@@ -32,6 +32,8 @@
 #include <zorba/error_handler.h>
 #include <zorba/exception.h>
 
+#include "util/properties.h"
+
 #include <zorbatypes/URI.h>
 #include "zorba_test_setting.h"
 #ifndef ZORBA_MINIMAL_STORE
@@ -42,6 +44,12 @@
 #endif
 
 namespace fs = boost::filesystem;
+
+zorba::Properties *lProp;
+
+void loadProperties () {
+  zorba::Properties::load (NULL, NULL);
+}
 
 void
 printFile(std::ostream& os, std::string aInFile)
@@ -308,12 +316,13 @@ _tmain(int argc, _TCHAR* argv[])
 main(int argc, char** argv)
 #endif
 {
+  loadProperties ();
+
   fs::path lQueryFile, lResultFile, lErrorFile, lRefFile, lSpecFile;
   Specification lSpec;
 
   // do initial stuff
-  if ( argc == 2 )
-  {
+  if (argc == 2) {
     std::string lQueryFileString  = zorba::RBKT_SRC_DIR +"/Queries/" + argv[1];
     lQueryFile = fs::system_complete( fs::path( lQueryFileString, fs::native ) );
 
@@ -327,10 +336,8 @@ main(int argc, char** argv)
                                      +lQueryWithoutSuffix +".xml.res", fs::native) );
     lSpecFile  = fs::system_complete(fs::path(zorba::RBKT_SRC_DIR+ "/Queries/" 
                                      +lQueryWithoutSuffix +".spec", fs::native) );
-  }
-  else
-  {
-    std::cerr << "\nusage:   testdriver [testfile]" << std::endl;
+  } else {
+    std::cerr << "Usage:   testdriver [testfile]" << std::endl;
     return 1;
   }
 

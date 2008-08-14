@@ -20,6 +20,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <cctype>
 
 #include "util/properties.h"
 
@@ -32,6 +33,20 @@ namespace po = boost::program_options;
 
 namespace zorba
 {
+  struct env_mapper {
+    std::string operator() (std::string name) {
+      static const char *pfx = "ZORBA_";
+      static int pfx_len = strlen (pfx);
+      if (name.compare (0, pfx_len, pfx) != 0) return "";
+      std::string result (name, pfx_len, std::string::npos);
+      for (unsigned i = 0; i < result.length (); i++)
+        if (result [i] == '_') result [i] = '-'; 
+        else if (isupper (result [i])) result [i] += 'a' - 'A';
+      return result;
+    }
+  };
+  
+
   bool Properties::theLoaded = false;
   
   Properties::Properties() 
@@ -138,7 +153,7 @@ namespace zorba
       ( "trace-parsing,p", "trace parsing" )
       ( "trace-scanning,s", "trace scanning" )
       ("use-serializer,r", "use serializer")
-      ("opt-level,O", po::value<bool> (&theUseOptimizer), "optimization level (1=enabled (default), 0=off)")
+      ("optimizer,O", po::value<bool> (&theUseOptimizer), "optimization level (1=enabled (default), 0=off)")
       // program option with a value => the value is directly set to the variable theResultFile
       ("result-file,o", po::value<std::string>(&theResultFile), "result file")
       ("abort", "abort when fatal error happens")
@@ -186,8 +201,13 @@ namespace zorba
     po::positional_options_description lPositionalOptions;
     lPositionalOptions.add ( "input-query",-1 );
 
+    po::options_description lEnvOptions;
+    lEnvOptions.add ( lGenericOptions ).add ( lConfigOptions );
+      
     po::variables_map lVarMap;
-    
+
+    store (parse_environment(lEnvOptions, env_mapper()), lVarMap);
+
     // Applies the command line arguments
     if (argv != NULL)
       store ( po::command_line_parser ( argc, argv ).
@@ -211,10 +231,10 @@ namespace zorba
     }
     
     // parsing of the property file
-    if (lVarMap.count("property-file")) {
-      std::ifstream lStreamFile( lVarMap["property-file"].as<std::string>().c_str() );
+    if (! thePropFile.empty ()) {
+      std::ifstream lStreamFile( thePropFile.c_str() );
       if (!lStreamFile) {
-        std::cerr << "Property file (" <<  lVarMap["property-file"].as<std::string>() << ") not found" << std::endl;
+        std::cerr << "Property file (" << thePropFile << ") not found" << std::endl;
         return false;
       }
       store ( parse_config_file(lStreamFile, lConfigFileOptions), lVarMap);
