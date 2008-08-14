@@ -257,6 +257,8 @@ protected:
 
   varref_t create_var (const QueryLoc& loc, store::Item_t qname, var_expr::var_kind kind, xqtref_t type = NULL) {
     varref_t e = new var_expr (loc, kind, qname);
+    if (kind == var_expr::pos_var)
+      type = GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE;
     e->set_type (type);
     return e;
   }
