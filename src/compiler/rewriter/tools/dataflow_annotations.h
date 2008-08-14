@@ -20,10 +20,10 @@
 
 namespace zorba {
 
-class DataflowAnnotationsComputer {
+  class DataflowAnnotationsComputer {
   public:
-    DataflowAnnotationsComputer(static_context *ctx)
-      : m_ctx(ctx) { }
+  DataflowAnnotationsComputer(static_context *ctx)
+    : m_ctx(ctx) { }
     ~DataflowAnnotationsComputer() { }
 
     void compute(expr *e);
@@ -61,7 +61,7 @@ class DataflowAnnotationsComputer {
     void compute_pi_expr(pi_expr *e);
     void default_walk(expr *e);
     bool generic_compute(expr *e);
-};
+  };
 
 }
 
