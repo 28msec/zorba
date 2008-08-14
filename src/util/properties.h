@@ -95,11 +95,10 @@ namespace zorba {
        * 
        * @param argc 
        * @param argv[] 
-       * @param aNoCmdLineOptions true, if command line options should not be considered.
        * @return false, if the parsing didn't work
        */
       bool 
-      loadProps(int argc, char *argv[], bool aNoCmdLineOptions = false);
+      loadProps(int argc, char *argv[]);
     
     public:
       static Properties* 

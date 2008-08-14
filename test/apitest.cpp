@@ -76,7 +76,7 @@ int _tmain(int argc, _TCHAR* argv[])
 {
   // read the command file properties
   if (! Properties::load(argc,argv))
-    return 4;  
+    return 4;
 
   Properties* lProp = Properties::instance();
   Zorba_CompilerHints chints;

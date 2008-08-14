@@ -23,6 +23,7 @@
 
 #include "util/properties.h"
 
+#include "zorba/config.h"
 
 #define CONFIG_FOLDER "zorba"
 #define CONFIG_FILE "properties.cfg"
@@ -86,10 +87,16 @@ namespace zorba
     
     
     if (getOSConfigFolder(lFolder)) {
+#if defined (WIN32) || defined (UNIX)
+#define DOT_FILE "."
+#else
+#define DOT_FILE ""
+#endif
+
 #ifdef __win32__
-      lStream << lFolder << "\\" << "." CONFIG_FOLDER << "\\" << CONFIG_FILE;
+      lStream << lFolder << "\\" << DOT_FILE CONFIG_FOLDER << "\\" << CONFIG_FILE;
 # else
-      lStream << lFolder << "/" << CONFIG_FOLDER << "/" << CONFIG_FILE;
+      lStream << lFolder << "/" << DOT_FILE CONFIG_FOLDER << "/" << CONFIG_FILE;
 #endif
       aFileURI = lStream.str();
       return true;
@@ -101,7 +108,7 @@ namespace zorba
   {
     static Properties lProperties;
     if (aCheckLoad && !theLoaded)
-      lProperties.loadProps(0,0,true);
+      lProperties.loadProps(0,0);
     return &lProperties;
   }
 
@@ -112,7 +119,7 @@ namespace zorba
    * 
    * Important: 
    **/
-  bool Properties::loadProps ( int argc, char *argv[], bool aNoCmdLineOptions )
+  bool Properties::loadProps ( int argc, char *argv[])
   {
     std::string thePropFile;
     
@@ -182,10 +189,9 @@ namespace zorba
     po::variables_map lVarMap;
     
     // Applies the command line arguments
-    if (!aNoCmdLineOptions) {
+    if (argv != NULL)
       store ( po::command_line_parser ( argc, argv ).
-          options ( lCmdlineOptions ).positional ( lPositionalOptions ).run(), lVarMap );
-    }
+              options ( lCmdlineOptions ).positional ( lPositionalOptions ).run(), lVarMap );
     
     // Ignites the command line parsing
     notify ( lVarMap );
