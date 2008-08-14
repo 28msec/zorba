@@ -23,7 +23,7 @@
 #include "compiler/parser/symbol_table.h"
 
 // needed because we have to delete the main module node
-#include "compiler/parsetree/parsenodes.h"
+#include "compiler/parsetree/parsenode_base.h"
 
 namespace zorba {
 
