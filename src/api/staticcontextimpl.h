@@ -146,6 +146,18 @@ class StaticContextImpl : public StaticContext
 
   virtual CollectionURIResolver*
   getCollectionURIResolver();
+
+  virtual void
+  setSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver);
+
+  virtual SchemaURIResolver*
+  getSchemaURIResolver();
+
+  virtual void
+  setModuleURIResolver(ModuleURIResolver* aModuleUriResolver);
+
+  virtual ModuleURIResolver*
+  getModuleURIResolver();
 };
 
 } /* namespace zorba */

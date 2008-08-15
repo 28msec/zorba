@@ -305,6 +305,18 @@ namespace zorba {
 
       virtual CollectionURIResolver*
       getCollectionURIResolver() = 0;
+
+      virtual void
+      setSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver) = 0;
+
+      virtual SchemaURIResolver*
+      getSchemaURIResolver() = 0;
+
+      virtual void
+      setModuleURIResolver(ModuleURIResolver* aModuleUriResolver) = 0;
+
+      virtual ModuleURIResolver*
+      getModuleURIResolver() = 0;
   };
 
 } /* namespace zorba */

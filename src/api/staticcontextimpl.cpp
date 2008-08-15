@@ -506,4 +506,44 @@ StaticContextImpl::getCollectionURIResolver()
   return 0;
 }
 
+void
+StaticContextImpl::setModuleURIResolver(ModuleURIResolver* aModuleUriResolver)
+{
+  try {
+    theCtx->set_module_uri_resolver(new ModuleURIResolverWrapper(aModuleUriResolver));
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
+}
+
+SchemaURIResolver*
+StaticContextImpl::getSchemaURIResolver()
+{
+  SchemaURIResolverWrapper* lWrapper = dynamic_cast<SchemaURIResolverWrapper*>(theCtx->get_schema_uri_resolver());
+  if (lWrapper) { // if it's the user's resolver
+    return lWrapper->theSchemaResolver;
+  }
+  return 0;
+}
+
+void
+StaticContextImpl::setSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver)
+{
+  try {
+    theCtx->set_schema_uri_resolver(new SchemaURIResolverWrapper(aSchemaUriResolver));
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
+}
+
+ModuleURIResolver*
+StaticContextImpl::getModuleURIResolver()
+{
+  ModuleURIResolverWrapper* lWrapper = dynamic_cast<ModuleURIResolverWrapper*>(theCtx->get_module_uri_resolver());
+  if (lWrapper) { // if it's the user's resolver
+    return lWrapper->theModuleResolver;
+  }
+  return 0;
+}
+
 } /* namespace zorba */

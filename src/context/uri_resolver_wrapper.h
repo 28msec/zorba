@@ -63,6 +63,7 @@ namespace zorba {
               static_context* aStaticContext);
 
     protected:
+      friend class StaticContextImpl;
       SchemaURIResolver* theSchemaResolver;
   };
 
@@ -77,6 +78,7 @@ namespace zorba {
               static_context* aStaticContext);
 
     protected:
+      friend class StaticContextImpl;
       ModuleURIResolver* theModuleResolver;
   };
 
