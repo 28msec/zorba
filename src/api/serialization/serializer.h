@@ -93,7 +93,8 @@ protected:
     PARAMETER_VALUE_OMIT,
 		
     PARAMETER_VALUE_XML,
-	  PARAMETER_VALUE_HTML,
+	PARAMETER_VALUE_HTML,
+	PARAMETER_VALUE_TEXT,
   
     PARAMETER_VALUE_UTF_8
 #ifndef ZORBA_NO_UNICODE
@@ -114,7 +115,7 @@ protected:
   short int escape_uri_attributes;   // TODO: yes/no requires unicode normalization
   short int include_content_type;    // yes/no, implemented
   xqp_string media_type;             // string, implemented
-  short int method;                  // an expanded QName: "xml", "html" are handled
+  short int method;                  // an expanded QName: "xml", "html", "text"  are handled
   xqp_string normalization_form;     // TODO:   requires unicode normalization
   short int omit_xml_declaration;    // "yes" or "no", implemented
   short int standalone;              // implemented, TODO: add some validity checks
@@ -203,7 +204,7 @@ protected:
     virtual void emit_item(const store::Item* item);
 
     /**
-     * Outputs indentation whitespace, depending of depth. 
+     * Outputs indentation whitespace, depending on depth. 
      *
      * @param depth the level of indentation
      */
@@ -267,12 +268,26 @@ protected:
     
     virtual void emit_declaration();
     virtual void emit_declaration_end();
-    
-    virtual void emit_node(
-        const store::Item* item,
-        int depth);
+    virtual void emit_node(const store::Item* item, int depth);
   };
 
+  
+  ///////////////////////////////////////////////////////////
+  //                                                       //
+  //  class text_emitter                                   //
+  //                                                       //
+  ///////////////////////////////////////////////////////////
+  
+  class text_emitter : public emitter
+  {
+  public:
+    text_emitter(serializer* the_serializer, transcoder& the_transcoder);
+    
+    virtual void emit_declaration();        
+    virtual void emit_node(const store::Item* item, int depth);
+    virtual int emit_node_children(const store::Item* item, int depth, bool perform_escaping = true);
+  };
+  
 
   ///////////////////////////////////////////////////////////
   //                                                       //

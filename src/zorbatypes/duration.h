@@ -120,34 +120,34 @@ public:
   Decimal
   operator/(const Duration& d) const;
 
-  bool
+  virtual bool
   isNegative() const;
 
-  bool
+  virtual bool
   isZero() const;
 
-  long
+  virtual long
   getYears() const;
       
-  long
+  virtual long
   getMonths() const;
       
-  long
+  virtual long
   getDays() const;
       
-  long
+  virtual long
   getHours() const;
       
-  long
+  virtual long
   getMinutes() const;
       
-  double
+  virtual double
   getSeconds() const;
 
-  long
+  virtual long
   getFractionalSeconds() const;
 
-  long
+  virtual long
   getIntSeconds() const;
 
   Double

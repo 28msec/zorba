@@ -153,6 +153,11 @@ double TimeZone::getSeconds() const
   return Duration::getSeconds();
 }
 
+long TimeZone::getIntSeconds() const
+{
+  return Duration::getIntSeconds();
+}
+
 long TimeZone::getFractionalSeconds() const
 {
   return Duration::getFractionalSeconds();

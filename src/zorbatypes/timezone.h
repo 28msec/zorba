@@ -71,6 +71,9 @@ public:
   getSeconds() const;
 
   virtual long
+  getIntSeconds() const;
+
+  virtual long
   getFractionalSeconds() const;
 
   uint32_t 

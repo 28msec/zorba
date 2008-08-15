@@ -50,7 +50,8 @@ typedef struct Zorba_CompilerHints {
 
 typedef enum {
   ZORBA_SERIALIZATION_METHOD_XML, 
-  ZORBA_SERIALIZATION_METHOD_HTML
+  ZORBA_SERIALIZATION_METHOD_HTML,
+  ZORBA_SERIALIZATION_METHOD_TEXT
 } Zorba_serialization_method_t;
 
 typedef enum {

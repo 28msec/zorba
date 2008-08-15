@@ -592,6 +592,8 @@ XQueryImpl::setSerializationParameters(
     ser->set_parameter("method", "xml"); break;
   case ZORBA_SERIALIZATION_METHOD_HTML:
     ser->set_parameter("method", "html"); break;
+  case ZORBA_SERIALIZATION_METHOD_TEXT:
+    ser->set_parameter("method", "text"); break;
   }
 
   switch (opt.byte_order_mark) 

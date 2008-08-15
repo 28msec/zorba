@@ -173,7 +173,7 @@ int Duration::fromTimezone(const TimeZone& t, Duration& d)
 {
   if(!t.timeZoneNotSet())
   {
-    d = Duration(DAYTIMEDURATION_FACET, t.isNegative(), 0, 0, 0, t.getHours(), t.getMinutes(), t.getSeconds(), t.getFractionalSeconds() );
+    d = Duration(DAYTIMEDURATION_FACET, t.isNegative(), 0, 0, 0, t.getHours(), t.getMinutes(), t.getIntSeconds(), t.getFractionalSeconds() );
     return 0;
   }
   else

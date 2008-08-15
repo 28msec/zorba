@@ -1045,7 +1045,7 @@ DateTime* DateTime::adjustToTimeZone(int tz_seconds) const
                                 0, 0, 0,
                                 the_time_zone.getHours(),
                                 the_time_zone.getMinutes(),
-                                the_time_zone.getSeconds(), 0));
+                                the_time_zone.getIntSeconds(), 0));
 
     dtduration = std::auto_ptr<Duration>(*context_tz - *dtduration);
     dt = std::auto_ptr<DateTime>(dt->addDuration(*dtduration));
@@ -1099,7 +1099,7 @@ DateTime* DateTime::adjustToTimeZone(const Duration* d) const
                                   0, 0, 0,
                                          the_time_zone.getHours(),
                                          the_time_zone.getMinutes(),
-                                         the_time_zone.getSeconds(),
+                                         the_time_zone.getIntSeconds(),
                                          0));
 
       context_tz = std::auto_ptr<Duration>(new Duration(*d));
