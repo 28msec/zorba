@@ -78,8 +78,8 @@ namespace zorba {
 #define CHK_SINGLE_DECL( state, err ) do { if (state) ZORBA_ERROR(err); state = true; } while (0)
 #define QLOCDECL const QueryLoc &loc = v.get_location(); (void) loc
 #ifndef NDEBUG
-# define TRACE_VISIT() QLOCDECL; if (Properties::instance()->traceTranslator()) cout << string(++print_depth, ' ') << TRACE << ", stk size " << nodestack.size () << ", scope depth " << scope_depth << endl
-# define TRACE_VISIT_OUT() QLOCDECL; if (Properties::instance()->traceTranslator()) cout << string(print_depth--, ' ') << TRACE << ", stk size: " << nodestack.size () << ", scope depth " << scope_depth << endl
+# define TRACE_VISIT() QLOCDECL; if (Properties::instance()->traceTranslator()) cout << string(++print_depth, ' ') << TRACE << ", stk size " << nodestack.size () << ", tstk size: " << tstack.size () << ", scope depth " << scope_depth << endl
+# define TRACE_VISIT_OUT() QLOCDECL; if (Properties::instance()->traceTranslator()) cout << string(print_depth--, ' ') << TRACE << ", stk size: " << nodestack.size () << ", tstk size: " << tstack.size () << ", scope depth " << scope_depth << endl
 #else
 # define TRACE_VISIT() QLOCDECL
 # define TRACE_VISIT_OUT() QLOCDECL
@@ -2157,6 +2157,8 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     || lFuncType == ParseConstants::fn_extern_sequential;
   if (! is_external)
     body = pop_nodestack ();
+  if (v.get_return_type () != NULL)
+    pop_tstack ();
 
   // The following code must execute regardless of the function type
   // to clean up the node and type stacks.
@@ -5632,6 +5634,7 @@ expr_t result ()
     }
     ZORBA_ASSERT (false);
   }
+  ZORBA_ASSERT (tstack.size () == 0);
   if (scope_depth != 0) {
     cout << "Error: scope depth " << scope_depth << endl;
     ZORBA_ASSERT (false);
