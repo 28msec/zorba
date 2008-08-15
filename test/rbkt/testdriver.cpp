@@ -46,6 +46,8 @@
 namespace fs = boost::filesystem;
 
 zorba::Properties *lProp;
+#define EXPECTED_ERROR  0
+#define UNEXPECTED_ERROR  6
 
 void loadProperties () {
   zorba::Properties::load (NULL, NULL);
@@ -191,7 +193,7 @@ printErrors (const TestErrorHandler& errHandler, const char *msg)
 int analyzeError (const Specification &lSpec, const TestErrorHandler& errHandler) {
   if (isErrorExpected(errHandler, &lSpec)) {
     printErrors(errHandler, "The following execution error occurred as expected");
-    return 0;
+    return EXPECTED_ERROR;
   } else {
     printErrors(errHandler, "Unexpected error executing query");
     std::cerr << "Expected error(s)";
@@ -201,7 +203,7 @@ int analyzeError (const Specification &lSpec, const TestErrorHandler& errHandler
         std::cerr << " " << *lIter;
       }
     std::cerr << std::endl;
-    return 6;
+    return UNEXPECTED_ERROR;
   }
 }
 
@@ -321,12 +323,22 @@ main(int argc, char** argv)
   fs::path lQueryFile, lResultFile, lErrorFile, lRefFile, lSpecFile;
   Specification lSpec;
 
-  // do initial stuff
-  if (argc == 2) {
-    std::string lQueryFileString  = zorba::RBKT_SRC_DIR +"/Queries/" + argv[1];
+  if ( argc < 2 )
+  {
+    std::cerr << "\nusage:   testdriver [testfile_1] [testfile_2] ..." << std::endl;
+    return 1;
+  }
+
+  zorba::Zorba *  engine;
+  int             errors;
+
+  for( int i=1; i < argc; i++ )
+  {
+    // do initial stuff
+    std::string lQueryFileString  = zorba::RBKT_SRC_DIR +"/Queries/" + argv[i];
     lQueryFile = fs::system_complete( fs::path( lQueryFileString, fs::native ) );
 
-    std::string lQueryWithoutSuffix = std::string(argv[1]).substr( 0, std::string(argv[1]).size()-3 );
+    std::string lQueryWithoutSuffix = std::string(argv[i]).substr( 0, std::string(argv[i]).size()-3 );
     std::cout << "test " << lQueryWithoutSuffix << std::endl;
     lResultFile = fs::system_complete(fs::path( zorba::RBKT_BINARY_DIR +"/QueryResults/" 
                                       +lQueryWithoutSuffix + ".res", fs::native) );
@@ -336,141 +348,152 @@ main(int argc, char** argv)
                                      +lQueryWithoutSuffix +".xml.res", fs::native) );
     lSpecFile  = fs::system_complete(fs::path(zorba::RBKT_SRC_DIR+ "/Queries/" 
                                      +lQueryWithoutSuffix +".spec", fs::native) );
-  } else {
-    std::cerr << "Usage:   testdriver [testfile]" << std::endl;
-    return 1;
-  }
 
-  // does the query file exists
-  if ( (! fs::exists( lQueryFile )) || fs::is_directory( lQueryFile) ) {
-    std::cerr << "\n query file " << lQueryFile.native_file_string() 
-              << " does not exist or is not a file" << std::endl;
-    return 2;
-  }
+    // does the query file exists
+    if ( (! fs::exists( lQueryFile )) || fs::is_directory( lQueryFile) ) {
+      std::cerr << "\n query file " << lQueryFile.native_file_string() 
+                << " does not exist or is not a file" << std::endl;
+      return 2;
+    }
 
-  // delete previous files if they exists
-  if ( fs::exists ( lResultFile ) ) { fs::remove (lResultFile); }
-  if ( fs::exists ( lErrorFile ) )  { fs::remove (lErrorFile);  }
+    // delete previous files if they exists
+    if ( fs::exists ( lResultFile ) ) { fs::remove (lResultFile); }
+    if ( fs::exists ( lErrorFile ) )  { fs::remove (lErrorFile);  }
 
-  // create the result directory
-  fs::path lBucket = fs::system_complete(fs::path( lResultFile.branch_path().string(), fs::native ));
-  if ( ! fs::exists( lBucket ) )
-    fs::create_directories(lBucket); // create deep directories
+    // create the result directory
+    fs::path lBucket = fs::system_complete(fs::path( lResultFile.branch_path().string(), fs::native ));
+    if ( ! fs::exists( lBucket ) )
+      fs::create_directories(lBucket); // create deep directories
 
-  // read the xargs and errors if the spec file exists
-  if ( fs::exists( lSpecFile )) 
-  { 
-    lSpec.parseFile(lSpecFile.native_file_string()); 
-  }
+    // read the xargs and errors if the spec file exists
+    if ( fs::exists( lSpecFile )) 
+    {
+      lSpec.parseFile(lSpecFile.native_file_string());
+    }
 
-  // we must either have a reference file or an expected error code
-  if ( (lSpec.errorsSize() == 0) && ((! fs::exists( lRefFile )) || fs::is_directory( lRefFile)))
-  {
-    std::cerr << "No reference result and no expected errors." << std::endl;
-    return 3;
-  }
+    // we must either have a reference file or an expected error code
+    if ( (lSpec.errorsSize() == 0) && ((! fs::exists( lRefFile )) || fs::is_directory( lRefFile)))
+    {
+      std::cerr << "No reference result and no expected errors." << std::endl;
+      return 3;
+    }
 
-  // print the query
-  std::cout << "Query:" << std::endl;
-  printFile(std::cout, lQueryFile.native_file_string());
-  std::cout << std::endl;
+    // print the query
+    std::cout << "Query:" << std::endl;
+    printFile(std::cout, lQueryFile.native_file_string());
+    std::cout << std::endl;
 
-  // Instantiate the simple store
+    if( i == 1 )
+    {
+      // Instantiate the simple store
 #ifdef ZORBA_MINIMAL_STORE
-  zorba::storeminimal::SimpleStore* store = 
-        zorba::storeminimal::SimpleStore::getInstance();
+      zorba::storeminimal::SimpleStore* store =
+      zorba::storeminimal::SimpleStore::getInstance();
 #else
-  zorba::simplestore::SimpleStore* store = 
-        zorba::simplestore::SimpleStoreManager::getStore();
+      zorba::simplestore::SimpleStore* store =
+      zorba::simplestore::SimpleStoreManager::getStore();
 #endif
 
-  // Instantiate zorba query processor
-  zorba::Zorba *engine = zorba::Zorba::getInstance(store);
+      // Instantiate zorba query processor
+      engine = zorba::Zorba::getInstance(store);
+    }
 
-  TestErrorHandler errHandler;
+    TestErrorHandler errHandler;
 
-  // create and compile the query
-  std::string lQueryString;
-  slurp_file(lQueryFile.native_file_string().c_str(), lQueryString);
-  zorba::XQuery_t lQuery = engine->createQuery (&errHandler);
-  lQuery->setFileName (lQueryFile.string());
-  lQuery->compile (lQueryString.c_str(), getCompilerHints());
+    // create and compile the query
+    std::string lQueryString;
+    slurp_file(lQueryFile.native_file_string().c_str(), lQueryString);
+    zorba::XQuery_t lQuery = engine->createQuery (&errHandler);
+    lQuery->setFileName (lQueryFile.string());
+    lQuery->compile (lQueryString.c_str(), getCompilerHints());
 
-  if (errHandler.errors())
-    return analyzeError (lSpec, errHandler);
+    errors = -1;
+    if ( errHandler.errors() )
+    {
+      errors = analyzeError (lSpec, errHandler);
+      if( errors == UNEXPECTED_ERROR )
+        return 6;
+    }
+    else
+    {
+      // set the variables in the dynamic context
+      zorba::DynamicContext* lDynCtxt = lQuery->getDynamicContext();
 
-  // set the variables in the dynamic context
-  zorba::DynamicContext* lDynCtxt = lQuery->getDynamicContext();
+      if (lSpec.hasDateSet()) {
+        // set the current date time such that tests that use fn:current-time behave deterministically
+        zorba::Item lDateTimeItem = engine->getItemFactory()->createDateTime(lSpec.getDate());
 
-  if (lSpec.hasDateSet()) {
-    // set the current date time such that tests that use fn:current-time behave deterministically
-    zorba::Item lDateTimeItem = engine->getItemFactory()->createDateTime(lSpec.getDate());
+        lDynCtxt->setCurrentDateTime(lDateTimeItem);
+      }
 
-    lDynCtxt->setCurrentDateTime(lDateTimeItem);
-  }
+      if (lSpec.hasTimezoneSet()) {
+        int lTimezone = atoi(lSpec.getTimezone().c_str());
 
-  if (lSpec.hasTimezoneSet()) {
-    int lTimezone = atoi(lSpec.getTimezone().c_str());
+        std::cout << "timezone " << lTimezone << std::endl;
+        lDynCtxt->setImplicitTimezone(lTimezone);
+      }
 
-    std::cout << "timezone " << lTimezone << std::endl;
-    lDynCtxt->setImplicitTimezone(lTimezone);
-  }
+      set_vars(&lSpec, lDynCtxt);
 
-  set_vars(&lSpec, lDynCtxt);
+      errors = -1;
+      {
+        // serialize xml
+        std::ofstream lResFileStream(lResultFile.native_file_string().c_str());
+        assert (lResFileStream.good());
 
-  {
-    // serialize xml
-    std::ofstream lResFileStream(lResultFile.native_file_string().c_str());
-    assert (lResFileStream.good());
+        lResFileStream << lQuery;
 
-    lResFileStream << lQuery;
+        if (errHandler.errors())
+          errors = analyzeError (lSpec, errHandler);
+        else if ( lSpec.errorsSize() > 0 ) {
+          if ( ! fs::exists(lRefFile) ) {
+            std::cerr << "Expected error(s)";
+            for (std::vector<std::string>::const_iterator lIter = lSpec.errorsBegin();
+                lIter != lSpec.errorsEnd(); ++lIter)
+            {
+              std::cerr << " " << *lIter;
+            }
+            if ( fs::exists(lResultFile) && fs::file_size(lResultFile) == 0)
+              std::cerr << " but got empty result" << std::endl;
+            else {
+              std::cerr << " but got result:" << std::endl;
+              printFile(std::cerr, lResultFile.native_file_string());
+              std::cerr << "=== end of result ===" << std::endl;
+            }
+            return 7;
+          }
+        }
+      }
+      if( errors == UNEXPECTED_ERROR)
+        return 6;
+      else if( errors == -1 )
+      {
+        std::cout << "Result:" << std::endl;
+        printFile(std::cout, lResultFile.native_file_string());
+        std::cout << "=== end of result ===" << std::endl;
+        std::cout.flush();
 
-    if (errHandler.errors())
-      return analyzeError (lSpec, errHandler);
-    else if ( lSpec.errorsSize() > 0 ) {
-      if ( ! fs::exists(lRefFile) ) {
-        std::cerr << "Expected error(s)";
-        for (std::vector<std::string>::const_iterator lIter = lSpec.errorsBegin();
-            lIter != lSpec.errorsEnd(); ++lIter)
+        // last, we have to diff the result
+        int lLine, lCol, lPos; // where do the files differ
+        bool lRes = isEqual(lRefFile, lResultFile, lLine, lCol, lPos);
+        if ( !lRes )  // results differ
         {
-          std::cerr << " " << *lIter;
+          std::cerr << std::endl << "Result does not match expected result:" << std::endl;
+          printFile(std::cerr, lRefFile.native_file_string());
+          std::cerr << "=== end of expected result ===" << std::endl;
+
+          std::cerr << "See line " << lLine << ", col " << lCol << " of expected result. " << std::endl;
+          std::cerr << "Actual: <";
+          printPart(std::cerr, lResultFile.native_file_string(), lPos, 15);
+          std::cerr << ">" << std::endl;
+          std::cerr << "Expected: <";
+          printPart(std::cerr, lRefFile.native_file_string(), lPos, 15);
+          std::cerr << ">" << std::endl;
+
+          return 8;
         }
-        if ( fs::exists(lResultFile) && fs::file_size(lResultFile) == 0)
-          std::cerr << " but got empty result" << std::endl;
-        else {
-          std::cerr << " but got result:" << std::endl;
-          printFile(std::cerr, lResultFile.native_file_string());
-          std::cerr << "=== end of result ===" << std::endl;
-        }
-        return 7;
       }
     }
   }
-  std::cout << "Result:" << std::endl;
-  printFile(std::cout, lResultFile.native_file_string());
-  std::cout << "=== end of result ===" << std::endl;
-  std::cout.flush();
-
-  // last, we have to diff the result
-  int lLine, lCol, lPos; // where do the files differ
-  bool lRes = isEqual(lRefFile, lResultFile, lLine, lCol, lPos);
-  if ( !lRes )  // results differ
-  {
-    std::cerr << std::endl << "Result does not match expected result:" << std::endl;
-    printFile(std::cerr, lRefFile.native_file_string());
-    std::cerr << "=== end of expected result ===" << std::endl;
-
-    std::cerr << "See line " << lLine << ", col " << lCol << " of expected result. " << std::endl;
-    std::cerr << "Actual: <";
-    printPart(std::cerr, lResultFile.native_file_string(), lPos, 15);
-    std::cerr << ">" << std::endl;
-    std::cerr << "Expected: <";
-    printPart(std::cerr, lRefFile.native_file_string(), lPos, 15);
-    std::cerr << ">" << std::endl;
-
-    return 8;
-  }
-
-
   return 0;
 }
