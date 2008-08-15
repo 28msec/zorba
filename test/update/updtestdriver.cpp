@@ -335,7 +335,8 @@ main(int argc, char** argv)
       catch (zorba::ZorbaException &e)
       {
         if (isErrorExpected(e, lState)) {
-          return 0;
+          //return 0;
+          continue;
         } else {
           std::cerr << e << std::endl;
           return 6;
