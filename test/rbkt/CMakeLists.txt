@@ -45,10 +45,11 @@ TARGET_LINK_LIBRARIES(testdriver ${requiredlibs-testdriver})
 #
 # collect all queries (suffix .xq) in all subdirectories of the Queries dir
 #
-FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.xq)
-
 
 MESSAGE(STATUS "Adding tests for CTest")
+
+FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.xq)
+
 SET(TESTCOUNTER 0)
 
 FOREACH(TESTFILE ${TESTFILES})
