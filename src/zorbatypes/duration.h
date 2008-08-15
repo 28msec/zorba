@@ -37,6 +37,8 @@ public:
   
 public:
   Duration();
+
+  virtual ~Duration() {} ;
   
   Duration(FACET_TYPE facet_type);
 
