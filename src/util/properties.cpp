@@ -35,10 +35,7 @@ namespace zorba
 {
   struct env_mapper {
     std::string operator() (std::string name) {
-      // legacy option, special handling
-      if (name == "ZORBA_OPTLEVEL")
-        return "";
-      static const char *pfx = "ZORBA_";
+      static const char *pfx = "ZORBA_CFG_";
       static int pfx_len = strlen (pfx);
       if (name.compare (0, pfx_len, pfx) != 0) return "";
       std::string result (name, pfx_len, std::string::npos);
