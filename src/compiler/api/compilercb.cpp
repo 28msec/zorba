@@ -54,11 +54,11 @@ CompilerCB::CompilerCB()
     translate_cb = normalize_cb = optimize_cb = NULL;
     // TODO: move these out
     print_item_flow = Properties::instance()->printItemFlow();
-    if (Properties::instance()->printTranslatedExpressions())
+    if (Properties::instance()->printTranslated())
       translate_cb = print_expr_tree_translation;
-    if (Properties::instance()->printNormalizedExpressions())
+    if (Properties::instance()->printNormalized())
       normalize_cb = print_expr_tree_normalization;
-    if (Properties::instance()->printOptimizedExpressions())
+    if (Properties::instance()->printOptimized())
       optimize_cb = print_expr_tree_optimization;
   }
 

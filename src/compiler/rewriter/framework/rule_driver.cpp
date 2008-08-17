@@ -45,7 +45,7 @@ void RuleMajorDriver::rewriteRuleMajor(RewriterContext& rCtx)
         rCtx.setRoot(newRoot);
       }
 
-      if (modified && Properties::instance()->printIntermediateOptimizations ()) {
+      if (modified && Properties::instance()->printIntermediateOpt ()) {
         std::cout << "After " << (*i)->getRuleName () << ":" << std::endl;
         rCtx.getRoot ()->put (std::cout) << std::endl;
       }

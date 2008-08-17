@@ -1,0 +1,27 @@
+      // program flag. The value of the flag must be set at the end of this function
+      ( "trace-parsing,p", "trace parsing" )
+      ( "trace-scanning,s", "trace scanning" )
+      ("use-serializer,r", "use serializer")
+      ("optimizer,O", po::value<bool> (&theUseOptimizer)->default_value (true), "optimization level (1=enabled (default), 0=off)")
+      // program option with a value => the value is directly set to the variable theResultFile
+      ("result-file,o", po::value<std::string>(&theResultFile), "result file")
+      ("abort", "abort when fatal error happens")
+      ("query,e", po::value<std::string>(), "execute inline query")
+      ("print-query,q", "print the query query")
+      ("print-time,t", "print the execution time")
+      ("print-ast,a", "print the parse tree")
+      ("print-translated", "print the normalized expression tree")
+      ("print-normalized,n", "print the translated expression tree")
+      ("print-optimized", "print the optimized expression tree")
+      ("print-iterator-tree,i", "print the iterator tree")
+      ("print-item-flow,f", "show items produced by all iterators")
+      ("stable-iterator-ids", "print the iterator plan with stable ids")
+      ("no-tree-ids", "suppress ids and locations from compiler tree dumps")
+      ("print-intermediate-opt", "print intermediate optimizations")
+#ifndef NDEBUG
+      ("trace-translator,l", "trace the translator")
+      ("trace-codegen,c", "trace the codegenerator")
+#endif
+      ("compile-only", "only compile (don't execute)")
+      ("tz", po::value<int>(&theTimezone), "implicit time zone (in minutes)")
+      ("external-vars,x", po::value<std::vector<std::string> >(&theExternalVars), "external variables (e.g. -x x=file1.xml -x y:=strValue)")

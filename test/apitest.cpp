@@ -80,34 +80,32 @@ int _tmain(int argc, _TCHAR* argv[])
 
   Properties* lProp = Properties::instance();
   Zorba_CompilerHints chints;
-  chints.opt_level = (lProp->useOptimizer () ?
+  chints.opt_level = (lProp->optimizer () ?
                       ZORBA_OPT_LEVEL_O1:
                       ZORBA_OPT_LEVEL_O0);
 
   // output file (either a file or the standard out if no file is specified)
-  auto_ptr<ostream> outputFile (lProp->useResultFile() ?
-                                new ofstream (lProp->getResultFile().c_str()) :
-                                NULL);
+  auto_ptr<ostream> outputFile (lProp->resultFile ().empty () 
+                                ? NULL : new ofstream (lProp->resultFile().c_str()));
   ostream *resultFile = outputFile.get ();
   if (resultFile == NULL)
     resultFile = &cout;
   
 
   // input file (either from a file or given as parameter)
-  const char* fname = lProp->getQuery().c_str();
-
   auto_ptr<istream> qfile;
   fs::path path;
 
   if (! lProp->inlineQuery()) {
-    path = fs::system_complete (fname);
-    qfile.reset (new ifstream (path.native_file_string ().c_str ()));
+    path = fs::system_complete (lProp->queryFile ());
+    std::string fname = path.native_file_string ();
+    qfile.reset (new ifstream (fname.c_str ()));
+    if (!qfile->good() || qfile->eof()) {
+      cerr << "no query given or not readable " << fname  << endl;
+      return 3;
+    }
   } else {
-    qfile.reset (new istringstream(fname));
-  }
-  if (!qfile->good() || qfile->eof()) {
-    cerr << "no query given or not readable " << fname  << endl;
-    return 3;
+    qfile.reset (new istringstream(lProp->query ()));
   }
   
   // print the query if requested
@@ -146,7 +144,7 @@ int _tmain(int argc, _TCHAR* argv[])
   // set external variables
   vector<pair <string, string> > ext_vars = lProp->getExternalVars ();
   DynamicContext* dctx = query->getDynamicContext ();
-  dctx->setImplicitTimezone (lProp->timezone ());
+  dctx->setImplicitTimezone (lProp->tz ());
   for (vector<pair <string, string> >::const_iterator iter = ext_vars.begin ();
        iter != ext_vars.end (); iter++) {
     set_var (iter->first, iter->second, dctx);

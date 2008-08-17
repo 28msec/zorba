@@ -90,7 +90,7 @@ parsenode_t
 XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
 {
   // TODO: move these out
-  if (Properties::instance()->printAST())
+  if (Properties::instance()->printAst())
     theCompilerCB->m_config.parse_cb = print_ast_tree;
   
   xquery_driver lDriver(&*theCompilerCB);
