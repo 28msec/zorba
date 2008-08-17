@@ -20,9 +20,7 @@
 
 #ifndef ZORBA_ZORBAPROPERTIES
 #define ZORBA_ZORBAPROPERTIES
-
-namespace zorba {
-
+namespace zorba { 
 class ZorbaProperties : public PropertiesBase {
 protected:
   const char **get_all_options () const {
@@ -238,6 +236,6 @@ public:
   
 };
 
-}  // namespace zorba
+}   // namespaces
 
 #endif // ZORBA_ZORBAPROPERTIES

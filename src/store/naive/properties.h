@@ -13,32 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_PROPERTIES_H
-#define ZORBA_PROPERTIES_H
+#ifndef ZORBA_STORE_PROPERTIES_H
+#define ZORBA_STORE_PROPERTIES_H
 
 #include <string>
 #include <fstream>
 #include <vector>
 
+#include "store/naive/store_properties.h"
+
 namespace zorba { namespace store {
 
-class Properties
+class Properties : public StoreProperties
 {
 private:
-  static bool theLoaded;
-
-private:
-  long theStoreTraceLevel;
-  bool theBuildDataGuide;
-
-  /**
-   * Constructor.
-   * The default values of the properties are set here! Boost Program Options
-   * default values do not work because parts of the parsing might not be executed
-   * because of the command line or the property file is not parsed.
-   */
-  Properties();
-
   /**
    * Gets the Operation System folger where the properties of the current 
    * user are saved.
@@ -55,9 +43,9 @@ private:
   /**
    * Gets the location of the zorba property in the operation system.
    * 
-   * Linux, Mac: /home/username/.zorba/properties.cfg
-   * Windows Vista: C:\Users\username\Application Data\zorba\properties.cfg
-   * Windows XP: C:\Documents and Settings\username\Application Data\zorba\properties.cfg
+   * Linux, Mac: /home/username/.zorba/simplestore.cfg
+   * Windows Vista: C:\Users\username\Application Data\zorba\simplestore.cfg
+   * Windows XP: C:\Documents and Settings\username\Application Data\zorba\simplestore.cfg
    * 
    * @param aFileURI 
    * @return true, if found
@@ -65,42 +53,13 @@ private:
   bool 
   getOSConfigFile(std::string& aFileURI);
     
-  /**
-   * Parses the program options.
-   * 
-   * @param argc 
-   * @param argv[] 
-   * @param aNoCmdLineOptions true, if command line options should not be considered.
-   * @return false, if the parsing didn't work
-   */
-  bool 
-  loadProps(int argc, char *argv[], bool aNoCmdLineOptions = false);
+  bool loadProps(int argc, char *argv[]);
     
 public:
-  static Properties* 
-  instance(bool aCheckLoad = true);
+  static Properties* instance();
       
-  /**
-   * Parses the command line arguments and the property file for properties.
-   * The url of the property file is searched in the command line's arguments under the name property-file.
-   * If this argument is not found, the property file is search in the current
-   * directory under the name properties.cfg. If not found there, it is searched in the
-   * config folder for zorba of the operation system. This folder is defined as follows:
-   * - Linux, Mac: /home/username/.zorba/properties.cfg
-   * - Windows Vista: C:\Users\username\Application Data\zorba\properties.cfg
-   * - Windows XP: C:\Documents and Settings\username\Application Data\zorba\properties.cfg
-   * 
-   * 
-   * @return true if parsing was successful, else false
-   */
-  static bool 
-  load(int argc, char *argv[]);
+  static bool load(int argc, char *argv[]);
       
-  long
-  storeTraceLevel() const { return theStoreTraceLevel; }    
-
-  bool
-  buildDataGuide() const { return theBuildDataGuide; }
 };
 
 }

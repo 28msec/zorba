@@ -258,7 +258,7 @@ XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
 {
   return new FastXmlLoader(theItemFactory,
                            aErrorManager,
-                           store::Properties::instance()->buildDataGuide());
+                           store::Properties::instance()->buildDataguide());
 }
 
 

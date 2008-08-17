@@ -1,0 +1,2 @@
+    ("build-dataguide", "build-dataguide (true/false)")
+    ("store-trace-level", po::value<long>()->default_value (0), "store trace level (<= 0 : no tracing)")
