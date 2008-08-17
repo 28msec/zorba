@@ -13,18 +13,64 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include <fstream>
+#include <cassert>
+
 #include "util/properties_base.h"
+
+using namespace std;
 
 namespace zorba {
 
-  template<> void PropertiesBase::init_val (const char *str, std::string &val, unsigned delta) { val = str + delta; }
-  template<> void PropertiesBase::init_val (const char *str, std::vector<std::string> &val, unsigned delta) {
+  template<> void PropertiesBase::init_val (const char *str, string &val, unsigned delta) { val = str + delta; }
+  template<> void PropertiesBase::init_val (const char *str, vector<string> &val, unsigned delta) {
     val.push_back (str + delta);
   }
 
-  std::string PropertiesBase::load_env (const std::string &env_pfx, const char **options) {
-    std::string opt;
-    std::vector<const char *> arg_vec;
+  string PropertiesBase::load_file (const char *fname) {
+    ifstream is (fname);
+    vector<pair <const char *, const char *> > arg_vec;
+    string line;
+    unsigned nargs = 1;
+    while (getline (is, line)) {
+      if (line.size () == 0 || line [0] == '#')
+        continue;
+      ++nargs;
+      char *str = new char [line.size () + 3];
+      str [0] = str [1] = '-';
+      memcpy (str + 2, line.data (), line.size ());
+      str [line.size () + 2] = '\0';
+      char *p = strchr (str, '=');
+      if (p != NULL) {
+        ++nargs;
+        *p = '\0';
+      }
+      arg_vec.push_back (pair<const char *, const char *> (str, p));
+    }
+    if (nargs == 1)
+      return "";
+    else {
+      const char **argv = new const char * [nargs + 1];
+      unsigned i, j;
+      for (i = 0, j = 1; i < arg_vec.size (); ++i) {
+        argv [j++] = arg_vec [i].first;
+        if (arg_vec [i].second != NULL)
+          argv [j++] = arg_vec [i].second;
+      }
+      assert (j == nargs);
+      argv [nargs] = NULL;
+      string res = load_argv (nargs, argv);
+      delete [] argv;
+      for (i = 0; i < arg_vec.size (); ++i)
+        delete [] arg_vec [i].first;
+      return res;
+    }
+  }
+
+  string PropertiesBase::load_env (const string &env_pfx, const char **options) {
+    string opt;
+    vector<const char *> arg_vec;
 
     arg_vec.push_back ("cmd");
     for (; *options != NULL; ++options) {
@@ -43,7 +89,7 @@ namespace zorba {
     }
 
     int nargs = arg_vec.size ();
-    if (nargs == 0)
+    if (nargs == 1)
       return "";
     else {
       const char **argv = new const char * [nargs + 1];
@@ -51,7 +97,7 @@ namespace zorba {
         argv [i] = arg_vec [i];
       argv [nargs] = NULL;
       arg_vec.clear ();
-      std::string res = load_argv (nargs, argv);
+      string res = load_argv (nargs, argv);
       delete [] argv;
       return res;
     }

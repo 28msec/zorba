@@ -77,7 +77,9 @@ namespace zorba
 
   
   bool Properties::loadProps ( int argc, char *argv[]) {
-    std::string result = load_all ("", "ZORBA_CFG_", argc, (const char **) argv);
+    std::string cfgfile;
+    getOSConfigFile (cfgfile);
+    std::string result = load_all (cfgfile.c_str (), "ZORBA_CFG_", argc, (const char **) argv);
     if (result.empty ()) result = check_args ();
     if (result == "!HELP") {
       std::cout << "Allowed options:\n\n";

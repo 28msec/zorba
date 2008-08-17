@@ -39,11 +39,14 @@ public:
     std::string result;
     if (! (result = load_env (env_pfx)).empty ())
       return result;
+    if (! (result = load_file (cfgname)).empty ())
+      return result;
     return load_argv (argc, argv);
   }
 
   virtual std::string load_env (const std::string &env_pfx, const char **options);
   virtual std::string load_env (const std::string &env_pfx) { return load_env (env_pfx, get_all_options ()); }
+  std::string load_file (const char *fname);
 
   const std::vector<std::string > &getPositionalArgs () const { return __thePositionalArgs; }
 
