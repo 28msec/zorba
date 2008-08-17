@@ -150,7 +150,7 @@ sub print_init () {
   void initialize () {
 EOF
     for my $opt (@options) {
-        if ($opt->{default}) {
+        if (defined $opt->{default}) {
             print "    $opt->{member} = $opt->{default};\n";
         }
     }
@@ -164,8 +164,11 @@ EOF
 #
 
 my $namespace = shift;
+my @namespaces = split (/::/, $namespace);
 my $classname = shift;
-my $ifdef = uc ($namespace) . "_" . uc ($classname);
+my $ifdef = $namespace;
+$ifdef =~ s/::/_/g;
+$ifdef = uc ($ifdef) . "_" . uc ($classname);
 
 load_options;
 
@@ -176,9 +179,12 @@ print <<"EOF";
 
 #ifndef $ifdef
 #define $ifdef
+EOF
 
-namespace $namespace {
+foreach my $ns (@namespaces) { print "namespace $ns { "; }
+print "\n";
 
+print <<"EOF";
 class $classname : public PropertiesBase {
 protected:
 EOF
@@ -210,7 +216,12 @@ print <<"EOF";
   
 };
 
-}  // namespace $namespace
+EOF
+
+foreach my $ns (@namespaces) { print "} "; }
+print "  // namespaces\n";
+
+print <<"EOF";
 
 #endif // $ifdef
 EOF
