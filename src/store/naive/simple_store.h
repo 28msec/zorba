@@ -29,6 +29,8 @@
 #include "store/naive/shared_types.h"
 #include "store/naive/node_items.h"
 
+#include "store/naive/store_config.h"
+
 
 namespace zorba { 
 
@@ -173,6 +175,10 @@ public:
         bool lazy = true);
 
   store::TempSeq_t createTempSeq(const std::vector<store::Item_t>& item_v);
+
+#ifdef ZORBA_STORE_MSDOM
+  IXMLDOMNode   *exportItemAsMSDOM(store::Item_t it);
+#endif
 };
 
 

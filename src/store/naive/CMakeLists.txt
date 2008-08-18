@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+SET(ZORBA_STORE_MSDOM OFF CACHE BOOL "select the MS DOM store")
+SET(ZORBA_MSDOM_IN_NATIVE_STORE_CACHING ON CACHE BOOL "select if all info in msdom should be cached into native store node items style")
 
 #
 # Source Files
@@ -32,7 +34,6 @@ SET(SIMPLE_STORE_SRCS
     item_vector.cpp
     item_iterator.cpp
     atomic_items.cpp
-    node_items.cpp
     node_vector.cpp
     node_updates.cpp
     node_iterators.cpp
@@ -43,6 +44,15 @@ SET(SIMPLE_STORE_SRCS
     inmemorystorec.cpp
     dataguide.cpp
 )
+
+IF(ZORBA_STORE_MSDOM)
+	LIST(APPEND SIMPLE_STORE_SRCS		msdom_addon/msdom_node_items.cpp)
+ELSE(ZORBA_STORE_MSDOM)
+	LIST(APPEND SIMPLE_STORE_SRCS		node_items.cpp)
+ENDIF(ZORBA_STORE_MSDOM)
+
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/store_config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/store_config.h)
+
 
 #
 # Internal common libraries

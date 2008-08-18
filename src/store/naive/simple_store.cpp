@@ -108,6 +108,9 @@ void SimpleStore::init()
 
     theTraceLevel = store::Properties::instance()->storeTraceLevel();
 
+#ifdef ZORBA_STORE_MSDOM
+    CoInitialize(NULL);
+#endif
     theIsInitialized = true;
   }
 }
@@ -237,6 +240,10 @@ void SimpleStore::shutdown()
   // beyond the lifecycle of zorba
   xmlCleanupParser(); 
 
+#ifdef ZORBA_STORE_MSDOM
+    CoUninitialize();
+#endif
+  
   theIsInitialized = false;
 }
 
@@ -256,9 +263,16 @@ ulong SimpleStore::getTreeId()
 ********************************************************************************/
 XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
 {
+#ifndef ZORBA_STORE_MSDOM
   return new FastXmlLoader(theItemFactory,
                            aErrorManager,
                            store::Properties::instance()->buildDataguide());
+#else
+
+  return new SimpleXmlLoader(theItemFactory, 
+                            aErrorManager, 
+                            (store::Properties::instance())->buildDataguide());
+#endif
 }
 
 
@@ -832,6 +846,16 @@ TempSeq_t SimpleStore::createTempSeq(const std::vector<store::Item_t>& item_v)
   TempSeq_t tempSeq = new SimpleTempSeq(item_v);
   return tempSeq;
 }
+
+#ifdef ZORBA_STORE_MSDOM
+IXMLDOMNode*   SimpleStore::exportItemAsMSDOM(store::Item_t it)
+{
+  if(it == NULL)
+    return NULL;
+  XmlNode *xml_node = dynamic_cast<XmlNode*>(it.getp());
+  return xml_node->GetDOMNode();
+}
+#endif
 
 } // namespace store
 } // namespace zorba

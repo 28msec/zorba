@@ -26,7 +26,11 @@
 #include "store/naive/item_vector.h"
 #include "store/naive/ordpath.h"
 #include "store/naive/node_vector.h"
+#include "store/naive/store_config.h"
 
+#ifdef ZORBA_STORE_MSDOM
+#include "msdom_addon/msdom_node_items.h"
+#else
 namespace zorba 
 { 
 
@@ -1061,5 +1065,7 @@ public:
 
 } // namespace store
 } // namespace zorba
+
+#endif//#ifdef ZORBA_STORE_MSDOM
 
 #endif
