@@ -107,6 +107,8 @@ sub print_load_argv {
     for (++argv; *argv != NULL; ++argv) {
       if (strcmp (*argv, "--help") == 0 || strcmp (*argv, "-h") == 0)
         return "!HELP";
+      else if (strcmp (*argv, "--version") == 0)
+        return "!VER";
 EOF
 
     for my $opt (@options) {

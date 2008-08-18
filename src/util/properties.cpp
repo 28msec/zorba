@@ -21,6 +21,7 @@
 #include "util/properties.h"
 
 #include "zorba/config.h"
+#include "zorba/zorba.h"
 
 #define CONFIG_FOLDER "zorba"
 #define CONFIG_FILE "properties.cfg"
@@ -84,6 +85,10 @@ namespace zorba
     if (result == "!HELP") {
       std::cout << "Allowed options:\n\n";
       std::cout << get_help_msg ();
+      return false;
+    } else if (result == "!VER") {
+      std::cout << "Zorba XQuery Engine, Version: " 
+                << zorba::Zorba::version() << std::endl;
       return false;
     } else if (result.empty ()) {
       return true;

@@ -45,6 +45,8 @@ public:
     for (++argv; *argv != NULL; ++argv) {
       if (strcmp (*argv, "--help") == 0 || strcmp (*argv, "-h") == 0)
         return "!HELP";
+      else if (strcmp (*argv, "--version") == 0)
+        return "!VER";
       else if (strcmp (*argv, "--build-dataguide") == 0) {
         theBuildDataguide = true;
       }
