@@ -17,6 +17,7 @@
 #include <string>
 #include <sstream>
 #include <zorba/properties_base.h>
+#include <cstring>
 
 #ifndef ZORBA_STORE_STOREPROPERTIES
 #define ZORBA_STORE_STOREPROPERTIES

@@ -15,6 +15,8 @@
  */
 
 #include <fstream>
+#include <cstring>
+#include <cstdlib>
 #include <cassert>
 
 #include <zorba/properties_base.h>

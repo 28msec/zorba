@@ -17,6 +17,7 @@
 #include <iostream>
 #include <sstream>
 #include <cctype>
+#include <cstdlib>
 
 #include "util/properties.h"
 

@@ -178,6 +178,7 @@ print <<"EOF";
 #include <string>
 #include <sstream>
 #include <zorba/properties_base.h>
+#include <cstring>
 
 #ifndef $ifdef
 #define $ifdef
