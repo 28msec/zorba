@@ -177,7 +177,7 @@ load_options;
 print <<"EOF";
 #include <string>
 #include <sstream>
-#include "util/properties_base.h"
+#include <zorba/properties_base.h>
 
 #ifndef $ifdef
 #define $ifdef
@@ -187,7 +187,7 @@ foreach my $ns (@namespaces) { print "namespace $ns { "; }
 print "\n";
 
 print <<"EOF";
-class $classname : public PropertiesBase {
+class $classname : public ::zorba::PropertiesBase {
 protected:
 EOF
 
@@ -212,9 +212,7 @@ print <<"EOF";
     return &result;
   }
 
-  $classname () : PropertiesBase ()
-  { initialize (); }
-
+  $classname () { initialize (); }
   
 };
 

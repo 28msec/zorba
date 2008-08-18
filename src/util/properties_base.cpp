@@ -17,7 +17,7 @@
 #include <fstream>
 #include <cassert>
 
-#include "util/properties_base.h"
+#include <zorba/properties_base.h>
 
 using namespace std;
 

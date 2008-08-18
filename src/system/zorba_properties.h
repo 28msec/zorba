@@ -16,12 +16,12 @@
 // THIS IS A GENERATED FILE. DO NOT EDIT!
 #include <string>
 #include <sstream>
-#include "util/properties_base.h"
+#include <zorba/properties_base.h>
 
 #ifndef ZORBA_ZORBAPROPERTIES
 #define ZORBA_ZORBAPROPERTIES
 namespace zorba { 
-class ZorbaProperties : public PropertiesBase {
+class ZorbaProperties : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
     static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--trace-translator", "--trace-codegen", "--compile-only", "--tz", "--external-vars", NULL };
@@ -232,9 +232,7 @@ public:
     return &result;
   }
 
-  ZorbaProperties () : PropertiesBase ()
-  { initialize (); }
-
+  ZorbaProperties () { initialize (); }
   
 };
 

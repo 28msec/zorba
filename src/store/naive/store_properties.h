@@ -16,12 +16,12 @@
 // THIS IS A GENERATED FILE. DO NOT EDIT!
 #include <string>
 #include <sstream>
-#include "util/properties_base.h"
+#include <zorba/properties_base.h>
 
 #ifndef ZORBA_STORE_STOREPROPERTIES
 #define ZORBA_STORE_STOREPROPERTIES
 namespace zorba { namespace store { 
-class StoreProperties : public PropertiesBase {
+class StoreProperties : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
     static const char *result [] = { "--build-dataguide", "--store-trace-level", NULL };
@@ -81,9 +81,7 @@ public:
     return &result;
   }
 
-  StoreProperties () : PropertiesBase ()
-  { initialize (); }
-
+  StoreProperties () { initialize (); }
   
 };
 
