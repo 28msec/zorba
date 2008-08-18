@@ -16,7 +16,6 @@ SET(UTIL_SRCS
     fx/fxcharheap.cpp
     file.cpp
     tokenbuf.cpp
-    properties_base.cpp
     properties.cpp
     XmlWhitespace.cpp)
 
