@@ -73,7 +73,7 @@ ZORBA_THREAD_RETURN server( void * args)
     lQuery->debug();
     lQuery->close();
   } catch( std::exception &e ) {
-    std::cout << e.what() << std::endl;
+    std::cout << "Error: " << e.what() << std::endl;
   }
   return 0;
 }
@@ -110,7 +110,7 @@ populateStaticContext(
     try {
       aStaticContext->addCollation( aProperties->defaultCollation() );
     } catch (zorba::ZorbaException& e) {
-      std::cout << "The given collation '" << aProperties->defaultCollation() << "' is not a valid collation." << std::endl;
+      std::cout << "Error: the given collation '" << aProperties->defaultCollation() << "' is not a valid collation." << std::endl;
       return false;
     }
     aStaticContext->setDefaultCollation( aProperties->defaultCollation() );
@@ -170,10 +170,15 @@ createSerializerOptions(Zorba_SerializerOptions& lSerOptions, ZorbaCMDProperties
   return true;
 }
 
-bool isFileURI (const std::string &str) {
+std::string parseFileURI (bool asPath, const std::string &str) {
+  if (asPath)
+    return str;
   static const char *pfx = "file://";
   static unsigned plen = strlen (pfx);
-  return str.compare (0, plen, pfx);
+  if (str.compare (0, plen, pfx) == 0)
+    return str.substr (plen);
+  else
+    return "";
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -224,14 +229,14 @@ int _tmain(int argc, _TCHAR* argv[])
   }
   else if ( !lOutputStream->good() ) 
   {
-    std::cout << "could not write to output file " << lProperties.outputFile() << std::endl;
+    std::cout << "Error: could not write to output file " << lProperties.outputFile() << std::endl;
     lProperties.printHelp(std::cout);
     return 2;
   }
 
   if(lProperties.queriesOrFilesBegin() == lProperties.queriesOrFilesEnd())
   {
-    std::cout << "No query" << std::endl;
+    std::cout << "Error: no queries submitted" << std::endl;
     lProperties.printHelp(std::cout);
     return 3;
   }
@@ -242,25 +247,26 @@ int _tmain(int argc, _TCHAR* argv[])
        ++lIter)
   {
     // input file (either from a file or given as parameter)
-    const char* fname = (*lIter).c_str();
+    std::string fURI = *lIter;
+    std::string fname = parseFileURI (lProperties.asFiles (), fURI);
+    bool asFile = ! fname.empty ();
     fs::path path;
     std::auto_ptr<std::istream> qfile;
-    bool asFile = lProperties.asFiles () || isFileURI (fname);
     
     if (asFile) {
       path = fs::system_complete (fname);
       qfile.reset (new std::ifstream (path.native_file_string ().c_str ()));
     }
     else {
-      qfile.reset (new std::istringstream(fname));
+      qfile.reset (new std::istringstream(fURI));
     }
     
     if ( asFile && (!qfile->good() || qfile->eof()) ) {
-      std::cout << "file " << fname << " not found or not readable" << std::endl;
+      std::cout << "Error: file " << fname << " not found or not readable" << std::endl;
       lProperties.printHelp(std::cout);
       return 3;
-    } else if (*fname == '\0') {
-      std::cout << "No query" << std::endl;
+    } else if (fURI.empty ()) {
+      std::cout << "Error: empty query" << std::endl;
       lProperties.printHelp(std::cout);
       return 3;
     }
