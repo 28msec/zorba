@@ -2,9 +2,9 @@
       ( "trace-parsing,p", "trace parsing" )
       ( "trace-scanning,s", "trace scanning" )
       ("use-serializer,r", "use serializer")
-      ("optimizer,O", po::value<bool> (&theUseOptimizer)->default_value (true), "optimization level (1=enabled (default), 0=off)")
+      ("optimizer,O", po::value<bool> ()->default_value (true), "optimization level (1=enabled (default), 0=off)")
       // program option with a value => the value is directly set to the variable theResultFile
-      ("result-file,o", po::value<std::string>(&theResultFile), "result file")
+      ("result-file,o", po::value<std::string>(), "result file")
       ("abort", "abort when fatal error happens")
       ("query,e", po::value<std::string>(), "execute inline query")
       ("print-query,q", "print the query query")
@@ -23,5 +23,5 @@
       ("trace-codegen,c", "trace the codegenerator")
 #endif
       ("compile-only", "only compile (don't execute)")
-      ("tz", po::value<int>(&theTimezone), "implicit time zone (in minutes)")
-      ("external-vars,x", po::value<std::vector<std::string> >(&theExternalVars), "external variables (e.g. -x x=file1.xml -x y:=strValue)")
+      ("tz", po::value<int>(), "implicit time zone (in minutes)")
+      ("external-vars,x", po::value<std::vector<std::string> >(), "external variables (e.g. -x x=file1.xml -x y:=strValue)")

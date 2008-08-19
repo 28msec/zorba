@@ -17,3 +17,4 @@ cd `dirname $0`/..
 D=`pwd`
 (cd src/system; { cat $D/src/util/empty.h; echo '// THIS IS A GENERATED FILE. DO NOT EDIT!'; $D/scripts/gen_po_props zorba ZorbaProperties zorba_properties.txt; } >zorba_properties.h)
 (cd src/store/naive; { cat $D/src/util/empty.h; echo '// THIS IS A GENERATED FILE. DO NOT EDIT!'; $D/scripts/gen_po_props zorba::store StoreProperties store_properties.txt; } >store_properties.h)
+(cd bin; { cat $D/src/util/empty.h; echo '// THIS IS A GENERATED FILE. DO NOT EDIT!'; $D/scripts/gen_po_props zorbacmd ZorbaCMDPropertiesBase zorbacmdproperties.txt; } >zorbacmdproperties_base.h)

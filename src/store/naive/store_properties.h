@@ -36,8 +36,8 @@ protected:
     theStoreTraceLevel = 0;
   }
 public:
-  bool buildDataguide () const { return theBuildDataguide; }
-  long storeTraceLevel () const { return theStoreTraceLevel; }
+  const bool &buildDataguide () const { return theBuildDataguide; }
+  const long &storeTraceLevel () const { return theStoreTraceLevel; }
 
   std::string load_argv (int argc, const char **argv) {
     if (argv == NULL) return "";
@@ -72,8 +72,8 @@ public:
 
   const char *get_help_msg () {
     return
-"--build-dataguide\n  build-dataguide (true/false)\n\n"
-"--store-trace-level\n  store trace level (<= 0 : no tracing)\n\n"
+"--build-dataguide\nbuild-dataguide (true/false)\n\n"
+"--store-trace-level\nstore trace level (<= 0 : no tracing)\n\n"
 ;
   }
 

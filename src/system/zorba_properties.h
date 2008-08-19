@@ -15,9 +15,9 @@
  */
 // THIS IS A GENERATED FILE. DO NOT EDIT!
 #include <string>
-#include <cstring>
 #include <sstream>
 #include <zorba/properties_base.h>
+#include <cstring>
 
 #ifndef ZORBA_ZORBAPROPERTIES
 #define ZORBA_ZORBAPROPERTIES
@@ -50,7 +50,7 @@ protected:
   bool theTraceCodegen;
   bool theCompileOnly;
   int theTz;
-  std::vector<std::string>  theExternalVars;
+  std::vector<std::string> theExternalVars;
 
   void initialize () {
     theTraceParsing = false;
@@ -74,29 +74,29 @@ protected:
     theCompileOnly = false;
   }
 public:
-  bool traceParsing () const { return theTraceParsing; }
-  bool traceScanning () const { return theTraceScanning; }
-  bool useSerializer () const { return theUseSerializer; }
-  bool optimizer () const { return theOptimizer; }
-  std::string resultFile () const { return theResultFile; }
-  bool abort () const { return theAbort; }
-  std::string query () const { return theQuery; }
-  bool printQuery () const { return thePrintQuery; }
-  bool printTime () const { return thePrintTime; }
-  bool printAst () const { return thePrintAst; }
-  bool printTranslated () const { return thePrintTranslated; }
-  bool printNormalized () const { return thePrintNormalized; }
-  bool printOptimized () const { return thePrintOptimized; }
-  bool printIteratorTree () const { return thePrintIteratorTree; }
-  bool printItemFlow () const { return thePrintItemFlow; }
-  bool stableIteratorIds () const { return theStableIteratorIds; }
-  bool noTreeIds () const { return theNoTreeIds; }
-  bool printIntermediateOpt () const { return thePrintIntermediateOpt; }
-  bool traceTranslator () const { return theTraceTranslator; }
-  bool traceCodegen () const { return theTraceCodegen; }
-  bool compileOnly () const { return theCompileOnly; }
-  int tz () const { return theTz; }
-  std::vector<std::string>  externalVars () const { return theExternalVars; }
+  const bool &traceParsing () const { return theTraceParsing; }
+  const bool &traceScanning () const { return theTraceScanning; }
+  const bool &useSerializer () const { return theUseSerializer; }
+  const bool &optimizer () const { return theOptimizer; }
+  const std::string &resultFile () const { return theResultFile; }
+  const bool &abort () const { return theAbort; }
+  const std::string &query () const { return theQuery; }
+  const bool &printQuery () const { return thePrintQuery; }
+  const bool &printTime () const { return thePrintTime; }
+  const bool &printAst () const { return thePrintAst; }
+  const bool &printTranslated () const { return thePrintTranslated; }
+  const bool &printNormalized () const { return thePrintNormalized; }
+  const bool &printOptimized () const { return thePrintOptimized; }
+  const bool &printIteratorTree () const { return thePrintIteratorTree; }
+  const bool &printItemFlow () const { return thePrintItemFlow; }
+  const bool &stableIteratorIds () const { return theStableIteratorIds; }
+  const bool &noTreeIds () const { return theNoTreeIds; }
+  const bool &printIntermediateOpt () const { return thePrintIntermediateOpt; }
+  const bool &traceTranslator () const { return theTraceTranslator; }
+  const bool &traceCodegen () const { return theTraceCodegen; }
+  const bool &compileOnly () const { return theCompileOnly; }
+  const int &tz () const { return theTz; }
+  const std::vector<std::string> &externalVars () const { return theExternalVars; }
 
   std::string load_argv (int argc, const char **argv) {
     if (argv == NULL) return "";
@@ -202,29 +202,29 @@ public:
 
   const char *get_help_msg () {
     return
-"--trace-parsing, -p\n  trace parsing\n\n"
-"--trace-scanning, -s\n  trace scanning\n\n"
-"--use-serializer, -r\n  use serializer\n\n"
-"--optimizer, -O\n  optimization level (1=enabled (default), 0=off)\n\n"
-"--result-file, -o\n  result file\n\n"
-"--abort\n  abort when fatal error happens\n\n"
-"--query, -e\n  execute inline query\n\n"
-"--print-query, -q\n  print the query query\n\n"
-"--print-time, -t\n  print the execution time\n\n"
-"--print-ast, -a\n  print the parse tree\n\n"
-"--print-translated\n  print the normalized expression tree\n\n"
-"--print-normalized, -n\n  print the translated expression tree\n\n"
-"--print-optimized\n  print the optimized expression tree\n\n"
-"--print-iterator-tree, -i\n  print the iterator tree\n\n"
-"--print-item-flow, -f\n  show items produced by all iterators\n\n"
-"--stable-iterator-ids\n  print the iterator plan with stable ids\n\n"
-"--no-tree-ids\n  suppress ids and locations from compiler tree dumps\n\n"
-"--print-intermediate-opt\n  print intermediate optimizations\n\n"
-"--trace-translator, -l\n  trace the translator\n\n"
-"--trace-codegen, -c\n  trace the codegenerator\n\n"
-"--compile-only\n  only compile (don't execute)\n\n"
-"--tz\n  implicit time zone (in minutes)\n\n"
-"--external-vars, -x\n  external variables (e.g. -x x=file1.xml -x y:=strValue)\n\n"
+"--trace-parsing, -p\ntrace parsing\n\n"
+"--trace-scanning, -s\ntrace scanning\n\n"
+"--use-serializer, -r\nuse serializer\n\n"
+"--optimizer, -O\noptimization level (1=enabled (default), 0=off)\n\n"
+"--result-file, -o\nresult file\n\n"
+"--abort\nabort when fatal error happens\n\n"
+"--query, -e\nexecute inline query\n\n"
+"--print-query, -q\nprint the query query\n\n"
+"--print-time, -t\nprint the execution time\n\n"
+"--print-ast, -a\nprint the parse tree\n\n"
+"--print-translated\nprint the normalized expression tree\n\n"
+"--print-normalized, -n\nprint the translated expression tree\n\n"
+"--print-optimized\nprint the optimized expression tree\n\n"
+"--print-iterator-tree, -i\nprint the iterator tree\n\n"
+"--print-item-flow, -f\nshow items produced by all iterators\n\n"
+"--stable-iterator-ids\nprint the iterator plan with stable ids\n\n"
+"--no-tree-ids\nsuppress ids and locations from compiler tree dumps\n\n"
+"--print-intermediate-opt\nprint intermediate optimizations\n\n"
+"--trace-translator, -l\ntrace the translator\n\n"
+"--trace-codegen, -c\ntrace the codegenerator\n\n"
+"--compile-only\nonly compile (don't execute)\n\n"
+"--tz\nimplicit time zone (in minutes)\n\n"
+"--external-vars, -x\nexternal variables (e.g. -x x=file1.xml -x y:=strValue)\n\n"
 ;
   }
 

@@ -27,8 +27,8 @@
 #define sleep(s) Sleep(s*1000)
 #endif
 
-#include <zorba/zorba.h>
 #include <simplestore/simplestore.h>
+#include <zorba/zorba.h>
 
 #ifdef ZORBA_DEBUGGER
 #include "debugcmd_client.h"
@@ -61,8 +61,7 @@ struct server_args
 ZORBA_THREAD_RETURN server( void * args)
 {
   server_args * lArgs = (server_args*)args;
-  try
-  {
+  try {
     zorba::simplestore::SimpleStore* lStore = zorba::simplestore::SimpleStoreManager::getStore();
     zorba::Zorba *lZorba = zorba::Zorba::getInstance(lStore);
     XQuery_t lQuery = lZorba->createQuery();
@@ -85,42 +84,36 @@ populateStaticContext(
     zorba::StaticContext_t& aStaticContext,
     ZorbaCMDProperties* aProperties)
 {
-  if (aProperties->getBoundarySpace().size() != 0 )
-  {
+  if (aProperties->boundarySpace().size() != 0 )
     aStaticContext->setBoundarySpacePolicy(
-                       (aProperties->getBoundarySpace().compare("preserve") == 0 
+                       (aProperties->boundarySpace().compare("preserve") == 0 
                         ? preserve_space 
                         : strip_space));
-  }
 
-  if (aProperties->getConstructionMode().size() != 0)
-  {
-    aStaticContext->setConstructionMode( aProperties->getBoundarySpace().compare("preserve") == 0 
+  if (aProperties->constructionMode().size() != 0)
+    aStaticContext->setConstructionMode( aProperties->boundarySpace().compare("preserve") == 0 
                                          ? preserve_cons 
                                          : strip_cons );
-  }
 
-  if (aProperties->getOrderingMode().size() != 0 )
+  if (aProperties->orderingMode().size() != 0 )
   {
-    aStaticContext->setOrderingMode( aProperties->getBoundarySpace().compare("ordered") == 0 
+    aStaticContext->setOrderingMode( aProperties->boundarySpace().compare("ordered") == 0 
                                      ? ordered 
                                      : unordered );
   }
 
-  if (aProperties->getBaseUri().size() != 0 )
-  {
-    aStaticContext->setBaseURI( aProperties->getBaseUri() );
-  }
+  if (aProperties->baseUri().size() != 0 )
+    aStaticContext->setBaseURI( aProperties->baseUri() );
 
-  if (aProperties->getDefaultCollation().size() != 0 )
+  if (aProperties->defaultCollation().size() != 0 )
   {
     try {
-      aStaticContext->addCollation( aProperties->getDefaultCollation() );
+      aStaticContext->addCollation( aProperties->defaultCollation() );
     } catch (zorba::ZorbaException& e) {
-      std::cerr << "The given collation '" << aProperties->getDefaultCollation() << "' is not a valid collation." << std::endl;
+      std::cout << "The given collation '" << aProperties->defaultCollation() << "' is not a valid collation." << std::endl;
       return false;
     }
-    aStaticContext->setDefaultCollation( aProperties->getDefaultCollation() );
+    aStaticContext->setDefaultCollation( aProperties->defaultCollation() );
   }
   return true;
 }
@@ -129,9 +122,9 @@ populateStaticContext(
 bool
 populateDynamicContext(zorba::DynamicContext* aDynamicContext, ZorbaCMDProperties* aProperties)
 {
-  if ( aProperties->getContextItem().size() != 0 ) {
-    std::ifstream* lInStream = new std::ifstream(aProperties->getContextItem().c_str());
-    aDynamicContext->setContextItemAsDocument(aProperties->getContextItem(), 
+  if ( aProperties->contextItem().size() != 0 ) {
+    std::ifstream* lInStream = new std::ifstream(aProperties->contextItem().c_str());
+    aDynamicContext->setContextItemAsDocument(aProperties->contextItem(), 
                                               std::auto_ptr<std::istream>(lInStream));
   }
 
@@ -159,7 +152,7 @@ createSerializerOptions(Zorba_SerializerOptions& lSerOptions, ZorbaCMDProperties
   else
     lSerOptions.indent = ZORBA_INDENT_NO;
 
-  if ( aProperties->omitXMLDeclaration() )
+  if ( aProperties->omitXmlDeclaration() )
     lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
   else
     lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_NO;
@@ -169,7 +162,7 @@ createSerializerOptions(Zorba_SerializerOptions& lSerOptions, ZorbaCMDProperties
   else
     lSerOptions.byte_order_mark = ZORBA_BYTE_ORDER_MARK_NO;
 
-  if ( aProperties->serializeHTML() )
+  if ( aProperties->serializeHtml() )
     lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
   else  
     lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
@@ -177,6 +170,11 @@ createSerializerOptions(Zorba_SerializerOptions& lSerOptions, ZorbaCMDProperties
   return true;
 }
 
+bool isFileURI (const std::string &str) {
+  static const char *pfx = "file://";
+  static unsigned plen = strlen (pfx);
+  return str.compare (0, plen, pfx);
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -209,41 +207,15 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // parse the command line and/or the properties file
   ZorbaCMDProperties lProperties;
-
-  try
-  {
-    if ( !lProperties.loadProperties(argc, argv) )
-    {
-      lProperties.printHelp();
+  if (! lProperties.loadProperties(argc, argv)) {
       return 1;
-    }
-  } catch (boost::program_options::error& e)
-  {
-    std::cerr << e.what() << std::endl;
-    lProperties.printHelp();
-    return 1;
   }
 
-  bool lTiming = lProperties.useTiming();
+  bool lTiming = lProperties.timing();
 
-  // print the help 
-  if (lProperties.printHelp())
-  {
-    lProperties.printHelp(std::cout); 
-    return 0;
-  }
-
-  // print zorba version
-  if (lProperties.printVersion())
-  {
-    std::cout << "Zorba XQuery Engine, Version: " 
-              << zorba::Zorba::version() << std::endl;
-    return 0;
-  }
-  
   // write to file or standard out
-  std::auto_ptr<std::ostream> lFileStream (lProperties.getOutputFile().size() > 0 
-                                           ? new std::ofstream(lProperties.getOutputFile().c_str()) 
+  std::auto_ptr<std::ostream> lFileStream (lProperties.outputFile().size() > 0 
+                                           ? new std::ofstream(lProperties.outputFile().c_str()) 
                                            : 0 );
   std::ostream* lOutputStream = lFileStream.get();
   if ( lOutputStream == 0 ) 
@@ -252,15 +224,15 @@ int _tmain(int argc, _TCHAR* argv[])
   }
   else if ( !lOutputStream->good() ) 
   {
-    std::cerr << "could not write to output file " << lProperties.getOutputFile() << std::endl;
-    lProperties.printHelp(std::cerr);
+    std::cout << "could not write to output file " << lProperties.outputFile() << std::endl;
+    lProperties.printHelp(std::cout);
     return 2;
   }
 
   if(lProperties.queriesOrFilesBegin() == lProperties.queriesOrFilesEnd())
   {
-    std::cerr << "No query" << std::endl;
-    lProperties.printHelp(std::cerr);
+    std::cout << "No query" << std::endl;
+    lProperties.printHelp(std::cout);
     return 3;
   }
 
@@ -273,8 +245,9 @@ int _tmain(int argc, _TCHAR* argv[])
     const char* fname = (*lIter).c_str();
     fs::path path;
     std::auto_ptr<std::istream> qfile;
+    bool asFile = lProperties.asFiles () || isFileURI (fname);
     
-    if (! lProperties.inlineQuery()) {
+    if (asFile) {
       path = fs::system_complete (fname);
       qfile.reset (new std::ifstream (path.native_file_string ().c_str ()));
     }
@@ -282,13 +255,13 @@ int _tmain(int argc, _TCHAR* argv[])
       qfile.reset (new std::istringstream(fname));
     }
     
-    if ( !lProperties.inlineQuery() && !qfile->good() || qfile->eof() ) {
-      std::cerr << "file " << fname << " not found or not readable" << std::endl;
-      lProperties.printHelp(std::cerr);
+    if ( asFile && (!qfile->good() || qfile->eof()) ) {
+      std::cout << "file " << fname << " not found or not readable" << std::endl;
+      lProperties.printHelp(std::cout);
       return 3;
     } else if (*fname == '\0') {
-      std::cerr << "No query" << std::endl;
-      lProperties.printHelp(std::cerr);
+      std::cout << "No query" << std::endl;
+      lProperties.printHelp(std::cout);
       return 3;
     }
 
@@ -307,7 +280,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
     // populate the static context with information passed as parameter
     if (! populateStaticContext(lStaticContext, &lProperties) ) {
-      lProperties.printHelp(std::cerr);
+      lProperties.printHelp(std::cout);
       return 3;
     }
 
@@ -363,8 +336,8 @@ int _tmain(int argc, _TCHAR* argv[])
           return 0;
         } catch( std::exception &e ) {
           if ( i < 2 ){ continue; }
-          std::cerr << "Could not start the debugger client: " << std::endl;
-          std::cerr << e.what() << std::endl;
+          std::cout << "Could not start the debugger client: " << std::endl;
+          std::cout << e.what() << std::endl;
           return 7;
         }
       }
@@ -376,7 +349,7 @@ int _tmain(int argc, _TCHAR* argv[])
       Zorba_CompilerHints lHints;
 
       // default is O1
-      if (lProperties.getOptLevel() == "O0")
+      if (lProperties.optimizationLevel() == "O0")
         lHints.opt_level = ZORBA_OPT_LEVEL_O0;
 
       if (lTiming) 
@@ -386,7 +359,7 @@ int _tmain(int argc, _TCHAR* argv[])
       }
 
       lQuery = lZorbaInstance->createQuery ();
-      if (! lProperties.inlineQuery())
+      if (asFile)
         lQuery->setFileName (path.string ());
       lQuery->compile (*qfile, lStaticContext, lHints);
     
@@ -398,12 +371,12 @@ int _tmain(int argc, _TCHAR* argv[])
     }
     catch (zorba::QueryException& qe) 
     {
-      std::cerr << qe << std::endl;
+      std::cout << qe << std::endl;
       return 5;
     }
     catch (zorba::ZorbaException& ze) 
     {
-      std::cerr << ze << std::endl;
+      std::cout << ze << std::endl;
       return 6;
     }
 
@@ -413,18 +386,18 @@ int _tmain(int argc, _TCHAR* argv[])
     {
       if ( ! populateDynamicContext(lDynamicContext, &lProperties) )
       {
-        lProperties.printHelp(std::cerr);
+        lProperties.printHelp(std::cout);
         return 4;
       }
     } catch (zorba::QueryException& qe) {
-      std::cerr << qe << std::endl;
+      std::cout << qe << std::endl;
       return 5;
     } catch (zorba::ZorbaException& ze) {
-      std::cerr << ze << std::endl;
+      std::cout << ze << std::endl;
       return 6;
     }
 
-    int lNumExecutions = lProperties.getNoOfExecutions();
+    int lNumExecutions = lProperties.multiple();
 
     try
     {
@@ -474,19 +447,19 @@ int _tmain(int argc, _TCHAR* argv[])
     }
     catch (zorba::QueryException& qe) 
     {
-      std::cerr << qe << std::endl;
+      std::cout << qe << std::endl;
       return 5;
     }
     catch (zorba::ZorbaException& ze) 
     {
-      std::cerr << ze << std::endl;
+      std::cout << ze << std::endl;
       return 6;
     }
 
     if (lTiming) 
     {
       std::cout.precision (3); std::cout.setf (std::ios::fixed);
-      lNumExecutions = lProperties.getNoOfExecutions();
+      lNumExecutions = lProperties.multiple();
 
       std::cout << std::endl << "Number of executions = " << lNumExecutions
                 << std::endl;
