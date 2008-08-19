@@ -183,11 +183,10 @@ IF (BOOST_CHECK_LIBRARIES)
 
 INCLUDE(${CMAKE_MODULE_PATH}/FindBoost.cmake)
 
-SET (REQUIRED_BOOST_PACKAGES filesystem program_options)
+SET (REQUIRED_BOOST_PACKAGES filesystem)
 
 FIND_PACKAGE(Boost REQUIRED COMPONENTS
-  filesystem
-  program_options)
+  filesystem)
 
 IF (NOT Boost_FOUND)
   MESSAGE(FATAL "Boost not found")
@@ -203,8 +202,6 @@ ELSE (NOT Boost_FOUND)
 
     IF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
-      SET(requiredlibs-zorba ${requiredlibs-zorba} boost_program_options-mt)
-      SET(requiredlibs-simplestore ${requiredlibs-simplestore} boost_program_options-mt)
       SET(requiredlibs-apitest ${requiredlibs-apitest} boost_filesystem-mt)
       SET(requiredlibs-testordpath ${requiredlibs-testordpath} boost_filesystem-mt)
       SET(requiredlibs-testdriver ${requiredlibs-testdriver} boost_filesystem-mt)
@@ -217,8 +214,6 @@ ELSE (NOT Boost_FOUND)
 
     ELSE (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
-      SET(requiredlibs-zorba ${requiredlibs-zorba} boost_program_options)
-      SET(requiredlibs-simplestore ${requiredlibs-simplestore} boost_program_options)
       SET(requiredlibs-apitest ${requiredlibs-apitest} boost_filesystem)
       SET(requiredlibs-testordpath ${requiredlibs-testordpath} boost_filesystem)
       SET(requiredlibs-testdriver ${requiredlibs-testdriver} boost_filesystem)
@@ -235,8 +230,6 @@ ELSE (NOT Boost_FOUND)
 
     IF (CYGWIN)
       SET(CMAKE_INCLUDE_PATH)
-      SET(requiredlibs-zorba ${requiredlibs-zorba} boost_program_options-gcc-mt)
-      SET(requiredlibs-simplestore ${requiredlibs-simplestore} boost_program_options-gcc-mt)
       SET(requiredlibs-apitest ${requiredlibs-apitest} boost_filesystem-gcc-mt)
       SET(requiredlibs-testordpath ${requiredlibs-testordpath} boost_filesystem-gcc-mt)
       SET(requiredlibs-testdriver ${requiredlibs-testdriver} boost_filesystem-gcc-mt)
@@ -252,8 +245,6 @@ ELSE (NOT Boost_FOUND)
       IF(ZORBA_DEBUGGER)
 	      SET(requiredlibs-zorba ${requiredlibs-zorba} WSock32)
       ENDIF(ZORBA_DEBUGGER)
-      SET(requiredlibs-zorba ${requiredlibs-zorba} ${Boost_PROGRAM_OPTIONS_LIBRARY})
-      SET(requiredlibs-simplestore ${requiredlibs-simplestore} ${Boost_PROGRAM_OPTIONS_LIBRARY})
 
   	ENDIF (CYGWIN)
 
@@ -296,7 +287,7 @@ FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/svn_rev.txt ZORBA_SVN_NUMBER)
 STRING(REGEX REPLACE "[^0-9]*([0-9]*)..*" "\\1" ZORBA_SVN_NUMBER ${ZORBA_SVN_NUMBER})
 MESSAGE(STATUS "Zorba version number: " ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}-${ZORBA_SVN_NUMBER})
 
-# add compiler vvariables
+# add compiler variables
 ADD_DEFINITIONS(${DEFINITIONS})
 
 
