@@ -63,9 +63,11 @@ std::string ZorbaCMDProperties::check_args () {
   }
 
   if ( theDebugServer || theDebugClient ) {
-    unsigned int lSemiColon = theDebugPorts.find(":");
-    theRequestPort = atoi( theDebugPorts.substr(0, lSemiColon).c_str() );
-    theEventPort = atoi( theDebugPorts.substr( lSemiColon + 1, theDebugPorts.length() ).c_str() );
+    unsigned int lSemi = theDebugPorts.find(":");
+    if (lSemi == std::string::npos)
+      return "port argument must be of the format request:event";
+    theRequestPort = atoi( theDebugPorts.substr(0, lSemi).c_str() );
+    theEventPort = atoi( theDebugPorts.substr( lSemi + 1, theDebugPorts.length() ).c_str() );
   }
 
   return "";
