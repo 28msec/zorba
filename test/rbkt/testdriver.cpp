@@ -24,7 +24,6 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
-#include <boost/algorithm/string/replace.hpp>
 
 #include "testdriverconfig.h" // SRC and BIN dir definitions
 #include "specification.h" // parsing spec files
@@ -35,6 +34,8 @@
 #include "util/properties.h"
 
 #include <zorbatypes/URI.h>
+#include <zorbautils/strutil.h>
+
 #include "zorba_test_setting.h"
 #ifndef ZORBA_MINIMAL_STORE
 #include <simplestore/simplestore.h>
@@ -216,7 +217,7 @@ set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicConte
 
   zorba::ItemFactory* lFactory = zorba::Zorba::getInstance(NULL)->getItemFactory();
 
-  boost::replace_all(val, "$RBKT_SRC_DIR", zorba::RBKT_SRC_DIR);
+  zorba::str_replace_all (val, "$RBKT_SRC_DIR", zorba::RBKT_SRC_DIR);
   if (!inlineFile) {
     val = zorba::URI::encode_file_URI (val)->str ();
     zorba::Item lItem = lFactory->createString(val);
@@ -306,7 +307,7 @@ slurp_file (const char *fname, std::string &result) {
   std::string sstr (str, len);
 
   std::string rbkt_src_uri = zorba::URI::encode_file_URI (zorba::RBKT_SRC_DIR)->str ();
-  boost::replace_all(sstr, "$RBKT_SRC_DIR", rbkt_src_uri);
+  zorba::str_replace_all(sstr, "$RBKT_SRC_DIR", rbkt_src_uri);
   result.swap (sstr);
   delete [] str;
 }

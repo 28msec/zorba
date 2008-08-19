@@ -29,9 +29,13 @@
 #include "testdriverconfig.h" // SRC and BIN dir definitions
 #include "specification.h" // parsing spec files
 #include "common/common.h"
+
 #include <zorba/zorba.h>
 #include <zorba/error_handler.h>
 #include <zorba/exception.h>
+
+#include <zorbautils/strutil.h>
+
 #include <simplestore/simplestore.h>
 
 
@@ -108,7 +112,7 @@ getCompilerHints()
 void
 set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicContext* dctx)
 {
-  boost::replace_all(val, "$UPDATE_SRC_DIR", zorba::UPDATE_SRC_DIR);
+  zorba::str_replace_all(val, "$UPDATE_SRC_DIR", zorba::UPDATE_SRC_DIR);
 
   zorba::ItemFactory* lFactory = zorba::Zorba::getInstance(NULL)->getItemFactory();
 

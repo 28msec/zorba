@@ -25,14 +25,17 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
-#include <boost/algorithm/string/replace.hpp>
 
 #include "sax2testdriverconfig.h" // SRC and BIN dir definitions
 #include "specification.h" // parsing spec files
+
 #include <zorba/zorba.h>
 #include <zorba/default_content_handler.h>
 #include <zorba/error_handler.h>
 #include <zorba/exception.h>
+
+#include <zorbautils/strutil.h>
+
 #include <simplestore/simplestore.h>
 
 using namespace zorba;
@@ -270,7 +273,7 @@ printErrors(TestErrorHandler& errHandler)
 void
 set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicContext* dctx)
 {
-  boost::replace_all(val, "$SAX2_SRC_DIR", zorba::SAX2_SRC_DIR);
+  zorba::str_replace_all(val, "$SAX2_SRC_DIR", zorba::SAX2_SRC_DIR);
 
   zorba::ItemFactory* lFactory = zorba::Zorba::getInstance(NULL)->getItemFactory();
 
