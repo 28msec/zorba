@@ -17,6 +17,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <cstdlib>
 
 #include <zorba/zorba.h>
 
