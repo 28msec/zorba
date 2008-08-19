@@ -59,11 +59,11 @@ namespace zorba {
       bool inlineQuery () const { return ! query().empty (); }
       std::string queryFile () const { return getPositionalArgs ().at (0); }
       std::string check_args () {
-        int sz = getPositionalArgs ().size ();
-        if ((inlineQuery () && sz == 0) || (! inlineQuery () && sz == 1))
           return "";
-        else
-          return "either a single inline query or a single query file must be supplied";
+      }
+      bool hasSingleQuery () {
+        int sz = getPositionalArgs ().size ();
+        return ((inlineQuery () && sz == 0) || (! inlineQuery () && sz == 1));
       }
   }; /* class Properties */
 } /* namespace zorba */
