@@ -16,9 +16,6 @@
 #ifndef UNICODE_UTIL_H
 #define UNICODE_UTIL_H
 
-#include <iostream>
-#include <sstream>
-
 #include "common/common.h"
 
 namespace zorba {
@@ -41,12 +38,6 @@ with status C and S from the ftp://ftp.unicode.org/Public/5.1.0/ucd/CaseFolding-
 are taken into account. The mappings with status T are ignored.
 */
 uint32_t toLower(uint32_t c);
-
- template <class T> std::string to_string (T x) {
-   std::ostringstream o;
-   o << x;
-   return o.str ();
- }
 
 }/* namespace zorba */
 #endif /* UNICODE_UTIL_H */

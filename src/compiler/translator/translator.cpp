@@ -21,7 +21,7 @@
 #include <set>
 
 #include "zorbautils/fatal.h"
-#include "zorbatypes/Unicode_util.h"
+#include "zorbautils/strutil.h"
 #include "zorbatypes/URI.h"
 #include "zorbaerrors/error_manager.h"
 

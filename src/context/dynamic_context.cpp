@@ -33,7 +33,7 @@
 
 #include "runtime/api/plan_wrapper.h"
 
-#include "zorbatypes/Unicode_util.h"
+#include "zorbautils/strutil.h"
 
 using namespace std;
 namespace zorba {

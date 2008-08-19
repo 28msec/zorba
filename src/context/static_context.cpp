@@ -28,8 +28,8 @@
 
 #include "compiler/expression/expr_base.h"
 
+#include "zorbautils/strutil.h"
 #include "zorbatypes/collation_manager.h"
-#include "zorbatypes/Unicode_util.h"
 #include "zorbatypes/URI.h"
 
 #include "api/unmarshaller.h"

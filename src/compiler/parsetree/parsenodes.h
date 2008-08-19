@@ -30,7 +30,7 @@
 
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/representations.h"
-#include "zorbatypes/Unicode_util.h"
+#include "zorbautils/strutil.h"
 
 #include "context/static_context_consts.h"
 #include "context/dynamic_context.h"

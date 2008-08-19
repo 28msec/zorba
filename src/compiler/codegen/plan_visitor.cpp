@@ -22,7 +22,6 @@
 #include "util/tracer.h"
 #include "util/stl_extra.h"
 #include "util/hashmap.h"
-#include "zorbatypes/Unicode_util.h"
 
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/expression/expr.h"
