@@ -76,8 +76,8 @@ SET(TEST_ORDPATH_SRCS
 
 SET(requiredlibs-testordpath ${requiredlibs-testordpath} ${STORE_LIB})
 
-ADD_EXECUTABLE(test_ordpath ${TEST_ORDPATH_SRCS})
+#ADD_EXECUTABLE(test_ordpath ${TEST_ORDPATH_SRCS})
 
-TARGET_LINK_LIBRARIES(test_ordpath ${requiredlibs-testordpath})
+#TARGET_LINK_LIBRARIES(test_ordpath ${requiredlibs-testordpath})
 
 ENDIF(NOT ZORBA_MINIMAL_STORE)
