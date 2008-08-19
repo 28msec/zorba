@@ -13,10 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <boost/program_options/options_description.hpp>
-#include <boost/program_options/variables_map.hpp>
-#include <boost/program_options/positional_options.hpp>
-#include <boost/program_options/parsers.hpp>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -27,10 +23,7 @@
 #define CONFIG_FOLDER "zorba"
 #define CONFIG_FILE "simplestore.cfg"
 
-namespace po = boost::program_options;
-
 namespace zorba { namespace store {
-
 
 Properties* Properties::instance()
 {
