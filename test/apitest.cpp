@@ -79,7 +79,7 @@ int _tmain(int argc, _TCHAR* argv[])
     return 4;
 
   Properties* lProp = Properties::instance();
-  if (lProp->hasSingleQuery ()) {
+  if (! lProp->hasSingleQuery ()) {
     cout << "Error: either a single inline query or a single query file must be supplied" << endl;
     return 4;
   }
