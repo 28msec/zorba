@@ -78,18 +78,10 @@ FOREACH(CT ${CHAINED_TESTS_LIST})
   #sort the list of test files alphabetically
   LIST(SORT  CHAINED_TESTS_FILES)
 
-  #concatenate the elements of CHAINED_TESTS_FILES list into a single line
-  FOREACH(TF_NAME ${CHAINED_TESTS_FILES})
-    SET(ARGS "${ARGS} ${TF_NAME}")
-  ENDFOREACH(TF_NAME)
-
   #finally add the test
-  ADD_TEST(${TEST_NAME} testdriver ${ARGS})
+  ADD_TEST(${TEST_NAME} testdriver ${CHAINED_TESTS_FILES})
 
   SET_TESTS_PROPERTIES (${TEST_NAME} PROPERTIES TIMEOUT "100")
-
-#   MESSAGE(STATUS ${TEST_NAME})
-#   MESSAGE(STATUS ${ARGS})
 
   #clear the list of testfiles, args and also the name of the test
   SET(CHAINED_TESTS_FILES)
