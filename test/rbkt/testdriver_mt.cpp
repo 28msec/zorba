@@ -24,7 +24,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
-#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 #include <zorba/zorba.h>
 #include <zorba/error_handler.h>
