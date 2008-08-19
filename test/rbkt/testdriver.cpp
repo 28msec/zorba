@@ -338,7 +338,7 @@ main(int argc, char** argv)
     std::string lQueryFileString  = zorba::RBKT_SRC_DIR +"/Queries/" + argv[i];
     lQueryFile = fs::system_complete( fs::path( lQueryFileString, fs::native ) );
 
-    std::string lQueryWithoutSuffix = std::string(argv[i]).substr( 0, std::string(argv[i]).size()-3 );
+    std::string lQueryWithoutSuffix = std::string(argv[i]).substr( 0, std::string(argv[i]).rfind('.') );
     std::cout << "test " << lQueryWithoutSuffix << std::endl;
     lResultFile = fs::system_complete(fs::path( zorba::RBKT_BINARY_DIR +"/QueryResults/" 
                                       +lQueryWithoutSuffix + ".res", fs::native) );
