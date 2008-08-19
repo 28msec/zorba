@@ -16,8 +16,6 @@
 #ifndef ZORBA_CMD_PROPERTIES_H
 #define ZORBA_CMD_PROPERTIES_H
 
-#include <boost/program_options/options_description.hpp>
-
 #include <zorba/config.h>
 
 #include "zorbacmdproperties_base.h"
