@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "common/common.h"
 
 #include "util/file.h"
 
@@ -24,7 +23,6 @@
 #else
 #include <types.h>
 #endif
-#include <time.h>
 #include <stdio.h>
 
 #if defined (WIN32) 
@@ -41,9 +39,7 @@
 #ifndef _WIN32_WCE
 #include <fcntl.h>
 #endif
-#include <iostream>
 #include <sstream>
-#include <string>
 
 #include "zorbaerrors/error_manager.h"
 

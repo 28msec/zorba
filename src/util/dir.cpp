@@ -14,9 +14,34 @@
  * limitations under the License.
  */
 
-#include <string>
-
 #include "util/dir.h"
+
+#ifndef _WIN32_WCE
+#include <errno.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#else
+#include <types.h>
+#endif
+#include <stdio.h>
+
+#if defined (WIN32) 
+#include <tchar.h>
+#ifndef _WIN32_WCE
+#include <io.h>
+#include <direct.h>
+#endif
+#else
+#include <sys/param.h>
+#include <unistd.h>
+#endif
+
+#ifndef _WIN32_WCE
+#include <fcntl.h>
+#endif
+#include <sstream>
+
+#include "zorbaerrors/error_manager.h"
 
 using namespace std;
 
