@@ -463,7 +463,7 @@ public:
   const char*
   c_str() const;
 
-  inline operator std::string() const
+  operator std::string() const
   {
     return theStrStore->theString;
   }
@@ -661,11 +661,17 @@ private:
   }
 
   inline xqpString
-  operator+(xqpString& lsrc, const char* rsrc)
+  operator+(xqpString lsrc, const char* rsrc)
   {
     xqpString tmp (lsrc);
     tmp += rsrc;
     return tmp;
+  }
+
+  inline xqpString
+  operator+(xqpString lsrc, const std::string &rsrc)
+  {
+    return lsrc + rsrc.c_str ();
   }
 
   inline xqpString
