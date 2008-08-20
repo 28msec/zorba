@@ -169,6 +169,19 @@ Double Duration::getTotalSeconds() const
       + Double::parseFloatType(double(data[FRACSECONDS_DATA]) / FRAC_SECONDS_UPPER_LIMIT);
 }
 
+long Duration::getTotalMilliseconds() const
+{
+  return (is_negative? -1 : 1)
+      * ((((((data[YEAR_DATA] * 12)
+        + data[MONTH_DATA] * 30)
+        + data[DAY_DATA] * 24)
+        + data[HOUR_DATA] * 60)
+        + data[MINUTE_DATA] * 60)
+        + data[SECONDS_DATA] * 60)
+      * 1000
+      + round(data[FRACSECONDS_DATA]/1000.0);
+}
+
 int Duration::fromTimezone(const TimeZone& t, Duration& d)
 {
   if(!t.timeZoneNotSet())

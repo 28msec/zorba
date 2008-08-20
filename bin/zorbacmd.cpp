@@ -37,7 +37,10 @@
 #include <zorbautils/thread.h>
 #endif
 
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <zorbatypes/zorbatypes_decl.h>
+#include <zorbatypes/datetime.h>
+#include <zorbatypes/duration.h>
+#include <zorbatypes/floatimpl.h>
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
@@ -196,12 +199,12 @@ int _tmain(int argc, _TCHAR* argv[])
   zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(zorba::simplestore::SimpleStoreManager::getStore());
 
   // time compilation and execution per each query
-  boost::posix_time::ptime lStartCompileTime, lStopCompileTime;
-  boost::posix_time::ptime lStartFirstExecutionTime, lStopFirstExecutionTime;
-  boost::posix_time::ptime lStartExecutionTime, lStopExecutionTime;
-  boost::posix_time::time_duration lDiffCompileTime;
-  boost::posix_time::time_duration lDiffFirstExecutionTime;
-  boost::posix_time::time_duration lDiffExecutionTime;
+  zorba::DateTime lStartCompileTime, lStopCompileTime;
+  zorba::DateTime lStartFirstExecutionTime, lStopFirstExecutionTime;
+  zorba::DateTime lStartExecutionTime, lStopExecutionTime;
+  std::auto_ptr<zorba::Duration> lDiffCompileTime;
+  std::auto_ptr<zorba::Duration> lDiffFirstExecutionTime;
+  std::auto_ptr<zorba::Duration> lDiffExecutionTime;
 
   zorbatm::timeinfo lStartCompileTimeInfo, lStopCompileTimeInfo;
   zorbatm::timeinfo lStartFirstExecutionTimeInfo, lStopFirstExecutionTimeInfo;
@@ -360,7 +363,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
       if (lTiming) 
       {
-        lStartCompileTime = boost::posix_time::microsec_clock::local_time();
+        zorba::DateTime::getLocalTime(lStartCompileTime);
         zorbatm::get_timeinfo (lStartCompileTimeInfo);
       }
 
@@ -371,7 +374,7 @@ int _tmain(int argc, _TCHAR* argv[])
     
       if (lTiming) 
       {
-        lStopCompileTime = boost::posix_time::microsec_clock::local_time();
+        zorba::DateTime::getLocalTime(lStopCompileTime);
         zorbatm::get_timeinfo (lStopCompileTimeInfo);
       }
     }
@@ -412,7 +415,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
       if (lTiming) 
       {
-        lStartFirstExecutionTime = boost::posix_time::microsec_clock::local_time();
+        zorba::DateTime::getLocalTime(lStartFirstExecutionTime);
         zorbatm::get_timeinfo (lStartFirstExecutionTimeInfo);
       }
 
@@ -424,13 +427,13 @@ int _tmain(int argc, _TCHAR* argv[])
 
       if (lTiming) 
       {
-        lStopFirstExecutionTime = boost::posix_time::microsec_clock::local_time();
+        zorba::DateTime::getLocalTime(lStopFirstExecutionTime);
         zorbatm::get_timeinfo (lStopFirstExecutionTimeInfo);
       }
 
       if (lTiming) 
       {
-        lStartExecutionTime = boost::posix_time::microsec_clock::local_time();
+        zorba::DateTime::getLocalTime(lStartExecutionTime);
         zorbatm::get_timeinfo (lStartExecutionTimeInfo);
       }
 
@@ -447,7 +450,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
       if (lTiming) 
       {
-        lStopExecutionTime = boost::posix_time::microsec_clock::local_time();
+        zorba::DateTime::getLocalTime(lStopExecutionTime);
         zorbatm::get_timeinfo (lStopExecutionTimeInfo);
       }
     }
@@ -470,28 +473,28 @@ int _tmain(int argc, _TCHAR* argv[])
       std::cout << std::endl << "Number of executions = " << lNumExecutions
                 << std::endl;
 
-      lDiffCompileTime = lStopCompileTime - lStartCompileTime;
+      lDiffCompileTime = std::auto_ptr<zorba::Duration>(lStopCompileTime.subtractDateTime(&lStartCompileTime, 0));
 
       lDiffCompileUserTime = zorbatm::get_time_elapsed (zorbatm::extract_user_time_detail (lStartCompileTimeInfo), zorbatm::extract_user_time_detail (lStopCompileTimeInfo));
 
       std::cout << "Compilation time: "
-                << lDiffCompileTime.total_milliseconds()
+                << lDiffCompileTime->getTotalMilliseconds()
                 << " (user: " << lDiffCompileUserTime << ")"
                 << " milliseconds" << std::endl;
       
-      lDiffFirstExecutionTime = lStopFirstExecutionTime - lStartFirstExecutionTime;
+      lDiffFirstExecutionTime = std::auto_ptr<zorba::Duration>(lStopFirstExecutionTime.subtractDateTime(&lStartFirstExecutionTime, 0));
 
       lDiffFirstExecutionUserTime = zorbatm::get_time_elapsed (zorbatm::extract_user_time_detail (lStartFirstExecutionTimeInfo), zorbatm::extract_user_time_detail (lStopFirstExecutionTimeInfo));
 
       std::cout << "First Execution time: "
-                << lDiffFirstExecutionTime.total_milliseconds()
+                << lDiffFirstExecutionTime->getTotalMilliseconds()
                 << " (user: " << lDiffFirstExecutionUserTime << ")"
                 << " milliseconds (i.e. parsing the document is included)" << std::endl;
     
       if (lNumExecutions > 1) 
       {
-        lDiffExecutionTime = (lStopExecutionTime - lStartExecutionTime) /
-                             (lNumExecutions - 1);
+        std::auto_ptr<zorba::Duration> temp = std::auto_ptr<zorba::Duration>(lStopExecutionTime.subtractDateTime(&lStartExecutionTime, 0));
+        lDiffExecutionTime =  std::auto_ptr<zorba::Duration>(*temp / zorba::Double::parseInt(lNumExecutions - 1));
 
         lDiffExecutionUserTime =
           zorbatm::get_time_elapsed (zorbatm::extract_user_time_detail (lStartExecutionTimeInfo),
@@ -499,7 +502,7 @@ int _tmain(int argc, _TCHAR* argv[])
           / (lNumExecutions - 1);
 
         std::cout << "Average Execution time: "
-                  << lDiffExecutionTime.total_milliseconds()
+                  << lDiffExecutionTime->getTotalMilliseconds()
                   << " (user: " << lDiffExecutionUserTime << ")"
                   << " milliseconds" << std::endl;
       }

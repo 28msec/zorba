@@ -18,6 +18,12 @@
 #include <cassert>
 #include <memory>
 
+#ifndef WIN32
+#include <sys/time.h>
+#else
+// TODO
+#endif
+
 #include "zorbautils/hashfun.h"
 #include <zorbatypes/datetime.h>
 #include <zorbatypes/duration.h>
@@ -297,7 +303,18 @@ int DateTime::createGDay(int days, DateTime& dt)
   return 0;
 }
 
+int DateTime::getLocalTime(DateTime& dt)
+{
+  // TODO: check code on windows
+  timeval tv;
+  gettimeofday(&tv, NULL);
+  tm curr, *curr_ptr = 0;
+  curr_ptr = localtime_r(&tv.tv_sec, &curr);
 
+  return createDateTime(curr_ptr->tm_year + 1900, curr_ptr->tm_mon + 1, curr_ptr->tm_mday,
+                        curr_ptr->tm_hour, curr_ptr->tm_min, curr_ptr->tm_sec,
+                        round((tv.tv_usec / 1000000.0) * FRAC_SECONDS_UPPER_LIMIT), dt);
+}
 
 int DateTime::parseDateTime(const xqpString& s, DateTime& dt)
 {
@@ -980,7 +997,7 @@ Duration* DateTime::subtractDateTime(
     const DateTime* dt,
     int implicit_timezone_seconds) const
 {
-  std::auto_ptr<DateTime> dt1(this->normalizeTimeZone(implicit_timezone_seconds));
+  std::auto_ptr<DateTime> dt1(normalizeTimeZone(implicit_timezone_seconds));
   std::auto_ptr<DateTime> dt2(dt->normalizeTimeZone(implicit_timezone_seconds));
   std::auto_ptr<Duration> dur1(dt1->toDayTimeDuration());
   std::auto_ptr<Duration> dur2(dt2->toDayTimeDuration());

@@ -170,6 +170,9 @@ public:
   static int
   createGDay(int days, DateTime& dt);
 
+  static int
+  getLocalTime(DateTime& dt);
+
   /**
    *  Returns 0 on success
    */

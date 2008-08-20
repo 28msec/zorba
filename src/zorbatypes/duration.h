@@ -154,6 +154,9 @@ public:
 
   Double
   getTotalSeconds() const;
+
+  long
+  getTotalMilliseconds() const;
       
   uint32_t
   hash() const;
