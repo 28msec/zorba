@@ -31,7 +31,7 @@
 #define ZORBA_NODEREF_FN_NS "http://www.zorba-xquery.com/zorba/node-ref-functions"
 #define ZORBA_COLLECTION_FN_NS "http://www.zorba-xquery.com/zorba/collection-functions"
 
-#define ZORBA_DEF_COLLATION_NS "http://www.zorba-xquery.com/collations/IDENTICAL/en/US"
+#define ZORBA_DEF_COLLATION_NS "http://www.zorba-xquery.com/zorba/collations/IDENTICAL/en/US"
 #define W3C_CODEPT_COLLATION_NS "http://www.w3.org/2005/xpath-functions/collation/codepoint"
 
 #endif
