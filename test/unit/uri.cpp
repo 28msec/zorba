@@ -447,6 +447,19 @@ int uri(int argc, char* argv[])
       "/b/c/g",
       "",
       ""
+    },
+    {
+      "",
+      "file://d:/a/b/c",
+      "file://d:/a/b/c",
+      "file",
+      0,
+      "",
+      "",
+      "d:",
+      "/a/b/c",
+      "",
+      ""
     }
   }; // URITestEntry tests[]
 
