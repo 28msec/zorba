@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string.h>
 #include "util/path.h"
 
 using namespace std;
