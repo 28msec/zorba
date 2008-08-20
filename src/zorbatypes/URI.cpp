@@ -204,6 +204,7 @@ URI::initialize(const xqpString& uri)
   int32_t  lQueryIdx    = lTrimmedURI.indexOf("?");
   int32_t  lFragmentIdx = lTrimmedURI.indexOf("#");
 
+
   /**
    * Scheme
    * must be before `/', '?' or '#'.  
@@ -261,6 +262,7 @@ URI::initialize(const xqpString& uri)
      set_host("");
     }
   }
+
 
   // stop, if we're done here
   if (lIndex > lTrimmedURILength)
@@ -487,6 +489,7 @@ URI::initializeAuthority(const xqpString& uri)
   xqpString lUserInfo;
   bool      lUserInfoFound;
 
+
   lIndex = uri.indexOf("@");
 
   if ( lIndex != -1 ) {
@@ -527,16 +530,20 @@ URI::initializeAuthority(const xqpString& uri)
   }
 
 
+
   lTmp = uri.substr(lStart, uri.length() - lStart);
   xqpString lPortString;
   int lPort = -1;
+
 
   if ( ( ! lHost.empty() ) && ( lIndex != -1 ) && ( lStart < lEnd ) ) {
     lPortString = lTmp.substr(0, lEnd - lStart);
 
     if ( !lPortString.empty() ) {
       lPort = atoi(lPortString.c_str());
-    }
+    } 
+  } else if ( lStart >= lEnd && lIndex != -1 ) {
+    lPort = -2;
   }
 
   if ( is_valid_server_based_authority(lHost, lPort, lUserInfo, lUserInfoFound) ) {
@@ -552,7 +559,6 @@ URI::initializeAuthority(const xqpString& uri)
 
     return;
   }
-
   set_reg_based_authority(uri);
 }
 
@@ -895,6 +901,8 @@ URI::set_reg_based_authority(const xqpString& new_authority)
 
   theRegBasedAuthority = new_authority;
   set_state(RegBasedAuthority);
+
+  unset_state(Host);
 }
 
 void

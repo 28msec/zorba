@@ -187,7 +187,7 @@ protected:
 
   void set_state(uint32_t s) const   { theState |= s; }
   bool is_set(uint32_t s) const      { return theState & s; }
-  void unset_state(uint32_t s) const { theState ^= s; }
+  void unset_state(uint32_t s) const { theState &= ~s; }
  
   // the uri text is composed out of the components below
   // it's mutable because get_uri_text is const
