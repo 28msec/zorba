@@ -47,54 +47,57 @@ MESSAGE(STATUS "Adding tests for CTest")
 FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.xq)
 
 # collect all chained test queries (suffix .cxq) in all subdirectories of the Queries dir
-# FILE(GLOB_RECURSE CHAINED_TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.cxq)
+FILE(GLOB_RECURSE CHAINED_TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.cxq)
 
 SET(TESTCOUNTER 0)
 
-# LIST(LENGTH CHAINED_TESTFILES cxqNO)
+LIST(LENGTH CHAINED_TESTFILES cxqNO)
 
-#if we have .cxq files
-# IF(${cxqNO} STRGREATER "0")
-# 
-#   #create a list with the folders containg *.cxq files
-#   FOREACH(CHAINED_TESTFILE ${CHAINED_TESTFILES})
-#     GET_FILENAME_COMPONENT(TF_PATH ${CHAINED_TESTFILE} PATH)
-#     LIST(APPEND CHAINED_TESTS_LIST ${TF_PATH})
-#   ENDFOREACH(CHAINED_TESTFILE)
-# 
-#   LIST(REMOVE_DUPLICATES CHAINED_TESTS_LIST)
-# 
-#   #foreach chained test create a list with all the test files and sort it alphabetically
-#   FOREACH(CT ${CHAINED_TESTS_LIST})
-# 
-#     #create the name of the test and put it in TEST_NAME variable
-#     MATH(EXPR TESTCOUNTER ${TESTCOUNTER}+1)
-#     GET_FILENAME_COMPONENT(TF_DIR ${CT} NAME)
-#     SET(TEST_NAME "${TESTCOUNTER}_${TF_DIR}")
-# 
-#     #create the list of tests to be passed to the testdriver call
-#     FOREACH(CHAINED_TESTFILE ${CHAINED_TESTFILES})
-#       GET_FILENAME_COMPONENT(TF_PATH ${CHAINED_TESTFILE} PATH)
-#       IF(TF_PATH STREQUAL CT)
-#         GET_FILENAME_COMPONENT(TF_NAME ${CHAINED_TESTFILE} NAME)
-#         LIST(APPEND CHAINED_TESTS_FILES ${CHAINED_TESTFILE})
-#       ENDIF(TF_PATH STREQUAL CT)
-#     ENDFOREACH(CHAINED_TESTFILE)
-# 
-#     #sort the list of test files alphabetically
-#     LIST(SORT  CHAINED_TESTS_FILES)
-# 
-#     #finally add the test
-#     ADD_TEST(${TEST_NAME} testdriver ${CHAINED_TESTS_FILES})
-# 
-#     SET_TESTS_PROPERTIES (${TEST_NAME} PROPERTIES TIMEOUT "10")
-# 
-#     #clear the list of testfiles, args and also the name of the test
-#     SET(CHAINED_TESTS_FILES)
-#     SET(ARGS)
-#     SET(TEST_NAME)
-#   ENDFOREACH(CT)
-# ENDIF(${cxqNO} STRGREATER "0")
+# if we have .cxq files
+IF(${cxqNO} STRGREATER "0")
+
+  SET(PARAM 0)
+
+  #create a list with the folders containg *.cxq files
+  FOREACH(CHAINED_TESTFILE ${CHAINED_TESTFILES})
+    GET_FILENAME_COMPONENT(TF_PATH ${CHAINED_TESTFILE} PATH)
+    IF(NOT ${PARAM} STREQUAL ${TF_PATH})
+      LIST(APPEND CHAINED_TESTS_LIST ${TF_PATH})
+    ENDIF(NOT ${PARAM} STREQUAL ${TF_PATH})
+    SET(PARAM ${TF_PATH})
+  ENDFOREACH(CHAINED_TESTFILE)
+
+  #foreach chained test create a list with all the test files and sort it alphabetically
+  FOREACH(CT ${CHAINED_TESTS_LIST})
+
+    #create the name of the test and put it in TEST_NAME variable
+    MATH(EXPR TESTCOUNTER ${TESTCOUNTER}+1)
+    GET_FILENAME_COMPONENT(TF_DIR ${CT} NAME)
+    SET(TEST_NAME "${TESTCOUNTER}_${TF_DIR}")
+
+    #create the list of tests to be passed to the testdriver call
+    FOREACH(CHAINED_TESTFILE ${CHAINED_TESTFILES})
+      GET_FILENAME_COMPONENT(TF_PATH ${CHAINED_TESTFILE} PATH)
+      IF(TF_PATH STREQUAL CT)
+        GET_FILENAME_COMPONENT(TF_NAME ${CHAINED_TESTFILE} NAME)
+        LIST(APPEND CHAINED_TESTS_FILES ${CHAINED_TESTFILE})
+      ENDIF(TF_PATH STREQUAL CT)
+    ENDFOREACH(CHAINED_TESTFILE)
+
+    #sort the list of test files alphabetically
+    LIST(SORT  CHAINED_TESTS_FILES)
+
+    #finally add the test
+    ADD_TEST(${TEST_NAME} testdriver ${CHAINED_TESTS_FILES})
+
+    SET_TESTS_PROPERTIES (${TEST_NAME} PROPERTIES TIMEOUT "10")
+
+    #clear the list of testfiles, args and also the name of the test
+    SET(CHAINED_TESTS_FILES)
+    SET(ARGS)
+    SET(TEST_NAME)
+  ENDFOREACH(CT)
+ENDIF(${cxqNO} STRGREATER "0")
 
 FOREACH(TESTFILE ${TESTFILES})
 
