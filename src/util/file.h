@@ -53,26 +53,21 @@ protected:
   std::string path;
   enum filetype type; 
 
-private:	// file attributes
-  int64_t  size;      		// size in bytes
+private:  // file attributes
+  int64_t  size;          // size in bytes
 #if ! defined (WIN32) 
-  time_t   atime;     		// most recent access time
-  time_t   mtime;     		// most recent mod time
+  time_t   atime;         // most recent access time
+  time_t   mtime;         // most recent mod time
 #else
-	FILETIME	atime;
-	FILETIME	mtime;
-#endif
-#if ! defined (WIN32) 
-  uint32_t owner;     		// file owner uid
-  uint32_t group;     		// file group gid
-  uint32_t perms;     		// file permissions
+  FILETIME  atime;
+  FILETIME  mtime;
 #endif
 
 public:
   file(std::string const& pathname);
   file(std::string const& rootpath, std::string const& name);
 
-public:	// common methods
+public: // common methods
   void set_path(std::string const& _path ) { path = _path; }
   void set_filetype(enum filetype _type ) { type = _type ; }
   std::string const& get_path() const { return path; }
@@ -88,82 +83,36 @@ public:	// common methods
   static volatile void error(std::string const& location, std::string const& msg);
   static void sync() { 
 #if defined UNIX
-	::sync(); 
+  ::sync(); 
 #else
-	_flushall();
+  _flushall();
 #endif
-	}
+  }
 
 
-public:	// file methods
+public: // file methods
   void create();
   void remove(bool ignore);
   void rename(std::string const& newpath);
 
-  int64_t get_size() const				{ return size; }
+  int64_t get_size() const        { return size; }
 #if ! defined (WIN32) 
-  time_t  get_acctime() const			{ return atime; }
-  time_t  get_modtime() const			{ return mtime; }
-	uint32_t get_ownerid() const		{ return owner; }
-  uint32_t get_groupid() const		{ return group; }
-  uint32_t get_permissions() const	{ return perms; }
+  time_t  get_acctime() const     { return atime; }
+  time_t  get_modtime() const     { return mtime; }
 #else
-  FILETIME  get_acctime() const			{ return atime; }
-  FILETIME  get_modtime() const			{ return mtime; }
+  FILETIME  get_acctime() const     { return atime; }
+  FILETIME  get_modtime() const     { return mtime; }
 
 #endif
 
-public:	// directory methods
-	class dir_iterator : public SimpleRCObject
-	{
-	public:
-  	std::string dirpath;
-  	std::string path;
-#if ! defined (WIN32) 
-  	DIR *dir;
-  	struct dirent *dirent;
-#else
-		HANDLE						win32_dir;
-		WIN32_FIND_DATA		win32_direntry;
-#endif
-	public:
-  	dir_iterator(const std::string& path, bool end_iterator = false);
-  	~dir_iterator();
-	public:	// iterator interface
-		void operator++();
-#if ! defined (WIN32) 
-		const char* operator*() { 
-			return dirent->d_name; 
-		}
-#else
-		const TCHAR* operator*() { 
-			return win32_direntry.cFileName;
-		}
-#endif
-	public:	
-#if ! defined (WIN32) 
-		const char* get_name() const { 
-			return dirent?dirent->d_name:0;
-		}
-#else
-		const TCHAR* get_name() const { 
-			return (win32_dir != INVALID_HANDLE_VALUE) ? win32_direntry.cFileName : NULL;
-		}
-#endif
-	};
-
-	void mkdir() ;
-	void rmdir(bool ignore) ;
+public: // directory methods
+  void mkdir();
+  void rmdir(bool ignore);
 #ifndef _WIN32_WCE
-	void chdir();
+  void chdir();
 #endif
 
-  dir_iterator begin();
-  dir_iterator end();
-
-	friend bool operator!=(dir_iterator const& x, dir_iterator const& y);
-  
-	bool is_empty() const { return (size == (int64_t)0); }
+  bool is_empty() const { return (size == (int64_t)0); }
 
 };
 
