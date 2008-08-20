@@ -16,6 +16,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <cstdlib>
 
 #include "store/naive/properties.h"
 
