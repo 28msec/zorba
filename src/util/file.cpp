@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef WIN32
+#include <zorba/config.h>
+#if ! defined (WIN32) && ! defined (APPLE)
 #define _XOPEN_SOURCE 600  // getcwd
 #endif
 
