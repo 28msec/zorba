@@ -75,7 +75,7 @@ filesystem_path::filesystem_path () {
 #endif
 }
 
-bool filesystem_path::is_absolute () const {
+bool filesystem_path::is_complete () const {
 #ifdef WIN32
   // c:dir1\file is NOT absolute! Only c:\dir\file is
   if (path.size () >= 3 && isalpha (path [0]) && path [1] == ':' && path [2] == '\\')
@@ -88,7 +88,7 @@ bool filesystem_path::is_absolute () const {
 }
 
 void filesystem_path::resolve_relative () {
-  if (! is_absolute ()) {
+  if (! is_complete ()) {
 #ifdef WIN32
     // call GetFullPathName as per
     // http://msdn.microsoft.com/en-us/library/aa364963(VS.85).aspx 
@@ -103,14 +103,98 @@ void filesystem_path::resolve_relative () {
   }
 }
 
+bool filesystem_path::is_root () const {
+  const string &sep = get_path_separator ();
+#ifdef WIN32
+  return path.size () == 3
+    && isalpha (path [0]) && path [1] == ':'
+    && path.compare (2, sep.size (), sep) == 0;
+#else
+  return path == sep;
+#endif
+}
+
+void filesystem_path::canonicalize () {
+  const string &sep = get_path_separator ();
+  string::size_type pos, start;
+  string pfx;
+  bool last_seg;
+  bool initial_dotdots = false, next_initial_dotdots;
+
+#ifdef WIN32
+  if (filesystem_path (path.substr (0, 2 + pos.size ())).is_root ()) {
+    pfx = path.substr (0, 2);
+    path = path.substr (2);
+  }
+#endif
+  for (pos = start = 0, last_seg = false;
+       ! last_seg && pos != path.size ();
+       pos += sep.size (), start = pos, initial_dotdots = next_initial_dotdots)
+  {
+    next_initial_dotdots = false;
+    pos = path.find (sep, pos);
+    if (pos == string::npos) {
+      pos = path.size ();
+      last_seg = true;
+    }
+    // cout << "path: " << path << " start: " << start << " pos: " << pos << endl;
+    string seg = path.substr (start, pos - start);
+    if ((seg.empty () && start != 0) || seg == ".") {
+      path.erase (start, pos - start + sep.size ());
+      pos = start - sep.size ();
+    } else if (seg == "..") {
+      string::size_type prev;
+      if (start == 0 || initial_dotdots) {
+        // cout << "initial or continued ..\n";
+        next_initial_dotdots = true;
+        continue;  // initial ..
+      }
+      if (start == sep.size ()) {
+        // cout << "initial /..\n";
+        prev = sep.size ();
+      } else {
+        prev = path.rfind (sep, start - sep.size () - 1);
+        // cout << "prev @" << (int) (prev == string::npos ? -1 : prev) << endl;
+        if (prev == string::npos)
+          prev = 0;
+        else
+          prev += sep.size ();
+      }
+      path.erase (prev, pos - prev + sep.size ());
+      pos = prev - sep.size ();
+    }
+  }
+  if (! pfx.empty ())
+    path = pfx + path;
+  if (path.empty ())
+      path = ".";
+  else if (path.size () != sep.size () && path.compare (path.size () - sep.size (), sep.size (), sep) == 0)
+    path.erase (path.size () - sep.size (), sep.size ());
+}
+
+filesystem_path filesystem_path::branch_path () const {
+  if (is_root () && is_complete ())
+    return *this;
+
+  const string &sep = get_path_separator ();
+  string::size_type pos = path.rfind (sep);
+  if (pos == string::npos) {
+    return filesystem_path (".");
+  } else if (pos + sep.size () == path.size ()) {
+    // Final separator -- eliminate.
+    // Shouldn't happen, canonicalize() does this too
+    filesystem_path other = path.substr (0, pos);
+    return other.branch_path ();
+  }
+  else return filesystem_path (path.substr (0, pos + sep.size ()));
+}
 
 void file::do_stat () {
 #if ! defined (WIN32) 
   struct stat st;
   if (::stat(path.c_str(), &st)) {
     if (errno!=ENOENT) file::error(__FUNCTION__,"stat failed on "+path.get_path ());
-  } 
-  else {
+  } else {
     size  = st.st_size;
     atime = st.st_atime;
     mtime = st.st_mtime;
@@ -132,11 +216,8 @@ void file::do_stat () {
 
   hfind = FindFirstFile(path_str, &findData);
   if(hfind == INVALID_HANDLE_VALUE)
-  {
     error(__FUNCTION__,"file/dir not exist "+path);
-  }
-  else
-  {
+  else {
     size = findData.nFileSizeLow + (((int64_t)(findData.nFileSizeHigh))<<32);
     atime = findData.ftLastAccessTime;
     mtime = findData.ftLastWriteTime;

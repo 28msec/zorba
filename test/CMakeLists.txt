@@ -42,7 +42,6 @@ SET(API_TEST_SRCS
 SET(requiredlibs-apitest-shared ${requiredlibs-apitest} zorba ${STORE_LIB})
 
 ADD_EXECUTABLE(apitest ${API_TEST_SRCS})
-
 TARGET_LINK_LIBRARIES(apitest ${requiredlibs-apitest-shared})
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)
@@ -50,6 +49,22 @@ IF (ZORBA_BUILD_STATIC_LIBRARY)
   TARGET_LINK_LIBRARIES(apitest_static ${requiredlibs-apitest} zorba_static
   ${STORE_LIB})
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
+
+ADD_EXECUTABLE(path_test path_test.cpp)
+TARGET_LINK_LIBRARIES(path_test zorba)
+
+ADD_TEST (fspathbranch1 path_test --branch-path /d1/d2/../d3/.)
+SET_TESTS_PROPERTIES (fspathbranch1 PROPERTIES PASS_REGULAR_EXPRESSION /d1)
+
+ADD_TEST (fspathbranch2 path_test --branch-path /dir)
+SET_TESTS_PROPERTIES (fspathbranch1 PROPERTIES PASS_REGULAR_EXPRESSION /)
+
+ADD_TEST (fspath1 path_test --path /../d1/./././././././../..)
+SET_TESTS_PROPERTIES (fspath1 PROPERTIES PASS_REGULAR_EXPRESSION /)
+
+ADD_TEST (fspath2 path_test --path d1/d2/../../../../d3//)
+SET_TESTS_PROPERTIES (fspath2 PROPERTIES PASS_REGULAR_EXPRESSION ../../d3)
+
 
 IF(NOT ZORBA_MINIMAL_STORE)
 #
