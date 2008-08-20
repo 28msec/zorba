@@ -15,12 +15,6 @@
  */
 
 
-#include <boost/program_options/options_description.hpp>
-#include <boost/program_options/parsers.hpp>
-#include <boost/program_options/errors.hpp>
-#include <boost/program_options/variables_map.hpp>
-#include <boost/program_options/positional_options.hpp>
-
 #include  "zorbaerrors/errors.h"
 #include  "store/naive/simple_store.h"
 #include  "store/naive/ordpath.h"
@@ -75,46 +69,70 @@ int main(int argc, char * argv[])
   std::vector<long> dewey2;
   std::vector<long> deweyParent;
 
-  boost::program_options::options_description options("Options");
-  options.add_options()
-    ("verbose,v", ""
-    )
-    ("compress,c",
-     boost::program_options::value<std::string>(&deweyStr),
-     "provide dewey id as string of numbers separated by spaces"
-    )
-    ("insert,i",
-     boost::program_options::value<std::vector<std::string> >(&deweyStrVector)->multitoken(),
-     "provide 2 dewey ids as strings of numbers separated by spaces"
-    )
-    ("compare,r",
-     boost::program_options::value<std::vector<std::string> >(&deweyStrVector)->multitoken(),
-     "provide 2 dewey ids as strings of numbers separated by spaces"
-    )
-    ;
+  bool verbose = false;
+  bool compress = false;
+  bool insert = false;
+  bool compare = false;
 
-  boost::program_options::variables_map varMap;
+  for (++argv; *argv != NULL; ++argv) 
+  {
+    if (strcmp (*argv, "-v") == 0)
+    {
+      verbose = true;
+    }
+    else if (strcmp (*argv, "--compress") == 0)
+    {
+      // provide dewey id as string of numbers separated by spaces
+      compress = true;
+      argv++;
+      deweyStr = *argv;
+    }
+    else if (strcmp (*argv, "--insert") == 0)
+    {
+      // provide 2 dewey ids as strings of numbers separated by spaces
+      insert = true;
+      argv++;
+      deweyStrVector.push_back(*argv);
+      argv++;
+      deweyStrVector.push_back(*argv);
+    }
+    else if (strcmp (*argv, "--compare") == 0)
+    {
+      // provide 2 dewey ids as strings of numbers separated by spaces
+      compare = true;
+      argv++;
+      deweyStrVector.push_back(*argv);
+      argv++;
+      deweyStrVector.push_back(*argv);
+    }
+    else
+    {
+      std::cout << "Unknown option" << std::endl;
+      break;
+    }
+  }
 
-  // parse the command line options
-  store(boost::program_options::command_line_parser(argc, argv).
-        options(options).run(), varMap);
 
-  notify(varMap);
-
-  if (varMap.count("verbose") != 0)
-    verbose = true;
-
-  if (varMap.count("compress") != 0)
+  if (compress)
   {
     parseDeweyString(deweyStr, dewey1);
 
     zorba::simplestore::OrdPath path;
-    path.compress(dewey1);
+
+    try
+    {
+      path.compress(dewey1);
+    }
+    catch (zorba::error::ZorbaError& e)
+    {
+      std::cout << e.theDescription << std::endl;
+      return 1;
+    }
 
     std::cout << "ordpath = " << path.show() << std::endl;
   }
 
-  if (varMap.count("insert") != 0)
+  if (insert)
   {
     parseDeweyString(deweyStrVector[0], dewey1);
     parseDeweyString(deweyStrVector[1], dewey2);
@@ -155,7 +173,7 @@ int main(int argc, char * argv[])
     }
   }
 
-  if (varMap.count("compare") != 0)
+  if (compare)
   {
     parseDeweyString(deweyStrVector[0], dewey1);
     parseDeweyString(deweyStrVector[1], dewey2);
@@ -191,3 +209,8 @@ int main(int argc, char * argv[])
 
   return 0;
 }
+
+
+/*
+ *  -c "1 4 2 1 6  3215638"  --> 71, 142
+ */
