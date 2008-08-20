@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#ifndef WIN32
+#define _XOPEN_SOURCE 600  // getcwd
+#endif
+
 #include "util/file.h"
 
 #ifndef _WIN32_WCE
@@ -47,15 +51,58 @@
 using namespace std;
 namespace zorba {
 
-file::file(const std::string& _path)
-:
-  path(_path),
-  type(type_non_existent)
-{
+const char *filesystem_path::get_path_separator () {
+#ifdef WIN32
+  return "\\";
+#else
+  return "/";
+#endif
+}
+
+filesystem_path::filesystem_path () {
+  char buf [512];
+#ifdef WIN32
+  GetCurrentDirectory (sizeof (buf), buf);
+#else
+  if (getcwd (buf, sizeof (buf)) == NULL) {
+    file::error (__FUNCTION__, "current directory path too long");
+  }
+  else path = buf;
+#endif
+#ifdef WIN32
+  resolve_relative ();
+#endif
+}
+
+bool filesystem_path::is_absolute () const {
+#ifdef WIN32
+  // c:dir1\file is NOT absolute! Only c:\dir\file is
+  if (path.size () >= 3 && isalpha (path [0]) && path [1] == ':' && path [2] == '\\')
+    return true;
+#endif
+  const std::string &sep = get_path_separator ();
+  if (path.compare (0, sep.size (), sep) == 0)
+    return true;
+  return false;
+}
+
+void filesystem_path::resolve_relative () {
+  if (! is_absolute ())
+#ifdef WIN32
+    // TODO
+    // call GetFullPathName as per
+    // http://msdn.microsoft.com/en-us/library/aa364963(VS.85).aspx
+#else
+    *this = filesystem_path (filesystem_path (), *this);
+#endif
+}
+
+
+void file::do_stat () {
 #if ! defined (WIN32) 
   struct stat st;
   if (::stat(path.c_str(), &st)) {
-    if (errno!=ENOENT) error(__FUNCTION__,"stat failed on "+path);
+    if (errno!=ENOENT) file::error(__FUNCTION__,"stat failed on "+path.get_path ());
   } 
   else {
     size  = st.st_size;
@@ -96,56 +143,23 @@ file::file(const std::string& _path)
 #endif
 }
 
+file::file(const std::string& _path)
+:
+  path(_path),
+  type(type_non_existent)
+{
+  do_stat ();
+}
+
 
 file::file(
   std::string const& base,
   std::string const& name)
 :
-  path(base+"/"+name),
-  type(type_non_existent)
+  path (base+ filesystem_path::get_path_separator () +name),
+  type (type_non_existent)
 {
-#if ! defined (WIN32) 
-  struct stat st;
-  if (::stat(path.c_str(), &st)) {
-    if (errno!=ENOENT) error(__FUNCTION__,"stat failed on "+path);
-  } 
-  else {
-    size  = st.st_size;
-    atime = st.st_atime;
-    mtime = st.st_mtime;
-    type  = (st.st_mode & S_IFDIR)  ? type_directory :
-            (st.st_mode & S_IFREG ) ? type_file :
-            (st.st_mode & S_IFLNK)  ? type_link : type_invalid;
-  }
-#else
-  WIN32_FIND_DATA   findData;
-  HANDLE            hfind;
-#ifdef UNICODE
-  TCHAR path_str[1024];
-  MultiByteToWideChar(CP_ACP,/// or CP_UTF8
-                      0, path.c_str(), -1,
-                      path_str, sizeof(path_str)/sizeof(TCHAR));
-#else
-  const char  *path_str = path.c_str();
-#endif
-  hfind = FindFirstFile(path_str, &findData);
-  if(hfind == INVALID_HANDLE_VALUE)
-  {
-    error(__FUNCTION__,"file/dir not exist "+path);
-  }
-  else
-  {
-    size = findData.nFileSizeLow + (((int64_t)(findData.nFileSizeHigh))<<32);
-    atime = findData.ftLastAccessTime;
-    mtime = findData.ftLastWriteTime;
-    type  = (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)  ? type_directory :
-            (findData.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE ) ? type_file :
-            //(st.st_mode & S_IFLNK)  ? type_link : 
-            type_invalid;
-    FindClose(hfind);
-  }
-
-#endif
+  do_stat ();
 }
 
 

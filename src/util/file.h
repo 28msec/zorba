@@ -23,10 +23,10 @@
 #include <time.h>
 #include <string>
 
+#include "util/path.h"
 
 #include "common/common.h"
 #include "zorbatypes/rchandle.h"
-
 
 namespace zorba {
 
@@ -50,10 +50,10 @@ public:
   };
 
 protected:
-  std::string path;
+  filesystem_path path;
   enum filetype type; 
 
-private:  // file attributes
+// file attributes
   int64_t  size;          // size in bytes
 #if ! defined (WIN32) 
   time_t   atime;         // most recent access time
@@ -63,14 +63,16 @@ private:  // file attributes
   FILETIME  mtime;
 #endif
 
+  void do_stat ();
+
 public:
   file(std::string const& pathname);
   file(std::string const& rootpath, std::string const& name);
 
 public: // common methods
-  void set_path(std::string const& _path ) { path = _path; }
+  void set_path(std::string const& _path ) { path = filesystem_path (_path); }
   void set_filetype(enum filetype _type ) { type = _type ; }
-  std::string const& get_path() const { return path; }
+  std::string const& get_path() const { return path.get_path (); }
   enum filetype get_filetype();
 
   bool is_directory() const { return (type==type_directory); }  
@@ -113,7 +115,6 @@ public: // directory methods
 #endif
 
   bool is_empty() const { return (size == (int64_t)0); }
-
 };
 
 
