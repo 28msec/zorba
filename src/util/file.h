@@ -30,7 +30,7 @@
 
 namespace zorba {
 
-class file : public SimpleRCObject
+class file : public filesystem_path
 {
 public:
   enum filetype {
@@ -66,13 +66,11 @@ protected:
   void do_stat ();
 
 public:
-  file(std::string const& pathname);
-  file(std::string const& rootpath, std::string const& name);
+  file(const filesystem_path &path);
 
 public: // common methods
   void set_path(std::string const& _path ) { path = filesystem_path (_path); }
   void set_filetype(enum filetype _type ) { type = _type ; }
-  std::string const& get_path() const { return path.get_path (); }
   enum filetype get_filetype();
 
   bool is_directory() const { return (type==type_directory); }  
@@ -94,7 +92,7 @@ public: // common methods
 
 public: // file methods
   void create();
-  void remove(bool ignore);
+  void remove(bool ignore = true);
   void rename(std::string const& newpath);
 
   int64_t get_size() const        { return size; }
@@ -109,6 +107,7 @@ public: // file methods
 
 public: // directory methods
   void mkdir();
+  void deep_mkdir();
   void rmdir(bool ignore);
 #ifndef _WIN32_WCE
   void chdir();

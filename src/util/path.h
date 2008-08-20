@@ -29,7 +29,7 @@ public:
   // from current dir
   filesystem_path ();
   filesystem_path &operator = (const std::string &p_)
-  { path = p_; return *this; }
+  { path = p_; canonicalize (); return *this; }
 
   bool is_complete () const;
   bool is_root () const;

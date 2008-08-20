@@ -192,8 +192,8 @@ filesystem_path filesystem_path::branch_path () const {
 void file::do_stat () {
 #if ! defined (WIN32) 
   struct stat st;
-  if (::stat(path.c_str(), &st)) {
-    if (errno!=ENOENT) file::error(__FUNCTION__,"stat failed on "+path.get_path ());
+  if (::stat(c_str(), &st)) {
+    if (errno!=ENOENT) file::error(__FUNCTION__,"stat failed on "+get_path ());
   } else {
     size  = st.st_size;
     atime = st.st_atime;
@@ -208,10 +208,10 @@ void file::do_stat () {
 #ifdef UNICODE
   TCHAR path_str[1024];
   MultiByteToWideChar(CP_ACP,/// or CP_UTF8
-                      0, path.c_str(), -1,
+                      0, c_str(), -1,
                       path_str, sizeof(path_str)/sizeof(TCHAR));
 #else
-  const char  *path_str = path.c_str();
+  const char  *path_str = c_str();
 #endif
 
   hfind = FindFirstFile(path_str, &findData);
@@ -230,21 +230,10 @@ void file::do_stat () {
 #endif
 }
 
-file::file(const std::string& _path)
+file::file(const filesystem_path &path_)
 :
-  path(_path),
+  filesystem_path(path_),
   type(type_non_existent)
-{
-  do_stat ();
-}
-
-
-file::file(
-  std::string const& base,
-  std::string const& name)
-:
-  path (base+ filesystem_path::get_path_separator () +name),
-  type (type_non_existent)
 {
   do_stat ();
 }
@@ -256,7 +245,7 @@ enum file::filetype file::get_filetype() {
 #if ! defined (WIN32) 
   // call native file system status
   struct stat st;
-  if (::stat(path.c_str(), &st)) {
+  if (::stat(c_str(), &st)) {
     if (errno==ENOENT) {
       errno = 0;
       return (type = type_non_existent);
@@ -278,10 +267,10 @@ enum file::filetype file::get_filetype() {
 #ifdef UNICODE
   TCHAR path_str[1024];
   MultiByteToWideChar(CP_ACP,/// or CP_UTF8
-                      0, path.c_str(), -1,
+                      0, c_str(), -1,
                       path_str, sizeof(path_str)/sizeof(TCHAR));
 #else
-  const char  *path_str = path.c_str();
+  const char  *path_str = c_str();
 #endif
   hfind = FindFirstFile(path_str, &findData);
   if(hfind == INVALID_HANDLE_VALUE)
@@ -316,7 +305,7 @@ volatile void file::error(
 
 void file::create() {
 #ifndef WIN32
-  int fd = ::creat(path.c_str(),0666);
+  int fd = ::creat(c_str(),0666);
   if (fd < 0) error(__FUNCTION__, "failed to create file "+path);
   ::close(fd);
   set_filetype(type_file); 
@@ -324,10 +313,10 @@ void file::create() {
 #ifdef UNICODE
   TCHAR path_str[1024];
   MultiByteToWideChar(CP_ACP,/// or CP_UTF8
-                      0, path.c_str(), -1,
+                      0, c_str(), -1,
                       path_str, sizeof(path_str)/sizeof(TCHAR));
 #else
-  const char  *path_str = path.c_str();
+  const char  *path_str = c_str();
 #endif
   HANDLE fd = CreateFile(path_str,GENERIC_READ | GENERIC_WRITE, 
                       FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
@@ -342,7 +331,7 @@ void file::create() {
 
 void file::mkdir() {
 #if ! defined (WIN32) 
-  if (::mkdir(path.c_str(),0777)) {
+  if (::mkdir(c_str(),0777)) {
     ostringstream oss;
     oss<<"mkdir failed ["<<strerror(errno) << "]"<<"] for: "<<path;
     cout << oss.str() << endl;  //XXX DEBUG
@@ -353,26 +342,34 @@ void file::mkdir() {
 #ifdef UNICODE
   TCHAR path_str[1024];
   MultiByteToWideChar(CP_ACP,/// or CP_UTF8
-                      0, path.c_str(), -1,
+                      0, c_str(), -1,
                       path_str, sizeof(path_str)/sizeof(TCHAR));
 #else
-  const char  *path_str = path.c_str();
+  const char  *path_str = c_str();
 #endif
   if (!CreateDirectory(path_str, NULL))
   {
     ostringstream oss;
     oss<<"mkdir failed ["<<GetLastError() << "]"<<"] for: "<<path;
-    cout << oss.str() << endl;  //DEBUG
     error(__FUNCTION__,oss.str());
   }
   set_filetype(file::type_directory);
 #endif
 }
 
+void file::deep_mkdir () {
+  vector<file> files;
+  for (file f = *this; ! f.exists (); f = f.branch_path ())
+    files.push_back (f);
+  for (int i = files.size () - 1; i >= 0; i--) {
+    // cout << "mkdir " << files [i] << endl;
+    files [i].mkdir ();
+  }
+}
 
 void file::remove(bool ignore) {
 #if ! defined (WIN32) 
-  if (::remove(path.c_str()) && !ignore) {
+  if (::remove(c_str()) && !ignore) {
     error(__FUNCTION__, "failed to remove "+path);
   }
 #else
@@ -380,16 +377,16 @@ void file::remove(bool ignore) {
 #ifdef UNICODE
   TCHAR path_str[1024];
   MultiByteToWideChar(CP_ACP,/// or CP_UTF8
-                      0, path.c_str(), -1,
+                      0, c_str(), -1,
                       path_str, sizeof(path_str)/sizeof(TCHAR));
 #else
-  const char  *path_str = path.c_str();
+  const char  *path_str = c_str();
 #endif
   if(this->type == type_file)
     retval = DeleteFile(path_str);
   else if(this->type == type_directory)
     retval = RemoveDirectory(path_str);
-  if(!retval)
+  if(!retval && !ignore)
     error(__FUNCTION__, "failed to remove "+path);
 #endif
   set_filetype(type_non_existent);
@@ -398,7 +395,7 @@ void file::remove(bool ignore) {
 
 void file::rmdir(bool ignore) {
 #if ! defined (WIN32) 
-  if (::rmdir(path.c_str()) && !ignore) {
+  if (::rmdir(c_str()) && !ignore) {
     error(__FUNCTION__, "rmdir failed on "+path);
   }
 #else
@@ -406,10 +403,10 @@ void file::rmdir(bool ignore) {
 #ifdef UNICODE
   TCHAR path_str[1024];
   MultiByteToWideChar(CP_ACP,/// or CP_UTF8
-                      0, path.c_str(), -1,
+                      0, c_str(), -1,
                       path_str, sizeof(path_str)/sizeof(TCHAR));
 #else
-  const char  *path_str = path.c_str();
+  const char  *path_str = c_str();
 #endif
   retval = RemoveDirectory(path_str);
   if(!retval)
@@ -422,11 +419,11 @@ void file::rmdir(bool ignore) {
 void file::chdir() {
   if (!is_directory()) return;
 #if ! defined (WIN32) 
-  if (::chdir(path.c_str())) {
+  if (::chdir(c_str())) {
     error(__FUNCTION__, "chdir failed on "+path);
   }
 #else
-  if (::_chdir(path.c_str())) {
+  if (::_chdir(c_str())) {
     error(__FUNCTION__, "chdir failed on "+path);
   }
 #endif
@@ -435,7 +432,7 @@ void file::chdir() {
 
 void file::rename(std::string const& newpath) {
 #if ! defined (WIN32) 
-  if (::rename(path.c_str(), newpath.c_str())) {
+  if (::rename(c_str(), newpath.c_str())) {
     ostringstream oss;
     oss << path << " to " << newpath;
     error(__FUNCTION__, "failed to rename: "+oss.str());
@@ -445,14 +442,14 @@ void file::rename(std::string const& newpath) {
 #ifdef UNICODE
   TCHAR path_str[1024];
   MultiByteToWideChar(CP_ACP,/// or CP_UTF8
-                      0, path.c_str(), -1,
+                      0, c_str(), -1,
                       path_str, sizeof(path_str)/sizeof(TCHAR));
   TCHAR newpath_str[1024];
   MultiByteToWideChar(CP_ACP,/// or CP_UTF8
                       0, newpath.c_str(), -1,
                       newpath_str, sizeof(newpath_str)/sizeof(TCHAR));
 #else
-  const char  *path_str = path.c_str();
+  const char  *path_str = c_str();
   const char  *newpath_str = newpath.c_str();
 #endif
   if(!MoveFile(path_str, newpath_str))
