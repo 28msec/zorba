@@ -76,7 +76,7 @@ XQPCollator::~XQPCollator()
 XQPCollator*
 CollationFactory::createCollator(const std::string& aCollationURI)
 {
-  static const char *coll_uri_start = "http://www.zorba-xquery.com/zorba/collations/";
+  static const char *coll_uri_start = ZORBA_COLLATION_NS_BASE;
   static int coll_uri_start_len = strlen (coll_uri_start);
 
   if (aCollationURI == W3C_CODEPT_COLLATION_NS)
