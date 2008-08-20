@@ -68,27 +68,9 @@ private:	// file attributes
   uint32_t perms;     		// file permissions
 #endif
 
-#if ! defined (WIN32) 
-private:	// volume attributes
-  uint64_t filtotal;    	// total number of file inodes in file system
-  uint64_t filfree;     	// number of free file inodes in file system
-  uint64_t filavail;    	// number of free file inodes available to non super-users
-  uint64_t fsid; 		      // file system id
-  uint64_t fstype;        // numeric file system type identifier (fs-specific)
-  uint64_t blksize;     	// recommended file system block size in bytes
-  uint64_t blktotal;    	// total number of blocks in file system
-  uint64_t blkfree;     	// number of free blocks in file system
-  uint64_t blkavail;    	// number of free blocks available to non super-users
-  std::string fstypename;	// string name of file system type (null-terminated)
-  enum rwaccess access;   // level of read/write access
-  bool setuid;            // allows setuid/setguid
-	bool truncnames;        // truncates long filenames
-#endif
-
 public:
   file(std::string const& pathname);
   file(std::string const& rootpath, std::string const& name);
-  ~file();
 
 public:	// common methods
   void set_path(std::string const& _path ) { path = _path; }
@@ -117,7 +99,6 @@ public:	// file methods
   void create();
   void remove(bool ignore);
   void rename(std::string const& newpath);
-	void touch();
 
   int64_t get_size() const				{ return size; }
 #if ! defined (WIN32) 
@@ -131,10 +112,6 @@ public:	// file methods
   FILETIME  get_modtime() const			{ return mtime; }
 
 #endif
-
-	int readfile(
-		char* docbuf,
-		uint32_t maxlen);
 
 public:	// directory methods
 	class dir_iterator : public SimpleRCObject
@@ -185,26 +162,9 @@ public:	// directory methods
   dir_iterator end();
 
 	friend bool operator!=(dir_iterator const& x, dir_iterator const& y);
-
-#ifndef WIN32
-public:	// volume methods
-  uint64_t get_block_size() const   { return blksize; }
-  uint64_t get_total_blocks() const { return blktotal; }
-  uint64_t get_avail_blocks() const { return blkavail; }
-  uint64_t get_total_inodes() const { return filtotal; }
-  uint64_t get_avail_inodes() const { return filavail; } 
-
-  std::string get_volume_type() const { return fstypename; }
-  enum rwaccess get_access() const { return access; }
-	bool has_set_uid() const { return setuid; }
-  bool has_truncated_names() const { return truncnames; }
-#endif
   
 	bool is_empty() const { return (size == (int64_t)0); }
 
-#if 0  // not portable, not used
-  void do_statfs(std::string const& path)
-#endif
 };
 
 

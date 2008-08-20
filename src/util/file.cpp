@@ -55,23 +55,6 @@
 using namespace std;
 namespace zorba {
 
-static const uint64_t FS_TYPES[] = {
-    0x0000EF53, 0x0000adf5, 0x0000adff, 0x73757245, 0x00001373, 0x00414A53,
-    0x0000EF53, 0x0000EF53, 0xf995e849, 0x00009660, 0x000072b6, 0x0000137F,
-    0x0000138F, 0x00002468, 0x00002478, 0x00004d44, 0x00006969, 0x00009fa1,
-    0x00009fa0, 0x0000002f, 0x52654973, 0x012FF7B3, 0x012FF7B4, 0x012FF7B5,
-    0x012FF7B6, 0x00009fa2
-  };
-
-// This variable is never used
-// static const char *FS_NAMES[] = {
-//    "ext2", "adfs", "affs", "coda", "devfs", "efs", "ext2", "ext3", "hpfs", 
-//		"isofs", "jffs2", "minix", "minix_30charnames", "minix2", "minix2_30charnames",
-//		"msdos", "nfs", "openprom", "proc", "qnx4", "reiserfs", "xenix", "sysv4",
-//		"sysv2", "coh", "usbdevice"
-//  };
-
-
 file::file(const std::string& _path)
 
 :
@@ -92,20 +75,6 @@ file::file(const std::string& _path)
   					(st.st_mode & S_IFLNK)  ? type_link : type_invalid;
 	}
 #else
-/*	struct _stat32i64 st;///time on 32 bits, file size on 64 bits
-  if (::_stat32i64(path.c_str(), &st)) {
-    if (errno!=ENOENT) error(__FUNCTION__,"stat failed on "+path);
-  } 
-	else {
-  	size	= st.st_size;
-  	atime	= st.st_atime;
-  	mtime	= st.st_mtime;
-		type 	=	(st.st_mode & _S_IFDIR)  ? type_directory :
-						(st.st_mode & _S_IFREG ) ? type_file :
-  					//(st.st_mode & S_IFLNK)  ? type_link : 
-						type_invalid;
-	}
-*/
 	WIN32_FIND_DATA		findData;
 	HANDLE						hfind;
 #ifdef UNICODE
@@ -158,26 +127,6 @@ file::file(
   					(st.st_mode & S_IFLNK)  ? type_link : type_invalid;
 	}
 #else
-/*	struct _stat32i64 st;///time on 32 bits, file size on 64 bits
-  if (::_stat32i64(path.c_str(), &st)) {
-    if (errno!=ENOENT) 
-			error(__FUNCTION__,"stat failed on "+path);
-		else
-		{
-			errno = 0;
-    	type = type_non_existent;
-		}
-  } 
-	else {
-  	size	= st.st_size;
-  	atime	= st.st_atime;
-  	mtime	= st.st_mtime;
-		type 	=	(st.st_mode & _S_IFDIR)  ? type_directory :
-						(st.st_mode & _S_IFREG ) ? type_file :
-  					//(st.st_mode & S_IFLNK)  ? type_link : 
-						type_invalid;
-	}
-*/
 	WIN32_FIND_DATA		findData;
 	HANDLE						hfind;
 #ifdef UNICODE
@@ -206,11 +155,6 @@ file::file(
 	}
 
 #endif
-}
-
-
-file::~file()
-{
 }
 
 
@@ -442,118 +386,6 @@ void file::rename(
 	}
 #endif
 }
-
-void file::touch()
-
-{
-#if ! defined (WIN32) 
-  int fd = 0;
-	fd = open(path.c_str(),O_CREAT|O_WRONLY,0666);
-  if (fd<0) error(__FUNCTION__, "failed to open "+path);
-  try {
-    if (fsync(fd)) error(__FUNCTION__, "failed to fsync "+path);
-  } catch (error::ZorbaError &) {
-    close(fd);
-    throw;
-  }
-  if (close(fd)) error(__FUNCTION__, "failed to close "+path);
-#else
-	FILE	*fd;
-	fd = fopen(path.c_str(),"a");
-  if (fd == NULL) 
-		error(__FUNCTION__, "failed to open "+path);
-  try {
-    if (fflush(fd)) 
-			error(__FUNCTION__, "failed to fsync "+path);
-  } catch (error::ZorbaError &) {
-    fclose(fd);
-    throw;
-  }
-  if (fclose(fd)) 
-		error(__FUNCTION__, "failed to close "+path);
-#endif
-}
-
-#if 0  // not portable, not used
-void file::do_statfs(
-	std::string const& path)
-
-{
-  struct statfs buf;
-  if (statfs(path.c_str(),&buf))
-		error(__FUNCTION__,"statfs failed on "+path);
-
-  blksize  = buf.f_bsize;
-  blktotal = buf.f_blocks;
-  blkfree  = buf.f_bfree;
-  blkavail = buf.f_bavail;	
-  filtotal = buf.f_files;
-  filfree  = buf.f_ffree;
-  filavail = buf.f_ffree;
-  //fsid     = buf.f_fsid;
-  fstype   = buf.f_type;
-
-  for (uint32_t i = 0; i < sizeof(FS_TYPES); ++i) {
-    if (FS_TYPES[i]==fstype) {
-      fstypename = FS_NAMES[i];
-      break;
-    }
-  }
-
-  access = rw;
-  setuid = true;
-  truncnames = false;
-}
-#endif
-
-// read a file into a buffer
-int file::readfile(
-	char* docbuf,
-	uint32_t maxlen)
-
-{
-#if ! defined (WIN32) 
-  int fd = open(path.c_str(), O_RDONLY);
-	if (fd < 0) {
-		error(__FUNCTION__, "open("+path+") failed ["+strerror(errno)+"]");
-	}
-  ssize_t n = read(fd, docbuf, maxlen);
-	if (n<0) {
-		error(__FUNCTION__, "read("+path+") failed ["+strerror(errno)+"]");
-  }
-	if (close(fd)==-1) {
-		error(__FUNCTION__, "close("+path+") failed ["+strerror(errno)+"]");
-  }
-#else
-#ifdef UNICODE
-	TCHAR	path_str[1024];
-	MultiByteToWideChar(CP_ACP,/// or CP_UTF8
-											0, path.c_str(), -1,
-											path_str, sizeof(path_str)/sizeof(TCHAR));
-#else
-	const char	*path_str = path.c_str();
-#endif
-  HANDLE fd = CreateFile(path_str, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
-													NULL, OPEN_EXISTING, 0, NULL);
-	if(fd == INVALID_HANDLE_VALUE)
-	{
-		ostringstream		oss;
-		oss << "open(" << path << ") failed [" << GetLastError() << "]";
-		error(__FUNCTION__, oss.str());
-	}
-  DWORD	 n;
-	if(!ReadFile(fd, docbuf, maxlen, &n, NULL))
-	{
-		ostringstream		oss;
-		oss << "read(" << path << ") failed [" << GetLastError() << "]";
-		error(__FUNCTION__, oss.str());
-	}
-	CloseHandle(fd);
-#endif
-	return (int)n;
-}
-
-
 
 // dir_iterator
 
