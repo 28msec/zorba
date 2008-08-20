@@ -47,13 +47,13 @@ IF(UNIX)
 ENDIF(UNIX)
 
 # test the command line tool
-ADD_TEST(bin/zorba1 zorba --omit-xml-declaration -i "1+1")
+ADD_TEST(bin/zorba1 zorba --omit-xml-declaration -q "1+1")
 SET_TESTS_PROPERTIES(bin/zorba1 PROPERTIES PASS_REGULAR_EXPRESSION "2")
 
-ADD_TEST(bin/zorba2 zorba --serialize-html -i "1+1")
+ADD_TEST(bin/zorba2 zorba --serialize-html -q "1+1")
 SET_TESTS_PROPERTIES(bin/zorba2 PROPERTIES PASS_REGULAR_EXPRESSION "<html>2</html>")
 
-ADD_TEST(bin/zorba3 zorba -m 0 -i "1+1")
+ADD_TEST(bin/zorba3 zorba -m 0 -q "1+1")
 SET_TESTS_PROPERTIES(bin/zorba3 PROPERTIES PASS_REGULAR_EXPRESSION "")
 
 ADD_TEST(bin/zorba4 zorba --context-item=${CMAKE_CURRENT_SOURCE_DIR}/test.xml  -m 3 -i "./test/child[1]")
