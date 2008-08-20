@@ -1081,8 +1081,8 @@ void serializer::text_emitter::emit_node(
     previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->getNodeKind() == store::StoreConsts::textNode)
-  {		
-    emit_expanded_string(item->getStringValue());
+  {
+    tr << item->getStringValue()->c_str();
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
   }
   else if (item->getNodeKind() == store::StoreConsts::commentNode)
