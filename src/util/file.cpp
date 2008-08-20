@@ -89,13 +89,19 @@ bool filesystem_path::is_absolute () const {
 
 void filesystem_path::resolve_relative () {
   if (! is_absolute ())
+  {
 #ifdef WIN32
-    // TODO
     // call GetFullPathName as per
-    // http://msdn.microsoft.com/en-us/library/aa364963(VS.85).aspx
+    // http://msdn.microsoft.com/en-us/library/aa364963(VS.85).aspx 
+    
+    char fullpath[1024];
+    fullpath[0] = 0;
+    GetFullPathName(path.c_str(), sizeof(fullpath), fullpath, NULL);
+    path = fullpath;
 #else
     *this = filesystem_path (filesystem_path (), *this);
 #endif
+  }
 }
 
 
