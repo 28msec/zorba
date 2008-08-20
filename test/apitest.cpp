@@ -21,14 +21,12 @@
 #include <sstream>
 #include <memory>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/convenience.hpp>
-
 // tests are allowed to use internals
 #include "api/unmarshaller.h"
 #include "zorbatypes/xqpstring.h"
 #include "util/properties.h"
+
+#include <zorba/util/path.h>
 
 #include "store/api/item.h"
 #include "zorba_test_setting.h"
@@ -41,8 +39,6 @@
 
 using namespace zorba;
 using namespace std;
-
-namespace fs = boost::filesystem;
 
 
 void set_var (string name, string val, DynamicContext* dctx)
@@ -98,11 +94,12 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // input file (either from a file or given as parameter)
   auto_ptr<istream> qfile;
-  fs::path path;
+  filesystem_path path;
 
   if (! lProp->inlineQuery()) {
-    path = fs::system_complete (lProp->queryFile ());
-    std::string fname = path.native_file_string ();
+    path = lProp->queryFile ();
+    path.resolve_relative ();
+    std::string fname = path.get_path ();
     qfile.reset (new ifstream (fname.c_str ()));
     if (!qfile->good() || qfile->eof()) {
       cerr << "no query given or not readable " << fname  << endl;
@@ -135,7 +132,7 @@ int _tmain(int argc, _TCHAR* argv[])
   // start parsing the query
   XQuery_t query = zengine->createQuery ();
   if (! lProp->inlineQuery())
-    query->setFileName (path.string ());
+    query->setFileName (path.get_path ());
   
   try {
     query->compile(*qfile, chints);
