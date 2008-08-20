@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string.h>
-#include "util/path.h"
+
+#include <zorba/util/path.h>
 
 using namespace std;
 using namespace zorba;

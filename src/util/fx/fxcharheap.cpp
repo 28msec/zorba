@@ -34,7 +34,8 @@
 #include <sstream>
 #include <iostream>
 
-#include "util/file.h"
+#include <zorba/util/file.h>
+
 #include "zorbaerrors/error_manager.h"
 
 using namespace std;

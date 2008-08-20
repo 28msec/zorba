@@ -19,7 +19,7 @@
 #define _XOPEN_SOURCE 600  // getcwd
 #endif
 
-#include "util/file.h"
+#include <zorba/util/file.h>
 
 #ifndef _WIN32_WCE
 #include <errno.h>

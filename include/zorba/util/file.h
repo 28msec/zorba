@@ -23,10 +23,7 @@
 #include <time.h>
 #include <string>
 
-#include "util/path.h"
-
-#include "common/common.h"
-#include "zorbatypes/rchandle.h"
+#include <zorba/util/path.h>
 
 namespace zorba {
 
