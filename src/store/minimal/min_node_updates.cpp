@@ -43,39 +43,100 @@ void XmlNode::removeType(TypeUndoList& undoList)
 
   while(currNode != NULL)
   {
-    if (currNode->getNodeKind() == store::StoreConsts::elementNode)
+    NodeTypeInfo tinfo;
+    tinfo.theNode = currNode;
+
+    store::StoreConsts::NodeKind nodeKind = currNode->getNodeKind();
+
+    if (nodeKind == store::StoreConsts::elementNode)
     {
       ElementNode* n = reinterpret_cast<ElementNode*>(currNode);
 
-      if (n->theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED])
+      if (n->theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED] ||
+          n->theTypeName == GET_STORE().theSchemaTypeNames[XS_ANY])
         break;
 
-      NodeTypeInfo tinfo(n->theTypeName, n->isId(), n->isIdRefs());
+      tinfo.theTypeName.transfer(n->theTypeName);
+      tinfo.theFlags = n->theFlags;
 
-      undoList.push_back(std::pair<XmlNode*, NodeTypeInfo>(n, tinfo));
+      if (n->haveTypedValue())
+      {
+        TextNode* textChild = reinterpret_cast<TextNode*>(n->getChild(0));
+
+        xqpStringStore_t newValue = textChild->getStringValue();
+
+        tinfo.theTextContent.setValue(textChild->getValue());
+        textChild->setValue(NULL);
+        tinfo.theIsTyped = true;
+
+        textChild->setText(newValue);
+      }
+
+      undoList.push_back(tinfo);
 
       n->theTypeName = GET_STORE().theSchemaTypeNames[XS_ANY];
+      n->resetIsId();
+      n->resetIsIdRefs();
       n->setHaveValue();
       n->resetHaveEmptyValue();
       n->resetHaveTypedValue();
-      n->resetIsId();
-      n->resetIsIdRefs();
+      n->resetHaveListValue();
     }
-    else if (currNode->getNodeKind() == store::StoreConsts::attributeNode)
+    else if (nodeKind == store::StoreConsts::attributeNode)
     {
       AttributeNode* n = reinterpret_cast<AttributeNode*>(currNode);
 
-      NodeTypeInfo tinfo(n->theTypeName, n->isId(), n->isIdRefs());
+      tinfo.theTypedValue.transfer(n->theTypedValue);
 
-      undoList.push_back(std::pair<XmlNode*, NodeTypeInfo>(n, tinfo));
+      if (n->theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC])
+      {
+        undoList.push_back(tinfo);
+      }
+      else
+      {
+        tinfo.theTypeName.transfer(n->theTypeName);
+        tinfo.theFlags = n->theFlags;
 
-      n->theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
-      n->resetIsId();
-      n->resetIsIdRefs();
+        undoList.push_back(tinfo);
+
+        n->theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+        n->resetIsId();
+        n->resetIsIdRefs();
+        n->resetHaveListValue();
+      }
+    }
+    else if (nodeKind == store::StoreConsts::textNode)
+    {
+      TextNode* n = reinterpret_cast<TextNode*>(currNode);
+
+      if (n->isTyped())
+      {
+        tinfo.theTextContent.setValue(n->getValue());
+        n->setValue(NULL);
+        tinfo.theIsTyped = true;
+
+        if (n->theParent)
+        {
+          ElementNode* parent = reinterpret_cast<ElementNode*>(theParent);
+          parent->resetHaveTypedValue();
+        }
+      }
+      else
+      {
+        tinfo.theTextContent.setText(n->getText());
+        n->setText(NULL);
+        tinfo.theIsTyped = false;
+      }
+
+      undoList.push_back(tinfo);
+    }
+    else if (nodeKind == store::StoreConsts::documentNode)
+    {
+      break;
     }
     else
     {
-      break;
+      ZORBA_FATAL(0, "");
     }
 
     currNode = currNode->theParent;
@@ -86,32 +147,73 @@ void XmlNode::removeType(TypeUndoList& undoList)
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlNode::restoreType(const TypeUndoList& undoList)
+void XmlNode::restoreType(TypeUndoList& undoList)
 {
   XmlNode* currNode = this;
   long pos = undoList.size() - 1;
 
   while(currNode != NULL && pos >= 0)
   {
-    if (currNode->getNodeKind() == store::StoreConsts::elementNode)
+    ZORBA_FATAL(currNode == undoList[pos].theNode, "");
+ 
+   store::StoreConsts::NodeKind nodeKind = currNode->getNodeKind();
+
+    if (nodeKind == store::StoreConsts::elementNode)
     {
       ElementNode* n = reinterpret_cast<ElementNode*>(currNode);
 
-      ZORBA_FATAL(n == undoList[pos].first, "");
+      n->theTypeName = undoList[pos].theTypeName;
+      n->theFlags = undoList[pos].theFlags;
 
-      n->theTypeName = undoList[pos].second.theTypeName;
+      if (n->haveTypedValue())
+      {
+        TextNode* textChild = reinterpret_cast<TextNode*>(n->getChild(0));
+
+        textChild->setText(NULL);
+        textChild->setValue(undoList[pos].theTextContent.getValue());
+        undoList[pos].theTextContent.setValue(NULL);
+      }
     }
-    else if (currNode->getNodeKind() == store::StoreConsts::attributeNode)
+    else if (nodeKind == store::StoreConsts::attributeNode)
     {
       AttributeNode* n = reinterpret_cast<AttributeNode*>(currNode);
 
-      ZORBA_FATAL(n == undoList[pos].first, "");
+      n->theTypedValue.transfer(undoList[pos].theTypedValue);
 
-      n->theTypeName = undoList[pos].second.theTypeName;
+      if (undoList[pos].theTypeName != NULL)
+      {
+        n->theTypeName.transfer(undoList[pos].theTypeName);
+        n->theFlags = undoList[pos].theFlags;
+      }
+    }
+    else if (nodeKind == store::StoreConsts::textNode)
+    {
+      TextNode* n = reinterpret_cast<TextNode*>(currNode);
+
+      if (undoList[pos].theIsTyped)
+      {
+        n->theContent.setValue(undoList[pos].theTextContent.getValue());
+        undoList[pos].theTextContent.setValue(NULL);
+
+        if (n->theParent)
+        {
+          ElementNode* parent = reinterpret_cast<ElementNode*>(theParent);
+          parent->setHaveTypedValue();
+        }
+      }
+      else
+      {
+        n->theContent.setText(undoList[pos].theTextContent.getText());
+        undoList[pos].theTextContent.setText(NULL);
+      }
+    }
+    else if (nodeKind == store::StoreConsts::documentNode)
+    {
+      break;
     }
     else
     {
-      break;
+      ZORBA_FATAL(0, "");
     }
 
     currNode = currNode->theParent;
@@ -120,8 +222,10 @@ void XmlNode::restoreType(const TypeUndoList& undoList)
 }
 
 
+#if 0
 /*******************************************************************************
-
+  This method is commented out because the type is removed during the copying
+  of the source nodes.
 ********************************************************************************/
 void XmlNode::setToUntyped()
 {
@@ -149,6 +253,7 @@ void XmlNode::setToUntyped()
       XmlNode* child = n->getChild(i);
       if (child->getNodeKind() == store::StoreConsts::elementNode)
         child->setToUntyped();
+      // TODO: fix text node (if any) anyholding typed value
     }
   }
   else if (getNodeKind() == store::StoreConsts::attributeNode)
@@ -157,6 +262,7 @@ void XmlNode::setToUntyped()
 
     n->theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
 
+    // TODO: recompute theTypedValue
     n->resetIsId();
     n->resetIsIdRefs();
   }
@@ -165,6 +271,7 @@ void XmlNode::setToUntyped()
     ZORBA_FATAL(0, "");
   }
 }
+#endif
 
 
 /*******************************************************************************
@@ -176,7 +283,8 @@ void XmlNode::revalidate()
 
 
 /*******************************************************************************
-
+  This method is used by the undo of UpdInsertChildren, UpdInsertSiblings, and
+  UpdReplaceChild.
 ********************************************************************************/
 void XmlNode::removeChildren(
     ulong  pos,
@@ -214,7 +322,7 @@ void XmlNode::removeChildren(
 void XmlNode::insertChildren(
     std::vector<store::Item_t>& newChildren,
     ulong                       pos,
-    bool                 copy,
+    bool                        copy,
     const store::CopyMode&      copymode)
 {
   ulong numNewChildren = newChildren.size();
@@ -239,7 +347,7 @@ void XmlNode::insertChildren(
 ********************************************************************************/
 void XmlNode::insertChildrenFirst(
     std::vector<store::Item_t>& newChildren,
-    bool                 copy,
+    bool                        copy,
     const store::CopyMode&      copymode)
 {
   ulong numNewChildren = newChildren.size();
@@ -471,98 +579,6 @@ void ElementNode::replaceContent(
 /*******************************************************************************
 
 ********************************************************************************/
-void AttributeNode::replaceValue(
-    xqpStringStore_t& newValue,
-    store::Item_t&    oldType,
-    store::Item_t&    oldValue,
-    uint16_t&         oldFlags)
-{
-  oldValue.transfer(theTypedValue);
-  oldType.transfer(theTypeName);
-  oldFlags = theFlags;
-
-  theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
- 
-  store::Item_t item(new UntypedAtomicItemImpl(newValue));
-  theTypedValue.transfer(item);
-}
-
-
-void AttributeNode::restoreValue(
-    store::Item_t&    oldType,
-    store::Item_t&    oldValue,
-    uint16_t          oldFlags)
-{
-  theTypedValue.transfer(oldValue);
-  theTypeName.transfer(oldType);
-  theFlags = oldFlags;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void TextNode::replaceValue(
-    xqpStringStore_t&   newValue,
-    Content&            oldContent,
-    bool&               isTyped)
-{
-  if (this->isTyped())
-  {
-    oldContent.value = theContent.value;
-    theContent.value = NULL;
-    isTyped = true;
-  }
-  else
-  {
-    oldContent.text = theContent.text;
-    theContent.text = NULL;
-    isTyped = false;
-  }
-
-  setText(newValue);
-}
-
-
-void TextNode::restoreValue(
-    Content& oldContent,
-    bool     isTyped)
-{
-  if (isTyped)
-  {
-    theContent.text = oldContent.text;
-    oldContent.text = NULL;
-  }
-  else
-  {
-    theContent.value = oldContent.value;
-    oldContent.value = NULL;
-  }
-}
-
-
-
-void PiNode::replaceValue(
-    xqpStringStore_t& newValue,
-    xqpStringStore_t& oldValue)
-{
-  oldValue.transfer(theContent);
-  theContent = newValue;
-}
-
-
-void CommentNode::replaceValue(
-    xqpStringStore_t& newValue,
-    xqpStringStore_t& oldValue)
-{
-  oldValue.transfer(theContent);
-  theContent = newValue;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void ElementNode::rename(store::Item_t& newName, store::Item_t& oldName)
 {
   QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(newName.getp());
@@ -576,7 +592,35 @@ void ElementNode::rename(store::Item_t& newName, store::Item_t& oldName)
 }
 
 
-void AttributeNode::rename(store::Item_t& newName, store::Item_t& oldName)
+/*******************************************************************************
+
+********************************************************************************/
+void AttributeNode::replaceValue(
+    xqpStringStore_t& newStrValue,
+    TypeUndoList&     undoList)
+{
+  removeType(undoList);
+
+  store::Item_t newValue = new UntypedAtomicItemImpl(newStrValue);
+  theTypedValue.transfer(newValue);
+}
+
+
+void AttributeNode::restoreValue(
+    TypeUndoList& undoList)
+{
+  ZORBA_FATAL(!undoList.empty(), "");
+  restoreType(undoList);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void AttributeNode::replaceName(
+    store::Item_t& newName,
+    store::Item_t& oldName,
+    TypeUndoList&  undoList)
 {
   if (theParent)
   {
@@ -589,13 +633,87 @@ void AttributeNode::rename(store::Item_t& newName, store::Item_t& oldName)
 
   oldName.transfer(theName);
   theName.transfer(newName);
+
+  store::Item_t newValue;
+
+  if (theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC])
+  {
+    newValue = theTypedValue;
+  }
+  else
+  {
+    xqpStringStore_t strvalue = theTypedValue->getStringValue();
+    newValue = new UntypedAtomicItemImpl(strvalue);
+  }
+
+  removeType(undoList);
+
+  theTypedValue.transfer(newValue);
 }
 
 
-void PiNode::rename(xqpStringStore_t& newName, xqpStringStore_t& oldName)
+void AttributeNode::restoreName(
+    store::Item_t& oldName,
+    TypeUndoList&  undoList)
+{
+  theName.transfer(oldName);
+
+  if (!undoList.empty())
+    restoreType(undoList);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void TextNode::replaceValue(
+    xqpStringStore_t&   newValue,
+    TypeUndoList&       undoList)
+{
+  removeType(undoList);
+
+  setText(newValue);
+}
+
+
+void TextNode::restoreValue(
+    TypeUndoList&  undoList)
+{
+  ZORBA_FATAL(!undoList.empty(), "");
+  restoreType(undoList);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PiNode::rename(
+    xqpStringStore_t& newName,
+    xqpStringStore_t& oldName)
 {
   oldName.transfer(theTarget);
   theTarget.transfer(newName);
+}
+
+
+void PiNode::replaceValue(
+    xqpStringStore_t& newValue,
+    xqpStringStore_t& oldValue)
+{
+  oldValue.transfer(theContent);
+  theContent = newValue;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void CommentNode::replaceValue(
+    xqpStringStore_t& newValue,
+    xqpStringStore_t& oldValue)
+{
+  oldValue.transfer(theContent);
+  theContent = newValue;
 }
 
 

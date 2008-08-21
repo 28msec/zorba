@@ -85,9 +85,17 @@ bool QNameItemImpl::equals(
     long timezone,
     XQPCollator* aCollation) const
 {
-  return (this == item);
-          //(theNamespace->byteEqual(*item->getNamespace()) &&
-          // theLocal->byteEqual(*item->getLocalName())));
+  //return (this == item);
+
+  if (this == item)
+  {
+    return true;
+  }
+  else
+  {
+    return (theNamespace->byteEqual(*item->getNamespace()) &&
+            theLocal->byteEqual(*item->getLocalName()));
+  }
 }
 
 
@@ -444,6 +452,16 @@ const xqp_duration& DurationItemNaive::getDurationValue() const
   return theValue;
 }
 
+const xqp_dayTimeDuration& DurationItemNaive::getDayTimeDurationValue() const
+{
+  return theValue;
+}
+
+const xqp_yearMonthDuration& DurationItemNaive::getYearMonthDurationValue() const
+{
+  return theValue;
+}
+
 xqpStringStore_t DurationItemNaive::getStringValue() const
 {
   return theValue.toString().getStore();
@@ -451,7 +469,21 @@ xqpStringStore_t DurationItemNaive::getStringValue() const
 
 store::Item* DurationItemNaive::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_DURATION];
+  switch (theValue.getFacet())
+  {
+  default:
+  case Duration::DURATION_FACET:
+    return GET_STORE().theSchemaTypeNames[XS_DURATION];
+    break;
+
+  case Duration::DAYTIMEDURATION_FACET:
+    return GET_STORE().theSchemaTypeNames[XS_DT_DURATION];
+    break;
+
+  case Duration::YEARMONTHDURATION_FACET:
+    return GET_STORE().theSchemaTypeNames[XS_YM_DURATION];
+    break;
+  }
 }
 
 bool DurationItemNaive::equals(
@@ -481,6 +513,7 @@ uint32_t DurationItemNaive::hash(long timezone, XQPCollator* aCollation) const
 /*******************************************************************************
  * class DayTimeDuration
  *******************************************************************************/
+/*
 DayTimeDurationItemNaive::DayTimeDurationItemNaive(const xqp_dayTimeDuration* aValue) : theValue(*aValue)
 {
   durationCastValue = *theValue.toDuration();
@@ -503,7 +536,7 @@ xqpStringStore_t DayTimeDurationItemNaive::getStringValue() const
   
 store::Item* DayTimeDurationItemNaive::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_DT_DURATION];
+  
 }
 
 bool DayTimeDurationItemNaive::equals(
@@ -529,11 +562,13 @@ uint32_t DayTimeDurationItemNaive::hash(long timezone, XQPCollator* aCollation) 
 {
   return theValue.hash();
 }
+*/
 
 
 /*******************************************************************************
  * class YearMonthDuration
  *******************************************************************************/
+/*
 YearMonthDurationItemNaive::YearMonthDurationItemNaive(const xqp_yearMonthDuration* aValue) : theValue(*aValue)
 {
   durationCastValue = *theValue.toDuration();
@@ -585,6 +620,7 @@ uint32_t YearMonthDurationItemNaive::hash(
 {
   return theValue.hash();
 }
+*/
 
 
 /*******************************************************************************

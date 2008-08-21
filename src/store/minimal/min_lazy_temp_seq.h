@@ -25,104 +25,135 @@
 namespace zorba {
   namespace storeminimal {
 
-    /**
-       * Very simple implementation of Temp Sequence. It saves the resulting items
-       * of an iterator eager in a vector.
-     */
-    typedef rchandle<class SimpleLazyTempSeq> SimpleLazyTempSeq_t;
+/**
+ * Very simple implementation of Temp Sequence. It saves the resulting items
+ * of an iterator eager in a vector.
+ */
+typedef rchandle<class SimpleLazyTempSeq> SimpleLazyTempSeq_t;
 
     
-    class SimpleLazyTempSeq : public store::TempSeq {
-      private:
-        std::vector<store::Item_t> theItems;
-        store::Iterator_t theIterator;
-        bool theCopy;
-        bool theMatFinished;
-        uint32_t thePurgedUpTo;
-      public:
-        static const uint32_t MAX_POSITION;
+class SimpleLazyTempSeq : public store::TempSeq 
+{
+ public:
+  static const uint32_t MAX_POSITION;
 
-      public:
-        SimpleLazyTempSeq() { }
+ private:
+  std::vector<store::Item_t> theItems;
+  store::Iterator_t          theIterator;
+  bool                       theCopy;
+  bool                       theMatFinished;
+  uint32_t                   thePurgedUpTo;
+  
+ public:
+  SimpleLazyTempSeq() { }
 
-        SimpleLazyTempSeq ( store::Iterator_t iter, bool copy = false );
+  SimpleLazyTempSeq(store::Iterator_t iter, bool copy = false );
 
-        virtual ~SimpleLazyTempSeq();
+  virtual ~SimpleLazyTempSeq();
 
-        bool empty();
+  bool empty();
 
-        void append ( store::Iterator_t iter, bool copy );
+  void append ( store::Iterator_t iter, bool copy );
 
-        store::Item_t getItem ( int32_t position );
+  store::Item_t getItem(int32_t position);
 
-        bool getItem ( store::Item_t& result, int32_t position ){
-          if ( this->containsItem ( position ) ) {
-            result = theItems[position - thePurgedUpTo - 1];
-            return true;
-          } else {
-            result = NULL;
-            return false;
-          }
-        }
+  bool getItem(store::Item_t& result, int32_t position)
+  {
+    if ( this->containsItem ( position ) ) 
+    {
+      result = theItems[position - thePurgedUpTo - 1];
+      return true;
+    }
+    else 
+    {
+      result = NULL;
+      return false;
+    }
+  }
 
-        inline bool containsItem ( int32_t position ) {
-          uint32_t maxPos = position - thePurgedUpTo;
-          assert(maxPos > 0); //Otherwise we have a serious problem
-          while ( !theMatFinished && theItems.size() < maxPos ) { //Need to fix size type
-            matNextItem();
-          }
-          return int32_t ( theItems.size() ) >= maxPos;
-        }
+  inline bool containsItem ( int32_t position ) 
+  {
+    uint32_t maxPos = position - thePurgedUpTo;
+    assert(maxPos > 0); //Otherwise we have a serious problem
+    while ( !theMatFinished && theItems.size() < maxPos ) 
+    {
+      //Need to fix size type
+      matNextItem();
+    }
+    return theItems.size() >= maxPos;
+  }
 
-        store::Iterator_t getIterator();
+  store::Iterator_t getIterator();
 
-        store::Iterator_t getIterator (int32_t startPos, int32_t endPos, bool streaming = false );
+  store::Iterator_t getIterator(
+        int32_t startPos,
+        int32_t endPos,
+        bool streaming = false );
 
-        store::Iterator_t getIterator (int32_t startPos, store::Iterator_t function, const std::vector<store::Iterator_t>& var, bool streaming = false );
+  store::Iterator_t getIterator(
+        int32_t startPos,
+        store::Iterator_t function,
+        const std::vector<store::Iterator_t>& var,
+        bool streaming = false );
 
-        store::Iterator_t getIterator (const std::vector<int32_t>& positions, bool streaming = false );
+  store::Iterator_t getIterator(
+        const std::vector<int32_t>& positions,
+        bool streaming = false );
 
-        store::Iterator_t getIterator ( store::Iterator_t positions, bool streaming = false );
+  store::Iterator_t getIterator(
+        store::Iterator_t positions,
+        bool streaming = false );
         
-        void purge();
-        void purgeUpTo ( int32_t upTo );
-        void purgeItem ( const std::vector<int32_t>& positions );
-        void purgeItem ( int32_t position );
+  void purge();
+  void purgeUpTo( int32_t upTo );
+  void purgeItem( const std::vector<int32_t>& positions );
+  void purgeItem( int32_t position );
 
-      private:
-        inline void matNextItem() {
-          theItems.push_back ( NULL );
-          store::Item_t& lLocation = theItems.back();
-          if ( theIterator->next ( lLocation ) ) {
-            if ( theCopy && lLocation->isNode() ) {
-              store::CopyMode lCopyMode;
-              lLocation = lLocation->copy ( NULL, 0, lCopyMode );
-            }
-          } else {
-            //We do not want to have an empty item materialized.
-            theItems.pop_back();
-            theMatFinished = true;
-          }
-        }
-    }; /* class SimpleLazyTempSeq */
+ private:
+  inline void matNextItem() 
+  {
+    theItems.push_back ( NULL );
+    store::Item_t& lLocation = theItems.back();
+    if ( theIterator->next ( lLocation ) ) 
+    {
+      if ( theCopy && lLocation->isNode() ) 
+      {
+        store::CopyMode lCopyMode;
+        lLocation = lLocation->copy ( NULL, 0, lCopyMode );
+      }
+    }
+    else 
+    {
+      //We do not want to have an empty item materialized.
+      theItems.pop_back();
+      theMatFinished = true;
+    }
+  }
+};
+ 
+ 
+class SimpleLazyTempSeqIter : public store::Iterator 
+{
+ private:
+  SimpleLazyTempSeq_t   theTempSeq;
 
+  uint32_t              theCurPos;
+  uint32_t              theStartPos;
+  uint32_t              theEndPos;
 
-    class SimpleLazyTempSeqIter : public store::Iterator {
-      private:
-        SimpleLazyTempSeq_t        theTempSeq;
+ public:
+  SimpleLazyTempSeqIter(
+        SimpleLazyTempSeq_t aTempSeq,
+        uint32_t aStartPos,
+        uint32_t aEndPos);
 
-        uint32_t                    theCurPos;
-        uint32_t                    theStartPos;
-        uint32_t                    theEndPos;
+  virtual ~SimpleLazyTempSeqIter();
 
-      public:
-        SimpleLazyTempSeqIter (SimpleLazyTempSeq_t aTempSeq, uint32_t aStartPos, uint32_t aEndPos );
-        virtual ~SimpleLazyTempSeqIter();
-        void open();
-        bool next ( store::Item_t& result );
-        void reset();
-        void close();
-    };
+  void open();
+  bool next( store::Item_t& result );
+  void reset();
+  void close();
+};
 
 
   } // namespace store

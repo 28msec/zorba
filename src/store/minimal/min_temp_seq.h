@@ -39,7 +39,7 @@ public:
 
   SimpleTempSeq(const std::vector<store::Item_t>& items) : theItems(items) {}
 
-  SimpleTempSeq(store::Iterator_t iter, bool copy = false, bool lazy = true);
+  SimpleTempSeq(store::Iterator_t iter, bool copy = false);
 
   virtual ~SimpleTempSeq();
 

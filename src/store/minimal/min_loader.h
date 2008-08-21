@@ -183,7 +183,7 @@ public:
                    std::istream* xmlStream);
   bool continueloadXml(
                    enum lazyloadType_t,//for lazy loading, UNTIL_START_ELEMENT or UNTIL_END_ELEMENT
-                   unsigned int   depth);//for lazy loading, 1 based, when to stop loading;
+                   unsigned short   depth);//for lazy loading, 1 based, when to stop loading;
 protected:
   void setRoot(DocumentTreeNode* root);
 

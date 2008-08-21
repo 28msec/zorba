@@ -1157,7 +1157,7 @@ XmlNode* XmlLoader::startloadXml(
 ********************************************************************************/
 bool XmlLoader::continueloadXml(
                            enum lazyloadType_t lazytype ,//for lazy loading, START_ELEMENT or END_ELEMENT
-                           unsigned int   depth)//for lazy loading, 1 based, when to stop loading;
+                           unsigned short   depth)//for lazy loading, 1 based, when to stop loading;
 {
   while(1)
   {

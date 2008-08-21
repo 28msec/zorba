@@ -82,7 +82,7 @@ void PULImpl::addDelete(store::Item_t& target)
 {
   XmlNode* n = BASE_NODE(target);
 
-  NodeUpdates* updates = 0;
+  NodeUpdates* updates;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
   if (!found)
@@ -326,7 +326,7 @@ void PULImpl::addReplaceContent(
 {
   XmlNode* n = BASE_NODE(target);
 
-  NodeUpdates* updates = 0;
+  NodeUpdates* updates;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
   if (!found)
@@ -362,7 +362,7 @@ void PULImpl::addReplaceValue(store::Item_t& target, xqpStringStore_t& newValue)
   XmlNode* n = BASE_NODE(target);
   store::StoreConsts::NodeKind targetKind = n->getNodeKind();
 
-  NodeUpdates* updates = 0;
+  NodeUpdates* updates;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
   UpdatePrimitive* upd;
@@ -418,7 +418,7 @@ void PULImpl::addRename(store::Item_t& target, store::Item_t& newName)
   XmlNode* n = BASE_NODE(target);
   store::StoreConsts::NodeKind targetKind = n->getNodeKind();
 
-  NodeUpdates* updates = 0;
+  NodeUpdates* updates;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
   UpdatePrimitive* upd;
@@ -467,6 +467,50 @@ void PULImpl::addRename(store::Item_t& target, store::Item_t& newName)
     theDoFirstList.push_back(upd);
     updates->push_back(upd);
   }
+}
+
+
+void PULImpl::addSetElementType(
+    store::Item_t&              target,
+    store::Item_t&              typeName,
+    store::Item_t&              typedValue,
+    bool                        haveTypedValue,
+    bool                        haveEmptyValue,
+    bool                        isId,
+    bool                        isIdRefs)
+{
+}
+
+
+void PULImpl::addSetElementType(
+    store::Item_t&              target,
+    store::Item_t&              typeName,
+    std::vector<store::Item_t>& typedValue,
+    bool                        haveTypedValue,
+    bool                        haveEmptyValue,
+    bool                        isId,
+    bool                        isIdRefs)
+{
+}
+
+
+void PULImpl::addSetAttributeType(
+    store::Item_t&              target,
+    store::Item_t&              typeName,
+    store::Item_t&              typedValue,
+    bool                        isId,
+    bool                        isIdRefs)
+{
+}
+
+
+void PULImpl::addSetAttributeType(
+    store::Item_t&              target,
+    store::Item_t&              typeName,
+    std::vector<store::Item_t>& typedValue,
+    bool                        isId,
+    bool                        isIdRefs)
+{
 }
 
 
@@ -593,7 +637,9 @@ void PULImpl::mergeUpdateList(
 
 
 /*******************************************************************************
-
+  Check that each target node of this pul is inside one of the trees rooted at
+  the given root nodes (the root nodes are the copies of the nodes produced by
+  the source expr of a transform expr).
 ********************************************************************************/
 void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) const
 {
@@ -645,17 +691,19 @@ void PULImpl::serializeUpdates(serializer& ser, std::ostream& os)
 /*******************************************************************************
 
 ********************************************************************************/
-void PULImpl::applyUpdates()
+void PULImpl::applyUpdates(std::vector<zorba::store::Item*>& validationNodes)
 {
   try
   {
     ulong i;
     ulong numUpdates;
 
+    // insertInto, insertAttributes, replaceValue, rename
     numUpdates = theDoFirstList.size();
     for (i = 0; i < numUpdates; i++)
       theDoFirstList[i]->apply();
 
+    // insertBefore, insertAfter, insertIntoFirst, insertIntoLast
     numUpdates = theInsertList.size();
     for (i = 0; i < numUpdates; i++)
       theInsertList[i]->apply();
@@ -676,13 +724,15 @@ void PULImpl::applyUpdates()
   {
 #ifndef NDEBUG
     std::cerr << "Exception thrown during pul::applyUpdates: "
-      << std::endl <<  e.theDescription << std::endl;
+              << std::endl <<  e.theDescription << std::endl;
 #endif
+    //ZORBA_FATAL(0, "");
     undoUpdates();
     throw e;
   }
   catch(...)
   {
+    //ZORBA_FATAL(0, "");
     undoUpdates();
     throw;
   }
@@ -697,9 +747,10 @@ void PULImpl::applyUpdates()
     {
       UpdatePrimitive* upd = theReplaceNodeList[i];
 
-      XmlNode* node = BASE_NODE(upd->getKind() == store::UpdateConsts::UP_REPLACE_CHILD ?
-                                reinterpret_cast<UpdReplaceChild*>(upd)->theChild :
-                                reinterpret_cast<UpdReplaceAttribute*>(upd)->theAttr);
+      XmlNode* node = BASE_NODE(
+                      upd->getKind() == store::UpdateConsts::UP_REPLACE_CHILD ?
+                      reinterpret_cast<UpdReplaceChild*>(upd)->theChild :
+                      reinterpret_cast<UpdReplaceAttribute*>(upd)->theAttr);
 
       node->switchTree(NULL, 0, copymode);
     }
@@ -837,8 +888,8 @@ UpdInsertChildren::UpdInsertChildren(
     if (theRemoveType == false)
     {
       store::StoreConsts::NodeKind childKind = theChildren[i]->getNodeKind();
-      if (childKind == store::StoreConsts::elementNode || 
-        childKind == store::StoreConsts::textNode)
+      if (childKind == store::StoreConsts::elementNode ||
+          childKind == store::StoreConsts::textNode)
         theRemoveType = true;
     }
   }
@@ -908,8 +959,8 @@ UpdInsertSiblings::UpdInsertSiblings(
     if (theRemoveType == false)
     {
       store::StoreConsts::NodeKind sibKind = theSiblings[i]->getNodeKind();
-      if (sibKind == store::StoreConsts::elementNode || 
-        sibKind == store::StoreConsts::textNode)
+      if (sibKind == store::StoreConsts::elementNode ||
+          sibKind == store::StoreConsts::textNode)
         theRemoveType = true;
     }
   }
@@ -1009,8 +1060,8 @@ UpdReplaceChild::UpdReplaceChild(
   theChild.transfer(child);
 
   store::StoreConsts::NodeKind childKind = theChild->getNodeKind();
-  if (childKind == store::StoreConsts::elementNode || 
-    childKind == store::StoreConsts::textNode)
+  if (childKind == store::StoreConsts::elementNode ||
+      childKind == store::StoreConsts::textNode)
     theRemoveType = true;
 
   ulong numChildren = newChildren.size();
@@ -1022,8 +1073,8 @@ UpdReplaceChild::UpdReplaceChild(
     if (theRemoveType == false)
     {
       store::StoreConsts::NodeKind childKind = theNewChildren[i]->getNodeKind();
-      if (childKind == store::StoreConsts::elementNode || 
-        childKind == store::StoreConsts::textNode)
+      if (childKind == store::StoreConsts::elementNode ||
+          childKind == store::StoreConsts::textNode)
         theRemoveType = true;
     }
   }
@@ -1161,107 +1212,6 @@ void UpdReplaceContent::undo()
     target->restoreType(theTypeUndoList);
 }
 
-/*******************************************************************************
-
-********************************************************************************/
-UpdReplaceAttrValue::~UpdReplaceAttrValue()
-{
-}
-
-void UpdReplaceAttrValue::apply()
-{
-  AttributeNode* target = ATTR_NODE(theTarget);
-
-  target->replaceValue(theNewValue, theOldType, theOldValue, theOldFlags);
-
-  if (target->theParent)
-    target->theParent->removeType(theTypeUndoList);
-
-  theIsApplied = true;
-}
-
-
-void UpdReplaceAttrValue::undo()
-{
-  AttributeNode* target = ATTR_NODE(theTarget);
-
-  target->restoreValue(theOldType, theOldValue, theOldFlags);
-
-  if (!theTypeUndoList.empty())
-    target->theParent->restoreType(theTypeUndoList);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-UpdReplaceTextValue::~UpdReplaceTextValue()
-{
-  if (theIsTyped)
-  {
-    if (theOldContent.value)
-      theOldContent.value->removeReference(NULL
-                                            SYNC_PARAM2(theOldContent.value->getRCLock()));
-  }
-  else if (theOldContent.text)
-  {
-    theOldContent.text->removeReference(NULL
-                                        SYNC_PARAM2(theOldContent.text->getRCLock()));
-  }
-}
-
-
-void UpdReplaceTextValue::apply()
-{
-  TextNode* target = TEXT_NODE(theTarget);
-
-  target->replaceValue(theNewContent, theOldContent, theIsTyped);
-
-  if (target->theParent)
-    target->theParent->removeType(theTypeUndoList);
-
-  theIsApplied = true;
-}
-
-
-void UpdReplaceTextValue::undo()
-{
-  TextNode* target = TEXT_NODE(theTarget);
-
-  target->restoreValue(theOldContent, theIsTyped);
-
-  if (!theTypeUndoList.empty())
-    target->theParent->restoreType(theTypeUndoList);
-}
-
-
-void UpdReplacePiValue::apply()
-{
-  PI_NODE(theTarget)->replaceValue(theNewValue, theOldValue);
-
-  theIsApplied = true;
-}
-
-
-void UpdReplacePiValue::undo()
-{
-  PI_NODE(theTarget)->replaceValue(theOldValue, theNewValue);
-}
-
-
-void UpdReplaceCommentValue::apply()
-{
-  COMMENT_NODE(theTarget)->replaceValue(theNewValue, theOldValue);
-
-  theIsApplied = true;
-}
-
-
-void UpdReplaceCommentValue::undo()
-{
-  COMMENT_NODE(theTarget)->replaceValue(theOldValue, theNewValue);
-}
-
 
 /*******************************************************************************
 
@@ -1280,9 +1230,38 @@ void UpdRenameElem::undo()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+UpdReplaceAttrValue::~UpdReplaceAttrValue()
+{
+}
+
+
+void UpdReplaceAttrValue::apply()
+{
+  AttributeNode* target = ATTR_NODE(theTarget);
+
+  target->replaceValue(theNewValue, theTypeUndoList);
+
+  theIsApplied = true;
+}
+
+
+void UpdReplaceAttrValue::undo()
+{
+  AttributeNode* target = ATTR_NODE(theTarget);
+
+  target->restoreValue(theTypeUndoList);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void UpdRenameAttr::apply()
 {
-  ATTR_NODE(theTarget)->rename(theNewName, theOldName);
+  ATTR_NODE(theTarget)->replaceName(theNewName, theOldName, theTypeUndoList);
 
   theIsApplied = true;
 }
@@ -1290,10 +1269,51 @@ void UpdRenameAttr::apply()
 
 void UpdRenameAttr::undo()
 {
-  ATTR_NODE(theTarget)->rename(theOldName, theNewName);
+  ATTR_NODE(theTarget)->restoreName(theOldName, theTypeUndoList);
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+void UpdReplaceTextValue::apply()
+{
+  TextNode* target = TEXT_NODE(theTarget);
+
+  target->replaceValue(theNewContent, theTypeUndoList);
+
+  theIsApplied = true;
+}
+
+
+void UpdReplaceTextValue::undo()
+{
+  TextNode* target = TEXT_NODE(theTarget);
+
+  target->restoreValue(theTypeUndoList);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UpdReplacePiValue::apply()
+{
+  PI_NODE(theTarget)->replaceValue(theNewValue, theOldValue);
+
+  theIsApplied = true;
+}
+
+
+void UpdReplacePiValue::undo()
+{
+  PI_NODE(theTarget)->replaceValue(theOldValue, theNewValue);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void UpdRenamePi::apply()
 {
   PI_NODE(theTarget)->rename(theNewName, theOldName);
@@ -1305,6 +1325,23 @@ void UpdRenamePi::apply()
 void UpdRenamePi::undo()
 {
   PI_NODE(theTarget)->rename(theOldName, theNewName);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UpdReplaceCommentValue::apply()
+{
+  COMMENT_NODE(theTarget)->replaceValue(theNewValue, theOldValue);
+
+  theIsApplied = true;
+}
+
+
+void UpdReplaceCommentValue::undo()
+{
+  COMMENT_NODE(theTarget)->replaceValue(theOldValue, theNewValue);
 }
 
 }

@@ -62,7 +62,9 @@ store::Iterator_t SimpleCollection::getIterator(bool idsNeeded)
   Insert into the collection an xml document or fragment given as text via an
   input stream. Return the root node of the new xml document or fragment.
 ********************************************************************************/
-store::Item_t SimpleCollection::addToCollection(std::istream& stream, long position)
+store::Item_t SimpleCollection::addToCollection(
+                std::istream& stream, 
+                long position)
 {
   error::ErrorManager lErrorManager;
   //std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lErrorManager));
@@ -147,7 +149,10 @@ void SimpleCollection::addToCollection(const store::Item* node, long position)
 /*******************************************************************************
   Insert the given node to the collection before the aTargetNode. 
 ********************************************************************************/
-void SimpleCollection::addNode(const store::Item* node, const store::Item* aTargetNode, bool aOrder)
+void SimpleCollection::addNode(
+                               const store::Item* node, 
+                               const store::Item* aTargetNode, 
+                               bool aOrder)
 {
   if (!node->isNode() || !aTargetNode->isNode())
   {
@@ -170,7 +175,8 @@ void SimpleCollection::addNode(const store::Item* node, const store::Item* aTarg
     for (; it != end; ++it)
     {
       //check if the nodes have the same ID
-      if((reinterpret_cast<XmlNode*>(it->getp()))->getOrdPath() == rTargetNode->getOrdPath())
+      if((reinterpret_cast<XmlNode*>(it->getp()))->getOrdPath() == 
+              rTargetNode->getOrdPath())
       {
         if(aOrder)
           theXmlTrees.insert(it, const_cast<store::Item*>(node));
@@ -251,7 +257,7 @@ void SimpleCollection::removeFromCollection(long position)
 ********************************************************************************/
 store::Item_t SimpleCollection::nodeAt(long position)
 {
-  if( position < 0 || position >= theXmlTrees.size() )
+  if( position < 0 || ((ulong)position) >= theXmlTrees.size() )
   {
     ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
   }
@@ -300,7 +306,8 @@ void SimpleCollection::CollectionIter::open()
 ********************************************************************************/
 bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 {
-  if (theIterator == theCollection->theXmlTrees.end()) {
+  if (theIterator == theCollection->theXmlTrees.end()) 
+  {
     result = NULL;
     return false;
   }
@@ -330,6 +337,9 @@ void SimpleCollection::CollectionIter::close()
   SYNC_CODE(theCollection->theLatch.unlock();)
 }
 
+/*******************************************************************************
+
+********************************************************************************/
 int
 SimpleCollection::nodePositionInCollection(store::Item* newNode)
 {

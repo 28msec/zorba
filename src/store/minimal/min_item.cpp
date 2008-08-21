@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <typeinfo>
+
 #include <zorba/error.h>
 #include "zorbaerrors/error_manager.h"
 #include "zorbatypes/datetime.h"
@@ -557,7 +559,7 @@ Item* Item::copy(
 }
 
 
-void Item::applyUpdates()
+void Item::applyUpdates(std::vector<zorba::store::Item*>& validationNodes)
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
