@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-#include "util/file.h"
+#include "zorba/util/file.h"
+#include "zorbatypes/rchandle.h"
 
 #ifdef UNIX
 #include <dirent.h>

@@ -136,7 +136,7 @@ void filesystem_path::canonicalize () {
   bool initial_dotdots = false, next_initial_dotdots;
 
 #ifdef WIN32
-  if (filesystem_path (path.substr (0, 2 + pos.size ())).is_root ()) {
+  if (filesystem_path (path.substr (0, 2 + sep.size ())).is_root ()) {
     pfx = path.substr (0, 2);
     path = path.substr (2);
   }
@@ -356,7 +356,7 @@ void file::mkdir() {
   if (!CreateDirectory(path_str, NULL))
   {
     ostringstream oss;
-    oss<<"mkdir failed ["<<GetLastError() << "]"<<"] for: "<<path;
+    oss<<"mkdir failed ["<<GetLastError() << "]"<<"] for: "<<path_str;
     error(__FUNCTION__,oss.str());
   }
   set_filetype(file::type_directory);
@@ -461,7 +461,7 @@ void file::rename(std::string const& newpath) {
   if(!MoveFile(path_str, newpath_str))
   {
     ostringstream oss;
-    oss << path << " to " << newpath;
+    oss << path_str << " to " << newpath;
     error(__FUNCTION__, "failed to rename: " +oss.str());
   }
 #endif
