@@ -21,10 +21,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/convenience.hpp>
-
 #include "testdriverconfig.h" // SRC and BIN dir definitions
 #include "specification.h" // parsing spec files
 #include <zorba/zorba.h>
@@ -32,6 +28,7 @@
 #include <zorba/exception.h>
 
 #include "util/properties.h"
+#include "util/file.h"
 
 #include <zorbatypes/URI.h>
 #include <zorbautils/strutil.h>
@@ -43,8 +40,6 @@
 #else
 #include "store/minimal/min_store.h"
 #endif
-
-namespace fs = boost::filesystem;
 
 zorba::Properties *lProp;
 #define EXPECTED_ERROR  0
@@ -266,10 +261,10 @@ trim(std::string& str) {
 // aPos is the character number off the first difference in the file
 // -1 is returned for aLine, aCol, and aPos if the files are equal
 bool
-isEqual(fs::path aRefFile, fs::path aResFile, int& aLine, int& aCol, int& aPos)
+isEqual(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, int& aPos)
 {
-  std::ifstream li(aRefFile.native_file_string().c_str());
-  std::ifstream ri(aResFile.native_file_string().c_str()); 
+  std::ifstream li(aRefFile.get_path().c_str());
+  std::ifstream ri(aResFile.get_path().c_str()); 
   
   std::string lLine, rLine;
 
@@ -321,7 +316,6 @@ main(int argc, char** argv)
 {
   loadProperties ();
 
-  fs::path lQueryFile, lResultFile, lErrorFile, lRefFile, lSpecFile;
   Specification lSpec;
 
   if ( argc < 2 )
@@ -336,44 +330,51 @@ main(int argc, char** argv)
   for( int i=1; i < argc; i++ )
   {
     // do initial stuff
-    std::string lQueryFileString  = zorba::RBKT_SRC_DIR +"/Queries/" + argv[i];
-    lQueryFile = fs::system_complete( fs::path( lQueryFileString, fs::native ) );
+    zorba::file lQueryFile (zorba::RBKT_SRC_DIR +"/Queries/" + argv[i]);
+    lQueryFile.resolve_relative ();
 
     std::string lQueryWithoutSuffix = std::string(argv[i]).substr( 0, std::string(argv[i]).rfind('.') );
     std::cout << "test " << lQueryWithoutSuffix << std::endl;
-    lResultFile = fs::system_complete(fs::path( zorba::RBKT_BINARY_DIR +"/QueryResults/" 
-                                      +lQueryWithoutSuffix + ".res", fs::native) );
-    lErrorFile = fs::system_complete(fs::path(zorba::RBKT_BINARY_DIR +"/" 
-                                     +lQueryWithoutSuffix + ".err", fs::native) );
-    lRefFile   = fs::system_complete(fs::path( zorba::RBKT_SRC_DIR +"/ExpQueryResults/" 
-                                     +lQueryWithoutSuffix +".xml.res", fs::native) );
-    lSpecFile  = fs::system_complete(fs::path(zorba::RBKT_SRC_DIR+ "/Queries/" 
-                                     +lQueryWithoutSuffix +".spec", fs::native) );
+
+    zorba::file lResultFile (zorba::RBKT_BINARY_DIR + "/QueryResults/" 
+                             + lQueryWithoutSuffix + ".res");
+    lResultFile.resolve_relative ();
+
+    zorba::file lErrorFile  (zorba::RBKT_BINARY_DIR + "/" 
+                             + lQueryWithoutSuffix + ".err");
+    lErrorFile.resolve_relative ();
+
+    zorba::file lRefFile (zorba::RBKT_SRC_DIR + "/ExpQueryResults/" 
+                          + lQueryWithoutSuffix +".xml.res");
+    lRefFile.resolve_relative ();
+
+    zorba::file lSpecFile (zorba::RBKT_SRC_DIR + "/Queries/" 
+                           + lQueryWithoutSuffix +".spec");
+    lSpecFile.resolve_relative ();
 
     // does the query file exists
-    if ( (! fs::exists( lQueryFile )) || fs::is_directory( lQueryFile) ) {
-      std::cerr << "\n query file " << lQueryFile.native_file_string() 
+    if ( (! lQueryFile.exists ()) || lQueryFile.is_directory () ) {
+      std::cerr << "\n query file " << lQueryFile.get_path() 
                 << " does not exist or is not a file" << std::endl;
       return 2;
     }
 
     // delete previous files if they exists
-    if ( fs::exists ( lResultFile ) ) { fs::remove (lResultFile); }
-    if ( fs::exists ( lErrorFile ) )  { fs::remove (lErrorFile);  }
+    if ( lResultFile.exists () ) { lResultFile.remove (); }
+    if ( lErrorFile.exists () )  { lErrorFile.remove ();  }
 
     // create the result directory
-    fs::path lBucket = fs::system_complete(fs::path( lResultFile.branch_path().string(), fs::native ));
-    if ( ! fs::exists( lBucket ) )
-      fs::create_directories(lBucket); // create deep directories
+    zorba::file lBucket (lResultFile.branch_path());
+
+    if ( ! lBucket.exists () )
+      lBucket.deep_mkdir (); // create deep directories
 
     // read the xargs and errors if the spec file exists
-    if ( fs::exists( lSpecFile )) 
-    {
-      lSpec.parseFile(lSpecFile.native_file_string());
-    }
+    if ( lSpecFile.exists ()) 
+      lSpec.parseFile(lSpecFile.get_path());
 
     // we must either have a reference file or an expected error code
-    if ( (lSpec.errorsSize() == 0) && ((! fs::exists( lRefFile )) || fs::is_directory( lRefFile)))
+    if ( (lSpec.errorsSize() == 0) && ((! lRefFile.exists ()) || lRefFile.is_directory ()))
     {
       std::cerr << "No reference result and no expected errors." << std::endl;
       return 3;
@@ -381,7 +382,7 @@ main(int argc, char** argv)
 
     // print the query
     std::cout << "Query:" << std::endl;
-    printFile(std::cout, lQueryFile.native_file_string());
+    printFile(std::cout, lQueryFile.get_path());
     std::cout << std::endl;
 
     if( i == 1 )
@@ -403,9 +404,9 @@ main(int argc, char** argv)
 
     // create and compile the query
     std::string lQueryString;
-    slurp_file(lQueryFile.native_file_string().c_str(), lQueryString);
+    slurp_file(lQueryFile.get_path().c_str(), lQueryString);
     zorba::XQuery_t lQuery = engine->createQuery (&errHandler);
-    lQuery->setFileName (lQueryFile.string());
+    lQuery->setFileName (lQueryFile.get_path ());
     lQuery->compile (lQueryString.c_str(), getCompilerHints());
 
     errors = -1;
@@ -439,7 +440,7 @@ main(int argc, char** argv)
       errors = -1;
       {
         // serialize xml
-        std::ofstream lResFileStream(lResultFile.native_file_string().c_str());
+        std::ofstream lResFileStream(lResultFile.get_path().c_str());
         assert (lResFileStream.good());
 
         lResFileStream << lQuery;
@@ -447,18 +448,18 @@ main(int argc, char** argv)
         if (errHandler.errors())
           errors = analyzeError (lSpec, errHandler);
         else if ( lSpec.errorsSize() > 0 ) {
-          if ( ! fs::exists(lRefFile) ) {
+          if ( ! lRefFile.exists () ) {
             std::cerr << "Expected error(s)";
             for (std::vector<std::string>::const_iterator lIter = lSpec.errorsBegin();
                 lIter != lSpec.errorsEnd(); ++lIter)
             {
               std::cerr << " " << *lIter;
             }
-            if ( fs::exists(lResultFile) && fs::file_size(lResultFile) == 0)
+            if ( lResultFile.exists () && lResultFile.get_size () == 0)
               std::cerr << " but got empty result" << std::endl;
             else {
               std::cerr << " but got result:" << std::endl;
-              printFile(std::cerr, lResultFile.native_file_string());
+              printFile(std::cerr, lResultFile.get_path());
               std::cerr << "=== end of result ===" << std::endl;
             }
             return 7;
@@ -470,7 +471,7 @@ main(int argc, char** argv)
       else if( errors == -1 )
       {
         std::cout << "Result:" << std::endl;
-        printFile(std::cout, lResultFile.native_file_string());
+        printFile(std::cout, lResultFile.get_path());
         std::cout << "=== end of result ===" << std::endl;
         std::cout.flush();
 
@@ -480,15 +481,15 @@ main(int argc, char** argv)
         if ( !lRes )  // results differ
         {
           std::cerr << std::endl << "Result does not match expected result:" << std::endl;
-          printFile(std::cerr, lRefFile.native_file_string());
+          printFile(std::cerr, lRefFile.get_path());
           std::cerr << "=== end of expected result ===" << std::endl;
 
           std::cerr << "See line " << lLine << ", col " << lCol << " of expected result. " << std::endl;
           std::cerr << "Actual: <";
-          printPart(std::cerr, lResultFile.native_file_string(), lPos, 15);
+          printPart(std::cerr, lResultFile.get_path(), lPos, 15);
           std::cerr << ">" << std::endl;
           std::cerr << "Expected: <";
-          printPart(std::cerr, lRefFile.native_file_string(), lPos, 15);
+          printPart(std::cerr, lRefFile.get_path(), lPos, 15);
           std::cerr << ">" << std::endl;
 
           return 8;
