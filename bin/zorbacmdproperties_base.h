@@ -172,6 +172,7 @@ public:
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         init_val (*argv, theOptimizationLevel, d);
       }
+#ifdef ZORBA_DEBUGGER
       else if (strcmp (*argv, "--debug-ports") == 0 || strncmp (*argv, "-p", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
@@ -183,6 +184,7 @@ public:
       else if (strcmp (*argv, "--debug-server") == 0 || strncmp (*argv, "-s", 2) == 0) {
         theDebugServer = true;
       }
+#endif
       else if (strcmp (*argv, "--") == 0) {
         copy_args (++argv);
         break;
@@ -217,9 +219,11 @@ public:
 "--external-variable, -e\nProvide the value for a variable given a file (name=file) or a value (name:=value)\n\n"
 "--context-item\nSet the context item to the XML document in a given file.\n\n"
 "--optimization-level\nOptimization level for the query compiler (O0 or O1)\n\n"
+#ifdef ZORBA_DEBUGGER
 "--debug-ports, -p\nSpecify the ports for zorba debugger. The format is requestPort:eventPort.\n\n"
 "--debug-client, -c\nLaunch the debugger command line client.\n\n"
 "--debug-server, -s\nLaunch queries on the debugger server.\n\n"
+#endif
 ;
   }
 

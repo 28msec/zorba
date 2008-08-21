@@ -44,6 +44,8 @@ sub load_options {
             }
             push @options, { long => $1, short => $short, descr => $10, member => $member, getter => $getter, type => $type, has_val => $has_val, default => $default };
             # print "long $1 short $short mem $member\n";
+        } elsif (m@^ *#(.*)$@) {
+            push @options, { directive => $1 };
         }
     }
 }
@@ -52,6 +54,7 @@ sub print_long_opts {
     print "  const char **get_all_options () const {\n";
     print "    static const char *result [] = { ";
     for my $opt (@options) {
+        if ($opt->{directive}) { next; }
         print "\"--$opt->{long}\", ";
     }
     print "NULL };\n";
@@ -62,6 +65,7 @@ sub print_long_opts {
 sub print_members {
     my %all_members;
     for my $opt (@options) {
+        if ($opt->{directive}) { next; }
         my $member = $opt->{member};
         if ($all_members {$member}) { next; }
         $all_members {$member} = 1;
@@ -76,6 +80,7 @@ EOF
 
 sub print_getters {
     for my $opt (@options) {
+        if ($opt->{directive}) { next; }
         print <<"EOF";
   const $opt->{type} &$opt->{getter} () const { return $opt->{member}; }
 EOF
@@ -92,6 +97,7 @@ sub print_help {
 EOF
 
     for my $opt (@options) {
+        if ($opt->{directive}) { print "#$opt->{directive}\n"; next; }
         my $short = $opt->{short};
         my $shorthlp = $short ? ", -$short" : "";
         print "\"--$opt->{long}$shorthlp\\n$opt->{descr}\\n\\n\"\n";
@@ -117,6 +123,7 @@ sub print_load_argv {
 EOF
 
     for my $opt (@options) {
+        if ($opt->{directive}) { print "#$opt->{directive}\n"; next; }
         my $short = $opt->{short};
         my $shortcmp = ($short eq "") ? "" : " || strncmp (*argv, \"-$short\", 2) == 0";
         print <<"EOF";
