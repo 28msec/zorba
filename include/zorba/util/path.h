@@ -12,12 +12,15 @@ protected:
   void canonicalize ();
 
 public:
+  typedef enum { CONVERT_SLASHES  = 1 << 0, 
+                 RESOLVE = 1 << 1
+  } flags_t;
+
+public:
   const std::string &get_path () const { return path; }
   const char *c_str () { return path.c_str (); }
   operator const std::string & () const { return path; }
-  filesystem_path (const std::string &path_) : path (path_) {
-    canonicalize ();
-  }
+  filesystem_path (const std::string &path_, int flags = 0);
   filesystem_path (const filesystem_path &base, const filesystem_path &rel) {
     if (rel.is_complete ())
       *this = rel;
@@ -46,3 +49,9 @@ inline std::ostream &operator<< (std::ostream &os, const filesystem_path &p)
 }
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

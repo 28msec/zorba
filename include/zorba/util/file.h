@@ -63,7 +63,7 @@ protected:
   void do_stat ();
 
 public:
-  file(const filesystem_path &path);
+  file(const filesystem_path &path, int flags = 0);
 
 public: // common methods
   void set_path(std::string const& _path ) { path = filesystem_path (_path); }
@@ -116,3 +116,9 @@ public: // directory methods
 
 } /* namespace zorba */
 #endif /* ZORBA_FILE_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

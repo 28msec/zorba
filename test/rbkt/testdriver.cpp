@@ -318,8 +318,6 @@ main(int argc, char** argv)
   loadProperties ();
 
   Specification lSpec;
-  const std::string &sep = zorba::filesystem_path::get_path_separator ();
-
   if ( argc < 2 )
   {
     std::cerr << "\nusage:   testdriver [testfile_1] [testfile_2] ..." << std::endl;
@@ -331,28 +329,23 @@ main(int argc, char** argv)
 
   for( int i=1; i < argc; i++ )
   {
-    // do initial stuff
-    zorba::file lQueryFile (zorba::RBKT_SRC_DIR + sep + "Queries" + sep + argv[i]);
-    lQueryFile.resolve_relative ();
+    int path_flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;
+    zorba::file lQueryFile (zorba::RBKT_SRC_DIR +"/Queries/" + argv[i], path_flags);
 
     std::string lQueryWithoutSuffix = std::string(argv[i]).substr( 0, std::string(argv[i]).rfind('.') );
     std::cout << "test " << lQueryWithoutSuffix << std::endl;
 
-    zorba::file lResultFile (zorba::RBKT_BINARY_DIR + sep + "QueryResults" + sep
-                             + lQueryWithoutSuffix + ".res");
-    lResultFile.resolve_relative ();
+    zorba::file lResultFile (zorba::RBKT_BINARY_DIR + "/QueryResults/" 
+                             + lQueryWithoutSuffix + ".res", path_flags);
 
-    zorba::file lErrorFile  (zorba::RBKT_BINARY_DIR + sep 
-                             + lQueryWithoutSuffix + ".err");
-    lErrorFile.resolve_relative ();
+    zorba::file lErrorFile  (zorba::RBKT_BINARY_DIR + "/" 
+                             + lQueryWithoutSuffix + ".err", path_flags);
 
-    zorba::file lRefFile (zorba::RBKT_SRC_DIR + sep + "ExpQueryResults" + sep
-                          + lQueryWithoutSuffix +".xml.res");
-    lRefFile.resolve_relative ();
+    zorba::file lRefFile (zorba::RBKT_SRC_DIR + "/ExpQueryResults/" 
+                          + lQueryWithoutSuffix +".xml.res", path_flags);
 
-    zorba::file lSpecFile (zorba::RBKT_SRC_DIR + sep + "Queries" + sep
-                           + lQueryWithoutSuffix +".spec");
-    lSpecFile.resolve_relative ();
+    zorba::file lSpecFile (zorba::RBKT_SRC_DIR + "/Queries/"
+                           + lQueryWithoutSuffix +".spec", path_flags);
 
     // does the query file exists
     if ( (! lQueryFile.exists ()) || lQueryFile.is_directory () ) {

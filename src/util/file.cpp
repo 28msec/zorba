@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-#include <zorba/config.h>
-#if ! defined (WIN32) && ! defined (APPLE)
+#if ! defined (WIN32) && ! defined (_BSD_SOURCE)
 #define _XOPEN_SOURCE 600  // getcwd
 #endif
-
-#include <zorba/util/file.h>
 
 #ifndef _WIN32_WCE
 #include <errno.h>
@@ -45,6 +42,11 @@
 #include <fcntl.h>
 #endif
 #include <sstream>
+
+#include <zorba/config.h>
+#include <zorba/util/file.h>
+
+#include <zorbautils/strutil.h>
 
 #include "zorbaerrors/error_manager.h"
 
@@ -73,6 +75,16 @@ filesystem_path::filesystem_path () {
 #ifdef WIN32
   resolve_relative ();
 #endif
+}
+
+filesystem_path::filesystem_path (const string &path_, int flags)
+  : path (path_)
+{
+  if ((flags | CONVERT_SLASHES) != 0)
+    str_replace_all (path, "/", get_path_separator ());
+  canonicalize ();
+  if ((flags | RESOLVE) != 0)
+    resolve_relative ();
 }
 
 bool filesystem_path::is_complete () const {
@@ -230,9 +242,9 @@ void file::do_stat () {
 #endif
 }
 
-file::file(const filesystem_path &path_)
+file::file(const filesystem_path &path_, int flags_)
 :
-  filesystem_path(path_),
+  filesystem_path(path_, flags_),
   type(type_non_existent)
 {
   do_stat ();
