@@ -21,7 +21,8 @@
 #ifndef WIN32
 #include <sys/time.h>
 #else
-// TODO
+#include <sys/timeb.h>
+#include <time.h>
 #endif
 
 #include "zorbautils/hashfun.h"
@@ -306,14 +307,25 @@ int DateTime::createGDay(int days, DateTime& dt)
 int DateTime::getLocalTime(DateTime& dt)
 {
   // TODO: check code on windows
+#ifndef WIN32
   timeval tv;
   gettimeofday(&tv, NULL);
   tm curr, *curr_ptr = 0;
   curr_ptr = localtime_r(&tv.tv_sec, &curr);
-
   return createDateTime(curr_ptr->tm_year + 1900, curr_ptr->tm_mon + 1, curr_ptr->tm_mday,
                         curr_ptr->tm_hour, curr_ptr->tm_min, curr_ptr->tm_sec,
                         round((tv.tv_usec / 1000000.0) * FRAC_SECONDS_UPPER_LIMIT), dt);
+#else
+  struct _timeb   tb;
+  _ftime_s(&tb);
+  struct  tm  curr, *curr_ptr=0;
+  _localtime64_s(&curr, &tb.time);
+  curr_ptr = &curr;
+  return createDateTime(curr_ptr->tm_year + 1900, curr_ptr->tm_mon + 1, curr_ptr->tm_mday,
+                        curr_ptr->tm_hour, curr_ptr->tm_min, curr_ptr->tm_sec,
+                        round((tb.millitm / 1000.0) * FRAC_SECONDS_UPPER_LIMIT), dt);
+#endif
+
 }
 
 int DateTime::parseDateTime(const xqpString& s, DateTime& dt)
