@@ -110,7 +110,7 @@ IF(CURL_FOUND)
   INCLUDE_DIRECTORIES(${CURL_INCLUDE_DIRS})
 
   SET(requiredlibs-zorba ${requiredlibs-zorba} ${CURL_LIBRARIES})
-
+  
 ELSE(CURL_FOUND)
   MESSAGE(STATUS "The cURL library was not found.")
 ENDIF(CURL_FOUND)
@@ -235,6 +235,14 @@ ELSE (NOT Boost_FOUND)
 ENDIF (NOT Boost_FOUND)
 
 ENDIF (BOOST_CHECK_LIBRARIES)
+
+###############################################################################
+# Debian package dependencies
+SET(debian-required-packages "libxml2-dev,libicu-dev,libxerces28-dev,libboost-filesystem-dev,libboost-program-options-dev")
+IF(CURL_FOUND)
+  SET(debian-required-packages "${debian-required-packages},libcurl4-openssl-dev")
+ENDIF(CURL_FOUND)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ZorbaDebianDependencies.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/ZorbaDebianDependencies.cmake)
 
 ################################################################################
 # Variables
