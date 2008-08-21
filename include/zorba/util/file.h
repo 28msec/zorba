@@ -47,7 +47,6 @@ public:
   };
 
 protected:
-  filesystem_path path;
   enum filetype type; 
 
 // file attributes

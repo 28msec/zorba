@@ -80,10 +80,10 @@ filesystem_path::filesystem_path () {
 filesystem_path::filesystem_path (const string &path_, int flags)
   : path (path_)
 {
-  if ((flags | CONVERT_SLASHES) != 0)
+  if ((flags & CONVERT_SLASHES) != 0)
     str_replace_all (path, "/", get_path_separator ());
   canonicalize ();
-  if ((flags | RESOLVE) != 0)
+  if ((flags & RESOLVE) != 0)
     resolve_relative ();
 }
 
