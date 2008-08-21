@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-#if ! defined (WIN32) && ! defined (_BSD_SOURCE)
+#include <zorba/util/file.h>
+
+#if ! defined (WIN32) && ! defined (APPLE) && ! defined (__FreeBSD__)
 #define _XOPEN_SOURCE 600  // getcwd
 #endif
 
@@ -44,7 +46,6 @@
 #include <sstream>
 
 #include <zorba/config.h>
-#include <zorba/util/file.h>
 
 #include <zorbautils/strutil.h>
 
