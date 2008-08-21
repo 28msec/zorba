@@ -177,7 +177,7 @@ main(int argc, char** argv)
 
   if (argc != 2)
   {
-    std::cerr << "\nusage:   testdriver [testfile]" << std::endl;
+    std::cout << "\nusage:   testdriver [testfile]" << std::endl;
     return 1;
   }
 
@@ -196,7 +196,7 @@ main(int argc, char** argv)
   zorba::filesystem_path lRefPath (lRefFile.branch_path());
 
   if ( (! lSpecFile.exists ()) || lSpecFile.is_directory () ) {
-    std::cerr << "\n spec file " << lSpecFile.get_path() 
+    std::cout << "\n spec file " << lSpecFile.get_path() 
               << " does not exist or is not a file" << std::endl;
     return 2;
   }
@@ -240,9 +240,10 @@ main(int argc, char** argv)
       catch (zorba::ZorbaException &e)
       {
         if (isErrorExpected(e, lState)) {
+          std::cout << "Expected compiler error " << e << " caught " << std::endl;
           return 0;
         } else {
-          std::cerr << e << std::endl;
+          std::cout << e << std::endl;
           return 3;
         }
       }
@@ -296,47 +297,47 @@ main(int argc, char** argv)
 
               if (!lRes) 
               {
-                std::cerr << std::endl << "Result does not match expected result : "
+                std::cout << std::endl << "Result does not match expected result : "
                           << std::endl;
 
-                printFile(std::cerr, lRefFile.get_path());
-                std::cerr << std::endl;
+                printFile(std::cout, lRefFile.get_path());
+                std::cout << std::endl;
 
-                std::cerr << "See line " << lLine << ", col " << lCol
+                std::cout << "See line " << lLine << ", col " << lCol
                           << " of expected result. " << std::endl;
-                std::cerr << "Got: " << std::endl; 
-                printPart(std::cerr, lResultFile.get_path(), lPos, 15);
-                std::cerr << std::endl << "Expected ";
-                printPart(std::cerr, lRefFile.get_path(), lPos, 15);
-                std::cerr <<  std::endl;
+                std::cout << "Got: " << std::endl; 
+                printPart(std::cout, lResultFile.get_path(), lPos, 15);
+                std::cout << std::endl << "Expected ";
+                printPart(std::cout, lRefFile.get_path(), lPos, 15);
+                std::cout <<  std::endl;
               }
             }
 
             if (!lRes) 
             {
-              std::cerr << std::endl << "Result does not match any of the expected results"
+              std::cout << std::endl << "Result does not match any of the expected results"
                         << std::endl;
               return 4;
             }
           }
           else if (lState->hasErrors)
           {
-            std::cerr << "Query must throw an error!" << std::endl;
+            std::cout << "Query must throw an error!" << std::endl;
             return 5; 
           }
           else
           {
-            std::cerr << "Query returns result but no expected result defined!" << std::endl;
+            std::cout << "Query returns result but no expected result defined!" << std::endl;
           }
         }
       }
       catch (zorba::ZorbaException &e)
       {
         if (isErrorExpected(e, lState)) {
-          //return 0;
+          std::cout << "Expected execution error " << e << " caught " << std::endl;
           continue;
         } else {
-          std::cerr << e << std::endl;
+          std::cout << e << std::endl;
           return 6;
         }
       }
