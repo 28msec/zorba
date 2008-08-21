@@ -22,10 +22,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/convenience.hpp>
-
 #include "testdriverconfig.h" // SRC and BIN dir definitions
 #include "specification.h" // parsing spec files
 #include "common/common.h"
@@ -34,18 +30,21 @@
 #include <zorba/error_handler.h>
 #include <zorba/exception.h>
 
+#include <zorba/util/file.h>
+
 #include <zorbautils/strutil.h>
 
 #include <simplestore/simplestore.h>
 
 
-namespace fs = boost::filesystem;
-
 void
 printFile(std::ostream& os, std::string aInFile)
 {
   std::ifstream lInFileStream(aInFile.c_str());
-  assert(lInFileStream);
+  if (!lInFileStream) {
+    std::cout << "Could not open " << aInFile << std::endl;
+    assert(false);
+  }
 
   os << lInFileStream.rdbuf() << std::endl;
 }
@@ -138,10 +137,10 @@ set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicConte
 // aPos is the character number off the first difference in the file
 // -1 is returned for aLine, aCol, and aPos if the files are equal
 bool
-isEqual(fs::path aRefFile, fs::path aResFile, int& aLine, int& aCol, int& aPos)
+isEqual(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, int& aPos)
 {
-  std::ifstream li(aRefFile.native_file_string().c_str());
-  std::ifstream ri(aResFile.native_file_string().c_str()); 
+  std::ifstream li(aRefFile.get_path().c_str());
+  std::ifstream ri(aResFile.get_path().c_str()); 
   
   std::string lLine, rLine;
 
@@ -173,9 +172,8 @@ _tmain(int argc, _TCHAR* argv[])
 main(int argc, char** argv)
 #endif
 {
-  fs::path lSpecFile, lResultFile;
-  fs::path lSpecPath, lRefPath, lResultPath;
   Specification lSpec;
+  int flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;
 
   if (argc != 2)
   {
@@ -183,38 +181,31 @@ main(int argc, char** argv)
     return 1;
   }
 
-  // do initial stuff
-  {
-    std::string lSpecFileString  = zorba::UPDATE_SRC_DIR +"/Queries/" + argv[1];
-    lSpecFile = fs::system_complete( fs::path( lSpecFileString, fs::native ) );
-    lSpecPath = fs::system_complete(fs::path(lSpecFile.branch_path().string(), fs::native ));
+  std::string lSpecFileString  = zorba::UPDATE_SRC_DIR +"/Queries/" + argv[1];
+  zorba::file lSpecFile (lSpecFileString, flags);
+  zorba::filesystem_path lSpecPath (lSpecFile.branch_path());
+  
+  std::string lSpecWithoutSuffix = std::string(argv[1]).substr( 0, std::string(argv[1]).size()-5 );
+  std::cout << "test " << lSpecWithoutSuffix << std::endl;
+  
+  zorba::file lResultFile (zorba::UPDATE_BINARY_DIR +"/QueryResults/" 
+                           + lSpecWithoutSuffix + ".res", flags);
+  
+  zorba::file lRefFile (zorba::UPDATE_SRC_DIR +"/ExpectedTestResults/" 
+                        + lSpecWithoutSuffix +".xml.res", flags);
+  zorba::filesystem_path lRefPath (lRefFile.branch_path());
 
-    std::string lSpecWithoutSuffix = std::string(argv[1]).substr( 0, std::string(argv[1]).size()-5 );
-    std::cout << "test " << lSpecWithoutSuffix << std::endl;
-
-    lResultFile = fs::system_complete(fs::path( zorba::UPDATE_BINARY_DIR +"/QueryResults/" 
-                                      +lSpecWithoutSuffix + ".res", fs::native) );
-    lResultPath = fs::system_complete(fs::path(lResultFile.branch_path().string(), fs::native ));
-
-    fs::path lRefFile = fs::system_complete(fs::path( zorba::UPDATE_SRC_DIR +"/ExpectedTestResults/" 
-                                     +lSpecWithoutSuffix +".xml.res", fs::native) );
-    lRefPath = fs::system_complete(fs::path(lRefFile.branch_path().string(), fs::native ));
-  }
-
-
-  // does the spec file exists
-  if ( (! fs::exists( lSpecFile )) || fs::is_directory( lSpecFile) ) {
-    std::cerr << "\n spec file " << lSpecFile.native_file_string() 
+  if ( (! lSpecFile.exists ()) || lSpecFile.is_directory () ) {
+    std::cerr << "\n spec file " << lSpecFile.get_path() 
               << " does not exist or is not a file" << std::endl;
     return 2;
   }
 
-  // create the result directory
-  if ( ! fs::exists( lResultPath ) )
-    fs::create_directories(lResultPath); // create deep directories
+  if ( ! lResultFile.exists () )
+    lResultFile.deep_mkdir ();
 
   // read the xargs and errors if the spec file exists
-  lSpec.parseFile(lSpecFile.native_file_string()); 
+  lSpec.parseFile(lSpecFile.get_path()); 
 
   zorba::Zorba* engine = zorba::Zorba::getInstance(zorba::simplestore::SimpleStoreManager::getStore());
 
@@ -232,9 +223,11 @@ main(int argc, char** argv)
 
     for(;lIter!=lEnd;++lIter)
     {
-      State* lState = *lIter;     
+      State* lState = *lIter;
 
-      std::string lQueryFile = lSpecPath.native_file_string() + "/" + (*lIter)->theName + ".xq";
+      zorba::filesystem_path lQueryFile
+        (lSpecPath, zorba::filesystem_path ((*lIter)->theName + ".xq",
+                                            zorba::file::CONVERT_SLASHES));
       std::cout << std::endl << "Query (Run " << ++lRun << "):" << std::endl;
       printFile(std::cout, lQueryFile);
       std::cout << std::endl;
@@ -282,12 +275,12 @@ main(int argc, char** argv)
         }
         else
         {
-          if ( fs::exists(lResultFile)) { fs::remove (lResultFile); }
-          std::ofstream lResFileStream(lResultFile.native_file_string().c_str());
+          if ( lResultFile.exists ()) { lResultFile.remove (); }
+          std::ofstream lResFileStream(lResultFile.get_path().c_str());
           lQueries.back()->serialize(lResFileStream, lSerOptions);
           lResFileStream.flush();
           std::cout << "Result:" << std::endl;
-          printFile(std::cout, lResultFile.native_file_string());
+          printFile(std::cout, lResultFile.get_path());
 
           if (lState->hasCompare)
           {
@@ -295,8 +288,9 @@ main(int argc, char** argv)
             ulong numRefs = lState->theCompares.size();
             for (ulong i = 0; i < numRefs && !lRes; i++)
             {
-              fs::path lRefFile = fs::system_complete(fs::path(lRefPath.native_file_string() + "/" 
-                                   + lState->theCompares[i], fs::native) );
+              zorba::filesystem_path lRefFile
+                (lRefPath, zorba::filesystem_path (lState->theCompares[i],
+                                                   zorba::file::CONVERT_SLASHES));
               int lLine, lCol, lPos;
               lRes = isEqual(lRefFile, lResultFile, lLine, lCol, lPos);
 
@@ -305,15 +299,15 @@ main(int argc, char** argv)
                 std::cerr << std::endl << "Result does not match expected result : "
                           << std::endl;
 
-                printFile(std::cerr, lRefFile.native_file_string());
+                printFile(std::cerr, lRefFile.get_path());
                 std::cerr << std::endl;
 
                 std::cerr << "See line " << lLine << ", col " << lCol
                           << " of expected result. " << std::endl;
                 std::cerr << "Got: " << std::endl; 
-                printPart(std::cerr, lResultFile.native_file_string(), lPos, 15);
+                printPart(std::cerr, lResultFile.get_path(), lPos, 15);
                 std::cerr << std::endl << "Expected ";
-                printPart(std::cerr, lRefFile.native_file_string(), lPos, 15);
+                printPart(std::cerr, lRefFile.get_path(), lPos, 15);
                 std::cerr <<  std::endl;
               }
             }
