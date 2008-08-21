@@ -233,12 +233,10 @@ main(int argc, char** argv)
       std::cout << std::endl;
       std::ifstream lQueryStream(lQueryFile.c_str());
 
-      try 
-      {
+      try {
         lQueries.push_back(engine->compileQuery(lQueryStream, getCompilerHints()));
       }
-      catch (zorba::ZorbaException &e)
-      {
+      catch (zorba::ZorbaException &e) {
         if (isErrorExpected(e, lState)) {
           std::cout << "Expected compiler error " << e << " caught " << std::endl;
           return 0;
@@ -249,8 +247,7 @@ main(int argc, char** argv)
       }
 
       zorba::DynamicContext* lDynCtx = lQueries.back()->getDynamicContext();
-      if (lState->hasDate) 
-      {
+      if (lState->hasDate) {
         std::string lDateTime = lState->theDate; 
         if (lDateTime.find("T") == std::string::npos) {
           lDateTime += "T00:00:00";
@@ -261,21 +258,17 @@ main(int argc, char** argv)
       std::vector<Variable*>::const_iterator lVarIter = (*lIter)->varsBegin();
       std::vector<Variable*>::const_iterator lVarEnd = (*lIter)->varsEnd();
 
-      for(;lVarIter!=lVarEnd;++lVarIter)
-      {
+      for(;lVarIter!=lVarEnd;++lVarIter) {
         Variable* lVar = *lVarIter;  
         set_var(lVar->theInline, lVar->theName, lVar->theValue, lDynCtx);
       }
 
       try 
       {
-        if (lQueries.back()->isUpdateQuery()) 
-        {
+        if (lQueries.back()->isUpdateQuery()) {
           lQueries.back()->applyUpdates();
           std::cout << "Updating Query -> no Result" << std::endl;
-        }
-        else
-        {
+        } else {
           if ( lResultFile.exists ()) { lResultFile.remove (); }
           std::ofstream lResFileStream(lResultFile.get_path().c_str());
           lQueries.back()->serialize(lResFileStream, lSerOptions);
@@ -283,20 +276,17 @@ main(int argc, char** argv)
           std::cout << "Result:" << std::endl;
           printFile(std::cout, lResultFile.get_path());
 
-          if (lState->hasCompare)
-          {
+          if (lState->hasCompare) {
             bool lRes = false;
             ulong numRefs = lState->theCompares.size();
-            for (ulong i = 0; i < numRefs && !lRes; i++)
-            {
+            for (ulong i = 0; i < numRefs && !lRes; i++) {
               zorba::filesystem_path lRefFile
                 (lRefPath, zorba::filesystem_path (lState->theCompares[i],
                                                    zorba::file::CONVERT_SLASHES));
               int lLine, lCol, lPos;
               lRes = isEqual(lRefFile, lResultFile, lLine, lCol, lPos);
 
-              if (!lRes) 
-              {
+              if (!lRes) {
                 std::cout << std::endl << "Result does not match expected result : "
                           << std::endl;
 
@@ -313,26 +303,20 @@ main(int argc, char** argv)
               }
             }
 
-            if (!lRes) 
-            {
+            if (!lRes) {
               std::cout << std::endl << "Result does not match any of the expected results"
                         << std::endl;
               return 4;
             }
-          }
-          else if (lState->hasErrors)
-          {
+          } else if (lState->hasErrors) {
             std::cout << "Query must throw an error!" << std::endl;
             return 5; 
           }
-          else
-          {
+          else {
             std::cout << "Query returns result but no expected result defined!" << std::endl;
           }
         }
-      }
-      catch (zorba::ZorbaException &e)
-      {
+      } catch (zorba::ZorbaException &e) {
         if (isErrorExpected(e, lState)) {
           std::cout << "Expected execution error " << e << " caught " << std::endl;
           continue;
@@ -346,5 +330,6 @@ main(int argc, char** argv)
 
   }
 
+  std::cout << "updtestdriver: success" << std::endl;
   return 0;
 }

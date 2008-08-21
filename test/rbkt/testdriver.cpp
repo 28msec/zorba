@@ -172,7 +172,7 @@ printErrors (const TestErrorHandler& errHandler, const char *msg)
   if (!errHandler.errors()) {
     return;
   }
-  std::cerr << msg << ":" << std::endl;
+  std::cout << msg << ":" << std::endl;
   
   const std::vector<std::string>& errors = errHandler.getErrorList();
   const std::vector<zorba::String>& descs = errHandler.getErrorDescs();
@@ -182,7 +182,7 @@ printErrors (const TestErrorHandler& errHandler, const char *msg)
 
     for(; codeIter != errors.end(); ++codeIter, ++descIter) {
       assert (descIter != descs.end());
-      std::cerr << *codeIter << ": " << *descIter << std::endl;
+      std::cout << *codeIter << ": " << *descIter << std::endl;
   }
   return;
 }
@@ -193,13 +193,13 @@ int analyzeError (const Specification &lSpec, const TestErrorHandler& errHandler
     return EXPECTED_ERROR;
   } else {
     printErrors(errHandler, "Unexpected error executing query");
-    std::cerr << "Expected error(s)";
+    std::cout << "Expected error(s)";
     for (std::vector<std::string>::const_iterator lIter = lSpec.errorsBegin();
          lIter != lSpec.errorsEnd(); ++lIter)
       {
-        std::cerr << " " << *lIter;
+        std::cout << " " << *lIter;
       }
-    std::cerr << std::endl;
+    std::cout << std::endl;
     return UNEXPECTED_ERROR;
   }
 }
@@ -225,7 +225,7 @@ set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicConte
     const char *val_fname = val.c_str ();
     std::ifstream* is = new std::ifstream(val_fname);
     if (! is) {
-      std::cerr << "Could not open file `" << val_fname << "' for variable `" << name << "'" << std::endl;
+      std::cout << "Could not open file `" << val_fname << "' for variable `" << name << "'" << std::endl;
       assert (false);
     }
 		if(name != ".")
@@ -320,7 +320,7 @@ main(int argc, char** argv)
   Specification lSpec;
   if ( argc < 2 )
   {
-    std::cerr << "\nusage:   testdriver [testfile_1] [testfile_2] ..." << std::endl;
+    std::cout << "\nusage:   testdriver [testfile_1] [testfile_2] ..." << std::endl;
     return 1;
   }
 
@@ -349,7 +349,7 @@ main(int argc, char** argv)
 
     // does the query file exists
     if ( (! lQueryFile.exists ()) || lQueryFile.is_directory () ) {
-      std::cerr << "\n query file " << lQueryFile.get_path() 
+      std::cout << "\n query file " << lQueryFile.get_path() 
                 << " does not exist or is not a file" << std::endl;
       return 2;
     }
@@ -371,7 +371,7 @@ main(int argc, char** argv)
     // we must either have a reference file or an expected error code
     if ( (lSpec.errorsSize() == 0) && ((! lRefFile.exists ()) || lRefFile.is_directory ()))
     {
-      std::cerr << "No reference result and no expected errors." << std::endl;
+      std::cout << "No reference result and no expected errors." << std::endl;
       return 3;
     }
 
@@ -444,18 +444,18 @@ main(int argc, char** argv)
           errors = analyzeError (lSpec, errHandler);
         else if ( lSpec.errorsSize() > 0 ) {
           if ( ! lRefFile.exists () ) {
-            std::cerr << "Expected error(s)";
+            std::cout << "Expected error(s)";
             for (std::vector<std::string>::const_iterator lIter = lSpec.errorsBegin();
                 lIter != lSpec.errorsEnd(); ++lIter)
             {
-              std::cerr << " " << *lIter;
+              std::cout << " " << *lIter;
             }
             if ( lResultFile.exists () && lResultFile.get_size () == 0)
-              std::cerr << " but got empty result" << std::endl;
+              std::cout << " but got empty result" << std::endl;
             else {
-              std::cerr << " but got result:" << std::endl;
-              printFile(std::cerr, lResultFile.get_path());
-              std::cerr << "=== end of result ===" << std::endl;
+              std::cout << " but got result:" << std::endl;
+              printFile(std::cout, lResultFile.get_path());
+              std::cout << "=== end of result ===" << std::endl;
             }
             return 7;
           }
@@ -475,22 +475,23 @@ main(int argc, char** argv)
         bool lRes = isEqual(lRefFile, lResultFile, lLine, lCol, lPos);
         if ( !lRes )  // results differ
         {
-          std::cerr << std::endl << "Result does not match expected result:" << std::endl;
-          printFile(std::cerr, lRefFile.get_path());
-          std::cerr << "=== end of expected result ===" << std::endl;
+          std::cout << std::endl << "Result does not match expected result:" << std::endl;
+          printFile(std::cout, lRefFile.get_path());
+          std::cout << "=== end of expected result ===" << std::endl;
 
-          std::cerr << "See line " << lLine << ", col " << lCol << " of expected result. " << std::endl;
-          std::cerr << "Actual: <";
-          printPart(std::cerr, lResultFile.get_path(), lPos, 15);
-          std::cerr << ">" << std::endl;
-          std::cerr << "Expected: <";
-          printPart(std::cerr, lRefFile.get_path(), lPos, 15);
-          std::cerr << ">" << std::endl;
+          std::cout << "See line " << lLine << ", col " << lCol << " of expected result. " << std::endl;
+          std::cout << "Actual: <";
+          printPart(std::cout, lResultFile.get_path(), lPos, 15);
+          std::cout << ">" << std::endl;
+          std::cout << "Expected: <";
+          printPart(std::cout, lRefFile.get_path(), lPos, 15);
+          std::cout << ">" << std::endl;
 
           return 8;
         }
       }
     }
   }
+  std::cout << "testdriver: success" << std::endl;
   return 0;
 }
