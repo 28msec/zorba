@@ -203,7 +203,7 @@ main(int argc, char** argv)
   }
 
   if ( ! lResultFile.exists () )
-    lResultFile.deep_mkdir ();
+    zorba::file (lResultFile.branch_path ()).deep_mkdir ();
 
   // read the xargs and errors if the spec file exists
   lSpec.parseFile(lSpecFile.get_path()); 
