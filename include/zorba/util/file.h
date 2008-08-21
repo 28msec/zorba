@@ -38,7 +38,7 @@ public:
   };
 
 #ifdef WIN32
-  typedef __int64_t file_size_t;
+  typedef __int64 file_size_t;
 #else
   typedef int64_t file_size_t;
 #endif
