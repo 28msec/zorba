@@ -7,7 +7,7 @@
 namespace zorba {
 
 class filesystem_path {
-protected:
+private:
   std::string path;
   void canonicalize ();
 

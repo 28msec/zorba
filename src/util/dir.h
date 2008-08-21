@@ -16,6 +16,10 @@
 
 #include "util/file.h"
 
+#ifdef UNIX
+#include <dirent.h>
+#endif
+
 namespace zorba {
 
 class directory : public file {

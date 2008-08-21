@@ -74,6 +74,7 @@ filesystem_path::filesystem_path () {
   else path = buf;
 #endif
 #ifdef WIN32
+  // GetCurrentDirectory sometimes misses drive letter
   resolve_relative ();
 #endif
 }
@@ -109,7 +110,7 @@ void filesystem_path::resolve_relative () {
     char fullpath[1024];
     fullpath[0] = 0;
     GetFullPathName(path.c_str(), sizeof(fullpath), fullpath, NULL);
-    path = fullpath;
+    *this = fullpath;
 #else
     *this = filesystem_path (filesystem_path (), *this);
 #endif
@@ -206,11 +207,9 @@ void file::do_stat () {
 #if ! defined (WIN32) 
   struct stat st;
   if (::stat(c_str(), &st)) {
-    if (errno!=ENOENT) file::error(__FUNCTION__,"stat failed on "+get_path ());
+    if (errno!=ENOENT) file::error(__FUNCTION__,"stat failed on " +get_path ());
   } else {
     size  = st.st_size;
-    atime = st.st_atime;
-    mtime = st.st_mtime;
     type  = (st.st_mode & S_IFDIR)  ? type_directory :
             (st.st_mode & S_IFREG ) ? type_file :
             (st.st_mode & S_IFLNK)  ? type_link : type_invalid;
@@ -229,11 +228,9 @@ void file::do_stat () {
 
   hfind = FindFirstFile(path_str, &findData);
   if(hfind == INVALID_HANDLE_VALUE)
-    error(__FUNCTION__,"file/dir not exist "+path);
+    error(__FUNCTION__,"file/dir not exist " + get_path ());
   else {
     size = findData.nFileSizeLow + (((int64_t)(findData.nFileSizeHigh))<<32);
-    atime = findData.ftLastAccessTime;
-    mtime = findData.ftLastWriteTime;
     type  = (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)  ? type_directory :
             (findData.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE ) ? type_file :
             //(st.st_mode & S_IFLNK)  ? type_link : 
@@ -263,11 +260,9 @@ enum file::filetype file::get_filetype() {
       errno = 0;
       return (type = type_non_existent);
     }
-    error(__FUNCTION__,"stat failed on "+path);
+    error(__FUNCTION__,"stat failed on " +get_path ());
   } 
   size  = st.st_size;
-  atime = st.st_atime;
-  mtime = st.st_mtime;
   return (type  = (st.st_mode & S_IFDIR)  ? type_directory :
                   (st.st_mode & S_IFREG ) ? type_file :
                   //(st.st_mode & S_IFLNK)  ? type_link : 
@@ -288,14 +283,12 @@ enum file::filetype file::get_filetype() {
   hfind = FindFirstFile(path_str, &findData);
   if(hfind == INVALID_HANDLE_VALUE)
   {
-    error(__FUNCTION__,"file/dir not exist "+path);
+    error(__FUNCTION__,"file/dir not exist " + get_path ());
     return type_non_existent;
   }
   else
   {
     size = findData.nFileSizeLow + (((int64_t)(findData.nFileSizeHigh))<<32);
-    atime = findData.ftLastAccessTime;
-    mtime = findData.ftLastWriteTime;
     type  = (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)  ? type_directory :
             (findData.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE ) ? type_file :
             //(st.st_mode & S_IFLNK)  ? type_link : 
@@ -319,7 +312,7 @@ volatile void file::error(
 void file::create() {
 #ifndef WIN32
   int fd = ::creat(c_str(),0666);
-  if (fd < 0) error(__FUNCTION__, "failed to create file "+path);
+  if (fd < 0) error(__FUNCTION__, "failed to create file " + get_path ());
   ::close(fd);
   set_filetype(type_file); 
 #else
@@ -335,7 +328,7 @@ void file::create() {
                       FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
                       CREATE_ALWAYS, 0, NULL);
   if (fd == INVALID_HANDLE_VALUE) 
-    error(__FUNCTION__, "failed to create file "+path);
+    error(__FUNCTION__, "failed to create file " + get_path ());
   CloseHandle(fd);
   set_filetype(type_file); 
 #endif
@@ -346,7 +339,7 @@ void file::mkdir() {
 #if ! defined (WIN32) 
   if (::mkdir(c_str(),0777)) {
     ostringstream oss;
-    oss<<"mkdir failed ["<<strerror(errno) << "]"<<"] for: "<<path;
+    oss<<"mkdir failed ["<<strerror(errno) << "]"<<"] for: " << get_path ();
     cout << oss.str() << endl;  //XXX DEBUG
     error(__FUNCTION__,oss.str());
   }
@@ -383,7 +376,7 @@ void file::deep_mkdir () {
 void file::remove(bool ignore) {
 #if ! defined (WIN32) 
   if (::remove(c_str()) && !ignore) {
-    error(__FUNCTION__, "failed to remove "+path);
+    error(__FUNCTION__, "failed to remove " + get_path ());
   }
 #else
   BOOL  retval = TRUE;
@@ -400,7 +393,7 @@ void file::remove(bool ignore) {
   else if(this->type == type_directory)
     retval = RemoveDirectory(path_str);
   if(!retval && !ignore)
-    error(__FUNCTION__, "failed to remove "+path);
+    error(__FUNCTION__, "failed to remove " + get_path ());
 #endif
   set_filetype(type_non_existent);
 }
@@ -409,7 +402,7 @@ void file::remove(bool ignore) {
 void file::rmdir(bool ignore) {
 #if ! defined (WIN32) 
   if (::rmdir(c_str()) && !ignore) {
-    error(__FUNCTION__, "rmdir failed on "+path);
+    error(__FUNCTION__, "rmdir failed on " + get_path ());
   }
 #else
   BOOL  retval;
@@ -423,7 +416,7 @@ void file::rmdir(bool ignore) {
 #endif
   retval = RemoveDirectory(path_str);
   if(!retval)
-    error(__FUNCTION__, "rmdir failed on "+path);
+    error(__FUNCTION__, "rmdir failed on " + get_path ());
 #endif
   set_filetype(file::type_non_existent);
 }
@@ -433,11 +426,11 @@ void file::chdir() {
   if (!is_directory()) return;
 #if ! defined (WIN32) 
   if (::chdir(c_str())) {
-    error(__FUNCTION__, "chdir failed on "+path);
+    error(__FUNCTION__, "chdir failed on " + get_path ());
   }
 #else
   if (::_chdir(c_str())) {
-    error(__FUNCTION__, "chdir failed on "+path);
+    error(__FUNCTION__, "chdir failed on " + get_path ());
   }
 #endif
 }
@@ -447,8 +440,8 @@ void file::rename(std::string const& newpath) {
 #if ! defined (WIN32) 
   if (::rename(c_str(), newpath.c_str())) {
     ostringstream oss;
-    oss << path << " to " << newpath;
-    error(__FUNCTION__, "failed to rename: "+oss.str());
+    oss << get_path () << " to " << newpath;
+    error(__FUNCTION__, "failed to rename: " +oss.str());
   }
   set_path(newpath);
 #else
@@ -469,7 +462,7 @@ void file::rename(std::string const& newpath) {
   {
     ostringstream oss;
     oss << path << " to " << newpath;
-    error(__FUNCTION__, "failed to rename: "+oss.str());
+    error(__FUNCTION__, "failed to rename: " +oss.str());
   }
 #endif
 }

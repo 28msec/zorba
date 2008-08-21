@@ -15,15 +15,11 @@
  */
 #ifndef ZORBA_FILE_H
 #define ZORBA_FILE_H
-#include <stdio.h>
 
-#if ! defined (WIN32) 
-#include <dirent.h>
-#endif
+#include <cstdio>
+
 #include <time.h>
 #include <string>
-
-#include <zorba/config.h>
 
 #include <zorba/util/path.h>
 
@@ -41,25 +37,17 @@ public:
     type_volume
   };
 
-public:
-  enum rwaccess {
-    ro = 1, // Read-Only
-    wo = 2, // WriteOnly
-    rw = 3  // Read and Write
-  };
+#ifdef WIN32
+  typedef __int64_t file_size_t;
+#else
+  typedef int64_t file_size_t;
+#endif
 
 protected:
   enum filetype type; 
 
 // file attributes
-  int64_t  size;          // size in bytes
-#if ! defined (WIN32) 
-  time_t   atime;         // most recent access time
-  time_t   mtime;         // most recent mod time
-#else
-  FILETIME  atime;
-  FILETIME  mtime;
-#endif
+  file_size_t  size;          // size in bytes
 
   void do_stat ();
 
@@ -67,7 +55,7 @@ public:
   file(const filesystem_path &path, int flags = 0);
 
 public: // common methods
-  void set_path(std::string const& _path ) { path = filesystem_path (_path); }
+  void set_path(std::string const& _path ) { *((filesystem_path *) this) = _path; }
   void set_filetype(enum filetype _type ) { type = _type ; }
   enum filetype get_filetype();
 
@@ -79,29 +67,13 @@ public: // common methods
   bool is_invalid() const { return (type==type_invalid); }  
   bool exists() const { return (type!=type_non_existent && type!=type_invalid); }  
   static volatile void error(std::string const& location, std::string const& msg);
-  static void sync() { 
-#if defined (UNIX)
-  ::sync(); 
-#else
-  _flushall();
-#endif
-  }
-
 
 public: // file methods
   void create();
   void remove(bool ignore = true);
   void rename(std::string const& newpath);
 
-  int64_t get_size() const        { return size; }
-#if ! defined (WIN32) 
-  time_t  get_acctime() const     { return atime; }
-  time_t  get_modtime() const     { return mtime; }
-#else
-  FILETIME  get_acctime() const     { return atime; }
-  FILETIME  get_modtime() const     { return mtime; }
-
-#endif
+  file_size_t get_size() const        { return size; }
 
 public: // directory methods
   void mkdir();
@@ -111,7 +83,7 @@ public: // directory methods
   void chdir();
 #endif
 
-  bool is_empty() const { return (size == (int64_t)0); }
+  bool is_empty() const { return (size == (file_size_t)0); }
 };
 
 
