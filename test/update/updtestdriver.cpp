@@ -315,7 +315,7 @@ main(int argc, char** argv)
         }
       } catch (zorba::ZorbaException &e) {
         if (isErrorExpected(e, lState)) {
-          std::cout << "Expected execution error:\n" << e std::endl;
+          std::cout << "Expected execution error:\n" << e << std::endl;
           continue;
         } else {
           std::cout << "Unexpected execution error:\n" << e << std::endl;
