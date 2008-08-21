@@ -239,10 +239,10 @@ main(int argc, char** argv)
       }
       catch (zorba::ZorbaException &e) {
         if (isErrorExpected(e, lState)) {
-          std::cout << "Expected compiler error " << e << " caught " << std::endl;
+          std::cout << "Expected compiler error:\n" << e << std::endl;
           return 0;
         } else {
-          std::cout << e << std::endl;
+          std::cout << "Unexpected compiler error:\n" << e << std::endl;
           return 3;
         }
       }
@@ -315,10 +315,10 @@ main(int argc, char** argv)
         }
       } catch (zorba::ZorbaException &e) {
         if (isErrorExpected(e, lState)) {
-          std::cout << "Expected execution error " << e << " caught " << std::endl;
+          std::cout << "Expected execution error:\n" << e std::endl;
           continue;
         } else {
-          std::cout << e << std::endl;
+          std::cout << "Unexpected execution error:\n" << e << std::endl;
           return 6;
         }
       }
