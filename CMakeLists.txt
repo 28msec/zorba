@@ -183,10 +183,7 @@ IF (BOOST_CHECK_LIBRARIES)
 
 INCLUDE(${CMAKE_MODULE_PATH}/FindBoost.cmake)
 
-SET (REQUIRED_BOOST_PACKAGES filesystem)
-
-FIND_PACKAGE(Boost REQUIRED COMPONENTS
-  filesystem)
+FIND_PACKAGE(Boost REQUIRED COMPONENTS )
 
 IF (NOT Boost_FOUND)
   MESSAGE(FATAL "Boost not found")
@@ -202,22 +199,12 @@ ELSE (NOT Boost_FOUND)
 
     IF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
-      SET(requiredlibs-apitest ${requiredlibs-apitest} boost_filesystem-mt)
-      SET(requiredlibs-testordpath ${requiredlibs-testordpath} boost_filesystem-mt)
-      SET(requiredlibs-testdriver ${requiredlibs-testdriver} boost_filesystem-mt)
-      SET(requiredlibs-zorbacmd ${requiredlibs-zorbacmd} boost_filesystem-mt)
-
       IF (34 LESS ${Boost_MINOR_VERSION})
         MESSAGE(STATUS "Boost minor version is greater than 34")
         SET(requiredlibs-zorba ${requiredlibs-zorba} boost_system-mt)
       ENDIF (34 LESS ${Boost_MINOR_VERSION})
 
     ELSE (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-
-      SET(requiredlibs-apitest ${requiredlibs-apitest} boost_filesystem)
-      SET(requiredlibs-testordpath ${requiredlibs-testordpath} boost_filesystem)
-      SET(requiredlibs-testdriver ${requiredlibs-testdriver} boost_filesystem)
-      SET(requiredlibs-zorbacmd ${requiredlibs-zorbacmd} boost_filesystem)
 
       IF (34 LESS ${Boost_MINOR_VERSION})
         MESSAGE(STATUS "Boost minor version is greater than 34")
@@ -230,10 +217,6 @@ ELSE (NOT Boost_FOUND)
 
     IF (CYGWIN)
       SET(CMAKE_INCLUDE_PATH)
-      SET(requiredlibs-apitest ${requiredlibs-apitest} boost_filesystem-gcc-mt)
-      SET(requiredlibs-testordpath ${requiredlibs-testordpath} boost_filesystem-gcc-mt)
-      SET(requiredlibs-testdriver ${requiredlibs-testdriver} boost_filesystem-gcc-mt)
-      SET(requiredlibs-zorbacmd ${requiredlibs-zorbacmd} boost_filesystem-gcc-mt)
 
       IF (34 LESS ${Boost_MINOR_VERSION})
         MESSAGE(STATUS "Boost minor version is greater than 34")
