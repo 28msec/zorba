@@ -42,13 +42,9 @@
 #include <zorbatypes/duration.h>
 #include <zorbatypes/floatimpl.h>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/convenience.hpp>
+#include <zorba/util/path.h>
 
 #include "util/time.h"
-
-namespace fs = boost::filesystem;
 
 namespace zorbatm = zorba::time;
 
@@ -252,13 +248,13 @@ int _tmain(int argc, _TCHAR* argv[])
     // input file (either from a file or given as parameter)
     std::string fURI = *lIter;
     std::string fname = parseFileURI (lProperties.asFiles (), fURI);
+    zorba::filesystem_path path (fname);
     bool asFile = ! fname.empty ();
-    fs::path path;
     std::auto_ptr<std::istream> qfile;
     
     if (asFile) {
-      path = fs::system_complete (fname);
-      qfile.reset (new std::ifstream (path.native_file_string ().c_str ()));
+      path.resolve_relative ();
+      qfile.reset (new std::ifstream (path.c_str ()));
     }
     else {
       qfile.reset (new std::istringstream(fURI));
@@ -296,8 +292,8 @@ int _tmain(int argc, _TCHAR* argv[])
 #ifdef ZORBA_DEBUGGER
     
     std::auto_ptr<server_args> lArgs( new server_args() ); 
-    std::auto_ptr<std::istream> lXQ( new std::ifstream(path.native_file_string().c_str()) );
-    std::auto_ptr<std::string> lFileName(new std::string(path.native_file_string()));
+    std::auto_ptr<std::istream> lXQ( new std::ifstream(path.c_str()) );
+    std::auto_ptr<std::string> lFileName(new std::string(path.get_path ()));
     lArgs->theQuery = &lXQ;
     lArgs->theFileName = lFileName.get();
     lArgs->theRequestPort = lProperties.requestPort();
@@ -369,7 +365,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
       lQuery = lZorbaInstance->createQuery ();
       if (asFile)
-        lQuery->setFileName (path.string ());
+        lQuery->setFileName (path.get_path ());
       lQuery->compile (*qfile, lStaticContext, lHints);
     
       if (lTiming) 
