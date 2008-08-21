@@ -23,6 +23,8 @@
 #include <time.h>
 #include <string>
 
+#include <zorba/config.h>
+
 #include <zorba/util/path.h>
 
 namespace zorba {
@@ -78,7 +80,7 @@ public: // common methods
   bool exists() const { return (type!=type_non_existent && type!=type_invalid); }  
   static volatile void error(std::string const& location, std::string const& msg);
   static void sync() { 
-#if defined UNIX
+#if defined (UNIX)
   ::sync(); 
 #else
   _flushall();
