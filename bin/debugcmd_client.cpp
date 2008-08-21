@@ -116,6 +116,7 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
   {
     lLineNo++;
     std::getline( *theQueryFile, lLine, '\n');
+    theOutput << std::endl;
     if ( (lLineNo >= aBegin && lLineNo <= anEnd) || listAll )
     {
       if ( lLineNo >= theLocation->getLineBegin() && lLineNo <= theLocation->getLineEnd() )

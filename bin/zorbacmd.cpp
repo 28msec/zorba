@@ -69,7 +69,7 @@ ZORBA_THREAD_RETURN server( void * args)
     Zorba_CompilerHints lHints;
     lHints.opt_level = ZORBA_OPT_LEVEL_O0;
     lQuery->compile(*lArgs->theQuery->get(), lHints);
-    lQuery->debug();
+    lQuery->debug(lArgs->theRequestPort, lArgs->theEventPort);
     lQuery->close();
   } catch( std::exception &e ) {
     std::cout << "Error: " << e.what() << std::endl;
@@ -296,8 +296,8 @@ int _tmain(int argc, _TCHAR* argv[])
     std::auto_ptr<std::string> lFileName(new std::string(path.get_path ()));
     lArgs->theQuery = &lXQ;
     lArgs->theFileName = lFileName.get();
-    lArgs->theRequestPort = lProperties.requestPort();
-    lArgs->theEventPort = lProperties.eventPort();
+    lArgs->theRequestPort = lProperties.getRequestPort();
+    lArgs->theEventPort = lProperties.getEventPort();
   
     // debug server
     if ( lProperties.debugServer() )
@@ -330,7 +330,7 @@ int _tmain(int argc, _TCHAR* argv[])
         {
           //wait 1 second before trying to reconnect
           sleep(1);
-          ZorbaDebuggerClient * debuggerClient = ZorbaDebuggerClient::createClient( lProperties.requestPort(), lProperties.eventPort() );
+          ZorbaDebuggerClient * debuggerClient = ZorbaDebuggerClient::createClient( lProperties.getRequestPort(), lProperties.getEventPort() );
           CommandLineEventHandler lEventHandler( *lIter, *lArgs->theQuery, std::cin, std::cout, debuggerClient );
 #ifdef SIGINT /* not all system have SIGINT */
           signal( SIGINT, suspend );

@@ -33,8 +33,10 @@ public:
 protected:
   ExternalVars_t theExternalVars;
 
+#ifdef ZORBA_DEBUGGER
   unsigned int theRequestPort;
   unsigned int theEventPort;
+#endif
 
 public:
   ExternalVars_t::const_iterator
@@ -48,7 +50,15 @@ public:
 
   QueriesOrFiles_t::const_iterator
   queriesOrFilesEnd()   { return theQueriesOrFiles.end(); }
+#ifdef ZORBA_DEBUGGER
+  bool isDebugClient(){ return theDebugClient; }
 
+  bool isDebugServer(){ return theDebugServer; }
+
+  unsigned int getRequestPort(){ return theRequestPort; }
+
+  unsigned int getEventPort(){ return theEventPort; }
+#endif
   std::string check_args ();
   void printHelp(std::ostream& os) {
     os << "Zorba XQuery Engine\n";
