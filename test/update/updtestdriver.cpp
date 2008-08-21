@@ -38,11 +38,12 @@
 
 
 void
-printFile(std::ostream& os, std::string aInFile)
+printFile(std::ostream& os, std::string aInFile, std::string message)
 {
+  std::cout << message << " " << aInFile << ":" << std::endl;
   std::ifstream lInFileStream(aInFile.c_str());
   if (!lInFileStream) {
-    std::cout << "Could not open " << aInFile << std::endl;
+    std::cout << "Error: could not open " << aInFile << std::endl;
     assert(false);
   }
 
@@ -229,7 +230,7 @@ main(int argc, char** argv)
         (lSpecPath, zorba::filesystem_path ((*lIter)->theName + ".xq",
                                             zorba::file::CONVERT_SLASHES));
       std::cout << std::endl << "Query (Run " << ++lRun << "):" << std::endl;
-      printFile(std::cout, lQueryFile);
+      printFile(std::cout, lQueryFile, "Query file");
       std::cout << std::endl;
       std::ifstream lQueryStream(lQueryFile.c_str());
 
@@ -273,8 +274,7 @@ main(int argc, char** argv)
           std::ofstream lResFileStream(lResultFile.get_path().c_str());
           lQueries.back()->serialize(lResFileStream, lSerOptions);
           lResFileStream.flush();
-          std::cout << "Result:" << std::endl;
-          printFile(std::cout, lResultFile.get_path());
+          printFile(std::cout, lResultFile.get_path(), "Result ");
 
           if (lState->hasCompare) {
             bool lRes = false;
@@ -287,10 +287,7 @@ main(int argc, char** argv)
               lRes = isEqual(lRefFile, lResultFile, lLine, lCol, lPos);
 
               if (!lRes) {
-                std::cout << std::endl << "Result does not match expected result : "
-                          << std::endl;
-
-                printFile(std::cout, lRefFile.get_path());
+                printFile(std::cout, lRefFile.get_path(), "Result does not match expected result");
                 std::cout << std::endl;
 
                 std::cout << "See line " << lLine << ", col " << lCol
