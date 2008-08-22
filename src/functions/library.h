@@ -40,6 +40,7 @@ class BuiltinFunctionLibrary {
         static void populateContext_Constructors(static_context *sctx);
         static void populateContext_Debug(static_context *sctx);
         static void populateContext_Zorba(static_context *sctx);
+        static void populateContext_ZorbaExtensions(static_context *sctx);
 };
 
 } /* namespace zorba */

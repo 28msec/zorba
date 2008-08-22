@@ -21,6 +21,7 @@
 #include <cstring>
 #include <stdio.h>
 #include <stdlib.h>
+#include <cstring>
 
 #include "testdriverconfig.h" // SRC and BIN dir definitions
 #include "specification.h" // parsing spec files

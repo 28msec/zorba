@@ -34,6 +34,7 @@
 #include "functions/Misc.h"
 #include "functions/arithmetic.h"
 #include "functions/Nodes.h"
+#include "functions/tuple_functions.h"
 
 #ifdef ZORBA_WITH_REST
 #include "functions/Rest.h"
@@ -70,6 +71,7 @@ void BuiltinFunctionLibrary::populateContext(static_context *sctx)
   populateContext_Datetime(sctx);
   populateContext_Debug(sctx);
   populateContext_Zorba(sctx);
+  populateContext_ZorbaExtensions(sctx);
 }
 
 void BuiltinFunctionLibrary::populateContext_Accesors(static_context *sctx)
@@ -882,5 +884,20 @@ DECL(sctx, ctx_var_assign,
 
   populateContext_Math (sctx);
 }
+
+void BuiltinFunctionLibrary::populateContext_ZorbaExtensions(static_context *sctx)
+{
+DECL(sctx, zop_createtuple,
+     (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "create-tuple"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      true,
+      GENV_TYPESYSTEM.ITEM_TYPE_ONE));
+DECL(sctx, zop_gettuplefield,
+     (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "get-tuple-field"),
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+}
+
 
 } /* namespace zorba */

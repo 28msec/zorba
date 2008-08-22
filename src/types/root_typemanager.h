@@ -59,6 +59,8 @@ public:
 
   store::Item_t XS_UNTYPED_QNAME;
 
+  store::Item_t ZXSE_TUPLE_QNAME;
+
 #define ATOMIC_DECL(basename) \
     store::Item_t XS_##basename##_QNAME; \
     xqtref_t basename##_TYPE_ONE;\

@@ -29,6 +29,7 @@ namespace zorba { namespace store {
 
 class CopyMode;
 class PUL;
+class TupleField;
 
 typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 
@@ -648,6 +649,21 @@ public:
    * Create a pending updates list.
    */
   virtual PUL* createPendingUpdateList() = 0;
+
+  /**
+   * Create a new tuple.
+   */
+  virtual bool createTuple(
+          store::Item_t& result,
+          std::vector<store::TupleField>& fields) = 0;
+
+  /**
+   * Create a new tuple from an existing one.
+   */
+  virtual bool createTuple(
+          store::Item_t& result,
+          store::Item *inTuple,
+          std::vector<int>& permutation) = 0;
 };
 
 } // namespace store

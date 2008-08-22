@@ -104,6 +104,8 @@ enum SchemaTypeNames
   XS_HEXBINARY,
   XS_BOOLEAN,
 
+  ZXSE_TUPLE,
+
   XS_LAST
 };
 

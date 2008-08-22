@@ -55,6 +55,7 @@ const ulong SimpleStore::DEFAULT_COLLECTION_MAP_SIZE = 32;
 
 const char* SimpleStore::XS_URI = "http://www.w3.org/2001/XMLSchema";
 const char* SimpleStore::XML_URI = "http://www.w3.org/2001/XML/1998/namespace";
+const char* SimpleStore::ZXSE_URI = "http://www.zorba-xquery.com/zorba/schema-extensions";
 
 
 
@@ -180,6 +181,7 @@ void SimpleStore::initTypeNames()
   theSchemaTypeNames[45] = theQNamePool->insert(XS_URI, "xs", "base64Binary");
   theSchemaTypeNames[46] = theQNamePool->insert(XS_URI, "xs", "hexBinary");
   theSchemaTypeNames[47] = theQNamePool->insert(XS_URI, "xs", "boolean");
+  theSchemaTypeNames[48] = theQNamePool->insert(ZXSE_URI, "zxse", "tuple");
 }
 
 

@@ -43,6 +43,7 @@ SET(SIMPLE_STORE_SRCS
     inmemorystore.cpp
     inmemorystorec.cpp
     dataguide.cpp
+    tupleimpl.cpp
 )
 
 IF(ZORBA_STORE_MSDOM)

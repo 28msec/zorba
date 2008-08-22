@@ -35,6 +35,8 @@ namespace store
 typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 typedef StoreConsts::NodeKind NodeKind;
 
+class TupleField;
+
 
 /**
  *
@@ -95,6 +97,12 @@ public:
    */
   virtual bool 
   isPul() const = 0;
+
+  /**
+   * @return "true" if the item is a tuple.
+   */
+  virtual bool
+  isTuple() const = 0;
 
   /**
    *  @return  (dynamic) XQuery type of the item
@@ -533,6 +541,13 @@ public:
 
   virtual void
   applyUpdates(std::vector<zorba::store::Item*>& validationNodes);
+
+  /* -------------------- Methods for tuples --------------------- */
+  virtual const std::vector<zorba::store::TupleField>& getTupleFields() const;
+
+  virtual int getTupleFieldCount() const;
+
+  virtual const TupleField& getTupleField(int index) const;
 }; 
 
 

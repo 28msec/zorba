@@ -225,6 +225,8 @@ namespace zorba
   class FnLangIterator;
   class FnCollectionIterator;
   class FnDeepEqualIterator;
+  class CreateTupleIterator;
+  class GetTupleFieldIterator;
 
   class ZorbaImportXmlIterator;
   class ZorbaImportCatalogIterator;
@@ -575,6 +577,9 @@ namespace zorba
     PLAN_ITER_VISITOR (ZorNumGen);
       
     PLAN_ITER_VISITOR (TextIterator);
+
+    PLAN_ITER_VISITOR (CreateTupleIterator);
+    PLAN_ITER_VISITOR (GetTupleFieldIterator);
             
     virtual void beginVisitFlworWhereClause(const  PlanIterator&) = 0;
     virtual void endVisitFlworWhereClause(const PlanIterator&) = 0;

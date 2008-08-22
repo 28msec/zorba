@@ -33,6 +33,7 @@
 #include "store/naive/simple_pul.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/string_pool.h"
+#include "store/naive/tupleimpl.h"
 
 
 namespace zorba { namespace simplestore {
@@ -1230,6 +1231,28 @@ store::PUL* BasicItemFactory::createPendingUpdateList()
   return new PULImpl();
 }
 
+bool BasicItemFactory::createTuple(
+        store::Item_t& result,
+        std::vector<store::TupleField>& fields)
+{
+  result = new TupleItem(fields);
+  return true;
+}
+
+bool BasicItemFactory::createTuple(
+        store::Item_t& result,
+        store::Item *inTuple,
+        std::vector<int>& permutation)
+{
+  ZORBA_ASSERT(inTuple->isTuple());
+  std::vector<zorba::store::TupleField> newFields;
+  int n = permutation.size();
+  for(int i = 0; i <= n; ++i) {
+    newFields.push_back(inTuple->getTupleField(permutation[i]));
+  }
+  result = new TupleItem(newFields);
+  return true;
+}
 
 } // namespace store
 } // namespace zorba

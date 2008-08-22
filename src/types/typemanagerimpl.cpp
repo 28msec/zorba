@@ -208,6 +208,10 @@ xqtref_t TypeManagerImpl::create_named_type(
   {
     return create_untyped_type();
   }
+  else if (qname == GENV_TYPESYSTEM.ZXSE_TUPLE_QNAME.getp())
+  {
+    return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
+  }
   else
   {
     return create_named_atomic_type(qname, quantifier);

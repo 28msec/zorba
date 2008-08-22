@@ -72,6 +72,7 @@ class SimpleStore : public store::Store
 public:
   static const char* XS_URI;
   static const char* XML_URI;
+  static const char* ZXSE_URI;
 
 protected:
   static const ulong DEFAULT_COLLECTION_MAP_SIZE;

@@ -38,6 +38,7 @@ public:
   bool isNode() const   { return false; }
   bool isAtomic() const { return false; }
   bool isPul() const    { return true; }
+  bool isTuple() const  { return false; }
 
   virtual void addDelete(Item_t& node) = 0;
 

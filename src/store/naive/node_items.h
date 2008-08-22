@@ -281,6 +281,7 @@ public:
   bool isNode() const       { return true; }
   bool isAtomic() const     { return false; }
   bool isPul() const        { return false; }
+  bool isTuple() const      { return false; }
 
   store::Item* getParent() const   { return theParent; }
 

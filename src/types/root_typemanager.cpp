@@ -174,6 +174,9 @@ RootTypeManager::RootTypeManager()
 #define XS_URI "http://www.w3.org/2001/XMLSchema"
 #define XS_PREFIX "xs"
 
+#define ZXSE_URI "http://www.zorba-xquery.com/zorba/schema-extensions"
+#define ZXSE_PREFIX "zxse"
+
 #define XSQNDECL(var, local)                         \
         GENV.getStore().getItemFactory()->   \
             createQName(var, XS_URI, XS_PREFIX, local)
@@ -226,6 +229,7 @@ RootTypeManager::RootTypeManager()
   XSQNDECL(XS_ANY_TYPE_QNAME, "anyType");
   XSQNDECL(XS_ANY_SIMPLE_TYPE_QNAME, "anySimpleType");
   XSQNDECL(XS_UNTYPED_QNAME, "untyped");
+  GENV.getStore().getItemFactory()->createQName(ZXSE_TUPLE_QNAME, ZXSE_URI, ZXSE_PREFIX, "tuple");
 
 #define ATOMIC_TYPE_DEFN(tname)                                                 \
   tname##_TYPE_ONE = new AtomicXQType(this,                                     \
