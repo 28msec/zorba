@@ -24,6 +24,7 @@
 #include "store/naive/store_defs.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/node_items.h"
+#include "store/naive/simple_pul.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/basic_item_factory.h"
 #include "store/api/collection.h"
@@ -37,8 +38,11 @@ namespace zorba { namespace simplestore {
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlNode::removeType(TypeUndoList& undoList)
+void XmlNode::removeType(UpdatePrimitive& upd)
 {
+  TypeUndoList& undoList = upd.theTypeUndoList;
+
+  zorba::store::Item* revalidationNode = NULL;
   XmlNode* currNode = this;
 
   while(currNode != NULL)
@@ -52,9 +56,14 @@ void XmlNode::removeType(TypeUndoList& undoList)
     {
       ElementNode* n = reinterpret_cast<ElementNode*>(currNode);
 
-      if (n->theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED] ||
-          n->theTypeName == GET_STORE().theSchemaTypeNames[XS_ANY])
+      if (n->theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED])
         break;
+
+      if (n->theTypeName == GET_STORE().theSchemaTypeNames[XS_ANY])
+      {
+        revalidationNode = currNode;
+        break;
+      }
 
       tinfo.theTypeName.transfer(n->theTypeName);
       tinfo.theFlags = n->theFlags;
@@ -65,9 +74,8 @@ void XmlNode::removeType(TypeUndoList& undoList)
 
         xqpStringStore_t newValue = textChild->getStringValue();
 
-        tinfo.theTextContent.setValue(textChild->getValue());
-        textChild->setValue(NULL);
         tinfo.theIsTyped = true;
+        tinfo.theTextContent.setValue(textChild->theContent.transferValue());
 
         textChild->setText(newValue);
       }
@@ -81,12 +89,12 @@ void XmlNode::removeType(TypeUndoList& undoList)
       n->resetHaveEmptyValue();
       n->resetHaveTypedValue();
       n->resetHaveListValue();
+
+      revalidationNode = currNode;
     }
     else if (nodeKind == store::StoreConsts::attributeNode)
     {
       AttributeNode* n = reinterpret_cast<AttributeNode*>(currNode);
-
-      tinfo.theTypedValue.transfer(n->theTypedValue);
 
       if (n->theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC])
       {
@@ -96,7 +104,6 @@ void XmlNode::removeType(TypeUndoList& undoList)
       {
         tinfo.theTypeName.transfer(n->theTypeName);
         tinfo.theFlags = n->theFlags;
-
         undoList.push_back(tinfo);
 
         n->theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
@@ -105,33 +112,9 @@ void XmlNode::removeType(TypeUndoList& undoList)
         n->resetHaveListValue();
       }
     }
-    else if (nodeKind == store::StoreConsts::textNode)
-    {
-      TextNode* n = reinterpret_cast<TextNode*>(currNode);
-
-      if (n->isTyped())
-      {
-        tinfo.theTextContent.setValue(n->getValue());
-        n->setValue(NULL);
-        tinfo.theIsTyped = true;
-
-        if (n->theParent)
-        {
-          ElementNode* parent = reinterpret_cast<ElementNode*>(theParent);
-          parent->resetHaveTypedValue();
-        }
-      }
-      else
-      {
-        tinfo.theTextContent.setText(n->getText());
-        n->setText(NULL);
-        tinfo.theIsTyped = false;
-      }
-
-      undoList.push_back(tinfo);
-    }
     else if (nodeKind == store::StoreConsts::documentNode)
     {
+      revalidationNode = currNode;
       break;
     }
     else
@@ -141,6 +124,9 @@ void XmlNode::removeType(TypeUndoList& undoList)
 
     currNode = currNode->theParent;
   }
+
+  if (revalidationNode != NULL)
+    upd.addNodeForValidation(revalidationNode);
 }
 
 
@@ -149,6 +135,9 @@ void XmlNode::removeType(TypeUndoList& undoList)
 ********************************************************************************/
 void XmlNode::restoreType(TypeUndoList& undoList)
 {
+  if (undoList.empty())
+    return;
+
   XmlNode* currNode = this;
   long pos = undoList.size() - 1;
 
@@ -170,41 +159,17 @@ void XmlNode::restoreType(TypeUndoList& undoList)
         TextNode* textChild = reinterpret_cast<TextNode*>(n->getChild(0));
 
         textChild->setText(NULL);
-        textChild->setValue(undoList[pos].theTextContent.getValue());
-        undoList[pos].theTextContent.setValue(NULL);
+        textChild->setValue(undoList[pos].theTextContent.transferValue());
       }
     }
     else if (nodeKind == store::StoreConsts::attributeNode)
     {
       AttributeNode* n = reinterpret_cast<AttributeNode*>(currNode);
 
-      n->theTypedValue.transfer(undoList[pos].theTypedValue);
-
       if (undoList[pos].theTypeName != NULL)
       {
         n->theTypeName.transfer(undoList[pos].theTypeName);
         n->theFlags = undoList[pos].theFlags;
-      }
-    }
-    else if (nodeKind == store::StoreConsts::textNode)
-    {
-      TextNode* n = reinterpret_cast<TextNode*>(currNode);
-
-      if (undoList[pos].theIsTyped)
-      {
-        n->theContent.setValue(undoList[pos].theTextContent.getValue());
-        undoList[pos].theTextContent.setValue(NULL);
-
-        if (n->theParent)
-        {
-          ElementNode* parent = reinterpret_cast<ElementNode*>(theParent);
-          parent->setHaveTypedValue();
-        }
-      }
-      else
-      {
-        n->theContent.setText(undoList[pos].theTextContent.getText());
-        undoList[pos].theTextContent.setText(NULL);
       }
     }
     else if (nodeKind == store::StoreConsts::documentNode)
@@ -275,14 +240,6 @@ void XmlNode::setToUntyped()
 
 
 /*******************************************************************************
-
-********************************************************************************/
-void XmlNode::revalidate()
-{
-}
-
-
-/*******************************************************************************
   This method is used by the undo of UpdInsertChildren, UpdInsertSiblings, and
   UpdReplaceChild.
 ********************************************************************************/
@@ -317,139 +274,7 @@ void XmlNode::removeChildren(
 
 
 /*******************************************************************************
-
-********************************************************************************/
-void XmlNode::insertChildren(
-    std::vector<store::Item_t>& newChildren,
-    ulong                       pos,
-    bool                        copy,
-    const store::CopyMode&      copymode)
-{
-  ulong numNewChildren = newChildren.size();
-  for (ulong i = 0; i < numNewChildren; i++)
-  {
-    XmlNode* child = BASE_NODE(newChildren[i]);
-
-    if (copy)
-    {
-      child->copy2(this, this, pos + i, copymode);
-    }
-    else
-    {
-      child->switchTree(this, pos + i, copymode);
-    }
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void XmlNode::insertChildrenFirst(
-    std::vector<store::Item_t>& newChildren,
-    bool                        copy,
-    const store::CopyMode&      copymode)
-{
-  ulong numNewChildren = newChildren.size();
-  for (long i = numNewChildren - 1; i >= 0; i--)
-  {
-    XmlNode* child = BASE_NODE(newChildren[i]);
-
-    if (copy)
-    {
-      child->copy2(this, this, 0, copymode);
-    }
-    else
-    {
-      child->switchTree(this, 0, copymode);
-    }
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void XmlNode::insertChildrenLast(
-    std::vector<store::Item_t>& newChildren,
-    bool                 copy,
-    const store::CopyMode&      copymode)
-{
-  insertChildren(newChildren, numChildren(), copy, copymode);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void XmlNode::insertSiblingsBefore(
-    std::vector<store::Item_t>& siblings,
-    bool                        copy,
-    const store::CopyMode&      copymode)
-{
-  ZORBA_FATAL(theParent, "");
-
-  ElementNode* parent = reinterpret_cast<ElementNode*>(theParent);
-
-  ulong pos = parent->children().find(this);
-
-  if (pos == 0)
-    parent->insertChildrenFirst(siblings, copy, copymode);
-  else
-    parent->insertChildren(siblings, pos, copy, copymode);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void XmlNode::insertSiblingsAfter(
-    std::vector<store::Item_t>& siblings,
-    bool                        copy,
-    const store::CopyMode&      copymode)
-{
-  ZORBA_FATAL(theParent, "");
-
-  ElementNode* parent = reinterpret_cast<ElementNode*>(theParent);
-
-  ulong pos = parent->children().find(this);
-  pos++;
-
-  parent->insertChildren(siblings, pos, copy, copymode);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void XmlNode::replaceChild(
-    std::vector<store::Item_t>& newChildren,
-    ulong                       pos,
-    bool                        copy,
-    const store::CopyMode&      copymode)
-{
-  removeChild(pos);
-
-  ulong numNewChildren = newChildren.size();
-
-  for (ulong i = 0; i < numNewChildren; i++)
-  {
-    XmlNode* child = BASE_NODE(newChildren[i]);
-
-    if (copy)
-    {
-      child->copy2(this, this, pos + i, copymode);
-    }
-    else
-    {
-      child->switchTree(this, pos + i, copymode);
-    }
-  }
-}
-
-
-/*******************************************************************************
-
+  This method is used by the undo of UpdInsertAttributes, and UpdReplaceAttribute.
 ********************************************************************************/
 void ElementNode::removeAttributes(
     ulong  pos,
@@ -484,76 +309,274 @@ void ElementNode::removeAttributes(
 /*******************************************************************************
 
 ********************************************************************************/
-void ElementNode::insertAttributes(
-    std::vector<store::Item_t>& attrs,
-    bool                        copy,
-    const store::CopyMode&      copymode)
+void XmlNode::insertChildren(UpdInsertChildren& upd, ulong pos)
+{
+  if (pos == 0)
+  {
+    ulong numNewChildren = upd.theNewChildren.size();
+    for (long i = numNewChildren - 1; i >= 0; i--)
+    {
+      XmlNode* child = BASE_NODE(upd.theNewChildren[i]);
+
+      if (upd.theCopyMode.theDoCopy)
+        upd.theNewChildren[i] = child->copy2(this, this, 0, upd.theCopyMode);
+      else
+        child->switchTree(this, 0, upd.theCopyMode);
+
+      upd.theNumApplied++;
+    }
+  }
+  else
+  {
+    ulong numNewChildren = upd.theNewChildren.size();
+    for (ulong i = 0; i < numNewChildren; i++)
+    {
+      XmlNode* child = BASE_NODE(upd.theNewChildren[i]);
+
+      if (upd.theCopyMode.theDoCopy)
+        upd.theNewChildren[i] = child->copy2(this, this, pos + i, upd.theCopyMode);
+      else
+        child->switchTree(this, pos + i, upd.theCopyMode);
+
+      upd.theNumApplied++;
+    }
+  }
+
+  if (upd.theRemoveType)
+    removeType(upd);
+}
+
+
+void XmlNode::undoInsertChildren(UpdInsertChildren& upd)
+{
+  if (upd.theNumApplied == 0)
+    return;
+
+  ulong pos = children().find(BASE_NODE(upd.theNewChildren[0]));
+
+  ZORBA_FATAL(pos < children().size(), "");
+
+  removeChildren(pos, upd.theNumApplied);
+
+  restoreType(upd.theTypeUndoList);
+}
+
+
+/*******************************************************************************
+  ELEMENT/TEXT/PI/COMMENT - INSERT SIBLINGS BEFORE
+********************************************************************************/
+void XmlNode::insertSiblingsBefore(UpdInsertChildren& upd)
+{
+  ZORBA_FATAL(theParent, "");
+
+  XmlNode* parent = reinterpret_cast<XmlNode*>(upd.theSibling->getParent());
+
+  ulong pos = parent->children().find(this);
+
+  parent->insertChildren(upd, pos);
+}
+
+
+/*******************************************************************************
+  ELEMENT/TEXT/PI/COMMENT - INSERT SIBLINGS AFTER
+********************************************************************************/
+void XmlNode::insertSiblingsAfter(UpdInsertChildren& upd)
+{
+  ZORBA_FATAL(theParent, "");
+
+  XmlNode* parent = reinterpret_cast<XmlNode*>(upd.theSibling->getParent());
+
+  ulong pos = parent->children().find(this);
+  pos++;
+
+  parent->insertChildren(upd, pos);
+}
+
+
+/*******************************************************************************
+  ELEMENT - INSERT ATTRIBUTES
+********************************************************************************/
+void ElementNode::insertAttributes(UpdInsertAttributes& upd)
 {
   ulong numAttrs = numAttributes();
-  ulong numNewAttrs = attrs.size();
+  ulong numNewAttrs = upd.theNewAttrs.size();
 
   for (ulong i = 0; i < numNewAttrs; i++)
   {
-    AttributeNode* attr = reinterpret_cast<AttributeNode*>(attrs[i].getp());
+    AttributeNode* attr = reinterpret_cast<AttributeNode*>(
+                          upd.theNewAttrs[i].getp());
 
-    checkNamespaceConflict(attr->getNodeName(), XUDY0024);
     checkUniqueAttr(attr->getNodeName());
 
-    if (copy)
-    {
-      attr = reinterpret_cast<AttributeNode*>(
-             attr->copy2(this, this, numAttrs + i, copymode));
-      attrs[i] = attr;
-    }
-    else
-    {
-      attr->switchTree(this, numAttrs + i, copymode);
-    }
+    if (addBindingForQName(attr->theName, false))
+      upd.theNewBindings.push_back(attr->theName);
 
-    addBindingForQName2(attr->getNodeName());
+    if (upd.theCopyMode.theDoCopy)
+      upd.theNewAttrs[i] = attr->copy2(this, this, numAttrs + i, upd.theCopyMode);
+    else
+      attr->switchTree(this, numAttrs + i, upd.theCopyMode);
+
+    upd.theNumApplied++;
   }
+
+  removeType(upd);
+}
+
+
+void ElementNode::undoInsertAttributes(UpdInsertAttributes& upd)
+{
+  if (upd.theNumApplied == 0)
+    return;
+
+  ulong pos = attributes().find(BASE_NODE(upd.theNewAttrs[0]));
+
+  ZORBA_FATAL(pos < attributes().size(), "");
+
+  removeAttributes(pos, upd.theNumApplied);
+
+  ulong numBindings = upd.theNewBindings.size();
+  for (ulong i = 0; i < numBindings; i++)
+    removeLocalBinding(upd.theNewBindings[i]->getPrefix(),
+                       upd.theNewBindings[i]->getNamespace());
+
+  restoreType(upd.theTypeUndoList);
 }
 
 
 /*******************************************************************************
-
+  ELEMENT - REPLACE ATTRIBUTE
 ********************************************************************************/
-void ElementNode::replaceAttribute(
-    std::vector<store::Item_t>& newAttrs,
-    ulong                       pos,
-    bool                        copy,
-    const store::CopyMode&      copymode)
+void ElementNode::replaceAttribute(UpdReplaceAttribute& upd)
 {
+  ulong pos = attributes().find(BASE_NODE(upd.theAttr));
   removeAttr(pos);
 
-  ulong numNewAttrs = newAttrs.size();
+  ulong numNewAttrs = upd.theNewAttrs.size();
 
   for (ulong i = 0; i < numNewAttrs; i++)
   {
-    AttributeNode* attr = reinterpret_cast<AttributeNode*>(newAttrs[i].getp());
+    AttributeNode* attr = reinterpret_cast<AttributeNode*>(
+                          upd.theNewAttrs[i].getp());
 
-    checkNamespaceConflict(attr->getNodeName(), XUDY0024);
     checkUniqueAttr(attr->getNodeName());
 
-    if (copy)
-      attr->copy2(this, this, pos + i, copymode);
+    if (addBindingForQName(attr->theName, false))
+      upd.theNewBindings.push_back(attr->theName);
+  
+    if (upd.theCopyMode.theDoCopy)
+      upd.theNewAttrs[i] = attr->copy2(this, this, pos + i, upd.theCopyMode);
     else
-      attr->switchTree(this, pos + i, copymode);
+      attr->switchTree(this, pos + i, upd.theCopyMode);
 
-    addBindingForQName2(attr->getNodeName());
+    upd.theNumApplied++;
+  }
+
+  removeType(upd);
+}
+
+
+void ElementNode::restoreAttribute(UpdReplaceAttribute& upd)
+{
+  if (upd.theNumApplied == 0)
+    return;
+
+  XmlNode* attr = BASE_NODE(upd.theAttr);
+
+  ulong pos = attributes().find(BASE_NODE(upd.theNewAttrs[0]));
+
+  ZORBA_FATAL(pos < attributes().size(), "");
+
+  removeAttributes(pos, upd.theNumApplied);
+
+  ulong numBindings = upd.theNewBindings.size();
+  for (ulong i = 0; i < numBindings; i++)
+    removeLocalBinding(upd.theNewBindings[i]->getPrefix(),
+                       upd.theNewBindings[i]->getNamespace());
+
+  attr->connect(this, pos);
+
+  restoreType(upd.theTypeUndoList);
+}
+
+
+/*******************************************************************************
+  ELEMENT/DOCUMENT - REPLACE CHILD
+********************************************************************************/
+void XmlNode::replaceChild(UpdReplaceChild& upd)
+{
+  XmlNode* child = BASE_NODE(upd.theChild);
+
+  ulong pos = children().find(child);
+
+  ZORBA_FATAL(pos < children().size(), "");
+
+  removeChild(pos);
+
+  ulong numNewChildren = upd.theNewChildren.size();
+
+  for (ulong i = 0; i < numNewChildren; i++)
+  {
+    XmlNode* child = BASE_NODE(upd.theNewChildren[i]);
+
+    if (upd.theCopyMode.theDoCopy)
+      upd.theNewChildren[i] = child->copy2(this, this, pos + i, upd.theCopyMode);
+    else
+      child->switchTree(this, pos + i, upd.theCopyMode);
+
+    upd.theNumApplied++;
+  }
+
+  if (upd.theRemoveType)
+  {
+    // we can be here only if the target is an element node
+    ElementNode* target = reinterpret_cast<ElementNode*>(this);
+
+    // Before calling removeType on "this", reset its haveTypedValue flag,
+    // so that "this" will not attempt to save its typed value in its
+    // associated NodeTypeInfo.
+    if (target->haveTypedValue())
+    {
+      target->resetHaveTypedValue();
+      upd.theIsTyped = true;
+    }
+
+    removeType(upd);
+  }
+}
+
+
+void XmlNode::restoreChild(UpdReplaceChild& upd)
+{
+  if (upd.theNumApplied == 0)
+    return;
+
+  XmlNode* child = BASE_NODE(upd.theChild);
+
+  ulong pos = children().find(BASE_NODE(upd.theNewChildren[0]));
+
+  ZORBA_FATAL(pos < children().size(), "");
+
+  removeChildren(pos, upd.theNumApplied);
+
+  child->connect(this, pos);
+
+  if (upd.theRemoveType)
+  {
+    // we can be here only if the target is an element node
+    ElementNode* target = reinterpret_cast<ElementNode*>(this);
+
+    restoreType(upd.theTypeUndoList);
+
+    if (upd.theIsTyped)
+      target->setHaveTypedValue();
   }
 }
 
 
 /*******************************************************************************
-  Disconnect all the current children of "this" and make the given text node
-  the only child of "this". Return a vector of pointers to the disconnected
-  children.
+  ELEMENT - REPLACE CONTENT
 ********************************************************************************/
-void ElementNode::replaceContent(
-    XmlNode*               newTextChild,
-    ConstrNodeVector&      oldChildren,
-    const store::CopyMode& copymode)
+void ElementNode::replaceContent(UpdReplaceElemContent& upd)
 {
   ulong numChildren = this->numChildren();
   for (ulong i = 0; i < numChildren; i++)
@@ -563,157 +586,296 @@ void ElementNode::replaceContent(
       child->theParent = NULL;
   }
 
-  children().copy(oldChildren);
+  children().copy(upd.theOldChildren);
   children().clear();
 
-  if (newTextChild->getStringValue()->empty())
+  if (upd.theNewChild->getStringValue()->empty())
     return;
 
-  if (copymode.theDoCopy)
-    newTextChild->copy2(this, this, 0, copymode);
+  if (upd.theCopyMode.theDoCopy)
+    TEXT_NODE(upd.theNewChild)->copy2(this, this, 0, upd.theCopyMode);
   else
-    newTextChild->switchTree(this, 0, copymode);
-}
+    TEXT_NODE(upd.theNewChild)->switchTree(this, 0, upd.theCopyMode);
 
-
-/*******************************************************************************
-
-********************************************************************************/
-void ElementNode::rename(store::Item_t& newName, store::Item_t& oldName)
-{
-  QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(newName.getp());
-
-  checkNamespaceConflict(newName, XUDY0024);
-
-  oldName.transfer(theName);
-  theName.transfer(newName);
-
-  addLocalBinding(qn->getPrefix(), qn->getNamespace());
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void AttributeNode::replaceValue(
-    xqpStringStore_t& newStrValue,
-    TypeUndoList&     undoList)
-{
-  removeType(undoList);
-
-  store::Item_t newValue = new UntypedAtomicItemImpl(newStrValue);
-  theTypedValue.transfer(newValue);
-}
-
-
-void AttributeNode::restoreValue(
-    TypeUndoList& undoList)
-{
-  ZORBA_FATAL(!undoList.empty(), "");
-  restoreType(undoList);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void AttributeNode::replaceName(
-    store::Item_t& newName,
-    store::Item_t& oldName,
-    TypeUndoList&  undoList)
-{
-  if (theParent)
+  // Before calling removeType on "this", reset its haveTypedValue flag,
+  // so that "this" will not attempt to save its typed value in its
+  // associated NodeTypeInfo.
+  if (haveTypedValue())
   {
-    ElementNode* parent = reinterpret_cast<ElementNode*>(theParent);
-
-    QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(newName.getp());
-    parent->checkNamespaceConflict(newName, XUDY0024);
-    parent->addLocalBinding(qn->getPrefix(), qn->getNamespace());
+    resetHaveTypedValue();
+    upd.theIsTyped = true;
   }
 
-  oldName.transfer(theName);
-  theName.transfer(newName);
+  removeType(upd);
+}
 
-  store::Item_t newValue;
+
+void ElementNode::restoreContent(UpdReplaceElemContent& upd)
+{
+  if (numChildren() > 0)
+  {
+    ZORBA_FATAL(numChildren() == 1, "");
+
+    XmlNode* child = getChild(0);
+ 
+    child->disconnect();
+    child->deleteTree();
+  }
+
+  if (dynamic_cast<ElementDagNode*>(this) != NULL)
+  {
+    ElementDagNode* target1 = reinterpret_cast<ElementDagNode*>(this);
+    upd.theOldChildren.copy(target1->theChildren);
+  }
+  else
+  {
+    ElementTreeNode* target1 = reinterpret_cast<ElementTreeNode*>(this);
+    upd.theOldChildren.copy(target1->theChildren); 
+  }
+
+  restoreType(upd.theTypeUndoList);
+
+  if (upd.theIsTyped)
+    setHaveTypedValue();
+}
+
+
+/*******************************************************************************
+  ELEMENT - RENAME
+********************************************************************************/
+void ElementNode::replaceName(UpdRenameElem& upd)
+{
+  if (upd.theNewName->equals(theName))
+    return;
+
+  upd.theNewBinding = addBindingForQName(upd.theNewName, false);
+
+  upd.theOldName.transfer(theName);
+  theName.transfer(upd.theNewName);
+
+  if (theParent &&
+      (theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED] ||
+       theTypeName == GET_STORE().theSchemaTypeNames[XS_ANY]))
+  {
+    // Even if "this" is untyped, we must call removeType() on the parent
+    // because renaming of an elelemt may require revalidation of the ancestors.
+    upd.theRestoreParentType = true;
+    theParent->removeType(upd);
+  }
+  else
+  {
+    removeType(upd);
+  }
+}
+
+
+void ElementNode::restoreName(UpdRenameElem& upd)
+{
+  if (upd.theNewBinding)
+  {
+    xqpStringStore* prefix = theName->getPrefix();
+    xqpStringStore* ns = theName->getNamespace();
+
+    removeLocalBinding(prefix, ns);
+  }
+
+  theName.transfer(upd.theOldName);
+
+  if (upd.theRestoreParentType)
+    theParent->restoreType(upd.theTypeUndoList);
+  else
+    restoreType(upd.theTypeUndoList);
+}
+
+
+/*******************************************************************************
+  ATTRIBUTE - REPLACE VALUE
+********************************************************************************/
+void AttributeNode::replaceValue(UpdReplaceAttrValue& upd)
+{
+  upd.theOldValue.transfer(theTypedValue);
+
+  store::Item_t newValue = new UntypedAtomicItemImpl(upd.theNewValue);
+  theTypedValue.transfer(newValue);
+
+  removeType(upd);
+}
+
+
+void AttributeNode::restoreValue(UpdReplaceAttrValue& upd)
+{
+  theTypedValue.transfer(upd.theOldValue);
+
+  restoreType(upd.theTypeUndoList);
+}
+
+
+/*******************************************************************************
+  ATTRIBUTE - RENAME
+********************************************************************************/
+void AttributeNode::replaceName(UpdRenameAttr& upd)
+{
+  if (upd.theNewName->equals(theName))
+    return;
+
+  ElementNode* parent = reinterpret_cast<ElementNode*>(theParent);
+
+  if (parent)
+  {
+    // TODO: this check should actually be done after all updates have been
+    // applied because the conflicting attribute may be deleted by a later
+    // update
+    parent->checkUniqueAttr(upd.theNewName);
+
+    upd.theNewBinding = parent->addBindingForQName(upd.theNewName, false);
+  }
+
+  upd.theOldName.transfer(theName);
+  theName.transfer(upd.theNewName);
 
   if (theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC])
   {
-    newValue = theTypedValue;
+    // We must call removeType() even if "this" is untyped, because renaming
+    // of an attribute may require revalidation of the ancestors.
+    removeType(upd);
   }
   else
   {
+    // We must convert the current typed value to an untyped one.
     xqpStringStore_t strvalue = theTypedValue->getStringValue();
-    newValue = new UntypedAtomicItemImpl(strvalue);
+    store::Item_t newValue = new UntypedAtomicItemImpl(strvalue);
+
+    upd.theOldValue.transfer(theTypedValue);
+    theTypedValue.transfer(newValue);
+
+    removeType(upd);
+  }
+}
+
+
+void AttributeNode::restoreName(UpdRenameAttr& upd)
+{
+  if (theParent && upd.theNewBinding)
+  {
+    ElementNode* parent = reinterpret_cast<ElementNode*>(theParent);
+
+    xqpStringStore* prefix = theName->getPrefix();
+    xqpStringStore* ns = theName->getNamespace();
+
+    parent->removeLocalBinding(prefix, ns);
   }
 
-  removeType(undoList);
+  theName.transfer(upd.theOldName);
 
-  theTypedValue.transfer(newValue);
-}
+  if (upd.theOldValue != NULL)
+    theTypedValue.transfer(upd.theOldValue);
 
-
-void AttributeNode::restoreName(
-    store::Item_t& oldName,
-    TypeUndoList&  undoList)
-{
-  theName.transfer(oldName);
-
-  if (!undoList.empty())
-    restoreType(undoList);
+  restoreType(upd.theTypeUndoList);
 }
 
 
 /*******************************************************************************
-
+  TEXT - REPLACE VALUE
 ********************************************************************************/
-void TextNode::replaceValue(
-    xqpStringStore_t&   newValue,
-    TypeUndoList&       undoList)
+void TextNode::replaceValue(UpdReplaceTextValue& upd)
 {
-  removeType(undoList);
+  ElementNode* parent = reinterpret_cast<ElementNode*>(theParent);
 
-  setText(newValue);
+  if (isTyped())
+  {
+    upd.theIsTyped = true;
+    upd.theOldContent.setValue(theContent.transferValue());
+    setText(upd.theNewContent);
+
+    // before calling removeType on the parent P, reset P's haveTypedValue
+    // flag, so that P will not attempt to save its typed value in its
+    // associated NodeTypeInfo.
+    parent->resetHaveTypedValue();
+
+    parent->removeType(upd);
+  }
+  else
+  {
+    upd.theIsTyped = false;
+    upd.theOldContent.setText(theContent.transferText());
+    setText(upd.theNewContent);
+
+    if (parent)
+      parent->removeType(upd);
+  }
 }
 
 
-void TextNode::restoreValue(
-    TypeUndoList&  undoList)
+void TextNode::restoreValue(UpdReplaceTextValue& upd)
 {
-  ZORBA_FATAL(!undoList.empty(), "");
-  restoreType(undoList);
+  ElementNode* parent = reinterpret_cast<ElementNode*>(theParent);
+
+  if (upd.theIsTyped)
+  {
+    setValue(upd.theOldContent.getValue());
+    upd.theOldContent.setValue(NULL);
+
+    parent->restoreType(upd.theTypeUndoList);
+
+    // Restore the haveTypedValue flag on P.
+    parent->setHaveTypedValue();
+  }
+  else
+  {
+    setText(upd.theOldContent.getText());
+    upd.theOldContent.setText(NULL);
+
+    if (parent)
+      parent->restoreType(upd.theTypeUndoList);
+  }
 }
 
 
 /*******************************************************************************
-
+  PI - REPLACE VALUE
 ********************************************************************************/
-void PiNode::rename(
-    xqpStringStore_t& newName,
-    xqpStringStore_t& oldName)
+void PiNode::replaceValue(UpdReplacePiValue& upd)
 {
-  oldName.transfer(theTarget);
-  theTarget.transfer(newName);
+  upd.theOldValue.transfer(theContent);
+  theContent.transfer(upd.theNewValue);
 }
 
 
-void PiNode::replaceValue(
-    xqpStringStore_t& newValue,
-    xqpStringStore_t& oldValue)
+void PiNode::restoreValue(UpdReplacePiValue& upd)
 {
-  oldValue.transfer(theContent);
-  theContent = newValue;
+  theContent.transfer(upd.theOldValue);
 }
 
 
 /*******************************************************************************
-
+  PI - RENAME
 ********************************************************************************/
-void CommentNode::replaceValue(
-    xqpStringStore_t& newValue,
-    xqpStringStore_t& oldValue)
+void PiNode::replaceName(UpdRenamePi& upd)
 {
-  oldValue.transfer(theContent);
-  theContent = newValue;
+  upd.theOldName.transfer(theTarget);
+  theTarget.transfer(upd.theNewName);
+}
+
+
+void PiNode::restoreName(UpdRenamePi& upd)
+{
+  theTarget.transfer(upd.theOldName);
+}
+
+
+/*******************************************************************************
+ COMMENT - REPLACE VALUE
+********************************************************************************/
+void CommentNode::replaceValue(UpdReplaceCommentValue& upd)
+{
+  upd.theOldValue.transfer(theContent);
+  theContent.transfer(upd.theNewValue);
+}
+
+
+void CommentNode::restoreValue(UpdReplaceCommentValue& upd)
+{
+  theContent.transfer(upd.theOldValue);
 }
 
 

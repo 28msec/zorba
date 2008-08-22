@@ -883,10 +883,10 @@ ElementNode::ElementNode(store::Item_t& nodeName)
 
 
 /*******************************************************************************
-  localBindings will be NULL if this contructor is called from the copy() method
-  (because in that case, the in-scope bindings must be computed by the copy()
-  method based on the copy mode). Otherwise, localBindings should not be NULL
-  (but may be empty).
+  Note: localBindings will be NULL if this contructor is called from the copy()
+  method (because in that case, the in-scope bindings must be computed by the
+  copy() method based on the copy mode). Otherwise, localBindings should not be
+  NULL (but may be empty).
 ********************************************************************************/
 ElementNode::ElementNode(
     XmlTree*                 tree,
@@ -935,7 +935,7 @@ ElementNode::ElementNode(
     {
       try
       {
-        addBindingForQName(theName);
+        addBindingForQName(theName, true);
         setNsContext(parent->getNsContext());
       }
       catch(...)
@@ -948,7 +948,7 @@ ElementNode::ElementNode(
   else
   {
     if (localBindings)
-      addBindingForQName(theName);
+      addBindingForQName(theName, true);
   }
 }
 
@@ -1374,10 +1374,14 @@ void ElementNode::getNamespaceBindings(
     store::NsBindings&            bindings,
     store::StoreConsts::NsScoping ns_scoping) const
 {
+  assert(bindings.empty());
+
   if (theNsContext != NULL)
   {
     if(ns_scoping != store::StoreConsts::ONLY_PARENT_NAMESPACES)
+    {
       bindings = theNsContext->getBindings();
+    }
 
     if(ns_scoping == store::StoreConsts::ONLY_LOCAL_NAMESPACES)
       return;
@@ -1390,6 +1394,8 @@ void ElementNode::getNamespaceBindings(
       ulong parentSize = parentBindings.size();
       ulong currSize = bindings.size();
 
+      // for each parent binding, add it to the result, if it doesn't have the
+      // same prefix as another binding that is already in the result.
       for (ulong i = 0; i < parentSize; i++)
       {
         ulong j;
@@ -1400,7 +1406,9 @@ void ElementNode::getNamespaceBindings(
         }
 
         if (j == currSize)
+        {
           bindings.push_back(parentBindings[i]);
+        }
       }
 
       parentContext = parentContext->getParent();
@@ -1445,12 +1453,22 @@ const store::NsBindings& ElementNode::getLocalBindings() const
 
 
 /*******************************************************************************
-  Add the ns binding that is implied by the given qname. If this ns binding
-  conflicts with the current ns bindings of "this" node, then replace the given
-  qname with a new one that has the same local name and ns uri, but whose
-  prefix is artificially generated so that the conflict is resolved.
+  Add the ns binding that is implied by the given qname, if such a binding does
+  not exist already among the bindings of "this" node. The method returns true
+  if a binding was added, or false otherwise.
+
+  The method also check if the given binding conflicts with the current bindings
+  of "this" node. If a conflict exists and replacePrefix is false, an error is
+  thrown. Else, if a conflict exists and replacePrefix is true, then the method
+  creates and returns a qname with the same local name and ns uri as the given
+  qname, but with a prefix that is artificially generated so that the conflict
+  is resolved.
+
+  This method is used by the ElementNode and AttributeNode constructors with
+  replacePrefix set to true. It is also used by updating methods with 
+  replacePrefix set to false.
 ********************************************************************************/
-void ElementNode::addBindingForQName(store::Item_t& qname)
+bool ElementNode::addBindingForQName(store::Item_t& qname, bool replacePrefix)
 {
   xqpStringStore* prefix = qname->getPrefix();
   xqpStringStore* ns = qname->getNamespace();
@@ -1459,9 +1477,6 @@ void ElementNode::addBindingForQName(store::Item_t& qname)
   ZORBA_FATAL(!ns->empty() || prefix->empty(),
               "prefix = " << prefix->str() << "ns = " << ns->str());
 
-  if (ns->empty())
-    return;
-
   if (prefix->str() != "xml")
   {
     xqpStringStore* ns2 = findBinding(prefix);
@@ -1469,19 +1484,37 @@ void ElementNode::addBindingForQName(store::Item_t& qname)
     if (ns2 == NULL)
     {
       if (!ns->empty())
+      {
         addLocalBinding(prefix, ns);
+        return true;
+      }
     }
     else if (!ns2->byteEqual(*ns))
     {
-      xqpStringStore_t prefix(new xqpStringStore("XXX"));
+      if (replacePrefix)
+      {
+        ZORBA_FATAL(!ns->empty(), "");
 
-      while (findBinding(prefix) != NULL)
-        prefix = prefix->append("X");
+        xqpStringStore_t prefix(new xqpStringStore("XXX"));
 
-      GET_FACTORY().createQName(qname, ns, prefix, qname->getLocalName());
-      addLocalBinding(prefix, ns);
+        while (findBinding(prefix) != NULL)
+          prefix = prefix->append("X");
+
+        GET_FACTORY().createQName(qname, ns, prefix, qname->getLocalName());
+        addLocalBinding(prefix, ns);
+      }
+      else
+      {
+        ZORBA_ERROR_DESC_OSS(XUDY0024,
+                             "The implied namespace binding of "
+                             << qname->show()
+                             << " conflicts with namespace binding ["
+                             << prefix->str() << ", " << ns2->str() << "]");
+      }
     }
   }
+
+  return false;
 }
 
 
@@ -1515,9 +1548,12 @@ void ElementNode::addBindingForQName2(const store::Item* qname)
 
 
 /*******************************************************************************
-  Add a local ns binding to "this". It is assumed that "this" does not already
-  have the given binding among its local bindings (ZORBA_FATAL is called if this
-  condition is not true).
+  Add a given ns binding to the local ns bindings of "this", if it's not already
+  there. It is assumed that the given binding does not conflit with the other
+  local bindings of "this" (ZORBA_FATAL is called if this condition is not true).
+
+  Note: it is possible to add the binding (empty --> empty); this happens when we
+  need to delete the default binding (empty --> ns) from the bindings of "this".
 ********************************************************************************/
 void ElementNode::addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns)
 {
@@ -1535,6 +1571,17 @@ void ElementNode::addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns)
 
 
 /*******************************************************************************
+  Remove the given ns binding from the local ns bindings of "this", if it is
+  there.
+********************************************************************************/
+void ElementNode::removeLocalBinding(xqpStringStore* prefix, xqpStringStore* ns)
+{
+  if (haveLocalBindings())
+    theNsContext->removeBinding(prefix, ns);
+}
+
+
+/*******************************************************************************
   Check if the ns binding implied by the given qname conflicts with the current
   ns bindings of "this" node.
 ********************************************************************************/
@@ -1547,6 +1594,7 @@ void ElementNode::checkNamespaceConflict(
   xqpStringStore* prefix = qn->getPrefix();
   xqpStringStore* ns = qn->getNamespace();
 
+  // Nothing to do if the qname does not imply any ns binding
   if (prefix->empty() && ns->empty())
     return;
 
@@ -1566,11 +1614,13 @@ void ElementNode::checkNamespaceConflict(
   Check that "this" does not have an attr with the same name as the given name.
 ********************************************************************************/
 void ElementNode::checkUniqueAttr(const store::Item* attrName) const
+
 {
   ulong numAttrs = numAttributes();
   for (ulong i = 0; i < numAttrs; i++)
   {
-    if (getAttr(i)->getNodeName()->equals(attrName))
+    XmlNode* attr = getAttr(i);
+    if (attr->getNodeName()->equals(attrName))
     {
       ZORBA_ERROR_PARAM_OSS(XQDY0025,
                             "Attribute name " << *attrName->getStringValue() 
@@ -2003,7 +2053,7 @@ AttributeNode::AttributeNode(
       }
       else if (!isHidden())
       {
-        p->addBindingForQName(theName);
+        p->addBindingForQName(theName, true);
       }
 
       // Connect "this" to its parent. We do this at the end of this method
@@ -2239,11 +2289,11 @@ xqp_string AttributeNode::show() const
 /*******************************************************************************
   Node constructor used by FastXmlLoader
 ********************************************************************************/
-TextNode::TextNode(xqpStringStore_t& value) 
+TextNode::TextNode(xqpStringStore_t& content) 
   :
   XmlNode()
 {
-  setText(value);
+  setText(content);
 
   NODE_TRACE1("Loaded text node " << this << " content = " << *getText());
 }

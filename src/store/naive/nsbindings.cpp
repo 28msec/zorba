@@ -92,6 +92,24 @@ void NsBindingsContext::addBinding(
 }
 
 
+void NsBindingsContext::removeBinding(
+    xqpStringStore* prefix,
+    xqpStringStore* ns)
+{
+  ulong numBindings = theBindings.size();
+
+  for (ulong i = 0; i < numBindings; i++)
+  {
+    if (theBindings[i].first.getStore()->byteEqual(*prefix))
+    {
+      ZORBA_FATAL(theBindings[i].second.getStore()->byteEqual(*ns), "");
+
+      theBindings.erase(theBindings.begin() + i);
+      return;
+    }
+  }
+}
+
 } // namespace store
 } // namespace zorba
 

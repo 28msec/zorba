@@ -53,6 +53,7 @@ public:
   xqpStringStore* findBinding(const xqpStringStore* prefix) const;
 
   void addBinding(xqpStringStore* prefix, xqpStringStore* ns);
+  void removeBinding(xqpStringStore* prefix, xqpStringStore* ns);
 };
 
 

@@ -289,6 +289,7 @@ ReplaceIterator::ReplaceIterator (
 bool
 ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 {
+  bool elemParent;
   store::StoreConsts::NodeKind lTargetKind;
   store::StoreConsts::NodeKind lWithKind;
   store::Item_t lWith;
@@ -339,7 +340,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     ZORBA_ERROR_LOC(XUTY0008, loc);
   }
 
-  if (theType == store::UpdateConsts::NODE) 
+  if (theType == store::UpdateConsts::NODE) // replace node ...
   {
     if (lTarget->getParent() == 0)
     {
@@ -347,6 +348,16 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     }
 
     lParent = lTarget->getParent();
+
+    elemParent = (lParent->getNodeKind() == store::StoreConsts::elementNode);
+
+    // Do not preserve the type of the source nodes (we do this here so that
+    // we don't have to use the upd::setToUntyped() primitive later, during
+    // the application of the PUL).
+    if (lCopyMode.theTypePreserve &&
+        (!elemParent ||
+         lParent->getType()->equals(GENV_TYPESYSTEM.XS_UNTYPED_QNAME)))
+      lCopyMode.theTypePreserve = false;
     
     if ( lTargetKind == store::StoreConsts::attributeNode)
     {
@@ -391,7 +402,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     lNodes.resize(lNumNodes);
     lPul->addReplaceNode(lTarget, lNodes, lCopyMode);
   }
-  else
+  else // replace value of node ...
   {
     lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
@@ -592,7 +603,7 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
       // at some of the copied nodes.
       lPul->checkTransformUpdates(copyNodes);
 
-      std::vector<zorba::store::Item*> validationNodes;
+      std::set<zorba::store::Item*> validationNodes;
 
       lPul->applyUpdates(validationNodes);  
     }

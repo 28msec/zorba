@@ -518,14 +518,15 @@ XQueryImpl::applyUpdates()
           ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR,
                            "Query does not return a pending update list");
 
-        std::vector<zorba::store::Item*> validationNodes;
+        std::set<zorba::store::Item*> validationNodes;
 
         pul->applyUpdates(validationNodes);
 
-        ulong numNodes = validationNodes.size();
-        for (ulong i = 0; i < numNodes; i++)
+        std::set<zorba::store::Item*>::const_iterator it = validationNodes.begin();
+        std::set<zorba::store::Item*>::const_iterator end = validationNodes.end();
+        for (; it != end; it++)
         {
-          std::cout << "Validating node " << validationNodes[i] << std::endl;
+          std::cout << "Validating node " << *it << std::endl;
         }
       }
     }

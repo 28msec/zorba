@@ -69,6 +69,7 @@ bool Properties::getOSConfigFile(std::string& aFileURI)
     
   if (getOSConfigFolder(lFolder)) 
   {
+    // $HOME/.zorba/simplestore.cfg
 #ifdef __win32__
     lStream << lFolder << "\\" << DOT_FILE CONFIG_FOLDER << "\\" << CONFIG_FILE;
 # else

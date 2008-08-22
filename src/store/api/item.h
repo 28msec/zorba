@@ -17,6 +17,7 @@
 #define ZORBA_STORE_ITEM_H
 
 #include <vector>
+#include <set>
 #include <zorba/store_consts.h>
 
 #include "zorbatypes/xqpstring.h"
@@ -540,7 +541,7 @@ public:
   //serializeXML(serializer& ser, std::ostream& os) const;
 
   virtual void
-  applyUpdates(std::vector<zorba::store::Item*>& validationNodes);
+  applyUpdates(std::set<zorba::store::Item*>& validationNodes);
 
   /* -------------------- Methods for tuples --------------------- */
   virtual const std::vector<zorba::store::TupleField>& getTupleFields() const;

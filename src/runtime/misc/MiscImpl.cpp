@@ -129,7 +129,7 @@ bool SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     {
       if (theChildren [i]->isUpdating ())
       {
-        std::vector<zorba::store::Item*> validationNodes;
+        std::set<zorba::store::Item*> validationNodes;
 
         static_cast<store::PUL *> (result.getp ())->applyUpdates(validationNodes);
       }
