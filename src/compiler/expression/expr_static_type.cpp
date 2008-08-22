@@ -155,7 +155,7 @@ static xqtref_t print_expr_ant_type(expr *e, xqtref_t t)
   
   xqtref_t var_expr::return_type_impl(static_context *sctx) {
     xqtref_t type1 = NULL;
-    if (kind == for_var || kind == let_var) {
+    if (kind == for_var || kind == let_var || kind == win_var) {
       assert (m_forlet_clause != NULL);
       type1 = m_forlet_clause->get_expr()->return_type(sctx);
       if (kind == for_var) {

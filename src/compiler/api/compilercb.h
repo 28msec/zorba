@@ -41,6 +41,7 @@ class CompilerCB
     typedef void (* expr_callback) (const expr *, std::string name);
     typedef void (* ast_callback) (const parsenode *, std::string name);
 
+    bool force_gflwor;
     opt_level_t opt_level;
     ast_callback parse_cb;
     expr_callback translate_cb, normalize_cb, optimize_cb;

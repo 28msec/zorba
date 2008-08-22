@@ -60,6 +60,7 @@ CompilerCB::CompilerCB()
       normalize_cb = print_expr_tree_normalization;
     if (Properties::instance()->printOptimized())
       optimize_cb = print_expr_tree_optimization;
+    force_gflwor = Properties::instance()->forceGflwor();
   }
 
 } /* namespace zorba */

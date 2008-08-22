@@ -48,6 +48,7 @@ public:
   EXPR_VISITOR_METHODS (var_expr);
   EXPR_VISITOR_METHODS (order_modifier);
   EXPR_VISITOR_METHODS (flwor_expr);
+  EXPR_VISITOR_METHODS (gflwor_expr);
   EXPR_VISITOR_METHODS (case_clause);
   EXPR_VISITOR_METHODS (promote_expr);
   EXPR_VISITOR_METHODS (trycatch_expr);

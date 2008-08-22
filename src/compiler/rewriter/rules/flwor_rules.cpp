@@ -309,7 +309,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   {
     rchandle<fo_expr> result = new fo_expr (LOC (WHERE),
                                             LOOKUP_FN ("fn", "subsequence", 3),
-                                            pvar->get_forlet_clause ()->get_expr (),
+                                            pvar->get_flwor_clause ()->get_expr (),
                                             &*pos,
                                             new const_expr (LOC (pos),
                                                             xqp_double::parseInt (1)));

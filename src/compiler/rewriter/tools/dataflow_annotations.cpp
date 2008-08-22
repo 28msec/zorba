@@ -164,8 +164,8 @@ void DataflowAnnotationsComputer::compute_var_expr(var_expr *e)
 {
   if (!generic_compute(e)) {
     if (e->get_kind() == var_expr::let_var) {
-      PROPOGATE_SORTED_NODES(e->get_forlet_clause()->get_expr().getp(), e);
-      PROPOGATE_DISTINCT_NODES(e->get_forlet_clause()->get_expr().getp(), e);
+      PROPOGATE_SORTED_NODES(e->get_flwor_clause()->get_expr().getp(), e);
+      PROPOGATE_DISTINCT_NODES(e->get_flwor_clause()->get_expr().getp(), e);
     }
   }
 }

@@ -39,6 +39,22 @@ public:
 
 };
 
+class flwor_clause : public SimpleRCObject {
+};
+
+class flwor_initial_clause : public flwor_clause {
+protected:
+  varref_t var_h;
+  expr_t expr_h;
+
+public:
+  flwor_initial_clause (varref_t var_, expr_t expr_)
+    : var_h (var_), expr_h (expr_) {}
+  void set_expr(expr_t v) { expr_h = v; }
+  expr_t get_expr() const { return expr_h; }
+  varref_t get_var() const { return var_h; }
+  void set_var(varref_t v) { var_h = v; if (var_h != NULL) { var_h->set_forlet_clause(this); } }
+};
 
 /******************************************************************************
 
@@ -54,7 +70,7 @@ public:
      | VARNAME  TypeDeclaration  PositionalVar  FTScoreVar  "in"  ExprSingle
 
 ********************************************************************************/
-class forlet_clause : public SimpleRCObject {
+class forlet_clause : public flwor_initial_clause {
   friend class flwor_expr;
 public:
   enum forlet_t {
@@ -64,10 +80,8 @@ public:
 
 protected: // state
   enum forlet_t type;
-  varref_t var_h;
   varref_t pos_var_h;
   varref_t score_var_h;
-  expr_t expr_h;
 
 public: // ctor,dtor
   forlet_clause(
@@ -80,16 +94,12 @@ public: // ctor,dtor
 
 public: // accessors
   enum forlet_t get_type() const { return type; }
-  varref_t get_var() const { return var_h; }
   varref_t get_pos_var() const { return pos_var_h; }
   varref_t get_score_var() const { return score_var_h; }
-  expr_t get_expr() const { return expr_h; }
 
   void set_type(enum forlet_t v) { type = v; }
-  void set_var(varref_t v) { var_h = v; if (var_h != NULL) { var_h->set_forlet_clause(this); } }
   void set_pos_var(varref_t v) { pos_var_h = v; if (pos_var_h != NULL) { pos_var_h->set_forlet_clause(this); } }
   void set_score_var(varref_t v) { score_var_h = v; if (score_var_h != NULL) { score_var_h->set_forlet_clause(this); } }
-  void set_expr(expr_t v) { expr_h = v; }
 
 public:
   std::ostream& put(std::ostream&) const;
@@ -97,7 +107,7 @@ public:
   rchandle<forlet_clause> clone(expr::substitution_t& substitution);
 };
 
-class group_clause : public SimpleRCObject {
+class group_clause : public flwor_clause {
   friend class flwor_expr;
 protected:
   varref_t    theOuterVar;

@@ -89,6 +89,15 @@ public:
   flwor_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
 };
 
+class gflwor_expr_iterator_data : public expr_iterator_data {
+public:
+  gflwor_expr::clause_list_t::iterator clause_iter;
+  int wincond_iter;
+
+public:
+  gflwor_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
+};
+
 class trycatch_expr_iterator_data : public expr_iterator_data {
 public:
   std::vector<trycatch_expr::clauseref_t>::const_iterator clause_iter;
@@ -161,6 +170,7 @@ DEF_ACCEPT (debugger_expr)
 DEF_ACCEPT (sequential_expr)
 DEF_ACCEPT (var_expr)
 DEF_ACCEPT (flwor_expr)
+DEF_ACCEPT (gflwor_expr)
 DEF_ACCEPT (promote_expr)
 DEF_ACCEPT (trycatch_expr)
 DEF_ACCEPT (eval_expr)
@@ -305,7 +315,13 @@ string var_expr::decode_var_kind(
   switch (k) {
   case for_var: return "FOR"; break;
   case let_var: return "LET"; break;
+  case win_var: return "WIN"; break;
   case pos_var: return "POS"; break;
+  case wincond_var: return "WINCOND"; break;
+  case wincond_in_var: return "WINCOND IN"; break;
+  case wincond_pos_var: return "WINCOND POS"; break;
+  case wincond_in_pos_var: return "WINCOND IN POS"; break;
+  case count_var: return "CNT"; break;
   case score_var: return "SCORE"; break;
   case quant_var: return "QUANT"; break;
   case context_var: return "CTX"; break;
@@ -339,6 +355,9 @@ expr::expr_t var_expr::clone(expr::substitution_t& substitution)
   return i->second->clone(substitution);
 }
 
+forlet_clause *var_expr::get_forlet_clause() const
+{ return dynamic_cast<forlet_clause *> (m_forlet_clause); }
+
 // [33] [http://www.w3.org/TR/xquery/#prod-xquery-FLWORExpr]
 
 
@@ -349,11 +368,10 @@ forlet_clause::forlet_clause(
   varref_t _score_var_h,
   expr_t _expr_h)
 :
+  flwor_initial_clause (_var_h, _expr_h),
   type(_type),
-  var_h(_var_h),
   pos_var_h(_pos_var_h),
-  score_var_h(_score_var_h),
-  expr_h(_expr_h)
+  score_var_h(_score_var_h)
 {
   if (var_h != NULL) {
     var_h->set_forlet_clause(this);
@@ -388,6 +406,40 @@ rchandle<forlet_clause> forlet_clause::clone(expr::substitution_t& substitution)
   }
 
   return new forlet_clause(type, var_copy_h, pos_var_copy_h, score_var_copy_h, expr_copy_h);
+}
+
+void orderby_gclause::init_clauses () {
+  for (unsigned i = 0; i < rebind_list.size (); i++) {
+    rebind_list [i].second->set_forlet_clause (rebind_list [i].first->get_flwor_clause ());
+  }
+}
+
+forletwin_gclause::forletwin_gclause(enum forlet_t _type,
+                                     varref_t _var_h,
+                                     expr_t _expr_h,
+                                     varref_t _pos_var_h,
+                                     varref_t _score_var_h,
+                                     window_t wintype_,
+                                     std::auto_ptr<flwor_wincond> win_start_,
+                                     std::auto_ptr<flwor_wincond> win_stop_)
+    : flwor_initial_clause (_var_h, _expr_h),
+      type (_type), wintype (wintype_),
+      pos_var_h (_pos_var_h),
+      win_start (win_start_), win_stop (win_stop_)
+{
+  if (_var_h != NULL) {
+    _var_h->set_forlet_clause(this);
+  }
+  if (_pos_var_h != NULL) {
+    _pos_var_h->set_forlet_clause(this);
+  }
+  if (_score_var_h != NULL) {
+    _score_var_h->set_forlet_clause(this);
+  }
+  if (win_start.get () != NULL)
+    win_start->set_forlet_clause (this);
+  if (win_stop.get () != NULL)
+    win_stop->set_forlet_clause (this);
 }
 
 flwor_expr::clause_list_t::iterator flwor_expr::remove_forlet_clause(flwor_expr::clause_list_t::iterator i) {
@@ -450,6 +502,62 @@ expr::expr_t flwor_expr::clone(expr::substitution_t& substitution)
   flwor_copy_ptr->set_retval(retval_h->clone(substitution));
 
   return flwor_copy;
+}
+
+void flwor_wincond::vars::set_forlet_clause (forletwin_gclause *c) {
+  if (posvar != NULL) posvar->set_forlet_clause (c);
+  if (curr != NULL) curr->set_forlet_clause (c);
+  if (prev != NULL) prev->set_forlet_clause (c);
+  if (next != NULL) next->set_forlet_clause (c);
+}
+
+void flwor_wincond::set_forlet_clause (forletwin_gclause *c) {
+  in_vars.set_forlet_clause (c);
+  out_vars.set_forlet_clause (c);
+}
+
+void gflwor_expr::push_back (rchandle<flwor_clause> c) {
+  clauses.push_back (c);
+  if (typeid (*c) == typeid (orderby_gclause)) {
+    c.cast<orderby_gclause> ()->init_clauses ();
+  }
+}
+
+expr_iterator_data *gflwor_expr::make_iter () {
+  return new gflwor_expr_iterator_data (this);
+}
+
+void gflwor_expr::next_iter (expr_iterator_data& v) {
+  flwor_clause *c;
+  forletwin_gclause *flc;
+  flwor_wincond *wincond;
+  BEGIN_EXPR_ITER2 (gflwor_expr);
+
+  for (vv.clause_iter = clauses.begin (); vv.clause_iter != clauses.end (); vv.clause_iter++) {
+    c = (vv.clause_iter)->getp ();
+    if (typeid (*c) == typeid (forletwin_gclause)) {
+      if (static_cast<forletwin_gclause *> (c)->get_type () == forletwin_gclause::win_clause) {
+        for (vv.wincond_iter = 0; vv.wincond_iter < 2; vv.wincond_iter++) {
+          flc = static_cast<forletwin_gclause *> ((vv.clause_iter)->getp ());
+          wincond = vv.wincond_iter == 0 ? flc->win_start.get () : flc->win_stop.get ();
+          if (wincond != 0)
+            ITER (wincond->cond);
+        }
+      }
+      flc = static_cast<forletwin_gclause *> ((vv.clause_iter)->getp ());
+      ITER (flc->expr_h);
+    } else if (typeid (*c) == typeid (where_gclause)) {
+      ITER (static_cast<where_gclause *> (c)->where);
+    } else if (typeid (*c) == typeid (orderby_gclause)) {
+      // TODO: we should probably iterate over inner vars as well.
+      // If so these need to become expr_t's.
+      ITER (static_cast<orderby_gclause *> (c)->order);
+    }
+  }
+
+  ITER (retval_h);
+  
+  END_EXPR_ITER(); 
 }
 
 catch_clause::catch_clause()

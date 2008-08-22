@@ -27,6 +27,7 @@ namespace zorba {
 *******************************************************************************/
 
 class forlet_clause;
+class flwor_initial_clause;
 
 class var_expr : public expr {
 public:
@@ -37,7 +38,13 @@ public:
     for_var,
     let_var,
     pos_var,
+    win_var,
     score_var,
+    wincond_var,
+    wincond_pos_var,
+    wincond_in_var,
+    wincond_in_pos_var,
+    count_var,
     quant_var,
     context_var,
     param_var,
@@ -76,11 +83,12 @@ public:
   virtual expr_t clone(substitution_t& substitution);
   virtual xqtref_t return_type_impl (static_context *);
 
-  void set_forlet_clause(forlet_clause *flclause) { m_forlet_clause = flclause; }
-  forlet_clause *get_forlet_clause() { return m_forlet_clause; }
+  void set_forlet_clause(flwor_initial_clause *flclause) { m_forlet_clause = flclause; }
+  forlet_clause *get_forlet_clause() const;
+  flwor_initial_clause *get_flwor_clause() const { return m_forlet_clause; }
 
 protected:
-  forlet_clause *m_forlet_clause;
+  flwor_initial_clause *m_forlet_clause;
 };
 
   typedef rchandle<var_expr> varref_t;

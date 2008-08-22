@@ -36,6 +36,15 @@
 using namespace std;
 namespace zorba {
   
+  static inline xqp_string qname_to_string (store::Item_t qname) {
+    xqp_string result;
+    xqp_string pfx = qname->getPrefix (), ns = qname->getNamespace();
+    if (! ns.empty ())
+      result += pfx + "[=" + qname->getNamespace()->str() + "]:";
+    result += qname->getLocalName()->str();
+    return result;
+  }
+
   static inline ostream &put_qname (store::Item_t qname, ostream &os) {
     xqp_string pfx = qname->getPrefix (), ns = qname->getNamespace();
     if (! ns.empty ())
@@ -111,6 +120,38 @@ ostream & forlet_clause::put( ostream& os) const
   CLOSE_EXPR;
 }
 
+ostream & flwor_wincond::vars::put( ostream& os) const
+{
+  BEGIN_EXPR (flwor_wincond::vars);
+  PUT_SUB ("AT", posvar);
+  PUT_SUB ("CURR", curr);
+  PUT_SUB ("NEXT", next);
+  PUT_SUB ("PREV", prev);
+  CLOSE_EXPR;
+}
+
+ostream & flwor_wincond::put( ostream& os) const
+{
+  BEGIN_EXPR (flwor_wincond);
+  PUT_SUB ("IN-VARS", &get_in_vars ());
+  PUT_SUB ("OUT-VARS", &get_out_vars ());
+  PUT_SUB ("WHEN", cond);
+  CLOSE_EXPR;
+}
+
+ostream & forletwin_gclause::put( ostream& os) const
+{
+  BEGIN_EXPR (forletwin);
+
+  get_var ()->put(os);
+  PUT_SUB ("AT", pos_var_h);
+  PUT_SUB ("SCORE", score_var_h);
+  PUT_SUB (var_h->get_kind() == var_expr::let_var ? ":=" : "IN", expr_h);
+  PUT_SUB ("START", win_start.get());
+  PUT_SUB ("STOP", win_stop.get());
+  CLOSE_EXPR;
+}
+
 ostream& flwor_expr::put( ostream& os) const
 {
   BEGIN_EXPR (flwor_expr);;
@@ -168,6 +209,61 @@ ostream& flwor_expr::put( ostream& os) const
     retval_h->put(os);
   }
 
+  CLOSE_EXPR;
+}
+
+ostream &orderby_gclause::put( ostream &os ) const {
+  BEGIN_EXPR (orderby_gclause);
+  order->put (os);
+  os << DENT << "REBIND ";
+  for (unsigned i = 0; i < rebind_list.size (); i++) {
+    os << "$";
+    put_qname (rebind_list [i].first->get_varname (), os) << " (" << rebind_list [i].first.getp () << " -> " << rebind_list [i].second.getp () << ") ";
+  }
+  os << endl;
+  CLOSE_EXPR;
+}
+
+ostream &group_gclause::put( ostream &os ) const {
+  BEGIN_EXPR (group_gclause);
+  os << DENT << "GROUP ";
+  for (unsigned i = 0; i < inner_rebind.size (); i++) {
+    os << "$";
+    put_qname (inner_rebind [i].first->get_varname (), os) << " ";
+  }
+  os << endl;
+  os << DENT << "REBIND ";
+  for (unsigned i = 0; i < outer_rebind.size (); i++) {
+    os << "$";
+    put_qname (outer_rebind [i].first->get_varname (), os) << " ";
+  }
+  os << endl;
+  CLOSE_EXPR;
+}
+
+ostream& gflwor_expr::put( ostream& os) const
+{
+  BEGIN_EXPR (gflwor_expr);
+  for (int i = 0; i < size (); i++) {
+    const flwor_clause &c = *((*this) [i]);
+    if (typeid (c) == typeid (where_gclause))
+      PUT_SUB ("WHERE", static_cast<const where_gclause *> (&c)->get_where ());
+    else if (typeid (c) == typeid (count_gclause)) {
+      os << DENT << "COUNT $"; put_qname (static_cast<const count_gclause *> (&c)->get_var ()->get_varname (), os) << endl;
+    } else if (typeid (c) == typeid (forletwin_gclause)) {
+      static_cast<const forletwin_gclause *> (&c)->put (os);
+    } else if (typeid (c) == typeid (group_gclause)) {
+      static_cast<const group_gclause *> (&c)->put (os);
+    } else if (typeid (c) == typeid (orderby_gclause)) {
+      static_cast<const orderby_gclause *> (&c)->put (os);
+    }
+  }
+  os << DENT << "RETURN\n";
+  if (retval_h == NULL) {
+    os << "NULL";
+  } else {
+    retval_h->put(os);
+  }
   CLOSE_EXPR;
 }
 

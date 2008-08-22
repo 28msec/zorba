@@ -37,7 +37,7 @@ protected:
     friend class ParseNodePrintXMLVisitor;
 
 public:
-	parsenode(const QueryLoc& _loc) : loc(_loc) { }
+	parsenode(const QueryLoc& loc_) : loc(loc_) { }
   virtual ~parsenode() {}
 
 public:
@@ -64,8 +64,8 @@ public:
 class ParseErrorNode : public parsenode {
 public:
   std::string msg;
-  ParseErrorNode (const QueryLoc& loc, std::string msg_)
-    : parsenode (loc), msg (msg_)
+  ParseErrorNode (const QueryLoc& loc_, std::string msg_)
+    : parsenode (loc_), msg (msg_)
   {}
 
 public:

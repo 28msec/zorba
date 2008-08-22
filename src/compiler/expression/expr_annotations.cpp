@@ -44,7 +44,7 @@ void SourceFinder::findSources(expr *e)
         switch(var->get_kind()) {
           case var_expr::for_var:
           case var_expr::let_var:
-            findSources(&*var->get_forlet_clause()->get_expr());
+            findSources(&*var->get_flwor_clause()->get_expr());
             break;
 
           case var_expr::context_var:

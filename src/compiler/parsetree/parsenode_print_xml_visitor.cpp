@@ -170,7 +170,7 @@ BEGIN_TAG (EmptyOrderDecl)
 
 BEGIN_TAG (ForClause)
 
-BEGIN_TAG (ForLetClauseList)
+BEGIN_TAG (FLWORClauseList)
 
 void *begin_visit(const ForwardAxis &n)
 {
@@ -551,6 +551,9 @@ void *begin_visit(const VersionDecl &n)
 
 BEGIN_TAG (VFO_DeclList)
 
+BEGIN_TAG (CountClause)
+END_TAG (CountClause)
+
 BEGIN_TAG (WhereClause)
 
 void *begin_visit(const QName &n)
@@ -678,6 +681,15 @@ BEGIN_TAG (Expr)
 BEGIN_TAG (ExtensionExpr)
 
 BEGIN_TAG (FLWORExpr)
+
+BEGIN_TAG (WindowClause);
+END_TAG (WindowClause);
+BEGIN_TAG (WindowVarDecl);
+END_TAG (WindowVarDecl);
+BEGIN_TAG (FLWORWinCond);
+END_TAG (FLWORWinCond);
+BEGIN_TAG (WindowVars);
+END_TAG (WindowVars);
 
 BEGIN_TAG (FilterExpr)
 
@@ -929,7 +941,7 @@ END_TAG (EmptyOrderDecl)
 
 END_TAG (ForClause)
 
-END_TAG (ForLetClauseList)
+END_TAG (FLWORClauseList)
 
 END_TAG (ForwardAxis)
 

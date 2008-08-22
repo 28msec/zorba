@@ -115,6 +115,22 @@ bool begin_visit (flwor_expr& node)
   return true;
 }
 
+void end_visit (gflwor_expr& node) {
+  for (int i = 0; i < node.size (); i++) {
+    flwor_clause &c = *(node [i]);
+    if (typeid (c) == typeid (where_gclause)) {
+      where_gclause *wc = static_cast<where_gclause *> (&c);
+      wc->set_where (wrap_in_bev (m_sctx, wc->get_where ()));
+    } else if (typeid (c) == typeid (orderby_gclause)) {
+      orderby_gclause *obc = static_cast<orderby_gclause *> (&c);
+      obc->set_expr (wrap_in_atomization (m_sctx, obc->get_expr ()));
+    }
+  }
+}
+bool begin_visit (gflwor_expr& node) {
+  return true;
+}
+
 void end_visit (case_clause&) {}
 bool begin_visit (case_clause& node)
 {

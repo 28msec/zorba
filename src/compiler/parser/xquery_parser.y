@@ -47,13 +47,17 @@
 
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
+#include "compiler/api/compilercb.h"
 #include "store/api/update_consts.h"
-
 
 #define SYMTAB( n ) driver.symtab.get ((off_t) n)
 #define LOC( p ) driver.createQueryLoc(p)
 
 namespace zorba {
+  namespace parser {
+    extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end, *the_ofor;
+  }
+
   class xquery_driver;
 
   class FunctionSig {
@@ -119,6 +123,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
   zorba::exprnode * expr;
   zorba::FunctionSig *fnsig;
   off_t sval;
+  const char *strval;
 	xqp_integer* ival;
 	xqp_double* dval;
 	xqp_decimal* decval;
@@ -134,6 +139,11 @@ static void print_token_value(FILE *, int, YYSTYPE);
 */
 
 %token	_EOF	0 "end of file"
+
+/* constant string tokens */
+%type <strval> WindowType
+%type <strval> ForDollar
+%type <strval> FLWORWinCondType
 
 /* tokens that contain embedded string literals */
 /* -------------------------------------------- */
@@ -203,6 +213,14 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token CONSTRUCTION               "'construction'"
 %token EVAL                       "'eval'"
 %token FOR                        "'for'"
+%token OUTER                       "'outer'"
+%token SLIDING                    "'sliding'"
+%token TUMBLING                   "'tumbling'"
+%token PREVIOUS  "'previous'"
+%token NEXT  "'next'"
+%token ONLY  "'only'"
+%token WHEN  "'when'"
+%token COUNT  "'count'"
 %token ORDERING                   "'ordering'"
 %token CONT                       "'cont'"
 %token BASE_URI                   "'base-uri'"
@@ -446,9 +464,11 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> DocumentTest
 %type <node> ElementTest
 %type <node> EmptyOrderDecl
+%type <node> WindowClause
 %type <node> ForClause
-%type <node> ForLetClause
-%type <node> ForLetClauseList
+%type <node> ForLetWinClause
+%type <node> FLWORClause
+%type <node> FLWORClauseList
 %type <node> ForwardAxis
 %type <node> ForwardStep
 %type <node> FunctionDecl
@@ -471,7 +491,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> GroupSpecList
 %type <node> GroupSpec
 %type <node> GroupCollationSpec
-%type <node> LetClauseList
 %type <node> OrderByClause
 %type <node> OrderCollationSpec
 %type <node> OrderDirSpec
@@ -516,12 +535,18 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> VarGetsDeclList
 %type <node> VarInDecl
 %type <node> VarInDeclList
+%type <node> WindowVarDecl
+%type <node> WindowVars
+%type <node> WindowVars2
+%type <node> WindowVars3
+%type <node> FLWORWinCond
 %type <node> EvalVarDecl
 %type <node> EvalVarDeclList
 %type <node> VersionDecl
 %type <node> VFO_Decl
 %type <node> VFO_DeclList
 %type <node> WhereClause
+%type <node> CountClause
 %type <node> Wildcard
 
 /* left-hand sides: expressions */
@@ -662,8 +687,12 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // TODO: FT stuff, update stuff
 // HACK to trigger rchandle release: rchandles are freed when refcount == 0
 // (not <= 0); but Bison never increments the refcount, so we do it manually...
-%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl ForClause ForLetClause ForLetClauseList ForwardAxis ForwardStep FunctionDecl Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec LetClauseList OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
+
+// parsenodes
+%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
+// exprnodes
 %destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockBody EnclosedExpr Expr ExprSingle ExtensionExpr FLWORExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl ExitExpr WhileExpr FlowCtlStatement FTContainsExpr
+// internal class
 %destructor { delete $$; } FunctionSig;
 
 /*_____________________________________________________________________
@@ -777,7 +806,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 // [1] Module
 // ----------
-// TODO: use VersionDecl's when available
 Module :
     MainModule
 		{
@@ -795,7 +823,7 @@ Module :
        $$ = $1;
        driver.set_expr ($$);
 		}
-  | VersionDecl LibraryModule 
+  | VersionDecl LibraryModule
 		{
        dynamic_cast<LibraryModule *> ($2)->set_version_decl (static_cast<VersionDecl *> ($1));
        $$ = $2;
@@ -825,15 +853,15 @@ MainModule :
     Prolog  QueryBody
 		{
 			$$ = new MainModule(LOC (@$),
-								static_cast<Prolog*>($1),
-								static_cast<QueryBody*>($2));
+								static_cast<QueryBody*>($2),
+								static_cast<Prolog*>($1));
 		}
 	|
     QueryBody
 		{
 			$$ = new MainModule(LOC (@$),
-								NULL,
-								static_cast<QueryBody*>($1));
+								static_cast<QueryBody*>($1),
+                NULL);
 		}
   ;
 
@@ -930,44 +958,20 @@ VFO_DeclList :
 // --------------
 SIND_Decl :
 		Setter
-		{
-			$$ = $1;
-		}
 	| Import
-		{
-			$$ = $1;
-		}
 	| NamespaceDecl
-		{
-			$$ = $1;
-		}
 	| DefaultNamespaceDecl
-		{
-			$$ = $1;
-		}
 	;
 
 
 // [6d] VFO_Decl
 VFO_Decl :
 		VarDecl
-		{
-			$$ = $1;
-		}
 	| FunctionDecl
-		{
-			$$ = $1;
-		}
 	| OptionDecl
-		{
-			$$ = $1;
-		}
-	
+
 	/* full-text extension */
 	| FTOptionDecl
-		{
-			$$ = $1;
-		}
 	;
 
 
@@ -975,39 +979,15 @@ VFO_Decl :
 // ----------
 Setter :
 		BoundarySpaceDecl
-		{
-			$$ = $1;
-		}
 	| DefaultCollationDecl
-		{
-			$$ = $1;
-		}
 	| BaseURIDecl
-		{
-			$$ = $1;
-		}
 	| ConstructionDecl
-		{
-			$$ = $1;
-		}
 	| OrderingModeDecl
-		{
-			$$ = $1;
-		}
 	| EmptyOrderDecl
-		{
-			$$ = $1;
-		}
 	| CopyNamespacesDecl
-		{
-			$$ = $1;
-		}
 
 	/* update extension */
 	| RevalidationDecl
-		{
-			$$ = $1;
-		}
 	;
 
 
@@ -1015,13 +995,7 @@ Setter :
 // ----------
 Import :
 		SchemaImport
-		{
-			$$ = $1;
-		}
 	| ModuleImport
-		{
-			$$ = $1;
-		}
 	;
 
 
@@ -1552,200 +1526,141 @@ Expr :
 // [32] ExprSingle
 // ---------------
 ExprSingle :
-		FLWORExpr
-		{
-			$$ = $1;
-		}
-	|	QuantifiedExpr
-		{
-			$$ = $1;
-		}
-	|	TypeswitchExpr
-		{
-			$$ = $1;
-		}
-	|	IfExpr
-		{
-			$$ = $1;
-		}
-	|	OrExpr
-		{
-			$$ = $1;
-		}
+    FLWORExpr
+  | QuantifiedExpr
+  | TypeswitchExpr
+  | IfExpr
+  | OrExpr
 
-		/* update extensions */
-	| InsertExpr
-		{
-			$$ = $1;
-		}
-	| DeleteExpr
-		{
-			$$ = $1;
-		}
-	| RenameExpr
-		{
-			$$ = $1;
-		}
-	| ReplaceExpr
-		{
-			$$ = $1;
-		}
-	| TransformExpr
-		{
-			$$ = $1;
-		}
+    /* update extensions */
+  | InsertExpr
+  | DeleteExpr
+  | RenameExpr
+  | ReplaceExpr
+  | TransformExpr
   | TryExpr
-    {
-      $$ = $1;
-    }
   | EvalExpr
-    {
-      $$ = $1;
-    }
   | ExitExpr
-    {
-      $$ = $1;
-    }
   | WhileExpr
-    {
-      $$ = $1;
-    }
   | FlowCtlStatement
-    {
-      $$ = $1;
-    }
   | Block
-    {
-      $$ = $1;
-    }
     ;
 
 
 // [33] FLWORExpr
 // --------------
 FLWORExpr :
-	  ForLetClauseList  RETURN  ExprSingle
-		{
-			$$ = new FLWORExpr(LOC (@$),
-								dynamic_cast<ForLetClauseList*>($1),
-								NULL,NULL,NULL,
-								$3);
-		}
-	|	ForLetClauseList  WhereClause  RETURN  ExprSingle
-		{
-			$$ = new FLWORExpr(LOC (@$),
-								dynamic_cast<ForLetClauseList*>($1),
-								dynamic_cast<WhereClause*>($2),
-								NULL,NULL,
-								$4);
-		}
-	|	ForLetClauseList  OrderByClause  RETURN  ExprSingle
-		{
-			$$ = new FLWORExpr(LOC (@$),
-								dynamic_cast<ForLetClauseList*>($1),
-								NULL,NULL,
-								dynamic_cast<OrderByClause*>($2),
-								$4);
-		}
-	|	ForLetClauseList  WhereClause  OrderByClause  RETURN  ExprSingle
-		{
-			$$ = new FLWORExpr(LOC (@$),
-								dynamic_cast<ForLetClauseList*>($1),
-								dynamic_cast<WhereClause*>($2),
-                NULL,
-								dynamic_cast<OrderByClause*>($3),
-								$5);
-		}
-  | ForLetClauseList GroupByClause RETURN ExprSingle
+    FLWORClauseList RETURN ExprSingle
     {
-      GroupByClause* lGroupBy = dynamic_cast<GroupByClause*>($2);
-			FLWORExpr* lFLWOR = new FLWORExpr(LOC (@$),
-								dynamic_cast<ForLetClauseList*>($1),
-								NULL,
-                lGroupBy,
-								NULL,
-								$4);
-      lGroupBy->set_flwor(lFLWOR);
-      $$ = lFLWOR;
+      $$ = new FLWORExpr (LOC (@$), dynamic_cast<FLWORClauseList*>($1), $3, driver.theCompilerCB->m_config.force_gflwor);
     }
-  | ForLetClauseList WhereClause GroupByClause RETURN ExprSingle
-    {
-      GroupByClause* lGroupBy = dynamic_cast<GroupByClause*>($3);
-			FLWORExpr* lFLWOR = new FLWORExpr(LOC (@$),
-								dynamic_cast<ForLetClauseList*>($1),
-								dynamic_cast<WhereClause*>($2),
-                lGroupBy,
-								NULL,
-								$5);
-      lGroupBy->set_flwor(lFLWOR);
-      $$ = lFLWOR;
-    }
-  | ForLetClauseList GroupByClause OrderByClause RETURN ExprSingle
-    {
-      GroupByClause* lGroupBy = dynamic_cast<GroupByClause*>($2);
-			FLWORExpr* lFLWOR = new FLWORExpr(LOC (@$),
-								dynamic_cast<ForLetClauseList*>($1),
-								NULL,
-                lGroupBy,
-								dynamic_cast<OrderByClause*>($3),
-								$5);
-      lGroupBy->set_flwor(lFLWOR);
-      $$ = lFLWOR;
-    }
-  | ForLetClauseList WhereClause GroupByClause OrderByClause RETURN ExprSingle
-    {
-      GroupByClause* lGroupBy = dynamic_cast<GroupByClause*>($3);
-			FLWORExpr* lFLWOR = new FLWORExpr(LOC (@$),
-								dynamic_cast<ForLetClauseList*>($1),
-								dynamic_cast<WhereClause*>($2),
-                lGroupBy,
-								dynamic_cast<OrderByClause*>($4),
-								$6);
-      lGroupBy->set_flwor(lFLWOR);
-      $$ = lFLWOR;
-    }
-	;
+    ;
 
 
-// [33a] ForLetClauseList
-// ----------------------
-ForLetClauseList :
-		ForLetClause
-		{
-			ForLetClauseList* flc_list_p = new ForLetClauseList(LOC (@$));
-			flc_list_p->push_back(dynamic_cast<ForOrLetClause *> ($1));
-			$$ = flc_list_p;
-		}
-	|	ForLetClauseList  ForLetClause
-		{
-			ForLetClauseList* flc_list_p = dynamic_cast<ForLetClauseList*>($1);
-			if (flc_list_p) flc_list_p->push_back(dynamic_cast<ForOrLetClause *> ($2));
-			$$ = $1;
-		}
-	;
+WindowType :
+    SLIDING WINDOW
+    {
+      $$ = parser::the_sliding;
+    }
+  | TUMBLING WINDOW
+    {
+      $$ = parser::the_tumbling;
+    }
+  ;
 
 
-// [33b] ForLetClause
+FLWORWinCondType :
+    START
+    {
+      $$ = parser::the_start;
+    }
+  | END
+    {
+      $$ = parser::the_end;
+    }
+  | ONLY END
+    {
+      $$ = parser::the_only_end;
+    }
+  ;
+
+FLWORWinCond :
+    FLWORWinCondType WindowVars WHEN ExprSingle
+    {
+      $$ = new FLWORWinCond (LOC (@$), dynamic_cast<WindowVars *> ($2), $4, $1 == parser::the_start, $1 == parser::the_only_end);
+    }
+  | FLWORWinCondType WHEN ExprSingle
+    {
+      $$ = new FLWORWinCond (LOC (@$), NULL, $3, $1 == parser::the_start, $1 == parser::the_only_end);
+    }
+  ;
+
+WindowClause :
+    FOR WindowType WindowVarDecl FLWORWinCond FLWORWinCond
+    {
+      $$ = new WindowClause (LOC (@$), ($2 == parser::the_tumbling) ? WindowClause::tumbling_window : WindowClause::sliding_window, dynamic_cast<WindowVarDecl *> ($3),
+                             dynamic_cast<FLWORWinCond *> ($4), dynamic_cast<FLWORWinCond *> ($5));
+    }
+  | FOR WindowType WindowVarDecl FLWORWinCond
+    {
+      $$ = new WindowClause (LOC (@$), ($2 == parser::the_tumbling) ? WindowClause::tumbling_window : WindowClause::sliding_window, dynamic_cast<WindowVarDecl *> ($3),
+                             dynamic_cast<FLWORWinCond *> ($4), NULL);
+    }
+  ;
+
+
+CountClause :
+    COUNT DOLLAR QNAME
+    {
+      $$ = new CountClause (LOC (@$), driver.symtab.get((off_t)$3));
+    }
+    ;
+
+// [33b] ForLetWinClause
 // ------------------
-ForLetClause :
+ForLetWinClause :
 		ForClause
-		{
-			$$ = $1;
-		}
 	|	LetClause
-		{
-			$$ = $1;
-		}
+  | WindowClause
 	;
 
+FLWORClause :
+    ForLetWinClause | WhereClause | OrderByClause | GroupByClause | CountClause;
+
+FLWORClauseList :
+    ForLetWinClause
+    {
+      FLWORClauseList *l = new FLWORClauseList (LOC (@$));
+      l->push_back (dynamic_cast<FLWORClause *> ($1));
+      $$ = l;
+    }
+  | FLWORClauseList FLWORClause
+    {
+      FLWORClauseList *l = dynamic_cast<FLWORClauseList *> ($1);
+      l->push_back (dynamic_cast<FLWORClause *> ($2));
+      $$ = l;
+    }
+  ;
+
+ForDollar :
+    FOR DOLLAR
+    {
+      $$ = NULL;
+    }
+  | OUTER FOR DOLLAR
+    {
+      $$ = parser::the_ofor;
+    }
+  ;
+    
 
 // [34] ForClause
 // --------------
 ForClause :
-		FOR DOLLAR  VarInDeclList
+		ForDollar VarInDeclList
 		{
 			$$ = new ForClause(LOC (@$),
-								dynamic_cast<VarInDeclList*>($3));
+                         dynamic_cast<VarInDeclList*>($2), $1 != NULL);
 		}
 	;
 
@@ -1957,6 +1872,63 @@ VarGetsDecl :
 	;
 
 
+WindowVarDecl :
+		DOLLAR QNAME  _IN  ExprSingle
+		{
+			$$ = new WindowVarDecl(LOC (@$),
+								driver.symtab.get((off_t)$2),
+								NULL, $4);
+		}
+	|	DOLLAR QNAME  TypeDeclaration  _IN  ExprSingle
+		{
+			$$ = new WindowVarDecl(LOC (@$),
+								driver.symtab.get((off_t)$2),
+								dynamic_cast<TypeDeclaration*>($3),
+								$5);
+		}
+
+
+WindowVars :
+    WindowVars3
+  | DOLLAR QNAME
+    {
+      $$ = new WindowVars (LOC (@$), NULL, driver.symtab.get((off_t)$2), "", "");
+    }
+  | DOLLAR QNAME WindowVars3
+    {
+      $$ = $3;
+      dynamic_cast<WindowVars *> ($$)->set_curr (driver.symtab.get((off_t)$2));
+    }
+  ;
+
+WindowVars3 :
+    PositionalVar
+    {
+      $$ = new WindowVars (LOC (@$), dynamic_cast<PositionalVar *> ($1), "", "", "");
+    }
+  | PositionalVar WindowVars2
+    {
+      $$ = $2;
+      dynamic_cast<WindowVars *> ($$)->set_posvar (dynamic_cast<PositionalVar *> ($1));
+    }
+  | WindowVars2
+  ;
+
+WindowVars2 :
+    PREVIOUS DOLLAR QNAME NEXT DOLLAR QNAME
+    {
+      $$ = new WindowVars (LOC (@$), NULL, "", driver.symtab.get((off_t)$3), driver.symtab.get((off_t)$6));
+    }
+  | NEXT DOLLAR QNAME
+    {
+      $$ = new WindowVars (LOC (@$), NULL, "", "", driver.symtab.get((off_t)$3));
+    }
+  | PREVIOUS DOLLAR QNAME
+    {
+      $$ = new WindowVars (LOC (@$), NULL, "", driver.symtab.get((off_t)$3), "");
+    }
+    ;
+
 EvalVarDecl :
     QNAME
     {
@@ -1987,27 +1959,6 @@ GroupByClause :
                  dynamic_cast<GroupSpecList*>($3),
                  NULL,
                  NULL);
-    }
-  | GROUP BY GroupSpecList LetClauseList
-    {
-      $$ = new GroupByClause(LOC(@$),
-                 dynamic_cast<GroupSpecList*>($3),
-                 dynamic_cast<LetClauseList*>($4),
-                 NULL);
-    }
-  | GROUP BY GroupSpecList WhereClause
-    {
-      $$ = new GroupByClause(LOC(@$),
-                 dynamic_cast<GroupSpecList*>($3),
-                 NULL,
-                 dynamic_cast<WhereClause*>($4));
-    }
-  | GROUP BY GroupSpecList LetClauseList WhereClause
-    {
-      $$ = new GroupByClause(LOC(@$),
-                 dynamic_cast<GroupSpecList*>($3),
-                 dynamic_cast<LetClauseList*>($4),
-                 dynamic_cast<WhereClause*>($5));
     }
   ;
 
@@ -2047,22 +1998,6 @@ GroupCollationSpec :
     COLLATION  URI_LITERAL
     {
       $$ = new GroupCollationSpec(LOC(@$), driver.symtab.get((off_t)$2));
-    }
-  ;
-
-LetClauseList :
-    LetClause
-    {
-      LetClauseList* lc_list_p = new LetClauseList(LOC(@$));
-      lc_list_p->push_back(dynamic_cast<LetClause*>($1));
-      $$ = lc_list_p;
-    }
-  |
-    LetClauseList LetClause 
-    {
-      LetClauseList* lc_list_p = dynamic_cast<LetClauseList*>($1);
-      if (lc_list_p) lc_list_p->push_back(dynamic_cast<LetClause*>($2));
-      $$ = $1;
     }
   ;
 
@@ -4681,6 +4616,14 @@ QNAME :
   | VARIABLE { $$ = driver.symtab.put("variable"); }
   | RETURN { $$ = driver.symtab.put("return"); }
   | FOR { $$ = driver.symtab.put("for"); }
+  | OUTER { $$ = driver.symtab.put("outer"); }
+  | SLIDING { $$ = driver.symtab.put("sliding"); }
+  | TUMBLING { $$ = driver.symtab.put("tumbling"); }
+  | PREVIOUS { $$ = driver.symtab.put("previous"); }
+  | NEXT { $$ = driver.symtab.put("next"); }
+  | ONLY { $$ = driver.symtab.put("only"); }
+  | WHEN { $$ = driver.symtab.put("when"); }
+  | COUNT { $$ = driver.symtab.put("count"); }
   | _IN { $$ = driver.symtab.put("in"); }
   | LET { $$ = driver.symtab.put("let"); }
   | WHERE { $$ = driver.symtab.put("where"); }
@@ -5327,16 +5270,25 @@ FTIgnoreOption :
 
 %%
 
+namespace zorba {
+
+namespace parser {
+
+const char *the_tumbling = "tumbling", *the_sliding = "sliding",
+  *the_start = "start", *the_end = "end", *the_only_end = "only end",
+  *the_ofor = "ofor";
+
+}
 
 /*
 	The error member function registers the errors to the driver.
 */
 
-void zorba::xquery_parser::error(
-	zorba::xquery_parser::location_type const& loc,
-	std::string const& msg)
+void xquery_parser::error(zorba::xquery_parser::location_type const& loc, std::string const& msg)
 {
   driver.set_expr (new ParseErrorNode (driver.createQueryLoc (loc), msg));
+}
+
 }
 
 

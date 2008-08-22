@@ -379,7 +379,15 @@ typedef zorba::xquery_parser::token token;
 "schema" { return token::SCHEMA; }
 "copy-namespaces" { return token::COPY_NAMESPACES; }
 "for" { return token::FOR; }
+"outer" { return token::OUTER; }
 "let" { return token::LET; }
+"sliding" { return token::SLIDING; }
+"tumbling" { return token::TUMBLING; }
+"previous" { return token::PREVIOUS; }
+"next" { return token::NEXT; }
+"only" { return token::ONLY; }
+"when" { return token::WHEN; }
+"count" { return token::COUNT; }
 "using" { return token::USING; }
 "some" { return token::SOME; }
 "every" { return token::EVERY; }

@@ -30,6 +30,7 @@
 
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/gflwor_expr.h"
 
 #include "context/static_context.h"
 #include "types/node_test.h"
