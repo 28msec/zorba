@@ -25,13 +25,14 @@ namespace zorba {
 class ZorbaProperties : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--trace-translator", "--trace-codegen", "--compile-only", "--tz", "--external-vars", NULL };
+    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--force-gflwor", "--result-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--trace-translator", "--trace-codegen", "--compile-only", "--tz", "--external-vars", NULL };
     return result;
   }
   bool theTraceParsing;
   bool theTraceScanning;
   bool theUseSerializer;
   bool theOptimizer;
+  bool theForceGflwor;
   std::string theResultFile;
   bool theAbort;
   std::string theQuery;
@@ -57,6 +58,7 @@ protected:
     theTraceScanning = false;
     theUseSerializer = false;
     theOptimizer = true;
+    theForceGflwor = false;
     theAbort = false;
     thePrintQuery = false;
     thePrintTime = false;
@@ -78,6 +80,7 @@ public:
   const bool &traceScanning () const { return theTraceScanning; }
   const bool &useSerializer () const { return theUseSerializer; }
   const bool &optimizer () const { return theOptimizer; }
+  const bool &forceGflwor () const { return theForceGflwor; }
   const std::string &resultFile () const { return theResultFile; }
   const bool &abort () const { return theAbort; }
   const std::string &query () const { return theQuery; }
@@ -120,6 +123,9 @@ public:
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         init_val (*argv, theOptimizer, d);
+      }
+      else if (strcmp (*argv, "--force-gflwor") == 0) {
+        theForceGflwor = true;
       }
       else if (strcmp (*argv, "--result-file") == 0 || strncmp (*argv, "-o", 2) == 0) {
         int d = 2;
@@ -167,12 +173,14 @@ public:
       else if (strcmp (*argv, "--print-intermediate-opt") == 0) {
         thePrintIntermediateOpt = true;
       }
+#ifndef NDEBUG
       else if (strcmp (*argv, "--trace-translator") == 0 || strncmp (*argv, "-l", 2) == 0) {
         theTraceTranslator = true;
       }
       else if (strcmp (*argv, "--trace-codegen") == 0 || strncmp (*argv, "-c", 2) == 0) {
         theTraceCodegen = true;
       }
+#endif
       else if (strcmp (*argv, "--compile-only") == 0) {
         theCompileOnly = true;
       }
@@ -206,6 +214,7 @@ public:
 "--trace-scanning, -s\ntrace scanning\n\n"
 "--use-serializer, -r\nuse serializer\n\n"
 "--optimizer, -O\noptimization level (1=enabled (default), 0=off)\n\n"
+"--force-gflwor\nforce compiler to generate GFLWOR iterators\n\n"
 "--result-file, -o\nresult file\n\n"
 "--abort\nabort when fatal error happens\n\n"
 "--query, -e\nexecute inline query\n\n"
@@ -220,8 +229,10 @@ public:
 "--stable-iterator-ids\nprint the iterator plan with stable ids\n\n"
 "--no-tree-ids\nsuppress ids and locations from compiler tree dumps\n\n"
 "--print-intermediate-opt\nprint intermediate optimizations\n\n"
+#ifndef NDEBUG
 "--trace-translator, -l\ntrace the translator\n\n"
 "--trace-codegen, -c\ntrace the codegenerator\n\n"
+#endif
 "--compile-only\nonly compile (don't execute)\n\n"
 "--tz\nimplicit time zone (in minutes)\n\n"
 "--external-vars, -x\nexternal variables (e.g. -x x=file1.xml -x y:=strValue)\n\n"

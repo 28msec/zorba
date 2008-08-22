@@ -3,6 +3,7 @@
       ( "trace-scanning,s", "trace scanning" )
       ("use-serializer,r", "use serializer")
       ("optimizer,O", po::value<bool> ()->default_value (true), "optimization level (1=enabled (default), 0=off)")
+      ("force-gflwor", "force compiler to generate GFLWOR iterators")
       // program option with a value => the value is directly set to the variable theResultFile
       ("result-file,o", po::value<std::string>(), "result file")
       ("abort", "abort when fatal error happens")
