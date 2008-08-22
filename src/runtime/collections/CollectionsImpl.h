@@ -23,7 +23,11 @@
 
 namespace zorba {
 
-NARY_ITER (ZorbaCollectionIterator);
+  NARY_ITER (ZorbaImportXmlIterator);
+
+  NARY_ITER (ZorbaImportCatalogIterator);
+
+  NARY_ITER (ZorbaImportFolderIterator);
 
 class ZorbaListCollectionsState : public PlanIteratorState {
 public:
@@ -58,7 +62,9 @@ NARY_ITER (ZorbaNodeCountIterator);
 
 NARY_ITER (ZorbaNodeAtIterator);
 
-NARY_ITER (ZorbaExportCollectionIterator);
+NARY_ITER (ZorbaIndexOfIterator);
+
+NARY_ITER (ZorbaExportXmlIterator);
 
 }/*namespace zorba*/
 

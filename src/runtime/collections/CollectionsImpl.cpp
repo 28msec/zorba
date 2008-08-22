@@ -39,12 +39,34 @@
 namespace zorba {
 
 bool
-ZorbaCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaCollectionIterator not implemented");
+  ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaImportXmlIterator not implemented");
+
+  STACK_END (state);
+}
+
+bool
+ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaImportCatalogIterator not implemented");
+
+  STACK_END (state);
+}
+
+bool
+ZorbaImportFolderIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaImportFolderIterator not implemented");
 
   STACK_END (state);
 }
@@ -378,13 +400,24 @@ ZorbaNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 }
 
 bool
-ZorbaExportCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaExportCollectionIterator not implemented");
-  
+  ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaIndexOfIterator not implemented");
+
+  STACK_END (state);
+}
+
+bool
+ZorbaExportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaExportXmlIterator not implemented");
+
   STACK_END (state);
 }
 

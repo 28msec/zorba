@@ -226,7 +226,9 @@ namespace zorba
   class FnCollectionIterator;
   class FnDeepEqualIterator;
 
-  class ZorbaCollectionIterator;
+  class ZorbaImportXmlIterator;
+  class ZorbaImportCatalogIterator;
+  class ZorbaImportFolderIterator;
   class ZorbaListCollectionsIterator;
   class ZorbaCreateCollectionIterator;
   class ZorbaDeleteCollectionIterator;
@@ -240,8 +242,9 @@ namespace zorba
   class ZorbaRemoveNodeAtIterator;
   class ZorbaNodeCountIterator;
   class ZorbaNodeAtIterator;
-  class ZorbaExportCollectionIterator;
-  
+  class ZorbaIndexOfIterator;
+  class ZorbaExportXmlIterator;
+
   namespace gflwor{
     class TupleStreamIterator;
     class TupleSourceIterator;
@@ -691,7 +694,9 @@ namespace zorba
 
     PLAN_ITER_VISITOR(FnDeepEqualIterator);
 
-    PLAN_ITER_VISITOR(ZorbaCollectionIterator);
+    PLAN_ITER_VISITOR(ZorbaImportXmlIterator);
+    PLAN_ITER_VISITOR(ZorbaImportCatalogIterator);
+    PLAN_ITER_VISITOR(ZorbaImportFolderIterator);
     PLAN_ITER_VISITOR(ZorbaListCollectionsIterator);
     PLAN_ITER_VISITOR(ZorbaCreateCollectionIterator);
     PLAN_ITER_VISITOR(ZorbaDeleteCollectionIterator);
@@ -705,7 +710,8 @@ namespace zorba
     PLAN_ITER_VISITOR(ZorbaRemoveNodeAtIterator);
     PLAN_ITER_VISITOR(ZorbaNodeCountIterator);
     PLAN_ITER_VISITOR(ZorbaNodeAtIterator);
-    PLAN_ITER_VISITOR(ZorbaExportCollectionIterator);
+    PLAN_ITER_VISITOR(ZorbaIndexOfIterator);
+    PLAN_ITER_VISITOR(ZorbaExportXmlIterator);
 
 #ifdef ZORBA_DEBUGGER
     PLAN_ITER_VISITOR ( FnDebugIterator );  

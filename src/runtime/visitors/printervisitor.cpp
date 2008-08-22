@@ -880,7 +880,9 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
 
   PRINTER_VISITOR_DEFINITION(FnDeepEqualIterator);
 
-  PRINTER_VISITOR_DEFINITION(ZorbaCollectionIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaImportXmlIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaImportCatalogIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaImportFolderIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaListCollectionsIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaCreateCollectionIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaDeleteCollectionIterator);
@@ -894,7 +896,8 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
   PRINTER_VISITOR_DEFINITION(ZorbaRemoveNodeAtIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaNodeCountIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaNodeAtIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaExportCollectionIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaIndexOfIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaExportXmlIterator);
 
 #ifdef ZORBA_DEBUGGER
   PRINTER_VISITOR_DEFINITION(FnDebugIterator);
