@@ -27,7 +27,9 @@
 namespace zorba
 {
 
-bool validateAfterUpdate(const std::vector<zorba::store::Item*>& nodes, zorba::store::Item_t& pul);
+void validateAfterUpdate(const vector<zorba::store::Item*>& nodes, zorba::store::Item_t& pul,
+    DelegatingTypeManager* delegatingTypeManager, static_context* staticContext, 
+    const QueryLoc& loc, bool isLax);
 
 } // namespace zorba
 

@@ -371,11 +371,6 @@ namespace zorba
     
         static_context* staticContext = planState.sctx();
         namespace_context nsCtx = namespace_context(staticContext, bindings);
-        // fill nsCtx
-        //for (unsigned long i = 0; i < bindings.size(); i++)
-        //{
-        //    nsCtx.bind_ns( bindings[i].first.getStore(), bindings[i].second.getStore() );
-        //}
                 
         store::Item_t result;                    
         if (type!=NULL)
