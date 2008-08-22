@@ -47,12 +47,16 @@ namespace zorba {
         PlanIteratorState* lState;
         DEFAULT_STACK_INIT (PlanIteratorState, lState, aPlanState);
         while (consumeNext (aResult, theChild0, aPlanState)) {
-            consumeNext (lItem, theChild1, aPlanState);
-            do{
+            //using a if, to avoid an additional state
+            if(consumeNext (lItem, theChild1, aPlanState)){
+              do{
                 bindVariables (lItem, theOuterForVars, aPlanState);
                 STACK_PUSH (true, lState);
-            } while (consumeNext (lItem, theChild1, aPlanState));
-            
+              } while (consumeNext (lItem, theChild1, aPlanState));
+            }else{
+              bindVariables (lItem, theOuterForVars, aPlanState);
+              STACK_PUSH (true, lState);
+            }
             theChild1->reset (aPlanState);
           }
         STACK_PUSH (false, lState);

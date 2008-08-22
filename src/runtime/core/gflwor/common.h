@@ -227,9 +227,10 @@ namespace zorba {
     inline bool evalToBool ( const PlanIter_t& checkIter, PlanState& planState )
     {
       store::Item_t boolValue;
-      if (!PlanIterator::consumeNext ( boolValue, checkIter.getp(), planState ))
+      if (!PlanIterator::consumeNext ( boolValue, checkIter.getp(), planState )){
+        checkIter->reset ( planState );
         return false;
-
+      }
       bool value = boolValue->getBooleanValue();
       checkIter->reset ( planState );
       return value;

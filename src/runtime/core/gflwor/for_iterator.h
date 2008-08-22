@@ -32,6 +32,7 @@ namespace zorba {
         void init ( PlanState& );
         void reset ( PlanState& );
         inline int incReturnPosition() {return ++thePosition;}
+        inline void resetCount() { thePosition=0;}
 
     };
 

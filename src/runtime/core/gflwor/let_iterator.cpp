@@ -42,9 +42,9 @@ namespace zorba {
       DEFAULT_STACK_INIT ( PlanIteratorState, lState, aPlanState );
       while ( consumeNext ( aResult, theChild0, aPlanState ) ) {
         bindVariables ( theChild1 ,theLetVars,aPlanState,theNeedsMat);
+        STACK_PUSH ( true, lState );
         theChild1->reset ( aPlanState );
       }
-      STACK_PUSH ( true, lState );
       STACK_END ( lState );
     }
 

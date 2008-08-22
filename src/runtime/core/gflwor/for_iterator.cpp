@@ -93,6 +93,7 @@ namespace zorba {
           }
           STACK_PUSH ( true, lState );
         }
+        lState->resetCount();
         theChild1->reset(aPlanState);
         
       }

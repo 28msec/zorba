@@ -155,6 +155,7 @@ namespace zorba {
         WindowState();
         void init ( PlanState& aState );
         void reset ( PlanState& aState );
+        void tupleReset();
     };
 
 
