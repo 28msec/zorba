@@ -102,7 +102,7 @@ public:
   virtual void addSetElementType(
         Item_t&              target,
         Item_t&              typeName,
-        std::vector<Item_t>&  typedValue,
+        std::vector<Item_t>& typedValue,
         bool                 haveTypedValue,
         bool                 haveEmptyValue,
         bool                 isId,

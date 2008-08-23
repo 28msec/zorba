@@ -17,6 +17,7 @@
 #include "common/shared_types.h"
 #include <zorbatypes/xerces_xmlcharray.h>
 #include "store/api/item_factory.h"
+#include "store/api/pul.h"
 
 #include "types/casting.h"
 #include "types/delegating_typemanager.h"
@@ -38,19 +39,22 @@ using namespace std;
 namespace zorba
 {
 
-void validateAfterUpdate(const zorba::store::Item* item, zorba::store::Item_t& pul,
+void validateAfterUpdate(zorba::store::Item* item, zorba::store::Item_t& pul,
     DelegatingTypeManager* delegatingTypeManager, static_context* staticContext, 
     const QueryLoc& loc, bool isLax);
 
-void processElement( store::Item_t& pul, static_context* staticContext, DelegatingTypeManager* delegatingTypeManager, 
-    SchemaValidator& schemaValidator, const store::Item* element);
+void processElement( store::Item_t& pul, static_context* staticContext, 
+    DelegatingTypeManager* delegatingTypeManager, SchemaValidator& schemaValidator, 
+    store::Item_t element);
     
 void validateAttributes( SchemaValidator& schemaValidator, store::Iterator_t attributes);
     
-void processAttributes( store::Item_t& pul, namespace_context& nsCtx, DelegatingTypeManager* delegatingTypeManager, 
-    SchemaValidator& schemaValidator, store::Iterator_t attributes);
+void processAttributes( store::Item_t& pul, namespace_context& nsCtx, 
+    DelegatingTypeManager* delegatingTypeManager, SchemaValidator& schemaValidator, 
+    const store::Item* parent, store::Iterator_t attributes);
         
-void processChildren( store::Item_t& pul, static_context* staticContext, namespace_context& nsCtx, DelegatingTypeManager* delegatingTypeManager, 
+void processChildren( store::Item_t& pul, static_context* staticContext, 
+    namespace_context& nsCtx, DelegatingTypeManager* delegatingTypeManager, 
     SchemaValidator& schemaValidator, store::Iterator_t children);
     
 void processNamespaces ( SchemaValidator& schemaValidator, const store::Item *item);
@@ -59,7 +63,7 @@ void processTextValue (store::Item_t& pul, DelegatingTypeManager* delegatingType
     namespace_context &nsCtx, store::Item_t typeQName, xqpStringStore_t& textValue, 
     std::vector<store::Item_t> &resultList);
 
-    
+store::Item_t findAttributeItem(const store::Item *parent, store::Item_t &attQName);    
     
 /**
  *   Given a vector of root nodes, this method validates all of them and 
@@ -76,17 +80,11 @@ void validateAfterUpdate(const vector<zorba::store::Item*>& nodes, zorba::store:
     }
 }
 
-void validateAfterUpdate(const store::Item* item, zorba::store::Item_t& pul,
+void validateAfterUpdate(store::Item* item, zorba::store::Item_t& pul,
     DelegatingTypeManager* delegatingTypeManager, static_context* staticContext, 
     const QueryLoc& loc, bool isLax)
 {
     ZORBA_ASSERT(item->isNode());
-
-    //static_context* staticContext = planState.sctx();
-    ////dynamic_context* dynamicContext = planState.dctx();
-    //TypeManager * typeManager = staticContext->get_typemanager();
-    //DelegatingTypeManager* delegatingTypeManager = 
-    //    static_cast<DelegatingTypeManager*>(typeManager);
 
     Schema* schema = delegatingTypeManager->getSchema();
     if ( !schema )
@@ -114,7 +112,8 @@ void validateAfterUpdate(const store::Item* item, zorba::store::Item_t& pul,
         item->getNamespaceBindings(bindings);
         namespace_context nsCtx = namespace_context(staticContext, bindings);
         
-        processChildren( pul, staticContext, nsCtx, delegatingTypeManager, schemaValidator, item->getChildren() );
+        processChildren( pul, staticContext, nsCtx, delegatingTypeManager, schemaValidator, 
+            item->getChildren() );
 
         schemaValidator.endDoc();
 
@@ -141,8 +140,9 @@ void validateAfterUpdate(const store::Item* item, zorba::store::Item_t& pul,
     }
 }
 
-void processElement( store::Item_t& pul, static_context* staticContext, DelegatingTypeManager* delegatingTypeManager, 
-    SchemaValidator& schemaValidator, const store::Item* element)
+void processElement( store::Item_t& pul, static_context* staticContext, 
+    DelegatingTypeManager* delegatingTypeManager, SchemaValidator& schemaValidator, 
+    store::Item_t element)
 {
     ZORBA_ASSERT(element->isNode());
     ZORBA_ASSERT(element->getNodeKind() == store::StoreConsts::elementNode);
@@ -170,14 +170,15 @@ void processElement( store::Item_t& pul, static_context* staticContext, Delegati
         vector<store::Item_t> typedValues;
         bool hasTypedValue = true;
         bool hasEmptyValue = false;
-        //pul->addSetElementType(element, typeName, typedValues, hasTypedValue, hasEmptyValue, element->isId(), element->isIdRefs());
+        store::PUL *p = static_cast<store::PUL *>(pul.getp());
+        p->addSetElementType(element, typeName, (vector<store::Item_t>&)typedValues, hasTypedValue, hasEmptyValue, element->isId(), element->isIdRefs());
     }
 
     store::NsBindings bindings;
     element->getNamespaceBindings(bindings);
     namespace_context nsCtx = namespace_context(staticContext, bindings);
         
-    processAttributes( pul, nsCtx, delegatingTypeManager, schemaValidator, element->getAttributes());
+    processAttributes( pul, nsCtx, delegatingTypeManager, schemaValidator, element, element->getAttributes());
     
     processChildren( pul, staticContext, nsCtx, delegatingTypeManager, schemaValidator, element->getChildren());
 
@@ -201,8 +202,9 @@ void validateAttributes( SchemaValidator& schemaValidator, store::Iterator_t att
     }
 }
 
-void processAttributes( store::Item_t& pul, namespace_context& nsCtx, DelegatingTypeManager* delegatingTypeManager, 
-    SchemaValidator& schemaValidator, store::Iterator_t attributes)
+void processAttributes( store::Item_t& pul, namespace_context& nsCtx, 
+    DelegatingTypeManager* delegatingTypeManager, SchemaValidator& schemaValidator, 
+    const store::Item* parent, store::Iterator_t attributes)
 {
     std::list<AttributeValidationInfo*>* attList = schemaValidator.getAttributeList();
     std::list<AttributeValidationInfo*>::iterator curAtt;
@@ -215,6 +217,7 @@ void processAttributes( store::Item_t& pul, namespace_context& nsCtx, Delegating
         store::Item_t attQName;
         GENV_ITEMFACTORY->createQName( attQName, att->_uri, att->_prefix, att->_localName);
         
+        store::Item_t attrib = findAttributeItem(parent, attQName);
         
         std::string typePrefix;
         if ( std::strcmp(Schema::XSD_NAMESPACE, att->_typeURI->c_str() )==0 ) // hack around typeManager bug for comparing QNames
@@ -231,10 +234,11 @@ void processAttributes( store::Item_t& pul, namespace_context& nsCtx, Delegating
         
         //todo check in attributes if the type is different
         {
-            //if ( typedValues.size()==1 )        // optimize when only one item is available 
-            //    pul->addSetAttributeType( att, typedValues[0], attrib->isId(), attrib->isIDRef() );
-            //else            
-            //    pul->addSetAttributeType( att, typedValues, attrib->isId(), attrib->isIDRef() );
+            store::PUL *p = static_cast<store::PUL *>(pul.getp());
+            if ( typedValues.size()==1 )        // optimize when only one item is available 
+                p->addSetAttributeType( attrib, typeQName, (store::Item_t&)(typedValues[0]), attrib->isId(), attrib->isIdRefs() );
+            else            
+                p->addSetAttributeType( attrib, typeQName, typedValues, attrib->isId(), attrib->isIdRefs() );
         }
     }
 }
@@ -283,10 +287,12 @@ void processChildren( store::Item_t& pul, static_context* staticContext, namespa
                     {
                         bool hasTypedValue = true;
                         bool hasEmptyValue = false;
-                        //if ( typedValues.size()==1 ) // hack around serialization bug
-                        //    pul->addSetType(child, typedValues[0], child->isId(), child->isIdRefs());
-                        //else
-                        //    pul->addSetTypec(child, typedValues, child->isId(), child->isIdRefs());
+                        store::PUL *p = static_cast<store::PUL *>(pul.getp());
+                        
+                        if ( typedValues.size()==1 ) // hack around serialization bug
+                            p->addSetElementType(child, type, typedValues[0], hasTypedValue, hasEmptyValue, child->isId(), child->isIdRefs());
+                        else
+                            p->addSetElementType(child, type, typedValues, hasTypedValue, hasEmptyValue, child->isId(), child->isIdRefs());
                     }
                 }
                 break;
@@ -370,6 +376,29 @@ void processTextValue (store::Item_t& pul, DelegatingTypeManager* delegatingType
     }
 }
 
-
+store::Item_t findAttributeItem(const store::Item *parent, store::Item_t &attQName)
+{
+    store::Iterator_t attributes = parent->getAttributes();
+    
+    store::Item_t attribute;
+    
+    while ( attributes->next(attribute) )
+    {
+        ZORBA_ASSERT(attribute->isNode());
+        ZORBA_ASSERT(attribute->getNodeKind() == store::StoreConsts::attributeNode);
+                  
+        store::Item_t currentAttName = attribute->getNodeName();
+        
+        if ( attQName->getLocalName()->
+                compare(currentAttName->getLocalName())==0 && 
+             attQName->getNamespace()->
+                compare(currentAttName->getNamespace())==0 )
+        {
+            return attribute.getp();
+        }
+    }
+    ZORBA_ASSERT(false);
+    return NULL;
+}
 
 }// namespace zorba
