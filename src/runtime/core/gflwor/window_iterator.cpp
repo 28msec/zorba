@@ -445,6 +445,7 @@ namespace zorba {
         //Check if we have open windows
         while(!lState->theOpenWindowsStartPos.empty() && (!theEndClause.theOnlyEnd || !theEndClause.theHasEndClause)){
           bindVariable ( aPlanState, lState->theInputSeq, lState->theOpenWindowsStartPos[0], lState->theCurInputPos - 1 );
+          theEndClause.bindExtern ( aPlanState, lState->theInputSeq, lState->theCurInputPos-1 );
           lState->theCurWindow = lState->theOpenWindowsStartPos.erase ( lState->theOpenWindowsStartPos.begin());
           STACK_PUSH ( true, lState );
         }
