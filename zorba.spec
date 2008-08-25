@@ -14,7 +14,7 @@ Source0: ftp://ftp.heanet.ie/pub/download.sourceforge/z/zo/zorba/%{name}-%{versi
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires: cmake >= 2.4 libxml2 >= 2.2.16 icu >= 2.6 libicu-devel
+BuildRequires: cmake >= 2.4 libxml2-devel >= 2.2.16 icu >= 2.6 libicu-devel
 BuildRequires: boost-devel >= 1.32 xerces-c-devel >= 2.7
 BuildRequires: ruby-devel >= 1.8
 
@@ -43,25 +43,15 @@ The %{name}-devel package contains headers for building applications
 that use %{zorba}.
 
 
-%package devel-docs
-Summary: Class library documentation
-Group: Documentation
-
-
-%description devel-docs
-This package contains the html documentation files for the %{name}
-class library.  User documentation is part of the main package.
-
-
 %package python
 Summary: %{name} Python module for %{name}
 Group: Development/Languages
+Requires: %{name} = %{version}-%{release}
 BuildRequires: swig
 
 
 %description python
 Provides Python module to use %{name} API
-Requires: %{name} = %{version}-%{release}
 
 
 %package ruby
@@ -107,16 +97,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.so.%{version}
 
 %dir %{_datadir}/doc/%{name}-%{version}
-%doc %{_datadir}/doc/%{name}-%{version}/LICENSE.txt
-%doc %{_datadir}/doc/%{name}-%{version}/AUTHORS.txt
-%doc %{_datadir}/doc/%{name}-%{version}/NOTICE.txt
-%doc %{_datadir}/doc/%{name}-%{version}/README.txt
-%{_datadir}/doc/%{name}-%{version}/c/examples/*.c
-%{_datadir}/doc/%{name}-%{version}/c/html/*.gif
-%{_datadir}/doc/%{name}-%{version}/cxx/examples/*.cpp
-%{_datadir}/doc/%{name}-%{version}/cxx/examples/Makefile
-%{_datadir}/doc/%{name}-%{version}/cxx/html/*.gif
-%{_datadir}/doc/%{name}-%{version}/zorba/html/*.gif
+%{_datadir}/doc/%{name}-%{version}
 
 
 %files devel
@@ -124,66 +105,29 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.so
 %{_includedir}/%{name}/%{name}/*.h
 %{_includedir}/%{name}/simplestore/*.h
-
-
-%files devel-docs
-%defattr(-,root,root,-)
-%{_datadir}/doc/%{name}-%{version}/c/html/*.html
-%{_datadir}/doc/%{name}-%{version}/c/html/%{name}.TAGFILE
-%{_datadir}/doc/%{name}-%{version}/c/html/*.css
-%{_datadir}/doc/%{name}-%{version}/c/html/*.png
-%{_datadir}/doc/%{name}-%{version}/c/html/index.*
-%{_datadir}/doc/%{name}-%{version}/c/html/installdox
-%{_datadir}/doc/%{name}-%{version}/c/html/search.*
-%{_datadir}/doc/%{name}-%{version}/cxx/html/*.html
-%{_datadir}/doc/%{name}-%{version}/cxx/html/%{name}.TAGFILE
-%{_datadir}/doc/%{name}-%{version}/cxx/html/*.css
-%{_datadir}/doc/%{name}-%{version}/cxx/html/*.png
-%{_datadir}/doc/%{name}-%{version}/cxx/html/index.*
-%{_datadir}/doc/%{name}-%{version}/cxx/html/installdox
-%{_datadir}/doc/%{name}-%{version}/cxx/html/search.*
-%{_datadir}/doc/%{name}-%{version}/python/html/*.css
-%{_datadir}/doc/%{name}-%{version}/python/html/*.html
-%{_datadir}/doc/%{name}-%{version}/python/html/doxygen.png
-%{_datadir}/doc/%{name}-%{version}/python/html/index.*
-%{_datadir}/doc/%{name}-%{version}/python/html/installdox
-%{_datadir}/doc/%{name}-%{version}/python/html/search.*
-%{_datadir}/doc/%{name}-%{version}/python/html/%{name}.TAGFILE
-%{_datadir}/doc/%{name}-%{version}/ruby/html/*.html
-%{_datadir}/doc/%{name}-%{version}/ruby/html/*.css
-%{_datadir}/doc/%{name}-%{version}/ruby/html/index.*
-%{_datadir}/doc/%{name}-%{version}/ruby/html/doxygen.png
-%{_datadir}/doc/%{name}-%{version}/ruby/html/index.*
-%{_datadir}/doc/%{name}-%{version}/ruby/html/installdox
-%{_datadir}/doc/%{name}-%{version}/ruby/html/search.*
-%{_datadir}/doc/%{name}-%{version}/ruby/html/%{name}.TAGFILE
-%{_datadir}/doc/%{name}-%{version}/%{name}/html/index.*
-%{_datadir}/doc/%{name}-%{version}/%{name}/html/*.css
-%{_datadir}/doc/%{name}-%{version}/%{name}/html/*.html
-%{_datadir}/doc/%{name}-%{version}/%{name}/html/doxygen.png
-%{_datadir}/doc/%{name}-%{version}/%{name}/html/installdox
-%{_datadir}/doc/%{name}-%{version}/%{name}/html/search.*
-%{_datadir}/doc/%{name}-%{version}/%{name}/html/%{name}.TAGFILE
+%{_datadir}/doc/%{name}-%{version}/python/examples/*.py
+%{_datadir}/doc/%{name}-%{version}/python/examples/*.pyc
+%{_datadir}/doc/%{name}-%{version}/python/examples/*.pyo
+%{_datadir}/doc/%{name}-%{version}/python/html/*.gif
+%{_datadir}/doc/%{name}-%{version}/ruby/examples/*.rb
+%{_datadir}/doc/%{name}-%{version}/ruby/html/*.gif
 
 
 %files python
 %defattr(-,root,root,-)
 %dir %{python_sitelib}/_zorba_api.so
 %dir %{python_sitelib}/zorba_api.*
-%{_datadir}/doc/%{name}-%{version}/python/examples/*.py
-%{_datadir}/doc/%{name}-%{version}/python/examples/*.pyc
-%{_datadir}/doc/%{name}-%{version}/python/examples/*.pyo
-%{_datadir}/doc/%{name}-%{version}/python/html/*.gif
 
 
 %files ruby
 %defattr(-,root,root,-)
 %dir %{ruby_sitelib}/zorba_api.so
-%{_datadir}/doc/%{name}-%{version}/ruby/examples/*.rb
-%{_datadir}/doc/%{name}-%{version}/ruby/html/*.gif
 
 
 %changelog
+* Fri Aug 22 2008 Paul Kunz <PaulfKunz@gmail.com> - 0.9.21-3
+- remove devel-doc subpackage
+
 * Sun Aug 17 2008 Paul Kunz <PaulfKunz@gmail.com> - 0.9.21-3
 - Fixed Source tag with ftp: and site that has 0.9.21 version
 - added Ruby requirements
