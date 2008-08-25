@@ -226,7 +226,7 @@ namespace zorba {
         std::vector<store::TempSeq_t>::iterator lOuterSeqIter = lOuterSeq->begin();
         while ( lOuterVarIter != theOuterVars.end() ) {
           store::Iterator_t iterWrapper = new PlanIteratorWrapper ( lOuterVarIter->theInput, aPlanState );
-          ( *lOuterSeqIter )->append ( iterWrapper, true );
+          ( *lOuterSeqIter )->append ( iterWrapper, false );//FIXME are those settings right? I think copy is correct 
           lOuterVarIter->theInput->reset ( aPlanState );
           ++lOuterSeqIter;
           ++lOuterVarIter;
@@ -236,7 +236,7 @@ namespace zorba {
         lOuterSeq = new std::vector<store::TempSeq_t>();
         while ( lOuterVarIter != theOuterVars.end() ) {
           store::Iterator_t iterWrapper = new PlanIteratorWrapper ( lOuterVarIter->theInput, aPlanState );
-          store::TempSeq_t result = GENV_STORE.createTempSeq ( iterWrapper, true, false );
+          store::TempSeq_t result = GENV_STORE.createTempSeq ( iterWrapper, false, false ); //FIXME are those settings right? 
           lOuterSeq->push_back ( result );
           lOuterVarIter->theInput->reset ( aPlanState );
           ++lOuterVarIter;
