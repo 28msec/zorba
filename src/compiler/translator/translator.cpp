@@ -2947,7 +2947,6 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     ZORBA_ERROR_LOC_PARAM (XQST0059, loc, "(no location specified)", target_ns);
 
   InternalModuleURIResolver* lModuleResolver = sctx_p->get_module_uri_resolver();
-  bool isStandardResolver = dynamic_cast<StandardModuleURIResolver*>(lModuleResolver) != 0;
 
   for (int i = 0; i < ats->size (); i++) {
     
@@ -2991,10 +2990,10 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
         minfo->mod_ns_map.put (xqpString(resolveduri.getp()), imported_ns);
 
       } catch (...) {
-        if (isStandardResolver) delete modfile;
+        delete modfile;
         throw;
       }
-      if (isStandardResolver) delete modfile;
+      delete modfile;
     }
 
     if (imported_ns != target_ns)
