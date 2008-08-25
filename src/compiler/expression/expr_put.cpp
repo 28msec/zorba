@@ -229,13 +229,13 @@ ostream &group_gclause::put( ostream &os ) const {
   os << DENT << "GROUP ";
   for (unsigned i = 0; i < inner_rebind.size (); i++) {
     os << "$";
-    put_qname (inner_rebind [i].first->get_varname (), os) << " ";
+    put_qname (inner_rebind [i].first->get_varname (), os) << " (" << inner_rebind [i].first.getp () << " -> " << inner_rebind [i].second.getp () << ") ";
   }
   os << endl;
   os << DENT << "REBIND ";
   for (unsigned i = 0; i < outer_rebind.size (); i++) {
     os << "$";
-    put_qname (outer_rebind [i].first->get_varname (), os) << " ";
+    put_qname (outer_rebind [i].first->get_varname (), os) << " (" << outer_rebind [i].first.getp () << " -> " << outer_rebind [i].second.getp () << ") ";
   }
   os << endl;
   CLOSE_EXPR;
