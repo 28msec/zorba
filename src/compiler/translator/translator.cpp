@@ -2943,14 +2943,22 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   if (ats == NULL && zorba_predef_mod_ns.find (target_ns) != zorba_predef_mod_ns.end ())
     return;
 
-  if (ats == NULL || ats->size () == 0)
-    ZORBA_ERROR_LOC_PARAM (XQST0059, loc, "(no location specified)", target_ns);
+  vector<xqpStringStore_t> lURIs;
+  if (ats == NULL || ats->size () == 0) {
+    lURIs.push_back(sctx_p->resolve_relative_uri(target_ns).getStore());
+  }
+  else {
+    for (int i = 0; i < ats->size(); ++i) {
+      lURIs.push_back(sctx_p->resolve_relative_uri((*ats)[i]).getStore());
+    }
+  }
 
   InternalModuleURIResolver* lModuleResolver = sctx_p->get_module_uri_resolver();
+  bool isStandardResolver = dynamic_cast<StandardModuleURIResolver*>(lModuleResolver) != 0;
 
-  for (int i = 0; i < ats->size (); i++) {
-    
-    xqpStringStore_t resolveduri(sctx_p->resolve_relative_uri((*ats)[i]).getStore());
+  for (vector<xqpStringStore_t>::iterator lIter = lURIs.begin();
+       lIter != lURIs.end(); ++lIter) {
+    xqpStringStore_t resolveduri = *lIter; 
     store::Item_t    aturiitem = NULL;
     if (!GENV_ITEMFACTORY->createAnyURI(aturiitem, resolveduri))
       ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "URI is not valid " << resolveduri);
@@ -2990,10 +2998,10 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
         minfo->mod_ns_map.put (xqpString(resolveduri.getp()), imported_ns);
 
       } catch (...) {
-        delete modfile;
+        if (isStandardResolver) delete modfile;
         throw;
       }
-      delete modfile;
+      if (isStandardResolver) delete modfile;
     }
 
     if (imported_ns != target_ns)
