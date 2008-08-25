@@ -18,7 +18,6 @@
 #include <fstream>
 #include <sstream>
 #include <csignal>
-#include <boost/bind.hpp> 
 #include <zorba/zorba.h>
 #ifdef WIN32
 #include <windows.h>
@@ -111,12 +110,11 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
     theQueryFile->clear();
     theQueryFile->seekg( 0, std::ios::beg );
   }
-  
-  while ( theQueryFile->good() && ! theQueryFile->eof() )
+  theOutput << std::endl; 
+  while(theQueryFile->good() && !theQueryFile->eof())
   {
     lLineNo++;
     std::getline( *theQueryFile, lLine, '\n');
-    theOutput << std::endl;
     if ( (lLineNo >= aBegin && lLineNo <= anEnd) || listAll )
     {
       if ( lLineNo >= theLocation->getLineBegin() && lLineNo <= theLocation->getLineEnd() )
@@ -130,19 +128,6 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
         theOutput << lLineNo << '\t' << lLine <<  std::endl;
         SetConsoleTextAttribute(lConsole, saved_configuration);
 #else
-        //TODO: useless with the query location bug
-	//theOutput << "\033[1m" << lLineNo << "\033[0m\t";
-        //for ( lIterator = lLine.begin(); lIterator != lLine.end(); ++lIterator )
-        //{
-        //  i++;
-        //  if ( i >= theLocation->getColumnBegin() && i <= theLocation->getColumnEnd() )
-        //  {
-        //    theOutput << "\033[1m" << *lIterator << "\033[0m";
-        //  } else {
-        //    theOutput << *lIterator;
-        //  } 
-        //} 
-        //theOutput << std::endl; 
         theOutput << "\033[1m" << lLineNo << '\t' << lLine << "\033[0m" << std::endl;
 #endif
      } else {
@@ -150,6 +135,7 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
       }
     }
   }
+  theOutput << std::endl;
 }
 
 void CommandLineEventHandler::suspend( int aSignum )

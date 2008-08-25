@@ -32,9 +32,13 @@
 
 #ifdef ZORBA_DEBUGGER
 #include "debugcmd_client.h"
-
+#ifdef ZORBA_HAVE_PTHREAD_H
+#include <pthread.h>
+#define ZORBA_THREAD_RETURN void *
+#else
+#define ZORBA_THREAD_RETURN DWORD WINAPI
+#endif
 #include <csignal>
-#include <zorbautils/thread.h>
 #endif
 
 #include <zorbatypes/zorbatypes_decl.h>
@@ -312,17 +316,20 @@ int _tmain(int argc, _TCHAR* argv[])
       std::cout << "Zorba XQuery debugger client." << std::endl;
       std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
       std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
-      //copy the input stream
-      //std::stringstream out;
-      //std::copy( std::istreambuf_iterator<char>(*qfile),
-      //           std::istreambuf_iterator<char>(),
-      //           std::ostreambuf_iterator<char>(out));
-      //qfile->seekg(0);
-      //std::istringstream lInputQuery( out.str() );
       
       //start the server thread
-      Thread lServerThread( server, lArgs.get() );
-
+      //Thread lServerThread( server, lArgs.get() );
+#ifdef ZORBA_HAVE_PTHREAD_H
+      pthread_t lServerThread;
+      if ( pthread_create( &lServerThread, 0, server, lArgs.get() ) != 0 )
+#else
+      HANDLE lServerThread;
+      if ( ( lServerThread = CreateThread( 0, 0, server, lArgs.get(), 0, 0 ) ) == 0 )
+#endif
+      {
+        std::cerr << "Couldn't start the server thread" << std::endl;
+        return 7;
+      }
       //Try to connect 3 times on the server thread
       for ( unsigned int i = 0; i < 3; i++ )
       {
@@ -336,7 +343,13 @@ int _tmain(int argc, _TCHAR* argv[])
           signal( SIGINT, suspend );
 #endif
           debuggerClient->registerEventHandler( &lEventHandler );
-          lServerThread.join();
+#ifdef ZORBA_HAVE_PTHREAD_H
+          pthread_join( lServerThread, 0 );
+          pthread_cancel( lServerThread );
+#else
+          WaitForSingleObject( theThread, INFINITE );
+          CloseHandler( lServerThread );
+#endif
       	  delete debuggerClient;
           return 0;
         } catch( std::exception &e ) {
