@@ -2,7 +2,7 @@
 
 Name:    zorba
 Version: 0.9.21
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: General purpose XQuery processor implemented in C++
 
 Group: System Environment/Libraries
@@ -15,8 +15,8 @@ Source0: ftp://ftp.heanet.ie/pub/download.sourceforge/z/zo/zorba/%{name}-%{versi
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: cmake >= 2.4 libxml2-devel >= 2.2.16 icu >= 2.6 libicu-devel
-BuildRequires: boost-devel >= 1.32 xerces-c-devel >= 2.7
-BuildRequires: ruby-devel >= 1.8
+BuildRequires: boost-devel >= 1.32 xerces-c-devel >= 2.7 libcurl-devel
+BuildRequires: ruby-devel >= 1.8 graphviz
 
 
 %description
@@ -125,6 +125,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 25 2008 Paul Kunz <PaulfKunz@gmail.com> - 0.9.21-4
+- Added requirement of graphviz and libcurl-devel
+
 * Fri Aug 22 2008 Paul Kunz <PaulfKunz@gmail.com> - 0.9.21-3
 - remove devel-doc subpackage
 
