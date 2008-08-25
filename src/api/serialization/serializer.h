@@ -286,6 +286,7 @@ protected:
     virtual void emit_declaration();        
     virtual void emit_node(const store::Item* item, int depth);
     virtual int emit_node_children(const store::Item* item, int depth, bool perform_escaping = true);
+    virtual void emit_item(const store::Item* item);
   };
   
 

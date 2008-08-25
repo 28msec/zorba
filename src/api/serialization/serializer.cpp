@@ -1060,6 +1060,22 @@ void serializer::text_emitter::emit_declaration()
 {  
 }
 
+void serializer::text_emitter::emit_item(const store::Item* item)
+{
+  if (item->isAtomic())
+  {
+    tr << item->getStringValue()->c_str();
+    previous_item = PREVIOUS_ITEM_WAS_TEXT;
+  }
+  else
+  {
+    if (item->getNodeKind() == store::StoreConsts::attributeNode)
+      ZORBA_ERROR(SENR0001);
+    else
+      emit_node(item, 0);
+  }
+}
+
 void serializer::text_emitter::emit_node(
     const store::Item* item,
     int depth)
