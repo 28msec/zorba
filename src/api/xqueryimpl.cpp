@@ -439,7 +439,7 @@ XQueryImpl::doCompile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints)
     theStaticContext = theStaticContext->create_child_context();
   }
 
-  theStaticContext->set_entity_retrieval_url (xqp_string (&*URI::encode_file_URI (theFileName)));
+  theStaticContext->set_entity_retrieval_url(xqp_string (&*URI::encode_file_URI (theFileName)));
 
   theCompilerCB->m_sctx = theStaticContext;
 

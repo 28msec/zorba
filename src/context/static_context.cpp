@@ -548,7 +548,7 @@ void static_context::compute_current_absolute_baseuri()
 
 xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri) {
   URI resolved_uri(base_uri, uri);
-  return resolved_uri.get_uri_text();
+  return resolved_uri.toString();
 }
 
 xqp_string static_context::final_baseuri () {

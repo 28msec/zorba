@@ -31,12 +31,12 @@ namespace zorba {
 xqpStringStore_t  URI::decode_file_URI(const xqpStringStore_t& uri)
 {
   // TODO: file://localhost/
-  if (uri->byteCompare(0, 8, "file:///") == 0) {
-    xqp_string res(uri->c_str() + 8);
+  if (uri->byteCompare(0, 7, "file://") == 0) {
+    xqp_string res(uri->c_str() + 7);
 #if defined(UNIX)
     res = xqp_string ("/") + res;
 #endif
-    return res.replace("%20"," ","").getStore();
+    return res.decodeFromUri().getStore();
   }
   else
     return uri;
@@ -45,13 +45,13 @@ xqpStringStore_t  URI::decode_file_URI(const xqpStringStore_t& uri)
 // Assumes input is absolute path.
 xqpStringStore_t  URI::encode_file_URI(const xqpStringStore_t& uri)
 {
-  xqpString result (&*uri);
+  xqpString  result (&*uri);
 
 #if !defined(UNIX)
   result = xqpString ("/") + result;
 #endif
-  result = xqpString ("file://") + result;
-  return result.replace(" ","%20","").getStore();
+  result = xqpString ("file://") + result.encodeForUri();
+  return result.getStore();
 }
 
 URI::URI( const xqpString& uri )
@@ -186,16 +186,6 @@ URI::initialize(const xqpString& uri)
   xqpString lTrimmedURI = uri.trim();
   int    lTrimmedURILength = lTrimmedURI.length();
 
-  // we don't throw errors now
-//if ( base_uri == 0 && lTrimmedURI.empty() ) {
-//  ZORBA_ERROR_DESC_OSS(XQST0046, "No base URI given and URILiteral is of zero length");
-//}
-
-//if ( lTrimmedURI.empty() ) {
-//  // just copy the base uri 
-//  initialize(*base_uri);
-//}
-
   // index of the current processing state used in this function
   int lIndex = 0;
 
@@ -223,12 +213,6 @@ URI::initialize(const xqpString& uri)
     initializeScheme(lTrimmedURI);
     lIndex = theScheme.length() + 1;
   }
-
-  // only a scheme or a scheme followed by a # is not valid
-//if ( lIndex == lTrimmedURILength || 
-//     ( is_set(Scheme) && (lTrimmedURI.getStore()->str().at(lIndex) == '#'))) {
-//  ZORBA_ERROR_DESC_OSS(XQST0046, "A mandatory URI component is missing");
-//}
 
   /**
    * Authority
@@ -259,7 +243,7 @@ URI::initialize(const xqpString& uri)
       lAuthUri = lTrimmedURI.substr(lStartPos, lIndex - lStartPos);
       initializeAuthority(lAuthUri);
     } else {
-     set_host("");
+      set_host("");
     }
   }
 
@@ -283,11 +267,11 @@ URI::resolve(const URI * base_uri)
     return;
   }
 
-  if ( base_uri == 0 && get_uri_text().empty() ) {
+  if ( base_uri == 0 && toString().empty() ) {
     ZORBA_ERROR_DESC_OSS(XQST0046, "No base URI given and URILiteral is of zero length");
   }
 
-  if ( get_uri_text().empty() ) {
+  if ( toString().empty() ) {
     // just copy the base uri 
     initialize(*base_uri);
   }
@@ -366,7 +350,8 @@ URI::resolve(const URI * base_uri)
       set_state(RegBasedAuthority);
     }
   } else {
-    theURIText = ""; // force rebuild in get_uri_text
+    theURIText = ""; // force rebuild in toString
+    theASCIIURIText = "";
     return;
   }
 
@@ -375,6 +360,7 @@ URI::resolve(const URI * base_uri)
   // the reference is an absolute-path and we skip to step 7.
   if ( (is_set(Path)) && (thePath.indexOf("/") == 0) ) {
     theURIText = ""; // force rebuild in get_uri_text
+    theASCIIURIText = "";
     return;
   }
 
@@ -464,7 +450,7 @@ URI::resolve(const URI * base_uri)
   
   thePath = path;
   theURIText = ""; // force rebuild in get_uri_text
-
+  theASCIIURIText = "";
 }
 
 // scheme = alpha *( alpha | digit | "+" | "-" | "." )
@@ -529,12 +515,9 @@ URI::initializeAuthority(const xqpString& uri)
     lStart = lEnd;
   }
 
-
-
   lTmp = uri.substr(lStart, uri.length() - lStart);
   xqpString lPortString;
   int lPort = -1;
-
 
   if ( ( ! lHost.empty() ) && ( lIndex != -1 ) && ( lStart < lEnd ) ) {
     lPortString = lTmp.substr(0, lEnd - lStart);
@@ -864,17 +847,10 @@ URI::is_conformant_scheme_name(const xqpString& scheme)
 void
 URI::set_user_info(const xqpString& new_user_info)
 {
-  theUserInfo = new_user_info;
+  theUserInfo = new_user_info.encodeForUri();
   set_state(UserInfo);
 }
 
-
-bool
-URI::is_conformant_user_info(const xqpString& user_info)
-{
-  // TODO
-  return true;
-}
 
 void
 URI::set_host(const xqpString& new_host)
@@ -921,7 +897,7 @@ URI::set_path(const xqpString& new_path)
 }
 
 const xqpString&
-URI::get_uri_text() const
+URI::toString() const
 {
   if (theURIText.length() == 0) {
     build_full_text();
@@ -929,8 +905,55 @@ URI::get_uri_text() const
   return theURIText;
 }
 
+const xqpString&
+URI::toASCIIString() const
+{
+  if (theASCIIURIText.length() == 0) {
+    build_ascii_full_text();
+  }
+  return theASCIIURIText;
+}
+
 void
 URI::build_full_text() const
+{
+  std::ostringstream lURI;
+  
+  // Scheme
+  if ( is_set(Scheme) )
+    lURI << theScheme << ":";
+
+  // Authority
+  if ( is_set(Host) || is_set(RegBasedAuthority) ) {
+    lURI << "//";
+    
+    if ( is_set(Host) ) {
+      if ( is_set(UserInfo) )
+        lURI << theUserInfo << "@";
+
+      lURI << theHost;
+
+      if ( is_set(Port) )
+        lURI << ":" << thePort;
+    } else {
+      lURI << theRegBasedAuthority;
+    }
+  }
+
+  if ( is_set(Path) )
+    lURI << thePath;
+
+  if ( is_set(QueryString) )
+    lURI << "?" << theQueryString;
+
+  if ( is_set(Fragment) )
+    lURI << "#" << theFragment;
+
+  theURIText = lURI.str();
+}
+
+void
+URI::build_ascii_full_text() const
 {
   std::ostringstream lURI;
   

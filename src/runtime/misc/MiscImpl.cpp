@@ -107,7 +107,7 @@ bool FnResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
     try {
       resolvedURI = URI(baseURI, &*strRelative); // resolve with baseURI or return strRelative if it's a valid absolute URI
-      strResult = resolvedURI.get_uri_text().getStore();
+      strResult = resolvedURI.toString().getStore();
     } catch (error::ZorbaError& e) {
       ZORBA_ERROR_DESC(FORG0002, e.theDescription);
     }

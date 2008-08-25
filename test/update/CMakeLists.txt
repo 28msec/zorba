@@ -29,7 +29,7 @@ ADD_EXECUTABLE(updtestdriver updtestdriver.cpp)
 
 TARGET_LINK_LIBRARIES(updtestdriver ${requiredlibs-updtestdriver})
 
-# collect all queries (suffix .xq) in all subdirectories of the Queries dir
+# collect all spec files (suffix .spec) in all subdirectories of the Queries dir
 FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.spec)
 
 MESSAGE(STATUS "Adding update tests for CTest $TESTFILES")

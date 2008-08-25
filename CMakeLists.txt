@@ -201,14 +201,14 @@ ELSE (NOT Boost_FOUND)
 
       IF (34 LESS ${Boost_MINOR_VERSION})
         MESSAGE(STATUS "Boost minor version is greater than 34")
-        SET(requiredlibs-zorba ${requiredlibs-zorba} boost_system-mt)
+#        SET(requiredlibs-zorba ${requiredlibs-zorba} boost_system-mt)
       ENDIF (34 LESS ${Boost_MINOR_VERSION})
 
     ELSE (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
       IF (34 LESS ${Boost_MINOR_VERSION})
         MESSAGE(STATUS "Boost minor version is greater than 34")
-        SET(requiredlibs-zorba ${requiredlibs-zorba} boost_system)
+#        SET(requiredlibs-zorba ${requiredlibs-zorba} boost_system)
       ENDIF (34 LESS ${Boost_MINOR_VERSION})
 
     ENDIF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -220,7 +220,7 @@ ELSE (NOT Boost_FOUND)
 
       IF (34 LESS ${Boost_MINOR_VERSION})
         MESSAGE(STATUS "Boost minor version is greater than 34")
-        SET(requiredlibs-zorba ${requiredlibs-zorba}  boost_system-gcc-mt)
+#        SET(requiredlibs-zorba ${requiredlibs-zorba}  boost_system-gcc-mt)
       ENDIF (34 LESS ${Boost_MINOR_VERSION})
 
     ELSE (CYGWIN)

@@ -48,7 +48,10 @@ class URI
 
   // get the full uri as text
   const xqpString&
-  get_uri_text() const;
+  toString() const;
+
+  const xqpString&
+  toASCIIString() const;
   
   // getters and setters for each component
   const xqpString&
@@ -57,12 +60,6 @@ class URI
   void
   set_scheme(const xqpString& new_scheme);
 
-  const xqpString&
-  get_user_info() const;
-
-  void
-  set_user_info(const xqpString& new_user_info);
-  
   const xqpString&
   get_host() const;
 
@@ -75,26 +72,55 @@ class URI
   void
   set_port(int new_port);
 
+  const xqpString
+  get_user_info() const;
+
   const xqpString&
+  get_encoded_user_info() const;
+
+  void
+  set_user_info(const xqpString& new_user_info);
+
+  // decoded
+  const xqpString
   get_reg_based_authority() const;
+
+  // encoded
+  const xqpString&
+  get_encoded_reg_based_authority() const;
 
   void
   set_reg_based_authority(const xqpString& new_authority);
 
-  const xqpString&
+  // decoded
+  const xqpString
   get_path() const;
+
+  // encoded
+  const xqpString&
+  get_encoded_path() const;
 
   void
   set_path(const xqpString& new_path);
   
-  const xqpString&
+  // decoded
+  const xqpString
   get_query() const;
+
+  // encoded
+  const xqpString&
+  get_encoded_query() const;
 
   void
   set_query(const xqpString& new_query_string);
 
-  const xqpString&
+  // decoded
+  const xqpString
   get_fragment() const;
+
+  // encoded
+  const xqpString&
+  get_encoded_fragment() const;
 
   void
   set_fragment(const xqpString& new_fragment);
@@ -103,6 +129,9 @@ protected:
   // helper functions
   void
   build_full_text() const;
+
+  void
+  build_ascii_full_text() const;
 
   void
   initialize(const xqpString& uri);
@@ -122,9 +151,6 @@ protected:
 
   bool
   is_conformant_scheme_name(const xqpString& scheme);
-
-  bool
-  is_conformant_user_info(const xqpString& user_info);
 
   bool
   is_valid_server_based_authority(const xqpString& host, const int port, const xqpString& user_info, bool user_info_found);
@@ -170,9 +196,7 @@ protected:
   void
   resolve(const URI * base_uri);
 
-  // keep track whether particular components of a uri are set or not
-  // this could be captured with xqpString pointers but would require
-  // to allocate xqpStrings dynamically
+  // keep track whether particular components of a uri are defined or undefined
   mutable uint32_t theState;
   enum States {                   
     Scheme            = 1,
@@ -191,13 +215,14 @@ protected:
  
   // the uri text is composed out of the components below
   // it's mutable because get_uri_text is const
-  mutable xqpString theURIText;
+  mutable xqpString theURIText; // encoded
+  mutable xqpString theASCIIURIText; // decoded
 
-  // the uri information
+  // the uri components (RegBasedAuthority, Path, QueryString, Fragment, and UserInfo are always encoded)
   xqpString theScheme;
-  xqpString theUserInfo;
   xqpString theHost;
   uint32_t  thePort;
+  xqpString theUserInfo;
   xqpString theRegBasedAuthority;
   xqpString thePath;
   xqpString theQueryString;
@@ -208,49 +233,79 @@ protected:
 inline const xqpString&
 URI::get_scheme() const 
 {
-    return theScheme;
-}
-
-inline const xqpString&
-URI::get_user_info() const
-{
-    return theUserInfo;
+  return theScheme;
 }
 
 inline const xqpString&
 URI::get_host() const
 {
-    return theHost;
+  return theHost;
 }
 
 inline int 
 URI::get_port() const
 {
-    return thePort;
+  return thePort;
+}
+
+inline const xqpString
+URI::get_user_info() const
+{
+  return theUserInfo.decodeFromUri();
 }
 
 inline const xqpString&
+URI::get_encoded_user_info() const
+{
+  return theUserInfo;
+}
+
+inline const xqpString
 URI::get_reg_based_authority() const
 {
-    return theRegBasedAuthority;
+  return theRegBasedAuthority.decodeFromUri();
 }
 
 inline const xqpString&
+URI::get_encoded_reg_based_authority() const
+{
+  return theRegBasedAuthority;
+}
+
+inline const xqpString
 URI::get_path() const
 {
-    return thePath;
+  return thePath.decodeFromUri();
 }
 
 inline const xqpString&
+URI::get_encoded_path() const
+{
+  return thePath;
+}
+
+inline const xqpString
 URI::get_query() const
 {
-    return theQueryString;
+  return theQueryString.decodeFromUri();
 }
 
 inline const xqpString&
+URI::get_encoded_query() const
+{
+  return theQueryString;
+}
+
+inline const xqpString
 URI::get_fragment() const
 {
-    return theFragment;
+  return theFragment.decodeFromUri();
+}
+
+inline const xqpString&
+URI::get_encoded_fragment() const
+{
+  return theFragment;
 }
 
 } /* namespace zorba */

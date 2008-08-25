@@ -22,6 +22,7 @@
 #include "zorbaerrors/error_manager.h"
 #include "zorbatypes/zorbatypesError.h"
 #include "zorbaerrors/error_messages.h"
+#include "zorbatypes/URI.h"
 
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
@@ -1514,6 +1515,7 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (consumeNext(uriItem, theChild.getp(), planState)) {
 
     uriString = uriItem->getStringValueP();
+
 
     try {
       // maybe the document is stored with the uri that is given by the user

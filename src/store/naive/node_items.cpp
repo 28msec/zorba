@@ -1662,7 +1662,7 @@ void ElementNode::addBaseUriProperty(
     try {
       URI absoluteURI(&*absUri);
       URI resolvedURI(absoluteURI, &*relUri);
-      resolvedUriString = resolvedURI.get_uri_text().getStore();
+      resolvedUriString = resolvedURI.toString().getStore();
     } catch (error::ZorbaError& e) {
       resolvedUriString.transfer(relUri);
     }
@@ -1701,7 +1701,7 @@ void ElementNode::adjustBaseUriProperty(
     try {
       URI lAbsoluteUri(&*absUri);
       URI lResolvedUri(lAbsoluteUri, &*relUri);
-      resolvedUriString = lResolvedUri.get_uri_text().getStore();
+      resolvedUriString = lResolvedUri.toString().getStore();
     } catch (error::ZorbaError& e) {
       ZORBA_FATAL(e.theErrorCode, e.theDescription);
     }

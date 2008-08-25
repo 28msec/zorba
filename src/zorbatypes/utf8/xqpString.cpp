@@ -909,6 +909,7 @@ xqpStringStore_t xqpStringStore::iriToUri() const
 /*******************************************************************************
 
 ********************************************************************************/
+// TODO make this more efficient, i.e. don't use += but a stream or buffer
 xqpStringStore_t xqpStringStore::encodeForUri() const
 {
   uint32_t i;
@@ -926,7 +927,8 @@ xqpStringStore_t xqpStringStore::encodeForUri() const
     prev = c;
     cp = UTF8Decode(c);
     memset(seq, 0, sizeof(seq));
-    if(is_unreservedCP(cp))
+    // not encoding a / is a hack until the uri class can correctly encode paths
+    if(is_unreservedCP(cp) || cp == '/')
     {
       UTF8Encode(cp, seq);
       newStr->theString += seq;
@@ -949,6 +951,54 @@ xqpStringStore_t xqpStringStore::encodeForUri() const
   return newStr.release();
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+const char HEX2DEC[256] =
+{
+  /*       0  1  2  3   4  5  6  7   8  9  A  B   C  D  E  F */
+  /* 0 */ -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1,
+  /* 1 */ -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1,
+  /* 2 */ -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1,
+  /* 3 */  0, 1, 2, 3,  4, 5, 6, 7,  8, 9,-1,-1, -1,-1,-1,-1,
+
+  /* 4 */ -1,10,11,12, 13,14,15,-1, -1,-1,-1,-1, -1,-1,-1,-1,
+  /* 5 */ -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1,
+  /* 6 */ -1,10,11,12, 13,14,15,-1, -1,-1,-1,-1, -1,-1,-1,-1,
+  /* 7 */ -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1,
+
+  /* 8 */ -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1,
+  /* 9 */ -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1,
+  /* A */ -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1,
+  /* B */ -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1,
+
+  /* C */ -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1,
+  /* D */ -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1,
+  /* E */ -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1,
+  /* F */ -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1
+};
+
+
+xqpStringStore_t xqpStringStore::decodeFromUri() const
+{
+  std::ostringstream os;
+
+  for (std::string::size_type i = 0; i < numChars(); ++i) {
+    const char* c = c_str() + i;
+    if  (*c == '%' & i < numChars() -2) {
+      char dec1, dec2;
+      if ( (dec1 = HEX2DEC[(const unsigned char) *(c + 1)]) != -1 &&
+           (dec2 = HEX2DEC[(const unsigned char) *(c + 2)]) != -1 ) {
+        os <<  (char)((dec1 << 4) + dec2);
+        i += 2;
+        continue;
+      }
+    }
+    os << (char)*c;
+  }
+
+  return new xqpStringStore(os.str());
+}
 
 /*******************************************************************************
 

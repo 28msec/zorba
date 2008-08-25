@@ -228,6 +228,9 @@ public:
   encodeForUri() const;
 
   xqpStringStore_t
+  decodeFromUri() const;
+
+  xqpStringStore_t
   normalize(const xqpStringStore* normMode) const;
 
 //   UnicodeString
@@ -504,6 +507,13 @@ public:
   encodeForUri() const
   {
     return theStrStore->encodeForUri().getp();
+  }
+
+  // revert encodeForUri
+  xqpString
+  decodeFromUri() const
+  {
+    return theStrStore->decodeFromUri().getp();
   }
 
   //This function converts an xs:string containing an IRI into a URI according to the

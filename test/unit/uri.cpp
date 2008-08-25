@@ -460,6 +460,19 @@ int uri(int argc, char* argv[])
       "/a/b/c",
       "",
       ""
+    },
+    {
+      "file://",
+      "/a/b/c",
+      "file:///a/b/c",
+      "file",
+      0,
+      "",
+      "",
+      "",
+      "/a/b/c",
+      "",
+      ""
     }
   }; // URITestEntry tests[]
 
@@ -476,8 +489,8 @@ int uri(int argc, char* argv[])
         zorba::URI base(tests[i].base);
         uri = zorba::URI(base, tests[i].uri);
       }
-      if (uri.get_uri_text() != tests[i].text)  {
-        std::cerr << "uri text " << uri.get_uri_text() << " is not equal to " << tests[i].text << std::endl;
+      if (uri.toString() != tests[i].text)  {
+        std::cerr << "uri text " << uri.toString() << " is not equal to " << tests[i].text << std::endl;
         return 2;
       }
       if (uri.get_scheme() != tests[i].scheme)
@@ -511,12 +524,18 @@ int uri(int argc, char* argv[])
         std::cerr << "query " << uri.get_query() << " is not equal to " << tests[i].query << std::endl;
         return 10;
       }
-      std::cout << "result: " << uri.get_uri_text() << std::endl;
+      std::cout << "result: " << uri.toString() << std::endl;
     }
   } catch (zorba::error::ZorbaError & e) {
     std::cerr << e.theDescription << std::endl;
     return 11;
   }
+
+  zorba::xqpString lToEncode("/a /b/c");
+  zorba::xqpString lEncoded = lToEncode.encodeForUri();
+  std::cout << "encoded " << lEncoded << std::endl;
+
+  std::cout << "decoded " << lEncoded.decodeFromUri() << std::endl;
 
   return 0;
 
