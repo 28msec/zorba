@@ -25,12 +25,13 @@ namespace zorbacmd {
 class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialize-html", "--indent", "--print-query", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--debug-ports", "--debug-client", "--debug-server", NULL };
+    static const char *result [] = { "--timing", "--output-file", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--debug-ports", "--debug-client", "--debug-server", NULL };
     return result;
   }
   bool theTiming;
   std::string theOutputFile;
   bool theSerializeHtml;
+  bool theSerializeText;
   bool theIndent;
   bool thePrintQuery;
   bool theByteOrderMark;
@@ -53,6 +54,7 @@ protected:
   void initialize () {
     theTiming = false;
     theSerializeHtml = false;
+    theSerializeText = false;
     theIndent = false;
     thePrintQuery = false;
     theByteOrderMark = false;
@@ -68,6 +70,7 @@ public:
   const bool &timing () const { return theTiming; }
   const std::string &outputFile () const { return theOutputFile; }
   const bool &serializeHtml () const { return theSerializeHtml; }
+  const bool &serializeText () const { return theSerializeText; }
   const bool &indent () const { return theIndent; }
   const bool &printQuery () const { return thePrintQuery; }
   const bool &byteOrderMark () const { return theByteOrderMark; }
@@ -106,6 +109,9 @@ public:
       }
       else if (strcmp (*argv, "--serialize-html") == 0) {
         theSerializeHtml = true;
+      }
+      else if (strcmp (*argv, "--serialize-text") == 0) {
+        theSerializeText = true;
       }
       else if (strcmp (*argv, "--indent") == 0) {
         theIndent = true;
@@ -204,6 +210,7 @@ public:
 "--timing, -t\nPrint timing information. In case of multiple queries the timing information is provided per each query\n\n"
 "--output-file, -o\nWrite the result to the given file.\n\n"
 "--serialize-html\nSerialize the result as HTML.\n\n"
+"--serialize-text\nSerialize the result as Text.\n\n"
 "--indent\nIndent output.\n\n"
 "--print-query\nPrint the queries.\n\n"
 "--byte-order-mark\nSet the byte-order-mark for the serializer.\n\n"

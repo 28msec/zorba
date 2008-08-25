@@ -1,6 +1,7 @@
 ("timing,t", "Print timing information. In case of multiple queries the timing information is provided per each query")
 ("output-file,o", po::value<std::string>(), "Write the result to the given file.")
 ("serialize-html", "Serialize the result as HTML.")
+("serialize-text", "Serialize the result as Text.")
 ("indent", "Indent output.")
 ("print-query", "Print the queries.")
 ("byte-order-mark", "Set the byte-order-mark for the serializer.")

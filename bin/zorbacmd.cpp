@@ -167,6 +167,8 @@ createSerializerOptions(Zorba_SerializerOptions& lSerOptions, ZorbaCMDProperties
 
   if ( aProperties->serializeHtml() )
     lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
+  else if ( aProperties->serializeText() )
+    lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
   else  
     lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
 
