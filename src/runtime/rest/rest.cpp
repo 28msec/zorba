@@ -198,8 +198,8 @@ bool createAttributeHelper(store::Item_t parent, xqpString name, xqpString value
       qname,
       type_qname,
       str_item,
-      true,
-      true);
+      false,
+      false);
 
   if (result != NULL)
     *result = temp_result;
@@ -436,7 +436,7 @@ void processHeader(store::Item_t& headers, curl_slist** headers_list)
   it->next(child);
   if (child->getNodeKind() == store::StoreConsts::textNode)
   {
-    xqpString temp = xqpString(name->getStringValue()) + xqpString(": ") + child->getStringValueP();
+    xqpString temp = xqpString(name->getStringValue()) + xqpString(": ") + child->getStringValue().getp();
     *headers_list = curl_slist_append(*headers_list , temp.c_str());
   }
   else 
@@ -663,13 +663,12 @@ static xqpString processGetPayload(Item_t& payload_data, xqpString& Uri)
   if (child->getNodeKind() == store::StoreConsts::textNode)
   {
     // TODO: check if the name of parameter should be escaped too
-    xqpString value = child->getStringValueP();
-    value = value.encodeForUri();
+    xqpStringStore_t value = child->getStringValue()->encodeForUri();
     
     if (Uri.indexOf("?") == -1)
-      Uri = Uri + "?" + name->getStringValue()->str() + "=" + value;
+      Uri = Uri + "?" + name->getStringValue()->str() + "=" + value.getp();
     else
-      Uri = Uri + "&" + name->getStringValue()->str() + "=" + value;
+      Uri = Uri + "&" + name->getStringValue()->str() + "=" + value.getp();
   }
   else
   {
