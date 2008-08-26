@@ -372,6 +372,8 @@ URI::resolve(const URI * base_uri)
     int last_slash = base_path.lastIndexOf("/");
     if ( last_slash != -1 )
       path = base_path.substr(0, last_slash+1);
+    else
+      path = "/";
 
   }
 

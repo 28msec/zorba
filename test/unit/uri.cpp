@@ -473,7 +473,35 @@ int uri(int argc, char* argv[])
       "/a/b/c",
       "",
       ""
+    },
+    {
+      "",
+      "http://www.msb.de",
+      "http://www.msb.de",
+      "http",
+      0,
+      "",
+      "www.msb.de",
+      "",
+      "",
+      "",
+      ""
+    },
+    {
+      "http://www.msb.de",
+      "lib/helpers",
+      "http://www.msb.de/lib/helpers",
+      "http",
+      0,
+      "",
+      "www.msb.de",
+      "",
+      "/lib/helpers",
+      "",
+      ""
     }
+
+
   }; // URITestEntry tests[]
 
 
