@@ -22,6 +22,7 @@
 
 namespace zorba {
 
+  class Zorba;
   class XQuery;
   class StaticContext;
   class DynamicContext;
