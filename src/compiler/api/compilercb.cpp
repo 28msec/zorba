@@ -40,12 +40,11 @@ namespace zorba {
 CompilerCB::CompilerCB()
   :
   m_sctx(0),
-  m_error_manager(0),
+  m_error_manager(0)
 #ifdef ZORBA_DEBUGGER
-  m_debugger(0)
+  ,m_debugger(0)
 #endif
-{
-}
+{}
 
   CompilerCB::~CompilerCB() {}
 
