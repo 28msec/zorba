@@ -443,15 +443,17 @@ XQueryImpl::doCompile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints)
 
   theCompilerCB->m_sctx = theStaticContext;
 
-#ifdef ZORBA_DEBUGGER
-  theCompilerCB->m_debugger = theDebugger;
-#endif
-
   // set the compiler config
   theCompilerCB->m_config = getCompilerConfig(aHints);
 
   XQueryCompiler lCompiler(theCompilerCB);
-
+#ifdef ZORBA_DEBUGGER
+  theCompilerCB->m_debugger = theDebugger;
+  //if the debug mode is set, we force the gflwor
+  if ( theCompilerCB->m_debugger != 0 ){
+    theCompilerCB->m_config.force_gflwor = true;
+  }
+#endif
   // let's compile
   PlanIter_t planRoot = lCompiler.compile(aQuery, theFileName); 
 
