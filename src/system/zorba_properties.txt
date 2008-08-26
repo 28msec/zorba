@@ -23,6 +23,9 @@
       ("trace-translator,l", "trace the translator")
       ("trace-codegen,c", "trace the codegenerator")
 #endif
+#ifdef ZORBA_DEBUGGER
+      ("debug", "compile the query in debug mode")
+#endif
       ("compile-only", "only compile (don't execute)")
       ("tz", po::value<int>(), "implicit time zone (in minutes)")
       ("external-vars,x", po::value<std::vector<std::string> >(), "external variables (e.g. -x x=file1.xml -x y:=strValue)")

@@ -320,7 +320,6 @@ int _tmain(int argc, _TCHAR* argv[])
       std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
       
       //start the server thread
-      //Thread lServerThread( server, lArgs.get() );
 #ifdef ZORBA_HAVE_PTHREAD_H
       pthread_t lServerThread;
       if ( pthread_create( &lServerThread, 0, server, lArgs.get() ) != 0 )

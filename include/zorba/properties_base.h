@@ -21,6 +21,7 @@
 #include <iostream>
 #include <vector>
 #include <cctype>
+#include <zorba/config.h>
 
 namespace zorba {
 

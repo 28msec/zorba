@@ -131,6 +131,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // start parsing the query
   XQuery_t query = zengine->createQuery ();
+  query->setDebugMode(lProp->debug());
   if (! lProp->inlineQuery())
     query->setFileName (path.get_path ());
   

@@ -25,7 +25,7 @@ namespace zorba {
 class ZorbaProperties : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--force-gflwor", "--result-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--trace-translator", "--trace-codegen", "--compile-only", "--tz", "--external-vars", NULL };
+    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--force-gflwor", "--result-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--trace-translator", "--trace-codegen", "--debug", "--compile-only", "--tz", "--external-vars", NULL };
     return result;
   }
   bool theTraceParsing;
@@ -49,6 +49,7 @@ protected:
   bool thePrintIntermediateOpt;
   bool theTraceTranslator;
   bool theTraceCodegen;
+  bool theDebug;
   bool theCompileOnly;
   int theTz;
   std::vector<std::string> theExternalVars;
@@ -73,6 +74,7 @@ protected:
     thePrintIntermediateOpt = false;
     theTraceTranslator = false;
     theTraceCodegen = false;
+    theDebug = false;
     theCompileOnly = false;
   }
 public:
@@ -97,6 +99,7 @@ public:
   const bool &printIntermediateOpt () const { return thePrintIntermediateOpt; }
   const bool &traceTranslator () const { return theTraceTranslator; }
   const bool &traceCodegen () const { return theTraceCodegen; }
+  const bool &debug () const { return theDebug; }
   const bool &compileOnly () const { return theCompileOnly; }
   const int &tz () const { return theTz; }
   const std::vector<std::string> &externalVars () const { return theExternalVars; }
@@ -181,6 +184,11 @@ public:
         theTraceCodegen = true;
       }
 #endif
+#ifdef ZORBA_DEBUGGER
+      else if (strcmp (*argv, "--debug") == 0) {
+        theDebug = true;
+      }
+#endif
       else if (strcmp (*argv, "--compile-only") == 0) {
         theCompileOnly = true;
       }
@@ -232,6 +240,9 @@ public:
 #ifndef NDEBUG
 "--trace-translator, -l\ntrace the translator\n\n"
 "--trace-codegen, -c\ntrace the codegenerator\n\n"
+#endif
+#ifdef ZORBA_DEBUGGER
+"--debug\ncompile the query in debug mode\n\n"
 #endif
 "--compile-only\nonly compile (don't execute)\n\n"
 "--tz\nimplicit time zone (in minutes)\n\n"
