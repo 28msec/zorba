@@ -74,7 +74,7 @@ static void fillAddr(const string &address, unsigned short port,
 // Socket Code
 
 Socket::Socket(int type, int protocol) throw(SocketException) {
-  #ifdef WIN32
+#ifdef WIN32
     if (!initialized) {
       WORD wVersionRequested;
       WSADATA wsaData;
@@ -85,7 +85,7 @@ Socket::Socket(int type, int protocol) throw(SocketException) {
       }
       initialized = true;
     }
-  #endif
+#endif
 
   // Make a new socket
   if ((sockDesc = socket(PF_INET, type, protocol)) < 0) {
@@ -98,11 +98,11 @@ Socket::Socket(int sockDesc) {
 }
 
 Socket::~Socket() {
-  #ifdef WIN32
+#ifdef WIN32
     ::closesocket(sockDesc);
-  #else
+#else
     ::close(sockDesc);
-  #endif
+#endif
   sockDesc = -1;
 }
 
@@ -155,11 +155,11 @@ void Socket::setLocalAddressAndPort(const string &localAddress,
 }
 
 void Socket::cleanUp() throw(SocketException) {
-  #ifdef WIN32
+#ifdef WIN32
     if (WSACleanup() != 0) {
       throw SocketException("WSACleanup() failed");
     }
-  #endif
+#endif
 }
 
 unsigned short Socket::resolveService(const string &service,
