@@ -20,11 +20,16 @@
 #include <zorba/debugger_client.h>
 #include <zorba/debugger_default_event_handler.h>
 #include <simplestore/simplestore.h>
-#include <zorbautils/thread.h>
 #include <zorbaerrors/errors.h>
 #ifdef WIN32
 #include <windows.h>
 #define sleep(s) Sleep(s*1000)
+#endif
+#ifdef ZORBA_HAVE_PTHREAD_H
+#include <pthread.h>
+#define ZORBA_THREAD_RETURN void *
+#else
+#define ZORBA_THREAD_RETURN DWORD WINAPI
 #endif
 
 using namespace zorba;
@@ -125,19 +130,47 @@ int debugger( int argc, char *argv[] )
   Zorba *lZorba = Zorba::getInstance( lStore );
   bool res = false;
   {
-    Thread lThread(runClient, 0); 
+#ifdef ZORBA_HAVE_PTHREAD_H
+    pthread_t lThread;
+    if ( pthread_create( &lThread, 0, runClient, 0 ) != 0 ) 
+#else
+    HANDLE lThread;
+    if ( ( lThread = CreateThread(0, 0, runClient, 0, 0, 0) ) == 0 )
+#endif
+    {
+      std::cerr << "Couldn't start the thread" << std::endl;
+      return 1;
+    }
     std::cout << "executing example 1" << std::endl;
     res = debugger_example_1(lZorba);
-    lThread.join();
+#ifdef ZORBA_HAVE_PTHREAD_H
+    pthread_join( lThread, 0 );
+#else
+    WaitForSingleObject( lThread, INFINITE );
+#endif
     if ( !res ) return 1;
     std::cout << std::endl;
   }
 
   {
-    Thread lThread(runClient, 0);
     std::cout << "executing example 2" << std::endl;
+#ifdef ZORBA_HAVE_PTHREAD_H
+    pthread_t lThread;
+    if ( pthread_create( &lThread, 0, runClient, 0 ) != 0 ) 
+#else
+    HANDLE lThread;
+    if ( ( lThread = CreateThread(0, 0, runClient, 0, 0, 0) ) == 0 )
+#endif
+    {
+      std::cerr << "Couldn't start the thread" << std::endl;
+      return 1;
+    }
     res = debugger_example_2(lZorba);
-    lThread.join();
+#ifdef ZORBA_HAVE_PTHREAD_H
+    pthread_join( lThread, 0 );
+#else
+    WaitForSingleObject( lThread, INFINITE );
+#endif
     if ( !res ) return 1;
     std::cout << std::endl;
   }
