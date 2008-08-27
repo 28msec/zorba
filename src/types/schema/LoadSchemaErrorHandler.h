@@ -17,6 +17,11 @@
 #define LOADSCHEMAERRORHANDLER_H_
 
 #include "xercesIncludes.h"
+#include "common/common.h"
+#include <zorbaerrors/error_manager.h>
+#include "zorbaerrors/errors.h"
+#include <compiler/parser/query_loc.h>
+
 
 using namespace XERCES_CPP_NAMESPACE;
 
@@ -30,12 +35,12 @@ public:
     // -----------------------------------------------------------------------
     //  Constructors and Destructor
     // -----------------------------------------------------------------------
-    LoadSchemaErrorHandler ();
+    LoadSchemaErrorHandler (const QueryLoc& loc);
     ~LoadSchemaErrorHandler ();
 
     bool getSawErrors() const
     {
-        return fSawErrors;
+        return _sawErrors;
     }
 
     void warning(const SAXParseException& exc);
@@ -45,7 +50,8 @@ public:
 
 
 private:
-    bool            fSawErrors;
+    const QueryLoc& _loc;
+    bool            _sawErrors;
 };
 
 } // namespace xqp

@@ -1500,6 +1500,7 @@ bool ElementNode::addBindingForQName(
     {
       if (replacePrefix)
       {
+        //std::cout << "Prefix: " << prefix->str() << " ns: " << ns->c_str() << " ns2: " << ns2->c_str() << " local: " << qname->getLocalName()->str() << "\n";
         ZORBA_FATAL(!ns->empty(), "");
 
         xqpStringStore_t prefix(new xqpStringStore("XXX"));

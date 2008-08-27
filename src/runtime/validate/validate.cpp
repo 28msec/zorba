@@ -79,6 +79,8 @@ namespace zorba
     bool ValidateIterator::effectiveValidationValue ( store::Item_t& result, const QueryLoc& loc, 
         PlanState& planState, const PlanIterator* iter, bool isLax)
     {
+        //std::cout << "Starting Validation" << "\n"; std::cout.flush();
+        
         bool returnVal = false;
         store::Item_t item;
         xqtref_t type;
@@ -92,7 +94,7 @@ namespace zorba
         else if ( item->isNode() )
         {
             static_context* staticContext = planState.sctx();
-            //dynamic_context* dynamicContext = planState.dctx();
+            
             TypeManager * typeManager = staticContext->get_typemanager();
             DelegatingTypeManager* delegatingTypeManager = 
                 static_cast<DelegatingTypeManager*>(typeManager);
@@ -131,7 +133,7 @@ namespace zorba
                 schemaValidator.endDoc();
 
                 //std::cout << "End Validate doc" << "\n"; std::cout.flush();
-                //break;
+                
                 result = newDoc;
                 return true;
             }
@@ -222,7 +224,7 @@ namespace zorba
             ZORBA_ASSERT(attribute->isNode());
             ZORBA_ASSERT(attribute->getNodeKind() == store::StoreConsts::attributeNode);
 
-            //std::cout << " v    - attr: " << attribute->getNodeName()->getLocalName()->c_str() << "\n"; std::cout.flush();
+            std::cout << " v    - attr: " << attribute->getNodeName()->getLocalName()->c_str() << "\n"; std::cout.flush();
                         
             store::Item_t attName = attribute->getNodeName();
             schemaValidator.attr(attName, attribute->getStringValue());
@@ -238,7 +240,7 @@ namespace zorba
         for( curAtt = attList->begin() ; curAtt != attList->end(); ++curAtt )
         {
             AttributeValidationInfo* att = *curAtt;
-            //std::cout << " v    proccessATT2: " << att->_localName << " T: " << att->_typeName << "\n";
+            std::cout << " v    proccessATT2: " << att->_localName << " T: " << att->_typeName << "\n";
              
             store::Item_t attQName;
             GENV_ITEMFACTORY->createQName( attQName, att->_uri, att->_prefix, att->_localName);

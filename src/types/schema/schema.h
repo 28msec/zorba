@@ -48,7 +48,7 @@ public:
     Schema();
     virtual ~Schema();
 
-    void registerXSD(const char* xsdFileName);
+    void registerXSD(const char* xsdFileName, const QueryLoc& loc);
     void printXSDInfo(bool excludeBuiltIn = true);
 
     // user defined simple types, i.e. Atomic, List or Union Types

@@ -3170,7 +3170,7 @@ void *begin_visit(const SchemaImport& v)
 
     rchandle<URILiteralList> atlist = v.get_at_list();
     if (atlist == NULL || atlist->size () == 0)
-      ZORBA_ERROR_LOC_PARAM (XQST0059, loc, "(no location specified)", target_ns);
+      ZORBA_ERROR_LOC_PARAM (XQST0057, loc, "(no location specified)", target_ns);
     {
       string at = sctx_p->resolve_relative_uri ((*atlist) [0]);
      
@@ -3184,7 +3184,7 @@ void *begin_visit(const SchemaImport& v)
       ((DelegatingTypeManager*)CTXTS)->initializeSchema();
       Schema* schema_p = ((DelegatingTypeManager*)CTXTS)->getSchema();
       
-      schema_p->registerXSD (at.c_str ());
+      schema_p->registerXSD (at.c_str (), loc);
     }
 
     return no_state;

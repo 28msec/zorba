@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "common/common.h"
+
 
 #ifndef ZORBA_NO_XMLSCHEMA
 
 #include "LoadSchemaErrorHandler.h"
 #include "StrX.h"
 
-
 namespace zorba
 {
 
-LoadSchemaErrorHandler::LoadSchemaErrorHandler() :
-    fSawErrors(false)
+LoadSchemaErrorHandler::LoadSchemaErrorHandler(const QueryLoc& loc) :
+    _loc(loc), _sawErrors(false)
 {
 }
 
@@ -38,20 +37,24 @@ LoadSchemaErrorHandler::~LoadSchemaErrorHandler()
 // ---------------------------------------------------------------------------
 void LoadSchemaErrorHandler::error(const SAXParseException& e)
 {
-    fSawErrors = true;
+    _sawErrors = true;
     XERCES_STD_QUALIFIER cerr << "\nError at file " << StrX(e.getSystemId())
     << ", line " << e.getLineNumber()
     << ", char " << e.getColumnNumber()
     << "\n  Message: " << StrX(e.getMessage()) << XERCES_STD_QUALIFIER endl;
+    ZORBA_ERROR_LOC_DESC( XQST0059, _loc, StrX(e.getMessage()));
+    //ZORBA_ERROR_DESC(XQST0059, StrX(e.getMessage()));
 }
 
 void LoadSchemaErrorHandler::fatalError(const SAXParseException& e)
 {
-    fSawErrors = true;
+    _sawErrors = true;
     XERCES_STD_QUALIFIER cerr << "\nFatal Error at file " << StrX(e.getSystemId())
     << ", line " << e.getLineNumber()
     << ", char " << e.getColumnNumber()
     << "\n  Message: " << StrX(e.getMessage()) << XERCES_STD_QUALIFIER endl;
+    ZORBA_ERROR_LOC_DESC( XQST0059, _loc, StrX(e.getMessage()));
+    //ZORBA_ERROR_DESC(XQST0059, StrX(e.getMessage()));
 }
 
 void LoadSchemaErrorHandler::warning(const SAXParseException& e)
@@ -60,11 +63,13 @@ void LoadSchemaErrorHandler::warning(const SAXParseException& e)
     << ", line " << e.getLineNumber()
     << ", char " << e.getColumnNumber()
     << "\n  Message: " << StrX(e.getMessage()) << XERCES_STD_QUALIFIER endl;
+    //error::ErrorManager errorManager;
+    //ZORBA_WARNING(&errorManager, XQST0059, StrX(e.getMessage()), _loc);
 }
 
 void LoadSchemaErrorHandler::resetErrors()
 {
-    fSawErrors = false;
+    _sawErrors = false;
 }
 
 } // namspace xqp

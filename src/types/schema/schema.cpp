@@ -105,7 +105,7 @@ Schema::~Schema()
 #endif //ZORBA_NO_XMLSCHEMA
 }
 
-void Schema::registerXSD(const char* xsdURL)
+void Schema::registerXSD(const char* xsdURL, const QueryLoc& loc)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
     std::auto_ptr<SAX2XMLReader> parser;
@@ -121,7 +121,7 @@ void Schema::registerXSD(const char* xsdURL)
         parser->setFeature(XMLUni::fgXercesDynamic, true);
         parser->setProperty(XMLUni::fgXercesScannerName, (void *)XMLUni::fgSGXMLScanner);
 
-        LoadSchemaErrorHandler handler;    
+        LoadSchemaErrorHandler handler(loc);    
         parser->setErrorHandler(&handler);
 
         //cout << "== Parsing == " << xsdURL << endl;
@@ -138,16 +138,19 @@ void Schema::registerXSD(const char* xsdURL)
     catch (const OutOfMemoryException&)
     {
         std::cerr << "OutOfMemoryException during parsing: '" << xsdURL << "'\n" << std::endl;
+        ZORBA_ERROR_LOC_DESC (XQST0059, loc, string("OutOfMemoryException during parsing ") + string(xsdURL));
     }
     catch (const XMLException& e)
     {
         std::cerr << "\nError during parsing: '" << xsdURL << "'\n"
         << "Exception message is:  \n"
         << StrX(e.getMessage()) << std::endl;
+        ZORBA_ERROR_LOC_DESC( XQST0059, loc, StrX(e.getMessage()));
     }
     catch (...)
     {
         std::cerr << "\nUnexpected exception during parsing: '" << xsdURL << "'\n" << std::endl;
+        ZORBA_ERROR_LOC_DESC (XQST0059, loc, string("Unexpected exception during parsing: ") + string(xsdURL));
     }
 
 #if 0                   // enable this to debug registered user defined schema types
