@@ -1615,9 +1615,10 @@ void translate_gflwor (const FLWORExpr& v) {
 
   expr_t lReturnExpr = pop_nodestack ();
 #ifdef ZORBA_DEBUGGER
-  if (compilerCB->m_debugger != 0) {
+  if ( compilerCB->m_debugger != 0)
+  {
     rchandle<debugger_expr> lDebuggerExpr =
-      new debugger_expr(loc, lReturnExpr, theScopedVariables, theGlobalVars);
+      new debugger_expr(lReturnExpr->get_loc(), lReturnExpr, theScopedVariables, theGlobalVars);
    lReturnExpr = lDebuggerExpr;
   }
 #endif
@@ -1661,6 +1662,7 @@ void translate_gflwor (const FLWORExpr& v) {
                                NULL, NULL,
                                wc.get_wintype () == WindowClause::tumbling_window ? forletwin_gclause::tumbling_window : forletwin_gclause::sliding_window,
                                econds [0], econds [1]);
+      
       eclauses.push_back (flwc);
     } else if (typeid (c) == typeid (ForClause)) {
       const ForClause &flc = *static_cast<const ForClause *> (&c);
@@ -1707,8 +1709,13 @@ void translate_gflwor (const FLWORExpr& v) {
       }
 
       for (int j = 0; j < nvars; j++) {
-        forletwin_gclause *flc = 
-          new forletwin_gclause (forletwin_gclause::let_clause, vars [j], exprs [j]);
+        forletwin_gclause *flc = new forletwin_gclause (forletwin_gclause::let_clause, vars [j], exprs[j]);
+#ifdef ZORBA_DEBUGGER
+        if(compilerCB->m_debugger != 0){
+          flc->set_bound_variables(theScopedVariables);
+          flc->set_global_variables(theGlobalVars);
+        }
+#endif
         eclauses.push_back (flc);
       }
     } else if (typeid (c) == typeid (WhereClause)) {
@@ -5159,6 +5166,7 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
   var_expr *e = lookup_var (v.get_varname ());
   if (e == NULL)
     ZORBA_ERROR_LOC_PARAM( XPST0008, loc, v.get_varname (), "");
+  //e->set_loc(v.get_location());
   nodestack.push (rchandle<expr> (e));
 }
 

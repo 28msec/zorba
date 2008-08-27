@@ -18,6 +18,7 @@
 #define ZORBA_FLWOR_EXPR_H
 
 #include "compiler/expression/expr_base.h"
+#include "context/dynamic_context.h"
 
 namespace zorba {
 
@@ -39,7 +40,61 @@ public:
 
 };
 
+#ifdef ZORBA_DEBUGGER
+typedef rchandle<var_expr> var_expr_t;
+typedef std::pair<var_expr_t, expr_t> global_binding;
+class bound_var
+{
+  public:
+    store::Item_t varname;
+    std::string var_key;
+    xqtref_t type;
+    expr_t val;
+
+    bound_var(var_expr *ve, expr_t val_):
+      varname (ve->get_varname ()),
+      var_key (dynamic_context::var_key (ve)), type(ve->get_type()), val (val_){}
+};
+#endif
 class flwor_clause : public SimpleRCObject {
+#ifdef ZORBA_DEBUGGER
+  private:
+    std::list<global_binding> theGlobals;
+    checked_vector<bound_var> theBoundVariables;
+
+  public:
+    void set_bound_variables( checked_vector<var_expr_t> &aScopedVariables )
+    {
+      std::set<store::Item_t> lQNames;
+      checked_vector<var_expr_t>::reverse_iterator it;
+      for ( it = aScopedVariables.rbegin(); it != aScopedVariables.rend(); ++it )
+		  {
+        if ( lQNames.find( (*it)->get_varname() ) == lQNames.end() )
+        {
+          lQNames.insert( (*it)->get_varname() );
+          var_expr_t lValue = (*it);
+          var_expr_t lVariable( new var_expr( lValue->get_loc(), var_expr::eval_var, lValue->get_varname() ) );
+          lVariable->set_type( lValue->get_type() );
+          theBoundVariables.push_back(bound_var(&*lVariable, lValue.getp()));
+        }
+      } 
+    }
+    
+    checked_vector<bound_var> get_bound_variables() const
+    {
+      return theBoundVariables;
+    }
+    
+    void set_global_variables( std::list<global_binding> &aGlobals )
+    {
+      theGlobals = aGlobals;
+    }
+
+    std::list<global_binding> get_global_variables() const
+    {
+      return theGlobals;
+    }
+#endif
 };
 
 class flwor_initial_clause : public flwor_clause {

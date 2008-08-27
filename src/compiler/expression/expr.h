@@ -233,41 +233,35 @@ public:
 
 #ifdef ZORBA_DEBUGGER
 //debugger expression
-typedef rchandle<var_expr> var_expr_t;
-typedef std::pair<var_expr_t, expr_t> global_binding;
 class debugger_expr: public eval_expr
 {
   private:
     std::list<global_binding> theGlobals;
-  
+    
   public:
     debugger_expr( const QueryLoc& loc, expr_t aChild, std::list<global_binding> aGlobals ):
       eval_expr(loc, aChild ), theGlobals( aGlobals ){}
     
     debugger_expr( const QueryLoc& loc, expr_t aChild,
-                   std::vector<var_expr_t> aScopedVariables,
-                   std::list<global_binding> aGlobals ):
-      eval_expr(loc, aChild ), theGlobals( aGlobals )
-    {
-      std::set<store::Item_t> lQNames;
-      checked_vector<var_expr_t>::reverse_iterator it;
-      for ( it = aScopedVariables.rbegin(); it != aScopedVariables.rend(); ++it )
-      {
-        if ( lQNames.find( (*it)->get_varname() ) == lQNames.end() )
-        {
-          lQNames.insert( (*it)->get_varname() );
-          var_expr_t lValue = (*it);
-          var_expr_t lVariable( new var_expr( loc, var_expr::eval_var, lValue->get_varname() ) );
-          lVariable->set_type( lValue->get_type() );
-          add_var(eval_expr::eval_var(&*lVariable, lValue.getp()));
-        }
-      }
-    }
-    
-    debugger_expr( const QueryLoc& loc, expr_t aChild,
                    checked_vector<var_expr_t> aScopedVariables,
                    std::list<global_binding> aGlobals ):
       eval_expr(loc, aChild ), theGlobals( aGlobals )
+    {
+      store_local_variables( aScopedVariables );
+    }
+
+    expr_iterator_data *make_iter();
+    void next_iter (expr_iterator_data&);
+    void accept (expr_visitor&);
+    std::ostream& put(std::ostream&) const;
+
+    std::list<global_binding> getGlobals() const
+    {
+      return theGlobals;
+    }
+
+  private:
+    void store_local_variables(checked_vector<var_expr_t> &aScopedVariables)
     {
       std::set<store::Item_t> lQNames;
       checked_vector<var_expr_t>::reverse_iterator it;
@@ -282,16 +276,6 @@ class debugger_expr: public eval_expr
           add_var(eval_expr::eval_var(&*lVariable, lValue.getp()));
         }
       }
-    }
-
-    expr_iterator_data *make_iter();
-    void next_iter (expr_iterator_data&);
-    void accept (expr_visitor&);
-    std::ostream& put(std::ostream&) const;
-
-    std::list<global_binding> getGlobals() const
-    {
-      return theGlobals;
     }
 };
 #endif

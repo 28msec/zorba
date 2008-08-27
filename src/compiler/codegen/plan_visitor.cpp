@@ -647,9 +647,35 @@ PlanIter_t gflwor_codegen(gflwor_expr& v, int ccnt, gflwor_codegen_data &gdata) 
     } else if (flwc->get_type () == forletwin_gclause::let_clause) {
       vector<LetVarIter_t> *var_iters = NULL;
       ZORBA_ASSERT (lvar_iter_map.get((uint64_t)var, var_iters));
-      
+#ifdef ZORBA_DEBUGGER
+        if(ccb->m_debugger != 0){
+          checked_vector<PlanIter_t> argv;
+          checked_vector<store::Item_t> varnames;
+          checked_vector<string> var_keys;
+          checked_vector<global_binding> globals;
+          checked_vector<xqtref_t> vartypes;
+          
+          checked_vector<bound_var> lVars = flwc->get_bound_variables();
+          checked_vector<bound_var>::iterator lIter;
+          for ( lIter = lVars.begin(); lIter != lVars.end(); ++lIter )
+          {
+            varnames.push_back ((*lIter).varname);
+            var_keys.push_back ((*lIter).var_key);
+            vartypes.push_back ((*lIter).type);
+          }
+
+          list<global_binding> lGlobals = flwc->get_global_variables();
+          list<global_binding>::iterator it;
+          for ( it = lGlobals.begin(); it != lGlobals.end(); ++it )
+          {
+            globals.push_back( *it );
+          }
+          argv.push_back(new gflwor::LetIterator(var->get_loc (), var->get_varname(), PREV_ITER, input, *var_iters, true));
+          return new FnDebugIterator(var->get_loc(), varnames, var_keys, vartypes, globals, argv);
+        }
+#endif
       return new gflwor::LetIterator(var->get_loc (), var->get_varname(), PREV_ITER, input, *var_iters, true);
-    } else if (flwc->get_type () == forletwin_gclause::win_clause) {
+   } else if (flwc->get_type () == forletwin_gclause::win_clause) {
       vector<LetVarIter_t> *var_iters = NULL;
       ZORBA_ASSERT (lvar_iter_map.get((uint64_t)var, var_iters));
       auto_ptr<gflwor::StartClause> start_clause;
