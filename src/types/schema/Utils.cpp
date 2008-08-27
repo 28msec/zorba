@@ -74,12 +74,15 @@ void validateAfterUpdate(const vector<zorba::store::Item*>& nodes, zorba::store:
     DelegatingTypeManager* delegatingTypeManager, static_context* staticContext, 
     const QueryLoc& loc, bool isLax)
 {
+#ifndef ZORBA_NO_XMLSCHEMA
     for ( unsigned int i = 0; i<nodes.size() ; i++)
     {
         validateAfterUpdate(nodes[i], pul, delegatingTypeManager, staticContext, loc, isLax);
     }
+#endif //ZORBA_NO_XMLSCHEMA
 }
 
+#ifndef ZORBA_NO_XMLSCHEMA
 void validateAfterUpdate(store::Item* item, zorba::store::Item_t& pul,
     DelegatingTypeManager* delegatingTypeManager, static_context* staticContext, 
     const QueryLoc& loc, bool isLax)
@@ -400,5 +403,6 @@ store::Item_t findAttributeItem(const store::Item *parent, store::Item_t &attQNa
     ZORBA_ASSERT(false);
     return NULL;
 }
+#endif //ZORBA_NO_XMLSCHEMA
 
 }// namespace zorba
