@@ -174,7 +174,14 @@ void processElement( store::Item_t& pul, static_context* staticContext,
         bool hasTypedValue = true;
         bool hasEmptyValue = false;
         store::PUL *p = static_cast<store::PUL *>(pul.getp());
-        p->addSetElementType(element, typeName, (vector<store::Item_t>&)typedValues, hasTypedValue, hasEmptyValue, element->isId(), element->isIdRefs());
+        p->addSetElementType(element,
+                             typeName,
+                             (vector<store::Item_t>&)typedValues,
+                             true, // TODO: check this
+                             hasEmptyValue,
+                             hasTypedValue,
+                             element->isId(),
+                             element->isIdRefs());
     }
 
     store::NsBindings bindings;
@@ -293,9 +300,23 @@ void processChildren( store::Item_t& pul, static_context* staticContext, namespa
                         store::PUL *p = static_cast<store::PUL *>(pul.getp());
                         
                         if ( typedValues.size()==1 ) // hack around serialization bug
-                            p->addSetElementType(child, type, typedValues[0], hasTypedValue, hasEmptyValue, child->isId(), child->isIdRefs());
+                            p->addSetElementType(child,
+                                                 type,
+                                                 typedValues[0],
+                                                 true, // TODO: check this
+                                                 hasEmptyValue,
+                                                 hasTypedValue,
+                                                 child->isId(),
+                                                 child->isIdRefs());
                         else
-                            p->addSetElementType(child, type, typedValues, hasTypedValue, hasEmptyValue, child->isId(), child->isIdRefs());
+                            p->addSetElementType(child,
+                                                 type,
+                                                 typedValues,
+                                                 true, // TODO: check this
+                                                 hasEmptyValue,
+                                                 hasTypedValue,
+                                                 child->isId(),
+                                                 child->isIdRefs());
                     }
                 }
                 break;

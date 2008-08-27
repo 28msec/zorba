@@ -94,8 +94,9 @@ public:
         Item_t&              target,
         Item_t&              typeName,
         Item_t&              typedValue,
-        bool                 haveTypedValue,
+        bool                 haveValue,
         bool                 haveEmptyValue,
+        bool                 haveTypedValue,
         bool                 isId,
         bool                 isIdRefs) = 0;
 
@@ -103,8 +104,9 @@ public:
         Item_t&              target,
         Item_t&              typeName,
         std::vector<Item_t>& typedValue,
-        bool                 haveTypedValue,
+        bool                 haveValue,
         bool                 haveEmptyValue,
+        bool                 haveTypedValue,
         bool                 isId,
         bool                 isIdRefs) = 0;
 

@@ -457,23 +457,41 @@ void PULImpl::addSetElementType(
     store::Item_t&              target,
     store::Item_t&              typeName,
     store::Item_t&              typedValue,
-    bool                        haveTypedValue,
+    bool                        haveValue,
     bool                        haveEmptyValue,
+    bool                        haveTypedValue,
     bool                        isId,
     bool                        isIdRefs)
 {
+  UpdatePrimitive* upd = new UpdSetElementType(this, target,
+                                               typeName, typedValue,
+                                               haveValue, haveEmptyValue,
+                                               haveTypedValue, false,
+                                               isId, isIdRefs);
+
+  theValidationList.push_back(upd);
 }
 
 
 void PULImpl::addSetElementType(
     store::Item_t&              target,
     store::Item_t&              typeName,
-    std::vector<store::Item_t>& typedValue,
-    bool                        haveTypedValue,
+    std::vector<store::Item_t>& typedValueV,
+    bool                        haveValue,
     bool                        haveEmptyValue,
+    bool                        haveTypedValue,
     bool                        isId,
     bool                        isIdRefs)
 {
+  store::Item_t typedValue = new ItemVector(typedValueV);
+
+  UpdatePrimitive* upd = new UpdSetElementType(this, target,
+                                               typeName, typedValue,
+                                               haveValue, haveEmptyValue,
+                                               haveTypedValue, true,
+                                               isId, isIdRefs);
+
+  theValidationList.push_back(upd);
 }
 
 
@@ -484,16 +502,28 @@ void PULImpl::addSetAttributeType(
     bool                        isId,
     bool                        isIdRefs)
 {
+  UpdatePrimitive* upd = new UpdSetAttributeType(this, target,
+                                                 typeName, typedValue, false,
+                                                 isId, isIdRefs);
+
+  theValidationList.push_back(upd);
 }
 
 
 void PULImpl::addSetAttributeType(
     store::Item_t&              target,
     store::Item_t&              typeName,
-    std::vector<store::Item_t>& typedValue,
+    std::vector<store::Item_t>& typedValueV,
     bool                        isId,
     bool                        isIdRefs)
 {
+  store::Item_t typedValue = new ItemVector(typedValueV);
+
+  UpdatePrimitive* upd = new UpdSetAttributeType(this, target,
+                                                 typeName, typedValue, true,
+                                                 isId, isIdRefs);
+
+  theValidationList.push_back(upd);
 }
 
 
@@ -1101,6 +1131,49 @@ void UpdRenameElem::undo()
 /*******************************************************************************
 
 ********************************************************************************/
+void UpdSetElementType::apply()
+{
+  ElementNode* target = ELEM_NODE(theTarget);
+
+  ZORBA_FATAL(target->theTypeName == GET_STORE().theSchemaTypeNames[XS_ANY], "");
+
+  target->theTypeName.transfer(theTypeName);
+
+  if (theHaveValue)
+  {
+    target->setHaveValue();
+
+    if (theHaveEmptyValue)
+      target->setHaveEmptyValue();
+    else if (theIsId)
+      target->setIsId();
+    else if (theIsIdRefs)
+      target->setIsIdRefs();
+
+    if (theHaveTypedValue)
+    {
+      ZORBA_FATAL(target->numChildren() == 1, "");
+
+      TextNode* textChild = reinterpret_cast<TextNode*>(target->getChild(0));
+
+      textChild->setValue(theTypedValue);
+
+      target->setHaveTypedValue();
+
+      if (theHaveListValue)
+        target->setHaveListValue();
+    }
+  }
+  else
+  {
+    target->resetHaveValue();
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void UpdReplaceAttrValue::apply()
 {
   ATTR_NODE(theTarget)->replaceValue(*this);
@@ -1127,6 +1200,26 @@ void UpdRenameAttr::apply()
 void UpdRenameAttr::undo()
 {
   ATTR_NODE(theTarget)->restoreName(*this);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UpdSetAttributeType::apply()
+{
+  AttributeNode* target = ATTR_NODE(theTarget);
+
+  target->theTypeName.transfer(theTypeName);
+  target->theTypedValue.transfer(theTypedValue);
+
+  if (theIsId)
+    target->setIsId();
+  else if (theIsIdRefs)
+    target->setIsIdRefs();
+
+  if (theHaveListValue)
+    target->setHaveListValue();
 }
 
 

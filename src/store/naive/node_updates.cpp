@@ -70,6 +70,8 @@ void XmlNode::removeType(UpdatePrimitive& upd)
 
       if (n->haveTypedValue())
       {
+        ZORBA_FATAL(n->numChildren() == 1, "");
+
         TextNode* textChild = reinterpret_cast<TextNode*>(n->getChild(0));
 
         xqpStringStore_t newValue = textChild->getStringValue();
@@ -83,9 +85,9 @@ void XmlNode::removeType(UpdatePrimitive& upd)
       undoList.push_back(tinfo);
 
       n->theTypeName = GET_STORE().theSchemaTypeNames[XS_ANY];
+      n->setHaveValue();
       n->resetIsId();
       n->resetIsIdRefs();
-      n->setHaveValue();
       n->resetHaveEmptyValue();
       n->resetHaveTypedValue();
       n->resetHaveListValue();

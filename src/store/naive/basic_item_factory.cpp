@@ -1119,7 +1119,7 @@ bool BasicItemFactory::createTextNode(
   assert(parent != NULL);
   ElementNode* pnode = reinterpret_cast<ElementNode*>(parent);
 
-  // Note: the TextNode constructor asserts that the parent hos 0 children
+  // Note: the TextNode constructor asserts that the parent has 0 children
   result = new TextNode(pnode, content, false);
   return true;
 }

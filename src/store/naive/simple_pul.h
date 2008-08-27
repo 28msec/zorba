@@ -86,6 +86,8 @@ protected:
   std::vector<UpdatePrimitive*>      theReplaceContentList;
   std::vector<UpdatePrimitive*>      theDeleteList;
 
+  std::vector<UpdatePrimitive*>      theValidationList;
+
   NodeToUpdatesMap                   theNodeToUpdatesMap;
 
   std::set<zorba::store::Item*>    * theValidationNodes;
@@ -149,8 +151,9 @@ public:
         store::Item_t&               target,
         store::Item_t&               typeName,
         store::Item_t&               typedValue,
-        bool                         haveTypedValue,
+        bool                         haveValue,
         bool                         haveEmptyValue,
+        bool                         haveTypedValue,
         bool                         isId,
         bool                         isIdRefs);
 
@@ -158,8 +161,9 @@ public:
         store::Item_t&               target,
         store::Item_t&               typeName,
         std::vector<store::Item_t>&  typedValue,
-        bool                         haveTypedValue,
+        bool                         haveValue,
         bool                         haveEmptyValue,
+        bool                         haveTypedValue,
         bool                         isId,
         bool                         isIdRefs);
 
@@ -484,6 +488,58 @@ public:
 
 
 /*******************************************************************************
+
+********************************************************************************/
+class UpdSetElementType : public UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  store::Item_t            theTypeName;
+  store::Item_t            theTypedValue;
+  bool                     theHaveValue;
+  bool                     theHaveEmptyValue;
+  bool                     theHaveTypedValue;
+  bool                     theHaveListValue;
+  bool                     theIsId;
+  bool                     theIsIdRefs;
+
+public:
+  UpdSetElementType(
+        PULImpl*       pul,
+        store::Item_t& target,
+        store::Item_t& typeName,
+        store::Item_t& typedValue,
+        bool           haveValue,
+        bool           haveEmptyValue,
+        bool           haveTypedValue,
+        bool           haveListValue,
+        bool           isId,
+        bool           isIdRefs)
+    :
+    UpdatePrimitive(pul, target),
+    theHaveValue(haveValue),
+    theHaveEmptyValue(haveEmptyValue),
+    theHaveTypedValue(haveTypedValue),
+    theHaveListValue(haveListValue),
+    theIsId(isId),
+    theIsIdRefs(isIdRefs)
+  {
+    theTypeName.transfer(typeName);
+    theTypedValue.transfer(typedValue);
+  }
+
+  store::UpdateConsts::UpdPrimKind getKind() 
+  {
+    return store::UpdateConsts::UP_SET_ELEMENT_TYPE; 
+  }
+
+  void apply();
+  void undo() {}
+};
+
+
+/*******************************************************************************
   A target node cannot have more than 1 UpdReplaceAttrValue primitives
 ********************************************************************************/
 class UpdReplaceAttrValue : public UpdatePrimitive
@@ -552,6 +608,49 @@ public:
 
   void apply();
   void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdSetAttributeType : public UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  store::Item_t            theTypeName;
+  store::Item_t            theTypedValue;
+  bool                     theHaveListValue;
+  bool                     theIsId;
+  bool                     theIsIdRefs;
+
+public:
+  UpdSetAttributeType(
+        PULImpl*       pul,
+        store::Item_t& target,
+        store::Item_t& typeName,
+        store::Item_t& typedValue,
+        bool           haveListValue,
+        bool           isId,
+        bool           isIdRefs)
+    :
+    UpdatePrimitive(pul, target),
+    theHaveListValue(haveListValue),
+    theIsId(isId),
+    theIsIdRefs(isIdRefs)
+  {
+    theTypeName.transfer(typeName);
+    theTypedValue.transfer(typedValue);
+  }
+
+  store::UpdateConsts::UpdPrimKind getKind() 
+  {
+    return store::UpdateConsts::UP_SET_ATTRIBUTE_TYPE; 
+  }
+
+  void apply();
+  void undo() {}
 };
 
 
@@ -675,7 +774,6 @@ public:
   void apply();
   void undo();
 };
-
 
 
 }

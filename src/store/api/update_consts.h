@@ -78,7 +78,9 @@ public:
     UP_REPLACE_COMMENT_VALUE,
     UP_RENAME_ELEM,
     UP_RENAME_ATTR,
-    UP_RENAME_PI
+    UP_RENAME_PI,
+    UP_SET_ATTRIBUTE_TYPE,
+    UP_SET_ELEMENT_TYPE
   };
 
   static bool isRename(UpdPrimKind k)

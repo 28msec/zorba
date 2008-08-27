@@ -542,6 +542,7 @@ class ElementNode : public XmlNode
   friend class XmlNode;
   friend class ElementTreeNode;
   friend class AttributeNode;
+  friend class UpdSetElementType;
 
 protected:
   store::Item_t         theName;
@@ -791,6 +792,7 @@ class AttributeNode : public XmlNode
   friend class XmlNode;
   friend class ElementNode;
   friend class FastXmlLoader;
+  friend class UpdSetAttributeType;
 
 protected:
   store::Item_t   theName;
@@ -833,9 +835,11 @@ public:
   store::Item* getNodeName() const { return theName.getp(); }
 
   bool isId() const           { return (theFlags & IsId) != 0; }
+  void setIsId()              { theFlags |= IsId; }
   void resetIsId()            { theFlags &= ~IsId; }
 
   bool isIdRefs() const       { return (theFlags & IsIdRefs) != 0; }
+  void setIsIdRefs()          { theFlags |= IsIdRefs; }
   void resetIsIdRefs()        { theFlags &= ~IsIdRefs; }
 
   bool haveListValue() const  { return (theFlags & HaveListValue) != 0; }
@@ -884,6 +888,7 @@ class TextNode : public XmlNode
   friend class ElementNode;
   friend class BasicItemFactory;
   friend class FastXmlLoader;
+  friend class UpdSetElementType;
 
 protected:
   TextNodeContent theContent;
