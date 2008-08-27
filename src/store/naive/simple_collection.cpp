@@ -29,7 +29,7 @@ namespace zorba { namespace simplestore {
 ********************************************************************************/
 SimpleCollection::SimpleCollection(store::Item_t& uri)
 {
-  theUri.transfer(uri);
+ theUri.transfer(uri);
 }
 
 
@@ -248,6 +248,10 @@ store::Item_t SimpleCollection::nodeAt(long position)
   return theXmlTrees[position];
 }
 
+bool SimpleCollection::exportXML(const store::Item* aTargerURI)
+{
+  return true;
+}
 
 /*******************************************************************************
 

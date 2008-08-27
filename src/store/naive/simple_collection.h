@@ -85,6 +85,8 @@ public:
 
   store::Item_t nodeAt(long position);
 
+  bool exportXML(const store::Item* aTargerURI);
+
 protected:
   int
   nodePositionInCollection(store::Item* newNode);

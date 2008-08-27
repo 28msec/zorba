@@ -140,6 +140,9 @@ public:
   void deleteCollection(const xqpStringStore_t& uri);
   void deleteAllCollections() { theCollections.clear(); };
   store::Iterator_t listCollectionsUri();
+  void importXML(const xqpStringStore_t& uri);
+  void importCatalog(const xqpStringStore_t& uri);
+  void importFolder(const xqpStringStore_t& uri);
 
   store::Item_t loadDocument(const xqpStringStore_t& uri, std::istream& stream);
   store::Item_t loadDocument(const xqpStringStore_t& uri, std::istream* stream);

@@ -397,6 +397,18 @@ store::Iterator_t SimpleStore::listCollectionsUri()
   return new ItemIterator(theItemUris);
 }
 
+void SimpleStore::importXML(const xqpStringStore_t& uri)
+{
+}
+
+void SimpleStore::importCatalog(const xqpStringStore_t& uri)
+{
+}
+
+void SimpleStore::importFolder(const xqpStringStore_t& uri)
+{
+}
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -455,7 +467,7 @@ void SimpleStore::addNode(const xqpStringStore* uri, const store::Item_t& node)
 {
   ZORBA_ASSERT(uri != NULL);
 
-	if(node == NULL || !node->isNode())
+  if(node == NULL || !node->isNode())
   {
     ZORBA_ERROR_PARAM( API0021_ITEM_TO_LOAD_IS_NOT_NODE, uri, "");
   }

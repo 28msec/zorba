@@ -207,7 +207,7 @@ public:
   /** Returns an XDM instance which is saved in the store 
    * (corresponds to the opening of a connection to a database)
    *
-   * @param URI of the colleciton
+   * @param URI of the collection
    * @return handle object of the collection. Returns NULL if the collection does not exist
    */
   virtual Collection_t getCollection(const xqpStringStore_t& uri) = 0;
@@ -222,11 +222,37 @@ public:
    *
    */
   virtual void deleteAllCollections() = 0;
-  
+
   /** Returns an iterator that lists the URI's of all the available collections.
    *
    */
   virtual Iterator_t listCollectionsUri() = 0;
+
+  /** Import a given XML document, identified by the  uri parameter, into a new collection.
+   * The collection's URI will be the value of the $uri parameter.
+   *
+   */
+  virtual void importXML(const xqpStringStore_t& uri) = 0;
+
+  /** The function will open the given XML file and interpret it as a catalog.
+   * It must have the following structure:
+   * \<catalog\>
+   * \<doc href="path/file1.xml"/\>
+   * \<doc href="path/file2.xml"/\>
+   * \<doc href="path/file3.xml"/\>
+   * ...
+   * \</catalog\>
+   * Each of the documents referenced in the \<doc\> tags is first looked up in the collection poll.
+   * If it is already present, nothing is done, otherwise it is loaded as a collection,
+   * with the href attribute's value as the associated URI.
+   *
+   */
+  virtual void importCatalog(const xqpStringStore_t& uri) = 0;
+
+  /** The function will scan the given folder and import the specified XML files into new collections.
+   *
+   */
+  virtual void importFolder(const xqpStringStore_t& uri) = 0;
 };
 
 

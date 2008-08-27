@@ -118,6 +118,14 @@ class ZORBA_EXTERN_DECL Collection : public SmartObject
     virtual bool
     addDocument(std::istream& aInStream, long aPosition = -1) = 0;
 
+    /**
+     * Saves the collection as an XML file.
+     *
+     * @param aTargetURI supported protocol is "file:///path/file.xml" - saves the collection to a file, in the serialized form.
+     */
+    virtual bool
+    exportXML(const Item& aTargetURI) = 0;
+
 }; /* class Collection */
 
 } /* namespace zorba */

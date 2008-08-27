@@ -55,6 +55,9 @@ class CollectionImpl : public Collection
   bool
   addDocument(std::istream& lInStream, long aPosition = -1);
 
+  bool
+  exportXML(const Item& aTargetURI);
+
  protected:
   friend class Unmarshaller;
 

@@ -128,6 +128,14 @@ public:
    */
   virtual Item_t
   nodeAt(long aPosition) = 0;
+
+  /**
+   * Saves the collection to an XML file.
+   *
+   * @param aTargetURI supported protocol is "file:///path/file.xml" - saves the collection to a file, in the serialized form.
+   */
+  virtual bool
+  exportXML(const Item* aTargetURI) = 0;
 };
 
 } // namespace store
