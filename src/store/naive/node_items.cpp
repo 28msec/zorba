@@ -935,7 +935,7 @@ ElementNode::ElementNode(
     {
       try
       {
-        addBindingForQName(theName, true);
+        addBindingForQName(theName, false, true);
         setNsContext(parent->getNsContext());
       }
       catch(...)
@@ -948,7 +948,7 @@ ElementNode::ElementNode(
   else
   {
     if (localBindings)
-      addBindingForQName(theName, true);
+      addBindingForQName(theName, false, true);
   }
 }
 
@@ -1457,7 +1457,7 @@ const store::NsBindings& ElementNode::getLocalBindings() const
   not exist already among the bindings of "this" node. The method returns true
   if a binding was added, or false otherwise.
 
-  The method also check if the given binding conflicts with the current bindings
+  The method also checks if the given binding conflicts with the current bindings
   of "this" node. If a conflict exists and replacePrefix is false, an error is
   thrown. Else, if a conflict exists and replacePrefix is true, then the method
   creates and returns a qname with the same local name and ns uri as the given
@@ -1468,7 +1468,10 @@ const store::NsBindings& ElementNode::getLocalBindings() const
   replacePrefix set to true. It is also used by updating methods with 
   replacePrefix set to false.
 ********************************************************************************/
-bool ElementNode::addBindingForQName(store::Item_t& qname, bool replacePrefix)
+bool ElementNode::addBindingForQName(
+    store::Item_t& qname,
+    bool           isAttr,
+    bool           replacePrefix)
 {
   xqpStringStore* prefix = qname->getPrefix();
   xqpStringStore* ns = qname->getNamespace();
@@ -1476,6 +1479,10 @@ bool ElementNode::addBindingForQName(store::Item_t& qname, bool replacePrefix)
   // If ns is empty, then prefix must be empty
   ZORBA_FATAL(!ns->empty() || prefix->empty(),
               "prefix = " << prefix->str() << "ns = " << ns->str());
+
+  // No ns binding is implied by an attribute qname whose ns uri is empty
+  if (ns->empty() && isAttr)
+    return false;
 
   if (prefix->str() != "xml")
   {
@@ -2053,7 +2060,7 @@ AttributeNode::AttributeNode(
       }
       else if (!isHidden())
       {
-        p->addBindingForQName(theName, true);
+        p->addBindingForQName(theName, true, true);
       }
 
       // Connect "this" to its parent. We do this at the end of this method

@@ -410,7 +410,7 @@ void ElementNode::insertAttributes(UpdInsertAttributes& upd)
 
     checkUniqueAttr(attr->getNodeName());
 
-    if (addBindingForQName(attr->theName, false))
+    if (addBindingForQName(attr->theName, true, false))
       upd.theNewBindings.push_back(attr->theName);
 
     if (upd.theCopyMode.theDoCopy)
@@ -462,7 +462,7 @@ void ElementNode::replaceAttribute(UpdReplaceAttribute& upd)
 
     checkUniqueAttr(attr->getNodeName());
 
-    if (addBindingForQName(attr->theName, false))
+    if (addBindingForQName(attr->theName, true, false))
       upd.theNewBindings.push_back(attr->theName);
   
     if (upd.theCopyMode.theDoCopy)
@@ -650,7 +650,7 @@ void ElementNode::replaceName(UpdRenameElem& upd)
   if (upd.theNewName->equals(theName))
     return;
 
-  upd.theNewBinding = addBindingForQName(upd.theNewName, false);
+  upd.theNewBinding = addBindingForQName(upd.theNewName, false, false);
 
   upd.theOldName.transfer(theName);
   theName.transfer(upd.theNewName);
@@ -729,7 +729,7 @@ void AttributeNode::replaceName(UpdRenameAttr& upd)
     // update
     parent->checkUniqueAttr(upd.theNewName);
 
-    upd.theNewBinding = parent->addBindingForQName(upd.theNewName, false);
+    upd.theNewBinding = parent->addBindingForQName(upd.theNewName, true, false);
   }
 
   upd.theOldName.transfer(theName);

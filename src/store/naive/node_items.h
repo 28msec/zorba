@@ -627,7 +627,12 @@ public:
   const store::NsBindings& getLocalBindings() const;
   void addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns);
   void removeLocalBinding(xqpStringStore* prefix, xqpStringStore* ns);
-  bool addBindingForQName(store::Item_t& qname, bool replacePrefix);
+
+  bool addBindingForQName(
+        store::Item_t& qname,
+        bool           isAttr,
+        bool           replacePrefix);
+
   void addBindingForQName2(const store::Item* qname);
 
   void checkNamespaceConflict(
