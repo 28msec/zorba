@@ -125,11 +125,34 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
         GetConsoleScreenBufferInfo(lConsole, &lConsoleInfo);
         const int saved_configuration = lConsoleInfo.wAttributes;
         SetConsoleTextAttribute(lConsole, 15+0*16); 
-        theOutput << lLineNo << '\t' << lLine <<  std::endl;
+        theOutput << lLineNo << '\t';// v<< lLine <<  std::endl;
         SetConsoleTextAttribute(lConsole, saved_configuration);
+        for(unsigned int j=1; j <= lLine.length(); j++)
+        {
+          if( j >= theLocation->getColumnBegin() && j <= theLocation->getColumnEnd() )
+          {
+            SetConsoleTextAttribute(lConsole, 15+0*16); 
+            theOutput << lLine.at(j-1);
+            SetConsoleTextAttribute(lConsole, saved_configuration);
+          } else {
+            SetConsoleTextAttribute(lConsole, 15+0*16); 
+            theOutput << lLine.at(j-1);
+            SetConsoleTextAttribute(lConsole, saved_configuration);
+          }
+        }
 #else
-        theOutput << "\033[1m" << lLineNo << '\t' << lLine << "\033[0m" << std::endl;
+        theOutput << "\033[1m" << lLineNo << '\t' << "\033[0m"; 
+        for(unsigned int j=1; j <= lLine.length(); j++)
+        {
+          if( j >= theLocation->getColumnBegin() && j <= theLocation->getColumnEnd() )
+          {
+            theOutput << "\033[1m" << lLine.at(j-1) << "\033[0m";
+          } else {
+            theOutput << lLine.at(j-1);
+          }
+        }
 #endif
+        theOutput << std::endl;
      } else {
         theOutput << lLineNo << '\t' << lLine << std::endl;
       }
