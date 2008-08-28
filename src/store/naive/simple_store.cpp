@@ -354,7 +354,7 @@ store::Collection_t SimpleStore::getCollection(const xqpStringStore_t& uri)
     return collection.getp();
   else
   {
-    ZORBA_ERROR_PARAM(API0006_COLLECTION_NOT_FOUND, uri->c_str(), "");
+    ZORBA_ERROR_PARAM(FODC0004, uri->c_str(), "");
     return NULL;
   }
 }
