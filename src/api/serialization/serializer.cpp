@@ -1064,7 +1064,11 @@ void serializer::text_emitter::emit_item(const store::Item* item)
 {
   if (item->isAtomic())
   {
+    if (previous_item == PREVIOUS_ITEM_WAS_TEXT )
+      tr << " ";
+    
     tr << item->getStringValue()->c_str();
+    
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
   }
   else
