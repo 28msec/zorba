@@ -49,6 +49,9 @@ class CollectionImpl : public Collection
   Item
   nodeAt(long aPosition);
 
+  long
+  indexOf(const Item& aNode);
+
   bool
   addNodes(const ResultIterator* aResultIterator);
 

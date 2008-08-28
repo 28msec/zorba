@@ -144,6 +144,12 @@ DEF_ERR_CODE (API0030_NO_NODE_AT_GIVEN_POSITION, API0030, "There is no node at t
 
 DEF_ERR_CODE (API0031_NODE_ALREADY_IN_COLLECTION, API0031, "Node is already part of the collection /s.");
 
+DEF_ERR_CODE (API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, API0033, "File or folder (/s) does not exist.");
+
+DEF_ERR_CODE (API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED, API0034, "File or folder (/s) could not be opened.");
+
+DEF_ERR_CODE (API0035_COLLECTION_CANNOT_BE_SERIALIZED, API0035, "Collection (/s) can not be serialized.");
+
 DEF_ERR_CODE (API0020_DOCUMENT_ALREADY_EXISTS, API0020, "Another document with uri `/s' exists in the store already.")
 
 DEF_ERR_CODE (API0021_ITEM_TO_LOAD_IS_NOT_NODE, API0021, "The uri `/s' does not identify an XML node")

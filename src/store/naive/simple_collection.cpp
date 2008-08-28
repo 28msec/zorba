@@ -248,6 +248,19 @@ store::Item_t SimpleCollection::nodeAt(long position)
   return theXmlTrees[position];
 }
 
+/*******************************************************************************
+  Return position of the given node in the collection.
+********************************************************************************/
+long SimpleCollection::indexOf(const store::Item* node)
+{
+  if (!node->isNode())
+  {
+    ZORBA_ERROR( API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
+  }
+
+  return nodePositionInCollection((store::Item*) node);
+}
+
 bool SimpleCollection::exportXML(const store::Item* aTargerURI)
 {
   return true;
@@ -342,7 +355,6 @@ SimpleCollection::nodePositionInCollection(store::Item* newNode)
       //check if the nodes have the same ID
       if((reinterpret_cast<XmlNode*>(it->getp()))->getOrdPath() == rNewNode->getOrdPath())
         return (it - theXmlTrees.begin());
-
     return -1;
   }
 }

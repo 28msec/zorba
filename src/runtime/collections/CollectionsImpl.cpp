@@ -41,8 +41,8 @@ namespace zorba {
 bool
 ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t       itemURI;
-  URI                 uri;
+  store::Item_t itemURI;
+  URI           uri;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -53,7 +53,7 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   if( uri.get_scheme() != xqpString("http") && !uri.get_scheme().empty())
     ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaExportXmlIterator implemented only for 'http' scheme.");
 
-// // //   GENV_STORE.importXML(itemURI->getStringValue());
+//   GENV_STORE.importXML(itemURI->getStringValue());
 
   STACK_END (state);
 }
@@ -433,10 +433,30 @@ ZorbaNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 bool
 ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
+  store::Collection_t theColl;
+  store::Item_t       itemUri, itemTarget;
+  xqpStringStore_t    strURI;
+  int                 pos = 0;
+
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaIndexOfIterator not implemented");
+  if (consumeNext(itemUri, theChildren[0].getp(), planState))
+    strURI = itemUri->getStringValue();
+
+  theColl = GENV_STORE.getCollection(strURI);
+
+  if (consumeNext(itemTarget, theChildren[1].getp(), planState))
+  {
+    pos = theColl->indexOf(itemTarget);
+
+    if( -1 == pos)
+      ZORBA_ERROR_LOC_DESC (API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION, loc, "The node does not belong to collection.");
+
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(
+               result,
+               Integer::parseInt(pos)), state);
+  }
 
   STACK_END (state);
 }

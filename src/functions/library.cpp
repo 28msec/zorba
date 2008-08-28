@@ -853,7 +853,7 @@ DECL(sctx, zorba_node_at,
 
 DECL(sctx, zorba_index_of,
      (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "index-of"),
-      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
 

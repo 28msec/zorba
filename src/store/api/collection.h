@@ -28,11 +28,13 @@ public:
   /**
    * Returns the URI of the collection.
    * @return URI
+   *
    */
   virtual Item* getUri() = 0;
 
   /**
    * Returns the number of items in the collection.
+   *
    */
   virtual unsigned long size() const = 0;
 
@@ -46,6 +48,7 @@ public:
    * Ids == false is likely to be faster. 'idsNeeded' should only be set to
    * true if clients wants to sort or compare the items or sub-items generated
    * from the returned iterator.
+   *
    */
   virtual Iterator_t getIterator(bool idsNeeded) = 0;
 
@@ -57,6 +60,7 @@ public:
    * @param position The position where the data will be inserted.
    * By default the data will be appended at the end.
    * @return The root node of the xml document or fragment.
+   *
    */
   virtual Item_t addToCollection(std::istream& stream, long position = -1) = 0;
 
@@ -70,6 +74,7 @@ public:
    * @param position The position where the data will be inserted.
    * By default the data will be appended at the end.
    * @return The root node of the xml document or fragment.
+   *
    */
   virtual Item_t addToCollection(std::istream* stream, long position = -1) = 0;
 
@@ -79,6 +84,7 @@ public:
    * @param node The node to insert
    * @param position The position where the data will be inserted.
    * By default the data will be appended at the end.
+   *
    */
   virtual void addToCollection(const Item* node, long position = -1) = 0;
 
@@ -90,6 +96,7 @@ public:
    * @param sOrder if true the aNode will be inserted before the aTarget.
    * Otherwise aNode will be inserted after aTarget.
    * @return true if the Node Item was added to the Collection, false otherwise.
+   *
    */
   virtual void
   addNode(const Item* aNode, const Item* aTargetNode, bool aOrder) = 0;
@@ -100,6 +107,7 @@ public:
    * @param nodeIter The iterator which produces the nodes to insert
    * @param position The position where the data will be inserted.
    * By default the data will be appended at the end.
+   *
    */
   virtual void addToCollection(Iterator* nodeIter, long position = -1) = 0;
 
@@ -107,7 +115,7 @@ public:
    * Removes a node from the collection.
    *
    * @param node to be removed
-   * 
+   *
    */
   virtual void removeFromCollection(const Item* node) = 0;
 
@@ -116,7 +124,7 @@ public:
    *
    * @param position the position of the Node that will be removed from collection.
    * By default the last Node will be removed from collection.
-   * 
+   *
    */
   virtual void removeFromCollection(long position = -1) = 0;
 
@@ -125,14 +133,28 @@ public:
    * 
    * @param aPosition the position of the Node in the collection.
    * @return the Node Item at the given position.
+   *
    */
   virtual Item_t
   nodeAt(long aPosition) = 0;
 
   /**
+   * Get the position of the Node Item within the collection.
+   *
+   * @param aNode the Node Item at the given position.
+   * @return the position of the Node in the collection,
+   * -1 if the node is not part of the collection.
+   *
+   */
+  virtual long
+  indexOf(const Item* aNode) = 0;
+
+  /**
    * Saves the collection to an XML file.
    *
-   * @param aTargetURI supported protocol is "file:///path/file.xml" - saves the collection to a file, in the serialized form.
+   * @param aTargetURI supported protocol is "file:///path/file.xml"
+   * saves the collection to a file, in the serialized form.
+   *
    */
   virtual bool
   exportXML(const Item* aTargetURI) = 0;

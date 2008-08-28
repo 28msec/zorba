@@ -170,6 +170,20 @@ CollectionImpl::nodeAt(long aPosition)
       return Item();
 }
 
+long
+CollectionImpl::indexOf(const Item& aNode)
+{
+  ZORBA_TRY
+      store::Item* lItem = Unmarshaller::getInternalItem(aNode);
+
+  SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::WRITE);)
+
+      theCollection->indexOf(lItem);
+  return true;
+  ZORBA_CATCH
+      return false;
+}
+
 bool
 CollectionImpl::exportXML(const Item& aTargetURI)
 {
