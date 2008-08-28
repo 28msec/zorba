@@ -2952,7 +2952,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
   vector<xqpStringStore_t> lURIs;
   if (ats == NULL || ats->size () == 0) {
-    lURIs.push_back(sctx_p->resolve_relative_uri(target_ns).getStore());
+    lURIs.push_back(xqp_string(target_ns).getStore());
   }
   else {
     for (int i = 0; i < ats->size(); ++i) {
