@@ -53,7 +53,7 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   if( uri.get_scheme() != xqpString("http") && !uri.get_scheme().empty())
     ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaExportXmlIterator implemented only for 'http' scheme.");
 
-  GENV_STORE.importXML(itemURI->getStringValue());
+// // //   GENV_STORE.importXML(itemURI->getStringValue());
 
   STACK_END (state);
 }
@@ -73,7 +73,7 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
   if( uri.get_scheme() != xqpString("http") && !uri.get_scheme().empty())
     ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaExportXmlIterator implemented only for 'http' scheme.");
 
-  GENV_STORE.importCatalog(itemURI->getStringValue());
+//   GENV_STORE.importCatalog(itemURI->getStringValue());
 
   STACK_END (state);
 }
@@ -93,7 +93,7 @@ ZorbaImportFolderIterator::nextImpl(store::Item_t& result, PlanState& planState)
   if( uri.get_scheme() != xqpString("http") && !uri.get_scheme().empty())
     ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaExportXmlIterator implemented only for 'http' scheme.");
 
-  GENV_STORE.importFolder(itemURI->getStringValue());
+//   GENV_STORE.importFolder(itemURI->getStringValue());
 
   STACK_END (state);
 }
@@ -116,12 +116,11 @@ bool
 ZorbaListCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   ZorbaListCollectionsState * state;
-  store::Iterator_t           uriItState;
   store::Item_t               uriItem;
 
   DEFAULT_STACK_INIT(ZorbaListCollectionsState, state, planState);
 
-  for ((state->uriItState = GENV_STORE.listCollectionsUri())->open ();
+  for ((state->uriItState = GENV_STORE.listCollectionUris())->open ();
        state->uriItState->next(uriItem); )
   {
     result = uriItem;
@@ -198,10 +197,15 @@ ZorbaDeleteCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSt
 bool
 ZorbaDeleteAllCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  PlanIteratorState *state;
+  PlanIteratorState   *state;
+  store::Iterator_t   uriItState;
+  store::Item_t       itemUri;
+
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  GENV_STORE.deleteAllCollections();
+  for ((uriItState = GENV_STORE.listCollectionUris())->open ();
+        uriItState->next(itemUri); )
+    GENV_STORE.deleteCollection(itemUri->getStringValue());
 
   STACK_END (state);
 }

@@ -392,21 +392,9 @@ void SimpleStore::deleteCollection(const xqpStringStore_t& uri)
 /*******************************************************************************
   Resturn an iterator that lists the URI's of all the available collections.
 ********************************************************************************/
-store::Iterator_t SimpleStore::listCollectionsUri()
+store::Iterator_t SimpleStore::listCollectionUris()
 {
   return new ItemIterator(theItemUris);
-}
-
-void SimpleStore::importXML(const xqpStringStore_t& uri)
-{
-}
-
-void SimpleStore::importCatalog(const xqpStringStore_t& uri)
-{
-}
-
-void SimpleStore::importFolder(const xqpStringStore_t& uri)
-{
 }
 
 /*******************************************************************************
