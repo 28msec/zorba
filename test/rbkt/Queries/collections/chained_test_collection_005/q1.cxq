@@ -1,0 +1,4 @@
+import module namespace
+fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
+declare variable $input-context1 external;
+fn-zorba-collection:create-collection('http', fn:doc($input-context1)//*)
