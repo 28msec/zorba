@@ -36,24 +36,33 @@
 
 #include "CollectionsImpl.h"
 
+#include "util/web/web.h"
+
 namespace zorba {
 
 bool
 ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t itemURI;
-  URI           uri;
+  store::Item_t       itemURI;
+  xqpStringStore_t    strURI;
+  URI                 uri;
+  xqp_string          file;
+  store::Collection_t theColl;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(itemURI, theChildren[0].getp(), planState))
+  {
     uri = URI(itemURI->getStringValue().getp());
 
-  if( uri.get_scheme() != xqpString("http") && !uri.get_scheme().empty())
-    ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaExportXmlIterator implemented only for 'http' scheme.");
+    if(http_get(itemURI->getStringValue().getp()->c_str(), file) != 0)
+      ZORBA_ERROR_LOC_DESC_OSS (API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, loc, "File or folder does not exist: " << itemURI->getStringValue()->str());
 
-//   GENV_STORE.importXML(itemURI->getStringValue());
+    strURI = itemURI->getStringValue();
+    theColl = GENV_STORE.createCollection(strURI);
+    theColl->addToCollection(new std::istringstream(file.c_str()), 0);
+  }
 
   STACK_END (state);
 }

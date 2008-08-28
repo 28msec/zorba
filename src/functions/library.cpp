@@ -758,17 +758,17 @@ DECL(sctx, rest_post,
 //begin collection functions
 DECL(sctx, zorba_import_xml,
      (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "import-xml"),
-      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.NONE_TYPE));
 
 DECL(sctx, zorba_import_catalog,
      (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "import-catalog"),
-      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.NONE_TYPE));
 
 DECL(sctx, zorba_import_folder,
      (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "import-folder"),
-      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.NONE_TYPE));
 
 DECL(sctx, zorba_list_collections,
