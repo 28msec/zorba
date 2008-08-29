@@ -33,10 +33,16 @@
 #include "system/globalenv.h"
 
 #include "context/static_context.h"
+#include "context/internal_uri_resolvers.h"
 
 #include "CollectionsImpl.h"
 
+#include "api/serialization/serializer.h"
+
 #include "util/web/web.h"
+#include "runtime/api/runtimecb.h"
+#include "runtime/api/plan_wrapper.h"
+#include "runtime/api/plan_iterator_wrapper.h"
 
 namespace zorba {
 
@@ -70,8 +76,14 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 bool
 ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t       itemURI;
+  store::Item_t       itemURI, resolvedURIItem, inNode, intt, inArg, attr;
+  xqp_string          attrName;
+  xqpStringStore_t    uriString, resolvedURIString;
+  store::Iterator_t   theIterator, theAttributes;;
+  xqpStringStore_t    strURI;
   URI                 uri;
+  xqp_string          file;
+  store::Collection_t theColl;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -79,10 +91,53 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
   if (consumeNext(itemURI, theChildren[0].getp(), planState))
     uri = URI(itemURI->getStringValue().getp());
 
-  if( uri.get_scheme() != xqpString("http") && !uri.get_scheme().empty())
-    ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaExportXmlIterator implemented only for 'http' scheme.");
+  uriString = uri.get_path().getStore();
 
-//   GENV_STORE.importCatalog(itemURI->getStringValue());
+  try {
+    inNode = GENV_STORE.getDocument(itemURI->getStringValue());
+  } catch (error::ZorbaError& e) {
+    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+  }
+  if (inNode == NULL) {
+    try {
+      resolvedURIString = planState.sctx()->resolve_relative_uri(uriString.getp()).getStore();
+      GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
+    } catch (error::ZorbaError& e) {
+      ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
+    }
+    try {
+      inNode = planState.sctx()->get_document_uri_resolver()->resolve(resolvedURIItem,
+                              planState.sctx());
+    } catch (error::ZorbaError& e) {
+      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+    }
+  }
+
+  if(inNode->getNodeKind() == store::StoreConsts::documentNode) {
+    theIterator = inNode->getChildren();
+    theIterator->open();
+    theIterator->next(intt);
+    theIterator = intt->getChildren();
+
+    while(theIterator->next(inArg)) {
+      if(inArg->getNodeKind() == store::StoreConsts::elementNode &&
+         inArg->getNodeName()->getLocalName()->byteEqual("doc", 3)) {
+        for ((theAttributes = inArg->getAttributes())->open (); theAttributes->next(attr); ) {
+          attrName = attr->getNodeName()->getStringValue()->str();
+          if(attr->getNodeName()->getLocalName()->byteEqual("href", 4)) {
+            uri = URI(attr->getStringValue().getp());
+
+            if(http_get(attr->getStringValue().getp()->c_str(), file) != 0)
+              ZORBA_ERROR_LOC_DESC_OSS (API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, loc, "File or folder does not exist: " << attr->getStringValue()->str());
+
+            strURI = attr->getStringValue();
+            theColl = GENV_STORE.createCollection(strURI);
+            theColl->addToCollection(new std::istringstream(file.c_str()), 0);
+          }
+        }
+      }
+    }
+  }
 
   STACK_END (state);
 }
@@ -483,16 +538,16 @@ ZorbaExportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   if (consumeNext(itemURI, theChildren[0].getp(), planState))
     uri = URI(itemURI->getStringValue().getp());
 
-  if( uri.get_scheme() != xqpString("http") && !uri.get_scheme().empty())
-    ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaExportXmlIterator implemented only for 'http' scheme.");
+  if( uri.get_scheme() != xqpString("file") && !uri.get_scheme().empty())
+    ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaExportXmlIterator implemented only for 'file' scheme.");
 
   theColl = GENV_STORE.getCollection(itemURI->getStringValue());
 
-  if((theChildren.size() == 2) &&
-     (consumeNext(itemTargetURI, theChildren[1].getp(), planState)))
-    theColl.getp()->exportXML(itemTargetURI);
-  else
-    theColl.getp()->exportXML(itemURI);
+//   if((theChildren.size() == 2) &&
+//      (consumeNext(itemTargetURI, theChildren[1].getp(), planState)))
+//     theColl.getp()->exportXML(itemTargetURI);
+//   else
+//     theColl.getp()->exportXML(itemURI);
 
   STACK_END (state);
 }
