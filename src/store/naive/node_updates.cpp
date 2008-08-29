@@ -128,7 +128,12 @@ void XmlNode::removeType(UpdatePrimitive& upd)
   }
 
   if (revalidationNode != NULL)
+  {
+    while (revalidationNode->getParent() != NULL)
+      revalidationNode = revalidationNode->getParent();
+
     upd.addNodeForValidation(revalidationNode);
+  }
 }
 
 
