@@ -22,9 +22,6 @@
 #include <iostream>
 #include "common/common.h"
 
-#include <boost/spirit.hpp>
-#include <boost/bind.hpp>
-
 class Variable 
 {
 public:
@@ -120,9 +117,7 @@ public:
 class Specification
 {
   typedef char char_t;
-  typedef boost::spirit::file_iterator <char_t> iterator_t;
-  typedef boost::spirit::scanner<iterator_t> scanner_t;
-  typedef boost::spirit::rule<scanner_t> rule_t;
+  typedef std::string::iterator iterator_t;
 
 public:
   std::vector<State*> theStates;
@@ -206,7 +201,7 @@ private:
     theCurState->theErrors.push_back(lError);
   }
 
-  void addQuery(iterator_t str, iterator_t end) 
+  void addQuery() 
   {
     theStates.push_back(theCurState);
     theCurState = 0;
@@ -223,86 +218,123 @@ private:
     theCurVar->theValue = std::string(str,end);
   }
 
-  void addVariable(iterator_t str, iterator_t end, bool aInline) 
+  void addVariable(bool aInline) 
   {
     theCurVar->theInline = aInline;
     theCurState->theVars.push_back(theCurVar);
     theCurVar = 0;
   }
 
+  void tokenize(const std::string& str,
+                std::vector<std::string>& tokens,
+                const std::string& delimiters)
+  {
+    // Skip delimiters at beginning.
+    std::string::size_type lastPos = str.find_first_not_of(delimiters, 0);
+    // Find first "non-delimiter".
+    std::string::size_type pos     = str.find_first_of(delimiters, lastPos);
+
+    while (std::string::npos != pos || std::string::npos != lastPos)
+    {
+      // Found a token, add it to the vector.
+      tokens.push_back(str.substr(lastPos, pos - lastPos));
+      // Skip delimiters.  Note the "not_of"
+      lastPos = str.find_first_not_of(delimiters, pos);
+      // Find next "non-delimiter"
+      pos = str.find_first_of(delimiters, lastPos);
+    }
+  }
+
 public:
   bool
   parseFile(std::string str)
   {
-    rule_t state
-      = boost::spirit::str_p("State:")
-      >> boost::spirit::blank_p
-      >> (+boost::spirit::graph_p)[bind(&Specification::addState, this, _1, _2)]
-      >> !boost::spirit::eol_p;
-
-    rule_t propsInline
-      = (+(boost::spirit::graph_p & ~boost::spirit::ch_p(':') & ~boost::spirit::ch_p('=')))[bind(&Specification::setVarName, this, _1, _2)]
-      >> boost::spirit::str_p("=")
-      >> (+boost::spirit::graph_p)[bind(&Specification::setVarValue, this, _1, _2)];
-
-    rule_t props
-      = (+(boost::spirit::graph_p & ~boost::spirit::ch_p(':') & ~boost::spirit::ch_p('=')))[bind(&Specification::setVarName, this, _1, _2)]
-      >> boost::spirit::str_p(":=") 
-      >> (+boost::spirit::graph_p)[bind(&Specification::setVarValue, this, _1, _2)];
-
-    rule_t ext_var
-      =  boost::spirit::blank_p
-      >> boost::spirit::str_p("-x")
-      >> boost::spirit::blank_p
-      >> (
-           propsInline[bind(&Specification::addVariable, this, _1, _2, true)]
-         | props[bind(&Specification::addVariable, this, _1, _2, false)] 
-         );
-
-    rule_t date
-      =  boost::spirit::blank_p
-      >> boost::spirit::str_p("-d")
-      >> boost::spirit::blank_p
-      >> (+boost::spirit::graph_p)[bind(&Specification::setDate, this, _1, _2)];
-
-    rule_t args 
-      =  boost::spirit::str_p("Args:")
-      >> *ext_var
-      >> !date
-      >> !boost::spirit::eol_p;
-
-    rule_t compare
-      =  boost::spirit::str_p("Compare:")
-      >> boost::spirit::blank_p
-      >> (+boost::spirit::graph_p)[bind(&Specification::addCompare, this, _1, _2)]
-      >> boost::spirit::blank_p
-      >> (+boost::spirit::graph_p)[bind(&Specification::addCompareType, this, _1, _2)]
-      >> !boost::spirit::eol_p;
-
-
-    rule_t error
-      =  boost::spirit::str_p("Error:")
-      >> boost::spirit::blank_p
-      >> (+boost::spirit::graph_p)[bind(&Specification::addError, this, _1, _2)]
-      >> !boost::spirit::eol_p;
-
-    rule_t defs 
-      =  
-      *(
-       (
-           state 
-        >> !args 
-        >> !(+compare | +error)
-       )[bind(&Specification::addQuery, this, _1, _2)]
-      );
-
-    iterator_t first(str.c_str());
-    if (!first)
-      return false;
-
-    iterator_t last = first.make_end();
-
-    return boost::spirit::parse(first, last, defs).full; 
+    bool first_query = true;
+    std::ifstream lFile(str.c_str(), std::ifstream::in);
+    std::stringstream lContent;
+    while(lFile.good()){
+      lContent << (char)lFile.get();
+    }
+    lFile.close();
+    std::vector<std::string> lines;
+    std::vector<std::string>::iterator it;
+    tokenize(lContent.str(), lines, "\n");
+    for(it=lines.begin(); it!=lines.end(); ++it)
+    {
+      std::vector<std::string> newline;
+      tokenize(*it, newline, "\r");
+      std::vector<std::string> tokens;
+      std::vector<std::string>::iterator lIter;
+      tokenize(newline.at(0), tokens, " ");
+      for(lIter=tokens.begin(); lIter!=tokens.end(); ++lIter)
+      {      
+        if( *lIter == "Args:" )
+        {
+          for(++lIter;lIter!=tokens.end(); ++lIter)
+          {
+            if(*lIter == "-d")
+            {
+              ++lIter;
+              if(lIter == tokens.end() ) { return false; }
+              setDate(lIter->begin(), lIter->end());
+            } else if (*lIter == "-x" ) {
+              bool lInline = false;
+              ++lIter;
+              if(lIter == tokens.end() ) { return false; }
+              if(lIter->find(':') == std::string::npos){ lInline=true; }
+              if(lIter->find('=') == std::string::npos){ return false; }
+              if( lInline ){
+                setVarName(lIter->begin(), lIter->begin()+lIter->find('='));
+              } else {
+                setVarName(lIter->begin(), lIter->begin()+lIter->find(':'));
+              }
+              setVarValue(lIter->begin()+lIter->find("=")+1, lIter->end());
+              addVariable(lInline);
+            } else {
+              return false;
+            }
+          }
+          break;
+        } else if ( *lIter == "Compare:" ){
+          ++lIter;
+          if(lIter == tokens.end() ) { return false; }
+          addCompare(lIter->begin(), lIter->end());
+          ++lIter;
+          if(lIter == tokens.end() ) { return false; }
+          addCompareType(lIter->begin(), lIter->end());
+        } else if ( *lIter == "State:" ) {
+          if(first_query){
+            first_query = false;
+          } else {
+            addQuery();
+          }
+          ++lIter;
+          if(lIter == tokens.end() ) { return false; }
+          addState(lIter->begin(), lIter->end());
+        } else if ( *lIter == "Error:" ) { 
+          ++lIter;
+          if(lIter == tokens.end() ) { return false; }
+          addError(lIter->begin(), lIter->end());
+        } else if ( lIter->find("Compare:") != std::string::npos){
+          addCompare( lIter->begin()+lIter->find(":")+1, lIter->end() );
+          ++lIter;
+          if(lIter == tokens.end() ) { return false; }
+          addCompareType(lIter->begin(), lIter->end());
+        } else if ( lIter->find("State:") != std::string::npos ) {
+          if(first_query){
+            first_query = false;
+          } else {
+            addQuery();
+          }
+          addState( lIter->begin()+lIter->find(":")+1, lIter->end());
+        } else if ( lIter->find("Error:") != std::string::npos ) {
+          addError(lIter->begin()+lIter->find(":")+1, lIter->end());
+        } else {
+          break;
+        }
+      }
+    }
+    return true;
   }
 
   void printContent() 
