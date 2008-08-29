@@ -246,6 +246,15 @@ private:
   }
 
 public:
+  
+  void trim(std::string& str) {
+    std::string::size_type  notwhite = str.find_first_not_of(" \t\n");
+    str.erase(0,notwhite);
+
+    notwhite = str.find_last_not_of(" \t\n"); 
+    str.erase(notwhite+1); 
+  }
+  
   bool
   parseFile(std::string str)
   {
@@ -261,11 +270,10 @@ public:
     tokenize(lContent.str(), lines, "\n");
     for(it=lines.begin(); it!=lines.end(); ++it)
     {
-      std::vector<std::string> newline;
-      tokenize(*it, newline, "\r");
       std::vector<std::string> tokens;
       std::vector<std::string>::iterator lIter;
-      tokenize(newline.at(0), tokens, " ");
+      trim(*it);
+      tokenize(*it, tokens, " ");
       for(lIter=tokens.begin(); lIter!=tokens.end(); ++lIter)
       {      
         if( *lIter == "Args:" )
@@ -334,6 +342,7 @@ public:
         }
       }
     }
+    addQuery();
     return true;
   }
 
