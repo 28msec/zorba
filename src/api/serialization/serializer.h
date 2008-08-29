@@ -231,6 +231,7 @@ protected:
     {
       INVALID_ITEM,   
       PREVIOUS_ITEM_WAS_TEXT,
+      PREVIOUS_ITEM_WAS_TEXT_WITH_EOL,
       PREVIOUS_ITEM_WAS_NODE
     }                                      previous_item;
 

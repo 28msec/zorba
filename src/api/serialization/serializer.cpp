@@ -328,7 +328,8 @@ int serializer::emitter::emit_node_children(
   store::Item_t parent = const_cast<store::Item*>(item);
   iter->init(parent);
   iter->open();
-	while ((child = iter->next()) != NULL)
+  store::StoreConsts::NodeKind prev_node_kind = store::StoreConsts::anyNode;
+  while ((child = iter->next()) != NULL)
 	{
     if (closed_parent_tag == 0)
 		{
@@ -336,8 +337,26 @@ int serializer::emitter::emit_node_children(
       closed_parent_tag = 1;
     }
 
+    if (ser->indent
+        &&
+        prev_node_kind == store::StoreConsts::elementNode
+        &&
+        !(child->getNodeKind() == store::StoreConsts::textNode
+          &&
+          (child->getStringValue()->endsWith("\r")
+          ||
+          child->getStringValue()->endsWith("\n"))) )
+      tr << ser->END_OF_LINE;
+
+    if (ser->indent && child->getNodeKind() == store::StoreConsts::elementNode)
+      emit_indentation(depth);
+
     emit_node(child, depth);
+    
+    prev_node_kind = child->getNodeKind();
   }
+  if (ser->indent && prev_node_kind == store::StoreConsts::elementNode)
+    tr << ser->END_OF_LINE;
   iter->close();
   releaseChildIter(iter);
 
@@ -435,13 +454,10 @@ void serializer::emitter::emit_node(
 {
 	if( item->getNodeKind() == store::StoreConsts::documentNode )
 	{		
-		emit_node_children(item, depth+1);    
+		emit_node_children(item, depth);    
 	}
 	else if (item->getNodeKind() == store::StoreConsts::elementNode)
 	{
-    if (ser->indent)
-      emit_indentation(depth);
-
     store::Item* qname = item->getNodeName();
     xqpStringStore* prefix = qname->getPrefix();
 
@@ -454,7 +470,7 @@ void serializer::emitter::emit_node(
 
     bool should_remove_binding = emit_bindings(item);
 
-    int closed_parent_tag = emit_node_children(item, depth);
+    int closed_parent_tag = emit_node_children(item, depth+1);
 
     if (should_remove_binding)
       bindings.pop_back();
@@ -470,9 +486,6 @@ void serializer::emitter::emit_node(
     {
       tr << " />";
     }
-
-    if (ser->indent)
-      tr << ser->END_OF_LINE;
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
@@ -496,7 +509,12 @@ void serializer::emitter::emit_node(
 	{		
     emit_expanded_string(item->getStringValue());
 
-    previous_item = PREVIOUS_ITEM_WAS_TEXT;
+    if (item->getStringValue()->endsWith("\r")
+        ||
+        item->getStringValue()->endsWith("\n"))
+      previous_item = PREVIOUS_ITEM_WAS_TEXT_WITH_EOL;
+    else
+      previous_item = PREVIOUS_ITEM_WAS_TEXT;
 	}
 	else if (item->getNodeKind() == store::StoreConsts::commentNode)
 	{
@@ -528,7 +546,7 @@ void serializer::emitter::emit_item(const store::Item* item)
 {
   if (item->isAtomic())
   {
-    if (previous_item == PREVIOUS_ITEM_WAS_TEXT )
+    if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
       tr << " ";
 
     emit_expanded_string(item->getStringValue());
@@ -684,7 +702,7 @@ void serializer::html_emitter::emit_node(
       
   if( item->getNodeKind() == store::StoreConsts::documentNode )
   {
-    emit_node_children(item, depth+1);
+    emit_node_children(item, depth);
   }
   else if (item->getNodeKind() == store::StoreConsts::elementNode)
   {
@@ -739,7 +757,7 @@ void serializer::html_emitter::emit_node(
       closed_parent_tag = 1;
     }
 
-    closed_parent_tag |= emit_node_children(item, depth);
+    closed_parent_tag |= emit_node_children(item, depth+1);
         
     if (closed_parent_tag)   
       tr << "</" << item->getNodeName()->getStringValue()->c_str() << ">";
@@ -1064,7 +1082,7 @@ void serializer::text_emitter::emit_item(const store::Item* item)
 {
   if (item->isAtomic())
   {
-    if (previous_item == PREVIOUS_ITEM_WAS_TEXT )
+    if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
       tr << " ";
     
     tr << item->getStringValue()->c_str();
