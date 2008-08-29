@@ -138,9 +138,11 @@ public:
     tokenize(lContent.str(), lines, "\n");
     for(it=lines.begin(); it!=lines.end(); ++it)
     {
+      std::vector<std::string> newline;
+      tokenize(*it, newline, "\r");
       std::vector<std::string> tokens;
       std::vector<std::string>::iterator lIter;
-      tokenize(*it, tokens, " ");
+      tokenize(newline.at(0), tokens, " ");
       for(lIter=tokens.begin(); lIter!=tokens.end(); ++lIter)
       {      
         if( *lIter == "Args:" )
@@ -162,12 +164,15 @@ public:
           break;
         } else if ( *lIter == "Error:" ) { 
           ++lIter;
+          if(lIter == tokens.end() ) { return false; }
           addError(lIter->begin(), lIter->end());
         } else if( *lIter == "Date:" ) {
           ++lIter;
+          if(lIter == tokens.end() ) { return false; }
           setDate( lIter->begin(), lIter->end() );
         } else if ( *lIter == "Timezone:" ) {
           ++lIter;
+          if(lIter == tokens.end() ) { return false; }
           setTimezone(lIter->begin(), lIter->end());
         } else if ( lIter->find("Error:") != std::string::npos ) {
           addError(lIter->begin()+lIter->find(":")+1, lIter->end());
