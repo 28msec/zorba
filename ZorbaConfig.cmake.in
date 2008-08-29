@@ -31,6 +31,8 @@ SET(SimpleStore_LIBRARY_DIRS "${CMAKE_BINARY_DIR}/src/store/naive"
 )
 SET(Zorba_VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
 
+SET(ZORBA_SKIP_RPATH ${CMAKE_SKIP_RPATH})
+
 # Tell the user project where to find our build settings and library dependencies
 SET(Zorba_BUILD_SETTINGS_FILE "${CMAKE_BINARY_DIR}/ZorbaBuildSettings.cmake")
 INCLUDE("${CMAKE_BINARY_DIR}/ZorbaLibraryDepends.cmake")
