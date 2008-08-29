@@ -352,13 +352,13 @@ public:
   bool
   operator<(xqpString src) const
   {
-    return compare(src) == -1;
+    return compare(src) < 0;
   }
 
   bool
   operator>(xqpString src) const
   {
-    return compare(src) == 1;
+    return compare(src) > 0;
   }
 
   int
