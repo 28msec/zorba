@@ -746,7 +746,7 @@ URI::initializePath(const xqpString& uri)
           }
         } else if (!is_unreserved_char(c) && !is_path_character(c)) 
         {
-          ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char in URI: '" << c << "'");
+          ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char in URI: '" << c << "': " << uri);
         }
         ++lIndex;
       }
