@@ -27,7 +27,6 @@
 #include <zorba/util/file.h>
 
 #include "sax2testdriverconfig.h" // SRC and BIN dir definitions
-#include "specification.h" // parsing spec files
 
 #include <zorba/zorba.h>
 #include <zorba/default_content_handler.h>
@@ -228,22 +227,6 @@ class TestErrorHandler : public zorba::ErrorHandler {
     }
 };
 
-// check of an error that was repored was expected 
-// by the given specification object
-bool
-isErrorExpected(TestErrorHandler& errHandler, Specification* aSpec)
-{
-  const std::vector<std::string>& errors = errHandler.getErrorList();
-  for(std::vector<std::string>::const_iterator i = errors.begin(); i != errors.end(); ++i) {
-    for(std::vector<std::string>::const_iterator j = aSpec->errorsBegin(); j != aSpec->errorsEnd(); ++j) {
-      if (i->compare(*j) == 0) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
 // print all errors that were raised
 void
 printErrors(TestErrorHandler& errHandler)
@@ -265,43 +248,6 @@ printErrors(TestErrorHandler& errHandler)
   }
   return;
 }
-
-// set a variable in the dynamic context
-// inlineFile specifies whether the given parameter is a file and it's value should
-// be inlined or not
-void
-set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicContext* dctx)
-{
-  zorba::str_replace_all(val, "$SAX2_SRC_DIR", zorba::SAX2_SRC_DIR);
-
-  zorba::ItemFactory* lFactory = zorba::Zorba::getInstance(NULL)->getItemFactory();
-
-  if (!inlineFile) {
-    zorba::Item lItem = lFactory->createString(val);
-		if(name != ".")
-			dctx->setVariable (name, lItem);
-		else
-			dctx->setContextItem (lItem);
-  } else {
-    std::ifstream* is = new std::ifstream(val.c_str ());
-    assert (*is);
-		if(name != ".")
-			dctx->setVariableAsDocument (name, val.c_str(), std::auto_ptr<std::istream>(is));
-		else
-			dctx->setContextItemAsDocument (val.c_str(), std::auto_ptr<std::istream>(is));
-  }
-}
-
-void 
-set_vars (Specification* aSpec, zorba::DynamicContext* dctx) 
-{
-  for (std::vector<Specification::Variable>::const_iterator lIter = aSpec->variablesBegin();
-       lIter != aSpec->variablesEnd(); ++lIter)
-  {
-    set_var ((*lIter).theInline, (*lIter).theVarName, (*lIter).theVarValue, dctx);
-  }
-}
-
 
 void
 trim(std::string& str) {
@@ -370,7 +316,6 @@ _tmain(int argc, _TCHAR* argv[])
 main(int argc, char** argv)
 #endif
 {
-  Specification lSpec;
   int flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;
 
   // do initial stuff
@@ -389,9 +334,7 @@ main(int argc, char** argv)
                            + lQueryWithoutSuffix + ".err", flags);
   zorba::file lRefFile    (zorba::SAX2_SRC_DIR +"/ExpQueryResults/" 
                            + lQueryWithoutSuffix +".xml.res", flags);
-  zorba::file lSpecFile   (zorba::SAX2_SRC_DIR+ "/Queries/" 
-                           + lQueryWithoutSuffix +".spec", flags);
-
+  
   // does the query file exists
   if ( (! lQueryFile.exists ()) || lQueryFile.is_directory () ) {
     std::cerr << "\n query file " << lQueryFile.get_path() 
@@ -408,14 +351,8 @@ main(int argc, char** argv)
   if ( ! lBucket.exists () )
     lBucket.deep_mkdir ();
 
-  // read the xargs and errors if the spec file exists
-  if ( lSpecFile.exists ()) 
-  { 
-    lSpec.parseFile(lSpecFile.get_path()); 
-  }
-
   // we must either have a reference file or an expected error code
-  if ( (lSpec.errorsSize() == 0) && ((! lRefFile.exists ()) || lRefFile.is_directory ()))
+  if ( (! lRefFile.exists ()) || lRefFile.is_directory ())
   {
     std::cerr << "No reference result and no expected errors." << std::endl;
     return 3;
@@ -439,37 +376,8 @@ main(int argc, char** argv)
   
   if (errHandler.errors())
   {
-    if (isErrorExpected(errHandler, &lSpec)) 
-    { 
-      // done, we expected an error during compile
-      return 0; 
-    } 
-    else 
-    { 
-      std::cerr << "Error compiling query" << std::endl;
-      printErrors(errHandler); return 4;
-    }
+    std::cerr << "Error compiling query" << std::endl;
   }
-
-
-  // set the variables in the dynamic context
-  zorba::DynamicContext* lDynCtxt = lQuery->getDynamicContext();
-
-  if (lSpec.hasDateSet()) {
-    // set the current date time such that tests that use fn:current-time behave deterministically
-    zorba::Item lDateTimeItem = engine->getItemFactory()->createDateTime(lSpec.getDate());
-
-    lDynCtxt->setCurrentDateTime(lDateTimeItem);
-  }
-
-  if (lSpec.hasTimezoneSet()) {
-    int lTimezone = atoi(lSpec.getTimezone().c_str());
-
-    std::cout << "timezone " << lTimezone << std::endl;
-    lDynCtxt->setImplicitTimezone(lTimezone);
-  }
-
-  set_vars(&lSpec, lDynCtxt);
 
   {
     // serialize xml
@@ -482,34 +390,9 @@ main(int argc, char** argv)
 
     if (errHandler.errors())
     {
-      if (isErrorExpected(errHandler, &lSpec)) { return 0; } // again done, we expected this error
-      else 
-      { 
         std::cerr << "Error executing query" << std::endl;
         printErrors(errHandler); 
         return 6;
-      }
-    }
-    else if ( lSpec.errorsSize() > 0 )
-    {
-      if ( ! lRefFile.exists () )
-      {
-        std::cerr << "Expected error(s)";
-        for (std::vector<std::string>::const_iterator lIter = lSpec.errorsBegin();
-            lIter != lSpec.errorsEnd(); ++lIter)
-        {
-          std::cerr << " " << *lIter;
-        }
-        if ( lResultFile.exists () && lResultFile.get_size () == 0)
-          std::cerr << " but got empty result" << std::endl;
-        else
-        {
-          std::cerr << " but got result:" << std::endl;
-          printFile(std::cerr, lResultFile.get_path());
-          std::cerr << "=== end of result ===" << std::endl;
-        } 
-        return 7;
-      }
     }
   }
   std::cout << "Result:" << std::endl;
