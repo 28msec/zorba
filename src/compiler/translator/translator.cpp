@@ -1708,12 +1708,29 @@ void translate_gflwor (const FLWORExpr& v) {
         pop_scope ();
       }
 
-      for (int j = 0; j < nvars; j++) {
-        forletwin_gclause *flc = new forletwin_gclause (forletwin_gclause::let_clause, vars [j], exprs[j]);
+      for (int j = 0; j < nvars; j++)
+      {
+        expr_t lExpr = exprs[j];
 #ifdef ZORBA_DEBUGGER
-        if(compilerCB->m_debugger != 0){
+        if(compilerCB->m_debugger != 0)
+        {
+          //TODO: useless without steps
+          //TODO: has to break before iterator consumption
+          //lExpr = new debugger_expr(lExpr->get_loc(), lExpr, theScopedVariables, theGlobalVars);
+        }
+#endif
+        forletwin_gclause *flc = new forletwin_gclause (forletwin_gclause::let_clause, vars [j], lExpr);
+#ifdef ZORBA_DEBUGGER
+        if(compilerCB->m_debugger != 0)
+        {
+          for(unsigned int k=nvars; k>j; k--)
+          {
+            std::cerr << "Add var:" << vars[k-1]->get_varname()->getStringValue() << std::endl;
+            theScopedVariables.push_back(vars[k-1]);
+          }
           flc->set_bound_variables(theScopedVariables);
           flc->set_global_variables(theGlobalVars);
+          pop_scope();
         }
 #endif
         eclauses.push_back (flc);
@@ -2542,13 +2559,6 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
       ZORBA_ASSERT(arg_var != NULL);
       args.push_back(arg_var);
     }
-#ifdef ZORBA_DEBUGGER
-      //if ( GlobalEnvironment::getInstance().getDebugger()->isEnabled() )
-      //{
-      //  rchandle<debugger_expr> lDebuggerExpr = new debugger_expr( loc, body, theGlobalVars );
-      //  body = lDebuggerExpr;
-      //}
-#endif
     if (body != NULL)
       flwor->set_retval(body);
     body = &*flwor;
@@ -2811,7 +2821,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         fo_h->add(*iter);
       }
 #ifdef ZORBA_DEBUGGER
-      if ( compilerCB->m_debugger != 0 )
+      if ( false && compilerCB->m_debugger != 0 )
       {
         rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(loc, &*fo_h, theScopedVariables, theGlobalVars);
         nodestack.push(&*lDebuggerExpr);

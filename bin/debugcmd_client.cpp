@@ -125,7 +125,7 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
         GetConsoleScreenBufferInfo(lConsole, &lConsoleInfo);
         const int saved_configuration = lConsoleInfo.wAttributes;
         SetConsoleTextAttribute(lConsole, 15+0*16); 
-        theOutput << lLineNo << '\t';// v<< lLine <<  std::endl;
+        theOutput << lLineNo << '\t';
         SetConsoleTextAttribute(lConsole, saved_configuration);
         for(unsigned int j=1; j <= lLine.length(); j++)
         {
@@ -194,7 +194,7 @@ void CommandLineEventHandler::resumed()
 
 void CommandLineEventHandler::terminated()
 {
-  theOutput << "End of query execution" << std::endl;
+  theOutput << std::endl << "End of query execution" << std::endl;
   handle_cmd();
 }
 

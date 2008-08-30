@@ -29,31 +29,35 @@ namespace zorba {
 typedef rchandle<var_expr> var_expr_t;
 class ZorbaDebugger;
 
+enum DebuggerBreak{BEFORE, AFTER, BOTH};
+
 class FnDebugIterator : public NaryBaseIterator<FnDebugIterator, PlanIteratorState>
 {
-protected:
-  ZorbaDebugger *theDebugger;
-  checked_vector<store::Item_t> varnames;
-  checked_vector<std::string> var_keys;  
-  checked_vector<xqtref_t> vartypes;
-  checked_vector<global_binding> globals;
+  public:
+    DebuggerBreak theKind;
 
-public:
-  FnDebugIterator(const QueryLoc& loc,
-               checked_vector<store::Item_t> varnames_,
-               checked_vector<std::string> var_keys_,
-               checked_vector<xqtref_t> vartypes_,
-               checked_vector<global_binding> globals_,
-               std::vector<PlanIter_t>& aChildren );
+  protected:
+    ZorbaDebugger *theDebugger;
+    checked_vector<store::Item_t> varnames;
+    checked_vector<std::string> var_keys;  
+    checked_vector<xqtref_t> vartypes;
+    checked_vector<global_binding> globals;
 
-  virtual ~FnDebugIterator();
+  public:
+    FnDebugIterator(DebuggerBreak aKind, const QueryLoc& loc,
+                 checked_vector<store::Item_t> varnames_,
+                 checked_vector<std::string> var_keys_,
+                 checked_vector<xqtref_t> vartypes_,
+                 checked_vector<global_binding> globals_,
+                 std::vector<PlanIter_t>& aChildren );
 
-  bool nextImpl( store::Item_t& result, PlanState& planState ) const;
+    virtual ~FnDebugIterator();
 
-  void accept(PlanIterVisitor& v) const;
+    bool nextImpl( store::Item_t& result, PlanState& planState ) const;
 
-  void openImpl(PlanState& planState, uint32_t& offset );
+    void accept(PlanIterVisitor& v) const;
 
+    void openImpl(PlanState& planState, uint32_t& offset );
 };
 } /* namespace zorba */
 

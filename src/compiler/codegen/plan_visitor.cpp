@@ -236,7 +236,7 @@ void end_visit(debugger_expr& v)
   }
   argv.push_back (pop_itstack ());
   reverse (argv.begin (), argv.end ());
-  itstack.push (new FnDebugIterator (qloc, varnames, var_keys, vartypes, globals, argv));
+  itstack.push (new FnDebugIterator(AFTER, qloc, varnames, var_keys, vartypes, globals, argv));
 }
 #endif
 
@@ -671,7 +671,7 @@ PlanIter_t gflwor_codegen(gflwor_expr& v, int ccnt, gflwor_codegen_data &gdata) 
             globals.push_back( *it );
           }
           argv.push_back(new gflwor::LetIterator(var->get_loc (), var->get_varname(), PREV_ITER, input, *var_iters, true));
-          return new FnDebugIterator(var->get_loc(), varnames, var_keys, vartypes, globals, argv);
+          return new FnDebugIterator(AFTER, var->get_loc(), varnames, var_keys, vartypes, globals, argv);
         }
 #endif
       return new gflwor::LetIterator(var->get_loc (), var->get_varname(), PREV_ITER, input, *var_iters, true);

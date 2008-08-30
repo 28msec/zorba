@@ -638,7 +638,6 @@ void ZorbaDebugger::processMessage(AbstractCommandMessage * aMessage)
           lMessage = static_cast< VariableMessage * > ( aMessage );
 #endif
           VariableReply * lReply = new VariableReply( lMessage->getId(), DEBUGGER_NO_ERROR );
-          
           for( unsigned i = 0; i<theVarnames.size(); i++ )
           {
             xqpString lName(theVarnames.at(i)->getStringValue());
@@ -661,7 +660,9 @@ void ZorbaDebugger::processMessage(AbstractCommandMessage * aMessage)
               }
             }
             if ( ! is_global )
+            {
               lReply->addLocal( lName, lType );
+            }
           }
           lMessage->setReplyMessage( lReply );
           break;

@@ -23,20 +23,21 @@
 #include <zorbautils/thread.h>
 
 #include "system/globalenv.h"
+
 #include "debugger/debugger_server.h"
 
 using namespace std;
 
 namespace zorba {
 
-FnDebugIterator::FnDebugIterator( const QueryLoc& loc,
+FnDebugIterator::FnDebugIterator(DebuggerBreak aKind, const QueryLoc& loc,
                checked_vector<store::Item_t> varnames_,
                checked_vector<std::string> var_keys_,
                checked_vector<xqtref_t> vartypes_,
                checked_vector<global_binding> globals_,
                std::vector<PlanIter_t>& aChildren ) 
     : NaryBaseIterator<FnDebugIterator, PlanIteratorState>(loc, aChildren),
-    theDebugger(0), varnames(varnames_), var_keys(var_keys_), vartypes(vartypes_),
+    theKind(aKind), theDebugger(0), varnames(varnames_), var_keys(var_keys_), vartypes(vartypes_),
     globals(globals_){}
 
   FnDebugIterator::~FnDebugIterator(){}
@@ -47,6 +48,11 @@ FnDebugIterator::FnDebugIterator( const QueryLoc& loc,
 
     DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
     
+    if ( (theKind == BEFORE || theKind == BOTH) && theDebugger->hasToSuspend() )
+    {
+      assert(theDebugger->theRuntimeThread);
+      theDebugger->theRuntimeThread->suspend();
+    }
     while ( consumeNext( result, theChildren[0], planState ) ) {
       assert(theDebugger);
       theDebugger->thePlanState = &planState;
@@ -56,7 +62,7 @@ FnDebugIterator::FnDebugIterator( const QueryLoc& loc,
       theDebugger->theGlobals  = globals;
       theDebugger->theChildren = theChildren;
       theDebugger->theLocation = loc;
-      if ( theDebugger->hasToSuspend() )
+      if ( (theKind == AFTER || theKind == BOTH) && theDebugger->hasToSuspend() )
       {
         assert(theDebugger->theRuntimeThread);
         theDebugger->theRuntimeThread->suspend();

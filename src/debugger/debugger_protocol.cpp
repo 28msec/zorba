@@ -812,7 +812,7 @@ VariableMessage::VariableMessage( Byte * aMessage, const unsigned int aLength ):
 VariableMessage::~VariableMessage(){}
 
 /**
- * Variable Message
+ * Variable Reply Message
  */
 VariableReply::VariableReply( const Id anId, const ErrorCode aErrorCode ):
   ReplyMessage( anId, aErrorCode )
@@ -907,13 +907,14 @@ xqpString VariableReply::getData() const
     lJSONString << "{\"name\":\"" << it->first << "\",\"type\":\"" << it->second << "\"}";
   }
   lJSONString << "],\"locals\":[";
-  for( it = theLocals.begin(); it != theLocals.end(); it++ )
+  std::map<xqpString, xqpString>::const_iterator lIter;
+  for( lIter = theLocals.begin(); lIter != theLocals.end(); ++lIter )
   {
-    if ( it != theLocals.begin() )
+    if ( lIter != theLocals.begin() )
     {
       lJSONString << ',';
     }
-    lJSONString << "{\"name\":\"" << it->first << "\",\"type\":\"" << it->second << "\"}";
+    lJSONString << "{\"name\":\"" << lIter->first << "\",\"type\":\"" << lIter->second << "\"}";
   }
   lJSONString << "]}";
   xqpString lReturnString( lJSONString.str() );

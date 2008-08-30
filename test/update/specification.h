@@ -190,6 +190,7 @@ private:
     }
     else 
     {
+      std::cerr << lCompareType << std::endl;
       assert(false);
     }
   }
