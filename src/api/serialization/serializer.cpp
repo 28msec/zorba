@@ -339,7 +339,9 @@ int serializer::emitter::emit_node_children(
 
     if (ser->indent
         &&
-        prev_node_kind == store::StoreConsts::elementNode
+        (prev_node_kind == store::StoreConsts::elementNode
+        ||
+        prev_node_kind == store::StoreConsts::commentNode)
         &&
         !(child->getNodeKind() == store::StoreConsts::textNode
           &&
@@ -348,15 +350,25 @@ int serializer::emitter::emit_node_children(
           child->getStringValue()->endsWith("\n"))) )
       tr << ser->END_OF_LINE;
 
-    if (ser->indent && child->getNodeKind() == store::StoreConsts::elementNode)
+    if (ser->indent
+        &&
+        (child->getNodeKind() == store::StoreConsts::elementNode
+        ||
+        child->getNodeKind() == store::StoreConsts::commentNode))
       emit_indentation(depth);
 
     emit_node(child, depth);
     
     prev_node_kind = child->getNodeKind();
   }
-  if (ser->indent && prev_node_kind == store::StoreConsts::elementNode)
+
+  if (ser->indent
+      &&
+      (prev_node_kind == store::StoreConsts::elementNode
+      ||
+      prev_node_kind == store::StoreConsts::commentNode))
     tr << ser->END_OF_LINE;
+  
   iter->close();
   releaseChildIter(iter);
 
@@ -518,14 +530,7 @@ void serializer::emitter::emit_node(
 	}
 	else if (item->getNodeKind() == store::StoreConsts::commentNode)
 	{
-    if (ser->indent)
-      emit_indentation(depth);
-
     tr << "<!--" << item->getStringValueP()->c_str() << "-->";
-
-    if (ser->indent)
-      tr << ser->END_OF_LINE;		
-
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
 	else if (item->getNodeKind() == store::StoreConsts::piNode )
@@ -723,8 +728,6 @@ void serializer::html_emitter::emit_node(
       return;      
     }        
     
-    if (ser->indent)
-      emit_indentation(depth);
     tr << "<" << item->getNodeName()->getStringValue()->c_str();
     previous_item = PREVIOUS_ITEM_WAS_NODE;
     
@@ -751,9 +754,7 @@ void serializer::html_emitter::emit_node(
         tr << "UTF-16";
 #endif      
       tr << "\">";
-      
-      if (ser->indent)
-        tr << ser->END_OF_LINE;
+
       closed_parent_tag = 1;
     }
 
@@ -775,9 +776,6 @@ void serializer::html_emitter::emit_node(
         tr << "/>";
     }
     
-    if (ser->indent)
-      tr << serializer::END_OF_LINE;
-
     previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->getNodeKind() == store::StoreConsts::attributeNode)
@@ -819,14 +817,7 @@ void serializer::html_emitter::emit_node(
   }
   else if (item->getNodeKind() == store::StoreConsts::commentNode)
   {
-    if (ser->indent)
-      emit_indentation(depth);
-
     tr << "<!--" << item->getStringValue()->c_str() << "-->";
-
-    if (ser->indent)
-      tr << ser->END_OF_LINE;
-
     previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->getNodeKind() == store::StoreConsts::piNode )
