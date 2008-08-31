@@ -657,6 +657,7 @@ PlanIter_t gflwor_codegen(gflwor_expr& v, int ccnt, gflwor_codegen_data &gdata) 
           
           checked_vector<bound_var> lVars = flwc->get_bound_variables();
           checked_vector<bound_var>::iterator lIter;
+          
           for ( lIter = lVars.begin(); lIter != lVars.end(); ++lIter )
           {
             varnames.push_back ((*lIter).varname);

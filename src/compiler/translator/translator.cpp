@@ -1723,9 +1723,9 @@ void translate_gflwor (const FLWORExpr& v) {
 #ifdef ZORBA_DEBUGGER
         if(compilerCB->m_debugger != 0)
         {
+          push_scope();
           for(unsigned int k=nvars; k>j; k--)
           {
-            std::cerr << "Add var:" << vars[k-1]->get_varname()->getStringValue() << std::endl;
             theScopedVariables.push_back(vars[k-1]);
           }
           flc->set_bound_variables(theScopedVariables);
