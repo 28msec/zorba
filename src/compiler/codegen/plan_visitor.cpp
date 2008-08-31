@@ -637,9 +637,37 @@ PlanIter_t gflwor_codegen(gflwor_expr& v, int ccnt, gflwor_codegen_data &gdata) 
       if (pos_var != NULL)
         ZORBA_ASSERT (pvar_iter_map.get((uint64_t) pos_var, pvar_iters));
       if (! flwc->is_outer ())
-        return new gflwor::ForIterator(var->get_loc (), var->get_varname(),
-                                       PREV_ITER, input, *var_iters, *pvar_iters);
-      else {
+      {
+#ifdef ZORBA_DEBUGGER
+        if(ccb->m_debugger != 0){
+          checked_vector<PlanIter_t> argv;
+          checked_vector<store::Item_t> varnames;
+          checked_vector<string> var_keys;
+          checked_vector<global_binding> globals;
+          checked_vector<xqtref_t> vartypes;
+          
+          checked_vector<bound_var> lVars = flwc->get_bound_variables();
+          checked_vector<bound_var>::iterator lIter;
+          
+          for ( lIter = lVars.begin(); lIter != lVars.end(); ++lIter )
+          {
+            varnames.push_back ((*lIter).varname);
+            var_keys.push_back ((*lIter).var_key);
+            vartypes.push_back ((*lIter).type);
+          }
+
+          list<global_binding> lGlobals = flwc->get_global_variables();
+          list<global_binding>::iterator it;
+          for ( it = lGlobals.begin(); it != lGlobals.end(); ++it )
+          {
+            globals.push_back( *it );
+          }
+          argv.push_back(new gflwor::ForIterator(var->get_loc (), var->get_varname(), PREV_ITER, input, *var_iters, *pvar_iters));
+          return new FnDebugIterator(AFTER, var->get_loc(), varnames, var_keys, vartypes, globals, argv);
+        }
+#endif
+        return new gflwor::ForIterator(var->get_loc (), var->get_varname(), PREV_ITER, input, *var_iters, *pvar_iters);
+      } else {
         ZORBA_ASSERT (pos_var == NULL);
         return new gflwor::OuterForIterator(var->get_loc (), var->get_varname(),
                                             PREV_ITER, input, *var_iters);

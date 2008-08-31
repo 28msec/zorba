@@ -502,6 +502,16 @@ rchandle<forlet_clause> wrap_in_forclause(expr_t e, varref_t fv, varref_t pv) {
   assert (fv->get_kind () == var_expr::for_var);
   if (pv != NULL)
     assert (pv->get_kind() == var_expr::pos_var);
+// #ifdef ZORBA_DEBUGGER
+//  if(compilerCB->m_debugger != 0)
+//  {
+//    forlet_clause *flc = new forlet_clause(forlet_clause::for_clause, fv, pv, NULL, e);
+//    theScopedVariables.push_back(fv);
+//    flc->set_bound_variables(theScopedVariables);
+//    flc->set_global_variables(theGlobalVars);
+//    return flc;
+//  }
+// #endif
   return new forlet_clause(forlet_clause::for_clause, fv, pv, NULL, e);
 }
 
@@ -1691,6 +1701,15 @@ void translate_gflwor (const FLWORExpr& v) {
       for (int j = 0; j < nvars; j++) {
         forletwin_gclause *eflc = 
           new forletwin_gclause (forletwin_gclause::for_clause, vars [j], exprs [j], pos_vars [j]);
+#ifdef ZORBA_DEBUGGER
+        if(compilerCB->m_debugger != 0)
+        {
+          theScopedVariables.push_back(vars[j]);
+          //theScopedVariables.push_back();
+          eflc->set_bound_variables(theScopedVariables);
+          eflc->set_global_variables(theGlobalVars);
+        }
+#endif
         eflc->set_outer (flc.is_outer ());
         eclauses.push_back (eflc);
       }
@@ -1711,14 +1730,6 @@ void translate_gflwor (const FLWORExpr& v) {
       for (int j = 0; j < nvars; j++)
       {
         expr_t lExpr = exprs[j];
-#ifdef ZORBA_DEBUGGER
-        if(compilerCB->m_debugger != 0)
-        {
-          //TODO: useless without steps
-          //TODO: has to break before iterator consumption
-          //lExpr = new debugger_expr(lExpr->get_loc(), lExpr, theScopedVariables, theGlobalVars);
-        }
-#endif
         forletwin_gclause *flc = new forletwin_gclause (forletwin_gclause::let_clause, vars [j], lExpr);
 #ifdef ZORBA_DEBUGGER
         if(compilerCB->m_debugger != 0)
@@ -3571,6 +3582,14 @@ void end_visit(const IfExpr& v, void* /*visit_state*/)
     e_h->getUpdateType(),
     loc);
 
+#ifdef ZORBA_DEBUGGER
+  if(compilerCB->m_debugger != 0)
+  {
+    c_h = new debugger_expr(c_h->get_loc(), c_h, theScopedVariables, theGlobalVars);
+    t_h = new debugger_expr(t_h->get_loc(), t_h, theScopedVariables, theGlobalVars);
+    e_h = new debugger_expr(e_h->get_loc(), e_h, theScopedVariables, theGlobalVars);
+  }
+#endif
   if_expr *lIfExpr = new if_expr(loc,c_h,t_h,e_h);
   lIfExpr->setUpdateType(lUpdateType);
   nodestack.push(lIfExpr);
