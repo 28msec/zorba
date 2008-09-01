@@ -20,11 +20,10 @@
 
 #include <stdlib.h>
 #include <iostream>
-#include <vector>
 #include <map>
+#include <cstring>
 
 #include "zorbatypes/zorbatypes_decl.h"
-#include "zorbatypes/rchandle.h"
 #include "zorbautils/checked_vector.h"
 
 namespace zorba {
@@ -227,6 +226,9 @@ public:
   encodeForUri() const;
 
   xqpStringStore_t
+  decodeFromUri() const;
+
+  xqpStringStore_t
   normalize(const xqpStringStore* normMode) const;
 
 //  UnicodeString
@@ -307,7 +309,8 @@ public:
     xqpString&
     operator+=(const char* src);
       
-    // @param cp Codepoint
+    /**@param cp Codepoint
+     */
     xqpString&
     operator+=(uint32_t cp);
       
@@ -353,13 +356,13 @@ public:
     bool
     operator<(xqpString src) const
     {
-      return compare(src) == -1;
+      return compare(src) < 0;
     }
 
     bool
     operator>(xqpString src) const
     {
-      return compare(src) == 1;
+      return compare(src) > 0;
     }
 
     int
@@ -478,11 +481,11 @@ public:
 //      return theStrStore->getUnicodeString();
 //    }
 
-//    std::vector<uint32_t>
-//    getCodepoints() const
-//    {
-//      return theStrStore->getCodepoints();
-//    }
+    checked_vector<uint32_t>
+    getCodepoints() const
+    {
+      return theStrStore->getCodepoints();
+    }
 
     //uppercase/lowercase
     xqpString
@@ -508,6 +511,13 @@ public:
     encodeForUri() const
     {
       return theStrStore->encodeForUri().getp();
+    }
+
+    // revert encodeForUri
+    xqpString
+    decodeFromUri() const
+    {
+      return theStrStore->decodeFromUri().getp();
     }
 
     //This function converts an xs:string containing an IRI into a URI according to the
@@ -595,11 +605,6 @@ public:
       // Removes the leading and trailing whitespace (one of the " \t\r\n")
       // TODO: xqpString trim_whitespace() const;
 
-      /**
-       * Create and return an xqpString from an UTF-16 encoded string
-       */
-//      static xqpString
-//      fromUTF16(const UChar* src, int32_t len);
 public:
       static xqpString concat(const char *s1, 
                               const char *s2);
@@ -672,11 +677,17 @@ public:
   }
 
   inline xqpString
-  operator+(xqpString& lsrc, const char* rsrc)
+  operator+(xqpString lsrc, const char* rsrc)
   {
     xqpString tmp (lsrc);
     tmp += rsrc;
     return tmp;
+  }
+
+  inline xqpString
+  operator+(xqpString lsrc, const std::string &rsrc)
+  {
+    return lsrc + rsrc.c_str ();
   }
 
   inline xqpString
