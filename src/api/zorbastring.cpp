@@ -137,6 +137,30 @@ String::operator!=(const String& str) const
 }
 
 bool
+String::operator<(const String& str) const
+{
+  return compare(str) < 0;
+}
+
+bool
+String::operator<=(const String& str) const
+{
+  return compare(str) <= 0;
+}
+
+bool
+String::operator>(const String& str) const
+{
+  return compare(str) > 0;
+}
+
+bool
+String::operator>=(const String& str) const
+{
+  return compare(str) >= 0;
+}
+
+bool
 String::byteEqual(const char* aString, unsigned int aBytes) const
 {
   return m_string->byteEqual( aString, aBytes );

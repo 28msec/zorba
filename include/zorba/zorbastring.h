@@ -129,6 +129,18 @@ public:
   bool
   operator!=(const String& str) const;
 
+  bool
+  operator<(const String& str) const;
+
+  bool
+  operator<=(const String& str) const;
+
+  bool
+  operator>(const String& str) const;
+
+  bool
+  operator>=(const String& str) const;
+
   /** \brief Byte by byte comparison of two strings.
    *
    */  
