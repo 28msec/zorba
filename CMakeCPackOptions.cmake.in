@@ -12,6 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+SET ( CPACK_PACKAGE_DEFAULT_LOCATION "/" )
+SET ( CPACK_PACKAGING_INSTALL_PREFIX "local" )
+SET ( CPACK_SET_DESTDIR ON )
+MESSAGE ( STATUS "current source: " ${CMAKE_SOURCE_DIR} )
+SET ( CPACK_PACKAGE_DESCRIPTION_FILE "@CMAKE_SOURCE_DIR@/README.txt")
+
+# for Windows Null Soft Installer System ...
 if(CPACK_GENERATOR MATCHES "NSIS")
   SET(CPACK_PACKAGE_EXECUTABLES "zorba" "Zorba Command Line Client" )
 
@@ -23,6 +30,3 @@ if(CPACK_GENERATOR MATCHES "NSIS")
   SET(CPACK_NSIS_MODIFY_PATH ON)
 endif(CPACK_GENERATOR MATCHES "NSIS")
 
-if("${CPACK_GENERATOR}" STREQUAL "PackageMaker")
-  SET(CPACK_PACKAGE_DEFAULT_LOCATION "/usr")
-endif("${CPACK_GENERATOR}" STREQUAL "PackageMaker")
