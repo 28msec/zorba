@@ -38,6 +38,7 @@ SET(MIN_STORE_SRCS
     min_temp_seq.cpp
     qname_pool.cpp
     string_pool.cpp
+    min_tupleimpl.cpp
 )
 
 #

@@ -48,6 +48,7 @@ public:
   bool isNode() const   { return false; }
   bool isAtomic() const { return true; }
   bool isPul() const    { return false; }
+  bool isTuple() const  { return false; }
 
   virtual store::Item_t getAtomizationValue() const;
   virtual void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;

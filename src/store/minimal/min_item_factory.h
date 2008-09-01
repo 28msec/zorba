@@ -24,6 +24,7 @@
 
 #include "store/api/item_factory.h"
 #include "store/api/iterator.h"
+#include "store/api/tuples.h"
 
 
 namespace zorba 
@@ -275,6 +276,15 @@ public:
 
 
   store::PUL* createPendingUpdateList();
+  
+  virtual bool createTuple(
+          store::Item_t& result,
+          std::vector<store::TupleField>& fields);
+
+  virtual bool createTuple(
+          store::Item_t& result,
+          store::Item *inTuple,
+          std::vector<int>& permutation);
 };
 
 } // namespace storeminimal

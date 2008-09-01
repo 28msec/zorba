@@ -52,6 +52,7 @@ const ulong SimpleStore::DEFAULT_COLLECTION_MAP_SIZE = 32;
 
 const char* SimpleStore::XS_URI = "http://www.w3.org/2001/XMLSchema";
 const char* SimpleStore::XML_URI = "http://www.w3.org/2001/XML/1998/namespace";
+const char* SimpleStore::ZXSE_URI = "http://www.zorba-xquery.com/zorba/schema-extensions";
 
 
 /*******************************************************************************
@@ -183,6 +184,7 @@ void SimpleStore::initTypeNames()
   theSchemaTypeNames[45] = theQNamePool->insert(XS_URI, "xs", "base64Binary");
   theSchemaTypeNames[46] = theQNamePool->insert(XS_URI, "xs", "hexBinary");
   theSchemaTypeNames[47] = theQNamePool->insert(XS_URI, "xs", "boolean");
+  theSchemaTypeNames[48] = theQNamePool->insert(ZXSE_URI, "zxse", "tuple");
 
 /*  theSchemaTypeNames.resize(XS_LAST);
 
@@ -436,7 +438,7 @@ store::Collection_t SimpleStore::getCollection(const xqpStringStore_t& uri)
     return collection.getp();
   else
   {
-    ZORBA_ERROR_PARAM(API0006_COLLECTION_NOT_FOUND, uri->c_str(), "");
+    ZORBA_ERROR_PARAM(FODC0004, uri->c_str(), "");
     return NULL;
   }
 }
@@ -474,9 +476,9 @@ void SimpleStore::deleteCollection(const xqpStringStore_t& uri)
 /*******************************************************************************
   Resturn an iterator that lists the URI's of all the available collections.
 ********************************************************************************/
-store::Iterator_t SimpleStore::listCollectionsUri()
+store::Iterator_t SimpleStore::listCollectionUris()
 {
-  return new storeminimal::ItemIterator(theItemUris);
+  return new ItemIterator(theItemUris);
 }
 
 

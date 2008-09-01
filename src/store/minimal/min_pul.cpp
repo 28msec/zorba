@@ -87,7 +87,7 @@ void PULImpl::addDelete(store::Item_t& target)
 
   if (!found)
   {
-    UpdDelete* upd = new UpdDelete(target);
+    UpdDelete* upd = new UpdDelete(this, target);
     theDeleteList.push_back(upd);
 
     updates = new NodeUpdates(1);
@@ -103,7 +103,7 @@ void PULImpl::addDelete(store::Item_t& target)
         return;
     }
 
-    UpdDelete* upd = new UpdDelete(target);
+    UpdDelete* upd = new UpdDelete(this, target);
     theDeleteList.push_back(upd);
     updates->push_back(upd);
   }
@@ -118,8 +118,10 @@ void PULImpl::addInsertInto(
     std::vector<store::Item_t>& children,
     const store::CopyMode&      copymode)
 {
+  store::Item_t sibling;
+
   addInsertChildren(store::UpdateConsts::UP_INSERT_INTO,
-                    target, children, copymode);
+                    target, sibling, children, copymode);
 }
 
 
@@ -128,8 +130,10 @@ void PULImpl::addInsertFirst(
     std::vector<store::Item_t>& children,
     const store::CopyMode&      copymode)
 {
+  store::Item_t sibling;
+
   addInsertChildren(store::UpdateConsts::UP_INSERT_INTO_FIRST,
-                    target, children, copymode);
+                    target, sibling, children, copymode);
 }
 
 
@@ -138,53 +142,22 @@ void PULImpl::addInsertLast(
     std::vector<store::Item_t>& children,
     const store::CopyMode&      copymode)
 {
+  store::Item_t sibling;
+
   addInsertChildren(store::UpdateConsts::UP_INSERT_INTO_LAST,
-                    target, children, copymode);
+                    target, sibling, children, copymode);
 }
 
 
-void PULImpl::addInsertChildren(
-    store::UpdateConsts::UpdPrimKind kind,
-    store::Item_t&                   target,
-    std::vector<store::Item_t>&      children,
-    const store::CopyMode&           copymode)
-{
-  XmlNode* n = BASE_NODE(target);
-
-  NodeUpdates* updates = 0;
-  bool found = theNodeToUpdatesMap.get(n, updates);
-
-  UpdInsertChildren* upd = new UpdInsertChildren(kind, target, children,
-                                                 copymode);
-
-  if (kind == store::UpdateConsts::UP_INSERT_INTO)
-    theDoFirstList.push_back(upd);
-  else
-    theInsertList.push_back(upd);
-
-  if (!found)
-  {
-    updates = new NodeUpdates(1);
-    (*updates)[0] = upd;
-    theNodeToUpdatesMap.insert(n, updates);
-  }
-  else
-  {
-    updates->push_back(upd);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void PULImpl::addInsertBefore(
     store::Item_t&                   target,
     std::vector<store::Item_t>&      siblings,
     const store::CopyMode&           copymode)
 {
-  addInsertSiblings(store::UpdateConsts::UP_INSERT_BEFORE,
-                    target, siblings, copymode);
+  store::Item_t parent;
+
+  addInsertChildren(store::UpdateConsts::UP_INSERT_BEFORE,
+                    parent, target, siblings, copymode);
 }
 
 
@@ -193,15 +166,18 @@ void PULImpl::addInsertAfter(
     std::vector<store::Item_t>&      siblings,
     const store::CopyMode&           copymode)
 {
-  addInsertSiblings(store::UpdateConsts::UP_INSERT_AFTER,
-                    target, siblings, copymode);
+  store::Item_t parent;
+
+  addInsertChildren(store::UpdateConsts::UP_INSERT_AFTER,
+                    parent, target, siblings, copymode);
 }
 
 
-void PULImpl::addInsertSiblings(
+void PULImpl::addInsertChildren(
     store::UpdateConsts::UpdPrimKind kind,
     store::Item_t&                   target,
-    std::vector<store::Item_t>&      siblings,
+    store::Item_t&                   sibling,
+    std::vector<store::Item_t>&      children,
     const store::CopyMode&           copymode)
 {
   XmlNode* n = BASE_NODE(target);
@@ -209,9 +185,14 @@ void PULImpl::addInsertSiblings(
   NodeUpdates* updates = 0;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
-  UpdInsertSiblings* upd = new UpdInsertSiblings(kind, target, siblings,
+  UpdInsertChildren* upd = new UpdInsertChildren(this, kind,
+                                                 target, sibling, children,
                                                  copymode);
-  theInsertList.push_back(upd);
+
+  if (kind == store::UpdateConsts::UP_INSERT_INTO)
+    theDoFirstList.push_back(upd);
+  else
+    theInsertList.push_back(upd);
 
   if (!found)
   {
@@ -245,7 +226,7 @@ void PULImpl::addInsertAttributes(
   NodeUpdates* updates = 0;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
-  UpdInsertAttributes* upd = new UpdInsertAttributes(target, attrs, copymode);
+  UpdInsertAttributes* upd = new UpdInsertAttributes(this, target, attrs, copymode);
   theDoFirstList.push_back(upd);
 
   if (!found)
@@ -282,12 +263,12 @@ void PULImpl::addReplaceNode(
 
   if (target->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    upd = new UpdReplaceAttribute(parent, target, newNodes, copymode);
+    upd = new UpdReplaceAttribute(this, parent, target, newNodes, copymode);
     kind = store::UpdateConsts::UP_REPLACE_ATTRIBUTE;
   }
   else
   {
-    upd = new UpdReplaceChild(parent, target, newNodes, copymode);
+    upd = new UpdReplaceChild(this, parent, target, newNodes, copymode);
     kind = store::UpdateConsts::UP_REPLACE_CHILD;
   }
 
@@ -331,7 +312,7 @@ void PULImpl::addReplaceContent(
 
   if (!found)
   {
-    UpdatePrimitive* upd = new UpdReplaceContent(target, newChild, copymode);
+    UpdatePrimitive* upd = new UpdReplaceElemContent(this, target, newChild, copymode);
     theReplaceContentList.push_back(upd);
 
     updates = new NodeUpdates(1);
@@ -347,7 +328,7 @@ void PULImpl::addReplaceContent(
         ZORBA_ERROR(XUDY0017);
     }
 
-    UpdatePrimitive* upd = new UpdReplaceContent(target, newChild, copymode);
+    UpdatePrimitive* upd = new UpdReplaceElemContent(this, target, newChild, copymode);
     theReplaceContentList.push_back(upd);
     updates->push_back(upd);
   }
@@ -369,16 +350,16 @@ void PULImpl::addReplaceValue(store::Item_t& target, xqpStringStore_t& newValue)
   switch (targetKind)
   {
   case store::StoreConsts::attributeNode:
-    upd = new UpdReplaceAttrValue(target, newValue);
+    upd = new UpdReplaceAttrValue(this, target, newValue);
     break;
   case store::StoreConsts::textNode:
-    upd = new UpdReplaceTextValue(target, newValue);
+    upd = new UpdReplaceTextValue(this, target, newValue);
     break;
   case store::StoreConsts::piNode:
-    upd = new UpdReplacePiValue(target, newValue);
+    upd = new UpdReplacePiValue(this, target, newValue);
     break;
   case store::StoreConsts::commentNode:
-    upd = new UpdReplaceCommentValue(target, newValue);
+    upd = new UpdReplaceCommentValue(this, target, newValue);
     break;
   default:
     ZORBA_FATAL(0, "");
@@ -426,18 +407,18 @@ void PULImpl::addRename(store::Item_t& target, store::Item_t& newName)
   {
   case store::StoreConsts::elementNode:
   {
-    upd = new UpdRenameElem(target, newName);
+    upd = new UpdRenameElem(this, target, newName);
     break;
   }
   case store::StoreConsts::attributeNode:
   {
-    upd = new UpdRenameAttr(target, newName);
+    upd = new UpdRenameAttr(this, target, newName);
     break;
   }
   case store::StoreConsts::piNode:
   {
     xqpStringStore_t tmp = newName->getStringValue();
-    upd = new UpdRenamePi(target, tmp);
+    upd = new UpdRenamePi(this, target, tmp);
     break;
   }
   default:
@@ -474,23 +455,41 @@ void PULImpl::addSetElementType(
     store::Item_t&              target,
     store::Item_t&              typeName,
     store::Item_t&              typedValue,
-    bool                        haveTypedValue,
+    bool                        haveValue,
     bool                        haveEmptyValue,
+    bool                        haveTypedValue,
     bool                        isId,
     bool                        isIdRefs)
 {
+  UpdatePrimitive* upd = new UpdSetElementType(this, target,
+                                               typeName, typedValue,
+                                               haveValue, haveEmptyValue,
+                                               haveTypedValue, false,
+                                               isId, isIdRefs);
+
+  theValidationList.push_back(upd);
 }
 
 
 void PULImpl::addSetElementType(
     store::Item_t&              target,
     store::Item_t&              typeName,
-    std::vector<store::Item_t>& typedValue,
-    bool                        haveTypedValue,
+    std::vector<store::Item_t>& typedValueV,
+    bool                        haveValue,
     bool                        haveEmptyValue,
+    bool                        haveTypedValue,
     bool                        isId,
     bool                        isIdRefs)
 {
+  store::Item_t typedValue = new ItemVector(typedValueV);
+
+  UpdatePrimitive* upd = new UpdSetElementType(this, target,
+                                               typeName, typedValue,
+                                               haveValue, haveEmptyValue,
+                                               haveTypedValue, true,
+                                               isId, isIdRefs);
+
+  theValidationList.push_back(upd);
 }
 
 
@@ -501,16 +500,28 @@ void PULImpl::addSetAttributeType(
     bool                        isId,
     bool                        isIdRefs)
 {
+  UpdatePrimitive* upd = new UpdSetAttributeType(this, target,
+                                                 typeName, typedValue, false,
+                                                 isId, isIdRefs);
+
+  theValidationList.push_back(upd);
 }
 
 
 void PULImpl::addSetAttributeType(
     store::Item_t&              target,
     store::Item_t&              typeName,
-    std::vector<store::Item_t>& typedValue,
+    std::vector<store::Item_t>& typedValueV,
     bool                        isId,
     bool                        isIdRefs)
 {
+  store::Item_t typedValue = new ItemVector(typedValueV);
+
+  UpdatePrimitive* upd = new UpdSetAttributeType(this, target,
+                                                 typeName, typedValue, true,
+                                                 isId, isIdRefs);
+
+  theValidationList.push_back(upd);
 }
 
 
@@ -558,6 +569,8 @@ void PULImpl::mergeUpdateList(
   for (ulong i = 0; i < numOtherUpdates; i++)
   {
     UpdatePrimitive* upd = otherList[i];
+    upd->thePul = this;
+
     store::UpdateConsts::UpdPrimKind updKind = upd->getKind();
     XmlNode* target;
 
@@ -691,12 +704,14 @@ void PULImpl::serializeUpdates(serializer& ser, std::ostream& os)
 /*******************************************************************************
 
 ********************************************************************************/
-void PULImpl::applyUpdates(std::vector<zorba::store::Item*>& validationNodes)
+void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
 {
   try
   {
     ulong i;
     ulong numUpdates;
+
+    theValidationNodes = &validationNodes;
 
     // insertInto, insertAttributes, replaceValue, rename
     numUpdates = theDoFirstList.size();
@@ -758,8 +773,8 @@ void PULImpl::applyUpdates(std::vector<zorba::store::Item*>& validationNodes)
     numUpdates = theReplaceContentList.size();
     for (ulong i = 0; i < numUpdates; i++)
     {
-      UpdReplaceContent* upd;
-      upd = reinterpret_cast<UpdReplaceContent*>(theReplaceContentList[i]);
+      UpdReplaceElemContent* upd;
+      upd = reinterpret_cast<UpdReplaceElemContent*>(theReplaceContentList[i]);
 
       ulong numChildren = upd->theOldChildren.size();
       for (ulong j = 0; j < numChildren; j++)
@@ -844,7 +859,7 @@ void UpdDelete::apply()
     if (targetKind == store::StoreConsts::elementNode || 
         targetKind == store::StoreConsts::attributeNode ||
         targetKind == store::StoreConsts::textNode)
-      theParent->removeType(theTypeUndoList);
+      theParent->removeType(*this);
   }
 
   theIsApplied = true;
@@ -869,206 +884,25 @@ void UpdDelete::undo()
 
 ********************************************************************************/
 UpdInsertChildren::UpdInsertChildren(
+    PULImpl*                         pul,
     store::UpdateConsts::UpdPrimKind kind,
     store::Item_t&                   target,
+    store::Item_t&                   sibling,
     std::vector<store::Item_t>&      children,
     const store::CopyMode&           copymode)
   :
-  UpdatePrimitive(target),
+  UpdatePrimitive(pul, target),
   theKind(kind),
-  theDoCopy(copymode.theDoCopy),
-  theCopyMode(copymode)
+  theCopyMode(copymode),
+  theNumApplied(0)
 {
+  theSibling.transfer(sibling);
+
   ulong numChildren = children.size();
-  theChildren.resize(numChildren);
-  for (ulong i = 0; i < numChildren; i++)
-  {
-    theChildren[i].transfer(children[i]);
-
-    if (theRemoveType == false)
-    {
-      store::StoreConsts::NodeKind childKind = theChildren[i]->getNodeKind();
-      if (childKind == store::StoreConsts::elementNode ||
-          childKind == store::StoreConsts::textNode)
-        theRemoveType = true;
-    }
-  }
-}
-
-
-void UpdInsertChildren::apply()
-{
-  XmlNode* target = BASE_NODE(theTarget);
-
-  if (theKind == store::UpdateConsts::UP_INSERT_INTO)
-  {
-    target->insertChildren(theChildren,
-                           target->numChildren(),
-                           theDoCopy,
-                           theCopyMode);
-  }
-  else if (theKind == store::UpdateConsts::UP_INSERT_INTO_FIRST)
-  {
-    target->insertChildrenFirst(theChildren, theDoCopy, theCopyMode);
-  }
-  else
-  {
-    target->insertChildrenLast(theChildren, theDoCopy, theCopyMode);
-  }
-
-  if (theRemoveType)
-    target->removeType(theTypeUndoList);
-
-  theIsApplied = true;
-}
-
-
-void UpdInsertChildren::undo()
-{
-  XmlNode* target = BASE_NODE(theTarget);
-
-  ulong pos = target->children().find(BASE_NODE(theChildren[0]));
-
-  target->removeChildren(pos, theChildren.size());
-
-  if (!theTypeUndoList.empty())
-    target->restoreType(theTypeUndoList);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-UpdInsertSiblings::UpdInsertSiblings(
-    store::UpdateConsts::UpdPrimKind kind,
-    store::Item_t&                   target,
-    std::vector<store::Item_t>&      siblings,
-    const store::CopyMode&           copymode)
-  :
-  UpdatePrimitive(target),
-  theKind(kind),
-  theDoCopy(copymode.theDoCopy),
-  theCopyMode(copymode)
-{
-  ulong numSiblings = siblings.size();
-  theSiblings.resize(numSiblings);
-  for (ulong i = 0; i < numSiblings; i++)
-  {
-    theSiblings[i].transfer(siblings[i]);
-
-    if (theRemoveType == false)
-    {
-      store::StoreConsts::NodeKind sibKind = theSiblings[i]->getNodeKind();
-      if (sibKind == store::StoreConsts::elementNode ||
-          sibKind == store::StoreConsts::textNode)
-        theRemoveType = true;
-    }
-  }
-}
-
-
-void UpdInsertSiblings::apply()
-{
-  XmlNode* target = BASE_NODE(theTarget);
-
-  if (theKind == store::UpdateConsts::UP_INSERT_BEFORE)
-  {
-    target->insertSiblingsBefore(theSiblings, theDoCopy, theCopyMode);
-  }
-  else
-  {
-    target->insertSiblingsAfter(theSiblings, theDoCopy, theCopyMode);
-  }
-
-  if (theRemoveType)
-    target->theParent->removeType(theTypeUndoList);
-
-  theIsApplied = true;
-}
-
-
-void UpdInsertSiblings::undo()
-{
-  XmlNode* parent = BASE_NODE(theTarget)->theParent;
-
-  ulong pos = parent->children().find(BASE_NODE(theSiblings[0]));
-
-  parent->removeChildren(pos, theSiblings.size());
-
-  if (!theTypeUndoList.empty())
-    parent->restoreType(theTypeUndoList);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-UpdInsertAttributes::UpdInsertAttributes(
-    store::Item_t&               target,
-    std::vector<store::Item_t>&  attrs,
-    const store::CopyMode&       copymode)
-  :
-  UpdatePrimitive(target),
-  theDoCopy(copymode.theDoCopy),
-  theCopyMode(copymode)
-{
-  ulong numAttrs = attrs.size();
-  theAttributes.resize(numAttrs);
-  for (ulong i = 0; i < numAttrs; i++)
-    theAttributes[i].transfer(attrs[i]);
-}
-
-
-void UpdInsertAttributes::apply()
-{
-  ElementNode* target = ELEM_NODE(theTarget);
-
-  target->insertAttributes(theAttributes, theDoCopy, theCopyMode);
-
-  target->removeType(theTypeUndoList);
-
-  theIsApplied = true;
-}
-
-
-void UpdInsertAttributes::undo()
-{
-  ElementNode* target = ELEM_NODE(theTarget);
-
-  ulong pos = target->attributes().find(BASE_NODE(theAttributes[0]));
-
-  target->removeAttributes(pos, theAttributes.size());
-
-  if (!theTypeUndoList.empty())
-    target->restoreType(theTypeUndoList);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-UpdReplaceChild::UpdReplaceChild(
-    store::Item_t&              target,
-    store::Item_t&              child,
-    std::vector<store::Item_t>& newChildren,
-    const store::CopyMode&      copymode)
-  :
-  UpdatePrimitive(target),
-  theDoCopy(copymode.theDoCopy),
-  theCopyMode(copymode)
-{
-  theChild.transfer(child);
-
-  store::StoreConsts::NodeKind childKind = theChild->getNodeKind();
-  if (childKind == store::StoreConsts::elementNode ||
-      childKind == store::StoreConsts::textNode)
-    theRemoveType = true;
-
-  ulong numChildren = newChildren.size();
   theNewChildren.resize(numChildren);
   for (ulong i = 0; i < numChildren; i++)
   {
-    theNewChildren[i].transfer(newChildren[i]);
+    theNewChildren[i].transfer(children[i]);
 
     if (theRemoveType == false)
     {
@@ -1081,36 +915,90 @@ UpdReplaceChild::UpdReplaceChild(
 }
 
 
-void UpdReplaceChild::apply()
+void UpdInsertChildren::apply()
 {
-  XmlNode* target = BASE_NODE(theTarget);
-
-  ulong pos = target->children().find(BASE_NODE(theChild));
-
-  target->replaceChild(theNewChildren, pos, theDoCopy, theCopyMode);
-
-  if (theRemoveType)
-    target->removeType(theTypeUndoList);
-
   theIsApplied = true;
+
+  switch (theKind)
+  {
+  case store::UpdateConsts::UP_INSERT_INTO:
+  {
+    XmlNode* target = BASE_NODE(theTarget);
+    target->insertChildren(*this, target->numChildren());
+    break;
+  }
+  case store::UpdateConsts::UP_INSERT_INTO_FIRST:
+  {
+    BASE_NODE(theTarget)->insertChildren(*this, 0);
+    break;
+  }
+  case store::UpdateConsts::UP_INSERT_INTO_LAST:
+  {
+    XmlNode* target = BASE_NODE(theTarget);
+    target->insertChildren(*this, target->numChildren());
+    break;
+  }
+  case store::UpdateConsts::UP_INSERT_BEFORE:
+  {
+    BASE_NODE(theSibling)->insertSiblingsBefore(*this);
+    break;
+  }
+  case store::UpdateConsts::UP_INSERT_AFTER:
+  {
+    BASE_NODE(theSibling)->insertSiblingsAfter(*this);
+    break;
+  }
+  default:
+    ZORBA_FATAL(0, "");
+  }
 }
 
 
-void UpdReplaceChild::undo()
+void UpdInsertChildren::undo()
 {
-  XmlNode* target = BASE_NODE(theTarget);
-  XmlNode* child = BASE_NODE(theChild);
+  if (theKind == store::UpdateConsts::UP_INSERT_BEFORE ||
+      theKind == store::UpdateConsts::UP_INSERT_AFTER)
+  {
+    reinterpret_cast<XmlNode*>(theSibling->getParent())->
+    undoInsertChildren(*this);
+  }
+  else
+  {
+    BASE_NODE(theTarget)->undoInsertChildren(*this);
+  }
+}
 
-  ulong pos = target->children().find(BASE_NODE(theNewChildren[0]));
 
-  ZORBA_FATAL(pos < target->children().size(), "");
+/*******************************************************************************
 
-  target->removeChildren(pos, theNewChildren.size());
+********************************************************************************/
+UpdInsertAttributes::UpdInsertAttributes(
+    PULImpl*                     pul,
+    store::Item_t&               target,
+    std::vector<store::Item_t>&  attrs,
+    const store::CopyMode&       copymode)
+  :
+  UpdatePrimitive(pul, target),
+  theCopyMode(copymode),
+  theNumApplied(0)
+{
+  ulong numAttrs = attrs.size();
+  theNewAttrs.resize(numAttrs);
+  for (ulong i = 0; i < numAttrs; i++)
+    theNewAttrs[i].transfer(attrs[i]);
+}
 
-  child->connect(target, pos);
 
-  if (!theTypeUndoList.empty())
-    target->restoreType(theTypeUndoList);
+void UpdInsertAttributes::apply()
+{
+  theIsApplied = true;
+  ELEM_NODE(theTarget)->insertAttributes(*this);
+}
+
+
+void UpdInsertAttributes::undo()
+{
+  ELEM_NODE(theTarget)->undoInsertAttributes(*this);
 }
 
 
@@ -1118,14 +1006,15 @@ void UpdReplaceChild::undo()
 
 ********************************************************************************/
 UpdReplaceAttribute::UpdReplaceAttribute(
+    PULImpl*                    pul,
     store::Item_t&              target,
     store::Item_t&              attr,
     std::vector<store::Item_t>& newAttrs,
     const store::CopyMode&      copymode)
   :
-  UpdatePrimitive(target),
-  theDoCopy(copymode.theDoCopy),
-  theCopyMode(copymode)
+  UpdatePrimitive(pul, target),
+  theCopyMode(copymode),
+  theNumApplied(0)
 {
   theAttr.transfer(attr);
 
@@ -1138,78 +1027,86 @@ UpdReplaceAttribute::UpdReplaceAttribute(
 
 void UpdReplaceAttribute::apply()
 {
-  ElementNode* target = ELEM_NODE(theTarget);
-
-  ulong pos = target->attributes().find(BASE_NODE(theAttr));
-
-  target->replaceAttribute(theNewAttrs, pos, theDoCopy, theCopyMode);
-
-  target->removeType(theTypeUndoList);
-
   theIsApplied = true;
+  ELEM_NODE(theTarget)->replaceAttribute(*this);
 }
 
 
 void UpdReplaceAttribute::undo()
 {
-  ElementNode* target = ELEM_NODE(theTarget);
-  XmlNode* attr = BASE_NODE(theAttr);
-
-  ulong pos = target->attributes().find(BASE_NODE(theNewAttrs[0]));
-
-  ZORBA_FATAL(pos < target->attributes().size(), "");
-
-  target->removeAttributes(pos, theNewAttrs.size());
-
-  attr->connect(target, pos);
-
-  if (!theTypeUndoList.empty())
-    target->restoreType(theTypeUndoList);
+  ELEM_NODE(theTarget)->restoreAttribute(*this);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void UpdReplaceContent::apply()
+UpdReplaceChild::UpdReplaceChild(
+    PULImpl*                    pul,
+    store::Item_t&              target,
+    store::Item_t&              child,
+    std::vector<store::Item_t>& newChildren,
+    const store::CopyMode&      copymode)
+  :
+  UpdatePrimitive(pul, target),
+  theCopyMode(copymode),
+  theNumApplied(0),
+  theIsTyped(false)
 {
-  ElementNode* target = ELEM_NODE(theTarget);
+  theChild.transfer(child);
 
-  target->replaceContent(BASE_NODE(theNewChild), theOldChildren, theCopyMode);
+  store::StoreConsts::NodeKind targetKind = theTarget->getNodeKind();
 
-  target->removeType(theTypeUndoList);
+  store::StoreConsts::NodeKind childKind = theChild->getNodeKind();
+  if (targetKind == store::StoreConsts::elementNode &&
+      (childKind == store::StoreConsts::elementNode ||
+       childKind == store::StoreConsts::textNode))
+    theRemoveType = true;
 
+  ulong numChildren = newChildren.size();
+  theNewChildren.resize(numChildren);
+  for (ulong i = 0; i < numChildren; i++)
+  {
+    theNewChildren[i].transfer(newChildren[i]);
+
+    if (theRemoveType == false)
+    {
+      store::StoreConsts::NodeKind childKind = theNewChildren[i]->getNodeKind();
+      if (targetKind == store::StoreConsts::elementNode &&
+          (childKind == store::StoreConsts::elementNode ||
+           childKind == store::StoreConsts::textNode))
+        theRemoveType = true;
+    }
+  }
+}
+
+
+void UpdReplaceChild::apply()
+{
+  theIsApplied = true;
+  BASE_NODE(theTarget)->replaceChild(*this);
+}
+
+
+void UpdReplaceChild::undo()
+{
+  BASE_NODE(theTarget)->restoreChild(*this);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UpdReplaceElemContent::apply()
+{
+  ELEM_NODE(theTarget)->replaceContent(*this);
   theIsApplied = true;
 }
 
 
-void UpdReplaceContent::undo()
+void UpdReplaceElemContent::undo()
 {
-  ElementNode* target = ELEM_NODE(theTarget);
-
-  if (target->numChildren() > 0)
-  {
-    ZORBA_FATAL(target->numChildren() == 1, "");
-
-    XmlNode* child = target->getChild(0);
- 
-    child->disconnect();
-    child->deleteTree();
-  }
-
-  if (dynamic_cast<ElementDagNode*>(target) != NULL)
-  {
-    ElementDagNode* target1 = reinterpret_cast<ElementDagNode*>(target);
-    theOldChildren.copy(target1->theChildren);
-  }
-  else
-  {
-    ElementTreeNode* target1 = reinterpret_cast<ElementTreeNode*>(target);
-    theOldChildren.copy(target1->theChildren); 
-  }
-
-  if (!theTypeUndoList.empty())
-    target->restoreType(theTypeUndoList);
+  ELEM_NODE(theTarget)->restoreContent(*this);
 }
 
 
@@ -1218,41 +1115,73 @@ void UpdReplaceContent::undo()
 ********************************************************************************/
 void UpdRenameElem::apply()
 {
-  ELEM_NODE(theTarget)->rename(theNewName, theOldName);
-
+  ELEM_NODE(theTarget)->replaceName(*this);
   theIsApplied = true;
 }
 
 
 void UpdRenameElem::undo()
 {
-  ELEM_NODE(theTarget)->rename(theOldName, theNewName);
+  ELEM_NODE(theTarget)->restoreName(*this);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-UpdReplaceAttrValue::~UpdReplaceAttrValue()
+void UpdSetElementType::apply()
 {
+  ElementNode* target = ELEM_NODE(theTarget);
+
+  ZORBA_FATAL(target->theTypeName == GET_STORE().theSchemaTypeNames[XS_ANY], "");
+
+  target->theTypeName.transfer(theTypeName);
+
+  if (theHaveValue)
+  {
+    target->setHaveValue();
+
+    if (theHaveEmptyValue)
+      target->setHaveEmptyValue();
+    else if (theIsId)
+      target->setIsId();
+    else if (theIsIdRefs)
+      target->setIsIdRefs();
+
+    if (theHaveTypedValue)
+    {
+      ZORBA_FATAL(target->numChildren() == 1, "");
+
+      TextNode* textChild = reinterpret_cast<TextNode*>(target->getChild(0));
+
+      textChild->setValue(theTypedValue);
+
+      target->setHaveTypedValue();
+
+      if (theHaveListValue)
+        target->setHaveListValue();
+    }
+  }
+  else
+  {
+    target->resetHaveValue();
+  }
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void UpdReplaceAttrValue::apply()
 {
-  AttributeNode* target = ATTR_NODE(theTarget);
-
-  target->replaceValue(theNewValue, theTypeUndoList);
-
+  ATTR_NODE(theTarget)->replaceValue(*this);
   theIsApplied = true;
 }
 
 
 void UpdReplaceAttrValue::undo()
 {
-  AttributeNode* target = ATTR_NODE(theTarget);
-
-  target->restoreValue(theTypeUndoList);
+  ATTR_NODE(theTarget)->restoreValue(*this);
 }
 
 
@@ -1261,15 +1190,34 @@ void UpdReplaceAttrValue::undo()
 ********************************************************************************/
 void UpdRenameAttr::apply()
 {
-  ATTR_NODE(theTarget)->replaceName(theNewName, theOldName, theTypeUndoList);
-
+  ATTR_NODE(theTarget)->replaceName(*this);
   theIsApplied = true;
 }
 
 
 void UpdRenameAttr::undo()
 {
-  ATTR_NODE(theTarget)->restoreName(theOldName, theTypeUndoList);
+  ATTR_NODE(theTarget)->restoreName(*this);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UpdSetAttributeType::apply()
+{
+  AttributeNode* target = ATTR_NODE(theTarget);
+
+  target->theTypeName.transfer(theTypeName);
+  target->theTypedValue.transfer(theTypedValue);
+
+  if (theIsId)
+    target->setIsId();
+  else if (theIsIdRefs)
+    target->setIsIdRefs();
+
+  if (theHaveListValue)
+    target->setHaveListValue();
 }
 
 
@@ -1278,19 +1226,14 @@ void UpdRenameAttr::undo()
 ********************************************************************************/
 void UpdReplaceTextValue::apply()
 {
-  TextNode* target = TEXT_NODE(theTarget);
-
-  target->replaceValue(theNewContent, theTypeUndoList);
-
+  TEXT_NODE(theTarget)->replaceValue(*this);
   theIsApplied = true;
 }
 
 
 void UpdReplaceTextValue::undo()
 {
-  TextNode* target = TEXT_NODE(theTarget);
-
-  target->restoreValue(theTypeUndoList);
+  TEXT_NODE(theTarget)->restoreValue(*this);
 }
 
 
@@ -1299,15 +1242,14 @@ void UpdReplaceTextValue::undo()
 ********************************************************************************/
 void UpdReplacePiValue::apply()
 {
-  PI_NODE(theTarget)->replaceValue(theNewValue, theOldValue);
-
+  PI_NODE(theTarget)->replaceValue(*this);
   theIsApplied = true;
 }
 
 
 void UpdReplacePiValue::undo()
 {
-  PI_NODE(theTarget)->replaceValue(theOldValue, theNewValue);
+  PI_NODE(theTarget)->restoreValue(*this);
 }
 
 
@@ -1316,15 +1258,14 @@ void UpdReplacePiValue::undo()
 ********************************************************************************/
 void UpdRenamePi::apply()
 {
-  PI_NODE(theTarget)->rename(theNewName, theOldName);
-
+  PI_NODE(theTarget)->replaceName(*this);
   theIsApplied = true;
 }
 
 
 void UpdRenamePi::undo()
 {
-  PI_NODE(theTarget)->rename(theOldName, theNewName);
+  PI_NODE(theTarget)->restoreName(*this);
 }
 
 
@@ -1333,15 +1274,14 @@ void UpdRenamePi::undo()
 ********************************************************************************/
 void UpdReplaceCommentValue::apply()
 {
-  COMMENT_NODE(theTarget)->replaceValue(theNewValue, theOldValue);
-
+  COMMENT_NODE(theTarget)->replaceValue(*this);
   theIsApplied = true;
 }
 
 
 void UpdReplaceCommentValue::undo()
 {
-  COMMENT_NODE(theTarget)->replaceValue(theOldValue, theNewValue);
+  COMMENT_NODE(theTarget)->restoreValue(*this);
 }
 
 }

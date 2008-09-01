@@ -71,6 +71,7 @@ class SimpleStore : public store::Store
 public:
   static const char* XS_URI;
   static const char* XML_URI;
+  static const char* ZXSE_URI;
 
 protected:
   static const ulong DEFAULT_COLLECTION_MAP_SIZE;
@@ -141,8 +142,7 @@ public:
   store::Collection_t createCollection();
   store::Collection_t getCollection(const xqpStringStore_t& uri);
   void deleteCollection(const xqpStringStore_t& uri);
-  void deleteAllCollections() { theCollections.clear(); };
-  store::Iterator_t listCollectionsUri();
+  store::Iterator_t listCollectionUris();
 
   store::Item_t loadDocument(const xqpStringStore_t& uri, std::istream& stream);
   store::Item_t loadDocument(const xqpStringStore_t& uri, std::istream* stream);

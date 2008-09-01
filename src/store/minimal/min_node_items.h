@@ -24,7 +24,6 @@
 #include "store/minimal/min_item_vector.h"
 #include "store/minimal/min_ordpath.h"
 #include "store/minimal/min_node_vector.h"
-#include "store/minimal/min_node_updates.h"
 #include "store/minimal/min_loader.h"
 
 namespace zorba 
@@ -39,6 +38,22 @@ namespace storeminimal
 {
 class AttributeNode;
 class NsBindingsContext;
+
+class UpdatePrimitive;
+class UpdDelete;
+class UpdInsertChildren;
+class UpdInsertSiblings;
+class UpdInsertAttributes;
+class UpdReplaceChild;
+class UpdReplaceAttribute;
+class UpdReplaceElemContent;
+class UpdRenameElem;
+class UpdReplaceAttrValue;
+class UpdRenameAttr;
+class UpdReplaceTextValue;
+class UpdReplacePiValue;
+class UpdRenamePi;
+class UpdReplaceCommentValue;
 
 typedef rchandle<NsBindingsContext> NsBindingsContext_t;
 
@@ -79,9 +94,11 @@ public:
     return theContent.text;
   }
 
-  store::Item* getValue() const
+  xqpStringStore* transferText()
   {
-    return theContent.value; 
+    xqpStringStore* tmp = theContent.text;
+    theContent.text = NULL;
+    return tmp; 
   }
 
   void setText(xqpStringStore_t& text)
@@ -104,6 +121,18 @@ public:
     theContent.text = text;
   }
 
+
+  store::Item* getValue() const
+  {
+    return theContent.value; 
+  }
+
+  store::Item* transferValue()
+  {
+    store::Item* tmp = theContent.value;
+    theContent.value = NULL;
+    return tmp; 
+  }
 
   void setValue(store::Item_t& val)
   {
@@ -137,18 +166,11 @@ public:
   XmlNode           * theNode;
 
   store::Item_t       theTypeName;
-  store::Item_t       theTypedValue;
   TextNodeContent     theTextContent;
   bool                theIsTyped;
   uint16_t            theFlags;
 
-  NodeTypeInfo() 
-    :
-    theTypeName(0),
-    theIsTyped(false),
-    theFlags(0)
-  { 
-  }
+  NodeTypeInfo() : theIsTyped(false), theFlags(0) { }
 
   ~NodeTypeInfo()
   {
@@ -240,7 +262,8 @@ public:
     HaveLocalBindings =   64,  // for element nodes only
     HaveBaseUri       =   128, // for element nodes only
     IsBaseUri         =   256, // for attribute nodes only
-    IsHidden          =   512  // for attribute nodes only
+    IsHidden          =   512,  // for attribute nodes only
+    IsNotFullLoaded   =  1024
   };
 
 
@@ -269,6 +292,7 @@ public:
   bool isNode() const       { return true; }
   bool isAtomic() const     { return false; }
   bool isPul() const        { return false; }
+  bool isTuple() const      { return false; }
 
   store::Item* getParent() const   { return theParent; }
 
@@ -336,45 +360,19 @@ public:
   void deleteTree() throw();
 
   void setToUntyped();
-  void removeType(TypeUndoList& undoList);
+  void removeType(UpdatePrimitive& upd);
   void restoreType(TypeUndoList& undoList);
-  void revalidate();
 
-  void removeChildren(
-        ulong  pos,
-        ulong  numChildren);
+  void removeChildren(ulong pos, ulong numChildren);
 
-  void insertChildren(
-        std::vector<store::Item_t>& newChildren,
-        ulong                pos,
-        bool                 copy,
-        const store::CopyMode&      copymode);
+  void insertChildren(UpdInsertChildren& upd, ulong pos);
+  void undoInsertChildren(UpdInsertChildren& upd);
   
-  void insertChildrenFirst(
-        std::vector<store::Item_t>& newChildren,
-        bool                 copy,
-        const store::CopyMode&      copymode);
+  void insertSiblingsBefore(UpdInsertChildren& upd);
+  void insertSiblingsAfter(UpdInsertChildren& upd);
 
-  void insertChildrenLast(
-        std::vector<store::Item_t>& newChildren,
-        bool                 copy,
-        const store::CopyMode&      copymode);
-
-  void insertSiblingsBefore(
-        std::vector<store::Item_t>& siblings,
-        bool                 copy,
-        const store::CopyMode&      copymode);
-
-  void insertSiblingsAfter(
-        std::vector<store::Item_t>& siblings,
-        bool                 copy,
-        const store::CopyMode&      copymode);
-
-  void replaceChild(
-        std::vector<store::Item_t>& newChildren,
-        ulong                pos,
-        bool                 copy,
-        const store::CopyMode&      copymode);
+  void replaceChild(UpdReplaceChild& upd);
+  void restoreChild(UpdReplaceChild& upd);
 
   virtual XmlNode* copy2(
         XmlNode*        rootParent,
@@ -539,6 +537,8 @@ class ElementNode : public XmlNode
   friend class XmlNode;
   friend class ElementTreeNode;
   friend class AttributeNode;
+  friend class UpdSetElementType;
+
 public:
   store::Item_t                theName;
 protected:
@@ -622,7 +622,12 @@ public:
   xqpStringStore* findBinding(const xqpStringStore* prefix) const;
   const store::NsBindings& getLocalBindings() const;
   void addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns);
-  void addBindingForQName(store::Item_t& qname);
+  void removeLocalBinding(xqpStringStore* prefix, xqpStringStore* ns);
+
+  bool addBindingForQName(
+        store::Item_t& qname,
+        bool           isAttr,
+        bool           replacePrefix);
   void addBindingForQName2(const store::Item* qname);
 
   void checkNamespaceConflict(
@@ -637,27 +642,19 @@ public:
         long            pos,
         const store::CopyMode& copymode) const;
 
-  void removeAttributes(
-        ulong  pos,
-        ulong  numAttributes);
+  void removeAttributes(ulong pos, ulong numAttributes);
 
-  void insertAttributes(
-        std::vector<store::Item_t>&  newAttrs,
-        bool                  copy,
-        const store::CopyMode&       copymode);
+  void insertAttributes(UpdInsertAttributes& upd);
+  void undoInsertAttributes(UpdInsertAttributes& upd);
 
-  void replaceAttribute(
-        std::vector<store::Item_t>& newAttrs,
-        ulong                pos,
-        bool                 copy,
-        const store::CopyMode&      copymode);
+  void replaceAttribute(UpdReplaceAttribute& upd);
+  void restoreAttribute(UpdReplaceAttribute& upd);
 
-  void replaceContent(
-        XmlNode*          newText,
-        ConstrNodeVector& oldChildren,
-        const store::CopyMode&   copymode);
+  void replaceContent(UpdReplaceElemContent& upd);
+  void restoreContent(UpdReplaceElemContent& upd);
 
-  void rename(store::Item_t& newname, store::Item_t& oldName);
+  void replaceName(UpdRenameElem& upd);
+  void restoreName(UpdRenameElem& upd);
 
 protected:
   void addBaseUriProperty(
@@ -747,6 +744,7 @@ private:
 ********************************************************************************/
 class ElementDagNode : public ElementNode
 {
+  friend class ElementNode;
   friend class UpdReplaceContent;
 
 protected:
@@ -802,8 +800,8 @@ class AttributeNode : public XmlNode
 {
   friend class XmlNode;
   friend class ElementNode;
-  friend class ConstrElementNode;
   friend class XmlLoader;
+  friend class UpdSetAttributeType;
 
 protected:
   store::Item_t   theName;
@@ -847,9 +845,11 @@ public:
   store::Item* getNodeName() const { return theName.getp(); }
 
   bool isId() const           { return (theFlags & IsId) != 0; }
+  void setIsId()              { theFlags |= IsId; }
   void resetIsId()            { theFlags &= ~IsId; }
 
   bool isIdRefs() const       { return (theFlags & IsIdRefs) != 0; }
+  void setIsIdRefs()          { theFlags |= IsIdRefs; }
   void resetIsIdRefs()        { theFlags &= ~IsIdRefs; }
 
   bool haveListValue() const  { return (theFlags & HaveListValue) != 0; }
@@ -869,21 +869,11 @@ public:
 
   xqp_string show() const;
 
-  void replaceValue(
-        xqpStringStore_t& newValue,
-        TypeUndoList&  undoList);
+  void replaceValue(UpdReplaceAttrValue& upd);
+  void restoreValue(UpdReplaceAttrValue& upd);
 
-  void restoreValue(
-        TypeUndoList&  undoList);
-
-  void replaceName(
-        store::Item_t& newname,
-        store::Item_t& oldName,
-        TypeUndoList&  undoList);
-
-  void restoreName(
-        store::Item_t& oldName,
-        TypeUndoList&  undoList);
+  void replaceName(UpdRenameAttr& upd);
+  void restoreName(UpdRenameAttr& upd);
 
 protected:
   ItemVector& getValueVector() 
@@ -907,6 +897,8 @@ class TextNode : public XmlNode
   friend class DocumentDagNode;
   friend class ElementNode;
   friend class BasicItemFactory;
+  friend class UpdSetElementType;
+  friend class XmlLoader;
 
 protected:
   TextNodeContent theContent;
@@ -948,12 +940,8 @@ public:
 			
   xqp_string show() const;
 
-  void replaceValue(
-        xqpStringStore_t&  newContent,
-        TypeUndoList&  undoList);
-
-  void restoreValue(
-        TypeUndoList&  undoList);
+  void replaceValue(UpdReplaceTextValue& upd);
+  void restoreValue(UpdReplaceTextValue& upd);
 
 protected:
   xqpStringStore* getText() const      { return theContent.getText(); }
@@ -1013,9 +1001,11 @@ public:
 
   xqp_string show() const;
 
-  void replaceValue(xqpStringStore_t& newValue, xqpStringStore_t& oldValue);
+  void replaceValue(UpdReplacePiValue& upd);
+  void restoreValue(UpdReplacePiValue& upd);
 
-  void rename(xqpStringStore_t& newName, xqpStringStore_t& oldName);
+  void replaceName(UpdRenamePi& upd);
+  void restoreName(UpdRenamePi& upd);
 };
 
 
@@ -1060,7 +1050,8 @@ public:
 
   xqp_string show() const;
 
-  void replaceValue(xqpStringStore_t& newValue, xqpStringStore_t& oldValue);
+  void replaceValue(UpdReplaceCommentValue& upd);
+  void restoreValue(UpdReplaceCommentValue& upd);
 };
 
 

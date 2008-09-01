@@ -175,8 +175,8 @@ void SimpleCollection::addNode(
     for (; it != end; ++it)
     {
       //check if the nodes have the same ID
-      if((reinterpret_cast<XmlNode*>(it->getp()))->getOrdPath() == 
-              rTargetNode->getOrdPath())
+      if((reinterpret_cast<XmlNode*>(it->getp()))->getTreeId() == rTargetNode->getTreeId() &&
+         (reinterpret_cast<XmlNode*>(it->getp()))->getOrdPath() == rTargetNode->getOrdPath())
       {
         if(aOrder)
           theXmlTrees.insert(it, const_cast<store::Item*>(node));
@@ -263,6 +263,24 @@ store::Item_t SimpleCollection::nodeAt(long position)
   }
 
   return theXmlTrees[position];
+}
+
+/*******************************************************************************
+  Return position of the given node in the collection.
+********************************************************************************/
+long SimpleCollection::indexOf(const store::Item* node)
+{
+  if (!node->isNode())
+  {
+    ZORBA_ERROR( API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
+  }
+
+  return nodePositionInCollection((store::Item*) node);
+}
+
+bool SimpleCollection::exportXML(const store::Item* aTargerURI)
+{
+  return true;
 }
 
 
@@ -353,7 +371,8 @@ SimpleCollection::nodePositionInCollection(store::Item* newNode)
 
     for (; it != end; ++it)
       //check if the nodes have the same ID
-      if((reinterpret_cast<XmlNode*>(it->getp()))->getOrdPath() == rNewNode->getOrdPath())
+      if((reinterpret_cast<XmlNode*>(it->getp()))->getTreeId() == rNewNode->getTreeId() &&
+         (reinterpret_cast<XmlNode*>(it->getp()))->getOrdPath() == rNewNode->getOrdPath())
         return (it - theXmlTrees.begin());
 
     return -1;

@@ -559,11 +559,30 @@ Item* Item::copy(
 }
 
 
-void Item::applyUpdates(std::vector<zorba::store::Item*>& validationNodes)
+void Item::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
+
+const std::vector<zorba::store::TupleField>& Item::getTupleFields() const
+{
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                        __FUNCTION__, getType()->getStringValue());
+}
+
+int Item::getTupleFieldCount() const
+{
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                        __FUNCTION__, getType()->getStringValue());
+}
+
+const TupleField& Item::getTupleField(int index) const
+{
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                        __FUNCTION__, getType()->getStringValue());
+}
+
 
 
 } // namespace storeminimal

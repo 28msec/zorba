@@ -82,6 +82,9 @@ public:
   void removeFromCollection(long position = -1);
 
   store::Item_t nodeAt(long position);
+  long indexOf(const store::Item* node);
+
+  bool exportXML(const store::Item* aTargerURI);
 protected:
   int
   nodePositionInCollection(store::Item* newNode);
