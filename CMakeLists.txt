@@ -238,9 +238,9 @@ ENDIF (BOOST_CHECK_LIBRARIES)
 
 ###############################################################################
 # Debian package dependencies
-SET(debian-required-packages "libxml2-dev,libicu-dev,libxerces28-dev,libboost-filesystem-dev,libboost-program-options-dev")
+SET(debian-required-packages "libxml2,libicu38,libxerces28")
 IF(CURL_FOUND)
-  SET(debian-required-packages "${debian-required-packages},libcurl4-openssl-dev")
+  SET(debian-required-packages "${debian-required-packages},libcurl3")
 ENDIF(CURL_FOUND)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ZorbaDebianDependencies.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/ZorbaDebianDependencies.cmake)
 
