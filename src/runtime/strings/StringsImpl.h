@@ -226,9 +226,10 @@ NARY_ITER(FnReplaceIterator);
 // 7.6.4 fn:tokenize
 class FnTokenizeIteratorState : public PlanIteratorState {
   public:
-    xqp_string theString; // the remaining string
-    bool      hasmatched;
-    xqp_string thePattern, theFlags;
+    xqp_string  theString; // the remaining string
+    int32_t     start_pos;
+    bool        hasmatched;
+    xqp_string  thePattern, theFlags;
 
     void init(PlanState&);
     void reset(PlanState&);

@@ -1373,8 +1373,9 @@ xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
 
 
   xqpString
-  xqpString::tokenize(xqpString pattern, xqpString flags, xqpString *remaining, bool *hasmatched)
+  xqpString::tokenize(xqpString pattern, xqpString flags, int32_t *start_pos, bool *hasmatched)
   {
+    int32_t pos = *start_pos;
     UErrorCode status = U_ZERO_ERROR;
     UnicodeString uspattern = getUnicodeString (pattern.getStore()),
     us = getUnicodeString (this->getStore());
@@ -1383,15 +1384,15 @@ xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
       throw zorbatypesException("", ZorbatypesError::FORX0002);
       return "";
     }
-    if (m.find ()) {
+    if(m.find(*start_pos, status)){
       *hasmatched = true;
       int32_t start = m.start (status), end = m.end (status);
-      *remaining = substr (end, length () - end);
-      return substr (0, start);
+      *start_pos = end;
+      return substr (pos, start - pos);
     } else {
       *hasmatched = false;
-      *remaining = xqpString ();
-      return substr (0, length ());
+      *start_pos = length ();
+      return substr (pos, length ());
     }
   }
 
