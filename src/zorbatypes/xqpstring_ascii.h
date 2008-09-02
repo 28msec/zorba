@@ -600,7 +600,7 @@ public:
       replace(xqpString pattern, xqpString replacement, xqpString flags);
 
       xqpString
-      tokenize(xqpString pattern, xqpString flags, xqpString *remaining, bool *hasmatched);
+      tokenize(xqpString pattern, xqpString flags, /*in-out*/int *match_pos, /*out*/bool *hasmatched);
 
       // Removes the leading and trailing whitespace (one of the " \t\r\n")
       // TODO: xqpString trim_whitespace() const;

@@ -636,8 +636,15 @@ CRegexAscii_parser::~CRegexAscii_parser()
 bool CRegexAscii_regex::match_anywhere(const char *source, int flags,
                                        int *match_pos, int *matched_len)
 {
-  this->flags = flags;
   *match_pos = 0;
+  return match_from(source, flags, match_pos, matched_len);
+}
+
+bool CRegexAscii_regex::match_from(const char *source, int flags,
+                                       int *match_pos, int *matched_len)
+{
+  this->flags = flags;
+
 //  if(!source[0])
 //  {
 //    if(branch_list.empty())
@@ -646,10 +653,17 @@ bool CRegexAscii_regex::match_anywhere(const char *source, int flags,
 //      return false;
 //  }
 
+  bool  skip_first_match = false;
+  if(*match_pos && align_begin)
+    skip_first_match = true;
   do
   {
-    if(match(source + *match_pos, matched_len))
-      return true;
+    if(!skip_first_match)
+    {
+      if(match(source + *match_pos, matched_len))
+        return true;
+    }
+    skip_first_match = false;
     if(align_begin)
     {
       if(flags & REGEX_ASCII_MULTILINE)
@@ -784,8 +798,9 @@ bool CRegexAscii_branch::match_piece_iter_normal(
   if(strict_max && (max >= 0))
   {
     //check if the piece doesn't exceed the max match
-    if((*piece_it)->match_piece_times(source, &timeslen, max+1, &match_lens))
-      return false;///too many matches
+    //if((*piece_it)->match_piece_times(source, &timeslen, max+1, &match_lens))
+    //  return false;///too many matches
+    (*piece_it)->match_piece_times(source, &timeslen, max, &match_lens);
   }
   else if(!strict_max && (max >= 0))
     (*piece_it)->match_piece_times(source, &timeslen, max, &match_lens);

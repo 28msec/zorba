@@ -61,6 +61,7 @@ public:
   virtual ~CRegexAscii_regex();
 
   bool match_anywhere(const char *source, int flags, int *match_pos, int *matched_len);
+  bool match_from(const char *source, int flags, int *match_pos, int *matched_len);
   virtual bool match(const char *source, int *matched_len);
 
   //for replace $1, $2 ...

@@ -1522,7 +1522,10 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
   }
 
   xqpString
-  xqpString::tokenize(xqpString pattern, xqpString flags, xqpString *remaining, bool *hasmatched)
+  xqpString::tokenize(xqpString pattern, 
+                      xqpString flags, 
+                      /*in-out*/int *match_pos, 
+                      /*out*/bool *hasmatched)
   {
     regex_ascii::CRegexAscii_parser    regex_parser;
     regex_ascii::CRegexAscii_regex     *regex;
@@ -1530,8 +1533,9 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     if(!regex)
       throw zorbatypesException("", ZorbatypesError::FORX0002);
 
-    int   match_pos;
-    int   matched_len;
+    int first_pos = *match_pos;
+    //int   match_pos;
+    int   matched_len = 0;
   //+  if(regex->match_anywhere("", parse_regex_flags(flags.c_str()), &match_pos, &matched_len))
   //+  {//Regular expression matches zero-length string.
   //+    throw zorbatypesException("", ZorbatypesError::FORX0003);
@@ -1540,18 +1544,20 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     xqpString   leftstr;
     const char  *start_str = c_str();
 
-    *hasmatched = regex->match_anywhere(start_str, parse_regex_flags(flags.c_str()), &match_pos, &matched_len);
+    *hasmatched = regex->match_from(start_str, parse_regex_flags(flags.c_str()), match_pos, &matched_len);
     delete regex;
     if(*hasmatched)
     {
-      *remaining = xqpString(start_str + match_pos + matched_len);
-      if(match_pos)
-        leftstr = substr(0, match_pos);
+      //*remaining = xqpString(start_str + match_pos + matched_len);
+      if(*match_pos)
+        leftstr = substr(first_pos, *match_pos-first_pos);
+      *match_pos += matched_len;
     }
     else
     {
-      leftstr = substr (0, length ());
-      *remaining = xqpString();
+      leftstr = substr (first_pos, length ()-first_pos);
+      //*remaining = xqpString();
+      *match_pos = length ();
     }
 
     return leftstr;
