@@ -136,10 +136,12 @@ void filesystem_path::canonicalize () {
   bool initial_dotdots = false, next_initial_dotdots;
 
 #ifdef WIN32
-  if (filesystem_path (path.substr (0, 2 + sep.size ())).is_root ()) {
-    pfx = path.substr (0, 2);
-    path = path.substr (2);
-  }
+  // TODO Temporarily disabled because of infinite loop
+  // e.g. if called bin\zorba.exe -q "1+2"
+//  if (filesystem_path (path.substr (0, 2 + sep.size ())).is_root ()) {
+//    pfx = path.substr (0, 2);
+//    path = path.substr (2);
+//  }
 #endif
   for (pos = start = 0, last_seg = false;
        ! last_seg && pos != path.size ();
