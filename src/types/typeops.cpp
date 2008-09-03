@@ -100,6 +100,12 @@ bool TypeOps::is_equal(const XQType& type1, const XQType& type2)
       const NodeXQType& n2 = static_cast<const NodeXQType&>(type2);
       return *n1.get_nodetest() == *n2.get_nodetest();
     }
+    case XQType::USER_DEFINED_KIND:
+    {
+      const UserDefinedXQType& udt1 = static_cast<const UserDefinedXQType&>(type1);
+      const UserDefinedXQType& udt2 = static_cast<const UserDefinedXQType&>(type2);
+      return udt1.getQName()->equals( udt2.getQName());
+    }
     default:
       break;
   }

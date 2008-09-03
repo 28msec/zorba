@@ -431,7 +431,7 @@ xqtref_t Schema::getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XS
 
                     xqtref_t baseXQType = getXQTypeForXSTypeDefinition(typeManager, baseTypeDef);
 
-                    xqtref_t xqType = xqtref_t(new UserDefinedXQType(typeManager, qname, baseXQType, TypeConstants::QUANT_ONE));
+                    xqtref_t xqType = xqtref_t(new UserDefinedXQType(typeManager, qname, baseXQType, TypeConstants::QUANT_ONE, XQType::SIMPLE_CONTENT_KIND));
 
                     result = xqType;
                 }
@@ -539,7 +539,29 @@ xqtref_t Schema::getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XS
             store::Item_t qname;
             GENV_ITEMFACTORY->createQName(qname, lNamespace.getStore(), lPrefix.getStore(), lLocal.getStore());
 
-            xqtref_t xqType = xqtref_t(new UserDefinedXQType(typeManager, qname, baseXQType, TypeConstants::QUANT_ONE));
+            // get content type
+            XSComplexTypeDefinition *xsComplexTypeDef = static_cast<XSComplexTypeDefinition*>(xsTypeDef);
+            XQType::content_kind_t contentType;
+
+            switch(xsComplexTypeDef->getContentType())
+            {
+            case XSComplexTypeDefinition::CONTENTTYPE_MIXED:
+                contentType = XQType::MIXED_CONTENT_KIND;
+                break;
+            case XSComplexTypeDefinition::CONTENTTYPE_ELEMENT:
+                contentType = XQType::ELEMENT_ONLY_CONTENT_KIND;
+                break;
+            case XSComplexTypeDefinition::CONTENTTYPE_SIMPLE:
+                contentType = XQType::SIMPLE_CONTENT_KIND;
+                break;
+            case XSComplexTypeDefinition::CONTENTTYPE_EMPTY:
+                contentType = XQType::EMPTY_CONTENT_KIND;
+                break;
+            default:
+                ZORBA_ASSERT(false);
+            }
+
+            xqtref_t xqType = xqtref_t(new UserDefinedXQType(typeManager, qname, baseXQType, TypeConstants::QUANT_ONE, contentType));
 
             result = xqType;
         }

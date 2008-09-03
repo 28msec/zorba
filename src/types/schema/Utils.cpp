@@ -21,16 +21,17 @@
 
 #include "types/casting.h"
 #include "types/delegating_typemanager.h"
-#include "types/typeimpl.h"
 #include "types/schema/schema.h"
 #include "types/schema/SchemaValidator.h"
 #include "types/schema/StrX.h"
+#include "types/typeimpl.h"
+#include "types/typeops.h"
 
 #include "context/static_context.h"
 #include "context/collation_cache.h"
 #include "context/namespace_context.h"
 #include "compiler/parser/query_loc.h"
-//#include "zorbaerrors/error_manager.h"
+
 #include "zorbaerrors/error_messages.h"
 #include "zorbaerrors/errors.h"
 
@@ -39,6 +40,8 @@ using namespace std;
 namespace zorba
 {
 
+#ifndef ZORBA_NO_XMLSCHEMA
+    
 void validateAfterUpdate(zorba::store::Item* item, zorba::store::Item_t& pul,
     DelegatingTypeManager* delegatingTypeManager, static_context* staticContext, 
     const QueryLoc& loc, bool isLax);
@@ -64,7 +67,15 @@ void processTextValue (store::Item_t& pul, DelegatingTypeManager* delegatingType
     std::vector<store::Item_t> &resultList);
 
 store::Item_t findAttributeItem(const store::Item *parent, store::Item_t &attQName);    
+
+bool typeHasValue(xqtref_t t);
+bool typeHasTypedValue(xqtref_t t);
+bool typeHasEmptyValue(xqtref_t t);
+
+#endif //ZORBA_NO_XMLSCHEMA
     
+
+
 /**
  *   Given a vector of root nodes, this method validates all of them and 
  *   fills out pul with a list of changes that will be applied later, if
@@ -165,21 +176,26 @@ void processElement( store::Item_t& pul, static_context* staticContext,
     // we need to go through the attributes twice: once for validation and once for creation
     validateAttributes(schemaValidator, element->getAttributes());
     
-    store::Item_t typeName = schemaValidator.getTypeQName();
+    store::Item_t typeQName = schemaValidator.getTypeQName();
 
-    // check if type has changed
-    //if ( typeName != element->getType() )
+    if ( !typeQName->equals(element->getType()) )
     {
-        vector<store::Item_t> typedValues;
-        bool hasTypedValue = true;
-        bool hasEmptyValue = false;
+        vector<store::Item_t> typedValues; // todo
+
+        TypeIdentifier_t newTypeIdent = TypeIdentifier::createNamedType(typeQName->getNamespace(), typeQName->getLocalName() );
+        xqtref_t newType = delegatingTypeManager->create_type(*newTypeIdent);
+
+        bool tHasValue      = typeHasValue(newType);
+        bool tHasTypedValue = typeHasTypedValue(newType);
+        bool tHasEmptyValue = typeHasEmptyValue(newType);
+
         store::PUL *p = static_cast<store::PUL *>(pul.getp());
         p->addSetElementType(element,
-                             typeName,
+                             typeQName,
                              (vector<store::Item_t>&)typedValues,
-                             true, // TODO: check this
-                             hasEmptyValue,
-                             hasTypedValue,
+                             tHasValue, 
+                             tHasEmptyValue,
+                             tHasTypedValue,
                              element->isId(),
                              element->isIdRefs());
     }
@@ -242,7 +258,7 @@ void processAttributes( store::Item_t& pul, namespace_context& nsCtx,
         std::vector<store::Item_t> typedValues;        
         processTextValue(pul, delegatingTypeManager, nsCtx, typeQName, att->_value, typedValues);
         
-        //todo check in attributes if the type is different
+        if ( !typeQName->equals(attrib->getType()) )
         {
             store::PUL *p = static_cast<store::PUL *>(pul.getp());
             if ( typedValues.size()==1 )        // optimize when only one item is available 
@@ -287,34 +303,39 @@ void processChildren( store::Item_t& pul, static_context* staticContext, namespa
                     xqpStringStore_t childStringValue = child->getStringValue();
                     schemaValidator.text(childStringValue);
 
-                    store::Item_t type = schemaValidator.getTypeQName();
+                    store::Item_t typeQName = schemaValidator.getTypeQName();
                   
                     
-                    std::vector<store::Item_t> typedValues;
-                    processTextValue(pul, delegatingTypeManager, nsCtx, type, childStringValue, typedValues );
+                    std::vector<store::Item_t> typedValues; // todo
+                    processTextValue(pul, delegatingTypeManager, nsCtx, typeQName, childStringValue, typedValues );
                     
-                    //todo check in attributes if the type is different
+                    if ( child->getType()->equals(typeQName) )
                     {
-                        bool hasTypedValue = true;
-                        bool hasEmptyValue = false;
+                        TypeIdentifier_t newTypeIdent = TypeIdentifier::createNamedType(typeQName->getNamespace(), typeQName->getLocalName() );
+                        xqtref_t newType = delegatingTypeManager->create_type(*newTypeIdent);
+
+                        bool tHasValue      = typeHasValue(newType);
+                        bool tHasTypedValue = typeHasTypedValue(newType);
+                        bool tHasEmptyValue = typeHasEmptyValue(newType);
+
                         store::PUL *p = static_cast<store::PUL *>(pul.getp());
                         
                         if ( typedValues.size()==1 ) // hack around serialization bug
                             p->addSetElementType(child,
-                                                 type,
+                                                 typeQName,
                                                  typedValues[0],
-                                                 true, // TODO: check this
-                                                 hasEmptyValue,
-                                                 hasTypedValue,
+                                                 tHasValue, 
+                                                 tHasEmptyValue,
+                                                 tHasTypedValue,
                                                  child->isId(),
                                                  child->isIdRefs());
                         else
                             p->addSetElementType(child,
-                                                 type,
+                                                 typeQName,
                                                  typedValues,
-                                                 true, // TODO: check this
-                                                 hasEmptyValue,
-                                                 hasTypedValue,
+                                                 tHasValue, 
+                                                 tHasEmptyValue,
+                                                 tHasTypedValue,
                                                  child->isId(),
                                                  child->isIdRefs());
                     }
@@ -423,6 +444,24 @@ store::Item_t findAttributeItem(const store::Item *parent, store::Item_t &attQNa
     }
     ZORBA_ASSERT(false);
     return NULL;
+}
+
+
+bool typeHasValue(xqtref_t t)
+{
+    return t->content_kind()==XQType::MIXED_CONTENT_KIND ||
+        t->content_kind()==XQType::SIMPLE_CONTENT_KIND;
+}
+
+bool typeHasTypedValue(xqtref_t t)
+{
+    return !( TypeOps::is_equal(*t, *GENV_TYPESYSTEM.UNTYPED_TYPE) ||
+              TypeOps::is_equal(*t, *GENV_TYPESYSTEM.ANY_TYPE) );
+}
+
+bool typeHasEmptyValue(xqtref_t t)
+{
+    return t->content_kind()==XQType::EMPTY_CONTENT_KIND;
 }
 #endif //ZORBA_NO_XMLSCHEMA
 

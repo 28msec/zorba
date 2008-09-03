@@ -32,7 +32,8 @@ namespace zorba {
 class XQType : public RCObject
 {
 public:
-  typedef enum {
+  typedef enum 
+  {
     ATOMIC_TYPE_KIND,
     NODE_TYPE_KIND,
     ANY_TYPE_KIND,
@@ -44,12 +45,21 @@ public:
     USER_DEFINED_KIND,
   } type_kind_t;
 
+  typedef enum 
+  {
+    MIXED_CONTENT_KIND,             // children elements and text
+    ELEMENT_ONLY_CONTENT_KIND,      // only children elements
+    SIMPLE_CONTENT_KIND,            // no children elements only text
+    EMPTY_CONTENT_KIND,             // empty
+  } content_kind_t;
+
   virtual ~XQType() { }
 
   virtual std::ostream& serialize(std::ostream& os) const;
   virtual std::string toString() const;
 
   type_kind_t type_kind() const { return m_type_kind; }
+  virtual content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };
 
   TypeConstants::quantifier_t get_quantifier() const { return m_quantifier; }
 
@@ -96,6 +106,7 @@ class AtomicXQType : public XQType
    }
 
    TypeConstants::atomic_type_code_t get_type_code() const { return m_type_code; }
+   content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
 
    virtual std::ostream& serialize(std::ostream& os) const;
 
@@ -116,6 +127,7 @@ public:
   rchandle<NodeTest> get_nodetest() const { return m_nodetest; }
 
   xqtref_t get_content_type() const { return m_content_type; }
+  content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };
 
   virtual std::ostream& serialize(std::ostream& os) const;
 
@@ -149,6 +161,7 @@ public:
   AnySimpleXQType(const TypeManager *manager)
     :
     XQType(manager, ANY_SIMPLE_TYPE_KIND, TypeConstants::QUANT_STAR) { }
+  content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
 };
 
 
@@ -167,6 +180,7 @@ public:
   EmptyXQType(const TypeManager *manager)
     :
     XQType(manager, EMPTY_KIND, TypeConstants::QUANT_QUESTION) { }
+  content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
 };
 
 
@@ -176,6 +190,7 @@ public:
   NoneXQType(const TypeManager *manager)
     :
     XQType(manager, NONE_KIND, TypeConstants::QUANT_ONE) { }
+  content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
 };
 
 
@@ -197,6 +212,7 @@ private:
   store::Item_t              m_qname;
   xqtref_t                   m_baseType;
   TYPE_CATEGORY              m_typeCategory;
+  content_kind_t             m_contentKind;
   const XQType*              m_listItemType;
   std::vector<const XQType*> m_unionItemTypes;
 
@@ -205,8 +221,10 @@ public:
         const TypeManager *manager,
         store::Item_t qname,
         xqtref_t baseType,
-        TypeConstants::quantifier_t quantifier);
+        TypeConstants::quantifier_t quantifier, 
+        content_kind_t contentKind);
 
+  // Constructor for List types 
   UserDefinedXQType(
         const TypeManager *manager,
         store::Item_t qname,
@@ -214,6 +232,7 @@ public:
         TypeConstants::quantifier_t quantifier,
         const XQType* listItemType);
 
+  // Constructor for Union types 
   UserDefinedXQType(
         const TypeManager *manager,
         store::Item_t qname,
@@ -223,9 +242,10 @@ public:
 
   virtual ~UserDefinedXQType() {}
 
+  virtual content_kind_t content_kind() const { return m_contentKind; };
   bool isSuperTypeOf(const XQType& subType) const;
 
-  store::Item_t getQName() const { return m_qname;    }
+  store::Item_t getQName()        const { return m_qname;    }
 
   bool isAtomic()                 const { return m_typeCategory == ATOMIC_TYPE;  }
   bool isList()                   const { return m_typeCategory == LIST_TYPE;    }

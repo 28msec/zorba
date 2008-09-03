@@ -144,11 +144,13 @@ UserDefinedXQType::UserDefinedXQType(
     const TypeManager *manager,
     store::Item_t qname,
     xqtref_t baseType,
-    TypeConstants::quantifier_t quantifier)
+    TypeConstants::quantifier_t quantifier,
+    content_kind_t contentKind)
   :
   XQType(manager, USER_DEFINED_KIND, quantifier),
   m_qname(qname),
-  m_baseType(baseType)
+  m_baseType(baseType),
+  m_contentKind(contentKind)
 {
   ZORBA_ASSERT(baseType!=NULL);
 
@@ -162,11 +164,11 @@ UserDefinedXQType::UserDefinedXQType(
   }
   case ATOMIC_TYPE_KIND:
   {
-      m_typeCategory = ATOMIC_TYPE;
-      break;
+    m_typeCategory = ATOMIC_TYPE;
+    break;
   }
   default:
-      m_typeCategory = COMPLEX_TYPE;            
+    m_typeCategory = COMPLEX_TYPE;            
   }        
 }
 
@@ -181,6 +183,7 @@ UserDefinedXQType::UserDefinedXQType(
     m_qname(qname),
     m_baseType(baseType),
     m_typeCategory(LIST_TYPE),
+    m_contentKind(SIMPLE_CONTENT_KIND),
     m_listItemType(listItemType)
 {
 }
@@ -196,6 +199,7 @@ UserDefinedXQType::UserDefinedXQType(
     m_qname(qname),
     m_baseType(baseType),
     m_typeCategory(UNION_TYPE),
+    m_contentKind(SIMPLE_CONTENT_KIND),
     m_unionItemTypes(unionItemTypes)
 {
 }

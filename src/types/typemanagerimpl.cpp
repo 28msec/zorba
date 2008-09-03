@@ -85,7 +85,7 @@ xqtref_t TypeManagerImpl::create_type(
   case XQType::USER_DEFINED_KIND:
   {
     const UserDefinedXQType& udt = static_cast<const UserDefinedXQType&>(type);
-    return xqtref_t(new UserDefinedXQType(this, udt.getQName(), udt.getBaseType(), quantifier));
+    return xqtref_t(new UserDefinedXQType(this, udt.getQName(), udt.getBaseType(), quantifier, udt.content_kind()));
   }
   }
 
