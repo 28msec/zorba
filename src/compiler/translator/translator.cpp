@@ -502,16 +502,6 @@ rchandle<forlet_clause> wrap_in_forclause(expr_t e, varref_t fv, varref_t pv) {
   assert (fv->get_kind () == var_expr::for_var);
   if (pv != NULL)
     assert (pv->get_kind() == var_expr::pos_var);
-// #ifdef ZORBA_DEBUGGER
-//  if(compilerCB->m_debugger != 0)
-//  {
-//    forlet_clause *flc = new forlet_clause(forlet_clause::for_clause, fv, pv, NULL, e);
-//    theScopedVariables.push_back(fv);
-//    flc->set_bound_variables(theScopedVariables);
-//    flc->set_global_variables(theGlobalVars);
-//    return flc;
-//  }
-// #endif
   return new forlet_clause(forlet_clause::for_clause, fv, pv, NULL, e);
 }
 
@@ -1705,7 +1695,10 @@ void translate_gflwor (const FLWORExpr& v) {
         if(compilerCB->m_debugger != 0)
         {
           theScopedVariables.push_back(vars[j]);
-          //theScopedVariables.push_back();
+          if(pos_vars[j] != 0)
+          {
+            theScopedVariables.push_back(pos_vars[j]);
+          }
           eflc->set_bound_variables(theScopedVariables);
           eflc->set_global_variables(theGlobalVars);
         }
@@ -1737,6 +1730,7 @@ void translate_gflwor (const FLWORExpr& v) {
           push_scope();
           for(unsigned int k=nvars; k>j; k--)
           {
+            //varref_t v = bind_var(vars[k-1]->get_loc(), vars[k-1]->get_varname(), var_expr::let_var, vars[k-1]->get_type());
             theScopedVariables.push_back(vars[k-1]);
           }
           flc->set_bound_variables(theScopedVariables);
@@ -2832,7 +2826,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         fo_h->add(*iter);
       }
 #ifdef ZORBA_DEBUGGER
-      if ( false && compilerCB->m_debugger != 0 )
+      if ( compilerCB->m_debugger != 0 )
       {
         rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(loc, &*fo_h, theScopedVariables, theGlobalVars);
         nodestack.push(&*lDebuggerExpr);
@@ -3016,7 +3010,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
         minfo->topCompilerCB->m_sctx_list.push_back (imported_sctx = independent_sctx->create_child_context ());
         minfo->mod_sctx_map.put (xqpString(resolveduri.getp()), imported_sctx);
         XQueryCompiler xqc (&mod_ccb);
-        rchandle<parsenode> ast = xqc.parse (*modfile);
+        xqpString lFileName(URI::decode_file_URI(aturiitem->getStringValue()));
+        rchandle<parsenode> ast = xqc.parse (*modfile, lFileName);
 
         LibraryModule *mod_ast = dynamic_cast<LibraryModule *> (&*ast);
         if (mod_ast == NULL)

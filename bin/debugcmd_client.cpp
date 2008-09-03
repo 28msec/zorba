@@ -105,7 +105,13 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
   std::ifstream * lFile = dynamic_cast< std::ifstream * >( theQueryFile.get() );
   if ( lFile != 0 )
   {
-    theQueryFile.reset( new std::ifstream( theFileName.c_str() ) );
+    if( theLocation->getFileName() == "" )
+    {
+      theQueryFile.reset( new std::ifstream( theFileName.c_str() ) );
+    } else {
+      
+      theQueryFile.reset( new std::ifstream( theLocation->getFileName().c_str() ) );
+    }
   } else {
     theQueryFile->clear();
     theQueryFile->seekg( 0, std::ios::beg );
@@ -280,7 +286,7 @@ void CommandLineEventHandler::handle_cmd()
       return;
     } else if ( lCommand == "s" || lCommand == "stop" ) {
       theClient->terminate();
-    }else if ( lCommand == "cl" || lCommand == "clear" ) {
+    }else if ( lCommand == "delete" || lCommand == "cl" || lCommand == "clear" ) {
       if ( lArgs.size() >= 2 && lArgs.at(1) == "all" )
       {
         theClient->clearBreakpoints();
@@ -311,16 +317,30 @@ void CommandLineEventHandler::handle_cmd()
       if ( lArgs.size() < 2 )
       {
         theOutput << "Invalid syntax." << std::endl;
-        theOutput << "(b|break) <line number>" << std::endl;
+        theOutput << "(b|break) <filename>+:<line number>" << std::endl;
       } else {
-        unsigned int lLineNo = atoi( lArgs.at(1).c_str() );
-        if( lLineNo == 0 )
+        std::string::size_type loc = lArgs.at(1).find(':');
+        if( loc != std::string::npos)
         {
-          theOutput << "Invalid line number." << std::endl;
+          std::string lFileName = lArgs.at(1).substr(0, loc);
+          unsigned int lLineNo = atoi( lArgs.at(1).substr(loc+1).c_str() );
+          if( lLineNo == 0 )
+          {
+            theOutput << "Invalid line number"  << std::endl;
+          } else {
+            theClient->addBreakpoint( lFileName, lLineNo );
+            theOutput << "Set breakpoint at line " << lLineNo << " in " << lFileName << '.' << std::endl;
+          }
         } else {
-          theClient->addBreakpoint( lLineNo );
-          theOutput << "Set breakpoint at line " << lLineNo << '.' << std::endl;
-        }
+          unsigned int lLineNo = atoi( lArgs.at(1).c_str() );
+          if( lLineNo == 0 )
+          {
+            theOutput << "Invalid line number." << std::endl;
+          } else {
+            theClient->addBreakpoint( lLineNo );
+            theOutput << "Set breakpoint at line " << lLineNo << '.' << std::endl;
+          }
+        } 
       }
     } else if ( lCommand ==  "r" || lCommand == "run" ) {
       if ( ! theClient->isQueryIdle() )

@@ -19,7 +19,9 @@
 #include <iostream>
 #include <memory>
 #include <fstream>
+
 #include <zorba/zorba.h>
+#include <zorba/util/path.h>
 
 #include "debugger/socket.h"
 #include "debugger/message_factory.h"
@@ -233,9 +235,17 @@ bool ZorbaDebugger::hasToSuspend()
     return true;
   }
   std::map<unsigned int, QueryLoc>::iterator it;
+  //TODO: can be faster
   for ( it = theBreakpoints.begin(); it != theBreakpoints.end(); it++ )
   {
-    if ( theLocation.getLineno() == it->second.getLineno() )
+    std::string lCurrentFilename = theLocation.getFilename();
+    std::string lBreakFilename = it->second.getFilename();
+    int start = lCurrentFilename.length() - lBreakFilename.length();
+    bool fileMatch = true;
+    if( start >= 0){
+      fileMatch = (lBreakFilename == lCurrentFilename.substr(start));
+    }
+    if (fileMatch && theLocation.getLineno() == it->second.getLineno() )
     {
       setStatus( QUERY_SUSPENDED, CAUSE_BREAKPOINT );
       return true;

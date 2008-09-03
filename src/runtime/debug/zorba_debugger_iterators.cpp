@@ -19,11 +19,9 @@
 #include <iostream>
 #include <sstream>
 #include <cassert>
-
 #include <zorbautils/thread.h>
 
 #include "system/globalenv.h"
-
 #include "debugger/debugger_server.h"
 
 using namespace std;
