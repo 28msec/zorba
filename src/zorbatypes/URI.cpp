@@ -31,7 +31,16 @@ namespace zorba {
 xqpStringStore_t  URI::decode_file_URI(const xqpStringStore_t& uri)
 {
   // TODO: file://localhost/
-  if (uri->byteCompare(0, 7, "file://") == 0) {
+#ifdef WIN32
+  if ((uri->byteCompare(0, 8, "file:///") == 0) && 
+        ((uri->byteCompare(9, 1, ":") == 0) || (uri->byteCompare(9, 4, "%3A/") == 0)))
+  {
+    xqp_string res(uri->c_str() + 8);
+    return res.decodeFromUri().getStore();
+  }
+  else 
+#endif
+    if (uri->byteCompare(0, 7, "file://") == 0) {
     xqp_string res(uri->c_str() + 7);
 #if defined(UNIX)
     res = xqp_string ("/") + res;
