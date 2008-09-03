@@ -453,20 +453,24 @@ void CommandLineEventHandler::handle_cmd()
 void CommandLineEventHandler::help()
 {
   //TODO: Full documentation of each command
-  theOutput << "List of available commands:" << std::endl;
-  theOutput << "run      -- Run the query." << std::endl;
-  theOutput << "eval     -- Evaluate an xquery expression and print its result." << std::endl;
-  theOutput << "break    -- Set a breakpoint at the specified file and line." << std::endl;
-  theOutput << "continue -- Resume the query execution." << std::endl;
-  theOutput << "next     -- Step over the next instruction." << std::endl;
-  theOutput << "clear    -- Clear breakpoints." << std::endl;
-  theOutput << "list     -- Display the executed query line." << std::endl;
-  theOutput << "status   -- Display the status of the query." << std::endl;
-  theOutput << "stop     -- Stop the query execution." << std::endl;
-  theOutput << "quit     -- Quit Zorba debugger." << std::endl;
-  theOutput << "version  -- Display the version of Zorba engine and its debugger" << std::endl;
-  theOutput << "watch    -- Add watchpoint to the query" << std::endl;
-  theOutput << "help     -- This help." << std::endl;
+  theOutput << "List of available commands." << std::endl;
+  theOutput << "Execution commands:" << std::endl;
+  theOutput << "  run      -- Run the query." << std::endl;
+  theOutput << "  stop     -- Stop the query execution." << std::endl;
+  theOutput << "  quit     -- Quit Zorba debugger." << std::endl;
+  theOutput << "  continue -- Resume the query execution." << std::endl;
+  theOutput << "  status   -- Display the status of the query." << std::endl;
+  theOutput << "Breakpoint commands:" << std::endl;
+  theOutput << "  break    -- Set a breakpoint at the specified file and line." << std::endl;
+  theOutput << "  watch    -- Add watchpoint to the query" << std::endl;
+  theOutput << "  list     -- Display the executed query line." << std::endl;
+  theOutput << "  clear    -- Clear breakpoints." << std::endl;
+  theOutput << "Data commands:" << std::endl;
+  theOutput << "  vars     -- List all variables that are in scope." << std::endl;
+  theOutput << "  eval     -- Evaluate an xquery expression and print its result." << std::endl;
+  theOutput << "Zorba debugger:" << std::endl;
+  theOutput << "  version  -- Display the version of Zorba engine and its debugger" << std::endl;
+  theOutput << "  help     -- This help." << std::endl;
 }
 
 void CommandLineEventHandler::version()
