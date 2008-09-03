@@ -27,7 +27,10 @@ CHECK_INCLUDE_FILES ("stdlib.h"                     ZORBA_HAVE_STDLIB_H)
 CHECK_INCLUDE_FILES ("limits.h"                     ZORBA_HAVE_LIMITS_H)
 CHECK_INCLUDE_FILES ("sys/types.h"                  ZORBA_HAVE_SYS_TYPES_H)
 CHECK_INCLUDE_FILES ("iconv.h"                      ZORBA_HAVE_ICONV_H)
-CHECK_INCLUDE_FILES ("execinfo.h"                   ZORBA_HAVE_EXECINFO_H)
+IF (NOT APPLE)
+  # execinfo is found by this macro when cross compiling for Mac OS X 10.4. although it shouldn't be found for this platform
+  CHECK_INCLUDE_FILES ("execinfo.h"                   ZORBA_HAVE_EXECINFO_H)
+ENDIF (NOT APPLE)
 CHECK_INCLUDE_FILES ("curl/curl.h"                  ZORBA_HAVE_CURL_H)
 CHECK_INCLUDE_FILE_CXX ("FlexLexer.h"               ZORBA_HAVE_FLEXLEXER_H)
 
