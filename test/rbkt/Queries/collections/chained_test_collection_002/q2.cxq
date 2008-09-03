@@ -1,4 +1,4 @@
 declare base-uri "http://example.org";
 import module namespace
 fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
-fn-zorba-collection:insert-nodes-first('http', <book>One Thousand and One Nights</book>)
+fn-zorba-collection:create-collection('collection_2')

@@ -197,49 +197,28 @@ ZorbaListCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planSta
 bool
 ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t       itemUri, itemNode;
-  xqpStringStore_t    strURI, strResult, strBaseURI;
-//   URI::error_t        err;
+  store::Item_t       item;
+  xqpStringStore_t    resolvedURIString;
   store::Collection_t theColl;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(itemUri, theChildren[0].getp(), planState))
-    strURI = itemUri->getStringValue();
-
-  /*
-  //if it is not a valix xs:anyURI
-  if(!URI::is_valid(strURI, true) && !URI::is_valid(strURI, false))
-    ZORBA_ERROR_LOC_DESC (FORG0002, loc, "Invalid uri given to fn:CreateCollection");
-
-  //if this is a relative URI resolve it against the baseuri() property of the static context
-  else if(URI::is_valid(strURI, false))
+  if (consumeNext(item, theChildren[0].getp(), planState))
   {
-    strBaseURI = planState.theRuntimeCB->theStaticContext->baseuri().getStore();
-    err = URI::resolve_relative (strBaseURI, strURI, strResult);
-
-    switch (err)
-    {
-      case URI::INVALID_URI:
-        ZORBA_ERROR_LOC_DESC (FORG0002, loc, "Invalid uri given to fn:CreateCollection");
-        break;
-      case URI::RESOLUTION_ERROR:
-        ZORBA_ERROR_LOC_DESC (FORG0009, loc, "Error in resolving a relative URI against a base URI in fn:resolve-uri.");
-        break;
-      case URI::MAX_ERROR_CODE:
-        break;
+    try {
+      resolvedURIString = planState.sctx()->resolve_relative_uri(item->getStringValueP()).getStore();
+    } catch (error::ZorbaError& e) {
+      ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
     }
-    theColl = GENV_STORE.createCollection(strResult);
-  }
-  else
-  */
-    theColl = GENV_STORE.createCollection(strURI);
 
-  if(theChildren.size() == 2)
-    //add the nodes to the newly created collection
-    while (consumeNext(itemNode, theChildren[1].getp(), planState))
-      theColl.getp()->addToCollection(itemNode.getp(), -1);
+    theColl = GENV_STORE.createCollection(resolvedURIString);
+
+    if(theChildren.size() == 2)
+      //add the nodes to the newly created collection
+      while (consumeNext(item, theChildren[1].getp(), planState))
+        theColl.getp()->addToCollection(item.getp(), -1);
+  }
 
   STACK_END (state);
 }
@@ -248,12 +227,17 @@ bool
 ZorbaDeleteCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState  *state;
-  store::Item_t       itemUri;
+  store::Item_t       item;
+  store::Collection_t coll;
 
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(itemUri, theChildren[0].getp(), planState ))
-    GENV_STORE.deleteCollection(itemUri->getStringValue());
+  if (consumeNext(item, theChildren[0].getp(), planState ))
+  {
+    coll = getCollection(planState, item->getStringValue(), loc);
+
+    GENV_STORE.deleteCollection(coll->getUri()->getStringValue());
+  }
 
   STACK_END (state);
 }
@@ -261,15 +245,27 @@ ZorbaDeleteCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSt
 bool
 ZorbaDeleteAllCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  PlanIteratorState   *state;
-  store::Iterator_t   uriItState;
-  store::Item_t       itemUri;
+  PlanIteratorState                           *state;
+  store::Iterator_t                           uriItState;
+  store::Item_t                               itemUri;
+  checked_vector<xqpStringStore_t>            vectorUri;
+  checked_vector<xqpStringStore_t>::iterator  it, end;
 
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   for ((uriItState = GENV_STORE.listCollectionUris())->open ();
         uriItState->next(itemUri); )
-    GENV_STORE.deleteCollection(itemUri->getStringValue());
+    vectorUri.push_back(itemUri->getStringValue());
+
+  it = vectorUri.begin();
+  end = vectorUri.end();
+
+  for (; it != end; ++it)
+  {
+    GENV_STORE.deleteCollection(*it);
+  }
+
+  vectorUri.clear();
 
   STACK_END (state);
 }
@@ -278,21 +274,18 @@ bool
 ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Collection_t theColl;
-  store::Item_t       itemUri, itemNode;
-  xqpStringStore_t    strURI;
+  store::Item_t       item;
   int                 pos = 0;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(itemUri, theChildren[0].getp(), planState))
-    strURI = itemUri->getStringValue();
-
-  theColl = GENV_STORE.getCollection(strURI);
+  if (consumeNext(item, theChildren[0].getp(), planState))
+    theColl = getCollection(planState, item->getStringValue(), loc);
 
   //add the nodes to the newly created collection
-  while (consumeNext(itemNode, theChildren[1].getp(), planState))
-    theColl.getp()->addToCollection(itemNode, pos++);
+  while (consumeNext(item, theChildren[1].getp(), planState))
+    theColl.getp()->addToCollection(item, pos++);
 
   STACK_END (state);
 }
@@ -301,20 +294,18 @@ bool
 ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Collection_t theColl;
-  store::Item_t       itemUri, itemNode;
+  store::Item_t       item;
   xqpStringStore_t    strURI;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(itemUri, theChildren[0].getp(), planState))
-    strURI = itemUri->getStringValue();
-
-  theColl = GENV_STORE.getCollection(strURI);
+  if (consumeNext(item, theChildren[0].getp(), planState))
+    theColl = getCollection(planState, item->getStringValue(), loc);
 
   //add the nodes to the newly created collection
-  while (consumeNext(itemNode, theChildren[1].getp(), planState))
-    theColl.getp()->addToCollection(itemNode, -1);
+  while (consumeNext(item, theChildren[1].getp(), planState))
+    theColl.getp()->addToCollection(item, -1);
 
   STACK_END (state);
 }
@@ -323,16 +314,13 @@ bool
 ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Collection_t theColl;
-  xqpStringStore_t    strURI;
   store::Item_t       itemUri, itemTarget, itemNewNode;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(itemUri, theChildren[0].getp(), planState))
-    strURI = itemUri->getStringValue();
-
-  theColl = GENV_STORE.getCollection(strURI);
+    theColl = getCollection(planState, itemUri->getStringValue(), loc);
 
   if(consumeNext(itemTarget, theChildren[1].getp(), planState))
   {
@@ -348,16 +336,13 @@ bool
 ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Collection_t theColl;
-  xqpStringStore_t    strURI;
   store::Item_t       itemUri, itemTarget, itemNewNode;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(itemUri, theChildren[0].getp(), planState))
-    strURI = itemUri->getStringValue();
-
-  theColl = GENV_STORE.getCollection(strURI);
+    theColl = getCollection(planState, itemUri->getStringValue(), loc);
 
   if(consumeNext(itemTarget, theChildren[1].getp(), planState))
   {
@@ -374,16 +359,13 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
 {
   store::Collection_t theColl;
   store::Item_t       itemUri, itemPos, itemNode;
-  xqpStringStore_t    strURI;
   int                 pos = 0;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(itemUri, theChildren[0].getp(), planState))
-    strURI = itemUri->getStringValue();
-
-  theColl = GENV_STORE.getCollection(strURI);
+    theColl = getCollection(planState, itemUri->getStringValue(), loc);
 
   if(consumeNext(itemPos, theChildren[1].getp(), planState))
   {
@@ -402,20 +384,17 @@ bool
 ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Collection_t theColl;
-  xqpStringStore_t    strURI;
-  store::Item_t       itemUri, itemTarget;
+  store::Item_t       item;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(itemUri, theChildren[0].getp(), planState))
-    strURI = itemUri->getStringValue();
-
-  theColl = GENV_STORE.getCollection(strURI);
+  if (consumeNext(item, theChildren[0].getp(), planState))
+    theColl = getCollection(planState, item->getStringValue(), loc);
 
   //delete the nodes
-  while (consumeNext(itemTarget, theChildren[1].getp(), planState))
-    theColl.getp()->removeFromCollection(itemTarget);
+  while (consumeNext(item, theChildren[1].getp(), planState))
+    theColl.getp()->removeFromCollection(item);
 
   STACK_END (state);
 }
@@ -424,22 +403,19 @@ bool
 ZorbaRemoveNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Collection_t theColl;
-  xqpStringStore_t    strURI;
-  store::Item_t       itemUri, itemPos;
+  store::Item_t       item;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(itemUri, theChildren[0].getp(), planState))
-    strURI = itemUri->getStringValue();
-
-  theColl = GENV_STORE.getCollection(strURI);
+  if (consumeNext(item, theChildren[0].getp(), planState))
+    theColl = getCollection(planState, item->getStringValue(), loc);
 
   //delete the node
-  if (consumeNext(itemPos, theChildren[1].getp(), planState))
+  if (consumeNext(item, theChildren[1].getp(), planState))
   {
-    if(itemPos->getIntegerValue() >= Integer::zero())
-      theColl.getp()->removeFromCollection(itemPos->getIntValue());
+    if(item->getIntegerValue() >= Integer::zero())
+      theColl.getp()->removeFromCollection(item->getIntValue());
   }
 
   STACK_END (state);
@@ -450,15 +426,12 @@ ZorbaNodeCountIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 {
   store::Collection_t theColl;
   store::Item_t       itemUri;
-  xqpStringStore_t    strURI;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(itemUri, theChildren[0].getp(), planState))
-    strURI = itemUri->getStringValue();
-
-  theColl = GENV_STORE.getCollection(strURI);
+    theColl = getCollection(planState, itemUri->getStringValue(), loc);
 
   STACK_PUSH(GENV_ITEMFACTORY->createInteger(
              result,
@@ -471,22 +444,19 @@ bool
 ZorbaNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Collection_t theColl;
-  store::Item_t       itemUri, itemPos;
-  xqpStringStore_t    strURI;
+  store::Item_t       item;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(itemUri, theChildren[0].getp(), planState))
-    strURI = itemUri->getStringValue();
+  if (consumeNext(item, theChildren[0].getp(), planState))
+    theColl = getCollection(planState, item->getStringValue(), loc);
 
-  theColl = GENV_STORE.getCollection(strURI);
-
-  if (consumeNext(itemPos, theChildren[1].getp(), planState))
+  if (consumeNext(item, theChildren[1].getp(), planState))
   {
-    if(itemPos->getIntegerValue() >= Integer::zero())
+    if(item->getIntegerValue() >= Integer::zero())
     {
-      result = theColl->nodeAt(itemPos->getIntValue());
+      result = theColl->nodeAt(item->getIntValue());
       STACK_PUSH(true, state);
     }
   }
@@ -498,21 +468,18 @@ bool
 ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Collection_t theColl;
-  store::Item_t       itemUri, itemTarget;
-  xqpStringStore_t    strURI;
+  store::Item_t       item;
   int                 pos = 0;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(itemUri, theChildren[0].getp(), planState))
-    strURI = itemUri->getStringValue();
+  if (consumeNext(item, theChildren[0].getp(), planState))
+    theColl = getCollection(planState, item->getStringValue(), loc);
 
-  theColl = GENV_STORE.getCollection(strURI);
-
-  if (consumeNext(itemTarget, theChildren[1].getp(), planState))
+  if (consumeNext(item, theChildren[1].getp(), planState))
   {
-    pos = theColl->indexOf(itemTarget);
+    pos = theColl->indexOf(item);
 
     if( -1 == pos)
       ZORBA_ERROR_LOC_DESC (API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION, loc, "The node does not belong to collection.");
@@ -541,7 +508,7 @@ ZorbaExportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   if( uri.get_scheme() != xqpString("file") && !uri.get_scheme().empty())
     ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaExportXmlIterator implemented only for 'file' scheme.");
 
-  theColl = GENV_STORE.getCollection(itemURI->getStringValue());
+  theColl = getCollection(planState, itemURI->getStringValue(), loc);
 
 //   if((theChildren.size() == 2) &&
 //      (consumeNext(itemTargetURI, theChildren[1].getp(), planState)))
@@ -550,6 +517,28 @@ ZorbaExportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 //     theColl.getp()->exportXML(itemURI);
 
   STACK_END (state);
+}
+
+store::Collection_t getCollection(PlanState& planState, const xqpStringStore_t strURI, const QueryLoc  loc)
+{
+  store::Item_t       resolvedURIItem;
+  xqpStringStore_t    resolvedURIString;
+
+  try {
+    resolvedURIString = planState.sctx()->resolve_relative_uri(strURI.getp()).getStore();
+    GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
+  } catch (error::ZorbaError& e) {
+    ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
+  }
+
+  try {
+    return planState.sctx()->get_collection_uri_resolver()->resolve(resolvedURIItem,
+                             planState.sctx());
+  } catch (error::ZorbaError& e) {
+    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+  }
+
+  return NULL;
 }
 
 } /* namespace zorba */

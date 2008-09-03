@@ -66,6 +66,8 @@ NARY_ITER (ZorbaIndexOfIterator);
 
 NARY_ITER (ZorbaExportXmlIterator);
 
+store::Collection_t getCollection(PlanState&, const xqpStringStore_t, const QueryLoc);
+
 }/*namespace zorba*/
 
 #endif /* ZORBA_COLLECTIONS_IMPL_H */

@@ -1,4 +1,3 @@
-declare base-uri "http://example.org";
 import module namespace
 fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
-fn-zorba-collection:create-collection('http')
+fn-zorba-collection:delete-all-collections()
