@@ -378,12 +378,13 @@ void SimpleStore::deleteCollection(const xqpStringStore_t& uri)
 
     for (; it != end; ++it)
     {
-      if( (*it)->getStringValue() == uri )
+      if( (*it)->getStringValue()->compare(uri) == 0 )
       {
         theItemUris.erase(it);
         break;
       }
     }
+
   }
   else
     ZORBA_ERROR_PARAM(API0006_COLLECTION_NOT_FOUND, uri->c_str(), "");
