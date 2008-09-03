@@ -329,7 +329,6 @@ void CommandLineEventHandler::handle_cmd()
             theOutput << "Invalid line number"  << std::endl;
           } else {
             theClient->addBreakpoint( lFileName, lLineNo );
-            theOutput << "Set breakpoint at line " << lLineNo << " in " << lFileName << '.' << std::endl;
           }
         } else {
           unsigned int lLineNo = atoi( lArgs.at(1).c_str() );
@@ -337,8 +336,9 @@ void CommandLineEventHandler::handle_cmd()
           {
             theOutput << "Invalid line number." << std::endl;
           } else {
-            theClient->addBreakpoint( lLineNo );
-            theOutput << "Set breakpoint at line " << lLineNo << '.' << std::endl;
+            String lFileName(theFileName);
+            theClient->addBreakpoint( lFileName, lLineNo );
+            theOutput << "Set breakpoint at line " << lLineNo << " in " << lFileName << '.' << std::endl;
           }
         } 
       }
