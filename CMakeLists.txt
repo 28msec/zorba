@@ -321,13 +321,19 @@ INCLUDE(CMakeCPack.cmake)
 
 IF( APPLE AND UNIVERSAL )
   SET ( CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "archs" FORCE)
-  SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -v" )
+  SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -v" )
 # The following is not the default when building universal
   INCLUDE_DIRECTORIES	 ( SYSTEM /usr/local/include )
-  SET ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -v")
-  SET ( CMAKE_SHARED_LINKER_FLAGS "-syslibroot ${CMAKE_OSX_SYSROOT} ${CMAKE_SHARED_LINKER_FLAGS}" )
+  SET ( CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -v")
   MESSAGE( "Building Apple universal binaries" )
-ENDIF ( APPLE AND UNIVERSAL )
+  SET( CMAKE_SKIP_RPATH ON )
+ENDIF( APPLE AND UNIVERSAL )
+
+IF ( APPLE )
+  SET ( CMAKE_SHARED_LINKER_FLAGS "-Wl-syslibroot,${CMAKE_OSX_SYSROOT} -mmacosx-version-min=10.4 ${CMAKE_SHARED_LINKER_FLAGS}" )
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -I/usr/local/include -mmacosx-version-min=10.4" )
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -I/usr/local/include -mmacosx-version-min=10.4" )
+ENDIF ( APPLE )
 
 SET ( CMAKE_VERBOSE_MAKEFILE OFF )
 
