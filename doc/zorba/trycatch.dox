@@ -5,7 +5,7 @@
 <tr>
 <td>TryCatchExpr</td>
 <td>::=</td>
-<td>CatchClause+</td>
+<td>TryClause CatchClause+</td>
 </tr>
 <tr>
 <td>TryClause</td>
