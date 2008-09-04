@@ -184,19 +184,4 @@ CollectionImpl::indexOf(const Item& aNode)
       return false;
 }
 
-bool
-CollectionImpl::exportXML(const Item& aTargetURI)
-{
-  ZORBA_TRY
-    store::Item* lItem = Unmarshaller::getInternalItem(aTargetURI);
-
-  SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::WRITE);)
-
-    theCollection->exportXML(lItem);
-
-    return true;
-  ZORBA_CATCH
-    return false;
-}
-
 } /* namespace zorba */

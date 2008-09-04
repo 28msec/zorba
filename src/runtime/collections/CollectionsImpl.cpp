@@ -21,9 +21,6 @@
 #include "zorbatypes/URI.h"
 #include "zorbatypes/numconversions.h"
 
-#include "runtime/context/ContextImpl.h"
-#include "runtime/api/runtimecb.h"
-
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "store/api/collection.h"
@@ -40,9 +37,7 @@
 #include "api/serialization/serializer.h"
 
 #include "util/web/web.h"
-#include "runtime/api/runtimecb.h"
-#include "runtime/api/plan_wrapper.h"
-#include "runtime/api/plan_iterator_wrapper.h"
+#include <fstream>
 
 namespace zorba {
 
@@ -214,10 +209,11 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSt
 
     theColl = GENV_STORE.createCollection(resolvedURIString);
 
-    if(theChildren.size() == 2)
+    if(theChildren.size() == 2) {
       //add the nodes to the newly created collection
       while (consumeNext(item, theChildren[1].getp(), planState))
         theColl.getp()->addToCollection(item.getp(), -1);
+    }
   }
 
   STACK_END (state);
@@ -496,26 +492,43 @@ bool
 ZorbaExportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Collection_t theColl;
-  store::Item_t       itemURI, itemTargetURI;
+  store::Item_t       item;
+  store::Iterator_t   collIterator;
+  std::ostringstream  ss;
+  error::ErrorManager lErrorManager;
   URI                 uri;
+  serializer          ser(&lErrorManager);
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(itemURI, theChildren[0].getp(), planState))
-    uri = URI(itemURI->getStringValue().getp());
+  if (consumeNext(item, theChildren[0].getp(), planState))
+  {
+    theColl = getCollection(planState, item->getStringValue(), loc);
 
-  if( uri.get_scheme() != xqpString("file") && !uri.get_scheme().empty())
-    ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaExportXmlIterator implemented only for 'file' scheme.");
+    if(theChildren.size() == 2 && consumeNext(item, theChildren[1].getp(), planState))
+      uri = URI(item->getStringValue().getp());
+    else
+      uri = URI(theColl->getUri()->getStringValue()->c_str());
 
-  theColl = getCollection(planState, itemURI->getStringValue(), loc);
+    if( uri.get_scheme() != xqpString("file") && !uri.get_scheme().empty())
+      ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaExportXmlIterator implemented only for 'file' scheme.");
 
-//   if((theChildren.size() == 2) &&
-//      (consumeNext(itemTargetURI, theChildren[1].getp(), planState)))
-//     theColl.getp()->exportXML(itemTargetURI);
-//   else
-//     theColl.getp()->exportXML(itemURI);
+    std::auto_ptr<std::ostream> lFileStream (new std::ofstream(uri.get_path().c_str()));
+    std::ostream* lOutputStream = lFileStream.get();
+    if ( !lOutputStream->good() )
+      ZORBA_ERROR_LOC_DESC_OSS (API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, loc, "File or folder does not exist: " << uri.get_path().c_str());
 
+    collIterator = theColl->getIterator(true);
+
+    ser.set_parameter("omit-xml-declaration", "yes");
+
+    collIterator->open();
+    while (collIterator->next(item))
+      ser.serialize(item, ss);
+
+    *lOutputStream << ss.str() << std::endl;
+  }
   STACK_END (state);
 }
 

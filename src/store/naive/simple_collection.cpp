@@ -261,11 +261,6 @@ long SimpleCollection::indexOf(const store::Item* node)
   return nodePositionInCollection((store::Item*) node);
 }
 
-bool SimpleCollection::exportXML(const store::Item* aTargerURI)
-{
-  return true;
-}
-
 /*******************************************************************************
 
 ********************************************************************************/
