@@ -43,8 +43,7 @@ namespace zorba
 #ifndef ZORBA_NO_XMLSCHEMA
     
 void validateAfterUpdate(zorba::store::Item* item, zorba::store::Item_t& pul,
-    DelegatingTypeManager* delegatingTypeManager, static_context* staticContext, 
-    const QueryLoc& loc, bool isLax);
+    static_context* staticContext, const QueryLoc& loc);
 
 void processElement( store::Item_t& pul, static_context* staticContext, 
     DelegatingTypeManager* delegatingTypeManager, SchemaValidator& schemaValidator, 
@@ -81,27 +80,36 @@ bool typeHasEmptyValue(xqtref_t t);
  *   fills out pul with a list of changes that will be applied later, if
  *   the validation succeds. This should be called after an update.
  */
-void validateAfterUpdate(const vector<zorba::store::Item*>& nodes, zorba::store::Item_t& pul,
-    DelegatingTypeManager* delegatingTypeManager, static_context* staticContext, 
-    const QueryLoc& loc, bool isLax)
+void validateAfterUpdate(
+    const set<zorba::store::Item*>& nodes,
+    zorba::store::Item_t& pul,
+    static_context* staticContext, 
+    const QueryLoc& loc)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
-    for ( unsigned int i = 0; i<nodes.size() ; i++)
-    {
-        validateAfterUpdate(nodes[i], pul, delegatingTypeManager, staticContext, loc, isLax);
-    }
+  set<zorba::store::Item*>::const_iterator it = nodes.begin();
+  set<zorba::store::Item*>::const_iterator end = nodes.end();
+  for (; it != end; it++)
+  {
+    validateAfterUpdate(*it, pul, staticContext, loc);
+  }
 #endif //ZORBA_NO_XMLSCHEMA
 }
 
 #ifndef ZORBA_NO_XMLSCHEMA
-void validateAfterUpdate(store::Item* item, zorba::store::Item_t& pul,
-    DelegatingTypeManager* delegatingTypeManager, static_context* staticContext, 
-    const QueryLoc& loc, bool isLax)
+void validateAfterUpdate(
+    store::Item* item,
+    zorba::store::Item_t& pul,
+    static_context* staticContext, 
+    const QueryLoc& loc)
 {
-    ZORBA_ASSERT(item->isNode());
+  ZORBA_ASSERT(item->isNode());
 
-    Schema* schema = delegatingTypeManager->getSchema();
-    if ( !schema )
+  DelegatingTypeManager* delegatingTypeManager = NULL;
+  bool isLax = true;
+
+  Schema* schema = delegatingTypeManager->getSchema();
+  if ( !schema )
     {
         // no schema available no change to pul
         return;
