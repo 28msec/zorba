@@ -1,0 +1,4 @@
+import module namespace
+fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
+declare variable $input-context1 external;
+fn-zorba-collection:export-xml('http://example.org/collection_1', '$RBKT_SRC_DIR/Queries/collections/chained_test_collection_007/collection_1.xml')

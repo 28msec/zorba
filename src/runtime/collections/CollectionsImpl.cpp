@@ -73,10 +73,10 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
 {
   store::Item_t       itemURI, resolvedURIItem, inNode, intt, inArg, attr;
   xqp_string          attrName;
-  xqpStringStore_t    uriString, resolvedURIString;
+  xqpStringStore_t    uriString, resolvedURIString, fileString;
   store::Iterator_t   theIterator, theAttributes;;
   xqpStringStore_t    strURI;
-  URI                 uri;
+  URI                 uriCatalog, uriFile;
   xqp_string          file;
   store::Collection_t theColl;
 
@@ -84,9 +84,9 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(itemURI, theChildren[0].getp(), planState))
-    uri = URI(itemURI->getStringValue().getp());
+    uriCatalog = URI(itemURI->getStringValue().getp());
 
-  uriString = uri.get_path().getStore();
+  uriString = uriCatalog.get_path().getStore();
 
   try {
     inNode = GENV_STORE.getDocument(itemURI->getStringValue());
@@ -120,13 +120,19 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
         for ((theAttributes = inArg->getAttributes())->open (); theAttributes->next(attr); ) {
           attrName = attr->getNodeName()->getStringValue()->str();
           if(attr->getNodeName()->getLocalName()->byteEqual("href", 4)) {
-            uri = URI(attr->getStringValue().getp());
-
-            if(http_get(attr->getStringValue().getp()->c_str(), file) != 0)
-              ZORBA_ERROR_LOC_DESC_OSS (API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, loc, "File or folder does not exist: " << attr->getStringValue()->str());
 
             strURI = attr->getStringValue();
-            theColl = GENV_STORE.createCollection(strURI);
+            if(strURI->indexOf("/") == -1)
+              uriFile = URI(uriCatalog, strURI.getp());
+            else
+              uriFile = URI(strURI.getp());
+
+            fileString = uriFile.toString().getStore();
+
+            if(http_get(uriFile.toString().c_str(), file) != 0)
+              ZORBA_ERROR_LOC_DESC_OSS (API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, loc, "File or folder does not exist: " << uriFile.toString().c_str());
+
+            theColl = GENV_STORE.createCollection(fileString);
             theColl->addToCollection(new std::istringstream(file.c_str()), 0);
           }
         }

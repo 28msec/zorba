@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<catalog>
+ <doc href="document1.xml"/>
+ <doc href="document2.xml"/>
+ <doc href="document3.xml"/>
+</catalog>
