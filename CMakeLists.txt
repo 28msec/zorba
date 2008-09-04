@@ -329,11 +329,6 @@ IF( APPLE AND UNIVERSAL )
   SET( CMAKE_SKIP_RPATH ON )
 ENDIF( APPLE AND UNIVERSAL )
 
-IF ( APPLE )
-  SET ( CMAKE_SHARED_LINKER_FLAGS "-Wl-syslibroot,${CMAKE_OSX_SYSROOT} -mmacosx-version-min=10.4 ${CMAKE_SHARED_LINKER_FLAGS}" )
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -I/usr/local/include -mmacosx-version-min=10.4" )
-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -I/usr/local/include -mmacosx-version-min=10.4" )
-ENDIF ( APPLE )
 
 SET ( CMAKE_VERBOSE_MAKEFILE OFF )
 
