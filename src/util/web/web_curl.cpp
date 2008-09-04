@@ -28,17 +28,14 @@ WriteMemoryCallback(void *ptr, size_t size, size_t nmemb, void* data)
   return realsize;
 }
 
+static int curl_enabled = 0;
+
 int http_get(const char* url, xqp_string& result)
 {
   int result_code;
   CURL* curl_handle;
   std::string temp;
 
-#ifdef ZORBA_WITH_SSL
-  curl_global_init(CURL_GLOBAL_ALL);
-#else
-  curl_global_init(CURL_GLOBAL_NOTHING);
-#endif
   curl_handle = curl_easy_init();                                             /* init the curl session */
   curl_easy_setopt(curl_handle, CURLOPT_URL, url);                            /* specify URL to get */
   curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);  /* send all data to this function  */
@@ -50,7 +47,6 @@ int http_get(const char* url, xqp_string& result)
   
   result_code = curl_easy_perform(curl_handle);
   curl_easy_cleanup(curl_handle);
-  curl_global_cleanup();
 
   temp.push_back(0);
   result = temp;
