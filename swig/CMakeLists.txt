@@ -18,13 +18,13 @@ IF (SWIG_FOUND)
   ADD_SUBDIRECTORY(python)
   ADD_SUBDIRECTORY(php)
 
-# ruby module on Mac OS doesn't link because cmake is generating
-# -framework ruby instead of -framework Ruby
-IF (APPLE AND UNIVERSAL )
-MESSAGE ( STATUS "Ruby module can't be built Universal" )
-ELSE( APPLE AND UNIVERSAL )
-  ADD_SUBDIRECTORY(ruby)
-ENDIF ( APPLE AND UNIVERSAL )
-ELSE(SWIG_FOUND)
-  MESSAGE(STATUS "SWIG not installed => no language bindings are generated.")
+  # ruby module on Mac OS doesn't link because cmake is generating
+  # -framework ruby instead of -framework Ruby
+  IF (APPLE AND UNIVERSAL )
+    MESSAGE ( STATUS "Ruby module can't be built Universal" )
+  ELSE( APPLE AND UNIVERSAL )
+    ADD_SUBDIRECTORY(ruby)
+  ENDIF ( APPLE AND UNIVERSAL )
+  ELSE(SWIG_FOUND)
+    MESSAGE(STATUS "SWIG not installed => no language bindings are generated.")
 ENDIF(SWIG_FOUND)
