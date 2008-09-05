@@ -108,15 +108,6 @@ namespace zorba {
 
     store::Store& lStore = GENV.getStore();
 
-    // TODO to be removed as soon as create-collection implement correct uri resolving
-    // maybe the document is stored with the uri that is given by the user
-    try {
-      lResultCol = lStore.getCollection(lUriString);
-      if (lResultCol != NULL)
-        return lResultCol;
-    } catch (error::ZorbaError& e) {
-    }
-
     // check and eventually resolve URI
     // throw FODC0004 if the URI is not valid
     URI lURI;
