@@ -17,6 +17,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <sstream>
 
 #include "util/web/web.h"
 
@@ -145,8 +146,15 @@ namespace zorba {
           static_context* aStaticContext)
   {
     xqpStringStore_t lResolvedURI = aURI->getStringValue();
-    std::auto_ptr<std::istream> modfile(
-      new std::ifstream(URI::decode_file_URI (lResolvedURI)->c_str()));
+    std::auto_ptr<std::istream> modfile;
+    if (lResolvedURI->byteStartsWith ("file://"))
+      modfile.reset (new std::ifstream(URI::decode_file_URI (lResolvedURI)->c_str()));
+    else {
+      xqp_string code;
+      if (http_get (lResolvedURI->c_str (), code) != 0)
+        return NULL;
+      modfile.reset (new std::istringstream (code));
+    }
 
     // we transfer ownership to the caller
     return modfile.release();
