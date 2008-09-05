@@ -863,7 +863,17 @@ bool FLWORExpr::compute_general () const {
   bool has_where = false, has_order = false, has_group = false;
   for (unsigned i = 0; i < clauses->size (); i++) {
     const FLWORClause* cp = (*clauses) [i].getp ();
-    if (typeid (*cp) == typeid (WhereClause)) {
+    if (dynamic_cast<const FLWORInitialClause *> (cp) != NULL) {
+      if (has_group)
+        return true;
+
+      if (typeid (*cp) == typeid (ForClause)) {
+        if (static_cast<const ForClause *> (cp)->is_outer ())
+          return true;
+      } else if (typeid (*cp) == typeid (WindowClause)) {
+        return true;
+      }
+    } else if (typeid (*cp) == typeid (WhereClause)) {
       if (has_where || has_group) return true;
       has_where = true;
     } else if (typeid (*cp) == typeid (OrderByClause)) {
@@ -872,10 +882,7 @@ bool FLWORExpr::compute_general () const {
     } else if (typeid (*cp) == typeid (GroupByClause)) {
       if (has_group || has_order) return true;
       has_group = true;
-    } else if (typeid (*cp) == typeid (ForClause)) {
-      if (static_cast<const ForClause *> (cp)->is_outer ())
-        return true;
-    } else if (typeid (*cp) == typeid (WindowClause) || typeid (*cp) == typeid (CountClause))
+    } else if (typeid (*cp) == typeid (CountClause))
       return true;
   }
   return false;
