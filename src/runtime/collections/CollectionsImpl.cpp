@@ -385,8 +385,10 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
 bool
 ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Collection_t theColl;
-  store::Item_t       item;
+  store::Collection_t             theColl;
+  store::Item_t                   item;
+  checked_vector<int>             toBeRemoved;
+  checked_vector<int>::iterator   it, end, begin;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -396,7 +398,13 @@ ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
   //delete the nodes
   while (consumeNext(item, theChildren[1].getp(), planState))
-    theColl.getp()->removeFromCollection(item);
+    toBeRemoved.push_back(theColl->indexOf(item));
+
+  begin = toBeRemoved.begin();
+  end = toBeRemoved.end();
+
+  for (it = end; it != begin; --it)
+    theColl.getp()->removeFromCollection((*it));
 
   STACK_END (state);
 }
