@@ -70,3 +70,4 @@ INSTALL(DIRECTORY simplestore DESTINATION include/zorba
 
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba/config.h DESTINATION
 include/zorba/zorba)
+
