@@ -66,7 +66,7 @@ public:
 
   store::Item* getUri() { return theUri; }
 
-  ulong size() const { return (ulong)theXmlTrees.size(); }
+  ulong size() const { return theXmlTrees.size(); }
 
   store::Iterator_t getIterator(bool idsNeeded);
 
@@ -84,7 +84,6 @@ public:
   store::Item_t nodeAt(long position);
   long indexOf(const store::Item* node);
 
-  bool exportXML(const store::Item* aTargerURI);
 protected:
   int
   nodePositionInCollection(store::Item* newNode);

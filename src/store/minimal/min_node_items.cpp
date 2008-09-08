@@ -968,7 +968,7 @@ ElementNode::ElementNode(
     {
       try
       {
-        //+addBindingForQName(theName);
+        addBindingForQName(theName, false, true);
         setNsContext(parent->getNsContext());
       }
       catch(...)
@@ -980,8 +980,8 @@ ElementNode::ElementNode(
   }
   else
   {
-  //+  if (localBindings)
-  //+    addBindingForQName(theName);
+    if (localBindings)
+      addBindingForQName(theName, false, true);
   }
 }
 

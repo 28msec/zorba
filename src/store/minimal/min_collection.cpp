@@ -221,9 +221,8 @@ void SimpleCollection::removeFromCollection(const store::Item* node)
 
   if(position != -1)
   {
-    SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
-
-    theXmlTrees.erase(theXmlTrees.begin() + position);
+    if( theXmlTrees.erase(theXmlTrees.begin() + position) == theXmlTrees.end() )
+      ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
   }
   else
   {
@@ -238,17 +237,19 @@ void SimpleCollection::removeFromCollection(long position)
 {
   if(position == -1)
   {
-    if( theXmlTrees.erase(theXmlTrees.end()) == theXmlTrees.end() )
+    if( theXmlTrees.size() == 0 )
     {
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
     }
+    theXmlTrees.erase(theXmlTrees.end());
   }
   else
   {
-    if( theXmlTrees.erase(theXmlTrees.begin() + position) == theXmlTrees.end() )
+    if(position >= theXmlTrees.size() )
     {
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
     }
+    theXmlTrees.erase(theXmlTrees.begin() + position);
   }
 }
 
@@ -277,13 +278,6 @@ long SimpleCollection::indexOf(const store::Item* node)
 
   return nodePositionInCollection((store::Item*) node);
 }
-
-bool SimpleCollection::exportXML(const store::Item* aTargerURI)
-{
-  return true;
-}
-
-
 
 /*******************************************************************************
 
