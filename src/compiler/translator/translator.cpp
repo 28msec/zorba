@@ -303,15 +303,15 @@ protected:
     return bind_var_and_push (loc, sctx_p->lookup_var_qname (varname), kind, type);
   }
 
-  void bind_udf (store::Item_t qname, function *f, int nargs, static_context *sctx) {
+  void bind_udf (store::Item_t qname, function *f, int nargs, static_context *sctx, const QueryLoc& loc) {
     if (! sctx->bind_fn (qname, f, nargs))
-      ZORBA_ERROR_PARAM (XQST0034, qname->getStringValue (), "");
+      ZORBA_ERROR_LOC_PARAM (XQST0034, loc, qname->getStringValue (), loc.getFilenameBegin());
   }
-  void bind_udf (store::Item_t qname, function *f, int nargs) {
-    bind_udf (qname, f, nargs, sctx_p);
-    bind_udf (qname, f, nargs, minfo->globals.get ());
+  void bind_udf (store::Item_t qname, function *f, int nargs, const QueryLoc& loc) {
+    bind_udf (qname, f, nargs, sctx_p, loc);
+    bind_udf (qname, f, nargs, minfo->globals.get (), loc);
     if (export_sctx != NULL)
-      bind_udf (qname, f, nargs, export_sctx);
+      bind_udf (qname, f, nargs, export_sctx, loc);
   }
 
   fo_expr *create_seq (const QueryLoc& loc) {
@@ -936,7 +936,7 @@ void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
 
   rchandle<QName> end_tag = v.get_end_name();
   if (end_tag != NULL && v.get_elem_name ()->get_qname() != end_tag->get_qname ())
-    ZORBA_ERROR( XPST0003);
+    ZORBA_ERROR_LOC( XPST0003, loc);
 
   if (v.get_dir_content_list() != NULL)
     contentExpr = pop_nodestack();
@@ -2246,7 +2246,7 @@ void *begin_visit(const GroupSpec& v)
   TRACE_VISIT ();
   var_expr *e = lookup_var (v.get_var_name());
   if (e == NULL)
-    ZORBA_ERROR_PARAM(XPST0008, v.get_var_name(), "");
+    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, v.get_var_name(), "");
   push_scope();
   // Create a new var_expr gX, corresponding to the var X that is referenced
   // by this group spec. Then push gX and X to the node stack.
@@ -2514,7 +2514,7 @@ void *begin_visit(const VFO_DeclList& v)
     default:
       ZORBA_ASSERT(false);
     }
-    bind_udf(qname, f, nargs);
+    bind_udf(qname, f, nargs, n->get_location());
   }
 
   return no_state;
@@ -3395,9 +3395,9 @@ expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool i
           throw e;
         } else {
           if (e.theErrorCode == FORG0001)
-            ZORBA_ERROR(XPST0003);
+            ZORBA_ERROR_LOC(XPST0003, loc);
           else
-            ZORBA_ERROR(XPST0081);
+            ZORBA_ERROR_LOC(XPST0081, loc);
         }
       }
       assert (castLiteral != NULL || ! isCast);
@@ -3549,7 +3549,7 @@ void end_visit(const ExtensionExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   if (v.get_expr () == NULL)
-    ZORBA_ERROR( XQST0079);
+    ZORBA_ERROR_LOC( XQST0079, loc);
 }
 
 
@@ -3817,7 +3817,7 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()
   if (t == NULL)
-    ZORBA_ERROR( XPST0051);
+    ZORBA_ERROR_LOC( XPST0051, loc);
   else
     tstack.push (t);
 }
