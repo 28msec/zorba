@@ -2501,6 +2501,9 @@ void *begin_visit(const VFO_DeclList& v)
       StatelessExternalFunction *ef =
         sctx_p->lookup_stateless_external_function(n->get_name()->get_prefix(),
                                                    n->get_name()->get_localname());
+      if (ef == NULL) {
+          ZORBA_ERROR_LOC_PARAM(XQP0028_FUNCTION_IMPL_NOT_FOUND, n->get_location(), qname->getNamespace()->str(), qname->getLocalName()->str());
+      }
       ZORBA_ASSERT(ef != NULL);
       f = new stateless_external_function_adapter(sig, ef, n->get_type () == ParseConstants::fn_extern_update);
       break;

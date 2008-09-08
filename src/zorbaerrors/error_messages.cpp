@@ -200,6 +200,8 @@ DEF_ERR_CODE (XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE, XQP0024, "The funct
 
 DEF_ERR_CODE (XQP0025_COULD_NOT_CREATE_ITEM, XQP0025, "The item could not be created.")
 
+DEF_ERR_CODE (XQP0028_FUNCTION_IMPL_NOT_FOUND, XQP0028, "The external function called ({/s}/s) is not bound in the static context")
+
 
 //
 // XPDY
