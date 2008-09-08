@@ -136,7 +136,7 @@ void filesystem_path::canonicalize () {
   bool initial_dotdots = false, next_initial_dotdots;
 
 #ifdef WIN32
-  int rtsize = 2 + sep.size ();  // length of C:\
+  int rtsize = 2 + sep.size ();  // length of 'C:\'
   if (path.size () > rtsize && filesystem_path (path.substr (0, rtsize)).is_root ()) {
     pfx = path.substr (0, 2);
     path = path.substr (2);
