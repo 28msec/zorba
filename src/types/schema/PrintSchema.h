@@ -16,6 +16,9 @@
 #ifndef PRINTSCHEMA_H_
 #define PRINTSCHEMA_H_
 
+#include "common/common.h"
+#ifndef ZORBA_NO_XMLSCHEMA
+
 #include "xercesIncludes.h"
 
 
@@ -43,4 +46,5 @@ private:
 
 } // namespace xqp
 
+#endif // ifndef ZORBA_NO_XMLSCHEMA
 #endif /*PRINTSCHEMA_H_*/

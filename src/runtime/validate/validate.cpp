@@ -41,7 +41,6 @@
 #include "zorbaerrors/error_messages.h"
 #include "zorbaerrors/errors.h"
 
-#ifndef ZORBA_NO_XMLSCHEMA
 
 namespace zorba
 {
@@ -107,6 +106,7 @@ namespace zorba
                 return true;
             }
 
+#ifndef ZORBA_NO_XMLSCHEMA
             xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->
                 final_baseuri().getStore();
 
@@ -158,6 +158,7 @@ namespace zorba
                 returnVal = false;
                 result = NULL;
             }
+#endif // ZORBA_NO_XMLSCHEMA
         }
         else
         {
@@ -169,6 +170,8 @@ namespace zorba
         return returnVal;
     }
 
+
+#ifndef ZORBA_NO_XMLSCHEMA
     store::Item_t ValidateIterator::processElement( PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
         SchemaValidator& schemaValidator, store::Item *parent, const store::Item_t& element)
     {
@@ -407,8 +410,9 @@ namespace zorba
         }
     }
 
+#endif//#ifndef ZORBA_NO_XMLSCHEMA
+    
     /* end class ValidateIterator */
 }
 
 
-#endif//#ifndef ZORBA_NO_XMLSCHEMA

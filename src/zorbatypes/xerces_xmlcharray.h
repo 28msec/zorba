@@ -16,9 +16,12 @@
 #ifndef ZORBA_XERCES_XMLCHARRAY_H
 #define ZORBA_XERCES_XMLCHARRAY_H
 
+#ifndef ZORBA_NO_XMLSCHEMA
+
 #include <xercesc/util/XMLString.hpp>
 
 #include <zorbatypes/xqpstring.h>
+
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -44,4 +47,5 @@ namespace zorba {
 
 }
 
-#endif
+#endif // ifndef ZORBA_NO_XMLSCHEMA
+#endif // ifndef ZORBA_XERCES_XMLCHARRAY_H

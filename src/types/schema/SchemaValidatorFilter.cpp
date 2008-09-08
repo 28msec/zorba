@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef ZORBA_NO_XMLSCHEMA 
+
 #include "types/schema/SchemaValidatorFilter.h"
 #include "types/schema/StrX.h"
 
@@ -1138,3 +1140,5 @@ void SchemaValidatorFilter::error(const unsigned int errCode, const XMLCh* const
 }
 
 } //namespace zorba
+
+#endif // ZORBA_NO_XMLSCHEMA

@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef ZORBA_NO_XMLSCHEMA
+
 #include "system/globalenv.h"
 #include "types/schema/SchemaValidator.h"
 #include "types/schema/StrX.h"
@@ -142,3 +144,4 @@ xqtref_t SchemaValidator::getType()
 }
 
 }// namespace zorba
+#endif // ZORBA_NO_XMLSCHEMA

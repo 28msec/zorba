@@ -16,6 +16,8 @@
 #ifndef ZORBA_XERCESINCLUDES_H_
 #define ZORBA_XERCESINCLUDES_H_
 
+#include "common/common.h"
+#ifndef ZORBA_NO_XMLSCHEMA
 
 #include <xercesc/framework/psvi/XSModel.hpp>
 #include <xercesc/framework/psvi/XSElementDeclaration.hpp>
@@ -49,5 +51,7 @@
 #ifdef CYGWIN
 #undef WIN32
 #endif
+
+#endif //ZORBA_NO_XMLSCHEMA
 
 #endif /*ZORBA_XERCESINCLUDES_H_*/

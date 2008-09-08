@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "common/common.h"
-
 #ifndef ZORBA_NO_XMLSCHEMA
 
+#include "common/common.h"
 #include "types/schema/StrX.h"
 
-#endif //#ifndef ZORBA_NO_XMLSCHEMA
+#endif // ZORBA_NO_XMLSCHEMA

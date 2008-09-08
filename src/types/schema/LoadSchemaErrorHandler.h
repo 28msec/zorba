@@ -16,20 +16,20 @@
 #ifndef LOADSCHEMAERRORHANDLER_H_
 #define LOADSCHEMAERRORHANDLER_H_
 
-#include "xercesIncludes.h"
 #include "common/common.h"
+#ifndef ZORBA_NO_XMLSCHEMA
+
+#include "xercesIncludes.h"
 #include <zorbaerrors/error_manager.h>
 #include "zorbaerrors/errors.h"
 #include <compiler/parser/query_loc.h>
 
 
-using namespace XERCES_CPP_NAMESPACE;
-
 namespace zorba
 {
 
 class LoadSchemaErrorHandler 
-    : public DefaultHandler
+    : public XERCES_CPP_NAMESPACE::DefaultHandler
 {
 public:
     // -----------------------------------------------------------------------
@@ -43,9 +43,9 @@ public:
         return _sawErrors;
     }
 
-    void warning(const SAXParseException& exc);
-    void error(const SAXParseException& exc);
-    void fatalError(const SAXParseException& exc);
+    void warning(const XERCES_CPP_NAMESPACE::SAXParseException& exc);
+    void error(const XERCES_CPP_NAMESPACE::SAXParseException& exc);
+    void fatalError(const XERCES_CPP_NAMESPACE::SAXParseException& exc);
     void resetErrors();
 
 
@@ -56,4 +56,5 @@ private:
 
 } // namespace xqp
 
+#endif // ifndef ZORBA_NO_XMLSCHEMA
 #endif /*LOADSCHEMAERRORHANDLER_H_*/

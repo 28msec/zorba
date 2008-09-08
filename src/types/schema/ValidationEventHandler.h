@@ -17,6 +17,8 @@
 #ifndef _VALIDATIONEVENTHANDLER_H
 #define _VALIDATIONEVENTHANDLER_H
 
+#ifndef ZORBA_NO_XMLSCHEMA
+
 #include <xercesc/util/XMLString.hpp>
 #include <list>
 #include "store/api/item.h"
@@ -101,4 +103,6 @@ private:
 }; // class ValidationEventHandler
 
 }  // namespace zorba
-#endif
+
+#endif // ZORBA_NO_XMLSCHEMA
+#endif // _VALIDATIONEVENTHANDLER_H

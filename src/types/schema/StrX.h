@@ -16,6 +16,8 @@
 #ifndef ZORBA_STRX_H_
 #define ZORBA_STRX_H_
 
+#include "common/common.h"
+#ifndef ZORBA_NO_XMLSCHEMA
 
 #include <stdlib.h>
 #include <string.h>
@@ -85,4 +87,7 @@ inline XERCES_STD_QUALIFIER ostream& operator<<(XERCES_STD_QUALIFIER ostream& ta
 }
 
 } // namespace zorba
+
+#endif  // ZORBA_NO_XMLSCHEMA
 #endif /*ZORBA_STRX_H_*/
+

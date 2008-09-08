@@ -12,14 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-SET(SCHEMA_SRCS
-    schema.cpp
-    StrX.cpp
-    LoadSchemaErrorHandler.cpp
-    PrintSchema.cpp
-    XercesParseUtils.cpp
-    SchemaValidator.cpp
-    SchemaValidatorFilter.cpp
-    ValidationEventHandler.cpp
-    Utils.cpp
-    )
+
+IF (NOT ZORBA_NO_XMLSCHEMA)
+    SET(SCHEMA_SRCS
+        schema.cpp
+        LoadSchemaErrorHandler.cpp
+        PrintSchema.cpp
+        SchemaValidator.cpp
+        SchemaValidatorFilter.cpp
+        StrX.cpp
+        ValidationEventHandler.cpp
+        Utils.cpp
+        XercesParseUtils.cpp
+        )
+ELSE (NOT ZORBA_NO_XMLSCHEMA)
+    SET(SCHEMA_SRCS
+        schema.cpp
+        )
+ENDIF (NOT ZORBA_NO_XMLSCHEMA)

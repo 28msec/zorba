@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef ZORBA_NO_XMLSCHEMA
 
 #include "types/schema/StrX.h"
 #include "types/schema/ValidationEventHandler.h"
@@ -126,3 +127,4 @@ void ValidationEventHandler::resetTextInfo()
 }
 
 } // end namespace zorba
+#endif // ZORBA_NO_XMLSCHEMA

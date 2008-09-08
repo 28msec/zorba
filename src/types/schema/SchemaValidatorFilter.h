@@ -16,6 +16,9 @@
 #ifndef _SCHEMAVALIDATORFILTER_H
 #define _SCHEMAVALIDATORFILTER_H
 
+#include "common/common.h"
+#ifndef ZORBA_NO_XMLSCHEMA
+
 #include <vector>
 
 #include <xercesc/framework/XMLDocumentHandler.hpp>
@@ -155,4 +158,7 @@ private:
 };
 
 }  // namespace zorba
+
+
+#endif // ZORBA_NO_XMLSCHEMA
 #endif

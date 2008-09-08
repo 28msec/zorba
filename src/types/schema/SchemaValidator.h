@@ -16,6 +16,9 @@
 #ifndef ZORBA_SCHEMAVALIDATOR_H_
 #define ZORBA_SCHEMAVALIDATOR_H_
 
+#include "common/common.h"
+#ifndef ZORBA_NO_XMLSCHEMA
+
 #include "xercesIncludes.h"
 #include "types/schema/SchemaValidatorFilter.h"
 #include "types/schema/StrX.h"
@@ -75,5 +78,6 @@ public:
 
 } // namespace zorba
 
+#endif //ZORBA_NO_XMLSCHEMA
 #endif /*ZORBA_SCHEMAVALIDATOR_H_*/
 

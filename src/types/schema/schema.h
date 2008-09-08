@@ -16,6 +16,7 @@
 #ifndef ZORBA_SCHEMA_H_
 #define ZORBA_SCHEMA_H_
 
+#include "common/common.h"
 #include "xercesIncludes.h"
 
 #include <zorba/api_shared_types.h>

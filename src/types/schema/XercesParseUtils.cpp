@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 #include "common/common.h"
-
 #ifndef ZORBA_NO_XMLSCHEMA
 
 #include "XercesParseUtils.h"
