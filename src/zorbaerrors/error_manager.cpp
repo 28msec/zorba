@@ -38,7 +38,7 @@ ErrorManager::createException(
 {
   std::string lDesc = ErrorMessages::getMessageForErrorCode(aErrorCode);
 
-  ZorbaError lError(aErrorCode, lDesc , 0, 0, aFileName, aLineNumber);
+  ZorbaError lError(aErrorCode, lDesc , 0, 0, "", aFileName, aLineNumber);
 
   return ZorbaError(lError);
 }
@@ -51,12 +51,13 @@ ErrorManager::createException(
     const std::string&  aFileName,
     int                 aLineNumber,
     unsigned int        aQueryLine,
-    unsigned int        aQueryColumn)
+    unsigned int        aQueryColumn,
+    const std::string&  aQueryFileName)
 {
   std::string lDesc = ErrorMessages::getMessageForErrorCode(aErrorCode);
 
   ZorbaError lError(aErrorCode, lDesc,
-                    aQueryLine, aQueryColumn,
+                    aQueryLine, aQueryColumn, aQueryFileName,
                     aFileName, aLineNumber);
 
   return ZorbaError(lError);
@@ -71,13 +72,14 @@ ErrorManager::createException(
     const std::string&  aFileName,
     int                 aLineNumber,
     unsigned int        aQueryLine,
-    unsigned int        aQueryColumn)
+    unsigned int        aQueryColumn,
+    const std::string&  aQueryFileName)
 {
   std::string lDesc = ErrorMessages::getMessageForErrorCode(aErrorCode);
   applyParams(&lDesc, &aParam1, &aParam2);
 
   ZorbaError lError(aErrorCode, lDesc,
-                    aQueryLine, aQueryColumn,
+                    aQueryLine, aQueryColumn, aQueryFileName,
                     aFileName, aLineNumber);
   return ZorbaError(lError);
 }
@@ -90,7 +92,7 @@ ErrorManager::createException(
     const std::string&  aFileName,
     int                 aLineNumber)
 {
-  ZorbaError lError(aErrorCode, aDesc, 0, 0, aFileName, aLineNumber);
+  ZorbaError lError(aErrorCode, aDesc, 0, 0, "", aFileName, aLineNumber);
 
   return ZorbaError(lError);
 }
@@ -103,10 +105,11 @@ ErrorManager::createException(
     const std::string&  aFileName,
     int                 aLineNumber,
     unsigned int        aQueryLine,
-    unsigned int        aQueryColumn)
+    unsigned int        aQueryColumn,
+    const std::string&  aQueryFileName)
 {
   ZorbaError lError(aErrorCode, aDescription,
-                    aQueryLine, aQueryColumn,
+                    aQueryLine, aQueryColumn, aQueryFileName,
                     aFileName, aLineNumber);
 
   return ZorbaError(lError);
@@ -120,10 +123,11 @@ ErrorManager::addError(
     const std::string&  aFileName,
     int                 aLineNumber,
     unsigned int        aQueryLine,
-    unsigned int        aQueryColumn)
+    unsigned int        aQueryColumn,
+    const std::string&  aQueryFileName)
 {
   ZorbaError lError(aErrorCode, aDescription,
-                    aQueryLine, aQueryColumn,
+                    aQueryLine, aQueryColumn, aQueryFileName,
                     aFileName, aLineNumber);
   theErrors.push_back(lError);
 }
@@ -137,13 +141,14 @@ ErrorManager::addError(
     const std::string&  aFileName,
     int                 aLineNumber,
     unsigned int        aQueryLine,
-    unsigned int        aQueryColumn)
+    unsigned int        aQueryColumn,
+    const std::string&  aQueryFileName)
 {
   std::string lDesc = ErrorMessages::getMessageForErrorCode(aErrorCode);
   applyParams(&lDesc, &aParam1, &aParam2);
 
   ZorbaError lError(aErrorCode, lDesc,
-                    aQueryLine, aQueryColumn,
+                    aQueryLine, aQueryColumn, aQueryFileName,
                     aFileName, aLineNumber);
   theErrors.push_back(lError);
 }
@@ -156,7 +161,8 @@ ErrorManager::addWarning(
     const std::string&        aFileName,
     int                       aLineNumber,
     unsigned int              aQueryLine,
-    unsigned int              aQueryColumn)
+    unsigned int              aQueryColumn,
+    const std::string&        aQueryFileName)
 {
   assert(false);
 }

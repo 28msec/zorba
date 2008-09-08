@@ -31,6 +31,7 @@ ZorbaError::ZorbaError(
     const xqpString&    aDescription,
     unsigned int        aQueryLine,
     unsigned int        aQueryColumn,
+    const std::string&  aQueryFileName,
     const std::string&  aFileName,
     int                 aLineNumber)
   :
@@ -41,6 +42,7 @@ ZorbaError::ZorbaError(
   theDescription(aDescription),
   theQueryLine(aQueryLine),
   theQueryColumn(aQueryColumn),
+  theQueryFileName(aQueryFileName),
   theFileName(aFileName),
   theLineNumber(aLineNumber)
 {
@@ -54,6 +56,7 @@ ZorbaError::ZorbaError(
     const xqpString&    aDescription,
     unsigned int        aQueryLine,
     unsigned int        aQueryColumn,
+    const std::string&  aQueryFileName,
     const std::string&  aFileName,
     int                 aLineNumber)
   :
@@ -63,6 +66,7 @@ ZorbaError::ZorbaError(
   theDescription(aDescription),
   theQueryLine(aQueryLine),
   theQueryColumn(aQueryColumn),
+  theQueryFileName(aQueryFileName),
   theFileName(aFileName),
   theLineNumber(aLineNumber)
 {
@@ -83,6 +87,7 @@ ZorbaError::ZorbaError(const ZorbaError& other)
   theDescription(other.theDescription),
   theQueryLine(other.theQueryLine),
   theQueryColumn(other.theQueryColumn),
+  theQueryFileName(other.theQueryFileName),
   theFileName(other.theFileName),
   theLineNumber(other.theLineNumber)
 {
@@ -205,6 +210,7 @@ ZorbaWarning::ZorbaWarning(
     const xqpString&   aDescription,
     unsigned int       aQueryLine,
     unsigned int       aQueryColumn,
+    const std::string& aQueryFileName,
     const std::string& aFileName,
     int aLineNumber)
   :
@@ -212,6 +218,7 @@ ZorbaWarning::ZorbaWarning(
   theDescription(aDescription),
   theQueryLine(aQueryLine),
   theQueryColumn(aQueryColumn),
+  theQueryFileName(aQueryFileName),
   theFileName(aFileName),
   theLineNumber(aLineNumber)
 {

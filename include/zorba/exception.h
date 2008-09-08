@@ -37,7 +37,7 @@ class ZORBA_EXTERN_DECL ZorbaException
   getErrorCode() const;
 
 
-  /** \brief Get the descriptionof the error that is reported by this exception.
+  /** \brief Get the description of the error that is reported by this exception.
    */
   virtual String
   getDescription() const;

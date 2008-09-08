@@ -36,6 +36,7 @@ ZorbaUserError::ZorbaUserError(
              aDescription,
              aLocation.getLineBegin(),
              aLocation.getColumnBegin(),
+             aLocation.getFilenameBegin(),
              aFileName,
              aLineNumber),
   theErrorObject(aErrorObject)

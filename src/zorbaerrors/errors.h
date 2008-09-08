@@ -45,6 +45,7 @@ public:
   xqpString      theDescription;
   unsigned int   theQueryLine;
   unsigned int   theQueryColumn;
+  std::string    theQueryFileName; // the name of the file where the error occured
   std::string    theFileName; // source file
   int            theLineNumber; // line number in the source file
 
@@ -58,6 +59,7 @@ public:
         const xqpString&    aDescription,
         unsigned int        aQueryLine,
         unsigned int        aQueryColumn,
+        const std::string&  aQueryFileName,
         const std::string&  aFileName,
         int                 aLineNumber);
 
@@ -68,6 +70,7 @@ public:
         const xqpString&    aDescription,
         unsigned int        aQueryLine,
         unsigned int        aQueryColumn,
+        const std::string&  aQueryFileName,
         const std::string&  aFileName,
         int                 aLineNumber);
 
@@ -132,6 +135,7 @@ protected:
   xqpString     theDescription;   
   unsigned int  theQueryLine;
   unsigned int  theQueryColumn;
+  std::string   theQueryFileName;
   std::string   theFileName;      
   int           theLineNumber;  
 
@@ -141,6 +145,7 @@ public:
         const xqpString&   aDescription,
         unsigned int       aQueryLine,
         unsigned int       aQueryColumn,
+        const std::string& aQueryFileName,
         const std::string& aFileName,
         int                aLineNumber);  
 };
