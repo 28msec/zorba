@@ -18,6 +18,8 @@
 
 
 #include "common/common.h"
+#ifndef ZORBA_NO_XMLSCHEMA
+
 #include "common/shared_types.h"
 #include "runtime/base/unarybase.h"
 #include "runtime/booleans/compare_types.h"
@@ -58,7 +60,6 @@ namespace zorba
         static bool effectiveValidationValue ( store::Item_t& result, const QueryLoc& loc, 
             PlanState& planState, const PlanIterator* iter, bool isLax);
 
-#ifndef ZORBA_NO_XMLSCHEMA
         static store::Item_t processElement ( PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
             SchemaValidator& schemaValidator, store::Item *parent, const store::Item_t& element);
 
@@ -75,9 +76,9 @@ namespace zorba
         static void processTextValue (PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
             store::NsBindings& bindings, store::Item_t typeQName, xqpStringStore_t& textValue, 
             std::vector<store::Item_t> &resultList);
-#endif // ZORBA_NO_XMLSCHEMA    
     };
 
 }
 
+#endif // ZORBA_NO_XMLSCHEMA    
 #endif

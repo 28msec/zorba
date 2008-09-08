@@ -13,6 +13,9 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+#include "validate.h"
+#ifndef ZORBA_NO_XMLSCHEMA
+
 #include "system/globalenv.h"
 
 #include "types/casting.h"
@@ -416,3 +419,4 @@ namespace zorba
 }
 
 
+#endif // ifndef ZORBA_NO_XMLSCHEMA

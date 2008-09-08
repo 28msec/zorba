@@ -49,7 +49,6 @@ SET(RUNTIME_SRCS
     qnames/QNamesImpl.cpp
     sequences/SequencesImpl.cpp
     strings/StringsImpl.cpp
-    validate/validate.cpp
     visitors/accept.cpp
     visitors/iterprinter.cpp
     visitors/printervisitor.cpp
@@ -68,6 +67,11 @@ IF (ZORBA_WITH_REST)
   HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS rest)
 ENDIF (ZORBA_WITH_REST)
 
+IF (NOT ZORBA_NO_SCHEMA)
+  SET(RUNTIME_SRCS ${RUNTIME_SRCS} validate/validate.cpp)
+  HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS validate)
+ENDIF (ZORBA_WITH_REST)
+    
 
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS accessors)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS collections)
@@ -83,4 +87,3 @@ HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS visitors)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS fncontext)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS misc)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS nodes)
-HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS validate)
