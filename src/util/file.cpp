@@ -229,7 +229,7 @@ void file::do_stat () {
 
   hfind = FindFirstFile(path_str, &findData);
   if(hfind == INVALID_HANDLE_VALUE)
-    error(__FUNCTION__,"file/dir not exist " + get_path ());
+    ;//error(__FUNCTION__,"file/dir not exist " + get_path ());
   else {
     size = findData.nFileSizeLow + (((int64_t)(findData.nFileSizeHigh))<<32);
     type  = (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)  ? type_directory :
