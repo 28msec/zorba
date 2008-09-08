@@ -28,8 +28,6 @@ WriteMemoryCallback(void *ptr, size_t size, size_t nmemb, void* data)
   return realsize;
 }
 
-static int curl_enabled = 0;
-
 int http_get(const char* url, xqp_string& result)
 {
   int result_code;
