@@ -88,12 +88,12 @@ void validateAfterUpdate(
     const QueryLoc& loc)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
-  set<zorba::store::Item*>::const_iterator it = nodes.begin();
-  set<zorba::store::Item*>::const_iterator end = nodes.end();
-  for (; it != end; it++)
-  {
-    validateAfterUpdate(*it, pul, staticContext, loc);
-  }
+    set<zorba::store::Item*>::const_iterator it = nodes.begin();
+    set<zorba::store::Item*>::const_iterator end = nodes.end();
+    for (; it != end; it++)
+    {
+        validateAfterUpdate(*it, pul, staticContext, loc);
+    }
 #endif //ZORBA_NO_XMLSCHEMA
 }
 
@@ -104,13 +104,15 @@ void validateAfterUpdate(
     static_context* staticContext, 
     const QueryLoc& loc)
 {
-  ZORBA_ASSERT(item->isNode());
-
-  DelegatingTypeManager* delegatingTypeManager = NULL;
-  bool isLax = true;
-
-  Schema* schema = delegatingTypeManager->getSchema();
-  if ( !schema )
+    ZORBA_ASSERT(item->isNode());
+    
+    TypeManager * typeManager = staticContext->get_typemanager();
+    DelegatingTypeManager* delegatingTypeManager = static_cast<DelegatingTypeManager*>(typeManager);
+    
+    bool isLax = true; //staticContext->isLax();
+    
+    Schema* schema = delegatingTypeManager->getSchema();
+    if ( !schema )
     {
         // no schema available no change to pul
         return;
