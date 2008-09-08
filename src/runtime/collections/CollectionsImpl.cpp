@@ -388,7 +388,7 @@ ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   store::Collection_t             theColl;
   store::Item_t                   item;
   checked_vector<int>             toBeRemoved;
-  checked_vector<int>::iterator   it, end, begin;
+  checked_vector<int>::reverse_iterator   it, end, begin;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -400,11 +400,11 @@ ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   while (consumeNext(item, theChildren[1].getp(), planState))
     toBeRemoved.push_back(theColl->indexOf(item));
 
-  begin = toBeRemoved.begin();
-  end = toBeRemoved.end();
+  begin = toBeRemoved.rbegin();
+  end = toBeRemoved.rend();
 
-  for (it = end; it != begin; --it)
-    theColl.getp()->removeFromCollection((*it));
+  for (it = begin; it != end; it++)
+    theColl.getp()->removeFromCollection(*it);
 
   STACK_END (state);
 }
