@@ -220,17 +220,19 @@ void SimpleCollection::removeFromCollection(long position)
 {
   if(position == -1)
   {
-    if( theXmlTrees.erase(theXmlTrees.end()) == theXmlTrees.end() )
+    if( theXmlTrees.size() == 0 )
     {
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
     }
+    theXmlTrees.erase(theXmlTrees.end());
   }
   else
   {
-    if( theXmlTrees.erase(theXmlTrees.begin() + position) == theXmlTrees.end() )
+    if(position >= theXmlTrees.size() )
     {
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
     }
+    theXmlTrees.erase(theXmlTrees.begin() + position);
   }
 }
 
