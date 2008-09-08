@@ -58,7 +58,7 @@ class GlobalEnvironment
 
   store::Store*                          m_store;
   std::auto_ptr<static_context>          m_rootStaticContext;
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_BIGNUMBERS
   M_APM                                  m_mapm; // this is a pointer type
 #endif
   std::auto_ptr<XQueryCompilerSubsystem> m_compilerSubSys;
