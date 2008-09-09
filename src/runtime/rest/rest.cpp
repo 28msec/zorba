@@ -502,7 +502,7 @@ static void processPayload(Item_t& payload_data, struct curl_httppost** first, s
     {
       curl_formadd(first, last,
                   CURLFORM_COPYNAME, name->getStringValue()->c_str(),
-                  CURLFORM_COPYCONTENTS, child->getStringValueP()->c_str(),
+                  CURLFORM_COPYCONTENTS, child->getStringValue()->c_str(),
                   CURLFORM_END);
     }
     else if (child->getNodeKind() == store::StoreConsts::elementNode)
@@ -585,7 +585,7 @@ static bool processSinglePayload(Item_t& payload_data, CURL* EasyHandle, curl_sl
     it->next(child);
     if (child->getNodeKind() == store::StoreConsts::textNode)
     {
-      xqpStringStore* str = child->getStringValueP();
+      xqpStringStore* str = child->getStringValue();
       buffer = std::auto_ptr<char>(new char[str->bytes()]);
       memcpy(buffer.get(), str->c_str(), str->bytes());
 
