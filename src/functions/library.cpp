@@ -35,6 +35,7 @@
 #include "functions/arithmetic.h"
 #include "functions/Nodes.h"
 #include "functions/tuple_functions.h"
+#include "functions/Util.h"
 
 #ifdef ZORBA_WITH_REST
 #include "functions/Rest.h"
@@ -869,6 +870,13 @@ DECL(sctx, zorba_export_xml,
      GENV_TYPESYSTEM.NONE_TYPE));
 
 //end collection functions
+
+// begin util functions
+DECL(sctx, zorba_schema_type,
+     (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "schema-type"),
+      GENV_TYPESYSTEM.ITEM_TYPE_ONE,
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE));
+// end util functions
 
 // begin context functions
 DECL(sctx, ctx_variable,

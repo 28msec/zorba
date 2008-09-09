@@ -50,6 +50,8 @@
 #include "runtime/fncontext/FnContextImpl.h"
 #include "runtime/debug/debug_iterators.h"
 #include "runtime/collections/CollectionsImpl.h"
+#include "runtime/util/UtilImpl.h"
+
 #ifdef ZORBA_WITH_REST
 #include "runtime/rest/rest.h"
 #endif
@@ -902,6 +904,8 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
   PRINTER_VISITOR_DEFINITION(ZorbaNodeAtIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaIndexOfIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaExportXmlIterator);
+
+  PRINTER_VISITOR_DEFINITION(ZorbaSchemaTypeIterator);
 
 #ifdef ZORBA_DEBUGGER
   PRINTER_VISITOR_DEFINITION(FnDebugIterator);

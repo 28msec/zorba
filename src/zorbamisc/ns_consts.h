@@ -30,6 +30,7 @@
 #define ZORBA_MATH_FN_NS "http://www.zorba-xquery.com/zorba/math-functions"
 #define ZORBA_NODEREF_FN_NS "http://www.zorba-xquery.com/zorba/node-ref-functions"
 #define ZORBA_COLLECTION_FN_NS "http://www.zorba-xquery.com/zorba/collection-functions"
+#define ZORBA_ALEXIS_FN_NS "http://www.zorba-xquery.com/zorba/util-functions"
 
 #define ZORBA_COLLATION_NS_BASE "http://www.zorba-xquery.com/zorba/collations/"
 #define ZORBA_DEF_COLLATION_NS ZORBA_COLLATION_NS_BASE "IDENTICAL/en/US"

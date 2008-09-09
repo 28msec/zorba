@@ -247,6 +247,8 @@ namespace zorba
   class ZorbaIndexOfIterator;
   class ZorbaExportXmlIterator;
 
+  class ZorbaSchemaTypeIterator;
+
   namespace gflwor{
     class TupleStreamIterator;
     class TupleSourceIterator;
@@ -717,6 +719,8 @@ namespace zorba
     PLAN_ITER_VISITOR(ZorbaNodeAtIterator);
     PLAN_ITER_VISITOR(ZorbaIndexOfIterator);
     PLAN_ITER_VISITOR(ZorbaExportXmlIterator);
+
+    PLAN_ITER_VISITOR(ZorbaSchemaTypeIterator);
 
 #ifdef ZORBA_DEBUGGER
     PLAN_ITER_VISITOR ( FnDebugIterator );  
