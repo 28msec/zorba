@@ -61,6 +61,17 @@ protected:
   bool import_comment(IXMLDOMComment *dom_comment);
 };
 
+
+class CMyBSTR
+{
+  BSTR  internal_bstr;
+public:
+  CMyBSTR(const char* str);
+  ~CMyBSTR();
+
+  operator BSTR();
+};
+
 } // namespace simplestore
 } // namespace zorba
 

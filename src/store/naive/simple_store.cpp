@@ -46,6 +46,11 @@
 
 #include "store/api/pul.h"
 
+#ifdef ZORBA_STORE_MSDOM
+#include "store/naive/msdom_addon/import_msdom.h"
+#include <time.h>
+#endif
+
 namespace zorba { namespace simplestore {
 
 typedef rchandle<store::TempSeq> TempSeq_t;
@@ -425,6 +430,31 @@ store::Item_t SimpleStore::loadDocument(
     ZORBA_ERROR(lErrorManager.getErrors().front().theErrorCode);
   }
 
+/*
+//some testing
+#ifdef ZORBA_STORE_MSDOM
+  clock_t   t0,t1;
+  XmlNode_t   root2 = root;
+  IXMLDOMNode  *dom_root;
+  dom_root = exportItemAsMSDOM(root.getp());
+  //debug
+  //{
+  //  BSTR  bstr_doc;
+  //  char  *char_text;
+  //  dom_root->get_xml(&bstr_doc);
+  //  char_text = ImportMSDOM::fromBSTR(bstr_doc);
+  //  std::cout << "document loaded into MS DOM " << std::endl
+  //    << char_text << std::endl;
+  //  ::free(char_text);
+  //}
+  //end debug
+  //reimport
+  t0 = clock();
+  root = importMSDOM(dom_root, uri, NULL);
+  t1 = clock();
+  std::cout << "time spent importing MSDOM: " << (t1-t0) << std::endl;
+#endif
+*/
   if (root != NULL)
     theDocuments.insert(urip, root);
 
@@ -856,8 +886,25 @@ IXMLDOMNode*   SimpleStore::exportItemAsMSDOM(store::Item_t it)
   if(it == NULL)
     return NULL;
   XmlNode *xml_node = dynamic_cast<XmlNode*>(it.getp());
-  return xml_node->GetDOMNode();
+  if(xml_node)
+    return xml_node->GetDOMNode();
+  else
+    return NULL;
 }
+
+store::Item_t  SimpleStore::importMSDOM(IXMLDOMNode* domNode,
+                                        xqpStringStore_t docUri,
+                                        xqpStringStore_t baseUri)
+{
+  ImportMSDOM   importer(theItemFactory);
+
+  XmlNode_t root_node = importer.importMSDOM(domNode, docUri, baseUri);
+  const xqpStringStore* urip = docUri.getp();
+  theDocuments.insert(urip, root_node);
+
+  return root_node.getp();
+}
+
 #endif
 
 } // namespace store

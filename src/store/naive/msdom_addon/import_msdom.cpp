@@ -527,5 +527,35 @@ bool ImportMSDOM::import_comment(IXMLDOMComment *dom_comment)
   return true;
 }
 
+
+
+
+////////////////////////////////////////
+CMyBSTR::CMyBSTR(const char* str)
+{
+  int   len;
+  LPWSTR  outstr;
+
+  len = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0);
+  outstr = (wchar_t*)malloc(sizeof(wchar_t)*(len+1));
+  MultiByteToWideChar(CP_UTF8, 0, str, -1, outstr, len);
+  outstr[len] = 0;
+
+  internal_bstr = SysAllocString(outstr);
+  free(outstr);
+}
+
+CMyBSTR::~CMyBSTR()
+{
+  ::SysFreeString(internal_bstr);
+}
+
+CMyBSTR::operator BSTR()
+{
+  return internal_bstr;
+}
+
+
+
 } // namespace simplestore
 } // namespace zorba

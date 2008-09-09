@@ -178,6 +178,9 @@ public:
 
 #ifdef ZORBA_STORE_MSDOM
   IXMLDOMNode   *exportItemAsMSDOM(store::Item_t it);
+  store::Item_t  importMSDOM(IXMLDOMNode* domNode,
+                            xqpStringStore_t docUri,
+                            xqpStringStore_t baseUri);
 #endif
 };
 

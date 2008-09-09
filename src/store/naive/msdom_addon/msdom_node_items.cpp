@@ -1221,11 +1221,11 @@ ElementNode::ElementNode(
     xqpStringStore_t    name_str;
 
     name_str = theName->getStringValue();
-    CComBSTR      bstr_name(name_str->c_str());
+    CMyBSTR      bstr_name(name_str->c_str());
     CComVariant   node_type(NODE_ELEMENT);
     xqpStringStore_t    ns_str;
     ns_str = nodeName->getNamespace();
-    CComBSTR      bstr_namespace(ns_str->c_str());
+    CMyBSTR      bstr_namespace(ns_str->c_str());
     IXMLDOMNode   *dom_node;
     hr = getTree()->getDOMcreator()->createNode(node_type, bstr_name, bstr_namespace, &dom_node);
     if(FAILED(hr))
@@ -1368,7 +1368,7 @@ XmlNode* ElementNode::copy2(
             xqpStringStore* ns = reinterpret_cast<ElementNode*>(rootParent)->
                                  findBinding(prefix);
             if (ns != NULL)
-              copyNode->addLocalBinding(prefix, ns);//??theName->getNamespace());
+              copyNode->addLocalBinding(prefix, theName->getNamespace());//ns);
           }
 
           copyNode->setNsContext(rootParent->getNsContext());
@@ -1916,7 +1916,7 @@ void ElementNode::removeLocalBinding(xqpStringStore* prefix, xqpStringStore* ns)
         qname += prefix->c_str();
       }
 
-      CComBSTR  bstr_qname(qname.c_str());
+      CMyBSTR  bstr_qname(qname.c_str());
       theDOMElement->removeAttribute(bstr_qname);
     }
   }
@@ -1943,8 +1943,8 @@ void ElementNode::addLocalBinding_DOM(xqpStringStore* prefix, xqpStringStore* ns
       qn = "xmlns";
     else
       qn = xqpString::concat("xmlns:", prefix->c_str());
-    CComBSTR      bstr_name(qn.c_str());
-    CComBSTR      bstr_namespace(ns->c_str());
+    CMyBSTR      bstr_name(qn.c_str());
+    CMyBSTR      bstr_namespace(ns->c_str());
     CComVariant   var_namespace(bstr_namespace);
 
     HRESULT   hr;
@@ -2452,11 +2452,11 @@ AttributeNode::AttributeNode(
       xqpStringStore_t    name_str;
 
       name_str = theName->getStringValue();
-      CComBSTR      bstr_name(name_str->c_str());
+      CMyBSTR      bstr_name(name_str->c_str());
       CComVariant   node_type(NODE_ATTRIBUTE);
       xqpStringStore_t    ns_str;
       ns_str = attrName->getNamespace();
-      CComBSTR      bstr_namespace(ns_str->c_str());
+      CMyBSTR      bstr_namespace(ns_str->c_str());
       IXMLDOMNode   *dom_node;
       hr = getTree()->getDOMcreator()->createNode(node_type, bstr_name, bstr_namespace, &dom_node);
       if(FAILED(hr))
@@ -2473,7 +2473,7 @@ AttributeNode::AttributeNode(
     if((!getTree()->during_import_DOM) && theDOMAttribute)
     {//set the DOM attribute value
       xqpStringStore_t    str_value = theTypedValue->getStringValue();
-      CComBSTR    bstr_value(str_value->c_str());
+      CMyBSTR    bstr_value(str_value->c_str());
       CComVariant   var_value(bstr_value);
       theDOMAttribute->put_value(var_value);
     }
@@ -2530,7 +2530,7 @@ void AttributeNode::setTypedValue(store::Item_t& value)
   if((!getTree()->during_import_DOM) && theDOMAttribute)
   {//set the DOM attribute value
     xqpStringStore_t    str_value = theTypedValue->getStringValue();
-    CComBSTR    bstr_value(str_value->c_str());
+    CMyBSTR    bstr_value(str_value->c_str());
     CComVariant   var_value(bstr_value);
     theDOMAttribute->put_value(var_value);
   }
@@ -2748,7 +2748,7 @@ TextNode::TextNode(
   if(!dom_text)
   {//create the MS DOM Text Node
     HRESULT   hr;
-    CComBSTR  bstr_content;
+    CMyBSTR  bstr_content("");
 
     hr = getTree()->getDOMcreator()->createTextNode(bstr_content, &theContent.theDOMText);
     if(FAILED(hr))
@@ -2803,7 +2803,7 @@ TextNode::TextNode(
   if(!dom_text)
   {//create the MS DOM Text Node
     HRESULT   hr;
-    CComBSTR  bstr_content;
+    CMyBSTR  bstr_content("");
 
     hr = getTree()->getDOMcreator()->createTextNode(bstr_content, &theContent.theDOMText);
     if(FAILED(hr))
@@ -2870,7 +2870,7 @@ void TextNodeContent::setText(xqpStringStore_t& text, bool update_DOM)
 #endif
   if(update_DOM && text && theDOMText)
   {
-    CComBSTR  bstr_text(text->c_str());
+    CMyBSTR  bstr_text(text->c_str());
     CComVariant var_text(bstr_text);
     theDOMText->put_nodeValue(var_text);
   }
@@ -2890,7 +2890,7 @@ void TextNodeContent::setText(xqpStringStore* text, bool update_DOM)
 #endif
   if(update_DOM && text && theDOMText)
   {
-    CComBSTR  bstr_text(text->c_str());
+    CMyBSTR  bstr_text(text->c_str());
     CComVariant var_text(bstr_text);
     theDOMText->put_nodeValue(var_text);
   }
@@ -2909,7 +2909,7 @@ void TextNodeContent::setValue(store::Item_t& val, bool update_DOM)
 
   if(update_DOM && val && theDOMText)
   {
-    CComBSTR  bstr_text(val->getStringValue()->c_str());
+    CMyBSTR  bstr_text(val->getStringValue()->c_str());
     CComVariant var_text(bstr_text);
     theDOMText->put_nodeValue(var_text);
   }
@@ -2928,7 +2928,7 @@ void TextNodeContent::setValue(store::Item* val, bool update_DOM)
 
   if(update_DOM && val && theDOMText)
   {
-    CComBSTR  bstr_text(val->getStringValue()->c_str());
+    CMyBSTR  bstr_text(val->getStringValue()->c_str());
     CComVariant var_text(bstr_text);
     theDOMText->put_nodeValue(var_text);
   }
@@ -3167,8 +3167,8 @@ PiNode::PiNode(
   
   if(!dom_pi)
   {
-    CComBSTR  bstr_target(target->c_str());
-    CComBSTR  bstr_content(content->c_str());
+    CMyBSTR  bstr_target(target->c_str());
+    CMyBSTR  bstr_content(content->c_str());
     HRESULT   hr;
 
     hr = getTree()->getDOMcreator()->createProcessingInstruction(bstr_target, bstr_content, &theDOMpi);
@@ -3349,7 +3349,7 @@ CommentNode::CommentNode(
   
   if(!dom_comment)
   {
-    CComBSTR  bstr_content(content->c_str());
+    CMyBSTR  bstr_content(content->c_str());
     HRESULT   hr;
 
     hr = getTree()->getDOMcreator()->createComment(bstr_content, &theDOMComment);
