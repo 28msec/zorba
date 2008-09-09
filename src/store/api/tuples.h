@@ -25,55 +25,102 @@ namespace zorba {
 
 namespace store {
 
-class TupleField {
-  public:
-    typedef enum {
-      UNINITIALIZED,
-      FIELD_TYPE_ITEM,
-      FIELD_TYPE_SEQ,
-    } tag_t;
+/*******************************************************************************
 
-    TupleField();
-    ~TupleField();
+  Stores a pointer that is a pointer to either a single item or a temp sequence
 
-    TupleField(const TupleField&);
-    const TupleField& operator=(const TupleField&);
+ *******************************************************************************/
+class TupleField 
+{
+ public:
+  typedef enum 
+  {
+    UNINITIALIZED,
+    FIELD_TYPE_ITEM,
+    FIELD_TYPE_SEQ,
+  } tag_t;
 
-    tag_t getTag() const;
+  TupleField();
+  ~TupleField();
 
-    void get(Item_t& item) const;
-    void set(Item *item);
+  TupleField(const TupleField&);
+  const TupleField& operator=(const TupleField&);
 
-    void get(TempSeq_t& seq) const;
-    void set(TempSeq *seq);
+  tag_t getTag() const;
 
-    void reset();
+  void get(Item_t& item) const;
+  void set(Item *item);
 
-  private:
-    tag_t m_tag;
-    void *m_data;
+  void get(TempSeq_t& seq) const;
+  void set(TempSeq *seq);
+
+  void reset();
+
+ private:
+  tag_t m_tag;
+  void *m_data;
 };
 
+
 inline TupleField::TupleField()
-  : m_tag(UNINITIALIZED),
+  :
+  m_tag(UNINITIALIZED),
   m_data(NULL)
 {
 }
+
 
 inline TupleField::~TupleField()
 {
   reset();
 }
 
+
 inline TupleField::TupleField(const TupleField& other)
 {
-  switch(other.getTag()) {
+  switch(other.getTag()) 
+  {
     case UNINITIALIZED:
       m_tag = UNINITIALIZED;
       m_data = NULL;
       break;
 
     case FIELD_TYPE_ITEM:
+    {
+      m_tag = FIELD_TYPE_ITEM;
+      m_data = other.m_data;
+      Item *ip = static_cast<Item *>(m_data);
+      ip->addReference(ip->getSharedRefCounter() SYNC_PARAM2(ip->getRCLock()));
+      break;
+    }
+
+    case FIELD_TYPE_SEQ:
+    {
+      m_tag = FIELD_TYPE_SEQ;
+      m_data = other.m_data;
+      TempSeq *tp = static_cast<TempSeq *>(m_data);
+      tp->addReference(tp->getSharedRefCounter() SYNC_PARAM2(tp->getRCLock()));
+      break;
+    }
+
+    default:
+      ZORBA_ASSERT(false);
+  }
+}
+
+
+inline const TupleField& TupleField::operator=(const TupleField& other)
+{
+  if (this != &other) 
+  {
+    switch(other.getTag()) 
+    {
+      case UNINITIALIZED:
+        m_tag = UNINITIALIZED;
+        m_data = NULL;
+        break;
+
+      case FIELD_TYPE_ITEM:
       {
         m_tag = FIELD_TYPE_ITEM;
         m_data = other.m_data;
@@ -82,7 +129,7 @@ inline TupleField::TupleField(const TupleField& other)
         break;
       }
 
-    case FIELD_TYPE_SEQ:
+      case FIELD_TYPE_SEQ:
       {
         m_tag = FIELD_TYPE_SEQ;
         m_data = other.m_data;
@@ -91,38 +138,6 @@ inline TupleField::TupleField(const TupleField& other)
         break;
       }
 
-    default:
-      ZORBA_ASSERT(false);
-  }
-}
-
-inline const TupleField& TupleField::operator=(const TupleField& other)
-{
-  if (this != &other) {
-    switch(other.getTag()) {
-      case UNINITIALIZED:
-        m_tag = UNINITIALIZED;
-        m_data = NULL;
-        break;
-
-      case FIELD_TYPE_ITEM:
-        {
-          m_tag = FIELD_TYPE_ITEM;
-          m_data = other.m_data;
-          Item *ip = static_cast<Item *>(m_data);
-          ip->addReference(ip->getSharedRefCounter() SYNC_PARAM2(ip->getRCLock()));
-          break;
-        }
-
-      case FIELD_TYPE_SEQ:
-        {
-          m_tag = FIELD_TYPE_SEQ;
-          m_data = other.m_data;
-          TempSeq *tp = static_cast<TempSeq *>(m_data);
-          tp->addReference(tp->getSharedRefCounter() SYNC_PARAM2(tp->getRCLock()));
-          break;
-        }
-
       default:
         ZORBA_ASSERT(false);
     }
@@ -130,10 +145,12 @@ inline const TupleField& TupleField::operator=(const TupleField& other)
   return *this;
 }
 
+
 inline TupleField::tag_t TupleField::getTag() const
 {
   return m_tag;
 }
+
 
 inline void TupleField::get(Item_t& item) const
 {
@@ -142,13 +159,18 @@ inline void TupleField::get(Item_t& item) const
   item = ip;
 }
 
+
 inline void TupleField::set(Item *item)
 {
-  if (m_data == item) {
+  if (m_data == item) 
+  {
     return;
   }
+
   reset();
-  if (item != NULL) {
+
+  if (item != NULL) 
+  {
     m_tag = FIELD_TYPE_ITEM;
     m_data = item;
     item->addReference(item->getSharedRefCounter() SYNC_PARAM2(item->getRCLock()));
@@ -162,43 +184,53 @@ inline void TupleField::get(TempSeq_t& seq) const
   seq = seqp;
 }
 
+
 inline void TupleField::set(TempSeq *seq)
 {
-  if (m_data == seq) {
+  if (m_data == seq) 
+  {
     return;
   }
+
   reset();
-  if (seq != NULL) {
+
+  if (seq != NULL) 
+  {
     m_tag = FIELD_TYPE_SEQ;
     m_data = seq;
     seq->addReference(seq->getSharedRefCounter() SYNC_PARAM2(seq->getRCLock()));
   }
 }
 
+
 inline void TupleField::reset()
 {
-  if (m_data == NULL) {
+  if (m_data == NULL) 
+  {
     return;
   }
   ZORBA_ASSERT(m_tag != UNINITIALIZED);
-  switch(m_tag) {
+
+  switch(m_tag) 
+  {
     case FIELD_TYPE_ITEM:
-      {
-        Item *ip = static_cast<Item *>(m_data);
-        ip->removeReference(ip->getSharedRefCounter() SYNC_PARAM2(ip->getRCLock()));
-        break;
-      }
+    {
+      Item *ip = static_cast<Item *>(m_data);
+      ip->removeReference(ip->getSharedRefCounter() SYNC_PARAM2(ip->getRCLock()));
+      break;
+    }
 
     case FIELD_TYPE_SEQ:
-      {
-        TempSeq *seqp = static_cast<TempSeq *>(m_data);
-        seqp->removeReference(seqp->getSharedRefCounter() SYNC_PARAM2(seqp->getRCLock()));
-        break;
-      }
+    {
+      TempSeq *seqp = static_cast<TempSeq *>(m_data);
+      seqp->removeReference(seqp->getSharedRefCounter() SYNC_PARAM2(seqp->getRCLock()));
+      break;
+    }
 
     default:
       ZORBA_ASSERT(false);
   }
+
   m_tag = UNINITIALIZED;
   m_data = NULL;
 }

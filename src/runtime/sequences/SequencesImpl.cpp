@@ -1516,7 +1516,6 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     uriString = uriItem->getStringValueP();
 
-
     try {
       // maybe the document is stored with the uri that is given by the user
       result = GENV_STORE.getDocument(uriString.getStore());

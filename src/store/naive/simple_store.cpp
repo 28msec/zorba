@@ -427,7 +427,8 @@ store::Item_t SimpleStore::loadDocument(
   root = loader->loadXml(uri, stream);
   if (lErrorManager.hasErrors()) 
   {
-    ZORBA_ERROR(lErrorManager.getErrors().front().theErrorCode);
+    ZORBA_ERROR_PARAM(lErrorManager.getErrors().front().theErrorCode,
+                      lErrorManager.getErrors().front().theDescription, "");
   }
 
 /*

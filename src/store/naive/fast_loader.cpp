@@ -154,7 +154,7 @@ void FastXmlLoader::abortload()
   {
     NsBindingsContext* ctx = theBindingsStack.top();
     theBindingsStack.pop();
-    delete ctx;
+    //delete ctx;
   }
 }
 
