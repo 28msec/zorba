@@ -23,8 +23,7 @@
 #include <iostream>
 
 
-namespace zorba
-{
+namespace zorba {
 
 using namespace std;
 using namespace XERCES_CPP_NAMESPACE;
@@ -126,5 +125,6 @@ void ValidationEventHandler::resetTextInfo()
     }
 }
 
-} // end namespace zorba
+}  // end namespace zorba
+
 #endif // ZORBA_NO_XMLSCHEMA

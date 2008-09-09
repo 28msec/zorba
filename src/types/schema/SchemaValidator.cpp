@@ -27,8 +27,7 @@
 using namespace std;
 using namespace XERCES_CPP_NAMESPACE;
 
-namespace zorba
-{
+namespace zorba {
 
 SchemaValidator::SchemaValidator(TypeManager *typeManager, XERCES_CPP_NAMESPACE::XMLGrammarPool *grammarPool,
     bool isLax, const QueryLoc& loc)
@@ -143,5 +142,6 @@ xqtref_t SchemaValidator::getType()
     return type;
 }
 
-}// namespace zorba
+}  // namespace zorba
+
 #endif // ZORBA_NO_XMLSCHEMA

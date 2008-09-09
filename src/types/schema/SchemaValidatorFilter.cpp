@@ -34,8 +34,7 @@
 using namespace std;
 XERCES_CPP_NAMESPACE_USE;
 
-namespace zorba
-{
+namespace zorba {
 
 const XMLCh* emptyToNull(const XMLCh * chars)
 {
@@ -1139,6 +1138,6 @@ void SchemaValidatorFilter::error(const unsigned int errCode, const XMLCh* const
     ZORBA_ERROR_LOC_DESC( XQDY0027, _loc, XMLString::transcode(exc_msg.getRawBuffer()) );
 }
 
-} //namespace zorba
+}  //namespace zorba
 
 #endif // ZORBA_NO_XMLSCHEMA
