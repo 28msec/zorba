@@ -204,18 +204,17 @@ std::ostream& operator<< (std::ostream& os, const ZorbaException& aException)
 std::ostream& operator<< (std::ostream& os, const QueryException& aException)
 {
 #ifndef NDEBUG
-  return os << "Error " << aException.getDescription()
-            << " occured in " << aException.getFileName()
+  return os << "Error in " << aException.getFileName()
             << ":"  << aException.getFileLineNumber() 
-            << "Generated from " << aException.getQueryURI()
-            << " Error on line " << aException.getLineBegin() 
-            << " column " << aException.getColumnBegin() + 1
+            << ". Query: <" << aException.getQueryURI()
+            << ">, line " << aException.getLineBegin() 
+            << ", column " << aException.getColumnBegin() + 1
             << ": " 
             << (ZorbaException)aException;
 #else
   return os << "Generated from " << aException.getQueryURI()
-            << " Error on line " << aException.getLineBegin()
-            << " column " << aException.getColumnBegin() + 1
+            << ". Error on line " << aException.getLineBegin()
+            << ", column " << aException.getColumnBegin() + 1
             << ": " 
             << (ZorbaException)aException;
 #endif
