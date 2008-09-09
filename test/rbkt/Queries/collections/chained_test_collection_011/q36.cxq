@@ -1,0 +1,3 @@
+import module namespace
+fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
+fn-zorba-collection:remove-nodes('http://example.org/collection_333', <a/>)

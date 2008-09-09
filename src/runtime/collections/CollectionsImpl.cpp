@@ -602,14 +602,14 @@ store::Collection_t getCollection(PlanState& planState, const xqpStringStore_t s
     resolvedURIString = planState.sctx()->resolve_relative_uri(strURI.getp()).getStore();
     GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
   } catch (error::ZorbaError& e) {
-    ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
+    ZORBA_ERROR_LOC_PARAM(API0006_COLLECTION_NOT_FOUND, loc, strURI, "");
   }
 
   try {
     return planState.sctx()->get_collection_uri_resolver()->resolve(resolvedURIItem,
                              planState.sctx());
   } catch (error::ZorbaError& e) {
-    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+    ZORBA_ERROR_LOC_PARAM(API0006_COLLECTION_NOT_FOUND, loc, strURI, "");
   }
 
   return NULL;
