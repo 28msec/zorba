@@ -1863,7 +1863,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
       if (mod && mod->get_collation_spec () != NULL)
         col = mod->get_collation_spec ()->get_uri ();
       if (! sctx_p->has_collation_uri (col))
-        ZORBA_ERROR (XQST0076);
+        ZORBA_ERROR_LOC (XQST0076, loc);
       rchandle<order_modifier> emod (new order_modifier (dir_spec, empty_spec, col));
       expr_t lOrderExpr = orders [i];
       if (lOrderExpr->isUpdating())

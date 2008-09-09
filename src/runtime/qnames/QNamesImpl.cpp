@@ -79,7 +79,7 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
       // must check for FOCA0002 first
       if (!GENV_GCAST.castableToNCName (resPre) || ! GENV_GCAST.castableToNCName (resLocal))
-        ZORBA_ERROR (FOCA0002);
+        ZORBA_ERROR_LOC (FOCA0002, loc);
       
       if (consumeNext(itemElem, theChild1, planState )) {
         itemElem->getNamespaceBindings(NamespaceBindings);
@@ -93,14 +93,14 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
           }
           }
         if (resNs == NULL)
-          ZORBA_ERROR (FONS0004);
+          ZORBA_ERROR_LOC (FONS0004, loc);
       }
     } else {
       resNs = new xqpStringStore("");
       resPre = new xqpStringStore("");
       resLocal = qname;
       if (! GENV_GCAST.castableToNCName (resLocal))
-        ZORBA_ERROR (FOCA0002);
+        ZORBA_ERROR_LOC (FOCA0002, loc);
     }
 
     GENV_ITEMFACTORY->createQName(result, resNs, resPre, resLocal);
@@ -160,7 +160,7 @@ QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if( -1 != index ) {
     if (resNs->empty ())
-      ZORBA_ERROR (FOCA0002);
+      ZORBA_ERROR_LOC (FOCA0002, loc);
 
     resPre = new xqpStringStore(qname->str().substr(0, index));
     resLocal = new xqpStringStore(qname->str().substr(index+1, qname->bytes() - index));
@@ -171,7 +171,7 @@ QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   
   if ((index != -1 && ! GENV_GCAST.castableToNCName (resPre))
       || ! GENV_GCAST.castableToNCName (resLocal))
-    ZORBA_ERROR (FOCA0002);
+    ZORBA_ERROR_LOC (FOCA0002, loc);
 
   GENV_ITEMFACTORY->createQName(result, resNs, resPre, resLocal);
   STACK_PUSH(true, state );

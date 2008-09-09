@@ -380,7 +380,7 @@ bool EitherNodesOrAtomicsIterator::nextImpl(store::Item_t& result, PlanState& pl
     
     while (CONSUME (result, 0)) {
       if (lState->atomics != item->isAtomic ())
-        ZORBA_ERROR (XPTY0018);
+        ZORBA_ERROR_LOC (XPTY0018, loc);
       STACK_PUSH (true, lState);
     }
   }

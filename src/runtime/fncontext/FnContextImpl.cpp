@@ -85,7 +85,7 @@ PlanIter_t EvalIterator::compile (CompilerCB *ccb, xqp_string query,
 
     rchandle<MainModule> mm = ast.dyn_cast<MainModule> ();
     if (mm == NULL)
-      ZORBA_ERROR (XPST0003);
+      ZORBA_ERROR_LOC (XPST0003, loc);
     rchandle<Prolog> prolog = mm->get_prolog ();
     if (prolog == NULL) {
       prolog = new Prolog (loc, NULL, NULL);
