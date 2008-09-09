@@ -2999,12 +2999,13 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       ZORBA_ASSERT (found);
     } else {
       // we get the ownership if the moduleResolver is a standard resolver
-      istream* modfile = lModuleResolver->resolve(aturiitem, sctx_p);
+      auto_ptr<istream> modfile (lModuleResolver->resolve(aturiitem, sctx_p));
+      if (! isStandardResolver)
+        modfile.release ();
 
-      try {
-        if (! *modfile) {
-          ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
-        }
+      if (modfile.get () == NULL || ! *modfile) {
+        ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
+      }
 
         CompilerCB mod_ccb (*compilerCB);
         static_context *independent_sctx = static_cast<static_context *> (minfo->topCompilerCB->m_sctx->get_parent ());
@@ -3023,11 +3024,6 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
         minfo->init_exprs.push_back (translate_aux (*ast, &mod_ccb, minfo, mod_stk1));
         minfo->mod_ns_map.put (xqpString(resolveduri.getp()), imported_ns);
 
-      } catch (...) {
-        if (isStandardResolver) delete modfile;
-        throw;
-      }
-      if (isStandardResolver) delete modfile;
     }
 
     if (imported_ns != target_ns)
