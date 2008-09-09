@@ -46,7 +46,6 @@ int http_get(const char* url, xqp_string& result)
   result_code = curl_easy_perform(curl_handle);
   curl_easy_cleanup(curl_handle);
 
-  temp.push_back(0);
   result = temp;
   return result_code;
 }
