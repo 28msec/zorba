@@ -44,10 +44,8 @@ namespace zorba {
 bool
 ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t       itemURI;
-  xqpStringStore_t    strURI;
-  URI                 uri;
-  xqp_string          file;
+  store::Item_t       itemURI, itemXML, resolvedURIItem;
+  xqpStringStore_t    strURI, resolvedURIString;
   store::Collection_t theColl;
 
   PlanIteratorState *state;
@@ -55,14 +53,36 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
   if (consumeNext(itemURI, theChildren[0].getp(), planState))
   {
-    uri = URI(itemURI->getStringValue().getp());
+    try {
+      theColl = getCollection(planState, itemURI->getStringValue(), loc);
+    } catch (error::ZorbaError& e) { }
 
-    if(http_get(itemURI->getStringValue().getp()->c_str(), file) != 0)
-      ZORBA_ERROR_LOC_DESC_OSS (API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, loc, "File or folder does not exist: " << itemURI->getStringValue()->str());
+    if(theColl != NULL)
+      ZORBA_ERROR_LOC_DESC(API0005_COLLECTION_ALREADY_EXISTS, loc, "Collection already exists");
+    else {
+      try {
+        itemXML = GENV_STORE.getDocument(itemURI->getStringValue());
+      } catch (error::ZorbaError& e) {
+        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+      }
+      if (itemXML == NULL) {
+        try {
+          resolvedURIString = planState.sctx()->resolve_relative_uri(itemURI->getStringValueP()).getStore();
+          GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
+        } catch (error::ZorbaError& e) {
+          ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
+        }
+        try {
+          itemXML = planState.sctx()->get_document_uri_resolver()->resolve(resolvedURIItem, planState.sctx());
+        } catch (error::ZorbaError& e) {
+          ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+        }
+      }
 
-    strURI = itemURI->getStringValue();
-    theColl = GENV_STORE.createCollection(strURI);
-    theColl->addToCollection(new std::istringstream(file.c_str()), 0);
+      strURI = itemURI->getStringValue();
+      theColl = GENV_STORE.createCollection(strURI);
+      theColl->addToCollection(itemXML, 0);
+    }
   }
 
   STACK_END (state);
@@ -71,13 +91,11 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 bool
 ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t       itemURI, resolvedURIItem, inNode, intt, inArg, attr;
+  store::Item_t       itemURI, resolvedURIItem, inNode, intt, inArg, attr, itemXML;
   xqp_string          attrName;
   xqpStringStore_t    uriString, resolvedURIString, fileString;
   store::Iterator_t   theIterator, theAttributes;;
-  xqpStringStore_t    strURI;
   URI                 uriCatalog, uriFile;
-  xqp_string          file;
   store::Collection_t theColl;
 
   PlanIteratorState *state;
@@ -121,19 +139,40 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
           attrName = attr->getNodeName()->getStringValue()->str();
           if(attr->getNodeName()->getLocalName()->byteEqual("href", 4)) {
 
-            strURI = attr->getStringValue();
-            if(strURI->indexOf("/") == -1)
-              uriFile = URI(uriCatalog, strURI.getp());
+            if(attr->getStringValue()->indexOf("/") == -1)
+              uriFile = URI(uriCatalog, attr->getStringValue().getp());
             else
-              uriFile = URI(strURI.getp());
+              uriFile = URI(attr->getStringValue().getp());
 
             fileString = uriFile.toString().getStore();
 
-            if(http_get(uriFile.toString().c_str(), file) != 0)
-              ZORBA_ERROR_LOC_DESC_OSS (API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, loc, "File or folder does not exist: " << uriFile.toString().c_str());
+            try {
+              theColl = getCollection(planState, fileString, loc);
+            } catch (error::ZorbaError& e) { }
 
-            theColl = GENV_STORE.createCollection(fileString);
-            theColl->addToCollection(new std::istringstream(file.c_str()), 0);
+            if(theColl == NULL) {
+              try {
+                itemXML = GENV_STORE.getDocument(fileString);
+              } catch (error::ZorbaError& e) {
+                ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+              }
+              if (itemXML == NULL) {
+                try {
+                  resolvedURIString = planState.sctx()->resolve_relative_uri(fileString.getp()).getStore();
+                  GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
+                } catch (error::ZorbaError& e) {
+                  ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
+                }
+                try {
+                  itemXML = planState.sctx()->get_document_uri_resolver()->resolve(resolvedURIItem, planState.sctx());
+                } catch (error::ZorbaError& e) {
+                  ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+                }
+              }
+
+              theColl = GENV_STORE.createCollection(fileString);
+              theColl->addToCollection(itemXML, 0);
+            }
           }
         }
       }
@@ -208,17 +247,25 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSt
   if (consumeNext(item, theChildren[0].getp(), planState))
   {
     try {
-      resolvedURIString = planState.sctx()->resolve_relative_uri(item->getStringValueP()).getStore();
-    } catch (error::ZorbaError& e) {
-      ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
-    }
+      theColl = getCollection(planState, item->getStringValue(), loc);
+    } catch (error::ZorbaError& e) { }
 
-    theColl = GENV_STORE.createCollection(resolvedURIString);
+    if(theColl != NULL)
+      ZORBA_ERROR_LOC_DESC(API0005_COLLECTION_ALREADY_EXISTS, loc, "Collection already exists");
+    else {
+      try {
+        resolvedURIString = planState.sctx()->resolve_relative_uri(item->getStringValueP()).getStore();
+      } catch (error::ZorbaError& e) {
+        ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
+      }
 
-    if(theChildren.size() == 2) {
-      //add the nodes to the newly created collection
-      while (consumeNext(item, theChildren[1].getp(), planState))
-        theColl.getp()->addToCollection(item.getp(), -1);
+      theColl = GENV_STORE.createCollection(resolvedURIString);
+
+      if(theChildren.size() == 2) {
+        //add the nodes to the newly created collection
+        while (consumeNext(item, theChildren[1].getp(), planState))
+          theColl.getp()->addToCollection(item.getp(), -1);
+      }
     }
   }
 
