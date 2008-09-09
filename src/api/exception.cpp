@@ -212,11 +212,11 @@ std::ostream& operator<< (std::ostream& os, const QueryException& aException)
             << ": " 
             << (ZorbaException)aException;
 #else
-  return os << "Generated from " << aException.getQueryURI()
-            << ". Error on line " << aException.getLineBegin()
+  return os << "Query: <" << aException.getQueryURI()
+            << ">, line " << aException.getLineBegin()
             << ", column " << aException.getColumnBegin() + 1
-            << ": " 
-            << (ZorbaException)aException;
+            << ": "
+            << (ZorbaException)aException; 
 #endif
 }
 
