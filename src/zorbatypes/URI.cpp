@@ -254,6 +254,10 @@ URI::initialize(const xqpString& uri)
       initializeAuthority(lAuthUri);
     } else {
       set_host("");
+      
+      #ifdef WIN32
+        lIndex++;//jump over the third '/'
+      #endif
     }
   }
 
@@ -375,7 +379,7 @@ URI::resolve(const URI * base_uri)
   }
 
 
-  xqpString base_path = base_uri->get_path();
+  xqpString base_path = base_uri->get_encoded_path();
 
   xqpString path;
   if ( base_uri->is_set(Path) ) {
@@ -944,6 +948,10 @@ URI::build_full_text() const
         lURI << theUserInfo << "@";
 
       lURI << theHost;
+#ifdef WIN32
+      if(theScheme.byteEqual("file"))
+        lURI << "/";
+#endif
 
       if ( is_set(Port) )
         lURI << ":" << thePort;
@@ -982,6 +990,10 @@ URI::build_ascii_full_text() const
         lURI << theUserInfo << "@";
 
       lURI << theHost;
+#ifdef WIN32
+      if(theScheme.byteEqual("file"))
+        lURI << "/";
+#endif
 
       if ( is_set(Port) )
         lURI << ":" << thePort;
