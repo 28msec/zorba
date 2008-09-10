@@ -380,6 +380,14 @@ int _tmain(int argc, _TCHAR* argv[])
       lQuery = lZorbaInstance->createQuery ();
       if (asFile)
         lQuery->setFileName (path.get_path ());
+      else {
+        // set the cwd to be used as base-uri in order to make the
+        // doc function doc("mydoc.xml") work
+        zorba::filesystem_path p;
+        std::stringstream lTmp;
+        lTmp << "file:///" << p.c_str() << "/";
+        lStaticContext->setBaseURI(lTmp.str());
+      }
       lQuery->compile (*qfile, lStaticContext, lHints);
     
       if (lTiming) 

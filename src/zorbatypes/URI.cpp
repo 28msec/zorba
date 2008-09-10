@@ -38,28 +38,31 @@ xqpStringStore_t  URI::decode_file_URI(const xqpStringStore_t& uri)
     xqp_string res(uri->c_str() + 8);
     return res.decodeFromUri().getStore();
   }
-  else 
-#endif
-    if (uri->byteCompare(0, 7, "file://") == 0) {
-    xqp_string res(uri->c_str() + 7);
-#if defined(UNIX)
-    res = xqp_string ("/") + res;
-#endif
-    return res.decodeFromUri().getStore();
-  }
   else
-    return uri;
+#endif
+    if (uri->byteCompare(0, 8, "file:///") == 0) {
+      xqp_string res(uri->c_str() + 7);
+      return res.decodeFromUri().getStore();
+    } else if (uri->byteCompare(0, 16, "file://localhost/")) {
+      xqp_string res(uri->c_str() + 16);
+      return res.decodeFromUri().getStore();
+    } else {
+      // should we raise an unknown host exception?
+      return uri;
+    }
 }
 
 // Assumes input is absolute path.
 xqpStringStore_t  URI::encode_file_URI(const xqpStringStore_t& uri)
 {
   xqpString  result (&*uri);
+  if (result.indexOf("://") != -1)
+    return uri;
 
 #if !defined(UNIX)
   result = result.replace("\\\\","/","");
-  result = xqpString ("/") + result;
 #endif
+  result = xqpString ("/") + result;
   result = xqpString ("file://") + result.encodeForUri();
   return result.getStore();
 }
@@ -75,7 +78,7 @@ URI::URI( const URI& base_uri, const xqpString& uri )
   :  theState(0),
      thePort(0)
 {
-  initialize(uri);
+  initialize(uri, true);
   resolve(&base_uri);
 }
 
@@ -189,7 +192,7 @@ URI::is_reservered_or_unreserved_char(char c)
 
 // initialize this uri based on a base-uri (i.e. uri resolving) and a (relative) uri given as string
 void
-URI::initialize(const xqpString& uri)
+URI::initialize(const xqpString& uri, bool have_base)
 {
   // first, we need to trim the uri
   // and only work with the trimmed one from this point on
@@ -214,10 +217,10 @@ URI::initialize(const xqpString& uri)
       (lColonIdx > lQueryIdx && lQueryIdx != -1) ||
       (lColonIdx > lFragmentIdx && lFragmentIdx != -1)) {
 
-//   // A standalone base is a valid URI
-//  if ( lColonIdx == 0 || (base_uri == 0 && lFragmentIdx != 0) ) {
-//    ZORBA_ERROR_DESC_OSS(XQST0046, "URI doesn't have an URI scheme");
-//  }
+   // A standalone base is a valid URI
+//if ( lColonIdx == 0 || (!have_base && lFragmentIdx != 0) ) {
+//  ZORBA_ERROR_DESC_OSS(XQST0046, "URI doesn't have an URI scheme");
+//}
 
   } else {
     initializeScheme(lTrimmedURI);
@@ -386,8 +389,8 @@ URI::resolve(const URI * base_uri)
     int last_slash = base_path.lastIndexOf("/");
     if ( last_slash != -1 )
       path = base_path.substr(0, last_slash+1);
-    else
-      path = "/";
+//  else
+//    path = "/";
 
   }
 
@@ -414,7 +417,7 @@ URI::resolve(const URI * base_uri)
 
   xqpString tmp_path = path.substr(1, path.length() - 1 );
   xqpString tmp1, tmp2;
-  while ((lIndex = tmp_path.indexOf("/../")) != -1) { // XMLString::patternMatch(&(path[offset]), SLASH_DOTDOT_SLASH)) != -1)
+  while ((lIndex = tmp_path.indexOf("/../")) != -1) {
 
     // Undo offset
     lIndex += offset;
@@ -760,7 +763,7 @@ URI::initializePath(const xqpString& uri)
           }
         } else if (!is_unreserved_char(c) && !is_path_character(c)) 
         {
-          ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char '" << c << "' in URI path " << uri);
+    //      ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char '" << c << "' in URI path " << uri);
         }
         ++lIndex;
       }
@@ -775,8 +778,8 @@ URI::initializePath(const xqpString& uri)
         if ( c == '%' ) {
           // TODO check errors
         } else if (!is_reservered_or_unreserved_char(c)) {
-          ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char '" << c << "' in URI path " << uri);
-        }
+   //       ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char '" << c << "' in URI path " << uri);
+        } 
         ++lIndex;
       }
     }

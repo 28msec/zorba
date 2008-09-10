@@ -134,7 +134,7 @@ protected:
   build_ascii_full_text() const;
 
   void
-  initialize(const xqpString& uri);
+  initialize(const xqpString& uri, bool have_base = false);
 
   // simply copy.
   void
