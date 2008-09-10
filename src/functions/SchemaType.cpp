@@ -16,7 +16,7 @@
 
 #include "system/globalenv.h"
 
-#include "functions/Util.h"
+#include "functions/SchemaType.h"
 
 #include "runtime/util/UtilImpl.h"
 
