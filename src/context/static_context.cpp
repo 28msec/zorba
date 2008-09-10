@@ -570,7 +570,6 @@ xqp_string static_context::final_baseuri () {
 }
 
 xqp_string static_context::resolve_relative_uri (xqp_string uri, xqp_string abs_base_uri) {
-  URI lURI(uri);
   return make_absolute_uri (uri, abs_base_uri.empty () ? final_baseuri () : abs_base_uri);
 }
 

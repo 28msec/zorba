@@ -115,7 +115,7 @@ URI::initialize(const URI& to_copy)
 bool
 URI::is_absolute() const
 {
-  return is_set(Scheme);
+  return is_set(Scheme) && !theScheme.empty();
 }
 
 // helper
@@ -218,9 +218,9 @@ URI::initialize(const xqpString& uri, bool have_base)
       (lColonIdx > lFragmentIdx && lFragmentIdx != -1)) {
 
    // A standalone base is a valid URI
-//if ( lColonIdx == 0 || (!have_base && lFragmentIdx != 0) ) {
-//  ZORBA_ERROR_DESC_OSS(XQST0046, "URI doesn't have an URI scheme");
-//}
+    if ( lColonIdx == 0 || (!have_base && lFragmentIdx != 0) ) {
+      ZORBA_ERROR_DESC_OSS(XQST0046, "URI doesn't have an URI scheme");
+    }
 
   } else {
     initializeScheme(lTrimmedURI);
@@ -284,7 +284,7 @@ URI::resolve(const URI * base_uri)
     return;
   }
 
-  if ( base_uri == 0 && toString().empty() ) {
+  if ( base_uri == 0 && toString().empty()  ) {
     ZORBA_ERROR_DESC_OSS(XQST0046, "No base URI given and URILiteral is of zero length");
   }
 
