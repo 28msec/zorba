@@ -24,52 +24,58 @@ namespace zorba {
 
 namespace storeminimal {
 
-class TupleItem : public store::Item {
+class TupleItem : public store::Item 
+{
 #ifdef ZORBA_FOR_ONE_THREAD_ONLY
 
-  public:
-    TupleItem(std::vector<zorba::store::TupleField>& fields)
-      : store::Item(),
-      m_fields(fields) { }
+ public:
+   TupleItem(std::vector<zorba::store::TupleField>& fields)
+     :
+     store::Item(),
+     m_fields(fields) { }
 
 #else
 
   protected:
     SYNC_CODE(RCLock theRCLock;)
 
-  public:
+public:
     TupleItem(std::vector<zorba::store::TupleField>& fields)
-      : store::Item(),
-      m_fields(fields) { theRCLockPtr = &theRCLock; }
+      :
+      store::Item(),
+      m_fields(fields)
+    {
+      theRCLockPtr = &theRCLock; 
+    }
 
 #endif
 
-    virtual ~TupleItem() { }
+  virtual ~TupleItem() { }
 
-    bool isNode() const   { return false; }
-    bool isAtomic() const { return false; }
-    bool isPul() const    { return false; }
-    bool isTuple() const  { return true; }
+  bool isNode() const   { return false; }
+  bool isAtomic() const { return false; }
+  bool isPul() const    { return false; }
+  bool isTuple() const  { return true; }
 
-    virtual const std::vector<zorba::store::TupleField>& getTupleFields() const
-    {
-      return m_fields;
-    }
+  virtual const std::vector<zorba::store::TupleField>& getTupleFields() const
+  {
+    return m_fields;
+  }
 
-    virtual int getTupleFieldCount() const
-    {
-      return m_fields.size();
-    }
+  virtual int getTupleFieldCount() const
+  {
+    return m_fields.size();
+  }
 
-    virtual const zorba::store::TupleField& getTupleField(int index) const
-    {
-      return m_fields[index - 1];
-    }
+  virtual const zorba::store::TupleField& getTupleField(int index) const
+  {
+    return m_fields[index - 1];
+  }
 
-    store::Item* getType() const;
+  store::Item* getType() const;
 
-  private:
-    std::vector<zorba::store::TupleField> m_fields;
+ private:
+  std::vector<zorba::store::TupleField> m_fields;
 };
 
 }

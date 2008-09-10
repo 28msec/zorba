@@ -235,20 +235,16 @@ void SimpleCollection::removeFromCollection(const store::Item* node)
 ********************************************************************************/
 void SimpleCollection::removeFromCollection(long position)
 {
-  if(position == -1)
-  {
-    if( theXmlTrees.size() == 0 )
-    {
+  if (position == -1) {
+    if (theXmlTrees.size() == 0)
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
-    }
     theXmlTrees.erase(theXmlTrees.end());
   }
-  else
-  {
-    if(position >= theXmlTrees.size() )
-    {
+  else if (position < 0)
+    assert (false);
+  else {
+    if ((unsigned) position >= theXmlTrees.size())
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
-    }
     theXmlTrees.erase(theXmlTrees.begin() + position);
   }
 }

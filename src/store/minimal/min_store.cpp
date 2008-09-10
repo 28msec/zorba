@@ -186,88 +186,8 @@ void SimpleStore::initTypeNames()
   theSchemaTypeNames[47] = theQNamePool->insert(XS_URI, "xs", "boolean");
   theSchemaTypeNames[48] = theQNamePool->insert(ZXSE_URI, "zxse", "tuple");
 
-/*  theSchemaTypeNames.resize(XS_LAST);
-
-  RootTypeManager   &typemanager = GENV_TYPESYSTEM;
-
-  theSchemaTypeNames[XS_UNTYPED]  = typemanager.XS_UNTYPED_QNAME;//new QNameItemImpl(XS_URI, "xs", "untyped");
-  theSchemaTypeNames[XS_UNTYPED_ATOMIC]  = typemanager.XS_UNTYPED_ATOMIC_QNAME;//new QNameItemImpl(XS_URI, "xs", "untypedAtomic");
-  theSchemaTypeNames[XS_ANY]  = typemanager.XS_ANY_TYPE_QNAME;//new QNameItemImpl(XS_URI, "xs", "anyType");
-  theSchemaTypeNames[XS_ANY_SIMPLE]  = typemanager.XS_ANY_SIMPLE_TYPE_QNAME;//new QNameItemImpl(XS_URI, "xs", "anySimpleType");
-  theSchemaTypeNames[XS_ANY_ATOMIC]  = typemanager.XS_ANY_ATOMIC_QNAME;//new QNameItemImpl(XS_URI, "xs", "anyAtomicType");
-
-  theSchemaTypeNames[XS_STRING]  = typemanager.XS_STRING_QNAME;//new QNameItemImpl(XS_URI, "xs", "string");
-  theSchemaTypeNames[XS_NORMALIZED_STRING]  = typemanager.XS_NORMALIZED_STRING_QNAME;//new QNameItemImpl(XS_URI, "xs", "normalizedString");
-  theSchemaTypeNames[XS_LANGUAGE]  = typemanager.XS_LANGUAGE_QNAME;//new QNameItemImpl(XS_URI, "xs", "language");
-  theSchemaTypeNames[XS_TOKEN]  = typemanager.XS_TOKEN_QNAME;//new QNameItemImpl(XS_URI, "xs", "token");
-  theSchemaTypeNames[XS_NMTOKEN]  = typemanager.XS_NMTOKEN_QNAME;//new QNameItemImpl(XS_URI, "xs", "NMTOKEN");
-
-  theSchemaTypeNames[XS_ANY_URI] = typemanager.XS_ANY_URI_QNAME;//new QNameItemImpl(XS_URI, "xs", "anyURI");
-  theSchemaTypeNames[XS_NAME] = typemanager.XS_NAME_QNAME;//new QNameItemImpl(XS_URI, "xs", "Name");
-  theSchemaTypeNames[XS_NCNAME] = typemanager.XS_NCNAME_QNAME;//new QNameItemImpl(XS_URI, "xs", "NCName");
-  theSchemaTypeNames[XS_QNAME] = typemanager.XS_QNAME_QNAME;//new QNameItemImpl(XS_URI, "xs", "QName");
-  theSchemaTypeNames[XS_NOTATION] = typemanager.XS_NOTATION_QNAME;//new QNameItemImpl(XS_URI, "xs", "notation");
-
-  theSchemaTypeNames[XS_ID] = typemanager.XS_ID_QNAME;//new QNameItemImpl(XS_URI, "xs", "ID");
-  theSchemaTypeNames[XS_IDREF] = typemanager.XS_IDREF_QNAME;//new QNameItemImpl(XS_URI, "xs", "IDREF");
-
-  theSchemaTypeNames[XS_ENTITY] = typemanager.XS_ENTITY_QNAME;//new QNameItemImpl(XS_URI, "xs", "ENTITY");
-
-  theSchemaTypeNames[XS_DATETIME] = typemanager.XS_DATETIME_QNAME;//new QNameItemImpl(XS_URI, "xs", "dateTime");
-  theSchemaTypeNames[XS_DATE] = typemanager.XS_DATE_QNAME;//new QNameItemImpl(XS_URI, "xs", "date");
-  theSchemaTypeNames[XS_TIME] = typemanager.XS_TIME_QNAME;//new QNameItemImpl(XS_URI, "xs", "time");
-  theSchemaTypeNames[XS_DURATION] = typemanager.XS_DURATION_QNAME;//new QNameItemImpl(XS_URI, "xs", "duration");
-  theSchemaTypeNames[XS_DT_DURATION] = typemanager.XS_DT_DURATION_QNAME;//new QNameItemImpl(XS_URI, "xs", "dayTimeDuration");
-  theSchemaTypeNames[XS_YM_DURATION] = typemanager.XS_YM_DURATION_QNAME;//new QNameItemImpl(XS_URI, "xs", "yearMonthDuration");
-
-  theSchemaTypeNames[XS_FLOAT] = typemanager.XS_FLOAT_QNAME;//new QNameItemImpl(XS_URI, "xs", "float");
-  theSchemaTypeNames[XS_DOUBLE] = typemanager.XS_DOUBLE_QNAME;//new QNameItemImpl(XS_URI, "xs", "double");
-  theSchemaTypeNames[XS_DECIMAL] = typemanager.XS_DECIMAL_QNAME;//new QNameItemImpl(XS_URI, "xs", "decimal");
-  theSchemaTypeNames[XS_INTEGER] = typemanager.XS_INTEGER_QNAME;//new QNameItemImpl(XS_URI, "xs", "integer");
-  theSchemaTypeNames[XS_NON_POSITIVE_INTEGER] = typemanager.XS_NON_POSITIVE_INTEGER_QNAME;//new QNameItemImpl(XS_URI, "xs", "nonPositiveInteger");
-  theSchemaTypeNames[XS_NON_NEGATIVE_INTEGER] = typemanager.XS_NON_NEGATIVE_INTEGER_QNAME;//new QNameItemImpl(XS_URI, "xs", "nonNegativeInteger");
-  theSchemaTypeNames[XS_NEGATIVE_INTEGER] = typemanager.XS_NEGATIVE_INTEGER_QNAME;//new QNameItemImpl(XS_URI, "xs", "negativeInteger");
-  theSchemaTypeNames[XS_POSITIVE_INTEGER] = typemanager.XS_POSITIVE_INTEGER_QNAME;//new QNameItemImpl(XS_URI, "xs", "positiveInteger");
-
-  theSchemaTypeNames[XS_LONG] = typemanager.XS_LONG_QNAME;//new QNameItemImpl(XS_URI, "xs", "long");
-  theSchemaTypeNames[XS_INT] = typemanager.XS_INT_QNAME;//new QNameItemImpl(XS_URI, "xs", "int");
-  theSchemaTypeNames[XS_SHORT] = typemanager.XS_SHORT_QNAME;//new QNameItemImpl(XS_URI, "xs", "short");
-  theSchemaTypeNames[XS_BYTE] = typemanager.XS_BYTE_QNAME;//new QNameItemImpl(XS_URI, "xs", "byte");
-  theSchemaTypeNames[XS_UNSIGNED_LONG] = typemanager.XS_UNSIGNED_LONG_QNAME;//new QNameItemImpl(XS_URI, "xs", "unsignedLong");
-  theSchemaTypeNames[XS_UNSIGNED_INT] = typemanager.XS_UNSIGNED_INT_QNAME;//new QNameItemImpl(XS_URI, "xs", "unsignedInt");
-  theSchemaTypeNames[XS_UNSIGNED_SHORT] = typemanager.XS_UNSIGNED_SHORT_QNAME;//new QNameItemImpl(XS_URI, "xs", "unsignedShort");
-  theSchemaTypeNames[XS_UNSIGNED_BYTE] = typemanager.XS_UNSIGNED_BYTE_QNAME;//new QNameItemImpl(XS_URI, "xs", "unsignedByte");
-
-  theSchemaTypeNames[XS_GYEAR_MONTH] = typemanager.XS_GYEAR_MONTH_QNAME;//new QNameItemImpl(XS_URI, "xs", "gYearMonth");
-  theSchemaTypeNames[XS_GYEAR] = typemanager.XS_GYEAR_QNAME;//new QNameItemImpl(XS_URI, "xs", "gYear");
-  theSchemaTypeNames[XS_GMONTH_DAY] = typemanager.XS_GMONTH_DAY_QNAME;//new QNameItemImpl(XS_URI, "xs", "gMonthDay");
-  theSchemaTypeNames[XS_GDAY] = typemanager.XS_GDAY_QNAME;//new QNameItemImpl(XS_URI, "xs", "gDay");
-  theSchemaTypeNames[XS_GMONTH] = typemanager.XS_GMONTH_QNAME;//new QNameItemImpl(XS_URI, "xs", "gMonth");
-
-  theSchemaTypeNames[XS_BASE64BINARY] = typemanager.XS_BASE64BINARY_QNAME;//new QNameItemImpl(XS_URI, "xs", "base64Binary");
-  theSchemaTypeNames[XS_HEXBINARY] = typemanager.XS_HEXBINARY_QNAME;//new QNameItemImpl(XS_URI, "xs", "hexBinary");
-  theSchemaTypeNames[XS_BOOLEAN] = typemanager.XS_BOOLEAN_QNAME;//new QNameItemImpl(XS_URI, "xs", "boolean");
-*/
 }
-/*
-store::Item *SimpleStore::getTypeQName(store::Item *item)
-{
-  QNameItemImpl *qname = dynamic_cast<QNameItemImpl*>(item);
-  if(!qname)
-    return item;
 
-  checked_vector<store::Item_t>::const_iterator  i;
-  const xqpStringStore  *ln = qname->getLocalName();
-  const xqpStringStore  *pref = qname->getPrefix();
-  for(i=theSchemaTypeNames.begin(); i != theSchemaTypeNames.end(); i++)
-  {
-    if(((*i)->getLocalName()->byteEqual(*ln)) && ((*i)->getPrefix()->byteEqual(*pref)))
-      return &*(*i);
-  }
-
-  return item;
-}
-*/
 /*******************************************************************************
 
 ********************************************************************************/
@@ -462,7 +382,7 @@ void SimpleStore::deleteCollection(const xqpStringStore_t& uri)
 
     for (; it != end; ++it)
     {
-      if( (*it)->getStringValue() == uri )
+      if( (*it)->getStringValue()->compare(uri) == 0 )
       {
         theItemUris.erase(it);
         break;
