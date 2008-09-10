@@ -1545,6 +1545,25 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
+bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Store& lStore = GENV.getStore();
+  xqpString         uriString;
+  xqpString         docString;
+  std::auto_ptr<std::istringstream> iss;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  consumeNext (result, theChildren [0].getp (), planState);
+  docString = result->getStringValueP ();
+  consumeNext (result, theChildren [1].getp (), planState);
+  uriString = result->getStringValueP ();
+  iss.reset (new std::istringstream (docString.c_str()));
+  result = lStore.loadDocument(uriString.getStore(), *iss);
+  STACK_PUSH(true, state);
+  STACK_END (state);  
+}
+
 /*______________________________________________________________________
 | 15.5.5 fn:doc-available
 |

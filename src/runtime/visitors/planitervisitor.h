@@ -133,6 +133,7 @@ namespace zorba
   class FnSumIterator;
   class FnDocIterator;
   class FnDocAvailableIterator;
+  class FnParseIterator;
   class HashSemiJoinIterator;
   class SortSemiJoinIterator;
   class FnTraceIterator;
@@ -501,6 +502,8 @@ namespace zorba
     PLAN_ITER_VISITOR (FnDocIterator);
 
     PLAN_ITER_VISITOR (FnDocAvailableIterator);
+      
+    PLAN_ITER_VISITOR (FnParseIterator);
       
     PLAN_ITER_VISITOR (HashSemiJoinIterator);
 

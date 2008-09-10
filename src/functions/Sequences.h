@@ -257,6 +257,15 @@ namespace zorba {
     bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
   };
 
+  class fn_parse_func : public function
+  {
+  public:
+    fn_parse_func(const signature& sig) : function (sig) {}
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    virtual bool isSource() const { return true; }
+    bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
+  };
+
 
   //15.5.5 fn:doc-available
   class fn_doc_available_func : public function

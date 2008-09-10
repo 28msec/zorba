@@ -449,6 +449,8 @@ public:
 //15.5.5 fn:doc-available
 NARY_ITER(FnDocAvailableIterator);
 
+NARY_ITER(FnParseIterator);
+
 
 //15.5.6 fn:collection
 

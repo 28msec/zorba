@@ -273,6 +273,12 @@ DECL(sctx, fn_doc_available_func,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
+DECL(sctx, fn_parse_func,
+     (createQName(XQUERY_FN_NS,"fn","parse"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE));
+
 DECL(sctx, op_concatenate,
      (createQName(XQUERY_FN_NS,"fn",":concatenate"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,

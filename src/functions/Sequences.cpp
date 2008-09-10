@@ -250,6 +250,14 @@ PlanIter_t fn_doc_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& a
 }
 
 
+//fn:parse
+//-------------
+PlanIter_t fn_parse_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new FnParseIterator(loc, argv);
+}
+
+
 
 //15.5.5 fn:doc-available
 /*begin class fn_doc_available_func*/

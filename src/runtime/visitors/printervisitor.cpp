@@ -519,6 +519,8 @@ public:
 
   PRINTER_VISITOR_DEFINITION (FnDocAvailableIterator)
 
+  PRINTER_VISITOR_DEFINITION (FnParseIterator)
+
   PRINTER_VISITOR_DEFINITION (HashSemiJoinIterator)
 
   PRINTER_VISITOR_DEFINITION (SortSemiJoinIterator)

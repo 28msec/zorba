@@ -2793,6 +2793,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       else
 #endif
         arguments.insert (arguments.begin (), new const_expr (loc, sctx_p->final_baseuri()));
+    } else if (sz == 1 && fn_local == "parse") {
+      arguments.insert (arguments.begin (), new const_expr (loc, sctx_p->final_baseuri()));
     } else if (fn_local == "concat") {
       if (sz < 2)
         ZORBA_ERROR_LOC_PARAM (XPST0017, loc, "concat", to_string (sz));
