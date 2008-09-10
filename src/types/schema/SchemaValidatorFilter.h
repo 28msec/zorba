@@ -27,6 +27,11 @@
 #include <xercesc/validators/schema/identity/IdentityConstraintHandler.hpp>
 #include <xercesc/internal/XMLScanner.hpp>
 #include <xercesc/util/RefHash3KeysIdPool.hpp>
+//daniel: this is to make cygwin work; xerces defines WIN32 in case of cygwin, which is wrong
+#ifdef CYGWIN
+#undef WIN32
+#endif
+
 #include "common/shared_types.h"
 #include "types/schema/ValidationEventHandler.h"
 

@@ -23,6 +23,10 @@
 #include <xercesc/util/XMLUniDefs.hpp>
 #include <xercesc/validators/common/ContentLeafNameTypeVector.hpp>
 #include <xercesc/validators/schema/SubstitutionGroupComparator.hpp>
+//daniel: this is to make cygwin work; xerces defines WIN32 in case of cygwin, which is wrong
+#ifdef CYGWIN
+#undef WIN32
+#endif
 
 #include <iostream>
 
