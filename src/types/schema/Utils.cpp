@@ -19,6 +19,7 @@
 #include <zorbatypes/xerces_xmlcharray.h>
 #include "store/api/item_factory.h"
 #include "store/api/pul.h"
+#include "store/api/copymode.h"
 
 #include "types/casting.h"
 #include "types/delegating_typemanager.h"
@@ -54,7 +55,7 @@ void validateAttributes( SchemaValidator& schemaValidator, store::Iterator_t att
     
 void processAttributes( store::Item_t& pul, namespace_context& nsCtx, 
     DelegatingTypeManager* delegatingTypeManager, SchemaValidator& schemaValidator, 
-    const store::Item* parent, store::Iterator_t attributes);
+    store::Item* parent, store::Iterator_t attributes);
         
 void processChildren( store::Item_t& pul, static_context* staticContext, 
     namespace_context& nsCtx, DelegatingTypeManager* delegatingTypeManager, 
@@ -241,10 +242,11 @@ void validateAttributes( SchemaValidator& schemaValidator, store::Iterator_t att
 
 void processAttributes( store::Item_t& pul, namespace_context& nsCtx, 
     DelegatingTypeManager* delegatingTypeManager, SchemaValidator& schemaValidator, 
-    const store::Item* parent, store::Iterator_t attributes)
+    store::Item* parent, store::Iterator_t attributes)
 {
     std::list<AttributeValidationInfo*>* attList = schemaValidator.getAttributeList();
     std::list<AttributeValidationInfo*>::iterator curAtt;
+    std::vector<store::Item_t> defaultAtts;    
         
     for( curAtt = attList->begin() ; curAtt != attList->end(); ++curAtt )
     {
@@ -265,11 +267,24 @@ void processAttributes( store::Item_t& pul, namespace_context& nsCtx,
         store::Item_t typeQName;
         GENV_ITEMFACTORY->createQName(typeQName, att->_typeURI, new xqpStringStore(typePrefix), att->_typeName);
      
-     
+        
         std::vector<store::Item_t> typedValues;        
         processTextValue(pul, delegatingTypeManager, nsCtx, typeQName, att->_value, typedValues);
         
-        if ( !typeQName->equals(attrib->getType()) )
+        if ( attrib==NULL )
+        {
+            // this is an attibute filled in by the validator
+            store::Item_t defaultAttNode;
+            if ( typedValues.size()==1 ) // hack around serialization bug
+                GENV_ITEMFACTORY->createAttributeNode( defaultAttNode, parent, -1, attQName, 
+                    typeQName, typedValues[0], false, false );
+            else            
+                GENV_ITEMFACTORY->createAttributeNode( defaultAttNode, parent, -1, attQName, 
+                    typeQName, typedValues, false, false );
+            
+            defaultAtts.push_back(defaultAttNode);
+        } 
+        else if ( !typeQName->equals(attrib->getType()) )
         {
             store::PUL *p = static_cast<store::PUL *>(pul.getp());
             if ( typedValues.size()==1 )        // optimize when only one item is available 
@@ -277,6 +292,19 @@ void processAttributes( store::Item_t& pul, namespace_context& nsCtx,
             else            
                 p->addSetAttributeType( attrib, typeQName, typedValues, attrib->isId(), attrib->isIdRefs() );
         }
+    }
+    
+    if ( defaultAtts.size()>0 )
+    {
+        store::PUL *p = static_cast<store::PUL *>(pul.getp());
+        store::CopyMode lCopyMode;
+        bool typePreserve = true; //(sctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
+        bool nsPreserve = true; //(sctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
+        bool nsInherit = true; //(sctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
+        lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
+        
+        store::Item_t parentElem = store::Item_t(parent);
+        p->addInsertAttributes(parentElem, defaultAtts, lCopyMode);
     }
 }
 
