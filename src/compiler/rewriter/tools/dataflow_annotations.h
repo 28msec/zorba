@@ -32,6 +32,7 @@ namespace zorba {
     static_context *m_ctx;
 
     void compute_sequential_expr(sequential_expr *e);
+    void compute_wrapper_expr(wrapper_expr *e);
     void compute_constructor_expr(constructor_expr *e);
     void compute_var_expr(var_expr *e);
     void compute_flwor_expr(flwor_expr *e);

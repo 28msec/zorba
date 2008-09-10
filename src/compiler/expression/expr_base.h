@@ -30,6 +30,7 @@ namespace zorba {
 
 enum expr_kind_t {
   expr_kind,
+  wrapper_expr_kind,
   sequential_expr_kind,
   exit_expr_kind,
   flowctl_expr_kind,

@@ -284,6 +284,8 @@ class wrapper_expr : public expr {
   expr_t wrapped;
 
 public:
+  expr_kind_t get_expr_kind () { return wrapper_expr_kind; }
+
   wrapper_expr (const QueryLoc &loc_, expr_t wrapped_)
     : expr (loc_), wrapped (wrapped_)
   {}

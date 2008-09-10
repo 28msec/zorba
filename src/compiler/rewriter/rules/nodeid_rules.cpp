@@ -232,6 +232,12 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
     break;
   }
 
+  case wrapper_expr_kind: {
+    wrapper_expr *we = static_cast<wrapper_expr *> (node);
+    propagate_down_nodeid_props (node, we->get_expr ());
+    break;
+  }    
+
   default:
     {
       cast_or_castable_base_expr *ce = dynamic_cast<cast_base_expr *> (node);

@@ -34,6 +34,10 @@ void DataflowAnnotationsComputer::compute(expr *e)
       compute_sequential_expr(static_cast<sequential_expr *>(e));
       break;
 
+    case wrapper_expr_kind:
+      compute_wrapper_expr(static_cast<wrapper_expr *>(e));
+      break;
+
     case constructor_expr_kind:
       compute_constructor_expr(static_cast<constructor_expr *>(e));
       break;
@@ -148,6 +152,12 @@ void DataflowAnnotationsComputer::compute(expr *e)
 }
 
 void DataflowAnnotationsComputer::compute_sequential_expr(sequential_expr *e)
+{
+  default_walk(e);
+  generic_compute(e);
+}
+
+void DataflowAnnotationsComputer::compute_wrapper_expr(wrapper_expr *e)
 {
   default_walk(e);
   generic_compute(e);
