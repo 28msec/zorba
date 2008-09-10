@@ -167,6 +167,7 @@ DEF_ACCEPT (expr)
 #ifdef ZORBA_DEBUGGER
 DEF_ACCEPT (debugger_expr)
 #endif
+DEF_ACCEPT (wrapper_expr)
 DEF_ACCEPT (sequential_expr)
 DEF_ACCEPT (var_expr)
 DEF_ACCEPT (flwor_expr)
@@ -286,6 +287,12 @@ expr_iterator::expr_iterator (const expr_iterator &other) : iter (new expr_itera
   }  
 #endif
 
+  void wrapper_expr::next_iter (expr_iterator_data& v) {
+    BEGIN_EXPR_ITER ();
+    ITER (wrapped);
+    END_EXPR_ITER ();
+  }
+
   expr_iterator_data *sequential_expr::make_iter () {
     return new sequential_expr_iterator_data (this);
   }
@@ -296,7 +303,7 @@ expr_iterator::expr_iterator (const expr_iterator &other) : iter (new expr_itera
   ITER_FOR_EACH (iter, sequence.begin (), sequence.end (),
                  (*vv.iter));
 
-  END_EXPR_ITER();
+  END_EXPR_ITER ();
   }
 
 /////////////////////////////////////////////////////////////////////////

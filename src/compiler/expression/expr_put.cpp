@@ -82,6 +82,12 @@ std::ostream& debugger_expr::put(std::ostream& os) const
 }
 #endif
 
+std::ostream& wrapper_expr::put(std::ostream& os) const
+{
+  get_expr ()->put(os);
+  return os;
+}
+
 ostream& sequential_expr::put( ostream& os) const
 {
   BEGIN_EXPR (sequential_expr);

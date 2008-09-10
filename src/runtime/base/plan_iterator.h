@@ -283,6 +283,8 @@ public:
 
 public:
 
+  void setLocation (const QueryLoc &loc_) { loc = loc_; }
+
   /**
    * Return true if "this" may return a pending update list.
    */

@@ -44,6 +44,7 @@ public:
 #ifdef ZORBA_DEBUGGER
   EXPR_VISITOR_METHODS (debugger_expr);
 #endif
+  EXPR_VISITOR_METHODS (wrapper_expr);
   EXPR_VISITOR_METHODS (sequential_expr);
   EXPR_VISITOR_METHODS (var_expr);
   EXPR_VISITOR_METHODS (order_modifier);

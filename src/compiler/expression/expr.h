@@ -278,7 +278,24 @@ class debugger_expr: public eval_expr
       }
     }
 };
-#endif
+#endif  // ZORBA_DEBUGGER
+
+class wrapper_expr : public expr {
+  expr_t wrapped;
+
+public:
+  wrapper_expr (const QueryLoc &loc_, expr_t wrapped_)
+    : expr (loc_), wrapped (wrapped_)
+  {}
+  expr_t get_expr () const {
+    return wrapped;
+  }
+
+  std::ostream& put(std::ostream&) const;
+
+  void next_iter (expr_iterator_data&);
+  void accept (expr_visitor&);
+};
 
 // [42] [http://www.w3.org/TR/xquery/#prod-xquery-QuantifiedExpr]
 

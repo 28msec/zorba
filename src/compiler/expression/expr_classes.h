@@ -21,6 +21,7 @@ namespace zorba {
 #ifdef ZORBA_DEBUGGER
   class debugger_expr;
 #endif
+  class wrapper_expr;
   class sequential_expr; class exit_expr; class while_expr; class flowctl_expr;
   class order_modifier; class flwor_expr; class case_clause; class promote_expr;
   class gflwor_expr; class trycatch_expr; class eval_expr; class typeswitch_expr;

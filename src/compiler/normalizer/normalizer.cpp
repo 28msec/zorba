@@ -77,6 +77,8 @@ DEF_VISIT_METHODS (expr)
 DEF_VISIT_METHODS (debugger_expr)
 #endif
 
+DEF_VISIT_METHODS (wrapper_expr)
+
 DEF_VISIT_METHODS (sequential_expr)
 
 DEF_VISIT_METHODS (var_expr)

@@ -240,6 +240,20 @@ void end_visit(debugger_expr& v)
 }
 #endif
 
+bool begin_visit(wrapper_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit(wrapper_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  PlanIter_t iter = pop_itstack ();
+  iter->setLocation (v.get_loc ());
+  itstack.push (iter);
+}
+
 bool begin_visit(sequential_expr& v)
 {
   CODEGEN_TRACE_IN("");

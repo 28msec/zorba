@@ -5193,7 +5193,7 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
   if (e == NULL)
     ZORBA_ERROR_LOC_PARAM( XPST0008, loc, v.get_varname (), "");
   //e->set_loc(v.get_location());
-  nodestack.push (rchandle<expr> (e));
+  nodestack.push (new wrapper_expr (v.get_location (), rchandle<expr> (e)));
 }
 
 
