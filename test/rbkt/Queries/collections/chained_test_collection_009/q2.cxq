@@ -1,4 +1,4 @@
-declare base-uri "http://example.org";
+declare base-uri "http://example.org/";
 import module namespace
 fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
 fn-zorba-collection:remove-nodes('collection_1', fn:collection("http://example.org/collection_1"))
