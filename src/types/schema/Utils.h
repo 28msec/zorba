@@ -16,6 +16,8 @@
 #ifndef ZORBA_SCHEMA_UTILS_H_
 #define ZORBA_SCHEMA_UTILS_H_
 
+#include <set>
+
 #include "xercesIncludes.h"
 #include "types/schema/SchemaValidatorFilter.h"
 #include "types/schema/StrX.h"
@@ -28,7 +30,7 @@ namespace zorba
 {
 
 void validateAfterUpdate(
-    const set<zorba::store::Item*>& nodes,
+    const std::set<zorba::store::Item*>& nodes,
     zorba::store::Item_t& pul,
     static_context* staticContext, 
     const QueryLoc& loc);

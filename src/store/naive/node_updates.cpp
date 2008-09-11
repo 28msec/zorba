@@ -57,7 +57,10 @@ void XmlNode::removeType(UpdatePrimitive& upd)
       ElementNode* n = reinterpret_cast<ElementNode*>(currNode);
 
       if (n->theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED])
+      {
+        revalidationNode = currNode;
         break;
+      }
 
       if (n->theTypeName == GET_STORE().theSchemaTypeNames[XS_ANY])
       {

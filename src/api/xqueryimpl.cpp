@@ -44,6 +44,8 @@
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 
+#include "types/schema/Utils.h"
+
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/base/plan_iterator.h"  // maybe we can separate the batcher from the plan iterator
 #include "runtime/api/plan_wrapper.h"
@@ -51,6 +53,8 @@
 #include "util/properties.h"
 
 #include "store/api/item.h"
+#include "store/api/item_factory.h"
+#include "store/api/pul.h"
 #include "store/api/store.h"
 
 #ifdef ZORBA_DEBUGGER
@@ -523,13 +527,21 @@ XQueryImpl::applyUpdates()
         std::set<zorba::store::Item*> validationNodes;
 
         pul->applyUpdates(validationNodes);
-
+        
         std::set<zorba::store::Item*>::const_iterator it = validationNodes.begin();
         std::set<zorba::store::Item*>::const_iterator end = validationNodes.end();
         for (; it != end; it++)
         {
           std::cout << "Validating node " << *it << std::endl;
         }
+        
+
+        QueryLoc loc;
+        store::Item_t validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
+
+        validateAfterUpdate(validationNodes, validationPul, theStaticContext, loc);
+
+        validationPul->applyUpdates(validationNodes);
       }
     }
     catch (error::ZorbaError&)
