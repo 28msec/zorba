@@ -191,30 +191,39 @@ FnCollectionIteratorState::reset(PlanState& planState)
 
 bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t       lURI;
+  store::Item_t       lURI, resolvedURIItem;
   store::Collection_t theColl;
-  
+  xqpStringStore_t    resolvedURIString, tt;
+
   FnCollectionIteratorState *state;
   DEFAULT_STACK_INIT(FnCollectionIteratorState, state, planState);
 
   if (theChildren.size() == 1 && consumeNext(lURI, theChildren[0].getp(), planState)) {
+    try {
+      tt = lURI->getStringValue();
+      resolvedURIString = planState.sctx()->resolve_relative_uri(lURI->getStringValueP()).getStore();
+      GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
+    } catch (error::ZorbaError& e) {
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Error retrieving resource.");
+    }
   } else {
-    lURI = planState.theRuntimeCB->theDynamicContext->get_default_collection();
-    if(lURI->getStringValue()->empty())
-      ZORBA_ERROR_LOC_DESC(FODC0002, loc,
-                           "Default collection is undefined in the dynamic context.");
+
+  resolvedURIItem = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+  if( NULL == resolvedURIItem)
+    ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection is undefined in the dynamic context.");
   }
 
-  theColl =  planState.sctx()->get_collection_uri_resolver()->resolve(lURI, planState.sctx()); 
-
-  if(theColl == NULL)
-    ZORBA_ERROR_LOC_DESC_OSS(FODC0004, loc, "The collection could not be found: " << lURI->getStringValue());
+  try {
+    theColl =  planState.sctx()->get_collection_uri_resolver()->resolve(resolvedURIItem, planState.sctx());
+  } catch (error::ZorbaError& e) {
+    ZORBA_ERROR_LOC_PARAM(FODC0004, loc, resolvedURIItem->getStringValue()->c_str(), "");
+  }
 
   /** return the nodes of the collection */
   state->theIterator = theColl->getIterator(false);
   ZORBA_ASSERT(state->theIterator!=NULL);
   state->theIterator->open();
-  
+
   while(state->theIterator->next(result))
     STACK_PUSH (true, state);
 
