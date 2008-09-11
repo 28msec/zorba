@@ -17,10 +17,11 @@
 #define ZORBA_REWRITER_H
 
 #include "common/shared_types.h"
+#include "zorbatypes/rchandle.h"
 
 namespace zorba {
 
-class Rewriter {
+class Rewriter : public SimpleRCObject {
   public:
     virtual ~Rewriter() { }
 

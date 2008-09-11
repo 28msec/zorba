@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <typeinfo>
 #include "compiler/normalizer/normalizer.h"
 #include "context/static_context.h"
 #include "compiler/expression/expr.h"

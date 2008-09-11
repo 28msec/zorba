@@ -25,6 +25,7 @@
 #include "system/globalenv.h"
 
 #include <set>
+#include <algorithm>
 
 #define LOOKUP_FN( pfx, local, arity ) static_cast<function *> (GENV.getRootStaticContext ().lookup_fn (pfx, local, arity))
 #define LOOKUP_OP1( local ) static_cast<function *> (GENV.getRootStaticContext ().lookup_builtin_fn (":" local, 1))
@@ -71,7 +72,7 @@ inline expr_t fix_annotations (expr_t new_expr, expr *old_expr = NULL) {
       const var_ptr_set & old_set = get_varset_annotation (old_expr, AnnotationKey::FREE_VARS),
         &new_set = get_varset_annotation (old_expr, AnnotationKey::FREE_VARS);
       var_ptr_set s;
-      set_union (old_set.begin (), old_set.end (), new_set.begin (), new_set.end (), inserter (s, s.begin ()));
+      std::set_union (old_set.begin (), old_set.end (), new_set.begin (), new_set.end (), inserter (s, s.begin ()));
       new_expr->put_annotation (k, Annotation::value_ref_t (new VarSetAnnVal (s)));
     } else {
       Annotation::value_ref_t v = old_expr->get_annotation (k);

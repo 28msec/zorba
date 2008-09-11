@@ -35,9 +35,9 @@ class TSVAnnotationValue : public AnnotationValue {
   // pessimistic
   static void update_annotation (AnnotationHolder *e, Annotation::key_t k, Annotation::value_ref_t v) {
     Annotation::value_ref_t oldv = e->get_annotation (k);
-    if (oldv == FALSE_VAL)
+    if (oldv.getp() == FALSE_VAL.getp())
       v = FALSE_VAL;
-    else if (oldv == MAYBE_VAL || v == NULL)
+    else if (oldv.getp() == MAYBE_VAL.getp() || v == NULL)
       v = MAYBE_VAL;
         
     e->put_annotation (k, v);

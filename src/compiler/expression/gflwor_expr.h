@@ -19,6 +19,7 @@
 
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/flwor_expr.h"
+#include <memory>
 
 namespace zorba {
 

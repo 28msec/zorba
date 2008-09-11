@@ -18,13 +18,14 @@
 
 #include <string>
 #include "common/shared_types.h"
+#include "zorbatypes/rchandle.h"
 
 namespace zorba {
 
 class CompilerCB;
 class RewriterContext;
 
-class RewriteRule {
+class RewriteRule : public SimpleRCObject {
   public:
     virtual ~RewriteRule() { }
 

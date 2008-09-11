@@ -114,11 +114,11 @@ static bool analyze_let_vars_consumer_props (flwor_expr *flwor) {
       Annotation::value_ref_t analysis_ann = vref->get_annotation (AnnotationKey::LET_VAR_NODEID_ANALYSIS);
       if (vref->get_kind() == var_expr::let_var
           && analysis_ann != NULL
-          && 0 != ((1 << j) & static_cast<IntAnnotationValue *> (analysis_ann.get ())->n))
+          && 0 != ((1 << j) & static_cast<IntAnnotationValue *> (analysis_ann.getp ())->n))
       {
         Annotation::value_ref_t v = vref->get_annotation (k);
         TSVAnnotationValue::update_annotation (ref->get_expr (), k, v);
-        if (v == TSVAnnotationValue::TRUE_VAL) {
+        if (v.getp() == TSVAnnotationValue::TRUE_VAL.getp()) {
           modified = true;
         }
       }
@@ -146,7 +146,7 @@ static bool analyze_let_vars_consumer_props (flwor_expr *flwor) {
       TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VAL);
     } else if (is_cast) {
       TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_SORTED_NODES,
-                                             TSVAnnotationValue::from_bool (node->get_annotation (AnnotationKey::IGNORES_DUP_NODES) == TSVAnnotationValue::TRUE_VAL));
+                                             TSVAnnotationValue::from_bool (node->get_annotation (AnnotationKey::IGNORES_DUP_NODES).getp() == TSVAnnotationValue::TRUE_VAL.getp()));
     }
 
     bool ignores_dups =
@@ -154,7 +154,7 @@ static bool analyze_let_vars_consumer_props (flwor_expr *flwor) {
       || (q == TypeConstants::QUANT_PLUS
           && TypeOps::type_min_cnt (*input->return_type (sctx)) >= 1);
     if (is_cast)
-      ignores_dups = ignores_dups && node->get_annotation (AnnotationKey::IGNORES_DUP_NODES) == TSVAnnotationValue::TRUE_VAL;
+      ignores_dups = ignores_dups && node->get_annotation (AnnotationKey::IGNORES_DUP_NODES).getp() == TSVAnnotationValue::TRUE_VAL.getp();
     TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_DUP_NODES,
                                            TSVAnnotationValue::from_bool (ignores_dups));
 }

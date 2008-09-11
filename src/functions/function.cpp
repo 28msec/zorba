@@ -111,7 +111,7 @@ bool user_function::requires_dyn_ctx () const
 {
   // All undeclared functions unfoldable. TODO: better analysis
   return (m_expr_body == NULL ||
-          m_expr_body->get_annotation (AnnotationKey::UNFOLDABLE_OP) == TSVAnnotationValue::TRUE_VAL);
+          m_expr_body->get_annotation (AnnotationKey::UNFOLDABLE_OP).getp() == TSVAnnotationValue::TRUE_VAL.getp());
 }
 
 

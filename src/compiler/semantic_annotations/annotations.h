@@ -16,7 +16,7 @@
 #ifndef ZORBA_ANNOTATIONS_H
 #define ZORBA_ANNOTATIONS_H
 
-#include <boost/shared_ptr.hpp>
+#include "zorbatypes/rchandle.h"
 
 namespace zorba {
 
@@ -25,10 +25,10 @@ class AnnotationValue;
 namespace Annotation {
   typedef int key_t;
 
-  typedef boost::shared_ptr<AnnotationValue> value_ref_t;
+  typedef rchandle<AnnotationValue> value_ref_t;
 };
 
-class AnnotationValue {
+class AnnotationValue : public SimpleRCObject {
 public:
   virtual ~AnnotationValue() {}
   virtual bool equals (const AnnotationValue &other) { 
@@ -46,7 +46,7 @@ public:
 inline bool operator== (Annotation::value_ref_t v1, Annotation::value_ref_t v2) {
   if (v2 == NULL || v1 == NULL)
     return v2 == NULL && v1 == NULL;
-  return v2->equals (*v1.get ());
+  return v2->equals (*v1.getp());
 }
 
 }

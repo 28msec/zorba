@@ -101,7 +101,7 @@ namespace zorba {
 
   void propagate_any_child_up (expr *node, Annotation::key_t k) {
     for(expr_iterator i = node->expr_begin(); ! i.done(); ++i) {
-      if ((*i)->get_annotation (k) == TSVAnnotationValue::TRUE_VAL) {
+      if ((*i)->get_annotation (k).getp() == TSVAnnotationValue::TRUE_VAL.getp()) {
         node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
         break;
       }
@@ -325,7 +325,7 @@ namespace zorba {
     castable_base_expr *cbe;
     if ((cbe = dynamic_cast<castable_base_expr *>(node)) != NULL) {
       expr_t arg = cbe->get_input();
-      if (arg->get_annotation (AnnotationKey::NONDISCARDABLE_EXPR) == TSVAnnotationValue::TRUE_VAL)
+      if (arg->get_annotation (AnnotationKey::NONDISCARDABLE_EXPR).getp() == TSVAnnotationValue::TRUE_VAL.getp())
         return NULL;
       xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
       if (TypeOps::is_subtype(*arg_type, *cbe->get_target_type()))

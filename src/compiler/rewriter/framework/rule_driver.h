@@ -17,7 +17,6 @@
 #define ZORBA_RULE_DRIVER_H
 
 #include <vector>
-#include <boost/shared_ptr.hpp>
 #include "common/shared_types.h"
 #include "compiler/rewriter/framework/rewriter.h"
 
@@ -33,7 +32,7 @@ class RuleMajorDriver : public Rewriter {
 
     void rewrite(RewriterContext& rCtx);
 
-    typedef boost::shared_ptr<RewriteRule> rule_ptr_t;
+    typedef rchandle<RewriteRule> rule_ptr_t;
     typedef std::vector<rule_ptr_t> rules_t;
 
   protected:
