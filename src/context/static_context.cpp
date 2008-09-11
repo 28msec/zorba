@@ -155,6 +155,7 @@ DECL_ENUM_PARAM (static_context, inherit_mode)
 DECL_ENUM_PARAM (static_context, preserve_mode)
 DECL_ENUM_PARAM (static_context, xpath1_0compatib_mode)
 DECL_ENUM_PARAM (static_context, ordering_mode)
+DECL_ENUM_PARAM (static_context, validation_mode)
 
 // DECL_STR_PARAM (static_context, baseuri)
 // DECL_STR_PARAM (static_context, default_collation)

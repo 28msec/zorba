@@ -27,6 +27,7 @@ namespace zorba {
     enum boundary_space_mode_t   { preserve_space, strip_space };
     enum inherit_mode_t          { inherit_ns, no_inherit_ns   };
     enum preserve_mode_t         { preserve_ns, no_preserve_ns };
+    enum validation_mode_t       { strict_validation, lax_validation, skip_validation };
     
   }; /* namespace StaticContextConsts */
 

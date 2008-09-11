@@ -66,6 +66,7 @@ void root_static_context::init()
   set_collection_uri_resolver(new StandardCollectionURIResolver());
   set_schema_uri_resolver(new StandardSchemaURIResolver());
   set_module_uri_resolver(new StandardModuleURIResolver());
+  set_validation_mode(StaticContextConsts::lax_validation);
 } 
 
 root_static_context::~root_static_context()
