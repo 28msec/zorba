@@ -527,14 +527,14 @@ XQueryImpl::applyUpdates()
         std::set<zorba::store::Item*> validationNodes;
 
         pul->applyUpdates(validationNodes);
-        
+        /*
         std::set<zorba::store::Item*>::const_iterator it = validationNodes.begin();
         std::set<zorba::store::Item*>::const_iterator end = validationNodes.end();
         for (; it != end; it++)
         {
           std::cout << "Validating node " << *it << std::endl;
         }
-        
+        */
 
         QueryLoc loc;
         store::Item_t validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
