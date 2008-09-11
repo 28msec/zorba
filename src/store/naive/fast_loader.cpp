@@ -152,7 +152,7 @@ void FastXmlLoader::abortload()
 
   while(!theBindingsStack.empty())
   {
-    NsBindingsContext* ctx = theBindingsStack.top();
+    //NsBindingsContext* ctx = theBindingsStack.top();
     theBindingsStack.pop();
     //delete ctx;
   }
