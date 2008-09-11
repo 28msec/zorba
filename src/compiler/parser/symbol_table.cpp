@@ -121,19 +121,41 @@ static void normalize_eol (const char *text, uint32_t length, string *out) {
   }
 }
 
+static void normalize_attribute(const char *text, uint32_t length, string *out)
+{
+  uint32_t i;
+  out->reserve (length + 1);
+  for (i = 0; i < length; i++)
+  {
+    char ch = text[i];
+    if (ch == 0x0D || ch == 0x0A || ch == 0x09)
+      *out += ' ';
+    else 
+      *out += ch;
+  }
+}
+
 off_t symbol_table::put(char const* text)
 {
   return put(text, strlen(text));
 }
 
-off_t symbol_table::put(char const* text, uint32_t length, bool eolNorm)
+off_t symbol_table::put(char const* text, uint32_t length, int normalizationType)
 {
   string normStr;
-  if (eolNorm) {
+  if (normalizationType == 1)
+  {
     normalize_eol (text, length, &normStr);
     text = normStr.c_str ();
     length = normStr.size ();
   }
+  else if (normalizationType == 2)
+  {
+    normalize_attribute(text, length, &normStr);
+    text = normStr.c_str ();
+    length = normStr.size ();
+  }
+  
 	return heap.put(text, 0, length);
 }
 

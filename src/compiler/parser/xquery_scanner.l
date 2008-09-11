@@ -940,7 +940,7 @@ typedef zorba::xquery_parser::token token;
 <MODE_ELEMENT_CONTENT>"<?" { PUSH_STATE(MODE_PROCESSING_INSTRUCTION); return token::PI_BEGIN; }
 <MODE_ELEMENT_CONTENT>"<![CDATA[" { PUSH_STATE(MODE_CDATA_SECTION); return token::CDATA_BEGIN; }
 <MODE_ELEMENT_CONTENT>"<" { PUSH_STATE(MODE_START_TAG); return token::LT_OR_START_TAG; }
-<MODE_ELEMENT_CONTENT>{ElementContentChar}+ { TRY_SVAL_TOKEN (ELEMENT_CONTENT, put(yytext, yyleng, true)); }
+<MODE_ELEMENT_CONTENT>{ElementContentChar}+ { TRY_SVAL_TOKEN (ELEMENT_CONTENT, put(yytext, yyleng, 1)); }
 <MODE_ELEMENT_CONTENT>{PredefinedEntityRef} { TRY_SVAL_TOKEN (ELEMENT_CONTENT, put_entityref(yytext, yyleng)); }
 <MODE_ELEMENT_CONTENT>{CharRef}+ { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 <MODE_ELEMENT_CONTENT>"{{" { return token::DOUBLE_LBRACE; }
@@ -1070,7 +1070,7 @@ typedef zorba::xquery_parser::token token;
 <MODE_QUOTE_ATTRIBUTE_CONTENT>\" { BEGIN MODE_START_TAG; return token::QUOTE; }
 <MODE_QUOTE_ATTRIBUTE_CONTENT>"{" { PUSH_STATE(INITIAL); return token::LBRACE; }
 <MODE_QUOTE_ATTRIBUTE_CONTENT>{EscapeQuot} { return token::ESCAPE_QUOTE; }
-<MODE_QUOTE_ATTRIBUTE_CONTENT>{QuotAttrContentChar}+ { TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put(yytext, yyleng, true)); }
+<MODE_QUOTE_ATTRIBUTE_CONTENT>{QuotAttrContentChar}+ { TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put(yytext, yyleng, 2)); }
 <MODE_QUOTE_ATTRIBUTE_CONTENT>{PredefinedEntityRef} { TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put_entityref(yytext, yyleng)); }
 <MODE_QUOTE_ATTRIBUTE_CONTENT>{CharRef}+ { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 <MODE_QUOTE_ATTRIBUTE_CONTENT>"{{" { return token::DOUBLE_LBRACE; }
@@ -1093,7 +1093,7 @@ typedef zorba::xquery_parser::token token;
 <MODE_APOS_ATTRIBUTE_CONTENT>\'                     { BEGIN MODE_START_TAG; return token::APOS; }
 <MODE_APOS_ATTRIBUTE_CONTENT>"{"                    { PUSH_AND_BEGIN (INITIAL, MODE_APOS_ATTRIBUTE_CONTENT); return token::LBRACE; }
 <MODE_APOS_ATTRIBUTE_CONTENT>{EscapeApos}           { return token::ESCAPE_APOS; }
-<MODE_APOS_ATTRIBUTE_CONTENT>{AposAttrContentChar}+ { TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put(yytext, yyleng, true)); }
+<MODE_APOS_ATTRIBUTE_CONTENT>{AposAttrContentChar}+ { TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put(yytext, yyleng, 2)); }
 <MODE_APOS_ATTRIBUTE_CONTENT>{PredefinedEntityRef}  { TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put_entityref(yytext, yyleng)); }
 <MODE_APOS_ATTRIBUTE_CONTENT>{CharRef}+             { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 <MODE_APOS_ATTRIBUTE_CONTENT>"{{"                   { return token::DOUBLE_LBRACE; }

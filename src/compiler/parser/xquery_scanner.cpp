@@ -3547,7 +3547,7 @@ case 236:
 /* rule 236 can match eol */
 YY_RULE_SETUP
 #line 943 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN (ELEMENT_CONTENT, put(yytext, yyleng, true)); }
+{ TRY_SVAL_TOKEN (ELEMENT_CONTENT, put(yytext, yyleng, 1)); }
 	YY_BREAK
 case 237:
 YY_RULE_SETUP
@@ -3736,7 +3736,7 @@ case 257:
 /* rule 257 can match eol */
 YY_RULE_SETUP
 #line 1073 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put(yytext, yyleng, true)); }
+{ TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put(yytext, yyleng, 2)); }
 	YY_BREAK
 case 258:
 YY_RULE_SETUP
@@ -3787,7 +3787,7 @@ case 265:
 /* rule 265 can match eol */
 YY_RULE_SETUP
 #line 1096 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put(yytext, yyleng, true)); }
+{ TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put(yytext, yyleng, 2)); }
 	YY_BREAK
 case 266:
 YY_RULE_SETUP

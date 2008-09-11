@@ -33,7 +33,14 @@ public:			// ctor,dtor
 
 public:			// table interface
   off_t put(char const* text);
-	off_t put(char const* text, uint32_t length, bool eolNorm = false);
+
+  /* Accepted values for normalizationType:
+   * normalizationType = 0 -- no normalization
+   * normalizationType = 1 -- EOL normalization
+   * normalizationType = 2 -- Attribute value normalization
+   */
+	off_t put(char const* text, uint32_t length, int normalizationType = 0);
+  
 	off_t put_ncname(char const* text, uint32_t length);
 	off_t put_qname(char const* text, uint32_t length, bool do_trim_start = false, bool do_trim_end = false);
 	off_t put_uri(char const* text, uint32_t length);
