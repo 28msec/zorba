@@ -488,7 +488,7 @@ int uri(int argc, char* argv[])
       ""
     },
     {
-      "http://www.msb.de",
+      "http://www.msb.de/",
       "lib/helpers",
       "http://www.msb.de/lib/helpers",
       "http",
