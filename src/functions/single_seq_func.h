@@ -30,6 +30,16 @@ public:
   void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
 };
 
+class single_seq_opt_function : public function {
+protected:
+  int src;
+  
+public:
+  single_seq_opt_function (const signature &sig, int src_ = 0) : function (sig), src (src_) {}
+  xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+  void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
+};
+
 }
 
 #endif

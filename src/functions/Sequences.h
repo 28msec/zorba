@@ -91,10 +91,10 @@ namespace zorba {
 
   //15.1.8 fn:remove
   //----------------
-  class fn_remove : public single_seq_function
+  class fn_remove : public single_seq_opt_function
   {
   public:
-    fn_remove(const signature& sig) : single_seq_function (sig) {}
+    fn_remove(const signature& sig) : single_seq_opt_function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
@@ -111,10 +111,10 @@ namespace zorba {
 
   //15.1.10 fn:subsequence
   //----------------------
-  class fn_subsequence : public single_seq_function
+  class fn_subsequence : public single_seq_opt_function
   {
   public:
-    fn_subsequence(const signature&sig) : single_seq_function (sig) {}
+    fn_subsequence(const signature&sig) : single_seq_opt_function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
   };
