@@ -16,6 +16,7 @@
 #include <zorba/item.h>
 #include <zorba/item_sequence.h>
 #include <zorba/stateless_function.h>
+#include <zorba/exception.h>
 
 #include "zorbaerrors/error_manager.h"
 
@@ -238,9 +239,20 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result, PlanState
   Item lOutsideItem;
   DEFAULT_STACK_INIT(StatelessExtFunctionCallIteratorState, state, planState);
 
-  state->m_result = m_function->evaluate(state->m_extArgs);
-  while (state->m_result->next(lOutsideItem)) 
+  try {
+    state->m_result = m_function->evaluate(state->m_extArgs);
+  } catch(const ZorbaException& e) {
+    ZORBA_ERROR_LOC(e.getErrorCode(), loc);
+  }
+  while (true)
   {
+    try {
+      if (!state->m_result->next(lOutsideItem)) {
+        break;
+      }
+    } catch(const ZorbaException& e) {
+      ZORBA_ERROR_LOC(e.getErrorCode(), loc);
+    }
     result = Unmarshaller::getInternalItem(lOutsideItem);
     if (theIsUpdating)
     {
