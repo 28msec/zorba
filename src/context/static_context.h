@@ -46,6 +46,7 @@ protected:
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string qname) const;
   static xqp_string fn_internal_key (int arity);
+  function *lookup_fn_int (xqp_string key, int arity) const;
 
   std::auto_ptr<TypeManager> typemgr;
 
@@ -143,17 +144,18 @@ public:
   lookup_stateless_external_function(xqp_string prefix, xqp_string local);
 
   function *lookup_fn (xqp_string prefix, xqp_string local, int arity) const;
+  function *lookup_resolved_fn (xqp_string ns, xqp_string local, int arity) const;
   static function *lookup_builtin_fn (xqp_string local, int arity);
   bool bind_fn (const store::Item *qname, function *f, int arity) {
     return bind_func (fn_internal_key (arity) + qname_internal_key (qname), f);
   }
 
-	void add_variable_type( const xqp_string var_name, xqtref_t var_type);
-	xqtref_t  get_variable_type( store::Item *var_name );
-
-	void bind_type( xqp_string key, xqtref_t t);
-	xqtref_t  lookup_type (xqp_string key);
-	xqtref_t  lookup_type2 (const char *key1, xqp_string key2);
+  void add_variable_type( const xqp_string var_name, xqtref_t var_type);
+  xqtref_t  get_variable_type( store::Item *var_name );
+  
+  void bind_type( xqp_string key, xqtref_t t);
+  xqtref_t  lookup_type (xqp_string key);
+  xqtref_t  lookup_type2 (const char *key1, xqp_string key2);
 
   /**
    * collation management

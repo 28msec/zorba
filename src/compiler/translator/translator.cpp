@@ -2821,16 +2821,16 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   }
   else
   {
-    try {
-      rchandle<fo_expr> fo_h = new fo_expr (loc, LOOKUP_FN (prefix, fname, sz));
+      function *f = LOOKUP_FN (prefix, fname, sz);
+      if (f == NULL)
+        ZORBA_ERROR_LOC_PARAM (XPST0017, loc, (prefix.empty () ? prefix : (prefix + ":")) + fname, to_string (sz));
+      rchandle<fo_expr> fo_h = new fo_expr (loc, f);
       fo_h->setUpdateType(fo_h->get_func()->getUpdateType());
 
       // TODO this should be a const iterator
       vector<expr_t>::reverse_iterator iter = arguments.rbegin();
       for(; iter != arguments.rend(); ++iter)
-      {
         fo_h->add(*iter);
-      }
 #ifdef ZORBA_DEBUGGER
       if ( compilerCB->m_debugger != 0 )
       {
@@ -2842,9 +2842,6 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 #else
       nodestack.push(&*fo_h);
 #endif
-    } catch (error::ZorbaError& e) {
-      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-    }
   }
 }
 

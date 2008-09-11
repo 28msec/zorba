@@ -234,25 +234,28 @@ store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qn
     return xqpString::concat("fn:", to_string (arity).c_str(), "/");
   }
 
-
-function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int arity) const 
+function *static_context::lookup_fn_int (xqp_string key, int arity) const
 {
-  function *f = lookup_func2 (fn_internal_key (arity),
-                             qname_internal_key (default_function_namespace (),
-                                                 prefix,
-                                                 local));
+  function *f = lookup_func2 (fn_internal_key (arity), key);
   if (f != NULL)
     return f;
   else 
   {
-    f = lookup_func2(fn_internal_key (VARIADIC_SIG_SIZE),
-                     qname_internal_key (default_function_namespace (),
-                                         prefix,
-                                         local));
-    if (f == NULL)
-      ZORBA_ERROR_PARAM (XPST0017, (prefix.empty () ? prefix : (prefix + ":")) + local, to_string (arity));
+    f = lookup_func2 (fn_internal_key (VARIADIC_SIG_SIZE), key);
     return f;
   }
+}
+
+function *static_context::lookup_resolved_fn (xqp_string ns, xqp_string local, int arity) const 
+{
+  return lookup_fn_int (qname_internal_key2 (ns, local), arity);
+}
+
+function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int arity) const 
+{
+  return lookup_fn_int (qname_internal_key (default_function_namespace (),
+                                            prefix, local),
+                        arity);
 }
 
   bool static_context::lookup_ns (xqp_string prefix, xqp_string &ns) const {
