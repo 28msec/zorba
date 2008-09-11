@@ -104,6 +104,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_libdir}/*.so
 %{_includedir}/%{name}/%{name}/*.h
+%{_includedir}/%{name}/%{name}/util/*.h
 %{_includedir}/%{name}/simplestore/*.h
 %{_datadir}/doc/%{name}-%{version}/python/examples/*.py
 %{_datadir}/doc/%{name}-%{version}/python/examples/*.pyc
