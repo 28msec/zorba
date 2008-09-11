@@ -110,7 +110,7 @@ std::string start_state(int);
 #define YY_USER_ACTION \
 { \
   if (yy_flex_debug) { \
-    std::cout<<'<'<<start_state(YY_START)<<">" /* << " [["<<yytext<<"]]" */ << std::endl; \
+    std::cerr << "<" << start_state(YY_START) << ">" << "\""<<yytext<<"\"" << std::endl; \
   } \
   \
   int last_endl = 0;\
@@ -317,7 +317,6 @@ typedef zorba::xquery_parser::token token;
 "-" { return token::MINUS; }
 "+" { return token::PLUS; }
 "/" { return token::SLASH; }
-"/ " { return token::LEADING_LONE_SLASH; }
 "//" { return token::SLASH_SLASH; }
 "@" { return token::AT_SIGN; }
 ")" { return token::RPAR; }
@@ -402,6 +401,7 @@ typedef zorba::xquery_parser::token token;
 "as" { return token::AS; }
 
 "try" { return token::TRY;}
+
  
     /*______________________________________________________________________
      |

@@ -48,7 +48,7 @@ namespace zorba
 }
 
 /* First part of user declarations.  */
-#line 38 "/usr/local/src/zorba_gflwor/src/compiler/parser/xquery_parser.y"
+#line 38 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
 
 
 #include "common/common.h"
@@ -61,6 +61,7 @@ namespace zorba
 
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
+#include "compiler/api/compilercb.h"
 #include "store/api/update_consts.h"
 
 #define SYMTAB( n ) driver.symtab.get ((off_t) n)
@@ -68,7 +69,7 @@ namespace zorba
 
 namespace zorba {
   namespace parser {
-    extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end;
+    extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end, *the_ofor;
   }
 
   class xquery_driver;
@@ -88,7 +89,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc.  */
-#line 92 "/usr/local/src/zorba_gflwor/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
+#line 93 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -139,7 +140,7 @@ namespace zorba
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 120 "/usr/local/src/zorba_gflwor/src/compiler/parser/xquery_parser.y"
+#line 121 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
 {
   zorba::parsenode * node;
   zorba::exprnode * expr;
@@ -151,7 +152,7 @@ namespace zorba
 	xqp_decimal* decval;
 }
 /* Line 35 of lalr1.cc.  */
-#line 155 "/usr/local/src/zorba_gflwor/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
+#line 156 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;
@@ -213,85 +214,85 @@ namespace zorba
      CONSTRUCTION = 307,
      EVAL = 308,
      FOR = 309,
-     SLIDING = 310,
-     TUMBLING = 311,
-     PREVIOUS = 312,
-     NEXT = 313,
-     ONLY = 314,
-     WHEN = 315,
-     COUNT = 316,
-     ORDERING = 317,
-     CONT = 318,
-     BASE_URI = 319,
-     SCHEMA_ELEMENT = 320,
-     DOCUMENT_NODE = 321,
-     COPY_NAMESPACES = 322,
-     INSTANCE = 323,
-     SCHEMA_ATTRIBUTE = 324,
-     BOUNDARY_SPACE = 325,
-     ANCESTOR_AXIS = 326,
-     ANCESTOR_OR_SELF_AXIS = 327,
-     AND = 328,
-     APOS = 329,
-     AS = 330,
-     ASCENDING = 331,
-     AT = 332,
-     ATTRIBUTE = 333,
-     ATTRIBUTE_AXIS = 334,
-     AT_SIGN = 335,
-     CASE = 336,
-     CASTABLE = 337,
-     CAST = 338,
-     CDATA_BEGIN = 339,
-     CDATA_END = 340,
-     CHILD_AXIS = 341,
-     COLLATION = 342,
-     COMMA = 343,
-     COMMENT_BEGIN = 344,
-     COMMENT_END = 345,
-     DECIMAL_LITERAL = 346,
-     VARIABLE = 347,
-     DEFAULT = 348,
-     DESCENDANT_AXIS = 349,
-     DESCENDANT_OR_SELF_AXIS = 350,
-     DESCENDING = 351,
-     DIV = 352,
-     DOLLAR = 353,
-     DOT = 354,
-     DOT_DOT = 355,
-     DOUBLE_LBRACE = 356,
-     DOUBLE_LITERAL = 357,
-     DOUBLE_RBRACE = 358,
-     ELSE = 359,
-     _EMPTY = 360,
-     GREATEST = 361,
-     LEAST = 362,
-     EMPTY_TAG_END = 363,
-     ENCODING = 364,
-     EQUALS = 365,
-     ESCAPE_APOS = 366,
-     ESCAPE_QUOTE = 367,
-     EVERY = 368,
-     EXCEPT = 369,
-     EXTERNAL = 370,
-     FOLLOWING_AXIS = 371,
-     FOLLOWING_SIBLING_AXIS = 372,
-     FOLLOWS = 373,
-     GE = 374,
-     GETS = 375,
-     GT = 376,
-     HOOK = 377,
-     IDIV = 378,
-     _IN = 379,
-     INHERIT = 380,
-     INTEGER_LITERAL = 381,
-     INTERSECT = 382,
-     IS = 383,
-     ITEM = 384,
-     LBRACE = 385,
-     LBRACK = 386,
-     LE = 387,
-     LEADING_LONE_SLASH = 388,
+     OUTER = 310,
+     SLIDING = 311,
+     TUMBLING = 312,
+     PREVIOUS = 313,
+     NEXT = 314,
+     ONLY = 315,
+     WHEN = 316,
+     COUNT = 317,
+     ORDERING = 318,
+     CONT = 319,
+     BASE_URI = 320,
+     SCHEMA_ELEMENT = 321,
+     DOCUMENT_NODE = 322,
+     COPY_NAMESPACES = 323,
+     INSTANCE = 324,
+     SCHEMA_ATTRIBUTE = 325,
+     BOUNDARY_SPACE = 326,
+     ANCESTOR_AXIS = 327,
+     ANCESTOR_OR_SELF_AXIS = 328,
+     AND = 329,
+     APOS = 330,
+     AS = 331,
+     ASCENDING = 332,
+     AT = 333,
+     ATTRIBUTE = 334,
+     ATTRIBUTE_AXIS = 335,
+     AT_SIGN = 336,
+     CASE = 337,
+     CASTABLE = 338,
+     CAST = 339,
+     CDATA_BEGIN = 340,
+     CDATA_END = 341,
+     CHILD_AXIS = 342,
+     COLLATION = 343,
+     COMMA = 344,
+     COMMENT_BEGIN = 345,
+     COMMENT_END = 346,
+     DECIMAL_LITERAL = 347,
+     VARIABLE = 348,
+     DEFAULT = 349,
+     DESCENDANT_AXIS = 350,
+     DESCENDANT_OR_SELF_AXIS = 351,
+     DESCENDING = 352,
+     DIV = 353,
+     DOLLAR = 354,
+     DOT = 355,
+     DOT_DOT = 356,
+     DOUBLE_LBRACE = 357,
+     DOUBLE_LITERAL = 358,
+     DOUBLE_RBRACE = 359,
+     ELSE = 360,
+     _EMPTY = 361,
+     GREATEST = 362,
+     LEAST = 363,
+     EMPTY_TAG_END = 364,
+     ENCODING = 365,
+     EQUALS = 366,
+     ESCAPE_APOS = 367,
+     ESCAPE_QUOTE = 368,
+     EVERY = 369,
+     EXCEPT = 370,
+     EXTERNAL = 371,
+     FOLLOWING_AXIS = 372,
+     FOLLOWING_SIBLING_AXIS = 373,
+     FOLLOWS = 374,
+     GE = 375,
+     GETS = 376,
+     GT = 377,
+     HOOK = 378,
+     IDIV = 379,
+     _IN = 380,
+     INHERIT = 381,
+     INTEGER_LITERAL = 382,
+     INTERSECT = 383,
+     IS = 384,
+     ITEM = 385,
+     LBRACE = 386,
+     LBRACK = 387,
+     LE = 388,
      LPAR = 389,
      LT_OR_START_TAG = 390,
      MINUS = 391,

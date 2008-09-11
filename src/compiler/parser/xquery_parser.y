@@ -182,7 +182,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 %token BLANK                      "<blank>"
 
-    
 %token EXIT                       "'exit'"
 %token BREAK                      "'break'"
 %token LOOP                       "'loop'"
@@ -253,7 +252,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token COMMENT_END								"':)'"
 %token <decval> DECIMAL_LITERAL	  "'DECIMAL'"
 
-
 %token VARIABLE                   "'variable'"
 %token DEFAULT										"'default'"
 %token DESCENDANT_AXIS						"'descendant::'"
@@ -295,7 +293,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token LBRACE											"'{'"
 %token LBRACK											"'['"
 %token LE													"'<='"
-%token LEADING_LONE_SLASH					"'[ / ]'"
 %token LPAR												"'('"
 %token LT_OR_START_TAG            "'<'"
 %token MINUS											"'-'"
@@ -360,7 +357,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token END_PRAGMA                 "'#)'"
 %token START                      "'start'"
 
-
 /* update-related */
 /* -------------- */
 %token AFTER											"'after'"
@@ -388,7 +384,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* ----------------- */
 %token TRY                        "'try'"
 %token CATCH                      "'catch'"
-
 
 /* eval-related */
 /* ------------ */
@@ -435,8 +430,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token THESAURUS                  "'thesaurus'"
 %token WILDCARDS	         				"'wildcards'"
 
-
-
+/* Leading slash handling expression */
+/* --------------------------------- */
+%type <expr> LeadingSlash
     
 /* left-hand sides: syntax only */
 /* ---------------------------- */
@@ -612,7 +608,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> ExitExpr
 %type <expr> WhileExpr
 %type <expr> FlowCtlStatement
-
 
 /* update-related */
 /* -------------- */
@@ -2800,12 +2795,11 @@ Pragma :
 // [67] PathExpr
 // -------------
 PathExpr :
-		//LEADING_LONE_SLASH
-    SLASH
+		LeadingSlash
 		{
 			$$ = new PathExpr(LOC (@$), ParseConstants::path_leading_lone_slash, NULL);
 		}
-	|	SLASH  RelativePathExpr
+	|	LeadingSlash RelativePathExpr
 		{
 			$$ = new PathExpr(LOC (@$), ParseConstants::path_leading_slash, $2);
 		}
@@ -2822,7 +2816,16 @@ PathExpr :
 		}
 	;
 
+// Leading slash promotion
+// -----------------------
+LeadingSlash :
+    SLASH
+    {
+      $$ = NULL;
+    }
+  ;
 
+    
 // [68] RelativePathExpr
 // ---------------------
 RelativePathExpr :
