@@ -864,7 +864,8 @@ bool FLWORExpr::compute_general () const {
   for (unsigned i = 0; i < clauses->size (); i++) {
     const FLWORClause* cp = (*clauses) [i].getp ();
     if (dynamic_cast<const FLWORInitialClause *> (cp) != NULL) {
-      if (has_group)
+      // any preceding non-initial clause triggers GFLWOR
+      if (has_group || has_where || has_order)
         return true;
 
       if (typeid (*cp) == typeid (ForClause)) {
