@@ -58,7 +58,7 @@ namespace zorba {
       for (i = 0, j = 1; i < arg_vec.size (); ++i) {
         argv [j++] = arg_vec [i].first;
         if (arg_vec [i].second != NULL)
-          argv [j++] = arg_vec [i].second;
+          argv [j++] = arg_vec [i].second + 1;
       }
       assert (j == nargs);
       argv [nargs] = NULL;
