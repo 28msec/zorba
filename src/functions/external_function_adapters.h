@@ -17,6 +17,7 @@
 #define ZORBA_EXTERNAL_FUNCTION_ADAPTERS_H
 
 #include <vector>
+#include <zorba/external_function.h>
 #include "common/shared_types.h"
 #include "functions/function.h"
 
@@ -34,6 +35,8 @@ class stateless_external_function_adapter : public external_function {
     virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     virtual expr_update_t getUpdateType() const { return theUpdateType; }
+
+    virtual bool isPureFunction() const { return m_function->isPureFunction(); }
 
   private:
     StatelessExternalFunction *m_function;

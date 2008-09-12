@@ -40,6 +40,8 @@ namespace zorba {
 
       virtual ItemSequence_t
       evaluate(const Arguments_t&) const = 0;
+
+      virtual bool isPureFunction() const { return true; }
   };
 } /* namespace zorba */
 #endif

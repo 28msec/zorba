@@ -147,7 +147,8 @@ namespace zorba {
       fo_expr *fo = static_cast<fo_expr *> (node);
       const function *f = fo->get_func ();
       if (f->requires_dyn_ctx () || dynamic_cast<const fn_error *> (f) != NULL
-          || maybe_needs_implicit_timezone (fo, rCtx.getStaticContext ()))
+          || maybe_needs_implicit_timezone (fo, rCtx.getStaticContext ())
+          || !f->isPureFunction())
         node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
       break;
     }

@@ -78,6 +78,8 @@ public:
   // Annotation calculator functions
   virtual bool isSource() const { return false; }
 
+  virtual bool isPureFunction() const { return true; }
+
   virtual expr_update_t getUpdateType() const { return SIMPLE_EXPR; }
   bool isUpdating() const { return getUpdateType() == UPDATE_EXPR; }
 };
