@@ -174,68 +174,6 @@ IF (ZORBA_DEBUGGER)
 ENDIF (ZORBA_DEBUGGER)
 
 
-#
-# Boost
-#
-SET(BOOST_CHECK_LIBRARIES ON CACHE BOOL "enable or disable automatic search of boost libraries")
-MESSAGE(STATUS "BOOST_CHECK_LIBRARIES:     " ${BOOST_CHECK_LIBRARIES})
-
-IF (BOOST_CHECK_LIBRARIES)
-
-INCLUDE(${CMAKE_MODULE_PATH}/FindBoost.cmake)
-
-FIND_PACKAGE(Boost REQUIRED COMPONENTS )
-
-IF (NOT Boost_FOUND)
-  MESSAGE(FATAL "Boost not found")
-
-ELSE (NOT Boost_FOUND)
-  MESSAGE(STATUS "Found Boost: ${Boost_INCLUDE_DIRS}")
-  MESSAGE(STATUS "      Boost: ${Boost_LIBRARY_DIRS}")
-
-  INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
-  LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
-
-  IF (NOT WIN32)
-
-    IF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-
-      IF (34 LESS ${Boost_MINOR_VERSION})
-        MESSAGE(STATUS "Boost minor version is greater than 34")
-#        SET(requiredlibs-zorba ${requiredlibs-zorba} boost_system-mt)
-      ENDIF (34 LESS ${Boost_MINOR_VERSION})
-
-    ELSE (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-
-      IF (34 LESS ${Boost_MINOR_VERSION})
-        MESSAGE(STATUS "Boost minor version is greater than 34")
-#        SET(requiredlibs-zorba ${requiredlibs-zorba} boost_system)
-      ENDIF (34 LESS ${Boost_MINOR_VERSION})
-
-    ENDIF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-
-  ELSE (NOT WIN32)
-
-    IF (CYGWIN)
-      SET(CMAKE_INCLUDE_PATH)
-
-      IF (34 LESS ${Boost_MINOR_VERSION})
-        MESSAGE(STATUS "Boost minor version is greater than 34")
-#        SET(requiredlibs-zorba ${requiredlibs-zorba}  boost_system-gcc-mt)
-      ENDIF (34 LESS ${Boost_MINOR_VERSION})
-
-    ELSE (CYGWIN)
-
-      IF(ZORBA_DEBUGGER)
-	      SET(requiredlibs-zorba ${requiredlibs-zorba} WSock32)
-      ENDIF(ZORBA_DEBUGGER)
-
-  	ENDIF (CYGWIN)
-
-  ENDIF (NOT WIN32)
-ENDIF (NOT Boost_FOUND)
-
-ENDIF (BOOST_CHECK_LIBRARIES)
 
 ###############################################################################
 # Debian package dependencies
