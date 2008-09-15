@@ -617,7 +617,7 @@ void FastXmlLoader::startElement(
         AttributeNode* attrNode = new AttributeNode(qname, typeName);
         attrNode->theParent = elemNode;
         attrNode->setId(loader.theTree, &loader.theOrdPath);
-        attrNode->theTypedValue = typedValue.transfer();
+        attrNode->theTypedValue.transfer(typedValue);
 
         attrNodes.set(attrNode, i, false);
 
@@ -821,6 +821,8 @@ void FastXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 
   try
   {
+    // If a doc contains an element like <cdata><![CDATA[ <> ]]></cdata>,
+    // libxml returns the string " <> ".
     const char* charp = reinterpret_cast<const char*>(ch);
     xqpStringStore_t content(new xqpStringStore(charp, len));
 
