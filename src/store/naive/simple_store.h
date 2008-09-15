@@ -31,7 +31,6 @@
 
 #include "store/naive/store_config.h"
 
-
 namespace zorba { 
 
 class GlobalEnvironment;

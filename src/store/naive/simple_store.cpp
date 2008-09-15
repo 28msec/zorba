@@ -884,6 +884,12 @@ TempSeq_t SimpleStore::createTempSeq(const std::vector<store::Item_t>& item_v)
 }
 
 #ifdef ZORBA_STORE_MSDOM
+/*******************************************************************************
+  Export the Microsoft DOM tree representation of a Node Item.
+  Exporting MS DOM tree is valid only for the MS DOM store.
+  Compile the simple store with ZORBA_STORE_MSDOM in order to use this feature on Windows machines.
+  For atomic items it returns NULL.
+********************************************************************************/
 IXMLDOMNode*   SimpleStore::exportItemAsMSDOM(store::Item_t it)
 {
   if(it == NULL)
@@ -895,6 +901,14 @@ IXMLDOMNode*   SimpleStore::exportItemAsMSDOM(store::Item_t it)
     return NULL;
 }
 
+/*******************************************************************************
+  Import a Microsoft DOM tree into the store as a xml document.
+  This function is equivalent with loadDocument,  only that it loads the xml from an existing MS DOM tree.
+  The existing MS DOM is kept unchanged at import time.
+  Further updates on the document are reflected into the original MS DOM tree.
+  Compile the simple store with ZORBA_STORE_MSDOM in order to use this feature on Windows machines.
+
+*******************************************************************************/
 store::Item_t  SimpleStore::importMSDOM(IXMLDOMNode* domNode,
                                         xqpStringStore_t docUri,
                                         xqpStringStore_t baseUri)
