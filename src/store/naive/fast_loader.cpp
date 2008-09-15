@@ -675,8 +675,10 @@ void  FastXmlLoader::endElement(
     while (currChild != NULL)
     {
       if (currChild->getNodeKind() == store::StoreConsts::textNode &&
+          !currChild->get_isCDATA() &&
           prevChild != NULL &&
-          prevChild->getNodeKind() == store::StoreConsts::textNode)
+          prevChild->getNodeKind() == store::StoreConsts::textNode &&
+          !prevChild->get_isCDATA())
       {
         TextNode* textSibling = reinterpret_cast<TextNode*>(prevChild);
         TextNode* textChild = reinterpret_cast<TextNode*>(currChild);
@@ -776,7 +778,7 @@ void FastXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
     const char* charp = reinterpret_cast<const char*>(ch);
     xqpStringStore_t content(new xqpStringStore(charp, len));
 
-    XmlNode* textNode = new TextNode(content);
+    XmlNode* textNode = new TextNode(content, false);//is not cdata
 
     if (loader.theNodeStack.empty())
       loader.setRoot(textNode);
@@ -822,21 +824,21 @@ void FastXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
     const char* charp = reinterpret_cast<const char*>(ch);
     xqpStringStore_t content(new xqpStringStore(charp, len));
 
-    XmlNode* textNode = new TextNode(content);
+    XmlNode* cdataNode = new TextNode(content, true);//is cdata
 
     if (loader.theNodeStack.empty())
-      loader.setRoot(textNode);
+      loader.setRoot(cdataNode);
 
-    loader.theNodeStack.push(textNode);
+    loader.theNodeStack.push(cdataNode);
 
-    textNode->setId(loader.theTree, &loader.theOrdPath);
+    cdataNode->setId(loader.theTree, &loader.theOrdPath);
     loader.theOrdPath.nextChild();
 
-    SYNC_CODE(textNode->theRCLockPtr = &loader.theTree->getRCLock();)
+    SYNC_CODE(cdataNode->theRCLockPtr = &loader.theTree->getRCLock();)
  
-    LOADER_TRACE2("Text Node = " << textNode << " content = "
+    LOADER_TRACE2("CDATA Node = " << cdataNode << " content = "
                   << std::string(charp, len) << std::endl << " ordpath = "
-                  << textNode->getOrdPath().show() << std::endl);
+                  << cdataNode->getOrdPath().show() << std::endl);
   }
   catch (error::ZorbaError& e)
   {

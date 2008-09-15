@@ -529,7 +529,7 @@ void SimpleXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 
     // Create the text node
     store::Item_t node;
-    loader.theFactory->createTextNode(node, parent, -1, content);
+    loader.theFactory->createTextNode(node, parent, -1, content, false);//not cdata
 
     if (loader.theNodeStack.empty())
       loader.theRootNode = node;
@@ -576,12 +576,12 @@ void SimpleXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 
     // Create the text node
     store::Item_t node;
-    loader.theFactory->createTextNode(node, parent, -1, content);
+    loader.theFactory->createTextNode(node, parent, -1, content, true);//is cdata
 
     if (loader.theNodeStack.empty())
       loader.theRootNode = node;
 
-    LOADER_TRACE1("Text Node = " << node.getp() << std::endl
+    LOADER_TRACE1("CDATA Node = " << node.getp() << std::endl
                   << node->show() << std::endl);
   }
   catch (error::ZorbaError& e)

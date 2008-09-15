@@ -537,6 +537,9 @@ public:
   virtual xqp_string
   show() const;
 
+  virtual bool  
+  get_isCDATA() const {return false;}
+
   //virtual void
   //serializeXML(serializer& ser, std::ostream& os) const;
 

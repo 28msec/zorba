@@ -1046,7 +1046,8 @@ bool BasicItemFactory::createTextNode(
     store::Item_t&    result,
     store::Item*      parent,
     long              pos,
-    xqpStringStore_t& content)
+    xqpStringStore_t& content,
+    bool              is_cdata)
 {
   XmlTree* xmlTree = NULL;
   TextNode* n = NULL;
@@ -1059,37 +1060,40 @@ bool BasicItemFactory::createTextNode(
     {
       xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
 
-      n = new TextNode(xmlTree, pnode, pos, content);
+      n = new TextNode(xmlTree, pnode, pos, content, is_cdata);
     }
     else
     {
-      ulong pos2 = (pos >= 0 ? pos : pnode->numChildren());
-
-      XmlNode* lsib = (pos2 > 0 ? pnode->getChild(pos2-1) : NULL);
-
-      if (lsib != NULL && lsib->getNodeKind() == store::StoreConsts::textNode)
+      if(!is_cdata)
       {
-        TextNode* textSibling = reinterpret_cast<TextNode*>(lsib);
+        ulong pos2 = (pos >= 0 ? pos : pnode->numChildren());
 
-        ZORBA_ASSERT(pnode->getNodeKind() != store::StoreConsts::elementNode ||
-                     !reinterpret_cast<ElementNode*>(pnode)->haveTypedValue());
+        XmlNode* lsib = (pos2 > 0 ? pnode->getChild(pos2-1) : NULL);
 
-        if (lsib->getParent() == parent)
+        if (lsib != NULL && lsib->getNodeKind() == store::StoreConsts::textNode && !lsib->get_isCDATA())
         {
-          xqpStringStore_t content2 = textSibling->getText()->append(content);
-          textSibling->setText(content2);
-          result = lsib;
+          TextNode* textSibling = reinterpret_cast<TextNode*>(lsib);
+
+          ZORBA_ASSERT(pnode->getNodeKind() != store::StoreConsts::elementNode ||
+                       !reinterpret_cast<ElementNode*>(pnode)->haveTypedValue());
+
+          if (lsib->getParent() == parent)
+          {
+            xqpStringStore_t content2 = textSibling->getText()->append(content);
+            textSibling->setText(content2);
+            result = lsib;
+          }
+          else
+          {
+            xqpStringStore_t content2 = textSibling->getText()->append(content);
+            pnode->removeChild(pos2-1);
+            result = new TextNode(NULL, pnode, pos2-1, content2, false);//not cdata
+          }
+          return result != NULL;
         }
-        else
-        {
-          xqpStringStore_t content2 = textSibling->getText()->append(content);
-          pnode->removeChild(pos2-1);
-          result = new TextNode(NULL, pnode, pos2-1, content2);
-        }
-        return result != NULL;
       }
  
-      n = new TextNode(xmlTree, pnode, pos, content);
+      n = new TextNode(xmlTree, pnode, pos, content, is_cdata);
     }
   }
   catch (...)

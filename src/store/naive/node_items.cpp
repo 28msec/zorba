@@ -2297,10 +2297,11 @@ xqp_string AttributeNode::show() const
 /*******************************************************************************
   Node constructor used by FastXmlLoader
 ********************************************************************************/
-TextNode::TextNode(xqpStringStore_t& content) 
+TextNode::TextNode(xqpStringStore_t& content, bool is_cdata)
   :
   XmlNode()
 {
+  this->is_cdata = is_cdata;
   setText(content);
 
   NODE_TRACE1("Loaded text node " << this << " content = " << *getText());
@@ -2314,10 +2315,12 @@ TextNode::TextNode(
     XmlTree*          tree,
     XmlNode*          parent,
     long              pos,
-    xqpStringStore_t& content)
+    xqpStringStore_t& content,
+    bool              is_cdata)
   :
   XmlNode(tree, parent, pos, store::StoreConsts::textNode)
 {
+  this->is_cdata = is_cdata;
   setText(content);
 
   if (parent)
@@ -2351,6 +2354,7 @@ TextNode::TextNode(
 {
   assert(parent != NULL);
 
+  this->is_cdata = false;
   setValue(content);
 
   ElementNode* p = reinterpret_cast<ElementNode*>(parent);
@@ -2425,7 +2429,7 @@ XmlNode* TextNode::copy2(
       tree = new XmlTree(NULL, GET_STORE().getTreeId());
 
       textContent = getText();
-      copyNode = new TextNode(tree, NULL, pos, textContent);
+      copyNode = new TextNode(tree, NULL, pos, textContent, is_cdata);
     }
     else
     {
@@ -2436,7 +2440,8 @@ XmlNode* TextNode::copy2(
    
       XmlNode* lsib = (pos2 > 0 ? parent->getChild(pos2-1) : NULL);
 
-      if (lsib != NULL && lsib->getNodeKind() == store::StoreConsts::textNode)
+      if (!is_cdata && 
+        lsib != NULL && lsib->getNodeKind() == store::StoreConsts::textNode && !lsib->get_isCDATA())
       {
         TextNode* textSibling = reinterpret_cast<TextNode*>(lsib);
 
@@ -2455,7 +2460,7 @@ XmlNode* TextNode::copy2(
 
           parent->removeChild(pos2-1);
 
-          copyNode = new TextNode(tree, parent, pos2-1, textContent);
+          copyNode = new TextNode(tree, parent, pos2-1, textContent, false);
         }
       }
       // Skip copy if caller says so.
@@ -2480,13 +2485,13 @@ XmlNode* TextNode::copy2(
         else
         {
           textContent = getValue()->getStringValue();
-          copyNode = new TextNode(NULL, parent, pos, textContent);
+          copyNode = new TextNode(NULL, parent, pos, textContent, is_cdata);
         }
       }
       else
       {
         textContent = getText();
-        copyNode = new TextNode(NULL, parent, pos, textContent);
+        copyNode = new TextNode(NULL, parent, pos, textContent, is_cdata);
       }
     }
   }
@@ -2566,8 +2571,12 @@ xqpStringStore_t TextNode::getStringValue() const
 ********************************************************************************/
 xqp_string TextNode::show() const
 {
-  return xqpString::concat("<text nid=\"", theOrdPath.show(), "\">", 
+  if(!is_cdata)
+    return xqpString::concat("<text nid=\"", theOrdPath.show(), "\">", 
                            getStringValue(), "</text>");
+  else
+    return xqpString::concat("<cdata nid=\"", theOrdPath.show(), "\">", 
+                           getStringValue(), "</cdata>");
 }
 
 
