@@ -36,7 +36,6 @@
 
 #include "api/serialization/serializer.h"
 
-#include "util/web/web.h"
 #include <fstream>
 
 namespace zorba {
