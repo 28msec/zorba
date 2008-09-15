@@ -49,7 +49,14 @@ rchandle<XmlNode>   ImportMSDOM::importMSDOM(IXMLDOMNode* domNode,
 
   IXMLDOMDocument *owner_document;
   domNode->get_ownerDocument(&owner_document);
+  if(!owner_document)
+  {
+    domNode->QueryInterface(IID_IXMLDOMDocument, (void**)&owner_document);
+  }
+  else
+    owner_document->AddRef();
   xmlTree->setDOMcreator(owner_document);
+  owner_document->Release();
 
   hr = domNode->get_nodeType(&node_type);
   if(FAILED(hr))
@@ -107,7 +114,7 @@ bool ImportMSDOM::import_node(IXMLDOMNode *domNode)
     hr = domNode->QueryInterface(IID_IXMLDOMText, (void**)&dom_text);
     if(FAILED(hr))
       return false;
-    if(!import_characters(dom_text))
+    if(!import_characters(dom_text, node_type == NODE_CDATA_SECTION))
       return false;
     dom_text->Release();
   }break;
@@ -437,7 +444,7 @@ bool ImportMSDOM::end_element()
   return true;
 }
 
-bool ImportMSDOM::import_characters(IXMLDOMText *dom_text)
+bool ImportMSDOM::import_characters(IXMLDOMText *dom_text, bool is_cdata)
 {
   {
     XmlNode* parent = NULL;
@@ -455,7 +462,7 @@ bool ImportMSDOM::import_characters(IXMLDOMText *dom_text)
 
     // Create the text node
     TextNode *node;
-    node = new TextNode(xmlTree, parent, -1, content, dom_text);
+    node = new TextNode(xmlTree, parent, -1, content, is_cdata, dom_text);
 
     if (elem_stack.empty())
       rootNode = node;
@@ -481,6 +488,9 @@ bool ImportMSDOM::import_pi(IXMLDOMProcessingInstruction *dom_pi)
 
     dom_pi->get_data(&bstr_data);
     dom_pi->get_target(&bstr_target);
+    CComBSTR  cbstr_target(bstr_target);
+    if((cbstr_target == "xml") && (elem_stack.size() == 1))
+      return true;//don't add this PI "<?xml"
     data = fromBSTR(bstr_data);
     targetp = fromBSTR(bstr_target);
 
