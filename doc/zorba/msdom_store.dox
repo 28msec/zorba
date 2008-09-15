@@ -1,0 +1,92 @@
+/** \page msdomstore MS DOM Store
+
+The MS DOM store is intended to ease the interaction between Zorba and existing 
+xml processing applications, at least for Windows machines. Usualy on Windows 
+the xml data is kept and processed in DOM 1 format and there are a lot of tools
+that handle this format only.
+
+Zorba implements the powerfull XQuery and is desired in xml processing applications.
+But XQuery cannot replace all the xml processing technologies in the present, like XSLT,
+therefore there is a need to enable the easy integration between Zorba and the existing
+xml technologies.
+
+The MS DOM store will keep the internal representation of xml in Microsoft DOM format.
+It will also keep some additional information for each node, because there are 
+fundamental differences between XQuery Data Model (XDM) and DOM 1. This way the processing
+can be done without compromising any of the systems, XDM or MS DOM. 
+
+From the XQuery point of view, there is no difference in using the MS DOM store.
+
+Note: the MS DOM store automatically calls CoInitialize and CoUninitialize
+because it uses COM features from Windows.
+
+\section howtobuildmsdom How To Build MS DOM Store
+
+The MS DOM store is implemented as an add-on to the existing simple store.
+Of course, the MS DOM store can be compiled only on Windows.
+There are no other special restrictions for the MS DOM store.
+
+In order to compile it, you have to first run cmake with ZORBA_STORE_MSDOM flag set to on
+in the build directory:
+
+\code
+cmake ..\ -DZORBA_STORE_MSDOM=ON
+\endcode
+
+This sample command assumes that your build directory is one subdirectory from the main zorba source dir.
+
+The cmake command will construct the Visual Studio project files which you can use
+to further compile the sources.
+
+\section msdomfunctions		Special store functions for MS DOM
+
+In the header "include/simplestore/msdom/import.h" there are defined two static functions
+in the class MSDOM2SimpleStore, offering export and import between IXMLDOMNode* 
+nodes and zorba::Item items from simple store.
+These functions can be used only with MS DOM store.
+
+The zorba::Item and zorba::String classes are defined in include/zorba/item.h and
+include/zorba/zorbastring.h respectively.
+
+\subsection exportmsdom		Export MS DOM tree
+
+\code
+	static IXMLDOMNode*   MSDOM2SimpleStore::exportItemAsMSDOM(zorba::Item item);
+\endcode
+
+After executing an XQuery you may want to get the result in MS DOM format.
+Each node item from the store has MS DOM node information associated with it and you 
+can get that plus all the xml subtree by calling exportItemAsMSDOM over that node item.
+
+The return value, the IXMLDOMNode object is not AddRef-erenced, you have to do that yourself.
+Note that this is not a copy of MS DOM data from the item, but a pointer to the internal data.
+Further information on IXMLDOMNode and relatives can be found in online MSDN.
+
+Note: the xml document root node in MS DOM format is an IXMLDOMDocumentFragment instead
+of IXMLDOMDocument. This way, one document can be added as a subtree into a bigger document. 
+The IXMLDOMDocument object cannot be added as a subtree into another xml document.
+
+\subsection importmsdom		Import MS DOM tree
+
+\code
+  static zorba::Item  MSDOM2SimpleStore::importMSDOM(IXMLDOMNode* domNode,
+													 String docUri,
+													 String baseUri);
+\endcode
+
+An existing MS DOM node or tree can be loaded into the store. Loading means wrapping
+all the MS DOM nodes with internal node items and associating this loaded document with the
+specified docUri.
+From XQuery program you can refer to this loaded document using fn:doc(docUri).
+The domNode doesn't need to be of document type, it can be a subtree of a document.
+Note that the import does not make a copy of the MS DOM tree, so all the updates
+performed over the docUri document will be reflected back into the original MS DOM tree.
+
+The reference count on all MS DOM nodes will be incremented when importing.
+
+
+
+
+
+
+*/
