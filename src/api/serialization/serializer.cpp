@@ -519,15 +519,24 @@ void serializer::emitter::emit_node(
 	}
 	else if (item->getNodeKind() == store::StoreConsts::textNode)
 	{		
-    emit_expanded_string(item->getStringValue());
+    if(!item->get_isCDATA())
+    {
+      emit_expanded_string(item->getStringValue());
 
-    if (item->getStringValue()->endsWith("\r")
-        ||
-        item->getStringValue()->endsWith("\n"))
-      previous_item = PREVIOUS_ITEM_WAS_TEXT_WITH_EOL;
-    else
-      previous_item = PREVIOUS_ITEM_WAS_TEXT;
-	}
+      if (item->getStringValue()->endsWith("\r")
+          ||
+          item->getStringValue()->endsWith("\n"))
+        previous_item = PREVIOUS_ITEM_WAS_TEXT_WITH_EOL;
+      else
+        previous_item = PREVIOUS_ITEM_WAS_TEXT;
+	  }
+	  else
+	  {		
+      tr << "<![CDATA[" << item->getStringValue()->c_str() << "]]>";
+      
+	    previous_item = PREVIOUS_ITEM_WAS_NODE;
+	  }
+  }
 	else if (item->getNodeKind() == store::StoreConsts::commentNode)
 	{
     tr << "<!--" << item->getStringValueP()->c_str() << "-->";
@@ -790,30 +799,39 @@ void serializer::html_emitter::emit_node(
   }
   else if (item->getNodeKind() == store::StoreConsts::textNode)
   {
-    bool expand = true;
-    
-    /*
-      The HTML output method MUST NOT perform escaping for the content of the script and style elements.
-    */
-    if (element_parent != NULL )
+    if(!item->get_isCDATA())
     {
-      xqpString iname(element_parent->getNodeName()->getStringValue());
-      iname = iname.lowercase();
+      bool expand = true;
+      
+      /*
+        The HTML output method MUST NOT perform escaping for the content of the script and style elements.
+      */
+      if (element_parent != NULL )
+      {
+        xqpString iname(element_parent->getNodeName()->getStringValue());
+        iname = iname.lowercase();
 
-      if (iname == "script" || iname == "style")
-        expand = false;
+        if (iname == "script" || iname == "style")
+          expand = false;
+      }
+      
+      /* commented out
+        if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
+          tr << " ";
+      */
+      if (expand)
+        emit_expanded_string(item->getStringValue());
+      else
+        tr << item->getStringValue()->c_str();  // no character expansion
+      
+      previous_item = PREVIOUS_ITEM_WAS_TEXT;
     }
-    
-    /* commented out
-      if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
-        tr << " ";
-    */
-    if (expand)
-      emit_expanded_string(item->getStringValue());
-    else
-      tr << item->getStringValue()->c_str();  // no character expansion
-    
-    previous_item = PREVIOUS_ITEM_WAS_TEXT;
+	  else
+	  {		
+      tr << "<![CDATA[" << item->getStringValue()->c_str() << "]]>";
+      
+	    previous_item = PREVIOUS_ITEM_WAS_NODE;
+	  }
   }
   else if (item->getNodeKind() == store::StoreConsts::commentNode)
   {
@@ -984,9 +1002,20 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
 	}
 	else if (item->getNodeKind() == store::StoreConsts::textNode)
 	{		
-		//TODO: if CDATA
-    emit_expanded_string(item->getStringValue().getp());
-	  //TODO: if CDATA
+    if(!item->get_isCDATA())
+      emit_expanded_string(item->getStringValue().getp());
+	  else 
+	  {		
+      if(theSAX2LexicalHandler)
+        theSAX2LexicalHandler->startCDATA();
+      if(theSAX2ContentHandler)
+      {
+        String  cdata_text(item->getStringValue());
+        theSAX2ContentHandler->characters( cdata_text );
+      }
+      if(theSAX2LexicalHandler)
+        theSAX2LexicalHandler->endCDATA();
+	  }
   }
 	else if (item->getNodeKind() == store::StoreConsts::commentNode)
 	{
@@ -1111,8 +1140,16 @@ void serializer::text_emitter::emit_node(
   }
   else if (item->getNodeKind() == store::StoreConsts::textNode)
   {
-    tr << item->getStringValue()->c_str();
-    previous_item = PREVIOUS_ITEM_WAS_TEXT;
+    if(!item->get_isCDATA())
+    {
+      tr << item->getStringValue()->c_str();
+      previous_item = PREVIOUS_ITEM_WAS_TEXT;
+    }
+    else
+    {
+      tr << item->getStringValue()->c_str();
+      previous_item = PREVIOUS_ITEM_WAS_TEXT;
+    }
   }
   else if (item->getNodeKind() == store::StoreConsts::commentNode)
   {
