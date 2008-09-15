@@ -181,7 +181,7 @@ namespace zorba {
     //                                                                             //
     /////////////////////////////////////////////////////////////////////////////////
 
-    EndClause::EndClause () : theEndClauseIter ( NULL ), theHasEndClause ( false ) {
+    EndClause::EndClause () : theEndClauseIter ( NULL ), theOnlyEnd(false), theHasEndClause ( false ) {
 
     }
 
@@ -443,7 +443,7 @@ namespace zorba {
           }
         }
         //Check if we have open windows
-        while(!lState->theOpenWindowsStartPos.empty() && (!theEndClause.theOnlyEnd || !theEndClause.theHasEndClause)){
+        while(!lState->theOpenWindowsStartPos.empty() && (!theEndClause.theOnlyEnd)){
           bindVariable ( aPlanState, lState->theInputSeq, lState->theOpenWindowsStartPos[0], lState->theCurInputPos - 1 );
           theEndClause.bindExtern ( aPlanState, lState->theInputSeq, lState->theCurInputPos-1 );
           lState->theCurWindow = lState->theOpenWindowsStartPos.erase ( lState->theOpenWindowsStartPos.begin());
