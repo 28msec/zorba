@@ -143,19 +143,8 @@ INSTALL(TARGETS ${ZORBA_LIBRARY_INSTALL_LIST}
 
 #install external packages in Mac OS X package
 IF ( APPLE )
-INSTALL(FILES
-   /usr/local/lib/libicuuc.40.0.dylib 
-   /usr/local/lib/libicuuc.40.dylib 
-   /usr/local/lib/libicuuc.dylib 
-   /usr/local/lib/libicui18n.40.0.dylib
-   /usr/local/lib/libicui18n.40.dylib
-   /usr/local/lib/libicui18n.dylib
-   /usr/local/lib/libicudata.40.0.dylib
-   /usr/local/lib/libicudata.40.dylib
-   /usr/local/lib/libicudata.dylib
-   /usr/local/lib/libxerces-c.28.0.dylib
-   /usr/local/lib/libxerces-c.28.dylib
-   /usr/local/lib/libxerces-c.dylib
-  
-   DESTINATION lib )
+  FOREACH(LIB ${Zorba_ICUUC} ${Zorba_ICUI18N} ${Zorba_ICU_DATA} ${Zorba_XERCESC})
+    STRING(STRIP LIBNAME ${LIB})
+    INSTALL(FILES ${LIBNAME} DESTINATION lib)
+  ENDFOREACH(LIB)
 ENDIF ( APPLE )

@@ -173,7 +173,16 @@ IF (ZORBA_DEBUGGER)
   SET(requiredlibs-zorba ${requiredlibs-zorba} json)
 ENDIF (ZORBA_DEBUGGER)
 
-
+###############################################################################
+# Mac OSX library dependencies
+EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_LIBRARIES}
+                  OUTPUT_VARIABLE Zorba_ICUUC)
+EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_I18N_LIBRARIES}
+                  OUTPUT_VARIABLE Zorba_ICUI18N)
+EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_DATA_LIBRARIES}
+                  OUTPUT_VARIABLE Zorba_ICU_DATA)
+EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libaries.sh ${XERCESC_LIBRARY}
+                  OUTPUT_VARIABLE Zorba_XERCESC)
 
 ###############################################################################
 # Debian package dependencies
