@@ -40,6 +40,8 @@ namespace zorba {
       case URIResolverResult::UR_FODC0003: lError = FODC0003; break;
       case URIResolverResult::UR_FODC0004: lError = FODC0004; break;
       case URIResolverResult::UR_FODC0005: lError = FODC0005; break;
+      case URIResolverResult::UR_XQST0046: lError = XQST0046; break;
+      case URIResolverResult::UR_XQST0088: lError = XQST0088; break;
       case URIResolverResult::UR_NOERROR: ZORBA_ASSERT(false); break; // avoid warnings => handled in the if-statement above
     }
     zorba::String lErrorDescription = aResolverResult->getErrorDescription();

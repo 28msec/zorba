@@ -161,6 +161,63 @@ resolver_example_2(Zorba* aZorba)
 	return true;
 }
 
+class MyModuleURIResolverResult : public ModuleURIResolverResult
+{
+  public:
+    virtual std::istream*
+    getModule() const
+    {
+      return theModule;
+    }
+
+  protected:
+    friend class MyModuleURIResolver;
+    std::istream* theModule;
+};
+
+class MyModuleURIResolver : public ModuleURIResolver
+{
+  public:
+    virtual ~MyModuleURIResolver() {}
+
+    virtual std::auto_ptr<ModuleURIResolverResult>
+    resolve(const Item& aURI, StaticContext* aStaticContext)
+    {
+      std::auto_ptr<MyModuleURIResolverResult> lResult(new MyModuleURIResolverResult());
+      if (aURI.getStringValue() == "http://www.zorba-xquery.com/mymodule") {
+        // we have only one module
+        lResult->theModule = new std::istringstream("module namespace lm = 'http://www.zorba-xquery.com/mymodule'; declare function lm:foo() { 'foo' };");
+        lResult->setError(URIResolverResult::UR_NOERROR);
+      } else {
+        lResult->setError(URIResolverResult::UR_XQST0046);
+        std::stringstream lErrorStream;
+        lErrorStream << "Module not found " << aURI.getStringValue();
+        lResult->setErrorDescription(lErrorStream.str());
+      }
+      return std::auto_ptr<ModuleURIResolverResult>(lResult.release());
+    }
+};
+
+bool 
+resolver_example_3(Zorba* aZorba)
+{
+  StaticContext_t lContext = aZorba->createStaticContext();
+
+  MyModuleURIResolver lResolver;
+
+  lContext->setModuleURIResolver(&lResolver);
+
+  try {
+    XQuery_t lQuery = aZorba->compileQuery("import module namespace lm='http://www.zorba-xquery.com/mymodule'; lm:foo()", lContext); 
+    std::cout << lQuery << std::endl;
+  } catch (ZorbaException& e) {
+    std::cerr << e.getDescription() << std::endl;
+    return false;
+  }
+
+	return true;
+}
+
 int 
 uri_resolvers(int argc, char* argv[])
 {
@@ -176,6 +233,11 @@ uri_resolvers(int argc, char* argv[])
   std::cout << std::endl  << "executing uri resolver example test 2" << std::endl;
   res = resolver_example_2(lZorba);
   if (!res) return 2; 
+  std::cout << std::endl;
+
+  std::cout << std::endl  << "executing uri resolver example test 3" << std::endl;
+  res = resolver_example_3(lZorba);
+  if (!res) return 3; 
   std::cout << std::endl;
 
   lZorba->shutdown();
