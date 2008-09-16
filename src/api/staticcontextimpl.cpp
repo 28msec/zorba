@@ -546,4 +546,14 @@ StaticContextImpl::getModuleURIResolver()
   return 0;
 }
 
+bool
+StaticContextImpl::containsFunction(const String& aFnNameUri, const String& aFnNameLocal, int arity) const
+{
+    const function *fn = theCtx->lookup_resolved_fn(Unmarshaller::getInternalString(aFnNameUri), Unmarshaller::getInternalString(aFnNameLocal), arity);
+    if (fn == NULL) {
+        return false;
+    }
+    return true;
+}
+
 } /* namespace zorba */

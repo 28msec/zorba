@@ -158,6 +158,9 @@ class StaticContextImpl : public StaticContext
 
   virtual ModuleURIResolver*
   getModuleURIResolver();
+
+  virtual bool
+  containsFunction(const String& aFnNameUri, const String& aFnNameLocal, int arity) const;
 };
 
 } /* namespace zorba */

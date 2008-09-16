@@ -317,6 +317,11 @@ namespace zorba {
 
       virtual ModuleURIResolver*
       getModuleURIResolver() = 0;
+
+      /** \brief Check if a function with the given name and arity are registered in the context.
+       */
+      virtual bool
+      containsFunction(const String& aFnNameUri, const String& aFnNameLocal, int arity) const = 0;
   };
 
 } /* namespace zorba */
