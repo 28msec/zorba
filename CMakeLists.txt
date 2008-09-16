@@ -215,7 +215,7 @@ SET(ZORBA_PATCH_NUMBER "4")
 SET(ZORBA_SVN_NUMER)
 
 CONFIGURE_FILE ( "${CMAKE_SOURCE_DIR}/zorba.spec.in"
-                 "${CMAKE_SOURCE_DIR}/zorba.spec" @ONLY )
+                 "${CMAKE_BINARY_DIR}/zorba.spec" @ONLY )
 
 FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/svn_rev.txt ZORBA_SVN_NUMBER)
 STRING(REGEX REPLACE "[^0-9]*([0-9]*)..*" "\\1" ZORBA_SVN_NUMBER ${ZORBA_SVN_NUMBER})
