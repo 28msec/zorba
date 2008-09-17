@@ -347,6 +347,7 @@ int _tmain(int argc, _TCHAR* argv[])
 #ifdef ZORBA_HAVE_PTHREAD_H
           pthread_join( lServerThread, 0 );
           pthread_cancel( lServerThread );
+          pthread_detach( lServerThread );
 #else
           WaitForSingleObject( theThread, INFINITE );
           CloseHandler( lServerThread );
