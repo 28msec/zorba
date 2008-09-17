@@ -145,6 +145,8 @@ public:
 
   expr_t clone();
   virtual expr_t clone(substitution_t& substitution);
+
+  virtual bool is_updating() { return false; }
 };
 
 typedef rchandle<expr> expr_t;

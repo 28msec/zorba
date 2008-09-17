@@ -52,7 +52,7 @@ class sequential_expr : public expr
   checked_vector<expr_t> sequence;
 
 public:
-  expr_kind_t get_expr_kind () { return constructor_expr_kind; }
+  expr_kind_t get_expr_kind () { return sequential_expr_kind; }
 
   sequential_expr (const QueryLoc& loc, expr_t first, expr_t second)
     : expr (loc)
@@ -1350,6 +1350,7 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
+  virtual bool is_updating() { return true; }
 
 };
 
@@ -1376,6 +1377,7 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
+  virtual bool is_updating() { return true; }
 };
 
 
@@ -1408,6 +1410,7 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
+  virtual bool is_updating() { return true; }
 
 };
 
@@ -1437,6 +1440,7 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
+  virtual bool is_updating() { return true; }
 
 };
 
@@ -1455,6 +1459,7 @@ public:
   expr_t             getExpr() const { return theExpr; }
 
   std::ostream& put(std::ostream&) const;
+  virtual bool is_updating() { return true; }
 };
 
 // [249] [http://www.w3.org/TR/xqupdate/#prod-xquery-TransformExpr]
@@ -1505,6 +1510,7 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
+  virtual bool is_updating() { return true; }
 
 };
 

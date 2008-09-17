@@ -155,8 +155,14 @@ static bool safe_to_fold_single_use(var_expr *v, flwor_expr *flwor, static_conte
         && TypeOps::type_max_cnt (*ref->get_expr ()->return_type (sctx)) >= 2)
       return false;
   }
-  if (containing_expr == NULL) {
+  if (flwor->get_where() != NULL && containing_expr == NULL && count_variable_uses(flwor->get_where(), v, 1) == 1) {
+    containing_expr = flwor->get_where();
+  }
+  if (containing_expr == NULL && count_variable_uses(flwor->get_retval(), v, 1) == 1) {
     containing_expr = flwor->get_retval();
+  }
+  if (containing_expr == NULL) {
+    return false;
   }
 
   return !var_in_try_block_or_in_loop(sctx, v, &*containing_expr, false);

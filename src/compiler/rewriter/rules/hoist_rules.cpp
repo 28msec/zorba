@@ -263,6 +263,8 @@ static bool hoist_expressions(RewriterContext& rCtx, expr *e, const std::map<var
     } else {
       status = hoist_expressions(rCtx, re, varmap, freevarMap, &curr_holder) || status;
     }
+  } else if (e->get_expr_kind() == sequential_expr_kind || e->is_updating()) {
+    // do nothing
   } else {
     expr_iterator i = e->expr_begin();
     while(!i.done()) {
@@ -283,9 +285,31 @@ static bool hoist_expressions(RewriterContext& rCtx, expr *e, const std::map<var
   return status;
 }
 
+static bool contains_updates(expr *e)
+{
+  if (e->is_updating()) {
+    return true;
+  }
+  expr_iterator i = e->expr_begin();
+  while(!i.done()) {
+    expr *ce = &*(*i);
+    if (ce) {
+      if (contains_updates(ce)) {
+        return true;
+      }
+    }
+    ++i;
+  }
+
+  return false;
+}
+
 RULE_REWRITE_PRE(HoistExprsOutOfLoops)
 {
   if (node != rCtx.getRoot()) {
+    return NULL;
+  }
+  if (contains_updates(node)) {
     return NULL;
   }
   int counter = 0;
