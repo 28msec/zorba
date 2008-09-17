@@ -98,10 +98,12 @@ IF ( CURL_FOUND )
   SET(ZORBA_WITH_REST ON CACHE BOOL "Compile Zorba with REST support")
 ELSE (CURL_FOUND )
    MESSAGE ( STATUS "Can't build Zorba with REST support because Curl is not found.")
-  SET(ZORBA_WITH_REST OFF CACHE BOOL "No REST support" )
+  SET(ZORBA_WITH_REST "OFF" CACHE BOOL "No REST support" FORCE )
+  MESSAGE ( STATUS "Setting REST off" )
 ENDIF (CURL_FOUND )
 
-MESSAGE ( STATUS "ZORBA_WITH_REST: " ${ZORBA_WITH_REST})
+
+MESSAGE ( STATUS "ZORBA_WITH_REST: " ${ZORBA_WITH_REST} )
 
 SET(ZORBA_WITH_SSL ON CACHE BOOL "compile zorba to be able to do https calls")
 MESSAGE ( STATUS "ZORBA_WITH_SSL: " ${ZORBA_WITH_SSL})
