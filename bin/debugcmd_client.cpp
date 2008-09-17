@@ -150,7 +150,10 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
         theOutput << "\033[1m" << lLineNo << '\t' << "\033[0m"; 
         for(unsigned int j=1; j <= lLine.length(); j++)
         {
-          if( j >= theLocation->getColumnBegin() && j <= theLocation->getColumnEnd() )
+          if((lLineNo==theLocation->getLineBegin() && j >= theLocation->getColumnBegin()) ||
+             (lLineNo==theLocation->getLineEnd() && j <= theLocation->getColumnEnd()) ||
+             (lLineNo > theLocation->getLineBegin() && lLineNo < theLocation->getLineEnd())
+            )
           {
             theOutput << "\033[1m" << lLine.at(j-1) << "\033[0m";
           } else {

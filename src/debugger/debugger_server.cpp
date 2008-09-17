@@ -428,8 +428,8 @@ store::Item_t ZorbaDebugger::fetchItem( const QueryLoc& loc, xqpString anExpr,
 
     } catch ( error::ZorbaError& e ) {
       std::stringstream lOutputStream;
-      lOutputStream << "Error: " << error::ZorbaError::toString(e.theErrorCode) << std::endl;
-      lOutputStream << "       " << e.theDescription << std::endl;
+      xqpString lDescription = e.theDescription.replace("\\\"", "", "");
+      lOutputStream << "Error: " << error::ZorbaError::toString(e.theErrorCode) << " " << lDescription;
       if ( anError != 0 )
         *anError = lOutputStream.str(); 
     }
@@ -484,8 +484,8 @@ xqpString ZorbaDebugger::fetchValue( const QueryLoc& loc, xqpString anExpr,
 
     } catch ( error::ZorbaError& e ) {
       std::stringstream lError;
-      lError << "Error: " << error::ZorbaError::toString(e.theErrorCode) << std::endl;
-      lError << "       " << e.theDescription << std::endl;
+      xqpString lDescription = e.theDescription.replace("\\\"", "", "");
+      lError << "Error: " << error::ZorbaError::toString(e.theErrorCode) << " " << lDescription;
       *anError = lError.str();
     }
     
