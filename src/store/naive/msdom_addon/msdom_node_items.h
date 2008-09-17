@@ -936,7 +936,6 @@ public:
 
 protected:
   TextNodeContent theContent;
-  bool  is_cdata;
 
 public:
   TextNode(
@@ -944,7 +943,6 @@ public:
         XmlNode*          parent,
         long              pos,
         xqpStringStore_t& content,
-        bool              is_cdata,
         IXMLDOMText       *dom_text = NULL);
 
   TextNode(

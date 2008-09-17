@@ -590,8 +590,7 @@ public:
         Item_t&           result,
         Item*             parent,
         long              pos,
-        xqpStringStore_t& content,
-        bool              is_cdata = false) = 0;
+        xqpStringStore_t& content) = 0;
 
   virtual bool createTextNode(
         Item_t&           result,

@@ -56,7 +56,7 @@ protected:
   void end_document();
   bool import_element(IXMLDOMElement *dom_elem);
   bool end_element();
-  bool import_characters(IXMLDOMText *dom_text, bool is_cdata);
+  bool import_characters(IXMLDOMText *dom_text);
   bool import_pi(IXMLDOMProcessingInstruction *dom_pi);
   bool import_comment(IXMLDOMComment *dom_comment);
 };

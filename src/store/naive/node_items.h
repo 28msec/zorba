@@ -897,18 +897,15 @@ class TextNode : public XmlNode
 
 protected:
   TextNodeContent theContent;
-  bool  is_cdata;
 
 public:
-  TextNode(xqpStringStore_t& content,
-           bool  is_cdata);
+  TextNode(xqpStringStore_t& content);
 
   TextNode(
         XmlTree*          tree,
         XmlNode*          parent,
         long              pos,
-        xqpStringStore_t& content,
-        bool  is_cdata);
+        xqpStringStore_t& content);
 
   TextNode(
         XmlNode*          parent,
@@ -940,8 +937,6 @@ public:
 
   void replaceValue(UpdReplaceTextValue& upd);
   void restoreValue(UpdReplaceTextValue& upd);
-
-  virtual bool   get_isCDATA() const             {return is_cdata;}
 
 protected:
   xqpStringStore* getText() const      { return theContent.getText(); }

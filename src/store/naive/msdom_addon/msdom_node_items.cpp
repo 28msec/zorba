@@ -2740,28 +2740,17 @@ TextNode::TextNode(
     XmlNode*          parent,
     long              pos,
     xqpStringStore_t& content,
-    bool              is_cdata,
     IXMLDOMText      *dom_text)
   :
   XmlNode(tree, parent)
 {
-  this->is_cdata = is_cdata;
   theContent.theDOMText = NULL;
   if(!dom_text)
   {//create the MS DOM Text Node
     HRESULT   hr;
     CMyBSTR  bstr_content("");
 
-    if(!is_cdata)
-    {
-      hr = getTree()->getDOMcreator()->createTextNode(bstr_content, &theContent.theDOMText);
-    }
-    else
-    {
-      IXMLDOMCDATASection   *cdata_node;
-      hr = getTree()->getDOMcreator()->createCDATASection(bstr_content, &cdata_node);
-      theContent.theDOMText = cdata_node;//CDATA is derived from Text
-    }
+    hr = getTree()->getDOMcreator()->createTextNode(bstr_content, &theContent.theDOMText);
     if(FAILED(hr))
       ZORBA_ERROR(XQP0027_MS_DOM_ERROR);
   }
@@ -3002,7 +2991,7 @@ XmlNode* TextNode::copy2(
       tree = new XmlTree(NULL, GET_STORE().getTreeId());
 
       textContent = getText();
-      copyNode = new TextNode(tree, NULL, pos, textContent, is_cdata);
+      copyNode = new TextNode(tree, NULL, pos, textContent);
     }
     else
     {
@@ -3013,8 +3002,7 @@ XmlNode* TextNode::copy2(
    
       XmlNode* lsib = (pos2 > 0 ? parent->getChild(pos2-1) : NULL);
 
-      if (!is_cdata && 
-        lsib != NULL && lsib->getNodeKind() == store::StoreConsts::textNode && !lsib->get_isCDATA())
+      if (lsib != NULL && lsib->getNodeKind() == store::StoreConsts::textNode)
       {
         TextNode* textSibling = reinterpret_cast<TextNode*>(lsib);
 
@@ -3059,13 +3047,13 @@ XmlNode* TextNode::copy2(
         else
         {
           textContent = getValue()->getStringValue();
-          copyNode = new TextNode(NULL, parent, pos, textContent, is_cdata);
+          copyNode = new TextNode(NULL, parent, pos, textContent);
         }
       }
       else
       {
         textContent = getText();
-        copyNode = new TextNode(NULL, parent, pos, textContent, is_cdata);
+        copyNode = new TextNode(NULL, parent, pos, textContent);
       }
     }
   }

@@ -675,10 +675,8 @@ void  FastXmlLoader::endElement(
     while (currChild != NULL)
     {
       if (currChild->getNodeKind() == store::StoreConsts::textNode &&
-          !currChild->get_isCDATA() &&
           prevChild != NULL &&
-          prevChild->getNodeKind() == store::StoreConsts::textNode &&
-          !prevChild->get_isCDATA())
+          prevChild->getNodeKind() == store::StoreConsts::textNode)
       {
         TextNode* textSibling = reinterpret_cast<TextNode*>(prevChild);
         TextNode* textChild = reinterpret_cast<TextNode*>(currChild);
@@ -778,7 +776,7 @@ void FastXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
     const char* charp = reinterpret_cast<const char*>(ch);
     xqpStringStore_t content(new xqpStringStore(charp, len));
 
-    XmlNode* textNode = new TextNode(content, false);//is not cdata
+    XmlNode* textNode = new TextNode(content);
 
     if (loader.theNodeStack.empty())
       loader.setRoot(textNode);
@@ -826,7 +824,7 @@ void FastXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
     const char* charp = reinterpret_cast<const char*>(ch);
     xqpStringStore_t content(new xqpStringStore(charp, len));
 
-    XmlNode* cdataNode = new TextNode(content, true);//is cdata
+    XmlNode* cdataNode = new TextNode(content);
 
     if (loader.theNodeStack.empty())
       loader.setRoot(cdataNode);

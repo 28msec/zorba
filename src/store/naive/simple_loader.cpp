@@ -529,7 +529,7 @@ void SimpleXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 
     // Create the text node
     store::Item_t node;
-    loader.theFactory->createTextNode(node, parent, -1, content, false);//not cdata
+    loader.theFactory->createTextNode(node, parent, -1, content);
 
     if (loader.theNodeStack.empty())
       loader.theRootNode = node;
@@ -576,7 +576,7 @@ void SimpleXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 
     // Create the text node
     store::Item_t node;
-    loader.theFactory->createTextNode(node, parent, -1, content, true);//is cdata
+    loader.theFactory->createTextNode(node, parent, -1, content);
 
     if (loader.theNodeStack.empty())
       loader.theRootNode = node;

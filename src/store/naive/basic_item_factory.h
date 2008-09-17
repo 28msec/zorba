@@ -250,8 +250,7 @@ public:
         store::Item_t&    result,
         store::Item*      parent,
         long              pos,
-        xqpStringStore_t& content,
-        bool              is_cdata = false);
+        xqpStringStore_t& content);
 
   bool createTextNode(
         store::Item_t&    result,

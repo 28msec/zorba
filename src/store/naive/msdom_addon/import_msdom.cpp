@@ -114,7 +114,7 @@ bool ImportMSDOM::import_node(IXMLDOMNode *domNode)
     hr = domNode->QueryInterface(IID_IXMLDOMText, (void**)&dom_text);
     if(FAILED(hr))
       return false;
-    if(!import_characters(dom_text, node_type == NODE_CDATA_SECTION))
+    if(!import_characters(dom_text))
       return false;
     dom_text->Release();
   }break;
@@ -444,7 +444,7 @@ bool ImportMSDOM::end_element()
   return true;
 }
 
-bool ImportMSDOM::import_characters(IXMLDOMText *dom_text, bool is_cdata)
+bool ImportMSDOM::import_characters(IXMLDOMText *dom_text)
 {
   {
     XmlNode* parent = NULL;
@@ -462,7 +462,7 @@ bool ImportMSDOM::import_characters(IXMLDOMText *dom_text, bool is_cdata)
 
     // Create the text node
     TextNode *node;
-    node = new TextNode(xmlTree, parent, -1, content, is_cdata, dom_text);
+    node = new TextNode(xmlTree, parent, -1, content, dom_text);
 
     if (elem_stack.empty())
       rootNode = node;
