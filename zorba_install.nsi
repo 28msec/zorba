@@ -676,17 +676,16 @@ Section "" ;No components page, name is not important
 SetOutPath $INSTDIR
 
 ; Put a file there
-File build\Release\bin\Zorba.exe
-File lib\icudt38.dll
-File lib\icuin38.dll
-File lib\icuuc38.dll
-File lib\libxml2.dll
-File lib\libxml2.lib
-File lib\simplestore.lib
-File lib\xerces-c_2_8.dll
-File lib\zlib1.dll
-File lib\zorba.lib
-File lib\iconv.dll
+File build\bin\Release\zorba.exe
+File C:\icu\bin\icudt40.dll
+File C:\icu\bin\icuin40.dll
+File C:\icu\bin\icuuc40.dll
+File C:\libxml2-2.6.32+.win32\bin\libxml2.dll
+File build\src\store\naive\Release\simplestore.lib
+File C:\xerces-c_2_8_0-x86-windows-vc_8_0\bin\xerces-c_2_8.dll
+;File lib\zlib1.dll
+File build\src\Release\zorba.lib
+File C:\iconv-1.9.2.win32\bin\iconv.dll
 File LICENSE.txt
 File README.txt
 
