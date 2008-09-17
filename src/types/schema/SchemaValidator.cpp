@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <zorba/config.h>
 #ifndef ZORBA_NO_XMLSCHEMA
 
 #include "system/globalenv.h"
