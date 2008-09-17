@@ -293,8 +293,9 @@ namespace zorba {
       virtual void
       setDebugMode( bool aDebugMode ) = 0;
 
-      /** \brief Return true if the debug mode is enabled, false otherwise
+      /** \brief Check if the debug mode is activated.
        *
+       * @return true if the debug mode is enabled, false otherwise.
        */
       virtual bool
       getDebugMode() const = 0;
@@ -302,7 +303,7 @@ namespace zorba {
       /** \brief Run the query with the debugger server.
        *
        * This method run the query with the debugger server.
-       * This method is blocking up until a debugger client connects to this
+       * This method is blocking up until a debugger client connects to the
        * server and decided to end the server. In order to call this method, the
        * query has to be compiled.
        *

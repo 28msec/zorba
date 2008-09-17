@@ -1,0 +1,184 @@
+/** \page debugger Debugger
+\briefIn any programming language, a debugger comes handy to prevent bugs during the development phase of an application. XQuery is no exception to this rule.
+Zorba provides XQuery debugging capabilities through tree medias: a high level C++ API to embed and build front-end XQuery debuggers, a command-line tool called XQDB and the XQuery Development Toolkit project, an Eclipse plugin that supports XQuery.
+
+\section xqdb XQDB, Command Line Tool
+
+
+XQDB is integrated in Zorba's command line utility.
+
+\subsection commandLineOptions Command-line Options.
+
+You need to use -c to start a query in debug mode.
+<pre>
+zorba -c -q -f query.xq
+</pre>
+
+With the port option (-p or --ports), you can specify the ports of the debugger server. By default it is 8000 for requests and 9000 for events. If you are using a firewall, you need to have these ports unblocked.
+<pre>
+zorba -p 1111:2222 -c -q query.xq -f
+</pre>
+
+Once XQDB is started, you can use the debugger client commands. There are basically divided in 3 categories: execution commands, breakpoints commands and data commands. Use help to get an overview.
+<pre>
+    (xqdb) help
+    List of available commands:
+    Execution commands:
+      run      -- Run the query.
+      stop     -- Stop the query execution.
+      quit     -- Quit Zorba debugger.
+      continue -- Resume the query execution.
+      status   -- Display the status of the query.
+    Breakpoint commands:
+      break    -- Set a breakpoint at the specified file and line.
+      watch    -- Add watchpoint to the query
+      list     -- Display the executed query line.
+      clear    -- Clear breakpoints.
+    Data commands:
+      vars     -- List all variables that are in scope.
+      eval     -- Evaluate an xquery expression and print its result.
+    Zorba debugger:
+      version  -- Display the version of Zorba engine and its debugger
+      help     -- This help.
+</pre>
+
+\subsection executionCommands Execution Commands
+<ul>
+  <li>run (shortcut: r): Start the query. Reload the query if it has changed.</li>
+  <li>suspend (shortcut: ctrl+c):  Suspend the query, print the location where the query is suspended.</li>
+  <li>stop (shortcut: s): Stop the query execution.</li>
+  <li>continue (shortcut: c): Resume the query execution.</li>
+  <li>status: Display the current execution status of the query.</li>
+</ul>
+
+\subsection breakpointCommands Breakpoint Commands
+<ul>
+  <li>break (shortcut: b): Set a breakpoint at a certain line in the query.<li>
+  <li>watch (shortcut: w): Suspend the query execution whenever the specified xquery expression has its effective boolean value as true.</li>
+  <li>list breakpoints (shortcut: l b): List all the breakpoints and watchpoints that are set.</li>
+  <li>clear (shortcut: cl): Remove a break or watchpoint.</li>
+
+\subsection dataCommands Data Commands
+<ul>
+  <li>list (shortcut: l): List the current line of the query that is being executed. Use list more to expand the listing or list number of lines to select the number of line you want to print.</li>
+  <li>variables: (shortcut: vars): Print the list of all the variables that are in scope.</li>
+  <li>print: (shortcut: p): Print the result of an xquery expression and its type. You can use all the variables that are in scope.</li>
+</ul>
+
+\section debugSession Example Debug Session
+
+
+Let's run a query in debug mode using the -c option:
+<pre>
+$ zorba -c -f -q test_query.xq
+</pre>
+
+You can use list all to print the query:
+<pre>
+    (xqdb) list all
+    1    <html>
+    2      <head />
+    3      <body>
+    4      {
+    5        for $act in <doc>
+    6                      <ACT>
+    7                        <TITLE>T</TITLE>
+    8                        <SPEAKER>S1</SPEAKER>
+    9                        <SPEAKER>S2</SPEAKER>
+    10                      </ACT>
+    11                    </doc>
+    12        let $speakers := distinct-values($act//SPEAKER)
+    13        return
+    14          <span>
+    15            <h1>{$act/TITLE/text()}</h1>
+    16            <ul>
+    17            {
+    18              for $speaker in $speakers
+    19              return <li>{ $speaker }</li>
+    20            }
+    21            </ul>
+    22          </span>
+    23      }
+    24      </body>
+    25    </html>
+    26
+</pre>
+
+Now we would like to set breakpoints in the query. In Zorba, the following expressions are breakable: For, Let and Return clauses; function calls and If/Else expressions.
+In the query above, we can set breakpoints at lines 5, 12, 13, 18 and 19:
+<ul>
+  <li>Line 5 breaks at the for binding after the variable $act is bound.<li>
+  <li>Line 12 make the query break twice: first at the parameters of the function call distinct-values(), then on the let binding after $speakers is bound.</li>
+  <li>Line 13 breaks at the return clause.</li>
+  <li>Lines 18 and 19 obey to the same rules. Line 18 breaks after $speaker is bound and line 19 breaks at the return clause.</li>
+</ul>
+
+Use b or break to set any of these breakpoints. For example,
+<pre>
+    (xqdb) b 19
+    Set breakpoint at line 19.
+</pre>
+
+And r or run the query:
+<pre>
+    (xqdb) r
+    Launch the query
+    19    return <li>{ $speaker }</li>
+</pre>
+
+The query suspended at line 19. If you are lost, you can use the list command to see the neighboring lines. The expression at which the query has suspended is printed in bold face.
+<pre>
+    (xqdb) list
+    16    <ul>
+    17    {
+    18        for $speaker in $speakers
+    19        return <li>{ $speaker }</li>
+    20    }
+    21    </ul>
+</pre>
+
+Let's list all variables that are in scope with the vars command:
+<pre>
+    (xqdb) vars
+    Global variables:
+
+    Local variables:
+    $act [XS_UNTYPED]
+    $speaker [XS_UNTYPED]
+    $speakers [XS_UNTYPED]
+</pre>
+
+You can use the print command to fetch the value of any of these variables. Note that you can execute arbitrary XQuery expressions having the in-scope variables being bound.
+<pre>
+    (xqdb) p $act
+    <ACT><TITLE>T</TITLE><SPEAKER>S1</SPEAKER><SPEAKER>S2</SPEAKER></ACT>
+    (xqdb) p $act/TITLE/text()
+    T
+</pre>
+
+Now, we would like to remove the breakpoint and set a watchpoint whenever $speaker is equal to S2, i.e. the execution of the query only suspends if the boolean effective value of the condition evalutes to true.
+<pre>
+    (xqdb) l b
+    List of breakpoints and watchpoints:
+    id:1    line:16
+    (xqdb) delete 1
+    Breakpoint 1 has been cleared.
+    (xqdb) w $speaker=S2
+    Set watchpoint: $speaker=S2
+</pre>
+
+If you rerun the query, it will again break at line 16. However it will break only once, the single time where $speaker is equal to S2:
+<pre>
+    (xqdb) r
+    The query being debugged has already started.
+    Reload query and start it from beginning? (y or n)
+    y
+    Launch the query
+    19        return <li>{ $speaker }</li>
+    (xqdb) p $speaker
+    S2
+</pre>
+
+\subsection modules Working with modules
+
+*/

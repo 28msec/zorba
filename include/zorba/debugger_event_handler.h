@@ -23,6 +23,12 @@ namespace zorba{
   /* Cause of the suspension of the engine */
   enum SuspendedBy { A_USER, A_BREAKPOINT, A_STEP }; 
 
+  /**
+   * Representation of the current location location 
+   * in the remote query.
+   * This location goes from the starting line and column
+   * to the ending line and column.
+   */
   class ZORBA_EXTERN_DECL QueryLocation
   {
     public:
@@ -46,28 +52,61 @@ namespace zorba{
       getColumnEnd() const = 0;
   };
 
+  /**
+   * DebuggerEventHandler is the base handler for all debugging events.
+   * During debugging, events are sent from the remote query to the client.
+   * Once a client received an event, a callback is made to the debugger event
+   * handler.
+   */
   class ZORBA_EXTERN_DECL DebuggerEventHandler
   {
     public:
 
       virtual
       ~DebuggerEventHandler(){}
-
+      
+      /** \brief Signal the query status as being started.
+       *
+       */
       virtual void
       started() = 0;
 
+      /** \brief Signal the query status as being idle.
+       *
+       */
       virtual void
       idle() = 0;
 
+      /** \brief Signal the query status as being suspended.
+       *
+       * When a suspended event is triggered, this method received the
+       * cause of the suspension (user, breakpoint, step) and the location 
+       * in the query where the debugger suspended.
+       */
       virtual void
       suspended( QueryLocation &aLocation, SuspendedBy aCause ) = 0;
 
+
+      /** \brief Signal the query status as being resumed.
+       *
+       */
       virtual void
       resumed() = 0;
 
+
+      /** \brief Signal the query status as being terminated.
+       *
+       */      
       virtual void
       terminated() = 0;
 
+      /** \brief Fire the result of an XQuery expression.
+       *
+       * Signal that the result of an XQuery expression sent by the 
+       * client has been computed. The original expression sent by the client
+       * and the result are given as parameters.
+       * If an error occured, anError contains its description.
+       */
       virtual void
       evaluated(String &anExpr, String &aResult, String &aReturnType, String &anError) = 0;
   };
