@@ -31,7 +31,7 @@
        <li> \ref groupby
        <li> \ref trycatch
        <li> \ref eval
-       <li> \ref debugger
+       <li> \ref rest
        <li> Additional Function Libraries
        <ul>
          <li> \ref deref
@@ -40,6 +40,7 @@
        </ul>
      </ul>
      <li> \ref commandline
+     <li> \ref debugger
      <li> Application Programming Interfaces (APIs)
      <ul>
        <li><a class="el" href="../../cxx/html/index.html">C++ API</a>
