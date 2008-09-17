@@ -174,17 +174,6 @@ IF (ZORBA_DEBUGGER)
 ENDIF (ZORBA_DEBUGGER)
 
 ###############################################################################
-# Mac OSX library dependencies
-EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_LIBRARIES}
-                  OUTPUT_VARIABLE Zorba_ICUUC)
-EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_I18N_LIBRARIES}
-                  OUTPUT_VARIABLE Zorba_ICUI18N)
-EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_DATA_LIBRARIES}
-                  OUTPUT_VARIABLE Zorba_ICU_DATA)
-EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libaries.sh ${XERCESC_LIBRARY}
-                  OUTPUT_VARIABLE Zorba_XERCESC)
-
-###############################################################################
 # Debian package dependencies
 SET(debian-required-packages "libxml2,libicu38,libxerces28")
 IF(CURL_FOUND)
@@ -194,14 +183,10 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ZorbaDebianDependencies.cmake.in ${CM
 
 ################################################################################
 # Variables
-
 SET(DEFINITIONS)
-
-
 
 ################################################################################
 # Custom user-defined settings
-
 INCLUDE ("CMakeUser.txt" OPTIONAL)
 
 
@@ -234,6 +219,18 @@ MESSAGE(STATUS "Zorba version number: " ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMB
 ADD_DEFINITIONS(${DEFINITIONS})
 
 
+################################################################################
+# find all dylib files (i.e. transitive closure of the library files that are linked)
+IF (APPLE )
+  EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_LIBRARIES}
+                    OUTPUT_VARIABLE Zorba_ICUUC)
+  EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_I18N_LIBRARIES}
+                    OUTPUT_VARIABLE Zorba_ICUI18N)
+  EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_DATA_LIBRARIES}
+                    OUTPUT_VARIABLE Zorba_ICU_DATA)
+  EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${XERCESC_LIBRARY}
+                    OUTPUT_VARIABLE Zorba_XERCESC)
+ENDIF (APPLE )
 
 
 ################################################################################

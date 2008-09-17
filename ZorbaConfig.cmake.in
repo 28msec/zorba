@@ -40,3 +40,8 @@ INCLUDE("${CMAKE_BINARY_DIR}/ZorbaLibraryDepends.cmake")
 # Tell the user project where to find the "USE" file.
 # This file uses the above settings to configure the user project
 SET(Zorba_USE_FILE "${CMAKE_SOURCE_DIR}/ZorbaUse.cmake")
+
+SET(Zorba_ICUUC    "@Zorba_ICUUC@")
+SET(Zorba_ICUI18N  "@Zorba_ICUI18N@")
+SET(Zorba_ICU_DATA "@Zorba_ICU_DATA@")
+SET(Zorba_XERCESC  "@Zorba_XERCESC@")

@@ -6,6 +6,6 @@ while [ -L $file ]
 do
   currentdir=$(dirname $file)
   file=$( readlink "$file" )
-  echo ";$(cd "${currentdir}";pwd)/$(basename "$file");"
+  echo ";$(cd "${currentdir}";pwd)/$(basename "$file")"
 done
 
