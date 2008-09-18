@@ -156,6 +156,15 @@ static bool contains_node_construction(expr *e)
   return false;
 }
 
+static bool is_enclosed_expr(expr *e)
+{
+  if (e->get_expr_kind() != fo_expr_kind) {
+    return false;
+  }
+  const function *fn = static_cast<fo_expr *>(e)->get_func();
+  return (fn == LOOKUP_FN("fn", ":enclosed-expr", 1));
+}
+
 static rchandle<var_expr> try_hoisting(RewriterContext& rCtx, expr *e, const std::map<var_expr *, int>& varmap, const std::map<expr *, DynamicBitset>& freevarMap, struct flwor_holder *holder)
 {
   if (e->get_expr_kind() == var_expr_kind
@@ -164,7 +173,8 @@ static rchandle<var_expr> try_hoisting(RewriterContext& rCtx, expr *e, const std
     || e->get_expr_kind() == match_expr_kind) {
     return NULL;
   }
-  if (contains_node_construction(e)) {
+  if (contains_node_construction(e)
+    || is_enclosed_expr(e)) {
     return NULL;
   }
   std::map<expr *, DynamicBitset>::const_iterator fvme = freevarMap.find(e);
@@ -263,7 +273,8 @@ static bool hoist_expressions(RewriterContext& rCtx, expr *e, const std::map<var
     } else {
       status = hoist_expressions(rCtx, re, varmap, freevarMap, &curr_holder) || status;
     }
-  } else if (e->get_expr_kind() == sequential_expr_kind || e->is_updating()) {
+  } else if (e->get_expr_kind() == sequential_expr_kind
+    || e->is_updating()) {
     // do nothing
   } else {
     expr_iterator i = e->expr_begin();
