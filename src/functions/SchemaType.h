@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_FUNCTIONS_UTIL_H
-#define ZORBA_FUNCTIONS_UTIL_H
+#ifndef ZORBA_FUNCTIONS_SCHEMA_TYPE_H
+#define ZORBA_FUNCTIONS_SCHEMA_TYPE_H
 
 #include "common/shared_types.h"
 #include "functions/function.h"
@@ -31,4 +31,4 @@ class zorba_schema_type : public function
 
 } /* namespace zorba */
 
-#endif /* ZORBA_FUNCTIONS_UTIL_H */
+#endif /* ZORBA_FUNCTIONS_SCHEMA_TYPE_H */

@@ -13,18 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "functions/Util.h"
 
-#ifndef ZORBA_UTIL_IMPL_H
-#define ZORBA_UTIL_IMPL_H
+#include "runtime/util/UtilImpl.h"
 
-#include "runtime/base/narybase.h"
+using namespace std;
 
 namespace zorba {
 
-  NARY_ITER (ZorbaSchemaTypeIterator);
-  NARY_ITER (ZorbaBase64DecodeIterator);
-  NARY_ITER (ZorbaBase64EncodeIterator);
+PlanIter_t zorba_decode_base64::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new ZorbaBase64DecodeIterator ( loc, argv );
+}
 
-}/*namespace zorba*/
 
-#endif /* ZORBA_UTIL_IMPL_H */
+PlanIter_t zorba_encode_base64::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new ZorbaBase64EncodeIterator ( loc, argv );
+}
+
+}
+/* vim:set ts=2 sw=2: */

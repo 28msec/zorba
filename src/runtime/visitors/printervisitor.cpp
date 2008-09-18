@@ -908,6 +908,8 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
   PRINTER_VISITOR_DEFINITION(ZorbaExportXmlIterator);
 
   PRINTER_VISITOR_DEFINITION(ZorbaSchemaTypeIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaBase64EncodeIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaBase64DecodeIterator);
 
 #ifdef ZORBA_DEBUGGER
   PRINTER_VISITOR_DEFINITION(FnDebugIterator);

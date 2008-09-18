@@ -36,6 +36,7 @@
 #include "functions/Nodes.h"
 #include "functions/tuple_functions.h"
 #include "functions/SchemaType.h"
+#include "functions/Util.h"
 
 #ifdef ZORBA_WITH_REST
 #include "functions/Rest.h"
@@ -882,6 +883,16 @@ DECL(sctx, zorba_schema_type,
      (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "schema-type"),
       GENV_TYPESYSTEM.ITEM_TYPE_ONE,
       GENV_TYPESYSTEM.QNAME_TYPE_ONE));
+
+DECL(sctx, zorba_decode_base64,
+     (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "base64Decode"),
+      GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+DECL(sctx, zorba_encode_base64,
+     (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "base64Encode"),
+      GENV_TYPESYSTEM.ITEM_TYPE_ONE,
+      GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE));
 // end util functions
 
 // begin context functions

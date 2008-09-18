@@ -213,6 +213,25 @@ xqpString Base64::encode(std::istream& aStream)
   return xqpResult;
 }
     
+void Base64::encode(const xqpStringStore* aString, Base64& aResult)
+{
+  std::vector<char> source;
+  source.reserve(aString->str().length());
+  
+  const char* lTmp = aString->c_str();
+  const char* lRun = lTmp;
+  for (int i = 0; i < aString->str().length(); ++i) {
+    source.push_back((*lRun));
+    ++lRun;
+  }
+  for (std::vector<char>::iterator lIter = source.begin(); lIter != source.end(); ++lIter) {
+    std::cout << (*lIter);
+  }
+  std::cout << std::endl;
+  aResult.theData.clear();
+  aResult.theData = encode(source);
+}
+
 std::vector<char> Base64::decode(const std::vector<char>& aSource)
 {
   std::vector<char> lRes;
@@ -265,6 +284,17 @@ std::vector<char> Base64::decode(const std::vector<char>& aSource)
   }
 
   return lRes;
+}
+
+xqpString
+Base64::decode() const
+{
+  std::vector<char> lDecodedData = Base64::decode(theData);
+
+  xqpString lResult;
+  for (unsigned int i=0; i< lDecodedData.size(); i++)
+    lResult.append_in_place( lDecodedData[i] );
+  return lResult;
 }
 
 uint32_t Base64::hash() const

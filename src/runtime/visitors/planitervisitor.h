@@ -249,6 +249,8 @@ namespace zorba
   class ZorbaExportXmlIterator;
 
   class ZorbaSchemaTypeIterator;
+  class ZorbaBase64EncodeIterator;
+  class ZorbaBase64DecodeIterator;
 
   namespace gflwor{
     class TupleStreamIterator;
@@ -724,6 +726,8 @@ namespace zorba
     PLAN_ITER_VISITOR(ZorbaExportXmlIterator);
 
     PLAN_ITER_VISITOR(ZorbaSchemaTypeIterator);
+    PLAN_ITER_VISITOR(ZorbaBase64EncodeIterator);
+    PLAN_ITER_VISITOR(ZorbaBase64DecodeIterator);
 
 #ifdef ZORBA_DEBUGGER
     PLAN_ITER_VISITOR ( FnDebugIterator );  
