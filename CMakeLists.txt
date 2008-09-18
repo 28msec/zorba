@@ -115,6 +115,21 @@ ELSE(CURL_FOUND)
   MESSAGE(STATUS "The cURL library was not found.")
 ENDIF(CURL_FOUND)
 
+#
+# LibTidy
+#
+INCLUDE(${CMAKE_MODULE_PATH}/FindLibTidy.cmake)
+FIND_PACKAGE(LibTidy)
+
+IF(LIBTIDY_FOUND)
+  MESSAGE(STATUS "Found LibTidy library -- " ${LIBTIDY_LIBRARIES})
+  INCLUDE_DIRECTORIES(${LIBTIDY_INCLUDE_DIR})
+
+  SET(requiredlibs-zorba ${requiredlibs-zorba} ${LIBTIDY_LIBRARIES})
+
+ELSE(LIBTIDY_FOUND)
+  MESSAGE(STATUS "The LibTidy library was not found.")
+ENDIF(LIBTIDY_FOUND)
 
 #
 # Iconv

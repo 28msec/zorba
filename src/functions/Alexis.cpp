@@ -39,5 +39,12 @@ zorba_schema_type::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, 
   return new ZorbaSchemaTypeIterator(loc, argv);
 }
 
+#ifdef ZORBA_WITH_TIDY
+  PlanIter_t
+  zorba_tidy::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  {
+    return new ZorbaTidyIterator(loc, argv);
+  }
+#endif
 }
 /* vim:set ts=2 sw=2: */

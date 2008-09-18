@@ -22,6 +22,10 @@
 
 #include "runtime/util/UtilImpl.h"
 
+#ifdef ZORBA_WITH_TIDY
+  #include <tidy/tidy.h>
+  #include <tidy/buffio.h>
+#endif
 
 namespace zorba {
 
@@ -84,4 +88,63 @@ ZorbaBase64EncodeIterator::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END (state);
 }
 
+#ifdef ZORBA_WITH_TIDY
+bool
+ZorbaTidyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t       item;
+  TidyDoc             tdoc;
+  bool                ok;
+  int                 rc = -1;
+  TidyBuffer output = {0, 0, 0, 0};
+  TidyBuffer errbuf = {0, 0, 0, 0};
+  xqpStringStore_t    buf, err;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (consumeNext(item, theChildren[0].getp(), planState))
+  {
+    tdoc = tidyCreate();
+
+    ok = tidyOptSetBool( tdoc, TidyXhtmlOut, yes );  // Convert to XHTML
+    if ( ok )
+      rc = tidySetErrorBuffer( tdoc, &errbuf );      // Capture diagnostics
+    if ( rc >= 0 )
+      rc = tidyParseString( tdoc, item->getStringValue()->c_str() );     // Parse the input
+    if ( rc >= 0 )
+      rc = tidyCleanAndRepair( tdoc );               // Tidy it up!
+    if ( rc >= 0 )
+      rc = tidyRunDiagnostics( tdoc );               // Kvetch
+    if ( rc > 1 )                                    // If error, force output.
+      rc = ( tidyOptSetBool(tdoc, TidyForceOutput, yes) ? rc : -1 );
+    if ( rc >= 0 )
+      rc = tidySaveBuffer( tdoc, &output );          // Pretty Print
+
+    if ( rc >= 0 )
+    {
+      buf = new xqpStringStore((char*)output.bp, output.size);
+
+      tidyBufFree( &output );
+      tidyBufFree( &errbuf );
+      tidyRelease( tdoc );
+
+      STACK_PUSH(GENV_ITEMFACTORY->createString(result, buf), state );
+//       if ( rc > 0 )
+//         printf( "\nDiagnostics:\n\n%s", errbuf.bp );
+//       printf( "\nAnd here is the result:\n\n%s", output.bp );
+    }
+    else
+    {
+      tidyBufFree( &output );
+      tidyBufFree( &errbuf );
+      tidyRelease( tdoc );
+//       printf( "A severe error (%d) occurred.\n", rc );
+      ZORBA_ERROR_LOC_PARAM(XQP0029_TIDY_ERROR, loc, "" , "");
+    }
+  }
+
+  STACK_END (state);
+}
+#endif
 } /* namespace zorba */

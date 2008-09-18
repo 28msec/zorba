@@ -892,6 +892,13 @@ DECL(sctx, zorba_encode_base64,
      (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "base64Encode"),
       GENV_TYPESYSTEM.ITEM_TYPE_ONE,
       GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE));
+
+#ifdef ZORBA_WITH_TIDY
+  DECL(sctx, zorba_tidy,
+       (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "tidy"),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.STRING_TYPE_ONE));
+#endif
 // end util functions
 
 // begin context functions

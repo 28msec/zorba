@@ -206,6 +206,8 @@ DEF_ERR_CODE (XQP0027_MS_DOM_ERROR, XQP0027, "Error from MS DOM engine.")
 
 DEF_ERR_CODE (XQP0028_FUNCTION_IMPL_NOT_FOUND, XQP0028, "The external function called ({/s}/s) is not bound in the static context")
 
+DEF_ERR_CODE (XQP0029_TIDY_ERROR, XQP0029, "Error in Tidy library: /s")
+
 
 //
 // XPDY

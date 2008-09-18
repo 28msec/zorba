@@ -68,6 +68,9 @@
 #cmakedefine ZORBA_WITH_REST
 #cmakedefine ZORBA_WITH_SSL
 
+/* tidy support*/
+#cmakedefine ZORBA_WITH_TIDY
+
 /* allow file system access */
 #cmakedefine ZORBA_WITH_FILE_ACCESS
 

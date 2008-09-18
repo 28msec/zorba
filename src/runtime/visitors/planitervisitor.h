@@ -251,6 +251,9 @@ namespace zorba
   class ZorbaSchemaTypeIterator;
   class ZorbaBase64EncodeIterator;
   class ZorbaBase64DecodeIterator;
+#ifdef ZORBA_WITH_TIDY
+  class ZorbaTidyIterator;
+#endif
 
   namespace gflwor{
     class TupleStreamIterator;
@@ -728,6 +731,9 @@ namespace zorba
     PLAN_ITER_VISITOR(ZorbaSchemaTypeIterator);
     PLAN_ITER_VISITOR(ZorbaBase64EncodeIterator);
     PLAN_ITER_VISITOR(ZorbaBase64DecodeIterator);
+#ifdef ZORBA_WITH_TIDY
+    PLAN_ITER_VISITOR(ZorbaTidyIterator);
+#endif
 
 #ifdef ZORBA_DEBUGGER
     PLAN_ITER_VISITOR ( FnDebugIterator );  

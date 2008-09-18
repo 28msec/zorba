@@ -50,6 +50,18 @@ namespace zorba {
                           AnnotationHolder &ann) const;
   };
 
+#ifdef ZORBA_WITH_TIDY
+  class zorba_tidy : public function
+  {
+    public:
+      zorba_tidy(const signature& sig): function(sig){}
+
+      PlanIter_t codegen (const QueryLoc& loc,
+                          std::vector<PlanIter_t>& argv,
+                          AnnotationHolder &ann) const;
+  };
+#endif
+
 }
 
 #endif /* ZORBA_FUNCTIONS_ALEXIS_H */

@@ -24,6 +24,9 @@ namespace zorba {
   NARY_ITER (ZorbaSchemaTypeIterator);
   NARY_ITER (ZorbaBase64DecodeIterator);
   NARY_ITER (ZorbaBase64EncodeIterator);
+#ifdef ZORBA_WITH_TIDY
+  NARY_ITER (ZorbaTidyIterator);
+#endif
 
 }/*namespace zorba*/
 
