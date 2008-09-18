@@ -627,7 +627,7 @@ XPStyle on
 Name "Zorba"
 
 ; The file to write
-OutFile "setup_zorba.exe"
+OutFile "build\setup_zorba.exe"
 
 ; The default installation directory
 InstallDir $PROGRAMFILES\Zorba
@@ -683,7 +683,7 @@ File C:\icu\bin\icuuc40.dll
 File C:\libxml2-2.6.32+.win32\bin\libxml2.dll
 File build\src\store\naive\Release\simplestore.lib
 File C:\xerces-c_2_8_0-x86-windows-vc_8_0\bin\xerces-c_2_8.dll
-;File lib\zlib1.dll
+File build\src\release\zlib1.dll
 File build\src\Release\zorba.lib
 File C:\iconv-1.9.2.win32\bin\iconv.dll
 File LICENSE.txt
