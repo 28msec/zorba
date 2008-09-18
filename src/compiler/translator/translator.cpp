@@ -125,11 +125,6 @@ namespace zorba {
 
   expr_t translate_aux (const parsenode &root, CompilerCB* aCompilerCB, ModulesInfo *minfo, set<string> mod_stack);
 
-  struct qname_less : public binary_function<store::Item_t, store::Item_t, bool> {
-    bool operator()(const store::Item_t& x, const store::Item_t& y) const
-    { return static_context::qname_internal_key (x) < static_context::qname_internal_key (y); }
-  };
-
 /*******************************************************************************
 
   theGlobalVars:

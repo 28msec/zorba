@@ -39,6 +39,32 @@
 
 using namespace zorba;
 
+int qname_compare::operator ()(const store::Item *qn1, const store::Item *qn2) const
+{
+    if (qn1 == NULL && qn2 != NULL) {
+      return -1;
+    } else if (qn2 == NULL && qn1 != NULL) {
+      return 1;
+    }
+    if (qn1 == qn2) {
+      return 0;
+    }
+    const xqpStringStore *qn1local = qn1->getLocalName();
+    const xqpStringStore *qn2local = qn2->getLocalName();
+
+    int lComp = qn1local->compare(qn2local);
+    if (lComp < 0) {
+      return -1;
+    } else if (lComp > 0) {
+      return 1;
+    }
+    const xqpStringStore *qn1ns = qn1->getNamespace();
+    const xqpStringStore *qn2ns = qn2->getNamespace();
+
+    int c = qn1ns->compare(qn2ns);
+    return c < 0 ? -1 : (c > 0 ? 1 : 0);
+}
+
 xqtref_t TypeManagerImpl::create_type_x_quant(
     const XQType& type,
     TypeConstants::quantifier_t quantifier) const
@@ -196,19 +222,21 @@ xqtref_t TypeManagerImpl::create_named_type(
     store::Item* qname,
     TypeConstants::quantifier_t quantifier) const
 {
-  if (qname == GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME.getp())
+  qname_compare cmp;
+
+  if (cmp(qname, GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME.getp()) == 0)
   {
     return create_any_type();
   }
-  else if (qname == GENV_TYPESYSTEM.XS_ANY_SIMPLE_TYPE_QNAME.getp())
+  else if (cmp(qname, GENV_TYPESYSTEM.XS_ANY_SIMPLE_TYPE_QNAME.getp()) == 0)
   {
     return create_any_simple_type();
   }
-  else if (qname == GENV_TYPESYSTEM.XS_UNTYPED_QNAME.getp()) 
+  else if (cmp(qname, GENV_TYPESYSTEM.XS_UNTYPED_QNAME.getp()) == 0) 
   {
     return create_untyped_type();
   }
-  else if (qname == GENV_TYPESYSTEM.ZXSE_TUPLE_QNAME.getp())
+  else if (cmp(qname, GENV_TYPESYSTEM.ZXSE_TUPLE_QNAME.getp()) == 0)
   {
     return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
   }

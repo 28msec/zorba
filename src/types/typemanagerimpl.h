@@ -18,10 +18,25 @@
 
 #include "types/typemanager.h"
 
-
 namespace zorba {
 
 class NodeTest;
+
+/* 
+ * Comparator for qnames. First compares local names and if equal then
+ * compares namespace
+ */
+struct qname_compare {
+  int operator()(const store::Item *qn1, const store::Item *qn2) const;
+};
+
+struct qname_less {
+  bool operator()(const store::Item *qn1, const store::Item *qn2) const
+  {
+    qname_compare cmp;
+    return cmp(qn1, qn2) < 0;
+  }
+};
 
 /*
  * Interface used by other parts of zorba to ask questions about types.

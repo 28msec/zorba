@@ -25,29 +25,6 @@
 namespace zorba {
 
 
-/* 
- * Comparator for qnames. First compares local names and if equal then
- * compares namespace
- */
-struct qname_compare {
-  bool operator()(const store::Item *qn1, const store::Item *qn2) const
-  {
-    const xqpStringStore *qn1local = qn1->getLocalName();
-    const xqpStringStore *qn2local = qn2->getLocalName();
-
-    int lComp = qn1local->compare(qn2local);
-    if (lComp < 0) {
-      return true;
-    } else if (lComp > 0) {
-      return false;
-    }
-    const xqpStringStore *qn1ns = qn1->getNamespace();
-    const xqpStringStore *qn2ns = qn2->getNamespace();
-
-    return qn1ns->compare(qn2ns) < 0;
-  }
-};
-
 class RootTypeManager : public TypeManagerImpl 
 {
 public:
@@ -158,7 +135,7 @@ public:
   /**
    *  Maps the qname of an atomic type to its typecode.
    */
-  typedef std::map<store::Item*, TypeConstants::atomic_type_code_t, qname_compare> qnametype_map_t;
+  typedef std::map<store::Item*, TypeConstants::atomic_type_code_t, qname_less> qnametype_map_t;
   qnametype_map_t m_atomic_qnametype_map;
 
   static const bool ATOMIC_SUBTYPE_MATRIX[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE][TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
