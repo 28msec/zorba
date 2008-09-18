@@ -1,0 +1,47 @@
+#!/usr/bin/perl
+# Copyright 2006-2008 The FLWOR Foundation.                                                      
+#  
+# Licensed under the Apache License, Version 2.0 (the "License");                                
+# you may not use this file except in compliance with the License.                               
+# You may obtain a copy of the License at
+#  
+# http://www.apache.org/licenses/LICENSE-2.0                                                     
+#  
+# Unless required by applicable law or agreed to in writing, software                            
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.                       
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Analyzes a ctest / valgrind output logs for unique loss records
+
+my $test, $newtest, $record = "", $firstrecord;
+my %records;  # things we have already seen
+
+while (<>) {
+
+    if (m@^test (.*)@) { $newtest = $1 }
+    elsif (m@^Query:$@ && $newtest) {
+        # new test confirmed
+        $test = $newtest; $newtest = "";
+        $firstrecord = 1;
+    }
+    elsif (m@==[0-9]+== (.*) bytes in ([0-9,]+) blocks (.*) in loss .*@) {
+        $record == "" || die ("Record not empty: $record");
+        $record .= "$1 bytes $2 blocks $3\n";
+    }
+    elsif (m@==[0-9]+== *((at|by) 0x.*)@) {
+        $record .= "$1\n"
+    }
+    elsif ($record) {
+        my $r = $record; $record = "";
+        if ($records {$r}) { next; }
+        if ($firstrecord) {
+            $firstrecord = 0;
+            print "=== TEST $test\n"
+        }
+        print "$r\n";
+        $records {$r} = 1;
+    }
+
+}
