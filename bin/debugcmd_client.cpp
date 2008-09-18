@@ -135,7 +135,10 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
         SetConsoleTextAttribute(lConsole, saved_configuration);
         for(unsigned int j=1; j <= lLine.length(); j++)
         {
-          if( j >= theLocation->getColumnBegin() && j <= theLocation->getColumnEnd() )
+          if((lLineNo==theLocation->getLineBegin() && j >= theLocation->getColumnBegin()) ||
+             (lLineNo==theLocation->getLineEnd() && j <= theLocation->getColumnEnd()) ||
+             (lLineNo > theLocation->getLineBegin() && lLineNo < theLocation->getLineEnd())
+            )
           {
             SetConsoleTextAttribute(lConsole, 15+0*16); 
             theOutput << lLine.at(j-1);
