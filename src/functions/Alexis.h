@@ -13,35 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_FUNCTIONS_UTIL_H
-#define ZORBA_FUNCTIONS_UTIL_H
+#ifndef ZORBA_FUNCTIONS_ALEXIS_H
+#define ZORBA_FUNCTIONS_ALEXIS_H
 
 #include <vector>
 #include "common/shared_types.h"
 #include "functions/function.h"
 
 namespace zorba {
-  
+
   class zorba_decode_base64 : public function {
   public:
-    zorba_decode_base64(const signature& sig) : function (sig) {}    
-    PlanIter_t codegen (const QueryLoc& loc, 
-                        std::vector<PlanIter_t>& argv, 
+    zorba_decode_base64(const signature& sig) : function (sig) {}
+
+    PlanIter_t codegen (const QueryLoc& loc,
+                        std::vector<PlanIter_t>& argv,
                         AnnotationHolder &ann) const;
   };
 
   class zorba_encode_base64 : public function {
   public:
     zorba_encode_base64(const signature& sig) : function (sig) {}
-    
-    PlanIter_t codegen (const QueryLoc& loc, 
-                        std::vector<PlanIter_t>& argv, 
+
+    PlanIter_t codegen (const QueryLoc& loc,
+                        std::vector<PlanIter_t>& argv,
                         AnnotationHolder &ann) const;
+  };
+
+  class zorba_schema_type : public function
+  {
+    public:
+      zorba_schema_type(const signature& sig): function(sig){}
+
+      PlanIter_t codegen (const QueryLoc& loc,
+                          std::vector<PlanIter_t>& argv,
+                          AnnotationHolder &ann) const;
   };
 
 }
 
-#endif /* ZORBA_FUNCTIONS_UTIL_H */
+#endif /* ZORBA_FUNCTIONS_ALEXIS_H */
 
 /* vim:set ts=2 sw=2: */
 /*

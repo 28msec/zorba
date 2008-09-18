@@ -13,6 +13,7 @@
 # limitations under the License.
 SET(FUNCTIONS_SRCS
     Accessors.cpp
+    Alexis.cpp
     arithmetic.cpp
     Boolean.cpp
     Collections.cpp
@@ -27,12 +28,10 @@ SET(FUNCTIONS_SRCS
     Nodes.cpp
     Numerics.cpp
     QNames.cpp
-    SchemaType.cpp
     Sequences.cpp
     signature.cpp
     Strings.cpp
-    tuple_functions.cpp
-    Util.cpp)
+    tuple_functions.cpp)
 
 IF (ZORBA_WITH_REST)
   SET(FUNCTIONS_SRCS ${FUNCTIONS_SRCS} Rest.cpp)

@@ -13,17 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#include "system/globalenv.h"
-
-#include "functions/SchemaType.h"
+#include "functions/Alexis.h"
 
 #include "runtime/util/UtilImpl.h"
 
+using namespace std;
+
 namespace zorba {
+
+PlanIter_t zorba_decode_base64::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new ZorbaBase64DecodeIterator ( loc, argv );
+}
+
+
+PlanIter_t zorba_encode_base64::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new ZorbaBase64EncodeIterator ( loc, argv );
+}
+
+
 PlanIter_t
 zorba_schema_type::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaSchemaTypeIterator(loc, argv);
 }
-} /* namespace zorba */
+
+}
+/* vim:set ts=2 sw=2: */

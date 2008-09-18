@@ -35,8 +35,7 @@
 #include "functions/arithmetic.h"
 #include "functions/Nodes.h"
 #include "functions/tuple_functions.h"
-#include "functions/SchemaType.h"
-#include "functions/Util.h"
+#include "functions/Alexis.h"
 
 #ifdef ZORBA_WITH_REST
 #include "functions/Rest.h"
