@@ -43,6 +43,8 @@ namespace zorba {
       unsigned int getColumnBegin() const;
 
       unsigned int getColumnEnd() const;
+
+      String toString() const;
   };
 }//end of namespace
 #endif

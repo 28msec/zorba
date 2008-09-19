@@ -44,5 +44,21 @@ unsigned int QueryLocationImpl::getColumnEnd() const
   return theLocation.getColumnEnd();
 }
 
+String QueryLocationImpl::toString() const
+{
+  std::stringstream lString;
+  lString << theLocation; 
+  return String(lString.str()); 
+}
+
+std::ostream& operator<< (std::ostream& aOstr, const QueryLocation& aQueryLoc){
+  aOstr << aQueryLoc.toString();
+  return aOstr;
+}
+
+std::ostream& operator<< (std::ostream& aOstr, QueryLocation* aQueryLoc){
+  aOstr << aQueryLoc->toString();
+  return aOstr;
+}
 }//end of namespace
 

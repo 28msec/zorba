@@ -134,9 +134,9 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
         theOutput << lLineNo << '\t';
         SetConsoleTextAttribute(lConsole, saved_configuration);
         for(unsigned int j=1; j <= lLine.length(); j++)
-        {
+       {
           if((lLineNo==theLocation->getLineBegin() && j >= theLocation->getColumnBegin()) ||
-             (lLineNo==theLocation->getLineEnd() && j <= theLocation->getColumnEnd()) ||
+             (theLocation->getLineBegin() != theLocation->getLineEnd() && lLineNo==theLocation->getLineEnd() && j <= theLocation->getColumnEnd()) ||
              (lLineNo > theLocation->getLineBegin() && lLineNo < theLocation->getLineEnd())
             )
           {
@@ -150,11 +150,13 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
           }
         }
 #else
+        //std::cerr << "The location: ";
+        //std::cerr << theLocation.get() << std::endl;
         theOutput << "\033[1m" << lLineNo << '\t' << "\033[0m"; 
         for(unsigned int j=1; j <= lLine.length(); j++)
         {
           if((lLineNo==theLocation->getLineBegin() && j >= theLocation->getColumnBegin()) ||
-             (lLineNo==theLocation->getLineEnd() && j <= theLocation->getColumnEnd()) ||
+             (theLocation->getLineBegin() != theLocation->getLineEnd() && lLineNo==theLocation->getLineEnd() && j <= theLocation->getColumnEnd()) ||
              (lLineNo > theLocation->getLineBegin() && lLineNo < theLocation->getLineEnd())
             )
           {
@@ -448,8 +450,6 @@ void CommandLineEventHandler::handle_cmd()
           theClient->eval( lExpr );
         }
         return;
-        //theOutput << theClient->eval() << std::endl;
-        //handle_cmd();
     } else {
       theOutput << "Unknown command \"" << lLine << "\" Try \"help\"." << std::endl;
     }
@@ -458,7 +458,6 @@ void CommandLineEventHandler::handle_cmd()
 
 void CommandLineEventHandler::help()
 {
-  //TODO: Full documentation of each command
   theOutput << "List of available commands." << std::endl;
   theOutput << "Execution commands:" << std::endl;
   theOutput << "  run      -- Run the query." << std::endl;
@@ -481,7 +480,7 @@ void CommandLineEventHandler::help()
 
 void CommandLineEventHandler::version()
 {
-  //TODO: Add debugger version
   theOutput << "Zorba " << Zorba::version() << '.' << std::endl;
+  theOutput << "Zorba Debugger, Version 0.0.1." << std::endl;
 }
 

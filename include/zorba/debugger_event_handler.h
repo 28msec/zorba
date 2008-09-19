@@ -50,7 +50,16 @@ namespace zorba{
 
       virtual unsigned int
       getColumnEnd() const = 0;
+
+      virtual String
+      toString() const = 0;
   };
+  
+  //string serialization of the query 
+  ZORBA_EXTERN_DECL
+  std::ostream& operator<< (std::ostream& os, const QueryLocation& aQuery); 
+  ZORBA_EXTERN_DECL
+  std::ostream& operator<< (std::ostream& os, QueryLocation* aQuery); 
 
   /**
    * DebuggerEventHandler is the base handler for all debugging events.
