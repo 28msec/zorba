@@ -164,6 +164,6 @@ command as follows
 \subsection visualstuido Building Visual Studio Project
 -# Start Visual Studio Command Line
 -# Change the current working directory into the <tt>[ZORBA]</tt> directory.
--# Execute CMake as described above but with the <tt> -G "Visual Studio X 200Y" </tt> option instead of <tt> -G "NMake Makefiles" </tt>.
--# Start Visual Studio, open the generated zorba.svl project file, and start compilation.
+-# Execute CMake as described above but with the <tt> -G "Visual Studio X 200Y" </tt> option instead of <tt> -G "NMake Makefiles"</tt>.
+-# Start Visual Studio, open the generated <tt>zorba.sln</tt> project file, and start compilation.
 */
