@@ -13,11 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Analyzes a ctest / valgrind output logs for unique loss records
+# Analyzes a ctest / valgrind output log for unique loss records
 
-my $test, $newtest, $record = "", $firstrecord;
+use strict;
+use warnings;
+
+my ($test, $newtest, $record, $firstrecord);
 my %records;  # things we have already seen
 
+my $except_regex;
+
+if ($#ARGV >= 1 && $ARGV [0] eq "--except") {
+    $except_regex = $ARGV [1];
+    shift @ARGV; shift @ARGV;
+} 
+
+$record = "";
 while (<>) {
 
     if (m@^test (.*)@) { $newtest = $1 }
@@ -27,7 +38,7 @@ while (<>) {
         $firstrecord = 1;
     }
     elsif (m@==[0-9]+== (.*) bytes in ([0-9,]+) blocks (.*) in loss .*@) {
-        $record == "" || die ("Record not empty: $record");
+        $record eq "" || die ("Record not empty: $record");
         $record .= "$1 bytes $2 blocks $3\n";
     }
     elsif (m@==[0-9]+== *((at|by) 0x.*)@) {
@@ -35,7 +46,7 @@ while (<>) {
     }
     elsif ($record) {
         my $r = $record; $record = "";
-        if ($records {$r}) { next; }
+        if ($records {$r} || ($except_regex && $r =~ m@($except_regex)@)) { next; }
         if ($firstrecord) {
             $firstrecord = 0;
             print "=== TEST $test\n"
