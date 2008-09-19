@@ -3003,7 +3003,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
         CompilerCB mod_ccb (*compilerCB);
         static_context *independent_sctx = static_cast<static_context *> (minfo->topCompilerCB->m_sctx->get_parent ());
-        compilerCB->m_sctx_list.push_back (mod_ccb.m_sctx = independent_sctx->create_child_context ());
+        minfo->topCompilerCB->m_sctx_list.push_back (mod_ccb.m_sctx = independent_sctx->create_child_context ());
         mod_ccb.m_sctx->set_entity_retrieval_url (xqpString(resolveduri.getp()));
         minfo->topCompilerCB->m_sctx_list.push_back (imported_sctx = independent_sctx->create_child_context ());
         minfo->mod_sctx_map.put (xqpString(resolveduri.getp()), imported_sctx);
