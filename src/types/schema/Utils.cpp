@@ -118,9 +118,6 @@ void validateAfterUpdate(
         // no schema available no change to pul
         return;
     }
-
-    //xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->
-    //    final_baseuri().getStore();
     
     SchemaValidator schemaValidator = SchemaValidator(delegatingTypeManager, 
         schema->getGrammarPool(), isLax, loc);
@@ -135,7 +132,7 @@ void validateAfterUpdate(
         schemaValidator.startDoc();
 
         store::NsBindings bindings;
-        item->getNamespaceBindings(bindings);
+        //item->getNamespaceBindings(bindings);
         namespace_context nsCtx = namespace_context(staticContext, bindings);
         
         processChildren( pul, staticContext, nsCtx, delegatingTypeManager, schemaValidator, 
@@ -202,7 +199,8 @@ void processElement( store::Item_t& pul, static_context* staticContext,
         bool tHasEmptyValue = typeHasEmptyValue(newType);
 
         store::PUL *p = static_cast<store::PUL *>(pul.getp());
-        p->addSetElementType(element,
+        store::Item_t elm = store::Item_t(element);
+        p->addSetElementType(elm,
                              typeQName,
                              (vector<store::Item_t>&)typedValues,
                              tHasValue, 
@@ -233,7 +231,7 @@ void validateAttributes( SchemaValidator& schemaValidator, store::Iterator_t att
         ZORBA_ASSERT(attribute->isNode());
         ZORBA_ASSERT(attribute->getNodeKind() == store::StoreConsts::attributeNode);
 
-        //std::cout << " v    - attr: " << attribute->getNodeName()->getLocalName()->c_str() << "\n"; std::cout.flush();
+        std::cout << " v    - attr: " << attribute->getNodeName()->getLocalName()->c_str() << "\n"; std::cout.flush();
                     
         store::Item_t attName = attribute->getNodeName();
         schemaValidator.attr(attName, attribute->getStringValue());
@@ -251,7 +249,7 @@ void processAttributes( store::Item_t& pul, namespace_context& nsCtx,
     for( curAtt = attList->begin() ; curAtt != attList->end(); ++curAtt )
     {
         AttributeValidationInfo* att = *curAtt;
-        //std::cout << " v    proccessATT2: " << att->_localName << " T: " << att->_typeName << "\n";
+        std::cout << " v    processATT2: " << att->_localName << " T: " << att->_typeName << "\n";
             
         store::Item_t attQName;
         GENV_ITEMFACTORY->createQName( attQName, att->_uri, att->_prefix, att->_localName);
@@ -287,10 +285,11 @@ void processAttributes( store::Item_t& pul, namespace_context& nsCtx,
         else if ( !typeQName->equals(attrib->getType()) )
         {
             store::PUL *p = static_cast<store::PUL *>(pul.getp());
+            store::Item_t atr = store::Item_t(attrib);
             if ( typedValues.size()==1 )        // optimize when only one item is available 
-                p->addSetAttributeType( attrib, typeQName, (store::Item_t&)(typedValues[0]), attrib->isId(), attrib->isIdRefs() );
+                p->addSetAttributeType( atr, typeQName, (store::Item_t&)(typedValues[0]), attrib->isId(), attrib->isIdRefs() );
             else            
-                p->addSetAttributeType( attrib, typeQName, typedValues, attrib->isId(), attrib->isIdRefs() );
+                p->addSetAttributeType( atr, typeQName, typedValues, attrib->isId(), attrib->isIdRefs() );
         }
     }
     
@@ -319,8 +318,8 @@ void processChildren( store::Item_t& pul, static_context* staticContext, namespa
     {
         if ( child->isNode() )
         {
-            //std::cout << "  > child: " << child->getNodeKind() << " " << child->getType()->getLocalName()->c_str() << "\n";
-            //std::cout.flush();
+            std::cout << "  > child: " << child->getNodeKind() << " " << child->getType()->getLocalName()->c_str() << "\n";
+            std::cout.flush();
             
             switch ( child->getNodeKind() )
             { 
@@ -338,7 +337,7 @@ void processChildren( store::Item_t& pul, static_context* staticContext, namespa
             
             case store::StoreConsts::textNode:
                 {
-                    //std::cout << "     - text: " << child->getStringValue() << "\n"; std::cout.flush();                    
+                    std::cout << "     - text: " << child->getStringValue() << "\n"; std::cout.flush();                    
                     xqpStringStore_t childStringValue = child->getStringValue();
                     schemaValidator.text(childStringValue);
 
@@ -358,9 +357,10 @@ void processChildren( store::Item_t& pul, static_context* staticContext, namespa
                         bool tHasEmptyValue = typeHasEmptyValue(newType);
 
                         store::PUL *p = static_cast<store::PUL *>(pul.getp());
+                        store::Item_t cld = store::Item_t(child);
                         
                         if ( typedValues.size()==1 ) // hack around serialization bug
-                            p->addSetElementType(child,
+                            p->addSetElementType(cld,
                                                  typeQName,
                                                  typedValues[0],
                                                  tHasValue, 
@@ -369,7 +369,7 @@ void processChildren( store::Item_t& pul, static_context* staticContext, namespa
                                                  child->isId(),
                                                  child->isIdRefs());
                         else
-                            p->addSetElementType(child,
+                            p->addSetElementType(cld,
                                                  typeQName,
                                                  typedValues,
                                                  tHasValue, 
@@ -423,9 +423,9 @@ void processTextValue (store::Item_t& pul, DelegatingTypeManager* delegatingType
     std::vector<store::Item_t> &resultList)
 {
     xqtref_t type = delegatingTypeManager->create_named_atomic_type(typeQName, TypeConstants::QUANT_ONE);
-    //std::cout << "     - processTextValue: " << typeQName->getPrefix()->str() << ":" << typeQName->getLocalName()->str() << "@" << 
-    //    typeQName->getNamespace()->str() ; std::cout.flush();
-    //std::cout << " type: " << ( type==NULL ? "NULL" : type->toString()) << "\n"; std::cout.flush();                    
+    std::cout << "     - processTextValue: " << typeQName->getPrefix()->str() << ":" << typeQName->getLocalName()->str() << "@" << 
+        typeQName->getNamespace()->str() ; std::cout.flush();
+    std::cout << "           type: " << ( type==NULL ? "NULL" : type->toString()) << "\n"; std::cout.flush();                    
             
     store::Item_t result;                    
     if (type!=NULL)

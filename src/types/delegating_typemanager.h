@@ -31,7 +31,8 @@ class DelegatingTypeManager : public TypeManagerImpl {
     DelegatingTypeManager(TypeManager *parent)
         : TypeManagerImpl(parent->level() + 1, parent) 
     {
-      _schema = NULL; 
+        _schema = NULL; 
+        initializeSchema();
     }
     
     virtual ~DelegatingTypeManager()

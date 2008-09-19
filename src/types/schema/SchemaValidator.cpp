@@ -121,10 +121,12 @@ store::Item_t SchemaValidator::getTypeQName()
     StrX typeName(_schemaValidatorFilter->getTypeName());
     StrX typeUri(_schemaValidatorFilter->getTypeUri());
 
-    //cout << "  - getTypeQName: " << typeName << "@" << typeUri <<"\n"; 
+    cout << "  - getTypeQName: " << typeName << "@" << typeUri <<" "; 
 
     store::Item_t typeQName;
     GENV_ITEMFACTORY->createQName(typeQName, typeUri.localFormOrDefault (Schema::XSD_NAMESPACE), "", typeName.localFormOrDefault ("anyType"));
+
+    cout << " : " << typeQName->getLocalName()->c_str() << " @ " << typeQName->getNamespace()->c_str() <<"\n"; 
 
     return typeQName;
 }

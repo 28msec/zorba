@@ -37,9 +37,9 @@ AttributeValidationInfo::AttributeValidationInfo(const XMLCh *prefix, const XMLC
 const XMLCh *value, const XMLCh *typeURI, const XMLCh *typeName)
 {
     //std::cout << "AttributeValidationInfo1: " << StrX(prefix) << ":" << StrX(localName) << "@" << StrX(uri) << " = " << StrX(value) << "  T: " << StrX(typeName) << "@" << StrX(typeURI) << "\n";
-    _prefix    = new xqpStringStore(StrX(prefix)   .localForm());
-    _uri       = new xqpStringStore(StrX(uri)      .localForm());
-    _localName = new xqpStringStore(StrX(localName).localForm());
+    _prefix    = new xqpStringStore(prefix    ==NULL ? "" : StrX(prefix)   .localForm() );
+    _uri       = new xqpStringStore(uri       ==NULL ? "" : StrX(uri)      .localForm());
+    _localName = new xqpStringStore(localName ==NULL ? "" : StrX(localName).localForm());
     _value     = new xqpStringStore(StrX(value)    .localForm());
     _typeURI   = new xqpStringStore(StrX(typeURI)  .localFormOrDefault (Schema::XSD_NAMESPACE));
     _typeName  = new xqpStringStore(StrX(typeName) .localFormOrDefault ("anyType"));

@@ -92,6 +92,7 @@ void Schema::terminate()
 Schema::Schema()
 {
 #ifndef ZORBA_NO_XMLSCHEMA
+    initialize();
     _grammarPool = new XMLGrammarPoolImpl(XMLPlatformUtils::fgMemoryManager);
     _udTypesCache = new hashmap<xqtref_t>;
 #endif //ZORBA_NO_XMLSCHEMA
