@@ -50,10 +50,11 @@ class bound_var
     std::string var_key;
     xqtref_t type;
     expr_t val;
+    var_expr_t var;
 
-    bound_var(var_expr *ve, expr_t val_):
+    bound_var(var_expr* ve, var_expr_t var, expr_t val_):
       varname (ve->get_varname ()),
-      var_key (dynamic_context::var_key (ve)), type(ve->get_type()), val (val_){}
+      var_key (dynamic_context::var_key (ve)), type(ve->get_type()), val (val_), var(var){}
 };
 #endif
 class flwor_clause : public SimpleRCObject {
@@ -73,9 +74,10 @@ class flwor_clause : public SimpleRCObject {
         {
           lQNames.insert( (*it)->get_varname() );
           var_expr_t lValue = (*it);
-          var_expr_t lVariable( new var_expr( lValue->get_loc(), var_expr::eval_var, lValue->get_varname() ) );
-          lVariable->set_type( lValue->get_type() );
-          theBoundVariables.push_back(bound_var(&*lVariable, lValue.getp()));
+          //var_expr_t lVariable( new var_expr( lValue->get_loc(), var_expr::eval_var, lValue->get_varname() ) );
+          //lVariable->set_type( lValue->get_type() );
+          //theBoundVariables.push_back(bound_var(&*lVariable, lVariable, lValue.getp()));
+          theBoundVariables.push_back(bound_var(&*lValue, lValue, lValue.getp()));
         }
       } 
     }

@@ -665,9 +665,11 @@ PlanIter_t gflwor_codegen(gflwor_expr& v, int ccnt, gflwor_codegen_data &gdata) 
           
           for ( lIter = lVars.begin(); lIter != lVars.end(); ++lIter )
           {
-            varnames.push_back ((*lIter).varname);
-            var_keys.push_back ((*lIter).var_key);
-            vartypes.push_back ((*lIter).type);
+            varnames.push_back (lIter->varname);
+            var_keys.push_back (lIter->var_key);
+            vartypes.push_back (lIter->type);
+            lIter->var->accept(*this);
+            argv.push_back(pop_itstack());
           }
 
           list<global_binding> lGlobals = flwc->get_global_variables();
@@ -677,6 +679,7 @@ PlanIter_t gflwor_codegen(gflwor_expr& v, int ccnt, gflwor_codegen_data &gdata) 
             globals.push_back( *it );
           }
           argv.push_back(new gflwor::ForIterator(var->get_loc (), var->get_varname(), PREV_ITER, input, *var_iters, *pvar_iters));
+          reverse (argv.begin (), argv.end ());
           return new FnDebugIterator(AFTER, var->get_loc(), varnames, var_keys, vartypes, globals, argv);
         }
 #endif
@@ -705,6 +708,8 @@ PlanIter_t gflwor_codegen(gflwor_expr& v, int ccnt, gflwor_codegen_data &gdata) 
             varnames.push_back ((*lIter).varname);
             var_keys.push_back ((*lIter).var_key);
             vartypes.push_back ((*lIter).type);
+            lIter->var->accept(*this);
+            argv.push_back(pop_itstack());
           }
 
           list<global_binding> lGlobals = flwc->get_global_variables();
@@ -714,6 +719,7 @@ PlanIter_t gflwor_codegen(gflwor_expr& v, int ccnt, gflwor_codegen_data &gdata) 
             globals.push_back( *it );
           }
           argv.push_back(new gflwor::LetIterator(var->get_loc (), var->get_varname(), PREV_ITER, input, *var_iters, true));
+          reverse (argv.begin (), argv.end ());
           return new FnDebugIterator(AFTER, var->get_loc(), varnames, var_keys, vartypes, globals, argv);
         }
 #endif
