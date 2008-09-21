@@ -893,7 +893,8 @@ BEGIN_TAG (FTWordsSelection)
 
 BEGIN_TAG (FTWordsValue)
 
-END_TAG (parsenode)
+BEGIN_TAG (FTMatchOptionProximity)
+END_TAG (FTMatchOptionProximity)
 
 END_TAG (AbbrevForwardStep)
 
@@ -1060,8 +1061,6 @@ END_TAG (VFO_DeclList)
 END_TAG (WhereClause)
 
 END_TAG (Wildcard)
-
-END_TAG (exprnode)
 
 END_TAG (AdditiveExpr)
 

@@ -479,8 +479,7 @@ rchandle<forlet_clause> wrap_in_letclause(expr_t e, varref_t lv) {
 }
 
 
-rchandle<forlet_clause> wrap_in_letclause(expr_t e, const QueryLoc& loc, string name)
-{
+rchandle<forlet_clause> wrap_in_letclause(expr_t e, const QueryLoc& loc, string name) {
   return wrap_in_letclause (e, bind_var (loc, name, var_expr::let_var));
 }
 
@@ -639,17 +638,6 @@ void collect_flwor_vars (const FLWORExpr &e, set<const var_expr *> &vars, const 
 /*******************************************************************************
 
 ********************************************************************************/
-
-void *begin_visit(const parsenode& v)
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit(const parsenode& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT ();
-}
 
 
 void *begin_visit(const exprnode& v)
@@ -5980,6 +5968,19 @@ void end_visit(const FTWordsValue& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
+
+void *begin_visit(const FTMatchOptionProximity& v)
+{
+  TRACE_VISIT ();
+  ZORBA_NOT_SUPPORTED ("full text");
+  return no_state;
+}
+
+void end_visit(const FTMatchOptionProximity& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+}
+
 
 // Pass-thru -- nothing to be done
 

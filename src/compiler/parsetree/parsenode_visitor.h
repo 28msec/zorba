@@ -49,8 +49,6 @@ public:
  /*..........................................
  	:  begin visit                            :
  	:.........................................*/
-	DECL_PARSENODE_VISIT_METHODS (parsenode);
-	DECL_PARSENODE_VISIT_METHODS (exprnode);
 	DECL_PARSENODE_VISIT_METHODS (AbbrevForwardStep);
 	DECL_PARSENODE_VISIT_METHODS (AnyKindTest);
 	DECL_PARSENODE_VISIT_METHODS (AposAttrContentList);
@@ -254,6 +252,7 @@ public:
 	DECL_PARSENODE_VISIT_METHODS (FTWords);
 	DECL_PARSENODE_VISIT_METHODS (FTWordsSelection);
 	DECL_PARSENODE_VISIT_METHODS (FTWordsValue);
+	DECL_PARSENODE_VISIT_METHODS (FTMatchOptionProximity);
 
   DECL_PARSENODE_VISIT_METHODS (ExitExpr);
   DECL_PARSENODE_VISIT_METHODS (WhileExpr);
