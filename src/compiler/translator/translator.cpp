@@ -458,8 +458,7 @@ expr_t wrap_in_globalvar_assign(expr_t e) {
     }
   }
 
-  if (! minfo->init_exprs.empty ())
-  {
+  if (! minfo->init_exprs.empty ()) {
     expr_update_t lUpdateType = e->getUpdateType();
     e = new sequential_expr (e->get_loc(), minfo->init_exprs, e);
     e->setUpdateType(lUpdateType);
@@ -532,8 +531,7 @@ rchandle<flwor_expr> wrap_expr_in_flwor(expr* inputExpr, bool withContextSize)
 
   rchandle<flwor_expr> flworExpr = new flwor_expr(loc);
 
-  if (withContextSize)
-  {
+  if (withContextSize) {
     // create a LET var equal to the seq returned by the input epxr
     rchandle<forlet_clause> lcInputSeq = wrap_in_letclause(inputExpr);
 
@@ -553,9 +551,7 @@ rchandle<flwor_expr> wrap_expr_in_flwor(expr* inputExpr, bool withContextSize)
     flworExpr->add(lcInputSeq);
     flworExpr->add(lcLast);
     flworExpr->add(fcDot);
-  }
-  else
-  {
+  } else {
     // Iterate over the input seq
     rchandle<forlet_clause> fcDot = wrap_in_forclause(inputExpr,
                                                       loc,
@@ -988,13 +984,10 @@ void end_visit (const DirElemContentList& v, void* /*visit_state*/) {
       break;
     expr_list->add(e_h);
   }
-  if (expr_list->size() == 1)
-  {
+  if (expr_list->size() == 1) {
     nodestack.push(*expr_list->begin());
     delete expr_list;
-  }
-  else
-  {
+  } else {
     nodestack.push(expr_list);
   }
 }
@@ -1015,9 +1008,7 @@ void end_visit (const DirElemContent& v, void* /*visit_state*/) {
   else if (v.get_cdata() != NULL) {
   }
   else if (v.get_common_content() != NULL) {
-  }
-  else
-  {
+  } else {
     if (!v.isStripped()) {
       expr_t content = new const_expr (loc, v.get_elem_content());
       nodestack.push (new text_expr(loc,
@@ -1209,16 +1200,13 @@ void end_visit (const AposAttrContentList& v, void* visit_state) {
 
 void attr_val_content (const QueryLoc& loc, const CommonContent *cc, xqpString content)
 {
-  if (cc == NULL)
-  {
+  if (cc == NULL) {
     nodestack.push(new const_expr (loc, content));
 
     //    nodestack.push(new text_expr(loc,
     //                            text_expr::text_constructor,
     //                            new const_expr (loc, content)));
-  }
-  else
-  {
+  } else {
     // nothing to be done because when common content != NULL,
     // the corresponding expr is already on the stack
   }
@@ -1372,8 +1360,7 @@ void end_visit (const CompAttrConstructor& v, void* /*visit_state*/) {
   expr_t valueExpr;
   expr_t attrExpr;
 
-  if (v.get_val_expr() != 0)
-  {
+  if (v.get_val_expr() != 0) {
     valueExpr = pop_nodestack();
 
     fo_expr* enclosedExpr = new fo_expr(loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
@@ -1384,13 +1371,10 @@ void end_visit (const CompAttrConstructor& v, void* /*visit_state*/) {
 
   QName* constQName = v.get_qname_expr().dyn_cast<QName> ().getp();
 
-  if (constQName != NULL)
-  {
+  if (constQName != NULL) {
     nameExpr = new const_expr(loc,
                               sctx_p->lookup_qname("", constQName->get_qname()));
-  }
-  else
-  {
+  } else {
     nameExpr = pop_nodestack();
 
     rchandle<fo_expr> atomExpr = (fo_expr*)wrap_in_atomization (nameExpr).getp();
@@ -1440,12 +1424,9 @@ void end_visit (const CompPIConstructor& v, void* /*visit_state*/) {
   expr_t target;
   expr_t content;
 
-  if (v.get_content_expr() == NULL)
-  {
+  if (v.get_content_expr() == NULL) {
     content = create_seq(loc);
-  }
-  else
-  {
+  } else {
     content = pop_nodestack();
 
     rchandle<fo_expr> enclosedExpr = new fo_expr(loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
@@ -1454,8 +1435,7 @@ void end_visit (const CompPIConstructor& v, void* /*visit_state*/) {
     content = enclosedExpr;
   }
 
-  if (v.get_target_expr() != NULL)
-  {
+  if (v.get_target_expr() != NULL) {
     target = pop_nodestack();
 
     rchandle<fo_expr> atomExpr = (fo_expr*)wrap_in_atomization (target).getp();
@@ -1530,8 +1510,7 @@ void translate_gflwor (const FLWORExpr& v) {
 
   expr_t lReturnExpr = pop_nodestack ();
 #ifdef ZORBA_DEBUGGER
-  if ( compilerCB->m_debugger != 0)
-  {
+  if ( compilerCB->m_debugger != 0) {
     rchandle<debugger_expr> lDebuggerExpr =
       new debugger_expr(lReturnExpr->get_loc(), lReturnExpr, theScopedVariables, theGlobalVars);
    lReturnExpr = lDebuggerExpr;
@@ -1607,11 +1586,9 @@ void translate_gflwor (const FLWORExpr& v) {
         forletwin_gclause *eflc = 
           new forletwin_gclause (forletwin_gclause::for_clause, vars [j], exprs [j], pos_vars [j]);
 #ifdef ZORBA_DEBUGGER
-        if(compilerCB->m_debugger != 0)
-        {
+        if (compilerCB->m_debugger != 0) {
           theScopedVariables.push_back(vars[j]);
-          if(pos_vars[j] != 0)
-          {
+          if (pos_vars[j] != 0) {
             theScopedVariables.push_back(pos_vars[j]);
           }
           eflc->set_bound_variables(theScopedVariables);
@@ -1640,8 +1617,7 @@ void translate_gflwor (const FLWORExpr& v) {
         expr_t lExpr = exprs[j];
         forletwin_gclause *flc = new forletwin_gclause (forletwin_gclause::let_clause, vars [j], lExpr);
 #ifdef ZORBA_DEBUGGER
-        if(compilerCB->m_debugger != 0)
-        {
+        if (compilerCB->m_debugger != 0) {
           push_scope();
           for(unsigned int k=nvars; k>j; k--)
           {
@@ -1780,8 +1756,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/) {
         ZORBA_ERROR_LOC (XQST0076, loc);
       rchandle<order_modifier> emod (new order_modifier (dir_spec, empty_spec, col));
       expr_t lOrderExpr = orders [i];
-      if (lOrderExpr->isUpdating())
-      {
+      if (lOrderExpr->isUpdating()) {
         ZORBA_ERROR_LOC(XUST0001, loc);
       }
       flwor->add (flwor_expr::orderspec_t (lOrderExpr, emod));
@@ -1789,8 +1764,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/) {
   }
 
   GroupByClause *lGroupBy = &*v.get_groupby();
-  if (lGroupBy)
-  {
+  if (lGroupBy) {
     if (lGroupBy->get_where() != 0) {
       expr_t lClauseExpr = pop_nodestack();
       if (lClauseExpr->isUpdating())
@@ -2323,20 +2297,16 @@ void *begin_visit (const VFO_DeclList& v) {
     {
       const Param *p = (*it).getp ();
       const TypeDeclaration *td = p->get_typedecl ().getp ();
-      if (td == NULL)
-      {
+      if (td == NULL) {
         arg_types.push_back (GENV_TYPESYSTEM.ITEM_TYPE_STAR);
-      }
-      else
-      {
+      } else {
         td->accept (*this);
         arg_types.push_back (pop_tstack ());
       }
     }
 
     xqtref_t return_type = GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-    if (n->get_return_type () != NULL) 
-    {
+    if (n->get_return_type () != NULL)  {
       n->get_return_type ()->accept (*this);
       return_type = pop_tstack ();
     }
@@ -2444,13 +2414,11 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/) {
   case ParseConstants::fn_sequential:
   case ParseConstants::fn_read:
   {
-    if (lFuncType == ParseConstants::fn_read)
-    {
+    if (lFuncType == ParseConstants::fn_read) {
       if (body->isUpdating())
         ZORBA_ERROR_LOC(XUST0001, loc);
     }
-    else if (lFuncType == ParseConstants::fn_update)
-    {
+    else if (lFuncType == ParseConstants::fn_update) {
       if (body->getUpdateType() == SIMPLE_EXPR)
         ZORBA_ERROR_LOC(XUST0002, loc);
     }
@@ -2468,8 +2436,7 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/) {
 
     normalize_expr_tree(v.get_name ()->get_qname().c_str(), compilerCB, body, *&(udf->get_signature().return_type()));
 
-    if (compilerCB->m_config.opt_level == CompilerCB::config_t::O1)
-    {
+    if (compilerCB->m_config.opt_level == CompilerCB::config_t::O1) {
       RewriterContext rCtx(compilerCB, body);
       GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
       body = rCtx.getRoot();
@@ -2526,8 +2493,7 @@ void end_visit (const Param& v, void* /*visit_state*/) {
 
   flwor->add(wrap_in_letclause(&*param_var, subst_var));
 
-  if (v.get_typedecl () != NULL) 
-  {
+  if (v.get_typedecl () != NULL)  {
     param_var->set_type (pop_tstack ());
     subst_var->set_type(param_var->get_type());
   }
@@ -2560,10 +2526,8 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
   store::Item_t fn_qname = sctx_p->lookup_fn_qname(prefix, fname);
   xqp_string fn_local = fn_qname->getLocalName ();
 
-  if (fn_qname->getNamespace()->byteEqual(XQUERY_FN_NS))
-  {
-    if (fn_local == "position" && sz == 0) 
-    {
+  if (fn_qname->getNamespace()->byteEqual(XQUERY_FN_NS)) {
+    if (fn_local == "position" && sz == 0)  {
       nodestack.push(sctx_p->lookup_var_nofail(DOT_POS_VARNAME));
       return;
     } else if (fn_local == "last" && sz == 0) {
@@ -2619,8 +2583,7 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
                                          ret));
       return;
     }
-    else if (sz == 0 && xquery_fns_def_dot.find (fn_local) != xquery_fns_def_dot.end ())
-    {
+    else if (sz == 0 && xquery_fns_def_dot.find (fn_local) != xquery_fns_def_dot.end ()) {
       arguments.push_back (DOT_VAR);
     } else if (fn_local == "static-base-uri") {
       if (sz != 0)
@@ -2664,16 +2627,13 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
   // try constructor functions
   xqtref_t type = CTXTS->create_named_type(fn_qname, TypeConstants::QUANT_QUESTION);
 
-  if (type != NULL)
-  {
+  if (type != NULL) {
     if (sz != 1
         || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION)
         || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
       ZORBA_ERROR_LOC_PARAM( XPST0017,  loc, prefix + ":" + fname, sz);
     nodestack.push (create_cast_expr (loc, arguments [0], type, true));
-  }
-  else
-  {
+  } else {
       function *f = LOOKUP_FN (prefix, fname, sz);
       if (f == NULL)
         ZORBA_ERROR_LOC_PARAM (XPST0017, loc, (prefix.empty () ? prefix : (prefix + ":")) + fname, to_string (sz));
@@ -2685,8 +2645,7 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
       for(; iter != arguments.rend(); ++iter)
         fo_h->add(*iter);
 #ifdef ZORBA_DEBUGGER
-      if ( compilerCB->m_debugger != 0 )
-      {
+      if ( compilerCB->m_debugger != 0 ) {
         rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(loc, &*fo_h, theScopedVariables, theGlobalVars);
         nodestack.push(&*lDebuggerExpr);
       } else {
@@ -2812,8 +2771,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/) {
   vector<xqpStringStore_t> lURIs;
   if (ats == NULL || ats->size () == 0) {
     lURIs.push_back(xqp_string(target_ns).getStore());
-  }
-  else {
+  } else {
     for (int i = 0; i < ats->size(); ++i) {
       lURIs.push_back(sctx_p->resolve_relative_uri((*ats)[i]).getStore());
     }
@@ -3193,8 +3151,7 @@ expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool i
       }
       catch (error::ZorbaError& e)
       {
-        if (isCast)
-        {
+        if (isCast) {
           throw e;
         } else {
           if (e.theErrorCode == FORG0001)
@@ -3356,8 +3313,7 @@ void end_visit (const IfExpr& v, void* /*visit_state*/) {
   expr_t t_h = pop_nodestack ();
   expr_t c_h = pop_nodestack ();
 
-  if (c_h->isUpdating())
-  {
+  if (c_h->isUpdating()) {
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
 
@@ -3367,8 +3323,7 @@ void end_visit (const IfExpr& v, void* /*visit_state*/) {
     loc);
 
 #ifdef ZORBA_DEBUGGER
-  if(compilerCB->m_debugger != 0)
-  {
+  if (compilerCB->m_debugger != 0) {
     c_h = new debugger_expr(c_h->get_loc(), c_h, theScopedVariables, theGlobalVars);
     t_h = new debugger_expr(t_h->get_loc(), t_h, theScopedVariables, theGlobalVars);
     e_h = new debugger_expr(e_h->get_loc(), e_h, theScopedVariables, theGlobalVars);
@@ -3623,22 +3578,18 @@ void end_visit (const NameTest& v, void* /*visit_state*/) {
   axis_step_expr *axisExpr = NULL;
   trycatch_expr *tce = NULL;
 
-  if ((axisExpr = dynamic_cast<axis_step_expr *>(top)) != NULL)
-  {
+  if ((axisExpr = dynamic_cast<axis_step_expr *>(top)) != NULL) {
     // Construct name-test match expr
     rchandle<match_expr> matchExpr = new match_expr(loc);;
     matchExpr->setTestKind(match_name_test);
 
-    if (v.getQName() != NULL)
-    {
+    if (v.getQName() != NULL) {
       string qname = v.getQName()->get_qname();
       store::Item_t qn_h = (axisExpr->getAxis () == axis_kind_attribute ?
                             sctx_p->lookup_qname("", qname) :
                             sctx_p->lookup_elem_qname(qname));
       matchExpr->setQName(qn_h);
-    }
-    else
-    {
+    } else {
       rchandle<Wildcard> wildcard = v.getWildcard();
       ZORBA_ASSERT(wildcard != NULL);
 
@@ -3675,14 +3626,11 @@ void end_visit (const NameTest& v, void* /*visit_state*/) {
     axisExpr->setTest(matchExpr);
   } else if ((tce = dynamic_cast<trycatch_expr *>(top)) != NULL) {
     catch_clause *cc = &*(*tce)[0];
-    if (v.getQName() != NULL)
-    {
+    if (v.getQName() != NULL) {
       string qname = v.getQName()->get_qname();
       store::Item_t qn_h = sctx_p->lookup_elem_qname (qname);
       cc->set_nametest_h(new NodeNameTest(qn_h));
-    }
-    else
-    {
+    } else {
       rchandle<Wildcard> wildcard = v.getWildcard();
       ZORBA_ASSERT(wildcard != NULL);
 
@@ -3741,14 +3689,11 @@ void end_visit (const AnyKindTest& v, void* /*visit_state*/) {
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-  if (axisExpr != NULL)
-  {
+  if (axisExpr != NULL) {
     rchandle<match_expr> me = new match_expr(loc);
     me->setTestKind(match_anykind_test);
     axisExpr->setTest(me);
-  }
-  else
-  {
+  } else {
     tstack.push(GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE);
   }
 }
@@ -3766,11 +3711,9 @@ void end_visit (const DocumentTest& v, void* /*visit_state*/) {
 
   rchandle<ElementTest> elemTest = v.get_elem_test();
 
-  if (elemTest == NULL)
-  {
+  if (elemTest == NULL) {
     axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-    if (axisExpr != NULL)
-    {
+    if (axisExpr != NULL) {
       rchandle<match_expr> match = new match_expr(loc);
       match->setTestKind(match_doc_test);
 
@@ -3784,8 +3727,7 @@ void end_visit (const DocumentTest& v, void* /*visit_state*/) {
     bool nilled =  elemTest->isNilledAllowed();
 
     axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-    if (axisExpr != NULL)
-    {
+    if (axisExpr != NULL) {
       rchandle<match_expr> match = new match_expr(loc);
       match->setTestKind(match_doc_test);
 
@@ -3799,9 +3741,7 @@ void end_visit (const DocumentTest& v, void* /*visit_state*/) {
         match->setNilledAllowed(true);
 
       axisExpr->setTest(match);
-    }
-    else
-    {
+    } else {
       ZORBA_ERROR_LOC_DESC( XQP0004_SYSTEM_NOT_SUPPORTED, loc, "Document kind test");
     }
   }
@@ -3823,8 +3763,7 @@ void end_visit (const ElementTest& v, void* /*visit_state*/) {
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-  if (axisExpr != NULL)
-  {
+  if (axisExpr != NULL) {
     rchandle<match_expr> me = new match_expr(loc);
     me->setTestKind(match_elem_test);
 
@@ -3841,31 +3780,25 @@ void end_visit (const ElementTest& v, void* /*visit_state*/) {
   }
 
   // Else, create a sequence-type match
-  else
-  {
-    if (nilled)
-    {
+  else {
+    if (nilled) {
       ZORBA_ERROR_LOC_DESC( XQP0004_SYSTEM_NOT_SUPPORTED, loc, "schema types");
     }
 
     rchandle<NodeTest> nodeTest;
-    if (elemName != NULL)
-    {
+    if (elemName != NULL) {
       store::Item_t qnameItem = sctx_p->lookup_elem_qname(elemName->get_qname());
 
       rchandle<NodeNameTest> nodeNameTest =
         new NodeNameTest(qnameItem->getNamespace(), qnameItem->getLocalName());
 
       nodeTest = new NodeTest(store::StoreConsts::elementNode, nodeNameTest);
-    }
-    else
-    {
+    } else {
       nodeTest = new NodeTest(store::StoreConsts::elementNode);
     }
 
     xqtref_t contentType;
-    if (typeName != NULL)
-    {
+    if (typeName != NULL) {
       store::Item_t qnameItem = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname());
 
       contentType = CTXTS->create_named_type(qnameItem, TypeConstants::QUANT_ONE);
@@ -3893,8 +3826,7 @@ void end_visit (const AttributeTest& v, void* /*visit_state*/) {
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-  if (axisExpr != NULL)
-  {
+  if (axisExpr != NULL) {
     rchandle<match_expr> match = new match_expr(loc);
     match->setTestKind(match_attr_test);
 
@@ -3905,12 +3837,9 @@ void end_visit (const AttributeTest& v, void* /*visit_state*/) {
       match->setTypeName(sctx_p->lookup_elem_qname(typeName->get_name()->get_qname()));
 
     axisExpr->setTest(match);
-  }
-  else
-  {
+  } else {
     rchandle<NodeTest> nodeTest;
-    if (attrName != NULL)
-    {
+    if (attrName != NULL) {
       store::Item_t qnameItem = sctx_p->lookup_qname("", attrName->get_qname());
 
       rchandle<NodeNameTest> nodeNameTest =
@@ -3918,15 +3847,12 @@ void end_visit (const AttributeTest& v, void* /*visit_state*/) {
                          qnameItem->getLocalName());
 
       nodeTest = new NodeTest(store::StoreConsts::attributeNode, nodeNameTest);
-    }
-    else
-    {
+    } else {
       nodeTest = new NodeTest(store::StoreConsts::attributeNode);
     }
 
     xqtref_t contentType;
-    if (typeName != NULL)
-    {
+    if (typeName != NULL) {
       store::Item_t qnameItem = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname());
 
       contentType = CTXTS->create_named_type(qnameItem, TypeConstants::QUANT_ONE);
@@ -3951,8 +3877,7 @@ void end_visit (const TextTest& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-  if (axisExpr != NULL)
-  {
+  if (axisExpr != NULL) {
     rchandle<match_expr> match = new match_expr(loc);
     match->setTestKind(match_text_test);
     axisExpr->setTest(match);
@@ -4103,8 +4028,7 @@ void *begin_visit (const PathExpr& v) {
   // Put a NULL in the stack to mark the beginning of a PathExp tree.
   nodestack.push(NULL);
 
-  if (pe_type != ParseConstants::path_leading_lone_slash)
-  {
+  if (pe_type != ParseConstants::path_leading_lone_slash) {
     path_expr = new relpath_expr(loc);
 
     result = path_expr.getp();
@@ -4115,8 +4039,7 @@ void *begin_visit (const PathExpr& v) {
   // In case 1, just push R to the nodestack.
   // In case 2, put "R/..." to the nodestact 
   // In case 3, put "R/descendant-or-self/...." to the nodestack
-  if (pe_type != ParseConstants::path_relative) 
-  {
+  if (pe_type != ParseConstants::path_relative)  {
     rchandle<relpath_expr> ctx_path_expr = new relpath_expr(loc);
     ctx_path_expr->add_back(DOT_VAR);
 
@@ -4133,14 +4056,12 @@ void *begin_visit (const PathExpr& v) {
 
     result = fo.getp();
 
-    if (path_expr != NULL)
-    {
+    if (path_expr != NULL) {
       path_expr->add_back(&*fo);
       result = path_expr.getp();
     }
 
-    if (pe_type == ParseConstants::path_leading_slashslash)
-    {
+    if (pe_type == ParseConstants::path_leading_slashslash) {
       rchandle<axis_step_expr> ase = new axis_step_expr(loc);
       rchandle<match_expr> me = new match_expr(loc);
       me->setTestKind(match_anykind_test);
@@ -4183,32 +4104,24 @@ void* begin_visit(const RelativePathExpr& v)
   AxisStep* axisStep = child1.dyn_cast<AxisStep>();
 
   // If the current rpe is the root of the Path Tree ..
-  if (pathExpr->size() == 0)
-  {
-    if (axisStep != NULL)
-    {
+  if (pathExpr->size() == 0) {
+    if (axisStep != NULL) {
       pathExpr->add_back(DOT_VAR);
 
-      if (axisStep->get_predicate_list() == NULL)
-      {
+      if (axisStep->get_predicate_list() == NULL) {
         nodestack.push(pathExpr);
-      }
-      else
-      {
+      } else {
         rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(pathExpr, false);
         nodestack.push(flworExpr.getp());
       }
-    }
-    else
-    {
+    } else {
       nodestack.push(pathExpr);
     }
   }
 
   // Else if child1 is an axis step with no repdicates, just put the pathExpr
   // back in the stack.
-  else if (axisStep != NULL && axisStep->get_predicate_list() == NULL)
-  {
+  else if (axisStep != NULL && axisStep->get_predicate_list() == NULL) {
     nodestack.push(pathExpr);
   }
 
@@ -4216,8 +4129,7 @@ void* begin_visit(const RelativePathExpr& v)
   // is not the very 1st step in the path expr. In this case, pathExpr becomes
   // the input to a new flwor expr that will compute, once for each node in
   // pathExpr, the next step in the path. The flwor is pushed to the nodestack.
-  else
-  {
+  else {
     expr_t inputExpr = wrap_in_dos_and_dupelim(pathExpr);
     rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputExpr, false);
     nodestack.push(flworExpr.getp());
@@ -4245,8 +4157,7 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
 
   // If curExpr is a path expr, step-i was an axis step with no predicates, or
   // rpe-i is the root of the Path Tree.
-  if (pathExpr != NULL)
-  {
+  if (pathExpr != NULL) {
     axis_step_expr* axisExpr = stepExpr.dyn_cast<axis_step_expr>();
     ZORBA_ASSERT(axisExpr != NULL || pathExpr->size() == 0);
 
@@ -4257,8 +4168,7 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
   // case, translation of step-i resulted in a flwor expr that includes step-i
   // and all the ancestors of rpe-i. We create a new path_expr and make the
   // flwor expr its 1st step (i.e. flwor/.... or flwor/descendant-or-sef/...)
-  else
-  {
+  else {
     ZORBA_ASSERT(flworExpr != NULL);
 
     flworExpr->set_retval(stepExpr);
@@ -4268,8 +4178,7 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
     pathExpr->add_back(flworExpr);
   }
 
-  if (rpe.get_step_type() == ParseConstants::st_slashslash)
-  {
+  if (rpe.get_step_type() == ParseConstants::st_slashslash) {
     rchandle<axis_step_expr> ase = new axis_step_expr(loc);
     rchandle<match_expr> me = new match_expr(loc);
     me->setTestKind(match_anykind_test);
@@ -4295,8 +4204,7 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
   // becomes the input to a new flwor expr that will compute, once for each
   // node in pathExpr, the next step in the path. The flwor is pushed to the
   // nodestack.
-  else 
-  {
+  else {
     expr_t inputSeqExpr = wrap_in_dos_and_dupelim(pathExpr);
     rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputSeqExpr, false);
     nodestack.push(flworExpr.getp());
@@ -4324,16 +4232,13 @@ void end_visit (const RelativePathExpr& v, void* /*visit_state*/) {
   flwor_expr* flworExpr = curExpr.dyn_cast<flwor_expr>();
 
   // If curExpr is a path expr, step-(i+1) was an axis step with no predicates.
-  if (pathExpr != NULL)
-  {
+  if (pathExpr != NULL) {
     axis_step_expr* axisExpr = stepExpr.dyn_cast<axis_step_expr>();
     ZORBA_ASSERT(axisExpr != NULL);
 
     pathExpr->add_back(stepExpr);
     nodestack.push(pathExpr);
-  }
-  else
-  {
+  } else {
     ZORBA_ASSERT(flworExpr != NULL);
     ZORBA_ASSERT(stepExpr != NULL);
 
@@ -4382,8 +4287,7 @@ void post_primary_visit(const FilterExpr& v, void* /*visit_state*/)
   expr_t e = pop_nodestack();
   flwor_expr* flworExpr = e.dyn_cast<flwor_expr>();
 
-  if (flworExpr != NULL)
-  {
+  if (flworExpr != NULL) {
     // for each item in the input seq
     rchandle<forlet_clause> fcOuterDot = (*flworExpr)[0];
 
@@ -4398,9 +4302,7 @@ void post_primary_visit(const FilterExpr& v, void* /*visit_state*/)
 
     nodestack.push(flworExpr);
     nodestack.push(lcPredSeq->get_var().getp());
-  }
-  else
-  {
+  } else {
      relpath_expr* pathExpr = e.dyn_cast<relpath_expr>();
      ZORBA_ASSERT(pathExpr != NULL && pathExpr->size() == 0);
 
@@ -4557,12 +4459,9 @@ void *begin_visit (const AbbrevForwardStep& v) {
 
   rchandle<axis_step_expr> ase = expect_axis_step_top ();
 
-  if (v.get_attr_bit())
-  {
+  if (v.get_attr_bit()) {
     ase->setAxis(axis_kind_attribute);
-  }
-  else
-  {
+  } else {
     ase->setAxis(axis_kind_child);
   }
 
@@ -4813,8 +4712,7 @@ void *begin_visit (const TypeswitchExpr& v) {
   {
     v.get_switch_expr ()->accept (*this);
     expr_t se = pop_nodestack ();
-    if (se->isUpdating())
-    {
+    if (se->isUpdating()) {
       ZORBA_ERROR_LOC(XUST0001, loc);
     }
     expr_t lFlwor = wrap_in_let_flwor (se, sv, defret);
@@ -4910,8 +4808,7 @@ void *begin_visit (const DeleteExpr& v) {
 void end_visit (const DeleteExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   expr_t lTarget = pop_nodestack();
-  if (lTarget->isUpdating())
-  {
+  if (lTarget->isUpdating()) {
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
   expr_t aDelete = new delete_expr(loc, lTarget);
@@ -4927,8 +4824,7 @@ void end_visit (const InsertExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   expr_t lTarget = pop_nodestack();
   expr_t lSource = pop_nodestack();
-  if (lTarget->isUpdating() || lSource->isUpdating())
-  {
+  if (lTarget->isUpdating() || lSource->isUpdating()) {
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
   fo_expr* lEnclosed = new fo_expr(loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
@@ -4951,8 +4847,7 @@ void end_visit (const RenameExpr& v, void* /*visit_state*/) {
   expr_t nameExpr = pop_nodestack();
   expr_t targetExpr = pop_nodestack();
 
-  if (nameExpr->isUpdating() || targetExpr->isUpdating())
-  {
+  if (nameExpr->isUpdating() || targetExpr->isUpdating()) {
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
 
@@ -4973,13 +4868,11 @@ void end_visit (const ReplaceExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   expr_t lReplacement = pop_nodestack();
   expr_t lTarget = pop_nodestack();
-  if (lReplacement->isUpdating() || lTarget->isUpdating())
-  {
+  if (lReplacement->isUpdating() || lTarget->isUpdating()) {
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
 
-  if (v.getType() == store::UpdateConsts::NODE)
-  {
+  if (v.getType() == store::UpdateConsts::NODE) {
     fo_expr* lEnclosed = new fo_expr(loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
     lEnclosed->add(lReplacement);
     lReplacement = lEnclosed;
@@ -5011,13 +4904,11 @@ void *begin_visit (const TransformExpr& v) {
 void end_visit (const TransformExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   expr_t lReturn = pop_nodestack();
-  if (lReturn->isUpdating())
-  {
+  if (lReturn->isUpdating()) {
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
   expr_t lModify = pop_nodestack();
-  if (lModify->getUpdateType() == SIMPLE_EXPR)
-  {
+  if (lModify->getUpdateType() == SIMPLE_EXPR) {
     ZORBA_ERROR_LOC(XUST0002, loc);
   }
   transform_expr* lTransform = new transform_expr(loc, lModify, lReturn);
@@ -5025,8 +4916,7 @@ void end_visit (const TransformExpr& v, void* /*visit_state*/) {
   for (size_t i = 0; i < lSize; ++i)
   {
     expr_t lExpr = pop_nodestack();
-    if (lExpr->isUpdating())
-    {
+    if (lExpr->isUpdating()) {
       ZORBA_ERROR_LOC(XUST0001, loc);
     }
     varref_t lVarExpr = pop_nodestack_var ();
