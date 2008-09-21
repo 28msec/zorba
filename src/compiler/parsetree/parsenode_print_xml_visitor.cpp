@@ -27,7 +27,6 @@ namespace zorba {
 #define INDENT_DEC  theIndent -= 2
 #define NL  os << std::endl
 
-
 class ParseNodePrintXMLVisitor : public parsenode_visitor {
 
 protected:
@@ -42,7 +41,6 @@ ParseNodePrintXMLVisitor(std::ostream &aStream)
 {
 }
 
-
 void print(const parsenode* p)
 {
     os << "<?xml version='1.0'>" << std::endl;
@@ -53,7 +51,6 @@ void print(const parsenode* p)
 
 #define IDS \
   " pos='" << n.get_location() << "' ptr='" << &n << "'"
-
 
 #define BEGIN_TAG( cls )                        \
   void *begin_visit (const cls &n) {            \
@@ -73,7 +70,9 @@ void print(const parsenode* p)
     NL;                                                      \
   }
 
-BEGIN_TAG (parsenode)
+#define BEGIN_END_TAG( cls )                    \
+  BEGIN_TAG (cls)                               \
+  END_TAG (cls)
 
 void *begin_visit(const AbbrevForwardStep &n)
 {
@@ -87,22 +86,6 @@ void *begin_visit(const AbbrevForwardStep &n)
     return no_state;
 }
 
-BEGIN_TAG (AnyKindTest)
-
-BEGIN_TAG (AposAttrContentList)
-
-BEGIN_TAG (AposAttrValueContent)
-
-BEGIN_TAG (ArgList)
-
-BEGIN_TAG (AtomicType)
-
-BEGIN_TAG (AttributeTest)
-
-BEGIN_TAG (BaseURIDecl)
-
-BEGIN_TAG (BoundarySpaceDecl)
-
 void *begin_visit(const CaseClause &n)
 {
     INDENT;
@@ -114,16 +97,6 @@ void *begin_visit(const CaseClause &n)
     INDENT_INC; NL;
     return no_state;
 }
-
-BEGIN_TAG (CaseClauseList)
-
-BEGIN_TAG (CommentTest)
-
-BEGIN_TAG (ConstructionDecl)
-
-BEGIN_TAG (CopyNamespacesDecl)
-
-BEGIN_TAG (DefaultCollationDecl)
 
 void *begin_visit(const DefaultNamespaceDecl &n)
 {
@@ -156,22 +129,6 @@ void *begin_visit(const DirAttr &n)
     return no_state;
 }
 
-BEGIN_TAG (DirAttributeList)
-
-BEGIN_TAG (DirAttributeValue)
-
-BEGIN_TAG (DirElemContentList)
-
-BEGIN_TAG (DocumentTest)
-
-BEGIN_TAG (ElementTest)
-
-BEGIN_TAG (EmptyOrderDecl)
-
-BEGIN_TAG (ForClause)
-
-BEGIN_TAG (FLWORClauseList)
-
 void *begin_visit(const ForwardAxis &n)
 {
     INDENT;
@@ -183,8 +140,6 @@ void *begin_visit(const ForwardAxis &n)
     INDENT_INC; NL;
     return no_state;
 }
-
-BEGIN_TAG (ForwardStep)
 
 void *begin_visit(const FunctionDecl &n)
 {
@@ -213,12 +168,6 @@ void *begin_visit(const GeneralComp &n)
 
 NO_END_TAG (GeneralComp)
 
-BEGIN_TAG (ItemType)
-
-BEGIN_TAG (LetClause)
-
-BEGIN_TAG (LibraryModule)
-
 void *begin_visit(const MainModule  &n)
 {
     INDENT;
@@ -231,8 +180,6 @@ void *begin_visit(const MainModule  &n)
 
     return no_state;
 }
-
-BEGIN_TAG (Module)
 
 void *begin_visit(const ModuleDecl &n)
 {
@@ -278,8 +225,6 @@ void *begin_visit(const NameTest &n)
     return no_state;
 }
 
-END_TAG (NameTest)
-
 void *begin_visit(const NamespaceDecl &n)
 {
     INDENT;
@@ -305,10 +250,6 @@ void *begin_visit(const NodeComp &n)
 }
 
 NO_END_TAG (NodeComp)
-
-BEGIN_TAG (OccurrenceIndicator)
-
-BEGIN_TAG (OptionDecl)
 
 void *begin_visit(GroupByClause const& n)
 {
@@ -370,24 +311,6 @@ void *begin_visit(LetClauseList const& n)
     return no_state;
 }
 
-BEGIN_TAG (OrderByClause)
-
-BEGIN_TAG (OrderCollationSpec)
-
-BEGIN_TAG (OrderDirSpec)
-
-BEGIN_TAG (OrderEmptySpec)
-
-BEGIN_TAG (OrderModifier)
-
-BEGIN_TAG (OrderSpec)
-
-BEGIN_TAG (OrderSpecList)
-
-BEGIN_TAG (OrderingModeDecl)
-
-BEGIN_TAG (PITest)
-
 void *begin_visit(const Param &n)
 {
     INDENT;
@@ -401,36 +324,6 @@ void *begin_visit(const Param &n)
 }
 
 NO_END_TAG (Param)
-
-BEGIN_TAG (ParamList)
-
-BEGIN_TAG (PositionalVar)
-
-BEGIN_TAG (Pragma)
-
-BEGIN_TAG (PragmaList)
-
-BEGIN_TAG (PredicateList)
-
-BEGIN_TAG (Prolog)
-
-BEGIN_TAG (QVarInDecl)
-
-BEGIN_TAG (QVarInDeclList)
-
-BEGIN_TAG (QuoteAttrValueContent)
-
-BEGIN_TAG (QuoteAttrContentList)
-
-BEGIN_TAG (ReverseAxis)
-
-BEGIN_TAG (ReverseStep)
-
-BEGIN_TAG (SIND_DeclList)
-
-BEGIN_TAG (SchemaAttributeTest)
-
-BEGIN_TAG (SchemaElementTest)
 
 void *begin_visit(const SchemaImport &n)
 {
@@ -448,20 +341,6 @@ void *begin_visit(const SchemaImport &n)
   return no_state;
 #endif
 }
-
-BEGIN_TAG (SchemaPrefix)
-
-BEGIN_TAG (SequenceType)
-
-BEGIN_TAG (SignList)
-
-BEGIN_TAG (SingleType)
-
-BEGIN_TAG (TextTest)
-
-BEGIN_TAG (TypeDeclaration)
-
-BEGIN_TAG (TypeName)
 
 void *begin_visit (const URILiteralList &n)
 {
@@ -519,8 +398,6 @@ void *begin_visit(const VarGetsDecl &n)
     return no_state;
 }
 
-BEGIN_TAG (VarGetsDeclList)
-
 void *begin_visit(const VarInDecl &n)
 {
     INDENT;
@@ -532,8 +409,6 @@ void *begin_visit(const VarInDecl &n)
     INDENT_INC; NL;
     return no_state;
 }
-
-BEGIN_TAG (VarInDeclList)
 
 void *begin_visit(const VersionDecl &n)
 {
@@ -549,13 +424,6 @@ void *begin_visit(const VersionDecl &n)
     return no_state;
 }
 
-BEGIN_TAG (VFO_DeclList)
-
-BEGIN_TAG (CountClause)
-END_TAG (CountClause)
-
-BEGIN_TAG (WhereClause)
-
 void *begin_visit(const QName &n)
 {
   INDENT;
@@ -570,22 +438,6 @@ void *begin_visit(const QName &n)
 }
 
 NO_END_TAG (QName)
-
-BEGIN_TAG (Wildcard)
-
-BEGIN_TAG (exprnode)
-
-BEGIN_TAG (AdditiveExpr)
-
-BEGIN_TAG (AndExpr)
-
-BEGIN_TAG (AxisStep)
-
-BEGIN_TAG (CDataSection)
-
-BEGIN_TAG (CastExpr)
-
-BEGIN_TAG (CastableExpr)
 
 void *begin_visit(const CommonContent &n)
 {
@@ -650,59 +502,6 @@ void *begin_visit(const ComparisonExpr &n)
     return no_state;
 }
 
-BEGIN_TAG (CompAttrConstructor)
-
-BEGIN_TAG (CompCommentConstructor)
-
-BEGIN_TAG (CompDocConstructor)
-
-BEGIN_TAG (CompElemConstructor)
-
-BEGIN_TAG (CompPIConstructor)
-
-BEGIN_TAG (CompTextConstructor)
-
-BEGIN_TAG (ContextItemExpr)
-
-BEGIN_TAG (DirCommentConstructor)
-
-BEGIN_TAG (DirElemConstructor)
-
-BEGIN_TAG (DirElemContent)
-
-BEGIN_TAG (DirPIConstructor)
-
-BEGIN_TAG (EnclosedExpr)
-
-BEGIN_TAG (BlockBody)
-
-BEGIN_TAG (Expr)
-
-BEGIN_TAG (ExtensionExpr)
-
-BEGIN_TAG (FLWORExpr)
-
-BEGIN_TAG (WindowClause);
-END_TAG (WindowClause);
-BEGIN_TAG (WindowVarDecl);
-END_TAG (WindowVarDecl);
-BEGIN_TAG (FLWORWinCond);
-END_TAG (FLWORWinCond);
-BEGIN_TAG (WindowVars);
-END_TAG (WindowVars);
-
-BEGIN_TAG (FilterExpr)
-
-BEGIN_TAG (FunctionCall)
-
-BEGIN_TAG (IfExpr)
-
-BEGIN_TAG (InstanceofExpr)
-
-BEGIN_TAG (IntersectExceptExpr)
-
-BEGIN_TAG (MultiplicativeExpr)
-
 void *begin_visit(const NumericLiteral &n)
 {
     INDENT;
@@ -718,12 +517,6 @@ void *begin_visit(const NumericLiteral &n)
 
 NO_END_TAG (NumericLiteral)
 
-BEGIN_TAG (OrExpr)
-
-BEGIN_TAG (OrderedExpr)
-
-BEGIN_TAG (ParenthesizedExpr)
-
 void *begin_visit(const PathExpr &n)
 {
     INDENT;
@@ -736,18 +529,6 @@ void *begin_visit(const PathExpr &n)
     return no_state;
 }
 
-BEGIN_TAG (QuantifiedExpr)
-
-BEGIN_TAG (QueryBody)
-
-BEGIN_TAG (RangeExpr)
-
-BEGIN_TAG (RelativePathExpr)
-
-BEGIN_TAG (StringLiteral)
-
-BEGIN_TAG (TreatExpr)
-
 void *begin_visit(const TypeswitchExpr &n)
 {
     INDENT;
@@ -759,14 +540,6 @@ void *begin_visit(const TypeswitchExpr &n)
     INDENT_INC; NL;
     return no_state;
 }
-
-BEGIN_TAG (UnaryExpr)
-
-BEGIN_TAG (UnionExpr)
-
-BEGIN_TAG (UnorderedExpr)
-
-BEGIN_TAG (ValidateExpr)
 
 void *begin_visit(const VarRef &n)
 {
@@ -782,20 +555,6 @@ void *begin_visit(const VarRef &n)
 
 NO_END_TAG (VarRef)
 
-BEGIN_TAG (DeleteExpr)
-
-BEGIN_TAG (InsertExpr)
-
-BEGIN_TAG (RenameExpr)
-
-BEGIN_TAG (ReplaceExpr)
-
-BEGIN_TAG (RevalidationDecl)
-
-BEGIN_TAG (TransformExpr)
-
-BEGIN_TAG (VarNameList)
-
 void *begin_visit(const VarBinding &n)
 {
     INDENT;
@@ -809,460 +568,197 @@ void *begin_visit(const VarBinding &n)
     return no_state;
 }
 
-BEGIN_TAG (TryExpr)
-
-BEGIN_TAG (CatchListExpr)
-
-BEGIN_TAG (CatchExpr)
-
-BEGIN_TAG (EvalExpr)
-
-BEGIN_TAG (FTAnd)
-
-BEGIN_TAG (FTAnyallOption)
-
-BEGIN_TAG (FTBigUnit)
-
-BEGIN_TAG (FTCaseOption)
-
-BEGIN_TAG (FTContainsExpr)
-
-BEGIN_TAG (FTContent)
-
-BEGIN_TAG (FTDiacriticsOption)
-
-BEGIN_TAG (FTDistance)
-
-BEGIN_TAG (FTIgnoreOption)
-
-BEGIN_TAG (FTInclExclStringLiteral)
-
-BEGIN_TAG (FTInclExclStringLiteralList)
-
-BEGIN_TAG (FTLanguageOption)
-
-BEGIN_TAG (FTMatchOption)
-
-BEGIN_TAG (FTMatchOptionProximityList)
-
-BEGIN_TAG (FTMildnot)
-
-BEGIN_TAG (FTOptionDecl)
-
-BEGIN_TAG (FTOr)
-
-BEGIN_TAG (FTOrderedIndicator)
-
-BEGIN_TAG (FTProximity)
-
-BEGIN_TAG (FTRange)
-
-BEGIN_TAG (FTRefOrList)
-
-BEGIN_TAG (FTScope)
-
-BEGIN_TAG (FTScoreVar)
-
-BEGIN_TAG (FTSelection)
-
-BEGIN_TAG (FTStemOption)
-
-BEGIN_TAG (FTStopwordOption)
-
-BEGIN_TAG (FTStringLiteralList)
-
-BEGIN_TAG (FTThesaurusID)
-
-BEGIN_TAG (FTThesaurusList)
-
-BEGIN_TAG (FTThesaurusOption)
-
-BEGIN_TAG (FTTimes)
-
-BEGIN_TAG (FTUnaryNot)
-
-BEGIN_TAG (FTUnit)
-
-BEGIN_TAG (FTWildcardOption)
-
-BEGIN_TAG (FTWindow)
-
-BEGIN_TAG (FTWords)
-
-BEGIN_TAG (FTWordsSelection)
-
-BEGIN_TAG (FTWordsValue)
-
-BEGIN_TAG (FTMatchOptionProximity)
-END_TAG (FTMatchOptionProximity)
-
 END_TAG (AbbrevForwardStep)
-
-END_TAG (AnyKindTest)
-
-END_TAG (AposAttrContentList)
-
-END_TAG (AposAttrValueContent)
-
-END_TAG (ArgList)
-
-END_TAG (AtomicType)
-
-END_TAG (AttributeTest)
-
-END_TAG (BaseURIDecl)
-
-END_TAG (BoundarySpaceDecl)
-
+BEGIN_END_TAG (AdditiveExpr)
+BEGIN_END_TAG (AndExpr)
+BEGIN_END_TAG (AnyKindTest)
+BEGIN_END_TAG (AposAttrContentList)
+BEGIN_END_TAG (AposAttrValueContent)
+BEGIN_END_TAG (ArgList)
+BEGIN_END_TAG (AtomicType)
+BEGIN_END_TAG (AttributeTest)
+BEGIN_END_TAG (AxisStep)
+BEGIN_END_TAG (BaseURIDecl)
+BEGIN_END_TAG (BlockBody)
+BEGIN_END_TAG (BoundarySpaceDecl)
 END_TAG (CaseClause)
-
-END_TAG (CaseClauseList)
-
-END_TAG (CommentTest)
-
-END_TAG (ConstructionDecl)
-
-END_TAG (CopyNamespacesDecl)
-
-END_TAG (DefaultCollationDecl)
-
-END_TAG (DirAttr)
-
-END_TAG (DirAttributeList)
-
-END_TAG (DirAttributeValue)
-
-END_TAG (DirElemContentList)
-
-END_TAG (DocumentTest)
-
-END_TAG (ElementTest)
-
-END_TAG (EmptyOrderDecl)
-
-END_TAG (ForClause)
-
-END_TAG (FLWORClauseList)
-
-END_TAG (ForwardAxis)
-
-END_TAG (ForwardStep)
-
-END_TAG (FunctionDecl)
-
-END_TAG (ItemType)
-
-END_TAG (LetClause)
-
-END_TAG (LibraryModule)
-
-END_TAG (MainModule )
-
-END_TAG (Module)
-
-END_TAG (ModuleDecl)
-
-END_TAG (ModuleImport)
-
-END_TAG (OccurrenceIndicator)
-
-END_TAG (OptionDecl)
-
-END_TAG (GroupByClause )
-
-END_TAG (GroupSpecList )
-
-END_TAG (GroupSpec )
-
-END_TAG (GroupCollationSpec )
-
-END_TAG (LetClauseList )
-
-END_TAG (OrderByClause)
-
-END_TAG (OrderCollationSpec)
-
-END_TAG (OrderDirSpec)
-
-END_TAG (OrderEmptySpec)
-
-END_TAG (OrderModifier)
-
-END_TAG (OrderSpec)
-
-END_TAG (OrderSpecList)
-
-END_TAG (OrderingModeDecl)
-
-END_TAG (PITest)
-
-END_TAG (ParamList)
-
-END_TAG (PositionalVar)
-
-END_TAG (Pragma)
-
-END_TAG (PragmaList)
-
-END_TAG (PredicateList)
-
-END_TAG (Prolog)
-
-END_TAG (QVarInDecl)
-
-END_TAG (QVarInDeclList)
-
-END_TAG (QuoteAttrValueContent)
-
-END_TAG (QuoteAttrContentList)
-
-END_TAG (ReverseAxis)
-
-END_TAG (ReverseStep)
-
-END_TAG (SIND_DeclList)
-
-END_TAG (SchemaAttributeTest)
-
-END_TAG (SchemaElementTest)
-
-END_TAG (SchemaImport)
-
-END_TAG (SchemaPrefix)
-
-END_TAG (SequenceType)
-
-END_TAG (SignList)
-
-END_TAG (SingleType)
-
-END_TAG (TextTest)
-
-END_TAG (TypeDeclaration)
-
-END_TAG (TypeName)
-
-END_TAG (URILiteralList)
-
-END_TAG (VarDecl)
-
-END_TAG (VarGetsDecl)
-
-END_TAG (VarGetsDeclList)
-
-END_TAG (VarInDecl)
-
-END_TAG (VarInDeclList)
-
-END_TAG (VersionDecl)
-
-END_TAG (VFO_DeclList)
-
-END_TAG (WhereClause)
-
-END_TAG (Wildcard)
-
-END_TAG (AdditiveExpr)
-
-END_TAG (AndExpr)
-
-END_TAG (AxisStep)
-
-END_TAG (CDataSection)
-
-END_TAG (CastExpr)
-
-END_TAG (CastableExpr)
-
+BEGIN_END_TAG (CaseClauseList)
+BEGIN_END_TAG (CastableExpr)
+BEGIN_END_TAG (CastExpr)
+BEGIN_END_TAG (CatchExpr)
+BEGIN_END_TAG (CatchListExpr)
+BEGIN_END_TAG (CDataSection)
+BEGIN_END_TAG (CommentTest)
 END_TAG (CommonContent)
-
 END_TAG (ComparisonExpr)
-
-END_TAG (CompAttrConstructor)
-
-END_TAG (CompCommentConstructor)
-
-END_TAG (CompDocConstructor)
-
-END_TAG (CompElemConstructor)
-
-END_TAG (CompPIConstructor)
-
-END_TAG (CompTextConstructor)
-
-END_TAG (ContextItemExpr)
-
-END_TAG (DirCommentConstructor)
-
-END_TAG (DirElemConstructor)
-
-END_TAG (DirElemContent)
-
-END_TAG (DirPIConstructor)
-
-END_TAG (EnclosedExpr)
-
-END_TAG (BlockBody)
-
-END_TAG (Expr)
-
-END_TAG (ExtensionExpr)
-
-END_TAG (FLWORExpr)
-
-END_TAG (FilterExpr)
-
-END_TAG (FunctionCall)
-
-END_TAG (IfExpr)
-
-END_TAG (InstanceofExpr)
-
-END_TAG (IntersectExceptExpr)
-
-END_TAG (MultiplicativeExpr)
-
-END_TAG (OrExpr)
-
-END_TAG (OrderedExpr)
-
-END_TAG (ParenthesizedExpr)
-
+BEGIN_END_TAG (CompAttrConstructor)
+BEGIN_END_TAG (CompCommentConstructor)
+BEGIN_END_TAG (CompDocConstructor)
+BEGIN_END_TAG (CompElemConstructor)
+BEGIN_END_TAG (CompPIConstructor)
+BEGIN_END_TAG (CompTextConstructor)
+BEGIN_END_TAG (ConstructionDecl)
+BEGIN_END_TAG (ContextItemExpr)
+BEGIN_END_TAG (CopyNamespacesDecl)
+BEGIN_END_TAG (CountClause)
+BEGIN_END_TAG (DefaultCollationDecl)
+BEGIN_END_TAG (DeleteExpr)
+END_TAG (DirAttr)
+BEGIN_END_TAG (DirAttributeList)
+BEGIN_END_TAG (DirAttributeValue)
+BEGIN_END_TAG (DirCommentConstructor)
+BEGIN_END_TAG (DirElemConstructor)
+BEGIN_END_TAG (DirElemContent)
+BEGIN_END_TAG (DirElemContentList)
+BEGIN_END_TAG (DirPIConstructor)
+BEGIN_END_TAG (DocumentTest)
+BEGIN_END_TAG (ElementTest)
+BEGIN_END_TAG (EmptyOrderDecl)
+BEGIN_END_TAG (EnclosedExpr)
+BEGIN_END_TAG (EvalExpr)
+BEGIN_END_TAG (ExitExpr)
+BEGIN_END_TAG (Expr)
+BEGIN_TAG (exprnode)
+BEGIN_END_TAG (ExtensionExpr)
+BEGIN_END_TAG (FilterExpr)
+BEGIN_END_TAG (FlowCtlStatement)
+BEGIN_END_TAG (FLWORClauseList)
+BEGIN_END_TAG (FLWORExpr)
+BEGIN_END_TAG (FLWORWinCond)
+BEGIN_END_TAG (ForClause)
+END_TAG (ForwardAxis)
+BEGIN_END_TAG (ForwardStep)
+BEGIN_END_TAG (FTAnd)
+BEGIN_END_TAG (FTAnyallOption)
+BEGIN_END_TAG (FTBigUnit)
+BEGIN_END_TAG (FTCaseOption)
+BEGIN_END_TAG (FTContainsExpr)
+BEGIN_END_TAG (FTContent)
+BEGIN_END_TAG (FTDiacriticsOption)
+BEGIN_END_TAG (FTDistance)
+BEGIN_END_TAG (FTIgnoreOption)
+BEGIN_END_TAG (FTInclExclStringLiteral)
+BEGIN_END_TAG (FTInclExclStringLiteralList)
+BEGIN_END_TAG (FTLanguageOption)
+BEGIN_END_TAG (FTMatchOption)
+BEGIN_END_TAG (FTMatchOptionProximity)
+BEGIN_END_TAG (FTMatchOptionProximityList)
+BEGIN_END_TAG (FTMildnot)
+BEGIN_END_TAG (FTOptionDecl)
+BEGIN_END_TAG (FTOr)
+BEGIN_END_TAG (FTOrderedIndicator)
+BEGIN_END_TAG (FTProximity)
+BEGIN_END_TAG (FTRange)
+BEGIN_END_TAG (FTRefOrList)
+BEGIN_END_TAG (FTScope)
+BEGIN_END_TAG (FTScoreVar)
+BEGIN_END_TAG (FTSelection)
+BEGIN_END_TAG (FTStemOption)
+BEGIN_END_TAG (FTStopwordOption)
+BEGIN_END_TAG (FTStringLiteralList)
+BEGIN_END_TAG (FTThesaurusID)
+BEGIN_END_TAG (FTThesaurusList)
+BEGIN_END_TAG (FTThesaurusOption)
+BEGIN_END_TAG (FTTimes)
+BEGIN_END_TAG (FTUnaryNot)
+BEGIN_END_TAG (FTUnit)
+BEGIN_END_TAG (FTWildcardOption)
+BEGIN_END_TAG (FTWindow)
+BEGIN_END_TAG (FTWords)
+BEGIN_END_TAG (FTWordsSelection)
+BEGIN_END_TAG (FTWordsValue)
+BEGIN_END_TAG (FunctionCall)
+END_TAG (FunctionDecl)
+END_TAG (GroupByClause )
+END_TAG (GroupCollationSpec )
+END_TAG (GroupSpec )
+END_TAG (GroupSpecList )
+BEGIN_END_TAG (IfExpr)
+BEGIN_END_TAG (InsertExpr)
+BEGIN_END_TAG (InstanceofExpr)
+BEGIN_END_TAG (IntersectExceptExpr)
+BEGIN_END_TAG (ItemType)
+BEGIN_END_TAG (LetClause)
+END_TAG (LetClauseList )
+BEGIN_END_TAG (LibraryModule)
+END_TAG (MainModule )
+BEGIN_END_TAG (Module)
+END_TAG (ModuleDecl)
+END_TAG (ModuleImport)
+BEGIN_END_TAG (MultiplicativeExpr)
+END_TAG (NameTest)
+BEGIN_END_TAG (OccurrenceIndicator)
+BEGIN_END_TAG (OptionDecl)
+BEGIN_END_TAG (OrderByClause)
+BEGIN_END_TAG (OrderCollationSpec)
+BEGIN_END_TAG (OrderDirSpec)
+BEGIN_END_TAG (OrderedExpr)
+BEGIN_END_TAG (OrderEmptySpec)
+BEGIN_END_TAG (OrderingModeDecl)
+BEGIN_END_TAG (OrderModifier)
+BEGIN_END_TAG (OrderSpec)
+BEGIN_END_TAG (OrderSpecList)
+BEGIN_END_TAG (OrExpr)
+BEGIN_END_TAG (ParamList)
+BEGIN_END_TAG (ParenthesizedExpr)
+BEGIN_END_TAG (ParseErrorNode)
+BEGIN_TAG (parsenode)
 END_TAG (PathExpr)
-
-END_TAG (QuantifiedExpr)
-
-END_TAG (QueryBody)
-
-END_TAG (RangeExpr)
-
-END_TAG (RelativePathExpr)
-
-END_TAG (StringLiteral)
-
-END_TAG (TreatExpr)
-
+BEGIN_END_TAG (PITest)
+BEGIN_END_TAG (PositionalVar)
+BEGIN_END_TAG (Pragma)
+BEGIN_END_TAG (PragmaList)
+BEGIN_END_TAG (PredicateList)
+BEGIN_END_TAG (Prolog)
+BEGIN_END_TAG (QuantifiedExpr)
+BEGIN_END_TAG (QueryBody)
+BEGIN_END_TAG (QuoteAttrContentList)
+BEGIN_END_TAG (QuoteAttrValueContent)
+BEGIN_END_TAG (QVarInDecl)
+BEGIN_END_TAG (QVarInDeclList)
+BEGIN_END_TAG (RangeExpr)
+BEGIN_END_TAG (RelativePathExpr)
+BEGIN_END_TAG (RenameExpr)
+BEGIN_END_TAG (ReplaceExpr)
+BEGIN_END_TAG (RevalidationDecl)
+BEGIN_END_TAG (ReverseAxis)
+BEGIN_END_TAG (ReverseStep)
+BEGIN_END_TAG (SchemaAttributeTest)
+BEGIN_END_TAG (SchemaElementTest)
+END_TAG (SchemaImport)
+BEGIN_END_TAG (SchemaPrefix)
+BEGIN_END_TAG (SequenceType)
+BEGIN_END_TAG (SignList)
+BEGIN_END_TAG (SIND_DeclList)
+BEGIN_END_TAG (SingleType)
+BEGIN_END_TAG (StringLiteral)
+BEGIN_END_TAG (TextTest)
+BEGIN_END_TAG (TransformExpr)
+BEGIN_END_TAG (TreatExpr)
+BEGIN_END_TAG (TryExpr)
+BEGIN_END_TAG (TypeDeclaration)
+BEGIN_END_TAG (TypeName)
 END_TAG (TypeswitchExpr)
-
-END_TAG (UnaryExpr)
-
-END_TAG (UnionExpr)
-
-END_TAG (UnorderedExpr)
-
-END_TAG (ValidateExpr)
-
-END_TAG (DeleteExpr)
-
-END_TAG (InsertExpr)
-
-END_TAG (RenameExpr)
-
-END_TAG (ReplaceExpr)
-
-END_TAG (RevalidationDecl)
-
-END_TAG (TransformExpr)
-
-END_TAG (VarNameList)
-
+BEGIN_END_TAG (UnaryExpr)
+BEGIN_END_TAG (UnionExpr)
+BEGIN_END_TAG (UnorderedExpr)
+END_TAG (URILiteralList)
+BEGIN_END_TAG (ValidateExpr)
 END_TAG (VarBinding)
-
-END_TAG (TryExpr)
-
-END_TAG (CatchListExpr)
-
-END_TAG (CatchExpr)
-
-END_TAG (EvalExpr)
-
-END_TAG (FTAnd)
-
-END_TAG (FTAnyallOption)
-
-END_TAG (FTBigUnit)
-
-END_TAG (FTCaseOption)
-
-END_TAG (FTContainsExpr)
-
-END_TAG (FTContent)
-
-END_TAG (FTDiacriticsOption)
-
-END_TAG (FTDistance)
-
-END_TAG (FTIgnoreOption)
-
-END_TAG (FTInclExclStringLiteral)
-
-END_TAG (FTInclExclStringLiteralList)
-
-END_TAG (FTLanguageOption)
-
-END_TAG (FTMatchOption)
-
-END_TAG (FTMatchOptionProximityList)
-
-END_TAG (FTMildnot)
-
-END_TAG (FTOptionDecl)
-
-END_TAG (FTOr)
-
-END_TAG (FTOrderedIndicator)
-
-END_TAG (FTProximity)
-
-END_TAG (FTRange)
-
-END_TAG (FTRefOrList)
-
-END_TAG (FTScope)
-
-END_TAG (FTScoreVar)
-
-END_TAG (FTSelection)
-
-END_TAG (FTStemOption)
-
-END_TAG (FTStopwordOption)
-
-END_TAG (FTStringLiteralList)
-
-END_TAG (FTThesaurusID)
-
-END_TAG (FTThesaurusList)
-
-END_TAG (FTThesaurusOption)
-
-END_TAG (FTTimes)
-
-END_TAG (FTUnaryNot)
-
-END_TAG (FTUnit)
-
-END_TAG (FTWildcardOption)
-
-END_TAG (FTWindow)
-
-END_TAG (FTWords)
-
-END_TAG (FTWordsSelection)
-
-END_TAG (FTWordsValue)
-
-BEGIN_TAG (ExitExpr)
-END_TAG (ExitExpr)
-
-BEGIN_TAG (FlowCtlStatement)
-END_TAG (FlowCtlStatement)
-
-BEGIN_TAG (WhileExpr)
-END_TAG (WhileExpr)
-
-BEGIN_TAG (ParseErrorNode)
-END_TAG (ParseErrorNode)
+END_TAG (VarDecl)
+END_TAG (VarGetsDecl)
+BEGIN_END_TAG (VarGetsDeclList)
+END_TAG (VarInDecl)
+BEGIN_END_TAG (VarInDeclList)
+BEGIN_END_TAG (VarNameList)
+END_TAG (VersionDecl)
+BEGIN_END_TAG (VFO_DeclList)
+BEGIN_END_TAG (WhereClause)
+BEGIN_END_TAG (WhileExpr)
+BEGIN_END_TAG (Wildcard)
+BEGIN_END_TAG (WindowClause)
+BEGIN_END_TAG (WindowVarDecl)
+BEGIN_END_TAG (WindowVars)
 
 };
 
