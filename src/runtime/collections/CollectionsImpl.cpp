@@ -177,6 +177,7 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
         }
       }
     }
+    theIterator->close();
   }
 
   STACK_END (state);
@@ -591,6 +592,8 @@ ZorbaExportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     collIterator->open();
     while (collIterator->next(item))
       ser.serialize(item, ss);
+
+    collIterator->close();
 
     *lOutputStream << ss.str() << std::endl;
   }

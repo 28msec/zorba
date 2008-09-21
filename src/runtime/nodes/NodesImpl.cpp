@@ -227,6 +227,8 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   while(state->theIterator->next(result))
     STACK_PUSH (true, state);
 
+  state->theIterator->close();
+
   STACK_END (state);
 }
 

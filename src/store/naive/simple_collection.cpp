@@ -112,10 +112,10 @@ void SimpleCollection::addToCollection(const store::Item* node, long position)
     ZORBA_ERROR( API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
-  SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
-
   if( nodePositionInCollection((store::Item*)node) == -1)
   {
+    SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
+
     if(position == -1)
       theXmlTrees.insert(theXmlTrees.end(), const_cast<store::Item*>(node));
     else
@@ -204,6 +204,8 @@ void SimpleCollection::removeFromCollection(const store::Item* node)
 
   if(position != -1)
   {
+    SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
+
     if( theXmlTrees.erase(theXmlTrees.begin() + position) == theXmlTrees.end() )
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
   }
@@ -218,6 +220,8 @@ void SimpleCollection::removeFromCollection(const store::Item* node)
 ********************************************************************************/
 void SimpleCollection::removeFromCollection(long position)
 {
+  SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
+
   if (position == -1) {
     if (theXmlTrees.size() == 0)
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
