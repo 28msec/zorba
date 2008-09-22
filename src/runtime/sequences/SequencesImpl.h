@@ -136,6 +136,7 @@ class FnDistinctValuesIteratorState : public PlanIteratorState {
 public:  
   bool theHasNaN;
   ItemValueCollHandleHashSet* theAlreadySeenMap;
+  ValueCollCompareParam*      theValueCompare;
 
   FnDistinctValuesIteratorState();
   ~FnDistinctValuesIteratorState();

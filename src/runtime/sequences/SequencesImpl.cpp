@@ -270,13 +270,13 @@ FnDistinctValuesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   {
     lCollator = getCollator(planState.theRuntimeCB, loc, planState, theChildren[1].getp());
 
-    ValueCollCompareParam* vcp = new ValueCollCompareParam(planState.theRuntimeCB);
-    vcp->theCollator = lCollator;
+    state->theValueCompare = new ValueCollCompareParam(planState.theRuntimeCB);
+    state->theValueCompare->theCollator = lCollator;
     state->theAlreadySeenMap = 
-      new ItemValueCollHandleHashSet(vcp);
+      new ItemValueCollHandleHashSet(state->theValueCompare);
   } else {
-    ValueCollCompareParam* vcp = new ValueCollCompareParam(planState.theRuntimeCB);
-    state->theAlreadySeenMap = new ItemValueCollHandleHashSet(vcp);
+    state->theValueCompare = new ValueCollCompareParam(planState.theRuntimeCB);
+    state->theAlreadySeenMap = new ItemValueCollHandleHashSet(state->theValueCompare);
   }
 
   while (consumeNext(result, theChildren[0].getp(), planState)) {
@@ -306,6 +306,11 @@ FnDistinctValuesIteratorState::FnDistinctValuesIteratorState()
 
 FnDistinctValuesIteratorState::~FnDistinctValuesIteratorState() 
 {
+  if (theValueCompare)
+  {
+    delete theValueCompare;
+    theValueCompare = 0;
+  }
   if (theAlreadySeenMap) 
   {
     delete theAlreadySeenMap;
