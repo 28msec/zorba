@@ -182,10 +182,13 @@ ENDIF (NOT ZORBA_NO_XMLSCHEMA)
 
 
 #
-# Json
+# Debugger
 #
 IF (ZORBA_DEBUGGER)
   SET(requiredlibs-zorba ${requiredlibs-zorba} json)
+  IF(WIN32)
+    SET(requiredlibs-zorba ${requiredlibs-zorba} wsock32) 
+  ENDIF(WIN32)
 ENDIF (ZORBA_DEBUGGER)
 
 ###############################################################################
