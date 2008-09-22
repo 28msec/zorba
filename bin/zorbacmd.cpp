@@ -52,36 +52,6 @@
 
 namespace zorbatm = zorba::time;
 
-#ifdef ZORBA_DEBUGGER
-struct server_args
-{
-  std::auto_ptr<std::istream> *theQuery;
-  std::string *theFileName;
-  unsigned short theRequestPort;
-  unsigned short theEventPort;
-};
-
-ZORBA_THREAD_RETURN server( void * args)
-{
-  server_args * lArgs = (server_args*)args;
-  try {
-    zorba::simplestore::SimpleStore* lStore = zorba::simplestore::SimpleStoreManager::getStore();
-    zorba::Zorba *lZorba = zorba::Zorba::getInstance(lStore);
-    XQuery_t lQuery = lZorba->createQuery();
-    lQuery->setFileName(*lArgs->theFileName);
-    lQuery->setDebugMode(true);
-    Zorba_CompilerHints lHints;
-    lHints.opt_level = ZORBA_OPT_LEVEL_O0;
-    lQuery->compile(*lArgs->theQuery->get(), lHints);
-    lQuery->debug(lArgs->theRequestPort, lArgs->theEventPort);
-    lQuery->close();
-  } catch( std::exception &e ) {
-    std::cout << "Error: " << e.what() << std::endl;
-  }
-  return 0;
-}
-#endif
-
 bool
 populateStaticContext(
     zorba::StaticContext_t& aStaticContext,
@@ -185,6 +155,62 @@ std::string parseFileURI (bool asPath, const std::string &str) {
   else
     return "";
 }
+
+#ifdef ZORBA_DEBUGGER
+struct server_args
+{
+  std::auto_ptr<std::istream> *theQuery;
+  std::string *theFileName;
+  unsigned short theRequestPort;
+  unsigned short theEventPort;
+  ZorbaCMDProperties * theProperties;
+};
+
+ZORBA_THREAD_RETURN server( void * args)
+{
+  server_args * lArgs = (server_args*)args;
+  try {
+    zorba::simplestore::SimpleStore* lStore = zorba::simplestore::SimpleStoreManager::getStore();
+    zorba::Zorba *lZorba = zorba::Zorba::getInstance(lStore);
+    XQuery_t lQuery = lZorba->createQuery();
+    zorba::StaticContext_t lStaticContext = lZorba->createStaticContext();
+    // populate the static context with information passed as parameter
+    if (! populateStaticContext(lStaticContext, lArgs->theProperties) ) {
+      lArgs->theProperties->printHelp(std::cout);
+      return 0;
+    }
+    lQuery->setFileName(*lArgs->theFileName);
+    lQuery->setDebugMode(true);
+    Zorba_CompilerHints lHints;
+    lHints.opt_level = ZORBA_OPT_LEVEL_O0;
+    lQuery->compile(*lArgs->theQuery->get(), lHints);
+    // populate the dynamic context
+    zorba::DynamicContext* lDynamicContext = lQuery->getDynamicContext();
+    try 
+    {
+      if ( ! populateDynamicContext(lDynamicContext, lArgs->theProperties) )
+      {
+        lArgs->theProperties->printHelp(std::cout);
+        return 0;
+      }
+    } catch (zorba::QueryException& qe) {
+      std::cout << qe << std::endl;
+      return 0;
+    } catch (zorba::ZorbaException& ze) {
+      std::cout << ze << std::endl;
+      return 0;
+    }
+
+    lQuery->debug(lArgs->theRequestPort, lArgs->theEventPort);
+    lQuery->close();
+  } catch( std::exception &e ) {
+    std::cout << "Error: " << e.what() << std::endl;
+  }
+  return 0;
+}
+#endif
+
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -304,7 +330,8 @@ int _tmain(int argc, _TCHAR* argv[])
     lArgs->theFileName = lFileName.get();
     lArgs->theRequestPort = lProperties.getRequestPort();
     lArgs->theEventPort = lProperties.getEventPort();
-  
+    lArgs->theProperties = &lProperties;
+
     // debug server
     if ( lProperties.debugServer() )
     {
@@ -349,8 +376,8 @@ int _tmain(int argc, _TCHAR* argv[])
           pthread_cancel( lServerThread );
           pthread_detach( lServerThread );
 #else
-          WaitForSingleObject( theThread, INFINITE );
-          CloseHandler( lServerThread );
+          WaitForSingleObject( lServerThread, INFINITE );
+          CloseHandle( lServerThread );
 #endif
       	  delete debuggerClient;
           return 0;
