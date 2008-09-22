@@ -123,10 +123,10 @@ AbstractMessage::~AbstractMessage()
 
 void AbstractMessage::checkIntegrity()
 {
-  if( ! isValidMessage() )
-  {
-    throw MessageException( "Invalid Message" );
-  }
+  //if( ! isValidMessage() )
+  //{
+  //  throw MessageException( "Invalid Message" );
+  //}
 }
 
 ReplyMessage::ReplyMessage( const Id aId, const ErrorCode aErrorCode ):

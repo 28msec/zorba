@@ -1511,8 +1511,7 @@ void translate_gflwor (const FLWORExpr& v) {
   expr_t lReturnExpr = pop_nodestack ();
 #ifdef ZORBA_DEBUGGER
   if ( compilerCB->m_debugger != 0) {
-    rchandle<debugger_expr> lDebuggerExpr =
-      new debugger_expr(lReturnExpr->get_loc(), lReturnExpr, theScopedVariables, theGlobalVars);
+    rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(lReturnExpr->get_loc(), lReturnExpr, theScopedVariables, theGlobalVars);
    lReturnExpr = lDebuggerExpr;
   }
 #endif
@@ -1586,9 +1585,11 @@ void translate_gflwor (const FLWORExpr& v) {
         forletwin_gclause *eflc = 
           new forletwin_gclause (forletwin_gclause::for_clause, vars [j], exprs [j], pos_vars [j]);
 #ifdef ZORBA_DEBUGGER
-        if (compilerCB->m_debugger != 0) {
+        if(compilerCB->m_debugger != 0)
+        {
           theScopedVariables.push_back(vars[j]);
-          if (pos_vars[j] != 0) {
+          if(pos_vars[j] != 0)
+          {
             theScopedVariables.push_back(pos_vars[j]);
           }
           eflc->set_bound_variables(theScopedVariables);
@@ -1621,7 +1622,6 @@ void translate_gflwor (const FLWORExpr& v) {
           push_scope();
           for(unsigned int k=nvars; k>j; k--)
           {
-            //varref_t v = bind_var(vars[k-1]->get_loc(), vars[k-1]->get_varname(), var_expr::let_var, vars[k-1]->get_type());
             theScopedVariables.push_back(vars[k-1]);
           }
           flc->set_bound_variables(theScopedVariables);
@@ -1722,14 +1722,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/) {
   int i, j;
 
   expr_t lReturnExpr = pop_nodestack ();
-#ifdef ZORBA_DEBUGGER
-  if (compilerCB->m_debugger != 0) {
-    rchandle<debugger_expr> lDebuggerExpr =
-      new debugger_expr(loc, lReturnExpr, theScopedVariables, theGlobalVars);
-   lReturnExpr = lDebuggerExpr;
-  }
-#endif
-
+  
   rchandle<flwor_expr> flwor = new flwor_expr (loc);
   flwor->setUpdateType(lReturnExpr->getUpdateType());
   flwor->set_retval (lReturnExpr);

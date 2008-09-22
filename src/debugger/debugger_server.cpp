@@ -371,6 +371,10 @@ void ZorbaDebugger::eval( xqpString anExpr )
       xqpString lType( lResult->getType()->getStringValue() );
       lMsg = new EvaluatedEvent( anExpr, lValue, lType ); 
     } else {
+      if(lValue.length() == 0)
+      {
+        lError = "xs:empty";
+      }
       lMsg = new EvaluatedEvent( anExpr, lError );
     }
     sendEvent( lMsg );
