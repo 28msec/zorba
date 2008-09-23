@@ -90,13 +90,13 @@ You can use list all to print the query:
     12        let $speakers := distinct-values($act//SPEAKER)
     13        return
     14          <span>
-    15            <h1>{$act/TITLE/text()}</h1>
-    16            <ul>
+    15            \<h1\>{$act/TITLE/text()}\</h1\>
+    16            \<ul\>
     17            {
     18              for $speaker in $speakers
-    19              return <li>{ $speaker }</li>
+    19              return \<li\>{ $speaker }\</li\>
     20            }
-    21            </ul>
+    21            \</ul\>
     22          </span>
     23      }
     24      </body>
@@ -123,18 +123,18 @@ And r or run the query:
 <pre>
     (xqdb) r
     Launch the query
-    19    return <li>{ $speaker }</li>
+    19    return \<li\>{ $speaker }\</li\>
 </pre>
 
 The query suspended at line 19. If you are lost, you can use the list command to see the neighboring lines. The expression at which the query has suspended is printed in bold face.
 <pre>
     (xqdb) list
-    16    <ul>
+    16    \<ul\>
     17    {
     18        for $speaker in $speakers
-    19        return <li>{ $speaker }</li>
+    19        return \<li\>{ $speaker }\</li\>
     20    }
-    21    </ul>
+    21    \</ul\>
 </pre>
 
 Let's list all variables that are in scope with the vars command:
@@ -174,7 +174,7 @@ If you rerun the query, it will again break at line 16. However it will break on
     Reload query and start it from beginning? (y or n)
     y
     Launch the query
-    19        return <li>{ $speaker }</li>
+    19        return \<li\>{ $speaker }\</li\>
     (xqdb) p $speaker
     S2
 </pre>
