@@ -1627,7 +1627,7 @@ void translate_gflwor (const FLWORExpr& v) {
 #ifdef ZORBA_DEBUGGER
         if (compilerCB->m_debugger != 0) {
           push_scope();
-          for(unsigned int k=nvars; k>j; k--)
+          for(int k=nvars; k>j; k--)
           {
             theScopedVariables.push_back(vars[k-1]);
           }

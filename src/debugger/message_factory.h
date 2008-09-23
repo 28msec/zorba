@@ -94,87 +94,89 @@ class MessageFactory
 
     static AbstractMessage * buildMessage( Byte * aMessage, const unsigned int aLength )
     {
-      switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND_SET ] )
+      try
       {
-        case 0:
+        switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND_SET ] )
         {
-          if ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ] == REPLY_FLAG )
+          case 0:
           {
-            return new ReplyMessage( aMessage, aLength );
-          }
+            if ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ] == REPLY_FLAG )
+            {
+              return new ReplyMessage( aMessage, aLength );
+            }
 
-          if ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ] == REPLY_VARIABLE_FLAG )
-          {
-            return new VariableReply( aMessage, aLength );
+            if ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ] == REPLY_VARIABLE_FLAG )
+            {
+              return new VariableReply( aMessage, aLength );
+            }
           }
-        }
-        case EXECUTION:
-        {
-          switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+          case EXECUTION:
           {
-            case RUN:
-              return new RunMessage( aMessage, aLength );
-            case SUSPEND:
-              return new SuspendMessage( aMessage, aLength );
-            case RESUME:
-              return new ResumeMessage( aMessage, aLength );
-            case TERMINATE:
-              return new TerminateMessage( aMessage, aLength );
-            case STEP:
-              return new StepMessage( aMessage, aLength );
-            case QUIT:
-              return new QuitMessage( aMessage, aLength );
+            switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+            {
+              case RUN:
+                return new RunMessage( aMessage, aLength );
+              case SUSPEND:
+                return new SuspendMessage( aMessage, aLength );
+              case RESUME:
+                return new ResumeMessage( aMessage, aLength );
+              case TERMINATE:
+                return new TerminateMessage( aMessage, aLength );
+              case STEP:
+                return new StepMessage( aMessage, aLength );
+              case QUIT:
+                return new QuitMessage( aMessage, aLength );
+            }
           }
-        }
-        case BREAKPOINTS:
-        {
-          switch( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+          case BREAKPOINTS:
           {
-            case CLEAR:
-              return new ClearMessage( aMessage, aLength );
-            case SET:
+            switch( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+            {
+              case CLEAR:
+                return new ClearMessage( aMessage, aLength );
+              case SET:
               return new SetMessage( aMessage, aLength );
+            }
           }
-        }
-        case ENGINE_EVENT:
-        {
-          switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+          case ENGINE_EVENT:
           {
-            case STARTED:
-              return new StartedEvent( aMessage, aLength );
-            case TERMINATED:
-              return new TerminatedEvent( aMessage, aLength );
-            case SUSPENDED:
-              return new SuspendedEvent( aMessage, aLength );
-            case RESUMED:
-              return new ResumedEvent( aMessage, aLength );
-            case EVALUATED:
-              return new EvaluatedEvent( aMessage, aLength );
+            switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+            {
+              case STARTED:
+                return new StartedEvent( aMessage, aLength );
+              case TERMINATED:
+                return new TerminatedEvent( aMessage, aLength );
+              case SUSPENDED:
+                return new SuspendedEvent( aMessage, aLength );
+              case RESUMED:
+                return new ResumedEvent( aMessage, aLength );
+              case EVALUATED:
+                return new EvaluatedEvent( aMessage, aLength );
+            }
           }
-        }
-        case STATIC:
-        {
+          case STATIC:
+          {
 
-        }
-        case DYNAMIC:
-        {
-          switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
-          {
-            case VARIABLES:
-              return new VariableMessage( aMessage, aLength );
-            case EVAL:
-              return new EvalMessage( aMessage, aLength );
           }
-        }
-        default:
-        {
-          //std::cerr << "Tried to build an invalid message" << std::endl;
-          //unsigned int commandset = (unsigned int)aMessage[9];
-          //unsigned int command = (unsigned int)aMessage[10];
-          //std::cerr << "CommandSet:" << commandset << std::endl;
-          //std::cerr << "Command:" << command << std::endl;
-          return new ReplyMessage( 0, DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT );
-        }
+          case DYNAMIC:
+          {
+            switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+            {
+              case VARIABLES:
+                return new VariableMessage( aMessage, aLength );
+              case EVAL:
+                return new EvalMessage( aMessage, aLength );
+            }
+          }
+          default:
+          {
+            return new ReplyMessage(0, DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT);
+          }
+        } 
+      } catch(MessageFormatException &e) {
+          std::cerr << "The following error happened: " << std::endl;
+          std::cerr << e.what() << std::endl;
+          return new ReplyMessage(0, DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT);
       }
     }
 };

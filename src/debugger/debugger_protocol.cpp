@@ -630,7 +630,7 @@ EvaluatedEvent::EvaluatedEvent( xqpString anExpr, xqpString anError ):
 }
 
 EvaluatedEvent::EvaluatedEvent( xqpString anExpr, xqpString aResult, xqpString aReturnType ):
-  AbstractCommandMessage( ENGINE_EVENT, EVALUATED ), theExpr( anExpr ), theResult( aResult ), theReturnType( aReturnType )
+  AbstractCommandMessage( ENGINE_EVENT, EVALUATED ), theExpr( anExpr ), theResult(aResult.replace("\\\"", "'", "")), theReturnType( aReturnType )
 {
     unsigned int l = MESSAGE_SIZE + getData().length();
     setLength( l );
@@ -734,8 +734,8 @@ xqpString EvaluatedEvent::getData() const
   lJSONString << "\"type\":\"" << theReturnType << "\",";
   lJSONString << "\"error\":\"" << theError << "\"";
   lJSONString << "}";
-  xqpString lReturnString( lJSONString.str() );
-  return lReturnString;
+  xqpString lData( lJSONString.str() );
+  return lData;
 }
 
 /**
