@@ -16,6 +16,7 @@
 #ifndef ZORBA_SEQUENCES_IMPL_H
 #define ZORBA_SEQUENCES_IMPL_H
 
+#include <memory>
 #include <vector>
 #include <stack>
 
