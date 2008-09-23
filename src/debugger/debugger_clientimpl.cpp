@@ -148,12 +148,10 @@ namespace zorba{
             std::map<xqpString, xqpString>::const_iterator it;
             for(it=lMap.begin(); it!=lMap.end(); ++it )
             {
-              //std::cerr << it->first << std::endl;
-              //std::cerr << it->second << std::endl;
-              //xqpString test(it->first);
-              //xqpString filter = test.replace("&quot;", "\"", "");
-              //String lResult(filter);
-              String lResult(it->first);
+              xqpString test(it->first);
+              xqpString filter = test.replace("&quot;", "\"", "");
+              String lResult(filter);
+              //String lResult(it->first);
               String lType(it->second);
               lValuesAndTypes.insert(std::make_pair(lResult, lType));
             }

@@ -632,11 +632,16 @@ EvaluatedEvent::EvaluatedEvent( xqpString anExpr, xqpString anError ):
 EvaluatedEvent::EvaluatedEvent( xqpString anExpr, std::map<xqpString, xqpString> valuesAndTypes ):
   AbstractCommandMessage( ENGINE_EVENT, EVALUATED ), theExpr( anExpr ), theValuesAndTypes(valuesAndTypes)
 {
+    std::map<xqpString, xqpString> lValues;
     std::map<xqpString, xqpString>::iterator it;
     for(it=theValuesAndTypes.begin(); it!=theValuesAndTypes.end(); it++)
     {
-      it->second.replace("\\\"", "&quot;", "");
+      xqpString lFirst(it->first);
+      xqpString lSecond(it->second);
+      lValues.insert(std::make_pair(lFirst.replace("\\\"", "&quot;", ""), 
+                                    lSecond.replace("\\\"", "&quot;", "")));
     }
+    theValuesAndTypes = lValues;
     unsigned int l = MESSAGE_SIZE + getData().length();
     setLength( l );
     checkIntegrity();
