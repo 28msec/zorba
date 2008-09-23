@@ -135,8 +135,7 @@ NARY_ITER(FnExistsIterator);
 class FnDistinctValuesIteratorState : public PlanIteratorState {
 public:  
   bool theHasNaN;
-  ItemValueCollHandleHashSet* theAlreadySeenMap;
-  ValueCollCompareParam*      theValueCompare;
+  std::auto_ptr<ItemValueCollHandleHashSet> theAlreadySeenMap;
 
   FnDistinctValuesIteratorState();
   ~FnDistinctValuesIteratorState();
