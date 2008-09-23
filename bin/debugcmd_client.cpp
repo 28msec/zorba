@@ -29,10 +29,10 @@ using namespace zorba;
 void suspend( int aSignum )
 {
   ZorbaDebuggerClient * lClient = CommandLineEventHandler::getClient();
-  if( lClient != 0 && lClient->isQueryRunning() )
+  if(lClient != 0 && lClient->isQueryRunning())
   {
     lClient->suspend();
-  } else {
+  }else{
     //if the query is not running, we call the default signal handling
     signal( SIGINT, SIG_DFL ); 
     raise( SIGINT );
@@ -72,9 +72,9 @@ void CommandLineEventHandler::listMore()
   int start = theLocation->getLineBegin() - 4;
   if ( start <= 0 )
   {
-    list( 1, 9 );
+    list(1, 9);
   } else {
-    list( start, theLocation->getLineBegin() + 4 );
+    list(start, theLocation->getLineBegin() + 4);
   }
 }
 
@@ -82,11 +82,11 @@ void CommandLineEventHandler::list()
 {
   update_location();
   int start = theLocation->getLineBegin() - 2;
-  if ( start <= 0 )
+  if (start <= 0)
   {
-    list( 1, 5 );
+    list(1, 5);
   } else {
-    list( start, theLocation->getLineBegin() + 2 );
+    list(start, theLocation->getLineBegin() + 2);
   }
 }
 
@@ -150,8 +150,6 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
           }
         }
 #else
-        //std::cerr << "The location: ";
-        //std::cerr << theLocation.get() << std::endl;
         theOutput << "\033[1m" << lLineNo << '\t' << "\033[0m"; 
         for(unsigned int j=1; j <= lLine.length(); j++)
         {
@@ -212,17 +210,22 @@ void CommandLineEventHandler::terminated()
   handle_cmd();
 }
 
-void CommandLineEventHandler::evaluated( String &anExpr, String &aResult,
-                                         String &aReturnType, String &anError )
+void CommandLineEventHandler::evaluated(String &anExpr, std::map<String, String> &aValuesAndTypes)
 {
-  if ( anError.length() > 0 )
+  std::map<String, String>::iterator it;
+  for(it=aValuesAndTypes.begin(); it!=aValuesAndTypes.end(); ++it)
   {
-    theOutput << anError << std::endl;
-  } else {
-    theOutput << aResult << " (" << aReturnType << ')' << std::endl;
+    theOutput << it->first << " " << it->second << std::endl;
   }
   handle_cmd();
 }
+  
+void CommandLineEventHandler::evaluated(String &anExpr, String &anError)
+{
+  theOutput << anError << std::endl;
+  handle_cmd();
+}
+
 
 std::vector<std::string> CommandLineEventHandler::get_args( const std::string& str )
 {
@@ -283,23 +286,29 @@ void CommandLineEventHandler::handle_cmd()
       if ( ! theClient->isQueryIdle() )
       {
         std::string quit;
-        theOutput << "The query is running. Exit anyway? (y or n) " << std::endl;
-        std::getline( theInput, quit, '\n');
-        if( quit != "y" && quit != "yes" )
+        if(theClient->isQueryRunning() || theClient->isQuerySuspended())
         {
-          continue;
+          theOutput << "The query is running. Exit anyway? (y or n) " << std::endl;
+          std::getline( theInput, quit, '\n');
+          if( quit != "y" && quit != "yes" )
+          {
+            continue;
+          }
+        } else {
+          theClient->quit();  
         }
       }
       theClient->quit();
       return;
-    } else if ( lCommand == "s" || lCommand == "stop" ) {
-      theClient->terminate();
+    //TODO: unimplemented command
+    //} else if ( lCommand == "s" || lCommand == "stop" ) {
+      //theClient->terminate();
     }else if ( lCommand == "delete" || lCommand == "cl" || lCommand == "clear" ) {
       if ( lArgs.size() >= 2 && lArgs.at(1) == "all" )
       {
         theClient->clearBreakpoints();
         theOutput << "All breakpoints have been cleared." << std::endl;
-      } else if ( lArgs.size() >= 2 && atoi(lArgs.at(1).c_str()) != 0 ) {
+      } else if ( lArgs.size() >= 2 && atoi(lArgs.at(1).c_str()) > 0 ) {
         bool lResult = theClient->clearBreakpoint( atoi(lArgs.at(1).c_str()) );
         if ( lResult )
         {
@@ -379,7 +388,8 @@ void CommandLineEventHandler::handle_cmd()
     } else if ( lCommand == "n" || lCommand == "next" ) {
       if ( theClient->isQuerySuspended() )
       {
-        theOutput << "next is not implemented yet." << std::endl;
+        theClient->resume();
+        //theOutput << "next is not implemented yet." << std::endl;
         //theClient->stepOver();
         return;
       } else {
@@ -399,7 +409,7 @@ void CommandLineEventHandler::handle_cmd()
           {
             theOutput << "id:" << it->first << '\t' << it->second << std::endl;
           }       
-        } else if ( lArgs.size() >= 2 && atoi(lArgs.at(1).c_str()) !=0 ) {
+        } else if ( lArgs.size() >= 2 && atoi(lArgs.at(1).c_str()) > 0 ) {
           int line = atoi(lArgs.at(1).c_str());
           int start = theLocation.get()==0?0:theLocation->getLineBegin()-line;
           int end = theLocation.get()==0?0:theLocation->getLineBegin()+line;
@@ -461,9 +471,11 @@ void CommandLineEventHandler::help()
   theOutput << "List of available commands." << std::endl;
   theOutput << "Execution commands:" << std::endl;
   theOutput << "  run      -- Run the query." << std::endl;
-  theOutput << "  stop     -- Stop the query execution." << std::endl;
+  //TODO: unimplemented command
+  //theOutput << "  stop     -- Stop the query execution." << std::endl;
   theOutput << "  quit     -- Quit Zorba debugger." << std::endl;
   theOutput << "  continue -- Resume the query execution." << std::endl;
+  //TODO: unimplemented command
   theOutput << "  status   -- Display the status of the query." << std::endl;
   theOutput << "Breakpoint commands:" << std::endl;
   theOutput << "  break    -- Set a breakpoint at the specified file and line." << std::endl;

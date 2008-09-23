@@ -36,8 +36,12 @@ namespace zorba{
       void resumed(){}
 
       void terminated(){}
-      
-      void evaluated(String &anExpr, String &aResult, String &aReturnType, String &anError){}
+
+      virtual void
+      evaluated(String &anExpr, std::map<String, String> &aValuesAndTypes){}
+  
+      virtual void
+      evaluated(String &anExpr, String &anError){}
   };
 }//end of namespace
 #endif

@@ -83,7 +83,9 @@ class CommandLineEventHandler: public DefaultDebuggerEventHandler
 
     void terminated();
 
-    void evaluated( String &anExpr, String &aResult, String &aReturnType, String &anError );
+    void evaluated(String &anExpr, std::map<String, String> &aValuesAndTypes);
+  
+    void evaluated(String &anExpr, String &anError);
 
     static ZorbaDebuggerClient * getClient();
 };

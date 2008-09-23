@@ -255,12 +255,12 @@ bool ZorbaDebugger::hasToSuspend()
   std::map<unsigned int, xqpString>::iterator lIter;
   for ( lIter = theWatchpoints.begin(); lIter != theWatchpoints.end(); lIter++ )
   {
-    store::Item_t lResult = fetchItem( theLocation, lIter->second, *thePlanState, 0);
-    if ( lResult != 0 && lResult->getEBV()->getBooleanValue() )
-    {
-      setStatus( QUERY_SUSPENDED, CAUSE_BREAKPOINT );
-      return true;
-    }
+    //store::Item_t lResult = fetchItem( theLocation, lIter->second, *thePlanState, 0);
+    //if ( lResult != 0 && lResult->getEBV()->getBooleanValue() )
+    //{
+    //  setStatus( QUERY_SUSPENDED, CAUSE_BREAKPOINT );
+    //  return true;
+    //}
   }
   
   return false;
@@ -362,141 +362,75 @@ void ZorbaDebugger::eval( xqpString anExpr )
 {
   if ( theStatus != QUERY_IDLE && theStatus != QUERY_TERMINATED )
   {
-    xqpString lError;
-    store::Item_t lResult = fetchItem( theLocation, anExpr, *thePlanState, &lError );
-    xqpString lValue = fetchValue( theLocation, anExpr, *thePlanState, &lError );
-    EvaluatedEvent * lMsg;
-    if ( lResult != 0 )
-    {
-      xqpString lType( lResult->getType()->getStringValue() );
-      lMsg = new EvaluatedEvent( anExpr, lValue, lType ); 
-    } else {
-      if(lValue.length() == 0)
-      {
-        lError = "xs:empty";
+    std::auto_ptr<EvaluatedEvent> lMsg;
+    try {
+      std::auto_ptr< CompilerCB > ccb;
+      std::auto_ptr< dynamic_context > dctx;
+      PlanWrapperHolder* eval_plan = compileEvalPlan(theLocation, ccb.get(), dctx.get(), anExpr, *thePlanState);
+      PlanWrapper* lIterator = eval_plan->get();
+      assert(lIterator != 0);
+
+      store::Item_t lItem;
+      std::map<xqpString, xqpString> lValuesAndTypes;
+
+      error::ErrorManager lErrorManger;
+      serializer lSerializer(&lErrorManger);
+      lSerializer.set_parameter("omit-xml-declaration", "yes");
+
+      while (lIterator->next(lItem)) {
+        std::ostringstream os;
+        lSerializer.serialize(lItem, os);
+        xqpString lValue = os.str();
+        xqpString lType( lItem->getType()->getStringValue() );
+        lValuesAndTypes.insert(std::pair<xqpString, xqpString>(lValue, lType));
       }
-      lMsg = new EvaluatedEvent( anExpr, lError );
-    }
-    sendEvent( lMsg );
-    delete lMsg;
-  }
-}
-
-store::Item_t ZorbaDebugger::fetchItem( const QueryLoc& loc, xqpString anExpr,
-                                             PlanState& planState, xqpString *anError )
-  {
-    
-    PlanWrapperHolder eval_plan;
-    std::auto_ptr< CompilerCB > ccb;
-    std::auto_ptr< dynamic_context > dctx;
-
-    checked_vector< std::string > var_keys;
-
-    //set up eval state's ccb
-    ccb.reset( new CompilerCB ( *planState.theCompilerCB ) );
-    ccb->m_sctx_list.push_back( ccb->m_sctx = ccb->m_sctx->create_child_context() );
-
-    store::Item_t lItem;
-    try
-    {
-      dctx.reset( new dynamic_context( planState.dctx() ) );
-      eval_plan.reset(
-        new PlanWrapper (
-          EvalIterator::compile ( ccb.get(), anExpr, theVarnames, theVartypes ),
-          ccb.get(),
-          dctx.get(),
-          planState.theStackDepth + 1 )
-        );
-      eval_plan->checkDepth( loc );
-   
-      for (unsigned i = 0; i < theChildren.size () - 1; i++)
-      {
-        //reset the plan iterator for multiple execution
-        theChildren[i+1]->reset(*thePlanState);
-        store::Iterator_t lIter = new PlanIteratorWrapper(theChildren[i+1], *thePlanState);
-        // TODO: is saving an open iterator efficient?
-        // Then again if we close theChildren [1] here,
-        // we won't be able to re-open it later via the PlanIteratorWrapper
-        dctx->add_variable(dynamic_context::var_key(ccb->m_sctx->lookup_var(theVarnames[i])), lIter);
-      }
-
-      PlanWrapper *lIterator = eval_plan.get();
-      lIterator->next(lItem);
-      //serializer lSerializer(0);
-      //lSerializer.set_parameter("method", "xml");
-      //lSerializer.set_parameter("indent", "no");
-      //lSerializer.set_parameter("omit-xml-declaration", "yes");
-
-      //eval_plan->open();
-      //lSerializer.serialize( eval_plan.get(), lOutputStream );
-
-    } catch ( error::ZorbaError& e ) {
+      lMsg.reset(new EvaluatedEvent(anExpr, lValuesAndTypes));
+    } catch ( error::ZorbaError& e) {
       std::stringstream lOutputStream;
       xqpString lDescription = e.theDescription.replace("\\\"", "", "");
       lOutputStream << "Error: " << error::ZorbaError::toString(e.theErrorCode) << " " << lDescription;
-      if ( anError != 0 )
-        *anError = lOutputStream.str(); 
-    }
-    return lItem;
-  }
 
-xqpString ZorbaDebugger::fetchValue( const QueryLoc& loc, xqpString anExpr,
-                                             PlanState& planState, xqpString *anError )
+      lMsg.reset(new EvaluatedEvent( anExpr, lOutputStream.str() ));
+    }
+    assert(lMsg.get() != 0);
+    sendEvent(lMsg.get());
+  }
+}
+
+PlanWrapperHolder*
+ZorbaDebugger::compileEvalPlan(const QueryLoc& loc, CompilerCB* ccb, dynamic_context* dctx, const xqpString& anExpr, PlanState& planState)
+{
+  PlanWrapperHolder* eval_plan = new PlanWrapperHolder();
+  
+  checked_vector< std::string > var_keys;
+
+  //set up eval state's ccb
+  ccb =  new CompilerCB(*planState.theCompilerCB);
+  ccb->m_sctx_list.push_back( ccb->m_sctx = ccb->m_sctx->create_child_context() );
+
+  dctx =  new dynamic_context( planState.dctx() );
+  ccb->m_debugger = 0;
+  eval_plan->reset(
+    new PlanWrapper (
+      EvalIterator::compile ( ccb, anExpr, theVarnames, theVartypes ),
+      ccb,
+      dctx,
+      planState.theStackDepth + 1 )
+    );
+  eval_plan->get()->checkDepth( loc );
+  
+  for (unsigned i = 0; i < theChildren.size () - 1; i++)
   {
-    std::stringstream lOutputStream;
-    
-    PlanWrapperHolder eval_plan;
-    std::auto_ptr< CompilerCB > ccb;
-    std::auto_ptr< dynamic_context > dctx;
-
-    checked_vector< std::string > var_keys;
-
-    //set up eval state's ccb
-    ccb.reset( new CompilerCB ( *planState.theCompilerCB ) );
-    ccb->m_sctx_list.push_back( ccb->m_sctx = ccb->m_sctx->create_child_context() );
-
-    try
-    {
-      dctx.reset( new dynamic_context( planState.dctx() ) );
-      eval_plan.reset(
-        new PlanWrapper (
-          EvalIterator::compile ( ccb.get(), anExpr, theVarnames, theVartypes ),
-          ccb.get(),
-          dctx.get(),
-          planState.theStackDepth + 1 )
-        );
-      eval_plan->checkDepth( loc );
-   
-      for (unsigned i = 0; i < theChildren.size () - 1; i++)
-      {
-        //reset the plan iterator for multiple execution
-        theChildren[i+1]->reset(*thePlanState);
-        store::Iterator_t lIter = new PlanIteratorWrapper(theChildren[i+1], *thePlanState);
-        // TODO: is saving an open iterator efficient?
-        // Then again if we close theChildren [1] here,
-        // we won't be able to re-open it later via the PlanIteratorWrapper
-        dctx->add_variable(dynamic_context::var_key(ccb->m_sctx->lookup_var(theVarnames[i])), lIter);
-      }
-
-      serializer lSerializer(0);
-      lSerializer.set_parameter("method", "xml");
-      lSerializer.set_parameter("indent", "no");
-      lSerializer.set_parameter("omit-xml-declaration", "yes");
-
-      //eval_plan->open();
-      lSerializer.serialize( eval_plan.get(), lOutputStream );
-
-    } catch ( error::ZorbaError& e ) {
-      std::stringstream lError;
-      xqpString lDescription = e.theDescription.replace("\\\"", "", "");
-      lError << "Error: " << error::ZorbaError::toString(e.theErrorCode) << " " << lDescription;
-      *anError = lError.str();
-    }
-    
-    return xqpString( lOutputStream.str() );
+    //reset the plan iterator for multiple execution
+    theChildren[i+1]->reset(*thePlanState);
+    store::Iterator_t lIter = new PlanIteratorWrapper(theChildren[i+1], *thePlanState);
+    // TODO: is saving an open iterator efficient?
+    // Then again if we close theChildren [1] here,
+    // we won't be able to re-open it later via the PlanIteratorWrapper
+    dctx->add_variable(dynamic_context::var_key(ccb->m_sctx->lookup_var(theVarnames[i])), lIter);
   }
-
-
+  return eval_plan;
+}
 
 void ZorbaDebugger::processMessage(AbstractCommandMessage * aMessage)
 {

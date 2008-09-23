@@ -591,13 +591,12 @@ class EvaluatedEvent: public AbstractCommandMessage
 {
   protected:
     xqpString theExpr;
-    xqpString theResult;
     xqpString theError;
-    xqpString theReturnType;
+    std::map<xqpString, xqpString> theValuesAndTypes;
     xqpString getData() const;
  
   public:
-    EvaluatedEvent( xqpString anExpr, xqpString aResult, xqpString aReturnType );
+    EvaluatedEvent( xqpString anExpr, std::map<xqpString, xqpString> valuesAndTypes );
 
     EvaluatedEvent( xqpString anExpr, xqpString anError );
 
@@ -609,9 +608,7 @@ class EvaluatedEvent: public AbstractCommandMessage
     
     xqpString getExpr() const;
 
-    xqpString getResult() const;
-
-    xqpString getReturnType() const;
+    std::map<xqpString, xqpString> getValuesAndTypes() const;
 
     xqpString getError() const;
 };

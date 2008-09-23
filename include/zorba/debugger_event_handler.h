@@ -17,6 +17,7 @@
 #define ZORBA_DEBUGGER_EVENT_HANDLER_H
 
 #include <zorba/zorbastring.h>
+#include <map>
 
 namespace zorba{
 
@@ -111,13 +112,12 @@ namespace zorba{
 
       /** \brief Fire the result of an XQuery expression.
        *
-       * Signal that the result of an XQuery expression sent by the 
-       * client has been computed. The original expression sent by the client
-       * and the result are given as parameters.
-       * If an error occured, anError contains its description.
        */
       virtual void
-      evaluated(String &anExpr, String &aResult, String &aReturnType, String &anError) = 0;
+      evaluated(String &anExpr, std::map<String, String> &aValuesAndTypes) = 0;
+  
+      virtual void
+      evaluated(String &anExpr, String &anError) = 0;
   };
 }//end of namespace
 #endif

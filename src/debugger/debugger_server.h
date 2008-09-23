@@ -28,6 +28,8 @@
 
 #include "runtime/base/plan_iterator.h"
 #include "runtime/debug/zorba_debugger_iterators.h"
+#include "runtime/api/plan_iterator_wrapper.h"
+#include "runtime/fncontext/FnContextImpl.h"
 
 #include "zorbautils/thread.h"
 
@@ -144,14 +146,8 @@ class ZorbaDebugger
 
     void eval( xqpString anExpr );
 
-    store::Item_t
-    fetchItem( const QueryLoc& loc, xqpString anExpr,
-                PlanState& planState, xqpString * anError);
-    
-    xqpString
-    fetchValue( const QueryLoc& loc, xqpString anExpr,
-                PlanState& planState, xqpString * anError);
-
+    PlanWrapperHolder*
+    compileEvalPlan(const QueryLoc& loc, CompilerCB* ccb, dynamic_context* dctx, const xqpString& anExpr, PlanState& planState);
 };
 }//end of namespace xqp
 #endif

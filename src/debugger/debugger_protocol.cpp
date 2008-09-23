@@ -629,9 +629,14 @@ EvaluatedEvent::EvaluatedEvent( xqpString anExpr, xqpString anError ):
     checkIntegrity();
 }
 
-EvaluatedEvent::EvaluatedEvent( xqpString anExpr, xqpString aResult, xqpString aReturnType ):
-  AbstractCommandMessage( ENGINE_EVENT, EVALUATED ), theExpr( anExpr ), theResult(aResult.replace("\\\"", "&quot;", "")), theReturnType( aReturnType )
+EvaluatedEvent::EvaluatedEvent( xqpString anExpr, std::map<xqpString, xqpString> valuesAndTypes ):
+  AbstractCommandMessage( ENGINE_EVENT, EVALUATED ), theExpr( anExpr ), theValuesAndTypes(valuesAndTypes)
 {
+    std::map<xqpString, xqpString>::iterator it;
+    for(it=theValuesAndTypes.begin(); it!=theValuesAndTypes.end(); it++)
+    {
+      it->second.replace("\\\"", "&quot;", "");
+    }
     unsigned int l = MESSAGE_SIZE + getData().length();
     setLength( l );
     checkIntegrity();
@@ -653,22 +658,31 @@ EvaluatedEvent::EvaluatedEvent( Byte * aMessage, const unsigned int aLength ):
     throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
   }
   
-  if ( (*lValue)["result"]  != 0 )
+  if ( (*lValue)["results"]  != 0 )
   {
-    std::wstring* lWString = (*lValue)["result"]->getstring(L"", true);
-    std::string lString( lWString->begin()+1, lWString->end()-1 );
-    delete lWString;
-    theResult = lString;
-  } else {
-    throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
-  }
-
-  if ( (*lValue)["type"]  != 0 )
-  {
-    std::wstring* lWString = (*lValue)["type"]->getstring(L"", true);
-    std::string lString( lWString->begin()+1, lWString->end()-1 );
-    delete lWString;
-    theReturnType = lString;
+    json::array_list_t::iterator it;
+    for ( it  = (*lValue)["results"]->getarraylist()->begin();
+          it != (*lValue)["results"]->getarraylist()->end();
+          it++ )
+    {
+      json::value *lVariable = (*it);
+      
+      if ( (*lVariable)["result"] == 0 )
+      {
+        throw MessageFormatException("Invalid JSON format for variable message.");
+      }
+      std::wstring *lName = (*lVariable)["result"]->getstring(L"", true);
+      std::string result = std::string( lName->begin()+1, lName->end()-1 );
+      delete lName;
+      if ( (*lVariable)["type"] == 0 )
+      {
+        throw MessageFormatException("Invalid JSON format for variable message.");
+      }
+      std::wstring *lType = (*lVariable)["type"]->getstring(L"", true);
+      std::string type = std::string( lType->begin()+1, lType->end()-1 );
+      delete lType; 
+      theValuesAndTypes.insert(std::make_pair(result, type));
+    }   
   } else {
     throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
   }
@@ -693,14 +707,9 @@ xqpString EvaluatedEvent::getExpr() const
   return theExpr;
 }
 
-xqpString EvaluatedEvent::getResult() const
+std::map<xqpString, xqpString> EvaluatedEvent::getValuesAndTypes() const
 {
-  return theResult;
-}
-
-xqpString EvaluatedEvent::getReturnType() const
-{
-  return theReturnType;
+  return theValuesAndTypes;
 }
 
 xqpString EvaluatedEvent::getError() const
@@ -730,8 +739,17 @@ xqpString EvaluatedEvent::getData() const
   std::stringstream lJSONString;
   lJSONString << "{";
   lJSONString << "\"expr\":\"" << theExpr << "\",";
-  lJSONString << "\"result\":\"" << theResult << "\",";
-  lJSONString << "\"type\":\"" << theReturnType << "\",";
+  lJSONString << "\"results\":[";
+  std::map<xqpString, xqpString>::const_iterator it = theValuesAndTypes.begin();
+  for(; it != theValuesAndTypes.end(); it++ )
+  {
+    if ( it != theValuesAndTypes.begin() )
+    {
+      lJSONString << ',';
+    }
+    lJSONString << "{\"result\":\"" << it->first << "\",\"type\":\"" << it->second << "\"}";
+  }
+  lJSONString << "],";
   lJSONString << "\"error\":\"" << theError << "\"";
   lJSONString << "}";
   xqpString lData( lJSONString.str() );

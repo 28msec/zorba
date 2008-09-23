@@ -135,11 +135,25 @@ namespace zorba{
         if ( lClient->theEventHandler )
         {
           String lExpr( lEvaluatedEvent->getExpr() );
-          String lResult( lEvaluatedEvent->getResult().replace("&quot;", "\"", "") );
+          //String lResult( lEvaluatedEvent->getResult().replace("&quot;", "\"", "") );
           //String lResult( lEvaluatedEvent->getResult() );
-          String lReturnType( lEvaluatedEvent->getReturnType() );
+          //String lReturnType( lEvaluatedEvent->getReturnType() );
           String lError( lEvaluatedEvent->getError() );
-          lClient->theEventHandler->evaluated( lExpr, lResult, lReturnType, lError );
+          if(lError.length() > 0)
+          {
+            lClient->theEventHandler->evaluated(lExpr, lError);
+          } else {
+            std::map<String, String> lValuesAndTypes;
+            std::map<xqpString, xqpString> lMap = lEvaluatedEvent->getValuesAndTypes();
+            std::map<xqpString, xqpString>::const_iterator it;
+            for(it=lMap.begin(); it!=lMap.end(); ++it )
+            {
+              String lResult(it->first);
+              String lType(it->second);
+              lValuesAndTypes.insert(std::make_pair(lResult, lType));
+            }
+            lClient->theEventHandler->evaluated(lExpr, lValuesAndTypes);
+          }
         }
       }
     }

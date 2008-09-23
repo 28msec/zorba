@@ -2393,6 +2393,14 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/) {
       rchandle<forlet_clause>& flc = (*flwor)[i];
       var_expr* arg_var = flc->get_expr().dyn_cast<var_expr> ().getp();
       ZORBA_ASSERT(arg_var != NULL);
+#ifdef ZORBA_DEBUGGER
+      if(compilerCB->m_debugger != 0)
+      {
+        //TODO: move to the right place
+        //std::cerr << "vars: " << arg_var << std::endl;
+        //theScopedVariables.push_back(arg_var);
+      }
+#endif
       args.push_back(arg_var);
     }
     if (body != NULL)
