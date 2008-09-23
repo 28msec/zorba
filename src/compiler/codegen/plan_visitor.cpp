@@ -646,7 +646,7 @@ PlanIter_t gflwor_codegen(gflwor_expr& v, int ccnt, gflwor_codegen_data &gdata) 
             lIter->var->accept(*this);
             argv.push_back(pop_itstack());
           }
-
+          reverse(argv.begin(), argv.end());
           list<global_binding> lGlobals = flwc->get_global_variables();
           list<global_binding>::iterator it;
           for ( it = lGlobals.begin(); it != lGlobals.end(); ++it )
@@ -686,7 +686,7 @@ PlanIter_t gflwor_codegen(gflwor_expr& v, int ccnt, gflwor_codegen_data &gdata) 
             lIter->var->accept(*this);
             argv.push_back(pop_itstack());
           }
-
+          reverse(argv.begin(), argv.end());
           list<global_binding> lGlobals = flwc->get_global_variables();
           list<global_binding>::iterator it;
           for ( it = lGlobals.begin(); it != lGlobals.end(); ++it )
