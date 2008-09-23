@@ -34,7 +34,7 @@
 #include "runtime/accessors/AccessorsImpl.h"
 #include "zorbaerrors/error_messages.h"
 #include "zorbaerrors/errors.h"
-
+#include "zorbatypes/xerces_xmlcharray.h"
 
 using namespace std;
 XERCES_CPP_NAMESPACE_USE;
@@ -1105,10 +1105,6 @@ void SchemaValidatorFilter::docCharacters(const XMLCh* const chars, const unsign
     ///next_->textEvent(chars, length);
 }
 
-const XMLCh * X(const char * str)
-{
-    return XMLString::transcode(str);
-}
 
 void SchemaValidatorFilter::error(const unsigned int errCode, const XMLCh* const errDomain, const XMLErrorReporter::ErrTypes errType, const XMLCh* const errorText,
                                   const XMLCh* const systemId, const XMLCh* const publicId, const XMLSSize_t lineNum, const XMLSSize_t colNum)
@@ -1121,12 +1117,12 @@ void SchemaValidatorFilter::error(const unsigned int errCode, const XMLCh* const
         return;
 
     XMLBuffer exc_msg(1023);
-    exc_msg.set(X("Schema validation failed: "));
+    exc_msg.set( XMLChArray("Schema validation failed: ").get() );
     exc_msg.append(errorText);
 
     if((publicId && *publicId) || (systemId && *systemId)) 
     {
-        exc_msg.append( X(", ") );
+        exc_msg.append( XMLChArray(", ").get() );
         if(systemId && *systemId)
             exc_msg.append(systemId);
         else
@@ -1140,7 +1136,7 @@ void SchemaValidatorFilter::error(const unsigned int errCode, const XMLCh* const
    
     //std::cout << XMLString::transcode(exc_msg.getRawBuffer()) << std::endl;
 
-    ZORBA_ERROR_LOC_DESC( XQDY0027, _loc, XMLString::transcode(exc_msg.getRawBuffer()) );
+    ZORBA_ERROR_LOC_DESC( XQDY0027, _loc, StrX(exc_msg.getRawBuffer()).localForm() );
 }
 
 }  //namespace zorba
