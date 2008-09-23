@@ -89,7 +89,7 @@ namespace zorba {
 #define DOT_POS_VARNAME "$$pos"
 #define LAST_IDX_VARNAME "$$last-idx"
 
-#define DOT_VAR lookup_ctx_var (DOT_VARNAME)
+#define DOT_VAR lookup_ctx_var (DOT_VARNAME).getp()
 
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
@@ -2528,10 +2528,10 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
 
   if (fn_qname->getNamespace()->byteEqual(XQUERY_FN_NS)) {
     if (fn_local == "position" && sz == 0)  {
-      nodestack.push(lookup_ctx_var(DOT_POS_VARNAME));
+      nodestack.push(lookup_ctx_var(DOT_POS_VARNAME).getp());
       return;
     } else if (fn_local == "last" && sz == 0) {
-      nodestack.push(lookup_ctx_var(LAST_IDX_VARNAME));
+      nodestack.push(lookup_ctx_var(LAST_IDX_VARNAME).getp());
       return;
     } else if (fn_local == "string") {
       // TODO: casting to xs:string? is almost correct;
@@ -4424,7 +4424,7 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   // If so: return $dot if the value of the pred expr is equal to the value
   // of $dot_pos var, otherwise return the empty seq.
   rchandle<fo_expr> eq = new fo_expr(loc, LOOKUP_OP2("value-equal"));
-  eq->add(lookup_ctx_var(DOT_POS_VARNAME));
+  eq->add(lookup_ctx_var(DOT_POS_VARNAME).getp());
   eq->add(predvar);
 
   expr_t thenExpr = new if_expr(loc, eq.getp(), dotvar, create_seq(loc));
