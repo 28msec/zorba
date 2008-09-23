@@ -1001,7 +1001,8 @@ DateTime* DateTime::addDuration(const Duration& d, bool adjust_facet) const
 
 DateTime* DateTime::subtractDuration(const Duration& d, bool adjust_facet) const
 {
-  return addDuration(*(d.toNegDuration()), adjust_facet);
+  auto_ptr<Duration> negD (d.toNegDuration());
+  return addDuration(*negD, adjust_facet);
 }
 
 
