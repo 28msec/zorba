@@ -691,8 +691,8 @@ File README.txt
 
   CreateDirectory "$INSTDIR\docs\include"
   SetOutPath "$INSTDIR"
-  CopyFiles "C:\pers\zorba\include" "$INSTDIR\docs"
-  CopyFiles "C:\pers\zorba\docs" "$INSTDIR"
+;  CopyFiles "C:\pers\zorba\include" "$INSTDIR\docs"
+;  CopyFiles "C:\pers\zorba\docs" "$INSTDIR"
   ;SetOutPath "$INSTDIR\include\zorba\simplestore"
   ;SetOverwrite try
   ;File "C:\pers\zorba\include\zorba\simplestore\simplestore.h"
