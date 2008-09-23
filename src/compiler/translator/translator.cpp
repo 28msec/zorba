@@ -983,19 +983,17 @@ void *begin_visit (const DirElemContentList& v) {
 void end_visit (const DirElemContentList& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 
-  fo_expr *expr_list = create_seq (loc);
-  while (true)
-  {
+  rchandle<fo_expr> expr_list = create_seq (loc);
+  while (true) {
     expr_t e_h = pop_nodestack();
     if (e_h == NULL)
       break;
     expr_list->add(e_h);
   }
-  if (expr_list->size() == 1) {
+  if (expr_list->size() == 1)
     nodestack.push(*expr_list->begin());
-    delete expr_list;
-  } else {
-    nodestack.push(expr_list);
+  else {
+    nodestack.push(expr_list.getp ());
   }
 }
 
