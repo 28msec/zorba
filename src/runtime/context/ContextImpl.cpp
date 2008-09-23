@@ -61,7 +61,7 @@ bool
 FnCurrentDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemRes;
-  xqp_date* d = NULL;
+  std::auto_ptr<xqp_date> d;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -69,8 +69,8 @@ FnCurrentDateIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   itemRes = planState.theRuntimeCB->theDynamicContext->get_current_date_time();
   if( NULL != itemRes )
   {
-    d = itemRes->getDateTimeValue().getDate();
-    STACK_PUSH( GENV_ITEMFACTORY->createDate(result, d), state );
+    d.reset (itemRes->getDateTimeValue().getDate());
+    STACK_PUSH( GENV_ITEMFACTORY->createDate(result, d.get ()), state );
   }
 
   STACK_END (state);
@@ -90,7 +90,7 @@ bool
 FnCurrentTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemRes;
-  xqp_time* t = NULL;
+  std::auto_ptr<xqp_time> t;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -98,8 +98,8 @@ FnCurrentTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   itemRes = planState.theRuntimeCB->theDynamicContext->get_current_date_time();
   if( NULL != itemRes )
   {
-    t = itemRes->getDateTimeValue().getTime();
-    STACK_PUSH( GENV_ITEMFACTORY->createTime(result, t), state );
+    t.reset (itemRes->getDateTimeValue().getTime());
+    STACK_PUSH( GENV_ITEMFACTORY->createTime(result, t.get ()), state );
   }
 
   STACK_END (state);
