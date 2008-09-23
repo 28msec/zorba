@@ -255,14 +255,30 @@ bool ZorbaDebugger::hasToSuspend()
   std::map<unsigned int, xqpString>::iterator lIter;
   for ( lIter = theWatchpoints.begin(); lIter != theWatchpoints.end(); lIter++ )
   {
-    //store::Item_t lResult = fetchItem( theLocation, lIter->second, *thePlanState, 0);
-    //if ( lResult != 0 && lResult->getEBV()->getBooleanValue() )
-    //{
-    //  setStatus( QUERY_SUSPENDED, CAUSE_BREAKPOINT );
-    //  return true;
-    //}
+    try
+    {
+      std::auto_ptr< CompilerCB > ccb;
+      std::auto_ptr< dynamic_context > dctx;
+      PlanWrapperHolder* eval_plan = compileEvalPlan(theLocation, ccb.get(), dctx.get(), lIter->second, *thePlanState);
+      PlanWrapper* lIterator = eval_plan->get();
+      assert(lIterator != 0);
+
+      store::Item_t lItem;
+      std::map<xqpString, xqpString> lValuesAndTypes;
+
+      error::ErrorManager lErrorManger;
+
+      lIterator->next(lItem);
+      
+      if(lItem->getEBV()->getBooleanValue())
+      {
+        setStatus(QUERY_SUSPENDED, CAUSE_BREAKPOINT);
+        return true;
+      }
+    } catch ( error::ZorbaError& e) {
+      //do nothing...
+    }
   }
-  
   return false;
 }
 
