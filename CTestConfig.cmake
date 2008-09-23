@@ -11,9 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-SET (CTEST_DROP_METHOD xmlrpc) 
+SET (CTEST_DROP_METHOD http) 
 SET (CTEST_PROJECT_NAME "zorba") 
 SET (CTEST_NIGHTLY_START_TIME "00:00:00 GMT") 
-SET (CTEST_DROP_SITE "http://fifthelement.inf.ethz.ch:8082") 
-SET (CTEST_DROP_LOCATION "zorba") 
-SET (CTEST_COMPRESS_SUBMISSION ON)
+SET (CTEST_DROP_SITE "dbisdart.inf.ethz.ch") 
+SET (CTEST_DROP_LOCATION "/CDash/submit.php?project=zorba") 
+SET (CTEST_DROP_SITE_CDASH TRUE)
+# SET (CTEST_COMPRESS_SUBMISSION ON)
