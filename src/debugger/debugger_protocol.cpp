@@ -630,7 +630,7 @@ EvaluatedEvent::EvaluatedEvent( xqpString anExpr, xqpString anError ):
 }
 
 EvaluatedEvent::EvaluatedEvent( xqpString anExpr, xqpString aResult, xqpString aReturnType ):
-  AbstractCommandMessage( ENGINE_EVENT, EVALUATED ), theExpr( anExpr ), theResult(aResult.replace("\\\"", "'", "")), theReturnType( aReturnType )
+  AbstractCommandMessage( ENGINE_EVENT, EVALUATED ), theExpr( anExpr ), theResult(aResult.replace("\\\"", "&quot;", "")), theReturnType( aReturnType )
 {
     unsigned int l = MESSAGE_SIZE + getData().length();
     setLength( l );

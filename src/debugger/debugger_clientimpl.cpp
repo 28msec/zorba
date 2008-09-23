@@ -135,7 +135,8 @@ namespace zorba{
         if ( lClient->theEventHandler )
         {
           String lExpr( lEvaluatedEvent->getExpr() );
-          String lResult( lEvaluatedEvent->getResult() );
+          String lResult( lEvaluatedEvent->getResult().replace("&quot;", "\"", "") );
+          //String lResult( lEvaluatedEvent->getResult() );
           String lReturnType( lEvaluatedEvent->getReturnType() );
           String lError( lEvaluatedEvent->getError() );
           lClient->theEventHandler->evaluated( lExpr, lResult, lReturnType, lError );
