@@ -18,9 +18,19 @@
 
 #include "zorbatypes/representations.h"
 
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <fstream>
+
 namespace zorba
 {
   int http_get(const char* url, xqp_string& result);
+#ifdef ZORBA_WITH_TIDY
+  int tidy(const char* input, xqp_string& result, xqp_string& diagnostics);
+  int tidy(const std::ifstream& fStream, std::iostream& result, std::iostream& diagnostics);
+  int tidy(const std::istringstream& isStream, std::iostream& result, std::iostream& diagnostics);
+#endif
 }
 
 #endif 

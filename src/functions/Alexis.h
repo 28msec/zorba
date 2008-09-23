@@ -60,6 +60,16 @@ namespace zorba {
                           std::vector<PlanIter_t>& argv,
                           AnnotationHolder &ann) const;
   };
+
+  class zorba_tdoc : public function
+  {
+    public:
+      zorba_tdoc(const signature& sig): function(sig){}
+
+      PlanIter_t codegen (const QueryLoc& loc,
+                          std::vector<PlanIter_t>& argv,
+                          AnnotationHolder &ann) const;
+  };
 #endif
 
 }

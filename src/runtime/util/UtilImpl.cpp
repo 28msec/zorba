@@ -22,10 +22,9 @@
 
 #include "runtime/util/UtilImpl.h"
 
-#ifdef ZORBA_WITH_TIDY
-  #include <tidy/tidy.h>
-  #include <tidy/buffio.h>
-#endif
+#include "util/web/web.h"
+#include "context/static_context.h"
+#include "context/internal_uri_resolvers.h"
 
 namespace zorba {
 
@@ -93,57 +92,71 @@ bool
 ZorbaTidyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t       item;
-  TidyDoc             tdoc;
-  bool                ok;
-  int                 rc = -1;
-  TidyBuffer output = {0, 0, 0, 0};
-  TidyBuffer errbuf = {0, 0, 0, 0};
-  xqpStringStore_t    buf, err;
+  xqp_string          xmlString, diag;
+  xqpStringStore_t    buf;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChildren[0].getp(), planState))
   {
-    tdoc = tidyCreate();
-
-    ok = tidyOptSetBool( tdoc, TidyXhtmlOut, yes );  // Convert to XHTML
-    if ( ok )
-      rc = tidySetErrorBuffer( tdoc, &errbuf );      // Capture diagnostics
-    if ( rc >= 0 )
-      rc = tidyParseString( tdoc, item->getStringValue()->c_str() );     // Parse the input
-    if ( rc >= 0 )
-      rc = tidyCleanAndRepair( tdoc );               // Tidy it up!
-    if ( rc >= 0 )
-      rc = tidyRunDiagnostics( tdoc );               // Kvetch
-    if ( rc > 1 )                                    // If error, force output.
-      rc = ( tidyOptSetBool(tdoc, TidyForceOutput, yes) ? rc : -1 );
-    if ( rc >= 0 )
-      rc = tidySaveBuffer( tdoc, &output );          // Pretty Print
-
-    if ( rc >= 0 )
+    if( tidy(item->getStringValue()->c_str(), xmlString, diag) >= 0)
     {
-      buf = new xqpStringStore((char*)output.bp, output.size);
-
-      tidyBufFree( &output );
-      tidyBufFree( &errbuf );
-      tidyRelease( tdoc );
-
+      buf = xqpStringStore_t(xmlString.getStore());
+      //if tidy returns a value >0 a warning should be raised
       STACK_PUSH(GENV_ITEMFACTORY->createString(result, buf), state );
-//       if ( rc > 0 )
-//         printf( "\nDiagnostics:\n\n%s", errbuf.bp );
-//       printf( "\nAnd here is the result:\n\n%s", output.bp );
     }
     else
     {
-      tidyBufFree( &output );
-      tidyBufFree( &errbuf );
-      tidyRelease( tdoc );
-//       printf( "A severe error (%d) occurred.\n", rc );
       ZORBA_ERROR_LOC_PARAM(XQP0029_TIDY_ERROR, loc, "" , "");
     }
   }
 
+  STACK_END (state);
+}
+
+bool
+ZorbaTDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t     uriItem;
+  xqpString         uriString;
+  xqpStringStore_t  resolvedURIString;
+  store::Item_t     resolvedURIItem;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (consumeNext(uriItem, theChildren[0].getp(), planState)) {
+
+    uriString = uriItem->getStringValueP();
+
+    try {
+      // maybe the document is stored with the uri that is given by the user
+      result = GENV_STORE.getDocument(uriString.getStore());
+    } catch (error::ZorbaError& e) {
+      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+    }
+    if (result != NULL) {
+      STACK_PUSH(true, state);
+    } else {
+      try {
+        resolvedURIString = planState.sctx()->resolve_relative_uri(uriString).getStore();
+        GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
+      } catch (error::ZorbaError& e) {
+        ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
+      }
+      try {
+        result = planState.sctx()->get_document_uri_resolver()->resolve(resolvedURIItem,
+                                                                        planState.sctx(),
+                                                                        true);
+      } catch (error::ZorbaError& e) {
+        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+      }
+
+      STACK_PUSH(true, state);
+    }
+
+  } // return empty sequence if input is the empty sequence
   STACK_END (state);
 }
 #endif

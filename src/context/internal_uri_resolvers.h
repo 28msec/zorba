@@ -32,7 +32,8 @@ namespace zorba {
 
       virtual store::Item_t
       resolve(const store::Item_t& aURI,
-              static_context* aStaticContext) = 0;
+              static_context* aStaticContext,
+              bool tidying = false) = 0;
   };
 
   class InternalCollectionURIResolver

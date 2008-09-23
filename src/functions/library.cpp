@@ -898,6 +898,12 @@ DECL(sctx, zorba_encode_base64,
        (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "tidy"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+  DECL(sctx, zorba_tdoc,
+       (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "tdoc"),
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+        GENV_TYPESYSTEM.DOCUMENT_TYPE_QUESTION));
+
 #endif
 // end util functions
 

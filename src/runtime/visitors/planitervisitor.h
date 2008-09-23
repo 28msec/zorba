@@ -253,6 +253,7 @@ namespace zorba
   class ZorbaBase64DecodeIterator;
 #ifdef ZORBA_WITH_TIDY
   class ZorbaTidyIterator;
+  class ZorbaTDocIterator;
 #endif
 
   namespace gflwor{
@@ -733,6 +734,7 @@ namespace zorba
     PLAN_ITER_VISITOR(ZorbaBase64DecodeIterator);
 #ifdef ZORBA_WITH_TIDY
     PLAN_ITER_VISITOR(ZorbaTidyIterator);
+    PLAN_ITER_VISITOR(ZorbaTDocIterator);
 #endif
 
 #ifdef ZORBA_DEBUGGER

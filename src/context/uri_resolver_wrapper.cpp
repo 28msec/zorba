@@ -57,7 +57,8 @@ namespace zorba {
 
   store::Item_t
   DocumentURIResolverWrapper::resolve(const store::Item_t& aURI,
-                                      static_context* aStaticContext)
+                                      static_context* aStaticContext,
+                                      bool tidying)
   {
     StaticContextImpl  lOuterStaticContext(aStaticContext, 0);
     Item               lURIItem(aURI.getp());  
