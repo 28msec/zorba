@@ -123,7 +123,6 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
   std::string lLine;
   unsigned int lLineNo = 0;
   std::string::iterator lIterator;
-  unsigned int i = 0;
   std::ifstream * lFile = dynamic_cast< std::ifstream * >( theQueryFile.get() );
   if ( lFile != 0 )
   {
@@ -480,14 +479,20 @@ void CommandLineEventHandler::handle_cmd()
         version();
     } else if ( lCommand == "p" || lCommand == "print" ||
                 lCommand == "e" || lCommand == "eval" ) {
-        if ( lArgs.size() < 2 )
+        if(!theClient->isQuerySuspended())
         {
-          theOutput << "Invalid syntax." << std::endl;
-          theOutput << "(e|eval) <expr>" << std::endl;
+          theOutput << "There is executing query suspended." << std::endl;
           handle_cmd();
         } else {
-          String lExpr( get_expression( lArgs ) );  
-          theClient->eval( lExpr );
+          if ( lArgs.size() < 2 )
+          {
+            theOutput << "Invalid syntax." << std::endl;
+            theOutput << "(e|eval) <expr>" << std::endl;
+            handle_cmd();
+          } else {
+            String lExpr( get_expression( lArgs ) );  
+            theClient->eval( lExpr );
+          }
         }
         return;
     } else {

@@ -151,7 +151,6 @@ namespace zorba{
               xqpString test(it->first);
               xqpString filter = test.replace("&quot;", "\"", "");
               String lResult(filter);
-              //String lResult(it->first);
               String lType(it->second);
               lValuesAndTypes.insert(std::make_pair(lResult, lType));
             }

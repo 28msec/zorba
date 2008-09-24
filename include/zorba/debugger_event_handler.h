@@ -116,6 +116,11 @@ namespace zorba{
       virtual void
       evaluated(String &anExpr, std::map<String, String> &aValuesAndTypes) = 0;
   
+      /** \brief Fire an Error from an XQuery expression.
+       *
+       * @param String the XQuery expression
+       * @param String the Error description
+       */
       virtual void
       evaluated(String &anExpr, String &anError) = 0;
   };
