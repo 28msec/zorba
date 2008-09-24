@@ -25,7 +25,7 @@ namespace zorbacmd {
 class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--debug-ports", "--debug-client", "--debug-server", NULL };
+    static const char *result [] = { "--timing", "--output-file", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--debug-ports", "--debug-client", "--debug-server", "--no-colors", NULL };
     return result;
   }
   bool theTiming;
@@ -50,6 +50,7 @@ protected:
   std::string theDebugPorts;
   bool theDebugClient;
   bool theDebugServer;
+  bool theNoColors;
 
   void initialize () {
     theTiming = false;
@@ -65,6 +66,7 @@ protected:
     theDebugPorts = "8000:9000";
     theDebugClient = false;
     theDebugServer = false;
+    theNoColors = false;
   }
 public:
   const bool &timing () const { return theTiming; }
@@ -89,6 +91,7 @@ public:
   const std::string &debugPorts () const { return theDebugPorts; }
   const bool &debugClient () const { return theDebugClient; }
   const bool &debugServer () const { return theDebugServer; }
+  const bool &noColors () const { return theNoColors; }
 
   std::string load_argv (int argc, const char **argv) {
     if (argv == NULL) return "";
@@ -190,6 +193,9 @@ public:
       else if (strcmp (*argv, "--debug-server") == 0 || strncmp (*argv, "-s", 2) == 0) {
         theDebugServer = true;
       }
+      else if (strcmp (*argv, "--no-colors") == 0 || strncmp (*argv, "-n", 2) == 0) {
+        theNoColors = true;
+      }
 #endif
       else if (strcmp (*argv, "--") == 0) {
         copy_args (++argv);
@@ -230,6 +236,7 @@ public:
 "--debug-ports, -p\nSpecify the ports for zorba debugger. The format is requestPort:eventPort.\n\n"
 "--debug-client, -c\nLaunch the debugger command line client.\n\n"
 "--debug-server, -s\nLaunch queries on the debugger server.\n\n"
+"--no-colors, -n\nDisable debugger syntax highlighting.\n\n"
 #endif
 ;
   }

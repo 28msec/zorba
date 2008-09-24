@@ -64,12 +64,14 @@ class CommandLineEventHandler: public DefaultDebuggerEventHandler
 
     void suspend( int aSignum );
 
+    bool colors;
   public:
     CommandLineEventHandler( std::string aFileName,
                              std::auto_ptr<std::istream> &aQueryFile,
                              std::istream &anInput,
                              std::ostream &anOutput,
-                             ZorbaDebuggerClient * aClient );
+                             ZorbaDebuggerClient * aClient,
+                             bool aColor = true);
 
     virtual ~CommandLineEventHandler(){}
 

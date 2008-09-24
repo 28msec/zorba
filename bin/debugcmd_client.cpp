@@ -51,12 +51,14 @@ CommandLineEventHandler::CommandLineEventHandler( std::string aFileName,
                                                   std::auto_ptr<std::istream> &aQueryFile,
                                                   std::istream & anInput,
                                                   std::ostream & anOutput,
-                                                  ZorbaDebuggerClient * aClient )
+                                                  ZorbaDebuggerClient * aClient,
+                                                  bool aColor)
  : theFileName( aFileName ),
    theQueryFile( aQueryFile ),
    theLocation(0),
    theOutput( anOutput ),
-   theInput( anInput )
+   theInput( anInput ),
+   colors(aColor)
 {
   theClient = aClient;
 }
@@ -126,37 +128,43 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
       if ( lLineNo >= theLocation->getLineBegin() && lLineNo <= theLocation->getLineEnd() )
       {
 #ifdef WIN32
-        HANDLE lConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-        CONSOLE_SCREEN_BUFFER_INFO lConsoleInfo;
-        GetConsoleScreenBufferInfo(lConsole, &lConsoleInfo);
-        const int saved_configuration = lConsoleInfo.wAttributes;
-        SetConsoleTextAttribute(lConsole, 15+0*16); 
-        theOutput << lLineNo << '\t';
-        SetConsoleTextAttribute(lConsole, saved_configuration);
-        for(unsigned int j=1; j <= lLine.length(); j++)
-       {
-          if((lLineNo==theLocation->getLineBegin() && j >= theLocation->getColumnBegin()) ||
-             (theLocation->getLineBegin() != theLocation->getLineEnd() && lLineNo==theLocation->getLineEnd() && j <= theLocation->getColumnEnd()) ||
-             (lLineNo > theLocation->getLineBegin() && lLineNo < theLocation->getLineEnd())
-            )
-          {
-            SetConsoleTextAttribute(lConsole, 15+0*16); 
-            theOutput << lLine.at(j-1);
-            SetConsoleTextAttribute(lConsole, saved_configuration);
-          } else {
-            SetConsoleTextAttribute(lConsole, 15+0*16); 
-            theOutput << lLine.at(j-1);
-            SetConsoleTextAttribute(lConsole, saved_configuration);
-          }
+        if(colors)
+        {
+          HANDLE lConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+          CONSOLE_SCREEN_BUFFER_INFO lConsoleInfo;
+          GetConsoleScreenBufferInfo(lConsole, &lConsoleInfo);
+          const int saved_configuration = lConsoleInfo.wAttributes;
+          SetConsoleTextAttribute(lConsole, 15+0*16); 
         }
-#else
-        theOutput << "\033[1m" << lLineNo << '\t' << "\033[0m"; 
+        theOutput << lLineNo << '\t';
+        if(colors) SetConsoleTextAttribute(lConsole, saved_configuration);
         for(unsigned int j=1; j <= lLine.length(); j++)
         {
           if((lLineNo==theLocation->getLineBegin() && j >= theLocation->getColumnBegin()) ||
              (theLocation->getLineBegin() != theLocation->getLineEnd() && lLineNo==theLocation->getLineEnd() && j <= theLocation->getColumnEnd()) ||
              (lLineNo > theLocation->getLineBegin() && lLineNo < theLocation->getLineEnd())
             )
+          {
+            if(colors) SetConsoleTextAttribute(lConsole, 15+0*16); 
+            theOutput << lLine.at(j-1);
+            if(colors) SetConsoleTextAttribute(lConsole, saved_configuration);
+          } else {
+            if(colors) SetConsoleTextAttribute(lConsole, 15+0*16); 
+            theOutput << lLine.at(j-1);
+            if(colors) SetConsoleTextAttribute(lConsole, saved_configuration);
+          }
+        }
+#else
+        if(colors) 
+          theOutput << "\033[1m" << lLineNo << '\t' << "\033[0m"; 
+        else
+          theOutput << lLineNo << '\t';
+        for(unsigned int j=1; j <= lLine.length(); j++)
+        {
+          if(colors && ((lLineNo==theLocation->getLineBegin() && j >= theLocation->getColumnBegin()) ||
+             (theLocation->getLineBegin() != theLocation->getLineEnd() && lLineNo==theLocation->getLineEnd() && j <= theLocation->getColumnEnd()) ||
+             (lLineNo > theLocation->getLineBegin() && lLineNo < theLocation->getLineEnd())
+            ))
           {
             theOutput << "\033[1m" << lLine.at(j-1) << "\033[0m";
           } else {

@@ -51,6 +51,8 @@ public:
   QueriesOrFiles_t::const_iterator
   queriesOrFilesEnd()   { return theQueriesOrFiles.end(); }
 #ifdef ZORBA_DEBUGGER
+  bool hasNoSyntaxHighlighting(){ return theNoColors; }
+
   bool isDebugClient(){ return theDebugClient; }
 
   bool isDebugServer(){ return theDebugServer; }

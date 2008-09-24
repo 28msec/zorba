@@ -366,7 +366,7 @@ int _tmain(int argc, _TCHAR* argv[])
           //wait 1 second before trying to reconnect
           sleep(1);
           ZorbaDebuggerClient * debuggerClient = ZorbaDebuggerClient::createClient( lProperties.getRequestPort(), lProperties.getEventPort() );
-          CommandLineEventHandler lEventHandler( *lArgs->theFileName, *lArgs->theQuery, std::cin, std::cout, debuggerClient );
+          CommandLineEventHandler lEventHandler( *lArgs->theFileName, *lArgs->theQuery, std::cin, std::cout, debuggerClient, !lProperties.hasNoSyntaxHighlighting() );
 #ifdef SIGINT /* not all system have SIGINT */
           signal( SIGINT, suspend );
 #endif
