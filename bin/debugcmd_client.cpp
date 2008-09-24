@@ -99,13 +99,22 @@ void CommandLineEventHandler::list( unsigned int aLineNo )
 
 void CommandLineEventHandler::list( std::string &aFileName )
 {
-  std::ifstream lFile(aFileName.c_str());
-  while(lFile.good())
+  int start = theFileName.length() - aFileName.length();
+  if( start >= 0)
   {
-    std::string lLine;
-    getline(lFile, lLine, '\n');
-    theOutput << lLine << std::endl;
-  }
+    std::stringstream lFileName;
+    lFileName << theFileName.substr(0, start+1) << "/" << aFileName;
+    theOutput << lFileName.str() << std::endl;
+    std::ifstream lFile(lFileName.str().c_str());
+    while(lFile.good())
+    {
+      std::string lLine;
+      getline(lFile, lLine, '\n');
+      theOutput << lLine << std::endl;
+    }
+  } else {
+    theOutput << "Couldn't find " << aFileName << std::endl;
+  } 
 }
 
 void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, bool listAll )
