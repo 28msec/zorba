@@ -14,4 +14,24 @@ Clause ::= InitialClause | WhereClause | GroupByClause | OrderByClause | CountCl
 
 Each clause accepts a tuple stream as input, acts on that tuple stream, and produces a tuple stream as output. Apart from the initial clause requirement and the final return clause, all clauses can appear in any order.
 
+\section gflworclauses GFLWOR new clauses
+
+An outer for clause behaves like a for-clause, except that, if the binding 
+sequence for a variable in the outer for clause is empty, rather than producing 
+no bindings for that variable, the outer for clause produces a single binding 
+which binds that variable to an empty sequence.
+
+The syntax for an outer for clause is the same as for a regular for clause,
+but with an extra <tt>outer</tt> keyword prepended before the <tt>for</tt>
+keyword.
+
+<tt>
+CountClause ::= "count" "$" VarName
+</tt>
+
+A count clause augments each tuple in it's input tuple stream with an
+additional variable, named in the clause. The value of this variable is
+the singleton xs:integer value of the ordinal position of the tuple in
+the input tuple stream, starting at 1.
+
 */

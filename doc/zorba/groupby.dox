@@ -4,11 +4,6 @@
 
 <table border="0">
 <tr>
-<td>FLWORExpr</td>
-<td>::=</td>
-<td>(ForClause | LetClause)+ | WhereClause? ( GroupByClause LetClause* WhereClause?)?  OrderByClause?  ReturnClause</td>
-</tr>
-<tr>
 <td>GroupByClause</td>    <td>::=</td>   <td> "group" "by" GroupingSpecList</td>
 </tr>
 <tr>
