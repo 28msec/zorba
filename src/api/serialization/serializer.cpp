@@ -676,7 +676,7 @@ int is_content_type_meta(const store::Item* item, const store::Item* element_par
   return 0;
 }
 
-int is_html_empty_element(const store::Item* item)
+static bool is_html_empty_element(const store::Item* item)
 {
   xqpString str(item->getNodeName()->getStringValue());
   str = str.lowercase();
@@ -694,9 +694,31 @@ int is_html_empty_element(const store::Item* item)
       str == "link" ||
       str == "meta" ||
       str == "param")
-    return 1;
+    return true;
   else
-    return 0;
+    return false;
+}
+
+static bool is_html_boolean_attribute(const xqpStringStore_t& attribute)
+{
+  xqpString str(attribute.getp());
+  str = str.lowercase();
+
+  if (str == "compact" ||
+      str == "nowrap" ||
+      str == "ismap" ||
+      str == "declare" ||
+      str == "noshade" ||
+      str == "checked" ||
+      str == "disabled" ||
+      str == "readonly" ||
+      str == "multiple" ||
+      str == "selected" ||
+      str == "noresize" ||
+      str == "defer")
+    return true;
+  else
+    return false;
 }
 
 void serializer::html_emitter::emit_node(
@@ -780,11 +802,20 @@ void serializer::html_emitter::emit_node(
   }
   else if (item->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    tr << " " << item->getNodeName()->getStringValue()->c_str() << "=\"";
-
-    emit_expanded_string(item->getStringValue(), true);
-
-    tr << "\"";
+    /*
+      The HTML output method MUST output boolean attributes (that is attributes with only a single
+      allowed value that is equal to the name of the attribute) in minimized form.
+    */
+    if (is_html_boolean_attribute(item->getNodeName()->getStringValue()))
+    {
+      tr << " " << item->getNodeName()->getStringValue()->c_str();
+    }
+    else
+    {
+      tr << " " << item->getNodeName()->getStringValue()->c_str() << "=\"";
+      emit_expanded_string(item->getStringValue(), true);
+      tr << "\"";
+    }
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
