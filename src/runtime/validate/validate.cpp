@@ -282,6 +282,7 @@ namespace zorba
         store::Item_t child;
 
         store::Item_t typeName;
+        int childIndex = 0;
         
         while ( children->next(child) )
         {
@@ -310,18 +311,29 @@ namespace zorba
                         xqpStringStore_t childStringValue = child->getStringValue();
                         schemaValidator.text(childStringValue);
 
-                        store::Item_t type = schemaValidator.getTypeQName();
-
-                        store::NsBindings nsBindings;
-                        parent->getNamespaceBindings(nsBindings);
-                        std::vector<store::Item_t> typedValues;
-                        processTextValue(planState, delegatingTypeManager, nsBindings, type, childStringValue, typedValues );
+                        store::Item_t typeQName = schemaValidator.getTypeQName();
                         
                         store::Item_t validatedTextNode;
-                        if ( typedValues.size()==1 ) // hack around serialization bug
-                            GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, typedValues[0]);
-                        else
-                            GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, typedValues);
+                        
+                        TypeIdentifier_t typeIdentifier = TypeIdentifier::createNamedType(typeQName->getNamespace(), typeQName->getLocalName() );
+                        xqtref_t xqType = delegatingTypeManager->create_type(*typeIdentifier);                        
+                        
+                        if ( xqType!=NULL && xqType->content_kind()==XQType::SIMPLE_CONTENT_KIND )
+                        {
+                            store::NsBindings nsBindings;
+                            parent->getNamespaceBindings(nsBindings);
+                            std::vector<store::Item_t> typedValues;
+                            processTextValue(planState, delegatingTypeManager, nsBindings, typeQName, childStringValue, typedValues );
+                            
+                            if ( typedValues.size()==1 ) // hack around serialization bug
+                                GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, typedValues[0]);
+                            else
+                                GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, typedValues);
+                        }
+                        else if ( xqType!=NULL && xqType->content_kind()==XQType::MIXED_CONTENT_KIND )
+                        {
+                            GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, childIndex, childStringValue);                               
+                        }
                     }
                     break;
                 
@@ -354,6 +366,8 @@ namespace zorba
                     ZORBA_ASSERT(false);
                 }
             }
+            
+            childIndex++;
         }
     }
 
