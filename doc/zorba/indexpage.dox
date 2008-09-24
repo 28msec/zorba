@@ -29,6 +29,7 @@
      <li> Feature Description
      <ul>
        <li> \ref groupby
+       <li> \ref gflwor
        <li> \ref trycatch
        <li> \ref eval
        <li> \ref rest

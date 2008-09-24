@@ -1,0 +1,17 @@
+/** \page gflwor General FLWOR - XQuery 1.1
+
+\section gflworgrammar GFLWOR Grammar
+
+<tt>
+FLWORExpr ::= InitialClause Clause* ReturnClause
+
+InitialClause ::= ForClause | LetClause | WindowClause
+
+Clause ::= InitialClause | WhereClause | GroupByClause | OrderByClause | CountClause
+</tt>
+
+\section gflworsem GFLWOR Semantics
+
+Each clause accepts a tuple stream as input, acts on that tuple stream, and produces a tuple stream as output. Apart from the initial clause requirement and the final return clause, all clauses can appear in any order.
+
+*/

@@ -26,9 +26,6 @@ A FLWOR expression may optionally have a group by clause that operates on the tu
 
 The post-grouping tuples have exactly the same variable-names as the pre-grouping tuples. The number of post-grouping tuples is less than or equal to the number of pre-grouping tuples. The group by clause assigns each pre-grouping tuple to a group, and generates one post-grouping tuple for each group. After the action of the group by clause, the pre-grouping tuples are no longer accessible. Subsequent clauses in the FLWOR expression operate on the post-grouping tuples, each of which represents a group.
 
-\Note Unfortunately, it's currently not possible to have a <code>LetClause</code> after the <code>GroupByClause</code>.
-      However, future Zorba releases will add this functionality.
-     
 
 \section groupbyexamples Group By Examples
 
