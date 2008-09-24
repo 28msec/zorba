@@ -1193,7 +1193,8 @@ serializer::~serializer()
 
 void serializer::reset()
 { 
-  version = "1.0";  
+  version = "1.0";
+  version_has_default_value = true;
   indent = PARAMETER_VALUE_NO;
   standalone = PARAMETER_VALUE_OMIT;
   omit_xml_declaration = PARAMETER_VALUE_NO;
@@ -1307,6 +1308,11 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
   {
     media_type = value;    
   }
+  else if (parameter_name == "version")
+  {
+    version = value;
+    version_has_default_value = false;
+  }
   else
   {
     ZORBA_ERROR( SEPM0016);
@@ -1324,6 +1330,12 @@ void serializer::validate_parameters(void)
     {
       // throw SEPM0009
     }
+  }
+
+  if (method == PARAMETER_VALUE_HTML && version_has_default_value == true)
+  {
+    // Default value for "version" when method is HTML is "4.0"
+    version = "4.0";
   }
 }
 

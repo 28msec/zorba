@@ -124,6 +124,9 @@ protected:
   xqp_string version;                // "1.1"
   short int indent;                  // "yes" or "no", implemented
 
+  bool version_has_default_value;    // true or false. Used during validation to set version to "4.0" when
+                                     // output method is "html"
+
   rchandle<emitter>    e;
   rchandle<transcoder> tr;
 
