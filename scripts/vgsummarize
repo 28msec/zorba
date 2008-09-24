@@ -41,7 +41,8 @@ while (<>) {
         $record = "$1 bytes $2 blocks $3\n";
     } elsif (m@==[0-9]+== ( ?)([A-Z].*)@) {
         # if $1 eq " ", inside an existing record; if not, new record
-        ($record eq "" || $1) || die ("Record not empty: $record");
+        # Segfaults are neither indented nor delimited by \n\n
+        # ($record eq "" || $1) || die ("Record not empty: $record");
         $record .= "$2\n";
     } elsif (m@==[0-9]+== *((at|by) 0x.*)@) {
         $record .= "$1\n"
