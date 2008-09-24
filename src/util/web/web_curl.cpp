@@ -17,8 +17,8 @@
 #include "util/web/web.h"
 
 #ifdef ZORBA_WITH_TIDY
-  #include <tidy/tidy.h>
-  #include <tidy/buffio.h>
+  #include <tidy.h>
+  #include <buffio.h>
 #endif
 
 #include <iostream>

@@ -31,11 +31,6 @@
 #include "zorbaerrors/error_manager.h"
 #include "context/static_context.h"
 
-// #ifdef ZORBA_WITH_TIDY
-//   #include <tidy/tidy.h>
-//   #include <tidy/buffio.h>
-// #endif
-
 namespace zorba {
 
   store::Item_t
