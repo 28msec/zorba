@@ -97,6 +97,17 @@ void CommandLineEventHandler::list( unsigned int aLineNo )
   list( aLineNo, aLineNo );
 }
 
+void CommandLineEventHandler::list( std::string &aFileName )
+{
+  std::ifstream lFile(aFileName.c_str());
+  while(lFile.good())
+  {
+    std::string lLine;
+    getline(lFile, lLine, '\n');
+    theOutput << lLine << std::endl;
+  }
+}
+
 void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, bool listAll )
 {
   update_location();
@@ -163,8 +174,8 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
         {
           if(colors && ((lLineNo==theLocation->getLineBegin() && j >= theLocation->getColumnBegin()) ||
              (theLocation->getLineBegin() != theLocation->getLineEnd() && lLineNo==theLocation->getLineEnd() && j <= theLocation->getColumnEnd()) ||
-             (lLineNo > theLocation->getLineBegin() && lLineNo < theLocation->getLineEnd())
-            ))
+             (lLineNo > theLocation->getLineBegin() && lLineNo < theLocation->getLineEnd()))
+            )
           {
             theOutput << "\033[1m" << lLine.at(j-1) << "\033[0m";
           } else {
@@ -422,6 +433,8 @@ void CommandLineEventHandler::handle_cmd()
           int start = theLocation.get()==0?0:theLocation->getLineBegin()-line;
           int end = theLocation.get()==0?0:theLocation->getLineBegin()+line;
           list( start<=0?1:start, end<=0?1:end );
+        } else if ( lArgs.size() >= 2 && atoi(lArgs.at(1).c_str()) == 0 ) {
+          list(lArgs.at(1));
         } else {
           list();
        }

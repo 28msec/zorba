@@ -62,6 +62,8 @@ class CommandLineEventHandler: public DefaultDebuggerEventHandler
 
     void list( unsigned int aBegin, unsigned int anEnd, bool listAll = false );
 
+    void list( std::string &aFileName );
+
     void suspend( int aSignum );
 
     bool colors;
