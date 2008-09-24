@@ -293,7 +293,6 @@ IF( APPLE AND UNIVERSAL )
   INCLUDE_DIRECTORIES	 ( SYSTEM /usr/local/include )
   SET ( CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -v")
   MESSAGE( "Building Apple universal binaries" )
-  SET( CMAKE_SKIP_RPATH ON )
 ENDIF( APPLE AND UNIVERSAL )
 
 

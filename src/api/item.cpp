@@ -34,7 +34,7 @@
 namespace zorba {
 
 #define ITEM_TRY try {
-#define ITEM_CATCH } catch (::zorba::error::ZorbaError &e) {  \
+#define ITEM_CATCH } catch ( ::zorba::error::ZorbaError & e) {  \
   throw SystemException(e.theErrorCode, String(e.theDescription.theStrStore), "", 0); \
   } catch (std::exception& e) { \
     throw SystemException(XQP0019_INTERNAL_ERROR, e.what(), "", 0); \

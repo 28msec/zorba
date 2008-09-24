@@ -24,6 +24,10 @@ CREATE_TEST_SOURCELIST(UnitTests
 ADD_EXECUTABLE(UnitTests ${UnitTests})
 TARGET_LINK_LIBRARIES(UnitTests zorba simplestore)
 
+IF ( APPLE )
+    SET( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -all_load" )
+ENDIF (APPLE)
+
 # remove the test driver source file
 SET (TestsToRun ${UnitTests})
 REMOVE (TestsToRun UnitTests.cpp)

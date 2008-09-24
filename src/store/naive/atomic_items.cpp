@@ -109,10 +109,11 @@ store::Item_t QNameItemImpl::getEBV( ) const
 
 xqpStringStore_t QNameItemImpl::getStringValue( ) const
 {
-  if (thePrefix->empty())
+  if (thePrefix->empty()) {
     return theLocal;
-  else
+  } else {
     return new xqpStringStore(thePrefix->str() + ":" + theLocal->str());
+  }
 }
 
 
