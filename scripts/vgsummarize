@@ -32,19 +32,20 @@ $record = "";
 while (<>) {
 
     if (m@^test (.*)@) { $newtest = $1 }
-    elsif (m@^Query:$@ && $newtest) {
+    elsif (m@^Query( \(Run [0-9]+\))?:$@ && $newtest) {
         # new test confirmed
         $test = $newtest; $newtest = "";
         $firstrecord = 1;
-    }
-    elsif (m@==[0-9]+== (.*) bytes in ([0-9,]+) blocks (.*) in loss .*@) {
+    } elsif (m@==[0-9]+== (.*) bytes in ([0-9,]+) blocks (.*) in loss .*@) {
         $record eq "" || die ("Record not empty: $record");
-        $record .= "$1 bytes $2 blocks $3\n";
-    }
-    elsif (m@==[0-9]+== *((at|by) 0x.*)@) {
+        $record = "$1 bytes $2 blocks $3\n";
+    } elsif (m@==[0-9]+== ( ?)([A-Z].*)@) {
+        # if $1 eq " ", inside an existing record; if not, new record
+        ($record eq "" || $1) || die ("Record not empty: $record");
+        $record .= "$2\n";
+    } elsif (m@==[0-9]+== *((at|by) 0x.*)@) {
         $record .= "$1\n"
-    }
-    elsif ($record) {
+    } elsif ($record) {
         my $r = $record; $record = "";
         if ($records {$r} || ($except_regex && $r =~ m@($except_regex)@)) { next; }
         if ($firstrecord) {
