@@ -73,6 +73,10 @@ PULImpl::~PULImpl()
   num = theDeleteList.size();
   for (ulong i = 0; i < num; i++)
     delete theDeleteList[i];
+
+  num = theValidationList.size();
+  for (ulong i = 0; i < num; i++)
+    delete theValidationList[i];
 }
 
 
