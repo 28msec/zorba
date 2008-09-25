@@ -20,7 +20,7 @@ Zorba_CompilerHints::Zorba_CompilerHints()
 {}
 
 Zorba_SerializerOptions::Zorba_SerializerOptions()
-: ser_method(ZORBA_SERIALIZATION_METHOD_HTML),
+: ser_method(ZORBA_SERIALIZATION_METHOD_XML),
   byte_order_mark(ZORBA_BYTE_ORDER_MARK_NO),
   escape_uri_attributes(ZORBA_ESCAPE_URI_ATTRIBUTES_NO),
   include_content_type(ZORBA_INCLUDE_CONTENT_TYPE_NO),
