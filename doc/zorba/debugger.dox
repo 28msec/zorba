@@ -60,7 +60,7 @@ Once XQDB is started, you can use the debugger client commands. There are basica
 
 \subsection dataCommands Data Commands
 <ul>
-  <li>list (shortcut: l): List the current line of the query that is being executed. Use list more to expand the listing or list number of lines to select the number of line you want to print.</li>
+  <li>list (shortcut: l): List the current line of the query that is being executed. Use list more to expand the listing or list number of lines to select the number of line you want to print. list filename prints the content of the file: it can be either xml data or an xquery module.</li>
   <li>variables: (shortcut: vars): Print the list of all the variables that are in scope.</li>
   <li>print: (shortcut: p): Print the result of an xquery expression and its type. You can use all the variables that are in scope.</li>
 </ul>
@@ -181,4 +181,19 @@ If you rerun the query, it will again break at line 16. However it will break on
 
 \subsection modules Working with modules
 
-*/
+Zorba debugger is aware of modules when you run a query.
+Use list to print the module. You can set breakpoints in the module with the following syntax: <filename>:<line number>:
+<pre>
+(xqdb) list mymodule.xq
+1 module namespace shopping = "http://www.zorba-xquery.com/shopping";
+2 
+3 declare function shopping:discount($price as xs:decimal?, $discount as xs:decimal?) as xs:decimal?
+4 {
+5   let $disc := ($price*$discount) div 100
+6   return ($price - $disc)
+7 };
+8 
+(xqdb) b mymodule.xq:5
+(xqdb) r
+let $disc:= ($price*$discount) div 100
+</pre>
