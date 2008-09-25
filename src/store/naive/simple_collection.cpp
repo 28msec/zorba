@@ -156,9 +156,8 @@ void SimpleCollection::addNode(
   {
     for (; it != end; ++it)
     {
-      //check if the nodes have the same ID
-      if((reinterpret_cast<XmlNode*>(it->getp()))->getTreeId() == rTargetNode->getTreeId() &&
-         (reinterpret_cast<XmlNode*>(it->getp()))->getOrdPath() == rTargetNode->getOrdPath())
+      //check if the nodes are the same
+      if(rTargetNode->equals(reinterpret_cast<XmlNode*>(it->getp())))
       {
         if(aOrder)
           theXmlTrees.insert(it, const_cast<store::Item*>(node));
@@ -348,9 +347,8 @@ SimpleCollection::nodePositionInCollection(store::Item* newNode)
     const XmlNode* rNewNode = reinterpret_cast<const XmlNode*>(newNode);
 
     for (; it != end; ++it)
-      //check if the nodes have the same ID
-      if((reinterpret_cast<XmlNode*>(it->getp()))->getTreeId() == rNewNode->getTreeId() &&
-         (reinterpret_cast<XmlNode*>(it->getp()))->getOrdPath() == rNewNode->getOrdPath())
+      //check if the nodes are the same
+      if(rNewNode->equals(reinterpret_cast<XmlNode*>(it->getp())))
         return (it - theXmlTrees.begin());
     return -1;
   }
