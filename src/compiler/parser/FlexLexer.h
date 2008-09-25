@@ -62,8 +62,8 @@ class FlexLexer {
 public:
 	virtual ~FlexLexer()	{ }
 
-	const char* YYText() const	{ return yytext; }
-	int YYLeng()	const	{ return yyleng; }
+	const char* YYText()	{ return yytext; }
+	int YYLeng()		{ return yyleng; }
 
 	virtual void
 		yy_switch_to_buffer( struct yy_buffer_state* new_buffer ) = 0;
@@ -99,12 +99,12 @@ protected:
 };
 
 }
-#endif // FLEXLEXER_H
+#endif
 
 #if defined(yyFlexLexer) || ! defined(yyFlexLexerOnce)
 // Either this is the first time through (yyFlexLexerOnce not defined),
 // or this is a repeated include to define a different flavor of
-// yyFlexLexer, as discussed in the flex manual.
+// yyFlexLexer, as discussed in the flex man page.
 #define yyFlexLexerOnce
 
 extern "C++" {
@@ -122,12 +122,11 @@ public:
 	void yy_delete_buffer( struct yy_buffer_state* b );
 	void yyrestart( FLEX_STD istream* s );
 
-	void yypush_buffer_state( struct yy_buffer_state* new_buffer );
-	void yypop_buffer_state();
+    void yypush_buffer_state( struct yy_buffer_state* new_buffer );
+    void yypop_buffer_state(void);
 
 	virtual int yylex();
-	virtual void switch_streams( FLEX_STD istream* new_in, FLEX_STD ostream* new_out = 0 );
-	virtual int yywrap();
+	virtual void switch_streams( FLEX_STD istream* new_in, FLEX_STD ostream* new_out );
 
 protected:
 	virtual int LexerInput( char* buf, int max_size );
@@ -173,10 +172,10 @@ protected:
 	int yy_did_buffer_switch_on_eof;
 
 
-	size_t yy_buffer_stack_top; /**< index of top of stack. */
-	size_t yy_buffer_stack_max; /**< capacity of stack. */
-	struct yy_buffer_state ** yy_buffer_stack; /**< Stack as an array. */
-	void yyensure_buffer_stack(void);
+    size_t yy_buffer_stack_top; /**< index of top of stack. */
+    size_t yy_buffer_stack_max; /**< capacity of stack. */
+    struct yy_buffer_state ** yy_buffer_stack; /**< Stack as an array. */
+    void yyensure_buffer_stack(void);
 
 	// The following are not always needed, but may be depending
 	// on use of certain flex features (like REJECT or yymore()).
@@ -202,5 +201,4 @@ protected:
 
 }
 
-#endif // yyFlexLexer || ! yyFlexLexerOnce
-
+#endif

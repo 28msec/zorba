@@ -48,7 +48,7 @@ namespace zorba
 }
 
 /* First part of user declarations.  */
-#line 38 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 38 "/Users/wcandillon/zorba/src/compiler/parser/xquery_parser.y"
 
 
 #include "common/common.h"
@@ -88,8 +88,8 @@ namespace zorba {
 
 
 
-/* Line 35 of lalr1.cc.  */
-#line 93 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+/* Line 303 of lalr1.cc.  */
+#line 93 "/Users/wcandillon/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -140,7 +140,7 @@ namespace zorba
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 121 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 121 "/Users/wcandillon/zorba/src/compiler/parser/xquery_parser.y"
 {
   zorba::parsenode * node;
   zorba::exprnode * expr;
@@ -151,8 +151,8 @@ namespace zorba
 	xqp_double* dval;
 	xqp_decimal* decval;
 }
-/* Line 35 of lalr1.cc.  */
-#line 156 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+/* Line 303 of lalr1.cc.  */
+#line 156 "/Users/wcandillon/zorba/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;
