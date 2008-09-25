@@ -160,7 +160,7 @@ void PULImpl::addInsertBefore(
     std::vector<store::Item_t>&      siblings,
     const store::CopyMode&           copymode)
 {
-  store::Item_t parent;
+  store::Item_t parent = target->getParent();
 
   addInsertChildren(store::UpdateConsts::UP_INSERT_BEFORE,
                     parent, target, siblings, copymode);
@@ -172,7 +172,7 @@ void PULImpl::addInsertAfter(
     std::vector<store::Item_t>&      siblings,
     const store::CopyMode&           copymode)
 {
-  store::Item_t parent;
+  store::Item_t parent = target->getParent();
 
   addInsertChildren(store::UpdateConsts::UP_INSERT_AFTER,
                     parent, target, siblings, copymode);
