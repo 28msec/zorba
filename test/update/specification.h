@@ -304,14 +304,18 @@ public:
             }
           }
           break;
-        } else if ( *lIter == "Compare:" ){
+        }
+        else if ( *lIter == "Compare:" )
+        {
           ++lIter;
           if(lIter == tokens.end() ) { return false; }
           addCompare(lIter->begin(), lIter->end());
           ++lIter;
           if(lIter == tokens.end() ) { return false; }
           addCompareType(lIter->begin(), lIter->end());
-        } else if ( *lIter == "State:" ) {
+        }
+        else if ( *lIter == "State:" ) 
+        {
           if(first_query){
             first_query = false;
           } else {
@@ -320,25 +324,35 @@ public:
           ++lIter;
           if(lIter == tokens.end() ) { return false; }
           addState(lIter->begin(), lIter->end());
-        } else if ( *lIter == "Error:" ) { 
+        }
+        else if ( *lIter == "Error:" )
+        { 
           ++lIter;
           if(lIter == tokens.end() ) { return false; }
           addError(lIter->begin(), lIter->end());
-        } else if ( lIter->find("Compare:") != std::string::npos){
+        }
+        else if ( lIter->find("Compare:") != std::string::npos)
+        {
           addCompare( lIter->begin()+lIter->find(":")+1, lIter->end() );
           ++lIter;
           if(lIter == tokens.end() ) { return false; }
           addCompareType(lIter->begin(), lIter->end());
-        } else if ( lIter->find("State:") != std::string::npos ) {
+        }
+        else if ( lIter->find("State:") != std::string::npos ) 
+        {
           if(first_query){
             first_query = false;
           } else {
             addQuery();
           }
           addState( lIter->begin()+lIter->find(":")+1, lIter->end());
-        } else if ( lIter->find("Error:") != std::string::npos ) {
+        }
+        else if ( lIter->find("Error:") != std::string::npos ) 
+        {
           addError(lIter->begin()+lIter->find(":")+1, lIter->end());
-        } else {
+        }
+        else
+        {
           break;
         }
       }
