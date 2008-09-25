@@ -564,7 +564,7 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     std::vector<store::Item*> copyNodes(numCopyClauses);
 
     // For each copy var compute the target node and bind that node to all
-    // reference of the copy var.
+    // references of the copy var.
     for(ulong i = 0; i < numCopyClauses; i++)
     {
       const CopyClause& copyClause = theCopyClauses[i];
@@ -575,12 +575,12 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
         ZORBA_ERROR_LOC(XUTY0013, loc);
       }
 
-      copyNodes[i] = lCopyNode->copy(NULL, 0, lCopyMode);
-
       if (consumeNext(temp, copyClause.theInput, aPlanState))
       {
         ZORBA_ERROR_LOC(XUTY0013, loc);
       }
+
+      copyNodes[i] = lCopyNode->copy(NULL, 0, lCopyMode);
 
       lVarRefIter = copyClause.theCopyVars.begin();
       lVarRefEnd = copyClause.theCopyVars.end();
