@@ -220,7 +220,7 @@ void Base64::encode(const xqpStringStore* aString, Base64& aResult)
   
   const char* lTmp = aString->c_str();
   const char* lRun = lTmp;
-  for (int i = 0; i < aString->str().length(); ++i) {
+  for (uint i = 0; i < aString->str().length(); ++i) {
     source.push_back((*lRun));
     ++lRun;
   }
