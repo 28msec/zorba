@@ -64,14 +64,18 @@ class MyDebuggerEventHandler: public DefaultDebuggerEventHandler
       std::cerr << "Query terminated" << std::endl; 
     }
 
-    void evaluated( String &anExpr, String &aResult, String &aReturnType, String &anError )
+    void evaluated(String &anExpr, std::map<String, String> &aValuesAndTypes)
     {
-      if ( anError == "" )
+      std::map<String, String>::iterator it;
+      for(it=aValuesAndTypes.begin(); it!=aValuesAndTypes.end(); ++it)
       {
-        std::cerr << anExpr << ": " << aResult << std::endl;
-      } else {
-        std::cerr << anError << std::endl;
-      }
+        std::cerr << it->first << " " << it->second << std::endl;
+      }   
+    }
+  
+    void evaluated(String &anExpr, String &anError)
+    {
+      std::cerr << "An error happened: " << anError << std::endl;
     }
 };
 
