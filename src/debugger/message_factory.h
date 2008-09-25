@@ -20,38 +20,11 @@
 #include <iostream>
 
 #include "debugger/socket.h"
+#include "debugger/utils.h"
 #include "debugger/debugger_protocol.h"
 
 namespace zorba
 {
-
-template<class T>
-class ZorbaArrayAutoPointer
-{
-  private:
-    T* thePtr;
-
-  public:
-    ZorbaArrayAutoPointer(T *aPtr): thePtr(aPtr){}
-
-    ~ZorbaArrayAutoPointer()
-    {
-      delete[] thePtr;
-    }
-
-    void reset(T *aPtr)
-    {
-      T *lPtr = thePtr;
-      thePtr = aPtr;
-      delete[] lPtr;
-    }
-
-    T *get()
-    {
-      return thePtr;
-    }
-};
-
 /**
  * Zorba Debugger message factory
  * TODO: Check error handling 

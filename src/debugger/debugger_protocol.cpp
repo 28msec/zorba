@@ -26,6 +26,8 @@
 #include "json/parser.h"
 #include "json/value.h"
 
+#include "debugger/utils.h"
+
 namespace zorba{
 
 bool is_little_endian()
@@ -69,6 +71,19 @@ std::ostream& operator << ( std::ostream &os, const AbstractMessage * message )
   const char * lData = reinterpret_cast< const char * > ( message->serialize( length ) );
   os.write( lData, length );
   return os;
+}
+
+json::value* getValue(Byte* aMessage, const unsigned int aLength)
+{
+  char* lMessage = reinterpret_cast<char *>(aMessage+MESSAGE_SIZE);
+  json::parser lParser;
+  json::value* lValue = lParser.parse(lMessage, aLength-MESSAGE_SIZE);
+  return lValue;
+}
+
+json::value* getValue(json::value* aValue, std::string anIndex)
+{
+  return (*aValue)[anIndex.c_str()];
 }
 
 bool AbstractMessage::operator == ( const AbstractMessage & message )
@@ -144,12 +159,12 @@ ReplyMessage::ReplyMessage( Byte * aMessage, const unsigned int aLength ):  Abst
   memcpy( theReplyContent, lmsg, SIZE_OF_REPLY_CONTENT );
   if ( aLength - MESSAGE_SIZE > 0 )
   {
-    char * lData = new char[ aLength - MESSAGE_SIZE + 1 ];
+    //char * lData = new char[ aLength - MESSAGE_SIZE + 1 ];
+    ZorbaArrayAutoPointer<char> lData(new char[ aLength - MESSAGE_SIZE + 1 ]);
     //char *lMessage = reinterpret_cast<char *>( aMessage + MESSAGE_SIZE );
-    memset(lData, '\0', aLength - MESSAGE_SIZE + 1);
-    memcpy( lData, aMessage + MESSAGE_SIZE, aLength - MESSAGE_SIZE );
-    theData = xqpString( lData );
-    delete[] lData;
+    memset(lData.get(), '\0', aLength - MESSAGE_SIZE + 1);
+    memcpy( lData.get(), aMessage + MESSAGE_SIZE, aLength - MESSAGE_SIZE );
+    theData = xqpString( lData.get() );
   }
   checkIntegrity();
 }
@@ -334,11 +349,10 @@ StepMessage::~StepMessage(){}
 
 Byte * StepMessage::serialize( Length & aLength ) const
 {
-  Byte * lHeader = AbstractCommandMessage::serialize( aLength );
+  ZorbaArrayAutoPointer<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   Byte * lMsg = new Byte[ MESSAGE_SIZE + 1 ];
-  memcpy( lMsg, lHeader, MESSAGE_SIZE );
+  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
   lMsg[ 11 ] = theKind;
-  delete[] lHeader;
   aLength = getLength();
   return lMsg; 
 }
@@ -362,34 +376,34 @@ SetMessage::SetMessage(): AbstractCommandMessage( BREAKPOINTS, SET ){}
 SetMessage::SetMessage( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength )
 {
-  char * lMessage = new char[ aLength + 1 ];
-  memset( lMessage, '\0', aLength );
-  memcpy( lMessage, aMessage + MESSAGE_SIZE, aLength - MESSAGE_SIZE );
-  json::parser lParser;
-  json::value * lValue = lParser.parse( lMessage, aLength - MESSAGE_SIZE );
-  if ( (*lValue)["breakpoints"]  != 0 )
+  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
+  
+  json::value* breakpoints = getValue(lValue.get(), "breakpoints");
+  if( breakpoints != 0 )
   {
+    json::array_list_t* list = breakpoints->getarraylist();
     json::array_list_t::iterator it; 
-    for ( it=(*lValue)["breakpoints"]->getarraylist()->begin(); it != (*lValue)["breakpoints"]->getarraylist()->end(); it++ )
+    
+    for ( it=list->begin(); it != list->end(); ++it )
     {
-      if ((**it)["location"] != 0 )
+      if ( getValue(*it, "location") != 0 )
       {
         QueryLoc loc;
-        loc.fromJSON( (**it)["location"] );
-        if ( (**it)["id"] == 0 )
+        loc.fromJSON(getValue(*it, "location"));
+        if ( getValue(*it, "id") == 0 )
         {
           throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
         }
-        theLocations.insert( std::make_pair((**it)["id"]->getinteger(), loc) );
-      } else if ( (**it)["expr"] != 0 ) {
-        std::wstring *lExpr = (**it)["expr"]->getstring(L"", true);
+        theLocations.insert( std::make_pair(getValue(*it, "id")->getinteger(), loc) );
+      } else if ( getValue( *it, "expr" ) != 0 ) {
+        std::wstring* lExpr = getValue(*it, "expr")->getstring(L"", true);
         std::string expr( lExpr->begin()+1, lExpr->end()-1 );
        	delete lExpr; 
-	if ( (**it)["id"] == 0 )
+	      if ( getValue(*it, "id") == 0 )
         {
           throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
         }
-        theExprs.insert( std::make_pair( (**it)["id"]->getinteger(),  xqpString( expr ) ) );
+        theExprs.insert( std::make_pair( getValue(*it, "id")->getinteger(),  xqpString( expr ) ) );
       } else {
         throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
       }
@@ -397,26 +411,21 @@ SetMessage::SetMessage( Byte * aMessage, const unsigned int aLength ):
   } else {
     throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
   }
-  delete lValue;
-  //setLength( MESSAGE_SIZE + getData().length() );  
   checkIntegrity();
-  delete[] lMessage;
 }
 
 SetMessage::~SetMessage(){}
 
 Byte * SetMessage::serialize( Length & aLength ) const
 {
-  Byte * lHeader = AbstractCommandMessage::serialize( aLength );
+  ZorbaArrayAutoPointer<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   std::string lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '\0', getLength()+1);
-  memcpy( lMsg, lHeader, MESSAGE_SIZE );
+  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
-  //memcpy( lMsg + MESSAGE_SIZE, s, l - 1 );
   memcpy( lMsg + MESSAGE_SIZE, s, l );
-  delete[] lHeader;
   aLength = getLength();
   return lMsg; 
 }
@@ -452,21 +461,19 @@ ClearMessage::ClearMessage(): AbstractCommandMessage( BREAKPOINTS, CLEAR ){}
 ClearMessage::ClearMessage( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength )
 {
-  char * lMessage = reinterpret_cast< char * >( aMessage + MESSAGE_SIZE );
-  json::parser lParser;
-  json::value * lValue = lParser.parse( lMessage, aLength );
-  if ( (*lValue)["ids"]  != 0 )
+  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
+  json::value* ids = getValue(lValue.get(), "ids");
+  if ( ids != 0 )
   {
+    json::array_list_t* list =  ids->getarraylist();
     json::array_list_t::iterator it; 
-    for ( it=(*lValue)["ids"]->getarraylist()->begin(); it != (*lValue)["ids"]->getarraylist()->end(); it++ )
+    for (it=list->begin(); it!=list->end(); ++it)
     {
       theIds.push_back( (*it)->getinteger() );
     }
   } else {
     throw MessageFormatException("Invalid JSON format for Clear breakpoint message.");
   }
-  //setLength( MESSAGE_SIZE + getData().length() );  
-  delete lValue;
   checkIntegrity();
 }
 
@@ -474,16 +481,14 @@ ClearMessage::~ClearMessage(){}
 
 Byte * ClearMessage::serialize( Length & aLength ) const
 {
-  Byte * lHeader = AbstractCommandMessage::serialize( aLength );
+  ZorbaArrayAutoPointer<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   std::string lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '\0', getLength()+1);
-  memcpy( lMsg, lHeader, MESSAGE_SIZE );
+  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
-  //memcpy( lMsg + MESSAGE_SIZE, s, l - 1 );
   memcpy( lMsg + MESSAGE_SIZE, s, l );
-  delete[] lHeader;
   aLength = getLength();
   return lMsg; 
 }
@@ -544,25 +549,23 @@ SuspendedEvent::SuspendedEvent( const QueryLoc &aLocation, const SuspensionCause
 SuspendedEvent::SuspendedEvent( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength )
 {
-  char * lMessage = reinterpret_cast< char * >( aMessage + MESSAGE_SIZE );
-  json::parser lParser;
-  json::value * lValue = lParser.parse( lMessage, aLength - MESSAGE_SIZE );
-  assert( lValue != 0 );
-  if ( (*lValue)["cause"]  != 0 )
+  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
+  json::value* cause = getValue(lValue.get(), "cause");
+  json::value* location = getValue(lValue.get(), "location");
+
+  if ( cause  != 0 )
   {
-    theCause = (*lValue)["cause"]->getinteger();
+    theCause = cause->getinteger();
   } else {
     throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
   }
   
-  if ( (*lValue)["location"]  != 0 )
+  if ( location  != 0 )
   {
-    theLocation.fromJSON( (*lValue)["location"] );
+    theLocation.fromJSON( location );
   } else {
     throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
   }
-  //setLength( MESSAGE_SIZE + getData().length() );  
-  delete lValue;
   checkIntegrity();
 }
 
@@ -570,16 +573,14 @@ SuspendedEvent::~SuspendedEvent(){}
 
 Byte * SuspendedEvent::serialize( Length & aLength ) const
 {
-  Byte * lHeader = AbstractCommandMessage::serialize( aLength );
+  ZorbaArrayAutoPointer<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   std::string lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '0', getLength()+1);
-  memcpy( lMsg, lHeader, MESSAGE_SIZE );
+  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
-  //memcpy( lMsg + MESSAGE_SIZE, s, l - 1 );
   memcpy( lMsg + MESSAGE_SIZE, s, l );
-  delete[] lHeader;
   aLength = getLength();
   return lMsg; 
 }
@@ -647,15 +648,17 @@ EvaluatedEvent::EvaluatedEvent( xqpString anExpr, std::map<xqpString, xqpString>
     checkIntegrity();
 }
 
-EvaluatedEvent::EvaluatedEvent( Byte * aMessage, const unsigned int aLength ):
+EvaluatedEvent::EvaluatedEvent( Byte* aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength )
 {
-  char * lMessage = reinterpret_cast< char * >( aMessage + MESSAGE_SIZE );
-  json::parser lParser;
-  json::value * lValue = lParser.parse( lMessage, aLength - MESSAGE_SIZE );
-  if ( (*lValue)["expr"]  != 0 )
+  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
+  json::value* expr = getValue(lValue.get(), "expr");
+  json::value* results = getValue(lValue.get(), "results");
+  json::value* error = getValue(lValue.get(), "error");
+
+  if (expr != 0)
   {
-    std::wstring* lWString = (*lValue)["expr"]->getstring(L"", true);
+    std::wstring* lWString = expr->getstring(L"", true);
     std::string lString( lWString->begin()+1, lWString->end()-1 );
     delete lWString;
     theExpr = lString;
@@ -663,27 +666,24 @@ EvaluatedEvent::EvaluatedEvent( Byte * aMessage, const unsigned int aLength ):
     throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
   }
   
-  if ( (*lValue)["results"]  != 0 )
+  if (results != 0)
   {
+    json::array_list_t* list = results->getarraylist();
     json::array_list_t::iterator it;
-    for ( it  = (*lValue)["results"]->getarraylist()->begin();
-          it != (*lValue)["results"]->getarraylist()->end();
-          it++ )
+    for (it=list->begin(); it!=list->end(); it++)
     {
-      json::value *lVariable = (*it);
-      
-      if ( (*lVariable)["result"] == 0 )
+      if ( getValue(*it, "result") == 0 )
       {
         throw MessageFormatException("Invalid JSON format for variable message.");
       }
-      std::wstring *lName = (*lVariable)["result"]->getstring(L"", true);
+      std::wstring *lName = getValue(*it, "result")->getstring(L"", true);
       std::string result = std::string( lName->begin()+1, lName->end()-1 );
       delete lName;
-      if ( (*lVariable)["type"] == 0 )
+      if ( getValue(*it, "type") == 0 )
       {
         throw MessageFormatException("Invalid JSON format for variable message.");
       }
-      std::wstring *lType = (*lVariable)["type"]->getstring(L"", true);
+      std::wstring *lType = getValue(*it, "type")->getstring(L"", true);
       std::string type = std::string( lType->begin()+1, lType->end()-1 );
       delete lType; 
       theValuesAndTypes.insert(std::make_pair(result, type));
@@ -692,16 +692,15 @@ EvaluatedEvent::EvaluatedEvent( Byte * aMessage, const unsigned int aLength ):
     throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
   }
 
-  if ( (*lValue)["error"]  != 0 )
+  if ( error != 0 )
   {
-    std::wstring* lWString = (*lValue)["error"]->getstring(L"", true);
+    std::wstring* lWString = error->getstring(L"", true);
     std::string lString( lWString->begin()+1, lWString->end()-1 );
     delete lWString;
     theError = lString;
   } else {
     throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
   }
-  delete lValue; 
   checkIntegrity();
 }
 
@@ -724,18 +723,15 @@ xqpString EvaluatedEvent::getError() const
 
 Byte * EvaluatedEvent::serialize( Length &aLength ) const
 {
-  Byte * lHeader = AbstractCommandMessage::serialize( aLength );
+  ZorbaArrayAutoPointer<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   xqpString lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '0', getLength()+1);
-  memcpy( lMsg, lHeader, MESSAGE_SIZE );
+  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
-  //memcpy( lMsg + MESSAGE_SIZE, s, l - 1 );
   memcpy( lMsg + MESSAGE_SIZE, s, l );
-  //delete[] lHeader;
   aLength = getLength();
-  delete[] lHeader;
   return lMsg; 
 }
 
@@ -775,19 +771,17 @@ EvalMessage::EvalMessage( xqpString anExpr ):
 EvalMessage::EvalMessage( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength )
 {
-  char * lMessage = reinterpret_cast< char * >( aMessage + MESSAGE_SIZE );
-  json::parser lParser;
-  json::value * lValue = lParser.parse( lMessage, aLength - MESSAGE_SIZE );
-  if ( (*lValue)["expr"]  != 0 )
+  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
+  json::value* expr = getValue(lValue.get(), "expr");
+  if (expr != 0)
   {
-    std::wstring* lWString = (*lValue)["expr"]->getstring(L"", true);
+    std::wstring* lWString = expr->getstring(L"", true);
     std::string lString( lWString->begin()+1, lWString->end()-1 );
     delete lWString;
     theExpr = lString;
   } else {
     throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
   }
-  delete lValue;
   checkIntegrity();
 }
 
@@ -805,15 +799,14 @@ xqpString EvalMessage::getData() const
 
 Byte * EvalMessage::serialize( Length & aLength ) const
 {
-  Byte * lHeader = AbstractCommandMessage::serialize( aLength );
+  ZorbaArrayAutoPointer<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   xqpString lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '0', getLength()+1);
-  memcpy( lMsg, lHeader, MESSAGE_SIZE );
+  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
   memcpy( lMsg + MESSAGE_SIZE, s, l );
-  delete[] lHeader;
   aLength = getLength();
   return lMsg; 
 }
@@ -850,30 +843,31 @@ VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
   ReplyMessage( aMessage, aLength )
 {
   setFlags( REPLY_VARIABLE_FLAG );
-  char *lMessage = reinterpret_cast<char *>( aMessage + MESSAGE_SIZE );
-  json::parser lParser;
-  json::value *lValue = lParser.parse( lMessage, aLength - MESSAGE_SIZE );
-  if ( (*lValue)["globals"] != 0 )
+  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
+  json::value* globals = getValue(lValue.get(), "globals");
+  json::value* locals = getValue(lValue.get(), "locals");
+
+  if ( globals != 0 )
   {
+    json::array_list_t* list = globals->getarraylist();
     json::array_list_t::iterator it;
-    for ( it  = (*lValue)["globals"]->getarraylist()->begin();
-          it != (*lValue)["globals"]->getarraylist()->end();
-          it++ )
+    for (it=list->begin(); it!=list->end(); it++)
     {
-      json::value *lVariable = (*it);
-      
-      if ( (*lVariable)["name"] == 0 )
+      json::value* Name = getValue(*it, "name");
+      json::value* Type = getValue(*it, "type");
+
+      if ( Name == 0 )
       {
         throw MessageFormatException("Invalid JSON format for variable message.");
       }
-      std::wstring *lName = (*lVariable)["name"]->getstring(L"", true);
+      std::wstring *lName = Name->getstring(L"", true);
       std::string name = std::string( lName->begin()+1, lName->end()-1 );
       delete lName;
-      if ( (*lVariable)["type"] == 0 )
+      if ( Type == 0 )
       {
         throw MessageFormatException("Invalid JSON format for variable message.");
       }
-      std::wstring *lType = (*lVariable)["type"]->getstring(L"", true);
+      std::wstring *lType = Type->getstring(L"", true);
       std::string type = std::string( lType->begin()+1, lType->end()-1 );
       delete lType; 
       addGlobal(name, type);
@@ -882,32 +876,31 @@ VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
     throw MessageFormatException("Invalid JSON format for variable message.");
   }
 
-  if ( (*lValue)["locals"] != 0 )
+  if ( locals != 0 )
   {
+    json::array_list_t* list = locals->getarraylist();
     json::array_list_t::iterator it;
-    for ( it  = (*lValue)["locals"]->getarraylist()->begin();
-          it != (*lValue)["locals"]->getarraylist()->end();
-          it++ )
+    for ( it =list->begin(); it!= list->end(); it++ )
     {
-      json::value *lVariable = (*it);
-      
-      if ( (*lVariable)["name"] == 0 )
+      json::value* Name = getValue(*it, "name");
+      json::value* Type = getValue(*it, "type");
+
+      if ( Name == 0 )
       {
         throw MessageFormatException("Invalid JSON format for variable message.");
       }
-      std::wstring *lName = (*lVariable)["name"]->getstring(L"", true);
+      std::wstring *lName = Name->getstring(L"", true);
       std::string name = std::string( lName->begin()+1, lName->end()-1 );
       delete lName;
-      if ( (*lVariable)["type"] == 0 )
+      if ( Type == 0 )
       {
         throw MessageFormatException("Invalid JSON format for variable message.");
       }
-      std::wstring *lType = (*lVariable)["type"]->getstring(L"", true);
+      std::wstring *lType = Type->getstring(L"", true);
       std::string type = std::string( lType->begin()+1, lType->end()-1 );
       delete lType; 
       addLocal(name, type);
     }
-    delete lValue;
   } else {
     throw MessageFormatException("Invalid JSON format for variable message.");
   }
@@ -946,15 +939,14 @@ xqpString VariableReply::getData() const
 
 Byte * VariableReply::serialize( Length & aLength ) const
 {
-  Byte * lHeader = ReplyMessage::serialize( aLength );
+  ZorbaArrayAutoPointer<Byte> lHeader(ReplyMessage::serialize( aLength ));
   xqpString lJSONString = getData();
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
   Byte * lMsg = new Byte[ MESSAGE_SIZE + l + 1 ];
   memset(lMsg, '0', MESSAGE_SIZE + l + 1);
-  memcpy( lMsg, lHeader, MESSAGE_SIZE );
+  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
   memcpy( lMsg + MESSAGE_SIZE, s, l );
-  delete[] lHeader;
   aLength = getLength();
   return lMsg; 
 }
