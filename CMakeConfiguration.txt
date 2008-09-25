@@ -82,9 +82,9 @@ SET(ZORBA_WITH_FILE_ACCESS ON CACHE BOOL "compile zorba and allow loading docume
 MESSAGE(STATUS "ZORBA_WITH_FILE_ACCESS [ON/OFF]:" ${ZORBA_WITH_FILE_ACCESS})
 
 # curl headers don't seem to work on darwin
-IF (APPLE )
-  SET(ZORBA_WITH_REST OFF CACHE BOOL "No REST for the Mac")
-ENDIF (APPLE)
+#IF (APPLE )
+#  SET(ZORBA_WITH_REST OFF CACHE BOOL "No REST for the Mac")
+#ENDIF (APPLE)
 
 # make 10.4 the default sysroot on apple, i.e. always build for 10.4 minimum
 IF (APPLE)
