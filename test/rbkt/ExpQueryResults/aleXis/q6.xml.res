@@ -3,8 +3,6 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
 &lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
 &lt;head&gt;
-&lt;meta name="generator" content=
-"HTML Tidy for Linux/x86 (vers 31 October 2006), see www.w3.org" /&gt;
 &lt;title&gt;[ #426885 ] Definition list w/Center crashes&lt;/title&gt;
 &lt;/head&gt;
 &lt;body&gt;
@@ -34,8 +32,6 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
 &lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
 &lt;head&gt;
-&lt;meta name="generator" content=
-"HTML Tidy for Linux/x86 (vers 31 October 2006), see www.w3.org" /&gt;
 &lt;title&gt;[#427663] Line endings not supported correctly&lt;/title&gt;
 &lt;/head&gt;
 &lt;body&gt;

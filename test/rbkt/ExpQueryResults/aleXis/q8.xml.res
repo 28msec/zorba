@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta name="generator" content="HTML Tidy for Linux/x86 (vers 31 October 2006), see www.w3.org" />
 <title>Introduction To TidyLib</title>
 <meta http-equiv="Content-Type" content="text/xhtml; charset=us-ascii" />
 <link rel="stylesheet" href="tidy.site.css" type="text/css" />

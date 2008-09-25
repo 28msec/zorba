@@ -45,6 +45,8 @@ int tidy(const char* input, xqp_string& result, xqp_string& diagnostics)
   TidyBuffer output = {0, 0, 0, 0};
   TidyBuffer errbuf = {0, 0, 0, 0};
   xqpStringStore_t    buf, err;
+  TidyOptionId        toID;
+  std::string         optTM("tidy-mark");
 
   tdoc = tidyCreate();
 
@@ -52,8 +54,14 @@ int tidy(const char* input, xqp_string& result, xqp_string& diagnostics)
   if ( ok )
     rc = tidySetErrorBuffer( tdoc, &errbuf );      // Capture diagnostics
   if ( rc >= 0 )
-    rc = tidyParseString( tdoc, input );     // Parse the input
-  if ( rc >= 0 )
+    rc = tidyParseString( tdoc, input );           // Parse the input
+  if ( rc >= 0 ) {
+    //set tidy-mark to off: Tidy will not add a meta element to the document head to indicate that the document has been tidied.
+    toID = tidyOptGetIdForName(optTM.c_str());
+    if( tidyOptGetBool(tdoc, toID) )
+      ok = tidyOptSetBool(tdoc, toID, no);
+  }
+  if( ok )
     rc = tidyCleanAndRepair( tdoc );               // Tidy it up!
   if ( rc >= 0 )
     rc = tidyRunDiagnostics( tdoc );               // Kvetch
@@ -82,6 +90,8 @@ int tidy(const std::ifstream& fStream, std::iostream& result, std::iostream& dia
   std::filebuf*   pbuf;
   long            size;
   char*           buffer;
+  TidyOptionId    toID;
+  std::string     optTM("tidy-mark");
 
   pbuf=fStream.rdbuf();
   size=pbuf->pubseekoff (0,std::ios::end,std::ios::in);
@@ -100,7 +110,13 @@ int tidy(const std::ifstream& fStream, std::iostream& result, std::iostream& dia
     rc = tidySetErrorBuffer( tdoc, &errbuf );      // Capture diagnostics
   if ( rc >= 0 )
     rc = tidyParseBuffer( tdoc, &inputBuf );     // Parse the input
-  if ( rc >= 0 )
+  if ( rc >= 0 ) {
+    //set tidy-mark to off: Tidy will not add a meta element to the document head to indicate that the document has been tidied.
+    toID = tidyOptGetIdForName(optTM.c_str());
+    if( tidyOptGetBool(tdoc, toID) )
+      ok = tidyOptSetBool(tdoc, toID, no);
+  }
+  if( ok )
     rc = tidyCleanAndRepair( tdoc );               // Tidy it up!
   if ( rc >= 0 )
     rc = tidyRunDiagnostics( tdoc );               // Kvetch
@@ -130,6 +146,8 @@ int tidy(const std::istringstream& isStream, std::iostream& result, std::iostrea
   TidyBuffer output = {0, 0, 0, 0};
   TidyBuffer errbuf = {0, 0, 0, 0};
   xqpStringStore_t    buf, err;
+  TidyOptionId        toID;
+  std::string         optTM("tidy-mark");
 
   tdoc = tidyCreate();
 
@@ -138,7 +156,13 @@ int tidy(const std::istringstream& isStream, std::iostream& result, std::iostrea
     rc = tidySetErrorBuffer( tdoc, &errbuf );      // Capture diagnostics
   if ( rc >= 0 )
     rc = tidyParseBuffer( tdoc, &inputBuf );     // Parse the input
-  if ( rc >= 0 )
+  if ( rc >= 0 ) {
+    //set tidy-mark to off: Tidy will not add a meta element to the document head to indicate that the document has been tidied.
+    toID = tidyOptGetIdForName(optTM.c_str());
+    if( tidyOptGetBool(tdoc, toID) )
+      ok = tidyOptSetBool(tdoc, toID, no);
+  }
+  if( ok )
     rc = tidyCleanAndRepair( tdoc );               // Tidy it up!
   if ( rc >= 0 )
     rc = tidyRunDiagnostics( tdoc );               // Kvetch
