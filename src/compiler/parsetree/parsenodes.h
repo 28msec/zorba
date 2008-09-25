@@ -1222,8 +1222,10 @@ protected:
 
   bool compute_general () const;
 
+  QueryLoc return_location;
+
 public:
-	FLWORExpr(const QueryLoc& loc_, rchandle<FLWORClauseList> clauses_, rchandle<exprnode> ret_, bool force_general = false);
+	FLWORExpr(const QueryLoc& loc_, rchandle<FLWORClauseList> clauses_, rchandle<exprnode> ret_, const QueryLoc& return_loc_, bool force_general = false);
 
 public:
 	rchandle<FLWORClauseList> get_clause_list() const { return clauses; }
@@ -1233,12 +1235,23 @@ public:
   WhereClause *get_where() const;
 
   bool is_general () const { return general; }
+  const QueryLoc& get_return_location() const { return return_location; }
 
 public:
 	void accept(parsenode_visitor&) const;
 
 };
 
+class ReturnExpr: public exprnode
+{
+  protected:
+    rchandle<exprnode> return_val_h;
+
+  public:
+    ReturnExpr(const QueryLoc& loc_, rchandle<exprnode> ret_): exprnode(loc_), return_val_h(ret_){}
+    rchandle<exprnode> get_return_val() const { return return_val_h; }
+    void accept(parsenode_visitor&) const { /* do nothing... */ }
+};
 
 // [33a] FLWORClauseList
 // ----------------------

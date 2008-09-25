@@ -577,6 +577,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> ExprSingle
 %type <expr> ExtensionExpr
 %type <expr> FLWORExpr
+%type <expr> ReturnExpr
 %type <expr> FilterExpr
 %type <expr> FunctionCall
 %type <expr> IfExpr
@@ -1545,12 +1546,19 @@ ExprSingle :
 // [33] FLWORExpr
 // --------------
 FLWORExpr :
-    FLWORClauseList RETURN ExprSingle
+    FLWORClauseList ReturnExpr
     {
-      $$ = new FLWORExpr (LOC (@$), dynamic_cast<FLWORClauseList*>($1), $3, driver.theCompilerCB->m_config.force_gflwor);
+      ReturnExpr* lReturnExpr = dynamic_cast<ReturnExpr*>($2);
+      $$ = new FLWORExpr (LOC (@$), dynamic_cast<FLWORClauseList*>($1), lReturnExpr->get_return_val(), lReturnExpr->get_location(), driver.theCompilerCB->m_config.force_gflwor);
     }
     ;
 
+ReturnExpr:
+    RETURN ExprSingle
+    {
+      $$ = new ReturnExpr(LOC(@$), $2);
+    }
+    ;
 
 WindowType :
     SLIDING WINDOW

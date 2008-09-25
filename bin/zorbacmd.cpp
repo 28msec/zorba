@@ -294,11 +294,8 @@ int _tmain(int argc, _TCHAR* argv[])
     std::auto_ptr<std::istream> lXQ(new std::ifstream(path.c_str()));
     std::string lFileName(path.get_path ());
     try {
-      zorba::simplestore::SimpleStore* lStore =
-        zorba::simplestore::SimpleStoreManager::getStore();
-      zorba::Zorba *lZorba = zorba::Zorba::getInstance(lStore);
-      lQuery = lZorba->createQuery();
-      zorba::StaticContext_t lStaticContext = lZorba->createStaticContext();
+      lQuery = lZorbaInstance->createQuery();
+      zorba::StaticContext_t lStaticContext = lZorbaInstance->createStaticContext();
       // populate the static context with information passed as parameter
       if (!populateStaticContext(lStaticContext, &lProperties)) {
         lProperties.printHelp(std::cout);
@@ -380,13 +377,12 @@ int _tmain(int argc, _TCHAR* argv[])
           CloseHandle( lServerThread );
 #endif
       	  delete debuggerClient;
-          return 0;
         } catch( std::exception &e ) {
           if ( i < 2 ){ continue; }
           std::cout << "Could not start the debugger client: " << std::endl;
           std::cout << e.what() << std::endl;
-          return 7;
         }
+        return 0;
       }
     }
 #endif

@@ -106,11 +106,13 @@ void CommandLineEventHandler::list( std::string &aFileName )
     lFileName << theFileName.substr(0, start+1) << "/" << aFileName;
     theOutput << lFileName.str() << std::endl;
     std::ifstream lFile(lFileName.str().c_str());
+    unsigned int i=0;
     while(lFile.good())
     {
       std::string lLine;
       getline(lFile, lLine, '\n');
-      theOutput << lLine << std::endl;
+      i++;
+      theOutput << i << '\t' << lLine << std::endl;
     }
   } else {
     theOutput << "Couldn't find " << aFileName << std::endl;
