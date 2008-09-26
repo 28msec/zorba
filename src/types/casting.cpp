@@ -1616,13 +1616,17 @@ bool GenericCast::isCastable(
     const XQType* aTargetType) const
 {
 #ifndef ZORBA_NO_XMLSCHEMA
-  if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND
-  && !static_cast<const UserDefinedXQType*>(aTargetType)->isComplex()) {
-    const DelegatingTypeManager* lDelegatingTypeManager 
-       = static_cast<const DelegatingTypeManager*>(aTargetType->get_manager()); 
-
-    return lDelegatingTypeManager->getSchema()->
-              isCastableUserSimpleTypes(xqpString(aItem->getStringValue().getp()), aTargetType);
+  if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND )
+  {
+    const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(aTargetType);
+    if ( !udt->isComplex()) 
+    {
+      const DelegatingTypeManager* lDelegatingTypeManager 
+        = static_cast<const DelegatingTypeManager*>(aTargetType->get_manager()); 
+    
+      return lDelegatingTypeManager->getSchema()->
+                isCastableUserSimpleTypes(xqpString(aItem->getStringValue().getp()), udt->getBaseType().getp());
+    }
   }
 #endif // ZORBA_NO_XMLSCHEMA
     

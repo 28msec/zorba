@@ -39,7 +39,7 @@
 
 #include "zorbamisc/ns_consts.h"
 
-using namespace std;
+//using namespace std;
 namespace zorba
 {
 const char* Schema::XSD_NAMESPACE = XML_SCHEMA_NS;
@@ -139,7 +139,7 @@ void Schema::registerXSD(const char* xsdURL, const QueryLoc& loc)
     catch (const OutOfMemoryException&)
     {
         std::cerr << "OutOfMemoryException during parsing: '" << xsdURL << "'\n" << std::endl;
-        ZORBA_ERROR_LOC_DESC (XQST0059, loc, string("OutOfMemoryException during parsing ") + string(xsdURL));
+        ZORBA_ERROR_LOC_DESC (XQST0059, loc, std::string("OutOfMemoryException during parsing ") + std::string(xsdURL));
     }
     catch (const XMLException& e)
     {
@@ -151,7 +151,7 @@ void Schema::registerXSD(const char* xsdURL, const QueryLoc& loc)
     catch (...)
     {
         std::cerr << "\nUnexpected exception during parsing: '" << xsdURL << "'\n" << std::endl;
-        ZORBA_ERROR_LOC_DESC (XQST0059, loc, string("Unexpected exception during parsing: ") + string(xsdURL));
+        ZORBA_ERROR_LOC_DESC (XQST0059, loc, std::string("Unexpected exception during parsing: ") + std::string(xsdURL));
     }
 
 #if 0                   // enable this to debug registered user defined schema types
@@ -811,7 +811,7 @@ bool Schema::parseUserUnionTypes(const xqp_string textValue, const xqtref_t& aTa
 // user defined simple types, i.e. Atomic, List or Union Types
 bool Schema::isCastableUserSimpleTypes(const xqp_string textValue, const xqtref_t& aTargetType)
 {
-    //std::cout << "isCastableUserSimpleTypes: " << textValue;
+    //cout << "isCastableUserSimpleTypes: " << textValue <<  " to " << aTargetType->toString() << endl; cout.flush();
 
     if ( aTargetType->type_kind() != XQType::USER_DEFINED_KIND )
     {
@@ -854,6 +854,7 @@ bool Schema::isCastableUserSimpleTypes(const xqp_string textValue, const xqtref_
 // user defined atomic types
 bool Schema::isCastableUserAtomicTypes(const xqp_string textValue, const xqtref_t& aTargetType)
 {
+    //cout << "isCastableUserAtomicTypes: " << textValue << endl; cout.flush();
     xqpStringStore_t text = xqpStringStore_t(textValue.getStore());
     return GenericCast::instance()->isCastable( text, aTargetType.getp());
 }        
@@ -861,7 +862,7 @@ bool Schema::isCastableUserAtomicTypes(const xqp_string textValue, const xqtref_
 // user defined list types
 bool Schema::isCastableUserListTypes(const xqp_string textValue, const xqtref_t& aTargetType)
 {
-    //std::cout << "isCastableUserListTypes: " << textValue;
+    //cout << "isCastableUserListTypes: " << textValue << endl; cout.flush();
     ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
 
     const UserDefinedXQType* udXQType = static_cast<const UserDefinedXQType*>(aTargetType.getp());
@@ -886,7 +887,7 @@ bool Schema::isCastableUserListTypes(const xqp_string textValue, const xqtref_t&
 // user defined union types
 bool Schema::isCastableUserUnionTypes(const xqp_string textValue, const xqtref_t& aTargetType)
 {
-    //std::cout << "isCastableUserUnionTypes: " << textValue;
+    //cout << "isCastableUserUnionTypes: " << textValue << endl; cout.flush();
 
     ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
 
