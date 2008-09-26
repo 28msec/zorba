@@ -29,7 +29,7 @@
 #    the variable will keep this value (i.e. store it in the cache file CMakeCache.txt)
 #    until you set a new one or edit the CMakeCache.txt file
 #Build with Zorba debugger
-OPTION(ZORBA_DEBUGGER "Build with Zorba debugger.")
+OPTION(ZORBA_DEBUGGER "Build with Zorba debugger." 1)
 MESSAGE(STATUS "Build with Zorba debugger " ${ZORBA_DEBUGGER})
 
 # how should batching in the runtime system be done
