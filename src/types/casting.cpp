@@ -306,10 +306,9 @@ inline bool str_aURI(store::Item_t& result, const store::Item_t& aItem, store::I
   return aFactory->createAnyURI(result, strval);
 }
 
+
 inline bool str_QN(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  assert(nsCtx != 0);
-
   xqpString str(doTrim(aItem->getStringValue()));
   int32_t idx = str.theStrStore->indexOf(":");
   int32_t lidx = str.theStrStore->lastIndexOf(":");
@@ -321,12 +320,15 @@ inline bool str_QN(store::Item_t& result, const store::Item_t& aItem, store::Ite
   if (idx < 0)
   {
     lPrefix = "";
-    nsCtx->findBinding(lPrefix, lUri);
-  } else {
+    if (nsCtx)
+      nsCtx->findBinding(lPrefix, lUri);
+  }
+  else 
+  {
     lPrefix = str.substr(0, idx);
     if (!GenericCast::instance()->castableToNCName(lPrefix.getStore()))
       throwError(FORG0001, aErrorInfo);
-    if (!nsCtx->findBinding(lPrefix, lUri))
+    if (nsCtx && !nsCtx->findBinding(lPrefix, lUri))
       throwError(FONS0004, aErrorInfo);
   }
 
@@ -340,6 +342,7 @@ inline bool str_QN(store::Item_t& result, const store::Item_t& aItem, store::Ite
                                &*lPrefix.theStrStore, 
                                &*lLocal.theStrStore);
 }
+
 
 inline bool str_NOT(store::Item_t& result, const store::Item_t& aItem, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {

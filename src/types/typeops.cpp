@@ -393,31 +393,44 @@ xqtref_t TypeOps::intersect_type(const XQType& type1, const XQType& type2)
     return intersect_type (type2, type1);
 
   TypeConstants::quantifier_t q1 = quantifier (type1), q2 = quantifier (type2);
+
   if (is_subtype (type1, type2))
     return &type1;
+
   else if (is_subtype (type2, type1))
     return &type2;
+
   else if (tk1 == XQType::EMPTY_KIND)
-    return (q2 == TypeConstants::QUANT_QUESTION || q2 == TypeConstants::QUANT_STAR)
-      ? GENV_TYPESYSTEM.EMPTY_TYPE : GENV_TYPESYSTEM.NONE_TYPE;
+    return (q2 == TypeConstants::QUANT_QUESTION || q2 == TypeConstants::QUANT_STAR
+            ? GENV_TYPESYSTEM.EMPTY_TYPE : GENV_TYPESYSTEM.NONE_TYPE);
+
   else if (tk2 == XQType::EMPTY_KIND)
     return (q1 == TypeConstants::QUANT_QUESTION || q1 == TypeConstants::QUANT_STAR)
       ? GENV_TYPESYSTEM.EMPTY_TYPE : GENV_TYPESYSTEM.NONE_TYPE;
-  else if (q1 == TypeConstants::QUANT_ONE && q2 == TypeConstants::QUANT_ONE) {
-    switch (tk1) {
+
+  else if (q1 == TypeConstants::QUANT_ONE && q2 == TypeConstants::QUANT_ONE) 
+  {
+    switch (tk1) 
+    {
     case XQType::ATOMIC_TYPE_KIND:
       if (tk2 == XQType::NODE_TYPE_KIND || tk2 == XQType::ATOMIC_TYPE_KIND)
         return GENV_TYPESYSTEM.NONE_TYPE;
       else
         return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
       break;
+
     case XQType::NODE_TYPE_KIND:
-      return (tk2 == XQType::NODE_TYPE_KIND) ? GENV_TYPESYSTEM.NONE_TYPE : GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE;
-    default: break;
+      return (tk2 == XQType::NODE_TYPE_KIND) ? GENV_TYPESYSTEM.NONE_TYPE : GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE; // ????
+
+    default:
+      break;
     }
+
     return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
   }
-  else {
+
+  else 
+  {
     xqtref_t pt1 = prime_type (type1), pt2 = prime_type (type2);
     if (! is_equal (type1, *pt1) || ! is_equal (type2, *pt2)) {
       xqtref_t pti = intersect_type (*pt1, *pt2);
