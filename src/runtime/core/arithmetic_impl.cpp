@@ -218,48 +218,48 @@ template<>
 bool AddOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_dateTime* d = i0->getDateTimeValue().addDuration(i1->getDurationValue());
-  return GENV_ITEMFACTORY->createDateTime(result, d);
+  std::auto_ptr<xqp_dateTime> d = std::auto_ptr<xqp_dateTime>(i0->getDateTimeValue().addDuration(i1->getDurationValue()));
+  return GENV_ITEMFACTORY->createDateTime(result, d.get());
 }
 
 template<>
 bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_dateTime* d = i1->getDateTimeValue().addDuration(i0->getDurationValue());
-  return GENV_ITEMFACTORY->createDateTime (result, d);
+  std::auto_ptr<xqp_dateTime> d = std::auto_ptr<xqp_dateTime>(i1->getDateTimeValue().addDuration(i0->getDurationValue()));
+  return GENV_ITEMFACTORY->createDateTime(result, d.get());
 }
 
 template<>
 bool AddOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_date* d = i0->getDateValue().addDuration(i1->getDurationValue());
-  return GENV_ITEMFACTORY->createDate (result, d);
+  std::auto_ptr<xqp_date> d = std::auto_ptr<xqp_date>(i0->getDateValue().addDuration(i1->getDurationValue()));
+  return GENV_ITEMFACTORY->createDate(result, d.get());
 }
 
 template<>
 bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_date* d = i1->getDateValue().addDuration(i0->getDurationValue());
-  return GENV_ITEMFACTORY->createDate (result, d);
+  std::auto_ptr<xqp_date> d = std::auto_ptr<xqp_date>(i1->getDateValue().addDuration(i0->getDurationValue()));
+  return GENV_ITEMFACTORY->createDate (result, d.get());
 }
 
 template<>
 bool AddOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_time* t = i0->getTimeValue().addDuration(i1->getDurationValue());
-  return GENV_ITEMFACTORY->createTime (result, t);
+  std::auto_ptr<xqp_time> t = std::auto_ptr<xqp_time>(i0->getTimeValue().addDuration(i1->getDurationValue()));
+  return GENV_ITEMFACTORY->createTime (result, t.get());
 }
 
 template<>
 bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_TIME>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_time* t = i1->getTimeValue().addDuration(i0->getDurationValue());
-  return GENV_ITEMFACTORY->createTime (result, t);
+  std::auto_ptr<xqp_time> t = std::auto_ptr<xqp_time>(i1->getTimeValue().addDuration(i0->getDurationValue()));
+  return GENV_ITEMFACTORY->createTime (result, t.get());
 }
 
  /* end class AddOperations */
@@ -285,8 +285,8 @@ template<>
 bool SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_dateTime* d = i0->getDateTimeValue().subtractDuration(i1->getDurationValue());
-  return GENV_ITEMFACTORY->createDateTime (result, d);
+  std::auto_ptr<xqp_dateTime> d = std::auto_ptr<xqp_dateTime>(i0->getDateTimeValue().subtractDuration(i1->getDurationValue()));
+  return GENV_ITEMFACTORY->createDateTime (result, d.get());
 }
 
 
@@ -294,8 +294,8 @@ template<>
 bool SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_date* d = i0->getDateValue().subtractDuration(i1->getDurationValue());
-  return GENV_ITEMFACTORY->createDate (result, d);
+  std::auto_ptr<xqp_date> d = std::auto_ptr<xqp_date>(i0->getDateValue().subtractDuration(i1->getDurationValue()));
+  return GENV_ITEMFACTORY->createDate(result, d.get());
 }
 
 
@@ -303,8 +303,8 @@ template<>
 bool SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
 ( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_time* t = i0->getTimeValue().subtractDuration(i1->getDurationValue());
-  return GENV_ITEMFACTORY->createTime (result, t);
+  std::auto_ptr<xqp_time> t = std::auto_ptr<xqp_time>(i0->getTimeValue().subtractDuration(i1->getDurationValue()));
+  return GENV_ITEMFACTORY->createTime(result, t.get());
 }
 
 

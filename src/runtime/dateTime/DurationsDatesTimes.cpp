@@ -782,7 +782,7 @@ FnAdjustToTimeZoneIterator_1::nextImpl(store::Item_t& result, PlanState& planSta
 {
   store::Item_t item0;
   store::Item_t item1;
-  DateTime* dt = NULL;
+  std::auto_ptr<DateTime> dt;
   
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -794,14 +794,14 @@ FnAdjustToTimeZoneIterator_1::nextImpl(store::Item_t& result, PlanState& planSta
   {
     try 
     {
-      dt = item0->getDateTimeValue().adjustToTimeZone(
-        planState.theRuntimeCB->theDynamicContext->get_implicit_timezone());
+      dt = std::auto_ptr<DateTime>(item0->getDateTimeValue().adjustToTimeZone(
+        planState.theRuntimeCB->theDynamicContext->get_implicit_timezone()));
     }
     catch (InvalidTimezoneException)
     {
       ZORBA_ERROR(FODT0003);
     }
-    STACK_PUSH(GENV_ITEMFACTORY->createDateTime(result, dt), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createDateTime(result, dt.get()), state);
   }
     
   STACK_END (state);
@@ -813,7 +813,7 @@ FnAdjustToTimeZoneIterator_2::nextImpl(store::Item_t& result, PlanState& planSta
   store::Item_t item0;
   store::Item_t item1;
   bool s1;
-  DateTime* dt = NULL;
+  std::auto_ptr<DateTime> dt;
   
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -825,13 +825,13 @@ FnAdjustToTimeZoneIterator_2::nextImpl(store::Item_t& result, PlanState& planSta
     s1 = consumeNext(item1, theChild1.getp(), planState);
     try 
     {
-      dt = item0->getDateTimeValue().adjustToTimeZone(!s1 ? NULL : &item1->getDayTimeDurationValue());
+      dt = std::auto_ptr<DateTime>(item0->getDateTimeValue().adjustToTimeZone(!s1 ? NULL : &item1->getDayTimeDurationValue()));
     }
     catch (InvalidTimezoneException)
     {
       ZORBA_ERROR(FODT0003);
     }
-    STACK_PUSH(GENV_ITEMFACTORY->createDateTime(result, dt), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createDateTime(result, dt.get()), state);
   }
      
   STACK_END (state);
