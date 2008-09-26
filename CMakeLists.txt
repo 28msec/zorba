@@ -47,7 +47,7 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 
 ################################################################################
 # Setup Compiler Options
-
+INCLUDE(CMakeConfiguration.txt)
 INCLUDE(CMakeCompiler.txt)
 
 

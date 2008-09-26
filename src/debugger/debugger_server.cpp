@@ -382,6 +382,7 @@ void ZorbaDebugger::eval( xqpString anExpr )
     try {
       std::auto_ptr< CompilerCB > ccb;
       std::auto_ptr< dynamic_context > dctx;
+      
       PlanWrapperHolder* eval_plan = compileEvalPlan(theLocation, ccb.get(), dctx.get(), anExpr, *thePlanState);
       PlanWrapper* lIterator = eval_plan->get();
       assert(lIterator != 0);
@@ -405,7 +406,6 @@ void ZorbaDebugger::eval( xqpString anExpr )
       std::stringstream lOutputStream;
       xqpString lDescription = e.theDescription.replace("\\\"", "", "");
       lOutputStream << "Error: " << error::ZorbaError::toString(e.theErrorCode) << " " << lDescription;
-
       lMsg.reset(new EvaluatedEvent( anExpr, lOutputStream.str() ));
     }
     assert(lMsg.get() != 0);

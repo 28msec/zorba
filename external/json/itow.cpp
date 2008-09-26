@@ -52,7 +52,7 @@ void _itow(int value, wchar_t* str, int base) {
 	
 		*wstr++ = num[res.rem];
 	
-	}while(value=res.quot);
+	}while((value=res.quot));
 	
 	if(sign<0) *wstr++='-';
 	
