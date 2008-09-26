@@ -287,6 +287,7 @@ std::string CommandLineEventHandler::get_expression( const std::vector<std::stri
     if ( it != arr.begin() )
     {
       lExpr.append( *it );
+      lExpr.append(" ");
     }
   }
   return lExpr;
