@@ -149,12 +149,13 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
       if ( lLineNo >= theLocation->getLineBegin() && lLineNo <= theLocation->getLineEnd() )
       {
 #ifdef WIN32
+        HANDLE lConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+        CONSOLE_SCREEN_BUFFER_INFO lConsoleInfo;
+        GetConsoleScreenBufferInfo(lConsole, &lConsoleInfo);
+        const int saved_configuration = lConsoleInfo.wAttributes;
+
         if(colors)
         {
-          HANDLE lConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-          CONSOLE_SCREEN_BUFFER_INFO lConsoleInfo;
-          GetConsoleScreenBufferInfo(lConsole, &lConsoleInfo);
-          const int saved_configuration = lConsoleInfo.wAttributes;
           SetConsoleTextAttribute(lConsole, 15+0*16); 
         }
         theOutput << lLineNo << '\t';
