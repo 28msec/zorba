@@ -195,5 +195,6 @@ Use list to print the module. You can set breakpoints in the module with the fol
 8 
 (xqdb) b mymodule.xq:5
 (xqdb) r
-let $disc:= ($price*$discount) div 100
+let \$disc:= ($price*$discount) div 100
 </pre>
+*/
