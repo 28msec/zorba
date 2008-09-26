@@ -30,7 +30,7 @@
 
 namespace zorba {
 
-using namespace std;
+//using namespace std;
 using namespace XERCES_CPP_NAMESPACE;
 
 AttributeValidationInfo::AttributeValidationInfo(const XMLCh *prefix, const XMLCh *uri, const XMLCh *localName, 
@@ -63,12 +63,9 @@ void ValidationEventHandler::endDocumentEvent()
 void ValidationEventHandler::startElementEvent(const XMLCh *prefix, const XMLCh *uri, const XMLCh *localName)
 {
     //cout << "   veh SElm: " << StrX(localName) << "\n";    
-    while ( !_attributeList.empty() )
-    {
-        AttributeValidationInfo* attInfo = _attributeList.front();
-        _attributeList.pop_front();
-        delete attInfo;
-    }
+
+    resetAttList();
+    resetTextInfo();    
 }
 
 void ValidationEventHandler::typeElementEvent(const XMLCh *typeURI, const XMLCh *typeName)
@@ -80,32 +77,32 @@ void ValidationEventHandler::endElementEvent(const XMLCh *prefix, const XMLCh *u
     const XMLCh *typeURI, const XMLCh *typeName)
 {
     //cout << "   veh EElm: " << StrX(localName) << "  T:" << StrX(typeName) << "\n";
-    if ( _textInfo != NULL )
-    {   
-        delete _textInfo;
-        _textInfo = NULL;
-    }
+    resetAttList();
+    resetTextInfo();
 }
 
 void ValidationEventHandler::piEvent(const XMLCh *target, const XMLCh *value)
 {
+    resetAttList();
 }
 
 //void ValidationEventHandler::textEvent(const XMLCh *value);
 void ValidationEventHandler::textEvent(const XMLCh *chars, unsigned int length)
 {
     //cout << "     veh Text: " << StrX(chars) << "  length:" << length << "\n";
+    resetAttList();
     resetTextInfo();
 }
 
 void ValidationEventHandler::commentEvent(const XMLCh *value)
 {
+    resetAttList();
 }
 
 void ValidationEventHandler::attributeEvent(const XMLCh *prefix, const XMLCh *uri, const XMLCh *localName, 
     const XMLCh *value, const XMLCh *typeURI, const XMLCh *typeName)
 {
-    //cout << "    veh Atr: " << StrX(localName) << " val: " << StrX(value) << "  T:" << StrX(typeName) << "\n";
+    //cout << "    veh Atr: " << StrX(localName) << " val: " << StrX(value) << "  T:" << StrX(typeName) << "\n"; cout.flush();
         
     _attributeList.push_back(new AttributeValidationInfo(prefix, uri, localName, value, typeURI, typeName));
 }
@@ -115,10 +112,16 @@ void ValidationEventHandler::namespaceEvent(const XMLCh *prefix, const XMLCh *ur
     //cout << "     veh NS: " << StrX(prefix) << " : " << StrX(uri) << "\n";    
 }
 
-void ValidationEventHandler::reset()
+void ValidationEventHandler::resetAttList()
 {
-    _attributeList.clear();
-    resetTextInfo();
+    //cout << "    resetAttList size: " << _attributeList.size() << "\n"; cout.flush();
+    
+    while ( !_attributeList.empty() )
+    {
+        AttributeValidationInfo* attInfo = _attributeList.front();
+        _attributeList.pop_front();
+        delete attInfo;
+    }
 }
                
 void ValidationEventHandler::resetTextInfo()

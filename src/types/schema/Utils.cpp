@@ -37,7 +37,7 @@
 #include "zorbaerrors/error_messages.h"
 #include "zorbaerrors/errors.h"
 
-using namespace std;
+//using namespace std;
 
 namespace zorba
 {
@@ -83,14 +83,14 @@ bool typeHasEmptyValue(xqtref_t t);
  *   the validation succeds. This should be called after an update.
  */
 void validateAfterUpdate(
-    const set<zorba::store::Item*>& nodes,
+    const std::set<zorba::store::Item*>& nodes,
     zorba::store::Item_t& pul,
     static_context* staticContext, 
     const QueryLoc& loc)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
-    set<zorba::store::Item*>::const_iterator it = nodes.begin();
-    set<zorba::store::Item*>::const_iterator end = nodes.end();
+    std::set<zorba::store::Item*>::const_iterator it = nodes.begin();
+    std::set<zorba::store::Item*>::const_iterator end = nodes.end();
     for (; it != end; it++)
     {
         validateAfterUpdate(*it, pul, staticContext, loc);
@@ -127,7 +127,7 @@ void validateAfterUpdate(
     {
     case store::StoreConsts::documentNode:
     {
-        //std::cout << "Validate document" << "\n"; std::cout.flush();
+        //cout << "Validate document" << "\n"; cout.flush();
 
         schemaValidator.startDoc();
 
@@ -140,12 +140,12 @@ void validateAfterUpdate(
 
         schemaValidator.endDoc();
 
-        //std::cout << "End Validate doc" << "\n"; std::cout.flush();
+        //cout << "End Validate doc" << "\n"; cout.flush();
         return;
     }
     case store::StoreConsts::elementNode: 
     {
-        //std::cout << "Validate element" << "\n"; std::cout.flush();
+        //cout << "Validate element" << "\n"; cout.flush();
 
         schemaValidator.startDoc();
 
@@ -153,7 +153,7 @@ void validateAfterUpdate(
 
         schemaValidator.endDoc();
         
-        //std::cout << "End Validate elem" << "\n"; std::cout.flush();
+        //cout << "End Validate elem" << "\n"; cout.flush();
         return;
     }
     default:
@@ -189,7 +189,7 @@ void processElement( store::Item_t& pul, static_context* staticContext,
 
     if ( !typeQName->equals(element->getType()) )
     {
-        vector<store::Item_t> typedValues; // todo
+        std::vector<store::Item_t> typedValues; // todo
 
         TypeIdentifier_t newTypeIdent = TypeIdentifier::createNamedType(typeQName->getNamespace(), typeQName->getLocalName() );
         xqtref_t newType = delegatingTypeManager->create_type(*newTypeIdent);
@@ -202,7 +202,7 @@ void processElement( store::Item_t& pul, static_context* staticContext,
         store::Item_t elm = store::Item_t(element);
         p->addSetElementType(elm,
                              typeQName,
-                             (vector<store::Item_t>&)typedValues,
+                             (std::vector<store::Item_t>&)typedValues,
                              tHasValue, 
                              tHasEmptyValue,
                              tHasTypedValue,
@@ -231,7 +231,7 @@ void validateAttributes( SchemaValidator& schemaValidator, store::Iterator_t att
         ZORBA_ASSERT(attribute->isNode());
         ZORBA_ASSERT(attribute->getNodeKind() == store::StoreConsts::attributeNode);
 
-        std::cout << " v    - attr: " << attribute->getNodeName()->getLocalName()->c_str() << "\n"; std::cout.flush();
+        //cout << " v    - attr: " << attribute->getNodeName()->getLocalName()->c_str() << "\n"; cout.flush();
                     
         store::Item_t attName = attribute->getNodeName();
         schemaValidator.attr(attName, attribute->getStringValue());
@@ -318,8 +318,7 @@ void processChildren( store::Item_t& pul, static_context* staticContext, namespa
     {
         if ( child->isNode() )
         {
-            std::cout << "  > child: " << child->getNodeKind() << " " << child->getType()->getLocalName()->c_str() << "\n";
-            std::cout.flush();
+            //cout << "  > child: " << child->getNodeKind() << " " << child->getType()->getLocalName()->c_str() << "\n"; cout.flush();
             
             switch ( child->getNodeKind() )
             { 
@@ -337,7 +336,7 @@ void processChildren( store::Item_t& pul, static_context* staticContext, namespa
             
             case store::StoreConsts::textNode:
                 {
-                    std::cout << "     - text: " << child->getStringValue() << "\n"; std::cout.flush();                    
+                    //cout << "     - text: " << child->getStringValue() << "\n"; cout.flush();
                     xqpStringStore_t childStringValue = child->getStringValue();
                     schemaValidator.text(childStringValue);
 
@@ -383,20 +382,20 @@ void processChildren( store::Item_t& pul, static_context* staticContext, namespa
             
             case store::StoreConsts::piNode:
                 {
-                    //std::cout << "     - pi: " << child->getStringValue() << "\n"; std::cout.flush();
+                    //cout << "     - pi: " << child->getStringValue() << "\n"; cout.flush();
                     // do nothing
                 }
                 break;
             
             case store::StoreConsts::commentNode:
                 {
-                    //std::cout << "     - comment: " << child->getStringValue() << "\n"; std::cout.flush();
+                    //cout << "     - comment: " << child->getStringValue() << "\n"; cout.flush();
                     // do nothing
                 }
                 break;
             
             case store::StoreConsts::anyNode:
-                //std::cout << "     - any: " << child->getStringValue() << "\n"; std::cout.flush();
+                //cout << "     - any: " << child->getStringValue() << "\n"; cout.flush();
                 ZORBA_ASSERT(false);                    
                 break;
                                 
@@ -423,9 +422,8 @@ void processTextValue (store::Item_t& pul, DelegatingTypeManager* delegatingType
     std::vector<store::Item_t> &resultList)
 {
     xqtref_t type = delegatingTypeManager->create_named_atomic_type(typeQName, TypeConstants::QUANT_ONE);
-    std::cout << "     - processTextValue: " << typeQName->getPrefix()->str() << ":" << typeQName->getLocalName()->str() << "@" << 
-        typeQName->getNamespace()->str() ; std::cout.flush();
-    std::cout << "           type: " << ( type==NULL ? "NULL" : type->toString()) << "\n"; std::cout.flush();                    
+    //cout << "     - processTextValue: " << typeQName->getPrefix()->str() << ":" << typeQName->getLocalName()->str() << "@" << typeQName->getNamespace()->str() ; cout.flush();
+    //cout << "           type: " << ( type==NULL ? "NULL" : type->toString()) << "\n"; cout.flush();                    
             
     store::Item_t result;                    
     if (type!=NULL)

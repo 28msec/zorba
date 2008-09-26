@@ -36,7 +36,7 @@
 #include "zorbaerrors/errors.h"
 #include "zorbatypes/xerces_xmlcharray.h"
 
-using namespace std;
+//using namespace std;
 XERCES_CPP_NAMESPACE_USE;
 
 namespace zorba {
@@ -1110,6 +1110,8 @@ void SchemaValidatorFilter::error(const unsigned int errCode, const XMLCh* const
                                   const XMLCh* const systemId, const XMLCh* const publicId, const XMLSSize_t lineNum, const XMLSSize_t colNum)
 {
     _errorOccurred = true;
+    next_->resetAttList();
+    next_->resetTextInfo();
 
     // Skip validation errors if validation isn't strict
     if(!_strictValidation && errDomain == XMLUni::fgValidityDomain &&

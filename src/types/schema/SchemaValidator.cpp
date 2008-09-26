@@ -25,7 +25,7 @@
 #include "types/schema/schema.h"
 
 
-using namespace std;
+//using namespace std;
 using namespace XERCES_CPP_NAMESPACE;
 
 namespace zorba {
@@ -104,6 +104,7 @@ void SchemaValidator::text(xqpStringStore_t textValue)
 
     XMLChArray value(textValue->c_str());
     _schemaValidatorFilter->textEvent(value);
+    //_validationEventHandler.resetAttList();
 }
 
 void SchemaValidator::ns(xqpStringStore_t prefix, xqpStringStore_t uri)

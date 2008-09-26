@@ -87,8 +87,9 @@ public:
         const XMLCh *value, const XMLCh *typeURI, const XMLCh *typeName);
     void namespaceEvent(const XMLCh *prefix, const XMLCh *uri);
     
-    void reset();
-    
+    void resetAttList();
+    void resetTextInfo();
+        
     std::list<AttributeValidationInfo*>* getAttributeList()
     {
         return &_attributeList;
@@ -102,8 +103,6 @@ public:
 private:
     std::list<AttributeValidationInfo*> _attributeList;
     TextValidationInfo *_textInfo;
-    
-    void resetTextInfo();
     
 }; // class ValidationEventHandler
 
