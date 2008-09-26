@@ -294,7 +294,7 @@ int _tmain(int argc, _TCHAR* argv[])
     if ( lProperties.debugServer() || lProperties.debugClient() )
     {
       //TODO: be able to debug inline query.
-      if(lProperties.outputFile().size() <= 0)
+      if(fname.empty())
       {
         std::cerr << "Cannot debug inline queries." << std::endl; 
         return 0;
