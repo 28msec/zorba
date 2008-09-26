@@ -3009,6 +3009,7 @@ AposAttrValueContent::AposAttrValueContent(
 void AposAttrValueContent::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
+  ACCEPT (common_content_h);
   END_VISITOR ();
 }
 

@@ -1214,16 +1214,6 @@ void attr_val_content (const QueryLoc& loc, const CommonContent *cc, xqpString c
   }
   else
   {
-    if (cc->get_type() == ParseConstants::cont_escape_lbrace)
-    {
-      xqpString content("{");
-      nodestack.push(new const_expr (loc, content));
-    }
-    else if (cc->get_type() == ParseConstants::cont_escape_rbrace)
-    {
-      xqpString content("}");
-      nodestack.push(new const_expr (loc, content));
-    }
     // nothing to be done because when common content != NULL,
     // the corresponding expr is already on the stack
   }
