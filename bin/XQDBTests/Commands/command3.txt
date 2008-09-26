@@ -1,0 +1,11 @@
+list all
+list mymodule.xq
+b mymodule.xq:5
+b mymodule.xq:6
+r
+vars
+p $disc
+c
+p $price-$disc
+c
+q

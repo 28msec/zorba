@@ -1,0 +1,28 @@
+list all
+b 5
+b 12
+b 13
+b 18
+b 19
+r
+vars
+p $act
+p data($act//@foo)
+c
+c
+c
+vars
+p $speakers
+c
+vars
+p $speaker
+c
+vars
+p $speaker
+cl 1
+cl 2
+cl 3
+cl 4
+cl 5
+c
+q
