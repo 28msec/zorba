@@ -376,11 +376,7 @@ xqtref_t Schema::getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XS
             {
                 result = GENV_TYPESYSTEM.QNAME_TYPE_ONE;
             }
-            else if ( XMLString::equals(SchemaSymbols::fgELT_NOTATION, local) )
-            {
-                result = GENV_TYPESYSTEM.ID_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgATT_ID, local) )
+            else if ( XMLString::equals(SchemaSymbols::fgATTVAL_ID, local) )
             {
                 result = GENV_TYPESYSTEM.ID_TYPE_ONE;
             }
@@ -397,10 +393,15 @@ xqtref_t Schema::getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XS
             {
                 result = GENV_TYPESYSTEM.ID_TYPE_ONE;
             }
+            else if ( XMLString::equals(XMLChArray("NOTATION").get (), local) )
+            {
+                result = GENV_TYPESYSTEM.NOTATION_TYPE_ONE;
+            }
             // YearMonthDuration and DayTimeDuration are not in schema spec
             else
             {
-                // type not covered             
+                // type not covered  
+                //cout << "Assertion Error: Type unknown " << StrX(local).localForm() << "@" << Schema::XSD_NAMESPACE; cout.flush(); 
                 ZORBA_ASSERT(false);
                 result = NULL;
             }
