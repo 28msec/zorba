@@ -84,6 +84,14 @@ public:
       lStream << theQuery;
     return lStream.str();
   }
+
+#ifdef SWIGPYTHON
+  void executeSAX(SAX2ContentHandlerProxy* contentHandlerProxy)
+  {
+    theQuery->executeSAX(contentHandlerProxy);
+  }
+#endif
+
   bool isUpdateQuery() { return theQuery->isUpdateQuery(); }
   void applyUpdates() { theQuery->applyUpdates(); }
   void destroy() { theQuery = 0; }
@@ -181,7 +189,12 @@ public:
 
 class XQuery {
 public:
-  std::string execute(); 
+  std::string execute();
+
+#ifdef SWIGPYTHON
+  void executeSAX(SAX2ContentHandlerProxy* contentHandlerProxy);
+#endif
+
   bool isUpdateQuery();
   void applyUpdates();
   void destroy();
@@ -209,4 +222,3 @@ public:
   XmlDataManager getXmlDataManager();
   void shutdown();
 };
-
