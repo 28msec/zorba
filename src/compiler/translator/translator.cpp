@@ -1528,8 +1528,9 @@ void translate_gflwor (const FLWORExpr& v) {
   expr_t lReturnExpr = pop_nodestack ();
 #ifdef ZORBA_DEBUGGER
   if ( compilerCB->m_debugger != 0) {
-    const QueryLoc &return_location = v.get_return_location(); 
-    rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(return_location, lReturnExpr, theScopedVariables, theGlobalVars);
+    const QueryLoc& return_location = v.get_return_location(); 
+    rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(return_location, lReturnExpr,
+								theScopedVariables, theGlobalVars);
    lReturnExpr = lDebuggerExpr;
   }
 #endif

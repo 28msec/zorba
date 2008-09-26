@@ -53,7 +53,8 @@ class MessageFactory
         }
         length -= MESSAGE_HEADER_SIZE;
         //allocate memory for the whole packet
-        ZorbaArrayAutoPointer<Byte> lPacket(new Byte[ length + MESSAGE_HEADER_SIZE ]);
+        ZorbaArrayAutoPointer<Byte> lPacket(new Byte[ length + MESSAGE_HEADER_SIZE + 1 ]);
+	memset( lPacket.get(), '\0', length+MESSAGE_HEADER_SIZE+1 );
         memcpy( lPacket.get(), lengthField.get(), MESSAGE_HEADER_SIZE );
         //read the command packet
         aSocket->recv ( lPacket.get() + MESSAGE_HEADER_SIZE, length );

@@ -159,12 +159,10 @@ ReplyMessage::ReplyMessage( Byte * aMessage, const unsigned int aLength ):  Abst
   memcpy( theReplyContent, lmsg, SIZE_OF_REPLY_CONTENT );
   if ( aLength - MESSAGE_SIZE > 0 )
   {
-    //char * lData = new char[ aLength - MESSAGE_SIZE + 1 ];
     ZorbaArrayAutoPointer<char> lData(new char[ aLength - MESSAGE_SIZE + 1 ]);
-    //char *lMessage = reinterpret_cast<char *>( aMessage + MESSAGE_SIZE );
     memset(lData.get(), '\0', aLength - MESSAGE_SIZE + 1);
-    memcpy( lData.get(), aMessage + MESSAGE_SIZE, aLength - MESSAGE_SIZE );
-    theData = xqpString( lData.get() );
+    memcpy(lData.get(), aMessage + MESSAGE_SIZE, aLength - MESSAGE_SIZE );
+    theData = xqpString(lData.get());
   }
   checkIntegrity();
 }
@@ -576,7 +574,7 @@ Byte * SuspendedEvent::serialize( Length & aLength ) const
   ZorbaArrayAutoPointer<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   std::string lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
-  memset(lMsg, '0', getLength()+1);
+  memset(lMsg, '\0', getLength()+1);
   memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
