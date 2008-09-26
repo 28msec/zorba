@@ -1,0 +1,350 @@
+/** \page collections The Zorba collection functions
+
+<ul>
+   <li> Table of Contents
+   <ul>
+     <li> \ref introduction
+     <ul>
+       <li> \ref coll
+       <li> \ref namespace
+     </ul>
+     <li> \ref signatures
+     <ul>
+       <li> \ref fn_collection
+       <li> \ref coll_import_xml
+       <li> \ref coll_import_catalog
+       <li> \ref coll_list_collections
+       <li> \ref coll_create_collection
+       <li> \ref coll_delete_collection
+       <li> \ref coll_delete_all_collections
+       <li> \ref coll_insert_nodes_first
+       <li> \ref coll_insert_nodes_last
+       <li> \ref coll_insert_nodes_before
+       <li> \ref coll_insert_nodes_after
+       <li> \ref coll_insert_nodes_at
+       <li> \ref coll_remove_nodes
+       <li> \ref coll_remove_node_at
+       <li> \ref coll_remove_nodes_count
+       <li> \ref coll_remove_node_at
+       <li> \ref coll_index_of
+       <li> \ref coll_export_xml
+     </ul>
+     <li> \ref apendix
+   </ul>
+ </ul>
+ 
+\section introduction 1 Introduction
+This document defines the functions that will perform manipulations on collections in the Zorba engine.
+
+\subsection coll 1.1 Collections in Zorba
+Each collection is defined to be a sequence of nodes, identified by an URI. \n The collections concern themselves only with the top-level sequence of nodes, and do not have any functions to manipulate the nodes or their contents. \n A node may be part of more than one collection, still the node is unique within every collection.\n When added to a collection, a node is not copied, and further modifications to it will be reflected in the collection.
+
+\subsection namespace 1.2 Namespaces
+In order to use Zorba collection functions functionality, the module <tt>"http://www.zorba-xquery.com/zorba/collection-functions"</tt> has
+to be included at the beginning of a query. For example
+
+\code
+  import module namespace zorba-collection = "http://www.zorba-xquery.com/zorba/collection-functions";
+\endcode
+
+\section signatures 2 Function Signatures and Descriptions
+Most of the collection functions will be sequential functions (marked by "sequential" keyword).
+
+\subsection fn_collection 2.1 fn:collection
+
+\code
+  declare function collection($uri as xs:anyURI) as node()*
+\endcode
+
+This is provided here for completeness. It will return the nodes from the collection identified by the given URI.
+
+For details about this function please see chapter <tt>15.5.6 fn:collection</tt> from <a href="http://www.w3.org/TR/xquery-operators/#func-collection" target="_blank">XQuery 1.0 and XPath 2.0 Functions and Operators</a>
+
+\subsection coll_import_xml 2.2 zorba-collection:import-xml
+
+\code
+  declare function import-xml($uri as xs:anyURI) as none
+\endcode
+
+Summary: This function will import a given XML document, identified by the <b>$uri</b> parameter, into a new collection. \n
+The collection's URI will be the value of the <b>$uri</b> parameter. \n
+If the <b>$uri</b> is found in the collection poll no import is done.
+
+Error conditions:\n
+If the XML file specified by the <b>$uri</b> parameter does not exist, an error is raised API0033_FILE_OR_FOLDER_DOES_NOT_EXIST (see \ref apendix).\n
+If the XML file cannot be opened, an error is raised API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED (see \ref apendix).\n
+If the <b>$uri</b> is found in the collection poll an error is raised API0005_COLLECTION_ALREADY_EXISTS (see \ref apendix).\n
+
+\subsection coll_import_catalog 2.3 zorba-collection:import-catalog
+
+\code
+  declare function import-catalog($uri as xs:anyURI) as none
+\endcode
+
+Summary: The function will open the given XML file and interpret it as a catalog.\n
+Assuming <b>$uri</b> is 'file://localhost/home/user_1/catalog.xml', it must have the following structure:
+
+\code
+<catalog>
+  <doc href="file1.xml"/>
+  <doc href="path/file2.xml"/>
+  <doc href="path/file3.xml"/>
+  ...
+</catalog>
+\endcode
+
+Each of the documents referenced in the <tt>\<doc\></tt> tags is first looked up in the collection poll. \n
+If it is already present, nothing is done, otherwise it is loaded as a collection, with the <tt>href</tt> attribute's value as the associated URI.\n
+The URIs of the catalog and the files may include a protocol specification, such as "file://" or "http://".\n
+The function will not validate the catalog file's structure. In case it is malformed - no XML files will be imported.
+
+In case a <tt>href</tt> attribute contains no path, only the name of the file (see the first href attribute in the example above) the file will be looked in the same path as the catalog ('file://localhost/home/user_1/file1.xml' in the example above).
+
+Error conditions:\n
+If the catalog file specified by the <b>$uri</b> parameter or any of the files specified by the href attributes does not exist, an error is raised API0033_FILE_OR_FOLDER_DOES_NOT_EXIST (see \ref apendix).\n
+If the catalog file or the href files cannot be opened, an error is raised API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED (see \ref apendix).\n
+
+\subsection coll_list_collections 2.4 zorba-collection:list-collections
+
+\code
+  declare function list-collections() as xs:anyURI*
+\endcode
+
+Summary: The function will return a sequence of URIs of all currently know collections.
+
+\subsection ex_2_4 Example:
+\include q4.cxq
+
+\subsection coll_create_collection 2.5 zorba-collection:create-collection
+
+\code
+  declare sequential function create-collection($uri as xs:anyURI) as none
+  declare sequential function create-collection($uri as xs:anyURI,
+                                                $nodes as node()*) as none
+\endcode
+
+Summary: The first function will create a new, empty, collection. \n
+The second function will create a new collection and will add the given nodes to it.
+
+Error conditions:\n
+If the collection already exists, an error is raised API0005_COLLECTION_ALREADY_EXISTS (see \ref apendix).
+
+\subsection ex_2_5 Example:
+\include q1.cxq
+
+\subsection coll_delete_collection 2.6 zorba-collection:delete-collection
+
+\code
+  declare sequential function delete-collection($uri as xs:anyURI) as none
+\endcode
+
+Summary: The function will delete the collection identified by the given URI.
+
+Error conditions:\n
+If the collection does not exist, an error is raised: API0006_COLLECTION_NOT_FOUND (see \ref apendix).
+
+\subsection ex_2_6 Example:
+\include q3.cxq
+
+\subsection coll_delete_all_collections 2.7 zorba-collection:delete-all-collections
+
+\code
+  declare sequential function delete-all-collections() as none
+\endcode
+
+Summary: The function will delete all existing collections.
+
+\subsection coll_insert_nodes_first 2.8 zorba-collection:insert-nodes-first
+
+\code
+  declare sequential function insert-nodes-first( $uri as xs:anyURI,
+                                                  $newnode as node()*) as none
+\endcode
+
+Summary: The function will insert the given node(s) as the first node(s) of the given collection. \n
+If multiple nodes are inserted, the nodes remain adjacent and their order preserves the node ordering of the source expression.
+
+Error conditions:\n
+If the specified collection does not exist, an error is raised API0006_COLLECTION_NOT_FOUND (see \ref apendix). \n
+If the node is already in the collection, an error is raised API0031_NODE_ALREADY_IN_COLLECTION  (see \ref apendix).
+
+\subsection coll_insert_nodes_last 2.9 zorba-collection:insert-nodes-last
+
+\code
+  declare sequential function insert-nodes-last($uri as xs:anyURI,
+                                                $newnode as node()*) as none
+\endcode
+
+Summary: The function will insert the given node(s) as the last node(s) of the given collection. \n
+If multiple nodes are inserted, the nodes remain adjacent and their order preserves the node ordering of the source expression.
+
+Error conditions:\n
+If the specified collection does not exist, an error is raised API0006_COLLECTION_NOT_FOUND (see \ref apendix). \n
+If the node is already in the collection, an error is raised API0031_NODE_ALREADY_IN_COLLECTION  (see \ref apendix).
+
+\subsection ex_2_9 Example:
+\include q31.cxq
+
+\subsection coll_insert_nodes_before 2.10 zorba-collection:insert-nodes-before
+
+\code
+  declare sequential function insert-nodes-before($uri as xs:anyURI,
+                                                  $target as node()+,
+                                                  $newnode as node()*) as none
+\endcode
+
+Summary: The inserted nodes become the preceding nodes of the <b>$target</b>.\n
+The <b>$target</b> should be a non-updating expression (e.g. an XPath expression) identifying a node that is part of the given collection at the top-level.\n
+If the expression returns more than one node, the first one is used. A predicate can be used to select a different node in this case.\n
+If multiple nodes are inserted by a single insert expression, the nodes remain adjacent and their order preserves the node ordering of the source expression.
+
+Error conditions:\n
+If the specified collection does not exist, an error is raised API0006_COLLECTION_NOT_FOUND (see \ref apendix). \n
+If the given expression points to node that is not part of the collection, an error is raised API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION (see \ref apendix). \n
+If  <b>$target</b> is already part of the collection an error is raised API0031_NODE_ALREADY_IN_COLLECTION (see \ref apendix).
+
+\subsection ex_2_10 Example:
+\include q32.cxq
+
+\subsection coll_insert_nodes_after 2.11 zorba-collection:insert-nodes-after
+
+\code
+  declare sequential function insert-nodes-after( $uri as xs:anyURI,
+                                                  $target as node()+,
+                                                  $newnode as node()*) as none
+\endcode
+
+Summary: The inserted nodes become the following nodes of the <b>$target</b>.\n
+The <b>$target</b> should be a non-updating expression (e.g. an XPath expression) identifying a node that is part of the given collection at the top-level.\n
+If the expression returns more than one node, the first one is used. A predicate can be used to select a different node in this case.\n
+If multiple nodes are inserted by a single insert expression, the nodes remain adjacent and their order preserves the node ordering of the source expression.
+
+Error conditions:\n
+If the specified collection does not exist, an error is raised API0006_COLLECTION_NOT_FOUND (see \ref apendix). \n
+If the given expression points to node that is not part of the collection, an error is raised API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION (see \ref apendix). \n
+If  <b>$target</b> is already part of the collection an error is raised API0031_NODE_ALREADY_IN_COLLECTION (see \ref apendix).
+
+\subsection coll_insert_nodes_at 2.12 zorba-collection:insert-nodes-at
+
+\code
+  declare sequential function insert-nodes-at($uri as xs:anyURI,
+                                              $position as xs:integer,
+                                              $newnode as node()*) as none
+\endcode
+
+Summary: Inserts the node(s) into the given collection, at the specified position.\n
+If <b>$position</b> is negative, the node(s) will be inserted at the beginning of the collection.\n
+If <b>$position</b> is greater or equal to the number of nodes in the collection, the node(s) will be inserted as the last node(s) of the collection.
+
+Error conditions:\n
+If the specified collection does not exist, an error is raised API0006_COLLECTION_NOT_FOUND (see \ref apendix). \n
+If the node is already part of the collection an error is raised API0031_NODE_ALREADY_IN_COLLECTION (see \ref apendix).
+
+\subsection coll_remove_nodes 2.13 zorba-collection:remove-nodes
+
+\code
+  declare sequential function remove-nodes( $uri as xs:anyURI,
+                                            $target as node()+) as none
+\endcode
+
+Summary: The function will remove the node(s) identified by the <b>$target</b> expression from the given collection.\n
+The nodes themselves will not be deleted and they may remain as parts of other collections.\n
+If the expression identifies more than one node, all of them will be removed from the collection. A predicate can be used to select a single node, if needed.
+
+Error conditions:\n
+If the specified collection does not exist, an error is raised API0006_COLLECTION_NOT_FOUND (see \ref apendix). \n
+If the given expression points to a node that is not part of the collection, an error is raised API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION (see \ref apendix).
+
+\subsection ex_2_13 Example:
+\include q36.cxq
+
+\subsection coll_remove_node_at 2.14 zorba-collection:remove-node-at
+
+\code
+  declare sequential function remove-node-at( $uri as xs:anyURI,
+                                              $position as xs:integer) as none
+\endcode
+
+Summary: The function will remove from the given collection the node positioned at <b>$position</b>.
+
+Error conditions:\n
+If the specified collection does not exist, an error is raised API0006_COLLECTION_NOT_FOUND (see \ref apendix). \n
+If the collection has fewer nodes than <b>$position</b> + 1, nothing is removed and an error is raised API0030_NO_NODE_AT_GIVEN_POSITION (see \ref apendix).
+
+\subsection ex_2_14 Example:
+\include q37.cxq
+
+\subsection coll_remove_nodes_count 2.15 zorba-collection:nodes-count
+
+\code
+  declare sequential function nodes-count($uri as xs:anyURI) as xs:integer?
+\endcode
+
+Summary: The function returns the number of nodes in the given collection.
+
+Error conditions:\n
+If the specified collection does not exist, an error is raised API0006_COLLECTION_NOT_FOUND (see \ref apendix).
+
+\subsection ex_2_15 Example:
+\include q38.cxq
+
+\subsection coll_remove_node_at 2.16 zorba-collection:node-at
+
+\code
+  declare sequential function node-at($uri as xs:anyURI,
+                                      $position as xs:integer) as node()?
+\endcode
+
+Summary: The function will return the node positioned at <b>$position</b> in the given collection.
+
+Error conditions:\n
+If the specified collection does not exist, an error is raised API0006_COLLECTION_NOT_FOUND (see \ref apendix).\n
+If the collection has fewer nodes than <b>$position</b> + 1 an error is raised API0030_NO_NODE_AT_GIVEN_POSITION (see \ref apendix).
+
+\subsection ex_2_16 Example:
+\include q39.cxq
+
+\subsection coll_index_of 2.17 zorba-collection:index-of
+
+\code
+  declare function index-of($uri as xs:anyURI,
+                            $target as node()) as xs:integer
+\endcode
+
+Summary: The function will return the index of the  $target node within the collection identified by <b>$uri</b>.
+
+Error conditions:\n
+If the specified collection does not exist, an error is raised API0006_COLLECTION_NOT_FOUND (see \ref apendix).\n
+If the node does not belong to the given collection, an error is raised API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION (see \ref apendix).
+
+\subsection coll_export_xml 2.18 zorba-collection:export-xml
+
+\code
+  declare updating function export-xml( $uri as xs:anyURI) as none
+  declare updating function export-xml( $uri as xs:anyURI,
+                                        $targeturi as xs:string) as none
+\endcode
+
+Summary: Saves the given collection to the target URI as an XML file.\n
+Intended supported targets (protocols) are:\n
+"file:///path/file.xml" : (e.g. "file://c:/path/folder/file.xml") - saves the collection to a file, in the serialized form.\n
+"http://www.example.com/path/file.xml" - saves the collection to a remote location, via the HTTP PUT request (to be implemented by the REST library).\n
+If the protocol is omitted in the URI, "file://" is assumed.\n
+The first function will use the collection's URI (the $uri parameter) as the target URI.\n
+The collection will be exported only if it can be serialized correctly - i.e. it is a well-formed XML document. \n
+
+Error conditions:\n
+If the collection can not be serialized corectly an error will be returned API0035_COLLECTION_CANNOT_BE_SERIALIZED (see \ref apendix).
+
+\section apendix Appendix A:  Error codes
+
+  API0006_COLLECTION_NOT_FOUND - collection does not exist.\n
+  API0005_COLLECTION_ALREADY_EXISTS - collection already exists.\n
+  API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION - the node does not belong to the given collection.\n
+  API0030_NO_NODE_AT_GIVEN_POSITION - there is no node at the given position, the collection has fewer nodes.\n
+  API0031_NODE_ALREADY_IN_COLLECTION - the node is already part of the collection.\n
+  API0033_FILE_OR_FOLDER_DOES_NOT_EXIST - the file or folder does not exist.\n
+  API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED - a file or folder cannot be opened.\n
+  API0035_COLLECTION_CANNOT_BE_SERIALIZED - the collection cannot be serialized.\n
+
+*/

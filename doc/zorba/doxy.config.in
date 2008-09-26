@@ -499,6 +499,7 @@ EXCLUDE_PATTERNS       = */.svn \
 # the \include command).
 
 EXAMPLE_PATH           = @CMAKE_SOURCE_DIR@/test/rbkt/Queries \
+                         @CMAKE_SOURCE_DIR@/test/rbkt/Queries/collections/chained_test_collection_011 \
                          @CMAKE_SOURCE_DIR@/test/update/Queries \
                          @CMAKE_SOURCE_DIR@/test/update/ExpectedTestResults
 
@@ -512,6 +513,7 @@ EXAMPLE_PATTERNS       = *.cpp \
                          *.h \
                          *.hh \
                          *.xq \
+                         *.cxq \
                          *.xqlib \
                          *.xml \
                          INSTALL DEPENDENCIES CHANGELOG LICENSE LGPL
