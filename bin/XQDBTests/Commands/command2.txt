@@ -6,6 +6,7 @@ p $foo
 p $var
 p $e
 p $x1
+p $e mod 1000
 c
 vars
 p $foo

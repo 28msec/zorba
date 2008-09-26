@@ -22,6 +22,7 @@ $e [XS_UNTYPED]
 123 xs:integer
 2 xs:integer
 3 xs:integer
+(xqdb) 1 xs:integer
 (xqdb) 
 7	 if ($e mod 1000 eq 0)
 
