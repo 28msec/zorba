@@ -2,7 +2,7 @@
 #include <list>
 #include <istream>
 #include <map>
-#include <string>
+#include <cstring>
 
 namespace json{
 	

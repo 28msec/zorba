@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <string>
+#include <cstring>
 #include "value.h"
 
 namespace json{

@@ -236,8 +236,8 @@ bool value::setstring(const wchar_t *newval){
 bool value::setstring(const char *nval){
 	if (val) deletevalue();
 	dt=datatype::_string;
-	wchar_t *newval=new wchar_t[strlen(nval)+1];
-	astr2wstr(newval,nval,strlen(nval)+1);
+	wchar_t *newval=new wchar_t[std::strlen(nval)+1];
+	astr2wstr ( newval,nval, std::strlen(nval)+1 );
 
 	val=(void *)new std::wstring;
 	(*(std::wstring *)val)=newval;
