@@ -42,8 +42,9 @@ int tidy(const char* input, xqp_string& result, xqp_string& diagnostics)
   TidyDoc             tdoc;
   bool                ok;
   int                 rc = -1;
-  TidyBuffer output = {0, 0, 0, 0};
-  TidyBuffer errbuf = {0, 0, 0, 0};
+  TidyBuffer output, errbuf;
+  tidyBufInit( &output );
+  tidyBufInit( &errbuf );
   xqpStringStore_t    buf, err;
   TidyOptionId        toID;
   std::string         optTM("tidy-mark");
@@ -99,9 +100,13 @@ int tidy(const std::ifstream& fStream, std::iostream& result, std::iostream& dia
   buffer = new char[size];
   pbuf->sgetn (buffer, size);
 
-  TidyBuffer inputBuf = {(byte*)buffer, size, size, 0};
-  TidyBuffer output = {0, 0, 0, 0};
-  TidyBuffer errbuf = {0, 0, 0, 0};
+  TidyBuffer inputBuf;
+  tidyBufAlloc(&inputBuf, size+1);
+  inputBuf.bp = (byte*)buffer;
+  inputBuf.size = size;
+  TidyBuffer output, errbuf;
+  tidyBufInit( &output );
+  tidyBufInit( &errbuf );
 
   tdoc = tidyCreate();
 
@@ -144,9 +149,14 @@ int tidy(const std::istringstream& isStream, std::iostream& result, std::iostrea
   int                 rc = -1;
   std::stringbuf *    isBuf = isStream.rdbuf();
   uint                size = (uint)isBuf->in_avail();
-  TidyBuffer inputBuf = {(byte*)(isStream.str().c_str()), size, size, 0};
-  TidyBuffer output = {0, 0, 0, 0};
-  TidyBuffer errbuf = {0, 0, 0, 0};
+
+  TidyBuffer inputBuf;
+  tidyBufAlloc(&inputBuf, size+1);
+  inputBuf.bp = (byte*)(isStream.str().c_str());
+  inputBuf.size = size;
+  TidyBuffer output, errbuf;
+  tidyBufInit( &output );
+  tidyBufInit( &errbuf );
   xqpStringStore_t    buf, err;
   TidyOptionId        toID;
   std::string         optTM("tidy-mark");
