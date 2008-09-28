@@ -26,6 +26,10 @@
   #include <arpa/inet.h>
   #include <unistd.h>
   #include <netinet/in.h>
+
+#include <cstring>
+#include <cstdlib>
+
   typedef void raw_type;
 #endif
 
@@ -43,7 +47,7 @@ SocketException::SocketException(const string &message, bool inclSysMsg)
   throw() : userMessage(message) {
   if (inclSysMsg) {
     userMessage.append(": ");
-    userMessage.append(strerror(errno));
+    userMessage.append(std::strerror(errno));
   }
 }
 

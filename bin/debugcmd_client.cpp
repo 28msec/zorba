@@ -23,6 +23,8 @@
 #include <windows.h>
 #endif
 
+#include <cstdlib>
+
 using namespace zorba;
 
 #ifdef SIGINT /* not all system have SIGINT */
