@@ -1550,6 +1550,7 @@ FLWORExpr :
     {
       ReturnExpr* lReturnExpr = dynamic_cast<ReturnExpr*>($2);
       $$ = new FLWORExpr (LOC (@$), dynamic_cast<FLWORClauseList*>($1), lReturnExpr->get_return_val(), lReturnExpr->get_location(), driver.theCompilerCB->m_config.force_gflwor);
+      delete $2;
     }
     ;
 
