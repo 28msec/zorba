@@ -257,7 +257,8 @@ bool ZorbaDebugger::hasToSuspend()
   {
     std::auto_ptr< CompilerCB > ccb;
     std::auto_ptr< dynamic_context > dctx;
-    PlanWrapperHolder* eval_plan = compileEvalPlan(theLocation, ccb.get(), dctx.get(), lIter->second, *thePlanState);
+    //TODO: catch exceptions
+    std::auto_ptr<PlanWrapperHolder> eval_plan = compileEvalPlan(theLocation, ccb.get(), dctx.get(), lIter->second, *thePlanState);
     PlanWrapper* lIterator = eval_plan->get();
     try
     {
@@ -271,13 +272,11 @@ bool ZorbaDebugger::hasToSuspend()
       if(lItem->getEBV()->getBooleanValue())
       {
         setStatus(QUERY_SUSPENDED, CAUSE_BREAKPOINT);
-      	delete eval_plan;
-	return true;
+	      return true;
       }
     } catch ( error::ZorbaError& e) {
-      delete eval_plan;
+      //do nothing... 
     }
-    delete eval_plan;
   }
   return false;
 }
@@ -317,6 +316,8 @@ void ZorbaDebugger::handleTcpClient( TCPSocket * aSock )
     if ( lCommandMessage )
     {
       //process the command message
+      //TODO: flush the output somewhere else
+      std::cout.flush();
       processMessage( lCommandMessage );
       //Send the reply message
       lReplyMessage = lCommandMessage->getReplyMessage();
@@ -383,7 +384,7 @@ void ZorbaDebugger::eval( xqpString anExpr )
       std::auto_ptr< CompilerCB > ccb;
       std::auto_ptr< dynamic_context > dctx;
       
-      PlanWrapperHolder* eval_plan = compileEvalPlan(theLocation, ccb.get(), dctx.get(), anExpr, *thePlanState);
+      std::auto_ptr<PlanWrapperHolder> eval_plan = compileEvalPlan(theLocation, ccb.get(), dctx.get(), anExpr, *thePlanState);
       PlanWrapper* lIterator = eval_plan->get();
       assert(lIterator != 0);
 
@@ -413,10 +414,10 @@ void ZorbaDebugger::eval( xqpString anExpr )
   }
 }
 
-PlanWrapperHolder*
+std::auto_ptr<PlanWrapperHolder>
 ZorbaDebugger::compileEvalPlan(const QueryLoc& loc, CompilerCB* ccb, dynamic_context* dctx, const xqpString& anExpr, PlanState& planState)
 {
-  PlanWrapperHolder* eval_plan = new PlanWrapperHolder();
+  std::auto_ptr<PlanWrapperHolder> eval_plan(new PlanWrapperHolder());
   
   checked_vector< std::string > var_keys;
 
@@ -445,7 +446,7 @@ ZorbaDebugger::compileEvalPlan(const QueryLoc& loc, CompilerCB* ccb, dynamic_con
     // we won't be able to re-open it later via the PlanIteratorWrapper
     dctx->add_variable(dynamic_context::var_key(ccb->m_sctx->lookup_var(theVarnames[i])), lIter);
   }
-  return eval_plan;
+  return std::auto_ptr<PlanWrapperHolder>(eval_plan.release());
 }
 
 void ZorbaDebugger::processMessage(AbstractCommandMessage * aMessage)

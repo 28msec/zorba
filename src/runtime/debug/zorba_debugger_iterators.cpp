@@ -53,7 +53,6 @@ FnDebugIterator::FnDebugIterator(DebuggerBreak aKind, const QueryLoc& loc,
     }
     while ( consumeNext( result, theChildren[0], planState ) ) {
       //the debugger query is always executed on std::cout
-      std::cout.flush();
       assert(theDebugger);
       theDebugger->thePlanState = &planState;
       theDebugger->theVarnames = varnames;

@@ -146,7 +146,7 @@ class ZorbaDebugger
 
     void eval( xqpString anExpr );
 
-    PlanWrapperHolder*
+    std::auto_ptr<PlanWrapperHolder>
     compileEvalPlan(const QueryLoc& loc, CompilerCB* ccb, dynamic_context* dctx, const xqpString& anExpr, PlanState& planState);
 };
 }//end of namespace xqp
