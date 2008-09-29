@@ -96,10 +96,11 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   state->thePlan = theUDF->get_plan(planState.theCompilerCB).getp();
   state->thePlanStateSize = state->thePlan->getStateSizeOfSubtree();
-  state->theFnBodyStateBlock = new PlanState(state->thePlanStateSize, planState.theStackDepth + 1);
-  state->theFnBodyStateBlock->checkDepth (loc);
-  state->theFnBodyStateBlock->theRuntimeCB = planState.theRuntimeCB;
-  state->theFnBodyStateBlock->theCompilerCB = planState.theCompilerCB;
+  std::auto_ptr<PlanState> block(new PlanState(state->thePlanStateSize, planState.theStackDepth + 1));
+  block->theRuntimeCB = planState.theRuntimeCB;
+  block->theCompilerCB = planState.theCompilerCB;
+  block->checkDepth (loc);
+  state->theFnBodyStateBlock = block.release();
 }
 
 
