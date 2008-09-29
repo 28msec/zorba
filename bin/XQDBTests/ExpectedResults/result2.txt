@@ -2,8 +2,8 @@ Zorba XQuery debugger client.
 Copyright 2006-2008 The FLWOR Foundation.
 License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>
 Query idle
-(xqdb) Set breakpoint at line 5 in /Users/wcandillon/zorba/bin/XQDBTests/Queries/query2.xq.
-(xqdb) Set breakpoint at line 7 in /Users/wcandillon/zorba/bin/XQDBTests/Queries/query2.xq.
+(xqdb) Set breakpoint at line 5 in query2.xq.
+(xqdb) Set breakpoint at line 7 in query2.xq.
 (xqdb) Launch the query
 
 5	for $e in (1 to 10)

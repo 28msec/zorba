@@ -30,11 +30,11 @@ Query idle
 25	</html>
 26	
 
-(xqdb) Set breakpoint at line 5 in /Users/wcandillon/zorba/bin/XQDBTests/Queries/query4.xq.
-(xqdb) Set breakpoint at line 12 in /Users/wcandillon/zorba/bin/XQDBTests/Queries/query4.xq.
-(xqdb) Set breakpoint at line 13 in /Users/wcandillon/zorba/bin/XQDBTests/Queries/query4.xq.
-(xqdb) Set breakpoint at line 18 in /Users/wcandillon/zorba/bin/XQDBTests/Queries/query4.xq.
-(xqdb) Set breakpoint at line 19 in /Users/wcandillon/zorba/bin/XQDBTests/Queries/query4.xq.
+(xqdb) Set breakpoint at line 5 in query4.xq.
+(xqdb) Set breakpoint at line 12 in query4.xq.
+(xqdb) Set breakpoint at line 13 in query4.xq.
+(xqdb) Set breakpoint at line 18 in query4.xq.
+(xqdb) Set breakpoint at line 19 in query4.xq.
 (xqdb) Launch the query
 
 5	    for $act in <doc>

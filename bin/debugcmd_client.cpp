@@ -388,7 +388,9 @@ void CommandLineEventHandler::handle_cmd()
           } else {
             String lFileName(theFileName);
             theClient->addBreakpoint( lFileName, lLineNo );
-            theOutput << "Set breakpoint at line " << lLineNo << " in " << lFileName << '.' << std::endl;
+            int loc = theFileName.rfind('/');
+            std::string lFile = theFileName.substr(loc+1);
+            theOutput << "Set breakpoint at line " << lLineNo << " in " << lFile << '.' << std::endl;
           }
         } 
       }

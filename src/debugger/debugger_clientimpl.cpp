@@ -196,10 +196,6 @@ namespace zorba{
       ReplyMessage * lReplyMessage = dynamic_cast< ReplyMessage * >( lMsg );
       if ( lReplyMessage )
       {
-        if( ! lReplyMessage->isOk() )
-        {
-          std::cerr << "Error occured: " << lReplyMessage->getMessage() << std::endl;
-        }
         return lReplyMessage;
       } else {
       //TODO: print the error message.
