@@ -3274,7 +3274,7 @@ void end_visit (const Expr& v, void* /*visit_state*/) {
 
   if (v.numberOfChildren () > 1) {
     expr_update_t lUpdateType = VACUOUS_EXPR;
-    fo_expr *elist_h = create_seq (loc);
+    std::auto_ptr<fo_expr> elist_h(create_seq (loc));
     for (int i = 0; i < v.numberOfChildren (); i++) {
       expr_t e_h = pop_nodestack();
       lUpdateType = update_type_check_for_if(
@@ -3284,7 +3284,7 @@ void end_visit (const Expr& v, void* /*visit_state*/) {
       elist_h->add(e_h);
     }
     elist_h->setUpdateType(lUpdateType);
-    nodestack.push(elist_h);
+    nodestack.push(elist_h.release());
   }
 }
 
