@@ -4916,7 +4916,7 @@ void end_visit (const TransformExpr& v, void* /*visit_state*/) {
   if (lModify->getUpdateType() == SIMPLE_EXPR) {
     ZORBA_ERROR_LOC(XUST0002, loc);
   }
-  transform_expr* lTransform = new transform_expr(loc, lModify, lReturn);
+  std::auto_ptr<transform_expr> lTransform(new transform_expr(loc, lModify, lReturn));
   const size_t lSize = v.get_varname_list()->size();
   for (size_t i = 0; i < lSize; ++i)
   {
@@ -4930,7 +4930,7 @@ void end_visit (const TransformExpr& v, void* /*visit_state*/) {
     lTransform->add(lCCE);
     pop_scope();
   }
-  nodestack.push(lTransform);
+  nodestack.push(lTransform.release());
 }
 
 void *begin_visit (const VarNameList& v) {
