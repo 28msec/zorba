@@ -938,8 +938,6 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
 {
 	if( item->getNodeKind() == store::StoreConsts::documentNode )
 	{
-    String lPublicID( item->getUnparsedEntityPublicId() );
-    String lSystemID( item->getUnparsedEntitySystemId() );
 		emit_node_children(item);    
 	}
 	else if (item->getNodeKind() == store::StoreConsts::elementNode)
