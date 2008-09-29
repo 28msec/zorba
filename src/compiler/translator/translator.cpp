@@ -2788,7 +2788,6 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/) {
   }
 
   InternalModuleURIResolver* lModuleResolver = sctx_p->get_module_uri_resolver();
-  bool isStandardResolver = dynamic_cast<StandardModuleURIResolver*>(lModuleResolver) != 0;
 
   for (vector<xqpStringStore_t>::iterator lIter = lURIs.begin();
        lIter != lURIs.end(); ++lIter) {
@@ -2831,11 +2830,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/) {
         imported_ns = mod_ast->get_decl ()->get_target_namespace ();
         minfo->init_exprs.push_back (translate_aux (*ast, &mod_ccb, minfo, mod_stk1));
         minfo->mod_ns_map.put (xqpString(resolveduri.getp()), imported_ns);
-        if ( !isStandardResolver )
-          modfile.release();
       } catch (...) {
-        if ( !isStandardResolver )
-          modfile.release();
         throw;
       }
     }
