@@ -25,6 +25,7 @@ namespace zorba
       T* thePtr;
   
     public:
+      ZorbaArrayAutoPointer(): thePtr(0){}
       ZorbaArrayAutoPointer(T *aPtr): thePtr(aPtr){}
   
       ~ZorbaArrayAutoPointer()
@@ -34,14 +35,21 @@ namespace zorba
   
       void reset(T *aPtr)
       {
-        T *lPtr = thePtr;
+        T* lPtr = thePtr;
         thePtr = aPtr;
         delete[] lPtr;
       }
   
-      T *get()
+      T* get()
       {
         return thePtr;
+      }
+
+      T* release()
+      {
+        T* lPtr = thePtr;
+        thePtr = 0;
+        return lPtr;
       }
   };
 }//end of namespace
