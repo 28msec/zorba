@@ -28,6 +28,7 @@
 #include "zorbatypes/xqpstring.h"
 
 #include "debugger/query_locationimpl.h"
+#include "debugger/utils.h"
 #include "debugger/socket.h"
 #include "debugger/message_factory.h"
 
@@ -72,17 +73,16 @@ namespace zorba{
   void ZorbaDebuggerClientImpl::handshake()
   {
     bool result = false;
-    char * msg = new char[ 12 ];
-    memset(msg, '\0', 12);
+    ZorbaArrayAutoPointer<char> msg(new char[ 12 ]);
+    memset(msg.get(), '\0', 12);
     try
     {
       theRequestSocket->send( "XQHandshake", 11 );
-      theRequestSocket->recv( msg, 11 );
-      result = strcmp( msg, "XQHandshake" ) == 0; 
+      theRequestSocket->recv( msg.get(), 11 );
+      result = strcmp( msg.get(), "XQHandshake" ) == 0; 
     } catch ( SocketException &e ) {
       std::cerr << e.what() << std::endl;
     }
-    delete[] msg;
     if( !result )
     {
       throw MessageException( "Handshake failed" ); 
@@ -201,7 +201,6 @@ namespace zorba{
       //TODO: print the error message.
         std::cerr << "Internal error occured" << std::endl;
       }
-      //delete[] lMsg;
     } catch( SocketException &e ) {
       std::cerr << "Request client:" << e.what() << std::endl;
     }
@@ -211,57 +210,57 @@ namespace zorba{
   void ZorbaDebuggerClientImpl::run()
   {
     RunMessage lMessage;
-    ReplyMessage *lReply = send( &lMessage );
-    delete lReply;
+    //TODO: check reply message
+    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   }
 
   void ZorbaDebuggerClientImpl::suspend()
   {
     SuspendMessage lMessage;
-    ReplyMessage *lReply = send( &lMessage );
-    delete lReply;
+    //TODO: check reply message
+    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   }
 
   void ZorbaDebuggerClientImpl::resume()
   {
     ResumeMessage lMessage;
-    ReplyMessage *lReply = send( &lMessage );
-    delete lReply;
+    //TODO: check reply message
+    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   }
 
   void ZorbaDebuggerClientImpl::terminate()
   {
     TerminateMessage lMessage;
-    ReplyMessage *lReply = send( &lMessage );
-    delete lReply;
+    //TODO: check reply message
+    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   }
 
   void ZorbaDebuggerClientImpl::quit()
   {
     QuitMessage lMessage;
-    ReplyMessage *lReply = send( &lMessage );
-    delete lReply;
+    //TODO: check reply message
+    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   }
 
   void ZorbaDebuggerClientImpl::stepInto()
   {
     StepMessage lMessage( STEP_INTO );
-    ReplyMessage *lReply = send( &lMessage );
-    delete lReply;
+    //TODO: check reply message
+    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   }
 
   void ZorbaDebuggerClientImpl::stepOver()
   {
     StepMessage lMessage( STEP_OVER );
-    ReplyMessage *lReply = send( &lMessage );
-    delete lReply;
+    //TODO: check reply message
+    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   }
 
   void ZorbaDebuggerClientImpl::stepOut()
   {
     StepMessage lMessage( STEP_OUT );
-    ReplyMessage *lReply = send( &lMessage );
-    delete lReply;
+    //TODO: check reply message
+    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   }
 
   void ZorbaDebuggerClientImpl::addBreakpoint( const String &anExpr )
@@ -271,8 +270,7 @@ namespace zorba{
     theLastId++;
     lMessage.addExpr( theLastId, lExpr );
     theBreakpoints.insert( std::make_pair( theLastId, lExpr ) );
-    ReplyMessage *lReply = send( &lMessage );
-    delete lReply;
+    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   }
 
 
@@ -287,8 +285,7 @@ namespace zorba{
     std::stringstream lB;
     lB << "line:" << aLineNo;
     theBreakpoints.insert( std::make_pair( theLastId, lB.str() ) );
-    ReplyMessage *lReply = send( &lMessage );
-    delete lReply;
+    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   }
   
   void ZorbaDebuggerClientImpl::addBreakpoint( const String &aFileName, const unsigned int aLineNo )
@@ -305,8 +302,7 @@ namespace zorba{
     std::stringstream lB;
     lB << lFilename << ':' << aLineNo;
     theBreakpoints.insert( std::make_pair( theLastId, lB.str() ) );
-    ReplyMessage *lReply = send( &lMessage );
-    delete lReply;
+    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   }
 
   bool ZorbaDebuggerClientImpl::clearBreakpoint( unsigned int anId )
@@ -319,8 +315,7 @@ namespace zorba{
     } else {
       return false;
     }
-    ReplyMessage *lReply = send( &lMessage );
-    delete lReply;
+    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
     return true;
   }
 
@@ -333,8 +328,7 @@ namespace zorba{
       lMessage.addId( *it );
       theBreakpoints.erase( theBreakpoints.find( *it ) );
     }
-    ReplyMessage *lReply = send( &lMessage );
-    delete lReply;
+    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   }
 
   void ZorbaDebuggerClientImpl::clearBreakpoints()
@@ -345,8 +339,7 @@ namespace zorba{
     {
       lMessage.addId( it->first );
     }
-    ReplyMessage *lReply = send( &lMessage );
-    delete lReply;
+    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
     theBreakpoints.clear();
   }
  
@@ -365,16 +358,15 @@ namespace zorba{
     xqpString lExpr = Unmarshaller::getInternalString( anExpr );
     //TODO: espace double quotes characters
     EvalMessage lMessage( lExpr );
-    ReplyMessage *lReply = send( &lMessage );
-    delete lReply;
+    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   }
 
   std::list<Variable> ZorbaDebuggerClientImpl::getAllVariables()
   {
     std::list<Variable> lVariables;
     VariableMessage lMessage;
-    ReplyMessage * lReply = send( &lMessage );
-    VariableReply *lVariableReply = dynamic_cast<VariableReply *>( lReply );
+    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+    VariableReply *lVariableReply = dynamic_cast<VariableReply *>( lReply.get() );
     if ( lVariableReply )
     {
       std::map<xqpString, xqpString> variables = lVariableReply->getVariables();
@@ -387,7 +379,6 @@ namespace zorba{
         lVariables.push_back( lVariable );
       }
     }
-    delete lReply;
     return lVariables;
   }
   
@@ -395,8 +386,8 @@ namespace zorba{
   {
     std::list<Variable> lVariables;
     VariableMessage lMessage;
-    ReplyMessage * lReply = send( &lMessage );
-    VariableReply *lVariableReply = dynamic_cast<VariableReply *>( lReply );
+    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+    VariableReply *lVariableReply = dynamic_cast<VariableReply *>( lReply.get() );
     if ( lVariableReply )
     {
       std::map<xqpString, xqpString> variables = lVariableReply->getLocalVariables();
@@ -409,7 +400,6 @@ namespace zorba{
         lVariables.push_back( lVariable );
       }
     }
-    delete lReply;
     return lVariables;
   }
 
@@ -417,8 +407,8 @@ namespace zorba{
   {
     std::list<Variable> lVariables;
     VariableMessage lMessage;
-    ReplyMessage * lReply = send( &lMessage );
-    VariableReply *lVariableReply = dynamic_cast<VariableReply *>( lReply );
+    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+    VariableReply *lVariableReply = dynamic_cast<VariableReply *>( lReply.get() );
     if ( lVariableReply )
     {
       std::map<xqpString, xqpString> variables = lVariableReply->getGlobalVariables();
@@ -431,7 +421,6 @@ namespace zorba{
         lVariables.push_back( lVariable );
       }
     }
-    delete lReply;
     return lVariables;
   }
 }//end of namespace

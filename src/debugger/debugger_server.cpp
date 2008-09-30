@@ -23,6 +23,7 @@
 #include <zorba/zorba.h>
 #include <zorba/util/path.h>
 
+#include "debugger/utils.h"
 #include "debugger/socket.h"
 #include "debugger/message_factory.h"
 
@@ -70,7 +71,7 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
                            unsigned short aRequestPortno,
                            unsigned short aEventPortno)
 {
-  TCPSocket * lSock;
+  std::auto_ptr<TCPSocket> lSock;
   //Set the query
   theQuery = aQuery;
   //Run the server 
@@ -78,8 +79,8 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
   theEventPortno = aEventPortno;
   
   //Wait for a client to connect
-  lSock = theRequestServerSocket->accept();
-  assert( lSock != 0 );
+  lSock.reset(theRequestServerSocket->accept());
+  assert( lSock.get() != 0 );
 #ifndef NDEBUG
   std::clog << "[Server Thread] Client connected" << std::endl;
 #endif
@@ -105,12 +106,12 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
 #endif
 
   //Perform handshake
-  handshake( lSock );
+  handshake( lSock.get() );
   
   //Until the query execution has ended
   while ( theStatus != QUERY_QUITED )
   {
-    handleTcpClient( lSock );
+    handleTcpClient( lSock.get() );
   }
 #ifndef NDEBUG
   std::clog << "[Server Thread] server quited" << std::endl;
@@ -119,7 +120,6 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
 #ifndef NDEBUG
   std::clog << "[Server Thread] runtime thread quited" << std::endl;
 #endif 
-  delete lSock;
 }
 
 void ZorbaDebugger::setStatus( ExecutionStatus Status,
@@ -153,7 +153,7 @@ void ZorbaDebugger::setStatus( ExecutionStatus Status,
 void ZorbaDebugger::sendEvent( AbstractCommandMessage * aMessage )
 {
     Length length;
-    Byte * lMessage = aMessage->serialize( length );
+    ZorbaArrayAutoPointer<Byte> lMessage(aMessage->serialize(length));
     try
     {
 #ifndef NDEBUG
@@ -177,14 +177,13 @@ void ZorbaDebugger::sendEvent( AbstractCommandMessage * aMessage )
           break;
       }
 #endif
-      theEventSocket->send( lMessage, length );
+      theEventSocket->send( lMessage.get(), length );
 #ifndef NDEBUG
       std::clog << "[Server Thread] event sent" << std::endl;
 #endif
     } catch( SocketException &e ) {
       std::cerr << e.what() << std::endl;
     }
-    delete[] lMessage;
 }
 
 
@@ -202,9 +201,8 @@ void ZorbaDebugger::suspendedEvent( QueryLoc &aLocation, SuspensionCause aCause 
 
 void ZorbaDebugger::resumedEvent()
 {
-    ResumedEvent * lMessage = new ResumedEvent();
-    sendEvent( lMessage );
-    delete lMessage;
+    ResumedEvent lMessage;
+    sendEvent( &lMessage );
 }
 
 void ZorbaDebugger::terminatedEvent()
@@ -290,15 +288,14 @@ bool ZorbaDebugger::hasToSuspend()
  */
 void ZorbaDebugger::handshake( TCPSocket * aSock )
 {
-  Byte * msg = new Byte[11];
+  ZorbaArrayAutoPointer<Byte> msg(new Byte[11]);
   try
   {
-    aSock->recv( msg, 11 );
-    aSock->send( msg, 11 );
+    aSock->recv( msg.get(), 11 );
+    aSock->send( msg.get(), 11 );
   } catch( SocketException &e ) {
     std::cerr << e.what() << std::endl;
   }
-  delete[] msg;
 }
 
 /**
@@ -306,16 +303,14 @@ void ZorbaDebugger::handshake( TCPSocket * aSock )
  */
 void ZorbaDebugger::handleTcpClient( TCPSocket * aSock )
 {
-    Byte * lByteMessage = 0;
-    AbstractMessage * lMessage = 0;
-    ReplyMessage * lReplyMessage = 0;
-    Length length;
-    try
-    {
-    lMessage = MessageFactory::buildMessage( aSock );
-    
-    AbstractCommandMessage * lCommandMessage = dynamic_cast< AbstractCommandMessage * > ( lMessage );
-    
+  ZorbaArrayAutoPointer<Byte> lByteMessage;
+  std::auto_ptr<AbstractMessage> lMessage;
+  std::auto_ptr<ReplyMessage> lReplyMessage;
+  Length length;
+  try
+  {
+    lMessage.reset(MessageFactory::buildMessage( aSock ));
+    AbstractCommandMessage * lCommandMessage = dynamic_cast< AbstractCommandMessage * > ( lMessage.get() );
     if ( lCommandMessage )
     {
       //process the command message
@@ -323,19 +318,19 @@ void ZorbaDebugger::handleTcpClient( TCPSocket * aSock )
       std::cout.flush();
       processMessage( lCommandMessage );
       //Send the reply message
-      lReplyMessage = lCommandMessage->getReplyMessage();
-      lByteMessage = lReplyMessage->serialize( length );
-      aSock->send( lByteMessage, length );
+      lReplyMessage.reset(lCommandMessage->getReplyMessage());
+      lByteMessage.reset(lReplyMessage->serialize( length ));
+      aSock->send( lByteMessage.get(), length );
     } else {
 #ifndef NDEBUG
       std::cerr << "Received something wrong" << std::endl;
 #endif
       //If something goes wrong, buildMessage() receive a Reply Message containing the error description
       //Send it back to the client right away
-      lReplyMessage = dynamic_cast<ReplyMessage *> ( lMessage );
-      if( lReplyMessage ){
-        lByteMessage = lReplyMessage->serialize( length );
-        aSock->send( lByteMessage, length );
+      lReplyMessage.reset(dynamic_cast<ReplyMessage *> ( lMessage.get() ));
+      if( lReplyMessage.get() ){
+        lByteMessage.reset(lReplyMessage->serialize( length ));
+        aSock->send( lByteMessage.get(), length );
       } else {
         std::cerr << "Internal error occured. Couldn't send the error message." << std::endl;
       }
@@ -343,10 +338,6 @@ void ZorbaDebugger::handleTcpClient( TCPSocket * aSock )
   } catch ( std::exception &e ) {
     std::cerr <<  e.what() << std::endl;
   }
-  if ( lByteMessage != 0 )
-    delete[] lByteMessage;
-  delete lMessage;
-  delete lReplyMessage;
 }
 
 void ZorbaDebugger::run()

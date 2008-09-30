@@ -371,8 +371,8 @@ int _tmain(int argc, _TCHAR* argv[])
          {
            //wait 1 second before trying to reconnect
            sleep(1);
-           ZorbaDebuggerClient * debuggerClient = ZorbaDebuggerClient::createClient( lProperties.getRequestPort(), lProperties.getEventPort() );
-           CommandLineEventHandler lEventHandler( lFileName, lXQ, std::cin, std::cout, debuggerClient, !lProperties.hasNoSyntaxHighlighting() );
+           std::auto_ptr<ZorbaDebuggerClient> debuggerClient(ZorbaDebuggerClient::createClient(lProperties.getRequestPort(), lProperties.getEventPort()));
+           CommandLineEventHandler lEventHandler( lFileName, lXQ, std::cin, std::cout, debuggerClient.get(), !lProperties.hasNoSyntaxHighlighting() );
  #ifdef SIGINT /* not all system have SIGINT */
            signal( SIGINT, suspend );
  #endif
@@ -385,7 +385,6 @@ int _tmain(int argc, _TCHAR* argv[])
            WaitForSingleObject( lServerThread, INFINITE );
            CloseHandle( lServerThread );
  #endif
-       	  delete debuggerClient;
          } catch( std::exception &e ) {
            if ( i < 2 ){ continue; }
            std::cout << "Could not start the debugger client: " << std::endl;
