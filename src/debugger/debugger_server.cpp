@@ -52,7 +52,10 @@ ZORBA_THREAD_RETURN runtimeThread( void *aDebugger )
 {
   ZorbaDebugger * lDebugger = (ZorbaDebugger *)aDebugger;
   //We wait for theRuntimeThread to be allocated
-  while( lDebugger->theRuntimeThread == 0 );
+  while( lDebugger->theRuntimeThread == 0 )
+  {
+	sleep(1);
+  }
   lDebugger->runQuery();
   return 0;
 }
