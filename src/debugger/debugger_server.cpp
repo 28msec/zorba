@@ -256,8 +256,9 @@ bool ZorbaDebugger::hasToSuspend()
   std::map<unsigned int, xqpString>::iterator lIter;
   for ( lIter = theWatchpoints.begin(); lIter != theWatchpoints.end(); lIter++ )
   {
-    std::auto_ptr< CompilerCB > ccb;
-    std::auto_ptr< dynamic_context > dctx;
+    std::auto_ptr< CompilerCB > ccb(new CompilerCB(*thePlanState->theCompilerCB));
+    std::auto_ptr< dynamic_context > dctx(new dynamic_context(thePlanState->dctx()));
+      
     //TODO: catch exceptions
     std::auto_ptr<PlanWrapperHolder> eval_plan = compileEvalPlan(theLocation, ccb.get(), dctx.get(), lIter->second, *thePlanState);
     PlanWrapper* lIterator = eval_plan->get();
@@ -375,9 +376,8 @@ void ZorbaDebugger::eval( xqpString anExpr )
   {
     std::auto_ptr<EvaluatedEvent> lMsg;
     try {
-      std::auto_ptr< CompilerCB > ccb;
-      std::auto_ptr< dynamic_context > dctx;
-      
+      std::auto_ptr< CompilerCB > ccb(new CompilerCB(*thePlanState->theCompilerCB));
+      std::auto_ptr< dynamic_context > dctx(new dynamic_context(thePlanState->dctx()));
       std::auto_ptr<PlanWrapperHolder> eval_plan = compileEvalPlan(theLocation, ccb.get(), dctx.get(), anExpr, *thePlanState);
       PlanWrapper* lIterator = eval_plan->get();
       assert(lIterator != 0);
@@ -416,11 +416,9 @@ ZorbaDebugger::compileEvalPlan(const QueryLoc& loc, CompilerCB* ccb, dynamic_con
   checked_vector< std::string > var_keys;
 
   //set up eval state's ccb
-  ccb =  new CompilerCB(*planState.theCompilerCB);
   ccb->m_sctx_list.push_back( ccb->m_sctx = ccb->m_sctx->create_child_context() );
-
-  dctx =  new dynamic_context( planState.dctx() );
   ccb->m_debugger = 0;
+
   eval_plan->reset(
     new PlanWrapper (
       EvalIterator::compile ( ccb, anExpr, theVarnames, theVartypes ),
