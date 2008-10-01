@@ -219,6 +219,7 @@ void ZorbaDebugger::runQuery()
     Zorba_SerializerOptions lSerOptions;
     lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
     theQuery->serialize( std::cout, lSerOptions );
+    std::cout.flush();
   } catch ( StaticException& se ) {
     std::cerr << se << std::endl;
   } catch ( DynamicException& de ) {
