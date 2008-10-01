@@ -54,7 +54,7 @@ CollectionImpl::~CollectionImpl()
 
  
 Item
-CollectionImpl::getUri() 
+CollectionImpl::getUri() const
 {
   ZORBA_TRY
     return theCollection->getUri();

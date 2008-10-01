@@ -43,7 +43,7 @@ class ZORBA_EXTERN_DECL Collection : public SmartObject
      * @return Item the anyURI Item of the Collection.
      */
     virtual Item
-    getUri() = 0;
+    getUri() const = 0;
 
     /** \brief Returns the number of items in the collection.
      *

@@ -30,7 +30,7 @@ public:
    * @return URI
    *
    */
-  virtual Item* getUri() = 0;
+  virtual Item* getUri() const = 0;
 
   /**
    * Returns the number of items in the collection.
