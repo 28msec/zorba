@@ -45,10 +45,6 @@ IF(NOT CMAKE_BUILD_TYPE)
       FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
-################################################################################
-# Setup Compiler Options
-INCLUDE(CMakeConfiguration.txt)
-INCLUDE(CMakeCompiler.txt)
 
 
 ################################################################################
@@ -180,6 +176,14 @@ IF (NOT ZORBA_NO_XMLSCHEMA)
   ENDIF (XERCESC_FOUND)
 ENDIF (NOT ZORBA_NO_XMLSCHEMA)
 
+################################################################################
+# Setup Compiler Options
+# Note that this needs to be done after all packages are found because
+# it sets variables based on whether packages have been found or not.
+# Also, it needs to be done before the first variable (e.g. ZORBA_DEBUGGER) 
+# is used.
+INCLUDE(CMakeConfiguration.txt)
+INCLUDE(CMakeCompiler.txt)
 
 #
 # Debugger
@@ -216,9 +220,6 @@ MESSAGE(STATUS "Build type -- " ${CMAKE_BUILD_TYPE})
 # add the include dir (i.e. the library) to the include path
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
-
-# add cmake configuration (zorba options, etc.)
-INCLUDE(CMakeConfiguration.txt)
 
 # zorba versioning
 SET(ZORBA_MAJOR_NUMBER "0")
