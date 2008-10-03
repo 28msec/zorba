@@ -57,6 +57,14 @@
 // Could be moved to include/util.
 #include "util/time.h"
 
+// toggle this to allow configuration via a system properties file
+// (see src/util/properties.*)
+#define ZORBACMD_LOAD_SYSTEM_PROPERTIES 0
+
+#if ZORBACMD_LOAD_SYSTEM_PROPERTIES
+#include "util/properties.h"
+#endif
+
 namespace zorbatm = zorba::time;
 
 bool
@@ -201,6 +209,11 @@ int _tmain(int argc, _TCHAR* argv[])
 #endif
 {
   zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(zorba::simplestore::SimpleStoreManager::getStore());
+
+#if ZORBACMD_LOAD_SYSTEM_PROPERTIES
+  // only configurable via a config file or environment vars
+  zorba::Properties::load (0, NULL);
+#endif
 
   // time compilation and execution per each query
   zorba::DateTime lStartCompileTime, lStopCompileTime;
