@@ -41,13 +41,20 @@
 #include <csignal>
 #endif
 
+// For setting the base URI from the current directory
+#include <zorba/util/path.h>
+
+// Non-API includes -- handy, but should be rewritten eventually
+
+// We use zorba::DateTime from the zorbatypes library to measure wallclock time.
+// This is a highly non-portable problem; see zorba::DateTime::getLocalTime().
 #include <zorbatypes/zorbatypes_decl.h>
 #include <zorbatypes/datetime.h>
 #include <zorbatypes/duration.h>
 #include <zorbatypes/floatimpl.h>
 
-#include <zorba/util/path.h>
-
+// Simple wrappers around get_rusage() / clock() for measuring CPU time.
+// Could be moved to include/util.
 #include "util/time.h"
 
 namespace zorbatm = zorba::time;
