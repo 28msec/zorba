@@ -95,7 +95,7 @@ public:
 
 class expr : public SimpleRCObject, public AnnotationHolder {
 public:
-  virtual expr_kind_t get_expr_kind () { return expr_kind; }
+  virtual expr_kind_t get_expr_kind () const { return expr_kind; }
   typedef rchandle<expr> expr_t;
   typedef std::map<var_expr *, expr_t> substitution_t;
   typedef substitution_t::iterator subst_iter_t;

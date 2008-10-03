@@ -31,7 +31,7 @@ class flwor_initial_clause;
 
 class var_expr : public expr {
 public:
-  expr_kind_t get_expr_kind () { return var_expr_kind; }
+  expr_kind_t get_expr_kind () const { return var_expr_kind; }
 
   enum var_kind {
     eval_var,

@@ -52,7 +52,7 @@ class sequential_expr : public expr
   checked_vector<expr_t> sequence;
 
 public:
-  expr_kind_t get_expr_kind () { return sequential_expr_kind; }
+  expr_kind_t get_expr_kind () const { return sequential_expr_kind; }
 
   sequential_expr (const QueryLoc& loc, expr_t first, expr_t second)
     : expr (loc)
@@ -90,7 +90,7 @@ public:
 
 class constructor_expr : public expr {
 public:
-  expr_kind_t get_expr_kind () { return constructor_expr_kind; }
+  expr_kind_t get_expr_kind () const { return constructor_expr_kind; }
 
   constructor_expr(const QueryLoc& loc) : expr (loc) {}
 };
@@ -144,7 +144,7 @@ class catch_clause : public SimpleRCObject {
 
 class trycatch_expr : public expr {
 public:
-  expr_kind_t get_expr_kind () { return trycatch_expr_kind; }
+  expr_kind_t get_expr_kind () const { return trycatch_expr_kind; }
 private:
   public:
     typedef rchandle<catch_clause> clauseref_t;
@@ -284,7 +284,7 @@ class wrapper_expr : public expr {
   expr_t wrapped;
 
 public:
-  expr_kind_t get_expr_kind () { return wrapper_expr_kind; }
+  expr_kind_t get_expr_kind () const { return wrapper_expr_kind; }
 
   wrapper_expr (const QueryLoc &loc_, expr_t wrapped_)
     : expr (loc_), wrapped (wrapped_)
@@ -352,7 +352,7 @@ public:
 
 class promote_expr : public cast_base_expr {
 public:
-  expr_kind_t get_expr_kind () { return promote_expr_kind; }
+  expr_kind_t get_expr_kind () const { return promote_expr_kind; }
 
   promote_expr(const QueryLoc& loc, expr_t input, xqtref_t type);
 
@@ -375,7 +375,7 @@ public:
 
 class instanceof_expr : public castable_base_expr {
 public:
-  expr_kind_t get_expr_kind () { return instanceof_expr_kind; }
+  expr_kind_t get_expr_kind () const { return instanceof_expr_kind; }
 protected:
   bool forced;  // error if not instance?
 
@@ -407,7 +407,7 @@ protected:
   bool check_prime;
 
 public:
-  expr_kind_t get_expr_kind () { return treat_expr_kind; }
+  expr_kind_t get_expr_kind () const { return treat_expr_kind; }
   treat_expr(
     const QueryLoc&,
     expr_t,
@@ -434,7 +434,7 @@ public:
 
 class castable_expr : public castable_base_expr {
 public:
-  expr_kind_t get_expr_kind () { return castable_expr_kind; }
+  expr_kind_t get_expr_kind () const { return castable_expr_kind; }
 
 public:
   castable_expr(
@@ -461,7 +461,7 @@ public:
 
 class cast_expr : public cast_base_expr {
 public:
-  expr_kind_t get_expr_kind () { return cast_expr_kind; }
+  expr_kind_t get_expr_kind () const { return cast_expr_kind; }
   cast_expr(
     const QueryLoc&,
     expr_t,
@@ -484,7 +484,7 @@ public:
     expr_t,
     NamespaceContext_t);
 
-  expr_kind_t get_expr_kind () { return name_cast_expr_kind; }
+  expr_kind_t get_expr_kind () const { return name_cast_expr_kind; }
   expr_t get_input() { return input_expr_h; }
   NamespaceContext_t getNamespaceContext();
 
@@ -503,7 +503,7 @@ public:
 
 class typeswitch_expr : public expr {
 public:
-  expr_kind_t get_expr_kind () { return typeswitch_expr_kind; }
+  expr_kind_t get_expr_kind () const { return typeswitch_expr_kind; }
 
   typedef rchandle<case_clause> clauseref_t;
 
@@ -572,7 +572,7 @@ public:
 
 class if_expr : public expr {
 public:
-  expr_kind_t get_expr_kind () { return if_expr_kind; }
+  expr_kind_t get_expr_kind () const { return if_expr_kind; }
 protected:
   expr_t cond_expr_h;
   expr_t then_expr_h;
@@ -613,7 +613,7 @@ class signature;
 
 class function_def_expr : public expr {
 public:
-  expr_kind_t get_expr_kind () { return function_def_expr_kind; }
+  expr_kind_t get_expr_kind () const { return function_def_expr_kind; }
 protected:
   store::Item_t name;
   std::vector<rchandle<var_expr> > params;
@@ -650,7 +650,7 @@ public:
 class fo_expr : public expr 
 {
 public:
-  expr_kind_t get_expr_kind () { return fo_expr_kind; }
+  expr_kind_t get_expr_kind () const { return fo_expr_kind; }
 protected:
   checked_vector<expr_t>   argv;
   const function                * func;
@@ -722,7 +722,7 @@ public:
 
 class ft_contains_expr : public expr {
 public:
-  expr_kind_t get_expr_kind () { return ft_contains_expr_kind; }
+  expr_kind_t get_expr_kind () const { return ft_contains_expr_kind; }
 protected:
   expr_t range_h;
   expr_t ft_select_h;
@@ -766,7 +766,7 @@ public:
 
 class validate_expr : public expr {
 public:
-  expr_kind_t get_expr_kind () { return validate_expr_kind; }
+  expr_kind_t get_expr_kind () const { return validate_expr_kind; }
 protected:
   ParseConstants::validation_mode_t valmode;
   expr_t expr_h;
@@ -808,7 +808,7 @@ struct pragma : public SimpleRCObject
 
 class extension_expr : public expr {
 public:
-  expr_kind_t get_expr_kind () { return extension_expr_kind; }
+  expr_kind_t get_expr_kind () const { return extension_expr_kind; }
 protected:
   rchandle<pragma> pragma_h;
   expr_t expr_h;
@@ -871,7 +871,7 @@ public:
 ********************************************************************************/
 class relpath_expr : public expr {
 public:
-  expr_kind_t get_expr_kind () { return relpath_expr_kind; }
+  expr_kind_t get_expr_kind () const { return relpath_expr_kind; }
 protected:
   std::vector<expr_t> theSteps;
 
@@ -927,7 +927,7 @@ public:
 ********************************************************************************/
 class match_expr : public expr {
 public:
-  expr_kind_t get_expr_kind () { return match_expr_kind; }
+  expr_kind_t get_expr_kind () const { return match_expr_kind; }
 protected:
   match_test_t  theTestKind;
   match_test_t  theDocTestKind;
@@ -978,7 +978,7 @@ public:
 ********************************************************************************/
 class axis_step_expr : public expr {
 public:
-  expr_kind_t get_expr_kind () { return axis_step_expr_kind; }
+  expr_kind_t get_expr_kind () const { return axis_step_expr_kind; }
 protected:
   axis_kind_t             theAxis;
   expr_t                  theNodeTest;
@@ -1030,7 +1030,7 @@ public:
 
 class const_expr : public expr {
 public:
-  expr_kind_t get_expr_kind () { return const_expr_kind; }
+  expr_kind_t get_expr_kind () const { return const_expr_kind; }
 protected:
   store::Item_t val;
 
@@ -1065,7 +1065,7 @@ public:
 
 class order_expr : public expr {
 public:
-  expr_kind_t get_expr_kind () { return order_expr_kind; }
+  expr_kind_t get_expr_kind () const { return order_expr_kind; }
 
   enum order_type_t {
     ordered,
@@ -1108,7 +1108,7 @@ public:
 
 class elem_expr : public constructor_expr {
 public:
-  expr_kind_t get_expr_kind () { return elem_expr_kind; }
+  expr_kind_t get_expr_kind () const { return elem_expr_kind; }
 protected:
   expr_t theQNameExpr;
   expr_t theAttrs;
@@ -1153,7 +1153,7 @@ public:
 
 class doc_expr : public constructor_expr {
 public:
-  expr_kind_t get_expr_kind () { return doc_expr_kind; }
+  expr_kind_t get_expr_kind () const { return doc_expr_kind; }
 protected:
   expr_t theContent;
 
@@ -1193,7 +1193,7 @@ public:
 ********************************************************************************/
 class attr_expr : public constructor_expr {
 public:
-  expr_kind_t get_expr_kind () { return attr_expr_kind; }
+  expr_kind_t get_expr_kind () const { return attr_expr_kind; }
 protected:
   expr_t theQNameExpr;
   expr_t theValueExpr;
@@ -1231,7 +1231,7 @@ public:
 
 class text_expr : public constructor_expr {
 public:
-  expr_kind_t get_expr_kind () { return text_expr_kind; }
+  expr_kind_t get_expr_kind () const { return text_expr_kind; }
 
   typedef enum { text_constructor, comment_constructor, pi_constructor }
     text_constructor_type;
@@ -1277,7 +1277,7 @@ public:
 
 class pi_expr : public text_expr {
 public:
-  expr_kind_t get_expr_kind () { return pi_expr_kind; }
+  expr_kind_t get_expr_kind () const { return pi_expr_kind; }
 protected:
   expr_t target_expr_h;
   
@@ -1521,7 +1521,7 @@ public:
   exit_expr (const QueryLoc &loc, expr_t val_)
     : expr (loc), val (val_)
   {}
-  expr_kind_t get_expr_kind () { return exit_expr_kind; }
+  expr_kind_t get_expr_kind () const { return exit_expr_kind; }
   expr_t get_value () { return val; }
 
 public:
@@ -1541,7 +1541,7 @@ public:
   flowctl_expr (const QueryLoc &loc, enum action action_)
     : expr (loc), action (action_)
   {}
-  expr_kind_t get_expr_kind () { return flowctl_expr_kind; }
+  expr_kind_t get_expr_kind () const { return flowctl_expr_kind; }
   enum action get_action () const { return action; }
 
 public:
@@ -1557,7 +1557,7 @@ public:
   while_expr (const QueryLoc &loc, expr_t body_)
     : expr (loc), body (body_)
   {}
-  expr_kind_t get_expr_kind () { return while_expr_kind; }
+  expr_kind_t get_expr_kind () const { return while_expr_kind; }
   expr_t get_body () { return body; }
 
 public:

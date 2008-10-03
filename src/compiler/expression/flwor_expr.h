@@ -200,7 +200,7 @@ public:
 
 class flwor_expr : public expr {
 public:
-  expr_kind_t get_expr_kind () { return flwor_expr_kind; }
+  expr_kind_t get_expr_kind () const { return flwor_expr_kind; }
  // types
   typedef rchandle<forlet_clause> forletref_t;
   typedef rchandle<order_modifier> orderref_t;
