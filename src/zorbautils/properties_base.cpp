@@ -87,6 +87,11 @@ namespace zorba {
       if (val != NULL) {
         arg_vec.push_back (*options);
         arg_vec.push_back (val);
+      } else {  // workaround for binary options
+        opt += "_ON";
+        const char *val = getenv (opt.c_str ());
+        if (val != NULL)
+          arg_vec.push_back (*options);
       }
     }
 
