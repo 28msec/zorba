@@ -2,14 +2,19 @@ Zorba - The XQuery Processor
 version 0.9.4 (2008.10.06)
   * added General FLWOR (GFLWOR)
   	- added Windowing functionality
-	- added ability to perform "outer" joins in the FLWOR with outer for clauses.
+	- added ability to perform "outer" joins in the FLWOR with outer for clauses
 	- output numbering added to FLWOR
   * Added HTTP support to module import
   * fn:parse() is implemented as per the XQuery proposal
-  * extended api to register user-defined URI resolvers for documents, collections, schemas, and modules
-  * provide user-defined URI resolvers (i.e. for documents, schema, collections, and modules)
+  * Extended api to register user-defined URI resolvers for documents, collections, schemas, and modules
   * boost dependencies removed
   * Added xquery debugging support
+  * Added a store implementation based on Windows DOM.
+  * Added functions to make calls to REST based web services through XQuery
+  * Added PHP bindings to zorba
+  * Added tidy support to convert web pages into xhtml.
+  * Added XML Schema support for validation
+  * Added the ability to revalidate XML data with respect to a Schema after applying updates
 
 version 0.9.21-4303 (2008.06.26):
   * fixed installation problem for python and ruby language bindings
