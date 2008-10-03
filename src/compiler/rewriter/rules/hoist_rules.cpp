@@ -165,12 +165,17 @@ static bool is_enclosed_expr(expr *e)
   return (fn == LOOKUP_FN("fn", ":enclosed-expr", 1));
 }
 
+static bool non_hoistable (expr *e) {
+  expr_kind_t k = e->get_expr_kind();
+  return k == var_expr_kind
+    || k == const_expr_kind
+    || k == axis_step_expr_kind
+    || (k == wrapper_expr_kind && non_hoistable (static_cast<const wrapper_expr *> (e)->get_expr ()));    
+}
+
 static rchandle<var_expr> try_hoisting(RewriterContext& rCtx, expr *e, const std::map<var_expr *, int>& varmap, const std::map<expr *, DynamicBitset>& freevarMap, struct flwor_holder *holder)
 {
-  if (e->get_expr_kind() == var_expr_kind
-    || e->get_expr_kind() == const_expr_kind
-    || e->get_expr_kind() == axis_step_expr_kind
-    || e->get_expr_kind() == match_expr_kind) {
+  if (non_hoistable (e)) {
     return NULL;
   }
   if (contains_node_construction(e)
