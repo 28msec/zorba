@@ -22,8 +22,9 @@ SET(Zorba_LIBRARY_DIRS "${CMAKE_BINARY_DIR}/src"
                        "${CMAKE_BINARY_DIR}/src/zorbaerrors"
                        "${CMAKE_BINARY_DIR}/src/zorbatypes"
                        "${CMAKE_BINARY_DIR}/src/zorbautils"
-                       ${Boost_LIBRARY_DIRS}
+                       "${CMAKE_BINARY_DIR}/external/json"
 )
+
 SET(Zorba_API "${CMAKE_BINARY_DIR}/include"
               "${CMAKE_SOURCE_DIR}/include"
 )
