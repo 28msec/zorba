@@ -139,6 +139,9 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
 
             fileString = uriFile.toString().getStore();
 
+            
+            //theColl = getCollection(planState, fileString, loc);
+
             try {
               itemXML = GENV_STORE.getDocument(fileString);
             } catch (error::ZorbaError& e) {
@@ -161,8 +164,8 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
             xqpStringStore_t    collectionUri = uriFile.toString().getStore();
             theColl = GENV_STORE.createCollection(collectionUri);
             theColl->addToCollection(itemXML, 0);
+            }
           }
-        }
       }
     }
     theIterator->close();
@@ -225,7 +228,7 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSt
 {
   store::Item_t       item;
   xqpStringStore_t    resolvedURIString;
-  store::Collection_t theColl;
+  store::Collection_t theColl = NULL;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -239,19 +242,17 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSt
     }
     try {
       theColl = getCollection(planState, resolvedURIString, loc);
-    } catch (error::ZorbaError& e) { }
+    } catch (error::ZorbaError& e) {}
 
-    if(theColl != NULL)
-      ZORBA_ERROR_LOC_DESC(API0005_COLLECTION_ALREADY_EXISTS, loc, "Collection already exists");
-    else {
+    if (theColl != NULL)
+      ZORBA_ERROR_LOC_DESC(API0005_COLLECTION_ALREADY_EXISTS, loc, "The collection already exists.");
 
-      theColl = GENV_STORE.createCollection(resolvedURIString);
+    theColl = GENV_STORE.createCollection(resolvedURIString);
 
-      if(theChildren.size() == 2) {
-        //add the nodes to the newly created collection
-        while (consumeNext(item, theChildren[1].getp(), planState))
-          theColl.getp()->addToCollection(item.getp(), -1);
-      }
+    if(theChildren.size() == 2) {
+      //add the nodes to the newly created collection
+      while (consumeNext(item, theChildren[1].getp(), planState))
+        theColl.getp()->addToCollection(item.getp(), -1);
     }
   }
 
@@ -600,14 +601,12 @@ store::Collection_t getCollection(PlanState& planState, const xqpStringStore_t s
     ZORBA_ERROR_LOC_PARAM(API0006_COLLECTION_NOT_FOUND, loc, strURI, "");
   }
 
-  try {
-    return planState.sctx()->get_collection_uri_resolver()->resolve(resolvedURIItem,
-                             planState.sctx());
-  } catch (error::ZorbaError& e) {
-    ZORBA_ERROR_LOC_PARAM(API0006_COLLECTION_NOT_FOUND, loc, strURI, "");
+  store::Collection_t lCollection = planState.sctx()->get_collection_uri_resolver()->resolve(resolvedURIItem, planState.sctx());
+  if (lCollection == NULL) {
+    ZORBA_ERROR_LOC_PARAM(API0006_COLLECTION_NOT_FOUND, loc, strURI, "The requested collection could not be found.");
   }
 
-  return NULL;
+  return lCollection;
 }
 
 } /* namespace zorba */
