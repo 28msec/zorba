@@ -52,36 +52,30 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
   if (consumeNext(itemURI, theChildren[0].getp(), planState))
   {
-    try {
-      theColl = getCollection(planState, itemURI->getStringValue(), loc);
-    } catch (error::ZorbaError& e) { }
+    theColl = getCollection(planState, itemURI->getStringValue(), loc);
 
-    if(theColl != NULL)
-      ZORBA_ERROR_LOC_DESC(API0005_COLLECTION_ALREADY_EXISTS, loc, "Collection already exists");
-    else {
+    try {
+      resolvedURIString = planState.sctx()->resolve_relative_uri(itemURI->getStringValueP()).getStore();
+      itemXML = GENV_STORE.getDocument(resolvedURIString);
+    } catch (error::ZorbaError& e) {
+      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+    }
+    if (itemXML == NULL) {
       try {
-        resolvedURIString = planState.sctx()->resolve_relative_uri(itemURI->getStringValueP()).getStore();
-        itemXML = GENV_STORE.getDocument(resolvedURIString);
+        GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
+      } catch (error::ZorbaError& e) {
+        ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
+      }
+      try {
+        itemXML = planState.sctx()->get_document_uri_resolver()->resolve(resolvedURIItem, planState.sctx());
       } catch (error::ZorbaError& e) {
         ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
       }
-      if (itemXML == NULL) {
-        try {
-          GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
-        } catch (error::ZorbaError& e) {
-          ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
-        }
-        try {
-          itemXML = planState.sctx()->get_document_uri_resolver()->resolve(resolvedURIItem, planState.sctx());
-        } catch (error::ZorbaError& e) {
-          ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-        }
-      }
-
-      strURI = itemURI->getStringValue();
-      theColl = GENV_STORE.createCollection(strURI);
-      theColl->addToCollection(itemXML, 0);
     }
+
+    strURI = itemURI->getStringValue();
+    theColl = GENV_STORE.createCollection(strURI);
+    theColl->addToCollection(itemXML, 0);
   }
 
   STACK_END (state);
@@ -146,33 +140,27 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
             fileString = uriFile.toString().getStore();
 
             try {
-              theColl = getCollection(planState, fileString, loc);
-            } catch (error::ZorbaError& e) { }
-
-            if(theColl == NULL) {
+              itemXML = GENV_STORE.getDocument(fileString);
+            } catch (error::ZorbaError& e) {
+              ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+            }
+            if (itemXML == NULL) {
               try {
-                itemXML = GENV_STORE.getDocument(fileString);
+                resolvedURIString = fileString;
+                GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
+              } catch (error::ZorbaError& e) {
+                ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
+              }
+              try {
+                itemXML = planState.sctx()->get_document_uri_resolver()->resolve(resolvedURIItem, planState.sctx());
               } catch (error::ZorbaError& e) {
                 ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
               }
-              if (itemXML == NULL) {
-                try {
-                  resolvedURIString = fileString;
-                  GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
-                } catch (error::ZorbaError& e) {
-                  ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
-                }
-                try {
-                  itemXML = planState.sctx()->get_document_uri_resolver()->resolve(resolvedURIItem, planState.sctx());
-                } catch (error::ZorbaError& e) {
-                  ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-                }
-              }
-
-              xqpStringStore_t    collectionUri = uriFile.toString().getStore();
-              theColl = GENV_STORE.createCollection(collectionUri);
-              theColl->addToCollection(itemXML, 0);
             }
+
+            xqpStringStore_t    collectionUri = uriFile.toString().getStore();
+            theColl = GENV_STORE.createCollection(collectionUri);
+            theColl->addToCollection(itemXML, 0);
           }
         }
       }

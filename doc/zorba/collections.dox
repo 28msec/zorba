@@ -73,7 +73,6 @@ If the <b>$uri</b> is found in the collection poll no import is done.
 Error conditions:\n
 If the XML file specified by the <b>$uri</b> parameter does not exist, an error is raised API0033_FILE_OR_FOLDER_DOES_NOT_EXIST (see \ref apendix).\n
 If the XML file cannot be opened, an error is raised API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED (see \ref apendix).\n
-If the <b>$uri</b> is found in the collection poll an error is raised API0005_COLLECTION_ALREADY_EXISTS (see \ref apendix).\n
 
 \subsection coll_import_catalog 2.3 zorba-collection:import-catalog
 
