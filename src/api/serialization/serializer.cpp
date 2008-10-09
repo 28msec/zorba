@@ -290,8 +290,8 @@ std::string serializer::emitter::expand_string(
 
 void serializer::emitter::emit_indentation(int depth)
 {
-	for (int i = 0; i < depth; i++)
-		tr << "  ";
+  for (int i = 0; i < depth; i++)
+    tr << "  ";
 }
 
 
@@ -355,7 +355,10 @@ int serializer::emitter::emit_node_children(
         (child->getNodeKind() == store::StoreConsts::elementNode
         ||
         child->getNodeKind() == store::StoreConsts::commentNode))
+    {
+      tr << ser->END_OF_LINE;
       emit_indentation(depth);
+    }
 
     emit_node(child, depth);
     
@@ -367,7 +370,10 @@ int serializer::emitter::emit_node_children(
       (prev_node_kind == store::StoreConsts::elementNode
       ||
       prev_node_kind == store::StoreConsts::commentNode))
+  {
     tr << ser->END_OF_LINE;
+    emit_indentation(depth-1);
+  }
   
   iter->close();
   releaseChildIter(iter);
@@ -764,9 +770,10 @@ void serializer::html_emitter::emit_node(
     {
       tr << "/>";
       if (ser->indent)
+      {
         tr << ser->END_OF_LINE;
-      if (ser->indent)
         emit_indentation(depth+1);
+      }
 
       tr << "<meta http-equiv=\"content-type\" content=\"" << ser->media_type.c_str() << "; charset=";
       if (ser->encoding == PARAMETER_VALUE_UTF_8)
