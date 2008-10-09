@@ -213,9 +213,8 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
     ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection is undefined in the dynamic context.");
   }
 
-  try {
-    theColl =  planState.sctx()->get_collection_uri_resolver()->resolve(resolvedURIItem, planState.sctx());
-  } catch (error::ZorbaError& e) {
+  theColl =  planState.sctx()->get_collection_uri_resolver()->resolve(resolvedURIItem, planState.sctx());
+  if ( theColl == 0 ) {
     ZORBA_ERROR_LOC_PARAM(FODC0004, loc, resolvedURIItem->getStringValue()->c_str(), "");
   }
 
