@@ -101,7 +101,7 @@ XmlDataManagerImpl::loadDocument(
     const String& uri,
     std::istream& stream)
 {
-  return loadDocument(uri, stream, 0);
+  return loadDocument(uri, stream, theErrorHandler);
 }
 
 
@@ -158,7 +158,7 @@ XmlDataManagerImpl::loadDocument(
 Item
 XmlDataManagerImpl::getDocument(const String& uri)
 {
-  return getDocument(uri, 0);
+  return getDocument(uri, theErrorHandler);
 }
 
 
@@ -180,7 +180,7 @@ XmlDataManagerImpl::getDocument(const String& uri, ErrorHandler* aErrorHandler)
 bool
 XmlDataManagerImpl::deleteDocument(const String& uri)
 {
-  return deleteDocument(uri, 0);
+  return deleteDocument(uri, theErrorHandler);
 }
 
 
@@ -203,7 +203,7 @@ XmlDataManagerImpl::deleteDocument(const String& uri, ErrorHandler* aErrorHandle
 Collection_t
 XmlDataManagerImpl::createCollection(const String& uri)
 {
-  return createCollection(uri, 0);
+  return createCollection(uri, theErrorHandler);
 }
 
 
@@ -216,7 +216,7 @@ XmlDataManagerImpl::createCollection(const String& uri, ErrorHandler* aErrorHand
   {
     xqpStringStore_t lUri = Unmarshaller::getInternalString(uri);
     return Collection_t(new CollectionImpl(theStore->createCollection(lUri), 
-                                           errorHandler));
+                                           aErrorHandler));
   }
   ZORBA_DM_CATCH
   return Collection_t();
@@ -226,7 +226,7 @@ XmlDataManagerImpl::createCollection(const String& uri, ErrorHandler* aErrorHand
 Collection_t
 XmlDataManagerImpl::getCollection(const String& uri)
 {
-  return getCollection(uri, 0);
+  return getCollection(uri, theErrorHandler);
 }
 
 
@@ -238,18 +238,21 @@ XmlDataManagerImpl::getCollection(const String& uri, ErrorHandler* aErrorHandler
   ZORBA_DM_TRY
   {
     xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
-    return Collection_t(new CollectionImpl(theStore->getCollection(lUri),
-                                           errorHandler));
+    store::Collection_t lColl = theStore->getCollection(lUri);
+    if (lColl)
+      return Collection_t(new CollectionImpl(lColl, aErrorHandler));
+    else
+      return NULL;
   }
   ZORBA_DM_CATCH
-  return Collection_t();
+  return NULL;
 }
 
 
 bool
 XmlDataManagerImpl::deleteCollection(const String& uri)
 {
-  return deleteCollection(uri, 0);
+  return deleteCollection(uri, theErrorHandler);
 }
 
 
