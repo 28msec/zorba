@@ -337,6 +337,7 @@ int serializer::emitter::emit_node_children(
       closed_parent_tag = 1;
     }
 
+    /* commented out
     if (ser->indent
         &&
         (prev_node_kind == store::StoreConsts::elementNode
@@ -349,6 +350,7 @@ int serializer::emitter::emit_node_children(
           ||
           child->getStringValue()->endsWith("\n"))) )
       tr << ser->END_OF_LINE;
+    */
 
     if (ser->indent
         &&
