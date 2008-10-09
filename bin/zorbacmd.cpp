@@ -98,7 +98,7 @@ populateStaticContext(
     try {
       aStaticContext->addCollation( aProperties->defaultCollation() );
     } catch (zorba::ZorbaException& e) {
-      std::cout << "Error: the given collation '" << aProperties->defaultCollation() << "' is not a valid collation." << std::endl;
+      std::cerr << "Error: the given collation '" << aProperties->defaultCollation() << "' is not a valid collation." << std::endl;
       return false;
     }
     aStaticContext->setDefaultCollation( aProperties->defaultCollation() );
@@ -249,14 +249,14 @@ int _tmain(int argc, _TCHAR* argv[])
   }
   else if ( !lOutputStream->good() ) 
   {
-    std::cout << "Error: could not write to output file " << lProperties.outputFile() << std::endl;
+    std::cerr << "Error: could not write to output file " << lProperties.outputFile() << std::endl;
     lProperties.printHelp(std::cout);
     return 2;
   }
 
   if(lProperties.queriesOrFilesBegin() == lProperties.queriesOrFilesEnd())
   {
-    std::cout << "Error: no queries submitted" << std::endl;
+    std::cerr << "Error: no queries submitted" << std::endl;
     lProperties.printHelp(std::cout);
     return 3;
   }
@@ -282,11 +282,11 @@ int _tmain(int argc, _TCHAR* argv[])
     }
     
     if ( asFile && (!qfile->good() || qfile->eof()) ) {
-      std::cout << "Error: file " << fname << " not found or not readable" << std::endl;
+      std::cerr << "Error: file " << fname << " not found or not readable" << std::endl;
       lProperties.printHelp(std::cout);
       return 3;
     } else if (fURI.empty ()) {
-      std::cout << "Error: empty query" << std::endl;
+      std::cerr << "Error: empty query" << std::endl;
       lProperties.printHelp(std::cout);
       return 3;
     }
@@ -344,14 +344,14 @@ int _tmain(int argc, _TCHAR* argv[])
             return 0;
           }
         } catch (zorba::QueryException& qe) {
-          std::cout << qe << std::endl;
+          std::cerr << qe << std::endl;
           return 0;
         } catch (zorba::ZorbaException& ze) {
-          std::cout << ze << std::endl;
+          std::cerr << ze << std::endl;
           return 0;
         }
       } catch( StaticException &e ) {
-        std::cout << e << std::endl;
+        std::cerr << e << std::endl;
         return 0;
       }
       //Debugger server arguments
@@ -407,8 +407,8 @@ int _tmain(int argc, _TCHAR* argv[])
  #endif
          } catch( std::exception &e ) {
            if ( i < 2 ){ continue; }
-           std::cout << "Could not start the debugger client: " << std::endl;
-           std::cout << e.what() << std::endl;
+           std::cerr << "Could not start the debugger client: " << std::endl;
+           std::cerr << e.what() << std::endl;
          }
          return 0;
        }
@@ -451,12 +451,12 @@ int _tmain(int argc, _TCHAR* argv[])
     }
     catch (zorba::QueryException& qe) 
     {
-      std::cout << qe << std::endl;
+      std::cerr << qe << std::endl;
       return 5;
     }
     catch (zorba::ZorbaException& ze) 
     {
-      std::cout << ze << std::endl;
+      std::cerr << ze << std::endl;
       return 6;
     }
 
@@ -470,10 +470,10 @@ int _tmain(int argc, _TCHAR* argv[])
         return 4;
       }
     } catch (zorba::QueryException& qe) {
-      std::cout << qe << std::endl;
+      std::cerr << qe << std::endl;
       return 5;
     } catch (zorba::ZorbaException& ze) {
-      std::cout << ze << std::endl;
+      std::cerr << ze << std::endl;
       return 6;
     }
 
@@ -527,12 +527,12 @@ int _tmain(int argc, _TCHAR* argv[])
     }
     catch (zorba::QueryException& qe) 
     {
-      std::cout << qe << std::endl;
+      std::cerr << qe << std::endl;
       return 5;
     }
     catch (zorba::ZorbaException& ze) 
     {
-      std::cout << ze << std::endl;
+      std::cerr << ze << std::endl;
       return 6;
     }
 
