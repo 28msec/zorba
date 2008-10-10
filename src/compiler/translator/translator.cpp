@@ -5558,6 +5558,8 @@ expr_t translate_aux (const parsenode &root, CompilerCB* aCompilerCB, ModulesInf
 
 expr_t translate (const parsenode &root, CompilerCB* aCompilerCB) {
   set<string> mod_stack;
+  if (typeid (root) != typeid (MainModule))
+    ZORBA_ERROR_LOC_DESC (XPST0003, root.get_location (), "Module declaration must not be used in a main module");
   ModulesInfo minfo (aCompilerCB->m_sctx, aCompilerCB);
   return translate_aux (root, aCompilerCB, &minfo, mod_stack);
 }
