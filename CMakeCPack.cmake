@@ -38,3 +38,4 @@ IF(UNIX)
 ENDIF(UNIX)
 
 INCLUDE(CPack)
+INCLUDE(CPack.cmake)
