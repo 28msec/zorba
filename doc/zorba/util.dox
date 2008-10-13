@@ -1,0 +1,66 @@
+/** \page util The "Zorba util" functions
+
+<ul>
+   <li> Table of Contents
+   <ul>
+     <li> \ref introduction
+     <ul>
+       <li> \ref namespace
+     </ul>
+     <li> \ref signatures
+     <ul>
+      <li> \ref tidyLib
+      <ul>
+        <li> \ref tidy
+        <li> \ref tdoc
+      </ul>
+     </ul>
+     <li> \ref apendix
+   </ul>
+ </ul>
+ 
+\section introduction 1 Introduction
+This document defines a genereal set of functions grouped together under "zorba-util" namespace.
+
+\subsection namespace 1.1 Namespace
+In order to use Zorba util functions, the module <tt>"http://www.zorba-xquery.com/zorba/util-functions"</tt> has
+to be included at the beginning of a query. For example
+
+\code
+  import module namespace zorba-util = "http://www.zorba-xquery.com/zorba/util-functions";
+\endcode
+
+\section signatures 2 Function Signatures and Descriptions
+
+\subsection tidyLib 2.1 Functions using Tidy library
+In order to use the functions that require Tidy you have to:\n
+- install Tidy either from <a href="http://tidy.sourceforge.net/#binaries" target="_blank">binaries</a> or <a href="http://tidy.sourceforge.net/#source" target="_blank">source code</a>.\n
+- rebuild Zorba with ZORBA_WITH_TIDY set to ON.\n
+
+\subsection tidy 2.1.1 zorba-util:tidy
+
+\code
+  declare function tidy($str as xs:string) as xs:string
+\endcode
+
+Summary: Assuming <b>$str</b> contains a "dirty" HTML the function will return a valid XHTML version of the <b>$str</b>. \n
+
+Error conditions:\n
+If Tidy lib is not able to transform the given string into a valid XHTML, an error is raised XQP0029_TIDY_ERROR (see \ref apendix).\n
+
+\subsection tdoc 2.1.2 zorba-util:tdoc
+
+\code
+  declare function tdoc($uri as xs:string?) as document-node()?
+\endcode
+
+Summary: This function if very similar to the <tt>15.5.4 fn:doc</tt> from <a href="http://www.w3.org/TR/xquery-operators/#func-doc" target="_blank">XQuery 1.0 and XPath 2.0 Functions and Operators</a> function. The only difference is that prior to parsing  and inserting the document identified by <b>$uri</b> in the store, <tt>tdoc</tt> function transforms the document into a valid XHTML document with the help of Tidy lib.\n
+
+Error conditions:\n
+If Tidy lib is not able to transform the given string into a valid XHTML, an error is raised XQP0029_TIDY_ERROR (see \ref apendix).\n
+
+
+\section apendix Appendix A:  Error codes
+
+  XQP0029_TIDY_ERROR - Error in Tidy library - is returned in case Tidy lib is not able to transform the given string into a valid XHTML.\n
+*/

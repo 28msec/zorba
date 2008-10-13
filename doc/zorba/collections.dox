@@ -40,7 +40,7 @@ This document defines the functions that will perform manipulations on collectio
 Each collection is defined to be a sequence of nodes, identified by an URI. \n The collections concern themselves only with the top-level sequence of nodes, and do not have any functions to manipulate the nodes or their contents. \n A node may be part of more than one collection, still the node is unique within every collection.\n When added to a collection, a node is not copied, and further modifications to it will be reflected in the collection.
 
 \subsection namespace 1.2 Namespaces
-In order to use Zorba collection functions functionality, the module <tt>"http://www.zorba-xquery.com/zorba/collection-functions"</tt> has
+In order to use Zorba collection functionality, the module <tt>"http://www.zorba-xquery.com/zorba/collection-functions"</tt> has
 to be included at the beginning of a query. For example
 
 \code
