@@ -28,6 +28,7 @@
        <li> \ref coll_remove_node_at
        <li> \ref coll_index_of
        <li> \ref coll_export_xml
+       <li> \ref fn_collection_exists
      </ul>
      <li> \ref apendix
    </ul>
@@ -334,6 +335,14 @@ The collection will be exported only if it can be serialized correctly - i.e. it
 
 Error conditions:\n
 If the collection can not be serialized corectly an error will be returned API0035_COLLECTION_CANNOT_BE_SERIALIZED (see \ref apendix).
+
+\subsection fn_collection_exists 2.19 zorba-collection:collection-exists
+
+\code
+  declare function collection-exists( $uri as xs:anyURI) as xs:boolean
+\endcode
+
+Summary: Returns true is a collection with the requested <b>$uri</b> is found in the collection poll, false otherwise.\n
 
 \section apendix Appendix A:  Error codes
 
