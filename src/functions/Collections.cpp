@@ -22,6 +22,13 @@
 
 namespace zorba {
 PlanIter_t
+zorba_collection_exists::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new ZorbaCollectionExistsIterator(loc, argv);
+}
+
+
+PlanIter_t
 zorba_import_xml::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaImportXmlIterator(loc, argv);

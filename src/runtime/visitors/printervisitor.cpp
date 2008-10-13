@@ -888,6 +888,7 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
 
   PRINTER_VISITOR_DEFINITION(FnDeepEqualIterator);
 
+  PRINTER_VISITOR_DEFINITION(ZorbaCollectionExistsIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaImportXmlIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaImportCatalogIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaImportFolderIterator);

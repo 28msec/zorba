@@ -23,6 +23,8 @@
 
 namespace zorba {
 
+  NARY_ITER (ZorbaCollectionExistsIterator);
+
   NARY_ITER (ZorbaImportXmlIterator);
 
   NARY_ITER (ZorbaImportCatalogIterator);

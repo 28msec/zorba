@@ -39,6 +39,35 @@
 #include <fstream>
 
 namespace zorba {
+bool
+ZorbaCollectionExistsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState  *state;
+  store::Item_t       item, resolvedURIItem;
+  xqpStringStore_t    resolvedURIString, t;
+  store::Collection_t lCollection;
+  bool                res = false;
+
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (consumeNext(item, theChildren[0].getp(), planState )) {
+    t = item->getStringValue();
+    try {
+      resolvedURIString = planState.sctx()->resolve_relative_uri(item->getStringValueP()).getStore();
+      GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
+    } catch (error::ZorbaError& e) {
+      ZORBA_ERROR_LOC_PARAM(XQST0046, loc, item->getStringValue()->c_str(), "URI literal empty or is not in the lexical space of xs:anyURI" );
+    }
+
+    lCollection = planState.sctx()->get_collection_uri_resolver()->resolve(resolvedURIItem, planState.sctx());
+    res = (lCollection != NULL);
+
+    GENV_ITEMFACTORY->createBoolean(result, res);
+    STACK_PUSH(true, state );
+  }
+
+  STACK_END (state);
+}
 
 bool
 ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) const

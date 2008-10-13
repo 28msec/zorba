@@ -229,6 +229,7 @@ namespace zorba
   class CreateTupleIterator;
   class GetTupleFieldIterator;
 
+  class ZorbaCollectionExistsIterator;
   class ZorbaImportXmlIterator;
   class ZorbaImportCatalogIterator;
   class ZorbaImportFolderIterator;
@@ -710,6 +711,7 @@ namespace zorba
 
     PLAN_ITER_VISITOR(FnDeepEqualIterator);
 
+    PLAN_ITER_VISITOR(ZorbaCollectionExistsIterator);
     PLAN_ITER_VISITOR(ZorbaImportXmlIterator);
     PLAN_ITER_VISITOR(ZorbaImportCatalogIterator);
     PLAN_ITER_VISITOR(ZorbaImportFolderIterator);

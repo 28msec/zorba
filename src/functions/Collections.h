@@ -21,6 +21,14 @@
 
 namespace zorba {
 
+class zorba_collection_exists : public function
+{
+  public:
+    zorba_collection_exists(const signature& sig): function(sig){}
+
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
 class zorba_import_xml : public function
 {
   public:

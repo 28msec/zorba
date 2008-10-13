@@ -763,6 +763,11 @@ DECL(sctx, rest_post,
 #endif
 
 //begin collection functions
+DECL(sctx, zorba_collection_exists,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "collection-exists"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
 DECL(sctx, zorba_import_xml,
      (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "import-xml"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
