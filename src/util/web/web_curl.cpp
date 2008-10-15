@@ -48,12 +48,17 @@ int http_get(const char* url, xqp_string& result)
   curl_easy_setopt(curl_handle, CURLOPT_URL, url);                            /* specify URL to get */
   curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);  /* send all data to this function  */
   curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&temp);            /* we pass our 'result' struct to the callback function */
+  curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);        /* tells the library to fail silently if the HTTP code returned >= 400*/
 
   /* some servers don't like requests that are made without a user-agent
     field, so we provide one */
   curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-  
+
   result_code = curl_easy_perform(curl_handle);
+
+  if(0 != result_code) /*warkaround for a problem in cURL: curl_easy_cleanup fails if curl_easy_perform returned an error*/
+    curl_easy_reset(curl_handle);
+
   curl_easy_cleanup(curl_handle);
 
   result = temp;
