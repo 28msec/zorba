@@ -249,7 +249,7 @@ void processAttributes( store::Item_t& pul, namespace_context& nsCtx,
     for( curAtt = attList->begin() ; curAtt != attList->end(); ++curAtt )
     {
         AttributeValidationInfo* att = *curAtt;
-        std::cout << " v    processATT2: " << att->_localName << " T: " << att->_typeName << "\n";
+        //cout << " v    processATT2: " << att->_localName << " T: " << att->_typeName << "\n";
             
         store::Item_t attQName;
         GENV_ITEMFACTORY->createQName( attQName, att->_uri, att->_prefix, att->_localName);

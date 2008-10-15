@@ -1,0 +1,35 @@
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="zorba/test/substitution.xsd"
+  xmlns="zorba/test/substitution.xsd"
+  elementFormDefault="qualified">
+
+  <xs:element name="basket" type="BasketType"/>
+  <xs:element name="fruit"  type="FruitType"/>
+  <xs:element name="apple" substitutionGroup="fruit" type="FruitType"/>
+  <xs:element name="berry" substitutionGroup="fruit" type="BerryType"/>
+
+
+  <xs:complexType name="BasketType">
+    <xs:sequence>
+      <xs:element ref="fruit" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FruitType">
+    <xs:sequence>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="BerryType">
+    <xs:complexContent>
+      <xs:extension base="FruitType">
+        <xs:sequence>
+          <xs:element name="wild" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+</xs:schema>

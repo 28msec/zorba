@@ -125,11 +125,15 @@ set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicConte
 			dctx->setContextItem (lItem);
   } else {
     std::ifstream* is = new std::ifstream(val.c_str ());
+    
+    if ( *is==NULL )
+        std::cout << "Error: Location not found: " << val.c_str() << std::endl;
+    
     assert (*is);
-		if(name != ".")
-			dctx->setVariableAsDocument (name, val.c_str(), std::auto_ptr<std::istream>(is));
-		else
-			dctx->setContextItemAsDocument (val.c_str(), std::auto_ptr<std::istream>(is));
+	if(name != ".")
+		dctx->setVariableAsDocument (name, val.c_str(), std::auto_ptr<std::istream>(is));
+	else
+		dctx->setContextItemAsDocument (val.c_str(), std::auto_ptr<std::istream>(is));
   }
 }
 
@@ -267,8 +271,11 @@ main(int argc, char** argv)
 
       try 
       {
-        if (lQueries.back()->isUpdateQuery()) {
-          lQueries.back()->applyUpdates();
+        if (lQueries.back()->isUpdateQuery()) 
+        {
+          zorba::XQuery_t query = lQueries.back();
+          query->applyUpdates();
+          
           std::cout << "Updating Query -> no Result" << std::endl;
         } else {
           if ( lResultFile.exists ()) { lResultFile.remove (); }

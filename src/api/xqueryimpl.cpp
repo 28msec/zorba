@@ -525,17 +525,17 @@ XQueryImpl::applyUpdates()
                            "Query does not return a pending update list");
 
         std::set<zorba::store::Item*> validationNodes;
-
+        //std::cout << "  -> pul->applyUpdates(validationNodes) " << std::endl; std::cout.flush();
         pul->applyUpdates(validationNodes);
         /*
         std::set<zorba::store::Item*>::const_iterator it = validationNodes.begin();
         std::set<zorba::store::Item*>::const_iterator end = validationNodes.end();
         for (; it != end; it++)
         {
-          std::cout << "Validating node " << *it << std::endl;
+          std::cout << "     Validating node " << *it << std::endl;
         }
         */
-
+        //std::cout << "  -> GENV_ITEMFACTORY->createPendingUpdateList() " << std::endl; std::cout.flush();
         QueryLoc loc;
         store::Item_t validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
 
