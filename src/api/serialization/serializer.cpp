@@ -356,14 +356,16 @@ int serializer::emitter::emit_node_children(
         &&
         (child->getNodeKind() == store::StoreConsts::elementNode
         ||
-        child->getNodeKind() == store::StoreConsts::commentNode))
+        child->getNodeKind() == store::StoreConsts::commentNode)
+       &&
+        (prev_node_kind != store::StoreConsts::textNode))
     {
       tr << ser->END_OF_LINE;
       emit_indentation(depth);
     }
 
     emit_node(child, depth);
-    
+
     prev_node_kind = child->getNodeKind();
   }
 
