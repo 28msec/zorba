@@ -155,10 +155,12 @@ class TestErrorHandler : public zorba::ErrorHandler {
 bool
 isErrorExpected(const TestErrorHandler& errHandler, const Specification* aSpec)
 {
+  char star = '*';
   const std::vector<std::string>& errors = errHandler.getErrorList();
   for(std::vector<std::string>::const_iterator i = errors.begin(); i != errors.end(); ++i) {
     for(std::vector<std::string>::const_iterator j = aSpec->errorsBegin(); j != aSpec->errorsEnd(); ++j) {
-      if (i->compare(*j) == 0)
+      if ((i->compare(*j) == 0)
+           || (j->compare(&star)))
         return true;
     }
   }
