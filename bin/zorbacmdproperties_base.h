@@ -25,7 +25,7 @@ namespace zorbacmd {
 class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--debug-ports", "--debug-client", "--debug-server", "--no-colors", NULL };
+    static const char *result [] = { "--timing", "--output-file", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--debug-ports", "--debug-client", "--debug-server", "--no-colors", "--parse-only", NULL };
     return result;
   }
   bool theTiming;
@@ -51,6 +51,7 @@ protected:
   bool theDebugClient;
   bool theDebugServer;
   bool theNoColors;
+  bool theParseOnly;
 
   void initialize () {
     theTiming = false;
@@ -67,6 +68,7 @@ protected:
     theDebugClient = false;
     theDebugServer = false;
     theNoColors = false;
+    theParseOnly = false;
   }
 public:
   const bool &timing () const { return theTiming; }
@@ -92,6 +94,7 @@ public:
   const bool &debugClient () const { return theDebugClient; }
   const bool &debugServer () const { return theDebugServer; }
   const bool &noColors () const { return theNoColors; }
+  const bool &parseOnly() const { return theParseOnly; }
 
   std::string load_argv (int argc, const char **argv) {
     if (argv == NULL) return "";
@@ -181,6 +184,9 @@ public:
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         init_val (*argv, theOptimizationLevel, d);
       }
+      else if (strcmp(*argv, "--parse-only") == 0) {
+          theParseOnly = true;
+      }
 #ifdef ZORBA_DEBUGGER
       else if (strcmp (*argv, "--debug-ports") == 0 || strncmp (*argv, "-p", 2) == 0) {
         int d = 2;
@@ -232,6 +238,7 @@ public:
 "--external-variable, -e\nProvide the value for a variable given a file (name=file) or a value (name:=value)\n\n"
 "--context-item\nSet the context item to the XML document in a given file.\n\n"
 "--optimization-level\nOptimization level for the query compiler (O0 or O1)\n\n"
+"--parse-only\nStop after parsing the query\n\n"
 #ifdef ZORBA_DEBUGGER
 "--debug-ports, -p\nSpecify the ports for zorba debugger. The format is requestPort:eventPort.\n\n"
 "--debug-client, -c\nLaunch the debugger command line client.\n\n"

@@ -460,122 +460,125 @@ int _tmain(int argc, _TCHAR* argv[])
       return 6;
     }
 
-    // populate the dynamic context
-    zorba::DynamicContext* lDynamicContext = lQuery->getDynamicContext();
-    try 
-    {
-      if ( ! populateDynamicContext(lDynamicContext, &lProperties) )
+    if (!lProperties.parseOnly()) {
+
+      // populate the dynamic context
+      zorba::DynamicContext* lDynamicContext = lQuery->getDynamicContext();
+      try 
       {
-        lProperties.printHelp(std::cout);
-        return 4;
-      }
-    } catch (zorba::QueryException& qe) {
-      std::cerr << qe << std::endl;
-      return 5;
-    } catch (zorba::ZorbaException& ze) {
-      std::cerr << ze << std::endl;
-      return 6;
-    }
-
-    int lNumExecutions = lProperties.multiple();
-
-    try
-    {
-      Zorba_SerializerOptions lSerOptions;
-      createSerializerOptions(lSerOptions, &lProperties);
-
-      if (lTiming) 
-      {
-        zorba::DateTime::getLocalTime(lStartFirstExecutionTime);
-        zorbatm::get_timeinfo (lStartFirstExecutionTimeInfo);
+        if ( ! populateDynamicContext(lDynamicContext, &lProperties) )
+        {
+          lProperties.printHelp(std::cout);
+          return 4;
+        }
+      } catch (zorba::QueryException& qe) {
+        std::cerr << qe << std::endl;
+        return 5;
+      } catch (zorba::ZorbaException& ze) {
+        std::cerr << ze << std::endl;
+        return 6;
       }
 
-      // RUN THE QUERY ONCE
-      if (lQuery->isUpdateQuery()) 
-        lQuery->applyUpdates();
-      else
-        lQuery->serialize(*lOutputStream, lSerOptions);
+      int lNumExecutions = lProperties.multiple();
 
-      if (lTiming) 
+      try
       {
-        zorba::DateTime::getLocalTime(lStopFirstExecutionTime);
-        zorbatm::get_timeinfo (lStopFirstExecutionTimeInfo);
-      }
+        Zorba_SerializerOptions lSerOptions;
+        createSerializerOptions(lSerOptions, &lProperties);
 
-      if (lTiming) 
-      {
-        zorba::DateTime::getLocalTime(lStartExecutionTime);
-        zorbatm::get_timeinfo (lStartExecutionTimeInfo);
-      }
+        if (lTiming) 
+        {
+          zorba::DateTime::getLocalTime(lStartFirstExecutionTime);
+          zorbatm::get_timeinfo (lStartFirstExecutionTimeInfo);
+        }
 
-      int numExecutions = lNumExecutions - 1;
-
-      // RUN THE QUERY N TIMES
-      while (--numExecutions >= 0 ) 
-      {
-        if (lQuery->isUpdateQuery())
+        // RUN THE QUERY ONCE
+        if (lQuery->isUpdateQuery()) 
           lQuery->applyUpdates();
         else
           lQuery->serialize(*lOutputStream, lSerOptions);
+
+        if (lTiming) 
+        {
+          zorba::DateTime::getLocalTime(lStopFirstExecutionTime);
+          zorbatm::get_timeinfo (lStopFirstExecutionTimeInfo);
+        }
+
+        if (lTiming) 
+        {
+          zorba::DateTime::getLocalTime(lStartExecutionTime);
+          zorbatm::get_timeinfo (lStartExecutionTimeInfo);
+        }
+
+        int numExecutions = lNumExecutions - 1;
+
+        // RUN THE QUERY N TIMES
+        while (--numExecutions >= 0 ) 
+        {
+          if (lQuery->isUpdateQuery())
+            lQuery->applyUpdates();
+          else
+            lQuery->serialize(*lOutputStream, lSerOptions);
+        }
+
+        if (lTiming) 
+        {
+          zorba::DateTime::getLocalTime(lStopExecutionTime);
+          zorbatm::get_timeinfo (lStopExecutionTimeInfo);
+        }
+      }
+      catch (zorba::QueryException& qe) 
+      {
+        std::cerr << qe << std::endl;
+        return 5;
+      }
+      catch (zorba::ZorbaException& ze) 
+      {
+        std::cerr << ze << std::endl;
+        return 6;
       }
 
       if (lTiming) 
       {
-        zorba::DateTime::getLocalTime(lStopExecutionTime);
-        zorbatm::get_timeinfo (lStopExecutionTimeInfo);
-      }
-    }
-    catch (zorba::QueryException& qe) 
-    {
-      std::cerr << qe << std::endl;
-      return 5;
-    }
-    catch (zorba::ZorbaException& ze) 
-    {
-      std::cerr << ze << std::endl;
-      return 6;
-    }
+        std::cout.precision (3); std::cout.setf (std::ios::fixed);
+        lNumExecutions = lProperties.multiple();
 
-    if (lTiming) 
-    {
-      std::cout.precision (3); std::cout.setf (std::ios::fixed);
-      lNumExecutions = lProperties.multiple();
+        std::cout << std::endl << "Number of executions = " << lNumExecutions
+          << std::endl;
 
-      std::cout << std::endl << "Number of executions = " << lNumExecutions
-                << std::endl;
+        lDiffCompileTime = std::auto_ptr<zorba::Duration>(lStopCompileTime.subtractDateTime(&lStartCompileTime, 0));
 
-      lDiffCompileTime = std::auto_ptr<zorba::Duration>(lStopCompileTime.subtractDateTime(&lStartCompileTime, 0));
+        lDiffCompileUserTime = zorbatm::get_time_elapsed (zorbatm::extract_user_time_detail (lStartCompileTimeInfo), zorbatm::extract_user_time_detail (lStopCompileTimeInfo));
 
-      lDiffCompileUserTime = zorbatm::get_time_elapsed (zorbatm::extract_user_time_detail (lStartCompileTimeInfo), zorbatm::extract_user_time_detail (lStopCompileTimeInfo));
+        std::cout << "Compilation time: "
+          << lDiffCompileTime->getTotalMilliseconds()
+          << " (user: " << lDiffCompileUserTime << ")"
+          << " milliseconds" << std::endl;
 
-      std::cout << "Compilation time: "
-                << lDiffCompileTime->getTotalMilliseconds()
-                << " (user: " << lDiffCompileUserTime << ")"
-                << " milliseconds" << std::endl;
-      
-      lDiffFirstExecutionTime = std::auto_ptr<zorba::Duration>(lStopFirstExecutionTime.subtractDateTime(&lStartFirstExecutionTime, 0));
+        lDiffFirstExecutionTime = std::auto_ptr<zorba::Duration>(lStopFirstExecutionTime.subtractDateTime(&lStartFirstExecutionTime, 0));
 
-      lDiffFirstExecutionUserTime = zorbatm::get_time_elapsed (zorbatm::extract_user_time_detail (lStartFirstExecutionTimeInfo), zorbatm::extract_user_time_detail (lStopFirstExecutionTimeInfo));
+        lDiffFirstExecutionUserTime = zorbatm::get_time_elapsed (zorbatm::extract_user_time_detail (lStartFirstExecutionTimeInfo), zorbatm::extract_user_time_detail (lStopFirstExecutionTimeInfo));
 
-      std::cout << "First Execution time: "
-                << lDiffFirstExecutionTime->getTotalMilliseconds()
-                << " (user: " << lDiffFirstExecutionUserTime << ")"
-                << " milliseconds (i.e. parsing the document is included)" << std::endl;
-    
-      if (lNumExecutions > 1) 
-      {
-        std::auto_ptr<zorba::Duration> temp = std::auto_ptr<zorba::Duration>(lStopExecutionTime.subtractDateTime(&lStartExecutionTime, 0));
-        lDiffExecutionTime =  std::auto_ptr<zorba::Duration>(*temp / zorba::Double::parseInt(lNumExecutions - 1));
+        std::cout << "First Execution time: "
+          << lDiffFirstExecutionTime->getTotalMilliseconds()
+          << " (user: " << lDiffFirstExecutionUserTime << ")"
+          << " milliseconds (i.e. parsing the document is included)" << std::endl;
 
-        lDiffExecutionUserTime =
-          zorbatm::get_time_elapsed (zorbatm::extract_user_time_detail (lStartExecutionTimeInfo),
-                                     zorbatm::extract_user_time_detail (lStopExecutionTimeInfo))
-          / (lNumExecutions - 1);
+        if (lNumExecutions > 1) 
+        {
+          std::auto_ptr<zorba::Duration> temp = std::auto_ptr<zorba::Duration>(lStopExecutionTime.subtractDateTime(&lStartExecutionTime, 0));
+          lDiffExecutionTime =  std::auto_ptr<zorba::Duration>(*temp / zorba::Double::parseInt(lNumExecutions - 1));
 
-        std::cout << "Average Execution time: "
-                  << lDiffExecutionTime->getTotalMilliseconds()
-                  << " (user: " << lDiffExecutionUserTime << ")"
-                  << " milliseconds" << std::endl;
+          lDiffExecutionUserTime =
+            zorbatm::get_time_elapsed (zorbatm::extract_user_time_detail (lStartExecutionTimeInfo),
+                zorbatm::extract_user_time_detail (lStopExecutionTimeInfo))
+            / (lNumExecutions - 1);
+
+          std::cout << "Average Execution time: "
+            << lDiffExecutionTime->getTotalMilliseconds()
+            << " (user: " << lDiffExecutionUserTime << ")"
+            << " milliseconds" << std::endl;
+        }
       }
     }
     
@@ -584,3 +587,4 @@ int _tmain(int argc, _TCHAR* argv[])
   
   return 0;
 }
+/* vim:set ts=2 sw=2: */
