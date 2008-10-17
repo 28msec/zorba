@@ -161,6 +161,12 @@ class StaticContextImpl : public StaticContext
 
   virtual bool
   containsFunction(const String& aFnNameUri, const String& aFnNameLocal, int arity) const;
+
+  virtual void
+  setContextItemStaticType(TypeIdentifier_t type);
+
+  virtual TypeIdentifier_t
+  getContextItemStaticType() const;
 };
 
 } /* namespace zorba */

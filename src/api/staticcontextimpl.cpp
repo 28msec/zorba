@@ -29,6 +29,7 @@
 #include "zorbaerrors/error_manager.h"
 #include "api/zorbaimpl.h"
 #include "types/casting.h"
+#include "types/typeops.h"
 
 namespace zorba {
 
@@ -554,6 +555,26 @@ StaticContextImpl::containsFunction(const String& aFnNameUri, const String& aFnN
         return false;
     }
     return true;
+}
+
+void
+StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
+{
+    xqtref_t xqType = NULL;
+    if (type != NULL) {
+        xqType = theCtx->get_typemanager()->create_type(*type);
+    }
+    theCtx->set_context_item_static_type(xqType);
+}
+
+TypeIdentifier_t
+StaticContextImpl::getContextItemStaticType() const
+{
+    xqtref_t type = theCtx->context_item_static_type();
+    if (type == NULL) {
+        return NULL;
+    }
+    return TypeOps::get_type_identifier(*type);
 }
 
 } /* namespace zorba */

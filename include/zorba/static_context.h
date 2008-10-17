@@ -322,6 +322,16 @@ namespace zorba {
        */
       virtual bool
       containsFunction(const String& aFnNameUri, const String& aFnNameLocal, int arity) const = 0;
+
+      /** \brief Set the type of the context item.
+       */
+      virtual void
+      setContextItemStaticType(TypeIdentifier_t type) = 0;
+
+      /** \brief Fetch the type of the context item.
+       */
+      virtual TypeIdentifier_t
+      getContextItemStaticType() const = 0;
   };
 
 } /* namespace zorba */
