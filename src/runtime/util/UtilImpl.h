@@ -28,7 +28,7 @@ namespace zorba {
   NARY_ITER (ZorbaTidyIterator);
   NARY_ITER (ZorbaTDocIterator);
 #endif
-
+  NARY_ITER (ZorbaRandomIterator);
 }/*namespace zorba*/
 
 #endif /* ZORBA_UTIL_IMPL_H */

@@ -908,8 +908,12 @@ DECL(sctx, zorba_encode_base64,
        (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "tdoc"),
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
         GENV_TYPESYSTEM.DOCUMENT_TYPE_QUESTION));
-
 #endif
+
+  DECL(sctx, zorba_random,
+       (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "random"),
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
+
 // end util functions
 
 // begin context functions

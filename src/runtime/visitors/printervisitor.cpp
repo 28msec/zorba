@@ -915,6 +915,7 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
   PRINTER_VISITOR_DEFINITION(ZorbaTidyIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaTDocIterator);
 #endif
+  PRINTER_VISITOR_DEFINITION(ZorbaRandomIterator);
 
 #ifdef ZORBA_DEBUGGER
   PRINTER_VISITOR_DEFINITION(FnDebugIterator);

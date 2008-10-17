@@ -26,6 +26,9 @@
 #include "context/static_context.h"
 #include "context/internal_uri_resolvers.h"
 
+#include <stdlib.h>
+#include <time.h>
+
 namespace zorba {
 
 bool
@@ -160,4 +163,20 @@ ZorbaTDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 #endif
+
+bool
+ZorbaRandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t item;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  std::srand(time(NULL));
+
+  GENV_ITEMFACTORY->createInteger(result, Integer::parseInt (std::rand()));
+  STACK_PUSH (true, state);
+
+  STACK_END (state);
+}
 } /* namespace zorba */

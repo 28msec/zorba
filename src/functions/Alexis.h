@@ -72,6 +72,15 @@ namespace zorba {
   };
 #endif
 
+  class zorba_random : public function
+  {
+    public:
+      zorba_random(const signature& sig): function(sig){}
+
+      PlanIter_t codegen (const QueryLoc& loc,
+                          std::vector<PlanIter_t>& argv,
+                          AnnotationHolder &ann) const;
+  };
 }
 
 #endif /* ZORBA_FUNCTIONS_ALEXIS_H */

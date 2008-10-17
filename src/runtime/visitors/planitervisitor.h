@@ -256,6 +256,7 @@ namespace zorba
   class ZorbaTidyIterator;
   class ZorbaTDocIterator;
 #endif
+  class ZorbaRandomIterator;
 
   namespace gflwor{
     class TupleStreamIterator;
@@ -738,6 +739,7 @@ namespace zorba
     PLAN_ITER_VISITOR(ZorbaTidyIterator);
     PLAN_ITER_VISITOR(ZorbaTDocIterator);
 #endif
+    PLAN_ITER_VISITOR(ZorbaRandomIterator);
 
 #ifdef ZORBA_DEBUGGER
     PLAN_ITER_VISITOR ( FnDebugIterator );  
