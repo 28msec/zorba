@@ -60,6 +60,8 @@ class FnDebugIterator : public NaryBaseIterator<FnDebugIterator, PlanIteratorSta
     void updateInfos(const QueryLoc& loc, PlanState& planState, checked_vector<store::Item_t> varnames,
                      checked_vector<std::string> var_keys, checked_vector<xqtref_t> vartypes,
                      checked_vector<global_binding> globals) const;
+
+   
 };
 } /* namespace zorba */
 

@@ -47,16 +47,6 @@ FnDebugIterator::FnDebugIterator(const QueryLoc& loc,
     PlanIteratorState * state;
 
     DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-    //TODO: refactor 
-    assert(theDebugger);
-    theDebugger->theLocation = loc;
-    theDebugger->thePlanState = &planState;
-    theDebugger->theVarnames = varnames;
-    theDebugger->theVarkeys = var_keys;
-    theDebugger->theVartypes = vartypes;
-    theDebugger->theGlobals  = globals;
-    theDebugger->theChildren = theChildren;
-    theDebugger->theLocation = loc;
  
     if ( theDebugger->hasToSuspend() )
     {

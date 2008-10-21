@@ -86,7 +86,6 @@ class ZorbaDebugger
 
   protected:
     friend class FnDebugIterator;
-    friend class ForVarIterator;
     friend class XQueryCompiler;
     friend class UDFunctionCallIterator; 
     friend ZORBA_THREAD_RETURN runtimeThread( void* );

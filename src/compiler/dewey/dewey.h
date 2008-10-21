@@ -66,7 +66,6 @@ class Node
 
     Node* addChild(Node* aChild)
     {
-      assert(this != 0);
       aChild->setParent(this);
       theChildren.push_back(aChild);
       return this;

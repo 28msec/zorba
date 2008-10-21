@@ -270,28 +270,11 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
   {
     QueryLoc loc;
     loc.setLineBegin( aLineNo );
-    
-    SetMessage lMessage;
     theLastId++;
-    lMessage.addLocation( theLastId, loc );
     std::stringstream lB;
     lB << "line:" << aLineNo;
     theBreakpoints.insert( std::make_pair( theLastId, lB.str() ) );
-    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
-    SetReply* lSetReply = dynamic_cast<SetReply*>(lReply.get());
-    if(lSetReply)
-    {
-      std::map<unsigned int, QueryLoc> breakpoints = lSetReply->getBreakpoints();
-      std::map<unsigned int, QueryLoc>::iterator it;
-      for(it = breakpoints.begin(); it != breakpoints.end(); ++it)
-      {
-        QueryLocation* location = new QueryLocationImpl(it->second);
-        return location;
-      }
-    } else {
-      std::cerr << "An error occured" << std::endl;
-    }
-    return 0;
+    return addBreakpoint(loc);
   }
   
   QueryLocation* ZorbaDebuggerClientImpl::addBreakpoint( const String &aFileName, const unsigned int aLineNo )
@@ -301,13 +284,17 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
     std::string lTmp(lFilename);
     loc.setFilenameBegin( &lTmp );
     loc.setLineBegin( aLineNo );
-    
-    SetMessage lMessage;
     theLastId++;
-    lMessage.addLocation( theLastId, loc );
     std::stringstream lB;
     lB << lFilename << ':' << aLineNo;
     theBreakpoints.insert( std::make_pair( theLastId, lB.str() ) );
+    return addBreakpoint(loc);
+  }
+
+  QueryLocation* ZorbaDebuggerClientImpl::addBreakpoint(QueryLoc& aLocation)
+  {
+    SetMessage lMessage;
+    lMessage.addLocation( theLastId, aLocation );
     std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
     SetReply* lSetReply = dynamic_cast<SetReply*>(lReply.get());
     if(lSetReply)
@@ -322,7 +309,7 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
     } else {
       std::cerr << "An error occured" << std::endl;
     }
-    return 0;
+    return 0;  
   }
 
   bool ZorbaDebuggerClientImpl::clearBreakpoint( unsigned int anId )

@@ -117,6 +117,8 @@ namespace zorba{
 
       std::map<unsigned int, String> theBreakpoints;
 
+      QueryLocation* addBreakpoint(QueryLoc& aLocation);
+
       void handshake();
 
       ReplyMessage* send( AbstractCommandMessage * aMessage ) const;
