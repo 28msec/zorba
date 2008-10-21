@@ -17,6 +17,7 @@
 ("external-variable,e", po::value<std::vector<std::string> >(), "Provide the value for a variable given a file (name=file) or a value (name:=value)")
 ("context-item", po::value<std::string> (), "Set the context item to the XML document in a given file.")
 ("optimization-level", po::value<std::string>()->default_value("O1"), "Optimization level for the query compiler (O0 or O1)")
+("parse-only", "Stop after parsing the query")
 #ifdef ZORBA_DEBUGGER
 ("debug-ports,p", po::value< std::string >()->default_value("8000:9000"), "Specify the ports for zorba debugger. The format is requestPort:eventPort.")
 ("debug-client,c", "Launch the debugger command line client.")
