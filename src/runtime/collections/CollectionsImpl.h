@@ -34,6 +34,7 @@ namespace zorba {
 class ZorbaListCollectionsState : public PlanIteratorState {
 public:
   store::Iterator_t   uriItState;
+  ~ZorbaListCollectionsState();
   void init(PlanState&);
   void reset(PlanState&);
 };

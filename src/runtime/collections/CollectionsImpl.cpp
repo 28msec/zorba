@@ -221,6 +221,14 @@ ZorbaImportFolderIterator::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END (state);
 }
 
+ZorbaListCollectionsState::~ZorbaListCollectionsState()
+{
+  if ( uriItState != NULL ) {
+    uriItState->close();
+    uriItState = NULL;
+  }
+}
+
 void
 ZorbaListCollectionsState::init(PlanState& planState)
 {
@@ -232,7 +240,10 @@ void
 ZorbaListCollectionsState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  uriItState = NULL;
+  if ( uriItState != NULL ) {
+    uriItState->close();
+    uriItState = NULL;
+  }
 }
 
 bool
