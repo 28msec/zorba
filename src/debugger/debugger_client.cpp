@@ -20,9 +20,17 @@
 
 namespace zorba{
 
-ZorbaDebuggerClient * ZorbaDebuggerClient::createClient( unsigned short aRequestPortno, unsigned short aEventPortno )
+ZorbaDebuggerClient * ZorbaDebuggerClient::createClient(unsigned short aRequestPortno,
+                                                        unsigned short aEventPortno)
 {
-  return new ZorbaDebuggerClientImpl( aRequestPortno, aEventPortno );
+  return new ZorbaDebuggerClientImpl("127.0.0.1", aRequestPortno, aEventPortno );
+}
+
+ZorbaDebuggerClient * ZorbaDebuggerClient::createClient(std::string aServerAddress,
+                                                        unsigned short aRequestPortno,
+                                                        unsigned short aEventPortno )
+{
+  return new ZorbaDebuggerClientImpl(aServerAddress, aRequestPortno, aEventPortno );
 }
 
 }//end of namespace

@@ -290,6 +290,9 @@ bool AbstractCommandMessage::isDynamicCommand() const
       getCommand() == COLLECTIONS || getCommand() == EVAL );
 }
 
+/**
+ * Run message
+ */
 RunMessage::RunMessage():
   AbstractCommandMessage( EXECUTION, RUN ){}
 
@@ -298,6 +301,10 @@ RunMessage::RunMessage( Byte * aMessage, const unsigned int aLength ):
 
 RunMessage::~RunMessage(){}
 
+
+/**
+ * Suspend message
+ */
 SuspendMessage::SuspendMessage():
   AbstractCommandMessage( EXECUTION, SUSPEND ){}
 
@@ -306,6 +313,9 @@ SuspendMessage::SuspendMessage( Byte * aMessage, const unsigned int aLength ):
 
 SuspendMessage::~SuspendMessage(){}
 
+/**
+ * Terminate message
+ */
 TerminateMessage::TerminateMessage():
   AbstractCommandMessage( EXECUTION, TERMINATE ){}
 
@@ -314,14 +324,9 @@ TerminateMessage::TerminateMessage( Byte * aMessage, const unsigned int aLength 
 
 TerminateMessage::~TerminateMessage(){}
 
-QuitMessage::QuitMessage():
-  AbstractCommandMessage( EXECUTION, QUIT ){}
-
-QuitMessage::QuitMessage( Byte * aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength ){}
-
-QuitMessage::~QuitMessage(){}
-
+/**
+ * Resume message
+ */
 ResumeMessage::ResumeMessage():
   AbstractCommandMessage( EXECUTION, RESUME ){}
 
@@ -330,6 +335,9 @@ ResumeMessage::ResumeMessage( Byte * aMessage, const unsigned int aLength ):
 
 ResumeMessage::~ResumeMessage(){}
 
+/**
+ * Step message
+ */
 StepMessage::StepMessage( StepCommand aKind ):
   AbstractCommandMessage( EXECUTION, STEP ), theKind( aKind ){
   setLength( MESSAGE_SIZE + 1 );
@@ -824,6 +832,175 @@ VariableMessage::VariableMessage( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength ){}
 
 VariableMessage::~VariableMessage(){}
+
+/**
+ * Frame Message
+ */
+FrameMessage::FrameMessage(): AbstractCommandMessage(DYNAMIC, FRAME){}
+
+FrameMessage::FrameMessage(Byte* aMessage, const unsigned int aLength):
+  AbstractCommandMessage(aMessage, aLength){}
+
+FrameMessage::~FrameMessage(){}
+
+/**
+ * Frame Reply
+ */
+FrameReply::FrameReply(const Id anId, const ErrorCode aErrorCode,
+                       std::stack< std::pair<std::string, const QueryLoc> >  aStack)
+  : ReplyMessage(anId, aErrorCode), theStack(aStack)
+{
+  setFlags(REPLY_FRAME_FLAG);
+  unsigned int l = MESSAGE_SIZE + getData().length();
+  setLength(l);
+  checkIntegrity();
+}
+
+FrameReply::FrameReply(Byte* aMessage, const unsigned int aLength)
+  : ReplyMessage(aMessage, aLength)
+{
+  setFlags(REPLY_FRAME_FLAG);
+  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
+  json::value* frame = getValue(lValue.get(), "frame");
+  if(frame != 0)
+  {
+    json::array_list_t* list = frame->getarraylist();
+    json::array_list_t::iterator it;
+    for(it=list->begin(); it!=list->end(); ++it)
+    {
+      if(getValue(*it, "location") != 0)
+      {
+        QueryLoc loc;
+        loc.fromJSON(getValue(*it, "location"));
+        if(getValue(*it, "label") == 0)
+        {
+          throw MessageFormatException("Invalid JSON format for Stack");
+        }
+        std::wstring* lLabel = getValue(*it, "label")->getstring(L"", true);
+        std::string label(lLabel->begin()+1, lLabel->end()-1);
+        theStack.push(std::make_pair<std::string, const QueryLoc>(label, loc));
+      } else {
+        throw MessageFormatException("Invalid JSON format for Stack");
+      }
+    }
+  } else {
+    throw MessageFormatException("Invalid JSON format for stack frame messsage.");
+  }
+}
+
+xqpString FrameReply::getData() const
+{
+  std::stringstream lJSONString;
+  lJSONString << "{\"frame\":[";
+  std::stack< std::pair<std::string, const QueryLoc> > lStack(theStack);
+  while(!lStack.empty())
+  {
+    if(lStack.size() != theStack.size())
+    {
+      lJSONString << ",";
+    }
+    std::pair<std::string, const QueryLoc> it = lStack.top();
+    lJSONString << "{\"label\":\"" << it.first << "\",\"location\":" << it.second.toJSON() << "}";
+    lStack.pop();
+  }
+  lJSONString << "]}";
+  return lJSONString.str();
+}
+
+Byte* FrameReply::serialize(Length& aLength) const
+{
+  ZorbaArrayAutoPointer<Byte> lHeader(ReplyMessage::serialize(aLength));
+  xqpString lJSON = getData();
+  const char* s = lJSON.c_str();
+  unsigned int l = lJSON.length();
+  Byte* lMsg = new Byte[MESSAGE_SIZE+l+1];
+  memset(lMsg, '0', MESSAGE_SIZE+l+1);
+  memcpy(lMsg, lHeader.get(), MESSAGE_SIZE);
+  memcpy(lMsg+MESSAGE_SIZE, s, l);
+  aLength = getLength();
+  return lMsg;
+}
+
+
+/**
+ * Set Breakpoint reply message
+ */
+SetReply::SetReply(const Id anId, const ErrorCode aErrorCode):
+  ReplyMessage(anId, aErrorCode)
+{
+  setFlags(REPLY_SET_FLAG);
+  unsigned int l = MESSAGE_SIZE + getData().length();
+  setLength(l);
+  checkIntegrity();
+}
+
+SetReply::SetReply(Byte* aMessage, const unsigned int aLength): ReplyMessage(aMessage, aLength)
+{
+  setFlags(REPLY_SET_FLAG);
+  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
+  json::value* breakpoints = getValue(lValue.get(), "breakpoints");
+  if(breakpoints != 0)
+  {
+    json::array_list_t* list = breakpoints->getarraylist();
+    json::array_list_t::iterator it;
+    for(it=list->begin(); it!=list->end(); ++it)
+    {
+      if(getValue(*it, "location") != 0)
+      {
+        QueryLoc loc;
+        loc.fromJSON(getValue(*it, "location"));
+        if(getValue(*it, "id") == 0)
+        {
+          throw MessageFormatException("Invalid JSON format for Set breakpoint reply message.");
+        }
+        theBreakpoints.insert( std::make_pair(getValue(*it, "id")->getinteger(), loc));
+      } else {
+        throw MessageFormatException("Invalid JSON format for breakpoint reply message.");
+      }
+    }
+  } else {
+    throw MessageFormatException("Invalid JSON format for breakpoint reply message.");
+  }
+}
+
+SetReply::~SetReply(){}
+
+xqpString SetReply::getData() const
+{
+  std::stringstream lJSONString;
+  lJSONString << "{\"breakpoints\":[";
+  std::map<unsigned int, QueryLoc>::const_iterator it;
+  for( it = theBreakpoints.begin(); it != theBreakpoints.end(); ++it )
+  { 
+    if ( it != theBreakpoints.begin() )
+    {
+      lJSONString << ',';
+    }
+    lJSONString << "{\"id\":" << it->first << ",\"location\":" << it->second.toJSON() << "}";
+  }
+  lJSONString << "]}";
+  return lJSONString.str();
+}
+
+Byte* SetReply::serialize(Length& aLength) const
+{
+  ZorbaArrayAutoPointer<Byte> lHeader(ReplyMessage::serialize( aLength ));
+  xqpString lJSONString = getData();
+  const char * s = lJSONString.c_str();
+  unsigned int l = lJSONString.length();
+  Byte * lMsg = new Byte[ MESSAGE_SIZE + l + 1 ];
+  memset(lMsg, '0', MESSAGE_SIZE + l + 1);
+  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
+  memcpy( lMsg + MESSAGE_SIZE, s, l );
+  aLength = getLength();
+  return lMsg; 
+}
+
+void SetReply::addBreakpoint(unsigned int anId, QueryLoc& aLocation)
+{
+  theBreakpoints.insert(std::make_pair<unsigned int, QueryLoc>(anId, aLocation));
+  setLength(getData().length());
+}
 
 /**
  * Variable Reply Message

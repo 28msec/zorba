@@ -30,7 +30,6 @@ int test_debugger_protocol( int argc, char* argv[] )
   test->testSuspendMessage();
   test->testResumeMessage();
   test->testTerminateMessage();
-  test->testQuitMessage();
   test->testStepIntoMessage();
   test->testStepOutMessage();
   test->testStepOverMessage();
@@ -154,25 +153,12 @@ void TestDebuggerSerialization::testRunMessage()
     delete[] lBmsg;
   }
 
-  void TestDebuggerSerialization::testQuitMessage()
-  {
-    std::cerr << "Test quit message" << std::endl;
-    QuitMessage msg;
-    test_packet<QuitMessage>( &msg );
-    const char * lBinary =  "\0\0\0\xb\0\0\0\5\0\xf1\6"; 
-    Length length;
-    Byte * lBmsg = msg.serialize( length );
-    bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
-    assert( lMsgcmp );
-    delete[] lBmsg;
-  }
-
   void TestDebuggerSerialization::testStepIntoMessage()
   {
     std::cerr << "Test step into message" << std::endl;
     StepMessage msg( STEP_INTO );
     test_packet<StepMessage>( &msg );
-    const char * lBinary =  "\0\0\0\xc\0\0\0\6\0\xf1\5\1"; 
+    const char * lBinary =  "\0\0\0\xc\0\0\0\5\0\xf1\5\1"; 
     Length length;
     Byte * lBmsg = msg.serialize( length );
     bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
@@ -185,7 +171,7 @@ void TestDebuggerSerialization::testRunMessage()
     std::cerr << "Test step out message" << std::endl;
     StepMessage msg( STEP_OUT );
     test_packet<StepMessage>( &msg );
-    const char * lBinary =  "\0\0\0\xc\0\0\0\7\0\xf1\5\2"; 
+    const char * lBinary =  "\0\0\0\xc\0\0\0\6\0\xf1\5\2"; 
     Length length;
     Byte * lBmsg = msg.serialize( length );
     bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
@@ -198,7 +184,7 @@ void TestDebuggerSerialization::testRunMessage()
     std::cerr << "Test step over message" << std::endl;
     StepMessage msg( STEP_OVER );
     test_packet<StepMessage>( &msg );
-    const char * lBinary =  "\0\0\0\xc\0\0\0\x8\0\xf1\5\3"; 
+    const char * lBinary =  "\0\0\0\xc\0\0\0\7\0\xf1\5\3"; 
     Length length;
     Byte * lBmsg = msg.serialize( length );
     bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
@@ -211,7 +197,7 @@ void TestDebuggerSerialization::testRunMessage()
     std::cerr << "Test started event message" << std::endl;
     StartedEvent msg;
     test_packet< StartedEvent >( &msg );
-    const char * lBinary = "\0\0\0\xb\0\0\0\x9\0\xf8\1";
+    const char * lBinary = "\0\0\0\xb\0\0\0\x8\0\xf8\1";
     Length length;
     Byte * lBmsg = msg.serialize( length );
     bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
@@ -224,7 +210,7 @@ void TestDebuggerSerialization::testRunMessage()
     std::cerr << "Test terminated event message" << std::endl;
     TerminatedEvent msg;
     test_packet< TerminatedEvent >( &msg );
-    const char * lBinary = "\0\0\0\xb\0\0\0\xa\0\xf8\2";
+    const char * lBinary = "\0\0\0\xb\0\0\0\x9\0\xf8\2";
     Length length;
     Byte * lBmsg = msg.serialize( length );
     bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
@@ -252,7 +238,7 @@ void TestDebuggerSerialization::testRunMessage()
     Byte * lBmsg = msg.serialize( length );
     
     char * lBinary = new char[length];
-    memcpy( lBinary, "\0\0\0\x070\0\0\0\xb\0\xf8\3", MESSAGE_SIZE );
+    memcpy( lBinary, "\0\0\0\x070\0\0\0\xa\0\xf8\3", MESSAGE_SIZE );
     const char * lJSONString = "{\"cause\":1,\"location\":{\"fileName\":\"data.xq\",\"lineBegin\":1,\"columnBegin\":1,\"lineEnd\":1,\"columnEnd\":1}}";
     memcpy( lBinary + MESSAGE_SIZE, lJSONString, length - MESSAGE_SIZE );
     bool lMsgcmp = msgcmp( lBmsg, lBinary, length );
@@ -266,7 +252,7 @@ void TestDebuggerSerialization::testRunMessage()
     std::cerr << "Test resumed event message" << std::endl;
     ResumedEvent msg;
     test_packet< ResumedEvent >( &msg );
-    const char * lBinary = "\0\0\0\xb\0\0\0\xc\0\xf8\4";
+    const char * lBinary = "\0\0\0\xb\0\0\0\xb\0\xf8\4";
     Length length;
     Byte * lBmsg = msg.serialize( length );
     bool lMsgcmp = msgcmp( lBmsg, lBinary, length );

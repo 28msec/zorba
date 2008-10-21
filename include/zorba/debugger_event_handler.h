@@ -21,47 +21,11 @@
 
 namespace zorba{
 
+  class QueryLocation;
+
   /* Cause of the suspension of the engine */
   enum SuspendedBy { A_USER, A_BREAKPOINT, A_STEP }; 
-
-  /**
-   * Representation of the current location location 
-   * in the remote query.
-   * This location goes from the starting line and column
-   * to the ending line and column.
-   */
-  class ZORBA_EXTERN_DECL QueryLocation
-  {
-    public:
-
-      virtual
-      ~QueryLocation(){}
-
-      virtual String
-      getFileName() const = 0; 
-
-      virtual unsigned int
-      getLineBegin() const = 0;
-
-      virtual unsigned int
-      getLineEnd() const = 0;
-
-      virtual unsigned int
-      getColumnBegin() const = 0;
-
-      virtual unsigned int
-      getColumnEnd() const = 0;
-
-      virtual String
-      toString() const = 0;
-  };
   
-  //string serialization of the query 
-  ZORBA_EXTERN_DECL
-  std::ostream& operator<< (std::ostream& os, const QueryLocation& aQuery); 
-  ZORBA_EXTERN_DECL
-  std::ostream& operator<< (std::ostream& os, QueryLocation* aQuery); 
-
   /**
    * DebuggerEventHandler is the base handler for all debugging events.
    * During debugging, events are sent from the remote query to the client.

@@ -16,7 +16,6 @@
 
 #include "debugger/debugger_server.h"
 
-#include <iostream>
 #include <memory>
 #include <fstream>
 
@@ -55,7 +54,7 @@ ZORBA_THREAD_RETURN runtimeThread( void *aDebugger )
   //We wait for theRuntimeThread to be allocated
   while( lDebugger->theRuntimeThread == 0 )
   {
-	sleep(1);
+	  sleep(1);
   }
   lDebugger->runQuery();
   return 0;
@@ -68,12 +67,16 @@ ZorbaDebugger::~ZorbaDebugger()
 }
 
 void ZorbaDebugger::start( XQueryImpl *aQuery,
+                           std::ostream& aOutStream,
+                           const Zorba_SerializerOptions_t& aSerOptions,
                            unsigned short aRequestPortno,
                            unsigned short aEventPortno)
 {
   std::auto_ptr<TCPSocket> lSock;
-  //Set the query
+  //Set the query and serialization options
   theQuery = aQuery;
+  theOutputStream = &aOutStream;
+  theSerOptions = &aSerOptions;
   //Run the server 
   theRequestServerSocket = new TCPServerSocket( aRequestPortno );
   theEventPortno = aEventPortno;
@@ -92,7 +95,7 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
       //Wait one second before trying to reconnect
       sleep(1);
       //Connect the client to the event server
-      theEventSocket = new TCPSocket( "127.0.0.1", theEventPortno );
+      theEventSocket = new TCPSocket( lSock->getForeignAddress(), theEventPortno );
       break;
     } catch ( SocketException &e )  {
       if ( i < 2 ) continue;
@@ -109,7 +112,7 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
   handshake( lSock.get() );
   
   //Until the query execution has ended
-  while ( theStatus != QUERY_QUITED )
+  while ( theStatus != QUERY_TERMINATED )
   {
     handleTcpClient( lSock.get() );
   }
@@ -218,7 +221,7 @@ void ZorbaDebugger::runQuery()
   {
     Zorba_SerializerOptions lSerOptions;
     lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-    theQuery->serialize( std::cout, lSerOptions );
+    theQuery->serialize( *theOutputStream, *theSerOptions );
     std::cout.flush();
   } catch ( StaticException& se ) {
     std::cerr << se << std::endl;
@@ -232,22 +235,14 @@ void ZorbaDebugger::runQuery()
 
 bool ZorbaDebugger::hasToSuspend()
 {
-  if( theStatus == QUERY_SUSPENDED )
-  {
-    return true;
-  }
+  //If the query has been suspend by the user
+  if( theStatus == QUERY_SUSPENDED ){ return true; }
+  
   std::map<unsigned int, QueryLoc>::iterator it;
   //TODO: can be faster
   for ( it = theBreakpoints.begin(); it != theBreakpoints.end(); it++ )
   {
-    std::string lCurrentFilename = theLocation.getFilename();
-    std::string lBreakFilename = it->second.getFilename();
-    int start = lCurrentFilename.length() - lBreakFilename.length();
-    bool fileMatch = true;
-    if( start >= 0){
-      fileMatch = (lBreakFilename == lCurrentFilename.substr(start));
-    }
-    if (fileMatch && theLocation.getLineno() == it->second.getLineno() )
+    if (it->second == theLocation)
     {
       setStatus( QUERY_SUSPENDED, CAUSE_BREAKPOINT );
       return true;
@@ -366,9 +361,107 @@ void ZorbaDebugger::terminate()
   setStatus( QUERY_TERMINATED );
 }
 
-void ZorbaDebugger::quit()
+std::stack<unsigned int> ZorbaDebugger::getCurrentDecimal() const
 {
-  setStatus( QUERY_QUITED );
+  std::stack<unsigned int> lCurrentDecimal;
+  std::map< std::stack<unsigned int>, const QueryLoc>::const_iterator it;
+  for(it=theClassification.begin(); it!=theClassification.end(); ++it)
+  {
+    if(it->second == theLocation)
+    {
+      lCurrentDecimal = it->first;
+      break;
+    }
+  }
+  return lCurrentDecimal;
+}
+
+void ZorbaDebugger::step( const StepCommand aKind )
+{
+  //find the current decimal.
+  std::stack<unsigned int> lCurrentDecimal = getCurrentDecimal();
+  //if the current decimal is not found something really wrong happened
+  if(lCurrentDecimal.empty())
+  {
+    //TODO: proper error handling
+    std::cerr << "Internal error occured for step." << std::endl;
+    return;
+  }
+  if( aKind == STEP_OVER )
+  {
+    std::cerr << "Step Over." << std::endl;
+    isSteppingOver = true;
+    theDecimalSize = lCurrentDecimal.size();
+    resume();
+  } else if ( aKind == STEP_INTO ) {
+    std::cerr << "Step Into." << std::endl;
+    isSteppingInto = true;
+    theDecimalSize = lCurrentDecimal.size()+1;
+    resume();
+  } else if ( aKind == STEP_OUT ) {
+    std::cerr << "Step Out." << std::endl;
+    isSteppingOut = true;
+    lCurrentDecimal.pop();
+    theDecimalSize = lCurrentDecimal.size();
+    resume();
+  }
+}
+
+bool ZorbaDebugger::hasToStepOver() const
+{
+  std::stack<unsigned int> lDecimal(getCurrentDecimal());
+  if(lDecimal.empty())
+  {
+    return false;
+  }
+  if(isSteppingOver && lDecimal.size() <= theDecimalSize)
+  {
+    return true;
+  }
+  return false;
+}
+
+bool ZorbaDebugger::hasToStepInto() const
+{
+  std::stack<unsigned int> lDecimal(getCurrentDecimal());
+  if(lDecimal.empty())
+  {
+    return false;
+  }
+  if(isSteppingInto) //&& lDecimal.size() == theDecimalSize)
+  {
+    return true;
+  }
+  return false;
+}
+
+bool ZorbaDebugger::hasToStepOut() const
+{
+  std::stack<unsigned int> lDecimal(getCurrentDecimal());
+  if(lDecimal.empty())
+  {
+    return false;
+  }
+  if(isSteppingOut && lDecimal.size() <= theDecimalSize)
+  {
+    return true;
+  }
+  return false;
+}
+
+void ZorbaDebugger::stepOver()
+{
+  isSteppingOver = false;
+}
+
+void ZorbaDebugger::stepInto()
+{
+  isSteppingInto = false;
+}
+
+void ZorbaDebugger::stepOut()
+{
+  isSteppingOut = false;
 }
 
 void ZorbaDebugger::eval( xqpString anExpr )
@@ -407,6 +500,34 @@ void ZorbaDebugger::eval( xqpString anExpr )
     assert(lMsg.get() != 0);
     sendEvent(lMsg.get());
   }
+}
+
+const QueryLoc ZorbaDebugger::addBreakpoint(const QueryLoc& aLocation)
+{
+  xqpString lFilename = aLocation.getFilename();
+  unsigned int lLineNumber = aLocation.getLineBegin();
+  std::pair<std::stack<unsigned int>, QueryLoc> lBreakpoint;
+  do{
+    std::map<std::stack<unsigned int>, const QueryLoc>::iterator it;
+    for(it=theClassification.begin(); it!=theClassification.end(); ++it)
+    {
+      if( it->second.getFilename() == lFilename &&
+          it->second.getLineBegin() == lLineNumber &&
+          it->second.getColumnBegin() != 0 && 
+          (lBreakpoint.first.empty() || lBreakpoint.first.size() > it->first.size()))
+      {
+        lBreakpoint.first = it->first;
+        lBreakpoint.second = it->second;  
+      }
+    }
+    ++lLineNumber;
+    //If a breakpoint hasn't been found 10 lines below, we return an empty location
+    if( lLineNumber > 10 )
+    {
+      return lBreakpoint.second;
+    }
+  }while(lBreakpoint.first.empty());
+  return lBreakpoint.second;
 }
 
 std::auto_ptr<PlanWrapperHolder>
@@ -477,15 +598,6 @@ void ZorbaDebugger::processMessage(AbstractCommandMessage * aMessage)
           resume();
           break;
         }
-        case QUIT:
-        {
-#ifndef NDEGUB
-          QuitMessage * lMessage = dynamic_cast<QuitMessage *>( aMessage );
-          assert( lMessage );
-#endif
-          quit();
-          break;
-        }
         case TERMINATE:
         {
 #ifndef NDEBUG
@@ -498,12 +610,12 @@ void ZorbaDebugger::processMessage(AbstractCommandMessage * aMessage)
         case STEP:
         {
 #ifndef NDEBUG
-          StepMessage * lMessage = dynamic_cast<StepMessage *> ( aMessage );
+          StepMessage* lMessage = dynamic_cast<StepMessage *> ( aMessage );
           assert( lMessage );
-          processMessage( lMessage );
 #else
-          processMessage( static_cast<StepMessage *> ( aMessage ));
+          StepMessage* lMessage =  static_cast<StepMessage *> ( aMessage );
 #endif
+          step(lMessage->getStepKind());
           break;
         }
         default: throw InvalidCommandException("Internal Error. Command not implemented for execution command set .");
@@ -522,11 +634,15 @@ void ZorbaDebugger::processMessage(AbstractCommandMessage * aMessage)
 #else
           lMessage =  static_cast< SetMessage * > ( aMessage );
 #endif
+          SetReply* lReply = new SetReply(lMessage->getId(), DEBUGGER_NO_ERROR);
+          
           std::map<unsigned int, QueryLoc> locations = lMessage->getLocations();
           std::map<unsigned int, QueryLoc>::iterator it;
           for ( it = locations.begin(); it != locations.end(); it++ )
           {
-            theBreakpoints.insert( std::make_pair( it->first, it->second ) ); 
+            QueryLoc loc = addBreakpoint(it->second);
+            theBreakpoints.insert( std::make_pair( it->first, loc ) ); 
+            lReply->addBreakpoint(it->first, loc);
           }
           
           std::map<unsigned int, xqpString> exprs = lMessage->getExprs();
@@ -535,6 +651,8 @@ void ZorbaDebugger::processMessage(AbstractCommandMessage * aMessage)
           {
             theWatchpoints.insert( std::make_pair( lIt->first, lIt->second ) ); 
           }
+
+          lMessage->setReplyMessage(lReply);
           break;
         }
         case CLEAR:
@@ -623,6 +741,18 @@ void ZorbaDebugger::processMessage(AbstractCommandMessage * aMessage)
             }
           }
           lMessage->setReplyMessage( lReply );
+          break;
+        }
+        case FRAME:
+        {
+          FrameMessage* lMessage;
+#ifndef NDEBUG
+          lMessage = dynamic_cast<FrameMessage*>(aMessage);
+#else
+          lMessage = static_cast<FrameMessage*>(aMessage);
+#endif
+          FrameReply* lReply = new FrameReply(lMessage->getId(), DEBUGGER_NO_ERROR, theStack);
+          lMessage->setReplyMessage(lReply);
           break;
         }
         default: throw InvalidCommandException("Internal Error. Command not implemented for dynamic command set.");

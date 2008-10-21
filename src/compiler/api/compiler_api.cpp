@@ -41,6 +41,10 @@
 #include "runtime/visitors/printervisitor.h"
 #include "runtime/visitors/iterprinter.h"
 
+#ifdef ZORBA_DEBUGGER
+#include "debugger/debugger_server.h"
+#include "compiler/dewey/dewey.h"
+#endif
 
 namespace zorba {
 
@@ -107,6 +111,24 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
 expr_t
 XQueryCompiler::normalize(parsenode_t aParsenode)
 {
+#ifdef ZORBA_DEBUGGER
+  if(theCompilerCB->m_debugger != 0)
+  {
+    theCompilerCB->m_debugger->theClassification = classify(*aParsenode);
+    //std::map<std::stack<unsigned int>, const QueryLoc> lClassification = theCompilerCB->m_debugger->theClassification;
+    //std::map<std::stack<unsigned int>, const QueryLoc>::iterator it;
+    //for(it=lClassification.begin(); it!=lClassification.end(); ++it)
+    //{
+    //  std::stack<unsigned int> s(it->first);
+    //  while(!s.empty())
+    //  {
+    //    std::cerr << s.top();
+    //    s.pop();
+    //  }
+    //  std::cerr << ' ' << it->second << std::endl;
+    //}
+  }
+#endif
   expr_t lExpr = translate (*aParsenode, theCompilerCB);
   if ( lExpr == NULL ) { // TODO: can this happen?
     ZORBA_ERROR( API0002_COMPILE_FAILED);
@@ -115,6 +137,12 @@ XQueryCompiler::normalize(parsenode_t aParsenode)
 
   normalize_expr_tree ("query", theCompilerCB, lExpr, NULL);
 
+#ifdef ZORBA_DEBUGGER
+  if(theCompilerCB->m_debugger != 0)
+  {
+//    theCompilerCB->m_debugger->theClassification = classify(*aParsenode);    
+  }
+#endif
   return lExpr;
 }
 

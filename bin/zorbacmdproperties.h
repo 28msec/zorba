@@ -60,6 +60,7 @@ public:
   unsigned int getRequestPort(){ return theRequestPort; }
 
   unsigned int getEventPort(){ return theEventPort; }
+
 #endif
   std::string check_args ();
   void printHelp(std::ostream& os) {

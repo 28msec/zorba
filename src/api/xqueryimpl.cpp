@@ -725,13 +725,23 @@ void XQueryImpl::checkIsDebugMode() const
 
 void XQueryImpl::debug( unsigned short aCommandPort, unsigned short anEventPort )
 {
+  Zorba_SerializerOptions lSerOptions;
+  lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;  
+  debug(std::cout, lSerOptions, aCommandPort, anEventPort);
+}
+
+void XQueryImpl::debug(std::ostream& aOutStream,
+                        const Zorba_SerializerOptions_t& aSerOptions,
+                        unsigned short aCommandPort, unsigned short anEventPort)
+{
   //check if the query is compiled and not closed
   checkCompiled();
   checkNotClosed();
   //check if the debug mode is enabled
   checkIsDebugMode();
-  theDebugger->start( this, aCommandPort, anEventPort );
+  theDebugger->start( this, aOutStream, aSerOptions, aCommandPort, anEventPort );
 }
+
 #endif
 
 std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery)

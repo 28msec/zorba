@@ -28,6 +28,10 @@
 
 #include "api/unmarshaller.h"
 
+#ifdef ZORBA_DEBUGGER
+#include "debugger/debugger_server.h"
+#endif
+
 namespace zorba {
 
 UDFunctionCallIteratorState::UDFunctionCallIteratorState()
@@ -129,6 +133,17 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 {
   UDFunctionCallIteratorState *state;
   bool success;
+#ifdef ZORBA_DEBUGGER
+  ZorbaDebugger* lDebugger = planState.theCompilerCB->m_debugger; 
+  if(lDebugger != 0)
+  {
+    std::stringstream name;
+    name << theUDF->get_fname()->getStringValue() << '(';
+    //TODO: print the arguments
+    name << ')';
+    lDebugger->theStack.push(std::make_pair<std::string, const QueryLoc>(name.str(), loc)); 
+  }
+#endif
 
   DEFAULT_STACK_INIT(UDFunctionCallIteratorState, state, planState);
 
@@ -165,6 +180,12 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     while (state->exitValue->next (result))
       STACK_PUSH(true, state);
 
+#ifdef ZORBA_DEBUGGER
+  if(lDebugger != 0)
+  {
+    lDebugger->theStack.pop();
+  }
+#endif
   STACK_END (state);
 }
 

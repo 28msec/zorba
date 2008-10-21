@@ -237,6 +237,7 @@ class debugger_expr: public eval_expr
 {
   private:
     std::list<global_binding> theGlobals;
+    bool theForExpr;
     
   public:
     debugger_expr( const QueryLoc& loc, expr_t aChild, std::list<global_binding> aGlobals ):
@@ -244,8 +245,9 @@ class debugger_expr: public eval_expr
     
     debugger_expr( const QueryLoc& loc, expr_t aChild,
                    checked_vector<var_expr_t> aScopedVariables,
-                   std::list<global_binding> aGlobals ):
-      eval_expr(loc, aChild ), theGlobals( aGlobals )
+                   std::list<global_binding> aGlobals,
+                   bool aForExpr = false):
+      eval_expr(loc, aChild ), theGlobals( aGlobals ), theForExpr(aForExpr)
     {
       store_local_variables( aScopedVariables );
     }
@@ -259,6 +261,8 @@ class debugger_expr: public eval_expr
     {
       return theGlobals;
     }
+
+    bool isForExpr() const { return theForExpr; }
 
   private:
     void store_local_variables(checked_vector<var_expr_t> &aScopedVariables)

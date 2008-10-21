@@ -18,10 +18,63 @@
 
 #include <map>
 #include <list>
+#include <stack>
 #include <zorba/api_shared_types.h>
 #include <zorba/debugger_event_handler.h>
 
 namespace zorba{ 
+
+  /**
+   * Representation of the current location location 
+   * in the remote query.
+   * This location goes from the starting line and column
+   * to the ending line and column.
+   */
+  class ZORBA_EXTERN_DECL QueryLocation
+  {
+    public:
+
+      virtual
+      ~QueryLocation(){}
+
+      virtual String
+      getFileName() const = 0; 
+
+      virtual unsigned int
+      getLineBegin() const = 0;
+
+      virtual unsigned int
+      getLineEnd() const = 0;
+
+      virtual unsigned int
+      getColumnBegin() const = 0;
+
+      virtual unsigned int
+      getColumnEnd() const = 0;
+
+      virtual String
+      toString() const = 0;
+  };
+
+  /**
+   * Representation of the runtime stack frame.
+   */
+  class ZORBA_EXTERN_DECL RuntimeStack
+  {
+    public:
+ 
+      virtual
+      ~RuntimeStack(){}
+
+      virtual std::stack< std::pair<std::string, QueryLocation*> >
+      getFrames() const = 0;
+  };
+ 
+  //string serialization of the query 
+  ZORBA_EXTERN_DECL
+  std::ostream& operator<< (std::ostream& os, const QueryLocation& aQuery); 
+  ZORBA_EXTERN_DECL
+  std::ostream& operator<< (std::ostream& os, QueryLocation* aQuery); 
 
   /**
    * zorba::Variable is the debugger representation of a variable on 
@@ -63,14 +116,34 @@ namespace zorba{
        * ZorbaDebuggerClient* lClient = ZorbaDebuggerClient::createClient(8000, 9000);
        * </pre>
        *
-       * @param unsigned short aRequestPortno Network port number for debugging commands
-       * @param unsigned short aEventPortno
+       * @param unsigned short aRequestPortno Network port number for debugging commands.
+       * @param unsigned short aEventPortno.
        * @return ZorbaDebuggerClient the newly created debugger client instance.
        */
       static ZorbaDebuggerClient*
       createClient( unsigned short aRequestPortno, unsigned short aEventPortno );
 
-      /** \brief Register a debuggere vent handler to which runtime events on the remote 
+      /** \brief Gets a new instance of Zorba debugger client.
+       *
+       * This factory method create a new instance of the debugger client for remote 
+       * debugging.
+       * You can specify the IP address of the debugger server.
+       * The parameters are the network ports for the request and event connection
+       * (by default: 8000 for commands and 9000 for events).
+       * <pre>
+       * ZorbaDebuggerClient* lClient = ZorbaDebuggerClient::createClient("192.168.0.1");
+       * </pre>
+       *
+       * @param std::string aServerAddress the IP address of the debugger server.
+       * @param unsigned short aRequestPortno Network port number for debugging commands.
+       * @param unsigned short aEventPortno.
+       * @return ZorbaDebuggerClient the newly created debugger client instance.
+       */
+       static ZorbaDebuggerClient*
+       createClient(std::string aServerAddress, unsigned short aRequestPortno, unsigned short aEventPortno );
+
+
+/** \brief Register a debuggere vent handler to which runtime events on the remote 
        * debugger server are reported.
        *
        * @param aDebuggerEventHandler DebuggerEventHandler Handler for runtime events comming
@@ -131,25 +204,36 @@ namespace zorba{
       virtual void
       terminate() = 0;
 
-      
-      /** \brief Request the remote query quit and the debugger server to shutdown.
+      /** \brief Step into the function call.
        *
-       */virtual void
-      quit() = 0;
+       */
+      virtual void stepInto() = 0;
+
+      /** \brief Step out the function call.
+       *
+       */
+      virtual void stepOut() = 0;
+
+      /** \breif Step over the expression
+       *
+       */
+      virtual void stepOver() = 0;
 
       /** \brief Set a new breakpoint.
        *
        * @param aFileName String Filename of the query or module.
        * @param aLineNo unsigned int Line number in the file.
+       * @return the location where the breakpoint has been set.
        */
-      virtual void
+      virtual QueryLocation*
       addBreakpoint( const String &aFileName, const unsigned int aLineNo ) = 0;
 
       /** \brief Set a new breakpoint in the main query.
        *
        * @param aLineNo unsigned int Line number in the main query.
+       * @return the location where the breakpoint has been set.
        */
-      virtual void
+      virtual QueryLocation*
       addBreakpoint( const unsigned int aLineNo ) = 0;
 
       /** \brief Set a new watchpoint.
@@ -207,28 +291,34 @@ namespace zorba{
        * the client with the result or an error description if an error happened during evaluation.
        */
       virtual void
-      eval( String &anExpr ) = 0;
+      eval( String &anExpr ) const = 0;
 
       /** \brief Get all variables that are in scope in the remote query.
        *
        * @return a list of all variables that are in scope in the remote query.
        */
       virtual std::list<Variable>
-      getAllVariables() = 0;
+      getAllVariables() const = 0;
 
       /** \brief Get all local variables that are in scope in the remote query.
        *
        * @return a list of all local variables that are in scope in the remote query.
        */
       virtual std::list<Variable>
-      getLocalVariables() = 0;
+      getLocalVariables() const = 0;
 
       /** \brief Get all global variables that are in scope in the remote query.
        *
        * @return a list of all global variables that are in scope in the remote query.
        */
       virtual std::list<Variable>
-      getGlobalVariables() = 0;
+      getGlobalVariables() const = 0;
+
+      /** \breif Get the runtime stack frame.
+       *
+       * @return the runtime stack frame.
+       */
+      virtual RuntimeStack* getStack() const = 0;
   };
 }//end of namespace
 #endif

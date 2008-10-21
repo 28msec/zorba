@@ -284,6 +284,7 @@ public:
 public:
 
   void setLocation (const QueryLoc &loc_) { loc = loc_; }
+  const QueryLoc& getLocation() const { return loc; }
 
   /**
    * Return true if "this" may return a pending update list.

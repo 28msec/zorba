@@ -65,9 +65,29 @@ public:
   void setColumnEnd     ( unsigned int aColumnEnd )     { theColumnEnd = aColumnEnd; }
 #ifdef ZORBA_DEBUGGER
   xqpString getFilename() const { return getFilenameBegin(); }
+  
   unsigned int getLineno() const { return getLineBegin(); }
+  
   xqpString toJSON() const;
+  
   void fromJSON( json::value *obj );
+ 
+  bool equals(const QueryLoc& loc) const
+  {
+    return theFilenameBegin==loc.getFilenameBegin() && theFilenameEnd==loc.getFilenameEnd() &&
+           theColumnBegin==loc.getColumnBegin() && theColumnEnd==loc.getColumnEnd() &&
+           theLineBegin==loc.getLineBegin() && theLineEnd==loc.getLineEnd();
+  }
+
+  bool operator==(const QueryLoc& loc) const
+  {
+    return equals(loc);    
+  }
+  
+  bool operator<(const QueryLoc& loc) const
+  {
+    return theLineBegin < loc.getLineBegin();
+  }
 #endif
 };
 

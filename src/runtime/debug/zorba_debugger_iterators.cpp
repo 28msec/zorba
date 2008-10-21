@@ -22,21 +22,23 @@
 #include <zorbautils/thread.h>
 
 #include "system/globalenv.h"
+
 #include "debugger/debugger_server.h"
 
 using namespace std;
 
 namespace zorba {
 
-FnDebugIterator::FnDebugIterator(DebuggerBreak aKind, const QueryLoc& loc,
+FnDebugIterator::FnDebugIterator(const QueryLoc& loc,
                checked_vector<store::Item_t> varnames_,
                checked_vector<std::string> var_keys_,
                checked_vector<xqtref_t> vartypes_,
                checked_vector<global_binding> globals_,
-               std::vector<PlanIter_t>& aChildren ) 
+               std::vector<PlanIter_t>& aChildren,
+               bool for_expr_) 
     : NaryBaseIterator<FnDebugIterator, PlanIteratorState>(loc, aChildren),
-    theKind(aKind), theDebugger(0), varnames(varnames_), var_keys(var_keys_), vartypes(vartypes_),
-    globals(globals_){}
+    theDebugger(0), varnames(varnames_), var_keys(var_keys_), vartypes(vartypes_),
+    globals(globals_), for_expr(for_expr_){}
 
   FnDebugIterator::~FnDebugIterator(){}
 
@@ -45,29 +47,72 @@ FnDebugIterator::FnDebugIterator(DebuggerBreak aKind, const QueryLoc& loc,
     PlanIteratorState * state;
 
     DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-    
-    if ( (theKind == BEFORE || theKind == BOTH) && theDebugger->hasToSuspend() )
+    //TODO: refactor 
+    assert(theDebugger);
+    theDebugger->theLocation = loc;
+    theDebugger->thePlanState = &planState;
+    theDebugger->theVarnames = varnames;
+    theDebugger->theVarkeys = var_keys;
+    theDebugger->theVartypes = vartypes;
+    theDebugger->theGlobals  = globals;
+    theDebugger->theChildren = theChildren;
+    theDebugger->theLocation = loc;
+ 
+    if ( theDebugger->hasToSuspend() )
     {
+      updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+      assert(theDebugger->theRuntimeThread);
+      theDebugger->theRuntimeThread->suspend();
+    } else if ( theDebugger->hasToStepOver() ) {
+      updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+      theDebugger->stepOver();
+      theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
+      assert(theDebugger->theRuntimeThread);
+      theDebugger->theRuntimeThread->suspend();
+    } else if ( theDebugger->hasToStepOut() ) {
+      updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+      theDebugger->stepOut();
+      theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
+      assert(theDebugger->theRuntimeThread);
+      theDebugger->theRuntimeThread->suspend();
+    } else if ( theDebugger->hasToStepInto() ) {
+      updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+      theDebugger->stepInto();
+      theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
       assert(theDebugger->theRuntimeThread);
       theDebugger->theRuntimeThread->suspend();
     }
-    while ( consumeNext( result, theChildren[0], planState ) ) {
-      //the debugger query is always executed on std::cout
-      assert(theDebugger);
-      theDebugger->thePlanState = &planState;
-      theDebugger->theVarnames = varnames;
-      theDebugger->theVarkeys = var_keys;
-      theDebugger->theVartypes = vartypes;
-      theDebugger->theGlobals  = globals;
-      theDebugger->theChildren = theChildren;
-      theDebugger->theLocation = loc;
-      if ( (theKind == AFTER || theKind == BOTH) && theDebugger->hasToSuspend() )
-      {
-        assert(theDebugger->theRuntimeThread);
-        theDebugger->theRuntimeThread->suspend();
-      }
+    
+    
+    while ( consumeNext( result, theChildren[0], planState )) {
       STACK_PUSH(true, state);
-    }
+      if ( for_expr ) {
+        if ( theDebugger->hasToSuspend() )
+        {
+          updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+          assert(theDebugger->theRuntimeThread);
+          theDebugger->theRuntimeThread->suspend();
+        } else if ( theDebugger->hasToStepOver() ) {
+          updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+          theDebugger->stepOver();
+          theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
+          assert(theDebugger->theRuntimeThread);
+          theDebugger->theRuntimeThread->suspend();
+        } else if ( theDebugger->hasToStepOut() ) {
+          updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+          theDebugger->stepOut();
+          theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
+          assert(theDebugger->theRuntimeThread);
+          theDebugger->theRuntimeThread->suspend();
+        } else if ( theDebugger->hasToStepInto() ) {
+          updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+          theDebugger->stepInto();
+          theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
+          assert(theDebugger->theRuntimeThread);
+          theDebugger->theRuntimeThread->suspend();
+        }
+      }
+     }
     STACK_END(state);
   }
 
@@ -87,5 +132,20 @@ FnDebugIterator::FnDebugIterator(DebuggerBreak aKind, const QueryLoc& loc,
     }
     v.endVisit(*this);
   }
+
+void FnDebugIterator::updateInfos(const QueryLoc& loc, PlanState& planState, checked_vector<store::Item_t> varnames,
+                                  checked_vector<std::string> var_keys, checked_vector<xqtref_t> vartypes,
+                                  checked_vector<global_binding> globals) const
+{
+  assert(theDebugger);
+  theDebugger->theLocation = loc;
+  theDebugger->thePlanState = &planState;
+  theDebugger->theVarnames = varnames;
+  theDebugger->theVarkeys = var_keys;
+  theDebugger->theVartypes = vartypes;
+  theDebugger->theGlobals  = globals;
+  theDebugger->theChildren = theChildren;
+  theDebugger->theLocation = loc;
+}  
 } /* namespace zorba */
 

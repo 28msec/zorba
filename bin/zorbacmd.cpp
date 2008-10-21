@@ -321,6 +321,7 @@ int _tmain(int argc, _TCHAR* argv[])
       }
       std::auto_ptr<std::istream> lXQ(new std::ifstream(path.c_str()));
       std::string lFileName(path.get_path ());
+      
       try {
         lQuery = lZorbaInstance->createQuery();
         zorba::StaticContext_t lStaticContext = lZorbaInstance->createStaticContext();
@@ -359,7 +360,7 @@ int _tmain(int argc, _TCHAR* argv[])
       lArgs->theRequestPort = lProperties.getRequestPort();
       lArgs->theEventPort = lProperties.getEventPort();
       lArgs->theQuery = lQuery;
-    
+   
      // debug server
      if ( lProperties.debugServer() )
      {
@@ -392,7 +393,7 @@ int _tmain(int argc, _TCHAR* argv[])
            //wait 1 second before trying to reconnect
            sleep(1);
            std::auto_ptr<ZorbaDebuggerClient> debuggerClient(ZorbaDebuggerClient::createClient(lProperties.getRequestPort(), lProperties.getEventPort()));
-           CommandLineEventHandler lEventHandler( lFileName, lXQ, std::cin, std::cout, debuggerClient.get(), !lProperties.hasNoSyntaxHighlighting() );
+           CommandLineEventHandler lEventHandler( lFileName, lXQ.get(), std::cin, std::cout, debuggerClient.get(), !lProperties.hasNoSyntaxHighlighting() );
  #ifdef SIGINT /* not all system have SIGINT */
            signal( SIGINT, suspend );
  #endif

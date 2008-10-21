@@ -45,8 +45,8 @@ class MessageFactory
         //Convert the length field into an integer
         Length length;
         if( is_little_endian() ){
-          length = lengthField.get()[3] | lengthField.get()[2] |
-                    lengthField.get()[1] | lengthField.get()[0];
+          length = lengthField.get()[3] | (lengthField.get()[2]<<8) |
+                    (lengthField.get()[1]<<16) | (lengthField.get()[0]<<24);
         } else {
           length = lengthField.get()[0] | (lengthField.get()[1]<<8) |
                     (lengthField.get()[2]<<16) | (lengthField.get()[3]<<24);
@@ -83,6 +83,16 @@ class MessageFactory
             {
               return new VariableReply( aMessage, aLength );
             }
+
+            if( aMessage[MESSAGE_HEADER_SIZE + MESSAGE_FLAGS]  == REPLY_SET_FLAG )
+            {
+              return new SetReply(aMessage, aLength);
+            }
+
+            if( aMessage[MESSAGE_HEADER_SIZE + MESSAGE_FLAGS] == REPLY_FRAME_FLAG )
+            {
+              return new FrameReply(aMessage, aLength);
+            }
           }
           case EXECUTION:
           {
@@ -98,8 +108,6 @@ class MessageFactory
                 return new TerminateMessage( aMessage, aLength );
               case STEP:
                 return new StepMessage( aMessage, aLength );
-              case QUIT:
-                return new QuitMessage( aMessage, aLength );
             }
           }
           case BREAKPOINTS:
@@ -140,6 +148,8 @@ class MessageFactory
                 return new VariableMessage( aMessage, aLength );
               case EVAL:
                 return new EvalMessage( aMessage, aLength );
+              case FRAME:
+                return new FrameMessage( aMessage, aLength );
             }
           }
           default:

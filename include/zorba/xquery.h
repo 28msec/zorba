@@ -312,6 +312,28 @@ namespace zorba {
        */
       virtual void
       debug( unsigned short aCommandPort = 8000, unsigned short anEventPort = 9000 ) = 0;
+
+      /** \brief Run the query with the debugger server.
+       *
+       * This method run the query with the debugger server.
+       * This method is blocking up until a debugger client connects to the
+       * server and decided to end the server. In order to call this method, the
+       * query has to be compiled.
+       * You can specify an output stream and serialization options that can be used
+       * by the serializer.
+       *
+       * @param aOutStream the output stream on which the result is written.
+       * @param aSerOptions an optinal set of serialization options.
+       * @param aCommandPort the port used to received commands from the client.
+       * @param anEventPort the port used to send events to the client.
+       *
+       * @throw ZorbaException if an error occurs (e.g. the query is closed or has not been compiled)
+       *
+       */
+      virtual void
+      debug(std::ostream& aOutStream,
+            const Zorba_SerializerOptions_t& aSerOptions = Zorba_SerializerOptions_default(),
+            unsigned short aCommandPort = 8000, unsigned short anEventPort = 9000) = 0;
 #endif
   };
 

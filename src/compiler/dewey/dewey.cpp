@@ -1,50 +1,44 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_QUERY_LOCATIONIMPL
-#define ZORBA_QUERY_LOCATIONIMPL
 
-#include <zorba/debugger_client.h>
+#include "compiler/dewey/dewey.h"
 
-#include "compiler/parser/query_loc.h"
+#include <cassert>
+#include <memory>
 
-namespace zorba {
+namespace zorba{
 
-  class QueryLocationImpl: public QueryLocation
+
+void Node::accept(DeweyClassification* v)
+{
+  v->begin_visit(this);
+  std::list<Node*>::iterator it;
+  for(it=theChildren.begin(); it!=theChildren.end(); ++it)
   {
-    private:
-      QueryLoc theLocation;
+    (*it)->accept(v);    
+  }
+  v->end_visit(this);
+}
 
-    public:
-
-      QueryLocationImpl( const QueryLoc & aLocation );
-
-      virtual
-      ~QueryLocationImpl(){}
-
-      String getFileName() const; 
-
-      unsigned int getLineBegin() const;
-
-      unsigned int getLineEnd() const;
-
-      unsigned int getColumnBegin() const;
-
-      unsigned int getColumnEnd() const;
-
-      String toString() const;
-  };
+std::map<std::stack<unsigned int>, const QueryLoc> classify(parsenode& aNode)
+{
+  DeweyClassification lVisitor;
+  aNode.accept(lVisitor);
+  std::auto_ptr<Node> lRoot(lVisitor.getRoot());
+  lRoot->accept(&lVisitor);
+  return lVisitor.getClassification();
+}
 }//end of namespace
-#endif

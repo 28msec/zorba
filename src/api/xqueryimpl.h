@@ -268,6 +268,11 @@ class XQueryImpl : public XQuery
 
   void
   debug( unsigned short aCommandPort, unsigned short anEventPort );
+
+  void
+  debug(std::ostream& aOutStream,
+        const Zorba_SerializerOptions_t& aSerOptions,
+        unsigned short aCommandPort, unsigned short anEventPort);
 #endif
 }; /* class XQueryImpl */
 

@@ -22,7 +22,7 @@
 #include <string>
 #include <typeinfo>
 #include <vector>
-#include <assert.h>
+#include <cassert>
 
 #include "compiler/parsetree/parsenode_base.h"
 

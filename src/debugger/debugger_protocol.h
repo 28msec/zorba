@@ -24,6 +24,7 @@
 #include <ostream>
 #include <istream>
 #include <map>
+#include <stack>
 
 #include "common/common.h"
 #include "compiler/parser/query_loc.h"
@@ -50,6 +51,8 @@ const int SIZE_OF_REPLY_CONTENT = 2;
 const Flags NULL_FLAG = 0x0;
 const Flags REPLY_FLAG = 0x80;
 const Flags REPLY_VARIABLE_FLAG = 0xf0;
+const Flags REPLY_SET_FLAG = 0xf1;
+const Flags REPLY_FRAME_FLAG = 0xf2;
 
 /* CommandSet */
 const CommandSet EXECUTION    = 0xf1;
@@ -91,6 +94,7 @@ const Command DOCUMENTS   = 0x05;
 const Command COLLECTIONS = 0x06;
 const Command COLLECTION  = 0x07;
 const Command EVAL        = 0x08;
+const Command FRAME       = 0x09;
 
 /* Error codes */
 const ErrorCode DEBUGGER_NO_ERROR                      = 0;
@@ -194,7 +198,6 @@ class AbstractMessage
     void setId ( Id aId ) { theHeaderContent->theId = uint_swap( aId ); }
 
     void setFlags ( Flags aFlags ) { theHeaderContent->theFlags = aFlags; }
-
 
   public:
 
@@ -397,19 +400,6 @@ class TerminateMessage: public AbstractCommandMessage
     TerminateMessage( Byte * aMessage, const unsigned int aLength ); 
     
     virtual ~TerminateMessage();
-};
-
-/**
- *
- */
-class QuitMessage: public AbstractCommandMessage
-{
-  public:
-    QuitMessage();
-
-    QuitMessage( Byte * aMessage, const unsigned int aLength );
-
-    virtual ~QuitMessage();
 };
 
 /**
@@ -634,6 +624,41 @@ class EvalMessage: public AbstractCommandMessage
     xqpString getExpr() const;
 };
 
+class FrameMessage: public AbstractCommandMessage
+{
+  public:
+    FrameMessage();
+
+    FrameMessage(Byte* aMessage, const unsigned int aLength);
+    
+    virtual ~FrameMessage();
+};
+
+/**
+ *
+ */
+class FrameReply: public ReplyMessage
+{
+  protected:
+    std::stack< std::pair<std::string, const QueryLoc> > theStack;
+    xqpString getData() const;
+
+  public:
+    FrameReply(const Id anId, const ErrorCode aErrorCode,
+                       std::stack< std::pair<std::string, const QueryLoc> >  aStack);
+
+    FrameReply(Byte* aMessage, const unsigned int aLength);
+
+    virtual ~FrameReply(){}
+
+    virtual Byte* serialize(Length& aLength) const;
+
+    std::stack< std::pair<std::string, const QueryLoc> > getStack() const
+    {
+      return theStack;
+    }
+};
+
 /**
  *
  */
@@ -647,6 +672,35 @@ class VariableMessage: public AbstractCommandMessage
     virtual ~VariableMessage();
 };
 
+/**
+ *
+ */
+class SetReply: public ReplyMessage
+{
+  private:
+    std::map<unsigned int, QueryLoc> theBreakpoints;
+    xqpString getData() const;
+
+  public:
+    SetReply(const Id anId, const ErrorCode aErrorCode);
+
+    SetReply(Byte* aMessage, const unsigned int aLength);
+
+    virtual ~SetReply();
+
+    virtual Byte* serialize(Length &aLength) const;
+
+    virtual ReplyMessage * getReplyMessage()
+    {
+      ReplyMessage * lReply =  new ReplyMessage( getId(), DEBUGGER_NO_ERROR );
+      lReply->setData( getData() );
+      return lReply;
+    }
+
+    void addBreakpoint(unsigned int anId, QueryLoc& aLocation);
+
+    std::map<unsigned int, QueryLoc> getBreakpoints(){ return theBreakpoints; }
+};
 /**
  *
  */
@@ -685,4 +739,3 @@ class VariableReply: public ReplyMessage
 };
 }//end of namespace
 #endif
-

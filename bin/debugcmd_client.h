@@ -34,9 +34,9 @@ class CommandLineEventHandler: public DefaultDebuggerEventHandler
 
     std::string theFileName;
 
-    std::auto_ptr<std::istream> &theQueryFile;
+    std::istream* theQueryFile;
 
-    std::auto_ptr<QueryLocation> theLocation;
+    QueryLocation* theLocation;
     
     std::ostream &theOutput;
     
@@ -45,12 +45,14 @@ class CommandLineEventHandler: public DefaultDebuggerEventHandler
     std::vector<std::string> get_args( const std::string& str );
 
     std::string get_expression( const std::vector<std::string> arr );
-  
+
     void update_location();
     
     void handle_cmd();
 
     void help();
+
+    void status();
 
     void version();
 
@@ -69,13 +71,17 @@ class CommandLineEventHandler: public DefaultDebuggerEventHandler
     bool colors;
   public:
     CommandLineEventHandler( std::string aFileName,
-                             std::auto_ptr<std::istream> &aQueryFile,
+                             std::istream *aQueryFile,
                              std::istream &anInput,
                              std::ostream &anOutput,
                              ZorbaDebuggerClient * aClient,
                              bool aColor = true);
 
-    virtual ~CommandLineEventHandler(){}
+    virtual ~CommandLineEventHandler()
+    {
+      delete theLocation;
+      delete theQueryFile;
+    }
 
     void started();
 

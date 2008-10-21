@@ -87,7 +87,7 @@ ZORBA_THREAD_RETURN runClient( void* )
   lClient->registerEventHandler( &lEventHandler );
   lClient->run();
   sleep(1);
-  lClient->quit();
+  lClient->terminate();
   delete lClient;
   return 0;
 }

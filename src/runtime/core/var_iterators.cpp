@@ -19,7 +19,6 @@
 #include "runtime/base/noarybase.h"
 #include "runtime/core/var_iterators.h"
 
-
 namespace zorba
 {
 
@@ -47,10 +46,11 @@ bool ForVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   ForVarState* state;
   DEFAULT_STACK_INIT(ForVarState, state, planState);
   if ((result = state->theValue) != NULL)
+  {
     STACK_PUSH(true, state);
+  }
   STACK_END (state);
 }
-
 
 void ForVarIterator::bind(store::Item* value, PlanState& planState)
 {

@@ -31,6 +31,7 @@
 #include "debugger/utils.h"
 #include "debugger/socket.h"
 #include "debugger/message_factory.h"
+#include "debugger/stackimpl.h"
 
 #include "json/parser.h"
 #include "json/value.h"
@@ -39,10 +40,10 @@ namespace zorba{
 
   unsigned int ZorbaDebuggerClientImpl::theLastId = 0;
 
-  ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl( unsigned short aRequestPortno, unsigned short aEventPortno )
+ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, unsigned short aRequestPortno, unsigned short aEventPortno )
   :
     theEventHandler(0),
-    theRequestSocket( new TCPSocket( "127.0.0.1", aRequestPortno ) ),
+    theRequestSocket( new TCPSocket( aServerAddress, aRequestPortno ) ),
     theEventServerSocket( new TCPServerSocket( aEventPortno ) ),
     theExecutionStatus( QUERY_IDLE ),
     theEventListener(0)	
@@ -96,7 +97,7 @@ namespace zorba{
 
     std::auto_ptr<TCPSocket> lSocket( lClient->theEventServerSocket->accept() );
     
-    while( lClient->theExecutionStatus != QUERY_QUITED )
+    while( true )
     {
       std::auto_ptr<AbstractMessage> lMessage(MessageFactory::buildMessage( lSocket.get() ));
       SuspendedEvent  *lSuspendedMsg;
@@ -130,14 +131,12 @@ namespace zorba{
           {
             lClient->theEventHandler->terminated();
           }
+          break;
         }
       } else if ( (lEvaluatedEvent = dynamic_cast< EvaluatedEvent * >( lMessage.get() ))) {
         if ( lClient->theEventHandler )
         {
           String lExpr( lEvaluatedEvent->getExpr() );
-          //String lResult( lEvaluatedEvent->getResult().replace("&quot;", "\"", "") );
-          //String lResult( lEvaluatedEvent->getResult() );
-          //String lReturnType( lEvaluatedEvent->getReturnType() );
           String lError( lEvaluatedEvent->getError() );
           if(lError.length() > 0)
           {
@@ -182,7 +181,7 @@ namespace zorba{
     return theExecutionStatus == QUERY_TERMINATED;
   }
  
-  ReplyMessage *ZorbaDebuggerClientImpl::send( AbstractCommandMessage * aMessage )
+  ReplyMessage *ZorbaDebuggerClientImpl::send( AbstractCommandMessage * aMessage ) const
   {
     //Connect the client
     Length length;
@@ -235,13 +234,6 @@ namespace zorba{
     std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   }
 
-  void ZorbaDebuggerClientImpl::quit()
-  {
-    QuitMessage lMessage;
-    //TODO: check reply message
-    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
-  }
-
   void ZorbaDebuggerClientImpl::stepInto()
   {
     StepMessage lMessage( STEP_INTO );
@@ -270,11 +262,11 @@ namespace zorba{
     theLastId++;
     lMessage.addExpr( theLastId, lExpr );
     theBreakpoints.insert( std::make_pair( theLastId, lExpr ) );
-    std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+    std::auto_ptr<ReplyMessage> lReply(send( &lMessage )); 
   }
 
 
-  void ZorbaDebuggerClientImpl::addBreakpoint( const unsigned int aLineNo )
+  QueryLocation* ZorbaDebuggerClientImpl::addBreakpoint( const unsigned int aLineNo )
   {
     QueryLoc loc;
     loc.setLineBegin( aLineNo );
@@ -286,9 +278,23 @@ namespace zorba{
     lB << "line:" << aLineNo;
     theBreakpoints.insert( std::make_pair( theLastId, lB.str() ) );
     std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+    SetReply* lSetReply = dynamic_cast<SetReply*>(lReply.get());
+    if(lSetReply)
+    {
+      std::map<unsigned int, QueryLoc> breakpoints = lSetReply->getBreakpoints();
+      std::map<unsigned int, QueryLoc>::iterator it;
+      for(it = breakpoints.begin(); it != breakpoints.end(); ++it)
+      {
+        QueryLocation* location = new QueryLocationImpl(it->second);
+        return location;
+      }
+    } else {
+      std::cerr << "An error occured" << std::endl;
+    }
+    return 0;
   }
   
-  void ZorbaDebuggerClientImpl::addBreakpoint( const String &aFileName, const unsigned int aLineNo )
+  QueryLocation* ZorbaDebuggerClientImpl::addBreakpoint( const String &aFileName, const unsigned int aLineNo )
   {
     xqpString lFilename = Unmarshaller::getInternalString( aFileName );
     QueryLoc loc;
@@ -303,6 +309,20 @@ namespace zorba{
     lB << lFilename << ':' << aLineNo;
     theBreakpoints.insert( std::make_pair( theLastId, lB.str() ) );
     std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+    SetReply* lSetReply = dynamic_cast<SetReply*>(lReply.get());
+    if(lSetReply)
+    {
+      std::map<unsigned int, QueryLoc> breakpoints = lSetReply->getBreakpoints();
+      std::map<unsigned int, QueryLoc>::iterator it;
+      for(it = breakpoints.begin(); it != breakpoints.end(); ++it)
+      {
+        QueryLocation* location = new QueryLocationImpl(it->second);
+        return location;
+      }
+    } else {
+      std::cerr << "An error occured" << std::endl;
+    }
+    return 0;
   }
 
   bool ZorbaDebuggerClientImpl::clearBreakpoint( unsigned int anId )
@@ -353,7 +373,7 @@ namespace zorba{
     return new QueryLocationImpl( theRemoteLocation );
   }
 
-  void ZorbaDebuggerClientImpl::eval( String &anExpr )
+  void ZorbaDebuggerClientImpl::eval( String &anExpr ) const
   {
     xqpString lExpr = Unmarshaller::getInternalString( anExpr );
     //TODO: espace double quotes characters
@@ -361,7 +381,7 @@ namespace zorba{
     std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   }
 
-  std::list<Variable> ZorbaDebuggerClientImpl::getAllVariables()
+  std::list<Variable> ZorbaDebuggerClientImpl::getAllVariables() const
   {
     std::list<Variable> lVariables;
     VariableMessage lMessage;
@@ -382,7 +402,7 @@ namespace zorba{
     return lVariables;
   }
   
-  std::list<Variable> ZorbaDebuggerClientImpl::getLocalVariables()
+  std::list<Variable> ZorbaDebuggerClientImpl::getLocalVariables() const
   {
     std::list<Variable> lVariables;
     VariableMessage lMessage;
@@ -403,7 +423,7 @@ namespace zorba{
     return lVariables;
   }
 
-  std::list<Variable> ZorbaDebuggerClientImpl::getGlobalVariables()
+  std::list<Variable> ZorbaDebuggerClientImpl::getGlobalVariables() const
   {
     std::list<Variable> lVariables;
     VariableMessage lMessage;
@@ -422,5 +442,25 @@ namespace zorba{
       }
     }
     return lVariables;
+  }
+
+  RuntimeStack* ZorbaDebuggerClientImpl::getStack() const
+  {
+    std::auto_ptr<StackImpl> lStack(new StackImpl());
+    FrameMessage lMessage;
+    std::auto_ptr<ReplyMessage> lReply(send(&lMessage));
+    FrameReply* lFrameReply = dynamic_cast<FrameReply*>(lReply.get());
+    if(lFrameReply)
+    {
+      std::stack< std::pair<std::string, const QueryLoc> > stack = lFrameReply->getStack();
+      while(!stack.empty())
+      {
+        lStack->push(stack.top().first, new QueryLocationImpl(stack.top().second));
+        stack.pop();
+      }
+    }
+    StackImpl* s = lStack.get();
+    lStack.release();
+    return s;
   }
 }//end of namespace

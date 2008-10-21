@@ -21,5 +21,6 @@
 ("debug-ports,p", po::value< std::string >()->default_value("8000:9000"), "Specify the ports for zorba debugger. The format is requestPort:eventPort.")
 ("debug-client,c", "Launch the debugger command line client.")
 ("debug-server,s", "Launch queries on the debugger server.")
+("debug-remote-client", po::value<std::string>(), "Connect the debugger client to the given IP address")
 ("no-colors,n", "Disable debugger syntax highlighting.")
 #endif

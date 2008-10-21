@@ -1591,8 +1591,23 @@ void translate_gflwor (const FLWORExpr& v) {
       }
 
       for (int j = 0; j < nvars; j++) {
+        expr_t lExpr = exprs[j];
+        varref_t lVar = vars[j];
+#ifdef ZORBA_DEBUGGER
+        if(compilerCB->m_debugger != 0)
+        {
+          push_scope();
+          for(int k=nvars; k>j; k--)
+          {
+            theScopedVariables.push_back(vars[k-1]);
+          }
+          lExpr = new debugger_expr(exprs[j]->get_loc(), lExpr, theScopedVariables, theGlobalVars, true);
+          //lVar = new debugger_expr(lVar->get_loc(), lVar, theScopedVariables, theGlobalVars, true);
+          pop_scope();
+        }
+#endif
         forletwin_gclause *eflc = 
-          new forletwin_gclause (forletwin_gclause::for_clause, vars [j], exprs [j], pos_vars [j]);
+          new forletwin_gclause (forletwin_gclause::for_clause, lVar, lExpr, pos_vars [j]);
 #ifdef ZORBA_DEBUGGER
         if(compilerCB->m_debugger != 0)
         {
@@ -1625,19 +1640,19 @@ void translate_gflwor (const FLWORExpr& v) {
       for (int j = 0; j < nvars; j++)
       {
         expr_t lExpr = exprs[j];
-        forletwin_gclause *flc = new forletwin_gclause (forletwin_gclause::let_clause, vars [j], lExpr);
 #ifdef ZORBA_DEBUGGER
-        if (compilerCB->m_debugger != 0) {
+        if(compilerCB->m_debugger != 0)
+        {
           push_scope();
           for(int k=nvars; k>j; k--)
           {
             theScopedVariables.push_back(vars[k-1]);
           }
-          flc->set_bound_variables(theScopedVariables);
-          flc->set_global_variables(theGlobalVars);
+          lExpr = new debugger_expr(exprs[j]->get_loc(), lExpr, theScopedVariables, theGlobalVars);
           pop_scope();
         }
 #endif
+        forletwin_gclause *flc = new forletwin_gclause (forletwin_gclause::let_clause, vars [j], lExpr);
         eclauses.push_back (flc);
       }
     } else if (typeid (c) == typeid (WhereClause)) {
@@ -2397,14 +2412,6 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/) {
       rchandle<forlet_clause>& flc = (*flwor)[i];
       var_expr* arg_var = flc->get_expr().dyn_cast<var_expr> ().getp();
       ZORBA_ASSERT(arg_var != NULL);
-#ifdef ZORBA_DEBUGGER
-      if(compilerCB->m_debugger != 0)
-      {
-        //TODO: move to the right place
-        //std::cerr << "vars: " << arg_var << std::endl;
-        //theScopedVariables.push_back(arg_var);
-      }
-#endif
       args.push_back(arg_var);
     }
     if (body != NULL)
@@ -2500,6 +2507,13 @@ void end_visit (const Param& v, void* /*visit_state*/) {
 
   varref_t param_var = create_var (loc, qname, var_expr::param_var);
   varref_t subst_var = bind_var (loc, qname, var_expr::let_var);
+
+#ifdef ZORBA_DEBUGGER
+  if(compilerCB->m_debugger != 0)
+  {
+    theScopedVariables.push_back(subst_var);
+  }
+#endif
 
   flwor->add(wrap_in_letclause(&*param_var, subst_var));
 
@@ -2821,7 +2835,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/) {
         minfo->topCompilerCB->m_sctx_list.push_back (imported_sctx = independent_sctx->create_child_context ());
         minfo->mod_sctx_map.put (xqpString(resolveduri.getp()), imported_sctx);
         XQueryCompiler xqc (&mod_ccb);
-        xqpString lFileName(URI::decode_file_URI(aturiitem->getStringValue()));
+        xqpString lFileName(aturiitem->getStringValue());
         rchandle<parsenode> ast = xqc.parse (*modfile, lFileName);
 
         LibraryModule *mod_ast = dynamic_cast<LibraryModule *> (&*ast);
@@ -5565,4 +5579,4 @@ expr_t translate (const parsenode &root, CompilerCB* aCompilerCB) {
 }
 
 } /* namespace zorba */
-/* vim:set ts=2 sw=2: */
+

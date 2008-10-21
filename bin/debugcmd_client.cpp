@@ -50,9 +50,9 @@ ZorbaDebuggerClient * CommandLineEventHandler::getClient()
 }
 
 CommandLineEventHandler::CommandLineEventHandler( std::string aFileName,
-                                                  std::auto_ptr<std::istream> &aQueryFile,
-                                                  std::istream & anInput,
-                                                  std::ostream & anOutput,
+                                                  std::istream* aQueryFile,
+                                                  std::istream& anInput,
+                                                  std::ostream& anOutput,
                                                   ZorbaDebuggerClient * aClient,
                                                   bool aColor)
  : theFileName( aFileName ),
@@ -67,7 +67,7 @@ CommandLineEventHandler::CommandLineEventHandler( std::string aFileName,
 
 void CommandLineEventHandler::update_location()
 {
-  theLocation.reset( theClient->getLocation() );
+  theLocation = theClient->getLocation();
 }
 
 void CommandLineEventHandler::listMore()
@@ -76,19 +76,20 @@ void CommandLineEventHandler::listMore()
   int start = theLocation->getLineBegin() - 4;
   if ( start <= 0 )
   {
-    list(1, 9);
+    list(1, 19);
   } else {
     list(start, theLocation->getLineBegin() + 4);
   }
 }
 
+//TODO: better handler with the code that has to be highlighted
 void CommandLineEventHandler::list()
 {
   update_location();
   int start = theLocation->getLineBegin() - 2;
   if (start <= 0)
   {
-    list(1, 5);
+    list(1, 9);
   } else {
     list(start, theLocation->getLineBegin() + 2);
   }
@@ -127,15 +128,13 @@ void CommandLineEventHandler::list( unsigned int aBegin, unsigned int anEnd, boo
   std::string lLine;
   unsigned int lLineNo = 0;
   std::string::iterator lIterator;
-  std::ifstream * lFile = dynamic_cast< std::ifstream * >( theQueryFile.get() );
+  std::ifstream* lFile = dynamic_cast< std::ifstream * >( theQueryFile );
   if ( lFile != 0 )
   {
-    if( theLocation->getFileName() == "" )
+    if( theLocation->getFileName() == "" || theLocation->getFileName() == theFileName )
     {
-      theQueryFile.reset( new std::ifstream( theFileName.c_str() ) );
-    } else {
-      
-      theQueryFile.reset( new std::ifstream( theLocation->getFileName().c_str() ) );
+      delete theQueryFile;
+      theQueryFile =  new std::ifstream( theFileName.c_str() );
     }
   } else {
     theQueryFile->clear();
@@ -227,7 +226,9 @@ void CommandLineEventHandler::idle()
 
 void CommandLineEventHandler::suspended( QueryLocation & aLocation, SuspendedBy aCause )
 {
-  list( aLocation.getLineBegin() );
+  unsigned int line = aLocation.getLineBegin();
+  unsigned int start = line<10?0:line-10;
+  list( start, start+10 );
   handle_cmd();
 }
 
@@ -239,7 +240,7 @@ void CommandLineEventHandler::resumed()
 void CommandLineEventHandler::terminated()
 {
   theOutput << std::endl << "End of query execution" << std::endl;
-  handle_cmd();
+  exit(0);
 }
 
 void CommandLineEventHandler::evaluated(String &anExpr, std::map<String, String> &aValuesAndTypes)
@@ -295,6 +296,20 @@ std::string CommandLineEventHandler::get_expression( const std::vector<std::stri
   return lExpr;
 }
 
+void CommandLineEventHandler::status()
+{
+  if(theClient->isQueryRunning())
+  {
+    theOutput << "The query is running." << std::endl;
+  } else if (theClient->isQueryIdle()) {
+    theOutput << "The query is idle." << std::endl;
+  } else if (theClient->isQuerySuspended()) {
+    theOutput << "The query is suspended." << std::endl;
+  } else if (theClient->isQueryTerminated()) {
+    theOutput << "The query is terminated." << std::endl;
+  }
+}
+
 void CommandLineEventHandler::handle_cmd()
 {
   while( ! theInput.eof() )
@@ -328,14 +343,14 @@ void CommandLineEventHandler::handle_cmd()
             continue;
           }
         } else {
-          theClient->quit();  
+          theClient->terminate();  
         }
       }
-      theClient->quit();
+      theClient->terminate();
+      exit(0);
       return;
-    //TODO: unimplemented command
-    //} else if ( lCommand == "s" || lCommand == "stop" ) {
-      //theClient->terminate();
+    } else if ( lCommand == "s" || lCommand == "status" ) {
+      status();
     }else if ( lCommand == "delete" || lCommand == "cl" || lCommand == "clear" ) {
       if ( lArgs.size() >= 2 && lArgs.at(1) == "all" )
       {
@@ -369,11 +384,10 @@ void CommandLineEventHandler::handle_cmd()
         theOutput << "Invalid syntax." << std::endl;
         theOutput << "(b|break) <filename>+:<line number>" << std::endl;
       } else {
-        std::string::size_type loc = lArgs.at(1).find(':');
-        if( loc != std::string::npos)
+        if( lArgs.size() == 3 )
         {
-          std::string lFileName = lArgs.at(1).substr(0, loc);
-          unsigned int lLineNo = atoi( lArgs.at(1).substr(loc+1).c_str() );
+          std::string lFileName = lArgs.at(1);
+          unsigned int lLineNo = atoi( lArgs.at(2).c_str() );
           if( lLineNo == 0 )
           {
             theOutput << "Invalid line number"  << std::endl;
@@ -387,15 +401,13 @@ void CommandLineEventHandler::handle_cmd()
             theOutput << "Invalid line number." << std::endl;
           } else {
             String lFileName(theFileName);
-            theClient->addBreakpoint( lFileName, lLineNo );
-            int loc = theFileName.rfind('/');
-            std::string lFile = theFileName.substr(loc+1);
-            theOutput << "Set breakpoint at line " << lLineNo << " in " << lFile << '.' << std::endl;
+            std::auto_ptr<QueryLocation> lLocation(theClient->addBreakpoint( lFileName, lLineNo ));
+            theOutput << "Set breakpoint at line " << lLocation.get() << '.' << std::endl;
           }
         } 
       }
     } else if ( lCommand ==  "r" || lCommand == "run" ) {
-      if ( ! theClient->isQueryIdle() )
+      if ( !theClient->isQueryIdle() && !theClient->isQueryTerminated() )
       {
         std::string reload;
         theOutput << "The query being debugged has already started." << std::endl;
@@ -420,16 +432,6 @@ void CommandLineEventHandler::handle_cmd()
       } else {
         theOutput << "The query is not suspended." << std::endl;
       }
-    } else if ( lCommand == "n" || lCommand == "next" ) {
-      if ( theClient->isQuerySuspended() )
-      {
-        theClient->resume();
-        //theOutput << "next is not implemented yet." << std::endl;
-        //theClient->stepOver();
-        return;
-      } else {
-        theOutput << "The query is not suspended." << std::endl;
-      }
     } else if ( lCommand == "l" || lCommand == "list" ) {
         update_location();
         if ( lArgs.size() >= 2 && lArgs.at(1) == "more" )
@@ -446,8 +448,8 @@ void CommandLineEventHandler::handle_cmd()
           }       
         } else if ( lArgs.size() >= 2 && atoi(lArgs.at(1).c_str()) > 0 ) {
           int line = atoi(lArgs.at(1).c_str());
-          int start = theLocation.get()==0?0:theLocation->getLineBegin()-line;
-          int end = theLocation.get()==0?0:theLocation->getLineBegin()+line;
+          int start = theLocation==0?0:theLocation->getLineBegin()-line;
+          int end = theLocation==0?0:theLocation->getLineBegin()+line;
           list( start<=0?1:start, end<=0?1:end );
         } else if ( lArgs.size() >= 2 && atoi(lArgs.at(1).c_str()) == 0 ) {
           list(lArgs.at(1));
@@ -489,7 +491,7 @@ void CommandLineEventHandler::handle_cmd()
                 lCommand == "e" || lCommand == "eval" ) {
         if(!theClient->isQuerySuspended())
         {
-          theOutput << "There is executing query suspended." << std::endl;
+          theOutput << "The query is not suspended." << std::endl;
           handle_cmd();
         } else {
           if ( lArgs.size() < 2 )
@@ -503,6 +505,24 @@ void CommandLineEventHandler::handle_cmd()
           }
         }
         return;
+    } else if ( lCommand == "over" || lCommand == "next" || lCommand == "n" ) {
+      theClient->stepOver();
+      return;
+    } else if ( lCommand == "in" ) {
+      theClient->stepInto();
+      return;
+    } else if (lCommand == "out" ) {
+      theClient->stepOut();
+      return;
+    } else if (lCommand == "where"){
+      std::auto_ptr<RuntimeStack> lStack(theClient->getStack());
+      std::stack< std::pair<std::string, QueryLocation*> > stack(lStack->getFrames());
+      while(!stack.empty())
+      {
+        theOutput << stack.top().first << " " << stack.top().second << std::endl;
+        stack.pop();
+      }
+      handle_cmd();
     } else {
       theOutput << "Unknown command \"" << lLine << "\" Try \"help\"." << std::endl;
     }
@@ -514,17 +534,17 @@ void CommandLineEventHandler::help()
   theOutput << "List of available commands." << std::endl;
   theOutput << "Execution commands:" << std::endl;
   theOutput << "  run      -- Run the query." << std::endl;
-  //TODO: unimplemented command
-  //theOutput << "  stop     -- Stop the query execution." << std::endl;
   theOutput << "  quit     -- Quit Zorba debugger." << std::endl;
   theOutput << "  continue -- Resume the query execution." << std::endl;
-  //TODO: unimplemented command
   theOutput << "  status   -- Display the status of the query." << std::endl;
   theOutput << "Breakpoint commands:" << std::endl;
   theOutput << "  break    -- Set a breakpoint at the specified file and line." << std::endl;
   theOutput << "  watch    -- Add watchpoint to the query" << std::endl;
   theOutput << "  list     -- Display the executed query line." << std::endl;
   theOutput << "  clear    -- Clear breakpoints." << std::endl;
+  theOutput << "  over     -- Steps over the expression." << std::endl;
+  theOutput << "  in       -- Steps inside the function call." << std::endl;
+  theOutput << "  out      -- Steps outside the function call." << std::endl;
   theOutput << "Data commands:" << std::endl;
   theOutput << "  vars     -- List all variables that are in scope." << std::endl;
   theOutput << "  eval     -- Evaluate an xquery expression and print its result." << std::endl;

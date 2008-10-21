@@ -44,7 +44,9 @@ namespace zorba{
     ZORBA_THREAD_RETURN listenEvents( void * aClient );
 
     public:
-      ZorbaDebuggerClientImpl( unsigned short aRequestPortno, unsigned short aEventPortno );
+      ZorbaDebuggerClientImpl(std::string aServerAddress = "127.0.0.1",
+                              unsigned short aRequestPortno = 8000,
+                              unsigned short aEventPortno = 9000 );
 
       virtual ~ZorbaDebuggerClientImpl();
 
@@ -66,8 +68,6 @@ namespace zorba{
 
       void terminate();
 
-      void quit();
-
       void stepInto();
 
       void stepOut();
@@ -76,9 +76,9 @@ namespace zorba{
 
       void addBreakpoint( const String &anExpr );
 
-      void addBreakpoint( const String &aFileName, const unsigned int aLineNo );
+      QueryLocation* addBreakpoint( const String &aFileName, const unsigned int aLineNo );
 
-      void addBreakpoint( const unsigned int aLineNo );
+      QueryLocation* addBreakpoint( const unsigned int aLineNo );
 
       std::map<unsigned int, String> getBreakpoints() const;
 
@@ -90,13 +90,15 @@ namespace zorba{
       
       QueryLocation *getLocation() const;
 
-      void eval( String &anExpr );
+      void eval( String &anExpr ) const;
 
-      std::list<Variable> getAllVariables();
+      std::list<Variable> getAllVariables() const;
       
-      std::list<Variable> getLocalVariables();
+      std::list<Variable> getLocalVariables() const;
       
-      std::list<Variable> getGlobalVariables();
+      std::list<Variable> getGlobalVariables() const;
+    
+      RuntimeStack* getStack() const;
     
     protected:
       static unsigned int theLastId;
@@ -117,9 +119,9 @@ namespace zorba{
 
       void handshake();
 
-      ReplyMessage* send( AbstractCommandMessage * aMessage );
+      ReplyMessage* send( AbstractCommandMessage * aMessage ) const;
 
-      void send( std::string aMessage );
+      void send( std::string aMessage ) const;
   };
 }//end of namespace
 #endif

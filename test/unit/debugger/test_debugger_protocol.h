@@ -41,8 +41,6 @@ namespace zorba
     
       void testTerminateMessage();
 
-      void testQuitMessage();
-    
       void testStepIntoMessage();
     
       void testStepOutMessage();
