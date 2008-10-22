@@ -59,5 +59,11 @@ zorba_random::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Annot
   return new ZorbaRandomIterator(loc, argv);
 }
 
+PlanIter_t
+zorba_uuid::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new ZorbaUUIDIterator(loc, argv);
+}
+
 }
 /* vim:set ts=2 sw=2: */

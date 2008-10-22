@@ -14,6 +14,11 @@
         <li> \ref tidy
         <li> \ref tdoc
       </ul>
+      <li> \ref random_generation
+      <ul>
+        <li> \ref uuid
+        <li> \ref random
+      </ul>
      </ul>
      <li> \ref apendix
    </ul>
@@ -59,6 +64,25 @@ Summary: This function if very similar to the <tt>15.5.4 fn:doc</tt> from <a hre
 Error conditions:\n
 If Tidy lib is not able to transform the given string into a valid XHTML, an error is raised XQP0029_TIDY_ERROR (see \ref apendix).\n
 
+\subsection random_generation 2.2 Functions for generating UUID's, random integers
+
+\subsection uuid 2.2.1 zorba-util:uuid
+
+\code
+  declare function uuid() as xs:string
+\endcode
+
+Summary: This function does not generates a DCE 1.1 variant UUIDs.\n
+However please take into account that the UUID contains the the time (as the number of 100-nanosecond intervals since the adoption of the Gregorian calendar in the West) at which the UUID was generated (like DCE version 1 states).\n
+The UUID does not contain the MAC address of the machine used to generate it, and that is why the generated UUID's are not conformant to DCE version 1.\n
+
+\subsection random 2.2.2 zorba-util:random
+
+\code
+  declare function random() as xs:integer
+\endcode
+
+Summary: Function for generating a random integer.
 
 \section apendix Appendix A:  Error codes
 

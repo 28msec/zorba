@@ -81,6 +81,16 @@ namespace zorba {
                           std::vector<PlanIter_t>& argv,
                           AnnotationHolder &ann) const;
   };
+
+  class zorba_uuid : public function
+  {
+    public:
+      zorba_uuid(const signature& sig): function(sig){}
+
+      PlanIter_t codegen (const QueryLoc& loc,
+                          std::vector<PlanIter_t>& argv,
+                          AnnotationHolder &ann) const;
+  };
 }
 
 #endif /* ZORBA_FUNCTIONS_ALEXIS_H */

@@ -14,22 +14,28 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_UTIL_IMPL_H
-#define ZORBA_UTIL_IMPL_H
+#ifndef ZORBA_UTIL_UUID_H
+#define ZORBA_UTIL_UUID_H
 
-#include "runtime/base/narybase.h"
+#undef uuid_t
 
 namespace zorba {
 
-  NARY_ITER (ZorbaSchemaTypeIterator);
-  NARY_ITER (ZorbaBase64DecodeIterator);
-  NARY_ITER (ZorbaBase64EncodeIterator);
-#ifdef ZORBA_WITH_TIDY
-  NARY_ITER (ZorbaTidyIterator);
-  NARY_ITER (ZorbaTDocIterator);
-#endif
-  NARY_ITER (ZorbaRandomIterator);
-  NARY_ITER (ZorbaUUIDIterator);
+typedef struct {
+  xqp_uint    time_low;
+  xqp_ushort  time_mid;
+  xqp_ushort  time_hi_and_version;
+  xqp_ubyte   clock_seq_hi_and_reserved;
+  xqp_ubyte   clock_seq_low;
+  xqp_byte    node[6];
+} uuid_t;
+
+/* uuid_create -- generate a UUID */
+int uuid_create(uuid_t * uuid);
+
+/* uuidToString -- transform a UUID to a string */
+xqpString uuidToString(uuid_t uuid);
+
 }/*namespace zorba*/
 
-#endif /* ZORBA_UTIL_IMPL_H */
+#endif /* ZORBA_UTIL_UUID_H */

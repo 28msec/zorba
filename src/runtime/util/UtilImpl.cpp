@@ -26,6 +26,8 @@
 #include "context/static_context.h"
 #include "context/internal_uri_resolvers.h"
 
+#include "util/uuid/uuid.h"
+
 #include <stdlib.h>
 #include <time.h>
 
@@ -179,4 +181,24 @@ ZorbaRandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   STACK_END (state);
 }
+
+bool
+ZorbaUUIDIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t     item;
+  uuid_t            u;
+  xqpStringStore_t  uuidStr;
+
+  uuid_create(&u);
+  uuidStr = new xqpStringStore(uuidToString(u));
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  GENV_ITEMFACTORY->createString(result, uuidStr);
+  STACK_PUSH (true, state);
+
+  STACK_END (state);
+}
+
 } /* namespace zorba */

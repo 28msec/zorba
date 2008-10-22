@@ -914,6 +914,10 @@ DECL(sctx, zorba_encode_base64,
        (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "random"),
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
 
+  DECL(sctx, zorba_uuid,
+       (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "uuid"),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
 // end util functions
 
 // begin context functions
