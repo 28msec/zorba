@@ -73,7 +73,7 @@ If Tidy lib is not able to transform the given string into a valid XHTML, an err
 \endcode
 
 Summary: This function does not generates a DCE 1.1 variant UUIDs.\n
-However please take into account that the UUID contains the the time (as the number of 100-nanosecond intervals since the adoption of the Gregorian calendar in the West) at which the UUID was generated (like DCE version 1 states).\n
+However please take into account that the UUID contains the time (as the number of 100-nanosecond intervals since the adoption of the Gregorian calendar in the West) at which the UUID was generated (like DCE version 1 states).\n
 The UUID does not contain the MAC address of the machine used to generate it, and that is why the generated UUID's are not conformant to DCE version 1.\n
 
 \subsection random 2.2.2 zorba-util:random
