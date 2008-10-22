@@ -445,7 +445,7 @@ URI::resolve(const URI * base_uri)
     } else {
       offset += 4;
     }
-    tmp_path = path.substr(offset, tmp_path.length() - offset);
+    tmp_path = path.substr(offset, path.length() - offset);
   } // while
 
   // 6f) If the buffer string ends with "<segment>/..", where <segment>
