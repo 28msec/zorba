@@ -445,6 +445,41 @@ void processHeader(store::Item_t& headers, curl_slist** headers_list)
   }
 }
 
+// Returns all the children of a node as a concatenated string (text nodes + serialized 
+// element nodes) in the children_string out-paramter, and sets the has_element_child flag
+static void getSerializedChildren(store::Item_t node, xqpString& children_string, bool& has_element_child)
+{
+  store::Iterator_t it;
+  store::Item_t child;
+  children_string = "";
+  has_element_child = false;
+  
+  it = node->getChildren();
+  it->open();
+  while (it->next(child))
+  {
+    if (child->getNodeKind() == store::StoreConsts::textNode)
+    {
+      children_string += xqpString(child->getStringValue());
+    }
+    else if (child->getNodeKind() == store::StoreConsts::elementNode)
+    {
+      stringstream ss;
+      error::ErrorManager lErrorManager;
+      serializer ser(&lErrorManager);
+      ser.set_parameter("omit-xml-declaration","yes");
+      ser.serialize(child, ss);
+      children_string += ss.str().c_str();        
+      has_element_child = true;
+    }
+    else
+    {
+      // TODO: process comments, pi nodes? or generate error?
+      return;
+    }
+  }
+}
+
 static void processPayload(Item_t& payload_data, struct curl_httppost** first, struct curl_httppost** last)
 {
   store::Iterator_t it;
@@ -494,33 +529,24 @@ static void processPayload(Item_t& payload_data, struct curl_httppost** first, s
   }
   else
   {
+    xqpString payload_string;
+    bool has_element_child;
+    getSerializedChildren(payload_data, payload_string, has_element_child);
 
-    it = payload_data->getChildren();
-    it->open();
-    it->next(child);
-    if (child->getNodeKind() == store::StoreConsts::textNode)
+    if (has_element_child)
     {
       curl_formadd(first, last,
                   CURLFORM_COPYNAME, name->getStringValue()->c_str(),
-                  CURLFORM_COPYCONTENTS, child->getStringValue()->c_str(),
-                  CURLFORM_END);
-    }
-    else if (child->getNodeKind() == store::StoreConsts::elementNode)
-    {
-      stringstream ss;
-      error::ErrorManager lErrorManager;
-      serializer ser(&lErrorManager);
-      ser.set_parameter("omit-xml-declaration","yes");
-      ser.serialize(child, ss);
-      curl_formadd(first, last,
-                  CURLFORM_COPYNAME, name->getStringValue()->c_str(),
-                  CURLFORM_COPYCONTENTS, ss.str().c_str(),
+                  CURLFORM_COPYCONTENTS, payload_string.c_str(),
                   CURLFORM_CONTENTTYPE, "text/html",
                   CURLFORM_END);
     }
     else
     {
-      // TODO: process comments, pi nodes? or generate error?
+      curl_formadd(first, last,
+                  CURLFORM_COPYNAME, name->getStringValue()->c_str(),
+                  CURLFORM_COPYCONTENTS, payload_string.c_str(),
+                  CURLFORM_END);
     }
   }
 }
@@ -565,8 +591,7 @@ static bool processSinglePayload(Item_t& payload_data, CURL* EasyHandle, curl_sl
 
     filebuf* pbuf = ifs.rdbuf();
     long size = pbuf->pubseekoff(0,ios::end,ios::in);
-    pbuf->pubseekpos(0,ios::in);
-    //std::auto_ptr<char> buffer = std::auto_ptr<char>(new char[size]);
+    pbuf->pubseekpos(0,ios::in);    
     buffer = std::auto_ptr<char>(new char[size]);
     pbuf->sgetn(buffer.get(), size);
 
@@ -580,45 +605,23 @@ static bool processSinglePayload(Item_t& payload_data, CURL* EasyHandle, curl_sl
   }
   else
   {
-    it = payload_data->getChildren();
-    it->open();
-    it->next(child);
-    if (child->getNodeKind() == store::StoreConsts::textNode)
+    xqpString payload_string;
+    bool has_element_child;
+    getSerializedChildren(payload_data, payload_string, has_element_child);
+    buffer = std::auto_ptr<char>(new char[payload_string.bytes()]);
+    memcpy(buffer.get(), payload_string.c_str(), payload_string.bytes());
+
+    // curl_easy_setopt(EasyHandle, CURLOPT_COPYPOSTFIELDS, payload_string.c_str());
+    curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDSIZE , payload_string.bytes());
+    curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDS, buffer.get());
+    curl_easy_setopt(EasyHandle, CURLOPT_POST, 1);
+
+    if (content_type.getp() == NULL)
     {
-      xqpStringStore* str = child->getStringValue();
-      buffer = std::auto_ptr<char>(new char[str->bytes()]);
-      memcpy(buffer.get(), str->c_str(), str->bytes());
-
-      // curl_easy_setopt(EasyHandle, CURLOPT_COPYPOSTFIELDS, str->c_str());
-      curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDSIZE , str->bytes());
-      curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDS, buffer.get());
-      curl_easy_setopt(EasyHandle, CURLOPT_POST, 1);
-
-      if (content_type.getp() == NULL)
-        *headers_list = curl_slist_append(*headers_list, "Content-Type: text/plain");
-    }
-    else if (child->getNodeKind() == store::StoreConsts::elementNode)
-    {
-      stringstream ss;
-      error::ErrorManager lErrorManager;
-      serializer ser(&lErrorManager);
-      ser.set_parameter("omit-xml-declaration","yes");
-      ser.serialize(child, ss);
-      buffer = std::auto_ptr<char>(new char[ss.str().size()]);
-      memcpy(buffer.get(), ss.str().c_str(), ss.str().size());
-      
-      // curl_easy_setopt(EasyHandle, CURLOPT_COPYPOSTFIELDS, ss.str().c_str());
-      curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDSIZE , ss.str().size());
-      curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDS, buffer.get());
-      curl_easy_setopt(EasyHandle, CURLOPT_POST, 1);
-
-      if (content_type.getp() == NULL)
+      if (has_element_child)
         *headers_list = curl_slist_append(*headers_list, "Content-Type: text/xml");
-    }
-    else
-    {
-      // TODO: process comments, pi nodes? or generate error?
-      return false;
+      else
+        *headers_list = curl_slist_append(*headers_list, "Content-Type: text/plain");
     }
   }
 
