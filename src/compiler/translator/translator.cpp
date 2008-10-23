@@ -887,9 +887,9 @@ void end_visit (const DirElemConstructor& v, void* /*visit_state*/) {
   expr_t attrExpr;
   expr_t contentExpr;
 
-  rchandle<QName> end_tag = v.get_end_name();
-  if (end_tag != NULL && v.get_elem_name ()->get_qname() != end_tag->get_qname ())
-    ZORBA_ERROR_LOC( XPST0003, loc);
+  rchandle<QName> end_tag = v.get_end_name(), start_tag = v.get_elem_name ();
+  if (end_tag != NULL && start_tag->get_qname() != end_tag->get_qname ())
+    ZORBA_ERROR_LOC_DESC( XPST0003, loc, string ("Start tag ") + start_tag->get_qname () + " does not match end tag " + end_tag->get_qname());
 
   if (v.get_dir_content_list() != NULL)
     contentExpr = pop_nodestack();
@@ -2547,21 +2547,20 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
   string prefix = qn_h->get_prefix();
   string fname = qn_h->get_localname();
 
-  store::Item_t fn_qname = sctx_p->lookup_fn_qname(prefix, fname);
-  xqp_string fn_local = fn_qname->getLocalName ();
+  const xqpStringStore *fn_ns = sctx_p->lookup_fn_qname(prefix, fname)->getNamespace ();
 
-  if (fn_qname->getNamespace()->byteEqual(XQUERY_FN_NS)) {
-    if (fn_local == "position" && sz == 0)  {
+  if (fn_ns->byteEqual(XQUERY_FN_NS)) {
+    if (fname == "position" && sz == 0)  {
       nodestack.push(lookup_ctx_var(DOT_POS_VARNAME).getp());
       return;
-    } else if (fn_local == "last" && sz == 0) {
+    } else if (fname == "last" && sz == 0) {
       nodestack.push(lookup_ctx_var(LAST_IDX_VARNAME).getp());
       return;
-    } else if (fn_local == "string") {
+    } else if (fname == "string") {
       // TODO: casting to xs:string? is almost correct;
       // it fails, however, the following test:
       // 'fn:string (()) instance of xs:string'
-      fn_qname = sctx_p->lookup_fn_qname("xs", "string");
+      prefix = "xs";
       switch (sz) 
       {
       case 0:
@@ -2572,7 +2571,7 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
       default:
         ZORBA_ERROR_LOC_PARAM( XPST0017, loc, "fn:string", sz );
       }
-    } else if (fn_local == "number") {
+    } else if (fname == "number") {
       switch (sz) 
       {
       case 0:
@@ -2607,9 +2606,9 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
                                          ret));
       return;
     }
-    else if (sz == 0 && xquery_fns_def_dot.find (fn_local) != xquery_fns_def_dot.end ()) {
+    else if (sz == 0 && xquery_fns_def_dot.find (fname) != xquery_fns_def_dot.end ()) {
       arguments.push_back (DOT_VAR);
-    } else if (fn_local == "static-base-uri") {
+    } else if (fname == "static-base-uri") {
       if (sz != 0)
         ZORBA_ERROR_LOC_PARAM( XPST0017, loc, "fn:static-base-uri", sz );
 
@@ -2623,24 +2622,24 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
       return;
     }
     else if (sz == 1 &&
-             (fn_local == "lang" || fn_local == "id" || fn_local == "idref")) 
+             (fname == "lang" || fname == "id" || fname == "idref")) 
     {
       arguments.insert (arguments.begin (), DOT_VAR);
-    } else if (sz == 1 && fn_local == "resolve-uri") {
+    } else if (sz == 1 && fname == "resolve-uri") {
 #if 0  // even if the base-uri is not declared in the prolog, we have a default
       if (! hadBUriDecl)
         ZORBA_ERROR (FONS0005);
       else
 #endif
         arguments.insert (arguments.begin (), new const_expr (loc, sctx_p->final_baseuri()));
-    } else if (sz == 1 && fn_local == "parse") {
+    } else if (sz == 1 && fname == "parse") {
       arguments.insert (arguments.begin (), new const_expr (loc, sctx_p->final_baseuri()));
-    } else if (fn_local == "concat") {
+    } else if (fname == "concat") {
       if (sz < 2)
         ZORBA_ERROR_LOC_PARAM (XPST0017, loc, "concat", to_string (sz));
     }
-  } else if (fn_qname->getNamespace()->byteEqual(ZORBA_FN_NS)) {
-    if (fn_local == "inline-xml" && sz == 1) {
+  } else if (fn_ns->byteEqual(ZORBA_FN_NS)) {
+    if (fname == "inline-xml" && sz == 1) {
       nodestack.push (new eval_expr(loc, create_cast_expr (loc, arguments [0], GENV_TYPESYSTEM.STRING_TYPE_ONE, true)));
       return;
     }
@@ -2649,7 +2648,7 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
   sz = arguments.size ();  // recompute size
 
   // try constructor functions
-  xqtref_t type = CTXTS->create_named_type(fn_qname, TypeConstants::QUANT_QUESTION);
+  xqtref_t type = CTXTS->create_named_type(sctx_p->lookup_elem_qname (prefix, fname), TypeConstants::QUANT_QUESTION);
 
   if (type != NULL) {
     if (sz != 1
@@ -2982,7 +2981,11 @@ void *begin_visit (const SchemaImport& v) {
       string pfx = sp->get_prefix ();
       if (pfx == "xml" || pfx == "xmlns")
         ZORBA_ERROR_LOC (XQST0070, loc);
-      sctx_p->bind_ns (pfx, target_ns, XQST0033);
+      if (sp->get_default_bit ()) {
+        sctx_p->set_default_elem_type_ns (target_ns);
+      }
+      if (! pfx.empty ())
+        sctx_p->bind_ns (pfx, target_ns, XQST0033);
     }
 
     rchandle<URILiteralList> atlist = v.get_at_list();
@@ -3553,9 +3556,8 @@ void end_visit (const AtomicType& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   rchandle<QName> qname = v.get_qname ();
   xqtref_t t =
-    CTXTS->create_named_atomic_type(sctx_p->lookup_qname("",
-                                                         qname->get_prefix (),
-                                                         qname->get_localname ()),
+    CTXTS->create_named_atomic_type(sctx_p->lookup_elem_qname(qname->get_prefix (),
+                                                              qname->get_localname ()),
                                     TypeConstants::QUANT_ONE);
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()
