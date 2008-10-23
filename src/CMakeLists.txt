@@ -21,8 +21,10 @@ INCLUDE_DIRECTORIES(BEFORE ${CMAKE_SOURCE_DIR}/external)
 #
 # only platform headers and configuration stuff is in there
 #
-ADD_SUBDIRECTORY(common)
-ADD_SUBDIRECTORY(zorbamisc)
+# Commented these as out, as there are no CMakeLists.txt files in those
+# folders and Zorba does not build on Windows because of that.
+#ADD_SUBDIRECTORY(common)
+#ADD_SUBDIRECTORY(zorbamisc)
 
 
 
