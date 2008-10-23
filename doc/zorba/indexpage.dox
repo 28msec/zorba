@@ -48,7 +48,9 @@
        <li><a class="el" href="../../c/html/index.html">C API</a>
        <li><a class="el" href="../../python/html/index.html">Python API</a>
        <li><a class="el" href="../../ruby/html/index.html">Ruby API</a>
+       <li><a class="el" href="../../php/html/index.html">PHP API</a>
      </ul>
+     <li> \ref msdomstore
    </ul>
  </ul>
  */

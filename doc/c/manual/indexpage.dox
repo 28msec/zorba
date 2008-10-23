@@ -8,7 +8,7 @@
   It is a joint effort between <a href="http://xqilla.sourceforge.net/">XQilla</a> and the 
   <a href="http://www.zorba-xquery.org/">FLWOR Foundation's Zorba Group</a> with the goal to make these two 
   XQuery processor easily exchangable.
-  However, XQC is still in it's early stages. Zorba in it's version 0.9.2 implements most of the things 
+  However, XQC is still in it's early stages. Zorba implements most of the things 
   that are specified in XQC but also deviates from and enhances the XQC specification to some degree.
   For instance, the following list contains the differences between the current implmentation of Zorba's C API and XQC.
 

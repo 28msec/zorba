@@ -1,6 +1,6 @@
 /*! \mainpage C++ API Documentation
 
-    Zorba in it's version 0.9.2 ships with a C++ API that provides the following features:
+    Zorba ships with a C++ API that provides the following features:
 
     <ul>
       <li>Preparing and executing Queries from strings, files, and streams.
