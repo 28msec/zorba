@@ -77,6 +77,8 @@ int tidy(const char* input, xqp_string& result, xqp_string& diagnostics)
   xqpStringStore_t    buf, err;
   TidyOptionId        toID;
   std::string         optTM("tidy-mark");
+  std::string         optQS("quote-nbsp");
+  std::string         optCE("char-encoding");
 
   tdoc = tidyCreate();
 
@@ -86,10 +88,22 @@ int tidy(const char* input, xqp_string& result, xqp_string& diagnostics)
   if ( rc >= 0 )
     rc = tidyParseString( tdoc, input );           // Parse the input
   if ( rc >= 0 ) {
-    //set tidy-mark to off: Tidy will not add a meta element to the document head to indicate that the document has been tidied.
+    //set tidy-mark to off(Default value is on.): Tidy will not add a meta element to the document head
+    //to indicate that the document has been tidied.
     toID = tidyOptGetIdForName(optTM.c_str());
     if( tidyOptGetBool(tdoc, toID) )
       ok = tidyOptSetBool(tdoc, toID, no);
+
+    //set quote-nbsp to off(Default value is on.): This option specifies if Tidy should output non-breaking space
+    //characters as entities, rather than as the Unicode character value 160 (decimal).
+    toID = tidyOptGetIdForName(optQS.c_str());
+    if( tidyOptGetBool(tdoc, toID) )
+      ok = tidyOptSetBool(tdoc, toID, no);
+
+    //set char-encoding to utf-8(Default value is ascii.): This option specifies the character encoding Tidy uses
+    //for both the input and output. For utf8, Tidy assumes that both input and output is encoded as UTF-8.
+    toID = tidyOptGetIdForName(optCE.c_str());
+    ok = tidyOptSetValue(tdoc, toID, "utf8");
   }
   if( ok )
     rc = tidyCleanAndRepair( tdoc );               // Tidy it up!
@@ -121,7 +135,9 @@ int tidy(const std::ifstream& fStream, std::iostream& result, std::iostream& dia
   uint            size;
   char*           buffer;
   TidyOptionId    toID;
-  std::string     optTM("tidy-mark");
+  std::string         optTM("tidy-mark");
+  std::string         optQS("quote-nbsp");
+  std::string         optCE("char-encoding");
 
   pbuf = fStream.rdbuf();
   size = (uint)pbuf->pubseekoff (0,std::ios::end, std::ios::in);
@@ -141,14 +157,26 @@ int tidy(const std::ifstream& fStream, std::iostream& result, std::iostream& dia
 
   ok = tidyOptSetBool( tdoc, TidyXhtmlOut, yes );  // Convert to XHTML
   if ( ok )
-    rc = tidySetErrorBuffer( tdoc, &errbuf );      // Capture diagnostics
+    rc = tidySetErrorBuffer( tdoc, &errbuf );       // Capture diagnostics
   if ( rc >= 0 )
-    rc = tidyParseBuffer( tdoc, &inputBuf );     // Parse the input
+    rc = tidyParseBuffer( tdoc, &inputBuf );        // Parse the input
   if ( rc >= 0 ) {
-    //set tidy-mark to off: Tidy will not add a meta element to the document head to indicate that the document has been tidied.
+    //set tidy-mark to off(Default value is on.): Tidy will not add a meta element to the document head
+    //to indicate that the document has been tidied.
     toID = tidyOptGetIdForName(optTM.c_str());
     if( tidyOptGetBool(tdoc, toID) )
       ok = tidyOptSetBool(tdoc, toID, no);
+
+    //set quote-nbsp to off(Default value is on.): This option specifies if Tidy should output non-breaking space
+    //characters as entities, rather than as the Unicode character value 160 (decimal).
+    toID = tidyOptGetIdForName(optQS.c_str());
+    if( tidyOptGetBool(tdoc, toID) )
+      ok = tidyOptSetBool(tdoc, toID, no);
+
+    //set char-encoding to utf-8(Default value is ascii.): This option specifies the character encoding Tidy uses
+    //for both the input and output. For utf8, Tidy assumes that both input and output is encoded as UTF-8.
+    toID = tidyOptGetIdForName(optCE.c_str());
+    ok = tidyOptSetValue(tdoc, toID, "utf8");
   }
   if( ok )
     rc = tidyCleanAndRepair( tdoc );               // Tidy it up!
@@ -189,6 +217,8 @@ int tidy(const std::istringstream& isStream, std::iostream& result, std::iostrea
   xqpStringStore_t    buf, err;
   TidyOptionId        toID;
   std::string         optTM("tidy-mark");
+  std::string         optQS("quote-nbsp");
+  std::string         optCE("char-encoding");
 
   tdoc = tidyCreate();
 
@@ -198,10 +228,22 @@ int tidy(const std::istringstream& isStream, std::iostream& result, std::iostrea
   if ( rc >= 0 )
     rc = tidyParseBuffer( tdoc, &inputBuf );     // Parse the input
   if ( rc >= 0 ) {
-    //set tidy-mark to off: Tidy will not add a meta element to the document head to indicate that the document has been tidied.
+    //set tidy-mark to off(Default value is on.): Tidy will not add a meta element to the document head
+    //to indicate that the document has been tidied.
     toID = tidyOptGetIdForName(optTM.c_str());
     if( tidyOptGetBool(tdoc, toID) )
       ok = tidyOptSetBool(tdoc, toID, no);
+
+    //set quote-nbsp to off(Default value is on.): This option specifies if Tidy should output non-breaking space
+    //characters as entities, rather than as the Unicode character value 160 (decimal).
+    toID = tidyOptGetIdForName(optQS.c_str());
+    if( tidyOptGetBool(tdoc, toID) )
+      ok = tidyOptSetBool(tdoc, toID, no);
+
+    //set char-encoding to utf-8(Default value is ascii.): This option specifies the character encoding Tidy uses
+    //for both the input and output. For utf8, Tidy assumes that both input and output is encoded as UTF-8.
+    toID = tidyOptGetIdForName(optCE.c_str());
+    ok = tidyOptSetValue(tdoc, toID, "utf8");
   }
   if( ok )
     rc = tidyCleanAndRepair( tdoc );               // Tidy it up!
