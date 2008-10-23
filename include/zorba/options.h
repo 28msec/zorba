@@ -125,8 +125,12 @@ typedef struct Zorba_SerializerOptions {
   Zorba_omit_xml_declaration_t  omit_xml_declaration;
   Zorba_standalone_t            standalone; 
   Zorba_undeclare_prefixes_t    undeclare_prefixes;
+
+#ifdef __cplusplus
+  // Only available in the C++ build
   zorba::String                 doctype_system;
   zorba::String                 doctype_public;
+#endif
 
   /** \brief Default constructor for SerializerOptions which assigns default values to all 
    *         options (C++ only).
