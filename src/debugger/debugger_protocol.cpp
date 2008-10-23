@@ -847,7 +847,7 @@ FrameMessage::~FrameMessage(){}
  * Frame Reply
  */
 FrameReply::FrameReply(const Id anId, const ErrorCode aErrorCode,
-                       std::stack< std::pair<std::string, const QueryLoc> >  aStack)
+                       std::stack< std::pair<std::string, QueryLoc> >  aStack)
   : ReplyMessage(anId, aErrorCode), theStack(aStack)
 {
   setFlags(REPLY_FRAME_FLAG);
@@ -892,14 +892,14 @@ xqpString FrameReply::getData() const
 {
   std::stringstream lJSONString;
   lJSONString << "{\"frame\":[";
-  std::stack< std::pair<std::string, const QueryLoc> > lStack(theStack);
+  std::stack< std::pair<std::string, QueryLoc> > lStack(theStack);
   while(!lStack.empty())
   {
     if(lStack.size() != theStack.size())
     {
       lJSONString << ",";
     }
-    std::pair<std::string, const QueryLoc> it = lStack.top();
+    std::pair<std::string, QueryLoc> it = lStack.top();
     lJSONString << "{\"label\":\"" << it.first << "\",\"location\":" << it.second.toJSON() << "}";
     lStack.pop();
   }

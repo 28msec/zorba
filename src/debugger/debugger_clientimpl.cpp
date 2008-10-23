@@ -439,7 +439,7 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
     FrameReply* lFrameReply = dynamic_cast<FrameReply*>(lReply.get());
     if(lFrameReply)
     {
-      std::stack< std::pair<std::string, const QueryLoc> > stack = lFrameReply->getStack();
+      std::stack< std::pair<std::string, QueryLoc> > stack = lFrameReply->getStack();
       while(!stack.empty())
       {
         lStack->push(stack.top().first, new QueryLocationImpl(stack.top().second));

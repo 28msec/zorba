@@ -143,7 +143,7 @@ class ZorbaDebugger
     std::stack<unsigned int> theBaseDecimal;
 
     //The stack frame
-    std::stack< std::pair<std::string, const QueryLoc> > theStack;
+    std::stack< std::pair<std::string, QueryLoc> > theStack;
 
     const QueryLoc addBreakpoint(const QueryLoc& aLocation);
     

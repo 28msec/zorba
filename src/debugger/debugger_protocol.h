@@ -640,12 +640,12 @@ class FrameMessage: public AbstractCommandMessage
 class FrameReply: public ReplyMessage
 {
   protected:
-    std::stack< std::pair<std::string, const QueryLoc> > theStack;
+    std::stack< std::pair<std::string, QueryLoc> > theStack;
     xqpString getData() const;
 
   public:
     FrameReply(const Id anId, const ErrorCode aErrorCode,
-                       std::stack< std::pair<std::string, const QueryLoc> >  aStack);
+                       std::stack< std::pair<std::string, QueryLoc> >  aStack);
 
     FrameReply(Byte* aMessage, const unsigned int aLength);
 
@@ -653,7 +653,7 @@ class FrameReply: public ReplyMessage
 
     virtual Byte* serialize(Length& aLength) const;
 
-    std::stack< std::pair<std::string, const QueryLoc> > getStack() const
+    std::stack< std::pair<std::string, QueryLoc> > getStack() const
     {
       return theStack;
     }
