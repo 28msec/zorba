@@ -163,7 +163,7 @@ int _tmain(int argc, _TCHAR* argv[])
         if (query->isUpdateQuery()) {
           query->applyUpdates();
         } else {
-          Zorba_SerializerOptions opts = SerializerOptionsFromStringParams(lProp->getSerializerParameters());
+          Zorba_SerializerOptions opts = Zorba_SerializerOptions::SerializerOptionsFromStringParams(lProp->getSerializerParameters());
           query->serialize(*resultFile, opts);
           // *resultFile << query;
         }

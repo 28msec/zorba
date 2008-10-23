@@ -31,7 +31,7 @@ Zorba_SerializerOptions::Zorba_SerializerOptions()
   undeclare_prefixes(ZORBA_UNDECLARE_PREFIXES_NO)
 {}
 
-Zorba_SerializerOptions SerializerOptionsFromStringParams(const std::vector<std::pair<std::string, std::string> >& params)
+Zorba_SerializerOptions Zorba_SerializerOptions::SerializerOptionsFromStringParams(const std::vector<std::pair<std::string, std::string> >& params)
 {
   Zorba_SerializerOptions opt;
 
@@ -47,7 +47,9 @@ Zorba_SerializerOptions SerializerOptionsFromStringParams(const std::vector<std:
       else if (iter->second == "xhtml") opt.ser_method = ZORBA_SERIALIZATION_METHOD_XHTML;
       else if (iter->second == "text") opt.ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
       else
+      {
         ; // TODO signal errors for incorrect values?
+      }
     }
     else if (iter->first == "byte-order-mark")
     {

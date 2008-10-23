@@ -16,8 +16,11 @@
 #ifndef ZORBA_OPTIONS_H
 #define ZORBA_OPTIONS_H
 
+#ifdef __cplusplus
 #include <vector>
 #include <zorba/zorbastring.h>
+#endif
+
 
 /** \brief The optimization level used for optimizing the query. */
 typedef enum {
@@ -141,15 +144,16 @@ typedef struct Zorba_SerializerOptions {
    */
 #ifdef __cplusplus
   Zorba_SerializerOptions();
+
+  /** \brief Helper function to create a Zorba_SerializerOptions from a vector of key / value 
+   *         string pairs 
+   *
+   * \retval The created Zorba_SerializerOptions structure
+   */
+  static Zorba_SerializerOptions SerializerOptionsFromStringParams(const std::vector<std::pair<std::string,std::string> >& params);
 #endif
 } Zorba_SerializerOptions_t;
 
-/** \brief Helper function to create a Zorba_SerializerOptions from a vector of key / value 
- *         string pairs 
- *
- * \retval The created Zorba_SerializerOptions structure
- */
-Zorba_SerializerOptions SerializerOptionsFromStringParams(const std::vector<std::pair<std::string,std::string> >& params);
 
 #ifdef __cplusplus
 extern "C" {
