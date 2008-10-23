@@ -24,7 +24,6 @@
 #else
   #include <sys/types.h>
   #include <sys/time.h>
-  #include <sys/sysinfo.h>
 #endif
 
 /* Set the following to a calls to get and release a global lock */
