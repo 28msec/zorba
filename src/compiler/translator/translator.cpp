@@ -3560,7 +3560,7 @@ void end_visit (const AtomicType& v, void* /*visit_state*/) {
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()
   if (t == NULL)
-    ZORBA_ERROR_LOC( XPST0051, loc);
+    ZORBA_ERROR_LOC_PARAM (XPST0051, loc, qname->get_qname (), "");
   else
     tstack.push (t);
 }

@@ -234,7 +234,7 @@ DEF_ERR_CODE (XPST0010, XPST0010, "An implementation must raise a static error i
 
 DEF_ERR_CODE (XPST0017, XPST0017, "Expanded QName and number of arguments in function call do not match the name and arity of any function signature in the static context /s / /s")
 
-DEF_ERR_CODE (XPST0051, XPST0051, "A QName that is used as an AtomicType in a SequenceType is not defined in the in-scope schema types as an atomic type.")
+DEF_ERR_CODE (XPST0051, XPST0051, "A QName /s that is used as an AtomicType in a SequenceType is not defined in the in-scope schema types as an atomic type.")
 
 DEF_ERR_CODE (XPST0080, XPST0080, "The target type of a cast or castable expression is xs:NOTATION or xs:anyAtomicType.")
 
