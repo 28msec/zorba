@@ -2704,7 +2704,7 @@ void *begin_visit (const LibraryModule& v) {
 void end_visit (const LibraryModule& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   parse_xquery_version (v.get_version_decl ());
-  nodestack.push (wrap_in_globalvar_assign (new fo_expr (loc, CACHED (op_concatenate, LOOKUP_OPN ("concatenate")))));
+  nodestack.push (wrap_in_globalvar_assign (create_seq (loc)));
 }
 
 
@@ -2841,7 +2841,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/) {
         if (mod_ast == NULL)
           ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
         imported_ns = mod_ast->get_decl ()->get_target_namespace ();
-        minfo->init_exprs.push_back (translate_aux (*ast, &mod_ccb, minfo, mod_stk1));
+        translate_aux (*ast, &mod_ccb, minfo, mod_stk1);
         minfo->mod_ns_map.put (xqpString(resolveduri.getp()), imported_ns);
       } catch (...) {
         throw;
