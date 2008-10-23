@@ -607,6 +607,8 @@ XQueryImpl::setSerializationParameters(
     ser->set_parameter("method", "xml"); break;
   case ZORBA_SERIALIZATION_METHOD_HTML:
     ser->set_parameter("method", "html"); break;
+  case ZORBA_SERIALIZATION_METHOD_XHTML:
+    ser->set_parameter("method", "xhtml"); break;
   case ZORBA_SERIALIZATION_METHOD_TEXT:
     ser->set_parameter("method", "text"); break;
   }
@@ -660,6 +662,12 @@ XQueryImpl::setSerializationParameters(
   case ZORBA_UNDECLARE_PREFIXES_NO:
     ser->set_parameter("undeclare-prefixes", "no"); break;
   }    
+
+  if (opt.doctype_system != "")
+    ser->set_parameter("doctype-system", xqpString(opt.doctype_system.c_str()));
+
+  if (opt.doctype_public != "")
+    ser->set_parameter("doctype-public", xqpString(opt.doctype_public.c_str()));
 }
 
 

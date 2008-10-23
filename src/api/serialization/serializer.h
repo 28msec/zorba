@@ -94,6 +94,7 @@ protected:
 		
     PARAMETER_VALUE_XML,
     PARAMETER_VALUE_HTML,
+    PARAMETER_VALUE_XHTML,
     PARAMETER_VALUE_TEXT,
   
     PARAMETER_VALUE_UTF_8
@@ -109,22 +110,22 @@ protected:
   // Serialization parameters
   short int byte_order_mark;         // "yes" or "no", implemented
   short int cdata_section_elements;  // TODO: list of expanded QNames
-  xqp_string doctype_public;         // TODO:
-  xqp_string doctype_system;         // TODO:
+  xqp_string doctype_system;         // string, implemented
+  xqp_string doctype_public;         // string, implemented
   int encoding;                      // UTF-8 and UTF-16 supported, add others?
   short int escape_uri_attributes;   // TODO: yes/no requires unicode normalization
   short int include_content_type;    // yes/no, implemented
   xqp_string media_type;             // string, implemented
-  short int method;                  // an expanded QName: "xml", "html", "text"  are handled
+  short int method;                  // an expanded QName: "xml", "html", "xhtml" and "text"  are handled
   xqp_string normalization_form;     // TODO:   requires unicode normalization
   short int omit_xml_declaration;    // "yes" or "no", implemented
   short int standalone;              // implemented, TODO: add some validity checks
-  short int undeclare_prefixes;      // TODO: yes/no, not clear
+  short int undeclare_prefixes;      // "yes" or "no", implemented
   void* use_character_maps;          // TODO: list of pairs
   xqp_string version;                // "1.1"
   short int indent;                  // "yes" or "no", implemented
 
-  bool version_has_default_value;    // true or false. Used during validation to set version to "4.0" when
+  bool version_has_default_value;    // Used during validation to set version to "4.0" when
                                      // output method is "html"
 
   rchandle<emitter>    e;
@@ -165,6 +166,13 @@ protected:
      * Outputs the end of the serialized document.
      */
     virtual void emit_declaration_end();
+
+	  /**
+     * Outputs the doctype declaration. This function is not used by the 
+	   * default emitter, it is intended to be defined by the XML, HTML and XHTML 
+	   * serializers.
+     */
+	  virtual void emit_doctype(const xqpString& elementName);
     
     /**
      *  The root function that performs the serialization
@@ -226,9 +234,9 @@ protected:
     store::AttributesIterator* getAttrIter();
     void releaseAttrIter(store::AttributesIterator* iter);
 
-    serializer                           * ser;
-    transcoder                           & tr;
-    std::vector<NsBindings>                bindings;
+    serializer* ser;
+    transcoder& tr;
+    std::vector<NsBindings> bindings;
 
     enum ItemState 
     {
@@ -236,12 +244,13 @@ protected:
       PREVIOUS_ITEM_WAS_TEXT,
       PREVIOUS_ITEM_WAS_TEXT_WITH_EOL,
       PREVIOUS_ITEM_WAS_NODE
-    }                                      previous_item;
+    } previous_item;
 
-    std::vector<store::ChildrenIterator*>  theChildIters;
-    ulong                                  theFirstFreeChildIter;
+    std::vector<store::ChildrenIterator*> theChildIters;
+    ulong theFirstFreeChildIter;
 
-    store::AttributesIterator            * theAttrIter;
+    store::AttributesIterator* theAttrIter;
+    bool isFirstElementNode;
   };
 
   
@@ -256,6 +265,7 @@ protected:
   public:
     xml_emitter(serializer* the_serializer, transcoder& the_transcoder);
     virtual void emit_declaration();    
+    virtual void emit_doctype(const zorba::xqpString& elementName);
   };
 
 
@@ -272,6 +282,21 @@ protected:
     
     virtual void emit_declaration();
     virtual void emit_declaration_end();
+    virtual void emit_doctype(const zorba::xqpString& elementName);
+    virtual void emit_node(const store::Item* item, int depth);
+  };
+
+  ///////////////////////////////////////////////////////////
+  //                                                       //
+  //  class xhtml_emitter                                  //
+  //                                                       //
+  ///////////////////////////////////////////////////////////
+  
+  class xhtml_emitter : public xml_emitter
+  {
+  public:
+    xhtml_emitter(serializer* the_serializer, transcoder& the_transcoder);
+
     virtual void emit_node(const store::Item* item, int depth);
   };
 

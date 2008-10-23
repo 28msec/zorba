@@ -31,6 +31,68 @@ Zorba_SerializerOptions::Zorba_SerializerOptions()
   undeclare_prefixes(ZORBA_UNDECLARE_PREFIXES_NO)
 {}
 
+Zorba_SerializerOptions SerializerOptionsFromStringParams(const std::vector<std::pair<std::string, std::string> >& params)
+{
+  Zorba_SerializerOptions opt;
+
+  for (
+    std::vector<std::pair<std::string, std::string> >::const_iterator iter = params.begin();
+    iter != params.end();
+    ++iter) 
+  {
+    if (iter->first == "method")
+    {
+      if (iter->second == "xml") opt.ser_method = ZORBA_SERIALIZATION_METHOD_XML; 
+      else if (iter->second == "html") opt.ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
+      else if (iter->second == "xhtml") opt.ser_method = ZORBA_SERIALIZATION_METHOD_XHTML;
+      else if (iter->second == "text") opt.ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
+      else
+        ; // TODO signal errors for incorrect values?
+    }
+    else if (iter->first == "byte-order-mark")
+    {
+      if (iter->second == "yes") opt.byte_order_mark = ZORBA_BYTE_ORDER_MARK_YES; 
+      else if (iter->second == "no") opt.byte_order_mark = ZORBA_BYTE_ORDER_MARK_NO; 
+    }
+    else if (iter->first == "include-content-type")
+    {
+      if (iter->second == "yes") opt.include_content_type = ZORBA_INCLUDE_CONTENT_TYPE_YES; 
+      else if (iter->second == "no") opt.include_content_type = ZORBA_INCLUDE_CONTENT_TYPE_NO; 
+    }
+    else if (iter->first == "indent")
+    {
+      if (iter->second == "yes") opt.indent = ZORBA_INDENT_YES; 
+      else if (iter->second == "no") opt.indent= ZORBA_INDENT_NO; 
+    }
+    else if (iter->first == "omit-xml-declaration")
+    {
+      if (iter->second == "yes") opt.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES; 
+      else if (iter->second == "no") opt.omit_xml_declaration= ZORBA_OMIT_XML_DECLARATION_NO; 
+    }
+    else if (iter->first == "standalone")
+    {
+      if (iter->second == "yes") opt.standalone = ZORBA_STANDALONE_YES; 
+      else if (iter->second == "no") opt.standalone= ZORBA_STANDALONE_NO; 
+      else if (iter->second == "omit") opt.standalone= ZORBA_STANDALONE_OMIT; 
+    }
+    else if (iter->first == "undeclare-prefixes")
+    {
+      if (iter->second == "yes") opt.undeclare_prefixes = ZORBA_UNDECLARE_PREFIXES_YES; 
+      else if (iter->second == "no") opt.undeclare_prefixes = ZORBA_UNDECLARE_PREFIXES_NO;       
+    }
+    else if (iter->first == "doctype-system")
+    {
+      opt.doctype_system = iter->second;
+    }
+    else if (iter->first == "doctype-public")
+    {
+      opt.doctype_public = iter->second;
+    }
+  }
+
+  return opt;
+}
+
 Zorba_CompilerHints_t Zorba_CompilerHints_default()
 {
   Zorba_CompilerHints_t lDefault;

@@ -53,6 +53,7 @@ protected:
   bool theCompileOnly;
   int theTz;
   std::vector<std::string> theExternalVars;
+  std::vector<std::string> theSerializerParams;
 
   void initialize () {
     theTraceParsing = false;
@@ -125,7 +126,8 @@ public:
       else if (strcmp (*argv, "--optimizer") == 0 || strncmp (*argv, "-O", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theOptimizer, d);
+        if (*argv != NULL)
+          init_val (*argv, theOptimizer, d);
       }
       else if (strcmp (*argv, "--force-gflwor") == 0) {
         theForceGflwor = true;
@@ -133,7 +135,8 @@ public:
       else if (strcmp (*argv, "--result-file") == 0 || strncmp (*argv, "-o", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theResultFile, d);
+        if (*argv != NULL)
+          init_val (*argv, theResultFile, d);
       }
       else if (strcmp (*argv, "--abort") == 0) {
         theAbort = true;
@@ -141,7 +144,8 @@ public:
       else if (strcmp (*argv, "--query") == 0 || strncmp (*argv, "-e", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theQuery, d);
+        if (*argv != NULL)
+          init_val (*argv, theQuery, d);
       }
       else if (strcmp (*argv, "--print-query") == 0 || strncmp (*argv, "-q", 2) == 0) {
         thePrintQuery = true;
@@ -195,12 +199,20 @@ public:
       else if (strcmp (*argv, "--tz") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theTz, d);
+        if (*argv != NULL)
+          init_val (*argv, theTz, d);
       }
       else if (strcmp (*argv, "--external-vars") == 0 || strncmp (*argv, "-x", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theExternalVars, d);
+        if (*argv != NULL)
+          init_val (*argv, theExternalVars, d);
+      }
+      else if (strcmp (*argv, "--serializer-parameter") == 0 || strncmp (*argv, "-z", 2) == 0) {        
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        if (*argv != NULL)
+          init_val (*argv, theSerializerParams, d);
       }
       else if (strcmp (*argv, "--") == 0) {
         copy_args (++argv);
@@ -211,6 +223,9 @@ public:
         copy_args (argv);
         break;
       }
+
+      if (*argv == NULL)
+        break;
     }
 
     return result;
@@ -246,6 +261,7 @@ public:
 #endif
 "--compile-only\nonly compile (don't execute)\n\n"
 "--tz\nimplicit time zone (in minutes)\n\n"
+"--serializer-parameter, -z\nset serialization parameters (e.g. -z indent=yes)\n\n"
 "--external-vars, -x\nexternal variables (e.g. -x x=file1.xml -x y:=strValue)\n\n"
 ;
   }

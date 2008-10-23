@@ -45,7 +45,8 @@ serializer::emitter::emitter(serializer *the_serializer, transcoder& the_transco
   tr(the_transcoder),
   previous_item(INVALID_ITEM),
   theChildIters(8),
-  theFirstFreeChildIter(0)
+  theFirstFreeChildIter(0),
+  isFirstElementNode(true)
 {
   for (ulong i = 0; i < 8; i++)
     theChildIters[i] = GENV_ITERATOR_FACTORY->createChildrenIterator();
@@ -106,6 +107,13 @@ void serializer::emitter::emit_declaration()
 
 void serializer::emitter::emit_declaration_end()
 {
+  // Do nothing in the default emitter
+}
+
+
+void serializer::emitter::emit_doctype(const xqpString& elementName)
+{
+  // Do nothing in the default emitter
 }
 
 
@@ -303,8 +311,7 @@ int serializer::emitter::emit_node_children(
   store::Item* child;
   store::Item* attr;
   int closed_parent_tag = 0;
-  
-  
+    
   if (item->getNodeKind() == store::StoreConsts::elementNode)
   {
     // emit attributes
@@ -483,6 +490,12 @@ void serializer::emitter::emit_node(
     store::Item* qname = item->getNodeName();
     xqpStringStore* prefix = qname->getPrefix();
 
+    if (isFirstElementNode)
+    {
+      emit_doctype(qname->getLocalName());
+      isFirstElementNode = false;
+    }
+
     if (prefix->empty())
       tr << "<" << qname->getLocalName()->c_str();
     else
@@ -624,6 +637,28 @@ void serializer::xml_emitter::emit_declaration()
   }
 }
 
+void serializer::xml_emitter::emit_doctype(const zorba::xqpString& elementName)
+{
+  // doctype-system has not been specified, do nothing
+  if (ser->doctype_system == "")
+    return;
+
+  tr << "<!DOCTYPE " << elementName.c_str();
+
+  /*
+   * The doctype-public parameter MUST be ignored unless the doctype-system parameter is specified.
+   */
+  if (ser->doctype_public != "")
+    tr << " PUBLIC \"" << ser->doctype_public.c_str() << "\"";
+  else 
+    tr << " SYSTEM";
+
+  tr << " \"" << ser->doctype_system.c_str() << "\">";
+
+  if (ser->indent)
+    tr << ser->END_OF_LINE;
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -642,15 +677,33 @@ serializer::html_emitter::html_emitter(
 void serializer::html_emitter::emit_declaration()
 {
   emitter::emit_declaration();
-     
-  tr << "<html>";
-  if (ser->indent)
-    tr << END_OF_LINE;
 }
 
 void serializer::html_emitter::emit_declaration_end()
 {
-  tr << "</html>";  
+}
+
+void serializer::html_emitter::emit_doctype(const zorba::xqpString& elementName)
+{
+  if (ser->doctype_system == "" && ser->doctype_public == "")
+    return;
+
+  /*
+   * The name following <!DOCTYPE MUST be HTML or html.
+   */
+  tr << "<!DOCTYPE html";
+
+  if (ser->doctype_public != "")
+  {
+    tr << " PUBLIC \"" << ser->doctype_public.c_str() << "\"";
+    if (ser->doctype_system != "")
+      tr << " \"" << ser->doctype_system.c_str() << "\">";
+  }
+  else 
+    tr << " SYSTEM" << " \"" << ser->doctype_system.c_str() << "\">";
+
+  if (ser->indent)
+    tr << ser->END_OF_LINE;
 }
 
 // returns true if there is a META element, as a child of a HEAD element,
@@ -686,7 +739,7 @@ int is_content_type_meta(const store::Item* item, const store::Item* element_par
   return 0;
 }
 
-static bool is_html_empty_element(const store::Item* item)
+static bool is_html_empty_content_model_element(const store::Item* item)
 {
   xqpString str(item->getNodeName()->getStringValue());
   str = str.lowercase();
@@ -744,6 +797,12 @@ void serializer::html_emitter::emit_node(
   else if (item->getNodeKind() == store::StoreConsts::elementNode)
   {
     unsigned closed_parent_tag = 0;
+
+    if (isFirstElementNode)
+    {
+      emit_doctype(item->getNodeName()->getStringValue()->c_str());
+      isFirstElementNode = false;
+    }
     
     /*
       If a meta element has been added to the head element as described above, then any existing 
@@ -803,7 +862,7 @@ void serializer::html_emitter::emit_node(
         meta and param. For example, an element written as <br/> or <br></br> in an XSLT stylesheet 
         MUST be output as <br>.
       */
-      if (is_html_empty_element(item) && ser->version == "4.0")
+      if (is_html_empty_content_model_element(item) && ser->version == "4.0")
         tr << ">";      
       else
         tr << "/>";
@@ -874,6 +933,115 @@ void serializer::html_emitter::emit_node(
     tr << "node of type: " << item->getNodeKind();
     assert(0);
   }
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  XHTML Emitter                                                              //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+serializer::xhtml_emitter::xhtml_emitter(
+    serializer* the_serializer,
+    transcoder& the_transcoder)
+  :
+  xml_emitter(the_serializer, the_transcoder)
+{   
+}
+
+void serializer::xhtml_emitter::emit_node(
+    const store::Item* item,
+    int depth)
+{
+	if (item->getNodeKind() == store::StoreConsts::elementNode)
+	{		
+    const store::Item* element_parent = item->getParent();
+    unsigned closed_parent_tag = 0;
+
+    if (isFirstElementNode)
+    {
+      emit_doctype(item->getNodeName()->getStringValue()->c_str());
+      isFirstElementNode = false;
+    }
+    
+    /*
+      If a meta element has been added to the head element as described above, then any existing 
+      meta element child of the head element having an http-equiv attribute with the value "Content-Type" 
+      MUST be discarded.
+    */
+    if (ser->include_content_type == PARAMETER_VALUE_YES 
+        &&
+        element_parent != NULL
+        &&
+        is_content_type_meta(item, element_parent))
+    {
+      // do not emit this element
+      return;      
+    }        
+    
+    tr << "<" << item->getNodeName()->getStringValue()->c_str();
+    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    
+    /*
+      If there is a head element, and the include-content-type parameter has the value yes, the 
+      HTML output method MUST add a meta element as the first child element of the head element 
+      specifying the character encoding actually used.
+    */
+    if (ser->include_content_type == PARAMETER_VALUE_YES
+        &&
+        item->getNodeName()->getStringValue()->lowercase()->str() == "head")
+    {
+      tr << "/>";
+      if (ser->indent)
+      {
+        tr << ser->END_OF_LINE;
+        emit_indentation(depth+1);
+      }
+
+      tr << "<meta http-equiv=\"content-type\" content=\"" << ser->media_type.c_str() << "; charset=";
+      if (ser->encoding == PARAMETER_VALUE_UTF_8)
+        tr << "UTF-8";
+#ifndef ZORBA_NO_UNICODE
+      else if (ser->encoding == PARAMETER_VALUE_UTF_16)
+        tr << "UTF-16";
+#endif      
+      tr << "\">";
+
+      closed_parent_tag = 1;
+    }
+
+    closed_parent_tag |= emit_node_children(item, depth+1);
+    
+    /*
+     * [Definition: The following XHTML elements have an EMPTY content model: area, base, br, col, 
+     * hr, img, input, link, meta, basefont, frame, isindex, and param.] 
+     *
+     * Given an empty instance of an XHTML element whose content model is not EMPTY (for example, 
+     * an empty title or paragraph) the serializer MUST NOT use the minimized form. That is, it 
+     * MUST output <p></p> and not <p />.
+     */ 
+
+    /*
+     * Given an XHTML element whose content model is EMPTY, the serializer MUST use the minimized 
+     * tag syntax, for example <br />, as the alternative syntax <br></br> allowed by XML gives 
+     * uncertain results in many existing user agents. The serializer MUST include a space before 
+     * the trailing />, e.g. <br />, <hr /> and <img src="karen.jpg"  alt="Karen" />.
+     */
+
+    if (closed_parent_tag)
+      tr << "</" << item->getNodeName()->getStringValue()->c_str() << ">";
+    else
+    {
+      if (!is_html_empty_content_model_element(item))
+        tr << ">" << "</" << item->getNodeName()->getStringValue()->c_str() << ">";
+      else
+        tr << " />";
+    }
+    
+    previous_item = PREVIOUS_ITEM_WAS_NODE;
+  }
+  else
+    xml_emitter::emit_node(item, depth);
 }
 
 
@@ -957,7 +1125,13 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
     store::Item_t      item_qname;
     std::vector< xqpString > aNSList; 
     NsBindings::size_type ns_size = 0;
-    
+
+    if (isFirstElementNode)
+    {
+      // TODO: emit doctype declaration
+      // emit_doctype(qname->getLocalName());
+      isFirstElementNode = false;
+    }    
 
     if(theSAX2ContentHandler)
     {
@@ -1244,6 +1418,8 @@ void serializer::reset()
   include_content_type = PARAMETER_VALUE_NO;
   media_type = "";  
   encoding = PARAMETER_VALUE_UTF_8;
+  doctype_system = "";
+  doctype_public = "";
 }
 
 
@@ -1313,6 +1489,8 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       method = PARAMETER_VALUE_XML;
     else if (value == "html")
       method = PARAMETER_VALUE_HTML;
+	else if (value == "xhtml")
+      method = PARAMETER_VALUE_XHTML;
 	else if (value == "text")
       method = PARAMETER_VALUE_TEXT;
     else
@@ -1353,6 +1531,14 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
     version = value;
     version_has_default_value = false;
   }
+  else if (parameter_name == "doctype-system")
+  {
+    doctype_system = value;
+  }
+  else if (parameter_name == "doctype-public")
+  {
+    doctype_public = value;
+  }
   else
   {
     ZORBA_ERROR( SEPM0016);
@@ -1368,7 +1554,7 @@ void serializer::validate_parameters(void)
       /*||
         (version != "1.0" && doctype_system is specified*/ )
     {
-      // throw SEPM0009
+      // TODO: throw SEPM0009
     }
   }
 
@@ -1402,6 +1588,8 @@ bool serializer::setup(ostream& os)
     e = new xml_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_HTML)
     e = new html_emitter(this, *tr);
+  else if (method == PARAMETER_VALUE_XHTML)
+    e = new xhtml_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_TEXT)
     e = new text_emitter(this, *tr);
   else

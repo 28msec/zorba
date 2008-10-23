@@ -56,6 +56,7 @@ namespace zorba {
       static bool load (int argc, char **argv);
       static Properties* instance();
       std::vector<std::pair<std::string,std::string> > getExternalVars();
+      std::vector<std::pair<std::string,std::string> > getSerializerParameters();
       bool inlineQuery () const { return ! query().empty (); }
       std::string queryFile () const { return getPositionalArgs ().at (0); }
       std::string check_args () {

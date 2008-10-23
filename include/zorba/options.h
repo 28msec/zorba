@@ -16,6 +16,9 @@
 #ifndef ZORBA_OPTIONS_H
 #define ZORBA_OPTIONS_H
 
+#include <vector>
+#include <zorba/zorbastring.h>
+
 /** \brief The optimization level used for optimizing the query. */
 typedef enum {
   ZORBA_OPT_LEVEL_O0, /**< Don't use any optimization. */
@@ -51,6 +54,7 @@ typedef struct Zorba_CompilerHints {
 typedef enum {
   ZORBA_SERIALIZATION_METHOD_XML, 
   ZORBA_SERIALIZATION_METHOD_HTML,
+  ZORBA_SERIALIZATION_METHOD_XHTML,
   ZORBA_SERIALIZATION_METHOD_TEXT
 } Zorba_serialization_method_t;
 
@@ -118,6 +122,8 @@ typedef struct Zorba_SerializerOptions {
   Zorba_omit_xml_declaration_t  omit_xml_declaration;
   Zorba_standalone_t            standalone; 
   Zorba_undeclare_prefixes_t    undeclare_prefixes;
+  zorba::String                 doctype_system;
+  zorba::String                 doctype_public;
 
   /** \brief Default constructor for SerializerOptions which assigns default values to all 
    *         options (C++ only).
@@ -138,7 +144,12 @@ typedef struct Zorba_SerializerOptions {
 #endif
 } Zorba_SerializerOptions_t;
 
-
+/** \brief Helper function to create a Zorba_SerializerOptions from a vector of key / value 
+ *         string pairs 
+ *
+ * \retval The created Zorba_SerializerOptions structure
+ */
+Zorba_SerializerOptions SerializerOptionsFromStringParams(const std::vector<std::pair<std::string,std::string> >& params);
 
 #ifdef __cplusplus
 extern "C" {

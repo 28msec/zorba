@@ -118,6 +118,23 @@ namespace zorba
     return lResult;
   }
   
+  std::vector<std::pair<std::string,std::string> > Properties::getSerializerParameters() {
+    std::vector<std::pair<std::string,std::string> > lResult;
+    std::vector<std::string>::const_iterator lEnd = theSerializerParams.end();
+    for (
+      std::vector<std::string>::const_iterator lIter = theSerializerParams.begin();
+      lIter != lEnd;
+      ++lIter
+    ) {
+      std::string lStr = *lIter;
+      std::string::size_type lPos = lStr.find_first_of("=");
+      std::string lVarName = lStr.substr(0, lPos);
+      std::string lValue = lStr.substr(lPos + 1);
+      lResult.push_back(std::pair<std::string,std::string>(lVarName, lValue));
+    }
+    return lResult;
+  }
+  
   bool Properties::load(int argc, char *argv[]) {
     Properties* lProps = Properties::instance();
     return lProps->loadProps(argc, argv);
