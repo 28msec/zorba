@@ -5,104 +5,67 @@
 
 \section commandLineHelp Help
 
-\subsection cmdGenericOptions Generic options:
+\verbatim
+--timing, -t
+Print timing information. In case of multiple queries the timing information is provided per each query
 
-<table border="0">
- <tr>
-  <td><tt>  --version</tt></td>
-  <td>Print program version.</td>
- </tr>
- <tr>
-  <td><tt>  -h [ --help ]</tt></td>
-  <td>Print the help list.</td>
- </tr>
-</table>
+--output-file, -o
+Write the result to the given file.
 
-\subsection cmdOutputOptions Output options:
+--serialize-html
+Serialize the result as HTML.
 
-<table border="0">
- <tr>
-  <td><tt>  -t [ --timing ]</tt></td>
-  <td>Print timing information. In case of multiple queries the timing information if provided per each query.</td>
- </tr>
- <tr>
-  <td><tt>  -o [ --output-file ] arg</tt></td>
-  <td>Write the result to the given file.</td>
- </tr>
- <tr>
-  <td><tt>  --serialize-html</tt></td>
-  <td>Serialize the result as HTML.</td>
- </tr>
- <tr>
-  <td><tt>  --indent</tt></td>
-  <td>Indent output.</td>
- </tr>
- <tr>
-  <td><tt>  --print-query</tt></td>
-  <td>Print the queries.</td>
- </tr>
- <tr>
-  <td><tt>  --byte-order-mark</tt></td>
-  <td>Set the byte-order-mark for the serializer.</td>
- </tr>
- <tr>
-  <td><tt>  --omit-xml-declaration </tt></td>
-  <td>Omit the XML declaration.</td>
- </tr>
-</table>
+--serialize-text
+Serialize the result as Text.
 
-\subsection cmdStaticContextOptions Static context options:
+--indent
+Indent output.
 
-<table border="0">
- <tr>
-  <td><tt>  --base-uri arg</tt></td>
-  <td>Specify the base URI property of the static context.</td>
- </tr>
- <tr>
-  <td><tt>  --boundary-space arg</tt></td>
-  <td>Sets the boundary-space policy in the static context. Values allowed are strip or preserve.</td>
- </tr>
- <tr>
-  <td><tt>  --default-collation arg</tt></td>
-  <td>Add the given collation and set the value of the default collation in the static context to the given collation.</td>
- </tr>
- <tr>
-  <td><tt>  --construction-mode arg</tt></td>
-  <td>Set the construction mode in the static context. Values allowed are strip or preserve.</td>
- </tr>
- <tr>
-  <td><tt>  --ordering-mode arg</tt></td>
-  <td>Set the ordering mode in the static context. Values allowed are ordered or unordered.</td>
- </tr>
-</table>
+--print-query
+Print the queries.
 
-\subsection cmdExecuteOptions Execute options:
-<table border="0">
- <tr>
-  <td><tt>  -m [ --multiple ] arg</tt></td>
-  <td>Execute the given queries multiple times.</td>
- </tr>
- <tr>
-  <td><tt>  -i [ --inline ] arg</tt></td>
-  <td>Inline the queries. All file options (-f) that are provided will be ignored.</td>
- </tr>
- <tr>
-  <td><tt>  -f [ --file ] arg</tt></td>
-  <td>Treat the arguments as files. In case inline option (-i) is provided, the file option is ignored.</td>
- </tr>
- <tr>
-  <td><tt>  -e [ --external-variable ] arg</tt></td>
-  <td>Provide the value for a variable given a file (name=file) or a value (name:=value).</td>
- </tr>
- <tr>
-  <td><tt>  --context-item arg</tt></td>
-  <td>Provide the context item given an XML document in a file.</td>
- </tr>
- <tr>
-  <td><tt>  --optimization-level arg</tt></td>
-  <td>Optimization level for compiling the query. Values allowed are O0, O1.</td>
- </tr>
-</table>
+--byte-order-mark
+Set the byte-order-mark for the serializer.
+
+--omit-xml-declaration
+Omit the XML declaration from the result.
+ 
+--base-uri
+Set the base URI property of the static context
+
+--boundary-space
+Set the boundary-space policy ('strip' or 'preserve') in the static context.
+
+--default-collation
+Add the given collation and set the value of the default collation in the static context to the given collation.
+
+--construction-mode
+Set the construction mode ('strip' or 'preserve') in the static context.
+
+--ordering-mode
+Set the ordering mode ('ordered' or 'unordered') in the static context
+
+--multiple, -m
+Execute the given queries multiple times.
+
+--query, -q
+Query test or file URI (file://...)
+
+--as-files, -f
+Treat all -q arguments as file paths instead of URIs or inline queries
+
+--external-variable, -e
+Provide the value for a variable given a file (name=file) or a value (name:=value)
+
+--context-item
+Set the context item to the XML document in a given file.
+
+--optimization-level
+Optimization level for the query compiler (O0 or O1)
+
+--parse-only
+Stop after parsing the query
+\endverbatim
 
 \section commandlineexamples Examples
 
@@ -111,7 +74,7 @@ This example shows the use of <tt>-t</tt>, <tt>--print-query</tt> output options
 
 Zorba command:
 \verbatim
-zorba -t --print-query -i "1+1" -i "fn:concat('un', 'grateful')" -i "fn:matches('abracadabra', '^a.*a$')"
+zorba -t --print-query -q "1+1" -q "fn:concat('un', 'grateful')" -q "fn:matches('abracadabra', '^a.*a$')"
 \endverbatim
 
 Output:
@@ -171,7 +134,7 @@ comandline_doc_example_2-test.xq :
 
 %Zorba command:
 \verbatim
-zorba -e input-context=works-mod.xml -f comandline_doc_example_2.xq -f comandline_doc_example_2-test.xq
+zorba -e input-context=works-mod.xml -f -q comandline_doc_example_2.xq -q comandline_doc_example_2-test.xq
 \endverbatim
 
 \Note Make sure you give the correct path to the works-mod.xml, comandline_doc_example_2.xq and comandline_doc_example_2-test.xq files.
