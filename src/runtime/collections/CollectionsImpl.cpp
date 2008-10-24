@@ -438,7 +438,7 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
 {
   store::Collection_t theColl;
   store::Item_t       itemUri, itemPos, itemNode;
-  int                 pos = 0;
+  uint32_t            pos = 0;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -449,7 +449,7 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
     if(consumeNext(itemPos, theChildren[1].getp(), planState))
     {
       if(itemPos->getIntegerValue() < Integer::zero())
-        pos = itemPos->getIntValue();
+        NumConversions::strToUInt(itemPos->getIntegerValue().toString(),pos);
 
       //add the nodes to the newly created collection
       while (consumeNext(itemNode, theChildren[2].getp(), planState))
@@ -493,6 +493,7 @@ ZorbaRemoveNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
 {
   store::Collection_t theColl;
   store::Item_t       item;
+  uint32_t            lpos;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -501,10 +502,12 @@ ZorbaRemoveNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
     theColl = getCollection(planState, item->getStringValue(), loc);
 
     //delete the node
-    if (consumeNext(item, theChildren[1].getp(), planState))
-      if(item->getIntegerValue() >= Integer::zero())
-        theColl.getp()->removeFromCollection(item->getIntValue());
-
+    if (consumeNext(item, theChildren[1].getp(), planState)) {
+      if(item->getIntegerValue() >= Integer::zero()) {
+        NumConversions::strToUInt(item->getIntegerValue().toString(),lpos);
+        theColl.getp()->removeFromCollection(lpos);
+      }
+    }
   }
 
   STACK_END (state);
@@ -535,6 +538,7 @@ ZorbaNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Collection_t theColl;
   store::Item_t       item;
+  uint32_t            lpos;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -546,7 +550,8 @@ ZorbaNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       if(item->getIntegerValue() >= Integer::zero())
       {
-        result = theColl->nodeAt(item->getIntValue());
+        NumConversions::strToUInt(item->getIntegerValue().toString(),lpos);
+        result = theColl->nodeAt(lpos);
         STACK_PUSH(true, state);
       }
     }
