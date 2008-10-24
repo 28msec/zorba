@@ -74,35 +74,37 @@ std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc) {
   return lJSONString.str();
  }
 
- void QueryLoc::fromJSON( json::value *obj )
+ QueryLoc QueryLoc::fromJSON(json::value *obj)
  {
+    QueryLoc loc; 
     if ( (*obj)["fileName"] != 0 )
     {
       std::wstring *lFileName = (*obj)["fileName"]->getstring(L"", true);
       std::string filename( lFileName->begin()+1, lFileName->end()-1 );
-      setFilenameBegin( &filename );
+      loc.setFilenameBegin( &filename );
       delete lFileName;
     }
     
     if ( (*obj)["lineBegin"] != 0 )
     {
-      setLineBegin( (*obj)["lineBegin"]->getinteger() );
+      loc.setLineBegin( (*obj)["lineBegin"]->getinteger() );
     }
     
     if ( (*obj)["columnBegin"] != 0 )
     {
-      setColumnBegin( (*obj)["columnBegin"]->getinteger() );
+      loc.setColumnBegin( (*obj)["columnBegin"]->getinteger() );
     }
 
     if ( (*obj)["lineEnd"] != 0 )
     {
-      setLineEnd( (*obj)["lineEnd"]->getinteger() );
+      loc.setLineEnd( (*obj)["lineEnd"]->getinteger() );
     }
 
     if ( (*obj)["columnEnd"] != 0 )
     {
-      setColumnEnd( (*obj)["columnEnd"]->getinteger() );
+      loc.setColumnEnd( (*obj)["columnEnd"]->getinteger() );
     }
+    return loc;
  }
 #endif
 } // namespace zorba

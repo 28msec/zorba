@@ -45,11 +45,11 @@ class MessageFactory
         //Convert the length field into an integer
         Length length;
         if( is_little_endian() ){
-          length = lengthField.get()[3] | (lengthField.get()[2]<<8) |
-                    (lengthField.get()[1]<<16) | (lengthField.get()[0]<<24);
+          length = lengthField[3] | (lengthField[2]<<8) |
+                    (lengthField[1]<<16) | (lengthField[0]<<24);
         } else {
-          length = lengthField.get()[0] | (lengthField.get()[1]<<8) |
-                    (lengthField.get()[2]<<16) | (lengthField.get()[3]<<24);
+          length = lengthField[0] | (lengthField[1]<<8) |
+                    (lengthField[2]<<16) | (lengthField[3]<<24);
         }
         length -= MESSAGE_HEADER_SIZE;
         //allocate memory for the whole packet

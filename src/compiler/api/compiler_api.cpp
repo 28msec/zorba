@@ -120,18 +120,20 @@ XQueryCompiler::normalize(parsenode_t aParsenode)
   if(theCompilerCB->m_debugger != 0)
   {
     theCompilerCB->m_debugger->theClassification = classify(*aParsenode);
-    //std::map<std::stack<unsigned int>, const QueryLoc> lClassification = theCompilerCB->m_debugger->theClassification;
-    //std::map<std::stack<unsigned int>, const QueryLoc>::iterator it;
-    //for(it=lClassification.begin(); it!=lClassification.end(); ++it)
-    //{
-    //  std::stack<unsigned int> s(it->first);
-    //  while(!s.empty())
-    //  {
-    //    std::cerr << s.top();
-    //    s.pop();
-    //  }
-    //  std::cerr << ' ' << it->second << std::endl;
-    //}
+#if 0
+    std::map<std::stack<unsigned int>, const QueryLoc> lClassification = theCompilerCB->m_debugger->theClassification;
+    std::map<std::stack<unsigned int>, const QueryLoc>::iterator it;
+    for(it=lClassification.begin(); it!=lClassification.end(); ++it)
+    {
+      std::stack<unsigned int> s(it->first);
+      while(!s.empty())
+      {
+        std::cerr << s.top();
+        s.pop();
+      }
+      std::cerr << ' ' << it->second << std::endl;
+    }
+#endif
   }
 #endif
   expr_t lExpr = translate (*aParsenode, theCompilerCB);

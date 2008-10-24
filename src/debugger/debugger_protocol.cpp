@@ -394,8 +394,7 @@ SetMessage::SetMessage( Byte * aMessage, const unsigned int aLength ):
     {
       if ( getValue(*it, "location") != 0 )
       {
-        QueryLoc loc;
-        loc.fromJSON(getValue(*it, "location"));
+        QueryLoc loc = QueryLoc::fromJSON(getValue(*it, "location"));
         if ( getValue(*it, "id") == 0 )
         {
           throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
@@ -568,7 +567,7 @@ SuspendedEvent::SuspendedEvent( Byte * aMessage, const unsigned int aLength ):
   
   if ( location  != 0 )
   {
-    theLocation.fromJSON( location );
+    theLocation = QueryLoc::fromJSON( location );
   } else {
     throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
   }
@@ -870,8 +869,7 @@ FrameReply::FrameReply(Byte* aMessage, const unsigned int aLength)
     {
       if(getValue(*it, "location") != 0)
       {
-        QueryLoc loc;
-        loc.fromJSON(getValue(*it, "location"));
+        QueryLoc loc = QueryLoc::fromJSON(getValue(*it, "location"));
         if(getValue(*it, "label") == 0)
         {
           throw MessageFormatException("Invalid JSON format for Stack");
@@ -947,8 +945,7 @@ SetReply::SetReply(Byte* aMessage, const unsigned int aLength): ReplyMessage(aMe
     {
       if(getValue(*it, "location") != 0)
       {
-        QueryLoc loc;
-        loc.fromJSON(getValue(*it, "location"));
+        QueryLoc loc = QueryLoc::fromJSON(getValue(*it, "location"));
         if(getValue(*it, "id") == 0)
         {
           throw MessageFormatException("Invalid JSON format for Set breakpoint reply message.");

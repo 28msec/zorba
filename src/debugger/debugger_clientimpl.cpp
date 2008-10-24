@@ -95,68 +95,72 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
     ZorbaDebuggerClientImpl * lClient = (ZorbaDebuggerClientImpl *) aClient;
     assert(lClient != 0);
 
-    std::auto_ptr<TCPSocket> lSocket( lClient->theEventServerSocket->accept() );
-    
-    while( true )
+    try
     {
-      std::auto_ptr<AbstractMessage> lMessage(MessageFactory::buildMessage( lSocket.get() ));
-      SuspendedEvent  *lSuspendedMsg;
-      EvaluatedEvent  *lEvaluatedEvent;
-      if ( ( lSuspendedMsg = dynamic_cast< SuspendedEvent * > ( lMessage.get() ) ) )
+      std::auto_ptr<TCPSocket> lSocket( lClient->theEventServerSocket->accept() );
+      while( true )
       {
-        lClient->theExecutionStatus = QUERY_SUSPENDED;
-        lClient->theRemoteLocation  = lSuspendedMsg->getLocation();
-        if ( lClient->theEventHandler )
+        std::auto_ptr<AbstractMessage> lMessage(MessageFactory::buildMessage( lSocket.get() ));
+        SuspendedEvent  *lSuspendedMsg;
+        EvaluatedEvent  *lEvaluatedEvent;
+        if ( ( lSuspendedMsg = dynamic_cast< SuspendedEvent * > ( lMessage.get() ) ) )
         {
-          QueryLocationImpl loc( lSuspendedMsg->getLocation() );
-          lClient->theEventHandler->suspended( loc, (SuspendedBy)lSuspendedMsg->getCause() );
-        }
-      } else if ( dynamic_cast< StartedEvent * > ( lMessage.get() ) ) {
-        lClient->theExecutionStatus = QUERY_RUNNING;
-        if ( lClient->theEventHandler )
-        {
-          lClient->theEventHandler->started();
-        }
-      } else if ( dynamic_cast< ResumedEvent * > ( lMessage.get() ) ) {
-        lClient->theExecutionStatus = QUERY_RUNNING;
-        if ( lClient->theEventHandler )
-        {
-          lClient->theEventHandler->resumed();
-        }
-      } else if ( dynamic_cast< TerminatedEvent * > ( lMessage.get() ) ) {
-        if( lClient->theExecutionStatus != QUERY_IDLE )
-        {
-          lClient->theExecutionStatus = QUERY_TERMINATED;
+          lClient->theExecutionStatus = QUERY_SUSPENDED;
+          lClient->theRemoteLocation  = lSuspendedMsg->getLocation();
           if ( lClient->theEventHandler )
           {
-            lClient->theEventHandler->terminated();
+            QueryLocationImpl loc( lSuspendedMsg->getLocation() );
+            lClient->theEventHandler->suspended( loc, (SuspendedBy)lSuspendedMsg->getCause() );
           }
-          break;
-        }
-      } else if ( (lEvaluatedEvent = dynamic_cast< EvaluatedEvent * >( lMessage.get() ))) {
-        if ( lClient->theEventHandler )
-        {
-          String lExpr( lEvaluatedEvent->getExpr() );
-          String lError( lEvaluatedEvent->getError() );
-          if(lError.length() > 0)
+        } else if ( dynamic_cast< StartedEvent * > ( lMessage.get() ) ) {
+          lClient->theExecutionStatus = QUERY_RUNNING;
+          if ( lClient->theEventHandler )
           {
-            lClient->theEventHandler->evaluated(lExpr, lError);
-          } else {
-            std::map<String, String> lValuesAndTypes;
-            std::map<xqpString, xqpString> lMap = lEvaluatedEvent->getValuesAndTypes();
-            std::map<xqpString, xqpString>::const_iterator it;
-            for(it=lMap.begin(); it!=lMap.end(); ++it )
+            lClient->theEventHandler->started();
+          }
+        } else if ( dynamic_cast< ResumedEvent * > ( lMessage.get() ) ) {
+          lClient->theExecutionStatus = QUERY_RUNNING;
+          if ( lClient->theEventHandler )
+          {
+            lClient->theEventHandler->resumed();
+          }
+        } else if ( dynamic_cast< TerminatedEvent * > ( lMessage.get() ) ) {
+          if( lClient->theExecutionStatus != QUERY_IDLE )
+          {
+            lClient->theExecutionStatus = QUERY_TERMINATED;
+            if ( lClient->theEventHandler )
             {
-              xqpString test(it->first);
-              xqpString filter = test.replace("&quot;", "\"", "");
-              String lResult(filter);
-              String lType(it->second);
-              lValuesAndTypes.insert(std::make_pair(lResult, lType));
+              lClient->theEventHandler->terminated();
             }
-            lClient->theEventHandler->evaluated(lExpr, lValuesAndTypes);
+            break;
+          }
+        } else if ( (lEvaluatedEvent = dynamic_cast< EvaluatedEvent * >( lMessage.get() ))) {
+          if ( lClient->theEventHandler )
+          {
+            String lExpr( lEvaluatedEvent->getExpr() );
+            String lError( lEvaluatedEvent->getError() );
+            if(lError.length() > 0)
+            {
+              lClient->theEventHandler->evaluated(lExpr, lError);
+            } else {
+              std::map<String, String> lValuesAndTypes;
+              std::map<xqpString, xqpString> lMap = lEvaluatedEvent->getValuesAndTypes();
+              std::map<xqpString, xqpString>::const_iterator it;
+              for(it=lMap.begin(); it!=lMap.end(); ++it )
+              {
+                xqpString test(it->first);
+                xqpString filter = test.replace("&quot;", "\"", "");
+                String lResult(filter);
+                String lType(it->second);
+                lValuesAndTypes.insert(std::make_pair(lResult, lType));
+              }
+              lClient->theEventHandler->evaluated(lExpr, lValuesAndTypes);
+            }
           }
         }
       }
+    } catch(std::exception &e) {
+      //do nothing...
     }
     return 0;
   }
@@ -271,10 +275,11 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
     QueryLoc loc;
     loc.setLineBegin( aLineNo );
     theLastId++;
+    QueryLocation* lLocation = addBreakpoint(loc);
     std::stringstream lB;
-    lB << "line:" << aLineNo;
+    lB << lLocation;
     theBreakpoints.insert( std::make_pair( theLastId, lB.str() ) );
-    return addBreakpoint(loc);
+    return lLocation;
   }
   
   QueryLocation* ZorbaDebuggerClientImpl::addBreakpoint( const String &aFileName, const unsigned int aLineNo )
@@ -285,10 +290,11 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
     loc.setFilenameBegin( &lTmp );
     loc.setLineBegin( aLineNo );
     theLastId++;
+    QueryLocation* lLocation = addBreakpoint(loc);
     std::stringstream lB;
-    lB << lFilename << ':' << aLineNo;
+    lB << lLocation;
     theBreakpoints.insert( std::make_pair( theLastId, lB.str() ) );
-    return addBreakpoint(loc);
+    return lLocation;
   }
 
   QueryLocation* ZorbaDebuggerClientImpl::addBreakpoint(QueryLoc& aLocation)

@@ -513,8 +513,7 @@ const QueryLoc ZorbaDebugger::addBreakpoint(const QueryLoc& aLocation)
     {
       if( it->second.getFilename() == lFilename &&
           it->second.getLineBegin() == lLineNumber &&
-          it->second.getColumnBegin() != 0 && 
-          (lBreakpoint.first.empty() || lBreakpoint.first.size() > it->first.size()))
+          lBreakpoint.first.empty())//(lBreakpoint.first.empty() || lBreakpoint.first.size() > it->first.size()))
       {
         lBreakpoint.first = it->first;
         lBreakpoint.second = it->second;  

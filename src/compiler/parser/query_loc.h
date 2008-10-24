@@ -70,7 +70,7 @@ public:
   
   xqpString toJSON() const;
   
-  void fromJSON( json::value *obj );
+  static QueryLoc fromJSON(json::value *obj);
  
   bool equals(const QueryLoc& loc) const
   {
