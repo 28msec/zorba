@@ -2329,7 +2329,8 @@ void *begin_visit (const VFO_DeclList& v) {
     }
 
     store::Item_t qname = sctx_p->lookup_fn_qname(n->get_name()->get_prefix(),
-                                                  n->get_name()->get_localname());
+                                                  n->get_name()->get_localname(),
+                                                  n->get_location ());
     {
       xqp_string ns = qname->getNamespace ();
       if (ns == XQUERY_FN_NS || ns == XML_NS || ns == XML_SCHEMA_NS || ns == XSI_NS)
@@ -2547,7 +2548,7 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
   string prefix = qn_h->get_prefix();
   string fname = qn_h->get_localname();
 
-  const xqpStringStore *fn_ns = sctx_p->lookup_fn_qname(prefix, fname)->getNamespace ();
+  const xqpStringStore *fn_ns = sctx_p->lookup_fn_qname(prefix, fname, loc)->getNamespace ();
 
   if (fn_ns->byteEqual(XQUERY_FN_NS)) {
     if (fname == "position" && sz == 0)  {

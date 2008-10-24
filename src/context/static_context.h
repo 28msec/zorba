@@ -89,9 +89,7 @@ public:
   }
   bool lookup_elem_namespace(const xqp_string pfx, xqp_string& ns) const;
 
-  store::Item_t lookup_fn_qname (xqp_string pfx, xqp_string local) const {
-    return lookup_qname (default_function_namespace (), pfx, local);
-  }
+  store::Item_t lookup_fn_qname (xqp_string pfx, xqp_string local, const QueryLoc& loc) const;
 
   store::Item_t lookup_var_qname (xqp_string varname) const {
     return lookup_qname ("", varname);

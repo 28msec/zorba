@@ -295,6 +295,16 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
       return true;
   }
 
+  store::Item_t static_context::lookup_fn_qname (xqp_string pfx, xqp_string local, const QueryLoc& loc) const {
+    store::Item_t ret;
+    try {
+    ret = lookup_qname (default_function_namespace (), pfx, local);
+  } catch (error::ZorbaError& e) {// rethrow with current location
+    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+  }
+    return ret;
+  }
+
   void static_context::bind_ns (xqp_string prefix, xqp_string ns, const XQUERY_ERROR& err)
   {
     bind_str2 ("ns:", prefix, ns, err);
