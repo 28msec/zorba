@@ -58,6 +58,9 @@ class XmlDataManagerImpl : public XmlDataManager
   loadDocument(const String& local_file_uri, ErrorHandler* aErrorHandler);
 
   Item
+  loadDocumentFromUri(const String& aUri);
+
+  Item
   getDocument(const String& uri);
 
   Item

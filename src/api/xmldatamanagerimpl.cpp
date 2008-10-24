@@ -31,7 +31,11 @@
 #include "store/api/item.h"
 #include "system/globalenv.h"
 #include "store/api/store.h"
+#include "store/api/item_factory.h"
 #include "zorbatypes/xqpstring.h"
+
+#include "context/static_context.h"
+#include "context/internal_uri_resolvers.h"
 
 namespace zorba {
 
@@ -149,6 +153,37 @@ XmlDataManagerImpl::loadDocument(
     std::ifstream lFileIn(lString->c_str());
 
     return loadDocument(local_file_uri, lFileIn, aErrorHandler);
+  }
+  ZORBA_DM_CATCH
+  return Item();
+}
+
+Item
+XmlDataManagerImpl::loadDocumentFromUri(const String& aUri)
+{
+  SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
+
+  ErrorHandler* aErrorHandler = NULL;
+
+  ZORBA_DM_TRY
+  {
+    InternalDocumentURIResolver   *uri_resolver;
+    uri_resolver = GENV_ROOT_STATIC_CONTEXT.get_document_uri_resolver();
+
+    xqpStringStore_t str_uri = Unmarshaller::getInternalString(aUri);
+
+    zorba::store::ItemFactory    *item_factory = GENV_ITEMFACTORY;
+    store::Item_t   uriItem;
+
+    item_factory->createAnyURI(uriItem, str_uri);
+
+    store::Item_t   docItem;
+    docItem = uri_resolver->resolve(uriItem, &GENV_ROOT_STATIC_CONTEXT);
+    
+    if(docItem.isNull())
+      return Item();
+
+    return Item(docItem);
   }
   ZORBA_DM_CATCH
   return Item();

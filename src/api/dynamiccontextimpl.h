@@ -79,6 +79,9 @@ public:
         const Item& aItem );
 
   virtual bool
+  setVariableAsDocument( const String& aQName, const String& xml_uri );
+
+  virtual bool
   setVariable(
         const String& aQName,
         const ResultIterator_t& aResultIterator );
@@ -95,6 +98,9 @@ public:
   virtual bool
   setContextItemAsDocument ( const String& aDocURI, 
                              std::auto_ptr<std::istream> aInStream );
+
+  virtual bool
+  setContextItemAsDocument ( const String& aDocURI );
 
   virtual bool
   setCurrentDateTime( const Item& aDateTimeItem );

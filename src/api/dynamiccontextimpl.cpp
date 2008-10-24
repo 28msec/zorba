@@ -33,6 +33,8 @@
 #include "runtime/util/item_iterator.h"
 #include "store/api/item.h"
 #include "store/api/store.h"
+#include "store/api/item_factory.h"
+#include "context/internal_uri_resolvers.h"
 
 
 namespace zorba {
@@ -92,6 +94,35 @@ DynamicContextImpl::setVariable(
   return false;
 }
 
+bool
+DynamicContextImpl::setVariableAsDocument( const String& aQName, const String& xml_uri )
+{
+  ZORBA_DCTX_TRY
+  {
+    checkNoIterators();
+
+    xqpString uriString (Unmarshaller::getInternalString(xml_uri));
+    InternalDocumentURIResolver   *uri_resolver;
+    uri_resolver = theStaticContext->get_document_uri_resolver();
+
+    store::Item_t   uriItem;
+
+    zorba::store::ItemFactory    *item_factory = GENV_ITEMFACTORY;
+
+    xqpStringStore_t    uriStore = uriString.getStore();
+    item_factory->createAnyURI(uriItem, uriStore);
+
+    store::Item_t   docItem;
+    docItem = uri_resolver->resolve(uriItem, theStaticContext);
+    
+    if(docItem.isNull())
+      return false;
+
+    return setVariable(aQName, Item(docItem));
+  }
+  ZORBA_DCTX_CATCH
+  return false;
+}
 
 bool
 DynamicContextImpl::setVariable(
@@ -179,6 +210,37 @@ DynamicContextImpl::setContextItemAsDocument (
                                                                                                         
     setContextItem ( Item(lDocItem) );                                                                  
     return true;                                                                                        
+  }                                                                                                     
+  ZORBA_DCTX_CATCH
+  return false;
+}
+
+bool
+DynamicContextImpl::setContextItemAsDocument (
+    const String& aDocURI)
+{
+  ZORBA_DCTX_TRY                                                                                        
+  {                                                                                                     
+    checkNoIterators();                                                                                 
+                                                                                                        
+    xqpString uriString (Unmarshaller::getInternalString(aDocURI));
+    InternalDocumentURIResolver   *uri_resolver;
+    uri_resolver = theStaticContext->get_document_uri_resolver();
+
+    store::Item_t   uriItem;
+
+    zorba::store::ItemFactory    *item_factory = GENV_ITEMFACTORY;
+
+    xqpStringStore_t    uriStore = uriString.getStore();
+    item_factory->createAnyURI(uriItem, uriStore);
+
+    store::Item_t   docItem;
+    docItem = uri_resolver->resolve(uriItem, theStaticContext);
+    
+    if(docItem.isNull())
+      return false;
+
+    return setContextItem ( Item(docItem) );                                                                  
   }                                                                                                     
   ZORBA_DCTX_CATCH
   return false;
