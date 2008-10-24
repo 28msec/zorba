@@ -91,7 +91,7 @@ namespace zorba {
 #endif
     } 
     if (lURI.get_scheme() == "http") {
-#ifdef ZORBA_HAVE_CURL_H
+#ifdef ZORBA_WITH_REST
       // retrieve web file
       xqp_string xmlString;
       int result = http_get(lURI.toString().c_str(), xmlString);
@@ -125,7 +125,7 @@ namespace zorba {
       // result can't be null, because we already asked the store if he has it
       ZORBA_ASSERT(lResultDoc != NULL);
 #else
-      ZORBA_ERROR_DESC_OSS(FODC0002, "Can't retrieve a http:// URI " << lURI.toString());
+      ZORBA_ERROR_DESC_OSS(FODC0002, "Can't retrieve the http:// URI " << lURI.toString());
 #endif
     } 
 
