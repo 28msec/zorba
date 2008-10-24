@@ -737,7 +737,7 @@ void XQueryImpl::setDebugMode( bool aDebugMode )
   }
 }
 
-bool XQueryImpl::getDebugMode() const
+bool XQueryImpl::isDebugMode() const
 {
   if ( theDebugger == 0 )
   {

@@ -107,7 +107,7 @@ bool debugger_example_2(Zorba *aZorba)
   XQuery_t lQuery = aZorba->createQuery();
   lQuery->setFileName("foo.xq");
   lQuery->setDebugMode(true);
-  assert(lQuery->getDebugMode());
+  assert(lQuery->isDebugMode());
   lQuery->compile("1+2");
   lQuery->debug( 8000, 9000 );
   lQuery->close();

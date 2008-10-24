@@ -121,7 +121,7 @@ namespace zorba{
        * @return ZorbaDebuggerClient the newly created debugger client instance.
        */
       static ZorbaDebuggerClient*
-      createClient( unsigned short aRequestPortno, unsigned short aEventPortno );
+      createClient( unsigned short aRequestPortno = 8000, unsigned short aEventPortno = 9000 );
 
       /** \brief Gets a new instance of Zorba debugger client.
        *
@@ -140,7 +140,7 @@ namespace zorba{
        * @return ZorbaDebuggerClient the newly created debugger client instance.
        */
        static ZorbaDebuggerClient*
-       createClient(std::string aServerAddress, unsigned short aRequestPortno, unsigned short aEventPortno );
+       createClient(std::string aServerAddress, unsigned short aRequestPortno = 8000, unsigned short aEventPortno = 9000 );
 
 
 /** \brief Register a debuggere vent handler to which runtime events on the remote 

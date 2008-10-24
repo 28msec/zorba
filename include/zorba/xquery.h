@@ -306,7 +306,7 @@ namespace zorba {
        * @return true if the debug mode is enabled, false otherwise.
        */
       virtual bool
-      getDebugMode() const = 0;
+      isDebugMode() const = 0;
 
       /** \brief Run the query with the debugger server.
        *

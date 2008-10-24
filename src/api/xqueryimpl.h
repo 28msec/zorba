@@ -267,7 +267,7 @@ class XQueryImpl : public XQuery
   setDebugMode( bool aDebugMode );
 
   bool
-  getDebugMode() const;
+  isDebugMode() const;
 
   void
   debug( unsigned short aCommandPort, unsigned short anEventPort );
