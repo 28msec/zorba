@@ -74,7 +74,20 @@ namespace zorba {
        *
        */
       virtual Item
-      loadDocument(const String& aLocalFile) = 0;
+      loadDocument(const String& aUri) = 0;
+
+      /** \brief Load a document from a Uri.
+       *
+       * This function loads a document from a Uri. 
+       * The Uri can be a "file://" or "http://".
+       *
+       * @param aUri the Uri of the document as String.
+       * @return Item the document as an Item.
+       * @throws ZorbaException if an error occurs.
+       *
+       */
+      virtual Item
+      loadDocumentFromUri(const String& aUri) = 0;
 
       /** \brief Get the document identified by the given URI.
        *
