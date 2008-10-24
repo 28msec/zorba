@@ -1,7 +1,8 @@
 /** \page commandline The Zorba Command Line Utility
 
 \section commandLineUsage Usage
-%zorba [options]  [-i Query ...] | [-f QueryFile ... ]
+%zorba [options] [-q Inline_Query ...] or \n
+%zorba [options] -f [-q Query_File ...]
 
 \section commandLineHelp Help
 
