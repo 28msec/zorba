@@ -64,7 +64,6 @@
 #cmakedefine ZORBA_HAVE_FLEXLEXER_H
 
 /* rest support */
-#cmakedefine ZORBA_HAVE_CURL_H
 #cmakedefine ZORBA_WITH_REST
 #cmakedefine ZORBA_WITH_SSL
 

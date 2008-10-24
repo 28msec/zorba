@@ -31,7 +31,6 @@ IF (NOT APPLE)
   # execinfo is found by this macro when cross compiling for Mac OS X 10.4. although it shouldn't be found for this platform
   CHECK_INCLUDE_FILES ("execinfo.h"                   ZORBA_HAVE_EXECINFO_H)
 ENDIF (NOT APPLE)
-CHECK_INCLUDE_FILES ("curl/curl.h"                  ZORBA_HAVE_CURL_H)
 CHECK_INCLUDE_FILE_CXX ("FlexLexer.h"               ZORBA_HAVE_FLEXLEXER_H)
 
 CHECK_FUNCTION_EXISTS (strtof                     ZORBA_HAVE_STRTOF_FUNCTION)
