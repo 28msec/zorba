@@ -45,28 +45,29 @@ FnDebugIterator::FnDebugIterator(const QueryLoc& loc,
   bool FnDebugIterator::nextImpl( store::Item_t& result, PlanState& planState ) const
   {
     PlanIteratorState * state;
-
+    updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+    
     DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
  
     if ( theDebugger->hasToSuspend() )
     {
-      updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+      //updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
       assert(theDebugger->theRuntimeThread);
       theDebugger->theRuntimeThread->suspend();
     } else if ( theDebugger->hasToStepOver() ) {
-      updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+      //updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
       theDebugger->stepOver();
       theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
       assert(theDebugger->theRuntimeThread);
       theDebugger->theRuntimeThread->suspend();
     } else if ( theDebugger->hasToStepOut() ) {
-      updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+      //updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
       theDebugger->stepOut();
       theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
       assert(theDebugger->theRuntimeThread);
       theDebugger->theRuntimeThread->suspend();
     } else if ( theDebugger->hasToStepInto() ) {
-      updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+      //updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
       theDebugger->stepInto();
       theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
       assert(theDebugger->theRuntimeThread);
