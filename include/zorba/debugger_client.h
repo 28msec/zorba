@@ -214,7 +214,7 @@ namespace zorba{
        */
       virtual void stepOut() = 0;
 
-      /** \breif Step over the expression
+      /** \brief Step over the expression
        *
        */
       virtual void stepOver() = 0;
@@ -314,7 +314,7 @@ namespace zorba{
       virtual std::list<Variable>
       getGlobalVariables() const = 0;
 
-      /** \breif Get the runtime stack frame.
+      /** \brief Get the runtime stack frame.
        *
        * @return the runtime stack frame.
        */
