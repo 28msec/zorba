@@ -310,158 +310,176 @@ int _tmain(int argc, _TCHAR* argv[])
       return 3;
     }
 
-#ifdef ZORBA_DEBUGGER
-    if ( lProperties.debugServer() || lProperties.debugClient() )
-    {
-      //TODO: be able to debug inline query.
-      if(fname.empty())
-      {
-        std::cerr << "Cannot debug inline queries." << std::endl; 
-        return 0;
-      }
-      std::auto_ptr<std::istream> lXQ(new std::ifstream(path.c_str()));
-      std::string lFileName(path.get_path ());
-      
+    if (lProperties.parseOnly()) {
       try {
-        lQuery = lZorbaInstance->createQuery();
-        zorba::StaticContext_t lStaticContext = lZorbaInstance->createStaticContext();
-        // populate the static context with information passed as parameter
-        if (!populateStaticContext(lStaticContext, &lProperties)) {
-          lProperties.printHelp(std::cout);
+        lQuery = lZorbaInstance->createQuery ();
+        if (asFile)
+          lQuery->setFileName (path.get_path ());
+        else {
+          // set the cwd to be used as base-uri in order to make the
+          // doc function doc("mydoc.xml") work
+          zorba::filesystem_path p;
+          std::stringstream lTmp;
+          lTmp << "file:///" << p.c_str() << "/";
+          lStaticContext->setBaseURI(lTmp.str());
+        }
+        lQuery->parse (*qfile);
+      } catch (zorba::ZorbaException& ze) {
+        std::cerr << ze << std::endl;
+        return 6;
+      }
+
+    } else {
+#ifdef ZORBA_DEBUGGER
+      if ( lProperties.debugServer() || lProperties.debugClient() )
+      {
+        //TODO: be able to debug inline query.
+        if(fname.empty())
+        {
+          std::cerr << "Cannot debug inline queries." << std::endl; 
           return 0;
         }
-        lQuery->setFileName(lFileName);
-        lQuery->setDebugMode(true);
-        Zorba_CompilerHints lHints;
-        lHints.opt_level = ZORBA_OPT_LEVEL_O0;
-        lQuery->compile(*lXQ.get(), lHints);
-        // populate the dynamic context
-        zorba::DynamicContext* lDynamicContext = lQuery->getDynamicContext();
-        try 
-        {
-          if (!populateDynamicContext(lDynamicContext, &lProperties))
-          {
+        std::auto_ptr<std::istream> lXQ(new std::ifstream(path.c_str()));
+        std::string lFileName(path.get_path ());
+        
+        try {
+          lQuery = lZorbaInstance->createQuery();
+          zorba::StaticContext_t lStaticContext = lZorbaInstance->createStaticContext();
+          // populate the static context with information passed as parameter
+          if (!populateStaticContext(lStaticContext, &lProperties)) {
             lProperties.printHelp(std::cout);
             return 0;
           }
-        } catch (zorba::QueryException& qe) {
-          std::cerr << qe << std::endl;
-          return 0;
-        } catch (zorba::ZorbaException& ze) {
-          std::cerr << ze << std::endl;
+          lQuery->setFileName(lFileName);
+          lQuery->setDebugMode(true);
+          Zorba_CompilerHints lHints;
+          lHints.opt_level = ZORBA_OPT_LEVEL_O0;
+          lQuery->compile(*lXQ.get(), lHints);
+          // populate the dynamic context
+          zorba::DynamicContext* lDynamicContext = lQuery->getDynamicContext();
+          try 
+          {
+            if (!populateDynamicContext(lDynamicContext, &lProperties))
+            {
+              lProperties.printHelp(std::cout);
+              return 0;
+            }
+          } catch (zorba::QueryException& qe) {
+            std::cerr << qe << std::endl;
+            return 0;
+          } catch (zorba::ZorbaException& ze) {
+            std::cerr << ze << std::endl;
+            return 0;
+          }
+        } catch( StaticException &e ) {
+          std::cerr << e << std::endl;
           return 0;
         }
-      } catch( StaticException &e ) {
-        std::cerr << e << std::endl;
-        return 0;
-      }
-      //Debugger server arguments
-      std::auto_ptr<server_args> lArgs(new server_args());
-      lArgs->theRequestPort = lProperties.getRequestPort();
-      lArgs->theEventPort = lProperties.getEventPort();
-      lArgs->theQuery = lQuery;
-   
-     // debug server
-     if ( lProperties.debugServer() )
-     {
-       std::cout << "Zorba XQuery debugger server." << std::endl;
-       std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
-       std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
-       server((void *)lArgs.get());
-       return 0;  
-     } else if (lProperties.debugClient()) {
-       std::cout << "Zorba XQuery debugger client." << std::endl;
-       std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
-       std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
-       //start the server thread
- #ifdef ZORBA_HAVE_PTHREAD_H
-       pthread_t lServerThread;
-       if ( pthread_create( &lServerThread, 0, server, lArgs.get() ) != 0 )
- #else
-       HANDLE lServerThread;
-       if ( ( lServerThread = CreateThread( 0, 0, server, lArgs.get(), 0, 0 ) ) == 0 )
- #endif
+        //Debugger server arguments
+        std::auto_ptr<server_args> lArgs(new server_args());
+        lArgs->theRequestPort = lProperties.getRequestPort();
+        lArgs->theEventPort = lProperties.getEventPort();
+        lArgs->theQuery = lQuery;
+     
+       // debug server
+       if ( lProperties.debugServer() )
        {
-         std::cerr << "Couldn't start the server thread" << std::endl;
-         return 7;
-       }
-       //Try to connect 3 times on the server thread
-       for ( unsigned int i = 0; i < 3; i++ )
-       {
-         try
+         std::cout << "Zorba XQuery debugger server." << std::endl;
+         std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
+         std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
+         server((void *)lArgs.get());
+         return 0;  
+       } else if (lProperties.debugClient()) {
+         std::cout << "Zorba XQuery debugger client." << std::endl;
+         std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
+         std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
+         //start the server thread
+#ifdef ZORBA_HAVE_PTHREAD_H
+         pthread_t lServerThread;
+         if ( pthread_create( &lServerThread, 0, server, lArgs.get() ) != 0 )
+#else
+         HANDLE lServerThread;
+         if ( ( lServerThread = CreateThread( 0, 0, server, lArgs.get(), 0, 0 ) ) == 0 )
+#endif
          {
-           //wait 1 second before trying to reconnect
-           sleep(1);
-           std::auto_ptr<ZorbaDebuggerClient> debuggerClient(ZorbaDebuggerClient::createClient(lProperties.getRequestPort(), lProperties.getEventPort()));
-           CommandLineEventHandler lEventHandler( lFileName, lXQ.get(), std::cin, std::cout, debuggerClient.get(), !lProperties.hasNoSyntaxHighlighting() );
- #ifdef SIGINT /* not all system have SIGINT */
-           signal( SIGINT, suspend );
- #endif
-           debuggerClient->registerEventHandler( &lEventHandler );
- #ifdef ZORBA_HAVE_PTHREAD_H
-           pthread_join( lServerThread, 0 );
-           pthread_cancel( lServerThread );
-           pthread_detach( lServerThread );
- #else
-           WaitForSingleObject( lServerThread, INFINITE );
-           CloseHandle( lServerThread );
- #endif
-         } catch( std::exception &e ) {
-           if ( i < 2 ){ continue; }
-           std::cerr << "Could not start the debugger client: " << std::endl;
-           std::cerr << e.what() << std::endl;
+           std::cerr << "Couldn't start the server thread" << std::endl;
+           return 7;
          }
-         return 0;
+         //Try to connect 3 times on the server thread
+         for ( unsigned int i = 0; i < 3; i++ )
+         {
+           try
+           {
+             //wait 1 second before trying to reconnect
+             sleep(1);
+             std::auto_ptr<ZorbaDebuggerClient> debuggerClient(ZorbaDebuggerClient::createClient(lProperties.getRequestPort(), lProperties.getEventPort()));
+             CommandLineEventHandler lEventHandler( lFileName, lXQ.get(), std::cin, std::cout, debuggerClient.get(), !lProperties.hasNoSyntaxHighlighting() );
+#ifdef SIGINT /* not all system have SIGINT */
+             signal( SIGINT, suspend );
+#endif
+             debuggerClient->registerEventHandler( &lEventHandler );
+#ifdef ZORBA_HAVE_PTHREAD_H
+             pthread_join( lServerThread, 0 );
+             pthread_cancel( lServerThread );
+             pthread_detach( lServerThread );
+#else
+             WaitForSingleObject( lServerThread, INFINITE );
+             CloseHandle( lServerThread );
+#endif
+           } catch( std::exception &e ) {
+             if ( i < 2 ){ continue; }
+             std::cerr << "Could not start the debugger client: " << std::endl;
+             std::cerr << e.what() << std::endl;
+           }
+           return 0;
+         }
        }
-     }
-    }
+      }
 #endif
 
-    try 
-    {
-      Zorba_CompilerHints lHints;
-
-      // default is O1
-      if (lProperties.optimizationLevel() == "O0")
-        lHints.opt_level = ZORBA_OPT_LEVEL_O0;
-
-      if (lTiming) 
+      try 
       {
-        zorba::DateTime::getLocalTime(lStartCompileTime);
-        zorbatm::get_timeinfo (lStartCompileTimeInfo);
-      }
+        Zorba_CompilerHints lHints;
 
-      lQuery = lZorbaInstance->createQuery ();
-      if (asFile)
-        lQuery->setFileName (path.get_path ());
-      else {
-        // set the cwd to be used as base-uri in order to make the
-        // doc function doc("mydoc.xml") work
-        zorba::filesystem_path p;
-        std::stringstream lTmp;
-        lTmp << "file:///" << p.c_str() << "/";
-        lStaticContext->setBaseURI(lTmp.str());
+        // default is O1
+        if (lProperties.optimizationLevel() == "O0")
+          lHints.opt_level = ZORBA_OPT_LEVEL_O0;
+
+        if (lTiming) 
+        {
+          zorba::DateTime::getLocalTime(lStartCompileTime);
+          zorbatm::get_timeinfo (lStartCompileTimeInfo);
+        }
+
+        lQuery = lZorbaInstance->createQuery ();
+        if (asFile)
+          lQuery->setFileName (path.get_path ());
+        else {
+          // set the cwd to be used as base-uri in order to make the
+          // doc function doc("mydoc.xml") work
+          zorba::filesystem_path p;
+          std::stringstream lTmp;
+          lTmp << "file:///" << p.c_str() << "/";
+          lStaticContext->setBaseURI(lTmp.str());
+        }
+        lQuery->compile (*qfile, lStaticContext, lHints);
+      
+        if (lTiming) 
+        {
+          zorba::DateTime::getLocalTime(lStopCompileTime);
+          zorbatm::get_timeinfo (lStopCompileTimeInfo);
+        }
       }
-      lQuery->compile (*qfile, lStaticContext, lHints);
-    
-      if (lTiming) 
+      catch (zorba::QueryException& qe) 
       {
-        zorba::DateTime::getLocalTime(lStopCompileTime);
-        zorbatm::get_timeinfo (lStopCompileTimeInfo);
+        std::cerr << qe << std::endl;
+        return 5;
       }
-    }
-    catch (zorba::QueryException& qe) 
-    {
-      std::cerr << qe << std::endl;
-      return 5;
-    }
-    catch (zorba::ZorbaException& ze) 
-    {
-      std::cerr << ze << std::endl;
-      return 6;
-    }
-
-    if (!lProperties.parseOnly()) {
+      catch (zorba::ZorbaException& ze) 
+      {
+        std::cerr << ze << std::endl;
+        return 6;
+      }
 
       // populate the dynamic context
       zorba::DynamicContext* lDynamicContext = lQuery->getDynamicContext();
@@ -581,9 +599,8 @@ int _tmain(int argc, _TCHAR* argv[])
             << " milliseconds" << std::endl;
         }
       }
+      queryNo++;
     }
-    
-    queryNo++;
   }
   
   return 0;

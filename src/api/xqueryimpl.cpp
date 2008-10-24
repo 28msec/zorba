@@ -360,6 +360,30 @@ XQueryImpl::executeSAX()
   //xmlreader.parse( this, theErrorHandler );
 }
 
+/**
+ * Parse a query.
+ */
+void
+XQueryImpl::parse(std::istream& aQuery)
+{
+  ZORBA_TRY
+    if ( ! theStaticContext ) {
+      // no context given => use the default one (i.e. a child of the root static context)
+      theStaticContext = GENV.getRootStaticContext().create_child_context();
+    } else {
+      // otherwise create a child and we have ownership over that one
+      theStaticContext = theStaticContext->create_child_context();
+    }
+
+    theStaticContext->set_entity_retrieval_url(xqp_string (&*URI::encode_file_URI (theFileName)));
+
+    theCompilerCB->m_sctx = theStaticContext;
+
+    XQueryCompiler lCompiler(theCompilerCB);
+    lCompiler.parseOnly(aQuery, theFileName);
+  ZORBA_CATCH
+}
+
 
 /**
  * various ways to compile a query

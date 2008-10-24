@@ -160,6 +160,14 @@ namespace zorba {
       virtual const StaticContext*
       getStaticContext() const = 0;
 
+      /** \brief Parse the given query String.
+       *
+       * @param aQuery the query String to parse.
+       * @throw ZorbaException if an error occurs while parsing the query.
+       */
+      virtual void
+      parse(std::istream& aQuery) = 0;
+
       /** \brief Compile the give query String.
        *
        * @param aQuery the query String to compile.

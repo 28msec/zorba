@@ -35,7 +35,9 @@ class XQueryCompiler
   virtual ~XQueryCompiler();
     
   parsenode_t parse(std::istream& aXQuery, const xqpString & aFileName = "");
-    
+
+  void parseOnly(std::istream& aXQuery, const xqpString& aFileName);
+
   PlanIter_t compile(std::istream& aXQuery, const xqpString & aFileName = "");
   PlanIter_t compile(parsenode_t);
     

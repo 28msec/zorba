@@ -67,6 +67,11 @@ static void print_ast_tree (const parsenode *n, std::string name) {
   std::cout << std::endl;
 }
 
+void XQueryCompiler::parseOnly(std::istream& aXQuery, const xqpString& aFileName)
+{
+  parsenode_t pn = parse(aXQuery, aFileName);
+}
+
 
 PlanIter_t XQueryCompiler::compile(parsenode_t ast) 
 {

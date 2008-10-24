@@ -188,6 +188,9 @@ class XQueryImpl : public XQuery
   getStaticContext() const;
 
   void
+  parse(std::istream&);
+
+  void
   compile(const String&);
 
   void 
