@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_DEBUGGER_UTILS
-#define ZORBA_DEBUGGER_UTILS
+#ifndef ZORBA_DEBUGGER_UTILS_H
+#define ZORBA_DEBUGGER_UTILS_H
 namespace zorba
 {
   template<class T>
@@ -26,21 +26,27 @@ namespace zorba
   
     public:
       ZorbaArrayAutoPointer(): thePtr(0){}
-      ZorbaArrayAutoPointer(T *aPtr): thePtr(aPtr){}
+      explicit ZorbaArrayAutoPointer(T *aPtr): thePtr(aPtr){}
   
       ~ZorbaArrayAutoPointer()
       {
-        delete[] thePtr;
+        if(thePtr != 0)
+        {
+          delete[] thePtr;
+        }
       }
   
       void reset(T *aPtr)
       {
         T* lPtr = thePtr;
         thePtr = aPtr;
-        delete[] lPtr;
+        if(thePtr != 0)
+        {
+          delete[] lPtr;
+        }
       }
   
-      T* get()
+      T* get() const
       {
         return thePtr;
       }
@@ -50,6 +56,11 @@ namespace zorba
         T* lPtr = thePtr;
         thePtr = 0;
         return lPtr;
+      }
+
+      T operator[](unsigned int anIndex) const
+      {
+        return thePtr[anIndex];
       }
   };
 }//end of namespace
