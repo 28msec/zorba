@@ -2712,8 +2712,6 @@ void *begin_visit (const MainModule & v) {
   TRACE_VISIT ();
 
   theDotVar = bind_var(QueryLoc::null, DOT_VARNAME, var_expr::context_var, GENV_TYPESYSTEM.ITEM_TYPE_ONE);
-  theDotPosVar = bind_var(QueryLoc::null, DOT_POS_VARNAME, var_expr::context_var, GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE);
-  theLastVar = bind_var (QueryLoc::null, LAST_IDX_VARNAME, var_expr::context_var, GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE);
   
   parse_xquery_version (v.get_version_decl ());
   return no_state;
