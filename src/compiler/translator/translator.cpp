@@ -2415,8 +2415,10 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/) {
       ZORBA_ASSERT(arg_var != NULL);
       args.push_back(arg_var);
     }
-    if (body != NULL)
+    if (body != NULL) {
       flwor->set_retval(body);
+      flwor->setUpdateType(body->getUpdateType());
+    }
     body = &*flwor;
   }
 
