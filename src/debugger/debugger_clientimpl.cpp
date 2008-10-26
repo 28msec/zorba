@@ -19,7 +19,9 @@
 
 #include <iostream>
 #include <memory>
+
 #include <zorba/api_shared_types.h>
+#include <zorba/debugger_exception.h>
 
 #include "common/common.h"
 
@@ -81,7 +83,7 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
       theRequestSocket->send( "XQHandshake", 11 );
       theRequestSocket->recv( msg.get(), 11 );
       result = strcmp( msg.get(), "XQHandshake" ) == 0; 
-    } catch ( SocketException &e ) {
+    } catch ( DebuggerSocketException &e ) {
       std::cerr << e.what() << std::endl;
     }
     if( !result )
@@ -204,7 +206,7 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
       //TODO: print the error message.
         std::cerr << "Internal error occured" << std::endl;
       }
-    } catch( SocketException &e ) {
+    } catch( DebuggerSocketException &e ) {
       std::cerr << "Request client:" << e.what() << std::endl;
     }
     return 0;

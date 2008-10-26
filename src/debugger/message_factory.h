@@ -19,6 +19,8 @@
 
 #include <iostream>
 
+#include <zorba/debugger_exception.h>
+
 #include "debugger/socket.h"
 #include "debugger/utils.h"
 #include "debugger/debugger_protocol.h"
@@ -60,7 +62,7 @@ class MessageFactory
         aSocket->recv ( lPacket.get() + MESSAGE_HEADER_SIZE, length );
         //unserialize the packet
         lMessage =  MessageFactory::buildMessage( lPacket.get(), length + MESSAGE_HEADER_SIZE );
-      } catch ( SocketException &e ) {
+      } catch ( DebuggerSocketException &e ) {
         std::cerr << e.what() << std::endl;
       }
       return lMessage;

@@ -97,7 +97,7 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
       //Connect the client to the event server
       theEventSocket = new TCPSocket( lSock->getForeignAddress(), theEventPortno );
       break;
-    } catch ( SocketException &e )  {
+    } catch ( DebuggerSocketException &e )  {
       if ( i < 2 ) continue;
       std::cerr << "[Server Thread] Couldn't connect to the debugger server event: " << std::endl;
       std::cerr << "[Server Thread] " <<  e.what() << std::endl;
@@ -184,7 +184,7 @@ void ZorbaDebugger::sendEvent( AbstractCommandMessage * aMessage )
 #ifndef NDEBUG
       std::clog << "[Server Thread] event sent" << std::endl;
 #endif
-    } catch( SocketException &e ) {
+    } catch( DebuggerSocketException &e ) {
       std::cerr << e.what() << std::endl;
     }
 }
@@ -290,7 +290,7 @@ void ZorbaDebugger::handshake( TCPSocket * aSock )
   {
     aSock->recv( msg.get(), 11 );
     aSock->send( msg.get(), 11 );
-  } catch( SocketException &e ) {
+  } catch( DebuggerSocketException &e ) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -320,7 +320,7 @@ void ZorbaDebugger::handleTcpClient( TCPSocket * aSock )
       aSock->send( lByteMessage.get(), length );
     } else {
 #ifndef NDEBUG
-      std::cerr << "Received something wrong" << std::endl;
+      std::clog << "[Server Thread] Received something wrong" << std::endl;
 #endif
       //If something goes wrong, buildMessage() receive a Reply Message containing the error description
       //Send it back to the client right away
@@ -329,11 +329,14 @@ void ZorbaDebugger::handleTcpClient( TCPSocket * aSock )
         lByteMessage.reset(lReplyMessage->serialize( length ));
         aSock->send( lByteMessage.get(), length );
       } else {
-        std::cerr << "Internal error occured. Couldn't send the error message." << std::endl;
+        std::cerr << "[Server Thread] Internal error occured. Couldn't send the error message." << std::endl;
       }
     }    
   } catch ( std::exception &e ) {
-    std::cerr <<  e.what() << std::endl;
+#ifndef NDEBUG
+    std::clog << "The connection with the client is closed" << std::endl;
+    std::clog <<  e.what() << std::endl;
+#endif
   }
 }
 
