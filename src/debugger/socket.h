@@ -18,36 +18,12 @@
 #define ZORBA_DEBUGGER_SOCKET_H
 
 #include <string>
-#include <exception>
+
+#include <zorba/debugger_exception.h>
 
 namespace zorba{
-/**
- *   Signals a problem with the execution of a socket call.
- */
-class SocketException : public std::exception {
-public:
-  /**
-   *   Construct a SocketException with a explanatory message.
-   *   @param message explanatory message
-   *   @param incSysMsg true if system message (from strerror(errno))
-   *   should be postfixed to the user provided message
-   */
-  SocketException(const std::string &message, bool inclSysMsg = false) throw();
 
-  /**
-   *   Provided just to guarantee that no exceptions are thrown.
-   */
-  ~SocketException() throw();
-
-  /**
-   *   Get the exception message
-   *   @return exception message
-   */
-  const char *what() const throw();
-
-private:
-  std::string userMessage;  // Exception message
-};
+class DebuggerDebuggerSocketException;
 
 /**
  *   Base class representing basic communication endpoint
@@ -62,24 +38,24 @@ public:
   /**
    *   Get the local address
    *   @return local address of socket
-   *   @exception SocketException thrown if fetch fails
+   *   @exception DebuggerSocketException thrown if fetch fails
    */
-  std::string getLocalAddress() throw(SocketException);
+  std::string getLocalAddress() throw(DebuggerSocketException);
 
   /**
    *   Get the local port
    *   @return local port of socket
-   *   @exception SocketException thrown if fetch fails
+   *   @exception DebuggerSocketException thrown if fetch fails
    */
-  unsigned short getLocalPort() throw(SocketException);
+  unsigned short getLocalPort() throw(DebuggerSocketException);
 
   /**
    *   Set the local port to the specified port and the local address
    *   to any interface
    *   @param localPort local port
-   *   @exception SocketException thrown if setting local port fails
+   *   @exception DebuggerSocketException thrown if setting local port fails
    */
-  void setLocalPort(unsigned short localPort) throw(SocketException);
+  void setLocalPort(unsigned short localPort) throw(DebuggerSocketException);
 
   /**
    *   Set the local port to the specified port and the local address
@@ -87,10 +63,10 @@ public:
    *   will be selected.
    *   @param localAddress local address
    *   @param localPort local port
-   *   @exception SocketException thrown if setting local port or address fails
+   *   @exception DebuggerSocketException thrown if setting local port or address fails
    */
   void setLocalAddressAndPort(const std::string &localAddress, 
-    unsigned short localPort = 0) throw(SocketException);
+    unsigned short localPort = 0) throw(DebuggerSocketException);
 
   /**
    *   If WinSock, unload the WinSock DLLs; otherwise do nothing.  We ignore
@@ -103,9 +79,9 @@ public:
    *   @param buffer buffer to receive the data
    *   @param bufferLen maximum number of bytes to read into buffer
    *   @return number of bytes read, 0 for EOF, and -1 for error
-   *   @exception SocketException thrown WinSock clean up fails
+   *   @exception DebuggerSocketException thrown WinSock clean up fails
    */
-  static void cleanUp() throw(SocketException);
+  static void cleanUp() throw(DebuggerSocketException);
 
   /**
    *   Resolve the specified service for the specified protocol to the
@@ -126,7 +102,7 @@ private:
   void operator=(const Socket &sock);
 
 protected:            // Socket descriptor
-  Socket(int type, int protocol) throw(SocketException);
+  Socket(int type, int protocol) throw(DebuggerSocketException);
   Socket(int sockDesc);
 };
 
@@ -140,19 +116,19 @@ public:
    *   address and port
    *   @param foreignAddress foreign address (IP address or name)
    *   @param foreignPort foreign port
-   *   @exception SocketException thrown if unable to establish connection
+   *   @exception DebuggerSocketException thrown if unable to establish connection
    */
   void connect(const std::string &foreignAddress, unsigned short foreignPort)
-    throw(SocketException);
+    throw(DebuggerSocketException);
 
   /**
    *   Write the given buffer to this socket.  Call connect() before
    *   calling send()
    *   @param buffer buffer to be written
    *   @param bufferLen number of bytes from buffer to be written
-   *   @exception SocketException thrown if unable to send data
+   *   @exception DebuggerSocketException thrown if unable to send data
    */
-  void send(const void *buffer, int bufferLen) throw(SocketException);
+  void send(const void *buffer, int bufferLen) throw(DebuggerSocketException);
 
   /**
    *   Read into the given buffer up to bufferLen bytes data from this
@@ -160,26 +136,26 @@ public:
    *   @param buffer buffer to receive the data
    *   @param bufferLen maximum number of bytes to read into buffer
    *   @return number of bytes read, 0 for EOF, and -1 for error
-   *   @exception SocketException thrown if unable to receive data
+   *   @exception DebuggerSocketException thrown if unable to receive data
    */
-  int recv(void *buffer, int bufferLen) throw(SocketException);
+  int recv(void *buffer, int bufferLen) throw(DebuggerSocketException);
 
   /**
    *   Get the foreign address.  Call connect() before calling recv()
    *   @return foreign address
-   *   @exception SocketException thrown if unable to fetch foreign address
+   *   @exception DebuggerSocketException thrown if unable to fetch foreign address
    */
-  std::string getForeignAddress() throw(SocketException);
+  std::string getForeignAddress() throw(DebuggerSocketException);
 
   /**
    *   Get the foreign port.  Call connect() before calling recv()
    *   @return foreign port
-   *   @exception SocketException thrown if unable to fetch foreign port
+   *   @exception DebuggerSocketException thrown if unable to fetch foreign port
    */
-  unsigned short getForeignPort() throw(SocketException);
+  unsigned short getForeignPort() throw(DebuggerSocketException);
 
 protected:
-  CommunicatingSocket(int type, int protocol) throw(SocketException);
+  CommunicatingSocket(int type, int protocol) throw(DebuggerSocketException);
   CommunicatingSocket(int newConnSD);
 };
 
@@ -190,19 +166,19 @@ class TCPSocket : public CommunicatingSocket {
 public:
   /**
    *   Construct a TCP socket with no connection
-   *   @exception SocketException thrown if unable to create TCP socket
+   *   @exception DebuggerSocketException thrown if unable to create TCP socket
    */
-  TCPSocket() throw(SocketException);
+  TCPSocket() throw(DebuggerSocketException);
 
   /**
    *   Construct a TCP socket with a connection to the given foreign address
    *   and port
    *   @param foreignAddress foreign address (IP address or name)
    *   @param foreignPort foreign port
-   *   @exception SocketException thrown if unable to create TCP socket
+   *   @exception DebuggerSocketException thrown if unable to create TCP socket
    */
   TCPSocket(const std::string &foreignAddress, unsigned short foreignPort) 
-      throw(SocketException);
+      throw(DebuggerSocketException);
 
 private:
   // Access for TCPServerSocket::accept() connection creation
@@ -222,10 +198,10 @@ public:
    *                   give a system-assigned unused port
    *   @param queueLen maximum queue length for outstanding 
    *                   connection requests (default 5)
-   *   @exception SocketException thrown if unable to create TCP server socket
+   *   @exception DebuggerSocketException thrown if unable to create TCP server socket
    */
   TCPServerSocket(unsigned short localPort, int queueLen = 5) 
-      throw(SocketException);
+      throw(DebuggerSocketException);
 
   /**
    *   Construct a TCP socket for use with a server, accepting connections
@@ -234,20 +210,20 @@ public:
    *   @param localPort local port of server socket
    *   @param queueLen maximum queue length for outstanding 
    *                   connection requests (default 5)
-   *   @exception SocketException thrown if unable to create TCP server socket
+   *   @exception DebuggerSocketException thrown if unable to create TCP server socket
    */
   TCPServerSocket(const std::string &localAddress, unsigned short localPort,
-      int queueLen = 5) throw(SocketException);
+      int queueLen = 5) throw(DebuggerSocketException);
 
   /**
    *   Blocks until a new connection is established on this socket or error
    *   @return new connection socket
-   *   @exception SocketException thrown if attempt to accept a new connection fails
+   *   @exception DebuggerSocketException thrown if attempt to accept a new connection fails
    */
-  TCPSocket *accept() throw(SocketException);
+  TCPSocket *accept() throw(DebuggerSocketException);
 
 private:
-  void setListen(int queueLen) throw(SocketException);
+  void setListen(int queueLen) throw(DebuggerSocketException);
 };
 }//end of namespace
 #endif
