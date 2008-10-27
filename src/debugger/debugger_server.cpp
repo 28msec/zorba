@@ -20,11 +20,15 @@
 #include <fstream>
 
 #include <zorba/zorba.h>
+#include <zorba/uri_resolvers.h>
 #include <zorba/util/path.h>
 
 #include "debugger/utils.h"
 #include "debugger/socket.h"
 #include "debugger/message_factory.h"
+
+#include "compiler/parser/xquery_driver.h"
+#include "compiler/dewey/dewey.h"
 
 #include "context/static_context.h"
 
@@ -36,6 +40,7 @@
 
 #include "api/serialization/serializer.h"
 #include "api/unmarshaller.h"
+#include "api/itemfactoryimpl.h"
 
 #include "zorbatypes/numconversions.h"
 
@@ -507,28 +512,76 @@ void ZorbaDebugger::eval( xqpString anExpr )
 
 const QueryLoc ZorbaDebugger::addBreakpoint(const QueryLoc& aLocation)
 {
-  xqpString lFilename = aLocation.getFilename();
+  assert(theQuery != 0);
+  String lStringURI(aLocation.getFilename());
   unsigned int lLineNumber = aLocation.getLineBegin();
   std::pair<std::stack<unsigned int>, QueryLoc> lBreakpoint;
-  do{
-    std::map<std::stack<unsigned int>, const QueryLoc>::iterator it;
-    for(it=theClassification.begin(); it!=theClassification.end(); ++it)
-    {
-      if( it->second.getFilename() == lFilename &&
-          it->second.getLineBegin() == lLineNumber &&
-          lBreakpoint.first.empty())//(lBreakpoint.first.empty() || lBreakpoint.first.size() > it->first.size()))
-      {
-        lBreakpoint.first = it->first;
-        lBreakpoint.second = it->second;  
-      }
-    }
-    ++lLineNumber;
-    //If a breakpoint hasn't been found 10 lines below, we return an empty location
-    if( lLineNumber > 10 )
+  StaticContext* lStaticCtx = const_cast<StaticContext*>(theQuery->getStaticContext()); 
+  //Check for namespace prefix
+  try
+  {
+    lStringURI = lStaticCtx->getNamespaceURIByPrefix(lStringURI); 
+  }catch(ZorbaException &e){ /*do nothing*/ }
+  
+  //Resolve the logical/physical URI
+  ItemFactory* lItemFactory = ItemFactoryImpl::getInstance();
+  Item lURI = lItemFactory->createAnyURI(lStringURI);
+  ModuleURIResolver* lModuleURIResolver = lStaticCtx->getModuleURIResolver();
+  std::auto_ptr<std::istream> lInputStream;
+  if(lModuleURIResolver != 0)
+  {
+    std::auto_ptr<ModuleURIResolverResult> lModuleURIResolverResult(
+      lModuleURIResolver->resolve(lURI, lStaticCtx)
+    );
+    assert(lModuleURIResolverResult.get() != 0);
+    lInputStream.reset(lModuleURIResolverResult->getModule()); 
+  } else {
+    lInputStream.reset(new std::ifstream(lStringURI.c_str()));
+  }
+
+  if(lInputStream.get() != 0)
+  {
+    //Parse the file and get the classification
+    CompilerCB lCompilerCB;
+    xquery_driver lDriver(&lCompilerCB);
+    std::stringstream lFileName;
+    lFileName << lStringURI;
+    const xqpString lFileName2(lFileName.str());
+    lDriver.parse_stream(*lInputStream.get(), lFileName2);
+    parsenode_t lParseNode = lDriver.get_expr();
+    if(typeid(*lParseNode) == typeid(ParseErrorNode))
     {
       return lBreakpoint.second;
     }
-  }while(lBreakpoint.first.empty());
+    std::map<std::stack<unsigned int>, const QueryLoc> lClassification = classify(*lParseNode);
+#if 0
+    std::map<std::stack<unsigned int>, const QueryLoc>::iterator it;
+    for(it=lClassification.begin(); it!=lClassification.end(); ++it)
+    {
+      std::stack<unsigned int> s(it->first);
+      while(!s.empty())
+      {
+        std::cerr << s.top();
+        s.pop();
+      }
+      std::cerr << ' ' << it->second << std::endl;
+    }
+#endif
+    for(unsigned int i=0; i<=10; i++)
+    {
+      std::map<std::stack<unsigned int>, const QueryLoc>::iterator it;
+      for(it=lClassification.begin(); it!=lClassification.end(); ++it)
+      {
+        if(lLineNumber == it->second.getLineBegin())//lBreakpoint.first.empty())
+        {
+          lBreakpoint.first = it->first;
+          lBreakpoint.second = it->second;
+          return lBreakpoint.second;
+        }
+      }
+      ++lLineNumber;
+    }
+  }
   return lBreakpoint.second;
 }
 

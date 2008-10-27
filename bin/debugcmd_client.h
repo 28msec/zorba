@@ -20,6 +20,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+
 #include <zorba/debugger_client.h>
 #include <zorba/debugger_default_event_handler.h>
 
@@ -44,7 +45,7 @@ class CommandLineEventHandler: public DefaultDebuggerEventHandler
 
     std::vector<std::string> get_args( const std::string& str );
 
-    std::string get_expression( const std::vector<std::string> arr );
+    std::string get_expression( const std::vector<std::string>& arr );
 
     void update_location();
     

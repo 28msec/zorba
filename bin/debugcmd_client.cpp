@@ -281,7 +281,7 @@ std::vector<std::string> CommandLineEventHandler::get_args( const std::string& s
    return tokens;
 }
 
-std::string CommandLineEventHandler::get_expression( const std::vector<std::string> arr )
+std::string CommandLineEventHandler::get_expression( const std::vector<std::string>& arr )
 {
   std::string lExpr;
   std::vector<std::string>::const_iterator it;
@@ -402,7 +402,12 @@ void CommandLineEventHandler::handle_cmd()
           } else {
             String lFileName(theFileName);
             std::auto_ptr<QueryLocation> lLocation(theClient->addBreakpoint( lFileName, lLineNo ));
-            theOutput << "Set breakpoint at line " << lLocation.get() << '.' << std::endl;
+            if(lLocation->getLineBegin() == 0)
+            {
+              theOutput << "No breakpoint found at this line." << std::endl;
+            } else {
+              theOutput << "Set breakpoint at line " << lLocation.get() << '.' << std::endl;
+            }
           }
         } 
       }

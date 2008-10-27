@@ -45,7 +45,6 @@ std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc) {
     aOstr << lStr << ":";
   }
   aOstr << aQueryLoc.getLineBegin() << "." << aQueryLoc.getColumnBegin() << "-" << aQueryLoc.getColumnEnd();
-
   return aOstr;
 }
 
