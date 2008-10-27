@@ -45,6 +45,12 @@ public:
 
   ~Mutex();
     
+#ifdef ZORBA_HAVE_PTHREAD_H
+  pthread_mutex_t*  getMutex() { return &theMutex; }
+#elif defined WIN32
+  HANDLE* getMutex() { return &theMutex; }
+#endif
+
   void lock();
     
   void unlock();

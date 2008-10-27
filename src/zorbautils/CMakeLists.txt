@@ -16,7 +16,9 @@ SET(ZORBAUTILS_SRCS
     properties_base.cpp
     thread.cpp
     mutex.cpp
-    latch.cpp)
+    condition.cpp
+    latch.cpp
+    lock.cpp)
 
 
 ADD_LIBRARY(zorbautils ${ZORBAUTILS_SRCS})

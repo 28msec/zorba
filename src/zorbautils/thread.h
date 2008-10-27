@@ -27,31 +27,47 @@
 
 namespace zorba {
 
+#ifdef ZORBA_HAVE_PTHREAD_H
+typedef pthread_t ThreadId;
+#else
+typedef DWORD ThreadId;
+#endif
+
+
 class Thread
 {
-  private:
+ private:
 #ifdef ZORBA_HAVE_PTHREAD_H
-    pthread_t theThread;
-    pthread_mutex_t theMutex;
-    pthread_cond_t theCV;
+  pthread_t theThread;
+  pthread_mutex_t theMutex;
+  pthread_cond_t theCV;
 #else
-    HANDLE theThread;
+  HANDLE theThread;
 #endif
 
-  public:
+ public:
+  static ThreadId self()
+  {
 #ifdef ZORBA_HAVE_PTHREAD_H
-    Thread( void *aFunction(void *anArgs), void *anArg );
+    return pthread_self();
 #else
-    Thread( DWORD ( WINAPI *aFunction ) ( void *anArg ), void *anArg );
+    return GetCurrentThreadId();
+#endif
+  }
+
+#ifdef ZORBA_HAVE_PTHREAD_H
+  Thread( void *aFunction(void *anArgs), void *anArg );
+#else
+  Thread( DWORD ( WINAPI *aFunction ) ( void *anArg ), void *anArg );
 #endif
     
-    ~Thread();
-    
-    void suspend();
+  ~Thread();
+  
+  void suspend();
 
-    void resume();
+  void resume();
 
-    void join();
+  void join();
 };
 }//end of namespace
 #endif

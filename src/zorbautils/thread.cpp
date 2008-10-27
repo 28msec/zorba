@@ -38,7 +38,7 @@ Thread::Thread( DWORD ( WINAPI *aFunction ) ( void *anArg ), void *anArg )
     if ( (theThread = CreateThread( 0, 0, aFunction, anArg, 0, 0 ) ) == 0 )
 #endif
     {
-      ZORBA_ERROR_DESC( XQP0026_COULD_NOT_CREATE_THREAD, "Could not create the thread" );
+      ZORBA_ERROR_DESC(XQP0026_COULD_NOT_CREATE_THREAD, "Could not create the thread" );
     }
 }
     
