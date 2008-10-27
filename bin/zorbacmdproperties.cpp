@@ -43,7 +43,7 @@ std::string ZorbaCMDProperties::check_args () {
   if ( ! (theOptimizationLevel.compare("O0") == 0 || theOptimizationLevel.compare("O1") == 0 ))
     return "only O0 or O1 are allowed as values for the option opt-level";
 
-  for (std::vector<std::string>::const_iterator lIter = theExternalVariable.end();
+  for (std::vector<std::string>::const_iterator lIter = theExternalVariable.begin();
        lIter != theExternalVariable.end(); ++lIter) 
   {
     std::string lStr = *lIter;
