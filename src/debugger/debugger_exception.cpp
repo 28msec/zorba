@@ -16,6 +16,7 @@
 
 #include <zorba/debugger_exception.h>
 
+#include <cstring>
 #include <cerrno>
 
 using namespace std;
