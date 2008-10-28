@@ -82,6 +82,11 @@ ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
 ADD_LIBRARY(simplestore SHARED ${SIMPLE_STORE_SRCS})
 
+# The following IF is needed in order to create the .lib file on Windows
+IF (MSVC )
+  ADD_LIBRARY(simplestore ${SIMPLE_STORE_SRCS})
+ENDIF(MSVC)
+
 TARGET_LINK_LIBRARIES(simplestore ${requiredlibs-simplestore})
 
 SET_TARGET_PROPERTIES(simplestore PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
