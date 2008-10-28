@@ -16,7 +16,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: cmake >= 2.4 libxml2-devel >= 2.2.16 icu >= 2.6 libicu-devel
 BuildRequires: boost-devel >= 1.32 xerces-c-devel >= 2.7 libcurl-devel
-BuildRequires: ruby-devel >= 1.8 graphviz
+BuildRequires: ruby-devel >= 1.8 graphviz tidy-devel
 
 
 %description
@@ -70,7 +70,7 @@ Provides ruby module to use %{name} API
 %build
 mkdir -p build
 pushd build
-cmake -D CMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug --debug-output -DCMAKE_SKIP_BUILD_RPATH=1  ..
+cmake -D CMAKE_INSTALL_PREFIX=/usr  --debug-output -DCMAKE_SKIP_BUILD_RPATH=1  ..
 make %{?_smp_mflags}
 make doc
 popd
