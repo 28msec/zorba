@@ -20,7 +20,9 @@
 
 #include "zorbamisc/config/platform.h"
 
+#ifdef ZORBA_HAVE_PTHREAD_H
 #include <pthread.h>
+#endif
 
 namespace zorba { 
 
