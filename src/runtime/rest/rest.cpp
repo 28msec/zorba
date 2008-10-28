@@ -434,7 +434,13 @@ void processHeader(store::Item_t& headers, curl_slist** headers_list)
   it = headers->getChildren();
   it->open();
   it->next(child);
-  if (child->getNodeKind() == store::StoreConsts::textNode)
+  if (child == NULL)
+  {
+    // HTTP header without a value 
+    xqpString temp = xqpString(name->getStringValue()) + xqpString(": ");
+    *headers_list = curl_slist_append(*headers_list , temp.c_str());
+  }
+  else if (child->getNodeKind() == store::StoreConsts::textNode)
   {
     xqpString temp = xqpString(name->getStringValue()) + xqpString(": ") + child->getStringValue().getp();
     *headers_list = curl_slist_append(*headers_list , temp.c_str());
