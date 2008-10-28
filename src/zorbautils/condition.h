@@ -49,7 +49,24 @@ class Condition
   void broadcast();
 };
 
-#else // ZORBA_HAVE_PTHREAD_H
+#elif WIN32 
+
+class Condition
+{
+protected:
+  HANDLE           cond_event;
+  Mutex          & theMutex;
+public:
+  Condition(Mutex& m);
+
+  ~Condition();
+
+  void wait();
+  void signal();
+  void broadcast();
+};
+
+#else
 
 class Condition
 {

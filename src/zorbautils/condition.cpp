@@ -65,7 +65,52 @@ void Condition::broadcast()
   ZORBA_FATAL(!ret, "Failed to brodcast condition variable. Error code = " << ret);
 }
 
-#endif // ZORBA_HAVE_PTHREAD_H
+#elif WIN32
+Condition::Condition(Mutex& m) : theMutex(m) 
+{
+//  int ret = pthread_cond_init(&theCondition, NULL); 
+	cond_event = CreateEvent(NULL, FALSE, FALSE, NULL);
+
+  ZORBA_FATAL(cond_event==INVALID_HANDLE_VALUE, "Failed to create condition variable. Error code = " << GetLastError());
+}
+
+
+Condition::~Condition()
+{
+//  int ret = pthread_cond_destroy(&theCondition); 
+  BOOL ret = CloseHandle(cond_event);
+
+  ZORBA_FATAL(!ret, "Failed to destroy condition variable. Error code = " << GetLastError());
+}
+
+
+void Condition::wait() 
+{
+  //int ret = pthread_cond_wait(&theCondition, theMutex.getMutex());
+  theMutex.unlock();
+	WaitForSingleObject(cond_event, INFINITE);
+	theMutex.lock();
+}
+
+
+void Condition::signal() 
+{
+  //int ret = pthread_cond_signal(&theCondition);
+	BOOL ret = SetEvent(cond_event);
+
+  ZORBA_FATAL(!ret, "Failed to signal condition variable. Error code = " << GetLastError());
+}
+
+
+void Condition::broadcast() 
+{
+  //int ret = pthread_cond_broadcast(&theCondition);
+	BOOL ret = PulseEvent(cond_event);
+
+  ZORBA_FATAL(!ret, "Failed to brodcast condition variable. Error code = " << GetLastError());
+}
+
+#endif
 
 }
 
