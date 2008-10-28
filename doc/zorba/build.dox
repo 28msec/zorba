@@ -16,13 +16,10 @@ In order ot build Zorba, you need the following libraries and development header
 - Libxml2 2.2.16 or higher (http://xmlsoft.org/ )
   - Iconv 1.12 (used by Libxml2; http://www.gnu.org/software/libiconv/)
 - ICU4C 3.6 or higher (http://www.icu-project.org/)
-- Boost 1.32 or higher (http://www.boost.org/) 
-  - boost_program_options
-  - boost_date_time
-  - boost_filesystem
 - Xerces-C 2.7.0 or higher (http://xerces.apache.org/xerces-c/)
 - <em>Optional Packages</em>
   - CURL 7.12 (used to enable REST and HTTP; http://curl.haxx.se/)
+  - Tidy (used to enable tidy functions; http://tidy.sourceforge.net)
 - <em>Optional Packages that are required if you want to build the scanner and parser</em>
   - Flex 2.5.33 or higher (http://flex.sourceforge.net/)
   - Bison 2.3 or higher (http://www.gnu.org/software/bison/)
@@ -41,7 +38,7 @@ In order ot build Zorba, you need the following libraries and development header
 - CMake supports multiple build configurations (e.g. Debug, Release, or MinSizeRel. By default, Zorba is build with the Release configuration. To change the build mode (to Debug, Release, RelWithDebInfo or MinSizeRel), you can pass an additional parameter to CMake, e.g. <tt>cmake -D CMAKE_BUILD_TYPE=Debug [ZORBA]</tt>.
 
 \section mac Note for Mac OS Users
-The easiest way to install the required packages (like CMake, Boost, etc.) is to use Darwin Ports (http://darwinports.com/). After installating Darwin Ports, you should run <tt>sudo port -d selfupdate</tt> to upgrade the package lists. If this was successfull, you can simply install packages by typing e.g. <tt>sudo port install cmake</tt>.
+The easiest way to install the required packages (like CMake, etc.) is to use Darwin Ports (http://darwinports.com/). After installating Darwin Ports, you should run <tt>sudo port -d selfupdate</tt> to upgrade the package lists. If this was successfull, you can simply install packages by typing e.g. <tt>sudo port install cmake</tt>.
 Note that libxml2 is already installed as part of Mac OS X.
 
 \subsection universal Building as Universal binaries
@@ -65,78 +62,14 @@ instructions like this ...
 
 As noted by Apple, dependency generation by gcc doesn't work when building universal, thus it is turned off with the above command.
 
-Since Boost uses @em bjam instead of @em make, it's not obvious how to
-build it for universal binaries.  However, the following patch was
-found by another project that uses Boost and works for Boost-1.33.1
-
-@verbatim
-$ cd boost_1_33_1
-$ patch -p0 <<EOF
---- tools/build/v1/darwin-tools.jam.orig        2006-08-07 11:52:23.000000000 +\0200
-+++ tools/build/v1/darwin-tools.jam     2006-08-07 11:40:26.000000000 +0200
-@@ -104,6 +105,8 @@
- {
-     flags darwin C++FLAGS : -fcoalesce-templates ;
- }
-+flags darwin CFLAGS : -arch i386 -arch ppc ;
-+flags darwin LINKFLAGS : -arch i386 -arch ppc ;
- flags darwin LINKFLAGS <runtime-link>static : -static-libgcc ;
- flags darwin CFLAGS <debug-symbols>on : -g ;
- flags darwin LINKFLAGS <debug-symbols>on : -g ;
-EOF
-@endverbatim
-
-Note this patch adds two lines to the specified file..  After making
-this patch one can procced as if Boost was using the standard GNU
-autotools, namely 
-\verbatim 
-> configure 
-> make 
-> sudo make install
-\endverbatim
-
-Note the above is not documented in the Boost documentation but it
-works just fine on Mac OS X and Linux as well.
-
-For Boost-1.35 life has changed.  After configuring Boost as above, modify the
-top of the generated Makefile with a line that reads
-
-\verbatim
-BJAM_CONFIG=architecture=combined
-\endverbatim
-
-One last problem is that the "make install" doesn't install the
-variation of the Boost libraries required by Zorba.  The quick fix is
-to create symbolic links by hand in @em /usr/local/lib.  So that one has
-
-\verbatim
-libboost_date_time-mt.dylib -> libboost_date_time-mt-1_35.dylib
-libboost_date_time.dylib -> libboost_date_time-mt-1_35.dylib
-libboost_filesystem-mt.dylib -> libboost_filesystem-mt-1_35.dylib
-libboost_filesystem.dylib -> libboost_filesystem-mt-1_35.dylib
-libboost_program_options-mt.dylib -> libboost_program_options-mt-1_35.dylib
-libboost_program_options.dylib -> libboost_program_options-mt-1_35.dylib
-\endverbatim
-
-After installing the external libraries as universal binaries, Zorba
-itself can be built universal by adding an argument to the cmake
-command as follows
-
-\verbatim
-> cmake -D UNIVERSAL=1 ..
-\endverbatim
-
-
-
 \section windows Notes for Windows Users
 - In order to compile Zorba on Windows, you need a working Visual Studio installation.
 - Additionally, you need the following packages to be installed for your Visual Studio installation.
   -# CMake (http://www.cmake.org/)
-  -# Boost (program_options, date_time, filesystem). We recommend to use the package provided by boost consulting (http://www.boost-consulting.com/products/free/).
   -# Libxml2 and Iconv (http://www.zlatkovic.com/pub/libxml/) 
   -# ICU (http://download.icu-project.org/files/icu4c/)
 - Note that the path to all of the installed libraries need to be included in the <tt>PATH</tt> environment variable.
-  \code path_to_boost\bin;path_to_libxml2\bin;path_to_icu\bin;path_to_iconv\bin;path_to_xerces\bin \endcode
+  \code path_to_libxml2\bin;path_to_icu\bin;path_to_iconv\bin;path_to_xerces\bin \endcode
 
 \subsection nmake Building Zorba using a NMake Project
 -# Start a Visual Studio Command Line
@@ -154,7 +87,6 @@ command as follows
 -D ICONV_LIBRARY="path_to_iconv\lib\iconv.lib" 
 -D LIBXML2_INCLUDE_DIR="path_to_libxml2\include" 
 -D LIBXML2_LIBRARIES="path_to_libxml2\lib\libxml2.lib" 
--D BOOST_ROOT="path_to_boost" 
 -D XERCESC_INCLUDE="path_to_xerces\include" 
 -D XERCESC_LIBRARY="path_to_xerces\lib\xerces-c_2.lib"
 ..\

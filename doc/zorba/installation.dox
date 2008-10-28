@@ -32,7 +32,7 @@
  zorba-{version}-Darwin-i386/lib). Also, please make sure that the directories of the required libraries (see \ref build) are
  present in your library search path.
   
- After that, try typing <tt>%zorba -i '1+1'</tt> and you should see 
+ After that, try typing <tt>%zorba -q '1+1'</tt> and you should see 
  \code
    <?xml version="1.0" encoding="UTF-8"?>
    2
