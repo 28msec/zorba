@@ -60,17 +60,49 @@ SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 #                                                                               #
 #################################################################################
 
+SET(commonlibs)
 
-SET(requiredlibs-zorbautils)
-SET(requiredlibs-zorbatypes)
-SET(requiredlibs-zorbaerrors)
-SET(requiredlibs-simplestore)
-SET(requiredlibs-zorba)
-SET(requiredlibs-apitest)
-SET(requiredlibs-teststore)
-SET(requiredlibs-testordpath)
-SET(requiredlibs-testdriver)
-SET(requiredlibs-zorbacmd)
+#
+# TcMalloc support
+#
+IF (ZORBA_USE_TCMALLOC)
+    MESSAGE (STATUS "Looking for TcMalloc")
+
+    FIND_PACKAGE(TcMalloc)
+    IF (Tcmalloc_FOUND)
+        SET(commonlibs ${commonlibs} ${Tcmalloc_LIBRARIES})
+    ELSE (Tcmalloc_FOUND)
+        MESSAGE (FATAL_ERROR "TcMalloc not found")
+    ENDIF (Tcmalloc_FOUND)
+
+ENDIF (ZORBA_USE_TCMALLOC)
+
+#
+# GooglePerfTools support
+#
+IF (ZORBA_WITH_CPU_PROFILE)
+    MESSAGE (STATUS "Looking for GooglePerfTools")
+
+    FIND_PACKAGE(GooglePerfTools)
+    IF (GooglePerfTools_FOUND)
+        SET(commonlibs ${commonlibs} ${GooglePerfTools_LIBRARIES})
+    ELSE (GooglePerfTools_FOUND)
+        MESSAGE(FATAL_ERROR "GooglePerfTools not found. Cannot build with CPU
+        profiling")
+    ENDIF (GooglePerfTools_FOUND)
+ENDIF (ZORBA_WITH_CPU_PROFILE)
+
+SET(requiredlibs-zorbautils ${commonlibs})
+SET(requiredlibs-zorbatypes ${commonlibs})
+SET(requiredlibs-zorbaerrors ${commonlibs})
+SET(requiredlibs-simplestore ${commonlibs})
+SET(requiredlibs-zorba ${commonlibs})
+SET(requiredlibs-apitest ${commonlibs})
+SET(requiredlibs-teststore ${commonlibs})
+SET(requiredlibs-testordpath ${commonlibs})
+SET(requiredlibs-testdriver ${commonlibs})
+SET(requiredlibs-zorbacmd ${commonlibs})
+
 
 #
 #  LibXml2
