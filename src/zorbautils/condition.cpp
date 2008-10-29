@@ -110,7 +110,7 @@ void Condition::broadcast()
   ZORBA_FATAL(!ret, "Failed to brodcast condition variable. Error code = " << GetLastError());
 }
 
-#endif
+#endif // ZORBA_HAVE_PTHREAD_H
 
 }
 
