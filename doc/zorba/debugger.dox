@@ -11,7 +11,7 @@ XQDB is integrated in Zorba's command line utility.
 
 You need to use -c to start a query in debug mode.
 <pre>
-zorba -c -q -f query.xq
+zorba -c -q query.xq -f
 </pre>
 
 With the port option (-p or --ports), you can specify the ports of the debugger server. By default it is 8000 for requests and 9000 for events. If you are using a firewall, you need to have these ports unblocked.
@@ -70,7 +70,7 @@ Once XQDB is started, you can use the debugger client commands. There are basica
 
 Let's run a query in debug mode using the -c option:
 <pre>
-$ zorba -c -f -q test_query.xq
+$ zorba -c -q test_query.xq -f
 </pre>
 
 You can use list all to print the query:
