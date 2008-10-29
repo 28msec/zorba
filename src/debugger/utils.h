@@ -16,8 +16,14 @@
 
 #ifndef ZORBA_DEBUGGER_UTILS_H
 #define ZORBA_DEBUGGER_UTILS_H
+
 namespace zorba
 {
+  template<class T> struct destroyer: public std::unary_function<T, void>
+  {
+    void operator()(T x){ delete x; }
+  };
+
   template<class T>
   class ZorbaArrayAutoPointer
   {
