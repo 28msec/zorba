@@ -51,6 +51,8 @@
 #define sleep(s) Sleep(s*1000)
 #endif
 
+using namespace std;
+
 namespace zorba{
 
 ZORBA_THREAD_RETURN runtimeThread( void *aDebugger )
@@ -242,7 +244,6 @@ bool ZorbaDebugger::hasToSuspend()
 {
   //If the query has been suspend by the user
   if( theStatus == QUERY_SUSPENDED ){ return true; }
-  
   std::map<unsigned int, QueryLoc>::iterator it;
   //TODO: can be faster
   for ( it = theBreakpoints.begin(); it != theBreakpoints.end(); it++ )
@@ -517,32 +518,38 @@ const QueryLoc ZorbaDebugger::addBreakpoint(const QueryLoc& aLocation)
   unsigned int lLineNumber = aLocation.getLineBegin();
   std::pair<std::stack<unsigned int>, QueryLoc> lBreakpoint;
   StaticContext* lStaticCtx = const_cast<StaticContext*>(theQuery->getStaticContext()); 
+  assert(lStaticCtx != 0);
   //Check for namespace prefix
-  try
-  {
-    lStringURI = lStaticCtx->getNamespaceURIByPrefix(lStringURI); 
-  }catch(ZorbaException &e){ /*do nothing*/ }
+  //try
+  //{
+  //  lStringURI = lStaticCtx->getNamespaceURIByPrefix(lStringURI); 
+  //}catch(ZorbaException &e){ std::cerr << "Prefix not resolved" << std::endl; }
   
   //Resolve the logical/physical URI
   ItemFactory* lItemFactory = ItemFactoryImpl::getInstance();
   Item lURI = lItemFactory->createAnyURI(lStringURI);
+  assert(lStaticCtx != 0);
   ModuleURIResolver* lModuleURIResolver = lStaticCtx->getModuleURIResolver();
-  std::auto_ptr<std::istream> lInputStream;
+  auto_ptr<istream> lInputStream;
   if(lModuleURIResolver != 0)
   {
-    std::auto_ptr<ModuleURIResolverResult> lModuleURIResolverResult(
-      lModuleURIResolver->resolve(lURI, lStaticCtx)
-    );
+    auto_ptr<ModuleURIResolverResult>
+    lModuleURIResolverResult(lModuleURIResolver->resolve(lURI, lStaticCtx));
     assert(lModuleURIResolverResult.get() != 0);
-    lInputStream.reset(lModuleURIResolverResult->getModule()); 
+    lInputStream.reset(lModuleURIResolverResult->getModule());
+    assert(lModuleURIResolverResult->getModule() != 0);
   } else {
     lInputStream.reset(new std::ifstream(lStringURI.c_str()));
   }
-
-  if(lInputStream.get() != 0)
+  
+  if(lInputStream.get() != 0 && lInputStream->good())
   {
     //Parse the file and get the classification
     CompilerCB lCompilerCB;
+    // make a copy and destroy it at the end of the scope
+    StaticContext_t lExternalCtx = lStaticCtx->createChildContext();
+    static_context* sctx = Unmarshaller::getInternalStaticContext(lExternalCtx); 
+    lCompilerCB.m_sctx = sctx;
     xquery_driver lDriver(&lCompilerCB);
     std::stringstream lFileName;
     lFileName << lStringURI;
