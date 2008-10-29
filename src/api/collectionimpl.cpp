@@ -23,7 +23,7 @@
 
 #include "zorbaerrors/errors.h"
 #include "zorbaerrors/error_manager.h"
-#include "zorbautils/latch.h"
+#include "zorbautils/lock.h"
 
 #include "api/unmarshaller.h"
 
@@ -78,7 +78,7 @@ CollectionImpl::addNode(const Item& aNode, long aPosition)
 
     store::Item* lItem = Unmarshaller::getInternalItem(aNode);
 
-    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::WRITE);)
+    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
     //check if the item is already in the collection
     theCollection->addToCollection(lItem, aPosition);
@@ -96,7 +96,7 @@ CollectionImpl::addNode(const Item& aNode, const Item& aTargetNode, bool aOrder)
     store::Item* lItem = Unmarshaller::getInternalItem(aNode);
     store::Item* targetItem = Unmarshaller::getInternalItem(aTargetNode);
 
-    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::WRITE);)
+    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
     theCollection->addNode(lItem, targetItem, aOrder);
 
@@ -114,7 +114,7 @@ CollectionImpl::addNodes(const ResultIterator* aResultIterator)
 
     PlanWrapper_t lPlan = Unmarshaller::getInternalPlan(aResultIterator);
 
-    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::WRITE);)
+    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
     theCollection->addToCollection(&*lPlan);
     return true;
@@ -141,7 +141,7 @@ CollectionImpl::deleteNode(const Item& aNode)
   ZORBA_TRY
     store::Item* lItem = Unmarshaller::getInternalItem(aNode);
 
-    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::WRITE);)
+    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
     theCollection->removeFromCollection(lItem);
     return true;
@@ -176,7 +176,7 @@ CollectionImpl::indexOf(const Item& aNode)
   ZORBA_TRY
       store::Item* lItem = Unmarshaller::getInternalItem(aNode);
 
-  SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::WRITE);)
+  SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
       theCollection->indexOf(lItem);
   return true;

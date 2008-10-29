@@ -18,7 +18,7 @@
 #include <zorba/exception.h>
 #include <zorba/default_error_handler.h>
 
-#include "zorbautils/latch.h"
+#include "zorbautils/lock.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/errors.h"
 
@@ -156,7 +156,7 @@ Item Item::getType() const
 {
   ITEM_TRY
 
-    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::READ);)
+    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     return &*m_item->getType();
 
@@ -169,7 +169,7 @@ Item Item::getAtomizationValue() const
 {
   ITEM_TRY
 
-    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::READ);)
+    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     return &*m_item->getAtomizationValue();
 
@@ -182,7 +182,7 @@ String Item::getStringValue() const
 {
   ITEM_TRY
 
-    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::READ);)
+    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     return m_item->getStringValue().getp();
 
@@ -193,7 +193,7 @@ String Item::getStringValue() const
 
 void Item::serialize(std::ostream& os) const
 {
-  SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::READ);)
+  SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
   try 
   {
@@ -224,7 +224,7 @@ Item Item::getEBV() const
 {
   ITEM_TRY
 
-    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::READ);)
+    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     return &*m_item->getEBV();
 
@@ -238,7 +238,7 @@ String Item::getPrefix() const
 {
   ITEM_TRY
 
-    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::READ);)
+    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     return m_item->getPrefix();
 
@@ -251,7 +251,7 @@ String Item::getLocalName() const
 {
   ITEM_TRY
 
-    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::READ);)
+    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     return m_item->getLocalName();
 
@@ -264,7 +264,7 @@ String Item::getNamespace() const
 {
   ITEM_TRY
 
-    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::READ);)
+    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     return m_item->getNamespace();
 
@@ -278,7 +278,7 @@ bool Item::isNaN() const
 {
   ITEM_TRY
 
-    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::READ);)
+    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     return m_item->isNaN();
 
@@ -292,7 +292,7 @@ bool Item::isPosOrNegInf() const
 {
   ITEM_TRY
 
-    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::READ);)
+    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     return m_item->isPosOrNegInf();
 
@@ -307,7 +307,7 @@ Item::getBooleanValue() const
 {
   ITEM_TRY
 
-    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::READ);)
+    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     return m_item->getBooleanValue();
 

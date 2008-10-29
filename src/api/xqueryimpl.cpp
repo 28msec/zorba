@@ -27,7 +27,7 @@
 
 #include <zorbatypes/URI.h>
 
-#include "zorbautils/latch.h"
+#include "zorbautils/lock.h"
 #include "zorbaerrors/errors.h"
 #include "zorbaerrors/error_manager.h"
 
@@ -506,7 +506,7 @@ XQueryImpl::serialize(std::ostream& os, const Zorba_SerializerOptions_t& opt)
     serializer lSerializer(theErrorManager);
     setSerializationParameters(&lSerializer, opt);
     
-    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::READ);)
+    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     try 
     {
@@ -533,7 +533,7 @@ XQueryImpl::applyUpdates()
 
     PlanWrapper_t lPlan = generateWrapper();
 
-    SYNC_CODE(AutoLatch(GENV_STORE.getGlobalLock(), Latch::WRITE);)
+    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
     store::Item_t pul;
     

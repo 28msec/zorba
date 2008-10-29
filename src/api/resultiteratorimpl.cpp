@@ -16,7 +16,7 @@
 #include <zorba/item.h>
 
 #include "zorbaerrors/error_manager.h"
-#include "zorbautils/latch.h"
+#include "zorbautils/lock.h"
 
 #include "system/globalenv.h"
 
