@@ -78,11 +78,16 @@ public:
   }
 
   ~Lock();
-    
+
+#ifdef ZORBA_HAVE_PTHREAD_H    
   void rlock();
   void wlock();
-
   void unlock();
+#else
+  void rlock() {}
+  void wlock() {}
+  void unlock() {}
+#endif
 
  private:
   Lock(const Lock &);
