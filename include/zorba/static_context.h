@@ -304,19 +304,19 @@ namespace zorba {
       setCollectionURIResolver(CollectionURIResolver* aCollectionUriResolver) = 0;
 
       virtual CollectionURIResolver*
-      getCollectionURIResolver() = 0;
+      getCollectionURIResolver() const = 0;
 
       virtual void
       setSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver) = 0;
 
       virtual SchemaURIResolver*
-      getSchemaURIResolver() = 0;
+      getSchemaURIResolver() const = 0;
 
       virtual void
       setModuleURIResolver(ModuleURIResolver* aModuleUriResolver) = 0;
 
       virtual ModuleURIResolver*
-      getModuleURIResolver() = 0;
+      getModuleURIResolver() const = 0;
 
       /** \brief Check if a function with the given name and arity are registered in the context.
        */

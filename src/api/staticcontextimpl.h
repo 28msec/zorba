@@ -145,19 +145,19 @@ class StaticContextImpl : public StaticContext
   setCollectionURIResolver(CollectionURIResolver* aCollectionUriResolver);
 
   virtual CollectionURIResolver*
-  getCollectionURIResolver();
+  getCollectionURIResolver() const;
 
   virtual void
   setSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver);
 
   virtual SchemaURIResolver*
-  getSchemaURIResolver();
+  getSchemaURIResolver() const;
 
   virtual void
   setModuleURIResolver(ModuleURIResolver* aModuleUriResolver);
 
   virtual ModuleURIResolver*
-  getModuleURIResolver();
+  getModuleURIResolver() const;
 
   virtual bool
   containsFunction(const String& aFnNameUri, const String& aFnNameLocal, int arity) const;

@@ -498,7 +498,7 @@ StaticContextImpl::setCollectionURIResolver(CollectionURIResolver* aCollectionUr
 }
 
 CollectionURIResolver*
-StaticContextImpl::getCollectionURIResolver()
+StaticContextImpl::getCollectionURIResolver() const
 {
   CollectionURIResolverWrapper* lWrapper = dynamic_cast<CollectionURIResolverWrapper*>(theCtx->get_collection_uri_resolver());
   if (lWrapper) { // if it's the user's resolver
@@ -518,7 +518,7 @@ StaticContextImpl::setModuleURIResolver(ModuleURIResolver* aModuleUriResolver)
 }
 
 SchemaURIResolver*
-StaticContextImpl::getSchemaURIResolver()
+StaticContextImpl::getSchemaURIResolver() const
 {
   SchemaURIResolverWrapper* lWrapper = dynamic_cast<SchemaURIResolverWrapper*>(theCtx->get_schema_uri_resolver());
   if (lWrapper) { // if it's the user's resolver
@@ -538,7 +538,7 @@ StaticContextImpl::setSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver)
 }
 
 ModuleURIResolver*
-StaticContextImpl::getModuleURIResolver()
+StaticContextImpl::getModuleURIResolver() const
 {
   ModuleURIResolverWrapper* lWrapper = dynamic_cast<ModuleURIResolverWrapper*>(theCtx->get_module_uri_resolver());
   if (lWrapper) { // if it's the user's resolver
