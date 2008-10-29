@@ -25,7 +25,7 @@
  </ul>
  
 \section introduction 1 Introduction
-This document defines a genereal set of functions grouped together under "zorba-util" namespace.
+This document defines a general set of functions grouped together under "zorba-util" namespace.
 
 \subsection namespace 1.1 Namespace
 In order to use Zorba util functions, the module <tt>"http://www.zorba-xquery.com/zorba/util-functions"</tt> has
