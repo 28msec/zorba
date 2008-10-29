@@ -13,6 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include "runtime/core/fncall_iterator.h"
+
+#include <map>
+
 #include <zorba/item.h>
 #include <zorba/item_sequence.h>
 #include <zorba/stateless_function.h>
@@ -21,7 +26,6 @@
 #include "zorbaerrors/error_manager.h"
 
 #include "runtime/core/var_iterators.h"
-#include "runtime/core/fncall_iterator.h"
 #include "runtime/misc/MiscImpl.h"  // for ExitException
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "functions/function.h"
@@ -134,19 +138,18 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
   UDFunctionCallIteratorState *state;
   bool success;
 #ifdef ZORBA_DEBUGGER
-  ZorbaDebugger* lDebugger = planState.theCompilerCB->m_debugger; 
-  if(lDebugger != 0)
-  {
-    std::stringstream name;
-    name << theUDF->get_fname()->getStringValue() << '(';
-    //TODO: print the arguments
-    name << ')';
-    lDebugger->theStack.push(std::make_pair<std::string, const QueryLoc>(name.str(), loc)); 
-  }
+  ZorbaDebugger* lDebugger = planState.theCompilerCB->m_debugger;
+  std::stringstream name;
 #endif
 
   DEFAULT_STACK_INIT(UDFunctionCallIteratorState, state, planState);
 
+#ifdef ZORBA_DEBUGGER
+  if(lDebugger != 0)
+  {
+    name << theUDF->get_fname()->getStringValue() << '(';
+  }
+#endif
   {
     // Bind the args.
     state->openPlan();
@@ -159,10 +162,31 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
         state->theChildIterators.push_back(new PlanIteratorWrapper(theChildren[i], planState));
         state->theChildIterators.back()->open();
         ref->bind(state->theChildIterators.back(), *state->theFnBodyStateBlock);
+#ifdef ZORBA_DEBUGGER
+        if(lDebugger != 0)
+        {
+          store::Iterator_t it = state->theChildIterators.back();
+          it->open();
+          store::Item_t item;
+          name << '$' << ref->getVarName() << '=';
+          while(it->next(item))
+          {
+            name << item->getStringValue() << " (" << item->getType()->getStringValue() << ')';
+          }
+          it->reset();
+        }
+#endif
       }
     }
   }
-
+#ifdef ZORBA_DEBUGGER
+  if(lDebugger != 0)
+  {
+    name << ')';
+    lDebugger->theStack.push(std::make_pair<std::string, const QueryLoc>(name.str(), loc)); 
+  }
+#endif
+  
   for (;;) {
     try {
       success = consumeNext (result, state->thePlan, *state->theFnBodyStateBlock);
