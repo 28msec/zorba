@@ -90,6 +90,31 @@ public:
 };
 
 
+
+/*******************************************************************************
+
+********************************************************************************/
+class AutoLock
+{
+private:
+  Lock & theLock;
+
+public:
+  AutoLock(Lock& l, Lock::Mode m) : theLock(l)
+  {
+    if (m == Lock::READ)
+      theLock.rlock();
+    else
+      theLock.wlock();
+  }
+    
+  ~AutoLock()
+  {
+    theLock.unlock();
+  }
+};
+
+
 }
 
 #endif // ZORBA_FOR_ONE_THREAD_ONLY

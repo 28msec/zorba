@@ -268,9 +268,12 @@ void Lock::unlock()
     {
       theHolders.erase(iter);
 
-      if (theHolders.empty() && theNumWaiters > 0)
+      if (theHolders.empty())
       {
-        theCondition.broadcast();
+        theMode = NOLOCK;
+
+        if (theNumWaiters > 0)
+          theCondition.broadcast();
       }
       else if (theHaveUpgradeReq && theHolders.size() == 1)
       {
