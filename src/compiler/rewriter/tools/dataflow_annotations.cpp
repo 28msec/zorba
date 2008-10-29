@@ -160,7 +160,8 @@ void DataflowAnnotationsComputer::compute_sequential_expr(sequential_expr *e)
 void DataflowAnnotationsComputer::compute_wrapper_expr(wrapper_expr *e)
 {
   default_walk(e);
-  generic_compute(e);
+  PROPOGATE_SORTED_NODES(e->get_expr().getp(), e);
+  PROPOGATE_DISTINCT_NODES(e->get_expr().getp(), e);
 }
 
 void DataflowAnnotationsComputer::compute_constructor_expr(constructor_expr *e)
