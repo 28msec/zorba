@@ -208,6 +208,8 @@ DEF_ERR_CODE (XQP0028_FUNCTION_IMPL_NOT_FOUND, XQP0028, "The external function c
 
 DEF_ERR_CODE (XQP0029_TIDY_ERROR, XQP0029, "Error in Tidy library: /s")
 
+DEF_ERR_CODE (XQP0030_DEADLOCK, XQP0029, "Lock upgrade request will result in deadlock")
+
 
 //
 // XPDY
