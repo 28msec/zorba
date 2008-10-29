@@ -17,7 +17,7 @@
 #define ZORBA_SIMPLE_STORE
 
 #include "zorbautils/mutex.h"
-#include "zorbautils/latch.h"
+#include "zorbautils/lock.h"
 
 #include "common/shared_types.h"
 
@@ -102,7 +102,7 @@ protected:
   CollectionSet                 theCollections;
   checked_vector<store::Item_t> theItemUris;
 
-  Latch                         theGlobalLock;
+  Lock                          theGlobalLock;
 
   long                          theTraceLevel;
 
@@ -123,7 +123,7 @@ public:
   StringPool& getNamespacePool() const    { return *theNamespacePool; }
   QNamePool& getQNamePool() const         { return *theQNamePool; }
 
-  Latch& getGlobalLock()                  { return theGlobalLock; }
+  Lock& getGlobalLock()                   { return theGlobalLock; }
 
   long getTraceLevel() const              { return theTraceLevel; }
 
