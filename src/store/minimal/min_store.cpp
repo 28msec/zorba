@@ -358,7 +358,6 @@ store::Collection_t SimpleStore::getCollection(const xqpStringStore_t& uri)
     return collection.getp();
   else
   {
-    ZORBA_ERROR_PARAM(FODC0004, uri->c_str(), "");
     return NULL;
   }
 }
@@ -427,7 +426,8 @@ store::Item_t SimpleStore::loadDocument(
   root = loader->loadXml(uri, stream);
   if (lErrorManager.hasErrors()) 
   {
-    ZORBA_ERROR(lErrorManager.getErrors().front().theErrorCode);
+    ZORBA_ERROR_PARAM(lErrorManager.getErrors().front().theErrorCode,
+                      lErrorManager.getErrors().front().theDescription, "");
   }
 
   if (root != NULL)
@@ -462,7 +462,8 @@ store::Item_t SimpleStore::loadDocument(
   root = loader->startloadXml(uri, stream);
   if (lErrorManager.hasErrors()) 
   {
-    ZORBA_ERROR(lErrorManager.getErrors().front().theErrorCode);
+    ZORBA_ERROR_PARAM(lErrorManager.getErrors().front().theErrorCode,
+                      lErrorManager.getErrors().front().theDescription, "");
   }
 
   if (root != NULL)

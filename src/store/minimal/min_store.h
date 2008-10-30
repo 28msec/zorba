@@ -18,7 +18,7 @@
 
 
 #include "zorbautils/mutex.h"
-#include "zorbautils/latch.h"
+#include "zorbautils/lock.h"
 
 #include "common/shared_types.h"
 
@@ -104,7 +104,7 @@ protected:
 
   QueryContextContainer  * theQueryContextContainer; 
 
-  Latch                   theGlobalLock;
+  SYNC_CODE(Lock                   theGlobalLock;)
 
   long                     theTraceLevel;
 public:
@@ -126,7 +126,7 @@ public:
 
   StringPool& getNamespacePool() const    { return *theNamespacePool; }
   QNamePool& getQNamePool() const         { return *theQNamePool; }
-  Latch&    getGlobalLock()                 { return theGlobalLock; }
+  SYNC_CODE(Lock&    getGlobalLock()                 { return theGlobalLock; })
   long getTraceLevel() const              { return theTraceLevel; }
 
   XmlLoader* getXmlLoader(error::ErrorManager*);

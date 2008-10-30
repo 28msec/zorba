@@ -132,9 +132,9 @@ void SimpleCollection::addToCollection(const store::Item* node, long position)
     ZORBA_ERROR( API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
-  SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
   if( nodePositionInCollection((store::Item*)node) == -1)
   {
+    SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
     if(position == -1)
       theXmlTrees.insert(theXmlTrees.end(), const_cast<store::Item*>(node));
     else
@@ -174,9 +174,8 @@ void SimpleCollection::addNode(
   {
     for (; it != end; ++it)
     {
-      //check if the nodes have the same ID
-      if((reinterpret_cast<XmlNode*>(it->getp()))->getTreeId() == rTargetNode->getTreeId() &&
-         (reinterpret_cast<XmlNode*>(it->getp()))->getOrdPath() == rTargetNode->getOrdPath())
+      //check if the nodes are the same
+      if(rTargetNode->equals(reinterpret_cast<XmlNode*>(it->getp())))
       {
         if(aOrder)
           theXmlTrees.insert(it, const_cast<store::Item*>(node));
@@ -221,6 +220,7 @@ void SimpleCollection::removeFromCollection(const store::Item* node)
 
   if(position != -1)
   {
+    SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
     if( theXmlTrees.erase(theXmlTrees.begin() + position) == theXmlTrees.end() )
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
   }
@@ -235,6 +235,7 @@ void SimpleCollection::removeFromCollection(const store::Item* node)
 ********************************************************************************/
 void SimpleCollection::removeFromCollection(long position)
 {
+  SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
   if (position == -1) {
     if (theXmlTrees.size() == 0)
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
@@ -360,9 +361,8 @@ SimpleCollection::nodePositionInCollection(store::Item* newNode)
     const XmlNode* rNewNode = reinterpret_cast<const XmlNode*>(newNode);
 
     for (; it != end; ++it)
-      //check if the nodes have the same ID
-      if((reinterpret_cast<XmlNode*>(it->getp()))->getTreeId() == rNewNode->getTreeId() &&
-         (reinterpret_cast<XmlNode*>(it->getp()))->getOrdPath() == rNewNode->getOrdPath())
+      //check if the nodes are the same
+      if(rNewNode->equals(reinterpret_cast<XmlNode*>(it->getp())))
         return (it - theXmlTrees.begin());
 
     return -1;
