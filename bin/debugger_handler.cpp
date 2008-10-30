@@ -319,7 +319,26 @@ void DebuggerHandler::list(const QueryLocation& aLocation) const
       if(lLineNo >= lLineBegin && lLineNo <= lLineEnd)
       {
 #ifdef WIN32
-        //TODO: Windows implementation
+        HANDLE lConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+        CONSOLE_SCREEN_BUFFER_INFO lConsoleInfo;
+        GetConsoleScreenBufferInfo(lConsole, &lConsoleInfo);
+        const int saved_configuration = lConsoleInfo.wAttributes;
+        SetConsoleTextAttribute(lConsole, 15+0*16); 
+        cerr << lLineNo << '\t';
+        SetConsoleTextAttribute(lConsole, saved_configuration); 
+        for(unsigned int j=1; j<=lLine.length(); j++)
+        {
+          if((lLineNo==lLineBegin && j >= lColumnBegin) ||
+             (lLineBegin != lLineEnd && lLineNo==lLineEnd && j <= lColumnEnd) ||
+             (lLineNo > lLineBegin && lLineEnd))
+          {
+            SetConsoleTextAttribute(lConsole, 15+0*16); 
+            cerr << lLine.at(j-1);
+            SetConsoleTextAttribute(lConsole, saved_configuration); 
+          } else {
+            cerr << lLine.at(j-1);
+          }
+        }
 #else
         cerr << "\033[1m" << lLineNo << '\t' << "\033[0m";
         for(unsigned int j=1; j<=lLine.length(); j++)
