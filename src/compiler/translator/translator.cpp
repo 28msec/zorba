@@ -63,6 +63,10 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
+#ifdef ZORBA_DEBUGGER
+#include "debugger/debugger_server.h"
+#endif
+
 using namespace std;
 
 namespace zorba {
@@ -2837,7 +2841,12 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/) {
         XQueryCompiler xqc (&mod_ccb);
         xqpString lFileName(aturiitem->getStringValue());
         rchandle<parsenode> ast = xqc.parse (*modfile, lFileName);
-
+#ifdef ZORBA_DEBUGGER
+        if(compilerCB->m_debugger != 0)
+        {
+          compilerCB->m_debugger->addModule(ast);
+        }
+#endif
         LibraryModule *mod_ast = dynamic_cast<LibraryModule *> (&*ast);
         if (mod_ast == NULL)
           ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);

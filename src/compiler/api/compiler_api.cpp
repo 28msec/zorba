@@ -116,10 +116,24 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
 expr_t
 XQueryCompiler::normalize(parsenode_t aParsenode)
 {
+  expr_t lExpr = translate (*aParsenode, theCompilerCB);
+  if ( lExpr == NULL ) { // TODO: can this happen?
+    ZORBA_ERROR( API0002_COMPILE_FAILED);
+    return NULL;
+  }
 #ifdef ZORBA_DEBUGGER
   if(theCompilerCB->m_debugger != 0)
   {
-    theCompilerCB->m_debugger->theClassification = classify(*aParsenode);
+    ZorbaDebugger* lDebugger = theCompilerCB->m_debugger;
+    lDebugger->theClassification = classify(*aParsenode);
+    std::list<parsenode_t> lModules = lDebugger->getModules();
+    std::list<parsenode_t>::iterator it;
+    for(it=lModules.begin(); it!=lModules.end(); ++it)
+    {
+      std::map<std::stack<unsigned int>, const QueryLoc> lClassification = classify(**it);
+      lDebugger->theClassification.insert(lClassification.begin(), lClassification.end());
+    }
+
 #if 0
     std::map<std::stack<unsigned int>, const QueryLoc> lClassification = theCompilerCB->m_debugger->theClassification;
     std::map<std::stack<unsigned int>, const QueryLoc>::iterator it;
@@ -136,20 +150,7 @@ XQueryCompiler::normalize(parsenode_t aParsenode)
 #endif
   }
 #endif
-  expr_t lExpr = translate (*aParsenode, theCompilerCB);
-  if ( lExpr == NULL ) { // TODO: can this happen?
-    ZORBA_ERROR( API0002_COMPILE_FAILED);
-    return NULL;
-  }
-
   normalize_expr_tree ("query", theCompilerCB, lExpr, NULL);
-
-#ifdef ZORBA_DEBUGGER
-  if(theCompilerCB->m_debugger != 0)
-  {
-//    theCompilerCB->m_debugger->theClassification = classify(*aParsenode);    
-  }
-#endif
   return lExpr;
 }
 

@@ -24,6 +24,8 @@
 #include <list>
 #include <stack>
 
+#include "compiler/parsetree/parsenode_base.h"
+
 #include "api/xqueryimpl.h"
 
 #include "debugger/debugger_common.h"
@@ -84,7 +86,7 @@ class ZorbaDebugger
                 unsigned short aRequestPort = 8000,
                 unsigned short aEventPort = 9000 );
 
-  protected:
+  private:
     friend class FnDebugIterator;
     friend class XQueryCompiler;
     friend class UDFunctionCallIterator; 
@@ -123,6 +125,22 @@ class ZorbaDebugger
     //The runtime thread
     Thread * theRuntimeThread;
 
+    //The List of modules for the query
+    std::list<parsenode_t> theModules;
+
+  public:
+    ZorbaDebugger* addModule(parsenode_t& anAST)
+    {
+      theModules.push_back(anAST);
+      return this;
+    }
+
+    std::list<parsenode_t> getModules() const
+    {
+      return theModules;
+    }
+
+  private:
     //The dewey classification
     std::map<std::stack<unsigned int>, const QueryLoc> theClassification;
     

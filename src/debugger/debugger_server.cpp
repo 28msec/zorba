@@ -74,12 +74,12 @@ ZorbaDebugger::~ZorbaDebugger()
 }
 
 void ZorbaDebugger::start( XQueryImpl *aQuery,
-                           std::ostream& aOutStream,
+                           ostream& aOutStream,
                            const Zorba_SerializerOptions_t& aSerOptions,
                            unsigned short aRequestPortno,
                            unsigned short aEventPortno)
 {
-  std::auto_ptr<TCPSocket> lSock;
+  auto_ptr<TCPSocket> lSock;
   //Set the query and serialization options
   theQuery = aQuery;
   theOutputStream = &aOutStream;
@@ -92,7 +92,7 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
   lSock.reset(theRequestServerSocket->accept());
   assert( lSock.get() != 0 );
 #ifndef NDEBUG
-  std::clog << "[Server Thread] Client connected" << std::endl;
+  clog << "[Server Thread] Client connected" << std::endl;
 #endif
   //Try to connect to the event server 3 times
   for ( unsigned int i = 0; i < 3 && ! theEventSocket; i++ )
@@ -106,13 +106,13 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
       break;
     } catch ( DebuggerSocketException &e )  {
       if ( i < 2 ) continue;
-      std::cerr << "[Server Thread] Couldn't connect to the debugger server event: " << std::endl;
-      std::cerr << "[Server Thread] " <<  e.what() << std::endl;
+      cerr << "[Server Thread] Couldn't connect to the debugger server event: " << std::endl;
+      cerr << "[Server Thread] " <<  e.what() << std::endl;
       return;
     }
   }
 #ifndef NDEBUG
-  std::clog << "[Server Thread] Connected to the event server" << std::endl;
+  clog << "[Server Thread] Connected to the event server" << std::endl;
 #endif
 
   //Perform handshake
@@ -124,11 +124,11 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
     handleTcpClient( lSock.get() );
   }
 #ifndef NDEBUG
-  std::clog << "[Server Thread] server quited" << std::endl;
+  clog << "[Server Thread] server quited" << std::endl;
 #endif
   delete theRuntimeThread;
 #ifndef NDEBUG
-  std::clog << "[Server Thread] runtime thread quited" << std::endl;
+  clog << "[Server Thread] runtime thread quited" << std::endl;
 #endif 
 }
 
@@ -167,32 +167,32 @@ void ZorbaDebugger::sendEvent( AbstractCommandMessage * aMessage )
     try
     {
 #ifndef NDEBUG
-      std::clog << "[Server Thread] send an event: ";
+      clog << "[Server Thread] send an event: ";
       switch ( aMessage->getCommand() )
       {
         case STARTED:
-          std::cerr << "started" << std::endl;
+          cerr << "started" << std::endl;
           break;
         case TERMINATED:
-          std::cerr << "terminated" << std::endl;
+          cerr << "terminated" << std::endl;
           break;
         case SUSPENDED:
-          std::cerr << "suspended" << std::endl;
+          cerr << "suspended" << std::endl;
           break;
         case RESUMED:
-          std::cerr << "resumed" << std::endl;
+          cerr << "resumed" << std::endl;
           break;
         case EVALUATED:
-          std::cerr << "evaluated" << std::endl;
+          cerr << "evaluated" << std::endl;
           break;
       }
 #endif
       theEventSocket->send( lMessage.get(), length );
 #ifndef NDEBUG
-      std::clog << "[Server Thread] event sent" << std::endl;
+      clog << "[Server Thread] event sent" << std::endl;
 #endif
     } catch( DebuggerSocketException &e ) {
-      std::cerr << e.what() << std::endl;
+      cerr << e.what() << std::endl;
     }
 }
 
@@ -229,13 +229,13 @@ void ZorbaDebugger::runQuery()
     Zorba_SerializerOptions lSerOptions;
     lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
     theQuery->serialize( *theOutputStream, *theSerOptions );
-    std::cout.flush();
+    cout.flush();
   } catch ( StaticException& se ) {
-    std::cerr << se << std::endl;
+    cerr << se << std::endl;
   } catch ( DynamicException& de ) {
-    std::cerr << de << std::endl;
+    cerr << de << std::endl;
   } catch ( SystemException& se ) {
-    std::cerr << se << std::endl;
+    cerr << se << std::endl;
   }
   setStatus( QUERY_TERMINATED );
 }
@@ -244,7 +244,7 @@ bool ZorbaDebugger::hasToSuspend()
 {
   //If the query has been suspend by the user
   if( theStatus == QUERY_SUSPENDED ){ return true; }
-  std::map<unsigned int, QueryLoc>::iterator it;
+  map<unsigned int, QueryLoc>::iterator it;
   //TODO: can be faster
   for ( it = theBreakpoints.begin(); it != theBreakpoints.end(); it++ )
   {
@@ -255,19 +255,19 @@ bool ZorbaDebugger::hasToSuspend()
     }
   }
  
-  std::map<unsigned int, xqpString>::iterator lIter;
+  map<unsigned int, xqpString>::iterator lIter;
   for ( lIter = theWatchpoints.begin(); lIter != theWatchpoints.end(); lIter++ )
   {
-    std::auto_ptr< CompilerCB > ccb(new CompilerCB(*thePlanState->theCompilerCB));
-    std::auto_ptr< dynamic_context > dctx(new dynamic_context(thePlanState->dctx()));
+    auto_ptr< CompilerCB > ccb(new CompilerCB(*thePlanState->theCompilerCB));
+    auto_ptr< dynamic_context > dctx(new dynamic_context(thePlanState->dctx()));
       
     //TODO: catch exceptions
-    std::auto_ptr<PlanWrapperHolder> eval_plan = compileEvalPlan(theLocation, ccb.get(), dctx.get(), lIter->second, *thePlanState);
+    auto_ptr<PlanWrapperHolder> eval_plan = compileEvalPlan(theLocation, ccb.get(), dctx.get(), lIter->second, *thePlanState);
     PlanWrapper* lIterator = eval_plan->get();
     try
     {
       store::Item_t lItem;
-      std::map<xqpString, xqpString> lValuesAndTypes;
+      map<xqpString, xqpString> lValuesAndTypes;
 
       error::ErrorManager lErrorManger;
 
@@ -297,7 +297,7 @@ void ZorbaDebugger::handshake( TCPSocket * aSock )
     aSock->recv( msg.get(), 11 );
     aSock->send( msg.get(), 11 );
   } catch( DebuggerSocketException &e ) {
-    std::cerr << e.what() << std::endl;
+    cerr << e.what() << std::endl;
   }
 }
 
@@ -307,8 +307,8 @@ void ZorbaDebugger::handshake( TCPSocket * aSock )
 void ZorbaDebugger::handleTcpClient( TCPSocket * aSock )
 {
   ZorbaArrayAutoPointer<Byte> lByteMessage;
-  std::auto_ptr<AbstractMessage> lMessage;
-  std::auto_ptr<ReplyMessage> lReplyMessage;
+  auto_ptr<AbstractMessage> lMessage;
+  auto_ptr<ReplyMessage> lReplyMessage;
   Length length;
   try
   {
@@ -318,7 +318,7 @@ void ZorbaDebugger::handleTcpClient( TCPSocket * aSock )
     {
       //process the command message
       //TODO: flush the output somewhere else
-      std::cout.flush();
+      cout.flush();
       processMessage( lCommandMessage );
       //Send the reply message
       lReplyMessage.reset(lCommandMessage->getReplyMessage());
@@ -326,7 +326,7 @@ void ZorbaDebugger::handleTcpClient( TCPSocket * aSock )
       aSock->send( lByteMessage.get(), length );
     } else {
 #ifndef NDEBUG
-      std::clog << "[Server Thread] Received something wrong" << std::endl;
+      clog << "[Server Thread] Received something wrong" << std::endl;
 #endif
       //If something goes wrong, buildMessage() receive a Reply Message containing the error description
       //Send it back to the client right away
@@ -335,13 +335,13 @@ void ZorbaDebugger::handleTcpClient( TCPSocket * aSock )
         lByteMessage.reset(lReplyMessage->serialize( length ));
         aSock->send( lByteMessage.get(), length );
       } else {
-        std::cerr << "[Server Thread] Internal error occured. Couldn't send the error message." << std::endl;
+        cerr << "[Server Thread] Internal error occured. Couldn't send the error message." << std::endl;
       }
     }    
-  } catch ( std::exception &e ) {
+  } catch ( exception &e ) {
 #ifndef NDEBUG
-    std::clog << "The connection with the client is closed" << std::endl;
-    std::clog <<  e.what() << std::endl;
+    clog << "The connection with the client is closed" << std::endl;
+    clog <<  e.what() << std::endl;
 #endif
   }
 }
@@ -370,10 +370,10 @@ void ZorbaDebugger::terminate()
   setStatus( QUERY_TERMINATED );
 }
 
-std::stack<unsigned int> ZorbaDebugger::getCurrentDecimal() const
+stack<unsigned int> ZorbaDebugger::getCurrentDecimal() const
 {
-  std::stack<unsigned int> lCurrentDecimal;
-  std::map< std::stack<unsigned int>, const QueryLoc>::const_iterator it;
+  stack<unsigned int> lCurrentDecimal;
+  map< std::stack<unsigned int>, const QueryLoc>::const_iterator it;
   for(it=theClassification.begin(); it!=theClassification.end(); ++it)
   {
     if(it->second == theLocation)
@@ -388,27 +388,27 @@ std::stack<unsigned int> ZorbaDebugger::getCurrentDecimal() const
 void ZorbaDebugger::step( const StepCommand aKind )
 {
   //find the current decimal.
-  std::stack<unsigned int> lCurrentDecimal = getCurrentDecimal();
+  stack<unsigned int> lCurrentDecimal = getCurrentDecimal();
   //if the current decimal is not found something really wrong happened
   if(lCurrentDecimal.empty())
   {
     //TODO: proper error handling
-    std::cerr << "Internal error occured for step." << std::endl;
+    cerr << "Internal error occured for step." << std::endl;
     return;
   }
   if( aKind == STEP_OVER )
   {
-    std::cerr << "Step Over." << std::endl;
+    cerr << "Step Over." << std::endl;
     isSteppingOver = true;
     theDecimalSize = lCurrentDecimal.size();
     resume();
   } else if ( aKind == STEP_INTO ) {
-    std::cerr << "Step Into." << std::endl;
+    cerr << "Step Into." << std::endl;
     isSteppingInto = true;
     theDecimalSize = lCurrentDecimal.size()+1;
     resume();
   } else if ( aKind == STEP_OUT ) {
-    std::cerr << "Step Out." << std::endl;
+    cerr << "Step Out." << std::endl;
     isSteppingOut = true;
     lCurrentDecimal.pop();
     theDecimalSize = lCurrentDecimal.size();
@@ -418,7 +418,7 @@ void ZorbaDebugger::step( const StepCommand aKind )
 
 bool ZorbaDebugger::hasToStepOver() const
 {
-  std::stack<unsigned int> lDecimal(getCurrentDecimal());
+  stack<unsigned int> lDecimal(getCurrentDecimal());
   if(lDecimal.empty())
   {
     return false;
@@ -432,7 +432,7 @@ bool ZorbaDebugger::hasToStepOver() const
 
 bool ZorbaDebugger::hasToStepInto() const
 {
-  std::stack<unsigned int> lDecimal(getCurrentDecimal());
+  stack<unsigned int> lDecimal(getCurrentDecimal());
   if(lDecimal.empty())
   {
     return false;
@@ -446,7 +446,7 @@ bool ZorbaDebugger::hasToStepInto() const
 
 bool ZorbaDebugger::hasToStepOut() const
 {
-  std::stack<unsigned int> lDecimal(getCurrentDecimal());
+  stack<unsigned int> lDecimal(getCurrentDecimal());
   if(lDecimal.empty())
   {
     return false;
@@ -477,31 +477,31 @@ void ZorbaDebugger::eval( xqpString anExpr )
 {
   if ( theStatus != QUERY_IDLE && theStatus != QUERY_TERMINATED )
   {
-    std::auto_ptr<EvaluatedEvent> lMsg;
+    auto_ptr<EvaluatedEvent> lMsg;
     try {
-      std::auto_ptr< CompilerCB > ccb(new CompilerCB(*thePlanState->theCompilerCB));
-      std::auto_ptr< dynamic_context > dctx(new dynamic_context(thePlanState->dctx()));
-      std::auto_ptr<PlanWrapperHolder> eval_plan = compileEvalPlan(theLocation, ccb.get(), dctx.get(), anExpr, *thePlanState);
+      auto_ptr< CompilerCB > ccb(new CompilerCB(*thePlanState->theCompilerCB));
+      auto_ptr< dynamic_context > dctx(new dynamic_context(thePlanState->dctx()));
+      auto_ptr<PlanWrapperHolder> eval_plan = compileEvalPlan(theLocation, ccb.get(), dctx.get(), anExpr, *thePlanState);
       PlanWrapper* lIterator = eval_plan->get();
       assert(lIterator != 0);
 
       store::Item_t lItem;
-      std::map<xqpString, xqpString> lValuesAndTypes;
+      map<xqpString, xqpString> lValuesAndTypes;
 
       error::ErrorManager lErrorManger;
       serializer lSerializer(&lErrorManger);
       lSerializer.set_parameter("omit-xml-declaration", "yes");
 
       while (lIterator->next(lItem)) {
-        std::ostringstream os;
+        ostringstream os;
         lSerializer.serialize(lItem, os);
         xqpString lValue = os.str();
         xqpString lType( lItem->getType()->getStringValue() );
-        lValuesAndTypes.insert(std::pair<xqpString, xqpString>(lValue, lType));
+        lValuesAndTypes.insert(pair<xqpString, xqpString>(lValue, lType));
       }
       lMsg.reset(new EvaluatedEvent(anExpr, lValuesAndTypes));
     } catch ( error::ZorbaError& e) {
-      std::stringstream lOutputStream;
+      stringstream lOutputStream;
       xqpString lDescription = e.theDescription.replace("\\\"", "", "");
       lOutputStream << "Error: " << error::ZorbaError::toString(e.theErrorCode) << " " << lDescription;
       lMsg.reset(new EvaluatedEvent( anExpr, lOutputStream.str() ));
@@ -516,14 +516,14 @@ const QueryLoc ZorbaDebugger::addBreakpoint(const QueryLoc& aLocation)
   assert(theQuery != 0);
   String lStringURI(aLocation.getFilename());
   unsigned int lLineNumber = aLocation.getLineBegin();
-  std::pair<std::stack<unsigned int>, QueryLoc> lBreakpoint;
+  pair<std::stack<unsigned int>, QueryLoc> lBreakpoint;
   StaticContext* lStaticCtx = const_cast<StaticContext*>(theQuery->getStaticContext()); 
   assert(lStaticCtx != 0);
   //Check for namespace prefix
   //try
   //{
   //  lStringURI = lStaticCtx->getNamespaceURIByPrefix(lStringURI); 
-  //}catch(ZorbaException &e){ std::cerr << "Prefix not resolved" << std::endl; }
+  //}catch(ZorbaException &e){ cerr << "Prefix not resolved" << std::endl; }
   
   //Resolve the logical/physical URI
   ItemFactory* lItemFactory = ItemFactoryImpl::getInstance();
@@ -539,7 +539,7 @@ const QueryLoc ZorbaDebugger::addBreakpoint(const QueryLoc& aLocation)
     lInputStream.reset(lModuleURIResolverResult->getModule());
     assert(lModuleURIResolverResult->getModule() != 0);
   } else {
-    lInputStream.reset(new std::ifstream(lStringURI.c_str()));
+    lInputStream.reset(new ifstream(lStringURI.c_str()));
   }
   
   if(lInputStream.get() != 0 && lInputStream->good())
@@ -551,7 +551,7 @@ const QueryLoc ZorbaDebugger::addBreakpoint(const QueryLoc& aLocation)
     static_context* sctx = Unmarshaller::getInternalStaticContext(lExternalCtx); 
     lCompilerCB.m_sctx = sctx;
     xquery_driver lDriver(&lCompilerCB);
-    std::stringstream lFileName;
+    stringstream lFileName;
     lFileName << lStringURI;
     const xqpString lFileName2(lFileName.str());
     lDriver.parse_stream(*lInputStream.get(), lFileName2);
@@ -560,23 +560,23 @@ const QueryLoc ZorbaDebugger::addBreakpoint(const QueryLoc& aLocation)
     {
       return lBreakpoint.second;
     }
-    std::map<std::stack<unsigned int>, const QueryLoc> lClassification = classify(*lParseNode);
+    map<std::stack<unsigned int>, const QueryLoc> lClassification = classify(*lParseNode);
 #if 0
-    std::map<std::stack<unsigned int>, const QueryLoc>::iterator it;
+    map<std::stack<unsigned int>, const QueryLoc>::iterator it;
     for(it=lClassification.begin(); it!=lClassification.end(); ++it)
     {
-      std::stack<unsigned int> s(it->first);
+      stack<unsigned int> s(it->first);
       while(!s.empty())
       {
-        std::cerr << s.top();
+        cerr << s.top();
         s.pop();
       }
-      std::cerr << ' ' << it->second << std::endl;
+      cerr << ' ' << it->second << std::endl;
     }
 #endif
     for(unsigned int i=0; i<=10; i++)
     {
-      std::map<std::stack<unsigned int>, const QueryLoc>::iterator it;
+      map<std::stack<unsigned int>, const QueryLoc>::iterator it;
       for(it=lClassification.begin(); it!=lClassification.end(); ++it)
       {
         if(lLineNumber == it->second.getLineBegin())//lBreakpoint.first.empty())
@@ -592,12 +592,12 @@ const QueryLoc ZorbaDebugger::addBreakpoint(const QueryLoc& aLocation)
   return lBreakpoint.second;
 }
 
-std::auto_ptr<PlanWrapperHolder>
+auto_ptr<PlanWrapperHolder>
 ZorbaDebugger::compileEvalPlan(const QueryLoc& loc, CompilerCB* ccb, dynamic_context* dctx, const xqpString& anExpr, PlanState& planState)
 {
-  std::auto_ptr<PlanWrapperHolder> eval_plan(new PlanWrapperHolder());
+  auto_ptr<PlanWrapperHolder> eval_plan(new PlanWrapperHolder());
   
-  checked_vector< std::string > var_keys;
+  checked_vector< string > var_keys;
 
   //set up eval state's ccb
   ccb->m_sctx_list.push_back( ccb->m_sctx = ccb->m_sctx->create_child_context() );
@@ -622,7 +622,7 @@ ZorbaDebugger::compileEvalPlan(const QueryLoc& loc, CompilerCB* ccb, dynamic_con
     // we won't be able to re-open it later via the PlanIteratorWrapper
     dctx->add_variable(dynamic_context::var_key(ccb->m_sctx->lookup_var(theVarnames[i])), lIter);
   }
-  return std::auto_ptr<PlanWrapperHolder>(eval_plan.release());
+  return auto_ptr<PlanWrapperHolder>(eval_plan.release());
 }
 
 void ZorbaDebugger::processMessage(AbstractCommandMessage * aMessage)
@@ -698,20 +698,20 @@ void ZorbaDebugger::processMessage(AbstractCommandMessage * aMessage)
 #endif
           SetReply* lReply = new SetReply(lMessage->getId(), DEBUGGER_NO_ERROR);
           
-          std::map<unsigned int, QueryLoc> locations = lMessage->getLocations();
-          std::map<unsigned int, QueryLoc>::iterator it;
+          map<unsigned int, QueryLoc> locations = lMessage->getLocations();
+          map<unsigned int, QueryLoc>::iterator it;
           for ( it = locations.begin(); it != locations.end(); it++ )
           {
             QueryLoc loc = addBreakpoint(it->second);
-            theBreakpoints.insert( std::make_pair( it->first, loc ) ); 
+            theBreakpoints.insert( make_pair( it->first, loc ) ); 
             lReply->addBreakpoint(it->first, loc);
           }
           
-          std::map<unsigned int, xqpString> exprs = lMessage->getExprs();
-          std::map<unsigned int, xqpString>::iterator lIt;
+          map<unsigned int, xqpString> exprs = lMessage->getExprs();
+          map<unsigned int, xqpString>::iterator lIt;
           for ( lIt = exprs.begin(); lIt != exprs.end(); lIt++ )
           {
-            theWatchpoints.insert( std::make_pair( lIt->first, lIt->second ) ); 
+            theWatchpoints.insert( make_pair( lIt->first, lIt->second ) ); 
           }
 
           lMessage->setReplyMessage(lReply);
@@ -726,17 +726,17 @@ void ZorbaDebugger::processMessage(AbstractCommandMessage * aMessage)
 #else
           lMessage =  static_cast< ClearMessage * > ( aMessage );
 #endif
-          std::vector<unsigned int>::iterator it;
-          std::vector<unsigned int> ids = lMessage->getIds();
+          vector<unsigned int>::iterator it;
+          vector<unsigned int> ids = lMessage->getIds();
           for ( it = ids.begin(); it != ids.end(); it++ )
           {
-            std::map<unsigned int, QueryLoc>::iterator
+            map<unsigned int, QueryLoc>::iterator
             lIter = theBreakpoints.find( *it );
             if ( lIter !=  theBreakpoints.end() )
             {
               theBreakpoints.erase( lIter );
             } else {
-              std::map<unsigned int, xqpString>::iterator lIter2 =
+              map<unsigned int, xqpString>::iterator lIter2 =
               theWatchpoints.find( *it );
               if ( lIter2 != theWatchpoints.end() ) {
                 theWatchpoints.erase( lIter2 );

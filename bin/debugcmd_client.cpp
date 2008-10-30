@@ -392,7 +392,13 @@ void CommandLineEventHandler::handle_cmd()
           {
             theOutput << "Invalid line number"  << std::endl;
           } else {
-            theClient->addBreakpoint( lFileName, lLineNo );
+            std::auto_ptr<QueryLocation> lLocation(theClient->addBreakpoint( lFileName, lLineNo ));
+            if(lLocation->getLineBegin() == 0)
+            {
+              theOutput << "No breakpoint found at this line." << std::endl;
+            } else {
+              theOutput << "Set breakpoint at line " << lLocation.get() << '.' << std::endl;
+            }
           }
         } else {
           unsigned int lLineNo = atoi( lArgs.at(1).c_str() );
@@ -556,6 +562,7 @@ void CommandLineEventHandler::help()
   theOutput << "Zorba debugger:" << std::endl;
   theOutput << "  version  -- Display the version of Zorba engine and its debugger" << std::endl;
   theOutput << "  help     -- This help." << std::endl;
+  help();
 }
 
 void CommandLineEventHandler::version()
