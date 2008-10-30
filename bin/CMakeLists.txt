@@ -17,7 +17,7 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
 SET(ZORBA_CMD_SRCS zorbacmd.cpp zorbacmdproperties.cpp)
 
 IF(ZORBA_DEBUGGER)
- SET(ZORBA_CMD_SRCS ${ZORBA_CMD_SRCS} debugcmd_client.cpp) 
+ SET(ZORBA_CMD_SRCS ${ZORBA_CMD_SRCS} debugger_handler.cpp) 
 ENDIF(ZORBA_DEBUGGER)
 
 SET(requiredlibs-zorbacmd-shared ${requiredlibs-zorbacmd} zorba simplestore)

@@ -31,7 +31,8 @@
 #include <zorba/zorba.h>
 
 #ifdef ZORBA_DEBUGGER
-#include "debugcmd_client.h"
+#include <zorba/debugger_client.h>
+#include "debugger_handler.h"
 #ifdef ZORBA_HAVE_PTHREAD_H
 #include <pthread.h>
 #define ZORBA_THREAD_RETURN void *
@@ -65,6 +66,7 @@
 #include "util/properties.h"
 #endif
 
+using namespace zorba;
 namespace zorbatm = zorba::time;
 
 bool
@@ -174,7 +176,7 @@ std::string parseFileURI (bool asPath, const std::string &str) {
 #ifdef ZORBA_DEBUGGER
 struct server_args
 {
-  XQuery_t theQuery;
+  zorba::XQuery_t theQuery;
   unsigned short theRequestPort;
   unsigned short theEventPort;
 };
@@ -413,7 +415,9 @@ int _tmain(int argc, _TCHAR* argv[])
              //wait 1 second before trying to reconnect
              sleep(1);
              std::auto_ptr<ZorbaDebuggerClient> debuggerClient(ZorbaDebuggerClient::createClient(lProperties.getRequestPort(), lProperties.getEventPort()));
-             CommandLineEventHandler lEventHandler( lFileName, lXQ.get(), std::cin, std::cout, debuggerClient.get(), !lProperties.hasNoSyntaxHighlighting() );
+             lXQ.release();
+             DebuggerHandler lEventHandler(lZorbaInstance, debuggerClient.get(), lFileName);
+             //DebuggerHandler lEventHandler( lFileName, lXQ.get(), std::cin, std::cout, debuggerClient.get(), !lProperties.hasNoSyntaxHighlighting() );
 #ifdef SIGINT /* not all system have SIGINT */
              signal( SIGINT, suspend );
 #endif
