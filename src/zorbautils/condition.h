@@ -54,8 +54,12 @@ class Condition
 class Condition
 {
 protected:
-  HANDLE           cond_event;
+  HANDLE           cond_event[2];
   Mutex          & theMutex;
+  int              waiters;
+  HANDLE           cond_door;
+  HANDLE           cond_broadcast;
+  CRITICAL_SECTION  cond_cs;
 public:
   Condition(Mutex& m);
 

@@ -69,26 +69,57 @@ void Condition::broadcast()
 Condition::Condition(Mutex& m) : theMutex(m) 
 {
 //  int ret = pthread_cond_init(&theCondition, NULL); 
-	cond_event = CreateEvent(NULL, FALSE, FALSE, NULL);
+	cond_event[0] = CreateEvent(NULL, FALSE, FALSE, NULL);//auto-reset, for signal
+	cond_event[1] = CreateEvent(NULL, TRUE, FALSE, NULL);//manual-reset, for broadcast
+	
+  cond_door = CreateEvent(NULL, FALSE, TRUE, NULL);//auto-reset, initial ON
+  cond_broadcast = CreateEvent(NULL, FALSE, FALSE, NULL);//auto-reset, initial OFF
 
-  ZORBA_FATAL(cond_event==INVALID_HANDLE_VALUE, "Failed to create condition variable. Error code = " << GetLastError());
+  InitializeCriticalSection(&cond_cs);
+  waiters = 0;
+
+  ZORBA_FATAL(cond_event[0]!=INVALID_HANDLE_VALUE && cond_event[1]!=INVALID_HANDLE_VALUE && cond_door!=INVALID_HANDLE_VALUE && cond_broadcast!=INVALID_HANDLE_VALUE, 
+            "Failed to create condition variable. Error code = " << GetLastError());
 }
 
 
 Condition::~Condition()
 {
 //  int ret = pthread_cond_destroy(&theCondition); 
-  BOOL ret = CloseHandle(cond_event);
+  BOOL ret = CloseHandle(cond_event[0]);
+  ret &= CloseHandle(cond_event[1]);
+  ret &= CloseHandle(cond_door);
+  ret &= CloseHandle(cond_broadcast);
 
-  ZORBA_FATAL(!ret, "Failed to destroy condition variable. Error code = " << GetLastError());
+  DeleteCriticalSection(&cond_cs);
+
+  ZORBA_FATAL(ret, "Failed to destroy condition variable. Error code = " << GetLastError());
 }
 
 
 void Condition::wait() 
 {
   //int ret = pthread_cond_wait(&theCondition, theMutex.getMutex());
+
+  WaitForSingleObject(cond_door, INFINITE);
+
+  EnterCriticalSection(&cond_cs);
+  waiters++;
+  LeaveCriticalSection(&cond_cs);
+  
+  SetEvent(cond_door);//let other waits/signal/broadcast to enter
+
   theMutex.unlock();
-	WaitForSingleObject(cond_event, INFINITE);
+	int result = WaitForMultipleObjects(2,cond_event, FALSE, INFINITE);//wait any of them
+
+  EnterCriticalSection(&cond_cs);
+  waiters--;
+  if((result == WAIT_OBJECT_0 + 1) && !waiters || (result == WAIT_OBJECT_0))
+  {
+    SetEvent(cond_broadcast);
+  }
+  LeaveCriticalSection(&cond_cs);
+
 	theMutex.lock();
 }
 
@@ -96,18 +127,50 @@ void Condition::wait()
 void Condition::signal() 
 {
   //int ret = pthread_cond_signal(&theCondition);
-	BOOL ret = SetEvent(cond_event);
+  WaitForSingleObject(cond_door, INFINITE);//allow one broadcast/signal at a time
 
-  ZORBA_FATAL(!ret, "Failed to signal condition variable. Error code = " << GetLastError());
+  EnterCriticalSection(&cond_cs);
+  bool have_waiters = waiters > 0;
+  LeaveCriticalSection(&cond_cs);
+
+  if(!have_waiters)
+  {
+    SetEvent(cond_door);//no reason to bother
+    return;
+  }
+
+  SetEvent(cond_event[0]);
+
+  WaitForSingleObject(cond_broadcast, INFINITE);//wait for one waiting thread to wake up
+
+  SetEvent(cond_door);
+
+  //ZORBA_FATAL(!ret, "Failed to signal condition variable. Error code = " << GetLastError());
 }
 
 
 void Condition::broadcast() 
 {
   //int ret = pthread_cond_broadcast(&theCondition);
-	BOOL ret = PulseEvent(cond_event);
+  WaitForSingleObject(cond_door, INFINITE);//allow one broadcast/signal at a time
 
-  ZORBA_FATAL(!ret, "Failed to brodcast condition variable. Error code = " << GetLastError());
+  EnterCriticalSection(&cond_cs);
+  bool have_waiters = waiters > 0;
+  LeaveCriticalSection(&cond_cs);
+
+  if(!have_waiters)
+  {
+    SetEvent(cond_door);//no reason to bother
+    return;
+  }
+
+  SetEvent(cond_event[1]);//signal broadcast
+
+  WaitForSingleObject(cond_broadcast, INFINITE);//wait for all waiting threads to wake up
+  ResetEvent(cond_event[1]);//stop the broadcast
+  SetEvent(cond_door);//open the door for waits/signal/broadcast
+
+  //ZORBA_FATAL(!ret, "Failed to brodcast condition variable. Error code = " << GetLastError());
 }
 
 #endif // ZORBA_HAVE_PTHREAD_H
