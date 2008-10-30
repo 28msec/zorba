@@ -1648,7 +1648,7 @@ void translate_gflwor (const FLWORExpr& v) {
         if(compilerCB->m_debugger != 0)
         {
           push_scope();
-          for(int k=nvars; k>j; k--)
+          for(int k=nvars; k-1>j; k--)
           {
             theScopedVariables.push_back(vars[k-1]);
           }
