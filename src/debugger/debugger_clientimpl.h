@@ -50,7 +50,7 @@ namespace zorba{
 
       virtual ~ZorbaDebuggerClientImpl();
 
-      void registerEventHandler( DebuggerEventHandler * anEventHandler );
+      ZorbaDebuggerClient* registerEventHandler( DebuggerEventHandler * anEventHandler );
       
       bool isQueryRunning() const;
 
@@ -60,21 +60,21 @@ namespace zorba{
 
       bool isQueryTerminated() const;
       
-      void run();
+      bool run();
 
-      void suspend();
+      bool suspend();
 
-      void resume();
+      bool resume();
 
-      void terminate();
+      bool terminate();
 
-      void stepInto();
+      bool stepInto();
 
-      void stepOut();
+      bool stepOut();
 
-      void stepOver();
+      bool stepOver();
 
-      void addBreakpoint( const String &anExpr );
+      bool addBreakpoint( const String &anExpr );
 
       QueryLocation* addBreakpoint( const String &aFileName, const unsigned int aLineNo );
 
@@ -84,13 +84,13 @@ namespace zorba{
 
       bool clearBreakpoint( unsigned int anId );
 
-      void clearBreakpoints( std::list<unsigned int> &Ids );
+      bool clearBreakpoints( std::list<unsigned int> &Ids );
 
-      void clearBreakpoints();
+      bool clearBreakpoints();
       
       QueryLocation *getLocation() const;
 
-      void eval( String &anExpr ) const;
+      bool eval( String &anExpr ) const;
 
       std::list<Variable> getAllVariables() const;
       

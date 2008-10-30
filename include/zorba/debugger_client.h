@@ -149,7 +149,7 @@ namespace zorba{
        * @param aDebuggerEventHandler DebuggerEventHandler Handler for runtime events comming
        * from the remote debugger server.
        */
-      virtual void
+      virtual ZorbaDebuggerClient*
       registerEventHandler( DebuggerEventHandler *aDebuggerEventHandler ) = 0;
      
       /** \brief Indicates if the query is running.
@@ -183,41 +183,44 @@ namespace zorba{
       /** \brief Request the remote query to run.
        *
        */
-      virtual void
+      virtual bool
       run() = 0;
 
       /** \brief Request the remote query to suspend.
        *
        */
-      virtual void
+      virtual bool
       suspend() = 0;
 
       /** \brief Request the remote query to resume.
        *
        */
-      virtual void
+      virtual bool
       resume() = 0;
       
       /** \brief Request the remote query to terminate.
        *
        */
-      virtual void
+      virtual bool
       terminate() = 0;
 
       /** \brief Step into the function call.
        *
        */
-      virtual void stepInto() = 0;
+      virtual bool
+      stepInto() = 0;
 
       /** \brief Step out the function call.
        *
        */
-      virtual void stepOut() = 0;
+      virtual bool
+      stepOut() = 0;
 
       /** \brief Step over the expression
        *
        */
-      virtual void stepOver() = 0;
+      virtual bool
+      stepOver() = 0;
 
       /** \brief Set a new breakpoint.
        *
@@ -243,7 +246,7 @@ namespace zorba{
        *
        * @param anExpr String XQuery expression to be evaluated.
        */
-      virtual void
+      virtual bool
       addBreakpoint( const String &anExpr ) = 0;
 
       /** \brief Remove a breakpoint or watchpoint of the given id
@@ -259,7 +262,7 @@ namespace zorba{
        * @param Ids std::list<unsigned int> List of the breakpoint/watchpoint ids
        * @return true if all breakpoint ids are correct.
        */
-      virtual void
+      virtual bool
       clearBreakpoints( std::list<unsigned int> &Ids ) = 0;
       
       /** \brief Get all breakpoints set on the remote query.
@@ -272,7 +275,7 @@ namespace zorba{
       /** \brief Remove all breakpoints on the remote query.
        *
        */
-      virtual void
+      virtual bool
       clearBreakpoints() = 0;
 
       /** \brief Get the current location of the remote query.
@@ -290,7 +293,7 @@ namespace zorba{
        * done in a separate thread. Once the expression computed, the server fires an event to
        * the client with the result or an error description if an error happened during evaluation.
        */
-      virtual void
+      virtual bool
       eval( String &anExpr ) const = 0;
 
       /** \brief Get all variables that are in scope in the remote query.

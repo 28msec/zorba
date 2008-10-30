@@ -63,7 +63,7 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
     delete theEventServerSocket;
   }
 
-  void ZorbaDebuggerClientImpl::registerEventHandler( DebuggerEventHandler * anEventHandler )
+  ZorbaDebuggerClient* ZorbaDebuggerClientImpl::registerEventHandler( DebuggerEventHandler * anEventHandler )
   {
     theEventHandler = anEventHandler;
     //Special case for event handler initialization
@@ -71,6 +71,7 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
     {
       theEventHandler->idle();
     }
+    return this;
   }
   
   void ZorbaDebuggerClientImpl::handshake()
@@ -88,7 +89,9 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
     }
     if( !result )
     {
-      throw MessageException( "Handshake failed" ); 
+#ifndef NDEBUG
+      std::clog << "Handshake failed" << std::endl;
+#endif
     }
   }
 
@@ -212,56 +215,63 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
     return 0;
   }
 
-  void ZorbaDebuggerClientImpl::run()
+  bool ZorbaDebuggerClientImpl::run()
   {
     RunMessage lMessage;
-    //TODO: check reply message
     std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+    //TODO: check reply message
+    return true;
   }
 
-  void ZorbaDebuggerClientImpl::suspend()
+  bool ZorbaDebuggerClientImpl::suspend()
   {
     SuspendMessage lMessage;
     //TODO: check reply message
     std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+    return true;
   }
 
-  void ZorbaDebuggerClientImpl::resume()
+  bool ZorbaDebuggerClientImpl::resume()
   {
     ResumeMessage lMessage;
     //TODO: check reply message
     std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+    return true;
   }
 
-  void ZorbaDebuggerClientImpl::terminate()
+  bool ZorbaDebuggerClientImpl::terminate()
   {
     TerminateMessage lMessage;
     //TODO: check reply message
     std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+    return true;
   }
 
-  void ZorbaDebuggerClientImpl::stepInto()
+  bool ZorbaDebuggerClientImpl::stepInto()
   {
     StepMessage lMessage( STEP_INTO );
     //TODO: check reply message
     std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+    return true;
   }
 
-  void ZorbaDebuggerClientImpl::stepOver()
+  bool ZorbaDebuggerClientImpl::stepOver()
   {
     StepMessage lMessage( STEP_OVER );
     //TODO: check reply message
     std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+    return true;
   }
 
-  void ZorbaDebuggerClientImpl::stepOut()
+  bool ZorbaDebuggerClientImpl::stepOut()
   {
     StepMessage lMessage( STEP_OUT );
     //TODO: check reply message
     std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+    return true;
   }
 
-  void ZorbaDebuggerClientImpl::addBreakpoint( const String &anExpr )
+  bool ZorbaDebuggerClientImpl::addBreakpoint( const String &anExpr )
   {
     xqpString lExpr = Unmarshaller::getInternalString( anExpr );
     SetMessage lMessage;
@@ -269,6 +279,7 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
     lMessage.addExpr( theLastId, lExpr );
     theBreakpoints.insert( std::make_pair( theLastId, lExpr ) );
     std::auto_ptr<ReplyMessage> lReply(send( &lMessage )); 
+    return true;
   }
 
 
@@ -334,7 +345,7 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
     return true;
   }
 
-  void ZorbaDebuggerClientImpl::clearBreakpoints( std::list<unsigned int> &Ids )
+  bool ZorbaDebuggerClientImpl::clearBreakpoints( std::list<unsigned int> &Ids )
   {
     ClearMessage lMessage;
     std::list<unsigned int>::const_iterator it;
@@ -344,9 +355,10 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
       theBreakpoints.erase( theBreakpoints.find( *it ) );
     }
     std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+    return true;
   }
 
-  void ZorbaDebuggerClientImpl::clearBreakpoints()
+  bool ZorbaDebuggerClientImpl::clearBreakpoints()
   {
     ClearMessage lMessage;
     std::map<unsigned int, String>::iterator it;
@@ -356,6 +368,7 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
     }
     std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
     theBreakpoints.clear();
+    return true;
   }
  
   std::map<unsigned int, String> ZorbaDebuggerClientImpl::getBreakpoints() const
@@ -368,12 +381,13 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
     return new QueryLocationImpl( theRemoteLocation );
   }
 
-  void ZorbaDebuggerClientImpl::eval( String &anExpr ) const
+  bool ZorbaDebuggerClientImpl::eval( String &anExpr ) const
   {
     xqpString lExpr = Unmarshaller::getInternalString( anExpr );
     //TODO: espace double quotes characters
     EvalMessage lMessage( lExpr );
     std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+    return true;
   }
 
   std::list<Variable> ZorbaDebuggerClientImpl::getAllVariables() const
