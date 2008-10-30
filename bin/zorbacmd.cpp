@@ -31,6 +31,7 @@
 #include <zorba/zorba.h>
 
 #ifdef ZORBA_DEBUGGER
+#include <csignal>
 #include <zorba/debugger_client.h>
 #include "debugger_handler.h"
 #ifdef ZORBA_HAVE_PTHREAD_H
@@ -39,7 +40,6 @@
 #else
 #define ZORBA_THREAD_RETURN DWORD WINAPI
 #endif
-#include <csignal>
 #endif
 
 // For setting the base URI from the current directory
@@ -417,9 +417,8 @@ int _tmain(int argc, _TCHAR* argv[])
              std::auto_ptr<ZorbaDebuggerClient> debuggerClient(ZorbaDebuggerClient::createClient(lProperties.getRequestPort(), lProperties.getEventPort()));
              lXQ.release();
              DebuggerHandler lEventHandler(lZorbaInstance, debuggerClient.get(), lFileName);
-             //DebuggerHandler lEventHandler( lFileName, lXQ.get(), std::cin, std::cout, debuggerClient.get(), !lProperties.hasNoSyntaxHighlighting() );
 #ifdef SIGINT /* not all system have SIGINT */
-             signal( SIGINT, suspend );
+             //signal( SIGINT, suspend );
 #endif
              debuggerClient->registerEventHandler( &lEventHandler );
 #ifdef ZORBA_HAVE_PTHREAD_H
