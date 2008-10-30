@@ -22,7 +22,7 @@
 
 namespace zorba { 
 
-class Lock;
+SYNC_CODE(class Lock;)
 
 
 namespace store 
@@ -55,7 +55,7 @@ public:
    */
   virtual IteratorFactory* getIteratorFactory() const = 0;
 
-  virtual Lock& getGlobalLock() = 0;
+  SYNC_CODE(virtual Lock& getGlobalLock() = 0;)
 
   /**
    * Creates a new TempSeq. The instance can be used, e.g. for variable bindings.
