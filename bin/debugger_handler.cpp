@@ -23,6 +23,7 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <cstdlib>
 
 #include <zorba/zorba.h>
 #include <zorba/uri_resolvers.h>
