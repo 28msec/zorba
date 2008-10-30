@@ -102,7 +102,7 @@ protected:
   CollectionSet                 theCollections;
   checked_vector<store::Item_t> theItemUris;
 
-  Lock                          theGlobalLock;
+  SYNC_CODE(Lock                          theGlobalLock;)
 
   long                          theTraceLevel;
 
@@ -123,7 +123,7 @@ public:
   StringPool& getNamespacePool() const    { return *theNamespacePool; }
   QNamePool& getQNamePool() const         { return *theQNamePool; }
 
-  Lock& getGlobalLock()                   { return theGlobalLock; }
+  SYNC_CODE(Lock& getGlobalLock()                   { return theGlobalLock; })
 
   long getTraceLevel() const              { return theTraceLevel; }
 
