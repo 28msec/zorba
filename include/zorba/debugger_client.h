@@ -57,24 +57,48 @@ namespace zorba{
   };
 
   /**
-   * Representation of the runtime stack frame.
+   * Representation of the runtime frame.
    */
-  class ZORBA_EXTERN_DECL RuntimeStack
+  class ZORBA_EXTERN_DECL Frame
   {
     public:
- 
       virtual
-      ~RuntimeStack(){}
+      ~Frame(){}
 
-      virtual std::stack< std::pair<std::string, QueryLocation*> >
-      getFrames() const = 0;
+      virtual const std::string&
+      getSignature() const = 0;
+
+      virtual const QueryLocation*
+      getLocation() const = 0;
+  };
+
+  /**
+   * Representation of the runtime stack frame.
+   */
+  class ZORBA_EXTERN_DECL StackFrame
+  {
+    public:
+      virtual
+      ~StackFrame(){}
+
+      virtual const Frame*
+      top() const = 0;
+
+      virtual StackFrame*
+      pop() = 0;
+
+      virtual unsigned int
+      size() const = 0;
+
+      virtual bool
+      empty() const = 0;
   };
  
   //string serialization of the query 
   ZORBA_EXTERN_DECL
   std::ostream& operator<< (std::ostream& os, const QueryLocation& aQuery); 
   ZORBA_EXTERN_DECL
-  std::ostream& operator<< (std::ostream& os, QueryLocation* aQuery); 
+  std::ostream& operator<< (std::ostream& os, const QueryLocation* aQuery); 
 
   /**
    * zorba::Variable is the debugger representation of a variable on 
@@ -321,7 +345,7 @@ namespace zorba{
        *
        * @return the runtime stack frame.
        */
-      virtual RuntimeStack* getStack() const = 0;
+      virtual StackFrame* getStack() const = 0;
   };
 }//end of namespace
 #endif

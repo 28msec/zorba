@@ -56,7 +56,7 @@ std::ostream& operator<< (std::ostream& aOstr, const QueryLocation& aQueryLoc){
   return aOstr;
 }
 
-std::ostream& operator<< (std::ostream& aOstr, QueryLocation* aQueryLoc){
+std::ostream& operator<< (std::ostream& aOstr, const QueryLocation* aQueryLoc){
   aOstr << aQueryLoc->toString();
   return aOstr;
 }

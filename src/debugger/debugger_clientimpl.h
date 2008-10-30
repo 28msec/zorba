@@ -46,7 +46,7 @@ namespace zorba{
     public:
       ZorbaDebuggerClientImpl(std::string aServerAddress = "127.0.0.1",
                               unsigned short aRequestPortno = 8000,
-                              unsigned short aEventPortno = 9000 );
+                              unsigned short aEventPortno = 9000);
 
       virtual ~ZorbaDebuggerClientImpl();
 
@@ -98,7 +98,7 @@ namespace zorba{
       
       std::list<Variable> getGlobalVariables() const;
     
-      RuntimeStack* getStack() const;
+      StackFrame* getStack() const;
     
     protected:
       static unsigned int theLastId;

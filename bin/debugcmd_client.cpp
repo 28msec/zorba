@@ -526,12 +526,11 @@ void CommandLineEventHandler::handle_cmd()
       theClient->stepOut();
       return;
     } else if (lCommand == "where"){
-      std::auto_ptr<RuntimeStack> lStack(theClient->getStack());
-      std::stack< std::pair<std::string, QueryLocation*> > stack(lStack->getFrames());
-      while(!stack.empty())
+      std::auto_ptr<StackFrame> lStack(theClient->getStack());
+      while(!lStack->empty())
       {
-        theOutput << stack.top().first << " " << stack.top().second << std::endl;
-        stack.pop();
+        theOutput << lStack->top()->getSignature() << " " << lStack->top()->getLocation() << std::endl;
+        lStack->pop();
       }
       handle_cmd();
     } else {

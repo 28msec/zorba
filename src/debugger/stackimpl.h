@@ -23,31 +23,78 @@
 
 namespace zorba{
 
-class StackImpl: public RuntimeStack{
+class FrameImpl: public Frame
+{
+  private:
+    const std::string theSignature;
+    const QueryLocation* theLocation;
+
+  public:
+    FrameImpl(const std::string& aSignature, const QueryLocation* aLocation):
+      theSignature(aSignature), theLocation(aLocation){}
+
+    ~FrameImpl(){ delete theLocation; }
+
+    const std::string& getSignature() const { return theSignature; }
+    const QueryLocation* getLocation() const { return theLocation; }
+};
+
+class StackFrameImpl: public StackFrame{
   
   private:
-    std::stack< std::pair<std::string, QueryLocation*> > theStack;
+    std::stack<Frame*> theStack;
   
   public:
-    StackImpl(){}
+    StackFrameImpl(){}
 
-    ~StackImpl()
+    ~StackFrameImpl()
     {
       while(!theStack.empty())
       {
-        delete theStack.top().second;
+        delete theStack.top();
         theStack.pop();
       }
     }
 
-    void push(std::string aLabel, QueryLocation* aLocation)
+    const Frame* top() const
     {
-      theStack.push(std::make_pair<std::string, QueryLocation*>(aLabel, aLocation));
+      if(!theStack.empty())
+      {
+        return theStack.top();
+      }
+      return 0;
     }
 
-    virtual std::stack< std::pair<std::string, QueryLocation*> > getFrames() const
+    StackFrame* push(const std::string aSignature, QueryLocation* aLocation)
     {
-      return theStack;
+      theStack.push(new FrameImpl(aSignature, aLocation));
+      return this;
+    }
+
+    StackFrame* push(Frame* aFrame)
+    {
+      theStack.push(aFrame);
+      return this;
+    }
+
+    StackFrame* pop()
+    {
+      if(!theStack.empty())
+      {
+        delete theStack.top();
+        theStack.pop();
+      }
+      return this;
+    }
+
+    unsigned int size() const
+    {
+      return theStack.size(); 
+    }
+
+    bool empty() const
+    {
+      return theStack.empty();
     }
 };
 }//end of namespace

@@ -79,20 +79,12 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
     bool result = false;
     ZorbaArrayAutoPointer<char> msg(new char[ 12 ]);
     memset(msg.get(), '\0', 12);
-    try
-    {
-      theRequestSocket->send( "XQHandshake", 11 );
-      theRequestSocket->recv( msg.get(), 11 );
-      result = strcmp( msg.get(), "XQHandshake" ) == 0; 
-    } catch ( DebuggerSocketException &e ) {
-      std::cerr << e.what() << std::endl;
-    }
-    if( !result )
-    {
-#ifndef NDEBUG
-      std::clog << "Handshake failed" << std::endl;
-#endif
-    }
+    theRequestSocket->send( "XQHandshake", 11 );
+    theRequestSocket->recv( msg.get(), 11 );
+    result = strcmp( msg.get(), "XQHandshake" ) == 0; 
+    //} catch ( DebuggerSocketException &e ) {
+      //std::cerr << e.what() << std::endl;
+    //}
   }
 
   ZORBA_THREAD_RETURN listenEvents( void * aClient )
@@ -453,9 +445,9 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
     return lVariables;
   }
 
-  RuntimeStack* ZorbaDebuggerClientImpl::getStack() const
+  StackFrame* ZorbaDebuggerClientImpl::getStack() const
   {
-    std::auto_ptr<StackImpl> lStack(new StackImpl());
+    std::auto_ptr<StackFrameImpl> lStack(new StackFrameImpl());
     FrameMessage lMessage;
     std::auto_ptr<ReplyMessage> lReply(send(&lMessage));
     FrameReply* lFrameReply = dynamic_cast<FrameReply*>(lReply.get());
@@ -468,7 +460,7 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
         stack.pop();
       }
     }
-    StackImpl* s = lStack.get();
+    StackFrameImpl* s = lStack.get();
     lStack.release();
     return s;
   }
