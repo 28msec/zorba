@@ -2,7 +2,7 @@
 
 Name:    zorba
 Version: @ZORBA_MAJOR_NUMBER@.@ZORBA_MINOR_NUMBER@.@ZORBA_PATCH_NUMBER@
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: General purpose XQuery processor implemented in C++
 
 Group: System Environment/Libraries
@@ -127,6 +127,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Oct 31 2008 Paul Kunz <PaulfKunz@gmail.com> - 0.9.4-2
+- Upstream updated documentation
+
 * Tue Sep 16 2008 Paul Kunz <PaulfKunz@gmail.com> - 0.9.4-1
 - fix for new version
 - new header file added in msdom
