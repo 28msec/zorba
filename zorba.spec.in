@@ -15,6 +15,7 @@ Source0: ftp://ftp.heanet.ie/pub/download.sourceforge/z/zo/zorba/%{name}-%{versi
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: cmake >= 2.4 libxml2-devel >= 2.2.16 icu >= 2.6 libicu-devel
+# Change libcurl-devel to curl-devel for Fedora 8
 BuildRequires: boost-devel >= 1.32 xerces-c-devel >= 2.7 libcurl-devel
 BuildRequires: ruby-devel >= 1.8 graphviz tidy-devel
 
