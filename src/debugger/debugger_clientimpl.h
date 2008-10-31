@@ -119,7 +119,7 @@ namespace zorba{
 
       QueryLocation* addBreakpoint(QueryLoc& aLocation);
 
-      void handshake();
+      bool handshake();
 
       ReplyMessage* send( AbstractCommandMessage * aMessage ) const;
 

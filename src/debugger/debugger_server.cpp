@@ -297,7 +297,8 @@ void ZorbaDebugger::handshake( TCPSocket * aSock )
     aSock->recv( msg.get(), 11 );
     aSock->send( msg.get(), 11 );
   } catch( DebuggerSocketException &e ) {
-    cerr << e.what() << std::endl;
+    clog << "[Server Thread] handshake failed" << endl; 
+    clog << "[Server Thread]" << e.what() << endl;
   }
 }
 
@@ -411,7 +412,7 @@ void ZorbaDebugger::step( const StepCommand aKind )
     cerr << "Step Out." << std::endl;
     isSteppingOut = true;
     lCurrentDecimal.pop();
-    theDecimalSize = lCurrentDecimal.size();
+    theDecimalSize = lCurrentDecimal.size()-1;
     resume();
   }
 }

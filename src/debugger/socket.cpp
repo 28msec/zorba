@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include "debugger/socket.h"
+
 #include <sstream>
 #if defined WIN32 || defined WINCE
 #include <winsock2.h>
