@@ -1,4 +1,4 @@
-#/bin/sh
+#/bin/bash
 # Copyright 2006-2008 The FLWOR Foundation.                                                             
 #  
 # Licensed under the Apache License, Version 2.0 (the "License");                                       
@@ -13,8 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+add_notice () {
+echo
+echo '// ******************************************'
+echo '// *                                        *'
+echo '// * THIS IS A GENERATED FILE. DO NOT EDIT! *'
+echo '// * SEE .txt FILE WITH SAME NAME           *'
+echo '// *                                        *'
+echo '// ******************************************'
+echo
+}
+
 cd `dirname $0`/..
 D=`pwd`
-(cd src/system; { cat $D/src/util/empty.h; echo '// THIS IS A GENERATED FILE. DO NOT EDIT!'; $D/scripts/gen_po_props zorba ZorbaProperties zorba_properties.txt; } >zorba_properties.h)
-(cd src/store/naive; { cat $D/src/util/empty.h; echo '// THIS IS A GENERATED FILE. DO NOT EDIT!'; $D/scripts/gen_po_props zorba::store StoreProperties store_properties.txt; } >store_properties.h)
-(cd bin; { cat $D/src/util/empty.h; echo '// THIS IS A GENERATED FILE. DO NOT EDIT!'; $D/scripts/gen_po_props zorbacmd ZorbaCMDPropertiesBase zorbacmdproperties.txt; } >zorbacmdproperties_base.h)
+(cd src/system; { cat $D/src/util/empty.h; add_notice; $D/scripts/gen_po_props zorba ZorbaProperties zorba_properties.txt; } >zorba_properties.h)
+(cd src/store/naive; { cat $D/src/util/empty.h; add_notice; $D/scripts/gen_po_props zorba::store StoreProperties store_properties.txt; } >store_properties.h)
+(cd bin; { cat $D/src/util/empty.h; add_notice; $D/scripts/gen_po_props zorbacmd ZorbaCMDPropertiesBase zorbacmdproperties.txt; } >zorbacmdproperties_base.h)
