@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>Introduction To TidyLib</title>
-<meta http-equiv="Content-Type" content="text/xhtml; charset=us-ascii" />
+<meta http-equiv="Content-Type" content="text/xhtml; charset=utf-8" />
 <link rel="stylesheet" href="tidy.site.css" type="text/css" />
 <style type="text/css">
   /**/
