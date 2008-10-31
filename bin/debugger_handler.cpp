@@ -19,7 +19,6 @@
 #include <iostream>
 #include <vector>
 #include <list>
-#include <csignal>
 #include <string>
 #include <sstream>
 #include <fstream>
@@ -31,23 +30,29 @@
  
 using namespace std;
  
-#ifdef SIGINT /* not all system have SIGINT */
-void suspend(int aSignum)
-{
-  zorba::ZorbaDebuggerClient* lDebugClient = 0;
-  if(lDebugClient != 0 && lDebugClient->isQueryRunning())
-  {
-    lDebugClient->suspend();
-  } else {
-    //if the query is not running, we calll the default signal handling
-    signal(SIGINT, SIG_DFL);
-    raise(SIGINT);
-  }
-}
-#endif
 
 namespace zorba{
 
+#ifdef SIGINT /* not all system have SIGINT */
+ZorbaDebuggerClient* theDebugClient = 0;
+
+void setDebugClient(ZorbaDebuggerClient* lClient)
+{
+  theDebugClient = lClient;
+}
+
+void suspend(int aSignum)
+{
+  if(theDebugClient != 0 && theDebugClient->isQueryRunning())
+  {
+    theDebugClient->suspend();
+  } else {
+  //if the query is not running, we calll the default signal handling
+  signal(SIGINT, SIG_DFL);
+  raise(SIGINT);
+  }
+}
+#endif
 DebuggerHandler::DebuggerHandler(Zorba* aZorba, ZorbaDebuggerClient* aClient, std::string aFileName):
   theZorba(aZorba), theClient(aClient), theFileName(aFileName){}
 

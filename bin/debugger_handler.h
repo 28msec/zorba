@@ -20,17 +20,20 @@
 #include <map>
 #include <list>
 #include <cassert>
+#include <csignal>
 
 #include <zorba/debugger_default_event_handler.h>
-
-#ifdef SIGINT
-void suspend(int aSignum);
-#endif
 
 namespace zorba{
 
 class Zorba;
 class ZorbaDebuggerClient;
+
+#ifdef SIGINT /* not all system have SIGINT */
+void setDebugClient(ZorbaDebuggerClient* lClient);
+
+void suspend(int aSignum);
+#endif
 
 class DebuggerHandler: public DefaultDebuggerEventHandler
 {
