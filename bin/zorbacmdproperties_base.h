@@ -13,7 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// THIS IS A GENERATED FILE. DO NOT EDIT!
+
+// ******************************************
+// *                                        *
+// * THIS IS A GENERATED FILE. DO NOT EDIT! *
+// * SEE .txt FILE WITH SAME NAME           *
+// *                                        *
+// ******************************************
+
 #include <string>
 #include <sstream>
 #include <zorba/properties_base.h>
@@ -219,7 +226,7 @@ public:
 
   const char *get_help_msg () {
     return
-"--timing, -t\nPrint timing information. In case of multiple queries the timing information is provided per each query\n\n"
+"--timing, -t\nPrint timing information. In case of multiple queries the timing information is provided per each query. Both wallclock time and user time (which excludes I/O, network delays and other kernel waits) are shown.\n\n"
 "--output-file, -o\nWrite the result to the given file.\n\n"
 "--serialize-html\nSerialize the result as HTML.\n\n"
 "--serialize-text\nSerialize the result as Text.\n\n"

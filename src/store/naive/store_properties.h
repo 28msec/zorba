@@ -13,7 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// THIS IS A GENERATED FILE. DO NOT EDIT!
+
+// ******************************************
+// *                                        *
+// * THIS IS A GENERATED FILE. DO NOT EDIT! *
+// * SEE .txt FILE WITH SAME NAME           *
+// *                                        *
+// ******************************************
+
 #include <string>
 #include <sstream>
 #include <zorba/properties_base.h>

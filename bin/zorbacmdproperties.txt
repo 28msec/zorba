@@ -1,4 +1,4 @@
-("timing,t", "Print timing information. In case of multiple queries the timing information is provided per each query")
+("timing,t", "Print timing information. In case of multiple queries the timing information is provided per each query. Both wallclock time and user time (which excludes I/O, network delays and other kernel waits) are shown.")
 ("output-file,o", po::value<std::string>(), "Write the result to the given file.")
 ("serialize-html", "Serialize the result as HTML.")
 ("serialize-text", "Serialize the result as Text.")
