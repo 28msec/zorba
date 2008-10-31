@@ -111,25 +111,23 @@ bool FnLocalNameIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 //---------------------
 bool FnNamespaceUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t inNode;
-  xqpStringStore_t uriStr;
+  store::Item_t     inNode;
+  xqpStringStore_t  uriStr;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(inNode, theChildren[0].getp(), planState))
-  {
+  if (consumeNext(inNode, theChildren[0].getp(), planState)) {
     if(inNode->getNodeKind() == store::StoreConsts::elementNode ||
-       inNode->getNodeKind() == store::StoreConsts::attributeNode)
-    {
+       inNode->getNodeKind() == store::StoreConsts::attributeNode) {
       uriStr = inNode->getNodeName()->getNamespace();
       STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(result, uriStr), state);
-    }
-    else
-    {
-      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(result, ""), state);
-    }
+       }
+       else
+         STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(result, ""), state);
   }
+  else
+    STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(result, ""), state);
 
   STACK_END (state);
 }
