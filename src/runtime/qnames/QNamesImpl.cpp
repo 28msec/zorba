@@ -319,7 +319,7 @@ NamespaceUriFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planSt
   if (consumeNext(item, theChild.getp(), planState))
   {
     ns = item->getNamespace();
-    STACK_PUSH( GENV_ITEMFACTORY->createString(result, ns), state );
+    STACK_PUSH( GENV_ITEMFACTORY->createAnyURI(result, ns), state );
   }
   STACK_END (state);
 }
