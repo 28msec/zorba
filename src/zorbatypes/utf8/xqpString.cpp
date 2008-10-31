@@ -42,6 +42,29 @@ bool xqpStringStore::is_whitespace(uint32_t cp)
   return res;
 }
 
+/*******************************************************************************
+  Returns true returns true if the characters given as 'start' and 'length'
+  contain the codepoint 'cp'.
+********************************************************************************/
+bool xqpStringStore::is_contained(const char* start, uint16_t length, uint32_t cp)
+{
+  bool ret = false;
+
+  if( length != 0 ) {
+    uint32_t* trimCP;
+    trimCP = new uint32_t[length];
+    for(uint16_t i = 0; i < length; i++)
+      trimCP[i] = UTF8Decode(start);
+
+    for(uint16_t i = 0; i < length; i++) {
+      if(trimCP[i] == cp) {
+        ret = true;
+        break;
+      }
+    }
+  }
+  return ret;
+}
 
 /*******************************************************************************
   Returns true is cp reprezents "unreserved" as defined by rfc3986.
@@ -910,25 +933,24 @@ xqpStringStore_t xqpStringStore::iriToUri() const
 
 ********************************************************************************/
 // TODO make this more efficient, i.e. don't use += but a stream or buffer
-xqpStringStore_t xqpStringStore::encodeForUri() const
+xqpStringStore_t xqpStringStore::encodeForUri(const char* start, uint16_t length) const
 {
-  uint32_t i;
-  uint32_t len = numChars();
-  const char* c = c_str();
-  unsigned int cp;
-  char seq[5];
-  const char* prev = c_str();
-  distance_type length;
-  
+  uint32_t      i, cp;
+  uint32_t      len = numChars();
+  const char*   c = c_str();
+  char          seq[5];
+  const char*   prev = c_str();
+  distance_type seq_length;
+
   std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
-    
+
   for(i = 0; i < len; ++i)
   {
     prev = c;
     cp = UTF8Decode(c);
     memset(seq, 0, sizeof(seq));
     // not encoding a / is a hack until the uri class can correctly encode paths
-    if(is_unreservedCP(cp) || cp == '/')
+    if(is_unreservedCP(cp) || is_contained(start, length, cp))
     {
       UTF8Encode(cp, seq);
       newStr->theString += seq;
@@ -936,8 +958,8 @@ xqpStringStore_t xqpStringStore::encodeForUri() const
     else
     {
       //codepoint has to be escaped
-      length = sequence_length(prev);
-      for(int j = 0; j < length; ++j)
+      seq_length = sequence_length(prev);
+      for(int j = 0; j < seq_length; ++j)
       {
         cp = mask8(*prev);
         sprintf(seq, "%%%X", cp);
@@ -979,13 +1001,16 @@ const char HEX2DEC[256] =
 };
 
 
+/*******************************************************************************
+  revert encodeForUri("/",1)
+********************************************************************************/
 xqpStringStore_t xqpStringStore::decodeFromUri() const
 {
   std::ostringstream os;
 
   for (std::string::size_type i = 0; i < numChars(); ++i) {
     const char* c = c_str() + i;
-    if  (*c == '%' & i < numChars() -2) {
+    if  ((*c == '%') & (i < numChars() -2)) {
       char dec1, dec2;
       if ( (dec1 = HEX2DEC[(const unsigned char) *(c + 1)]) != -1 &&
            (dec2 = HEX2DEC[(const unsigned char) *(c + 2)]) != -1 ) {

@@ -63,7 +63,7 @@ xqpStringStore_t  URI::encode_file_URI(const xqpStringStore_t& uri)
   result = result.replace("\\\\","/","");
 #endif
   result = xqpString ("/") + result;
-  result = xqpString ("file://") + result.encodeForUri();
+  result = xqpString ("file://") + result.encodeForUri("/",1);
   return result.getStore();
 }
 
@@ -866,7 +866,7 @@ URI::is_conformant_scheme_name(const xqpString& scheme)
 void
 URI::set_user_info(const xqpString& new_user_info)
 {
-  theUserInfo = new_user_info.encodeForUri();
+  theUserInfo = new_user_info.encodeForUri("/",1);
   set_state(UserInfo);
 }
 

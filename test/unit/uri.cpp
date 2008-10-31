@@ -560,7 +560,7 @@ int uri(int argc, char* argv[])
   }
 
   zorba::xqpString lToEncode("/a /b/c");
-  zorba::xqpString lEncoded = lToEncode.encodeForUri();
+  zorba::xqpString lEncoded = lToEncode.encodeForUri("/",1);
   std::cout << "encoded " << lEncoded << std::endl;
 
   std::cout << "decoded " << lEncoded.decodeFromUri() << std::endl;

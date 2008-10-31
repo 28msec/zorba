@@ -55,6 +55,9 @@ public:
   hash(const char* str);
 
   static bool
+  is_contained(const char* start, uint16_t length, uint32_t cp);
+
+  static bool
   is_unreservedCP(uint32_t cp);
 
   static bool
@@ -225,7 +228,7 @@ public:
   iriToUri() const;
 
   xqpStringStore_t
-  encodeForUri() const;
+  encodeForUri(const char* start = NULL, uint16_t length = 0) const;
 
   xqpStringStore_t
   decodeFromUri() const;
@@ -503,13 +506,14 @@ public:
   //escape all characters except for those :
   //Upper and lowercase letters A-Z
   //digits 0-9, HYPHEN-MINUS ("-"), LOW LINE ("_"), FULL STOP ".", and TILDE "~"
+  //and also the characters defined by 'start' and 'length'
   xqpString
-  encodeForUri() const
+  encodeForUri(const char* start = NULL, uint16_t length = 0) const
   {
-    return theStrStore->encodeForUri().getp();
+    return theStrStore->encodeForUri(start, length).getp();
   }
 
-  // revert encodeForUri
+  // revert encodeForUri("/",1)
   xqpString
   decodeFromUri() const
   {

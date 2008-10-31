@@ -762,17 +762,14 @@ EncodeForUriIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(item, theChildren [0].getp(), planState))
-  {
-    item = item->getAtomizationValue();
+  if (consumeNext(item, theChildren [0].getp(), planState)) {
     resStr = item->getStringValue()->encodeForUri();
-    STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   }
-  else
-  {
+  else {
     resStr = new xqpStringStore("");
-    STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   }
+
+  STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   STACK_END (state);
 }
 
