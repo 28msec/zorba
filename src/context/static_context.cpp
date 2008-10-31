@@ -526,7 +526,7 @@ void static_context::compute_current_absolute_baseuri()
       set_current_absolute_baseuri(prolog_baseuri);
       return; // valid (absolute) uri
     } catch (error::ZorbaError& e) {
-      throw e;
+//       throw e;
     } // assume it's relative and go on
   }
   if (!prolog_baseuri.empty()) {
