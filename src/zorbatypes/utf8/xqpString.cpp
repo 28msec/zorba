@@ -50,7 +50,7 @@ bool xqpStringStore::is_contained(const char* start, uint16_t length, uint32_t c
 {
   bool ret = false;
 
-  if( length != 0 ) {
+  if( length != 0 && start != NULL) {
     uint32_t* trimCP;
     trimCP = new uint32_t[length];
     for(uint16_t i = 0; i < length; i++)
@@ -62,6 +62,7 @@ bool xqpStringStore::is_contained(const char* start, uint16_t length, uint32_t c
         break;
       }
     }
+    delete[] trimCP;
   }
   return ret;
 }
