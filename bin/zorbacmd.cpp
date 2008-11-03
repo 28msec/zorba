@@ -27,8 +27,12 @@
 #define sleep(s) Sleep(s*1000)
 #endif
 
-#include <simplestore/simplestore.h>
 #include <zorba/zorba.h>
+#ifndef ZORBA_MINIMAL_STORE
+#include <simplestore/simplestore.h>
+#else
+#include "store/minimal/min_store.h"
+#endif
 
 #ifdef ZORBA_DEBUGGER
 #include <csignal>
@@ -210,7 +214,11 @@ int main(int argc, char* argv[])
 int _tmain(int argc, _TCHAR* argv[])
 #endif
 {
+#ifndef ZORBA_MINIMAL_STORE
   zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(zorba::simplestore::SimpleStoreManager::getStore());
+#else
+  zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(zorba::storeminimal::SimpleStore::getInstance());
+#endif
 
 #if ZORBACMD_LOAD_SYSTEM_PROPERTIES
   // only configurable via a config file or environment vars
