@@ -85,9 +85,10 @@ public:
 
 /*******************************************************************************
 
-  This template class implements a set container for rchandles. 
+  This template class implements a hash-based map from items of type T to items
+  of type V. 
 
-  theNumEntries  : The total number of items stored in the set.
+  theNumEntries  : The total number of mappings stored in the map.
 
   theHashTab     : The hash table. The table is implemented as a vector of hash
                    entries and is devided in 2 areas: Each entry between 0 and
@@ -392,7 +393,8 @@ bool remove(const T& item)
   return removeNoSync(item, hval);
 }
 
-bool empty(){
+bool empty()
+{
   return (theNumEntries == 0); 
 }
 
@@ -483,26 +485,12 @@ HashEntry<T, V>* bucket(ulong hvalue)
   return &theHashTab[hvalue % theHashTabSize];
 }
 
-/*
-HashEntry<T, V>* gotoLast(HashEntry<T, V>* entry)
-{
-  for (;;) 
-  {
-    theHashTab[entry - &theHashTab[0]];  // assertion
-    HashEntry<T, V>* next = entry->getNext();
-    if (next == NULL)
-      return entry;
-    else
-      entry = next;
-  }
-}
-*/
 
 /*******************************************************************************
 
 ********************************************************************************/
 HashEntry<T, V>* hashInsert(
-    T&         item,
+    const T&   item,
     ulong      hvalue,
     bool&      found)
 {
@@ -521,10 +509,6 @@ doHashInsert:
     return entry;
   }
 
-//debug
-//  int   nr_colisions = 0;
-//end debug
-
   // Search the hash bucket looking for the given item.
   while (entry != NULL)
   {
@@ -538,14 +522,6 @@ doHashInsert:
     lastentry = entry;
     entry = entry->getNext();
   }
-//+debug
-  //std::cout << "Entry collision " << std::hex << hvalue << " " << Externals<T,E,C>::hash(lastentry->theItem, theCompareParam) 
-  //          << std::dec
-  //          << " nr colisions " << nr_colisions 
-  //          << " (" << numCollisions << "/" << theNumEntries << ")"
-  //          << std::endl;
-//end debug
-
 
   // The item was not found.
   theNumEntries++;
@@ -575,12 +551,6 @@ doHashInsert:
     theNumEntries--;
     numCollisions--;
     goto doHashInsert;//look again if the item is in the collision list
-//    entry = bucket(hvalue);
-//
-//    if (entry->theItem == NULL)
-//      return entry;
-//
-//    lastentry = gotoLast(entry);
   }
 
   // Get an entry from the free list in the overflow section of the hash teble

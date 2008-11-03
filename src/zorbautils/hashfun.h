@@ -59,6 +59,11 @@ class hashfun
     return hval;
   }
 
+  static inline uint32_t h32( void *buf, size_t len) 
+  {
+    return h32(buf, len, FNV_32_INIT);
+  }
+
   static inline uint32_t h32( const std::string& key, uint32_t hval)
   {
     return h32(key.c_str(), key.length(), hval);

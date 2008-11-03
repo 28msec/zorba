@@ -141,6 +141,37 @@ bool insert(T& item,  T& outItem)
 }
 
 
+/******************************************************************************
+  If the set does not already contain an item I that is "equal" to the given
+  item, insert the given item to the set and return true. Otherwise, return
+  false and a copy of the found item I.
+********************************************************************************/
+bool insert(const T& item,  T& outItem)
+{
+  bool found;
+
+  SYNC_CODE(AutoMutex lock(this->theMutexp);)
+
+  //assert(item != 0);
+
+  HashEntry<T, DummyHashValue>* entry;
+  entry = hashInsert(item,
+                     Externals<T,E,C>::hash(item, this->theCompareParam),
+                     found);
+  if (!found)
+  {
+    entry->theItem = item;
+    outItem = entry->theItem;
+    return true;
+  }
+  else
+  {
+    outItem = entry->theItem;
+    return false;
+  }
+}
+
+
 /*******************************************************************************
   If the set contains an item that is "equal" to the given item, remove that
   item from the set and return true. Otherwise, return false.
