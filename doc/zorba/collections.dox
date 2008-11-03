@@ -25,7 +25,7 @@
        <li> \ref coll_remove_nodes
        <li> \ref coll_remove_node_at
        <li> \ref coll_remove_nodes_count
-       <li> \ref coll_remove_node_at
+       <li> \ref coll_node_at
        <li> \ref coll_index_of
        <li> \ref coll_export_xml
        <li> \ref fn_collection_exists
@@ -38,7 +38,7 @@
 This document defines the functions that will perform manipulations on collections in the Zorba engine.
 
 \subsection coll 1.1 Collections in Zorba
-Each collection is defined to be a sequence of nodes, identified by an URI. \n The collections concern themselves only with the top-level sequence of nodes, and do not have any functions to manipulate the nodes or their contents. \n A node may be part of more than one collection, still the node is unique within every collection.\n When added to a collection, a node is not copied, and further modifications to it will be reflected in the collection.
+Each collection is defined to be a sequence of nodes that is one based indexed, identified by an URI. \n The collections concern themselves only with the top-level sequence of nodes, and do not have any functions to manipulate the nodes or their contents. \n A node may be part of more than one collection, still the node is unique within every collection.\n When added to a collection, a node is not copied, and further modifications to it will be reflected in the collection.
 
 \subsection namespace 1.2 Namespaces
 In order to use Zorba collection functionality, the module <tt>"http://www.zorba-xquery.com/zorba/collection-functions"</tt> has
@@ -232,7 +232,8 @@ If  <b>$target</b> is already part of the collection an error is raised API0031_
                                               $newnode as node()*) as none
 \endcode
 
-Summary: Inserts the node(s) into the given collection, at the specified position.\n
+Summary: Inserts the node(s) into the given collection, at the specified <b>$position</b>.\n
+Note: The collection is a list of nodes that is one based indexed. \n
 If <b>$position</b> is negative, the node(s) will be inserted at the beginning of the collection.\n
 If <b>$position</b> is greater or equal to the number of nodes in the collection, the node(s) will be inserted as the last node(s) of the collection.
 
@@ -265,7 +266,8 @@ If the given expression points to a node that is not part of the collection, an 
                                               $position as xs:integer) as none
 \endcode
 
-Summary: The function will remove from the given collection the node positioned at <b>$position</b>.
+Summary: The function will remove from the given collection the node positioned at <b>$position</b>. \n
+Note: The collection is a list of nodes that is one based indexed. \n
 
 Error conditions:\n
 If the specified collection does not exist, an error is raised API0006_COLLECTION_NOT_FOUND (see \ref apendix). \n
@@ -288,14 +290,15 @@ If the specified collection does not exist, an error is raised API0006_COLLECTIO
 \subsection ex_2_15 Example:
 \include q38.cxq
 
-\subsection coll_remove_node_at 2.16 zorba-collection:node-at
+\subsection coll_node_at 2.16 zorba-collection:node-at
 
 \code
   declare sequential function node-at($uri as xs:anyURI,
                                       $position as xs:integer) as node()?
 \endcode
 
-Summary: The function will return the node positioned at <b>$position</b> in the given collection.
+Summary: The function will return the node positioned at <b>$position</b> in the given collection. \n
+Note: The collection is a list of nodes that is one based indexed. \n
 
 Error conditions:\n
 If the specified collection does not exist, an error is raised API0006_COLLECTION_NOT_FOUND (see \ref apendix).\n
@@ -311,7 +314,8 @@ If the collection has fewer nodes than <b>$position</b> + 1 an error is raised A
                             $target as node()) as xs:integer
 \endcode
 
-Summary: The function will return the index of the  $target node within the collection identified by <b>$uri</b>.
+Summary: The function will return the index of the  $target node within the collection identified by <b>$uri</b>. \n
+Note: The collection is a list of nodes that is one based indexed. \n
 
 Error conditions:\n
 If the specified collection does not exist, an error is raised API0006_COLLECTION_NOT_FOUND (see \ref apendix).\n

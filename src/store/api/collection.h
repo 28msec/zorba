@@ -62,7 +62,7 @@ public:
    * @return The root node of the xml document or fragment.
    *
    */
-  virtual Item_t addToCollection(std::istream& stream, long position = -1) = 0;
+  virtual Item_t addToCollection(std::istream& stream, const long position = -1) = 0;
 
   /**
    * Inserts into the collection an xml document or fragment given as text via
@@ -76,7 +76,7 @@ public:
    * @return The root node of the xml document or fragment.
    *
    */
-  virtual Item_t addToCollection(std::istream* stream, long position = -1) = 0;
+  virtual Item_t addToCollection(std::istream* stream, const long position = -1) = 0;
 
   /**
    * Inserts a node to the collection.
@@ -86,7 +86,7 @@ public:
    * By default the data will be appended at the end.
    *
    */
-  virtual void addToCollection(const Item* node, long position = -1) = 0;
+  virtual void addToCollection(const Item* node, const long position = -1) = 0;
 
   /**
    * Adds a Node Item to the Collection after the targetNode.
@@ -109,7 +109,7 @@ public:
    * By default the data will be appended at the end.
    *
    */
-  virtual void addToCollection(Iterator* nodeIter, long position = -1) = 0;
+  virtual void addToCollection(Iterator* nodeIter, const long position = -1) = 0;
 
   /**
    * Removes a node from the collection.
@@ -126,7 +126,7 @@ public:
    * By default the last Node will be removed from collection.
    *
    */
-  virtual void removeFromCollection(long position = -1) = 0;
+  virtual void removeFromCollection(const long position = -1) = 0;
 
   /**
    * Get the node at the given position in the collection as a Node Item.

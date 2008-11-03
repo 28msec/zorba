@@ -35,7 +35,7 @@ class CollectionImpl : public Collection
   size() const;
 
   bool
-  addNode(const Item& aNode, long aPosition = -1);
+  addNode(const Item& aNode, const long aPosition = -1);
 
   bool
   addNode(const Item& aNode, const Item& aTargetNode, bool aOrder);
@@ -44,10 +44,10 @@ class CollectionImpl : public Collection
   deleteNode(const Item& aNode);
 
   bool
-  deleteNode(long aPosition = -1);
+  deleteNode(const long aPosition = -1);
 
   Item
-  nodeAt(long aPosition);
+  nodeAt(const long aPosition);
 
   long
   indexOf(const Item& aNode);
@@ -56,7 +56,7 @@ class CollectionImpl : public Collection
   addNodes(const ResultIterator* aResultIterator);
 
   bool
-  addDocument(std::istream& lInStream, long aPosition = -1);
+  addDocument(std::istream& lInStream, const long aPosition = -1);
 
  protected:
   friend class Unmarshaller;

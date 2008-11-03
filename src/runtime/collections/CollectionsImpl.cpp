@@ -56,7 +56,10 @@ ZorbaCollectionExistsIterator::nextImpl(store::Item_t& result, PlanState& planSt
       resolvedURIString = planState.sctx()->resolve_relative_uri(item->getStringValueP()).getStore();
       GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
     } catch (error::ZorbaError& e) {
-      ZORBA_ERROR_LOC_PARAM(XQST0046, loc, item->getStringValue()->c_str(), "URI literal empty or is not in the lexical space of xs:anyURI" );
+      ZORBA_ERROR_LOC_PARAM(XQST0046,
+                            loc,
+                            item->getStringValue()->c_str(),
+                            "URI literal empty or is not in the lexical space of xs:anyURI" );
     }
 
     lCollection = planState.sctx()->get_collection_uri_resolver()->resolve(resolvedURIItem, planState.sctx());
@@ -104,7 +107,7 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
     strURI = itemURI->getStringValue();
     theColl = GENV_STORE.createCollection(strURI);
-    theColl->addToCollection(itemXML, 0);
+    theColl->addToCollection(itemXML, 1);
   }
 
   STACK_END (state);
@@ -168,9 +171,6 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
 
             fileString = uriFile.toString().getStore();
 
-            
-            //theColl = getCollection(planState, fileString, loc);
-
             try {
               itemXML = GENV_STORE.getDocument(fileString);
             } catch (error::ZorbaError& e) {
@@ -192,7 +192,7 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
 
             xqpStringStore_t    collectionUri = uriFile.toString().getStore();
             theColl = GENV_STORE.createCollection(collectionUri);
-            theColl->addToCollection(itemXML, 0);
+            theColl->addToCollection(itemXML, 1);
             }
           }
       }
@@ -216,7 +216,9 @@ ZorbaImportFolderIterator::nextImpl(store::Item_t& result, PlanState& planState)
     uri = URI(itemURI->getStringValue().getp());
 
   if( uri.get_scheme() != xqpString("file") && !uri.get_scheme().empty())
-    ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaImportFolderIterator implemented only for 'file' scheme.");
+    ZORBA_ERROR_LOC_DESC (FOER0000,
+                          loc,
+                          "ZorbaImportFolderIterator implemented only for 'file' scheme.");
 
   STACK_END (state);
 }
@@ -285,7 +287,9 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSt
     } catch (error::ZorbaError& e) {}
 
     if (theColl != NULL)
-      ZORBA_ERROR_LOC_DESC(API0005_COLLECTION_ALREADY_EXISTS, loc, "The collection already exists.");
+      ZORBA_ERROR_LOC_DESC(API0005_COLLECTION_ALREADY_EXISTS,
+                           loc,
+                           "The collection already exists.");
 
     theColl = GENV_STORE.createCollection(resolvedURIString);
 
@@ -350,7 +354,7 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
 {
   store::Collection_t theColl;
   store::Item_t       item;
-  int                 pos = 0;
+  int                 pos = 1;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -438,7 +442,7 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
 {
   store::Collection_t theColl;
   store::Item_t       itemUri, itemPos, itemNode;
-  uint32_t            pos = 0;
+  uint32_t            pos = 1;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -448,8 +452,8 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
     if(consumeNext(itemPos, theChildren[1].getp(), planState))
     {
-      if(itemPos->getIntegerValue() < Integer::zero())
-        NumConversions::strToUInt(itemPos->getIntegerValue().toString(),pos);
+      if(itemPos->getIntegerValue() > Integer::zero())
+        NumConversions::strToUInt(itemPos->getIntegerValue().toString(), pos);
 
       //add the nodes to the newly created collection
       while (consumeNext(itemNode, theChildren[2].getp(), planState))
@@ -565,7 +569,7 @@ ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 {
   store::Collection_t theColl;
   store::Item_t       item;
-  int                 pos = 0;
+  int                 pos = 1;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -578,7 +582,9 @@ ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       pos = theColl->indexOf(item);
 
       if( -1 == pos)
-        ZORBA_ERROR_LOC_DESC (API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION, loc, "The node does not belong to collection.");
+        ZORBA_ERROR_LOC_DESC (API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION,
+                              loc,
+                              "The node does not belong to collection.");
 
       STACK_PUSH(GENV_ITEMFACTORY->createInteger(
                 result,
@@ -612,12 +618,16 @@ ZorbaExportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
       uri = URI(theColl->getUri()->getStringValue()->c_str());
 
     if( uri.get_scheme() != xqpString("file") && !uri.get_scheme().empty())
-      ZORBA_ERROR_LOC_DESC (FOER0000, loc, "ZorbaExportXmlIterator implemented only for 'file' scheme.");
+      ZORBA_ERROR_LOC_DESC (FOER0000,
+                            loc,
+                            "ZorbaExportXmlIterator implemented only for 'file' scheme.");
 
     std::auto_ptr<std::ostream> lFileStream (new std::ofstream(uri.get_path().c_str()));
     std::ostream* lOutputStream = lFileStream.get();
     if ( !lOutputStream->good() )
-      ZORBA_ERROR_LOC_DESC_OSS (API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, loc, "File or folder does not exist: " << uri.get_path().c_str());
+      ZORBA_ERROR_LOC_DESC_OSS (API0033_FILE_OR_FOLDER_DOES_NOT_EXIST,
+                                loc,
+                                "File or folder does not exist: " << uri.get_path().c_str());
 
     collIterator = theColl->getIterator(true);
 
@@ -648,7 +658,10 @@ store::Collection_t getCollection(PlanState& planState, const xqpStringStore_t s
 
   store::Collection_t lCollection = planState.sctx()->get_collection_uri_resolver()->resolve(resolvedURIItem, planState.sctx());
   if (lCollection == NULL) {
-    ZORBA_ERROR_LOC_PARAM(API0006_COLLECTION_NOT_FOUND, loc, strURI, "The requested collection could not be found.");
+    ZORBA_ERROR_LOC_PARAM(API0006_COLLECTION_NOT_FOUND,
+                          loc,
+                          strURI,
+                          "The requested collection could not be found.");
   }
 
   return lCollection;

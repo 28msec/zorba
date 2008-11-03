@@ -72,7 +72,7 @@ CollectionImpl::size() const
 
 
 bool
-CollectionImpl::addNode(const Item& aNode, long aPosition)
+CollectionImpl::addNode(const Item& aNode, const long aPosition)
 {
   ZORBA_TRY
 
@@ -125,7 +125,7 @@ CollectionImpl::addNodes(const ResultIterator* aResultIterator)
 
 
 bool
-CollectionImpl::addDocument(std::istream& lInStream, long aPosition)
+CollectionImpl::addDocument(std::istream& lInStream, const long aPosition)
 {
   ZORBA_TRY
     theCollection->addToCollection(lInStream, aPosition);
@@ -151,7 +151,7 @@ CollectionImpl::deleteNode(const Item& aNode)
 
 
 bool
-CollectionImpl::deleteNode(long aPosition)
+CollectionImpl::deleteNode(const long aPosition)
 {
   ZORBA_TRY
     theCollection->removeFromCollection(aPosition);
@@ -162,7 +162,7 @@ CollectionImpl::deleteNode(long aPosition)
 
 
 Item
-CollectionImpl::nodeAt(long aPosition)
+CollectionImpl::nodeAt(const long aPosition)
 {
   ZORBA_TRY
       return theCollection->nodeAt(aPosition).getp();
