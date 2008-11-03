@@ -417,7 +417,10 @@ store::Item_t SimpleStore::loadDocument(
   bool found = theDocuments.get(urip, root);
 
   if (found)
-    return root.getp();
+  {
+    theDocuments.remove(uri);
+    //return root.getp();
+  }
 
   error::ErrorManager lErrorManager;
   //std::auto_ptr<XmlLoader> loader(getXmlLoader(&lErrorManager));

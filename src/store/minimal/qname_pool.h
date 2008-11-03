@@ -70,7 +70,7 @@ protected:
     //                               hashfun::h32(t->getLocalName()->c_str())));
         return compute_hash(t->getPrefix()->c_str(),
                             t->getLocalName()->c_str(), 
-                            (uint32_t)t->getNamespace());
+                            (uint32_t)(uint64_t)t->getNamespace());
     }
 
     static uint32_t compute_hash(const char *pre, const char *ln, uint32_t ns)
