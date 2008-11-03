@@ -38,6 +38,11 @@
 #include "json/parser.h"
 #include "json/value.h"
 
+#ifdef WIN32
+#include <windows.h>
+#define sleep(s) Sleep(s*1000)
+#endif
+
 using namespace std;
 
 namespace zorba{
@@ -56,6 +61,7 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
     do{
     theRequestSocket = new TCPSocket(aServerAddress, aRequestPortno);
     theEventServerSocket = new TCPServerSocket(aEventPortno);
+    sleep(1);
     //Perform the handshake with the server
     }while(!handshake());
     //Start the event listener thread

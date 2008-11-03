@@ -18,6 +18,8 @@
 #define ZORBA_DEBUGGER_UTILS_H
 #include <functional>
 
+#include <functional>
+
 namespace zorba
 {
   template<class T> 

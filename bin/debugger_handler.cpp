@@ -29,9 +29,12 @@
 #include <zorba/zorba.h>
 #include <zorba/uri_resolvers.h>
 #include <zorba/debugger_client.h>
- 
+
+#if WIN32
+#include <windows.h>
+#endif
+
 using namespace std;
- 
 
 namespace zorba{
 
@@ -163,6 +166,8 @@ void DebuggerHandler::list(const std::vector<std::string>& args) const
     {
       cerr << "id: " << it->first << '\t' << it->second << endl; 
     }
+  }else if(args.size() >= 2 && args.at(1) == "all"){
+    list(theFileName); 
   }else if(args.size() >= 2){
     const String lStringURI(args.at(1));
     list(lStringURI);
@@ -400,45 +405,42 @@ void DebuggerHandler::handle()
  
     if(lCommand == "r" || lCommand == "run"){
       run();
+      return;
     } else if(lCommand == "c" || lCommand == "resume"){
       resume();
+      return;
     } else if(lCommand == "s" || lCommand == "status"){
       status();
-      handle();
     } else if(lCommand == "b" || lCommand == "break"){
       addBreakpoint(lArgs);
-      handle();
     } else if(lCommand == "w" || lCommand == "watch"){
       addWatchpoint(lArgs);
-      handle();
     } else if(lCommand == "l" || lCommand == "list"){
       list(lArgs);
-      handle();
     } else if(lCommand == "cl" || lCommand == "clear"){
       clear(lArgs);
-      handle();
     } else if(lCommand == "n" || lCommand == "over" || lCommand == "next") {
       stepOver();
+      return;
     } else if(lCommand == "s" || lCommand == "in") {
       stepIn();
+      return;
     } else if(lCommand == "o" || lCommand == "out"){
       stepOut();
+      return;
     } else if(lCommand == "v" || lCommand == "var" || lCommand == "vars" || lCommand == "variables"){
       variables();
-      handle();
     } else if(lCommand == "where"){
       where();
-      handle();
     } else if(lCommand == "p" || lCommand == "print" || lCommand == "e" || lCommand == "eval"){
       eval(lArgs);
     } else if(lCommand == "h" || lCommand == "help"){
       help();
-      handle();
     } else {
       cerr << "Unknown command " << lCommand << endl;
       help();
-      handle();
     }
+    handle();
   }
 }
 
