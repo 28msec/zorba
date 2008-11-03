@@ -420,7 +420,9 @@ store::Item_t SimpleStore::loadDocument(
   bool found = theDocuments.get(urip, root);
 
   if (found)
+  {
     return root.getp();
+  }
 
   error::ErrorManager lErrorManager;
   std::auto_ptr<XmlLoader> loader(getXmlLoader(&lErrorManager));
@@ -465,15 +467,22 @@ store::Item_t SimpleStore::loadDocument(
 
 /*******************************************************************************
 For lazy loading...
+Param stream is a heap pointer to an input stream. This is to be deallocated by Zorba.
 ********************************************************************************/
 store::Item_t SimpleStore::loadDocument(
     const xqpStringStore_t& uri, 
     std::istream* stream)
 {
   store::Item_t docitem;
-  //do full loading for now
-  docitem = loadDocument(uri, *stream);
-  delete stream;
+  try{
+    //do full loading for now
+    docitem = loadDocument(uri, *stream);
+    delete stream;
+  }
+  catch(...)
+  {
+    delete stream;
+  }
   return docitem;
 }
 
