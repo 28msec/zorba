@@ -523,7 +523,7 @@ void static_context::compute_current_absolute_baseuri()
     try {
       URI lCheckValid(prolog_baseuri);
       // is already absolute baseuri
-      set_current_absolute_baseuri(prolog_baseuri);
+      set_current_absolute_baseuri(lCheckValid.toString());
       return; // valid (absolute) uri
     } catch (error::ZorbaError& e) {
 //       throw e;

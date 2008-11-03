@@ -71,7 +71,7 @@ URI::URI( const xqpString& uri )
   : theState(0),
     thePort(0)
 {
-  initialize(uri); 
+  initialize(uri);
 }
 
 URI::URI( const URI& base_uri, const xqpString& uri )
@@ -194,9 +194,9 @@ URI::is_reservered_or_unreserved_char(char c)
 void
 URI::initialize(const xqpString& uri, bool have_base)
 {
-  // first, we need to trim the uri
-  // and only work with the trimmed one from this point on
-  xqpString lTrimmedURI = uri.trim();
+  // first, we need to normalize the spaces in the uri
+  // and only work with the normalized version from this point on
+  xqpString lTrimmedURI = uri.normalizeSpace();
   int    lTrimmedURILength = lTrimmedURI.length();
 
   // index of the current processing state used in this function
@@ -1014,7 +1014,7 @@ URI::build_ascii_full_text() const
   if ( is_set(Fragment) )
     lURI << "#" << theFragment;
 
-  theURIText = lURI.str();
+  theASCIIURIText = lURI.str();
 }
 
 //
