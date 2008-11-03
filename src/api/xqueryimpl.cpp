@@ -563,8 +563,9 @@ XQueryImpl::applyUpdates()
         QueryLoc loc;
         store::Item_t validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
 
+#ifndef ZORBA_NO_XMLSCHEMA
         validateAfterUpdate(validationNodes, validationPul, theStaticContext, loc);
-
+#endif
         validationPul->applyUpdates(validationNodes);
       }
     }
