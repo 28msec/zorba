@@ -25,6 +25,11 @@
 
 namespace zorba { namespace simplestore {
 
+class QNameItemNorm;
+
+typedef rchandle<QNameItemNorm> NormalizedQName_t;
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -65,6 +70,9 @@ class QNameItemImpl : public AtomicItem
   friend class ElementNode;
 
 private:
+  static xqpStringStore_t theEmptyPrefix;
+
+private:
   xqpStringStore_t  theNamespace;
   xqpStringStore_t  thePrefix;
   xqpStringStore_t  theLocal;
@@ -73,25 +81,58 @@ private:
   uint16_t          theNextFree;
   uint16_t          thePrevFree;
 
-private:
+protected:
   QNameItemImpl() : thePosition(0), theNextFree(0), thePrevFree(0) {}
- 
-  virtual ~QNameItemImpl() { }
 
   void free();
 
-  bool isInCache() const               { return thePosition != 0; }
-  bool isOverflow() const              { return thePosition == 0; }
+  bool isValid() const      { return theLocal != NULL; }
 
- public:
+  bool isInCache() const    { return thePosition != 0; }
+  bool isOverflow() const   { return thePosition == 0; }
+
+  bool isNormalized() const { return thePrefix->empty(); }
+
+  QNameItemImpl* getNormalized() const
+  {
+    return (isNormalized() ?
+            const_cast<QNameItemImpl*>(this) :
+            reinterpret_cast<QNameItemImpl*>(theLocal.getp()));
+  }
+
+  QNameItemImpl* detachNormalized() 
+  {
+    assert(!isNormalized());
+    QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(theLocal.getp());
+    theLocal.setNull();
+    return qn;
+  }
+
+  void setNormalized(QNameItemImpl* qn);  
+
+  void unsetNormalized();
+
+public:
+  virtual ~QNameItemImpl();
+
+  uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
+
+  bool equals(
+        const store::Item* item,
+        long timezone = 0,
+        XQPCollator* aCollation = 0) const
+  {
+    return (getNormalized() == 
+            reinterpret_cast<const QNameItemImpl*>(item)->getNormalized());
+  }
+
   xqpStringStore* getNamespace() const { return theNamespace.getp(); }
   xqpStringStore* getPrefix() const    { return thePrefix.getp(); }
-  xqpStringStore* getLocalName() const { return theLocal.getp(); }
+  xqpStringStore* getLocalName() const { return getNormalized()->theLocal.getp(); }
 
   store::Item* getType() const;
-  uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
-  bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
   store::Item_t getEBV() const;
+
   xqpStringStore_t getStringValue() const;
 
   bool isId() const;

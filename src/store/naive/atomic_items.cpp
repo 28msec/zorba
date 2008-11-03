@@ -62,41 +62,53 @@ void AtomicItem::getTypedValue(store::Item_t& val, store::Iterator_t& iter) cons
   class QNameItemImpl
 ********************************************************************************/
 
+xqpStringStore_t QNameItemImpl::theEmptyPrefix(new xqpStringStore(""));
+
+
+QNameItemImpl::~QNameItemImpl() 
+{
+  if (isValid() && !isNormalized())
+  {
+    unsetNormalized();
+  }
+}
+
+
 void QNameItemImpl::free()
 {
   GET_STORE().getQNamePool().remove(this);
 }
 
 
-store::Item* QNameItemImpl::getType() const
+void QNameItemImpl::setNormalized(QNameItemImpl* qn)  
 {
-  return GET_STORE().theSchemaTypeNames[XS_QNAME];
+  assert(theLocal == NULL);
+
+  *reinterpret_cast<QNameItemImpl**>(&theLocal) = qn;
+  qn->addReference(NULL SYNC_PARAM2(qn->getRCLock()));
 }
+
+
+void QNameItemImpl::unsetNormalized()  
+{
+  assert(theLocal != NULL && !isNormalized());
+
+  QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(theLocal.getp());
+  qn->removeReference(NULL SYNC_PARAM2(qn->getRCLock()));
+  theLocal.setNull();
+}
+
 
 uint32_t QNameItemImpl::hash(long timezone, XQPCollator* aCollation) const
 {
-  return hashfun::h32(thePrefix->str(),
-                      hashfun::h32(theLocal->str(),
-                                   hashfun::h32(theNamespace->str())));
+  const void* tmp = getNormalized();
+  return hashfun::h32(&tmp, sizeof(*this));
 }
 
 
-bool QNameItemImpl::equals(
-    const store::Item* item,
-    long timezone,
-    XQPCollator* aCollation) const
+store::Item* QNameItemImpl::getType() const
 {
-  //return (this == item);
-
-  if (this == item)
-  {
-    return true;
-  }
-  else
-  {
-    return (theNamespace->byteEqual(*item->getNamespace()) &&
-            theLocal->byteEqual(*item->getLocalName()));
-  }
+  return GET_STORE().theSchemaTypeNames[XS_QNAME];
 }
 
 
@@ -109,19 +121,25 @@ store::Item_t QNameItemImpl::getEBV( ) const
 
 xqpStringStore_t QNameItemImpl::getStringValue( ) const
 {
-  if (thePrefix->empty()) {
-    return theLocal;
-  } else {
-    return new xqpStringStore(thePrefix->str() + ":" + theLocal->str());
+  if (thePrefix->empty()) 
+  {
+    return getLocalName();
+  }
+  else 
+  {
+    return new xqpStringStore(thePrefix->str() + ":" + getLocalName()->str());
   }
 }
 
 
 bool QNameItemImpl::isId() const
 {
-  if (thePrefix->byteEqual("xml", 3) &&
-      theLocal->byteEqual("id", 2))
-    return true;
+  if (getLocalName()->byteEqual("id", 2))
+  {
+    if (getPrefix()->byteEqual("xml", 3) ||
+        theNamespace->byteEqual(SimpleStore::XML_URI, SimpleStore::XML_URI_LEN))
+      return true;
+  }
 
   return false;
 }
@@ -129,9 +147,12 @@ bool QNameItemImpl::isId() const
 
 bool QNameItemImpl::isBaseUri() const
 {
-  if (thePrefix->byteEqual("xml", 3) &&
-      theLocal->byteEqual("base", 4))
-    return true;
+  if (getLocalName()->byteEqual("base", 4))
+  {
+    if (getPrefix()->byteEqual("xml", 3) ||
+        getNamespace()->byteEqual(SimpleStore::XML_URI, SimpleStore::XML_URI_LEN))
+      return true;
+  }
 
   return false;
 }
@@ -139,9 +160,10 @@ bool QNameItemImpl::isBaseUri() const
 
 xqp_string QNameItemImpl::show() const
 {
-  return "xs:QName(" + theNamespace->str() + "," + thePrefix->str() + "," +
-                       theLocal->str() + ")";
+  return "xs:QName(" + getNamespace()->str() + "," + getPrefix()->str() + "," +
+                       getLocalName()->str() + ")";
 }
+
 
 
 /*******************************************************************************

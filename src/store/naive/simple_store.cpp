@@ -62,6 +62,7 @@ const char* SimpleStore::XS_URI = "http://www.w3.org/2001/XMLSchema";
 const char* SimpleStore::XML_URI = "http://www.w3.org/2001/XML/1998/namespace";
 const char* SimpleStore::ZXSE_URI = "http://www.zorba-xquery.com/zorba/schema-extensions";
 
+const ulong SimpleStore::XML_URI_LEN = sizeof(SimpleStore::XML_URI);
 
 
 /*******************************************************************************

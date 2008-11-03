@@ -73,6 +73,8 @@ public:
   static const char* XML_URI;
   static const char* ZXSE_URI;
 
+  static const ulong XML_URI_LEN;
+
 protected:
   static const ulong DEFAULT_COLLECTION_MAP_SIZE;
   static const ulong NAMESPACE_POOL_SIZE;
