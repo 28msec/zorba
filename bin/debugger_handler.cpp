@@ -23,7 +23,9 @@
 #include <sstream>
 #include <fstream>
 #include <cstdlib>
-
+#ifdef WIN32
+#include <windows.h>
+#endif
 #include <zorba/zorba.h>
 #include <zorba/uri_resolvers.h>
 #include <zorba/debugger_client.h>

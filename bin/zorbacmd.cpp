@@ -419,10 +419,10 @@ int _tmain(int argc, _TCHAR* argv[])
              DebuggerHandler lEventHandler(lZorbaInstance, debuggerClient.get(), lFileName);
 #ifdef SIGINT /* not all system have SIGINT */
              setDebugClient(debuggerClient.get());
-             struct sigaction sa;
-             memset(&sa, 0, sizeof(sa));
-             sa.sa_handler = &suspend;
-             sigaction(SIGINT, &sa, 0);
+//             struct sigaction sa;
+//             memset(&sa, 0, sizeof(sa));
+//             sa.sa_handler = &suspend;
+//             sigaction(SIGINT, &sa, 0);
 #endif
              debuggerClient->registerEventHandler( &lEventHandler );
               while(!debuggerClient->isQueryTerminated()){ sleep(1); }
