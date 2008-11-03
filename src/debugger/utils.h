@@ -16,7 +16,6 @@
 
 #ifndef ZORBA_DEBUGGER_UTILS_H
 #define ZORBA_DEBUGGER_UTILS_H
-#include <functional>
 
 #include <functional>
 

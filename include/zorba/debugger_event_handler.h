@@ -74,13 +74,13 @@ namespace zorba{
       virtual void
       terminated() = 0;
 
-      /** \brief Fire the result of an XQuery expression.
+      /** \brief Signal the result of an XQuery expression.
        *
        */
       virtual void
       evaluated(String &anExpr, std::map<String, String> &aValuesAndTypes) = 0;
   
-      /** \brief Fire an Error from an XQuery expression.
+      /** \brief Signal an Error from an XQuery expression.
        *
        * @param String the XQuery expression
        * @param String the Error description

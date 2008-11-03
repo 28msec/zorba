@@ -345,7 +345,14 @@ namespace zorba{
        *
        * @return the runtime stack frame.
        */
-      virtual StackFrame* getStack() const = 0;
+      virtual
+      StackFrame* getStack() const = 0;
+  
+      /** \brief Catch all function executions
+       *
+       */
+      virtual
+      bool catchFunctionCall() const = 0;
   };
 }//end of namespace
 #endif

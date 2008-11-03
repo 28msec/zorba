@@ -30,10 +30,6 @@
 #include <zorba/uri_resolvers.h>
 #include <zorba/debugger_client.h>
 
-#if WIN32
-#include <windows.h>
-#endif
-
 using namespace std;
 
 namespace zorba{
@@ -130,7 +126,11 @@ void DebuggerHandler::addWatchpoint(const vector<string>& args) const
 void DebuggerHandler::resume() const
 {
   assert(theClient != 0);
-  assert(theClient->isQueryIdle() || theClient->isQuerySuspended());
+  if(!theClient->isQueryIdle() && !theClient->isQuerySuspended())
+  {
+    cerr << "The query is not suspended or idle." << endl;
+    return;
+  }
   theClient->resume();
 }
 
@@ -434,6 +434,7 @@ void DebuggerHandler::handle()
       where();
     } else if(lCommand == "p" || lCommand == "print" || lCommand == "e" || lCommand == "eval"){
       eval(lArgs);
+      return;
     } else if(lCommand == "h" || lCommand == "help"){
       help();
     } else {
@@ -451,7 +452,6 @@ void DebuggerHandler::started()
 
 void DebuggerHandler::idle()
 {
-  cout << "The debugger is now attached to a request" << endl;
   handle();
 }
 

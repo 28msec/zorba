@@ -70,7 +70,9 @@ class ZorbaDebugger
       theRuntimeThread(0),
       isSteppingOver(false),
       isSteppingInto(false),
-      isSteppingOut(false){}
+      isSteppingOut(false),
+      isFunctionExecution(false),
+      catchFunctionExecution(false){}
 
     virtual ~ZorbaDebugger();
 
@@ -162,6 +164,10 @@ class ZorbaDebugger
 
     //The stack frame
     std::stack< std::pair<std::string, QueryLoc> > theStack;
+    
+    //is it a function execution ?
+    bool isFunctionExecution;
+    bool catchFunctionExecution;
 
     const QueryLoc addBreakpoint(const QueryLoc& aLocation);
     

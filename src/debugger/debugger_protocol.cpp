@@ -258,7 +258,7 @@ bool AbstractCommandMessage::isExecutionCommand() const
   return getCommandSet() == EXECUTION &&
           ( getCommand() == RUN || getCommand() == SUSPEND ||
             getCommand() == RESUME || getCommand() == STEP ||
-            getCommand() == TERMINATE || getCommand() == QUIT );
+            getCommand() == TERMINATE );
 }
 
 bool AbstractCommandMessage::isBreakpointsCommand() const
@@ -301,6 +301,16 @@ RunMessage::RunMessage( Byte * aMessage, const unsigned int aLength ):
 
 RunMessage::~RunMessage(){}
 
+/**
+ * Catch function execution message
+ */
+CatchFnExecMessage::CatchFnExecMessage():
+  AbstractCommandMessage(EXECUTION, CATCH_FN_EXEC){}
+
+CatchFnExecMessage::CatchFnExecMessage(Byte* aMessage, const unsigned int aLength):
+  AbstractCommandMessage(aMessage, aLength){}
+
+CatchFnExecMessage::~CatchFnExecMessage(){}
 
 /**
  * Suspend message

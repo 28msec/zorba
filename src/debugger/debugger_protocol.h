@@ -62,12 +62,12 @@ const CommandSet DYNAMIC      = 0xf4;
 const CommandSet ENGINE_EVENT = 0xf8;
 
 /* Execution Commands */
-const Command RUN       = 0x01; 
-const Command SUSPEND   = 0x02;
-const Command RESUME    = 0x03;
-const Command TERMINATE = 0x04;
-const Command STEP      = 0x05;
-const Command QUIT      = 0x06;
+const Command RUN           = 0x01; 
+const Command SUSPEND       = 0x02;
+const Command RESUME        = 0x03;
+const Command TERMINATE     = 0x04;
+const Command STEP          = 0x05;
+const Command CATCH_FN_EXEC = 0x06;
 
 /* Breakpoints Commands */
 const Command SET   = 0x01;
@@ -375,6 +375,18 @@ class RunMessage: public AbstractCommandMessage
     virtual ~RunMessage();
 };
 
+/*
+ *
+ */
+class CatchFnExecMessage: public AbstractCommandMessage
+{
+  public:
+    CatchFnExecMessage();
+
+    CatchFnExecMessage(Byte* aMessage, const unsigned int aLength);
+
+    virtual ~CatchFnExecMessage();
+};
 
 /**
  * 

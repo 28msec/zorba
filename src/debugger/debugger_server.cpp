@@ -244,6 +244,13 @@ bool ZorbaDebugger::hasToSuspend()
 {
   //If the query has been suspend by the user
   if( theStatus == QUERY_SUSPENDED ){ return true; }
+  //If we break for each function execution
+  if(isFunctionExecution && catchFunctionExecution)
+  {
+    setStatus( QUERY_SUSPENDED, CAUSE_FUNCTION_EXECUTION );
+    isFunctionExecution = false;
+    return true;
+  }
   map<unsigned int, QueryLoc>::iterator it;
   //TODO: can be faster
   for ( it = theBreakpoints.begin(); it != theBreakpoints.end(); it++ )
@@ -679,6 +686,11 @@ void ZorbaDebugger::processMessage(AbstractCommandMessage * aMessage)
           StepMessage* lMessage =  static_cast<StepMessage *> ( aMessage );
 #endif
           step(lMessage->getStepKind());
+          break;
+        }
+        case CATCH_FN_EXEC:
+        {
+          catchFunctionExecution = true;
           break;
         }
         default: throw InvalidCommandException("Internal Error. Command not implemented for execution command set .");

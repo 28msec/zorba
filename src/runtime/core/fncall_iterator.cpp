@@ -184,6 +184,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
   {
     name << ')';
     lDebugger->theStack.push(std::make_pair<std::string, const QueryLoc>(name.str(), loc)); 
+    lDebugger->isFunctionExecution = true;
   }
 #endif
   

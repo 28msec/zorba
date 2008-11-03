@@ -99,7 +99,8 @@ namespace zorba{
       std::list<Variable> getGlobalVariables() const;
     
       StackFrame* getStack() const;
-    
+
+      bool catchFunctionCall() const;
     protected:
       static unsigned int theLastId;
 
