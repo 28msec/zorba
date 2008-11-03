@@ -11,7 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+IF (NOT ZORBA_MINIMAL_STORE)
 ADD_SUBDIRECTORY(examples)
+ENDIF (NOT ZORBA_MINIMAL_STORE)
 
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeUseDoxygen.cmake)
 IF (DOXYGEN_FOUND)
