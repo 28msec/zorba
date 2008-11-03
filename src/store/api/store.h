@@ -146,7 +146,7 @@ public:
   /**
    * Load a document to the store. The document is loaded from an input stream.
    *
-   * @param uri The uri of the document to load.
+   * @param uri The uri of the document to load. This uri can be used to refer the document in the store.
    * @return rchandle to the newly created document or NULL if a document
    *         with the given uri exists already.
    */
@@ -156,8 +156,8 @@ public:
    * Load a document to the store. The document is loaded from an input stream.
      Do the lazy loading of document. The stream will be freed by Zorba when finished.
    *
-   * @param uri The uri of the document to load.
-   * @param stream User allocated stream. This will be freed by Zorba when finishing loading doc.
+   * @param uri The uri of the document to load. This uri can be used to refer the document in the store.
+   * @param stream User heap allocated stream. This will be freed by Zorba when finishing loading doc.
    * @return rchandle to the newly created document or NULL if a document
    *         with the given uri exists already.
    */
