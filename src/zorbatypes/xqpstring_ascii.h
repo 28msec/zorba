@@ -53,6 +53,9 @@ public:
   hash(const char* str);
 
   static bool
+  is_contained(const char* start, uint16_t length, uint32_t cp);
+
+  static bool
   is_unreservedCP(uint32_t cp);
 
   static bool
@@ -223,7 +226,7 @@ public:
   iriToUri() const;
 
   xqpStringStore_t
-  encodeForUri() const;
+  encodeForUri(const char* start = NULL, uint16_t length = 0) const;
 
   xqpStringStore_t
   decodeFromUri() const;
@@ -508,12 +511,12 @@ public:
     //Upper and lowercase letters A-Z
     //digits 0-9, HYPHEN-MINUS ("-"), LOW LINE ("_"), FULL STOP ".", and TILDE "~"
     xqpString
-    encodeForUri() const
+    encodeForUri(const char* start = NULL, uint16_t length = 0) const
     {
-      return theStrStore->encodeForUri().getp();
+      return theStrStore->encodeForUri(start, length).getp();
     }
 
-    // revert encodeForUri
+    // revert encodeForUri("/",1)
     xqpString
     decodeFromUri() const
     {
@@ -600,7 +603,7 @@ public:
       replace(xqpString pattern, xqpString replacement, xqpString flags);
 
       xqpString
-      tokenize(xqpString pattern, xqpString flags, /*in-out*/int *match_pos, /*out*/bool *hasmatched);
+      tokenize(xqpString pattern, xqpString flags, /*in-out*/int32_t *match_pos, /*out*/bool *hasmatched);
 
       // Removes the leading and trailing whitespace (one of the " \t\r\n")
       // TODO: xqpString trim_whitespace() const;
