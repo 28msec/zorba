@@ -49,19 +49,19 @@ NARY_ITER (CodepointsToStringIterator);
 class StringToCodepointsState : public PlanIteratorState
 {
 private:
-  checked_vector<uint32_t> resVector;
-  uint32_t iter;
+  checked_vector<xqp_uint> resVector;
+  xqp_uint iter;
 public:
   void init(PlanState&);
   void reset(PlanState&);
 
   // TODO for performance reasons we should inline these functions or provide direct access to the members
-  void setIterator(uint32_t);
-  void setVector(checked_vector<uint32_t> vect);
+  void setIterator(xqp_uint);
+  void setVector(checked_vector<xqp_uint> vect);
   
-  uint32_t getItem(uint32_t iter);
-  uint32_t getVectSize();
-  uint32_t getIterator();
+  xqp_uint getItem(xqp_uint iter);
+  xqp_uint getVectSize();
+  xqp_uint getIterator();
 };
 
 
@@ -227,8 +227,8 @@ NARY_ITER(FnReplaceIterator);
 class FnTokenizeIteratorState : public PlanIteratorState {
   public:
     xqp_string  theString; // the remaining string
-    int32_t     start_pos;
-    bool        hasmatched;
+    xqp_int     start_pos;
+    xqp_boolean hasmatched;
     xqp_string  thePattern, theFlags;
 
     void init(PlanState&);

@@ -63,7 +63,7 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
       item = item->getAtomizationValue();
       {
         xqp_string lUtf8Code = item->getIntegerValue().toString();
-        uint32_t lCode;
+        xqp_uint lCode;
         if (NumConversions::strToUInt(lUtf8Code, lCode)) 
         {
           char seq[5] = {0,0,0,0,0};
@@ -149,29 +149,29 @@ StringToCodepointsState::reset(PlanState& planState)
 }
 
 void
-StringToCodepointsState::setIterator(uint32_t value)
+StringToCodepointsState::setIterator(xqp_uint value)
 {
   iter = value;
 }
 
-uint32_t
+xqp_uint
 StringToCodepointsState::getIterator() {
   return iter;
 }
 
 void
-StringToCodepointsState::setVector(checked_vector<uint32_t> vect)
+StringToCodepointsState::setVector(checked_vector<xqp_uint> vect)
 {
   resVector = vect;
 }
 
-uint32_t
-StringToCodepointsState::getItem(uint32_t iter)
+xqp_uint
+StringToCodepointsState::getItem(xqp_uint iter)
 {
   return resVector[iter];
 }
 
-uint32_t
+xqp_uint
 StringToCodepointsState::getVectSize()
 {
   return resVector.size();
@@ -218,7 +218,7 @@ CompareStrIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
           }
           GENV_ITEMFACTORY->createInteger(
                   result,
-                  Integer::parseInt((int32_t)n0->getStringValue()->compare(n1->getStringValue(), coll)));
+                  Integer::parseInt((xqp_int)n0->getStringValue()->compare(n1->getStringValue(), coll)));
       }
       else {
         XQPCollator* coll = 0;
@@ -230,7 +230,7 @@ CompareStrIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
         }
         GENV_ITEMFACTORY->createInteger(
                 result,
-                Integer::parseInt((int32_t)n0->getStringValue()->compare(n1->getStringValue(), coll)));
+                Integer::parseInt((xqp_int)n0->getStringValue()->compare(n1->getStringValue(), coll)));
       }
       STACK_PUSH(true, state );
     }
@@ -410,8 +410,8 @@ SubstringIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t lenItem;
   xqpString stringVal;
   xqpStringStore_t resStr;
-  int32_t tmpStart;
-  int32_t tmpLen;
+  xqp_int tmpStart;
+  xqp_int tmpLen;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -529,7 +529,7 @@ StringLengthIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     STACK_PUSH(GENV_ITEMFACTORY->createInteger(
                             result,
-                            Integer::parseInt((int32_t)0)),
+                            Integer::parseInt((xqp_int)0)),
                             state);
   }
   STACK_END (state);
@@ -1101,7 +1101,7 @@ SubstringBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   store::Item_t item0;
   store::Item_t item1;
   store::Item_t itemColl;
-  int32_t index = -1;
+  xqp_int index = -1;
   xqpStringStore_t arg1;
   xqpStringStore_t arg2;
   xqpStringStore_t resStr;
@@ -1188,7 +1188,7 @@ SubstringAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   store::Item_t item0;
   store::Item_t item1;
   store::Item_t itemColl;
-  int32_t startPos = -1;
+  xqp_int startPos = -1;
   xqpStringStore_t arg1;
   xqpStringStore_t arg2;
   xqpStringStore_t resStr;
@@ -1446,7 +1446,7 @@ FnTokenizeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     ZORBA_ERROR_LOC_DESC(FORX0003, loc,
                          "Regular expression matches zero-length string.");
 
-  while (state->start_pos < state->theString.length ())
+  while ((xqp_uint)state->start_pos < state->theString.length ())
   {
     try
     {
