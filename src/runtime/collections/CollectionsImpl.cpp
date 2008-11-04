@@ -195,6 +195,7 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
             theColl->addToCollection(itemXML, 1);
             }
           }
+          theAttributes->close();
       }
     }
     theIterator->close();
@@ -261,6 +262,8 @@ ZorbaListCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planSta
     result = uriItem;
     STACK_PUSH( true, state);
   }
+
+  state->uriItState->close();
 
   STACK_END (state);
 }
@@ -335,6 +338,8 @@ ZorbaDeleteAllCollectionsIterator::nextImpl(store::Item_t& result, PlanState& pl
   for ((uriItState = GENV_STORE.listCollectionUris())->open ();
         uriItState->next(itemUri); )
     vectorUri.push_back(itemUri->getStringValue());
+
+  uriItState->close();
 
   it = vectorUri.begin();
   end = vectorUri.end();

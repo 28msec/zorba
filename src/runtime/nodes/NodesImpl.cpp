@@ -155,13 +155,13 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         node = node->getParent())
       {
         for ((theAttributes = node->getAttributes())->open ();
-             ! found && theAttributes->next(attr); )
-        {
+             ! found && theAttributes->next(attr); ) {
           attrName = attr->getNodeName();
           found = (attrName->getLocalName()->byteEqual("lang", 4) &&
                    attrName->getNamespace()->byteEqual(XML_NS, strlen(XML_NS)) &&
                    xqp_string(attr->getStringValue()).matches(xqp_string("^" + reqLang->str() + "(-|$)"), "i"));
         }
+        theAttributes->close();
       }
     }
   }

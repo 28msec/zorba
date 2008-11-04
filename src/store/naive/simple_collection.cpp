@@ -146,8 +146,6 @@ void SimpleCollection::addNode(
     ZORBA_ERROR(API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION);
   }
 
-  SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
-
   checked_vector<store::Item_t>::iterator it = theXmlTrees.begin();
   checked_vector<store::Item_t>::iterator end = theXmlTrees.end();
   const XmlNode* rTargetNode = reinterpret_cast<const XmlNode*>(aTargetNode);
@@ -159,6 +157,8 @@ void SimpleCollection::addNode(
       //check if the nodes are the same
       if(rTargetNode->equals(reinterpret_cast<XmlNode*>(it->getp())))
       {
+        SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
+
         if(aOrder)
           theXmlTrees.insert(it, const_cast<store::Item*>(node));
         else
