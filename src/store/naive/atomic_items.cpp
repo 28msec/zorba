@@ -102,7 +102,7 @@ void QNameItemImpl::unsetNormalized()
 uint32_t QNameItemImpl::hash(long timezone, XQPCollator* aCollation) const
 {
   const void* tmp = getNormalized();
-  return hashfun::h32(&tmp, sizeof(*this));
+  return hashfun::h32(tmp, FNV_32_INIT);
 }
 
 
