@@ -1218,8 +1218,7 @@ void FlworState::reset(PlanState& planState)
   PlanIteratorState::reset(planState);
   assert(varBindingState.size() > 0);
   size_t size = varBindingState.size();
-  varBindingState.clear();
-  varBindingState.insert(varBindingState.begin(), size, 0);
+  ::memset(&varBindingState[0], 0, size * sizeof(uint32_t));
   curOrderResultSeq = 0;
   if ( orderMap != 0 )
   {
