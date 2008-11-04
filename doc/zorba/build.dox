@@ -12,7 +12,7 @@ Zorba is tested with the following compilers:
 
 
 \subsection packages Packages
-In order ot build Zorba, you need the following libraries and development headers to be installed:
+In order to build Zorba, you need the following libraries and development headers to be installed:
 - Libxml2 2.2.16 or higher (http://xmlsoft.org/ )
   - Iconv 1.12 (used by Libxml2; http://www.gnu.org/software/libiconv/)
 - ICU4C 3.6 or higher (http://www.icu-project.org/)
@@ -26,7 +26,7 @@ In order ot build Zorba, you need the following libraries and development header
 
 \subsection buildingzorba Building Zorba
 -# Install the Zorba source distribution (see \ref installation). The directory in which the Zorba
-           sources are installed is refered to as <tt>[ZORBA]</tt> in the following.
+           sources are installed is referred to as <tt>[ZORBA]</tt> in the following.
 -# Change the working directory into <tt>[ZORBA]</tt>.
 -# The recommended way to build Zorba is by creating an <a href="http://www.cmake.org/Wiki/CMake_FAQ#What_is_an_.22out-of-source.22_build.3F" target="_blank">out-of-source build</a>. We suggest to create the directory <tt>[ZORBA]/build</tt> and refer to this directory as <tt>[ZORBABUILD]</tt> in the following.
 -# Change the working directory into the <tt>[ZORBABUILD]</tt> directory and execute cmake as follows: <tt>cmake [ZORBA]</tt>. In case the <tt>[ZORBABUILD]</tt> is located directly within the <tt>[ZORBA]</tt> directory just type <tt>cmake ..</tt> . This command should configure Zorba and prepare for the build. CMake will tell you if your installation is missing some of the required libraries or development headers.
@@ -38,13 +38,13 @@ In order ot build Zorba, you need the following libraries and development header
 - CMake supports multiple build configurations (e.g. Debug, Release, or MinSizeRel. By default, Zorba is build with the Release configuration. To change the build mode (to Debug, Release, RelWithDebInfo or MinSizeRel), you can pass an additional parameter to CMake, e.g. <tt>cmake -D CMAKE_BUILD_TYPE=Debug [ZORBA]</tt>.
 
 \section mac Note for Mac OS Users
-The easiest way to install the required packages (like CMake, etc.) is to use Darwin Ports (http://darwinports.com/). After installating Darwin Ports, you should run <tt>sudo port -d selfupdate</tt> to upgrade the package lists. If this was successfull, you can simply install packages by typing e.g. <tt>sudo port install cmake</tt>.
+The easiest way to install the required packages (like CMake, etc.) is to use Darwin Ports (http://darwinports.com/). After installing Darwin Ports, you should run <tt>sudo port -d selfupdate</tt> to upgrade the package lists. If this was successful, you can simply install packages by typing e.g. <tt>sudo port install cmake</tt>.
 Note that libxml2 is already installed as part of Mac OS X.
 
 \subsection universal Building as Universal binaries
 
 To build zorba as a universal binary one must also build the required
-external libaries as universal.  In most cases this is as easy as
+external libraries as universal.  In most cases this is as easy as
 building them non-universal.   Following are instructions on how to do so.
 
 For ICU and Xerces-C the 
