@@ -136,7 +136,7 @@ public:
    *
    */
   virtual Item_t
-  nodeAt(long aPosition) = 0;
+  nodeAt(const long aPosition) = 0;
 
   /**
    * Get the position of the Node Item within the collection.
