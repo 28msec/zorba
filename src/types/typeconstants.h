@@ -29,6 +29,7 @@ class TypeConstants {
     } quantifier_t;
 
     typedef enum {
+      INVALID_TYPE_CODE = -1,
       XS_ANY_ATOMIC = 0,
       XS_STRING,
       XS_NORMALIZED_STRING,

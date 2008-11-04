@@ -39,39 +39,12 @@
 
 using namespace zorba;
 
-int qname_compare::operator ()(const store::Item *qn1, const store::Item *qn2) const
-{
-    if (qn1 == NULL && qn2 != NULL) {
-      return -1;
-    } else if (qn2 == NULL && qn1 != NULL) {
-      return 1;
-    }
-    if (qn1 == qn2) {
-      return 0;
-    }
-    const xqpStringStore *qn1local = qn1->getLocalName();
-    const xqpStringStore *qn2local = qn2->getLocalName();
-
-    int lComp = qn1local->compare(qn2local);
-    if (lComp < 0) {
-      return -1;
-    } else if (lComp > 0) {
-      return 1;
-    }
-    const xqpStringStore *qn1ns = qn1->getNamespace();
-    const xqpStringStore *qn2ns = qn2->getNamespace();
-
-    int c = qn1ns->compare(qn2ns);
-    return c < 0 ? -1 : (c > 0 ? 1 : 0);
-}
-
 xqtref_t TypeManagerImpl::create_type_x_quant(
     const XQType& type,
     TypeConstants::quantifier_t quantifier) const
 {
   return create_type(type, RootTypeManager::QUANT_MULT_MATRIX[type.get_quantifier()][quantifier]);
 }
-
 
 xqtref_t TypeManagerImpl::create_type(
     const XQType& type,
@@ -217,26 +190,23 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const
                            TypeConstants::QUANT_ONE);
 }
 
-
 xqtref_t TypeManagerImpl::create_named_type(
     store::Item* qname,
     TypeConstants::quantifier_t quantifier) const
 {
-  qname_compare cmp;
-
-  if (cmp(qname, GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME.getp()) == 0)
+  if (qname_hash_equals::equal(qname, GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME.getp()))
   {
     return create_any_type();
   }
-  else if (cmp(qname, GENV_TYPESYSTEM.XS_ANY_SIMPLE_TYPE_QNAME.getp()) == 0)
+  else if (qname_hash_equals::equal(qname, GENV_TYPESYSTEM.XS_ANY_SIMPLE_TYPE_QNAME.getp()))
   {
     return create_any_simple_type();
   }
-  else if (cmp(qname, GENV_TYPESYSTEM.XS_UNTYPED_QNAME.getp()) == 0) 
+  else if (qname_hash_equals::equal(qname, GENV_TYPESYSTEM.XS_UNTYPED_QNAME.getp())) 
   {
     return create_untyped_type();
   }
-  else if (cmp(qname, GENV_TYPESYSTEM.ZXSE_TUPLE_QNAME.getp()) == 0)
+  else if (qname_hash_equals::equal(qname, GENV_TYPESYSTEM.ZXSE_TUPLE_QNAME.getp()))
   {
     return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
   }
@@ -245,7 +215,6 @@ xqtref_t TypeManagerImpl::create_named_type(
     return create_named_atomic_type(qname, quantifier);
   }
 }
-
 
 xqtref_t TypeManagerImpl::create_node_type(
     rchandle<NodeTest> nodetest,
@@ -263,27 +232,8 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
 
   zorba::RootTypeManager::qnametype_map_t& myMap = GENV_TYPESYSTEM.m_atomic_qnametype_map;
 
-  RootTypeManager::qnametype_map_t::const_iterator i =
-	  myMap.find(qname);
-
-  bool found = (i != myMap.end());
-  if(found)
-  {
-	  return create_atomic_type(i->second, quantifier);
-  } else {
-#ifdef ZORBA_XBROWSER
-	  RootTypeManager::qnametype_map_t::const_iterator i;
-	  for(i = myMap.begin();i!=myMap.end();i++) {
-		  xqp::DOMQName *q = static_cast<xqp::DOMQName*>(i->first);
-		  if(q->getNamespace()->equals(qname->getNamespace())
-			  && q->getLocalName()->equals(qname->getLocalName())
-			  && q->getPrefix()->equals(qname->getPrefix())) {
-				  return create_atomic_type(i->second, quantifier);
-		  }
-	  }
-#endif
-	  return xqtref_t (NULL);
-  }
+  TypeConstants::atomic_type_code_t code = TypeConstants::INVALID_TYPE_CODE;
+  return myMap.get(qname, code) ? create_atomic_type(code, quantifier) : xqtref_t(NULL);
 }
 
 

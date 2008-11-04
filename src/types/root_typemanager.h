@@ -16,11 +16,11 @@
 #ifndef ZORBA_ROOT_TYPEMANAGER_H
 #define ZORBA_ROOT_TYPEMANAGER_H
 
-#include <map>
 #include <assert.h>
 #include "types/typeconstants.h"
 #include "types/typeimpl.h"
 #include "types/typemanagerimpl.h"
+#include "zorbautils/hashmap.h"
 
 namespace zorba {
 
@@ -135,7 +135,7 @@ public:
   /**
    *  Maps the qname of an atomic type to its typecode.
    */
-  typedef std::map<store::Item*, TypeConstants::atomic_type_code_t, qname_less> qnametype_map_t;
+  typedef zorba::HashMap<store::Item*, TypeConstants::atomic_type_code_t, qname_hash_equals> qnametype_map_t;
   qnametype_map_t m_atomic_qnametype_map;
 
   static const bool ATOMIC_SUBTYPE_MATRIX[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE][TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];

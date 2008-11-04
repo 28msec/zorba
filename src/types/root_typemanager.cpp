@@ -167,9 +167,12 @@ const TypeConstants::quantifier_t RootTypeManager::QUANT_INTERS_MATRIX [4] [4] =
 };
 
 #undef Q
+
+#define ATOMIC_QNAMETYPE_MAP_SIZE 50
   
 RootTypeManager::RootTypeManager()
-  : TypeManagerImpl(0, NULL)
+  : TypeManagerImpl(0, NULL),
+  m_atomic_qnametype_map(ATOMIC_QNAMETYPE_MAP_SIZE, false)
 {
 #define XS_URI "http://www.w3.org/2001/XMLSchema"
 #define XS_PREFIX "xs"
@@ -231,6 +234,9 @@ RootTypeManager::RootTypeManager()
   XSQNDECL(XS_UNTYPED_QNAME, "untyped");
   GENV.getStore().getItemFactory()->createQName(ZXSE_TUPLE_QNAME, ZXSE_URI, ZXSE_PREFIX, "tuple");
 
+  store::Item *tempQN = NULL;
+  TypeConstants::atomic_type_code_t tempCode;
+
 #define ATOMIC_TYPE_DEFN(tname)                                                 \
   tname##_TYPE_ONE = new AtomicXQType(this,                                     \
                                       TypeConstants::XS_##tname,                \
@@ -250,7 +256,9 @@ RootTypeManager::RootTypeManager()
                                                                                 \
   m_atomic_typecode_qname_map[TypeConstants::XS_##tname] = XS_##tname##_QNAME;  \
                                                                                 \
-  m_atomic_qnametype_map[XS_##tname##_QNAME] = TypeConstants::XS_##tname;       \
+  tempQN = XS_##tname##_QNAME.getp();                                           \
+  tempCode = TypeConstants::XS_##tname;                                         \
+  m_atomic_qnametype_map.insert(tempQN, tempCode);                              \
                                                                                 \
   m_atomic_typecode_map[TypeConstants::XS_##tname][TypeConstants::QUANT_ONE] =  \
     &tname##_TYPE_ONE;                                                          \
