@@ -88,6 +88,12 @@ public:
   This template class implements a hash-based map from items of type T to items
   of type V. 
 
+  E is the template parameter that implements the hashing and equality functions.
+
+  E must have two static methods compatible with the following signature.
+    uint32_t hash(const T&);
+    bool equal(const T&, const T&);
+
   theNumEntries  : The total number of mappings stored in the map.
 
   theHashTab     : The hash table. The table is implemented as a vector of hash
