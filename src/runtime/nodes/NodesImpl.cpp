@@ -173,10 +173,20 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 // 15.5.6 fn:collection
 //---------------------
+FnCollectionIteratorState::FnCollectionIteratorState()
+  : theIteratorOpened(false)
+{
+}
+
 FnCollectionIteratorState::~FnCollectionIteratorState()
 {
   if ( theIterator != NULL ) {
-    theIterator->close();
+    // closing the iterator is necessary here if an exception occurs
+    // in the producer or if the iterator is not fully consumed
+    if (theIteratorOpened) {
+      theIterator->close();
+      theIteratorOpened = false;
+    }
     theIterator = NULL;
   }
 }
@@ -193,7 +203,12 @@ FnCollectionIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   if ( theIterator != NULL ) {
-    theIterator->close();
+    // closing the iterator is necessary here if an exception occurs
+    // in the producer or if the iterator is not fully consumed
+    if (theIteratorOpened) {
+      theIterator->close();
+      theIteratorOpened = false;
+    }
     theIterator = NULL;
   }
 }
@@ -231,11 +246,14 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   state->theIterator = theColl->getIterator(false);
   ZORBA_ASSERT(state->theIterator!=NULL);
   state->theIterator->open();
+  state->theIteratorOpened = true;
 
   while(state->theIterator->next(result))
     STACK_PUSH (true, state);
 
+  // close as early as possible
   state->theIterator->close();
+  state->theIteratorOpened = false;
 
   STACK_END (state);
 }
