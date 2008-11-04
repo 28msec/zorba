@@ -465,6 +465,13 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     lexicalValue = new xqpStringStore("");
   }
   
+  //normalize value of xml:id
+  if(name->getPrefix()->byteEqual("xml", 3) &&
+     name->getLocalName()->byteEqual("id", 2))
+  {
+    lexicalValue = lexicalValue->normalizeSpace();
+  }
+
   GENV_ITEMFACTORY->createUntypedAtomic(typedValue, lexicalValue);
 
   // Create the attribute node
