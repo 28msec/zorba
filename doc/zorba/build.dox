@@ -99,13 +99,17 @@ As noted by Apple, dependency generation by gcc doesn't work when building unive
 \endcode
 
 If you need CURL you have to set its directories
+\code
 - D CURL_INCLUDE_DIR="path_to_curl\include"
 - D CURL_LIBRARY="path_to_curl\lib\curllib.lib"
+\endcode
 After you set CURL directories, the libs are automatically added to Zorba makefile, and Zorba functionality related to CURL is automatically activated (meaning, the ZORBA_WITH_REST flag is forced to ON).
 
 If you need Tidy you have to set its directories
+\code
 - D LIBTIDY_INCLUDE_DIR="path_to_tidy\include"
 - D LIBTIDY_LIBRARIES="path_to_tidy\lib\tidy.lib"
+\endcode
 After you set Tidy directories, the libs are automatically added to Zorba makefile, and Zorba functionality related to Tidy is automatically activated (meaning, the ZORBA_WITH_TIDY flag is set to ON, unless you explicitly set it to OFF to deactivate Tidy functions).
 
 -# Compile Zorba by calling <tt>nmake</tt> from the <tt>[ZORBABUILD]</tt> directory.
