@@ -300,11 +300,31 @@ namespace zorba {
       virtual DocumentURIResolver*
       getDocumentURIResolver() = 0;
 
+      /** \brief Set the type of a statically known document
+       */
+      virtual void
+      setDocumentType(const String& aDocUri, TypeIdentifier_t type) = 0;
+
+      /** \brief Get the type of a statically known document
+       */
+      virtual TypeIdentifier_t
+      getDocumentType(const String& aDocUri) const = 0;
+
       virtual void
       setCollectionURIResolver(CollectionURIResolver* aCollectionUriResolver) = 0;
 
       virtual CollectionURIResolver*
       getCollectionURIResolver() const = 0;
+
+      /** \brief Set the type of a statically known collection
+       */
+      virtual void
+      setCollectionType(const String& aCollectionUri, TypeIdentifier_t type) = 0;
+
+      /** \brief Get the type of a statically known collection
+       */
+      virtual TypeIdentifier_t
+      getCollectionType(const String& aCollectionUri) const = 0;
 
       virtual void
       setSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver) = 0;

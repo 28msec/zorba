@@ -136,6 +136,12 @@ class StaticContextImpl : public StaticContext
   registerStatelessExternalFunction(StatelessExternalFunction* aExternalFunction);
 
   virtual void
+  setDocumentType(const String& aDocUri, TypeIdentifier_t type);
+
+  virtual TypeIdentifier_t
+  getDocumentType(const String& aDocUri) const;
+
+  virtual void
   setDocumentURIResolver(DocumentURIResolver* aDocumentURIResolver);
 
   virtual DocumentURIResolver*
@@ -146,6 +152,12 @@ class StaticContextImpl : public StaticContext
 
   virtual CollectionURIResolver*
   getCollectionURIResolver() const;
+
+  virtual void
+  setCollectionType(const String& aCollectionUri, TypeIdentifier_t type);
+
+  virtual TypeIdentifier_t
+  getCollectionType(const String& aCollectionUri) const;
 
   virtual void
   setSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver);

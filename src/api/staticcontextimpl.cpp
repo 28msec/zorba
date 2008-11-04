@@ -476,6 +476,7 @@ StaticContextImpl::setDocumentURIResolver(DocumentURIResolver* aDocumentURIResol
   }
 }
 
+
 DocumentURIResolver*
 StaticContextImpl::getDocumentURIResolver()
 {
@@ -486,6 +487,27 @@ StaticContextImpl::getDocumentURIResolver()
   return 0;
 }
 
+void
+StaticContextImpl::setDocumentType(const String& aDocUri, TypeIdentifier_t type)
+{
+  xqtref_t xqType = NULL;
+  if (type != NULL) {
+    xqType = theCtx->get_typemanager()->create_type(*type);
+  }
+  theCtx->set_document_type(Unmarshaller::getInternalString(aDocUri), xqType);
+}
+
+
+TypeIdentifier_t
+StaticContextImpl::getDocumentType(const String& aDocUri) const
+{
+  xqtref_t xqType = theCtx->get_document_type(Unmarshaller::getInternalString(aDocUri));
+  TypeIdentifier_t type = NULL;
+  if (xqType == NULL) {
+    return NULL;
+  }
+  return TypeOps::get_type_identifier(*xqType);
+}
 
 void
 StaticContextImpl::setCollectionURIResolver(CollectionURIResolver* aCollectionUriResolver)
@@ -505,6 +527,28 @@ StaticContextImpl::getCollectionURIResolver() const
     return lWrapper->theColResolver;
   }
   return 0;
+}
+
+void
+StaticContextImpl::setCollectionType(const String& aCollectionUri, TypeIdentifier_t type)
+{
+  xqtref_t xqType = NULL;
+  if (type != NULL) {
+    xqType = theCtx->get_typemanager()->create_type(*type);
+  }
+  theCtx->set_collection_type(Unmarshaller::getInternalString(aCollectionUri), xqType);
+}
+
+
+TypeIdentifier_t
+StaticContextImpl::getCollectionType(const String& aCollectionUri) const
+{
+  xqtref_t xqType = theCtx->get_collection_type(Unmarshaller::getInternalString(aCollectionUri));
+  TypeIdentifier_t type = NULL;
+  if (xqType == NULL) {
+    return NULL;
+  }
+  return TypeOps::get_type_identifier(*xqType);
 }
 
 void
