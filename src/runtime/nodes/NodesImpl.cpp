@@ -173,6 +173,14 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 // 15.5.6 fn:collection
 //---------------------
+FnCollectionIteratorState::~FnCollectionIteratorState()
+{
+  if ( theIterator != NULL ) {
+    theIterator->close();
+    theIterator = NULL;
+  }
+}
+
 void
 FnCollectionIteratorState::init(PlanState& planState)
 {
@@ -184,7 +192,10 @@ void
 FnCollectionIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  theIterator = NULL;
+  if ( theIterator != NULL ) {
+    theIterator->close();
+    theIterator = NULL;
+  }
 }
 
 bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const

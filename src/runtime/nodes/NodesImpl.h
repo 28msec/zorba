@@ -41,7 +41,7 @@ NARY_ITER(FnLangIterator);
 class FnCollectionIteratorState : public PlanIteratorState {
 public:
   store::Iterator_t theIterator;
-
+  ~FnCollectionIteratorState();
   void init(PlanState&);
   void reset(PlanState&);
 };
