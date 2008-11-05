@@ -156,15 +156,15 @@ public:
 
 protected:
 
-  uint32_t print_depth;
-  int scope_depth;
+  uint32_t                             print_depth;
+  int                                  scope_depth;
 
-  CompilerCB                           * compilerCB;
-  static_context                       * sctx_p;
-  ModulesInfo                          * minfo;
-  vector<rchandle<static_context> >    & sctx_list;
-  stack<expr_t>                     nodestack;
-  stack<xqtref_t>                   tstack;  // types stack
+  CompilerCB                         * compilerCB;
+  static_context                     * sctx_p;
+  ModulesInfo                        * minfo;
+  vector<rchandle<static_context> >  & sctx_list;
+  stack<expr_t>                        nodestack;
+  stack<xqtref_t>                      tstack;  // types stack
 
   set<string> mod_import_ns_set;
   set<string> mod_stack;
@@ -3942,11 +3942,12 @@ void end_visit (const ElementTest& v, void* /*visit_state*/) {
 
   rchandle<QName> elemName = v.getElementName();
   rchandle<TypeName> typeName = v.getTypeName();
-  bool nilled =  v.isNilledAllowed();
+  bool nillable =  v.isNilledAllowed();
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-  if (axisExpr != NULL) {
+  if (axisExpr != NULL) 
+  {
     rchandle<match_expr> me = new match_expr(loc);
     me->setTestKind(match_elem_test);
 
@@ -3956,39 +3957,41 @@ void end_visit (const ElementTest& v, void* /*visit_state*/) {
     if (typeName != NULL)
       me->setTypeName(sctx_p->lookup_elem_qname(typeName->get_name()->get_qname()));
 
-    if (nilled)
+    if (nillable)
       me->setNilledAllowed(true);
 
     axisExpr->setTest(me);
   }
 
   // Else, create a sequence-type match
-  else {
-    if (nilled) {
-      ZORBA_ERROR_LOC_DESC( XQP0004_SYSTEM_NOT_SUPPORTED, loc, "schema types");
-    }
-
+  else 
+  {
     rchandle<NodeTest> nodeTest;
-    if (elemName != NULL) {
+    if (elemName != NULL) 
+    {
       store::Item_t qnameItem = sctx_p->lookup_elem_qname(elemName->get_qname());
 
       rchandle<NodeNameTest> nodeNameTest =
         new NodeNameTest(qnameItem->getNamespace(), qnameItem->getLocalName());
 
       nodeTest = new NodeTest(store::StoreConsts::elementNode, nodeNameTest);
-    } else {
+    }
+    else 
+    {
       nodeTest = new NodeTest(store::StoreConsts::elementNode);
     }
 
     xqtref_t contentType;
-    if (typeName != NULL) {
-      store::Item_t qnameItem = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname());
+    if (typeName != NULL) 
+    {
+      store::Item_t qnameItem =
+        sctx_p->lookup_elem_qname(typeName->get_name()->get_qname());
 
       contentType = CTXTS->create_named_type(qnameItem, TypeConstants::QUANT_ONE);
     }
 
     xqtref_t seqmatch = CTXTS->
-      create_node_type(nodeTest, contentType, TypeConstants::QUANT_ONE);
+      create_node_type(nodeTest, contentType, TypeConstants::QUANT_ONE, nillable);
 
     tstack.push(seqmatch);
   }
@@ -4009,7 +4012,8 @@ void end_visit (const AttributeTest& v, void* /*visit_state*/) {
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-  if (axisExpr != NULL) {
+  if (axisExpr != NULL) 
+  {
     rchandle<match_expr> match = new match_expr(loc);
     match->setTestKind(match_attr_test);
 
@@ -4020,7 +4024,9 @@ void end_visit (const AttributeTest& v, void* /*visit_state*/) {
       match->setTypeName(sctx_p->lookup_elem_qname(typeName->get_name()->get_qname()));
 
     axisExpr->setTest(match);
-  } else {
+  }
+  else 
+  {
     rchandle<NodeTest> nodeTest;
     if (attrName != NULL) {
       store::Item_t qnameItem = sctx_p->lookup_qname("", attrName->get_qname());
@@ -4042,7 +4048,7 @@ void end_visit (const AttributeTest& v, void* /*visit_state*/) {
     }
 
     xqtref_t seqmatch = CTXTS->
-      create_node_type(nodeTest, contentType, TypeConstants::QUANT_ONE);
+      create_node_type(nodeTest, contentType, TypeConstants::QUANT_ONE, false);
 
     tstack.push(seqmatch);
   }

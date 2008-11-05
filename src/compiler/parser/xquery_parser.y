@@ -4173,26 +4173,30 @@ ElementTest :
 		ELEMENT LPAR  RPAR
 		{
 			$$ = new ElementTest(LOC (@$),
-									NULL,
-									NULL);
+                           NULL,
+                           NULL,
+                           true);
 		}
 	|	ELEMENT LPAR  QNAME  RPAR
 		{
 			$$ = new ElementTest(LOC (@$),
-									new QName(LOC (@$),driver.symtab.get((off_t)$3)),
-									NULL);
+                           new QName(LOC(@$), driver.symtab.get((off_t)$3)),
+                           NULL,
+                           true);
 		}
 	|	ELEMENT LPAR  QNAME  COMMA  TypeName  RPAR
 		{
 			$$ = new ElementTest(LOC (@$),
-									new QName(LOC (@$),driver.symtab.get((off_t)$3)),
-									dynamic_cast<TypeName*>($5));
+                           new QName(LOC(@$),driver.symtab.get((off_t)$3)),
+                           dynamic_cast<TypeName*>($5),
+                           false);
 		}
 	|	ELEMENT LPAR  QNAME  COMMA  TypeName_WITH_HOOK RPAR
 		{
 			$$ = new ElementTest(LOC (@$),
-									new QName(LOC (@$),driver.symtab.get((off_t)$3)),
-									dynamic_cast<TypeName*>($5));
+                           new QName(LOC(@$), driver.symtab.get((off_t)$3)),
+                           dynamic_cast<TypeName*>($5),
+                           true);
 		}
 	|	ELEMENT LPAR  STAR  RPAR
 		{
@@ -4206,7 +4210,7 @@ ElementTest :
 			$$ = new ElementTest(LOC (@$),
 									NULL,
 									dynamic_cast<TypeName*>($5),
-									true);
+									false);
 		}
 	|	ELEMENT LPAR  STAR  COMMA  TypeName_WITH_HOOK RPAR
 		{

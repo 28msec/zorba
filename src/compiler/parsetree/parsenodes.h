@@ -4655,7 +4655,7 @@ public:
 		const QueryLoc& l,
 		rchandle<QName> qn,
 		rchandle<TypeName> tn,
-    bool na = false);
+    bool na);
 
 
 public:

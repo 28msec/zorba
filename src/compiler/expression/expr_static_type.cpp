@@ -114,15 +114,15 @@ static xqtref_t print_expr_ant_type(expr *e, xqtref_t t)
 
   xqtref_t elem_expr::return_type_impl (static_context *sctx) {
     return
-      sctx->get_typemanager ()->create_node_type (NodeTest::ELEMENT_TEST, theContent == NULL ? NULL : theContent->return_type (sctx), TypeConstants::QUANT_ONE);
+      sctx->get_typemanager ()->create_node_type (NodeTest::ELEMENT_TEST, theContent == NULL ? NULL : theContent->return_type (sctx), TypeConstants::QUANT_ONE, false);
   }
 
   xqtref_t doc_expr::return_type_impl (static_context *sctx) {
-    return sctx->get_typemanager ()->create_node_type (NodeTest::DOCUMENT_TEST, theContent == NULL ? NULL : theContent->return_type (sctx), TypeConstants::QUANT_ONE);
+    return sctx->get_typemanager ()->create_node_type (NodeTest::DOCUMENT_TEST, theContent == NULL ? NULL : theContent->return_type (sctx), TypeConstants::QUANT_ONE, false);
   }
 
   xqtref_t attr_expr::return_type_impl (static_context *sctx) {
-    return sctx->get_typemanager ()->create_node_type (NodeTest::ATTRIBUTE_TEST, theValueExpr == NULL ? NULL : theValueExpr->return_type (sctx), TypeConstants::QUANT_ONE);
+    return sctx->get_typemanager ()->create_node_type (NodeTest::ATTRIBUTE_TEST, theValueExpr == NULL ? NULL : theValueExpr->return_type (sctx), TypeConstants::QUANT_ONE, false);
   }
 
   xqtref_t text_expr::return_type_impl (static_context *sctx) {
@@ -142,7 +142,7 @@ static xqtref_t print_expr_ant_type(expr *e, xqtref_t t)
     case pi_constructor: nt = NodeTest::PI_TEST; break;
     default: ZORBA_ASSERT (false); break;
     }
-    return sctx->get_typemanager ()->create_node_type (nt, text == NULL ? NULL : text->return_type (sctx), q);
+    return sctx->get_typemanager ()->create_node_type (nt, text == NULL ? NULL : text->return_type (sctx), q, false);
   }
 
   xqtref_t castable_base_expr::return_type_impl (static_context *sctx) {

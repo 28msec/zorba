@@ -40,9 +40,12 @@ public:
 
 };
 
+
 #ifdef ZORBA_DEBUGGER
+
 typedef rchandle<var_expr> var_expr_t;
 typedef std::pair<var_expr_t, expr_t> global_binding;
+
 class bound_var
 {
   public:
@@ -57,7 +60,10 @@ class bound_var
       var_key (dynamic_context::var_key (ve)), type(ve->get_type()), val (val_), var(var){}
 };
 #endif
-class flwor_clause : public SimpleRCObject {
+
+
+class flwor_clause : public SimpleRCObject 
+{
 #ifdef ZORBA_DEBUGGER
   private:
     std::list<global_binding> theGlobals;
@@ -113,6 +119,7 @@ public:
   void set_var(varref_t v) { var_h = v; if (var_h != NULL) { var_h->set_forlet_clause(this); } }
 };
 
+
 /******************************************************************************
 
   [33] [http://www.w3.org/TR/xquery/#prod-xquery-FLWORExpr]
@@ -163,6 +170,7 @@ public:
   
   rchandle<forlet_clause> clone(expr::substitution_t& substitution);
 };
+
 
 class group_clause : public flwor_clause {
   friend class flwor_expr;
