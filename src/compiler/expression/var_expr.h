@@ -58,14 +58,16 @@ public:
   var_kind kind;
   store::Item_t varname_h;
   xqtref_t type;
+  int depth;  // scope depth
 
 public:
-  var_expr(const QueryLoc& loc, var_kind k, store::Item_t name);
+  var_expr(const QueryLoc& loc, var_kind k, store::Item_t name, int depth_ = -1);
 
 public:
   store::Item_t get_varname() const;
 
   var_kind get_kind() const { return kind; }
+  int get_depth () const { return depth; }
   void set_kind(var_kind k) { kind = k; }
 
   xqtref_t get_type() const;

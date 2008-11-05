@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-#include <string>
-#include <stack>
 #include <sstream>
-#include <list>
-#include <set>
+#include <iterator>
 
 #include "zorbautils/fatal.h"
 #include "zorbautils/strutil.h"
@@ -112,7 +109,30 @@ namespace zorba {
     return x;
   }
 
-
+  template <class T> class RCSet : public SimpleRCObject {
+  public:
+    set<T> theSet;
+    typedef set<string>::iterator iterator;
+    
+    iterator begin () { return theSet.begin (); }
+    iterator begin () const { return theSet.begin (); }
+    iterator end () { return theSet.end (); }
+    iterator end () const { return theSet.end (); }
+    void insert (const T &val) { theSet.insert (val); }
+    void insert (iterator p0, iterator p1) { theSet.insert (p0, p1); }
+    iterator find (const T &val) const { return theSet.find (val); }
+    unsigned size () const { return theSet.size (); }
+  };
+  typedef rchandle<RCSet<string> > strset_t;
+  void add_multimap_value (hashmap<strset_t > &map, const string &key, const string &val) {
+    strset_t result;
+    if (! map.get (key, result)) {
+      result = new RCSet<string> ();
+      map.put (key, result);
+    }
+    result->insert (val);
+  }
+  
   class ModulesInfo {
   public:
     auto_ptr<static_context> globals;
@@ -129,14 +149,6 @@ namespace zorba {
 
   expr_t translate_aux (const parsenode &root, CompilerCB* aCompilerCB, ModulesInfo *minfo, set<string> mod_stack);
 
-/*******************************************************************************
-
-  theGlobalVars:
-  Global vars are the ones declared in the prolog (both external and non-external
-  vars). theGlobalVars vector contains one entry per global var V. The entry maps
-  the var_expr for V to the expr E that defines V (E is NULL for external vars)
-
-********************************************************************************/
 class TranslatorImpl : public parsenode_visitor
 {
 public:
@@ -158,6 +170,13 @@ protected:
   set<string> mod_stack;
   set<string> schema_import_ns_set;
   int tempvar_counter;
+
+
+  /*******************************************************************************
+   Global vars are the ones declared in the prolog (both external and non-external
+   vars). theGlobalVars vector contains one entry per global var V. The entry maps
+   the var_expr for V to the expr E that defines V (E is NULL for external vars)
+  ********************************************************************************/
   list<global_binding> theGlobalVars;
 #ifdef ZORBA_DEBUGGER
   checked_vector<unsigned int> theScopes;
@@ -191,6 +210,12 @@ protected:
   const function *op_concatenate, *op_enclosed_expr, *op_or, *fn_data;
 
   set<string> zorba_predef_mod_ns;
+  
+  // format of strings: type_char + qname_internal_key
+  // where type_char is F or V
+  stack<string> global_decl_stack;
+  list<string> global_fn_decls, global_var_decls;
+  hashmap<strset_t> global_deps;
 
   TranslatorImpl (CompilerCB* aCompilerCB, ModulesInfo *minfo_, set<string> mod_stack_)
     :
@@ -228,7 +253,7 @@ protected:
     zorba_predef_mod_ns.insert (ZORBA_COLLECTION_FN_NS);
     zorba_predef_mod_ns.insert (ZORBA_ALEXIS_FN_NS);
   }
-  
+
   varref_t lookup_ctx_var (xqp_string name) {
     expr *ve = sctx_p->lookup_var (name);
     if (ve != NULL)
@@ -270,7 +295,7 @@ protected:
   }
 
   varref_t create_var (const QueryLoc& loc, store::Item_t qname, var_expr::var_kind kind, xqtref_t type = NULL) {
-    varref_t e = new var_expr (loc, kind, qname);
+    varref_t e = new var_expr (loc, kind, qname, global_decl_stack.size ());
     if (kind == var_expr::pos_var || kind == var_expr::count_var || kind == var_expr::wincond_pos_var || kind == var_expr::wincond_in_pos_var)
       type = GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE;
     e->set_type (type);
@@ -2249,12 +2274,15 @@ void end_visit (const OrderEmptySpec& v, void* /*visit_state*/) {
 
 void *begin_visit (const VarDecl& v) {
   TRACE_VISIT ();
+  string key = static_context::qname_internal_key (sctx_p->lookup_var_qname (v.get_varname ()));
+  global_decl_stack.push ("V" + key);
+  global_var_decls.push_front (key);
   return no_state;
 }
 
 void end_visit (const VarDecl& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-
+  global_decl_stack.pop ();
   xqp_string varname = v.get_varname();
 
   // The declared type of a global or external is never tightened based on
@@ -2381,19 +2409,136 @@ void *begin_visit (const VFO_DeclList& v) {
 
 void end_visit (const VFO_DeclList& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+
+  // STEP 1: Floyd-Warshall transitive closure of edges starting from functions
+  for (list<string>::iterator k = global_fn_decls.begin ();
+       k != global_fn_decls.end (); k++)
+  {
+    string kkey = "F" + *k;
+    strset_t kedges;    
+    if (! global_deps.get (kkey, kedges))
+      continue;
+
+    for (set<string>::iterator j = kedges->begin (); j != kedges->end (); j++) {
+      string jkey = *j;
+      for (list<string>::iterator i = global_fn_decls.begin ();
+           i != global_fn_decls.end (); i++)
+      {
+        string ikey = "F" + *i;
+        strset_t iedges, new_iedges;
+        if (global_deps.get (ikey, iedges)
+            && iedges->find (kkey) != iedges->end ()
+            && iedges->find (jkey) == iedges->end ()) {
+          // cout << "Added " << ikey << " -> " << kkey << " -> " << jkey << endl;
+          iedges->insert (jkey);
+        }
+      }
+    }
+  }
+
+  // STEP 2: add var -> fn -> var dependencies found above
+  for (list<string>::iterator i = global_var_decls.begin ();
+       i != global_var_decls.end (); i++)
+  {
+    string ikey = "V" + *i;
+    strset_t iedges;
+    if (! global_deps.get (ikey, iedges))
+      continue;
+    set<string> new_iedges;
+    for (set<string>::iterator k = iedges->begin (); k != iedges->end (); k++) {
+      string kkey = *k;
+      strset_t kedges;
+      if (kkey [0] == 'F' && global_deps.get (kkey, kedges))
+        new_iedges.insert (kedges->begin (), kedges->end ());
+    }
+    // after iteration on iedges is finished, enlarge it
+    #if 0
+    cout << "Adding to " << ikey << " ";
+    copy (new_iedges.begin (), new_iedges.end (),
+          ostream_iterator<string> (cout, " "));
+    cout << endl;
+    #endif
+    iedges->insert (new_iedges.begin (), new_iedges.end ());
+  }
+
+  // STEP 3: topologically sort global vars.
+  // Note that steps 1 & 2 are required: we cannot sort the entire set of
+  // global vars + fns, because functions are allowed to be mutually recursive.
+  // Implemented using non-recursive (stack-based) DFS traversal.
+  // This algorithm unfortunately does not detect cycles.
+  list<string> topsorted_vars;  // dependencies first
+  set<string> visited;
+  stack<string> todo;  // format: action_char + var_key
+  for (list<string>::iterator i = global_var_decls.begin ();
+       i != global_var_decls.end (); i++)
+    todo.push ("I" + (*i));
+  
+  while (! todo.empty ()) {
+    string ikey = todo.top ();
+    // cout << "Action " << ikey << endl;
+    char action = ikey [0];
+    ikey.replace (0, 1, "");
+    todo.pop ();
+
+    switch (action) {
+    case 'D':  // finish notification
+      topsorted_vars.push_back (ikey);
+      break;
+    case 'I':  // visit request
+      if (visited.find (ikey) == visited.end ()) {
+        visited.insert (ikey);
+        todo.push ("D" + ikey);
+        strset_t iedges;
+        if (global_deps.get ("V" + ikey, iedges)) {
+          for (set<string>::iterator j = iedges->begin ();
+               j != iedges->end (); j++)
+          {
+            if ((*j) [0] == 'V')
+              todo.push ("I" + (*j).substr (1));
+          }
+        }
+      }
+      break;
+    default: assert (false);
+    }
+  }
+
+  // STEP 4: reorder theGlobalVars according to topological order
+  #if 1
+  map<string, global_binding> gvmap;
+  for (list<global_binding>::iterator i = theGlobalVars.begin ();
+       i != theGlobalVars.end (); i++)
+  {
+    store::Item_t qname = (*i).first->get_varname ();
+    gvmap [static_context::qname_internal_key (qname)] = *i;
+  }
+  theGlobalVars.clear ();
+  for (list<string>::iterator i = topsorted_vars.begin ();
+       i != topsorted_vars.end (); i++) {
+    map<string, global_binding>::iterator p = gvmap.find (*i);
+    if (p != gvmap.end ())
+      theGlobalVars.push_back ((*p).second);
+  }
+  #endif
 }
 
 
 void *begin_visit (const FunctionDecl& v) {
   TRACE_VISIT ();
   push_scope ();
+  store::Item_t qname = sctx_p->lookup_fn_qname(v.get_name()->get_prefix(),
+                                                v.get_name()->get_localname(),
+                                                v.get_location ());
+  string key = sctx_p->qname_internal_key (qname);
+  global_decl_stack.push ("F" + key);
+  global_fn_decls.push_front (key);
   return no_state;
 }
 
 
 void end_visit (const FunctionDecl& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-
+  global_decl_stack.pop ();
   ParseConstants::function_type_t lFuncType = v.get_type();
   expr_t body;
   bool is_external = 
@@ -2533,6 +2678,13 @@ void end_visit (const Param& v, void* /*visit_state*/) {
 
 void *begin_visit (const FunctionCall& v) {
   TRACE_VISIT ();
+  rchandle<QName> qn_h = v.get_fname();
+  string prefix = qn_h->get_prefix();
+  string fname = qn_h->get_localname();
+  store::Item_t qname = sctx_p->lookup_fn_qname(prefix, fname, loc);
+  string key = "F" + static_context::qname_internal_key (qname);
+  if (! global_decl_stack.empty ())
+    add_multimap_value (global_deps, global_decl_stack.top (), key);
   nodestack.push(NULL);
   return no_state;
 }
@@ -4825,7 +4977,10 @@ void end_visit (const VarRef& v, void* /*visit_state*/) {
   var_expr *e = lookup_var (v.get_varname ());
   if (e == NULL)
     ZORBA_ERROR_LOC_PARAM( XPST0008, loc, v.get_varname (), "");
-  //e->set_loc(v.get_location());
+  if (e->get_depth () == 0 && ! global_decl_stack.empty ()) {
+    string key = "V" + static_context::qname_internal_key (e->get_varname ());
+    add_multimap_value (global_deps, global_decl_stack.top (), key);
+  }
   nodestack.push (new wrapper_expr (v.get_location (), rchandle<expr> (e)));
 }
 

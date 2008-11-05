@@ -212,25 +212,30 @@ store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qn
 }
 
 
-  xqp_string static_context::qname_internal_key (const store::Item *qname)
-  {
+  xqp_string static_context::qname_internal_key (const store::Item *qname) {
     return qname_internal_key2 (qname->getNamespace (), qname->getLocalName ());
   }
 
-  xqp_string static_context::qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const
-  {
+  pair<xqp_string /* local */, xqp_string /* uri */> decode_qname_internal_key (xqp_string key) {
+    pair<xqp_string, xqp_string> result;
+    string skey (key);
+    int pos = skey.find (':');
+    result.first = key.substr (0, pos);
+    result.second = key.substr (pos + 1);
+    return result;
+  }
+
+  xqp_string static_context::qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const {
     return qname_internal_key2(prefix.empty () ? default_ns : lookup_ns (prefix),
                                local);
   }
 
-  xqp_string static_context::qname_internal_key (xqp_string default_ns, xqp_string qname) const
-  {
+  xqp_string static_context::qname_internal_key (xqp_string default_ns, xqp_string qname) const {
     pair<xqp_string, xqp_string> rqname = parse_qname (qname);
     return qname_internal_key (default_ns, rqname.first, rqname.second);
   }
 
-  xqp_string static_context::fn_internal_key (int arity) 
-  {
+  xqp_string static_context::fn_internal_key (int arity) {
     return xqpString::concat("fn:", to_string (arity).c_str(), "/");
   }
 

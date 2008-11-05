@@ -13,9 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include <cassert>
 #include <algorithm>
 #include <functional>
-#include <cassert>
+#include <string>
+#include <stack>
+#include <set>
+#include <list>
 
 namespace zorba {
 

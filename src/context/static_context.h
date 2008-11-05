@@ -78,6 +78,7 @@ public:
   void bind_ns (xqp_string prefix, xqp_string ns, const XQUERY_ERROR& err = XQST0033);
 
   static xqp_string qname_internal_key (const store::Item *qname);
+  static std::pair<xqp_string /* local */, xqp_string /* uri */> decode_qname_internal_key (xqp_string key);
 
   store::Item_t lookup_qname (xqp_string default_ns, xqp_string name) const;
   store::Item_t lookup_qname (xqp_string default_ns, xqp_string pfx, xqp_string local) const;
