@@ -1010,6 +1010,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lRunningItem = NULL;
   xqtref_t lMaxType;
   XQPCollator*  lCollator = 0;
+  bool  elems_in_seq = 0;
 
   result = NULL;
   PlanIteratorState* state;
@@ -1068,7 +1069,15 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
         lMaxType = lRunningType;
         result = lRunningItem;
       }
+      elems_in_seq++;
     } while (consumeNext(lRunningItem, theChildren[0].getp(), planState));
+    
+    if(elems_in_seq == 1)
+    {
+      //check type compatibility
+      CompareIterator::valueComparison(planState.theRuntimeCB, result, result, theCompareType, lCollator);
+    }
+
     STACK_PUSH(result != NULL, state);
   }
 
