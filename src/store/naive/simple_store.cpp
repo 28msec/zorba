@@ -712,13 +712,18 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
       colIter->open();
 
       store::Item_t rootItem;
-      if (!colIter->next(rootItem)) {
+      if (!colIter->next(rootItem)) 
+      {
         rootItem = NULL;
       }
+
       while (rootItem != NULL)
       {
         rootNode = BASE_NODE(rootItem);
         if (rootNode->getTreeId() == treeid)
+          break;
+
+        if (!colIter->next(rootItem))
           break;
       }
 
