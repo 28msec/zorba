@@ -56,12 +56,15 @@ xqtref_t TypeManagerImpl::create_type(
   switch(type.type_kind())
   {
   case XQType::ATOMIC_TYPE_KIND:
-    return create_atomic_type(static_cast <const AtomicXQType *> (& type)->get_type_code(), quantifier);
+    return create_atomic_type(static_cast<const AtomicXQType *>(& type)->get_type_code(), quantifier);
 
   case XQType::NODE_TYPE_KIND:
   {
     const NodeXQType& nt = static_cast<const NodeXQType&>(type);
-    return create_node_type(nt.get_nodetest(), nt.get_content_type(), quantifier);
+    return create_node_type(nt.get_nodetest(),
+                            nt.get_content_type(),
+                            quantifier,
+                            nt.get_nillable());
   }
 
   case XQType::ANY_TYPE_KIND:
@@ -78,6 +81,7 @@ xqtref_t TypeManagerImpl::create_type(
 
   case XQType::EMPTY_KIND:
     return GENV_TYPESYSTEM.EMPTY_TYPE;
+
   case XQType::NONE_KIND:
     return quantifier == TypeConstants::QUANT_ONE || quantifier == TypeConstants::QUANT_PLUS ? GENV_TYPESYSTEM.NONE_TYPE : GENV_TYPESYSTEM.EMPTY_TYPE;
 
@@ -128,12 +132,16 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
   case IdentTypes::ELEMENT_TYPE:
   {
     store::Item_t i;
-    GENV_ITEMFACTORY->createQName(i, ident.getUri().c_str(), NULL, ident.getLocalName().c_str());
+    GENV_ITEMFACTORY->createQName(i,
+                                  ident.getUri().c_str(),
+                                  NULL,
+                                  ident.getLocalName().c_str());
     rchandle<NodeNameTest> nnt(new NodeNameTest(i));
     rchandle<NodeTest> nt(new NodeTest(store::StoreConsts::elementNode, nnt));
     type_ident_ref_t ci = ident.getContentType();
     xqtref_t content_type = (ci != NULL ? create_type(*ci) : xqtref_t(0));
-    return create_node_type(nt, content_type, q);
+
+    return create_node_type(nt, content_type, q, false);
   }
 
   case IdentTypes::ATTRIBUTE_TYPE:
@@ -144,27 +152,44 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
     rchandle<NodeTest> nt(new NodeTest(store::StoreConsts::attributeNode, nnt));
     type_ident_ref_t ci = ident.getContentType();
     xqtref_t content_type = (ci != NULL ? create_type(*ci) : xqtref_t(0));
-    return create_node_type(nt, content_type, q);
+
+    return create_node_type(nt, content_type, q, false);
   }
 
   case IdentTypes::DOCUMENT_TYPE:
   {
     type_ident_ref_t ci = ident.getContentType();
     xqtref_t content_type = ci != NULL ? create_type(*ci) : xqtref_t(0);
-    return create_node_type(NodeTest::DOCUMENT_TEST, content_type, q);
+
+    return create_node_type(NodeTest::DOCUMENT_TEST,
+                            content_type,
+                            q,
+                            false);
   }
 
   case IdentTypes::PI_TYPE:
-    return create_node_type(NodeTest::PI_TEST, GENV_TYPESYSTEM.NONE_TYPE, q);
+    return create_node_type(NodeTest::PI_TEST,
+                            GENV_TYPESYSTEM.NONE_TYPE,
+                            q,
+                            false);
 
   case IdentTypes::TEXT_TYPE:
-    return create_node_type(NodeTest::TEXT_TEST, GENV_TYPESYSTEM.NONE_TYPE, q);
+    return create_node_type(NodeTest::TEXT_TEST,
+                            GENV_TYPESYSTEM.NONE_TYPE,
+                            q,
+                            false);
 
   case IdentTypes::COMMENT_TYPE:
-    return create_node_type(NodeTest::COMMENT_TEST, GENV_TYPESYSTEM.NONE_TYPE, q);
+    return create_node_type(NodeTest::COMMENT_TEST,
+                            GENV_TYPESYSTEM.NONE_TYPE,
+                            q,
+                            false);
 
   case IdentTypes::ANY_NODE_TYPE:
-    return create_node_type(NodeTest::ANY_NODE_TEST, GENV_TYPESYSTEM.NONE_TYPE, q);
+    return create_node_type(NodeTest::ANY_NODE_TEST,
+                            GENV_TYPESYSTEM.NONE_TYPE,
+                            q,
+                            false);
 
   case IdentTypes::ITEM_TYPE:
     return create_any_item_type(q);
@@ -187,7 +212,8 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const
 
   return create_node_type (new NodeTest (item->getNodeKind ()),
                            xqtref_t (NULL),
-                           TypeConstants::QUANT_ONE);
+                           TypeConstants::QUANT_ONE,
+                           false);
 }
 
 xqtref_t TypeManagerImpl::create_named_type(
@@ -219,9 +245,10 @@ xqtref_t TypeManagerImpl::create_named_type(
 xqtref_t TypeManagerImpl::create_node_type(
     rchandle<NodeTest> nodetest,
     xqtref_t content_type,
-    TypeConstants::quantifier_t quantifier) const
+    TypeConstants::quantifier_t quantifier,
+    bool nillable) const
 {
-  return new NodeXQType(this, nodetest, content_type, quantifier);
+  return new NodeXQType(this, nodetest, content_type, quantifier, nillable);
 }
 
 

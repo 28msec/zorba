@@ -67,7 +67,8 @@ class TypeManager {
     virtual xqtref_t create_node_type(
         rchandle<NodeTest> nodetest,
         xqtref_t content_type,
-        TypeConstants::quantifier_t quantifier) const = 0;
+        TypeConstants::quantifier_t quantifier,
+        bool nillable) const = 0;
 
     virtual xqtref_t create_any_type() const = 0;
 

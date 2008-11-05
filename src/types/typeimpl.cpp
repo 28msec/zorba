@@ -111,11 +111,13 @@ NodeXQType::NodeXQType(
     const TypeManager *manager,
     rchandle<NodeTest> nodetest,
     xqtref_t content_type,
-    TypeConstants::quantifier_t quantifier)
+    TypeConstants::quantifier_t quantifier,
+    bool nillable)
   :
   XQType(manager, NODE_TYPE_KIND, quantifier),
   m_nodetest(nodetest),
-  m_content_type(content_type)
+  m_content_type(content_type),
+  m_nillable(nillable)
 {
 }
 

@@ -122,18 +122,22 @@ public:
         const TypeManager *manager,
         rchandle<NodeTest> nodetest,
         xqtref_t content_type,
-        TypeConstants::quantifier_t quantifier);
+        TypeConstants::quantifier_t quantifier,
+        bool nillable);
 
   rchandle<NodeTest> get_nodetest() const { return m_nodetest; }
 
   xqtref_t get_content_type() const { return m_content_type; }
   content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };
 
+  bool get_nillable() const { return m_nillable; }
+
   virtual std::ostream& serialize(std::ostream& os) const;
 
 private:
   rchandle<NodeTest> m_nodetest;
   xqtref_t           m_content_type;
+  bool               m_nillable;
 };
 
 

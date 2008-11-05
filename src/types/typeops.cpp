@@ -439,27 +439,37 @@ xqtref_t TypeOps::intersect_type(const XQType& type1, const XQType& type2)
   }
 }
 
-xqtref_t TypeOps::prime_type(const XQType& type) {
-  switch (type.type_kind ()) {
+
+xqtref_t TypeOps::prime_type(const XQType& type) 
+{
+  switch (type.type_kind ()) 
+  {
   case XQType::EMPTY_KIND:
     return GENV_TYPESYSTEM.NONE_TYPE;
+
   case XQType::ATOMIC_TYPE_KIND: {
     const AtomicXQType& atype = static_cast<const AtomicXQType&>(type);
     return type.get_manager()->create_atomic_type(atype.get_type_code(), TypeConstants::QUANT_ONE);
   }
   case XQType::NONE_KIND:
     return &type;
+
   case XQType::ITEM_KIND:
     return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
+
   case XQType::ANY_TYPE_KIND:
     return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
+
   case XQType::ANY_SIMPLE_TYPE_KIND:
     return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
+
   case XQType::UNTYPED_KIND:
     return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
-  case XQType::NODE_TYPE_KIND: {
+
+  case XQType::NODE_TYPE_KIND: 
+  {
     const NodeXQType& ntype = static_cast<const NodeXQType&>(type);
-    return type.get_manager()->create_node_type(ntype.get_nodetest(), ntype.get_content_type(), TypeConstants::QUANT_ONE);
+    return type.get_manager()->create_node_type(ntype.get_nodetest(), ntype.get_content_type(), TypeConstants::QUANT_ONE, ntype.get_nillable());
   }
   case XQType::USER_DEFINED_KIND:
   {
