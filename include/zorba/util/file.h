@@ -66,7 +66,7 @@ public: // common methods
 
   bool is_invalid() const { return (type==type_invalid); }  
   bool exists() const { return (type!=type_non_existent && type!=type_invalid); }  
-  static volatile void error(std::string const& location, std::string const& msg);
+  static void error(std::string const& location, std::string const& msg);
 
 public: // file methods
   void create();

@@ -302,7 +302,7 @@ enum file::filetype file::get_filetype() {
 
 
 
-volatile void file::error(
+void file::error(
   string const& location,
   string const& msg)
 {
