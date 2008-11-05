@@ -60,7 +60,6 @@ public:
   xqtref_t type;
 
 public:
-  var_expr(const QueryLoc& loc, store::Item_t name);
   var_expr(const QueryLoc& loc, var_kind k, store::Item_t name);
 
 public:
