@@ -438,8 +438,6 @@ ostream& relpath_expr::put( ostream& os) const
 
 ostream& axis_step_expr::put(ostream& os) const
 {
-  BEGIN_EXPR (axis_step_expr);
-
   os << INDENT;
   switch (theAxis)
   {
@@ -460,13 +458,14 @@ ostream& axis_step_expr::put(ostream& os) const
   UNDENT;
 
   if (theNodeTest != NULL) {
-    int saveIndent = printdepth0;
+    int spd = printdepth0;
     printdepth0 = -2;
     theNodeTest->put(os);
-    printdepth0 = saveIndent;
-  }
-  
-  CLOSE_EXPR;
+    printdepth0 = spd;
+  } else
+    os << endl;
+
+  return os;
 }
 
 ostream& match_expr::put(ostream& os) const
