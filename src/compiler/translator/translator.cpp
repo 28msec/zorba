@@ -700,12 +700,14 @@ void end_visit (const ArgList& v, void* /*visit_state*/) {
 ********************************************************************************/
 void *begin_visit (const QueryBody& v) {
   TRACE_VISIT ();
+  // fictious :query-body operator
+  global_decl_stack.push ("F" + static_context::qname_internal_key (sctx_p->lookup_fn_qname ("fn", ":query-body", loc)));
   return no_state;
 }
 
 void end_visit (const QueryBody& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-
+  global_decl_stack.pop ();
   nodestack.push(wrap_in_globalvar_assign(pop_nodestack()));
 }
 
@@ -2524,6 +2526,7 @@ void end_visit (const VFO_DeclList& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   if (Properties::instance ()->reorderGlobals ())
     reorder_globals ();
+  // else cout << "Warning: global var reordering disabled\n";
 }
 
 
