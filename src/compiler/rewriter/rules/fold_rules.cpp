@@ -326,7 +326,7 @@ RULE_REWRITE_POST(FoldConst)
 
 ********************************************************************************/
 
-static expr_t partial_eval_logic (fo_expr *fo, bool shortcircuit_val) 
+static expr_t partial_eval_logic (fo_expr *fo, bool shortcircuit_val, RewriterContext& rCtx) 
 {
   // fo is a logical "and" or "or" expr
 
@@ -339,16 +339,23 @@ static expr_t partial_eval_logic (fo_expr *fo, bool shortcircuit_val)
     } else {
       if (nontrivial1 == NULL)
         nontrivial1 = *i;
-      else
+      else {
         nontrivial2 = *i;
+        break;  // no rewrite anyway
+      }
     }
   }
   if (nontrivial1 == NULL)
     return new const_expr (LOC (fo), (xqp_boolean) ! shortcircuit_val);
-  else if (nontrivial2 == NULL)
-    return fix_annotations (new fo_expr (LOC (fo), LOOKUP_FN("fn", "boolean", 1), nontrivial1));
-  else
-    return NULL;
+  if (nontrivial2 == NULL) {
+    if (! TypeOps::is_subtype(*nontrivial1->return_type(rCtx.getStaticContext()),
+                              *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
+      nontrivial1 =
+        fix_annotations (new fo_expr (LOC (fo), LOOKUP_FN("fn", "boolean", 1),
+                                      nontrivial1));
+    return nontrivial1;
+  }
+  return NULL;
 }
 
 static expr_t partial_eval_eq (RewriterContext& rCtx, fo_expr &fo) 
@@ -391,9 +398,9 @@ static expr_t partial_eval_fo (RewriterContext& rCtx, fo_expr *fo)
 {
   const function *f = fo->get_func ();
   if (f == LOOKUP_OPN ("or"))
-    return partial_eval_logic (fo, true);
+    return partial_eval_logic (fo, true, rCtx);
   else if (f == LOOKUP_OPN ("and"))
-    return partial_eval_logic (fo, false);
+    return partial_eval_logic (fo, false, rCtx);
   else if (f == LOOKUP_OP2 ("value-equal") || f == LOOKUP_OP2 ("equal"))
     return partial_eval_eq (rCtx, *fo);
   else if (f == LOOKUP_FN ("fn", "count", 1)) {
