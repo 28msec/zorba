@@ -120,7 +120,7 @@ namespace zorba {
     iterator end () const { return theSet.end (); }
     void insert (const T &val) { theSet.insert (val); }
     void insert (iterator p0, iterator p1) { theSet.insert (p0, p1); }
-    iterator find (const T &val) const { return theSet.find (val); }
+    iterator find (const T &val) { return theSet.find (val); }
     unsigned size () const { return theSet.size (); }
   };
   typedef rchandle<RCSet<string> > strset_t;
