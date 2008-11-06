@@ -1298,11 +1298,11 @@ FnMatchesIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       ZORBA_ASSERT (false);
     flags = item->getStringValue().getp();
   }
-  try{
+  try {
     res = input.matches(pattern, flags);
   }
-  catch(zorbatypesException& ex){
-    ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()), loc, "");
+  catch(zorbatypesException& ex) {
+    ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()), loc, ex.what(), "");
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, res), state); 
@@ -1353,26 +1353,22 @@ FnReplaceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     flags = item->getStringValue().getp();
   }
 
-  try
-  {
+  try {
     tmp = xqp_string().matches(pattern, flags);
   }
-  catch(zorbatypesException& ex)
-  {
-    ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()), loc, "");
+  catch(zorbatypesException& ex) {
+    ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()), loc, ex.what(), "");
   }
   
   if(tmp)
     ZORBA_ERROR_LOC_DESC(FORX0003, loc,
                          "Regular expression matches zero-length string.");
 
-  try
-  {
+  try {
     resStr = input.replace(pattern, replacement, flags).getStore();
   }
-  catch(zorbatypesException& ex)
-  {
-    ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()), loc, "");
+  catch(zorbatypesException& ex) {
+    ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()), loc, ex.what(), "");
   }
   
   STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
@@ -1439,7 +1435,7 @@ FnTokenizeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     tmp = xqp_string().matches(state->thePattern, state->theFlags);
   }
   catch(zorbatypesException& ex){
-    ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()), loc, "");
+    ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()), loc, ex.what(), "");
   }
 
   if(tmp)
@@ -1448,13 +1444,11 @@ FnTokenizeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   while ((xqp_uint)state->start_pos < state->theString.length ())
   {
-    try
-    {
+    try {
       token = state->theString.tokenize(state->thePattern, state->theFlags, &state->start_pos, &state->hasmatched).getStore();
     }
-    catch(zorbatypesException& ex)
-    {
-      ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()), loc, "");
+    catch(zorbatypesException& ex) {
+      ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()), loc, ex.what(), "");
     }
 
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, token), state);

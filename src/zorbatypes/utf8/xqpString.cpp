@@ -1344,7 +1344,7 @@ xqpString xqpString::normalize(xqpString normMode)
       case 'm': flags |= UREGEX_MULTILINE; break;
       case 'x': flags |= UREGEX_COMMENTS; break;
       default:
-        throw zorbatypesException("", ZorbatypesError::FORX0001);
+        throw zorbatypesException(flag_cstr, ZorbatypesError::FORX0001);
         break;
       }
     }
@@ -1360,7 +1360,7 @@ xqpString xqpString::normalize(xqpString normMode)
 
     RegexMatcher matcher (uspattern, parse_regex_flags (flags.c_str ()), status);
     if (U_FAILURE(status)) {
-      throw zorbatypesException("", ZorbatypesError::FORX0002);
+      throw zorbatypesException(pattern.c_str(), ZorbatypesError::FORX0002);
       return false;
     }
 
@@ -1378,7 +1378,7 @@ xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
 
     RegexMatcher matcher (uspattern, us, parse_regex_flags (flags.c_str ()), status);
     if (U_FAILURE(status)) {
-      throw zorbatypesException("", ZorbatypesError::FORX0002);
+      throw zorbatypesException(pattern.c_str(), ZorbatypesError::FORX0002);
       return "";
     }
 
@@ -1407,7 +1407,7 @@ xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
     us = getUnicodeString (this->getStore());
     RegexMatcher m (uspattern, us, parse_regex_flags (flags.c_str ()), status);
     if (U_FAILURE(status)) {
-      throw zorbatypesException("", ZorbatypesError::FORX0002);
+      throw zorbatypesException(pattern.c_str(), ZorbatypesError::FORX0002);
       return "";
     }
     if(m.find(*start_pos, status)){
