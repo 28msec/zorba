@@ -145,7 +145,7 @@ namespace zorba
   class PrefixFromQNameIterator;
   class LocalNameFromQNameIterator;
   class NamespaceUriFromQNameIterator;
-  class NamespaceUriForPrefixlIterator;
+  class NamespaceUriForPrefixIterator;
   class InScopePrefixesIterator;
   class CodepointsToStringIterator;
   class StringToCodepointsIterator;
@@ -538,7 +538,7 @@ namespace zorba
 
     PLAN_ITER_VISITOR (InScopePrefixesIterator);
 
-    PLAN_ITER_VISITOR (NamespaceUriForPrefixlIterator);
+    PLAN_ITER_VISITOR (NamespaceUriForPrefixIterator);
 
     PLAN_ITER_VISITOR (CodepointsToStringIterator);
        

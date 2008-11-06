@@ -22,6 +22,7 @@
 #include "common/shared_types.h"
 #include "runtime/base/unarybase.h" // remove after iterator refactoring
 #include "runtime/base/binarybase.h" // remove after iterator refactoring
+#include "runtime/base/narybase.h"
 
 namespace zorba {
 /*
@@ -144,22 +145,7 @@ class NamespaceUriFromQNameIterator : public UnaryBaseIterator<NamespaceUriFromQ
 /*
  * 11.2.5 fn:namespace-uri-for-prefix
  * --------------------*/
- 
-/*begin class NamespaceUriForPrefixlIterator */
-class NamespaceUriForPrefixlIterator : public BinaryBaseIterator<NamespaceUriForPrefixlIterator, PlanIteratorState>
-{
-  public:
-    NamespaceUriForPrefixlIterator( const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
-  :
-    BinaryBaseIterator<NamespaceUriForPrefixlIterator, PlanIteratorState>(loc, arg0, arg1){}
-
-    ~NamespaceUriForPrefixlIterator() {};
-  public:
-    bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  
-    virtual void accept(PlanIterVisitor&) const;
-};
-/*end class NamespaceUriForPrefixlIterator */
+NARY_ITER (NamespaceUriForPrefixIterator);
 
 /*
  * 11.2.6 fn:in-scope-prefixes

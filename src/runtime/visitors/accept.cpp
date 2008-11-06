@@ -145,7 +145,6 @@ namespace zorba {
   BINARY_ACCEPT(AttributeIterator);
   BINARY_ACCEPT(PiIterator);
   BINARY_ACCEPT(QNameEqualIterator);
-  BINARY_ACCEPT(NamespaceUriForPrefixlIterator);
   BINARY_ACCEPT(ResolveQNameIterator);
   BINARY_ACCEPT(QNameIterator);
   BINARY_ACCEPT(FnAdjustToTimeZoneIterator_2);

@@ -543,7 +543,7 @@ public:
 
   PRINTER_VISITOR_DEFINITION (NamespaceUriFromQNameIterator)
 
-  PRINTER_VISITOR_DEFINITION (NamespaceUriForPrefixlIterator)
+  PRINTER_VISITOR_DEFINITION (NamespaceUriForPrefixIterator)
 
   PRINTER_VISITOR_DEFINITION (InScopePrefixesIterator)
 

@@ -344,10 +344,9 @@ NamespaceUriFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planSt
 
  /* begin class NamespaceUriForPrefixlIterator */
 bool
-NamespaceUriForPrefixlIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+NamespaceUriForPrefixIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t itemPrefix;
-  store::Item_t itemElem;
+  store::Item_t itemPrefix, itemElem;
   xqpStringStore_t resNs;
   std::vector<std::pair<xqp_string, xqp_string> > NamespaceBindings;
   std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator iter;
@@ -355,12 +354,12 @@ NamespaceUriForPrefixlIterator::nextImpl(store::Item_t& result, PlanState& planS
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(itemPrefix, theChild0, planState ))
-  {
-    itemPrefix = itemPrefix->getAtomizationValue();
-
-    if (consumeNext(itemElem, theChild1, planState ))
-    {
+  if (!consumeNext(itemPrefix, theChildren[0].getp(), planState ))
+    resNs = planState.theRuntimeCB->theStaticContext->default_elem_type_ns().getStore();
+  else {
+    if (!consumeNext(itemElem, theChildren[1].getp(), planState ))
+      resNs = planState.theRuntimeCB->theStaticContext->default_elem_type_ns().getStore();
+    else {
       itemElem->getNamespaceBindings(NamespaceBindings);
       for (
             iter = NamespaceBindings.begin();
@@ -368,21 +367,17 @@ NamespaceUriForPrefixlIterator::nextImpl(store::Item_t& result, PlanState& planS
             ++iter
           )
       {
-        if( (*iter).first.getStore()->byteEqual(*itemPrefix->getStringValue()->trim()))
-        {
+        if( (*iter).first.getStore()->byteEqual(*itemPrefix->getStringValue()->trim())) {
           resNs = (*iter).second.getStore();
           break;
         }
       }
     }
-    else
-    {
-      resNs = planState.theRuntimeCB->theStaticContext->default_elem_type_ns().getStore();
-    }
-
-    if( resNs != NULL && !resNs->empty() )
-      STACK_PUSH( GENV_ITEMFACTORY->createString(result, resNs), state );
   }
+
+  if( resNs != NULL && !resNs->empty() )
+    STACK_PUSH( GENV_ITEMFACTORY->createString(result, resNs), state );
+
   STACK_END (state);
 }
 /* end class NamespaceUriForPrefixlIterator */

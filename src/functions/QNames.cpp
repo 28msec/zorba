@@ -118,7 +118,7 @@ PlanIter_t
 PlanIter_t
     fn_namespace_uri_for_prefix::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new NamespaceUriForPrefixlIterator(loc, argv[0], argv[1]);
+  return new NamespaceUriForPrefixIterator(loc, argv);
 }
 
 
