@@ -343,13 +343,13 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (!CONSUME (result, 0)) {
     if (theQuantifier == TypeConstants::QUANT_PLUS || theQuantifier == TypeConstants::QUANT_ONE) {
       ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  
-      "Empty seq cannot be treated as QUANT_ONE or QUANT_PLUS type.");
+      "Cannot treat empty sequence as <type>+ or <type>.");
     }
   } else if(theQuantifier == TypeConstants::QUANT_QUESTION 
          || theQuantifier == TypeConstants::QUANT_ONE) {
     if (CONSUME (temp, 0)) {
       ZORBA_ERROR_LOC_DESC( theErrorCode, loc, 
-      "Seq with 2 or more items cannot treated as a QUANT_QUESTION or QUANT_ONE type.");
+      "Cannot treat sequence with 2 or more items as <type>? or <type>.");
     }
     if ( check_prime && !TypeOps::is_treatable(result, *theTreatType)) {
       ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  "Cannot treat " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result)) + " as " + TypeOps::toString (*theTreatType) );
