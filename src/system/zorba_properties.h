@@ -13,7 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// THIS IS A GENERATED FILE. DO NOT EDIT!
+
+// ******************************************
+// *                                        *
+// * THIS IS A GENERATED FILE. DO NOT EDIT! *
+// * SEE .txt FILE WITH SAME NAME           *
+// *                                        *
+// ******************************************
+
 #include <string>
 #include <sstream>
 #include <zorba/properties_base.h>
@@ -25,7 +32,7 @@ namespace zorba {
 class ZorbaProperties : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--force-gflwor", "--result-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--trace-translator", "--trace-codegen", "--debug", "--compile-only", "--tz", "--external-vars", NULL };
+    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--force-gflwor", "--reorder-globals", "--result-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--trace-translator", "--trace-codegen", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", NULL };
     return result;
   }
   bool theTraceParsing;
@@ -33,6 +40,7 @@ protected:
   bool theUseSerializer;
   bool theOptimizer;
   bool theForceGflwor;
+  bool theReorderGlobals;
   std::string theResultFile;
   bool theAbort;
   std::string theQuery;
@@ -52,8 +60,8 @@ protected:
   bool theDebug;
   bool theCompileOnly;
   int theTz;
-  std::vector<std::string> theExternalVars;
-  std::vector<std::string> theSerializerParams;
+  std::vector<std::string> theExternalVar;
+  std::vector<std::string> theSerializerParam;
 
   void initialize () {
     theTraceParsing = false;
@@ -61,6 +69,7 @@ protected:
     theUseSerializer = false;
     theOptimizer = true;
     theForceGflwor = false;
+    theReorderGlobals = true;
     theAbort = false;
     thePrintQuery = false;
     thePrintTime = false;
@@ -84,6 +93,7 @@ public:
   const bool &useSerializer () const { return theUseSerializer; }
   const bool &optimizer () const { return theOptimizer; }
   const bool &forceGflwor () const { return theForceGflwor; }
+  const bool &reorderGlobals () const { return theReorderGlobals; }
   const std::string &resultFile () const { return theResultFile; }
   const bool &abort () const { return theAbort; }
   const std::string &query () const { return theQuery; }
@@ -103,7 +113,8 @@ public:
   const bool &debug () const { return theDebug; }
   const bool &compileOnly () const { return theCompileOnly; }
   const int &tz () const { return theTz; }
-  const std::vector<std::string> &externalVars () const { return theExternalVars; }
+  const std::vector<std::string> &externalVar () const { return theExternalVar; }
+  const std::vector<std::string> &serializerParam () const { return theSerializerParam; }
 
   std::string load_argv (int argc, const char **argv) {
     if (argv == NULL) return "";
@@ -126,17 +137,20 @@ public:
       else if (strcmp (*argv, "--optimizer") == 0 || strncmp (*argv, "-O", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv != NULL)
-          init_val (*argv, theOptimizer, d);
+        init_val (*argv, theOptimizer, d);
       }
       else if (strcmp (*argv, "--force-gflwor") == 0) {
         theForceGflwor = true;
       }
+      else if (strcmp (*argv, "--reorder-globals") == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        init_val (*argv, theReorderGlobals, d);
+      }
       else if (strcmp (*argv, "--result-file") == 0 || strncmp (*argv, "-o", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv != NULL)
-          init_val (*argv, theResultFile, d);
+        init_val (*argv, theResultFile, d);
       }
       else if (strcmp (*argv, "--abort") == 0) {
         theAbort = true;
@@ -144,8 +158,7 @@ public:
       else if (strcmp (*argv, "--query") == 0 || strncmp (*argv, "-e", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv != NULL)
-          init_val (*argv, theQuery, d);
+        init_val (*argv, theQuery, d);
       }
       else if (strcmp (*argv, "--print-query") == 0 || strncmp (*argv, "-q", 2) == 0) {
         thePrintQuery = true;
@@ -199,20 +212,17 @@ public:
       else if (strcmp (*argv, "--tz") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv != NULL)
-          init_val (*argv, theTz, d);
+        init_val (*argv, theTz, d);
       }
-      else if (strcmp (*argv, "--external-vars") == 0 || strncmp (*argv, "-x", 2) == 0) {
+      else if (strcmp (*argv, "--external-var") == 0 || strncmp (*argv, "-x", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv != NULL)
-          init_val (*argv, theExternalVars, d);
+        init_val (*argv, theExternalVar, d);
       }
-      else if (strcmp (*argv, "--serializer-parameter") == 0 || strncmp (*argv, "-z", 2) == 0) {        
+      else if (strcmp (*argv, "--serializer-param") == 0 || strncmp (*argv, "-z", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv != NULL)
-          init_val (*argv, theSerializerParams, d);
+        init_val (*argv, theSerializerParam, d);
       }
       else if (strcmp (*argv, "--") == 0) {
         copy_args (++argv);
@@ -223,9 +233,6 @@ public:
         copy_args (argv);
         break;
       }
-
-      if (*argv == NULL)
-        break;
     }
 
     return result;
@@ -238,6 +245,7 @@ public:
 "--use-serializer, -r\nuse serializer\n\n"
 "--optimizer, -O\noptimization level (1=enabled (default), 0=off)\n\n"
 "--force-gflwor\nforce compiler to generate GFLWOR iterators\n\n"
+"--reorder-globals\nreorder global variables (1=enabled (default), 0=off)\n\n"
 "--result-file, -o\nresult file\n\n"
 "--abort\nabort when fatal error happens\n\n"
 "--query, -e\nexecute inline query\n\n"
@@ -261,8 +269,8 @@ public:
 #endif
 "--compile-only\nonly compile (don't execute)\n\n"
 "--tz\nimplicit time zone (in minutes)\n\n"
-"--serializer-parameter, -z\nset serialization parameters (e.g. -z indent=yes)\n\n"
-"--external-vars, -x\nexternal variables (e.g. -x x=file1.xml -x y:=strValue)\n\n"
+"--external-var, -x\nexternal variables (e.g. -x x=file1.xml -x y:=strValue)\n\n"
+"--serializer-param, -z\nserializer parameters\n\n"
 ;
   }
 

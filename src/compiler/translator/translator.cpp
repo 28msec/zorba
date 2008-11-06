@@ -2407,9 +2407,7 @@ void *begin_visit (const VFO_DeclList& v) {
 }
 
 
-void end_visit (const VFO_DeclList& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-
+void reorder_globals () {
   // STEP 1: Floyd-Warshall transitive closure of edges starting from functions
   for (list<string>::iterator k = global_fn_decls.begin ();
        k != global_fn_decls.end (); k++)
@@ -2520,6 +2518,12 @@ void end_visit (const VFO_DeclList& v, void* /*visit_state*/) {
       theGlobalVars.push_back ((*p).second);
   }
   #endif
+}
+
+void end_visit (const VFO_DeclList& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+  if (Properties::instance ()->reorderGlobals ())
+    reorder_globals ();
 }
 
 

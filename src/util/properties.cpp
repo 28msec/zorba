@@ -103,9 +103,9 @@ namespace zorba
 
   std::vector<std::pair<std::string,std::string> > Properties::getExternalVars() {
     std::vector<std::pair<std::string,std::string> > lResult;
-    std::vector<std::string>::const_iterator lEnd = theExternalVars.end();
+    std::vector<std::string>::const_iterator lEnd = theExternalVar.end();
     for (
-      std::vector<std::string>::const_iterator lIter = theExternalVars.begin();
+      std::vector<std::string>::const_iterator lIter = theExternalVar.begin();
       lIter != lEnd;
       ++lIter
     ) {
@@ -120,9 +120,9 @@ namespace zorba
   
   std::vector<std::pair<std::string,std::string> > Properties::getSerializerParameters() {
     std::vector<std::pair<std::string,std::string> > lResult;
-    std::vector<std::string>::const_iterator lEnd = theSerializerParams.end();
+    std::vector<std::string>::const_iterator lEnd = theSerializerParam.end();
     for (
-      std::vector<std::string>::const_iterator lIter = theSerializerParams.begin();
+      std::vector<std::string>::const_iterator lIter = theSerializerParam.begin();
       lIter != lEnd;
       ++lIter
     ) {
