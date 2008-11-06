@@ -227,7 +227,7 @@ main(int argc, char** argv)
 
     int lRun = 0;
 
-    for(;lIter!=lEnd;++lIter)
+    for(; lIter != lEnd; ++lIter)
     {
       State* lState = *lIter;
 
@@ -239,10 +239,15 @@ main(int argc, char** argv)
       std::cout << std::endl;
       std::ifstream lQueryStream(lQueryFile.c_str());
 
-      try {
-        lQueries.push_back(engine->compileQuery(lQueryStream, getCompilerHints()));
+      try 
+      {
+        zorba::XQuery_t lQuery = engine->createQuery();
+        lQuery->setFileName (lQueryFile.c_str());
+        lQuery->compile(lQueryStream, getCompilerHints());
+        lQueries.push_back(lQuery);
       }
-      catch (zorba::ZorbaException &e) {
+      catch (zorba::ZorbaException &e) 
+      {
         if (isErrorExpected(e, lState)) {
           std::cout << "Expected compiler error:\n" << e << std::endl;
           return 0;
@@ -253,7 +258,8 @@ main(int argc, char** argv)
       }
 
       zorba::DynamicContext* lDynCtx = lQueries.back()->getDynamicContext();
-      if (lState->hasDate) {
+      if (lState->hasDate) 
+      {
         std::string lDateTime = lState->theDate; 
         if (lDateTime.find("T") == std::string::npos) {
           lDateTime += "T00:00:00";
@@ -264,7 +270,8 @@ main(int argc, char** argv)
       std::vector<Variable*>::const_iterator lVarIter = (*lIter)->varsBegin();
       std::vector<Variable*>::const_iterator lVarEnd = (*lIter)->varsEnd();
 
-      for(;lVarIter!=lVarEnd;++lVarIter) {
+      for(; lVarIter != lVarEnd; ++lVarIter) 
+      {
         Variable* lVar = *lVarIter;  
         set_var(lVar->theInline, lVar->theName, lVar->theValue, lDynCtx);
       }
@@ -277,24 +284,29 @@ main(int argc, char** argv)
           query->applyUpdates();
           
           std::cout << "Updating Query -> no Result" << std::endl;
-        } else {
+        }
+        else 
+        {
           if ( lResultFile.exists ()) { lResultFile.remove (); }
           std::ofstream lResFileStream(lResultFile.get_path().c_str());
           lQueries.back()->serialize(lResFileStream, lSerOptions);
           lResFileStream.flush();
           printFile(std::cout, lResultFile.get_path(), "Result ");
 
-          if (lState->hasCompare) {
+          if (lState->hasCompare) 
+          {
             bool lRes = false;
             ulong numRefs = lState->theCompares.size();
-            for (ulong i = 0; i < numRefs && !lRes; i++) {
+            for (ulong i = 0; i < numRefs && !lRes; i++) 
+            {
               zorba::filesystem_path lRefFile
                 (lRefPath, zorba::filesystem_path (lState->theCompares[i],
                                                    zorba::file::CONVERT_SLASHES));
               int lLine, lCol, lPos;
               lRes = isEqual(lRefFile, lResultFile, lLine, lCol, lPos);
 
-              if (!lRes) {
+              if (!lRes) 
+              {
                 printFile(std::cout, lRefFile.get_path(), "Result does not match expected result");
                 std::cout << std::endl;
 
