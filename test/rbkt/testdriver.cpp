@@ -437,10 +437,12 @@ main(int argc, char** argv)
       errors = -1;
       {
         // serialize xml
-        std::ofstream lResFileStream(lResultFile.get_path().c_str());
-        assert (lResFileStream.good());
+        {
+          std::ofstream lResFileStream(lResultFile.get_path().c_str());
+          assert (lResFileStream.good());
 
-        lResFileStream << lQuery;
+          lResFileStream << lQuery;
+        }
 
         if (errHandler.errors())
           errors = analyzeError (lSpec, errHandler);
