@@ -186,7 +186,12 @@ int _tmain(int argc, _TCHAR* argv[])
       query->close();
       zengine->shutdown();
       store->shutdown();
-      cerr << "Execution error: " << e << endl;
+      cerr << "Execution error: ";
+      if (dynamic_cast<QueryException *> (&e) != NULL)
+        cerr << (QueryException &) e;
+      else
+        cerr << e;
+      cerr << endl;
       return 2;
     }
   }
