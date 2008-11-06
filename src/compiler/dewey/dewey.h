@@ -33,7 +33,9 @@ namespace zorba{
 
 class DeweyClassification;
 
-std::map<std::stack<unsigned int>, const QueryLoc> classify(parsenode& aNode);
+typedef std::map<const QueryLoc, std::stack<unsigned int> > Classification_t;
+
+Classification_t classify(const parsenode& aNode);
 
 class Node
 {
@@ -106,7 +108,7 @@ class DeweyClassification: public parsenode_visitor
     Node* theParent;
     std::stack<unsigned int> theDecimal;
     std::map<uint64_t, unsigned int> theCounter;
-    std::map<std::stack<unsigned int>, const QueryLoc> theClassification;
+    Classification_t theClassification;
 
     void push(const QueryLoc& loc)
     {
@@ -158,7 +160,7 @@ class DeweyClassification: public parsenode_visitor
       return theRoot;
     }
 
-    std::map<std::stack<unsigned int>, const QueryLoc> getClassification()
+    Classification_t getClassification()
     {
       return theClassification;
     }
@@ -186,8 +188,8 @@ class DeweyClassification: public parsenode_visitor
         }
         aNode->setDecimal(lDecimal);
         theClassification.insert(
-          std::make_pair<std::stack<unsigned int>, const QueryLoc>
-          (aNode->getDecimal(), aNode->getLocation())
+          std::make_pair<const QueryLoc, std::stack<unsigned int> >
+          (aNode->getLocation(), aNode->getDecimal())
         );
       }
     }
@@ -209,14 +211,21 @@ class DeweyClassification: public parsenode_visitor
     
     void* begin_visit(const FunctionDecl& v)
     {
-      //return false;
-      return no_state;
+      if(!v.get_body().isNull())
+      {
+        Classification_t lClassification = classify(*v.get_body());
+        Classification_t::iterator it;
+        for(it=lClassification.begin(); it!=lClassification.end(); ++it)
+        {
+          QueryLoc* loc = const_cast<QueryLoc *>(&it->first);
+          loc->setFunctionName(v.get_name()->get_qname()); 
+        }
+        theClassification.insert(lClassification.begin(), lClassification.end()); 
+      }
+      return false;
     }
 
-    void end_visit(const FunctionDecl& v, void* /* visit state */)
-    {
-      //pop();
-    }
+    void end_visit(const FunctionDecl& v, void* /* visit state */){}
 
     void* begin_visit(const FunctionCall& v)
     {
@@ -238,7 +247,6 @@ class DeweyClassification: public parsenode_visitor
     {
       const QueryLoc loc;
       push(loc);
-      //std::cerr << "Expr" << std::endl;
       //add(v.get_location());
       return no_state;
     }

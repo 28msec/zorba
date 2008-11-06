@@ -76,9 +76,9 @@ namespace zorba{
 
       bool addBreakpoint( const String &anExpr );
 
-      QueryLocation* addBreakpoint( const String &aFileName, const unsigned int aLineNo );
+      QueryLocation_t addBreakpoint( const String &aFileName, const unsigned int aLineNo );
 
-      QueryLocation* addBreakpoint( const unsigned int aLineNo );
+      QueryLocation_t addBreakpoint( const unsigned int aLineNo );
 
       std::map<unsigned int, String> getBreakpoints() const;
 
@@ -88,7 +88,7 @@ namespace zorba{
 
       bool clearBreakpoints();
       
-      QueryLocation *getLocation() const;
+      QueryLocation_t getLocation() const;
 
       bool eval( String &anExpr ) const;
 
@@ -98,9 +98,10 @@ namespace zorba{
       
       std::list<Variable> getGlobalVariables() const;
     
-      StackFrame* getStack() const;
+      StackFrame_t getStack() const;
 
       bool catchFunctionCall() const;
+
     protected:
       static unsigned int theLastId;
 
@@ -118,7 +119,7 @@ namespace zorba{
 
       std::map<unsigned int, String> theBreakpoints;
 
-      QueryLocation* addBreakpoint(QueryLoc& aLocation);
+      QueryLocation_t addBreakpoint(QueryLoc& aLocation);
 
       bool handshake();
 

@@ -299,7 +299,7 @@ bool ZorbaDebuggerClientImpl::addBreakpoint( const String &anExpr )
 }
 
 
-QueryLocation* ZorbaDebuggerClientImpl::addBreakpoint( const unsigned int aLineNo )
+QueryLocation_t ZorbaDebuggerClientImpl::addBreakpoint( const unsigned int aLineNo )
 {
   QueryLoc loc;
   loc.setLineBegin( aLineNo );
@@ -311,7 +311,7 @@ QueryLocation* ZorbaDebuggerClientImpl::addBreakpoint( const unsigned int aLineN
   return lLocation;
 }
 
-QueryLocation* ZorbaDebuggerClientImpl::addBreakpoint( const String &aFileName, const unsigned int aLineNo )
+QueryLocation_t ZorbaDebuggerClientImpl::addBreakpoint( const String &aFileName, const unsigned int aLineNo )
 {
   xqpString lFilename = Unmarshaller::getInternalString( aFileName );
   QueryLoc loc;
@@ -319,14 +319,14 @@ QueryLocation* ZorbaDebuggerClientImpl::addBreakpoint( const String &aFileName, 
   loc.setFilenameBegin( &lTmp );
   loc.setLineBegin( aLineNo );
   theLastId++;
-  QueryLocation* lLocation = addBreakpoint(loc);
+  QueryLocation_t lLocation = addBreakpoint(loc);
   std::stringstream lB;
   lB << lLocation;
   theBreakpoints.insert( std::make_pair( theLastId, lB.str() ) );
   return lLocation;
 }
 
-QueryLocation* ZorbaDebuggerClientImpl::addBreakpoint(QueryLoc& aLocation)
+QueryLocation_t ZorbaDebuggerClientImpl::addBreakpoint(QueryLoc& aLocation)
 {
   SetMessage lMessage;
   lMessage.addLocation( theLastId, aLocation );
@@ -338,7 +338,7 @@ QueryLocation* ZorbaDebuggerClientImpl::addBreakpoint(QueryLoc& aLocation)
     std::map<unsigned int, QueryLoc>::iterator it;
     for(it = breakpoints.begin(); it != breakpoints.end(); ++it)
     {
-      QueryLocation* location = new QueryLocationImpl(it->second);
+      QueryLocation_t location(new QueryLocationImpl(it->second));
       return location;
     }
   } else {
@@ -392,7 +392,7 @@ std::map<unsigned int, String> ZorbaDebuggerClientImpl::getBreakpoints() const
   return theBreakpoints;
 }
 
-QueryLocation *ZorbaDebuggerClientImpl::getLocation() const
+QueryLocation_t ZorbaDebuggerClientImpl::getLocation() const
 {
   return new QueryLocationImpl( theRemoteLocation );
 }
@@ -469,9 +469,9 @@ std::list<Variable> ZorbaDebuggerClientImpl::getGlobalVariables() const
   return lVariables;
 }
 
-StackFrame* ZorbaDebuggerClientImpl::getStack() const
+StackFrame_t ZorbaDebuggerClientImpl::getStack() const
 {
-  std::auto_ptr<StackFrameImpl> lStack(new StackFrameImpl());
+  auto_ptr<StackFrameImpl> lStack(new StackFrameImpl());
   FrameMessage lMessage;
   std::auto_ptr<ReplyMessage> lReply(send(&lMessage));
   FrameReply* lFrameReply = dynamic_cast<FrameReply*>(lReply.get());
@@ -484,9 +484,9 @@ StackFrame* ZorbaDebuggerClientImpl::getStack() const
       stack.pop();
     }
   }
-  StackFrameImpl* s = lStack.get();
+  StackFrame_t lReturnStack = lStack.get();
   lStack.release();
-  return s;
+  return lReturnStack;
 }
 
 bool ZorbaDebuggerClientImpl::catchFunctionCall() const

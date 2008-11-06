@@ -19,18 +19,19 @@
 #include <map>
 #include <list>
 #include <stack>
+
 #include <zorba/api_shared_types.h>
 #include <zorba/debugger_event_handler.h>
 
 namespace zorba{ 
-
+  
   /**
    * Representation of the current location location 
    * in the remote query.
    * This location goes from the starting line and column
    * to the ending line and column.
    */
-  class ZORBA_EXTERN_DECL QueryLocation
+  class ZORBA_EXTERN_DECL QueryLocation: public SmartObject
   {
     public:
 
@@ -75,7 +76,7 @@ namespace zorba{
   /**
    * Representation of the runtime stack frame.
    */
-  class ZORBA_EXTERN_DECL StackFrame
+  class ZORBA_EXTERN_DECL StackFrame: public SmartObject
   {
     public:
       virtual
@@ -252,7 +253,7 @@ namespace zorba{
        * @param aLineNo unsigned int Line number in the file.
        * @return the location where the breakpoint has been set.
        */
-      virtual QueryLocation*
+      virtual QueryLocation_t
       addBreakpoint( const String &aFileName, const unsigned int aLineNo ) = 0;
 
       /** \brief Set a new breakpoint in the main query.
@@ -260,7 +261,7 @@ namespace zorba{
        * @param aLineNo unsigned int Line number in the main query.
        * @return the location where the breakpoint has been set.
        */
-      virtual QueryLocation*
+      virtual QueryLocation_t
       addBreakpoint( const unsigned int aLineNo ) = 0;
 
       /** \brief Set a new watchpoint.
@@ -306,7 +307,7 @@ namespace zorba{
        *
        * return the current location of the query or null is the query didn't start yet.
        */
-      virtual QueryLocation*
+      virtual QueryLocation_t
       getLocation() const = 0;
 
       /** \brief Evaluate an XQuery expression on the remote debugger server.
@@ -346,7 +347,7 @@ namespace zorba{
        * @return the runtime stack frame.
        */
       virtual
-      StackFrame* getStack() const = 0;
+      StackFrame_t getStack() const = 0;
   
       /** \brief Catch all function executions
        *

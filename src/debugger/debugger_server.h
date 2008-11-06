@@ -51,7 +51,9 @@ class ResumeExecutionMessage;
 class TerminateExecutionMessage;
 class StepExecutionMessage;
 
-ZORBA_THREAD_RETURN runQuery( void *aQuery );
+typedef std::map<const QueryLoc, std::stack<unsigned int> > Classification_t;
+
+ZORBA_THREAD_RETURN runQuery(void *aQuery);
 
 /**
  * @
@@ -92,10 +94,13 @@ class ZorbaDebugger
     friend class FnDebugIterator;
     friend class XQueryCompiler;
     friend class UDFunctionCallIterator; 
+    friend class XQueryImpl;
     friend ZORBA_THREAD_RETURN runtimeThread( void* );
- 
+
     XQueryImpl* theQuery;
+
     std::ostream* theOutputStream;
+    
     const Zorba_SerializerOptions_t* theSerOptions;
 
     TCPServerSocket* theRequestServerSocket;
@@ -129,7 +134,7 @@ class ZorbaDebugger
 
     //The List of modules for the query
     std::list<parsenode_t> theModules;
-
+   
   public:
     ZorbaDebugger* addModule(parsenode_t& anAST)
     {
@@ -144,7 +149,7 @@ class ZorbaDebugger
 
   private:
     //The dewey classification
-    std::map<std::stack<unsigned int>, const QueryLoc> theClassification;
+    Classification_t theClassification;
     
     //True if the debugger is stepping
     bool isSteppingOver;
@@ -161,6 +166,8 @@ class ZorbaDebugger
     unsigned int theDecimalSize;
     //The common base of the next decimal to stop to
     std::stack<unsigned int> theBaseDecimal;
+    //The current function name
+    std::string theFunctionName;
 
     //The stack frame
     std::stack< std::pair<std::string, QueryLoc> > theStack;
@@ -208,6 +215,8 @@ class ZorbaDebugger
     void step( const StepCommand aKind );
 
     std::stack<unsigned int> getCurrentDecimal() const;
+
+    std::string getCurrentFunctionName() const;
 
     std::auto_ptr<PlanWrapperHolder>
     compileEvalPlan(const QueryLoc& loc, CompilerCB* ccb, dynamic_context* dctx, const xqpString& anExpr, PlanState& planState);

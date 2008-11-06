@@ -477,7 +477,7 @@ XQueryImpl::doCompile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints)
   XQueryCompiler lCompiler(theCompilerCB);
 #ifdef ZORBA_DEBUGGER
   theCompilerCB->m_debugger = theDebugger;
-  //if the debug mode is set, we force the gflwor
+  //if the debug mode is set, we force the gflwor, we set the query input stream
   if ( theCompilerCB->m_debugger != 0 ){
     theCompilerCB->m_config.force_gflwor = true;
   }

@@ -19,8 +19,9 @@
 #include <cassert>
 #include <memory>
 
-namespace zorba{
+using namespace std;
 
+namespace zorba{
 
 void Node::accept(DeweyClassification* v)
 {
@@ -33,12 +34,15 @@ void Node::accept(DeweyClassification* v)
   v->end_visit(this);
 }
 
-std::map<std::stack<unsigned int>, const QueryLoc> classify(parsenode& aNode)
+Classification_t classify(const parsenode& aNode)
 {
   DeweyClassification lVisitor;
   aNode.accept(lVisitor);
-  std::auto_ptr<Node> lRoot(lVisitor.getRoot());
-  lRoot->accept(&lVisitor);
+  auto_ptr<Node> lRoot(lVisitor.getRoot());
+  if(lRoot.get() != 0)
+  {
+    lRoot->accept(&lVisitor);
+  }
   return lVisitor.getClassification();
 }
 }//end of namespace

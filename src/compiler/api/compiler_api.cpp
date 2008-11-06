@@ -130,7 +130,7 @@ XQueryCompiler::normalize(parsenode_t aParsenode)
     std::list<parsenode_t>::iterator it;
     for(it=lModules.begin(); it!=lModules.end(); ++it)
     {
-      std::map<std::stack<unsigned int>, const QueryLoc> lClassification = classify(**it);
+      Classification_t lClassification = classify(**it);
       lDebugger->theClassification.insert(lClassification.begin(), lClassification.end());
     }
 

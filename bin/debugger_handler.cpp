@@ -105,7 +105,7 @@ void DebuggerHandler::addBreakpoint(const vector<string>& args) const
     lNamespace = args.at(1);
     lLine = atoi(args.at(2).c_str());
   }
-  auto_ptr<QueryLocation> lLocation(theClient->addBreakpoint(lNamespace, lLine));
+  QueryLocation_t lLocation(theClient->addBreakpoint(lNamespace, lLine));
   cerr << "Set breakpoint at: " <<  lLocation.get() << endl;
 }
 
@@ -379,7 +379,7 @@ void DebuggerHandler::list(const QueryLocation& aLocation) const
 
 void DebuggerHandler::where() const
 {
-  auto_ptr<StackFrame> lStack(theClient->getStack());
+  StackFrame_t lStack(theClient->getStack());
   while(!lStack->empty())
   {
     const Frame* lFrame = lStack->top();

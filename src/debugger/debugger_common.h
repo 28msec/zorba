@@ -25,9 +25,9 @@ typedef unsigned char ExecutionStatus;
 typedef unsigned short SuspensionCause;
 
 /* Kind of step command */
-const StepCommand STEP_INTO = 0x01;
-const StepCommand STEP_OUT  = 0x02;
-const StepCommand STEP_OVER = 0x03;
+const StepCommand STEP_INTO   = 0x01;
+const StepCommand STEP_OUT    = 0x02;
+const StepCommand STEP_OVER   = 0x03;
 
 /* Status of the engine */
 const ExecutionStatus QUERY_IDLE       = 0x01;

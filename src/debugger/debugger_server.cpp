@@ -381,16 +381,31 @@ void ZorbaDebugger::terminate()
 stack<unsigned int> ZorbaDebugger::getCurrentDecimal() const
 {
   stack<unsigned int> lCurrentDecimal;
-  map< std::stack<unsigned int>, const QueryLoc>::const_iterator it;
+  Classification_t::const_iterator it;
   for(it=theClassification.begin(); it!=theClassification.end(); ++it)
   {
-    if(it->second == theLocation)
+    if(it->first == theLocation)
     {
-      lCurrentDecimal = it->first;
+      lCurrentDecimal = it->second;
       break;
     }
   }
   return lCurrentDecimal;
+}
+
+std::string ZorbaDebugger::getCurrentFunctionName() const
+{
+  QueryLoc loc;
+  Classification_t::const_iterator it;
+  for(it=theClassification.begin(); it!=theClassification.end(); ++it)
+  {
+    if(it->first == theLocation)
+    {
+      loc = it->first;
+      break;
+    }
+  }
+  return loc.getFunctionName();
 }
 
 void ZorbaDebugger::step( const StepCommand aKind )
@@ -404,6 +419,7 @@ void ZorbaDebugger::step( const StepCommand aKind )
     cerr << "Internal error occured for step." << std::endl;
     return;
   }
+  theFunctionName = getCurrentFunctionName();
   if( aKind == STEP_OVER )
   {
     cerr << "Step Over." << std::endl;
@@ -427,11 +443,13 @@ void ZorbaDebugger::step( const StepCommand aKind )
 bool ZorbaDebugger::hasToStepOver() const
 {
   stack<unsigned int> lDecimal(getCurrentDecimal());
+  string lFunctionName(getCurrentFunctionName());
   if(lDecimal.empty())
   {
     return false;
   }
-  if(isSteppingOver && lDecimal.size() <= theDecimalSize)
+  if(isSteppingOver && lDecimal.size() <= theDecimalSize &&
+     theFunctionName == lFunctionName)
   {
     return true;
   }
@@ -455,11 +473,16 @@ bool ZorbaDebugger::hasToStepInto() const
 bool ZorbaDebugger::hasToStepOut() const
 {
   stack<unsigned int> lDecimal(getCurrentDecimal());
+  string lFunctionName(getCurrentFunctionName());
   if(lDecimal.empty())
   {
     return false;
   }
-  if(isSteppingOut && lDecimal.size() <= theDecimalSize)
+  if(isSteppingOut && (
+      (lDecimal.size() <= theDecimalSize && theFunctionName == lFunctionName) ||
+        (theFunctionName != lFunctionName)
+      )
+    )
   {
     return true;
   }
@@ -524,7 +547,7 @@ const QueryLoc ZorbaDebugger::addBreakpoint(const QueryLoc& aLocation)
   assert(theQuery != 0);
   String lStringURI(aLocation.getFilename());
   unsigned int lLineNumber = aLocation.getLineBegin();
-  pair<std::stack<unsigned int>, QueryLoc> lBreakpoint;
+  pair< QueryLoc, stack<unsigned int> > lBreakpoint;
   StaticContext* lStaticCtx = const_cast<StaticContext*>(theQuery->getStaticContext()); 
   assert(lStaticCtx != 0);
   //Check for namespace prefix
@@ -566,9 +589,9 @@ const QueryLoc ZorbaDebugger::addBreakpoint(const QueryLoc& aLocation)
     parsenode_t lParseNode = lDriver.get_expr();
     if(typeid(*lParseNode) == typeid(ParseErrorNode))
     {
-      return lBreakpoint.second;
+      return lBreakpoint.first;
     }
-    map<std::stack<unsigned int>, const QueryLoc> lClassification = classify(*lParseNode);
+    Classification_t lClassification = classify(*lParseNode);
 #if 0
     map<std::stack<unsigned int>, const QueryLoc>::iterator it;
     for(it=lClassification.begin(); it!=lClassification.end(); ++it)
@@ -584,20 +607,20 @@ const QueryLoc ZorbaDebugger::addBreakpoint(const QueryLoc& aLocation)
 #endif
     for(unsigned int i=0; i<=10; i++)
     {
-      map<std::stack<unsigned int>, const QueryLoc>::iterator it;
-      for(it=lClassification.begin(); it!=lClassification.end(); ++it)
+     Classification_t::iterator it;
+     for(it=lClassification.begin(); it!=lClassification.end(); ++it)
       {
-        if(lLineNumber == it->second.getLineBegin())//lBreakpoint.first.empty())
+        if(lLineNumber == it->first.getLineBegin())//lBreakpoint.first.empty())
         {
           lBreakpoint.first = it->first;
           lBreakpoint.second = it->second;
-          return lBreakpoint.second;
+          return lBreakpoint.first;
         }
       }
       ++lLineNumber;
     }
   }
-  return lBreakpoint.second;
+  return lBreakpoint.first;
 }
 
 auto_ptr<PlanWrapperHolder>

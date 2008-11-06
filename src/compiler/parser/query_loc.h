@@ -19,6 +19,7 @@
 #include <string>
 
 #include "zorbatypes/xqpstring.h"
+
 #ifdef ZORBA_DEBUGGER
 #include "json/value.h"
 #endif
@@ -44,6 +45,9 @@ private:
   xqpString    theFilenameEnd;
   unsigned int theLineEnd;
   unsigned int theColumnEnd;
+#ifdef ZORBA_DEBUGGER
+  std::string theFunctionName;
+#endif
 
 public:
   QueryLoc();
@@ -65,18 +69,20 @@ public:
   void setColumnEnd     ( unsigned int aColumnEnd )     { theColumnEnd = aColumnEnd; }
 #ifdef ZORBA_DEBUGGER
   xqpString getFilename() const { return getFilenameBegin(); }
-  
   unsigned int getLineno() const { return getLineBegin(); }
-  
+ 
+  void setFunctionName(std::string aName){ theFunctionName = aName; }
+  std::string getFunctionName() const { return theFunctionName; }
+
   xqpString toJSON() const;
-  
   static QueryLoc fromJSON(json::value *obj);
  
   bool equals(const QueryLoc& loc) const
   {
     return theFilenameBegin==loc.getFilenameBegin() && theFilenameEnd==loc.getFilenameEnd() &&
            theColumnBegin==loc.getColumnBegin() && theColumnEnd==loc.getColumnEnd() &&
-           theLineBegin==loc.getLineBegin() && theLineEnd==loc.getLineEnd();
+           theLineBegin==loc.getLineBegin() && theLineEnd==loc.getLineEnd() &&
+           theFunctionName==loc.getFunctionName();
   }
 
   bool operator==(const QueryLoc& loc) const
