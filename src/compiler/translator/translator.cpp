@@ -244,6 +244,7 @@ protected:
     xquery_fns_def_dot.insert ("namespace-uri");
     xquery_fns_def_dot.insert ("local-name");
     xquery_fns_def_dot.insert ("name");
+    xquery_fns_def_dot.insert ("string");
 
     op_concatenate = op_enclosed_expr = op_or = fn_data = NULL;
     zorba_predef_mod_ns.insert (ZORBA_FN_NS);
@@ -2722,21 +2723,6 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
     } else if (fname == "last" && sz == 0) {
       nodestack.push(lookup_ctx_var(LAST_IDX_VARNAME).getp());
       return;
-    } else if (fname == "string") {
-      // TODO: casting to xs:string? is almost correct;
-      // it fails, however, the following test:
-      // 'fn:string (()) instance of xs:string'
-      prefix = "xs";
-      switch (sz) 
-      {
-      case 0:
-        arguments.push_back (DOT_VAR);
-        break;
-      case 1:
-        break;
-      default:
-        ZORBA_ERROR_LOC_PARAM( XPST0017, loc, "fn:string", sz );
-      }
     } else if (fname == "number") {
       switch (sz) 
       {

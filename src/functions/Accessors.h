@@ -72,6 +72,13 @@ namespace zorba {
     fn_name_func(const signature& s) : function (s) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
+
+  class fn_string_func : public function
+  {
+  public:
+    fn_string_func(const signature& s) : function (s) {}
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  };
 } /* namespace zorba */
 
 #endif /* ZORBA_ACCESSORS_H */

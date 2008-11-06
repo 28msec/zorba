@@ -105,6 +105,10 @@ DECL(sctx, fn_document_uri_func,
 DECL(sctx, fn_name_func,
      (createQName(XQUERY_FN_NS, "fn", "name"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+DECL(sctx, fn_string_func,
+     (createQName(XQUERY_FN_NS, "fn", "string"),
+      GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, GENV_TYPESYSTEM.STRING_TYPE_ONE));
 // end Accessors
 
 }

@@ -110,6 +110,10 @@ PlanIter_t fn_name_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
   return new FnStringIterator(loc, lVec, true);
 }
 
+PlanIter_t fn_string_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new FnStringIterator(loc, argv, true);
+}
 
 
 } /* namespace zorba */
