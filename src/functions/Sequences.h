@@ -198,35 +198,20 @@ namespace zorba {
   typedef function_impl<FnAvgIterator> fn_avg;
 
   //15.4.3 fn:max
-  class fn_max_1 : public function
+  class fn_max : public function
   {
   public:
-    fn_max_1(const signature& sig) : function (sig) {}
+    fn_max(const signature& sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
-
-  class fn_max_2 : public fn_max_1
-  {
-  public:
-    fn_max_2(const signature& sig)
-      : fn_max_1(sig) { }
-  };
-
 
   //15.4.4 fn:min
   //-------------
-  class fn_min_1 : public function
+  class fn_min : public function
   {
   public:
-    fn_min_1(const signature& sig) : function (sig) {}
+    fn_min(const signature& sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
-
-  class fn_min_2 : public fn_min_1
-  {
-  public:
-    fn_min_2(const signature& sig)
-      : fn_min_1(sig) { }
   };
 
   //15.4.5 fn:sum

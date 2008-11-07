@@ -221,7 +221,7 @@ PlanIter_t fn_except::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& arg
 |_______________________________________________________________________*/
 
 //15.4.3 fn:max
-PlanIter_t fn_max_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_max::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnMinMaxIterator(loc, argv, FnMinMaxIterator::MAX);
 }
@@ -229,7 +229,7 @@ PlanIter_t fn_max_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
 
 
 //15.4.4 fn:min
-PlanIter_t fn_min_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_min::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnMinMaxIterator(loc, argv, FnMinMaxIterator::MIN);
 }

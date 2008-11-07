@@ -1016,8 +1016,8 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (theChildren.size() == 3)
-    lCollator = getCollator(planState.theRuntimeCB, loc, planState, theChildren[2].getp());
+  if (theChildren.size() == 2)
+    lCollator = getCollator(planState.theRuntimeCB, loc, planState, theChildren[1].getp());
 
   if (consumeNext(lRunningItem, theChildren[0].getp(), planState))
   {
