@@ -26,6 +26,8 @@
 #include <string>
 #include <fstream>
 
+#include "system/globalenv.h"
+
 namespace zorba
 {
 
@@ -49,6 +51,19 @@ int http_get(const char* url, xqp_string& result)
   curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);  /* send all data to this function  */
   curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&temp);            /* we pass our 'result' struct to the callback function */
   curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);        /* tells the library to fail silently if the HTTP code returned >= 400*/
+
+#ifndef ZORBA_VERIFY_PEER_SSL_CERTIFICATE//default is to not verify root certif
+  curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, 0);
+  //but CURLOPT_SSL_VERIFYHOST is left default, value 2, meaning verify that the Common Name or Subject Alternate Name field in the certificate matches the name of the server
+  //tested with https://www.npr.org/rss/rss.php?id=1001
+  //about using ssl certs in curl: http://curl.haxx.se/docs/sslcerts.html
+#else
+  #if defined WIN32
+  //set the root CA certificates file path
+  if(GENV.g_curl_root_CA_certificates_path[0])
+    curl_easy_setopt(curl_handle, CURLOPT_CAINFO, GENV.g_curl_root_CA_certificates_path);
+  #endif
+#endif
 
   /* some servers don't like requests that are made without a user-agent
     field, so we provide one */
