@@ -55,17 +55,17 @@ ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 ADD_EXECUTABLE(path_test path_test.cpp)
 TARGET_LINK_LIBRARIES(path_test zorba)
 
-ADD_TEST (fspathbranch1 path_test --branch-path /d1/d2/../d3/.)
-SET_TESTS_PROPERTIES (fspathbranch1 PROPERTIES PASS_REGULAR_EXPRESSION /d1)
+ADD_TEST (test/fspathbranch1 path_test --branch-path /d1/d2/../d3/.)
+SET_TESTS_PROPERTIES (test/fspathbranch1 PROPERTIES PASS_REGULAR_EXPRESSION /d1)
 
-ADD_TEST (fspathbranch2 path_test --branch-path /dir)
-SET_TESTS_PROPERTIES (fspathbranch1 PROPERTIES PASS_REGULAR_EXPRESSION /)
+ADD_TEST (test/fspathbranch2 path_test --branch-path /dir)
+SET_TESTS_PROPERTIES (test/fspathbranch1 PROPERTIES PASS_REGULAR_EXPRESSION /)
 
-ADD_TEST (fspath1 path_test --path /../d1/./././././././../..)
-SET_TESTS_PROPERTIES (fspath1 PROPERTIES PASS_REGULAR_EXPRESSION /)
+ADD_TEST (test/fspath1 path_test --path /../d1/./././././././../..)
+SET_TESTS_PROPERTIES (test/fspath1 PROPERTIES PASS_REGULAR_EXPRESSION /)
 
-ADD_TEST (fspath2 path_test --path d1/d2/../../../../d3//)
-SET_TESTS_PROPERTIES (fspath2 PROPERTIES PASS_REGULAR_EXPRESSION ../../d3)
+ADD_TEST (test/fspath2 path_test --path d1/d2/../../../../d3//)
+SET_TESTS_PROPERTIES (test/fspath2 PROPERTIES PASS_REGULAR_EXPRESSION ../../d3)
 
 
 IF(NOT ZORBA_MINIMAL_STORE)
