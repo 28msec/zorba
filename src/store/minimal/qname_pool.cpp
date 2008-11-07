@@ -63,10 +63,15 @@ QNamePool::~QNamePool()
   ulong n = theHashSet.theHashTab.size();
   for (ulong i = 0; i < n; i++)
   {
-    if (theHashSet.theHashTab[i].theItem != NULL &&
-        theHashSet.theHashTab[i].theItem->isOverflow())
+    if (theHashSet.theHashTab[i].theItem != NULL)
     {
-      delete theHashSet.theHashTab[i].theItem;
+      QNameItemImpl* qn = theHashSet.theHashTab[i].theItem;
+
+      if (!qn->isNormalized())
+        qn->theLocal.setNull();
+
+      if (theHashSet.theHashTab[i].theItem->isOverflow())
+        delete theHashSet.theHashTab[i].theItem;
     }
   }
 
@@ -96,6 +101,22 @@ void QNamePool::remove(QNameItemImpl* qn)
     theNumFree++;
 
     //+
+    if (!qn->isNormalized())
+    {
+      // Save the pointer to the associated normalized qname and then set
+      // that pointer to null. This way (a) we can decerement the ref
+      // counter of the normalized qname after releasing theHashSet.theMutex
+      // (otherwise, we would run into a self-deadlock if the normalized
+      // qname needs to be freed),and (b) removeReference is not called
+      // when we overwite the pointer with the new local name.
+      qn->detachNormalized();
+    }
+    else
+    {
+      // Set qn->theLocal so that the assertion in setNormalized() (which is
+      // invoked later by the caller of this method) will not trigger.
+      qn->theLocal = NULL;
+    }
     theHashSet.remove(qn);
   }
   else
@@ -123,43 +144,71 @@ void QNamePool::remove(QNameItemImpl* qn)
 store::Item_t QNamePool::insert(
     const char* ns,
     const char* pre,
-    const char* ln)
+    const char* ln,
+    bool        sync)
 {
   QNameItemImpl* qn;
+  QNameItemImpl* normVictim = NULL;
+
+  bool normalized = (pre == NULL || *pre == '\0');
 
   if (ns == NULL) ns = "";
   if (pre == NULL) pre = "";
-  ZORBA_ASSERT(((ln != NULL) && (*ln != '\0')));
+  ZORBA_FATAL(ln != NULL && *ln != '\0', "");
 
   xqpStringStore_t pooledNs;
   theNamespacePool->insertc(ns, pooledNs);
 
   ulong hval = QNamePoolHashSet::compute_hash(pre, ln, (uint32_t)pooledNs.getp());
 
-  SYNC_CODE(AutoMutex lock(&theHashSet.theMutex);)
-
-  QNHashEntry* entry = hashFind(pooledNs.getp(), pre, ln,
-                                //pooledNs->bytes(), 
-                                strlen(pre), strlen(ln),
-                                hval);
-
-  if (entry == 0)
+  try
   {
-    qn = cacheInsert();//hval);
+    SYNC_CODE(AutoMutex lock(sync ? &theHashSet.theMutex : NULL);)
 
-    qn->theNamespace.transfer(pooledNs);
-    qn->thePrefix = new xqpStringStore(pre);
-    qn->theLocal = new xqpStringStore(ln);
+    QNHashEntry* entry = hashFind(pooledNs.getp(), pre, ln,
+                                  //pooledNs->bytes(), 
+                                  strlen(pre), strlen(ln),
+                                  hval);
 
-    bool found;
-    entry = theHashSet.hashInsert(qn, hval, found);
-    entry->theItem = qn;
-    ZORBA_FATAL(!found, "");
+    if (entry == 0)
+    {
+      qn = cacheInsert(normVictim);
+      if (normalized)
+      {
+        qn->theNamespace.transfer(pooledNs);
+        qn->thePrefix = QNameItemImpl::theEmptyPrefix;
+        qn->theLocal = new xqpStringStore(ln);
+      }
+      else
+      {
+        store::Item_t normItem = insert(ns, NULL, ln, false);
+
+        QNameItemImpl* normQName = reinterpret_cast<QNameItemImpl*>(normItem.getp());
+
+        qn->theNamespace = normQName->theNamespace;
+        qn->thePrefix = new xqpStringStore(pre);
+        qn->setNormalized(normQName);
+      }
+
+      bool found;
+      entry = theHashSet.hashInsert(qn, hval, found);
+      entry->theItem = qn;
+      ZORBA_FATAL(!found, "");
+    }
+    else
+    {
+      qn = entry->theItem;
+      cachePin(qn);
+    }
   }
-  else
+  catch (...)
   {
-    qn = entry->theItem;
-    cachePin(qn);
+    ZORBA_FATAL(0, "Unexpected exception");
+  }
+
+  if (normVictim != NULL)
+  {
+    normVictim->removeReference(NULL SYNC_PARAM2(normVictim->getRCLock()));
   }
 
   return qn;
@@ -175,39 +224,71 @@ store::Item_t QNamePool::insert(
 store::Item_t QNamePool::insert(
     const xqpStringStore_t& ns,
     const xqpStringStore_t& pre,
-    const xqpStringStore_t& ln)
+    const xqpStringStore_t& ln,
+    bool                    sync)
 {
   QNameItemImpl* qn;
-  bool found;
+  QNameItemImpl* normVictim = NULL;
+
+  bool normalized = pre->empty();
 
   xqpStringStore_t pooledNs;
   theNamespacePool->insertc(ns.getp(), pooledNs);
 
   ulong hval = QNamePoolHashSet::compute_hash(pre->c_str(), ln->c_str(), (uint32_t)pooledNs.getp());
 
-  SYNC_CODE(AutoMutex lock(&theHashSet.theMutex);)
-
-  QNHashEntry* entry = hashFind(pooledNs.getp(), pre, ln,
-                                //ns->bytes(), pre->bytes(), ln->bytes(),
-                                hval);
-  if (entry == 0)
+  try
   {
-    qn = cacheInsert();//hval);
+    SYNC_CODE(AutoMutex lock(sync ? &theHashSet.theMutex : NULL);)
+    QNHashEntry* entry = hashFind(pooledNs.getp(), pre, ln,
+                                  //ns->bytes(), pre->bytes(), ln->bytes(),
+                                  hval);
+    if (entry == 0)
+    {
+    
+      qn = cacheInsert(normVictim);
 
-    qn->theNamespace = pooledNs;//ns;
-    qn->thePrefix = pre;
-    qn->theLocal = ln;
+      if (normalized)
+      {
+        qn->theNamespace.transfer(pooledNs);
+        qn->thePrefix = QNameItemImpl::theEmptyPrefix;
+        qn->theLocal = ln;
+      }
+      else
+      {
+        store::Item_t normItem = insert(pooledNs,
+                                        QNameItemImpl::theEmptyPrefix,
+                                        ln,
+                                        false);
 
-    entry = theHashSet.hashInsert(qn, hval, found);
-    entry->theItem = qn;
-    ZORBA_FATAL(!found, "");
+        QNameItemImpl* normQName = reinterpret_cast<QNameItemImpl*>(normItem.getp());
+
+        qn->theNamespace = normQName->theNamespace;
+        qn->thePrefix = pre;
+        qn->setNormalized(normQName);
+      }
+
+      bool  found;
+      entry = theHashSet.hashInsert(qn, hval, found);
+      entry->theItem = qn;
+      ZORBA_FATAL(!found, "");
+    }
+    else
+    {
+      qn = entry->theItem;
+      cachePin(qn);
+    }
   }
-  else
+  catch (...)
   {
-    found = true;
-    qn = entry->theItem;
-    cachePin(qn);
+    ZORBA_FATAL(0, "Unexpected exception");
   }
+
+  if (normVictim != NULL)
+  {
+    normVictim->removeReference(NULL SYNC_PARAM2(normVictim->getRCLock()));
+  }
+
 
   return qn;
 }
@@ -219,13 +300,13 @@ store::Item_t QNamePool::insert(
   slot (if any) is removed from the pool. If the cache free list is empty a new
   QNameItem is allocated from the heap.
 ********************************************************************************/
-QNameItemImpl* QNamePool::cacheInsert()//ulong hval)
+QNameItemImpl* QNamePool::cacheInsert(QNameItemImpl*& normVictim)
 {
-  QNameItemImpl* qn;
+  normVictim = NULL;
 
   if (theFirstFree != 0)
   {
-    qn = &theCache[theFirstFree];
+    QNameItemImpl* qn = &theCache[theFirstFree];
 
     theFirstFree = qn->theNextFree;
     theCache[theFirstFree].thePrevFree = 0;
@@ -238,9 +319,10 @@ QNameItemImpl* QNamePool::cacheInsert()//ulong hval)
     theNumFree--;
     return qn;
   }
-
-  qn = new QNameItemImpl();
-  return qn;
+  else
+  {
+    return new QNameItemImpl();
+  }
 }
 
 

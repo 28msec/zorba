@@ -64,7 +64,7 @@ store::Iterator_t SimpleCollection::getIterator(bool idsNeeded)
 ********************************************************************************/
 store::Item_t SimpleCollection::addToCollection(
                 std::istream& stream, 
-                long position)
+                const long position)
 {
   error::ErrorManager lErrorManager;
   //std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lErrorManager));
@@ -84,7 +84,7 @@ store::Item_t SimpleCollection::addToCollection(
     if(position == -1)
       theXmlTrees.insert(theXmlTrees.end(), root);
     else
-      theXmlTrees.insert(theXmlTrees.begin() + position, root);
+      theXmlTrees.insert(theXmlTrees.begin() + (position - 1), root);
   }
 
   return root;
@@ -94,7 +94,7 @@ store::Item_t SimpleCollection::addToCollection(
   Insert into the collection an xml document or fragment given as text via an
   input stream. Return the root node of the new xml document or fragment.
 ********************************************************************************/
-store::Item_t SimpleCollection::addToCollection(std::istream* stream, long position)
+store::Item_t SimpleCollection::addToCollection(std::istream* stream, const long position)
 {
   error::ErrorManager lErrorManager;
   //std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lErrorManager));
@@ -114,7 +114,7 @@ store::Item_t SimpleCollection::addToCollection(std::istream* stream, long posit
     if(position == -1)
       theXmlTrees.insert(theXmlTrees.end(), root);
     else
-      theXmlTrees.insert(theXmlTrees.begin() + position, root);
+      theXmlTrees.insert(theXmlTrees.begin() + (position - 1), root);
   }
 
   return root;
@@ -125,7 +125,7 @@ store::Item_t SimpleCollection::addToCollection(std::istream* stream, long posit
   Insert the given node to the collection. If the node is in the collection
   already, this method is a noop.
 ********************************************************************************/
-void SimpleCollection::addToCollection(const store::Item* node, long position)
+void SimpleCollection::addToCollection(const store::Item* node, const long position)
 {
   if (!node->isNode())
   {
@@ -138,7 +138,7 @@ void SimpleCollection::addToCollection(const store::Item* node, long position)
     if(position == -1)
       theXmlTrees.insert(theXmlTrees.end(), const_cast<store::Item*>(node));
     else
-      theXmlTrees.insert(theXmlTrees.begin() + position, const_cast<store::Item*>(node));
+      theXmlTrees.insert(theXmlTrees.begin() + (position - 1), const_cast<store::Item*>(node));
   }
   else
   {
@@ -164,7 +164,6 @@ void SimpleCollection::addNode(
     ZORBA_ERROR(API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION);
   }
 
-  SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
 
   checked_vector<store::Item_t>::iterator it = theXmlTrees.begin();
   checked_vector<store::Item_t>::iterator end = theXmlTrees.end();
@@ -177,6 +176,7 @@ void SimpleCollection::addNode(
       //check if the nodes are the same
       if(rTargetNode->equals(reinterpret_cast<XmlNode*>(it->getp())))
       {
+        SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
         if(aOrder)
           theXmlTrees.insert(it, const_cast<store::Item*>(node));
         else
@@ -195,7 +195,7 @@ void SimpleCollection::addNode(
 /*******************************************************************************
   Insert into the collection the set of nodes returned by the given iterator.
 ********************************************************************************/
-void SimpleCollection::addToCollection(store::Iterator* nodeIter, long position)
+void SimpleCollection::addToCollection(store::Iterator* nodeIter, const long position)
 {
   store::Item_t node;
 
@@ -221,7 +221,7 @@ void SimpleCollection::removeFromCollection(const store::Item* node)
   if(position != -1)
   {
     SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
-    if( theXmlTrees.erase(theXmlTrees.begin() + position) == theXmlTrees.end() )
+    if( theXmlTrees.erase(theXmlTrees.begin() + (position - 1)) == theXmlTrees.end() )
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
   }
   else
@@ -233,7 +233,7 @@ void SimpleCollection::removeFromCollection(const store::Item* node)
 /*******************************************************************************
   Delete the node at the given position from the collection.
 ********************************************************************************/
-void SimpleCollection::removeFromCollection(long position)
+void SimpleCollection::removeFromCollection(const long position)
 {
   SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
   if (position == -1) {
@@ -241,26 +241,26 @@ void SimpleCollection::removeFromCollection(long position)
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
     theXmlTrees.erase(theXmlTrees.end());
   }
-  else if (position < 0)
+  else if (position <= 0)
     assert (false);
   else {
-    if ((unsigned) position >= theXmlTrees.size())
+    if ((unsigned) position > theXmlTrees.size())
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
-    theXmlTrees.erase(theXmlTrees.begin() + position);
+    theXmlTrees.erase(theXmlTrees.begin() + (position - 1));
   }
 }
 
 /*******************************************************************************
   Return the node at the given position from the collection.
 ********************************************************************************/
-store::Item_t SimpleCollection::nodeAt(long position)
+store::Item_t SimpleCollection::nodeAt(const long position)
 {
-  if( position < 0 || ((ulong)position) >= theXmlTrees.size() )
+  if( position <= 0 || ((ulong)position) > theXmlTrees.size() )
   {
     ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
   }
 
-  return theXmlTrees[position];
+  return theXmlTrees[position - 1];
 }
 
 /*******************************************************************************
@@ -363,7 +363,7 @@ SimpleCollection::nodePositionInCollection(store::Item* newNode)
     for (; it != end; ++it)
       //check if the nodes are the same
       if(rNewNode->equals(reinterpret_cast<XmlNode*>(it->getp())))
-        return (it - theXmlTrees.begin());
+        return (it - theXmlTrees.begin() + 1);
 
     return -1;
   }

@@ -110,17 +110,19 @@ public:
   store::Item_t insert(
         const char* ns,
         const char* pre,
-        const char* ln);
+        const char* ln,
+        bool        sync = true);
 
   store::Item_t insert(
         const xqpStringStore_t& ns,
         const xqpStringStore_t& pre,
-        const xqpStringStore_t& ln);
+        const xqpStringStore_t& ln,
+        bool                    sync = true);
 
   void remove(QNameItemImpl* qn);
 
 protected:
-  QNameItemImpl* cacheInsert();//ulong hval);
+  QNameItemImpl* cacheInsert(QNameItemImpl*& normVictim);
 
   void cachePin(QNameItemImpl* qn);
 

@@ -54,6 +54,7 @@ const char* SimpleStore::XS_URI = "http://www.w3.org/2001/XMLSchema";
 const char* SimpleStore::XML_URI = "http://www.w3.org/2001/XML/1998/namespace";
 const char* SimpleStore::ZXSE_URI = "http://www.zorba-xquery.com/zorba/schema-extensions";
 
+const ulong SimpleStore::XML_URI_LEN = sizeof(SimpleStore::XML_URI);
 
 /*******************************************************************************
 
@@ -701,13 +702,18 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
       colIter->open();
 
       store::Item_t rootItem;
-      if (!colIter->next(rootItem)) {
+      if (!colIter->next(rootItem)) 
+      {
         rootItem = NULL;
       }
+
       while (rootItem != NULL)
       {
         rootNode = BASE_NODE(rootItem);
         if (rootNode->getTreeId() == treeid)
+          break;
+
+        if (!colIter->next(rootItem))
           break;
       }
 
