@@ -45,7 +45,7 @@ protected:
   SYNC_CODE(RCLock  theRCLock;)
 
 public:
-  AtomicItem() : store::Item() { theRCLockPtr = &theRCLock; }
+  AtomicItem() : store::Item() { SYNC_CODE(theRCLockPtr = &theRCLock;) }
 #endif
 
   virtual ~AtomicItem() {}
