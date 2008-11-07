@@ -400,8 +400,8 @@ QueryLocation_t ZorbaDebuggerClientImpl::getLocation() const
 bool ZorbaDebuggerClientImpl::eval( String &anExpr ) const
 {
   xqpString lExpr = Unmarshaller::getInternalString( anExpr );
-  //TODO: espace double quotes characters
-  EvalMessage lMessage( lExpr );
+  xqpString expr = lExpr.replace("\"", "&quot;", "");
+  EvalMessage lMessage( expr );
   std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   return true;
 }

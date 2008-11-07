@@ -95,6 +95,7 @@ class ZorbaDebugger
     friend class XQueryCompiler;
     friend class UDFunctionCallIterator; 
     friend class XQueryImpl;
+    friend class TranslatorImpl;
     friend ZORBA_THREAD_RETURN runtimeThread( void* );
 
     XQueryImpl* theQuery;
@@ -134,6 +135,9 @@ class ZorbaDebugger
 
     //The List of modules for the query
     std::list<parsenode_t> theModules;
+
+    //The list of URIs to import for eval
+    std::map<std::string, std::string> theImports;
    
   public:
     ZorbaDebugger* addModule(parsenode_t& anAST)

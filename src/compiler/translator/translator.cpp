@@ -2913,6 +2913,12 @@ void *begin_visit (const ModuleImport& v) {
 void end_visit (const ModuleImport& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   string pfx = v.get_prefix (), target_ns = v.get_uri ();
+#ifdef ZORBA_DEBUGGER
+  if(compilerCB->m_debugger != 0)
+  {
+    compilerCB->m_debugger->theImports.insert(make_pair<string, string>(pfx, target_ns)); 
+  }
+#endif
 
   // The namespace prefix specified in a module import must not be xml or xmlns [err:XQST0070]
   if (pfx == "xml" || pfx == "xmlns")

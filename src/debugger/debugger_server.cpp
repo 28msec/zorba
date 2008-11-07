@@ -512,7 +512,8 @@ void ZorbaDebugger::eval( xqpString anExpr )
     try {
       auto_ptr< CompilerCB > ccb(new CompilerCB(*thePlanState->theCompilerCB));
       auto_ptr< dynamic_context > dctx(new dynamic_context(thePlanState->dctx()));
-      auto_ptr<PlanWrapperHolder> eval_plan = compileEvalPlan(theLocation, ccb.get(), dctx.get(), anExpr, *thePlanState);
+      xqpString lExpr = anExpr.replace("&quot;", "\"", "");
+      auto_ptr<PlanWrapperHolder> eval_plan = compileEvalPlan(theLocation, ccb.get(), dctx.get(), lExpr, *thePlanState);
       PlanWrapper* lIterator = eval_plan->get();
       assert(lIterator != 0);
 
@@ -634,9 +635,20 @@ ZorbaDebugger::compileEvalPlan(const QueryLoc& loc, CompilerCB* ccb, dynamic_con
   ccb->m_sctx_list.push_back( ccb->m_sctx = ccb->m_sctx->create_child_context() );
   ccb->m_debugger = 0;
 
+  //set up import list
+  xqpString lExpr;
+  map<string, string>::iterator it;
+  stringstream lImport;
+  for(it=theImports.begin(); it!=theImports.end(); ++it)
+  {
+    lImport << "import module namespace " << it->first << "=\"" << it->second << "\";" << endl;
+  }
+  lExpr += lImport.str();
+  lExpr += anExpr;
+  cerr << lExpr << endl;
   eval_plan->reset(
     new PlanWrapper (
-      EvalIterator::compile ( ccb, anExpr, theVarnames, theVartypes ),
+      EvalIterator::compile ( ccb, lExpr, theVarnames, theVartypes ),
       ccb,
       dctx,
       planState.theStackDepth + 1 )
