@@ -66,6 +66,7 @@
 /* rest support */
 #cmakedefine ZORBA_WITH_REST
 #cmakedefine ZORBA_WITH_SSL
+#cmakedefine ZORBA_VERIFY_PEER_SSL_CERTIFICATE
 
 /* tidy support*/
 #cmakedefine ZORBA_WITH_TIDY
