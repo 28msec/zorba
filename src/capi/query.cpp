@@ -57,6 +57,12 @@ using namespace zorba;
 
 namespace zorbac {
 
+  static int readSome(std::istream& stream, char *buffer, int maxlen)
+  {
+    stream.read(buffer, maxlen);
+    return stream.gcount();
+  }
+
   zorba::XQuery*
   getXQuery(XQC_Query query)
   {
@@ -112,7 +118,7 @@ namespace zorbac {
       lStream.seekg(0);
 
       int lRes = 0;
-      while ( (lRes = lStream.readsome(lBuf, 1023)) > 0 ) {
+      while ( (lRes = readSome(lStream, lBuf, 1023)) > 0 ) {
         lBuf[lRes] = 0;
         fprintf (file, "%s", lBuf);
       }
