@@ -1436,7 +1436,7 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
       case 'm': flags |= REGEX_ASCII_MULTILINE; break;
       case 'x': flags |= REGEX_ASCII_COMMENTS; break;
       default:
-        throw zorbatypesException("", ZorbatypesError::FORX0001);
+        throw zorbatypesException(flag_cstr, ZorbatypesError::FORX0001);
         break;
       }
     }
@@ -1450,7 +1450,7 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     regex_ascii::CRegexAscii_regex     *regex;
     regex = regex_parser.parse(pattern.c_str());//should be moved out of here for performance
     if(!regex)
-      throw zorbatypesException("", ZorbatypesError::FORX0002);
+      throw zorbatypesException(pattern.c_str(), ZorbatypesError::FORX0002);
 
     bool  retval;
     int   match_pos;
@@ -1468,7 +1468,7 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     regex_ascii::CRegexAscii_regex     *regex;
     regex = regex_parser.parse(pattern.c_str());//should be moved out of here for performance
     if(!regex)
-      throw zorbatypesException("", ZorbatypesError::FORX0002);
+      throw zorbatypesException(pattern.c_str(), ZorbatypesError::FORX0002);
 
     int   match_pos;
     int   matched_len;
@@ -1551,7 +1551,7 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     regex_ascii::CRegexAscii_regex     *regex;
     regex = regex_parser.parse(pattern.c_str());//should be moved out of here for performance
     if(!regex)
-      throw zorbatypesException("", ZorbatypesError::FORX0002);
+      throw zorbatypesException(pattern.c_str(), ZorbatypesError::FORX0002);
 
     int first_pos = *match_pos;
     //int   match_pos;
