@@ -47,3 +47,5 @@ SET(Zorba_ICUI18N  "@Zorba_ICUI18N@")
 SET(Zorba_ICU_DATA "@Zorba_ICU_DATA@")
 SET(Zorba_XERCESC  "@Zorba_XERCESC@")
 SET(Zorba_CURL     "@Zorba_CURL@")
+
+SET(ZORBA_DOC_DIR "${CMAKE_SOURCE_DIR}/doc/")
