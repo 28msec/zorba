@@ -702,13 +702,15 @@ void end_visit (const ArgList& v, void* /*visit_state*/) {
 void *begin_visit (const QueryBody& v) {
   TRACE_VISIT ();
   // fictious :query-body operator
-  global_decl_stack.push ("F" + static_context::qname_internal_key (sctx_p->lookup_fn_qname ("fn", ":query-body", loc)));
+  // TODO: should be local::query-body, but some C examples fail to
+  // properly initialize the store
+  global_decl_stack.push ("F" + static_context::qname_internal_key (sctx_p->lookup_fn_qname ("", ":query-body", loc)));
   return no_state;
 }
 
 void end_visit (const QueryBody& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  global_decl_stack.pop ();
+  pop_stack (global_decl_stack);
   nodestack.push(wrap_in_globalvar_assign(pop_nodestack()));
 }
 
@@ -2285,7 +2287,7 @@ void *begin_visit (const VarDecl& v) {
 
 void end_visit (const VarDecl& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  global_decl_stack.pop ();
+  pop_stack (global_decl_stack);
   xqp_string varname = v.get_varname();
 
   // The declared type of a global or external is never tightened based on
@@ -2546,7 +2548,7 @@ void *begin_visit (const FunctionDecl& v) {
 
 void end_visit (const FunctionDecl& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  global_decl_stack.pop ();
+  pop_stack (global_decl_stack);
   ParseConstants::function_type_t lFuncType = v.get_type();
   expr_t body;
   bool is_external = 
