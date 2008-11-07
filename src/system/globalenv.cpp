@@ -72,6 +72,31 @@ void GlobalEnvironment::init(store::Store* store)
 #ifdef ZORBA_WITH_REST
 #  ifdef ZORBA_WITH_SSL
     curl_global_init(CURL_GLOBAL_ALL);
+    #ifdef ZORBA_VERIFY_PEER_SSL_CERTIFICATE
+    #if defined WIN32
+    //for Windows, try to find the "cacert.pem" file in one of system paths or current dir
+    DWORD   search_result;
+    #ifndef UNICODE
+    char  *certpath = m_globalEnv->g_curl_root_CA_certificates_path;
+    #else
+    WCHAR certpath[sizeof(m_globalEnv->g_curl_root_CA_certificates_path)];
+    #endif
+    search_result = SearchPath(NULL, 
+                              "cacert.pem", NULL,
+                              sizeof(m_globalEnv->g_curl_root_CA_certificates_path),
+                              certpath, NULL);
+    if(!search_result)
+      certpath[0] = 0;
+    else
+      certpath[search_result] = 0;
+    #ifdef UNICODE
+    //convert from UNICODE to ASCII
+    WideCharToMultiByte(CP_ACP, 0, certpath, -1, 
+                      m_globalEnv->g_curl_root_CA_certificates_path, sizeof(m_globalEnv->g_curl_root_CA_certificates_path),
+                      NULL, NULL);
+    #endif
+#endif
+#endif
 #  else
     curl_global_init(CURL_GLOBAL_NOTHING);
 #  endif

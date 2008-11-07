@@ -65,6 +65,15 @@ class GlobalEnvironment
 
   static GlobalEnvironment             * m_globalEnv;
   icu_init                               m_icu;
+
+public:
+#if defined ZORBA_WITH_REST && defined ZORBA_WITH_SSL && defined ZORBA_VERIFY_PEER_SSL_CERTIFICATE
+#if defined WIN32
+  //path where root CA certificates for SSL are kept (filename is "cacert.pem")
+  //certificates are used by curl/ssleay (or openssl) when connecting to https.
+  char    g_curl_root_CA_certificates_path[1024];
+#endif
+#endif
 };
 
 #define GENV GlobalEnvironment::getInstance()
