@@ -379,7 +379,7 @@ bool StepMessage::isValidMessage() const
     ( theKind == STEP_INTO || theKind == STEP_OUT || theKind == STEP_OVER );
 }
 
-const StepCommand StepMessage::getStepKind() const
+StepCommand StepMessage::getStepKind() const
 {
   return theKind;
 }

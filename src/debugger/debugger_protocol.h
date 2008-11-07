@@ -209,9 +209,9 @@ class AbstractMessage
 
     virtual Byte * serialize( Length & aLength ) const = 0;
 
-    const Id getId() const { return uint_swap( theHeaderContent->theId ); }
+    Id getId() const { return uint_swap( theHeaderContent->theId ); }
 
-    const Flags getFlags() const { return theHeaderContent->theFlags; }
+    Flags getFlags() const { return theHeaderContent->theFlags; }
     //friend std::ostream& operator << ( std::ostream &os, const AbstractMessage * );
     
     bool operator == ( const AbstractMessage & );
@@ -250,7 +250,7 @@ class ReplyMessage: public AbstractMessage
 
     bool isOk() const;
     
-    const ErrorCode getErrorCode() const
+    ErrorCode getErrorCode() const
     {
       return uint_swap( theReplyContent->theErrorCode );
     }
@@ -341,9 +341,9 @@ class AbstractCommandMessage: public AbstractMessage
 
     virtual ~AbstractCommandMessage();
  
-    const CommandSet getCommandSet() const { return theCommandContent->theCommandSet; }
+    CommandSet getCommandSet() const { return theCommandContent->theCommandSet; }
 
-    const Command getCommand() const { return theCommandContent->theCommand; }
+    Command getCommand() const { return theCommandContent->theCommand; }
 
     virtual ReplyMessage * getReplyMessage()
     {
@@ -444,7 +444,7 @@ class StepMessage: public AbstractCommandMessage
     
     virtual ~StepMessage();
 
-    const StepCommand getStepKind() const;
+    StepCommand getStepKind() const;
 
     virtual Byte * serialize( Length &aLength ) const;
 };
