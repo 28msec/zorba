@@ -131,6 +131,10 @@ store::Item_t QNamePool::insert(
 {
   QNameItemImpl* qn;
   QNameItemImpl* normVictim = NULL;
+  bool haveLock = false;
+  bool haveNormQName = false;
+  store::Item_t normItem;
+  QNameItemImpl* normQName;
 
   bool normalized = (pre == NULL || *pre == '\0');
 
@@ -145,26 +149,40 @@ store::Item_t QNamePool::insert(
 
   try
   {
-    SYNC_CODE(AutoMutex lock(sync ? &theHashSet.theMutex : NULL);)
+retry:
+    theHashSet.theMutex.lock();
+    haveLock = true;
 
     QNHashEntry* entry = hashFind(ns, pre, ln,
                                   pooledNs->bytes(), strlen(pre), strlen(ln),
                                   hval);
     if (entry == 0)
     {
-      qn = cacheInsert(normVictim);
-
       if (normalized)
       {
+        qn = cacheInsert(normVictim);
+
         qn->theNamespace.transfer(pooledNs);
         qn->thePrefix = QNameItemImpl::theEmptyPrefix;
         qn->theLocal = new xqpStringStore(ln);
       }
       else
       {
-        store::Item_t normItem = insert(ns, NULL, ln, false);
+        if (!haveNormQName)
+        {
+          theHashSet.theMutex.unlock();
+          haveLock = false;
 
-        QNameItemImpl* normQName = reinterpret_cast<QNameItemImpl*>(normItem.getp());
+          normItem = insert(ns, NULL, ln, false);
+
+          normQName = reinterpret_cast<QNameItemImpl*>(normItem.getp());
+
+
+          haveNormQName = true;
+          goto retry;
+        }
+
+        qn = cacheInsert(normVictim);
 
         qn->theNamespace = normQName->theNamespace;
         qn->thePrefix = new xqpStringStore(pre);
@@ -181,9 +199,15 @@ store::Item_t QNamePool::insert(
       qn = entry->theItem;
       cachePin(qn);
     }
+
+    theHashSet.theMutex.unlock();
+    haveLock = false;
   }
   catch (...)
   {
+    if (haveLock)
+      theHashSet.theMutex.unlock();
+
     ZORBA_FATAL(0, "Unexpected exception");
   }
 
@@ -209,6 +233,10 @@ store::Item_t QNamePool::insert(
 {
   QNameItemImpl* qn;
   QNameItemImpl* normVictim = NULL;
+  bool haveLock = false;
+  bool haveNormQName = false;
+  store::Item_t normItem;
+  QNameItemImpl* normQName;
 
   bool normalized = pre->empty();
 
@@ -220,31 +248,43 @@ store::Item_t QNamePool::insert(
                                          hashfun::h32(ns->c_str())));
   try
   {
-    SYNC_CODE(AutoMutex lock(sync ? &theHashSet.theMutex : NULL);)
+retry:
+    theHashSet.theMutex.lock();
+    haveLock = true;
 
     QNHashEntry* entry = hashFind(ns->c_str(), pre->c_str(), ln->c_str(),
                                   ns->bytes(), pre->bytes(), ln->bytes(),
                                   hval);
     if (entry == 0)
     {
-    
-      qn = cacheInsert(normVictim);
-
       if (normalized)
       {
+        qn = cacheInsert(normVictim);
+
         qn->theNamespace.transfer(pooledNs);
         qn->thePrefix = QNameItemImpl::theEmptyPrefix;
         qn->theLocal = ln;
       }
       else
       {
-        store::Item_t normItem = insert(pooledNs,
-                                        QNameItemImpl::theEmptyPrefix,
-                                        ln,
-                                        false);
+        if (!haveNormQName)
+        {
+          theHashSet.theMutex.unlock();
+          haveLock = false;
 
-        QNameItemImpl* normQName = reinterpret_cast<QNameItemImpl*>(normItem.getp());
+          normItem = insert(pooledNs,
+                            QNameItemImpl::theEmptyPrefix,
+                            ln,
+                            false);
 
+          normQName = reinterpret_cast<QNameItemImpl*>(normItem.getp());
+
+          haveNormQName = true;
+          goto retry;
+        }
+
+        qn = cacheInsert(normVictim);
+      
         qn->theNamespace = normQName->theNamespace;
         qn->thePrefix = pre;
         qn->setNormalized(normQName);
@@ -260,9 +300,15 @@ store::Item_t QNamePool::insert(
       qn = entry->theItem;
       cachePin(qn);
     }
+
+    theHashSet.theMutex.unlock();
+    haveLock = false;
   }
   catch (...)
   {
+    if (haveLock)
+      theHashSet.theMutex.unlock();
+
     ZORBA_FATAL(0, "Unexpected exception");
   }
 

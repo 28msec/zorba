@@ -328,8 +328,6 @@ store::Collection_t SimpleStore::createCollection(xqpStringStore_t& uri)
     return NULL;
   }
 
-
-
   return collection;
 }
 
