@@ -46,7 +46,7 @@ class MyDocumentURIResolver : public  DocumentURIResolver
     virtual ~MyDocumentURIResolver() {}
 
     virtual std::auto_ptr<DocumentURIResolverResult>
-    resolve(const Item& aURI, StaticContext* aStaticContext, XmlDataManager* aXmlDataManager)
+    resolve(const Item& aURI, StaticContext* aStaticContext, XmlDataManager* aXmlDataManager, bool validate, bool tidying)
     {
       std::auto_ptr<MyDocumentURIResolverResult> lResult(new MyDocumentURIResolverResult());
       if (aURI.getStringValue() == "mydoc.xml") {

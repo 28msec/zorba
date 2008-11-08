@@ -2954,7 +2954,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/) {
     lURIs.push_back(xqp_string(target_ns).getStore());
   } else {
     for (int i = 0; i < ats->size(); ++i) {
-      lURIs.push_back(sctx_p->resolve_relative_uri((*ats)[i]).getStore());
+      lURIs.push_back(sctx_p->resolve_relative_uri((*ats)[i], xqp_string()).getStore());
     }
   }
 
@@ -3155,7 +3155,7 @@ void *begin_visit (const SchemaImport& v) {
     if (atlist == NULL || atlist->size () == 0)
       ZORBA_ERROR_LOC_PARAM (XQST0057, loc, "(no location specified)", target_ns);
     {
-      string at = sctx_p->resolve_relative_uri ((*atlist) [0]);
+      string at = sctx_p->resolve_relative_uri ((*atlist) [0], xqp_string());
      
 #if 0
       string prefix = sp == NULL ? "" : sp->get_prefix();

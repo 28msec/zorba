@@ -225,7 +225,7 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   if (theChildren.size() == 1 && consumeNext(lURI, theChildren[0].getp(), planState)) {
     try {
       tt = lURI->getStringValue();
-      resolvedURIString = planState.sctx()->resolve_relative_uri(lURI->getStringValueP()).getStore();
+      resolvedURIString = planState.sctx()->resolve_relative_uri(lURI->getStringValueP(), xqp_string()).getStore();
       GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
     } catch (error::ZorbaError& e) {
       ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Error retrieving resource.");

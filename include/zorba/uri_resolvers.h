@@ -83,8 +83,9 @@ namespace zorba {
       virtual std::auto_ptr<DocumentURIResolverResult>
       resolve(const Item& aURI,
               StaticContext* aStaticContext,
-              XmlDataManager* aXmlDataManager) = 0;
-
+              XmlDataManager* aXmlDataManager,
+              bool validate,
+              bool tidying = false) = 0;
   };
 
   class CollectionURIResolverResult : public URIResolverResult

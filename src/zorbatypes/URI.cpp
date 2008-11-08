@@ -67,16 +67,18 @@ xqpStringStore_t  URI::encode_file_URI(const xqpStringStore_t& uri)
   return result.getStore();
 }
 
-URI::URI( const xqpString& uri )
+URI::URI( const xqpString& uri, bool validate )
   : theState(0),
-    thePort(0)
+    thePort(0),
+    valid(validate)
 {
   initialize(uri);
 }
 
-URI::URI( const URI& base_uri, const xqpString& uri )
+URI::URI( const URI& base_uri, const xqpString& uri, bool validate )
   :  theState(0),
-     thePort(0)
+     thePort(0),
+     valid(validate)
 {
   initialize(uri, true);
   resolve(&base_uri);
@@ -89,8 +91,8 @@ URI::URI( const URI& to_copy )
 
 URI::URI()
   : theState(0),
-    thePort(0) {}
-      
+    thePort(0),
+    valid(true){}
 
 
 URI::~URI()
@@ -110,6 +112,7 @@ URI::initialize(const URI& to_copy)
   thePath              = to_copy.thePath;
   theQueryString       = to_copy.theQueryString;
   theFragment          = to_copy.theFragment;
+  valid                = to_copy.valid;
 }
 
 bool
@@ -743,6 +746,12 @@ URI::initializePath(const xqpString& uri)
   int lEnd = uri.length();
   char c = 0;
 
+  if(uri.empty()){
+    thePath = uri;
+    set_state(Path);
+    return;
+  }
+
   // path - everything up to query string or fragment
   if ( lStart < lEnd ) {
 
@@ -761,9 +770,8 @@ URI::initializePath(const xqpString& uri)
           if ( lIndex + 2 >= lEnd ) { // TODO check hex and throw errors
             
           }
-        } else if (!is_unreserved_char(c) && !is_path_character(c)) 
-        {
-    //      ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char '" << c << "' in URI path " << uri);
+        } else if (!is_unreserved_char(c) && !is_path_character(c) && valid) {
+         ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char '" << c << "' in URI path " << uri);
         }
         ++lIndex;
       }
@@ -777,8 +785,8 @@ URI::initializePath(const xqpString& uri)
 
         if ( c == '%' ) {
           // TODO check errors
-        } else if (!is_reservered_or_unreserved_char(c)) {
-   //       ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char '" << c << "' in URI path " << uri);
+        } else if (!is_reservered_or_unreserved_char(c) && valid) {
+         ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char '" << c << "' in URI path " << uri);
         } 
         ++lIndex;
       }

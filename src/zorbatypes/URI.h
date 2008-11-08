@@ -29,10 +29,10 @@ class URI
   }
 
   // construct a uri
-  URI( const xqpString& uri );
+  URI( const xqpString& uri, bool validate = true );
 
   // construct a uri and eventually resolve with the given base uri
-  URI( const URI& base_uri, const xqpString& uri );
+  URI( const URI& base_uri, const xqpString& uri, bool validate = true );
 
   // copy constructor
   URI ( const URI& to_copy );
@@ -52,8 +52,11 @@ class URI
 
   const xqpString&
   toASCIIString() const;
-  
+
   // getters and setters for each component
+  bool
+  is_valid() const;
+
   const xqpString&
   get_scheme() const;
 
@@ -65,7 +68,7 @@ class URI
 
   void
   set_host(const xqpString& new_host);
-  
+
   int
   get_port() const;
 
@@ -102,7 +105,7 @@ class URI
 
   void
   set_path(const xqpString& new_path);
-  
+
   // decoded
   const xqpString
   get_query() const;
@@ -191,14 +194,14 @@ protected:
 
   static bool
   is_reservered_or_unreserved_char(char c);
-  
+
 protected:
   void
   resolve(const URI * base_uri);
 
   // keep track whether particular components of a uri are defined or undefined
   mutable uint32_t theState;
-  enum States {                   
+  enum States {
     Scheme            = 1,
     UserInfo          = 2,
     Host              = 4,
@@ -228,7 +231,16 @@ protected:
   xqpString theQueryString;
   xqpString theFragment;
 
+  //true if the constructed URI is valid
+  bool valid;
+
 }; /* class URI */
+
+inline bool
+URI::is_valid() const
+{
+  return valid;
+}
 
 inline const xqpString&
 URI::get_scheme() const 

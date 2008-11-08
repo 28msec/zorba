@@ -178,7 +178,7 @@ XmlDataManagerImpl::loadDocumentFromUri(const String& aUri)
     item_factory->createAnyURI(uriItem, str_uri);
 
     store::Item_t   docItem;
-    docItem = uri_resolver->resolve(uriItem, &GENV_ROOT_STATIC_CONTEXT);
+    docItem = uri_resolver->resolve(uriItem, &GENV_ROOT_STATIC_CONTEXT, true, false);
     
     if(docItem.isNull())
       return Item();

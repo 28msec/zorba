@@ -424,7 +424,7 @@ xqtref_t static_context::get_collection_type(
 void 
 static_context::add_collation(const xqp_string& aURI)
 {
-  xqp_string lURI = resolve_relative_uri(aURI); 
+  xqp_string lURI = resolve_relative_uri(aURI, xqp_string());
   XQPCollator* lCollator = CollationFactory::createCollator(lURI);
   if (lCollator == 0)
   {
@@ -475,7 +475,7 @@ static_context::has_collation_uri(const xqp_string& aURI) const
 void 
 static_context::set_default_collation_uri(const xqp_string& aURI)
 {
-  xqp_string lURI = resolve_relative_uri(aURI); 
+  xqp_string lURI = resolve_relative_uri(aURI, xqp_string());
   XQPCollator* lCollator = CollationFactory::createCollator(lURI);
   if (lCollator == 0)
   {
@@ -565,8 +565,8 @@ void static_context::compute_current_absolute_baseuri()
   return;
 }
 
-xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri) {
-  URI resolved_uri(base_uri, uri);
+xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri, bool validate) {
+  URI resolved_uri(base_uri, uri, validate);
   return resolved_uri.toString();
 }
 
@@ -588,8 +588,8 @@ xqp_string static_context::final_baseuri () {
   return abs_base_uri;
 }
 
-xqp_string static_context::resolve_relative_uri (xqp_string uri, xqp_string abs_base_uri) {
-  return make_absolute_uri (uri, abs_base_uri.empty () ? final_baseuri () : abs_base_uri);
+xqp_string static_context::resolve_relative_uri (xqp_string uri, xqp_string abs_base_uri, bool validate) {
+  return make_absolute_uri (uri, abs_base_uri.empty () ? final_baseuri () : abs_base_uri, validate);
 }
 
 bool static_context::import_module (const static_context *module) {

@@ -53,7 +53,7 @@ ZorbaCollectionExistsIterator::nextImpl(store::Item_t& result, PlanState& planSt
   if (consumeNext(item, theChildren[0].getp(), planState )) {
     t = item->getStringValue();
     try {
-      resolvedURIString = planState.sctx()->resolve_relative_uri(item->getStringValueP()).getStore();
+      resolvedURIString = planState.sctx()->resolve_relative_uri(item->getStringValueP(), xqp_string()).getStore();
       GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
     } catch (error::ZorbaError& e) {
       ZORBA_ERROR_LOC_PARAM(XQST0046,
@@ -87,7 +87,7 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     theColl = getCollection(planState, itemURI->getStringValue(), loc);
 
     try {
-      resolvedURIString = planState.sctx()->resolve_relative_uri(itemURI->getStringValueP()).getStore();
+      resolvedURIString = planState.sctx()->resolve_relative_uri(itemURI->getStringValueP(), xqp_string()).getStore();
       itemXML = GENV_STORE.getDocument(resolvedURIString);
     } catch (error::ZorbaError& e) {
       ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
@@ -99,7 +99,10 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
         ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
       }
       try {
-        itemXML = planState.sctx()->get_document_uri_resolver()->resolve(resolvedURIItem, planState.sctx());
+        itemXML = planState.sctx()->get_document_uri_resolver()->resolve( resolvedURIItem,
+                                                                          planState.sctx(),
+                                                                          false,
+                                                                          false);
       } catch (error::ZorbaError& e) {
         ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
       }
@@ -138,14 +141,16 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
   }
   if (inNode == NULL) {
     try {
-      resolvedURIString = planState.sctx()->resolve_relative_uri(uriString.getp()).getStore();
+      resolvedURIString = planState.sctx()->resolve_relative_uri(uriString.getp(), xqp_string()).getStore();
       GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
     } catch (error::ZorbaError& e) {
       ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
     }
     try {
       inNode = planState.sctx()->get_document_uri_resolver()->resolve(resolvedURIItem,
-                              planState.sctx());
+                                                                      planState.sctx(),
+                                                                      false,
+                                                                      false);
     } catch (error::ZorbaError& e) {
       ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
     }
@@ -184,7 +189,10 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
                 ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
               }
               try {
-                itemXML = planState.sctx()->get_document_uri_resolver()->resolve(resolvedURIItem, planState.sctx());
+                itemXML = planState.sctx()->get_document_uri_resolver()->resolve(resolvedURIItem,
+                                                                                 planState.sctx(),
+                                                                                 false,
+                                                                                 false);
               } catch (error::ZorbaError& e) {
                 ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
               }
@@ -281,7 +289,7 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSt
   if (consumeNext(item, theChildren[0].getp(), planState))
   {
     try {
-      resolvedURIString = planState.sctx()->resolve_relative_uri(item->getStringValueP()).getStore();
+      resolvedURIString = planState.sctx()->resolve_relative_uri(item->getStringValueP(), xqp_string()).getStore();
     } catch (error::ZorbaError& e) {
       ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
     }
@@ -655,7 +663,7 @@ store::Collection_t getCollection(PlanState& planState, const xqpStringStore_t s
   xqpStringStore_t    resolvedURIString;
 
   try {
-    resolvedURIString = planState.sctx()->resolve_relative_uri(strURI.getp()).getStore();
+    resolvedURIString = planState.sctx()->resolve_relative_uri(strURI.getp(), xqp_string()).getStore();
     GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
   } catch (error::ZorbaError& e) {
     ZORBA_ERROR_LOC_PARAM(API0006_COLLECTION_NOT_FOUND, loc, strURI, "");

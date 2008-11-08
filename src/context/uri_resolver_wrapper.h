@@ -30,6 +30,7 @@ namespace zorba {
       virtual store::Item_t
       resolve(const store::Item_t& aURI,
               static_context* aStaticContext,
+              bool validate,
               bool tidying = false);
 
     protected:

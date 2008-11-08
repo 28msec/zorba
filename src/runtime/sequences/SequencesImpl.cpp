@@ -77,8 +77,6 @@ getCollator(
   xqtref_t lCollationItemType = planState.theCompilerCB->m_sctx->get_typemanager()->
                                 create_value_type (lCollationItem);
 
-  // TODO resolve uri (base-uri)
-
   return planState.theRuntimeCB->theCollationCache->getCollator(lCollationItem->getStringValue());
 }
 
@@ -1529,14 +1527,16 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       STACK_PUSH(true, state);
     } else {
       try {
-        resolvedURIString = planState.sctx()->resolve_relative_uri(uriString).getStore(); 
+        resolvedURIString = planState.sctx()->resolve_relative_uri(uriString, xqp_string(), false).getStore();
         GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
       } catch (error::ZorbaError& e) {
         ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
       }
       try {
         result = planState.sctx()->get_document_uri_resolver()->resolve(resolvedURIItem, 
-                                                                        planState.sctx());
+                                                                        planState.sctx(),
+                                                                        false,
+                                                                        false);
       } catch (error::ZorbaError& e) {
         ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
       }
@@ -1583,7 +1583,10 @@ bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planStat
   if (consumeNext(uriItem, theChildren[0].getp(), planState)) {
 
     try {
-      doc = planState.sctx()->get_document_uri_resolver()->resolve(uriItem, planState.sctx());
+      doc = planState.sctx()->get_document_uri_resolver()->resolve( uriItem,
+                                                                    planState.sctx(),
+                                                                    false,
+                                                                    false);
     } catch (error::ZorbaError& e) {
       if (e.theErrorCode == FODC0005) {
         ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);

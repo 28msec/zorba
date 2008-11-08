@@ -113,7 +113,7 @@ DynamicContextImpl::setVariableAsDocument( const String& aQName, const String& x
     item_factory->createAnyURI(uriItem, uriStore);
 
     store::Item_t   docItem;
-    docItem = uri_resolver->resolve(uriItem, theStaticContext);
+    docItem = uri_resolver->resolve(uriItem, theStaticContext, true, false);
     
     if(docItem.isNull())
       return false;
@@ -235,7 +235,7 @@ DynamicContextImpl::setContextItemAsDocument (
     item_factory->createAnyURI(uriItem, uriStore);
 
     store::Item_t   docItem;
-    docItem = uri_resolver->resolve(uriItem, theStaticContext);
+    docItem = uri_resolver->resolve(uriItem, theStaticContext, true, false);
     
     if(docItem.isNull())
       return false;

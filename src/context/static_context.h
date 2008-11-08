@@ -220,9 +220,9 @@ public:
   void set_current_absolute_baseuri(xqp_string);
 
   // TODO: move this method to URI class in zorbatypes
-  static xqp_string make_absolute_uri(xqp_string uri, xqp_string base_uri);
+  static xqp_string make_absolute_uri(xqp_string uri, xqp_string base_uri, bool validate = true);
 
-  xqp_string resolve_relative_uri( xqp_string uri, xqp_string abs_base_uri = xqp_string() );
+  xqp_string resolve_relative_uri( xqp_string uri, xqp_string abs_base_uri, bool validate = true);
 
   bool import_module (const static_context *module);
 

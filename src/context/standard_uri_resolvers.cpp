@@ -36,6 +36,7 @@ namespace zorba {
   store::Item_t
   StandardDocumentURIResolver::resolve(const store::Item_t& aURI,
                                       static_context* aStaticContext,
+                                      bool validate,
                                       bool tidying)
   {
     store::Item_t lResultDoc;
@@ -48,7 +49,7 @@ namespace zorba {
     store::Store& lStore = GENV.getStore();
 
     xqpString lURIString = xqpString(&*aURI->getStringValue());
-    URI lURI(lURIString);
+    URI lURI(lURIString, validate);
 
     lResultDoc = lStore.getDocument(lURI.toString().getStore());
     if (lResultDoc != NULL)
@@ -140,7 +141,7 @@ namespace zorba {
 
   store::Collection_t 
   StandardCollectionURIResolver::resolve(const store::Item_t& aURI,
-          static_context* aStaticContext)
+                                         static_context* aStaticContext)
   {
     store::Collection_t lResultCol;
 
@@ -168,9 +169,9 @@ namespace zorba {
   }
 
   std::istream*
-  StandardSchemaURIResolver::resolve(const store::Item_t& aURI,
-          const std::vector<store::Item_t>& aLocationHints,
-          static_context* aStaticContext)
+  StandardSchemaURIResolver::resolve( const store::Item_t& aURI,
+                                      const std::vector<store::Item_t>& aLocationHints,
+                                      static_context* aStaticContext)
   {
     xqpStringStore_t lResolvedURI = aURI->getStringValue();
     std::auto_ptr<std::istream> schemafile(
