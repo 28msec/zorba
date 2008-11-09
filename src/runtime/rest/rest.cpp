@@ -147,6 +147,13 @@ int CurlStreamBuffer::underflow()
  *
  ****************************************************************************/
 
+bool createTypeHelper(store::Item_t& result, xqpString type_name)
+{
+  xqpString xs_ns = "http://www.w3.org/2001/XMLSchema";
+  xqpString xs_pre = "xs";
+  return GENV_ITEMFACTORY->createQName(result, xs_ns.theStrStore, xs_pre.theStrStore, type_name.theStrStore);
+}
+
 bool createQNameHelper(store::Item_t& result, xqpString name) 
 {
   xqpString ns = ZORBA_REST_FN_NS;
@@ -156,24 +163,24 @@ bool createQNameHelper(store::Item_t& result, xqpString name)
     
 bool createNodeHelper(store::Item_t parent, PlanState& planState, xqpString name, store::Item_t* result = NULL)
 {
-  store::Item_t qname, temp_result;
+  store::Item_t qname, temp_result, type_qname;
   store::NsBindings bindings;
   xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->final_baseuri().getStore();
   createQNameHelper(qname, name);
-  
+  createTypeHelper(type_qname, "untyped");
   bool status = GENV_ITEMFACTORY->createElementNode(
       temp_result,
       parent,
       -1,
       qname,
-      GENV_TYPESYSTEM.XS_UNTYPED_QNAME,
+      type_qname,
       true,
       false,
       false,
       false,
       bindings,
       baseUri,
-      false);
+      true);
 
   if (result != NULL)
     *result = temp_result;
@@ -186,10 +193,7 @@ bool createAttributeHelper(store::Item_t parent, xqpString name, xqpString value
   store::Item_t qname, temp_result, str_item;
   createQNameHelper(qname, name);
   store::Item_t type_qname;
-  xqpString xs_ns = "http://www.w3.org/2001/XMLSchema";
-  xqpString xs_pre = "xs";
-  xqpString type_name = "string";
-  GENV_ITEMFACTORY->createQName(type_qname, xs_ns.theStrStore, xs_pre.theStrStore, type_name.theStrStore);
+  createTypeHelper(type_qname, "string");
   GENV_ITEMFACTORY->createString(str_item, value.theStrStore);
   GENV_ITEMFACTORY->createAttributeNode(
       temp_result,
@@ -698,11 +702,13 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
   DEFAULT_STACK_INIT(ZorbaRestGetIteratorState, state, planState);
   
   setupConnection(state, true);
-
-  if (CONSUME(lUri,0) )
+     
+  if (!CONSUME(lUri,0))
   {
-    //TODO: raise an error
+    //TODO: raise an error ?
+    // ZORBA_ERROR_DESC(XQP0020_INVALID_URI, "No URI given to the REST get() function.");
   }
+  
   Uri = lUri->getStringValue()->str();
 
   if (theChildren.size() > 1)
