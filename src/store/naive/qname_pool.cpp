@@ -131,7 +131,7 @@ store::Item_t QNamePool::insert(
 {
   QNameItemImpl* qn;
   QNameItemImpl* normVictim = NULL;
-  bool haveLock = false;
+  SYNC_CODE(bool haveLock = false;)
   bool haveNormQName = false;
   store::Item_t normItem;
   QNameItemImpl* normQName;
@@ -150,8 +150,8 @@ store::Item_t QNamePool::insert(
   try
   {
 retry:
-    theHashSet.theMutex.lock();
-    haveLock = true;
+    SYNC_CODE(theHashSet.theMutex.lock();\
+    haveLock = true;)
 
     QNHashEntry* entry = hashFind(ns, pre, ln,
                                   pooledNs->bytes(), strlen(pre), strlen(ln),
@@ -170,8 +170,8 @@ retry:
       {
         if (!haveNormQName)
         {
-          theHashSet.theMutex.unlock();
-          haveLock = false;
+          SYNC_CODE(theHashSet.theMutex.unlock();\
+          haveLock = false;)
 
           normItem = insert(ns, NULL, ln, false);
 
@@ -200,13 +200,13 @@ retry:
       cachePin(qn);
     }
 
-    theHashSet.theMutex.unlock();
-    haveLock = false;
+    SYNC_CODE(theHashSet.theMutex.unlock();\
+    haveLock = false;)
   }
   catch (...)
   {
-    if (haveLock)
-      theHashSet.theMutex.unlock();
+    SYNC_CODE(if (haveLock) \
+      theHashSet.theMutex.unlock();)
 
     ZORBA_FATAL(0, "Unexpected exception");
   }
@@ -233,7 +233,7 @@ store::Item_t QNamePool::insert(
 {
   QNameItemImpl* qn;
   QNameItemImpl* normVictim = NULL;
-  bool haveLock = false;
+  SYNC_CODE(bool haveLock = false;)
   bool haveNormQName = false;
   store::Item_t normItem;
   QNameItemImpl* normQName;
@@ -249,8 +249,8 @@ store::Item_t QNamePool::insert(
   try
   {
 retry:
-    theHashSet.theMutex.lock();
-    haveLock = true;
+    SYNC_CODE(theHashSet.theMutex.lock();\
+    haveLock = true;)
 
     QNHashEntry* entry = hashFind(ns->c_str(), pre->c_str(), ln->c_str(),
                                   ns->bytes(), pre->bytes(), ln->bytes(),
@@ -269,8 +269,8 @@ retry:
       {
         if (!haveNormQName)
         {
-          theHashSet.theMutex.unlock();
-          haveLock = false;
+          SYNC_CODE(theHashSet.theMutex.unlock();\
+          haveLock = false;)
 
           normItem = insert(pooledNs,
                             QNameItemImpl::theEmptyPrefix,
@@ -301,13 +301,13 @@ retry:
       cachePin(qn);
     }
 
-    theHashSet.theMutex.unlock();
-    haveLock = false;
+    SYNC_CODE(theHashSet.theMutex.unlock();\
+    haveLock = false;)
   }
   catch (...)
   {
-    if (haveLock)
-      theHashSet.theMutex.unlock();
+  SYNC_CODE(  if (haveLock) \
+      theHashSet.theMutex.unlock();)
 
     ZORBA_FATAL(0, "Unexpected exception");
   }
