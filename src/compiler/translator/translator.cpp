@@ -704,7 +704,7 @@ void *begin_visit (const QueryBody& v) {
   // fictious :query-body operator
   // TODO: should be local::query-body, but some C examples fail to
   // properly initialize the store
-  global_decl_stack.push ("F" + static_context::qname_internal_key (sctx_p->lookup_fn_qname ("", ":query-body", loc)));
+  global_decl_stack.push ("F" + static_context::qname_internal_key (sctx_p->lookup_fn_qname ("fn", ":query-body", loc)));
   return no_state;
 }
 
