@@ -2314,7 +2314,7 @@ void end_visit (const VarDecl& v, void* /*visit_state*/) {
 
 /*******************************************************************************
 
-  Function declarions and invocations.
+  Function declarations and invocations.
 
   VFO_DeclList represents a list of prolog declarations that consists of all
   the variable, udf, and option declaration in the prolog. 
@@ -2370,6 +2370,8 @@ void *begin_visit (const VFO_DeclList& v) {
                                                   n->get_location ());
     {
       xqp_string ns = qname->getNamespace ();
+      if(ns.empty())
+        ZORBA_ERROR_LOC (XQST0060, loc);//function must be declared in a non-NULL namespace
       if (ns == XQUERY_FN_NS || ns == XML_NS || ns == XML_SCHEMA_NS || ns == XSI_NS)
         ZORBA_ERROR_LOC_PARAM (XQST0045,
                                n->get_location (),
