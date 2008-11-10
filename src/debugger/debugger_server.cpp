@@ -313,12 +313,12 @@ void ZorbaDebugger::handleTcpClient( TCPSocket * aSock )
 {
   ZorbaArrayAutoPointer<Byte> lByteMessage;
   auto_ptr<AbstractMessage> lMessage;
-  auto_ptr<ReplyMessage> lReplyMessage;
+  ReplyMessage* lReplyMessage;
   Length length;
   try
   {
     lMessage.reset(MessageFactory::buildMessage( aSock ));
-    AbstractCommandMessage * lCommandMessage = dynamic_cast< AbstractCommandMessage * > ( lMessage.get() );
+    AbstractCommandMessage* lCommandMessage(dynamic_cast< AbstractCommandMessage * >(lMessage.get()));
     if ( lCommandMessage )
     {
       //process the command message
@@ -326,8 +326,8 @@ void ZorbaDebugger::handleTcpClient( TCPSocket * aSock )
       cout.flush();
       processMessage( lCommandMessage );
       //Send the reply message
-      lReplyMessage.reset(lCommandMessage->getReplyMessage());
-      lByteMessage.reset(lReplyMessage->serialize( length ));
+      auto_ptr<ReplyMessage> lReply(lCommandMessage->getReplyMessage());
+      lByteMessage.reset(lReply->serialize( length ));
       aSock->send( lByteMessage.get(), length );
     } else {
 #ifndef NDEBUG
@@ -335,8 +335,8 @@ void ZorbaDebugger::handleTcpClient( TCPSocket * aSock )
 #endif
       //If something goes wrong, buildMessage() receive a Reply Message containing the error description
       //Send it back to the client right away
-      lReplyMessage.reset(dynamic_cast<ReplyMessage *> ( lMessage.get() ));
-      if( lReplyMessage.get() ){
+      lReplyMessage = dynamic_cast<ReplyMessage *>(lMessage.get());
+      if( lReplyMessage != 0 ){
         lByteMessage.reset(lReplyMessage->serialize( length ));
         aSock->send( lByteMessage.get(), length );
       } else {
