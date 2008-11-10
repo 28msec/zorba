@@ -139,7 +139,7 @@ populateDynamicContext(zorba::DynamicContext* aDynamicContext, ZorbaCMDPropertie
 
 
 bool
-createSerializerOptions(Zorba_SerializerOptions& lSerOptions, ZorbaCMDProperties* aProperties)
+createSerializerOptions(Zorba_SerializerOptions_t& lSerOptions, ZorbaCMDProperties* aProperties)
 {
   if ( aProperties->indent() )
     lSerOptions.indent = ZORBA_INDENT_YES;
@@ -477,7 +477,7 @@ int _tmain(int argc, _TCHAR* argv[])
           lStaticContext->setBaseURI(lTmp.str());
         }
         lQuery->compile (*qfile, lStaticContext, lHints);
-      
+
         if (lTiming) 
         {
           zorba::DateTime::getLocalTime(lStopCompileTime);
@@ -516,7 +516,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
       try
       {
-        Zorba_SerializerOptions lSerOptions;
+        Zorba_SerializerOptions_t lSerOptions;
         createSerializerOptions(lSerOptions, &lProperties);
 
         if (lTiming) 
@@ -529,7 +529,7 @@ int _tmain(int argc, _TCHAR* argv[])
         if (lQuery->isUpdateQuery()) 
           lQuery->applyUpdates();
         else
-          lQuery->serialize(*lOutputStream, lSerOptions);
+          lQuery->serialize(*lOutputStream, &lSerOptions);
 
         if (lTiming) 
         {
@@ -551,7 +551,7 @@ int _tmain(int argc, _TCHAR* argv[])
           if (lQuery->isUpdateQuery())
             lQuery->applyUpdates();
           else
-            lQuery->serialize(*lOutputStream, lSerOptions);
+            lQuery->serialize(*lOutputStream, &lSerOptions);
         }
 
         if (lTiming) 

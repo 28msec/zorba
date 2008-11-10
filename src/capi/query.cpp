@@ -137,7 +137,7 @@ namespace zorbac {
 
       // TODO this is eager at the moment, we need a pull serializer
       if (options)
-        lQuery->serialize(lStream, *options);
+        lQuery->serialize(lStream, options);
       else
         lQuery->serialize(lStream);
       lStream.seekg(0);
@@ -164,7 +164,7 @@ namespace zorbac {
 
       // TODO this is eager at the moment, we need a pull serializer
       if (options)
-        lQuery->serialize(lStream, *options);
+        lQuery->serialize(lStream, options);
       else
         lQuery->serialize(lStream);
       lStream.seekg(0);

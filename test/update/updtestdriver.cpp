@@ -289,7 +289,7 @@ main(int argc, char** argv)
         {
           if ( lResultFile.exists ()) { lResultFile.remove (); }
           std::ofstream lResFileStream(lResultFile.get_path().c_str());
-          lQueries.back()->serialize(lResFileStream, lSerOptions);
+          lQueries.back()->serialize(lResFileStream, &lSerOptions);
           lResFileStream.flush();
           printFile(std::cout, lResultFile.get_path(), "Result ");
 

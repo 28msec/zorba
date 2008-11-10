@@ -70,7 +70,7 @@ serialization_example_3(Zorba* aZorba)
     Zorba_SerializerOptions lSerOptions;
     lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
 
-    lQuery->serialize(std::cout, lSerOptions);
+    lQuery->serialize(std::cout, &lSerOptions);
   } catch (ZorbaException& e) {
     std::cerr << e << std::endl;
     return false;
@@ -91,7 +91,7 @@ serialization_example_4(Zorba* aZorba)
     Zorba_SerializerOptions lSerOptions;
     lSerOptions.indent = ZORBA_INDENT_YES;
 
-    lQuery->serialize(std::cout, lSerOptions);
+    lQuery->serialize(std::cout, &lSerOptions);
   } catch (ZorbaException& e) {
     std::cerr << e << std::endl;
     return false;
@@ -109,7 +109,7 @@ serialization_example_5(Zorba* aZorba)
     Zorba_SerializerOptions lSerOptions;
     lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
 
-    lQuery->serialize(std::cout, lSerOptions);
+    lQuery->serialize(std::cout, &lSerOptions);
   } catch (ZorbaException& e) {
     std::cerr << e << std::endl;
     return false;
@@ -127,7 +127,7 @@ serialization_example_6(Zorba* aZorba)
     Zorba_SerializerOptions lSerOptions;
     lSerOptions.byte_order_mark = ZORBA_BYTE_ORDER_MARK_YES;
 
-    lQuery->serialize(std::cout, lSerOptions);
+    lQuery->serialize(std::cout, &lSerOptions);
   } catch (ZorbaException& e) {
     std::cerr << e << std::endl;
     return false;

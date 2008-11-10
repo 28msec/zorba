@@ -72,7 +72,7 @@ ZorbaDebugger::~ZorbaDebugger()
 
 void ZorbaDebugger::start( XQueryImpl *aQuery,
                            ostream& aOutStream,
-                           const Zorba_SerializerOptions_t& aSerOptions,
+                           const Zorba_SerializerOptions_t* aSerOptions,
                            unsigned short aRequestPortno,
                            unsigned short aEventPortno)
 {
@@ -80,7 +80,7 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
   //Set the query and serialization options
   theQuery = aQuery;
   theOutputStream = &aOutStream;
-  theSerOptions = &aSerOptions;
+  theSerOptions = aSerOptions;
   //Run the server 
   theRequestServerSocket = new TCPServerSocket( aRequestPortno );
   theEventPortno = aEventPortno;
@@ -223,9 +223,9 @@ void ZorbaDebugger::runQuery()
   setStatus( QUERY_RUNNING );
   try
   {
-    Zorba_SerializerOptions lSerOptions;
+    Zorba_SerializerOptions_t lSerOptions;
     lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-    theQuery->serialize( *theOutputStream, *theSerOptions );
+    theQuery->serialize( *theOutputStream, theSerOptions );
     cout.flush();
   } catch ( StaticException& se ) {
     cerr << se << std::endl;

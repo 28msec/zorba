@@ -342,8 +342,8 @@ XQueryImpl::executeSAX()
 
   PlanWrapper_t lPlan = generateWrapper();
   serializer lSerializer(theErrorManager);
-  Zorba_SerializerOptions opt;
-  setSerializationParameters(&lSerializer, opt);
+  Zorba_SerializerOptions_t opt;
+  setSerializationParameters(&lSerializer, &opt);
 
   try { 
     lPlan->open();
@@ -496,7 +496,7 @@ XQueryImpl::doCompile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints)
  */
 
 void
-XQueryImpl::serialize(std::ostream& os, const Zorba_SerializerOptions_t& opt)
+XQueryImpl::serialize(std::ostream& os, const Zorba_SerializerOptions_t* opt)
 {
   ZORBA_TRY
     checkNotClosed();
@@ -504,7 +504,8 @@ XQueryImpl::serialize(std::ostream& os, const Zorba_SerializerOptions_t& opt)
 
     PlanWrapper_t lPlan = generateWrapper();
     serializer lSerializer(theErrorManager);
-    setSerializationParameters(&lSerializer, opt);
+    if (opt != NULL)
+      setSerializationParameters(&lSerializer, opt);
     
     SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
@@ -624,9 +625,12 @@ XQueryImpl::generateWrapper()
 void
 XQueryImpl::setSerializationParameters(
     serializer* ser,
-    const Zorba_SerializerOptions_t& opt)
+    const Zorba_SerializerOptions_t* opt)
 {
-  switch (opt.ser_method) 
+  if (opt == NULL)
+    return;
+  
+  switch (opt->ser_method) 
   {
   case ZORBA_SERIALIZATION_METHOD_XML:
     ser->set_parameter("method", "xml"); break;
@@ -638,7 +642,7 @@ XQueryImpl::setSerializationParameters(
     ser->set_parameter("method", "text"); break;
   }
 
-  switch (opt.byte_order_mark) 
+  switch (opt->byte_order_mark) 
   {
   case ZORBA_BYTE_ORDER_MARK_YES:
     ser->set_parameter("byte-order-mark", "yes"); break;
@@ -646,7 +650,7 @@ XQueryImpl::setSerializationParameters(
     ser->set_parameter("byte-order-mark", "no"); break;
   }
 
-  switch (opt.include_content_type)
+  switch (opt->include_content_type)
   {
   case ZORBA_INCLUDE_CONTENT_TYPE_YES:
     ser->set_parameter("include-content-type", "yes"); break;
@@ -654,7 +658,7 @@ XQueryImpl::setSerializationParameters(
     ser->set_parameter("include-content-type", "no"); break;
   }
 
-  switch (opt.indent) 
+  switch (opt->indent) 
   {
   case ZORBA_INDENT_YES:
     ser->set_parameter("indent", "yes"); break;
@@ -662,7 +666,7 @@ XQueryImpl::setSerializationParameters(
     ser->set_parameter("indent", "no"); break;
   }
 
-  switch (opt.omit_xml_declaration)
+  switch (opt->omit_xml_declaration)
   {
   case ZORBA_OMIT_XML_DECLARATION_YES:
     ser->set_parameter("omit-xml-declaration", "yes"); break;
@@ -670,7 +674,7 @@ XQueryImpl::setSerializationParameters(
     ser->set_parameter("omit-xml-declaration", "no"); break;
   }
 
-  switch (opt.standalone)
+  switch (opt->standalone)
   {
   case ZORBA_STANDALONE_YES:
     ser->set_parameter("standalone", "yes"); break;
@@ -680,7 +684,7 @@ XQueryImpl::setSerializationParameters(
     ser->set_parameter("standalone", "omit"); break;
   }
 
-  switch (opt.undeclare_prefixes)
+  switch (opt->undeclare_prefixes)
   {
   case ZORBA_UNDECLARE_PREFIXES_YES:
     ser->set_parameter("undeclare-prefixes", "yes"); break;
@@ -688,11 +692,11 @@ XQueryImpl::setSerializationParameters(
     ser->set_parameter("undeclare-prefixes", "no"); break;
   }    
 
-  if (opt.doctype_system != "")
-    ser->set_parameter("doctype-system", xqpString(opt.doctype_system.c_str()));
+  if (opt->doctype_system != "")
+    ser->set_parameter("doctype-system", xqpString(opt->doctype_system.c_str()));
 
-  if (opt.doctype_public != "")
-    ser->set_parameter("doctype-public", xqpString(opt.doctype_public.c_str()));
+  if (opt->doctype_public != "")
+    ser->set_parameter("doctype-public", xqpString(opt->doctype_public.c_str()));
 }
 
 
@@ -758,13 +762,13 @@ void XQueryImpl::checkIsDebugMode() const
 
 void XQueryImpl::debug( unsigned short aCommandPort, unsigned short anEventPort )
 {
-  Zorba_SerializerOptions lSerOptions;
+  Zorba_SerializerOptions_t lSerOptions;
   lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;  
-  debug(std::cout, lSerOptions, aCommandPort, anEventPort);
+  debug(std::cout, &lSerOptions, aCommandPort, anEventPort);
 }
 
 void XQueryImpl::debug(std::ostream& aOutStream,
-                        const Zorba_SerializerOptions_t& aSerOptions,
+                        const Zorba_SerializerOptions_t* aSerOptions,
                         unsigned short aCommandPort, unsigned short anEventPort)
 {
   //check if the query is compiled and not closed

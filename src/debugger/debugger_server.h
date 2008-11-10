@@ -86,7 +86,7 @@ class ZorbaDebugger
 
     void start( XQueryImpl *aQuery,
                 std::ostream& aOutStream,
-                const Zorba_SerializerOptions_t& aSerOptions,
+                const Zorba_SerializerOptions_t* aSerOptions,
                 unsigned short aRequestPort = 8000,
                 unsigned short aEventPort = 9000 );
 

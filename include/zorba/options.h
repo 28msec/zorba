@@ -115,7 +115,9 @@ typedef enum {
 * File \link serialization.cpp \endlink contains examples that show how to use
 * the SerializerOptions.
 */
-typedef struct Zorba_SerializerOptions {
+#ifdef __cplusplus
+typedef struct Zorba_SerializerOptions 
+{
   Zorba_serialization_method_t  ser_method;
   Zorba_byte_order_mark_t       byte_order_mark;
   Zorba_escape_uri_attributes_t escape_uri_attributes;
@@ -125,12 +127,10 @@ typedef struct Zorba_SerializerOptions {
   Zorba_omit_xml_declaration_t  omit_xml_declaration;
   Zorba_standalone_t            standalone; 
   Zorba_undeclare_prefixes_t    undeclare_prefixes;
-
-#ifdef __cplusplus
-  // Only available in the C++ build
+  
   zorba::String                 doctype_system;
   zorba::String                 doctype_public;
-#endif
+
 
   /** \brief Default constructor for SerializerOptions which assigns default values to all 
    *         options (C++ only).
@@ -146,8 +146,15 @@ typedef struct Zorba_SerializerOptions {
    *   - standalone: omit
    *   - undeclare-prefixes: NO
    */
-#ifdef __cplusplus
+
   Zorba_SerializerOptions();
+  
+  /** \brief Helper function to set a serializer parameter value from a key / value string pair.
+   *
+   *
+   * \retval None
+   */
+  void SetSerializerOption(const char* parameter, const char* value);
 
   /** \brief Helper function to create a Zorba_SerializerOptions from a vector of key / value 
    *         string pairs 
@@ -155,8 +162,15 @@ typedef struct Zorba_SerializerOptions {
    * \retval The created Zorba_SerializerOptions structure
    */
   static Zorba_SerializerOptions SerializerOptionsFromStringParams(const std::vector<std::pair<std::string,std::string> >& params);
-#endif
+  
 } Zorba_SerializerOptions_t;
+#endif
+
+
+#ifndef __cplusplus
+struct Zorba_SerializerOptions;
+typedef struct Zorba_SerializerOptions Zorba_SerializerOptions_t;
+#endif
 
 
 #ifdef __cplusplus
@@ -170,12 +184,29 @@ extern "C" {
  */
 Zorba_CompilerHints_t Zorba_CompilerHints_default();
 
-/** \brief Helper function for C to create a Zorba_SerializerOptions_t struct 
- *         because of missing default constructor. 
+/** \brief Helper function to create a Zorba_SerializerOptions_t struct because 
+ *         of missing default constructor. C++ code can delete the
+ *         returned Zorba_SerializerOptions_t* struct, while C code 
+ *         must call Zorba_SerializerOptions_free().  
  *
  * \retval Zorba_CompilerHints_t with default member values 
  */
-Zorba_SerializerOptions_t Zorba_SerializerOptions_default();
+Zorba_SerializerOptions_t* Zorba_SerializerOptions_default();
+
+/** \brief Helper function to delete a Zorba_SerializerOptions_t struct
+ *
+ * \retval Zorba_CompilerHints_t with default member values 
+ */
+void Zorba_SerializerOptions_free(Zorba_SerializerOptions_t* serializerOptions);
+
+/** \brief Helper function to set an option in a Zorba_SerializerOptions_t structure
+ * 
+ * \param parameter the serializer parameter to be configured
+ * \param value the value to which the parameter should be set
+ * \retval Zorba_CompilerHints_t with default member values 
+ */
+void Zorba_SerializerOptions_set(Zorba_SerializerOptions_t* serializerOptions, const char* parameter, const char* value);
+
 
 #ifdef __cplusplus
 }

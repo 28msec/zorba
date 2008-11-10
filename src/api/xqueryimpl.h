@@ -173,7 +173,7 @@ class XQueryImpl : public XQuery
   isUpdateQuery() const;
 
   void
-  serialize(std::ostream&, const Zorba_SerializerOptions_t& = Zorba_SerializerOptions_default());
+  serialize(std::ostream&, const Zorba_SerializerOptions_t* = NULL);
 
   void 
   applyUpdates();
@@ -233,7 +233,7 @@ class XQueryImpl : public XQuery
   getCompilerConfig(const Zorba_CompilerHints_t&);
 
   void
-  setSerializationParameters(serializer*, const Zorba_SerializerOptions&);
+  setSerializationParameters(serializer*, const Zorba_SerializerOptions_t*);
 
   PlanWrapper_t
   generateWrapper();
@@ -274,7 +274,7 @@ class XQueryImpl : public XQuery
 
   void
   debug(std::ostream& aOutStream,
-        const Zorba_SerializerOptions_t& aSerOptions,
+        const Zorba_SerializerOptions_t* aSerOptions,
         unsigned short aCommandPort, unsigned short anEventPort);
 #endif
 }; /* class XQueryImpl */

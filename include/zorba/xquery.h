@@ -106,7 +106,7 @@ namespace zorba {
        */
       virtual void
       serialize(std::ostream& aOutStream, 
-                const Zorba_SerializerOptions_t& aSerOptions = Zorba_SerializerOptions_default()) = 0;
+                const Zorba_SerializerOptions_t* aSerOptions = NULL) = 0;
 
       /** \brief Apply/execute the query if it is an updating query.
        *
@@ -340,7 +340,7 @@ namespace zorba {
        */
       virtual void
       debug(std::ostream& aOutStream,
-            const Zorba_SerializerOptions_t& aSerOptions = Zorba_SerializerOptions_default(),
+            const Zorba_SerializerOptions_t* aSerOptions = NULL,
             unsigned short aCommandPort = 8000, unsigned short anEventPort = 9000) = 0;
 #endif
   };
