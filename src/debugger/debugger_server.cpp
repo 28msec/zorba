@@ -59,10 +59,7 @@ ZORBA_THREAD_RETURN runtimeThread( void *aDebugger )
 {
   ZorbaDebugger * lDebugger = (ZorbaDebugger *)aDebugger;
   //We wait for theRuntimeThread to be allocated
-  while( lDebugger->theRuntimeThread == 0 )
-  {
-	  sleep(1);
-  }
+  while( lDebugger->theRuntimeThread == 0 ){ sleep(1); }
   lDebugger->runQuery();
   return 0;
 }
@@ -451,6 +448,8 @@ bool ZorbaDebugger::hasToStepOver() const
   if(isSteppingOver && lDecimal.size() <= theDecimalSize &&
      theFunctionName == lFunctionName)
   {
+    cerr << "theFunctionName: " << theFunctionName << endl;
+    cerr << "lFunctionName: " << lFunctionName << endl;
     return true;
   }
   return false;

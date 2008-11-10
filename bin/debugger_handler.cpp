@@ -106,7 +106,12 @@ void DebuggerHandler::addBreakpoint(const vector<string>& args) const
     lLine = atoi(args.at(2).c_str());
   }
   QueryLocation_t lLocation(theClient->addBreakpoint(lNamespace, lLine));
-  cerr << "Set breakpoint at: " <<  lLocation.get() << endl;
+  if(lLocation->getLineBegin() == 0)
+  {
+    cerr << "Couldn't find an expression to break in " << lNamespace << " at line " << lLine << endl;
+  } else {
+    cerr << "Set breakpoint at: " <<  lLocation.get() << endl;
+  }
 }
 
 void DebuggerHandler::addWatchpoint(const vector<string>& args) const

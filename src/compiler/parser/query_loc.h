@@ -53,6 +53,7 @@ public:
   QueryLoc();
   QueryLoc(const QueryLoc& aQueryLoc);
   ~QueryLoc(){}
+
 public:
   xqpString    getFilenameBegin() const { return theFilenameBegin; } 
   unsigned int getLineBegin() const     { return theLineBegin; }     
@@ -71,7 +72,11 @@ public:
   xqpString getFilename() const { return getFilenameBegin(); }
   unsigned int getLineno() const { return getLineBegin(); }
  
-  void setFunctionName(std::string aName){ theFunctionName = aName; }
+  void setFunctionName(std::string aName)
+  { 
+    theFunctionName = aName;
+  }
+
   std::string getFunctionName() const { return theFunctionName; }
 
   xqpString toJSON() const;
@@ -81,8 +86,7 @@ public:
   {
     return theFilenameBegin==loc.getFilenameBegin() && theFilenameEnd==loc.getFilenameEnd() &&
            theColumnBegin==loc.getColumnBegin() && theColumnEnd==loc.getColumnEnd() &&
-           theLineBegin==loc.getLineBegin() && theLineEnd==loc.getLineEnd() &&
-           theFunctionName==loc.getFunctionName();
+           theLineBegin==loc.getLineBegin() && theLineEnd==loc.getLineEnd();
   }
 
   bool operator==(const QueryLoc& loc) const

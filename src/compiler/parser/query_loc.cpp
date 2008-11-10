@@ -37,6 +37,9 @@ QueryLoc::QueryLoc(const QueryLoc& aQueryLoc)
    theFilenameEnd (aQueryLoc.theFilenameEnd),
    theLineEnd (aQueryLoc.theLineEnd),
    theColumnEnd (aQueryLoc.theColumnEnd)
+#ifdef ZORBA_DEBUGGER
+  ,theFunctionName(aQueryLoc.theFunctionName)
+#endif
 {}
 
 std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc) {

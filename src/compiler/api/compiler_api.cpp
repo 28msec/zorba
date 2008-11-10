@@ -134,18 +134,18 @@ XQueryCompiler::normalize(parsenode_t aParsenode)
       lDebugger->theClassification.insert(lClassification.begin(), lClassification.end());
     }
 
-#if 0
-    std::map<std::stack<unsigned int>, const QueryLoc> lClassification = theCompilerCB->m_debugger->theClassification;
-    std::map<std::stack<unsigned int>, const QueryLoc>::iterator it;
-    for(it=lClassification.begin(); it!=lClassification.end(); ++it)
+#if 1
+    Classification_t lClassification = theCompilerCB->m_debugger->theClassification;
+    Classification_t::iterator lIter;
+    for(lIter=lClassification.begin(); lIter!=lClassification.end(); ++lIter)
     {
-      std::stack<unsigned int> s(it->first);
+      std::stack<unsigned int> s(lIter->second);
       while(!s.empty())
       {
         std::cerr << s.top();
         s.pop();
       }
-      std::cerr << ' ' << it->second << std::endl;
+      std::cerr << ' ' << lIter->first << ' ' << lIter->first.getFunctionName() << std::endl;
     }
 #endif
   }
