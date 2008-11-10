@@ -175,7 +175,8 @@ class ZorbaDebugger
 
     //The stack frame
     std::stack< std::pair<std::string, QueryLoc> > theStack;
-    
+    std::stack< std::pair<std::string, QueryLoc> > theLastKnownStack;
+
     //is it a function execution ?
     bool isFunctionExecution;
     bool catchFunctionExecution;

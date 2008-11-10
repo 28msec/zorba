@@ -221,19 +221,10 @@ void ZorbaDebugger::terminatedEvent()
 void ZorbaDebugger::runQuery()
 {
   setStatus( QUERY_RUNNING );
-  try
-  {
-    Zorba_SerializerOptions_t lSerOptions;
-    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-    theQuery->serialize( *theOutputStream, theSerOptions );
-    cout.flush();
-  } catch ( StaticException& se ) {
-    cerr << se << std::endl;
-  } catch ( DynamicException& de ) {
-    cerr << de << std::endl;
-  } catch ( SystemException& se ) {
-    cerr << se << std::endl;
-  }
+  Zorba_SerializerOptions_t lSerOptions;
+  lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+  theQuery->serialize( *theOutputStream, theSerOptions );
+  theOutputStream->flush();
   setStatus( QUERY_TERMINATED );
 }
 
@@ -433,6 +424,8 @@ void ZorbaDebugger::step( const StepCommand aKind )
     isSteppingOut = true;
     lCurrentDecimal.pop();
     theDecimalSize = lCurrentDecimal.size()-1;
+    theLastKnownStack = theStack;
+    if(theLastKnownStack.size() > 0) theLastKnownStack.pop();
     resume();
   }
 }
@@ -477,9 +470,10 @@ bool ZorbaDebugger::hasToStepOut() const
   {
     return false;
   }
+
   if(isSteppingOut && (
       (lDecimal.size() <= theDecimalSize && theFunctionName == lFunctionName) ||
-        (theFunctionName != lFunctionName)
+        (theLastKnownStack == theStack)
       )
     )
   {

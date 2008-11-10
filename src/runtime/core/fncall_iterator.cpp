@@ -183,6 +183,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
   if(lDebugger != 0)
   {
     name << ')';
+    //lDebugger->theLastKnownStack = lDebugger->theStack;
     lDebugger->theStack.push(std::make_pair<std::string, const QueryLoc>(name.str(), loc)); 
     lDebugger->isFunctionExecution = true;
   }
@@ -208,6 +209,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 #ifdef ZORBA_DEBUGGER
   if(lDebugger != 0)
   {
+    //lDebugger->theLastKnownStack = lDebugger->theStack;
     lDebugger->theStack.pop();
   }
 #endif

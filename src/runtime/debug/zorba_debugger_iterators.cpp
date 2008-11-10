@@ -77,6 +77,7 @@ FnDebugIterator::FnDebugIterator(const QueryLoc& loc,
     
     while ( consumeNext( result, theChildren[0], planState )) {
       STACK_PUSH(true, state);
+      assert(theDebugger != 0);
       if ( for_expr ) {
         if ( theDebugger->hasToSuspend() )
         {

@@ -194,8 +194,12 @@ ZORBA_THREAD_RETURN server(void* args)
   try
   {
     lQuery->debug(requests, events);
-  }catch(DynamicException& e){
+  }catch(zorba::StaticException& se){
+    std::cerr << se << std::endl;
+  }catch(zorba::DynamicException& e){
     std::cerr << e << std::endl;  
+  }catch(zorba::SystemException& e){
+    std::cerr << e << std::endl;
   }
   lQuery->close();
   return 0;
