@@ -134,7 +134,7 @@ XQueryCompiler::normalize(parsenode_t aParsenode)
       lDebugger->theClassification.insert(lClassification.begin(), lClassification.end());
     }
 
-#if 1
+#if 0
     Classification_t lClassification = theCompilerCB->m_debugger->theClassification;
     Classification_t::iterator lIter;
     for(lIter=lClassification.begin(); lIter!=lClassification.end(); ++lIter)
