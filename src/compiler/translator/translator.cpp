@@ -3046,6 +3046,9 @@ void end_visit (const NodeComp& v, void* /*visit_state*/) {
 
 void *begin_visit (const OptionDecl& v) {
   TRACE_VISIT ();
+  //check if namespace for option is valid
+  rchandle<QName>   qn = v.get_qname();
+  xqpString   option_ns = sctx_p->lookup_ns(qn->get_prefix());
   return no_state;
 }
 
