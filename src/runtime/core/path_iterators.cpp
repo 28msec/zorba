@@ -477,7 +477,7 @@ bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
         ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
                              "The context item of an axis step is not a node");
       }
-    }
+    }//daniel: maybe we should allow attribute nodes if kind test permits
     while (state->theContextNode->getNodeKind() == store::StoreConsts::attributeNode);
 
     parent = state->theContextNode->getParent();
@@ -552,7 +552,7 @@ bool LSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
       {
         ZORBA_ERROR_LOC_DESC(  XPTY0020, loc, "The context item of an axis step is not a node");
       }
-    }
+    }//daniel: maybe we should allow attribute nodes if kind test permits
     while (state->theContextNode->getNodeKind() == store::StoreConsts::attributeNode);
 
     parent = state->theContextNode->getParent();
@@ -786,7 +786,8 @@ bool DescendantSelfAxisIterator::nextImpl(
                              "The context item of an axis step is not a node");
       }
     }
-    while (!isElementOrDocumentNode(state->theContextNode.getp()));
+    while (!((theTestKind != match_name_test) && (theTestKind != match_no_test) ||
+          isElementOrDocumentNode(state->theContextNode.getp())));//for name test, check for principal node type
 
     result = state->theContextNode;
     first = true;
@@ -804,6 +805,9 @@ bool DescendantSelfAxisIterator::nextImpl(
       {
         STACK_PUSH(true, state);
       }
+
+      if(state->empty())
+        break;
 
       // The next descendant is the next child of the node N that is currently
       // at the top of the path stack. If N has no children or all of its
