@@ -31,10 +31,13 @@ namespace zorba {
 
   NARY_ITER (ZorbaImportFolderIterator);
 
-class ZorbaListCollectionsState : public PlanIteratorState {
+class ZorbaListCollectionsState : public PlanIteratorState 
+{
 public:
   store::Iterator_t   uriItState;
+
   ~ZorbaListCollectionsState();
+
   void init(PlanState&);
   void reset(PlanState&);
 };

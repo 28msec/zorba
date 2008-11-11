@@ -38,12 +38,15 @@ NARY_ITER(FnNamespaceUriIterator);
 NARY_ITER(FnLangIterator);
 
 // 15.5.6 fn:collection
-class FnCollectionIteratorState : public PlanIteratorState {
+class FnCollectionIteratorState : public PlanIteratorState 
+{
 public:
   store::Iterator_t theIterator;
   bool              theIteratorOpened;
+
   FnCollectionIteratorState();
   ~FnCollectionIteratorState();
+
   void init(PlanState&);
   void reset(PlanState&);
 };

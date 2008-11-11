@@ -222,24 +222,40 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   FnCollectionIteratorState *state;
   DEFAULT_STACK_INIT(FnCollectionIteratorState, state, planState);
 
-  if (theChildren.size() == 1 && consumeNext(lURI, theChildren[0].getp(), planState)) {
-    try {
+  if (theChildren.size() == 1 &&
+      consumeNext(lURI, theChildren[0].getp(), planState)) 
+  {
+    try 
+    {
       tt = lURI->getStringValue();
-      resolvedURIString = planState.sctx()->resolve_relative_uri(lURI->getStringValueP(), xqp_string()).getStore();
+      resolvedURIString = planState.sctx()->
+                          resolve_relative_uri(lURI->getStringValueP(),
+                                               xqp_string()).getStore();
+
       GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
-    } catch (error::ZorbaError& e) {
+    }
+    catch (error::ZorbaError& e) 
+    {
       ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Error retrieving resource.");
     }
-  } else {
+  }
+  else 
+  {
+    resolvedURIItem = planState.theRuntimeCB->theDynamicContext->
+                      get_default_collection();
 
-  resolvedURIItem = planState.theRuntimeCB->theDynamicContext->get_default_collection();
-  if( NULL == resolvedURIItem)
-    ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection is undefined in the dynamic context.");
+    if( NULL == resolvedURIItem)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc,
+                           "Default collection is undefined in the dynamic context.");
   }
 
-  theColl =  planState.sctx()->get_collection_uri_resolver()->resolve(resolvedURIItem, planState.sctx());
-  if ( theColl == 0 ) {
-    ZORBA_ERROR_LOC_PARAM(FODC0004, loc, resolvedURIItem->getStringValue()->c_str(), "");
+  theColl =  planState.sctx()->get_collection_uri_resolver()->
+             resolve(resolvedURIItem, planState.sctx());
+
+  if ( theColl == 0 ) 
+  {
+    ZORBA_ERROR_LOC_PARAM(FODC0004, loc,
+                          resolvedURIItem->getStringValue()->c_str(), "");
   }
 
   /** return the nodes of the collection */
