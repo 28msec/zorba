@@ -81,7 +81,7 @@ CollectionImpl::addNode(const Item& aNode, const long aPosition)
     SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
     //check if the item is already in the collection
-    theCollection->addToCollection(lItem, aPosition);
+    theCollection->addNode(lItem, aPosition);
     return true;
 
   ZORBA_CATCH
@@ -89,7 +89,7 @@ CollectionImpl::addNode(const Item& aNode, const long aPosition)
 }
 
 bool
-CollectionImpl::addNode(const Item& aNode, const Item& aTargetNode, bool aOrder)
+CollectionImpl::addNode(const Item& aNode, const Item& aTargetNode, bool before)
 {
   ZORBA_TRY
 
@@ -98,7 +98,7 @@ CollectionImpl::addNode(const Item& aNode, const Item& aTargetNode, bool aOrder)
 
     SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
-    theCollection->addNode(lItem, targetItem, aOrder);
+    theCollection->addNode(lItem, targetItem, before);
 
     return true;
 
@@ -116,7 +116,7 @@ CollectionImpl::addNodes(const ResultIterator* aResultIterator)
 
     SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
-    theCollection->addToCollection(&*lPlan);
+    theCollection->addNodes(&*lPlan);
     return true;
 
   ZORBA_CATCH
@@ -128,7 +128,7 @@ bool
 CollectionImpl::addDocument(std::istream& lInStream, const long aPosition)
 {
   ZORBA_TRY
-    theCollection->addToCollection(lInStream, aPosition);
+    theCollection->loadDocument(lInStream, aPosition);
     return true;
   ZORBA_CATCH
   return false;
@@ -143,7 +143,7 @@ CollectionImpl::deleteNode(const Item& aNode)
 
     SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
-    theCollection->removeFromCollection(lItem);
+    theCollection->removeNode(lItem);
     return true;
   ZORBA_CATCH
   return false;
@@ -154,7 +154,7 @@ bool
 CollectionImpl::deleteNode(const long aPosition)
 {
   ZORBA_TRY
-    theCollection->removeFromCollection(aPosition);
+    theCollection->removeNode(aPosition);
     return true;
   ZORBA_CATCH
   return false;
