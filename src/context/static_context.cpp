@@ -163,7 +163,22 @@ DECL_STR_PARAM (static_context, default_function_namespace, XQST0066)
 DECL_STR_PARAM (static_context, default_elem_type_ns, XQST0066)
 DECL_STR_PARAM (static_context, current_absolute_baseuri, MAX_ZORBA_ERROR_CODE)
 DECL_STR_PARAM_TRIGGER (static_context, encapsulating_entity_baseuri, MAX_ZORBA_ERROR_CODE, set_current_absolute_baseuri (""))
-DECL_STR_PARAM_TRIGGER (static_context, entity_retrieval_url, MAX_ZORBA_ERROR_CODE, set_current_absolute_baseuri (""))
+//DECL_STR_PARAM_TRIGGER (static_context, entity_retrieval_url, MAX_ZORBA_ERROR_CODE, set_current_absolute_baseuri (""))
+
+
+xqp_string static_context::entity_retrieval_url () const 
+{ 
+  xqp_string val; 
+  GET_CONTEXT_VALUE (entity_retrieval_url, val); 
+  return val;                   
+}                               
+                                  
+void static_context::set_entity_retrieval_url(xqp_string val) 
+{ 
+  bind_str ("int:entity_retrieval_url", val, MAX_ZORBA_ERROR_CODE);      
+  set_current_absolute_baseuri ("");
+}
+
 
 void static_context::set_typemanager(std::auto_ptr<TypeManager> _typemgr)
 {
