@@ -70,16 +70,16 @@ public:
 
   store::Iterator_t getIterator(bool idsNeeded);
 
-  store::Item_t addToCollection(std::istream& stream, const long position = -1);
-  store::Item_t addToCollection(std::istream* stream, const long position = -1);
+  store::Item_t loadDocument(std::istream& stream, const long position = -1);
+  store::Item_t loadDocument(std::istream* stream, const long position = -1);
 
-  void addToCollection(const store::Item* node, const long position = -1);
-  void addNode(const store::Item* node, const store::Item* aTargetNode, bool aOrder);
+  void addNode(const store::Item* node, const long position = -1);
+  void addNode(const store::Item* node, const store::Item* aTargetNode, bool before);
 
-  void addToCollection(store::Iterator* nodes, const long position = -1);
+  void addNodes(store::Iterator* nodes, const long position = -1);
 
-  void removeFromCollection(const store::Item* node);
-  void removeFromCollection(const long position = -1);
+  void removeNode(const store::Item* node);
+  void removeNode(const long position = -1);
 
   store::Item_t nodeAt(const long position);
   long indexOf(const store::Item* node);

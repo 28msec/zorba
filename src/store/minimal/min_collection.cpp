@@ -62,7 +62,7 @@ store::Iterator_t SimpleCollection::getIterator(bool idsNeeded)
   Insert into the collection an xml document or fragment given as text via an
   input stream. Return the root node of the new xml document or fragment.
 ********************************************************************************/
-store::Item_t SimpleCollection::addToCollection(
+store::Item_t SimpleCollection::loadDocument(
                 std::istream& stream, 
                 const long position)
 {
@@ -94,7 +94,7 @@ store::Item_t SimpleCollection::addToCollection(
   Insert into the collection an xml document or fragment given as text via an
   input stream. Return the root node of the new xml document or fragment.
 ********************************************************************************/
-store::Item_t SimpleCollection::addToCollection(std::istream* stream, const long position)
+store::Item_t SimpleCollection::loadDocument(std::istream* stream, const long position)
 {
   error::ErrorManager lErrorManager;
   //std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lErrorManager));
@@ -125,7 +125,7 @@ store::Item_t SimpleCollection::addToCollection(std::istream* stream, const long
   Insert the given node to the collection. If the node is in the collection
   already, this method is a noop.
 ********************************************************************************/
-void SimpleCollection::addToCollection(const store::Item* node, const long position)
+void SimpleCollection::addNode(const store::Item* node, const long position)
 {
   if (!node->isNode())
   {
@@ -195,13 +195,13 @@ void SimpleCollection::addNode(
 /*******************************************************************************
   Insert into the collection the set of nodes returned by the given iterator.
 ********************************************************************************/
-void SimpleCollection::addToCollection(store::Iterator* nodeIter, const long position)
+void SimpleCollection::addNodes(store::Iterator* nodeIter, const long position)
 {
   store::Item_t node;
 
   while (nodeIter->next(node))
   {
-    addToCollection(node, position);
+    addNode(node, position);
   }
 }
 
@@ -209,7 +209,7 @@ void SimpleCollection::addToCollection(store::Iterator* nodeIter, const long pos
 /*******************************************************************************
   Delete the given node from the collection.
 ********************************************************************************/
-void SimpleCollection::removeFromCollection(const store::Item* node)
+void SimpleCollection::removeNode(const store::Item* node)
 {
   if (!node->isNode())
   {
@@ -233,7 +233,7 @@ void SimpleCollection::removeFromCollection(const store::Item* node)
 /*******************************************************************************
   Delete the node at the given position from the collection.
 ********************************************************************************/
-void SimpleCollection::removeFromCollection(const long position)
+void SimpleCollection::removeNode(const long position)
 {
   SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
   if (position == -1) {

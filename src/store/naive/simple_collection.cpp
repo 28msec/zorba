@@ -29,7 +29,7 @@ namespace zorba { namespace simplestore {
 ********************************************************************************/
 SimpleCollection::SimpleCollection(store::Item_t& uri)
 {
- theUri.transfer(uri);
+  theUri.transfer(uri);
 }
 
 
@@ -62,7 +62,7 @@ store::Iterator_t SimpleCollection::getIterator(bool idsNeeded)
   Insert into the collection an xml document or fragment given as text via an
   input stream. Return the root node of the new xml document or fragment.
 ********************************************************************************/
-store::Item_t SimpleCollection::addToCollection(
+store::Item_t SimpleCollection::loadDocument(
     std::istream& stream,
     const long position)
 {
@@ -91,11 +91,13 @@ store::Item_t SimpleCollection::addToCollection(
 }
 
 
-store::Item_t SimpleCollection::addToCollection(std::istream* stream, const long position)
+store::Item_t SimpleCollection::loadDocument(
+    std::istream* stream,
+    const long position)
 {
   store::Item_t    docitem;
   //do full loading for now
-  docitem = addToCollection(*stream, position);
+  docitem = loadDocument(*stream, position);
   delete stream;
   return docitem;
 }
@@ -105,17 +107,19 @@ store::Item_t SimpleCollection::addToCollection(std::istream* stream, const long
   Insert the given node to the collection. If the node is in the collection
   already, this method is a noop.
 ********************************************************************************/
-void SimpleCollection::addToCollection(const store::Item* node, const long position)
+void SimpleCollection::addNode(
+    const store::Item* node,
+    const long position)
 {
   if (!node->isNode())
   {
     ZORBA_ERROR( API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
+  SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
+
   if( nodePositionInCollection((store::Item*)node) == -1)
   {
-    SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
-
     if(position == -1)
       theXmlTrees.insert(theXmlTrees.end(), const_cast<store::Item*>(node));
     else
@@ -129,62 +133,54 @@ void SimpleCollection::addToCollection(const store::Item* node, const long posit
 
 
 /*******************************************************************************
-  Insert the given node to the collection before the aTargetNode. 
+  Insert the given node to the collection before or after the aTargetNode. 
 ********************************************************************************/
 void SimpleCollection::addNode(
     const store::Item* node,
     const store::Item* aTargetNode,
-    bool aOrder)
+    bool before)
 {
   if (!node->isNode() || !aTargetNode->isNode())
   {
     ZORBA_ERROR( API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
-  if( nodePositionInCollection((store::Item*)aTargetNode)  == -1)
+  SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
+
+  long targetPos = nodePositionInCollection((store::Item*)aTargetNode);
+  if(targetPos == -1)
   {
     ZORBA_ERROR(API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION);
   }
 
-  checked_vector<store::Item_t>::iterator it = theXmlTrees.begin();
-  checked_vector<store::Item_t>::iterator end = theXmlTrees.end();
-  const XmlNode* rTargetNode = reinterpret_cast<const XmlNode*>(aTargetNode);
-
   if( nodePositionInCollection((store::Item*)node) == -1)
   {
-    for (; it != end; ++it)
-    {
-      //check if the nodes are the same
-      if(rTargetNode->equals(reinterpret_cast<XmlNode*>(it->getp())))
-      {
-        SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
+    checked_vector<store::Item_t>::iterator targetIter;
+    targetIter = theXmlTrees.begin() + (targetPos -1);
 
-        if(aOrder)
-          theXmlTrees.insert(it, const_cast<store::Item*>(node));
-        else
-          theXmlTrees.insert(++it,const_cast<store::Item*>(node));
-
-        break;
-      }
-    }
+    if(before)
+      theXmlTrees.insert(targetIter, const_cast<store::Item*>(node));
+    else
+      theXmlTrees.insert(++targetIter, const_cast<store::Item*>(node));
   }
   else
   {
     ZORBA_ERROR(API0031_NODE_ALREADY_IN_COLLECTION);
   }
-
 }
 
 
 /*******************************************************************************
   Insert into the collection the set of nodes returned by the given iterator.
 ********************************************************************************/
-void SimpleCollection::addToCollection(store::Iterator* nodeIter, const long position)
+void SimpleCollection::addNodes(
+    store::Iterator* nodeIter,
+    const long position)
 {
   store::Item_t node;
   while (nodeIter->next(node))
   {
-    addToCollection(node, position);
+    addNode(node, position);
   }
 }
 
@@ -192,19 +188,19 @@ void SimpleCollection::addToCollection(store::Iterator* nodeIter, const long pos
 /*******************************************************************************
   Delete the given node from the collection.
 ********************************************************************************/
-void SimpleCollection::removeFromCollection(const store::Item* node)
+void SimpleCollection::removeNode(const store::Item* node)
 {
   if (!node->isNode())
   {
     ZORBA_ERROR( API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
+  SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
+
   int position = nodePositionInCollection((store::Item*) node);
 
   if(position != -1)
   {
-    SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
-
     if( theXmlTrees.erase(theXmlTrees.begin() + (position - 1)) == theXmlTrees.end() )
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
   }
@@ -214,26 +210,34 @@ void SimpleCollection::removeFromCollection(const store::Item* node)
   }
 }
 
+
 /*******************************************************************************
   Delete the node at the given position from the collection.
 ********************************************************************************/
-void SimpleCollection::removeFromCollection(const long position)
+void SimpleCollection::removeNode(const long position)
 {
   SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
 
-  if (position == -1) {
+  if (position == -1) 
+  {
     if (theXmlTrees.size() == 0)
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
+
     theXmlTrees.erase(theXmlTrees.end());
   }
   else if (position <= 0)
+  {
     assert (false);
-  else {
+  }
+  else 
+  {
     if ((unsigned) position > theXmlTrees.size())
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
+
     theXmlTrees.erase(theXmlTrees.begin() + (position - 1));
   }
 }
+
 
 /*******************************************************************************
   Return the node at the given position from the collection.
@@ -248,6 +252,7 @@ store::Item_t SimpleCollection::nodeAt(const long position)
   return theXmlTrees[position  - 1];
 }
 
+
 /*******************************************************************************
   Return position of the given node in the collection.
 ********************************************************************************/
@@ -255,11 +260,34 @@ long SimpleCollection::indexOf(const store::Item* node)
 {
   if (!node->isNode())
   {
-    ZORBA_ERROR( API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
+    ZORBA_ERROR(API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
   return nodePositionInCollection((store::Item*) node);
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+int SimpleCollection::nodePositionInCollection(store::Item* newNode)
+{
+  if( theXmlTrees.empty() )
+    return -1;
+
+  checked_vector<store::Item_t>::iterator it = theXmlTrees.begin();
+  checked_vector<store::Item_t>::iterator end = theXmlTrees.end();
+  const XmlNode* rNewNode = reinterpret_cast<const XmlNode*>(newNode);
+
+  for (; it != end; ++it)
+  {
+    //check if the nodes are the same
+    if(rNewNode->equals(reinterpret_cast<XmlNode*>(it->getp())))
+      return (it - theXmlTrees.begin() + 1);
+  }
+  return -1;
+}
+
 
 /*******************************************************************************
 
@@ -327,31 +355,9 @@ void SimpleCollection::CollectionIter::reset()
 ********************************************************************************/
 void SimpleCollection::CollectionIter::close() 
 {
+  assert(theHaveLock);
   theHaveLock = false;
   SYNC_CODE(theCollection->theLatch.unlock();)
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-int
-SimpleCollection::nodePositionInCollection(store::Item* newNode)
-{
-  if( theXmlTrees.empty() )
-    return -1;
-  else
-  {
-    checked_vector<store::Item_t>::iterator it = theXmlTrees.begin();
-    checked_vector<store::Item_t>::iterator end = theXmlTrees.end();
-    const XmlNode* rNewNode = reinterpret_cast<const XmlNode*>(newNode);
-
-    for (; it != end; ++it)
-      //check if the nodes are the same
-      if(rNewNode->equals(reinterpret_cast<XmlNode*>(it->getp())))
-        return (it - theXmlTrees.begin() + 1);
-    return -1;
-  }
 }
 
 } // namespace store

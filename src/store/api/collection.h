@@ -34,7 +34,6 @@ public:
 
   /**
    * Returns the number of items in the collection.
-   *
    */
   virtual unsigned long size() const = 0;
 
@@ -48,25 +47,23 @@ public:
    * Ids == false is likely to be faster. 'idsNeeded' should only be set to
    * true if clients wants to sort or compare the items or sub-items generated
    * from the returned iterator.
-   *
    */
   virtual Iterator_t getIterator(bool idsNeeded) = 0;
 
   /**
-   * Inserts into the collection an xml document or fragment given as text via
-   * an input stream. Note that the collection is ordered.
+   * Loads and inserts into the collection an xml document or fragment given
+   * as text via an input stream. Note that the collection is ordered.
    *
    * @param stream The stream providing the data to insert (e.g. from a file).
    * @param position The position where the data will be inserted.
    * By default the data will be appended at the end.
    * @return The root node of the xml document or fragment.
-   *
    */
-  virtual Item_t addToCollection(std::istream& stream, const long position = -1) = 0;
+  virtual Item_t loadDocument(std::istream& stream, const long position = -1) = 0;
 
   /**
-   * Inserts into the collection an xml document or fragment given as text via
-   * an input stream.
+   * Loads and inserts into the collection an xml document or fragment given
+   * as text via an input stream.
    * The document is lazy loaded. The stream will be freed by Zorba when finished.
    *
    * @param stream The stream providing the data to insert (e.g. from a file). 
@@ -74,9 +71,8 @@ public:
    * @param position The position where the data will be inserted.
    * By default the data will be appended at the end.
    * @return The root node of the xml document or fragment.
-   *
    */
-  virtual Item_t addToCollection(std::istream* stream, const long position = -1) = 0;
+  virtual Item_t loadDocument(std::istream* stream, const long position = -1) = 0;
 
   /**
    * Inserts a node to the collection.
@@ -86,10 +82,10 @@ public:
    * By default the data will be appended at the end.
    *
    */
-  virtual void addToCollection(const Item* node, const long position = -1) = 0;
+  virtual void addNode(const Item* node, const long position = -1) = 0;
 
   /**
-   * Adds a Node Item to the Collection after the targetNode.
+   * Adds a Node Item to the Collection before or after the targetNode.
    * 
    * @param aNode the Node Item to add.
    * @param aTargetNode the aNode will be added before the aTargetNode.
@@ -99,7 +95,7 @@ public:
    *
    */
   virtual void
-  addNode(const Item* aNode, const Item* aTargetNode, bool aOrder) = 0;
+  addNode(const Item* aNode, const Item* aTargetNode, bool before) = 0;
 
   /**
    * Inserts to the collection the set of nodes returned by the given iterator.
@@ -109,7 +105,7 @@ public:
    * By default the data will be appended at the end.
    *
    */
-  virtual void addToCollection(Iterator* nodeIter, const long position = -1) = 0;
+  virtual void addNodes(Iterator* nodeIter, const long position = -1) = 0;
 
   /**
    * Removes a node from the collection.
@@ -117,7 +113,7 @@ public:
    * @param node to be removed
    *
    */
-  virtual void removeFromCollection(const Item* node) = 0;
+  virtual void removeNode(const Item* node) = 0;
 
   /**
    * Removes a node from the collection from the given position.
@@ -126,7 +122,7 @@ public:
    * By default the last Node will be removed from collection.
    *
    */
-  virtual void removeFromCollection(const long position = -1) = 0;
+  virtual void removeNode(const long position = -1) = 0;
 
   /**
    * Get the node at the given position in the collection as a Node Item.
