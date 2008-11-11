@@ -98,3 +98,4 @@ ADD_EXECUTABLE(test_ordpath ${TEST_ORDPATH_SRCS})
 TARGET_LINK_LIBRARIES(test_ordpath ${requiredlibs-testordpath})
 
 ENDIF(NOT ZORBA_MINIMAL_STORE)
+

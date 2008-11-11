@@ -37,11 +37,13 @@ class Timer
     clock_t startClock;
     clock_t suspendClock;
     clock_t endClock;
+
 #ifndef WIN32
     double startTime;
     double endTime;
     double suspendTime;
 #endif
+
 		bool suspended;
     bool running;
     bool verbose;

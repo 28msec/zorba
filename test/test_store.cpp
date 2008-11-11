@@ -114,7 +114,8 @@ int main(int argc, const char * argv[])
   // Re-acquirable latch
   //
   lStore->getGlobalLock().rlock();
-  lStore->getGlobalLock().rlock();
+  // lStore->getGlobalLock().wlock(); this will block
+  lStore->getGlobalLock().rlock(); // this is ok.
   lStore->getGlobalLock().unlock();
   lStore->getGlobalLock().unlock();
 
@@ -244,7 +245,7 @@ int main(int argc, const char * argv[])
 
   try
   {
-    doc = coll1->addToCollection(xmlStream);
+    doc = coll1->loadDocument(xmlStream);
   }
   catch (zorba::error::ZorbaError& e)
   {
@@ -293,7 +294,7 @@ int main(int argc, const char * argv[])
 
     std::cout << coll1->getUri()->show() << std::endl;
 
-    coll1->addToCollection(doc);
+    coll1->addNode(doc);
   }
   catch (error::ZorbaError& e)
   {
