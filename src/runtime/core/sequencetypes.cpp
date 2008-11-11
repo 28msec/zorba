@@ -299,23 +299,31 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, planState);
 
-  if (!consumeNext(lItem, theChild.getp(), planState)) {
+  if (!consumeNext(lItem, theChild.getp(), planState)) 
+  {
     if (theQuantifier == TypeConstants::QUANT_PLUS || theQuantifier == TypeConstants::QUANT_ONE) {
       ZORBA_ERROR_LOC_DESC(  XPTY0004, loc,  
       "Empty seq cannot be promoted to QUANT_ONE or QUANT_PLUS type.");
     }
-  } else if(theQuantifier == TypeConstants::QUANT_QUESTION 
-         || theQuantifier == TypeConstants::QUANT_ONE) {
+  } 
+  else if(theQuantifier == TypeConstants::QUANT_QUESTION 
+         || theQuantifier == TypeConstants::QUANT_ONE) 
+  {
     if (! GenericCast::instance()->promote(result, lItem, thePromoteType))
       ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
                            "Type promotion not possible: " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (lItem)) + " -> " + TypeOps::toString (*thePromoteType) );
-    if(consumeNext(temp, theChild.getp(), planState)) {
+
+    if(consumeNext(temp, theChild.getp(), planState)) 
+    {
       ZORBA_ERROR_LOC_DESC(  XPTY0004, loc,  
       "Seq with 2 or more items cannot be promoted to a QUANT_QUESTION or QUANT_ONE type.");
     }
     STACK_PUSH(true, lState);
-  } else {
-    do {
+  }
+  else
+  {
+    do 
+    {
       if (! GenericCast::instance()->promote(result, lItem, thePromoteType))
         ZORBA_ERROR_LOC_DESC( XPTY0004, loc,  "Type promotion not possible: " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (lItem)) + " -> " + TypeOps::toString (*thePromoteType) );
       else
@@ -333,6 +341,7 @@ TreatIterator::TreatIterator(const QueryLoc& aLoc, std::vector<PlanIter_t>& aChi
   theQuantifier = TypeOps::quantifier(*aTreatType);
 }
 
+
 bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t temp;
@@ -340,27 +349,43 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, planState);
 
-  if (!CONSUME (result, 0)) {
-    if (theQuantifier == TypeConstants::QUANT_PLUS || theQuantifier == TypeConstants::QUANT_ONE) {
+  if (!CONSUME (result, 0)) 
+  {
+    if (theQuantifier == TypeConstants::QUANT_PLUS ||
+        theQuantifier == TypeConstants::QUANT_ONE) 
+    {
       ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  
       "Cannot treat empty sequence as <type>+ or <type>.");
     }
-  } else if(theQuantifier == TypeConstants::QUANT_QUESTION 
-         || theQuantifier == TypeConstants::QUANT_ONE) {
-    if (CONSUME (temp, 0)) {
+  }
+  else if(theQuantifier == TypeConstants::QUANT_QUESTION 
+         || theQuantifier == TypeConstants::QUANT_ONE) 
+  {
+    if (CONSUME (temp, 0)) 
+    {
       ZORBA_ERROR_LOC_DESC( theErrorCode, loc, 
       "Cannot treat sequence with 2 or more items as <type>? or <type>.");
     }
-    if ( check_prime && !TypeOps::is_treatable(result, *theTreatType)) {
+
+    if ( check_prime && !TypeOps::is_treatable(result, *theTreatType)) 
+    {
       ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  "Cannot treat " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result)) + " as " + TypeOps::toString (*theTreatType) );
-    } else {
+    }
+    else 
+    {
       STACK_PUSH(true, lState);
     }
-  } else {
-    do {
-      if ( check_prime && !TypeOps::is_treatable(result, *theTreatType)) {
+  }
+  else 
+  {
+    do 
+    {
+      if ( check_prime && !TypeOps::is_treatable(result, *theTreatType)) 
+      {
         ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  "Cannot treat " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result)) + " as " + TypeOps::toString (*theTreatType) );
-      } else{
+      }
+      else
+      {
         STACK_PUSH(true, lState);
       }
     } while (CONSUME (result, 0));

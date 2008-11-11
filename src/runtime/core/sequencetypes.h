@@ -65,12 +65,14 @@ public:
   void reset(PlanState&);
 };
 
-class CastIterator : public UnaryBaseIterator<CastIterator, CastIteratorState> {
+class CastIterator : public UnaryBaseIterator<CastIterator, CastIteratorState> 
+{
   friend class PrinterVisitor;
 private:
-  xqtref_t theCastType;
+  xqtref_t                    theCastType;
   TypeConstants::quantifier_t theQuantifier;
-  bool theIsSimpleType;
+  bool                        theIsSimpleType;
+
 public:
   CastIterator(const QueryLoc& loc,
                PlanIter_t& aChild,
@@ -104,10 +106,12 @@ public:
 };
 
 /**
- * Iterator which tries to promote an item to the passed target type. If it is not possible,
- * a type error is thrown.
+ * Iterator which tries to promote an item to the passed target type. If it
+ * is not possible, a type error is thrown. If the type of the item is a 
+ * subtype of the target type, then no promotion is done (it's a noop).
  **/
-class PromoteIterator : public UnaryBaseIterator<PromoteIterator, PlanIteratorState> {
+class PromoteIterator : public UnaryBaseIterator<PromoteIterator, PlanIteratorState> 
+{
   friend class PrinterVisitor;
 private:
   xqtref_t thePromoteType;
