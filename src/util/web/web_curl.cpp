@@ -100,9 +100,9 @@ int tidy(const char* input, xqp_string& result, xqp_string& diagnostics)
     rc = tidyParseString( tdoc, input );           // Parse the input
   if ( rc >= 0 ) {
     if(ok) {
-      //set char-encoding to utf-8(Default value is ascii.): This option specifies the character encoding Tidy uses
-      //for both the input and output. For utf8, Tidy assumes that both input and output is encoded as UTF-8.
-      ok = tidyOptSetValue(tdoc, TidyCharEncoding, "utf8");
+      //set char-encoding to utf-8(Default value is ascii.): This option specifies the character encoding
+      //Tidy uses for the output. For utf8, Tidy assumes that both input and output is encoded as UTF-8.
+      ok = tidyOptSetValue(tdoc, TidyOutCharEncoding, "utf8");
     }
 
     if(ok) {
@@ -170,9 +170,9 @@ int tidy(const std::ifstream& fStream, std::iostream& result, std::iostream& dia
     rc = tidyParseBuffer( tdoc, &inputBuf );        // Parse the input
   if ( rc >= 0 ) {
     if(ok) {
-      //set char-encoding to utf-8(Default value is ascii.): This option specifies the character encoding Tidy uses
-      //for both the input and output. For utf8, Tidy assumes that both input and output is encoded as UTF-8.
-      ok = tidyOptSetValue(tdoc, TidyCharEncoding, "utf8");
+      //set char-encoding to utf-8(Default value is ascii.): This option specifies the character encoding
+      //Tidy uses for the output. For utf8, Tidy assumes that both input and output is encoded as UTF-8.
+      ok = tidyOptSetValue(tdoc, TidyOutCharEncoding, "utf8");
     }
 
     if(ok) {
@@ -234,9 +234,9 @@ int tidy(const std::istringstream& isStream, std::iostream& result, std::iostrea
     rc = tidyParseBuffer( tdoc, &inputBuf );     // Parse the input
   if ( rc >= 0 ) {
     if(ok) {
-      //set char-encoding to utf-8(Default value is ascii.): This option specifies the character encoding Tidy uses
-      //for both the input and output. For utf8, Tidy assumes that both input and output is encoded as UTF-8.
-      ok = tidyOptSetValue(tdoc, TidyCharEncoding, "utf8");
+      //set char-encoding to utf-8(Default value is ascii.): This option specifies the character encoding
+      //Tidy uses for the output. For utf8, Tidy assumes that both input and output is encoded as UTF-8.
+      ok = tidyOptSetValue(tdoc, TidyOutCharEncoding, "utf8");
     }
 
     if(ok) {
