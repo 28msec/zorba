@@ -117,6 +117,8 @@ StandardDocumentURIResolver::resolve(
     {
 #ifdef ZORBA_WITH_TIDY
       std::stringstream out, diag;
+      std::cout << "Before Tidying" << std::endl;
+      std::cout << iss.str() << std::endl;
       int res = tidy(iss, out, diag);
       if( res < 0)
       {
@@ -126,7 +128,10 @@ StandardDocumentURIResolver::resolve(
         else if(res > 0){
         //raise a warning
       }*/
-      
+
+      std::cout << "After Tidying" << std::endl;
+      std::cout << out.str() << std::endl;
+
       lResultDoc = lStore.loadDocument(lURI.toString().getStore(), out);
 #else
       ZORBA_ASSERT(!tidying);
