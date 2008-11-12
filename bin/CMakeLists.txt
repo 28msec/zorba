@@ -51,7 +51,7 @@ ADD_TEST(bin/zorba1 zorba --omit-xml-declaration -q "1+1")
 SET_TESTS_PROPERTIES(bin/zorba1 PROPERTIES PASS_REGULAR_EXPRESSION "2")
 
 ADD_TEST(bin/zorba2 zorba --serialize-html -q "1+1")
-SET_TESTS_PROPERTIES(bin/zorba2 PROPERTIES PASS_REGULAR_EXPRESSION "<html>2</html>")
+SET_TESTS_PROPERTIES(bin/zorba2 PROPERTIES PASS_REGULAR_EXPRESSION "2")
 
 ADD_TEST(bin/zorba3 zorba -m 0 -q "1+1")
 SET_TESTS_PROPERTIES(bin/zorba3 PROPERTIES PASS_REGULAR_EXPRESSION "")
