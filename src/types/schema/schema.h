@@ -94,6 +94,7 @@ public:
 
 private:
     xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefinition* xsTypeDef);
+    void addTypeToCache(xqtref_t itemXQType);
 #endif //ZORBA_NO_XMLSCHEMA
 
 

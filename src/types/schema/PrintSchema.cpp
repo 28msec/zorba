@@ -70,11 +70,11 @@ void PrintSchema::printBasic(bool excludeBuiltIn, XSObject *xsObject, const char
 {
     XERCES_STD_QUALIFIER cout << "Name:\t\t\t";
     const XMLCh *nameSpace = xsObject->getNamespace();
+    XERCES_STD_QUALIFIER cout << StrX(xsObject->getName()) << " @ ";
     if (nameSpace && (XMLString::stringLen(nameSpace)>0))
     {
-        XERCES_STD_QUALIFIER cout << StrX(nameSpace) << ", ";
+        XERCES_STD_QUALIFIER cout << StrX(nameSpace) << "\n";
     }
-    XERCES_STD_QUALIFIER cout << StrX(xsObject->getName()) << "\n";
     XERCES_STD_QUALIFIER cout << "Component Type:\t" << type << XERCES_STD_QUALIFIER endl;
 }
 

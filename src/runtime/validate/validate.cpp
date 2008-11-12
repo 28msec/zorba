@@ -389,7 +389,7 @@ namespace zorba
         xqtref_t type = delegatingTypeManager->create_named_atomic_type(typeQName, TypeConstants::QUANT_ONE);
         //cout << "     - processTextValue: " << typeQName->getPrefix()->str() << ":" << typeQName->getLocalName()->str() << "@" << 
         //    typeQName->getNamespace()->str() ; cout.flush();
-        //cout << " type: " << ( type==NULL ? "NULL" : type->toString()) << "\n"; cout.flush();                    
+        //cout << " type: " << ( type==NULL ? "NULL" : type->toString() ) << "\n"; cout.flush();                    
     
         static_context* staticContext = planState.sctx();
         namespace_context nsCtx = namespace_context(staticContext, bindings);
