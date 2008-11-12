@@ -102,7 +102,17 @@ int tidy(const char* input, xqp_string& result, xqp_string& diagnostics)
     if(ok) {
       //set char-encoding to utf-8(Default value is ascii.): This option specifies the character encoding
       //Tidy uses for the output. For utf8, Tidy assumes that both input and output is encoded as UTF-8.
-      ok = tidyOptSetValue(tdoc, TidyOutCharEncoding, "utf8");
+      ok = tidyOptSetValue(tdoc, TidyCharEncoding, "utf8");
+    }
+
+    //The default is appropriate to the current platform: CRLF on PC-DOS, MS-Windows and OS/2,
+    //CR on Classic Mac OS, and LF everywhere else (Unix and Linux).
+    if(ok) {
+#if defined (APPLE)
+      ok = tidyOptSetValue(tdoc, TidyNewline, "CR");
+#else
+      ok = tidyOptSetValue(tdoc, TidyNewline, "LF");
+#endif
     }
 
     if(ok) {
@@ -172,7 +182,17 @@ int tidy(const std::ifstream& fStream, std::iostream& result, std::iostream& dia
     if(ok) {
       //set char-encoding to utf-8(Default value is ascii.): This option specifies the character encoding
       //Tidy uses for the output. For utf8, Tidy assumes that both input and output is encoded as UTF-8.
-      ok = tidyOptSetValue(tdoc, TidyOutCharEncoding, "utf8");
+      ok = tidyOptSetValue(tdoc, TidyCharEncoding, "utf8");
+    }
+
+    //The default is appropriate to the current platform: CRLF on PC-DOS, MS-Windows and OS/2,
+    //CR on Classic Mac OS, and LF everywhere else (Unix and Linux).
+    if(ok) {
+#if defined (APPLE)
+      ok = tidyOptSetValue(tdoc, TidyNewline, "CR");
+#else
+      ok = tidyOptSetValue(tdoc, TidyNewline, "LF");
+#endif
     }
 
     if(ok) {
@@ -236,7 +256,17 @@ int tidy(const std::istringstream& isStream, std::iostream& result, std::iostrea
     if(ok) {
       //set char-encoding to utf-8(Default value is ascii.): This option specifies the character encoding
       //Tidy uses for the output. For utf8, Tidy assumes that both input and output is encoded as UTF-8.
-      ok = tidyOptSetValue(tdoc, TidyOutCharEncoding, "utf8");
+      ok = tidyOptSetValue(tdoc, TidyCharEncoding, "utf8");
+    }
+
+    //The default is appropriate to the current platform: CRLF on PC-DOS, MS-Windows and OS/2,
+    //CR on Classic Mac OS, and LF everywhere else (Unix and Linux).
+    if(ok) {
+#if defined (APPLE)
+      ok = tidyOptSetValue(tdoc, TidyNewline, "CR");
+#else
+      ok = tidyOptSetValue(tdoc, TidyNewline, "LF");
+#endif
     }
 
     if(ok) {
