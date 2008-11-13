@@ -153,6 +153,16 @@ namespace zorba
                 
                 //cout << "End Validate elem" << "\n"; cout.flush();
 
+                // check if other values are in the iterator
+                valid = consumeNext(item, iter, planState);
+                if ( valid )
+                {
+                    ZORBA_ERROR_LOC_DESC( XQTY0030, loc, 
+                        "Argument in validate expression not a single element node.");
+                    result = NULL;
+                    return false;
+                }
+
                 result = newElem;
                 return true;
             }

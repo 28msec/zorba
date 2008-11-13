@@ -39,7 +39,7 @@
 
 #include "zorbamisc/ns_consts.h"
 
-//using namespace std;
+using namespace std;
 
 namespace zorba
 {
@@ -156,7 +156,7 @@ void Schema::registerXSD(const char* xsdURL, const QueryLoc& loc)
         ZORBA_ERROR_LOC_DESC (XQST0059, loc, std::string("Unexpected exception during parsing: ") + std::string(xsdURL));
     }
 
-#if 0                   // enable this to debug registered user defined schema types
+#if 1                   // enable this to debug registered user defined schema types
       printXSDInfo(true);
 #endif
 #endif //ZORBA_NO_XMLSCHEMA
@@ -177,7 +177,7 @@ xqtref_t Schema::createIfExists( const TypeManager *typeManager, const store::It
     if ( XMLString::equals(XSD_NAMESPACE, uri_cstr) )
         return NULL;
 
-    //cout << "--createIfExists: " << qname->getLocalName()->str() << "@" << qname->getNamespace()->str() << "\n";
+    cout << "--createIfExists: " << qname->getLocalName()->str() << "@" << qname->getNamespace()->str() << "\n";
 
     if (_grammarPool==NULL)
         // there is no schema import i.e. no user defined types 
