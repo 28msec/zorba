@@ -199,7 +199,7 @@ URI::initialize(const xqpString& uri, bool have_base)
 {
   // first, we need to normalize the spaces in the uri
   // and only work with the normalized version from this point on
-  xqpString lTrimmedURI = uri.normalizeSpace();
+  xqpString lTrimmedURI = (uri.normalizeSpace()).trim();
   int    lTrimmedURILength = lTrimmedURI.length();
 
   // index of the current processing state used in this function
@@ -236,37 +236,40 @@ URI::initialize(const xqpString& uri, bool have_base)
    */
   xqpString lAuthUri = lTrimmedURI.substr(lIndex, lTrimmedURILength - lIndex);
 
-  if ( ((lIndex + 1) < lTrimmedURILength) &&
-       lAuthUri.indexOf("//") == 0) {
-
-    lIndex += 2;
-
-    int lStartPos = lIndex;
-
-    // get authority - everything up to path, query or fragment
-    char c;
-    while ( lIndex < lTrimmedURILength ) {
-      c = lTrimmedURI.getStore()->str().at(lIndex);
-      if ( c == '/' || c == '?' || c == '#' ) {
-        break;
-      }
-      ++lIndex;
+  if (lAuthUri.indexOf("//") == 0)
+  {
+    if((lIndex + 2) >= lTrimmedURILength) {
+      ZORBA_ERROR_DESC_OSS(XQST0046, "Authority is misssing.");
     }
-  
-    // if we found authority, parse it out, otherwise we set the
-    // host to empty string
-    if (lIndex > lStartPos) {
-      lAuthUri = lTrimmedURI.substr(lStartPos, lIndex - lStartPos);
-      initializeAuthority(lAuthUri);
-    } else {
-      set_host("");
-      
-      #ifdef WIN32
-        lIndex++;//jump over the third '/'
-      #endif
+    else {
+      lIndex += 2;
+
+      int lStartPos = lIndex;
+
+      // get authority - everything up to path, query or fragment
+      char c;
+      while ( lIndex < lTrimmedURILength ) {
+        c = lTrimmedURI.getStore()->str().at(lIndex);
+        if ( c == '/' || c == '?' || c == '#' ) {
+          break;
+        }
+        ++lIndex;
+      }
+
+      // if we found authority, parse it out, otherwise we set the
+      // host to empty string
+      if (lIndex > lStartPos) {
+        lAuthUri = lTrimmedURI.substr(lStartPos, lIndex - lStartPos);
+        initializeAuthority(lAuthUri);
+      } else {
+        set_host("");
+
+        #ifdef WIN32
+          lIndex++;//jump over the third '/'
+        #endif
+      }
     }
   }
-
 
   // stop, if we're done here
   if (lIndex > lTrimmedURILength)

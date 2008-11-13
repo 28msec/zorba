@@ -102,23 +102,23 @@ bool FnResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState)
         if (theChildren.size() == 1) { // use base-uri from static context
           strBase = planState.sctx()->baseuri().getStore();
           if (strBase->empty()) {
-            ZORBA_ERROR_DESC(FONS0005, "base-uri is not initialized in the static context");
+            ZORBA_ERROR_LOC_DESC(FONS0005, loc, "base-uri is not initialized in the static context");
           }
         } else if (consumeNext(item, theChildren[1], planState )) { // two parameters => get baseuri from the second argument
           strBase = item->getStringValue();
         } else {
-          ZORBA_ERROR_DESC(FORG0009, "Can't treat empty-sequence an base-uri");
+          ZORBA_ERROR_LOC_DESC(FORG0009, loc, "Can't treat empty-sequence an base-uri");
         }
-        baseURI = URI(&*strBase);
+        baseURI = URI(&*strBase, true);
       } catch (error::ZorbaError& e) {
-        ZORBA_ERROR_DESC(FORG0009, e.theDescription);
+        ZORBA_ERROR_LOC_DESC(FORG0002, loc, "String {" + strBase->str() +  "} is not a valid URI: " + e.theDescription);
       }
 
       try {
-        resolvedURI = URI(baseURI, &*strRelative); // resolve with baseURI or return strRelative if it's a valid absolute URI
+        resolvedURI = URI(baseURI, &*strRelative, true); // resolve with baseURI or return strRelative if it's a valid absolute URI
         strResult = resolvedURI.toString().getStore();
       } catch (error::ZorbaError& e) {
-        ZORBA_ERROR_DESC(FORG0002, e.theDescription);
+        ZORBA_ERROR_LOC_DESC(FORG0002, loc, e.theDescription);
       }
     }
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, strResult), state);
