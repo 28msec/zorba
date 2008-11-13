@@ -1123,7 +1123,7 @@ bool BasicItemFactory::createTextNode(
   assert(parent != NULL);
   ElementNode* pnode = reinterpret_cast<ElementNode*>(parent);
 
-  // Note: the TextNode constructor asserts that the parent hos 0 children
+  // Note: the TextNode constructor asserts that the parent has 0 children
   result = new TextNode(pnode, content, false);
   return true;
 }
@@ -1236,6 +1236,9 @@ store::PUL* BasicItemFactory::createPendingUpdateList()
   return new PULImpl();
 }
 
+/*******************************************************************************
+
+********************************************************************************/
 bool BasicItemFactory::createTuple(
         store::Item_t& result,
         std::vector<store::TupleField>& fields)
@@ -1244,6 +1247,9 @@ bool BasicItemFactory::createTuple(
   return true;
 }
 
+/*******************************************************************************
+
+********************************************************************************/
 bool BasicItemFactory::createTuple(
         store::Item_t& result,
         store::Item *inTuple,

@@ -39,7 +39,9 @@ public:
   bool isPul() const    { return false; }
   bool isTuple() const  { return false; }
 
-  ulong size() const { return (ulong)theItems.size(); }
+  xqpStringStore_t getStringValue() const;
+
+  ulong size() const { return theItems.size(); }
 
   bool empty() const { return theItems.empty(); }
 
