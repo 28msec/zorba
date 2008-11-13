@@ -163,7 +163,7 @@ store::Item_t QNamePool::insert(
   xqpStringStore_t pooledNs;
   theNamespacePool->insertc(ns, pooledNs);
 
-  ulong hval = QNamePoolHashSet::compute_hash(pre, ln, (uint32_t)pooledNs.getp());
+  ulong hval = QNamePoolHashSet::compute_hash(pre, ln, (uint32_t)(uint64_t)pooledNs.getp());
 
   try
   {
@@ -261,7 +261,7 @@ store::Item_t QNamePool::insert(
   xqpStringStore_t pooledNs;
   theNamespacePool->insertc(ns.getp(), pooledNs);
 
-  ulong hval = QNamePoolHashSet::compute_hash(pre->c_str(), ln->c_str(), (uint32_t)pooledNs.getp());
+  ulong hval = QNamePoolHashSet::compute_hash(pre->c_str(), ln->c_str(), (uint32_t)(uint64_t)pooledNs.getp());
 
   try
   {
