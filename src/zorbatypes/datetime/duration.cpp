@@ -172,14 +172,14 @@ Double Duration::getTotalSeconds() const
 long Duration::getTotalMilliseconds() const
 {
   return (is_negative? -1 : 1)
-      * ((((((data[YEAR_DATA] * 12)
-        + data[MONTH_DATA] * 30)
-        + data[DAY_DATA] * 24)
-        + data[HOUR_DATA] * 60)
-        + data[MINUTE_DATA] * 60)
-        + data[SECONDS_DATA] * 60)
-      * 1000
-      + round(data[FRACSECONDS_DATA]/1000.0);
+      * (((((((((data[YEAR_DATA] * 12
+        + data[MONTH_DATA]) * 30)
+        + data[DAY_DATA]) * 24)
+        + data[HOUR_DATA]) * 60)
+        + data[MINUTE_DATA]) * 60)
+        + data[SECONDS_DATA])
+      * 1000 
+      + round(data[FRACSECONDS_DATA]/(FRAC_SECONDS_UPPER_LIMIT / 1000.0));
 }
 
 int Duration::fromTimezone(const TimeZone& t, Duration& d)
@@ -198,7 +198,7 @@ bool Duration::operator==(const Duration& d) const
   if (is_negative != d.is_negative)
     return false;
                  
-  for (int i=YEAR_DATA; i<=FRACSECONDS_DATA; i++)
+  for (int i=0; i<=FRACSECONDS_DATA; i++)
     if (data[i] != d.data[i])
       return false;
 
@@ -207,7 +207,7 @@ bool Duration::operator==(const Duration& d) const
 
 bool Duration::isZero() const
 { 
-  for (int i=0; i<FRACSECONDS_DATA; i++)
+  for (int i=0; i<=FRACSECONDS_DATA; i++)
     if (data[i] != 0)
       return false;
 
@@ -216,7 +216,7 @@ bool Duration::isZero() const
 
 int Duration::compare(const Duration& d, bool ignore_sign) const
 {
-  for (int i=YEAR_DATA; i<=FRACSECONDS_DATA; i++)
+  for (int i=0; i<=FRACSECONDS_DATA; i++)
     if ( (is_negative && !ignore_sign ? -1 : 1)*data[i] > (d.is_negative && !ignore_sign? -1 : 1)*d.data[i])
       return 1;
     else if ((is_negative && !ignore_sign? -1 : 1)*data[i] < (d.is_negative && !ignore_sign? -1 : 1)*d.data[i])
@@ -806,7 +806,7 @@ uint32_t Duration::hash() const
   uint32_t hval = 0;
 
   hval = hashfun::h32<int>((int)is_negative, hval);
-  for (int i=YEAR_DATA; i<=FRACSECONDS_DATA; i++)
+  for (int i=0; i<=FRACSECONDS_DATA; i++)
     hval = hashfun::h32<long>(data[i], hval);
   
   return hval;
