@@ -81,7 +81,7 @@ class MyDebuggerEventHandler: public DefaultDebuggerEventHandler
 
 ZORBA_THREAD_RETURN runClient( void* )
 {
-  sleep(3);
+  sleep(1);
   MyDebuggerEventHandler lEventHandler;
   ZorbaDebuggerClient * lClient = ZorbaDebuggerClient::createClient( 8000, 9000 );
   lClient->registerEventHandler( &lEventHandler );
