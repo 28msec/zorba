@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include <sstream>
+
 #include "store/api/item.h"
 #include "store/naive/item_vector.h"
 
@@ -28,6 +31,21 @@ ItemVector::ItemVector(std::vector<store::Item_t>& items)
     theItems[i].transfer(items[i]);
 }
 
+
+xqpStringStore_t ItemVector::getStringValue() const
+{
+  std::ostringstream ostr;
+  ulong numItems = theItems.size();
+
+  for (ulong i = 0; i < numItems; i++)
+  {
+    ostr << theItems[i]->getStringValue()->c_str() << " ";
+  }
+
+  ostr << std::endl;
+
+  return new xqpStringStore(ostr.str());
+}
 
 } // namespace store
 } // namespace zorba

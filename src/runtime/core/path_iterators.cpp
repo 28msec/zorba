@@ -786,8 +786,8 @@ bool DescendantSelfAxisIterator::nextImpl(
                              "The context item of an axis step is not a node");
       }
     }
-    while (!((theTestKind != match_name_test) && (theTestKind != match_no_test) ||
-          isElementOrDocumentNode(state->theContextNode.getp())));//for name test, check for principal node type
+    while ((theTestKind == match_name_test || theTestKind == match_no_test) &&
+           !isElementOrDocumentNode(state->theContextNode.getp()));//for name test, check for principal node type
 
     result = state->theContextNode;
     first = true;

@@ -18,10 +18,14 @@
 
 namespace zorba { namespace simplestore {
 
-ItemIterator::ItemIterator(const std::vector<store::Item_t>& aItems)
+ItemIterator::ItemIterator(const std::vector<store::Item_t>& items, bool copy)
   :
-  theItems(&aItems)
+  theIsOwner(copy)
 {
+  if (copy)
+    theItems = new std::vector<store::Item_t>(items);
+  else
+    theItems = &items;
 }
 
 
@@ -50,7 +54,8 @@ ItemIterator::next(store::Item_t& result)
     }
     else 
     {
-      result = *(theIterator++);
+      result = *(theIterator);
+      theIterator++;
       return true;
     }
   }
@@ -73,6 +78,11 @@ ItemIterator::reset()
 void
 ItemIterator::close() 
 {
+  if (theItems && theIsOwner)
+  {
+    delete theItems;
+    theItems = NULL;
+  }
 }
 
 } // namespace store

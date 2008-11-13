@@ -1239,7 +1239,7 @@ void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
       if (haveListValue())
       {
         ItemVector* vec = reinterpret_cast<ItemVector*>(child->getValue());
-        iter = new ItemIterator(vec->getItems());
+        iter = new ItemIterator(vec->getItems(), true);
         val = NULL;
       }
       else
@@ -2116,7 +2116,7 @@ void AttributeNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) c
 {
   if (haveListValue())
   {
-    iter = new ItemIterator(getValueVector().getItems());
+    iter = new ItemIterator(getValueVector().getItems(), true);
     val = NULL;
   }
   else

@@ -400,7 +400,7 @@ void SimpleStore::deleteCollection(const xqpStringStore_t& uri)
 ********************************************************************************/
 store::Iterator_t SimpleStore::listCollectionUris()
 {
-  return new ItemIterator(theItemUris);
+  return new ItemIterator(theItemUris, false);
 }
 
 /*******************************************************************************

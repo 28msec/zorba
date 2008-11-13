@@ -64,7 +64,7 @@ bool
 FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIter_t iter;
-  store::Item_t item;
+  store::Item_t itemNode;
 
   FnDataIteratorState* state;
   DEFAULT_STACK_INIT(FnDataIteratorState, state, planState);
@@ -80,8 +80,10 @@ FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-      item.transfer(result);
-      item->getTypedValue(result, state->theTypedValueIter);
+      assert(result->isNode());
+
+      itemNode.transfer(result);
+      itemNode->getTypedValue(result, state->theTypedValueIter);
 
       if (state->theTypedValueIter == NULL)
       {

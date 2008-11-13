@@ -1231,6 +1231,10 @@ store::PUL* BasicItemFactory::createPendingUpdateList()
   return new PULImpl();
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 bool BasicItemFactory::createTuple(
         store::Item_t& result,
         std::vector<store::TupleField>& fields)
@@ -1239,6 +1243,10 @@ bool BasicItemFactory::createTuple(
   return true;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 bool BasicItemFactory::createTuple(
         store::Item_t& result,
         store::Item *inTuple,
