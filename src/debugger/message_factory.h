@@ -132,7 +132,7 @@ class MessageFactory
     static AbstractMessage* buildMessage(TCPSocket * aSocket)
     {
       ZorbaArrayAutoPointer<Byte> lBody(new Byte[ MESSAGE_SIZE ]);
-      memset(lBody.get(), '0', MESSAGE_SIZE);
+      memset(lBody.get(), '\0', MESSAGE_SIZE);
       AbstractMessage* lMessage = 0;
       try
       {
@@ -152,13 +152,13 @@ class MessageFactory
         }
         length -= MESSAGE_HEADER_SIZE;
         //allocate memory for the whole packet
-        ZorbaArrayAutoPointer<Byte> lPacket(new Byte[ length + MESSAGE_HEADER_SIZE + 1 ]);
-	      memset( lPacket.get(), '\0', length+MESSAGE_HEADER_SIZE+1 );
+        ZorbaArrayAutoPointer<Byte> lPacket(new Byte[ length + MESSAGE_SIZE + 1 ]);
+	memset( lPacket.get(), '\0', length+MESSAGE_HEADER_SIZE+1 );
         memcpy( lPacket.get(), lBody.get(), MESSAGE_SIZE );
         //read the command packet
         if(length+MESSAGE_HEADER_SIZE > MESSAGE_SIZE)
         {
-          aSocket->recv ( lPacket.get() + MESSAGE_SIZE, length );
+          aSocket->recv ( lPacket.get()+MESSAGE_SIZE, length );
         }
         //unserialize the packet
         lMessage =  MessageFactory::buildMessage( lPacket.get(), length + MESSAGE_HEADER_SIZE );
