@@ -101,7 +101,9 @@ SET(ZORBA_LIBRARY_INSTALL_LIST)
 #
 # Build the Zorba SHARED library
 #
+IF (NOT MSVC)
 ADD_LIBRARY(zorba SHARED ${ZORBA_SRCS})
+ENDIF (NOT MSVC)
 
 # The next if() builds the .lib file on Windows, which is needed
 IF (MSVC)
