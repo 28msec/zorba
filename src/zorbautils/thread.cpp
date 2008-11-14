@@ -22,6 +22,8 @@
 #include <zorbaerrors/errors.h>
 #include <zorbaerrors/error_manager.h>
 
+using namespace std;
+
 namespace zorba {
 
 #ifdef ZORBA_HAVE_PTHREAD_H
@@ -45,10 +47,9 @@ Thread::Thread( DWORD ( WINAPI *aFunction ) ( void *anArg ), void *anArg )
 Thread::~Thread()    
 {
 #ifdef ZORBA_HAVE_PTHREAD_H
+  if(&theMutex != 0) pthread_mutex_destroy( &theMutex );
+  if(&theCV != 0) pthread_cond_destroy( &theCV );
   pthread_cancel( theThread );
-  pthread_detach( theThread );
-  pthread_mutex_destroy( &theMutex );
-  pthread_cond_destroy( &theCV );
 #else
   CloseHandle( theThread );
 #endif
