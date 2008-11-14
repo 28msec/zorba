@@ -47,9 +47,9 @@ Thread::Thread( DWORD ( WINAPI *aFunction ) ( void *anArg ), void *anArg )
 Thread::~Thread()    
 {
 #ifdef ZORBA_HAVE_PTHREAD_H
-  if(&theMutex != 0) pthread_mutex_destroy( &theMutex );
-  if(&theCV != 0) pthread_cond_destroy( &theCV );
-  pthread_cancel( theThread );
+  pthread_cancel(theThread);
+  if(&theMutex != 0) pthread_mutex_destroy(&theMutex);
+  if(&theCV != 0) pthread_cond_destroy(&theCV);
 #else
   CloseHandle( theThread );
 #endif

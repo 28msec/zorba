@@ -66,7 +66,6 @@ ZORBA_THREAD_RETURN runtimeThread( void *aDebugger )
 
 ZorbaDebugger::~ZorbaDebugger()
 {
-  delete theRuntimeThread;
   delete theRequestServerSocket;
   delete theEventSocket;
 }
