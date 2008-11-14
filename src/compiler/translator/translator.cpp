@@ -5222,14 +5222,31 @@ void *begin_visit (const CatchExpr& v) {
   if (v.getVarErrorCode() != "") {
     varref_t ev = bind_var(loc, v.getVarErrorCode(), var_expr::catch_var, GENV_TYPESYSTEM.QNAME_TYPE_QUESTION);
     cc->set_errorcode_var_h(ev);
+#ifdef ZORBA_DEBUGGER
+        if(compilerCB->m_debugger != 0)
+        {
+          theScopedVariables.push_back(ev);
+        }
+#endif
 
-    if (v.getVarErrorDescr() != "") {
+  if (v.getVarErrorDescr() != "") {
       varref_t dv = bind_var(loc, v.getVarErrorDescr(), var_expr::catch_var, GENV_TYPESYSTEM.STRING_TYPE_QUESTION);
       cc->set_errordesc_var_h(dv);
-
+#ifdef ZORBA_DEBUGGER
+        if(compilerCB->m_debugger != 0)
+        {
+          theScopedVariables.push_back(dv);
+        }
+#endif
       if (v.getVarErrorVal() != "") {
         varref_t vv = bind_var(loc, v.getVarErrorVal(), var_expr::catch_var, GENV_TYPESYSTEM.ITEM_TYPE_QUESTION);
         cc->set_errorobj_var_h(vv);
+#ifdef ZORBA_DEBUGGER
+        if(compilerCB->m_debugger != 0)
+        {
+          theScopedVariables.push_back(vv);
+        }
+#endif
       }
     }
   }
