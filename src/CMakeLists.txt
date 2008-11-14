@@ -153,4 +153,10 @@ IF ( APPLE )
     MESSAGE(STATUS "installing ${LIBNAME}")
     INSTALL(FILES ${LIBNAME} DESTINATION lib)
   ENDFOREACH(LIB)
+SET(CMAKE_POSTFLIGHT_SCRIPT "${CMAKE_BINARY_DIR}/osx_postflight.sh")
+CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/scripts/osx_postflight.sh.in"
+               "${CMAKE_BINARY_DIR}/osx_postflight.sh")
+MESSAGE ( STATUS "script = "${CMAKE_POSTFLIGHT_SCRIPT} )
 ENDIF ( APPLE )
+
+
