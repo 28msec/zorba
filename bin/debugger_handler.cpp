@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "debugger_handler.h"
 
 #include <memory>
@@ -280,20 +281,27 @@ void DebuggerHandler::help() const
 
 istream* DebuggerHandler::resolve(const String& aNamespace) const
 {
+  String lNamespace(aNamespace);
   assert(theZorba != 0);
   StaticContext_t lStaticCtx = theZorba->createStaticContext();
   assert(lStaticCtx != 0);
+  //Check for namespace prefix
+  try
+  {
+    lNamespace = lStaticCtx->getNamespaceURIByPrefix(lNamespace); 
+  }catch(ZorbaException &e){ /* do nothing */ }
+
   ModuleURIResolver* lModuleURIResolver = lStaticCtx->getModuleURIResolver(); 
   auto_ptr<istream> lInput;
   if(lModuleURIResolver == 0)
   {
     stringstream lFilename;
-    lFilename << aNamespace;
+    lFilename << lNamespace;
     lInput.reset(new ifstream(lFilename.str().c_str()));
   } else {
     //Resolve the logical/physical URI
     ItemFactory* lItemFactory = theZorba->getItemFactory();
-    Item lURI = lItemFactory->createAnyURI(aNamespace);
+    Item lURI = lItemFactory->createAnyURI(lNamespace);
     lInput.reset(lModuleURIResolver->resolve(lURI, 0)->getModule());
   }
   return lInput.release();
@@ -408,6 +416,7 @@ void DebuggerHandler::handle()
     if(lLine == "")
     {
       handle(); 
+      return;
     }
     vector<string> lArgs = getArgs(lLine);
     string lCommand = lArgs.at(0);
@@ -481,9 +490,9 @@ void DebuggerHandler::terminated()
   cout << endl << "...End of query" << endl;
 }
 
-void DebuggerHandler::evaluated(String& anExpr, map<String, String> &aValuesAndTypes)
+void DebuggerHandler::evaluated(zorba::String &anExpr, std::list< pair<String, String> > &aValuesAndTypes)
 {
-  std::map<String, String>::iterator it;
+  std::list< pair<String, String> >::iterator it;
   for(it=aValuesAndTypes.begin(); it!=aValuesAndTypes.end(); ++it)
   {
     cout << it->first << " " << it->second << std::endl;

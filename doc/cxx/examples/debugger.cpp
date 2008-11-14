@@ -64,9 +64,9 @@ class MyDebuggerEventHandler: public DefaultDebuggerEventHandler
       std::cerr << "Query terminated" << std::endl; 
     }
 
-    void evaluated(String &anExpr, std::map<String, String> &aValuesAndTypes)
+    void evaluated(String &anExpr, std::list< std::pair<String, String> > &aValuesAndTypes)
     {
-      std::map<String, String>::iterator it;
+      std::list<std::pair<String, String> >::iterator it;
       for(it=aValuesAndTypes.begin(); it!=aValuesAndTypes.end(); ++it)
       {
         std::cerr << it->first << " " << it->second << std::endl;

@@ -34,39 +34,173 @@ namespace zorba
 class MessageFactory
 {
   public:
-
-    static AbstractMessage * buildMessage( TCPSocket * aSocket )
+    static bool checkMessage(Byte* aMessage)
     {
-      ZorbaArrayAutoPointer<Byte> lengthField(new Byte[ MESSAGE_HEADER_SIZE ]);
-      memset( lengthField.get(), '0', MESSAGE_HEADER_SIZE );
-      AbstractMessage * lMessage = 0;
+      try
+      {
+        switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND_SET ] )
+        {
+          case 0:
+          {
+            if ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ] == REPLY_FLAG )
+            {
+              return true;
+            }
+
+            if ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ] == REPLY_VARIABLE_FLAG )
+            {
+              return true;
+            }
+
+            if( aMessage[MESSAGE_HEADER_SIZE + MESSAGE_FLAGS]  == REPLY_SET_FLAG )
+            {
+              return true;
+            }
+
+            if( aMessage[MESSAGE_HEADER_SIZE + MESSAGE_FLAGS] == REPLY_FRAME_FLAG )
+            {
+              return true;
+            }
+          }
+          case EXECUTION:
+          {
+            switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+            {
+              case RUN:
+                return true;
+              case SUSPEND:
+                return true;
+              case RESUME:
+                return true;
+              case TERMINATE:
+                return true;
+              case STEP:
+                return true;
+            }
+          }
+          case BREAKPOINTS:
+          {
+            switch( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+            {
+              case CLEAR:
+                return true;
+              case SET:
+                return true;
+            }
+          }
+          case ENGINE_EVENT:
+          {
+            switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+            {
+              case STARTED:
+                return true;
+              case TERMINATED:
+                return true;
+              case SUSPENDED:
+                return true;
+              case RESUMED:
+                return true;
+              case EVALUATED:
+                return true;
+            }
+          }
+          case STATIC:
+          {
+
+          }
+          case DYNAMIC:
+          {
+            switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+            {
+              case VARIABLES:
+                return true;
+              case EVAL:
+                return true;
+              case FRAME:
+                return true;
+            }
+          }
+          default:
+            return false;
+        } 
+      } catch(MessageFormatException &e) {
+          return false;
+      }
+    }
+
+
+    static AbstractMessage* buildMessage(TCPSocket * aSocket)
+    {
+      ZorbaArrayAutoPointer<Byte> lBody(new Byte[ MESSAGE_SIZE ]);
+      memset(lBody.get(), '0', MESSAGE_SIZE);
+      AbstractMessage* lMessage = 0;
       try
       {
         //read the packet length and write it into lLength
-        aSocket->recv( lengthField.get(), MESSAGE_HEADER_SIZE );
-        //Convert the length field into an integer
+        aSocket->recv( lBody.get(), MESSAGE_SIZE );
+        if(!checkMessage(lBody.get()))
+        {
+          return new ReplyMessage(0, DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT);
+        }
         Length length;
         if( is_little_endian() ){
-          length = lengthField[3] | (lengthField[2]<<8) |
-                    (lengthField[1]<<16) | (lengthField[0]<<24);
+          length = lBody[3] | (lBody[2]<<8) |
+                    (lBody[1]<<16) | (lBody[0]<<24);
         } else {
-          length = lengthField[0] | (lengthField[1]<<8) |
-                    (lengthField[2]<<16) | (lengthField[3]<<24);
+          length = lBody[0] | (lBody[1]<<8) |
+                    (lBody[2]<<16) | (lBody[3]<<24);
         }
         length -= MESSAGE_HEADER_SIZE;
         //allocate memory for the whole packet
         ZorbaArrayAutoPointer<Byte> lPacket(new Byte[ length + MESSAGE_HEADER_SIZE + 1 ]);
-	memset( lPacket.get(), '\0', length+MESSAGE_HEADER_SIZE+1 );
-        memcpy( lPacket.get(), lengthField.get(), MESSAGE_HEADER_SIZE );
+	      memset( lPacket.get(), '\0', length+MESSAGE_HEADER_SIZE+1 );
+        memcpy( lPacket.get(), lBody.get(), MESSAGE_SIZE );
         //read the command packet
-        aSocket->recv ( lPacket.get() + MESSAGE_HEADER_SIZE, length );
+        if(length+MESSAGE_HEADER_SIZE > MESSAGE_SIZE)
+        {
+          aSocket->recv ( lPacket.get() + MESSAGE_SIZE, length );
+        }
         //unserialize the packet
         lMessage =  MessageFactory::buildMessage( lPacket.get(), length + MESSAGE_HEADER_SIZE );
       } catch ( DebuggerSocketException &e ) {
         std::cerr << e.what() << std::endl;
+        return new ReplyMessage(0, DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT);
       }
       return lMessage;
     }
+    
+    //static AbstractMessage * buildMessage( TCPSocket * aSocket )
+    //{
+    //  ZorbaArrayAutoPointer<Byte> lengthField(new Byte[ MESSAGE_HEADER_SIZE ]);
+    //  memset( lengthField.get(), '0', MESSAGE_HEADER_SIZE );
+    //  AbstractMessage * lMessage = 0;
+    //  try
+    //  {
+    //    //read the packet length and write it into lLength
+    //    aSocket->recv( lengthField.get(), MESSAGE_HEADER_SIZE );
+    //    //Convert the length field into an integer
+    //    Length length;
+    //    if( is_little_endian() ){
+    //      length = lengthField[3] | (lengthField[2]<<8) |
+    //                (lengthField[1]<<16) | (lengthField[0]<<24);
+    //    } else {
+    //      length = lengthField[0] | (lengthField[1]<<8) |
+    //                (lengthField[2]<<16) | (lengthField[3]<<24);
+    //    }
+    //    length -= MESSAGE_HEADER_SIZE;
+    //    //allocate memory for the whole packet
+    //    ZorbaArrayAutoPointer<Byte> lPacket(new Byte[ length + MESSAGE_HEADER_SIZE + 1 ]);
+	  //memset( lPacket.get(), '\0', length+MESSAGE_HEADER_SIZE+1 );
+    //    memcpy( lPacket.get(), lengthField.get(), MESSAGE_HEADER_SIZE );
+    //    //read the command packet
+    //    aSocket->recv ( lPacket.get() + MESSAGE_HEADER_SIZE, length );
+    //    //unserialize the packet
+    //    lMessage =  MessageFactory::buildMessage( lPacket.get(), length + MESSAGE_HEADER_SIZE );
+    //  } catch ( DebuggerSocketException &e ) {
+    //    std::cerr << e.what() << std::endl;
+    //  }
+    //  return lMessage;
+    //}
 
     static AbstractMessage * buildMessage( Byte * aMessage, const unsigned int aLength )
     {

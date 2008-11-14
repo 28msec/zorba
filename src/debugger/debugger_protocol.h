@@ -594,11 +594,11 @@ class EvaluatedEvent: public AbstractCommandMessage
   protected:
     xqpString theExpr;
     xqpString theError;
-    std::map<xqpString, xqpString> theValuesAndTypes;
+    std::list< std::pair<xqpString, xqpString> > theValuesAndTypes;
     xqpString getData() const;
  
   public:
-    EvaluatedEvent( xqpString anExpr, std::map<xqpString, xqpString> valuesAndTypes );
+    EvaluatedEvent( xqpString anExpr, std::list<std::pair<xqpString, xqpString> > valuesAndTypes );
 
     EvaluatedEvent( xqpString anExpr, xqpString anError );
 
@@ -610,7 +610,7 @@ class EvaluatedEvent: public AbstractCommandMessage
     
     xqpString getExpr() const;
 
-    std::map<xqpString, xqpString> getValuesAndTypes() const;
+    std::list<std::pair<xqpString, xqpString> > getValuesAndTypes() const;
 
     xqpString getError() const;
 };

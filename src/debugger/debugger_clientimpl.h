@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <vector>
+
 #include <zorba/api_shared_types.h>
 #include <zorba/debugger_client.h>
 

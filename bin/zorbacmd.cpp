@@ -439,9 +439,12 @@ int _tmain(int argc, _TCHAR* argv[])
              debuggerClient->registerEventHandler( &lEventHandler );
               while(!debuggerClient->isQueryTerminated()){ sleep(1); }
 #ifdef ZORBA_HAVE_PTHREAD_H
-             pthread_cancel( lServerThread );
-             pthread_detach( lServerThread );
+             debuggerClient.reset(0);
+              pthread_join( lServerThread, 0);
+             //pthread_cancel( lServerThread );
+             //pthread_detach( lServerThread );
 #else
+             //WaitForSingleObject( lServerThread, INFINITE );
              CloseHandle( lServerThread );
 #endif
            } catch( std::exception &e ) {

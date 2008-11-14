@@ -17,6 +17,8 @@
 #include "debugger/debugger_protocol.h"
 
 #include <iomanip>
+#include <list>
+
 #include <zorba/zorba.h>
 
 #include "api/unmarshaller.h"
@@ -27,6 +29,8 @@
 #include "json/value.h"
 
 #include "debugger/utils.h"
+
+using namespace std;
 
 namespace zorba{
 
@@ -645,16 +649,16 @@ EvaluatedEvent::EvaluatedEvent( xqpString anExpr, xqpString anError ):
     checkIntegrity();
 }
 
-EvaluatedEvent::EvaluatedEvent( xqpString anExpr, std::map<xqpString, xqpString> valuesAndTypes ):
+EvaluatedEvent::EvaluatedEvent( xqpString anExpr, list<pair<xqpString, xqpString> > valuesAndTypes ):
   AbstractCommandMessage( ENGINE_EVENT, EVALUATED ), theExpr( anExpr ), theValuesAndTypes(valuesAndTypes)
 {
-    std::map<xqpString, xqpString> lValues;
-    std::map<xqpString, xqpString>::iterator it;
+    list<pair<xqpString, xqpString> > lValues;
+    list<pair<xqpString, xqpString> >::iterator it;
     for(it=theValuesAndTypes.begin(); it!=theValuesAndTypes.end(); it++)
     {
       xqpString lFirst(it->first);
       xqpString lSecond(it->second);
-      lValues.insert(std::make_pair(lFirst.replace("\\\"", "&quot;", ""), 
+      lValues.push_back(std::make_pair(lFirst.replace("\\\"", "&quot;", ""), 
                                     lSecond.replace("\\\"", "&quot;", "")));
     }
     theValuesAndTypes = lValues;
@@ -701,7 +705,7 @@ EvaluatedEvent::EvaluatedEvent( Byte* aMessage, const unsigned int aLength ):
       std::wstring *lType = getValue(*it, "type")->getstring(L"", true);
       std::string type = std::string( lType->begin()+1, lType->end()-1 );
       delete lType; 
-      theValuesAndTypes.insert(std::make_pair(result, type));
+      theValuesAndTypes.push_back(std::make_pair(result, type));
     }   
   } else {
     throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
@@ -726,7 +730,7 @@ xqpString EvaluatedEvent::getExpr() const
   return theExpr;
 }
 
-std::map<xqpString, xqpString> EvaluatedEvent::getValuesAndTypes() const
+list<pair<xqpString, xqpString> > EvaluatedEvent::getValuesAndTypes() const
 {
   return theValuesAndTypes;
 }
@@ -756,7 +760,7 @@ xqpString EvaluatedEvent::getData() const
   lJSONString << "{";
   lJSONString << "\"expr\":\"" << theExpr << "\",";
   lJSONString << "\"results\":[";
-  std::map<xqpString, xqpString>::const_iterator it = theValuesAndTypes.begin();
+  list<pair<xqpString, xqpString> >::const_iterator it = theValuesAndTypes.begin();
   for(; it != theValuesAndTypes.end(); it++ )
   {
     if ( it != theValuesAndTypes.begin() )

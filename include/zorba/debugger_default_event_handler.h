@@ -38,7 +38,7 @@ namespace zorba{
       void terminated(){}
 
       virtual void
-      evaluated(String &anExpr, std::map<String, String> &aValuesAndTypes){}
+      evaluated(String &anExpr, std::list<std::pair<String, String> > &aValuesAndTypes){}
   
       virtual void
       evaluated(String &anExpr, String &anError){}

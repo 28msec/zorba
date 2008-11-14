@@ -16,8 +16,11 @@
 #ifndef ZORBA_DEBUGGER_EVENT_HANDLER_H
 #define ZORBA_DEBUGGER_EVENT_HANDLER_H
 
+#include <list>
+#include <utility>
+
 #include <zorba/zorbastring.h>
-#include <map>
+
 
 namespace zorba{
 
@@ -78,7 +81,7 @@ namespace zorba{
        *
        */
       virtual void
-      evaluated(String &anExpr, std::map<String, String> &aValuesAndTypes) = 0;
+      evaluated(String &anExpr, std::list<std::pair<String, String> > &aValuesAndTypes) = 0;
   
       /** \brief Signal an Error from an XQuery expression.
        *

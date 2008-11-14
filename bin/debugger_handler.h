@@ -17,6 +17,8 @@
 #define ZORBA_DEBUGGER_HANDLER_H
 
 #include <vector>
+#include <utility>
+#include <list>
 #include <map>
 #include <list>
 #include <cassert>
@@ -118,7 +120,7 @@ class DebuggerHandler: public DefaultDebuggerEventHandler
 
     void terminated();
 
-    void evaluated(zorba::String &anExpr, std::map<zorba::String, zorba::String> &aValuesAndTypes);
+    void evaluated(zorba::String &anExpr, std::list< std::pair<zorba::String, zorba::String> > &aValuesAndTypes);
 
     void evaluated(zorba::String &anExpr, zorba::String &anError);
 };

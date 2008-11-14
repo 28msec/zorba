@@ -66,6 +66,7 @@ ZORBA_THREAD_RETURN runtimeThread( void *aDebugger )
 
 ZorbaDebugger::~ZorbaDebugger()
 {
+  delete theRuntimeThread;
   delete theRequestServerSocket;
   delete theEventSocket;
 }
@@ -336,9 +337,11 @@ void ZorbaDebugger::handleTcpClient( TCPSocket * aSock )
     }    
   } catch ( exception &e ) {
 #ifndef NDEBUG
-    clog << "The connection with the client is closed" << std::endl;
+    clog << "[Server Thread] The connection with the client is closed" << std::endl;
     clog <<  e.what() << std::endl;
 #endif
+  } catch(...) {
+    clog << "[Server Thread] unknown exception" << endl;
   }
 }
 
@@ -511,7 +514,7 @@ void ZorbaDebugger::eval( xqpString anExpr )
       assert(lIterator != 0);
 
       store::Item_t lItem;
-      map<xqpString, xqpString> lValuesAndTypes;
+      list< pair<xqpString, xqpString> > lValuesAndTypes;
 
       error::ErrorManager lErrorManger;
       serializer lSerializer(&lErrorManger);
@@ -522,7 +525,7 @@ void ZorbaDebugger::eval( xqpString anExpr )
         lSerializer.serialize(lItem, os);
         xqpString lValue = os.str();
         xqpString lType( lItem->getType()->getStringValue() );
-        lValuesAndTypes.insert(pair<xqpString, xqpString>(lValue, lType));
+        lValuesAndTypes.push_back(pair<xqpString, xqpString>(lValue, lType));
       }
       lMsg.reset(new EvaluatedEvent(anExpr, lValuesAndTypes));
     } catch ( error::ZorbaError& e) {
@@ -545,10 +548,10 @@ const QueryLoc ZorbaDebugger::addBreakpoint(const QueryLoc& aLocation)
   StaticContext* lStaticCtx = const_cast<StaticContext*>(theQuery->getStaticContext()); 
   assert(lStaticCtx != 0);
   //Check for namespace prefix
-  //try
-  //{
-  //  lStringURI = lStaticCtx->getNamespaceURIByPrefix(lStringURI); 
-  //}catch(ZorbaException &e){ cerr << "Prefix not resolved" << std::endl; }
+  try
+  {
+    lStringURI = lStaticCtx->getNamespaceURIByPrefix(lStringURI); 
+  }catch(ZorbaException &e){ /* do nothing */ }
   
   //Resolve the logical/physical URI
   ItemFactory* lItemFactory = ItemFactoryImpl::getInstance();

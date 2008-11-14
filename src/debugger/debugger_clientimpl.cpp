@@ -119,7 +119,7 @@ ZORBA_THREAD_RETURN listenEvents( void * aClient )
   try
   {
     std::auto_ptr<TCPSocket> lSocket( lClient->theEventServerSocket->accept() );
-    while( true )
+    while( lClient->theExecutionStatus != QUERY_TERMINATED )
     {
       std::auto_ptr<AbstractMessage> lMessage(MessageFactory::buildMessage( lSocket.get() ));
       SuspendedEvent  *lSuspendedMsg;
@@ -153,7 +153,7 @@ ZORBA_THREAD_RETURN listenEvents( void * aClient )
           {
             lClient->theEventHandler->terminated();
           }
-          break;
+          lClient->theRequestSocket->send("quit", 5);
         }
       } else if ( (lEvaluatedEvent = dynamic_cast< EvaluatedEvent * >( lMessage.get() ))) {
         if ( lClient->theEventHandler )
@@ -164,16 +164,16 @@ ZORBA_THREAD_RETURN listenEvents( void * aClient )
           {
             lClient->theEventHandler->evaluated(lExpr, lError);
           } else {
-            std::map<String, String> lValuesAndTypes;
-            std::map<xqpString, xqpString> lMap = lEvaluatedEvent->getValuesAndTypes();
-            std::map<xqpString, xqpString>::const_iterator it;
+            list<pair<String, String> > lValuesAndTypes;
+            list< pair<xqpString, xqpString> > lMap = lEvaluatedEvent->getValuesAndTypes();
+            list< pair<xqpString, xqpString> >::const_iterator it;
             for(it=lMap.begin(); it!=lMap.end(); ++it )
             {
               xqpString test(it->first);
               xqpString filter = test.replace("&quot;", "\"", "");
               String lResult(filter);
               String lType(it->second);
-              lValuesAndTypes.insert(std::make_pair(lResult, lType));
+              lValuesAndTypes.push_back(std::make_pair(lResult, lType));
             }
             lClient->theEventHandler->evaluated(lExpr, lValuesAndTypes);
           }
