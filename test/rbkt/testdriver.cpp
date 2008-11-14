@@ -264,7 +264,8 @@ trim(std::string& str) {
 // aPos is the character number off the first difference in the file
 // -1 is returned for aLine, aCol, and aPos if the files are equal
 bool
-isEqual(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, int& aPos)
+isEqual(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, int& aPos,
+        std::string& aRefLine, std::string& aResLine)
 {
   std::ifstream li(aRefFile.get_path().c_str());
   std::ifstream ri(aResFile.get_path().c_str()); 
@@ -285,6 +286,8 @@ isEqual(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, int& 
     std::getline(ri, rLine);
     ++aLine;
     if ( (aCol = lLine.compare(rLine)) != 0) {
+      aRefLine = lLine;
+      aResLine = rLine;
       return false;
     }
   }
@@ -476,7 +479,8 @@ main(int argc, char** argv)
 
         // last, we have to diff the result
         int lLine, lCol, lPos; // where do the files differ
-        bool lRes = isEqual(lRefFile, lResultFile, lLine, lCol, lPos);
+        std::string lRefLine, lResultLine;
+        bool lRes = isEqual(lRefFile, lResultFile, lLine, lCol, lPos, lRefLine, lResultLine);
         if ( !lRes )  // results differ
         {
           std::cout << std::endl << "Result does not match expected result:" << std::endl;
@@ -485,10 +489,16 @@ main(int argc, char** argv)
 
           std::cout << "See line " << lLine << ", col " << lCol << " of expected result. " << std::endl;
           std::cout << "Actual: <";
-          printPart(std::cout, lResultFile.get_path(), lPos, 15);
+          if( -1 != lPos )
+            printPart(std::cout, lResultFile.get_path(), lPos, 15);
+          else
+            std::cout << lResultLine;
           std::cout << ">" << std::endl;
           std::cout << "Expected: <";
-          printPart(std::cout, lRefFile.get_path(), lPos, 15);
+          if( -1 != lPos )
+            printPart(std::cout, lRefFile.get_path(), lPos, 15);
+          else
+            std::cout << lRefLine;
           std::cout << ">" << std::endl;
 
           return 8;
