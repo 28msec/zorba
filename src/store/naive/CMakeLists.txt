@@ -80,7 +80,9 @@ IF (ZORBA_BUILD_STATIC_LIBRARY)
 
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
+IF (NOT MSVC)
 ADD_LIBRARY(simplestore SHARED ${SIMPLE_STORE_SRCS})
+ENDIF (NOT MSVC)
 
 # The following IF is needed in order to create the .lib file on Windows
 IF (MSVC )
