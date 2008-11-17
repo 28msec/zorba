@@ -1,0 +1,2 @@
+#!/bin/sh
+ln -s libicudat.38.dyblib libicudata.38.1.dylib
