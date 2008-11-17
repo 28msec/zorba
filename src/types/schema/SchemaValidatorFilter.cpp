@@ -553,7 +553,12 @@ void SchemaValidatorFilter::endElementEvent(const XMLCh *prefix, const XMLCh *ur
             }
         }
 
+#if _XERCES_VERSION >= 30000
+        XMLSize_t failingChildNo;
+        int res = fValidator->checkContent(topElem->fThisElement, topElem->fChildren, topElem->fChildCount, &failingChildNo);
+#else
         int res = fValidator->checkContent(topElem->fThisElement, topElem->fChildren, topElem->fChildCount);
+#endif // _XERCES_VERSION >= 30000
 
         if(res >= 0) 
         {
@@ -1106,8 +1111,15 @@ void SchemaValidatorFilter::docCharacters(const XMLCh* const chars, const unsign
 }
 
 
-void SchemaValidatorFilter::error(const unsigned int errCode, const XMLCh* const errDomain, const XMLErrorReporter::ErrTypes errType, const XMLCh* const errorText,
-                                  const XMLCh* const systemId, const XMLCh* const publicId, const XMLSSize_t lineNum, const XMLSSize_t colNum)
+void SchemaValidatorFilter::error(const unsigned int errCode, const XMLCh* const errDomain, 
+    const XMLErrorReporter::ErrTypes errType, const XMLCh* const errorText,
+    const XMLCh* const systemId, const XMLCh* const publicId, 
+#if _XERCES_VERSION >= 30000
+    const XMLFileLoc lineNum, const XMLFileLoc colNum
+#else
+    const XMLSSize_t lineNum, const XMLSSize_t colNum
+#endif // _XERCES_VERSION >= 30000
+    )
 {
     _errorOccurred = true;
     next_->resetAttList();

@@ -123,8 +123,15 @@ private:
 
     // XMLErrorReporter
     virtual void resetErrors() {}
-    virtual void error(const unsigned int, const XMLCh* const, const XMLErrorReporter::ErrTypes errType, const XMLCh* const errorText,
-        const XMLCh* const systemId, const XMLCh* const publicId, const XMLSSize_t lineNum, const XMLSSize_t colNum);
+    virtual void error(const unsigned int, const XMLCh* const, 
+        const XMLErrorReporter::ErrTypes errType, const XMLCh* const errorText,
+        const XMLCh* const systemId, const XMLCh* const publicId, 
+#if _XERCES_VERSION >= 30000
+        const  XMLFileLoc lineNum, const  XMLFileLoc colNum
+#else
+        const XMLSSize_t lineNum, const XMLSSize_t colNum
+#endif // _XERCES_VERSION >= 30000
+        );
 
 private:
     void processStartElement();

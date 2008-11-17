@@ -31,7 +31,8 @@ void PrintSchema::printInfo(bool excludeBuiltIn, XMLGrammarPool* grammarPool)
 {
     XERCES_STD_QUALIFIER cout << "********** Printing out information from Schema **********" << "\n\n";
 
-    XSModel *xsModel = grammarPool->getXSModel();
+    bool modelHasChanged;
+    XSModel *xsModel = grammarPool->getXSModel(modelHasChanged);
     if (xsModel)
     {
         StringList *namespaces = xsModel->getNamespaces();

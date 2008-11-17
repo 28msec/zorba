@@ -194,7 +194,8 @@ xqtref_t Schema::createIfExists( const TypeManager *typeManager, const store::It
     XMLChArray local (qname->getLocalName()->c_str());
     XMLChArray uri (uri_cstr);
 
-    XSModel* xsModel = _grammarPool->getXSModel();
+    bool modelHasChanged;
+    XSModel* xsModel = _grammarPool->getXSModel(modelHasChanged);
     XSTypeDefinition* xsTypeDef = xsModel->getTypeDefinition(local, uri);
 
     if ( xsTypeDef==NULL )
