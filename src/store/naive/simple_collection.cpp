@@ -82,7 +82,7 @@ store::Item_t SimpleCollection::loadDocument(
     SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
 
     if(position == -1)
-      theXmlTrees.insert(theXmlTrees.end(), root);
+      theXmlTrees.push_back(root);
     else
       theXmlTrees.insert(theXmlTrees.begin() + (position - 1), root);
   }
@@ -121,7 +121,7 @@ void SimpleCollection::addNode(
   if( nodePositionInCollection((store::Item*)node) == -1)
   {
     if(position == -1)
-      theXmlTrees.insert(theXmlTrees.end(), const_cast<store::Item*>(node));
+      theXmlTrees.push_back(const_cast<store::Item*>(node));
     else
       theXmlTrees.insert(theXmlTrees.begin() + (position - 1), const_cast<store::Item*>(node));
   }
@@ -223,11 +223,11 @@ void SimpleCollection::removeNode(const long position)
     if (theXmlTrees.size() == 0)
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
 
-    theXmlTrees.erase(theXmlTrees.end());
+    theXmlTrees.erase(theXmlTrees.end() - 1);
   }
   else if (position <= 0)
   {
-    assert (false);
+    ZORBA_ERROR_DESC(API0030_NO_NODE_AT_GIVEN_POSITION, "The given position is not valid. It must be >= -1.");
   }
   else 
   {

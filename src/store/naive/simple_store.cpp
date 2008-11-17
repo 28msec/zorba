@@ -323,8 +323,8 @@ store::Collection_t SimpleStore::createCollection(xqpStringStore_t& uri)
 
   if (!inserted)
   {
+    theItemUris.erase(theItemUris.end() - 1);
     ZORBA_ERROR_PARAM(API0005_COLLECTION_ALREADY_EXISTS, uri->c_str(), "");
-    theItemUris.erase(theItemUris.end());
     return NULL;
   }
 
