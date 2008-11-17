@@ -16,7 +16,6 @@
 
 #ifndef ZORBA_TEST_DEBUGGER_SERIALIZATION_CLIENT_H
 #define ZORBA_TEST_DEBUGGER_SERIALIZATION_CLIENT_H
-#include <cassert>
 #include <string>
 
 #include "debugger/message_factory.h"
@@ -24,46 +23,44 @@
 namespace zorba
 {
   template<class T>
-  void test_packet( AbstractMessage * aMessage );
+  bool test_packet( AbstractMessage * aMessage );
   
   class TestDebuggerSerialization
   {
     public:
-      void testReplyMessageOk();
+      bool testReplyMessageOk();
 
-      void testReplyMessage();
+      bool testReplyMessage();
       
-      void testRunMessage();
+      bool testRunMessage();
 
-      void testResumeMessage();
+      bool testResumeMessage();
     
-      void testSuspendMessage();
+      bool testSuspendMessage();
     
-      void testTerminateMessage();
+      bool testTerminateMessage();
 
-      void testStepIntoMessage();
+      bool testStepIntoMessage();
     
-      void testStepOutMessage();
+      bool testStepOutMessage();
     
-      void testStepOverMessage();
+      bool testStepOverMessage();
 
-      void testStartedEvent();
+      bool testStartedEvent();
 
-      void testTerminatedEvent();
+      bool testTerminatedEvent();
 
-      void testSuspendedEvent();
+      bool testSuspendedEvent();
 
-      void testResumedEvent();
+      bool testResumedEvent();
 
-      void testClearMessage();
+      bool testClearMessage();
 
-      void testSetMessage();
+      bool testSetMessage();
 
-      void testEvalMessage();
+      bool testEvalMessage();
 
-      void testEvaluatedEvent();
-
-      void testVariableMessage();
+      bool testVariableMessage();
   };
 }
 #endif

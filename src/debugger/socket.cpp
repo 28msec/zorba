@@ -62,7 +62,7 @@ static void fillAddr(const string &address, unsigned short port,
 
 // Socket Code
 
-Socket::Socket(int type, int protocol) throw(DebuggerSocketException) {
+Socket::Socket(int type, int protocol) {
 #ifdef WIN32
     if (!initialized) {
       WORD wVersionRequested;
@@ -95,7 +95,7 @@ Socket::~Socket() {
   sockDesc = -1;
 }
 
-string Socket::getLocalAddress() throw(DebuggerSocketException) {
+string Socket::getLocalAddress() {
   sockaddr_in addr;
   unsigned int addr_len = sizeof(addr);
 
@@ -105,7 +105,7 @@ string Socket::getLocalAddress() throw(DebuggerSocketException) {
   return inet_ntoa(addr.sin_addr);
 }
 
-unsigned short Socket::getLocalPort() throw(DebuggerSocketException) {
+unsigned short Socket::getLocalPort() {
   sockaddr_in addr;
   unsigned int addr_len = sizeof(addr);
 
@@ -115,7 +115,7 @@ unsigned short Socket::getLocalPort() throw(DebuggerSocketException) {
   return ntohs(addr.sin_port);
 }
 
-void Socket::setLocalPort(unsigned short localPort) throw(DebuggerSocketException) {
+void Socket::setLocalPort(unsigned short localPort) {
   // Bind the socket to its port
   sockaddr_in localAddr;
   memset(&localAddr, 0, sizeof(localAddr));
@@ -132,7 +132,7 @@ void Socket::setLocalPort(unsigned short localPort) throw(DebuggerSocketExceptio
 }
 
 void Socket::setLocalAddressAndPort(const string &localAddress,
-    unsigned short localPort) throw(DebuggerSocketException) {
+    unsigned short localPort) {
   // Get the address of the requested host
   sockaddr_in localAddr;
   fillAddr(localAddress, localPort, localAddr);
@@ -143,7 +143,7 @@ void Socket::setLocalAddressAndPort(const string &localAddress,
   }
 }
 
-void Socket::cleanUp() throw(DebuggerSocketException) {
+void Socket::cleanUp() {
 #ifdef WIN32
     if (WSACleanup() != 0) {
       throw DebuggerSocketException("WSACleanup() failed");
@@ -163,15 +163,15 @@ unsigned short Socket::resolveService(const string &service,
 
 // CommunicatingSocket Code
 
-CommunicatingSocket::CommunicatingSocket(int type, int protocol)  
-    throw(DebuggerSocketException) : Socket(type, protocol) {
+CommunicatingSocket::CommunicatingSocket(int type, int protocol):
+  Socket(type, protocol) {
 }
 
 CommunicatingSocket::CommunicatingSocket(int newConnSD) : Socket(newConnSD) {
 }
 
 void CommunicatingSocket::connect(const string &foreignAddress,
-    unsigned short foreignPort) throw(DebuggerSocketException) {
+    unsigned short foreignPort) {
   // Get the address of the requested host
   sockaddr_in destAddr;
   fillAddr(foreignAddress, foreignPort, destAddr);
@@ -185,14 +185,13 @@ void CommunicatingSocket::connect(const string &foreignAddress,
 }
 
 void CommunicatingSocket::send(const void *buffer, int bufferLen) 
-    throw(DebuggerSocketException) {
+{
   if (::send(sockDesc, (raw_type *) buffer, bufferLen, 0) < 0) {
     throw DebuggerSocketException("Send failed (send())", true);
   }
 }
 
-int CommunicatingSocket::recv(void *buffer, int bufferLen) 
-    throw(DebuggerSocketException) {
+int CommunicatingSocket::recv(void *buffer, int bufferLen) {
   int rtn;
   if ((rtn = ::recv(sockDesc, (raw_type *) buffer, bufferLen, 0)) < 0) {
     throw DebuggerSocketException("Received failed (recv())", true);
@@ -201,8 +200,7 @@ int CommunicatingSocket::recv(void *buffer, int bufferLen)
   return rtn;
 }
 
-string CommunicatingSocket::getForeignAddress() 
-    throw(DebuggerSocketException) {
+string CommunicatingSocket::getForeignAddress() {
   sockaddr_in addr;
   unsigned int addr_len = sizeof(addr);
 
@@ -212,7 +210,7 @@ string CommunicatingSocket::getForeignAddress()
   return inet_ntoa(addr.sin_addr);
 }
 
-unsigned short CommunicatingSocket::getForeignPort() throw(DebuggerSocketException) {
+unsigned short CommunicatingSocket::getForeignPort() {
   sockaddr_in addr;
   unsigned int addr_len = sizeof(addr);
 
@@ -224,13 +222,10 @@ unsigned short CommunicatingSocket::getForeignPort() throw(DebuggerSocketExcepti
 
 // TCPSocket Code
 
-TCPSocket::TCPSocket() 
-    throw(DebuggerSocketException) : CommunicatingSocket(SOCK_STREAM, 
-    IPPROTO_TCP) {
+TCPSocket::TCPSocket(): CommunicatingSocket(SOCK_STREAM, IPPROTO_TCP) {
 }
 
-TCPSocket::TCPSocket(const string &foreignAddress, unsigned short foreignPort)
-    throw(DebuggerSocketException) : CommunicatingSocket(SOCK_STREAM, IPPROTO_TCP) {
+TCPSocket::TCPSocket(const string &foreignAddress, unsigned short foreignPort): CommunicatingSocket(SOCK_STREAM, IPPROTO_TCP) {
   connect(foreignAddress, foreignPort);
 }
 
@@ -239,20 +234,18 @@ TCPSocket::TCPSocket(int newConnSD) : CommunicatingSocket(newConnSD) {
 
 // TCPServerSocket Code
 
-TCPServerSocket::TCPServerSocket(unsigned short localPort, int queueLen) 
-    throw(DebuggerSocketException) : Socket(SOCK_STREAM, IPPROTO_TCP) {
+TCPServerSocket::TCPServerSocket(unsigned short localPort, int queueLen): Socket(SOCK_STREAM, IPPROTO_TCP) {
   setLocalPort(localPort);
   setListen(queueLen);
 }
 
 TCPServerSocket::TCPServerSocket(const string &localAddress, 
-    unsigned short localPort, int queueLen) 
-    throw(DebuggerSocketException) : Socket(SOCK_STREAM, IPPROTO_TCP) {
+    unsigned short localPort, int queueLen): Socket(SOCK_STREAM, IPPROTO_TCP) {
   setLocalAddressAndPort(localAddress, localPort);
   setListen(queueLen);
 }
 
-TCPSocket *TCPServerSocket::accept() throw(DebuggerSocketException) {
+TCPSocket *TCPServerSocket::accept() {
   int newConnSD;
   if ((newConnSD = ::accept(sockDesc, NULL, 0)) < 0) {
     throw DebuggerSocketException("Accept failed (accept())", true);
@@ -261,7 +254,7 @@ TCPSocket *TCPServerSocket::accept() throw(DebuggerSocketException) {
   return new TCPSocket(newConnSD);
 }
 
-void TCPServerSocket::setListen(int queueLen) throw(DebuggerSocketException) {
+void TCPServerSocket::setListen(int queueLen) {
   if (listen(sockDesc, queueLen) < 0) {
     throw DebuggerSocketException("Set listening socket failed (listen())", true);
   }

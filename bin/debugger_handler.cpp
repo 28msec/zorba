@@ -331,21 +331,20 @@ void DebuggerHandler::list(const QueryLocation& aLocation) const
   auto_ptr<istream> lInput(resolve(lStringURI));
   if(lInput.get() != 0)
   {
-    int lLineBegin = aLocation.getLineBegin();
-    int lLineEnd = aLocation.getLineEnd();
-    int lColumnBegin = aLocation.getColumnBegin();
-    int lColumnEnd = aLocation.getColumnEnd();
-    int lLineNo = 0;
+    unsigned int lLineBegin = aLocation.getLineBegin();
+    unsigned int lLineEnd = aLocation.getLineEnd();
+    unsigned int lColumnBegin = aLocation.getColumnBegin();
+    unsigned int lColumnEnd = aLocation.getColumnEnd();
+    unsigned int lLineNo = 0;
     string lLine;
     cout << endl;
     while(lInput->good())
     {
       lLineNo++;
       getline(*lInput, lLine, '\n');
-      //std::cerr << "lLineNo: " << lLineNo << std::endl;
-      //std::cerr << "lLineBegin-10:" << lLineBegin-10 << std::endl;
-      //std::cerr << "lLineEnd-10:" << lLineEnd+10 << std::endl;
-      if(lLineNo <= (lLineBegin-10) || lLineNo >= (lLineEnd+10)) continue;
+      unsigned int lBegin = (int)lLineBegin-10<0?0:lLineBegin-10;
+      unsigned int lEnd = lLineEnd+10;
+      if(lLineNo <= lBegin || lLineNo >= lEnd) continue;
       if(lLineNo >= lLineBegin && lLineNo <= lLineEnd)
       {
 #ifdef WIN32
