@@ -108,11 +108,7 @@ int tidy(const char* input, xqp_string& result, xqp_string& diagnostics)
     //The default is appropriate to the current platform: CRLF on PC-DOS, MS-Windows and OS/2,
     //CR on Classic Mac OS, and LF everywhere else (Unix and Linux).
     if(ok) {
-#if defined (APPLE)
-      ok = tidyOptSetValue(tdoc, TidyNewline, "CR");
-#else
       ok = tidyOptSetValue(tdoc, TidyNewline, "LF");
-#endif
     }
 
     if(ok) {
@@ -188,11 +184,7 @@ int tidy(const std::ifstream& fStream, std::iostream& result, std::iostream& dia
     //The default is appropriate to the current platform: CRLF on PC-DOS, MS-Windows and OS/2,
     //CR on Classic Mac OS, and LF everywhere else (Unix and Linux).
     if(ok) {
-#if defined (APPLE)
-      ok = tidyOptSetValue(tdoc, TidyNewline, "CR");
-#else
       ok = tidyOptSetValue(tdoc, TidyNewline, "LF");
-#endif
     }
 
     if(ok) {
@@ -262,11 +254,7 @@ int tidy(const std::istringstream& isStream, std::iostream& result, std::iostrea
     //The default is appropriate to the current platform: CRLF on PC-DOS, MS-Windows and OS/2,
     //CR on Classic Mac OS, and LF everywhere else (Unix and Linux).
     if(ok) {
-#if defined (APPLE)
-      ok = tidyOptSetValue(tdoc, TidyNewline, "CR");
-#else
       ok = tidyOptSetValue(tdoc, TidyNewline, "LF");
-#endif
     }
 
     if(ok) {
