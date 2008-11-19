@@ -67,7 +67,7 @@ ZorbaCollectionExistsIterator::nextImpl(store::Item_t& result, PlanState& planSt
 
       GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
     }
-    catch (error::ZorbaError& e) 
+    catch (error::ZorbaError&) 
     {
       ZORBA_ERROR_LOC_PARAM(XQST0046,
                             loc,
@@ -472,7 +472,7 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSt
     {
       theColl = getCollection(planState, resolvedURIString, loc);
     }
-    catch (error::ZorbaError& e) 
+    catch (error::ZorbaError&) 
     {
       // we come here if the collection does not exist already
     }
@@ -1140,7 +1140,7 @@ store::Collection_t getCollection(
   }
   catch (error::ZorbaError& e) 
   {
-    ZORBA_ERROR_LOC_PARAM(API0006_COLLECTION_NOT_FOUND, loc, strURI, "");
+    ZORBA_ERROR_LOC_PARAM(API0006_COLLECTION_NOT_FOUND, loc, strURI, e.theDescription);
   }
 
   store::Collection_t lCollection = planState.sctx()->
