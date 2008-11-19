@@ -21,8 +21,22 @@
 namespace zorba { namespace error {
 
 
+std::string 
+ZorbaError::toString(const XQUERY_ERROR& code) 
+{
+  return ErrorMessages::getNameForErrorCode(code);
+}
+
+
 ZorbaError::~ZorbaError()
 {
+  free();
+}
+
+
+void ZorbaError::free() 
+{ 
+  delete this; 
 }
 
 
@@ -95,9 +109,14 @@ ZorbaError::ZorbaError(const ZorbaError& other)
 
 
 std::string 
-ZorbaError::toString(const XQUERY_ERROR& code) 
+ZorbaError::toString() 
 {
-  return ErrorMessages::getNameForErrorCode(code);
+  std::ostringstream strstream;
+
+  strstream << "Code : " << ErrorMessages::getNameForErrorCode(theErrorCode)
+            << std::endl << "Description : " << theDescription << std::endl;
+
+  return strstream.str();
 }
 
 

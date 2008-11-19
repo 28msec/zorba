@@ -45,6 +45,7 @@ public:
   bool isUpdating() const { return theUpdating; }
 };
 
+
 class FlowCtlIterator : public NaryBaseIterator<FlowCtlIterator, PlanIteratorState>
 {
 public:
@@ -80,9 +81,11 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
 };
 
+
 NARY_ITER (LoopIterator);
 
 NARY_ITER (FnReadStringIterator);
+
 NARY_ITER (FnPrintIterator);
 
 } /* namespace zorba */

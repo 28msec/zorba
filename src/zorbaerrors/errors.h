@@ -78,6 +78,11 @@ public:
 
   virtual ~ZorbaError();
 
+  virtual void free();
+
+  virtual std::string
+  toString();
+
   virtual bool 
   isXPathStaticError() const;
 
@@ -115,7 +120,7 @@ public:
   isTypeError() const;
 
   virtual bool
-  isUserError() const          { return false; }
+  isUserError() const  { return false; }
 };
 
 

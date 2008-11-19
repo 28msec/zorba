@@ -28,6 +28,13 @@
 
 namespace zorba 
 {
+
+namespace error 
+{
+  class ZorbaError;
+};
+
+
 class serializer;
 
 namespace store
@@ -549,6 +556,9 @@ public:
   virtual int getTupleFieldCount() const;
 
   virtual const TupleField& getTupleField(int index) const;
+
+  /* -------------------- Methods for ErrorItem --------------------- */
+  error::ZorbaError* getError() const;
 }; 
 
 

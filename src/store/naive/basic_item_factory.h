@@ -288,6 +288,9 @@ public:
           store::Item *inTuple,
           std::vector<int>& permutation);
 
+  bool createError(
+          store::Item_t& result,
+          error::ZorbaError* inError);
 };
 
 } // namespace store

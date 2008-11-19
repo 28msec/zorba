@@ -664,6 +664,15 @@ public:
           store::Item_t& result,
           store::Item *inTuple,
           std::vector<int>& permutation) = 0;
+
+  /**
+   * Create an ErrorItem encapsulating a pointer to a ZorbaError obj (or to
+   * subclasses of ZorbaError). The new ErrorItem assumes ownership of the
+   * ZorbaError obj
+   */
+  virtual bool createError(
+          store::Item_t& result,
+          error::ZorbaError* inError) = 0;
 };
 
 } // namespace store
