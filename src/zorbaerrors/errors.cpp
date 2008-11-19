@@ -30,7 +30,6 @@ ZorbaError::toString(const XQUERY_ERROR& code)
 
 ZorbaError::~ZorbaError()
 {
-  free();
 }
 
 
