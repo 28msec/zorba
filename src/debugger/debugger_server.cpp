@@ -16,6 +16,8 @@
 
 #include "debugger/debugger_server.h"
 
+#include <zorba/debugger_default_event_handler.h>
+
 #include <memory>
 #include <fstream>
 
