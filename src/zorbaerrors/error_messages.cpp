@@ -56,22 +56,22 @@ DEF_ERR_CODE (FOCA0002, FOCA0002, "Invalid lexical value.")
 DEF_ERR_CODE (FOCA0003, FOCA0003, "Input value too large for integer.")
 DEF_ERR_CODE (FOCA0005, FOCA0005, "NaN supplied as float/double value.")
 DEF_ERR_CODE (FOCA0006, FOCA0006, "String to be cast to decimal has too many digits of precision.")
-DEF_ERR_CODE (FOCH0001, FOCH0001, "Code point not valid: /s.")
+DEF_ERR_CODE (FOCH0001, FOCH0001, "Code point not valid: {/s}.")
 DEF_ERR_CODE (FOCH0002, FOCH0002, "Unsupported collation.")
 DEF_ERR_CODE (FOCH0003, FOCH0003, "Unsupported normalization form.")
 DEF_ERR_CODE (FOCH0004, FOCH0004, "Collation does not support collation units.")
 DEF_ERR_CODE (FODC0001, FODC0001, "No context document.")
-DEF_ERR_CODE (FODC0002, FODC0002, "Error retrieving the resource with uri `/s'.\nReason: `/s'")
+DEF_ERR_CODE (FODC0002, FODC0002, "Error retrieving the resource with uri {/s}.\nReason {/s}")
 DEF_ERR_CODE (FODC0003, FODC0003, "Function stability not defined.")
-DEF_ERR_CODE (FODC0004, FODC0004, "Invalid argument to fn:collection: /s.")
-DEF_ERR_CODE (FODC0005, FODC0005, "Invalid argument to fn:doc or fn:doc-available: /s")
+DEF_ERR_CODE (FODC0004, FODC0004, "Invalid argument to fn:collection {/s}.")
+DEF_ERR_CODE (FODC0005, FODC0005, "Invalid argument to fn:doc or fn:doc-available {/s}")
 DEF_ERR_CODE (FODT0001, FODT0001, "Overflow/underflow in date/time operation.")
 DEF_ERR_CODE (FODT0002, FODT0002, "Overflow/underflow in duration operation.")
 DEF_ERR_CODE (FODT0003, FODT0003, "Invalid timezone value.")
 DEF_ERR_CODE (FOER0000, FOER0000, "Unidentified error.")
 DEF_ERR_CODE (FONS0004, FONS0004, "No namespace found for prefix.")
 DEF_ERR_CODE (FONS0005, FONS0005, "Base-uri not defined in the static context.")
-DEF_ERR_CODE (FORG0001, FORG0001, "Invalid value for cast/constructor. Reason: /s")
+DEF_ERR_CODE (FORG0001, FORG0001, "Invalid value for cast/constructor. Reason {/s}")
 DEF_ERR_CODE (FORG0002, FORG0002, "Invalid argument to fn:resolve-uri().")
 DEF_ERR_CODE (FORG0003, FORG0003, "fn:zero-or-one called with a sequence containing more than one item.")
 DEF_ERR_CODE (FORG0004, FORG0004, "fn:one-or-more called with a sequence containing no items.")
@@ -79,8 +79,8 @@ DEF_ERR_CODE (FORG0005, FORG0005, "fn:exactly-one called with a sequence contain
 DEF_ERR_CODE (FORG0006, FORG0006, "Invalid argument type.")
 DEF_ERR_CODE (FORG0008, FORG0008, "Both arguments to fn:dateTime have a specified timezone.")
 DEF_ERR_CODE (FORG0009, FORG0009, "Error in resolving a relative URI against a base URI in fn:resolve-uri.")
-DEF_ERR_CODE (FORX0001, FORX0001, "Invalid regular expression flags: /s")
-DEF_ERR_CODE (FORX0002, FORX0002, "Invalid regular expression: /s ")
+DEF_ERR_CODE (FORX0001, FORX0001, "Invalid regular expression flags {/s}")
+DEF_ERR_CODE (FORX0002, FORX0002, "Invalid regular expression {/s} ")
 DEF_ERR_CODE (FORX0003, FORX0003, "Regular expression matches zero-length string.")
 DEF_ERR_CODE (FORX0004, FORX0004, "Invalid replacement string.")
 DEF_ERR_CODE (FOTY0012, FOTY0012, "Argument node does not have a typed value.")
@@ -132,27 +132,27 @@ DEF_ERR_CODE (API0002_COMPILE_FAILED, API0002, "Query compilation failed")
 DEF_ERR_CODE (API0003_XQUERY_NOT_COMPILED, API0003, "Query not compiled")
 DEF_ERR_CODE (API0004_XQUERY_ALREADY_COMPILED, API0004, "Query already compiled")
 
-DEF_ERR_CODE (API0005_COLLECTION_ALREADY_EXISTS, API0005, "A collection with URI /s exists already.")
+DEF_ERR_CODE (API0005_COLLECTION_ALREADY_EXISTS, API0005, "A collection with URI {/s} exists already.")
 
-DEF_ERR_CODE (API0006_COLLECTION_NOT_FOUND, API0006, "A collection with URI `/s' does not exist.")
+DEF_ERR_CODE (API0006_COLLECTION_NOT_FOUND, API0006, "A collection with URI {/s} does not exist.")
 
 DEF_ERR_CODE (API0007_COLLECTION_ITEM_MUST_BE_A_NODE, API0007, "Cannot insert to a collection an item that is not a node.")
 
 DEF_ERR_CODE (API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION, API0029, "The node does not belong to the given collection.")
 
-DEF_ERR_CODE (API0030_NO_NODE_AT_GIVEN_POSITION, API0030, "There is no node at the given position (/s), the collection has fewer nodes.");
+DEF_ERR_CODE (API0030_NO_NODE_AT_GIVEN_POSITION, API0030, "There is no node at the given position {/s}, the collection has fewer nodes.");
 
-DEF_ERR_CODE (API0031_NODE_ALREADY_IN_COLLECTION, API0031, "Node is already part of the collection /s.");
+DEF_ERR_CODE (API0031_NODE_ALREADY_IN_COLLECTION, API0031, "Node is already part of the collection {/s}.");
 
-DEF_ERR_CODE (API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, API0033, "File or folder (/s) does not exist.");
+DEF_ERR_CODE (API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, API0033, "File or folder {/s} does not exist.");
 
-DEF_ERR_CODE (API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED, API0034, "File or folder (/s) could not be opened.");
+DEF_ERR_CODE (API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED, API0034, "File or folder {/s} could not be opened.");
 
-DEF_ERR_CODE (API0035_COLLECTION_CANNOT_BE_SERIALIZED, API0035, "Collection (/s) can not be serialized.");
+DEF_ERR_CODE (API0035_COLLECTION_CANNOT_BE_SERIALIZED, API0035, "Collection {/s} can not be serialized.");
 
-DEF_ERR_CODE (API0020_DOCUMENT_ALREADY_EXISTS, API0020, "Another document with uri `/s' exists in the store already.")
+DEF_ERR_CODE (API0020_DOCUMENT_ALREADY_EXISTS, API0020, "Another document with uri {/s} exists in the store already.")
 
-DEF_ERR_CODE (API0021_ITEM_TO_LOAD_IS_NOT_NODE, API0021, "The uri `/s' does not identify an XML node")
+DEF_ERR_CODE (API0021_ITEM_TO_LOAD_IS_NOT_NODE, API0021, "The uri {/s} does not identify an XML node")
 
 DEF_ERR_CODE(API0023_CANNOT_SERIALIZE_UPDATE_QUERY, API0023, "Cannot serialize an updating query")
 
@@ -164,7 +164,7 @@ DEF_ERR_CODE(API0026_CANNOT_CLOSE_QUERY_WITH_ITERATORS, API0026, "Query cannot b
 
 DEF_ERR_CODE(API0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS, API0027, "The query dynamic context cannot be updated because there are result iterators on the query")
 
-DEF_ERR_CODE(API0028_INVALID_NODE_URI, API0028, "The uri /s is not a valid node reference")
+DEF_ERR_CODE(API0028_INVALID_NODE_URI, API0028, "The uri {/s} is not a valid node reference")
 
 //
 // ZORBA-specific errors
@@ -178,7 +178,7 @@ DEF_ERR_CODE (XQP0003_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND, XQP0003, "XQP0003_DYNA
 
 DEF_ERR_CODE (XQP0004_SYSTEM_NOT_SUPPORTED, XQP0004, "/s not implemented or not supported")
 
-DEF_ERR_CODE (XQP0005_SYSTEM_ASSERT_FAILED, XQP0005, "Assertion `/s' failed in /s")
+DEF_ERR_CODE (XQP0005_SYSTEM_ASSERT_FAILED, XQP0005, "Assertion /s failed in /s")
 
 DEF_ERR_CODE (XQP0016_LOADER_IO_ERROR, XQP0016, "Loader I/O error: /s")
 
@@ -196,7 +196,7 @@ DEF_ERR_CODE (XQP0022_GET_RESULTS_AS_DOM_FAILED, XQP0022, "Couldn't get result a
 
 DEF_ERR_CODE (XQP0023_GET_RESULTS_AS_SAX_FAILED, XQP0023, "Couldn't get result as SAX")
 
-DEF_ERR_CODE (XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE, XQP0024, "The function called (/s) is not available for the given item type (/s).")
+DEF_ERR_CODE (XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE, XQP0024, "The function called {/s} is not available for the given item type {/s}.")
 
 DEF_ERR_CODE (XQP0025_COULD_NOT_CREATE_ITEM, XQP0025, "The item could not be created.")
 
@@ -206,7 +206,7 @@ DEF_ERR_CODE (XQP0027_MS_DOM_ERROR, XQP0027, "Error from MS DOM engine.")
 
 DEF_ERR_CODE (XQP0028_FUNCTION_IMPL_NOT_FOUND, XQP0028, "The external function called ({/s}/s) is not bound in the static context")
 
-DEF_ERR_CODE (XQP0029_TIDY_ERROR, XQP0029, "Error in Tidy library: /s")
+DEF_ERR_CODE (XQP0029_TIDY_ERROR, XQP0029, "Error in Tidy library: {/s}")
 
 DEF_ERR_CODE (XQP0030_DEADLOCK, XQP0029, "Lock upgrade request will result in deadlock")
 
@@ -215,7 +215,7 @@ DEF_ERR_CODE (XQP0030_DEADLOCK, XQP0029, "Lock upgrade request will result in de
 // XPDY
 //
 
-DEF_ERR_CODE (XPDY0002, XPDY0002, "evaluation of an expression relies on some part of the dynamic context that has not been assigned a value: /s.")
+DEF_ERR_CODE (XPDY0002, XPDY0002, "evaluation of an expression relies on some part of the dynamic context that has not been assigned a value: {/s}.")
 
 DEF_ERR_CODE (XPDY0050, XPDY0050, "The dynamic type of the operand of a treat expression does not match the sequence type specified by the treat expression.")
 
@@ -224,30 +224,30 @@ DEF_ERR_CODE (XPDY0050, XPDY0050, "The dynamic type of the operand of a treat ex
 // XPST
 //
 
-DEF_ERR_CODE (XPST0001, XPST0001, "Analysis of an expression relies on some component of the static context that has not been assigned a value /s")
+DEF_ERR_CODE (XPST0001, XPST0001, "Analysis of an expression relies on some component of the static context that has not been assigned a value {/s}")
 
 DEF_ERR_CODE (XPST0003, XPST0003, "Expression is not a valid instance of the grammar.")
 
 DEF_ERR_CODE (XPST0005, XPST0005, "During the analysis phase, it is a static error if the static type assigned to an expression other than the expression () or data(()) is empty-sequence().")
 
-DEF_ERR_CODE (XPST0008, XPST0008, "Expression refers to an element name, attribute name, schema type name, namespace prefix, or variable name that is not defined in the static context: /s /s")
+DEF_ERR_CODE (XPST0008, XPST0008, "Expression refers to an element name, attribute name, schema type name, namespace prefix, or variable name that is not defined in the static context: {/s} {/s}")
 
 DEF_ERR_CODE (XPST0010, XPST0010, "An implementation must raise a static error if it encounters a reference to an axis that it does not support.")
 
-DEF_ERR_CODE (XPST0017, XPST0017, "Expanded QName and number of arguments in function call do not match the name and arity of any function signature in the static context /s / /s")
+DEF_ERR_CODE (XPST0017, XPST0017, "Expanded QName and number of arguments in function call do not match the name and arity of any function signature in the static context {/s} / {/s}")
 
-DEF_ERR_CODE (XPST0051, XPST0051, "A QName /s that is used as an AtomicType in a SequenceType is not defined in the in-scope schema types as an atomic type.")
+DEF_ERR_CODE (XPST0051, XPST0051, "A QName {/s} that is used as an AtomicType in a SequenceType is not defined in the in-scope schema types as an atomic type.")
 
 DEF_ERR_CODE (XPST0080, XPST0080, "The target type of a cast or castable expression is xs:NOTATION or xs:anyAtomicType.")
 
-DEF_ERR_CODE (XPST0081, XPST0081, "A QName used in a query contains namespace prefix /s that cannot be expanded into a namespace URI by using the statically known namespaces")
+DEF_ERR_CODE (XPST0081, XPST0081, "A QName used in a query contains namespace prefix {/s} that cannot be expanded into a namespace URI by using the statically known namespaces")
 
 
 //
 // XPTY
 //
 
-DEF_ERR_CODE (XPTY0004, XPTY0004, "During the static analysis phase, an expression is found to have a static type that is not appropriate for the context in which the expression occurs, or during the dynamic evaluation phase, the dynamic type of a value does not match a required type as specified by the matching rules: /s")
+DEF_ERR_CODE (XPTY0004, XPTY0004, "During the static analysis phase, an expression is found to have a static type that is not appropriate for the context in which the expression occurs, or during the dynamic evaluation phase, the dynamic type of a value does not match a required type as specified by the matching rules: {/s}")
 
 DEF_ERR_CODE (XPTY0018, XPTY0018, "The result of the last step in a path expression contains both nodes and atomic values.")
 
@@ -301,7 +301,7 @@ DEF_ERR_CODE (XQST0032, XQST0032, "Prolog contains more than one base URI declar
 
 DEF_ERR_CODE (XQST0033, XQST0033, "A module contains multiple bindings for the same namespace prefix.")
 
-DEF_ERR_CODE (XQST0034, XQST0034, "Duplicate function: /s")
+DEF_ERR_CODE (XQST0034, XQST0034, "Duplicate function: {/s}")
 
 DEF_ERR_CODE (XQST0035, XQST0035, "Error importing two schema components that both define the same name in the same symbol space and in the same scope.")
 
@@ -313,7 +313,7 @@ DEF_ERR_CODE (XQST0039, XQST0039, "It is a static error for a function declarati
 
 DEF_ERR_CODE (XQST0040, XQST0040, "The attributes specified by a direct element constructor do not have distinct expanded QNames.")
 
-DEF_ERR_CODE (XQST0045, XQST0045, "Function name '/s' cannot be in one of the following namespaces: http://www.w3.org/XML/1998/namespace, http://www.w3.org/2001/XMLSchema, http://www.w3.org/2001/XMLSchema-instance, http://www.w3.org/2005/xpath-functions")
+DEF_ERR_CODE (XQST0045, XQST0045, "Function name {/s} cannot be in one of the following namespaces: http://www.w3.org/XML/1998/namespace, http://www.w3.org/2001/XMLSchema, http://www.w3.org/2001/XMLSchema-instance, http://www.w3.org/2005/xpath-functions")
 
 DEF_ERR_CODE (XQST0046, XQST0046, "Value of a URILiteral is of nonzero length and is not in the lexical space of xs:anyURI.")
 
@@ -321,7 +321,7 @@ DEF_ERR_CODE (XQST0047, XQST0047, "Multiple module imports in the same Prolog sp
 
 DEF_ERR_CODE (XQST0048, XQST0048, "A function or variable declared in a library module is not in the target namespace of the library module.")
 
-DEF_ERR_CODE (XQST0049, XQST0049, "Two or more variables declared or imported by a module have equal expanded QNames /s (as defined by the eq operator.)")
+DEF_ERR_CODE (XQST0049, XQST0049, "Two or more variables declared or imported by a module have equal expanded QNames {/s} (as defined by the eq operator.)")
 
 DEF_ERR_CODE (XQST0054, XQST0054, "A variable depends on itself.")
 
@@ -331,7 +331,7 @@ DEF_ERR_CODE (XQST0057, XQST0057, "A schema import binds a namespace prefix but 
 
 DEF_ERR_CODE (XQST0058, XQST0058, "Multiple schema imports specify the same target namespace.")
 
-DEF_ERR_CODE (XQST0059, XQST0059, "Unable to process a schema or module import by finding a schema or module /s with the specified target namespace /s")
+DEF_ERR_CODE (XQST0059, XQST0059, "Unable to process a schema or module import by finding a schema or module {/s} with the specified target namespace {/s}")
 
 DEF_ERR_CODE (XQST0060, XQST0060, "The name of a function in a function declaration is not in a namespace (expanded QName has a null namespace URI).")
 

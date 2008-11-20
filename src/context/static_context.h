@@ -74,26 +74,27 @@ public:
 
   bool lookup_ns (xqp_string prefix, xqp_string &ns) const;
   xqp_string lookup_ns (xqp_string prefix, const XQUERY_ERROR& err = XPST0081) const;
+  xqp_string lookup_ns (xqp_string prefix, const QueryLoc& loc, const XQUERY_ERROR& err = XPST0081) const;
   xqp_string lookup_ns_or_default (xqp_string prefix, xqp_string default_ns) const;
   void bind_ns (xqp_string prefix, xqp_string ns, const XQUERY_ERROR& err = XQST0033);
 
   static xqp_string qname_internal_key (const store::Item *qname);
   static std::pair<xqp_string /* local */, xqp_string /* uri */> decode_qname_internal_key (xqp_string key);
 
-  store::Item_t lookup_qname (xqp_string default_ns, xqp_string name) const;
-  store::Item_t lookup_qname (xqp_string default_ns, xqp_string pfx, xqp_string local) const;
-  store::Item_t lookup_elem_qname (xqp_string name) const {
-    return lookup_qname (lookup_ns_or_default ("", default_elem_type_ns ()), name);
+  store::Item_t lookup_qname (xqp_string default_ns, xqp_string name, const QueryLoc& loc) const;
+  store::Item_t lookup_qname (xqp_string default_ns, xqp_string pfx, xqp_string local, const QueryLoc& loc) const;
+  store::Item_t lookup_elem_qname (xqp_string name, const QueryLoc& loc) const {
+    return lookup_qname (lookup_ns_or_default ("", default_elem_type_ns ()), name, loc);
   }
-  store::Item_t lookup_elem_qname (xqp_string pfx, xqp_string local) const {
-    return lookup_qname (lookup_ns_or_default ("", default_elem_type_ns ()), pfx, local);
+  store::Item_t lookup_elem_qname (xqp_string pfx, xqp_string local, const QueryLoc& loc) const {
+    return lookup_qname (lookup_ns_or_default ("", default_elem_type_ns ()), pfx, local, loc);
   }
   bool lookup_elem_namespace(const xqp_string pfx, xqp_string& ns) const;
 
   store::Item_t lookup_fn_qname (xqp_string pfx, xqp_string local, const QueryLoc& loc) const;
 
-  store::Item_t lookup_var_qname (xqp_string varname) const {
-    return lookup_qname ("", varname);
+  store::Item_t lookup_var_qname (xqp_string varname, const QueryLoc& loc) const {
+    return lookup_qname ("", varname, loc);
   }
 
   expr *lookup_var (xqp_string varname) const {

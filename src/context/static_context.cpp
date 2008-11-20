@@ -204,12 +204,13 @@ xqp_string qname_internal_key2 (xqp_string ns, xqp_string local)
 store::Item_t static_context::lookup_qname(
     xqp_string default_ns,
     xqp_string prefix,
-    xqp_string local) const
+    xqp_string local,
+    const QueryLoc& loc) const
 {
   store::Item_t qname;
   xqpStringStore_t ns = (prefix.empty() ?
                          default_ns.theStrStore :
-                         lookup_ns(prefix).theStrStore);
+                         lookup_ns(prefix, loc).theStrStore);
 
   // Note: lookup_ns throws exception if there is no binding for the prefix.
   ITEM_FACTORY->createQName(qname,
@@ -220,10 +221,10 @@ store::Item_t static_context::lookup_qname(
 }
 
 
-store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) const
+store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname, const QueryLoc& loc) const
 {
   pair<xqp_string, xqp_string> rqname = parse_qname (qname);
-  return lookup_qname (default_ns, rqname.first, rqname.second);
+  return lookup_qname (default_ns, rqname.first, rqname.second, loc);
 }
 
 
@@ -279,7 +280,7 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
 }
 
   bool static_context::lookup_ns (xqp_string prefix, xqp_string &ns) const {
-    return context_value2 ("ns:", prefix, ns) && ! ns.empty();    
+    return context_value2 ("ns:", prefix, ns) && ! ns.empty();
   }
 
   xqp_string static_context::lookup_ns (xqp_string prefix, const XQUERY_ERROR& err) const {
@@ -287,6 +288,15 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
     if (! lookup_ns (prefix, ns)) {
       if (err != MAX_ZORBA_ERROR_CODE)
         ZORBA_ERROR_PARAM(err, prefix, "");
+    }
+    return ns;
+  }
+
+  xqp_string static_context::lookup_ns (xqp_string prefix, const QueryLoc& loc, const XQUERY_ERROR& err) const {
+    xqp_string ns;
+    if (! lookup_ns (prefix, ns)) {
+      if (err != MAX_ZORBA_ERROR_CODE)
+        ZORBA_ERROR_LOC_PARAM(err, loc, prefix, "");
     }
     return ns;
   }
@@ -318,7 +328,7 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
   store::Item_t static_context::lookup_fn_qname (xqp_string pfx, xqp_string local, const QueryLoc& loc) const {
     store::Item_t ret;
     try {
-    ret = lookup_qname (default_function_namespace (), pfx, local);
+    ret = lookup_qname (default_function_namespace (), pfx, local, loc);
   } catch (error::ZorbaError& e) {// rethrow with current location
     ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
   }
