@@ -16,6 +16,7 @@
 #ifndef ZORBA_STORE_UTIL_HASHSET
 #define ZORBA_STORE_UTIL_HASHSET
 
+#include <zorba/config.h>
 #include "zorbautils/checked_vector.h"
 #include "zorbautils/hashmap.h"
 #include "zorbautils/mutex.h"
@@ -34,7 +35,7 @@ class DummyHashValue
 /*******************************************************************************
 
 ********************************************************************************/
-template <class T, class E, class C = DummyCompareParam>
+template <class T, class E, class C = DummyCompareParam> ZORBAUTILS_EXTERNAL_DECL 
 class HashSet : public HashMap<T, DummyHashValue, E, C>
 {
 public:

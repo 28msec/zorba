@@ -18,10 +18,12 @@
 
 #include <vector>
 
+#include <zorba/config.h>
+
 namespace zorba { 
   
 template<typename T>
-class checked_vector : public std::vector<T> 
+class ZORBAUTILS_EXTERNAL_DECL checked_vector : public std::vector<T> 
 {
 public:
   checked_vector () {}

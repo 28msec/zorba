@@ -16,6 +16,7 @@
 #ifndef ZORBA_UTIL_THREAD
 #define ZORBA_UTIL_THREAD
 
+#include <zorba/config.h>
 #include "zorbamisc/config/platform.h"
 
 #ifdef ZORBA_HAVE_PTHREAD_H
@@ -34,7 +35,7 @@ typedef DWORD ThreadId;
 #endif
 
 
-class Thread
+class ZORBAUTILS_EXTERNAL_DECL Thread
 {
  private:
 #ifdef ZORBA_HAVE_PTHREAD_H

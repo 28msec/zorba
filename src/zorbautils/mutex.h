@@ -16,6 +16,7 @@
 #ifndef ZORBA_STORE_UTIL_MUTEX
 #define ZORBA_STORE_UTIL_MUTEX
 
+#include <zorba/config.h>
 #include "zorbamisc/config/platform.h"
 
 #ifdef ZORBA_HAVE_PTHREAD_H
@@ -30,7 +31,7 @@ namespace zorba {
 /*******************************************************************************
 
 ********************************************************************************/
-class Mutex
+class ZORBAUTILS_EXTERNAL_DECL Mutex
 {
 protected:
 
@@ -64,7 +65,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class AutoMutex
+class ZORBAUTILS_EXTERNAL_DECL AutoMutex
 {
 private:
   Mutex * theMutex;

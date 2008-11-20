@@ -18,12 +18,13 @@
 
 #include <string>
 
+#include <zorba/config.h>
 #include "zorbamisc/config/platform.h"
 
 namespace zorba { 
 
 
-class hashfun
+class ZORBAUTILS_EXTERNAL_DECL hashfun
 {
  public:
 #define FNV_32_PRIME    ((uint32_t)0x01000193)

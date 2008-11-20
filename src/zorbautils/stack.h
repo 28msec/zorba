@@ -18,13 +18,14 @@
 
 #include <vector>
 
+#include <zorba/config.h>
 #include "zorbamisc/config/platform.h"
 
 
 namespace zorba { 
 
 template <class T>
-class Stack
+class ZORBAUTILS_EXTERNAL_DECL Stack
 {
 protected:
   ulong          theTop;

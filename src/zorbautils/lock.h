@@ -20,6 +20,7 @@
 
 #include<vector>
 
+#include <zorba/config.h>
 #include "zorbamisc/config/platform.h"
 
 #include "zorbautils/thread.h"
@@ -33,7 +34,7 @@ namespace zorba {
 
 ********************************************************************************/
 
-class Lock
+class ZORBAUTILS_EXTERNAL_DECL Lock
 {
 public:
   enum Mode { NOLOCK, READ, WRITE };
@@ -93,7 +94,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class AutoLock
+class ZORBAUTILS_EXTERNAL_DECL AutoLock
 {
 private:
   Lock & theLock;

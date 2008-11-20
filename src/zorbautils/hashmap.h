@@ -16,6 +16,7 @@
 #ifndef ZORBA_UTILS_HASHMAP
 #define ZORBA_UTILS_HASHMAP
 
+#include <zorba/config.h>
 #include "zorbamisc/config/platform.h"
 #include "zorbautils/fatal.h"
 #include "zorbautils/checked_vector.h"
@@ -33,7 +34,7 @@ class DummyCompareParam
 /*******************************************************************************
 
 ********************************************************************************/
-template <class T, class E, class C>
+template <class T, class E, class C> ZORBAUTILS_EXTERNAL_DECL 
 class Externals
 {
 public:
@@ -52,7 +53,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-template <class T, class V>
+template <class T, class V> ZORBAUTILS_EXTERNAL_DECL 
 class HashEntry
 {
 public:
@@ -113,7 +114,7 @@ public:
                    hash table is doubled in size.
 
 ********************************************************************************/
-template <class T, class V, class E, class C = DummyCompareParam>
+template <class T, class V, class E, class C = DummyCompareParam> ZORBAUTILS_EXTERNAL_DECL 
 class HashMap
 {
 public:

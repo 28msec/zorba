@@ -18,6 +18,7 @@
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
 
+#include <zorba/config.h>
 #include "zorbamisc/config/platform.h"
 
 #ifdef ZORBA_HAVE_PTHREAD_H
@@ -32,7 +33,7 @@ namespace zorba {
 
 #ifdef ZORBA_HAVE_PTHREAD_H
 
-class Condition
+class ZORBAUTILS_EXTERNAL_DECL Condition
 {
  protected:
   pthread_cond_t   theCondition;
@@ -51,7 +52,7 @@ class Condition
 
 #elif WIN32 
 
-class Condition
+class ZORBAUTILS_EXTERNAL_DECL Condition
 {
 protected:
   HANDLE           cond_event[2];
@@ -72,7 +73,7 @@ public:
 
 #else
 
-class Condition
+class ZORBAUTILS_EXTERNAL_DECL Condition
 {
  protected:
   Mutex          & theMutex;
