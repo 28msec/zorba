@@ -191,16 +191,7 @@ ZORBA_THREAD_RETURN server(void* args)
   XQuery_t lQuery = lArgs->theQuery;
   unsigned short requests = lArgs->theRequestPort;
   unsigned short events = lArgs->theEventPort;
-  try
-  {
-    lQuery->debug(requests, events);
-  }catch(zorba::StaticException& se){
-    std::cerr << se << std::endl;
-  }catch(zorba::DynamicException& e){
-    std::cerr << e << std::endl;  
-  }catch(zorba::SystemException& e){
-    std::cerr << e << std::endl;
-  }
+  lQuery->debug(requests, events);
   lQuery->close();
   return 0;
 }

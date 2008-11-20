@@ -221,10 +221,23 @@ void ZorbaDebugger::terminatedEvent()
 void ZorbaDebugger::runQuery()
 {
   setStatus( QUERY_RUNNING );
-  Zorba_SerializerOptions_t lSerOptions;
-  lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-  theQuery->serialize( *theOutputStream, theSerOptions );
-  theOutputStream->flush();
+  try
+  {
+    Zorba_SerializerOptions_t lSerOptions;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    theQuery->serialize( *theOutputStream, theSerOptions );
+    theOutputStream->flush();
+  }catch(zorba::StaticException& se){
+    std::cerr << se << std::endl;
+  }catch(zorba::DynamicException& e){
+    std::cerr << e << std::endl;  
+  }catch(zorba::SystemException& e){
+    std::cerr << e << std::endl;
+  } catch(zorba::TypeException& e) {
+    std::cerr << e << std::endl;
+  } catch(...) {
+    std::cerr << "Unknown exception" << std::endl;
+  }
   setStatus( QUERY_TERMINATED );
 }
 
