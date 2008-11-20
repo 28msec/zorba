@@ -20,11 +20,12 @@
 #include <fstream>
 #include <vector>
 
+#include <zorba/config.h>
 #include "system/zorba_properties.h"
 
 namespace zorba {
 
-  class Properties : public ZorbaProperties {
+  class ZORBA_EXTERN_DECL Properties : public ZorbaProperties {
       /**
        * Gets the Operation System folger where the properties of the current 
        * user are saved.
