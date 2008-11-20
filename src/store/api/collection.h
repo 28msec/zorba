@@ -16,11 +16,12 @@
 #ifndef ZORBA_STORE_COLLECTION_H
 #define ZORBA_STORE_COLLECTION_H
 
+#include <zorba/config.h>
 #include "common/shared_types.h"
 
 namespace zorba { namespace store {
 
-class Collection : public SimpleRCObject
+class STORE_EXTERN_DECL Collection : public SimpleRCObject
 {
 public:
   virtual ~Collection() {}

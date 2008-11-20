@@ -16,6 +16,7 @@
 #ifndef ZORBA_STORE_TUPLES_H
 #define ZORBA_STORE_TUPLES_H
 
+#include <zorba/config.h>
 #include "common/shared_types.h"
 #include "store/api/item.h"
 #include "store/api/temp_seq.h"
@@ -30,7 +31,7 @@ namespace store {
   Stores a pointer that is a pointer to either a single item or a temp sequence
 
  *******************************************************************************/
-class TupleField 
+class STORE_EXTERN_DECL TupleField 
 {
  public:
   typedef enum 

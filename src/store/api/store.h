@@ -16,6 +16,7 @@
 #ifndef ZORBA_STORE_STORE_H
 #define ZORBA_STORE_STORE_H
 
+#include <zorba/config.h>
 #include "zorbatypes/representations.h"
 
 #include "common/shared_types.h"
@@ -34,7 +35,7 @@ class IteratorFactory;
 /**
  * Manages XDM Instances 
  */
-class Store
+class STORE_EXTERN_DECL Store
 {
 public:
   virtual ~Store() { }

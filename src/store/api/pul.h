@@ -16,6 +16,7 @@
 #ifndef ZORBA_STORE_PUL_H
 #define ZORBA_STORE_PUL_H
 
+#include <zorba/config.h>
 #include "common/shared_types.h"
 
 #include "store/api/update_consts.h"
@@ -30,7 +31,7 @@ class CopyMode;
 /*******************************************************************************
 
 ************************************** ******************************************/
-class PUL : public Item
+class STORE_EXTERN_DECL PUL : public Item
 {
 public:
   virtual ~PUL() { }

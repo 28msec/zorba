@@ -18,6 +18,7 @@
 
 #include <vector>
 #include <set>
+#include <zorba/config.h>
 #include <zorba/store_consts.h>
 
 #include "zorbatypes/xqpstring.h"
@@ -52,7 +53,7 @@ class TupleField;
  *         union of node types and atomic types
  *  [http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
  */
-class Item : public RCObject
+class STORE_EXTERN_DECL Item : public RCObject
 {
 #ifdef ZORBA_FOR_ONE_THREAD_ONLY
 

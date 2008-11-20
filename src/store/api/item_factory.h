@@ -18,6 +18,7 @@
 
 #include <vector>
 
+#include <zorba/config.h>
 #include "zorbatypes/representations.h"
 
 #include "common/shared_types.h"
@@ -33,7 +34,7 @@ class TupleField;
 
 typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 
-class ItemFactory
+class STORE_EXTERN_DECL ItemFactory
 {
 public:
   virtual ~ItemFactory() {}

@@ -18,6 +18,7 @@
 
 #include <vector>
 
+#include <zorba/config.h>
 #include "common/common.h"
 
 #include "common/shared_types.h"
@@ -31,7 +32,7 @@ namespace zorba { namespace store {
  * Used internally to materialize temporary query results
  */
 
-class TempSeq : public SimpleRCObject
+class STORE_EXTERN_DECL TempSeq : public SimpleRCObject
 {  
 public:
   virtual ~TempSeq(){}

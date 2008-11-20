@@ -17,13 +17,14 @@
 #define ZORBA_STORE_UPDATE_CONSTS_H
 
 #include <string>
+#include <zorba/config.h>
 
 namespace zorba { namespace store {
 
 /*******************************************************************************
 
 ********************************************************************************/
-class UpdateConsts
+class STORE_EXTERN_DECL UpdateConsts
 {
 public:
   typedef enum 
