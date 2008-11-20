@@ -16,12 +16,14 @@
 #ifndef ZORBA_SIMPLESTORE_SIMPLESTOREC_H
 #define ZORBA_SIMPLESTORE_SIMPLESTOREC_H
 
+#include <zorba/config.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void* create_simple_store();
-void shutdown_simple_store(void*);
+STORE_EXTERN_DECL void* create_simple_store();
+STORE_EXTERN_DECL void shutdown_simple_store(void*);
 
 #ifdef __cplusplus
 }

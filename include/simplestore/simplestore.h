@@ -16,6 +16,8 @@
 #ifndef ZORBA_SIMPLESTORE_SIMPLESTOREMANAGER_H
 #define ZORBA_SIMPLESTORE_SIMPLESTOREMANAGER_H
 
+#include <zorba/config.h>
+
 namespace zorba { 
 
 namespace simplestore {
@@ -24,7 +26,7 @@ namespace simplestore {
 class SimpleStore;
 
 
-class SimpleStoreManager
+class STORE_EXTERN_DECL SimpleStoreManager
 {
 public:
   static simplestore::SimpleStore* 
