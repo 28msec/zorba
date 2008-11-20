@@ -64,6 +64,9 @@ SET(requiredlibs-zorba ${requiredlibs-zorba} zorbautils)
 SET(requiredlibs-zorba ${requiredlibs-zorba} zorbatypes)
 SET(requiredlibs-zorba ${requiredlibs-zorba} zorbaerrors)
 
+IF(MSVC AND NOT ZORBA_BUILD_STATIC_LIBRARY)
+  SET(requiredlibs-zorba ${requiredlibs-zorba} ${STORE_LIB})
+ENDIF(MSVC AND NOT ZORBA_BUILD_STATIC_LIBRARY)
 
 #
 # Next, add the files to be compiled into the library
@@ -101,14 +104,7 @@ SET(ZORBA_LIBRARY_INSTALL_LIST)
 #
 # Build the Zorba SHARED library
 #
-IF (NOT MSVC)
 ADD_LIBRARY(zorba SHARED ${ZORBA_SRCS})
-ENDIF (NOT MSVC)
-
-# The next if() builds the .lib file on Windows, which is needed
-IF (MSVC)
-  ADD_LIBRARY(zorba ${ZORBA_SRCS})
-ENDIF (MSVC)
 
 TARGET_LINK_LIBRARIES(zorba ${requiredlibs-zorba})
 
@@ -135,6 +131,11 @@ IF (ZORBA_BUILD_STATIC_LIBRARY)
 
   SET(ZORBA_LIBRARY_INSTALL_LIST ${ZORBA_LIBRARY_INSTALL_LIST} zorba_static)
 
+ELSE (ZORBA_BUILD_STATIC_LIBRARY)
+  IF (MSVC)
+    #compile zorba as DLL
+    ADD_DEFINITIONS(-DZORBA_INTERNAL)
+  ENDIF (MSVC)
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
 #
