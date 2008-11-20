@@ -20,6 +20,8 @@
 #include <string>
 #include <fstream>
 
+#undef WIN32_LEAN_AND_MEAN
+
 class Specification
 {
   typedef char char_t;
