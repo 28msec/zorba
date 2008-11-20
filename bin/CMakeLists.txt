@@ -20,7 +20,7 @@ IF(ZORBA_DEBUGGER)
  SET(ZORBA_CMD_SRCS ${ZORBA_CMD_SRCS} debugger_handler.cpp) 
 ENDIF(ZORBA_DEBUGGER)
 
-SET(requiredlibs-zorbacmd-shared ${requiredlibs-zorbacmd} zorba simplestore)
+SET(requiredlibs-zorbacmd-shared ${requiredlibs-zorbacmd} zorba ${STORE_LIB})
 
 ADD_EXECUTABLE(zorbacmd ${ZORBA_CMD_SRCS})
 
@@ -46,15 +46,22 @@ IF(UNIX)
   ADD_DEPENDENCIES(zorbacmd_man zorbacmd)
 ENDIF(UNIX)
 
+IF(WIN32)
+SET(ZORBA_EXE_PATH    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/zorba)
+ELSE(WIN32)
+SET(ZORBA_EXE_PATH    zorba)
+ENDIF(WIN32)
+
+
 # test the command line tool
-ADD_TEST(bin/zorba1 zorba --omit-xml-declaration -q "1+1")
+ADD_TEST(bin/zorba1 ${ZORBA_EXE_PATH} --omit-xml-declaration -q "1+1")
 SET_TESTS_PROPERTIES(bin/zorba1 PROPERTIES PASS_REGULAR_EXPRESSION "2")
 
-ADD_TEST(bin/zorba2 zorba --serialize-html -q "1+1")
+ADD_TEST(bin/zorba2 ${ZORBA_EXE_PATH} --serialize-html -q "1+1")
 SET_TESTS_PROPERTIES(bin/zorba2 PROPERTIES PASS_REGULAR_EXPRESSION "2")
 
-ADD_TEST(bin/zorba3 zorba -m 0 -q "1+1")
+ADD_TEST(bin/zorba3 ${ZORBA_EXE_PATH} -m 0 -q "1+1")
 SET_TESTS_PROPERTIES(bin/zorba3 PROPERTIES PASS_REGULAR_EXPRESSION "")
 
-ADD_TEST(bin/zorba4 zorba --context-item=${CMAKE_CURRENT_SOURCE_DIR}/test.xml  -m 3 -q "./test/child[1]")
+ADD_TEST(bin/zorba4 ${ZORBA_EXE_PATH} --context-item=${CMAKE_CURRENT_SOURCE_DIR}/test.xml  -m 3 -q "./test/child[1]")
 SET_TESTS_PROPERTIES(bin/zorba4 PROPERTIES PASS_REGULAR_EXPRESSION "(.*<child>child1</child>)*")
