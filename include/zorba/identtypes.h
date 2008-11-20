@@ -16,8 +16,10 @@
 #ifndef ZORBA_TYPEIDENT_TYPES_API_H
 #define ZORBA_TYPEIDENT_TYPES_API_H
 
+#include <zorba/config.h>
+
 namespace zorba {
-class IdentTypes {
+class ZORBA_EXTERN_DECL IdentTypes {
 public:
   typedef enum {
     NAMED_TYPE,

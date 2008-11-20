@@ -21,11 +21,12 @@
 #include <time.h>
 #include <string>
 
+#include <zorba/config.h>
 #include <zorba/util/path.h>
 
 namespace zorba {
 
-class file : public filesystem_path
+class ZORBA_EXTERN_DECL file : public filesystem_path
 {
 public:
   enum filetype {

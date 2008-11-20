@@ -3,10 +3,11 @@
 
 #include <string>
 #include <iostream>
+#include <zorba/config.h>
 
 namespace zorba {
 
-class filesystem_path {
+class ZORBA_EXTERN_DECL filesystem_path {
 private:
   std::string path;
   void canonicalize ();

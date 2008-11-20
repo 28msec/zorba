@@ -25,7 +25,7 @@
 
 namespace zorba {
 
-class PropertiesBase {
+class ZORBAUTILS_EXTERNAL_DECL PropertiesBase {
 protected:
   std::vector<std::string > __thePositionalArgs;
 

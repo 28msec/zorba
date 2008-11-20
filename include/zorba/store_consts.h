@@ -17,6 +17,7 @@
 #define ZORBA_STORE_STORE_CONSTS_H
 
 #include <string>
+#include <zorba/config.h>
 
 namespace zorba { namespace store {
 

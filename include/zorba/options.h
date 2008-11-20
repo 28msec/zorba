@@ -15,6 +15,7 @@
  */
 #ifndef ZORBA_OPTIONS_H
 #define ZORBA_OPTIONS_H
+#include <zorba/config.h>
 
 #ifdef __cplusplus
 #include <vector>
@@ -41,7 +42,7 @@ typedef enum {
  * example_6 in file \link simple.cpp \endlink shows an example
  * how CompilerHints can be used.
  */
-typedef struct Zorba_CompilerHints {
+typedef struct ZORBA_EXTERN_DECL Zorba_CompilerHints {
   /** \brief The optimization level that is used */
   Zorba_opt_level_t opt_level;
 #ifdef __cplusplus
@@ -116,7 +117,7 @@ typedef enum {
 * the SerializerOptions.
 */
 #ifdef __cplusplus
-typedef struct Zorba_SerializerOptions 
+typedef struct ZORBA_EXTERN_DECL Zorba_SerializerOptions 
 {
   Zorba_serialization_method_t  ser_method;
   Zorba_byte_order_mark_t       byte_order_mark;
@@ -182,7 +183,7 @@ extern "C" {
  *
  * \retval Zorba_CompilerHints_t with default member values 
  */
-Zorba_CompilerHints_t Zorba_CompilerHints_default();
+ZORBA_EXTERN_DECL Zorba_CompilerHints_t Zorba_CompilerHints_default();
 
 /** \brief Helper function to create a Zorba_SerializerOptions_t struct because 
  *         of missing default constructor. C++ code can delete the
@@ -191,13 +192,13 @@ Zorba_CompilerHints_t Zorba_CompilerHints_default();
  *
  * \retval Zorba_CompilerHints_t with default member values 
  */
-Zorba_SerializerOptions_t* Zorba_SerializerOptions_default();
+ZORBA_EXTERN_DECL Zorba_SerializerOptions_t* Zorba_SerializerOptions_default();
 
 /** \brief Helper function to delete a Zorba_SerializerOptions_t struct
  *
  * \retval Zorba_CompilerHints_t with default member values 
  */
-void Zorba_SerializerOptions_free(Zorba_SerializerOptions_t* serializerOptions);
+ZORBA_EXTERN_DECL void Zorba_SerializerOptions_free(Zorba_SerializerOptions_t* serializerOptions);
 
 /** \brief Helper function to set an option in a Zorba_SerializerOptions_t structure
  * 
@@ -205,7 +206,7 @@ void Zorba_SerializerOptions_free(Zorba_SerializerOptions_t* serializerOptions);
  * \param value the value to which the parameter should be set
  * \retval Zorba_CompilerHints_t with default member values 
  */
-void Zorba_SerializerOptions_set(Zorba_SerializerOptions_t* serializerOptions, const char* parameter, const char* value);
+ZORBA_EXTERN_DECL void Zorba_SerializerOptions_set(Zorba_SerializerOptions_t* serializerOptions, const char* parameter, const char* value);
 
 
 #ifdef __cplusplus

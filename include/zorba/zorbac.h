@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <zorba/error.h>
+#include <zorba/config.h>
 #include <zorba/static_context_consts.h>
 #include <zorba/options.h>
 
@@ -82,7 +83,7 @@ extern "C" {
  * \retval ::XQC_NO_ERROR
  * \retval ::XQP0019_INTERNAL_ERROR
  */
-XQUERY_ERROR
+ZORBA_EXTERN_DECL XQUERY_ERROR
 zorba_implementation(XQC_Implementation_Ref impl, void* store);
 
 
@@ -97,7 +98,7 @@ zorba_implementation(XQC_Implementation_Ref impl, void* store);
  * The XQC_Implementation object should not be freed before all objects created using it's
  * functions have been freed - doing so causes undefined behaviour.
  */
-struct XQC_Implementation_s 
+struct ZORBA_EXTERN_DECL XQC_Implementation_s 
 {
 
  /**
@@ -258,7 +259,7 @@ struct XQC_Implementation_s
  * The ::XQC_Expression object should be freed before the ::XQC_Implementation object
  * that created it.
  */
-struct XQC_Query_s 
+struct ZORBA_EXTERN_DECL XQC_Query_s 
 {
   /**
    * This function returns the dynamic context that belongs to this query and
@@ -418,7 +419,7 @@ struct XQC_Query_s
  * The ::XQC_StaticContext object should be freed before the ::XQC_Implementation object that
  * created it.
  */
-struct XQC_StaticContext_s 
+struct ZORBA_EXTERN_DECL XQC_StaticContext_s 
 {
  /**
   * Creates a child context of the given static context.
@@ -790,7 +791,7 @@ struct XQC_StaticContext_s
  * An instance of this struct can be retrieved by calling the <code>get_dynamic_context</code> function
  * of an ::XQC_Query object.
  */
-struct XQC_DynamicContext_s 
+struct ZORBA_EXTERN_DECL XQC_DynamicContext_s 
 {
 	/**
 	 * Sets the context item to the given ::XQC_Item.
@@ -916,7 +917,7 @@ struct XQC_DynamicContext_s
  * A new atomic Item can be created using the ItemFactory. A new node Item should be created
  * by the result of a query.
  */
-struct XQC_Item_s 
+struct ZORBA_EXTERN_DECL XQC_Item_s 
 {
   /**
    * The string value is the string that is extracted by calling the fn:string function
@@ -1045,7 +1046,7 @@ struct XQC_Item_s
  * by calling <code>XQC_Implementation::create_item</code>. In both cases, the user is responsible 
  * for freeing the object by calling the XQC_Item::free() function.
  */
-struct XQC_ItemFactory_s
+struct ZORBA_EXTERN_DECL XQC_ItemFactory_s
 {
   /** 
    * Creates a String Item see [http://www.w3.org/TR/xmlschema-2/#string].
@@ -1708,7 +1709,7 @@ struct XQC_ItemFactory_s
  *
  * See http://www.w3.org/TR/xpath-datamodel/.
  */
-struct XQC_Sequence_s 
+struct ZORBA_EXTERN_DECL XQC_Sequence_s 
 {
 
   /** 
@@ -1744,7 +1745,7 @@ struct XQC_Sequence_s
  * Each Collection is created by the XmlDataManager and referenced by a URI.
  * The URI can be accessed in a query's fn:collection function.
  */
-struct XQC_Collection_s
+struct ZORBA_EXTERN_DECL XQC_Collection_s
 {
   /** 
    * Get the URI of a collection as an anyURI Item.
@@ -1846,7 +1847,7 @@ struct XQC_Collection_s
  * The XmlDataManager is a singelton instance. The instance can be accessed by calling 
  * XQC_Implementation::data_manager. The XmlDataManager is thread-safe.
  */
-struct XQC_DataManager_s
+struct ZORBA_EXTERN_DECL XQC_DataManager_s
 {
   /** 
    * This function loads a document from the given FILE pointer. The document
@@ -1967,7 +1968,7 @@ struct XQC_DataManager_s
  * The ::XQC_OutputStream struct is designed to be passed to an XQC implementation in order
  * to return streaming data (i.e. the result of a query).
  */
-struct XQC_OutputStream_s
+struct ZORBA_EXTERN_DECL XQC_OutputStream_s
 {
   /**
    * The function is called to provide the streaming result of a query
@@ -2000,7 +2001,7 @@ struct XQC_OutputStream_s
  * The ::XQC_InputStream struct is designed to be populated by users for the purpose
  * of streaming data into an XQC implementation.
  */
-struct XQC_InputStream_s
+struct ZORBA_EXTERN_DECL XQC_InputStream_s
 {
 	/**
 	 * The function called to read more of the input (e.g. the query). The function should read
@@ -2044,7 +2045,7 @@ struct XQC_InputStream_s
  * The XQC_ErrorHandler struct has no free() function pointer because the user remains 
  * responsible for freeing the resources associated with this struct.
  */
-struct XQC_ErrorHandler_s {
+struct ZORBA_EXTERN_DECL XQC_ErrorHandler_s {
 
     /**
      * The function is called when an error occurs. The function receives the components of the
