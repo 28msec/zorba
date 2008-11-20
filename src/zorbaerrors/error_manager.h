@@ -19,12 +19,13 @@
 #include <vector>
 #include <sstream>
 
+#include <zorba/config.h>
 #include <zorba/error.h>
 #include "zorbaerrors/errors.h"
 
 namespace zorba { namespace error {
 
-class ErrorManager
+class ZORBAERRORS_EXTERN_DECL ErrorManager
 {
  protected:
   // contains all errors that were raised but the execution went on

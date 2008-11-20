@@ -33,7 +33,7 @@
 
 namespace zorba {
 
-class StackTracePrinter {
+class ZORBAERRORS_EXTERN_DECL StackTracePrinter {
 public:
   StackTracePrinter(std::ostream *is)
   {

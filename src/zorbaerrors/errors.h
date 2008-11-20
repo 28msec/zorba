@@ -19,6 +19,7 @@
 #include <string>
 #include <vector>
 
+#include <zorba/config.h>
 #include <zorba/error.h>
 
 #include "zorbamisc/ns_consts.h"
@@ -35,7 +36,7 @@ namespace error
 /*******************************************************************************
 
 ********************************************************************************/
-class ZorbaError
+class ZORBAERRORS_EXTERN_DECL ZorbaError
 {
 public:
   xqpString      theLocalName;
@@ -127,7 +128,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class ZorbaWarning
+class ZORBAERRORS_EXTERN_DECL ZorbaWarning
 {
 public:
   // move to the outside if we ever have warnings
@@ -155,7 +156,7 @@ public:
         int                aLineNumber);  
 };
 
-class ZorbaInternalException {
+class ZORBAERRORS_EXTERN_DECL ZorbaInternalException {
 };
 
 } /* namespace error */
