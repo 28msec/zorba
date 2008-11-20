@@ -19,6 +19,8 @@
 #include <list>
 #include <vector>
 
+#include <zorba/config.h>
+
 namespace zorba {
   namespace regex_ascii{
 
@@ -30,7 +32,7 @@ namespace zorba {
 
 class CRegexAscii_regex;
 
-class IRegexMatcher
+class ZORBATYPES_EXTERNAL_DECL IRegexMatcher
 {
 public:
   CRegexAscii_regex *regex_intern;
@@ -41,7 +43,7 @@ public:
   virtual bool match(const char *source, int *matched_len) = 0;
 };
 
-class IRegexAtom : public IRegexMatcher
+class ZORBATYPES_EXTERNAL_DECL IRegexAtom : public IRegexMatcher
 {
 public:
   IRegexAtom(CRegexAscii_regex* regex) : IRegexMatcher(regex) {}
@@ -53,7 +55,7 @@ class CRegexAscii_piece;
 class CRegexAscii_chargroup;
 class CRegexAscii_parser;
 
-class CRegexAscii_regex : public IRegexAtom
+class ZORBATYPES_EXTERNAL_DECL CRegexAscii_regex : public IRegexAtom
 {
   friend class CRegexAscii_parser;
 public:
@@ -81,7 +83,7 @@ private:
   void add_branch(CRegexAscii_branch *branch);
 };
 
-class CRegexAscii_branch : public IRegexMatcher
+class ZORBATYPES_EXTERNAL_DECL CRegexAscii_branch : public IRegexMatcher
 {
   friend class CRegexAscii_parser;
 public:
@@ -100,7 +102,7 @@ private:
                         const char *source, int *matched_len);
 };
 
-class CRegexAscii_piece //: public IRegexMatcher
+class ZORBATYPES_EXTERNAL_DECL CRegexAscii_piece //: public IRegexMatcher
 {
   friend class CRegexAscii_parser;
 public:
@@ -130,7 +132,7 @@ public:
 #define   CHARGROUP_FLAGS_MULTICHAR   1
 #define   CHARGROUP_FLAGS_ENDLINE     2
 
-class CRegexAscii_chargroup : public IRegexAtom
+class ZORBATYPES_EXTERNAL_DECL CRegexAscii_chargroup : public IRegexAtom
 {
   friend class CRegexAscii_parser;
 public:
@@ -154,7 +156,7 @@ public:
   virtual bool match(const char *source, int *matched_len);
 };
 
-class CRegexAscii_negchargroup : public CRegexAscii_chargroup
+class ZORBATYPES_EXTERNAL_DECL CRegexAscii_negchargroup : public CRegexAscii_chargroup
 {
 public:
   CRegexAscii_negchargroup(CRegexAscii_regex* regex);
@@ -163,7 +165,7 @@ public:
   virtual bool match(const char *source, int *matched_len);
 };
 
-class CRegexAscii_wildchar : public IRegexAtom
+class ZORBATYPES_EXTERNAL_DECL CRegexAscii_wildchar : public IRegexAtom
 {
 public:
   CRegexAscii_wildchar(CRegexAscii_regex* regex);
@@ -172,7 +174,7 @@ public:
   virtual bool match(const char *source, int *matched_len);
 };
 
-class CRegexAscii_parser
+class ZORBATYPES_EXTERNAL_DECL CRegexAscii_parser
 {
 public:
   CRegexAscii_parser();

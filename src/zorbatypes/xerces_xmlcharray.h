@@ -24,6 +24,7 @@
 #undef WIN32
 #endif
 
+#include <zorba/config.h>
 #include <zorbatypes/xqpstring.h>
 
 

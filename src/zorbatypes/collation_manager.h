@@ -16,6 +16,7 @@
 #ifndef XQP_ZORBATYPES_COLLATION_MANAGER_H
 #define XQP_ZORBATYPES_COLLATION_MANAGER_H
 
+#include <zorba/config.h>
 #include "common/common.h"
 #include <string>
 #include <map>
@@ -23,12 +24,12 @@
 namespace zorba {
 
 #ifdef ZORBA_NO_UNICODE
-class Collator
+class ZORBATYPES_EXTERNAL_DECL Collator
 {
 };
 #endif
 
-  class XQPCollator 
+  class ZORBATYPES_EXTERNAL_DECL XQPCollator 
   {
     friend class CollationFactory;
     friend class xqpString;
@@ -48,7 +49,7 @@ class Collator
   };
 
 
-  class CollationFactory 
+  class ZORBATYPES_EXTERNAL_DECL CollationFactory 
   {
     public:
       CollationFactory();

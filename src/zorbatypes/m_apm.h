@@ -159,6 +159,8 @@
 #ifndef M__APM__INCLUDED
 #define M__APM__INCLUDED
 
+#include <zorba/config.h>
+
 #ifdef __cplusplus
 /* Comment this line out if you've compiled the library as C++. */
 #define APM_CONVERT_FROM_C
@@ -215,12 +217,12 @@ extern	M_APM	MM_LOG_3_BASE_E;
  *	function prototypes
  */
 
-extern	M_APM	m_apm_init(void);
-extern	void	m_apm_free(M_APM);
-extern	void	m_apm_free_all_mem(void);
-extern	void	m_apm_trim_mem_usage(void);
-extern	char	*m_apm_lib_version(char *);
-extern	char	*m_apm_lib_short_version(char *);
+extern	ZORBATYPES_EXTERNAL_DECL M_APM	m_apm_init(void);
+extern	ZORBATYPES_EXTERNAL_DECL void	m_apm_free(M_APM);
+extern	ZORBATYPES_EXTERNAL_DECL void	m_apm_free_all_mem(void);
+extern	ZORBATYPES_EXTERNAL_DECL void	m_apm_trim_mem_usage(void);
+extern	ZORBATYPES_EXTERNAL_DECL char	*m_apm_lib_version(char *);
+extern	ZORBATYPES_EXTERNAL_DECL char	*m_apm_lib_short_version(char *);
 
 extern	void	m_apm_set_string(M_APM, char *);
 extern	void	m_apm_set_double(M_APM, double);
@@ -234,7 +236,7 @@ extern  void    m_apm_to_integer_string(char *, M_APM);
 
 extern	void	m_apm_absolute_value(M_APM, M_APM);
 extern	void	m_apm_negate(M_APM, M_APM);
-extern	void	m_apm_copy(M_APM, M_APM);
+extern	ZORBATYPES_EXTERNAL_DECL void	m_apm_copy(M_APM, M_APM);
 extern	void	m_apm_round(M_APM, int, M_APM);
 extern	int	m_apm_compare(M_APM, M_APM);
 extern	int	m_apm_sign(M_APM);
@@ -318,7 +320,7 @@ extern
 int MM_cpp_min_precision;
 
 
-class MAPM {
+class ZORBATYPES_EXTERNAL_DECL MAPM {
 protected:
 
 /*

@@ -17,9 +17,11 @@
 #ifndef ZORBA_INTERNATIONAL_COMPONENTS_FOR_UNICODE_INITIALIZATION
 #define ZORBA_INTERNATIONAL_COMPONENTS_FOR_UNICODE_INITIALIZATION
 
+#include <zorba/config.h>
+
 namespace zorba {
 
-class icu_init {
+class ZORBATYPES_EXTERNAL_DECL icu_init {
   public:
     void zorbatypes_global_init();
     void zorbatypes_global_cleanup();

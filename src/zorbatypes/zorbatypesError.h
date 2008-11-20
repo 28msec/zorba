@@ -16,12 +16,13 @@
 #ifndef ZORBATYPES_ERROR_H
 #define ZORBATYPES_ERROR_H
 
+#include <zorba/config.h>
 #include <exception>
 
 namespace zorba
 {
 
-class ZorbatypesError
+class ZORBATYPES_EXTERNAL_DECL ZorbatypesError
 {
 public:
   enum ErrorCode
@@ -74,7 +75,7 @@ public:
 };
 
 
-class zorbatypesException : public std::exception
+class ZORBATYPES_EXTERNAL_DECL zorbatypesException : public std::exception
 {
   const char*                 additionalInfo;
   ZorbatypesError::ErrorCode  code;

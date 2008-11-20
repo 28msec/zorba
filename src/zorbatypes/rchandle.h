@@ -20,6 +20,7 @@
 #include <iostream>
 #include <cstdlib>
 
+#include <zorba/config.h>
 #include "common/common.h"
 #include "zorbautils/fatal.h"
 
@@ -36,7 +37,7 @@ namespace zorba {
 
 #if defined ZORBA_HAVE_PTHREAD_SPINLOCK
 
-class RCLock
+class ZORBATYPES_EXTERNAL_DECL RCLock
 {
 protected:
   pthread_spinlock_t  theLock;
@@ -81,7 +82,7 @@ public:
 
 #elif defined ZORBA_HAVE_PTHREAD_MUTEX
 
-class RCLock
+class ZORBATYPES_EXTERNAL_DECL RCLock
 {
 protected:
   mutable pthread_mutex_t  theLock;
@@ -136,7 +137,7 @@ public:
 
 #elif defined WIN32 || defined WINCE
 
-class RCLock
+class ZORBATYPES_EXTERNAL_DECL RCLock
 {
 protected:
   HANDLE    mutex;
@@ -175,6 +176,12 @@ public:
 #endif
 
 
+//#if defined ZORBA_INTERNAL || defined STORE_INTERNAL
+//#define   RCOBJECT_EXPORT   __declspec(dllexport)
+//#else
+//#define   RCOBJECT_EXPORT   
+//#endif
+
 /*******************************************************************************
   
   Base class for reference counted objects
@@ -188,7 +195,7 @@ public:
   reference count becomes 0.
 
 ********************************************************************************/
-class RCObject
+class ZORBATYPES_EXTERNAL_DECL RCObject
 {
 protected:
   mutable long  theRefCount;
@@ -304,7 +311,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class SimpleRCObject : public RCObject
+class ZORBATYPES_EXTERNAL_DECL SimpleRCObject : public RCObject
 {
 public:
   SimpleRCObject() : RCObject() { }
@@ -506,27 +513,27 @@ public:
 
 namespace RCHelper 
 {
-  template<class T>
+  template<class T> 
   static void addReference(T *t) throw()
   {
     t->addReference(t->getSharedRefCounter()
                     SYNC_PARAM2(t->getRCLock()));
   }
 
-  template<class T>
+  template<class T> 
   static void removeReference(T *t) throw()
   {
     t->removeReference(t->getSharedRefCounter()
                        SYNC_PARAM2(t->getRCLock()));
   }
 
-  template<class T>
+  template<class T> 
   static void addReference(rchandle<T> &t) throw()
   {
     addReference (t.getp ());
   }
   
-  template<class T>
+  template<class T> 
   static void removeReference(rchandle<T> &t) throw()
   {
     removeReference (t.getp ());

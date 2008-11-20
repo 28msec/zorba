@@ -16,6 +16,7 @@
 #ifndef ZORBA_DURATION_H
 #define ZORBA_DURATION_H
 
+#include <zorba/config.h>
 #include "zorbatypes/zorbatypes_decl.h"
 #include "zorbatypes/xqpstring.h"
 
@@ -23,7 +24,7 @@ namespace zorba
 {
 
 
-class Duration
+class ZORBATYPES_EXTERNAL_DECL Duration
 {
 public:
   typedef enum

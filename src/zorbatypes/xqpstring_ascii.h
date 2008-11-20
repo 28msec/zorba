@@ -16,6 +16,7 @@
 #ifndef ZORBA_XQPSTRING_ASCII_H
 #define ZORBA_XQPSTRING_ASCII_H
 
+#include <zorba/config.h>
 #include "common/common.h"
 
 #include <stdlib.h>
@@ -28,11 +29,11 @@
 
 namespace zorba {
 
-class xqpStringStore : public RCObject
+class ZORBATYPES_EXTERNAL_DECL xqpStringStore : public RCObject
 {
   friend class xqpString;
 
-  friend std::ostream& operator<<(std::ostream& os, const xqpStringStore& src);
+  friend ZORBATYPES_EXTERNAL_DECL std::ostream& operator<<(std::ostream& os, const xqpStringStore& src);
 
 public:
   typedef ptrdiff_t distance_type;
@@ -242,8 +243,9 @@ public:
 
 };
 
+template class ZORBATYPES_EXTERNAL_DECL rchandle<xqpStringStore>;
 
-  class xqpString
+  class ZORBATYPES_EXTERNAL_DECL xqpString
   {
   public:
     xqpStringStore_t theStrStore;
@@ -658,20 +660,20 @@ public:
 
 
   // xqpString::stream I/O operators
-  std::istream& 
+  ZORBATYPES_EXTERNAL_DECL std::istream& 
   operator>>(std::istream& is, zorba::xqpString utf8_src);
   
-  std::ostream& 
+  ZORBATYPES_EXTERNAL_DECL std::ostream& 
   operator<<(std::ostream& os, const zorba::xqpStringStore& src);
 
-  std::ostream& 
+  ZORBATYPES_EXTERNAL_DECL std::ostream& 
   operator<<(std::ostream& os, const zorba::xqpStringStore_t src);
 
-  std::ostream& 
+  ZORBATYPES_EXTERNAL_DECL std::ostream& 
   operator<<(std::ostream& os, zorba::xqpString utf8_src);
 
   //xqpString::concatenation operator+()
-  inline xqpString
+  ZORBATYPES_EXTERNAL_DECL inline xqpString
   operator+(xqpString lsrc, xqpString rsrc)
   {
     xqpString tmp (lsrc);
@@ -679,7 +681,7 @@ public:
     return tmp;
   }
 
-  inline xqpString
+  ZORBATYPES_EXTERNAL_DECL inline xqpString
   operator+(xqpString lsrc, const char* rsrc)
   {
     xqpString tmp (lsrc);
@@ -687,13 +689,13 @@ public:
     return tmp;
   }
 
-  inline xqpString
+  ZORBATYPES_EXTERNAL_DECL inline xqpString
   operator+(xqpString lsrc, const std::string &rsrc)
   {
     return lsrc + rsrc.c_str ();
   }
 
-  inline xqpString
+  ZORBATYPES_EXTERNAL_DECL inline xqpString
   operator+(const char* lsrc, xqpString rsrc)
   {
     xqpString tmp (lsrc);

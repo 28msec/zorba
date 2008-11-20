@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <zorba/config.h>
 #include "representations.h"
 
 namespace zorba {
 
-class URI
+class ZORBATYPES_EXTERNAL_DECL URI
 {
  public:
 

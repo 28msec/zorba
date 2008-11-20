@@ -17,11 +17,12 @@
 #ifndef ZORBA_XML_CHAR_TYPE
 #define ZORBA_XML_CHAR_TYPE
 
+#include <zorba/config.h>
 #include "common/common.h"
 
 namespace zorba{
 
-class XQCharType
+class ZORBATYPES_EXTERNAL_DECL XQCharType
 {
 public:
   static bool isLetter(uint32_t cp);

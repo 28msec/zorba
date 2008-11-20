@@ -16,6 +16,7 @@
 #ifndef ZORBA_DATETIME_H
 #define ZORBA_DATETIME_H
 
+#include <zorba/config.h>
 #include "zorbatypes/timezone.h"
 #include "zorbatypes/duration.h"
 
@@ -23,12 +24,12 @@
 namespace zorba
 {
 
-class InvalidTimezoneException : public std::exception
+class ZORBATYPES_EXTERNAL_DECL InvalidTimezoneException : public std::exception
 {
 };
   
 
-class DateTime 
+class ZORBATYPES_EXTERNAL_DECL DateTime 
 {
 public:
       

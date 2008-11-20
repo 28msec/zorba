@@ -17,12 +17,13 @@
 #define XQP_PRASE_H
 
 #include <string>
+#include <zorba/config.h>
 #include "zorbatypes/numconversions.h"
 
 namespace zorba
 {
 
-void skip_whitespace(std::string& s, unsigned int& position);
+ZORBATYPES_EXTERNAL_DECL void skip_whitespace(std::string& s, unsigned int& position);
 
 
 /**
@@ -38,7 +39,7 @@ void skip_whitespace(std::string& s, unsigned int& position);
  * @param max_digits Maximum number od digits
  * @return Returns 1 on an error, 0 on success
  */
-template <typename T>
+template <typename T> 
 int parse_int(
     std::string& s,
     unsigned int& position,
@@ -67,7 +68,7 @@ int parse_int(
   return 0;
 }
 
-template <typename T>
+template <typename T> 
 int parse_int_const_position(
     std::string& s,
     int position,
@@ -87,7 +88,7 @@ int parse_int_const_position(
  * @param result 
  * @return 
  */
-inline double parse_frac(std::string& s, unsigned int& position, double& result)
+ZORBATYPES_EXTERNAL_DECL inline double parse_frac(std::string& s, unsigned int& position, double& result)
 {
   if (s[position] < '0' || s[position] > '9')
     return 1;
@@ -105,7 +106,7 @@ inline double parse_frac(std::string& s, unsigned int& position, double& result)
 }
 
 
-inline std::string to_string(int value, int min_digits = 0)
+ZORBATYPES_EXTERNAL_DECL inline std::string to_string(int value, int min_digits = 0)
 {
   std::string zeros = "";
   std::string temp = NumConversions::longToStr(value);
@@ -121,7 +122,7 @@ inline std::string to_string(int value, int min_digits = 0)
  * @param year 
  * @return 
  */
-int leap_years_count(int year);
+ZORBATYPES_EXTERNAL_DECL int leap_years_count(int year);
 
 /**
  * Returns the number of days passed from the start of the year. 1st of January will return 0. 
@@ -129,9 +130,9 @@ int leap_years_count(int year);
  * @param day 
  * @return 
  */
-int days_since_year_start(int year, int month, int day);
+ZORBATYPES_EXTERNAL_DECL int days_since_year_start(int year, int month, int day);
   
-template <typename T>
+template <typename T> 
 T quotient(T a, T b)
 {
   if (a >= 0)
@@ -140,7 +141,7 @@ T quotient(T a, T b)
     return (a+1) / b - 1;
 }
 
-template <typename T>
+template <typename T> 
 T modulo(T a, T b)
 {
   a = a % b;
@@ -150,7 +151,7 @@ T modulo(T a, T b)
   return a;
 }
 
-template <typename T>
+template <typename T> 
 int floor(T a)
 {
   if (a>=0)
@@ -161,7 +162,7 @@ int floor(T a)
     return (int)(a-1);
 }
 
-template <typename T>
+template <typename T> 
 T abs(T value)
 {
   if (value < 0)
@@ -173,7 +174,7 @@ T abs(T value)
 /**
  * Rounds to the nearest integer
  */
-inline int round(double value)
+ZORBATYPES_EXTERNAL_DECL inline int round(double value)
 {
   if (value >= 0)
     return int(value+0.5);
@@ -181,18 +182,18 @@ inline int round(double value)
     return int(value-0.5);
 }
 
-inline double frac(double value)
+ZORBATYPES_EXTERNAL_DECL inline double frac(double value)
 {
   return value - floor<double>(value);
 }
 
-bool is_digit(char ch);
+ZORBATYPES_EXTERNAL_DECL bool is_digit(char ch);
 
-bool are_digits(std::string& s, unsigned int& position, int count);
+ZORBATYPES_EXTERNAL_DECL bool are_digits(std::string& s, unsigned int& position, int count);
     
 // Returns the last day of the given year and month. E.g. for 1980 and 2 it
 // will return 29. Returns 0 on an error
-int get_last_day(int year, int month);
+ZORBATYPES_EXTERNAL_DECL int get_last_day(int year, int month);
 
 } // namespace zorba
 

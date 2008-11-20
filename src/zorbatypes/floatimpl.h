@@ -16,6 +16,7 @@
 #ifndef ZORBA_FLOATIMPL_H
 #define ZORBA_FLOATIMPL_H
 
+#include <zorba/config.h>
 #include "common/common.h"
 #ifndef ZORBA_NO_BIGNUMBERS
 #include "zorbatypes/m_apm.h"
@@ -31,7 +32,7 @@ namespace zorba {
 typedef double    MAPM;
 #endif
 
-class FloatCommons 
+class ZORBATYPES_EXTERNAL_DECL FloatCommons 
 {
  public:
   enum NumType {
@@ -391,40 +392,40 @@ template <typename FloatType> class FloatImplTraits;
 
   }; // class FloatImpl
 
-  std::ostream&
+  ZORBATYPES_EXTERNAL_DECL std::ostream&
   operator<<(std::ostream& os, const Double& aFloatImpl); 
   
-  std::ostream&
+  ZORBATYPES_EXTERNAL_DECL std::ostream&
   operator<<(std::ostream& os, const Float& aFloatImpl);
   
-  Double
+  ZORBATYPES_EXTERNAL_DECL Double
   operator+(const Double&, const Float&);
   
-  Double
+  ZORBATYPES_EXTERNAL_DECL Double
   operator+(const Float&, const Double&);
   
-  Double
+  ZORBATYPES_EXTERNAL_DECL Double
   operator-(const Double&, const Float&);
   
-  Double
+  ZORBATYPES_EXTERNAL_DECL Double
   operator-(const Float&, const Double&);
   
-  Double
+  ZORBATYPES_EXTERNAL_DECL Double
   operator*(const Double&, const Float&);
   
-  Double
+  ZORBATYPES_EXTERNAL_DECL Double
   operator*(const Float&, const Double&);
   
-  Double
+  ZORBATYPES_EXTERNAL_DECL Double
   operator/(const Double&, const Float&);
   
-  Double
+  ZORBATYPES_EXTERNAL_DECL Double
   operator/(const Float&, const Double&);
   
-  Double
+  ZORBATYPES_EXTERNAL_DECL Double
   operator%(const Double&, const Float&);
   
-  Double
+  ZORBATYPES_EXTERNAL_DECL Double
   operator%(const Float&, const Double&);
   
 } /* namespace zorba */

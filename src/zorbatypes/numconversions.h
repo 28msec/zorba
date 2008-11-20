@@ -16,6 +16,7 @@
 #ifndef ZORBA_NUM_CONVERSIONS_H
 #define ZORBA_NUM_CONVERSIONS_H
 
+#include <zorba/config.h>
 #include "zorbatypes/representations.h"
 
 namespace zorba {
@@ -27,7 +28,7 @@ namespace zorba {
  * All functions which might not work return a bool which indicates the success of the
  * conversions. Functions which aways work return the value directly.
  */
-class NumConversions {
+class ZORBATYPES_EXTERNAL_DECL NumConversions {
 private:
   static bool isNegZero(const xqpString& aStr);
 

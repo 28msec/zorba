@@ -16,6 +16,7 @@
 #ifndef ZORBA_INTEGER_H
 #define ZORBA_INTEGER_H
 
+#include <zorba/config.h>
 #include "common/common.h"
 
 #ifndef ZORBA_NO_BIGNUMBERS
@@ -34,7 +35,7 @@ namespace zorba {
   typedef double  MAPM;
 #endif
 
-  class Integer {
+  class ZORBATYPES_EXTERNAL_DECL Integer {
     friend class Decimal;
     
     template <typename Type>
@@ -252,7 +253,7 @@ namespace zorba {
       hash() const;
   }; // class Integer
 
-  std::ostream& operator<<(std::ostream& os, const Integer&);
+  ZORBATYPES_EXTERNAL_DECL std::ostream& operator<<(std::ostream& os, const Integer&);
 
 } /* namespace zorba */
 #endif // ZORBA_INTEGER_H

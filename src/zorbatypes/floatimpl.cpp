@@ -1482,4 +1482,9 @@ Double operator%(const Float& aFloat, const Double& aDouble) {
   return FloatCommons::parseFloat(aFloat) % aDouble;
 }
 
+#ifdef ZORBA_WIN_DLL
+template class ZORBATYPES_EXTERNAL_DECL FloatImpl<float>;
+template class ZORBATYPES_EXTERNAL_DECL FloatImpl<double>;
+#endif
+
 }

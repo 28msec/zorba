@@ -17,12 +17,13 @@
 #define ZORBA_BINARY_H
 
 #include <vector>
+#include <zorba/config.h>
 #include "zorbatypes/xqpstring.h"
 
 namespace zorba {
 
 class Base16;
-class Base64
+class ZORBATYPES_EXTERNAL_DECL Base64
 {
 private:
   std::vector<char> theData;
@@ -65,9 +66,9 @@ public:
   uint32_t hash() const;
 };
 
-std::ostream& operator<<(std::ostream& os, const Base64& aBase64);
+ZORBATYPES_EXTERNAL_DECL std::ostream& operator<<(std::ostream& os, const Base64& aBase64);
 
-class Base16
+class ZORBATYPES_EXTERNAL_DECL Base16
 {
 private:
   std::vector<char> theData;
@@ -104,7 +105,7 @@ public:
   uint32_t hash() const;
 };
 
-std::ostream& operator<<(std::ostream& os, const Base16& aBase16);
+ZORBATYPES_EXTERNAL_DECL std::ostream& operator<<(std::ostream& os, const Base16& aBase16);
 
 } // namespace zorba
 

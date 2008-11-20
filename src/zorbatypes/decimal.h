@@ -16,6 +16,7 @@
 #ifndef ZORBA_DECIMAL_H
 #define ZORBA_DECIMAL_H
 
+#include <zorba/config.h>
 #include "common/common.h"
 
 #ifndef ZORBA_NO_BIGNUMBERS
@@ -32,7 +33,7 @@ namespace zorba {
 typedef double    MAPM;
 #endif
 
-class Decimal {
+class ZORBATYPES_EXTERNAL_DECL Decimal {
   friend class Integer;
   template <typename Type>
     friend class FloatImpl;
@@ -142,7 +143,7 @@ public:
 }; // class Decimal
 
 
-std::ostream& operator<<(std::ostream& os, const Decimal&);
+ZORBATYPES_EXTERNAL_DECL std::ostream& operator<<(std::ostream& os, const Decimal&);
 
 } // namespace zorba
 

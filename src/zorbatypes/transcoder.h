@@ -18,6 +18,7 @@
 
 #include <ostream>
 
+#include <zorba/config.h>
 #include "zorbatypes/rchandle.h"
 
 struct UConverter;
@@ -32,7 +33,7 @@ namespace zorba
 //                                                       //
 ///////////////////////////////////////////////////////////
 
-class transcoder : public SimpleRCObject
+class ZORBATYPES_EXTERNAL_DECL transcoder : public SimpleRCObject
 {
 public:
   transcoder(std::ostream& output_stream);
@@ -64,7 +65,7 @@ protected:
 };
 
 #ifndef ZORBA_NO_UNICODE
-class utf8_to_utf16_transcoder : public transcoder
+class ZORBATYPES_EXTERNAL_DECL utf8_to_utf16_transcoder : public transcoder
 {
 public:
   utf8_to_utf16_transcoder(std::ostream& output_stream);

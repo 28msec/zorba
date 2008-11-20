@@ -16,7 +16,7 @@
 #ifndef ZORBA_TIMEZONE_H
 #define ZORBA_TIMEZONE_H
 
-
+#include <zorba/config.h>
 #include "zorbatypes/zorbatypes_decl.h"
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/duration.h"
@@ -25,7 +25,7 @@
 namespace zorba
 {
 
-class TimeZone : protected Duration
+class ZORBATYPES_EXTERNAL_DECL TimeZone : protected Duration
 {
 public:
   virtual ~TimeZone() { };
