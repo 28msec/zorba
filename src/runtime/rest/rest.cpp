@@ -59,10 +59,10 @@ using namespace store;
 CurlStreamBuffer::CurlStreamBuffer(CURLM* aMultiHandle, CURL* aEasyHandle)
   : std::streambuf(), MultiHandle(aMultiHandle), EasyHandle(aEasyHandle)
 {
-  CurlErrorBuffer = std::auto_ptr<char>(new char[CURLOPT_ERRORBUFFER]);
-  CurlErrorBuffer.get()[0] = 0;
+  CurlErrorBuffer = new char[CURLOPT_ERRORBUFFER];
+  memset(CurlErrorBuffer, 0, CURLOPT_ERRORBUFFER);
   
-  curl_easy_setopt(EasyHandle, CURLOPT_ERRORBUFFER, CurlErrorBuffer.get());
+  curl_easy_setopt(EasyHandle, CURLOPT_ERRORBUFFER, CurlErrorBuffer);
   curl_easy_setopt(EasyHandle, CURLOPT_WRITEDATA, this);
   curl_easy_setopt(EasyHandle, CURLOPT_WRITEFUNCTION, CurlStreamBuffer::write_callback);
   curl_easy_setopt(EasyHandle, CURLOPT_BUFFERSIZE, INITIAL_BUFFER_SIZE);
@@ -98,6 +98,7 @@ int CurlStreamBuffer::multi_perform()
 
 CurlStreamBuffer::~CurlStreamBuffer()
 {
+  delete[] CurlErrorBuffer;
   ::free(eback());
 }
 

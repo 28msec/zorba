@@ -44,7 +44,7 @@ public:
   int multi_perform();
 
 protected:
-  std::auto_ptr<char> CurlErrorBuffer;
+  char* CurlErrorBuffer;
   CURLM* MultiHandle;
   CURL* EasyHandle;
 
