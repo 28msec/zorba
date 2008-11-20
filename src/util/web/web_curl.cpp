@@ -81,7 +81,7 @@ int http_get(const char* url, xqp_string& result)
 }
 
 #ifdef ZORBA_WITH_TIDY
-int tidy(const char* input, xqp_string& result, xqp_string& diagnostics)
+int tidy(const char* input, xqp_string& result, xqp_string& diagnostics) throw()
 {
   TidyDoc             tdoc;
   bool                ok;
@@ -214,6 +214,7 @@ int tidy(const std::ifstream& fStream, std::iostream& result, std::iostream& dia
       diagnostics << errbuf.bp;
   }
 
+  tidyBufFree( &inputBuf );
   tidyBufFree( &output );
   tidyBufFree( &errbuf );
   tidyRelease( tdoc );
@@ -230,7 +231,8 @@ int tidy(const std::istringstream& isStream, std::iostream& result, std::iostrea
 
   TidyBuffer inputBuf;
   tidyBufAlloc(&inputBuf, size+1);
-  inputBuf.bp = (byte*)(isStream.str().c_str());
+  memset(inputBuf.bp, 0, size+1);
+  memcpy(inputBuf.bp, isStream.str().c_str(), size);
   inputBuf.size = size;
   TidyBuffer output, errbuf;
   tidyBufInit( &output );
@@ -284,6 +286,7 @@ int tidy(const std::istringstream& isStream, std::iostream& result, std::iostrea
       diagnostics << errbuf.bp;
   }
 
+  tidyBufFree( &inputBuf );
   tidyBufFree( &output );
   tidyBufFree( &errbuf );
   tidyRelease( tdoc );
