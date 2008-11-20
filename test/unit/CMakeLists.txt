@@ -24,6 +24,12 @@ CREATE_TEST_SOURCELIST(UnitTests
 ADD_EXECUTABLE(UnitTests ${UnitTests})
 TARGET_LINK_LIBRARIES(UnitTests zorba simplestore)
 
+IF(WIN32)
+SET(UNITTESTS_EXE_PATH    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/UnitTests)
+ELSE(WIN32)
+SET(UNITTESTS_EXE_PATH    UnitTests)
+ENDIF(WIN32)
+
 # remove the test driver source file
 SET (TestsToRun ${UnitTests})
 REMOVE (TestsToRun UnitTests.cpp)
@@ -32,7 +38,7 @@ REMOVE (TestsToRun UnitTests.cpp)
 FOREACH (test ${TestsToRun})
   GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
   MESSAGE(STATUS ${TName})
-  ADD_TEST(${TName} UnitTests ${TName})
+  ADD_TEST(${TName} ${UNITTESTS_EXE_PATH} ${TName})
 ENDFOREACH(test)
 
 
@@ -45,6 +51,12 @@ CREATE_TEST_SOURCELIST(CAPIUnitTests
  # add the executable
  ADD_EXECUTABLE(CAPIUnitTests ${CAPIUnitTests})
  TARGET_LINK_LIBRARIES(CAPIUnitTests zorba simplestore)
+
+IF(WIN32)
+SET(CAPIUnitTests_EXE_PATH    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/CAPIUnitTests)
+ELSE(WIN32)
+SET(CAPIUnitTests_EXE_PATH    CAPIUnitTests)
+ENDIF(WIN32)
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)                                                                         
   ADD_EXECUTABLE(CAPIUnitTests_static ${CAPIUnitTests})                                                 
@@ -59,7 +71,7 @@ ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
  FOREACH (test ${CTestsToRun})
    GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
    MESSAGE(STATUS ${TName})
-   ADD_TEST(${TName} CAPIUnitTests ${TName})
+   ADD_TEST(${TName} ${CAPIUnitTests_EXE_PATH} ${TName})
  ENDFOREACH(test)
 
 IF(ZORBA_DEBUGGER)

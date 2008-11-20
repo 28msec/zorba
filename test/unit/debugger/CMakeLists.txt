@@ -22,6 +22,12 @@ CREATE_TEST_SOURCELIST(DebuggerTests
 ADD_EXECUTABLE(DebuggerTests ${DebuggerTests})
 TARGET_LINK_LIBRARIES(DebuggerTests zorba simplestore)
 
+IF(WIN32)
+SET(DebuggerTests_EXE_PATH    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/DebuggerTests)
+ELSE(WIN32)
+SET(DebuggerTests_EXE_PATH    DebuggerTests)
+ENDIF(WIN32)
+
 SET (TestsToRun ${DebuggerTests})
 REMOVE (TestsToRun DebuggerTests.cpp)
 
@@ -29,5 +35,5 @@ REMOVE (TestsToRun DebuggerTests.cpp)
 FOREACH (test ${TestToRun})
 	GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
 	MESSAGE(STATUS ${TName})
-	ADD_TEST(${TName} DebuggerTests ${TName})
+	ADD_TEST(${TName} ${DebuggerTests} ${TName})
 ENDFOREACH(test)

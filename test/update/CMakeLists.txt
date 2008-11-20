@@ -29,6 +29,12 @@ ADD_EXECUTABLE(updtestdriver updtestdriver.cpp)
 
 TARGET_LINK_LIBRARIES(updtestdriver ${requiredlibs-updtestdriver})
 
+IF(WIN32)
+SET(updtestdriver_EXE_PATH    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/updtestdriver)
+ELSE(WIN32)
+SET(updtestdriver_EXE_PATH    updtestdriver)
+ENDIF(WIN32)
+
 # collect all spec files (suffix .spec) in all subdirectories of the Queries dir
 FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.spec)
 
@@ -42,7 +48,7 @@ FOREACH(TESTFILE ${TESTFILES})
  STRING(SUBSTRING ${TESTFILE} 0 ${TESTLENGTH} TESTNAME)
  SET(TESTNAME "UPDATE/${TESTNAME}")
 
- ADD_TEST("${TESTNAME}" updtestdriver ${TESTFILE})
+ ADD_TEST("${TESTNAME}" ${updtestdriver_EXE_PATH} ${TESTFILE})
  SET_TESTS_PROPERTIES ("${TESTNAME}" PROPERTIES TIMEOUT "1")
 
  MATH(EXPR TESTCOUNTER ${TESTCOUNTER}+1)
