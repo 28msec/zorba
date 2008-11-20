@@ -93,16 +93,53 @@
 #cmakedefine ZORBA_NO_XMLSCHEMA
 #cmakedefine ZORBA_NO_BIGNUMBERS
 
+/* to use minimal store or simplestore*/
+#cmakedefine  ZORBA_MINIMAL_STORE
+
 /* Windows MSVC DLL */
-#define    ZORBA_EXTERN_DECL
 #cmakedefine ZORBA_WIN_DLL
+
+#define    ZORBA_EXTERN_DECL
+#define    STORE_EXTERN_DECL
+#define    ZORBAUTILS_EXTERNAL_DECL
+#define    ZORBATYPES_EXTERNAL_DECL
+#define    ZORBAERRORS_EXTERN_DECL
+
 #ifdef ZORBA_WIN_DLL
   #undef    ZORBA_EXTERN_DECL
+  #undef    STORE_EXTERN_DECL
+//  #undef    ZORBAUTILS_EXTERNAL_DECL
+  #undef    ZORBATYPES_EXTERNAL_DECL
+//  #undef    ZORBAERRORS_EXTERN_DECL
 #ifdef ZORBA_INTERNAL
   #define   ZORBA_EXTERN_DECL    __declspec(dllexport) 
 #else
   #define   ZORBA_EXTERN_DECL    __declspec(dllimport)
 #endif
+
+#ifdef STORE_INTERNAL
+  #define   STORE_EXTERN_DECL    __declspec(dllexport) 
+#else
+  #define   STORE_EXTERN_DECL    __declspec(dllimport)
+#endif
+
+//#ifdef ZORBAUTILS_INTERNAL
+//  #define   ZORBAUTILS_EXTERNAL_DECL    __declspec(dllexport) 
+//#else
+//  #define   ZORBAUTILS_EXTERNAL_DECL    __declspec(dllimport)
+//#endif
+
+#ifdef ZORBATYPES_INTERNAL
+  #define   ZORBATYPES_EXTERNAL_DECL    __declspec(dllexport) 
+#else
+  #define   ZORBATYPES_EXTERNAL_DECL    __declspec(dllimport)
+#endif
+
+//#ifdef ZORBAERRORS_INTERNAL
+//  #define   ZORBAERRORS_EXTERN_DECL    __declspec(dllexport) 
+//#else
+//  #define   ZORBAERRORS_EXTERN_DECL    __declspec(dllimport)
+//#endif
 
 #endif
 
