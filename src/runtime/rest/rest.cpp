@@ -721,6 +721,18 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   curl_easy_setopt(state->EasyHandle, CURLOPT_URL, Uri.c_str());
   curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
+#ifndef ZORBA_VERIFY_PEER_SSL_CERTIFICATE//default is to not verify root certif
+  curl_easy_setopt(state->EasyHandle, CURLOPT_SSL_VERIFYPEER, 0);
+  //but CURLOPT_SSL_VERIFYHOST is left default, value 2, meaning verify that the Common Name or Subject Alternate Name field in the certificate matches the name of the server
+  //tested with https://www.npr.org/rss/rss.php?id=1001
+  //about using ssl certs in curl: http://curl.haxx.se/docs/sslcerts.html
+#else
+  #if defined WIN32
+  //set the root CA certificates file path
+  if(GENV.g_curl_root_CA_certificates_path[0])
+    curl_easy_setopt(state->EasyHandle, CURLOPT_CAINFO, GENV.g_curl_root_CA_certificates_path);
+  #endif
+#endif
   code = state->theStreamBuffer->multi_perform();
   processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp());
   
