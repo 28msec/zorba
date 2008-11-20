@@ -19,6 +19,7 @@
 
 #include <vector>
 
+#include <zorba/config.h>
 #include "common/common.h"
 #include "zorbautils/fatal.h"
 
@@ -30,7 +31,7 @@ class OrdPathStack;
 /*******************************************************************************
 
 ********************************************************************************/
-class OrdPath
+class STORE_EXTERN_DECL OrdPath
 {
   friend class OrdPathStack;
 
