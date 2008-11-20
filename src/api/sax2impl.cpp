@@ -17,6 +17,7 @@
 #include "store/api/iterator.h"
 #include "store/api/item.h"
 #include "api/unmarshaller.h"
+#include <zorba/default_content_handler.h>
 
 namespace zorba{
 /////////////////////////////////////////////////////////////////////////////////
