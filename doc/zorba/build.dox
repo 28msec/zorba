@@ -18,7 +18,7 @@ In order to build Zorba, you need the following libraries and development header
 - ICU4C 3.6 or higher (http://www.icu-project.org/)
 - Xerces-C 2.7.0 or higher (http://xerces.apache.org/xerces-c/)
 - <em>Optional Packages</em>
-  - CURL 7.12 (used to enable REST and HTTP; http://curl.haxx.se/)
+  - CURL 7.12 or higher(used to enable REST and HTTP; http://curl.haxx.se/)
   - Tidy (used to enable tidy functions; http://tidy.sourceforge.net)
 - <em>Optional Packages that are required if you want to build the scanner and parser</em>
   - Flex 2.5.33 or higher (http://flex.sourceforge.net/)
@@ -118,4 +118,17 @@ After you've provided all of the required variables, you are ready to call <tt>n
 -# Change the current working directory into the <tt>[ZORBA]</tt> directory.
 -# Execute CMake as described above but with the <tt> -G "Visual Studio X 200Y" </tt> option instead of <tt> -G "NMake Makefiles"</tt>.
 -# Start Visual Studio, open the generated <tt>zorba.sln</tt> project file, and start compilation.
+
+\subsection https_support HTTPS support
+- In order to have SSL support in Zorba you have to use the CURL library that has SSL support. 
+- To use CURL+SSL you have to set ZORBA_WITH_REST and ZORBA_WITH_SSL to ON in cmake.
+- There is one more thing: in order to validate the server's certificate, CURL+SSL needs to know
+about the root Certificates of Authenticity (CA), this is a set of public keys freely available on the internet. 
+- On Windows, Zorba expects this file to be called "cacert.pem" and searches for it in current dir and system paths. 
+- This "cacert.pem" file can be found on curl page: http://curl.haxx.se/docs/caextract.html .
+- In order to disable the validation of server certificate, the ZORBA_VERIFY_PEER_SSL_CERTIFICATE can be set to OFF in cmake 
+(and actually this is the default value). Set it to ON to validate server certificate chain on every access to https:// .
+- More read about CURL+SSL : http://curl.haxx.se/docs/sslcerts.html .
+- As a https test page we used for example the rss feed fn:doc('https://www.npr.org/rss/rss.php?id=1001') .
+
 */
