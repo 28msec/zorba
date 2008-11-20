@@ -1265,6 +1265,18 @@ bool BasicItemFactory::createTuple(
   return true;
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+bool BasicItemFactory::createError(
+          store::Item_t& result,
+          error::ZorbaError* inError)
+{
+  result = new ErrorItemNaive(inError);
+  return true;
+}
+
+
 } // namespace storeminimal
 } // namespace zorba
 

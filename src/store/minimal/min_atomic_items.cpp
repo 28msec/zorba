@@ -1452,6 +1452,25 @@ HexBinaryItemNaive::hash(long timezone, XQPCollator* aCollation) const
   return theValue.hash();
 }
 
+/*******************************************************************************
+  class ErrorItem
+********************************************************************************/
+ErrorItemNaive::~ErrorItemNaive()
+{
+  if (theError)
+  {
+    theError->free();
+    theError = NULL;
+  }
+}
+
+
+xqp_string ErrorItemNaive::show() const
+{
+  return theError->toString();
+}
+
+
 
 } // namespace storeminimal
 } // namespace zorba

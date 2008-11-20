@@ -583,6 +583,11 @@ const TupleField& Item::getTupleField(int index) const
                         __FUNCTION__, getType()->getStringValue());
 }
 
+error::ZorbaError* Item::getError() const
+{
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                        __FUNCTION__, "ErrorItem");
+}
 
 
 } // namespace storeminimal

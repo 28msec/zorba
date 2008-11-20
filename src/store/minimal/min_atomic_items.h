@@ -811,6 +811,43 @@ class HexBinaryItemNaive : public AtomicItem
   virtual uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
 };
 
+
+/*******************************************************************************
+  class ErrorItem
+
+  An ErrorItem obj stores a pointer to a ZorbaError obj. The ZorbaError obj is
+  not created by the store, but once a pointer to it is set inside an ErrorItem
+  obj, the ErrorItem obj assumes ownership of the ZorbaError. The getError()
+  method returns the zorbaError pointer, but if the caller needs to access the
+  ZobaError obj beyond the lifetime of the ErrorItem, they must make a deep
+  copy of it.
+
+  This design is due to the fact that ZorbaError class is visible to the store
+  lib, but subclasses of ZorbaError (like ZorbaUserError) may not be visible,
+  so ErrorItem cannot do much with an error obj other than storing a pointer
+  to it (and calling the virtual free() method on that pointer when the
+  ErrorItem gets destroyed).
+********************************************************************************/
+class ErrorItemNaive : public AtomicItem 
+{
+private:
+  error::ZorbaError * theError;
+
+public:
+ ErrorItemNaive(error::ZorbaError* error) : theError(error) {}
+
+  ~ErrorItemNaive();
+
+  error::ZorbaError* getError() const { return theError; }
+
+  xqp_string show() const;
+
+private:
+  // Disable copy
+  ErrorItemNaive(const ErrorItemNaive& other);
+  ErrorItemNaive& operator=(const ErrorItemNaive& other);
+};
+
 } // namespace storeminimal
 } // namespace zorba
 #endif /* ZORBA_STORE_ATOMIC_ITEMS_H */
