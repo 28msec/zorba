@@ -34,6 +34,12 @@ CREATE_TEST_SOURCELIST(cexamples
 ADD_EXECUTABLE(cexamples ${cexamples})
 TARGET_LINK_LIBRARIES(cexamples zorba simplestore)
 
+IF(WIN32)
+SET(cexamples_EXE_PATH    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/cexamples)
+ELSE(WIN32)
+SET(cexamples_EXE_PATH    cexamples)
+ENDIF(WIN32)
+
 # remove the test driver source file
 SET (TestsToRun ${cexamples})
 REMOVE (TestsToRun cexamples.c)
@@ -49,7 +55,7 @@ FOREACH (test ${TestsToRun})
   
   STRING(SUBSTRING ${FULL_TEST_NAME} ${SOURCE_DIR_LENGTH} ${TEST_NAME_LENGTH} TName)
 	MESSAGE(STATUS "Adding test for the C API's documentation: ${TName}")
-	ADD_TEST(${TName} cexamples ${NAME_WITHOUT_EXT})
+	ADD_TEST(${TName} ${cexamples_EXE_PATH} ${NAME_WITHOUT_EXT})
 ENDFOREACH(test)
 
 INSTALL(FILES ${CAPI_EXAMPLES} ${CMAKE_CURRENT_BINARY_DIR}/cexamples.c
