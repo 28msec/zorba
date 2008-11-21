@@ -184,12 +184,12 @@ namespace zorbac {
     ZORBA_XQUERY_TRY
       XQuery* lQuery = getXQuery(query);
 
-      lQuery->isUpdateQuery();
+      return lQuery->isUpdateQuery();
 
     ZORBA_XQUERY_CATCH
   }
 
-	XQUERY_ERROR 
+  XQUERY_ERROR 
   Query::apply_updates(XQC_Query query)
   {
     XQuery* lQuery = 0;
