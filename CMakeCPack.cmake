@@ -36,6 +36,11 @@ IF(UNIX)
   SET(CPACK_SOURCE_STRIP_FILES "")
   SET(CPACK_PACKAGE_EXECUTABLES "zorba" "Zorba")
 ENDIF(UNIX)
-
+IF ( APPLE )
+  SET(CPACK_POSTFLIGHT_SCRIPT "${CMAKE_BINARY_DIR}/osx_postflight.sh")
+  CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/scripts/osx_postflight.sh.in"
+               "${CMAKE_BINARY_DIR}/osx_postflight.sh")
+  MESSAGE ( STATUS "script = "${CPACK_POSTFLIGHT_SCRIPT} )
+ENDIF ( APPLE )
 INCLUDE(CPack)
 INCLUDE(CPack.cmake)

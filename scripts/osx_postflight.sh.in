@@ -1,2 +1,5 @@
 #!/bin/sh
-ln -s libicudat.38.dyblib libicudata.38.1.dylib
+ln -s $2/usr/local/lib/libicudata.38.1.dylib $2/usr/local/lib/libicudata.38.dylib
+ln -s $2/usr/local/lib/libicui18n.38.1.dylib $2/usr/local/lib/libicui18n.38.dylib
+ln -s $2/usr/local/lib/libicuuc.38.1.dylib $2/usr/local/lib/libicuuc.38.dylib
+ln -s $2/usr/local/lib/libxerces-c.28.0.dylib $2/usr/local/lib/libxerces-c.28.dylib
