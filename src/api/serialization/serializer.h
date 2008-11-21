@@ -192,6 +192,10 @@ protected:
     virtual void emit_expanded_string(const xqpStringStore* str, bool emit_attribute_value);
     
     
+    /**
+     *  Serializes a given text node. Also performs the processing of cdata-section-elements 
+     *  parameters, if any.
+     */
     virtual void emit_text(const store::Item* item);
     
     /**

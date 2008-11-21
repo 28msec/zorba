@@ -322,17 +322,23 @@ static std::vector<xqp_string> tokenize(const xqpStringStore& str, const xqpStri
 
 void serializer::emitter::emit_text(const store::Item* item)
 {
+  xqp_string name, value;
+  const store::Item* qname;  
   const store::Item* element_parent = item->getParent();  
-  const store::Item* qname = element_parent->getNodeName();  
-  xqp_string name;
   
+  if (element_parent == NULL)
+  {
+    emit_expanded_string(item->getStringValue());
+    return;
+  }
+    
+  qname = element_parent->getNodeName();  
   if (qname->getNamespace()->empty())
     name = qname->getLocalName();
   else
     name = qname->getNamespace() + xqp_string(":") + qname->getLocalName();
     
-  xqpString value = item->getStringValue().getp();
-  
+  value = item->getStringValue().getp();
   for (unsigned int i=0; i<ser->cdata_section_elements_tokens.size(); i++)
     if (ser->cdata_section_elements_tokens[i] == name)
     {
