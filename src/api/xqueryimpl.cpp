@@ -697,6 +697,9 @@ XQueryImpl::setSerializationParameters(
 
   if (opt->doctype_public != "")
     ser->set_parameter("doctype-public", xqpString(opt->doctype_public.c_str()));
+  
+  if (opt->cdata_section_elements != "")
+    ser->set_parameter("cdata-section-elements", xqpString(opt->cdata_section_elements.c_str()));
 }
 
 

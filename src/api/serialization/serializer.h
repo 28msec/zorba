@@ -109,7 +109,7 @@ protected:
 
   // Serialization parameters
   short int byte_order_mark;         // "yes" or "no", implemented
-  short int cdata_section_elements;  // TODO: list of expanded QNames
+  xqp_string cdata_section_elements; // list of expanded QNames, implemented
   xqp_string doctype_system;         // string, implemented
   xqp_string doctype_public;         // string, implemented
   int encoding;                      // UTF-8 and UTF-16 supported, add others?
@@ -130,6 +130,9 @@ protected:
 
   rchandle<emitter>    e;
   rchandle<transcoder> tr;
+  
+  std::vector<xqp_string> cdata_section_elements_tokens;  // Used to hold the QNames of the cdata section elements after
+                                     // they have been tokenized
 
   static const char	END_OF_LINE;
 
@@ -188,6 +191,9 @@ protected:
      */   
     virtual void emit_expanded_string(const xqpStringStore* str, bool emit_attribute_value);
     
+    
+    virtual void emit_text(const store::Item* item);
+    
     /**
      *  Serializes the children of the given node, without
      *  the node itself.
@@ -241,8 +247,7 @@ protected:
     enum ItemState 
     {
       INVALID_ITEM,   
-      PREVIOUS_ITEM_WAS_TEXT,
-      PREVIOUS_ITEM_WAS_TEXT_WITH_EOL,
+      PREVIOUS_ITEM_WAS_TEXT,      
       PREVIOUS_ITEM_WAS_NODE
     } previous_item;
 

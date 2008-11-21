@@ -131,6 +131,7 @@ typedef struct ZORBA_EXTERN_DECL Zorba_SerializerOptions
   
   zorba::String                 doctype_system;
   zorba::String                 doctype_public;
+  zorba::String                 cdata_section_elements;
 
 
   /** \brief Default constructor for SerializerOptions which assigns default values to all 

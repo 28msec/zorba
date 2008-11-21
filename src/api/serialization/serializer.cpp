@@ -295,13 +295,72 @@ std::string serializer::emitter::expand_string(
   return lStringStream.str();
 }
 
+static std::vector<xqp_string> tokenize(const xqpStringStore& str, const xqpStringStore& separators)
+{
+  std::vector<xqp_string> result;
+  unsigned int start = 0;
+  for (unsigned int i=0; i<str.bytes(); i++)
+  {
+    for (unsigned int j=0; j<separators.bytes(); j++)
+      if (str.byteAt(i) == separators.byteAt(j))
+      {
+        if (start < i)
+        {
+          result.push_back(xqpString(str.substr(start, i-start)));
+        }
+        start = i+1;
+      }   
+  }
+  
+  if (start < str.bytes())
+  {
+    result.push_back(xqpString(str.substr(start, str.bytes()-start)));
+  }
+ 
+  return result;  
+}
+
+void serializer::emitter::emit_text(const store::Item* item)
+{
+  const store::Item* element_parent = item->getParent();  
+  const store::Item* qname = element_parent->getNodeName();  
+  xqp_string name;
+  
+  if (qname->getNamespace()->empty())
+    name = qname->getLocalName();
+  else
+    name = qname->getNamespace() + xqp_string(":") + qname->getLocalName();
+    
+  xqpString value = item->getStringValue().getp();
+  
+  for (unsigned int i=0; i<ser->cdata_section_elements_tokens.size(); i++)
+    if (ser->cdata_section_elements_tokens[i] == name)
+    {
+      while (1)
+      {
+        int pos = value.indexOf("]]>");
+        if ( pos > -1)
+        {
+          tr << "<![CDATA[" << value.substr(0, pos+2).c_str() << "]]>";
+          value = value.substr(pos+2);
+        }
+        else
+        {          
+          tr << "<![CDATA[" << value.c_str() << "]]>";
+          return;
+        }
+      }
+    }
+  
+  // parent is not in the cdata-section-elements, output as a normal text node
+  emit_expanded_string(item->getStringValue());
+}
 
 void serializer::emitter::emit_indentation(int depth)
 {
   for (int i = 0; i < depth; i++)
     tr << "  ";
 }
-
 
 int serializer::emitter::emit_node_children(
     const store::Item* item,
@@ -542,14 +601,8 @@ void serializer::emitter::emit_node(
 	}
 	else if (item->getNodeKind() == store::StoreConsts::textNode)
 	{		
-    emit_expanded_string(item->getStringValue());
-
-    if (item->getStringValue()->endsWith("\r")
-        ||
-        item->getStringValue()->endsWith("\n"))
-      previous_item = PREVIOUS_ITEM_WAS_TEXT_WITH_EOL;
-    else
-      previous_item = PREVIOUS_ITEM_WAS_TEXT;
+    emit_text(item);
+    previous_item = PREVIOUS_ITEM_WAS_TEXT;
 	}
 	else if (item->getNodeKind() == store::StoreConsts::commentNode)
 	{
@@ -1539,6 +1592,10 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
   {
     doctype_public = value;
   }
+  else if (parameter_name == "cdata-section-elements")
+  {
+    cdata_section_elements = value;
+  }
   else
   {
     ZORBA_ERROR( SEPM0016);
@@ -1597,7 +1654,12 @@ bool serializer::setup(ostream& os)
     ZORBA_ASSERT(0);
     return false;
   }
-
+  
+  if (cdata_section_elements != "")
+  {
+    cdata_section_elements_tokens = tokenize(*cdata_section_elements.theStrStore, xqpStringStore("; ")); // space and semicolon    
+  }
+  
   return true;
 }
 

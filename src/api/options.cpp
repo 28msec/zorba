@@ -87,6 +87,10 @@ void Zorba_SerializerOptions::SetSerializerOption(const char* parameter, const c
   {
     doctype_public = value;
   }
+  else if (strcmp(parameter, "cdata-section-elements") == 0)
+  {
+    cdata_section_elements = value;
+  }
 }
 
 Zorba_SerializerOptions_t Zorba_SerializerOptions::SerializerOptionsFromStringParams(const std::vector<std::pair<std::string, std::string> >& params)
@@ -128,4 +132,3 @@ void Zorba_SerializerOptions_set(Zorba_SerializerOptions_t* serializerOptions, c
   
   serializerOptions->SetSerializerOption(parameter, value);
 }
-
