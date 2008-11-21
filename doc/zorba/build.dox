@@ -16,7 +16,7 @@ In order to build Zorba, you need the following libraries and development header
 - Libxml2 2.2.16 or higher (http://xmlsoft.org/ )
   - Iconv 1.12 (used by Libxml2; http://www.gnu.org/software/libiconv/)
 - ICU4C 3.6 or higher (http://www.icu-project.org/)
-- Xerces-C 2.7.0 or higher (http://xerces.apache.org/xerces-c/)
+- Xerces-C 2.8.0 or 3.0.0 (http://xerces.apache.org/xerces-c/)
 - <em>Optional Packages</em>
   - CURL 7.12 or higher(used to enable REST and HTTP; http://curl.haxx.se/)
   - Tidy (used to enable tidy functions; http://tidy.sourceforge.net)
