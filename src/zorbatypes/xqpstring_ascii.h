@@ -243,7 +243,9 @@ public:
 
 };
 
+#ifdef ZORBA_WIN_DLL
 template class ZORBATYPES_EXTERNAL_DECL rchandle<xqpStringStore>;
+#endif
 
   class ZORBATYPES_EXTERNAL_DECL xqpString
   {
