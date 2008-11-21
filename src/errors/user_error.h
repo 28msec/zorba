@@ -47,6 +47,12 @@ public:
 
   virtual bool
   isUserError() const          { return true; }
+
+  virtual std::auto_ptr<ZorbaError>
+  clone() const;
+
+  virtual void
+  raise() const { throw *this; }
 };
 
 

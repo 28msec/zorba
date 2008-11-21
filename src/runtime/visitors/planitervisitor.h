@@ -279,6 +279,9 @@ namespace zorba
   class ZorbaRestPostIterator;
 #endif
 
+  class HoistIterator;
+  class UnhoistIterator;
+
 #define PLAN_ITER_VISITOR(class)                  \
   virtual void beginVisit ( const class& ) = 0;  \
   virtual void endVisit ( const class& ) = 0
@@ -751,6 +754,9 @@ namespace zorba
     PLAN_ITER_VISITOR(ZorbaRestGetIterator);
     PLAN_ITER_VISITOR(ZorbaRestPostIterator);
 #endif
+
+    PLAN_ITER_VISITOR(HoistIterator);
+    PLAN_ITER_VISITOR(UnhoistIterator);
 	  
   }; /* class PlanIterVisitor */
 } /* namespace zorba */

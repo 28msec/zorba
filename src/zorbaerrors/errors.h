@@ -18,6 +18,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include <zorba/config.h>
 #include <zorba/error.h>
@@ -122,6 +123,12 @@ public:
 
   virtual bool
   isUserError() const  { return false; }
+
+  virtual std::auto_ptr<ZorbaError>
+  clone() const;
+
+  virtual void
+  raise() const { throw *this; }
 };
 
 

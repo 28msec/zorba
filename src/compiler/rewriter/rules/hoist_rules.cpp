@@ -165,13 +165,22 @@ static bool is_enclosed_expr(expr *e)
   return (fn == LOOKUP_FN("fn", ":enclosed-expr", 1));
 }
 
+static bool is_already_hoisted(expr *e)
+{
+  if (e->get_expr_kind() == fo_expr_kind) {
+    return static_cast<fo_expr *>(e)->get_func() == LOOKUP_OP1("unhoist");
+  }
+  return false;
+}
+
 static bool non_hoistable (expr *e) {
   expr_kind_t k = e->get_expr_kind();
   return k == var_expr_kind
     || k == const_expr_kind
     || k == axis_step_expr_kind
     || k == match_expr_kind
-    || (k == wrapper_expr_kind && non_hoistable (static_cast<const wrapper_expr *> (e)->get_expr ()));    
+    || (k == wrapper_expr_kind && non_hoistable (static_cast<const wrapper_expr *> (e)->get_expr ()))
+    || is_already_hoisted(e);
 }
 
 static rchandle<var_expr> try_hoisting(RewriterContext& rCtx, expr *e, const std::map<var_expr *, int>& varmap, const std::map<expr *, DynamicBitset>& freevarMap, struct flwor_holder *holder)
@@ -222,8 +231,11 @@ static rchandle<var_expr> try_hoisting(RewriterContext& rCtx, expr *e, const std
   if (!inloop) {
     return NULL;
   }
+  // Hoisting is possible ... Go ahead and hoist e.
+  // We surround e with an opext:hoist() call and the user of e with an opext:unhoist() call.
   rchandle<var_expr> letvar(rCtx.createTempVar(e->get_loc(), var_expr::let_var));
-  flwor_expr::forletref_t flref(new forlet_clause(forlet_clause::let_clause, letvar, NULL, NULL, e));
+  expr_t hoisted = new fo_expr(e->get_loc(), LOOKUP_OP1("hoist"), e);
+  flwor_expr::forletref_t flref(new forlet_clause(forlet_clause::let_clause, letvar, NULL, NULL, hoisted));
   letvar->set_forlet_clause(flref.getp());
   if (h->prev == NULL) {
     if (h->flwor == NULL) {
@@ -234,7 +246,8 @@ static rchandle<var_expr> try_hoisting(RewriterContext& rCtx, expr *e, const std
     h->flwor->add(i + 1, flref);
     ++h->clause_count;
   }
-  return letvar;
+  expr_t unhoisted = new fo_expr(e->get_loc(), LOOKUP_OP1("unhoist"), letvar);
+  return unhoisted;
 }
 
 static bool hoist_expressions(RewriterContext& rCtx, expr *e, const std::map<var_expr *, int>& varmap, const std::map<expr *, DynamicBitset>& freevarMap, struct flwor_holder *fholder)
@@ -280,7 +293,8 @@ static bool hoist_expressions(RewriterContext& rCtx, expr *e, const std::map<var
       status = hoist_expressions(rCtx, re, varmap, freevarMap, &curr_holder) || status;
     }
   } else if (e->get_expr_kind() == sequential_expr_kind
-    || e->is_updating()) {
+    || e->is_updating()
+    || e->get_expr_kind() == gflwor_expr_kind) {
     // do nothing
   } else {
     expr_iterator i = e->expr_begin();

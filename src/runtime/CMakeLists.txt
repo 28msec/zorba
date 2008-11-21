@@ -42,6 +42,7 @@ SET(RUNTIME_SRCS
     core/gflwor/orderby_iterator.cpp
     core/gflwor/outerfor_iterator.cpp
     core/tuple_iterators.cpp
+    core/internal_operators.cpp
     dateTime/DurationsDatesTimes.cpp
     debug/debug_iterators.cpp
     fncontext/FnContextImpl.cpp

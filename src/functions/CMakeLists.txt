@@ -31,7 +31,8 @@ SET(FUNCTIONS_SRCS
     Sequences.cpp
     signature.cpp
     Strings.cpp
-    tuple_functions.cpp)
+    tuple_functions.cpp
+    InternalOperators.cpp)
 
 IF (ZORBA_WITH_REST)
   SET(FUNCTIONS_SRCS ${FUNCTIONS_SRCS} Rest.cpp)

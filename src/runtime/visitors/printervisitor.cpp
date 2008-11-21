@@ -42,6 +42,7 @@
 #include "runtime/core/tuple_iterators.h"
 #include "runtime/core/trycatch.h"
 #include "runtime/core/nodeid_iterators.h"
+#include "runtime/core/internal_operators.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/sequences/SequencesImpl.h"
@@ -927,6 +928,8 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
   PRINTER_VISITOR_DEFINITION(ZorbaRestPostIterator);
 #endif
 
+  PRINTER_VISITOR_DEFINITION(HoistIterator);
+  PRINTER_VISITOR_DEFINITION(UnhoistIterator);
 };
 
 void print_iter_plan (IterPrinter& aPrinter, PlanIterator* aIter) {

@@ -204,6 +204,7 @@ protected:
   expr_t retval_h;
 
 public:
+  expr_kind_t get_expr_kind () const { return gflwor_expr_kind; }
   int size () const { return clauses.size (); }
   rchandle<flwor_clause> operator[] (int i) { return clauses [i]; }
   const flwor_clause *operator[] (int i) const { return clauses [i].getp (); }

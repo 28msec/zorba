@@ -222,6 +222,12 @@ ZorbaError::isTypeError() const
   return isXPathTypeError() || isXQueryTypeError();
 }
 
+std::auto_ptr<ZorbaError>
+ZorbaError::clone() const
+{
+    std::auto_ptr<ZorbaError> err(new ZorbaError(*this));
+    return err;
+}
 
 ZorbaWarning::ZorbaWarning(
     WarningCode        aWarningCode,

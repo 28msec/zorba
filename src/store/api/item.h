@@ -114,6 +114,12 @@ public:
   isTuple() const = 0;
 
   /**
+   * @return "true" if the item is an error.
+   */
+  virtual bool
+  isError() const = 0;
+
+  /**
    *  @return  (dynamic) XQuery type of the item
    */
   virtual Item*
@@ -559,7 +565,7 @@ public:
   virtual const TupleField& getTupleField(int index) const;
 
   /* -------------------- Methods for ErrorItem --------------------- */
-  error::ZorbaError* getError() const;
+  virtual error::ZorbaError* getError() const;
 }; 
 
 

@@ -35,6 +35,7 @@
 #include "functions/arithmetic.h"
 #include "functions/Nodes.h"
 #include "functions/tuple_functions.h"
+#include "functions/InternalOperators.h"
 #include "functions/Alexis.h"
 
 #ifdef ZORBA_WITH_REST
@@ -950,6 +951,14 @@ DECL(sctx, zop_gettuplefield,
      (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "get-tuple-field"),
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+DECL(sctx, zop_hoist,
+     (createQName(XQUERY_FN_NS,"fn", ":hoist"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_ONE));
+DECL(sctx, zop_unhoist,
+     (createQName(XQUERY_FN_NS,"fn", ":unhoist"),
+      GENV_TYPESYSTEM.ITEM_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }
 

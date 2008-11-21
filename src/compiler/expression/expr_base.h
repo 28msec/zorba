@@ -38,6 +38,7 @@ enum expr_kind_t {
   constructor_expr_kind,
   var_expr_kind,
   flwor_expr_kind,
+  gflwor_expr_kind,
   trycatch_expr_kind,
   promote_expr_kind,
   typeswitch_expr_kind,
