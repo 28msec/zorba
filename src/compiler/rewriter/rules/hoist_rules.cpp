@@ -246,8 +246,8 @@ static rchandle<var_expr> try_hoisting(RewriterContext& rCtx, expr *e, const std
     h->flwor->add(i + 1, flref);
     ++h->clause_count;
   }
-  expr_t unhoisted = new fo_expr(e->get_loc(), LOOKUP_OP1("unhoist"), letvar);
-  return unhoisted;
+  expr_t unhoisted = new fo_expr(e->get_loc(), LOOKUP_OP1("unhoist"), letvar.getp());
+  return (var_expr*)unhoisted.getp();//daniel: is this cast correct?
 }
 
 static bool hoist_expressions(RewriterContext& rCtx, expr *e, const std::map<var_expr *, int>& varmap, const std::map<expr *, DynamicBitset>& freevarMap, struct flwor_holder *fholder)
