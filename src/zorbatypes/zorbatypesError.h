@@ -22,7 +22,7 @@
 namespace zorba
 {
 
-class ZORBATYPES_EXTERNAL_DECL ZorbatypesError
+class  ZorbatypesError
 {
 public:
   enum ErrorCode
@@ -75,7 +75,7 @@ public:
 };
 
 
-class ZORBATYPES_EXTERNAL_DECL zorbatypesException : public std::exception
+class  zorbatypesException : public std::exception
 {
   const char*                 additionalInfo;
   ZorbatypesError::ErrorCode  code;

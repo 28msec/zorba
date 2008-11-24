@@ -29,7 +29,7 @@ DecodeZorbatypesError(::zorba::ZorbatypesError::ErrorCode code);
 /*******************************************************************************
 
 ********************************************************************************/
-class ErrorMessages
+class ZORBA_DLL_PUBLIC ErrorMessages
 {
  public:
   virtual ~ErrorMessages() { }

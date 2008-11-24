@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-                                   
 SET(ZORBATYPES_SRCS 
   decimal.cpp
   floatimpl.cpp
@@ -23,34 +22,18 @@ SET(ZORBATYPES_SRCS
   transcoder.cpp
   utf8/Unicode_util.cpp
   collation_manager.cpp
-  icu_init.cpp
   chartype.cpp)
   
 IF(ZORBA_NO_UNICODE)
-LIST(APPEND ZORBATYPES_SRCS 
-  xqpString_ascii.cpp
-  regex_ascii.cpp
-  )
+  LIST(APPEND ZORBATYPES_SRCS 
+    xqpString_ascii.cpp
+    regex_ascii.cpp
+    )
 ELSE(ZORBA_NO_UNICODE)
-LIST(APPEND ZORBATYPES_SRCS 
-  utf8/xqpString.cpp
-  )
+  LIST(APPEND ZORBATYPES_SRCS 
+    utf8/xqpString.cpp
+    )
 ENDIF(ZORBA_NO_UNICODE)
-
 
 ADD_SRC_SUBFOLDER(ZORBATYPES_SRCS mapm     MAPM_SRCS)
 ADD_SRC_SUBFOLDER(ZORBATYPES_SRCS datetime DATETIME_SRCS)
-
-ADD_LIBRARY(zorbatypes SHARED ${ZORBATYPES_SRCS})
-
-SET(requiredlibs-zorbatypes ${requiredlibs-zorbatypes} zorbaerrors)
-TARGET_LINK_LIBRARIES(zorbatypes ${requiredlibs-zorbatypes})
-
-IF (ZORBA_BUILD_STATIC_LIBRARY)
-ELSE (ZORBA_BUILD_STATIC_LIBRARY)
-  IF (MSVC)
-    #compile zorbatypes as DLL
-    REMOVE_DEFINITIONS(-DZORBA_INTERNAL)
-    ADD_DEFINITIONS(-DZORBATYPES_INTERNAL)
-  ENDIF (MSVC)
-ENDIF (ZORBA_BUILD_STATIC_LIBRARY)

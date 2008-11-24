@@ -7,7 +7,7 @@
 
 namespace zorba {
 
-class ZORBA_EXTERN_DECL filesystem_path {
+class ZORBA_DLL_PUBLIC filesystem_path {
 private:
   std::string path;
   void canonicalize ();

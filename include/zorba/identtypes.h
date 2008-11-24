@@ -19,7 +19,7 @@
 #include <zorba/config.h>
 
 namespace zorba {
-class ZORBA_EXTERN_DECL IdentTypes {
+class ZORBA_DLL_PUBLIC IdentTypes {
 public:
   typedef enum {
     NAMED_TYPE,

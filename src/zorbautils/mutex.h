@@ -31,7 +31,7 @@ namespace zorba {
 /*******************************************************************************
 
 ********************************************************************************/
-class ZORBAUTILS_EXTERNAL_DECL Mutex
+class ZORBA_DLL_PUBLIC Mutex
 {
 protected:
 
@@ -65,7 +65,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class ZORBAUTILS_EXTERNAL_DECL AutoMutex
+class ZORBA_DLL_PUBLIC AutoMutex
 {
 private:
   Mutex * theMutex;

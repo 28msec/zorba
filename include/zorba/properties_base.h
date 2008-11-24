@@ -25,7 +25,7 @@
 
 namespace zorba {
 
-class ZORBAUTILS_EXTERNAL_DECL PropertiesBase {
+class ZORBA_DLL_PUBLIC PropertiesBase {
 protected:
   std::vector<std::string > __thePositionalArgs;
 
@@ -64,8 +64,8 @@ public:
 
 };
 
-template<> void PropertiesBase::init_val (const char *str, std::string &val, unsigned delta);
-template<> void PropertiesBase::init_val (const char *str, std::vector<std::string> &val, unsigned delta);
+template<> ZORBA_DLL_PUBLIC void PropertiesBase::init_val (const char *str, std::string &val, unsigned delta);
+template<> ZORBA_DLL_PUBLIC void PropertiesBase::init_val (const char *str, std::vector<std::string> &val, unsigned delta);
 
 }
 

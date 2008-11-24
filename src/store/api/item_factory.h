@@ -34,7 +34,7 @@ class TupleField;
 
 typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 
-class STORE_EXTERN_DECL ItemFactory
+class ItemFactory
 {
 public:
   virtual ~ItemFactory() {}

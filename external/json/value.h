@@ -48,8 +48,8 @@ namespace json{
 	private:
 		value *parent;
 		/*std::wstring name;*/
-		datatype::dt dt;
 		void *val;
+		datatype::dt dt;
 	public:
 		bool separatevalues;
 		/*bool setname(std::wstring &newname);

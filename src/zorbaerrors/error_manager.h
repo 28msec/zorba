@@ -25,7 +25,7 @@
 
 namespace zorba { namespace error {
 
-class ZORBAERRORS_EXTERN_DECL ErrorManager
+class ZORBA_DLL_PUBLIC ErrorManager
 {
  protected:
   // contains all errors that were raised but the execution went on

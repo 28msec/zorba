@@ -20,7 +20,12 @@ CREATE_TEST_SOURCELIST(DebuggerTests
 )
  
 ADD_EXECUTABLE(DebuggerTests ${DebuggerTests})
-TARGET_LINK_LIBRARIES(DebuggerTests zorba simplestore)
+TARGET_LINK_LIBRARIES(DebuggerTests zorba_simplestore)
+
+IF (ZORBA_BUILD_STATIC_LIBRARY)
+  ADD_EXECUTABLE(DebuggerTests_static ${DebuggerTests})
+  TARGET_LINK_LIBRARIES(DebuggerTests_static zorba_simplestore_static)
+ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
 IF(WIN32)
 SET(DebuggerTests_EXE_PATH    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/DebuggerTests)

@@ -24,12 +24,12 @@
 namespace zorba {
 
 #ifdef ZORBA_NO_UNICODE
-class ZORBATYPES_EXTERNAL_DECL Collator
+class   Collator
 {
 };
 #endif
 
-  class ZORBATYPES_EXTERNAL_DECL XQPCollator 
+  class   XQPCollator 
   {
     friend class CollationFactory;
     friend class xqpString;
@@ -49,7 +49,7 @@ class ZORBATYPES_EXTERNAL_DECL Collator
   };
 
 
-  class ZORBATYPES_EXTERNAL_DECL CollationFactory 
+  class   CollationFactory 
   {
     public:
       CollationFactory();

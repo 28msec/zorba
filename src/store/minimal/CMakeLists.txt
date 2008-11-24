@@ -12,11 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# define an extension to the name of the library that is greated with this store
+SET(ZORBA_STORE_LIB_EXTENSION "minimal")
 
 #
 # Source Files
 #
-SET(MIN_STORE_SRCS
+SET(ZORBA_STORE_IMPL_SRCS
     min_atomic_items.cpp
     min_collection.cpp
     min_item.cpp
@@ -40,52 +42,3 @@ SET(MIN_STORE_SRCS
     string_pool.cpp
     min_tupleimpl.cpp
 )
-
-#
-# Internal common libraries
-#
-SET(requiredlibs-minimalstore ${requiredlibs-minimalstore} zorbautils)
-SET(requiredlibs-minimalstore ${requiredlibs-minimalstore} zorbatypes)
-SET(requiredlibs-minimalstore ${requiredlibs-minimalstore} zorbaerrors)
-
-
-SET(MINIMALSTORE_INSTALL_LIST)
-
-IF (ZORBA_BUILD_STATIC_LIBRARY)
-
-  ADD_LIBRARY(minimalstore_static ${MIN_STORE_SRCS})
-  TARGET_LINK_LIBRARIES(minimalstore_static ${requiredlibs-minimalstore})
-
-  SET_TARGET_PROPERTIES(minimalstore_static PROPERTIES OUTPUT_NAME "minimalstore")  
-  SET_TARGET_PROPERTIES(minimalstore_static PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})  
-  SET_TARGET_PROPERTIES(minimalstore_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
-
-  SET(MINIMALSTORE_INSTALL_LIST ${MINIMALSTORE_INSTALL_LIST} minimalstore_static)
-
-ELSE (ZORBA_BUILD_STATIC_LIBRARY)
-  IF (MSVC)
-    #compile store as DLL
-    REMOVE_DEFINITIONS(-DZORBA_INTERNAL)
-    ADD_DEFINITIONS(-DSTORE_INTERNAL)
-  ENDIF (MSVC)
-ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
-
-
-ADD_LIBRARY(minimalstore SHARED ${MIN_STORE_SRCS})
-
-TARGET_LINK_LIBRARIES(minimalstore ${requiredlibs-minimalstore})
-
-SET_TARGET_PROPERTIES(minimalstore PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
-
-SET_TARGET_PROPERTIES(minimalstore PROPERTIES CLEAN_DIRECT_OUTPUT 1)
-
-SET(MINIMALSTORE_INSTALL_LIST ${MINIMALSTORE_INSTALL_LIST} minimalstore)
-
-INSTALL(TARGETS ${MINIMALSTORE_INSTALL_LIST}
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-)
-
-SET(STORE_LIB minimalstore CACHE INTERNAL "store used" FORCE)
-

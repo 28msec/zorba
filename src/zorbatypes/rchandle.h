@@ -37,7 +37,7 @@ namespace zorba {
 
 #if defined ZORBA_HAVE_PTHREAD_SPINLOCK
 
-class ZORBATYPES_EXTERNAL_DECL RCLock
+class RCLock
 {
 protected:
   pthread_spinlock_t  theLock;
@@ -82,7 +82,7 @@ public:
 
 #elif defined ZORBA_HAVE_PTHREAD_MUTEX
 
-class ZORBATYPES_EXTERNAL_DECL RCLock
+class RCLock
 {
 protected:
   mutable pthread_mutex_t  theLock;
@@ -137,7 +137,7 @@ public:
 
 #elif defined WIN32 || defined WINCE
 
-class ZORBATYPES_EXTERNAL_DECL RCLock
+class RCLock
 {
 protected:
   HANDLE    mutex;
@@ -176,12 +176,6 @@ public:
 #endif
 
 
-//#if defined ZORBA_INTERNAL || defined STORE_INTERNAL
-//#define   RCOBJECT_EXPORT   __declspec(dllexport)
-//#else
-//#define   RCOBJECT_EXPORT   
-//#endif
-
 /*******************************************************************************
   
   Base class for reference counted objects
@@ -195,7 +189,7 @@ public:
   reference count becomes 0.
 
 ********************************************************************************/
-class ZORBATYPES_EXTERNAL_DECL RCObject
+class ZORBA_DLL_PUBLIC RCObject
 {
 protected:
   mutable long  theRefCount;
@@ -311,7 +305,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class ZORBATYPES_EXTERNAL_DECL SimpleRCObject : public RCObject
+class ZORBA_DLL_PUBLIC SimpleRCObject : public RCObject
 {
 public:
   SimpleRCObject() : RCObject() { }
@@ -323,7 +317,6 @@ public:
 
   SimpleRCObject& operator=(const SimpleRCObject&) { return *this; }
 };
-
 
 /*******************************************************************************
 

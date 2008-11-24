@@ -55,6 +55,8 @@ class bound_var
     expr_t val;
     var_expr_t var;
 
+    bound_var() {};
+
     bound_var(var_expr* ve, var_expr_t var, expr_t val_):
       varname (ve->get_varname ()),
       var_key (dynamic_context::var_key (ve)), type(ve->get_type()), val (val_), var(var){}

@@ -33,7 +33,8 @@ namespace zorba {
  * parser generator. yy::location is used as few as possible in zorba to reduced
  * dependencies to the parser.
  */
-class QueryLoc {
+// exported for unit testing only
+class ZORBA_DLL_PUBLIC QueryLoc {
 
 public:
   static QueryLoc null;

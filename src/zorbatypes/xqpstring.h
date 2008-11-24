@@ -31,11 +31,12 @@
 
 namespace zorba {
 
-class ZORBATYPES_EXTERNAL_DECL xqpStringStore : public RCObject
+// exported for testing only
+class ZORBA_DLL_PUBLIC xqpStringStore : public RCObject
 {
   friend class xqpString;
 
-  friend ZORBATYPES_EXTERNAL_DECL std::ostream& operator<<(std::ostream& os, const xqpStringStore& src);
+  friend  std::ostream& operator<<(std::ostream& os, const xqpStringStore& src);
 
 public:
   typedef ptrdiff_t distance_type;
@@ -245,10 +246,11 @@ public:
 };
 
 #ifdef ZORBA_WIN_DLL
-template class ZORBATYPES_EXTERNAL_DECL rchandle<xqpStringStore>;
+template class  rchandle<xqpStringStore>;
 #endif
 
-class ZORBATYPES_EXTERNAL_DECL xqpString
+// exported for testing only
+class ZORBA_DLL_PUBLIC xqpString
 {
 public:
   xqpStringStore_t theStrStore;
@@ -658,20 +660,21 @@ private:
 
 
   // xqpString::stream I/O operators
-  ZORBATYPES_EXTERNAL_DECL std::istream& 
+   std::istream& 
   operator>>(std::istream& is, zorba::xqpString utf8_src);
   
-  ZORBATYPES_EXTERNAL_DECL std::ostream& 
+   std::ostream& 
   operator<<(std::ostream& os, const zorba::xqpStringStore& src);
 
-  ZORBATYPES_EXTERNAL_DECL std::ostream& 
+   std::ostream& 
   operator<<(std::ostream& os, const zorba::xqpStringStore_t src);
 
-  ZORBATYPES_EXTERNAL_DECL std::ostream& 
+  ZORBA_DLL_PUBLIC
+  std::ostream& 
   operator<<(std::ostream& os, zorba::xqpString utf8_src);
 
   //xqpString::concatenation operator+()
-  ZORBATYPES_EXTERNAL_DECL inline xqpString
+   inline xqpString
   operator+(xqpString lsrc, xqpString rsrc)
   {
     xqpString tmp (lsrc);
@@ -679,7 +682,7 @@ private:
     return tmp;
   }
 
-  ZORBATYPES_EXTERNAL_DECL inline xqpString
+   inline xqpString
   operator+(xqpString lsrc, const char* rsrc)
   {
     xqpString tmp (lsrc);
@@ -687,13 +690,13 @@ private:
     return tmp;
   }
 
-  ZORBATYPES_EXTERNAL_DECL inline xqpString
+   inline xqpString
   operator+(xqpString lsrc, const std::string &rsrc)
   {
     return lsrc + rsrc.c_str ();
   }
 
-  ZORBATYPES_EXTERNAL_DECL inline xqpString
+   inline xqpString
   operator+(const char* lsrc, xqpString rsrc)
   {
     xqpString tmp (lsrc);

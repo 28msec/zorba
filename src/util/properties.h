@@ -25,7 +25,7 @@
 
 namespace zorba {
 
-  class ZORBA_EXTERN_DECL Properties : public ZorbaProperties {
+  class ZORBA_DLL_PUBLIC Properties : public ZorbaProperties {
       /**
        * Gets the Operation System folger where the properties of the current 
        * user are saved.

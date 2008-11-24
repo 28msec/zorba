@@ -16,17 +16,3 @@ SET(ZORBAERRORS_SRCS
    errors.cpp
    error_manager.cpp
    error_messages.cpp)
-
-
-ADD_LIBRARY(zorbaerrors ${ZORBAERRORS_SRCS})
-
-TARGET_LINK_LIBRARIES(zorbaerrors ${requiredlibs-zorbaerrors})
-
-IF (ZORBA_BUILD_STATIC_LIBRARY)
-ELSE (ZORBA_BUILD_STATIC_LIBRARY)
-  IF (MSVC)
-    #compile zorbaerrors as DLL
-    REMOVE_DEFINITIONS(-DZORBA_INTERNAL)
-    ADD_DEFINITIONS(-DZORBAERRORS_INTERNAL)
-  ENDIF (MSVC)
-ENDIF (ZORBA_BUILD_STATIC_LIBRARY)

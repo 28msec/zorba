@@ -31,7 +31,7 @@ namespace zorba {
    *
    * XmlDataManager is a thread-safe class.
    */
-  class ZORBA_EXTERN_DECL XmlDataManager 
+  class ZORBA_DLL_PUBLIC XmlDataManager 
   {
     public:
 

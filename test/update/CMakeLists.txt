@@ -23,11 +23,13 @@ CONFIGURE_FILE(testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/testdriverconfi
 # Compile and build the testdriver executable
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
-SET(requiredlibs-updtestdriver ${requiredlibs-testdriver} zorba simplestore)
-
 ADD_EXECUTABLE(updtestdriver updtestdriver.cpp)
+TARGET_LINK_LIBRARIES(updtestdriver zorba_simplestore)
 
-TARGET_LINK_LIBRARIES(updtestdriver ${requiredlibs-updtestdriver})
+IF (ZORBA_BUILD_STATIC_LIBRARY)
+  ADD_EXECUTABLE(updtestdriver_static updtestdriver.cpp)
+  TARGET_LINK_LIBRARIES(updtestdriver_static zorba_simplestore_static)
+ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
 IF(WIN32)
 SET(updtestdriver_EXE_PATH    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/updtestdriver)

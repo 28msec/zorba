@@ -25,7 +25,7 @@
 namespace zorba
 {
 
-class ZORBATYPES_EXTERNAL_DECL TimeZone : protected Duration
+class ZORBA_DLL_PUBLIC TimeZone : protected Duration
 {
 public:
   virtual ~TimeZone() { };

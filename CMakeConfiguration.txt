@@ -28,6 +28,20 @@
 #    cmake -DVARIABLE=new_value
 #    the variable will keep this value (i.e. store it in the cache file CMakeCache.txt)
 #    until you set a new one or edit the CMakeCache.txt file
+#
+SET(ZORBA_MINIMAL_STORE  OFF CACHE BOOL "Choose zorba minimal store for better performance")
+MESSAGE(STATUS "ZORBA_MINIMAL_STORE:               " ${ZORBA_MINIMAL_STORE})
+
+# Adding store srcs
+IF (ZORBA_MINIMAL_STORE)
+  SET(ZORBA_STORE_DIRS "${CMAKE_SOURCE_DIR}/src/store/minimal" CACHE PATHS
+    "Path to the store directories. Must contain CMakeLists.txt defining the variables ZORBA_STORE_IMPL_SRCS and ZORBA_STORE_LIB_EXTENSION.")
+ELSE (ZORBA_MINIMAL_STORE)
+  SET(ZORBA_STORE_DIRS "${CMAKE_SOURCE_DIR}/src/store/naive" CACHE PATHS
+    "Path to the store directories. Must contain CMakeLists.txt defining the variables ZORBA_STORE_IMPL_SRCS and ZORBA_STORE_LIB_EXTENSION.")
+ENDIF (ZORBA_MINIMAL_STORE)
+
+MESSAGE(STATUS "ZORBA_STORE_DIRS " ${ZORBA_STORE_DIRS})
 
 #Build with Zorba debugger
 SET(ZORBA_DEBUGGER ON CACHE BOOL "Compile zorba with debugger support")
@@ -146,9 +160,6 @@ MESSAGE(STATUS "ZORBA_NO_UNICODE:                 " ${ZORBA_NO_UNICODE})
 
 SET(ZORBA_NO_XMLSCHEMA OFF CACHE BOOL "disable XMLSchema")
 MESSAGE(STATUS "ZORBA_NO_XMLSCHEMA:               " ${ZORBA_NO_XMLSCHEMA})
-
-#SET(ZORBA_MINIMAL_STORE OFF CACHE BOOL "activate the minimal store instead of naive store")
-#MESSAGE(STATUS "ZORBA_MINIMAL_STORE:               " ${ZORBA_MINIMAL_STORE})
 
 SET(ZORBA_NO_BIGNUMBERS OFF CACHE BOOL "disable MAPM")
 MESSAGE(STATUS "ZORBA_NO_BIGNUMBERS:               " ${ZORBA_NO_BIGNUMBERS})

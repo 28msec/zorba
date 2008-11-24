@@ -33,7 +33,7 @@ namespace zorba {
 
 #ifdef ZORBA_HAVE_PTHREAD_H
 
-class ZORBAUTILS_EXTERNAL_DECL Condition
+class  Condition
 {
  protected:
   pthread_cond_t   theCondition;
@@ -52,7 +52,7 @@ class ZORBAUTILS_EXTERNAL_DECL Condition
 
 #elif WIN32 
 
-class ZORBAUTILS_EXTERNAL_DECL Condition
+class  Condition
 {
 protected:
   HANDLE           cond_event[2];
@@ -73,7 +73,7 @@ public:
 
 #else
 
-class ZORBAUTILS_EXTERNAL_DECL Condition
+class  Condition
 {
  protected:
   Mutex          & theMutex;

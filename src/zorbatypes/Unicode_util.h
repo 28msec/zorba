@@ -22,23 +22,23 @@
 namespace zorba {
 
 #define TABLE_SIZE(arr)   (sizeof (arr) / sizeof ((arr)[0]))
-ZORBATYPES_EXTERNAL_DECL bool isUpper(uint32_t c);
+ ZORBA_DLL_PUBLIC bool isUpper(uint32_t c);
 
-ZORBATYPES_EXTERNAL_DECL bool isLower(uint32_t c);
-
-/*
-This is a simple case folding(where string lengths don't change) so only the mappings
-with status C and S from the ftp://ftp.unicode.org/Public/5.1.0/ucd/CaseFolding-5.1.0d10.txt
-are taken into account. The mappings with status T are ignored.
-*/
-ZORBATYPES_EXTERNAL_DECL uint32_t toUpper(uint32_t c);
+ ZORBA_DLL_PUBLIC bool isLower(uint32_t c);
 
 /*
 This is a simple case folding(where string lengths don't change) so only the mappings
 with status C and S from the ftp://ftp.unicode.org/Public/5.1.0/ucd/CaseFolding-5.1.0d10.txt
 are taken into account. The mappings with status T are ignored.
 */
-ZORBATYPES_EXTERNAL_DECL uint32_t toLower(uint32_t c);
+ ZORBA_DLL_PUBLIC uint32_t toUpper(uint32_t c);
+
+/*
+This is a simple case folding(where string lengths don't change) so only the mappings
+with status C and S from the ftp://ftp.unicode.org/Public/5.1.0/ucd/CaseFolding-5.1.0d10.txt
+are taken into account. The mappings with status T are ignored.
+*/
+ ZORBA_DLL_PUBLIC uint32_t toLower(uint32_t c);
 
 }/* namespace zorba */
 #endif /* UNICODE_UTIL_H */

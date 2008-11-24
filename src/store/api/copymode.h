@@ -16,8 +16,8 @@
 #ifndef ZORBA_STORE_API_COPYMODE
 #define ZORBA_STORE_API_COPYMODE
 
-#include <string>
 #include <zorba/config.h>
+#include <string>
 
 namespace zorba { namespace store {
 
@@ -27,7 +27,7 @@ namespace zorba { namespace store {
  * context to the Item::copy() method.
  *
  */
-class STORE_EXTERN_DECL CopyMode
+class CopyMode
 {
 public:
   bool  theDoCopy;

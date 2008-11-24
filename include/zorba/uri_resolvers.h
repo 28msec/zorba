@@ -27,7 +27,7 @@
 
 namespace zorba {
 
-  class ZORBA_EXTERN_DECL URIResolverResult
+  class ZORBA_DLL_PUBLIC URIResolverResult
   {
     public:
       enum ErrorCode
@@ -65,7 +65,7 @@ namespace zorba {
       String    theDescription;
   };
 
-  class ZORBA_EXTERN_DECL DocumentURIResolverResult : public URIResolverResult
+  class ZORBA_DLL_PUBLIC DocumentURIResolverResult : public URIResolverResult
   {
     public:
       virtual ~DocumentURIResolverResult() {}
@@ -75,7 +75,7 @@ namespace zorba {
       getDocument() const = 0;
   };
 
-  class ZORBA_EXTERN_DECL DocumentURIResolver 
+  class ZORBA_DLL_PUBLIC DocumentURIResolver 
   {
     public:
       virtual ~DocumentURIResolver() {}
@@ -88,7 +88,7 @@ namespace zorba {
               bool tidying = false) = 0;
   };
 
-  class ZORBA_EXTERN_DECL CollectionURIResolverResult : public URIResolverResult
+  class ZORBA_DLL_PUBLIC CollectionURIResolverResult : public URIResolverResult
   {
     public:
       virtual ~CollectionURIResolverResult() {}
@@ -97,7 +97,7 @@ namespace zorba {
       getCollection() const = 0;
   };
 
-  class ZORBA_EXTERN_DECL CollectionURIResolver
+  class ZORBA_DLL_PUBLIC CollectionURIResolver
   {
     public:
       virtual ~CollectionURIResolver() {}
@@ -108,7 +108,7 @@ namespace zorba {
               XmlDataManager* aXmlDataManager) = 0;
   };
 
-  class ZORBA_EXTERN_DECL SchemaURIResolverResult : public URIResolverResult 
+  class ZORBA_DLL_PUBLIC SchemaURIResolverResult : public URIResolverResult 
   {
     public:
       virtual ~SchemaURIResolverResult() {}
@@ -117,7 +117,7 @@ namespace zorba {
       getSchema() const = 0;
   };
 
-  class ZORBA_EXTERN_DECL SchemaURIResolver
+  class ZORBA_DLL_PUBLIC SchemaURIResolver
   {
     public:
       virtual ~SchemaURIResolver() {}
@@ -128,7 +128,7 @@ namespace zorba {
               StaticContext* aStaticContext) = 0;
   };
 
-  class ZORBA_EXTERN_DECL ModuleURIResolverResult : public URIResolverResult
+  class ZORBA_DLL_PUBLIC ModuleURIResolverResult : public URIResolverResult
   {
     public:
       virtual ~ModuleURIResolverResult() {}
@@ -137,7 +137,7 @@ namespace zorba {
       getModule() const = 0;
   };
 
-  class ZORBA_EXTERN_DECL ModuleURIResolver
+  class ZORBA_DLL_PUBLIC ModuleURIResolver
   {
     public:
       virtual ~ModuleURIResolver() {}

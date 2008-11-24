@@ -60,7 +60,8 @@ SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 #                                                                               #
 #################################################################################
 
-SET(commonlibs)
+SET(requiredlibs)
+SET(requiredlibs-store)
 
 #
 # TcMalloc support
@@ -70,7 +71,7 @@ IF (ZORBA_USE_TCMALLOC)
 
     FIND_PACKAGE(TcMalloc)
     IF (Tcmalloc_FOUND)
-        SET(commonlibs ${commonlibs} ${Tcmalloc_LIBRARIES})
+        SET(requiredlibs ${requiredlibs} ${Tcmalloc_LIBRARIES})
     ELSE (Tcmalloc_FOUND)
         MESSAGE (FATAL_ERROR "TcMalloc not found")
     ENDIF (Tcmalloc_FOUND)
@@ -85,23 +86,12 @@ IF (ZORBA_WITH_CPU_PROFILE)
 
     FIND_PACKAGE(GooglePerfTools)
     IF (GooglePerfTools_FOUND)
-        SET(commonlibs ${commonlibs} ${GooglePerfTools_LIBRARIES})
+        SET(requiredlibs ${requiredlibs} ${GooglePerfTools_LIBRARIES})
     ELSE (GooglePerfTools_FOUND)
         MESSAGE(FATAL_ERROR "GooglePerfTools not found. Cannot build with CPU
         profiling")
     ENDIF (GooglePerfTools_FOUND)
 ENDIF (ZORBA_WITH_CPU_PROFILE)
-
-SET(requiredlibs-zorbautils ${commonlibs})
-SET(requiredlibs-zorbatypes ${commonlibs})
-SET(requiredlibs-zorbaerrors ${commonlibs})
-SET(requiredlibs-simplestore ${commonlibs})
-SET(requiredlibs-zorba ${commonlibs})
-SET(requiredlibs-apitest ${commonlibs})
-SET(requiredlibs-teststore ${commonlibs})
-SET(requiredlibs-testordpath ${commonlibs})
-SET(requiredlibs-testdriver ${commonlibs})
-SET(requiredlibs-zorbacmd ${commonlibs})
 
 
 #
@@ -113,7 +103,7 @@ IF(LIBXML2_FOUND)
     MESSAGE(STATUS "Found  LIBXML2 library -- " ${LIBXML2_LIBRARIES})
     INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
 
-    SET(requiredlibs-simplestore ${requiredlibs-simplestore} ${LIBXML2_LIBRARIES})
+    SET(requiredlibs-store ${requiredlibs-store} ${LIBXML2_LIBRARIES})
     SET(CXXFLAGS ${CXXFLAGS} ${LIBXML2_DEFINITONS})
 
 ELSE(LIBXML2_FOUND)
@@ -125,7 +115,7 @@ ENDIF(LIBXML2_FOUND)
 # Pthreads
 #
 IF (ZORBA_HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
-  SET(requiredlibs-zorbautils ${requiredlibs-zorbautils} pthread)
+  SET(requiredlibs ${requiredlibs} pthread)
 ENDIF (ZORBA_HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
 
 #
@@ -138,7 +128,7 @@ IF(CURL_FOUND)
   
   SET(CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES} ${CURL_INCLUDE_DIR})
 
-  SET(requiredlibs-zorba ${requiredlibs-zorba} ${CURL_LIBRARIES})
+  SET(requiredlibs ${requiredlibs} ${CURL_LIBRARIES})
   SET(ZORBA_WITH_REST ON)
   
 ELSE(CURL_FOUND)
@@ -155,7 +145,7 @@ IF(LIBTIDY_FOUND)
   MESSAGE(STATUS "Found LibTidy library -- " ${LIBTIDY_LIBRARIES})
   INCLUDE_DIRECTORIES(${LIBTIDY_INCLUDE_DIR})
 
-  SET(requiredlibs-zorba ${requiredlibs-zorba} ${LIBTIDY_LIBRARIES})
+  SET(requiredlibs ${requiredlibs} ${LIBTIDY_LIBRARIES})
 
 ELSE(LIBTIDY_FOUND)
   MESSAGE(STATUS "The LibTidy library was not found.")
@@ -173,7 +163,7 @@ IF (WIN32)
       MESSAGE(STATUS "Found Iconv library -- " ${ICONV_LIBRARY})
       INCLUDE_DIRECTORIES(${ICONV_INCLUDE_DIR})
 
-      SET(requiredlibs-zorba ${requiredlibs-zorba} ${ICONV_LIBRARY})
+      SET(requiredlibs ${requiredlibs} ${ICONV_LIBRARY})
 
     ELSE(Iconv_FOUND)
       MESSAGE(STATUS "The Iconv library was not found.")
@@ -189,7 +179,7 @@ IF (ICU_FOUND AND ICU_I18N_FOUND AND ICU_DATA_FOUND)
 
   INCLUDE_DIRECTORIES(${ICU_INCLUDE_DIRS})
 
-  SET(requiredlibs-zorbatypes ${requiredlibs-zorbatypes} ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES} ${ICU_DATA_LIBRARIES}) 
+  SET(requiredlibs ${requiredlibs} ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES} ${ICU_DATA_LIBRARIES}) 
 
 ELSE (ICU_FOUND AND ICU_I18N_FOUND AND ICU_DATA_FOUND)
   MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")
@@ -204,11 +194,12 @@ IF (NOT ZORBA_NO_XMLSCHEMA)
     
     INCLUDE_DIRECTORIES(${XERCESC_INCLUDE})
     
-    SET(requiredlibs-zorbatypes ${requiredlibs-zorbatypes} ${XERCESC_LIBRARY})
-    SET(requiredlibs-zorba ${requiredlibs-zorba} ${XERCESC_LIBRARY})
+    SET(requiredlibs ${requiredlibs} ${XERCESC_LIBRARY})
     
   ENDIF (XERCESC_FOUND)
 ENDIF (NOT ZORBA_NO_XMLSCHEMA)
+
+LIST(APPEND requiredlibs ${requiredlibs-store})
 
 ################################################################################
 # Setup Compiler Options
@@ -223,9 +214,9 @@ INCLUDE(CMakeCompiler.txt)
 # Debugger
 #
 IF (ZORBA_DEBUGGER)
-  SET(requiredlibs-zorba ${requiredlibs-zorba} json)
+  SET(requiredlibs ${requiredlibs} json)
   IF(WIN32)
-    SET(requiredlibs-zorba ${requiredlibs-zorba} wsock32) 
+    SET(requiredlibs ${requiredlibs} wsock32) 
   ENDIF(WIN32)
 ENDIF (ZORBA_DEBUGGER)
 
@@ -297,18 +288,35 @@ ENDIF (APPLE )
 #                                                                              #
 ################################################################################
 
+# we can only build the command line client, apitests, and other if we build the simplestore
+SET (BUILDING_SIMPLESTORE)
+IF (ZORBA_STORE_DIRS MATCHES "src/store/naive")
+  SET(BUILDING_SIMPLESTORE "ON")
+ELSE (ZORBA_STORE_DIRS MATCHES "src/store/naive")
+  SET(BUILDING_SIMPLESTORE "OFF")
+ENDIF (ZORBA_STORE_DIRS MATCHES "src/store/naive")
+
 IF(ZORBA_DEBUGGER)
   INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/external)
   ADD_SUBDIRECTORY(external)
 ENDIF(ZORBA_DEBUGGER)
 
 ADD_SUBDIRECTORY(include)
+
+ADD_DEFINITIONS(-Dzorba_EXPORTS)
 ADD_SUBDIRECTORY(src)
-IF(ZORBA_USE_SWIG)
+REMOVE_DEFINITIONS(-Dzorba_EXPORTS)
+
+IF(ZORBA_USE_SWIG AND BUILDING_SIMPLESTORE)
   ADD_SUBDIRECTORY(swig)
-ENDIF(ZORBA_USE_SWIG)
+ENDIF(ZORBA_USE_SWIG AND BUILDING_SIMPLESTORE)
+
 ADD_SUBDIRECTORY(test)
-ADD_SUBDIRECTORY(bin)
+
+IF (BUILDING_SIMPLESTORE)
+  ADD_SUBDIRECTORY(bin)
+ENDIF (BUILDING_SIMPLESTORE)
+
 ADD_SUBDIRECTORY(doc)
 ADD_SUBDIRECTORY(scripts)
 
@@ -323,8 +331,6 @@ ADD_CUSTOM_TARGET(uninstall
 INCLUDE(InstallRequiredSystemLibraries)
 
 INCLUDE(CMakeCPack.cmake)
-#CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/CPackSourceConfig.cmake.in 
-#               ${CMAKE_BINARY_DIR}/CPackSourceConfig.cmake)
 
 IF( APPLE AND UNIVERSAL )
   SET ( CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "archs" FORCE)
@@ -334,9 +340,6 @@ IF( APPLE AND UNIVERSAL )
   SET ( CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -v")
   MESSAGE( "Building Apple universal binaries" )
 ENDIF( APPLE AND UNIVERSAL )
-
-
-SET ( CMAKE_VERBOSE_MAKEFILE OFF )
 
 # Create config (build settings, library dependencies, etc.) files that are needed by 
 # cmake projects which extend the zorba project

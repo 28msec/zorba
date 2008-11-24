@@ -35,7 +35,7 @@ typedef DWORD ThreadId;
 #endif
 
 
-class ZORBAUTILS_EXTERNAL_DECL Thread
+class  Thread
 {
  private:
 #ifdef ZORBA_HAVE_PTHREAD_H

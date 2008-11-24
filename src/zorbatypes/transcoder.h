@@ -33,7 +33,7 @@ namespace zorba
 //                                                       //
 ///////////////////////////////////////////////////////////
 
-class ZORBATYPES_EXTERNAL_DECL transcoder : public SimpleRCObject
+class ZORBA_DLL_PUBLIC transcoder : public SimpleRCObject
 {
 public:
   transcoder(std::ostream& output_stream);
@@ -65,7 +65,7 @@ protected:
 };
 
 #ifndef ZORBA_NO_UNICODE
-class ZORBATYPES_EXTERNAL_DECL utf8_to_utf16_transcoder : public transcoder
+class ZORBA_DLL_PUBLIC utf8_to_utf16_transcoder : public transcoder
 {
 public:
   utf8_to_utf16_transcoder(std::ostream& output_stream);

@@ -20,7 +20,7 @@
 
 namespace zorba{
 
-  class ZORBA_EXTERN_DECL DefaultDebuggerEventHandler: public DebuggerEventHandler
+  class ZORBA_DLL_PUBLIC DefaultDebuggerEventHandler: public DebuggerEventHandler
   {
 
     public:

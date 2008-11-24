@@ -33,7 +33,8 @@ namespace zorba {
 typedef double    MAPM;
 #endif
 
-class ZORBATYPES_EXTERNAL_DECL Decimal {
+// exported for testing only
+class ZORBA_DLL_PUBLIC  Decimal {
   friend class Integer;
   template <typename Type>
     friend class FloatImpl;
@@ -142,8 +143,8 @@ public:
   uint32_t hash() const;
 }; // class Decimal
 
-
-ZORBATYPES_EXTERNAL_DECL std::ostream& operator<<(std::ostream& os, const Decimal&);
+  
+ std::ostream& operator<<(std::ostream& os, const Decimal&);
 
 } // namespace zorba
 

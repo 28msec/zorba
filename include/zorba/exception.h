@@ -24,7 +24,7 @@ namespace zorba {
 
 /** \brief Base class of all exceptions thrown by %Zorba.
  */
-class ZORBA_EXTERN_DECL ZorbaException
+class ZORBA_DLL_PUBLIC ZorbaException
 {
  public:
   /** \brief Destructor
@@ -88,7 +88,7 @@ protected:
  *         and have a direct connection to the query, i.e. information about the location
  *         where the error occured in the query is available.
  */
-class ZORBA_EXTERN_DECL QueryException : public ZorbaException 
+class ZORBA_DLL_PUBLIC QueryException : public ZorbaException 
 {
  public:
   /** \brief Destructor
@@ -117,7 +117,7 @@ class ZORBA_EXTERN_DECL QueryException : public ZorbaException
   getQueryURI() const;
 
 protected:
-  friend ZORBA_EXTERN_DECL std::ostream& operator<<(std::ostream&, const QueryException&);
+  friend ZORBA_DLL_PUBLIC std::ostream& operator<<(std::ostream&, const QueryException&);
   friend class ZorbaImpl;
 
   /** \brief Proctected constructor - only the %Zorba engine can construct and throw
@@ -142,9 +142,9 @@ protected:
 /** \brief DynamicException represents a dynamic error as defined in the %XQuery 1.0
  *         Specification (see http://www.w3.org/TR/xquery/#id-kinds-of-errors).
  */
-class ZORBA_EXTERN_DECL DynamicException : public QueryException
+class ZORBA_DLL_PUBLIC DynamicException : public QueryException
 {
-  friend ZORBA_EXTERN_DECL std::ostream& operator<<(std::ostream&, const DynamicException&);
+  friend ZORBA_DLL_PUBLIC std::ostream& operator<<(std::ostream&, const DynamicException&);
   friend class ZorbaImpl;
 
 public:
@@ -170,9 +170,9 @@ protected:
 /** \brief StaticException represents a static error as defined in the %XQuery 1.0
  *         Specification (see http://www.w3.org/TR/xquery/#id-kinds-of-errors).
  */
-class ZORBA_EXTERN_DECL StaticException : public QueryException
+class ZORBA_DLL_PUBLIC StaticException : public QueryException
 {
-  friend ZORBA_EXTERN_DECL std::ostream& operator<<(std::ostream&, const StaticException&);
+  friend ZORBA_DLL_PUBLIC std::ostream& operator<<(std::ostream&, const StaticException&);
   friend class ZorbaImpl;
 
 
@@ -199,9 +199,9 @@ protected:
 /** \brief TypeException represents a type error as defined in the %XQuery 1.0
  *         Specification (see http://www.w3.org/TR/xquery/#id-kinds-of-errors).
  */
-class ZORBA_EXTERN_DECL TypeException : public QueryException
+class ZORBA_DLL_PUBLIC TypeException : public QueryException
 {
-  friend ZORBA_EXTERN_DECL std::ostream& operator<<(std::ostream&, const TypeException&);
+  friend ZORBA_DLL_PUBLIC std::ostream& operator<<(std::ostream&, const TypeException&);
   friend class ZorbaImpl;
 
 
@@ -230,9 +230,9 @@ protected:
  *         XSLT 2.0 and XQuery 1.0 Serialization Specification 
  *         (see http://www.w3.org/TR/2005/CR-xslt-xquery-serialization-20051103/)
  */
-class ZORBA_EXTERN_DECL SerializationException : public QueryException
+class ZORBA_DLL_PUBLIC SerializationException : public QueryException
 {
-  friend ZORBA_EXTERN_DECL std::ostream& operator<<(std::ostream&, const SerializationException&);
+  friend ZORBA_DLL_PUBLIC std::ostream& operator<<(std::ostream&, const SerializationException&);
   friend class ZorbaImpl;
 
 public:
@@ -258,9 +258,9 @@ protected:
 
 /** \brief SystemException represents an error that occurs in the %Zorba system.
  */
-class ZORBA_EXTERN_DECL SystemException : public ZorbaException
+class ZORBA_DLL_PUBLIC SystemException : public ZorbaException
 {
-  friend ZORBA_EXTERN_DECL std::ostream& operator<<(std::ostream&, const ZorbaException&);
+  friend ZORBA_DLL_PUBLIC std::ostream& operator<<(std::ostream&, const ZorbaException&);
   friend class ZorbaImpl;
   friend class Item;
 
@@ -280,25 +280,25 @@ protected:
 
 
 /** \brief Print information about the exception to the given output stream */
-ZORBA_EXTERN_DECL
+ZORBA_DLL_PUBLIC
 std::ostream& operator<< (std::ostream& os, const ZorbaException& aException);
 /** \brief Print information about the exception to the given output stream */
-ZORBA_EXTERN_DECL
+ZORBA_DLL_PUBLIC
 std::ostream& operator<< (std::ostream& os, const QueryException& aException);
 /** \brief Print information about the exception to the given output stream */
-ZORBA_EXTERN_DECL
+ZORBA_DLL_PUBLIC
 std::ostream& operator<< (std::ostream& os, const StaticException& aException);
 /** \brief Print information about the exception to the given output stream */
-ZORBA_EXTERN_DECL
+ZORBA_DLL_PUBLIC
 std::ostream& operator<< (std::ostream& os, const DynamicException& aException);
 /** \brief Print information about the exception to the given output stream */
-ZORBA_EXTERN_DECL
+ZORBA_DLL_PUBLIC
 std::ostream& operator<< (std::ostream& os, const TypeException& aException);
 /** \brief Print information about the exception to the given output stream */
-ZORBA_EXTERN_DECL
+ZORBA_DLL_PUBLIC
 std::ostream& operator<< (std::ostream& os, const SerializationException& aException);
 /** \brief Print information about the exception to the given output stream */
-ZORBA_EXTERN_DECL
+ZORBA_DLL_PUBLIC
 std::ostream& operator<< (std::ostream& os, const SystemException& aException);
 
 } /* namespace zorba */

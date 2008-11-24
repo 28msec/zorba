@@ -99,48 +99,34 @@
 /* Windows MSVC DLL */
 #cmakedefine ZORBA_WIN_DLL
 
-#define    ZORBA_EXTERN_DECL
-#define    STORE_EXTERN_DECL
-#define    ZORBAUTILS_EXTERNAL_DECL
-#define    ZORBATYPES_EXTERNAL_DECL
-#define    ZORBAERRORS_EXTERN_DECL
-
-#ifdef ZORBA_WIN_DLL
-  #undef    ZORBA_EXTERN_DECL
-  #undef    STORE_EXTERN_DECL
-//  #undef    ZORBAUTILS_EXTERNAL_DECL
-  #undef    ZORBATYPES_EXTERNAL_DECL
-//  #undef    ZORBAERRORS_EXTERN_DECL
-#ifdef ZORBA_INTERNAL
-  #define   ZORBA_EXTERN_DECL    __declspec(dllexport) 
+#if defined WIN32 || defined CYGWIN
+  #if defined (zorba_EXPORTS) && ! defined (BUILDING_ZORBA_STATIC)
+    #ifdef __GNUC__
+      #define ZORBA_DLL_PUBLIC __attribute__((dllexport))
+    #else
+      #define ZORBA_DLL_PUBLIC __declspec(dllexport)
+    #endif
+  #else
+    #ifdef __GNUC__
+      #define ZORBA_DLL_PUBLIC __attribute__((dllimport))
+    #else
+      #define ZORBA_DLL_PUBLIC __declspec(dllimport)
+    #endif
+  #endif
+  #define ZORBA_DLL_LOCAL
 #else
-  #define   ZORBA_EXTERN_DECL    __declspec(dllimport)
+  #if __GNUC__ >= 4
+    #define ZORBA_DLL_PUBLIC __attribute__ ((visibility("default")))
+    #define ZORBA_DLL_LOCAL  __attribute__ ((visibility("hidden")))
+  #else
+    #define ZORBA_DLL_PUBLIC
+    #define ZORBA_DLL_LOCAL
+  #endif
 #endif
 
-#ifdef STORE_INTERNAL
-  #define   STORE_EXTERN_DECL    __declspec(dllexport) 
-#else
-  #define   STORE_EXTERN_DECL    __declspec(dllimport)
-#endif
-
-//#ifdef ZORBAUTILS_INTERNAL
-//  #define   ZORBAUTILS_EXTERNAL_DECL    __declspec(dllexport) 
-//#else
-//  #define   ZORBAUTILS_EXTERNAL_DECL    __declspec(dllimport)
-//#endif
-
-#ifdef ZORBATYPES_INTERNAL
-  #define   ZORBATYPES_EXTERNAL_DECL    __declspec(dllexport) 
-#else
-  #define   ZORBATYPES_EXTERNAL_DECL    __declspec(dllimport)
-#endif
-
-//#ifdef ZORBAERRORS_INTERNAL
-//  #define   ZORBAERRORS_EXTERN_DECL    __declspec(dllexport) 
-//#else
-//  #define   ZORBAERRORS_EXTERN_DECL    __declspec(dllimport)
-//#endif
-
+#if defined WIN32
+#  pragma warning( disable: 4251 )
 #endif
 
 #endif
+

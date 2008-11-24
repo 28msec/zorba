@@ -35,7 +35,7 @@ class DummyHashValue
 /*******************************************************************************
 
 ********************************************************************************/
-template <class T, class E, class C = DummyCompareParam> ZORBAUTILS_EXTERNAL_DECL 
+template <class T, class E, class C = DummyCompareParam>  
 class HashSet : public HashMap<T, DummyHashValue, E, C>
 {
 public:

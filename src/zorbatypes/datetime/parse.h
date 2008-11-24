@@ -23,7 +23,7 @@
 namespace zorba
 {
 
-ZORBATYPES_EXTERNAL_DECL void skip_whitespace(std::string& s, unsigned int& position);
+ZORBA_DLL_PUBLIC void skip_whitespace(std::string& s, unsigned int& position);
 
 
 /**
@@ -88,7 +88,7 @@ int parse_int_const_position(
  * @param result 
  * @return 
  */
-ZORBATYPES_EXTERNAL_DECL inline double parse_frac(std::string& s, unsigned int& position, double& result)
+ZORBA_DLL_PUBLIC inline double parse_frac(std::string& s, unsigned int& position, double& result)
 {
   if (s[position] < '0' || s[position] > '9')
     return 1;
@@ -106,7 +106,7 @@ ZORBATYPES_EXTERNAL_DECL inline double parse_frac(std::string& s, unsigned int& 
 }
 
 
-ZORBATYPES_EXTERNAL_DECL inline std::string to_string(int value, int min_digits = 0)
+ZORBA_DLL_PUBLIC inline std::string to_string(int value, int min_digits = 0)
 {
   std::string zeros = "";
   std::string temp = NumConversions::longToStr(value);
@@ -122,7 +122,7 @@ ZORBATYPES_EXTERNAL_DECL inline std::string to_string(int value, int min_digits 
  * @param year 
  * @return 
  */
-ZORBATYPES_EXTERNAL_DECL int leap_years_count(int year);
+ZORBA_DLL_PUBLIC int leap_years_count(int year);
 
 /**
  * Returns the number of days passed from the start of the year. 1st of January will return 0. 
@@ -130,7 +130,7 @@ ZORBATYPES_EXTERNAL_DECL int leap_years_count(int year);
  * @param day 
  * @return 
  */
-ZORBATYPES_EXTERNAL_DECL int days_since_year_start(int year, int month, int day);
+ZORBA_DLL_PUBLIC int days_since_year_start(int year, int month, int day);
   
 template <typename T> 
 T quotient(T a, T b)
@@ -174,7 +174,7 @@ T abs(T value)
 /**
  * Rounds to the nearest integer
  */
-ZORBATYPES_EXTERNAL_DECL inline int round(double value)
+ZORBA_DLL_PUBLIC inline int round(double value)
 {
   if (value >= 0)
     return int(value+0.5);
@@ -182,18 +182,18 @@ ZORBATYPES_EXTERNAL_DECL inline int round(double value)
     return int(value-0.5);
 }
 
-ZORBATYPES_EXTERNAL_DECL inline double frac(double value)
+ZORBA_DLL_PUBLIC inline double frac(double value)
 {
   return value - floor<double>(value);
 }
 
-ZORBATYPES_EXTERNAL_DECL bool is_digit(char ch);
+ZORBA_DLL_PUBLIC bool is_digit(char ch);
 
-ZORBATYPES_EXTERNAL_DECL bool are_digits(std::string& s, unsigned int& position, int count);
+ZORBA_DLL_PUBLIC bool are_digits(std::string& s, unsigned int& position, int count);
     
 // Returns the last day of the given year and month. E.g. for 1980 and 2 it
 // will return 29. Returns 0 on an error
-ZORBATYPES_EXTERNAL_DECL int get_last_day(int year, int month);
+ZORBA_DLL_PUBLIC int get_last_day(int year, int month);
 
 } // namespace zorba
 

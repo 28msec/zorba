@@ -44,12 +44,12 @@ SimpleTempSeq::SimpleTempSeq(store::Iterator_t iter, bool copy)
 ********************************************************************************/
 SimpleTempSeq::~SimpleTempSeq()
 {
-  ulong numItems = theItems.size();
-  for (ulong i = 0; i < numItems; i++)
-  {
-    store::Item* n = theItems[i];
-    //n->removeReference(n->getSharedRefCounter() SYNC_PARAM2(n->getRCLock()));
-  }
+//ulong numItems = theItems.size();
+//for (ulong i = 0; i < numItems; i++)
+//{
+//  store::Item* n = theItems[i];
+//  //n->removeReference(n->getSharedRefCounter() SYNC_PARAM2(n->getRCLock()));
+//}
 }
 
 

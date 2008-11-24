@@ -28,7 +28,7 @@ namespace zorba{
    * See SAX2_ContentHandler for a documentation.
    */
 
-  class ZORBA_EXTERN_DECL DefaultContentHandler: public SAX2_ContentHandler,
+  class ZORBA_DLL_PUBLIC DefaultContentHandler: public SAX2_ContentHandler,
                                public SAX2_LexicalHandler
   {
     public:

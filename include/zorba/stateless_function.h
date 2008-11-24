@@ -24,7 +24,7 @@
 
 namespace zorba {
 
-  class ZORBA_EXTERN_DECL StatelessExternalFunction : public ExternalFunctionData 
+  class ZORBA_DLL_PUBLIC StatelessExternalFunction : public ExternalFunctionData 
   {
     public:
       typedef std::vector<ItemSequence*> Arguments_t;

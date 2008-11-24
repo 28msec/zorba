@@ -18,7 +18,9 @@
 
 #include <vector>
 
+#include <zorba/config.h>
 #include "common/shared_types.h"
+#include "context/static_context.h"
 
 namespace zorba {
 
@@ -28,7 +30,8 @@ class ZorbaDebugger;
 class static_context;
 
 
-class CompilerCB 
+// exported for unit testing only
+class ZORBA_DLL_PUBLIC CompilerCB 
 {
  public:
   typedef struct config 

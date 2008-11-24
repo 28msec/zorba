@@ -45,7 +45,7 @@ namespace zorba {
    * It can be used to (1) create and compile queries, (2) create static contexts, 
    * (3) provides access to the XmlDataManager, and (4) provides access to the ItemFactory.
    */
-  class ZORBA_EXTERN_DECL Zorba 
+  class ZORBA_DLL_PUBLIC Zorba 
   {
     public:
 

@@ -31,7 +31,7 @@ namespace zorba{
    * This location goes from the starting line and column
    * to the ending line and column.
    */
-  class ZORBA_EXTERN_DECL QueryLocation: public SmartObject
+  class ZORBA_DLL_PUBLIC QueryLocation: public SmartObject
   {
     public:
 
@@ -60,7 +60,7 @@ namespace zorba{
   /**
    * Representation of the runtime frame.
    */
-  class ZORBA_EXTERN_DECL Frame
+  class ZORBA_DLL_PUBLIC Frame
   {
     public:
       virtual
@@ -76,7 +76,7 @@ namespace zorba{
   /**
    * Representation of the runtime stack frame.
    */
-  class ZORBA_EXTERN_DECL StackFrame: public SmartObject
+  class ZORBA_DLL_PUBLIC StackFrame: public SmartObject
   {
     public:
       virtual
@@ -96,16 +96,16 @@ namespace zorba{
   };
  
   //string serialization of the query 
-  ZORBA_EXTERN_DECL
+  ZORBA_DLL_PUBLIC
   std::ostream& operator<< (std::ostream& os, const QueryLocation& aQuery); 
-  ZORBA_EXTERN_DECL
+  ZORBA_DLL_PUBLIC
   std::ostream& operator<< (std::ostream& os, const QueryLocation* aQuery); 
 
   /**
    * zorba::Variable is the debugger representation of a variable on 
    * from the remote server to the client.
    */
-  class ZORBA_EXTERN_DECL Variable
+  class ZORBA_DLL_PUBLIC Variable
   {
     private:
       String theName;
@@ -125,7 +125,7 @@ namespace zorba{
    * ZorbaDebuggerClient API provides to send commands to a
    * remote debugger and to handle events from it.
    */
-  class ZORBA_EXTERN_DECL ZorbaDebuggerClient
+  class ZORBA_DLL_PUBLIC ZorbaDebuggerClient
   {
 
     public:

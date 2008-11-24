@@ -53,7 +53,7 @@ namespace zorba {
    * it is the responibility of the client code to synchronize assignments to the
    * SmartPtr holding this object.
    */
-  class ZORBA_EXTERN_DECL XQuery : public SmartObject
+  class ZORBA_DLL_PUBLIC XQuery : public SmartObject
   {
     public:
       /** \brief Destructor that destroys this XQuery object. 
@@ -346,9 +346,9 @@ namespace zorba {
   };
 
   // xml serialization of the query (equiv to calling serialize(os) 
-  ZORBA_EXTERN_DECL
+  ZORBA_DLL_PUBLIC
   std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery); 
-  ZORBA_EXTERN_DECL
+  ZORBA_DLL_PUBLIC
   std::ostream& operator<< (std::ostream& os, XQuery* aQuery); 
 
 

@@ -25,7 +25,7 @@
 namespace zorba { 
 
 template <class T>
-class ZORBAUTILS_EXTERNAL_DECL Stack
+class  ZORBA_DLL_PUBLIC Stack
 {
 protected:
   ulong          theTop;

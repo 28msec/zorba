@@ -34,7 +34,7 @@ class DummyCompareParam
 /*******************************************************************************
 
 ********************************************************************************/
-template <class T, class E, class C> ZORBAUTILS_EXTERNAL_DECL 
+template <class T, class E, class C> 
 class Externals
 {
 public:
@@ -53,7 +53,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-template <class T, class V> ZORBAUTILS_EXTERNAL_DECL 
+template <class T, class V> 
 class HashEntry
 {
 public:
@@ -114,7 +114,7 @@ public:
                    hash table is doubled in size.
 
 ********************************************************************************/
-template <class T, class V, class E, class C = DummyCompareParam> ZORBAUTILS_EXTERNAL_DECL 
+template <class T, class V, class E, class C = DummyCompareParam> 
 class HashMap
 {
 public:

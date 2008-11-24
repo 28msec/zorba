@@ -35,7 +35,7 @@ class IteratorFactory;
 /**
  * Manages XDM Instances 
  */
-class STORE_EXTERN_DECL Store
+class  Store
 {
 public:
   virtual ~Store() { }

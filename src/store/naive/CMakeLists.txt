@@ -15,12 +15,16 @@
 SET(ZORBA_STORE_MSDOM OFF CACHE BOOL "select the MS DOM store")
 SET(ZORBA_MSDOM_IN_NATIVE_STORE_CACHING ON CACHE BOOL "select if all info in msdom should be cached into native store node items style")
 
+# define an extension to the name of the library that is greated with this store
+SET(ZORBA_STORE_LIB_EXTENSION "simplestore")
+
 #
 # Source Files
 #
-SET(SIMPLE_STORE_SRCS
+SET(ZORBA_STORE_IMPL_SRCS
     simple_store.cpp
     basic_item_factory.cpp
+    item.cpp
     simple_iterator_factory.cpp
     simple_collection.cpp
     simple_temp_seq.cpp
@@ -30,7 +34,6 @@ SET(SIMPLE_STORE_SRCS
     fast_loader.cpp
     qname_pool.cpp
     string_pool.cpp
-    item.cpp
     item_vector.cpp
     item_iterator.cpp
     atomic_items.cpp
@@ -47,59 +50,11 @@ SET(SIMPLE_STORE_SRCS
 )
 
 IF(ZORBA_STORE_MSDOM)
-	LIST(APPEND SIMPLE_STORE_SRCS		msdom_addon/msdom_node_items.cpp)
-	LIST(APPEND SIMPLE_STORE_SRCS		msdom_addon/import_msdom.cpp)
-	LIST(APPEND SIMPLE_STORE_SRCS		msdom_addon/import_impl.cpp)
+	LIST(APPEND ZORBA_STORE_IMPL_SRCS		msdom_addon/msdom_node_items.cpp)
+	LIST(APPEND ZORBA_STORE_IMPL_SRCS		msdom_addon/import_msdom.cpp)
+	LIST(APPEND ZORBA_STORE_IMPL_SRCS		msdom_addon/import_impl.cpp)
 ELSE(ZORBA_STORE_MSDOM)
-	LIST(APPEND SIMPLE_STORE_SRCS		node_items.cpp)
+	LIST(APPEND ZORBA_STORE_IMPL_SRCS		node_items.cpp)
 ENDIF(ZORBA_STORE_MSDOM)
 
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/store_config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/store_config.h)
-
-
-#
-# Internal common libraries
-#
-SET(requiredlibs-simplestore ${requiredlibs-simplestore} zorbautils)
-SET(requiredlibs-simplestore ${requiredlibs-simplestore} zorbatypes)
-SET(requiredlibs-simplestore ${requiredlibs-simplestore} zorbaerrors)
-
-
-SET(SIMPLESTORE_INSTALL_LIST)
-
-IF (ZORBA_BUILD_STATIC_LIBRARY)
-
-  ADD_LIBRARY(simplestore_static ${SIMPLE_STORE_SRCS})
-  TARGET_LINK_LIBRARIES(simplestore_static ${requiredlibs-simplestore})
-
-  SET_TARGET_PROPERTIES(simplestore_static PROPERTIES OUTPUT_NAME "simplestore")  
-  SET_TARGET_PROPERTIES(simplestore_static PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})  
-  SET_TARGET_PROPERTIES(simplestore_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
-
-  SET(SIMPLESTORE_INSTALL_LIST ${SIMPLESTORE_INSTALL_LIST} simplestore_static)
-
-ELSE (ZORBA_BUILD_STATIC_LIBRARY)
-  IF (MSVC)
-    #compile store as DLL
-    REMOVE_DEFINITIONS(-DZORBA_INTERNAL)
-    ADD_DEFINITIONS(-DSTORE_INTERNAL)
-  ENDIF (MSVC)
-ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
-
-ADD_LIBRARY(simplestore SHARED ${SIMPLE_STORE_SRCS})
-
-TARGET_LINK_LIBRARIES(simplestore ${requiredlibs-simplestore})
-
-SET_TARGET_PROPERTIES(simplestore PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
-
-SET_TARGET_PROPERTIES(simplestore PROPERTIES CLEAN_DIRECT_OUTPUT 1)
-
-SET(SIMPLESTORE_INSTALL_LIST ${SIMPLESTORE_INSTALL_LIST} simplestore)
-
-INSTALL(TARGETS ${SIMPLESTORE_INSTALL_LIST}
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-)
-
-SET(STORE_LIB simplestore CACHE INTERNAL "store used" FORCE)
+CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/src/store/naive/store_config.h.cmake ${CMAKE_BINARY_DIR}/src/store/naive/store_config.h)

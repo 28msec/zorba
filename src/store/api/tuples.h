@@ -31,7 +31,7 @@ namespace store {
   Stores a pointer that is a pointer to either a single item or a temp sequence
 
  *******************************************************************************/
-class STORE_EXTERN_DECL TupleField 
+class TupleField 
 {
  public:
   typedef enum 

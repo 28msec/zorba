@@ -22,8 +22,8 @@
 extern "C" {
 #endif
 
-STORE_EXTERN_DECL void* create_simple_store();
-STORE_EXTERN_DECL void shutdown_simple_store(void*);
+ZORBA_DLL_PUBLIC void* create_simple_store();
+ZORBA_DLL_PUBLIC void shutdown_simple_store(void*);
 
 #ifdef __cplusplus
 }

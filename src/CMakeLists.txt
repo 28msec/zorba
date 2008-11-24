@@ -18,55 +18,12 @@ INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_SOURCE_DIR}/external) 
 
-#
-# only platform headers and configuration stuff is in there
-#
-# Commented these as out, as there are no CMakeLists.txt files in those
-# folders and Zorba does not build on Windows because of that.
-#ADD_SUBDIRECTORY(common)
-#ADD_SUBDIRECTORY(zorbamisc)
-
-
-
-################################################################################
-#                                                                              #
-# Build the common libraries, i.e., the ones required by both the query        #
-# processor and the store: zorbatypes, zorbaerrors, and zorbautils.            #
-#                                                                              #
-################################################################################
-
-ADD_SUBDIRECTORY(zorbautils)
-
-ADD_SUBDIRECTORY(zorbatypes)
-
-ADD_SUBDIRECTORY(zorbaerrors)
-
-
-################################################################################
-#                                                                              #
-# Build the store library (or libraries)                                       #
-#                                                                              #
-################################################################################
-
-ADD_SUBDIRECTORY(store)
-
 
 ################################################################################
 #                                                                              #
 # Build the zorba library                                                      #
 #                                                                              #
 ################################################################################
-
-#
-# Get all libraries that libzorba depends on
-#
-SET(requiredlibs-zorba ${requiredlibs-zorba} zorbautils)
-SET(requiredlibs-zorba ${requiredlibs-zorba} zorbatypes)
-SET(requiredlibs-zorba ${requiredlibs-zorba} zorbaerrors)
-
-IF(MSVC AND NOT ZORBA_BUILD_STATIC_LIBRARY)
-  SET(requiredlibs-zorba ${requiredlibs-zorba} ${STORE_LIB})
-ENDIF(MSVC AND NOT ZORBA_BUILD_STATIC_LIBRARY)
 
 #
 # Next, add the files to be compiled into the library
@@ -93,50 +50,71 @@ ADD_SRC_SUBFOLDER(ZORBA_SRCS functions FUNCTIONS_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS runtime RUNTIME_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS types TYPES_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS util UTIL_SRCS)
+ADD_SRC_SUBFOLDER(ZORBA_SRCS zorbatypes ZORBATYPES_SRCS)
+ADD_SRC_SUBFOLDER(ZORBA_SRCS zorbaerrors ZORBAERRORS_SRCS)
+ADD_SRC_SUBFOLDER(ZORBA_SRCS zorbautils ZORBAUTILS_SRCS)
 
 IF (ZORBA_DEBUGGER)
   ADD_SRC_SUBFOLDER(ZORBA_SRCS debugger DEBUGGER_SRCS)
 ENDIF (ZORBA_DEBUGGER)
 
-
 SET(ZORBA_LIBRARY_INSTALL_LIST)
 
-#
-# Build the Zorba SHARED library
-#
-ADD_LIBRARY(zorba SHARED ${ZORBA_SRCS})
+# if you want a cross-platform approach to compile all zorba sources only once 
+# you could extract the locations of previously built object files and insert them directly into
+# the libraries that need them. This is documented in CMake Feature Request #5155:
+# standard way to locate object files
+FOREACH(ZORBA_STORE_DIR ${ZORBA_STORE_DIRS})
+  MESSAGE(STATUS "processing store dir ${ZORBA_STORE_DIR}")
 
-TARGET_LINK_LIBRARIES(zorba ${requiredlibs-zorba})
+  INCLUDE (${ZORBA_STORE_DIR}/CMakeLists.txt) 		# side-effects!
 
-SET_TARGET_PROPERTIES(zorba PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
+  SET(STORE_SRCS)
+  FOREACH (SRCS ${ZORBA_STORE_IMPL_SRCS})
+    LIST(APPEND STORE_SRCS ${ZORBA_STORE_DIR}/${SRCS})
+  ENDFOREACH (SRCS ${ZORBA_STORE_IMPL_SRCS})
 
-SET_TARGET_PROPERTIES(zorba PROPERTIES CLEANN_DIRECT_OUTPUT 0)
 
-SET(ZORBA_LIBRARY_INSTALL_LIST ${ZORBA_LIBRARY_INSTALL_LIST} zorba)
+  #
+  # Build the Zorba SHARED library
+  #
+  ADD_LIBRARY(zorba_${ZORBA_STORE_LIB_EXTENSION} SHARED ${ZORBA_SRCS} ${STORE_SRCS})
+  LIST(APPEND ZORBA_LIBRARY_INSTALL_LIST zorba_${ZORBA_STORE_LIB_EXTENSION})
 
-#
-# Build the Zorba STATIC library
-#
-IF (ZORBA_BUILD_STATIC_LIBRARY)
+  TARGET_LINK_LIBRARIES(zorba_${ZORBA_STORE_LIB_EXTENSION} ${requiredlibs})
 
-  ADD_LIBRARY(zorba_static STATIC ${ZORBA_SRCS})
+  SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_LIB_EXTENSION} PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
 
-  TARGET_LINK_LIBRARIES(zorba_static ${requiredlibs-zorba})
+  SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_LIB_EXTENSION} PROPERTIES CLEANN_DIRECT_OUTPUT 0)
 
-  SET_TARGET_PROPERTIES(zorba_static PROPERTIES OUTPUT_NAME "zorba")  
+  SET(ZORBA_LIBRARY_INSTALL_LIST ${ZORBA_LIBRARY_INSTALL_LIST} zorba_${ZORBA_STORE_LIB_EXTENSION})
 
-  SET_TARGET_PROPERTIES(zorba_static PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})  
+  #
+  # Build the Zorba STATIC library
+  #
+  IF (ZORBA_BUILD_STATIC_LIBRARY)
 
-  SET_TARGET_PROPERTIES(zorba_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)  
+    ADD_LIBRARY(zorba_${ZORBA_STORE_LIB_EXTENSION}_static STATIC ${ZORBA_SRCS} ${STORE_SRCS})
+    LIST(APPEND ZORBA_LIBRARY_INSTALL_LIST zorba_${ZORBA_STORE_LIB_EXTENSION}_static)
+    SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_LIB_EXTENSION}_static PROPERTIES COMPILE_DEFINITIONS "-DBUILDING_ZORBA_STATIC")
 
-  SET(ZORBA_LIBRARY_INSTALL_LIST ${ZORBA_LIBRARY_INSTALL_LIST} zorba_static)
+    TARGET_LINK_LIBRARIES(zorba_${ZORBA_STORE_LIB_EXTENSION}_static ${requiredlibs})
 
-ELSE (ZORBA_BUILD_STATIC_LIBRARY)
-  IF (MSVC)
-    #compile zorba as DLL
-    ADD_DEFINITIONS(-DZORBA_INTERNAL)
-  ENDIF (MSVC)
-ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
+    # on windows, the static lib needs a different name because .lib is already generated when creating the .dll 
+    # on unix, the static library can have the same name because it uses a different file suffix (e.g. .a)
+    IF (WIN32)
+      SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_LIB_EXTENSION}_static PROPERTIES OUTPUT_NAME "zorba_${ZORBA_STORE_LIB_EXTENSION}_static")  
+    ELSE (WIN32)
+      SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_LIB_EXTENSION}_static PROPERTIES OUTPUT_NAME "zorba_${ZORBA_STORE_LIB_EXTENSION}")  
+    ENDIF (WIN32)
+
+    SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_LIB_EXTENSION}_static PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})  
+
+    SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_LIB_EXTENSION}_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)  
+
+  ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
+
+ENDFOREACH(ZORBA_STORE_DIR ${ZORBA_STORE_DIRS})
 
 #
 # Specify where the zorba libs are to be installed
@@ -155,5 +133,3 @@ IF ( APPLE )
     INSTALL(FILES ${LIBNAME} DESTINATION lib)
   ENDFOREACH(LIB)
 ENDIF ( APPLE )
-
-

@@ -1483,8 +1483,8 @@ Double operator%(const Float& aFloat, const Double& aDouble) {
 }
 
 #ifdef ZORBA_WIN_DLL
-template class ZORBATYPES_EXTERNAL_DECL FloatImpl<float>;
-template class ZORBATYPES_EXTERNAL_DECL FloatImpl<double>;
+template class ZORBA_DLL_PUBLIC FloatImpl<float>;
+template class ZORBA_DLL_PUBLIC FloatImpl<double>;
 #endif
 
 }

@@ -18,6 +18,7 @@
 
 #include <ostream>
 #include <string>
+#include <zorba/config.h>
 #include "zorbatypes/xqpstring.h"
 
 #include "compiler/parser/symbol_table.h"
@@ -31,7 +32,8 @@ class location;
 class parsenode;
 class CompilerCB;
 
-class xquery_driver
+// exported for unit testing only
+class ZORBA_DLL_PUBLIC xquery_driver
 {
 private:
   struct extra_scanner_state_t {

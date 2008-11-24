@@ -125,14 +125,16 @@ const unsigned short MESSAGE_COMMAND = 6;
 const unsigned short MESSAGE_DATA = 7;
 
 /* deals with endianness */
-bool is_little_endian();
-uint32_t uint_swap( uint32_t i );
-uint16_t uint_swap( uint16_t i );
+// exported for unit testing only
+ZORBA_DLL_PUBLIC bool is_little_endian();
+ZORBA_DLL_PUBLIC uint32_t uint_swap( uint32_t i );
+ZORBA_DLL_PUBLIC uint16_t uint_swap( uint16_t i );
 
 /**
  *   Signals a problem with the debugging protocol.
  */
-class MessageException : public std::exception
+// all classes are exported for unit testing only
+class ZORBA_DLL_PUBLIC MessageException : public std::exception
 {
   public:
 	  
@@ -153,13 +155,13 @@ class MessageException : public std::exception
     std::string userMessage;  // Exception message
 };
 
-class MessageFormatException: public MessageException
+class ZORBA_DLL_PUBLIC MessageFormatException: public MessageException
 {
   public:
     MessageFormatException( const std::string &aMessage ): MessageException( aMessage ){}
 };
 
-class InvalidCommandException: public MessageException
+class ZORBA_DLL_PUBLIC InvalidCommandException: public MessageException
 {
    public:
      InvalidCommandException( const std::string &aMessage ): MessageException( aMessage ){}
@@ -170,7 +172,7 @@ class InvalidCommandException: public MessageException
  * Abstract representation of a packet
  * in the debugging protocol
  */
-class AbstractMessage
+class ZORBA_DLL_PUBLIC AbstractMessage
 {
   protected:
 
@@ -224,7 +226,7 @@ std::ostream& operator << ( std::ostream &os, const AbstractMessage * message);
 /**
  * Abstract representation of a reply packet
  */
-class ReplyMessage: public AbstractMessage
+class ZORBA_DLL_PUBLIC ReplyMessage: public AbstractMessage
 {
   protected:
 	
@@ -292,7 +294,7 @@ class ReplyMessage: public AbstractMessage
 /**
  * 
  */
-class AbstractCommandMessage: public AbstractMessage
+class ZORBA_DLL_PUBLIC AbstractCommandMessage: public AbstractMessage
 {
   private:
     static unsigned long theLastId;
@@ -365,7 +367,7 @@ class AbstractCommandMessage: public AbstractMessage
 /**
  *
  */
-class RunMessage: public AbstractCommandMessage
+class ZORBA_DLL_PUBLIC RunMessage: public AbstractCommandMessage
 {
   public:
     RunMessage();
@@ -378,7 +380,7 @@ class RunMessage: public AbstractCommandMessage
 /*
  *
  */
-class CatchFnExecMessage: public AbstractCommandMessage
+class ZORBA_DLL_PUBLIC CatchFnExecMessage: public AbstractCommandMessage
 {
   public:
     CatchFnExecMessage();
@@ -391,7 +393,7 @@ class CatchFnExecMessage: public AbstractCommandMessage
 /**
  * 
  */
-class SuspendMessage: public AbstractCommandMessage
+class ZORBA_DLL_PUBLIC SuspendMessage: public AbstractCommandMessage
 {
   public:
     SuspendMessage();
@@ -404,7 +406,7 @@ class SuspendMessage: public AbstractCommandMessage
 /**
  * 
  */
-class TerminateMessage: public AbstractCommandMessage
+class ZORBA_DLL_PUBLIC TerminateMessage: public AbstractCommandMessage
 {
   public:
     TerminateMessage();
@@ -417,7 +419,7 @@ class TerminateMessage: public AbstractCommandMessage
 /**
  * 
  */
-class ResumeMessage: public AbstractCommandMessage
+class ZORBA_DLL_PUBLIC ResumeMessage: public AbstractCommandMessage
 {
   public:
     ResumeMessage();
@@ -430,7 +432,7 @@ class ResumeMessage: public AbstractCommandMessage
 /**
  * 
  */
-class StepMessage: public AbstractCommandMessage
+class ZORBA_DLL_PUBLIC StepMessage: public AbstractCommandMessage
 {
 	protected:
 		StepCommand theKind;
@@ -452,7 +454,7 @@ class StepMessage: public AbstractCommandMessage
 /**
  *
  */
-class SetMessage: public AbstractCommandMessage
+class ZORBA_DLL_PUBLIC SetMessage: public AbstractCommandMessage
 {
   protected:
     std::map<unsigned int, xqpString> theExprs;
@@ -495,7 +497,7 @@ class SetMessage: public AbstractCommandMessage
 /**
  *
  */
-class ClearMessage: public AbstractCommandMessage
+class ZORBA_DLL_PUBLIC ClearMessage: public AbstractCommandMessage
 {
   protected:
     std::vector<unsigned int> theIds;
@@ -525,7 +527,7 @@ class ClearMessage: public AbstractCommandMessage
 /**
  *
  */
-class StartedEvent: public AbstractCommandMessage
+class ZORBA_DLL_PUBLIC StartedEvent: public AbstractCommandMessage
 {
   public:
     StartedEvent();
@@ -538,7 +540,7 @@ class StartedEvent: public AbstractCommandMessage
 /**
  *
  */
-class TerminatedEvent: public AbstractCommandMessage
+class ZORBA_DLL_PUBLIC TerminatedEvent: public AbstractCommandMessage
 {
   public:
     TerminatedEvent();
@@ -551,7 +553,7 @@ class TerminatedEvent: public AbstractCommandMessage
 /**
  *
  */
-class SuspendedEvent: public AbstractCommandMessage
+class ZORBA_DLL_PUBLIC SuspendedEvent: public AbstractCommandMessage
 {
   protected:
     QueryLoc theLocation;
@@ -576,7 +578,7 @@ class SuspendedEvent: public AbstractCommandMessage
 /**
  *
  */
-class ResumedEvent: public AbstractCommandMessage
+class ZORBA_DLL_PUBLIC ResumedEvent: public AbstractCommandMessage
 { 
   public:
     ResumedEvent();
@@ -589,7 +591,7 @@ class ResumedEvent: public AbstractCommandMessage
 /**
  *
  */
-class EvaluatedEvent: public AbstractCommandMessage
+class ZORBA_DLL_PUBLIC EvaluatedEvent: public AbstractCommandMessage
 {
   protected:
     xqpString theExpr;
@@ -618,7 +620,7 @@ class EvaluatedEvent: public AbstractCommandMessage
 /**
  *
  */
-class EvalMessage: public AbstractCommandMessage
+class ZORBA_DLL_PUBLIC EvalMessage: public AbstractCommandMessage
 {
   protected:
     xqpString theExpr;
@@ -636,7 +638,7 @@ class EvalMessage: public AbstractCommandMessage
     xqpString getExpr() const;
 };
 
-class FrameMessage: public AbstractCommandMessage
+class ZORBA_DLL_PUBLIC FrameMessage: public AbstractCommandMessage
 {
   public:
     FrameMessage();
@@ -649,7 +651,7 @@ class FrameMessage: public AbstractCommandMessage
 /**
  *
  */
-class FrameReply: public ReplyMessage
+class ZORBA_DLL_PUBLIC FrameReply: public ReplyMessage
 {
   protected:
     std::stack< std::pair<std::string, QueryLoc> > theStack;
@@ -674,7 +676,7 @@ class FrameReply: public ReplyMessage
 /**
  *
  */
-class VariableMessage: public AbstractCommandMessage
+class ZORBA_DLL_PUBLIC VariableMessage: public AbstractCommandMessage
 { 
   public:
     VariableMessage();
@@ -687,7 +689,7 @@ class VariableMessage: public AbstractCommandMessage
 /**
  *
  */
-class SetReply: public ReplyMessage
+class ZORBA_DLL_PUBLIC SetReply: public ReplyMessage
 {
   private:
     std::map<unsigned int, QueryLoc> theBreakpoints;
@@ -716,7 +718,7 @@ class SetReply: public ReplyMessage
 /**
  *
  */
-class VariableReply: public ReplyMessage
+class ZORBA_DLL_PUBLIC VariableReply: public ReplyMessage
 {
   protected:
     std::map<xqpString, xqpString> theGlobals;

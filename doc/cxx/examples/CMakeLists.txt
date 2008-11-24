@@ -41,7 +41,7 @@ CREATE_TEST_SOURCELIST(examples
  
 # add the executable
 ADD_EXECUTABLE(examples ${examples})
-TARGET_LINK_LIBRARIES(examples zorba simplestore)
+TARGET_LINK_LIBRARIES(examples zorba_simplestore)
 
 IF(WIN32)
 SET(examples_EXE_PATH    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/examples)

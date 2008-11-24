@@ -19,23 +19,3 @@ SET(ZORBAUTILS_SRCS
     condition.cpp
     latch.cpp
     lock.cpp)
-
-
-IF(CYGWIN)
-  ADD_LIBRARY(zorbautils SHARED ${ZORBAUTILS_SRCS})
-ELSE(CYGWIN)
-  ADD_LIBRARY(zorbautils ${ZORBAUTILS_SRCS})
-ENDIF(CYGWIN)
-  
-
-SET(requiredlibs-zorbautils ${requiredlibs-zorbautils} zorbaerrors zorbatypes)
-TARGET_LINK_LIBRARIES(zorbautils ${requiredlibs-zorbautils})
-
-IF (ZORBA_BUILD_STATIC_LIBRARY)
-ELSE (ZORBA_BUILD_STATIC_LIBRARY)
-  IF (MSVC)
-    #compile zorbautils as DLL
-    REMOVE_DEFINITIONS(-DZORBA_INTERNAL)
-    ADD_DEFINITIONS(-DZORBAUTILS_INTERNAL)
-  ENDIF (MSVC)
-ENDIF (ZORBA_BUILD_STATIC_LIBRARY)

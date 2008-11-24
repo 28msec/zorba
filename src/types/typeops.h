@@ -17,6 +17,7 @@
 #define ZORBA_TYPEOPS_H
 
 #include <string>
+#include <zorba/config.h>
 #include "common/shared_types.h"
 #include "types/typeconstants.h"
 #include "zorba/typeident.h"
@@ -26,7 +27,8 @@ namespace zorba {
 
 typedef TypeIdentifier_t type_ident_ref_t;
 
-class TypeOps {
+// exported for unit testing only
+class ZORBA_DLL_PUBLIC TypeOps {
 public:
     /*
      * Writes a string representation of the given type to the output stream.

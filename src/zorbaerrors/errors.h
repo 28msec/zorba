@@ -37,7 +37,7 @@ namespace error
 /*******************************************************************************
 
 ********************************************************************************/
-class ZORBAERRORS_EXTERN_DECL ZorbaError
+class ZORBA_DLL_PUBLIC ZorbaError
 {
 public:
   xqpString      theLocalName;
@@ -135,7 +135,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class ZORBAERRORS_EXTERN_DECL ZorbaWarning
+class ZORBA_DLL_PUBLIC  ZorbaWarning
 {
 public:
   // move to the outside if we ever have warnings
@@ -163,7 +163,7 @@ public:
         int                aLineNumber);  
 };
 
-class ZORBAERRORS_EXTERN_DECL ZorbaInternalException {
+class ZORBA_DLL_PUBLIC ZorbaInternalException {
 };
 
 } /* namespace error */

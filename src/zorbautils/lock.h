@@ -34,7 +34,7 @@ namespace zorba {
 
 ********************************************************************************/
 
-class ZORBAUTILS_EXTERNAL_DECL Lock
+class ZORBA_DLL_PUBLIC Lock
 {
 public:
   enum Mode { NOLOCK, READ, WRITE };
@@ -94,7 +94,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class ZORBAUTILS_EXTERNAL_DECL AutoLock
+class ZORBA_DLL_PUBLIC AutoLock
 {
 private:
   Lock & theLock;

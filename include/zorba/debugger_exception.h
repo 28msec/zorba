@@ -17,6 +17,7 @@
 #ifndef ZORBA_DEBUGGER_EXCEPTION_H
 #define ZORBA_DEBUGGER_EXCEPTION_H
 
+#include <zorba/config.h>
 #include <exception>
 #include <string>
 
@@ -25,7 +26,7 @@ namespace zorba{
 /**
  *   Signals a problem with the execution of a socket call.
  */
-class DebuggerSocketException : public std::exception {
+class ZORBA_DLL_PUBLIC DebuggerSocketException : public std::exception {
 public:
   /**
    *   Construct a SocketException with a explanatory message.

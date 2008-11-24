@@ -18,7 +18,7 @@
 
 namespace zorba {
 
-class ZORBATYPES_EXTERNAL_DECL URI
+class ZORBA_DLL_PUBLIC URI
 {
  public:
 

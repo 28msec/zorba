@@ -35,7 +35,7 @@ namespace zorba {
    * calling getDynamicContext on a compiled query (see XQuery::getDynamicContext()).
    *
    */
-  class ZORBA_EXTERN_DECL DynamicContext 
+  class ZORBA_DLL_PUBLIC DynamicContext 
   {
     public:
       /** \brief Defines the external variable identified by aQName and assigns it the value of

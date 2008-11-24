@@ -24,7 +24,7 @@ namespace zorba
 {
 
 
-class ZORBATYPES_EXTERNAL_DECL Duration
+class ZORBA_DLL_PUBLIC Duration
 {
 public:
   typedef enum

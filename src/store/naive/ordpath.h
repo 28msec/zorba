@@ -31,7 +31,8 @@ class OrdPathStack;
 /*******************************************************************************
 
 ********************************************************************************/
-class STORE_EXTERN_DECL OrdPath
+// only exported for unit testing
+class ZORBA_DLL_PUBLIC OrdPath
 {
   friend class OrdPathStack;
 

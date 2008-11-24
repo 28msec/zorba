@@ -21,6 +21,7 @@
 
 #include "context/static_context_consts.h"
 
+#include "types/typeimpl.h"
 #include "compiler/parser/query_loc.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/expression/expr_consts.h"
@@ -126,6 +127,7 @@ protected:
   virtual expr_iterator_data *make_iter ();
   
 public:
+  expr() {};
   expr(const QueryLoc&);
   virtual ~expr();
 

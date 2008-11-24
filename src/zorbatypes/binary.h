@@ -23,7 +23,7 @@
 namespace zorba {
 
 class Base16;
-class ZORBATYPES_EXTERNAL_DECL Base64
+class   Base64
 {
 private:
   std::vector<char> theData;
@@ -66,9 +66,9 @@ public:
   uint32_t hash() const;
 };
 
-ZORBATYPES_EXTERNAL_DECL std::ostream& operator<<(std::ostream& os, const Base64& aBase64);
+ std::ostream& operator<<(std::ostream& os, const Base64& aBase64);
 
-class ZORBATYPES_EXTERNAL_DECL Base16
+class  Base16
 {
 private:
   std::vector<char> theData;
@@ -105,7 +105,7 @@ public:
   uint32_t hash() const;
 };
 
-ZORBATYPES_EXTERNAL_DECL std::ostream& operator<<(std::ostream& os, const Base16& aBase16);
+ std::ostream& operator<<(std::ostream& os, const Base16& aBase16);
 
 } // namespace zorba
 

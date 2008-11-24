@@ -15,7 +15,12 @@
 CONFIGURE_FILE(parsertestdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/parsertestdriverconfig.h)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 ADD_EXECUTABLE(parsertestdriver parsertestdriver.cpp)
-TARGET_LINK_LIBRARIES(parsertestdriver ${requiredlibs} zorba simplestore)
+TARGET_LINK_LIBRARIES(parsertestdriver zorba_simplestore)
+
+IF (ZORBA_BUILD_STATIC_LIBRARY)
+  ADD_EXECUTABLE(parsertestdriver_static parsertestdriver.cpp)
+  TARGET_LINK_LIBRARIES(parsertestdriver_static zorba_simplestore_static)
+ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
 IF(WIN32)
 SET(PARSERTESTDRIVER_EXE_PATH    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/parsertestdriver)

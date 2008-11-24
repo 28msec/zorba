@@ -21,7 +21,7 @@
 
 namespace zorba { namespace store {
 
-class StoreConsts
+class ZORBA_DLL_PUBLIC StoreConsts
 {
  public:
 

@@ -31,7 +31,7 @@ namespace zorba {
  * it is the responibility of the client code to synchronize assignments to the
  * SmartPtr holding this object.
  */
-class ZORBA_EXTERN_DECL TypeIdentifier : public SmartObject {
+class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject {
   public:
     /** \brief Destructor
      */
@@ -139,7 +139,7 @@ class ZORBA_EXTERN_DECL TypeIdentifier : public SmartObject {
     String m_localName;
     bool m_localNameWildcard;
 #ifdef WIN32
-  template class ZORBA_EXTERN_DECL  zorba::SmartPtr<TypeIdentifier>;
+  template class ZORBA_DLL_PUBLIC  zorba::SmartPtr<TypeIdentifier>;
 #endif
     TypeIdentifier_t m_contentType;
 };

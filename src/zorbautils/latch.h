@@ -30,7 +30,7 @@ namespace zorba {
 
 #ifdef ZORBA_HAVE_PTHREAD_H
 
-class ZORBAUTILS_EXTERNAL_DECL Latch
+class ZORBA_DLL_PUBLIC Latch
 {
 public:
   enum Mode { READ, WRITE };
@@ -64,7 +64,7 @@ public:
 #define LATCH_INVALID 0xbad
 
 
-class ZORBAUTILS_EXTERNAL_DECL Latch
+class ZORBA_DLL_PUBLIC Latch
 {
 public:
   enum Mode { READ, WRITE };
@@ -157,7 +157,7 @@ private:
 /*******************************************************************************
 
 ********************************************************************************/
-class ZORBAUTILS_EXTERNAL_DECL AutoLatch
+class ZORBA_DLL_PUBLIC AutoLatch
 {
 private:
   Latch & theLatch;
@@ -180,7 +180,7 @@ public:
 
 #else // ZORBA_FOR_ONE_THREAD_ONLY
 
-class ZORBAUTILS_EXTERNAL_DECL Latch
+class ZORBA_DLL_PUBLIC Latch
 {
 public:
   void rlock() {}
@@ -190,7 +190,7 @@ public:
 };
 
 
-class ZORBAUTILS_EXTERNAL_DECL AutoLatch
+class  AutoLatch
 {
 };
 #endif // ZORBA_FOR_ONE_THREAD_ONLY

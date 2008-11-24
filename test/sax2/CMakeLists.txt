@@ -23,11 +23,13 @@ CONFIGURE_FILE(sax2testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/sax2testdri
 # Compile and build the testdriver executable
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
-SET(requiredlibs-testdriver ${requiredlibs-testdriver} zorba simplestore)
-
 ADD_EXECUTABLE(sax2testdriver sax2testdriver.cpp)
+TARGET_LINK_LIBRARIES(sax2testdriver zorba_simplestore)
 
-TARGET_LINK_LIBRARIES(sax2testdriver ${requiredlibs-testdriver})
+IF (ZORBA_BUILD_STATIC_LIBRARY)
+  ADD_EXECUTABLE(sax2testdriver_static sax2testdriver.cpp)
+  TARGET_LINK_LIBRARIES(sax2testdriver_static zorba_simplestore_static)
+ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
 IF(WIN32)
 SET(SAX2TESTDRIVER_EXE_PATH    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/sax2testdriver)

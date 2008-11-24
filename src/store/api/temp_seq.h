@@ -32,7 +32,7 @@ namespace zorba { namespace store {
  * Used internally to materialize temporary query results
  */
 
-class STORE_EXTERN_DECL TempSeq : public SimpleRCObject
+class  TempSeq : public SimpleRCObject
 {  
 public:
   virtual ~TempSeq(){}

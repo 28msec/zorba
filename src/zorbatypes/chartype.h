@@ -22,7 +22,7 @@
 
 namespace zorba{
 
-class ZORBATYPES_EXTERNAL_DECL XQCharType
+class   XQCharType
 {
 public:
   static bool isLetter(uint32_t cp);

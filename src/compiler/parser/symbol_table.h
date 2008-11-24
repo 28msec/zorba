@@ -17,12 +17,13 @@
 #define ZORBA_SYMBOL_TABLE_H
 
 #include "zorbatypes/representations.h"
+#include <zorba/config.h>
 
 #include "util/fx/fxcharheap.h"
 
 namespace zorba {
 
-class symbol_table
+class ZORBA_DLL_PUBLIC symbol_table
 {
 protected:	// state
 	fxcharheap heap;

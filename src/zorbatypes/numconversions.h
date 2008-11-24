@@ -28,7 +28,7 @@ namespace zorba {
  * All functions which might not work return a bool which indicates the success of the
  * conversions. Functions which aways work return the value directly.
  */
-class ZORBATYPES_EXTERNAL_DECL NumConversions {
+class ZORBA_DLL_PUBLIC NumConversions {
 private:
   static bool isNegZero(const xqpString& aStr);
 

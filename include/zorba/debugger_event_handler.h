@@ -35,7 +35,7 @@ namespace zorba{
    * Once a client received an event, a callback is made to the debugger event
    * handler.
    */
-  class ZORBA_EXTERN_DECL DebuggerEventHandler
+  class ZORBA_DLL_PUBLIC DebuggerEventHandler
   {
     public:
 

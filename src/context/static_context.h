@@ -22,6 +22,7 @@
 
 #include "context/context.h"
 #include "context/static_context_consts.h"
+#include "types/typemanager.h"
 #include "zorbaerrors/Assert.h"
 
 #include <zorba/api_shared_types.h>
@@ -40,7 +41,7 @@ class TypeManager;
 |_______________________________________________________________________*/
 
 // External API interface is in class public StaticQueryContext
-class static_context : public context
+class ZORBA_DLL_PUBLIC static_context : public context
 {
 protected:
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const;

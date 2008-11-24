@@ -30,7 +30,7 @@ namespace zorba {
    * ZorbaException class that would have been thrown are passed as parameter
    * to the callback function.
    */
-  class ZORBA_EXTERN_DECL ErrorHandler 
+  class ZORBA_DLL_PUBLIC ErrorHandler 
   {
     public:
       /** \brief Destructor

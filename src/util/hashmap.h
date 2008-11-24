@@ -306,10 +306,17 @@ hashmap<V>::hashmap(
   tab (m.tsz),
   dp(m.dp)
 {
-  memcpy(tab, m.tab, tsz*sizeof(int));
-  typename checked_vector<entry>::const_iterator it = m.begin();
-  typename checked_vector<entry>::const_iterator en = m.end();
-  for (; it!=en; ++it) { v.push_back(*it); }
+  {
+    typename checked_vector<int>::const_iterator it = m.tab.begin();
+    typename checked_vector<int>::const_iterator en = m.tab.end();
+    for (; it!=en; ++it) { tab.push_back(*it); }
+  }
+
+  {
+    typename checked_vector<entry>::const_iterator it = m.begin();
+    typename checked_vector<entry>::const_iterator en = m.end();
+    for (; it!=en; ++it) { v.push_back(*it); }
+  }
 }
 
 template<class V>

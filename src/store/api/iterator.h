@@ -29,20 +29,21 @@ class Iterator : virtual public SimpleRCObject
 {
  public:
   Iterator() {}
-
-  Iterator(const Iterator&) : SimpleRCObject() {}
-
   virtual ~Iterator() {}
 
+   
   virtual void
   open() = 0;
 
+  
   virtual bool
   next(store::Item_t&) = 0;
 
+  
   virtual void
   reset() = 0;
 
+  
   virtual void
   close() = 0;
 };
@@ -65,21 +66,27 @@ class ChildrenIterator : public Iterator
 public:
   virtual ~ChildrenIterator() {}
 
+  
   virtual void
   init(Item_t& parent) = 0;
 
+  
   virtual void
   open() = 0;
 
+  
   virtual Item*
   next() = 0;
+  
   
   virtual bool
   next(Item_t& result) = 0;
 
+  
   virtual void
   reset() = 0;
 
+  
   virtual void
   close() = 0;
 };
@@ -101,21 +108,27 @@ class AttributesIterator : public Iterator
 public:
   virtual ~AttributesIterator() { }
 
+  
   virtual void
   init(Item_t& parent) = 0;
 
+  
   virtual void
   open() = 0;
 
+  
   virtual Item*
   next() = 0;
+  
   
   virtual bool
   next(Item_t& result) = 0;
 
+  
   virtual void
   reset() = 0;
 
+  
   virtual void
   close() = 0;
 };
@@ -137,21 +150,27 @@ class TempSeqIterator : public Iterator
 public:
   virtual ~TempSeqIterator() { }
 
+  
   virtual void
   init(const TempSeq_t& seq) = 0;
 
+  
   virtual void
   open() = 0;
 
+  
   virtual Item*
   next() = 0;
+  
   
   virtual bool
   next(Item_t& result) = 0;
 
+  
   virtual void
   reset() = 0;
 
+  
   virtual void
   close() = 0;
 };

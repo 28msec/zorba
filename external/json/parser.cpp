@@ -412,7 +412,9 @@ value *parser::readvalue(){
 		break;
 		case datatype::_object:
 			readobject(nval);
-		break;
+		  break;
+    default:
+		  break;
 	}
 	return nval;
 }

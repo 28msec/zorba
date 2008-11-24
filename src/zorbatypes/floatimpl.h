@@ -32,7 +32,7 @@ namespace zorba {
 typedef double    MAPM;
 #endif
 
-class ZORBATYPES_EXTERNAL_DECL FloatCommons 
+class FloatCommons 
 {
  public:
   enum NumType {
@@ -67,7 +67,7 @@ template <typename FloatType> class FloatImplTraits;
    * Specialization for double
    */
   template <>
-  class FloatImplTraits<double> {
+  class  FloatImplTraits<double> {
     public:
       static bool 
       isPosInf(MAPM aMAPM);
@@ -89,7 +89,7 @@ template <typename FloatType> class FloatImplTraits;
    * Specialization for float
    */
   template <>
-  class FloatImplTraits<float> {
+  class  FloatImplTraits<float> {
     public:
       static bool
       isPosInf(MAPM aMAPM);
@@ -127,8 +127,9 @@ template <typename FloatType> class FloatImplTraits;
   };
 #endif
 
+  // exported for testing only
   template <typename FloatType>
-  class FloatImpl {
+  class ZORBA_DLL_PUBLIC FloatImpl {
     friend class Integer;
     friend class Decimal;
     friend class FloatCommons;
@@ -392,40 +393,52 @@ template <typename FloatType> class FloatImplTraits;
 
   }; // class FloatImpl
 
-  ZORBATYPES_EXTERNAL_DECL std::ostream&
+  
+  std::ostream&
   operator<<(std::ostream& os, const Double& aFloatImpl); 
   
-  ZORBATYPES_EXTERNAL_DECL std::ostream&
+  
+  std::ostream&
   operator<<(std::ostream& os, const Float& aFloatImpl);
   
-  ZORBATYPES_EXTERNAL_DECL Double
+  
+   Double
   operator+(const Double&, const Float&);
   
-  ZORBATYPES_EXTERNAL_DECL Double
+  
+   Double
   operator+(const Float&, const Double&);
   
-  ZORBATYPES_EXTERNAL_DECL Double
+  
+   Double
   operator-(const Double&, const Float&);
   
-  ZORBATYPES_EXTERNAL_DECL Double
+  
+   Double
   operator-(const Float&, const Double&);
   
-  ZORBATYPES_EXTERNAL_DECL Double
+  
+   Double
   operator*(const Double&, const Float&);
   
-  ZORBATYPES_EXTERNAL_DECL Double
+  
+   Double
   operator*(const Float&, const Double&);
   
-  ZORBATYPES_EXTERNAL_DECL Double
+  
+   Double
   operator/(const Double&, const Float&);
   
-  ZORBATYPES_EXTERNAL_DECL Double
+  
+   Double
   operator/(const Float&, const Double&);
   
-  ZORBATYPES_EXTERNAL_DECL Double
+  
+   Double
   operator%(const Double&, const Float&);
   
-  ZORBATYPES_EXTERNAL_DECL Double
+  
+   Double
   operator%(const Float&, const Double&);
   
 } /* namespace zorba */

@@ -26,7 +26,7 @@ namespace simplestore {
 class SimpleStore;
 
 
-class STORE_EXTERN_DECL SimpleStoreManager
+class ZORBA_DLL_PUBLIC SimpleStoreManager
 {
 public:
   static simplestore::SimpleStore* 

@@ -29,7 +29,7 @@ namespace zorba {
    * If an isNull() call on an Item created by one of these functions returns true the
    * Item could not be created.
    */
-  class ZORBA_EXTERN_DECL ItemFactory 
+  class ZORBA_DLL_PUBLIC ItemFactory 
   {
     public:
       /** \brief Destructor

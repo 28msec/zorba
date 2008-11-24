@@ -16,6 +16,7 @@
 #ifndef ZORBA_PARSENODE_BASE_H
 #define ZORBA_PARSENODE_BASE_H
 
+#include <zorba/config.h>
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parser/query_loc.h"
 
@@ -29,7 +30,8 @@ class parsenode_visitor;
 /*
 **  base class: syntax-only nodes
 */
-class parsenode : public SimpleRCObject
+// exported for unit testing only
+class ZORBA_DLL_PUBLIC parsenode : public SimpleRCObject
 {
 protected:
 	QueryLoc loc;
@@ -61,7 +63,7 @@ public:
 
 };
 
-class ParseErrorNode : public parsenode {
+class ZORBA_DLL_PUBLIC ParseErrorNode : public parsenode {
 public:
   std::string msg;
   ParseErrorNode (const QueryLoc& loc_, std::string msg_)

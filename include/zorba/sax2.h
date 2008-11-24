@@ -33,7 +33,7 @@ class SAX2_Attributes;
  * a query by calling the XQuery::registerSAXHandler or XQuery::executeSAX
  * function.
  */
-class ZORBA_EXTERN_DECL SAX2_ContentHandler
+class ZORBA_DLL_PUBLIC SAX2_ContentHandler
 {
   public:
 
@@ -131,7 +131,7 @@ class ZORBA_EXTERN_DECL SAX2_ContentHandler
     skippedEntity( const	String& aName ) = 0;
 };
 
-class ZORBA_EXTERN_DECL SAX2_Attributes
+class ZORBA_DLL_PUBLIC SAX2_Attributes
 {
   public:
     virtual
@@ -174,7 +174,7 @@ class ZORBA_EXTERN_DECL SAX2_Attributes
     String getValue( const String & qName ) const = 0;
 };
 
-class ZORBA_EXTERN_DECL SAX2_LexicalHandler
+class ZORBA_DLL_PUBLIC SAX2_LexicalHandler
 {
   public:
     virtual

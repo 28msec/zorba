@@ -26,7 +26,7 @@
 
 namespace zorba {
 
-class ZORBA_EXTERN_DECL file : public filesystem_path
+class ZORBA_DLL_PUBLIC file : public filesystem_path
 {
 public:
   enum filetype {

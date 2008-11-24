@@ -28,18 +28,20 @@ CONFIGURE_FILE(testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/testdriverconfi
 #
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
-SET(requiredlibs-testdriver ${requiredlibs-testdriver} zorba ${STORE_LIB})
-
 ADD_EXECUTABLE(testdriver testdriver.cpp)
+TARGET_LINK_LIBRARIES(testdriver zorba_simplestore)
 
-TARGET_LINK_LIBRARIES(testdriver ${requiredlibs-testdriver})
+IF (ZORBA_BUILD_STATIC_LIBRARY)
+  ADD_EXECUTABLE(testdriver_static testdriver.cpp)
+  TARGET_LINK_LIBRARIES(testdriver_static zorba_simplestore_static)
+ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
 #
 # Compile and build the multi-threaded testdriver executable
 #
 #ADD_EXECUTABLE(testdriver_mt testdriver_mt.cpp)
 
-#TARGET_LINK_LIBRARIES(testdriver_mt ${requiredlibs-testdriver})
+#TARGET_LINK_LIBRARIES(testdriver_mt zorba)
 
 IF(WIN32)
 #for Windows and Cygwin

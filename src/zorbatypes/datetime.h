@@ -24,12 +24,13 @@
 namespace zorba
 {
 
-class ZORBATYPES_EXTERNAL_DECL InvalidTimezoneException : public std::exception
+class   InvalidTimezoneException : public std::exception
 {
 };
   
 
-class ZORBATYPES_EXTERNAL_DECL DateTime 
+ // exported for testing only
+class ZORBA_DLL_PUBLIC DateTime 
 {
 public:
       

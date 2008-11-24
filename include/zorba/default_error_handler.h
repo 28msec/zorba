@@ -21,7 +21,7 @@
 
 namespace zorba {
 
-  class ZORBA_EXTERN_DECL DefaultErrorHandler : public ErrorHandler
+  class ZORBA_DLL_PUBLIC DefaultErrorHandler : public ErrorHandler
   {
     public:
       virtual ~DefaultErrorHandler() {}

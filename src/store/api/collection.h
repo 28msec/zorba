@@ -21,7 +21,7 @@
 
 namespace zorba { namespace store {
 
-class STORE_EXTERN_DECL Collection : public SimpleRCObject
+class Collection : public SimpleRCObject
 {
 public:
   virtual ~Collection() {}

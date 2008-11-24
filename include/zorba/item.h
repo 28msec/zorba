@@ -43,7 +43,7 @@ namespace store { class Item; }
  * A new atomic Item can be created using the ItemFactory. A new node Item should be created
  * by the result of a query.
  */
-class ZORBA_EXTERN_DECL Item
+class ZORBA_DLL_PUBLIC Item
 {
 public:
   /** \brief Default constructor

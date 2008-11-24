@@ -20,7 +20,7 @@
 
 namespace zorba {
 
-class ZORBA_EXTERN_DECL SmartObject
+class ZORBA_DLL_PUBLIC SmartObject
 {
 protected:
   mutable unsigned int  theRefCount;

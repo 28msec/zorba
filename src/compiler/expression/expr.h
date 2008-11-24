@@ -203,6 +203,7 @@ public:
     xqtref_t type;
     expr_t val;
 
+    eval_var() {};
     eval_var (var_expr *ve, expr_t val);
   };
 
@@ -211,6 +212,7 @@ protected:
   checked_vector<eval_var> vars;
 
 public:
+  eval_expr() {};
   eval_expr (const QueryLoc &loc, expr_t expr_)
     : expr (loc), expr_h (expr_)
   {}

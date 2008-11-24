@@ -25,7 +25,7 @@ namespace zorba {
   /**
    * Provide access to the version of %Zorba that is used
    */
-  class ZORBA_EXTERN_DECL Version
+  class ZORBA_DLL_PUBLIC Version
   { 
     protected:
       static int theMajorVersion;
@@ -60,7 +60,7 @@ namespace zorba {
   /** \brief Write the result of calling aVersiongetVersion() to the given
    *         output stream.
    */
-  ZORBA_EXTERN_DECL
+  ZORBA_DLL_PUBLIC
   std::ostream& 
   operator<< (std::ostream& os, const Version& aVersion);
 

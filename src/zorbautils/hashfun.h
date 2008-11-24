@@ -24,7 +24,7 @@
 namespace zorba { 
 
 
-class ZORBAUTILS_EXTERNAL_DECL hashfun
+class  hashfun
 {
  public:
 #define FNV_32_PRIME    ((uint32_t)0x01000193)

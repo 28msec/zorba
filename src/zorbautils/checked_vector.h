@@ -23,7 +23,7 @@
 namespace zorba { 
   
 template<typename T>
-class ZORBAUTILS_EXTERNAL_DECL checked_vector : public std::vector<T> 
+class  checked_vector : public std::vector<T> 
 {
 public:
   checked_vector () {}

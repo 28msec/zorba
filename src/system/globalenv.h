@@ -17,26 +17,35 @@
 #define ZORBA_GLOBALENV_H
 
 #include <memory>
+#include <zorba/config.h>
 #include "common/common.h"
 #ifndef ZORBA_NO_BIGNUMBERS
 #include "zorbatypes/m_apm.h"
 #endif
 #include "common/shared_types.h"
-#include "zorbatypes/icu_init.h"
 
 namespace zorba {
 
 class RootTypeManager;
 class static_context;
-class icu_init;
 
 namespace store {
 class Store;
 }
 
 
-class GlobalEnvironment 
+// exported for unit testing only
+class ZORBA_DLL_PUBLIC GlobalEnvironment 
 {
+ public:
+   ~GlobalEnvironment();
+ private:
+  void
+  init_icu();
+
+  void
+  cleanup_icu();
+
  public:
   static void init(store::Store* store);
   static void destroy();
@@ -61,10 +70,9 @@ class GlobalEnvironment
 #ifndef ZORBA_NO_BIGNUMBERS
   M_APM                                  m_mapm; // this is a pointer type
 #endif
-  std::auto_ptr<XQueryCompilerSubsystem> m_compilerSubSys;
+  XQueryCompilerSubsystem*               m_compilerSubSys;
 
   static GlobalEnvironment             * m_globalEnv;
-  icu_init                               m_icu;
 
 public:
 #if defined ZORBA_WITH_REST && defined ZORBA_WITH_SSL && defined ZORBA_VERIFY_PEER_SSL_CERTIFICATE

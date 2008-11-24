@@ -22,7 +22,7 @@ namespace zorba {
 
   /** \brief Base class for all external function classes.
    */
-  class ZORBA_EXTERN_DECL ExternalFunctionData 
+  class ZORBA_DLL_PUBLIC ExternalFunctionData 
   {
   };
 

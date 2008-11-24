@@ -25,7 +25,7 @@ namespace zorba {
    *
    * See http://www.w3.org/TR/xpath-datamodel/.
    */
-  class ZORBA_EXTERN_DECL ItemSequence
+  class ZORBA_DLL_PUBLIC ItemSequence
   {
     public:
       /** \brief Destructor

@@ -33,7 +33,7 @@ namespace zorba {
 |	[http://www.w3.org/TR/xquery/#id-xq-context-components]
 |_______________________________________________________________________*/
 
-class context : public SimpleRCObject
+class ZORBA_DLL_PUBLIC context : public SimpleRCObject
 {
 protected:
   typedef union { 

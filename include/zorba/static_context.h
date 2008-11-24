@@ -39,7 +39,7 @@ namespace zorba {
    * it is the responibility of the client code to synchronize assignments to the
    * SmartPtr holding this object.
    */
-  class ZORBA_EXTERN_DECL StaticContext : public SmartObject
+  class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   {
     public:
       /** \brief Destructor

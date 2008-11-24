@@ -29,7 +29,7 @@ namespace zorba {
    * However, given that the XQuery class is not thread-safe, the ResultIterators
    * should not be operated upon by multiple threads.
    */
-  class ZORBA_EXTERN_DECL ResultIterator  : public Iterator
+  class ZORBA_DLL_PUBLIC ResultIterator  : public Iterator
   {
     public:
       /** \brief Destructor

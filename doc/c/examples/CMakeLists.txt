@@ -32,7 +32,7 @@ CREATE_TEST_SOURCELIST(cexamples
  
 # add the executable
 ADD_EXECUTABLE(cexamples ${cexamples})
-TARGET_LINK_LIBRARIES(cexamples zorba simplestore)
+TARGET_LINK_LIBRARIES(cexamples zorba_simplestore)
 
 IF(WIN32)
 SET(cexamples_EXE_PATH    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/cexamples)

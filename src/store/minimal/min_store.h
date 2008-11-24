@@ -17,6 +17,7 @@
 #define ZORBA_MINIMAL_STORE___
 
 
+#include <zorba/config.h>
 #include "zorbautils/mutex.h"
 #include "zorbautils/lock.h"
 
@@ -110,7 +111,7 @@ protected:
 
   long                     theTraceLevel;
 public:
-  static ZORBA_EXTERN_DECL SimpleStore*      getInstance();
+  static ZORBA_DLL_PUBLIC SimpleStore*      getInstance();
 private:
   SimpleStore();
 
