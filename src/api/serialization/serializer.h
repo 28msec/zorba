@@ -109,7 +109,7 @@ protected:
 
   // Serialization parameters
   short int byte_order_mark;         // "yes" or "no", implemented
-  xqp_string cdata_section_elements; // list of expanded QNames, implemented
+  xqp_string cdata_section_elements; // list of expanded QNames, delimited by spaces or semicolons, implemented
   xqp_string doctype_system;         // string, implemented
   xqp_string doctype_public;         // string, implemented
   int encoding;                      // UTF-8 and UTF-16 supported, add others?
@@ -194,7 +194,7 @@ protected:
     
     /**
      *  Serializes a given text node. Also performs the processing of cdata-section-elements 
-     *  parameters, if any.
+     *  parameter, if set.
      */
     virtual void emit_text(const store::Item* item);
     

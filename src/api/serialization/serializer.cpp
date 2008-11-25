@@ -1068,8 +1068,13 @@ void serializer::xhtml_emitter::emit_node(
 
       closed_parent_tag = 1;
     }
+    
+    bool should_remove_binding = emit_bindings(item);
 
     closed_parent_tag |= emit_node_children(item, depth+1);
+    
+    if (should_remove_binding)
+      bindings.pop_back();
     
     /*
      * [Definition: The following XHTML elements have an EMPTY content model: area, base, br, col, 
