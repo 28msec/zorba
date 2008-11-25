@@ -153,7 +153,7 @@ public:
       trim(*it);
       tokenize(*it, tokens, " ");
       for(lIter=tokens.begin(); lIter!=tokens.end(); ++lIter)
-      {      
+      {
         if( *lIter == "Args:" )
         {
           for(++lIter;lIter!=tokens.end(); ++lIter)
