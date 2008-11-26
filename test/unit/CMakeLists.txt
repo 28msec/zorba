@@ -38,11 +38,13 @@ ENDIF(WIN32)
 SET (TestsToRun ${UnitTests})
 REMOVE (TestsToRun UnitTests.cpp)
 
+MESSAGE(STATUS "Adding unit tests for CTest")
+
 # add all the ADD_TEST for each testing
 FOREACH (test ${TestsToRun})
   GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
-  MESSAGE(STATUS ${TName})
-  ADD_TEST(${TName} ${UNITTESTS_EXE_PATH} ${TName})
+  SET (TestName "test/unit/${TName}")
+  ADD_TEST(${TestName} ${UNITTESTS_EXE_PATH} ${TName})
 ENDFOREACH(test)
 
 
