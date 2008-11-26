@@ -23,20 +23,22 @@
 
 #include <string>
 #include <sstream>
+#include <zorba/config.h>
 #include <zorba/properties_base.h>
 #include <cstring>
 
 #ifndef ZORBACMD_ZORBACMDPROPERTIESBASE
 #define ZORBACMD_ZORBACMDPROPERTIESBASE
 namespace zorbacmd { 
-class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
+class ZORBA_DLL_PUBLIC ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--parse-only", "--debug-ports", "--debug-client", "--debug-server", "--no-colors", NULL };
+    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--parse-only", "--debug-ports", "--debug-client", "--debug-server", "--no-colors", NULL };
     return result;
   }
   bool theTiming;
   std::string theOutputFile;
+  std::vector<std::string> theSerializationParameter;
   bool theSerializeHtml;
   bool theSerializeText;
   bool theIndent;
@@ -80,6 +82,7 @@ protected:
 public:
   const bool &timing () const { return theTiming; }
   const std::string &outputFile () const { return theOutputFile; }
+  const std::vector<std::string> &serializationParameter () const { return theSerializationParameter; }
   const bool &serializeHtml () const { return theSerializeHtml; }
   const bool &serializeText () const { return theSerializeText; }
   const bool &indent () const { return theIndent; }
@@ -119,6 +122,11 @@ public:
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         init_val (*argv, theOutputFile, d);
+      }
+      else if (strcmp (*argv, "--serialization-parameter") == 0 || strncmp (*argv, "-z", 2) == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        init_val (*argv, theSerializationParameter, d);
       }
       else if (strcmp (*argv, "--serialize-html") == 0) {
         theSerializeHtml = true;
@@ -228,6 +236,7 @@ public:
     return
 "--timing, -t\nPrint timing information. In case of multiple queries the timing information is provided per each query. Both wallclock time and user time (which excludes I/O, network delays and other kernel waits) are shown.\n\n"
 "--output-file, -o\nWrite the result to the given file.\n\n"
+"--serialization-parameter, -z\nSet serialization parameter in the form of a parameter=value pair.\n\n"
 "--serialize-html\nSerialize the result as HTML.\n\n"
 "--serialize-text\nSerialize the result as Text.\n\n"
 "--indent\nIndent output.\n\n"

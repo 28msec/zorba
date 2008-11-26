@@ -50,6 +50,10 @@ public:
 
   QueriesOrFiles_t::const_iterator
   queriesOrFilesEnd()   { return theQueriesOrFiles.end(); }
+  
+  std::vector<std::pair<std::string,std::string> > 
+  getSerializerParameters();
+  
 #ifdef ZORBA_DEBUGGER
   bool hasNoSyntaxHighlighting(){ return theNoColors; }
 

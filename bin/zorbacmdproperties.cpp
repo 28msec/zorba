@@ -96,3 +96,22 @@ bool ZorbaCMDProperties::loadProperties(int argc, char* argv[]) {
     return false;
   }  
 }
+
+std::vector<std::pair<std::string,std::string> > ZorbaCMDProperties::getSerializerParameters() 
+{
+  std::vector<std::pair<std::string,std::string> > lResult;
+  std::vector<std::string>::const_iterator lEnd = theSerializationParameter.end();
+  for (
+       std::vector<std::string>::const_iterator lIter = theSerializationParameter.begin();
+       lIter != lEnd;
+       ++lIter
+      ) 
+  {
+    std::string lStr = *lIter;
+    std::string::size_type lPos = lStr.find_first_of("=");
+    std::string lVarName = lStr.substr(0, lPos);
+    std::string lValue = lStr.substr(lPos + 1);
+    lResult.push_back(std::pair<std::string,std::string>(lVarName, lValue));
+  }
+  return lResult;
+}

@@ -166,6 +166,7 @@ createSerializerOptions(Zorba_SerializerOptions_t& lSerOptions, ZorbaCMDProperti
   return true;
 }
 
+
 std::string parseFileURI (bool asPath, const std::string &str) {
   if (asPath)
     return str;
@@ -513,8 +514,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
       try
       {
-        Zorba_SerializerOptions_t lSerOptions;
-        createSerializerOptions(lSerOptions, &lProperties);
+        Zorba_SerializerOptions lSerOptions = Zorba_SerializerOptions::SerializerOptionsFromStringParams(lProperties.getSerializerParameters());
 
         if (lTiming) 
         {
