@@ -393,7 +393,6 @@ template <typename FloatType> class FloatImplTraits;
 
   }; // class FloatImpl
 
-  
   std::ostream&
   operator<<(std::ostream& os, const Double& aFloatImpl); 
   

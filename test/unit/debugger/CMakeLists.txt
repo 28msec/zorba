@@ -24,6 +24,7 @@ TARGET_LINK_LIBRARIES(DebuggerTests zorba_simplestore)
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)
   ADD_EXECUTABLE(DebuggerTests_static ${DebuggerTests})
+  SET_TARGET_PROPERTIES(DebuggerTests_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
   TARGET_LINK_LIBRARIES(DebuggerTests_static zorba_simplestore_static)
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 

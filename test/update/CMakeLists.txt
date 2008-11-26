@@ -28,6 +28,7 @@ TARGET_LINK_LIBRARIES(updtestdriver zorba_simplestore)
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)
   ADD_EXECUTABLE(updtestdriver_static updtestdriver.cpp)
+  SET_TARGET_PROPERTIES(updtestdriver_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
   TARGET_LINK_LIBRARIES(updtestdriver_static zorba_simplestore_static)
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 

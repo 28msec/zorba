@@ -24,6 +24,7 @@ TARGET_LINK_LIBRARIES(UnitTests zorba_simplestore)
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)                                                                         
   ADD_EXECUTABLE(UnitTests_static ${UnitTests})                                                 
+  SET_TARGET_PROPERTIES(UnitTests_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
   TARGET_LINK_LIBRARIES(UnitTests_static zorba_simplestore_static)                           
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)           
 
@@ -57,6 +58,7 @@ TARGET_LINK_LIBRARIES(CAPIUnitTests zorba_simplestore)
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)                                                                         
   ADD_EXECUTABLE(CAPIUnitTests_static ${CAPIUnitTests})                                                 
+  SET_TARGET_PROPERTIES(CAPIUnitTests_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
   TARGET_LINK_LIBRARIES(CAPIUnitTests_static zorba_simplestore_static)                           
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)           
 

@@ -19,6 +19,7 @@ TARGET_LINK_LIBRARIES(parsertestdriver zorba_simplestore)
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)
   ADD_EXECUTABLE(parsertestdriver_static parsertestdriver.cpp)
+  SET_TARGET_PROPERTIES(parsertestdriver_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
   TARGET_LINK_LIBRARIES(parsertestdriver_static zorba_simplestore_static)
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
