@@ -68,7 +68,7 @@ namespace zorbac {
        lIter->close();
        delete static_cast<zorbac::Sequence*>(seq->data);
        delete seq;
-     } catch (ZorbaException& e) {
+     } catch (ZorbaException&) {
        assert(false);
      } catch (...) {
        assert(false);

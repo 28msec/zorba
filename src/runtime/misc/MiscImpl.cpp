@@ -92,7 +92,7 @@ bool FnResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState)
     //If first param is an absolute URI reference, it is returned unchanged.
     try{
       resolvedURI = URI(&*strRelative);
-    } catch (error::ZorbaError& e) {}
+    } catch (error::ZorbaError&) {}
 
     if (resolvedURI.is_absolute()) {
       strResult = strRelative;

@@ -260,7 +260,7 @@ ftime(&timebuffer);
 millisec  = (int)timebuffer.millitm;    
 timestamp = timebuffer.time;
 ul        = (unsigned long)(timestamp / 7);
-ul       += timestamp + 537;
+ul       += (unsigned long)(timestamp + 537);
 strcpy(ss,ctime(&timestamp));        /* convert to string and copy to ss */
 
 sprintf(buf1,"%d",(millisec / 10));

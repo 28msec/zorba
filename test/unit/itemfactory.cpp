@@ -317,7 +317,7 @@ int itemfactory(int argc, char* argv[])
     UNIT_ASSERT ( lItem.isNaN() );
     UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
 
-    lItem = lFactory->createFloat(23.42);
+    lItem = lFactory->createFloat(23.42f);
     UNIT_ASSERT ( checkType(lItem.getType(), "float") );
     UNIT_ASSERT ( lItem.isAtomic() );
     UNIT_ASSERT ( lItem.getStringValue() == "23.4200000762939" );

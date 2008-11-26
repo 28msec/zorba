@@ -98,31 +98,30 @@
 
 #ifndef BUILDING_ZORBA_STATIC
 
-#if defined WIN32 || defined CYGWIN
-  #if defined (zorba_EXPORTS) 
-    #ifdef __GNUC__
-      #define ZORBA_DLL_PUBLIC __attribute__((dllexport))
+  #if defined WIN32 || defined CYGWIN
+    #if defined (zorba_EXPORTS) 
+      #ifdef __GNUC__
+        #define ZORBA_DLL_PUBLIC __attribute__((dllexport))
+      #else
+        #define ZORBA_DLL_PUBLIC __declspec(dllexport)
+      #endif
     #else
-      #define ZORBA_DLL_PUBLIC __declspec(dllexport)
+      #ifdef __GNUC__
+        #define ZORBA_DLL_PUBLIC __attribute__((dllimport))
+      #else
+        #define ZORBA_DLL_PUBLIC __declspec(dllimport)
+      #endif
     #endif
-  #else
-    #ifdef __GNUC__
-      #define ZORBA_DLL_PUBLIC __attribute__((dllimport))
-    #else
-      #define ZORBA_DLL_PUBLIC __declspec(dllimport)
-    #endif
-  #endif
-  #define ZORBA_DLL_LOCAL
-#else
-  #if __GNUC__ >= 4
-    #define ZORBA_DLL_PUBLIC __attribute__ ((visibility("default")))
-    #define ZORBA_DLL_LOCAL  __attribute__ ((visibility("hidden")))
-  #else
-    #define ZORBA_DLL_PUBLIC
     #define ZORBA_DLL_LOCAL
+  #else
+    #if __GNUC__ >= 4
+      #define ZORBA_DLL_PUBLIC __attribute__ ((visibility("default")))
+      #define ZORBA_DLL_LOCAL  __attribute__ ((visibility("hidden")))
+    #else
+      #define ZORBA_DLL_PUBLIC
+      #define ZORBA_DLL_LOCAL
+    #endif
   #endif
-#endif
-
 #else//BUILDING_ZORBA_STATIC
   #define ZORBA_DLL_PUBLIC
   #define ZORBA_DLL_LOCAL

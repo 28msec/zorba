@@ -71,7 +71,11 @@ printPart(std::ostream& os, std::string aInFile,
     std::ifstream lIn(aInFile.c_str());
     lIn.seekg(aStartPos);
 
+#ifdef WIN32
+    int lCharsRead = lIn._Readsome_s (buffer, aLen, aLen);
+#else
     int lCharsRead = lIn.readsome (buffer, aLen);
+#endif
     os.write (buffer, lCharsRead);
     os.flush();
     delete[] buffer;

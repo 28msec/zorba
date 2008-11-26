@@ -143,7 +143,11 @@ namespace zorbac {
       lStream.seekg(0);
 
       int lRes = 0;
+#ifdef WIN32
+      while ( (lRes = lStream._Readsome_s(lBuf, 1024, 1023)) > 0 ) {
+#else
       while ( (lRes = lStream.readsome(lBuf, 1023)) > 0 ) {
+#endif
         lBuf[lRes] = 0;
         fprintf (file, "%s", lBuf);
       }
@@ -170,7 +174,11 @@ namespace zorbac {
       lStream.seekg(0);
 
       int lRes = 0;
+#ifdef WIN32
+      while ( (lRes = lStream._Readsome_s(lBuf, 1024, 1023)) > 0 ) {
+#else
       while ( (lRes = lStream.readsome(lBuf, 1023)) > 0 ) {
+#endif
         lBuf[lRes] = 0;
         stream->write(stream, lBuf, lRes);
       }
@@ -236,7 +244,7 @@ namespace zorbac {
     try {
       delete static_cast<zorbac::Query*>(query->data);
       delete query;
-    } catch (ZorbaException& e) {
+    } catch (ZorbaException&) {
       assert(false);
     } catch (...) {
       assert(false);

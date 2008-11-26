@@ -128,7 +128,7 @@ namespace zorbac {
       zorba::Collection* lCollection = getCollection(collection);
       lCollection->removeReference();
       delete collection;
-    } catch (ZorbaException &e) { 
+    } catch (ZorbaException&) { 
       assert(false);
     } catch (...) { 
       assert(false);

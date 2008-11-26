@@ -27,7 +27,7 @@
 namespace zorba {
 
 class RootTypeManager;
-class static_context;
+class root_static_context;
 
 namespace store {
 class Store;
@@ -66,7 +66,7 @@ class ZORBA_DLL_PUBLIC GlobalEnvironment
   GlobalEnvironment();
 
   store::Store*                          m_store;
-  std::auto_ptr<static_context>          m_rootStaticContext;
+  root_static_context*                   m_rootStaticContext;
 #ifndef ZORBA_NO_BIGNUMBERS
   M_APM                                  m_mapm; // this is a pointer type
 #endif

@@ -709,9 +709,14 @@ PlanIter_t gflwor_codegen(gflwor_expr& v, int ccnt, gflwor_codegen_data &gdata) 
     vector<gflwor::OrderSpec> lOrderSpecs;
     string col = obc->get_collation ();
     if (col.empty ())
-      lOrderSpecs.push_back (gflwor::OrderSpec (pop_itstack (), obc->get_empty_mode (), obc->get_dir ()));
+      lOrderSpecs.push_back (gflwor::OrderSpec (pop_itstack (), 
+                                                obc->get_empty_mode() == StaticContextConsts::empty_least, 
+                                                obc->get_dir() == ParseConstants::dir_descending));
     else
-      lOrderSpecs.push_back (gflwor::OrderSpec (pop_itstack (), obc->get_empty_mode (), obc->get_dir (), col));
+      lOrderSpecs.push_back (gflwor::OrderSpec (pop_itstack (), 
+                                                obc->get_empty_mode() == StaticContextConsts::empty_least, 
+                                                obc->get_dir() == ParseConstants::dir_descending, 
+                                                col));
     
     const orderby_gclause::rebind_list_t &rebind_list = obc->get_rebind ();
     for (unsigned i = 0; i < rebind_list.size (); i++) {

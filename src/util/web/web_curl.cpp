@@ -157,7 +157,11 @@ int tidy(const std::ifstream& fStream, std::iostream& result, std::iostream& dia
   size = (uint)pbuf->pubseekoff (0,std::ios::end, std::ios::in);
   pbuf->pubseekpos (0, std::ios::in);
   buffer = new char[size];
+#ifdef WIN32
+  pbuf->_Sgetn_s (buffer, size, size);
+#else
   pbuf->sgetn (buffer, size);
+#endif
 
   TidyBuffer inputBuf;
   tidyBufAlloc(&inputBuf, size+1);

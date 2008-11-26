@@ -238,7 +238,7 @@ void mmfile::destroy()
 #endif
 		DeleteFile(path_str);
 #endif
-	} catch (error::ZorbaError& e) {
+	} catch (error::ZorbaError&) {
 		IOEXCEPTION("remove on: '"+path+"' application exception: ");
   } catch (exception& e) {
 		IOEXCEPTION("remove on: '"+path+"' system exception: "+e.what());

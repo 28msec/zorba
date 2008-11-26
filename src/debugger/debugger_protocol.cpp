@@ -413,7 +413,7 @@ SetMessage::SetMessage( Byte * aMessage, const unsigned int aLength ):
         {
           throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
         }
-        theLocations.insert( std::make_pair(getValue(*it, "id")->getinteger(), loc) );
+        theLocations.insert( std::make_pair((unsigned int)(getValue(*it, "id")->getinteger()), loc) );
       } else if ( getValue( *it, "expr" ) != 0 ) {
         std::wstring* lExpr = getValue(*it, "expr")->getstring(L"", true);
         std::string expr( lExpr->begin()+1, lExpr->end()-1 );
@@ -422,7 +422,7 @@ SetMessage::SetMessage( Byte * aMessage, const unsigned int aLength ):
         {
           throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
         }
-        theExprs.insert( std::make_pair( getValue(*it, "id")->getinteger(),  xqpString( expr ) ) );
+        theExprs.insert( std::make_pair((unsigned int)(getValue(*it, "id")->getinteger()),  xqpString( expr ) ) );
       } else {
         throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
       }
@@ -488,7 +488,7 @@ ClearMessage::ClearMessage( Byte * aMessage, const unsigned int aLength ):
     json::array_list_t::iterator it; 
     for (it=list->begin(); it!=list->end(); ++it)
     {
-      theIds.push_back( (*it)->getinteger() );
+      theIds.push_back( (unsigned int)((*it)->getinteger() ));
     }
   } else {
     throw MessageFormatException("Invalid JSON format for Clear breakpoint message.");
@@ -574,7 +574,7 @@ SuspendedEvent::SuspendedEvent( Byte * aMessage, const unsigned int aLength ):
 
   if ( cause  != 0 )
   {
-    theCause = cause->getinteger();
+    theCause = (unsigned int)(cause->getinteger());
   } else {
     throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
   }
@@ -964,7 +964,7 @@ SetReply::SetReply(Byte* aMessage, const unsigned int aLength): ReplyMessage(aMe
         {
           throw MessageFormatException("Invalid JSON format for Set breakpoint reply message.");
         }
-        theBreakpoints.insert( std::make_pair(getValue(*it, "id")->getinteger(), loc));
+        theBreakpoints.insert( std::make_pair((unsigned int)(getValue(*it, "id")->getinteger()), loc));
       } else {
         throw MessageFormatException("Invalid JSON format for breakpoint reply message.");
       }

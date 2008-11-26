@@ -274,9 +274,10 @@ bool TypeOps::is_treatable(const store::Item_t item, const XQType& type)
       return false;
 
     // TODO: check content type
-    switch(nodeTest->get_kind()) {
-    default: return true;
-    }
+    // switch(nodeTest->get_kind()) {
+    // default: return true;
+    // }
+      return true;
   }
 
   default:

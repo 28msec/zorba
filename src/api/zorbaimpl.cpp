@@ -89,7 +89,8 @@ ZorbaImpl::compileQuery(
     const String& aQuery,
     ErrorHandler* aErrorHandler)
 {
-  return compileQuery(aQuery, Zorba_CompilerHints_default(), aErrorHandler);
+  Zorba_CompilerHints_t lHints;
+  return compileQuery(aQuery, lHints, aErrorHandler);
 }
 
 
@@ -99,7 +100,8 @@ ZorbaImpl::compileQuery(
     const StaticContext_t& aStaticContext, 
     ErrorHandler* aErrorHandler)
 {
-  return compileQuery(aQuery, aStaticContext, Zorba_CompilerHints_default(), aErrorHandler);
+  Zorba_CompilerHints_t lHints;
+  return compileQuery(aQuery, aStaticContext, lHints, aErrorHandler);
 }
 
 
@@ -135,7 +137,8 @@ ZorbaImpl::compileQuery(
 XQuery_t
 ZorbaImpl::compileQuery(std::istream& aQuery, ErrorHandler* aErrorHandler)
 {
-  return compileQuery(aQuery, Zorba_CompilerHints_default(), aErrorHandler);
+  Zorba_CompilerHints_t lHints;
+  return compileQuery(aQuery, lHints, aErrorHandler);
 }
 
 
@@ -145,7 +148,8 @@ ZorbaImpl::compileQuery(
     const StaticContext_t& aStaticContext,
     ErrorHandler* aErrorHandler)
 {
-  return compileQuery(aQuery, aStaticContext, Zorba_CompilerHints_default(), aErrorHandler);
+  Zorba_CompilerHints_t lHints;
+  return compileQuery(aQuery, aStaticContext, lHints, aErrorHandler);
 }
 
 

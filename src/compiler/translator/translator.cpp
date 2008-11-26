@@ -723,7 +723,7 @@ void *begin_visit (const BaseURIDecl& v) {
   CHK_SINGLE_DECL (hadBUriDecl, XQST0032);
   try {
     sctx_p->set_baseuri(v.get_base_uri());
-  } catch (error::ZorbaError &e) {
+  } catch (error::ZorbaError&) {
     // assume it's a relative uri and we will resolve it later.
     // It's currently a problem if the uri is absolute but invalid
   }

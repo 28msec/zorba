@@ -288,7 +288,7 @@ bool ZorbaDebugger::hasToSuspend()
         setStatus(QUERY_SUSPENDED, CAUSE_BREAKPOINT);
 	      return true;
       }
-    } catch ( error::ZorbaError& e) {
+    } catch ( error::ZorbaError&) {
       //do nothing... 
     }
   }
@@ -565,7 +565,7 @@ const QueryLoc ZorbaDebugger::addBreakpoint(const QueryLoc& aLocation)
   try
   {
     lStringURI = lStaticCtx->getNamespaceURIByPrefix(lStringURI); 
-  }catch(ZorbaException &e){ /* do nothing */ }
+  }catch(ZorbaException&){ /* do nothing */ }
   
   //Resolve the logical/physical URI
   ItemFactory* lItemFactory = ItemFactoryImpl::getInstance();

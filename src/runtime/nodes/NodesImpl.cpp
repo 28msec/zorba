@@ -234,7 +234,7 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
       GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
     }
-    catch (error::ZorbaError& e) 
+    catch (error::ZorbaError&) 
     {
       ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Error retrieving resource.");
     }

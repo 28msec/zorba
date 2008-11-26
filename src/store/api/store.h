@@ -108,7 +108,7 @@ public:
    *					 0, if node1.id == node2.id
    *					+1, if node1.id &gt; node2.id
    */
-  virtual long compareNodes(Item* node1, Item* node2) const = 0;
+  virtual short compareNodes(Item* node1, Item* node2) const = 0;
 		
   /**
    * Sorts the nodes produced by the passed iterator

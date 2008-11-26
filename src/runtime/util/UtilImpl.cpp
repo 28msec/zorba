@@ -175,7 +175,7 @@ ZorbaRandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  std::srand(time(NULL));
+  std::srand((unsigned int)(time(NULL)));
 
   GENV_ITEMFACTORY->createInteger(result, Integer::parseInt (std::rand()));
   STACK_PUSH (true, state);

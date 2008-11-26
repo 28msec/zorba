@@ -116,7 +116,7 @@ int read_state(xqp_short *clockseq, xqp_ulong *timestamp,
 void write_state(xqp_short clockseq, xqp_ulong timestamp,
                  uuid_node_t node)
 {
-  static int inited = 0;
+  volatile static bool inited = false;
   static xqp_ulong next_save;
   FILE* fp;
 

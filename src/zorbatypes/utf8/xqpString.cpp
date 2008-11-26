@@ -1365,7 +1365,7 @@ xqpString xqpString::normalize(xqpString normMode)
     }
 
     matcher.reset (us);
-    return matcher.find ();
+    return matcher.find () != 0;
   }
 
 

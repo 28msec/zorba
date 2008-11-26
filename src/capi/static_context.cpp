@@ -347,7 +347,7 @@ namespace zorbac {
       zorbac::StaticContext* lWrapper = static_cast<zorbac::StaticContext*>(context->data);
       delete lWrapper;
       delete context;
-    } catch (ZorbaException &e) { 
+    } catch (ZorbaException&) { 
       assert(false);
     } catch (...) { 
       assert(false);

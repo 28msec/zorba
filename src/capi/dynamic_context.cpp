@@ -135,7 +135,7 @@ namespace zorbac {
     try {
       //zorba::DynamicContext* lContext = getDynamicContext(context);
       delete context;
-    } catch (ZorbaException &e) { 
+    } catch (ZorbaException&) { 
       assert(false);
     } catch (...) { 
       assert(false);

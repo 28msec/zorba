@@ -89,22 +89,22 @@ std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc) {
     
     if ( (*obj)["lineBegin"] != 0 )
     {
-      loc.setLineBegin( (*obj)["lineBegin"]->getinteger() );
+      loc.setLineBegin( (unsigned int)((*obj)["lineBegin"]->getinteger() ));
     }
     
     if ( (*obj)["columnBegin"] != 0 )
     {
-      loc.setColumnBegin( (*obj)["columnBegin"]->getinteger() );
+      loc.setColumnBegin( (unsigned int)((*obj)["columnBegin"]->getinteger() ));
     }
 
     if ( (*obj)["lineEnd"] != 0 )
     {
-      loc.setLineEnd( (*obj)["lineEnd"]->getinteger() );
+      loc.setLineEnd( (unsigned int)((*obj)["lineEnd"]->getinteger() ));
     }
 
     if ( (*obj)["columnEnd"] != 0 )
     {
-      loc.setColumnEnd( (*obj)["columnEnd"]->getinteger() );
+      loc.setColumnEnd( (unsigned int)((*obj)["columnEnd"]->getinteger() ));
     }
     return loc;
  }

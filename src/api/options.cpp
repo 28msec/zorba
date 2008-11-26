@@ -108,10 +108,10 @@ Zorba_SerializerOptions_t Zorba_SerializerOptions::SerializerOptionsFromStringPa
   return opt;
 }
 
-Zorba_CompilerHints_t Zorba_CompilerHints_default()
+void Zorba_CompilerHints_default(Zorba_CompilerHints_t* aHints)
 {
   Zorba_CompilerHints_t lDefault;
-  return lDefault;
+  *aHints = lDefault;
 }
 
 Zorba_SerializerOptions_t* Zorba_SerializerOptions_default() 

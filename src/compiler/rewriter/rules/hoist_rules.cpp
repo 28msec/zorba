@@ -356,7 +356,7 @@ RULE_REWRITE_PRE(HoistExprsOutOfLoops)
   if (hoist_expressions(rCtx, node, varmap, freevarMap, &root)) {
     if (root.flwor != NULL) {
       root.flwor->set_retval(node);
-      return root.flwor;
+      return root.flwor.getp();
     }
     return node;
   }

@@ -392,7 +392,8 @@ XQueryImpl::parse(std::istream& aQuery)
 void
 XQueryImpl::compile(const String& aQuery)
 {
-  return compile( aQuery, Zorba_CompilerHints_default() ); 
+  Zorba_CompilerHints_t lHints;
+  return compile( aQuery, lHints ); 
 }
 
 

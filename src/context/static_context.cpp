@@ -555,7 +555,7 @@ void static_context::compute_current_absolute_baseuri()
       // is already absolute baseuri
       set_current_absolute_baseuri(lCheckValid.toString());
       return; // valid (absolute) uri
-    } catch (error::ZorbaError& e) {
+    } catch (error::ZorbaError&) {
 //       throw e;
     } // assume it's relative and go on
   }

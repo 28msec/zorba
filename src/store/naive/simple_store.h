@@ -147,7 +147,7 @@ public:
   store::Item_t getDocument(const xqpStringStore_t& uri);
   void deleteDocument(const xqpStringStore_t& uri);
 
-  long compareNodes(store::Item* node1, store::Item* node2) const;
+  short compareNodes(store::Item* node1, store::Item* node2) const;
 
   store::Iterator_t sortNodes(
         store::Iterator* iterator,

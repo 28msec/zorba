@@ -168,7 +168,7 @@ namespace zorba {
     short lShort;
     if (strToShort(aStr, lShort)) {
       if (lShort >= -128 && lShort <= 127) {
-        aByte = lShort;
+        aByte = (xqp_byte)lShort;
         return true;
       } 
       else
@@ -184,7 +184,7 @@ namespace zorba {
     unsigned short lUShort;
     if (strToUShort(aStr, lUShort)) {
       if (lUShort <= 255) {
-        aUByte = lUShort;
+        aUByte = (xqp_ubyte)lUShort;
         return true;
       }
       else

@@ -120,7 +120,7 @@ namespace zorbac {
       zorbac::Item* lItem = static_cast<zorbac::Item*>(item->data);
       delete lItem;
       delete item;
-    } catch (ZorbaException &e) {
+    } catch (ZorbaException&) {
       assert(false);
     } catch (...) {
       assert(false);

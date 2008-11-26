@@ -604,7 +604,7 @@ public:
   bool isIdRefs() const         { return (theFlags & IsIdRefs) != 0; }
   void setIsIdRefs()            { theFlags |= IsIdRefs; }
   void resetIsIdRefs()          { theFlags &= ~IsIdRefs; }
-  bool haveBaseUri() const      { return (theFlags & HaveBaseUri); }
+  bool haveBaseUri() const      { return (theFlags & HaveBaseUri) != 0; }
   void setHaveBaseUri()         { theFlags |= HaveBaseUri; }
   void resetHaveBaseUri()       { theFlags &= ~HaveBaseUri; }
   void setHaveValue()           { theFlags |= HaveValue; }

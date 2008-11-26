@@ -123,7 +123,7 @@ class MessageFactory
           default:
             return false;
         } 
-      } catch(MessageFormatException &e) {
+      } catch(MessageFormatException&) {
           return false;
       }
     }

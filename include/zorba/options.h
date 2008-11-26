@@ -179,12 +179,11 @@ typedef struct Zorba_SerializerOptions Zorba_SerializerOptions_t;
 extern "C" {
 #endif
 
-/** \brief Helper function for C to create a Zorba_CompilerHints_t struct 
- *         because of missing default constructor. 
+/** \brief Helper function for C to set default values ComplilerHints struct.
  *
  * \retval Zorba_CompilerHints_t with default member values 
  */
-ZORBA_DLL_PUBLIC Zorba_CompilerHints_t Zorba_CompilerHints_default();
+ZORBA_DLL_PUBLIC void Zorba_CompilerHints_default(Zorba_CompilerHints_t*);
 
 /** \brief Helper function to create a Zorba_SerializerOptions_t struct because 
  *         of missing default constructor. C++ code can delete the

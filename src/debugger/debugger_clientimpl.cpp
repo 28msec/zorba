@@ -105,7 +105,7 @@ bool ZorbaDebuggerClientImpl::handshake()
     {
       return true;
     }
-  } catch ( DebuggerSocketException &e ) {
+  } catch ( DebuggerSocketException& ) {
     //do nothing...
   }
   return false;
@@ -180,7 +180,7 @@ ZORBA_THREAD_RETURN listenEvents( void * aClient )
         }
       }
     }
-  } catch(std::exception &e) {
+  } catch(std::exception&) {
     //do nothing...
   }
   return 0;

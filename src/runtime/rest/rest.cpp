@@ -604,7 +604,11 @@ static bool processSinglePayload(Item_t& payload_data, CURL* EasyHandle, curl_sl
     long size = pbuf->pubseekoff(0,ios::end,ios::in);
     pbuf->pubseekpos(0,ios::in);    
     buffer = std::auto_ptr<char>(new char[size]);
+#ifdef WIN32
+    pbuf->_Sgetn_s(buffer.get(), size, size);
+#else
     pbuf->sgetn(buffer.get(), size);
+#endif
 
     curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDSIZE , size);
     curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDS, buffer.get());

@@ -1652,7 +1652,7 @@ bool GenericCast::isCastable(
         store::Item_t temp = aItem;
         return castToAtomic(temp, temp, aTargetType);
       }
-      catch (error::ZorbaError& e)
+      catch (error::ZorbaError&)
       {
         return false;
       }

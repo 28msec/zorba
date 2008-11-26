@@ -145,7 +145,7 @@ namespace zorbac {
     try {
       //zorba::XmlDataManager* lDataManager = getDataManager(collection);
       delete data_manager;
-    } catch (ZorbaException &e) { 
+    } catch (ZorbaException&) { 
       assert(false);
     } catch (...) { 
       assert(false);

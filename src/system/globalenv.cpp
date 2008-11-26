@@ -130,10 +130,10 @@ void GlobalEnvironment::init(store::Store* store)
 
   m_globalEnv->m_store = store;
 
-  root_static_context* rctx = new root_static_context();
-  m_globalEnv->m_rootStaticContext.reset(rctx);
-  rctx->init();
-  BuiltinFunctionLibrary::populateContext(m_globalEnv->m_rootStaticContext.get());
+  m_globalEnv->m_rootStaticContext = new root_static_context();
+  m_globalEnv->m_rootStaticContext->init();
+
+  BuiltinFunctionLibrary::populateContext(m_globalEnv->m_rootStaticContext);
 
 #ifndef ZORBA_NO_BIGNUMBERS
   // initialize mapm for bignum handling
@@ -210,7 +210,8 @@ void GlobalEnvironment::destroy()
   m_globalEnv->m_mapm = 0;
 #endif
 
-  m_globalEnv->m_rootStaticContext.reset(NULL);
+  delete m_globalEnv->m_rootStaticContext;
+  m_globalEnv->m_rootStaticContext = 0;
 
   m_globalEnv->m_store = NULL;
 
@@ -220,8 +221,10 @@ void GlobalEnvironment::destroy()
 
 
 GlobalEnvironment::GlobalEnvironment()
-{
-}
+: m_store(0), 
+  m_rootStaticContext(0),
+  m_compilerSubSys(0)
+{}
 
 
 static_context& GlobalEnvironment::getRootStaticContext()

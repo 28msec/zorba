@@ -200,7 +200,7 @@ namespace zorbac {
       lZorba->shutdown();
 
       delete impl;
-    } catch (ZorbaException &e) {
+    } catch (ZorbaException&) {
       assert(false);
     } catch (...) {
       assert(false);
