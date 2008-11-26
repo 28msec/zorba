@@ -462,13 +462,13 @@ int uri(int argc, char* argv[])
       ""
     },
     {
-      "file://",
+      "file://a",
       "/a/b/c",
-      "file:///a/b/c",
+      "file://a/a/b/c",
       "file",
       0,
       "",
-      "",
+      "a",
       "",
       "/a/b/c",
       "",
@@ -500,8 +500,6 @@ int uri(int argc, char* argv[])
       "",
       ""
     }
-
-
   }; // URITestEntry tests[]
 
 
