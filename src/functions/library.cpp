@@ -153,6 +153,7 @@ DECL(sctx, fn_namespace_uri,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
 
+// lang / - handled by translator
 DECL(sctx, fn_lang,
      (createQName(XQUERY_FN_NS, "fn", "lang"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
@@ -176,7 +177,6 @@ void BuiltinFunctionLibrary::populateContext_AnyURI(static_context *sctx)
 //begin functions on AnyURI
 
 // resolve-uri / 1 handled by translator
-
  DECL(sctx, fn_resolve_uri,
      (createQName(XQUERY_FN_NS, "fn", "resolve-uri"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
@@ -307,8 +307,8 @@ DECL(sctx, fn_index_of,
 
 DECL(sctx, fn_index_of,
     (createQName(XQUERY_FN_NS,"fn","index-of"),
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-    GENV_TYPESYSTEM.ITEM_TYPE_ONE,
+    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
     GENV_TYPESYSTEM.STRING_TYPE_ONE,
     GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
 
