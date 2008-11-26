@@ -1,0 +1,8 @@
+  ----------------------------
+  FLWOR Foundation - Zorba 0.9
+  ----------------------------
+
+This is a list of issues that we are aware of but are not fixed in this version:
+
+1) floating-point precision problems.
+   For details see opened bug no. 2210842 (https://sourceforge.net/tracker/index.php?func=detail&aid=2210842&group_id=226244&atid=1067586)
