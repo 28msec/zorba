@@ -344,12 +344,12 @@ isEqual(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, int& 
     }
     std::getline(li, lLine);
     std::getline(ri, rLine);
-    ++aLine;
     if ( (aCol = lLine.compare(rLine)) != 0) {
       aRefLine = lLine;
       aResLine = rLine;
       return false;
     }
+    ++aLine;
   }
 
   return true;
@@ -548,7 +548,7 @@ main(int argc, char** argv)
           std::cout << "=== end of expected result ===" << std::endl;
 
           std::cout << "See line " << lLine << ", col " << lCol << " of expected result. " << std::endl;
-          std::cout << "Actual: <";
+          std::cout << "Actual:   <";
           if( -1 != lPos )
             printPart(std::cout, lResultFile.get_path(), lPos, 15);
           else
