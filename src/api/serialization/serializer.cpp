@@ -326,12 +326,12 @@ void serializer::emitter::emit_text(const store::Item* item)
   const store::Item* qname;  
   const store::Item* element_parent = item->getParent();  
   
-  if (element_parent == NULL)
+  if (element_parent == NULL || element_parent->getNodeKind() != store::StoreConsts::elementNode)
   {
     emit_expanded_string(item->getStringValue());
     return;
   }
-    
+  
   qname = element_parent->getNodeName();  
   if (qname->getNamespace()->empty())
     name = qname->getLocalName();
