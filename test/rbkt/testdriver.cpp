@@ -217,7 +217,10 @@ createItem(std::string strValue)
   size_t              pos = strValue.find("xs:");
 
   if(pos == std::string::npos)
+  {
+    strValue = zorba::URI::encode_file_URI (strValue)->str ();
     return  itemfactory->createString(strValue);
+  }
   else
   {
     pos += 3;
