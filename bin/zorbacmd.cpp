@@ -143,26 +143,18 @@ createSerializerOptions(Zorba_SerializerOptions_t& lSerOptions, ZorbaCMDProperti
 {
   if ( aProperties->indent() )
     lSerOptions.indent = ZORBA_INDENT_YES;
-  else
-    lSerOptions.indent = ZORBA_INDENT_NO;
-
+  
   if ( aProperties->omitXmlDeclaration() )
     lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-  else
-    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_NO;
-
+  
   if ( aProperties->byteOrderMark() )
     lSerOptions.byte_order_mark = ZORBA_BYTE_ORDER_MARK_YES;
-  else
-    lSerOptions.byte_order_mark = ZORBA_BYTE_ORDER_MARK_NO;
-
+  
   if ( aProperties->serializeHtml() )
     lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
   else if ( aProperties->serializeText() )
     lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
-  else  
-    lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
-
+  
   return true;
 }
 
