@@ -515,6 +515,7 @@ int _tmain(int argc, _TCHAR* argv[])
       try
       {
         Zorba_SerializerOptions lSerOptions = Zorba_SerializerOptions::SerializerOptionsFromStringParams(lProperties.getSerializerParameters());
+        createSerializerOptions(lSerOptions, &lProperties);        
 
         if (lTiming) 
         {
