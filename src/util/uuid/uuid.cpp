@@ -196,7 +196,11 @@ uuid_t NameSpace_DNS = { // 6ba7b810-9dad-11d1-80b4-00c04fd430c8
   0x11d1,
   0x80,
   0xb4,
-  {0x00, 0xc0, 0x4f, 0xd4, 0x30, 0xc8}
+  {
+    0x00, (unsigned char)0xc0,
+    0x4f, (unsigned char)0xd4,
+    0x30, (unsigned char)0xc8
+  }
 };
 
 /* uuidToString -- transform a UUID to a string*/

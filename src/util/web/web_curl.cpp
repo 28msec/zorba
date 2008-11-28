@@ -84,7 +84,7 @@ int http_get(const char* url, xqp_string& result)
 int tidy(const char* input, xqp_string& result, xqp_string& diagnostics) throw()
 {
   TidyDoc             tdoc;
-  bool                ok;
+  Bool                ok;
   int                 rc = -1;
   TidyBuffer output, errbuf;
   tidyBufInit( &output );
@@ -147,7 +147,7 @@ int tidy(const char* input, xqp_string& result, xqp_string& diagnostics) throw()
 int tidy(const std::ifstream& fStream, std::iostream& result, std::iostream& diagnostics)
 {
   TidyDoc         tdoc;
-  bool            ok;
+  Bool            ok;
   int             rc = -1;
   std::filebuf*   pbuf;
   uint            size;
@@ -228,7 +228,7 @@ int tidy(const std::ifstream& fStream, std::iostream& result, std::iostream& dia
 int tidy(const std::istringstream& isStream, std::iostream& result, std::iostream& diagnostics)
 {
   TidyDoc             tdoc;
-  bool                ok;
+  Bool                ok;
   int                 rc = -1;
   std::stringbuf *    isBuf = isStream.rdbuf();
   uint                size = (uint)isBuf->in_avail();
