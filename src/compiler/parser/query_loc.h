@@ -81,14 +81,10 @@ public:
   std::string getFunctionName() const { return theFunctionName; }
 
   xqpString toJSON() const;
+
   static QueryLoc fromJSON(json::value *obj);
  
-  bool equals(const QueryLoc& loc) const
-  {
-    return theFilenameBegin==loc.getFilenameBegin() && theFilenameEnd==loc.getFilenameEnd() &&
-           theColumnBegin==loc.getColumnBegin() && theColumnEnd==loc.getColumnEnd() &&
-           theLineBegin==loc.getLineBegin() && theLineEnd==loc.getLineEnd();
-  }
+  bool equals(const QueryLoc& loc) const;
 
   bool operator==(const QueryLoc& loc) const
   {
