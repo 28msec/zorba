@@ -289,7 +289,7 @@ istream* DebuggerHandler::resolve(const String& aNamespace) const
   try
   {
     lNamespace = lStaticCtx->getNamespaceURIByPrefix(lNamespace); 
-  }catch(ZorbaException &e){ /* do nothing */ }
+  }catch(ZorbaException&){ /* do nothing */ }
 
   ModuleURIResolver* lModuleURIResolver = lStaticCtx->getModuleURIResolver(); 
   auto_ptr<istream> lInput;

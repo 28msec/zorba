@@ -103,7 +103,7 @@ populateStaticContext(
   {
     try {
       aStaticContext->addCollation( aProperties->defaultCollation() );
-    } catch (zorba::ZorbaException& e) {
+    } catch (zorba::ZorbaException&) {
       std::cerr << "Error: the given collation '" << aProperties->defaultCollation() << "' is not a valid collation." << std::endl;
       return false;
     }
