@@ -5301,6 +5301,8 @@ void end_visit (const FlowCtlStatement& v, void* visit_state) {
   case FlowCtlStatement::CONTINUE:
     a = flowctl_expr::CONTINUE;
     break;
+  default:
+    ZORBA_FATAL(false, "");
   }
   nodestack.push (new flowctl_expr (loc, a));
 }

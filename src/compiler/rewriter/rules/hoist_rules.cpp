@@ -197,7 +197,7 @@ static rchandle<var_expr> try_hoisting(RewriterContext& rCtx, expr *e, const std
   const DynamicBitset& varset = fvme->second;
   bool inloop = false;
   struct flwor_holder *h = holder;
-  int i;
+  int i = 0;
   bool found = false;
   while(h->prev != NULL && !found) {
     // If any free variable is a group-by variable, give up.

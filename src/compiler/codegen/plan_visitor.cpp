@@ -1083,6 +1083,8 @@ void end_visit (flowctl_expr& v) {
   case flowctl_expr::CONTINUE:
     a = FlowCtlIterator::CONTINUE;
     break;
+  default:
+    ZORBA_FATAL(false, "");
   }
   checked_vector<PlanIter_t> argv;
   itstack.push (new FlowCtlIterator (qloc, argv, a));
