@@ -31,7 +31,8 @@ namespace zorba {
       resolve(const store::Item_t& aURI,
               static_context* aStaticContext,
               bool validate,
-              bool tidying = false);
+              bool tidying,
+              const store::Item_t& tidyUserOpt = NULL);
 
     protected:
       friend class StaticContextImpl;

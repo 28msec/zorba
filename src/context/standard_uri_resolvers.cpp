@@ -38,13 +38,14 @@ StandardDocumentURIResolver::resolve(
     const store::Item_t& aURI,
     static_context* aStaticContext,
     bool validate,
-    bool tidying)
+    bool tidying,
+    const store::Item_t& tidyUserOpt)
 {
   store::Item_t lResultDoc;
 
   if (aURI == NULL)
     return NULL;
-    
+
   xqpStringStore_t lUriString = aURI->getStringValue();
 
   store::Store& lStore = GENV.getStore();
@@ -71,16 +72,17 @@ StandardDocumentURIResolver::resolve(
     if (tidying) 
     {
 #ifdef ZORBA_WITH_TIDY
-      std::stringstream out, diag;
-      int res = tidy(lInStream, out, diag);
+      std::stringstream out;
+      xqp_string        diag;
+      int res = tidy(lInStream, out, diag, (NULL != tidyUserOpt? tidyUserOpt->getStringValue()->c_str(): NULL));
       if( res < 0){
-        ZORBA_ERROR_DESC_OSS(XQP0029_TIDY_ERROR, "");
+        ZORBA_ERROR_DESC_OSS(API0036_TIDY_ERROR, diag.c_str());
       }
       /*
         else if(res > 0){
         //raise a warning
       }*/
-      
+
       lResultDoc = lStore.loadDocument(lURI.toString().getStore(), out);
 #else
       ZORBA_ASSERT(!tidying);
@@ -113,14 +115,16 @@ StandardDocumentURIResolver::resolve(
 
     std::istringstream iss(xmlString.c_str());
 
-    if (tidying) 
+    if (tidying)
     {
 #ifdef ZORBA_WITH_TIDY
-      std::stringstream out, diag;
-      int res = tidy(iss, out, diag);
+      std::stringstream out;
+      xqp_string        diag;
+      int res = tidy(iss, out, diag, (NULL != tidyUserOpt? tidyUserOpt->getStringValue()->c_str(): NULL));
+
       if( res < 0)
       {
-        ZORBA_ERROR_DESC_OSS(XQP0029_TIDY_ERROR, "");
+        ZORBA_ERROR_DESC_OSS(API0036_TIDY_ERROR, diag.c_str());
       }
       /*
         else if(res > 0){

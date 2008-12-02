@@ -150,6 +150,10 @@ DEF_ERR_CODE (API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED, API0034, "File or folder 
 
 DEF_ERR_CODE (API0035_COLLECTION_CANNOT_BE_SERIALIZED, API0035, "Collection {/s} can not be serialized.");
 
+DEF_ERR_CODE (API0036_TIDY_ERROR, API0036, "Error in Tidy library: {/s}.");
+
+DEF_ERR_CODE (API0037_TIDY_ERROR_SET_OPTION, API0037, "Could not set option {/s} with value {/s} in Tidy.");
+
 DEF_ERR_CODE (API0020_DOCUMENT_ALREADY_EXISTS, API0020, "Another document with uri {/s} exists in the store already.")
 
 DEF_ERR_CODE (API0021_ITEM_TO_LOAD_IS_NOT_NODE, API0021, "The uri {/s} does not identify an XML node")
@@ -206,10 +210,7 @@ DEF_ERR_CODE (XQP0027_MS_DOM_ERROR, XQP0027, "Error from MS DOM engine.")
 
 DEF_ERR_CODE (XQP0028_FUNCTION_IMPL_NOT_FOUND, XQP0028, "The external function called ({/s}/s) is not bound in the static context")
 
-DEF_ERR_CODE (XQP0029_TIDY_ERROR, XQP0029, "Error in Tidy library: {/s}")
-
 DEF_ERR_CODE (XQP0030_DEADLOCK, XQP0029, "Lock upgrade request will result in deadlock")
-
 
 //
 // XPDY

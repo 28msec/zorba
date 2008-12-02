@@ -34,7 +34,8 @@ namespace zorba {
       resolve(const store::Item_t& aURI,
               static_context* aStaticContext,
               bool validate,
-              bool tidying = false) = 0;
+              bool tidying,
+              const store::Item_t& tidyUserOpt = NULL) = 0;
   };
 
   class InternalCollectionURIResolver

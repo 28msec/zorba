@@ -85,7 +85,8 @@ namespace zorba {
               StaticContext* aStaticContext,
               XmlDataManager* aXmlDataManager,
               bool validate,
-              bool tidying = false) = 0;
+              bool tidying,
+              const Item& aTidyUserOpt = NULL) = 0;
   };
 
   class ZORBA_DLL_PUBLIC CollectionURIResolverResult : public URIResolverResult

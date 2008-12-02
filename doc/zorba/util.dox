@@ -23,7 +23,7 @@
      <li> \ref apendix
    </ul>
  </ul>
- 
+
 \section introduction 1 Introduction
 This document defines a general set of functions grouped together under "zorba-util" namespace.
 
@@ -45,10 +45,39 @@ In order to use the functions that require Tidy you have to:\n
 \subsection tidy 2.1.1 zorba-util:tidy
 
 \code
-  declare function tidy($str as xs:string) as xs:string
+  declare function tidy($str          as xs:string) as xs:string
+  declare function tidy($str          as xs:string,
+                        $tidyOptions  as xs:string?) as xs:string
 \endcode
 
 Summary: Assuming <b>$str</b> contains a "dirty" HTML the function will return a valid XHTML version of the <b>$str</b>. \n
+
+A complete set of options that can be set for a Tidy call can be found at <a href="http://tidy.sourceforge.net/docs/quickref.html" target="_blank">HTML Tidy Configuration Options</a> \n
+
+By default Zorba sets these values for the following options: \n
+- char-encoding=utf8 \n
+- newline=LF \n
+- tidy-mark=true \n
+- quote-nbsp=no \n
+
+These options can be overwritten by passing different <b>$tidyOptions</b>
+
+\subsection ex_tidy Example:
+\code
+  import module namespace
+  fn-zorba-util="http://www.zorba-xquery.com/zorba/util-functions";
+  fn-zorba-util:tidy('<title>Foo</title><p>Foo!','"newline=CRLF","doctype=omit","force-output","bare=yes"')
+\endcode
+
+As a result: \n
+- <i>newline</i> will be set to <i>CRLF</i> (see <a href="http://tidy.sourceforge.net/docs/quickref.html#newline" target="_blank">newline</a>) \n
+- <i>doctype</i> will be set to <i>omit</i> (see <a href="http://tidy.sourceforge.net/docs/quickref.html#doctype" target="_blank">doctype</a>) \n
+- <i>force-output</i> will be set to <i>true</i> (see <a href="http://tidy.sourceforge.net/docs/quickref.html#force-output" target="_blank">force-output</a>) \n
+- <i>bare</i> will be set to <i>true</i> (see <a href="http://tidy.sourceforge.net/docs/quickref.html#bare" target="_blank">bare</a>) \n
+
+Note: you can set a boolean parameter to true by either of the following methods: \n
+- passing only the option name (like <i>force-output</i> in the above example) \n
+- passing the option name and the value (like <i>bare</i> in the above example) \n
 
 Error conditions:\n
 If Tidy lib is not able to transform the given string into a valid XHTML, an error is raised XQP0029_TIDY_ERROR (see \ref apendix).\n
@@ -56,10 +85,39 @@ If Tidy lib is not able to transform the given string into a valid XHTML, an err
 \subsection tdoc 2.1.2 zorba-util:tdoc
 
 \code
-  declare function tdoc($uri as xs:string?) as document-node()?
+  declare function tdoc($uri         as xs:string?) as document-node()?
+  declare function tdoc($uri         as xs:string
+                        $tidyOptions as xs:string?) as document-node()?
 \endcode
 
 Summary: This function if very similar to the <tt>15.5.4 fn:doc</tt> from <a href="http://www.w3.org/TR/xquery-operators/#func-doc" target="_blank">XQuery 1.0 and XPath 2.0 Functions and Operators</a> function. The only difference is that prior to parsing  and inserting the document identified by <b>$uri</b> in the store, <tt>tdoc</tt> function transforms the document into a valid XHTML document with the help of Tidy lib.\n
+
+A complete set of options that can be set for a Tidy call can be found at <a href="http://tidy.sourceforge.net/docs/quickref.html" target="_blank">HTML Tidy Configuration Options</a> \n
+
+By default Zorba sets these values for the following options: \n
+- char-encoding=utf8 \n
+- newline=LF \n
+- tidy-mark=true \n
+- quote-nbsp=no \n
+
+These options can be overwritten by passing different <b>$tidyOptions</b>
+
+\subsection ex_tdoc Example:
+\code
+  import module namespace
+  fn-zorba-util="http://www.zorba-xquery.com/zorba/util-functions";
+  fn-zorba-util:tdoc('http://tidy.sourceforge.net/libintro.html','"newline=CRLF","doctype=omit","force-output","bare=yes"')
+\endcode
+
+As a result: \n
+- <i>newline</i> will be set to <i>CRLF</i> (see <a href="http://tidy.sourceforge.net/docs/quickref.html#newline" target="_blank">newline</a>) \n
+- <i>doctype</i> will be set to <i>omit</i> (see <a href="http://tidy.sourceforge.net/docs/quickref.html#doctype" target="_blank">doctype</a>) \n
+- <i>force-output</i> will be set to <i>true</i> (see <a href="http://tidy.sourceforge.net/docs/quickref.html#force-output" target="_blank">force-output</a>) \n
+- <i>bare</i> will be set to <i>true</i> (see <a href="http://tidy.sourceforge.net/docs/quickref.html#bare" target="_blank">bare</a>) \n
+
+Note: you can set a boolean parameter to true by either of the following methods: \n
+- passing only the option name (like <i>force-output</i> in the above example) \n
+- passing the option name and the value (like <i>bare</i> in the above example) \n
 
 Error conditions:\n
 If Tidy lib is not able to transform the given string into a valid XHTML, an error is raised XQP0029_TIDY_ERROR (see \ref apendix).\n

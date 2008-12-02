@@ -59,17 +59,20 @@ namespace zorba {
   DocumentURIResolverWrapper::resolve(const store::Item_t& aURI,
                                       static_context* aStaticContext,
                                       bool validate,
-                                      bool tidying)
+                                      bool tidying,
+                                      const store::Item_t& aTidyUserOpt)
   {
     StaticContextImpl  lOuterStaticContext(aStaticContext, 0);
     Item               lURIItem(aURI.getp());
+    Item               lTidyUserOpt(aTidyUserOpt.getp());
 
     // we have the ownership; it will be destroyed automatically once we leave this function
     std::auto_ptr<DocumentURIResolverResult> lResult = theDocResolver->resolve( lURIItem, 
                                                                                 &lOuterStaticContext,
                                                                                 XmlDataManagerImpl::getInstance(),
                                                                                 validate,
-                                                                                tidying);
+                                                                                tidying,
+                                                                                lTidyUserOpt);
 
     if (lResult->getError() == URIResolverResult::UR_NOERROR) {
       return Unmarshaller::getInternalItem(lResult->getDocument());

@@ -96,16 +96,20 @@ ZorbaBase64EncodeIterator::nextImpl(store::Item_t& result, PlanState& planState)
 bool
 ZorbaTidyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t       item;
+  store::Item_t       item, itemOpt;
   xqp_string          xmlString, diag;
-  xqpStringStore_t    buf;
+  xqpStringStore_t    buf, options;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChildren[0].getp(), planState))
   {
-    if( tidy(item->getStringValue()->c_str(), xmlString, diag) >= 0)
+    if((theChildren.size() > 1) &&
+      consumeNext(itemOpt, theChildren[1].getp(), planState))
+      options = itemOpt->getStringValue();
+
+    if( tidy(item->getStringValue()->c_str(), xmlString, diag, (theChildren.size() > 1?options->c_str():NULL)) >= 0)
     {
       buf = xqpStringStore_t(xmlString.getStore());
       //if tidy returns a value >0 a warning should be raised
@@ -113,7 +117,7 @@ ZorbaTidyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-      ZORBA_ERROR_LOC_PARAM(XQP0029_TIDY_ERROR, loc, "" , "");
+      ZORBA_ERROR_LOC_PARAM(API0036_TIDY_ERROR, loc, diag.c_str() , "");
     }
   }
 
@@ -123,8 +127,8 @@ ZorbaTidyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 bool
 ZorbaTDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t     uriItem;
-  xqpString         uriString;
+  store::Item_t     uriItem, itemOpt;
+  xqp_string        uriString;
   xqpStringStore_t  resolvedURIString;
   store::Item_t     resolvedURIItem;
 
@@ -134,6 +138,9 @@ ZorbaTDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (consumeNext(uriItem, theChildren[0].getp(), planState)) {
 
     uriString = uriItem->getStringValueP();
+
+    if(theChildren.size() > 1)
+      consumeNext(itemOpt, theChildren[1].getp(), planState);
 
     try {
       // maybe the document is stored with the uri that is given by the user
@@ -154,7 +161,8 @@ ZorbaTDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         result = planState.sctx()->get_document_uri_resolver()->resolve(resolvedURIItem,
                                                                         planState.sctx(),
                                                                         false,
-                                                                        true);
+                                                                        true,
+                                                                        (theChildren.size() > 1 ? itemOpt : NULL));
       } catch (error::ZorbaError& e) {
         ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
       }
