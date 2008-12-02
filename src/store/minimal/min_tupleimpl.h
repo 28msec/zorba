@@ -56,6 +56,7 @@ public:
   bool isAtomic() const { return false; }
   bool isPul() const    { return false; }
   bool isTuple() const  { return true; }
+  bool isError() const  { return false; }
 
   virtual const std::vector<zorba::store::TupleField>& getTupleFields() const
   {

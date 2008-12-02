@@ -45,7 +45,7 @@ QNamePool::QNamePool(ulong size, StringPool* nspool)
   QNameItemImpl* qn = &theCache[1];
   QNameItemImpl* last = qn + size - 1;
 
-  for (ulong i = 1; qn < last; qn++, i++)
+  for (uint16_t i = 1; qn < last; qn++, i++)
   {
     qn->theNextFree = i + 1;
     qn->thePrevFree = i - 1;
@@ -95,7 +95,7 @@ void QNamePool::remove(QNameItemImpl* qn)
 
   if (qn->isInCache())
   {
-    qn->theNextFree = theFirstFree;
+    qn->theNextFree = (uint16_t)theFirstFree;
     theCache[theFirstFree].thePrevFree = qn->thePosition;
     theFirstFree = qn->thePosition;
     theNumFree++;

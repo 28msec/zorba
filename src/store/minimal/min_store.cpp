@@ -437,7 +437,7 @@ store::Item_t SimpleStore::loadDocument(
   if (root != NULL)
     theDocuments.insert(urip, root);
 
-  return root;
+  return root.getp();
 }
 
 /*******************************************************************************
@@ -473,7 +473,7 @@ store::Item_t SimpleStore::loadDocument(
   if (root != NULL)
     theDocuments.insert(urip, root);
 
-  return root;
+  return root.getp();
 }
 
 /*******************************************************************************
@@ -539,7 +539,7 @@ void SimpleStore::deleteDocument(const xqpStringStore_t& uri)
   Compare two nodes, based on their node id. Return -1 if node1 < node2, 0, if
   node1 == node2, or 1 if node1 > node2.
 ********************************************************************************/
-long SimpleStore::compareNodes(store::Item* node1, store::Item* node2) const
+short SimpleStore::compareNodes(store::Item* node1, store::Item* node2) const
 {
   ZORBA_FATAL(node1->isNode(), "");
   ZORBA_FATAL(node2->isNode(), "");
@@ -759,7 +759,8 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
 
         if (pos == OrdPath::SELF)
         {
-          return child;
+          result = child;
+          return result!=0;
         }
         else if (pos == OrdPath::DESCENDANT)
         {

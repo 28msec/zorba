@@ -38,6 +38,7 @@ public:
   bool isAtomic() const { return false; }
   bool isPul() const    { return false; }
   bool isTuple() const  { return false; }
+  bool isError() const  { return false; }
 
   xqpStringStore_t getStringValue() const;
 

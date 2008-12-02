@@ -18,6 +18,7 @@
 
 #include <vector>
 
+#include <zorba/config.h>
 #include "common/common.h"
 #include "zorbautils/fatal.h"
 
@@ -29,7 +30,8 @@ class OrdPathStack;
 /*******************************************************************************
 
 ********************************************************************************/
-class OrdPath
+// only exported for unit testing
+class ZORBA_DLL_PUBLIC OrdPath
 {
   friend class OrdPathStack;
 

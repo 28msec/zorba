@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # define an extension to the name of the library that is greated with this store
-SET(ZORBA_STORE_LIB_EXTENSION "minimal")
+SET(ZORBA_STORE_LIB_EXTENSION "minimal" CACHE STRING "store name" FORCE)
 
 #
 # Source Files

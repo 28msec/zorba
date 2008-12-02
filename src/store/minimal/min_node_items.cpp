@@ -347,7 +347,7 @@ void XmlNode::removeChild(ulong i)
 bool XmlNode::removeChild(XmlNode* child)
 {
 
-  bool found = children().find(child);
+  bool found = (children().find(child) != 0);
 
   if (found)
   {
@@ -1730,7 +1730,7 @@ void ElementNode::addBaseUriProperty(
       URI absoluteURI(&*absUri);
       URI resolvedURI(absoluteURI, &*relUri);
       resolvedUriString = resolvedURI.toString().getStore();
-    } catch (error::ZorbaError& e) {
+    } catch (error::ZorbaError&) {
       resolvedUriString.transfer(relUri);
     }
 
@@ -2269,7 +2269,7 @@ XmlNode* AttributeNode::copy2(
     {
       p->checkNamespaceConflict(theName, XQDY0025);
     }
-    catch(error::ZorbaError& e)
+    catch(error::ZorbaError&)
     {
       // Resolving the namespace conflict requires that the prefix of the
       // attribute name is changed. However, we cannot do that if the attr

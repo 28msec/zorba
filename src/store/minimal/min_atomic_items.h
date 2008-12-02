@@ -53,6 +53,7 @@ public:
   bool isAtomic() const { return true; }
   bool isPul() const    { return false; }
   bool isTuple() const  { return false; }
+  bool isError() const  { return false; }
 
   virtual store::Item_t getAtomizationValue() const;
   virtual void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
@@ -837,6 +838,8 @@ public:
  ErrorItemNaive(error::ZorbaError* error) : theError(error) {}
 
   ~ErrorItemNaive();
+
+  bool isError() const  { return true; }
 
   error::ZorbaError* getError() const { return theError; }
 

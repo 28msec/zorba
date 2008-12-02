@@ -987,7 +987,7 @@ void OrdPath::appendComp(long value)
   {
     unsigned char* newbuf = new unsigned char[bytesNeeded + 1];
     memset(newbuf, 0, bytesNeeded+1);
-    newbuf[0] = bytesNeeded;
+    newbuf[0] = (unsigned char)(bytesNeeded);
 
     if (isLocal)
     {
@@ -3866,7 +3866,7 @@ void OrdPathStack::compressComp(ulong comp, long value)
     }
     else if (value < 277)
     {
-      theCompLens[comp] = bitsNeeded = 14;
+      theCompLens[comp] = (unsigned char)(bitsNeeded = 14);
 
       value = 276 - value;
       eval = ((uint32_t)value) << 24;
@@ -3875,7 +3875,7 @@ void OrdPathStack::compressComp(ulong comp, long value)
     }
     else if (value < 4373)
     {
-      theCompLens[comp] = bitsNeeded = 19;
+      theCompLens[comp] = (unsigned char)(bitsNeeded = 19);
 
       value = 2372 - value;
       eval = ((uint32_t)value) << 20;
@@ -3884,7 +3884,7 @@ void OrdPathStack::compressComp(ulong comp, long value)
     }
     else if (value < 69909)
     {
-      theCompLens[comp] = bitsNeeded = 24;
+      theCompLens[comp] = (unsigned char)(bitsNeeded = 24);
 
       value = 69908 - value;
       eval = ((uint32_t)value) << 16;
@@ -3893,7 +3893,7 @@ void OrdPathStack::compressComp(ulong comp, long value)
     }
     else if (value < 1118485)
     {
-      theCompLens[comp] = bitsNeeded = 29;
+      theCompLens[comp] = (unsigned char)(bitsNeeded = 29);
 
       value = 1118484 - value;
       eval = ((uint32_t)value) << 12;
@@ -3909,14 +3909,14 @@ void OrdPathStack::compressComp(ulong comp, long value)
   }
   else if (value < OrdPath::DEFAULT_FAN_OUT)
   {
-    theCompLens[comp] = bitsNeeded = OrdPath::thePosV2LMap[value];
+    theCompLens[comp] = (unsigned char)(bitsNeeded = OrdPath::thePosV2LMap[value]);
     eval = OrdPath::thePosV2EVMap[value] << 16;
   }
   else
   {
     if (value < 280)
     {
-      theCompLens[comp] = bitsNeeded = 13;
+      theCompLens[comp] = (unsigned char)(bitsNeeded = 13);
 
       value -= 24;
       eval = ((uint32_t)value) << 24;
@@ -3925,7 +3925,7 @@ void OrdPathStack::compressComp(ulong comp, long value)
     }
     else if (value < 4376)
     {
-      theCompLens[comp] = bitsNeeded = 18;
+      theCompLens[comp] = (unsigned char)(bitsNeeded = 18);
 
       value -= 280;
       eval = ((uint32_t)value) << 20;
@@ -3934,7 +3934,7 @@ void OrdPathStack::compressComp(ulong comp, long value)
     }
     else if (value < 69912)
     {
-      theCompLens[comp] = bitsNeeded = 23;
+      theCompLens[comp] = (unsigned char)(bitsNeeded = 23);
 
       value -= 4376;
       eval = ((uint32_t)value) << 16;
@@ -3943,7 +3943,7 @@ void OrdPathStack::compressComp(ulong comp, long value)
     }
     else if (value < 1118488)
     {
-      theCompLens[comp] = bitsNeeded = 28; // 8 + 20
+      theCompLens[comp] = (unsigned char)(bitsNeeded = 28); // 8 + 20
 
       value -= 69912;
       eval = ((uint32_t)value) << 12;
@@ -3952,7 +3952,7 @@ void OrdPathStack::compressComp(ulong comp, long value)
     }
     else if (value < 3215640)
     {
-      theCompLens[comp] = bitsNeeded = 30; // 9 + 21
+      theCompLens[comp] = (unsigned char)(bitsNeeded = 30); // 9 + 21
 
       value -= 1118488;
       eval = ((uint32_t)value) << 11;
