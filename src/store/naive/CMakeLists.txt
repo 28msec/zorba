@@ -16,7 +16,7 @@ SET(ZORBA_STORE_MSDOM OFF CACHE BOOL "select the MS DOM store")
 SET(ZORBA_MSDOM_IN_NATIVE_STORE_CACHING ON CACHE BOOL "select if all info in msdom should be cached into native store node items style")
 
 # define an extension to the name of the library that is greated with this store
-SET(ZORBA_STORE_LIB_EXTENSION "simplestore")
+SET(ZORBA_STORE_LIB_EXTENSION "simplestore" CACHE STRING "store name" FORCE)
 
 #
 # Source Files
