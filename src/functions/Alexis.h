@@ -63,9 +63,9 @@ namespace zorba {
 
   class zorba_tdoc : public function
   {
-    public:
+  public:
       zorba_tdoc(const signature& sig): function(sig){}
-
+      bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
       PlanIter_t codegen (const QueryLoc& loc,
                           std::vector<PlanIter_t>& argv,
                           AnnotationHolder &ann) const;
