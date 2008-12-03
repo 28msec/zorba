@@ -641,7 +641,7 @@ void collect_flwor_vars (const FLWORExpr &e, set<const var_expr *> &vars, const 
     } else if (typeid (c) == typeid (WindowClause)) {
       const WindowClause &wc = *static_cast<const WindowClause *> (&c);
       vars.insert (lookup_var (wc.get_var ()->get_varname()));
-      for (int j = 1; j >= 0; j++) {
+      for (int j = 1; j >= 0; j--) {
         const FLWORWinCond *cond = &*wc [j];
         if (cond != NULL) {
           const WindowVars *wv = &*cond->get_winvars ();

@@ -1366,7 +1366,7 @@ public:
   win_clause_t get_wintype () const { return type; }
   rchandle<WindowVarDecl> get_var () const { return var; }
   rchandle<FLWORWinCond> operator[] (unsigned i) const
-  { return conditions [i]; }
+  { assert (i <= 2); return conditions [i]; }
 
 public:
 	void accept(parsenode_visitor&) const;
