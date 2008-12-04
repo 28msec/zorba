@@ -126,9 +126,48 @@ public:
         bool                 isId,
         bool                 isIdRefs) = 0;
 
-  //virtual void applyUpdates();
+  // functions to add primitives for updating collection functions (e.g. create-collection)
 
-  //virtual void serializeUpdates(serializer ser&, std::ostream& os);
+  virtual void addCreateCollection(
+        xqpStringStore_t&    resolvedURI) = 0;
+
+  virtual void addDeleteCollection(
+        xqpStringStore_t&    resolvedURI) = 0;
+
+  virtual void addInsertIntoCollection(
+        xqpStringStore_t&    resolvedURI,
+        Item_t&              nodes) = 0;             
+
+  virtual void addInsertFirstIntoCollection(
+        xqpStringStore_t&    resolvedURI,
+        std::vector<store::Item_t>& nodes) = 0;
+
+  virtual void addInsertLastIntoCollection(
+        xqpStringStore_t&    resolvedURI,
+        std::vector<store::Item_t>& nodes) = 0;
+
+  virtual void addInsertBeforeIntoCollection(
+        xqpStringStore_t&    resolvedURI,
+        Item_t&              target,
+        std::vector<store::Item_t>& nodes) = 0;
+
+  virtual void addInsertAfterIntoCollection(
+        xqpStringStore_t&    resolvedURI,
+        Item_t&              target,
+        std::vector<store::Item_t>& nodes) = 0;
+
+  virtual void addInsertAtIntoCollection(
+        xqpStringStore_t&    resolvedURI,
+        ulong                pos,
+        std::vector<store::Item_t>& nodes) = 0;
+
+  virtual void addRemoveFromCollection(
+        xqpStringStore_t&    resolvedURI,
+        std::vector<store::Item_t>& nodes) = 0;
+
+  virtual void addRemoveAtFromCollection(
+        xqpStringStore_t&    resolvedURI,
+        ulong                pos) = 0;
 
   virtual void mergeUpdates(Item* other) = 0;
 

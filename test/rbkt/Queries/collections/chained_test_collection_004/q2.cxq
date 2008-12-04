@@ -1,3 +1,8 @@
 import module namespace
 fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
-fn-zorba-collection:insert-nodes-last('http', <a/>)
+declare sequential function local:foo() {
+  fn-zorba-collection:insert-nodes-last('http', <a/>);
+  exit with ();
+};
+
+local:foo()

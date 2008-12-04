@@ -23,13 +23,17 @@
 
 namespace zorba {
 
-  NARY_ITER (ZorbaCollectionExistsIterator);
+// non-updating collection functions
+NARY_ITER (ZorbaCollectionExistsIterator);
 
-  NARY_ITER (ZorbaImportXmlIterator);
+NARY_ITER (ZorbaNodeCountIterator);
 
-  NARY_ITER (ZorbaImportCatalogIterator);
+NARY_ITER (ZorbaNodeAtIterator);
 
-  NARY_ITER (ZorbaImportFolderIterator);
+NARY_ITER (ZorbaIndexOfIterator);
+
+NARY_ITER (ZorbaExportXmlIterator);
+
 
 class ZorbaListCollectionsState : public PlanIteratorState 
 {
@@ -44,34 +48,34 @@ public:
 
 NARY_ITER_STATE(ZorbaListCollectionsIterator, ZorbaListCollectionsState);
 
-NARY_ITER (ZorbaCreateCollectionIterator);
+// updating collection functions
+NARY_UPDATE_ITER (ZorbaImportXmlIterator);
 
-NARY_ITER (ZorbaDeleteCollectionIterator);
+NARY_UPDATE_ITER (ZorbaImportCatalogIterator);
 
-NARY_ITER (ZorbaDeleteAllCollectionsIterator);
+NARY_UPDATE_ITER (ZorbaImportFolderIterator);
 
-NARY_ITER (ZorbaInsertNodeFirstIterator);
+NARY_UPDATE_ITER (ZorbaCreateCollectionIterator);
 
-NARY_ITER (ZorbaInsertNodeLastIterator);
+NARY_UPDATE_ITER (ZorbaDeleteCollectionIterator);
 
-NARY_ITER (ZorbaInsertNodeBeforeIterator);
+NARY_UPDATE_ITER (ZorbaDeleteAllCollectionsIterator);
 
-NARY_ITER (ZorbaInsertNodeAfterIterator);
+NARY_UPDATE_ITER (ZorbaInsertNodeFirstIterator);
 
-NARY_ITER (ZorbaInsertNodeAtIterator);
+NARY_UPDATE_ITER (ZorbaInsertNodeLastIterator);
 
-NARY_ITER (ZorbaRemoveNodeIterator);
+NARY_UPDATE_ITER (ZorbaInsertNodeBeforeIterator);
 
-NARY_ITER (ZorbaRemoveNodeAtIterator);
+NARY_UPDATE_ITER (ZorbaInsertNodeAfterIterator);
 
-NARY_ITER (ZorbaNodeCountIterator);
+NARY_UPDATE_ITER (ZorbaInsertNodeAtIterator);
 
-NARY_ITER (ZorbaNodeAtIterator);
+NARY_UPDATE_ITER (ZorbaRemoveNodeIterator);
 
-NARY_ITER (ZorbaIndexOfIterator);
+NARY_UPDATE_ITER (ZorbaRemoveNodeAtIterator);
 
-NARY_ITER (ZorbaExportXmlIterator);
-
+// helper function
 store::Collection_t getCollection(PlanState&, const xqpStringStore_t, const QueryLoc);
 
 }/*namespace zorba*/

@@ -6,7 +6,7 @@ declare sequential function local:test()
   coll:insert-nodes-last("a", <a/>);
   coll:insert-nodes-last("a", <b/>);
   coll:insert-nodes-last("a", <c/>);
-  coll:remove-nodes("a", fn:collection("a")[2]);
+  coll:remove-nodes("a", fn:collection("a")[position()<3]);
   exit with fn:collection("a");
 };
 

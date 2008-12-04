@@ -1,4 +1,10 @@
 declare base-uri "http://example.org/";
 import module namespace
 fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
-fn-zorba-collection:delete-collection('collection_333')
+
+declare sequential function local:foo() {
+  fn-zorba-collection:delete-collection('collection_333');
+  exit with ();
+};
+
+local:foo()

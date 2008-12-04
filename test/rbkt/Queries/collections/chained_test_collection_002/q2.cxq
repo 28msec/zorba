@@ -1,4 +1,9 @@
 declare base-uri "http://example.org/";
-import module namespace
-fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
-fn-zorba-collection:create-collection('collection_2')
+import module namespace fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
+
+declare sequential function local:foo() {
+  fn-zorba-collection:create-collection('collection_2');
+  exit with ();
+};
+
+local:foo()

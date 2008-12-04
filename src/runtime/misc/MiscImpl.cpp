@@ -107,7 +107,7 @@ bool FnResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState)
         } else if (consumeNext(item, theChildren[1], planState )) { // two parameters => get baseuri from the second argument
           strBase = item->getStringValue();
         } else {
-          ZORBA_ERROR_LOC_DESC(FORG0009, loc, "Can't treat empty-sequence an base-uri");
+          ZORBA_ERROR_LOC_DESC(FORG0009, loc, "Can't treat empty-sequence as base-uri");
         }
         baseURI = URI(&*strBase, true);
       } catch (error::ZorbaError& e) {

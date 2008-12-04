@@ -328,6 +328,7 @@ void SimpleCollection::CollectionIter::open()
 ********************************************************************************/
 bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 {
+  // TODO check if the iterator was opened
   if (theIterator == theCollection->theXmlTrees.end()) 
   {
     result = NULL;

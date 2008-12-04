@@ -81,7 +81,21 @@ public:
     UP_RENAME_ATTR,
     UP_RENAME_PI,
     UP_SET_ATTRIBUTE_TYPE,
-    UP_SET_ELEMENT_TYPE
+    UP_SET_ELEMENT_TYPE,
+
+    // collection functions
+    UP_CREATE_COLLECTION,
+    UP_COLLECTION,
+    UP_DELETE_COLLECTION,
+    UP_INSERT_INTO_COLLECTION,
+    UP_INSERT_FIRST_INTO_COLLECTION,
+    UP_INSERT_LAST_INTO_COLLECTION,
+    UP_INSERT_BEFORE_INTO_COLLECTION,
+    UP_INSERT_AFTER_INTO_COLLECTION,
+    UP_INSERT_AT_INTO_COLLECTION,
+    UP_REMOVE_FROM_COLLECTION,
+    UP_REMOVE_AT_FROM_COLLECTION
+
   };
 
   static bool isRename(UpdPrimKind k)
@@ -170,6 +184,28 @@ public:
         return "rename_attr";
       case UP_RENAME_PI:
         return "rename_pi";
+      case UP_CREATE_COLLECTION:
+        return "create_collection";
+      case UP_COLLECTION:
+        return "update_collection";
+      case UP_DELETE_COLLECTION:
+        return "delete_collection";
+      case UP_INSERT_INTO_COLLECTION:
+        return "insert_into_coll";
+      case UP_INSERT_FIRST_INTO_COLLECTION:
+        return "insert_first_into_collection";
+      case UP_INSERT_LAST_INTO_COLLECTION:
+        return "insert_last_into_collection";
+      case UP_INSERT_BEFORE_INTO_COLLECTION:
+        return "insert_before_into_collection";
+      case UP_INSERT_AFTER_INTO_COLLECTION:
+        return "insert_after_into_collection";
+      case UP_INSERT_AT_INTO_COLLECTION:
+        return "insert_at_into_collection";
+      case UP_REMOVE_FROM_COLLECTION:
+        return "remove_from_collection";
+      case UP_REMOVE_AT_FROM_COLLECTION:
+        return "remove_at_from_collection";
       default:
         return "<unknown UpdPrimKind>";
     }

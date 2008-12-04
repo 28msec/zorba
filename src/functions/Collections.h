@@ -27,6 +27,8 @@ class zorba_collection_exists : public function
     zorba_collection_exists(const signature& sig): function(sig){}
 
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+
+    bool requires_dyn_ctx () const { return true; }
 };
 
 class zorba_import_xml : public function
@@ -35,6 +37,10 @@ class zorba_import_xml : public function
     zorba_import_xml(const signature& sig): function(sig){}
 
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+
+    bool requires_dyn_ctx () const { return true; }
+
+    bool isUpdating() const { return true; }
 };
 
 
@@ -44,6 +50,10 @@ class zorba_import_catalog : public function
     zorba_import_catalog(const signature& sig): function(sig){}
 
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+
+    bool requires_dyn_ctx () const { return true; }
+
+    bool isUpdating() const { return true; }
 };
 
 class zorba_import_folder : public function
@@ -52,6 +62,10 @@ class zorba_import_folder : public function
     zorba_import_folder(const signature& sig): function(sig){}
 
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+
+    bool requires_dyn_ctx () const { return true; }
+
+    bool isUpdating() const { return true; }
 };
 
 class zorba_list_collections : public function
@@ -60,6 +74,8 @@ class zorba_list_collections : public function
     zorba_list_collections(const signature& sig): function(sig){}
 
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+
+    bool requires_dyn_ctx () const { return true; }
 };
 
 class zorba_create_collection : public function
@@ -70,6 +86,8 @@ class zorba_create_collection : public function
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
+
+    bool isUpdating() const { return true; }
 };
 
 class zorba_delete_collection : public function
@@ -80,6 +98,8 @@ class zorba_delete_collection : public function
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
+
+    bool isUpdating() const { return true; }
 };
 
 class zorba_delete_all_collections : public function
@@ -90,6 +110,8 @@ class zorba_delete_all_collections : public function
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
+
+    bool isUpdating() const { return true; }
 };
 
 class zorba_insert_nodes_first : public function
@@ -100,6 +122,8 @@ class zorba_insert_nodes_first : public function
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
+
+    bool isUpdating() const { return true; }
 };
 
 class zorba_insert_nodes_last : public function
@@ -110,6 +134,8 @@ class zorba_insert_nodes_last : public function
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
+
+    bool isUpdating() const { return true; }
 };
 
 class zorba_insert_nodes_before : public function
@@ -120,6 +146,8 @@ class zorba_insert_nodes_before : public function
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
+
+    bool isUpdating() const { return true; }
 };
 
 class zorba_insert_nodes_after : public function
@@ -130,6 +158,8 @@ class zorba_insert_nodes_after : public function
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
+
+    bool isUpdating() const { return true; }
 };
 
 class zorba_insert_nodes_at : public function
@@ -140,6 +170,8 @@ class zorba_insert_nodes_at : public function
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
+
+    bool isUpdating() const { return true; }
 };
 
 class zorba_remove_nodes : public function
@@ -150,6 +182,8 @@ class zorba_remove_nodes : public function
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
+
+    bool isUpdating() const { return true; }
 };
 
 class zorba_remove_node_at : public function
@@ -160,6 +194,8 @@ class zorba_remove_node_at : public function
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
+
+    bool isUpdating() const { return true; }
 };
 
 class zorba_nodes_count : public function
@@ -198,6 +234,8 @@ class zorba_export_xml : public function
     zorba_export_xml(const signature& sig): function(sig){}
 
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+
+    bool requires_dyn_ctx () const { return true; }
 };
 } /* namespace zorba */
 

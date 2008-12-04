@@ -1,3 +1,8 @@
-import module namespace
-fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
-fn-zorba-collection:delete-all-collections()
+import module namespace fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
+
+declare sequential function local:foo() {
+  fn-zorba-collection:delete-all-collections();
+  exit with ();
+};
+
+local:foo()

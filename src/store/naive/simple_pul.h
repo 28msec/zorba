@@ -88,6 +88,12 @@ protected:
 
   std::vector<UpdatePrimitive*>      theValidationList;
 
+  // update primitives for collection functions
+  std::vector<UpdatePrimitive*>      theCreateCollectionList;
+  std::vector<UpdatePrimitive*>      theInsertIntoCollectionList;
+  std::vector<UpdatePrimitive*>      theDeleteFromCollectionList;
+  std::vector<UpdatePrimitive*>      theDeleteCollectionList;
+
   NodeToUpdatesMap                   theNodeToUpdatesMap;
 
   std::set<zorba::store::Item*>    * theValidationNodes;
@@ -181,9 +187,50 @@ public:
         bool                        isId,
         bool                        isIdRefs);
 
-  void applyUpdates(std::set<zorba::store::Item*>& validationNodes);
+  // collection functions
+  void addCreateCollection(
+        xqpStringStore_t&    resolvedURI);
 
-  //void serializeUpdates(serializer& ser, std::ostream& os);
+  void addDeleteCollection(
+        xqpStringStore_t&    resolvedURI);
+
+  void addInsertIntoCollection(
+        xqpStringStore_t&    resolvedURI,
+        store::Item_t&       node);             
+
+  void addInsertFirstIntoCollection(
+        xqpStringStore_t&     resolvedURI,
+        std::vector<store::Item_t>& nodes);
+
+  void addInsertLastIntoCollection(
+        xqpStringStore_t&     resolvedURI,
+        std::vector<store::Item_t>& nodes);
+
+  void addInsertBeforeIntoCollection(
+        xqpStringStore_t&    resolvedURI,
+        store::Item_t&       target,
+        std::vector<store::Item_t>& nodes);
+
+  void addInsertAfterIntoCollection(
+        xqpStringStore_t&    resolvedURI,
+        store::Item_t&       target,
+        std::vector<store::Item_t>& nodes);
+
+  void addInsertAtIntoCollection(
+        xqpStringStore_t&    resolvedURI,
+        ulong                pos,
+        std::vector<store::Item_t>& nodes);
+
+  void addRemoveFromCollection(
+        xqpStringStore_t&    resolvedURI,
+        std::vector<store::Item_t>& nodes);
+
+  void addRemoveAtFromCollection(
+        xqpStringStore_t&    resolvedURI,
+        ulong                pos);
+
+  // apply
+  void applyUpdates(std::set<zorba::store::Item*>& validationNodes);
 
   void mergeUpdates(store::Item* other);
 
@@ -234,6 +281,15 @@ public:
    theRemoveType(false)
   {
     theTarget.transfer(target);
+  }
+
+ UpdatePrimitive(PULImpl* pul)
+   :
+   thePul(pul),
+   theTarget(NULL),
+   theIsApplied(false),
+   theRemoveType(false)
+  {
   }
 
   virtual ~UpdatePrimitive() { }
@@ -775,7 +831,268 @@ public:
   void undo();
 };
 
+/*******************************************************************************
+  UpdatePrimitives for collection functions
+********************************************************************************/
+class UpdCreateCollection : public UpdatePrimitive
+{
+protected:
+  xqpStringStore_t   theCollectionUri;
 
+public:
+  UpdCreateCollection(PULImpl* pul, xqpStringStore_t& collectionUri)
+    :
+    UpdatePrimitive(pul),
+    theCollectionUri(collectionUri)
+  {
+  }
+
+  store::UpdateConsts::UpdPrimKind getKind()
+  {
+    return store::UpdateConsts::UP_CREATE_COLLECTION;
+  }
+
+  void apply();
+  void undo();
+};
+
+// base class for other collection functions
+class UpdCollection : public UpdatePrimitive
+{
+protected:
+  xqpStringStore_t  theTargetCollectionUri;
+
+public:
+  UpdCollection(PULImpl* pul, xqpStringStore_t& targetCollectionUri)
+      :
+      UpdatePrimitive(pul),
+      theTargetCollectionUri(targetCollectionUri)
+  {
+  }
+
+};
+
+class UpdDeleteCollection : public UpdCollection
+{
+protected:
+  std::vector<store::Item_t> theSavedItems; // only used for undo
+
+public:
+  UpdDeleteCollection(PULImpl* pul, xqpStringStore_t& targetCollectionUri)
+    :
+    UpdCollection(pul, targetCollectionUri)
+  {
+  }
+
+  store::UpdateConsts::UpdPrimKind getKind()
+  {
+    return store::UpdateConsts::UP_DELETE_COLLECTION;
+  }
+
+  void apply();
+  void undo();
+
+};
+
+class UpdInsertIntoCollection : public UpdCollection
+{
+protected:
+  store::Item_t            theNode;
+
+public:
+  UpdInsertIntoCollection(PULImpl* pul, xqpStringStore_t& targetCollectionUri, store::Item_t& node)
+      :
+      UpdCollection(pul, targetCollectionUri),
+      theNode(node)
+  {
+  }
+
+  store::UpdateConsts::UpdPrimKind getKind()
+  {
+    return store::UpdateConsts::UP_INSERT_INTO_COLLECTION;
+  }
+
+  void apply();
+  void undo();
+};
+
+class UpdInsertFirstIntoCollection : public  UpdCollection
+{
+protected:
+  std::vector<store::Item_t>  theNodes;
+
+public:
+  UpdInsertFirstIntoCollection(PULImpl* pul,
+      xqpStringStore_t& targetCollectionUri,
+      std::vector<store::Item_t>& nodes)
+      :
+      UpdCollection(pul, targetCollectionUri),
+      theNodes(nodes)
+  {
+  }
+
+  store::UpdateConsts::UpdPrimKind getKind()
+  { 
+    return store::UpdateConsts::UP_INSERT_FIRST_INTO_COLLECTION;
+  }
+
+  void apply();
+  void undo();
+};
+
+class UpdInsertLastIntoCollection : public  UpdCollection
+{
+protected:
+  std::vector<store::Item_t>  theNodes;
+
+public:
+  UpdInsertLastIntoCollection(PULImpl* pul,
+      xqpStringStore_t& targetCollectionUri,
+      std::vector<store::Item_t>& nodes)
+      :
+      UpdCollection(pul, targetCollectionUri),
+      theNodes(nodes)
+  {
+  }
+
+  store::UpdateConsts::UpdPrimKind getKind()
+  { 
+    return store::UpdateConsts::UP_INSERT_LAST_INTO_COLLECTION;
+  }
+
+  void apply();
+  void undo();
+};
+
+class UpdInsertBeforeIntoCollection : public  UpdCollection
+{
+protected:
+  std::vector<store::Item_t>  theNodes;
+  store::Item_t               theTarget;
+
+public:
+  UpdInsertBeforeIntoCollection(PULImpl* pul,
+      xqpStringStore_t& targetCollectionUri,
+      store::Item_t&    target,
+      std::vector<store::Item_t>& nodes)
+      :
+      UpdCollection(pul, targetCollectionUri),
+      theNodes(nodes),
+      theTarget(target)
+  {
+  }
+
+  store::UpdateConsts::UpdPrimKind getKind()
+  { 
+    return store::UpdateConsts::UP_INSERT_BEFORE_INTO_COLLECTION;
+  }
+
+  void apply();
+  void undo();
+};
+
+class UpdInsertAfterIntoCollection : public  UpdCollection
+{
+protected:
+  std::vector<store::Item_t>  theNodes;
+  store::Item_t               theTarget;
+
+public:
+  UpdInsertAfterIntoCollection(PULImpl* pul,
+      xqpStringStore_t& targetCollectionUri,
+      store::Item_t&    target,
+      std::vector<store::Item_t>& nodes)
+      :
+      UpdCollection(pul, targetCollectionUri),
+      theNodes(nodes),
+      theTarget(target)
+  {
+  }
+
+  store::UpdateConsts::UpdPrimKind getKind()
+  { 
+    return store::UpdateConsts::UP_INSERT_AFTER_INTO_COLLECTION;
+  }
+
+  void apply();
+  void undo();
+};
+
+class UpdInsertAtIntoCollection : public  UpdCollection
+{
+protected:
+  std::vector<store::Item_t>  theNodes;
+  ulong                       thePos;
+
+public:
+  UpdInsertAtIntoCollection(PULImpl* pul,
+      xqpStringStore_t& targetCollectionUri,
+      ulong             pos,
+      std::vector<store::Item_t>& nodes)
+      :
+      UpdCollection(pul, targetCollectionUri),
+      theNodes(nodes),
+      thePos(pos)
+  {
+  }
+
+  store::UpdateConsts::UpdPrimKind getKind()
+  { 
+    return store::UpdateConsts::UP_INSERT_AT_INTO_COLLECTION;
+  }
+
+  void apply();
+  void undo();
+};
+
+class UpdRemoveNodesFromCollection: public  UpdCollection
+{
+protected:
+  std::vector<store::Item_t>  theNodes;
+
+public:
+  UpdRemoveNodesFromCollection(PULImpl* pul,
+      xqpStringStore_t& targetCollectionUri,
+      std::vector<store::Item_t>& nodes)
+      :
+      UpdCollection(pul, targetCollectionUri),
+      theNodes(nodes)
+  {
+  }
+
+  store::UpdateConsts::UpdPrimKind getKind()
+  { 
+    return store::UpdateConsts::UP_REMOVE_FROM_COLLECTION;
+  }
+
+  void apply();
+  void undo();
+};
+
+class UpdRemoveNodesAtFromCollection: public  UpdCollection
+{
+protected:
+  ulong thePos;
+  store::Item_t theNode; // used for undo only
+
+public:
+  UpdRemoveNodesAtFromCollection(PULImpl* pul,
+      xqpStringStore_t& targetCollectionUri,
+      ulong pos)
+      :
+      UpdCollection(pul, targetCollectionUri),
+      thePos(pos)
+  {
+  }
+
+  store::UpdateConsts::UpdPrimKind getKind()
+  { 
+    return store::UpdateConsts::UP_REMOVE_AT_FROM_COLLECTION;
+  }
+
+  void apply();
+  void undo();
+};
 }
 }
 
