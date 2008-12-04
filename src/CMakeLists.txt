@@ -100,11 +100,11 @@ FOREACH(ZORBA_STORE_DIR ${ZORBA_STORE_DIRS})
 
     # on windows, the static lib needs a different name because .lib is already generated when creating the .dll 
     # on unix, the static library can have the same name because it uses a different file suffix (e.g. .a)
-    IF (WIN32)
-      SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_LIB_EXTENSION}_static PROPERTIES OUTPUT_NAME "zorba_${ZORBA_STORE_LIB_EXTENSION}_static")  
-    ELSE (WIN32)
-      SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_LIB_EXTENSION}_static PROPERTIES OUTPUT_NAME "zorba_${ZORBA_STORE_LIB_EXTENSION}")  
-    ENDIF (WIN32)
+   # IF (WIN32)
+   #   SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_LIB_EXTENSION}_static PROPERTIES OUTPUT_NAME "zorba_${ZORBA_STORE_LIB_EXTENSION}_static")  
+   # ELSE (WIN32)
+   #   SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_LIB_EXTENSION}_static PROPERTIES OUTPUT_NAME "zorba_${ZORBA_STORE_LIB_EXTENSION}")  
+   # ENDIF (WIN32)
   ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
 ENDFOREACH(ZORBA_STORE_DIR ${ZORBA_STORE_DIRS})
