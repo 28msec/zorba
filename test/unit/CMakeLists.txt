@@ -58,11 +58,12 @@ CREATE_TEST_SOURCELIST(CAPIUnitTests
 ADD_EXECUTABLE(CAPIUnitTests ${CAPIUnitTests})
 TARGET_LINK_LIBRARIES(CAPIUnitTests zorba_simplestore)
 
-IF (ZORBA_BUILD_STATIC_LIBRARY)                                                                         
-  ADD_EXECUTABLE(CAPIUnitTests_static ${CAPIUnitTests})                                                 
-  SET_TARGET_PROPERTIES(CAPIUnitTests_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
-  TARGET_LINK_LIBRARIES(CAPIUnitTests_static zorba_simplestore_static)                           
-ENDIF (ZORBA_BUILD_STATIC_LIBRARY)           
+# building a C executable statically is an open issue
+# IF (ZORBA_BUILD_STATIC_LIBRARY)
+#   ADD_EXECUTABLE(CAPIUnitTests_static ${CAPIUnitTests})
+#   SET_TARGET_PROPERTIES(CAPIUnitTests_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
+#   TARGET_LINK_LIBRARIES(CAPIUnitTests_static zorba_simplestore_static)
+# ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
 IF(WIN32)
 SET(CAPIUnitTests_EXE_PATH    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/CAPIUnitTests)

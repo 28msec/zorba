@@ -28,7 +28,7 @@ INSTALL(TARGETS zorbacmd DESTINATION bin)
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)
   ADD_EXECUTABLE(zorbacmd_static ${ZORBA_CMD_SRCS})
-  TARGET_LINK_LIBRARIES(zorbacmd_static  zorba_simplestore_static)
+  TARGET_LINK_LIBRARIES(zorbacmd_static zorba_simplestore_static)
   SET_TARGET_PROPERTIES(zorbacmd_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
   SET_TARGET_PROPERTIES(zorbacmd_static PROPERTIES OUTPUT_NAME "zorba_static") # cmake way to rename the file
   INSTALL(TARGETS zorbacmd_static DESTINATION bin)
