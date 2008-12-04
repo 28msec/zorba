@@ -3159,6 +3159,7 @@ void *begin_visit (const SchemaImport& v) {
     rchandle<URILiteralList> atlist = v.get_at_list();
     if (atlist == NULL || atlist->size () == 0)
       ZORBA_ERROR_LOC_PARAM (XQST0057, loc, "(no location specified)", target_ns);
+    
     {
       string at = sctx_p->resolve_relative_uri ((*atlist) [0], xqp_string());
      

@@ -480,7 +480,7 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
                    break;
             }
 
-            if(index < _attrCount) 
+            if(index >= _attrCount)   // if curDef is not in the list of instance attrs fAttrList
             {
                 switch(defType) 
                 {
