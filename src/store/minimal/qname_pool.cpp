@@ -101,6 +101,7 @@ void QNamePool::remove(QNameItemImpl* qn)
     theNumFree++;
 
     //+
+    theHashSet.remove(qn);
     if (!qn->isNormalized())
     {
       // Save the pointer to the associated normalized qname and then set
@@ -117,7 +118,6 @@ void QNamePool::remove(QNameItemImpl* qn)
       // invoked later by the caller of this method) will not trigger.
       qn->theLocal = NULL;
     }
-    theHashSet.remove(qn);
   }
   else
   {
@@ -189,7 +189,7 @@ retry:
       {
         if (!haveNormQName)
         {
-          SYNC_CODE(heHashSet.theMutex.unlock(); \
+          SYNC_CODE(theHashSet.theMutex.unlock(); \
           haveLock = false;)
 
           normItem = insert(ns, NULL, ln, false);
@@ -289,9 +289,9 @@ retry:
           haveLock = false;)
 
           normItem = insert(pooledNs,
-                                        QNameItemImpl::theEmptyPrefix,
-                                        ln,
-                                        false);
+                            QNameItemImpl::theEmptyPrefix,
+                            ln,
+                            false);
           normQName = reinterpret_cast<QNameItemImpl*>(normItem.getp());
           haveNormQName = true;
           goto retry;
@@ -419,9 +419,9 @@ QNamePool::QNHashEntry* QNamePool::hashFind(
   {
     QNameItemImpl* qn = entry->theItem;
 
-    if (qn->theLocal->byteEqual(ln, lnlen) &&
-        qn->thePrefix->byteEqual(pre, prelen) &&
-        qn->theNamespace->byteEqual(*ns)
+    if (qn->getLocalName()->byteEqual(ln, lnlen) &&
+        qn->getPrefix()->byteEqual(pre, prelen) &&
+        qn->getNamespace()->byteEqual(*ns)
         )
       return entry;
 
@@ -449,9 +449,9 @@ QNamePool::QNHashEntry* QNamePool::hashFind(
   {
     QNameItemImpl* qn = entry->theItem;
 
-    if (qn->theLocal->byteEqual(*ln) &&
-        qn->thePrefix->byteEqual(*pre) &&
-        qn->theNamespace->byteEqual(*ns)
+    if (qn->getLocalName()->byteEqual(*ln) &&
+        qn->getPrefix()->byteEqual(*pre) &&
+        qn->getNamespace()->byteEqual(*ns)
         )
       return entry;
 
