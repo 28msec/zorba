@@ -46,7 +46,7 @@ class ZORBA_DLL_PUBLIC static_context : public context
 protected:
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string qname) const;
-  static xqp_string fn_internal_key (int arity);
+  static xqp_string fn_internal_key ();
   function *lookup_fn_int (xqp_string key, int arity) const;
 
   std::auto_ptr<TypeManager> typemgr;
@@ -147,9 +147,12 @@ public:
   function *lookup_fn (xqp_string prefix, xqp_string local, int arity) const;
   function *lookup_resolved_fn (xqp_string ns, xqp_string local, int arity) const;
   static function *lookup_builtin_fn (xqp_string local, int arity);
-  bool bind_fn (const store::Item *qname, function *f, int arity) {
-    return bind_func (fn_internal_key (arity) + qname_internal_key (qname), f);
-  }
+  void find_functions (const store::Item *qname,
+                       std::vector<function *>& functions) const;
+  void find_functions_int (xqp_string key,
+                           std::vector<function *>& functions,
+                           std::set<int> &found) const;
+  bool bind_fn (const store::Item *qname, function *f, int arity);
 
   void add_variable_type( const xqp_string var_name, xqtref_t var_type);
   xqtref_t  get_variable_type( store::Item *var_name );

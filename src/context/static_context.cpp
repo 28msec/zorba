@@ -101,6 +101,8 @@ static_context::~static_context()
       RCHelper::removeReference (const_cast<expr *> (val->exprValue));
     } else if (0 == strncmp(keybuff, "fn:", 3)) {
       RCHelper::removeReference (const_cast<function *> (val->functionValue));
+    } else if (0 == strncmp(keybuff, "fmap:", 5)) {
+      delete (const_cast<ArityFMap *> (val->fmapValue));
     }
   }
 
@@ -144,6 +146,56 @@ bool context::bind_func2 (const char *key1, xqp_string key2, function *f) {
     return false;
   RCHelper::addReference (f);
   return true;
+}
+
+function *context::lookup_fmap_func (xqp_string key, int arity) const {
+  ArityFMap *fmap = lookup_fmap (key);
+  if (fmap == NULL)
+    return NULL;
+  ArityFMap::iterator i = fmap->find (arity);
+  return i == fmap->end () ? NULL : (*i).second;
+}
+
+bool static_context::bind_fn (const store::Item *qname, function *f, int arity) {
+  xqp_string key = fn_internal_key () + qname_internal_key (qname);
+  if (lookup_fmap_func (key, arity) != NULL)
+    return false;
+  ArityFMap *fmap = lookup_fmap (key);
+  bool newMap = fmap == NULL;
+  if (newMap)
+    fmap = new ArityFMap;
+  (*fmap) [arity] = f;
+  if (newMap) {
+    ctx_value_t v;
+    v.fmapValue = fmap;
+    keymap.put (key, v, false);
+  }
+  return true;
+}
+
+
+void static_context::find_functions_int (xqp_string key,
+                                         std::vector<function *>& functions,
+                                         set<int> &found) const
+{
+  ArityFMap *fmap = lookup_fmap (key);
+  for (ArityFMap::iterator i = fmap->begin (); i != fmap->end (); i++) {
+    int arity = (*i).first;
+    if (found.find (arity) == found.end ()) {
+      found.insert (arity);
+      functions.push_back ((*i).second);
+    }
+  }
+  if (parent != NULL)
+    static_cast<static_context *> (parent)->find_functions_int (key, functions, found);
+}
+
+void static_context::find_functions (const store::Item *qname,
+                                     std::vector<function *>& functions) const
+{
+  xqp_string key = fn_internal_key () + qname_internal_key (qname);
+  set<int> found;
+  find_functions_int (key, functions, found);
 }
 
 
@@ -251,18 +303,18 @@ store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qn
     return qname_internal_key (default_ns, rqname.first, rqname.second);
   }
 
-  xqp_string static_context::fn_internal_key (int arity) {
-    return xqpString::concat("fn:", to_string (arity).c_str(), "/");
+  xqp_string static_context::fn_internal_key () {
+    return "fmap:";
   }
 
 function *static_context::lookup_fn_int (xqp_string key, int arity) const
 {
-  function *f = lookup_func2 (fn_internal_key (arity), key);
+  function *f = lookup_fmap_func (fn_internal_key () + key, arity);
   if (f != NULL)
     return f;
-  else 
+  else
   {
-    f = lookup_func2 (fn_internal_key (VARIADIC_SIG_SIZE), key);
+    f = lookup_fmap_func (fn_internal_key () + key, VARIADIC_SIG_SIZE);
     return f;
   }
 }
@@ -328,10 +380,10 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
   store::Item_t static_context::lookup_fn_qname (xqp_string pfx, xqp_string local, const QueryLoc& loc) const {
     store::Item_t ret;
     try {
-    ret = lookup_qname (default_function_namespace (), pfx, local, loc);
-  } catch (error::ZorbaError& e) {// rethrow with current location
-    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-  }
+      ret = lookup_qname (default_function_namespace (), pfx, local, loc);
+    } catch (error::ZorbaError& e) {// rethrow with current location
+      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+    }
     return ret;
   }
 
@@ -342,7 +394,7 @@ function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int ar
 
   function *static_context::lookup_builtin_fn (xqp_string local, int arity)
   {
-    function *f = GENV.getRootStaticContext().lookup_func2 (fn_internal_key (arity), qname_internal_key2 (XQUERY_FN_NS, local));
+    function *f = GENV.getRootStaticContext().lookup_fn_int (qname_internal_key2 (XQUERY_FN_NS, local), arity);
     if (f == NULL)
       ZORBA_NOT_IMPLEMENTED ("built-in `" + local + "/" + to_string (arity) + "'");
     return f;
@@ -631,6 +683,10 @@ bool static_context::import_module (const static_context *module) {
     } else if (0 == strncmp(keybuff, "fn:", 3)) {
       if (! bind_func (keybuff, val->functionValue))
         return false;
+    } else if (0 == strncmp(keybuff, "fmap:", 5)) {
+      ctx_value_t val2;
+      val2.fmapValue = new ArityFMap (*val->fmapValue);
+      keymap.put (keybuff, val2);
     }
   }
 

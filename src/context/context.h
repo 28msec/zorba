@@ -36,9 +36,11 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC context : public SimpleRCObject
 {
 protected:
+  typedef std::map<int, rchandle<function> > ArityFMap;
   typedef union { 
     expr             * exprValue;
     function         * functionValue;
+    ArityFMap        * fmapValue;
     int                intValue;
     bool               boolValue;
 		const XQType     * typeValue; ///do manual ref counting on this
@@ -103,6 +105,12 @@ protected:
     ctx_value_t val;
     return (context_value2 (key1.c_str(), key2, val)) ? val.functionValue : NULL;
   }
+
+  ArityFMap *lookup_fmap (xqp_string key) const {
+    ctx_value_t val;
+    return (context_value (key, val)) ? val.fmapValue : NULL;
+  }
+  function *lookup_fmap_func (xqp_string key, int arity) const;
 
   // defined in in static_context.cpp
   bool bind_expr (xqp_string key, expr *e);
