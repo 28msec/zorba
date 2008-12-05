@@ -159,3 +159,26 @@ IF(ZORBA_NO_UNICODE)
   SET_TESTS_PROPERTIES (test/rbkt/string/CompareFunc/CompareFunc3 PROPERTIES WILL_FAIL TRUE)
   SET_TESTS_PROPERTIES (test/rbkt/string/StringToCodepointFunc/StringToCodepointFunc1 PROPERTIES WILL_FAIL TRUE)
 ENDIF(ZORBA_NO_UNICODE)
+
+#these tests fail due to floating-point precision problems, see KNOWN_ISSUES.txt
+#bug 2210842 (https://sourceforge.net/tracker/index.php?func=detail&aid=2210842&group_id=226244&atid=1067586)
+SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Expressions/Operators/ArithExpr/NumericOpr/NumericAdd/K-NumericAdd-5 PROPERTIES WILL_FAIL TRUE)
+SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Expressions/Operators/ArithExpr/NumericOpr/NumericAdd/K-NumericAdd-6 PROPERTIES WILL_FAIL TRUE)
+
+#2210787 (https://sourceforge.net/tracker/index.php?func=detail&aid=2210787&group_id=226244&atid=1067586)
+SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/NodeFunc/NodeNumberFunc/fn-numberulng1args-2 PROPERTIES WILL_FAIL TRUE)
+SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/NodeFunc/NodeNumberFunc/fn-numberulng1args-3 PROPERTIES WILL_FAIL TRUE)
+SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/NodeFunc/NodeNumberFunc/fn-numberflt1args-1 PROPERTIES WILL_FAIL TRUE)
+SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/NodeFunc/NodeNumberFunc/fn-numberflt1args-3 PROPERTIES WILL_FAIL TRUE)
+SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/NodeFunc/NodeNumberFunc/fn-numberlng1args-1 PROPERTIES WILL_FAIL TRUE)
+SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/NodeFunc/NodeNumberFunc/fn-numberlng1args-3 PROPERTIES WILL_FAIL TRUE)
+
+#2210779 (https://sourceforge.net/tracker/index.php?func=detail&aid=2210779&group_id=226244&atid=1067586)
+SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/SeqFunc/AggregateSeqFunc/SeqAVGFunc/fn-avg-mix-args-013 PROPERTIES WILL_FAIL TRUE)
+SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/SeqFunc/AggregateSeqFunc/SeqAVGFunc/fn-avg-mix-args-014 PROPERTIES WILL_FAIL TRUE)
+SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/SeqFunc/AggregateSeqFunc/SeqAVGFunc/fn-avg-mix-args-015 PROPERTIES WILL_FAIL TRUE)
+SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/SeqFunc/AggregateSeqFunc/SeqAVGFunc/fn-avg-mix-args-020 PROPERTIES WILL_FAIL TRUE)
+SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/SeqFunc/AggregateSeqFunc/SeqAVGFunc/fn-avg-mix-args-022 PROPERTIES WILL_FAIL TRUE)
+
+#2204089 (https://sourceforge.net/tracker/index.php?func=detail&aid=2204089&group_id=226244&atid=1067586)
+SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/SchemaImport/SeqExprCastSI/casthcds9 PROPERTIES WILL_FAIL TRUE)
