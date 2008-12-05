@@ -28,6 +28,8 @@
 #include "store/api/iterator.h"
 #include "context/static_context.h"
 #include "context/internal_uri_resolvers.h"
+#include "system/globalenv.h"
+#include "store/api/item_factory.h"
 
 namespace zorba { namespace simplestore {
 
@@ -1403,8 +1405,13 @@ void UpdCreateCollection::apply()
 
 void UpdCreateCollection::undo()
 {
-  if (GET_STORE().getCollection(theCollectionUri)) {
-    GET_STORE().deleteCollection(theCollectionUri);
+  store::Item_t item;
+  GENV_ITEMFACTORY->createAnyURI(item, theCollectionUri);
+  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
+                              ->resolve(item, theStaticContext);
+  if (lColl) {
+    xqpStringStore_t lCollString = lColl->getUri()->getStringValueP();
+    GET_STORE().deleteCollection(lCollString);
   }
 }
 
