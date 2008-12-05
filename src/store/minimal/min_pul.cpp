@@ -24,6 +24,7 @@
 #include "store/minimal/min_atomic_items.h"
 
 #include "store/api/collection.h"
+#include "store/api/iterator.h"
 
 namespace zorba { namespace storeminimal {
 
@@ -52,6 +53,14 @@ PULImpl::~PULImpl()
 {
   ulong num;
 
+  num= theCreateCollectionList.size();
+  for (ulong i = 0; i < num; ++i)
+    delete theCreateCollectionList[i];
+
+  num= theInsertIntoCollectionList.size();
+  for (ulong i = 0; i < num; ++i)
+    delete theInsertIntoCollectionList[i];
+
   num = theDoFirstList.size();
   for (ulong i = 0; i < num; i++)
     delete theDoFirstList[i];
@@ -71,6 +80,14 @@ PULImpl::~PULImpl()
   num = theDeleteList.size();
   for (ulong i = 0; i < num; i++)
     delete theDeleteList[i];
+
+  num = theDeleteFromCollectionList.size();
+  for (ulong i = 0; i < num; ++i)
+    delete theDeleteFromCollectionList[i];
+
+  num= theDeleteCollectionList.size();
+  for (ulong i = 0; i < num; ++i)
+    delete theDeleteCollectionList[i];
 
   num = theValidationList.size();
   for (ulong i = 0; i < num; i++)
@@ -530,6 +547,99 @@ void PULImpl::addSetAttributeType(
 
 
 /*******************************************************************************
+ collection functions
+********************************************************************************/
+void PULImpl::addCreateCollection(
+    xqpStringStore_t&    resolvedURI)
+{
+  UpdatePrimitive* upd = new UpdCreateCollection(this, resolvedURI);
+
+  theCreateCollectionList.push_back(upd);
+}
+
+void PULImpl::addDeleteCollection(
+    xqpStringStore_t&    resolvedURI)
+{
+  UpdatePrimitive* upd = new UpdDeleteCollection(this, resolvedURI);
+
+  theDeleteCollectionList.push_back(upd);
+}
+
+void PULImpl::addInsertIntoCollection(
+    xqpStringStore_t&    resolvedURI,
+    store::Item_t&       node)
+{
+  UpdatePrimitive* upd = new UpdInsertIntoCollection(this, resolvedURI, node);
+
+  theInsertIntoCollectionList.push_back(upd);
+} 
+
+void PULImpl::addInsertFirstIntoCollection(
+    xqpStringStore_t&   resolvedURI,
+    std::vector<store::Item_t>& nodes)
+{
+  UpdatePrimitive* upd = new UpdInsertFirstIntoCollection(this, resolvedURI, nodes);
+
+  theInsertIntoCollectionList.push_back(upd);
+}
+
+void PULImpl::addInsertLastIntoCollection(
+    xqpStringStore_t&   resolvedURI,
+    std::vector<store::Item_t>& nodes)
+{
+  UpdatePrimitive* upd = new UpdInsertLastIntoCollection(this, resolvedURI, nodes);
+
+  theInsertIntoCollectionList.push_back(upd);
+}
+
+void PULImpl::addInsertBeforeIntoCollection(
+    xqpStringStore_t&  resolvedURI,
+    store::Item_t&     target,
+    std::vector<store::Item_t>& nodes)
+{
+  UpdatePrimitive* upd = new UpdInsertBeforeIntoCollection(this, resolvedURI, target, nodes);
+
+  theInsertIntoCollectionList.push_back(upd);
+}
+
+void PULImpl::addInsertAfterIntoCollection(
+    xqpStringStore_t&  resolvedURI,
+    store::Item_t&     target,
+    std::vector<store::Item_t>& nodes)
+{
+  UpdatePrimitive* upd = new UpdInsertAfterIntoCollection(this, resolvedURI, target, nodes);
+
+  theInsertIntoCollectionList.push_back(upd);
+}
+
+void PULImpl::addInsertAtIntoCollection(
+    xqpStringStore_t&  resolvedURI,
+    ulong              pos,
+    std::vector<store::Item_t>& nodes)
+{
+  UpdatePrimitive* upd = new UpdInsertAtIntoCollection(this, resolvedURI, pos, nodes);
+
+  theInsertIntoCollectionList.push_back(upd);
+}
+
+void PULImpl::addRemoveFromCollection(
+    xqpStringStore_t&  resolvedURI,
+    std::vector<store::Item_t>& nodes)
+{
+  UpdatePrimitive* upd = new UpdRemoveNodesFromCollection(this, resolvedURI, nodes);
+
+  theDeleteFromCollectionList.push_back(upd);
+}
+
+void PULImpl::addRemoveAtFromCollection(
+    xqpStringStore_t&  resolvedURI,
+    ulong              pos)
+{
+  UpdatePrimitive* upd = new UpdRemoveNodesAtFromCollection(this, resolvedURI, pos);
+
+  theDeleteFromCollectionList.push_back(upd);
+}
+/*******************************************************************************
 
 ********************************************************************************/
 void PULImpl::mergeUpdates(store::Item* other)
@@ -550,6 +660,19 @@ void PULImpl::mergeUpdates(store::Item* other)
 
   mergeUpdateList(theDeleteList, otherp->theDeleteList,
                   false, false, false, false, true);
+
+  // merge collection functions
+  mergeUpdateList(theCreateCollectionList, otherp->theCreateCollectionList,
+                  false, false, false, false, false);
+
+  mergeUpdateList(theInsertIntoCollectionList, otherp->theInsertIntoCollectionList,
+                  false, false, false, false, false);
+
+  mergeUpdateList(theDeleteFromCollectionList, otherp->theDeleteFromCollectionList,
+                  false, false, false, false, false);
+
+  mergeUpdateList(theDeleteCollectionList, otherp->theDeleteCollectionList,
+                  false, false, false, false, false);
 }
 
 
@@ -717,6 +840,15 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
 
     theValidationNodes = &validationNodes;
 
+    // create collections
+    numUpdates = theCreateCollectionList.size();
+    for (i = 0; i < numUpdates; ++i)
+      theCreateCollectionList[i]->apply();
+
+    numUpdates = theInsertIntoCollectionList.size();
+    for (i = 0; i < numUpdates; ++i)
+      theInsertIntoCollectionList[i]->apply();
+
     // insertInto, insertAttributes, replaceValue, rename
     numUpdates = theDoFirstList.size();
     for (i = 0; i < numUpdates; i++)
@@ -738,6 +870,14 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     numUpdates = theDeleteList.size();
     for (i = 0; i < numUpdates; i++)
       theDeleteList[i]->apply();
+
+    numUpdates = theDeleteFromCollectionList.size();
+    for (i = 0; i < numUpdates; ++i)
+      theDeleteFromCollectionList[i]->apply();
+
+    numUpdates = theDeleteCollectionList.size();
+    for (i = 0; i < numUpdates; ++i)
+      theDeleteCollectionList[i]->apply();
   }
   catch (error::ZorbaError& e)
   {
@@ -1286,6 +1426,263 @@ void UpdReplaceCommentValue::apply()
 void UpdReplaceCommentValue::undo()
 {
   COMMENT_NODE(theTarget)->restoreValue(*this);
+}
+
+/*******************************************************************************
+  UpdatePrimitives for collection functions
+********************************************************************************/
+
+// UpdCreateCollection
+void UpdCreateCollection::apply()
+{
+  GET_STORE().createCollection(theCollectionUri);
+  theIsApplied = true;
+}
+
+
+void UpdCreateCollection::undo()
+{
+  if (GET_STORE().getCollection(theCollectionUri)) {
+    GET_STORE().deleteCollection(theCollectionUri);
+  }
+}
+
+// UpdDeleteCollection
+void UpdDeleteCollection::apply()
+{
+  assert(GET_STORE().getCollection(theTargetCollectionUri));
+
+  // save nodes for potential undo
+  store::Item_t   lTmp = NULL;
+  store::Iterator_t lIter = GET_STORE().getCollection(theTargetCollectionUri)->getIterator(true);
+  assert(lIter);
+
+  lIter->open();
+  while (lIter->next(lTmp))
+    theSavedItems.push_back(lTmp);
+  lIter->close();
+
+  GET_STORE().deleteCollection(theTargetCollectionUri);
+  theIsApplied = true;
+}
+
+
+void UpdDeleteCollection::undo()
+{
+  if (!GET_STORE().getCollection(theTargetCollectionUri)) {
+    GET_STORE().createCollection(theTargetCollectionUri); 
+  }
+
+  store::Collection_t lCol = GET_STORE().getCollection(theTargetCollectionUri);
+  assert(lCol);
+
+  long lIndex;
+  for (std::vector<store::Item_t>::iterator lIter = theSavedItems.begin();
+       lIter != theSavedItems.end(); ++lIter) {
+    if ( ( lIndex = lCol->indexOf(lIter->getp())) != -1) {
+      lCol->addNode(lIter->getp());
+    }
+  }
+}
+
+// UpdInsertIntoCollection
+void UpdInsertIntoCollection::apply()
+{
+  store::Collection_t lColl = GET_STORE().getCollection(theTargetCollectionUri);
+  assert(lColl);
+
+  lColl->addNode(theNode.getp());
+
+  theIsApplied = true;
+}
+
+
+void UpdInsertIntoCollection::undo()
+{
+  store::Collection_t lColl = GET_STORE().getCollection(theTargetCollectionUri);
+  assert(lColl);
+
+  // remove the node if it exists
+  long lIndex;
+  if ( (lIndex = lColl->indexOf(theNode.getp())) != -1 ) {
+    lColl->removeNode(lIndex);
+  }
+}
+
+// UpdInsertFirstIntoCollection
+void UpdInsertFirstIntoCollection::apply()
+{
+  store::Collection_t lColl = GET_STORE().getCollection(theTargetCollectionUri);
+  assert(lColl);
+
+  for (std::vector<store::Item_t>::reverse_iterator lIter = theNodes.rbegin();
+       lIter != theNodes.rend(); ++lIter) {
+    lColl->addNode(lIter->getp(), 1);
+  }
+}
+
+void UpdInsertFirstIntoCollection::undo()
+{
+  store::Collection_t lColl = GET_STORE().getCollection(theTargetCollectionUri);
+  assert(lColl);
+
+  long lIndex;
+  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
+       lIter != theNodes.end(); ++lIter) {
+    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) {
+      lColl->removeNode(lIndex);
+    }
+  }
+}
+
+// UpdInsertLastIntoCollection
+void UpdInsertLastIntoCollection::apply()
+{
+  store::Collection_t lColl = GET_STORE().getCollection(theTargetCollectionUri);
+  assert(lColl);
+
+  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
+       lIter != theNodes.end(); ++lIter) {
+    lColl->addNode(lIter->getp(), -1);
+  }
+}
+
+void UpdInsertLastIntoCollection::undo()
+{
+  store::Collection_t lColl = GET_STORE().getCollection(theTargetCollectionUri);
+  assert(lColl);
+
+  long lIndex;
+  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
+       lIter != theNodes.end(); ++lIter) {
+    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) {
+      lColl->removeNode(lIndex);
+    }
+  }
+}
+
+// UpdInsertBeforeIntoCollection
+void UpdInsertBeforeIntoCollection::apply()
+{
+  store::Collection_t lColl = GET_STORE().getCollection(theTargetCollectionUri);
+  assert(lColl);
+
+  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
+       lIter != theNodes.end(); ++lIter) {
+    lColl->addNode(lIter->getp(), theTarget, true);
+  }
+}
+
+void UpdInsertBeforeIntoCollection::undo()
+{
+  store::Collection_t lColl = GET_STORE().getCollection(theTargetCollectionUri);
+  assert(lColl);
+
+  long lIndex;
+  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
+       lIter != theNodes.end(); ++lIter) {
+    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) {
+      lColl->removeNode(lIndex);
+    }
+  }
+}
+
+// UpdInsertAfterIntoCollection
+void UpdInsertAfterIntoCollection::apply()
+{
+  store::Collection_t lColl = GET_STORE().getCollection(theTargetCollectionUri);
+  assert(lColl);
+
+  for (std::vector<store::Item_t>::reverse_iterator lIter = theNodes.rbegin();
+       lIter != theNodes.rend(); ++lIter) {
+    lColl->addNode(lIter->getp(), theTarget, false);
+  }
+}
+
+void UpdInsertAfterIntoCollection::undo()
+{
+  store::Collection_t lColl = GET_STORE().getCollection(theTargetCollectionUri);
+  assert(lColl);
+
+  long lIndex;
+  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
+       lIter != theNodes.end(); ++lIter) {
+    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) {
+      lColl->removeNode(lIndex);
+    }
+  }
+}
+
+// UpdInsertAtIntoCollection
+void UpdInsertAtIntoCollection::apply()
+{
+  store::Collection_t lColl = GET_STORE().getCollection(theTargetCollectionUri);
+  assert(lColl);
+
+  ulong lPos = thePos;
+  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
+       lIter != theNodes.end(); ++lIter) {
+    lColl->addNode(lIter->getp(), lPos++);
+  }
+}
+
+void UpdInsertAtIntoCollection::undo()
+{
+  store::Collection_t lColl = GET_STORE().getCollection(theTargetCollectionUri);
+  assert(lColl);
+
+  long lIndex;
+  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
+       lIter != theNodes.end(); ++lIter) {
+    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) {
+      lColl->removeNode(lIndex);
+    }
+  }
+}
+
+// UpdRemoveNodesFromCollection
+void UpdRemoveNodesFromCollection::apply()
+{
+  store::Collection_t lColl = GET_STORE().getCollection(theTargetCollectionUri);
+  assert(lColl);
+
+  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
+       lIter != theNodes.end(); ++lIter) {
+    lColl->removeNode(lIter->getp());
+  }
+}
+
+void UpdRemoveNodesFromCollection::undo()
+{
+  store::Collection_t lColl = GET_STORE().getCollection(theTargetCollectionUri);
+  assert(lColl);
+
+  long lIndex;
+  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
+       lIter != theNodes.end(); ++lIter) {
+    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) {
+      lColl->addNode(lIter->getp());
+    }
+  }
+}
+
+// UpdRemoveNodesAtFromCollection
+void UpdRemoveNodesAtFromCollection::apply()
+{
+  store::Collection_t lColl = GET_STORE().getCollection(theTargetCollectionUri);
+  assert(lColl);
+
+  theNode = lColl->nodeAt(thePos);
+  assert(theNode);
+  lColl->removeNode(thePos);
+}
+
+void UpdRemoveNodesAtFromCollection::undo()
+{
+  store::Collection_t lColl = GET_STORE().getCollection(theTargetCollectionUri);
+  assert(lColl);
+
+  lColl->addNode(theNode);
 }
 
 }
