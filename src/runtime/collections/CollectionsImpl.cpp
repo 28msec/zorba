@@ -455,7 +455,7 @@ ZorbaListCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planSta
 bool
 ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 {
-  store::Item_t             item;
+  store::Item_t             item, lUri;
   store::Collection_t       coll;
   std::auto_ptr<store::PUL> pul;
   xqpStringStore_t          resolvedUri;
@@ -464,13 +464,13 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
   // check argument
-  if (!consumeNext(item, theChildren[0].getp(), aPlanState)) {
+  if (!consumeNext(lUri, theChildren[0].getp(), aPlanState)) {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, "The empty-sequence is not allowed as first argument to create-collection");
   }
 
   // check if the collection already exists
   try {
-    coll = getCollection(aPlanState, item->getStringValueP(), loc);
+    coll = getCollection(aPlanState, lUri->getStringValueP(), loc);
   }
   catch (error::ZorbaError&) {
     // we come here if the collection does not exist already
@@ -481,18 +481,21 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
                          loc,
                          "The collection already exists.");
 
-  resolvedUri = aPlanState.sctx()->resolve_relative_uri(item->getStringValueP(), xqp_string()).getStore();
+  resolvedUri = aPlanState.sctx()->resolve_relative_uri(lUri->getStringValueP(), xqp_string()).getStore();
 
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addCreateCollection(resolvedUri);
+  pul->addCreateCollection(aPlanState.sctx(), resolvedUri);
 
   // also add some optional nodes to the collection
   if(theChildren.size() == 2) 
   {
-    while (consumeNext(item, theChildren[1].getp(), aPlanState))
-      pul->addInsertIntoCollection(resolvedUri, item);
+    while (consumeNext(item, theChildren[1].getp(), aPlanState)) {
+      GENV_ITEMFACTORY->createAnyURI(lUri, resolvedUri);
+      pul->addInsertIntoCollection(aPlanState.sctx(), lUri, item);
+    }
+
   }
 
   result = pul.release();
@@ -518,7 +521,6 @@ ZorbaDeleteCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
   store::Item_t       item;
   store::Collection_t coll;
   std::auto_ptr<store::PUL> pul;
-  xqpStringStore_t          resolvedUri;
 
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
@@ -529,11 +531,10 @@ ZorbaDeleteCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
 
   coll = getCollection(aPlanState, item->getStringValueP(), loc);
 
-  resolvedUri = coll->getUri()->getStringValueP();
-
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addDeleteCollection(resolvedUri);
+  item = coll->getUri();
+  pul->addDeleteCollection(aPlanState.sctx(), item);
 
   result = pul.release();
   STACK_PUSH( result != NULL, state);
@@ -553,7 +554,6 @@ ZorbaDeleteAllCollectionsIterator::nextImpl(store::Item_t& result, PlanState& pl
   PlanIteratorState             *state;
   store::Iterator_t             uriItState;
   store::Item_t                 itemUri;
-  xqpStringStore_t              lResolvedUri;
   std::auto_ptr<store::PUL>     pul;
 
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -562,8 +562,7 @@ ZorbaDeleteAllCollectionsIterator::nextImpl(store::Item_t& result, PlanState& pl
 
   for ((uriItState = GENV_STORE.listCollectionUris())->open ();
         uriItState->next(itemUri); ) {
-    lResolvedUri = itemUri->getStringValue();
-    pul->addDeleteCollection(lResolvedUri);
+    pul->addDeleteCollection(planState.sctx(), itemUri);
   }
 
   uriItState->close();
@@ -594,7 +593,6 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
   store::Item_t              item;
   std::vector<store::Item_t> nodes;
   std::auto_ptr<store::PUL>  pul;
-  xqpStringStore_t           resolvedUri;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -612,9 +610,8 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  resolvedUri = coll->getUri()->getStringValueP();
-
-  pul->addInsertFirstIntoCollection(resolvedUri, nodes);
+  item = coll->getUri();
+  pul->addInsertFirstIntoCollection(planState.sctx(), item, nodes);
 
   result = pul.release();
   STACK_PUSH( result != NULL, state);
@@ -644,7 +641,6 @@ ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
   store::Item_t             item;
   std::vector<store::Item_t> nodes;
   std::auto_ptr<store::PUL>  pul;
-  xqpStringStore_t           resolvedUri;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -662,9 +658,9 @@ ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
   while (consumeNext(item, theChildren[1].getp(), planState))
     nodes.push_back(item);
 
-  resolvedUri = coll->getUri()->getStringValueP();
 
-  pul->addInsertLastIntoCollection(resolvedUri, nodes);
+  item = coll->getUri();
+  pul->addInsertLastIntoCollection(planState.sctx(), item, nodes);
 
   result = pul.release();
   STACK_PUSH( result != NULL, state);
@@ -702,7 +698,6 @@ ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planSt
   store::Item_t              itemUri, itemTarget, tmpItem;
   std::vector<store::Item_t> nodes;
   std::auto_ptr<store::PUL>  pul;
-  xqpStringStore_t           resolvedUri;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -714,8 +709,6 @@ ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planSt
   }
 
   coll = getCollection(planState, itemUri->getStringValueP(), loc);
-
-  resolvedUri = coll->getUri()->getStringValueP();
 
   if(!consumeNext(itemTarget, theChildren[1].getp(), planState)) {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
@@ -731,7 +724,7 @@ ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planSt
   if (coll->indexOf(itemTarget.getp()) == -1) {
     ZORBA_ERROR_LOC_DESC_OSS(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
                          "The target node passed as second parameter to insert-nodes-before does not exist in the given collection "
-                         << resolvedUri);
+                         << coll->getUri()->getStringValue());
   }
 
   // create the pul and add the primitive
@@ -740,7 +733,8 @@ ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planSt
   while (consumeNext(tmpItem, theChildren[2].getp(), planState))
     nodes.push_back(tmpItem);
 
-  pul->addInsertBeforeIntoCollection(resolvedUri, itemTarget, nodes);
+  tmpItem = coll->getUri();
+  pul->addInsertBeforeIntoCollection(planState.sctx(), tmpItem, itemTarget, nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[1]->reset(planState);
@@ -762,7 +756,6 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
   store::Item_t             itemUri, itemTarget, tmpItem;
   std::vector<store::Item_t> nodes;
   std::auto_ptr<store::PUL>  pul;
-  xqpStringStore_t           resolvedUri;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -774,8 +767,6 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
   }
 
   coll = getCollection(planState, itemUri->getStringValueP(), loc);
-
-  resolvedUri = coll->getUri()->getStringValueP();
 
   if(!consumeNext(itemTarget, theChildren[1].getp(), planState)) {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
@@ -791,7 +782,7 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
   if (coll->indexOf(itemTarget.getp()) == -1) {
     ZORBA_ERROR_LOC_DESC_OSS(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
                          "The target node passed as second parameter to insert-nodes-before does not exist in the given collection "
-                         << resolvedUri);
+                         << coll->getUri()->getStringValue());
   }
 
   // create the pul and add the primitive
@@ -800,7 +791,8 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
   while (consumeNext(tmpItem, theChildren[2].getp(), planState))
     nodes.push_back(tmpItem);
 
-  pul->addInsertAfterIntoCollection(resolvedUri, itemTarget, nodes);
+  tmpItem = coll->getUri();
+  pul->addInsertAfterIntoCollection(planState.sctx(), tmpItem, itemTarget, nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[1]->reset(planState);
@@ -838,7 +830,6 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   std::vector<store::Item_t> nodes;
   std::auto_ptr<store::PUL>  pul;
   xqp_uint                   pos;
-  xqpStringStore_t           resolvedUri;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -850,8 +841,6 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   }
 
   coll = getCollection(planState, itemUri->getStringValueP(), loc);
-
-  resolvedUri = coll->getUri()->getStringValueP();
 
   if(!consumeNext(itemPos, theChildren[1].getp(), planState)) {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
@@ -876,7 +865,8 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   while (consumeNext(tmpItem, theChildren[2].getp(), planState))
     nodes.push_back(tmpItem);
 
-  pul->addInsertAtIntoCollection(resolvedUri, pos, nodes);
+  tmpItem = coll->getUri();
+  pul->addInsertAtIntoCollection(planState.sctx(), tmpItem, pos, nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[1]->reset(planState);
@@ -912,7 +902,6 @@ ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   store::Item_t                           itemUri, item;
   std::vector<store::Item_t>              nodes;
   std::auto_ptr<store::PUL>               pul;
-  xqpStringStore_t                        resolvedUri;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -924,20 +913,20 @@ ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   }
 
   coll = getCollection(planState, itemUri->getStringValueP(), loc);
-  resolvedUri = coll->getUri()->getStringValueP();
 
   while (consumeNext(item, theChildren[1].getp(), planState)) {
     if (coll->indexOf(item.getp()) == -1)
       ZORBA_ERROR_LOC_DESC_OSS(API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION, loc, 
                            "The node passed as second parameter to remove-nodes does not exist in the given collection "
-                           << resolvedUri);
+                           << coll->getUri()->getStringValue());
 
     nodes.push_back(item);
   }
 
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-  pul->addRemoveFromCollection(resolvedUri, nodes);
+  item = coll->getUri();
+  pul->addRemoveFromCollection(planState.sctx(), item, nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[1]->reset(planState);
@@ -971,7 +960,6 @@ ZorbaRemoveNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   store::Item_t              itemUri, itemTarget, tmpItem;
   uint32_t                   lpos;
   std::auto_ptr<store::PUL>  pul;
-  xqpStringStore_t           resolvedUri;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -983,8 +971,6 @@ ZorbaRemoveNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   }
 
   coll = getCollection(planState, itemUri->getStringValueP(), loc);
-
-  resolvedUri = coll->getUri()->getStringValueP();
 
   if(!consumeNext(itemTarget, theChildren[1].getp(), planState)) {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
@@ -1009,7 +995,8 @@ ZorbaRemoveNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addRemoveAtFromCollection(resolvedUri, lpos);
+  tmpItem = coll->getUri();
+  pul->addRemoveAtFromCollection(planState.sctx(), tmpItem, lpos);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[1]->reset(planState);
