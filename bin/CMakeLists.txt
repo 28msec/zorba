@@ -22,13 +22,13 @@ ENDIF(ZORBA_DEBUGGER)
 
 ADD_EXECUTABLE(zorbacmd ${ZORBA_CMD_SRCS})
 
-TARGET_LINK_LIBRARIES(zorbacmd zorba_simplestore)
+TARGET_LINK_LIBRARIES(zorbacmd zorba_${ZORBA_STORE_LIB_EXTENSION})
 SET_TARGET_PROPERTIES(zorbacmd PROPERTIES OUTPUT_NAME "zorba") # cmake way to rename the file
 INSTALL(TARGETS zorbacmd DESTINATION bin)
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)
   ADD_EXECUTABLE(zorbacmd_static ${ZORBA_CMD_SRCS})
-  TARGET_LINK_LIBRARIES(zorbacmd_static zorba_simplestore_static)
+  TARGET_LINK_LIBRARIES(zorbacmd_static zorba_${ZORBA_STORE_LIB_EXTENSION}_static)
   SET_TARGET_PROPERTIES(zorbacmd_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
   SET_TARGET_PROPERTIES(zorbacmd_static PROPERTIES OUTPUT_NAME "zorba_static") # cmake way to rename the file
   INSTALL(TARGETS zorbacmd_static DESTINATION bin)
