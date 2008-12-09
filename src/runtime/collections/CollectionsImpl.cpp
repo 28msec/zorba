@@ -118,47 +118,53 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
   if (consumeNext(itemURI, theChildren[0].getp(), planState))
   {
-    // ????
-    theColl = getCollection(planState, itemURI->getStringValue(), loc);
-
-    try 
+    try
     {
       resolvedURIString = planState.sctx()->
-                          resolve_relative_uri(itemURI->getStringValueP(),
-                                               xqp_string()).getStore();
+          resolve_relative_uri(itemURI->getStringValueP(),
+                               xqp_string()).getStore();
 
-      itemXML = GENV_STORE.getDocument(resolvedURIString);
+      GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
     }
-    catch (error::ZorbaError& e) 
+    catch (error::ZorbaError&)
     {
-      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+      ZORBA_ERROR_LOC_PARAM(XQST0046,
+                            loc,
+                            itemURI->getStringValue()->c_str(),
+                                "URI literal empty or is not in the lexical space of xs:anyURI" );
     }
 
-    if (itemXML == NULL) 
+    theColl = planState.sctx()->get_collection_uri_resolver()->
+        resolve(resolvedURIItem, planState.sctx());
+
+    if (theColl == NULL)
     {
       try 
       {
-        GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
-      }
-      catch (error::ZorbaError& e) 
-      {
-        ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
-      }
-
-      try 
-      {
-        itemXML = planState.sctx()->get_document_uri_resolver()->
-                  resolve(resolvedURIItem, planState.sctx(), false, false);
+        itemXML = GENV_STORE.getDocument(resolvedURIString);
       }
       catch (error::ZorbaError& e) 
       {
         ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
       }
-    }
 
-    strURI = itemURI->getStringValue();
-    theColl = GENV_STORE.createCollection(strURI);
-    theColl->addNode(itemXML, 1);
+      if (itemXML == NULL) 
+      {
+        try
+        {
+          itemXML = planState.sctx()->get_document_uri_resolver()->
+                    resolve(resolvedURIItem, planState.sctx(), false, false);
+        }
+        catch (error::ZorbaError& e) 
+        {
+          ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+        }
+      }
+
+      strURI = itemURI->getStringValue();
+      theColl = GENV_STORE.createCollection(strURI);
+      theColl->addNode(itemXML, 1);
+    }
   }
 
   STACK_END (state);
@@ -465,23 +471,34 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
 
   // check argument
   if (!consumeNext(lUri, theChildren[0].getp(), aPlanState)) {
-    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, "The empty-sequence is not allowed as first argument to create-collection");
+    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR,
+                         loc,
+                         "The empty-sequence is not allowed as first argument to create-collection");
   }
 
   // check if the collection already exists
-  try {
-    coll = getCollection(aPlanState, lUri->getStringValueP(), loc);
+  try
+  {
+    resolvedUri = aPlanState.sctx()->resolve_relative_uri(lUri->getStringValueP(),
+                                                         xqp_string()).getStore();
+
+    GENV_ITEMFACTORY->createAnyURI(lUri, resolvedUri);
   }
-  catch (error::ZorbaError&) {
-    // we come here if the collection does not exist already
+  catch (error::ZorbaError&)
+  {
+    ZORBA_ERROR_LOC_PARAM(XQST0046,
+                          loc,
+                          lUri->getStringValue()->c_str(),
+                          "URI literal empty or is not in the lexical space of xs:anyURI" );
   }
+
+  coll = aPlanState.sctx()->get_collection_uri_resolver()->
+      resolve(lUri, aPlanState.sctx());
 
   if (coll != NULL)
     ZORBA_ERROR_LOC_DESC(API0005_COLLECTION_ALREADY_EXISTS,
                          loc,
                          "The collection already exists.");
-
-  resolvedUri = aPlanState.sctx()->resolve_relative_uri(lUri->getStringValueP(), xqp_string()).getStore();
 
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
@@ -491,11 +508,8 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
   // also add some optional nodes to the collection
   if(theChildren.size() == 2) 
   {
-    while (consumeNext(item, theChildren[1].getp(), aPlanState)) {
-      GENV_ITEMFACTORY->createAnyURI(lUri, resolvedUri);
+    while (consumeNext(item, theChildren[1].getp(), aPlanState))
       pul->addInsertIntoCollection(aPlanState.sctx(), lUri, item);
-    }
-
   }
 
   result = pul.release();
@@ -526,7 +540,9 @@ ZorbaDeleteCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
 
   // check argument
   if (!consumeNext(item, theChildren[0].getp(), aPlanState)) {
-    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, "The empty-sequence is not allowed as argument to delete-collection");
+    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR,
+                         loc,
+                         "The empty-sequence is not allowed as argument to delete-collection");
   }
 
   coll = getCollection(aPlanState, item->getStringValueP(), loc);
@@ -599,7 +615,9 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
   // check argument
   if (!consumeNext(item, theChildren[0].getp(), planState)) {
-    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, "The empty-sequence is not allowed as first argument to insert-nodes-first");
+    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR,
+                         loc,
+                         "The empty-sequence is not allowed as first argument to insert-nodes-first");
   }
 
   coll = getCollection(planState, item->getStringValueP(), loc);
@@ -647,7 +665,9 @@ ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
   // check argument
   if (!consumeNext(item, theChildren[0].getp(), planState)) {
-    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, "The empty-sequence is not allowed as first argument to insert-nodes-last");
+    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR,
+                         loc,
+                         "The empty-sequence is not allowed as first argument to insert-nodes-last");
   }
 
   coll = getCollection(planState, item->getStringValueP(), loc);
