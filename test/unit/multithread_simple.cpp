@@ -17,6 +17,8 @@
 #include <vector>
 #include <iostream>
 #include <sstream>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <zorba/zorba.h>
 #include <simplestore/simplestore.h>
@@ -36,6 +38,12 @@ struct data {
   int     index;
 };
 
+typedef struct {
+  Zorba*  lZorba;
+  int     index;
+} data_2;
+
+
 #ifdef ZORBA_HAVE_PTHREAD_H
 
 static  XQuery_t    lQuery;
@@ -49,21 +57,16 @@ multithread_example_1(Zorba* aZorba)
 {
   unsigned int  i;
   pthread_t     pt[NR_THREADS];
-  
+
   try {
     lQuery = aZorba->compileQuery("1+1");
 
     for(i=0; i<NR_THREADS; i++)
-    {
       pthread_create(&pt[i], NULL, query_thread_1, (void*)i);
-    }
 
     //wait for threads to finish
     for(i=0;i<NR_THREADS;i++)
-    {
-      void  *thread_result;
-      pthread_join(pt[i], &thread_result);
-    }
+      pthread_join(pt[i], NULL);
 
     lQuery->close();
 
@@ -82,22 +85,28 @@ Create multiple threads that compile and execute a query
 bool
 multithread_example_2(Zorba* aZorba)
 {
-  unsigned int  i;
-  pthread_t     pt[NR_THREADS];
-  
+  unsigned int    i;
+  pthread_t*      pthreads;
+  data_2*         pdata;
+
   try {
+    pthreads=(pthread_t *)malloc(NR_THREADS*sizeof(*pthreads));
+    pdata=(data_2 *)malloc(NR_THREADS*sizeof(data_2));
+
     for(i=0; i<NR_THREADS; i++)
     {
-      pthread_create(&pt[i], NULL, query_thread_2, (void*)aZorba);
+      pdata[i].lZorba = aZorba;
+      pdata[i].index = i;
+      pthread_create(&pthreads[i], NULL, query_thread_2, (void*)(pdata+i));
     }
 
     //wait for threads to finish
-    for(i=0;i<NR_THREADS;i++)
-    {
-      void  *thread_result;
-      pthread_join(pt[i], &thread_result);
-    }
-    
+    for(i=0; i<NR_THREADS; i++)
+      pthread_join(pthreads[i], NULL);
+
+    free(pthreads);
+    free(pdata);
+
     return true;
   }
   catch (ZorbaException &e) {
@@ -177,6 +186,7 @@ multithread_example_4(Zorba* aZorba)
     }
 
     aItem = NULL;
+    delete test;
 
     return true;
   }
@@ -193,15 +203,15 @@ multithread_simple(int argc, char* argv[])
   Zorba*                    lZorba = Zorba::getInstance(simplestore::SimpleStoreManager::getStore());
   bool                      res = false;
 
-  std::cout << std::endl  << "executing multithread test 1 : ";
-  res = multithread_example_1(lZorba);
-  if (!res) {
-    std::cout << "Failed" << std::endl;
-    lZorba->shutdown();
-    simplestore::SimpleStoreManager::shutdownStore(lStore);
-    return 1;
-  }
-  else std::cout << "Passed" << std::endl;
+//   std::cout << std::endl  << "executing multithread test 1 : ";
+//   res = multithread_example_1(lZorba);
+//   if (!res) {
+//     std::cout << "Failed" << std::endl;
+//     lZorba->shutdown();
+//     simplestore::SimpleStoreManager::shutdownStore(lStore);
+//     return 1;
+//   }
+//   else std::cout << "Passed" << std::endl;
 
   std::cout << std::endl  << "executing multithread test 2 : ";
   res = multithread_example_2(lZorba);
@@ -213,15 +223,15 @@ multithread_simple(int argc, char* argv[])
   }
   else std::cout << "Passed" << std::endl;
 
-  std::cout << std::endl  << "executing multithread test 3 : ";
-  res = multithread_example_3(lZorba);
-  if (!res) {
-    std::cout << "Failed" << std::endl;
-    lZorba->shutdown();
-    simplestore::SimpleStoreManager::shutdownStore(lStore);
-    return 1;
-  }
-  else std::cout << "Passed" << std::endl;
+//   std::cout << std::endl  << "executing multithread test 3 : ";
+//   res = multithread_example_3(lZorba);
+//   if (!res) {
+//     std::cout << "Failed" << std::endl;
+//     lZorba->shutdown();
+//     simplestore::SimpleStoreManager::shutdownStore(lStore);
+//     return 1;
+//   }
+//   else std::cout << "Passed" << std::endl;
 
 //   std::cout << std::endl  << "executing multithread test 4 : ";
 //   res = multithread_example_4(lZorba);
@@ -241,9 +251,7 @@ multithread_simple(int argc, char* argv[])
 
 void* query_thread_1(void *param)
 {
-  XQuery_t        xquery_clone;
-
-  xquery_clone = lQuery->clone();
+  XQuery_t xquery_clone = lQuery->clone();
   if(xquery_clone == NULL)
   {
     std::cout << "cannot clone xquery object" << std::endl;
@@ -253,24 +261,31 @@ void* query_thread_1(void *param)
   std::ostringstream os;
   os << xquery_clone << std::endl;
 
-  xquery_clone->close();
-
   return (void*)0;
 }
 
 
 void* query_thread_2(void *param)
 {
-  XQuery_t    query;
-  
-  query = ((Zorba*)param)->compileQuery("2+2");
+  data_2* var = (data_2*)param;
 
-  std::ostringstream os;
-  os << query << std::endl;
+  try
+  {
+    XQuery_t query = var->lZorba->compileQuery("1+1");
 
-  query->close();
+    std::ostringstream os;
+    os << query << std::endl;
 
-  return (void*)0;
+    query->close();
+  } catch (ZorbaException &e) {
+    std::cerr << "filename: " << e.getFileName() << ", ";
+    std::cerr << "line NO: " << e.getFileLineNumber() << ", ";
+    std::cerr << e.getDescription() << std::endl;
+    return NULL;
+  }
+
+//   std::cout << "1 ";
+  return (0);
 }
 
 
@@ -287,23 +302,31 @@ void* query_thread_3(void *param)
   std::ostringstream os;
   os << lQuery << std::endl;
 
+  var->lItem = NULL;
+  lQuery->close();
+
   return (void*)0;
 }
 
 void* query_thread_4(void *param)
 {
-  std::ostringstream os;
-  os << ((data*)param)->index;
+  data* var = (data*)param;
+  char buff [3];
+  int n;
 
-  XQuery_t aQuery = ((data*)param)->lZorba->compileQuery(".//chapter[@id=" + os.str() + "]");
+  int i = var->index % 10;
+  n=sprintf (buff, "%d", i);
+
+  XQuery_t aQuery = var->lZorba->compileQuery("declare variable $var external; doc('books.xml')//chapter[@id=1]");
 
   DynamicContext* lCtx = aQuery->getDynamicContext();
 
-  lCtx->setContextItem(((data*)param)->lItem);
+  lCtx->setVariable("var", var->lItem);
 
-  os.clear();
+  std::ostringstream os;
   os << aQuery << std::endl;
 
+  var->lItem = NULL;
   aQuery->close();
 
   return (void*)0;

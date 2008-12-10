@@ -12,11 +12,22 @@
 # See the License for the specific language governing permissions and                                   
 # limitations under the License.
 # create the testing file and list of tests
+
+# IF(WIN32)
 CREATE_TEST_SOURCELIST(UnitTests
   UnitTests.cpp
   itemfactory.cpp
   uri.cpp
 )
+# ELSE(WIN32)
+#  CREATE_TEST_SOURCELIST(UnitTests
+#  UnitTests.cpp
+#  itemfactory.cpp
+#  uri.cpp
+#  multithread_simple.cpp
+#  multithread_stress_test.cpp
+# )
+# ENDIF(WIN32)
 
 # add the executable
 ADD_EXECUTABLE(UnitTests ${UnitTests})
