@@ -201,8 +201,9 @@ void SimpleCollection::removeNode(const store::Item* node)
 
   if(position != -1)
   {
-    if( theXmlTrees.erase(theXmlTrees.begin() + (position - 1)) == theXmlTrees.end() )
+    if( (position-1) >= theXmlTrees.size() )
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
+    theXmlTrees.erase(theXmlTrees.begin() + (position - 1));
   }
   else
   {
