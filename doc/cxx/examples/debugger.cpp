@@ -102,18 +102,6 @@ bool debugger_example_1(Zorba *aZorba)
   return true;
 }
 
-bool debugger_example_2(Zorba *aZorba)
-{
-  XQuery_t lQuery = aZorba->createQuery();
-  lQuery->setFileName("foo.xq");
-  lQuery->setDebugMode(true);
-  assert(lQuery->isDebugMode());
-  lQuery->compile("1+2");
-  lQuery->debug( 8000, 9000 );
-  lQuery->close();
-  return true;
-}
-
 bool debugger_example_3(Zorba *aZorba)
 {
   try
@@ -156,29 +144,6 @@ int debugger( int argc, char *argv[] )
     std::cout << std::endl;
   }
 
-  {
-    std::cout << "executing example 2" << std::endl;
-#ifdef ZORBA_HAVE_PTHREAD_H
-    pthread_t lThread;
-    if ( pthread_create( &lThread, 0, runClient, 0 ) != 0 ) 
-#else
-    HANDLE lThread;
-    if ( ( lThread = CreateThread(0, 0, runClient, 0, 0, 0) ) == 0 )
-#endif
-    {
-      std::cerr << "Couldn't start the thread" << std::endl;
-      return 1;
-    }
-    res = debugger_example_2(lZorba);
-#ifdef ZORBA_HAVE_PTHREAD_H
-    pthread_cancel( lThread );
-#else
-    CloseHandle( lThread );;
-#endif
-    if ( !res ) return 1;
-    std::cout << std::endl;
-  }
- 
   {
     std::cout << "executing example 3" << std::endl;
     res = debugger_example_3(lZorba);
