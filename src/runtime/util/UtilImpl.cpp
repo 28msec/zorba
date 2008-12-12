@@ -19,6 +19,7 @@
 
 #include "system/globalenv.h"
 #include "zorbatypes/binary.h"
+#include "zorbatypes/numconversions.h"
 
 #include "runtime/util/UtilImpl.h"
 
@@ -179,11 +180,21 @@ bool
 ZorbaRandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
+  xqp_string    seed;
+  xqp_uint      seedInt;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  std::srand((unsigned int)(time(NULL)));
+  if((theChildren.size() == 1) &&
+      consumeNext(item, theChildren[0].getp(), planState))
+  {
+    seed = item->getIntegerValue().toString();
+    NumConversions::strToUInt(seed, seedInt);
+    std::srand((unsigned int)seedInt);
+  }
+  else
+    std::srand((unsigned int)(time(NULL)));
 
   GENV_ITEMFACTORY->createInteger(result, Integer::parseInt (std::rand()));
   STACK_PUSH (true, state);
