@@ -10,3 +10,8 @@ This is a list of issues that we are aware of but are not fixed in this version:
    - 2210787 (https://sourceforge.net/tracker/index.php?func=detail&aid=2210787&group_id=226244&atid=1067586)
    - 2210779 (https://sourceforge.net/tracker/index.php?func=detail&aid=2210779&group_id=226244&atid=1067586)
    - 2204089 (https://sourceforge.net/tracker/index.php?func=detail&aid=2204089&group_id=226244&atid=1067586)
+   - 2210786 (https://sourceforge.net/tracker/index.php?func=detail&aid=2210786&group_id=226244&atid=1067586)
+
+2) Zorba uses ICU for the regular expressions that does not support range subtraction and unicode properties.
+   For details see the following bugs:
+   - 2210801 (https://sourceforge.net/tracker/index.php?func=detail&aid=2210801&group_id=226244&atid=1067586)

@@ -160,9 +160,9 @@ IF(ZORBA_NO_UNICODE)
   SET_TESTS_PROPERTIES (test/rbkt/string/StringToCodepointFunc/StringToCodepointFunc1 PROPERTIES WILL_FAIL TRUE)
 ENDIF(ZORBA_NO_UNICODE)
 
-#these tests fail due to floating-point precision problems, see KNOWN_ISSUES.txt
-#bug 2210842 (https://sourceforge.net/tracker/index.php?func=detail&aid=2210842&group_id=226244&atid=1067586)
 IF (EXISTS test/rbkt/w3c_testsuite)
+  #these tests fail due to floating-point precision problems, see KNOWN_ISSUES.txt
+  #2210842 (https://sourceforge.net/tracker/index.php?func=detail&aid=2210842&group_id=226244&atid=1067586)
   SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Expressions/Operators/ArithExpr/NumericOpr/NumericAdd/K-NumericAdd-5 PROPERTIES WILL_FAIL TRUE)
   SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Expressions/Operators/ArithExpr/NumericOpr/NumericAdd/K-NumericAdd-6 PROPERTIES WILL_FAIL TRUE)
 
@@ -183,4 +183,16 @@ IF (EXISTS test/rbkt/w3c_testsuite)
 
   #2204089 (https://sourceforge.net/tracker/index.php?func=detail&aid=2204089&group_id=226244&atid=1067586)
   SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/SchemaImport/SeqExprCastSI/casthcds9 PROPERTIES WILL_FAIL TRUE)
+
+  #2210786 (https://sourceforge.net/tracker/index.php?func=detail&aid=2210786&group_id=226244&atid=1067586)
+  SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/SeqFunc/SeqDeepEqualFunc/fn-deep-equal-mix-args-019 PROPERTIES WILL_FAIL TRUE)
+
+  #these tests fail due ICU regullar expression use
+  #2210801 (https://sourceforge.net/tracker/index.php?func=detail&aid=2210801&group_id=226244&atid=1067586)
+  SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch08 PROPERTIES WILL_FAIL TRUE)
+  SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch09 PROPERTIES WILL_FAIL TRUE)
+  SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch10 PROPERTIES WILL_FAIL TRUE)
+  SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch11 PROPERTIES WILL_FAIL TRUE)
+  SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch14 PROPERTIES WILL_FAIL TRUE)
+
 ENDIF (EXISTS test/rbkt/w3c_testsuite)
