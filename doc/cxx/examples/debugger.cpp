@@ -148,11 +148,8 @@ int debugger( int argc, char *argv[] )
     std::cout << "executing example 1" << std::endl;
     res = debugger_example_1(lZorba);
 #ifdef ZORBA_HAVE_PTHREAD_H
-    pthread_join( lThread, 0 );
     pthread_cancel( lThread );
-    pthread_detach( lThread );
 #else
-    WaitForSingleObject( lThread, INFINITE );
     CloseHandle( lThread );;
 #endif
     if ( !res ) return 1;
@@ -174,11 +171,8 @@ int debugger( int argc, char *argv[] )
     }
     res = debugger_example_2(lZorba);
 #ifdef ZORBA_HAVE_PTHREAD_H
-    pthread_join( lThread, 0 );
     pthread_cancel( lThread );
-    pthread_detach( lThread );
 #else
-    WaitForSingleObject( lThread, INFINITE );
     CloseHandle( lThread );;
 #endif
     if ( !res ) return 1;
