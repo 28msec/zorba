@@ -877,6 +877,8 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
 
   PRINTER_VISITOR_DEFINITION(FnAdjustToTimeZoneIterator_2);
 
+  PRINTER_VISITOR_DEFINITION(FnFormatDateTimeIterator);
+
   PRINTER_VISITOR_DEFINITION(InsertIterator);
 
   PRINTER_VISITOR_DEFINITION(DeleteIterator);

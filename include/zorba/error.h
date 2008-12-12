@@ -740,6 +740,12 @@ typedef enum
   SEPM0016,
   // It is a an error if a parameter value is invalid for the defined domain.
 
+  XTDE1340,
+  // It is a non-recoverable dynamic error if the syntax of the picture is incorrect. 
+
+  XTDE1350,
+  // It is a non-recoverable dynamic error if a component specifier within the picture refers to components that are not available in the given type of $value.
+
   //
   // ZORBA errors
   //

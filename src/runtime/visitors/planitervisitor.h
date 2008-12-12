@@ -206,6 +206,7 @@ namespace zorba
   class FnTimezoneFromTimeIterator;
   class FnAdjustToTimeZoneIterator_1;
   class FnAdjustToTimeZoneIterator_2;
+  class FnFormatDateTimeIterator;
   class OpIsSameNodeIterator;
   class OpNodeBeforeIterator;
   class OpNodeAfterIterator;
@@ -703,6 +704,8 @@ namespace zorba
     PLAN_ITER_VISITOR(FnAdjustToTimeZoneIterator_1);
 
     PLAN_ITER_VISITOR(FnAdjustToTimeZoneIterator_2);
+
+    PLAN_ITER_VISITOR(FnFormatDateTimeIterator);
 
     PLAN_ITER_VISITOR(InsertIterator);
 

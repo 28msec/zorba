@@ -521,13 +521,28 @@ void *begin_visit(const PathExpr &n)
 {
     INDENT;
 
-    os << "<PathExpr pos='" << n.get_location() << "'  "  << "ptr='" << &n << "'";
+    os << "<PathExpr type=" << ParseConstants::decode_pathtype_t(n.get_type()) << " pos='" << n.get_location() << "'  "  << "ptr='" << &n << "'";
 
     os << ">";
 
     INDENT_INC; NL;
     return no_state;
 }
+
+void *begin_visit(const RelativePathExpr &n)
+{
+  INDENT;
+
+  os << "<RelativePathExpr step_type=" << ParseConstants::decode_steptype_t(n.get_step_type()) << " pos='" << n.get_location() << "'  "  << "ptr='" << &n << "'";
+
+  os << ">";
+
+  INDENT_INC; NL;
+  return no_state;
+}
+
+END_TAG(RelativePathExpr)
+    
 
 void *begin_visit(const TypeswitchExpr &n)
 {
@@ -717,7 +732,6 @@ BEGIN_END_TAG (QuoteAttrValueContent)
 BEGIN_END_TAG (QVarInDecl)
 BEGIN_END_TAG (QVarInDeclList)
 BEGIN_END_TAG (RangeExpr)
-BEGIN_END_TAG (RelativePathExpr)
 BEGIN_END_TAG (RenameExpr)
 BEGIN_END_TAG (ReplaceExpr)
 BEGIN_END_TAG (RevalidationDecl)

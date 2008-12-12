@@ -236,7 +236,29 @@ class ParseConstants
     default: assert (false); return "?";
     }
   }
-
+  
+  static const char* decode_pathtype_t(enum pathtype_t ptype)       
+  {
+    switch (ptype)
+    {
+    case path_leading_lone_slash : return "path_leading_lone_slash";
+    case path_leading_slash : return "path_leading_slash";
+    case path_leading_slashslash : return "path_leading_slashslash";
+    case path_relative : return "path_relative";
+    default: assert (false); return "?";
+    }
+  }
+  
+  static const char* decode_steptype_t(enum steptype_t stype)
+  {
+    switch (stype)
+    {
+    case st_step : return "st_step";
+    case st_slash : return "st_slash";
+    case st_slashslash : return "st_slashslash";
+    default: assert (false); return "?";
+    }
+  }
 }; /* class ParseConstants */
 
 } /* namespace zorba */

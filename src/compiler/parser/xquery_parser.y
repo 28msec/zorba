@@ -2844,7 +2844,7 @@ RelativePathExpr :
        $$ = (as != NULL ?
              new RelativePathExpr(LOC (@$),
                                   ParseConstants::st_slash,
-                                  new ContextItemExpr(LOC(@$)),
+                                  new ContextItemExpr(LOC(@$), true),
                                   $1) :
              $1);
 		}
@@ -4644,6 +4644,7 @@ QNAME :
   | LET { $$ = driver.symtab.put("let"); }
   | WHERE { $$ = driver.symtab.put("where"); }
   | BY { $$ = driver.symtab.put("by"); }
+  | GROUP { $$ = driver.symtab.put("group"); }
   | ORDER { $$ = driver.symtab.put("order"); }
   | STABLE { $$ = driver.symtab.put("stable"); }
   | ASCENDING { $$ = driver.symtab.put("ascending"); }

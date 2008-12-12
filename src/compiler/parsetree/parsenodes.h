@@ -2984,9 +2984,9 @@ public:
 class RelativePathExpr : public exprnode
 {
 protected:
-	enum ParseConstants::steptype_t step_type;
-	rchandle<exprnode> step_expr_h;
-	rchandle<exprnode> relpath_expr_h;
+  enum ParseConstants::steptype_t step_type;
+  rchandle<exprnode> step_expr_h;
+  rchandle<exprnode> relpath_expr_h;  
 
 public:
 	RelativePathExpr(
@@ -2995,11 +2995,10 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-
 public:
-	enum ParseConstants::steptype_t get_step_type() const { return step_type; }
-	rchandle<exprnode> get_step_expr() const { return step_expr_h; }
-	rchandle<exprnode> get_relpath_expr() const { return relpath_expr_h; }
+  enum ParseConstants::steptype_t get_step_type() const { return step_type; }	
+  rchandle<exprnode> get_step_expr() const { return step_expr_h; }
+  rchandle<exprnode> get_relpath_expr() const { return relpath_expr_h; }  
 
 public:
 	virtual	void accept(parsenode_visitor&) const;
@@ -3473,8 +3472,12 @@ class ContextItemExpr : public exprnode
 |	::= DOT
 |_______________________________________________________________________*/
 {
+protected:
+  bool placeholder;
+  
 public:
-	ContextItemExpr(const QueryLoc&);
+  ContextItemExpr(const QueryLoc&, bool _placeholder = false);
+  bool is_placeholder() { return placeholder; };
 
 public:
 	void accept(parsenode_visitor&) const;

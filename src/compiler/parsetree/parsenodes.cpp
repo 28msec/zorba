@@ -2195,6 +2195,9 @@ void PathExpr::accept(parsenode_visitor& v) const
                             StepExpr  SLASH  RelativePathExpr |
                             StepExpr  SLASH_SLASH  RelativePathExpr
 
+  Note: for the 1st alternative production, a RelativePathExpr node is generated
+  whose left child is a ContextItemExpr and its right child is the StepExpr.
+
 ********************************************************************************/
 RelativePathExpr::RelativePathExpr(
   const QueryLoc& loc_,
@@ -2211,7 +2214,11 @@ RelativePathExpr::RelativePathExpr(
   {
     ContextItemExpr* dot = dynamic_cast<ContextItemExpr*>(rpep->step_expr_h.getp());
     if (dot != NULL)
+    {
       relpath_expr_h = rpep->relpath_expr_h;
+      if (!dot->is_placeholder())
+        step_type = rpep->get_step_type();
+    }
     else
       relpath_expr_h = rpe;
   }
@@ -2646,9 +2653,10 @@ void ParenthesizedExpr::accept(parsenode_visitor& v) const
 // [90] ContextItemExpr
 // --------------------
 ContextItemExpr::ContextItemExpr(
-  const QueryLoc& loc_)
+  const QueryLoc& loc_, bool _placeholder)
 :
-  exprnode(loc_)
+  exprnode(loc_), 
+  placeholder(_placeholder)
 {}
 
 
