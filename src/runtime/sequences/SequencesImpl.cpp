@@ -693,7 +693,7 @@ bool DeepEqual(
           item2->getDoubleValue().isNaN())))
       return true;
     
-    int result = CompareIterator::valueCompare(theRuntimeCB, item1, item2, collator);
+    int result = CompareIterator::valueEqual(theRuntimeCB, item1, item2, collator);
     return (result == 0);
   }
   else
