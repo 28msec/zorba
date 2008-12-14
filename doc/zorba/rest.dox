@@ -7,8 +7,8 @@ to be included at the beginning of a query. For example
   import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
 \endcode
 
-Currently, Zorba provides function to setup HTTP GET and POST requests. We'll add additional functions for
-HEAD, DELETE, and PUT with a later release.
+Currently, Zorba provides function to setup HTTP GET, PUT and POST requests. We'll add additional functions for
+HEAD and DELETE  with a later release.
 Moreover, all of the functions will be declared nondeterministic (as in the upcoming XQuery 1.1. specification) and 
 sequential (as in the upcoming XQuery Scripting specification).
 
@@ -18,20 +18,31 @@ The following section defines the various REST XQuery functions (and their param
 \subsection getfunctions GET Functions
 
 \code
- declare nondeterministic sequential function zorba-rest:get(url as xs:string) as zorba-rest:result;
- declare nondeterministic sequential function zorba-rest:get(url as xs:string, payload as zorba-rest:payload*) as zorba-rest:result;
- declare nondeterministic sequential function zorba-rest:get(url as xs:string, payload as zorba-rest:payload*, 
-                                                             headers as zorba-rest:headers*) as zorba-rest:result;
+ declare nondeterministic sequential function zorba-rest:get(url as xs:string) as element(zorba-rest:result);
+ declare nondeterministic sequential function zorba-rest:get(url as xs:string, payload as element(zorba-rest:payload)) as element(zorba-rest:result);
+ declare nondeterministic sequential function zorba-rest:get(url as xs:string, payload as element(zorba-rest:payload),
+                                                             headers as element(zorba-rest:headers)*) as element(zorba-rest:result);
 \endcode
 
 \subsection postfunctions POST Functions
 
 \code
- declare nondeterministic sequential function zorba-rest:post(url as xs:string) as zorba-rest:result;
- declare nondeterministic sequential function zorba-rest:post(url as xs:string, payload as zorba-rest:payload*) as zorba-rest:result;
- declare nondeterministic sequential function zorba-rest:post(url as xs:string, payload as zorba-rest:payload*, 
-                                                              headers as zorba-rest:headers*) as zorba-rest:result;
+ declare nondeterministic sequential function zorba-rest:post(url as xs:string) as element(zorba-rest:result);
+ declare nondeterministic sequential function zorba-rest:post(url as xs:string, payload as element(zorba-rest:payload)) as element(zorba-rest:result);
+ declare nondeterministic sequential function zorba-rest:post(url as xs:string, payload as element(zorba-rest:payload),
+                                                              headers as element(zorba-rest:headers)*) as element(zorba-rest:result);
 \endcode
+
+\subsection postfunctions PUT Functions
+
+\code
+ declare nondeterministic sequential function zorba-rest:put(url as xs:string) as element(zorba-rest:result);
+ declare nondeterministic sequential function zorba-rest:put(url as xs:string, payload as element(zorba-rest:payload)) as element(zorba-rest:result);
+ declare nondeterministic sequential function zorba-rest:put(url as xs:string, payload as element(zorba-rest:payload),
+                                                              headers as element(zorba-rest:headers)*) as element(zorba-rest:result);
+\endcode
+
+
 
 \subsection parameterdesc Parameter Descriptions
 
@@ -111,7 +122,7 @@ The payload, however, will be returned too, if available.
 
 \subsection restgetexamples REST GET Examples
 
-\subsubsection restexample2 Example 2
+\subsubsection restexample2 Example 1
 
 \code
 (: Simple GET example :)
@@ -120,7 +131,7 @@ import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-fun
 zorba-rest:get("http://www.google.com/")
 \endcode
 
-\subsubsection restexample3 Example 3
+\subsubsection restexample3 Example 2
 
 \code
 (: Invoke Google search for the "zorba xquery" term :)
@@ -133,7 +144,7 @@ zorba-rest:get("http://www.google.com/search",
                </payload>)
 \endcode
 
-\subsubsection restexample4 Example 4
+\subsubsection restexample4 Example 3
 
 \code
 (: Invoke zorba-rest:get and pass a value for the Referer header :)
@@ -147,7 +158,7 @@ zorba-rest:get("http://www.google.com/",
                </headers>)
 \endcode
 
-\subsubsection restexample5 Example 5
+\subsubsection restexample5 Example 4
 
 \code
 (: Complex GET example with parameters and headers :)
