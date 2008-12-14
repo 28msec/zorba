@@ -53,4 +53,21 @@ rest_post::return_type (const std::vector<xqtref_t> &arg_types) const
   return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
+
+rest_put::rest_put(const signature& sig)
+  : function(sig)
+{}
+
+PlanIter_t
+rest_put::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new ZorbaRestPutIterator(loc, argv);
+}
+
+xqtref_t
+rest_put::return_type (const std::vector<xqtref_t> &arg_types) const
+{
+  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
+
 } /* namespace zorba */

@@ -29,6 +29,7 @@
 #include "store/api/store.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
+#include "zorbatypes/numconversions.h"
 
 using namespace std;
 
@@ -836,6 +837,160 @@ FnAdjustToTimeZoneIterator_2::nextImpl(store::Item_t& result, PlanState& planSta
      
   STACK_END (state);
 }
+
+/**
+ *______________________________________________________________________
+ * 
+ *_______________________________________________________________________*/
+
+void parse_presentation_modifier(xqpStringStore_t& str, unsigned int& position, xqpStringStore& result)
+{
+  result = xqpStringStore("");
+  /*
+  if (position >= str->bytes())
+    return;
+
+  if (str->byteAt(i) == '1' || str->byteAt(i) == 'i' || str->byteAt(i) == 'I' || str->byteAt(i) == 'w'
+    || str->byteAt(i) == 'W' || str->byteAt(i) == 'n' || str->byteAt(i) == 'N')
+  {
+    result = xqpStringStore(std::string(str->byteAt(i));
+    return;
+  }
+  else if (i+1 < str->bytes() )
+  {
+  }
+  */
+}
+
+/*begin class FnFormatDateTimeIterator */
+bool
+FnFormatDateTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  bool variable_marker;
+  xqpStringStore_t pictureString, resultString;
+  store::Item_t dateTimeItem, picture;
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (!consumeNext(dateTimeItem, theChildren[0].getp(), planState))
+  {
+    // std::cout << "Got void, returning void!" << std::endl;
+    STACK_PUSH(false, state);
+  }
+  else
+  { 
+  	consumeNext(picture, theChildren[1].getp(), planState);
+    pictureString = picture->getStringValue();
+    resultString = xqpString("").theStrStore;
+    variable_marker = false;
+    for (unsigned int i=0; i<pictureString->bytes(); i++)
+    {      
+      if (variable_marker)
+      {
+        char component = 0;
+        xqpStringStore presentation_modifier;
+
+        switch (pictureString->byteAt(i))
+        {
+        case 'Y': case 'M': case 'D': case 'd': case 'F': case 'W': case 'w': 
+        case 'H': case 'h': case 'P': case 'm': case 's': case 'f':
+        case 'Z': case 'z': case 'C': case 'E': 
+          component = pictureString->byteAt(i);
+          
+          break;
+
+        case ']':
+          variable_marker = false;
+          break;
+
+        default:          
+          ZORBA_ERROR(XTDE1340);          
+          break;
+        }
+
+        parse_presentation_modifier(pictureString, i, presentation_modifier);
+
+
+        switch (component)
+        {
+        case 'Y': 
+          // TODO: year can be negative
+          resultString->append_in_place( NumConversions::longToStr(dateTimeItem->getDateTimeValue().getYear()) );
+          break;
+        case 'M': 
+          resultString->append_in_place( NumConversions::longToStr(dateTimeItem->getDateTimeValue().getMonth()) );
+          break; 
+        case 'D': 
+          resultString->append_in_place( NumConversions::longToStr(dateTimeItem->getDateTimeValue().getDay()) );
+          break; 
+        case 'd':  // day in year
+          break; 
+        case 'F':  // day of week
+          break;
+        case 'W':  // week in year
+          break;
+        case 'w':  // week in month
+          break;
+        case 'H':  // hour in day (24 hours)
+          resultString->append_in_place( NumConversions::longToStr(dateTimeItem->getDateTimeValue().getHours()) );
+          break;
+        case 'h':  // hour in half-day (12 hours)
+          resultString->append_in_place( NumConversions::longToStr(dateTimeItem->getDateTimeValue().getHours()) );
+          break;
+        case 'P':  // am/pm marker
+          break;
+        case 'm':  
+          resultString->append_in_place( NumConversions::longToStr(dateTimeItem->getDateTimeValue().getMinutes()) );
+          break;
+        case 's':  
+          // TODO: seconds are fractional
+          // resultString->append_in_place( NumConversions::longToStr(dateTimeItem->getDateTimeValue().getSeconds()) );
+          break;
+        case 'f': 
+          break;
+        case 'Z':  
+          break;
+        case 'z':  
+          break;
+        case 'C': // calendar: the name or abbreviation of a calendar name
+          break;
+        case 'E':  
+          break;
+        }
+      }
+      else
+      {
+        if (pictureString->byteAt(i) == '[')
+        {
+          // check for quoted "[["
+          if (i<pictureString->bytes()-1 && pictureString->byteAt(i+1) == '[')
+            i++;
+          else
+          {
+            variable_marker = true;
+            continue;
+          }
+        }
+
+        resultString->append_in_place(pictureString->byteAt(i));
+      }
+    }
+
+  	STACK_PUSH(GENV_ITEMFACTORY->createString(result, resultString), state);
+  }
+
+  /*
+  if ( itemArg != NULL )
+  {
+    itemArg = itemArg->getAtomizationValue();
+    if (0 == Duration::fromTimezone(itemArg->getTimeValue().getTimezone(), tmpDuration))
+      STACK_PUSH( GENV_ITEMFACTORY->createDayTimeDuration(result, &tmpDuration), state );
+  }
+  */
+  STACK_END (state);
+}
+/*end class FnFormatDateTimeIterator */
+
 
 
 }

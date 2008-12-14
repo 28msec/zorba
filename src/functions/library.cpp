@@ -765,6 +765,28 @@ DECL(sctx, rest_post,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
+
+// zorba-rest:put with an URI
+DECL(sctx, rest_put,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "put"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+// zorba-rest:put with an URI and a payload
+DECL(sctx, rest_put,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "put"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+// zorba-rest:put with an URI, a payload and custom headers
+DECL(sctx, rest_put,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "put"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
 #endif
 
 //begin collection functions

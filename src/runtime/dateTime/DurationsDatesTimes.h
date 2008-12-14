@@ -153,6 +153,9 @@ NARY_ITER(FnSecondsFromTimeIterator);
 // 10.5.21 fn:timezone-from-time
 NARY_ITER(FnTimezoneFromTimeIterator);
 
+// XQuery 1.1 DateTime formatting
+NARY_ITER(FnFormatDateTimeIterator);
+
   /* begin 10.6 Arithmetic Operators on Durations
   10.6 Arithmetic Operators on Durations
   10.6.1 op:add-yearMonthDurations

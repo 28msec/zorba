@@ -278,6 +278,7 @@ namespace zorba
 #ifdef ZORBA_WITH_REST
   class ZorbaRestGetIterator;
   class ZorbaRestPostIterator;
+  class ZorbaRestPutIterator;
 #endif
 
   class HoistIterator;
@@ -756,6 +757,7 @@ namespace zorba
 #ifdef ZORBA_WITH_REST
     PLAN_ITER_VISITOR(ZorbaRestGetIterator);
     PLAN_ITER_VISITOR(ZorbaRestPostIterator);
+    PLAN_ITER_VISITOR(ZorbaRestPutIterator);
 #endif
 
     PLAN_ITER_VISITOR(HoistIterator);

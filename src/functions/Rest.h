@@ -40,6 +40,15 @@ public:
   xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
 };
 
+class rest_put : public function
+{
+public:
+  rest_put(const signature&);
+
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+};
+
 } /* namespace zorba */
 
 #endif
