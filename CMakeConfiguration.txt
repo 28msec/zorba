@@ -135,7 +135,12 @@ ENDIF (LIBTIDY_FOUND )
  
 MESSAGE ( STATUS "ZORBA_WITH_TIDY: " ${ZORBA_WITH_TIDY} )
 
+IF ( ${ZORBA_WITH_CODE_PROFILE} )
+SET(ZORBA_BUILD_STATIC_LIBRARY ON CACHE BOOL "build a static library, e.g. when creating a profile")
+ELSE (${ZORBA_WITH_CODE_PROFILE} )
 SET(ZORBA_BUILD_STATIC_LIBRARY OFF CACHE BOOL "build a static library, e.g. when creating a release")
+ENDIF ( ${ZORBA_WITH_CODE_PROFILE} )
+
 MESSAGE(STATUS "ZORBA_BUILD_STATIC_LIBRARY:     " ${ZORBA_BUILD_STATIC_LIBRARY})
 
 IF(WIN32)
@@ -219,6 +224,11 @@ MESSAGE( STATUS "CMAKE_COMPILER_2005:      " ${CMAKE_COMPILER_2005} )
 
 # A simple way to get switches to the compiler is to use ADD_DEFINITIONS(). 
 # But there are also two variables exactly for this purpose: 
+
+IF ( ${ZORBA_WITH_CODE_PROFILE} )
+SET ( CMAKE_C_FLAGS "-pg ${CMAKE_C_FLAGS}" )
+SET ( CMAKE_CXX_FLAGS "-pg ${CMAKE_CXX_FLAGS}" )
+ENDIF ( ${ZORBA_WITH_CODE_PROFILE} )
 
 # the compiler flags for compiling C sources 
 MESSAGE( STATUS "CMAKE_C_FLAGS:            " ${CMAKE_C_FLAGS} )
