@@ -20,7 +20,7 @@
         <li> \ref random
       </ul>
      </ul>
-     <li> \ref apendix
+     <li> \ref apendix_util
    </ul>
  </ul>
 
@@ -80,7 +80,7 @@ Note: you can set a boolean parameter to true by either of the following methods
 - passing the option name and the value (like <i>bare</i> in the above example) \n
 
 Error conditions:\n
-If Tidy lib is not able to transform the given string into a valid XHTML, an error is raised XQP0029_TIDY_ERROR (see \ref apendix).\n
+If Tidy lib is not able to transform the given string into a valid XHTML, an error is raised XQP0029_TIDY_ERROR (see \ref apendix_util).\n
 
 \subsection tdoc 2.1.2 zorba-util:tdoc
 
@@ -120,7 +120,7 @@ Note: you can set a boolean parameter to true by either of the following methods
 - passing the option name and the value (like <i>bare</i> in the above example) \n
 
 Error conditions:\n
-If Tidy lib is not able to transform the given string into a valid XHTML, an error is raised XQP0029_TIDY_ERROR (see \ref apendix).\n
+If Tidy lib is not able to transform the given string into a valid XHTML, an error is raised XQP0029_TIDY_ERROR (see \ref apendix_util).\n
 
 \subsection random_generation 2.2 Functions for generating UUID's, random integers
 
@@ -158,7 +158,7 @@ If the seed is not passed as an argument the same number will be generated every
     return zu:random()
 \endcode
 
-\section apendix Appendix A:  Error codes
+\section apendix_util Appendix A:  Error codes
 
   XQP0029_TIDY_ERROR - Error in Tidy library - is returned in case Tidy lib is not able to transform the given string into a valid XHTML.\n
 */

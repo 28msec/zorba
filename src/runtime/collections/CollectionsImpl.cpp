@@ -29,7 +29,9 @@
 
 #include "system/globalenv.h"
 
-#include "context/static_context.h"
+#include "runtime/api/runtimecb.h"
+
+#include "context/dynamic_context.h"
 #include "context/internal_uri_resolvers.h"
 #include "store/api/pul.h"
 
@@ -42,12 +44,16 @@
 namespace zorba {
 
 /*******************************************************************************
-  declare function collection-exists($uri as xs:anyURI) as xs:boolean
-  
+  declare function collection-exists() as xs:boolean
+
+  declare function collection-exists( $uri as xs:string?) as xs:boolean
+
   Returns true if a collection with the requested $uri is found in the collection
   pool, false otherwise.
 
-  Errors:
+  Error conditions:
+  - If the collection URI is empty and the default collection
+    is not defined in the dynamic context, FODC0002 is raised
   - XQST0046: could not resolve uri or given uri is not a valid uri
 ********************************************************************************/
 bool
@@ -61,31 +67,37 @@ ZorbaCollectionExistsIterator::nextImpl(store::Item_t& result, PlanState& planSt
 
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(item, theChildren[0].getp(), planState )) 
+  if((theChildren.size()==0) ||
+      ((theChildren.size()==1) &&
+      !consumeNext(item, theChildren[0].getp(), planState)))
   {
-    try 
-    {
-      resolvedURIString = planState.sctx()->
-                          resolve_relative_uri(item->getStringValueP(),
-                                               xqp_string()).getStore();
-
-      GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
-    }
-    catch (error::ZorbaError&) 
-    {
-      ZORBA_ERROR_LOC_PARAM(XQST0046,
-                            loc,
-                            item->getStringValue()->c_str(),
-                            "URI literal empty or is not in the lexical space of xs:anyURI" );
-    }
-
-    lCollection = planState.sctx()->get_collection_uri_resolver()->
-                  resolve(resolvedURIItem, planState.sctx());
-    res = (lCollection != NULL);
-
-    GENV_ITEMFACTORY->createBoolean(result, res);
-    STACK_PUSH(true, state );
+    item = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(NULL == item)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
+
+  try
+  {
+    resolvedURIString = planState.sctx()->
+                        resolve_relative_uri(item->getStringValueP(),
+                                              xqp_string()).getStore();
+
+    GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
+  }
+  catch (error::ZorbaError&)
+  {
+    ZORBA_ERROR_LOC_PARAM(XQST0046,
+                          loc,
+                          item->getStringValue()->c_str(),
+                          "URI literal empty or is not in the lexical space of xs:anyURI" );
+  }
+
+  lCollection = planState.sctx()->get_collection_uri_resolver()->
+                resolve(resolvedURIItem, planState.sctx());
+  res = (lCollection != NULL);
+
+  GENV_ITEMFACTORY->createBoolean(result, res);
+  STACK_PUSH(true, state );
 
   STACK_END (state);
 }
@@ -379,10 +391,6 @@ ZorbaImportFolderIterator::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END (state);
 }
 
-
-/*******************************************************************************
-
-********************************************************************************/
 ZorbaListCollectionsState::~ZorbaListCollectionsState()
 {
   if ( uriItState != NULL ) {
@@ -391,10 +399,6 @@ ZorbaListCollectionsState::~ZorbaListCollectionsState()
   }
 }
 
-
-/*******************************************************************************
-
-********************************************************************************/
 void
 ZorbaListCollectionsState::init(PlanState& planState)
 {
@@ -402,10 +406,6 @@ ZorbaListCollectionsState::init(PlanState& planState)
   uriItState = NULL;
 }
 
-
-/*******************************************************************************
-
-********************************************************************************/
 void
 ZorbaListCollectionsState::reset(PlanState& planState)
 {
@@ -444,10 +444,10 @@ ZorbaListCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
 
 /*******************************************************************************
-  declare sequential function create-collection($uri as xs:anyURI) as none
+  declare sequential function create-collection($uri    as xs:anyURI) as none
 
-  declare sequential function create-collection($uri as xs:anyURI,
-                                                $nodes as node()*) as none
+  declare sequential function create-collection($uri    as xs:anyURI,
+                                                $nodes  as node()*) as none
 
   The first function will create a new, empty, collection. The second function
   will create a new collection and will add the given nodes to it.
@@ -456,7 +456,6 @@ ZorbaListCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planSta
   -  If the collection already exists, an error is raised
      (API0005_COLLECTION_ALREADY_EXISTS - collection already exists).
   - XQP0000_DYNAMIC_RUNTIME_ERROR if the argument is the empty sequence
-  - 
 ********************************************************************************/
 bool
 ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
@@ -520,29 +519,38 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
 
 
 /*******************************************************************************
-  declare sequential function delete-collection($uri as xs:anyURI) as none
+  declare sequential function delete-collection() as none
+
+  declare sequential function delete-collection($uri as xs:string?) as none
 
   The function will delete the collection identified by the given URI.
 
   Error conditions:
-  If the collection does not exist, an error is raised.
-  (API0006_COLLECTION_NOT_FOUND - collection does not exist).
+  - If the collection URI is empty and the default collection
+    is not defined in the dynamic context, FODC0002 is raised
+  - If the collection does not exist, an error is raised.
+    (API0006_COLLECTION_NOT_FOUND - collection does not exist).
 ********************************************************************************/
 bool
 ZorbaDeleteCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 {
-  PlanIteratorState  *state;
-  store::Item_t       item;
-  store::Collection_t coll;
+  PlanIteratorState         *state;
+  store::Item_t             item;
+  store::Collection_t       coll;
   std::auto_ptr<store::PUL> pul;
+  bool                      setDefCollNull = false;
 
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
-  // check argument
-  if (!consumeNext(item, theChildren[0].getp(), aPlanState)) {
-    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR,
-                         loc,
-                         "The empty-sequence is not allowed as argument to delete-collection");
+  if((theChildren.size()==0) ||
+     ((theChildren.size()==1) &&
+      !consumeNext(item, theChildren[0].getp(), aPlanState)))
+  {
+    item = aPlanState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(NULL != item)
+      setDefCollNull = true;
+    else
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
   coll = getCollection(aPlanState, item->getStringValueP(), loc);
@@ -551,6 +559,9 @@ ZorbaDeleteCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
 
   item = coll->getUri();
   pul->addDeleteCollection(aPlanState.sctx(), item);
+
+  if(setDefCollNull)
+    aPlanState.theRuntimeCB->theDynamicContext->set_default_collection(NULL);
 
   result = pul.release();
   STACK_PUSH( result != NULL, state);
@@ -591,7 +602,9 @@ ZorbaDeleteAllCollectionsIterator::nextImpl(store::Item_t& result, PlanState& pl
 
 
 /*******************************************************************************
-  declare sequential function insert-nodes-first($uri as xs:anyURI,
+  declare sequential function insert-nodes-first($newnode as node()*) as none
+
+  declare sequential function insert-nodes-first($uri     as xs:string?,
                                                  $newnode as node()*) as none
 
   The function will insert the given node(s) as the first node(s) of the given
@@ -599,6 +612,8 @@ ZorbaDeleteAllCollectionsIterator::nextImpl(store::Item_t& result, PlanState& pl
   their order preserves the node ordering of the source expression.
 
   Error conditions:
+  - If the collection URI is empty and the default collection
+    is not defined in the dynamic context, FODC0002 is raised
   - If the specified collection does not exist, an error is raised
     (API0006_COLLECTION_NOT_FOUND - collection does not exist).
 ********************************************************************************/
@@ -613,16 +628,18 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  // check argument
-  if (!consumeNext(item, theChildren[0].getp(), planState)) {
-    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR,
-                         loc,
-                         "The empty-sequence is not allowed as first argument to insert-nodes-first");
+  if((theChildren.size()==1) ||
+     ((theChildren.size()==2) &&
+      !consumeNext(item, theChildren[0].getp(), planState)))
+  {
+    item = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(NULL == item)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
   coll = getCollection(planState, item->getStringValueP(), loc);
 
-  while (consumeNext(item, theChildren[1].getp(), planState))
+  while (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState))
     nodes.push_back(item);
 
   // create the pul and add the primitive
@@ -630,6 +647,9 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
   item = coll->getUri();
   pul->addInsertFirstIntoCollection(planState.sctx(), item, nodes);
+
+  // this should not be necessary. we reset everything in the sequential iterator
+  theChildren[theChildren.size()-1]->reset(planState);
 
   result = pul.release();
   STACK_PUSH( result != NULL, state);
@@ -639,14 +659,18 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
 
 /*******************************************************************************
-  declare sequential function insert-nodes-last($uri as xs:anyURI,
-                                                $newnode as node()*) as none
+  declare sequential function insert-nodes-last($newnode  as node()*) as none
+
+  declare sequential function insert-nodes-last($uri      as xs:string?,
+                                                $newnode  as node()*) as none
 
   The function will insert the given node(s) as the last node(s) of the given
   collection. If multiple nodes are inserted, the nodes remain adjacent and 
   their order preserves the node ordering of the source expression.
 
   Error conditions:
+  - If the collection URI is empty and the default collection
+    is not defined in the dynamic context, FODC0002 is raised
   - If the specified collection does not exist, an error is raised
     (API0006_COLLECTION_NOT_FOUND - collection does not exist).
   - If the node is already in the collection, an error is raised
@@ -663,24 +687,28 @@ ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  // check argument
-  if (!consumeNext(item, theChildren[0].getp(), planState)) {
-    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR,
-                         loc,
-                         "The empty-sequence is not allowed as first argument to insert-nodes-last");
+  if((theChildren.size()==1) ||
+     ((theChildren.size()==2) &&
+      !consumeNext(item, theChildren[0].getp(), planState)))
+  {
+    item = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(NULL == item)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
   coll = getCollection(planState, item->getStringValueP(), loc);
 
+  while (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState))
+    nodes.push_back(item);
+
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  while (consumeNext(item, theChildren[1].getp(), planState))
-    nodes.push_back(item);
-
-
   item = coll->getUri();
   pul->addInsertLastIntoCollection(planState.sctx(), item, nodes);
+
+  // this should not be necessary. we reset everything in the sequential iterator
+  theChildren[theChildren.size()-1]->reset(planState);
 
   result = pul.release();
   STACK_PUSH( result != NULL, state);
@@ -690,9 +718,12 @@ ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
 
 /*******************************************************************************
-  declare sequential function insert-nodes-before($uri as xs:anyURI,
-                                                  $target as node()+,
-                                                  $newnode as node()*) as none
+  declare sequential function insert-nodes-before($target   as node()+,
+                                                  $newnode  as node()*) as none
+
+  declare sequential function insert-nodes-before($uri      as xs:string?,
+                                                  $target   as node()+,
+                                                  $newnode  as node()*) as none
 
 
   The inserted nodes become the preceding (or following) nodes of the target.
@@ -703,6 +734,8 @@ ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
   adjacent and their order preserves the node ordering of the source expression.
 
   Error conditions:
+  - If the collection URI is empty and the default collection
+    is not defined in the dynamic context, FODC0002 is raised
   - If the specified collection does not exist, an error is raised
     (API0006_COLLECTION_NOT_FOUND - collection does not exist).
   - If the target node is not part of the collection, an error is raised
@@ -722,27 +755,33 @@ ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planSt
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  // check argument
-  if (!consumeNext(itemUri, theChildren[0].getp(), planState)) {
-    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc,
-                         "The empty-sequence is not allowed as first argument to insert-nodes-before");
+  if((theChildren.size()==2) ||
+     ((theChildren.size()==3) &&
+      !consumeNext(itemUri, theChildren[0].getp(), planState)))
+  {
+    itemUri = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(NULL == itemUri)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
   coll = getCollection(planState, itemUri->getStringValueP(), loc);
 
-  if(!consumeNext(itemTarget, theChildren[1].getp(), planState)) {
-    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
+  while (consumeNext(tmpItem, theChildren[theChildren.size()-1].getp(), planState))
+    nodes.push_back(tmpItem);
+
+  if(!consumeNext(itemTarget, theChildren[theChildren.size()-2].getp(), planState)) {
+    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc,
                          "The empty-sequence is not allowed as second argument to insert-nodes-before");
   }
 
-  if(consumeNext(tmpItem, theChildren[1].getp(), planState)) {
-    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
+  if(consumeNext(tmpItem, theChildren[theChildren.size()-2].getp(), planState)) {
+    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc,
                          "A sequence with more then one item is not allowed as second argument to insert-nodes-before");
   }
 
 
   if (coll->indexOf(itemTarget.getp()) == -1) {
-    ZORBA_ERROR_LOC_DESC_OSS(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
+    ZORBA_ERROR_LOC_DESC_OSS(XQP0000_DYNAMIC_RUNTIME_ERROR, loc,
                          "The target node passed as second parameter to insert-nodes-before does not exist in the given collection "
                          << coll->getUri()->getStringValue());
   }
@@ -750,14 +789,12 @@ ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planSt
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  while (consumeNext(tmpItem, theChildren[2].getp(), planState))
-    nodes.push_back(tmpItem);
-
   tmpItem = coll->getUri();
   pul->addInsertBeforeIntoCollection(planState.sctx(), tmpItem, itemTarget, nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
-  theChildren[1]->reset(planState);
+  theChildren[theChildren.size()-2]->reset(planState);
+  theChildren[theChildren.size()-1]->reset(planState);
 
   result = pul.release();
   STACK_PUSH( result != NULL, state);
@@ -767,7 +804,25 @@ ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planSt
 
 
 /*******************************************************************************
+  declare sequential function insert-nodes-after( $target   as node()+,
+                                                  $newnode  as node()*) as none
 
+  declare sequential function insert-nodes-after( $uri      as xs:string?,
+                                                  $target   as node()+,
+                                                  $newnode  as node()*) as none
+
+  The inserted nodes become the following nodes of the $target.
+  The $target should be a non-updating expression (e.g. an XPath expression)
+  identifying a node that is part of the given collection at the top-level.
+  If the expression returns more than one node, the first one is used.
+  A predicate can be used to select a different node in this case.
+  If multiple nodes are inserted by a single insert expression,
+  the nodes remain adjacent and their order preserves the node ordering of
+  the source expression.
+
+Error conditions:
+  - If the collection URI is empty and the default collection
+    is not defined in the dynamic context, FODC0002 is raised
 ********************************************************************************/
 bool
 ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -780,20 +835,23 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  // check argument
-  if (!consumeNext(itemUri, theChildren[0].getp(), planState)) {
-    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc,
-                         "The empty-sequence is not allowed as first argument to insert-nodes-after");
+  if((theChildren.size()==2) ||
+     ((theChildren.size()==3) &&
+      !consumeNext(itemUri, theChildren[0].getp(), planState)))
+  {
+    itemUri = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(NULL == itemUri)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
   coll = getCollection(planState, itemUri->getStringValueP(), loc);
 
-  if(!consumeNext(itemTarget, theChildren[1].getp(), planState)) {
+  if(!consumeNext(itemTarget, theChildren[theChildren.size()-2].getp(), planState)) {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
                          "The empty-sequence is not allowed as second argument to insert-nodes-after");
   }
 
-  if(consumeNext(tmpItem, theChildren[1].getp(), planState)) {
+  if(consumeNext(tmpItem, theChildren[theChildren.size()-2].getp(), planState)) {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
                          "A sequence with more then one item is not allowed as second argument to insert-nodes-after");
   }
@@ -808,15 +866,15 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  while (consumeNext(tmpItem, theChildren[2].getp(), planState))
+  while (consumeNext(tmpItem, theChildren[theChildren.size()-1].getp(), planState))
     nodes.push_back(tmpItem);
 
   tmpItem = coll->getUri();
   pul->addInsertAfterIntoCollection(planState.sctx(), tmpItem, itemTarget, nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
-  theChildren[1]->reset(planState);
-  theChildren[2]->reset(planState);
+  theChildren[theChildren.size()-2]->reset(planState);
+  theChildren[theChildren.size()-1]->reset(planState);
 
   result = pul.release();
   STACK_PUSH( result != NULL, state);
@@ -826,9 +884,12 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
 
 /*******************************************************************************
-  declare sequential function insert-nodes-at($uri as xs:anyURI,
+  declare sequential function insert-nodes-at($position as xs:integer,
+                                              $newnode  as node()*) as none
+
+  declare sequential function insert-nodes-at($uri      as xs:string?,
                                               $position as xs:integer,
-                                              $newnode as node()*) as none
+                                              $newnode  as node()*) as none
 
   Inserts the node(s) into the given collection, at the specified position.
   If $position is negative, the node(s) will be inserted at the beginning of
@@ -837,6 +898,8 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
   collection.
 
   Error conditions:
+  - If the collection URI is empty and the default collection
+    is not defined in the dynamic context, FODC0002 is raised
   - If the specified collection does not exist, an error is raised
     (API0006_COLLECTION_NOT_FOUND - collection does not exist).
   - If the node is already part of the collection an error is raised
@@ -854,20 +917,23 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  // check argument
-  if (!consumeNext(itemUri, theChildren[0].getp(), planState)) {
-    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc,
-                         "The empty-sequence is not allowed as first argument to insert-nodes-at");
+  if((theChildren.size()==2) ||
+     ((theChildren.size()==3) &&
+      !consumeNext(itemUri, theChildren[0].getp(), planState)))
+  {
+    itemUri = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(NULL == itemUri)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
   coll = getCollection(planState, itemUri->getStringValueP(), loc);
 
-  if(!consumeNext(itemPos, theChildren[1].getp(), planState)) {
+  if(!consumeNext(itemPos, theChildren[theChildren.size()-2].getp(), planState)) {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
                          "The empty-sequence is not allowed as second argument to insert-nodes-at");
   }
 
-  if(consumeNext(tmpItem, theChildren[1].getp(), planState)) {
+  if(consumeNext(tmpItem, theChildren[theChildren.size()-2].getp(), planState)) {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
                          "A sequence with more then one item is not allowed as second argument to insert-nodes-at");
   }
@@ -882,15 +948,15 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  while (consumeNext(tmpItem, theChildren[2].getp(), planState))
+  while (consumeNext(tmpItem, theChildren[theChildren.size()-1].getp(), planState))
     nodes.push_back(tmpItem);
 
   tmpItem = coll->getUri();
   pul->addInsertAtIntoCollection(planState.sctx(), tmpItem, pos, nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
-  theChildren[1]->reset(planState);
-  theChildren[2]->reset(planState);
+  theChildren[theChildren.size()-2]->reset(planState);
+  theChildren[theChildren.size()-1]->reset(planState);
 
   result = pul.release();
   STACK_PUSH( result != NULL, state);
@@ -900,8 +966,10 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
 
 /*******************************************************************************
-  declare sequential function remove-nodes($uri as xs:anyURI,
-                                           $target as node()+) as none
+  declare sequential function remove-nodes($target  as node()+) as none
+
+  declare sequential function remove-nodes($uri     as xs:string?,
+                                           $target  as node()+) as none
 
   The function will remove the node(s) identified by the $target expression
   from the given collection. The nodes themselves will not be deleted and
@@ -909,6 +977,8 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   more than one node, all of them will be removed from the collection. 
 
   Error conditions:
+  - If the collection URI is empty and the default collection
+    is not defined in the dynamic context, FODC0002 is raised
   - If the specified collection does not exist, an error is raised
     (API0006_COLLECTION_NOT_FOUND - collection does not exist).
   - If the given expression points to a node that is not part of the collection,
@@ -926,15 +996,18 @@ ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  // check argument
-  if (!consumeNext(itemUri, theChildren[0].getp(), planState)) {
-    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc,
-                         "The empty-sequence is not allowed as first argument to remove-nodes");
+  if((theChildren.size()==1) ||
+     ((theChildren.size()==2) &&
+      !consumeNext(itemUri, theChildren[0].getp(), planState)))
+  {
+    item = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(NULL == item)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
   coll = getCollection(planState, itemUri->getStringValueP(), loc);
 
-  while (consumeNext(item, theChildren[1].getp(), planState)) {
+  while (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState)) {
     if (coll->indexOf(item.getp()) == -1)
       ZORBA_ERROR_LOC_DESC_OSS(API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION, loc, 
                            "The node passed as second parameter to remove-nodes does not exist in the given collection "
@@ -949,7 +1022,7 @@ ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   pul->addRemoveFromCollection(planState.sctx(), item, nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
-  theChildren[1]->reset(planState);
+  theChildren[theChildren.size()-1]->reset(planState);
 
   result = pul.release();
   STACK_PUSH( result != NULL, state);
@@ -959,16 +1032,19 @@ ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
 
 /*******************************************************************************
-  declare sequential function remove-node-at($uri as xs:anyURI,
-                                             $position as xs:integer) as none
+  declare sequential function remove-node-at($position  as xs:integer) as none
+
+  declare sequential function remove-node-at($uri       as xs:string?,
+                                             $position  as xs:integer) as none
 
   The function will remove from the given collection the node positioned at
   $position.
 
   Error conditions:
+  - If the collection URI is empty and the default collection
+    is not defined in the dynamic context, FODC0002 is raised
   - If the specified collection does not exist, an error is raised 
     (API0006_COLLECTION_NOT_FOUND - collection does not exist).
-
   - If the collection has fewer nodes than $position + 1, nothing is removed
     and an error is raised (API0030_NO_NODE_AT_GIVEN_POSITION - there is no
     node at the given position, the collection has fewer nodes). 
@@ -984,24 +1060,27 @@ ZorbaRemoveNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  // check argument
-  if (!consumeNext(itemUri, theChildren[0].getp(), planState)) {
-    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc,
-                         "The empty-sequence is not allowed as first argument to remove-node-at");
+  if((theChildren.size()==1) ||
+      ((theChildren.size()==2) &&
+      !consumeNext(itemUri, theChildren[0].getp(), planState)))
+  {
+    itemUri = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(NULL == itemUri)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
   coll = getCollection(planState, itemUri->getStringValueP(), loc);
 
-  if(!consumeNext(itemTarget, theChildren[1].getp(), planState)) {
+  if(!consumeNext(itemTarget, theChildren[theChildren.size()-1].getp(), planState)) {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
                          "The empty-sequence is not allowed as second argument to remove-node-at");
   }
 
-  if(consumeNext(tmpItem, theChildren[1].getp(), planState)) {
+  if(consumeNext(tmpItem, theChildren[theChildren.size()-1].getp(), planState)) {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
                          "A sequence with more then one item is not allowed as second argument to remove-node-at");
   }
-  
+
   if(itemTarget->getIntegerValue() < Integer::zero())
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
                          "An negative integer is not allowed as as second argument to remove-node-at");
@@ -1019,7 +1098,7 @@ ZorbaRemoveNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   pul->addRemoveAtFromCollection(planState.sctx(), tmpItem, lpos);
 
   // this should not be necessary. we reset everything in the sequential iterator
-  theChildren[1]->reset(planState);
+  theChildren[theChildren.size()-1]->reset(planState);
 
   result = pul.release();
   STACK_PUSH( result != NULL, state);
@@ -1029,11 +1108,15 @@ ZorbaRemoveNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
 
 /*******************************************************************************
-  declare sequential function nodes-count($uri as xs:anyURI) as xs:integer?
+  declare sequential function nodes-count() as xs:integer?
+
+  declare sequential function nodes-count(xs:string?) as xs:integer?
 
   The function returns the number of nodes in the given collection.
 
   Error conditions:
+  - If the collection URI is empty and the default collection
+    is not defined in the dynamic context, FODC0002 is raised
   - If the specified collection does not exist, an error is raised
     (API0006_COLLECTION_NOT_FOUND - collection does not exist).
 ********************************************************************************/
@@ -1046,26 +1129,36 @@ ZorbaNodeCountIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(itemUri, theChildren[0].getp(), planState)) 
+  if((theChildren.size()==0) ||
+      ((theChildren.size()==1) &&
+      !consumeNext(itemUri, theChildren[0].getp(), planState)))
   {
-    theColl = getCollection(planState, itemUri->getStringValue(), loc);
-
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(
-              result,
-              Integer::parseInt(theColl.getp()->size())), state);
+    itemUri = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(NULL == itemUri)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
+
+  theColl = getCollection(planState, itemUri->getStringValue(), loc);
+
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(
+            result,
+            Integer::parseInt(theColl.getp()->size())), state);
 
   STACK_END (state);
 }
 
 
 /*******************************************************************************
-  declare sequential function node-at($uri as xs:anyURI,
+  declare sequential function node-at($position as xs:integer) as node()?
+
+  declare sequential function node-at($uri      as xs:string?,
                                       $position as xs:integer) as node()?
 
   The function will return the node positioned at $position in the given collection.
 
   Error conditions:
+  - If the collection URI is empty and the default collection
+    is not defined in the dynamic context, FODC0002 is raised
   - If the specified collection does not exist, an error is raised
     (API0006_COLLECTION_NOT_FOUND - collection does not exist).
   - If the collection has fewer nodes than $position + 1 an error is raised
@@ -1082,18 +1175,24 @@ ZorbaNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(item, theChildren[0].getp(), planState)) 
+  if((theChildren.size()==1) ||
+      ((theChildren.size()==2) &&
+      !consumeNext(item, theChildren[0].getp(), planState)))
   {
-    theColl = getCollection(planState, item->getStringValue(), loc);
+    item = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(NULL == item)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
+  }
 
-    if (consumeNext(item, theChildren[1].getp(), planState))
+  theColl = getCollection(planState, item->getStringValue(), loc);
+
+  if (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState))
+  {
+    if(item->getIntegerValue() >= Integer::zero())
     {
-      if(item->getIntegerValue() >= Integer::zero())
-      {
-        NumConversions::strToUInt(item->getIntegerValue().toString(),lpos);
-        result = theColl->nodeAt(lpos);
-        STACK_PUSH(true, state);
-      }
+      NumConversions::strToUInt(item->getIntegerValue().toString(),lpos);
+      result = theColl->nodeAt(lpos);
+      STACK_PUSH(true, state);
     }
   }
 
@@ -1102,12 +1201,17 @@ ZorbaNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 
 /*******************************************************************************
-  declare function index-of($uri as xs:anyURI, $target as node()) as xs:integer
+  declare function index-of($target as node()) as xs:integer
+
+  declare function index-of($uri as xs:string?,
+                            $target as node()) as xs:integer
 
   The function will return the index of the  $target node within the collection
   identified by $uri.
 
   Error condition:
+  - If the collection URI is empty and the default collection
+    is not defined in the dynamic context, FODC0002 is raised
   - If the specified collection does not exist, an error is raised
     (API0006_COLLECTION_NOT_FOUND - collection does not exist).
   - If the node does not belong to the given collection, an error is raised
@@ -1124,23 +1228,29 @@ ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(item, theChildren[0].getp(), planState)) 
+  if((theChildren.size()==1) ||
+      ((theChildren.size()==2) &&
+      !consumeNext(item, theChildren[0].getp(), planState)))
   {
-    theColl = getCollection(planState, item->getStringValue(), loc);
+    item = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(NULL == item)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
+  }
 
-    if (consumeNext(item, theChildren[1].getp(), planState))
-    {
-      pos = theColl->indexOf(item);
+  theColl = getCollection(planState, item->getStringValue(), loc);
 
-      if( -1 == pos)
-        ZORBA_ERROR_LOC_DESC (API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION,
-                              loc,
-                              "The node does not belong to collection.");
+  if (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState))
+  {
+    pos = theColl->indexOf(item);
 
-      STACK_PUSH(GENV_ITEMFACTORY->createInteger(
-                result,
-                Integer::parseInt(pos)), state);
-    }
+    if( -1 == pos)
+      ZORBA_ERROR_LOC_DESC (API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION,
+                            loc,
+                            "The node does not belong to collection.");
+
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(
+              result,
+              Integer::parseInt(pos)), state);
   }
 
   STACK_END (state);
@@ -1148,9 +1258,9 @@ ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
 
 /*******************************************************************************
-  declare updating function export-xml($uri as xs:anyURI) as none
+  declare updating function export-xml($uri       as xs:string) as none
 
-  declare updating function export-xml($uri as xs:anyURI,
+  declare updating function export-xml($uri       as xs:string,
                                        $targeturi as xs:string) as none
 
   Saves the given collection to the target URI as an XML file. Intended
@@ -1184,7 +1294,7 @@ ZorbaExportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(item, theChildren[0].getp(), planState)) 
+  if(consumeNext(item, theChildren[0].getp(), planState))
   {
     theColl = getCollection(planState, item->getStringValue(), loc);
 
@@ -1228,9 +1338,6 @@ ZorbaExportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
 store::Collection_t getCollection(
     PlanState& planState,
     const xqpStringStore_t strURI,
