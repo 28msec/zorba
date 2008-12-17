@@ -283,9 +283,9 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
         if (name_string.lowercase() == "content-type")
           content_type = temp;;
       }
-      else
+      else 
       {
-          // TODO: invalid header
+        // invalid header, ignore it
       }
     }
   }
@@ -321,6 +321,7 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
         store::Item_t temp;
         std::istream is(theStreamBuffer);
         try {
+          GENV_STORE.deleteDocument(lUriString.theStrStore);
           temp = GENV_STORE.loadDocument(lUriString.theStrStore, is);
         }
         catch (...) {
