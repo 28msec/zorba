@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef ZORBA_ZORBATYPES_URI_H
+#define ZORBA_ZORBATYPES_URI_H
+
 #include <zorba/config.h>
 #include "representations.h"
 
@@ -327,3 +330,5 @@ URI::get_encoded_fragment() const
  * mode: c++
  * End:
  */
+
+#endif
