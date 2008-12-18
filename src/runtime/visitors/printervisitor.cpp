@@ -929,6 +929,7 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
   PRINTER_VISITOR_DEFINITION(ZorbaRestGetIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaRestPostIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaRestPutIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaRestDeleteIterator);
 #endif
 
   PRINTER_VISITOR_DEFINITION(HoistIterator);

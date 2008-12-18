@@ -786,6 +786,20 @@ DECL(sctx, rest_put,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+      
+      
+// zorba-rest:delete with an URI
+DECL(sctx, rest_delete,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "delete"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+// zorba-rest:delete with an URI and custom headers
+DECL(sctx, rest_delete,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "delete"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 #endif
 

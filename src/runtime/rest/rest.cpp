@@ -396,10 +396,11 @@ static void setupConnection(ZorbaRestGetIteratorState* state, int get_method)
     curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPPOST, 1);
   else if (get_method == 2)
     curl_easy_setopt(state->EasyHandle, CURLOPT_PUT, 1);
-  else {
-    // TODO: throw an error
-  }
-
+  else if (get_method == 3)
+    curl_easy_setopt(state->EasyHandle, CURLOPT_CUSTOMREQUEST, "DELETE");
+  else if (get_method == 4)
+    curl_easy_setopt(state->EasyHandle, CURLOPT_CUSTOMREQUEST, "HEAD");
+  
   curl_easy_setopt(state->EasyHandle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
   curl_easy_setopt(state->EasyHandle, CURLOPT_HEADERFUNCTION, getHeaderData);
   curl_easy_setopt(state->EasyHandle, CURLOPT_WRITEHEADER, state);
@@ -877,5 +878,42 @@ bool ZorbaRestPutIterator::nextImpl(store::Item_t& result, PlanState& planState)
   cleanupConnection(state);
   STACK_END (state);
 }
+
+bool ZorbaRestDeleteIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  static const char expect_buf[] = "Expect:";
+  store::Item_t lUri, headers;
+  xqpString Uri;
+  curl_slist *headers_list = NULL;
+  std::auto_ptr<char> buffer;
+  int code;
+  
+  ZorbaRestGetIteratorState* state;
+  DEFAULT_STACK_INIT(ZorbaRestGetIteratorState, state, planState);
+  
+  setupConnection(state, 3);
+
+  if (CONSUME(lUri, 0) == false)
+  {
+    //TODO: raise an error
+  }
+  Uri = lUri->getStringValue()->str();
+  
+  if (theChildren.size() > 1)
+    while (CONSUME(headers, 1))
+      processHeader(headers, &headers_list);
+  
+  curl_easy_setopt(state->EasyHandle, CURLOPT_URL, Uri.c_str());
+  headers_list = curl_slist_append(headers_list , expect_buf);
+  curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
+  code = state->theStreamBuffer->multi_perform();
+  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp());
+  
+  STACK_PUSH(true, state);  
+  curl_slist_free_all(headers_list);
+  cleanupConnection(state);
+  STACK_END (state);
+}
+
 
 } /* namespace zorba */

@@ -279,6 +279,7 @@ namespace zorba
   class ZorbaRestGetIterator;
   class ZorbaRestPostIterator;
   class ZorbaRestPutIterator;
+  class ZorbaRestDeleteIterator;
 #endif
 
   class HoistIterator;
@@ -758,6 +759,7 @@ namespace zorba
     PLAN_ITER_VISITOR(ZorbaRestGetIterator);
     PLAN_ITER_VISITOR(ZorbaRestPostIterator);
     PLAN_ITER_VISITOR(ZorbaRestPutIterator);
+    PLAN_ITER_VISITOR(ZorbaRestDeleteIterator);
 #endif
 
     PLAN_ITER_VISITOR(HoistIterator);

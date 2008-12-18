@@ -821,6 +821,18 @@ double DateTime::getSeconds() const
 }
 
 
+int DateTime::getIntSeconds() const
+{
+  assert(data[SECONDS_DATA] >= 0);
+  return data[SECONDS_DATA];
+}
+  
+int DateTime::getFractionalSeconds() const
+{
+  assert(data[FRACSECONDS_DATA] >= 0);
+  return data[FRACSECONDS_DATA];
+}
+
 TimeZone DateTime::getTimezone() const
 {
   return the_time_zone;
@@ -1204,5 +1216,37 @@ void DateTime::adjustToFacet()
   }
 }
 
+int DateTime::getDayOfWeek() const
+{
+  if (facet != DATE_FACET && facet != DATETIME_FACET)
+    return -1;
+  
+  int month = data[MONTH_DATA];
+  int year = data[YEAR_DATA];
+  
+  if (month < 3)
+  {
+    month = month + 12;
+    year = year - 1;
+  }
+  
+  return (data[DAY_DATA]
+      + (2 * month)
+      + int(6 * (month + 1) / 10)
+      + year
+      + int(year / 4)
+      - int(year / 100)
+      + int(year / 400)
+      + 1                     // CalendarSystem, 1 for Gregorian
+         ) % 7;
+}
+
+int DateTime::getDayOfYear() const
+{
+  if (facet != DATE_FACET && facet != DATETIME_FACET && facet != GMONTHDAY_FACET)
+    return -1;
+  
+  return 1 + days_since_year_start(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA]);
+}
 
 } // namespace xqp

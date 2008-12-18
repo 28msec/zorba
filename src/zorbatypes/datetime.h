@@ -266,6 +266,12 @@ public:
       
   double 
   getSeconds() const;
+  
+  int
+  getIntSeconds() const;
+  
+  int 
+  getFractionalSeconds() const;  
       
   TimeZone
   getTimezone() const;
@@ -311,7 +317,19 @@ public:
    */
   DateTime* adjustToTimeZone(const Duration* db_t) const;
       
-  FACET_TYPE getFacet() const { return facet; };     
+  FACET_TYPE getFacet() const { return facet; };   
+  
+  /**
+   *  For a given Date or DateTime, it will return the respective day of the week, 
+   *  with the index being 0 based, with 0 being Sunday, 1 Monday, etc. If the give 
+   *  DateTime does not have a Date or DateTime facet, the function will return -1.
+   *
+   */ 
+  int getDayOfWeek() const;
+  
+  
+  int getDayOfYear() const;
+  
       
 protected:
   static int

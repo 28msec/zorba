@@ -54,20 +54,34 @@ rest_post::return_type (const std::vector<xqtref_t> &arg_types) const
 }
 
 
-rest_put::rest_put(const signature& sig)
-  : function(sig)
-{}
+rest_put::rest_put(const signature& sig) : function(sig)
+{
+}
 
-PlanIter_t
-rest_put::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t rest_put::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaRestPutIterator(loc, argv);
 }
 
-xqtref_t
-rest_put::return_type (const std::vector<xqtref_t> &arg_types) const
+xqtref_t rest_put::return_type (const std::vector<xqtref_t> &arg_types) const
 {
   return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
+
+
+rest_delete::rest_delete(const signature& sig) : function(sig)
+{
+}
+
+PlanIter_t rest_delete::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new ZorbaRestDeleteIterator(loc, argv);
+}
+
+xqtref_t rest_delete::return_type (const std::vector<xqtref_t> &arg_types) const
+{
+  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
+
 
 } /* namespace zorba */
