@@ -374,10 +374,13 @@ static size_t getHeaderData(void *ptr, size_t size, size_t nmemb, void *aState)
   ZorbaRestGetIteratorState* state = static_cast<ZorbaRestGetIteratorState*>(aState);
   
   std::string temp(static_cast<char*>(ptr), size*nmemb-1);
-  if (temp[temp.size()-1] == 0x0D)  // delete the 0xD at the end.
-    temp.erase(temp.end()-1);
-  state->headers->push_back(temp);
-  // std::cout << "header: " << temp << std::endl;
+  if (temp.size() > 0)
+  {
+    if (temp[temp.size()-1] == 0x0D)  // delete the 0xD at the end.
+      temp.erase(temp.end()-1);
+    state->headers->push_back(temp);        
+    // std::cout << "header: " << temp << std::endl;
+  }
   
   return size * nmemb;
 }
