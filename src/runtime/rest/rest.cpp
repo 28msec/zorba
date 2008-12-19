@@ -239,18 +239,18 @@ ZorbaRestGetIteratorState::reset(PlanState& planState)
 }
 
 int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriString,
-                 int code, std::vector<std::string>& headers, CurlStreamBuffer* theStreamBuffer) 
+                 int code, std::vector<std::string>& headers, CurlStreamBuffer* theStreamBuffer, bool ignore_payload = false) 
 {
   int reply_code;
   xqpString content_type;
   store::Item_t payload, headers_node, text_code, status_code;
   store::Item_t doc = NULL;
 
-  createNodeHelper(NULL, planState, "result", &result); // status_code, headers_item, payload);
-
+  createNodeHelper(NULL, planState, "result", &result); 
   createNodeHelper(result, planState, "status-code", &status_code);
   createNodeHelper(result, planState, "headers", &headers_node);
-  createNodeHelper(result, planState, "payload", &payload);
+  if (!ignore_payload)
+    createNodeHelper(result, planState, "payload", &payload);
   
     
   if (headers.size() == 0)
@@ -293,7 +293,7 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
   xqpString temp = NumConversions::intToStr(reply_code);
   GENV_ITEMFACTORY->createTextNode(text_code, status_code, -1, temp.theStrStore);
 
-  if (reply_code >= 200 && reply_code < 300)
+  if ((!ignore_payload) && reply_code >= 200 && reply_code < 300)
   {
     int doc_type;  // values: 3 - xml, 2 - text, 1 - everything else (base64), 0 - do nothing, document has bee processed.
 
@@ -389,21 +389,23 @@ static void setupConnection(ZorbaRestGetIteratorState* state, int get_method)
 {
   state->MultiHandle = curl_multi_init(); // TODO check error
   state->EasyHandle = curl_easy_init();
+
+  curl_easy_setopt(state->EasyHandle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+  curl_easy_setopt(state->EasyHandle, CURLOPT_HEADERFUNCTION, getHeaderData);
+  curl_easy_setopt(state->EasyHandle, CURLOPT_WRITEHEADER, state);
   
   if (get_method == 0)
     curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPGET, 1);
   else if (get_method == 1)
     curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPPOST, 1);
   else if (get_method == 2)
-    curl_easy_setopt(state->EasyHandle, CURLOPT_PUT, 1);
+    curl_easy_setopt(state->EasyHandle, CURLOPT_CUSTOMREQUEST, "PUT");
   else if (get_method == 3)
     curl_easy_setopt(state->EasyHandle, CURLOPT_CUSTOMREQUEST, "DELETE");
   else if (get_method == 4)
+    // curl_easy_setopt(state->EasyHandle, CURLOPT_NOBODY, 1);
     curl_easy_setopt(state->EasyHandle, CURLOPT_CUSTOMREQUEST, "HEAD");
   
-  curl_easy_setopt(state->EasyHandle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-  curl_easy_setopt(state->EasyHandle, CURLOPT_HEADERFUNCTION, getHeaderData);
-  curl_easy_setopt(state->EasyHandle, CURLOPT_WRITEHEADER, state);
   curl_multi_add_handle(state->MultiHandle, state->EasyHandle);
   state->headers = std::auto_ptr<std::vector<std::string> >(new std::vector<std::string>);
   state->theStreamBuffer = new CurlStreamBuffer(state->MultiHandle, state->EasyHandle);
@@ -922,7 +924,7 @@ bool ZorbaRestDeleteIterator::nextImpl(store::Item_t& result, PlanState& planSta
 #endif
 #endif
   code = state->theStreamBuffer->multi_perform();
-  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp());
+  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), true);
   
   STACK_PUSH(true, state);
   curl_slist_free_all(headers_list);
@@ -973,7 +975,7 @@ bool ZorbaRestHeadIterator::nextImpl(store::Item_t& result, PlanState& planState
 #endif
 #endif
   code = state->theStreamBuffer->multi_perform();
-  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp());
+  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), true);
   
   STACK_PUSH(true, state);
   curl_slist_free_all(headers_list);

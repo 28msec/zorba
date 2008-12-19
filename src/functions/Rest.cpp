@@ -90,7 +90,7 @@ rest_head::rest_head(const signature& sig) : function(sig)
 
 PlanIter_t rest_head::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new ZorbaRestDeleteIterator(loc, argv);
+  return new ZorbaRestHeadIterator(loc, argv);
 }
 
 xqtref_t rest_head::return_type (const std::vector<xqtref_t> &arg_types) const
