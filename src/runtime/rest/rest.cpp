@@ -881,11 +881,9 @@ bool ZorbaRestPutIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
 bool ZorbaRestDeleteIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  static const char expect_buf[] = "Expect:";
-  store::Item_t lUri, headers;
+  store::Item_t lUri, payload_data, headers;
   xqpString Uri;
   curl_slist *headers_list = NULL;
-  std::auto_ptr<char> buffer;
   int code;
   
   ZorbaRestGetIteratorState* state;
@@ -893,27 +891,94 @@ bool ZorbaRestDeleteIterator::nextImpl(store::Item_t& result, PlanState& planSta
   
   setupConnection(state, 3);
 
-  if (CONSUME(lUri, 0) == false)
+  if (!CONSUME(lUri,0))
   {
-    //TODO: raise an error
+    //TODO: raise an error ?
+    // ZORBA_ERROR_DESC(XQP0020_INVALID_URI, "No URI given to the REST get() function.");
   }
+
   Uri = lUri->getStringValue()->str();
-  
+
   if (theChildren.size() > 1)
-    while (CONSUME(headers, 1))
-      processHeader(headers, &headers_list);
+    while (CONSUME(payload_data, 1))
+      Uri = processGetPayload(payload_data, Uri);
   
+  if (theChildren.size() > 2)
+    while (CONSUME(headers, 2))
+      processHeader(headers, &headers_list);
+
   curl_easy_setopt(state->EasyHandle, CURLOPT_URL, Uri.c_str());
-  headers_list = curl_slist_append(headers_list , expect_buf);
   curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
+#ifndef ZORBA_VERIFY_PEER_SSL_CERTIFICATE//default is to not verify root certif
+  curl_easy_setopt(state->EasyHandle, CURLOPT_SSL_VERIFYPEER, 0);
+  //but CURLOPT_SSL_VERIFYHOST is left default, value 2, meaning verify that the Common Name or Subject Alternate Name field in the certificate matches the name of the server
+  //tested with https://www.npr.org/rss/rss.php?id=1001
+  //about using ssl certs in curl: http://curl.haxx.se/docs/sslcerts.html
+#else
+#if defined WIN32
+  //set the root CA certificates file path
+  if(GENV.g_curl_root_CA_certificates_path[0])
+    curl_easy_setopt(state->EasyHandle, CURLOPT_CAINFO, GENV.g_curl_root_CA_certificates_path);
+#endif
+#endif
   code = state->theStreamBuffer->multi_perform();
   processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp());
   
-  STACK_PUSH(true, state);  
+  STACK_PUSH(true, state);
   curl_slist_free_all(headers_list);
   cleanupConnection(state);
   STACK_END (state);
 }
 
+bool ZorbaRestHeadIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lUri, payload_data, headers;
+  xqpString Uri;
+  curl_slist *headers_list = NULL;
+  int code;
+  
+  ZorbaRestGetIteratorState* state;
+  DEFAULT_STACK_INIT(ZorbaRestGetIteratorState, state, planState);
+  
+  setupConnection(state, 4);
+
+  if (!CONSUME(lUri,0))
+  {
+    //TODO: raise an error ?
+    // ZORBA_ERROR_DESC(XQP0020_INVALID_URI, "No URI given to the REST get() function.");
+  }
+
+  Uri = lUri->getStringValue()->str();
+
+  if (theChildren.size() > 1)
+    while (CONSUME(payload_data, 1))
+      Uri = processGetPayload(payload_data, Uri);
+  
+  if (theChildren.size() > 2)
+    while (CONSUME(headers, 2))
+      processHeader(headers, &headers_list);
+
+  curl_easy_setopt(state->EasyHandle, CURLOPT_URL, Uri.c_str());
+  curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
+#ifndef ZORBA_VERIFY_PEER_SSL_CERTIFICATE//default is to not verify root certif
+  curl_easy_setopt(state->EasyHandle, CURLOPT_SSL_VERIFYPEER, 0);
+  //but CURLOPT_SSL_VERIFYHOST is left default, value 2, meaning verify that the Common Name or Subject Alternate Name field in the certificate matches the name of the server
+  //tested with https://www.npr.org/rss/rss.php?id=1001
+  //about using ssl certs in curl: http://curl.haxx.se/docs/sslcerts.html
+#else
+#if defined WIN32
+  //set the root CA certificates file path
+  if(GENV.g_curl_root_CA_certificates_path[0])
+    curl_easy_setopt(state->EasyHandle, CURLOPT_CAINFO, GENV.g_curl_root_CA_certificates_path);
+#endif
+#endif
+  code = state->theStreamBuffer->multi_perform();
+  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp());
+  
+  STACK_PUSH(true, state);
+  curl_slist_free_all(headers_list);
+  cleanupConnection(state);
+  STACK_END (state);
+}
 
 } /* namespace zorba */

@@ -170,23 +170,50 @@ public:
 
 class ZorbaRestDeleteIterator : public NaryBaseIterator<ZorbaRestDeleteIterator, ZorbaRestGetIteratorState >
 {
-  public:
-    ZorbaRestDeleteIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
-      : NaryBaseIterator<ZorbaRestDeleteIterator, ZorbaRestGetIteratorState >(loc, aChildren)
-    { }
+public:
+  ZorbaRestDeleteIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator<ZorbaRestDeleteIterator, ZorbaRestGetIteratorState >(loc, aChildren)
+  { }
 
-    bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
-    virtual void accept(PlanIterVisitor& v) const
-    {
-      v.beginVisit(*this);
-      std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin();
-      std::vector<PlanIter_t>::const_iterator lEnd =  theChildren.end();
-      for ( ; iter != lEnd; ++iter ) {
-        ( *iter )->accept ( v );
-      }
-      v.endVisit(*this);
+  virtual void accept(PlanIterVisitor& v) const
+  {
+    v.beginVisit(*this);
+    std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin();
+    std::vector<PlanIter_t>::const_iterator lEnd =  theChildren.end();
+    for ( ; iter != lEnd; ++iter ) {
+      ( *iter )->accept ( v );
     }
+    v.endVisit(*this);
+  }
+};
+
+/****************************************************************************
+ *
+ * zorba-rest head iterator
+ *
+ ****************************************************************************/
+
+class ZorbaRestHeadIterator : public NaryBaseIterator<ZorbaRestHeadIterator, ZorbaRestGetIteratorState >
+{
+public:
+  ZorbaRestHeadIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator<ZorbaRestHeadIterator, ZorbaRestGetIteratorState >(loc, aChildren)
+  { }
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  virtual void accept(PlanIterVisitor& v) const
+  {
+    v.beginVisit(*this);
+    std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin();
+    std::vector<PlanIter_t>::const_iterator lEnd =  theChildren.end();
+    for ( ; iter != lEnd; ++iter ) {
+      ( *iter )->accept ( v );
+    }
+    v.endVisit(*this);
+  }
 };
 
 

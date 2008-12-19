@@ -51,12 +51,22 @@ public:
 
 class rest_delete : public function
 {
-  public:
-    rest_delete(const signature&);
+public:
+  rest_delete(const signature&);
 
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
 };
+
+class rest_head : public function
+{
+public:
+  rest_head(const signature&);
+
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+};
+
 
 } /* namespace zorba */
 
