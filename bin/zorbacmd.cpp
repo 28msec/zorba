@@ -162,12 +162,40 @@ createSerializerOptions(Zorba_SerializerOptions_t& lSerOptions, ZorbaCMDProperti
 std::string parseFileURI (bool asPath, const std::string &str) {
   if (asPath)
     return str;
+#ifdef WIN32////for WINDOWS ////
+  // file:///c:/ return c:\
+  // file://localhost return \\localhost
+  static const char *file3 = "file:///";
+  static const char *file2 = "file://";
+  std::string   fpath;
+  if(str.compare(0, strlen(file3), file3) == 0)
+  {
+    fpath = str.substr(strlen(file3));
+  }
+  else if(str.compare(0, strlen(file2), file2) == 0)
+  {
+    fpath = "\\";
+    fpath += str.substr(strlen(file2));
+  }
+  //replace all slash with backslash
+  std::string::size_type off=0;
+  while((off=fpath.find('/', off)) != std::string::npos)
+  {
+    fpath.replace(off, 1, "\\");
+  }
+  return fpath;
+
+#else///for UNIX ///
+
   static const char *pfx = "file://";
   static unsigned plen = strlen (pfx);
   if (str.compare (0, plen, pfx) == 0)
+  {
     return str.substr (plen);
+  }
   else
     return "";
+#endif
 }
 
 #ifdef ZORBA_DEBUGGER
