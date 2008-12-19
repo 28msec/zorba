@@ -75,12 +75,6 @@ bool BasicItemFactory::createQName(
 }
 
 
-bool BasicItemFactory::createNCName(store::Item_t& result, xqpStringStore_t& value)
-{
-  result = new NCNameItemImpl(value);
-  return true;
-}
-
 
 bool BasicItemFactory::createAnyURI(store::Item_t& result, xqpStringStore_t& value)
 {
@@ -112,6 +106,85 @@ bool BasicItemFactory::createString(store::Item_t& result, xqpStringStore_t& val
   result = new StringItemNaive(value);
   return true;
 }
+
+bool BasicItemFactory::createNormalizedString(
+    store::Item_t&    result,
+    xqpStringStore_t& value)
+{
+  result = new NormalizedStringItemImpl(value);
+  return true;
+}
+
+bool BasicItemFactory::createToken(store::Item_t& result, xqpStringStore_t& value )
+{
+  result = new TokenItemImpl(value);
+  return true;
+}
+
+bool BasicItemFactory::createLanguage(store::Item_t& result, xqpStringStore_t& value )
+{
+  result = new LanguageItemImpl(value);
+  return true;
+}
+
+bool BasicItemFactory::createNMTOKEN(store::Item_t& result, xqpStringStore_t& value )
+{
+  result = new NMTOKENItemImpl(value);
+  return true;
+}
+
+bool BasicItemFactory::createNMTOKENS(
+    store::Item_t& result,
+    xqpStringStore_t& /*value*/ )
+{
+  result = NULL;
+  return false;
+}
+
+bool BasicItemFactory::createName(store::Item_t& result, xqpStringStore_t& value )
+{
+  result = new NameItemImpl(value);
+  return true;
+}
+
+bool BasicItemFactory::createNCName(store::Item_t& result, xqpStringStore_t& value )
+{
+  result = new NCNameItemImpl(value);
+  return true;
+}
+
+bool BasicItemFactory::createID(store::Item_t& result, xqpStringStore_t& value )
+{
+  result = new IDItemImpl(value);
+  return true;
+}
+
+bool BasicItemFactory::createIDREF(store::Item_t& result, xqpStringStore_t& value )
+{
+  result = new IDREFItemImpl(value);
+  return true;
+}
+
+bool BasicItemFactory::createIDREFS(store::Item_t& result, xqpStringStore_t& value )
+{
+  result = NULL;
+  return false;
+}
+
+bool BasicItemFactory::createENTITY(store::Item_t& result, xqpStringStore_t& value )
+{
+  result = new ENTITYItemImpl(value);
+  return true;
+}
+
+bool BasicItemFactory::createENTITIES(store::Item_t& result, xqpStringStore_t& value)
+{
+  result = NULL;
+  return false;
+}
+
+
+
 
 
 bool BasicItemFactory::createBase64Binary(store::Item_t& result, xqp_base64Binary value)
@@ -657,19 +730,6 @@ bool BasicItemFactory::createDayTimeDuration(store::Item_t& result, xqp_dayTimeD
 }
 
 
-bool BasicItemFactory::createENTITIES(store::Item_t& result, xqpStringStore_t& /*value*/)
-{
-  result = NULL;
-  return false;
-}
-
-
-bool BasicItemFactory::createENTITY(store::Item_t& result, xqpStringStore_t& /*value*/ )
-{
-  result = NULL;
-  return false;
-}
-
 
 bool BasicItemFactory::createFloat (store::Item_t& result,  xqp_float value )
 {
@@ -686,68 +746,7 @@ bool BasicItemFactory::createHexBinary (store::Item_t& result,  xqp_hexBinary va
 }
 
 
-bool BasicItemFactory::createID(store::Item_t& result, xqpStringStore_t& value)
-{
-  result = new IDItemImpl(value);
-  return true;
-}
-
-
-bool BasicItemFactory::createIDREF(
-    store::Item_t& result,
-    xqpStringStore_t& /*value*/ )
-{
-  result = NULL;
-  return false;
-}
-
-
-bool BasicItemFactory::createIDREFS(
-    store::Item_t& result,
-    xqpStringStore_t& /*value*/ )
-{
-  result = NULL;
-  return false;
-}
-
-
-bool BasicItemFactory::createLanguage(
-    store::Item_t& result,
-    xqpStringStore_t& /*value*/ )
-{
-  result = NULL;
-  return false;
-}
-
-
-bool BasicItemFactory::createNMTOKEN(
-    store::Item_t& result,
-    xqpStringStore_t& /*value*/ )
-{
-  result = NULL;
-  return false;
-}
-
-
-bool BasicItemFactory::createNMTOKENS(
-    store::Item_t& result,
-    xqpStringStore_t& /*value*/ )
-{
-  result = NULL;
-  return false;
-}
-
-
 bool BasicItemFactory::createNOTATION(
-    store::Item_t& result,
-    xqpStringStore_t& /*value*/ )
-{
-  result = NULL;
-  return false;
-}
-
-
-bool BasicItemFactory::createName(
     store::Item_t& result,
     xqpStringStore_t& /*value*/ )
 {
@@ -785,15 +784,6 @@ bool BasicItemFactory::createNonPositiveInteger(
 }
 
 
-bool BasicItemFactory::createNormalizedString(
-    store::Item_t&    result,
-    xqpStringStore_t& value)
-{
-  result = NULL;
-  return false;
-}
-
-
 bool BasicItemFactory::createPositiveInteger(
     store::Item_t& result,
     xqp_uinteger value)
@@ -803,12 +793,6 @@ bool BasicItemFactory::createPositiveInteger(
   return true;
 }
 
-
-bool BasicItemFactory::createToken(store::Item_t& result, xqpStringStore_t& /*value*/ )
-{
-  result = NULL;
-  return false;
-}
 
 bool BasicItemFactory::createUnsignedByte (store::Item_t& result,  xqp_ubyte value )
 {
