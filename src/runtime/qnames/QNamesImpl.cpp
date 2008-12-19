@@ -80,6 +80,13 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       // must check for FOCA0002 first
       if (!GENV_GCAST.castableToNCName (resPre) || ! GENV_GCAST.castableToNCName (resLocal))
         ZORBA_ERROR_LOC (FOCA0002, loc);
+    } else {
+      resNs = new xqpStringStore("");
+      resPre = new xqpStringStore("");
+      resLocal = qname;
+      if (! GENV_GCAST.castableToNCName (resLocal))
+        ZORBA_ERROR_LOC (FOCA0002, loc);
+    }
       
       if (consumeNext(itemElem, theChild1, planState )) {
         itemElem->getNamespaceBindings(NamespaceBindings);
@@ -95,13 +102,6 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         if (resNs == NULL)
           ZORBA_ERROR_LOC (FONS0004, loc);
       }
-    } else {
-      resNs = new xqpStringStore("");
-      resPre = new xqpStringStore("");
-      resLocal = qname;
-      if (! GENV_GCAST.castableToNCName (resLocal))
-        ZORBA_ERROR_LOC (FOCA0002, loc);
-    }
 
     GENV_ITEMFACTORY->createQName(result, resNs, resPre, resLocal);
 
