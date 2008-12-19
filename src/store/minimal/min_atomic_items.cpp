@@ -60,6 +60,7 @@ void AtomicItem::getTypedValue(store::Item_t& val, store::Iterator_t& iter) cons
 /*******************************************************************************
   class QNameItemImpl
 ********************************************************************************/
+
 xqpStringStore_t QNameItemImpl::theEmptyPrefix(new xqpStringStore(""));
 
 
@@ -71,10 +72,12 @@ QNameItemImpl::~QNameItemImpl()
   }
 }
 
+
 void QNameItemImpl::free()
 {
   GET_STORE().getQNamePool().remove(this);
 }
+
 
 void QNameItemImpl::setNormalized(QNameItemImpl* qn)  
 {
@@ -94,11 +97,14 @@ void QNameItemImpl::unsetNormalized()
   theLocal.setNull();
 }
 
+
 uint32_t QNameItemImpl::hash(long timezone, XQPCollator* aCollation) const
 {
+  //return (uint32_t)getNormalized();
   const void* tmp = getNormalized();
   return hashfun::h32(tmp, FNV_32_INIT);
 }
+
 
 store::Item* QNameItemImpl::getType() const
 {
@@ -108,7 +114,7 @@ store::Item* QNameItemImpl::getType() const
 
 store::Item_t QNameItemImpl::getEBV( ) const
 {
-  ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for QName!");
+  ZORBA_ERROR_DESC(FORG0006, "Effective Boolean Value is not defined for QName!");
   return NULL;
 }
 
@@ -198,6 +204,80 @@ xqp_string StringItemNaive::show() const
   return "xs:string(" + theValue->str() + ")";
 }
 
+/*******************************************************************************
+  class NormalizedStringItemImpl
+********************************************************************************/
+store::Item* NormalizedStringItemImpl::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[XS_NORMALIZED_STRING];
+}
+
+xqp_string NormalizedStringItemImpl::show() const
+{
+  return "xs:NormalizedString(" + theValue->str() + ")";
+}
+
+/*******************************************************************************
+  class TokenItemImpl
+********************************************************************************/
+store::Item* TokenItemImpl::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[XS_TOKEN];
+}
+
+
+uint32_t TokenItemImpl::hash(long timezone, XQPCollator* aCollation) const
+{
+  return theValue->hash();
+}
+
+xqp_string TokenItemImpl::show() const
+{
+  return "xs:TOKEN(" + theValue->str() + ")";
+}
+
+/*******************************************************************************
+  class LanguageItemImpl
+********************************************************************************/
+store::Item* LanguageItemImpl::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[XS_LANGUAGE];
+}
+
+
+xqp_string LanguageItemImpl::show() const
+{
+  return "xs:LANGUAGE(" + theValue->str() + ")";
+}
+
+/*******************************************************************************
+  class NMTOKENItemImpl
+********************************************************************************/
+store::Item* NMTOKENItemImpl::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[XS_NMTOKEN];
+}
+
+
+xqp_string NMTOKENItemImpl::show() const
+{
+  return "xs:NMTOKEN(" + theValue->str() + ")";
+}
+
+/*******************************************************************************
+  class NameItemImpl
+********************************************************************************/
+store::Item* NameItemImpl::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[XS_NAME];
+}
+
+
+xqp_string NameItemImpl::show() const
+{
+  return "xs:NAME(" + theValue->str() + ")";
+}
+
 
 /*******************************************************************************
   class NCNameItemImpl
@@ -208,49 +288,51 @@ store::Item* NCNameItemImpl::getType() const
 }
 
 
-uint32_t NCNameItemImpl::hash(long timezone, XQPCollator* aCollation) const
-{
-  return theValue->hash();
-}
-
-
-bool NCNameItemImpl::equals(
-    const store::Item* item,
-    long timezone,
-    XQPCollator* aCollation) const
-{
-  return item->getStringValueP()->equals(theValue);
-}
-
-
-store::Item_t NCNameItemImpl::getEBV() const
-{
-  bool b = ! ( theValue->str() == "" );
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
-}
-
-
 xqp_string NCNameItemImpl::show() const
 {
   return "xs:NCName(" + theValue->str() + ")";
 }
 
 
+/*******************************************************************************
+  class IDItemImpl
+********************************************************************************/
 store::Item* IDItemImpl::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_ID];
 }
 
-
-/*******************************************************************************
-  class IDItemImpl
-********************************************************************************/
 xqp_string IDItemImpl::show() const
 {
   return "xs:ID(" + theValue->str() + ")";
 }
+
+/*******************************************************************************
+  class IDREFItemImpl
+********************************************************************************/
+store::Item* IDREFItemImpl::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[XS_IDREF];
+}
+
+xqp_string IDREFItemImpl::show() const
+{
+  return "xs:IDREF(" + theValue->str() + ")";
+}
+
+/*******************************************************************************
+  class ENTITYItemImpl
+********************************************************************************/
+store::Item* ENTITYItemImpl::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[XS_ENTITY];
+}
+
+xqp_string ENTITYItemImpl::show() const
+{
+  return "xs:ENTITY(" + theValue->str() + ")";
+}
+
 
 
 /*******************************************************************************
@@ -527,6 +609,7 @@ uint32_t DurationItemNaive::hash(long timezone, XQPCollator* aCollation) const
   return theValue.hash();
 }
 
+
 /*******************************************************************************
   class DecimalItemNaive
 ********************************************************************************/
@@ -672,7 +755,7 @@ IntegerItemNaive::hash(long timezone, XQPCollator* aCollation) const
   return theValue.hash();
 }
 
-	
+
 /*******************************************************************************
   class DoubleItemNaive
 ********************************************************************************/
@@ -681,6 +764,7 @@ store::Item* DoubleItemNaive::getType() const
   return GET_STORE().theSchemaTypeNames[XS_DOUBLE];
 }
 
+
 bool DoubleItemNaive::equals (
     const store::Item* item,
     long timezone,
@@ -688,6 +772,7 @@ bool DoubleItemNaive::equals (
 {
   return item->getDoubleValue() == theValue;
 }
+
 
 store::Item_t DoubleItemNaive::getEBV() const
 {
@@ -702,31 +787,37 @@ store::Item_t DoubleItemNaive::getEBV() const
   return bVal;
 }
 
+
 xqpStringStore_t DoubleItemNaive::getStringValue() const
 {
   return NumConversions::doubleToStr(theValue).getStore();
 }
+
 
 xqp_string DoubleItemNaive::show() const
 {
   return "xs:double(" + getStringValue()->str() + ")";
 }
 
+
 bool DoubleItemNaive::isNaN() const 
 {
   return theValue.isNaN();
 }
+
 
 bool DoubleItemNaive::isPosOrNegInf() const 
 {
   return theValue.isPosInf() || theValue.isNegInf();
 }
 
+
 uint32_t
 DoubleItemNaive::hash(long timezone, XQPCollator* aCollation) const
 {
   return theValue.hash();
 }
+
   
 /*******************************************************************************
   class FloatItemNaive
@@ -1451,6 +1542,7 @@ HexBinaryItemNaive::hash(long timezone, XQPCollator* aCollation) const
 {
   return theValue.hash();
 }
+
 
 /*******************************************************************************
   class ErrorItem

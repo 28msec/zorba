@@ -29,6 +29,7 @@ class QNameItemNorm;
 
 typedef rchandle<QNameItemNorm> NormalizedQName_t;
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -163,25 +164,89 @@ public:
 
 
 /*******************************************************************************
-  class NCNameItem
+  class NormalizedStringItemImpl
 ********************************************************************************/
-class NCNameItemImpl : public AtomicItem
+class NormalizedStringItemImpl : public StringItemNaive
 {
-protected:
-  xqpStringStore_t  theValue;
 
 public:
-  NCNameItemImpl(xqpStringStore_t& value)
-  {
-    theValue.transfer(value);
-  }
+  NormalizedStringItemImpl(xqpStringStore_t& value) : StringItemNaive(value) {}
+
+  virtual store::Item* getType() const;
+//  uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
+
+  virtual xqp_string show() const;
+};
+
+/*******************************************************************************
+  class TokenItemImpl
+********************************************************************************/
+class TokenItemImpl : public NormalizedStringItemImpl
+{
+
+public:
+  TokenItemImpl(xqpStringStore_t& value) : NormalizedStringItemImpl(value) {}
 
   virtual store::Item* getType() const;
   uint32_t hash(long timezone = 0, XQPCollator* aCollation = 0) const;
-  bool equals(const store::Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
-  store::Item_t getEBV() const;
-  xqpStringStore_t getStringValue() const { return theValue.getp(); }
-  xqpStringStore* getStringValueP() const { return theValue.getp(); }
+
+  virtual xqp_string show() const;
+};
+
+/*******************************************************************************
+  class LanguageItem
+********************************************************************************/
+class LanguageItemImpl : public TokenItemImpl
+{
+
+public:
+  LanguageItemImpl(xqpStringStore_t& value) : TokenItemImpl(value) {}
+
+  virtual store::Item* getType() const;
+
+  virtual xqp_string show() const;
+};
+
+/*******************************************************************************
+  class NMTOKENItemImpl
+********************************************************************************/
+class NMTOKENItemImpl : public TokenItemImpl
+{
+
+public:
+  NMTOKENItemImpl(xqpStringStore_t& value) : TokenItemImpl(value) {}
+
+  virtual store::Item* getType() const;
+
+  virtual xqp_string show() const;
+};
+
+
+/*******************************************************************************
+  class NameItem
+********************************************************************************/
+class NameItemImpl : public TokenItemImpl
+{
+
+public:
+  NameItemImpl(xqpStringStore_t& value) : TokenItemImpl(value) {}
+
+  virtual store::Item* getType() const;
+
+  virtual xqp_string show() const;
+};
+
+
+/*******************************************************************************
+  class NCNameItem
+********************************************************************************/
+class NCNameItemImpl : public NameItemImpl
+{
+
+public:
+  NCNameItemImpl(xqpStringStore_t& value) : NameItemImpl(value) {}
+
+  virtual store::Item* getType() const;
 
   virtual xqp_string show() const;
 };
@@ -194,6 +259,32 @@ class IDItemImpl : public NCNameItemImpl
 {
 public:
   IDItemImpl(xqpStringStore_t& value) : NCNameItemImpl(value) { }
+
+  store::Item* getType() const;
+
+  virtual xqp_string show() const;
+};
+
+/*******************************************************************************
+  class IDREFItem
+********************************************************************************/
+class IDREFItemImpl : public NCNameItemImpl
+{
+public:
+  IDREFItemImpl(xqpStringStore_t& value) : NCNameItemImpl(value) { }
+
+  store::Item* getType() const;
+
+  virtual xqp_string show() const;
+};
+
+/*******************************************************************************
+  class ENTITYItemImpl
+********************************************************************************/
+class ENTITYItemImpl : public NCNameItemImpl
+{
+public:
+  ENTITYItemImpl(xqpStringStore_t& value) : NCNameItemImpl(value) { }
 
   store::Item* getType() const;
 
@@ -715,7 +806,7 @@ protected:
 	xqp_double theValue;
 
 public:
-	DoubleItemNaive ( const xqp_double& aValue ) : theValue ( aValue ) {}
+	DoubleItemNaive(const xqp_double& aValue ) : theValue( aValue ) {}
 
 	virtual const xqp_double& getDoubleValue() const { return theValue; }
 	
