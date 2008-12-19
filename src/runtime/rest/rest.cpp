@@ -50,6 +50,8 @@ namespace zorba {
 
 using namespace store;
 
+static const char expect_buf[] = "Expect:";
+
 /****************************************************************************
  *
  * CurlStreamBuffer
@@ -761,7 +763,6 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
 bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  static const char expect_buf[] = "Expect:";
   store::Item_t lUri, payload_data, headers;
   xqpString Uri;
   curl_httppost *first = NULL, *last = NULL;
@@ -822,7 +823,6 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
 
 bool ZorbaRestPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  static const char expect_buf[] = "Expect:";
   store::Item_t lUri, payload_data, headers;
   xqpString Uri;
   curl_httppost *first = NULL, *last = NULL;
