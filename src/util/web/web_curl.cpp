@@ -52,6 +52,7 @@ int http_get(const char* url, xqp_string& result)
   curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);  /* send all data to this function  */
   curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&temp);            /* we pass our 'result' struct to the callback function */
   curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);        /* tells the library to fail silently if the HTTP code returned >= 400*/
+  curl_easy_setopt(curl_handle, CURLOPT_FOLLOWLOCATION, 1); /*Tells cURL to follow redirects. CURLOPT_MAXREDIRS is by default set to -1 thus cURL will do an infinite number of redirects */
 
 #ifndef ZORBA_VERIFY_PEER_SSL_CERTIFICATE//default is to not verify root certif
   curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, 0);
