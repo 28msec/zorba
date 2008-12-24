@@ -22,6 +22,11 @@
 FIND_PACKAGE(Doxygen)
 
 IF (DOXYGEN_FOUND)
+# the FindDoxygen module doesn't set DOXYGEN_DOT_FOUND like it is
+# supposed to, so here we have a workaround.
+  IF ( DOXYGEN_DOT_EXECUTABLE )
+     SET ( DOXYGEN_DOT_FOUND "YES" )
+  ENDIF ( DOXYGEN_DOT_EXECUTABLE )
 
   # click+jump in Emacs and Visual Studio (for doxy.config) (jw)
   IF    (CMAKE_BUILD_TOOL MATCHES "(msdev|devenv)")
