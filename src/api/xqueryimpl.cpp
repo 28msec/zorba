@@ -243,6 +243,15 @@ XQueryImpl::setFileName( const String& aFileName )
   theFileName = lFileName;
 }
 
+/**
+ * Get the filename
+ */
+String
+XQueryImpl::getFileName()
+{
+  return String(theFileName);
+}
+
 
 /**
  * Give to the caller read-only access to the static context of the query

@@ -184,7 +184,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
   {
     name << ')';
     //lDebugger->theLastKnownStack = lDebugger->theStack;
-    lDebugger->theStack.push(std::make_pair<std::string, const QueryLoc>(name.str(), loc)); 
+    lDebugger->pushStack(std::make_pair<std::string, const QueryLoc>(name.str(), loc)); 
     lDebugger->isFunctionExecution = true;
   }
 #endif
@@ -210,7 +210,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
   if(lDebugger != 0)
   {
     //lDebugger->theLastKnownStack = lDebugger->theStack;
-    lDebugger->theStack.pop();
+    lDebugger->popStack();
   }
 #endif
   STACK_END (state);

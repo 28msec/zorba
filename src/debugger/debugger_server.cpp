@@ -78,6 +78,7 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
                            unsigned short aRequestPortno,
                            unsigned short aEventPortno)
 {
+  theProfiler = new Profiler(aQuery->getFileName());
   auto_ptr<TCPSocket> lSock;
   //Set the query and serialization options
   theQuery = aQuery;
@@ -126,6 +127,7 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
   clog << "[Server Thread] server quited" << std::endl;
 #endif
   delete theRuntimeThread;
+  delete theProfiler;
 #ifndef NDEBUG
   clog << "[Server Thread] runtime thread quited" << std::endl;
 #endif 

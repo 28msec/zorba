@@ -29,7 +29,8 @@
 #include "api/xqueryimpl.h"
 
 #include "debugger/debugger_common.h"
-    
+#include "debugger/profiler.h"
+
 #include "runtime/base/plan_iterator.h"
 #include "runtime/debug/zorba_debugger_iterators.h"
 #include "runtime/api/plan_iterator_wrapper.h"
@@ -73,8 +74,11 @@ class ZorbaDebugger
       isSteppingOver(false),
       isSteppingInto(false),
       isSteppingOut(false),
+      theProfiler(0),
       isFunctionExecution(false),
-      catchFunctionExecution(false){}
+      catchFunctionExecution(false)
+  {
+  }
 
     virtual ~ZorbaDebugger();
 
@@ -176,6 +180,19 @@ class ZorbaDebugger
     //The stack frame
     std::stack< std::pair<std::string, QueryLoc> > theStack;
     std::stack< std::pair<std::string, QueryLoc> > theLastKnownStack;
+    Profiler* theProfiler;
+
+    void pushStack(std::pair<std::string, QueryLoc> aFrame)
+    {
+      theStack.push(aFrame);
+      theProfiler->beginFn(aFrame.first, aFrame.second);
+    }
+
+    void popStack()
+    {
+      theStack.pop();
+      theProfiler->endFn();
+    }
 
     //is it a function execution ?
     bool isFunctionExecution;

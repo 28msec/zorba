@@ -20,4 +20,5 @@ SET(DEBUGGER_SRCS
     socket.cpp
     debugger_exception.cpp
     debugger_protocol.cpp
+    profiler.cpp
 )

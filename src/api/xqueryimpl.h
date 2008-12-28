@@ -208,6 +208,9 @@ class XQueryImpl : public XQuery
   void
   setFileName( const String& );
 
+  String
+  getFileName();
+
   void
   registerSAXHandler( SAX2_ContentHandler *  aSAXHandler );
     
