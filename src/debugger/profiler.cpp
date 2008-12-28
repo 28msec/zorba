@@ -128,7 +128,7 @@ namespace zorba {
 
   void Profiler::print(FnCallEntry* aCall)
   {
-    assert(aCall != 0);
+    if(aCall == 0) return;
     list<FnCallEntry*> children = aCall->getChildren();
     list<FnCallEntry*>::iterator it;
     for(it=children.begin(); it!=children.end(); ++it)
