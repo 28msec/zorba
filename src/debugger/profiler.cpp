@@ -114,7 +114,7 @@ namespace zorba {
     stringstream lStream;
     lStream << aFileName;
     theFileName = lStream.str();
-    theProfile.open("xquery_profile");
+    theProfile.open("xquery_profile.out");
     theProfile << "version: 0.9.6\ncmd: " << theFileName << "\npart: 1\n\nevents: Time" << endl << endl;     
   }
 
