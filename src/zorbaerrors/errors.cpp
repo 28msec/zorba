@@ -58,6 +58,9 @@ ZorbaError::ZorbaError(
   theQueryFileName(aQueryFileName),
   theFileName(aFileName),
   theLineNumber(aLineNumber)
+#ifdef ZORBA_DEBUGGER
+  ,theDebug(false)
+#endif
 {
 }
 
@@ -82,6 +85,9 @@ ZorbaError::ZorbaError(
   theQueryFileName(aQueryFileName),
   theFileName(aFileName),
   theLineNumber(aLineNumber)
+#ifdef ZORBA_DEBUGGER
+  ,theDebug(false)
+#endif
 {
   // compute err code from qname
   if (aErrNamespace.getStore()->byteEqual(XQUERY_ERR_NS))
@@ -103,6 +109,9 @@ ZorbaError::ZorbaError(const ZorbaError& other)
   theQueryFileName(other.theQueryFileName),
   theFileName(other.theFileName),
   theLineNumber(other.theLineNumber)
+#ifdef ZORBA_DEBUGGER
+  ,theDebug(other.theDebug)
+#endif
 {
 }
 

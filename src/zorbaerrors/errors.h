@@ -50,6 +50,9 @@ public:
   std::string    theQueryFileName; // the name of the file where the error occured
   std::string    theFileName; // source file
   int            theLineNumber; // line number in the source file
+#ifdef ZORBA_DEBUGGER
+  bool           theDebug;
+#endif
 
 public:
   static std::string

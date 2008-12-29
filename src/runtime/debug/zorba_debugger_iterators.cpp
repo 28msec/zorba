@@ -108,10 +108,15 @@ FnDebugIterator::FnDebugIterator(const QueryLoc& loc,
       }
       STACK_END(state);
     }catch(error::ZorbaError &e) {
+      if(e.theDebug == true)
+      {
+        throw e;
+      }
       cerr << e.toString() << endl;
       theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_ERROR); 
       assert(theDebugger->theRuntimeThread);
       theDebugger->theRuntimeThread->suspend();
+      e.theDebug = true;
       throw e;
     }
     return state;
