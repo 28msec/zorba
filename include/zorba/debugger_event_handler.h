@@ -27,7 +27,7 @@ namespace zorba{
   class QueryLocation;
 
   /* Cause of the suspension of the engine */
-  enum SuspendedBy { A_USER, A_BREAKPOINT, A_STEP }; 
+  enum SuspendedBy { A_USER, A_BREAKPOINT, A_STEP, AN_ERROR }; 
   
   /**
    * DebuggerEventHandler is the base handler for all debugging events.

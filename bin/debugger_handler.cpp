@@ -132,7 +132,7 @@ void DebuggerHandler::addWatchpoint(const vector<string>& args) const
 void DebuggerHandler::resume() const
 {
   assert(theClient != 0);
-  if(!theClient->isQueryIdle() && !theClient->isQuerySuspended())
+  if(!theClient->isQuerySuspended())
   {
     cerr << "The query is not suspended or idle." << endl;
     return;

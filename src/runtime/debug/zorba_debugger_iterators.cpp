@@ -46,66 +46,75 @@ FnDebugIterator::FnDebugIterator(const QueryLoc& loc,
   {
     PlanIteratorState * state;
     updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
-    
-    DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+   
+    try{
+      DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
  
-    if ( theDebugger->hasToSuspend() )
-    {
-      //updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
-      assert(theDebugger->theRuntimeThread);
-      theDebugger->theRuntimeThread->suspend();
-    } else if ( theDebugger->hasToStepOver() ) {
-      //updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
-      theDebugger->stepOver();
-      theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
-      assert(theDebugger->theRuntimeThread);
-      theDebugger->theRuntimeThread->suspend();
-    } else if ( theDebugger->hasToStepOut() ) {
-      //updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
-      theDebugger->stepOut();
-      theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
-      assert(theDebugger->theRuntimeThread);
-      theDebugger->theRuntimeThread->suspend();
-    } else if ( theDebugger->hasToStepInto() ) {
-      //updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
-      theDebugger->stepInto();
-      theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
-      assert(theDebugger->theRuntimeThread);
-      theDebugger->theRuntimeThread->suspend();
-    }
-    
-    
-    while ( consumeNext( result, theChildren[0], planState )) {
-      STACK_PUSH(true, state);
-      assert(theDebugger != 0);
-      if ( for_expr ) {
-        if ( theDebugger->hasToSuspend() )
-        {
-          updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
-          assert(theDebugger->theRuntimeThread);
-          theDebugger->theRuntimeThread->suspend();
-        } else if ( theDebugger->hasToStepOver() ) {
-          updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
-          theDebugger->stepOver();
-          theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
-          assert(theDebugger->theRuntimeThread);
-          theDebugger->theRuntimeThread->suspend();
-        } else if ( theDebugger->hasToStepOut() ) {
-          updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
-          theDebugger->stepOut();
-          theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
-          assert(theDebugger->theRuntimeThread);
-          theDebugger->theRuntimeThread->suspend();
-        } else if ( theDebugger->hasToStepInto() ) {
-          updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
-          theDebugger->stepInto();
-          theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
-          assert(theDebugger->theRuntimeThread);
-          theDebugger->theRuntimeThread->suspend();
+      if ( theDebugger->hasToSuspend() )
+      {
+        //updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+        assert(theDebugger->theRuntimeThread);
+        theDebugger->theRuntimeThread->suspend();
+      } else if ( theDebugger->hasToStepOver() ) {
+        //updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+        theDebugger->stepOver();
+        theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
+        assert(theDebugger->theRuntimeThread);
+        theDebugger->theRuntimeThread->suspend();
+      } else if ( theDebugger->hasToStepOut() ) {
+        //updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+        theDebugger->stepOut();
+        theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
+        assert(theDebugger->theRuntimeThread);
+        theDebugger->theRuntimeThread->suspend();
+      } else if ( theDebugger->hasToStepInto() ) {
+        //updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+        theDebugger->stepInto();
+        theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
+        assert(theDebugger->theRuntimeThread);
+        theDebugger->theRuntimeThread->suspend();
+      }
+      
+      
+      while ( consumeNext( result, theChildren[0], planState )) {
+        STACK_PUSH(true, state);
+        assert(theDebugger != 0);
+        if ( for_expr ) {
+          if ( theDebugger->hasToSuspend() )
+          {
+            updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+            assert(theDebugger->theRuntimeThread);
+            theDebugger->theRuntimeThread->suspend();
+          } else if ( theDebugger->hasToStepOver() ) {
+            updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+            theDebugger->stepOver();
+            theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
+            assert(theDebugger->theRuntimeThread);
+            theDebugger->theRuntimeThread->suspend();
+          } else if ( theDebugger->hasToStepOut() ) {
+            updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+            theDebugger->stepOut();
+            theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
+            assert(theDebugger->theRuntimeThread);
+            theDebugger->theRuntimeThread->suspend();
+          } else if ( theDebugger->hasToStepInto() ) {
+            updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
+            theDebugger->stepInto();
+            theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
+            assert(theDebugger->theRuntimeThread);
+            theDebugger->theRuntimeThread->suspend();
+          }
         }
       }
-     }
-    STACK_END(state);
+      STACK_END(state);
+    }catch(error::ZorbaError &e) {
+      cerr << e.toString() << endl;
+      theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_ERROR); 
+      assert(theDebugger->theRuntimeThread);
+      theDebugger->theRuntimeThread->suspend();
+      throw e;
+    }
+    return state;
   }
 
   void FnDebugIterator::openImpl(PlanState& planState, uint32_t& offset )

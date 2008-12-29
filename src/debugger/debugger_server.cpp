@@ -249,13 +249,6 @@ bool ZorbaDebugger::hasToSuspend()
 {
   //If the query has been suspend by the user
   if( theStatus == QUERY_SUSPENDED ){ return true; }
-  //If we break for each function execution
-  if(isFunctionExecution && catchFunctionExecution)
-  {
-    setStatus( QUERY_SUSPENDED, CAUSE_FUNCTION_EXECUTION );
-    isFunctionExecution = false;
-    return true;
-  }
   map<unsigned int, QueryLoc>::iterator it;
   //TODO: can be faster
   for ( it = theBreakpoints.begin(); it != theBreakpoints.end(); it++ )
