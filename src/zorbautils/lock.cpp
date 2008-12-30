@@ -196,6 +196,7 @@ retry:
     {
       assert(theHolders[0].theMode == WRITE);
       theHolders[0].theCount++;
+      break;
     }
     else
     {
