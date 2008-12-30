@@ -80,7 +80,7 @@ store::Item_t SimpleCollection::loadDocument(
 
   if (root != NULL)
   {
-    SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
+    SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
     if(position == -1)
       theXmlTrees.push_back(root);
     else
@@ -110,7 +110,7 @@ store::Item_t SimpleCollection::loadDocument(std::istream* stream, const long po
 
   if (root != NULL)
   {
-    SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
+    SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
     if(position == -1)
       theXmlTrees.push_back(root);
     else
@@ -134,7 +134,7 @@ void SimpleCollection::addNode(
     ZORBA_ERROR( API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
-  SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
+  SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
   if( nodePositionInCollection((store::Item*)node) == -1)
   {
@@ -162,7 +162,7 @@ void SimpleCollection::addNode(
     ZORBA_ERROR( API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
-  SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
+  SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
   long targetPos = nodePositionInCollection((store::Item*)aTargetNode);
   if(targetPos == -1)
@@ -212,7 +212,7 @@ void SimpleCollection::removeNode(const store::Item* node)
     ZORBA_ERROR( API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
-  SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
+  SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
   int position = nodePositionInCollection((store::Item*) node);
 
@@ -234,7 +234,7 @@ void SimpleCollection::removeNode(const store::Item* node)
 ********************************************************************************/
 void SimpleCollection::removeNode(const long position)
 {
-  SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
+  SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
   if (position == -1) 
   {
