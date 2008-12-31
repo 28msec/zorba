@@ -393,18 +393,25 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (lState);
 }
 
-bool EitherNodesOrAtomicsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
-  store::Item_t item;
 
+/*******************************************************************************
+
+********************************************************************************/
+bool EitherNodesOrAtomicsIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const 
+{
   EitherNodesOrAtomicsIteratorState *lState;
   DEFAULT_STACK_INIT(EitherNodesOrAtomicsIteratorState, lState, planState);
 
-  if (CONSUME (result, 0)) {
-    lState->atomics = item->isAtomic ();
+  if (CONSUME (result, 0)) 
+  {
+    lState->atomics = result->isAtomic ();
     STACK_PUSH (true, lState);
     
-    while (CONSUME (result, 0)) {
-      if (lState->atomics != item->isAtomic ())
+    while (CONSUME (result, 0)) 
+    {
+      if (lState->atomics != result->isAtomic ())
         ZORBA_ERROR_LOC (XPTY0018, loc);
       STACK_PUSH (true, lState);
     }
