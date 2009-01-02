@@ -163,7 +163,7 @@ std::string parseFileURI (bool asPath, const std::string &str) {
   if (asPath)
     return str;
 #ifdef WIN32////for WINDOWS ////
-  // file:///c:/ return c:\
+  // file:///c:/ return c:<backslash>
   // file://localhost return \\localhost
   static const char *file3 = "file:///";
   static const char *file2 = "file://";
