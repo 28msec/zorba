@@ -646,7 +646,10 @@ ZorbaDebugger::compileEvalPlan(const QueryLoc& loc, CompilerCB* ccb, dynamic_con
   stringstream lImport;
   for(it=theImports.begin(); it!=theImports.end(); ++it)
   {
-    lImport << "import module namespace " << it->first << "=\"" << it->second << "\";" << endl;
+    if(it->first!="ns")
+    {
+      lImport << "import module namespace " << it->first << "=\"" << it->second << "\";" << endl;
+    }
   }
   lExpr += lImport.str();
   lExpr += anExpr;
