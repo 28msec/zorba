@@ -139,6 +139,8 @@ FnDebugIterator::FnDebugIterator(const QueryLoc& loc,
     v.endVisit(*this);
   }
 
+  bool FnDebugIterator::isUpdating() const { return theChildren[0]->isUpdating(); }
+
 void FnDebugIterator::updateInfos(const QueryLoc& loc, PlanState& planState, checked_vector<store::Item_t> varnames,
                                   checked_vector<std::string> var_keys, checked_vector<xqtref_t> vartypes,
                                   checked_vector<global_binding> globals) const

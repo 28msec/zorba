@@ -55,7 +55,8 @@ class FnDebugIterator : public NaryBaseIterator<FnDebugIterator, PlanIteratorSta
     void accept(PlanIterVisitor& v) const;
 
     void openImpl(PlanState& planState, uint32_t& offset );
-
+    
+    bool isUpdating() const;
   private:
     void updateInfos(const QueryLoc& loc, PlanState& planState, checked_vector<store::Item_t> varnames,
                      checked_vector<std::string> var_keys, checked_vector<xqtref_t> vartypes,
