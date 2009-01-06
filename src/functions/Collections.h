@@ -39,8 +39,6 @@ class zorba_import_xml : public function
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
-
-    bool isUpdating() const { return true; }
 };
 
 
@@ -52,8 +50,6 @@ class zorba_import_catalog : public function
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
-
-    bool isUpdating() const { return true; }
 };
 
 class zorba_import_folder : public function
@@ -64,8 +60,6 @@ class zorba_import_folder : public function
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
-
-    bool isUpdating() const { return true; }
 };
 
 class zorba_list_collections : public function
@@ -87,7 +81,7 @@ class zorba_create_collection : public function
 
     bool requires_dyn_ctx () const { return true; }
 
-    bool isUpdating() const { return true; }
+    expr_update_t getUpdateType() const { return UPDATE_EXPR; }
 };
 
 class zorba_delete_collection : public function
@@ -99,7 +93,7 @@ class zorba_delete_collection : public function
 
     bool requires_dyn_ctx () const { return true; }
 
-    bool isUpdating() const { return true; }
+    expr_update_t getUpdateType() const { return UPDATE_EXPR; }
 };
 
 class zorba_delete_all_collections : public function
@@ -111,7 +105,7 @@ class zorba_delete_all_collections : public function
 
     bool requires_dyn_ctx () const { return true; }
 
-    bool isUpdating() const { return true; }
+    expr_update_t getUpdateType() const { return UPDATE_EXPR; }
 };
 
 class zorba_insert_nodes_first : public function
@@ -123,7 +117,7 @@ class zorba_insert_nodes_first : public function
 
     bool requires_dyn_ctx () const { return true; }
 
-    bool isUpdating() const { return true; }
+    expr_update_t getUpdateType() const { return UPDATE_EXPR; }
 };
 
 class zorba_insert_nodes_last : public function
@@ -135,7 +129,7 @@ class zorba_insert_nodes_last : public function
 
     bool requires_dyn_ctx () const { return true; }
 
-    bool isUpdating() const { return true; }
+    expr_update_t getUpdateType() const { return UPDATE_EXPR; }
 };
 
 class zorba_insert_nodes_before : public function
@@ -147,7 +141,7 @@ class zorba_insert_nodes_before : public function
 
     bool requires_dyn_ctx () const { return true; }
 
-    bool isUpdating() const { return true; }
+    expr_update_t getUpdateType() const { return UPDATE_EXPR; }
 };
 
 class zorba_insert_nodes_after : public function
@@ -159,7 +153,7 @@ class zorba_insert_nodes_after : public function
 
     bool requires_dyn_ctx () const { return true; }
 
-    bool isUpdating() const { return true; }
+    expr_update_t getUpdateType() const { return UPDATE_EXPR; }
 };
 
 class zorba_insert_nodes_at : public function
@@ -171,7 +165,7 @@ class zorba_insert_nodes_at : public function
 
     bool requires_dyn_ctx () const { return true; }
 
-    bool isUpdating() const { return true; }
+    expr_update_t getUpdateType() const { return UPDATE_EXPR; }
 };
 
 class zorba_remove_nodes : public function
@@ -183,7 +177,7 @@ class zorba_remove_nodes : public function
 
     bool requires_dyn_ctx () const { return true; }
 
-    bool isUpdating() const { return true; }
+    expr_update_t getUpdateType() const { return UPDATE_EXPR; }
 };
 
 class zorba_remove_node_at : public function
@@ -195,7 +189,7 @@ class zorba_remove_node_at : public function
 
     bool requires_dyn_ctx () const { return true; }
 
-    bool isUpdating() const { return true; }
+    expr_update_t getUpdateType() const { return UPDATE_EXPR; }
 };
 
 class zorba_nodes_count : public function
