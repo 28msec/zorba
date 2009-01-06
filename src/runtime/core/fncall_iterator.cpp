@@ -171,7 +171,15 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
           name << '$' << ref->getVarName() << '=';
           while(it->next(item))
           {
-            name << item->getStringValue() << " (" << item->getType()->getStringValue() << ')';
+            String lValue(item->getStringValue());
+            if(lValue.length() > 10)
+            {
+              name.write(lValue.c_str(), 10);
+              name << "...";
+            } else {
+              name << item->getStringValue();
+            }
+            name << " (" << item->getType()->getStringValue() << ')';
           }
           it->reset();
         }
