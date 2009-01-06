@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include <stack>
+#include <memory>
 
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/Assert.h"
@@ -1546,7 +1547,7 @@ bool ElementNode::addBindingForQName(
   if (ns->empty() && isAttr)
     return false;
 
-  if (prefix->str() != "xml")
+  if (!prefix->empty() && prefix->str() != "xml")
   {
     xqpStringStore* ns2 = findBinding(prefix);
 
