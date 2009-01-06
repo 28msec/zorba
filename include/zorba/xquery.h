@@ -308,6 +308,20 @@ namespace zorba {
       virtual bool
       isDebugMode() const = 0;
 
+      /** \brief Set the filename of the profile
+       *
+       * This file will contain the output of Zorba profiler.
+       */
+      virtual void
+      setProfileName( std::string aProfileName ) = 0;
+
+      /** \brief Get the filename of the profile
+       *
+       * This file will contain the output of Zorba profiler.
+       */
+      virtual std::string
+      getProfileName() const = 0;
+
       /** \brief Run the query with the debugger server.
        *
        * This method run the query with the debugger server.
@@ -320,7 +334,7 @@ namespace zorba {
        */
       virtual void
       debug( unsigned short aCommandPort = 8000, unsigned short anEventPort = 9000 ) = 0;
-
+      
       /** \brief Run the query with the debugger server.
        *
        * This method run the query with the debugger server.

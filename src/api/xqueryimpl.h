@@ -260,6 +260,7 @@ class XQueryImpl : public XQuery
 #ifdef ZORBA_DEBUGGER
  private:
   ZorbaDebugger *theDebugger;
+  std::string theProfileName;
  
  protected:
   void
@@ -272,6 +273,12 @@ class XQueryImpl : public XQuery
   bool
   isDebugMode() const;
 
+  void
+  setProfileName(std::string aProfileName);
+
+  std::string
+  getProfileName() const;
+  
   void
   debug( unsigned short aCommandPort, unsigned short anEventPort );
 

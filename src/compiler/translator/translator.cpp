@@ -2918,7 +2918,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/) {
 #ifdef ZORBA_DEBUGGER
   if(compilerCB->m_debugger != 0)
   {
-    compilerCB->m_debugger->theImports.insert(make_pair<string, string>(pfx, target_ns)); 
+    compilerCB->m_debugger->theImports.insert(make_pair<string, string>(target_ns, pfx)); 
   }
 #endif
 

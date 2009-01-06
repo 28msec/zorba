@@ -109,12 +109,12 @@ namespace zorba {
     return  (double)clock()/CLOCKS_PER_SEC*1000;
   }
 
-  Profiler::Profiler(String aFileName): theRoot(0), theCurrent(0)
+  Profiler::Profiler(String aFileName, string aProfileName): theRoot(0), theCurrent(0)
   {
     stringstream lStream;
     lStream << aFileName;
     theFileName = lStream.str();
-    theProfile.open("xquery_profile.out");
+    theProfile.open(aProfileName.c_str());
     theProfile << "version: 0.9.6\ncmd: " << theFileName << "\npart: 1\n\nevents: Time" << endl << endl;     
   }
 

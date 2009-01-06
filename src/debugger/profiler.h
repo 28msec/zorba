@@ -41,7 +41,7 @@ class Profiler
     void print(FnCallEntry* aCall);
 
   public:
-    Profiler(String aFileName);
+    Profiler(String aFileName, std::string aProfileName);
     ~Profiler();
   
     void beginFn(std::string aFnName, QueryLoc aQueryLoc);

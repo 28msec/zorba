@@ -78,7 +78,7 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
                            unsigned short aRequestPortno,
                            unsigned short aEventPortno)
 {
-  theProfiler = new Profiler(aQuery->getFileName());
+  theProfiler = new Profiler(aQuery->getFileName(), aQuery->getProfileName());
   auto_ptr<TCPSocket> lSock;
   //Set the query and serialization options
   theQuery = aQuery;
@@ -648,12 +648,11 @@ ZorbaDebugger::compileEvalPlan(const QueryLoc& loc, CompilerCB* ccb, dynamic_con
   {
     if(it->first!="ns")
     {
-      lImport << "import module namespace " << it->first << "=\"" << it->second << "\";" << endl;
+      lImport << "import module namespace " << it->second << "=\"" << it->first << "\";" << endl;
     }
   }
   lExpr += lImport.str();
   lExpr += anExpr;
-  cerr << lExpr << endl;
   eval_plan->reset(
     new PlanWrapper (
       EvalIterator::compile ( ccb, lExpr, theVarnames, theVartypes ),

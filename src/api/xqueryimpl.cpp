@@ -83,6 +83,7 @@ XQueryImpl::XQueryImpl()
   theIsClosed(false)
 #ifdef ZORBA_DEBUGGER
   , theDebugger(0)
+  , theProfileName("xquery_profile.out")
 #endif
 { 
   theCompilerCB = new CompilerCB();
@@ -762,6 +763,17 @@ bool XQueryImpl::isDebugMode() const
     return false;
   }
   return true;
+}
+
+void XQueryImpl::setProfileName(std::string aProfileName)
+{
+  checkIsDebugMode();
+  theProfileName = aProfileName;
+}
+
+std::string XQueryImpl::getProfileName() const
+{
+  return theProfileName;
 }
 
 void XQueryImpl::checkIsDebugMode() const
