@@ -40,10 +40,10 @@ int decode_entity (const char *in, string *out)
     unsigned long n = strtoul (in, (char **) &in, base);
 
     if (*in++ != ';')
-      ZORBA_ERROR_LOC (XPST0003, loc);
+      return -1;
 
     if (! is_code_point_valid (n))
-      ZORBA_ERROR_LOC (XQST0090, loc);
+      return -1;
 
 #ifndef ZORBA_NO_UNICODE
     UTF8Encode (n, back_inserter (*out));
@@ -61,7 +61,7 @@ int decode_entity (const char *in, string *out)
   M ("apos;", 5, "'")
 #undef M
 
-  ZORBA_ERROR_LOC_DESC(XPST0003, loc, "Invalid entity reference");
+  // ZORBA_ERROR_LOC_DESC(XPST0003, loc, "Invalid entity reference");
   return -1;
 }
 
