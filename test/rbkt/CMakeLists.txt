@@ -187,6 +187,13 @@ IF (EXISTS test/rbkt/w3c_testsuite)
   #2210786 (https://sourceforge.net/tracker/index.php?func=detail&aid=2210786&group_id=226244&atid=1067586)
   SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/SeqFunc/SeqDeepEqualFunc/fn-deep-equal-mix-args-019 PROPERTIES WILL_FAIL TRUE)
 
+  #2205034 (https://sourceforge.net/tracker2/?func=detail&aid=2205034&group_id=226244&atid=1067586)
+  SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/SchemaImport/SchemaImportProlog/schema-import-13 PROPERTIES WILL_FAIL TRUE)
+
+  #2210851 (https://sourceforge.net/tracker2/?func=detail&aid=2210851&group_id=226244&atid=1067586)
+  SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Expressions/exprSeqTypes/SeqExprCast/CastFOCA0001-1 PROPERTIES WILL_FAIL TRUE)
+  SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Expressions/exprSeqTypes/SeqExprCast/CastFOCA0003-1 PROPERTIES WILL_FAIL TRUE)
+
   #these tests fail due ICU regullar expression use
   #2210801 (https://sourceforge.net/tracker/index.php?func=detail&aid=2210801&group_id=226244&atid=1067586)
   SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch08 PROPERTIES WILL_FAIL TRUE)
