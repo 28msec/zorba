@@ -242,7 +242,8 @@ public: // accessors
   expr_iterator_data *make_iter ();
   void add(forletref_t v) { clause_v.push_back(v); }
   void add(int index, forletref_t v) { clause_v.insert(clause_v.begin() + index, v); }
-  uint32_t forlet_count() const { return clause_v.size(); }
+  unsigned forlet_count() const { return clause_v.size(); }
+  unsigned group_count() const { return group_v.size(); }
   forletref_t const& operator[](int i) const { return clause_v[i]; }
   forletref_t & operator[](int i) { return clause_v[i]; }
   clause_list_t::iterator remove_forlet_clause(clause_list_t::iterator i);

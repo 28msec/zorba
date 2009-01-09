@@ -245,7 +245,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   }
 
   // FLWOR with no remaining clauses
-  if (flwor->forlet_count() == 0) {
+  if (flwor->forlet_count() + flwor->group_count () == 0) {
     expr_t result = flwor->get_retval();
     if (WHERE != NULL)
       result = fix_if_annotations (new if_expr(LOC (WHERE), WHERE, result, new fo_expr(LOC (WHERE), LOOKUP_OPN("concatenate"))));
