@@ -47,6 +47,8 @@ typedef zorba::xquery_parser::token_type token_type;
 
 #define POP_STATE() \
     do { \
+        if (getDriver()->state_stack.empty ())    \
+          return token::UNRECOGNIZED; \
         yy_pop_state(); \
         getDriver()->pop_state_stack(); \
     } while(0)
@@ -1162,21 +1164,21 @@ xquery_scanner::xquery_scanner(
   xquery_driver* aDriver,
   std::istream* i,
   std::ostream* o)
-: ZorbaFlexLexer(i, o), theDriver(aDriver)
+: ZorbaFlexLexer(i, o), theDriver(aDriver), cond_stk_depth (0)
 {}
 
 xquery_scanner::~xquery_scanner() {}
-
 
 void xquery_scanner::set_yy_flex_debug(bool aBool)
 {
   yy_flex_debug = aBool;
 }
 
-void xquery_scanner::interpretAsLessThan()
+int xquery_scanner::interpretAsLessThan()
 {
   BEGIN INITIAL;
   POP_STATE();
+  return 0;
 }
 
 } /* namespace zorba */

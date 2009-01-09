@@ -50,6 +50,7 @@ class xquery_scanner : public ZorbaFlexLexer
 {
 private:
   xquery_driver* theDriver;
+  int cond_stk_depth;
 
 public:
   /** Create a new scanner object. The streams arg_yyin and arg_yyout default
@@ -72,7 +73,7 @@ public:
   xquery_driver* getDriver() const { return theDriver; } 
   void set_yy_flex_debug(bool aBool);
 
-  void interpretAsLessThan();
+  int interpretAsLessThan();
 };
 
 } 
