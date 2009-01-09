@@ -192,12 +192,12 @@ public:
    * @param aCollation optional collation parameter
    * @return 
    */
-  static bool valueComparison(
-        RuntimeCB* aRuntimeCB,
-        const store::Item_t& aItem0,
-        const store::Item_t& aItem1, 
-        CompareConsts::CompareType aCompType,
-        XQPCollator* aCollation = 0);
+  static bool valueComparison(const QueryLoc &,
+                              RuntimeCB* aRuntimeCB,
+                              const store::Item_t& aItem0,
+                              const store::Item_t& aItem1, 
+                              CompareConsts::CompareType aCompType,
+                              XQPCollator* aCollation = 0);
       
   /**
    * General comparison of the passed two items with the operator 
@@ -209,13 +209,13 @@ public:
    * @param aCollation optional collation parameter
    * @return 
    */
-  static bool generalComparison(
-        RuntimeCB*     aRuntimeCB,
-        const store::Item_t& aItem0,
-        const store::Item_t& aItem_1,
-        CompareConsts::CompareType aCompType,
-        XQPCollator*   aCollation = 0);
-
+  static bool generalComparison(const QueryLoc &,
+                                RuntimeCB*     aRuntimeCB,
+                                const store::Item_t& aItem0,
+                                const store::Item_t& aItem_1,
+                                CompareConsts::CompareType aCompType,
+                                XQPCollator*   aCollation = 0);
+  
   /**
    * Value Equal on the passed items
    * @param aItem0 
@@ -301,10 +301,10 @@ private:
         store::Item_t&       castItem0,
         store::Item_t&       castItem1);
 
-  static bool boolResult(
-        RuntimeCB* aRuntimeCB, 
-        int8_t aCompValue,
-        CompareConsts::CompareType aCompType);
+  static bool boolResult(const QueryLoc &,
+                         RuntimeCB* aRuntimeCB, 
+                         int8_t aCompValue,
+                         CompareConsts::CompareType aCompType);
 }; /* class CompareIterator */
 
 
@@ -317,3 +317,9 @@ NARY_ITER(OpNodeAfterIterator);
 }
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

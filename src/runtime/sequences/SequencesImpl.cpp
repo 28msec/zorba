@@ -1059,7 +1059,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
                          create_value_type (lRunningItem);
         }
 
-        if (CompareIterator::valueComparison(planState.theRuntimeCB, lRunningItem, result, theCompareType, lCollator) ) {
+        if (CompareIterator::valueComparison(loc, planState.theRuntimeCB, lRunningItem, result, theCompareType, lCollator) ) {
           lMaxType = lRunningType;
           result = lRunningItem;
         }
@@ -1073,7 +1073,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
     if(elems_in_seq == 1)
     {
       //check type compatibility
-      CompareIterator::valueComparison(planState.theRuntimeCB, result, result, theCompareType, lCollator);
+      CompareIterator::valueComparison(loc, planState.theRuntimeCB, result, result, theCompareType, lCollator);
     }
 
     STACK_PUSH(result != NULL, state);

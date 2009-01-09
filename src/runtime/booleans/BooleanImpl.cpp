@@ -192,7 +192,8 @@ CompareIterator::nextImpl ( store::Item_t& result, PlanState& planState ) const
             seq1.push_back(tItem1);
           } else {
             c1Done = true;
-            found = CompareIterator::generalComparison(planState.theRuntimeCB,
+            found = CompareIterator::generalComparison(loc,
+                                                       planState.theRuntimeCB,
                                                        lItem0, lItem1,
                                                        theCompType);
             done = true;
@@ -233,7 +234,7 @@ CompareIterator::nextImpl ( store::Item_t& result, PlanState& planState ) const
         int i1 = 1;
         while(!found && tSeq1->containsItem(i1)) 
         {
-          if (CompareIterator::generalComparison(planState.theRuntimeCB, tSeq0->getItem(i0), tSeq1->getItem(i1), theCompType)) 
+          if (CompareIterator::generalComparison(loc, planState.theRuntimeCB, tSeq0->getItem(i0), tSeq1->getItem(i1), theCompType)) 
           {
             found = true;
           }
@@ -250,7 +251,7 @@ CompareIterator::nextImpl ( store::Item_t& result, PlanState& planState ) const
     if ( consumeNext ( lItem0, theChild0.getp(), planState )
          && consumeNext ( lItem1, theChild1.getp(), planState ) )
     {
-      STACK_PUSH ( GENV_ITEMFACTORY->createBoolean ( result, CompareIterator::valueComparison ( planState.theRuntimeCB, lItem0, lItem1, theCompType ) ), state );
+      STACK_PUSH ( GENV_ITEMFACTORY->createBoolean ( result, CompareIterator::valueComparison ( loc, planState.theRuntimeCB, lItem0, lItem1, theCompType ) ), state );
       if ( consumeNext ( lItem0, theChild0.getp(), planState )
            || consumeNext ( lItem1, theChild1.getp(), planState ) )
       {
@@ -401,10 +402,10 @@ void CompareIterator::generalCasting(
 }
   
 
-bool CompareIterator::boolResult (
-    RuntimeCB* aRuntimeCB,
-    int8_t aCompValue,
-    CompareConsts::CompareType aCompType )
+bool CompareIterator::boolResult (const QueryLoc &loc,
+                                  RuntimeCB* aRuntimeCB,
+                                  int8_t aCompValue,
+                                  CompareConsts::CompareType aCompType )
 {
   if ( aCompValue > -2 )
     switch ( aCompType )
@@ -437,18 +438,18 @@ bool CompareIterator::boolResult (
         break;
     }
 
-    ZORBA_ERROR_DESC(  XPTY0004, "Dynamic type of a value does not match a required type.");
+  ZORBA_ERROR_LOC_DESC(  XPTY0004, loc, "Dynamic type of a value does not match a required type.");
   return false;
 }
 
 
 bool
-CompareIterator::generalComparison(
-    RuntimeCB* aRuntimeCB,
-    const store::Item_t& aItem0,
-    const store::Item_t& aItem1, 
-    CompareConsts::CompareType aCompType,
-    XQPCollator* aCollation)
+CompareIterator::generalComparison(const QueryLoc &loc,
+                                   RuntimeCB* aRuntimeCB,
+                                   const store::Item_t& aItem0,
+                                   const store::Item_t& aItem1, 
+                                   CompareConsts::CompareType aCompType,
+                                   XQPCollator* aCollation)
 {
   int8_t compValue = -2;
   switch(aCompType)
@@ -473,16 +474,16 @@ CompareIterator::generalComparison(
     break;
   }
     
-  return boolResult(aRuntimeCB, compValue, aCompType);
+  return boolResult(loc, aRuntimeCB, compValue, aCompType);
 }
   
 
-bool CompareIterator::valueComparison(
-    RuntimeCB* aRuntimeCB, 
-    const store::Item_t& aItem0,
-    const store::Item_t& aItem1, 
-    CompareConsts::CompareType aCompType,
-    XQPCollator* aCollation)
+bool CompareIterator::valueComparison(const QueryLoc &loc,
+                                      RuntimeCB* aRuntimeCB, 
+                                      const store::Item_t& aItem0,
+                                      const store::Item_t& aItem1, 
+                                      CompareConsts::CompareType aCompType,
+                                      XQPCollator* aCollation)
 {
   int8_t compValue = -2;
   switch(aCompType)
@@ -506,7 +507,7 @@ bool CompareIterator::valueComparison(
     break;
   }
   
-  return boolResult(aRuntimeCB, compValue, aCompType);
+  return boolResult(loc, aRuntimeCB, compValue, aCompType);
 }
   
 
