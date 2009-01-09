@@ -1300,7 +1300,12 @@ void end_visit (const CommonContent& v, void* /*visit_state*/) {
 
     while (curRef < end)
     {
-      curRef += decode_entity(curRef, &content);
+      int d = decode_entity(curRef, &content);
+      if (d<0)
+        ZORBA_ERROR_LOC(XPST0003, loc);
+      else
+        curRef += d;
+
       if (curRef >= end)
         break;
 
