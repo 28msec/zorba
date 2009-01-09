@@ -4114,15 +4114,27 @@ void *begin_visit (const PITest& v) {
 void end_visit (const PITest& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
+  string target = v.get_target();
+  store::Item_t qname = NULL;
+  if (target != "")
+    GENV_ITEMFACTORY->createQName(qname, NULL, NULL, target.c_str ());
   if (axisExpr != NULL) {
-    string target = v.get_target();
     rchandle<match_expr> match = new match_expr(loc);
     match->setTestKind(match_pi_test);
     if (target != "")
-      match->setQName(sctx_p->lookup_elem_qname(target, loc));
+      match->setQName(qname);
     axisExpr->setTest(match);
   } else {
-    tstack.push(GENV_TYPESYSTEM.PI_TYPE_ONE);
+    if (target == "")
+      tstack.push(GENV_TYPESYSTEM.PI_TYPE_ONE);
+    else {
+      rchandle<NodeTest> nodetest =
+        new NodeTest (store::StoreConsts::piNode, new NodeNameTest (qname));
+      xqtref_t t =
+        GENV_TYPESYSTEM.create_node_type (nodetest, NULL, TypeConstants::QUANT_ONE,
+                                          false);
+      tstack.push (t);
+    }
   }
 }
 
