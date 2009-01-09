@@ -165,7 +165,7 @@ isErrorExpected(const TestErrorHandler& errHandler, const Specification* aSpec)
   for(std::vector<std::string>::const_iterator i = errors.begin(); i != errors.end(); ++i) {
     for(std::vector<std::string>::const_iterator j = aSpec->errorsBegin(); j != aSpec->errorsEnd(); ++j) {
       if ((i->compare(*j) == 0)
-           || (j->compare(&star)))
+           || (j->compare(&star)) == 0)
         return true;
     }
   }
