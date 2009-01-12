@@ -78,26 +78,32 @@ populateStaticContext(
     zorba::StaticContext_t& aStaticContext,
     ZorbaCMDProperties* aProperties)
 {
-  if (aProperties->boundarySpace().size() != 0 )
-    aStaticContext->setBoundarySpacePolicy(
-                       (aProperties->boundarySpace().compare("preserve") == 0 
-                        ? preserve_space 
-                        : strip_space));
+  try{
+    if (aProperties->boundarySpace().size() != 0 )
+      aStaticContext->setBoundarySpacePolicy(
+                         (aProperties->boundarySpace().compare("preserve") == 0 
+                          ? preserve_space 
+                          : strip_space));
 
-  if (aProperties->constructionMode().size() != 0)
-    aStaticContext->setConstructionMode( aProperties->boundarySpace().compare("preserve") == 0 
-                                         ? preserve_cons 
-                                         : strip_cons );
+    if (aProperties->constructionMode().size() != 0)
+      aStaticContext->setConstructionMode( aProperties->boundarySpace().compare("preserve") == 0 
+                                           ? preserve_cons 
+                                           : strip_cons );
 
-  if (aProperties->orderingMode().size() != 0 )
-  {
-    aStaticContext->setOrderingMode( aProperties->boundarySpace().compare("ordered") == 0 
-                                     ? ordered 
-                                     : unordered );
+    if (aProperties->orderingMode().size() != 0 )
+    {
+      aStaticContext->setOrderingMode( aProperties->boundarySpace().compare("ordered") == 0 
+                                       ? ordered 
+                                       : unordered );
+    }
+
+    if (aProperties->baseUri().size() != 0 )
+      aStaticContext->setBaseURI( aProperties->baseUri() );
   }
-
-  if (aProperties->baseUri().size() != 0 )
-    aStaticContext->setBaseURI( aProperties->baseUri() );
+  catch (zorba::ZorbaException& ze) {
+    std::cerr << ze << std::endl;
+    return false;
+  }
 
   if (aProperties->defaultCollation().size() != 0 )
   {
