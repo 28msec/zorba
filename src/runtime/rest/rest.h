@@ -43,6 +43,8 @@ public:
   virtual int underflow();
   int multi_perform();
 
+  const char* getErrorBuffer() const;
+
 protected:
   char* CurlErrorBuffer;
   CURLM* MultiHandle;

@@ -131,48 +131,55 @@ DEF_ERR_CODE(XTDE1350, XTDE1350, "It is a non-recoverable dynamic error if a com
 // ZORBA Errors
 //
 
-DEF_ERR_CODE (API0001_XQUERY_STRING_IS_EMPTY, API0001, "Empty query")
-DEF_ERR_CODE (API0002_COMPILE_FAILED, API0002, "Query compilation failed")
-DEF_ERR_CODE (API0003_XQUERY_NOT_COMPILED, API0003, "Query not compiled")
-DEF_ERR_CODE (API0004_XQUERY_ALREADY_COMPILED, API0004, "Query already compiled")
+DEF_ERR_CODE(API0001_XQUERY_STRING_IS_EMPTY, API0001, "Empty query")
+DEF_ERR_CODE(API0002_COMPILE_FAILED, API0002, "Query compilation failed")
+DEF_ERR_CODE(API0003_XQUERY_NOT_COMPILED, API0003, "Query not compiled")
+DEF_ERR_CODE(API0004_XQUERY_ALREADY_COMPILED, API0004, "Query already compiled")
 
-DEF_ERR_CODE (API0005_COLLECTION_ALREADY_EXISTS, API0005, "A collection with URI {/s} exists already.")
+DEF_ERR_CODE(API0005_COLLECTION_ALREADY_EXISTS, API0005, "A collection with URI {/s} exists already.")
 
-DEF_ERR_CODE (API0006_COLLECTION_NOT_FOUND, API0006, "A collection with URI {/s} does not exist.")
+DEF_ERR_CODE(API0006_COLLECTION_NOT_FOUND, API0006, "A collection with URI {/s} does not exist.")
 
-DEF_ERR_CODE (API0007_COLLECTION_ITEM_MUST_BE_A_NODE, API0007, "Cannot insert to a collection an item that is not a node.")
+DEF_ERR_CODE(API0007_COLLECTION_ITEM_MUST_BE_A_NODE, API0007, "Cannot insert to a collection an item that is not a node.")
 
-DEF_ERR_CODE (API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION, API0029, "The node does not belong to the given collection.")
 
-DEF_ERR_CODE (API0030_NO_NODE_AT_GIVEN_POSITION, API0030, "There is no node at the given position {/s}, the collection has fewer nodes.");
+DEF_ERR_CODE(API0020_DOCUMENT_ALREADY_EXISTS, API0020, "Another document with uri {/s} exists in the store already.")
 
-DEF_ERR_CODE (API0031_NODE_ALREADY_IN_COLLECTION, API0031, "Node is already part of the collection {/s}.");
-
-DEF_ERR_CODE (API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, API0033, "File or folder {/s} does not exist.");
-
-DEF_ERR_CODE (API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED, API0034, "File or folder {/s} could not be opened.");
-
-DEF_ERR_CODE (API0035_COLLECTION_CANNOT_BE_SERIALIZED, API0035, "Collection {/s} can not be serialized.");
-
-DEF_ERR_CODE (API0036_TIDY_ERROR, API0036, "Error in Tidy library: {/s}.");
-
-DEF_ERR_CODE (API0037_TIDY_ERROR_SET_OPTION, API0037, "Could not set option {/s} with value {/s} in Tidy.");
-
-DEF_ERR_CODE (API0020_DOCUMENT_ALREADY_EXISTS, API0020, "Another document with uri {/s} exists in the store already.")
-
-DEF_ERR_CODE (API0021_ITEM_TO_LOAD_IS_NOT_NODE, API0021, "The uri {/s} does not identify an XML node")
+DEF_ERR_CODE(API0021_ITEM_TO_LOAD_IS_NOT_NODE, API0021, "The uri {/s} does not identify an XML node")
 
 DEF_ERR_CODE(API0023_CANNOT_SERIALIZE_UPDATE_QUERY, API0023, "Cannot serialize an updating query")
 
 DEF_ERR_CODE(API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY, API0024, "Cannot iterate over an updating query")
 
-DEF_ERR_CODE (API0025_END_OF_SEQUENCE, API0025_END_OF_SEQUENCE, "Reached the end of the sequence")
+DEF_ERR_CODE(API0025_END_OF_SEQUENCE, API0025_END_OF_SEQUENCE, "Reached the end of the sequence")
 
 DEF_ERR_CODE(API0026_CANNOT_CLOSE_QUERY_WITH_ITERATORS, API0026, "Query cannot be closed because there are result iterators on it")
 
 DEF_ERR_CODE(API0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS, API0027, "The query dynamic context cannot be updated because there are result iterators on the query")
 
 DEF_ERR_CODE(API0028_INVALID_NODE_URI, API0028, "The uri {/s} is not a valid node reference")
+
+DEF_ERR_CODE(API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION, API0029, "The node does not belong to the given collection.")
+
+DEF_ERR_CODE(API0030_NO_NODE_AT_GIVEN_POSITION, API0030, "There is no node at the given position {/s}, the collection has fewer nodes.");
+
+DEF_ERR_CODE(API0031_NODE_ALREADY_IN_COLLECTION, API0031, "Node is already part of the collection {/s}.");
+
+DEF_ERR_CODE(API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, API0033, "File or folder {/s} does not exist.");
+
+DEF_ERR_CODE(API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED, API0034, "File or folder {/s} could not be opened.");
+
+DEF_ERR_CODE(API0035_COLLECTION_CANNOT_BE_SERIALIZED, API0035, "Collection {/s} can not be serialized.");
+
+DEF_ERR_CODE(API0036_TIDY_ERROR, API0036, "Error in Tidy library: {/s}.");
+
+DEF_ERR_CODE(API0037_TIDY_ERROR_SET_OPTION, API0037, "Could not set option {/s} with value {/s} in Tidy.");
+
+DEF_ERR_CODE(API0050_REST_ERROR_HEADER, API0050, "Invalid value passed for header parameter.");
+DEF_ERR_CODE(API0051_REST_ERROR_PAYLOAD, API0051, "Invalid value passed for payload parameter.");
+DEF_ERR_CODE(API0051_REST_ERROR_XML_REPLY, API0052, "The server replied with an invalid XML.");
+
+
 
 //
 // ZORBA-specific errors
@@ -424,7 +431,7 @@ DEF_ERR_CODE(XUTY0008, XUTY0008, "In a replace expression, it is a type error if
 
 DEF_ERR_CODE(XUDY0009, XUDY0009, "In a replace expression where value of is not specified, it is a dynamic error if the node returned by the target expression does not have a parent.")
 
-  DEF_ERR_CODE(XUTY0010, XUTY0010, "In a replace expression where value of is not specified and the target is an element, text, comment, or processing instruction node, it is a type error if the replacement sequence does not consist of zero or more element, text, comment, or processing instruction nodes.")
+DEF_ERR_CODE(XUTY0010, XUTY0010, "In a replace expression where value of is not specified and the target is an element, text, comment, or processing instruction node, it is a type error if the replacement sequence does not consist of zero or more element, text, comment, or processing instruction nodes.")
 
 DEF_ERR_CODE(XUTY0011, XUTY0011, "In a replace expression where value of is not specified and the target is an attribute node, it is a type error if the replacement sequence does not consist of zero or more attribute nodes.")
 

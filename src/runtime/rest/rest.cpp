@@ -90,10 +90,6 @@ int CurlStreamBuffer::multi_perform()
         done = true;
       }
   }
-
-  // TODO: return message, too ?
-  //if (error)
-  //  std::cout << "error: [" << CurlErrorBuffer << "]" << std::endl;
   
   return error;
 }
@@ -139,8 +135,12 @@ int CurlStreamBuffer::overflow(int c)
 
 int CurlStreamBuffer::underflow()
 {
-  // TODO: place a call to multi_perform() ?
   return EOF;
+}
+
+const char* CurlStreamBuffer::getErrorBuffer() const
+{
+  return CurlErrorBuffer;
 }
 
 
@@ -245,25 +245,33 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
 {
   int reply_code;
   xqpString content_type;
-  store::Item_t payload, headers_node, text_code, status_code;
+  store::Item_t payload, error_node, headers_node, text_code, status_code;
   store::Item_t doc = NULL;
 
   createNodeHelper(NULL, planState, "result", &result); 
   createNodeHelper(result, planState, "status-code", &status_code);
+  if (headers.size() == 0)
+  { 
+    // No headers -- create error message node
+    xqpStringStore_t temp = new xqpStringStore(theStreamBuffer->getErrorBuffer());
+    createNodeHelper(result, planState, "error-message", &error_node);
+	GENV_ITEMFACTORY->createTextNode(text_code, error_node, -1, temp);
+  }
   createNodeHelper(result, planState, "headers", &headers_node);
   if (!ignore_payload)
-    createNodeHelper(result, planState, "payload", &payload);
-  
-    
+    createNodeHelper(result, planState, "payload", &payload);  
+
   if (headers.size() == 0)
   {
-    reply_code = code; // TODO change cURL's error code to something else? // TODO: throw exception?
+	// No headers, use cURL's error code.
+    reply_code = code; 
   }
   else
   {
     if (parse_int_const_position<int>(headers.operator[](0), 9, reply_code, 1))
     {
-      reply_code = -1; // TODO change this code
+	  // No status code in the reply. Put a -1 in there.
+      reply_code = -1; 
     }
 
     for (unsigned int i = 1; i < headers.size(); i++)
@@ -341,7 +349,8 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
         }
         else
         {
-          // TODO: error
+		  // xml could not parsed
+		  ZORBA_ERROR(API0051_REST_ERROR_XML_REPLY);
         }
       }
       break;
@@ -389,7 +398,7 @@ static size_t getHeaderData(void *ptr, size_t size, size_t nmemb, void *aState)
 
 static void setupConnection(ZorbaRestGetIteratorState* state, int get_method)
 {
-  state->MultiHandle = curl_multi_init(); // TODO check error
+  state->MultiHandle = curl_multi_init(); 
   state->EasyHandle = curl_easy_init();
 
   curl_easy_setopt(state->EasyHandle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
@@ -405,7 +414,6 @@ static void setupConnection(ZorbaRestGetIteratorState* state, int get_method)
   else if (get_method == 3)
     curl_easy_setopt(state->EasyHandle, CURLOPT_CUSTOMREQUEST, "DELETE");
   else if (get_method == 4)
-    // curl_easy_setopt(state->EasyHandle, CURLOPT_NOBODY, 1);
     curl_easy_setopt(state->EasyHandle, CURLOPT_CUSTOMREQUEST, "HEAD");
   
   curl_multi_add_handle(state->MultiHandle, state->EasyHandle);
@@ -428,7 +436,11 @@ void processHeader(store::Item_t& headers, curl_slist** headers_list)
   store::Item_t child, name;
 
   if (headers->getNodeKind() != store::StoreConsts::elementNode)
-    return; // TODO: error top node should be element node
+  {
+	// top node should be element node
+    ZORBA_ERROR(API0050_REST_ERROR_HEADER);
+    return;
+  }
 
   if (xqpString("headers") == headers->getNodeName()->getLocalName())
   {
@@ -448,7 +460,11 @@ void processHeader(store::Item_t& headers, curl_slist** headers_list)
   }
 
   if (name.getp() == NULL)
-    return; // TODO: signal error - header without an associated name
+  {
+    // header without an associated name
+    ZORBA_ERROR(API0050_REST_ERROR_HEADER);
+	return;
+  }
 
   it = headers->getChildren();
   it->open();
@@ -466,7 +482,7 @@ void processHeader(store::Item_t& headers, curl_slist** headers_list)
   }
   else 
   {
-    // TODO: error
+	ZORBA_ERROR(API0050_REST_ERROR_HEADER);
   }
 }
 
@@ -497,11 +513,7 @@ static void getSerializedChildren(store::Item_t node, xqpString& children_string
       children_string += ss.str().c_str();        
       has_element_child = true;
     }
-    else
-    {
-      // TODO: process comments, pi nodes? or generate error?
-      return;
-    }
+	// ignore other nodes
   }
 }
 
@@ -511,7 +523,11 @@ static void processPayload(Item_t& payload_data, struct curl_httppost** first, s
   store::Item_t child, name, filename, content_type;
 
   if (payload_data->getNodeKind() != store::StoreConsts::elementNode)
-    return; // TODO: error top node should be element node
+  {
+	// top node should be element node
+    ZORBA_ERROR(API0051_REST_ERROR_PAYLOAD);
+    return; 
+  }
 
   if (xqpString("payload") == payload_data->getNodeName()->getLocalName())
   {
@@ -537,7 +553,11 @@ static void processPayload(Item_t& payload_data, struct curl_httppost** first, s
   }
 
   if (name.getp() == NULL)
-    return; // TODO: signal error - payload part without an associated name
+  {
+    // payload part without an associated name
+    ZORBA_ERROR(API0051_REST_ERROR_PAYLOAD);
+    return; 
+  }
 
   if (filename.getp() != NULL)
   {
@@ -612,7 +632,10 @@ static bool processSinglePayload(Item_t& payload_data, CURL* EasyHandle, curl_sl
     ifstream ifs(filename->getStringValue()->c_str());
 
     if (!ifs)
-      return false; // TODO: generate error
+	{
+	  ZORBA_ERROR(API0051_REST_ERROR_PAYLOAD);
+      return false; 
+	}
 
     filebuf* pbuf = ifs.rdbuf();
     long size = pbuf->pubseekoff(0,ios::end,ios::in);
@@ -667,7 +690,11 @@ static xqpString processGetPayload(Item_t& payload_data, xqpString& Uri)
   store::Item_t child, name;
 
   if (payload_data->getNodeKind() != store::StoreConsts::elementNode)
-    return Uri; // TODO: error top node should be element node
+  {
+    // top node should be element node
+    ZORBA_ERROR(API0051_REST_ERROR_PAYLOAD);
+    return Uri; 
+  }
 
   if (xqpString("payload") == payload_data->getNodeName()->getLocalName())
   {
@@ -687,24 +714,24 @@ static xqpString processGetPayload(Item_t& payload_data, xqpString& Uri)
   }
 
   if (name.getp() == NULL)
-    return Uri; // TODO: signal error - payload part without an associated name
+  {
+    // payload part without an associated name
+    ZORBA_ERROR(API0051_REST_ERROR_PAYLOAD);
+    return Uri; 
+  }
 
   it = payload_data->getChildren();
   it->open();
   it->next(child);
   if (child->getNodeKind() == store::StoreConsts::textNode)
   {
-    // TODO: check if the name of parameter should be escaped too
+	xqpStringStore_t encoded_name = name->getStringValue()->encodeForUri();
     xqpStringStore_t value = child->getStringValue()->encodeForUri();
     
     if (Uri.indexOf("?") == -1)
-      Uri = Uri + "?" + name->getStringValue()->str() + "=" + value.getp();
+      Uri = Uri + "?" + encoded_name.getp() + "=" + value.getp();
     else
-      Uri = Uri + "&" + name->getStringValue()->str() + "=" + value.getp();
-  }
-  else
-  {
-    // TODO: generate error or ignore?
+      Uri = Uri + "&" + encoded_name.getp() + "=" + value.getp();
   }
 
   return Uri;
@@ -722,10 +749,9 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
   
   setupConnection(state, 0);
 
-  if (!CONSUME(lUri,0))
+  if (CONSUME(lUri,0) == false)
   {
-    //TODO: raise an error ?
-    // ZORBA_ERROR_DESC(XQP0020_INVALID_URI, "No URI given to the REST get() function.");
+    ZORBA_ERROR_DESC(XQP0020_INVALID_URI, "No URI given to the REST get() function.");
   }
 
   Uri = lUri->getStringValue()->str();
@@ -778,7 +804,7 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
 
   if (CONSUME(lUri, 0) == false)
   {
-    //TODO: raise an error
+    ZORBA_ERROR_DESC(XQP0020_INVALID_URI, "No URI given to the REST post() function.");
   }
   Uri = lUri->getStringValue()->str();
 
@@ -838,7 +864,7 @@ bool ZorbaRestPutIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   if (CONSUME(lUri, 0) == false)
   {
-    //TODO: raise an error
+    ZORBA_ERROR_DESC(XQP0020_INVALID_URI, "No URI given to the REST put() function.");
   }
   Uri = lUri->getStringValue()->str();
 
@@ -893,10 +919,9 @@ bool ZorbaRestDeleteIterator::nextImpl(store::Item_t& result, PlanState& planSta
   
   setupConnection(state, 3);
 
-  if (!CONSUME(lUri,0))
+  if (CONSUME(lUri,0) == false)
   {
-    //TODO: raise an error ?
-    // ZORBA_ERROR_DESC(XQP0020_INVALID_URI, "No URI given to the REST get() function.");
+    ZORBA_ERROR_DESC(XQP0020_INVALID_URI, "No URI given to the REST delete() function.");;
   }
 
   Uri = lUri->getStringValue()->str();
@@ -944,10 +969,9 @@ bool ZorbaRestHeadIterator::nextImpl(store::Item_t& result, PlanState& planState
   
   setupConnection(state, 4);
 
-  if (!CONSUME(lUri,0))
+  if (CONSUME(lUri,0) == false)
   {
-    //TODO: raise an error ?
-    // ZORBA_ERROR_DESC(XQP0020_INVALID_URI, "No URI given to the REST get() function.");
+    ZORBA_ERROR_DESC(XQP0020_INVALID_URI, "No URI given to the REST head() function.");
   }
 
   Uri = lUri->getStringValue()->str();
