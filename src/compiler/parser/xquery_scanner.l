@@ -257,6 +257,9 @@ NonSharpPragmaChar                  [\x09\x0A\x0D\x20-\x22\x24-\xFD]
 NonSharpNonParPragmaChar            [\x09\x0A\x0D\x20-\x28\x2A-\xFD]
 PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPragmaChar})*"#"*
 
+    
+ByteOrderMark_UTF8    \xEF\xBB\xBF
+    
   /*______________________________________________________________________
    |
    |  Exclusive start states
@@ -587,6 +590,16 @@ typedef zorba::xquery_parser::token token;
 
 {StringLiteral} { 
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
+}
+
+
+  /*______________________________________________________________________
+    |
+    | Byte Order Mark
+    |______________________________________________________________________*/
+
+{ByteOrderMark_UTF8} {
+  return token::BYTE_ORDER_MARK_UTF8;
 }
 
   /*______________________________________________________________________

@@ -48,7 +48,7 @@ namespace zorba
 }
 
 /* First part of user declarations.  */
-#line 38 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 38 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
 
 
 #include "common/common.h"
@@ -89,7 +89,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc.  */
-#line 93 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
+#line 93 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -140,7 +140,7 @@ namespace zorba
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 121 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 121 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
 {
   zorba::parsenode * node;
   zorba::exprnode * expr;
@@ -152,7 +152,7 @@ namespace zorba
 	xqp_decimal* decval;
 }
 /* Line 35 of lalr1.cc.  */
-#line 156 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
+#line 156 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;
@@ -417,20 +417,21 @@ namespace zorba
      WORDS = 510,
      THESAURUS = 511,
      WILDCARDS = 512,
-     FTCONTAINS_REDUCE = 513,
-     RANGE_REDUCE = 514,
-     ADDITIVE_REDUCE = 515,
-     MULTIPLICATIVE_REDUCE = 516,
-     UNION_REDUCE = 517,
-     INTERSECT_EXCEPT_REDUCE = 518,
-     QVARINDECLLIST_REDUCE = 519,
-     COMMA_DOLLAR = 520,
-     UNARY_PREC = 521,
-     SEQUENCE_TYPE_REDUCE = 522,
-     OCCURS_STAR = 523,
-     OCCURS_PLUS = 524,
-     OCCURS_HOOK = 525,
-     STEP_REDUCE = 526
+     BYTE_ORDER_MARK_UTF8 = 513,
+     FTCONTAINS_REDUCE = 514,
+     RANGE_REDUCE = 515,
+     ADDITIVE_REDUCE = 516,
+     MULTIPLICATIVE_REDUCE = 517,
+     UNION_REDUCE = 518,
+     INTERSECT_EXCEPT_REDUCE = 519,
+     QVARINDECLLIST_REDUCE = 520,
+     COMMA_DOLLAR = 521,
+     UNARY_PREC = 522,
+     SEQUENCE_TYPE_REDUCE = 523,
+     OCCURS_STAR = 524,
+     OCCURS_PLUS = 525,
+     OCCURS_HOOK = 526,
+     STEP_REDUCE = 527
    };
 
     };

@@ -429,6 +429,11 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token WORDS                      "'words'"
 %token THESAURUS                  "'thesaurus'"
 %token WILDCARDS	         				"'wildcards'"
+    
+/* Byte Order Marks                  */
+/* --------------------------------- */    
+%token BYTE_ORDER_MARK_UTF8       "'BOM_UTF8'"
+    
 
 /* Leading slash handling expression */
 /* --------------------------------- */
@@ -475,6 +480,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> LibraryModule
 %type <node> MainModule 
 %type <node> Module
+%type <node> ModuleWithoutBOM
 %type <node> ModuleDecl
 %type <node> ModuleImport
 %type <node> NameTest
@@ -799,10 +805,18 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %start Module;
 
 
+Module : 
+    ModuleWithoutBOM
+  | BYTE_ORDER_MARK_UTF8 ModuleWithoutBOM
+    {
+      $$ = $2;
+    }
+  ;
+    
 
 // [1] Module
 // ----------
-Module :
+ModuleWithoutBOM :
     MainModule
 		{
 			$$ = $1;
