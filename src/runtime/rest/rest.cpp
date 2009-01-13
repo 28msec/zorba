@@ -30,6 +30,9 @@
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "store/api/copymode.h"
+#include "store/naive/sax_loader.h"
+#include "store/naive/simple_store.h"
+#include "store/naive/properties.h"
 
 #include "types/root_typemanager.h"
 #include "context/static_context.h"
@@ -330,15 +333,19 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
       {
         store::Item_t temp;
         std::istream is(theStreamBuffer);
-        try {
-          GENV_STORE.deleteDocument(lUriString.theStrStore);
-          temp = GENV_STORE.loadDocument(lUriString.theStrStore, is);
-        }
-        catch (...) {
-          temp = NULL;
-        }
+		error::ErrorManager lErrorManager;
+		std::auto_ptr<simplestore::XmlLoader> loader(new simplestore::SimpleXmlLoader(GENV_ITEMFACTORY, 
+                            &lErrorManager, 
+                            (store::Properties::instance())->buildDataguide()));
 
-        if (temp != NULL)
+		temp = loader->loadXml(lUriString.theStrStore, is);
+		if (lErrorManager.hasErrors()) 
+		{
+		  ZORBA_ERROR_PARAM(lErrorManager.getErrors().front().theErrorCode,
+            lErrorManager.getErrors().front().theDescription, "");
+        }
+		
+		if (temp != NULL)
         {
           store::Iterator_t doc_children = temp->getChildren();
           doc_children->open();
@@ -350,7 +357,7 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
         else
         {
 		  // xml could not parsed
-		  ZORBA_ERROR(API0051_REST_ERROR_XML_REPLY);
+		  ZORBA_ERROR(XQP0017_LOADER_PARSING_ERROR);
         }
       }
       break;

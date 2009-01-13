@@ -177,8 +177,6 @@ DEF_ERR_CODE(API0037_TIDY_ERROR_SET_OPTION, API0037, "Could not set option {/s} 
 
 DEF_ERR_CODE(API0050_REST_ERROR_HEADER, API0050, "Invalid value passed for header parameter.");
 DEF_ERR_CODE(API0051_REST_ERROR_PAYLOAD, API0051, "Invalid value passed for payload parameter.");
-DEF_ERR_CODE(API0051_REST_ERROR_XML_REPLY, API0052, "The server replied with an invalid XML.");
-
 
 
 //
