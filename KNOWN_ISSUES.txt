@@ -17,3 +17,9 @@ This is a list of issues that we are aware of but are not fixed in this version:
 2) Zorba uses ICU for the regular expressions that does not support range subtraction and unicode properties.
    For details see the following bugs:
    - 2210801 (https://sourceforge.net/tracker/index.php?func=detail&aid=2210801&group_id=226244&atid=1067586)
+
+3) fn:id() and fn:idref() not implemented in the runtime, also ID/IDREF not implemented in the store
+  - 2210815 (https://sourceforge.net/tracker2/?func=detail&aid=2210815&group_id=226244&atid=1067586)
+  - 2210823 (https://sourceforge.net/tracker2/?func=detail&aid=2210823&group_id=226244&atid=1067586)
+  - 2210813 (https://sourceforge.net/tracker2/?func=detail&aid=2210813&group_id=226244&atid=1067586)
+  - 2210809 (https://sourceforge.net/tracker2/?func=detail&aid=2210809&group_id=226244&atid=1067586)
