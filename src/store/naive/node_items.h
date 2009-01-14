@@ -463,6 +463,8 @@ public:
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const;
 
+  store::Item* getNodeName() const { return NULL; }
+
   xqp_string show() const;
 
   //
@@ -934,6 +936,8 @@ public:
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const;
 			
+  store::Item* getNodeName() const { return NULL; }
+
   xqp_string show() const;
 
   void replaceValue(UpdReplaceTextValue& upd);
@@ -1048,6 +1052,8 @@ public:
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const   { return theContent; }
   xqpStringStore* getStringValueP() const   { return theContent.getp(); }
+
+  store::Item* getNodeName() const { return NULL; }
 
   xqp_string show() const;
 
