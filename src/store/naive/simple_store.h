@@ -141,8 +141,9 @@ public:
   void deleteCollection(const xqpStringStore_t& uri);
   store::Iterator_t listCollectionUris();
 
-  store::Item_t loadDocument(const xqpStringStore_t& uri, std::istream& stream);
-  store::Item_t loadDocument(const xqpStringStore_t& uri, std::istream* stream);
+  store::Item_t loadDocument(const xqpStringStore_t& uri, std::istream& stream, bool storeDocument);
+  store::Item_t loadDocument(const xqpStringStore_t& uri, std::istream* stream, bool storeDocument);
+
   void addNode(const xqpStringStore* uri, const store::Item_t& node);
   store::Item_t getDocument(const xqpStringStore_t& uri);
   void deleteDocument(const xqpStringStore_t& uri);

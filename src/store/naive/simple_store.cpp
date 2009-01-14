@@ -408,7 +408,8 @@ store::Iterator_t SimpleStore::listCollectionUris()
 ********************************************************************************/
 store::Item_t SimpleStore::loadDocument(
     const xqpStringStore_t& uri,
-    std::istream& stream)
+    std::istream& stream,
+    bool storeDocument)
 {
   if (uri == NULL)
     return NULL;
@@ -458,7 +459,7 @@ store::Item_t SimpleStore::loadDocument(
   std::cout << "time spent importing MSDOM: " << (t1-t0) << std::endl;
 #endif
 */
-  if (root != NULL)
+  if (root != NULL && storeDocument)
     theDocuments.insert(urip, root);
 
   return root.getp();
@@ -470,12 +471,13 @@ Param stream is a heap pointer to an input stream. This is to be deallocated by 
 ********************************************************************************/
 store::Item_t SimpleStore::loadDocument(
     const xqpStringStore_t& uri, 
-    std::istream* stream)
+    std::istream* stream,
+    bool storeDocument)
 {
   store::Item_t docitem;
   try{
     //do full loading for now
-    docitem = loadDocument(uri, *stream);
+    docitem = loadDocument(uri, *stream, storeDocument);
     delete stream;
   }
   catch(...)
