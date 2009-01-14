@@ -45,12 +45,12 @@ In order to use the functions that require Tidy you have to:\n
 \subsection tidy 2.1.1 zorba-util:tidy
 
 \code
-  declare function tidy($str          as xs:string) as xs:string
+  declare function tidy($str          as xs:string) as item()
   declare function tidy($str          as xs:string,
-                        $tidyOptions  as xs:string?) as xs:string
+                        $tidyOptions  as xs:string?) as item()
 \endcode
 
-Summary: Assuming <b>$str</b> contains a "dirty" HTML the function will return a valid XHTML version of the <b>$str</b>. \n
+Summary: Assuming <b>$str</b> contains a "dirty" HTML the function will return an item containing a valid XHTML version of the <b>$str</b>. \n
 
 A complete set of options that can be set for a Tidy call can be found at <a href="http://tidy.sourceforge.net/docs/quickref.html" target="_blank">HTML Tidy Configuration Options</a> \n
 
@@ -66,7 +66,7 @@ These options can be overwritten by passing different <b>$tidyOptions</b>
 \code
   import module namespace
   fn-zorba-util="http://www.zorba-xquery.com/zorba/util-functions";
-  fn-zorba-util:tidy('<title>Foo</title><p>Foo!','"newline=CRLF","doctype=omit","force-output","bare=yes"')
+  fn:string(fn-zorba-util:tidy('<title>Foo</title><p>Foo!','"newline=CRLF","doctype=omit","force-output","bare=yes"'))
 \endcode
 
 As a result: \n

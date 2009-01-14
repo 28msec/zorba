@@ -1,7 +1,7 @@
 import module namespace
 fn-zorba-util="http://www.zorba-xquery.com/zorba/util-functions";
 <test>
-<q1>{fn-zorba-util:tidy('<HTML>
+<q1>{fn:string(fn-zorba-util:tidy('<HTML>
 <HEAD>
 <TITLE>[ #426885 ] Definition list w/Center crashes</TITLE>
 </HEAD>
@@ -15,8 +15,8 @@ fn-zorba-util="http://www.zorba-xquery.com/zorba/util-functions";
 <DT><IMG src="redball.gif"><B>Term 4</B><HR></DT>
 </UL>
 </BODY>
-</HTML>')}</q1>
-<q2>{fn-zorba-util:tidy('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+</HTML>'))}</q1>
+<q2>{fn:string(fn-zorba-util:tidy('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head>
   <title>[#427663] Line endings not supported correctly</title>
@@ -27,5 +27,5 @@ This is a DOS line ending^M
 
 </body>
 </html>
-')}</q2></test>
+'))}</q2></test>
 

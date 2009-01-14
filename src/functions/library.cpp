@@ -1034,13 +1034,13 @@ DECL(sctx, zorba_encode_base64,
   DECL(sctx, zorba_tidy,
        (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "tidy"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
-        GENV_TYPESYSTEM.STRING_TYPE_ONE));
+        GENV_TYPESYSTEM.ITEM_TYPE_ONE));
 
   DECL(sctx, zorba_tidy,
        (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "tidy"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-        GENV_TYPESYSTEM.STRING_TYPE_ONE));
+        GENV_TYPESYSTEM.ITEM_TYPE_ONE));
 
   DECL(sctx, zorba_tdoc,
        (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "tdoc"),
