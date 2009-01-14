@@ -95,7 +95,13 @@ class ItemValuesCollHandleHashMap : public HashMap<GroupKey*,
     std::vector<store::Item_t>::const_iterator iter2 = t2->theTypedKey.begin();
     std::vector<XQPCollator*>::iterator lCollIter = aCompareParam->theCollators.begin();
     while(iter1 != t1->theTypedKey.end()){
-      if(CompareIterator::valueEqual ( aCompareParam->theRuntimeCB,
+      if(*iter1 == NULL){     
+        if(*iter2 != NULL){
+          return false;
+	}
+      }else if(*iter2 == NULL){
+        return false;
+      }else if(CompareIterator::valueEqual ( aCompareParam->theRuntimeCB,
                                        *iter1, *iter2,
                                        ( *lCollIter ) ) != 0){
         return false;                                 
@@ -114,8 +120,11 @@ class ItemValuesCollHandleHashMap : public HashMap<GroupKey*,
     std::vector<store::Item_t>::iterator lItemIter = t->theTypedKey.begin();
     std::vector<XQPCollator*>::iterator lCollIter = aCompareParam->theCollators.begin();
     while(lItemIter != t->theTypedKey.end()){
-      hash += (*lItemIter)->hash(aCompareParam->theRuntimeCB->theDynamicContext->get_implicit_timezone(),
+      store::Item_t lCurItem = (*lItemIter);
+      if(lCurItem != NULL){
+      	hash += (*lItemIter)->hash(aCompareParam->theRuntimeCB->theDynamicContext->get_implicit_timezone(),
                                   *lCollIter );
+      }
       ++lCollIter;
       ++lItemIter;
     }
