@@ -75,8 +75,12 @@ namespace zorba {
 static bool is_trivial_expr (expr *e) {
     switch (e->get_expr_kind ()) {
     case const_expr_kind:
-    case var_expr_kind:
-      return true;
+    case var_expr_kind: {
+      enum var_expr::var_kind vk = static_cast<var_expr *> (e)->get_kind ();
+      return vk != var_expr::param_var;
+    }
+    case wrapper_expr_kind:
+      return is_trivial_expr (static_cast<wrapper_expr *> (e)->get_expr ());
     default: return false;
     }
   }
@@ -221,7 +225,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         MODIFY (subst_vars (rCtx, node, pvref.getp (), new const_expr (LOC (node), xqp_integer::parseInt (1))));
       int uses = count_variable_uses(flwor, &*vref, 2);
       if (uses > 1) {
-        if (cexpr->get_expr_kind () == const_expr_kind) {
+        if (is_trivial_expr (cexpr)) {
           subst_vars (rCtx, node, vref, cexpr);
           MODIFY (i = flwor->remove_forlet_clause (i));
         } else ++i;
