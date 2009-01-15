@@ -46,6 +46,10 @@
 
 #include <iostream>
 #include <fstream>
+#include <istream>
+#include <sstream>
+
+#include "util/web/web.h"
 using namespace std;
 
 
@@ -243,8 +247,20 @@ ZorbaRestGetIteratorState::reset(PlanState& planState)
   PlanIteratorState::reset(planState);
 }
 
-int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriString,
-                 int code, std::vector<std::string>& headers, CurlStreamBuffer* theStreamBuffer, bool ignore_payload = false) 
+static int readSome(std::istream& stream, char *buffer, int maxlen)
+{
+  stream.read(buffer, maxlen);
+  return stream.gcount();
+}
+
+int processReply(store::Item_t& result,
+                 PlanState& planState,
+                 xqpString& lUriString,
+                 int code,
+                 std::vector<std::string>& headers,
+                 CurlStreamBuffer* theStreamBuffer,
+                 const char* tidyUserOpt,
+                 bool ignore_payload = false) 
 {
   int reply_code;
   xqpString content_type;
@@ -258,11 +274,11 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
     // No headers -- create error message node
     xqpStringStore_t temp = new xqpStringStore(theStreamBuffer->getErrorBuffer());
     createNodeHelper(result, planState, "error-message", &error_node);
-	GENV_ITEMFACTORY->createTextNode(text_code, error_node, -1, temp);
+    GENV_ITEMFACTORY->createTextNode(text_code, error_node, -1, temp);
   }
   createNodeHelper(result, planState, "headers", &headers_node);
   if (!ignore_payload)
-    createNodeHelper(result, planState, "payload", &payload);  
+    createNodeHelper(result, planState, "payload", &payload);
 
   if (headers.size() == 0)
   {
@@ -322,6 +338,8 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
       doc_type = 3;
     else if (content_type.indexOf("+xml") > -1)
       doc_type = 3;
+    else if (content_type == "text/html")
+      doc_type = 4;
     else if (content_type.indexOf("text/") == 0)
       doc_type = 2;
     else
@@ -329,23 +347,47 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
 
     switch (doc_type)
     {
-    case 3:  // xml
+    case 4:
       {
         store::Item_t temp;
-        std::istream is(theStreamBuffer);
-		error::ErrorManager lErrorManager;
-		std::auto_ptr<simplestore::XmlLoader> loader(new simplestore::SimpleXmlLoader(GENV_ITEMFACTORY, 
-                            &lErrorManager, 
-                            (store::Properties::instance())->buildDataguide()));
+        error::ErrorManager lErrorManager;
+        std::auto_ptr<simplestore::XmlLoader> loader(new simplestore::SimpleXmlLoader(GENV_ITEMFACTORY,
+            &lErrorManager,
+            (store::Properties::instance())->buildDataguide()));
 
-		temp = loader->loadXml(lUriString.theStrStore, is);
-		if (lErrorManager.hasErrors()) 
-		{
-		  ZORBA_ERROR_PARAM(lErrorManager.getErrors().front().theErrorCode,
-            lErrorManager.getErrors().front().theDescription, "");
+        if(tidyUserOpt == NULL)
+        {
+          std::istream is(theStreamBuffer);
+          temp = loader->loadXml(lUriString.theStrStore, is);
         }
-		
-		if (temp != NULL)
+        else
+        {
+          std::string         input;
+          char                lBuf[1024];
+          int                 lRes = 0;
+          xqp_string          diag, strOut;
+
+          std::istream lStream(theStreamBuffer);
+          while ( (lRes = readSome(lStream, lBuf, 1023)) > 0 ) {
+            lBuf[lRes] = 0;
+            input += lBuf;
+          }
+
+          int res = tidy(input.c_str(), strOut, diag, (NULL != tidyUserOpt? tidyUserOpt: NULL));
+          if( res < 0){
+            ZORBA_ERROR_DESC_OSS(API0036_TIDY_ERROR, diag.c_str());
+          }
+
+          std::istringstream isOut(strOut, istringstream::in);
+          temp = loader->loadXml(lUriString.theStrStore, isOut);
+        }
+        if (lErrorManager.hasErrors())
+        {
+          ZORBA_ERROR_PARAM(lErrorManager.getErrors().front().theErrorCode,
+                            lErrorManager.getErrors().front().theDescription, "");
+        }
+
+        if (temp != NULL)
         {
           store::Iterator_t doc_children = temp->getChildren();
           doc_children->open();
@@ -356,12 +398,44 @@ int processReply(store::Item_t& result, PlanState& planState, xqpString& lUriStr
         }
         else
         {
-		  // xml could not parsed
-		  ZORBA_ERROR(XQP0017_LOADER_PARSING_ERROR);
+          // xml could not parsed
+          ZORBA_ERROR(XQP0017_LOADER_PARSING_ERROR);
         }
       }
       break;
-      
+    case 3:  // xml
+      {
+        store::Item_t temp;
+        std::istream is(theStreamBuffer);
+        error::ErrorManager lErrorManager;
+        std::auto_ptr<simplestore::XmlLoader> loader(new simplestore::SimpleXmlLoader(GENV_ITEMFACTORY,
+                                &lErrorManager, 
+                                (store::Properties::instance())->buildDataguide()));
+
+        temp = loader->loadXml(lUriString.theStrStore, is);
+        if (lErrorManager.hasErrors())
+        {
+          ZORBA_ERROR_PARAM(lErrorManager.getErrors().front().theErrorCode,
+                lErrorManager.getErrors().front().theDescription, "");
+        }
+		
+		    if (temp != NULL)
+        {
+          store::Iterator_t doc_children = temp->getChildren();
+          doc_children->open();
+          doc_children->next(doc);
+          CopyMode copyMode;
+          copyMode.theDoCopy = false;
+          doc->copy(payload, -1, CopyMode());
+        }
+        else
+        {
+          // xml could not be parsed
+          ZORBA_ERROR(XQP0017_LOADER_PARSING_ERROR);
+        }
+      }
+      break;
+
     case 2:  // text
       {
         store::Item_t temp_item;
@@ -746,14 +820,15 @@ static xqpString processGetPayload(Item_t& payload_data, xqpString& Uri)
 
 bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lUri, payload_data, headers;
-  xqpString Uri;
-  curl_slist *headers_list = NULL;
-  int code;
-  
+  store::Item_t item, lUri, payload_data, headers, tidyUserOpt;
+  xqpString     Uri;
+  curl_slist    *headers_list = NULL;
+  bool          hasOpt = false;
+  int           code;
+
   ZorbaRestGetIteratorState* state;
   DEFAULT_STACK_INIT(ZorbaRestGetIteratorState, state, planState);
-  
+
   setupConnection(state, 0);
 
   if (CONSUME(lUri,0) == false)
@@ -763,19 +838,47 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   Uri = lUri->getStringValue()->str();
 
+#ifndef ZORBA_WITH_TIDY
   if (theChildren.size() > 1)
     while (CONSUME(payload_data, 1))
       Uri = processGetPayload(payload_data, Uri);
-  
+
   if (theChildren.size() > 2)
     while (CONSUME(headers, 2))
       processHeader(headers, &headers_list);
+#else
+  if(theChildren.size() == 4)
+  {
+    CONSUME(tidyUserOpt, 1);
+    while (CONSUME(payload_data, 2))
+      Uri = processGetPayload(payload_data, Uri);
+
+    while (CONSUME(headers, 3))
+      processHeader(headers, &headers_list);
+  }
+  else
+  {
+    while (CONSUME(payload_data, 1))
+      if(payload_data->isNode())
+        Uri = processGetPayload(payload_data, Uri);
+      else
+      {
+        tidyUserOpt = payload_data;
+        hasOpt = true;
+      }
+
+    if(theChildren.size() == 3  && !hasOpt)
+      while (CONSUME(headers, 2))
+        processHeader(headers, &headers_list);
+  }
+#endif
 
   curl_easy_setopt(state->EasyHandle, CURLOPT_URL, Uri.c_str());
   curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
 #ifndef ZORBA_VERIFY_PEER_SSL_CERTIFICATE//default is to not verify root certif
   curl_easy_setopt(state->EasyHandle, CURLOPT_SSL_VERIFYPEER, 0);
-  //but CURLOPT_SSL_VERIFYHOST is left default, value 2, meaning verify that the Common Name or Subject Alternate Name field in the certificate matches the name of the server
+  //but CURLOPT_SSL_VERIFYHOST is left default, value 2, meaning verify that
+  //the Common Name or Subject Alternate Name field in the certificate matches the name of the server
   //tested with https://www.npr.org/rss/rss.php?id=1001
   //about using ssl certs in curl: http://curl.haxx.se/docs/sslcerts.html
 #else
@@ -786,8 +889,14 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
   #endif
 #endif
   code = state->theStreamBuffer->multi_perform();
-  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp());
-  
+  processReply(result,
+               planState,
+               Uri,
+               code,
+               *state->headers,
+               state->theStreamBuffer.getp(),
+               (tidyUserOpt!=NULL)?tidyUserOpt->getStringValue()->c_str():NULL);
+
   STACK_PUSH(true, state);
   curl_slist_free_all(headers_list);
   cleanupConnection(state);
@@ -845,7 +954,7 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
   headers_list = curl_slist_append(headers_list , expect_buf);
   curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
   code = state->theStreamBuffer->multi_perform();
-  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp());
+  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL);
   
   STACK_PUSH(true, state);
   curl_formfree(first);
@@ -905,7 +1014,7 @@ bool ZorbaRestPutIterator::nextImpl(store::Item_t& result, PlanState& planState)
   headers_list = curl_slist_append(headers_list , expect_buf);
   curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
   code = state->theStreamBuffer->multi_perform();
-  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp());
+  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL);
   
   STACK_PUSH(true, state);
   curl_formfree(first);
@@ -956,7 +1065,7 @@ bool ZorbaRestDeleteIterator::nextImpl(store::Item_t& result, PlanState& planSta
 #endif
 #endif
   code = state->theStreamBuffer->multi_perform();
-  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), true);
+  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL, true);
   
   STACK_PUSH(true, state);
   curl_slist_free_all(headers_list);
@@ -1006,7 +1115,7 @@ bool ZorbaRestHeadIterator::nextImpl(store::Item_t& result, PlanState& planState
 #endif
 #endif
   code = state->theStreamBuffer->multi_perform();
-  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), true);
+  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL, true);
   
   STACK_PUSH(true, state);
   curl_slist_free_all(headers_list);
