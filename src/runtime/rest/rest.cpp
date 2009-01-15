@@ -30,16 +30,13 @@
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "store/api/copymode.h"
-//#include "store/naive/sax_loader.h"
-//#include "store/naive/simple_store.h"
-//#include "store/naive/properties.h"
-
 #include "types/root_typemanager.h"
 #include "context/static_context.h"
 #include "context/namespace_context.h"
 
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/datetime/parse.h"
+#include "util/web/web.h"
 
 #include "system/globalenv.h"
 #include "zorbaerrors/error_manager.h"
@@ -350,18 +347,15 @@ int processReply(store::Item_t& result,
     case 4:
       {
         store::Item_t temp;
-        error::ErrorManager lErrorManager;
-        std::auto_ptr<simplestore::XmlLoader> loader(new simplestore::SimpleXmlLoader(GENV_ITEMFACTORY,
-            &lErrorManager,
-            (store::Properties::instance())->buildDataguide()));
 
         if(tidyUserOpt == NULL)
         {
           std::istream is(theStreamBuffer);
-          temp = loader->loadXml(lUriString.theStrStore, is);
+          temp = GENV_STORE.loadDocument(lUriString.theStrStore, is);
         }
         else
         {
+#ifdef ZORBA_WITH_TIDY
           std::string         input;
           char                lBuf[1024];
           int                 lRes = 0;
@@ -378,15 +372,13 @@ int processReply(store::Item_t& result,
             ZORBA_ERROR_DESC_OSS(API0036_TIDY_ERROR, diag.c_str());
           }
 
-          std::istringstream isOut(strOut, istringstream::in);
-          temp = loader->loadXml(lUriString.theStrStore, isOut);
+          std::istringstream is(strOut, istringstream::in);
+#else
+		  std::istream is(theStreamBuffer);
+#endif
+          temp = GENV_STORE.loadDocument(lUriString.theStrStore, is);
         }
-        if (lErrorManager.hasErrors())
-        {
-          ZORBA_ERROR_PARAM(lErrorManager.getErrors().front().theErrorCode,
-                            lErrorManager.getErrors().front().theDescription, "");
-        }
-
+        
         if (temp != NULL)
         {
           store::Iterator_t doc_children = temp->getChildren();
@@ -407,21 +399,8 @@ int processReply(store::Item_t& result,
       {
         store::Item_t temp;
         std::istream is(theStreamBuffer);
-    /*
-		error::ErrorManager lErrorManager;
-		std::auto_ptr<simplestore::XmlLoader> loader(new simplestore::SimpleXmlLoader(GENV_ITEMFACTORY, 
-                            &lErrorManager, 
-                            (store::Properties::instance())->buildDataguide()));
-
-        temp = loader->loadXml(lUriString.theStrStore, is);
-        if (lErrorManager.hasErrors())
-        {
-          ZORBA_ERROR_PARAM(lErrorManager.getErrors().front().theErrorCode,
-                lErrorManager.getErrors().front().theDescription, "");
-    }
-		*/
-    temp = GENV_STORE.loadDocument(lUriString.theStrStore, is);
-		    if (temp != NULL)
+        temp = GENV_STORE.loadDocument(lUriString.theStrStore, is);
+		if (temp != NULL)
         {
           store::Iterator_t doc_children = temp->getChildren();
           doc_children->open();
