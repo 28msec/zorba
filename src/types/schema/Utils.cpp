@@ -199,7 +199,7 @@ void processElement( store::Item_t& pul, static_context* staticContext,
         bool tHasEmptyValue = typeHasEmptyValue(newType);
 
         store::PUL *p = static_cast<store::PUL *>(pul.getp());
-        store::Item_t elm = store::Item_t(element);
+        store::Item_t elm = element;
         p->addSetElementType(elm,
                              typeQName,
                              (std::vector<store::Item_t>&)typedValues,
