@@ -78,7 +78,7 @@ CollectionImpl::addNode(const Item& aNode, const long aPosition)
 
     store::Item* lItem = Unmarshaller::getInternalItem(aNode);
 
-    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
     //check if the item is already in the collection
     theCollection->addNode(lItem, aPosition);
@@ -96,7 +96,7 @@ CollectionImpl::addNode(const Item& aNode, const Item& aTargetNode, bool before)
     store::Item* lItem = Unmarshaller::getInternalItem(aNode);
     store::Item* targetItem = Unmarshaller::getInternalItem(aTargetNode);
 
-    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
     theCollection->addNode(lItem, targetItem, before);
 
@@ -114,7 +114,7 @@ CollectionImpl::addNodes(const ResultIterator* aResultIterator)
 
     PlanWrapper_t lPlan = Unmarshaller::getInternalPlan(aResultIterator);
 
-    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
     theCollection->addNodes(&*lPlan);
     return true;
@@ -141,7 +141,7 @@ CollectionImpl::deleteNode(const Item& aNode)
   ZORBA_TRY
     store::Item* lItem = Unmarshaller::getInternalItem(aNode);
 
-    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
     theCollection->removeNode(lItem);
     return true;
@@ -165,23 +165,23 @@ Item
 CollectionImpl::nodeAt(const long aPosition)
 {
   ZORBA_TRY
-      return theCollection->nodeAt(aPosition).getp();
+    return theCollection->nodeAt(aPosition).getp();
   ZORBA_CATCH
-      return Item();
+  return Item();
 }
 
 long
 CollectionImpl::indexOf(const Item& aNode)
 {
   ZORBA_TRY
-      store::Item* lItem = Unmarshaller::getInternalItem(aNode);
+    store::Item* lItem = Unmarshaller::getInternalItem(aNode);
 
-  SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
-      theCollection->indexOf(lItem);
-  return true;
+    theCollection->indexOf(lItem);
+    return true;
   ZORBA_CATCH
-      return false;
+  return false;
 }
 
 } /* namespace zorba */

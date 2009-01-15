@@ -518,7 +518,7 @@ XQueryImpl::serialize(std::ostream& os, const Zorba_SerializerOptions_t* opt)
     if (opt != NULL)
       setSerializationParameters(&lSerializer, opt);
     
-    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::READ);)
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     try 
     {
@@ -545,7 +545,7 @@ XQueryImpl::applyUpdates()
 
     PlanWrapper_t lPlan = generateWrapper();
 
-    SYNC_CODE(AutoLock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
     store::Item_t pul;
     
