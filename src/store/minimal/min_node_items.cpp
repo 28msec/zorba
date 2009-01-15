@@ -2657,8 +2657,12 @@ PiNode::PiNode(xqpStringStore_t& target, xqpStringStore_t& content)
   :
   XmlNode()
 {
+  QNamePool& qnpool = GET_STORE().getQNamePool();
+
   theTarget.transfer(target);
   theContent.transfer(content);
+
+  theName = qnpool.insert("", "", theTarget->c_str());
 
   NODE_TRACE1("Loaded pi node " << this << " target = " << theTarget
               << std::endl);
@@ -2677,8 +2681,12 @@ PiNode::PiNode(
   :
   XmlNode(tree, parent, pos, store::StoreConsts::piNode)
 {
+  QNamePool& qnpool = GET_STORE().getQNamePool();
+
   theTarget.transfer(target);
   theContent.transfer(content);
+
+  theName = qnpool.insert("", "", theTarget->c_str());
 
   if (parent)
   {

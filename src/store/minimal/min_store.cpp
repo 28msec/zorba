@@ -407,7 +407,8 @@ store::Iterator_t SimpleStore::listCollectionUris()
 ********************************************************************************/
 store::Item_t SimpleStore::loadDocument(
             const xqpStringStore_t& uri, 
-            std::istream& stream)
+            std::istream& stream,
+            bool storeDocument)
 {
   if (uri == NULL)
     return NULL;
@@ -434,7 +435,7 @@ store::Item_t SimpleStore::loadDocument(
                       lErrorManager.getErrors().front().theDescription, "");
   }
 
-  if (root != NULL)
+  if (root != NULL && storeDocument)
     theDocuments.insert(urip, root);
 
   return root.getp();
@@ -445,7 +446,8 @@ store::Item_t SimpleStore::loadDocument(
 ********************************************************************************/
 store::Item_t SimpleStore::loadDocument(
             const xqpStringStore_t& uri, 
-            std::istream *stream)
+            std::istream *stream,
+            bool storeDocument)
 
 {
   if (uri == NULL)
@@ -470,7 +472,7 @@ store::Item_t SimpleStore::loadDocument(
                       lErrorManager.getErrors().front().theDescription, "");
   }
 
-  if (root != NULL)
+  if (root != NULL && storeDocument)
     theDocuments.insert(urip, root);
 
   return root.getp();

@@ -456,6 +456,8 @@ public:
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const;
 
+  store::Item* getNodeName() const { return NULL; }
+
   xqp_string show() const;
 
   //
@@ -940,6 +942,8 @@ public:
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const;
 			
+  store::Item* getNodeName() const { return NULL; }
+
   xqp_string show() const;
 
   void replaceValue(UpdReplaceTextValue& upd);
@@ -969,6 +973,7 @@ class PiNode : public XmlNode
   xqpStringStore_t theTarget;
   xqpStringStore_t theContent;
 
+  store::Item_t   theName;
 public:
   PiNode(xqpStringStore_t& target, xqpStringStore_t& content);
 
@@ -999,6 +1004,7 @@ public:
   xqpStringStore_t getStringValue() const    { return theContent; }
   xqpStringStore* getStringValueP() const    { return theContent.getp(); }
 
+  store::Item* getNodeName() const { return theName.getp(); }
   xqpStringStore* getTarget() const { return theTarget.getp(); }
 
   xqp_string show() const;
@@ -1049,6 +1055,8 @@ public:
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const   { return theContent; }
   xqpStringStore* getStringValueP() const   { return theContent.getp(); }
+
+  store::Item* getNodeName() const { return NULL; }
 
   xqp_string show() const;
 
