@@ -1484,7 +1484,7 @@ bool ElementNode::addBindingForQName(
   if (ns->empty() && isAttr)
     return false;
 
-  if (!prefix->empty() && prefix->str() != "xml")
+  if (prefix->str() != "xml")
   {
     xqpStringStore* ns2 = findBinding(prefix);
 
