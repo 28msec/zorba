@@ -171,7 +171,8 @@ public:
 	StaticContextConsts::boundary_space_mode_t boundary_space_mode() const;
 	StaticContextConsts::inherit_mode_t inherit_mode() const;
 	StaticContextConsts::preserve_mode_t preserve_mode() const;
-    StaticContextConsts::validation_mode_t validation_mode() const;
+  StaticContextConsts::validation_mode_t validation_mode() const;
+  bool revalidation_enabled () const;
 	
 	void set_xpath1_0compatib_mode(StaticContextConsts::xpath1_0compatib_mode_t v);
 	void set_construction_mode(StaticContextConsts::construction_mode_t v);
@@ -179,7 +180,8 @@ public:
 	void set_boundary_space_mode(StaticContextConsts::boundary_space_mode_t v);
 	void set_inherit_mode(StaticContextConsts::inherit_mode_t v);
 	void set_preserve_mode(StaticContextConsts::preserve_mode_t v);
-    void set_validation_mode(StaticContextConsts::validation_mode_t v);
+  void set_validation_mode(StaticContextConsts::validation_mode_t v);
+  void set_revalidation_enabled (bool);
 
 	void set_context_item_static_type(xqtref_t t);
 	xqtref_t		context_item_static_type();

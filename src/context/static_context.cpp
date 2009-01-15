@@ -199,6 +199,7 @@ void static_context::find_functions (const store::Item *qname,
 }
 
 
+DECL_INT_PARAM (static_context, revalidation_enabled, bool)
 
 DECL_ENUM_PARAM (static_context, construction_mode)
 DECL_ENUM_PARAM (static_context, order_empty_mode)

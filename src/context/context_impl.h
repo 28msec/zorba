@@ -23,19 +23,21 @@
   context_value ("int:" #name, value); 
 #endif
 
-#define DECL_ENUM_PARAM( class, name )                                  \
-  StaticContextConsts::name##_t class::name () const {                  \
+#define DECL_INT_PARAM( class, name, type )                             \
+  type class::name () const {                                           \
     ctx_value_t val;                                                    \
     GET_CONTEXT_VALUE(name, val);                                       \
-    return (StaticContextConsts::name##_t) val.intValue;                \
+    return (type) val.intValue;                                         \
   }                                                                     \
                                                                         \
-  void class::set_##name (StaticContextConsts::name##_t x) {            \
+  void class::set_##name (type x) {                                     \
     class::ctx_value_t val;                                             \
     val.intValue = (int) x;                                             \
     keymap.put ("int:" #name, val);                                     \
   }
 
+#define DECL_ENUM_PARAM( class, name ) \
+  DECL_INT_PARAM( class, name, StaticContextConsts::name##_t )
 
 #define DECL_STR_PARAM_TRIGGER( class, name, err, trigger )    \
   xqp_string class::name () const {                            \
