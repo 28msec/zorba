@@ -13,6 +13,6 @@
 # limitations under the License.
 SET(DATETIME_SRCS
     duration.cpp
-	datetime.cpp
+	datetimetype.cpp
 	timezone.cpp
 	parse.cpp)
