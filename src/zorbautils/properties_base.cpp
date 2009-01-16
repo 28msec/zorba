@@ -20,6 +20,9 @@
 #include <cassert>
 
 #include <zorba/properties_base.h>
+#ifdef WINCE
+#include <sys/types.h>
+#endif
 
 using namespace std;
 

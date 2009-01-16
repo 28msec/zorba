@@ -50,7 +50,7 @@ class  Condition
   void broadcast();
 };
 
-#elif WIN32 
+#elif defined WIN32 || defined WINCE
 
 class  Condition
 {
