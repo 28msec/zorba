@@ -316,8 +316,13 @@ int DateTime::getLocalTime(DateTime& dt)
                         curr_ptr->tm_hour, curr_ptr->tm_min, curr_ptr->tm_sec,
                         round((tv.tv_usec / 1000000.0) * FRAC_SECONDS_UPPER_LIMIT), dt);
 #else
+#ifndef WINCE
   struct _timeb   tb;
   _ftime_s(&tb);
+#else
+  struct timeb   tb;
+  ftime(&tb);
+#endif
   struct  tm  curr, *curr_ptr=0;
   _localtime64_s(&curr, &tb.time);
   curr_ptr = &curr;

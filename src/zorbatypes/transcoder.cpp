@@ -15,7 +15,9 @@
  */
 #include "zorbatypes/transcoder.h"
 #include "zorbaerrors/Assert.h"
+#ifndef ZORBA_NO_UNICODE
 #include "zorbatypes/libicu.h"
+#endif
 
 namespace zorba {
 
