@@ -34,6 +34,8 @@
 #ifndef _WIN32_WCE
 #include <io.h>
 #include <direct.h>
+#else
+#include <sys/types.h>
 #endif
 #else
 #include <sys/param.h>
@@ -66,7 +68,7 @@ const char *filesystem_path::get_path_separator () {
 filesystem_path::filesystem_path () {
   char buf [512];
 #ifdef WIN32
-  GetCurrentDirectory (sizeof (buf), buf);
+  GetCurrentDirectoryA (sizeof (buf), buf);
 #else
   if (getcwd (buf, sizeof (buf)) == NULL) {
     file::error (__FUNCTION__, "current directory path too long");
@@ -107,10 +109,12 @@ void filesystem_path::resolve_relative () {
     // call GetFullPathName as per
     // http://msdn.microsoft.com/en-us/library/aa364963(VS.85).aspx 
     
+#ifndef WINCE//for win ce don't bother with relative paths
     char fullpath[1024];
     fullpath[0] = 0;
     GetFullPathName(path.c_str(), sizeof(fullpath), fullpath, NULL);
     *this = fullpath;
+#endif
 #else
     *this = filesystem_path (filesystem_path (), *this);
 #endif
