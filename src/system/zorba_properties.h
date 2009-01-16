@@ -96,7 +96,7 @@ public:
   const bool &forceGflwor () const { return theForceGflwor; }
   const bool &reorderGlobals () const { return theReorderGlobals; }
   const std::string &resultFile () const { return theResultFile; }
-  const bool &abort () const { return theAbort; }
+  const bool &get_abort () const { return theAbort; }
   const std::string &query () const { return theQuery; }
   const bool &printQuery () const { return thePrintQuery; }
   const bool &printTime () const { return thePrintTime; }
