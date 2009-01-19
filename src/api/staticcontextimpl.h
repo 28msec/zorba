@@ -175,6 +175,15 @@ class StaticContextImpl : public StaticContext
   containsFunction(const String& aFnNameUri, const String& aFnNameLocal, int arity) const;
 
   virtual void
+  findFunctions(const Item& aQName, std::vector<Function_t>& aFunctions) const;
+
+  void
+  disableFunction(const Function_t& aFunction);
+
+  void
+  disableFunction(const Item& aQName, int arity);
+
+  virtual void
   setContextItemStaticType(TypeIdentifier_t type);
 
   virtual TypeIdentifier_t

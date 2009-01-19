@@ -30,6 +30,7 @@
 #include "api/zorbaimpl.h"
 #include "types/casting.h"
 #include "types/typeops.h"
+#include "api/functionimpl.h"
 
 namespace zorba {
 
@@ -599,6 +600,40 @@ StaticContextImpl::containsFunction(const String& aFnNameUri, const String& aFnN
         return false;
     }
     return true;
+}
+
+void
+StaticContextImpl::findFunctions(const Item& aQName, std::vector<Function_t>& aFunctions) const
+{
+  try {
+    store::Item* lQName = Unmarshaller::getInternalItem(aQName);
+
+    std::vector<function*> lInternalFunctions;
+
+    theCtx->find_functions(lQName, lInternalFunctions);
+
+    for (std::vector<function*>::const_iterator lIter = lInternalFunctions.begin();
+         lIter != lInternalFunctions.end(); ++lIter) {
+      Function_t lFunc(new FunctionImpl(*lIter, theErrorHandler));
+      aFunctions.push_back(lFunc);
+    }
+
+    assert ( aFunctions.size() == lInternalFunctions.size() );
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
+}
+
+void
+StaticContextImpl::disableFunction(const Function_t& aFunction)
+{
+  disableFunction(aFunction->getFunctionName(), aFunction->getArity());
+}
+
+void
+StaticContextImpl::disableFunction(const Item& aQName, int arity)
+{
+  theCtx->bind_fn(Unmarshaller::getInternalItem(aQName), NULL, arity);
 }
 
 void

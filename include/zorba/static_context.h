@@ -20,6 +20,8 @@
 #include <zorba/zorbastring.h>
 #include <zorba/typeident.h> 
 #include <zorba/static_context_consts.h>
+#include <vector>
+#include <zorba/function.h>
 #include <zorba/smart_ptr.h>
 
 namespace zorba {
@@ -342,6 +344,15 @@ namespace zorba {
        */
       virtual bool
       containsFunction(const String& aFnNameUri, const String& aFnNameLocal, int arity) const = 0;
+
+      virtual void
+      findFunctions(const Item& aQName, std::vector<Function_t>& aFunctions) const = 0;
+
+      virtual void
+      disableFunction(const Function_t& aFunction) = 0;
+
+      virtual void
+      disableFunction(const Item& aQName, int arity) = 0;
 
       /** \brief Set the type of the context item.
        */

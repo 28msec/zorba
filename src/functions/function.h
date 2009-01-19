@@ -62,6 +62,7 @@ public:
 	const store::Item_t& get_fname() const { return sig.get_name(); }
 	void set_signature(signature& _sig) { sig = _sig; }
   const signature& get_signature() const { return sig; }
+  int  get_arity() const { return sig.arg_count(); }
 
 	// codegen: functor specification
 	virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const = 0;

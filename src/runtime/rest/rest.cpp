@@ -374,7 +374,7 @@ int processReply(store::Item_t& result,
 
           std::istringstream is(strOut, istringstream::in);
 #else
-		  std::istream is(theStreamBuffer);
+		      std::istream is(theStreamBuffer);
 #endif
           temp = GENV_STORE.loadDocument(lUriString.theStrStore, is);
         }
@@ -400,7 +400,7 @@ int processReply(store::Item_t& result,
         store::Item_t temp;
         std::istream is(theStreamBuffer);
         temp = GENV_STORE.loadDocument(lUriString.theStrStore, is);
-		if (temp != NULL)
+		    if (temp != NULL)
         {
           store::Iterator_t doc_children = temp->getChildren();
           doc_children->open();
@@ -499,7 +499,7 @@ void processHeader(store::Item_t& headers, curl_slist** headers_list)
 
   if (headers->getNodeKind() != store::StoreConsts::elementNode)
   {
-	// top node should be element node
+	  // top node should be element node
     ZORBA_ERROR(API0050_REST_ERROR_HEADER);
     return;
   }
@@ -544,7 +544,7 @@ void processHeader(store::Item_t& headers, curl_slist** headers_list)
   }
   else 
   {
-	ZORBA_ERROR(API0050_REST_ERROR_HEADER);
+	  ZORBA_ERROR(API0050_REST_ERROR_HEADER);
   }
 }
 

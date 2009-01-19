@@ -265,6 +265,46 @@ context_example_9(Zorba* aZorba)
 	return true;
 }
 
+/**
+ * Example to show the findFunctions function of the static context
+ */
+bool
+context_example_10(Zorba* aZorba)
+{
+  StaticContext_t lContext = aZorba->createStaticContext();
+
+  try {
+    Item lQName = aZorba->getItemFactory()->createQName("http://www.w3.org/2005/xpath-functions", "doc");
+
+    std::vector<Function_t> lFunctions;
+    lContext->findFunctions(lQName, lFunctions);
+
+    std::cout << "Number of Functions " << lFunctions.size() << std::endl;
+    for (std::vector<Function_t>::const_iterator lIter = lFunctions.begin();
+         lIter != lFunctions.end(); ++lIter) {
+      std::cout << "Function Name " << (*lIter)->getFunctionName().getStringValue() << std::endl;
+      std::cout << "  requires dynamic context " << (*lIter)->requiresDynamicContext() << std::endl;
+      std::cout << "  is updating " << (*lIter)->isUpdating() << std::endl;
+      std::cout << "  arity " << (*lIter)->getArity() << std::endl;
+
+//      lContext->disableFunction(*lIter);
+    }
+
+//  try {
+//    XQuery_t lQuery = aZorba->compileQuery("fn:doc('test.xml')", lContext);
+//  } catch (StaticException &se) {
+//    std::cerr << se << std::endl;
+//    return true;
+//  }
+//  return false;
+  } catch (ZorbaException &e) {
+    std::cerr << e << std::endl;
+    return false;
+  }
+
+	return true; // TODO change to false as soon as disableFunction works
+}
+
 
 int 
 context(int argc, char* argv[])
@@ -316,6 +356,11 @@ context(int argc, char* argv[])
 
     std::cout << "executing example_9" << std::endl;
     res = context_example_9(lZorba);
+    if (!res) return 1; 
+    std::cout << std::endl;
+
+    std::cout << "executing example_10" << std::endl;
+    res = context_example_10(lZorba);
     if (!res) return 1; 
     std::cout << std::endl;
 

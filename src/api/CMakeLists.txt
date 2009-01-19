@@ -34,6 +34,7 @@ SET(API_SRCS
     resultiteratorchainer.cpp
     collectionimpl.cpp
     options.cpp
+    functionimpl.cpp
     )
 
 SET(API_BUILD_SRCS

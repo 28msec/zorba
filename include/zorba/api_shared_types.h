@@ -33,6 +33,7 @@ namespace zorba {
   class TypeIdentifier;
   class ItemSequence;
   class Collection;
+  class Function;
 
   class ErrorHandler;
 
@@ -50,6 +51,7 @@ namespace zorba {
   typedef zorba::SmartPtr<Iterator>                   Iterator_t;
   typedef zorba::SmartPtr<TypeIdentifier>             TypeIdentifier_t;
   typedef zorba::SmartPtr<Collection>                 Collection_t;
+  typedef zorba::SmartPtr<Function>                   Function_t;
 
   // auto pointer (used for transfering ownership of the return type of external functions)
   typedef std::auto_ptr<ItemSequence>                   ItemSequence_t;
