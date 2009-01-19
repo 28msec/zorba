@@ -28,7 +28,14 @@ public:
   rest_get(const signature&);
 
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+};
+
+class rest_get_tidy : public function
+{
+  public:
+    rest_get_tidy(const signature&);
+
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 class rest_post : public function

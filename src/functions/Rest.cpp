@@ -27,15 +27,18 @@ rest_get::rest_get(const signature& sig)
 PlanIter_t
 rest_get::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new ZorbaRestGetIterator(loc, argv);
+  return new ZorbaRestGetIterator(loc, argv, false);
 }
 
-xqtref_t
-rest_get::return_type (const std::vector<xqtref_t> &arg_types) const
+rest_get_tidy::rest_get_tidy(const signature& sig)
+  : function(sig)
+{}
+
+PlanIter_t
+rest_get_tidy::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+  return new ZorbaRestGetIterator(loc, argv, true);
 }
-
 
 rest_post::rest_post(const signature& sig)
   : function(sig)

@@ -804,8 +804,8 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
   store::Item_t item, lUri, payload_data, headers, tidyUserOpt;
   xqpString     Uri;
   curl_slist    *headers_list = NULL;
-  bool          hasOpt = false;
   int           code;
+  uint          index;
 
   ZorbaRestGetIteratorState* state;
   DEFAULT_STACK_INIT(ZorbaRestGetIteratorState, state, planState);
@@ -828,30 +828,23 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
     while (CONSUME(headers, 2))
       processHeader(headers, &headers_list);
 #else
-  if(theChildren.size() == 4)
+  if(isGetTidy)
   {
-    CONSUME(tidyUserOpt, 1);
-    while (CONSUME(payload_data, 2))
-      Uri = processGetPayload(payload_data, Uri);
-
-    while (CONSUME(headers, 3))
-      processHeader(headers, &headers_list);
+    index = 2;
+    if (theChildren.size() > 1)
+      CONSUME(tidyUserOpt, 1);
   }
   else
-  {
-    while (CONSUME(payload_data, 1))
-      if(payload_data->isNode())
-        Uri = processGetPayload(payload_data, Uri);
-      else
-      {
-        tidyUserOpt = payload_data;
-        hasOpt = true;
-      }
+    index = 1;
 
-    if(theChildren.size() == 3  && !hasOpt)
-      while (CONSUME(headers, 2))
-        processHeader(headers, &headers_list);
-  }
+  if (theChildren.size() > index)
+    while (CONSUME(payload_data, index))
+      Uri = processGetPayload(payload_data, Uri);
+
+  if (theChildren.size() > (index + 1))
+    while (CONSUME(headers, (index + 1)))
+      processHeader(headers, &headers_list);
+
 #endif
 
   curl_easy_setopt(state->EasyHandle, CURLOPT_URL, Uri.c_str());

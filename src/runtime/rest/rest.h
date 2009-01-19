@@ -88,8 +88,9 @@ public:
 class ZorbaRestGetIterator : public NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState > 
 {
 public:                                                                  
-  ZorbaRestGetIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren) 
-    : NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState >(loc, aChildren)
+  ZorbaRestGetIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool tidy = false)
+    : NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState >(loc, aChildren),
+      isGetTidy(tidy)
   { } 
 
   bool
@@ -106,6 +107,8 @@ public:
     }
     v.endVisit(*this);
   }
+private:
+  bool isGetTidy;
 };
 
 /****************************************************************************
