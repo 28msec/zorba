@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef ZORBA_NO_UNICODE
+#include <unicode/regex.h>
+#endif
 #include <memory>
 #include "zorbatypes/xqpstring.h"
 
 #ifndef ZORBA_NO_UNICODE
-#include <unicode/regex.h>
 #include "zorbatypes/Unicode_util.h"
 #include "zorbatypes/utf8.h"
 #include "zorbatypes/numconversions.h"
