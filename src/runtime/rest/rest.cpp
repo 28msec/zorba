@@ -805,7 +805,7 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
   xqpString     Uri;
   curl_slist    *headers_list = NULL;
   int           code;
-  uint          index;
+  uint32_t      index;
 
   ZorbaRestGetIteratorState* state;
   DEFAULT_STACK_INIT(ZorbaRestGetIteratorState, state, planState);
