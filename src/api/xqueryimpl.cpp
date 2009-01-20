@@ -758,11 +758,7 @@ void XQueryImpl::setDebugMode( bool aDebugMode )
 
 bool XQueryImpl::isDebugMode() const
 {
-  if ( theDebugger == 0 )
-  {
-    return false;
-  }
-  return true;
+  return ( theDebugger != 0 );
 }
 
 void XQueryImpl::setProfileName(std::string aProfileName)
@@ -778,7 +774,7 @@ std::string XQueryImpl::getProfileName() const
 
 void XQueryImpl::checkIsDebugMode() const
 {
-  if ( theDebugger == 0 )
+  if ( ! isDebugMode() )
   {
     ZORBA_ERROR_DESC( API0032_QUERY_NOT_COMPILED_IN_DEBUG_MODE,
                       "Can't perform the operation because the debug mode is not set to true");
