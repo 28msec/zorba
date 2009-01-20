@@ -61,6 +61,9 @@ namespace zorba {
 
       virtual void checkDepth (const QueryLoc &loc);
 
+      virtual bool
+      isUpdating() const;
+
   };
 
 } /* namespace zorba */

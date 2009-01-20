@@ -62,24 +62,7 @@ ZORBA_THREAD_RETURN runQuery(void *aQuery);
 class ZorbaDebugger
 {
   public:
-    ZorbaDebugger():
-      theQuery(0),
-      theOutputStream(0),
-      theSerOptions(0),
-      theRequestServerSocket(0), 
-      theEventSocket(0), 
-      theStatus( QUERY_IDLE  ),
-      thePlanState(0),
-      theRuntimeThread(0),
-      isSteppingOver(false),
-      isSteppingInto(false),
-      isSteppingOut(false),
-      theProfiler(0),
-      isFunctionExecution(false),
-      catchFunctionExecution(false)
-  {
-  }
-
+    ZorbaDebugger();
     virtual ~ZorbaDebugger();
 
     void runQuery();

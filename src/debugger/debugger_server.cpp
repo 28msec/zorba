@@ -44,6 +44,10 @@
 #include "api/unmarshaller.h"
 #include "api/itemfactoryimpl.h"
 
+#include "system/globalenv.h"
+#include "store/api/pul.h"
+#include "store/api/item_factory.h"
+
 #include "zorbatypes/numconversions.h"
 
 #include "common/shared_types.h"
@@ -66,8 +70,28 @@ ZORBA_THREAD_RETURN runtimeThread( void *aDebugger )
   return 0;
 }
 
+ZorbaDebugger::ZorbaDebugger():
+      theQuery(0),
+      theOutputStream(0),
+      theSerOptions(0),
+      theRequestServerSocket(0), 
+      theEventSocket(0), 
+      theStatus( QUERY_IDLE  ),
+      thePlanState(0),
+      theRuntimeThread(0),
+      isSteppingOver(false),
+      isSteppingInto(false),
+      isSteppingOut(false),
+      theProfiler(0),
+      isFunctionExecution(false),
+      catchFunctionExecution(false)
+  {
+  }
+
+
 ZorbaDebugger::~ZorbaDebugger()
 {
+  delete theProfiler;
   delete theRequestServerSocket;
   delete theEventSocket;
 }
@@ -95,10 +119,8 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
   clog << "[Server Thread] Client connected" << std::endl;
 #endif
   //Try to connect to the event server 3 times
-  for ( unsigned int i = 0; i < 3 && ! theEventSocket; i++ )
-  {
-    try
-    {
+  for ( unsigned int i = 0; i < 3 && ! theEventSocket; i++ ) {
+    try {
       //Wait one second before trying to reconnect
       sleep(1);
       //Connect the client to the event server
@@ -127,7 +149,6 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
   clog << "[Server Thread] server quited" << std::endl;
 #endif
   delete theRuntimeThread;
-  delete theProfiler;
 #ifndef NDEBUG
   clog << "[Server Thread] runtime thread quited" << std::endl;
 #endif 
@@ -227,10 +248,13 @@ void ZorbaDebugger::runQuery()
   setStatus( QUERY_RUNNING );
   try
   {
-    Zorba_SerializerOptions_t lSerOptions;
-    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-    theQuery->serialize( *theOutputStream, theSerOptions );
-    theOutputStream->flush();
+    if (theQuery->isUpdateQuery()) {
+      theQuery->applyUpdates();
+      *theOutputStream << "Query doesn't have a result because it is an updating query.";
+    } else {
+      theQuery->serialize( *theOutputStream, theSerOptions );
+      theOutputStream->flush();
+    }
   }catch(zorba::StaticException& se){
     std::cerr << se << std::endl;
   }catch(zorba::DynamicException& e){
@@ -525,16 +549,34 @@ void ZorbaDebugger::eval( xqpString anExpr )
       store::Item_t lItem;
       list< pair<xqpString, xqpString> > lValuesAndTypes;
 
-      error::ErrorManager lErrorManger;
-      serializer lSerializer(&lErrorManger);
-      lSerializer.set_parameter("omit-xml-declaration", "yes");
+      if (lIterator->isUpdating()) {
+        if (lIterator->next(lItem))
+        {
+          if (!lItem->isPul())
+            ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR,
+                             "Query does not return a pending update list");
 
-      while (lIterator->next(lItem)) {
-        ostringstream os;
-        lSerializer.serialize(lItem, os);
-        xqpString lValue = os.str();
-        xqpString lType( lItem->getType()->getStringValue() );
-        lValuesAndTypes.push_back(pair<xqpString, xqpString>(lValue, lType));
+          std::set<zorba::store::Item*> validationNodes;
+          QueryLoc loc;
+
+          store::Item_t validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
+#ifndef ZORBA_NO_XMLSCHEMA
+//          validateAfterUpdate(validationNodes, validationPul, theStaticContext, loc);
+#endif  
+          validationPul->applyUpdates(validationNodes);
+        }
+      } else {
+        error::ErrorManager lErrorManger;
+        serializer lSerializer(&lErrorManger);
+        lSerializer.set_parameter("omit-xml-declaration", "yes");
+
+        while (lIterator->next(lItem)) {
+          ostringstream os;
+          lSerializer.serialize(lItem, os);
+          xqpString lValue = os.str();
+          xqpString lType( lItem->getType()->getStringValue() );
+          lValuesAndTypes.push_back(pair<xqpString, xqpString>(lValue, lType));
+        }
       }
       lMsg.reset(new EvaluatedEvent(anExpr, lValuesAndTypes));
     } catch ( error::ZorbaError& e) {
