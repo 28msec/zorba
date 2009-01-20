@@ -16,6 +16,7 @@
 #include "common/common.h"
 #include <assert.h>
 #include <time.h>
+#include <sys/timeb.h>
 
 #include "store/api/iterator.h"
 #include "store/api/temp_seq.h"
@@ -50,25 +51,27 @@ void dynamic_context::init()
 
 dynamic_context::dynamic_context(dynamic_context *parent)
 {
-	this->parent = parent;
-	if(!parent)
-	{
-    // set the current time 
-		time_t		t0 = time(NULL);
+  this->parent = parent;
+  if(!parent)
+  {
 #if defined (WIN32)
-		struct	::tm	gmtm;
-    localtime_s(&gmtm, &t0); //thread safe localtime on Windows
+    struct _timeb timebuffer;
+    _ftime_s( &timebuffer );
+    struct ::tm gmtm;
+    localtime_s(&gmtm, &timebuffer.time); //thread safe localtime on Windows
 #else
-		struct	::tm	gmtm;
-    localtime_r(&t0, &gmtm); //thread safe localtime on Linux
+    struct timeb timebuffer;
+    ftime( &timebuffer );
+    struct ::tm gmtm;
+    localtime_r(&timebuffer.time, &gmtm); //thread safe localtime on Linux
 #endif
 
-		implicit_timezone = 0;
+      implicit_timezone = 0;
 
-    GENV_ITEMFACTORY->createDateTime(current_date_time_item, gmtm.tm_year + 1900, gmtm.tm_mon + 1, gmtm.tm_mday, 
-                                                              gmtm.tm_hour, gmtm.tm_min, gmtm.tm_sec, implicit_timezone);
+      GENV_ITEMFACTORY->createDateTime(current_date_time_item, gmtm.tm_year + 1900, gmtm.tm_mon + 1, gmtm.tm_mday, 
+		  gmtm.tm_hour, gmtm.tm_min, gmtm.tm_sec + timebuffer.millitm/1000.0, implicit_timezone);
     
-		ctxt_position = 0;
+	  ctxt_position = 0;
 	}
 	else
 	{
