@@ -351,7 +351,7 @@ int processReply(store::Item_t& result,
         if(tidyUserOpt == NULL)
         {
           std::istream is(theStreamBuffer);
-          temp = GENV_STORE.loadDocument(lUriString.theStrStore, is);
+          temp = GENV_STORE.loadDocument(lUriString.theStrStore, is, false);
         }
         else
         {
@@ -376,7 +376,7 @@ int processReply(store::Item_t& result,
 #else
 		      std::istream is(theStreamBuffer);
 #endif
-          temp = GENV_STORE.loadDocument(lUriString.theStrStore, is);
+          temp = GENV_STORE.loadDocument(lUriString.theStrStore, is, false);
         }
         
         if (temp != NULL)
@@ -399,7 +399,7 @@ int processReply(store::Item_t& result,
       {
         store::Item_t temp;
         std::istream is(theStreamBuffer);
-        temp = GENV_STORE.loadDocument(lUriString.theStrStore, is);
+        temp = GENV_STORE.loadDocument(lUriString.theStrStore, is, false);
 		    if (temp != NULL)
         {
           store::Iterator_t doc_children = temp->getChildren();
