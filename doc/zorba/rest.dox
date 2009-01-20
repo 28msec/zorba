@@ -34,12 +34,12 @@ In order to use the functions that require Tidy you have to:\n
 
 \code
  declare nondeterministic sequential function zorba-rest:getTidy( url as xs:string,
-                                                                  $tidyOptions as xs:string?)               as element(zorba-rest:result);
+                                                                  $tidyOptions as xs:string)                as element(zorba-rest:result);
  declare nondeterministic sequential function zorba-rest:getTidy( url as xs:string,
-                                                                  $tidyOptions as xs:string?,
+                                                                  $tidyOptions as xs:string,
                                                                   payload as element(zorba-rest:payload))   as element(zorba-rest:result);
  declare nondeterministic sequential function zorba-rest:getTidy( url as xs:string,
-                                                                  $tidyOptions as xs:string?
+                                                                  $tidyOptions as xs:string
                                                                   payload as element(zorba-rest:payload),
                                                                   headers as element(zorba-rest:headers)*)  as element(zorba-rest:result);
 \endcode

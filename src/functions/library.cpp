@@ -748,14 +748,14 @@ DECL(sctx, rest_get,
 DECL(sctx, rest_get_tidy,
       (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "getTidy"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.STRING_TYPE_QUESTION, //$tidyOptions
+      GENV_TYPESYSTEM.STRING_TYPE_ONE, //$tidyOptions
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 // zorba-rest:get with an URI and a payload
 DECL(sctx, rest_get_tidy,
      (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "getTidy"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.STRING_TYPE_QUESTION, //$tidyOptions
+      GENV_TYPESYSTEM.STRING_TYPE_ONE, //$tidyOptions
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
@@ -763,7 +763,7 @@ DECL(sctx, rest_get_tidy,
 DECL(sctx, rest_get_tidy,
      (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "getTidy"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.STRING_TYPE_QUESTION, //$tidyOptions
+      GENV_TYPESYSTEM.STRING_TYPE_ONE, //$tidyOptions
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
