@@ -140,20 +140,18 @@ void Schema::registerXSD(const char* xsdURL, const QueryLoc& loc)
     }
     catch (const OutOfMemoryException&)
     {
-        std::cerr << "OutOfMemoryException during parsing: '" << xsdURL << "'\n" << std::endl;
-        ZORBA_ERROR_LOC_DESC (XQST0059, loc, std::string("OutOfMemoryException during parsing ") + std::string(xsdURL));
+      ZORBA_ERROR_LOC_DESC (XQST0059, loc, std::string("OutOfMemoryException during parsing ") + std::string(xsdURL));
     }
     catch (const XMLException& e)
     {
-        std::cerr << "\nError during parsing: '" << xsdURL << "'\n"
-        << "Exception message is:  \n"
-        << StrX(e.getMessage()) << std::endl;
-        ZORBA_ERROR_LOC_DESC( XQST0059, loc, StrX(e.getMessage()));
+      ZORBA_ERROR_LOC_DESC_OSS( XQST0059, loc, "Error during parsing: " << xsdURL << " " << StrX(e.getMessage()));
+    }
+    catch (const error::ZorbaError& e) {
+      throw e;
     }
     catch (...)
     {
-        std::cerr << "\nUnexpected exception during parsing: '" << xsdURL << "'\n" << std::endl;
-        ZORBA_ERROR_LOC_DESC (XQST0059, loc, std::string("Unexpected exception during parsing: ") + std::string(xsdURL));
+      ZORBA_ERROR_LOC_DESC (XQST0059, loc, std::string("Unexpected exception during parsing: ") + std::string(xsdURL));
     }
 
 #if 0                   // enable this to debug registered user defined schema types
@@ -739,6 +737,9 @@ bool Schema::parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aT
     catch(const OutOfMemoryException&) 
     {
         throw;
+    }
+    catch (const error::ZorbaError& e) {
+      throw e;
     }
     catch (...)
     {
