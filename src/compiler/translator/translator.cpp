@@ -3162,23 +3162,41 @@ void *begin_visit (const SchemaImport& v) {
     }
 
     rchandle<URILiteralList> atlist = v.get_at_list();
-    if (atlist == NULL || atlist->size () == 0)
-      ZORBA_ERROR_LOC_PARAM (XQST0057, loc, "(no location specified)", target_ns);
-    
-    {
-      string at = sctx_p->resolve_relative_uri ((*atlist) [0], xqp_string());
-     
+//  if (atlist == NULL || atlist->size () == 0)
+//    ZORBA_ERROR_LOC_PARAM (XQST0057, loc, "(no location specified)", target_ns);
+
+    std::vector<store::Item_t> lAtURIList;
+    store::Item_t lTargetNamespace = NULL;
+    ITEM_FACTORY->createAnyURI(lTargetNamespace, target_ns.c_str());
+    ZORBA_ASSERT(lTargetNamespace != NULL);
+
+    if (atlist != NULL) {
+      for (int i = 0; i < atlist->size(); ++i) {
+        string at = sctx_p->resolve_relative_uri((*atlist)[0], xqpString());
+        store::Item_t lAtURIItem = NULL;
+        ITEM_FACTORY->createAnyURI(lAtURIItem, at.c_str());
+        ZORBA_ASSERT(lAtURIItem != NULL);
+        lAtURIList.push_back(lAtURIItem);
 #if 0
       string prefix = sp == NULL ? "" : sp->get_prefix();
       cout << "SchemaImport: " << prefix << " : " << target_ns
            << " @ " << at << endl;
       cout << " Context: " << CTXTS << "\n";
 #endif
+      }
+    }
+
+    InternalSchemaURIResolver* lSchemaResolver = sctx_p->get_schema_uri_resolver();
+
+    try {
+      store::Item_t lSchemaUri = lSchemaResolver->resolve(lTargetNamespace, lAtURIList, sctx_p);
       
       ((DelegatingTypeManager*)CTXTS)->initializeSchema();
       Schema* schema_p = ((DelegatingTypeManager*)CTXTS)->getSchema();
       
-      schema_p->registerXSD (at.c_str (), loc);
+      schema_p->registerXSD (lSchemaUri->getStringValue()->c_str (), loc);
+    } catch (error::ZorbaError& e) {
+      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
     }
 
     return no_state;

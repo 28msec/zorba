@@ -40,7 +40,9 @@ namespace zorba {
         UR_FODC0005,
         // modules
         UR_XQST0088,
-        UR_XQST0046
+        UR_XQST0046,
+        // schemas
+        UR_XQST0057
       };
 
       URIResolverResult()
@@ -114,7 +116,7 @@ namespace zorba {
     public:
       virtual ~SchemaURIResolverResult() {}
 
-      virtual std::istream*
+      virtual Item
       getSchema() const = 0;
   };
 

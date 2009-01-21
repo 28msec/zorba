@@ -198,18 +198,17 @@ StandardCollectionURIResolver::resolve(
 }
 
 
-std::istream*
+store::Item_t
 StandardSchemaURIResolver::resolve(
     const store::Item_t& aURI,
     const std::vector<store::Item_t>& aLocationHints,
     static_context* aStaticContext)
 {
-  xqpStringStore_t lResolvedURI = aURI->getStringValue();
-  std::auto_ptr<std::istream> schemafile(
-      new std::ifstream(URI::decode_file_URI (lResolvedURI)->c_str()));
-
-  // we transfer ownership to the caller
-  return schemafile.release();
+  if (aLocationHints.size() == 0)
+    ZORBA_ERROR_DESC_OSS(XQST0057, "Could not find the schema with target namespace " << aURI->getStringValue() 
+                                   << " because no location hint has been specified.");
+  // take the first location hint
+  return aLocationHints[0];
 }
 
 

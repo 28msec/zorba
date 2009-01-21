@@ -42,6 +42,7 @@ namespace zorba {
       case URIResolverResult::UR_FODC0005: lError = FODC0005; break;
       case URIResolverResult::UR_XQST0046: lError = XQST0046; break;
       case URIResolverResult::UR_XQST0088: lError = XQST0088; break;
+      case URIResolverResult::UR_XQST0057: lError = XQST0057; break;
       case URIResolverResult::UR_NOERROR: ZORBA_ASSERT(false); break; // avoid warnings => handled in the if-statement above
     }
     zorba::String lErrorDescription = aResolverResult->getErrorDescription();
@@ -116,7 +117,7 @@ namespace zorba {
   SchemaURIResolverWrapper::SchemaURIResolverWrapper(SchemaURIResolver* aSchemaResolver)
     : theSchemaResolver(aSchemaResolver) {}
 
-  std::istream*
+  store::Item_t
   SchemaURIResolverWrapper::resolve(const store::Item_t& aURI,
                                     const std::vector<store::Item_t>& aLocationHints,
                                     static_context* aStaticContext)
@@ -135,7 +136,7 @@ namespace zorba {
                                                                                 &lOuterStaticContext);
 
     if (lResult->getError() == URIResolverResult::UR_NOERROR) {
-      return lResult->getSchema();
+      return Unmarshaller::getInternalItem(lResult->getSchema());
     } else {
       // handle errors
       handle_resolver_error(lResult.get());
