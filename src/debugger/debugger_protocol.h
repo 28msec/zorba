@@ -67,7 +67,6 @@ const Command SUSPEND       = 0x02;
 const Command RESUME        = 0x03;
 const Command TERMINATE     = 0x04;
 const Command STEP          = 0x05;
-const Command CATCH_FN_EXEC = 0x06;
 
 /* Breakpoints Commands */
 const Command SET   = 0x01;
@@ -375,19 +374,6 @@ class ZORBA_DLL_PUBLIC RunMessage: public AbstractCommandMessage
     RunMessage( Byte * aMessage, const unsigned int aLength ); 
 
     virtual ~RunMessage();
-};
-
-/*
- *
- */
-class ZORBA_DLL_PUBLIC CatchFnExecMessage: public AbstractCommandMessage
-{
-  public:
-    CatchFnExecMessage();
-
-    CatchFnExecMessage(Byte* aMessage, const unsigned int aLength);
-
-    virtual ~CatchFnExecMessage();
 };
 
 /**

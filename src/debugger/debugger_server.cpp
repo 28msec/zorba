@@ -772,11 +772,6 @@ void ZorbaDebugger::processMessage(AbstractCommandMessage * aMessage)
           step(lMessage->getStepKind());
           break;
         }
-        case CATCH_FN_EXEC:
-        {
-          catchFunctionExecution = true;
-          break;
-        }
         default: throw InvalidCommandException("Internal Error. Command not implemented for execution command set .");
     }
       break;

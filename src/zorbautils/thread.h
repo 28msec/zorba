@@ -34,7 +34,6 @@ typedef pthread_t ThreadId;
 typedef DWORD ThreadId;
 #endif
 
-
 class  Thread
 {
  private:

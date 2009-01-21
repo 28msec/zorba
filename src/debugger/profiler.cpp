@@ -41,7 +41,10 @@ namespace zorba {
       double theMark;
     
     public:
-      FnCallEntry(string aFnName, string aFileName, unsigned int aLineNo): theFnName(aFnName), theFileName(aFileName), theLineNo(aLineNo){}
+      
+      FnCallEntry(string aFnName, string aFileName, unsigned int aLineNo): theFnName(aFnName), theFileName(aFileName), theLineNo(aLineNo)
+      {
+      }
       
       ~FnCallEntry()
       {
@@ -67,6 +70,13 @@ namespace zorba {
 
       FnCallEntry* setFnName(string aFnName)
       {
+        //size_t found = aFnName.find("(");
+        //if(found != string::npos)
+        //{
+        //  theFnName = string(aFnName.begin(), aFnName.begin()+found);
+        //} else {
+        //  theFnName = aFnName;
+        //}
         theFnName = aFnName;
         return this;
       }

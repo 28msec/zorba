@@ -488,11 +488,4 @@ StackFrame_t ZorbaDebuggerClientImpl::getStack() const
   lStack.release();
   return lReturnStack;
 }
-
-bool ZorbaDebuggerClientImpl::catchFunctionCall() const
-{
-  CatchFnExecMessage lMessage;
-  auto_ptr<ReplyMessage> lReply(send(&lMessage));
-  return true;
-}
 }//end of namespace

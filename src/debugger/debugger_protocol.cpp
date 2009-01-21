@@ -306,17 +306,6 @@ RunMessage::RunMessage( Byte * aMessage, const unsigned int aLength ):
 RunMessage::~RunMessage(){}
 
 /**
- * Catch function execution message
- */
-CatchFnExecMessage::CatchFnExecMessage():
-  AbstractCommandMessage(EXECUTION, CATCH_FN_EXEC){}
-
-CatchFnExecMessage::CatchFnExecMessage(Byte* aMessage, const unsigned int aLength):
-  AbstractCommandMessage(aMessage, aLength){}
-
-CatchFnExecMessage::~CatchFnExecMessage(){}
-
-/**
  * Suspend message
  */
 SuspendMessage::SuspendMessage():

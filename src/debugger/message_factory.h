@@ -244,8 +244,6 @@ class MessageFactory
                 return new TerminateMessage( aMessage, aLength );
               case STEP:
                 return new StepMessage( aMessage, aLength );
-              case CATCH_FN_EXEC:
-                return new CatchFnExecMessage(aMessage, aLength);
             }
           }
           case BREAKPOINTS:

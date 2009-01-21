@@ -101,8 +101,6 @@ namespace zorba{
     
       StackFrame_t getStack() const;
 
-      bool catchFunctionCall() const;
-
     protected:
       static unsigned int theLastId;
 

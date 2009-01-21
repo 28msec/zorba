@@ -348,12 +348,6 @@ namespace zorba{
        */
       virtual
       StackFrame_t getStack() const = 0;
-  
-      /** \brief Catch all function executions
-       *
-       */
-      virtual
-      bool catchFunctionCall() const = 0;
   };
 }//end of namespace
 #endif
