@@ -192,26 +192,24 @@ class MyErrorReportingExternalFunction : public StatelessExternalFunction
     evaluate(const StatelessExternalFunction::Arguments_t& args) const 
     {
         // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
-        return ItemSequence_t(new LazyErrorReportingItemSequence(this, args));
+        return ItemSequence_t(new LazyErrorReportingItemSequence(args));
     }
 
   private:
     class LazyErrorReportingItemSequence : public ItemSequence {
       public:
-          LazyErrorReportingItemSequence(const MyErrorReportingExternalFunction* func, const StatelessExternalFunction::Arguments_t& args)
-              : m_func(func),
-              m_args(args),
+          LazyErrorReportingItemSequence(const StatelessExternalFunction::Arguments_t& args)
+              : m_args(args),
               m_i(0) { }
 
           bool next(Item& i)
           {
              if (!m_args[0]->next(i)) {
-              throw createZorbaException(XPTY0004, "First argument must not be the empty sequence.", __FILE__, __LINE__);
+              throw ExternalFunctionData::createZorbaException(XPTY0004, "First argument must not be the empty sequence.", __FILE__, __LINE__);
              }
              return true;
           }
       private:
-          const MyErrorReportingExternalFunction* m_func;
           StatelessExternalFunction::Arguments_t  m_args;
           size_t m_i;
     };
