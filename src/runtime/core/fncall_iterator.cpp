@@ -299,7 +299,10 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result, PlanState
   try {
     state->m_result = m_function->evaluate(state->m_extArgs);
   } catch(const ZorbaException& e) {
-    ZORBA_ERROR_LOC(e.getErrorCode(), loc);
+    // take all information from the exception raised in the external function (e.g. file name) + add loc information
+    throw error::ErrorManager::createException(e.getErrorCode(), e.getDescription().c_str(), 
+                                               e.getFileName().c_str(), e.getFileLineNumber(), 
+                                               loc.getLineBegin(), loc.getColumnBegin(), loc.getFilenameBegin());
   }
   while (true)
   {
@@ -308,7 +311,10 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result, PlanState
         break;
       }
     } catch(const ZorbaException& e) {
-      ZORBA_ERROR_LOC(e.getErrorCode(), loc);
+      // take all information from the exception raised in the external function (e.g. file name) + add loc information
+      throw error::ErrorManager::createException(e.getErrorCode(), e.getDescription().c_str(), 
+                                                 e.getFileName().c_str(), e.getFileLineNumber(), 
+                                                 loc.getLineBegin(), loc.getColumnBegin(), loc.getFilenameBegin());
     }
     result = Unmarshaller::getInternalItem(lOutsideItem);
     if (theIsUpdating)

@@ -17,6 +17,7 @@
 #define ZORBA_EXTERNAL_FUNCTION_DATA_H
 
 #include <zorba/config.h>
+#include <zorba/exception.h>
 
 namespace zorba {
 
@@ -24,6 +25,11 @@ namespace zorba {
    */
   class ZORBA_DLL_PUBLIC ExternalFunctionData 
   {
+    public:
+      static ZorbaException
+      createZorbaException(const XQUERY_ERROR& aError, const String& aDescription,
+                           const String& aFileName, unsigned int aFileLineNumber);
+
   };
 
 } /* namespace zorba */

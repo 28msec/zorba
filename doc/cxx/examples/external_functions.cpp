@@ -16,6 +16,7 @@
 
 #include <vector>
 #include <iostream>
+#include <sstream>
 
 #include <zorba/zorba.h>
 #include <zorba/external_function.h>
@@ -178,6 +179,73 @@ func_example_4(Zorba* aZorba)
 	return true;
 }
 
+class MyErrorReportingExternalFunction : public StatelessExternalFunction
+{
+  public:
+    virtual String
+    getURI() const { return "urn:foo"; }
+
+    virtual String
+    getLocalName() const { return "bar3"; }
+
+    virtual ItemSequence_t 
+    evaluate(const StatelessExternalFunction::Arguments_t& args) const 
+    {
+        // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
+        return ItemSequence_t(new LazyErrorReportingItemSequence(this, args));
+    }
+
+  private:
+    class LazyErrorReportingItemSequence : public ItemSequence {
+      public:
+          LazyErrorReportingItemSequence(const MyErrorReportingExternalFunction* func, const StatelessExternalFunction::Arguments_t& args)
+              : m_func(func),
+              m_args(args),
+              m_i(0) { }
+
+          bool next(Item& i)
+          {
+             if (!m_args[0]->next(i)) {
+              throw createZorbaException(XPTY0004, "First argument must not be the empty sequence.", __FILE__, __LINE__);
+             }
+             return true;
+          }
+      private:
+          const MyErrorReportingExternalFunction* m_func;
+          StatelessExternalFunction::Arguments_t  m_args;
+          size_t m_i;
+    };
+};
+
+bool
+func_example_5(Zorba* aZorba)
+{
+	StaticContext_t lContext = aZorba->createStaticContext();
+
+  MyErrorReportingExternalFunction lFunc;
+  
+  lContext->registerStatelessExternalFunction(&lFunc);
+
+  std::ostringstream lQueryStream;
+  lQueryStream << "declare namespace foo=\"urn:foo\";" << std::endl
+               << "declare function foo:bar3($a1) external;" << std::endl
+               << "let $s1 := ()" << std::endl
+               << "for $x in 1 to 6 return (foo:bar3($s1))" << std::endl;
+    
+	XQuery_t lQuery = aZorba->compileQuery(lQueryStream.str(), lContext); 
+
+  try {
+    std::cout << lQuery << std::endl;
+  } catch (TypeException& te) {
+    std::cerr << te << std::endl;
+    return true;
+  } catch (ZorbaException& ex) {
+    std::cerr << ex << std::endl;
+    return false; // type exception expected
+  }
+
+	return false;
+}
 int 
 external_functions(int argc, char* argv[])
 {
@@ -205,6 +273,11 @@ external_functions(int argc, char* argv[])
   if (!res) return 1; 
   std::cout << std::endl;
 
+  std::cout << std::endl  << "executing simple external function test 5" << std::endl;
+  res = func_example_5(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
+  
   lZorba->shutdown();
   simplestore::SimpleStoreManager::shutdownStore(lStore);
   return 0;

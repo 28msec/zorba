@@ -71,8 +71,10 @@ class ZORBA_DLL_PUBLIC ZorbaException
 
 protected:
   friend class ZorbaImpl;
-  /** \brief Proctected constructor - only the %Zorba engine can construct and throw
-   *         exceptions.
+  friend class ExternalFunctionData;
+
+  /** \brief Proctected constructor - only the %Zorba engine and external functions 
+   *         can construct and throw exceptions.
    */
   ZorbaException(const XQUERY_ERROR&, const String& aDescription,
                  const String& aFileName, unsigned int aFileLineNumber);
@@ -120,8 +122,8 @@ protected:
   friend ZORBA_DLL_PUBLIC std::ostream& operator<<(std::ostream&, const QueryException&);
   friend class ZorbaImpl;
 
-  /** \brief Proctected constructor - only the %Zorba engine can construct and throw
-   *         exceptions.
+  /** \brief Proctected constructor - only the %Zorba engine
+   *         can construct and throw exceptions.
    */
   QueryException(
         const XQUERY_ERROR&,
@@ -153,8 +155,8 @@ public:
   virtual ~DynamicException() throw();
 
 protected:
-  /** \brief Proctected constructor - only the %Zorba engine can construct and throw
-   *         exceptions.
+  /** \brief Proctected constructor - only the %Zorba engine
+   *         can construct and throw exceptions.
    */
   DynamicException(
         const XQUERY_ERROR&,
@@ -175,15 +177,14 @@ class ZORBA_DLL_PUBLIC StaticException : public QueryException
   friend ZORBA_DLL_PUBLIC std::ostream& operator<<(std::ostream&, const StaticException&);
   friend class ZorbaImpl;
 
-
 public:
   /** \brief Destructor
    */
   virtual ~StaticException() throw();
 
 protected:
-  /** \brief Proctected constructor - only the %Zorba engine can construct and throw
-   *         exceptions.
+  /** \brief Proctected constructor - only the %Zorba engine
+   *         can construct and throw exceptions.
    */
   StaticException(
         const XQUERY_ERROR&,
@@ -204,15 +205,14 @@ class ZORBA_DLL_PUBLIC TypeException : public QueryException
   friend ZORBA_DLL_PUBLIC std::ostream& operator<<(std::ostream&, const TypeException&);
   friend class ZorbaImpl;
 
-
 public:
   /** \brief Destructor
    */
   virtual ~TypeException() throw();
 
 protected:
-  /** \brief Proctected constructor - only the %Zorba engine can construct and throw
-   *         exceptions.
+  /** \brief Proctected constructor - only the %Zorba engine
+   *         can construct and throw exceptions.
    */
   TypeException(
         const XQUERY_ERROR&,
@@ -241,8 +241,8 @@ public:
   virtual ~SerializationException() throw();
 
 protected:
-  /** \brief Proctected constructor - only the %Zorba engine can construct and throw
-   *         exceptions.
+  /** \brief Proctected constructor - only the %Zorba engine
+   *         can construct and throw exceptions.
    */
   SerializationException(
         const XQUERY_ERROR&,
@@ -270,8 +270,8 @@ public:
   virtual ~SystemException() throw();
 
 protected:
-  /** \brief Proctected constructor - only the %Zorba engine can construct and throw
-   *         exceptions.
+  /** \brief Proctected constructor - only the %Zorba engine
+   *         can construct and throw exceptions.
    */
   SystemException(const XQUERY_ERROR&, const String& aDescription,
                   const String& afilename, unsigned int afilelinenumber);

@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_EXCEPTION_H
-#define ZORBA_EXCEPTION_H
-
 #include <ostream>
 #include <zorba/exception.h>
 #include <zorba/error.h>
@@ -252,5 +249,3 @@ std::ostream& operator<< (std::ostream& os, const SystemException& aException)
 
 
 } /* namespace zorba */
-
-#endif

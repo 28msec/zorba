@@ -35,6 +35,7 @@ SET(API_SRCS
     collectionimpl.cpp
     options.cpp
     functionimpl.cpp
+    external_function_data.cpp
     )
 
 SET(API_BUILD_SRCS
