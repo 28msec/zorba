@@ -38,6 +38,7 @@
 #include "CollectionsImpl.h"
 
 #include "api/serialization/serializer.h"
+#include "store/api/copymode.h"
 
 #include <fstream>
 
@@ -507,8 +508,25 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
   // also add some optional nodes to the collection
   if(theChildren.size() == 2) 
   {
+    static_context* sctx;
+    store::CopyMode lCopyMode;
+    bool typePreserve;
+    bool nsPreserve;
+    bool nsInherit;
+    
+    sctx = aPlanState.theRuntimeCB->theStaticContext;
+
+    typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+                    true : false);
+    nsPreserve = (sctx->preserve_mode() == StaticContextConsts::preserve_ns ?
+                  true : false);
+    nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
+                 true : false);
+
+    lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
+
     while (consumeNext(item, theChildren[1].getp(), aPlanState))
-      pul->addInsertIntoCollection(aPlanState.sctx(), lUri, item);
+      pul->addInsertIntoCollection(aPlanState.sctx(), lUri, item, lCopyMode);
   }
 
   result = pul.release();
@@ -625,8 +643,25 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
   std::vector<store::Item_t> nodes;
   std::auto_ptr<store::PUL>  pul;
 
+  static_context* sctx;
+  store::CopyMode lCopyMode;
+  bool typePreserve;
+  bool nsPreserve;
+  bool nsInherit;
+
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  sctx = planState.theRuntimeCB->theStaticContext;
+
+  typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+                  true : false);
+  nsPreserve = (sctx->preserve_mode() == StaticContextConsts::preserve_ns ?
+                true : false);
+  nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
+               true : false);
+
+  lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
 
   if((theChildren.size()==1) ||
      ((theChildren.size()==2) &&
@@ -646,7 +681,7 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   item = coll->getUri();
-  pul->addInsertFirstIntoCollection(planState.sctx(), item, nodes);
+  pul->addInsertFirstIntoCollection(planState.sctx(), item, nodes, lCopyMode);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -684,8 +719,25 @@ ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
   std::vector<store::Item_t> nodes;
   std::auto_ptr<store::PUL>  pul;
 
+  static_context* sctx;
+  store::CopyMode lCopyMode;
+  bool typePreserve;
+  bool nsPreserve;
+  bool nsInherit;
+
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  sctx = planState.theRuntimeCB->theStaticContext;
+
+  typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+                  true : false);
+  nsPreserve = (sctx->preserve_mode() == StaticContextConsts::preserve_ns ?
+                true : false);
+  nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
+               true : false);
+
+  lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
 
   if((theChildren.size()==1) ||
      ((theChildren.size()==2) &&
@@ -705,7 +757,7 @@ ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   item = coll->getUri();
-  pul->addInsertLastIntoCollection(planState.sctx(), item, nodes);
+  pul->addInsertLastIntoCollection(planState.sctx(), item, nodes, lCopyMode);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -752,8 +804,25 @@ ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planSt
   std::vector<store::Item_t> nodes;
   std::auto_ptr<store::PUL>  pul;
 
+  static_context* sctx;
+  store::CopyMode lCopyMode;
+  bool typePreserve;
+  bool nsPreserve;
+  bool nsInherit;
+
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  sctx = planState.theRuntimeCB->theStaticContext;
+
+  typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+                  true : false);
+  nsPreserve = (sctx->preserve_mode() == StaticContextConsts::preserve_ns ?
+                true : false);
+  nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
+               true : false);
+
+  lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
 
   if((theChildren.size()==2) ||
      ((theChildren.size()==3) &&
@@ -790,7 +859,7 @@ ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planSt
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   tmpItem = coll->getUri();
-  pul->addInsertBeforeIntoCollection(planState.sctx(), tmpItem, itemTarget, nodes);
+  pul->addInsertBeforeIntoCollection(planState.sctx(), tmpItem, itemTarget, nodes, lCopyMode);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-2]->reset(planState);
@@ -832,8 +901,25 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
   std::vector<store::Item_t> nodes;
   std::auto_ptr<store::PUL>  pul;
 
+  static_context* sctx;
+  store::CopyMode lCopyMode;
+  bool typePreserve;
+  bool nsPreserve;
+  bool nsInherit;
+
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  sctx = planState.theRuntimeCB->theStaticContext;
+
+  typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+                  true : false);
+  nsPreserve = (sctx->preserve_mode() == StaticContextConsts::preserve_ns ?
+                true : false);
+  nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
+               true : false);
+
+  lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
 
   if((theChildren.size()==2) ||
      ((theChildren.size()==3) &&
@@ -870,7 +956,7 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
     nodes.push_back(tmpItem);
 
   tmpItem = coll->getUri();
-  pul->addInsertAfterIntoCollection(planState.sctx(), tmpItem, itemTarget, nodes);
+  pul->addInsertAfterIntoCollection(planState.sctx(), tmpItem, itemTarget, nodes, lCopyMode);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-2]->reset(planState);
@@ -914,8 +1000,25 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   std::auto_ptr<store::PUL>  pul;
   xqp_uint                   pos;
 
+  static_context* sctx;
+  store::CopyMode lCopyMode;
+  bool typePreserve;
+  bool nsPreserve;
+  bool nsInherit;
+
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  sctx = planState.theRuntimeCB->theStaticContext;
+
+  typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+                  true : false);
+  nsPreserve = (sctx->preserve_mode() == StaticContextConsts::preserve_ns ?
+                true : false);
+  nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
+               true : false);
+
+  lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
 
   if((theChildren.size()==2) ||
      ((theChildren.size()==3) &&
@@ -952,7 +1055,7 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
     nodes.push_back(tmpItem);
 
   tmpItem = coll->getUri();
-  pul->addInsertAtIntoCollection(planState.sctx(), tmpItem, pos, nodes);
+  pul->addInsertAtIntoCollection(planState.sctx(), tmpItem, pos, nodes, lCopyMode);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-2]->reset(planState);

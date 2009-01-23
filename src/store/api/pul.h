@@ -137,37 +137,43 @@ public:
         Item_t&              resolvedURI) = 0;
 
   virtual void addInsertIntoCollection(
-        static_context*      aStaticContext,
-        Item_t&              resolvedURI,
-        Item_t&              nodes) = 0;             
+        static_context*             aStaticContext,
+        Item_t&                     resolvedURI,
+        Item_t&                     nodes,            
+        const store::CopyMode&      copymode) = 0;
 
   virtual void addInsertFirstIntoCollection(
-        static_context*      aStaticContext,
-        Item_t&              resolvedURI,
-        std::vector<store::Item_t>& nodes) = 0;
+        static_context*             aStaticContext,
+        Item_t&                     resolvedURI,
+        std::vector<store::Item_t>& nodes,
+        const store::CopyMode&      copymode) = 0;
 
   virtual void addInsertLastIntoCollection(
-        static_context*      aStaticContext,
-        Item_t&              resolvedURI,
-        std::vector<store::Item_t>& nodes) = 0;
+        static_context*             aStaticContext,
+        Item_t&                     resolvedURI,
+        std::vector<store::Item_t>& nodes,
+        const store::CopyMode&      copymode) = 0;
 
   virtual void addInsertBeforeIntoCollection(
-        static_context*      aStaticContext,
-        Item_t&              resolvedURI,
-        Item_t&              target,
-        std::vector<store::Item_t>& nodes) = 0;
+        static_context*             aStaticContext,
+        Item_t&                     resolvedURI,
+        Item_t&                     target,
+        std::vector<store::Item_t>& nodes,
+        const store::CopyMode&      copymode) = 0;
 
   virtual void addInsertAfterIntoCollection(
-        static_context*      aStaticContext,
-        Item_t&              resolvedURI,
-        Item_t&              target,
-        std::vector<store::Item_t>& nodes) = 0;
+        static_context*             aStaticContext,
+        Item_t&                     resolvedURI,
+        Item_t&                     target,
+        std::vector<store::Item_t>& nodes,
+        const store::CopyMode&      copymode) = 0;
 
   virtual void addInsertAtIntoCollection(
-        static_context*      aStaticContext,
-        Item_t&              resolvedURI,
-        ulong                pos,
-        std::vector<store::Item_t>& nodes) = 0;
+        static_context*             aStaticContext,
+        Item_t&                     resolvedURI,
+        ulong                       pos,
+        std::vector<store::Item_t>& nodes,
+        const store::CopyMode&      copymode) = 0;
 
   virtual void addRemoveFromCollection(
         static_context*      aStaticContext,

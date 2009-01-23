@@ -197,37 +197,43 @@ public:
         store::Item_t&              resolvedURI);
 
   void addInsertIntoCollection(
-        static_context*      aStaticContext,
+        static_context*             aStaticContext,
         store::Item_t&              resolvedURI,
-        store::Item_t&       node);             
+        store::Item_t&              node,             
+        const store::CopyMode&      copymode);
 
   void addInsertFirstIntoCollection(
-        static_context*      aStaticContext,
-        store::Item_t&               resolvedURI,
-        std::vector<store::Item_t>& nodes);
+        static_context*             aStaticContext,
+        store::Item_t&              resolvedURI,
+        std::vector<store::Item_t>& nodes,
+        const store::CopyMode&      copymode);
 
   void addInsertLastIntoCollection(
-        static_context*      aStaticContext,
-        store::Item_t&               resolvedURI,
-        std::vector<store::Item_t>& nodes);
+        static_context*             aStaticContext,
+        store::Item_t&              resolvedURI,
+        std::vector<store::Item_t>& nodes,
+        const store::CopyMode&      copymode);
 
   void addInsertBeforeIntoCollection(
-        static_context*      aStaticContext,
+        static_context*             aStaticContext,
         store::Item_t&              resolvedURI,
-        store::Item_t&       target,
-        std::vector<store::Item_t>& nodes);
+        store::Item_t&              target,
+        std::vector<store::Item_t>& nodes,
+        const store::CopyMode&      copymode);
 
   void addInsertAfterIntoCollection(
-        static_context*      aStaticContext,
+        static_context*             aStaticContext,
         store::Item_t&              resolvedURI,
-        store::Item_t&       target,
-        std::vector<store::Item_t>& nodes);
+        store::Item_t&              target,
+        std::vector<store::Item_t>& nodes,
+        const store::CopyMode&      copymode);
 
   void addInsertAtIntoCollection(
-        static_context*      aStaticContext,
+        static_context*             aStaticContext,
         store::Item_t&              resolvedURI,
-        ulong                pos,
-        std::vector<store::Item_t>& nodes);
+        ulong                       pos,
+        std::vector<store::Item_t>& nodes,
+        const store::CopyMode&      copymode);
 
   void addRemoveFromCollection(
         static_context*      aStaticContext,
@@ -914,12 +920,14 @@ class UpdInsertIntoCollection : public UpdCollection
 {
 protected:
   store::Item_t            theNode;
+  store::CopyMode          theCopyMode;
 
 public:
-  UpdInsertIntoCollection(PULImpl* pul, static_context* aStaticContext, store::Item_t& targetCollectionUri, store::Item_t& node)
+  UpdInsertIntoCollection(PULImpl* pul, static_context* aStaticContext, store::Item_t& targetCollectionUri, 
+                          store::Item_t& node, store::CopyMode aCopyMode)
       :
       UpdCollection(pul, aStaticContext, targetCollectionUri),
-      theNode(node)
+      theNode(node), theCopyMode(aCopyMode)
   {
   }
 
@@ -936,14 +944,15 @@ class UpdInsertFirstIntoCollection : public  UpdCollection
 {
 protected:
   std::vector<store::Item_t>  theNodes;
+  store::CopyMode             theCopyMode;
 
 public:
   UpdInsertFirstIntoCollection(PULImpl* pul, static_context* aStaticContext,
       store::Item_t& targetCollectionUri,
-      std::vector<store::Item_t>& nodes)
+      std::vector<store::Item_t>& nodes, store::CopyMode aCopyMode)
       :
       UpdCollection(pul, aStaticContext, targetCollectionUri),
-      theNodes(nodes)
+      theNodes(nodes), theCopyMode(aCopyMode)
   {
   }
 
@@ -960,14 +969,15 @@ class UpdInsertLastIntoCollection : public  UpdCollection
 {
 protected:
   std::vector<store::Item_t>  theNodes;
+  store::CopyMode             theCopyMode;
 
 public:
   UpdInsertLastIntoCollection(PULImpl* pul, static_context* aStaticContext,
       store::Item_t& targetCollectionUri,
-      std::vector<store::Item_t>& nodes)
+      std::vector<store::Item_t>& nodes, store::CopyMode aCopyMode)
       :
       UpdCollection(pul, aStaticContext, targetCollectionUri),
-      theNodes(nodes)
+      theNodes(nodes), theCopyMode(aCopyMode)
   {
   }
 
@@ -985,16 +995,19 @@ class UpdInsertBeforeIntoCollection : public  UpdCollection
 protected:
   std::vector<store::Item_t>  theNodes;
   store::Item_t               theTarget;
+  store::CopyMode             theCopyMode;
 
 public:
   UpdInsertBeforeIntoCollection(PULImpl* pul, static_context* aStaticContext,
       store::Item_t& targetCollectionUri,
       store::Item_t&    target,
-      std::vector<store::Item_t>& nodes)
+      std::vector<store::Item_t>& nodes,
+      store::CopyMode aCopyMode)
       :
       UpdCollection(pul, aStaticContext, targetCollectionUri),
       theNodes(nodes),
-      theTarget(target)
+      theTarget(target),
+      theCopyMode(aCopyMode)
   {
   }
 
@@ -1012,16 +1025,19 @@ class UpdInsertAfterIntoCollection : public  UpdCollection
 protected:
   std::vector<store::Item_t>  theNodes;
   store::Item_t               theTarget;
+  store::CopyMode             theCopyMode;
 
 public:
   UpdInsertAfterIntoCollection(PULImpl* pul, static_context* aStaticContext,
       store::Item_t& targetCollectionUri,
       store::Item_t&    target,
-      std::vector<store::Item_t>& nodes)
+      std::vector<store::Item_t>& nodes,
+      store::CopyMode aCopyMode)
       :
       UpdCollection(pul, aStaticContext, targetCollectionUri),
       theNodes(nodes),
-      theTarget(target)
+      theTarget(target),
+      theCopyMode(aCopyMode)
   {
   }
 
@@ -1039,16 +1055,20 @@ class UpdInsertAtIntoCollection : public  UpdCollection
 protected:
   std::vector<store::Item_t>  theNodes;
   ulong                       thePos;
+  store::CopyMode             theCopyMode;
 
 public:
   UpdInsertAtIntoCollection(PULImpl* pul, static_context* aStaticContext,
       store::Item_t& targetCollectionUri,
-      ulong             pos,
-      std::vector<store::Item_t>& nodes)
+      ulong                       pos,
+      std::vector<store::Item_t>& nodes,
+      store::CopyMode             aCopyMode
+      )
       :
       UpdCollection(pul, aStaticContext, targetCollectionUri),
       theNodes(nodes),
-      thePos(pos)
+      thePos(pos),
+      theCopyMode(aCopyMode)
   {
   }
 

@@ -165,7 +165,7 @@ Summary: The function will delete all existing collections.
                                                   $newnode  as node()*    ) as none
 \endcode
 
-Summary: The function will insert the given node(s) as the first node(s) of the given collection. \n
+Summary: The function will insert copies of the given node(s) as the first node(s) of the given collection. \n
 If multiple nodes are inserted, the nodes remain adjacent and their order preserves the node ordering of the source expression.
 
 Error conditions:\n
@@ -181,7 +181,7 @@ If the collection URI is empty and the default collection is not defined in the 
                                                 $newnode  as node()*    ) as none
 \endcode
 
-Summary: The function will insert the given node(s) as the last node(s) of the given collection. \n
+Summary: The function will insert copies of the given node(s) as the last node(s) of the given collection. \n
 If multiple nodes are inserted, the nodes remain adjacent and their order preserves the node ordering of the source expression.
 
 Error conditions:\n
@@ -247,7 +247,7 @@ If the collection URI is empty and the default collection is not defined in the 
                                               $newnode  as node()*    ) as none
 \endcode
 
-Summary: Inserts the node(s) into the given collection, at the specified <b>$position</b>.\n
+Summary: Inserts copies of the node(s) into the given collection, at the specified <b>$position</b>.\n
 Note: The collection is a list of nodes that is one based indexed. \n
 If <b>$position</b> is negative, the node(s) will be inserted at the beginning of the collection.\n
 If <b>$position</b> is greater or equal to the number of nodes in the collection, the node(s) will be inserted as the last node(s) of the collection.
