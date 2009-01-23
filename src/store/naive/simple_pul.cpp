@@ -64,15 +64,20 @@ inline void cleanList(std::vector<UpdatePrimitive*> aVector)
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 PULImpl::~PULImpl()
 {
-  cleanList(theCreateCollectionList);
-  cleanList(theInsertIntoCollectionList);
   cleanList(theDoFirstList);
   cleanList(theInsertList);
   cleanList(theReplaceNodeList);
   cleanList(theReplaceContentList);
   cleanList(theDeleteList);
+  cleanList(theValidationList);
+  cleanList(theCreateCollectionList);
+  cleanList(theInsertIntoCollectionList);
   cleanList(theDeleteFromCollectionList);
   cleanList(theDeleteCollectionList);
 }
