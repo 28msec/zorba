@@ -82,8 +82,13 @@
 #ifndef NDEBUG
 #define CODEGEN_TRACE(msg)                      \
   QLOCDECL;                                     \
-  if (Properties::instance()->traceCodegen())   \
-    cout << (msg) << TRACE << ", stk size " << itstack.size () << endl;
+  if (Properties::instance()->traceCodegen()) { \
+    cout << (msg) << TRACE << ", stk size " << itstack.size () << endl; \
+    cout << endl; \
+    v.put(cout); \
+    cout << "StackTop:" << endl; \
+    print_stack(); \
+  }
 #define CODEGEN_TRACE_IN( msg )  \
   CODEGEN_TRACE (string (++depth, ' ') + msg)
 #define CODEGEN_TRACE_OUT( msg ) \
@@ -189,6 +194,16 @@ public:
 
     return false;
   }
+
+void print_stack()
+{
+  if (itstack.empty()) {
+    cout << "EMPTY" << endl;
+  } else {
+    XMLIterPrinter vp (cout);
+    print_iter_plan (vp, peek_stack(itstack));
+  }
+}
 
 
 bool begin_visit (expr& v) {
@@ -1763,6 +1778,13 @@ void end_visit (extension_expr& v) {
   CODEGEN_TRACE_OUT("");
 }
 
+PlanIter_t result()
+{
+    PlanIter_t res = pop_itstack();
+    ZORBA_ASSERT(itstack.empty());
+    return res;
+}
+
 
 };
 
@@ -1779,7 +1801,7 @@ PlanIter_t codegen(
 {
   plan_visitor c(ccb, param_var_map);
   root->accept (c);
-  PlanIter_t result = c.pop_itstack ();
+  PlanIter_t result = c.result();
 
   // HACK: print only main query if no-tree-id's is active.
   // When that happens, we are comparing iterator plans.

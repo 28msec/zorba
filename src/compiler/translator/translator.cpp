@@ -4252,8 +4252,6 @@ void *begin_visit (const PathExpr& v) {
 
   ParseConstants::pathtype_t pe_type = pe.get_type();
 
-  ZORBA_ASSERT (pe.get_relpath_expr().dyn_cast<RelativePathExpr>().getp() != NULL);
-
   expr_t result;
   rchandle<relpath_expr> path_expr = NULL;
 
@@ -4524,11 +4522,14 @@ void post_primary_visit(const FilterExpr& v, void* /*visit_state*/)
     rchandle<forlet_clause> fcOuterDot = (*flworExpr)[0];
 
     // compute the input seq for the pred (= outer_dot/primaryExpr)
-    rchandle<relpath_expr> pathStepExpr = new relpath_expr(loc);
-    pathStepExpr->add_back(fcOuterDot->get_var().getp());
-    pathStepExpr->add_back(primaryExpr.getp());
+    if (primaryExpr->get_expr_kind() == axis_step_expr_kind) {
+      rchandle<relpath_expr> pathStepExpr = new relpath_expr(loc);
+      pathStepExpr->add_back(fcOuterDot->get_var().getp());
+      pathStepExpr->add_back(primaryExpr.getp());
+      primaryExpr = pathStepExpr.getp();
+    }
     
-    rchandle<forlet_clause> lcPredSeq = wrap_in_letclause(pathStepExpr.getp());
+    rchandle<forlet_clause> lcPredSeq = wrap_in_letclause(primaryExpr.getp());
 
     flworExpr->add(lcPredSeq);
 
