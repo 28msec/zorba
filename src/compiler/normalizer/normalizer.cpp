@@ -45,7 +45,9 @@ static inline expr::expr_t wrap_in_atomization(static_context *sctx, expr::expr_
 
 static inline expr::expr_t wrap_in_typematch(expr::expr_t e, xqtref_t type)
 {
-  return new treat_expr (e->get_loc (), e, type, XPTY0004);
+  return TypeOps::is_subtype(*type, *GENV_TYPESYSTEM.ITEM_TYPE_STAR)
+    ? e
+    : new treat_expr (e->get_loc (), e, type, XPTY0004);
 }
 
 static inline expr::expr_t wrap_in_type_conversion(expr::expr_t e, xqtref_t type)
@@ -112,7 +114,7 @@ bool begin_visit (flwor_expr& node)
         ZORBA_ERROR_LOC_PARAM (XPTY0004, loc, "empty-sequence()", "");
       xqtref_t promote_type = is_for ? m_sctx->get_typemanager()->create_type (*vartype, TypeConstants::QUANT_STAR) : vartype;
       expr_t e = clause->get_expr ();
-      clause->set_expr (new treat_expr (e->get_loc (), e, promote_type, XPTY0004));
+      clause->set_expr (wrap_in_typematch (e, promote_type));
     }
   }
   return true;
@@ -333,7 +335,7 @@ void normalize_expr_tree (const char *norm_descr, CompilerCB* aCompilerCB, expr_
       root = wrap_in_atomization(aCompilerCB->m_sctx, root);
       root = wrap_in_type_conversion(root, rType);
     } else {
-      root = new treat_expr (root->get_loc (), root, rType, XPTY0004);
+      root = wrap_in_typematch (root, rType);
     }
   }
   if (aCompilerCB->m_config.normalize_cb)
