@@ -108,6 +108,20 @@ XmlDataManagerImpl::loadDocument(
   return loadDocument(uri, stream, theErrorHandler);
 }
 
+Item
+XmlDataManagerImpl::parseDocument(std::istream& aStream)
+{
+  SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
+  ErrorHandler* aErrorHandler = 0;
+  ZORBA_DM_TRY
+  {
+    xqpStringStore_t lTmp(new xqpStringStore(""));
+    return &*theStore->loadDocument(lTmp, aStream, false); 
+  }
+  ZORBA_DM_CATCH
+  return Item();
+}
+
 
 Item
 XmlDataManagerImpl::loadDocument(

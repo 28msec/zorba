@@ -45,6 +45,9 @@ class XmlDataManagerImpl : public XmlDataManager
   void
   registerErrorHandler(ErrorHandler* aErrorHandler);
 
+  Item
+  parseDocument(std::istream& aStream);
+
   Item 
   loadDocument(const String& uri, std::istream& stream);
 

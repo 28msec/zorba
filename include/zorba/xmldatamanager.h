@@ -48,6 +48,21 @@ namespace zorba {
       void
       registerErrorHandler(ErrorHandler* aErrorHandler);
 
+      /** \brief Parse an XML document and return an Item.
+       *
+       * This function parses an XML document from an input stream
+       * and returns an XDM Item.
+       * Note that this function does not store any reference to
+       * the document in the XmlDataManager.
+       *
+       * @params aStream the document given in an input stream.
+       * @return Item the document as an Item
+       * @throws ZorbaException if an error occurs.
+       *
+       */
+      virtual Item
+      parseDocument(std::istream& aStream) = 0;
+
 
       /** \brief Load a document from an input stream.
        *
