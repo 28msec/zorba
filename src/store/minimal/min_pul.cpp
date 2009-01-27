@@ -62,15 +62,20 @@ inline void cleanList(std::vector<UpdatePrimitive*> aVector)
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 PULImpl::~PULImpl()
 {
-  cleanList(theCreateCollectionList);
-  cleanList(theInsertIntoCollectionList);
   cleanList(theDoFirstList);
   cleanList(theInsertList);
   cleanList(theReplaceNodeList);
   cleanList(theReplaceContentList);
   cleanList(theDeleteList);
+  cleanList(theValidationList);
+  cleanList(theCreateCollectionList);
+  cleanList(theInsertIntoCollectionList);
   cleanList(theDeleteFromCollectionList);
   cleanList(theDeleteCollectionList);
 }
@@ -549,64 +554,70 @@ void PULImpl::addDeleteCollection(
 }
 
 void PULImpl::addInsertIntoCollection(
-    static_context*      aStaticContext,
-    store::Item_t&              resolvedURI,
-    store::Item_t&       node)
+    static_context*        aStaticContext,
+    store::Item_t&         resolvedURI,
+    store::Item_t&         node,
+    const store::CopyMode& copymode)
 {
-  UpdatePrimitive* upd = new UpdInsertIntoCollection(this, aStaticContext, resolvedURI, node);
+  UpdatePrimitive* upd = new UpdInsertIntoCollection(this, aStaticContext, resolvedURI, node, copymode);
 
   theInsertIntoCollectionList.push_back(upd);
 } 
 
 void PULImpl::addInsertFirstIntoCollection(
-    static_context*     aStaticContext,
-    store::Item_t&             resolvedURI,
-    std::vector<store::Item_t>& nodes)
+    static_context*             aStaticContext,
+    store::Item_t&              resolvedURI,
+    std::vector<store::Item_t>& nodes,
+    const store::CopyMode&      copyMode)
 {
-  UpdatePrimitive* upd = new UpdInsertFirstIntoCollection(this, aStaticContext, resolvedURI, nodes);
+  UpdatePrimitive* upd = new UpdInsertFirstIntoCollection(this, aStaticContext, resolvedURI, nodes, copyMode);
 
   theInsertIntoCollectionList.push_back(upd);
 }
 
 void PULImpl::addInsertLastIntoCollection(
-    static_context*     aStaticContext,
-    store::Item_t&             resolvedURI,
-    std::vector<store::Item_t>& nodes)
+    static_context*             aStaticContext,
+    store::Item_t&              resolvedURI,
+    std::vector<store::Item_t>& nodes,
+    const store::CopyMode&      copyMode)
 {
-  UpdatePrimitive* upd = new UpdInsertLastIntoCollection(this, aStaticContext, resolvedURI, nodes);
+  UpdatePrimitive* upd = new UpdInsertLastIntoCollection(this, aStaticContext, resolvedURI, nodes, copyMode);
 
   theInsertIntoCollectionList.push_back(upd);
 }
 
 void PULImpl::addInsertBeforeIntoCollection(
-    static_context*    aStaticContext,
-    store::Item_t&            resolvedURI,
-    store::Item_t&     target,
-    std::vector<store::Item_t>& nodes)
+    static_context*             aStaticContext,
+    store::Item_t&              resolvedURI,
+    store::Item_t&              target,
+    std::vector<store::Item_t>& nodes,
+    const store::CopyMode&      copyMode)
 {
-  UpdatePrimitive* upd = new UpdInsertBeforeIntoCollection(this, aStaticContext, resolvedURI, target, nodes);
+  UpdatePrimitive* upd = new UpdInsertBeforeIntoCollection(this, aStaticContext, resolvedURI, target, nodes, copyMode);
 
   theInsertIntoCollectionList.push_back(upd);
 }
 
 void PULImpl::addInsertAfterIntoCollection(
-    static_context*    aStaticContext,
-    store::Item_t&            resolvedURI,
-    store::Item_t&     target,
-    std::vector<store::Item_t>& nodes)
+    static_context*             aStaticContext,
+    store::Item_t&              resolvedURI,
+    store::Item_t&              target,
+    std::vector<store::Item_t>& nodes,
+    const store::CopyMode&      copyMode)
 {
-  UpdatePrimitive* upd = new UpdInsertAfterIntoCollection(this, aStaticContext, resolvedURI, target, nodes);
+  UpdatePrimitive* upd = new UpdInsertAfterIntoCollection(this, aStaticContext, resolvedURI, target, nodes, copyMode);
 
   theInsertIntoCollectionList.push_back(upd);
 }
 
 void PULImpl::addInsertAtIntoCollection(
-    static_context*    aStaticContext,
-    store::Item_t&            resolvedURI,
-    ulong              pos,
-    std::vector<store::Item_t>& nodes)
+    static_context*             aStaticContext,
+    store::Item_t&              resolvedURI,
+    ulong                       pos,
+    std::vector<store::Item_t>& nodes,
+    const store::CopyMode&      copyMode)
 {
-  UpdatePrimitive* upd = new UpdInsertAtIntoCollection(this, aStaticContext, resolvedURI, pos, nodes);
+  UpdatePrimitive* upd = new UpdInsertAtIntoCollection(this, aStaticContext, resolvedURI, pos, nodes, copyMode);
 
   theInsertIntoCollectionList.push_back(upd);
 }
@@ -1465,7 +1476,7 @@ void UpdInsertIntoCollection::apply()
                          ->resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
-  lColl->addNode(theNode.getp());
+  lColl->addNode(theNode->copy(0, 0, theCopyMode));
 
   theIsApplied = true;
 }
@@ -1493,7 +1504,7 @@ void UpdInsertFirstIntoCollection::apply()
 
   for (std::vector<store::Item_t>::reverse_iterator lIter = theNodes.rbegin();
        lIter != theNodes.rend(); ++lIter) {
-    lColl->addNode(lIter->getp(), 1);
+    lColl->addNode((*lIter)->copy(0, 0, theCopyMode), 1);
   }
 }
 
@@ -1521,7 +1532,7 @@ void UpdInsertLastIntoCollection::apply()
 
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
        lIter != theNodes.end(); ++lIter) {
-    lColl->addNode(lIter->getp(), -1);
+    lColl->addNode((*lIter)->copy(0, 0, theCopyMode), -1);
   }
 }
 
@@ -1549,7 +1560,7 @@ void UpdInsertBeforeIntoCollection::apply()
 
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
        lIter != theNodes.end(); ++lIter) {
-    lColl->addNode(lIter->getp(), theTarget, true);
+    lColl->addNode((*lIter)->copy(0, 0, theCopyMode), theTarget, true);
   }
 }
 
@@ -1577,7 +1588,7 @@ void UpdInsertAfterIntoCollection::apply()
 
   for (std::vector<store::Item_t>::reverse_iterator lIter = theNodes.rbegin();
        lIter != theNodes.rend(); ++lIter) {
-    lColl->addNode(lIter->getp(), theTarget, false);
+    lColl->addNode((*lIter)->copy(0, 0, theCopyMode), theTarget, false);
   }
 }
 
@@ -1606,7 +1617,7 @@ void UpdInsertAtIntoCollection::apply()
   ulong lPos = thePos;
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
        lIter != theNodes.end(); ++lIter) {
-    lColl->addNode(lIter->getp(), lPos++);
+    lColl->addNode((*lIter)->copy(0, 0, theCopyMode), lPos++);
   }
 }
 
