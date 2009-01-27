@@ -49,6 +49,7 @@ StaticContextImpl::StaticContextImpl(ErrorHandler* aErrorHandler)
   theUserErrorHandler(true)
 {
   theCtx = GENV.getRootStaticContext().create_child_context();
+  RCHelper::addReference (theCtx);
   if ( ! theErrorHandler ) {
     theErrorHandler = new DefaultErrorHandler();
     theUserErrorHandler = false;
@@ -86,13 +87,14 @@ StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
 {
   // hierarchy of contexts
   theCtx = aStaticContext.theCtx->create_child_context();
+  RCHelper::addReference (theCtx);
 }
 
 
 StaticContextImpl::~StaticContextImpl()
 {
   if ( ! theUserStaticContext )
-    delete theCtx;
+    RCHelper::removeReference (theCtx);
 
   if ( ! theUserErrorHandler )
     delete theErrorHandler;
@@ -118,10 +120,10 @@ bool
 StaticContextImpl::addNamespace( const String& aPrefix, const String& aURI )
 {
   ZORBA_TRY
-      xqpString lPrefix = Unmarshaller::getInternalString(aPrefix);
-      xqpString lURI = Unmarshaller::getInternalString(aURI);
-      theCtx->bind_ns(lPrefix, lURI);
-      return true;
+    xqpString lPrefix = Unmarshaller::getInternalString(aPrefix);
+    xqpString lURI = Unmarshaller::getInternalString(aURI);
+    theCtx->bind_ns(lPrefix, lURI);
+    return true;
   ZORBA_CATCH
   return false;
 }
@@ -172,9 +174,9 @@ bool
 StaticContextImpl::setDefaultFunctionNamespace( const String& aURI )
 {
   ZORBA_TRY
-      xqpString lURI = Unmarshaller::getInternalString(aURI);
-      theCtx->set_default_function_namespace(lURI);
-      return true;
+    xqpString lURI = Unmarshaller::getInternalString(aURI);
+    theCtx->set_default_function_namespace(lURI);
+    return true;
   ZORBA_CATCH
   return false;
 }
@@ -198,9 +200,9 @@ bool
 StaticContextImpl::addCollation( const String& URI )
 {
   ZORBA_TRY
-      xqpString lURI = xqpString(Unmarshaller::getInternalString(URI));
-      theCtx->add_collation(lURI);
-      return true;
+    xqpString lURI = xqpString(Unmarshaller::getInternalString(URI));
+    theCtx->add_collation(lURI);
+    return true;
   ZORBA_CATCH
   return false;
 }
@@ -210,9 +212,9 @@ bool
 StaticContextImpl::setDefaultCollation( const String& URI )
 {
   ZORBA_TRY
-      xqpString lURI = xqpString(Unmarshaller::getInternalString(URI));
-      theCtx->set_default_collation_uri(lURI); 
-      return true;
+    xqpString lURI = xqpString(Unmarshaller::getInternalString(URI));
+    theCtx->set_default_collation_uri(lURI); 
+    return true;
   ZORBA_CATCH
   return false;
 }
@@ -236,11 +238,11 @@ bool
 StaticContextImpl::setXPath1_0CompatibMode( xpath1_0compatib_mode_t mode )
 {
   ZORBA_TRY
-      if ( mode == xpath1_0)
-        theCtx->set_xpath1_0compatib_mode(StaticContextConsts::xpath1_0_only);
-      else
-        theCtx->set_xpath1_0compatib_mode(StaticContextConsts::xpath2_0);
-      return true;
+    if ( mode == xpath1_0)
+      theCtx->set_xpath1_0compatib_mode(StaticContextConsts::xpath1_0_only);
+    else
+      theCtx->set_xpath1_0compatib_mode(StaticContextConsts::xpath2_0);
+    return true;
   ZORBA_CATCH
   return false;
 }
@@ -308,8 +310,7 @@ ordering_mode_t
 StaticContextImpl::getOrderingMode( ) const
 {
   try {
-    return theCtx->ordering_mode()==StaticContextConsts::ordered?
-      ordered:unordered;
+    return theCtx->ordering_mode()==StaticContextConsts::ordered?ordered:unordered;
   } catch (error::ZorbaError& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
   } catch (std::exception& e) {
@@ -323,11 +324,11 @@ bool
 StaticContextImpl::setDefaultOrderForEmptySequences( order_empty_mode_t mode )
 {
   ZORBA_TRY
-      if ( mode == empty_greatest)
-        theCtx->set_order_empty_mode(StaticContextConsts::empty_greatest);
-      else
-        theCtx->set_order_empty_mode(StaticContextConsts::empty_least);
-        return true;
+    if ( mode == empty_greatest)
+      theCtx->set_order_empty_mode(StaticContextConsts::empty_greatest);
+    else
+      theCtx->set_order_empty_mode(StaticContextConsts::empty_least);
+      return true;
   ZORBA_CATCH
   return false;
 }
@@ -352,11 +353,11 @@ bool
 StaticContextImpl::setBoundarySpacePolicy( boundary_space_mode_t mode )
 {
   ZORBA_TRY
-      if ( mode == preserve_space)
-        theCtx->set_boundary_space_mode(StaticContextConsts::preserve_space);
-      else
-        theCtx->set_boundary_space_mode(StaticContextConsts::strip_space);
-      return true;
+    if ( mode == preserve_space)
+      theCtx->set_boundary_space_mode(StaticContextConsts::preserve_space);
+    else
+      theCtx->set_boundary_space_mode(StaticContextConsts::strip_space);
+    return true;
   ZORBA_CATCH
   return false;
 }
@@ -382,16 +383,16 @@ StaticContextImpl::setCopyNamespacesMode( preserve_mode_t preserve,
                                           inherit_mode_t inherit )
 {
   ZORBA_TRY
-      if ( preserve == preserve_ns )
-        theCtx->set_preserve_mode(StaticContextConsts::preserve_ns);
-      else
-        theCtx->set_preserve_mode(StaticContextConsts::no_preserve_ns);
+    if ( preserve == preserve_ns )
+      theCtx->set_preserve_mode(StaticContextConsts::preserve_ns);
+    else
+      theCtx->set_preserve_mode(StaticContextConsts::no_preserve_ns);
 
-      if ( inherit == inherit_ns )
-        theCtx->set_inherit_mode(StaticContextConsts::inherit_ns);
-      else
-        theCtx->set_inherit_mode(StaticContextConsts::no_inherit_ns);
-      return true;
+    if ( inherit == inherit_ns )
+      theCtx->set_inherit_mode(StaticContextConsts::inherit_ns);
+    else
+      theCtx->set_inherit_mode(StaticContextConsts::no_inherit_ns);
+    return true;
   ZORBA_CATCH
   return false;
 }
@@ -402,10 +403,10 @@ StaticContextImpl::getCopyNamespacesMode( preserve_mode_t& preserve,
                                           inherit_mode_t& inherit ) const
 {
   ZORBA_TRY
-      preserve = theCtx->preserve_mode()==StaticContextConsts::preserve_ns?
-                      preserve_ns:no_preserve_ns;
-      inherit = theCtx->inherit_mode()==StaticContextConsts::inherit_ns?
-                      inherit_ns:no_inherit_ns;
+    preserve = theCtx->preserve_mode()==StaticContextConsts::preserve_ns?
+                    preserve_ns:no_preserve_ns;
+    inherit = theCtx->inherit_mode()==StaticContextConsts::inherit_ns?
+                    inherit_ns:no_inherit_ns;
   ZORBA_CATCH
 }
 
@@ -639,21 +640,21 @@ StaticContextImpl::disableFunction(const Item& aQName, int arity)
 void
 StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
 {
-    xqtref_t xqType = NULL;
-    if (type != NULL) {
-        xqType = theCtx->get_typemanager()->create_type(*type);
-    }
-    theCtx->set_context_item_static_type(xqType);
+  xqtref_t xqType = NULL;
+  if (type != NULL) {
+    xqType = theCtx->get_typemanager()->create_type(*type);
+  }
+  theCtx->set_context_item_static_type(xqType);
 }
 
 TypeIdentifier_t
 StaticContextImpl::getContextItemStaticType() const
 {
-    xqtref_t type = theCtx->context_item_static_type();
-    if (type == NULL) {
-        return NULL;
-    }
-    return TypeOps::get_type_identifier(*type);
+  xqtref_t type = theCtx->context_item_static_type();
+  if (type == NULL) {
+    return NULL;
+  }
+  return TypeOps::get_type_identifier(*type);
 }
 
 } /* namespace zorba */

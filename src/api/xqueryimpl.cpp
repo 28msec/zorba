@@ -134,7 +134,7 @@ XQueryImpl::close()
     if (!theUserErrorHandler) // see registerErrorHandler
       delete theErrorHandler;
 
-    delete theStaticContext;
+    RCHelper::removeReference (theStaticContext);
 
     delete theDynamicContext;
 
@@ -524,13 +524,11 @@ XQueryImpl::serialize(std::ostream& os, const Zorba_SerializerOptions_t* opt)
     
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
-    try 
-    {
+    try {
       lPlan->open();
       lSerializer.serialize(&*lPlan, os);
     }
-    catch (error::ZorbaError&)
-    {
+    catch (error::ZorbaError&) {
       lPlan->close();
       throw;
     }
@@ -778,8 +776,7 @@ std::string XQueryImpl::getProfileName() const
 
 void XQueryImpl::checkIsDebugMode() const
 {
-  if ( ! isDebugMode() )
-  {
+  if ( ! isDebugMode() ) {
     ZORBA_ERROR_DESC( API0032_QUERY_NOT_COMPILED_IN_DEBUG_MODE,
                       "Can't perform the operation because the debug mode is not set to true");
   }
