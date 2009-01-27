@@ -777,16 +777,16 @@ public:
   expr_kind_t get_expr_kind () const { return validate_expr_kind; }
 protected:
   ParseConstants::validation_mode_t valmode;
+  rchandle<static_context> sctx;
   expr_t expr_h;
 
 public:
-  validate_expr(
-    const QueryLoc&,
-    ParseConstants::validation_mode_t,
-    expr_t);
+  validate_expr(const QueryLoc&, ParseConstants::validation_mode_t,
+                expr_t, static_context *);
 
 public:
   expr_t get_expr() const { return expr_h; }
+  rchandle<static_context> get_sctx () const { return sctx; }
   ParseConstants::validation_mode_t get_valmode() const { return valmode; }
 
 public:

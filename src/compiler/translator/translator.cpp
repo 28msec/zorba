@@ -5014,7 +5014,7 @@ void *begin_visit (const ValidateExpr& v) {
 
 void end_visit (const ValidateExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  nodestack.push (new validate_expr (loc, v.get_valmode (), pop_nodestack ()));
+  nodestack.push (new validate_expr (loc, v.get_valmode (), pop_nodestack (), sctx_p));
 }
 
 void *begin_visit (const VarRef& v) {

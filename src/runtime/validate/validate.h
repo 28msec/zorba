@@ -48,17 +48,17 @@ namespace zorba
     {
     private:
         bool _isLax;
+        rchandle<static_context> sctx;
 
     public:
-        ValidateIterator ( const QueryLoc& loc, PlanIter_t& aIter, bool isLax );
-        virtual ~ValidateIterator();
+        ValidateIterator ( const QueryLoc& loc, PlanIter_t& aIter, rchandle<static_context>, bool isLax );
 
         bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
         virtual void accept(PlanIterVisitor&) const;
 
         static bool effectiveValidationValue ( store::Item_t& result, const QueryLoc& loc, 
-            PlanState& planState, const PlanIterator* iter, bool isLax);
+                                               PlanState& planState, const PlanIterator* iter, static_context *, bool isLax);
 
         static store::Item_t processElement ( PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
             SchemaValidator& schemaValidator, store::Item *parent, const store::Item_t& element);
@@ -82,3 +82,9 @@ namespace zorba
 
 #endif // ZORBA_NO_XMLSCHEMA    
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

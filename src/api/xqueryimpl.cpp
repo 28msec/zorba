@@ -134,7 +134,7 @@ XQueryImpl::close()
     if (!theUserErrorHandler) // see registerErrorHandler
       delete theErrorHandler;
 
-    delete theStaticContext;;
+    delete theStaticContext;
 
     delete theDynamicContext;
 
@@ -177,6 +177,7 @@ XQueryImpl::clone() const
     
     // child static context
     lImpl->theStaticContext = theStaticContext->create_child_context();
+    RCHelper::addReference (lImpl->theStaticContext);
     lImpl->theCompilerCB->m_sctx = lImpl->theStaticContext;
 
     // child dynamic context
@@ -384,6 +385,8 @@ XQueryImpl::parse(std::istream& aQuery)
       // otherwise create a child and we have ownership over that one
       theStaticContext = theStaticContext->create_child_context();
     }
+    RCHelper::addReference (theStaticContext);
+
 
     theStaticContext->set_entity_retrieval_url(xqp_string (&*URI::encode_file_URI (theFileName)));
 
@@ -477,6 +480,7 @@ XQueryImpl::doCompile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints)
     // otherwise create a child and we have ownership over that one
     theStaticContext = theStaticContext->create_child_context();
   }
+  RCHelper::addReference (theStaticContext);
 
   theStaticContext->set_entity_retrieval_url(xqp_string (&*URI::encode_file_URI (theFileName)));
 

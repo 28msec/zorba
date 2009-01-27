@@ -60,27 +60,21 @@ namespace zorba
     | the operand node. In some cases, default values may also be generated 
     | by the validation process.
     |_______________________________________________________________________*/
-    ValidateIterator::ValidateIterator ( const QueryLoc& loc, PlanIter_t& aIter, bool isLax )
-        :
-    UnaryBaseIterator<ValidateIterator, PlanIteratorState> ( loc, aIter ) , _isLax(isLax)
-    {}
+  ValidateIterator::ValidateIterator ( const QueryLoc& loc, PlanIter_t& aIter, rchandle<static_context> sctx_, bool isLax )
+    :
+    UnaryBaseIterator<ValidateIterator, PlanIteratorState> ( loc, aIter ) , _isLax(isLax), sctx (sctx_)
+  {}
 
-    ValidateIterator::~ValidateIterator() 
-    {}
-
-    bool ValidateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-    {
-        PlanIteratorState* aState;
-        DEFAULT_STACK_INIT(PlanIteratorState, aState, planState);
-        STACK_PUSH (
-            ValidateIterator::effectiveValidationValue ( result, this->loc, planState, theChild, _isLax ),
-            aState
-            );
-        STACK_END (aState);
-    }
+  bool ValidateIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+    PlanIteratorState* aState;
+    DEFAULT_STACK_INIT(PlanIteratorState, aState, planState);
+    STACK_PUSH (ValidateIterator::effectiveValidationValue ( result, this->loc, planState, theChild, sctx.getp (), _isLax ),
+                aState);
+    STACK_END (aState);
+  }
 
     bool ValidateIterator::effectiveValidationValue ( store::Item_t& result, const QueryLoc& loc, 
-        PlanState& planState, const PlanIterator* iter, bool isLax)
+                                                      PlanState& planState, const PlanIterator* iter, static_context *sctx, bool isLax)
     {
         //cout << "Starting Validation" << "\n"; cout.flush();
         
@@ -96,9 +90,7 @@ namespace zorba
         }
         else if ( item->isNode() )
         {
-            static_context* staticContext = planState.sctx();
-            
-            TypeManager * typeManager = staticContext->get_typemanager();
+            TypeManager * typeManager = sctx->get_typemanager();
             DelegatingTypeManager* delegatingTypeManager = 
                 static_cast<DelegatingTypeManager*>(typeManager);
 
