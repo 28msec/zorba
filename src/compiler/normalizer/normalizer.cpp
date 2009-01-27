@@ -45,7 +45,9 @@ static inline expr::expr_t wrap_in_atomization(static_context *sctx, expr::expr_
 
 static inline expr::expr_t wrap_in_typematch(expr::expr_t e, xqtref_t type)
 {
-  return TypeOps::is_subtype(*type, *GENV_TYPESYSTEM.ITEM_TYPE_STAR)
+  // treat_expr should be avoided for updating expressions too,
+  // but in that case "type" will be item()* anyway
+  return TypeOps::is_subtype(*GENV_TYPESYSTEM.ITEM_TYPE_STAR, *type)
     ? e
     : new treat_expr (e->get_loc (), e, type, XPTY0004);
 }
