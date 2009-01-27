@@ -78,6 +78,8 @@ public:
 
   void push_front (expr_t front) { invalidate (); sequence.insert (sequence.begin(), front); }
 
+  bool is_updating ();
+
   bool cache_compliant () { return true; }
 
   virtual xqtref_t return_type_impl (static_context *);
@@ -1356,7 +1358,7 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
-  virtual bool is_updating() { return true; }
+  bool is_updating() { return true; }
 
 };
 
@@ -1383,7 +1385,7 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
-  virtual bool is_updating() { return true; }
+  bool is_updating() { return true; }
 };
 
 
@@ -1416,7 +1418,7 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
-  virtual bool is_updating() { return true; }
+  bool is_updating() { return true; }
 
 };
 
@@ -1446,7 +1448,7 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
-  virtual bool is_updating() { return true; }
+  bool is_updating() { return true; }
 
 };
 
@@ -1465,7 +1467,7 @@ public:
   expr_t             getExpr() const { return theExpr; }
 
   std::ostream& put(std::ostream&) const;
-  virtual bool is_updating() { return true; }
+  bool is_updating() { return true; }
 };
 
 // [249] [http://www.w3.org/TR/xqupdate/#prod-xquery-TransformExpr]
@@ -1516,7 +1518,7 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
-  virtual bool is_updating() { return true; }
+  bool is_updating() { return true; }
 
 };
 
