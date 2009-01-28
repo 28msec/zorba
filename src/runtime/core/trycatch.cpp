@@ -153,9 +153,8 @@ TryCatchIterator::bindErrorVars(
     StateTraitsImpl<TryCatchIteratorState>::getState(planState, this->stateOffset);
 
   // bind the error code (always)
-  xqpStringStore_t errCode = new xqpStringStore(error::ZorbaError::toString(e.theErrorCode));
   store::Item_t lErrorCodeItem;
-  GENV_ITEMFACTORY->createString(lErrorCodeItem, errCode);
+  GENV_ITEMFACTORY->createQName(lErrorCodeItem, e.ns().c_str(), e.prefix().c_str(), e.localName().c_str());
 
   std::vector<LetVarIter_t>::const_iterator lErrorCodeVarIter = clause->errorcode_var.begin();
   std::vector<LetVarIter_t>::const_iterator lErrorCodeVarIterEnd = clause->errorcode_var.end();

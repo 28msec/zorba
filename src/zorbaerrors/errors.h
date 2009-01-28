@@ -88,6 +88,15 @@ public:
   virtual std::string
   toString();
 
+  const std::string&
+  localName() const;
+
+  const std::string&
+  ns() const;
+
+  const std::string&
+  prefix() const;
+
   virtual bool 
   isXPathStaticError() const;
 

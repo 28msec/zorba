@@ -127,6 +127,23 @@ ZorbaError::toString()
   return strstream.str();
 }
 
+const std::string&
+ZorbaError::localName() const
+{
+  return theLocalName;
+}
+
+const std::string&
+ZorbaError::ns() const
+{
+  return theNamespace;
+}
+
+const std::string&
+ZorbaError::prefix() const
+{
+  return thePrefix;
+}
 
 bool 
 ZorbaError::isXPathStaticError() const

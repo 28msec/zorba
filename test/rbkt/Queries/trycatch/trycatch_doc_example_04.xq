@@ -8,5 +8,5 @@ try {
             fn:error(xs:QName("err:XPTY0004"), "Rethrowing the exception", $x)
         }
 } catch(*, $code, $desc, $obj) {
-    string-join(("An error was caught: ", $code, "Description:", $desc, " The cause was:", $obj), " ")
+    string-join(("An error was caught: ", xs:string($code), "Description:", $desc, " The cause was:", $obj), " ")
 }
