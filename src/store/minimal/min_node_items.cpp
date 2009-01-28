@@ -1216,7 +1216,7 @@ XmlNode* ElementNode::copy2(
       }
       else if (parent == 0)
       {
-        xqpStringStore_t absuri = hiddenBaseUriAttr->getStringValueP();
+        xqpStringStore_t absuri = hiddenBaseUriAttr->getStringValue();
         xqpStringStore_t reluri;
         copyNode->addBaseUriProperty(absuri, reluri);
       }

@@ -268,7 +268,7 @@ inline int XmlLoader::read_char()
     if(cursorEnd == NULL)
       theBuffer[7] = 0;
     else
-      theBuffer[7] = theBuffer[8+buff_size-1];
+      memmove(theBuffer, theBuffer+8+buff_size-8, 8);
 
     stream->read((char*)theBuffer+8, sizeof(theBuffer)-8);
     buff_size = stream->gcount();
@@ -283,6 +283,53 @@ inline int XmlLoader::read_char()
 inline void XmlLoader::unread_char()
 {
   cursorBuffer--;
+}
+
+bool XmlLoader::read_char_or_entity(int *c)
+{
+  //int c1;
+  *c = read_char();
+  if(*c == '&')
+  {
+    int c2, c3;
+    //it is an entity, read until ';'
+    *c = read_char();
+    c2 = read_char();
+    c3 = read_char();
+    if((*c == 'g') && (c2 == 't') && (c3 == ';'))
+    {
+      *c = '>';
+      return true;
+    }
+    if((*c == 'l') && (c2 == 't') && (c3 == ';'))
+    {
+      *c = '<';
+      return true;
+    }
+    if((*c == 'a') && (c2 == 'm') && (c3 == 'p'))
+    {
+      c3 = read_char();
+      if(c3 == ';')
+      {
+        *c = '&';
+        return true;
+      }
+      unread_char();
+    }
+    unread_char();
+    unread_char();
+    unread_char();
+    *c = '&';
+    return false;
+  }
+  //*c = c1;
+  return false;
+}
+
+inline void XmlLoader::unread_char_or_entity(int c)
+{
+  unread_char();
+  *cursorBuffer = c;
 }
 
 bool XmlLoader::isWhitespace(int c)
@@ -809,6 +856,7 @@ bool XmlLoader::read_tag()
 bool XmlLoader::read_characters()
 {
   int c;
+  bool  is_entity;
   //std::string chars;
 
   temp_buff.clear();
@@ -816,7 +864,7 @@ bool XmlLoader::read_characters()
   end_document = false;
   while(1)
   {
-    c = read_char();
+    is_entity = read_char_or_entity(&c);
     if(!c)
     {
       end_document = true;
@@ -835,7 +883,7 @@ bool XmlLoader::read_characters()
       else
         return true;
     }
-    if(c == '<')
+    if(!is_entity && (c == '<'))
     {
       unread_char();
       break;
@@ -865,6 +913,8 @@ bool XmlLoader::read_comment()
   c = read_char();
   if(c == '[')
     return read_cdata();
+  else if(c == 'D')//from DOCTYPE
+    return read_doctype();
   else if(c != '-')
     return false;
   c = read_char();
@@ -897,6 +947,29 @@ bool XmlLoader::read_comment()
   //send comment as SAX event
   comment(this, comment_str.c_str());
 
+  return true;
+}
+
+//<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/xhtml1/DTD/xhtml1-strict.dtd">
+bool XmlLoader::read_doctype()
+{
+  //ignore DOCTYPE
+  int c;
+
+  do
+  {
+    c = read_char();
+    if(c == 0)
+      return false;
+  }while(c != '>');
+  //ignore the whitespaces after
+  do
+  {
+    c = read_char();
+    if(c == 0)
+      return false;
+  }while(isWhitespace(c));
+  unread_char();
   return true;
 }
 

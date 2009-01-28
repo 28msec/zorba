@@ -189,6 +189,8 @@ protected:
 
   int  read_char();
   void unread_char();
+  bool read_char_or_entity(int *c);
+  void unread_char_or_entity(int c);
   bool isWhitespace(int c);
   bool isNameChar(int c);
   void skip_whitespaces();
@@ -199,6 +201,7 @@ protected:
   bool read_tag();
   bool read_characters();
   bool read_comment();
+  bool read_doctype();
   bool read_cdata();
   bool read_pi();
   bool read_xmlprolog();
