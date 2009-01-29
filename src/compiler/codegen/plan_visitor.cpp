@@ -267,17 +267,12 @@ bool begin_visit (sequential_expr& v) {
 void end_visit (sequential_expr& v) {
   CODEGEN_TRACE_OUT("");
   checked_vector<PlanIter_t> argv;
-  bool lUpdating = false;
   size_t lSize = v.size();
   for (unsigned i = 0; i < lSize; i++)
     argv.push_back (pop_itstack ());
   reverse (argv.begin (), argv.end ());
 
-#if 0
-  if (lSize > 0)
-    lUpdating = argv[lSize-1]->isUpdating();
-#endif
-  itstack.push (new SequentialIterator (qloc, argv, lUpdating));
+  itstack.push (new SequentialIterator (qloc, argv, v.is_updating ()));
 }
 
 bool begin_visit (var_expr& v) {

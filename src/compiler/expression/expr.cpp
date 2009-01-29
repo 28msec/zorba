@@ -295,12 +295,7 @@ expr_iterator::expr_iterator (const expr_iterator &other) : iter (new expr_itera
   }
 
   bool sequential_expr::is_updating () {
-    //cout << "seq_expr is_upd? " << this << endl;
-    for (unsigned i = 0; i < sequence.size (); i++)
-      if (sequence [i]->is_updating ())
-        return true;
-    //cout << "seq_expr !is_upd " << this << endl;
-    return false;
+    return sequence.size () == 0 ? false : sequence [sequence.size () - 1]->is_updating ();
   }
 
   expr_iterator_data *sequential_expr::make_iter () {
