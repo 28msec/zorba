@@ -30,7 +30,7 @@ class NodeTest;
 /*
  * Interface used by other parts of zorba to ask questions about types.
  */
-class TypeManager {
+  class TypeManager : public SimpleRCObject {
   public:
     TypeManager(int level) : m_level(level) { }
     virtual ~TypeManager() { }

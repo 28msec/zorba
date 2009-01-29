@@ -132,6 +132,7 @@ void GlobalEnvironment::init(store::Store* store)
 
   m_globalEnv->m_rootStaticContext = new root_static_context();
   m_globalEnv->m_rootStaticContext->init();
+  RCHelper::addReference (m_globalEnv->m_rootStaticContext);
 
   BuiltinFunctionLibrary::populateContext(m_globalEnv->m_rootStaticContext);
 
@@ -210,7 +211,7 @@ void GlobalEnvironment::destroy()
   m_globalEnv->m_mapm = 0;
 #endif
 
-  delete m_globalEnv->m_rootStaticContext;
+  RCHelper::removeReference (m_globalEnv->m_rootStaticContext);
   m_globalEnv->m_rootStaticContext = 0;
 
   m_globalEnv->m_store = NULL;

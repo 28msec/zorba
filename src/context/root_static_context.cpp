@@ -36,7 +36,7 @@ static const char *default_ns_initializers [] = {
 root_static_context::root_static_context()
     : static_context()
 {
-  typemgr.reset(new RootTypeManager());
+  typemgr = new RootTypeManager();
 }
 
 

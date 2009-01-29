@@ -60,21 +60,21 @@ namespace zorba
     | the operand node. In some cases, default values may also be generated 
     | by the validation process.
     |_______________________________________________________________________*/
-  ValidateIterator::ValidateIterator ( const QueryLoc& loc, PlanIter_t& aIter, rchandle<static_context> sctx_, bool isLax )
+  ValidateIterator::ValidateIterator ( const QueryLoc& loc, PlanIter_t& aIter, TypeManager *tm_, bool isLax )
     :
-    UnaryBaseIterator<ValidateIterator, PlanIteratorState> ( loc, aIter ) , _isLax(isLax), sctx (sctx_)
+    UnaryBaseIterator<ValidateIterator, PlanIteratorState> ( loc, aIter ) , _isLax(isLax), typemgr (tm_)
   {}
 
   bool ValidateIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
     PlanIteratorState* aState;
     DEFAULT_STACK_INIT(PlanIteratorState, aState, planState);
-    STACK_PUSH (ValidateIterator::effectiveValidationValue ( result, this->loc, planState, theChild, sctx.getp (), _isLax ),
+    STACK_PUSH (ValidateIterator::effectiveValidationValue ( result, this->loc, planState, theChild, typemgr.getp (), _isLax ),
                 aState);
     STACK_END (aState);
   }
 
     bool ValidateIterator::effectiveValidationValue ( store::Item_t& result, const QueryLoc& loc, 
-                                                      PlanState& planState, const PlanIterator* iter, static_context *sctx, bool isLax)
+                                                      PlanState& planState, const PlanIterator* iter, TypeManager *typeManager, bool isLax)
     {
         //cout << "Starting Validation" << "\n"; cout.flush();
         
@@ -90,7 +90,6 @@ namespace zorba
         }
         else if ( item->isNode() )
         {
-            TypeManager * typeManager = sctx->get_typemanager();
             DelegatingTypeManager* delegatingTypeManager = 
                 static_cast<DelegatingTypeManager*>(typeManager);
 
@@ -392,9 +391,10 @@ namespace zorba
         //cout << "     - processTextValue: " << typeQName->getPrefix()->str() << ":" << typeQName->getLocalName()->str() << "@" << 
         //    typeQName->getNamespace()->str() ; cout.flush();
         //cout << " type: " << ( type==NULL ? "NULL" : type->toString() ) << "\n"; cout.flush();                    
-    
-        static_context* staticContext = planState.sctx();
-        namespace_context nsCtx = namespace_context(staticContext, bindings);
+
+        // TODO: we probably need the ns bindings from the static context
+        // surrounding the original validate_expr, not planState.sctx()
+        namespace_context nsCtx = namespace_context(planState.sctx(), bindings);
                 
         store::Item_t result;                    
         if (type!=NULL)

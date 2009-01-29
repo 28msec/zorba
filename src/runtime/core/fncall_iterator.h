@@ -19,6 +19,7 @@
 #include <zorba/api_shared_types.h>
 #include "common/shared_types.h"
 #include "runtime/base/narybase.h"
+#include <functions/function.h>
 #include <vector>
 
 namespace zorba {
@@ -46,8 +47,8 @@ class UDFunctionCallIteratorState : public PlanIteratorState
 class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator, 
                                                        UDFunctionCallIteratorState> 
 {
- protected:
-  const user_function * theUDF;
+protected:
+  const_rchandle<user_function> theUDF;
 
 public:
   UDFunctionCallIterator(
@@ -56,9 +57,10 @@ public:
         const user_function *aUDF)
     :
     NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>(loc, args), 
-    theUDF(aUDF) { }
+    theUDF(aUDF)
+  {}
 
-  virtual ~UDFunctionCallIterator() { }
+  virtual ~UDFunctionCallIterator() {}
     
   bool isUpdating() const;
   void openImpl(PlanState& planState, uint32_t& offset);
@@ -112,4 +114,10 @@ class StatelessExtFunctionCallIterator :
 }
 
 #endif /* ZORBA_FNCALL_ITERATOR_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
 /* vim:set ts=2 sw=2: */

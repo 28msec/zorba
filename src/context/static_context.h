@@ -49,7 +49,7 @@ protected:
   static xqp_string fn_internal_key ();
   function *lookup_fn_int (xqp_string key, int arity) const;
 
-  std::auto_ptr<TypeManager> typemgr;
+  rchandle<TypeManager> typemgr;
 
   static_context();
   static_context (static_context *_parent);
@@ -57,16 +57,15 @@ protected:
 public:
   virtual ~static_context();
   static_context *create_child_context() { return new static_context(this); }
-  TypeManager *get_typemanager ()
-  {
-    TypeManager *tm = typemgr.get();
+  TypeManager *get_typemanager () {
+    TypeManager *tm = typemgr.getp();
     if (tm != NULL) {
       return tm;
     }
     return dynamic_cast<static_context *>(parent)->get_typemanager();
   }
 
-  void set_typemanager(std::auto_ptr<TypeManager> _typemgr);
+  void set_typemanager(rchandle<TypeManager>);
   
   xqp_string default_function_namespace() const;
 	void set_default_function_namespace(xqp_string);

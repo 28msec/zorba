@@ -74,6 +74,8 @@ static_context::static_context (static_context *_parent)
   theSchemaResolver(0),
   theModuleResolver(0)
 {
+  if (parent)
+    RCHelper::addReference (parent);
 }
 
 
@@ -110,6 +112,9 @@ static_context::~static_context()
   set_collection_uri_resolver(0);
   set_schema_uri_resolver(0);
   set_module_uri_resolver(0);
+
+  if (parent)
+    RCHelper::removeReference (parent);
 }
 
 bool context::bind_expr (xqp_string key, expr *e) {
@@ -233,9 +238,9 @@ void static_context::set_entity_retrieval_url(xqp_string val)
 }
 
 
-void static_context::set_typemanager(std::auto_ptr<TypeManager> _typemgr)
+void static_context::set_typemanager(rchandle<TypeManager> typemgr_)
 {
-  typemgr = _typemgr;
+  typemgr = typemgr_;
 }
 
 

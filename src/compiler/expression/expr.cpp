@@ -861,11 +861,11 @@ rchandle<namespace_context> name_cast_expr::getNamespaceContext() { return theNC
 validate_expr::validate_expr(
   const QueryLoc& loc,
   enum ParseConstants::validation_mode_t _valmode,
-  expr_t _expr_h, static_context *sctx_)
+  expr_t _expr_h, rchandle<TypeManager> typemgr_)
 :
   expr(loc),
   valmode(_valmode),
-  sctx (sctx_),
+  typemgr (typemgr_),
   expr_h(_expr_h)
 {
 }

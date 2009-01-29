@@ -47,18 +47,18 @@ namespace zorba
     class ValidateIterator : public UnaryBaseIterator<ValidateIterator, PlanIteratorState>
     {
     private:
-        bool _isLax;
-        rchandle<static_context> sctx;
+      bool _isLax;
+      rchandle<TypeManager> typemgr;
 
     public:
-        ValidateIterator ( const QueryLoc& loc, PlanIter_t& aIter, rchandle<static_context>, bool isLax );
+        ValidateIterator ( const QueryLoc& loc, PlanIter_t& aIter, TypeManager *, bool isLax );
 
         bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
         virtual void accept(PlanIterVisitor&) const;
 
         static bool effectiveValidationValue ( store::Item_t& result, const QueryLoc& loc, 
-                                               PlanState& planState, const PlanIterator* iter, static_context *, bool isLax);
+                                               PlanState& planState, const PlanIterator* iter, TypeManager *, bool isLax);
 
         static store::Item_t processElement ( PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
             SchemaValidator& schemaValidator, store::Item *parent, const store::Item_t& element);
@@ -76,6 +76,8 @@ namespace zorba
         static void processTextValue (PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
             store::NsBindings& bindings, store::Item_t typeQName, xqpStringStore_t& textValue, 
             std::vector<store::Item_t> &resultList);
+
+      ~ValidateIterator () {};
     };
 
 }

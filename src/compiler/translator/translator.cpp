@@ -2993,7 +2993,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/) {
         }
 
         CompilerCB mod_ccb (*compilerCB);
-        static_context *independent_sctx = static_cast<static_context *> (minfo->topCompilerCB->m_sctx->get_parent ());
+        static_context_t independent_sctx = static_cast<static_context *> (minfo->topCompilerCB->m_sctx->get_parent ());
         minfo->topCompilerCB->m_sctx_list.push_back (mod_ccb.m_sctx = independent_sctx->create_child_context ());
         mod_ccb.m_sctx->set_entity_retrieval_url (xqpString(resolveduri.getp()));
         minfo->topCompilerCB->m_sctx_list.push_back (imported_sctx = independent_sctx->create_child_context ());
@@ -5014,7 +5014,7 @@ void *begin_visit (const ValidateExpr& v) {
 
 void end_visit (const ValidateExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  nodestack.push (new validate_expr (loc, v.get_valmode (), pop_nodestack (), sctx_p));
+  nodestack.push (new validate_expr (loc, v.get_valmode (), pop_nodestack (), sctx_p->get_typemanager ()));
 }
 
 void *begin_visit (const VarRef& v) {
