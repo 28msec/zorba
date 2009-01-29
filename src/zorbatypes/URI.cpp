@@ -222,7 +222,7 @@ URI::initialize(const xqpString& uri, bool have_base)
 
    // A standalone base is a valid URI
     if ( lColonIdx == 0 || (!have_base && lFragmentIdx != 0) ) {
-      ZORBA_ERROR_DESC_OSS(XQST0046, "URI doesn't have an URI scheme");
+      ZORBA_ERROR_DESC_OSS(XQST0046, "URI \"" << lTrimmedURI << "\" doesn't have an URI scheme");
     }
 
   } else {
@@ -239,7 +239,7 @@ URI::initialize(const xqpString& uri, bool have_base)
   if (lAuthUri.indexOf("//") == 0)
   {
     if((lIndex + 2) >= lTrimmedURILength) {
-      ZORBA_ERROR_DESC_OSS(XQST0046, "Authority is misssing.");
+      ZORBA_ERROR_DESC_OSS(XQST0046, "Authority is misssing in URI \"" << lTrimmedURI << "\" .");
     }
     else {
       lIndex += 2;
@@ -256,6 +256,21 @@ URI::initialize(const xqpString& uri, bool have_base)
         ++lIndex;
       }
 
+      #ifdef WIN32
+      if (theScheme.byteEqual("file", 4))
+      {
+        if((lIndex > lStartPos) || (c != '/'))
+        {//WIN32 special case
+          //found authority after file:// ... it must be an error
+          ZORBA_ERROR_DESC_OSS(XQST0046, "On Windows the \"file\" scheme must be specified with \"file:///\" followed by absolute file path.");
+        }
+        else
+        {
+          lStartPos++;
+          lIndex++;//jump over the third '/'
+        }
+      }
+      #endif
       // if we found authority, parse it out, otherwise we set the
       // host to empty string
       if (lIndex > lStartPos) {
@@ -263,10 +278,6 @@ URI::initialize(const xqpString& uri, bool have_base)
         initializeAuthority(lAuthUri);
       } else {
         set_host("");
-
-        #ifdef WIN32
-          lIndex++;//jump over the third '/'
-        #endif
       }
     }
   }
@@ -484,7 +495,7 @@ URI::initializeScheme(const xqpString& uri)
 {
   int lSchemeSeparatorIdx = find_any(uri, ":/?#");  
   if (lSchemeSeparatorIdx == -1 ) {
-    ZORBA_ERROR_DESC_OSS(XQST0046, "URI doesn't have an URI scheme");
+    ZORBA_ERROR_DESC_OSS(XQST0046, "URI \"" << uri << "\" doesn't have an URI scheme");
   } else {
     set_scheme(uri.substr(0, lSchemeSeparatorIdx));
   }
@@ -535,6 +546,11 @@ URI::initializeAuthority(const xqpString& uri)
     lHost = lTmp.substr(0, lIndex);
     ++lIndex; // skip the colon
     lStart += lIndex;
+    //if(lStart >= lEnd)
+    //{
+    //  //port number is missing after ':'
+    //  ZORBA_ERROR_DESC_OSS(XQST0046, "Port number is missing after ':'.");
+    //}
   } else {
     lHost = lTmp.substr(0, lEnd - lStart);
     lStart = lEnd;
@@ -848,7 +864,7 @@ URI::set_scheme(const xqpString& new_scheme)
   }
 
   if ( ! is_conformant_scheme_name(new_scheme) ) {
-    ZORBA_ERROR_DESC_OSS(XQST0046, "URI contain's a scheme that is not a conformant URI scheme");
+    ZORBA_ERROR_DESC_OSS(XQST0046, "URI contains a scheme \"" << new_scheme << "\" that is not a conformant URI scheme");
   }
 
   theScheme = new_scheme; //.lowercase();
