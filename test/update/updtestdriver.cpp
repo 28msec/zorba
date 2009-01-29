@@ -37,6 +37,8 @@
 
 #include <simplestore/simplestore.h>
 
+#include "util/properties.h"
+
 
 void
 printFile(std::ostream& os, std::string aInFile, std::string message)
@@ -182,6 +184,8 @@ _tmain(int argc, _TCHAR* argv[])
 main(int argc, char** argv)
 #endif
 {
+  zorba::Properties::load (NULL, NULL);
+
   Specification lSpec;
   int flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;
 
