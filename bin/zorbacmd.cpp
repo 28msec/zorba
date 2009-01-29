@@ -347,7 +347,8 @@ int _tmain(int argc, _TCHAR* argv[])
         lQuery = lZorbaInstance->createQuery ();
         if (asFile)
           lQuery->setFileName (path.get_path ());
-        else {
+        else if (lProperties.baseUri().size() == 0 )//no user set base URI
+        {
           // set the cwd to be used as base-uri in order to make the
           // doc function doc("mydoc.xml") work
           zorba::filesystem_path p;
@@ -492,7 +493,8 @@ int _tmain(int argc, _TCHAR* argv[])
         lQuery = lZorbaInstance->createQuery ();
         if (asFile)
           lQuery->setFileName (path.get_path ());
-        else {
+        else if (lProperties.baseUri().size() == 0 )//no user set base URI
+        {
           // set the cwd to be used as base-uri in order to make the
           // doc function doc("mydoc.xml") work
           zorba::filesystem_path p;
