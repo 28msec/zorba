@@ -48,7 +48,7 @@ class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator,
                                                        UDFunctionCallIteratorState> 
 {
 protected:
-  const_rchandle<user_function> theUDF;
+  const user_function *theUDF;
 
 public:
   UDFunctionCallIterator(
