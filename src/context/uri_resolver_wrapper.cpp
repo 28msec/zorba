@@ -124,7 +124,7 @@ namespace zorba {
   {
     StaticContextImpl  lOuterStaticContext(aStaticContext, 0);
     Item               lURIItem(aURI.getp());  
-    std::vector<Item>  lLocationHints(aLocationHints.size());
+    std::vector<Item>  lLocationHints;
     for (std::vector<store::Item_t>::const_iterator lIter = aLocationHints.begin();
          lIter != aLocationHints.end(); ++lIter) {
       lLocationHints.push_back(Item((*lIter).getp()));
