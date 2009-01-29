@@ -53,7 +53,7 @@ XQueryCompiler::XQueryCompiler(CompilerCB* aCompilerCB)
   :
   theCompilerCB(aCompilerCB)
 { 
-  aCompilerCB->m_sctx->set_typemanager(std::auto_ptr<TypeManager>(new DelegatingTypeManager(&GENV_TYPESYSTEM)));
+  aCompilerCB->m_sctx->set_typemanager(rchandle<TypeManager>(new DelegatingTypeManager(&GENV_TYPESYSTEM)));
 }
 
 

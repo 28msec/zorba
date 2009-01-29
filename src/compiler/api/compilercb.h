@@ -57,7 +57,7 @@ class ZORBA_DLL_PUBLIC CompilerCB
   CompilerCB();
   ~CompilerCB();
 
-  static_context*               m_sctx;          
+  static_context_t              m_sctx;          
   std::vector<static_context_t> m_sctx_list;     
   error::ErrorManager*          m_error_manager;
   config_t                      m_config;
