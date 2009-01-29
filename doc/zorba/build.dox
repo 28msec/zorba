@@ -37,9 +37,17 @@ In order to build Zorba, you need the following libraries and development header
   a KDevelop Project by executing the following command in the <tt>[ZORBA]</tt> directory: <tt>cmake -G KDevelop3 [ZORBABUILD]</tt>.
 - CMake supports multiple build configurations (e.g. Debug, Release, or MinSizeRel. By default, Zorba is build with the Release configuration. To change the build mode (to Debug, Release, RelWithDebInfo or MinSizeRel), you can pass an additional parameter to CMake, e.g. <tt>cmake -D CMAKE_BUILD_TYPE=Debug [ZORBA]</tt>.
 
-\section mac Note for Mac OS Users
-The easiest way to install the required packages (like CMake, etc.) is to use Darwin Ports (http://darwinports.com/). After installing Darwin Ports, you should run <tt>sudo port -d selfupdate</tt> to upgrade the package lists. If this was successful, you can simply install packages by typing e.g. <tt>sudo port install cmake</tt>.
-Note that libxml2 is already installed as part of Mac OS X.
+\section mac Note for Mac OS Users 
+
+The easiest way to install the required packages (like CMake, etc.) is
+to use Darwin Ports (http://darwinports.com/). After installing Darwin
+Ports, you should run <tt>sudo port -d selfupdate</tt> to upgrade the
+package lists. If this was successful, you can simply install packages
+by typing e.g. <tt>sudo port install cmake</tt>.  Note that versions
+of libcurl and libtidy, that are already installed as part of Mac OS X
+are sufficient.  However, a newer version of libxml2 than the one that
+is part of Mac OS X (v 2.6.16) is needed which can be obtained from
+Darwin Ports (v 2.6.31) or from source (v 2.7.2 )
 
 \subsection universal Building as Universal binaries
 
@@ -47,12 +55,12 @@ To build zorba as a universal binary one must also build the required
 external libraries as universal.  In most cases this is as easy as
 building them non-universal.   Following are instructions on how to do so.
 
-For ICU and Xerces-C the 
+For  Xerces-C the 
 <a href="http://developer.apple.com/documentation/Porting/Conceptual/PortingUnix/compiling/chapter_4_section_3.html">
 
 instructions given by Apple </a> almost just work.  One should change
-the CFLAGS to CXXFLAGS.  Zorba developers prefer a variation on those
-instructions like this ...
+the CFLAGS to CXXFLAGS because Xerces is written in C++.  Zorba
+developers prefer a variation on those instructions like this ...
 
 @verbatim
 ./configure CXXFLAGS="-arch i386 -arch ppc -isysroot /Developer/SDKs/MacOSX10.5.sdk" \
@@ -60,7 +68,36 @@ instructions like this ...
 -arch i386 -arch ppc"
 @endverbatim
 
-As noted by Apple, dependency generation by gcc doesn't work when building universal, thus it is turned off with the above command.
+Since libxml2 is written in C, change CXXFLAGS to CFLAGS in the above.
+As noted by Apple, dependency generation by gcc doesn't work when
+building universal, thus it is turned off with the above command.
+
+
+For ICU, one must build the libraries seperately on PPC and Intel
+platforms then combine the them into a Universal library.  The reason
+for this is that ICU tests for endianess at configure time (i.e. before
+compiling), thus the compiled code will only have endianess correct
+for one platform.  The script <em> zorba/scripts/makefat.sh </em>
+shows one how to do the combining.
+
+Once all the external libraries are built and installed Universal, one
+can build zorba Universal setting the CMake variable UNIVERSAL on like this
+
+\verbatim
+cmake -D UNIVERSAL=1 ..
+\endverbatim
+
+\subsection mac_installer Building Mac OS X Installer
+
+In order to build an installer package, one should run cmake with an
+extra flag as follows...
+
+@verbatim
+> cmake -DCMAKE_SKIP_BUILD_RPATH=1 .. 
+@endverbatim
+
+This will remove the build path from the installed executables and
+libraries.  It will also add some symbolic links to the libraries.
 
 \section windows Notes for Windows Users
 - In order to compile Zorba on Windows, you need a working Visual Studio (Express) installation.
