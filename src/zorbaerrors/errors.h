@@ -88,13 +88,13 @@ public:
   virtual std::string
   toString();
 
-  const std::string&
+  const xqpString&
   localName() const;
 
-  const std::string&
+  const xqpString&
   ns() const;
 
-  const std::string&
+  const xqpString&
   prefix() const;
 
   virtual bool 

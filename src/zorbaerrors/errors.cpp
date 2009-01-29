@@ -127,19 +127,19 @@ ZorbaError::toString()
   return strstream.str();
 }
 
-const std::string&
+const xqpString&
 ZorbaError::localName() const
 {
   return theLocalName;
 }
 
-const std::string&
+const xqpString&
 ZorbaError::ns() const
 {
   return theNamespace;
 }
 
-const std::string&
+const xqpString&
 ZorbaError::prefix() const
 {
   return thePrefix;
