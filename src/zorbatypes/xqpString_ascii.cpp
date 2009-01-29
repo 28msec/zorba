@@ -1013,48 +1013,61 @@ xqpStringStore_t xqpStringStore::iriToUri() const
 }
 
 
+// Only alphanum is safe.
+const char SAFE[256] =
+{
+  /*      0 1 2 3  4 5 6 7  8 9 A B  C D E F */
+  /* 0 */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+  /* 1 */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+  /* 2 */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,1,1,0,
+  /* 3 */ 1,1,1,1, 1,1,1,1, 1,1,0,0, 0,0,0,0,
+
+  /* 4 */ 0,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1,
+  /* 5 */ 1,1,1,1, 1,1,1,1, 1,1,1,0, 0,0,0,1,
+  /* 6 */ 0,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1,
+  /* 7 */ 1,1,1,1, 1,1,1,1, 1,1,1,0, 0,0,1,0,
+
+  /* 8 */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+  /* 9 */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+  /* A */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+  /* B */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+
+  /* C */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+  /* D */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+  /* E */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+  /* F */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0
+};
+
 /*******************************************************************************
 
 ********************************************************************************/
 xqpStringStore_t xqpStringStore::encodeForUri(const char* start, uint16_t length) const
 {
-  uint32_t i, cp;
-  uint32_t len = numChars();
-  const unsigned char* c = (unsigned char*)c_str();
-//  char seq[4];
-  const unsigned char* prev = (unsigned char*)c_str();
-  distance_type seq_length;
-  
-  std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
-    
-  for(i = 0; i < len; ++i)
+  const char DEC2HEX[16 + 1] = "0123456789ABCDEF";
+  const unsigned char * pSrc = (const unsigned char *)c_str();
+  const int SRC_LEN = theString.length();
+  unsigned char * const pStart = new unsigned char[SRC_LEN * 3];
+  unsigned char * pEnd = pStart;
+  const unsigned char * const SRC_END = pSrc + SRC_LEN;
+
+  for (; pSrc < SRC_END; ++pSrc)
   {
-    prev = c+i;
-    cp = c[i];//UTF8Decode(c);
-    //memset(seq, 0, sizeof(seq));
     // not encoding a / is a hack until the uri class can correctly encode paths
-    if(is_unreservedCP(cp) || is_contained(start, length, cp))
-    {
-      //UTF8Encode(cp, seq);
-      newStr->theString += cp;//seq;
-    }
+    if (SAFE[*pSrc] || is_contained(start, length, *pSrc))
+      *pEnd++ = *pSrc;
     else
     {
-      //codepoint has to be escaped
-      seq_length = 1;//sequence_length(prev);
-      for(int j = 0; j < seq_length; ++j)
-      {
-        cp = *prev;//mask8(*prev);
-        char seq[10];
-        sprintf(seq, "%%%X", cp);
-        newStr->theString += seq;
-        prev++;
-      }
+      // escape this char
+      *pEnd++ = '%';
+      *pEnd++ = DEC2HEX[*pSrc >> 4];
+      *pEnd++ = DEC2HEX[*pSrc & 0x0F];
     }
   }
-  //newStr->theString += "\0";
 
-  return newStr.release();
+  std::string sResult((char *)pStart, (char *)pEnd);
+  delete [] pStart;
+
+  return new xqpStringStore( sResult );
 }
 
 /*******************************************************************************
