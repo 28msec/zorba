@@ -1518,7 +1518,7 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
-  bool is_updating() { return true; }
+  bool is_updating() { return false; }
 
 };
 
