@@ -99,7 +99,7 @@ StandardDocumentURIResolver::resolve(
     ZORBA_ERROR_DESC_OSS(FODC0002, "Unable to retrieve " << lURI.toString());
 #endif
   } 
-
+  else
   if (lURI.get_scheme() == "http" || lURI.get_scheme() == "https") 
   {
 #ifdef ZORBA_WITH_REST
@@ -149,7 +149,20 @@ StandardDocumentURIResolver::resolve(
                          << lURI.toString());
 #endif
     } 
-
+  else
+  {
+    xqpString   q;
+#ifdef WIN32
+    if(lURI.get_scheme().size() == 1)
+    {
+      q = "Did you miss the \"file:///\" ahead of the absolute path?";
+    }
+#endif
+    ZORBA_ERROR_DESC_OSS(FODC0002,
+                         "Unknown URI scheme \"" << lURI.get_scheme() << "\" in URI "
+                         << lURI.toString()
+                         << " . " << q);
+  }
   if (lResultDoc == NULL) 
   {
     ZORBA_ERROR_DESC_OSS(FODC0002,
