@@ -36,23 +36,22 @@ LoadSchemaErrorHandler::~LoadSchemaErrorHandler()
 // ---------------------------------------------------------------------------
 void LoadSchemaErrorHandler::error(const SAXParseException& e)
 {
-    _sawErrors = true;
-    XERCES_STD_QUALIFIER cerr << "\nError at file " << StrX(e.getSystemId())
-    << ", line " << e.getLineNumber()
-    << ", char " << e.getColumnNumber()
-    << "\n  Message: " << StrX(e.getMessage()) << XERCES_STD_QUALIFIER endl;
-    ZORBA_ERROR_LOC_DESC( XQST0059, _loc, StrX(e.getMessage()));
-    //ZORBA_ERROR_DESC(XQST0059, StrX(e.getMessage()));
+  _sawErrors = true;
+  std::ostringstream os;
+  os << "Error in schema " << StrX(e.getSystemId()) << ", line " << e.getLineNumber() 
+     << ", column " << e.getColumnNumber() << "." << std::endl
+     << StrX(e.getMessage());
+  ZORBA_ERROR_LOC_DESC( XQST0059, _loc, os.str());
 }
 
 void LoadSchemaErrorHandler::fatalError(const SAXParseException& e)
 {
-    _sawErrors = true;
-    XERCES_STD_QUALIFIER cerr << "\nFatal Error at file " << StrX(e.getSystemId())
-    << ", line " << e.getLineNumber()
-    << ", char " << e.getColumnNumber()
-    << "\n  Message: " << StrX(e.getMessage()) << XERCES_STD_QUALIFIER endl;
-    ZORBA_ERROR_LOC_DESC( XQST0059, _loc, StrX(e.getMessage()));
+  _sawErrors = true;
+  std::ostringstream os;
+  os << "Error in schema " << StrX(e.getSystemId()) << ", line " << e.getLineNumber() 
+     << ", column " << e.getColumnNumber() << "." << std::endl
+     << StrX(e.getMessage());
+  ZORBA_ERROR_LOC_DESC( XQST0059, _loc, os.str());
     //ZORBA_ERROR_DESC(XQST0059, StrX(e.getMessage()));
 }
 
