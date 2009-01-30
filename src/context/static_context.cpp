@@ -161,21 +161,21 @@ function *context::lookup_fmap_func (xqp_string key, int arity) const {
   return i == fmap->end () ? NULL : (*i).second;
 }
 
-bool static_context::bind_fn (const store::Item *qname, function *f, int arity) {
+bool static_context::bind_fn (const store::Item *qname, function *f, int arity, bool allow_override) {
   xqp_string key = fn_internal_key () + qname_internal_key (qname);
-  if (lookup_fmap_func (key, arity) != NULL)
+  bool existed = lookup_fmap_func (key, arity) != NULL;
+  if (! allow_override && existed)
     return false;
-  ArityFMap *fmap = lookup_fmap (key);
-  bool newMap = fmap == NULL;
-  if (newMap)
-    fmap = new ArityFMap;
+  ctx_value_t v;
+  ArityFMap *fmap = NULL;
+  bool newMap = ! lookup_once (key, v);
+  fmap = newMap ? new ArityFMap : v.fmapValue;
   (*fmap) [arity] = f;
   if (newMap) {
-    ctx_value_t v;
     v.fmapValue = fmap;
     keymap.put (key, v, false);
   }
-  return true;
+  return ! existed;
 }
 
 

@@ -151,7 +151,7 @@ public:
   void find_functions_int (xqp_string key,
                            std::vector<function *>& functions,
                            std::set<int> &found) const;
-  bool bind_fn (const store::Item *qname, function *f, int arity);
+  bool bind_fn (const store::Item *qname, function *f, int arity, bool allow_override = false);
 
   void add_variable_type( const xqp_string var_name, xqtref_t var_type);
   xqtref_t  get_variable_type( store::Item *var_name );
