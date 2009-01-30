@@ -18,6 +18,7 @@
 
 #include "common/common.h"
 #include "xercesIncludes.h"
+#include "XercesParseUtils.h"
 
 #include <zorba/api_shared_types.h>
 
@@ -31,8 +32,18 @@
 namespace zorba
 {
 
-class Schema;
+#ifndef ZORBA_NO_XMLSCHEMA
+class SchemaLocationEntityResolver : public EntityResolver {
+  protected:
+    std::string theLocation;
+    const XMLCh* theLogicalURI;
 
+  public:
+    SchemaLocationEntityResolver(const XMLCh* const logical_uri, std::string& location);
+    InputSource* resolveEntity (const XMLCh* const publicId, const XMLCh* const systemId);
+};        
+  
+#endif
 
 class Schema
 {
@@ -49,7 +60,7 @@ public:
     Schema();
     virtual ~Schema();
 
-    void registerXSD(const char* xsdFileName, const QueryLoc& loc);
+    void registerXSD(const char* xsdFileName, std::string& loaction, const QueryLoc& loc);
     void printXSDInfo(bool excludeBuiltIn = true);
 
     // user defined simple types, i.e. Atomic, List or Union Types

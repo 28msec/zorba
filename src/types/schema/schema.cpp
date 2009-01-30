@@ -108,7 +108,27 @@ Schema::~Schema()
 #endif //ZORBA_NO_XMLSCHEMA
 }
 
-void Schema::registerXSD(const char* xsdURL, const QueryLoc& loc)
+#ifndef ZORBA_NO_XMLSCHEMA
+SchemaLocationEntityResolver::SchemaLocationEntityResolver(const XMLCh* logical_uri,
+                                                           std::string& location)
+   : theLocation(location),
+     theLogicalURI(logical_uri) {}
+
+
+InputSource*
+SchemaLocationEntityResolver::resolveEntity(const XMLCh* const publicId, const XMLCh* const systemID)
+{
+  if (XMLString::compareString(systemID, theLogicalURI) == 0) {
+    XMLChArray xerces_xsdURL (theLocation.c_str());
+    XMLURL url (xerces_xsdURL.get ());
+    return new URLInputSource(url);
+  } else {
+    return NULL;
+  }
+}
+#endif
+
+void Schema::registerXSD(const char* xsdURL, std::string& location, const QueryLoc& loc)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
     std::auto_ptr<SAX2XMLReader> parser;
@@ -124,14 +144,14 @@ void Schema::registerXSD(const char* xsdURL, const QueryLoc& loc)
         parser->setFeature(XMLUni::fgXercesDynamic, true);
         parser->setProperty(XMLUni::fgXercesScannerName, (void *)XMLUni::fgSGXMLScanner);
 
-        LoadSchemaErrorHandler handler(loc);    
+        LoadSchemaErrorHandler handler(loc);
         parser->setErrorHandler(&handler);
 
-        //cout << "== Parsing == " << xsdURL << endl;
         XMLChArray xerces_xsdURL (xsdURL);
-        XMLURL url (xerces_xsdURL.get ());
-        URLInputSource input_src (url);
-        parser->loadGrammar(input_src, Grammar::SchemaGrammarType, true);
+        SchemaLocationEntityResolver lEntityResolver(xerces_xsdURL.get(), location);
+        parser->setEntityResolver(&lEntityResolver);
+
+        parser->loadGrammar(xsdURL, Grammar::SchemaGrammarType, true);
         
         if (handler.getSawErrors())
         {

@@ -218,10 +218,9 @@ StandardSchemaURIResolver::resolve(
     static_context* aStaticContext)
 {
   if (aLocationHints.size() == 0)
-    ZORBA_ERROR_DESC_OSS(XQST0057, "Could not find the schema with target namespace " << aURI->getStringValue() 
-                                   << " because no location hint has been specified.");
-  // take the first location hint
-  return aLocationHints[0];
+    return aURI;
+  else 
+    return aLocationHints[0];
 }
 
 

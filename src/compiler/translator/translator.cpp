@@ -3172,7 +3172,7 @@ void *begin_visit (const SchemaImport& v) {
 
     if (atlist != NULL) {
       for (int i = 0; i < atlist->size(); ++i) {
-        string at = sctx_p->resolve_relative_uri((*atlist)[0], xqpString());
+        string at = sctx_p->resolve_relative_uri((*atlist)[i], xqpString());
         store::Item_t lAtURIItem = NULL;
         ITEM_FACTORY->createAnyURI(lAtURIItem, at.c_str());
         ZORBA_ASSERT(lAtURIItem != NULL);
@@ -3193,8 +3193,9 @@ void *begin_visit (const SchemaImport& v) {
       
       ((DelegatingTypeManager*)CTXTS)->initializeSchema();
       Schema* schema_p = ((DelegatingTypeManager*)CTXTS)->getSchema();
-      
-      schema_p->registerXSD (lSchemaUri->getStringValue()->c_str (), loc);
+
+      std::string lTmp(lSchemaUri->getStringValue()->c_str());
+      schema_p->registerXSD (lTargetNamespace->getStringValue()->c_str(), lTmp, loc);
     } catch (error::ZorbaError& e) {
       ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
     }
