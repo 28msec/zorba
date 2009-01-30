@@ -147,7 +147,7 @@ store::Item_t QNamePool::insert(
     const char* ln,
     bool        sync)
 {
-  ZORBA_FATAL(false, "")
+  ZORBA_FATAL(false, "");
 
   QNameItemImpl* qn;
   QNameItemImpl* normVictim = NULL;
