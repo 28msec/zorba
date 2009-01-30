@@ -284,6 +284,12 @@ namespace zorba {
       getBaseURI( ) const = 0;
 
 
+      virtual bool
+      setRevalidationEnabled ( bool enabled ) = 0;
+
+      virtual bool
+      getRevalidationEnabled( ) const = 0;
+
       /** \brief Register a stateless external function.
        *
        * Register an external function that can be called within a query.

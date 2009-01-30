@@ -132,6 +132,12 @@ class StaticContextImpl : public StaticContext
   virtual String   
   getBaseURI( ) const;
 
+  virtual bool
+  setRevalidationEnabled ( bool enabled );
+
+  virtual bool
+  getRevalidationEnabled( ) const;
+
   virtual bool 
   registerStatelessExternalFunction(StatelessExternalFunction* aExternalFunction);
 

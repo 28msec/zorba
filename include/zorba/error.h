@@ -830,3 +830,8 @@ typedef enum
 } XQUERY_ERROR;
 
 #endif
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

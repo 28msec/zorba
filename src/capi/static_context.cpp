@@ -316,6 +316,27 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
+  StaticContext::set_revalidation_enabled(XQC_StaticContext context, bool enabled)
+  {
+    SC_TRY
+      zorba::StaticContext* lContext = getStaticContext(context);
+
+      lContext->setRevalidationEnabled (enabled);
+    SC_CATCH
+  }
+
+  XQUERY_ERROR
+  StaticContext::get_revalidation_enabled(XQC_StaticContext context, bool *enabled)
+  {
+    SC_TRY
+      zorba::StaticContext* lContext = getStaticContext(context);;
+      zorbac::StaticContext* lWrapper = static_cast<zorbac::StaticContext*>(context->data);
+
+      (*enabled) = lContext->getRevalidationEnabled ();
+    SC_CATCH
+  }
+
+  XQUERY_ERROR
   StaticContext::register_external_function(XQC_StaticContext context, 
                                             const char* uri,
                                             const char* localname,

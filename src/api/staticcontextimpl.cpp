@@ -450,6 +450,31 @@ StaticContextImpl::getBaseURI( ) const
 }
 
 
+bool   
+StaticContextImpl::setRevalidationEnabled( bool enabled)
+{
+  ZORBA_TRY
+    theCtx->set_revalidation_enabled (enabled);
+    return true;
+  ZORBA_CATCH
+  return false;
+}
+
+
+bool
+StaticContextImpl::getRevalidationEnabled( ) const
+{
+  try {
+    return theCtx->revalidation_enabled ();
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  } catch (std::exception& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e.what());
+  }
+  return false;
+}
+  
+
 bool 
 StaticContextImpl::registerStatelessExternalFunction(StatelessExternalFunction* aExternalFunction)
 {

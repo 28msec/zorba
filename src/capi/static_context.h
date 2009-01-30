@@ -107,6 +107,13 @@ namespace zorbac {
       get_base_uri(XQC_StaticContext context, const char** base_uri);
 
       static XQUERY_ERROR
+      set_revalidation_enabled(XQC_StaticContext context, bool enabled);
+
+      static XQUERY_ERROR
+      get_revalidation_enabled(XQC_StaticContext context, bool* enabled);
+
+      
+      static XQUERY_ERROR
       register_external_function(XQC_StaticContext context, 
                                 const char* uri,
                                 const char* localname,
