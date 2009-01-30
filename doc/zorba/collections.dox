@@ -95,7 +95,7 @@ Assuming <b>$uri</b> is 'file://localhost/home/user_1/catalog.xml', it must have
 \endcode
 
 Each of the documents referenced in the <tt>\<doc\></tt> tags is first looked up in the collection poll. \n
-If it is already present, nothing is done, otherwise it is loaded as a collection, with the <tt>href</tt> attribute's value as the associated URI.\n
+If it is already present, nothing is done, otherwise it is loaded as a collection, with the <tt>href</tt> attribute value as the associated URI.\n
 The URIs of the catalog and the files may include a protocol specification, such as "file://" or "http://".\n
 The function will not validate the catalog file's structure. In case it is malformed - no XML files will be imported.
 
@@ -173,6 +173,9 @@ If the specified collection does not exist, an error is raised API0006_COLLECTIO
 If the node is already in the collection, an error is raised API0031_NODE_ALREADY_IN_COLLECTION  (see \ref apendix_coll). \n
 If the collection URI is empty and the default collection is not defined in the dynamic context, FODC0002 is raised (see \ref apendix_coll).
 
+\subsection ex_2_8 Example:
+\include insert_nodes_first.xq
+
 \subsection coll_insert_nodes_last 2.9 zorba-collection:insert-nodes-last
 
 \code
@@ -190,7 +193,7 @@ If the node is already in the collection, an error is raised API0031_NODE_ALREAD
 If the collection URI is empty and the default collection is not defined in the dynamic context, FODC0002 is raised (see \ref apendix_coll).
 
 \subsection ex_2_9 Example:
-\include q31.cxq
+\include insert_nodes_last.xq
 
 \subsection coll_insert_nodes_before 2.10 zorba-collection:insert-nodes-before
 
@@ -214,7 +217,7 @@ If  <b>$target</b> is already part of the collection an error is raised API0031_
 If the collection URI is empty and the default collection is not defined in the dynamic context, FODC0002 is raised (see \ref apendix_coll).
 
 \subsection ex_2_10 Example:
-\include q32.cxq
+\include insert_nodes_before_1.xq
 
 \subsection coll_insert_nodes_after 2.11 zorba-collection:insert-nodes-after
 
@@ -237,6 +240,9 @@ If the given expression points to node that is not part of the collection, an er
 If  <b>$target</b> is already part of the collection an error is raised API0031_NODE_ALREADY_IN_COLLECTION (see \ref apendix_coll). \n
 If the collection URI is empty and the default collection is not defined in the dynamic context, FODC0002 is raised (see \ref apendix_coll).
 
+\subsection ex_2_11 Example:
+\include insert_nodes_after_1.xq
+
 \subsection coll_insert_nodes_at 2.12 zorba-collection:insert-nodes-at
 
 \code
@@ -257,6 +263,9 @@ If the specified collection does not exist, an error is raised API0006_COLLECTIO
 If the node is already part of the collection an error is raised API0031_NODE_ALREADY_IN_COLLECTION (see \ref apendix_coll). \n
 If the collection URI is empty and the default collection is not defined in the dynamic context, FODC0002 is raised (see \ref apendix_coll).
 
+\subsection ex_2_12 Example:
+\include insert_nodes_at_1.xq
+
 \subsection coll_remove_nodes 2.13 zorba-collection:remove-nodes
 
 \code
@@ -275,7 +284,7 @@ If the given expression points to a node that is not part of the collection, an 
 If the collection URI is empty and the default collection is not defined in the dynamic context, FODC0002 is raised (see \ref apendix_coll).
 
 \subsection ex_2_13 Example:
-\include q36.cxq
+\include remove_nodes_1.xq
 
 \subsection coll_remove_node_at 2.14 zorba-collection:remove-node-at
 
@@ -294,7 +303,7 @@ If the collection has fewer nodes than <b>$position</b> + 1, nothing is removed 
 If the collection URI is empty and the default collection is not defined in the dynamic context, FODC0002 is raised (see \ref apendix_coll).
 
 \subsection ex_2_14 Example:
-\include q37.cxq
+\include remove_node_at_1.xq
 
 \subsection coll_nodes_count 2.15 zorba-collection:nodes-count
 
@@ -329,7 +338,7 @@ If the collection has fewer nodes than <b>$position</b> + 1 an error is raised A
 If the collection URI is empty and the default collection is not defined in the dynamic context, FODC0002 is raised (see \ref apendix_coll).
 
 \subsection ex_2_16 Example:
-\include q39.cxq
+\include node_at_1.xq
 
 \subsection coll_index_of 2.17 zorba-collection:index-of
 
@@ -347,6 +356,8 @@ If the specified collection does not exist, an error is raised API0006_COLLECTIO
 If the node does not belong to the given collection, an error is raised API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION (see \ref apendix_coll). \n
 If the collection URI is empty and the default collection is not defined in the dynamic context, FODC0002 is raised (see \ref apendix_coll).
 
+\subsection ex_2_17 Example:
+\include index_of_1.xq
 \subsection coll_export_xml 2.18 zorba-collection:export-xml
 
 \code
@@ -364,7 +375,7 @@ The first function will use the collection's URI (the $uri parameter) as the tar
 The collection will be exported only if it can be serialized correctly - i.e. it is a well-formed XML document. \n
 
 Error conditions:\n
-If the collection can not be serialized corectly an error will be returned API0035_COLLECTION_CANNOT_BE_SERIALIZED (see \ref apendix_coll).
+If the collection can not be serialized correctly an error will be returned API0035_COLLECTION_CANNOT_BE_SERIALIZED (see \ref apendix_coll).
 
 \subsection fn_collection_exists 2.19 zorba-collection:collection-exists
 
