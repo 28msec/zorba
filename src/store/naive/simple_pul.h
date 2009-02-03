@@ -542,9 +542,9 @@ protected:
   bool            theRestoreParentType;
 
 public:
-  UpdRenameElem(PULImpl* pul, store::Item_t& t, store::Item_t& newName) 
+  UpdRenameElem(PULImpl* pul, store::Item_t& target, store::Item_t& newName) 
     :
-    UpdatePrimitive(pul, t),
+    UpdatePrimitive(pul, target),
     theNewBinding(false),
     theRestoreParentType(false)
   {
@@ -627,9 +627,9 @@ protected:
   store::Item_t   theOldValue;
 
 public:
-  UpdReplaceAttrValue(PULImpl* pul, store::Item_t& t, xqpStringStore_t& newValue)
+  UpdReplaceAttrValue(PULImpl* pul, store::Item_t& target, xqpStringStore_t& newValue)
     :
-    UpdatePrimitive(pul, t)
+    UpdatePrimitive(pul, target)
   {
     theNewValue.transfer(newValue);
   }
@@ -667,9 +667,9 @@ protected:
   bool            theNewBinding;
 
 public:
-  UpdRenameAttr(PULImpl* pul, store::Item_t& t, store::Item_t& newName)
+  UpdRenameAttr(PULImpl* pul, store::Item_t& target, store::Item_t& newName)
     :
-    UpdatePrimitive(pul, t),
+    UpdatePrimitive(pul, target),
     theNewBinding(false)
   {
     theNewName.transfer(newName);
@@ -742,9 +742,9 @@ protected:
   bool               theIsTyped;
 
 public:
-  UpdReplaceTextValue(PULImpl* pul, store::Item_t& t, xqpStringStore_t& newValue) 
+  UpdReplaceTextValue(PULImpl* pul, store::Item_t& target, xqpStringStore_t& newValue) 
     :
-    UpdatePrimitive(pul, t),
+    UpdatePrimitive(pul, target),
     theIsTyped(false)
   {
     theNewContent.transfer(newValue);
@@ -773,9 +773,9 @@ protected:
   xqpStringStore_t   theOldValue;
 
 public:
-  UpdReplacePiValue(PULImpl* pul, store::Item_t& t, xqpStringStore_t& newValue)
+  UpdReplacePiValue(PULImpl* pul, store::Item_t& target, xqpStringStore_t& newValue)
     :
-    UpdatePrimitive(pul, t)
+    UpdatePrimitive(pul, target)
   {
     theNewValue.transfer(newValue);
   }
@@ -803,9 +803,9 @@ protected:
   xqpStringStore_t   theOldName;
 
 public:
-  UpdRenamePi(PULImpl* pul, store::Item_t& t, xqpStringStore_t& newName) 
+  UpdRenamePi(PULImpl* pul, store::Item_t& target, xqpStringStore_t& newName) 
     :
-    UpdatePrimitive(pul, t)
+    UpdatePrimitive(pul, target)
   {
     theNewName.transfer(newName);
   }
@@ -833,9 +833,9 @@ protected:
   xqpStringStore_t   theOldValue;
 
 public:
-  UpdReplaceCommentValue(PULImpl* pul, store::Item_t& t, xqpStringStore_t& newValue)
+  UpdReplaceCommentValue(PULImpl* pul, store::Item_t& target, xqpStringStore_t& newValue)
     :
-    UpdatePrimitive(pul, t)
+    UpdatePrimitive(pul, target)
   {
     theNewValue.transfer(newValue);
   }
@@ -881,12 +881,21 @@ class UpdCollection : public UpdatePrimitive
 {
 protected:
   static_context*    theStaticContext;
-  store::Item_t             theTargetCollectionUri;
+  store::Item_t      theTargetCollectionUri;
 
 public:
   UpdCollection(PULImpl* pul, static_context* aStaticContext, store::Item_t& targetCollectionUri)
     :
     UpdatePrimitive(pul),
+    theStaticContext(aStaticContext),
+    theTargetCollectionUri(targetCollectionUri)
+  {
+  }
+
+  UpdCollection(PULImpl* pul, static_context* aStaticContext, 
+                store::Item_t& target, store::Item_t& targetCollectionUri)
+    :
+    UpdatePrimitive(pul, target),
     theStaticContext(aStaticContext),
     theTargetCollectionUri(targetCollectionUri)
   {
@@ -973,8 +982,8 @@ protected:
 
 public:
   UpdInsertLastIntoCollection(PULImpl* pul, static_context* aStaticContext,
-      store::Item_t& targetCollectionUri,
-      std::vector<store::Item_t>& nodes, store::CopyMode aCopyMode)
+                              store::Item_t& targetCollectionUri,
+                              std::vector<store::Item_t>& nodes, store::CopyMode aCopyMode)
       :
       UpdCollection(pul, aStaticContext, targetCollectionUri),
       theNodes(nodes), theCopyMode(aCopyMode)
@@ -994,7 +1003,6 @@ class UpdInsertBeforeIntoCollection : public  UpdCollection
 {
 protected:
   std::vector<store::Item_t>  theNodes;
-  store::Item_t               theTarget;
   store::CopyMode             theCopyMode;
 
 public:
@@ -1004,9 +1012,8 @@ public:
       std::vector<store::Item_t>& nodes,
       store::CopyMode aCopyMode)
       :
-      UpdCollection(pul, aStaticContext, targetCollectionUri),
+      UpdCollection(pul, aStaticContext, target, targetCollectionUri),
       theNodes(nodes),
-      theTarget(target),
       theCopyMode(aCopyMode)
   {
   }
@@ -1024,7 +1031,6 @@ class UpdInsertAfterIntoCollection : public  UpdCollection
 {
 protected:
   std::vector<store::Item_t>  theNodes;
-  store::Item_t               theTarget;
   store::CopyMode             theCopyMode;
 
 public:
@@ -1034,9 +1040,8 @@ public:
       std::vector<store::Item_t>& nodes,
       store::CopyMode aCopyMode)
       :
-      UpdCollection(pul, aStaticContext, targetCollectionUri),
+      UpdCollection(pul, aStaticContext, target, targetCollectionUri),
       theNodes(nodes),
-      theTarget(target),
       theCopyMode(aCopyMode)
   {
   }
