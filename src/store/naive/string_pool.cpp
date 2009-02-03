@@ -103,7 +103,7 @@ void StringPool::garbageCollect()
     entry = &theHashTab[i];
 
     // If the current hash bucket is empty, move to the next one
-    if (entry->theItem == NULL)
+    if (entry->isFree())
     {
       ZORBA_FATAL(entry->theNext == 0, "");
       continue;
@@ -115,6 +115,7 @@ void StringPool::garbageCollect()
       if (entry->theNext == 0)
       {
         entry->theItem = NULL;
+        entry->setFree();
         theNumEntries--;
         break;
       }
@@ -124,6 +125,7 @@ void StringPool::garbageCollect()
         *entry = *nextEntry;
         entry->setNext(nextEntry->getNext());
         nextEntry->theItem = NULL;
+        nextEntry->setFree();
         nextEntry->setNext(freeList);
         freeList = nextEntry;
         theNumEntries--;
@@ -140,6 +142,7 @@ void StringPool::garbageCollect()
       {
         prevEntry->setNext(entry->getNext());
         entry->theItem = NULL;
+        entry->setFree();
         entry->setNext(freeList);
         freeList = entry;
         theNumEntries--;
