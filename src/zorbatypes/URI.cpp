@@ -84,6 +84,15 @@ URI::URI( const URI& base_uri, const xqpString& uri, bool validate )
   resolve(&base_uri);
 }
 
+URI::URI( const URI& full_uri, const URI& base_uri )
+   : theState(0),
+     thePort(0),
+     valid(false)
+{
+  initialize(full_uri.toString(), false);
+  relativize(&base_uri);
+}
+
 URI::URI( const URI& to_copy )
 {
   initialize(to_copy);
@@ -221,7 +230,7 @@ URI::initialize(const xqpString& uri, bool have_base)
       (lColonIdx > lFragmentIdx && lFragmentIdx != -1)) {
 
    // A standalone base is a valid URI
-    if ( lColonIdx == 0 || (!have_base && lFragmentIdx != 0) ) {
+    if ( (valid) && (lColonIdx == 0 || (!have_base && lFragmentIdx != 0)) ) {
       ZORBA_ERROR_DESC_OSS(XQST0046, "URI \"" << lTrimmedURI << "\" doesn't have an URI scheme");
     }
 
@@ -489,12 +498,51 @@ URI::resolve(const URI * base_uri)
   theASCIIURIText = "";
 }
 
+void
+URI::relativize(const URI * base_uri)
+{
+  if ( base_uri == 0 || base_uri->toString().size() == 0)
+    return;
+
+  // if the scheme of the base_uri and the current uri are not identical, we return the current uri
+  if ( base_uri->get_scheme().compare(get_scheme()) != 0 ) {
+    return;
+  }
+
+  // if the authority of the base_uri and the current uri are not identical, we return the current uri
+  if ( base_uri->get_reg_based_authority().compare(get_reg_based_authority()) != 0 ) {
+    return;
+  }
+
+  // if the path of the current uri is not a substring of the path of the base_uri, we return the current uri
+  if ( get_path().indexOf(base_uri->get_path()) != 0 ) {
+    return;
+  }
+
+  // construct a new relative hierarchical URI is constructed with query and fragment components 
+  // taken from the given URI and with a path component computed by removing this URI's 
+  // path from the beginning of the given URI's path.
+  xqpString lNewPath = get_path().substr(base_uri->get_path().length());
+  set_path(lNewPath);
+  // unset remaining stuff
+  theScheme = "";
+  unset_state(Scheme);
+  theRegBasedAuthority = "";
+  unset_state(RegBasedAuthority);
+  theUserInfo = "";
+  unset_state(UserInfo);
+  thePort = 0;
+  unset_state(Port);
+  theHost = "";
+  unset_state(Host);
+}
+
 // scheme = alpha *( alpha | digit | "+" | "-" | "." )
 void
 URI::initializeScheme(const xqpString& uri)
 {
   int lSchemeSeparatorIdx = find_any(uri, ":/?#");  
-  if (lSchemeSeparatorIdx == -1 ) {
+  if ( valid && lSchemeSeparatorIdx == -1 ) {
     ZORBA_ERROR_DESC_OSS(XQST0046, "URI \"" << uri << "\" doesn't have an URI scheme");
   } else {
     set_scheme(uri.substr(0, lSchemeSeparatorIdx));

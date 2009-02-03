@@ -509,11 +509,14 @@ int uri(int argc, char* argv[])
       std::cout << "executing test number " << i << " with uri " << tests[i].uri << std::endl;
       
       zorba::URI uri;
+      zorba::URI relativized;
+      zorba::URI base;
       if (tests[i].base.empty()) {
         uri = zorba::URI(tests[i].uri);
       } else  {
-        zorba::URI base(tests[i].base);
+        base = zorba::URI(tests[i].base);
         uri = zorba::URI(base, tests[i].uri);
+        relativized = zorba::URI(uri, base);
       }
       if (uri.toString() != tests[i].text)  {
         std::cerr << "uri text " << uri.toString() << " is not equal to " << tests[i].text << std::endl;
@@ -549,6 +552,15 @@ int uri(int argc, char* argv[])
       if (uri.get_query() != tests[i].query) {
         std::cerr << "query " << uri.get_query() << " is not equal to " << tests[i].query << std::endl;
         return 10;
+      }
+      if (!tests[i].base.empty() && uri.get_path().indexOf(base.get_path()) == 0) {
+        if (relativized.toString() != tests[i].uri) {
+          std::cerr << "relativized uri " << relativized.toString() << " is not equal to relative " << tests[i].uri 
+                    << " which was relativized using base " << tests[i].base << std::endl;
+          return 11;
+        } else {
+          std::cerr << "relativized uri " << relativized.toString() << std::endl;
+        }
       }
       std::cout << "result: " << uri.toString() << std::endl;
     }

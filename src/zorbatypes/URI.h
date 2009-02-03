@@ -38,6 +38,9 @@ class ZORBA_DLL_PUBLIC URI
   // construct a uri and eventually resolve with the given base uri
   URI( const URI& base_uri, const xqpString& uri, bool validate = true );
 
+  // constructs a new uri by relativizing the full_uri agsinst the base_uri
+  URI ( const URI& full_uri, const URI& base_uri);
+
   // copy constructor
   URI ( const URI& to_copy );
 
@@ -202,6 +205,9 @@ protected:
 protected:
   void
   resolve(const URI * base_uri);
+
+  void
+  relativize(const URI * base_uri);
 
   // keep track whether particular components of a uri are defined or undefined
   mutable uint32_t theState;
