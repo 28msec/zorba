@@ -44,7 +44,7 @@ NodeToUpdatesMap::~NodeToUpdatesMap()
   for (ulong i = 0; i < n; i++)
   {
     HashEntry<XmlNode*, NodeUpdates*>* entry = &this->theHashTab[i];
-    if (entry->theItem != NULL)
+    if (!entry->isFree())
     {
       delete entry->theValue;
     }
