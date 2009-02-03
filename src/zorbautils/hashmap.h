@@ -57,19 +57,22 @@ template <class T, class V>
 class HashEntry
 {
 public:
+  bool         theIsFree;
   T            theItem;
   V            theValue;
   long         theNext;  // offset from "this" to the next entry.
 
-  HashEntry() : theItem(NULL), theNext(0) { }
+  HashEntry() : theIsFree(true), theNext(0) { }
 
   ~HashEntry() 
   { 
-    theItem = NULL; 
+   theIsFree = true;
     theNext = 0;
   }
 
-  bool isFree() const  { return theItem == NULL; }
+  bool isFree() const  { return theIsFree; }
+  void setFree()       { theIsFree = true; }
+  void unsetFree()     { theIsFree = false; }
 
   void setNext(HashEntry* nextEntry) 
   {
@@ -134,7 +137,7 @@ public:
       thePos(pos)
     {
       while (thePos < theHashTab->size() &&
-             (*theHashTab)[thePos].theItem == NULL)
+             (*theHashTab)[thePos].isFree())
         thePos++;
     }
 
@@ -167,7 +170,7 @@ public:
       {
         thePos++;
         while (thePos < theHashTab->size() &&
-               (*theHashTab)[thePos].theItem == NULL)
+               (*theHashTab)[thePos].isFree())
           thePos++;
       }
       return *this;
@@ -207,7 +210,7 @@ protected:
 
 ulong computeTabSize(ulong size)
 {
-  return size + 32 + size/5; //theInitialSize / 10;
+  return size + 32 + size/5; 
 }
 
 
@@ -262,6 +265,15 @@ virtual ~HashMap()
     delete theCompareParam;
     theCompareParam = 0;
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool empty()
+{
+  return (theNumEntries == 0); 
 }
 
 
@@ -400,10 +412,6 @@ bool remove(const T& item)
   return removeNoSync(item, hval);
 }
 
-bool empty()
-{
-  return (theNumEntries == 0); 
-}
 
 bool removeNoSync(const T& item, ulong hval)
 {
@@ -487,6 +495,9 @@ HashEntry<T, V>* freelist()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 HashEntry<T, V>* bucket(ulong hvalue)
 {
   return &theHashTab[hvalue % theHashTabSize];
@@ -501,52 +512,48 @@ HashEntry<T, V>* hashInsert(
     ulong      hvalue,
     bool&      found)
 {
-doHashInsert:
-  HashEntry<T, V>* lastentry = NULL;
-
+retry:
   found = false;
 
   // Get ptr to the 1st entry of the hash bucket corresponding to the given item.
-  HashEntry<T, V>* entry = bucket(hvalue);
+  HashEntry<T, V>* headEntry = bucket(hvalue);
 
   // If the hash bucket is empty, its 1st entry is used to store the new string.
-  if (entry->isFree())
+  if (headEntry->isFree())
   {
     theNumEntries++;
-    return entry;
+    headEntry->unsetFree();
+    return headEntry;
   }
 
   // Search the hash bucket looking for the given item.
-  while (entry != NULL)
+  HashEntry<T, V>* currEntry = headEntry;
+
+  while (currEntry != NULL)
   {
-    if (Externals<T,E,C>::equal(entry->theItem, item, theCompareParam))
+    if (Externals<T,E,C>::equal(currEntry->theItem, item, theCompareParam))
     {
       found = true;
-      return entry;
+      return currEntry;
     }
 
-    //nr_colisions++;
-    lastentry = entry;
-    entry = entry->getNext();
+    currEntry = currEntry->getNext();
   }
 
   // The item was not found.
-  theNumEntries++;
-  numCollisions++;
 
-  // Do garbage collection if the hash table is more than 60% full.
-  // Note: gc does NOT resize theHashTab.
+  // Do garbage collection if the hash table is more than 60% full. Note that
+  // gc does NOT resize theHashTab, so after gc, the item still belongs to the
+  // same bucket as before gc.
   if (theNumEntries > theHashTabSize * theLoadFactor)
   {
     garbageCollect();
 
-    // If gc freed the lastentry, find the current last entry of the bucket.
-    if (lastentry->theItem == NULL)
+    if (headEntry->isFree())
     {
-      entry = bucket(hvalue);
-
-      //daniel: why go to the last item?
-      lastentry = entry;//gotoLast(entry);
+      theNumEntries++;
+      headEntry->unsetFree();
+      return headEntry;
     }
   }
 
@@ -554,28 +561,32 @@ doHashInsert:
   if (theNumEntries > theHashTabSize * theLoadFactor)
   {
     resizeHashTab(theHashTabSize * 2);
-
-    theNumEntries--;
-    numCollisions--;
-    goto doHashInsert;//look again if the item is in the collision list
+    goto retry;
   }
 
-  // Get an entry from the free list in the overflow section of the hash teble
-  // If no free entry exists, a new entry is appended into the hash table.
+  // We are having a collision, and are going to place the new item in the
+  // collision list for its bucket. We place the new item right after the
+  // headEntry for the bucket.
+
+  theNumEntries++;
+  numCollisions++;
+
+  // If no free entry exists, we extend the collision area of the hash table.
   if (freelist()->getNext() == 0)
   {
-    long lastOffset = lastentry - &theHashTab[0];
+    long offset = headEntry - &theHashTab[0];
     extendCollisionArea();
-    lastentry = &theHashTab[0] + lastOffset;
+    headEntry = &theHashTab[0] + offset;
   }
 
-  entry = freelist()->getNext();
-  freelist()->setNext(entry->getNext());
-  entry->setNext(lastentry->getNext());
-  lastentry->setNext(entry);
-  //entry->setNext(NULL);
+  currEntry = freelist()->getNext();
+  freelist()->setNext(currEntry->getNext());
+  currEntry->setNext(headEntry->getNext());
+  headEntry->setNext(currEntry);
 
-  return entry;
+  currEntry->unsetFree();
+
+  return currEntry;
 }
 
 
@@ -622,17 +633,17 @@ void resizeHashTab(ulong newSize)
   HashEntry<T, V>* entry;
   HashEntry<T, V>* oldentry;
 
-  // Allocate a new vector of new size and fill it with old items
-  checked_vector<HashEntry<T, V> > oldTab(computeTabSize(newSize));// = theHashTab;
+  // Create a new vector of new size and swap theHashTab with this new vector
+  checked_vector<HashEntry<T, V> > oldTab(computeTabSize(newSize));
   theHashTab.swap(oldTab);
 
   ulong oldsize = oldTab.size();
   theHashTabSize = newSize;
-  //theHashTab.clear();
-  //theHashTab.resize(computeTabSize(newSize));
+
   formatCollisionArea();
  
   numCollisions = 0;
+
   // Now rehash every entry
   for (ulong i = 0; i < oldsize; i++)
   {
@@ -641,35 +652,31 @@ void resizeHashTab(ulong newSize)
     if (oldentry->isFree())
       continue;
 
-    oldentry->theNext = 0;
-
     entry = bucket (Externals<T,E,C>::hash(oldentry->theItem, theCompareParam));
 
     if (!entry->isFree())
     {
-      // Go to the last entry of the current bucket
-      //daniel: why go to last? better insert after the first entry
-      HashEntry<T, V>* lastentry = entry;//gotoLast(entry);
+      HashEntry<T, V>* headEntry = entry;
 
       // Get an entry from the free list in the collision section of the hash
-      // table. If no free entry exists, a new entry is appended into the table.
+      // table. If no free entry exists, extend the collision area.
       if (freelist()->getNext() == NULL)
       {
-        long lastOffset = lastentry - &theHashTab[0];
+        long offset = headEntry - &theHashTab[0];
         extendCollisionArea();
-        lastentry = &theHashTab[0] + lastOffset;
+        headEntry = &theHashTab[0] + offset;
       }
 
       entry = freelist()->getNext();
       freelist()->setNext(entry->getNext());
-      entry->setNext(lastentry->getNext());
-      lastentry->setNext(entry);
+      entry->setNext(headEntry->getNext());
+      headEntry->setNext(entry);
       numCollisions++;
     }
 
-    //*entry = *oldentry;
     entry->theItem = oldentry->theItem;
     entry->theValue = oldentry->theValue;
+    entry->unsetFree();
   }
 }
 

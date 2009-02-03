@@ -112,7 +112,7 @@ bool insert(T& item)
   item, insert the given item to the set and return true. Otherwise, return
   false and a copy of the found item I.
 ********************************************************************************/
-bool insert(T& item,  T& outItem)
+bool insert(T& item, T& outItem)
 {
   bool found;
 
@@ -147,7 +147,7 @@ bool insert(T& item,  T& outItem)
   item, insert the given item to the set and return true. Otherwise, return
   false and a copy of the found item I.
 ********************************************************************************/
-bool insert(const T& item,  T& outItem)
+bool insert(const T& item, T& outItem)
 {
   bool found;
 
