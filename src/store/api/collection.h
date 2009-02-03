@@ -76,19 +76,21 @@ public:
   virtual Item_t loadDocument(std::istream* stream, const long position = -1) = 0;
 
   /**
-   * Inserts a node to the collection.
+   * Inserts a copy for the passed node to the collection.
    *
    * @param node The node to insert
+   * @param copyMode copy behavior
    * @param position The position where the data will be inserted.
    * By default the data will be appended at the end.
    *
    */
-  virtual void addNode(const Item* node, const long position = -1) = 0;
+  virtual void addNode(const Item* node, const CopyMode& copyMode,  const long position = -1) = 0;
 
   /**
-   * Adds a Node Item to the Collection before or after the targetNode.
+   * Adds a copy of a Node Item to the Collection before or after the targetNode.
    * 
    * @param aNode the Node Item to add.
+   * @param copyMode copy behavior
    * @param aTargetNode the aNode will be added before the aTargetNode.
    * @param sOrder if true the aNode will be inserted before the aTarget.
    * Otherwise aNode will be inserted after aTarget.
@@ -96,17 +98,18 @@ public:
    *
    */
   virtual void
-  addNode(const Item* aNode, const Item* aTargetNode, bool before) = 0;
+  addNode(const Item* aNode, const CopyMode& copyMode, const Item* aTargetNode, bool before) = 0;
 
   /**
-   * Inserts to the collection the set of nodes returned by the given iterator.
+   * Inserts to the collection copies of a set of nodes returned by the given iterator.
    *
    * @param nodeIter The iterator which produces the nodes to insert
+   * @param copyMode copy behavior
    * @param position The position where the data will be inserted.
    * By default the data will be appended at the end.
    *
    */
-  virtual void addNodes(Iterator* nodeIter, const long position = -1) = 0;
+  virtual void addNodes(Iterator* nodeIter, const CopyMode& copyMode, const long position = -1) = 0;
 
   /**
    * Removes a node from the collection.

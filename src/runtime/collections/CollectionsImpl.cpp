@@ -176,7 +176,8 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
       strURI = itemURI->getStringValue();
       theColl = GENV_STORE.createCollection(strURI);
-      theColl->addNode(itemXML, 1);
+      store::CopyMode lCopyMode;
+      theColl->addNode(itemXML, lCopyMode, 1);
     }
   }
 
@@ -339,7 +340,8 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
 
             xqpStringStore_t    collectionUri = uriFile.toString().getStore();
             theColl = GENV_STORE.createCollection(collectionUri);
-            theColl->addNode(itemXML, 1);
+            store::CopyMode lCopyMode;
+            theColl->addNode(itemXML, lCopyMode, 1);
           }
         }
         theAttributes->close();

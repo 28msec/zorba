@@ -30,6 +30,7 @@
 #include "context/internal_uri_resolvers.h"
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
+#include "store/naive/simple_collection.h"
 
 namespace zorba { namespace simplestore {
 
@@ -1466,7 +1467,11 @@ void UpdDeleteCollection::undo()
   for (std::vector<store::Item_t>::iterator lIter = theSavedItems.begin();
        lIter != theSavedItems.end(); ++lIter) {
     if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) {
-      lColl->addNode(lIter->getp());
+#ifndef NDEBUG
+      dynamic_cast<SimpleCollection*>(lColl.getp())->addNodeWithoutCopy(lIter->getp());
+#else
+      static_cast<SimpleCollection*>(lColl.getp())->addNodeWithoutCopy(lIter->getp());
+#endif
     }
   }
 }
@@ -1478,7 +1483,7 @@ void UpdInsertIntoCollection::apply()
                          ->resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
-  lColl->addNode(theNode->copy(0, 0, theCopyMode));
+  lColl->addNode(theNode, theCopyMode);
 
   theIsApplied = true;
 }
@@ -1506,7 +1511,7 @@ void UpdInsertFirstIntoCollection::apply()
 
   for (std::vector<store::Item_t>::reverse_iterator lIter = theNodes.rbegin();
        lIter != theNodes.rend(); ++lIter) {
-    lColl->addNode((*lIter)->copy(0, 0, theCopyMode), 1);
+    lColl->addNode(*lIter, theCopyMode, 1);
   }
 }
 
@@ -1534,7 +1539,7 @@ void UpdInsertLastIntoCollection::apply()
 
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
        lIter != theNodes.end(); ++lIter) {
-    lColl->addNode((*lIter)->copy(0, 0, theCopyMode), -1);
+    lColl->addNode(*lIter, theCopyMode, -1);
   }
 }
 
@@ -1562,7 +1567,7 @@ void UpdInsertBeforeIntoCollection::apply()
 
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
        lIter != theNodes.end(); ++lIter) {
-    lColl->addNode((*lIter)->copy(0, 0, theCopyMode), theTarget, true);
+    lColl->addNode(*lIter, theCopyMode, theTarget, true);
   }
 }
 
@@ -1590,7 +1595,7 @@ void UpdInsertAfterIntoCollection::apply()
 
   for (std::vector<store::Item_t>::reverse_iterator lIter = theNodes.rbegin();
        lIter != theNodes.rend(); ++lIter) {
-    lColl->addNode((*lIter)->copy(0, 0, theCopyMode), theTarget, false);
+    lColl->addNode(*lIter, theCopyMode, theTarget, false);
   }
 }
 
@@ -1619,7 +1624,7 @@ void UpdInsertAtIntoCollection::apply()
   ulong lPos = thePos;
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
        lIter != theNodes.end(); ++lIter) {
-    lColl->addNode((*lIter)->copy(0, 0, theCopyMode), lPos++);
+    lColl->addNode(*lIter, theCopyMode, lPos++);
   }
 }
 
@@ -1661,7 +1666,11 @@ void UpdRemoveNodesFromCollection::undo()
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
        lIter != theNodes.end(); ++lIter) {
     if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) {
-      lColl->addNode(lIter->getp());
+#ifndef NDEBUG
+      dynamic_cast<SimpleCollection*>(lColl.getp())->addNodeWithoutCopy(lIter->getp());
+#else
+      static_cast<SimpleCollection*>(lColl.getp())->addNodeWithoutCopy(lIter->getp());
+#endif
     }
   }
 }
@@ -1684,7 +1693,11 @@ void UpdRemoveNodesAtFromCollection::undo()
                          ->resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
-  lColl->addNode(theNode);
+#ifndef NDEBUG
+  dynamic_cast<SimpleCollection*>(lColl.getp())->addNodeWithoutCopy(theNode);
+#else
+  static_cast<SimpleCollection*>(lColl.getp())->addNodeWithoutCopy(theNode);
+#endif
 }
 
 }

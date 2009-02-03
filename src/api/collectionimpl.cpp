@@ -34,6 +34,7 @@
 #include "store/api/collection.h"
 #include "store/api/item.h"
 #include "store/api/store.h"
+#include "store/api/copymode.h"
 
 
 namespace zorba {
@@ -80,8 +81,9 @@ CollectionImpl::addNode(const Item& aNode, const long aPosition)
 
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
+    store::CopyMode lCopyMode;
     //check if the item is already in the collection
-    theCollection->addNode(lItem, aPosition);
+    theCollection->addNode(lItem, lCopyMode, aPosition);
     return true;
 
   ZORBA_CATCH
@@ -98,7 +100,8 @@ CollectionImpl::addNode(const Item& aNode, const Item& aTargetNode, bool before)
 
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
-    theCollection->addNode(lItem, targetItem, before);
+    store::CopyMode lCopyMode;
+    theCollection->addNode(lItem, lCopyMode, targetItem, before);
 
     return true;
 
@@ -116,7 +119,8 @@ CollectionImpl::addNodes(const ResultIterator* aResultIterator)
 
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
-    theCollection->addNodes(&*lPlan);
+    store::CopyMode lCopyMode;
+    theCollection->addNodes(&*lPlan, lCopyMode);
     return true;
 
   ZORBA_CATCH

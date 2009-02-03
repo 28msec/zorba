@@ -52,7 +52,9 @@ class ZORBA_DLL_PUBLIC Collection : public SmartObject
     virtual unsigned long
     size() const = 0;
 
-    /** \brief Adds a Node Item to the Collection.
+    /** \brief Adds a Copy of a Node Item to the Collection.
+     *
+     * Default copy behavior is used: construction mode == preserve, copy-namespace modes == preserve & inherit
      *
      * @param aNode the Node Item to add.
      * @param aPosition the position where the node will be inserted.
@@ -62,7 +64,9 @@ class ZORBA_DLL_PUBLIC Collection : public SmartObject
     virtual bool
     addNode(const Item& aNode, const long aPosition = -1) = 0;
 
-    /** \brief Adds a Node Item to the Collection after the targetNode.
+    /** \brief Adds a Copy of a Node Item to the Collection after the targetNode.
+     *
+     * Default copy behavior is used: construction mode == preserve, copy-namespace modes == preserve & inherit
      *
      * @param aNode the Node Item to add.
      * @param aTargetNode the aNode will be added before the aTargetNode.
@@ -98,7 +102,9 @@ class ZORBA_DLL_PUBLIC Collection : public SmartObject
     virtual Item
     nodeAt(const long aPosition) = 0;
 
-    /** \brief Adds the Node Items retrieved from the given ResultIterator to the Collection.
+    /** \brief Adds Copies of the Node Items retrieved from the given ResultIterator to the Collection.
+     *
+     * Default copy behavior is used: construction mode == preserve, copy-namespace modes == preserve & inherit
      *
      * @param aResultIterator the ResultIterator that produces the Node Items to add.
      * @return true if all the Node Items of the given ResultIterator were added to the Collection,
