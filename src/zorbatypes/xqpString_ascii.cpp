@@ -1468,7 +1468,13 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     bool  retval;
     int   match_pos;
     int   matched_len;
-    retval = regex->match_anywhere(c_str(), parse_regex_flags(flags.c_str()), &match_pos, &matched_len);
+    try{
+      retval = regex->match_anywhere(c_str(), parse_regex_flags(flags.c_str()), &match_pos, &matched_len);
+    }catch(...)
+    {
+      delete regex;
+      throw;
+    }
     delete regex;
     return retval;
   }
@@ -1494,6 +1500,7 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     const char  *start_str = c_str();
     int   subregex_count = regex->get_indexed_regex_count();
 
+    try{
     while(regex->match_anywhere(start_str, parse_regex_flags(flags.c_str()), &match_pos, &matched_len))
     {
       if(match_pos)
@@ -1548,6 +1555,11 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
       start_str += match_pos + matched_len;
     }
     newstr.append_in_place(start_str);
+    }catch(...)
+    {
+      delete regex;
+      throw;
+    }
 
     delete regex;
     return newstr;
@@ -1577,7 +1589,13 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     xqpString   leftstr;
     const char  *start_str = c_str();
 
+    try{
     *hasmatched = regex->match_from(start_str, parse_regex_flags(flags.c_str()), (int*)match_pos, &matched_len);
+    }catch(...)
+    {
+      delete regex;
+      throw;
+    }
     delete regex;
     if(*hasmatched)
     {

@@ -471,6 +471,12 @@ CRegexAscii_regex::~CRegexAscii_regex()
   {
     delete (*branch_it);
   }
+
+  std::vector<CRegexAscii_regex*>::iterator   subregex_it;
+  for(subregex_it = subregex.begin(); subregex_it != subregex.end(); subregex_it++)
+  {
+    delete (*subregex_it);
+  }
 }
 
 void CRegexAscii_regex::set_align_begin(bool align_begin)
