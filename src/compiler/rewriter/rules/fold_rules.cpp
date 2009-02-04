@@ -204,6 +204,7 @@ RULE_REWRITE_POST(MarkUnfoldableExprs)
     break;
     
   case exit_expr_kind:
+  case flowctl_expr_kind:
 
   // Node constructors are unfoldable because if a node constructor is inside
   // a loop, then it will create a different xml tree every time it is invoked,
