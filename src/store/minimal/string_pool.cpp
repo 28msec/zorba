@@ -31,7 +31,6 @@ StringPool::~StringPool()
     if (theHashTab[i].theItem != NULL &&
         theHashTab[i].theItem->getRefCount() != 1)
     {
-      xqpStringStore_t  strit = theHashTab[i].theItem;
       std::cout << "i = " << i << " String " << theHashTab[i].theItem->c_str()
                 << " is still in the pool" << std::endl;
       //delete theHashTab[i].theString.getp();
@@ -148,7 +147,7 @@ void StringPool::garbageCollect()
     entry = &theHashTab[i];
 
     // If the current hash bucket is empty, move to the next one
-    if (entry->theItem == NULL)
+    if (entry->isFree())
     {
       ZORBA_FATAL(entry->theNext == 0, "");
       continue;
@@ -160,6 +159,7 @@ void StringPool::garbageCollect()
       if (entry->theNext == 0)
       {
         entry->theItem = NULL;
+        entry->setFree();
         theNumEntries--;
         break;
       }
@@ -169,6 +169,7 @@ void StringPool::garbageCollect()
         *entry = *nextEntry;
         entry->setNext(nextEntry->getNext());
         nextEntry->theItem = NULL;
+        nextEntry->setFree();
         nextEntry->setNext(freeList);
         freeList = nextEntry;
         theNumEntries--;
@@ -185,6 +186,7 @@ void StringPool::garbageCollect()
       {
         prevEntry->setNext(entry->getNext());
         entry->theItem = NULL;
+        entry->setFree();
         entry->setNext(freeList);
         freeList = entry;
         theNumEntries--;

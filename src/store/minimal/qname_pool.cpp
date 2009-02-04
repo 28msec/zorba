@@ -63,7 +63,7 @@ QNamePool::~QNamePool()
   ulong n = theHashSet.theHashTab.size();
   for (ulong i = 0; i < n; i++)
   {
-    if (theHashSet.theHashTab[i].theItem != NULL)
+    if (!theHashSet.theHashTab[i].isFree())
     {
       QNameItemImpl* qn = theHashSet.theHashTab[i].theItem;
 

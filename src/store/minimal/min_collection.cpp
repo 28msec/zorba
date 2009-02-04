@@ -120,12 +120,33 @@ store::Item_t SimpleCollection::loadDocument(std::istream* stream, const long po
   return root;
 }
 
+/*******************************************************************************
+  Insert a copy of the given node to the collection.
+********************************************************************************/
+void SimpleCollection::addNode(
+    const store::Item* node,
+    const store::CopyMode& copyMode,
+    const long position)
+{
+  if (!node->isNode())
+  {
+    ZORBA_ERROR( API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
+  }
+
+  SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
+
+  store::Item* lCopy = node->copy(0, 0, copyMode);
+  if(position == -1)
+    theXmlTrees.push_back(lCopy);
+  else
+    theXmlTrees.insert(theXmlTrees.begin() + (position - 1), lCopy);
+}
 
 /*******************************************************************************
   Insert the given node to the collection. If the node is in the collection
   already, this method is a noop.
 ********************************************************************************/
-void SimpleCollection::addNode(
+void SimpleCollection::addNodeWithoutCopy(
                                const store::Item* node, 
                                const long position)
 {
@@ -154,6 +175,7 @@ void SimpleCollection::addNode(
 ********************************************************************************/
 void SimpleCollection::addNode(
     const store::Item* node,
+    const store::CopyMode& copyMode,
     const store::Item* aTargetNode,
     bool before)
 {
@@ -170,20 +192,14 @@ void SimpleCollection::addNode(
     ZORBA_ERROR(API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION);
   }
 
-  if( nodePositionInCollection((store::Item*)node) == -1)
-  {
-    checked_vector<store::Item_t>::iterator targetIter;
-    targetIter = theXmlTrees.begin() + (targetPos -1);
+  checked_vector<store::Item_t>::iterator targetIter;
+  targetIter = theXmlTrees.begin() + (targetPos -1);
 
-    if(before)
-      theXmlTrees.insert(targetIter, const_cast<store::Item*>(node));
-    else
-      theXmlTrees.insert(++targetIter, const_cast<store::Item*>(node));
-  }
+  store::Item* lCopy = node->copy(0, 0, copyMode);
+  if(before)
+    theXmlTrees.insert(targetIter, lCopy);
   else
-  {
-    ZORBA_ERROR(API0031_NODE_ALREADY_IN_COLLECTION);
-  }
+    theXmlTrees.insert(++targetIter, lCopy);
 }
 
 
@@ -192,12 +208,13 @@ void SimpleCollection::addNode(
 ********************************************************************************/
 void SimpleCollection::addNodes(
     store::Iterator* nodeIter,
+    const store::CopyMode& copyMode,
     const long position)
 {
   store::Item_t node;
   while (nodeIter->next(node))
   {
-    addNode(node, position);
+    addNode(node, copyMode, position);
   }
 }
 
@@ -346,6 +363,7 @@ void SimpleCollection::CollectionIter::open()
 ********************************************************************************/
 bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 {
+  // TODO check if the iterator was opened
   if (theIterator == theCollection->theXmlTrees.end()) 
   {
     result = NULL;
