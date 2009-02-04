@@ -287,22 +287,21 @@ context_example_10(Zorba* aZorba)
       std::cout << "  is updating " << (*lIter)->isUpdating() << std::endl;
       std::cout << "  arity " << (*lIter)->getArity() << std::endl;
 
-//      lContext->disableFunction(*lIter);
+      lContext->disableFunction(*lIter);
     }
 
-//  try {
-//    XQuery_t lQuery = aZorba->compileQuery("fn:doc('test.xml')", lContext);
-//  } catch (StaticException &se) {
-//    std::cerr << se << std::endl;
-//    return true;
-//  }
-//  return false;
+    try {
+      XQuery_t lQuery = aZorba->compileQuery("fn:doc('test.xml')", lContext);
+    } catch (StaticException &se) {
+      std::cerr << se << std::endl;
+      return true;
+    }
   } catch (ZorbaException &e) {
     std::cerr << e << std::endl;
     return false;
   }
 
-	return true; // TODO change to false as soon as disableFunction works
+	return false;
 }
 
 

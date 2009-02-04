@@ -659,7 +659,7 @@ StaticContextImpl::disableFunction(const Function_t& aFunction)
 void
 StaticContextImpl::disableFunction(const Item& aQName, int arity)
 {
-  theCtx->bind_fn(Unmarshaller::getInternalItem(aQName), NULL, arity);
+  theCtx->bind_fn(Unmarshaller::getInternalItem(aQName), NULL, arity, true);
 }
 
 void
