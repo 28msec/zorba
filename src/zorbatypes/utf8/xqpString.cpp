@@ -1414,7 +1414,7 @@ xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
 
 
   xqpString
-  xqpString::tokenize(xqpString pattern, xqpString flags, int32_t *start_pos, bool *hasmatched)
+  xqpString::tokenize(xqpString pattern, xqpString flags, int32_t *start_pos, bool *hasmatched) const
   {
     int32_t pos = *start_pos;
     UErrorCode status = U_ZERO_ERROR;
