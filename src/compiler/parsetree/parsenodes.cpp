@@ -4896,6 +4896,13 @@ void FTIgnoreOption::accept(parsenode_visitor& v) const
   END_VISITOR ();
 }
 
+void AssignExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  ACCEPT (value_h);
+  END_VISITOR ();
+}
+
 void ExitExpr::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();

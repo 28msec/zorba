@@ -20,6 +20,8 @@
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parser/query_loc.h"
 
+#include <zorba/error.h>
+
 #include "store/api/update_consts.h"
 
 namespace zorba {
@@ -36,7 +38,7 @@ class ZORBA_DLL_PUBLIC parsenode : public SimpleRCObject
 protected:
 	QueryLoc loc;
 
-    friend class ParseNodePrintXMLVisitor;
+  friend class ParseNodePrintXMLVisitor;
 
 public:
 	parsenode(const QueryLoc& loc_) : loc(loc_) { }
@@ -65,9 +67,11 @@ public:
 
 class ZORBA_DLL_PUBLIC ParseErrorNode : public parsenode {
 public:
+  XQUERY_ERROR err;
   std::string msg;
-  ParseErrorNode (const QueryLoc& loc_, std::string msg_)
-    : parsenode (loc_), msg (msg_)
+  ParseErrorNode (const QueryLoc& loc_,
+                  XQUERY_ERROR err_ = XPST0003, std::string msg_ = "")
+    : parsenode (loc_), err (err_), msg (msg_)
   {}
 
 public:

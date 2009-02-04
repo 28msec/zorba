@@ -264,3 +264,8 @@ class ParseConstants
 } /* namespace zorba */
 #endif /* ZORBA_PARSE_CONSTANTS_H */
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

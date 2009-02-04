@@ -6377,6 +6377,19 @@ public:
 	void accept(parsenode_visitor&) const;
 };
 
+class AssignExpr : public exprnode {
+  std::string varname;
+	rchandle<exprnode> value_h;
+
+public:
+  AssignExpr (const QueryLoc& loc_, std::string varname_, rchandle<exprnode> val_)
+    : exprnode (loc_), varname (varname_), value_h (val_)
+  {}
+	const std::string& get_varname() const { return varname; }
+  rchandle<exprnode> get_value () const { return value_h; }
+	void accept(parsenode_visitor&) const;
+};
+
 class FlowCtlStatement : public exprnode {
 public:
   enum action { BREAK, CONTINUE };

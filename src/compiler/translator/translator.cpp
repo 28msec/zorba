@@ -5312,6 +5312,19 @@ void end_visit (const CatchExpr& v, void* visit_state) {
   pop_scope();
 }
 
+void *begin_visit (const AssignExpr& v) {
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const AssignExpr& v, void* visit_state) {
+  TRACE_VISIT_OUT ();
+  const function *ctx_set = LOOKUP_OP2 ("ctxvar-assign");
+  varref_t var = lookup_ctx_var (v.get_varname (), loc);
+  expr_t qname_expr = new const_expr (var->get_loc(), dynamic_context::var_key (&*var));
+  nodestack.push (new fo_expr (loc, ctx_set, qname_expr, pop_nodestack ()));
+}
+
 void *begin_visit (const ExitExpr& v) {
   TRACE_VISIT ();
   return no_state;

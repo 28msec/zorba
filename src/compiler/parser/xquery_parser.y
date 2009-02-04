@@ -127,6 +127,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 	xqp_integer* ival;
 	xqp_double* dval;
 	xqp_decimal* decval;
+  XQUERY_ERROR err;
 };
 
 
@@ -153,6 +154,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
     /* %token <sval> AT_URI_LITERAL         "'<at URI>'" */
     /* %token <sval> VARNAME                  "'variable name'" */
       
+%token <err>  UNRECOGNIZED                  "'unrecognized'"
+
 %token <sval> APOS_ATTR_CONTENT             "'apos attribute content'"
 %token <sval> CHAR_LITERAL                  "'char literal'"
 %token <sval> CHAR_LITERAL_AND_CDATA_END    "'char literal]]>'"
@@ -208,6 +211,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token WORD                       "'word'"
 %token SCHEMA                     "'schema'"
 %token SPACE                      "'space'"
+%token SET                        "'set'"
 %token LET                        "'let'"
 %token CONSTRUCTION               "'construction'"
 %token EVAL                       "'eval'"
@@ -339,7 +343,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token TREAT  										"'treat'"
 %token UNION											"'union'"
 %token UNORDERED									"'unordered'"
-%token UNRECOGNIZED								"'unrecognized'"
 %token VAL_EQ											"'eq'"
 %token VAL_GE											"'ge'"
 %token VAL_GT											"'gt'"
@@ -614,6 +617,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> VarRef
 %type <expr> ExitExpr
 %type <expr> WhileExpr
+%type <expr> AssignExpr
 %type <expr> FlowCtlStatement
 
 /* update-related */
@@ -693,7 +697,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // parsenodes
 %destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
 // exprnodes
-%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockBody EnclosedExpr Expr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl ExitExpr WhileExpr FlowCtlStatement FTContainsExpr
+%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockBody EnclosedExpr Expr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement FTContainsExpr
 // internal class
 %destructor { delete $$; } FunctionSig;
 
@@ -1372,6 +1376,13 @@ BlockBody :
     }
   ;
 
+AssignExpr :
+    SET DOLLAR QNAME GETS ExprSingle
+    {
+      $$ = new AssignExpr (LOC (@$), driver.symtab.get ((off_t)$3), $5);
+    }
+  ;
+
 ExitExpr :
     EXIT WITH ExprSingle
     {
@@ -1548,11 +1559,15 @@ ExprSingle :
   | RenameExpr
   | ReplaceExpr
   | TransformExpr
+
   | TryExpr
   | EvalExpr
+
+    /* scripting */
   | ExitExpr
   | WhileExpr
   | FlowCtlStatement
+  | AssignExpr
   | Block
     ;
 
@@ -4745,6 +4760,11 @@ QNAME :
   | UPDATING { $$ = driver.symtab.put("updating"); }
   | ORDERED { $$ = driver.symtab.put("ordered"); }
   | UNORDERED { $$ = driver.symtab.put("unordered"); }
+  | EXIT { $$ = driver.symtab.put("exit"); }
+  | LOOP { $$ = driver.symtab.put("loop"); }
+  | BREAK { $$ = driver.symtab.put("break"); }
+  | CONT { $$ = driver.symtab.put("cont"); }
+  | SET { $$ = driver.symtab.put("set"); }
     ;
 
 
@@ -5317,7 +5337,7 @@ const char *the_tumbling = "tumbling", *the_sliding = "sliding",
 
 void xquery_parser::error(zorba::xquery_parser::location_type const& loc, std::string const& msg)
 {
-  driver.set_expr (new ParseErrorNode (driver.createQueryLoc (loc), msg));
+  driver.set_expr (new ParseErrorNode (driver.createQueryLoc (loc), XPST0003, msg));
 }
 
 }
