@@ -374,8 +374,18 @@ slurp_file (const char *fname, std::string &result) {
   len = qfile.gcount();
   std::string sstr (str, len);
 
-  std::string rbkt_src_uri = zorba::URI::encode_file_URI (zorba::RBKT_SRC_DIR)->str ();
-  zorba::str_replace_all(sstr, "$RBKT_SRC_DIR", rbkt_src_uri);
+  if(sstr.find("$RBKT_SRC_DIR",0) != std::string::npos)
+  {
+    std::string rbkt_src_uri = zorba::URI::encode_file_URI (zorba::RBKT_SRC_DIR)->str ();
+    zorba::str_replace_all(sstr, "$RBKT_SRC_DIR", rbkt_src_uri);
+  }
+
+  if(sstr.find("$RBKT_BINARY_DIR",0) != std::string::npos)
+  {
+    std::string rbkt_binary_uri = zorba::URI::encode_file_URI (zorba::RBKT_BINARY_DIR)->str ();
+    zorba::str_replace_all(sstr, "$RBKT_BINARY_DIR", rbkt_binary_uri);
+  }
+
   result.swap (sstr);
   delete [] str;
 }
