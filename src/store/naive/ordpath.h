@@ -258,7 +258,6 @@ protected:
         return i+1;
     }
 
-    ZORBA_FATAL(0, "");
     return 0;
   }
 
