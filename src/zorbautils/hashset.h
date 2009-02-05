@@ -24,7 +24,8 @@
 #include "zorbamisc/config/platform.h"
 
 
-namespace zorba { 
+namespace zorba 
+{ 
 
 
 class DummyHashValue
@@ -35,21 +36,22 @@ class DummyHashValue
 /*******************************************************************************
 
 ********************************************************************************/
-template <class T, class E, class C = DummyCompareParam>  
-class HashSet : public HashMap<T, DummyHashValue, E, C>
+template <class T, class C>  
+class HashSet : public HashMap<T, DummyHashValue, C>
 {
 public:
 
-HashSet(ulong size, bool sync, bool useTransfer = false)
+
+HashSet(const C& compFunction, ulong size, bool sync, bool useTransfer = false)
   :
-  HashMap<T, DummyHashValue, E, C>(size, sync, useTransfer)
+  HashMap<T, DummyHashValue, C>(compFunction, size, sync, useTransfer) 
 {
 }
 
 
-HashSet(C* compParam, ulong size, bool sync, bool useTransfer = false)
+HashSet(ulong size, bool sync, bool useTransfer = false)
   :
-  HashMap<T, DummyHashValue, E, C>(compParam, size, sync, useTransfer) 
+  HashMap<T, DummyHashValue, C>(size, sync, useTransfer) 
 {
 }
 
@@ -64,7 +66,7 @@ virtual ~HashSet()
 ********************************************************************************/
 void clear() 
 {
-  HashMap<T, DummyHashValue, E, C>::clear();
+  HashMap<T, DummyHashValue, C>::clear();
 }
 
 
@@ -74,7 +76,7 @@ void clear()
 ********************************************************************************/
 bool find(const T& item)
 {
-  return HashMap<T, DummyHashValue, E, C>::find(item);
+  return HashMap<T, DummyHashValue, C>::find(item);
 }
 
 
@@ -91,9 +93,7 @@ bool insert(T& item)
   //assert(item != 0);
 
   HashEntry<T, DummyHashValue>* entry;
-  entry = hashInsert(item,
-                     Externals<T,E,C>::hash(item, this->theCompareParam),
-                     found);
+  entry = hashInsert(item, hash(item), found);
 
   if (!found)
   {
@@ -121,9 +121,7 @@ bool insert(T& item, T& outItem)
   //assert(item != 0);
 
   HashEntry<T, DummyHashValue>* entry;
-  entry = hashInsert(item,
-                     Externals<T,E,C>::hash(item, this->theCompareParam),
-                     found);
+  entry = hashInsert(item, hash(item), found);
   if (!found)
   {
     if (this->theUseTransfer)
@@ -156,9 +154,7 @@ bool insert(const T& item, T& outItem)
   //assert(item != 0);
 
   HashEntry<T, DummyHashValue>* entry;
-  entry = hashInsert(item,
-                     Externals<T,E,C>::hash(item, this->theCompareParam),
-                     found);
+  entry = hashInsert(item, hash(item), found);
   if (!found)
   {
     entry->theItem = item;
@@ -179,7 +175,7 @@ bool insert(const T& item, T& outItem)
 ********************************************************************************/
 bool remove(const T& item)
 {
-  return HashMap<T, DummyHashValue, E, C>::remove(item);
+  return HashMap<T, DummyHashValue, C>::remove(item);
 }
 
 };

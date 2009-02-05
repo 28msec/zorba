@@ -23,31 +23,8 @@
 #include "zorbautils/mutex.h"
 
 
-namespace zorba { 
-
-
-class DummyCompareParam
-{
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-template <class T, class E, class C> 
-class Externals
-{
-public:
-  static bool equal(const T& t1, const T& t2, C* aCompareParam)
-  {
-    return E::equal(t1, t2);
-  }
-
-  static uint32_t hash(const T& t1, C* aCompareParam)
-  {
-    return E::hash(t1);
-  }
-};
+namespace zorba 
+{ 
 
 
 /*******************************************************************************
@@ -92,9 +69,9 @@ public:
   This template class implements a hash-based map from items of type T to items
   of type V. 
 
-  E is the template parameter that implements the hashing and equality functions.
+  C is the template parameter that implements the hashing and equality functions.
 
-  E must have two static methods compatible with the following signature.
+  C must have two static methods compatible with the following signature.
     uint32_t hash(const T&);
     bool equal(const T&, const T&);
 
@@ -117,7 +94,7 @@ public:
                    hash table is doubled in size.
 
 ********************************************************************************/
-template <class T, class V, class E, class C = DummyCompareParam> 
+template <class T, class V, class C> 
 class HashMap
 {
 public:
@@ -197,7 +174,7 @@ protected:
   ulong                             theInitialSize;
   checked_vector<HashEntry<T, V> >  theHashTab;
   double                            theLoadFactor;
-  C*                                theCompareParam;
+  C                                 theCompareFunction;
 
   bool                              theUseTransfer;
 
@@ -221,14 +198,14 @@ public:
   plus an initial number of free entries (= 32 + 10% of the given size). These
   free entries are placed in a free list.
 ********************************************************************************/
-HashMap(ulong size, bool sync, bool useTransfer = false) 
+HashMap(const C& compFunction, ulong size, bool sync, bool useTransfer = false) 
   :
   theNumEntries(0),
   theHashTabSize(size),
   theInitialSize(size),
   theHashTab(computeTabSize(size)),
   theLoadFactor(DEFAULT_LOAD_FACTOR),
-  theCompareParam(0),
+  theCompareFunction(compFunction),
   theUseTransfer(useTransfer),
   numCollisions(0)
 {
@@ -238,14 +215,13 @@ HashMap(ulong size, bool sync, bool useTransfer = false)
 }
 
 
- HashMap(C* aCompareParam, ulong size, bool sync, bool useTransfer = false) 
+HashMap(ulong size, bool sync, bool useTransfer = false) 
   :
   theNumEntries(0),
   theHashTabSize(size),
   theInitialSize(size),
   theHashTab(computeTabSize(size)),
   theLoadFactor(DEFAULT_LOAD_FACTOR),
-  theCompareParam(aCompareParam),
   theUseTransfer(useTransfer),
   numCollisions(0)
 {
@@ -260,20 +236,24 @@ HashMap(ulong size, bool sync, bool useTransfer = false)
 ********************************************************************************/
 virtual ~HashMap()
 {
-  if (theCompareParam != 0)
-  {
-    delete theCompareParam;
-    theCompareParam = 0;
-  }
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-bool empty()
+bool empty() const
 {
   return (theNumEntries == 0); 
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ulong capacity() const
+{
+  return theHashTab.size();
 }
 
 
@@ -319,7 +299,7 @@ iterator end() const
 ********************************************************************************/
 bool find(const T& item)
 {
-  ulong hval = Externals<T,E,C>::hash(item, theCompareParam);
+  ulong hval = hash(item);
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
@@ -330,7 +310,7 @@ bool find(const T& item)
 
   while (entry != NULL)
   {
-    if (Externals<T,E,C>::equal(entry->theItem, item, theCompareParam))
+    if (equal(entry->theItem, item))
       return true;
 
     entry = entry->getNext();
@@ -346,7 +326,7 @@ bool find(const T& item)
 ********************************************************************************/
 bool get(const T& item, V& value)
 {
-  ulong hval = Externals<T,E,C>::hash(item, theCompareParam);
+  ulong hval = hash(item);
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
@@ -357,7 +337,7 @@ bool get(const T& item, V& value)
 
   while (entry != NULL)
   {
-    if (Externals<T,E,C>::equal(entry->theItem, item, theCompareParam))
+    if (equal(entry->theItem, item))
     {
       value = entry->theValue;
       return true;
@@ -379,7 +359,7 @@ bool get(const T& item, V& value)
 bool insert(T& item, V& value)
 {
   bool found;
-  ulong hval = Externals<T,E,C>::hash(item, theCompareParam);
+  ulong hval = hash(item);
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
@@ -405,7 +385,7 @@ bool insert(T& item, V& value)
 ********************************************************************************/
 bool remove(const T& item)
 {
-  ulong hval = Externals<T,E,C>::hash(item, theCompareParam);
+  ulong hval = hash(item);
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
@@ -423,7 +403,7 @@ bool removeNoSync(const T& item, ulong hval)
   // If the item to remove is in the 1st entry of a bucket, then if the
   // bucket has no other entries, just call the destructor on that entry,
   // else copy the 2nd entry to the 1st entry and freeup the 2nd entry.
-  if (Externals<T,E,C>::equal(entry->theItem, item, theCompareParam))
+  if (equal(entry->theItem, item))
   {
     if (entry->theNext == 0)
     {
@@ -457,7 +437,7 @@ bool removeNoSync(const T& item, ulong hval)
 
   while (entry != NULL)
   {
-    if (Externals<T,E,C>::equal(entry->theItem, item, theCompareParam))
+    if (equal(entry->theItem, item))
     {
       preventry->setNext(entry->getNext());
       entry->~HashEntry<T, V>();
@@ -489,9 +469,15 @@ protected:
 /*******************************************************************************
 
 ********************************************************************************/
-HashEntry<T, V>* freelist()
+ulong hash(const T& item)
 {
-  return &theHashTab[theHashTabSize];
+  return theCompareFunction.hash(item);
+}
+
+
+bool equal(const T& item1, const T& item2)
+{
+  return theCompareFunction.equal(item1, item2);
 }
 
 
@@ -501,6 +487,15 @@ HashEntry<T, V>* freelist()
 HashEntry<T, V>* bucket(ulong hvalue)
 {
   return &theHashTab[hvalue % theHashTabSize];
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+HashEntry<T, V>* freelist()
+{
+  return &theHashTab[theHashTabSize];
 }
 
 
@@ -531,7 +526,7 @@ retry:
 
   while (currEntry != NULL)
   {
-    if (Externals<T,E,C>::equal(currEntry->theItem, item, theCompareParam))
+    if (equal(currEntry->theItem, item))
     {
       found = true;
       return currEntry;
@@ -652,7 +647,7 @@ void resizeHashTab(ulong newSize)
     if (oldentry->isFree())
       continue;
 
-    entry = bucket (Externals<T,E,C>::hash(oldentry->theItem, theCompareParam));
+    entry = bucket (hash(oldentry->theItem));
 
     if (!entry->isFree())
     {
@@ -691,8 +686,8 @@ virtual void garbageCollect()
 
 };
 
-template <class T, class E, class C, class V>
-const double HashMap<T, E, C, V>::DEFAULT_LOAD_FACTOR = 0.6;
+template <class T, class V, class C>
+const double HashMap<T, V, C>::DEFAULT_LOAD_FACTOR = 0.6;
 
 
 
