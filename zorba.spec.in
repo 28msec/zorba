@@ -2,7 +2,7 @@
 
 Name:    zorba
 Version: @ZORBA_MAJOR_NUMBER@.@ZORBA_MINOR_NUMBER@.@ZORBA_PATCH_NUMBER@
-Release: 4%{?dist}
+Release: 1%{?dist}
 Summary: General purpose XQuery processor implemented in C++
 
 Group: System Environment/Libraries
@@ -14,9 +14,9 @@ Source0: ftp://ftp.heanet.ie/pub/download.sourceforge/z/zo/zorba/%{name}-%{versi
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires: cmake >= 2.4 libxml2-devel >= 2.2.16 icu >= 2.6 libicu-devel
+BuildRequires: cmake >= 2.4 libxml2-devel >= 2.2.16 libicu >= 2.6 libicu-devel
 # Change libcurl-devel to curl-devel for Fedora 8
-BuildRequires: boost-devel >= 1.32 xerces-c-devel >= 2.7 libcurl-devel
+BuildRequires: xerces-c-devel >= 2.7 libcurl-devel
 BuildRequires: ruby-devel >= 1.8 graphviz tidy-devel php-devel
 
 
@@ -128,6 +128,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Feb  5 2009 Paul Kunz <Paul_Kunz@slac.stanford.edu> - 0.9.5-1
+- change require icu to libicu
+- Update to 0.9.5 version
+- remove require boost
+
 * Tue Dec 16 2008 Paul Kunz <Paul_Kunz@slac.stanford.edu> - 0.9.4-4
 - added php-devel
 
