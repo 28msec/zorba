@@ -33,7 +33,7 @@ class ZORBA_DLL_PUBLIC xqpStringStore : public RCObject
 {
   friend class xqpString;
 
-  friend ZORBA_DLL_PUBLIC std::ostream& operator<<(std::ostream& os, const xqpStringStore& src);
+  friend std::ostream& operator<<(std::ostream& os, const xqpStringStore& src);
 
 public:
   typedef ptrdiff_t distance_type;
@@ -242,6 +242,10 @@ public:
   getCodepoints() const;
 
 };
+
+#ifdef ZORBA_WIN_DLL
+template class  rchandle<xqpStringStore>;
+#endif
 
 
   class ZORBA_DLL_PUBLIC xqpString
@@ -511,6 +515,7 @@ public:
     //escape all characters except for those :
     //Upper and lowercase letters A-Z
     //digits 0-9, HYPHEN-MINUS ("-"), LOW LINE ("_"), FULL STOP ".", and TILDE "~"
+    //and also the characters defined by 'start' and 'length'
     xqpString
     encodeForUri(const char* start = NULL, uint16_t length = 0) const
     {
@@ -604,7 +609,7 @@ public:
       replace(xqpString pattern, xqpString replacement, xqpString flags);
 
       xqpString
-      tokenize(xqpString pattern, xqpString flags, /*in-out*/int32_t *match_pos, /*out*/bool *hasmatched);
+      tokenize(xqpString pattern, xqpString flags, /*in-out*/int32_t *match_pos, /*out*/bool *hasmatched) const;
 
       // Removes the leading and trailing whitespace (one of the " \t\r\n")
       // TODO: xqpString trim_whitespace() const;
@@ -659,20 +664,20 @@ public:
 
 
   // xqpString::stream I/O operators
-  ZORBA_DLL_PUBLIC std::istream& 
+  std::istream& 
   operator>>(std::istream& is, zorba::xqpString utf8_src);
   
-  ZORBA_DLL_PUBLIC std::ostream& 
+  std::ostream& 
   operator<<(std::ostream& os, const zorba::xqpStringStore& src);
 
-  ZORBA_DLL_PUBLIC std::ostream& 
+  std::ostream& 
   operator<<(std::ostream& os, const zorba::xqpStringStore_t src);
 
-  ZORBA_DLL_PUBLIC std::ostream& 
+  std::ostream& 
   operator<<(std::ostream& os, zorba::xqpString utf8_src);
 
   //xqpString::concatenation operator+()
-  ZORBA_DLL_PUBLIC inline xqpString
+  inline xqpString
   operator+(xqpString lsrc, xqpString rsrc)
   {
     xqpString tmp (lsrc);
@@ -680,7 +685,7 @@ public:
     return tmp;
   }
 
-  ZORBA_DLL_PUBLIC inline xqpString
+  inline xqpString
   operator+(xqpString lsrc, const char* rsrc)
   {
     xqpString tmp (lsrc);
@@ -688,13 +693,13 @@ public:
     return tmp;
   }
 
-  ZORBA_DLL_PUBLIC inline xqpString
+  inline xqpString
   operator+(xqpString lsrc, const std::string &rsrc)
   {
     return lsrc + rsrc.c_str ();
   }
 
-  ZORBA_DLL_PUBLIC inline xqpString
+  inline xqpString
   operator+(const char* lsrc, xqpString rsrc)
   {
     xqpString tmp (lsrc);

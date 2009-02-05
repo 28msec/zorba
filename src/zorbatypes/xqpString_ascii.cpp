@@ -1570,7 +1570,7 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
   xqpString::tokenize(xqpString pattern, 
                       xqpString flags, 
                       /*in-out*/int32_t *match_pos, 
-                      /*out*/bool *hasmatched)
+                      /*out*/bool *hasmatched) const
   {
     regex_ascii::CRegexAscii_parser    regex_parser;
     regex_ascii::CRegexAscii_regex     *regex;
