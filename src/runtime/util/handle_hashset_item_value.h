@@ -21,19 +21,25 @@
 #include "runtime/api/runtimecb.h"
 #include "context/dynamic_context.h"
 
-namespace zorba { 
+namespace zorba 
+{ 
 
+
+/*******************************************************************************
+
+********************************************************************************/
 class ValueCompareParam
 {
 public:
-  ValueCompareParam(RuntimeCB* aRuntimeCB)
-    :
-    theRuntimeCB(aRuntimeCB) {}
+  ValueCompareParam(RuntimeCB* aRuntimeCB) : theRuntimeCB(aRuntimeCB) {}
 
   RuntimeCB * theRuntimeCB;
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class ValueCollCompareParam
 {
 public:
@@ -47,102 +53,118 @@ public:
 };
 
 
-template <class T, class E>
-class Externals<T, E, ValueCompareParam>
+/*******************************************************************************
+
+********************************************************************************/
+class ItemValueHandleHashSet 
 {
 public:
-  static bool equal(const T& t1, const T& t2, ValueCompareParam* aCompareParam)
+
+  class CompareFunction
   {
-    return E::equal(t1, t2, aCompareParam);
-  }
+  private:
+    ValueCompareParam * theCompareParam;
 
-  static uint32_t hash(const T& t1, ValueCompareParam* aCompareParam)
-  {
-    return E::hash(t1, aCompareParam);
-  }
-};
+  public:
+    CompareFunction(ValueCompareParam* comp) : theCompareParam(comp) {}
 
+    bool equal(const store::Item_t& t1, const store::Item_t& t2)
+    {
+      return CompareIterator::valueEqual(theCompareParam->theRuntimeCB, t1, t2) == 0; 
+    }
 
-template <class T, class E>
-class Externals<T, E, ValueCollCompareParam>
-{
+    uint32_t hash(const store::Item_t& t)
+    {
+      return t->hash();
+    }
+
+  };
+
+private:
+  ValueCompareParam                      * theCompareParam;
+  CompareFunction                          theCompareFunction;
+  HashSet<store::Item_t, CompareFunction>  theSet;
+
 public:
-  static bool equal(const T& t1, const T& t2, ValueCollCompareParam* aCompareParam)
-  {
-    return E::equal(t1, t2, aCompareParam);
-  }
-
-  static uint32_t hash(const T& t1, ValueCollCompareParam* aCompareParam)
-  {
-    return E::hash(t1, aCompareParam);
-  }
-};
-
-
-class ItemValueHandleHashSet : public HashSet<store::Item_t,
-                                              ItemValueHandleHashSet,
-                                              ValueCompareParam>
-{
-public:
-  ItemValueHandleHashSet(ValueCompareParam* lValueCompareParam, long size = 1024)
+  ItemValueHandleHashSet(ValueCompareParam* compParam, ulong size = 1024)
     :
-    HashSet<store::Item_t,
-            ItemValueHandleHashSet,
-            ValueCompareParam>(lValueCompareParam, size, false) // no sync
+    theCompareParam(compParam),
+    theCompareFunction(compParam),
+    theSet(theCompareFunction, size, false) // no sync
   {
   }
 
-  static bool equal(
-        const store::Item_t& t1,
-        const store::Item_t& t2,
-        ValueCompareParam* aCompareParam)
+  ~ItemValueHandleHashSet()
   {
-    return CompareIterator::valueEqual(aCompareParam->theRuntimeCB, t1, t2) == 0; 
+    if (theCompareParam)
+      delete theCompareParam; 
   }
 
-  static uint32_t hash(
-        const store::Item_t& t,
-        ValueCompareParam* aCompareParam)
-  {
-    return t->hash();
-  }
+  void clear() { theSet.clear(); }
+
+  bool find(const store::Item_t& key) { return theSet.find(key); }
+
+  bool insert(store::Item_t& key) { return theSet.insert(key); }
 };
 
 
-class ItemValueCollHandleHashSet : public HashSet<store::Item_t,
-                                                  ItemValueCollHandleHashSet,
-                                                  ValueCollCompareParam>
+/*******************************************************************************
+
+********************************************************************************/
+class ItemValueCollHandleHashSet
 {
 public:
-  ItemValueCollHandleHashSet(
-        ValueCollCompareParam* lValueCompareParamColl,
-        long size = 1024)
+
+  class CompareFunction
+  {
+  private:
+    ValueCollCompareParam * theCompareParam;
+
+  public:
+    CompareFunction(ValueCollCompareParam* comp) : theCompareParam(comp) {}
+
+    bool equal(const store::Item_t& t1, const store::Item_t& t2)
+    {
+      assert (t1 != NULL);
+      assert (t2 != NULL);
+      return CompareIterator::valueEqual(theCompareParam->theRuntimeCB,
+                                         t1, t2,
+                                         (theCompareParam->theCollator)) == 0; 
+    }
+
+    uint32_t hash(const store::Item_t& t)
+    {
+      assert (t != NULL);
+      return t->hash(theCompareParam->theRuntimeCB->theDynamicContext->get_implicit_timezone(),
+                     theCompareParam->theCollator);
+    }
+  };
+
+private:
+  ValueCollCompareParam                  * theCompareParam;
+  CompareFunction                          theCompareFunction;
+  HashSet<store::Item_t, CompareFunction>  theSet;
+
+public:
+  ItemValueCollHandleHashSet(ValueCollCompareParam* compParam, ulong size = 1024)
   :
-  HashSet<store::Item_t,
-          ItemValueCollHandleHashSet,
-          ValueCollCompareParam>(lValueCompareParamColl, size, false)
+  theCompareParam(compParam),
+  theCompareFunction(compParam),
+  theSet(theCompareFunction, size, false)
   {
   }
 
-  static bool equal(
-        const store::Item_t& t1,
-        const store::Item_t& t2,
-        ValueCollCompareParam* aCompareParam)
+  ~ItemValueCollHandleHashSet()
   {
-    assert (t1 != NULL);
-    assert (t2 != NULL);
-    return CompareIterator::valueEqual(aCompareParam->theRuntimeCB,
-                                       t1, t2,
-                                       (aCompareParam->theCollator)) == 0; 
+    if (theCompareParam)
+      delete theCompareParam; 
   }
 
-  static uint32_t hash(
-        const store::Item_t& t,
-        ValueCollCompareParam* aCompareParam)
-  {
-    assert (t != NULL);
-    return t->hash(aCompareParam->theRuntimeCB->theDynamicContext->get_implicit_timezone(), aCompareParam->theCollator);
-  }
+  void clear() { theSet.clear(); }
+
+  bool find(const store::Item_t& key) { return theSet.find(key); }
+
+  bool insert(store::Item_t& key) { return theSet.insert(key); }
 };
 
 

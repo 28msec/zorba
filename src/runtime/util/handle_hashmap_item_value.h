@@ -49,88 +49,113 @@ class GroupCompareParam
 };
 
 
-template <class T, class E>
-class Externals<T, E, GroupCompareParam>
-{
- public:
-  static bool equal(const T& t1, const T& t2, GroupCompareParam* aCompareParam)
-  {
-    return E::equal(t1, t2, aCompareParam);
-  }
-
-  static uint32_t hash(const T& t1, GroupCompareParam* aCompareParam)
-  {
-    return E::hash(t1, aCompareParam);
-  }
-};
-
-
 
 template <class V>
-class ItemValuesCollHandleHashMap : public HashMap<GroupKey*,
-                                                   V,
-                                                   ItemValuesCollHandleHashMap<V>,
-                                                   GroupCompareParam>
+class ItemValuesCollHandleHashMap
 {
  public:
-  ItemValuesCollHandleHashMap (
-        GroupCompareParam* aCompareParam,
-        long size = 1024 )
-    :
-    HashMap<GroupKey*,
-            V,
-            ItemValuesCollHandleHashMap,
-            GroupCompareParam>( aCompareParam, size, false)
+  class CompareFunction
   {
-  }
+  private:
+    GroupCompareParam * theCompareParam;
 
-  static bool equal(
-        const GroupKey* t1,
-        const GroupKey* t2,
-        GroupCompareParam* aCompareParam )
-  {
-    assert(aCompareParam->theCollators.size() == t1->theTypedKey.size());
-    assert(t2->theTypedKey.size() == t1->theTypedKey.size());
-    std::vector<store::Item_t>::const_iterator iter1 = t1->theTypedKey.begin();
-    std::vector<store::Item_t>::const_iterator iter2 = t2->theTypedKey.begin();
-    std::vector<XQPCollator*>::iterator lCollIter = aCompareParam->theCollators.begin();
-    while(iter1 != t1->theTypedKey.end()){
-      if(*iter1 == NULL){     
-        if(*iter2 != NULL){
+  public:
+    CompareFunction(GroupCompareParam* comp) : theCompareParam(comp) {}
+
+    bool equal(const GroupKey* t1, const GroupKey* t2)
+    {
+      assert(theCompareParam->theCollators.size() == t1->theTypedKey.size());
+      assert(t2->theTypedKey.size() == t1->theTypedKey.size());
+
+      std::vector<store::Item_t>::const_iterator iter1 = t1->theTypedKey.begin();
+      std::vector<store::Item_t>::const_iterator iter2 = t2->theTypedKey.begin();
+      std::vector<XQPCollator*>::iterator lCollIter = theCompareParam->theCollators.begin();
+
+      while(iter1 != t1->theTypedKey.end())
+      {
+        if(*iter1 == NULL)
+        {      
+          if(*iter2 != NULL)
+          {
+            return false;
+          }
+        }
+        else if(*iter2 == NULL)
+        {
           return false;
-	}
-      }else if(*iter2 == NULL){
-        return false;
-      }else if(CompareIterator::valueEqual ( aCompareParam->theRuntimeCB,
-                                       *iter1, *iter2,
-                                       ( *lCollIter ) ) != 0){
-        return false;                                 
-      }
-      ++lCollIter;
-      ++iter1;
-      ++iter2;
-    }
-    return true;
-  }
+        }
+        else if(CompareIterator::valueEqual(theCompareParam->theRuntimeCB,
+                                            *iter1, *iter2,
+                                            ( *lCollIter ) ) != 0)
+        {
+          return false;                                 
+        }
 
-  static uint32_t hash (GroupKey* t, GroupCompareParam* aCompareParam )
+        ++lCollIter;
+        ++iter1;
+        ++iter2;
+      }
+      return true;
+    }
+
+    uint32_t hash (GroupKey* t)
+    {
+      uint32_t hash = 0;
+      assert(theCompareParam->theCollators.size() == t->theTypedKey.size());
+      std::vector<store::Item_t>::iterator lItemIter = t->theTypedKey.begin();
+      std::vector<XQPCollator*>::iterator lCollIter = theCompareParam->theCollators.begin();
+      while(lItemIter != t->theTypedKey.end())
+      {
+        store::Item_t lCurItem = (*lItemIter);
+        if(lCurItem != NULL){
+          hash += (*lItemIter)->hash(theCompareParam->theRuntimeCB->theDynamicContext->get_implicit_timezone(),
+                                     *lCollIter );
+        }
+        ++lCollIter;
+        ++lItemIter;
+      }
+      return hash;
+    }
+
+  };
+
+
+  typedef typename HashMap<GroupKey*, V, CompareFunction>::iterator iterator;
+
+private:
+  GroupCompareParam                     * theCompareParam;
+  CompareFunction                         theCompareFunction;
+  HashMap<GroupKey*, V, CompareFunction>  theMap;
+
+public:
+  ItemValuesCollHandleHashMap(
+        GroupCompareParam* compParam,
+        long size = 1024)
+    :
+    theCompareParam(compParam),
+    theCompareFunction(compParam),
+    theMap(theCompareFunction, size, false)
   {
-    uint32_t hash=0;
-    assert(aCompareParam->theCollators.size() == t->theTypedKey.size());
-    std::vector<store::Item_t>::iterator lItemIter = t->theTypedKey.begin();
-    std::vector<XQPCollator*>::iterator lCollIter = aCompareParam->theCollators.begin();
-    while(lItemIter != t->theTypedKey.end()){
-      store::Item_t lCurItem = (*lItemIter);
-      if(lCurItem != NULL){
-      	hash += (*lItemIter)->hash(aCompareParam->theRuntimeCB->theDynamicContext->get_implicit_timezone(),
-                                  *lCollIter );
-      }
-      ++lCollIter;
-      ++lItemIter;
-    }
-    return hash;
   }
 
+  ~ItemValuesCollHandleHashMap() 
+  {
+    if (theCompareParam)
+      delete theCompareParam; 
+  }
+ 
+  iterator begin() { return theMap.begin(); }
+  iterator end() { return theMap.end(); }
+
+  bool empty() const { return theMap.empty(); }
+
+  bool get(GroupKey* key, V& value) { return theMap.get(key, value); }
+
+  bool insert(GroupKey* key, V& value) { return theMap.insert(key, value); }
+
+  bool remove(GroupKey* key) { return theMap.remove(key); }
+
+  void clear() { theMap.clear(); }
 };
 
 
