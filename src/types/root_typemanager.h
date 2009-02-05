@@ -136,6 +136,7 @@ public:
    *  Maps the qname of an atomic type to its typecode.
    */
   typedef zorba::HashMap<store::Item*, TypeConstants::atomic_type_code_t, qname_hash_equals> qnametype_map_t;
+
   qnametype_map_t m_atomic_qnametype_map;
 
   static const bool ATOMIC_SUBTYPE_MATRIX[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE][TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];

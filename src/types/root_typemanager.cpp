@@ -169,9 +169,11 @@ const TypeConstants::quantifier_t RootTypeManager::QUANT_INTERS_MATRIX [4] [4] =
 #undef Q
 
 #define ATOMIC_QNAMETYPE_MAP_SIZE 50
-  
+ 
+ 
 RootTypeManager::RootTypeManager()
-  : TypeManagerImpl(0, NULL),
+  :
+  TypeManagerImpl(0, NULL),
   m_atomic_qnametype_map(ATOMIC_QNAMETYPE_MAP_SIZE, false)
 {
 #define XS_URI "http://www.w3.org/2001/XMLSchema"

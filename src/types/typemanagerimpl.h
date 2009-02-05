@@ -23,7 +23,9 @@ namespace zorba {
 
 class NodeTest;
 
-struct qname_hash_equals {
+class qname_hash_equals 
+{
+ public:
   static uint32_t hash(const store::Item *qn)
   {
     return qn->hash();
