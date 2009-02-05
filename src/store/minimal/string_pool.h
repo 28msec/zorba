@@ -24,13 +24,7 @@
 
 namespace zorba { namespace storeminimal {
 
-/*******************************************************************************
-  A hash-based set container of string rchandles, where equality is based on
-  string value.
-
-  It is used to implement a pool of URI strings.
-********************************************************************************/
-class StringPool : public HashSet<xqpStringStore_t, StringPool>
+class StringPoolCompareFunction
 {
 public:
   static bool equal(const xqpStringStore_t& s1, const xqpStringStore_t& s2)
@@ -42,9 +36,21 @@ public:
   {
     return s->hash();
   }
+ };
 
+
+/*******************************************************************************
+  A hash-based set container of string rchandles, where equality is based on
+  string value.
+
+  It is used to implement a pool of URI strings.
+********************************************************************************/
+class StringPool : public HashSet<xqpStringStore_t, StringPoolCompareFunction>
+{
 public:
- StringPool(ulong size) : HashSet<xqpStringStore_t, StringPool>(size, true) {};
+ StringPool(ulong size) 
+    :
+    HashSet<xqpStringStore_t, StringPoolCompareFunction>(size, true) {}
 
   ~StringPool();
 

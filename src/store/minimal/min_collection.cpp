@@ -231,11 +231,11 @@ void SimpleCollection::removeNode(const store::Item* node)
 
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
-  int position = nodePositionInCollection((store::Item*) node);
+  long position = nodePositionInCollection((store::Item*) node);
 
   if(position != -1)
   {
-    if( (position-1) >= theXmlTrees.size() )
+    if( (ulong)(position-1) >= theXmlTrees.size() )
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
     theXmlTrees.erase(theXmlTrees.begin() + (position - 1));
   }

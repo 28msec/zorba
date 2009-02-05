@@ -51,10 +51,8 @@ class QNamePool
 {
 protected:
 
-  class QNamePoolHashSet : public HashSet<QNameItemImpl*, QNamePoolHashSet>
+  class CompareFunction
   {
-    friend class QNamePool;
-
   public:
     static bool equal(const QNameItemImpl* t1, const QNameItemImpl* t2)
     {
@@ -77,11 +75,15 @@ protected:
     {
       return hashfun::h32(pre, hashfun::h32(ln, ns));
     }
+  };
 
+  class QNamePoolHashSet : public HashSet<QNameItemImpl*, CompareFunction>
+  {
+    friend class QNamePool;
   public:
     QNamePoolHashSet(ulong size) 
       :
-      HashSet<QNameItemImpl*, QNamePoolHashSet>(size, true)
+      HashSet<QNameItemImpl*, CompareFunction>(size, true)
     {
     }
   };
