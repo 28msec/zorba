@@ -302,7 +302,8 @@ class DeweyClassification: public parsenode_visitor
   	DECL_CONCRETE_VISIT (AposAttrContentList);
   	DECL_CONCRETE_VISIT (AposAttrValueContent);
   	DECL_CONCRETE_VISIT (ArgList);
-  	DECL_CONCRETE_VISIT (AtomicType);
+  	DECL_CONCRETE_VISIT (AssignExpr);
+    DECL_CONCRETE_VISIT (AtomicType);
   	DECL_CONCRETE_VISIT (AttributeTest);
   	DECL_CONCRETE_VISIT (BaseURIDecl);
   	DECL_CONCRETE_VISIT (BoundarySpaceDecl);
