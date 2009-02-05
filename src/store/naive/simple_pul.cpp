@@ -40,15 +40,12 @@ namespace zorba { namespace simplestore {
 ********************************************************************************/
 NodeToUpdatesMap::~NodeToUpdatesMap()
 {
-  ulong n = theHashTab.size();
+  NodeToUpdatesMap::iterator ite = theMap.begin();
+  NodeToUpdatesMap::iterator end = theMap.end();
 
-  for (ulong i = 0; i < n; i++)
+  for (; ite != end; ++ite)
   {
-    HashEntry<XmlNode*, NodeUpdates*>* entry = &this->theHashTab[i];
-    if (!entry->isFree())
-    {
-      delete entry->theValue;
-    }
+    delete (*ite).second;
   }
 }
 
@@ -60,7 +57,8 @@ inline void cleanList(std::vector<UpdatePrimitive*> aVector)
 {
   for ( std::vector<UpdatePrimitive*>::iterator lIter = aVector.begin();
         lIter != aVector.end();
-        ++lIter ) {
+        ++lIter ) 
+  {
     delete (*lIter);
   }
 }
@@ -461,6 +459,9 @@ void PULImpl::addRename(store::Item_t& target, store::Item_t& newName)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void PULImpl::addSetElementType(
     store::Item_t&              target,
     store::Item_t&              typeName,
@@ -547,6 +548,7 @@ void PULImpl::addCreateCollection(
   theCreateCollectionList.push_back(upd);
 }
 
+
 void PULImpl::addDeleteCollection(
     static_context*      aStaticContext,
     store::Item_t&              resolvedURI)
@@ -556,16 +558,21 @@ void PULImpl::addDeleteCollection(
   theDeleteCollectionList.push_back(upd);
 }
 
+
 void PULImpl::addInsertIntoCollection(
     static_context*        aStaticContext,
     store::Item_t&         resolvedURI,
     store::Item_t&         node,
     const store::CopyMode& copymode)
 {
-  UpdatePrimitive* upd = new UpdInsertIntoCollection(this, aStaticContext, resolvedURI, node, copymode);
-
+  UpdatePrimitive* upd = new UpdInsertIntoCollection(this,
+                                                     aStaticContext,
+                                                     resolvedURI,
+                                                     node,
+                                                     copymode);
   theInsertIntoCollectionList.push_back(upd);
 } 
+
 
 void PULImpl::addInsertFirstIntoCollection(
     static_context*             aStaticContext,
@@ -573,10 +580,14 @@ void PULImpl::addInsertFirstIntoCollection(
     std::vector<store::Item_t>& nodes,
     const store::CopyMode&      copyMode)
 {
-  UpdatePrimitive* upd = new UpdInsertFirstIntoCollection(this, aStaticContext, resolvedURI, nodes, copyMode);
-
+  UpdatePrimitive* upd = new UpdInsertFirstIntoCollection(this,
+                                                          aStaticContext,
+                                                          resolvedURI,
+                                                          nodes,
+                                                          copyMode);
   theInsertIntoCollectionList.push_back(upd);
 }
+
 
 void PULImpl::addInsertLastIntoCollection(
     static_context*             aStaticContext,
@@ -584,10 +595,14 @@ void PULImpl::addInsertLastIntoCollection(
     std::vector<store::Item_t>& nodes,
     const store::CopyMode&      copyMode)
 {
-  UpdatePrimitive* upd = new UpdInsertLastIntoCollection(this, aStaticContext, resolvedURI, nodes, copyMode);
-
+  UpdatePrimitive* upd = new UpdInsertLastIntoCollection(this,
+                                                         aStaticContext,
+                                                         resolvedURI,
+                                                         nodes,
+                                                         copyMode);
   theInsertIntoCollectionList.push_back(upd);
 }
+
 
 void PULImpl::addInsertBeforeIntoCollection(
     static_context*             aStaticContext,
@@ -596,10 +611,15 @@ void PULImpl::addInsertBeforeIntoCollection(
     std::vector<store::Item_t>& nodes,
     const store::CopyMode&      copyMode)
 {
-  UpdatePrimitive* upd = new UpdInsertBeforeIntoCollection(this, aStaticContext, resolvedURI, target, nodes, copyMode);
-
+  UpdatePrimitive* upd = new UpdInsertBeforeIntoCollection(this,
+                                                           aStaticContext,
+                                                           resolvedURI,
+                                                           target,
+                                                           nodes,
+                                                           copyMode);
   theInsertIntoCollectionList.push_back(upd);
 }
+
 
 void PULImpl::addInsertAfterIntoCollection(
     static_context*             aStaticContext,
@@ -608,10 +628,16 @@ void PULImpl::addInsertAfterIntoCollection(
     std::vector<store::Item_t>& nodes,
     const store::CopyMode&      copyMode)
 {
-  UpdatePrimitive* upd = new UpdInsertAfterIntoCollection(this, aStaticContext, resolvedURI, target, nodes, copyMode);
+  UpdatePrimitive* upd = new UpdInsertAfterIntoCollection(this,
+                                                          aStaticContext,
+                                                          resolvedURI,
+                                                          target,
+                                                          nodes,
+                                                          copyMode);
 
   theInsertIntoCollectionList.push_back(upd);
 }
+
 
 void PULImpl::addInsertAtIntoCollection(
     static_context*             aStaticContext,
@@ -620,30 +646,42 @@ void PULImpl::addInsertAtIntoCollection(
     std::vector<store::Item_t>& nodes,
     const store::CopyMode&      copyMode)
 {
-  UpdatePrimitive* upd = new UpdInsertAtIntoCollection(this, aStaticContext, resolvedURI, pos, nodes, copyMode);
-
+  UpdatePrimitive* upd = new UpdInsertAtIntoCollection(this,
+                                                       aStaticContext,
+                                                       resolvedURI,
+                                                       pos,
+                                                       nodes,
+                                                       copyMode);
   theInsertIntoCollectionList.push_back(upd);
 }
+
 
 void PULImpl::addRemoveFromCollection(
     static_context*    aStaticContext,
     store::Item_t&            resolvedURI,
     std::vector<store::Item_t>& nodes)
 {
-  UpdatePrimitive* upd = new UpdRemoveNodesFromCollection(this, aStaticContext, resolvedURI, nodes);
-
+  UpdatePrimitive* upd = new UpdRemoveNodesFromCollection(this,
+                                                          aStaticContext,
+                                                          resolvedURI,
+                                                          nodes);
   theDeleteFromCollectionList.push_back(upd);
 }
+
 
 void PULImpl::addRemoveAtFromCollection(
     static_context*    aStaticContext,
     store::Item_t&            resolvedURI,
     ulong              pos)
 {
-  UpdatePrimitive* upd = new UpdRemoveNodesAtFromCollection(this, aStaticContext, resolvedURI, pos);
-
+  UpdatePrimitive* upd = new UpdRemoveNodesAtFromCollection(this,
+                                                            aStaticContext,
+                                                            resolvedURI,
+                                                            pos);
   theDeleteFromCollectionList.push_back(upd);
 }
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -712,16 +750,21 @@ void PULImpl::mergeUpdateList(
       target = BASE_NODE(upd->theTarget);
 
     NodeUpdates* targetUpdates;
-    bool found = theNodeToUpdatesMap.get(target, targetUpdates);
+    bool found = (target == NULL ?
+                  false : 
+                  theNodeToUpdatesMap.get(target, targetUpdates));
 
     if (!found)
     {
       myList[numUpdates + i] = upd;
       otherList[i] = NULL;
 
-      targetUpdates = new NodeUpdates(1);
-      (*targetUpdates)[0] = upd;
-      theNodeToUpdatesMap.insert(target, targetUpdates);
+      if (target)
+      {
+        targetUpdates = new NodeUpdates(1);
+        (*targetUpdates)[0] = upd;
+        theNodeToUpdatesMap.insert(target, targetUpdates);
+      }
     }
     else
     {

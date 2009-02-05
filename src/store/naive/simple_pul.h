@@ -44,30 +44,49 @@ typedef std::vector<UpdatePrimitive*> NodeUpdates;
   updates of that kind on the same target node. In particular, there can be no
   duplicate delete, rename, replaveValue, replaceContent, or replaceNode updates.
 ********************************************************************************/
-class NodeToUpdatesMap : public HashMap<XmlNode*,
-                                        NodeUpdates*,
-                                        NodeToUpdatesMap>
+class NodeToUpdatesMap
 {
 public:
 
-  static bool equal(const XmlNode* n1, const XmlNode* n2)
+  class CompareFunction
   {
-    return n1 == n2;
-  }
+  public:
+    static bool equal(const XmlNode* n1, const XmlNode* n2)
+    {
+      return n1 == n2;
+    }
 
-  static uint32_t hash(const XmlNode* n)
-  {
-    return hashfun::h32((void*)(&n), sizeof(void*), FNV_32_INIT);
-  }
+    static uint32_t hash(const XmlNode* n)
+    {
+      return hashfun::h32((void*)(&n), sizeof(void*), FNV_32_INIT);
+    }
+  };
 
+  typedef HashMap<XmlNode*, NodeUpdates*, CompareFunction>::iterator iterator;
 
- NodeToUpdatesMap() 
-   :
-   HashMap<XmlNode*, NodeUpdates*, NodeToUpdatesMap>(8, false)
+private:
+
+  HashMap<XmlNode*, NodeUpdates*, CompareFunction> theMap;
+
+public:
+ NodeToUpdatesMap() : theMap(8, false)
   {
   }
 
   ~NodeToUpdatesMap();
+
+  iterator begin() const { return theMap.begin(); }
+  iterator end() const { return theMap.end(); }
+
+  bool empty() const { return theMap.empty(); }
+
+  bool get(XmlNode* key, NodeUpdates*& value) { return theMap.get(key, value); }
+
+  bool insert(XmlNode* key, NodeUpdates* value) { return theMap.insert(key, value); }
+
+  bool remove(XmlNode* key) { return theMap.remove(key); }
+
+  void clear() { theMap.clear(); }
 };
 
 

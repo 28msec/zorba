@@ -33,27 +33,47 @@ namespace zorba { namespace store {
  
 ********************************************************************************/
 template <class V>
-class StringHashMap : public HashMap<const xqpStringStore*,
-                                     V,
-                                     StringHashMap<V> >
+class StringHashMap
 {
 public:
-  static bool equal(const xqpStringStore* s1, const xqpStringStore* s2)
+  class CompareFunction
   {
-    return s1->byteEqual(*s2);
-  }
+  public:
+    static bool equal(const xqpStringStore* s1, const xqpStringStore* s2)
+    {
+      return s1->byteEqual(*s2);
+    }
 
-  static uint32_t hash(const xqpStringStore* s)
-  {
-    return s->hash();
-  }
+    static uint32_t hash(const xqpStringStore* s)
+    {
+      return s->hash();
+    }
+  };
+
+
+  typedef typename HashMap<const xqpStringStore*, V, CompareFunction>::iterator iterator;
+
+private:
+  HashMap<const xqpStringStore*, V, CompareFunction> theMap;
 
 public:
- StringHashMap(ulong size, bool sync)
-   :
-   HashMap<const xqpStringStore*, V, StringHashMap>(size, sync) {};
+ StringHashMap(ulong size, bool sync) : theMap(size, sync) {};
 
   ~StringHashMap() { };
+
+  iterator begin() { return theMap.begin(); }
+
+  iterator end() { return theMap.end(); }
+
+  bool empty() const { return theMap.empty(); }
+
+  void clear() { theMap.clear(); }
+
+  bool get(const xqpStringStore* key, V& value) { return theMap.get(key, value); }
+
+  bool insert(const xqpStringStore* key, V& value) { return theMap.insert(key, value); }
+
+  bool remove(const xqpStringStore* key) { return theMap.remove(key); }
 };
 
 

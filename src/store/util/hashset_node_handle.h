@@ -26,26 +26,44 @@ namespace zorba { namespace store {
   A hash-based set container of node rchandles, where equality is based on
   node identity (i.e.  ordpath).
 ********************************************************************************/
-class NodeHashSet : public HashSet<rchandle<Item>, NodeHashSet>
+class NodeHashSet
 {
 public:
 
-  static bool equal(const Item_t& t1, const Item_t& t2)
+  class CompareFunction
   {
-    return t1->equals(t2, 0);
-  }
+  public:
+    bool equal(const Item_t& t1, const Item_t& t2)
+    {
+      return t1->equals(t2, 0);
+    }
 
-  static uint32_t hash(const Item_t& t)
-  {
-    return t->hash(0);
-  }
+    uint32_t hash(const Item_t& t)
+    {
+      return t->hash(0);
+    }
+  };
+
+private:
+  HashSet<Item_t, CompareFunction>  theSet;
 
 public:
-  NodeHashSet(ulong size = 1024) 
-    :
-    HashSet<rchandle<Item>, NodeHashSet>(size, false) 
+  NodeHashSet(ulong size = 1024) : theSet(size, false) 
   {
   }
+
+  //iterator begin() { return theSet.begin(); }
+  //iterator end() { return theSet.end(); }
+
+  bool empty() const { return theSet.empty(); }
+
+  bool find(const Item_t& key) { return theSet.find(key); }
+
+  bool insert(Item_t& key) { return theSet.insert(key); }
+
+  bool remove(const Item_t& key) { return theSet.remove(key); }
+
+  void clear() { theSet.clear(); }
 };
 
 } // namespace store

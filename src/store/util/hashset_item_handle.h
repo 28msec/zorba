@@ -31,26 +31,35 @@ namespace zorba { namespace store {
   It is used by the NodeDistinctIterator. 
 
 ********************************************************************************/
-class ItemHandleHashSet : public HashSet<rchandle<Item>, ItemHandleHashSet>
+class ItemHandleHashSet
 {
 public:
 
-  static bool equal(const Item_t& t1, const Item_t& t2)
+  class CompareFunction
   {
-    return t1 == t2;
-  }
+  public:
+    static bool equal(const Item_t& t1, const Item_t& t2)
+    {
+      return t1 == t2;
+    }
 
-  static uint32_t hash(const Item_t& t)
-  {
-    return hashfun::h32((void*)(&t), sizeof(void*), FNV_32_INIT);
-  }
+    static uint32_t hash(const Item_t& t)
+    {
+      return hashfun::h32((void*)(&t), sizeof(void*), FNV_32_INIT);
+    }
+  };
+
+private:
+  HashSet<Item_t, CompareFunction>  theSet;
 
 public:
-  ItemHandleHashSet(ulong size, bool sync) 
-    :
-    HashSet<rchandle<Item>, ItemHandleHashSet>(size, sync, false)
-  {
-  }
+  ItemHandleHashSet(ulong size, bool sync) : theSet(size, sync, false) { }
+
+  void clear() { theSet.clear(); }
+
+  bool find(const Item_t& key) { return theSet.find(key); }
+
+  bool insert(Item_t& key) { return theSet.insert(key); }
 };
 
 } // namespace store
