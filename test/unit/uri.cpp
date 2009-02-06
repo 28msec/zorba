@@ -16,6 +16,8 @@
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/URI.h"
 #include "zorbaerrors/error_manager.h"
+#include <zorba/zorba.h>
+#include <simplestore/simplestore.h>
 
 struct URITestEntry
 {
@@ -32,8 +34,13 @@ struct URITestEntry
   zorba::xqpString query;
 };
 
+using namespace zorba;
+
 int uri(int argc, char* argv[]) 
 {
+  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
+  Zorba *lZorba = Zorba::getInstance(lStore);
+
   zorba::xqpString foo("/b");
   if (foo.endsWith("/.."))
     std::cout << foo << " ends with " << "/.." << std::endl;
@@ -575,6 +582,8 @@ int uri(int argc, char* argv[])
 
   std::cout << "decoded " << lEncoded.decodeFromUri() << std::endl;
 
+  lZorba->shutdown();
+  simplestore::SimpleStoreManager::shutdownStore(lStore);
   return 0;
 
 }
