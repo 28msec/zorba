@@ -871,9 +871,9 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
                state->theStreamBuffer.getp(),
                (tidyUserOpt!=NULL)?tidyUserOpt->getStringValue()->c_str():NULL);
 
-  STACK_PUSH(true, state);
   curl_slist_free_all(headers_list);
   cleanupConnection(state);
+  STACK_PUSH(true, state);
   STACK_END (state);
 }
 
@@ -930,10 +930,10 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
   code = state->theStreamBuffer->multi_perform();
   processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL);
   
-  STACK_PUSH(true, state);
   curl_formfree(first);
   curl_slist_free_all(headers_list);
   cleanupConnection(state);
+  STACK_PUSH(true, state);
   STACK_END (state);
 }
 
@@ -990,10 +990,10 @@ bool ZorbaRestPutIterator::nextImpl(store::Item_t& result, PlanState& planState)
   code = state->theStreamBuffer->multi_perform();
   processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL);
   
-  STACK_PUSH(true, state);
   curl_formfree(first);
   curl_slist_free_all(headers_list);
   cleanupConnection(state);
+  STACK_PUSH(true, state);
   STACK_END (state);
 }
 
@@ -1041,9 +1041,9 @@ bool ZorbaRestDeleteIterator::nextImpl(store::Item_t& result, PlanState& planSta
   code = state->theStreamBuffer->multi_perform();
   processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL, true);
   
-  STACK_PUSH(true, state);
   curl_slist_free_all(headers_list);
   cleanupConnection(state);
+  STACK_PUSH(true, state);
   STACK_END (state);
 }
 
@@ -1091,9 +1091,9 @@ bool ZorbaRestHeadIterator::nextImpl(store::Item_t& result, PlanState& planState
   code = state->theStreamBuffer->multi_perform();
   processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL, true);
   
-  STACK_PUSH(true, state);
   curl_slist_free_all(headers_list);
   cleanupConnection(state);
+  STACK_PUSH(true, state);
   STACK_END (state);
 }
 
