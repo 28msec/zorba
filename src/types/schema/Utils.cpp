@@ -127,7 +127,7 @@ void validateAfterUpdate(
     {
     case store::StoreConsts::documentNode:
     {
-        //cout << "Validate document" << "\n"; cout.flush();
+        //cout << "Validate after update document" << "\n"; cout.flush();
 
         schemaValidator.startDoc();
 
@@ -140,12 +140,12 @@ void validateAfterUpdate(
 
         schemaValidator.endDoc();
 
-        //cout << "End Validate doc" << "\n"; cout.flush();
+        //cout << "End Validate after update doc" << "\n"; cout.flush();
         return;
     }
     case store::StoreConsts::elementNode: 
     {
-        //cout << "Validate element" << "\n"; cout.flush();
+        //cout << "Validate  after update element" << "\n"; cout.flush();
 
         schemaValidator.startDoc();
 
@@ -153,7 +153,7 @@ void validateAfterUpdate(
 
         schemaValidator.endDoc();
         
-        //cout << "End Validate elem" << "\n"; cout.flush();
+        //cout << "End Validate  after update elem" << "\n"; cout.flush();
         return;
     }
     default:
@@ -174,6 +174,9 @@ void processElement( store::Item_t& pul, static_context* staticContext,
     store::Item_t nodeName = element->getNodeName();
     xqpStringStore_t baseUri = element->getBaseURI();
 
+    //cout << " vup    - elem: " << nodeName->getLocalName()->c_str() << " @ " << nodeName->getNamespace()->c_str() << "\n"; cout.flush();
+        
+
     schemaValidator.startElem(nodeName);
 
 
@@ -186,6 +189,8 @@ void processElement( store::Item_t& pul, static_context* staticContext,
     validateAttributes(schemaValidator, element->getAttributes());
     
     store::Item_t typeQName = schemaValidator.getTypeQName();
+    //cout << " vup      - elemType old: " << element->getType()->getLocalName()->c_str() << " @ " << element->getType()->getNamespace()->c_str() << "\n"; cout.flush();
+    //cout << " vup      - elemType new: " <<          typeQName->getLocalName()->c_str() << " @ " <<          typeQName->getNamespace()->c_str() << "\n"; cout.flush();
 
     if ( !typeQName->equals(element->getType()) )
     {
@@ -194,6 +199,8 @@ void processElement( store::Item_t& pul, static_context* staticContext,
         TypeIdentifier_t newTypeIdent = TypeIdentifier::createNamedType(typeQName->getNamespace(), typeQName->getLocalName() );
         xqtref_t newType = delegatingTypeManager->create_type(*newTypeIdent);
 
+        //cout << " vup      - elemType: " << newTypeIdent->getLocalName() << " @ " << newTypeIdent->getUri() << "\n"; cout.flush();
+        
         bool tHasValue      = typeHasValue(newType);
         bool tHasTypedValue = typeHasTypedValue(newType);
         bool tHasEmptyValue = typeHasEmptyValue(newType);
@@ -231,7 +238,7 @@ void validateAttributes( SchemaValidator& schemaValidator, store::Iterator_t att
         ZORBA_ASSERT(attribute->isNode());
         ZORBA_ASSERT(attribute->getNodeKind() == store::StoreConsts::attributeNode);
 
-        //cout << " v    - attr: " << attribute->getNodeName()->getLocalName()->c_str() << "\n"; cout.flush();
+        //cout << " vup    - attr: " << attribute->getNodeName()->getLocalName()->c_str() << "\n"; cout.flush();
                     
         store::Item_t attName = attribute->getNodeName();
         schemaValidator.attr(attName, attribute->getStringValue());

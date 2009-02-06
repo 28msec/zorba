@@ -23,7 +23,7 @@
 #include <zorbatypes/xerces_xmlcharray.h>
 #include "store/api/item_factory.h"
 #include "types/schema/schema.h"
-
+#include "PrintSchema.h"
 
 //using namespace std;
 using namespace XERCES_CPP_NAMESPACE;
@@ -38,6 +38,10 @@ SchemaValidator::SchemaValidator(TypeManager *typeManager, XERCES_CPP_NAMESPACE:
 
     _grammarResolver = new (memoryManager) XERCES_CPP_NAMESPACE::GrammarResolver(grammarPool, memoryManager);
     _grammarResolver->useCachedGrammarInParse(true);
+
+#if 0                   // enable this to debug registered user defined schema types
+    PrintSchema::printInfo( true, grammarPool);
+#endif 
 
     _schemaValidatorFilter = new SchemaValidatorFilter(!isLax, &_validationEventHandler, _grammarResolver, memoryManager, NULL, loc);
 }
