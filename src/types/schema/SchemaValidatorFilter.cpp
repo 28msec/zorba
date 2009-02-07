@@ -1009,7 +1009,10 @@ XMLElementDecl *SchemaValidatorFilter::createElementDecl(unsigned int uriId, uns
         elemDecl = _fElemNonDeclPool->getByKey(_localname.getRawBuffer(), uriId, currentScope);
 
     unsigned int orgGrammarUri = uriId;
-    if(!elemDecl && (orgGrammarUri = fURIStringPool->getId(original_uriStr)) != uriId) 
+    if(!elemDecl && ( 
+          original_uriStr==NULL ||       // to fix noTargetNamespace schema validation
+          (orgGrammarUri = fURIStringPool->getId(original_uriStr)) != uriId ) 
+      ) 
     {
         //not found, switch grammar and try globalNS
         if(!switchGrammar(_uri.getRawBuffer()) && fValidate && !laxThisOne) 
