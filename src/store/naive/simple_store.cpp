@@ -33,6 +33,7 @@
 #include "store/naive/simple_temp_seq.h"
 #include "store/naive/simple_lazy_temp_seq.h"
 #include "store/naive/simple_collection.h"
+#include "store/naive/simple_index.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/sax_loader.h"
 #include "store/naive/store_defs.h"
@@ -79,6 +80,7 @@ SimpleStore::SimpleStore()
   theIteratorFactory(NULL),
   theDocuments(DEFAULT_COLLECTION_MAP_SIZE, true),
   theCollections(DEFAULT_COLLECTION_MAP_SIZE, true),
+  theIndices(DEFAULT_COLLECTION_MAP_SIZE, true),
   theTraceLevel(0)
 {
 }
@@ -303,17 +305,85 @@ store::Item_t SimpleStore::createUri()
 
 
 /*******************************************************************************
+  Create an index with a given URI and return an rchandle to the index object. 
+  If an index with the given URI exists already, raise an error.
+********************************************************************************/
+store::Index_t SimpleStore::createIndex(
+    const xqpStringStore_t& uri,
+    const store::Iterator_t& contextNodeIterator,
+    const std::vector<store::Iterator_t>& keyIterators,
+    const std::vector<XQPCollator*>& collators,
+    long timezone,
+    const store::IndexProperties& properties)
+{
+  const xqpStringStore* urip = uri.getp();
+
+  bool temp = false;
+  bool ordered = false;
+
+  store::IndexProperties::const_iterator ite = properties.begin();
+  store::IndexProperties::const_iterator end = properties.end();
+
+  for (; ite != end; ++ite)
+  {
+    if ((*ite).first.byteEqual("ordered"))
+    {
+      if ((*ite).second.byteEqual("yes"))
+        ordered = true;
+    }
+    else if ((*ite).first.byteEqual("temporary"))
+    {
+      if ((*ite).second.byteEqual("yes"))
+        temp = true;
+    }
+  }
+
+  store::Index_t index;
+
+  if (temp = false)
+  {
+    bool found = theIndices.get(urip, index);
+    
+    if (found)
+    {
+      ZORBA_ERROR_PARAM(API0060_INDEX_ALREADY_EXISTS, uri->c_str(), "");
+    }
+  }
+
+
+  if (ordered)
+  {
+    ;
+  }
+  else
+  {
+    index = new HashIndex(uri, keyIterators.size(), timezone, collators);
+  }
+
+  if (temp = false)
+  {
+    theIndices.insert(urip, index);
+  }
+
+  return index;
+}
+
+    
+
+/*******************************************************************************
   Create a collection with a given URI and return an rchandle to the new
   collection object. If a collection with the given URI exists already, return
   NULL and register an error.
 ********************************************************************************/
-store::Collection_t SimpleStore::createCollection(xqpStringStore_t& uri)
+store::Collection_t SimpleStore::createCollection(const xqpStringStore_t& uri)
 {
   if (uri == NULL)
     return NULL;
 
   store::Item_t uriItem;
-  theItemFactory->createAnyURI(uriItem, uri);
+  xqpStringStore_t tmpuri(uri.getp());
+  theItemFactory->createAnyURI(uriItem, tmpuri);
+
   theItemUris.push_back(uriItem);
 
   store::Collection_t collection(new SimpleCollection(uriItem));
@@ -395,6 +465,7 @@ void SimpleStore::deleteCollection(const xqpStringStore_t& uri)
     ZORBA_ERROR_PARAM(API0006_COLLECTION_NOT_FOUND, uri->c_str(), "");
 }
 
+
 /*******************************************************************************
   Resturn an iterator that lists the URI's of all the available collections.
 ********************************************************************************/
@@ -402,6 +473,7 @@ store::Iterator_t SimpleStore::listCollectionUris()
 {
   return new ItemIterator(theItemUris, false);
 }
+
 
 /*******************************************************************************
 
@@ -434,31 +506,6 @@ store::Item_t SimpleStore::loadDocument(
                       lErrorManager.getErrors().front().theDescription, "");
   }
 
-/*
-//some testing
-#ifdef ZORBA_STORE_MSDOM
-  clock_t   t0,t1;
-  XmlNode_t   root2 = root;
-  IXMLDOMNode  *dom_root;
-  dom_root = exportItemAsMSDOM(root.getp());
-  //debug
-  //{
-  //  BSTR  bstr_doc;
-  //  char  *char_text;
-  //  dom_root->get_xml(&bstr_doc);
-  //  char_text = ImportMSDOM::fromBSTR(bstr_doc);
-  //  std::cout << "document loaded into MS DOM " << std::endl
-  //    << char_text << std::endl;
-  //  ::free(char_text);
-  //}
-  //end debug
-  //reimport
-  t0 = clock();
-  root = importMSDOM(dom_root, uri, NULL);
-  t1 = clock();
-  std::cout << "time spent importing MSDOM: " << (t1-t0) << std::endl;
-#endif
-*/
   if (root != NULL && storeDocument)
     theDocuments.insert(urip, root);
 
@@ -918,11 +965,11 @@ IXMLDOMNode*   SimpleStore::exportItemAsMSDOM(store::Item_t it)
 
 /*******************************************************************************
   Import a Microsoft DOM tree into the store as a xml document.
-  This function is equivalent with loadDocument,  only that it loads the xml from an existing MS DOM tree.
-  The existing MS DOM is kept unchanged at import time.
+  This function is equivalent with loadDocument,  only that it loads the xml from
+  an existing MS DOM tree. The existing MS DOM is kept unchanged at import time.
   Further updates on the document are reflected into the original MS DOM tree.
-  Compile the simple store with ZORBA_STORE_MSDOM in order to use this feature on Windows machines.
-
+  Compile the simple store with ZORBA_STORE_MSDOM in order to use this feature
+  on Windows machines.
 *******************************************************************************/
 store::Item_t  SimpleStore::importMSDOM(IXMLDOMNode* domNode,
                                         xqpStringStore_t docUri,

@@ -210,7 +210,6 @@ public:
 
   long* getSharedRefCounter() const  
   {
-    ZORBA_FATAL(0, "");
     return NULL; 
   } 
  

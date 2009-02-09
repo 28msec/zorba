@@ -21,7 +21,6 @@
 #include "common/shared_types.h"
 
 #include "types/root_typemanager.h"
-#include "store/api/item.h"
 
 namespace zorba {
 
@@ -35,14 +34,18 @@ namespace zorba {
                   ...       =  ...  
 
 ********************************************************************************/
-  class signature_base: public SimpleRCObject {
-  protected:
-    bool variadic;
-  public:
-    signature_base () : variadic (false) {}
-    signature_base (bool _variadic) : variadic (_variadic) {}
-    bool is_variadic () const { return variadic; }
-  };
+class signature_base: public SimpleRCObject 
+{
+ protected:
+  bool variadic;
+
+ public:
+  signature_base () : variadic (false) {}
+  signature_base (bool _variadic) : variadic (_variadic) {}
+
+  bool is_variadic () const { return variadic; }
+};
+
 
 class signature : public signature_base
 {
@@ -51,8 +54,10 @@ public:
   checked_vector<xqtref_t> argv;
 
 public:
-  signature (store::Item_t name, xqtref_t arg1,
-             bool variadic, xqtref_t return_type);
+  signature (store::Item_t name,
+             xqtref_t arg1,
+             bool variadic,
+             xqtref_t return_type);
   
   signature(store::Item_t name,
             xqtref_t return_type);
@@ -101,8 +106,10 @@ public:
             xqtref_t return_type);
 
 public:
-  const store::Item_t& get_name() const            { return qname_p; }
-  uint32_t arg_count() const {
+  const store::Item_t& get_name() const   { return qname_p; }
+
+  uint32_t arg_count() const 
+  {
     return is_variadic () ? VARIADIC_SIG_SIZE : argv.size() - 1;
   }
 

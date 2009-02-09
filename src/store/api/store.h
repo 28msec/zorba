@@ -203,7 +203,7 @@ public:
    * @return rchandle to the newly created collection or NULL if a collection
    *         with the given uri exists already.
    */
-  virtual Collection_t createCollection(xqpStringStore_t& uri) = 0;
+  virtual Collection_t createCollection(const xqpStringStore_t& uri) = 0;
 
   /** Creates a collection in the store (without given URI).
    * 

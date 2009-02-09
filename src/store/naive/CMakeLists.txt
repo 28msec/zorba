@@ -27,6 +27,7 @@ SET(ZORBA_STORE_IMPL_SRCS
     item.cpp
     simple_iterator_factory.cpp
     simple_collection.cpp
+    simple_index.cpp
     simple_temp_seq.cpp
     simple_lazy_temp_seq.cpp
     simple_pul.cpp

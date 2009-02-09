@@ -146,12 +146,9 @@ public:
   hash(long timezone = 0, XQPCollator* aCollation = 0) const;
   
   /**
-   *  Compares (by value) two items. All comparisons must be done by this
-   *  method. A store may carry out pooling and implement the value comparison
-   *  using "pointer identity".
-   *
-   *  @param RuntimeCB the runtime control block that contains
-   *                   the dynamic and static context
+   *  Compares (by value) two items for equality. All comparisons must be done
+   *  by this method. A store may carry out pooling and implement the value
+   *  comparison using "pointer identity".
    *
    *  @param An optional XQPCollator that is used for comparing string items
    *
@@ -159,6 +156,18 @@ public:
    */
   virtual bool 
   equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
+
+  /**
+   *  Compares (by value) two items, returning -1 if "this" is less than "other",
+   *  0 if "this" and "other" are equal, and 1 if "this" is greater than "other".
+   *
+   *  @param An optional XQPCollator that is used for comparing string items
+   *
+   *  @return  -1 if "this" is less than "other", 0 if "this" and "other" are
+   *           equal, and 1 if "this" is greater than "other".
+   */
+  virtual long
+  compare(const Item* other, long timezone = 0, XQPCollator* aCollation = 0) const;
   
   /**
    *  Computes the Effective Boolean Value for that item as specified in the

@@ -53,21 +53,28 @@
 #define SYMTAB( n ) driver.symtab.get ((off_t) n)
 #define LOC( p ) driver.createQueryLoc(p)
 
-namespace zorba {
-  namespace parser {
-    extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end, *the_ofor;
-  }
+namespace zorba 
+{
 
-  class xquery_driver;
+namespace parser 
+{
+extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end, *the_ofor;
+}
 
-  class FunctionSig {
-  public:
-    rchandle<ParamList> param;
-    rchandle<SequenceType> ret;
-    FunctionSig (ParamList *param_, SequenceType *ret_ = NULL)
-      : param (param_), ret (ret_)
-    {}
-  };
+class xquery_driver;
+
+
+class FunctionSig 
+{
+ public:
+  rchandle<ParamList> param;
+  rchandle<SequenceType> ret;
+
+  FunctionSig (ParamList *param_, SequenceType *ret_ = NULL)
+    : param (param_), ret (ret_)
+  {}
+};
+
 }
 
 #define YYDEBUG 1

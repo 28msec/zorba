@@ -18,6 +18,8 @@
 
 #include "zorbamisc/config/platform.h"
 #include "store/api/item.h"
+#include "store/api/index.h"
+
 
 namespace zorba { namespace store {
 
@@ -111,6 +113,48 @@ public:
   
   virtual void
   init(Item_t& parent) = 0;
+
+  
+  virtual void
+  open() = 0;
+
+  
+  virtual Item*
+  next() = 0;
+  
+  
+  virtual bool
+  next(Item_t& result) = 0;
+
+  
+  virtual void
+  reset() = 0;
+
+  
+  virtual void
+  close() = 0;
+};
+
+
+/**
+ * This iterator is used to iterate over the result of an index probe.
+ * It implements the interface of a generic iterator, but also offers the
+ * following additional methods:
+ *
+ * - An init method that takes as input an index and a key, so that it will
+ *   start returning the values associated with the given key.
+ * - A next method that returns pointers to the attributes instead of rchandles.
+ *   These pointers should not be used beyond the lifetime of the AttributesIterator
+ *   object. 
+ */
+class IndexProbeIterator : public Iterator
+{
+public:
+  virtual ~IndexProbeIterator() { }
+
+  
+  virtual void
+  init(IndexKey& key) = 0;
 
   
   virtual void

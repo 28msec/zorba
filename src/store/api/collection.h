@@ -21,8 +21,16 @@
 
 namespace zorba { namespace store {
 
-class Collection : public SimpleRCObject
+
+class Collection : public RCObject
 {
+protected:
+  SYNC_CODE(mutable RCLock theRCLock;)
+
+public:
+  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
+
+
 public:
   virtual ~Collection() {}
 

@@ -76,6 +76,7 @@ void BuiltinFunctionLibrary::populateContext(static_context *sctx)
   populateContext_ZorbaExtensions(sctx);
 }
 
+
 void BuiltinFunctionLibrary::populateContext_Accesors(static_context *sctx)
 {
 // Accessors
@@ -287,7 +288,8 @@ DECL(sctx, fn_parse_func,
 DECL(sctx, op_concatenate,
      (createQName(XQUERY_FN_NS,"fn",":concatenate"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      true, GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+      true,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 DECL(sctx, fn_exists,
     (createQName(XQUERY_FN_NS,"fn","exists"),
@@ -856,8 +858,8 @@ DECL(sctx, rest_head,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
+#endif // ZORBA_WITH_REST
 
-#endif
 
 //begin collection functions
 DECL(sctx, zorba_collection_exists,
@@ -1038,6 +1040,17 @@ DECL(sctx, zorba_export_xml,
      GENV_TYPESYSTEM.NONE_TYPE));
 
 //end collection functions
+
+
+// begin index functions
+#if 0
+DECL(sctx, zorba_create_index,
+     (createQName(ZORBA_INDEX_FN_NS, "fn-zorba-index", "create-index"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION
+      true,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+#endif
+
 
 // begin util functions
 DECL(sctx, zorba_schema_type,

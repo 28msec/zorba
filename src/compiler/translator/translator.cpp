@@ -2900,13 +2900,16 @@ void *begin_visit (const ModuleDecl& v) {
 
 void end_visit (const ModuleDecl& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+
   mod_pfx = v.get_prefix ();
   mod_ns = v.get_target_namespace ();
   if (mod_ns.empty ())
     ZORBA_ERROR_LOC (XQST0088, loc);
   if (mod_pfx == "xml" || mod_pfx == "xmlns")
     ZORBA_ERROR_LOC (XQST0070, loc);
+
   sctx_p->bind_ns (mod_pfx, mod_ns);
+
   bool found = minfo->mod_sctx_map.get (sctx_p->entity_retrieval_url (), export_sctx);
   ZORBA_ASSERT (found);
 }

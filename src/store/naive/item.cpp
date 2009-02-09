@@ -37,11 +37,27 @@ Item::getType( ) const
 }
 
 
+uint32_t Item::hash(long timezone, XQPCollator* coll) const
+{
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                        __FUNCTION__, getType()->getStringValue());
+  return 0;
+};
+
+
 bool Item::equals(const store::Item*, long timezone, XQPCollator* aCollation) const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return false;
+}
+
+
+long Item::compare(const store::Item*, long timezone, XQPCollator* aCollation) const
+{
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                        __FUNCTION__, getType()->getStringValue());
+  return 0;
 }
 
 
@@ -80,18 +96,6 @@ xqpStringStore* Item::getStringValueP() const
   return 0;
 }
 
-
-/**
- * Get a hash value computed from the value of this item.
- *
- * @return The hash value
- */
-uint32_t Item::hash(long timezone, XQPCollator* coll) const
-{
-  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                        __FUNCTION__, getType()->getStringValue());
-  return 0;
-};
 
 
 /* -------------------  Methods for AtomicValues ------------------------------ */

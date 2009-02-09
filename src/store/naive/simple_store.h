@@ -23,6 +23,7 @@
 
 #include "store/api/store.h"
 #include "store/api/collection.h"
+#include "store/api/index.h"
 
 #include "store/util/hashmap_stringp.h"
 
@@ -53,10 +54,13 @@ class StringPool;
 class QNamePool;
 class XmlLoader;
 class FastXmlLoader;
+class Index;
 
 typedef rchandle<XmlNode> XmlNode_t;
+
 typedef store::StringHashMap<XmlNode_t> DocumentSet;
 typedef store::StringHashMap<store::Collection_t> CollectionSet;
+typedef store::StringHashMap<store::Index_t> IndexSet;
 
 
 
@@ -102,6 +106,8 @@ protected:
 
   DocumentSet                   theDocuments;
   CollectionSet                 theCollections;
+  IndexSet                      theIndices;
+
   checked_vector<store::Item_t> theItemUris;
 
   SYNC_CODE(Lock                theGlobalLock;)
@@ -135,17 +141,38 @@ public:
 
   store::Item_t createUri();
 
-  store::Collection_t createCollection(xqpStringStore_t& uri);
+  store::Index_t createIndex(
+        const xqpStringStore_t& uri,
+        const store::Iterator_t& contextNodeIterator,
+        const std::vector<store::Iterator_t>& keyIterators,
+        const std::vector<XQPCollator*>& collators,
+        long timezone,
+        const store::IndexProperties& properties);
+
+  store::Collection_t createCollection(const xqpStringStore_t& uri);
+
   store::Collection_t createCollection();
+
   store::Collection_t getCollection(const xqpStringStore_t& uri);
+
   void deleteCollection(const xqpStringStore_t& uri);
+
   store::Iterator_t listCollectionUris();
 
-  store::Item_t loadDocument(const xqpStringStore_t& uri, std::istream& stream, bool storeDocument);
-  store::Item_t loadDocument(const xqpStringStore_t& uri, std::istream* stream, bool storeDocument);
+  store::Item_t loadDocument(
+        const xqpStringStore_t& uri,
+        std::istream& stream,
+        bool storeDocument);
+
+  store::Item_t loadDocument(
+        const xqpStringStore_t& uri,
+        std::istream* stream,
+        bool storeDocument);
 
   void addNode(const xqpStringStore* uri, const store::Item_t& node);
+
   store::Item_t getDocument(const xqpStringStore_t& uri);
+
   void deleteDocument(const xqpStringStore_t& uri);
 
   short compareNodes(store::Item* node1, store::Item* node2) const;

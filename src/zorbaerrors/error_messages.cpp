@@ -179,6 +179,8 @@ DEF_ERR_CODE(API0050_REST_ERROR_HEADER, API0050, "Invalid value passed for heade
 DEF_ERR_CODE(API0051_REST_ERROR_PAYLOAD, API0051, "Invalid value passed for payload parameter.");
 
 
+DEF_ERR_CODE(API0060_INDEX_ALREADY_EXISTS, API0060, "An index with URI {/s} exists already.")
+
 //
 // ZORBA-specific errors
 //

@@ -23,6 +23,9 @@
 namespace zorba { namespace store {
 
 
+class Index;
+
+
 class IteratorFactory
 {
 public:
@@ -38,6 +41,12 @@ public:
    * Create an iterator to iterate over the attributes of an element node.
    */
   virtual AttributesIterator* createAttributesIterator() = 0;
+
+
+  /**
+   * Create an iterator to iterate over the result of an index probe
+   */
+  virtual IndexProbeIterator* createIndexProbeIterator(const Index_t& index) = 0;
 
   /**
    * Create an iterator to iterate over the items of a temp sequence.
