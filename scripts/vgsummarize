@@ -18,7 +18,7 @@
 use strict;
 use warnings;
 
-my ($test, $newtest, $record, $firstrecord);
+my ($test, $record, $firstrecord, $intesthdr);
 my %records;  # things we have already seen
 
 my $except_regex;
@@ -31,11 +31,13 @@ if ($#ARGV >= 1 && $ARGV [0] eq "--except") {
 $record = "";
 while (<>) {
 
-    if (m@^test (.*)@) { $newtest = $1 }
-    elsif (m@^Query( \(Run [0-9]+\))?:$@ && $newtest) {
-        # new test confirmed
-        $test = $newtest; $newtest = "";
+    if (m@^ *[0-9]+/[0-9]+ +Memory Check ([^ ]+)@) {
+        $test = $1;
         $firstrecord = 1;
+        $intesthdr = 1;
+    } elsif ($intesthdr && m@^test (.*)@) {
+        $test = $1;
+        $intesthdr = 0;
     } elsif (m@==[0-9]+== (.*) bytes in ([0-9,]+) blocks (.*) in loss .*@) {
         $record eq "" || die ("Record not empty: $record");
         $record = "$1 bytes $2 blocks $3\n";
