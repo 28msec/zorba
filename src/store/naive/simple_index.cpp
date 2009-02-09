@@ -5,6 +5,7 @@
 #include "store/naive/simple_index.h"
 #include "store/naive/atomic_items.h"
 
+#include <algorithm>
 
 namespace zorba 
 { 
