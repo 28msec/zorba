@@ -54,7 +54,7 @@ bool namespace_context::findBinding(xqp_string aPrefix, xqp_string &aNamespace)
   {
     return m_parent->findBinding(aPrefix, aNamespace);
   } else {
-    return m_sctx->lookup_elem_namespace(aPrefix, aNamespace);
+    return m_sctx->lookup_elem_ns(aPrefix, aNamespace);
   }
 }
 

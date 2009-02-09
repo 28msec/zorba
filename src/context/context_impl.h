@@ -19,9 +19,10 @@
   bool found = context_value ("int:" #name, value);                     \
   assert (found);                                                     
 #else 
-# define GET_CONTEXT_VALUE(name, value)         \
+# define GET_CONTEXT_VALUE(name, value)                                 \
   context_value ("int:" #name, value); 
 #endif
+
 
 #define DECL_INT_PARAM( class, name, type )                             \
   type class::name () const {                                           \
@@ -36,8 +37,10 @@
     keymap.put ("int:" #name, val);                                     \
   }
 
+
 #define DECL_ENUM_PARAM( class, name ) \
   DECL_INT_PARAM( class, name, StaticContextConsts::name##_t )
+
 
 #define DECL_STR_PARAM_TRIGGER( class, name, err, trigger )    \
   xqp_string class::name () const {                            \

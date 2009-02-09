@@ -27,20 +27,23 @@ namespace zorba {
   class function;
 	class XQType;
   class StatelessExternalFunction;
-/*______________________________________________________________________
-|  
-|	XQuery 1.0 context
-|	[http://www.w3.org/TR/xquery/#id-xq-context-components]
-|_______________________________________________________________________*/
 
+
+/*******************************************************************************
+  Note: methods that are not defined here are defined in static_context.cpp
+********************************************************************************/
 class ZORBA_DLL_PUBLIC context : public SimpleRCObject
 {
 protected:
+  // Used for mapping (function name, arity) to function object. The function
+  // name is used first to probe the keymap, and the arity is used to probe
+  // the ArityFMap that is returned by the 1st probe.
   typedef std::map<int, rchandle<function> > ArityFMap;
+
   typedef union { 
     expr             * exprValue;
     function         * functionValue;
-    ArityFMap        * fmapValue;
+    ArityFMap        * fmapValue; 
     int                intValue;
     bool               boolValue;
 		const XQType     * typeValue; ///do manual ref counting on this
@@ -51,20 +54,34 @@ protected:
   
 protected:
 	context              * parent;
-	hashmap<ctx_value_t>   keymap;
-	hashmap<xqp_string>    str_keymap;
+	hashmap<ctx_value_t>   keymap;     // maps strings to ctx_values
+	hashmap<xqp_string>    str_keymap; // maps strings to strings
 
-  bool lookup_once (xqp_string key, xqp_string &val) const
-  { return str_keymap.get (key, val); }
+public:
+  context (context *_parent = NULL) : parent (_parent) {}
 
-  bool lookup_once2 (const char *key1, xqp_string key2, xqp_string &val) const
-  { return str_keymap.get2 (key1, key2, val); }
+	context *get_parent() const { return parent; }
+
+protected:
+  bool lookup_once (xqp_string key, xqp_string& val) const
+  { 
+    return str_keymap.get (key, val); 
+  }
+
+  bool lookup_once2 (const char *key1, xqp_string key2, xqp_string& val) const
+  {
+    return str_keymap.get2 (key1, key2, val); 
+  }
 
   bool lookup_once (xqp_string key, ctx_value_t &val) const
-  { return keymap.get (key, val); }
+  {
+    return keymap.get (key, val); 
+  }
 
-  bool lookup_once2 (const char *key1, xqp_string key2, ctx_value_t &val) const
-  { return keymap.get2 (key1, key2, val); }
+  bool lookup_once2 (const char *key1, xqp_string key2, ctx_value_t& val) const
+  {
+    return keymap.get2 (key1, key2, val); 
+  }
 
 	template<class V> bool context_value(xqp_string key, V &val) const
 	{
@@ -73,7 +90,8 @@ protected:
     else
       return parent == NULL ? false : parent->context_value (key, val);
 	}
-	template<class V> bool context_value2(const char *key1, xqp_string key2, V &val) const
+
+	template<class V> bool context_value2(const char *key1, xqp_string key2, V& val) const
 	{
 		if (lookup_once2 (key1, key2, val))
       return true;
@@ -81,63 +99,53 @@ protected:
       return parent == NULL ? false : parent->context_value2 (key1, key2, val);
 	}
 
-  StatelessExternalFunction*
-  lookup_stateless_function(xqp_string key) const {
-    ctx_value_t v;
-    return context_value (key, v) ? v.stateless_function : NULL;
-  }
-
-  expr *lookup_expr (xqp_string key) const {
+  expr* lookup_expr (xqp_string key) const 
+  {
     ctx_value_t val;
     return context_value (key, val) ? val.exprValue : NULL;
   }
-  expr *lookup_expr2 (const char *key1, xqp_string key2) const {
+
+  expr* lookup_expr2 (const char *key1, xqp_string key2) const 
+  {
     ctx_value_t val;
     return context_value2 (key1, key2, val) ? val.exprValue : NULL;
   }
 
-  // unlike other lookups, failure does not raise an assertion
-  function *lookup_func (xqp_string key) const {
+  function* lookup_func (xqp_string key) const 
+  {
     ctx_value_t val;
     return (context_value (key, val)) ? val.functionValue : NULL;
   }
-  function *lookup_func2 (xqp_string key1, xqp_string key2) const {
+
+  function* lookup_func2 (xqp_string key1, xqp_string key2) const 
+  {
     ctx_value_t val;
     return (context_value2 (key1.c_str(), key2, val)) ? val.functionValue : NULL;
   }
 
-  ArityFMap *lookup_fmap (xqp_string key) const {
+  ArityFMap* lookup_fmap (xqp_string key) const 
+  {
     ctx_value_t val;
     return (context_value (key, val)) ? val.fmapValue : NULL;
   }
-  function *lookup_fmap_func (xqp_string key, int arity) const;
 
-  // defined in in static_context.cpp
+  function* lookup_fmap_func (xqp_string key, int arity) const;
+
+  StatelessExternalFunction* lookup_stateless_function(xqp_string key) const 
+  {
+    ctx_value_t v;
+    return context_value (key, v) ? v.stateless_function : NULL;
+  }
+
   bool bind_expr (xqp_string key, expr *e);
   bool bind_func (xqp_string key, function *f);
   bool bind_expr2 (const char *key1, xqp_string key2, expr *e);
   bool bind_func2 (const char *key1, xqp_string key2, function *f);
+  bool bind_stateless_function(xqp_string key, StatelessExternalFunction* f);
 
-  bool bind_stateless_function(xqp_string key, StatelessExternalFunction* f) {
-    ctx_value_t v;
-    v.stateless_function = f;
-    return ! keymap.put (key, v);
-  }
+  void bind_str (xqp_string key, xqp_string v, XQUERY_ERROR err = XQP0019_INTERNAL_ERROR);
 
-  void bind_str (xqp_string key, xqp_string v, XQUERY_ERROR err = XQP0019_INTERNAL_ERROR) {
-    if (str_keymap.put (key, v))
-      if (err != MAX_ZORBA_ERROR_CODE)
-        ZORBA_ERROR(err);
-  }
-  void bind_str2 (const char *key1, xqp_string key2, xqp_string v, XQUERY_ERROR err = XQP0019_INTERNAL_ERROR) {
-    if (str_keymap.put2 (key1, key2, v))
-      if (err != MAX_ZORBA_ERROR_CODE)
-        ZORBA_ERROR(err);
-  }
-
-public:
-  context (context *_parent = NULL) : parent (_parent) {}
-	context *get_parent() const { return parent; }
+  void bind_str2 (const char *key1, xqp_string key2, xqp_string v, XQUERY_ERROR err = XQP0019_INTERNAL_ERROR);
 };
 
 

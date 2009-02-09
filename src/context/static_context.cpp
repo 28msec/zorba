@@ -53,6 +53,100 @@ namespace zorba {
 
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
+
+/*******************************************************************************
+  Class context methods
+********************************************************************************/
+function* context::lookup_fmap_func (xqp_string key, int arity) const 
+{
+  ArityFMap *fmap = lookup_fmap (key);
+  if (fmap == NULL)
+    return NULL;
+  ArityFMap::iterator i = fmap->find (arity);
+  return i == fmap->end () ? NULL : (*i).second;
+}
+
+
+void context::bind_str (
+    xqp_string key,
+    xqp_string v,
+    XQUERY_ERROR err) 
+{
+  if (str_keymap.put (key, v))
+    if (err != MAX_ZORBA_ERROR_CODE)
+      ZORBA_ERROR(err);
+}
+
+
+void context::bind_str2 (
+    const char *key1,
+    xqp_string key2,
+    xqp_string v,
+    XQUERY_ERROR err) 
+{
+  if (str_keymap.put2 (key1, key2, v))
+    if (err != MAX_ZORBA_ERROR_CODE)
+      ZORBA_ERROR(err);
+}
+
+
+bool context::bind_expr (xqp_string key, expr *e) 
+{
+  ctx_value_t v;
+  v.exprValue = e;
+  if (keymap.put (key, v, false))
+    return false;
+  RCHelper::addReference (e);
+  return true;
+}
+
+
+bool context::bind_expr2 (const char *key1, xqp_string key2, expr *e) 
+{
+  ctx_value_t v;
+  v.exprValue = e;
+  if (keymap.put2 (key1, key2, v, false))
+    return false;
+  RCHelper::addReference (e);
+  return true;
+}
+
+
+bool context::bind_func (xqp_string key, function *f) 
+{
+  ctx_value_t v;
+  v.functionValue = f;
+  if (keymap.put (key, v, false))
+    return false;
+  RCHelper::addReference (f);
+  return true;
+}
+
+
+bool context::bind_func2 (const char *key1, xqp_string key2, function *f) 
+{
+  ctx_value_t v;
+  v.functionValue = f;
+  if (keymap.put2 (key1, key2, v, false))
+    return false;
+  RCHelper::addReference (f);
+  return true;
+}
+
+
+bool context::bind_stateless_function(xqp_string key, StatelessExternalFunction* f) 
+{
+  ctx_value_t v;
+  v.stateless_function = f;
+  if (keymap.put (key, v, false))
+    return false;
+  return true;
+}
+
+
+/*******************************************************************************
+  Constructors/Destructor
+********************************************************************************/
 static_context::static_context()
   :
   context(NULL),
@@ -90,7 +184,7 @@ static_context::~static_context()
   const char    *keybuff;
   
   //keybuff[sizeof(keybuff)-1] = 0;
-  for(it = keymap.begin();it!=keymap.end();it++)
+  for(it = keymap.begin(); it != keymap.end(); it++)
   {
     ///it is an entry
     //keymap.getentryKey(*it, keybuff, sizeof(keybuff)-1);
@@ -117,145 +211,111 @@ static_context::~static_context()
     RCHelper::removeReference (parent);
 }
 
-bool context::bind_expr (xqp_string key, expr *e) {
-  ctx_value_t v;
-  v.exprValue = e;
-  if (keymap.put (key, v, false))
-    return false;
-  RCHelper::addReference (e);
-  return true;
-}
 
-bool context::bind_func (xqp_string key, function *f) {
-  ctx_value_t v;
-  v.functionValue = f;
-  if (keymap.put (key, v, false))
-    return false;
-  RCHelper::addReference (f);
-  return true;
-}
+/*******************************************************************************
 
-bool context::bind_expr2 (const char *key1, xqp_string key2, expr *e) {
-  ctx_value_t v;
-  v.exprValue = e;
-  if (keymap.put2 (key1, key2, v, false))
-    return false;
-  RCHelper::addReference (e);
-  return true;
-}
-
-bool context::bind_func2 (const char *key1, xqp_string key2, function *f) {
-  ctx_value_t v;
-  v.functionValue = f;
-  if (keymap.put2 (key1, key2, v, false))
-    return false;
-  RCHelper::addReference (f);
-  return true;
-}
-
-function *context::lookup_fmap_func (xqp_string key, int arity) const {
-  ArityFMap *fmap = lookup_fmap (key);
-  if (fmap == NULL)
-    return NULL;
-  ArityFMap::iterator i = fmap->find (arity);
-  return i == fmap->end () ? NULL : (*i).second;
-}
-
-bool static_context::bind_fn (const store::Item *qname, function *f, int arity, bool allow_override) {
-  xqp_string key = fn_internal_key () + qname_internal_key (qname);
-  bool existed = lookup_fmap_func (key, arity) != NULL;
-  if (! allow_override && existed)
-    return false;
-  ctx_value_t v;
-  ArityFMap *fmap = NULL;
-  bool newMap = ! lookup_once (key, v);
-  fmap = newMap ? new ArityFMap : v.fmapValue;
-  (*fmap) [arity] = f;
-  if (newMap) {
-    v.fmapValue = fmap;
-    keymap.put (key, v, false);
-  }
-  return ! existed;
-}
-
-
-void static_context::find_functions_int (xqp_string key,
-                                         std::vector<function *>& functions,
-                                         set<int> &found) const
-{
-  ArityFMap *fmap = lookup_fmap (key);
-  for (ArityFMap::iterator i = fmap->begin (); i != fmap->end (); i++) {
-    int arity = (*i).first;
-    if (found.find (arity) == found.end ()) {
-      found.insert (arity);
-      functions.push_back ((*i).second);
-    }
-  }
-  if (parent != NULL)
-    static_cast<static_context *> (parent)->find_functions_int (key, functions, found);
-}
-
-void static_context::find_functions (const store::Item *qname,
-                                     std::vector<function *>& functions) const
-{
-  xqp_string key = fn_internal_key () + qname_internal_key (qname);
-  set<int> found;
-  find_functions_int (key, functions, found);
-}
-
-
-DECL_INT_PARAM (static_context, revalidation_enabled, bool)
-
-DECL_ENUM_PARAM (static_context, construction_mode)
-DECL_ENUM_PARAM (static_context, order_empty_mode)
-DECL_ENUM_PARAM (static_context, boundary_space_mode)
-DECL_ENUM_PARAM (static_context, inherit_mode)
-DECL_ENUM_PARAM (static_context, preserve_mode)
-DECL_ENUM_PARAM (static_context, xpath1_0compatib_mode)
-DECL_ENUM_PARAM (static_context, ordering_mode)
-DECL_ENUM_PARAM (static_context, validation_mode)
-
-// DECL_STR_PARAM (static_context, baseuri)
-// DECL_STR_PARAM (static_context, default_collation)
-DECL_STR_PARAM (static_context, default_function_namespace, XQST0066)
-DECL_STR_PARAM (static_context, default_elem_type_ns, XQST0066)
-DECL_STR_PARAM (static_context, current_absolute_baseuri, MAX_ZORBA_ERROR_CODE)
-DECL_STR_PARAM_TRIGGER (static_context, encapsulating_entity_baseuri, MAX_ZORBA_ERROR_CODE, set_current_absolute_baseuri (""))
-//DECL_STR_PARAM_TRIGGER (static_context, entity_retrieval_url, MAX_ZORBA_ERROR_CODE, set_current_absolute_baseuri (""))
-
-
-xqp_string static_context::entity_retrieval_url () const 
-{ 
-  xqp_string val; 
-  GET_CONTEXT_VALUE (entity_retrieval_url, val); 
-  return val;                   
-}                               
-                                  
-void static_context::set_entity_retrieval_url(xqp_string val) 
-{ 
-  bind_str ("int:entity_retrieval_url", val, MAX_ZORBA_ERROR_CODE);      
-  set_current_absolute_baseuri ("");
-}
-
-
+********************************************************************************/
 void static_context::set_typemanager(rchandle<TypeManager> typemgr_)
 {
   typemgr = typemgr_;
 }
 
 
-pair<xqp_string, xqp_string> parse_qname (xqp_string qname)
-{
-  std::string::size_type n = static_cast<std::string> (qname).find (':');
-  return (n == string::npos)
-    ? pair<xqp_string, xqp_string> ("", qname)
-    : pair<xqp_string, xqp_string> (qname.substr (0, n), qname.substr (n+1));
-}
-  
+/*******************************************************************************
+  Methods for setting and retrieving certain "simple" context properties
+********************************************************************************/
+DECL_ENUM_PARAM (static_context, xpath1_0compatib_mode)
+DECL_ENUM_PARAM (static_context, construction_mode)
+DECL_ENUM_PARAM (static_context, order_empty_mode)
+DECL_ENUM_PARAM (static_context, boundary_space_mode)
+DECL_ENUM_PARAM (static_context, inherit_mode)
+DECL_ENUM_PARAM (static_context, preserve_mode)
+DECL_ENUM_PARAM (static_context, ordering_mode)
+DECL_ENUM_PARAM (static_context, validation_mode)
 
-xqp_string qname_internal_key2 (xqp_string ns, xqp_string local)
+DECL_INT_PARAM (static_context, revalidation_enabled, bool)
+
+DECL_STR_PARAM (static_context, default_function_namespace, XQST0066)
+DECL_STR_PARAM (static_context, default_elem_type_ns, XQST0066)
+
+DECL_STR_PARAM (static_context, current_absolute_baseuri, MAX_ZORBA_ERROR_CODE)
+
+DECL_STR_PARAM_TRIGGER (static_context, encapsulating_entity_baseuri, MAX_ZORBA_ERROR_CODE, set_current_absolute_baseuri (""))
+
+
+/*******************************************************************************
+  Bind the given prefix to the given namaspace uri. The binding is stored in
+  "this". If there is already in "this" a binding for the prefix, raise error.
+********************************************************************************/
+void static_context::bind_ns (xqp_string prefix, xqp_string ns, const XQUERY_ERROR& err)
 {
-  return xqpString::concat(local, ":", ns);
+  bind_str2 ("ns:", prefix, ns, err);
+}
+
+
+/*******************************************************************************
+
+  Methods that perform Prefix-to-Namespace resolution.
+
+  The following method searches the static-context tree, starting from "this"
+  and moving upwards, looking for the 1st mapping between the given prefix and a
+  namespace uri. It return false if no such mapping is found, or the ns uri in the
+  mapping is empty. Otherwise, it returns true and the associated uri.
+
+********************************************************************************/
+bool static_context::lookup_ns (xqp_string prefix, xqp_string &ns) const 
+{
+  return context_value2 ("ns:", prefix, ns) && ! ns.empty();
+}
+
+
+xqp_string static_context::lookup_ns (xqp_string prefix, const XQUERY_ERROR& err) const 
+{
+  xqp_string ns;
+  if (! lookup_ns (prefix, ns)) {
+    if (err != MAX_ZORBA_ERROR_CODE)
+      ZORBA_ERROR_PARAM(err, prefix, "");
+  }
+  return ns;
+}
+
+
+xqp_string static_context::lookup_ns (xqp_string prefix, const QueryLoc& loc, const XQUERY_ERROR& err) const 
+{
+  xqp_string ns;
+  if (! lookup_ns (prefix, ns)) {
+    if (err != MAX_ZORBA_ERROR_CODE)
+      ZORBA_ERROR_LOC_PARAM(err, loc, prefix, "");
+  }
+  return ns;
+}
+
+
+xqp_string static_context::lookup_ns_or_default (xqp_string prefix, xqp_string default_ns) const 
+{
+  xqp_string ns;
+  if (! lookup_ns (prefix, ns)) {
+    return default_ns;
+  }
+  return ns;
+}
+
+
+bool static_context::lookup_elem_ns(const xqp_string pfx, xqp_string& ns) const 
+{
+  if (pfx.empty())
+  {
+    ns = default_elem_type_ns(); 
+
+    if (ns.empty())
+      return false;
+    else
+      return true;
+  }
+  else 
+  {
+    return lookup_ns(pfx, ns);
+  }
 }
 
 
@@ -279,45 +339,167 @@ store::Item_t static_context::lookup_qname(
 }
 
 
-store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname, const QueryLoc& loc) const
+store::Item_t static_context::lookup_qname (
+    xqp_string default_ns,
+    xqp_string qname,
+    const QueryLoc& loc) const
 {
   pair<xqp_string, xqp_string> rqname = parse_qname (qname);
-  return lookup_qname (default_ns, rqname.first, rqname.second, loc);
+  return lookup_qname(default_ns, rqname.first, rqname.second, loc);
 }
 
 
-  xqp_string static_context::qname_internal_key (const store::Item *qname) {
-    return qname_internal_key2 (qname->getNamespace (), qname->getLocalName ());
-  }
-
-  pair<xqp_string /* local */, xqp_string /* uri */> decode_qname_internal_key (xqp_string key) {
-    pair<xqp_string, xqp_string> result;
-    string skey (key);
-    int pos = skey.find (':');
-    result.first = key.substr (0, pos);
-    result.second = key.substr (pos + 1);
-    return result;
-  }
-
-  xqp_string static_context::qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const {
-    return qname_internal_key2(prefix.empty () ? default_ns : lookup_ns (prefix),
-                               local);
-  }
-
-  xqp_string static_context::qname_internal_key (xqp_string default_ns, xqp_string qname) const {
-    pair<xqp_string, xqp_string> rqname = parse_qname (qname);
-    return qname_internal_key (default_ns, rqname.first, rqname.second);
-  }
-
-  xqp_string static_context::fn_internal_key () {
-    return "fmap:";
-  }
-
-function *static_context::lookup_fn_int (xqp_string key, int arity) const
+store::Item_t static_context::lookup_fn_qname (xqp_string pfx, xqp_string local, const QueryLoc& loc) const 
 {
-  function *f = lookup_fmap_func (fn_internal_key () + key, arity);
+  store::Item_t ret;
+  try 
+  {
+    ret = lookup_qname (default_function_namespace (), pfx, local, loc);
+  }
+  catch (error::ZorbaError& e) 
+  {
+    // rethrow with current location
+    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+  }
+  return ret;
+}
+
+
+/*******************************************************************************
+
+  Methods to create normalized qname stings from prefix and local-name pairs, or
+  qname items. Normalized qname stings are strings of the form:
+
+  <local name>:<namespace uri>
+
+********************************************************************************/
+xqp_string qname_internal_key2 (xqp_string ns, xqp_string local)
+{
+  return xqpString::concat(local, ":", ns);
+}
+
+
+pair<xqp_string, xqp_string> parse_qname (xqp_string qname)
+{
+  std::string::size_type n = static_cast<std::string> (qname).find (':');
+  return (n == string::npos)
+    ? pair<xqp_string, xqp_string> ("", qname)
+    : pair<xqp_string, xqp_string> (qname.substr (0, n), qname.substr (n+1));
+}
+
+
+xqp_string static_context::qname_internal_key (const store::Item *qname) 
+{
+    return qname_internal_key2 (qname->getNamespace (), qname->getLocalName ());
+}
+
+
+xqp_string static_context::qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const 
+{
+  return qname_internal_key2(prefix.empty () ? default_ns : lookup_ns (prefix),
+                             local);
+}
+
+
+xqp_string static_context::qname_internal_key (xqp_string default_ns, xqp_string qname) const 
+{
+  pair<xqp_string, xqp_string> rqname = parse_qname(qname);
+  return qname_internal_key (default_ns, rqname.first, rqname.second);
+}
+
+
+pair<xqp_string, xqp_string> decode_qname_internal_key (xqp_string key) 
+{
+  pair<xqp_string, xqp_string> result;
+  string skey (key);
+  int pos = skey.find (':');
+  result.first = key.substr (0, pos);
+  result.second = key.substr (pos + 1);
+  return result;
+}
+
+
+/*******************************************************************************
+
+  Function QName, Arity --> Function Object
+
+********************************************************************************/
+xqp_string static_context::fn_internal_key () 
+{
+  return "fmap:";
+}
+
+
+bool static_context::bind_fn (
+    const store::Item *qname,
+    function *f,
+    int arity,
+    bool allow_override) 
+{
+  xqp_string key = fn_internal_key () + qname_internal_key (qname);
+
+  bool existed = lookup_fmap_func (key, arity) != NULL;
+
+  if (! allow_override && existed)
+    return false;
+
+  ctx_value_t v;
+  ArityFMap *fmap = NULL;
+  bool newMap = ! lookup_once (key, v);
+
+  fmap = newMap ? new ArityFMap : v.fmapValue;
+
+  (*fmap) [arity] = f;
+
+  if (newMap) 
+  {
+    v.fmapValue = fmap;
+    keymap.put (key, v, false);
+  }
+
+  return ! existed;
+}
+
+
+function* static_context::lookup_builtin_fn (xqp_string local, int arity)
+{
+  function* f = GENV.getRootStaticContext().
+                lookup_fn_int (qname_internal_key2 (XQUERY_FN_NS, local), arity);
+
+  if (f == NULL)
+    ZORBA_NOT_IMPLEMENTED ("built-in `" + local + "/" + to_string (arity) + "'");
+  return f;
+}
+
+
+function* static_context::lookup_fn (
+    xqp_string prefix,
+    xqp_string local,
+    int arity) const 
+{
+  return lookup_fn_int (qname_internal_key (default_function_namespace (),
+                                            prefix,
+                                            local),
+                        arity);
+}
+
+
+function* static_context::lookup_resolved_fn (
+    xqp_string ns,
+    xqp_string local,
+    int arity) const 
+{
+  return lookup_fn_int (qname_internal_key2 (ns, local), arity);
+}
+
+
+function* static_context::lookup_fn_int (xqp_string key, int arity) const
+{
+  function* f = lookup_fmap_func (fn_internal_key() + key, arity);
   if (f != NULL)
+  {
     return f;
+  }
   else
   {
     f = lookup_fmap_func (fn_internal_key () + key, VARIADIC_SIG_SIZE);
@@ -325,221 +507,184 @@ function *static_context::lookup_fn_int (xqp_string key, int arity) const
   }
 }
 
-function *static_context::lookup_resolved_fn (xqp_string ns, xqp_string local, int arity) const 
+
+void static_context::find_functions (
+    const store::Item* qname,
+    std::vector<function *>& functions) const
 {
-  return lookup_fn_int (qname_internal_key2 (ns, local), arity);
+  xqp_string key = fn_internal_key () + qname_internal_key (qname);
+  set<int> found;
+  find_functions_int (key, functions, found);
 }
 
-function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int arity) const 
+
+void static_context::find_functions_int (
+    xqp_string key,
+    std::vector<function *>& functions,
+    set<int> &found) const
 {
-  return lookup_fn_int (qname_internal_key (default_function_namespace (),
-                                            prefix, local),
-                        arity);
-}
+  ArityFMap *fmap = lookup_fmap(key);
 
-  bool static_context::lookup_ns (xqp_string prefix, xqp_string &ns) const {
-    return context_value2 ("ns:", prefix, ns) && ! ns.empty();
-  }
+  for (ArityFMap::iterator i = fmap->begin (); i != fmap->end (); i++) 
+  {
+    int arity = (*i).first;
 
-  xqp_string static_context::lookup_ns (xqp_string prefix, const XQUERY_ERROR& err) const {
-    xqp_string ns;
-    if (! lookup_ns (prefix, ns)) {
-      if (err != MAX_ZORBA_ERROR_CODE)
-        ZORBA_ERROR_PARAM(err, prefix, "");
-    }
-    return ns;
-  }
-
-  xqp_string static_context::lookup_ns (xqp_string prefix, const QueryLoc& loc, const XQUERY_ERROR& err) const {
-    xqp_string ns;
-    if (! lookup_ns (prefix, ns)) {
-      if (err != MAX_ZORBA_ERROR_CODE)
-        ZORBA_ERROR_LOC_PARAM(err, loc, prefix, "");
-    }
-    return ns;
-  }
-
-  xqp_string static_context::lookup_ns_or_default (xqp_string prefix, xqp_string default_ns) const {
-    xqp_string ns;
-    if (! lookup_ns (prefix, ns)) {
-      return default_ns;
-    }
-    return ns;
-  }
-
-  bool static_context::lookup_elem_namespace(const xqp_string pfx, xqp_string& ns) const {
-    if (pfx.empty())
+    if (found.find(arity) == found.end ()) 
     {
-      ns = default_elem_type_ns(); 
-    } else {
-      if (!context_value2("ns:", pfx, ns))
-      {
-        return false;
-      }
+      found.insert (arity);
+      functions.push_back ((*i).second);
     }
-    if (ns.empty())
-      return false;
-    else
-      return true;
   }
 
-  store::Item_t static_context::lookup_fn_qname (xqp_string pfx, xqp_string local, const QueryLoc& loc) const {
-    store::Item_t ret;
-    try {
-      ret = lookup_qname (default_function_namespace (), pfx, local, loc);
-    } catch (error::ZorbaError& e) {// rethrow with current location
-      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-    }
-    return ret;
-  }
+  if (parent != NULL)
+    static_cast<static_context *>(parent)->find_functions_int (key, functions, found);
+}
 
-  void static_context::bind_ns (xqp_string prefix, xqp_string ns, const XQUERY_ERROR& err)
-  {
-    bind_str2 ("ns:", prefix, ns, err);
-  }
 
-  function *static_context::lookup_builtin_fn (xqp_string local, int arity)
-  {
-    function *f = GENV.getRootStaticContext().lookup_fn_int (qname_internal_key2 (XQUERY_FN_NS, local), arity);
-    if (f == NULL)
-      ZORBA_NOT_IMPLEMENTED ("built-in `" + local + "/" + to_string (arity) + "'");
-    return f;
-  }
+bool static_context::bind_stateless_external_function(
+    StatelessExternalFunction* aExternalFunction) 
+{
+  xqpString lLocalName = Unmarshaller::getInternalString(aExternalFunction->getLocalName());
+  xqpString lURI = Unmarshaller::getInternalString(aExternalFunction->getURI());
 
-  xqtref_t static_context::lookup_type( xqp_string key)
-  {
-    ctx_value_t val;
-    ZORBA_ASSERT (context_value (key, val));
-    return val.typeValue;
-  }
-  xqtref_t static_context::lookup_type2( const char *key1, xqp_string key2)
-  {
-    ctx_value_t val;
-    ZORBA_ASSERT (context_value2 (key1, key2, val));
-    return val.typeValue;
-  }
+  return bind_stateless_function(xqpString::concat(lLocalName,":",lURI), aExternalFunction);
+}
 
-  void  static_context::bind_type(xqp_string key, xqtref_t t)
-  {
-    ctx_value_t v;
-    v.typeValue = &*t;
-    keymap.put (key, v);
-    RCHelper::addReference (const_cast<XQType *> (t.getp ()));
-  }
 
-  void static_context::add_variable_type(
+StatelessExternalFunction * static_context::lookup_stateless_external_function(
+    xqp_string aPrefix,
+    xqp_string aLocalName)
+{
+  return lookup_stateless_function(qname_internal_key(default_function_namespace(),
+                                                      aPrefix,
+                                                      aLocalName)); 
+}
+
+
+/*******************************************************************************
+  
+  Type Management : Entity Name --> Type 
+  where entity may be variable, the context item, function, document, collection
+
+********************************************************************************/
+void static_context::bind_type(xqp_string key, xqtref_t t)
+{
+  ctx_value_t v;
+  v.typeValue = &*t;
+  keymap.put (key, v);
+  RCHelper::addReference (const_cast<XQType *> (t.getp ()));
+}
+
+
+xqtref_t static_context::lookup_type( xqp_string key)
+{
+  ctx_value_t val;
+  ZORBA_ASSERT(context_value (key, val));
+  return val.typeValue;
+}
+
+
+xqtref_t static_context::lookup_type2( const char *key1, xqp_string key2)
+{
+  ctx_value_t val;
+  ZORBA_ASSERT(context_value2 (key1, key2, val));
+  return val.typeValue;
+}
+
+
+void static_context::add_variable_type(
     const xqp_string var_name, 
     xqtref_t var_type)
-  {
-    bind_type("type:var:" + qname_internal_key("", var_name), var_type);
-  }
+{
+  bind_type("type:var:" + qname_internal_key("", var_name), var_type);
+}
 
-  xqtref_t  static_context::get_variable_type(
-    store::Item *var_name)
-  {
-    return lookup_type2( "type:var:", qname_internal_key("",
-                                                         var_name->getPrefix(),
-                                                         var_name->getLocalName()));
-  }
 
-  void static_context::set_context_item_static_type(xqtref_t t)
-  {
-    bind_type("type:context:", t);
-  }
+xqtref_t static_context::get_variable_type(store::Item *var_name)
+{
+  return lookup_type2("type:var:", qname_internal_key("",
+                                                      var_name->getPrefix(),
+                                                      var_name->getLocalName()));
+}
 
-  xqtref_t    static_context::context_item_static_type()
-  {
-    return lookup_type("type:context:");
-  }
 
-  void static_context::set_default_collection_type(xqtref_t t)
-  {
-    bind_type("type:defcollection:", t);
-  }
+void static_context::set_context_item_static_type(xqtref_t t)
+{
+  bind_type("type:context:", t);
+}
 
-  xqtref_t    static_context::default_collection_type()
-  {
-    return lookup_type("type:defcollection:");
-  }
+
+xqtref_t static_context::context_item_static_type()
+{
+  return lookup_type("type:context:");
+}
+
 
 void static_context::set_function_type(const store::Item *qname, xqtref_t t)
 {
-  bind_type("type:fun:" + qname_internal_key( default_function_namespace(),
-                                            qname->getPrefix(),
-                                            qname->getLocalName()),
+  bind_type("type:fun:" + qname_internal_key(default_function_namespace(),
+                                             qname->getPrefix(),
+                                             qname->getLocalName()),
             t);
 }
 
-xqtref_t static_context::get_function_type(
-  const store::Item_t qname) 
+
+xqtref_t static_context::get_function_type(const store::Item_t qname) 
 {
   return lookup_type2("type:fun:", qname_internal_key(default_function_namespace(),
                                                       qname->getPrefix(),
                                                       qname->getLocalName()));
 }
 
+
 void static_context::set_document_type(xqp_string docURI, xqtref_t t)
 {
   bind_type("type:doc:" + docURI, t);
 }
 
-xqtref_t static_context::get_document_type(
-  const xqp_string docURI) 
+
+xqtref_t static_context::get_document_type(const xqp_string docURI) 
 {
   return lookup_type2("type:doc:", docURI);
-
 }
+
+
+void static_context::set_default_collection_type(xqtref_t t)
+{
+  bind_type("type:defcollection:", t);
+}
+
+
+xqtref_t    static_context::default_collection_type()
+{
+  return lookup_type("type:defcollection:");
+}
+
 
 void static_context::set_collection_type(xqp_string collURI, xqtref_t t)
 {
   bind_type("type:collection:" + collURI, t);
 }
 
-xqtref_t static_context::get_collection_type(
-  const xqp_string collURI) 
+
+xqtref_t static_context::get_collection_type(const xqp_string collURI) 
 {
   return lookup_type2("type:collection:", collURI);
 }
 
-/**
- * collation management
- */
-void 
-static_context::add_collation(const xqp_string& aURI)
+
+/*******************************************************************************
+
+  collation management
+
+********************************************************************************/
+bool static_context::has_collation_uri(const xqp_string& aURI) const
 {
-  xqp_string lURI = resolve_relative_uri(aURI, xqp_string());
-  XQPCollator* lCollator = CollationFactory::createCollator(lURI);
-  if (lCollator == 0)
-  {
-    ZORBA_ERROR_DESC( XQST0038, "invalid collation uri");
-  }
-  else
-  {
-    delete lCollator;
-    bind_collation(lURI);
-  }
+  return lookup_collation(aURI);
 }
 
-CollationCache*
-static_context::get_collation_cache() 
-{
-  return new CollationCache(this);
-}
 
-void
-static_context::release_collation_cache(CollationCache* aCache)
-{
-  delete aCache;
-}
-
-XQPCollator*
-static_context::create_collator(const xqp_string& aURI)
-{
-  return CollationFactory::createCollator(aURI); 
-}
-
-xqp_string 
-static_context::default_collation_uri() const
+xqp_string static_context::default_collation_uri() const
 {
   xqp_string lURI;
   if (!lookup_default_collation(lURI))
@@ -549,17 +694,13 @@ static_context::default_collation_uri() const
   return lURI;
 }
 
-bool
-static_context::has_collation_uri(const xqp_string& aURI) const
-{
-  return lookup_collation(aURI);
-}
 
-void 
-static_context::set_default_collation_uri(const xqp_string& aURI)
+void static_context::set_default_collation_uri(const xqp_string& aURI)
 {
   xqp_string lURI = resolve_relative_uri(aURI, xqp_string());
+
   XQPCollator* lCollator = CollationFactory::createCollator(lURI);
+
   if (lCollator == 0)
   {
     ZORBA_ERROR_DESC_OSS( XQST0038, "invalid collation uri " << lURI);
@@ -572,27 +713,80 @@ static_context::set_default_collation_uri(const xqp_string& aURI)
 }
 
 
-xqp_string static_context::baseuri () const 
+void static_context::add_collation(const xqp_string& aURI)
 {
-  xqp_string val;                                        
-  if(!context_value ("int:" "from_prolog_baseuri", val))  // if not found val remains ""
+  xqp_string lURI = resolve_relative_uri(aURI, xqp_string());
+
+  XQPCollator* lCollator = CollationFactory::createCollator(lURI);
+
+  if (lCollator == 0)
   {
-    context_value("int:" "baseuri", val);
+    ZORBA_ERROR_DESC( XQST0038, "invalid collation uri");
   }
-  return val;
-}
-
-void static_context::set_baseuri (xqp_string val, bool from_prolog) 
-{
-  if (from_prolog)
-    // throw XQST0032 if from_prolog_baseuri is already defined
-    bind_str ("int:" "from_prolog_baseuri", val, XQST0032);
   else
-    // overwite existing value of baseuri, if any
-    str_keymap.put ("int:" "baseuri", val);
-
-  compute_current_absolute_baseuri ();
+  {
+    delete lCollator;
+    bind_collation(lURI);
+  }
 }
+
+
+XQPCollator* static_context::create_collator(const xqp_string& aURI)
+{
+  return CollationFactory::createCollator(aURI); 
+}
+
+
+CollationCache* static_context::get_collation_cache() 
+{
+  return new CollationCache(this);
+}
+
+
+void static_context::release_collation_cache(CollationCache* aCache)
+{
+  delete aCache;
+}
+
+
+/*******************************************************************************
+  Base Uri Computation
+
+  int:from_prolog_baseuri          --> uri
+  int:baseuri                      --> uri
+  int:encapsulating_entity_baseuri --> uri
+  int:entity_retrieval_url         --> uri
+
+  int:current_absolute_baseuri     --> uri
+
+  The from_prolog_baseuri is the one declared in the prolog. The baseuri is set
+  explicitly from the C++/C api. If both the from_prolog_baseuri and the baseuri
+  are set, the from_prolog_baseuri hides the baseuri.
+
+  The entity_retrieval_url is set by default to the name of file containing the
+  query we are running. It may also be set explicitly from the C++/C api. 
+********************************************************************************/
+xqp_string static_context::final_baseuri () 
+{
+  // cached value
+  string abs_base_uri = current_absolute_baseuri();
+
+  if(abs_base_uri.empty()) 
+  {
+    compute_current_absolute_baseuri();
+    abs_base_uri = current_absolute_baseuri();
+  }
+
+  // won't happen -- we default to a non-empty URI
+  if(abs_base_uri.empty()) 
+  {
+    ZORBA_ERROR_DESC( XPST0001, "empty base URI");
+    return "";
+  }
+  
+  return abs_base_uri;
+}
+
 
 void static_context::compute_current_absolute_baseuri()
 {
@@ -607,25 +801,34 @@ void static_context::compute_current_absolute_baseuri()
 
   prolog_baseuri = baseuri();
 
-  if (!prolog_baseuri.empty()) {
-    try {
+  if (!prolog_baseuri.empty()) 
+  {
+    try 
+    {
       URI lCheckValid(prolog_baseuri);
       // is already absolute baseuri
       set_current_absolute_baseuri(lCheckValid.toString());
       return; // valid (absolute) uri
-    } catch (error::ZorbaError&) {
-//       throw e;
-    } // assume it's relative and go on
+    }
+    catch (error::ZorbaError&) 
+    {
+      // assume it's relative and go on
+    }
   }
-  if (!prolog_baseuri.empty()) {
+
+  if (!prolog_baseuri.empty()) 
+  {
     /// is relative, needs to be resolved
     ee_baseuri = encapsulating_entity_baseuri();
-    if(!ee_baseuri.empty()) {
+    if(!ee_baseuri.empty()) 
+    {
       set_current_absolute_baseuri(make_absolute_uri(prolog_baseuri, ee_baseuri));
       return;
     }
+
     loaded_uri = entity_retrieval_url();
-    if(!loaded_uri.empty()) {
+    if(!loaded_uri.empty()) 
+    {
       set_current_absolute_baseuri(make_absolute_uri(prolog_baseuri, loaded_uri));
       return;
     }
@@ -635,51 +838,97 @@ void static_context::compute_current_absolute_baseuri()
   }
 
   ee_baseuri = encapsulating_entity_baseuri();
-  if(!ee_baseuri.empty()) {
+  if(!ee_baseuri.empty()) 
+  {
     set_current_absolute_baseuri(ee_baseuri);
     return;
   }
+
   loaded_uri = entity_retrieval_url();
-  if(!loaded_uri.empty()) {
+  if(!loaded_uri.empty()) 
+  {
     set_current_absolute_baseuri(loaded_uri);
     return;
   }
+
   set_current_absolute_baseuri (implementation_baseuri());
   return;
 }
 
-xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri, bool validate) {
+
+xqp_string static_context::baseuri () const 
+{
+  xqp_string val;                                        
+  if(!context_value ("int:" "from_prolog_baseuri", val))  // if not found val remains ""
+  {
+    context_value("int:" "baseuri", val);
+  }
+  return val;
+}
+
+
+void static_context::set_baseuri (xqp_string val, bool from_prolog) 
+{
+  if (from_prolog)
+    // throw XQST0032 if from_prolog_baseuri is already defined
+    bind_str ("int:" "from_prolog_baseuri", val, XQST0032);
+  else
+    // overwite existing value of baseuri, if any
+    str_keymap.put ("int:" "baseuri", val);
+
+  compute_current_absolute_baseuri ();
+}
+
+
+xqp_string static_context::entity_retrieval_url () const 
+{ 
+  xqp_string val; 
+  GET_CONTEXT_VALUE (entity_retrieval_url, val); 
+  return val;                   
+}                               
+                  
+                
+void static_context::set_entity_retrieval_url(xqp_string val) 
+{ 
+  bind_str ("int:entity_retrieval_url", val, MAX_ZORBA_ERROR_CODE);      
+  set_current_absolute_baseuri ("");
+}
+
+
+xqp_string static_context::resolve_relative_uri (
+    xqp_string uri,
+    xqp_string abs_base_uri,
+    bool validate) 
+{
+  return make_absolute_uri (uri,
+                            abs_base_uri.empty () ? final_baseuri () : abs_base_uri,
+                            validate);
+}
+
+
+xqp_string static_context::make_absolute_uri(
+    xqp_string uri,
+    xqp_string base_uri,
+    bool validate) 
+{
   URI resolved_uri(base_uri, uri, validate);
   return resolved_uri.toString();
 }
 
-xqp_string static_context::final_baseuri () {
-  // cached value
-  string abs_base_uri = current_absolute_baseuri();
 
-  if(abs_base_uri.empty()) {
-    compute_current_absolute_baseuri();
-    abs_base_uri = current_absolute_baseuri();
-  }
-
-  // won't happen -- we default to a non-empty URI
-  if(abs_base_uri.empty()) {
-    ZORBA_ERROR_DESC( XPST0001, "empty base URI");
-    return "";
-  }
-  
-  return abs_base_uri;
-}
-
-xqp_string static_context::resolve_relative_uri (xqp_string uri, xqp_string abs_base_uri, bool validate) {
-  return make_absolute_uri (uri, abs_base_uri.empty () ? final_baseuri () : abs_base_uri, validate);
-}
-
-bool static_context::import_module (const static_context *module) {
+/*******************************************************************************
+  Merge the ststic context of a module with this static context. Only functions
+  and variables defined in te module are included in this static context. If
+  a module variable or function already appears in this context, the method
+  returns false.
+********************************************************************************/
+bool static_context::import_module (const static_context *module) 
+{
   checked_vector<hashmap<ctx_value_t>::entry>::const_iterator   it;
   const char    *keybuff;
   
-  for(it = module->keymap.begin();it!=module->keymap.end();it++) {
+  for(it = module->keymap.begin(); it!=module->keymap.end(); it++) 
+  {
     keybuff = (*it).key.c_str();
     const ctx_value_t *val = &(*it).val;
 
@@ -700,22 +949,9 @@ bool static_context::import_module (const static_context *module) {
 }
 
 
-bool
-static_context::bind_stateless_external_function(StatelessExternalFunction* aExternalFunction) {
-  xqpString lLocalName = Unmarshaller::getInternalString(aExternalFunction->getLocalName());
-  xqpString lURI = Unmarshaller::getInternalString(aExternalFunction->getURI());
-
-  return bind_stateless_function(xqpString::concat(lLocalName,":",lURI), aExternalFunction);
-}
-
-StatelessExternalFunction *
-static_context::lookup_stateless_external_function(xqp_string aPrefix, xqp_string aLocalName)
-{
-  return lookup_stateless_function( 
-    qname_internal_key(default_function_namespace(), aPrefix, aLocalName)); 
-}
-
-// URI Resolver
+/*******************************************************************************
+  URI resolvers
+********************************************************************************/
 void
 static_context::set_document_uri_resolver(InternalDocumentURIResolver* aDocResolver)
 {
