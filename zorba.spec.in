@@ -2,7 +2,7 @@
 
 Name:    zorba
 Version: @ZORBA_MAJOR_NUMBER@.@ZORBA_MINOR_NUMBER@.@ZORBA_PATCH_NUMBER@
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: General purpose XQuery processor implemented in C++
 
 Group: System Environment/Libraries
@@ -14,10 +14,20 @@ Source0: ftp://ftp.heanet.ie/pub/download.sourceforge/z/zo/zorba/%{name}-%{versi
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires: cmake >= 2.4 libxml2-devel >= 2.2.16 libicu >= 2.6 libicu-devel
+BuildRequires: bison
+BuildRequires: cmake >= 2.4 
+BuildRequires: doxygen
+BuildRequires: flex
+BuildRequires: graphviz
 # Change libcurl-devel to curl-devel for Fedora 8
-BuildRequires: xerces-c-devel >= 2.7 libcurl-devel
-BuildRequires: ruby-devel >= 1.8 graphviz tidy-devel php-devel
+BuildRequires: libcurl-devel
+BuildRequires: libicu
+BuildRequires: libxml2-devel >= 2.2.16 
+BuildRequires: php-cli php-devel
+BuildRequires: python-devel
+BuildRequires: ruby ruby-devel >= 1.8
+BuildRequires: libtidy-devel
+BuildRequires: xerces-c-devel >= 2.7 
 
 
 %description
@@ -41,7 +51,7 @@ Requires: %{name} = %{version}-%{release}
 
 %description devel
 The %{name}-devel package contains headers for building applications
-that use %{zorba}.
+that use %{name}.
 
 
 %package python
@@ -71,8 +81,8 @@ Provides ruby module to use %{name} API
 %build
 mkdir -p build
 pushd build
-cmake -D CMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug -DCMAKE_SKIP_BUILD_RPATH=1  ..
-make %{?_smp_mflags}
+%cmake -D CMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug -DCMAKE_SKIP_BUILD_RPATH=1  ..
+make VERBOSE=1 %{?_smp_mflags}
 make doc
 popd
 
@@ -95,24 +105,35 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/%{name}
-%{_libdir}/*.so.%{version}
+%{_libdir}/*.so
 
-%dir %{_datadir}/doc/%{name}-%{version}
-%{_datadir}/doc/%{name}-%{version}
+
+%{_datadir}/doc/%{name}-%{version}/
 
 
 %files devel
 %defattr(-,root,root,-)
 %{_libdir}/*.so
+%dir %{_includedir}/%{name}
+%dir %{_includedir}/%{name}/%{name}
 %{_includedir}/%{name}/%{name}/*.h
+%dir %{_includedir}/%{name}/%{name}/util
 %{_includedir}/%{name}/%{name}/util/*.h
+%dir %{_includedir}/%{name}/simplestore
 %{_includedir}/%{name}/simplestore/*.h
+%dir %{_includedir}/%{name}/simplestore/msdom
 %{_includedir}/%{name}/simplestore/msdom/*.h
+%dir %{_datadir}/doc/%{name}-%{version}/python
+%dir %{_datadir}/doc/%{name}-%{version}/python/examples
 %{_datadir}/doc/%{name}-%{version}/python/examples/*.py
 %{_datadir}/doc/%{name}-%{version}/python/examples/*.pyc
 %{_datadir}/doc/%{name}-%{version}/python/examples/*.pyo
+%dir %{_datadir}/doc/%{name}-%{version}/python/html
 %{_datadir}/doc/%{name}-%{version}/python/html/*.gif
+%dir %{_datadir}/doc/%{name}-%{version}/ruby
+%dir %{_datadir}/doc/%{name}-%{version}/ruby/examples
 %{_datadir}/doc/%{name}-%{version}/ruby/examples/*.rb
+%dir %{_datadir}/doc/%{name}-%{version}/ruby/html
 %{_datadir}/doc/%{name}-%{version}/ruby/html/*.gif
 
 
