@@ -19,8 +19,11 @@ BuildRequires: cmake >= 2.4
 BuildRequires: doxygen
 BuildRequires: flex
 BuildRequires: graphviz
-# Change libcurl-devel to curl-devel for Fedora 8
+%if 0%{?fedora} >= 9
 BuildRequires: libcurl-devel
+%else 
+BuildRequires: curl-devel
+%endif
 BuildRequires: libicu
 BuildRequires: libxml2-devel >= 2.2.16 
 BuildRequires: php-cli php-devel
