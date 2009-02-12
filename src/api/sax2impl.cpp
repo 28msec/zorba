@@ -19,7 +19,9 @@
 #include "api/unmarshaller.h"
 #include <zorba/default_content_handler.h>
 
-namespace zorba{
+namespace zorba
+{
+
 /////////////////////////////////////////////////////////////////////////////////
 // SAX2 Attributes
 SAX2AttributesImpl::SAX2AttributesImpl(store::Item *item)

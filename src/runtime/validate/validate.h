@@ -30,8 +30,8 @@
 namespace zorba
 {
 
-    class RuntimeCB; // TODO we should have a shared_runtime_types.h
-    class GenericCast;
+class RuntimeCB; // TODO we should have a shared_runtime_types.h
+class GenericCast;
 
     /*______________________________________________________________________
     |
@@ -44,41 +44,70 @@ namespace zorba
     | the operand node. In some cases, default values may also be generated 
     | by the validation process.
     |_______________________________________________________________________*/
-    class ValidateIterator : public UnaryBaseIterator<ValidateIterator, PlanIteratorState>
-    {
-    private:
-      bool _isLax;
-      rchandle<TypeManager> typemgr;
+class ValidateIterator : public UnaryBaseIterator<ValidateIterator, PlanIteratorState>
+{
+private:
+  bool _isLax;
+  rchandle<TypeManager> typemgr;
 
-    public:
-        ValidateIterator ( const QueryLoc& loc, PlanIter_t& aIter, TypeManager *, bool isLax );
+public:
+  ValidateIterator (
+        const QueryLoc& loc,
+        PlanIter_t& aIter,
+        TypeManager *,
+        bool isLax );
 
-        bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
-        virtual void accept(PlanIterVisitor&) const;
+  virtual void accept(PlanIterVisitor&) const;
 
-        static bool effectiveValidationValue ( store::Item_t& result, const QueryLoc& loc, 
-                                               PlanState& planState, const PlanIterator* iter, TypeManager *, bool isLax);
+  static bool effectiveValidationValue (
+        store::Item_t& result,
+        const QueryLoc& loc, 
+        PlanState& planState,
+        const PlanIterator* iter,
+        TypeManager *,
+        bool isLax);
 
-        static store::Item_t processElement ( PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
-            SchemaValidator& schemaValidator, store::Item *parent, const store::Item_t& element);
+  static store::Item_t processElement (
+        PlanState& planState,
+        DelegatingTypeManager* delegatingTypeManager, 
+        SchemaValidator& schemaValidator,
+        store::Item *parent,
+        const store::Item_t& element);
+  
+  static void validateAttributes (
+        SchemaValidator& schemaValidator,
+        store::Iterator_t attributes);
 
-        static void validateAttributes ( SchemaValidator& schemaValidator, store::Iterator_t attributes);
+  static void processAttributes(
+        PlanState& planState,
+        DelegatingTypeManager* delegatingTypeManager,
+        SchemaValidator& schemaValidator,
+        store::Item *parent,
+        store::Iterator_t attributes);
 
-        static void processAttributes( PlanState& planState, DelegatingTypeManager* delegatingTypeManager,
-            SchemaValidator& schemaValidator, store::Item *parent, store::Iterator_t attributes);
+  static void processChildren (
+        PlanState& planState,
+        DelegatingTypeManager* delegatingTypeManager,
+        SchemaValidator& schemaValidator,
+        store::Item *parent,
+        store::Iterator_t children);
 
-        static void processChildren ( PlanState& planState, DelegatingTypeManager* delegatingTypeManager,
-            SchemaValidator& schemaValidator, store::Item *parent, store::Iterator_t children);
-
-        static void processNamespaces ( SchemaValidator& schemaValidator, const store::Item_t& item);
+  static void processNamespaces (
+        SchemaValidator& schemaValidator,
+        const store::Item_t& item);
         
-        static void processTextValue (PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
-            store::NsBindings& bindings, store::Item_t typeQName, xqpStringStore_t& textValue, 
-            std::vector<store::Item_t> &resultList);
+  static void processTextValue (
+        PlanState& planState,
+        DelegatingTypeManager* delegatingTypeManager, 
+        store::NsBindings& bindings,
+        store::Item_t typeQName,
+        xqpStringStore_t& textValue, 
+        std::vector<store::Item_t> &resultList);
 
-      ~ValidateIterator () {};
-    };
+  ~ValidateIterator () {};
+};
 
 }
 

@@ -24,7 +24,7 @@
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/representations.h"
 
-#include "common/shared_types.h"
+#include "store/api/shared_types.h"
 
 
 namespace zorba 

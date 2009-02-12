@@ -472,7 +472,8 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
   // check argument
-  if (!consumeNext(lUri, theChildren[0].getp(), aPlanState)) {
+  if (!consumeNext(lUri, theChildren[0].getp(), aPlanState)) 
+  {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR,
                          loc,
                          "The empty-sequence is not allowed as first argument to create-collection");

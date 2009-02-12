@@ -41,23 +41,25 @@ class IndexImpl : public store::Index
 protected:
   store::Item_t theUri;
 
+  bool          theIsUnique;
+  bool          theIsOrdering;
   bool          theIsTemp;
   bool          theIsThreadSafe;
 
 public:
-  IndexImpl(const xqpStringStore_t& uri);
+  IndexImpl(const xqpStringStore_t& uri, bool unique, bool ordering, bool temp);
 
   virtual ~IndexImpl() {}
 
   store::Item* getUri() const { return theUri.getp(); }
 
-  virtual bool isUnique() const { return false; }
+  bool isUnique() const { return theIsUnique; }
 
-  virtual bool isOrdering() const { return false; }
-
-  bool isThreadSafe() const { return theIsThreadSafe; }
+  bool isOrdering() const { return theIsOrdering; }
 
   bool isTemporary() const { return theIsTemp; }
+
+  bool isThreadSafe() const { return theIsThreadSafe; }
 };
 
 
@@ -74,6 +76,8 @@ protected:
 
   class CompareFunction
   {
+    friend class HashIndex;
+
   private:
     ulong                       theNumKeyComps;
     long                        theTimezone;
@@ -104,24 +108,19 @@ private:
   CompareFunction   theCompFunction;
   IndexMap          theMap;
 
+public:
+  bool insert(store::IndexKey& key, store::Item_t& value);
+
+  bool remove(const store::IndexKey& key, store::Item_t& value);
+
 protected:
   HashIndex(
         const xqpStringStore_t& uri,
-        ulong numKeys,
+        const std::vector<XQPCollator*>& collators,
         long timezone,
-        const std::vector<XQPCollator*>& collators)
-    :
-    IndexImpl(uri),
-    theCompFunction(numKeys, timezone, collators),
-    theMap(theCompFunction, 1024, theIsThreadSafe)
-  {
-  }
+        bool temp);
 
   ~HashIndex() {}
-
-  bool insert(store::IndexKey* key, store::Item_t& value);
-
-  bool remove(store::IndexKey* key, store::Item_t& value);
 };
 
 

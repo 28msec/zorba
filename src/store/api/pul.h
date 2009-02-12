@@ -17,16 +17,23 @@
 #define ZORBA_STORE_PUL_H
 
 #include <zorba/config.h>
-#include "common/shared_types.h"
+#include "store/api/shared_types.h"
 
 #include "store/api/update_consts.h"
 #include "store/api/item.h"
 
 
-namespace zorba { namespace store {
+namespace zorba 
+{ 
+
+class static_context;
+
+
+namespace store 
+{
 
 class XmlNode;
-class CopyMode;
+
 
 /*******************************************************************************
 

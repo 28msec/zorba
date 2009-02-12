@@ -126,9 +126,11 @@ public:
   void shutdown();
 
   store::ItemFactory* getItemFactory() const { return theItemFactory; }
+
   store::IteratorFactory* getIteratorFactory() const { return theIteratorFactory; }
 
   StringPool& getNamespacePool() const    { return *theNamespacePool; }
+
   QNamePool& getQNamePool() const         { return *theQNamePool; }
 
   SYNC_CODE(Lock& getGlobalLock()         { return theGlobalLock; })
@@ -143,8 +145,8 @@ public:
 
   store::Index_t createIndex(
         const xqpStringStore_t& uri,
-        const store::Iterator_t& contextNodeIterator,
-        const std::vector<store::Iterator_t>& keyIterators,
+        const std::vector<store::Item_t>& keyTypes,
+        const store::Item_t& valueType,
         const std::vector<XQPCollator*>& collators,
         long timezone,
         const store::IndexProperties& properties);

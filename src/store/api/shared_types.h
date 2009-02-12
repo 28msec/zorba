@@ -1,0 +1,76 @@
+/*
+ * Copyright 2006-2008 The FLWOR Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#ifndef ZORBA_STORE_SHARED_TYPES
+#define ZORBA_STORE_SHARED_TYPES
+
+#include <vector>
+
+#include "zorbamisc/config/platform.h"
+
+#include "zorbatypes/rchandle.h"
+
+
+namespace zorba 
+{ 
+
+class xqpStringStore;
+
+
+namespace store 
+{
+
+class CopyMode;
+
+class ItemFactory;
+class Item;
+typedef rchandle<Item> Item_t;
+
+class IteratorFactory;
+class Iterator;
+typedef rchandle<Iterator> Iterator_t;
+
+class ItemIterator;
+typedef rchandle<ItemIterator> ItemIterator_t;
+
+class TempSeq;
+typedef rchandle<TempSeq> TempSeq_t;
+
+class PUL;
+typedef rchandle<PUL> PUL_t;
+
+
+class Collection;
+typedef rchandle<Collection> Collection_t;
+
+class Index;
+typedef rchandle<Index> Index_t;
+
+typedef std::vector<store::Item_t> IndexKey;
+
+typedef std::vector<std::pair<xqpStringStore, xqpStringStore> > IndexProperties;
+
+class AnyUriItem;
+typedef rchandle<AnyUriItem> AnyUriItem_t;
+
+class Store;
+class XmlDataManager_Impl;
+
+
+}
+
+}
+
+#endif

@@ -5022,14 +5022,19 @@ void end_visit (const UnorderedExpr& v, void* /*visit_state*/) {
                                   pop_nodestack ()));
 }
 
-void *begin_visit (const ValidateExpr& v) {
+void *begin_visit (const ValidateExpr& v) 
+{
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit (const ValidateExpr& v, void* /*visit_state*/) {
+void end_visit (const ValidateExpr& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
-  nodestack.push (new validate_expr (loc, v.get_valmode (), pop_nodestack (), sctx_p->get_typemanager ()));
+  nodestack.push (new validate_expr (loc,
+                                     v.get_valmode(),
+                                     pop_nodestack(),
+                                     sctx_p->get_typemanager()));
 }
 
 void *begin_visit (const VarRef& v) {

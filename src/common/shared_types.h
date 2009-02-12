@@ -18,7 +18,7 @@
 
 #include "zorbamisc/config/platform.h"
 
-#include "zorbatypes/rchandle.h"
+#include "store/api/shared_types.h"
 
 namespace zorba 
 {
@@ -29,41 +29,6 @@ namespace zorba
     class ZorbaError;
   }
   
-  namespace store 
-  {
-    class CopyMode;
-
-    class Item;
-    typedef rchandle<Item> Item_t;
-
-    class ItemIterator;
-    typedef rchandle<ItemIterator> ItemIterator_t;
-
-    class TempSeq;
-    typedef rchandle<TempSeq> TempSeq_t;
-
-    class PUL;
-    typedef rchandle<PUL> PUL_t;
-
-    class ItemFactory;
-    class IteratorFactory;
-
-    class Collection;
-    typedef rchandle<Collection> Collection_t;
-
-    class Index;
-    typedef rchandle<Index> Index_t;
-
-    class AnyUriItem;
-    typedef rchandle<AnyUriItem> AnyUriItem_t;
-
-    class Store;
-    class XmlDataManager_Impl;
-
-    class Iterator;
-    typedef rchandle<Iterator> Iterator_t;
-  }
-
   namespace types 
   {
     class TypeIdentifier; 

@@ -19,9 +19,8 @@
 #include <vector>
 
 #include <zorba/config.h>
-#include "common/common.h"
 
-#include "common/shared_types.h"
+#include "store/api/shared_types.h"
 
 
 namespace zorba { namespace store {

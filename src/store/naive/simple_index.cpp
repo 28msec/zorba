@@ -16,10 +16,16 @@ namespace simplestore
 /******************************************************************************
 
 ********************************************************************************/
-IndexImpl::IndexImpl(const xqpStringStore_t& uri)
+IndexImpl::IndexImpl(
+    const xqpStringStore_t& uri,
+    bool unique,
+    bool ordering,
+    bool temp)
   :
-  theIsTemp(false),
-  theIsThreadSafe(false)
+  theIsUnique(unique),
+  theIsOrdering(ordering),
+  theIsTemp(temp),
+  theIsThreadSafe(!temp)
 {
   xqpStringStore_t tmpuri(uri.getp());
   theUri = new AnyUriItemImpl(tmpuri);
@@ -62,11 +68,27 @@ bool HashIndex::CompareFunction::equal(
 /******************************************************************************
 
 ********************************************************************************/
-bool HashIndex::insert(store::IndexKey* key, store::Item_t& value)
+HashIndex::HashIndex(
+    const xqpStringStore_t& uri,
+    const std::vector<XQPCollator*>& collators,
+    long timezone,
+    bool temp)
+  :
+  IndexImpl(uri, false, false, temp),
+  theCompFunction(collators.size(), timezone, collators),
+  theMap(theCompFunction, 1024, theIsThreadSafe)
+{
+}
+  
+
+/******************************************************************************
+
+********************************************************************************/
+bool HashIndex::insert(store::IndexKey& key, store::Item_t& value)
 {
   ValueSet* valueSet;
 
-  bool found = theMap.get(key, valueSet);
+  bool found = theMap.get(&key, valueSet);
 
   if (found)
   {
@@ -75,10 +97,17 @@ bool HashIndex::insert(store::IndexKey* key, store::Item_t& value)
   }
   else
   {
+    ulong numKeyComps = theCompFunction.theNumKeyComps;
+
+    store::IndexKey* keycopy = new store::IndexKey(key.size());
+
+    for (ulong i = 0; i < numKeyComps; i++)
+      (*keycopy)[i].transfer(key[i]);
+
     valueSet = new ValueSet(1);
     (*valueSet)[0].transfer(value);
 
-    theMap.insert(key, valueSet);
+    theMap.insert(keycopy, valueSet);
   }
 
   return found;
@@ -89,11 +118,13 @@ bool HashIndex::insert(store::IndexKey* key, store::Item_t& value)
 /******************************************************************************
 
 ********************************************************************************/
-bool HashIndex::remove(store::IndexKey* key, store::Item_t& value)
+bool HashIndex::remove(const store::IndexKey& key, store::Item_t& value)
 {
   ValueSet* valueSet;
 
-  bool found = theMap.get(key, valueSet);
+  store::IndexKey* keyp = const_cast<store::IndexKey*>(&key);
+
+  bool found = theMap.get(keyp, valueSet);
 
   if (found)
   {
@@ -101,12 +132,11 @@ bool HashIndex::remove(store::IndexKey* key, store::Item_t& value)
     valueSet->erase(ite);
 
     if (valueSet->empty())
-      theMap.remove(key);
+      theMap.remove(keyp);
   }
 
-    return found;
+  return found;
 } 
-
 
 
 /******************************************************************************
@@ -151,7 +181,7 @@ void HashIndexProbeIterator::close()
 
 
 /******************************************************************************
-
+  TODO : need sync on result vector
 ********************************************************************************/
 store::Item* HashIndexProbeIterator::next()
 {

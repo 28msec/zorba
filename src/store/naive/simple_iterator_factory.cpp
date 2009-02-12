@@ -48,7 +48,7 @@ store::AttributesIterator* SimpleIteratorFactory::createAttributesIterator()
 store::IndexProbeIterator* SimpleIteratorFactory::createIndexProbeIterator(
     const store::Index_t& index)
 {
-  if (index->isOrdering())
+  if (reinterpret_cast<IndexImpl*>(index.getp())->isOrdering())
     return NULL;
   else
     return new HashIndexProbeIterator(index);

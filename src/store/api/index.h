@@ -16,24 +16,22 @@
 #ifndef ZORBA_STORE_INDEX
 #define ZORBA_STORE_INDEX
 
-#include "zorbamisc/config/platform.h"
-#include "common/shared_types.h"
+#include "store/api/shared_types.h"
 
 
-namespace zorba { namespace store {
+namespace zorba 
+{
 
-
-typedef std::vector<store::Item_t> IndexKey;
-
-typedef std::vector<std::pair<xqpStringStore, xqpStringStore> > IndexProperties;
+namespace store 
+{
 
 
 /******************************************************************************
   Abstract index class.
 
-  Index instances are created via the store::createIndex() method. Index updates
-  are done via pul primitives. And index probing is done via IndexIterators (see
-  iterator.h). So, the Index class itself does not have much of an api.
+  Index instances are created (but not populated) via the store::createIndex()
+  method; they are populated via the Index::insert() and Index::remove() methods,
+  and are probed via IndexIterators (see iterator.h). 
 ********************************************************************************/
 class Index : public RCObject
 {
@@ -49,7 +47,9 @@ public:
 
   virtual Item* getUri() const = 0;
 
-  virtual bool isOrdering() const = 0;
+  virtual bool insert(store::IndexKey& key, store::Item_t& value) = 0;
+
+  virtual bool remove(const store::IndexKey& key, store::Item_t& value) = 0;
 };
 
 

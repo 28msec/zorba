@@ -27,6 +27,8 @@
 
 #include "store/util/hashmap_stringp.h"
 
+#include "store/api/pul.h"
+
 #include "store/naive/properties.h"
 #include "store/naive/string_pool.h"
 #include "store/naive/simple_store.h"
@@ -44,8 +46,6 @@
 #include "store/naive/simple_iterator_factory.h"
 #include "store/naive/query_context.h"
 #include "store/naive/item_iterator.h"
-
-#include "store/api/pul.h"
 
 #ifdef ZORBA_STORE_MSDOM
 #include "store/naive/msdom_addon/import_msdom.h"
@@ -310,22 +310,30 @@ store::Item_t SimpleStore::createUri()
 ********************************************************************************/
 store::Index_t SimpleStore::createIndex(
     const xqpStringStore_t& uri,
-    const store::Iterator_t& contextNodeIterator,
-    const std::vector<store::Iterator_t>& keyIterators,
+    const std::vector<store::Item_t>& keyTypes,
+    const store::Item_t& valueType,
     const std::vector<XQPCollator*>& collators,
     long timezone,
     const store::IndexProperties& properties)
 {
   const xqpStringStore* urip = uri.getp();
 
+  bool unique = false;
   bool temp = false;
   bool ordered = false;
 
-  store::IndexProperties::const_iterator ite = properties.begin();
-  store::IndexProperties::const_iterator end = properties.end();
+  store::IndexProperties::const_iterator ite;
+  store::IndexProperties::const_iterator end;
+  ite = properties.begin();
+  end = properties.end();
 
   for (; ite != end; ++ite)
   {
+    if ((*ite).first.byteEqual("unique"))
+    {
+      if ((*ite).second.byteEqual("yes"))
+        unique = true;
+    }
     if ((*ite).first.byteEqual("ordered"))
     {
       if ((*ite).second.byteEqual("yes"))
@@ -340,16 +348,10 @@ store::Index_t SimpleStore::createIndex(
 
   store::Index_t index;
 
-  if (temp = false)
+  if (!temp && theIndices.get(urip, index))
   {
-    bool found = theIndices.get(urip, index);
-    
-    if (found)
-    {
-      ZORBA_ERROR_PARAM(API0060_INDEX_ALREADY_EXISTS, uri->c_str(), "");
-    }
+    ZORBA_ERROR_PARAM(API0060_INDEX_ALREADY_EXISTS, uri->c_str(), "");
   }
-
 
   if (ordered)
   {
@@ -357,10 +359,10 @@ store::Index_t SimpleStore::createIndex(
   }
   else
   {
-    index = new HashIndex(uri, keyIterators.size(), timezone, collators);
+    index = new HashIndex(uri, collators, timezone, temp);
   }
 
-  if (temp = false)
+  if (!temp)
   {
     theIndices.insert(urip, index);
   }

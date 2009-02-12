@@ -19,9 +19,11 @@
 #include <zorba/config.h>
 #include "zorbatypes/representations.h"
 
-#include "common/shared_types.h"
+#include "store/api/shared_types.h"
 
-namespace zorba { 
+
+namespace zorba 
+{ 
 
 SYNC_CODE(class Lock;)
 
@@ -229,6 +231,23 @@ public:
    *
    */
   virtual Iterator_t listCollectionUris() = 0;
+
+
+  /* ------------------------ Index Management ---------------------------*/
+
+  /**
+   * Creates a new unique URI which can be used as an ID for a collection.
+   *
+   * @return URI
+   */
+  virtual Index_t createIndex(
+        const xqpStringStore_t& uri,
+        const std::vector<store::Item_t>& keyTypes,
+        const store::Item_t& valueType,
+        const std::vector<XQPCollator*>& collators,
+        long timezone,
+        const IndexProperties& properties) = 0;
+	
 };
 
 
