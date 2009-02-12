@@ -108,7 +108,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/%{name}
-%{_libdir}/*.so
+%{_libdir}/libzorba_simplestore.*
 
 
 %{_datadir}/doc/%{name}-%{version}/
@@ -152,12 +152,18 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Feb  5 2009 Paul Kunz <Paul_Kunz@slac.stanford.edu> - 0.9.5-1
+* Wed Feb 11 2009 Paul Kunz <PaulfKunz@gmail.com> - 0.9.5-2
+- Cleanup BuildRequires for readablity
+- Added addtional BuildRequires
+- make sure created directories are owned
+- Added condition for curl and version of Fedora
+
+* Thu Feb  5 2009 Paul Kunz <PaulfKunz@gmail.com> - 0.9.5-1
 - change require icu to libicu
 - Update to 0.9.5 version
 - remove require boost
 
-* Tue Dec 16 2008 Paul Kunz <Paul_Kunz@slac.stanford.edu> - 0.9.4-4
+* Tue Dec 16 2008 Paul Kunz <PaulfKunz@gmail.com> - 0.9.4-4
 - added php-devel
 
 * Mon Nov 10 2008 Paul Kunz <PaulfKunz@gmail.com> - 0.9.4-3
