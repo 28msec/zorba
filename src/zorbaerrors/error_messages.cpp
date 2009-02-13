@@ -273,7 +273,7 @@ DEF_ERR_CODE (XPTY0020, XPTY0020, "In an axis step, the context item is not a no
 // XQDY
 //
 
-DEF_ERR_CODE (XQDY0025, XQDY0025, "Any attribute of a constructed element does not have a name that is distinct from the names of all other attributes of the constructed element.")
+DEF_ERR_CODE (XQDY0025, XQDY0025, "An attribute of a constructed element has name \"/s\", which is not distinct from the names of all other attributes of the constructed element.")
 
 DEF_ERR_CODE (XQDY0026, XQDY0026, "The result of the content expression of a computed processing instruction constructor contains the string return \"?>\".")
 

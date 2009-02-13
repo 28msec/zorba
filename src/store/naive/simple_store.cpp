@@ -52,7 +52,11 @@
 #include <time.h>
 #endif
 
-namespace zorba { namespace simplestore {
+namespace zorba 
+{ 
+
+namespace simplestore 
+{
 
 typedef rchandle<store::TempSeq> TempSeq_t;
 
@@ -306,63 +310,33 @@ store::Item_t SimpleStore::createUri()
 
 /*******************************************************************************
   Create an index with a given URI and return an rchandle to the index object. 
-  If an index with the given URI exists already, raise an error.
+  If an index with the given URI exists already and the index we want to create
+  is not a temporary one, raise an error.
 ********************************************************************************/
-store::Index_t SimpleStore::createIndex(
-    const xqpStringStore_t& uri,
-    const std::vector<store::Item_t>& keyTypes,
-    const store::Item_t& valueType,
-    const std::vector<XQPCollator*>& collators,
-    long timezone,
-    const store::IndexProperties& properties)
+store::Index_t SimpleStore::createIndex(const store::IndexSpecification& spec)
 {
-  const xqpStringStore* urip = uri.getp();
-
-  bool unique = false;
-  bool temp = false;
-  bool ordered = false;
-
-  store::IndexProperties::const_iterator ite;
-  store::IndexProperties::const_iterator end;
-  ite = properties.begin();
-  end = properties.end();
-
-  for (; ite != end; ++ite)
-  {
-    if ((*ite).first.byteEqual("unique"))
-    {
-      if ((*ite).second.byteEqual("yes"))
-        unique = true;
-    }
-    if ((*ite).first.byteEqual("ordered"))
-    {
-      if ((*ite).second.byteEqual("yes"))
-        ordered = true;
-    }
-    else if ((*ite).first.byteEqual("temporary"))
-    {
-      if ((*ite).second.byteEqual("yes"))
-        temp = true;
-    }
-  }
+  const xqpStringStore* urip = spec.theUri.getp();
 
   store::Index_t index;
 
-  if (!temp && theIndices.get(urip, index))
+  if (!spec.theIsTemp && theIndices.get(urip, index))
   {
-    ZORBA_ERROR_PARAM(API0060_INDEX_ALREADY_EXISTS, uri->c_str(), "");
+    ZORBA_ERROR_PARAM(API0060_INDEX_ALREADY_EXISTS, urip->c_str(), "");
   }
 
-  if (ordered)
+  if (spec.theIsOrdering)
   {
     ;
   }
   else
   {
-    index = new HashIndex(uri, collators, timezone, temp);
+    index = new HashIndex(spec.theUri,
+                          spec.theCollators,
+                          spec.theTimezone,
+                          spec.theIsTemp);
   }
 
-  if (!temp)
+  if (!spec.theIsTemp)
   {
     theIndices.insert(urip, index);
   }

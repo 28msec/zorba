@@ -60,8 +60,6 @@ typedef rchandle<Index> Index_t;
 
 typedef std::vector<store::Item_t> IndexKey;
 
-typedef std::vector<std::pair<xqpStringStore, xqpStringStore> > IndexProperties;
-
 class AnyUriItem;
 typedef rchandle<AnyUriItem> AnyUriItem_t;
 

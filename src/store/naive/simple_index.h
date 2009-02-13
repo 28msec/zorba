@@ -157,6 +157,65 @@ public:
   void close();
 };
 
+#if 0
+/******************************************************************************
+
+********************************************************************************/
+class OrderingIndex : public IndexImpl
+{
+  friend class SimpleStore;
+  friend class OrderingIndexProbeIterator;
+
+protected:
+
+  class CompareFunction
+  {
+    friend class OrdringIndex;
+
+  private:
+    long                        theTimezone;
+    std::vector<XQPCollator*>   theCollators;
+
+  public:
+    CompareFunction(
+       ulong numKeyComps,
+       long timezone,
+       const std::vector<XQPCollator*>& collators)
+      :
+      theNumKeyComps(numKeyComps),
+      theTimezone(timezone),
+      theCollators(collators)
+    {
+    }
+
+    long compare(const store::Item_t& key1, const store::Item_t& key2) const;
+  };
+
+
+  typedef std::map<store::Item_t, void*, CompareFunction> IndexMap;
+
+
+private:
+  ulong             theNumKeyComps;
+  CompareFunction   theCompFunction;
+  IndexMap          theMap;
+
+public:
+  bool insert(store::IndexKey& key, store::Item_t& value);
+
+  bool remove(const store::IndexKey& key, store::Item_t& value);
+
+protected:
+  OrderigIndex(
+        const xqpStringStore_t& uri,
+        const std::vector<XQPCollator*>& collators,
+        long timezone,
+        bool temp);
+
+  ~OrderingIndex() {}
+};
+#endif
+
 }
 }
 

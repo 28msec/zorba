@@ -31,6 +31,7 @@ SYNC_CODE(class Lock;)
 namespace store 
 {
 
+class IndexSpecification;
 class IteratorFactory;
 
 
@@ -240,14 +241,7 @@ public:
    *
    * @return URI
    */
-  virtual Index_t createIndex(
-        const xqpStringStore_t& uri,
-        const std::vector<store::Item_t>& keyTypes,
-        const store::Item_t& valueType,
-        const std::vector<XQPCollator*>& collators,
-        long timezone,
-        const IndexProperties& properties) = 0;
-	
+  virtual Index_t createIndex(const IndexSpecification& spec) = 0;
 };
 
 

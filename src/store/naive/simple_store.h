@@ -44,6 +44,7 @@ namespace error
 namespace store
 {
   class IteratorFactory;
+  class IndexSpecification;
 }
 
 namespace simplestore 
@@ -143,13 +144,7 @@ public:
 
   store::Item_t createUri();
 
-  store::Index_t createIndex(
-        const xqpStringStore_t& uri,
-        const std::vector<store::Item_t>& keyTypes,
-        const store::Item_t& valueType,
-        const std::vector<XQPCollator*>& collators,
-        long timezone,
-        const store::IndexProperties& properties);
+  store::Index_t createIndex(const store::IndexSpecification& spec);
 
   store::Collection_t createCollection(const xqpStringStore_t& uri);
 

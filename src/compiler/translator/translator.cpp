@@ -3198,7 +3198,7 @@ void *begin_visit (const SchemaImport& v) {
       Schema* schema_p = ((DelegatingTypeManager*)CTXTS)->getSchema();
 
       std::string lTmp(lSchemaUri->getStringValue()->c_str());
-      schema_p->registerXSD (lTargetNamespace->getStringValue()->c_str(), lTmp, loc);
+      schema_p->registerXSD(lTargetNamespace->getStringValue()->c_str(), lTmp, loc);
     } catch (error::ZorbaError& e) {
       ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
     }

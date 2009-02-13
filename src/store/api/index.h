@@ -27,6 +27,22 @@ namespace store
 
 
 /******************************************************************************
+  Specification for creating an index
+********************************************************************************/
+struct IndexSpecification
+{
+  xqpStringStore_t           theUri;
+  std::vector<store::Item_t> theKeyTypes;
+  store::Item_t              theValueType;
+  std::vector<XQPCollator*>  theCollators;
+  long                       theTimezone;
+  bool                       theIsUnique;
+  bool                       theIsOrdering;
+  bool                       theIsTemp;
+};
+
+
+/******************************************************************************
   Abstract index class.
 
   Index instances are created (but not populated) via the store::createIndex()
@@ -46,6 +62,14 @@ public:
   virtual ~Index() {}
 
   virtual Item* getUri() const = 0;
+
+  virtual bool isUnique() const = 0;
+
+  virtual bool isOrdering() const = 0;
+
+  virtual bool isTemporary() const = 0;
+
+  virtual bool isThreadSafe() const = 0;
 
   virtual bool insert(store::IndexKey& key, store::Item_t& value) = 0;
 
