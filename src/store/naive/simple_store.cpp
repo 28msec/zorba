@@ -326,14 +326,11 @@ store::Index_t SimpleStore::createIndex(const store::IndexSpecification& spec)
 
   if (spec.theIsOrdering)
   {
-    ;
+    index = new STLMapIndex(spec);
   }
   else
   {
-    index = new HashIndex(spec.theUri,
-                          spec.theCollators,
-                          spec.theTimezone,
-                          spec.theIsTemp);
+    index = new HashIndex(spec);
   }
 
   if (!spec.theIsTemp)

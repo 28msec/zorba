@@ -141,10 +141,12 @@ public:
  * It implements the interface of a generic iterator, but also offers the
  * following additional methods:
  *
- * - An init method that takes as input an index and a key, so that it will
- *   start returning the values associated with the given key.
- * - A next method that returns pointers to the attributes instead of rchandles.
- *   These pointers should not be used beyond the lifetime of the AttributesIterator
+ * - An init method that takes as input a key, so that the index will return
+ *   the values associated with this key.
+ * - An init method that takes as input 2 keys, so that the index will return
+ *   the values associated with the range of keys between the 2 given keys.
+ * - A next method that returns pointers to the values instead of rchandles.
+ *   These pointers should not be used beyond the lifetime of the IndexProbeIterator
  *   object. 
  */
 class IndexProbeIterator : public Iterator
@@ -157,6 +159,9 @@ public:
   init(IndexKey& key) = 0;
 
   
+  virtual void
+  init(IndexKey& lowKey, IndexKey& highKey) = 0;
+
   virtual void
   open() = 0;
 

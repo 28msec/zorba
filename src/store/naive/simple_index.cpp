@@ -10,24 +10,25 @@
 namespace zorba 
 { 
 
+store::IndexKey store::Index::thePosInfKey;
+store::IndexKey store::Index::theNegInfKey;
+
+
 namespace simplestore 
 {
+
 
 /******************************************************************************
 
 ********************************************************************************/
-IndexImpl::IndexImpl(
-    const xqpStringStore_t& uri,
-    bool unique,
-    bool ordering,
-    bool temp)
+IndexImpl::IndexImpl(const store::IndexSpecification& spec)
   :
-  theIsUnique(unique),
-  theIsOrdering(ordering),
-  theIsTemp(temp),
-  theIsThreadSafe(!temp)
+  theIsUnique(spec.theIsUnique),
+  theIsOrdering(spec.theIsOrdering),
+  theIsTemp(spec.theIsTemp),
+  theIsThreadSafe(!theIsTemp)
 {
-  xqpStringStore_t tmpuri(uri.getp());
+  xqpStringStore_t tmpuri(spec.theUri.getp());
   theUri = new AnyUriItemImpl(tmpuri);
 }
 
@@ -68,14 +69,10 @@ bool HashIndex::CompareFunction::equal(
 /******************************************************************************
 
 ********************************************************************************/
-HashIndex::HashIndex(
-    const xqpStringStore_t& uri,
-    const std::vector<XQPCollator*>& collators,
-    long timezone,
-    bool temp)
+HashIndex::HashIndex(const store::IndexSpecification& spec)
   :
-  IndexImpl(uri, false, false, temp),
-  theCompFunction(collators.size(), timezone, collators),
+  IndexImpl(spec),
+  theCompFunction(spec.theCollators.size(), spec.theTimezone, spec.theCollators),
   theMap(theCompFunction, 1024, theIsThreadSafe)
 {
 }
@@ -151,12 +148,24 @@ void HashIndexProbeIterator::init(store::IndexKey& key)
 /******************************************************************************
 
 ********************************************************************************/
+void HashIndexProbeIterator::init(store::IndexKey& lowKey, store::IndexKey& highKey)
+{
+  ZORBA_ASSERT(false);
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
 void HashIndexProbeIterator::open()
 {
   theIndex->theMap.get(theKey, theResultSet);
 
-  theIte = theResultSet->begin();
-  theEnd = theResultSet->end();
+  if (theResultSet)
+  {
+    theIte = theResultSet->begin();
+    theEnd = theResultSet->end();
+  }
 }
 
 
@@ -185,6 +194,191 @@ void HashIndexProbeIterator::close()
 ********************************************************************************/
 store::Item* HashIndexProbeIterator::next()
 {
+  if (theResultSet && theIte != theEnd)
+  {
+    store::Item* result = (*theIte).getp();
+    ++theIte;
+    return result;
+  }
+
+  return NULL;
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+bool HashIndexProbeIterator::next(store::Item_t& result)
+{
+  if (theResultSet && theIte != theEnd)
+  {
+    result = (*theIte);
+    ++theIte;
+    return result;
+  }
+
+  return false;
+}
+
+
+
+/******************************************************************************
+
+********************************************************************************/
+long STLMapIndex::CompareFunction::compare(
+    const store::IndexKey* key1,
+    const store::IndexKey* key2) const
+{
+  long result;
+
+  ulong size1 = key1->size();
+  ulong size2 = key2->size();
+
+  if (size1 < size2)
+  {
+    for (ulong i = 0; i < size1; i++)
+    {
+      if ((result = (*key1)[i]->compare((*key2)[i])))
+        return result;
+    }
+
+    return -1;
+  }
+  else if (size1 == size2)
+  {
+    for (ulong i = 0; i < size1; i++)
+    {
+      if ((result = (*key1)[i]->compare((*key2)[i])))
+        return result;
+    }
+
+    return 0;
+  }
+  else
+  {
+    for (ulong i = 0; i < size2; i++)
+    {
+      if ((result = (*key1)[i]->compare((*key2)[i])))
+        return result;
+    }
+
+    return 1;
+  }
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+STLMapIndex::STLMapIndex(const store::IndexSpecification& spec)
+  :
+  IndexImpl(spec),
+  theCompFunction(spec.theCollators.size(), spec.theTimezone, spec.theCollators),
+  theMap(theCompFunction)
+{
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+bool STLMapIndex::insert(store::IndexKey& key, store::Item_t& value)
+{
+  SYNC_CODE(AutoMutex lock((theIsThreadSafe ? &theMapMutex : NULL));)
+
+  return true;
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+bool STLMapIndex::remove(const store::IndexKey& key, store::Item_t& value)
+{
+  SYNC_CODE(AutoMutex lock((theIsThreadSafe ? &theMapMutex : NULL));)
+
+  return true;
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+void STLMapIndexProbeIterator::init(store::IndexKey& key)
+{
+  theLowKey = &key;
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+void STLMapIndexProbeIterator::init(
+    store::IndexKey& lowKey,
+    store::IndexKey& highKey)
+{
+  theLowKey = &lowKey;
+  theHighKey = &highKey;
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+void STLMapIndexProbeIterator::open()
+{
+  if (theHighKey == NULL)
+  {
+    theResultSet = theIndex->theMap[theLowKey];
+  }
+  else if (theLowKey != &store::Index::theNegInfKey)
+  {
+    theResultSet = theIndex->theMap.begin()->second;
+  }
+  else
+  {
+    STLMapIndex::STLMapPair key(theLowKey, NULL);
+
+    STLMapIndex::IndexMap::iterator res =
+      std::lower_bound(theIndex->theMap.begin(),
+                       theIndex->theMap.end(),
+                       key,
+                       theIndex->theCompFunction);
+
+    theResultSet = res->second;
+  }
+
+  theIte = theResultSet->begin();
+  theEnd = theResultSet->end();
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+void STLMapIndexProbeIterator::reset()
+{
+  theResultSet = NULL;
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+void STLMapIndexProbeIterator::close()
+{
+  theIndex = NULL;
+  theLowKey = NULL;
+  theHighKey = NULL;
+  theResultSet = NULL;
+}
+
+
+/******************************************************************************
+  TODO : need sync on result vector
+********************************************************************************/
+store::Item* STLMapIndexProbeIterator::next()
+{
   ZORBA_ASSERT(theResultSet != NULL);
 
   if (theIte != theEnd)
@@ -201,7 +395,7 @@ store::Item* HashIndexProbeIterator::next()
 /******************************************************************************
 
 ********************************************************************************/
-bool HashIndexProbeIterator::next(store::Item_t& result)
+bool STLMapIndexProbeIterator::next(store::Item_t& result)
 {
   ZORBA_ASSERT(theResultSet != NULL);
 

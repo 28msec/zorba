@@ -51,6 +51,10 @@ struct IndexSpecification
 ********************************************************************************/
 class Index : public RCObject
 {
+public:
+  static IndexKey  thePosInfKey;
+  static IndexKey  theNegInfKey;
+
 protected:
   SYNC_CODE(mutable RCLock theRCLock;)
 

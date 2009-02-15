@@ -47,7 +47,7 @@ protected:
   bool          theIsThreadSafe;
 
 public:
-  IndexImpl(const xqpStringStore_t& uri, bool unique, bool ordering, bool temp);
+  IndexImpl(const store::IndexSpecification& spec);
 
   virtual ~IndexImpl() {}
 
@@ -114,11 +114,7 @@ public:
   bool remove(const store::IndexKey& key, store::Item_t& value);
 
 protected:
-  HashIndex(
-        const xqpStringStore_t& uri,
-        const std::vector<XQPCollator*>& collators,
-        long timezone,
-        bool temp);
+  HashIndex(const store::IndexSpecification& spec);
 
   ~HashIndex() {}
 };
@@ -140,11 +136,16 @@ protected:
 
 public:
   HashIndexProbeIterator(const store::Index_t& index) 
+    :
+    theKey(NULL),
+    theResultSet(NULL)
   {
     theIndex = reinterpret_cast<HashIndex*>(index.getp());
   }
 
   void init(store::IndexKey& key);
+
+  void init(store::IndexKey& lowKey, store::IndexKey& highKey);
 
   void open();
 
@@ -157,14 +158,16 @@ public:
   void close();
 };
 
-#if 0
+
 /******************************************************************************
 
 ********************************************************************************/
-class OrderingIndex : public IndexImpl
+class STLMapIndex : public IndexImpl
 {
   friend class SimpleStore;
-  friend class OrderingIndexProbeIterator;
+  friend class STLMapIndexProbeIterator;
+
+  typedef std::pair<store::IndexKey*, ValueSet*> STLMapPair;
 
 protected:
 
@@ -173,6 +176,7 @@ protected:
     friend class OrdringIndex;
 
   private:
+    ulong                       theNumKeyComps;
     long                        theTimezone;
     std::vector<XQPCollator*>   theCollators;
 
@@ -188,17 +192,26 @@ protected:
     {
     }
 
-    long compare(const store::Item_t& key1, const store::Item_t& key2) const;
+    bool operator()(const store::IndexKey* key1, const store::IndexKey* key2) const
+    {
+      return compare(key1, key2) < 0;
+    }
+
+    bool operator()(const STLMapPair& val1, const STLMapPair& val2) const
+    {
+      return compare(val1.first, val2.first) < 0;
+    }
+
+    long compare(const store::IndexKey* key1, const store::IndexKey* key2) const;
   };
 
 
-  typedef std::map<store::Item_t, void*, CompareFunction> IndexMap;
-
+  typedef std::map<store::IndexKey*, ValueSet*, CompareFunction> IndexMap;
 
 private:
-  ulong             theNumKeyComps;
   CompareFunction   theCompFunction;
   IndexMap          theMap;
+  SYNC_CODE(Mutex   theMapMutex;)
 
 public:
   bool insert(store::IndexKey& key, store::Item_t& value);
@@ -206,15 +219,51 @@ public:
   bool remove(const store::IndexKey& key, store::Item_t& value);
 
 protected:
-  OrderigIndex(
-        const xqpStringStore_t& uri,
-        const std::vector<XQPCollator*>& collators,
-        long timezone,
-        bool temp);
+  STLMapIndex(const store::IndexSpecification& spec);
 
-  ~OrderingIndex() {}
+  ~STLMapIndex() {}
 };
-#endif
+
+
+/******************************************************************************
+
+********************************************************************************/
+class STLMapIndexProbeIterator : public store::IndexProbeIterator
+{
+protected:
+  rchandle<STLMapIndex>       theIndex;
+
+  store::IndexKey           * theLowKey;
+  store::IndexKey           * theHighKey;
+
+  ValueSet                  * theResultSet;
+  ValueSet::const_iterator    theIte;
+  ValueSet::const_iterator    theEnd;
+
+public:
+  STLMapIndexProbeIterator(const store::Index_t& index) 
+    :
+    theLowKey(NULL),
+    theHighKey(NULL),
+    theResultSet(NULL)
+  {
+    theIndex = reinterpret_cast<STLMapIndex*>(index.getp());
+  }
+
+  void init(store::IndexKey& key);
+
+  void init(store::IndexKey& lowKey, store::IndexKey& highKey);
+
+  void open();
+
+  store::Item* next();
+    
+  bool next(store::Item_t& result);
+  
+  void reset();
+
+  void close();
+};
 
 }
 }
