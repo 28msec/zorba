@@ -118,9 +118,9 @@ INSTALL(TARGETS ${ZORBA_LIBRARY_INSTALL_LIST}
 
 #install external packages in Mac OS X package
 IF ( APPLE )
-  FOREACH(LIB ${Zorba_ICUUC} ${Zorba_ICUI18N} ${Zorba_ICU_DATA} ${Zorba_XERCESC})
+  FOREACH(LIB ${Zorba_ICUUC} ${Zorba_ICUI18N} ${Zorba_ICU_DATA} ${Zorba_XERCESC} ${Zorba_XML2} )
     STRING(STRIP ${LIB} LIBNAME)
-    MESSAGE(STATUS "installing ${LIBNAME}")
+    MESSAGE(STATUS "Will install ${LIBNAME}")
     INSTALL(FILES ${LIBNAME} DESTINATION lib)
   ENDFOREACH(LIB)
 ENDIF ( APPLE )

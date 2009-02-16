@@ -277,6 +277,8 @@ IF (APPLE )
                     OUTPUT_VARIABLE Zorba_XERCESC)
   EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${CURL_LIBRARIES}
                     OUTPUT_VARIABLE Zorba_CURL)
+  EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${LIBXML2_LIBRARIES}
+                    OUTPUT_VARIABLE Zorba_XML2)
 ENDIF (APPLE )
 
 

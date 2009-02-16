@@ -47,7 +47,13 @@ by typing e.g. <tt>sudo port install cmake</tt>.  Note that versions
 of libcurl and libtidy, that are already installed as part of Mac OS X
 are sufficient.  However, a newer version of libxml2 than the one that
 is part of Mac OS X (v 2.6.16) is needed which can be obtained from
-Darwin Ports (v 2.6.31) or from source (v 2.7.2 )
+Darwin Ports (v 2.6.31) or from source (v 2.2.7 ).  Assumming the
+latter, one add the following to the cmake configuration options
+
+\verbatim
+cmake -D LIBXML2_LIBRARIES=/usr/local/lib/libxml2.dylib
+\endverbatim
+
 
 \subsection universal Building as Universal binaries
 
