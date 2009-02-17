@@ -479,7 +479,9 @@ public:
 	 {return m_apm_compare(cval(),m.cval())>0;}
 	bool operator>=(const MAPM &m) const
 	 {return m_apm_compare(cval(),m.cval())>=0;}
-	
+	long compare(const MAPM &m) const
+  {return m_apm_compare(cval(),m.cval());}
+
 	/* Basic arithmetic operators */
 	friend MAPM operator+(const MAPM &a,const MAPM &b)
 	 {MAPM ret;m_apm_add(ret.val(),a.cval(),b.cval());return ret;}

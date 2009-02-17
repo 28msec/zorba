@@ -35,70 +35,72 @@ namespace zorba {
   typedef double  MAPM;
 #endif
 
-  // exported for testing only
-  class ZORBA_DLL_PUBLIC Integer {
-    friend class Decimal;
+// exported for testing only
+class ZORBA_DLL_PUBLIC Integer 
+{
+  friend class Decimal;
     
-    template <typename Type>
-    friend class FloatImpl;
+  template <typename Type> friend class FloatImpl;
 
-    friend class NumConversions;
+  friend class NumConversions;
 
-    private:
-      IMAPM theInteger;
-      Integer(IMAPM aInteger) : theInteger(aInteger) { }
+private:
+  IMAPM theInteger;
+
+  Integer(IMAPM aInteger) : theInteger(aInteger) { }
     
-    public:
-      Integer() : theInteger(0) { }
-      Integer(const Integer& aInteger) : theInteger(aInteger.theInteger) { }
+public:
+  Integer() : theInteger(0) { }
+  Integer(const Integer& aInteger) : theInteger(aInteger.theInteger) { }
 
-      private:
-      static MAPM 
-      longlongToMAPM(long long);
+private:
+  static MAPM 
+  longlongToMAPM(long long);
       
-      static IMAPM
-      floatingToInteger(MAPM theFloating) 
-      {
+  static IMAPM
+  floatingToInteger(MAPM theFloating) 
+  {
 #ifndef ZORBA_NO_BIGNUMBERS
-        // TODO inf and nan handling
-        if (theFloating >= 0)
-          return theFloating.floor();
-        else
-          return theFloating.ceil();
+    // TODO inf and nan handling
+    if (theFloating >= 0)
+      return theFloating.floor();
+    else
+      return theFloating.ceil();
 #else
-        return (IMAPM)theFloating;
+    return (IMAPM)theFloating;
 #endif
-      }
-  public:
-      /**
-       * @return integer that represents 0
-       */
-      static Integer& zero();
+  }
 
-      /**
-       * Parse string to Integer.
-       * @param aStr String
-       * @param aInteger Result
-       * @return true if parsing succeed, else false
-       */ 
-      static bool parseString(const char* aStr, Integer& aInteger);
+public:
+  /**
+   * @return integer that represents 0
+   */
+  static Integer& zero();
+  
+  /**
+   * Parse string to Integer.
+   * @param aStr String
+   * @param aInteger Result
+   * @return true if parsing succeed, else false
+   */ 
+  static bool parseString(const char* aStr, Integer& aInteger);
 
-      /**
-       * Parsing of string to unsigned integer. Zorba does not differ between
-       * unsigned and signed Integer because unsigned Integer is never a result
-       * of an numeric operation => The only places where the unsignedness must
-       * be checked is the parsing.
-       *
-       * @param aStr String
-       * @param aInteger result
-       * @return true if parsing succeed, else false
-       */
-      static bool parseStringUnsigned(const char*, Integer&);
-
-      /**
-       * Parsing form double to Integer. Decimal places are cut of.
-       */
-      static bool parseDouble(const Double&, Integer&);
+  /**
+   * Parsing of string to unsigned integer. Zorba does not differ between
+   * unsigned and signed Integer because unsigned Integer is never a result
+   * of an numeric operation => The only places where the unsignedness must
+   * be checked is the parsing.
+   *
+   * @param aStr String
+   * @param aInteger result
+   * @return true if parsing succeed, else false
+   */
+  static bool parseStringUnsigned(const char*, Integer&);
+  
+  /**
+   * Parsing form double to Integer. Decimal places are cut of.
+   */
+  static bool parseDouble(const Double&, Integer&);
 
       /**
        * Parsing form float to Integer. Decimal places are cut of.
@@ -209,40 +211,55 @@ namespace zorba {
       operator==(const Integer& aInteger) const { return theInteger == aInteger.theInteger; } 
       
       bool
-      operator==(const Decimal&) const;
-
-      bool
       operator!=(const Integer& aInteger) const { return theInteger != aInteger.theInteger; } 
       
       bool
-      operator!=(const Decimal&) const;
+      operator<(const Integer& aInteger) const { return theInteger < aInteger.theInteger; } 
 
       bool
-      operator<(const Integer& aInteger) const { return theInteger < aInteger.theInteger; } 
+      operator>(const Integer& aInteger) const 
+      {
+        return theInteger > aInteger.theInteger; 
+      } 
+      
+
+      bool
+      operator>=(const Integer& aInteger) const 
+      {
+        return theInteger >= aInteger.theInteger; 
+      } 
+  
+      bool
+      operator<=(const Integer& aInteger) const 
+      {
+        return theInteger <= aInteger.theInteger; 
+      } 
+
+      long compare(const Integer &aInteger) const
+      {
+        return theInteger.compare(aInteger.theInteger);
+      }
+
+      bool
+      operator==(const Decimal&) const;
+
+      bool
+      operator!=(const Decimal&) const;
       
       bool
       operator<(const Decimal&) const;
 
       bool
-      operator<=(const Integer& aInteger) const { return theInteger <= aInteger.theInteger; } 
-      
-      bool
       operator<=(const Decimal&) const;
-      
-      bool
-      operator<=(const Double&) const;
 
-      bool
-      operator>(const Integer& aInteger) const { return theInteger > aInteger.theInteger; } 
-      
       bool
       operator>(const Decimal&) const;
-
-      bool
-      operator>=(const Integer& aInteger) const { return theInteger >= aInteger.theInteger; } 
       
       bool
       operator>=(const Decimal&) const;
+
+      bool
+      operator<=(const Double&) const;
       
       bool
       operator>=(const Double&) const;
