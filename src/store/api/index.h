@@ -26,23 +26,42 @@ namespace store
 {
 
 
-/******************************************************************************
-  Specification for creating an index
+/***************************************************************************//**
+  Specification for creating a value index.
+
+  theUri          : The uri identifying the index. For non-temporary indices,
+                    the store maintains the map between uris and indices and
+                    makes sure that there are no two indices with the same uri.
+  theKeyTypes     : The data types of the key components. Each type must be 
+                    atomic, and for ordering indices, it must have an ordering. 
+  theValueType    : The data type of the values associated with the keys.
+  theCollations   : The names of the colltions to use when comparing the string
+                    components of a key. Note: the size of this vector is the
+                    same as that of theKeyTypes; if a key component is not a 
+                    string, the associated entry in theCollations is simply
+                    ignored.   
+  theTimezone     : The timezone is needed to compare date/time key values.
+  theIsUnique     : Whether the index is unique, i.e., there is exactly one
+                    value associated with each key.
+  theIsOrdering   : 
+  theIsTemp       : Whether the index is temporary or not.
+  theIsThreadSafe : Whether the index can be shared among multiple threads or not
 ********************************************************************************/
 struct IndexSpecification
 {
   xqpStringStore_t           theUri;
   std::vector<store::Item_t> theKeyTypes;
   store::Item_t              theValueType;
-  std::vector<XQPCollator*>  theCollators;
+  std::vector<std::string>   theCollations;
   long                       theTimezone;
   bool                       theIsUnique;
   bool                       theIsOrdering;
   bool                       theIsTemp;
+  bool                       theIsThreadSafe;
 };
 
 
-/******************************************************************************
+/***************************************************************************//**
   Abstract index class.
 
   Index instances are created (but not populated) via the store::createIndex()
@@ -51,10 +70,6 @@ struct IndexSpecification
 ********************************************************************************/
 class Index : public RCObject
 {
-public:
-  static IndexKey  thePosInfKey;
-  static IndexKey  theNegInfKey;
-
 protected:
   SYNC_CODE(mutable RCLock theRCLock;)
 
@@ -65,18 +80,23 @@ public:
 
   virtual ~Index() {}
 
-  virtual Item* getUri() const = 0;
+  /**
+   *  Return a reference to the specification object that describes this index. 
+   */
+  virtual const IndexSpecification& getSpecification() const = 0;
 
-  virtual bool isUnique() const = 0;
-
-  virtual bool isOrdering() const = 0;
-
-  virtual bool isTemporary() const = 0;
-
-  virtual bool isThreadSafe() const = 0;
-
+  /**
+   *  Insert into the index a mapping between the given key and value.
+   *  Return true if the key was already in the index, otherwise (i.e.,
+   *  this was the first mapping for this key) return false.
+   */
   virtual bool insert(store::IndexKey& key, store::Item_t& value) = 0;
 
+  /**
+   *  Remove from the index the mapping between the given key and value.
+   *  If this mapping does not appearin theindex return false; otherwise
+   *  return true.
+   */
   virtual bool remove(const store::IndexKey& key, store::Item_t& value) = 0;
 };
 

@@ -179,7 +179,12 @@ DEF_ERR_CODE(API0050_REST_ERROR_HEADER, API0050, "Invalid value passed for heade
 DEF_ERR_CODE(API0051_REST_ERROR_PAYLOAD, API0051, "Invalid value passed for payload parameter.");
 
 
-DEF_ERR_CODE(API0060_INDEX_ALREADY_EXISTS, API0060, "An index with URI {/s} exists already.")
+//
+// Store Errors
+//
+DEF_ERR_CODE(STR0001_INDEX_ALREADY_EXISTS, STR0001, "An index with URI /s exists already.")
+DEF_ERR_CODE(STR0002_INDEX_PARTIAL_KEY_INSERT, STR0002, "Attempt to insert a partial key in index with URI /s")
+DEF_ERR_CODE(STR0003_INDEX_PARTIAL_KEY_REMOVE, STR0003, "Attempt to remove a partial key from index with URI /s")
 
 //
 // ZORBA-specific errors

@@ -44,7 +44,7 @@ namespace error
 namespace store
 {
   class IteratorFactory;
-  class IndexSpecification;
+  class ValueIndexSpecification;
 }
 
 namespace simplestore 

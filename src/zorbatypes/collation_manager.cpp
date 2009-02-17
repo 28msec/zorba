@@ -34,30 +34,32 @@ namespace zorba {
    * Method splits the passed string into tokes. 
    * Delimiters are all characters passed in the variable delims.
    */
-  std::vector<std::string> std_string_tokenize(const std::string& str,
-      const std::string& delims)
+std::vector<std::string> std_string_tokenize(
+    const std::string& str,
+    const std::string& delims)
+{
+  // Skip delims at beginning, find start of first token
+  std::string::size_type lastPos = str.find_first_not_of(delims, 0);
+  // Find next delimiter @ end of token
+  std::string::size_type pos     = str.find_first_of(delims, lastPos);
+
+  // output vector
+  std::vector<std::string> tokens;
+
+  while (std::string::npos != pos || std::string::npos != lastPos)
   {
-    // Skip delims at beginning, find start of first token
-    std::string::size_type lastPos = str.find_first_not_of(delims, 0);
-    // Find next delimiter @ end of token
-    std::string::size_type pos     = str.find_first_of(delims, lastPos);
-
-    // output vector
-    std::vector<std::string> tokens;
-
-    while (std::string::npos != pos || std::string::npos != lastPos)
-    {
-      // Found a token, add it to the vector.
-      tokens.push_back(str.substr(lastPos, pos - lastPos));
-      // Skip delims.  Note the "not_of". this is beginning of token
-      lastPos = str.find_first_not_of(delims, pos);
-      // Find next delimiter at end of token.
-      pos     = str.find_first_of(delims, lastPos);
-    }
-
-    return tokens;
+    // Found a token, add it to the vector.
+    tokens.push_back(str.substr(lastPos, pos - lastPos));
+    // Skip delims.  Note the "not_of". this is beginning of token
+    lastPos = str.find_first_not_of(delims, pos);
+    // Find next delimiter at end of token.
+    pos     = str.find_first_of(delims, lastPos);
   }
+  
+  return tokens;
+}
                                           
+
 
 XQPCollator::XQPCollator(void* aCollator, bool doMemCmp)
   :
@@ -76,7 +78,7 @@ XQPCollator::~XQPCollator()
 XQPCollator*
 CollationFactory::createCollator(const std::string& aCollationURI)
 {
-  static const char *coll_uri_start = ZORBA_COLLATION_NS_BASE;
+  static const char* coll_uri_start = ZORBA_COLLATION_NS_BASE;
   static int coll_uri_start_len = strlen (coll_uri_start);
 
   if (aCollationURI == W3C_CODEPT_COLLATION_NS)
@@ -101,7 +103,9 @@ CollationFactory::createCollator(const std::string& aCollationURI)
     return 0;
 
   // e.g. PRIMARY/en/US
-  std::string lCollationIdentifier = aCollationURI.substr(coll_uri_start_len, aCollationURI.size() - coll_uri_start_len);
+  std::string lCollationIdentifier = 
+    aCollationURI.substr(coll_uri_start_len,
+                         aCollationURI.size() - coll_uri_start_len);
 
   std::vector<std::string> lTokens = std_string_tokenize(lCollationIdentifier, "/");
   if(lTokens.size() < 2)
@@ -110,42 +114,61 @@ CollationFactory::createCollator(const std::string& aCollationURI)
   }
   
   Collator* lCollator;
+
 #ifndef ZORBA_NO_UNICODE
   UErrorCode lError = U_ZERO_ERROR;
-  if (lTokens.size() == 2) {
+  if (lTokens.size() == 2) 
+  {
     lCollator = Collator::createInstance(Locale(lTokens[1].c_str()), lError);
-  } else {
-    lCollator = Collator::createInstance(Locale(lTokens[1].c_str(), lTokens[2].c_str()), lError);
+  }
+  else 
+  {
+    lCollator = Collator::createInstance(Locale(lTokens[1].c_str(),
+                                                lTokens[2].c_str()),
+                                         lError);
   }
 
-  if( U_FAILURE(lError) ) {
+  if( U_FAILURE(lError) ) 
+  {
     return 0;
   }
+
 #else
   lCollator = new Collator;
 #endif
 
-  if (lTokens[0].compare("PRIMARY") == 0) {
+  if (lTokens[0].compare("PRIMARY") == 0) 
+  {
 #ifndef ZORBA_NO_UNICODE
     lCollator->setStrength(Collator::PRIMARY);
 #endif
-  } else if (lTokens[0].compare("SECONDARY") == 0) {
+  }
+  else if (lTokens[0].compare("SECONDARY") == 0) 
+  {
 #ifndef ZORBA_NO_UNICODE
     lCollator->setStrength(Collator::SECONDARY);
 #endif
-  } else if (lTokens[0].compare("TERTIARY") == 0) {
+  }
+  else if (lTokens[0].compare("TERTIARY") == 0) 
+  {
 #ifndef ZORBA_NO_UNICODE
     lCollator->setStrength(Collator::TERTIARY);
 #endif
-  } else if (lTokens[0].compare("QUATERNARY") == 0) {
+  }
+  else if (lTokens[0].compare("QUATERNARY") == 0) 
+  {
 #ifndef ZORBA_NO_UNICODE
     lCollator->setStrength(Collator::QUATERNARY);
 #endif
-  } else if (lTokens[0].compare("IDENTICAL") == 0) {
+  }
+  else if (lTokens[0].compare("IDENTICAL") == 0) 
+  {
 #ifndef ZORBA_NO_UNICODE
     lCollator->setStrength(Collator::IDENTICAL);
 #endif
-  } else {
+  }
+  else
+  {
     return 0;
   }
   

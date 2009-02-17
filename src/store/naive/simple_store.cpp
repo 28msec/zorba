@@ -321,7 +321,7 @@ store::Index_t SimpleStore::createIndex(const store::IndexSpecification& spec)
 
   if (!spec.theIsTemp && theIndices.get(urip, index))
   {
-    ZORBA_ERROR_PARAM(API0060_INDEX_ALREADY_EXISTS, urip->c_str(), "");
+    ZORBA_ERROR_PARAM(STR0001_INDEX_ALREADY_EXISTS, urip->c_str(), "");
   }
 
   if (spec.theIsOrdering)

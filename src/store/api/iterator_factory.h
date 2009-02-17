@@ -35,23 +35,27 @@ public:
    * Create an iterator to iterate over the children of a document or element
    * node.
    */
-  virtual ChildrenIterator* createChildrenIterator() = 0;
+  virtual ChildrenIterator*
+  createChildrenIterator() = 0;
 
   /**
    * Create an iterator to iterate over the attributes of an element node.
    */
-  virtual AttributesIterator* createAttributesIterator() = 0;
+  virtual AttributesIterator*
+  createAttributesIterator() = 0;
 
 
   /**
    * Create an iterator to iterate over the result of an index probe
    */
-  virtual IndexProbeIterator* createIndexProbeIterator(const Index_t& index) = 0;
+  virtual IndexProbeIterator*
+  createIndexProbeIterator(const Index_t& index) = 0;
 
   /**
    * Create an iterator to iterate over the items of a temp sequence.
    */
-  virtual TempSeqIterator* createTempSeqIterator() = 0;
+  virtual TempSeqIterator*
+  createTempSeqIterator() = 0;
 };
 
 

@@ -38,28 +38,28 @@ typedef std::vector<store::Item_t> ValueSet;
 ********************************************************************************/
 class IndexImpl : public store::Index
 {
-protected:
-  store::Item_t theUri;
-
-  bool          theIsUnique;
-  bool          theIsOrdering;
-  bool          theIsTemp;
-  bool          theIsThreadSafe;
+protected:  
+  store::IndexSpecification       theSpec;
+  store::Item_t                   theUri;
+  ulong                           theNumKeyComps;
+  std::vector<XQPCollator*>       theCollators;
 
 public:
   IndexImpl(const store::IndexSpecification& spec);
 
-  virtual ~IndexImpl() {}
+  virtual ~IndexImpl();
 
   store::Item* getUri() const { return theUri.getp(); }
 
-  bool isUnique() const { return theIsUnique; }
+  const store::IndexSpecification& getSpecification() const { return theSpec; }
 
-  bool isOrdering() const { return theIsOrdering; }
+  bool isUnique() const { return theSpec.theIsUnique; }
 
-  bool isTemporary() const { return theIsTemp; }
+  bool isOrdering() const { return theSpec.theIsOrdering; }
 
-  bool isThreadSafe() const { return theIsThreadSafe; }
+  bool isTemporary() const { return theSpec.theIsTemp; }
+
+  bool isThreadSafe() const { return theSpec.theIsThreadSafe; }
 };
 
 
@@ -116,7 +116,7 @@ public:
 protected:
   HashIndex(const store::IndexSpecification& spec);
 
-  ~HashIndex() {}
+  ~HashIndex();
 };
 
 
@@ -145,7 +145,11 @@ public:
 
   void init(store::IndexKey& key);
 
-  void init(store::IndexKey& lowKey, store::IndexKey& highKey);
+  void init(
+        store::IndexKey& lowKey,
+        store::IndexKey& highKey,
+        bool lowInclusive,
+        bool highInclusive);
 
   void open();
 
@@ -252,7 +256,11 @@ public:
 
   void init(store::IndexKey& key);
 
-  void init(store::IndexKey& lowKey, store::IndexKey& highKey);
+  void init(
+        store::IndexKey& lowKey,
+        store::IndexKey& highKey,
+        bool lowInclusive,
+        bool highInclusive);
 
   void open();
 

@@ -320,6 +320,34 @@ bool find(const T& item)
 }
 
 
+
+/*******************************************************************************
+  If the given item is already in the set, return an iterator positioned at the
+  associated hash entry; otherwise return the end iterator.
+********************************************************************************/
+iterator get(const T& item)
+{
+  ulong hval = hash(item);
+
+  SYNC_CODE(AutoMutex lock(theMutexp);)
+
+  HashEntry<T, V>* entry = bucket(hval);
+
+  if (entry->isFree())
+    return iterator(&theHashTab, hval);
+
+  while (entry != NULL)
+  {
+    if (equal(entry->theItem, item))
+      return iterator(&theHashTab, entry - &theHashTab[0]);
+
+    entry = entry->getNext();
+  }
+
+  return end();
+}
+
+
 /*******************************************************************************
   If the given item is already in the set, return true and a copy of the value
   associated with the item; otherwise return false.
@@ -380,6 +408,31 @@ bool insert(T& item, V& value)
 
 
 /*******************************************************************************
+  Remove the item that is pointed to by the given iterator and move the iterator
+  to the next item.
+********************************************************************************/
+void remove(iterator& ite)
+{
+  SYNC_CODE(AutoMutex lock(theMutexp);)
+
+  if (ite.thePos < theHashTabSize)
+  {
+    removeEntry(&theHashTab[ite.thePos], NULL);
+  }
+  else
+  {
+    const T& item = theHashTab[ite.thePos].theItem;
+
+    ulong hval = hash(item);
+
+    removeNoSync(item, hval);
+  }
+
+  ++ite;
+}
+
+
+/*******************************************************************************
   If the set contains an item that is "equal" to the given item, remove that
   item from the set and return true. Otherwise, return false.
 ********************************************************************************/
@@ -405,28 +458,7 @@ bool removeNoSync(const T& item, ulong hval)
   // else copy the 2nd entry to the 1st entry and freeup the 2nd entry.
   if (equal(entry->theItem, item))
   {
-    if (entry->theNext == 0)
-    {
-      entry->~HashEntry<T, V>();
-    }
-    else
-    {
-      HashEntry<T, V>* nextEntry = entry->getNext();
-      *entry = *nextEntry;
-      entry->setNext(nextEntry->getNext());
-      nextEntry->~HashEntry<T, V>();
-      nextEntry->setNext(freelist()->getNext());
-      freelist()->setNext(nextEntry);
-    }
-
-    theNumEntries--;
-
-    if (theHashTabSize > theInitialSize &&
-        theNumEntries < (theHashTabSize / 2) * theLoadFactor)
-    {
-      resizeHashTab(theHashTabSize / 2);
-    }
-
+    removeEntry(entry, NULL);
     return true;
   }
 
@@ -439,20 +471,7 @@ bool removeNoSync(const T& item, ulong hval)
   {
     if (equal(entry->theItem, item))
     {
-      preventry->setNext(entry->getNext());
-      entry->~HashEntry<T, V>();
-      entry->setNext(freelist()->getNext());
-      freelist()->setNext(entry);
-
-      theNumEntries--;
-      numCollisions--;
-
-      if (theHashTabSize > theInitialSize &&
-          theNumEntries < (theHashTabSize / 2) * theLoadFactor)
-      {
-        resizeHashTab(theHashTabSize / 2);
-      }
-
+      removeEntry(entry, preventry);
       return true;
     }
 
@@ -496,6 +515,55 @@ HashEntry<T, V>* bucket(ulong hvalue)
 HashEntry<T, V>* freelist()
 {
   return &theHashTab[theHashTabSize];
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void removeEntry(HashEntry<T, V>* entry, HashEntry<T, V>* preventry)
+{
+  if (preventry == NULL)
+  {
+    if (entry->theNext == 0)
+    {
+      entry->~HashEntry<T, V>();
+    }
+    else
+    {
+      HashEntry<T, V>* nextEntry = entry->getNext();
+      *entry = *nextEntry;
+      entry->setNext(nextEntry->getNext());
+      nextEntry->~HashEntry<T, V>();
+      nextEntry->setNext(freelist()->getNext());
+      freelist()->setNext(nextEntry);
+    }
+
+    theNumEntries--;
+
+    if (theHashTabSize > theInitialSize &&
+        theNumEntries < (theHashTabSize / 2) * theLoadFactor)
+    {
+      resizeHashTab(theHashTabSize / 2);
+    }
+
+  }
+  else
+  {
+    preventry->setNext(entry->getNext());
+    entry->~HashEntry<T, V>();
+    entry->setNext(freelist()->getNext());
+    freelist()->setNext(entry);
+
+    theNumEntries--;
+    numCollisions--;
+
+    if (theHashTabSize > theInitialSize &&
+        theNumEntries < (theHashTabSize / 2) * theLoadFactor)
+    {
+      resizeHashTab(theHashTabSize / 2);
+    }
+  }
 }
 
 

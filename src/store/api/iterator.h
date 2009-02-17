@@ -18,10 +18,13 @@
 
 #include "zorbamisc/config/platform.h"
 #include "store/api/item.h"
-#include "store/api/index.h"
 
 
-namespace zorba { namespace store {
+namespace zorba 
+{ 
+
+namespace store 
+{
 
 /**
  * General iterator interface. Used to program iterators which return a
@@ -137,20 +140,33 @@ public:
 
 
 /**
- * This iterator is used to iterate over the result of an index probe.
- * It implements the interface of a generic iterator, but also offers the
- * following additional methods:
+ * This iterator is used to iterate over the result of an index probe. The
+ * target index is specified when the iterator is created (see iterator_factory.h)
+ * The IndexProbeIterator implements the interface of a generic iterator, but
+ * also offers the following additional methods:
  *
  * - An init method that takes as input a key, so that the index will return
- *   the values associated with this key.
- * - An init method that takes as input 2 keys, so that the index will return
- *   the values associated with the range of keys between the 2 given keys.
- * - A next method that returns pointers to the values instead of rchandles.
- *   These pointers should not be used beyond the lifetime of the IndexProbeIterator
+ *   the items associated with this key. The key must be fully specified.
+ * - An init method that takes as input a low and a high key, so that the index
+ *   will return the items associated with the range of keys low and high.
+ *   The low and/or the high key may be a partial key. The method also takes
+ *   two bool parameters to specify whether the low/high key should be included
+ *   in the search or not. Obviously, this method is supported by ordering
+ *   indiced only.
+ * - A next method that returns pointers to items instead of rchandles. These
+ *   pointers should not be used beyond the lifetime of the IndexProbeIterator
  *   object. 
+ *
+ * IndexProbeIterator also defined two special keys to represent "negative
+ * infinum" and "positive infinum" key values, so that it can perform searches
+ * with no lower or no upper bound. 
  */
 class IndexProbeIterator : public Iterator
 {
+public:
+  static IndexKey  thePosInfKey;
+  static IndexKey  theNegInfKey;
+
 public:
   virtual ~IndexProbeIterator() { }
 
@@ -160,7 +176,7 @@ public:
 
   
   virtual void
-  init(IndexKey& lowKey, IndexKey& highKey) = 0;
+  init(IndexKey& lowKey, IndexKey& highKey, bool lowIncl, bool highIncl) = 0;
 
   virtual void
   open() = 0;

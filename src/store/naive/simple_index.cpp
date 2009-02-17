@@ -1,6 +1,7 @@
 
 #include "zorbaerrors/Assert.h"
 #include "zorbautils/hashfun.h"
+#include "zorbatypes/collation_manager.h"
 #include "store/api/item.h"
 #include "store/naive/simple_index.h"
 #include "store/naive/atomic_items.h"
@@ -10,8 +11,8 @@
 namespace zorba 
 { 
 
-store::IndexKey store::Index::thePosInfKey;
-store::IndexKey store::Index::theNegInfKey;
+store::IndexKey store::IndexProbeIterator::thePosInfKey;
+store::IndexKey store::IndexProbeIterator::theNegInfKey;
 
 
 namespace simplestore 
@@ -23,14 +24,35 @@ namespace simplestore
 ********************************************************************************/
 IndexImpl::IndexImpl(const store::IndexSpecification& spec)
   :
-  theIsUnique(spec.theIsUnique),
-  theIsOrdering(spec.theIsOrdering),
-  theIsTemp(spec.theIsTemp),
-  theIsThreadSafe(!theIsTemp)
+  theSpec(spec),
+  theNumKeyComps(theSpec.theKeyTypes.size())
 {
   xqpStringStore_t tmpuri(spec.theUri.getp());
   theUri = new AnyUriItemImpl(tmpuri);
+
+  theCollators.resize(theNumKeyComps);
+
+  for (ulong i = 0; i < theNumKeyComps; i++)
+    theCollators[i] = CollationFactory::createCollator(spec.theCollations[i]);
 }
+
+
+/******************************************************************************
+
+********************************************************************************/
+IndexImpl::~IndexImpl()
+{
+  for (ulong i = 0; i < theNumKeyComps; i++)
+    delete theCollators[i]; 
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Hash Index                                                                 //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 
 /******************************************************************************
@@ -72,8 +94,8 @@ bool HashIndex::CompareFunction::equal(
 HashIndex::HashIndex(const store::IndexSpecification& spec)
   :
   IndexImpl(spec),
-  theCompFunction(spec.theCollators.size(), spec.theTimezone, spec.theCollators),
-  theMap(theCompFunction, 1024, theIsThreadSafe)
+  theCompFunction(theNumKeyComps, spec.theTimezone, theCollators),
+  theMap(theCompFunction, 1024, spec.theIsThreadSafe)
 {
 }
   
@@ -81,8 +103,28 @@ HashIndex::HashIndex(const store::IndexSpecification& spec)
 /******************************************************************************
 
 ********************************************************************************/
+HashIndex::~HashIndex()
+{
+  IndexMap::iterator ite = theMap.begin();
+  IndexMap::iterator end = theMap.end();
+ 
+  for (; ite != end; ++ite)
+  {
+    delete (*ite).first;
+    delete (*ite).second;
+  }
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
 bool HashIndex::insert(store::IndexKey& key, store::Item_t& value)
 {
+  if (key.size() != theNumKeyComps)
+    ZORBA_ERROR_PARAM(STR0002_INDEX_PARTIAL_KEY_INSERT,
+                      theUri->getStringValue()->c_str(), "");
+
   ValueSet* valueSet;
 
   bool found = theMap.get(&key, valueSet);
@@ -117,22 +159,37 @@ bool HashIndex::insert(store::IndexKey& key, store::Item_t& value)
 ********************************************************************************/
 bool HashIndex::remove(const store::IndexKey& key, store::Item_t& value)
 {
-  ValueSet* valueSet;
+  if (key.size() != theNumKeyComps)
+    ZORBA_ERROR_PARAM(STR0003_INDEX_PARTIAL_KEY_REMOVE,
+                      theUri->getStringValue()->c_str(), "");
 
   store::IndexKey* keyp = const_cast<store::IndexKey*>(&key);
 
-  bool found = theMap.get(keyp, valueSet);
+  IndexMap::iterator pos = theMap.get(keyp);
 
-  if (found)
+  if (pos != theMap.end())
   {
-    ValueSet::iterator ite = std::find(valueSet->begin(), valueSet->end(), value);
-    valueSet->erase(ite);
+    keyp = (*pos).first;
+    ValueSet* valueSet = (*pos).second;
+
+    ValueSet::iterator valIte = std::find(valueSet->begin(),
+                                          valueSet->end(),
+                                          value);
+
+    if (valIte != valueSet->end())
+      valueSet->erase(valIte);
 
     if (valueSet->empty())
-      theMap.remove(keyp);
+    {
+      theMap.remove(pos);
+      delete keyp;
+      delete valueSet;
+    }
+
+    return true;
   }
 
-  return found;
+  return false;
 } 
 
 
@@ -148,7 +205,11 @@ void HashIndexProbeIterator::init(store::IndexKey& key)
 /******************************************************************************
 
 ********************************************************************************/
-void HashIndexProbeIterator::init(store::IndexKey& lowKey, store::IndexKey& highKey)
+void HashIndexProbeIterator::init(
+    store::IndexKey& lowKey,
+    store::IndexKey& highKey,
+    bool lowInclusive,
+    bool highInclusive)
 {
   ZORBA_ASSERT(false);
 }
@@ -221,6 +282,12 @@ bool HashIndexProbeIterator::next(store::Item_t& result)
 }
 
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  STL Map Index                                                              //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 
 /******************************************************************************
 
@@ -273,7 +340,7 @@ long STLMapIndex::CompareFunction::compare(
 STLMapIndex::STLMapIndex(const store::IndexSpecification& spec)
   :
   IndexImpl(spec),
-  theCompFunction(spec.theCollators.size(), spec.theTimezone, spec.theCollators),
+  theCompFunction(theNumKeyComps, spec.theTimezone, theCollators),
   theMap(theCompFunction)
 {
 }
@@ -284,7 +351,7 @@ STLMapIndex::STLMapIndex(const store::IndexSpecification& spec)
 ********************************************************************************/
 bool STLMapIndex::insert(store::IndexKey& key, store::Item_t& value)
 {
-  SYNC_CODE(AutoMutex lock((theIsThreadSafe ? &theMapMutex : NULL));)
+  SYNC_CODE(AutoMutex lock((isThreadSafe() ? &theMapMutex : NULL));)
 
   return true;
 }
@@ -295,7 +362,7 @@ bool STLMapIndex::insert(store::IndexKey& key, store::Item_t& value)
 ********************************************************************************/
 bool STLMapIndex::remove(const store::IndexKey& key, store::Item_t& value)
 {
-  SYNC_CODE(AutoMutex lock((theIsThreadSafe ? &theMapMutex : NULL));)
+  SYNC_CODE(AutoMutex lock((isThreadSafe() ? &theMapMutex : NULL));)
 
   return true;
 }
@@ -315,7 +382,9 @@ void STLMapIndexProbeIterator::init(store::IndexKey& key)
 ********************************************************************************/
 void STLMapIndexProbeIterator::init(
     store::IndexKey& lowKey,
-    store::IndexKey& highKey)
+    store::IndexKey& highKey,
+    bool lowIncl,
+                                    bool highIncl)
 {
   theLowKey = &lowKey;
   theHighKey = &highKey;
@@ -331,7 +400,7 @@ void STLMapIndexProbeIterator::open()
   {
     theResultSet = theIndex->theMap[theLowKey];
   }
-  else if (theLowKey != &store::Index::theNegInfKey)
+  else if (theLowKey != &store::IndexProbeIterator::theNegInfKey)
   {
     theResultSet = theIndex->theMap.begin()->second;
   }
