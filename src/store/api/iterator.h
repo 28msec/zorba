@@ -158,7 +158,7 @@ public:
  *   object. 
  *
  * IndexProbeIterator also defined two special keys to represent "negative
- * infinum" and "positive infinum" key values, so that it can perform searches
+ * infinity" and "positive infinity" key values, so that it can perform searches
  * with no lower or no upper bound. 
  */
 class IndexProbeIterator : public Iterator

@@ -66,7 +66,8 @@ typedef store::StringHashMap<store::Index_t> IndexSet;
 
 
 /*******************************************************************************
-
+  theSchemaTypeNames : Maps each enum value from SchemaTypeNames (see 
+                       store_defs.h) to its associated QName item.
 ********************************************************************************/
 class SimpleStore : public store::Store
 {
@@ -144,7 +145,11 @@ public:
 
   store::Item_t createUri();
 
-  store::Index_t createIndex(const store::IndexSpecification& spec);
+  store::Index_t createIndex(
+        const xqpStringStore_t& uri,
+        const store::IndexSpecification& spec);
+
+  void deleteIndex(const xqpStringStore_t& uri);
 
   store::Collection_t createCollection(const xqpStringStore_t& uri);
 

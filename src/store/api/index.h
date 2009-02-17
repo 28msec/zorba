@@ -29,9 +29,7 @@ namespace store
 /***************************************************************************//**
   Specification for creating a value index.
 
-  theUri          : The uri identifying the index. For non-temporary indices,
-                    the store maintains the map between uris and indices and
-                    makes sure that there are no two indices with the same uri.
+  theUri          : The uri identifying the index. 
   theKeyTypes     : The data types of the key components. Each type must be 
                     atomic, and for ordering indices, it must have an ordering. 
   theValueType    : The data type of the values associated with the keys.
@@ -49,7 +47,6 @@ namespace store
 ********************************************************************************/
 struct IndexSpecification
 {
-  xqpStringStore_t           theUri;
   std::vector<store::Item_t> theKeyTypes;
   store::Item_t              theValueType;
   std::vector<std::string>   theCollations;

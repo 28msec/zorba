@@ -39,13 +39,15 @@ typedef std::vector<store::Item_t> ValueSet;
 class IndexImpl : public store::Index
 {
 protected:  
-  store::IndexSpecification       theSpec;
   store::Item_t                   theUri;
+  store::IndexSpecification       theSpec;
   ulong                           theNumKeyComps;
   std::vector<XQPCollator*>       theCollators;
 
 public:
-  IndexImpl(const store::IndexSpecification& spec);
+  IndexImpl(
+        const xqpStringStore_t& uri,
+        const store::IndexSpecification& spec);
 
   virtual ~IndexImpl();
 
@@ -114,7 +116,9 @@ public:
   bool remove(const store::IndexKey& key, store::Item_t& value);
 
 protected:
-  HashIndex(const store::IndexSpecification& spec);
+  HashIndex(
+        const xqpStringStore_t& uri,
+        const store::IndexSpecification& spec);
 
   ~HashIndex();
 };
@@ -223,9 +227,11 @@ public:
   bool remove(const store::IndexKey& key, store::Item_t& value);
 
 protected:
-  STLMapIndex(const store::IndexSpecification& spec);
+  STLMapIndex(
+        const xqpStringStore_t& uri,
+        const store::IndexSpecification& spec);
 
-  ~STLMapIndex() {}
+  ~STLMapIndex();
 };
 
 
@@ -235,14 +241,20 @@ protected:
 class STLMapIndexProbeIterator : public store::IndexProbeIterator
 {
 protected:
-  rchandle<STLMapIndex>       theIndex;
+  rchandle<STLMapIndex>            theIndex;
 
-  store::IndexKey           * theLowKey;
-  store::IndexKey           * theHighKey;
+  store::IndexKey                * theLowKey;
+  store::IndexKey                * theHighKey;
+  bool                             theLowIncl;
+  bool                             theHighIncl;
 
-  ValueSet                  * theResultSet;
-  ValueSet::const_iterator    theIte;
-  ValueSet::const_iterator    theEnd;
+  STLMapIndex::IndexMap::iterator  theMapBegin;
+  STLMapIndex::IndexMap::iterator  theMapEnd;
+  STLMapIndex::IndexMap::iterator  theMapIte;
+
+  ValueSet                       * theResultSet;
+  ValueSet::const_iterator         theIte;
+  ValueSet::const_iterator         theEnd;
 
 public:
   STLMapIndexProbeIterator(const store::Index_t& index) 

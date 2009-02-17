@@ -218,7 +218,8 @@ public:
    * (corresponds to the opening of a connection to a database)
    *
    * @param URI of the collection
-   * @return handle object of the collection. Returns NULL if the collection does not exist
+   * @return handle object of the collection. Returns NULL if the collection
+   *         does not exist
    */
   virtual Collection_t getCollection(const xqpStringStore_t& uri) = 0;
 		
@@ -228,8 +229,8 @@ public:
    */
   virtual void deleteCollection(const xqpStringStore_t& uri) = 0;
 
-  /** Returns an iterator that lists the URI's of all the available collections.
-   *
+  /** 
+   * Returns an iterator that lists the URI's of all the available collections.
    */
   virtual Iterator_t listCollectionUris() = 0;
 
@@ -237,11 +238,22 @@ public:
   /* ------------------------ Index Management ---------------------------*/
 
   /**
-   * Creates a new unique URI which can be used as an ID for a collection.
+   * Creates a new index.
    *
-   * @return URI
+   * @param uri The uri identifying the index. For non-temporary indices,
+   *        the store maintains the map between uris and indices and makes
+   *        sure that there are no two indices with the same uri.
+   * @param spec The index specification. It specifies the index properties
+   *        (@see index.h)
    */
-  virtual Index_t createIndex(const IndexSpecification& spec) = 0;
+  virtual Index_t createIndex(
+        const xqpStringStore_t& uri,
+        const IndexSpecification& spec) = 0;
+
+  /**
+   *  Destroy the index with the given uri. The index must not be a temporary one.
+   */
+  virtual void deleteIndex(const xqpStringStore_t& uri) = 0;
 };
 
 

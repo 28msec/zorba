@@ -313,9 +313,11 @@ store::Item_t SimpleStore::createUri()
   If an index with the given URI exists already and the index we want to create
   is not a temporary one, raise an error.
 ********************************************************************************/
-store::Index_t SimpleStore::createIndex(const store::IndexSpecification& spec)
+store::Index_t SimpleStore::createIndex(
+    const xqpStringStore_t& uri,
+    const store::IndexSpecification& spec)
 {
-  const xqpStringStore* urip = spec.theUri.getp();
+  const xqpStringStore* urip = uri.getp();
 
   store::Index_t index;
 
@@ -326,11 +328,11 @@ store::Index_t SimpleStore::createIndex(const store::IndexSpecification& spec)
 
   if (spec.theIsOrdering)
   {
-    index = new STLMapIndex(spec);
+    index = new STLMapIndex(uri, spec);
   }
   else
   {
-    index = new HashIndex(spec);
+    index = new HashIndex(uri, spec);
   }
 
   if (!spec.theIsTemp)
@@ -342,6 +344,17 @@ store::Index_t SimpleStore::createIndex(const store::IndexSpecification& spec)
 }
 
     
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleStore::deleteIndex(const xqpStringStore_t& uri)
+{
+  if (uri == NULL)
+    return;
+
+  theIndices.remove(uri);
+}
+
 
 /*******************************************************************************
   Create a collection with a given URI and return an rchandle to the new
