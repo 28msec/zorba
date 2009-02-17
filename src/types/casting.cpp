@@ -1266,6 +1266,11 @@ store::Item_t castUserDefinedType(
     case UserDefinedXQType::LIST_TYPE:
     case UserDefinedXQType::UNION_TYPE:
     case UserDefinedXQType::COMPLEX_TYPE:       
+        //std::cout << "  castUserDefinedType  typeCatego: isComplex:" << (udXQType.getTypeCategory()==UserDefinedXQType::COMPLEX_TYPE) << std::endl;
+        //std::cout << "                       targetType: " << udXQType.getQName()->getLocalName()->str() << " @ " << udXQType.getQName()->getNamespace()->str() << std::endl;
+        //std::cout << "                      stringValue: '" << aItem->getStringValue() << "'" << std::endl;
+        //std::cout << "                      aItem      : " << aItem->getType()->getLocalName()->str() <<  " @ " << aItem->getType()->getNamespace()->str() << std::endl;
+        
     default:
         ZORBA_ASSERT( false);
         break;

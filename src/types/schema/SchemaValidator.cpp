@@ -40,6 +40,7 @@ SchemaValidator::SchemaValidator(TypeManager *typeManager, XERCES_CPP_NAMESPACE:
     _grammarResolver->useCachedGrammarInParse(true);
 
 #if 0                   // enable this to debug registered user defined schema types
+    //cout << "SchemaValidator::SchemaValidator typeManager: " << typeManager << endl;
     PrintSchema::printInfo( true, grammarPool);
 #endif 
 

@@ -195,7 +195,8 @@ xqtref_t Schema::createIfExists( const TypeManager *typeManager, const store::It
     if ( XMLString::equals(XSD_NAMESPACE, uri_cstr) )
         return NULL;
 
-    //cout << "--createIfExists: " << qname->getLocalName()->str() << "@" << qname->getNamespace()->str() << "\n";
+    //cout << "createIfExists  typeManager:" << typeManager << endl;
+    //cout << "createIfExists: " << qname->getLocalName()->str() << "@" << qname->getNamespace()->str() << "\n";
 
     if (_grammarPool==NULL)
         // there is no schema import i.e. no user defined types 

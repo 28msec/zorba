@@ -98,7 +98,7 @@ bool ValidateIterator::effectiveValidationValue (
     TypeManager *typeManager,
     bool isLax)
 {
-        //cout << "Starting Validation" << "\n"; cout.flush();
+        //cout << "Starting Validation   typeManager: " << typeManager << endl; cout.flush();
         
         bool returnVal = false;
         store::Item_t item;

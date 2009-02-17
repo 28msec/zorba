@@ -109,6 +109,9 @@ void validateAfterUpdate(
     
     TypeManager * typeManager = staticContext->get_typemanager();
     DelegatingTypeManager* delegatingTypeManager = static_cast<DelegatingTypeManager*>(typeManager);
+    //cout << "validateAfterUpdate staticContext:" << staticContext << endl;
+    //cout << "                    typeManager  :" << typeManager << endl;
+    
     
     bool isLax = true; //staticContext->isLax();
     
@@ -174,7 +177,7 @@ void processElement( store::Item_t& pul, static_context* staticContext,
     store::Item_t nodeName = element->getNodeName();
     xqpStringStore_t baseUri = element->getBaseURI();
 
-    //cout << " vup    - elem: " << nodeName->getLocalName()->c_str() << " @ " << nodeName->getNamespace()->c_str() << "\n"; cout.flush();
+    //cout << " vup    - processElement: " << nodeName->getLocalName()->c_str() << " @ " << nodeName->getNamespace()->c_str() << "\n"; cout.flush();
         
 
     schemaValidator.startElem(nodeName);
@@ -199,7 +202,7 @@ void processElement( store::Item_t& pul, static_context* staticContext,
         TypeIdentifier_t newTypeIdent = TypeIdentifier::createNamedType(typeQName->getNamespace(), typeQName->getLocalName() );
         xqtref_t newType = delegatingTypeManager->create_type(*newTypeIdent);
 
-        //cout << " vup      - elemType: " << newTypeIdent->getLocalName() << " @ " << newTypeIdent->getUri() << "\n"; cout.flush();
+        //cout << " vup        - addSetElementType: " << newTypeIdent->getLocalName() << " @ " << newTypeIdent->getUri() << "\n"; cout.flush();
         
         bool tHasValue      = typeHasValue(newType);
         bool tHasTypedValue = typeHasTypedValue(newType);
@@ -435,28 +438,27 @@ void processTextValue (store::Item_t& pul, DelegatingTypeManager* delegatingType
     store::Item_t result;                    
     if (type!=NULL)
     {
-        bool listOrUnion = false;
         if ( type->type_kind() == XQType::USER_DEFINED_KIND )
         {
             const UserDefinedXQType udXQType = static_cast<const UserDefinedXQType&>(*type);
             if ( udXQType.isList() || udXQType.isUnion() )
             {
-                listOrUnion = true;
+                xqp_string str(textValue);
+                delegatingTypeManager->getSchema()->
+                    parseUserSimpleTypes(str, type, resultList);
+                
+                return;
             }
+            else if ( udXQType.isComplex() )
+            {
+                return;
+            }
+            // else isAtomic
         }
 
-        if ( listOrUnion )
-        {
-            xqp_string str(textValue);
-            delegatingTypeManager->getSchema()->
-                parseUserSimpleTypes(str, type, resultList);
-        }
-        else
-        {
-            bool isResult = GenericCast::instance()->castToAtomic(result, textValue, type.getp(), &nsCtx);
-            if ( isResult )
-                resultList.push_back(result);
-        }
+        bool isResult = GenericCast::instance()->castToAtomic(result, textValue, type.getp(), &nsCtx);
+        if ( isResult )
+            resultList.push_back(result);
     }
     else
     {
