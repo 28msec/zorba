@@ -39,9 +39,9 @@ ZORBA_DLL_PUBLIC void skip_whitespace(std::string& s, unsigned int& position);
  * @param max_digits Maximum number od digits
  * @return Returns 1 on an error, 0 on success
  */
-template <typename T> 
+template <typename T, typename S> 
 int parse_int(
-    std::string& s,
+    S& s,
     unsigned int& position,
     T& result,
     int min_digits = -1,

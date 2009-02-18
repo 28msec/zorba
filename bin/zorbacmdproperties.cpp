@@ -110,7 +110,10 @@ std::vector<std::pair<std::string,std::string> > ZorbaCMDProperties::getSerializ
     std::string lStr = *lIter;
     std::string::size_type lPos = lStr.find_first_of("=");
     std::string lVarName = lStr.substr(0, lPos);
-    std::string lValue = lStr.substr(lPos + 1);
+    std::string lValue;
+    if (lPos != std::string::npos)
+        lValue = lStr.substr(lPos + 1);
+
     lResult.push_back(std::pair<std::string,std::string>(lVarName, lValue));
   }
   return lResult;
