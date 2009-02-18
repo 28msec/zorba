@@ -121,7 +121,7 @@ StandardDocumentURIResolver::resolve(
 #ifdef ZORBA_WITH_TIDY
       std::stringstream out;
       xqp_string        diag;
-      int res = tidy(iss, out, diag, (NULL != tidyUserOpt? tidyUserOpt->getStringValue()->c_str(): NULL));
+      int res = tidy((std::istringstream&)iss, out, diag, (NULL != tidyUserOpt? tidyUserOpt->getStringValue()->c_str(): NULL));
 
       if( res < 0)
       {

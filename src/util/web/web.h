@@ -35,7 +35,7 @@ namespace zorba
            std::iostream& result,
            xqp_string& diagnostics,
            const char* userOpt);
-  int tidy(const std::stringstream& isStream,
+  int tidy(const std::istringstream& isStream,
            std::iostream& result,
            xqp_string& diagnostics,
            const char* userOpt);
