@@ -363,7 +363,11 @@ long STLMapIndex::CompareFunction::compare(
 {
   long result;
 
+#ifndef WIN32
   ulong size = std::min(key1->size(),  key2->size());
+#else
+  ulong size = min(key1->size(),  key2->size());
+#endif
 
   for (ulong i = 0; i < size; i++)
   {
