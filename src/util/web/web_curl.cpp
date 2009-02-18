@@ -41,7 +41,7 @@ WriteMemoryCallback(void *ptr, size_t size, size_t nmemb, void* data)
   return realsize;
 }
 
-int http_get(const char* url, xqp_string& result)
+int http_get(const char* url, std::iostream& result)
 {
   int result_code;
   CURL* curl_handle;
@@ -78,7 +78,7 @@ int http_get(const char* url, xqp_string& result)
 
   curl_easy_cleanup(curl_handle);
 
-  result = temp;
+  result << temp.c_str();
   return result_code;
 }
 
@@ -286,7 +286,7 @@ int tidy(const std::ifstream& fStream,
   return rc;
 }
 
-int tidy(const std::istringstream& isStream,
+int tidy(const std::stringstream& isStream,
          std::iostream& result,
          xqp_string& diagnostics,
          const char* userOpt)

@@ -25,7 +25,7 @@
 
 namespace zorba
 {
-  int http_get(const char* url, xqp_string& result);
+  int http_get(const char* url, std::iostream& result);
 #ifdef ZORBA_WITH_TIDY
   int tidy(const char* input,
            xqp_string& result,
@@ -35,7 +35,7 @@ namespace zorba
            std::iostream& result,
            xqp_string& diagnostics,
            const char* userOpt);
-  int tidy(const std::istringstream& isStream,
+  int tidy(const std::stringstream& isStream,
            std::iostream& result,
            xqp_string& diagnostics,
            const char* userOpt);

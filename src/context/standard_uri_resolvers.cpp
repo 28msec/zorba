@@ -104,15 +104,17 @@ StandardDocumentURIResolver::resolve(
   {
 #ifdef ZORBA_WITH_REST
     // retrieve web file
-    xqp_string xmlString;
-    int result = http_get(lURI.toString().c_str(), xmlString);
+    // xqp_string xmlString;
+    std::stringstream iss;
+    int result = http_get(lURI.toString().c_str(), iss);
+    
     if (result != 0) 
     {
       ZORBA_ERROR_DESC_OSS(FODC0002,
                            "File not found or accessible. Could not make HTTP call");
     }
 
-    std::istringstream iss(xmlString.c_str());
+    // std::istringstream iss(xmlString.c_str());
 
     if (tidying)
     {
@@ -235,10 +237,10 @@ StandardModuleURIResolver::resolve(
     modfile.reset (new std::ifstream(URI::decode_file_URI (lResolvedURI)->c_str()));
   else 
   {
-    xqp_string code;
+    std::stringstream code;
     if (http_get (lResolvedURI->c_str (), code) != 0)
       return NULL;
-    modfile.reset (new std::istringstream (code));
+    modfile.reset (&code);
   }
   
   // we transfer ownership to the caller
