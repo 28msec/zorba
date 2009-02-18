@@ -14,25 +14,35 @@
 namespace zorba 
 { 
 
-store::IndexKey store::IndexProbeIterator::thePosInfKey;
-store::IndexKey store::IndexProbeIterator::theNegInfKey;
-
-
-namespace simplestore 
+namespace store
 {
+
+IndexKey IndexProbeIterator::thePosInfKey;
+IndexKey IndexProbeIterator::theNegInfKey;
 
 
 /******************************************************************************
 
 ********************************************************************************/
-std::ostream& operator<<(std::ostream& os, const store::IndexKey& key)
+std::ostream& operator<<(std::ostream& os, const IndexKey& key)
 {
   ulong size = key.size();
 
   os << "[";
 
-  for (ulong i = 0; i < size; i++)
-    os << key[i]->getStringValue()->c_str();
+  if (&key == &IndexProbeIterator::thePosInfKey)
+  {
+    os << "+INF";
+  }
+  else if (&key == &IndexProbeIterator::theNegInfKey)
+  {
+    os << "-INF";
+  }
+  else
+  {
+    for (ulong i = 0; i < size; i++)
+      os << key[i]->getStringValue()->c_str();
+  }
 
   os << "]";
 
@@ -43,12 +53,19 @@ std::ostream& operator<<(std::ostream& os, const store::IndexKey& key)
 /******************************************************************************
 
 ********************************************************************************/
-std::string toString(const store::IndexKey& key)
+std::string toString(const IndexKey& key)
 {
   std::ostringstream str;
   str << key;
   return str.str();
 }
+
+
+} // namespace store
+
+
+namespace simplestore 
+{
 
 
 /******************************************************************************
@@ -506,13 +523,25 @@ void STLMapIndexProbeIterator::init(
 
   // Check for invalid range 
   if (theLowKey == &store::IndexProbeIterator::thePosInfKey ||
-      theHighKey == &store::IndexProbeIterator::theNegInfKey ||
-      (theLowKey != &store::IndexProbeIterator::theNegInfKey &&
-       theHighKey != &store::IndexProbeIterator::thePosInfKey &&
-       theIndex->theCompFunction.compare(theLowKey, theHighKey) > 0))
+      theHighKey == &store::IndexProbeIterator::theNegInfKey)
   {
-    ZORBA_ERROR_PARAM(STR0005_INDEX_INVALID_SCAN_RANGE, 
-                      theIndex->theUri->getStringValue()->c_str(), "");
+    ZORBA_ERROR_PARAM_OSS(STR0005_INDEX_INVALID_SCAN_RANGE, 
+                          theIndex->theUri->getStringValue()->c_str(),
+                          "low key = " <<  store::toString(lowKey) 
+                          << " high key = " << store::toString(highKey));
+  }
+  else if (theLowKey != &store::IndexProbeIterator::theNegInfKey &&
+           theHighKey != &store::IndexProbeIterator::thePosInfKey)
+  {
+    long cmp = theIndex->theCompFunction.compare(theLowKey, theHighKey);
+  
+    if (cmp > 0 || (cmp == 0 && (!lowIncl || !highIncl)))
+    { 
+      ZORBA_ERROR_PARAM_OSS(STR0005_INDEX_INVALID_SCAN_RANGE, 
+                            theIndex->theUri->getStringValue()->c_str(),
+                            "low key = " <<  store::toString(lowKey) 
+                            << " high key = " << store::toString(highKey));
+    }
   }
 
 
@@ -539,12 +568,11 @@ void STLMapIndexProbeIterator::init(
       theMapEnd = theMapBegin;
       return;
     }
-    else
+    else if (theIndex->theCompFunction.compare(theLowKey, theMapBegin->first) == 0)
     {
       ++theMapBegin;
     }
   }
-
 
   if (theHighKey == &store::IndexProbeIterator::thePosInfKey)
   {
@@ -553,36 +581,16 @@ void STLMapIndexProbeIterator::init(
   else if (theHighIncl)
   {
     theMapEnd = theIndex->theMap.upper_bound(theHighKey);
-
-    if (theMapEnd == theIndex->theMap.begin())
-    {
-      assert(theMapBegin == theMapEnd);
-
-      if (theIndex->theCompFunction.compare(theHighKey, theMapEnd->first) < 0)
-      {
-        theMapEnd = theMapBegin = theIndex->theMap.end();
-        return;
-      }
-    }
   }
   else
   {
     theMapEnd = theIndex->theMap.lower_bound(theHighKey);
+  }
 
-    if (theMapEnd == theIndex->theMap.begin())
-    {
-      assert(theMapBegin == theMapEnd);
-
-      if (theIndex->theCompFunction.compare(theHighKey, theMapEnd->first) < 0)
-      {
-        theMapEnd = theMapBegin = theIndex->theMap.end();
-        return;
-      }
-    }
-    else if (theMapEnd != theIndex->theMap.end())
-    {
-      --theMapEnd;
-    }
+  if (theMapEnd == theMapBegin)
+  {
+    theMapEnd = theMapBegin = theIndex->theMap.end();
+    return;
   }
 }
 
@@ -643,16 +651,21 @@ store::Item* STLMapIndexProbeIterator::next()
       ++theIte;
       return result;
     }
-    else if (theMapIte != theMapEnd)
+    else 
     {
+      theResultSet = NULL;
       theMapIte++;
-      theResultSet = theMapIte->second;
-      theIte = theResultSet->begin();
-      theEnd = theResultSet->end();
 
-      store::Item* result = (*theIte).getp();
-      ++theIte;
-      return result;
+      if (theMapIte != theMapEnd)
+      {
+        theResultSet = theMapIte->second;
+        theIte = theResultSet->begin();
+        theEnd = theResultSet->end();
+
+        store::Item* result = (*theIte).getp();
+        ++theIte;
+        return result;
+      }
     }
   }
 

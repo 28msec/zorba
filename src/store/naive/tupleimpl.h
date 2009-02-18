@@ -26,9 +26,16 @@ namespace simplestore {
 
 class TupleItem : public store::Item 
 {
+protected:
+  SYNC_CODE(RCLock                      theRCLock;)
+
+private:
+  std::vector<zorba::store::TupleField> m_fields;
+
+public:
+
 #ifdef ZORBA_FOR_ONE_THREAD_ONLY
 
- public:
    TupleItem(std::vector<zorba::store::TupleField>& fields)
      :
      store::Item(),
@@ -36,10 +43,6 @@ class TupleItem : public store::Item
 
 #else
 
-  protected:
-    SYNC_CODE(RCLock theRCLock;)
-
-public:
     TupleItem(std::vector<zorba::store::TupleField>& fields)
       :
       store::Item(),
@@ -74,9 +77,6 @@ public:
   }
 
   store::Item* getType() const;
-
- private:
-  std::vector<zorba::store::TupleField> m_fields;
 };
 
 }

@@ -326,7 +326,7 @@ store::Index_t SimpleStore::createIndex(
     ZORBA_ERROR_PARAM(STR0001_INDEX_ALREADY_EXISTS, urip->c_str(), "");
   }
 
-  if (spec.theIsOrdering)
+  if (spec.theIsSorted)
   {
     index = new STLMapIndex(uri, spec);
   }

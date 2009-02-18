@@ -48,8 +48,8 @@ store::AttributesIterator* SimpleIteratorFactory::createAttributesIterator()
 store::IndexProbeIterator* SimpleIteratorFactory::createIndexProbeIterator(
     const store::Index_t& index)
 {
-  if (reinterpret_cast<IndexImpl*>(index.getp())->isOrdering())
-    return NULL;
+  if (reinterpret_cast<IndexImpl*>(index.getp())->isSorted())
+    return new STLMapIndexProbeIterator(index);
   else
     return new HashIndexProbeIterator(index);
 }

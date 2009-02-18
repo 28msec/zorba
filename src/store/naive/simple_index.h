@@ -57,7 +57,7 @@ public:
 
   bool isUnique() const { return theSpec.theIsUnique; }
 
-  bool isOrdering() const { return theSpec.theIsOrdering; }
+  bool isSorted() const { return theSpec.theIsSorted; }
 
   bool isTemporary() const { return theSpec.theIsTemp; }
 
@@ -203,11 +203,6 @@ protected:
     bool operator()(const store::IndexKey* key1, const store::IndexKey* key2) const
     {
       return compare(key1, key2) < 0;
-    }
-
-    bool operator()(const STLMapPair& val1, const STLMapPair& val2) const
-    {
-      return compare(val1.first, val2.first) < 0;
     }
 
     long compare(const store::IndexKey* key1, const store::IndexKey* key2) const;

@@ -41,20 +41,29 @@ namespace store
   theTimezone     : The timezone is needed to compare date/time key values.
   theIsUnique     : Whether the index is unique, i.e., there is exactly one
                     value associated with each key.
-  theIsOrdering   : 
+  theIsSorted     : Whether the index is sorted by its key values or not.
   theIsTemp       : Whether the index is temporary or not.
   theIsThreadSafe : Whether the index can be shared among multiple threads or not
 ********************************************************************************/
-struct IndexSpecification
+class IndexSpecification
 {
+public:
   std::vector<store::Item_t> theKeyTypes;
   store::Item_t              theValueType;
   std::vector<std::string>   theCollations;
   long                       theTimezone;
   bool                       theIsUnique;
-  bool                       theIsOrdering;
+  bool                       theIsSorted;
   bool                       theIsTemp;
   bool                       theIsThreadSafe;
+
+public:
+  void clear()
+  {
+    theKeyTypes.clear();
+    theValueType = NULL;
+    theCollations.clear();
+  }
 };
 
 
@@ -96,6 +105,10 @@ public:
    */
   virtual bool remove(const store::IndexKey& key, store::Item_t& value) = 0;
 };
+
+
+extern std::ostream& operator<<(std::ostream& os, const IndexKey& key);
+extern std::string toString(const IndexKey& key);
 
 
 }
