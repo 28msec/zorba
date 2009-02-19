@@ -1,4 +1,27 @@
 Zorba - The XQuery Processor
+version 0.9.5 (2008.02.17)
+  * Unified the Tidy and Rest API's
+  * Added new sinatures to zorba-util:tidy and zorba-util:tdoc that
+	allow setting of tidy functions
+  * Added Schema imports using target namespace or location hints
+  * Added StaticContext::findFunctions and StaticContext::disableFunciton
+  * Added Functions for collections 
+  * Windows packages include a zorba_simplestore.dll
+  * Improved error messages for regular expression processing
+  * Added functions to return an item instead of xs:string
+  * Added a new signature to zorba-util:random in order to be able to call
+	random within a loop and get different numbers each time.
+  * Corrected the types of some functions/operators (YM_DURATION or 
+	DT_DURATION instead of DURATION).
+  * Now possible to pass empty sequence as collection URI.
+  * Now cURL is set to follow an infinite number of redirects.
+  * Added validate after update
+  * Fixed schema files without target namespace.
+  * Fixed notation cast.
+  * Added list and union item types to type manager cache
+  * Added validation tests for schema substitution groups
+  * Added message when error during update test driver.
+	
 version 0.9.4 (2008.10.06)
   * added General FLWOR (GFLWOR)
   	- added Windowing functionality
