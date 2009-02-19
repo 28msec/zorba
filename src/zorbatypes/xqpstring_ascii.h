@@ -38,10 +38,8 @@ class ZORBA_DLL_PUBLIC xqpStringStore : public RCObject
 public:
   typedef ptrdiff_t distance_type;
 
-#ifndef ZORBA_FOR_ONE_THREAD_ONLY
 protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
-#endif
 
 protected:
   std::string  theString;
@@ -71,9 +69,6 @@ public:
   static bool
   is_Invalid_in_IRI(uint32_t cp);
 
-//  static xqpStringStore_t
-//  getXqpString(UnicodeString source);
-
 public:
   xqpStringStore() { }
 
@@ -92,9 +87,6 @@ public:
   
   xqpStringStore(long initial_len) { theString.reserve(initial_len); }
 
-  long*
-  getSharedRefCounter() const { return NULL; }  
-
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
 
@@ -108,9 +100,13 @@ public:
 
   std::string::size_type bytes() const { return theString.size(); }
 
+  std::string::size_type size() const { return theString.size(); }
+
   std::string::size_type numChars() const;
 
   char byteAt (std::string::size_type i) const { return str () [i]; }
+
+  char operator[](std::string::size_type i) const { return str()[i]; }
 
   uint32_t 
   hash(XQPCollator* = 0) const;
