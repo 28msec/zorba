@@ -237,7 +237,7 @@ void file::do_stat () {
   else {
     size = findData.nFileSizeLow + (((int64_t)(findData.nFileSizeHigh))<<32);
     type  = (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)  ? type_directory :
-            (findData.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE ) ? type_file :
+            ((findData.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE ) | (findData.dwFileAttributes & FILE_ATTRIBUTE_NORMAL )) ? type_file :
             //(st.st_mode & S_IFLNK)  ? type_link : 
             type_invalid;
     FindClose(hfind);
@@ -295,7 +295,7 @@ enum file::filetype file::get_filetype() {
   {
     size = findData.nFileSizeLow + (((int64_t)(findData.nFileSizeHigh))<<32);
     type  = (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)  ? type_directory :
-            (findData.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE ) ? type_file :
+            ((findData.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE ) | (findData.dwFileAttributes & FILE_ATTRIBUTE_NORMAL )) ? type_file :
             //(st.st_mode & S_IFLNK)  ? type_link : 
             type_invalid;
     FindClose(hfind);
