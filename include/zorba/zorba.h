@@ -104,6 +104,23 @@ namespace zorba {
       virtual XQuery_t
       createQuery(ErrorHandler* aErrorHandler = 0) = 0;
       
+      /** \brief Creates an XQueryX object.
+       *
+       * This methods creates an XQueryX object without implicitliy assigning it
+       * a query. The user has to compile this query using code in xqueryx xml format.
+       * For compiling you can use the same compile() functions as for normal 
+       * xquery code.
+       *
+       * Optionally, this method takes an ErrorHandler as parameter. In the case
+       * an ErrorHandler is passed as parameter, each error that occurs during
+       * compiling or executing the query, is reported to the passed error handler.
+       * If no ErrorHandler is given, exceptions are thrown for each of these errors.
+       *
+       * @param aErrorHandler the ErrorHandler to which errors should be reported.
+       * @return XQuery the newly created XQuery object.
+       */
+      virtual XQuery_t
+      createXQueryX(ErrorHandler* aErrorHandler = 0) = 0;
 
       /** \brief Creates and compiles an XQuery object.
        *

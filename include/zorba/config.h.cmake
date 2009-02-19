@@ -93,6 +93,9 @@
 #cmakedefine ZORBA_NO_XMLSCHEMA
 #cmakedefine ZORBA_NO_BIGNUMBERS
 
+/* XQueryX */
+#cmakedefine ZORBA_XQUERYX
+
 /* to use minimal store or simplestore*/
 #cmakedefine  ZORBA_MINIMAL_STORE
 

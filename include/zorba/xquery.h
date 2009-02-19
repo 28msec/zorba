@@ -177,7 +177,7 @@ namespace zorba {
       virtual void
       compile(const String& aQuery) = 0;
 
-      /** \brief Compile the give query String with the given compiler hints.
+      /** \brief Compile the given query String with the given compiler hints.
        *
        * @param aQuery the query String to compile.
        * @param aHints hints passed to the query compiler.
