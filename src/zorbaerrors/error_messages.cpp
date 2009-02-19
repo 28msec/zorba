@@ -230,6 +230,9 @@ DEF_ERR_CODE (XQP0028_FUNCTION_IMPL_NOT_FOUND, XQP0028, "The external function c
 
 DEF_ERR_CODE (XQP0030_DEADLOCK, XQP0029, "Lock upgrade request will result in deadlock")
 
+DEF_ERR_CODE (XQP0031_MALFORMED_XQUERYX_INPUT, XQP0031, "XQueryX Xml input is malformed.")
+DEF_ERR_CODE (XQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY, XQP0031, "Error transforming XQueryX to XQuery using XSLT engine.")
+
 //
 // XPDY
 //
