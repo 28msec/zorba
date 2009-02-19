@@ -104,24 +104,18 @@ StandardDocumentURIResolver::resolve(
   {
 #ifdef ZORBA_WITH_REST
     // retrieve web file
-    // xqp_string xmlString;
     std::stringstream iss;
     int result = http_get(lURI.toString().c_str(), iss);
     
     if (result != 0) 
-    {
-      ZORBA_ERROR_DESC_OSS(FODC0002,
-                           "File not found or accessible. Could not make HTTP call");
-    }
-
-    // std::istringstream iss(xmlString.c_str());
+      ZORBA_ERROR_DESC_OSS(FODC0002, "File not found or accessible. Could not make HTTP call");
 
     if (tidying)
     {
 #ifdef ZORBA_WITH_TIDY
       std::stringstream out;
       xqp_string        diag;
-      int res = tidy((std::istringstream&)iss, out, diag, (NULL != tidyUserOpt? tidyUserOpt->getStringValue()->c_str(): NULL));
+      int res = tidy(iss, out, diag, (NULL != tidyUserOpt? tidyUserOpt->getStringValue()->c_str(): NULL));
 
       if( res < 0)
       {

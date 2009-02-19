@@ -31,14 +31,12 @@ namespace zorba
            xqp_string& result,
            xqp_string& diagnostics,
            const char* userOpt) throw();
-  int tidy(const std::ifstream& fStream,
+  
+  int tidy(const std::istream& stream,
            std::iostream& result,
            xqp_string& diagnostics,
            const char* userOpt);
-  int tidy(const std::istringstream& isStream,
-           std::iostream& result,
-           xqp_string& diagnostics,
-           const char* userOpt);
+
 #endif
 }
 
