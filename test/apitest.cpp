@@ -95,11 +95,14 @@ int _tmain(int argc, _TCHAR* argv[])
   // input file (either from a file or given as parameter)
   auto_ptr<istream> qfile;
   filesystem_path path;
+  bool  is_xqueryx = false;
 
   if (! lProp->inlineQuery()) {
     path = lProp->queryFile ();
     path.resolve_relative ();
     std::string fname = path.get_path ();
+    if(fname.substr(fname.length()-4) == ".xqx")
+      is_xqueryx = true;
     qfile.reset (new ifstream (fname.c_str ()));
     if (!qfile->good() || qfile->eof()) {
       cerr << "no query given or not readable " << fname  << endl;
@@ -130,7 +133,11 @@ int _tmain(int argc, _TCHAR* argv[])
   Zorba* zengine = Zorba::getInstance(store);
 
   // start parsing the query
-  XQuery_t query = zengine->createQuery ();
+  XQuery_t query;
+  if(!is_xqueryx)
+    query = zengine->createQuery ();
+  else
+    query = zengine->createXQueryX ();
 #ifdef ZORBA_DEBUGGER 
  query->setDebugMode(lProp->debug());
 #endif
