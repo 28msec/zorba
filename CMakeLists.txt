@@ -110,6 +110,23 @@ ELSE(LIBXML2_FOUND)
     MESSAGE(FATAL_ERROR "The libxml2 library is required in order to build simple store.")
 ENDIF(LIBXML2_FOUND)
 
+#
+#  LibXslt
+#
+IF(ZORBA_XQUERYX)
+FIND_PACKAGE(LibXslt)
+IF(LIBXSLT_FOUND)
+
+    MESSAGE(STATUS "Found  LIBXSLT library -- " ${LIBXSLT_LIBRARIES})
+    INCLUDE_DIRECTORIES(${LIBXSLT_INCLUDE_DIR})
+
+    SET(requiredlibs-store ${requiredlibs-store} ${LIBXSLT_LIBRARIES})
+    SET(CXXFLAGS ${CXXFLAGS} ${LIBXSLT_DEFINITONS})
+
+ELSE(LIBXSLT_FOUND)
+    MESSAGE(FATAL_ERROR "The libslt library is required in order to build zorba with xqueryx capabilities.")
+ENDIF(LIBXSLT_FOUND)
+ENDIF(ZORBA_XQUERYX)
 
 #
 # Pthreads
