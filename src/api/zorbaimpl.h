@@ -79,6 +79,9 @@ class ZorbaImpl : public Zorba
   createQuery(ErrorHandler* aErrorHandler = 0);
 
   XQuery_t
+  createXQueryX(ErrorHandler* aErrorHandler = 0);
+
+  XQuery_t
   compileQuery(
         const String& aQuery,
         ErrorHandler* aErrorHandler = 0);

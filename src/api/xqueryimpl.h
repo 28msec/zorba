@@ -160,6 +160,7 @@ class XQueryImpl : public XQuery
 
   SYNC_CODE(mutable Mutex          theCloningMutex;)
 
+  enum XQueryFormat               xqformat;
  public:
   virtual ~XQueryImpl();
 
@@ -227,7 +228,7 @@ class XQueryImpl : public XQuery
 
  protected:
     
-  XQueryImpl();
+  XQueryImpl(enum XQueryFormat xqformat = XQUERY1_1);
       
   void
   doCompile(std::istream&, const Zorba_CompilerHints_t& aHints);

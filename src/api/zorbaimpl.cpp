@@ -83,6 +83,14 @@ ZorbaImpl::createQuery(ErrorHandler* aErrorHandler)
   return lXQuery;
 }
 
+XQuery_t
+ZorbaImpl::createXQueryX(ErrorHandler* aErrorHandler)
+{
+  XQuery_t lXQuery(new XQueryImpl(XQUERYX_2005));
+  if (aErrorHandler != 0)
+    lXQuery->registerErrorHandler(aErrorHandler);
+  return lXQuery;
+}
 
 XQuery_t
 ZorbaImpl::compileQuery(
