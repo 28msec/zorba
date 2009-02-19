@@ -408,11 +408,22 @@ main(int argc, char** argv)
 
   zorba::Zorba *  engine;
   int             errors;
+  bool            is_xqueryx;
 
   for( int i=1; i < argc; i++ )
   {
+#ifndef ZORBA_XQUERYX
+    std::string   Queriesdir = "/Queries/";
+#else
+    std::string   Queriesdir = "/XQueryX/";
+#endif
     int path_flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;
-    zorba::file lQueryFile (zorba::RBKT_SRC_DIR +"/Queries/" + argv[i], path_flags);
+    zorba::file lQueryFile (zorba::RBKT_SRC_DIR + Queriesdir + argv[i], path_flags);
+    
+    if(lQueryFile.get_path().substr(lQueryFile.get_path().length()-4) != ".xqx")
+      is_xqueryx = false;
+    else
+      is_xqueryx = true;
 
     std::string lQueryWithoutSuffix = std::string(argv[i]).substr( 0, std::string(argv[i]).rfind('.') );
     std::cout << "test " << lQueryWithoutSuffix << std::endl;
@@ -430,7 +441,8 @@ main(int argc, char** argv)
                            + lQueryWithoutSuffix +".spec", path_flags);
 
     // does the query file exists
-    if ( (! lQueryFile.exists ()) || lQueryFile.is_directory () ) {
+    if ( (! lQueryFile.exists ()) || lQueryFile.is_directory () ) 
+    {
       std::cout << "\n query file " << lQueryFile.get_path() 
                 << " does not exist or is not a file" << std::endl;
       return 2;
@@ -482,7 +494,15 @@ main(int argc, char** argv)
     // create and compile the query
     std::string lQueryString;
     slurp_file(lQueryFile.get_path().c_str(), lQueryString);
-    zorba::XQuery_t lQuery = engine->createQuery (&errHandler);
+    zorba::XQuery_t lQuery;
+    if(!is_xqueryx)
+    {
+      lQuery = engine->createQuery (&errHandler);
+    }
+    else
+    {
+      lQuery = engine->createXQueryX (&errHandler);
+    }
     lQuery->setFileName (lQueryFile.get_path ());
     lQuery->compile (lQueryString.c_str(), getCompilerHints());
 
