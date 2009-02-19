@@ -24,6 +24,8 @@
 
 #include "store/util/hashmap_stringp.h"
 
+#include "store/api/pul.h"
+
 #include "store/minimal/min_store.h"
 #include "store/minimal/min_temp_seq.h"
 #include "store/minimal/min_lazy_temp_seq.h"
@@ -41,9 +43,12 @@
 #include "store/minimal/min_query_context.h"
 #include "store/minimal/min_item_iterator.h"
 
-#include "store/api/pul.h"
 
-namespace zorba { namespace storeminimal {
+namespace zorba 
+{ 
+
+namespace storeminimal 
+{
 
 typedef rchandle<store::TempSeq> TempSeq_t;
 
@@ -300,19 +305,43 @@ store::Item_t SimpleStore::createUri()
   return val;
 }
 
+*************************************************************************
+  Create an index with a given URI and return an rchandle to the index object. 
+  If an index with the given URI exists already, raise an error.
+********************************************************************************/
+store::Index_t SimpleStore::createIndex(
+                  const xqpStringStore_t& uri,
+                  const store::IndexSpecification& spec)
+{
+  ZORBA_ERROR(XQP0015_SYSTEM_NOT_YET_IMPLEMENTED);
+  return NULL;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleStore::deleteIndex(const xqpStringStore_t& uri)
+{
+  if (uri == NULL)
+    return;
+
+  theIndices.remove(uri);
+}
+
 
 /*******************************************************************************
   Create a collection with a given URI and return an rchandle to the new
   collection object. If a collection with the given URI exists already, return
   NULL and register an error.
 ********************************************************************************/
-store::Collection_t SimpleStore::createCollection(xqpStringStore_t& uri)
+store::Collection_t SimpleStore::createCollection(const xqpStringStore_t& uri)
 {
   if (uri == NULL)
     return NULL;
 
   store::Item_t uriItem;
-  theItemFactory->createAnyURI(uriItem, uri);
+  xqpStringStore_t  tmpuri(uri.getp());
+  theItemFactory->createAnyURI(uriItem, tmpuri);
   theItemUris.push_back(uriItem);
 
   store::Collection_t collection(new SimpleCollection(uriItem));

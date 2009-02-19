@@ -25,6 +25,7 @@
 
 #include "store/api/store.h"
 #include "store/api/collection.h"
+#include "store/api/index.h"
 
 #include "store/util/hashmap_stringp.h"
 
@@ -44,6 +45,7 @@ namespace error
 namespace store
 {
   class IteratorFactory;
+  class ValueIndexSpecification;
 }
 
 namespace storeminimal 
@@ -63,7 +65,8 @@ typedef store::StringHashMap<store::Collection_t> CollectionSet;
 
 
 /*******************************************************************************
-
+  theSchemaTypeNames : Maps each enum value from SchemaTypeNames (see 
+                       store_defs.h) to its associated QName item.
 ********************************************************************************/
 class SimpleStore : public store::Store
 {
@@ -141,14 +144,26 @@ public:
 
   store::Item_t createUri();
 
-  store::Collection_t createCollection(xqpStringStore_t& uri);
+  store::Index_t createIndex(
+        const xqpStringStore_t& uri,
+        const store::IndexSpecification& spec);
+
+  void deleteIndex(const xqpStringStore_t& uri);
+
+  store::Collection_t createCollection(const xqpStringStore_t& uri);
   store::Collection_t createCollection();
   store::Collection_t getCollection(const xqpStringStore_t& uri);
   void deleteCollection(const xqpStringStore_t& uri);
   store::Iterator_t listCollectionUris();
 
-  store::Item_t loadDocument(const xqpStringStore_t& uri, std::istream& stream, bool storeDocument);
-  store::Item_t loadDocument(const xqpStringStore_t& uri, std::istream* stream, bool storeDocument);
+  store::Item_t loadDocument(
+          const xqpStringStore_t& uri, 
+          std::istream& stream, 
+          bool storeDocument);
+  store::Item_t loadDocument(
+          const xqpStringStore_t& uri, 
+          std::istream* stream, 
+          bool storeDocument);
   void addNode(const xqpStringStore* uri, const store::Item_t&	 node);
   store::Item_t getDocument(const xqpStringStore_t& uri);
   void deleteDocument(const xqpStringStore_t& uri);

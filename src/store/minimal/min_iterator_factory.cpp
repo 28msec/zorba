@@ -43,6 +43,16 @@ store::AttributesIterator* SimpleIteratorFactory::createAttributesIterator()
 /*******************************************************************************
 
 ********************************************************************************/
+store::IndexProbeIterator* SimpleIteratorFactory::createIndexProbeIterator(
+    const store::Index_t& index)
+{
+  ZORBA_ERROR_PARAM(XQP0015_SYSTEM_NOT_YET_IMPLEMENTED);
+  return NULL;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
 store::TempSeqIterator* SimpleIteratorFactory::createTempSeqIterator()
 {
   return new SimpleTempSeqIter();

@@ -1687,12 +1687,10 @@ void ElementNode::checkUniqueAttr(const store::Item* attrName) const
   ulong numAttrs = numAttributes();
   for (ulong i = 0; i < numAttrs; i++)
   {
-    XmlNode* attr = getAttr(i);
-    if (attr->getNodeName()->equals(attrName))
+    AttributeNode* attr = getAttr(i);
+    if (!attr->isHidden() && attr->getNodeName()->equals(attrName))
     {
-      ZORBA_ERROR_PARAM_OSS(XQDY0025,
-                            "Attribute name " << *attrName->getStringValue() 
-                            << " is not unique", "");
+      ZORBA_ERROR_PARAM_OSS(XQDY0025, *attrName->getStringValue(), "");
     }
   }
 }
@@ -1727,11 +1725,14 @@ void ElementNode::addBaseUriProperty(
   else
   { 
     xqpStringStore_t resolvedUriString;
-    try {
+    try 
+    {
       URI absoluteURI(&*absUri);
       URI resolvedURI(absoluteURI, &*relUri);
       resolvedUriString = resolvedURI.toString().getStore();
-    } catch (error::ZorbaError&) {
+    } 
+    catch (error::ZorbaError&) 
+    {
       resolvedUriString.transfer(relUri);
     }
 
@@ -2105,10 +2106,9 @@ AttributeNode::AttributeNode(
 
     if (p)
     {
-      // If this is an explicit base uri attribute, set or update the base-uri
-      // property of the parent. Else, add the ns binding implied by the attr
-      // name into the in-scope ns bindings of the parent (if this ns binding
-      // is not there already) 
+      // If this is an explicit base uri attribute, (a) set or update the base-uri
+      // property of the parent, and (b) create an additional hidden base-uri attr
+      // with the resolved version ofthe given uri. 
       if (isBaseUri() && !isHidden())
       {
         xqpStringStore_t parentBaseUri = p->getBaseURI();
@@ -2134,6 +2134,8 @@ AttributeNode::AttributeNode(
         else
           p->addBaseUriProperty(parentBaseUri, baseUri);
       }
+      // Else, add the ns binding implied by the attr name into the in-scope ns
+      // bindings of the parent (if this ns binding is not there already) 
       else if (!isHidden())
       {
         p->addBindingForQName(theName, true, true);

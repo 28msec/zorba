@@ -23,16 +23,28 @@
 #include "store/api/iterator.h"
 #include "store/minimal/min_store_defs.h"
 
-namespace zorba { namespace store {
+namespace zorba 
+{
+
+namespace store 
+{
 
 
 Item*
 Item::getType( ) const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                        __FUNCTION__, typeid(*this).name());
+                        __FUNCTION__, typeid (*this).name ());
   return 0;
 }
+
+
+uint32_t Item::hash(long timezone, XQPCollator* coll) const
+{
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                        __FUNCTION__, getType()->getStringValue());
+  return 0;
+};
 
 
 bool Item::equals(const store::Item*, long timezone, XQPCollator* aCollation) const
@@ -40,6 +52,14 @@ bool Item::equals(const store::Item*, long timezone, XQPCollator* aCollation) co
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return false;
+}
+
+
+long Item::compare(const store::Item*, long timezone, XQPCollator* aCollation) const
+{
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                        __FUNCTION__, getType()->getStringValue());
+  return 0;
 }
 
 
@@ -71,25 +91,13 @@ xqpStringStore_t Item::getStringValue() const
  * Helper method with is used to return a StringValue of an store::Item
  * by pointer instead of rchandle
  */
-xqpStringStore* Item::getStringValueP() const
+xqpStringStore* Item::getStringValueP() const 
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
 
-
-/**
- * Get a hash value computed from the value of this item.
- *
- * @return The hash value
- */
-uint32_t Item::hash(long timezone, XQPCollator* coll) const
-{
-  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                        __FUNCTION__, getType()->getStringValue());
-  return 0;
-};
 
 
 /* -------------------  Methods for AtomicValues ------------------------------ */
@@ -338,7 +346,6 @@ const xqp_time& Item::getTimeValue() const
   return *(new xqp_time);
 }
 
-
 /** Accessor for xs:unsignedLong
  */
 xqp_ulong Item::getUnsignedLongValue() const
@@ -582,6 +589,7 @@ const TupleField& Item::getTupleField(int index) const
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
+
 
 error::ZorbaError* Item::getError() const
 {

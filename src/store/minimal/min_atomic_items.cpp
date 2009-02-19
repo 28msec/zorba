@@ -40,6 +40,7 @@
 namespace zorba { namespace storeminimal {
 
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -217,6 +218,7 @@ xqp_string NormalizedStringItemImpl::show() const
   return "xs:NormalizedString(" + theValue->str() + ")";
 }
 
+
 /*******************************************************************************
   class TokenItemImpl
 ********************************************************************************/
@@ -235,6 +237,7 @@ xqp_string TokenItemImpl::show() const
 {
   return "xs:TOKEN(" + theValue->str() + ")";
 }
+
 
 /*******************************************************************************
   class LanguageItemImpl
@@ -656,61 +659,6 @@ DecimalItemNaive::hash(long timezone, XQPCollator* aCollation) const
 
 
 /*******************************************************************************
-  class IntItemNaive
-********************************************************************************/
-xqp_integer IntItemNaive::getIntegerValue() const
-{
-  return Integer::parseInt( theValue );
-}
-
-xqp_decimal IntItemNaive::getDecimalValue() const
-{
-  return Decimal::parseInt( theValue );
-}
-
-xqp_long IntItemNaive::getLongValue() const {
-  return static_cast<xqp_long>(theValue);
-}
-
-store::Item* IntItemNaive::getType() const
-{
-  return GET_STORE().theSchemaTypeNames[XS_INT];
-}
-
-bool IntItemNaive::equals (
-    const store::Item* item,
-    long timezone,
-    XQPCollator* coll ) const
-{
-  return item->getIntValue() == theValue;
-}
-  
-store::Item_t IntItemNaive::getEBV() const
-{
-  bool b = ( theValue != (int32_t)0 );
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
-}
-
-xqpStringStore_t IntItemNaive::getStringValue() const
-{
-  return NumConversions::intToStr(theValue).getStore();
-}
-
-xqp_string IntItemNaive::show() const
-{
-  return "xs:int(" + getStringValue()->str() + ")";
-}
-
-uint32_t
-IntItemNaive::hash(long timezone, XQPCollator* aCollation) const
-{
-  return uint32_t(32767) + theValue;
-}
-
-
-/*******************************************************************************
   class IntegerItemNaive
 ********************************************************************************/
 xqp_decimal IntegerItemNaive::getDecimalValue() const
@@ -723,13 +671,6 @@ store::Item* IntegerItemNaive::getType() const
   return GET_STORE().theSchemaTypeNames[XS_INTEGER];
 }
 
-bool IntegerItemNaive::equals (
-    const store::Item* item,
-    long timezone,
-    XQPCollator* aCollation ) const
-{
-  return item->getIntegerValue() == theValue;
-}
 
 store::Item_t IntegerItemNaive::getEBV() const
 {
@@ -749,10 +690,238 @@ xqp_string IntegerItemNaive::show() const
   return "xs:integer(" + getStringValue()->str() + ")";
 }
 
+
+/*******************************************************************************
+  class NonPositiveIntegerItemNaive
+********************************************************************************/
+xqp_decimal NonPositiveIntegerItemNaive::getDecimalValue() const 
+{
+  return Decimal::parseInteger ( theValue );
+}
+
+store::Item* NonPositiveIntegerItemNaive::getType() const 
+{
+  return GET_STORE().theSchemaTypeNames[XS_NON_POSITIVE_INTEGER];
+}
+
+bool NonPositiveIntegerItemNaive::equals(
+   const store::Item* aItem,
+   long timezone,
+   XQPCollator* coll ) const
+{
+  return theValue == aItem->getIntegerValue();
+}
+
+store::Item_t NonPositiveIntegerItemNaive::getEBV() const 
+{
+  bool b = (theValue != xqp_integer::parseInt(0));
+  store::Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
+}
+
+xqpStringStore_t NonPositiveIntegerItemNaive::getStringValue() const 
+{
+  return NumConversions::uintegerToStr(theValue).getStore();
+}
+
+xqp_string NonPositiveIntegerItemNaive::show() const 
+{
+  return "xs:nonPositiveInteger(" + getStringValue()->str() + ")";
+}
+
 uint32_t
-IntegerItemNaive::hash(long timezone, XQPCollator* aCollation) const
+NonPositiveIntegerItemNaive::hash(long timezone, XQPCollator* aCollation) const
 {
   return theValue.hash();
+}
+  
+/*******************************************************************************
+  class NegativeIntegerItemNaive
+********************************************************************************/
+xqp_decimal NegativeIntegerItemNaive::getDecimalValue() const 
+{
+  return Decimal::parseInteger ( theValue );
+}
+
+store::Item* NegativeIntegerItemNaive::getType() const 
+{
+  return GET_STORE().theSchemaTypeNames[XS_NEGATIVE_INTEGER];
+}
+
+bool NegativeIntegerItemNaive::equals(
+    const store::Item* aItem,
+    long timezone,
+    XQPCollator* coll ) const 
+{
+  return theValue == aItem->getIntegerValue();
+}
+
+store::Item_t NegativeIntegerItemNaive::getEBV() const 
+{
+  bool b = (theValue != xqp_integer::parseInt(0));
+  store::Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
+}
+
+xqpStringStore_t NegativeIntegerItemNaive::getStringValue() const 
+{
+  return NumConversions::integerToStr(theValue).getStore();
+}
+
+xqp_string NegativeIntegerItemNaive::show() const 
+{
+  return "xs:negativeInteger(" + getStringValue()->str() + ")";
+}
+
+uint32_t
+NegativeIntegerItemNaive::hash(long timezone, XQPCollator* aCollation) const
+{
+  return theValue.hash();
+}
+  
+
+/*******************************************************************************
+  class NonNegativeINtegerItemNaive
+********************************************************************************/
+xqp_integer NonNegativeIntegerItemNaive::getIntegerValue() const 
+{
+ return theValue; 
+}
+
+xqp_decimal NonNegativeIntegerItemNaive::getDecimalValue() const 
+{
+  return Decimal::parseInteger(theValue);
+}
+
+store::Item* NonNegativeIntegerItemNaive::getType() const 
+{
+  return GET_STORE().theSchemaTypeNames[XS_NON_NEGATIVE_INTEGER];
+}
+
+bool NonNegativeIntegerItemNaive::equals(
+    const store::Item* aItem,
+    long timezone,
+    XQPCollator* coll ) const
+{
+  return theValue == aItem->getUnsignedIntegerValue();
+}
+
+store::Item_t NonNegativeIntegerItemNaive::getEBV() const 
+{
+  bool b = (theValue != xqp_integer::parseInt(0));
+  store::Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
+}
+
+xqpStringStore_t NonNegativeIntegerItemNaive::getStringValue() const 
+{
+  return NumConversions::uintegerToStr(theValue).getStore();
+}
+
+xqp_string NonNegativeIntegerItemNaive::show() const {
+  return "xs:nonNegativeInteger(" + getStringValue()->str() + ")";
+}
+
+uint32_t
+NonNegativeIntegerItemNaive::hash(long timezone, XQPCollator* aCollation) const
+{
+  return theValue.hash();
+}
+
+
+/*******************************************************************************
+  class PositiveIntegerItemNaive
+********************************************************************************/
+xqp_integer PositiveIntegerItemNaive::getIntegerValue() const 
+{
+  return static_cast<xqp_integer>(theValue);
+}
+
+xqp_decimal PositiveIntegerItemNaive::getDecimalValue() const 
+{
+  return Decimal::parseInteger(theValue);
+}
+
+store::Item* PositiveIntegerItemNaive::getType() const 
+{
+  return GET_STORE().theSchemaTypeNames[XS_POSITIVE_INTEGER];
+}
+
+bool PositiveIntegerItemNaive::equals(
+    const store::Item* aItem,
+    long timezone,
+    XQPCollator* coll ) const 
+{
+  return theValue == aItem->getUnsignedIntegerValue();
+}
+
+store::Item_t PositiveIntegerItemNaive::getEBV() const 
+{
+  bool b = (theValue != xqp_integer::parseInt(0));
+  store::Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
+}
+
+xqpStringStore_t PositiveIntegerItemNaive::getStringValue() const 
+{
+  return NumConversions::uintegerToStr(theValue).getStore();
+}
+
+xqp_string PositiveIntegerItemNaive::show() const 
+{
+  return "xs:positiveInteger(" + getStringValue()->str() + ")";
+}
+
+uint32_t
+PositiveIntegerItemNaive::hash(long timezone, XQPCollator* aCollation) const
+{
+  return theValue.hash();
+}
+
+
+/*******************************************************************************
+  class IntItemNaive
+********************************************************************************/
+xqp_integer IntItemNaive::getIntegerValue() const
+{
+  return Integer::parseInt( theValue );
+}
+
+xqp_decimal IntItemNaive::getDecimalValue() const
+{
+  return Decimal::parseInt( theValue );
+}
+
+xqp_long IntItemNaive::getLongValue() const 
+{
+  return static_cast<xqp_long>(theValue);
+}
+
+store::Item* IntItemNaive::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[XS_INT];
+}
+
+store::Item_t IntItemNaive::getEBV() const
+{
+  bool b = ( theValue != (int32_t)0 );
+  store::Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
+}
+
+xqpStringStore_t IntItemNaive::getStringValue() const
+{
+  return NumConversions::intToStr(theValue).getStore();
+}
+
+xqp_string IntItemNaive::show() const
+{
+  return "xs:int(" + getStringValue()->str() + ")";
 }
 
 
@@ -911,96 +1080,7 @@ xqp_string BooleanItemNaive::show() const
   return "xs:boolean(" + getStringValue()->str() + ")";
 }
 
-/*******************************************************************************
-  class NonPositiveIntegerItemNaive
-********************************************************************************/
-xqp_decimal NonPositiveIntegerItemNaive::getDecimalValue() const 
-{
-  return Decimal::parseInteger ( theValue );
-}
 
-store::Item* NonPositiveIntegerItemNaive::getType() const 
-{
-  return GET_STORE().theSchemaTypeNames[XS_NON_POSITIVE_INTEGER];
-}
-
-bool NonPositiveIntegerItemNaive::equals(
-   const store::Item* aItem,
-   long timezone,
-   XQPCollator* coll ) const
-{
-  return theValue == aItem->getIntegerValue();
-}
-
-store::Item_t NonPositiveIntegerItemNaive::getEBV() const 
-{
-  bool b = (theValue != xqp_integer::parseInt(0));
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
-}
-
-xqpStringStore_t NonPositiveIntegerItemNaive::getStringValue() const 
-{
-  return NumConversions::uintegerToStr(theValue).getStore();
-}
-
-xqp_string NonPositiveIntegerItemNaive::show() const 
-{
-  return "xs:nonPositiveInteger(" + getStringValue()->str() + ")";
-}
-
-uint32_t
-NonPositiveIntegerItemNaive::hash(long timezone, XQPCollator* aCollation) const
-{
-  return theValue.hash();
-}
-  
-/*******************************************************************************
-  class NonPositiveIntegerItemNaive
-********************************************************************************/
-xqp_decimal NegativeIntegerItemNaive::getDecimalValue() const 
-{
-  return Decimal::parseInteger ( theValue );
-}
-
-store::Item* NegativeIntegerItemNaive::getType() const 
-{
-  return GET_STORE().theSchemaTypeNames[XS_NEGATIVE_INTEGER];
-}
-
-bool NegativeIntegerItemNaive::equals(
-    const store::Item* aItem,
-    long timezone,
-    XQPCollator* coll ) const 
-{
-  return theValue == aItem->getIntegerValue();
-}
-
-store::Item_t NegativeIntegerItemNaive::getEBV() const 
-{
-  bool b = (theValue != xqp_integer::parseInt(0));
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
-}
-
-xqpStringStore_t NegativeIntegerItemNaive::getStringValue() const 
-{
-  return NumConversions::integerToStr(theValue).getStore();
-}
-
-xqp_string NegativeIntegerItemNaive::show() const 
-{
-  return "xs:negativeInteger(" + getStringValue()->str() + ")";
-}
-
-uint32_t
-NegativeIntegerItemNaive::hash(long timezone, XQPCollator* aCollation) const
-{
-  return theValue.hash();
-}
-  
 /*******************************************************************************
   class LongItemNaive
 ********************************************************************************/
@@ -1175,51 +1255,6 @@ ByteItemNaive::hash(long timezone, XQPCollator* aCollation) const
   return theValue;
 }
 
-
-/*******************************************************************************
-  class NonNegativeINtegerItemNaive
-********************************************************************************/
-xqp_integer NonNegativeIntegerItemNaive::getIntegerValue() const {
- return theValue; 
-}
-
-xqp_decimal NonNegativeIntegerItemNaive::getDecimalValue() const {
-  return Decimal::parseInteger(theValue);
-}
-
-store::Item* NonNegativeIntegerItemNaive::getType() const {
-  return GET_STORE().theSchemaTypeNames[XS_NON_NEGATIVE_INTEGER];
-}
-
-bool NonNegativeIntegerItemNaive::equals(
-    const store::Item* aItem,
-    long timezone,
-    XQPCollator* coll ) const
-{
-  return theValue == aItem->getUnsignedIntegerValue();
-}
-
-store::Item_t NonNegativeIntegerItemNaive::getEBV() const {
-  bool b = (theValue != xqp_integer::parseInt(0));
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
-}
-
-xqpStringStore_t NonNegativeIntegerItemNaive::getStringValue() const 
-{
-  return NumConversions::uintegerToStr(theValue).getStore();
-}
-
-xqp_string NonNegativeIntegerItemNaive::show() const {
-  return "xs:nonNegativeInteger(" + getStringValue()->str() + ")";
-}
-
-uint32_t
-NonNegativeIntegerItemNaive::hash(long timezone, XQPCollator* aCollation) const
-{
-  return theValue.hash();
-}
 
 /*******************************************************************************
   class UnsignedLongItemNaive
@@ -1435,55 +1470,6 @@ UnsignedByteItemNaive::hash(long timezone, XQPCollator* aCollation) const
   return theValue;
 }
 
-/*******************************************************************************
-  class PositiveIntegerItemNaive
-********************************************************************************/
-xqp_integer PositiveIntegerItemNaive::getIntegerValue() const 
-{
-  return static_cast<xqp_integer>(theValue);
-}
-
-xqp_decimal PositiveIntegerItemNaive::getDecimalValue() const 
-{
-  return Decimal::parseInteger(theValue);
-}
-
-store::Item* PositiveIntegerItemNaive::getType() const 
-{
-  return GET_STORE().theSchemaTypeNames[XS_POSITIVE_INTEGER];
-}
-
-bool PositiveIntegerItemNaive::equals(
-    const store::Item* aItem,
-    long timezone,
-    XQPCollator* coll ) const 
-{
-  return theValue == aItem->getUnsignedIntegerValue();
-}
-
-store::Item_t PositiveIntegerItemNaive::getEBV() const 
-{
-  bool b = (theValue != xqp_integer::parseInt(0));
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
-}
-
-xqpStringStore_t PositiveIntegerItemNaive::getStringValue() const 
-{
-  return NumConversions::uintegerToStr(theValue).getStore();
-}
-
-xqp_string PositiveIntegerItemNaive::show() const 
-{
-  return "xs:positiveInteger(" + getStringValue()->str() + ")";
-}
-
-uint32_t
-PositiveIntegerItemNaive::hash(long timezone, XQPCollator* aCollation) const
-{
-  return theValue.hash();
-}
 
 /*******************************************************************************
   class Base64BinaryItemNaive
