@@ -28,6 +28,7 @@ namespace zorba {
 
 class RootTypeManager;
 class root_static_context;
+class XQueryXConvertor;
 
 namespace store {
 class Store;
@@ -62,7 +63,10 @@ class ZORBA_DLL_PUBLIC GlobalEnvironment
   store::Store& getStore();
   store::ItemFactory* getItemFactory();
   store::IteratorFactory* getIteratorFactory();
- private:
+#ifdef ZORBA_XQUERYX
+  XQueryXConvertor    *getXQueryXConvertor();
+#endif
+private:
   GlobalEnvironment();
 
   store::Store*                          m_store;
@@ -73,6 +77,10 @@ class ZORBA_DLL_PUBLIC GlobalEnvironment
   XQueryCompilerSubsystem*               m_compilerSubSys;
 
   static GlobalEnvironment             * m_globalEnv;
+
+#ifdef ZORBA_XQUERYX
+  XQueryXConvertor                      *xqueryx_convertor;
+#endif
 
 public:
 #if defined ZORBA_WITH_REST && defined ZORBA_WITH_SSL && defined ZORBA_VERIFY_PEER_SSL_CERTIFICATE

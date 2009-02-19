@@ -34,6 +34,7 @@
 #include "context/root_static_context.h"
 #include "functions/library.h"
 #include "compiler/api/compiler_api.h"
+#include "compiler/xqueryx/xqueryx_to_xquery.h"
 
 #include "types/schema/schema.h"
 
@@ -45,6 +46,10 @@
 #include <curl/curl.h>
 #endif
 
+#ifdef ZORBA_XQUERYX
+#include <libxslt/xslt.h>
+#include <libxml/parser.h>
+#endif
 
 using namespace zorba;
 
@@ -175,6 +180,16 @@ void GlobalEnvironment::init(store::Store* store)
 #  endif
 #endif
 
+#ifdef ZORBA_XQUERYX
+  //libxml2 and libxslt are needed
+  xmlInitMemory();
+
+  LIBXML_TEST_VERSION
+ 
+  xsltInit();
+  m_globalEnv->xqueryx_convertor = new XQueryXConvertor;
+#endif
+
   std::auto_ptr<XQueryCompilerSubsystem> lSubSystem = 
     XQueryCompilerSubsystem::create();
   m_globalEnv->m_compilerSubSys = lSubSystem.release();
@@ -209,6 +224,14 @@ void GlobalEnvironment::destroy()
   m_apm_free(m_globalEnv->m_mapm);
   m_apm_free_all_mem();
   m_globalEnv->m_mapm = 0;
+#endif
+
+#ifdef ZORBA_XQUERYX
+    //free libxml2 and libxslt
+
+  xsltCleanupGlobals();
+  xmlCleanupParser();
+  delete m_globalEnv->xqueryx_convertor;
 #endif
 
   RCHelper::removeReference (m_globalEnv->m_rootStaticContext);
@@ -262,5 +285,13 @@ XQueryCompilerSubsystem& GlobalEnvironment::getCompilerSubsystem()
 {
   return *m_compilerSubSys;
 }
+
+#ifdef ZORBA_XQUERYX
+XQueryXConvertor    *GlobalEnvironment::getXQueryXConvertor()
+{
+  return xqueryx_convertor;
+}
+#endif
+
 /* vim:set ts=2 sw=2: */
 
