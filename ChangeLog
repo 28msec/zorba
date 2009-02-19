@@ -21,7 +21,8 @@ version 0.9.5 (2008.02.17)
   * Added list and union item types to type manager cache
   * Added validation tests for schema substitution groups
   * Added message when error during update test driver.
-	
+  * Varioius bug fixes and performance enhancements.
+
 version 0.9.4 (2008.10.06)
   * added General FLWOR (GFLWOR)
   	- added Windowing functionality
