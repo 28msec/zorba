@@ -45,7 +45,9 @@
 #include "debugger/debugger_server.h"
 #include "compiler/dewey/dewey.h"
 #endif
-
+#ifdef ZORBA_XQUERYX
+#include "compiler/xqueryx/xqueryx_to_xquery.h"
+#endif
 namespace zorba {
 
   // static context is in the compilercb
@@ -102,8 +104,43 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
   if (Properties::instance()->printAst())
     theCompilerCB->m_config.parse_cb = print_ast_tree;
   
+  std::istream  *xquery_stream = &aXQuery;
+
+#ifdef ZORBA_XQUERYX
+  char  *xquery_str;
+  if(theCompilerCB->xqformat == XQUERYX_2005)
+  {
+    //translate from xqueryx to xquery using XSLT
+    XQueryXConvertor    *xqxconvertor = GENV.getXQueryXConvertor();
+    std::string   xqueryx_str;
+    //read all input stream into std::string
+    char  strtemp[100];
+    int   nr_read = 1;
+    do
+    {
+      strtemp[0] = 0;
+      aXQuery.read(strtemp, sizeof(strtemp)-1);
+      strtemp[aXQuery.gcount()] = 0;
+      xqueryx_str += strtemp;
+    }while(aXQuery.gcount() == (sizeof(strtemp)-1));
+
+    xquery_str = xqxconvertor->XQueryX2XQuery(xqueryx_str.c_str());
+    printf("\n\n");
+    printf(xquery_str);
+    xquery_stream = new std::istringstream(xquery_str);
+  }
+#endif
+
   xquery_driver lDriver(&*theCompilerCB);
-  lDriver.parse_stream(aXQuery, aFileName);
+  lDriver.parse_stream(*xquery_stream, aFileName);
+#ifdef ZORBA_XQUERYX
+  if(theCompilerCB->xqformat == XQUERYX_2005)
+  {
+    delete xquery_stream;
+    XQueryXConvertor    *xqxconvertor = GENV.getXQueryXConvertor();
+    xqxconvertor->freeResult(xquery_str);
+  }
+#endif
   parsenode_t node = lDriver.get_expr();
   if (typeid (*node) == typeid (ParseErrorNode)) {
     ParseErrorNode *err = static_cast<ParseErrorNode *> (&*node);
