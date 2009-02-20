@@ -21,6 +21,10 @@ version 0.9.5 (2008.02.17)
   * Added list and union item types to type manager cache
   * Added validation tests for schema substitution groups
   * Added message when error during update test driver.
+  * Added partial support for scripting (XQSE)
+  * Added support "default element namespace" schema imports
+  * Added support variable initializers that refer to forward variable
+	declarations.
   * Varioius bug fixes and performance enhancements.
 
 version 0.9.4 (2008.10.06)
