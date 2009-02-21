@@ -16,6 +16,21 @@ using namespace zorba;
 using namespace zorba::store;
 
 
+long theIndex1[][2] = 
+{
+  { 30, 86 },
+  { 40,  4 },
+  { 40, 14 },
+  { 50, 59 },
+  { 52, 10 },
+  { 52, 20 },
+  { 52, 30 },
+  { 52, 30 }
+};
+
+ulong theNumIndexEntries = 8;
+
+
 void parseKey(
     int argc,
     const char * argv[],
@@ -69,6 +84,34 @@ void parseKey(
 }
 
 
+/*******************************************************************************
+
+  usage ::= "test_index" LowKey? HighKey?
+        
+  LowKey ::= "-lk" NumColumns (ColumnSpec)+
+
+  HighKey ::= "-hk" NumColumns (ColumnSpec)+
+
+  NumColumns ::= any non-negative number
+
+  ColumnSpec ::= (Value | "inf") ("t" | "f")
+
+  Value ::= any integer value
+
+  Note1: The number of ColumnSpecs in LowKey or HighKey spec must be equal to
+         the NumColumns in that spec.
+
+  Note2: The "t" and "f" flags in a ColumnSpec indicate whether the Value is
+         to be included in the range or not.
+
+  Examples:
+
+  test_index
+  test_index -lk 1 40 t -hk 1 50 f
+  test_index -lk 1 40 t
+  test_index -lk 1 40 f -hk 2 50 f 10 t
+
+********************************************************************************/
 int main(int argc, const char * argv[])
 {
   //
@@ -139,9 +182,9 @@ int main(int argc, const char * argv[])
   //
   // Create sorted index mapping a pair of integeres to an integer
   //
-  ulong numKeyComps = 2;
+  ulong numColumns = 2;
 
-  IndexSpecification spec(numKeyComps);
+  IndexSpecification spec(numColumns);
   spec.theIsUnique = false;
   spec.theIsSorted = true;
   spec.theIsTemp = false;
@@ -150,7 +193,7 @@ int main(int argc, const char * argv[])
 
   spec.theKeyTypes[0] = store->theSchemaTypeNames[simplestore::XS_INT];
   spec.theKeyTypes[0] = store->theSchemaTypeNames[simplestore::XS_INT];
-  spec.theValueType = store->theSchemaTypeNames[simplestore::XS_INT];
+  spec.theValueType = store->theSchemaTypeNames[simplestore::XS_STRING];
 
   xqpStringStore_t uri(new xqpStringStore("test_index"));
 
@@ -168,20 +211,26 @@ int main(int argc, const char * argv[])
   //
   // Populate the index
   //
-  IndexKey key(2);
+  IndexKey key(numColumns);
   Item_t value;
 
-  key[0] = ints[30]; key[1] = ints[86]; value = ints[30];
-  index->insert(key, value);
+  for (ulong i = 0; i < theNumIndexEntries; i++)
+  {
+    std::ostringstream str;
 
-  key[0] = ints[40]; key[1] = ints[4]; value = ints[40];
-  index->insert(key, value);
+    for (ulong j = 0; j < numColumns; j++)
+    {
+      key[j] = ints[theIndex1[i][j]];
 
-  key[0] = ints[50]; key[1] = ints[59]; value = ints[50];
-  index->insert(key, value);
+      str << theIndex1[i][j] << " ";
+    }
 
-  key[0] = ints[40]; key[1] = ints[14]; value = ints[41];
-  index->insert(key, value);
+    xqpStringStore_t valuestr = new xqpStringStore(str.str());
+
+    f->createString(value, valuestr);
+
+    index->insert(key, value);
+  }
 
   //
   // Probe the index
@@ -245,67 +294,3 @@ int main(int argc, const char * argv[])
 
 }
 
-
-
-/*
-
-  30  86  --> 30
-  40   4  --> 40
-  40  14  --> 41
-  50  59  --> 50
-
- no args 
-
- -lk 1 10 t
- -lk 1 10 f
- -lk 1 30 t
- -lk 1 30 f
- -lk 1 31 t
- -lk 1 31 f
- -lk 1 40 t
- -lk 1 40 f
- -lk 1 50 t
- -lk 1 50 f
- -lk 1 60 t
- -lk 1 60 f
-
- -hk 1 10 t
- -hk 1 10 f
- -hk 1 30 t
- -hk 1 30 f
- -hk 1 40 t
- -hk 1 40 f
- -hk 1 49 t
- -hk 1 49 f
- -hk 1 50 t
- -hk 1 50 f
- -hk 1 60 t
- -hk 1 60 f
-
-
--lk 1 10 t -hk 1 10 t
--lk 1 10 t -hk 1 10 f
--lk 1 10 f -hk 1 10 t
-
--lk 1 10 f -hk 1 20 f
--lk 1 10 t -hk 1 20 t
--lk 1 10 f -hk 1 20 t
--lk 1 10 t -hk 1 20 f
-
--lk 1 10 f -hk 1 30 f
--lk 1 10 f -hk 1 30 t
-
--lk 1 30 t -hk 1 30 t
-
--lk 1 31 t -hk 1 33 t
-
--lk 1 32 t -hk 1 40 f
--lk 1 32 t -hk 1 40 t
-
--lk 1 40 t -hk 1 40 t
-
--lk 1 55 t -hk 1 60 f
--lk 1 55 t -hk 1 60 t
--lk 1 55 f -hk 1 60 f
-
- */
