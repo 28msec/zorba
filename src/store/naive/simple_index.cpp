@@ -17,6 +17,12 @@ namespace zorba
 namespace simplestore 
 {
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Index                                                                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 
 /******************************************************************************
 
@@ -588,6 +594,8 @@ void STLMapProbeIterator::initBox()
                       "The box condition has more columns than the index");
   }
 
+  theDoExtraFiltering = (numRanges > 1);
+
   long timezone = theIndex->getTimezone();
 
   bool haveLowerBound = true;
@@ -762,29 +770,29 @@ void STLMapProbeIterator::close()
 ********************************************************************************/
 bool STLMapProbeIterator::next(store::Item_t& result)
 {
-  if (theResultSet != NULL)
+  while (theResultSet != NULL)
   {
-    if (theIte != theEnd)
+    while (theIte != theEnd)
     {
       result = (*theIte);
       ++theIte;
       return true;
     }
-    else 
-    {
-      theResultSet = NULL;
-      theMapIte++;
 
-      if (theMapIte != theMapEnd)
+    theResultSet = NULL;
+    theMapIte++;
+
+    while (theMapIte != theMapEnd)
+    {
+      if (!theDoExtraFiltering || theBoxCond->test(*(theMapIte->first)))
       {
         theResultSet = theMapIte->second;
         theIte = theResultSet->begin();
         theEnd = theResultSet->end();
-
-        result = (*theIte);
-        ++theIte;
-        return true;
+        break;
       }
+
+      theMapIte++;
     }
   }
 
@@ -982,18 +990,18 @@ std::ostream& operator<<(std::ostream& os, const IndexBoxConditionImpl& cond)
 
     if (!cond.theRangeFlags[i].theHaveUpperBound)
     {
-      os << "+INF]";
+      os << "+INF] ";
     }
     else 
     {
       if (cond.theRangeFlags[i].theUpperBoundIncl)
-        os << cond.theUpperBounds[i]->getStringValue()->c_str() << "]";
+        os << cond.theUpperBounds[i]->getStringValue()->c_str() << "] ";
       else
-        os << cond.theUpperBounds[i]->getStringValue()->c_str() << ")";
+        os << cond.theUpperBounds[i]->getStringValue()->c_str() << ") ";
     }
   }
 
-  os << " }";
+  os << "}";
 
   return os;
 }

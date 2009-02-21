@@ -279,6 +279,8 @@ protected:
   rchandle<IndexPointConditionImpl>        thePointCond;
   rchandle<IndexBoxConditionImpl>          theBoxCond;
 
+  bool                                     theDoExtraFiltering;
+
   STLMapIndex::IndexMap::const_iterator    theMapBegin;
   STLMapIndex::IndexMap::const_iterator    theMapEnd;
   STLMapIndex::IndexMap::const_iterator    theMapIte;
@@ -288,7 +290,10 @@ protected:
   ValueSet::const_iterator                 theEnd;
 
 public:
-  STLMapProbeIterator(const store::Index_t& index) : theResultSet(NULL)
+  STLMapProbeIterator(const store::Index_t& index) 
+    :
+    theDoExtraFiltering(true),
+    theResultSet(NULL)
   {
     theIndex = reinterpret_cast<STLMapIndex*>(index.getp());
   }
