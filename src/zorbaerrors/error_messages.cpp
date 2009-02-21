@@ -183,10 +183,11 @@ DEF_ERR_CODE(API0051_REST_ERROR_PAYLOAD, API0051, "Invalid value passed for payl
 // Store Errors
 //
 DEF_ERR_CODE(STR0001_INDEX_ALREADY_EXISTS, STR0001, "An index with URI /s exists already.")
-DEF_ERR_CODE(STR0002_INDEX_PARTIAL_KEY_INSERT, STR0002, "Partial key insertion in index /s")
-DEF_ERR_CODE(STR0003_INDEX_PARTIAL_KEY_REMOVE, STR0003, "Partial key deletion from index /s")
-DEF_ERR_CODE(STR0004_INDEX_PARTIAL_KEY_PROBE, STR0004, "Partial key probe into index /s")
-DEF_ERR_CODE(STR0005_INDEX_INVALID_SCAN_RANGE, STR0005, "Invalid scan range for index /s : /s")
+DEF_ERR_CODE(STR0002_INDEX_PARTIAL_KEY_INSERT, STR0002, "Partial key insertion in index \"/s\". Key = /s")
+DEF_ERR_CODE(STR0003_INDEX_PARTIAL_KEY_REMOVE, STR0003, "Partial key deletion from index \"/s\"")
+DEF_ERR_CODE(STR0004_INDEX_PARTIAL_KEY_PROBE, STR0004, "Partial key probe into index \"/s\"")
+DEF_ERR_CODE(STR0005_INDEX_INVALID_BOX_PROBE, STR0005, "Invalid box probe condition for index \"/s\" : /s")
+DEF_ERR_CODE(STR0006_INDEX_UNSUPPORTED_PROBE_CONDITION, STR0006, "Index \"/s\" does not support probe conditions of kind /s")
 
 //
 // ZORBA-specific errors

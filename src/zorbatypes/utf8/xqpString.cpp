@@ -255,7 +255,7 @@ uint32_t xqpStringStore::hash(const char* str)
 /*******************************************************************************
 
 ********************************************************************************/
-uint32_t xqpStringStore::hash(XQPCollator* coll) const
+uint32_t xqpStringStore::hash(const XQPCollator* coll) const
 {
     if(!coll) {
       return hash(c_str());
