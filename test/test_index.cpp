@@ -21,31 +21,43 @@ void parseKey(
     const char * argv[],
     int& arg,
     std::vector<long>& res,
-    std::vector<bool>& incl)
+    std::vector<bool>& incl,
+    std::vector<bool>& inf)
 {
   ulong numCols = atoi(argv[arg]);
   res.resize(numCols);
   incl.resize(numCols);
+  inf.resize(numCols);
+
   arg++;
   ulong i;
   for (i = 0; i < numCols && arg < argc; i++, arg++)
   {
-    res[i] = atoi(argv[arg]);
-
-    arg++;
-
-    if (*(argv[arg]) == 't')
+    if (strcmp(argv[arg], "inf") == 0)
     {
-      incl[i] = true;
-    }
-    else if (*(argv[arg]) == 'f')
-    {
+      inf[i] = true;
       incl[i] = false;
     }
     else
     {
-      std::cout << "bad usage" << std::endl;
-      abort();
+      res[i] = atoi(argv[arg]);
+      inf[i] = false;
+
+      arg++;
+
+      if (*(argv[arg]) == 't')
+      {
+        incl[i] = true;
+      }
+      else if (*(argv[arg]) == 'f')
+      {
+        incl[i] = false;
+      }
+      else
+      {
+        std::cout << "bad usage" << std::endl;
+        abort();
+      }
     }
   }
 
@@ -67,25 +79,80 @@ int main(int argc, const char * argv[])
   store::ItemFactory* f = store->getItemFactory();
   store::IteratorFactory* iteFactory = store->getIteratorFactory();
 
-  xqpStringStore_t uri(new xqpStringStore("test_index"));
-   
+  //
+  // Parse args
+  //
+  std::vector<long> low_key;
+  std::vector<bool> low_incl;
+  std::vector<bool> low_inf;
+  std::vector<long> high_key;
+  std::vector<bool> high_incl;
+  std::vector<bool> high_inf;
+
+  int arg = 1;
+  while (arg < argc)
+  {
+    if (strcmp(argv[arg], "-lk") == 0)
+    {
+      arg++;
+      parseKey(argc, argv, arg, low_key, low_incl, low_inf);
+    }
+    else if (strcmp(argv[arg], "-hk") == 0)
+    {
+      arg++;
+      parseKey(argc, argv, arg, high_key, high_incl, high_inf);
+    }
+    else
+    {
+      arg++;
+    }
+  }
+
+  ulong high_size = high_key.size();
+  ulong low_size = low_key.size();
+
+  if (low_size < high_size)
+  {
+    low_key.resize(high_size);
+    low_incl.resize(high_size);
+    low_inf.resize(high_size);
+
+    for (ulong i = low_size; i < high_size; i++)
+    {
+      low_incl[i] = false;
+      low_inf[i] = true;
+    }
+  }
+  else if (low_key.size() > high_key.size())
+  {
+    high_key.resize(low_size);
+    high_incl.resize(low_size);
+    high_inf.resize(low_size);
+
+    for (ulong i = high_size; i < low_size; i++)
+    {
+      high_incl[i] = false;
+      high_inf[i] = true;
+    }
+  }
+
   //
   // Create sorted index mapping a pair of integeres to an integer
   //
   ulong numKeyComps = 2;
 
-  IndexSpecification spec;
+  IndexSpecification spec(numKeyComps);
   spec.theIsUnique = false;
   spec.theIsSorted = true;
   spec.theIsTemp = false;
   spec.theIsThreadSafe = false;
   spec.theTimezone = 0;
-  spec.theCollations.resize(numKeyComps);
 
-  spec.theKeyTypes.resize(numKeyComps);
   spec.theKeyTypes[0] = store->theSchemaTypeNames[simplestore::XS_INT];
   spec.theKeyTypes[0] = store->theSchemaTypeNames[simplestore::XS_INT];
   spec.theValueType = store->theSchemaTypeNames[simplestore::XS_INT];
+
+  xqpStringStore_t uri(new xqpStringStore("test_index"));
 
   Index_t index = store->createIndex(uri, spec);
 
@@ -119,71 +186,40 @@ int main(int argc, const char * argv[])
   //
   // Probe the index
   //
-  std::vector<long> low_key;
-  std::vector<long> high_key;
-  std::vector<bool> low_incl;
-  std::vector<bool> high_incl;
-
-  int arg = 1;
-  while (arg < argc)
-  {
-    if (strcmp(argv[arg], "-lk") == 0)
-    {
-      arg++;
-      parseKey(argc, argv, arg, low_key, low_incl);
-    }
-    else if (strcmp(argv[arg], "-hk") == 0)
-    {
-      arg++;
-      parseKey(argc, argv, arg, high_key, high_incl);
-    }
-    else
-    {
-      arg++;
-    }
-  }
-
   IndexProbeIterator* ite = iteFactory->createIndexProbeIterator(index);
 
-  IndexKey* l_key = NULL;
-  IndexKey* h_key = NULL;
-  
+  IndexBoxCondition_t cond = index->createBoxCondition();
+
   if (low_key.empty())
   {
-    l_key = &IndexProbeIterator::theNegInfKey;
-    low_incl.push_back(true);
+    Item_t v = ints[0];
+
+    cond->pushRange(v, v, false, false, false, false);
   }
   else
   {
-    l_key = new IndexKey(low_key.size());
-    (*l_key)[0] = ints[low_key[0]];
-  }
+    for (ulong i = 0; i < low_key.size(); i++)
+    {
+      Item_t l = ints[low_key[i]];
+      Item_t h = ints[high_key[i]];
 
-  if (high_key.empty())
-  {
-    h_key = &IndexProbeIterator::thePosInfKey;
-    high_incl.push_back(true);
+      cond->pushRange(l, h, !low_inf[i], !high_inf[i], low_incl[i], high_incl[i]);
+    }
   }
-  else
-  {
-    h_key = new IndexKey(high_key.size());
-    (*h_key)[0] = ints[high_key[0]];
-  }
-
 
   try
   {
-    ite->init(*l_key, *h_key, low_incl[0], high_incl[0]);
-    ite->open();
+    std::cout << "Probing condition : " << cond->toString() << std::endl;
 
-    std::cout << "Probing: low key =" << *l_key
-              << " high key = " << *h_key << std::endl;
+    ite->init(cond);
+    ite->open();
  
-    store::Item* res = ite->next();
-    while (res != NULL)
+    store::Item_t res;
+    bool more = ite->next(res);
+    while (more)
     {
       std::cout << res->getStringValue()->c_str() << std::endl;
-      res = ite->next();
+      more = ite->next(res);
     }
   }
   catch(error::ZorbaError& e)
@@ -194,11 +230,7 @@ int main(int argc, const char * argv[])
   ite->close();
   delete ite;
 
-  if (!low_key.empty())
-    delete l_key;
-
-  if (!high_key.empty())
-    delete h_key;
+  cond = NULL;
   
   //
   // Shutdown

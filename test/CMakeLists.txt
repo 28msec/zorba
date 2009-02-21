@@ -78,7 +78,7 @@ IF (BUILDING_SIMPLESTORE)
   
 ENDIF (BUILDING_SIMPLESTORE)
 
-# IF(NOT ZORBA_MINIMAL_STORE)
+IF(NOT ZORBA_MINIMAL_STORE)
 # 
 # # test_store
 # 
@@ -90,12 +90,19 @@ ENDIF (BUILDING_SIMPLESTORE)
 #  
 #  TARGET_LINK_LIBRARIES(test_store zorba)
 #  
-#  ENDIF(NOT ZORBA_MINIMAL_STORE)
+
+# # test_index
+# 
+#  SET(TEST_INDEX_SRCS
+#      test_index.cpp)
 #  
-#  IF(NOT ZORBA_MINIMAL_STORE)
-#  #
+#  ADD_EXECUTABLE(test_index ${TEST_INDEX_SRCS})
+#  
+#  TARGET_LINK_LIBRARIES(test_index zorba_simplestore)
+  
+
 #  # test_ordpath
-#  #
+#
 #  SET(TEST_ORDPATH_SRCS
 #      test_ordpath.cpp)
 #  
@@ -105,5 +112,5 @@ ENDIF (BUILDING_SIMPLESTORE)
 #  
 #  TARGET_LINK_LIBRARIES(test_ordpath zorba)
 #  
-#  ENDIF(NOT ZORBA_MINIMAL_STORE)
-#  
+ENDIF(NOT ZORBA_MINIMAL_STORE)
+  
