@@ -304,7 +304,7 @@ void XmlNode::setId(XmlTree* tree, const OrdPathStack* op)
 /*******************************************************************************
   Return a hash value based on the id of the node.
 ********************************************************************************/
-uint32_t XmlNode::hash(long timezone, XQPCollator* aCollation) const
+uint32_t XmlNode::hash(long timezone, const XQPCollator* aCollation) const
 {
   ulong tid = getTree()->getId();
 

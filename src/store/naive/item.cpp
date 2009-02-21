@@ -41,7 +41,7 @@ Item::getType( ) const
 }
 
 
-uint32_t Item::hash(long timezone, XQPCollator* coll) const
+uint32_t Item::hash(long timezone, const XQPCollator* coll) const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
@@ -49,7 +49,7 @@ uint32_t Item::hash(long timezone, XQPCollator* coll) const
 };
 
 
-bool Item::equals(const store::Item*, long timezone, XQPCollator* aCollation) const
+bool Item::equals(const store::Item*, long timezone, const XQPCollator* aCollation) const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
@@ -57,7 +57,7 @@ bool Item::equals(const store::Item*, long timezone, XQPCollator* aCollation) co
 }
 
 
-long Item::compare(const store::Item*, long timezone, XQPCollator* aCollation) const
+long Item::compare(const store::Item*, long timezone, const XQPCollator* aCollation) const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());

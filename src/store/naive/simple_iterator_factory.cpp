@@ -49,9 +49,9 @@ store::IndexProbeIterator* SimpleIteratorFactory::createIndexProbeIterator(
     const store::Index_t& index)
 {
   if (reinterpret_cast<IndexImpl*>(index.getp())->isSorted())
-    return new STLMapIndexProbeIterator(index);
+    return new STLMapProbeIterator(index);
   else
-    return new HashIndexProbeIterator(index);
+    return new HashProbeIterator(index);
 }
 
 

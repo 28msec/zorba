@@ -34,23 +34,16 @@ class Iterator : virtual public SimpleRCObject
 {
  public:
   Iterator() {}
+
   virtual ~Iterator() {}
 
-   
-  virtual void
-  open() = 0;
+  virtual void open() = 0;
 
-  
-  virtual bool
-  next(store::Item_t&) = 0;
+  virtual bool next(store::Item_t&) = 0;
 
-  
-  virtual void
-  reset() = 0;
+  virtual void reset() = 0;
 
-  
-  virtual void
-  close() = 0;
+  virtual void close() = 0;
 };
 
 
@@ -71,29 +64,17 @@ class ChildrenIterator : public Iterator
 public:
   virtual ~ChildrenIterator() {}
 
+  virtual void init(Item_t& parent) = 0;
   
-  virtual void
-  init(Item_t& parent) = 0;
+  virtual void open() = 0;
 
+  virtual Item* next() = 0;
   
-  virtual void
-  open() = 0;
-
+  virtual bool next(Item_t& result) = 0;
   
-  virtual Item*
-  next() = 0;
+  virtual void reset() = 0;
   
-  
-  virtual bool
-  next(Item_t& result) = 0;
-
-  
-  virtual void
-  reset() = 0;
-
-  
-  virtual void
-  close() = 0;
+  virtual void close() = 0;
 };
 
 
@@ -113,29 +94,17 @@ class AttributesIterator : public Iterator
 public:
   virtual ~AttributesIterator() { }
 
-  
-  virtual void
-  init(Item_t& parent) = 0;
+  virtual void init(Item_t& parent) = 0;
 
-  
-  virtual void
-  open() = 0;
+  virtual void open() = 0;
 
+  virtual Item* next() = 0;
   
-  virtual Item*
-  next() = 0;
-  
-  
-  virtual bool
-  next(Item_t& result) = 0;
+  virtual bool next(Item_t& result) = 0;
 
-  
-  virtual void
-  reset() = 0;
+  virtual void reset() = 0;
 
-  
-  virtual void
-  close() = 0;
+  virtual void close() = 0;
 };
 
 
@@ -143,59 +112,31 @@ public:
  * This iterator is used to iterate over the result of an index probe. The
  * target index is specified when the iterator is created (see iterator_factory.h)
  * The IndexProbeIterator implements the interface of a generic iterator, but
- * also offers the following additional methods:
+ * also offers the following additional method:
  *
- * - An init method that takes as input a key, so that the index will return
- *   the items associated with this key. The key must be fully specified.
- * - An init method that takes as input a low and a high key, so that the index
- *   will return the items associated with the range of keys low and high.
- *   The low and/or the high key may be a partial key. The method also takes
- *   two bool parameters to specify whether the low/high key should be included
- *   in the search or not. Obviously, this method is supported by ordering
- *   indiced only.
- * - A next method that returns pointers to items instead of rchandles. These
- *   pointers should not be used beyond the lifetime of the IndexProbeIterator
- *   object. 
+ * - An init method that takes as input an index condition, so that the iterator
+ *   will return the items from the value set of each index key that satisfies 
+ *   this condition.
  *
- * IndexProbeIterator also defined two special keys to represent "negative
- * infinity" and "positive infinity" key values, so that it can perform searches
- * with no lower or no upper bound. 
+ *   NOTE: The method takes as input a reference to a condition. It will not
+ *   necessarily make a copy of the referenced condition object. As a result,
+ *   the condition object must remain alive at least until the iterator is 
+ *   closed, or its init() method is called again with a different condition.
  */
 class IndexProbeIterator : public Iterator
 {
 public:
-  static IndexKey  thePosInfKey;
-  static IndexKey  theNegInfKey;
-
-public:
   virtual ~IndexProbeIterator() { }
 
-  
-  virtual void
-  init(IndexKey& key) = 0;
+  virtual void init(const IndexCondition_t& cond) = 0;
 
+  virtual void open() = 0;
   
-  virtual void
-  init(IndexKey& lowKey, IndexKey& highKey, bool lowIncl, bool highIncl) = 0;
-
-  virtual void
-  open() = 0;
-
+  virtual bool next(Item_t& result) = 0;
   
-  virtual Item*
-  next() = 0;
+  virtual void reset() = 0;
   
-  
-  virtual bool
-  next(Item_t& result) = 0;
-
-  
-  virtual void
-  reset() = 0;
-
-  
-  virtual void
-  close() = 0;
+  virtual void close() = 0;
 };
 
 
@@ -215,29 +156,17 @@ class TempSeqIterator : public Iterator
 public:
   virtual ~TempSeqIterator() { }
 
+  virtual void init(const TempSeq_t& seq) = 0;
   
-  virtual void
-  init(const TempSeq_t& seq) = 0;
-
+  virtual void open() = 0;
   
-  virtual void
-  open() = 0;
-
+  virtual Item* next() = 0;
   
-  virtual Item*
-  next() = 0;
+  virtual bool next(Item_t& result) = 0;
   
+  virtual void reset() = 0;
   
-  virtual bool
-  next(Item_t& result) = 0;
-
-  
-  virtual void
-  reset() = 0;
-
-  
-  virtual void
-  close() = 0;
+  virtual void close() = 0;
 };
 
 

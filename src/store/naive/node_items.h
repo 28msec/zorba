@@ -310,14 +310,14 @@ public:
   bool equals(
         const store::Item* other,
         long timezone = 0,
-        XQPCollator* aCollation = 0) const
+        const XQPCollator* aCollation = 0) const
   {
     return this == other;
   }
 
   uint32_t hash(
         long timezone = 0,
-        XQPCollator* aCollation = 0) const;
+        const XQPCollator* aCollation = 0) const;
 
   store::Item* copy(
         store::Item*           parent,

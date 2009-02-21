@@ -143,7 +143,7 @@ public:
    * @return The hash value
    */
   virtual uint32_t 
-  hash(long timezone = 0, XQPCollator* aCollation = 0) const;
+  hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
   
   /**
    *  Compares (by value) two items for equality. All comparisons must be done
@@ -155,7 +155,7 @@ public:
    *  @return  true, if the two items are the "same"
    */
   virtual bool 
-  equals(const Item*, long timezone = 0, XQPCollator* aCollation = 0) const;
+  equals(const Item*, long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   /**
    *  Compares (by value) two items, returning -1 if "this" is less than "other",
@@ -167,7 +167,7 @@ public:
    *           equal, and 1 if "this" is greater than "other".
    */
   virtual long
-  compare(const Item* other, long timezone = 0, XQPCollator* aCollation = 0) const;
+  compare(const Item* other, long timezone = 0, const XQPCollator* aCollation = 0) const;
   
   /**
    *  Computes the Effective Boolean Value for that item as specified in the

@@ -38,6 +38,9 @@ class ItemFactory;
 class Item;
 typedef rchandle<Item> Item_t;
 
+class AnyUriItem;
+typedef rchandle<AnyUriItem> AnyUriItem_t;
+
 class IteratorFactory;
 class Iterator;
 typedef rchandle<Iterator> Iterator_t;
@@ -51,17 +54,25 @@ typedef rchandle<TempSeq> TempSeq_t;
 class PUL;
 typedef rchandle<PUL> PUL_t;
 
-
 class Collection;
 typedef rchandle<Collection> Collection_t;
 
 class Index;
 typedef rchandle<Index> Index_t;
 
-typedef std::vector<store::Item_t> IndexKey;
+class IndexEntryReceiver;
+typedef rchandle<IndexEntryReceiver> IndexEntryReceiver_t;
 
-class AnyUriItem;
-typedef rchandle<AnyUriItem> AnyUriItem_t;
+class IndexCondition;
+typedef rchandle<IndexCondition> IndexCondition_t;
+
+class IndexPointCondition;
+typedef rchandle<IndexPointCondition> IndexPointCondition_t;
+
+class IndexBoxCondition;
+typedef rchandle<IndexBoxCondition> IndexBoxCondition_t;
+
+class IndexKey;
 
 class Store;
 class XmlDataManager_Impl;
