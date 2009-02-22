@@ -10,6 +10,8 @@ License: ASL 2.0
 URL: http://www.zorba-xquery.com/
 Source0: ftp://ftp.heanet.ie/pub/download.sourceforge/z/zo/zorba/%{name}-%{version}.tar.gz
 
+Patch0: zorbalib64.patch
+
 %{!?ruby_sitelib: %define ruby_sitelib %( ruby -r rbconfig -e "print Config::CONFIG['sitearchdir']")}
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -82,6 +84,7 @@ Provides ruby module to use %{name} API
  
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 mkdir -p build
@@ -155,6 +158,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Sat Feb 21 2009 Paul Kunz <paulfkunz@gmail.com> - 0.9.5-3
+- Added patch for lib64 install
 - Added requires libicu-devel
 - Add requires tex
 
