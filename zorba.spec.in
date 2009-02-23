@@ -2,7 +2,7 @@
 
 Name:    zorba
 Version: @ZORBA_MAJOR_NUMBER@.@ZORBA_MINOR_NUMBER@.@ZORBA_PATCH_NUMBER@
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: General purpose XQuery processor implemented in C++
 
 Group: System Environment/Libraries
@@ -36,7 +36,7 @@ BuildRequires: ruby ruby-devel >= 1.8
 BuildRequires: xerces-c-devel >= 2.7 
 BuildRequires: tex(latex)
 BuildRequires: tex(dvips)
-
+BuildRequires:tex(tex)
 
 %description
 Zorba is a general purpose XQuery processor implementing in C++ the
@@ -90,7 +90,7 @@ Provides ruby module to use %{name} API
 %build
 mkdir -p build
 pushd build
-%cmake -D CMAKE_INSTALL_PREFIX=/usr -D CMAKE_BUILD_TYPE=Debug -DCMAKE_SKIP_BUILD_RPATH=1  ..
+%cmake -D CMAKE_INSTALL_PREFIX=/usr -D CMAKE_BUILD_TYPE=Debug -D CMAKE_SKIP_BUILD_RPATH=1  ..
 make VERBOSE=1 %{?_smp_mflags}
 make doc
 popd
@@ -158,6 +158,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 23 2009 Paul Kunz <paulfkunz@gmail.com> - 0.9.5-4
+- Package the correct released version
+- consistent use of white space in cmake command
+- added tex(tex) build requires
+
 * Sat Feb 21 2009 Paul Kunz <paulfkunz@gmail.com> - 0.9.5-3
 - Added patch for lib64 install
 - Added requires libicu-devel
