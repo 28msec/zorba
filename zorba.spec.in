@@ -2,16 +2,13 @@
 
 Name:    zorba
 Version: @ZORBA_MAJOR_NUMBER@.@ZORBA_MINOR_NUMBER@.@ZORBA_PATCH_NUMBER@
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: General purpose XQuery processor implemented in C++
 
 Group: System Environment/Libraries
 License: ASL 2.0
 URL: http://www.zorba-xquery.com/
 Source0: ftp://ftp.heanet.ie/pub/download.sourceforge/z/zo/zorba/%{name}-%{version}.tar.gz
-
-# patch to install in /usr/lib64
-Patch0: zorbalib64.patch
 
 %{!?ruby_sitelib: %define ruby_sitelib %( ruby -r rbconfig -e "print Config::CONFIG['sitearchdir']")}
 
@@ -85,7 +82,6 @@ Provides ruby module to use %{name} API
  
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 mkdir -p build
