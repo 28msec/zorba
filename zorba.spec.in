@@ -10,6 +10,7 @@ License: ASL 2.0
 URL: http://www.zorba-xquery.com/
 Source0: ftp://ftp.heanet.ie/pub/download.sourceforge/z/zo/zorba/%{name}-%{version}.tar.gz
 
+# patch to install in /usr/lib64
 Patch0: zorbalib64.patch
 
 %{!?ruby_sitelib: %define ruby_sitelib %( ruby -r rbconfig -e "print Config::CONFIG['sitearchdir']")}
