@@ -894,7 +894,7 @@ ElementNode::ElementNode(
     long                     pos,
     store::Item_t&           nodeName,
     store::Item_t&           typeName,
-    bool                     haveValue,
+    bool                     haveTypedValue,
     bool                     haveEmptyValue,
     bool                     isId,
     bool                     isIdRefs,
@@ -906,7 +906,7 @@ ElementNode::ElementNode(
   theName.transfer(nodeName);
   theTypeName.transfer(typeName);
 
-  if (haveValue)
+  if (haveTypedValue)
   {
     setHaveValue();
 

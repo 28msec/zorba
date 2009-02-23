@@ -175,17 +175,17 @@ public:
   void addSetElementType(
         store::Item_t&               target,
         store::Item_t&               typeName,
-        store::Item_t&               typedValue,
+        store::Item_t&               value,
         bool                         haveValue,
         bool                         haveEmptyValue,
-        bool                         haveTypedValue,
+        bool                         haveTypedVaule,
         bool                         isId,
         bool                         isIdRefs);
 
   void addSetElementType(
         store::Item_t&               target,
         store::Item_t&               typeName,
-        std::vector<store::Item_t>&  typedValue,
+        std::vector<store::Item_t>&  value,
         bool                         haveValue,
         bool                         haveEmptyValue,
         bool                         haveTypedValue,
@@ -581,7 +581,17 @@ public:
 
 
 /*******************************************************************************
-
+  theHaveValue      : True if the target element node has a typed value. The only
+                      case when an element node does not have a typed value is
+                      when the type of the node is complex with complex content,
+                      but with no mixed content allowed.
+  theHaveEmptyValue : True if the target element node has a complex type with
+                      empty content.
+  theHaveTypedValue : True if the target element node has a typed value whose
+                      type is not untypedAtomic. Note: This can happen only if
+                      the type of the target element node has simple content.
+  theHaveListValue  : True if theHaveTypedValue is true, and the type of the
+                      typed value is a list type. 
 ********************************************************************************/
 class UpdSetElementType : public UpdatePrimitive
 {

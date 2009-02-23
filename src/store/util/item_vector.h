@@ -23,7 +23,7 @@ namespace zorba { namespace store {
 
 
 /***************************************************************************//**
-  Class IndexKey represents an index key as a vector of item handles. 
+
 ********************************************************************************/
 class ItemVector
 {
