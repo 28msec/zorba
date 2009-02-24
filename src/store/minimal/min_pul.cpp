@@ -463,7 +463,7 @@ void PULImpl::addRename(store::Item_t& target, store::Item_t& newName)
 void PULImpl::addSetElementType(
     store::Item_t&              target,
     store::Item_t&              typeName,
-    store::Item_t&              typedValue,
+    store::Item_t&              value,
     bool                        haveValue,
     bool                        haveEmptyValue,
     bool                        haveTypedValue,
@@ -471,7 +471,7 @@ void PULImpl::addSetElementType(
     bool                        isIdRefs)
 {
   UpdatePrimitive* upd = new UpdSetElementType(this, target,
-                                               typeName, typedValue,
+                                               typeName, value,
                                                haveValue, haveEmptyValue,
                                                haveTypedValue, false,
                                                isId, isIdRefs);
@@ -483,14 +483,14 @@ void PULImpl::addSetElementType(
 void PULImpl::addSetElementType(
     store::Item_t&              target,
     store::Item_t&              typeName,
-    std::vector<store::Item_t>& typedValueV,
+    std::vector<store::Item_t>& valueV,
     bool                        haveValue,
     bool                        haveEmptyValue,
     bool                        haveTypedValue,
     bool                        isId,
     bool                        isIdRefs)
 {
-  store::Item_t typedValue = new ItemVector(typedValueV);
+  store::Item_t typedValue = new ItemVector(valueV);
 
   UpdatePrimitive* upd = new UpdSetElementType(this, target,
                                                typeName, typedValue,
@@ -541,8 +541,9 @@ void PULImpl::addCreateCollection(
     static_context*      aStaticContext,
     xqpStringStore_t&    resolvedURI)
 {
-  UpdatePrimitive* upd = new UpdCreateCollection(this, aStaticContext, resolvedURI);
-
+  UpdatePrimitive* upd = new UpdCreateCollection(this,
+                                                 aStaticContext,
+                                                 resolvedURI);
   theCreateCollectionList.push_back(upd);
 }
 
@@ -551,8 +552,9 @@ void PULImpl::addDeleteCollection(
     static_context*      aStaticContext,
     store::Item_t&              resolvedURI)
 {
-  UpdatePrimitive* upd = new UpdDeleteCollection(this, aStaticContext, resolvedURI);
-
+  UpdatePrimitive* upd = new UpdDeleteCollection(this,
+                                                 aStaticContext,
+                                                 resolvedURI);
   theDeleteCollectionList.push_back(upd);
 }
 
@@ -899,6 +901,7 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     applyList(theReplaceNodeList);
     applyList(theReplaceContentList);
     applyList(theDeleteList);
+    applyList(theValidationList);
     applyList(theDeleteFromCollectionList);
     applyList(theDeleteCollectionList);
   }
@@ -1293,11 +1296,12 @@ void UpdSetElementType::apply()
 {
   ElementNode* target = ELEM_NODE(theTarget);
 
-  ZORBA_FATAL(target->theTypeName == GET_STORE().theSchemaTypeNames[XS_ANY], "");
+  ZORBA_FATAL((target->theTypeName == GET_STORE().theSchemaTypeNames[XS_ANY] ||
+               target->theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED]), "");
 
   target->theTypeName.transfer(theTypeName);
 
-  if (theHaveValue)
+  if (theTypedValue)
   {
     target->setHaveValue();
 
@@ -1311,6 +1315,7 @@ void UpdSetElementType::apply()
     if (theHaveTypedValue)
     {
       ZORBA_FATAL(target->numChildren() == 1, "");
+      ZORBA_FATAL(target->getChild(0)->getNodeKind() == store::StoreConsts::textNode, "");
 
       TextNode* textChild = reinterpret_cast<TextNode*>(target->getChild(0));
 

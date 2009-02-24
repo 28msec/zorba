@@ -296,7 +296,7 @@ void XmlNode::setId(XmlTree* tree, const OrdPathStack* op)
 /*******************************************************************************
   Return a hash value based on the id of the node.
 ********************************************************************************/
-uint32_t XmlNode::hash(long timezone, XQPCollator* aCollation) const
+uint32_t XmlNode::hash(long timezone, const XQPCollator* aCollation) const
 {
   ulong tid = getTree()->getId();
 
@@ -927,7 +927,7 @@ ElementNode::ElementNode(
     long              pos,
     store::Item_t&           nodeName,
     store::Item_t&           typeName,
-    bool                     haveValue,
+    bool                     haveTypedValue,
     bool                     haveEmptyValue,
     bool                     isId,
     bool                     isIdRefs,
@@ -940,7 +940,7 @@ ElementNode::ElementNode(
   theName.transfer(nodeName);
   theTypeName.transfer(typeName);
 
-  if (haveValue)
+  if (haveTypedValue)
   {
     setHaveValue();
 

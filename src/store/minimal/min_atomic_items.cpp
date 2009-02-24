@@ -99,7 +99,7 @@ void QNameItemImpl::unsetNormalized()
 }
 
 
-uint32_t QNameItemImpl::hash(long timezone, XQPCollator* aCollation) const
+uint32_t QNameItemImpl::hash(long timezone, const XQPCollator* aCollation) const
 {
   //return (uint32_t)getNormalized();
   const void* tmp = getNormalized();
@@ -176,7 +176,7 @@ store::Item* StringItemNaive::getType() const
 }
 
 
-uint32_t StringItemNaive::hash(long timezone, XQPCollator* aCollation) const
+uint32_t StringItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue->hash(aCollation);
 }
@@ -185,7 +185,7 @@ uint32_t StringItemNaive::hash(long timezone, XQPCollator* aCollation) const
 bool StringItemNaive::equals(
     const store::Item* item,
     long timezone,
-    XQPCollator* aCollation) const
+    const XQPCollator* aCollation) const
 {
   return item->getStringValueP()->equals(theValue.getp());
 }
@@ -228,7 +228,7 @@ store::Item* TokenItemImpl::getType() const
 }
 
 
-uint32_t TokenItemImpl::hash(long timezone, XQPCollator* aCollation) const
+uint32_t TokenItemImpl::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue->hash();
 }
@@ -346,7 +346,7 @@ store::Item* AnyUriItemImpl::getType() const
   return GET_STORE().theSchemaTypeNames[XS_ANY_URI];
 }
 
-uint32_t AnyUriItemImpl::hash(long timezone, XQPCollator* aCollation) const
+uint32_t AnyUriItemImpl::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue->hash();
 }
@@ -355,7 +355,7 @@ uint32_t AnyUriItemImpl::hash(long timezone, XQPCollator* aCollation) const
 bool AnyUriItemImpl::equals(
     const store::Item* item,
     long timezone,
-    XQPCollator* aCollation) const
+    const XQPCollator* aCollation) const
 {
   return item->getStringValueP()->equals(theValue.getp());
 }
@@ -385,7 +385,7 @@ store::Item* UntypedAtomicItemImpl::getType() const
 }
 
 
-uint32_t UntypedAtomicItemImpl::hash(long timezone, XQPCollator* aCollation) const
+uint32_t UntypedAtomicItemImpl::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue->hash();
 }
@@ -394,7 +394,7 @@ uint32_t UntypedAtomicItemImpl::hash(long timezone, XQPCollator* aCollation) con
 bool UntypedAtomicItemImpl::equals(
     const store::Item* item,
     long timezone,
-    XQPCollator* aCollation) const
+    const XQPCollator* aCollation) const
 {
   return item->getStringValueP()->equals(theValue.getp());
 }
@@ -479,7 +479,7 @@ store::Item* DateTimeItemNaive::getType() const
 bool DateTimeItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    XQPCollator* coll) const
+    const XQPCollator* coll) const
 {
   try 
   {
@@ -493,7 +493,7 @@ bool DateTimeItemNaive::equals(
 }
 
 
-uint32_t DateTimeItemNaive::hash(long timezone, XQPCollator* aCollation) const
+uint32_t DateTimeItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue.hash(0);
 }
@@ -591,7 +591,7 @@ store::Item* DurationItemNaive::getType() const
 bool DurationItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    XQPCollator* coll ) const
+    const XQPCollator* coll ) const
 {
   return theValue == aItem->getDurationValue();
 }
@@ -607,7 +607,7 @@ xqp_string DurationItemNaive::show() const
   return theValue.toString().getStore();
 }
 
-uint32_t DurationItemNaive::hash(long timezone, XQPCollator* aCollation) const
+uint32_t DurationItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue.hash();
 }
@@ -624,7 +624,7 @@ store::Item* DecimalItemNaive::getType() const
 bool DecimalItemNaive::equals(
     const store::Item* item,
     long timezone,
-    XQPCollator* coll ) const
+    const XQPCollator* coll ) const
 {
   return item->getDecimalValue() == theValue;
 }
@@ -652,7 +652,7 @@ bool DecimalItemNaive::isNaN() const {
 }
 
 uint32_t
-DecimalItemNaive::hash(long timezone, XQPCollator* aCollation) const
+DecimalItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue.hash();
 }
@@ -707,7 +707,7 @@ store::Item* NonPositiveIntegerItemNaive::getType() const
 bool NonPositiveIntegerItemNaive::equals(
    const store::Item* aItem,
    long timezone,
-   XQPCollator* coll ) const
+   const XQPCollator* coll ) const
 {
   return theValue == aItem->getIntegerValue();
 }
@@ -731,7 +731,7 @@ xqp_string NonPositiveIntegerItemNaive::show() const
 }
 
 uint32_t
-NonPositiveIntegerItemNaive::hash(long timezone, XQPCollator* aCollation) const
+NonPositiveIntegerItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue.hash();
 }
@@ -752,7 +752,7 @@ store::Item* NegativeIntegerItemNaive::getType() const
 bool NegativeIntegerItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    XQPCollator* coll ) const 
+    const XQPCollator* coll ) const 
 {
   return theValue == aItem->getIntegerValue();
 }
@@ -776,7 +776,7 @@ xqp_string NegativeIntegerItemNaive::show() const
 }
 
 uint32_t
-NegativeIntegerItemNaive::hash(long timezone, XQPCollator* aCollation) const
+NegativeIntegerItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue.hash();
 }
@@ -803,7 +803,7 @@ store::Item* NonNegativeIntegerItemNaive::getType() const
 bool NonNegativeIntegerItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    XQPCollator* coll ) const
+    const XQPCollator* coll ) const
 {
   return theValue == aItem->getUnsignedIntegerValue();
 }
@@ -826,7 +826,7 @@ xqp_string NonNegativeIntegerItemNaive::show() const {
 }
 
 uint32_t
-NonNegativeIntegerItemNaive::hash(long timezone, XQPCollator* aCollation) const
+NonNegativeIntegerItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue.hash();
 }
@@ -853,7 +853,7 @@ store::Item* PositiveIntegerItemNaive::getType() const
 bool PositiveIntegerItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    XQPCollator* coll ) const 
+    const XQPCollator* coll ) const 
 {
   return theValue == aItem->getUnsignedIntegerValue();
 }
@@ -877,7 +877,7 @@ xqp_string PositiveIntegerItemNaive::show() const
 }
 
 uint32_t
-PositiveIntegerItemNaive::hash(long timezone, XQPCollator* aCollation) const
+PositiveIntegerItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue.hash();
 }
@@ -937,7 +937,7 @@ store::Item* DoubleItemNaive::getType() const
 bool DoubleItemNaive::equals (
     const store::Item* item,
     long timezone,
-    XQPCollator* coll ) const
+    const XQPCollator* coll ) const
 {
   return item->getDoubleValue() == theValue;
 }
@@ -982,7 +982,7 @@ bool DoubleItemNaive::isPosOrNegInf() const
 
 
 uint32_t
-DoubleItemNaive::hash(long timezone, XQPCollator* aCollation) const
+DoubleItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue.hash();
 }
@@ -999,7 +999,7 @@ store::Item* FloatItemNaive::getType() const
 bool FloatItemNaive::equals (
     const store::Item* item,
     long timezone,
-    XQPCollator* aCollation ) const
+    const XQPCollator* aCollation ) const
 {
   return item->getFloatValue() == theValue;
 }
@@ -1036,7 +1036,7 @@ bool FloatItemNaive::isPosOrNegInf() const {
 }
 
 uint32_t
-FloatItemNaive::hash(long timezone, XQPCollator* aCollation) const
+FloatItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue.hash();
 }
@@ -1052,12 +1052,12 @@ store::Item* BooleanItemNaive::getType() const
 bool BooleanItemNaive::equals (
     const store::Item* item,
     long timezone,
-    XQPCollator* aCollation ) const
+    const XQPCollator* aCollation ) const
 {
   return item->getBooleanValue() == theValue;
 }
 
-uint32_t BooleanItemNaive::hash ( long timezone, XQPCollator* aCollation ) const
+uint32_t BooleanItemNaive::hash ( long timezone, const XQPCollator* aCollation ) const
 {
   return theValue?0:1;
 }
@@ -1102,7 +1102,7 @@ store::Item* LongItemNaive::getType() const
 bool LongItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    XQPCollator* coll ) const 
+    const XQPCollator* coll ) const 
 {
   return theValue == aItem->getLongValue();
 }
@@ -1126,7 +1126,7 @@ xqp_string LongItemNaive::show() const
 }
 
 uint32_t
-LongItemNaive::hash(long timezone, XQPCollator* aCollation) const
+LongItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue % 65535;
 }
@@ -1162,7 +1162,7 @@ store::Item* ShortItemNaive::getType() const
 bool ShortItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    XQPCollator* coll ) const
+    const XQPCollator* coll ) const
 {
   return theValue == aItem->getLongValue();
 }
@@ -1186,7 +1186,7 @@ xqp_string ShortItemNaive::show() const
 }
 
 uint32_t
-ShortItemNaive::hash(long timezone, XQPCollator* aCollation) const
+ShortItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue;
 }
@@ -1226,7 +1226,7 @@ store::Item* ByteItemNaive::getType() const {
 bool ByteItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    XQPCollator* coll ) const
+    const XQPCollator* coll ) const
 {
   return theValue == aItem->getLongValue();
 }
@@ -1250,7 +1250,7 @@ xqp_string ByteItemNaive::show() const
 }
 
 uint32_t
-ByteItemNaive::hash(long timezone, XQPCollator* aCollation) const
+ByteItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue;
 }
@@ -1278,7 +1278,7 @@ store::Item* UnsignedLongItemNaive::getType() const {
 bool UnsignedLongItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    XQPCollator* coll ) const {
+    const XQPCollator* coll ) const {
   return theValue == aItem->getUnsignedLongValue();
 }
 
@@ -1298,7 +1298,7 @@ xqp_string UnsignedLongItemNaive::show() const {
 }
 
 uint32_t
-UnsignedLongItemNaive::hash(long timezone, XQPCollator* aCollation) const
+UnsignedLongItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue % 65535;
 }
@@ -1330,7 +1330,7 @@ store::Item* UnsignedIntItemNaive::getType() const {
 bool UnsignedIntItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    XQPCollator* coll ) const {
+    const XQPCollator* coll ) const {
   return theValue == aItem->getUnsignedIntValue();
 }
 
@@ -1350,7 +1350,7 @@ xqp_string UnsignedIntItemNaive::show() const {
 }
 
 uint32_t
-UnsignedIntItemNaive::hash(long timezone, XQPCollator* aCollation) const
+UnsignedIntItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue;
 }
@@ -1386,7 +1386,7 @@ store::Item* UnsignedShortItemNaive::getType() const {
 bool UnsignedShortItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    XQPCollator* coll ) const {
+    const XQPCollator* coll ) const {
   return theValue == aItem->getUnsignedShortValue();
 }
 
@@ -1406,7 +1406,7 @@ xqp_string UnsignedShortItemNaive::show() const {
 }
 
 uint32_t
-UnsignedShortItemNaive::hash(long timezone, XQPCollator* aCollation) const
+UnsignedShortItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue;
 }
@@ -1445,7 +1445,7 @@ store::Item* UnsignedByteItemNaive::getType() const {
 bool UnsignedByteItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    XQPCollator* coll ) const {
+    const XQPCollator* coll ) const {
   return theValue == aItem->getUnsignedByteValue();
 }
 
@@ -1465,7 +1465,7 @@ xqp_string UnsignedByteItemNaive::show() const {
 }
 
 uint32_t
-UnsignedByteItemNaive::hash(long timezone, XQPCollator* aCollation) const
+UnsignedByteItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue;
 }
@@ -1482,7 +1482,7 @@ store::Item* Base64BinaryItemNaive::getType() const
 bool Base64BinaryItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    XQPCollator* coll ) const {
+    const XQPCollator* coll ) const {
   return theValue.equal(aItem->getBase64BinaryValue());
 }
 
@@ -1495,7 +1495,7 @@ xqp_string Base64BinaryItemNaive::show() const {
 }
 
 uint32_t
-Base64BinaryItemNaive::hash(long timezone, XQPCollator* aCollation) const
+Base64BinaryItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue.hash();
 }
@@ -1511,7 +1511,7 @@ store::Item* HexBinaryItemNaive::getType() const
 bool HexBinaryItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    XQPCollator* coll ) const {
+    const XQPCollator* coll ) const {
   return theValue.equal(aItem->getHexBinaryValue());
 }
 
@@ -1524,7 +1524,7 @@ xqp_string HexBinaryItemNaive::show() const {
 }
 
 uint32_t
-HexBinaryItemNaive::hash(long timezone, XQPCollator* aCollation) const
+HexBinaryItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue.hash();
 }

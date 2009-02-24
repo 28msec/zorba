@@ -19,6 +19,8 @@
 #include "store/minimal/min_node_iterators.h"
 #include "store/minimal/min_temp_seq.h"
 
+#include "zorbaerrors/error_manager.h"
+
 namespace zorba { namespace storeminimal {
 
 
@@ -46,7 +48,7 @@ store::AttributesIterator* SimpleIteratorFactory::createAttributesIterator()
 store::IndexProbeIterator* SimpleIteratorFactory::createIndexProbeIterator(
     const store::Index_t& index)
 {
-  ZORBA_ERROR_PARAM(XQP0015_SYSTEM_NOT_YET_IMPLEMENTED);
+  ZORBA_ERROR(XQP0015_SYSTEM_NOT_YET_IMPLEMENTED);
   return NULL;
 }
 

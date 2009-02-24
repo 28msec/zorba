@@ -305,7 +305,8 @@ store::Item_t SimpleStore::createUri()
   return val;
 }
 
-*************************************************************************
+
+/*************************************************************************
   Create an index with a given URI and return an rchandle to the index object. 
   If an index with the given URI exists already, raise an error.
 ********************************************************************************/
@@ -325,7 +326,7 @@ void SimpleStore::deleteIndex(const xqpStringStore_t& uri)
   if (uri == NULL)
     return;
 
-  theIndices.remove(uri);
+  ZORBA_ERROR(XQP0015_SYSTEM_NOT_YET_IMPLEMENTED);
 }
 
 
