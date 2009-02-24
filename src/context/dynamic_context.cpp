@@ -66,10 +66,10 @@ dynamic_context::dynamic_context(dynamic_context *parent)
     localtime_r(&timebuffer.time, &gmtm); //thread safe localtime on Linux
 #endif
 
-    implicit_timezone = -timebuffer.timezone / 60;
+    set_implicit_timezone( -timebuffer.timezone * 60 );//in seconds
 
     GENV_ITEMFACTORY->createDateTime(current_date_time_item, gmtm.tm_year + 1900, gmtm.tm_mon + 1, gmtm.tm_mday, 
-		  gmtm.tm_hour, gmtm.tm_min, gmtm.tm_sec + timebuffer.millitm/1000.0, implicit_timezone);
+		  gmtm.tm_hour, gmtm.tm_min, gmtm.tm_sec + timebuffer.millitm/1000.0, implicit_timezone/3600);
     
 	  ctxt_position = 0;
 	}
