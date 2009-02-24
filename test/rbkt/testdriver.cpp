@@ -494,15 +494,7 @@ main(int argc, char** argv)
     // create and compile the query
     std::string lQueryString;
     slurp_file(lQueryFile.get_path().c_str(), lQueryString);
-    zorba::XQuery_t lQuery;
-    if(!is_xqueryx)
-    {
-      lQuery = engine->createQuery (&errHandler);
-    }
-    else
-    {
-      lQuery = engine->createXQueryX (&errHandler);
-    }
+    zorba::XQuery_t lQuery = engine->createQuery (&errHandler);
     lQuery->setFileName (lQueryFile.get_path ());
     lQuery->compile (lQueryString.c_str(), getCompilerHints());
 

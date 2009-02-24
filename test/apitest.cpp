@@ -133,11 +133,7 @@ int _tmain(int argc, _TCHAR* argv[])
   Zorba* zengine = Zorba::getInstance(store);
 
   // start parsing the query
-  XQuery_t query;
-  if(!is_xqueryx)
-    query = zengine->createQuery ();
-  else
-    query = zengine->createXQueryX ();
+  XQuery_t query = zengine->createQuery ();
 #ifdef ZORBA_DEBUGGER 
  query->setDebugMode(lProp->debug());
 #endif
