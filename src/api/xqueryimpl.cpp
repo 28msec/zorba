@@ -71,7 +71,7 @@ XQueryImpl::PlanProxy::PlanProxy(PlanIter_t& root)
 }
 
 
-XQueryImpl::XQueryImpl(enum XQueryFormat xqf)
+XQueryImpl::XQueryImpl()
   :
   thePlan(0),
   theStaticContext(0),
@@ -80,8 +80,7 @@ XQueryImpl::XQueryImpl(enum XQueryFormat xqf)
   theStaticContextWrapper(0),
   theUserErrorHandler(false),
   theSAX2Handler(0),
-  theIsClosed(false),
-  xqformat(xqf)
+  theIsClosed(false)
 #ifdef ZORBA_DEBUGGER
   , theDebugger(0)
   , theProfileName("xquery_profile.out")
@@ -394,8 +393,6 @@ XQueryImpl::parse(std::istream& aQuery)
 
     theCompilerCB->m_sctx = theStaticContext;
 
-    theCompilerCB->xqformat = xqformat;
-
     XQueryCompiler lCompiler(theCompilerCB);
     lCompiler.parseOnly(aQuery, theFileName);
   ZORBA_CATCH
@@ -492,8 +489,6 @@ XQueryImpl::doCompile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints)
 
   // set the compiler config
   theCompilerCB->m_config = getCompilerConfig(aHints);
-
-  theCompilerCB->xqformat = xqformat;
 
   XQueryCompiler lCompiler(theCompilerCB);
 #ifdef ZORBA_DEBUGGER

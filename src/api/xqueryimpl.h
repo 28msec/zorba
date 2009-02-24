@@ -228,7 +228,7 @@ class XQueryImpl : public XQuery
 
  protected:
     
-  XQueryImpl(enum XQueryFormat xqformat = XQUERY1_1);
+  XQueryImpl();
       
   void
   doCompile(std::istream&, const Zorba_CompilerHints_t& aHints);
