@@ -17,6 +17,10 @@ public:
   void XQueryX_init();
   char* XQueryX2XQuery( const char *xqueryx);
 
+  bool isWhitespace(char c);
+  char* skipWhitespaces(char *xquery_str);
+  bool  isXQueryX(char *xquery_str);
+
   void freeResult(char *result_str);
 };
 

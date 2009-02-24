@@ -107,26 +107,37 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
   std::istream  *xquery_stream = &aXQuery;
 
 #ifdef ZORBA_XQUERYX
-  char  *xquery_str;
-  if(theCompilerCB->xqformat == XQUERYX_2005)
+  char  *converted_xquery_str = NULL;
+  std::string   xquery_str;
+  bool  is_xqueryx = false;
   {
-    //translate from xqueryx to xquery using XSLT
-    XQueryXConvertor    *xqxconvertor = GENV.getXQueryXConvertor();
-    std::string   xqueryx_str;
-    //read all input stream into std::string
-    char  strtemp[100];
+    char  strtemp[1000];
     int   nr_read = 1;
     do
     {
       strtemp[0] = 0;
       aXQuery.read(strtemp, sizeof(strtemp)-1);
       strtemp[aXQuery.gcount()] = 0;
-      xqueryx_str += strtemp;
+      xquery_str += strtemp;
     }while(aXQuery.gcount() == (sizeof(strtemp)-1));
+  }
+  XQueryXConvertor    *xqxconvertor = GENV.getXQueryXConvertor();
+  //if(theCompilerCB->xqformat == XQUERYX_2005)
+  if(xqxconvertor->isXQueryX((char*)xquery_str.c_str()))//identify XQueryX by content: root tag = "<prefix:module ... xmlns:prefix="http://www.w3.org/2005/XQueryX" ... > "
+  {
+    is_xqueryx = true;
+    //translate from xqueryx to xquery using XSLT
+    //read all input stream into std::string
 
-    xquery_str = xqxconvertor->XQueryX2XQuery(xqueryx_str.c_str());
+    converted_xquery_str = xqxconvertor->XQueryX2XQuery(xquery_str.c_str());
+    //debug
     printf("\n\n");
-    printf(xquery_str);
+    printf(converted_xquery_str);
+    //end debug
+    xquery_stream = new std::istringstream(converted_xquery_str);
+  }
+  else
+  {
     xquery_stream = new std::istringstream(xquery_str);
   }
 #endif
@@ -134,11 +145,11 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
   xquery_driver lDriver(&*theCompilerCB);
   lDriver.parse_stream(*xquery_stream, aFileName);
 #ifdef ZORBA_XQUERYX
-  if(theCompilerCB->xqformat == XQUERYX_2005)
+  delete xquery_stream;
+  if(is_xqueryx)
   {
-    delete xquery_stream;
-    XQueryXConvertor    *xqxconvertor = GENV.getXQueryXConvertor();
-    xqxconvertor->freeResult(xquery_str);
+    //XQueryXConvertor    *xqxconvertor = GENV.getXQueryXConvertor();
+    xqxconvertor->freeResult(converted_xquery_str);
   }
 #endif
   parsenode_t node = lDriver.get_expr();

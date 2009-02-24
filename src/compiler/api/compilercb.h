@@ -29,13 +29,6 @@ class ZorbaDebugger;
 #endif
 class static_context;
 
-enum XQueryFormat
-{
-  XQUERY1_0,
-  XQUERY1_1,
-  XQUERYX_2005
-};
-
 
 // exported for unit testing only
 class ZORBA_DLL_PUBLIC CompilerCB 
@@ -68,7 +61,6 @@ class ZORBA_DLL_PUBLIC CompilerCB
   std::vector<static_context_t> m_sctx_list;     
   error::ErrorManager*          m_error_manager;
   config_t                      m_config;
-  enum XQueryFormat             xqformat;
 #ifdef ZORBA_DEBUGGER
   ZorbaDebugger*                m_debugger;
 #endif
