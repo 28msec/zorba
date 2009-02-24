@@ -109,7 +109,7 @@ public:
   char operator[](std::string::size_type i) const { return str()[i]; }
 
   uint32_t 
-  hash(XQPCollator* = 0) const;
+  hash(const XQPCollator* = 0) const;
 
   bool
   byteEqual(const xqpStringStore& src) const;
