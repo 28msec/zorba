@@ -26,5 +26,8 @@ ELSE( NOT PHP5_FOUND )
   ELSE(APPLE)
     SWIG_LINK_LIBRARIES(zorba_api zorba_simplestore)
   ENDIF(APPLE)
+  INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.php
+                  ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.so
+            DESTINATION ${PHP5_EXTENSION_DIR} )
 ENDIF( NOT PHP5_FOUND )
 
