@@ -29,6 +29,12 @@ class ZorbaDebugger;
 #endif
 class static_context;
 
+enum XQueryFormat
+  {
+    XQUERY1_0,
+    XQUERY1_1,
+    XQUERYX_2005
+  };
 
 // exported for unit testing only
 class ZORBA_DLL_PUBLIC CompilerCB 
