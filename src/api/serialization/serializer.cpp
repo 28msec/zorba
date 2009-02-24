@@ -855,6 +855,8 @@ void serializer::html_emitter::emit_node(
   }
   else if (item->getNodeKind() == store::StoreConsts::elementNode)
   {
+    store::Item* qname = item->getNodeName();
+    xqpStringStore* prefix = qname->getPrefix();
     unsigned closed_parent_tag = 0;
 
     if (isFirstElementNode)
@@ -876,10 +878,16 @@ void serializer::html_emitter::emit_node(
     {
       // do not emit this element
       return;      
-    }        
+    }
+
+    if (prefix->empty())
+      tr << "<" << qname->getLocalName()->c_str();
+    else
+      tr << "<" << prefix->c_str() << ":" << qname->getLocalName()->c_str();
     
-    tr << "<" << item->getNodeName()->getStringValue()->c_str();
     previous_item = PREVIOUS_ITEM_WAS_NODE;
+
+    bool should_remove_binding = emit_bindings(item);
     
     /*
       If there is a head element, and the include-content-type parameter has the value yes, the 
@@ -910,9 +918,17 @@ void serializer::html_emitter::emit_node(
     }
 
     closed_parent_tag |= emit_node_children(item, depth+1);
+
+    if (should_remove_binding)
+      bindings.pop_back(); 
         
-    if (closed_parent_tag)   
-      tr << "</" << item->getNodeName()->getStringValue()->c_str() << ">";
+    if (closed_parent_tag)
+    {
+      if (prefix->empty())
+        tr << "</" << qname->getLocalName()->c_str() << ">";
+      else
+        tr << "</" << prefix->c_str() << ":" << qname->getLocalName()->c_str() << ">";
+    }
     else
     {
       /* 
