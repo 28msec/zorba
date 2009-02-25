@@ -237,7 +237,16 @@ public:
 
       long compare(const Integer &aInteger) const
       {
+#ifndef ZORBA_NO_BIGNUMBERS
         return theInteger.compare(aInteger.theInteger);
+#else
+        if(theInteger < aInteger.theInteger)
+          return -1;
+        else if(theInteger == aInteger.theInteger)
+          return 0;
+        else
+          return 1;
+#endif
       }
 
       bool
