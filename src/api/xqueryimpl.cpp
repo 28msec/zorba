@@ -174,7 +174,6 @@ XQueryImpl::clone() const
     lImpl->registerErrorHandler(theErrorHandler);
     lImpl->thePlan = thePlan;
     lImpl->theFileName = theFileName;
-    lImpl->xqformat = xqformat;
     
     // child static context
     lImpl->theStaticContext = theStaticContext->create_child_context();

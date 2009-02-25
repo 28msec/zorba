@@ -160,7 +160,6 @@ class XQueryImpl : public XQuery
 
   SYNC_CODE(mutable Mutex          theCloningMutex;)
 
-  enum XQueryFormat               xqformat;
  public:
   virtual ~XQueryImpl();
 
