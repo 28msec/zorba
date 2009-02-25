@@ -129,6 +129,11 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
     //translate from xqueryx to xquery using XSLT
     //read all input stream into std::string
 
+    //debug
+    printf("\n\n");
+    printf(xquery_str.c_str());
+    //end debug
+
     converted_xquery_str = xqxconvertor->XQueryX2XQuery(xquery_str.c_str());
     //debug
     printf("\n\n");
