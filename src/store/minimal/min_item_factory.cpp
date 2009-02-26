@@ -920,7 +920,7 @@ bool BasicItemFactory::createElementNode(
       n = new ElementTreeNode(xmlTree, pnode, pos, nodeName,
                               typeName, haveTypedValue, haveEmptyValue,
 							  isId, isIdRefs,
-                              &localBindings, true, baseUri);
+                              &localBindings, false, baseUri);
   }
   catch (...)
   {

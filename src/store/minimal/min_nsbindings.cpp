@@ -84,18 +84,20 @@ void NsBindingsContext::addBinding(
     xqpStringStore* prefix,
     xqpStringStore* ns)
 {
-/*+
+
   ulong numBindings = theBindings.size();
   for (ulong i = 0; i < numBindings; i++)
   {
     if (theBindings[i].first.getStore()->byteEqual(*prefix))
     {
-      ZORBA_FATAL(theBindings[i].second.getStore()->byteEqual(*ns), "");
-
+      if(!theBindings[i].second.getStore()->byteEqual(*ns))
+      {
+        ZORBA_FATAL(theBindings[i].second.getStore()->byteEqual(*ns), "");
+      }
       return;
     }
   }
-*/
+
   theBindings.push_back(std::pair<xqpString, xqpString>(prefix, ns));
 }
 
