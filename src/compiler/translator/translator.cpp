@@ -1484,6 +1484,27 @@ void end_visit (const CompPIConstructor& v, void* /*visit_state*/) {
   if (v.get_target_expr() != NULL) {
     target = pop_nodestack();
 
+    //check if target is a sequence of more than 1 item
+    expr_kind_t target_kind = target->get_expr_kind();
+    if(target_kind == fo_expr_kind)
+    {
+      fo_expr *fo_target = reinterpret_cast<fo_expr*>(&*target);
+      uint32_t  s = fo_target->size();
+      store::Item_t   fname_item = fo_target->get_fname();
+      xqpStringStore  *fname_local = fname_item->getLocalName();
+      if(fname_local->byteEqual(":concatenate", 12))
+      {
+        if(s != 1)
+        {
+          //fire error: target cannot be a sequence of more than 1 item
+          ZORBA_ERROR_LOC(XPTY0004, v.get_location());
+        }
+      }
+//      const expr_t  arg0 = fo_target[0];
+//      expr_kind_t target_kind = target->get_expr_kind();
+      
+    }
+
     rchandle<fo_expr> atomExpr = (fo_expr*)wrap_in_atomization (target).getp();
 
     rchandle<cast_expr> castExpr =
