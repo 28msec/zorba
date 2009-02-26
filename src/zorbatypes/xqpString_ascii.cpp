@@ -442,7 +442,7 @@ bool xqpStringStore::endsWith(const xqpStringStore* pattern, XQPCollator* coll) 
 {
   int pattern_len = pattern->bytes();
   int mylen = bytes();
-  if(pattern_len < mylen)
+  if(mylen < pattern_len)
     return false;
   if(!memcmp(c_str()+ mylen - pattern_len, pattern->c_str(), pattern_len))
     return true;
