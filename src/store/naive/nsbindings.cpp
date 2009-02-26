@@ -82,8 +82,10 @@ void NsBindingsContext::addBinding(
   {
     if (theBindings[i].first.getStore()->byteEqual(*prefix))
     {
-      ZORBA_FATAL(theBindings[i].second.getStore()->byteEqual(*ns), "");
-
+      if(!theBindings[i].second.getStore()->byteEqual(*ns))
+      {
+        ZORBA_FATAL(theBindings[i].second.getStore()->byteEqual(*ns), "");
+      }
       return;
     }
   }
