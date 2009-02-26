@@ -50,8 +50,6 @@ void XQueryXConvertor::XQueryX_init()
     doc = xmlParseDoc((const xmlChar*)xqueryx2005_xslt);
 
     xqueryx2005 = (xsltStylesheet*)xsltParseStylesheetDoc(doc);
-    printf("XQueryX_init xqueryx2005_xslt %x doc %x xqueryx2005 %x\n", 
-              (void*)xqueryx2005_xslt, (void*)doc, xqueryx2005);
   //	xmlFreeDoc(doc);
   }
   inited = true;
