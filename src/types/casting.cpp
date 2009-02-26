@@ -1357,6 +1357,13 @@ bool GenericCast::castToAtomic(
       lPrimitiveTargetAtomicType == TypeConstants::XS_ANY_ATOMIC)
     throwError(XPST0080, lErrorInfo);
 
+  if ((aTargetType->type_kind() == XQType::ATOMIC_TYPE_KIND)&&
+      (TypeOps::get_atomic_type_code(*aTargetType) == TypeConstants::XS_NCNAME)&&
+      (lPrimitiveSourceAtomicType != TypeConstants::XS_STRING)&&
+      (lPrimitiveSourceAtomicType != TypeConstants::XS_NCNAME)&&
+      (lPrimitiveSourceAtomicType != TypeConstants::XS_UNTYPED_ATOMIC))
+    throwError(XPTY0004, lErrorInfo);
+
   CastFunc lCastFunc = theCastMatrix[lPrimitiveSourceMapping][lPrimitiveTargetMapping];
 
   if (lCastFunc == 0)
