@@ -362,7 +362,7 @@ class IndexBoxConditionImpl : public store::IndexBoxCondition
 
   friend std::ostream& operator<<(std::ostream& os, const IndexBoxConditionImpl& cond);
 
-protected:
+public:
   static store::Item_t  theNegInf;
   static store::Item_t  thePosInf;
 
