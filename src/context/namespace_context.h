@@ -40,7 +40,9 @@ class namespace_context : public SimpleRCObject {
       : m_sctx(sctx) { }
     namespace_context(static_context *sctx, store::NsBindings& bindings);
     namespace_context(rchandle<namespace_context> parent)
-      : m_parent(parent), m_sctx(parent->m_sctx) { }
+      :  m_sctx(parent->m_sctx),
+	 m_parent(parent)
+  { }
 
     rchandle<namespace_context> get_parent() const { return m_parent; }
     static_context *get_context() const { return m_sctx; }
