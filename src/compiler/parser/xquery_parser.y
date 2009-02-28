@@ -4727,6 +4727,7 @@ QNAME :
   | VERSION { $$ = driver.symtab.put("version"); }
   | IMPORT { $$ = driver.symtab.put("import"); }
   | SCHEMA { $$ = driver.symtab.put("schema"); }
+  | MODULE { $$ = driver.symtab.put("module"); }
   | FUNCTION { $$ = driver.symtab.put("function"); }
   | SCORE { $$ = driver.symtab.put("score"); }
   | FTCONTAINS { $$ = driver.symtab.put("ftcontains"); }

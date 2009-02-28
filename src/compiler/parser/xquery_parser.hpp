@@ -67,21 +67,28 @@ namespace zorba
 #define SYMTAB( n ) driver.symtab.get ((off_t) n)
 #define LOC( p ) driver.createQueryLoc(p)
 
-namespace zorba {
-  namespace parser {
-    extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end, *the_ofor;
-  }
+namespace zorba 
+{
 
-  class xquery_driver;
+namespace parser 
+{
+extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end, *the_ofor;
+}
 
-  class FunctionSig {
-  public:
-    rchandle<ParamList> param;
-    rchandle<SequenceType> ret;
-    FunctionSig (ParamList *param_, SequenceType *ret_ = NULL)
-      : param (param_), ret (ret_)
-    {}
-  };
+class xquery_driver;
+
+
+class FunctionSig 
+{
+ public:
+  rchandle<ParamList> param;
+  rchandle<SequenceType> ret;
+
+  FunctionSig (ParamList *param_, SequenceType *ret_ = NULL)
+    : param (param_), ret (ret_)
+  {}
+};
+
 }
 
 #define YYDEBUG 1
@@ -89,7 +96,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc.  */
-#line 93 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
+#line 100 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -140,7 +147,7 @@ namespace zorba
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 121 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 128 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 {
   zorba::parsenode * node;
   zorba::exprnode * expr;
@@ -153,7 +160,7 @@ namespace zorba
   XQUERY_ERROR err;
 }
 /* Line 35 of lalr1.cc.  */
-#line 157 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
+#line 164 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;
