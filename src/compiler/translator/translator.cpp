@@ -3175,6 +3175,9 @@ void *begin_visit (const SchemaImport& v) {
     if (! schema_import_ns_set.insert (target_ns).second)
       ZORBA_ERROR_LOC (XQST0058, loc);
     if (sp != NULL) {
+      if (target_ns.size() == 0)
+        ZORBA_ERROR_LOC_PARAM (XQST0057, loc, "(no location specified)", target_ns);
+
       string pfx = sp->get_prefix ();
       if (pfx == "xml" || pfx == "xmlns")
         ZORBA_ERROR_LOC (XQST0070, loc);
@@ -3186,8 +3189,6 @@ void *begin_visit (const SchemaImport& v) {
     }
 
     rchandle<URILiteralList> atlist = v.get_at_list();
-//  if (atlist == NULL || atlist->size () == 0)
-//    ZORBA_ERROR_LOC_PARAM (XQST0057, loc, "(no location specified)", target_ns);
 
     std::vector<store::Item_t> lAtURIList;
     store::Item_t lTargetNamespace = NULL;
