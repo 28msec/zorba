@@ -1,4 +1,4 @@
-# Copyright 2006-2008 The FLWOR Foundation.
+# Copyright 2006-2008 The FLWOR Foundation.n
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,10 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+FIND_PACKAGE ( Java )
 include ( FindJNI )
 
 IF ( NOT JNI_NOT_FOUND )
 MESSAGE(STATUS "Generating Java API")
+EXECUTE_PROCESS ( COMMAND ${JAVA_RUNTIME} -version 
+   OUTPUT_VARIABLE JAVA_VERSION )
 MESSAGE ( STATUS "JNI found at ${JNI_INCLUDE_PATH}" )
 SET_SOURCE_FILES_PROPERTIES(zorba_api.i PROPERTIES CPLUSPLUS ON)
 INCLUDE_DIRECTORIES ( ${JNI_INCLUDE_PATH} )
