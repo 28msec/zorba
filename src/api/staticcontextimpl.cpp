@@ -681,5 +681,108 @@ StaticContextImpl::getContextItemStaticType() const
   }
   return TypeOps::get_type_identifier(*type);
 }
+#ifdef ZORBA_WITH_EMAIL
+bool
+StaticContextImpl::setSMTPServer( const String& aSMTP_server )
+{
+  try {
+    xqpStringStore_t lSMTP_server = Unmarshaller::getInternalString(aSMTP_server);
 
+    theCtx->set_SMTP_server(lSMTP_server.getp());
+  }
+  catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+    return false;
+  }
+  catch (std::exception& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e.what());
+    return false;
+  }
+  return true;
+}
+
+
+String
+StaticContextImpl::getSMTPServer( ) const
+{
+  try {
+    xqpString lSMTP_server = theCtx->SMTP_server();
+    return &*lSMTP_server.theStrStore;
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  } catch (std::exception& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e.what());
+  }
+  return "";
+}
+
+
+bool
+StaticContextImpl::setSMTPUname( const String& aSMTP_username )
+{
+  try {
+    xqpStringStore_t lSMTP_username = Unmarshaller::getInternalString(aSMTP_username);
+
+    theCtx->set_SMTP_uname(lSMTP_username.getp());
+  }
+  catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+    return false;
+  }
+  catch (std::exception& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e.what());
+    return false;
+  }
+  return true;
+}
+
+
+String
+StaticContextImpl::getSMTPUname( ) const
+{
+  try {
+    xqpString lSMTP_username = theCtx->SMTP_uname();
+    return &*lSMTP_username.theStrStore;
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  } catch (std::exception& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e.what());
+  }
+  return "";
+}
+
+bool
+StaticContextImpl::setSMTPUpwd( const String& aSMTP_password )
+{
+  try {
+    xqpStringStore_t lSMTP_password = Unmarshaller::getInternalString(aSMTP_password);
+
+    theCtx->set_SMTP_upwd(lSMTP_password.getp());
+  }
+  catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+    return false;
+  }
+  catch (std::exception& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e.what());
+    return false;
+  }
+  return true;
+}
+
+
+String
+StaticContextImpl::getSMTPUpwd( ) const
+{
+  try {
+    xqpString lSMTP_password = theCtx->SMTP_upwd();
+    return &*lSMTP_password.theStrStore;
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  } catch (std::exception& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e.what());
+  }
+  return "";
+}
+#endif  /* ZORBA_WITH_EMAIL */
 } /* namespace zorba */

@@ -1105,6 +1105,15 @@ DECL(sctx, zorba_encode_base64,
        (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "uuid"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
+#ifdef ZORBA_WITH_EMAIL
+  DECL(sctx, zorba_mail,
+       (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "mail"),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.NONE_TYPE));
+#endif
+
 // end util functions
 
 // begin context functions

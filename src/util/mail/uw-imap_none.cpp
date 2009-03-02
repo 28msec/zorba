@@ -13,29 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "util/mail/uw-imap.h"
+#include "zorbaerrors/error_manager.h"
 
-#ifndef ZORBA_UTIL_IMPL_H
-#define ZORBA_UTIL_IMPL_H
+namespace zorba
+{
 
-#include "runtime/base/narybase.h"
+bool mail(const char* to, const char* subject, const char* message,
+          const char* SMTPServer, const char* SMTPUser, const char* SMTPPwd,
+          xqp_string& diagnostics)
+{
+  ZORBA_ERROR_PARAM(  XQP0004_SYSTEM_NOT_SUPPORTED, "MAIL" , "");
 
-namespace zorba {
-
-  NARY_ITER (ZorbaSchemaTypeIterator);
-  NARY_ITER (ZorbaBase64DecodeIterator);
-  NARY_ITER (ZorbaBase64EncodeIterator);
-
-#ifdef ZORBA_WITH_TIDY
-  NARY_ITER (ZorbaTidyIterator);
-  NARY_ITER (ZorbaTDocIterator);
-#endif  /* ZORBA_WITH_TIDY */
-
-  NARY_ITER (ZorbaRandomIterator);
-  NARY_ITER (ZorbaUUIDIterator);
-
-#ifdef ZORBA_WITH_EMAIL
-  NARY_ITER (ZorbaMailIterator);
-#endif  /* ZORBA_WITH_EMAIL */
-}/*namespace zorba*/
-
-#endif /* ZORBA_UTIL_IMPL_H */
+  return 0;
+}
+} // namespace zorba

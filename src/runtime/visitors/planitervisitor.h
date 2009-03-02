@@ -256,9 +256,12 @@ namespace zorba
 #ifdef ZORBA_WITH_TIDY
   class ZorbaTidyIterator;
   class ZorbaTDocIterator;
-#endif
+#endif  /* ZORBA_WITH_TIDY */
   class ZorbaRandomIterator;
   class ZorbaUUIDIterator;
+#ifdef ZORBA_WITH_EMAIL
+  class ZorbaMailIterator;
+#endif  /* ZORBA_WITH_EMAIL */
 
   namespace gflwor{
     class TupleStreamIterator;
@@ -751,6 +754,9 @@ namespace zorba
 #endif
     PLAN_ITER_VISITOR(ZorbaRandomIterator);
     PLAN_ITER_VISITOR(ZorbaUUIDIterator);
+#ifdef ZORBA_WITH_EMAIL
+    PLAN_ITER_VISITOR(ZorbaMailIterator);
+#endif  /* ZORBA_WITH_EMAIL */
 
 #ifdef ZORBA_DEBUGGER
     PLAN_ITER_VISITOR ( FnDebugIterator );  

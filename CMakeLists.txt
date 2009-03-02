@@ -137,17 +137,17 @@ ENDIF (ZORBA_HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
 
 #
 # cURL
-#    
+#
 FIND_PACKAGE(CURL)
 IF(CURL_FOUND)
   MESSAGE(STATUS "Found cURL library -- " ${CURL_LIBRARIES})
   INCLUDE_DIRECTORIES(${CURL_INCLUDE_DIR})
-  
+
   SET(CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES} ${CURL_INCLUDE_DIR})
 
   SET(requiredlibs ${requiredlibs} ${CURL_LIBRARIES})
   SET(ZORBA_WITH_REST ON)
-  
+
 ELSE(CURL_FOUND)
   MESSAGE(STATUS "The cURL library was not found.")
 ENDIF(CURL_FOUND)
@@ -155,7 +155,6 @@ ENDIF(CURL_FOUND)
 #
 # LibTidy
 #
-#INCLUDE(${CMAKE_MODULE_PATH}/FindLibTidy.cmake)
 FIND_PACKAGE(LibTidy)
 
 IF(LIBTIDY_FOUND)
@@ -167,6 +166,24 @@ IF(LIBTIDY_FOUND)
 ELSE(LIBTIDY_FOUND)
   MESSAGE(STATUS "The LibTidy library was not found.")
 ENDIF(LIBTIDY_FOUND)
+
+#
+# CClient library part of the UW IMAP toolkit required by the email functionality
+#
+FIND_PACKAGE(CClient)
+IF (CCLIENT_FOUND)
+  FIND_PACKAGE(PAM)
+    IF(PAM_FOUND)
+      INCLUDE_DIRECTORIES(${PAM_INCLUDE_DIR})
+      SET(requiredlibs ${requiredlibs} ${PAM_LIBRARIES})
+      INCLUDE_DIRECTORIES(${CCLIENT_INCLUDE_DIRS})
+      SET(requiredlibs ${requiredlibs} ${CCLIENT_LIBRARIES})
+    ELSE(PAM_FOUND)
+      MESSAGE(STATUS "The PAM library needed by CClient library was not found hence email functionality is not available.")
+    ENDIF(PAM_FOUND)
+ELSE (CCLIENT_FOUND)
+  MESSAGE(STATUS "The CClient library was not found hence email functionality is not available.")
+ENDIF (CCLIENT_FOUND)
 
 #
 # Iconv

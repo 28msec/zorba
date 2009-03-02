@@ -379,6 +379,27 @@ public:
   InternalModuleURIResolver*
   get_module_uri_resolver();
 
+#ifdef ZORBA_WITH_EMAIL
+  // SMTP parameter settings
+  xqp_string
+  SMTP_server() const;
+
+  void
+  set_SMTP_server(xqp_string);
+
+  xqp_string
+  SMTP_uname() const;
+
+  void
+  set_SMTP_uname(xqp_string);
+
+  xqp_string
+  SMTP_upwd() const;
+
+  void
+  set_SMTP_upwd(xqp_string);
+#endif  /* ZORBA_WITH_EMAIL */
+
 protected:
   static_context();
 

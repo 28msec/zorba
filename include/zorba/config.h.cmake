@@ -71,6 +71,9 @@
 /* tidy support*/
 #cmakedefine ZORBA_WITH_TIDY
 
+/* email support*/
+#cmakedefine ZORBA_WITH_EMAIL
+
 /* allow file system access */
 #cmakedefine ZORBA_WITH_FILE_ACCESS
 

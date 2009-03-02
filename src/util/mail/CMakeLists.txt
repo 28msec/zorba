@@ -11,18 +11,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-SET(UTIL_SRCS
-    fx/mmfile.cpp
-    fx/fxcharheap.cpp
-    file.cpp
-    properties.cpp
-    XmlWhitespace.cpp
-    uuid/sysdep.cpp
-    uuid/uuid.cpp)
 
-ADD_SRC_SUBFOLDER(UTIL_SRCS web WEB_SRCS)
-ADD_SRC_SUBFOLDER(UTIL_SRCS mail MAIL_SRCS)
+IF(ZORBA_WITH_EMAIL)
 
-HEADER_GROUP_SUBFOLDER(UTIL_SRCS fx)
-HEADER_GROUP_SUBFOLDER(UTIL_SRCS utf8)
-HEADER_GROUP_SUBFOLDER(UTIL_SRCS win32)
+  SET(MAIL_SRCS
+    uw-imap.cpp)
+
+ELSE(ZORBA_WITH_EMAIL)
+
+  SET(MAIL_SRCS
+    uw-imap_none.cpp)
+
+ENDIF(ZORBA_WITH_EMAIL)

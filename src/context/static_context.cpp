@@ -1020,7 +1020,47 @@ static_context::get_module_uri_resolver()
   return dynamic_cast<static_context*>(parent)->get_module_uri_resolver();
 }
 
+#ifdef ZORBA_WITH_EMAIL
+//  SMTP parameter settings
+xqp_string static_context::SMTP_server () const
+{
+  xqp_string SMTP_server;
+  context_value("int:" "smtp_server", SMTP_server);
+  return SMTP_server;
+}
 
+void static_context::set_SMTP_server (xqp_string SMTP_server)
+{
+  // overwite existing value of smtp_server, if any
+  str_keymap.put ("int:" "smtp_server", SMTP_server);
+}
+
+xqp_string static_context::SMTP_uname () const
+{
+  xqp_string SMTP_username;
+  context_value("int:" "smtp_uname", SMTP_username);
+  return SMTP_username;
+}
+
+void static_context::set_SMTP_uname (xqp_string SMTP_username)
+{
+  // overwite existing value of smtp_uname, if any
+  str_keymap.put ("int:" "smtp_uname", SMTP_username);
+}
+
+xqp_string static_context::SMTP_upwd () const
+{
+  xqp_string SMTP_password;
+  context_value("int:" "smtp_upwd", SMTP_password);
+  return SMTP_password;
+}
+
+void static_context::set_SMTP_upwd (xqp_string SMTP_password)
+{
+  // overwite existing value of smtp_upwd, if any
+  str_keymap.put ("int:" "smtp_upwd", SMTP_password);
+}
+#endif  /* ZORBA_WITH_EMAIL */
 
 } /* namespace zorba */
 

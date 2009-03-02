@@ -14,13 +14,22 @@
         <li> \ref tidy
         <li> \ref tdoc
       </ul>
-      <li> \ref random_generation
-      <ul>
-        <li> \ref uuid
-        <li> \ref random
-      </ul>
      </ul>
-     <li> \ref apendix_util
+    <li> \ref random_generation
+    <ul>
+      <li> \ref uuid
+      <li> \ref random
+    </ul>
+    <li> \ref mail_intro
+    <ul>
+      <li> \ref configuring
+      <li> \ref mail_functions
+      <ul>
+        <li> \ref mail
+      </ul>
+    </ul>
+    <li> \ref apendix_util
+    <li> \ref apendix_naming
    </ul>
  </ul>
 
@@ -158,7 +167,141 @@ If the seed is not passed as an argument the same number will be generated every
     return zu:random()
 \endcode
 
+\section mail_intro 2.3 Introduction
+
+This section describes the function used for sending email. \n
+Zorba provides email support through the <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>. \n
+The UW IMAP toolkit is provided as part of Zorba (not as a shared library) and the current version was released on the 16 December 2008 as <a href="http://www.washington.edu/imap/documentation/RELNOTES.html" target="_blank">imap-2007e</a>. \n
+A prerequirement is the installation of <a href="http://www.openssl.org/" target="_blank">Open SSL</a>. \n
+
+\subsection configuring 2.3.1 Configuring
+
+There are several values that have to be configured in the static context prior to calling any email functions. These are the following: \n
+- SMTP server \n
+- SMTP username \n
+- SMTP password \n
+
+<b>SMTP server</b> \n
+The SMTP server has to be specified as a string in the following form: \n
+<i> remote_system_name [":" port] [flags] </i> \n
+a complete list of usage see \ref apendix_naming
+
+For example: \n
+- smtp.gmail.com:587/tls/novalidate-cert \n
+- [209.85.129.111]:587/tls/novalidate-cert \n
+
+<b>SMTP username</b> \n
+This is the remote username used to authenticate to the SMTP server. \n
+
+Note: \n
+If you have specified a username in the SMTP server through <b>/user=</b> it will be overwritten by the one defined as SMTP username.
+
+<b>SMTP password</b> \n
+This is the remote username password used to authenticate to the SMTP server. \n
+
+\subsection mail_functions 2.3.2 Mail functions
+
+\subsection mail 2.3.2.1 zorba-util:mail
+
+\code
+  declare function mail(  $to       as xs:string
+                          $subject  as xs:string
+                          $message  as xs:string)  as none
+\endcode
+
+Parameters: \n
+<b>$to</b> Receiver, or receivers of the email. The formatting of this string must comply with <a href="http://www.faqs.org/rfcs/rfc2822.html" target="_blank">RFC 2822</a>. \n
+
+Examples: \n
+- user@example.com \n
+- user@example.com, anotheruser@example.com \n
+- User <user@example.com> \n
+- User <user@example.com>, Another User <anotheruser@example.com> \n
+
+<b>$subject</b> Subject of the email to be sent. The formatting of this string must comply with <a href="http://www.faqs.org/rfcs/rfc2047.html" target="_blank">RFC 2047</a>. \n
+
+<b>$message</b> Message to be sent. \n
+Each line should be separated with a LF (\\n). Lines should not be larger than 70 characters. \n
+
+Error conditions:\n
+If the SMTP server was not set in the static context an error is raised API0038_SMTP_SEVER_ERROR_SET_OPTION (see \ref apendix_util).\n
+If the <b>$to</to> parameter was not set an error is raised API0039_TO_SET_OPTION (see \ref apendix_util).\n
+If the email could not be sent for some reason an error is raised API0040_MAIL_NOT_SENT with the details of the failure (see \ref apendix_util).\n
+
 \section apendix_util Appendix A:  Error codes
 
   XQP0029_TIDY_ERROR - Error in Tidy library - is returned in case Tidy lib is not able to transform the given string into a valid XHTML.\n
+  API0038_SMTP_SEVER_ERROR_SET_OPTION - is returned if the mail function was called prior to setting the SMTP server in the static context.\n
+  API0039_TO_SET_OPTION - is returned if the To: parameter was not set correctly.\n
+  API0040_MAIL_NOT_SENT - is returned if the email could not be sent. \n
+
+\section apendix_naming Appendix B: SMTP server naming conventions
+This list is in fact section <i>III. Remote names</i> part of the <i>naming.txt</i> provided with the <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>. \n
+
+All names are in the form \n
+<table border="0" cellpadding="0" cellspacing="0">
+<tr>
+  <td colspan="2"><b>remote_system_name [":" port] [flags]</b></td>
+</tr>
+<tr>
+  <td colspan="2">where:</td>
+</tr>
+<tr>
+  <td><b>remote_system_name</b></td>
+  <td>Internet domain name or bracketed IP address of server.</td>
+</tr>
+<tr>
+  <td><b>port</b> </td>
+  <td>optional TCP port number, default is the default port for that service.</td>
+</tr>
+<tr>
+  <td><b>flags</b></td>
+  <td>optional flags, one of the following:</td>
+</tr>
+<tr>
+  <td><b>/user=</b></td>
+  <td>remote user name for login on the server</td>
+</tr>
+<tr>
+  <td><b>/anonymous</b></td>
+  <td>remote access as anonymous user</td>
+</tr>
+<tr>
+  <td><b>/secure</b></td>
+  <td>do not transmit a plaintext password over the network</td>
+</tr>
+<tr>
+  <td><b>/ssl</b></td>
+  <td>use the Secure Socket Layer to encrypt the session</td>
+</tr>
+<tr>
+  <td><b>/validate-cert</b></td>
+  <td>validate certificates from TLS/SSL server (this is the default behavior)</td>
+</tr>
+<tr>
+  <td><b>/novalidate-cert</b></td>
+  <td>do not validate certificates from TLS/SSL server, needed if server uses self-signed certificates</td>
+</tr>
+<tr>
+  <td><b>/tls</b></td>
+  <td>force use of start-TLS to encrypt the session, and reject connection to servers that do not support it</td>
+</tr>
+<tr>
+  <td><b>/tls-sslv23</b></td>
+  <td>use the depreciated SSLv23 client when negotiating TLS to the server. This is necessary with some broken servers which (incorrectly) think that TLS is just another way of doing SSL</td>
+</tr>
+<tr>
+  <td><b>/notls</b></td>
+  <td>do not do start-TLS to encrypt the session, even with servers that support it</td>
+</tr>
+<tr>
+  <td><b>/loser</b></td>
+  <td>disable various protocol features and perform various client-side workarounds; for example, it disables the SEARCH command in IMAP and does client-side searching instead. The precise measures taken by <b>/loser</b> depend upon the protocol and are subject to change over time. <b>/loser</b> is intended for use with defective servers which do not implement the protocol specification correctly. It should be used only as a last resort since it will seriously degrade performance</td>
+</tr>
+</table>
+
+For example: \n
+- smtp.gmail.com:587/tls/novalidate-cert \n
+- [209.85.129.111]:587/tls/novalidate-cert \n
+
 */

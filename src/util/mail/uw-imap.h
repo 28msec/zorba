@@ -14,28 +14,18 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_UTIL_IMPL_H
-#define ZORBA_UTIL_IMPL_H
+#ifndef ZORBA_UTIL_UW_IMAP_H
+#define ZORBA_UTIL_UW_IMAP_H
 
-#include "runtime/base/narybase.h"
+#include "zorbatypes/representations.h"
 
 namespace zorba {
 
-  NARY_ITER (ZorbaSchemaTypeIterator);
-  NARY_ITER (ZorbaBase64DecodeIterator);
-  NARY_ITER (ZorbaBase64EncodeIterator);
+  /* smtp_send -- send SMTP email */
+  bool mail(const char* to, const char* subject, const char* message,
+            const char* SMTPServer, const char* SMTPUser, const char* SMTPPwd,
+            xqp_string& diagnostics);
 
-#ifdef ZORBA_WITH_TIDY
-  NARY_ITER (ZorbaTidyIterator);
-  NARY_ITER (ZorbaTDocIterator);
-#endif  /* ZORBA_WITH_TIDY */
-
-  NARY_ITER (ZorbaRandomIterator);
-  NARY_ITER (ZorbaUUIDIterator);
-
-#ifdef ZORBA_WITH_EMAIL
-  NARY_ITER (ZorbaMailIterator);
-#endif  /* ZORBA_WITH_EMAIL */
 }/*namespace zorba*/
 
-#endif /* ZORBA_UTIL_IMPL_H */
+#endif /* ZORBA_UTIL_UW_IMAP_H */

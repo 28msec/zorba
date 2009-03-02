@@ -125,6 +125,27 @@ namespace zorbac {
       static void
       free(XQC_StaticContext context);
 
+#ifdef ZORBA_WITH_EMAIL
+      // SMTP parameter settings
+      static XQUERY_ERROR
+      set_SMTP_server(XQC_StaticContext context, const char* SMTP_server );
+
+      static XQUERY_ERROR
+      get_SMTP_server(XQC_StaticContext context, const char** SMTP_server);
+
+      static XQUERY_ERROR
+      set_SMTP_uname(XQC_StaticContext context, const char* SMTP_uname );
+
+      static XQUERY_ERROR
+      get_SMTP_uname(XQC_StaticContext context, const char** SMTP_uname);
+
+      static XQUERY_ERROR
+      set_SMTP_upwd(XQC_StaticContext context, const char* SMTP_upwd );
+
+      static XQUERY_ERROR
+      get_SMTP_upwd(XQC_StaticContext context, const char** SMTP_upwd);
+#endif  /* ZORBA_WITH_EMAIL */
+
       // private use
       static void
       assign_functions(XQC_StaticContext context);

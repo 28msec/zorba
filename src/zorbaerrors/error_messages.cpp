@@ -175,6 +175,12 @@ DEF_ERR_CODE(API0036_TIDY_ERROR, API0036, "Error in Tidy library: {/s}.");
 
 DEF_ERR_CODE(API0037_TIDY_ERROR_SET_OPTION, API0037, "Could not set option {/s} with value {/s} in Tidy.");
 
+#ifdef ZORBA_WITH_EMAIL
+  DEF_ERR_CODE(API0038_SMTP_SEVER_ERROR_SET_OPTION, API0038, "The SMTP server was not set in the static context. Please set SMTP username and password also if needed.");
+  DEF_ERR_CODE(API0039_TO_SET_OPTION, API0039, "To: parameter was not set.");
+  DEF_ERR_CODE(API0040_MAIL_NOT_SENT, API0040, "Mail could not be sent. Here is the log: {/s}");
+#endif  /* ZORBA_WITH_EMAIL */
+
 DEF_ERR_CODE(API0050_REST_ERROR_HEADER, API0050, "Invalid value passed for header parameter.");
 DEF_ERR_CODE(API0051_REST_ERROR_PAYLOAD, API0051, "Invalid value passed for payload parameter.");
 
