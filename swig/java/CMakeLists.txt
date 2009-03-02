@@ -16,19 +16,25 @@ include ( FindJNI )
 
 IF ( NOT JNI_NOT_FOUND )
 MESSAGE(STATUS "Generating Java API")
+MESSAGE ( STATUS "JNI found at ${JNI_INCLUDE_PATH}" )
 SET_SOURCE_FILES_PROPERTIES(zorba_api.i PROPERTIES CPLUSPLUS ON)
 INCLUDE_DIRECTORIES ( ${JNI_INCLUDE_PATH} )
+
+# Apple put jni_md.h at same level as jni.h
+IF ( NOT APPLE )
 INCLUDE_DIRECTORIES ( ${JNI_MD_INCLUDE_PATH} )
+ENDIF ( NOT APPLE )
+
 SWIG_ADD_MODULE(zorba_api java zorba_api.i)
   SWIG_LINK_LIBRARIES(zorba_api zorba_simplestore ${JAVA_LIBRARY})
   IF ( APPLE )
     set_target_properties( zorba_api PROPERTIES SUFFIX .bundle )
   ENDIF ( APPLE )
+SET ( JAVA_SITEARCH_DIR "/usr/share/java" )
   IF ( APPLE )
     INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.bundle
 	  DESTINATION ${JAVA_SITEARCH_DIR} )
   ELSE ( APPLE )
-SET ( JAVA_SITEARCH_DIR "/usr/share/java" )
     INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.so
 	  DESTINATION ${JAVA_SITEARCH_DIR} )
   ENDIF ( APPLE )
