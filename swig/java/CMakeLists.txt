@@ -1,0 +1,38 @@
+# Copyright 2006-2008 The FLWOR Foundation.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+# http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+include ( FindJNI )
+
+IF ( NOT JNI_NOT_FOUND )
+MESSAGE(STATUS "Generating Java API")
+SET_SOURCE_FILES_PROPERTIES(zorba_api.i PROPERTIES CPLUSPLUS ON)
+INCLUDE_DIRECTORIES ( ${JNI_INCLUDE_PATH} )
+INCLUDE_DIRECTORIES ( ${JNI_MD_INCLUDE_PATH} )
+SWIG_ADD_MODULE(zorba_api java zorba_api.i)
+  SWIG_LINK_LIBRARIES(zorba_api zorba_simplestore ${JAVA_LIBRARY})
+  IF ( APPLE )
+    set_target_properties( zorba_api PROPERTIES SUFFIX .bundle )
+  ENDIF ( APPLE )
+  IF ( APPLE )
+    INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.bundle
+	  DESTINATION ${JAVA_SITEARCH_DIR} )
+  ELSE ( APPLE )
+SET ( JAVA_SITEARCH_DIR "/usr/share/java" )
+    INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.so
+	  DESTINATION ${JAVA_SITEARCH_DIR} )
+  ENDIF ( APPLE )
+
+ELSE ( NOT JNI_NOT_FOUND )
+    MESSAGE ( STATUS "Not generating JAVA API because jni headers not found")
+ENDIF ( NOT JNI_NOT_FOUND )

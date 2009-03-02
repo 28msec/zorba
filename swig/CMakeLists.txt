@@ -17,7 +17,8 @@ IF (SWIG_FOUND AND BUILDING_SIMPLESTORE)
   INCLUDE(${SWIG_USE_FILE})
   ADD_SUBDIRECTORY(python)
   ADD_SUBDIRECTORY(php)
-
+  ADD_SUBDIRECTORY(java)
+  
   # ruby module on Mac OS doesn't link because cmake is generating
   # -framework ruby instead of -framework Ruby
   IF (APPLE AND UNIVERSAL )
