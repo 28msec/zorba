@@ -23,8 +23,14 @@ BuildRequires: graphviz
 BuildRequires: php >= 5
 %if 0%{?fedora} >= 9
 BuildRequires: libcurl-devel
+BuildRequires: tex(latex)
+BuildRequires: tex(dvips)
+BuildRequires:tex(tex)
 %else 
 BuildRequires: curl-devel
+BuildRequires: tetex
+BuildRequires: tetex-dvips
+BuildRequires: tetex-dvips
 %endif
 BuildRequires: libicu-devel
 BuildRequires: libtidy-devel
@@ -33,9 +39,6 @@ BuildRequires: php-cli php-devel
 BuildRequires: python-devel
 BuildRequires: ruby ruby-devel >= 1.8
 BuildRequires: xerces-c-devel >= 2.7 
-BuildRequires: tex(latex)
-BuildRequires: tex(dvips)
-BuildRequires:tex(tex)
 
 %description
 Zorba is a general purpose XQuery processor implementing in C++ the
