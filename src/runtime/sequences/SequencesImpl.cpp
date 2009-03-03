@@ -1012,6 +1012,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
 
   result = NULL;
   PlanIteratorState* state;
+  try{
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (theChildren.size() == 2)
@@ -1080,6 +1081,15 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   }
 
   STACK_END (state);
+  
+  }catch(error::ZorbaError &e)
+  {
+    if(e.localName() == "XPTY0004")
+    {
+      ZORBA_ERROR_LOC(FORG0006, loc);
+    }
+    throw;
+  }
 }
 
 
