@@ -338,7 +338,7 @@ DEF_ERR_CODE (XQST0036, XQST0036, "Error importing a module if the importing mod
 
 DEF_ERR_CODE (XQST0038, XQST0038, "Prolog contains more than one default collation declaration, or the value specified by a default collation declaration is not present in statically known collations.")
 
-DEF_ERR_CODE (XQST0039, XQST0039, "It is a static error for a function declaration to have more than one parameter with the same name.")
+DEF_ERR_CODE (XQST0039, XQST0039, "It is a static error for a function declaration to have more than one parameter with the same name: /s")
 
 DEF_ERR_CODE (XQST0040, XQST0040, "The attributes specified by a direct element constructor do not have distinct expanded QNames.")
 
