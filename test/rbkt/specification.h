@@ -160,12 +160,12 @@ public:
           {
             if(*lIter != "-x"){ return false; }
             ++lIter;
-            if(lIter->find(':') == std::string::npos){ setInline(); }
+            if(lIter->find(":=") == std::string::npos){ setInline(); }
             if(lIter->find('=') == std::string::npos){ return false; }
             if( theInline ){
               setVarName(lIter->begin(), lIter->begin()+lIter->find('='));
             } else {
-              setVarName(lIter->begin(), lIter->begin()+lIter->find(':'));
+              setVarName(lIter->begin(), lIter->begin()+lIter->find(":="));
             }
             setVarValue(lIter->begin()+lIter->find("=")+1, lIter->end());
             addVariable();

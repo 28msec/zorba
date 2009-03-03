@@ -237,6 +237,8 @@ createItem(std::string strValue)
       return itemfactory->createBoolean(((val == "true" || val == "1")? true: false));
     else if(type == "decimal")
       return itemfactory->createDecimal(val);
+    else if(type == "integer")
+      return itemfactory->createInteger(val);
     else if(type == "float")
       return itemfactory->createFloat(val);
     else if(type == "double")
