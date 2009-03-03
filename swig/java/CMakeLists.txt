@@ -28,17 +28,17 @@ IF ( NOT APPLE )
 INCLUDE_DIRECTORIES ( ${JNI_MD_INCLUDE_PATH} )
 ENDIF ( NOT APPLE )
 
-SWIG_ADD_MODULE(zorba_api java zorba_api.i)
-  SWIG_LINK_LIBRARIES(zorba_api zorba_simplestore ${JAVA_LIBRARY})
+SWIG_ADD_MODULE ( libzorba_api java zorba_api.i)
+  SWIG_LINK_LIBRARIES(libzorba_api zorba_simplestore ${JAVA_LIBRARY})
   IF ( APPLE )
-    set_target_properties( zorba_api PROPERTIES SUFFIX .bundle )
+    set_target_properties( libzorba_api PROPERTIES SUFFIX .bundle )
   ENDIF ( APPLE )
 SET ( JAVA_SITEARCH_DIR "/usr/share/java" )
   IF ( APPLE )
-    INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.bundle
+    INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/libzorba_api.bundle
 	  DESTINATION ${JAVA_SITEARCH_DIR} )
   ELSE ( APPLE )
-    INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.so
+    INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/libzorba_api.so
 	  DESTINATION ${JAVA_SITEARCH_DIR} )
   ENDIF ( APPLE )
 
