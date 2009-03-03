@@ -29,13 +29,7 @@
 namespace zorba
 {
 
-  int http_get ( const char * url, std::iostream & result )
-  {
-  ZORBA_ERROR_PARAM(  XQP0004_SYSTEM_NOT_SUPPORTED, "HTTP GET" , "");
-  return 0;
-  }
-
-int http_get(const char* url, xqp_string& result)
+int http_get(const char* url, std::iostream& result)
 {
   ZORBA_ERROR_PARAM(  XQP0004_SYSTEM_NOT_SUPPORTED, "HTTP GET" , "");
 
@@ -124,187 +118,24 @@ Bool setUserOptions(TidyDoc& tdoc, const char* options)  throw()
   return ok;
 }
 
+#endif 
+
 int tidy(const char* input,
          xqp_string& result,
          xqp_string& diagnostics,
          const char* userOpt) throw()
 {
-  TidyDoc     tdoc;
-  Bool        ok;
-  int         rc = -1;
-  TidyBuffer  output, errbuf;
-  tidyBufInit( &output );
-  tidyBufInit( &errbuf );
-  xqpStringStore_t    buf, err;
-
-  tdoc = tidyCreate();
-
-  ok = tidyOptSetBool( tdoc, TidyXhtmlOut, yes );  // Convert to XHTML
-  if ( ok )
-    rc = tidySetErrorBuffer( tdoc, &errbuf );      // Capture diagnostics
-  if ( rc >= 0 )
-    rc = tidyParseString( tdoc, input );           // Parse the input
-  if ( rc >= 0 )
-    ok = setZorbaOptions(tdoc);
-  if(ok)
-    ok = setUserOptions(tdoc, userOpt);
-  if( ok )
-  {
-    rc = tidyCleanAndRepair( tdoc );                 // Tidy it up!
-    if ( rc >= 0 )
-      rc = tidyRunDiagnostics( tdoc );               // Kvetch
-    if ( rc > 1 )                                    // If error, force output.
-      rc = ( tidyOptSetBool(tdoc, TidyForceOutput, yes) ? rc : -1 );
-    if ( rc >= 0 )
-      rc = tidySaveBuffer( tdoc, &output );          // Pretty Print
-
-    if ( rc >= 0 ) {
-      result = new xqpStringStore((char*)output.bp, output.size);
-      if ( rc > 0 )
-        diagnostics = new xqpStringStore((char*)errbuf.bp, errbuf.size);
-    }
-  }
-  else
-  {
-    rc = -1;
-    diagnostics = new xqpStringStore("couldn't set the Tidy options");
-  }
-
-  tidyBufFree( &output );
-  tidyBufFree( &errbuf );
-  tidyRelease( tdoc );
-  return rc;
+  ZORBA_ERROR_PARAM(  XQP0004_SYSTEM_NOT_SUPPORTED, "HTTP GET" , "");
+  return 0;
 }
 
-int tidy(const std::ifstream& fStream,
-         std::iostream& result,
-         xqp_string& diagnostics,
-         const char* userOpt)
+int tidy(const std::istream& stream,
+           std::iostream& result,
+           xqp_string& diagnostics,
+           const char* userOpt)
 {
-  TidyDoc         tdoc;
-  Bool            ok;
-  int             rc = -1;
-  std::filebuf*   pbuf;
-  uint            size;
-  char*           buffer;
-
-  pbuf = fStream.rdbuf();
-  size = (uint)pbuf->pubseekoff (0,std::ios::end, std::ios::in);
-  pbuf->pubseekpos (0, std::ios::in);
-  buffer = new char[size];
-#ifdef WIN32
-  pbuf->_Sgetn_s (buffer, size, size);
-#else
-  pbuf->sgetn (buffer, size);
-#endif
-
-  TidyBuffer inputBuf;
-  tidyBufAlloc(&inputBuf, size+1);
-  inputBuf.bp = (byte*)buffer;
-  inputBuf.size = size;
-  TidyBuffer output, errbuf;
-  tidyBufInit( &output );
-  tidyBufInit( &errbuf );
-
-  tdoc = tidyCreate();
-
-  ok = tidyOptSetBool( tdoc, TidyXhtmlOut, yes );   // Convert to XHTML
-  if ( ok )
-    rc = tidySetErrorBuffer( tdoc, &errbuf );       // Capture diagnostics
-  if ( rc >= 0 )
-    rc = tidyParseBuffer( tdoc, &inputBuf );        // Parse the input
-  if ( rc >= 0 )
-    ok = setZorbaOptions(tdoc);
-  if(ok)
-    ok = setUserOptions(tdoc, userOpt);
-  if( ok )
-  {
-    rc = tidyCleanAndRepair( tdoc );                 // Tidy it up!
-    if ( rc >= 0 )
-      rc = tidyRunDiagnostics( tdoc );               // Kvetch
-    if ( rc > 1 )                                    // If error, force output.
-      rc = ( tidyOptSetBool(tdoc, TidyForceOutput, yes) ? rc : -1 );
-    if ( rc >= 0 )
-      rc = tidySaveBuffer( tdoc, &output );          // Pretty Print
-
-    if ( rc >= 0 ) {
-      result << output.bp;
-      if ( rc > 0 )
-        diagnostics = new xqpStringStore((char*)errbuf.bp, errbuf.size);
-    }
-  }
-  else
-  {
-    rc = -1;
-    diagnostics = new xqpStringStore("couldn't set the Tidy options");
-  }
-
-  tidyBufFree( &inputBuf );
-  tidyBufFree( &output );
-  tidyBufFree( &errbuf );
-  tidyRelease( tdoc );
-  return rc;
+  ZORBA_ERROR_PARAM(  XQP0004_SYSTEM_NOT_SUPPORTED, "HTTP GET" , "");
+  return 0;
 }
 
-int tidy(const std::istringstream& isStream,
-         std::iostream& result,
-         xqp_string& diagnostics,
-         const char* userOpt)
-{
-  TidyDoc             tdoc;
-  Bool                ok;
-  int                 rc = -1;
-  std::stringbuf *    isBuf = isStream.rdbuf();
-  uint                size = (uint)isBuf->in_avail();
-
-  TidyBuffer inputBuf;
-  tidyBufAlloc(&inputBuf, size+1);
-  memset(inputBuf.bp, 0, size+1);
-  memcpy(inputBuf.bp, isStream.str().c_str(), size);
-  inputBuf.size = size;
-  TidyBuffer output, errbuf;
-  tidyBufInit( &output );
-  tidyBufInit( &errbuf );
-  xqpStringStore_t    buf, err;
-
-  tdoc = tidyCreate();
-
-  ok = tidyOptSetBool( tdoc, TidyXhtmlOut, yes );  // Convert to XHTML
-  if ( ok )
-    rc = tidySetErrorBuffer( tdoc, &errbuf );      // Capture diagnostics
-  if ( rc >= 0 )
-    rc = tidyParseBuffer( tdoc, &inputBuf );       // Parse the input
-  if ( rc >= 0 )
-    ok = setZorbaOptions(tdoc);
-  if(ok)
-    ok = setUserOptions(tdoc, userOpt);
-  if( ok )
-  {
-    rc = tidyCleanAndRepair( tdoc );                 // Tidy it up!
-    if ( rc >= 0 )
-      rc = tidyRunDiagnostics( tdoc );               // Kvetch
-    if ( rc > 1 )                                    // If error, force output.
-      rc = ( tidyOptSetBool(tdoc, TidyForceOutput, yes) ? rc : -1 );
-    if ( rc >= 0 )
-      rc = tidySaveBuffer( tdoc, &output );          // Pretty Print
-
-    if ( rc >= 0 ) {
-      result << output.bp;
-      if ( rc > 0 )
-        diagnostics = new xqpStringStore((char*)errbuf.bp, errbuf.size);
-    }
-  }
-  else
-  {
-    rc = -1;
-    diagnostics = new xqpStringStore("couldn't set the Tidy options");
-  }
-
-  tidyBufFree( &inputBuf );
-  tidyBufFree( &output );
-  tidyBufFree( &errbuf );
-  tidyRelease( tdoc );
-  return rc;
-}
-#endif
 } // namespace zorba
