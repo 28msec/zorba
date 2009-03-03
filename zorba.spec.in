@@ -3,7 +3,7 @@
 %{!?php_sitelib: %define php_sitelib %(/usr/bin/php-config --extension-dir)}
 Name:    zorba
 Version: @ZORBA_MAJOR_NUMBER@.@ZORBA_MINOR_NUMBER@.@ZORBA_PATCH_NUMBER@
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: General purpose XQuery processor implemented in C++
 
 Group: System Environment/Libraries
@@ -171,6 +171,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Mar  3 2009 Paul F. Kunz <PaulfKunz@gmail.com> - 0.9.6-2
+- Fix for difference in Tex for Fedora 8
+
 * Tue Feb 24 2009 Paul Kunz <paulfkunz@gmail.com> - 0.9.6-1
 - Added php subpackage
 
