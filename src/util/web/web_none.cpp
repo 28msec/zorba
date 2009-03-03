@@ -29,6 +29,12 @@
 namespace zorba
 {
 
+  int http_get ( const char * url, std::iostream & result )
+  {
+  ZORBA_ERROR_PARAM(  XQP0004_SYSTEM_NOT_SUPPORTED, "HTTP GET" , "");
+  return 0;
+  }
+
 int http_get(const char* url, xqp_string& result)
 {
   ZORBA_ERROR_PARAM(  XQP0004_SYSTEM_NOT_SUPPORTED, "HTTP GET" , "");
