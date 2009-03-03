@@ -312,7 +312,16 @@ protected:
     assert (sctx != NULL);
     store::Item_t qname = e->get_varname ();
     if (! sctx->bind_var (qname, e.getp ()))
-      ZORBA_ERROR_LOC_PARAM (XQST0049, e->get_loc (), qname->getStringValue (), "");
+    {
+      if(e->get_kind () == var_expr::let_var)
+      {
+        ZORBA_ERROR_LOC_PARAM (XQST0039, e->get_loc (), qname->getStringValue (), "");
+      }
+      else
+      {
+        ZORBA_ERROR_LOC_PARAM (XQST0049, e->get_loc (), qname->getStringValue (), "");
+      }
+    }
   }
 
   varref_t bind_var (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL) {
@@ -1484,7 +1493,7 @@ void end_visit (const CompPIConstructor& v, void* /*visit_state*/) {
   if (v.get_target_expr() != NULL) {
     target = pop_nodestack();
 
-    //check if target is a sequence of more than 1 item
+/*    //check if target is a sequence of more than 1 item
     expr_kind_t target_kind = target->get_expr_kind();
     if(target_kind == fo_expr_kind)
     {
@@ -1504,7 +1513,7 @@ void end_visit (const CompPIConstructor& v, void* /*visit_state*/) {
 //      expr_kind_t target_kind = target->get_expr_kind();
       
     }
-
+*/
     rchandle<fo_expr> atomExpr = (fo_expr*)wrap_in_atomization (target).getp();
 
     rchandle<cast_expr> castExpr =
@@ -2819,6 +2828,26 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
     } else if (fname == "concat") {
       if (sz < 2)
         ZORBA_ERROR_LOC_PARAM (XPST0017, loc, "concat", to_string (sz));
+    } else if (fname == "doc") {
+      expr_t  doc_uri = arguments[0];
+      //validate uri
+      if(doc_uri->get_expr_kind() == const_expr_kind)
+      {
+        const_expr  *const_uri = reinterpret_cast<const_expr*>(doc_uri.getp());
+        store::Item_t uri_value = const_uri->get_val();
+        xqpStringStore_t   uri_string = uri_value->getStringValue();
+        try{
+          xqpString   xqp_uri_string(uri_string);
+          xqpString   xqp_base_uri("http://website/");
+          URI   baseURI(xqp_base_uri, false);
+          URI   docURI(baseURI, xqp_uri_string, true);//with validate
+        }
+        catch(error::ZorbaError &e)
+        {
+          ZORBA_ERROR_LOC_PARAM(FODC0005, loc, e.toString(), "");
+        }
+
+      }
     }
   } else if (fn_ns->byteEqual(ZORBA_FN_NS)) {
     if (fname == "inline-xml" && sz == 1) {
