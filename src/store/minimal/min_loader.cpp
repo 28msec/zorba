@@ -301,18 +301,48 @@ bool XmlLoader::read_char_or_entity(int *c)
       *c = '>';
       return true;
     }
-    if((*c == 'l') && (c2 == 't') && (c3 == ';'))
+    else if((*c == 'l') && (c2 == 't') && (c3 == ';'))
     {
       *c = '<';
       return true;
     }
-    if((*c == 'a') && (c2 == 'm') && (c3 == 'p'))
+    else if((*c == 'a') && (c2 == 'm') && (c3 == 'p'))
     {
       c3 = read_char();
       if(c3 == ';')
       {
         *c = '&';
         return true;
+      }
+      unread_char();
+    }
+    else if((*c == 'q') && (c2 == 'u') && (c3 == 'o'))
+    {
+      c3 = read_char();
+      if(c3 == 't')
+      {
+        c3 = read_char();
+        if(c3 == ';')
+        {
+          *c = '"';
+          return true;
+        }
+        unread_char();
+      }
+      unread_char();
+    }
+    else if((*c == 'a') && (c2 == 'p') && (c3 == 'o'))
+    {
+      c3 = read_char();
+      if(c3 == 's')
+      {
+        c3 = read_char();
+        if(c3 == ';')
+        {
+          *c = '\'';
+          return true;
+        }
+        unread_char();
       }
       unread_char();
     }
