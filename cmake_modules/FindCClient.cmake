@@ -30,7 +30,7 @@ mark_as_advanced(CCLIENT_INCLUDE)
 # Look for the library.
 find_file(
   CCLIENT_LIBRARY
-  NAMES c-client.a libc-client.a libc-client4.a c-client
+  NAMES libc-client.a
   PATHS ${CCLIENT_LIBRARY_DIRS}
   DOC "Library to link against for the email support")
 

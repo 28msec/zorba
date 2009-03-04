@@ -90,7 +90,7 @@ namespace zorba {
 
     if (msg->to) {
       out << "Sending..." << std::endl;
-      smtp_stream = smtp_open (hostlist,1);
+      smtp_stream = smtp_open (hostlist,NIL);
       if (smtp_stream){
         sprintf (tmp,"MAIL");
         if (smtp_mail (smtp_stream,tmp,msg,body))
@@ -144,7 +144,7 @@ long mm_diskerror (MAILSTREAM *stream,long errcode,long serious) {return NIL;}
  */
 void mm_notify (MAILSTREAM *stream,char *string,long errflg)
 {
-  mm_log (string,errflg); /* just do mm_log action */
+//   mm_log (string,errflg); /* just do mm_log action */
 }
 
 /* Log an event for the user to see
@@ -153,18 +153,18 @@ void mm_notify (MAILSTREAM *stream,char *string,long errflg)
  */
 void mm_log (char *string,long errflg)
 {
-  switch ((short) errflg) {
-    case NIL:
-      printf ("[%s]\n",string);
-      break;
-    case PARSE:
-    case WARN:
-      printf ("WARN:%%%s\n",string);
-      break;
-    case ERROR:
-      printf ("ERROR:%s\n",string);
-      break;
-  }
+//   switch ((short) errflg) {
+//     case NIL:
+//       printf ("[%s]\n",string);
+//       break;
+//     case PARSE:
+//     case WARN:
+//       printf ("WARN:%%%s\n",string);
+//       break;
+//     case ERROR:
+//       printf ("ERROR:%s\n",string);
+//       break;
+//   }
 }
 
 /* Log an event to debugging telemetry
@@ -172,7 +172,7 @@ void mm_log (char *string,long errflg)
  */
 void mm_dlog (char *string)
 {
-  puts (string);
+//   puts (string);
 }
 
 /* Get user name and password for this host
@@ -192,6 +192,6 @@ void mm_login (NETMBX *mb,char *user,char *pwd,long trial)
  */
 void mm_fatal (char *string)
 {
-  printf ("?%s\n",string);
+//   printf ("?%s\n",string);
 }
 /* Co-routines from MAIL library */

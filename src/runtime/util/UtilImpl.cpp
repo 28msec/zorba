@@ -234,9 +234,9 @@ ZorbaMailIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  planState.theRuntimeCB->theStaticContext->set_SMTP_server("smtp.gmail.com:587/tls/novalidate-cert");
-  planState.theRuntimeCB->theStaticContext->set_SMTP_uname("zorbaro");
-  planState.theRuntimeCB->theStaticContext->set_SMTP_upwd("zorbaisgreat");
+//   planState.theRuntimeCB->theStaticContext->set_SMTP_server("smtp.gmail.com:587/tls/novalidate-cert");
+//   planState.theRuntimeCB->theStaticContext->set_SMTP_uname("zorbaro");
+//   planState.theRuntimeCB->theStaticContext->set_SMTP_upwd("zorbaisgreat");
 
   SMTPServer = planState.theRuntimeCB->theStaticContext->SMTP_server();
   SMTPUser = planState.theRuntimeCB->theStaticContext->SMTP_uname();
