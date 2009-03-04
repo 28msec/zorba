@@ -23,6 +23,11 @@
     <li> \ref mail_intro
     <ul>
       <li> \ref configuring
+      <ul>
+        <li> \ref mail_installation
+        <li> \ref mail_configuring
+        <li> \ref mail_static_context
+      </ul>
       <li> \ref mail_functions
       <ul>
         <li> \ref mail
@@ -171,11 +176,24 @@ If the seed is not passed as an argument the same number will be generated every
 
 This section describes the function used for sending email. \n
 Zorba provides email support through the <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>. \n
-The UW IMAP toolkit is provided as part of Zorba (not as a shared library) and the current version was released on the 16 December 2008 as <a href="http://www.washington.edu/imap/documentation/RELNOTES.html" target="_blank">imap-2007e</a>. \n
-A prerequirement is the installation of <a href="http://www.openssl.org/" target="_blank">Open SSL</a>. \n
 
 \subsection configuring 2.3.1 Configuring
 
+\subsection mail_installation 2.3.1.1 Installation
+
+C-Client library is a prerequirement of the installation.
+
+<b>Installing C-Client from sources:</b> \n
+C-Client library is part of the <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>. \n
+Make sure to install C-Client with SSL support and also check if the name of the library is <b>libc-client.a</b>.\n
+
+\subsection mail_configuring 2.3.1.2 Configuring Zorba to run with Email support
+If C-Client was installed from sources be sure to pass the location hints when reconfiguring Zorba: \n
+assuming the C-Client sources are under /home/user/imap-2007e, \n
+you should configure Zorba with -DCCLIENT_INCLUDE_DIRS=/home/user/imap-2007e -DCCLIENT_LIBRARY_DIRS=/home/user/imap-2007e/c-client \n
+After that the ZORBA_WITH_EMAIL flag should be set to ON. \n
+
+\subsection mail_static_context 2.3.1.3 Configuring SMTP parameters in the Static Context
 There are several values that have to be configured in the static context prior to calling any email functions. These are the following: \n
 - SMTP server \n
 - SMTP username \n
@@ -227,6 +245,35 @@ Error conditions:\n
 If the SMTP server was not set in the static context an error is raised API0038_SMTP_SEVER_ERROR_SET_OPTION (see \ref apendix_util).\n
 If the <b>$to</to> parameter was not set an error is raised API0039_TO_SET_OPTION (see \ref apendix_util).\n
 If the email could not be sent for some reason an error is raised API0040_MAIL_NOT_SENT with the details of the failure (see \ref apendix_util).\n
+
+\subsection ex_mail Example:
+\code
+  #include <zorba/zorba.h>
+  #include <simplestore/simplestore.h>
+
+  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
+  Zorba* lZorba = Zorba::getInstance(lStore);
+
+  StaticContext_t lStaticContext = aZorba->createStaticContext();
+
+  // set the values needed for the SMTP connection (SMTP server, username and password)
+  lStaticContext->setSMTPServer("smtp.gmail.com:587/tls/novalidate-cert");
+  lStaticContext->setSMTPUname("username");
+  lStaticContext->setSMTPUpwd("password");
+
+  // Use the German collation as the third argument to the fn:compare() XQuery function
+  XQuery_t lQuery = aZorba->compileQuery("import module namespace zu = 'http://www.zorba-xquery.com/zorba/util-functions'; zu:mail('user@domain.com','this is a test email','it works!')", lStaticContext);
+
+  try {
+    std::cout << lQuery << std::endl;
+  } catch (DynamicException &e) {
+      std::cerr << e << std::endl;
+      return false;
+  }
+
+  lZorba->shutdown();
+  simplestore::SimpleStoreManager::shutdownStore(lStore);
+\endcode
 
 \section apendix_util Appendix A:  Error codes
 
