@@ -243,7 +243,7 @@ Each line should be separated with a LF (\\n). Lines should not be larger than 7
 
 Error conditions:\n
 If the SMTP server was not set in the static context an error is raised API0038_SMTP_SEVER_ERROR_SET_OPTION (see \ref apendix_util).\n
-If the <b>$to</to> parameter was not set an error is raised API0039_TO_SET_OPTION (see \ref apendix_util).\n
+If the <b>$to</b> parameter was not set an error is raised API0039_TO_SET_OPTION (see \ref apendix_util).\n
 If the email could not be sent for some reason an error is raised API0040_MAIL_NOT_SENT with the details of the failure (see \ref apendix_util).\n
 
 \subsection ex_mail Example:
@@ -261,15 +261,16 @@ If the email could not be sent for some reason an error is raised API0040_MAIL_N
   lStaticContext->setSMTPUname("username");
   lStaticContext->setSMTPUpwd("password");
 
-  // Use the German collation as the third argument to the fn:compare() XQuery function
   XQuery_t lQuery = aZorba->compileQuery("import module namespace zu = 'http://www.zorba-xquery.com/zorba/util-functions'; zu:mail('user@domain.com','this is a test email','it works!')", lStaticContext);
 
   try {
     std::cout << lQuery << std::endl;
-  } catch (DynamicException &e) {
+  } catch (SystemException &e) {
       std::cerr << e << std::endl;
       return false;
   }
+
+  return true;
 
   lZorba->shutdown();
   simplestore::SimpleStoreManager::shutdownStore(lStore);
