@@ -137,6 +137,25 @@ bool ValidateIterator::effectiveValidationValue (
             case store::StoreConsts::documentNode:
             {
                 //cout << "Validate document" << "\n"; cout.flush();
+                
+                //don't allow more than one child element
+                store::Iterator_t child_it;
+                child_it = item->getChildren();
+                store::Item_t child;
+                int   nr_child_elements = 0;
+                while ( child_it->next(child) )
+                {
+                  if ( child->isNode() &&
+                    ( child->getNodeKind() == store::StoreConsts::elementNode))
+                  { 
+                    if(nr_child_elements)
+                    {
+                      ZORBA_ERROR_LOC_DESC(XQDY0061, loc, 
+                            "Document node has more than one element for validation.");
+                    }
+                    nr_child_elements++;
+                  }
+                }
 
                 schemaValidator.startDoc();
 
@@ -145,7 +164,7 @@ bool ValidateIterator::effectiveValidationValue (
                 store::Item_t newDoc;
                 GENV_ITEMFACTORY->createDocumentNode(newDoc, docBaseUri, docUri, true);
 
-                processChildren( planState, delegatingTypeManager, schemaValidator, newDoc, item->getChildren() );
+                processChildren( planState, delegatingTypeManager, schemaValidator, newDoc, item->getChildren());
 
                 schemaValidator.endDoc();
 
