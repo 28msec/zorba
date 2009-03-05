@@ -10,15 +10,6 @@ if (CCLIENT_INCLUDE_DIRS AND CCLIENT_LIBRARIES)
  set(CCLIENT_FIND_QUIETLY TRUE)
 endif (CCLIENT_INCLUDE_DIRS AND CCLIENT_LIBRARIES)
 
-# Look for the header files.
-find_path(
-  CCLIENT_SRC_INCLUDE
-  NAMES c-client.h
-  PATHS ${CCLIENT_INCLUDE_DIRS}
-  PATH_SUFFIXES src/c-client
-  DOC "Include directory for the CCLient library")
-mark_as_advanced(CCLIENT_SRC_INCLUDE)
-
 find_path(
   CCLIENT_INCLUDE
   NAMES linkage.h
@@ -41,14 +32,13 @@ else (CCLIENT_LIBRARY)
 endif (CCLIENT_LIBRARY)
 
 # Copy the results to the output variables.
-if(CCLIENT_SRC_INCLUDE AND CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
+if(CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
   set(CCLIENT_FOUND 1)
   set(CCLIENT_LIBRARIES ${CCLIENT_LIBRARY})
-  set(CCLIENT_INCLUDE_DIRS ${CCLIENT_SRC_INCLUDE})
   set(CCLIENT_INCLUDE_DIRS ${CCLIENT_INCLUDE_DIRS} ${CCLIENT_INCLUDE})
 
-# Do not treat the operator name keywords and, bitand, bitor, compl, not, or and xor
-# as synonyms as keywords. Needed in order to include C-CLIENT library
+  # Do not treat the operator name keywords and, bitand, bitor, compl, not, or and xor
+  # as synonyms as keywords. Needed in order to include C-CLIENT library
   IF(NOT CMAKE_CXX_FLAGS MATCHES "-fno-operator-names")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-operator-names")
   ENDIF(NOT CMAKE_CXX_FLAGS MATCHES "-fno-operator-names")
@@ -56,8 +46,8 @@ if(CCLIENT_SRC_INCLUDE AND CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
   IF(NOT CMAKE_C_FLAGS MATCHES "-fno-operator-names")
     SET(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -fno-operator-names")
   ENDIF(NOT CMAKE_C_FLAGS MATCHES "-fno-operator-names")
-else(CCLIENT_SRC_INCLUDE AND CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
+else(CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
   set(CCLIENT_FOUND 0)
   set(CCLIENT_LIBRARIES)
   set(CCLIENT_INCLUDE_DIRS)
-endif(CCLIENT_SRC_INCLUDE AND CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
+endif(CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
