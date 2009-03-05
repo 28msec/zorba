@@ -1637,6 +1637,8 @@ void translate_gflwor (const FLWORExpr& v) {
       eclauses.push_back (flwc);
     } else if (typeid (c) == typeid (ForClause)) {
       const ForClause &flc = *static_cast<const ForClause *> (&c);
+      if (xquery_version <= 100 && flc.is_outer ())
+        ZORBA_ERROR_LOC (XPST0003, loc);
       nvars = flc.get_decl_count ();
       VarInDeclList *decl_list = &*flc.get_vardecl_list ();
 
@@ -1964,6 +1966,8 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/) {
 
 void *begin_visit (const WindowClause& v) {
   TRACE_VISIT ();
+  if (xquery_version <= 100)
+    ZORBA_ERROR_LOC (XPST0003, loc);
   push_scope ();  // for window conditions
   return no_state;
 }
@@ -2126,6 +2130,8 @@ void end_visit (const WhereClause& v, void* /*visit_state*/) {
 
 void *begin_visit (const CountClause& v) {
   TRACE_VISIT ();
+  if (xquery_version <= 100)
+    ZORBA_ERROR_LOC (XPST0003, loc);
   return no_state;
 }
 
