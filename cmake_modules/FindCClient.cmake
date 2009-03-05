@@ -21,8 +21,8 @@ mark_as_advanced(CCLIENT_INCLUDE)
 # Look for the library.
 find_file(
   CCLIENT_LIBRARY
-  NAMES libc-client.a
-  PATHS ${CCLIENT_LIBRARY_DIRS}
+  NAMES libc-client.a libc-client4.a
+  PATHS ${CCLIENT_LIBRARY_DIRS} /opt/local/lib
   DOC "Library to link against for the email support")
 
 if (CCLIENT_LIBRARY)
@@ -43,9 +43,6 @@ if(CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-operator-names")
   ENDIF(NOT CMAKE_CXX_FLAGS MATCHES "-fno-operator-names")
 
-  IF(NOT CMAKE_C_FLAGS MATCHES "-fno-operator-names")
-    SET(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -fno-operator-names")
-  ENDIF(NOT CMAKE_C_FLAGS MATCHES "-fno-operator-names")
 else(CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
   set(CCLIENT_FOUND 0)
   set(CCLIENT_LIBRARIES)
