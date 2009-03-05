@@ -3339,8 +3339,6 @@ void end_visit (const ValueComp& v, void* /*visit_state*/) {
 
 void *begin_visit (const VersionDecl& v) {
   TRACE_VISIT ();
-  if (v.get_version () != "1.0")
-    ZORBA_ERROR_LOC (XQST0031, loc);
   if (! xqp_string (v.get_encoding ()).matches ("^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
     ZORBA_ERROR_LOC (XQST0087, loc);
   return no_state;
