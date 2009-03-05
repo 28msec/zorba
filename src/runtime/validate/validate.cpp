@@ -108,7 +108,7 @@ bool ValidateIterator::effectiveValidationValue (
 
         if ( !valid )
         {
-             ZORBA_ERROR_LOC_DESC( XQDY0061, loc, "Wrong arguments in validate expression.");
+             ZORBA_ERROR_LOC_DESC( XQTY0030, loc, "Wrong arguments in validate expression.");
         }
         else if ( item->isNode() )
         {
@@ -180,7 +180,7 @@ bool ValidateIterator::effectiveValidationValue (
                 return true;
             }
             default:
-                ZORBA_ERROR_LOC_DESC( XQDY0061, loc, 
+                ZORBA_ERROR_LOC_DESC( XQTY0030, loc, 
                     "Argument in validate expression not a document or element node.");
                 returnVal = false;
                 result = NULL;
@@ -189,7 +189,7 @@ bool ValidateIterator::effectiveValidationValue (
         }
         else
         {
-            ZORBA_ERROR_LOC_DESC( XQDY0061, loc, "Argument in validate expression not a document node.");
+            ZORBA_ERROR_LOC_DESC( XQTY0030, loc, "Argument in validate expression not a document node.");
             returnVal = false;
             result = NULL;
         }
