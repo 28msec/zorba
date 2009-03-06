@@ -1218,9 +1218,10 @@ class FLWORExpr : public exprnode
 protected:
 	rchandle<FLWORClauseList> clauses;
 	rchandle<exprnode> return_val_h;
-  bool general;
+  bool general;  //< needs to be translated into gflwor_expr?
+  bool non_10;  //< non-conformant to XQuery 1.0 spec?
 
-  bool compute_general () const;
+  void compute_general ();
 
   QueryLoc return_location;
 
@@ -1235,6 +1236,7 @@ public:
   WhereClause *get_where() const;
 
   bool is_general () const { return general; }
+  bool is_non_10 () const { return non_10; }
   const QueryLoc& get_return_location() const { return return_location; }
 
 public:

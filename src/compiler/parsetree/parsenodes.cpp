@@ -815,7 +815,8 @@ int Expr::numberOfChildren() const
           c->set_flwor (this);
       }
     }
-    general = force_general ? true : compute_general ();
+    compute_general ();
+    if (force_general) general = true;
   }
 
 void FLWORExpr::accept(parsenode_visitor& v) const
@@ -855,9 +856,10 @@ void FLWORWinCond::accept(parsenode_visitor& v) const
   END_VISITOR ();
 }
 
-bool FLWORExpr::compute_general () const {
+void FLWORExpr::compute_general () {
+  general = false;
 #ifdef ZORBA_FORCE_GFLWOR
-  return true;
+  general = true;
 #endif
 
   bool has_where = false, has_order = false, has_group = false;
@@ -866,27 +868,26 @@ bool FLWORExpr::compute_general () const {
     if (dynamic_cast<const FLWORInitialClause *> (cp) != NULL) {
       // any preceding non-initial clause triggers GFLWOR
       if (has_group || has_where || has_order)
-        return true;
+        non_10 = general = true;
 
       if (typeid (*cp) == typeid (ForClause)) {
         if (static_cast<const ForClause *> (cp)->is_outer ())
-          return true;
+          non_10 = general = true;
       } else if (typeid (*cp) == typeid (WindowClause)) {
-        return true;
+        non_10 = general =true;
       }
     } else if (typeid (*cp) == typeid (WhereClause)) {
-      if (has_where || has_group) return true;
+      if (has_where || has_group) non_10 = general = true;
       has_where = true;
     } else if (typeid (*cp) == typeid (OrderByClause)) {
-      if (has_order) return true;
+      if (has_order) non_10 = general = true;
       has_order = true;
     } else if (typeid (*cp) == typeid (GroupByClause)) {
-      if (has_group || has_order) return true;
+      if (has_group || has_order) non_10 = general = true;
       has_group = true;
     } else if (typeid (*cp) == typeid (CountClause))
-      return true;
+      non_10 = general = true;
   }
-  return false;
 }
 
 void WindowVarDecl::accept(parsenode_visitor& v) const {

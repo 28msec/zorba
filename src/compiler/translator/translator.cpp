@@ -1809,6 +1809,8 @@ void translate_gflwor (const FLWORExpr& v) {
 void end_visit (const FLWORExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 
+  if (xquery_version <= 100 && v. is_non_10 ())
+    ZORBA_ERROR_LOC (XPST0003, loc);
   if (v.is_general ()) {
     translate_gflwor (v);
     return;
