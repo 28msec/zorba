@@ -13,26 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef ZORBA_FUNCTIONS_EMAIL_H
+#define ZORBA_FUNCTIONS_EMAIL_H
 
-#ifndef ZORBA_UTIL_IMPL_H
-#define ZORBA_UTIL_IMPL_H
-
-#include "runtime/base/narybase.h"
+#include <vector>
+#include "common/shared_types.h"
+#include "functions/function.h"
 
 namespace zorba {
 
-  NARY_ITER (ZorbaSchemaTypeIterator);
-  NARY_ITER (ZorbaBase64DecodeIterator);
-  NARY_ITER (ZorbaBase64EncodeIterator);
+  class zorba_mail : public function
+  {
+    public:
+      zorba_mail(const signature& sig): function(sig){}
 
-#ifdef ZORBA_WITH_TIDY
-  NARY_ITER (ZorbaTidyIterator);
-  NARY_ITER (ZorbaTDocIterator);
-#endif  /* ZORBA_WITH_TIDY */
+      PlanIter_t codegen (const QueryLoc& loc,
+                          std::vector<PlanIter_t>& argv,
+                          AnnotationHolder &ann) const;
+  };
+}
 
-  NARY_ITER (ZorbaRandomIterator);
-  NARY_ITER (ZorbaUUIDIterator);
+#endif /* ZORBA_FUNCTIONS_EMAIL_H */
 
-}/*namespace zorba*/
-
-#endif /* ZORBA_UTIL_IMPL_H */
+/* vim:set ts=2 sw=2: */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

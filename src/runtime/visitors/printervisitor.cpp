@@ -56,6 +56,9 @@
 #ifdef ZORBA_WITH_REST
 #include "runtime/rest/rest.h"
 #endif
+#ifdef ZORBA_WITH_EMAIL
+#include "runtime/email/EmailImpl.h"
+#endif
 #ifdef ZORBA_DEBUGGER
 #include "runtime/debug/zorba_debugger_iterators.h"
 #endif

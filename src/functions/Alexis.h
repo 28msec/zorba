@@ -92,17 +92,6 @@ namespace zorba {
                           AnnotationHolder &ann) const;
   };
 
-#ifdef ZORBA_WITH_EMAIL
-  class zorba_mail : public function
-  {
-    public:
-      zorba_mail(const signature& sig): function(sig){}
-
-      PlanIter_t codegen (const QueryLoc& loc,
-                          std::vector<PlanIter_t>& argv,
-                          AnnotationHolder &ann) const;
-  };
-#endif  /* ZORBA_WITH_EMAIL */
 }
 
 #endif /* ZORBA_FUNCTIONS_ALEXIS_H */

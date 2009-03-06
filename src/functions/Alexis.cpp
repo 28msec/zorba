@@ -65,12 +65,5 @@ zorba_uuid::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Annotat
   return new ZorbaUUIDIterator(loc, argv);
 }
 
-#ifdef ZORBA_WITH_EMAIL
-PlanIter_t
-zorba_mail::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaMailIterator(loc, argv);
-}
-#endif  /* ZORBA_WITH_EMAIL */
 }
 /* vim:set ts=2 sw=2: */

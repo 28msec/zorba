@@ -1,0 +1,208 @@
+/** \page email The "Zorba mail" functions
+
+<ul>
+  <li> Table of Contents
+  <ul>
+    <li> \ref intro_mail
+    <ul>
+      <li> \ref namespace_mail
+    </ul>
+    <li> \ref configuring_mail
+    <ul>
+      <li> \ref mail_installation
+      <li> \ref mail_configuring
+      <li> \ref mail_static_context
+    </ul>
+    <li> \ref signatures_mail
+    <ul>
+      <li> \ref mail
+    </ul>
+  </ul>
+    <li> \ref apendix_email
+    <li> \ref apendix_naming
+   </ul>
+ </ul>
+
+\section intro_mail 1 Introduction
+This document defines functions used to send emails part of "zorba-util" namespace.
+
+\subsection namespace_mail 1.1 Namespace
+In order to use these functions, the module <tt>"http://www.zorba-xquery.com/zorba/util-functions"</tt> has
+to be included at the beginning of a query. For example
+
+\code
+  import module namespace zorba-util = "http://www.zorba-xquery.com/zorba/util-functions";
+\endcode
+
+\section configuring_mail 2 Configuring
+Zorba provides email support through the C-Client library part of <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>. \n
+
+\subsection mail_installation 2.1 Installation
+<b>Installing C-Client from sources:</b> \n
+Get <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a> and make sure to install C-Client with SSL support and also check if the name of the library is prefixed by 'lib' and suffixed with '.a', for example <b>libc-client.a</b> on linux or <b>libc-client4.a</b> on Mac.\n
+
+\subsection mail_configuring 2.2 Configuring Zorba to run with Email support
+If C-Client was installed from sources be sure to pass the location hints when reconfiguring Zorba: \n
+assuming the C-Client sources are under /home/user/imap-2007e, \n
+you should configure Zorba with -DCCLIENT_INCLUDE_DIRS=/home/user/imap-2007e -DCCLIENT_LIBRARY_DIRS=/home/user/imap-2007e/c-client \n
+After that the ZORBA_WITH_EMAIL flag should be set to ON. \n
+
+\subsection mail_static_context 2.3 Configuring SMTP parameters in the Static Context
+There are several values that have to be configured in the static context prior to calling any email functions. These are the following: \n
+- SMTP server \n
+- SMTP username \n
+- SMTP password \n
+
+<b>SMTP server</b> \n
+The SMTP server has to be specified as a string in the following form: \n
+<i> remote_system_name [":" port] [flags] </i> \n
+a complete list of usage see \ref apendix_naming
+
+For example: \n
+- smtp.gmail.com:587/tls/novalidate-cert \n
+- [209.85.129.111]:587/tls/novalidate-cert \n
+
+<b>SMTP username</b> \n
+This is the remote username used to authenticate to the SMTP server. \n
+
+Note: \n
+If you have specified a username in the SMTP server through <b>/user=</b> it will be overwritten by the one defined as SMTP username.
+
+<b>SMTP password</b> \n
+This is the remote username password used to authenticate to the SMTP server. \n
+
+\section signatures_mail 3 Function Signatures and Descriptions
+
+\subsection mail 3.1 zorba-util:mail
+
+\code
+  declare function mail(  $to       as xs:string
+                          $subject  as xs:string
+                          $message  as xs:string)  as none
+\endcode
+
+Parameters: \n
+<b>$to</b> Receiver, or receivers of the email. The formatting of this string must comply with <a href="http://www.faqs.org/rfcs/rfc2822.html" target="_blank">RFC 2822</a>. \n
+
+Examples: \n
+- user@example.com \n
+- user@example.com, anotheruser@example.com \n
+- User <user@example.com> \n
+- User <user@example.com>, Another User <anotheruser@example.com> \n
+
+<b>$subject</b> Subject of the email to be sent. The formatting of this string must comply with <a href="http://www.faqs.org/rfcs/rfc2047.html" target="_blank">RFC 2047</a>. \n
+
+<b>$message</b> Message to be sent. \n
+Each line should be separated with a LF (\\n). Lines should not be larger than 70 characters. \n
+
+Error conditions:\n
+If the SMTP server was not set in the static context an error is raised API0038_SMTP_SEVER_ERROR_SET_OPTION (see \ref apendix_email).\n
+If the <b>$to</b> parameter was not set an error is raised API0039_TO_SET_OPTION (see \ref apendix_email).\n
+If the email could not be sent for some reason an error is raised API0040_MAIL_NOT_SENT with the details of the failure (see \ref apendix_email).\n
+
+\subsection ex_mail Example:
+\code
+  #include <zorba/zorba.h>
+  #include <simplestore/simplestore.h>
+
+  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
+  Zorba* lZorba = Zorba::getInstance(lStore);
+
+  StaticContext_t lStaticContext = aZorba->createStaticContext();
+
+  // set the values needed for the SMTP connection (SMTP server, username and password)
+  lStaticContext->setSMTPServer("smtp.gmail.com:587/tls/novalidate-cert");
+  lStaticContext->setSMTPUname("username");
+  lStaticContext->setSMTPUpwd("password");
+
+  XQuery_t lQuery = aZorba->compileQuery("import module namespace zu = 'http://www.zorba-xquery.com/zorba/util-functions'; zu:mail('user@domain.com','this is a test email','it works!')", lStaticContext);
+
+  try {
+    std::cout << lQuery << std::endl;
+  } catch (SystemException &e) {
+      std::cerr << e << std::endl;
+      return false;
+  }
+
+  return true;
+
+  lZorba->shutdown();
+  simplestore::SimpleStoreManager::shutdownStore(lStore);
+\endcode
+
+\section apendix_email Appendix A:  Error codes
+
+  API0038_SMTP_SEVER_ERROR_SET_OPTION - is returned if the mail function was called prior to setting the SMTP server in the static context.\n
+  API0039_TO_SET_OPTION - is returned if the To: parameter was not set correctly.\n
+  API0040_MAIL_NOT_SENT - is returned if the email could not be sent. \n
+
+\section apendix_naming Appendix B: SMTP server naming conventions
+This list is in fact section <i>III. Remote names</i> part of the <i>naming.txt</i> provided with the <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>. \n
+
+All names are in the form \n
+<table border="0" cellpadding="0" cellspacing="0">
+<tr>
+  <td colspan="2"><b>remote_system_name [":" port] [flags]</b></td>
+</tr>
+<tr>
+  <td colspan="2">where:</td>
+</tr>
+<tr>
+  <td><b>remote_system_name</b></td>
+  <td>Internet domain name or bracketed IP address of server.</td>
+</tr>
+<tr>
+  <td><b>port</b> </td>
+  <td>optional TCP port number, default is the default port for that service.</td>
+</tr>
+<tr>
+  <td><b>flags</b></td>
+  <td>optional flags, one of the following:</td>
+</tr>
+<tr>
+  <td><b>/user=</b></td>
+  <td>remote user name for login on the server</td>
+</tr>
+<tr>
+  <td><b>/anonymous</b></td>
+  <td>remote access as anonymous user</td>
+</tr>
+<tr>
+  <td><b>/secure</b></td>
+  <td>do not transmit a plaintext password over the network</td>
+</tr>
+<tr>
+  <td><b>/ssl</b></td>
+  <td>use the Secure Socket Layer to encrypt the session</td>
+</tr>
+<tr>
+  <td><b>/validate-cert</b></td>
+  <td>validate certificates from TLS/SSL server (this is the default behavior)</td>
+</tr>
+<tr>
+  <td><b>/novalidate-cert</b></td>
+  <td>do not validate certificates from TLS/SSL server, needed if server uses self-signed certificates</td>
+</tr>
+<tr>
+  <td><b>/tls</b></td>
+  <td>force use of start-TLS to encrypt the session, and reject connection to servers that do not support it</td>
+</tr>
+<tr>
+  <td><b>/tls-sslv23</b></td>
+  <td>use the depreciated SSLv23 client when negotiating TLS to the server. This is necessary with some broken servers which (incorrectly) think that TLS is just another way of doing SSL</td>
+</tr>
+<tr>
+  <td><b>/notls</b></td>
+  <td>do not do start-TLS to encrypt the session, even with servers that support it</td>
+</tr>
+<tr>
+  <td><b>/loser</b></td>
+  <td>disable various protocol features and perform various client-side workarounds; for example, it disables the SEARCH command in IMAP and does client-side searching instead. The precise measures taken by <b>/loser</b> depend upon the protocol and are subject to change over time. <b>/loser</b> is intended for use with defective servers which do not implement the protocol specification correctly. It should be used only as a last resort since it will seriously degrade performance</td>
+</tr>
+</table>
+
+For example: \n
+- smtp.gmail.com:587/tls/novalidate-cert \n
+- [209.85.129.111]:587/tls/novalidate-cert \n
+
+*/

@@ -49,6 +49,9 @@
 #ifdef ZORBA_WITH_REST
 #include "runtime/rest/rest.h"
 #endif
+#ifdef ZORBA_WITH_EMAIL
+#include "runtime/email/EmailImpl.h"
+#endif
 #include "store/api/iterator.h"
 
 #define NOARY_ACCEPT(type) \

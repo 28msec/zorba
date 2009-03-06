@@ -42,6 +42,10 @@
 #include "functions/Rest.h"
 #endif
 
+#ifdef ZORBA_WITH_EMAIL
+#include "functions/Email.h"
+#endif
+
 #include "types/node_test.h"
 
 using namespace std;

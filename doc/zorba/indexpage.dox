@@ -41,6 +41,7 @@
          <li> \ref zorba-io
          <li> \ref util
          <li> \ref collections
+         <li> \ref email
        </ul>
      </ul>
      <li> \ref commandline

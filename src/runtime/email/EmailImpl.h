@@ -14,25 +14,14 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_UTIL_IMPL_H
-#define ZORBA_UTIL_IMPL_H
+#ifndef ZORBA_RUNTIME_EMAIL_IMPL_H
+#define ZORBA_RUNTIME_EMAIL_IMPL_H
 
 #include "runtime/base/narybase.h"
 
 namespace zorba {
 
-  NARY_ITER (ZorbaSchemaTypeIterator);
-  NARY_ITER (ZorbaBase64DecodeIterator);
-  NARY_ITER (ZorbaBase64EncodeIterator);
-
-#ifdef ZORBA_WITH_TIDY
-  NARY_ITER (ZorbaTidyIterator);
-  NARY_ITER (ZorbaTDocIterator);
-#endif  /* ZORBA_WITH_TIDY */
-
-  NARY_ITER (ZorbaRandomIterator);
-  NARY_ITER (ZorbaUUIDIterator);
-
+  NARY_ITER (ZorbaMailIterator);
 }/*namespace zorba*/
 
-#endif /* ZORBA_UTIL_IMPL_H */
+#endif /* ZORBA_RUNTIME_EMAIL_IMPL_H */
