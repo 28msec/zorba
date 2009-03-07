@@ -1,4 +1,5 @@
 #!/bin/sh
 export LD_LIBRARY_PATH=@Java_Load_Path@
+/usr/bin/javac *.java
 /usr/bin/java $1
 

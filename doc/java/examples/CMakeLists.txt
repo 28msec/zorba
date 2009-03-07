@@ -27,5 +27,5 @@ IF ( JAVA_FOUND )
    MESSAGE ( STATUS "Seting path for java tests ${Java_Load_Path}" )
    CONFIGURE_FILE ( ${CMAKE_CURRENT_SOURCE_DIR}/Test_Zorba.java
    		    ${CMAKE_CURRENT_BINARY_DIR}/Test_Zorba.java COPYONLY )
-   ADD_TEST( "Java" java_test.sh Test_Zorba )
+   ADD_TEST( "java" java_test.sh Test_Zorba )
 ENDIF ( JAVA_FOUND )
