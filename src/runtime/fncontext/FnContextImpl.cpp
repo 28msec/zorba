@@ -98,7 +98,7 @@ PlanIter_t EvalIterator::compile (CompilerCB *ccb, xqp_string query,
     }
 
     for (int i = (int) varnames.size () - 1; i >= 0; i--)
-      vfo->push_front (new VarDecl (loc, xqp_string (varnames [i]->getStringValue ()), NULL, NULL));
+      vfo->push_front (new VarDecl (loc, xqp_string (varnames [i]->getStringValue ()), NULL, NULL, true));
     // TODO: give eval'ed code the types of the variables (for optimization)
 
     return compiler.compile (ast);

@@ -592,14 +592,17 @@ void ModuleImport::accept(parsenode_visitor& v) const
 
 // [24] VarDecl
 // ------------
-VarDecl::VarDecl(
-  const QueryLoc& loc_,
-  std::string _varname,
-  rchandle<TypeDeclaration> _typedecl_h,
-  rchandle<exprnode> _initexpr_h)
+VarDecl::VarDecl (const QueryLoc& loc_,
+                  std::string _varname,
+                  rchandle<TypeDeclaration> _typedecl_h,
+                  rchandle<exprnode> _initexpr_h,
+                  bool ext_)
 :
-  VarDeclWithInit (loc_, _varname, _typedecl_h, _initexpr_h)
-{}
+  VarDeclWithInit (loc_, _varname, _typedecl_h, _initexpr_h),
+  ext (ext_)
+{
+  ZORBA_ASSERT (ext_ || _initexpr_h != NULL);
+}
 
 
 //-VarDecl::

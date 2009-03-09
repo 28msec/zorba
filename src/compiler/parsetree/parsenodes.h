@@ -942,15 +942,17 @@ class VarDecl : public VarDeclWithInit
 |			|	DECLARE_VARIABLE_DOLLAR  VARNAME  TypeDeclaration  EXTERNAL
 |_______________________________________________________________________*/
 {
+protected:
+  bool ext;
 public:
-	VarDecl(
-		const QueryLoc&,
-		std::string varname,
-		rchandle<TypeDeclaration>,
-		rchandle<exprnode>);
+	VarDecl(const QueryLoc&,
+          std::string varname,
+          rchandle<TypeDeclaration>,
+          rchandle<exprnode>,
+          bool ext_ = false);
 
 public:
-	bool is_extern() const { return initexpr_h==NULL; }
+	bool is_extern() const { return ext; }
 
 public:
 	void accept(parsenode_visitor&) const;

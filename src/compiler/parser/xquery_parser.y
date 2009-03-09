@@ -1326,10 +1326,14 @@ VarDecl :
 	|	DECLARE  VARIABLE  VarNameAndType EXTERNAL
 		{
       VarNameAndType *nt = dynamic_cast<VarNameAndType *> $3;
-			$$ = new VarDecl(LOC (@$),
-								nt->name,
-								nt->type,
-								NULL);
+			$$ = new VarDecl(LOC (@$), nt->name, nt->type,
+                       NULL, true);
+		}
+	|	DECLARE  VARIABLE  VarNameAndType EXTERNAL GETS ExprSingle
+		{
+      VarNameAndType *nt = dynamic_cast<VarNameAndType *> $3;
+			$$ = new VarDecl(LOC (@$), nt->name, nt->type,
+                       $6, true);
 		}
 	;
 
