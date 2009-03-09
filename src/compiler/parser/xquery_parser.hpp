@@ -78,14 +78,24 @@ extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_e
 class xquery_driver;
 
 
-class FunctionSig 
-{
- public:
+class FunctionSig {
+public:
   rchandle<ParamList> param;
   rchandle<SequenceType> ret;
 
   FunctionSig (ParamList *param_, SequenceType *ret_ = NULL)
     : param (param_), ret (ret_)
+  {}
+};
+
+class VarNameAndType {
+public:
+  std::string name;
+  rchandle<TypeDeclaration> type;
+
+
+  VarNameAndType (std::string name_, rchandle<TypeDeclaration> type_)
+    : name (name_), type (type_)
   {}
 };
 
@@ -96,7 +106,7 @@ class FunctionSig
 
 
 /* Line 35 of lalr1.cc.  */
-#line 100 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
+#line 110 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -147,11 +157,12 @@ namespace zorba
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 128 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 138 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 {
   zorba::parsenode * node;
   zorba::exprnode * expr;
   zorba::FunctionSig *fnsig;
+  zorba::VarNameAndType *varnametype;
   off_t sval;
   const char *strval;
 	xqp_integer* ival;
@@ -160,7 +171,7 @@ namespace zorba
   XQUERY_ERROR err;
 }
 /* Line 35 of lalr1.cc.  */
-#line 164 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
+#line 175 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;

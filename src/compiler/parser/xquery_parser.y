@@ -64,14 +64,24 @@ extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_e
 class xquery_driver;
 
 
-class FunctionSig 
-{
- public:
+class FunctionSig {
+public:
   rchandle<ParamList> param;
   rchandle<SequenceType> ret;
 
   FunctionSig (ParamList *param_, SequenceType *ret_ = NULL)
     : param (param_), ret (ret_)
+  {}
+};
+
+class VarNameAndType {
+public:
+  std::string name;
+  rchandle<TypeDeclaration> type;
+
+
+  VarNameAndType (std::string name_, rchandle<TypeDeclaration> type_)
+    : name (name_), type (type_)
   {}
 };
 
@@ -129,6 +139,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
   zorba::parsenode * node;
   zorba::exprnode * expr;
   zorba::FunctionSig *fnsig;
+  zorba::VarNameAndType *varnametype;
   off_t sval;
   const char *strval;
 	xqp_integer* ival;
@@ -690,6 +701,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> FTWordsValue
 
 %type <fnsig> FunctionSig
+%type <varnametype> VarNameAndType
 
 // destructors for token values
 %destructor { delete $$; } INTEGER_LITERAL
@@ -706,7 +718,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // exprnodes
 %destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockBody EnclosedExpr Expr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement FTContainsExpr
 // internal class
-%destructor { delete $$; } FunctionSig;
+%destructor { delete $$; } FunctionSig VarNameAndType
 
 /*_____________________________________________________________________
  *
@@ -1288,36 +1300,35 @@ ModuleImport :
 	;
 
 
+VarNameAndType :
+    DOLLAR QNAME
+    {
+      $$ = new VarNameAndType (driver.symtab.get((off_t) $2), NULL);
+    }
+  | DOLLAR QNAME TypeDeclaration
+    {
+      $$ = new VarNameAndType (driver.symtab.get((off_t) $2),
+                               dynamic_cast<TypeDeclaration *> ($3));
+    }
+  ;
 
 // [24] VarDecl
 // ------------
 VarDecl :
-    DECLARE  VARIABLE  DOLLAR  QNAME  GETS  ExprSingle
+    DECLARE  VARIABLE  VarNameAndType GETS  ExprSingle
 		{
+      VarNameAndType *nt = dynamic_cast<VarNameAndType *> $3;
 			$$ = new VarDecl(LOC (@$),
-								driver.symtab.get((off_t)$4),
-								NULL,
-								$6);
+								nt->name,
+								nt->type,
+								$5);
 		}
-	|	DECLARE  VARIABLE  DOLLAR  QNAME  EXTERNAL
+	|	DECLARE  VARIABLE  VarNameAndType EXTERNAL
 		{
+      VarNameAndType *nt = dynamic_cast<VarNameAndType *> $3;
 			$$ = new VarDecl(LOC (@$),
-								driver.symtab.get((off_t)$4),
-								NULL,
-								NULL);
-		}
-	|	DECLARE  VARIABLE  DOLLAR  QNAME  TypeDeclaration  GETS  ExprSingle
-		{
-			$$ = new VarDecl(LOC (@$),
-								driver.symtab.get((off_t)$4),
-								dynamic_cast<TypeDeclaration*>($5),
-								$7);
-		}
-	|	DECLARE  VARIABLE  DOLLAR  QNAME  TypeDeclaration  EXTERNAL
-		{
-			$$ = new VarDecl(LOC (@$),
-								driver.symtab.get((off_t)$4),
-								dynamic_cast<TypeDeclaration*>($5),
+								nt->name,
+								nt->type,
 								NULL);
 		}
 	;
