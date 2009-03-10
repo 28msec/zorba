@@ -318,4 +318,7 @@ IF (EXISTS test/rbkt/w3c_testsuite)
   SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/NodeSeqFunc/SeqIDFunc/fn-id-dtd-21 PROPERTIES WILL_FAIL TRUE)
   SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/Functions/NodeSeqFunc/SeqIDFunc/fn-id-dtd-23 PROPERTIES WILL_FAIL TRUE)
 
+  SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/SchemaImport/ConstructSI/Constr-compelem-constrmod-2 PROPERTIES WILL_FAIL TRUE)
+  SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/SchemaImport/ConstructSI/Constr-compelem-constrmod-6 PROPERTIES WILL_FAIL TRUE)
+
 ENDIF (EXISTS test/rbkt/w3c_testsuite)
