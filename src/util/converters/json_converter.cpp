@@ -19,15 +19,45 @@
 #include "json/parser.h"
 #include "json/value.h"
 
+#include "system/globalenv.h"
+#include "context/namespace_context.h"
+
 namespace zorba {
 
-  bool parse(const xqp_string json_string, store::Item_t& element, xqp_string& error_log)
+  bool JSON_parse(const char* json_string, store::Item_t& element, xqpStringStore_t baseUri, xqp_string& error_log)
   {
+    store::Item_t qname, type_qname;
+    xqpStringStore_t tname = new xqpStringStore("untyped");
+    xqpStringStore_t name = new xqpStringStore("json");
+
+    xqpString xs_ns = "http://www.w3.org/2001/XMLSchema";
+    xqpString xs_pre = "xs";
+    GENV_ITEMFACTORY->createQName(type_qname, xs_ns.theStrStore, xs_pre.theStrStore, tname);
+
+
+    xqpString ns = ZORBA_JSON_FN_NS;
+    xqpString pre = "zorba-json";
+    GENV_ITEMFACTORY->createQName(qname, ns.getStore(), pre.getStore(), name);
+
+    store::NsBindings bindings;
+    GENV_ITEMFACTORY->createElementNode(element,
+                                        NULL,
+                                        -1,
+                                        qname,
+                                        type_qname,
+                                        true,
+                                        false,
+                                        false,
+                                        false,
+                                        bindings,
+                                        baseUri,
+                                        true);
     return true;
   }
 
-  bool serialize(store::Item_t element, xqp_string& json_string, xqp_string& error_log)
+  bool JSON_serialize(store::Item_t element, xqpStringStore_t& json_string, xqp_string& error_log)
   {
+    json_string = new xqpStringStore("NOT implemented yet");
     return true;
   }
 } /*namespace Zorba */

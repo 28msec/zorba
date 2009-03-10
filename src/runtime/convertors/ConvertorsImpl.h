@@ -21,8 +21,23 @@
 
 namespace zorba {
 
-  NARY_ITER (ZorbaJSONParseIterator);
-  NARY_ITER (ZorbaJSONSerializeIterator);
+  class FnJSONParseIteratorState : public PlanIteratorState {
+    public:
+      xqp_integer theCurrentPos; // the current position in the sequence
+
+      void init(PlanState&);
+      void reset(PlanState&);
+  };
+  NARY_ITER_STATE (ZorbaJSONParseIterator, FnJSONParseIteratorState);
+
+  class FnJSONSerializeIteratorState : public PlanIteratorState {
+    public:
+      xqp_integer theCurrentPos; // the current position in the sequence
+
+      void init(PlanState&);
+      void reset(PlanState&);
+  };
+  NARY_ITER_STATE (ZorbaJSONSerializeIterator, FnJSONSerializeIteratorState);
 }/*namespace zorba*/
 
 #endif /* ZORBA_RUNTIME_CONVERTORS_IMPL_H */

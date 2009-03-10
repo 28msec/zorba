@@ -19,24 +19,96 @@
 #include "runtime/convertors/ConvertorsImpl.h"
 #include "runtime/api/runtimecb.h"
 
+#include "system/globalenv.h"
+
+#include "util/converters/json_converter.h"
+
 namespace zorba {
 
 bool
 ZorbaJSONParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  xqp_string        error_log;
+  bool              parseOK = true;
+  store::Item_t     strItem;
+  xqpStringStore_t  baseUri = planState.theRuntimeCB->theStaticContext->final_baseuri().getStore();
+
+  FnJSONParseIteratorState *state;
+  DEFAULT_STACK_INIT(FnJSONParseIteratorState, state, planState);
+
+  while (consumeNext(strItem, theChildren[0].getp(), planState) && parseOK)
+  {
+    parseOK = JSON_parse(strItem->getStringValue()->c_str(), result, baseUri, error_log);
+    if(parseOK &&
+       result->isNode() &&
+       result->getNodeKind () == store::StoreConsts::elementNode)
+    {
+      ++state->theCurrentPos;
+      STACK_PUSH (true, state);
+    }
+    else
+      ZORBA_ERROR_LOC_PARAM(API0060_CONV_JSON_PARSE, loc, strItem->getStringValue()->c_str() , error_log.c_str());
+  }
 
   STACK_END (state);
+}
+
+void
+FnJSONParseIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+  theCurrentPos = xqp_integer::parseInt(0);
+}
+
+void
+FnJSONParseIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+  theCurrentPos = xqp_integer::parseInt(0);
 }
 
 bool
 ZorbaJSONSerializeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  xqp_string        error_log;
+  bool              parseOK = true;
+  store::Item_t     elemItem;
+  xqpStringStore_t  str;
+
+  FnJSONSerializeIteratorState *state;
+  DEFAULT_STACK_INIT(FnJSONSerializeIteratorState, state, planState);
+
+  while (consumeNext(elemItem, theChildren[0].getp(), planState) && parseOK)
+  {
+    if(!elemItem->isNode() ||
+       elemItem->getNodeKind () != store::StoreConsts::elementNode)
+      ZORBA_ERROR_LOC_PARAM(API0062_CONV_JSON_PARAM, loc, elemItem->getStringValue()->c_str() , "");
+    else
+    {
+      parseOK = JSON_serialize(elemItem, str, error_log);
+      if(!parseOK)
+        ZORBA_ERROR_LOC_PARAM(API0061_CONV_JSON_SERIALIZE, loc, elemItem->getStringValue()->c_str() , error_log.c_str());
+      else
+      {
+        ++state->theCurrentPos;
+
+        GENV_ITEMFACTORY->createString(result, str);
+        STACK_PUSH (true, state);
+      }
+    }
+  }
 
   STACK_END (state);
+}
+
+void
+FnJSONSerializeIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+  theCurrentPos = xqp_integer::parseInt(0);
+}
+
+void
+FnJSONSerializeIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+  theCurrentPos = xqp_integer::parseInt(0);
 }
 
 } /* namespace zorba */

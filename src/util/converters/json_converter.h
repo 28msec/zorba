@@ -24,13 +24,14 @@
 
 namespace zorba {
 
-  bool parse(const xqp_string json_string,
-             store::Item_t& element,
-             xqp_string& error_log);
+  bool JSON_parse(const char* json_string,
+                  store::Item_t& element,
+                  xqpStringStore_t baseUri,
+                  xqp_string& error_log);
 
-  bool serialize(store::Item_t element,
-                 xqp_string& json_string,
-                 xqp_string& error_log);
+  bool JSON_serialize(store::Item_t element,
+                      xqpStringStore_t& json_string,
+                      xqp_string& error_log);
 
 }/*namespace zorba*/
 

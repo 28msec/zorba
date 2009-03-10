@@ -184,6 +184,9 @@ DEF_ERR_CODE(API0037_TIDY_ERROR_SET_OPTION, API0037, "Could not set option {/s} 
 DEF_ERR_CODE(API0050_REST_ERROR_HEADER, API0050, "Invalid value passed for header parameter.");
 DEF_ERR_CODE(API0051_REST_ERROR_PAYLOAD, API0051, "Invalid value passed for payload parameter.");
 
+DEF_ERR_CODE(API0060_CONV_JSON_PARSE, API0060, "Could not parse JSON string {/s} reason: {/s}.");
+DEF_ERR_CODE(API0061_CONV_JSON_SERIALIZE, API0061, "Could not serialize element {/s}.");
+DEF_ERR_CODE(API0062_CONV_JSON_PARAM, API0062, "Parameter {/s} is not an element node.");
 
 //
 // Store Errors
