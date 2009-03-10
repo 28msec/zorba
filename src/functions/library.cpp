@@ -37,6 +37,7 @@
 #include "functions/tuple_functions.h"
 #include "functions/InternalOperators.h"
 #include "functions/Alexis.h"
+#include "functions/Convertors.h"
 
 #ifdef ZORBA_WITH_REST
 #include "functions/Rest.h"
@@ -1108,6 +1109,16 @@ DECL(sctx, zorba_encode_base64,
   DECL(sctx, zorba_uuid,
        (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "uuid"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+  DECL(sctx, zorba_json_parse,
+       (createQName(ZORBA_JSON_FN_NS, "fn-zorba-json", "parse"),
+        GENV_TYPESYSTEM.STRING_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+
+  DECL(sctx, zorba_json_serialize,
+       (createQName(ZORBA_JSON_FN_NS, "fn-zorba-json", "serialize"),
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+        GENV_TYPESYSTEM.STRING_TYPE_STAR));
 
 #ifdef ZORBA_WITH_EMAIL
   DECL(sctx, zorba_mail,

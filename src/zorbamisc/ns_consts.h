@@ -32,6 +32,8 @@
 #define ZORBA_COLLECTION_FN_NS "http://www.zorba-xquery.com/zorba/collection-functions"
 #define ZORBA_INDEX_FN_NS "http://www.zorba-xquery.com/zorba/index-functions"
 #define ZORBA_ALEXIS_FN_NS "http://www.zorba-xquery.com/zorba/util-functions"
+#define ZORBA_JSON_FN_NS "http://www.zorba-xquery.com/zorba/json-functions"
+
 
 #define ZORBA_COLLATION_NS_BASE "http://www.zorba-xquery.com/zorba/collations/"
 #define ZORBA_DEF_COLLATION_NS ZORBA_COLLATION_NS_BASE "IDENTICAL/en/US"

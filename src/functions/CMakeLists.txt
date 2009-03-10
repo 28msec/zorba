@@ -19,6 +19,7 @@ SET(FUNCTIONS_SRCS
     Collections.cpp
     Constructor.cpp
     ContextFunctions.cpp
+    Convertors.cpp
     DateTime.cpp
     external_function_adapters.cpp
     FnContext.cpp

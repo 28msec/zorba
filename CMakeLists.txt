@@ -245,14 +245,16 @@ INCLUDE(CMakeConfiguration.txt)
 INCLUDE(CMakeCompiler.txt)
 
 #
+# JSON
+#
+SET(requiredlibs ${requiredlibs} json)
+
+#
 # Debugger
 #
-IF (ZORBA_DEBUGGER)
-  SET(requiredlibs ${requiredlibs} json)
-  IF(WIN32)
-    SET(requiredlibs ${requiredlibs} wsock32) 
-  ENDIF(WIN32)
-ENDIF (ZORBA_DEBUGGER)
+IF(ZORBA_DEBUGGER AND WIN32)
+  SET(requiredlibs ${requiredlibs} wsock32)
+ENDIF(ZORBA_DEBUGGER AND WIN32)
 
 ###############################################################################
 # Debian package dependencies

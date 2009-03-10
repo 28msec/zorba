@@ -52,6 +52,7 @@
 #include "runtime/debug/debug_iterators.h"
 #include "runtime/collections/CollectionsImpl.h"
 #include "runtime/util/UtilImpl.h"
+#include "runtime/convertors/ConvertorsImpl.h"
 
 #ifdef ZORBA_WITH_REST
 #include "runtime/rest/rest.h"
@@ -941,6 +942,9 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
 
   PRINTER_VISITOR_DEFINITION(HoistIterator);
   PRINTER_VISITOR_DEFINITION(UnhoistIterator);
+
+  PRINTER_VISITOR_DEFINITION(ZorbaJSONParseIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaJSONSerializeIterator);
 };
 
 void print_iter_plan (IterPrinter& aPrinter, PlanIterator* aIter) {

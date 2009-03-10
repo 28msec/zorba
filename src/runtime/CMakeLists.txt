@@ -20,6 +20,7 @@ SET(RUNTIME_SRCS
     booleans/BooleanImpl.cpp
     collections/CollectionsImpl.cpp
     context/ContextImpl.cpp
+    convertors/ConvertorsImpl.cpp
     core/arithmetic_impl.cpp
     core/constructors.cpp
     core/flwor_iterator.cpp
@@ -84,6 +85,7 @@ ENDIF (NOT ZORBA_NO_XMLSCHEMA)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS accessors)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS collections)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS context)
+HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS convertors)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS core)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS numerics)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS strings)
