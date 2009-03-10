@@ -856,10 +856,12 @@ rchandle<namespace_context> name_cast_expr::getNamespaceContext() { return theNC
 validate_expr::validate_expr(
   const QueryLoc& loc,
   enum ParseConstants::validation_mode_t _valmode,
+  store::Item_t aTypeName,
   expr_t _expr_h, rchandle<TypeManager> typemgr_)
 :
   expr(loc),
   valmode(_valmode),
+  typeName(aTypeName),
   typemgr (typemgr_),
   expr_h(_expr_h)
 {

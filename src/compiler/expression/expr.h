@@ -777,15 +777,18 @@ public:
   expr_kind_t get_expr_kind () const { return validate_expr_kind; }
 protected:
   ParseConstants::validation_mode_t valmode;
+  store::Item_t typeName;
   rchandle<TypeManager> typemgr;
   expr_t expr_h;
 
 public:
   validate_expr(const QueryLoc&, ParseConstants::validation_mode_t,
+                store::Item_t aTypeName,
                 expr_t, rchandle<TypeManager>);
 
 public:
   expr_t get_expr() const { return expr_h; }
+  store::Item_t get_type_name() { return typeName; }
   rchandle<TypeManager> get_typemgr () const { return typemgr; }
   ParseConstants::validation_mode_t get_valmode() const { return valmode; }
 

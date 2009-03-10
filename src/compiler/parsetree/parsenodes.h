@@ -2887,16 +2887,23 @@ class ValidateExpr : public exprnode
 protected:
 	enum ParseConstants::validation_mode_t valmode;
 	rchandle<exprnode> expr_h;
+  rchandle<QName> type_name;
 
 public:
 	ValidateExpr(
 		const QueryLoc&,
-		std::string const& valmode,
+    std::string const& _valmode,
 		rchandle<exprnode>);
+
+  ValidateExpr(
+    const QueryLoc&,
+    rchandle<QName> _valmode,
+    rchandle<exprnode>);
 
 
 public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
+  rchandle<QName> get_type_name() const { return type_name; }
 	enum ParseConstants::validation_mode_t get_valmode() const { return valmode; }
 
 public:

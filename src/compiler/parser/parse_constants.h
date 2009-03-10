@@ -89,7 +89,8 @@ class ParseConstants
 
     enum validation_mode_t {
       val_strict,
-      val_lax
+      val_lax,
+      val_typename
     };
 
     enum pathtype_t {

@@ -49,6 +49,7 @@ class ValidateIterator : public UnaryBaseIterator<ValidateIterator, PlanIterator
 private:
   bool _isLax;
   rchandle<TypeManager> typemgr;
+  store::Item_t typeName;
 
 public:
   ValidateIterator (

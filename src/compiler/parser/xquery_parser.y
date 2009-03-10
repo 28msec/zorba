@@ -2867,23 +2867,11 @@ ValidateExpr :
 		{
 			$$ = new ValidateExpr(LOC (@$), "strict", $3);
 		}
-	|	VALIDATE _STRICT  LBRACE  Expr  RBRACE
-		{
-			$$ = new ValidateExpr(LOC (@$),
-                "strict",
-								$4);
-		}
-  | VALIDATE LAX  LBRACE  Expr  RBRACE
+  | VALIDATE TypeName  LBRACE  Expr  RBRACE
     {
       $$ = new ValidateExpr(LOC (@$),
-                "lax",
-                $4);
-    }
-  | VALIDATE SKIP  LBRACE  Expr  RBRACE
-    {
-      $$ = new ValidateExpr(LOC (@$),
-                "skip",
-                $4);
+                            dynamic_cast<TypeName*>($2)->get_name(),
+                            $4);
     }
 	;
 

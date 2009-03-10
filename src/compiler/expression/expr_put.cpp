@@ -402,6 +402,7 @@ ostream& validate_expr::put( ostream& os) const
   switch (valmode) {
   case ParseConstants::val_strict: os << "strict\n"; break;
   case ParseConstants::val_lax: os << "lax\n"; break;
+  case ParseConstants::val_typename: os << "typename\n"; break;
   default: os << "??\n";
   }
   expr_h->put(os) << endl;

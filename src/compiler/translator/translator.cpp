@@ -5123,8 +5123,12 @@ void *begin_visit (const ValidateExpr& v)
 void end_visit (const ValidateExpr& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT ();
+  store::Item_t qname;
+  if (v.get_type_name() != NULL)
+    GENV_ITEMFACTORY->createQName(qname, NULL, v.get_type_name()->get_prefix().c_str(), v.get_type_name()->get_localname().c_str());
   nodestack.push (new validate_expr (loc,
                                      v.get_valmode(),
+                                     qname,
                                      pop_nodestack(),
                                      sctx_p->get_typemanager()));
 }

@@ -2102,13 +2102,32 @@ void NodeComp::accept(parsenode_visitor& v) const
 // -----------------
 ValidateExpr::ValidateExpr(
   const QueryLoc& loc_,
-  string const& _valmode,
+  std::string const& _valmode,
   rchandle<exprnode> _expr_h)
 :
   exprnode(loc_),
   valmode(_valmode=="lax" ? ParseConstants::val_lax : ParseConstants::val_strict),
   expr_h(_expr_h)
 {}
+
+ValidateExpr::ValidateExpr(
+  const QueryLoc& loc_,
+  rchandle<QName> _valmode,
+  rchandle<exprnode> _expr_h)
+:
+  exprnode(loc_),
+  expr_h(_expr_h)
+{
+  if (_valmode->get_qname() == "lax")
+    valmode = ParseConstants::val_lax;
+  else if (_valmode->get_qname() == "strict")
+    valmode = ParseConstants::val_strict;
+  else
+  {
+    valmode = ParseConstants::val_typename;
+    type_name = _valmode;
+  }
+}
 
 
 //-ValidateExpr::
