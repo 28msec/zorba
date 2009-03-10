@@ -72,7 +72,7 @@ namespace zorba
 
 namespace parser 
 {
-extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end, *the_ofor;
+  extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end, *the_ofor, *the_declare, *the_create;
 }
 
 class xquery_driver;
@@ -437,21 +437,28 @@ namespace zorba
      WORDS = 511,
      THESAURUS = 512,
      WILDCARDS = 513,
-     BYTE_ORDER_MARK_UTF8 = 514,
-     FTCONTAINS_REDUCE = 515,
-     RANGE_REDUCE = 516,
-     ADDITIVE_REDUCE = 517,
-     MULTIPLICATIVE_REDUCE = 518,
-     UNION_REDUCE = 519,
-     INTERSECT_EXCEPT_REDUCE = 520,
-     QVARINDECLLIST_REDUCE = 521,
-     COMMA_DOLLAR = 522,
-     UNARY_PREC = 523,
-     SEQUENCE_TYPE_REDUCE = 524,
-     OCCURS_STAR = 525,
-     OCCURS_PLUS = 526,
-     OCCURS_HOOK = 527,
-     STEP_REDUCE = 528
+     CREATE = 514,
+     DROP = 515,
+     UNIQUE = 516,
+     INDEX = 517,
+     HASH = 518,
+     BTREE = 519,
+     ON = 520,
+     BYTE_ORDER_MARK_UTF8 = 521,
+     FTCONTAINS_REDUCE = 522,
+     RANGE_REDUCE = 523,
+     ADDITIVE_REDUCE = 524,
+     MULTIPLICATIVE_REDUCE = 525,
+     UNION_REDUCE = 526,
+     INTERSECT_EXCEPT_REDUCE = 527,
+     QVARINDECLLIST_REDUCE = 528,
+     COMMA_DOLLAR = 529,
+     UNARY_PREC = 530,
+     SEQUENCE_TYPE_REDUCE = 531,
+     OCCURS_STAR = 532,
+     OCCURS_PLUS = 533,
+     OCCURS_HOOK = 534,
+     STEP_REDUCE = 535
    };
 
     };
@@ -543,7 +550,7 @@ namespace zorba
     /// - if positive, shift that token.
     /// - if negative, reduce the rule which number is the opposite.
     /// - if zero, do what YYDEFACT says.
-    static const unsigned short int yytable_[];
+    static const short int yytable_[];
     static const signed char yytable_ninf_;
 
     static const short int yycheck_[];

@@ -2313,6 +2313,41 @@ void end_visit (const OrderEmptySpec& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
+void *begin_visit (const IndexDecl& v) {
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const IndexDecl& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+}
+
+void *begin_visit (const IndexField& v) {
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const IndexField& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+}
+
+void *begin_visit (const IndexFieldList& v) {
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const IndexFieldList& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+}
+
+void *begin_visit (const IndexStatement& v) {
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const IndexStatement& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+}
 
 /*******************************************************************************
 

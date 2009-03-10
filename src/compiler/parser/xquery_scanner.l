@@ -408,6 +408,13 @@ typedef zorba::xquery_parser::token token;
 
 "try" { return token::TRY;}
 
+"index" { return token::INDEX; }
+"create" { return token::CREATE; }
+"unique" { return token::UNIQUE; }
+"hash" { return token::HASH; }
+"btree" { return token::BTREE; }
+"on" { return token::ON; }
+"drop" { return token::DROP; }
  
     /*______________________________________________________________________
      |

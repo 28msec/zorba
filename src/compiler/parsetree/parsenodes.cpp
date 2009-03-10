@@ -590,6 +590,35 @@ void ModuleImport::accept(parsenode_visitor& v) const
 }
 
 
+void IndexDecl::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  ACCEPT (on_expr);
+  END_VISITOR ();
+}
+
+void IndexField::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  ACCEPT (expr);
+  END_VISITOR ();
+}
+
+void IndexFieldList::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  for (vector<rchandle<IndexField> >::const_iterator i = fields.begin ();
+       i != fields.end (); i++)
+    ACCEPT (*i);
+  END_VISITOR ();
+}
+
+void IndexStatement::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  END_VISITOR ();
+}
+
 // [24] VarDecl
 // ------------
 VarDecl::VarDecl (const QueryLoc& loc_,

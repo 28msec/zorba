@@ -58,7 +58,7 @@ namespace zorba
 
 namespace parser 
 {
-extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end, *the_ofor;
+  extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end, *the_ofor, *the_declare, *the_create;
 }
 
 class xquery_driver;
@@ -163,6 +163,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <strval> WindowType
 %type <strval> ForDollar
 %type <strval> FLWORWinCondType
+%type <strval> DeclareOrCreate
+%type <strval> IndexingMethod
 
 /* tokens that contain embedded string literals */
 /* -------------------------------------------- */
@@ -450,7 +452,18 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token WORDS                      "'words'"
 %token THESAURUS                  "'thesaurus'"
 %token WILDCARDS	         				"'wildcards'"
-    
+
+
+/* Indexes */
+
+%token CREATE "'create'"
+%token DROP   "'drop'"
+%token UNIQUE "'unique'"
+%token INDEX  "'index'"
+%token HASH   "'hash'"
+%token BTREE  "'btree'"
+%token ON     "'on'"
+
 /* Byte Order Marks                  */
 /* --------------------------------- */    
 %token BYTE_ORDER_MARK_UTF8       "'BOM_UTF8'"
@@ -659,6 +672,16 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* ----------------- */
 %type <expr> EvalExpr
 
+
+/* index-related     */
+/* ----------------- */
+%type <node> IndexDecl
+%type <node> IndexDeclSuffix
+%type <node> IndexField
+%type <node> IndexField1
+%type <node> IndexFieldList
+%type <expr> IndexStatement
+
 /* full-text-related */
 /* ----------------- */
 %type <node> FTAnd
@@ -714,7 +737,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // (not <= 0); but Bison never increments the refcount, so we do it manually...
 
 // parsenodes
-%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
+%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp IndexDecl IndexDeclSuffix IndexField IndexField1 IndexFieldList IndexStatement VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
 // exprnodes
 %destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockBody EnclosedExpr Expr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement FTContainsExpr
 // internal class
@@ -1005,6 +1028,9 @@ VFO_Decl :
 
 	/* full-text extension */
 	| FTOptionDecl
+
+  /* Index */
+  | IndexDecl
 	;
 
 
@@ -1337,6 +1363,88 @@ VarDecl :
 		}
 	;
 
+DeclareOrCreate :
+    DECLARE 
+    { $$ = parser::the_declare; }
+  | CREATE
+    { $$ = parser::the_create; }
+  ;
+
+IndexingMethod :
+    HASH
+    { $$ = "hash"; }
+  | BTREE
+    { $$ = "btree"; }
+  ;
+
+IndexDecl :
+    DeclareOrCreate IndexDeclSuffix
+    {
+      IndexDecl *d = dynamic_cast<IndexDecl *> ($2);
+      d->create = ($1 == parser::the_create);
+      $$ = d;
+    }
+  | DeclareOrCreate UNIQUE IndexDeclSuffix
+    {
+      IndexDecl *d = dynamic_cast<IndexDecl *> ($3);
+      d->create = ($1 == parser::the_create);
+      d->uniq = true;
+      $$ = d;
+    }
+  ;
+
+IndexDeclSuffix :
+    INDEX URI_LITERAL ON ExprSingle BY IndexFieldList RPAR
+    {
+      $$ = new IndexDecl (LOC (@$), SYMTAB (2), $4, "",
+                          dynamic_cast<IndexFieldList *> ($6));
+    }
+  | INDEX URI_LITERAL ON ExprSingle IndexingMethod BY IndexFieldList RPAR
+    {
+      IndexDecl *d = new IndexDecl (LOC (@$), SYMTAB (2), $4, SYMTAB (5),
+                                    dynamic_cast<IndexFieldList *> ($7));
+      d->method = $5;
+      $$ = d;
+    }
+  ;
+
+IndexField :
+    IndexField1
+    {
+      $$ = $1;
+    }
+  | IndexField1 COLLATION URI_LITERAL
+    {
+      dynamic_cast<IndexField *> ($1)->coll = driver.symtab.get ((off_t) $3);
+      $$ = $1;
+    }
+  ;
+
+IndexField1 :
+    ExprSingle
+    {
+      $$ = new IndexField (LOC (@$), $1, NULL);
+    }
+  | ExprSingle TypeDeclaration
+    {
+      $$ = new IndexField (LOC (@$), $1, dynamic_cast<TypeDeclaration *> ($2));
+    }
+  ;
+
+IndexFieldList :
+    LPAR IndexField
+    {
+      IndexFieldList *l = new IndexFieldList (LOC (@$));
+      l->fields.push_back (dynamic_cast<IndexField *> ($2));
+      $$ = l;
+      
+    }
+  | IndexFieldList COMMA IndexField
+    {
+      dynamic_cast<IndexFieldList *> ($1)->fields.push_back (dynamic_cast<IndexField *> ($3));
+      $$ = $1;
+    }
+  ;
 
 // [25] ConstructionDecl
 // ---------------------
@@ -1427,6 +1535,17 @@ FlowCtlStatement :
   | CONT LOOP
     {
       $$ = new FlowCtlStatement (LOC (@$), FlowCtlStatement::CONTINUE);
+    }
+  ;
+
+IndexStatement :
+    CREATE INDEX URI_LITERAL
+    {
+      $$ = new IndexStatement (LOC (@$), SYMTAB (3), true);
+    }
+  | DROP INDEX URI_LITERAL
+    {
+      $$ = new IndexStatement (LOC (@$), SYMTAB (3), false);
     }
   ;
 
@@ -1591,6 +1710,9 @@ ExprSingle :
   | FlowCtlStatement
   | AssignExpr
   | Block
+
+    /* indexes */
+  | IndexStatement
     ;
 
 
@@ -4788,6 +4910,13 @@ QNAME :
   | BREAK { $$ = driver.symtab.put("break"); }
   | CONT { $$ = driver.symtab.put("cont"); }
   | SET { $$ = driver.symtab.put("set"); }
+  | INDEX { $$ = driver.symtab.put("index"); }
+  | CREATE { $$ = driver.symtab.put("create"); }
+  | UNIQUE { $$ = driver.symtab.put("unique"); }
+  | ON { $$ = driver.symtab.put("on"); }
+  | HASH { $$ = driver.symtab.put("hash"); }
+  | BTREE { $$ = driver.symtab.put("btree"); }
+  | DROP { $$ = driver.symtab.put("DROP"); }
     ;
 
 
@@ -5350,7 +5479,7 @@ namespace parser {
 
 const char *the_tumbling = "tumbling", *the_sliding = "sliding",
   *the_start = "start", *the_end = "end", *the_only_end = "only end",
-  *the_ofor = "ofor";
+  *the_ofor = "ofor", *the_declare = "declare", *the_create = "create";
 
 }
 

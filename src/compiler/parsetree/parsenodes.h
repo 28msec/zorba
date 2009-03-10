@@ -930,6 +930,79 @@ public:
 	rchandle<exprnode> get_valexpr() const { return get_initexpr (); }
 };
 
+class IndexField : public parsenode {
+  rchandle<exprnode> expr;
+  rchandle<TypeDeclaration> type;
+
+public:
+  std::string coll;
+
+public:
+  IndexField (const QueryLoc& loc_, rchandle<exprnode> expr_, rchandle<TypeDeclaration> type_)
+    : parsenode (loc_), expr (expr_), type (type_)
+  {}
+  rchandle<exprnode> get_expr () const { return expr; }
+  rchandle<TypeDeclaration> get_type () const { return type; }
+
+public:
+	void accept(parsenode_visitor&) const;
+  
+};
+
+class IndexFieldList : public parsenode {
+public:
+  std::vector<rchandle<IndexField> > fields;
+
+public:
+  IndexFieldList (const QueryLoc& loc_)
+    : parsenode (loc_)
+  {}
+
+public:
+	void accept(parsenode_visitor&) const;
+  
+};
+
+class IndexDecl : public parsenode {
+protected:
+  std::string uri;
+  rchandle<exprnode> on_expr;
+
+public:
+  std::string method;
+  bool create;
+  bool uniq;
+  rchandle<IndexFieldList> fields;
+
+public:
+  bool is_decl_only () const { return ! create; }
+  bool is_uniq () const { return uniq; }
+
+  rchandle<exprnode> get_expr () { return on_expr; }
+  std::string get_uri () { return uri; }
+
+  IndexDecl (const QueryLoc& loc_, std::string uri_, rchandle<exprnode> expr_, std::string method_, rchandle<IndexFieldList> fields_)
+    : parsenode (loc_), uri (uri_), on_expr (expr_), method (method_), fields (fields_)
+  {}
+
+public:
+	void accept(parsenode_visitor&) const;
+
+};
+
+class IndexStatement : public exprnode {
+  std::string uri;
+  bool create;  //< create or drop?
+
+public:
+  IndexStatement (const QueryLoc& loc_, std::string uri_, bool create_)
+    : exprnode (loc_), uri (uri_), create (create_)
+  {}
+
+public:
+	void accept(parsenode_visitor&) const;
+
+};
 
 // [24] VarDecl
 // ------------
