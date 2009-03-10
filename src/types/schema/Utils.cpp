@@ -254,14 +254,24 @@ void processElement(
         //cout << " vup        - addSetElementType: " << elm->getNodeName()->getLocalName()->str() << "   " << newTypeIdent->getLocalName() << " @ " << newTypeIdent->getUri() << "\n"; cout.flush();
         //cout << " vup             - " << ( tHasTypedValue ? "hasTypedValue" : "" ) << " values.size: " << typedValues.size() << (typedValues.size()>0 ? " [0]=" + typedValues[0]->getStringValue()->str() : "" ) << ( tHasValue ? " hasValue" : "" ) << ( tHasEmptyValue ? " hasEmptyValue" : "" ) << "\n"; cout.flush();
             
-        p->addSetElementType(elm,
-                            typeQName,
-                            (std::vector<store::Item_t>&)typedValues,
-                            tHasValue, 
-                            tHasEmptyValue,
-                            tHasTypedValue,
-                            element->isId(),
-                            element->isIdRefs());
+        if ( typedValues.size()==1 )
+            p->addSetElementType(elm,
+                                typeQName,
+                                typedValues[0],
+                                tHasValue, 
+                                tHasEmptyValue,
+                                tHasTypedValue,
+                                element->isId(),
+                                element->isIdRefs());
+        else
+            p->addSetElementType(elm,
+                                typeQName,
+                                (std::vector<store::Item_t>&)typedValues,
+                                tHasValue, 
+                                tHasEmptyValue,
+                                tHasTypedValue,
+                                element->isId(),
+                                element->isIdRefs());
     }    
 
     schemaValidator.endElem(nodeName);
