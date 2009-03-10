@@ -28,6 +28,7 @@
 #endif
 
 typedef unsigned long ulong;
+typedef unsigned int uint;
 // typedef __int64		int64_t;
 // typedef unsigned __int64	uint64_t;
 typedef unsigned short		uint16_t;
