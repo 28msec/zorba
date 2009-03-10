@@ -64,6 +64,27 @@ extern ConstrNodeVector dummyVector;
   ZORBA_FATAL(0, "Invalid method invocation on " \
               << store::StoreConsts::toString(getNodeKind()))
 
+#ifndef NDEBUG
+
+#define NODE_TRACE(level, msg)                \
+{                                             \
+  if (level <= GET_STORE().getTraceLevel())   \
+    std::cout << msg << std::endl;            \
+}
+
+#define NODE_TRACE1(msg) NODE_TRACE(1, msg);
+#define NODE_TRACE2(msg) NODE_TRACE(2, msg);
+#define NODE_TRACE3(msg) NODE_TRACE(3, msg);
+
+#else
+
+#define NODE_TRACE(msg)
+#define NODE_TRACE1(msg)
+#define NODE_TRACE2(msg)
+#define NODE_TRACE3(msg)
+
+#endif
+
 /*******************************************************************************
   A helper class to model the content of text nodes, which can be either a
   string or an item representing a simple-typed value.

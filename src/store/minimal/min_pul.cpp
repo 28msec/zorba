@@ -1301,7 +1301,7 @@ void UpdSetElementType::apply()
 
   target->theTypeName.transfer(theTypeName);
 
-  if (theTypedValue)
+  if (theHaveValue)
   {
     target->setHaveValue();
 
@@ -1319,6 +1319,7 @@ void UpdSetElementType::apply()
 
       TextNode* textChild = reinterpret_cast<TextNode*>(target->getChild(0));
 
+      textChild->setText(NULL);
       textChild->setValue(theTypedValue);
 
       target->setHaveTypedValue();

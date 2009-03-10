@@ -33,27 +33,6 @@
 #include "store/minimal/min_item_iterator.h"
 
 
-#ifndef NDEBUG
-
-#define NODE_TRACE(level, msg)                \
-{                                             \
-  if (level <= GET_STORE().getTraceLevel())   \
-    std::cout << msg << std::endl;            \
-}
-
-#define NODE_TRACE1(msg) NODE_TRACE(1, msg);
-#define NODE_TRACE2(msg) NODE_TRACE(2, msg);
-#define NODE_TRACE3(msg) NODE_TRACE(3, msg);
-
-#else
-
-#define NODE_TRACE(msg)
-#define NODE_TRACE1(msg)
-#define NODE_TRACE2(msg)
-#define NODE_TRACE3(msg)
-
-#endif
-
 
 namespace zorba { namespace storeminimal {
 
