@@ -1348,18 +1348,21 @@ VarDecl :
 								nt->name,
 								nt->type,
 								$5);
+      delete nt;
 		}
 	|	DECLARE  VARIABLE  VarNameAndType EXTERNAL
 		{
       VarNameAndType *nt = dynamic_cast<VarNameAndType *> $3;
 			$$ = new VarDecl(LOC (@$), nt->name, nt->type,
                        NULL, true);
+      delete nt;
 		}
 	|	DECLARE  VARIABLE  VarNameAndType EXTERNAL GETS ExprSingle
 		{
       VarNameAndType *nt = dynamic_cast<VarNameAndType *> $3;
 			$$ = new VarDecl(LOC (@$), nt->name, nt->type,
                        $6, true);
+      delete nt;
 		}
 	;
 
