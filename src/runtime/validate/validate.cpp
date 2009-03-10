@@ -64,10 +64,12 @@ ValidateIterator::ValidateIterator(
     const QueryLoc& loc,
     PlanIter_t& aIter,
     TypeManager *tm_,
-    bool isLax)
+	store::Item_t a_typeName,
+	ParseConstants::validation_mode_t a_validationMode)
   :
   UnaryBaseIterator<ValidateIterator, PlanIteratorState>( loc, aIter ),
-  _isLax(isLax),
+  typeName(a_typeName),
+  validationMode(a_validationMode),
   typemgr (tm_)
 {
 }
@@ -83,7 +85,7 @@ bool ValidateIterator::nextImpl(store::Item_t& result, PlanState& planState) con
                                                         planState,
                                                         theChild,
                                                         typemgr.getp(),
-                                                        _isLax),
+                                                        validationMode),
              aState);
 
   STACK_END (aState);
@@ -96,7 +98,7 @@ bool ValidateIterator::effectiveValidationValue (
     PlanState& planState,
     const PlanIterator* iter,
     TypeManager *typeManager,
-    bool isLax)
+    ParseConstants::validation_mode_t validationMode)
 {
         //cout << "Starting Validation   typeManager: " << typeManager << endl; cout.flush();
         
@@ -129,7 +131,7 @@ bool ValidateIterator::effectiveValidationValue (
 
             
             SchemaValidator schemaValidator = SchemaValidator(typeManager, 
-                schema->getGrammarPool(), isLax, loc);
+				schema->getGrammarPool(), validationMode == ParseConstants::val_lax, loc);  // TODO: removed isLax
             
 
             switch ( item->getNodeKind() )

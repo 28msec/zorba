@@ -20,6 +20,7 @@
 #include "common/common.h"
 #ifndef ZORBA_NO_XMLSCHEMA
 
+#include "compiler/parser/parse_constants.h"
 #include "common/shared_types.h"
 #include "runtime/base/unarybase.h"
 #include "runtime/booleans/compare_types.h"
@@ -47,7 +48,7 @@ class GenericCast;
 class ValidateIterator : public UnaryBaseIterator<ValidateIterator, PlanIteratorState>
 {
 private:
-  bool _isLax;
+  enum ParseConstants::validation_mode_t validationMode;
   rchandle<TypeManager> typemgr;
   store::Item_t typeName;
 
@@ -56,7 +57,8 @@ public:
         const QueryLoc& loc,
         PlanIter_t& aIter,
         TypeManager *,
-        bool isLax );
+		store::Item_t a_typeName,
+        ParseConstants::validation_mode_t a_validationMode);
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
@@ -68,7 +70,7 @@ public:
         PlanState& planState,
         const PlanIterator* iter,
         TypeManager *,
-        bool isLax);
+        ParseConstants::validation_mode_t validationMode);
 
   static store::Item_t processElement (
         PlanState& planState,

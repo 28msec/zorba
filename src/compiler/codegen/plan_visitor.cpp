@@ -1256,8 +1256,9 @@ void end_visit (validate_expr& v)
 
   itstack.push (new ValidateIterator (qloc,
                                       lChild,
-                                      v.get_typemgr (),
-                                      v.get_valmode () == ParseConstants::val_lax));
+                                      v.get_typemgr(),
+									  v.get_type_name(),
+                                      v.get_valmode()));
 #else
   //no schema support
   ZORBA_ERROR_LOC(XQST0009, qloc);
