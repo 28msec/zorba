@@ -1,5 +1,7 @@
 #!/bin/sh
 export LD_LIBRARY_PATH=@Java_Load_Path@
+# The following for Mac OS X
+export DYLD_LIBRARY_PATH=@Java_Load_Path@
 export CLASSPATH=".:@Java_Load_Path@"
 /usr/bin/javac $LD_LIBRARY_PATH/*.java
 /usr/bin/javac *.java
