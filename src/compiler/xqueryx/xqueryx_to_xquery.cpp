@@ -10,8 +10,8 @@
 #include <libxml/DOCBparser.h>
 #include <libxml/xinclude.h>
 #include <libxml/catalog.h>
-#include <libxslt/libxslt.h>
-#include <libxslt/xsltinternals.h>
+#include <libxslt/xslt.h>
+//#include <libxslt/xsltinternals.h>
 #include <libxslt/transform.h>
 #include <libxslt/xsltutils.h>
 
