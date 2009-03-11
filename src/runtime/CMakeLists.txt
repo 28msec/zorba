@@ -47,6 +47,7 @@ SET(RUNTIME_SRCS
     dateTime/DurationsDatesTimes.cpp
     debug/debug_iterators.cpp
     fncontext/FnContextImpl.cpp
+    indexing/value_index_builder.cpp
     numerics/NumericsImpl.cpp
     qnames/QNamesImpl.cpp
     sequences/SequencesImpl.cpp

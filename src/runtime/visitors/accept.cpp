@@ -40,6 +40,7 @@
 #include "runtime/validate/validate.h"
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/numerics/NumericsImpl.h"
+#include "runtime/indexing/value_index_builder.h"
 #include "runtime/accessors/AccessorsImpl.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/dateTime/DurationsDatesTimes.h"
@@ -140,6 +141,8 @@ namespace zorba {
   UNARY_ACCEPT(DeleteIterator);
   UNARY_ACCEPT(FnDataIterator);
   UNARY_ACCEPT(gflwor::CountIterator);
+  UNARY_ACCEPT(ValueIndexInsertSessionOpener);
+  UNARY_ACCEPT(ValueIndexInsertSessionCloser);
 
   // binary iterators
   BINARY_ACCEPT(LogicIterator);
@@ -161,6 +164,7 @@ namespace zorba {
   BINARY_ACCEPT(gflwor::WhereIterator);
 
   // nary iterators
+  NARY_ACCEPT(ValueIndexBuilder);
   NARY_ACCEPT(FnDistinctValuesIterator);
   NARY_ACCEPT(UDFunctionCallIterator);
   NARY_ACCEPT(StatelessExtFunctionCallIterator);

@@ -139,7 +139,6 @@ public:
     return lookup_qname ("", qname, loc);
   }
 
-
   //
   // Normalized qname construction
   //
@@ -260,6 +259,17 @@ public:
   xqtref_t
   get_collection_type(const xqp_string);
 
+  // Index
+  void bind_index(const xqp_string& aIndexURI, ValueIndex *vi)
+  {
+    context::bind_index("vindex:", aIndexURI, vi);
+  }
+
+  ValueIndex *lookup_index(const xqp_string& aIndexURI) const
+  {
+    ctx_value_t val;
+    return context_value2("vindex:", aIndexURI, val) ? val.valueIndex : NULL;
+  }
 
   //
   // Collations

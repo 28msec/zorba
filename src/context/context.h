@@ -27,6 +27,7 @@ namespace zorba {
   class function;
 	class XQType;
   class StatelessExternalFunction;
+  class ValueIndex;
 
 
 /*******************************************************************************
@@ -48,6 +49,7 @@ protected:
     bool               boolValue;
 		const XQType     * typeValue; ///do manual ref counting on this
     StatelessExternalFunction* stateless_function;
+    ValueIndex       * valueIndex;
   } ctx_value_t;
 
   typedef xqp_string (* str_param_t) ();
@@ -142,6 +144,7 @@ protected:
   bool bind_expr2 (const char *key1, xqp_string key2, expr *e);
   bool bind_func2 (const char *key1, xqp_string key2, function *f);
   bool bind_stateless_function(xqp_string key, StatelessExternalFunction* f);
+  bool bind_index(const char *key1, const xqp_string& key2, ValueIndex *vi);
 
   void bind_str (xqp_string key, xqp_string v, XQUERY_ERROR err = XQP0019_INTERNAL_ERROR);
 

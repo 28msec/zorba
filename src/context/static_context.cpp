@@ -47,6 +47,8 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
+#include "indexing/value_index.h"
+
 
 using namespace std;
 namespace zorba {
@@ -143,6 +145,15 @@ bool context::bind_stateless_function(xqp_string key, StatelessExternalFunction*
   return true;
 }
 
+bool context::bind_index(const char *key1, const xqp_string& key2, ValueIndex *vi)
+{
+  ctx_value_t v;
+  v.valueIndex = vi;
+  if (keymap.put2 (key1, key2, v, false))
+    return false;
+  RCHelper::addReference (vi);
+  return true;
+}
 
 /*******************************************************************************
   Constructors/Destructor
@@ -199,6 +210,8 @@ static_context::~static_context()
       RCHelper::removeReference (const_cast<function *> (val->functionValue));
     } else if (0 == strncmp(keybuff, "fmap:", 5)) {
       delete (const_cast<ArityFMap *> (val->fmapValue));
+    } else if (0 == strncmp(keybuff, "vindex:", 7)) {
+      RCHelper::removeReference(const_cast<ValueIndex *>(val->valueIndex));
     }
   }
 
