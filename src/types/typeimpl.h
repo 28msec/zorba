@@ -34,7 +34,7 @@ class XQType : public RCObject
 public:
   typedef enum 
   {
-    ATOMIC_TYPE_KIND,
+    ATOMIC_TYPE_KIND,  // Atomic builtin type
     NODE_TYPE_KIND,
     ANY_TYPE_KIND,
     ITEM_KIND,
@@ -42,7 +42,7 @@ public:
     UNTYPED_KIND,
     EMPTY_KIND,
     NONE_KIND,
-    USER_DEFINED_KIND,
+    USER_DEFINED_KIND, // May be atomic, list, union, or complex
   } type_kind_t;
 
   typedef enum 
@@ -56,16 +56,18 @@ public:
   virtual ~XQType() { }
 
   virtual std::ostream& serialize(std::ostream& os) const;
+
   virtual std::string toString() const;
 
   type_kind_t type_kind() const { return m_type_kind; }
+
   virtual content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };
 
   TypeConstants::quantifier_t get_quantifier() const { return m_quantifier; }
 
-  const TypeManager *get_manager() const { return m_manager; }
+  const TypeManager* get_manager() const { return m_manager; }
 
-  long *getSharedRefCounter() { return NULL; }
+  long* getSharedRefCounter() { return NULL; }
 
   SYNC_CODE(RCLock *getRCLock() { return &theLock; })
 
@@ -81,10 +83,12 @@ protected:
   }
 
 protected:
+  static const char            * KIND_STRINGS[NONE_KIND + 1];
+
   const TypeManager            * m_manager;
   const type_kind_t              m_type_kind;
   TypeConstants::quantifier_t    m_quantifier;
-  static const char            * KIND_STRINGS[NONE_KIND + 1];
+
   SYNC_CODE(RCLock               theLock;)
 };
 
@@ -201,15 +205,15 @@ public:
 class UserDefinedXQType : public XQType
 {
 public:
-    enum TYPE_CATEGORY
-    {
-        ATOMIC_TYPE,  // atomic types: ex: int, date, token, string
-        LIST_TYPE,    // list of simple types: ex: list of int: "1 2 33"
-        UNION_TYPE,   // union of simple types: ShirtSize int or string: "8", "small"
-                      // ATOMIC, LIST and UNION types are all SIMPLE types: i.e. their representation is a text value
+  enum TYPE_CATEGORY
+  {
+    ATOMIC_TYPE,  // atomic types: ex: int, date, token, string
+    LIST_TYPE,    // list of simple types: ex: list of int: "1 2 33"
+    UNION_TYPE,   // union of simple types: ShirtSize int or string: "8", "small"
+                  // ATOMIC, LIST and UNION types are all SIMPLE types: i.e. their representation is a text value
 
-        COMPLEX_TYPE  // complex types: they represent structure
-    };
+    COMPLEX_TYPE  // complex types: they represent structure
+  };
 
 
 private:

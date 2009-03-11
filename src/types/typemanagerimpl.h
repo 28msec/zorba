@@ -23,6 +23,7 @@ namespace zorba {
 
 class NodeTest;
 
+
 class qname_hash_equals 
 {
  public:
@@ -38,13 +39,26 @@ class qname_hash_equals
 };
 
 
-/*
- * Interface used by other parts of zorba to ask questions about types.
- */
+/***************************************************************************//**
+  A type manager acts as a factory and manager of XQType instances. 
+
+  Multiple type managers may participate in an xquery program, each corresponding
+  to a different xml schema. These type managers are arranged in a tree hierarchy.
+  There is always a root type manager (see root_typemanager.h) that is created
+  during system initialization and manages the built-in types of XQDM. Other
+  type managers are allocated dynamically during the processing of schema import
+  statements inside an xquery program. 
+
+  Each XQType instance has a pointer back to the type manager that created that
+  XQType.
+********************************************************************************/
 class TypeManagerImpl : public TypeManager 
 {
+protected:
+  TypeManager * m_parent;
+
 public:
-  TypeManagerImpl(int level, TypeManager *parent)
+  TypeManagerImpl(int level, TypeManager* parent)
     :
     TypeManager(level),
     m_parent(parent) 
@@ -53,9 +67,8 @@ public:
 
   virtual ~TypeManagerImpl() { }
 
-  TypeManager *get_parent_type_manager() const { return m_parent; }
+  TypeManager* get_parent_type_manager() const { return m_parent; }
 
-  /* Factory Methods */
   xqtref_t create_type_x_quant(
         const XQType& type,
         TypeConstants::quantifier_t quantifier) const;
@@ -86,9 +99,9 @@ public:
         TypeConstants::quantifier_t quantifier,
         bool nillable) const;
 
-  xqtref_t create_any_type() const;
-
   xqtref_t create_any_item_type(TypeConstants::quantifier_t quantifier) const;
+
+  xqtref_t create_any_type() const;
 
   xqtref_t create_any_simple_type() const;
 
@@ -97,9 +110,6 @@ public:
   xqtref_t create_empty_type() const;
 
   xqtref_t create_none_type() const;
-
-protected:
-  TypeManager *m_parent;
 };
 
 }

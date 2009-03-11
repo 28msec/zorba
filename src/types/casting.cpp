@@ -964,93 +964,6 @@ inline bool NOT_str(store::Item_t& result, const store::Item_t& aItem, store::It
   return uA_str(result, aItem, aFactory, nsCtx, aErrorInfo);
 }
 
-const int GenericCast::theMapping[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE] = {
-  -1, 1,-1,-1,-1,-1,-1,-1,-1,-1,
-  -1, 0, 9,11,10, 6, 8, 7, 2, 3,
-   4, 5,-1,-1,-1,-1,-1,-1,-1,-1,
-  -1,-1,-1,-1,12,13,14,15,16,17,
-  18,19,20,21,22
-  };
-
-const GenericCast::CastFunc GenericCast::theCastMatrix[23][23] = {
-          /*uA*/     /*str*/    /*flt*/    /*dbl*/    /*dec*/    /*int*/    /*dur*/    /*yMD*/    /*dTD*/    /*dT*/
-          /*tim*/    /*dat*/    /*gYM*/    /*gYr*/    /*gMD*/    /*gDay*/   /*gMon*/   /*bool*/   /*b64*/    /*hxB*/
-          /*aURI*/   /*QN*/     /*NOT*/
-/*uA*/   {&uA_uA,    &uA_str,   &uA_flt,   &uA_dbl,   &uA_dec,   &uA_int,   &uA_dur,   &uA_yMD,   &uA_dTD,   &uA_dT,
-          &uA_tim,   &uA_dat,   &uA_gYM,   &uA_gYr,   &uA_gMD,   &uA_gDay,  &uA_gMon,  &uA_bool,  &uA_b64,   &uA_hxB, 
-          &uA_aURI,  0,         0},
-/*str*/  {&str_uA,   &str_str,  &str_flt,  &str_dbl,  &str_dec,  &str_int,  &str_dur,  &str_yMD,  &str_dTD,  &str_dT,
-          &str_tim,  &str_dat,  &str_gYM,  &str_gYr,  &str_gMD,  &str_gDay, &str_gMon, &str_bool, &str_b64,  &uA_hxB, 
-          &str_aURI, &str_QN,   &str_NOT},
-/*flt*/  {&flt_uA,   &flt_str,  &flt_flt,  &flt_dbl,  &flt_dec,  &flt_int,  0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         &flt_bool, 0,         0,
-          0,         0,         0},
-/*dbl*/  {&dbl_uA,   &dbl_str,  &dbl_flt,  &dbl_dbl,  &dbl_dec,  &dbl_int,  0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         &dbl_bool, 0,         0,
-          0,         0,         0},
-/*dec*/  {&dec_uA,   &dec_str,  &dec_flt,  &dec_dbl,  &dec_dec,  &dec_int,  0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         &dec_bool, 0,         0,
-          0,         0,         0},
-/*int*/  {&int_uA,   &int_str,  &int_flt,  &int_dbl,  &int_dec,  &int_int,  0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         &int_bool, 0,         0,
-          0,         0,         0},
-/*dur*/  {&dur_uA,   &dur_str,  0,         0,         0,         0,         &dur_dur,  &dur_yMD,  &dur_dTD,  0,
-          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0},
-/*yMD*/  {&yMD_uA,   &yMD_str,  0,         0,         0,         0,         &yMD_dur,  &yMD_yMD,  &yMD_dTD,  0,
-          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0},
-/*dTD*/  {&dTD_uA,   &dTD_str,  0,         0,         0,         0,         &dTD_dur,  &dTD_yMD,  &dTD_dTD,  0,
-          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0},
-          /*uA*/     /*str*/    /*flt*/    /*dbl*/    /*dec*/    /*int*/    /*dur*/    /*yMD*/    /*dTD*/    /*dT*/
-          /*tim*/    /*dat*/    /*gYM*/    /*gYr*/    /*gMD*/    /*gDay*/   /*gMon*/   /*bool*/   /*b64*/    /*hxB*/
-          /*aURI*/   /*QN*/     /*NOT*/
-/*dT*/   {&dT_uA,    &dT_str,   0,         0,         0,         0,         0,         0,         0,         &dT_dT,
-          &dT_tim,   &dT_dat,   &dT_gYM,   &dT_gYr,   &dT_gMD,   &dT_gDay,  &dT_gMon,  0,         0,         0,
-          0,         0,         0},
-/*tim*/  {&tim_uA,   &tim_str,  0,         0,         0,         0,         0,         0,         0,         0,
-          &tim_tim,  0,         0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0},
-/*dat*/  {&dat_uA,   &dat_str,  0,         0,         0,         0,         0,         0,         0,         &dat_dT,
-          0,         &dat_dat,  &dat_gYM,  &dat_gYr,  &dat_gMD,  &dat_gDay, &dat_gMon, 0,         0,         0,
-          0,         0,         0},
-/*gYM*/  {&gYM_uA,   &gYM_str,  0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         &gYM_gYM,  0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0},
-/*gYr*/  {&gYr_uA,   &gYr_str,  0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         &gYr_gYr,  0,         0,         0,         0,         0,         0,
-          0,         0,         0},
-/*gMD*/  {&gMD_uA,   &gMD_str,  0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0,         &gMD_gMD,  0,         0,         0,         0,         0,
-          0,         0,         0},
-/*gDay*/ {&gDay_uA,  &gDay_str, 0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0,         0,         &gDay_gDay,0,         0,         0,         0,
-          0,         0,         0},
-/*gMon*/ {&gMon_uA,  &gMon_str, 0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         &gMon_gMon,0,         0,         0,
-          0,         0,         0},
-/*bool*/ {&bool_uA,  &bool_str, &bool_flt, &bool_dbl, &bool_dec, &bool_int, 0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         &bool_bool,0,         0,
-          0,         0,         0},
-/*b64*/  {&b64_uA,   &b64_str,  0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         0,         &b64_b64,  &b64_hxB,
-          0,         0,         0},
-/*hxB*/  {&hxB_uA,   &hxB_str,  0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         0,         &hxB_b64,  &hxB_hxB,
-          0,         0,         0},
-/*aURI*/ {&aURI_uA,  &aURI_str, 0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
-          &aURI_aURI,0,         0},
-/*QN*/   {&QN_uA,    &QN_str,   0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
-          0,         &QN_QN,    0},
-/*NOT*/  {&NOT_uA,   &NOT_str,  0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         &NOT_NOT}
-};
-
-
 bool str_down(
     store::Item_t& result,
     const store::Item* aItem, 
@@ -1218,11 +1131,146 @@ bool int_down(
 }
 
 
-const GenericCast::DownCastFunc GenericCast::theDownCastMatrix[23] = {
+
+const int GenericCast::theMapping[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE] = 
+{
+  -1,  //  0 XS_ANY_ATOMIC
+   1,  //  1 XS_STRING 
+  -1,  //  2 XS_NORMALIZED_STRING
+  -1,  //  3 XS_TOKEN
+  -1,  //  4 XS_LANGUAGE
+  -1,  //  5 XS_NMTOKEN
+  -1,  //  6 XS_NAME
+  -1,  //  7 XS_NCNAME
+  -1,  //  8 XS_ID
+  -1,  //  9 XS_IDREF
+  -1,  // 10 XS_ENTITY
+   0,  // 11 XS_UNTYPED_ATOMIC
+   9,  // 12 XS_DATETIME
+  11,  // 13 XS_DATE 
+  10,  // 14 XS_TIME
+   6,  // 15 XS_DURATION
+   8,  // 16 XS_DT_DURATION
+   7,  // 17 XS_YM_DURATION
+   2,  // 18 XS_FLOAT
+   3,  // 19 XS_DOUBLE
+   4,  // 20 XS_DECIMAL
+   5,  // 21 XS_INTEGER
+  -1,  // 22 XS_NON_POSITIVE_INTEGER
+  -1,  // 23 XS_NEGATIVE_INTEGER
+  -1,  // 24 XS_LONG
+  -1,  // 25 XS_INT
+  -1,  // 26 XS_SHORT
+  -1,  // 27 XS_BYTE
+  -1,  // 28 XS_NON_NEGATIVE_INTEGER
+  -1,  // 29 XS_UNSIGNED_LONG
+  -1,  // 30 XS_UNSIGNED_INT
+  -1,  // 31 XS_UNSIGNED_SHORT
+  -1,  // 32 XS_UNSIGNED_BYTE
+  -1,  // 33 XS_POSITIVE_INTEGER
+  12,  // 34 XS_GYEAR_MONTH
+  13,  // 35 XS_GYEAR
+  14,  // 36 XS_GMONTH_DAY
+  15,  // 37 XS_GDAY
+  16,  // 38 XS_GMONTH
+  17,  // 39 XS_BOOLEAN
+  18,  // 40 XS_BASE64BINARY
+  19,  // 41 XS_HEXBINARY
+  20,  // 42 XS_ANY_URI
+  21,  // 43 XS_QNAME
+  22   // 44 XS_NOTATION
+  };
+
+const GenericCast::CastFunc GenericCast::theCastMatrix[23][23] = {
+          /*uA*/     /*str*/    /*flt*/    /*dbl*/    /*dec*/    /*int*/    /*dur*/    /*yMD*/    /*dTD*/    /*dT*/
+          /*tim*/    /*dat*/    /*gYM*/    /*gYr*/    /*gMD*/    /*gDay*/   /*gMon*/   /*bool*/   /*b64*/    /*hxB*/
+          /*aURI*/   /*QN*/     /*NOT*/
+/*uA*/   {&uA_uA,    &uA_str,   &uA_flt,   &uA_dbl,   &uA_dec,   &uA_int,   &uA_dur,   &uA_yMD,   &uA_dTD,   &uA_dT,
+          &uA_tim,   &uA_dat,   &uA_gYM,   &uA_gYr,   &uA_gMD,   &uA_gDay,  &uA_gMon,  &uA_bool,  &uA_b64,   &uA_hxB, 
+          &uA_aURI,  0,         0},
+
+/*str*/  {&str_uA,   &str_str,  &str_flt,  &str_dbl,  &str_dec,  &str_int,  &str_dur,  &str_yMD,  &str_dTD,  &str_dT,
+          &str_tim,  &str_dat,  &str_gYM,  &str_gYr,  &str_gMD,  &str_gDay, &str_gMon, &str_bool, &str_b64,  &uA_hxB, 
+          &str_aURI, &str_QN,   &str_NOT},
+
+/*flt*/  {&flt_uA,   &flt_str,  &flt_flt,  &flt_dbl,  &flt_dec,  &flt_int,  0,         0,         0,         0,
+          0,         0,         0,         0,         0,         0,         0,         &flt_bool, 0,         0,
+          0,         0,         0},
+
+/*dbl*/  {&dbl_uA,   &dbl_str,  &dbl_flt,  &dbl_dbl,  &dbl_dec,  &dbl_int,  0,         0,         0,         0,
+          0,         0,         0,         0,         0,         0,         0,         &dbl_bool, 0,         0,
+          0,         0,         0},
+
+/*dec*/  {&dec_uA,   &dec_str,  &dec_flt,  &dec_dbl,  &dec_dec,  &dec_int,  0,         0,         0,         0,
+          0,         0,         0,         0,         0,         0,         0,         &dec_bool, 0,         0,
+          0,         0,         0},
+/*int*/  {&int_uA,   &int_str,  &int_flt,  &int_dbl,  &int_dec,  &int_int,  0,         0,         0,         0,
+          0,         0,         0,         0,         0,         0,         0,         &int_bool, 0,         0,
+          0,         0,         0},
+/*dur*/  {&dur_uA,   &dur_str,  0,         0,         0,         0,         &dur_dur,  &dur_yMD,  &dur_dTD,  0,
+          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
+          0,         0,         0},
+/*yMD*/  {&yMD_uA,   &yMD_str,  0,         0,         0,         0,         &yMD_dur,  &yMD_yMD,  &yMD_dTD,  0,
+          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
+          0,         0,         0},
+/*dTD*/  {&dTD_uA,   &dTD_str,  0,         0,         0,         0,         &dTD_dur,  &dTD_yMD,  &dTD_dTD,  0,
+          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
+          0,         0,         0},
+          /*uA*/     /*str*/    /*flt*/    /*dbl*/    /*dec*/    /*int*/    /*dur*/    /*yMD*/    /*dTD*/    /*dT*/
+          /*tim*/    /*dat*/    /*gYM*/    /*gYr*/    /*gMD*/    /*gDay*/   /*gMon*/   /*bool*/   /*b64*/    /*hxB*/
+          /*aURI*/   /*QN*/     /*NOT*/
+/*dT*/   {&dT_uA,    &dT_str,   0,         0,         0,         0,         0,         0,         0,         &dT_dT,
+          &dT_tim,   &dT_dat,   &dT_gYM,   &dT_gYr,   &dT_gMD,   &dT_gDay,  &dT_gMon,  0,         0,         0,
+          0,         0,         0},
+/*tim*/  {&tim_uA,   &tim_str,  0,         0,         0,         0,         0,         0,         0,         0,
+          &tim_tim,  0,         0,         0,         0,         0,         0,         0,         0,         0,
+          0,         0,         0},
+/*dat*/  {&dat_uA,   &dat_str,  0,         0,         0,         0,         0,         0,         0,         &dat_dT,
+          0,         &dat_dat,  &dat_gYM,  &dat_gYr,  &dat_gMD,  &dat_gDay, &dat_gMon, 0,         0,         0,
+          0,         0,         0},
+/*gYM*/  {&gYM_uA,   &gYM_str,  0,         0,         0,         0,         0,         0,         0,         0,
+          0,         0,         &gYM_gYM,  0,         0,         0,         0,         0,         0,         0,
+          0,         0,         0},
+/*gYr*/  {&gYr_uA,   &gYr_str,  0,         0,         0,         0,         0,         0,         0,         0,
+          0,         0,         0,         &gYr_gYr,  0,         0,         0,         0,         0,         0,
+          0,         0,         0},
+/*gMD*/  {&gMD_uA,   &gMD_str,  0,         0,         0,         0,         0,         0,         0,         0,
+          0,         0,         0,         0,         &gMD_gMD,  0,         0,         0,         0,         0,
+          0,         0,         0},
+/*gDay*/ {&gDay_uA,  &gDay_str, 0,         0,         0,         0,         0,         0,         0,         0,
+          0,         0,         0,         0,         0,         &gDay_gDay,0,         0,         0,         0,
+          0,         0,         0},
+/*gMon*/ {&gMon_uA,  &gMon_str, 0,         0,         0,         0,         0,         0,         0,         0,
+          0,         0,         0,         0,         0,         0,         &gMon_gMon,0,         0,         0,
+          0,         0,         0},
+/*bool*/ {&bool_uA,  &bool_str, &bool_flt, &bool_dbl, &bool_dec, &bool_int, 0,         0,         0,         0,
+          0,         0,         0,         0,         0,         0,         0,         &bool_bool,0,         0,
+          0,         0,         0},
+/*b64*/  {&b64_uA,   &b64_str,  0,         0,         0,         0,         0,         0,         0,         0,
+          0,         0,         0,         0,         0,         0,         0,         0,         &b64_b64,  &b64_hxB,
+          0,         0,         0},
+/*hxB*/  {&hxB_uA,   &hxB_str,  0,         0,         0,         0,         0,         0,         0,         0,
+          0,         0,         0,         0,         0,         0,         0,         0,         &hxB_b64,  &hxB_hxB,
+          0,         0,         0},
+/*aURI*/ {&aURI_uA,  &aURI_str, 0,         0,         0,         0,         0,         0,         0,         0,
+          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
+          &aURI_aURI,0,         0},
+/*QN*/   {&QN_uA,    &QN_str,   0,         0,         0,         0,         0,         0,         0,         0,
+          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
+          0,         &QN_QN,    0},
+/*NOT*/  {&NOT_uA,   &NOT_str,  0,         0,         0,         0,         0,         0,         0,         0,
+          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
+          0,         0,         &NOT_NOT}
+};
+
+
+const GenericCast::DownCastFunc GenericCast::theDownCastMatrix[23] = 
+{
 /*uA*/  0, /*str*/ str_down, /*flt*/ 0, /*dbl*/ 0, /*dec*/ 0, /*int*/ int_down, /*dur*/ 0, 
 /*yMD*/ 0, /*dTD*/ 0, /*dT*/  0, /*tim*/ 0, /*dat*/ 0, /*gYM*/ 0, /*gYr*/ 0, /*gMD*/ 0,
 /*gDay*/0, /*gMon*/0, /*bool*/0, /*b64*/ 0, /*hxB*/ 0, /*aURI*/0, /*QN*/  0, /*NOT*/ 0
 };
+
 
 
 GenericCast* GenericCast::instance()
@@ -1307,8 +1355,6 @@ bool GenericCast::castToAtomic(
   RootTypeManager& lTS = GENV_TYPESYSTEM;
   store::ItemFactory* lFactory = GENV_ITEMFACTORY;
 
-  //assert(!aItem->isNode());
-
   xqtref_t lSourceType = lTS.create_named_type(aItem->getType(), 
                                                TypeConstants::QUANT_ONE);
 
@@ -1328,6 +1374,7 @@ bool GenericCast::castToAtomic(
 
   store::Item_t lSourceItem;
   xqtref_t lPrimitiveSourceType;
+
   if (TypeOps::is_atomic(*lSourceType))
   {
     lPrimitiveSourceType = TypeOps::cast_primitive_type(*lSourceType);
@@ -1696,9 +1743,11 @@ bool GenericCast::promote(
     const store::Item_t& aItem,
     const XQType* aTargetType) const
 {
-  xqtref_t lItemType = GENV_TYPESYSTEM.create_value_type(aItem);
+  RootTypeManager& typesys = GENV_TYPESYSTEM;
 
-  if (TypeOps::is_equal (*aTargetType, *GENV_TYPESYSTEM.NONE_TYPE))
+  xqtref_t lItemType = typesys.create_value_type(aItem);
+
+  if (TypeOps::is_equal (*aTargetType, *typesys.NONE_TYPE))
       return false;
 
   if (TypeOps::is_subtype(*lItemType, *aTargetType))
@@ -1707,39 +1756,40 @@ bool GenericCast::promote(
     return result != NULL;
   }
 
-  if (TypeOps::is_equal(*lItemType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) &&
-      ! TypeOps::is_equal(*TypeOps::prime_type(*aTargetType), *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
+  if (TypeOps::is_equal(*lItemType, *typesys.UNTYPED_ATOMIC_TYPE_ONE) &&
+      ! TypeOps::is_equal(*TypeOps::prime_type(*aTargetType), *typesys.QNAME_TYPE_ONE))
   {
     return GenericCast::instance()->castToAtomic(result, aItem, aTargetType);
   }
-  else if (TypeOps::is_subtype(*aTargetType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) 
+  else if (TypeOps::is_subtype(*aTargetType, *typesys.FLOAT_TYPE_ONE)) 
   {
     // decimal --> xs:float
-    if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)) 
+    if (TypeOps::is_subtype(*lItemType, *typesys.DECIMAL_TYPE_ONE)) 
     {
       return GenericCast::instance()->castToAtomic(result, aItem,
-                                           &*GENV_TYPESYSTEM.FLOAT_TYPE_ONE); 
+                                                   &*typesys.FLOAT_TYPE_ONE); 
     }
   }
-  else if (TypeOps::is_subtype(*aTargetType, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
+  else if (TypeOps::is_subtype(*aTargetType, *typesys.DOUBLE_TYPE_ONE))
   {
     // Decimal/Float --> xs:double
-    if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE) ||
-        TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) 
+    if (TypeOps::is_subtype(*lItemType, *typesys.DECIMAL_TYPE_ONE) ||
+        TypeOps::is_subtype(*lItemType, *typesys.FLOAT_TYPE_ONE)) 
     {
       return GenericCast::instance()->castToAtomic(result, aItem,
-                                           &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+                                                   &*typesys.DOUBLE_TYPE_ONE);
     }
   }
-  else if (TypeOps::is_subtype(*aTargetType, *GENV_TYPESYSTEM.STRING_TYPE_ONE)) 
+  else if (TypeOps::is_subtype(*aTargetType, *typesys.STRING_TYPE_ONE)) 
   {
     // URI --> xs:String Promotion
-    if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) 
+    if (TypeOps::is_subtype(*lItemType, *typesys.ANY_URI_TYPE_ONE)) 
     {
       return GenericCast::instance()->castToAtomic(result, aItem,
-                                           &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
+                                                   &*typesys.STRING_TYPE_ONE);
     }
   }
+
   return false;
 }
 

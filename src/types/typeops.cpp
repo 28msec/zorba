@@ -377,8 +377,8 @@ xqtref_t TypeOps::union_type(const XQType& type1, const XQType& type2)
     xqtref_t pt1 = prime_type (type1), pt2 = prime_type (type2);
     if (! is_equal (type1, *pt1) || ! is_equal (type2, *pt2))
       return mgr->create_type_x_quant (*union_type (*pt1, *pt2),
-                           RootTypeManager::QUANT_MULT_MATRIX [TypeConstants::QUANT_QUESTION] /* to be on the safe side */
-                                              [RootTypeManager::QUANT_MULT_MATRIX [quantifier (type1)] [quantifier (type2)]]);
+                           RootTypeManager::QUANT_UNION_MATRIX [TypeConstants::QUANT_QUESTION] /* to be on the safe side */
+                                              [RootTypeManager::QUANT_UNION_MATRIX [quantifier (type1)] [quantifier (type2)]]);
     else
       return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
   }

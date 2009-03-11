@@ -39,24 +39,34 @@
 
 using namespace zorba;
 
+
+/***************************************************************************//**
+
+********************************************************************************/
 xqtref_t TypeManagerImpl::create_type_x_quant(
     const XQType& type,
     TypeConstants::quantifier_t quantifier) const
 {
-  return create_type(type, RootTypeManager::QUANT_MULT_MATRIX[type.get_quantifier()][quantifier]);
+  return create_type(type,
+                     RootTypeManager::QUANT_UNION_MATRIX[type.get_quantifier()][quantifier]);
 }
 
+
+/***************************************************************************//**
+
+********************************************************************************/
 xqtref_t TypeManagerImpl::create_type(
     const XQType& type,
     TypeConstants::quantifier_t quantifier) const
 {
-  // quantifier multiplication:
-  // quantifier = QUANT_MULT_MATRIX [quantifier] [type.get_quantifier ()];
-  // most code assumes that the quantifier arg *overrides* the original quantifier!
   switch(type.type_kind())
   {
   case XQType::ATOMIC_TYPE_KIND:
-    return create_atomic_type(static_cast<const AtomicXQType *>(& type)->get_type_code(), quantifier);
+  {
+    // Builtin atomic type
+    return create_atomic_type(static_cast<const AtomicXQType *>(& type)->get_type_code(),
+                              quantifier);
+  }
 
   case XQType::NODE_TYPE_KIND:
   {
@@ -67,11 +77,11 @@ xqtref_t TypeManagerImpl::create_type(
                             nt.get_nillable());
   }
 
-  case XQType::ANY_TYPE_KIND:
-    return GENV_TYPESYSTEM.ANY_TYPE;
-
   case XQType::ITEM_KIND:
     return create_any_item_type(quantifier);
+
+  case XQType::ANY_TYPE_KIND:
+    return GENV_TYPESYSTEM.ANY_TYPE;
 
   case XQType::ANY_SIMPLE_TYPE_KIND:
     return GENV_TYPESYSTEM.ANY_SIMPLE_TYPE;
@@ -83,12 +93,18 @@ xqtref_t TypeManagerImpl::create_type(
     return GENV_TYPESYSTEM.EMPTY_TYPE;
 
   case XQType::NONE_KIND:
-    return quantifier == TypeConstants::QUANT_ONE || quantifier == TypeConstants::QUANT_PLUS ? GENV_TYPESYSTEM.NONE_TYPE : GENV_TYPESYSTEM.EMPTY_TYPE;
+    return (quantifier == TypeConstants::QUANT_ONE || quantifier == TypeConstants::QUANT_PLUS ?
+            GENV_TYPESYSTEM.NONE_TYPE :
+            GENV_TYPESYSTEM.EMPTY_TYPE);
 
   case XQType::USER_DEFINED_KIND:
   {
     const UserDefinedXQType& udt = static_cast<const UserDefinedXQType&>(type);
-    return xqtref_t(new UserDefinedXQType(this, udt.getQName(), udt.getBaseType(), quantifier, udt.content_kind()));
+    return xqtref_t(new UserDefinedXQType(this,
+                                          udt.getQName(),
+                                          udt.getBaseType(),
+                                          quantifier,
+                                          udt.content_kind()));
   }
   }
 
@@ -97,6 +113,9 @@ xqtref_t TypeManagerImpl::create_type(
 }
 
 
+/***************************************************************************//**
+
+********************************************************************************/
 xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
 {
   TypeConstants::quantifier_t q = TypeConstants::QUANT_ONE;
@@ -205,17 +224,29 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
 }
 
 
+/***************************************************************************//**
+  Create a sequence type based on the kind and content of an item.
+********************************************************************************/
 xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const 
 {
-  if (item->isAtomic ())
+  if (item->isAtomic())
     return create_named_atomic_type(item->getType(), TypeConstants::QUANT_ONE);
 
-  return create_node_type (new NodeTest (item->getNodeKind ()),
-                           xqtref_t (NULL),
-                           TypeConstants::QUANT_ONE,
-                           false);
+  // Why do we pass NULL as the content type ????
+  return create_node_type(new NodeTest(item->getNodeKind()),
+                          xqtref_t(NULL),
+                          TypeConstants::QUANT_ONE,
+                          false);
 }
 
+
+/***************************************************************************//**
+  Create a sequence type from the given typename and quantifier.
+
+  Here, the typename is assumed to be of a builtin type. If not, the method will
+  return NULL. Class DelegatingTypeManager redefines this method to handle user-
+  defined types. 
+********************************************************************************/
 xqtref_t TypeManagerImpl::create_named_type(
     store::Item* qname,
     TypeConstants::quantifier_t quantifier) const
@@ -242,6 +273,41 @@ xqtref_t TypeManagerImpl::create_named_type(
   }
 }
 
+
+/***************************************************************************//**
+  Create a sequence type from the given typename and quantifier.
+
+  Here, the typename is assumed to be of a builtin atomic type. If not, the
+  method will return NULL. Class DelegatingTypeManager redefines this method
+  to handle user-defined atomic types. 
+********************************************************************************/
+xqtref_t TypeManagerImpl::create_named_atomic_type(
+    store::Item* qname,
+    TypeConstants::quantifier_t quantifier) const
+{
+  RootTypeManager::qnametype_map_t& myMap = GENV_TYPESYSTEM.m_atomic_qnametype_map;
+
+  TypeConstants::atomic_type_code_t code = TypeConstants::INVALID_TYPE_CODE;
+
+  return myMap.get(qname, code) ? create_atomic_type(code, quantifier) : xqtref_t(NULL);
+}
+
+
+/***************************************************************************//**
+  Return the builtin sequence type corresponding to the given typecode and
+  quantifier. The typecode identifies a builtin atomic type.
+********************************************************************************/
+xqtref_t TypeManagerImpl::create_atomic_type(
+    TypeConstants::atomic_type_code_t type_code,
+    TypeConstants::quantifier_t quantifier) const
+{
+  return *GENV_TYPESYSTEM.m_atomic_typecode_map[type_code][quantifier];
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
 xqtref_t TypeManagerImpl::create_node_type(
     rchandle<NodeTest> nodetest,
     xqtref_t content_type,
@@ -252,36 +318,13 @@ xqtref_t TypeManagerImpl::create_node_type(
 }
 
 
-xqtref_t TypeManagerImpl::create_named_atomic_type(
-    store::Item* qname,
-    TypeConstants::quantifier_t quantifier) const
-{
+/***************************************************************************//**
 
-  zorba::RootTypeManager::qnametype_map_t& myMap = GENV_TYPESYSTEM.m_atomic_qnametype_map;
-
-  TypeConstants::atomic_type_code_t code = TypeConstants::INVALID_TYPE_CODE;
-  return myMap.get(qname, code) ? create_atomic_type(code, quantifier) : xqtref_t(NULL);
-}
-
-
-xqtref_t TypeManagerImpl::create_atomic_type(
-    TypeConstants::atomic_type_code_t type_code,
-    TypeConstants::quantifier_t quantifier) const
-{
-  return *GENV_TYPESYSTEM.m_atomic_typecode_map[type_code][quantifier];
-}
-
-
-xqtref_t TypeManagerImpl::create_any_type() const
-{
-  return GENV_TYPESYSTEM.ANY_TYPE;
-}
-
-
+********************************************************************************/
 xqtref_t TypeManagerImpl::create_any_item_type(
     TypeConstants::quantifier_t quantifier) const
 {
-  switch(quantifier) 
+  switch(quantifier)
   {
     case TypeConstants::QUANT_ONE:
       return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
@@ -296,21 +339,46 @@ xqtref_t TypeManagerImpl::create_any_item_type(
   }
 }
 
-xqtref_t TypeManagerImpl::create_any_simple_type() const
+
+/***************************************************************************//**
+
+********************************************************************************/
+xqtref_t TypeManagerImpl::create_any_type() const
 {
-  return GENV_TYPESYSTEM.ANY_SIMPLE_TYPE;
+  return GENV_TYPESYSTEM.ANY_TYPE;
 }
 
+
+/***************************************************************************//**
+
+********************************************************************************/
 xqtref_t TypeManagerImpl::create_untyped_type() const
 {
   return GENV_TYPESYSTEM.UNTYPED_TYPE;
 }
 
+
+/***************************************************************************//**
+
+********************************************************************************/
+xqtref_t TypeManagerImpl::create_any_simple_type() const
+{
+  return GENV_TYPESYSTEM.ANY_SIMPLE_TYPE;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
 xqtref_t TypeManagerImpl::create_empty_type() const
 {
   return GENV_TYPESYSTEM.EMPTY_TYPE;
 }
 
+
+/***************************************************************************//**
+
+********************************************************************************/
 xqtref_t TypeManagerImpl::create_none_type() const
 {
   return GENV_TYPESYSTEM.NONE_TYPE;

@@ -27,64 +27,77 @@ namespace zorba {
 
 class NodeTest;
 
-/*
- * Interface used by other parts of zorba to ask questions about types.
- */
-  class TypeManager : public SimpleRCObject {
-  public:
-    TypeManager(int level) : m_level(level) { }
-    virtual ~TypeManager() { }
 
-    virtual TypeManager *get_parent_type_manager() const = 0;
+/***************************************************************************//**
+  A type manager acts as a factory and manager of XQType instances. 
 
-    virtual int level() const { return m_level; }
+  Multiple type managers may participate in an xquery program, each corresponding
+  to a different xml schema. These type managers are arranged in a tree hierarchy.
+  There is always a root type manager (see root_typemanager.h) that is created
+  during system initialization and manages the built-in types of XQDM. Other
+  type managers are allocated dynamically during the processing of schema import
+  statements inside an xquery program. 
 
-    /* Factory Methods */
-    virtual xqtref_t create_type_x_quant(
+  Each XQType instance has a pointer back to the type manager that created that
+  XQType.
+********************************************************************************/
+class TypeManager : public SimpleRCObject 
+{
+    
+protected:
+  int m_level;
+
+public:
+  TypeManager(int level) : m_level(level) { }
+  
+  virtual ~TypeManager() { }
+
+  virtual TypeManager *get_parent_type_manager() const = 0;
+
+  virtual int level() const { return m_level; }
+
+  /* Factory Methods */
+  virtual xqtref_t create_type_x_quant(
         const XQType& type,
         TypeConstants::quantifier_t quantifier) const = 0;
 
-    virtual xqtref_t create_type(
+  virtual xqtref_t create_type(
         const XQType& type,
         TypeConstants::quantifier_t quantifier) const = 0;
 
-    virtual xqtref_t create_type(const TypeIdentifier& ident) const = 0;
+  virtual xqtref_t create_type(const TypeIdentifier& ident) const = 0;
 
-    virtual xqtref_t create_value_type(const store::Item* item) const = 0;
+  virtual xqtref_t create_value_type(const store::Item* item) const = 0;
 
-    virtual xqtref_t create_named_type(
+  virtual xqtref_t create_named_type(
         store::Item* qname,
         TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE) const = 0;
 
-    virtual xqtref_t create_named_atomic_type(
+  virtual xqtref_t create_named_atomic_type(
         store::Item* qname,
         TypeConstants::quantifier_t quantifier) const = 0;
 
-    virtual xqtref_t create_atomic_type(
+  virtual xqtref_t create_atomic_type(
         TypeConstants::atomic_type_code_t type_code,
         TypeConstants::quantifier_t quantifier) const = 0;
 
-    virtual xqtref_t create_node_type(
+  virtual xqtref_t create_node_type(
         rchandle<NodeTest> nodetest,
         xqtref_t content_type,
         TypeConstants::quantifier_t quantifier,
         bool nillable) const = 0;
 
-    virtual xqtref_t create_any_type() const = 0;
+  virtual xqtref_t create_any_item_type(TypeConstants::quantifier_t quantifier) const = 0;
 
-    virtual xqtref_t create_any_item_type(TypeConstants::quantifier_t quantifier) const = 0;
+  virtual xqtref_t create_any_type() const = 0;
 
-    virtual xqtref_t create_any_simple_type() const = 0;
+  virtual xqtref_t create_any_simple_type() const = 0;
 
-    virtual xqtref_t create_untyped_type() const = 0;
+  virtual xqtref_t create_untyped_type() const = 0;
+  
+  virtual xqtref_t create_empty_type() const = 0;
 
-    virtual xqtref_t create_empty_type() const = 0;
-
-    virtual xqtref_t create_none_type() const = 0;
-    
-
-  protected:
-    int m_level;
+  virtual xqtref_t create_none_type() const = 0;
 };
 
 }

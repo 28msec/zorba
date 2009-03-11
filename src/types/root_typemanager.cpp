@@ -35,7 +35,8 @@ using namespace zorba;
 #define M TypeConstants::MAYBE_CASTABLE
 
 
-const TypeConstants::castable_t RootTypeManager::ATOMIC_CAST_MATRIX[45][45] = {
+const TypeConstants::castable_t RootTypeManager::ATOMIC_CAST_MATRIX[45][45] = 
+{
   {Y, Y, M, M, M, M, M, M, M, M, M, Y, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M}, /* anyAtomicType */
   {Y, Y, M, M, M, M, M, M, M, M, M, Y, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M}, /* string */
   {Y, Y, Y, M, M, M, M, M, M, M, M, Y, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M}, /* normalizedString */
@@ -90,7 +91,8 @@ const TypeConstants::castable_t RootTypeManager::ATOMIC_CAST_MATRIX[45][45] = {
 #define T true
 #define F false
 
-const bool RootTypeManager::ATOMIC_SUBTYPE_MATRIX[45][45] = {
+const bool RootTypeManager::ATOMIC_SUBTYPE_MATRIX[45][45] = 
+{
   {T, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, /* anyAtomicType */
   {T, T, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, /* string */
   {T, T, T, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, /* normalizedString */
@@ -138,7 +140,9 @@ const bool RootTypeManager::ATOMIC_SUBTYPE_MATRIX[45][45] = {
   {T, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, T}, /* NOTATION */
 };
 
-const bool RootTypeManager::QUANT_SUBTYPE_MATRIX[4][4] = {
+
+const bool RootTypeManager::QUANT_SUBTYPE_MATRIX[4][4] = 
+{
   {T, T, T, T}, /* QUANT_ONE */
   {F, T, T, F}, /* QUANT_QUESTION */
   {F, F, T, F}, /* QUANT_STAR */
@@ -150,7 +154,9 @@ const bool RootTypeManager::QUANT_SUBTYPE_MATRIX[4][4] = {
 
 #define Q( q ) TypeConstants::QUANT_##q
 
-const TypeConstants::quantifier_t RootTypeManager::QUANT_MULT_MATRIX [4] [4] = {
+
+const TypeConstants::quantifier_t RootTypeManager::QUANT_UNION_MATRIX [4] [4] = 
+{
   //  ONE          QUESTION     STAR     PLUS
   { Q(ONE),      Q(QUESTION), Q(STAR), Q(PLUS) }, // ONE
   { Q(QUESTION), Q(QUESTION), Q(STAR), Q(STAR) }, // QUESTION
@@ -158,7 +164,9 @@ const TypeConstants::quantifier_t RootTypeManager::QUANT_MULT_MATRIX [4] [4] = {
   { Q(PLUS),     Q(STAR),     Q(STAR), Q(PLUS) }, // PLUS
 };
 
-const TypeConstants::quantifier_t RootTypeManager::QUANT_INTERS_MATRIX [4] [4] = {
+
+const TypeConstants::quantifier_t RootTypeManager::QUANT_INTERS_MATRIX [4] [4] = 
+{
   //  ONE          QUESTION     STAR         PLUS
   { Q(ONE),      Q(ONE),      Q(ONE),      Q(ONE)  },  // ONE
   { Q(ONE),      Q(QUESTION), Q(QUESTION), Q(ONE)  },  // QUESTION
@@ -182,9 +190,8 @@ RootTypeManager::RootTypeManager()
 #define ZXSE_URI "http://www.zorba-xquery.com/zorba/schema-extensions"
 #define ZXSE_PREFIX "zxse"
 
-#define XSQNDECL(var, local)                         \
-        GENV.getStore().getItemFactory()->   \
-            createQName(var, XS_URI, XS_PREFIX, local)
+#define XSQNDECL(var, local)  \
+  GENV.getStore().getItemFactory()->createQName(var, XS_URI, XS_PREFIX, local)
 
   XSQNDECL(XS_ANY_ATOMIC_QNAME, "anyAtomicType");
   XSQNDECL(XS_STRING_QNAME, "string");
@@ -236,7 +243,7 @@ RootTypeManager::RootTypeManager()
   XSQNDECL(XS_UNTYPED_QNAME, "untyped");
   GENV.getStore().getItemFactory()->createQName(ZXSE_TUPLE_QNAME, ZXSE_URI, ZXSE_PREFIX, "tuple");
 
-  store::Item *tempQN = NULL;
+  store::Item* tempQN = NULL;
   TypeConstants::atomic_type_code_t tempCode;
 
 #define ATOMIC_TYPE_DEFN(tname)                                                 \
@@ -352,6 +359,7 @@ RootTypeManager::RootTypeManager()
 
 #undef NODE_TYPE_DEFN
 }
+
 
 RootTypeManager::~RootTypeManager()
 {
