@@ -241,6 +241,8 @@ std::vector<char> Base64::decode(const std::vector<char>& aSource)
 
   while (lSrcSize >= 1)
   {
+    char lChar;
+
     // 4 inputs...
     char in1 = aSource[lSrcPos++];
     char in2 = aSource[lSrcPos++];
@@ -258,29 +260,26 @@ std::vector<char> Base64::decode(const std::vector<char>& aSource)
     // Convert ascii to base16...
     in1 = DECODE_TABLE[ int(in1) ];
     in2 = DECODE_TABLE[ int(in2) ];
-    in3 = DECODE_TABLE[ int(in3) ];
-    in4 = DECODE_TABLE[ int(in4) ];
-
-    // Validate base16...
-    /*assert( in1 != 0xff );*/
-    /*assert( in2 != 0xff );*/
-    /*assert( in3 != 0xff );*/
-    /*assert( in4 != 0xff );*/
     assert( 0 <= in1 && in1 <= 63 );
     assert( 0 <= in2 && in2 <= 63 );
-    assert( 0 <= in3 && in3 <= 64 ); //possible padding
-    assert( 0 <= in4 && in4 <= 64 ); //possible padding
+    
+    lChar = ((in1 & 0x3f) << 2) | ((in2 & 0x30) >> 4);
+    lRes.push_back(lChar);
 
-    // 3 outputs...
-    char lChar = ((in1 & 0x3f) << 2) | ((in2 & 0x30) >> 4);
-    if (lChar != 0)
+    if (in3 != '=') {
+      in3 = DECODE_TABLE[ int(in3) ];
+      assert( 0 <= in3 && in3 <= 64 ); //possible padding
+      lChar = ((in2 & 0x0f) << 4) | ((in3 & 0x3c) >> 2);
       lRes.push_back(lChar);
-    lChar = ((in2 & 0x0f) << 4) | ((in3 & 0x3c) >> 2);
-    if (lChar != 0)
+    }
+
+    if (in4 != '=') {
+      in4 = DECODE_TABLE[ int(in4) ];
+      assert( 0 <= in4 && in4 <= 64 ); //possible padding
+      lChar = ((in3 & 0x03) << 6) | (in4 & 0x3f);
       lRes.push_back(lChar);
-    lChar = ((in3 & 0x03) << 6) | (in4 & 0x3f);
-    if (lChar != 0)
-      lRes.push_back(lChar);
+    }
+
   }
 
   return lRes;
