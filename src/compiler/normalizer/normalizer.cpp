@@ -94,7 +94,11 @@ DEF_VISIT_METHODS (eval_expr)
 
 DEF_VISIT_METHODS (typeswitch_expr)
 
-void end_visit (flwor_expr&) {}
+void end_visit (flwor_expr&) 
+{
+}
+
+
 bool begin_visit (flwor_expr& node)
 {
   const QueryLoc &loc = node.get_loc ();
@@ -329,7 +333,13 @@ DEF_VISIT_METHODS (ft_contains_expr)
 
 };
 
-void normalize_expr_tree (const char *norm_descr, CompilerCB* aCompilerCB, expr_t& root, const XQType *rType) {
+
+void normalize_expr_tree(
+    const char* norm_descr,
+    CompilerCB* aCompilerCB,
+    expr_t& root,
+    const XQType* rType) 
+{
   normalizer n (aCompilerCB);
   root->accept(n);
   if (rType != NULL) {

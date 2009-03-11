@@ -25,10 +25,12 @@
 
 namespace zorba {
 
+
 class NodeNameTest : virtual public SimpleRCObject
 {
  public:
-  typedef enum {
+  typedef enum 
+  {
     CONSTANT,
     CONSTANT_WILDCARD,
     WILDCARD_CONSTANT,

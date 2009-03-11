@@ -112,9 +112,10 @@ NodeXQType::NodeXQType(
     rchandle<NodeTest> nodetest,
     xqtref_t content_type,
     TypeConstants::quantifier_t quantifier,
-    bool nillable)
+    bool nillable,
+    bool builtin)
   :
-  XQType(manager, NODE_TYPE_KIND, quantifier),
+  XQType(manager, NODE_TYPE_KIND, quantifier, builtin),
   m_nodetest(nodetest),
   m_content_type(content_type),
   m_nillable(nillable)
@@ -149,7 +150,7 @@ UserDefinedXQType::UserDefinedXQType(
     TypeConstants::quantifier_t quantifier,
     content_kind_t contentKind)
   :
-  XQType(manager, USER_DEFINED_KIND, quantifier),
+  XQType(manager, USER_DEFINED_KIND, quantifier, false),
   m_qname(qname),
   m_baseType(baseType),
   m_contentKind(contentKind)
@@ -174,21 +175,23 @@ UserDefinedXQType::UserDefinedXQType(
   }        
 }
 
+
 UserDefinedXQType::UserDefinedXQType(
     const TypeManager *manager,
     store::Item_t qname,
     xqtref_t baseType,
     TypeConstants::quantifier_t quantifier,
     const XQType* listItemType)
-    :
-    XQType(manager, USER_DEFINED_KIND, quantifier),
-    m_qname(qname),
-    m_baseType(baseType),
-    m_typeCategory(LIST_TYPE),
-    m_contentKind(SIMPLE_CONTENT_KIND),
-    m_listItemType(listItemType)
+  :
+  XQType(manager, USER_DEFINED_KIND, quantifier, false),
+  m_qname(qname),
+  m_baseType(baseType),
+  m_typeCategory(LIST_TYPE),
+  m_contentKind(SIMPLE_CONTENT_KIND),
+  m_listItemType(listItemType)
 {
 }
+
 
 UserDefinedXQType::UserDefinedXQType(
     const TypeManager *manager,
@@ -196,13 +199,13 @@ UserDefinedXQType::UserDefinedXQType(
     xqtref_t baseType,
     TypeConstants::quantifier_t quantifier,
     std::vector<const XQType*> unionItemTypes)
-    : 
-    XQType(manager, USER_DEFINED_KIND, quantifier),
-    m_qname(qname),
-    m_baseType(baseType),
-    m_typeCategory(UNION_TYPE),
-    m_contentKind(SIMPLE_CONTENT_KIND),
-    m_unionItemTypes(unionItemTypes)
+  : 
+  XQType(manager, USER_DEFINED_KIND, quantifier, false),
+  m_qname(qname),
+  m_baseType(baseType),
+  m_typeCategory(UNION_TYPE),
+  m_contentKind(SIMPLE_CONTENT_KIND),
+  m_unionItemTypes(unionItemTypes)
 {
 }
 

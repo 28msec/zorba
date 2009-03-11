@@ -68,9 +68,9 @@ ValidateIterator::ValidateIterator(
 	ParseConstants::validation_mode_t a_validationMode)
   :
   UnaryBaseIterator<ValidateIterator, PlanIteratorState>( loc, aIter ),
-  typeName(a_typeName),
   validationMode(a_validationMode),
-  typemgr (tm_)
+  typemgr (tm_),
+  typeName(a_typeName)
 {
 }
 

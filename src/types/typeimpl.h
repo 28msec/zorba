@@ -20,16 +20,15 @@
 #include "types/node_test.h"
 #include "types/typeconstants.h"
 #include "zorbatypes/rchandle.h"
-//#include "system/globalenv.h"
-//#include "types/root_typemanager.h"
+
 
 namespace zorba {
 
-/*
- * Implementation specific classes after this point.
- */
 
-class XQType : public RCObject
+/***************************************************************************//**
+  Class XQType and its subtypes implement xquery's SequenceType spec.
+********************************************************************************/
+class XQType : public SimpleRCObject
 {
 public:
   typedef enum 
@@ -53,6 +52,19 @@ public:
     EMPTY_CONTENT_KIND,             // empty
   } content_kind_t;
 
+
+protected:
+  static const char            * KIND_STRINGS[NONE_KIND + 1];
+
+  const TypeManager            * m_manager;
+  const type_kind_t              m_type_kind;
+  TypeConstants::quantifier_t    m_quantifier;
+  bool                           theIsBuiltin;
+
+  //SYNC_CODE(RCLock               theLock;)
+
+
+public:
   virtual ~XQType() { }
 
   virtual std::ostream& serialize(std::ostream& os) const;
@@ -67,141 +79,193 @@ public:
 
   const TypeManager* get_manager() const { return m_manager; }
 
-  long* getSharedRefCounter() { return NULL; }
+  void free() 
+  {
+    if (!theIsBuiltin)
+      delete this;
+  }
 
-  SYNC_CODE(RCLock *getRCLock() { return &theLock; })
+  //long* getSharedRefCounter() { return NULL; }
+
+  //SYNC_CODE(RCLock *getRCLock() { return &theLock; })
 
 protected:
-  XQType(const TypeManager *manager,
+  XQType(const TypeManager* manager,
          type_kind_t type_kind,
-         TypeConstants::quantifier_t quantifier)
+         TypeConstants::quantifier_t quantifier,
+         bool builtin)
     :
     m_manager(manager),
     m_type_kind(type_kind),
-    m_quantifier(quantifier)
+    m_quantifier(quantifier),
+    theIsBuiltin(builtin)
   {
   }
-
-protected:
-  static const char            * KIND_STRINGS[NONE_KIND + 1];
-
-  const TypeManager            * m_manager;
-  const type_kind_t              m_type_kind;
-  TypeConstants::quantifier_t    m_quantifier;
-
-  SYNC_CODE(RCLock               theLock;)
 };
 
 
+/***************************************************************************//**
+  Class AtomicXQType represents all the sequence types whose ItemType is one
+  of the XQDM builtin atomic types.
+********************************************************************************/
 class AtomicXQType : public XQType
 {
  public:
-   static const char *ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
+   static const char* ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
+
+ private:
+   TypeConstants::atomic_type_code_t m_type_code;
 
  public:
    AtomicXQType(
         const TypeManager *manager,
         TypeConstants::atomic_type_code_t type_code,
-        TypeConstants::quantifier_t quantifier)
+        TypeConstants::quantifier_t quantifier,
+        bool builtin = false)
      :
-     XQType(manager, ATOMIC_TYPE_KIND, quantifier),
+     XQType(manager, ATOMIC_TYPE_KIND, quantifier, builtin),
      m_type_code(type_code)
    {
    }
 
    TypeConstants::atomic_type_code_t get_type_code() const { return m_type_code; }
+
    content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
 
    virtual std::ostream& serialize(std::ostream& os) const;
-
- private:
-   TypeConstants::atomic_type_code_t m_type_code;
 };
 
 
+/***************************************************************************//**
+  Class NodeXQType represents all the sequence types whose ItemType is a
+  KindTest.
+********************************************************************************/
 class NodeXQType : public XQType
 {
+private:
+  rchandle<NodeTest> m_nodetest;
+  xqtref_t           m_content_type;
+  bool               m_nillable;
+
 public:
   NodeXQType(
-        const TypeManager *manager,
+        const TypeManager* manager,
         rchandle<NodeTest> nodetest,
         xqtref_t content_type,
         TypeConstants::quantifier_t quantifier,
-        bool nillable);
+        bool nillable,
+        bool builtin = false);
 
   rchandle<NodeTest> get_nodetest() const { return m_nodetest; }
 
   xqtref_t get_content_type() const { return m_content_type; }
+
   content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };
 
   bool get_nillable() const { return m_nillable; }
 
   virtual std::ostream& serialize(std::ostream& os) const;
-
-private:
-  rchandle<NodeTest> m_nodetest;
-  xqtref_t           m_content_type;
-  bool               m_nillable;
 };
 
 
-class AnyXQType : public XQType
-{
-public:
-  AnyXQType(const TypeManager *manager)
-    :
-    XQType(manager, ANY_TYPE_KIND, TypeConstants::QUANT_STAR) { }
-};
-
-
+/***************************************************************************//**
+  Class ItemXQType represents sequence types item(), item()?, item()*, or item()+
+********************************************************************************/
 class ItemXQType : public XQType
 {
 public:
-  ItemXQType(const TypeManager *manager, TypeConstants::quantifier_t quantifier)
+  ItemXQType(
+        const TypeManager* manager,
+        TypeConstants::quantifier_t quantifier,
+        bool builtin = false)
     :
-    XQType(manager, ITEM_KIND, quantifier) { }
+    XQType(manager, ITEM_KIND, quantifier, builtin) 
+  { 
+  }
 };
 
 
+/***************************************************************************//**
+
+********************************************************************************/
+class AnyXQType : public XQType
+{
+public:
+  AnyXQType(const TypeManager* manager, bool builtin = false)
+    :
+    XQType(manager, ANY_TYPE_KIND, TypeConstants::QUANT_STAR, builtin) 
+  {
+  }
+};
+
+
+/***************************************************************************//**
+
+********************************************************************************/
 class AnySimpleXQType : public XQType
 {
 public:
-  AnySimpleXQType(const TypeManager *manager)
+  AnySimpleXQType(const TypeManager* manager, bool builtin = false)
     :
-    XQType(manager, ANY_SIMPLE_TYPE_KIND, TypeConstants::QUANT_STAR) { }
+    XQType(manager, ANY_SIMPLE_TYPE_KIND, TypeConstants::QUANT_STAR, builtin)
+  { 
+  }
+
   content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
 };
 
 
+/***************************************************************************//**
+
+********************************************************************************/
 class UntypedXQType : public XQType
 {
 public:
-  UntypedXQType(const TypeManager *manager)
+  UntypedXQType(const TypeManager* manager, bool builtin = false)
     :
-    XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR) { }
+    XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR, builtin)
+  {
+  }
 };
 
 
+/***************************************************************************//**
+  Represents the empty sequence
+********************************************************************************/
 class EmptyXQType : public XQType
 {
 public:
-  EmptyXQType(const TypeManager *manager)
+  EmptyXQType(const TypeManager* manager, bool builtin = false)
     :
-    XQType(manager, EMPTY_KIND, TypeConstants::QUANT_QUESTION) { }
+    XQType(manager, EMPTY_KIND, TypeConstants::QUANT_QUESTION, builtin) 
+  { 
+  }
+
   content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
 };
 
 
+/***************************************************************************//**
+
+********************************************************************************/
 class NoneXQType : public XQType
 {
 public:
-  NoneXQType(const TypeManager *manager)
+  NoneXQType(const TypeManager* manager, bool builtin = false)
     :
-    XQType(manager, NONE_KIND, TypeConstants::QUANT_ONE) { }
+    XQType(manager, NONE_KIND, TypeConstants::QUANT_ONE, builtin) 
+  { 
+  }
+
   content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
 };
 
 
+/***************************************************************************//**
+  UserDefinedXQType does NOT really correspond to a sequence type. Instead, it
+  represents a XMLSchema user-defined type that describes the content of an
+  element or attribute node.
+********************************************************************************/
 class UserDefinedXQType : public XQType
 {
 public:
@@ -210,8 +274,8 @@ public:
     ATOMIC_TYPE,  // atomic types: ex: int, date, token, string
     LIST_TYPE,    // list of simple types: ex: list of int: "1 2 33"
     UNION_TYPE,   // union of simple types: ShirtSize int or string: "8", "small"
-                  // ATOMIC, LIST and UNION types are all SIMPLE types: i.e. their representation is a text value
-
+                  // ATOMIC, LIST and UNION types are all SIMPLE types: i.e. 
+                  // their representation is a text value
     COMPLEX_TYPE  // complex types: they represent structure
   };
 

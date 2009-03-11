@@ -86,8 +86,12 @@ public:
   
   virtual void accept(PlanIterVisitor&) const;
 }; /* class LogicIterator */
-  
 
+
+
+/*******************************************************************************
+
+********************************************************************************/
 class CompareIterator : public BinaryBaseIterator<CompareIterator, PlanIteratorState>
 {
 private:
@@ -162,18 +166,37 @@ public:
 
   virtual void accept(PlanIterVisitor&) const;
     
-     
- public:
+
+  /**
+   * Checks if the two passed items contains the same value (without castings
+   * and promotions which are used in general and value comparison).
+   *
+   * @param item0 
+   * @param item1 
+   * @param aCollation optional collation parameter (passed as pointer to make
+   *        it possible to be set to 0)
+   * @return  0, if item0 == item1
+   *          1, if item0 != item1
+   *         -2, if it is not possible to compare the values of the passed items
+   */
+  static int8_t equal(
+        RuntimeCB* aRuntimeCB,
+        const store::Item_t& aItem0,
+        const store::Item_t& aItem1, 
+        XQPCollator* aCollation = 0);
+
   /**
    * Compares two items (without castings and promotions which are used in general 
    * and value comparison).
    * @param item0 
    * @param item1 
-   * @param aCollation optional collation parameter (passed as pointer to make it possible to be set to 0)
+   * @param aCollation optional collation parameter (passed as pointer to make 
+   *        it possible to be set to 0)
    * @return -1, if item0 &lt; item1
    *          0, if item0 == item1
    *          1, if item0 &gt; item1
-   *          2, if item0 not equal, not bigger, not smaller item1 (special case when an Item has the value NaN)
+   *          2, if item0 not equal, not bigger, not smaller item1 (special case
+   *             when an Item has the value NaN)
    *         -2, if it is not possible to compare the values the two passed items
    */
   static int8_t compare(
@@ -192,12 +215,13 @@ public:
    * @param aCollation optional collation parameter
    * @return 
    */
-  static bool valueComparison(const QueryLoc &,
-                              RuntimeCB* aRuntimeCB,
-                              const store::Item_t& aItem0,
-                              const store::Item_t& aItem1, 
-                              CompareConsts::CompareType aCompType,
-                              XQPCollator* aCollation = 0);
+  static bool valueComparison(
+        const QueryLoc &,
+        RuntimeCB* aRuntimeCB,
+        const store::Item_t& aItem0,
+        const store::Item_t& aItem1, 
+        CompareConsts::CompareType aCompType,
+        XQPCollator* aCollation = 0);
       
   /**
    * General comparison of the passed two items with the operator 
@@ -209,18 +233,20 @@ public:
    * @param aCollation optional collation parameter
    * @return 
    */
-  static bool generalComparison(const QueryLoc &,
-                                RuntimeCB*     aRuntimeCB,
-                                const store::Item_t& aItem0,
-                                const store::Item_t& aItem_1,
-                                CompareConsts::CompareType aCompType,
-                                XQPCollator*   aCollation = 0);
+  static bool generalComparison(
+        const QueryLoc &,
+        RuntimeCB*     aRuntimeCB,
+        const store::Item_t& aItem0,
+        const store::Item_t& aItem_1,
+        CompareConsts::CompareType aCompType,
+        XQPCollator*   aCollation = 0);
   
   /**
    * Value Equal on the passed items
+   *
    * @param aItem0 
    * @param aItem1 
-   * @param aCollation optional collation parameter (passed as pointer to make it possible to be set to 0)
+   * @param aCollation optional collation parameter 
    * @return 0 (equal), 1 (not equal), -2 (value equal not possible)
    */
   static int8_t valueEqual(
@@ -233,7 +259,7 @@ public:
    * General Equal on the passed items
    * @param aItem0 
    * @param aItem1 
-   * @param aCollation options collation parameter (passed as pointer to make it possible to be set to 0)
+   * @param aCollation options collation parameter 
    * @return 0 (equal), 1 (not equal), -2 (general equal not possible)
    */
   static int8_t generalEqual(
@@ -246,9 +272,12 @@ public:
    * Value Comparison on the passed items
    * @param aItem0 
    * @param aItem1 
-   * @param aCollation options collation parameter (passed as pointer to make it possible to be set to 0)
-   * @return -1 (smaller), 0 (equal), 1 (bigger), 
-   *          2 (not equal, not bigger, not smaller), -2 (value comparison not possible)
+   * @param aCollation options collation parameter 
+   * @return -1 (smaller),
+   *          0 (equal),
+   *          1 (bigger), 
+   *          2 (not equal, not bigger, not smaller),
+   *         -2 (value comparison not possible)
    */
   static int8_t valueCompare(
         RuntimeCB* aRuntimeCB,
@@ -270,22 +299,6 @@ public:
         const store::Item_t& aItem1, 
         XQPCollator* aCollation = 0);
       
-  /**
-   * Checks if the two passed items contains the same value (without castings and promotions which are used in general 
-   * and value comparison).
-   * @param item0 
-   * @param item1 
-   * @param aCollation options collation parameter (passed as pointer to make it possible to be set to 0)
-   * @return  0, if item0 == item1
-   *          1, if item0 != item1
-   *         -2, if it is not possible to compare the values of the passed items
-   */
-  static int8_t equal(
-        RuntimeCB* aRuntimeCB,
-        const store::Item_t& aItem0,
-        const store::Item_t& aItem1, 
-        XQPCollator* aCollation = 0);
-      
 private:
   static void valueCasting(
         RuntimeCB*     aRuntimeCB, 
@@ -301,16 +314,19 @@ private:
         store::Item_t&       castItem0,
         store::Item_t&       castItem1);
 
-  static bool boolResult(const QueryLoc &,
-                         RuntimeCB* aRuntimeCB, 
-                         int8_t aCompValue,
-                         CompareConsts::CompareType aCompType);
+  static bool boolResult(
+        const QueryLoc &,
+        RuntimeCB* aRuntimeCB, 
+        int8_t aCompValue,
+        CompareConsts::CompareType aCompType);
 }; /* class CompareIterator */
 
 
 NARY_ITER(OpIsSameNodeIterator); 
 
+
 NARY_ITER(OpNodeBeforeIterator);
+
 
 NARY_ITER(OpNodeAfterIterator);
 

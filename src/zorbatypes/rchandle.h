@@ -478,18 +478,25 @@ public:
 };
 
 
-template<class T> class const_rchandle : protected rchandle<T> {
+template<class T> class const_rchandle : protected rchandle<T> 
+{
 public:
   const_rchandle (const T *_p = 0) : rchandle<T> (const_cast<T *> (_p)) {}
+
   const_rchandle (const const_rchandle &rhs) : rchandle<T> (rhs) {}
+
   const_rchandle (rchandle<T> &rhs) : rchandle<T> (rhs) {}
+
   const_rchandle& operator= (const const_rchandle &rhs) {
     assign (rhs);
     return *this;
   }
 
 public:
-  const T *getp () const { return rchandle<T>::getp (); }
+  bool isNull () const        { return rchandle<T>::isNull(); }
+  void setNull()              { rchandle<T>::setNull();}
+
+  const T* getp () const { return rchandle<T>::getp (); }
   operator const T * () const { return rchandle<T>::getp (); }
 
   const T* operator->() const { return getp(); } 

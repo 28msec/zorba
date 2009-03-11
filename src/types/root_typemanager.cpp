@@ -249,19 +249,23 @@ RootTypeManager::RootTypeManager()
 #define ATOMIC_TYPE_DEFN(tname)                                                 \
   tname##_TYPE_ONE = new AtomicXQType(this,                                     \
                                       TypeConstants::XS_##tname,                \
-                                      TypeConstants::QUANT_ONE);                \
+                                      TypeConstants::QUANT_ONE,                 \
+                                      true);                                    \
                                                                                 \
   tname##_TYPE_QUESTION = new AtomicXQType(this,                                \
-                                          TypeConstants::XS_##tname,            \
-                                          TypeConstants::QUANT_QUESTION);       \
+                                           TypeConstants::XS_##tname,           \
+                                           TypeConstants::QUANT_QUESTION,       \
+                                           true);                               \
                                                                                 \
   tname##_TYPE_STAR = new AtomicXQType(this,                                    \
                                        TypeConstants::XS_##tname,               \
-                                       TypeConstants::QUANT_STAR);              \
+                                       TypeConstants::QUANT_STAR,               \
+                                       true);                                   \
                                                                                 \
   tname##_TYPE_PLUS = new AtomicXQType(this,                                    \
                                        TypeConstants::XS_##tname,               \
-                                       TypeConstants::QUANT_PLUS);              \
+                                       TypeConstants::QUANT_PLUS,               \
+                                       true);                                   \
                                                                                 \
   m_atomic_typecode_qname_map[TypeConstants::XS_##tname] = XS_##tname##_QNAME;  \
                                                                                 \
@@ -328,26 +332,26 @@ RootTypeManager::RootTypeManager()
   ATOMIC_TYPE_DEFN(NOTATION)
 #undef ATOMIC_TYPE_DEFN
 
-  ANY_TYPE = new AnyXQType(this);
+  ANY_TYPE = new AnyXQType(this, true);
 
-  ANY_SIMPLE_TYPE = new AnySimpleXQType(this);
+  ANY_SIMPLE_TYPE = new AnySimpleXQType(this, true);
 
-  UNTYPED_TYPE = new UntypedXQType(this);
+  UNTYPED_TYPE = new UntypedXQType(this, true);
 
-  EMPTY_TYPE = new EmptyXQType(this);
+  EMPTY_TYPE = new EmptyXQType(this, true);
 
-  NONE_TYPE = new NoneXQType(this);
+  NONE_TYPE = new NoneXQType(this, true);
 
-  ITEM_TYPE_ONE = new ItemXQType(this, TypeConstants::QUANT_ONE);
-  ITEM_TYPE_QUESTION = new ItemXQType(this, TypeConstants::QUANT_QUESTION);
-  ITEM_TYPE_STAR = new ItemXQType(this, TypeConstants::QUANT_STAR);
-  ITEM_TYPE_PLUS = new ItemXQType(this, TypeConstants::QUANT_PLUS);
+  ITEM_TYPE_ONE = new ItemXQType(this, TypeConstants::QUANT_ONE, true);
+  ITEM_TYPE_QUESTION = new ItemXQType(this, TypeConstants::QUANT_QUESTION, true);
+  ITEM_TYPE_STAR = new ItemXQType(this, TypeConstants::QUANT_STAR, true);
+  ITEM_TYPE_PLUS = new ItemXQType(this, TypeConstants::QUANT_PLUS, true);
 
 #define NODE_TYPE_DEFN(basename) \
-  basename##_TYPE_ONE = new NodeXQType(this, NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_ONE, false); \
-  basename##_TYPE_QUESTION = new NodeXQType(this, NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_QUESTION, false); \
-  basename##_TYPE_STAR = new NodeXQType(this, NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_STAR, false); \
-  basename##_TYPE_PLUS = new NodeXQType(this, NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_PLUS, false);
+  basename##_TYPE_ONE = new NodeXQType(this, NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_ONE, false, true); \
+  basename##_TYPE_QUESTION = new NodeXQType(this, NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_QUESTION, false, true); \
+  basename##_TYPE_STAR = new NodeXQType(this, NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_STAR, false, true); \
+  basename##_TYPE_PLUS = new NodeXQType(this, NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_PLUS, false, true);
 
   NODE_TYPE_DEFN(ANY_NODE)
   NODE_TYPE_DEFN(DOCUMENT)
@@ -363,6 +367,88 @@ RootTypeManager::RootTypeManager()
 
 RootTypeManager::~RootTypeManager()
 {
+
+#define DELETE_TYPE(tname) \
+  delete tname##_TYPE_ONE.getp();       \
+  delete tname##_TYPE_QUESTION.getp();  \
+  delete tname##_TYPE_STAR.getp();      \
+  delete tname##_TYPE_PLUS.getp();      \
+  tname##_TYPE_ONE.setNull();           \
+  tname##_TYPE_QUESTION.setNull();      \
+  tname##_TYPE_STAR.setNull();          \
+  tname##_TYPE_PLUS.setNull();          \
+
+  DELETE_TYPE(ANY_ATOMIC)
+  DELETE_TYPE(STRING)
+  DELETE_TYPE(NORMALIZED_STRING)
+  DELETE_TYPE(TOKEN)
+  DELETE_TYPE(LANGUAGE)
+  DELETE_TYPE(NMTOKEN)
+  DELETE_TYPE(NAME)
+  DELETE_TYPE(NCNAME)
+  DELETE_TYPE(ID)
+  DELETE_TYPE(IDREF)
+  DELETE_TYPE(ENTITY)
+  DELETE_TYPE(UNTYPED_ATOMIC)
+  DELETE_TYPE(DATETIME)
+  DELETE_TYPE(DATE)
+  DELETE_TYPE(TIME)
+  DELETE_TYPE(DURATION)
+  DELETE_TYPE(DT_DURATION)
+  DELETE_TYPE(YM_DURATION)
+  DELETE_TYPE(FLOAT)
+  DELETE_TYPE(DOUBLE)
+  DELETE_TYPE(DECIMAL)
+  DELETE_TYPE(INTEGER)
+  DELETE_TYPE(NON_POSITIVE_INTEGER)
+  DELETE_TYPE(NEGATIVE_INTEGER)
+  DELETE_TYPE(LONG)
+  DELETE_TYPE(INT)
+  DELETE_TYPE(SHORT)
+  DELETE_TYPE(BYTE)
+  DELETE_TYPE(NON_NEGATIVE_INTEGER)
+  DELETE_TYPE(UNSIGNED_LONG)
+  DELETE_TYPE(UNSIGNED_INT)
+  DELETE_TYPE(UNSIGNED_SHORT)
+  DELETE_TYPE(UNSIGNED_BYTE)
+  DELETE_TYPE(POSITIVE_INTEGER)
+  DELETE_TYPE(GYEAR_MONTH)
+  DELETE_TYPE(GYEAR)
+  DELETE_TYPE(GMONTH_DAY)
+  DELETE_TYPE(GDAY)
+  DELETE_TYPE(GMONTH)
+  DELETE_TYPE(BOOLEAN)
+  DELETE_TYPE(BASE64BINARY)
+  DELETE_TYPE(HEXBINARY)
+  DELETE_TYPE(ANY_URI)
+  DELETE_TYPE(QNAME)
+  DELETE_TYPE(NOTATION)
+
+
+  DELETE_TYPE(ITEM)
+  DELETE_TYPE(ANY_NODE)
+  DELETE_TYPE(DOCUMENT)
+  DELETE_TYPE(ELEMENT)
+  DELETE_TYPE(ATTRIBUTE)
+  DELETE_TYPE(TEXT)
+  DELETE_TYPE(PI)
+  DELETE_TYPE(COMMENT)
+#undef DELETE_TYPE
+
+  delete ANY_TYPE.getp();
+  ANY_TYPE.setNull();
+
+  delete ANY_SIMPLE_TYPE.getp();
+  ANY_SIMPLE_TYPE.setNull();
+
+  delete UNTYPED_TYPE.getp();
+  UNTYPED_TYPE.setNull();
+
+  delete EMPTY_TYPE.getp();
+  EMPTY_TYPE.setNull();
+
+  delete NONE_TYPE.getp();
+  NONE_TYPE.setNull();
 }
 
 /* vim:set ts=2 sw=2: */
