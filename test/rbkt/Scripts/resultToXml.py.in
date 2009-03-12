@@ -1,0 +1,36 @@
+import string
+
+ctest_failed_file = "@zorbaBuildDir@/Testing/Temporary/LastTestsFailed.log"
+ctest_log_file = "@zorbaBuildDir@/Testing/Temporary/LastTest.log"
+
+
+def has_testing ( s ):
+    yes = string.find ( s, 'Testing:' )
+    yes2 = s.find ( 'w3c_testsuite' )
+    return yes > 0 and yes2 > 0 
+
+def get_test_name ( s ) :
+    words = string.split ( s, '/' )
+    l = len ( words )
+    name = words[ l -1]
+    name = string.strip ( name )
+    return name
+
+failedfile = open ( ctest_failed_file, 'r' )
+
+failures = set()
+for line in failedfile:
+    i = string.find ( line, "w3c_testsuite" )
+    if i > 0 :
+        name = get_test_name ( line )
+        print name
+        failures.add ( name )
+
+file = open ( ctest_log_file, 'r' )
+for line in file:
+    if has_testing ( line ):
+        name = get_test_name ( line )
+        if  name in failures :
+            print '<test-case name="%s" result="failed" />' % name
+        else :
+            print '<test-case name="%s" result="passed" />' % name

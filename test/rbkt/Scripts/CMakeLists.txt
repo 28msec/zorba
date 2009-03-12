@@ -13,7 +13,10 @@
 # limitations under the License.
 SET(zorbaRepos ${CMAKE_SOURCE_DIR})
 SET(zorbaExecDir ${CMAKE_BINARY_DIR}/test)
+SET(zorbaBuildDir ${CMAKE_BINARY_DIR} )
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/rbkt.sh.in ${CMAKE_CURRENT_BINARY_DIR}/rbkt.sh @ONLY)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/lbkt.sh.in ${CMAKE_CURRENT_BINARY_DIR}/lbkt.sh @ONLY)
+
+CONFIGURE_FILE ( ${CMAKE_CURRENT_SOURCE_DIR}/resultToXml.py.in ${CMAKE_CURRENT_BINARY_DIR}/resultToXml.py @ONLY )
