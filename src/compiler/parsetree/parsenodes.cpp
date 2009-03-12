@@ -4366,7 +4366,7 @@ void FTWords::accept(parsenode_visitor& v) const
 FTWordsValue::FTWordsValue(
   const QueryLoc& loc_,
   rchandle<StringLiteral> _lit_h,
-  rchandle<Expr> _expr_h)
+  rchandle<exprnode> _expr_h)
 :
   parsenode(loc_),
   lit_h(_lit_h),

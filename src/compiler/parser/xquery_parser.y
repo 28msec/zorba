@@ -163,7 +163,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <strval> WindowType
 %type <strval> ForDollar
 %type <strval> FLWORWinCondType
-%type <strval> DeclareOrCreate
 %type <strval> IndexingMethod
 
 /* tokens that contain embedded string literals */
@@ -205,6 +204,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 %token BLANK                      "<blank>"
 
+%token BLOCK                      "'block'"
 %token EXIT                       "'exit'"
 %token BREAK                      "'break'"
 %token LOOP                       "'loop'"
@@ -612,8 +612,10 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> EnclosedExpr
 %type <expr> BracedExpr
 %type <expr> Block;
-%type <expr> BlockBody;
+%type <expr> BlockExpr;
 %type <expr> Expr
+%type <expr> ConcatExpr
+%type <expr> ApplyExpr
 %type <expr> ExprSingle
 %type <expr> ExtensionExpr
 %type <expr> FLWORExpr
@@ -676,6 +678,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* index-related     */
 /* ----------------- */
 %type <node> IndexDecl
+%type <node> IndexDecl2
 %type <node> IndexDeclSuffix
 %type <node> IndexField
 %type <node> IndexField1
@@ -737,9 +740,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // (not <= 0); but Bison never increments the refcount, so we do it manually...
 
 // parsenodes
-%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp IndexDecl IndexDeclSuffix IndexField IndexField1 IndexFieldList IndexStatement VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
+%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp IndexDecl IndexDecl2 IndexDeclSuffix IndexField IndexField1 IndexFieldList IndexStatement VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
 // exprnodes
-%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockBody EnclosedExpr Expr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement FTContainsExpr
+%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement FTContainsExpr
 // internal class
 %destructor { delete $$; } FunctionSig VarNameAndType
 
@@ -1366,13 +1369,6 @@ VarDecl :
 		}
 	;
 
-DeclareOrCreate :
-    DECLARE 
-    { $$ = parser::the_declare; }
-  | CREATE
-    { $$ = parser::the_create; }
-  ;
-
 IndexingMethod :
     HASH
     { $$ = "hash"; }
@@ -1380,19 +1376,32 @@ IndexingMethod :
     { $$ = "btree"; }
   ;
 
+
+
 IndexDecl :
-    DeclareOrCreate IndexDeclSuffix
+    DECLARE IndexDecl2
     {
       IndexDecl *d = dynamic_cast<IndexDecl *> ($2);
-      d->create = ($1 == parser::the_create);
+      d->create = false;
       $$ = d;
     }
-  | DeclareOrCreate UNIQUE IndexDeclSuffix
+  | CREATE IndexDecl2
     {
-      IndexDecl *d = dynamic_cast<IndexDecl *> ($3);
-      d->create = ($1 == parser::the_create);
-      d->uniq = true;
+      IndexDecl *d = dynamic_cast<IndexDecl *> ($2);
+      d->create = true;
       $$ = d;
+    }
+  ;
+
+IndexDecl2 :
+    IndexDeclSuffix
+    {
+      $$ = $1;
+    }
+  | UNIQUE IndexDeclSuffix
+    {
+      dynamic_cast<IndexDecl *> ($2)->uniq = true;
+      $$ = $2;
     }
   ;
 
@@ -1487,25 +1496,17 @@ FunctionSig :
     }
   ;
 
-Block :
-    LBRACE BlockBody RBRACE
+BlockExpr :
+    BLOCK Block
     {
       $$ = $2;
     }
   ;
 
-BlockBody :
-    Expr SEMI
+Block :
+    LBRACE Expr RBRACE
     {
-      BlockBody *blk = new BlockBody (LOC (@$));
-      blk->add ($1);
-      $$ = blk;
-    }
-  | BlockBody Expr SEMI
-    {
-      BlockBody *blk = dynamic_cast<BlockBody *> ($1);
-      blk->add ($2);
-      $$ = blk;
+      $$ = $2;
     }
   ;
 
@@ -1672,18 +1673,50 @@ QueryBody :
 
 // [31] Expr
 // ---------
+
 Expr :
+    ConcatExpr
+    {
+      $$ = $1;
+    }
+  | ConcatExpr ApplyExpr
+    {
+      BlockBody *blk = dynamic_cast<BlockBody *> ($2),
+        *blk2 = new BlockBody (LOC (@$));
+      blk2->add ($1);
+      for (int i = 0; i < blk->size (); i++)
+        blk2->add ((*blk) [i]);
+      $$ = blk2;
+    }
+  ;
+
+ApplyExpr :
+    SEMI
+    {
+      $$ = new BlockBody (LOC (@$));
+    }
+  | ApplyExpr ConcatExpr SEMI
+    {
+      BlockBody *blk = dynamic_cast<BlockBody *> ($1);
+      blk->add ($2);
+      $$ = blk;
+    }
+  ;
+
+ConcatExpr :
 		ExprSingle 
 		{
-			Expr* expr_p = new Expr(LOC (@$));
-			expr_p->push_back($1);
-			$$ = expr_p;
+			$$ = $1;
 		}
-	|	Expr  COMMA  ExprSingle
+	|	ConcatExpr COMMA ExprSingle
 		{
 			Expr* expr_p = dynamic_cast<Expr*>($1);
-			if (expr_p) expr_p->push_back($3);
-			$$ = $1;
+			if (expr_p == NULL) {
+        expr_p = new Expr (LOC (@$));
+        expr_p->push_back ($1);
+      }
+      expr_p->push_back($3);
+			$$ = expr_p;
 		}
 	;
 
@@ -1712,7 +1745,7 @@ ExprSingle :
   | WhileExpr
   | FlowCtlStatement
   | AssignExpr
-  | Block
+  | BlockExpr
 
     /* indexes */
   | IndexStatement
@@ -4000,8 +4033,7 @@ CompAttrConstructor :
 CompTextConstructor :
 		TEXT LBRACE  Expr  RBRACE
 		{
-			$$ = new CompTextConstructor(LOC (@$),
-								dynamic_cast<Expr*>($3));
+			$$ = new CompTextConstructor(LOC (@$), $3);
 		}
 	;
 
@@ -4011,8 +4043,7 @@ CompTextConstructor :
 CompCommentConstructor :
 		COMMENT LBRACE  Expr  RBRACE
 		{
-			$$ = new CompCommentConstructor(LOC (@$),
-								dynamic_cast<Expr*>($3));
+			$$ = new CompCommentConstructor(LOC (@$), $3);
 		}
 	;
 
@@ -4896,6 +4927,7 @@ QNAME :
   | UPDATING { $$ = driver.symtab.put("updating"); }
   | ORDERED { $$ = driver.symtab.put("ordered"); }
   | UNORDERED { $$ = driver.symtab.put("unordered"); }
+  | BLOCK { $$ = driver.symtab.put("block"); }
   | EXIT { $$ = driver.symtab.put("exit"); }
   | LOOP { $$ = driver.symtab.put("loop"); }
   | BREAK { $$ = driver.symtab.put("break"); }
@@ -5062,7 +5094,7 @@ FTWordsValue :
 		}
 	| LBRACE  Expr  RBRACE
 		{
-      $$ = new FTWordsValue (LOC (@$), NULL, static_cast<Expr *> ($2));
+      $$ = new FTWordsValue (LOC (@$), NULL, $2);
 		}
 	;
 

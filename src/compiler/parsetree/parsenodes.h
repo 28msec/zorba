@@ -970,9 +970,9 @@ protected:
 
 public:
   std::string method;
+  rchandle<IndexFieldList> fields;
   bool create;
   bool uniq;
-  rchandle<IndexFieldList> fields;
 
 public:
   bool is_decl_only () const { return ! create; }
@@ -982,7 +982,8 @@ public:
   std::string get_uri () { return uri; }
 
   IndexDecl (const QueryLoc& loc_, std::string uri_, rchandle<exprnode> expr_, std::string method_, rchandle<IndexFieldList> fields_)
-    : parsenode (loc_), uri (uri_), on_expr (expr_), method (method_), fields (fields_)
+    : parsenode (loc_), uri (uri_), on_expr (expr_), method (method_), fields (fields_),
+      create (false), uniq (false)
   {}
 
 public:
@@ -998,6 +999,9 @@ public:
   IndexStatement (const QueryLoc& loc_, std::string uri_, bool create_)
     : exprnode (loc_), uri (uri_), create (create_)
   {}
+  std::string get_uri () const { return uri; }
+  bool is_create () const { return create; }
+
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5656,18 +5660,18 @@ class FTWordsValue : public parsenode
 {
 protected:
 	rchandle<StringLiteral> lit_h;
-	rchandle<Expr> expr_h;
+	rchandle<exprnode> expr_h;
 
 public:
 	FTWordsValue(
 		const QueryLoc&,
 		rchandle<StringLiteral>,
-		rchandle<Expr>);
+		rchandle<exprnode>);
 
 
 public:
 	rchandle<StringLiteral> get_lit() const { return lit_h; }
-	rchandle<Expr> get_expr() const { return expr_h; }
+	rchandle<exprnode> get_expr() const { return expr_h; }
 
 public:
 	void accept(parsenode_visitor&) const;
