@@ -1,4 +1,5 @@
 import string
+import sys
 
 ctest_failed_file = "@zorbaBuildDir@/Testing/Temporary/LastTestsFailed.log"
 ctest_log_file = "@zorbaBuildDir@/Testing/Temporary/LastTest.log"
@@ -16,17 +17,30 @@ def get_test_name ( s ) :
     name = string.strip ( name )
     return name
 
-failedfile = open ( ctest_failed_file, 'r' )
+try:
+    failedfile = open ( ctest_failed_file, 'r' )
+    failed = True
+except IOError :
+    print "CTest failed log not found"
+    print "Assuming that CTest was run and that there were no failures"
+    failed = False
 
 failures = set()
-for line in failedfile:
-    i = string.find ( line, "w3c_testsuite" )
-    if i > 0 :
-        name = get_test_name ( line )
-        print name
-        failures.add ( name )
+if failed :
+    for line in failedfile:
+        i = string.find ( line, "w3c_testsuite" )
+        if i > 0 :
+            name = get_test_name ( line )
+            print name
+            failures.add ( name )
 
-file = open ( ctest_log_file, 'r' )
+try:
+    file = open ( ctest_log_file, 'r' )
+except IOError :
+    print "Ctest log file not found"
+    print "Run CTest before this script"
+    sys.exit ( 1 )
+
 for line in file:
     if has_testing ( line ):
         name = get_test_name ( line )
