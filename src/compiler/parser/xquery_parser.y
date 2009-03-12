@@ -220,6 +220,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token FUNCTION                   "'function'"
 %token UPDATING                   "'updating'"
 %token SEQUENTIAL                 "'sequential'"
+%token DETERMINISTIC              "'deterministic'"
+%token NONDETERMINISTIC           "'nondeterministic'"
+%token SIMPLE                     "'simple'"
 %token IF                         "'if'"
 %token PROCESSING_INSTRUCTION     "'processing-instruction'"
 %token MOST                       "'most'"
@@ -508,6 +511,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> ForwardAxis
 %type <node> ForwardStep
 %type <node> FunctionDecl
+%type <node> FunctionDecl2
+%type <node> FunctionDecl3
+%type <node> FunctionDecl4
 %type <node> Import
 %type <node> ItemType
 %type <node> KindTest
@@ -745,7 +751,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // (not <= 0); but Bison never increments the refcount, so we do it manually...
 
 // parsenodes
-%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp IndexDecl IndexDecl2 IndexDeclSuffix IndexField IndexField1 IndexFieldList IndexStatement CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
+%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp IndexDecl IndexDecl2 IndexDeclSuffix IndexField IndexField1 IndexFieldList IndexStatement CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
 // exprnodes
 %destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement FTContainsExpr
 // internal class
@@ -1603,52 +1609,76 @@ IndexStatement :
   ;
 
 FunctionDecl :
-		DECLARE FUNCTION  QNAME FunctionSig EXTERNAL
-		{
-			$$ = new FunctionDecl(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$3)),
-                &* $4->param, &* $4->ret, NULL,
-								ParseConstants::fn_extern);
-      delete $4;
-		}
-	|	DECLARE FUNCTION  QNAME FunctionSig BracedExpr
-		{
-			$$ = new FunctionDecl(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$3)),
-                &* $4->param, &* $4->ret,
-								$5,
-								ParseConstants::fn_read);
-      delete $4;
-		}
-	|	DECLARE UPDATING FUNCTION  QNAME FunctionSig EXTERNAL
-		{
-			$$ = new FunctionDecl(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$4)),
-								&* $5->param, &* $5->ret,
-								NULL,
-								ParseConstants::fn_extern_update);
-      delete $5;
-		}
-	|	DECLARE UPDATING FUNCTION  QNAME FunctionSig BracedExpr
-		{
-			$$ = new FunctionDecl(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$4)),
-                &* $5->param, &* $5->ret,
-								$6,
-								ParseConstants::fn_update);
-      delete $5;
-		}
-  | DECLARE SEQUENTIAL FUNCTION QNAME FunctionSig Block
-		{
-			$$ = new FunctionDecl(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$4)),
-                &* $5->param, &* $5->ret,
-								$6,
-								ParseConstants::fn_sequential);
-      delete $5;
-		}
-	;
+    DECLARE FunctionDecl2
+    {
+      $$ = $2;
+    }
+  | DECLARE NONDETERMINISTIC FunctionDecl2
+    {
+      $$ = $3;
+    }
+  | DECLARE DETERMINISTIC FunctionDecl2
+    {
+      //
+      $$ = $3;
+    }
+  ;
 
+FunctionDecl2 :
+    FunctionDecl3
+    {
+      $$ = $1;
+    }
+  | SIMPLE FunctionDecl3
+    {
+      $$ = $2;
+    }
+  | UPDATING FunctionDecl3
+    {
+      FunctionDecl *d = dynamic_cast<FunctionDecl *> ($2);
+      d->type = (d->type == ParseConstants::fn_extern)
+        ? ParseConstants::fn_extern_update
+        : ParseConstants::fn_update;
+      $$ = d;
+    }
+  | SEQUENTIAL FunctionDecl4
+    {
+      $$ = $2;
+    }
+  ;
+
+FunctionDecl3 :
+    FUNCTION QNAME FunctionSig BracedExpr
+    {
+			$$ = new FunctionDecl(LOC (@$),
+								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+                &* $3->param, &* $3->ret,
+								$4,
+								ParseConstants::fn_read);
+      delete $3;
+    }
+  | FUNCTION QNAME FunctionSig EXTERNAL
+    {
+			$$ = new FunctionDecl(LOC (@$),
+								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+                &* $3->param, &* $3->ret,
+								NULL,
+								ParseConstants::fn_extern);
+      delete $3;
+    }
+  ;
+
+FunctionDecl4 :
+    FUNCTION QNAME FunctionSig Block
+    {
+			$$ = new FunctionDecl(LOC (@$),
+								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+                &* $3->param, &* $3->ret,
+								$4,
+								ParseConstants::fn_sequential);
+      delete $3;
+    }
+  ;
 
 // [27] ParamList
 // --------------

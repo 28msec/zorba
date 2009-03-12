@@ -352,6 +352,9 @@ typedef zorba::xquery_parser::token token;
 "comment" { return token::COMMENT; }
 "declare" { return token::DECLARE; }
 "function" { return token::FUNCTION; }
+"deterministic" { return token::DETERMINISTIC; }
+"nondeterministic" { return token::NONDETERMINISTIC; }
+"simple" { return token::SIMPLE; }
 "updating" { return token::UPDATING; }
 "sequential" { return token::SEQUENTIAL; }
 "ordered" { return token::ORDERED;}

@@ -1100,8 +1100,10 @@ class FunctionDecl : public parsenode
 |
 |_______________________________________________________________________*/
 {
-protected:
+public:
   ParseConstants::function_type_t type;
+
+protected:
 	rchandle<QName> name_h;
 	rchandle<ParamList> paramlist_h;
 	rchandle<exprnode> body_h;
