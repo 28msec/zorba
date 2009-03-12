@@ -619,6 +619,15 @@ void IndexStatement::accept(parsenode_visitor& v) const
   END_VISITOR ();
 }
 
+void CtxItemDecl::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  ACCEPT (type);
+  ACCEPT (expr);
+  END_VISITOR ();
+}
+
+
 // [24] VarDecl
 // ------------
 VarDecl::VarDecl (const QueryLoc& loc_,

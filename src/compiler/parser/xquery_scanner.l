@@ -397,6 +397,7 @@ typedef zorba::xquery_parser::token token;
 "using" { return token::USING; }
 "some" { return token::SOME; }
 "every" { return token::EVERY; }
+"context" { return token::CONTEXT; }
 "variable" { return token::VARIABLE; }
 "boundary-space" { return token::BOUNDARY_SPACE; }
 "ordering" { return token::ORDERING; }

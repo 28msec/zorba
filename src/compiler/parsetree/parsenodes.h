@@ -930,6 +930,26 @@ public:
 	rchandle<exprnode> get_valexpr() const { return get_initexpr (); }
 };
 
+class CtxItemDecl : public parsenode {
+  rchandle<exprnode> expr;
+
+public:
+  bool ext;
+  rchandle<ItemType> type;
+
+  CtxItemDecl (const QueryLoc& loc_, rchandle<exprnode> expr_)
+    : parsenode (loc_), expr (expr_)
+  {}
+
+  rchandle<exprnode> get_expr () const { return expr; }
+  bool is_external () const { return ext; }
+  rchandle<ItemType> get_type () const { return type; }
+
+public:
+	void accept(parsenode_visitor&) const;
+
+};
+
 class IndexField : public parsenode {
   rchandle<exprnode> expr;
   rchandle<TypeDeclaration> type;

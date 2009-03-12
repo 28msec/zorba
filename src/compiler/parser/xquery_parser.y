@@ -276,6 +276,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token COMMENT_END								"':)'"
 %token <decval> DECIMAL_LITERAL	  "'DECIMAL'"
 
+%token CONTEXT                    "'context'"
 %token VARIABLE                   "'variable'"
 %token DEFAULT										"'default'"
 %token DESCENDANT_AXIS						"'descendant::'"
@@ -566,6 +567,10 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> TypeName_WITH_HOOK
 %type <node> URILiteralList
 %type <node> ValueComp
+%type <node> CtxItemDecl
+%type <node> CtxItemDecl2
+%type <node> CtxItemDecl3
+%type <node> CtxItemDecl4
 %type <node> VarDecl
 %type <node> VarGetsDecl
 %type <node> VarGetsDeclList
@@ -740,7 +745,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // (not <= 0); but Bison never increments the refcount, so we do it manually...
 
 // parsenodes
-%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp IndexDecl IndexDecl2 IndexDeclSuffix IndexField IndexField1 IndexFieldList IndexStatement VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
+%destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp IndexDecl IndexDecl2 IndexDeclSuffix IndexField IndexField1 IndexFieldList IndexStatement CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
 // exprnodes
 %destructor { RCHelper::addReference ($$); RCHelper::removeReference ($$); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement FTContainsExpr
 // internal class
@@ -1026,6 +1031,7 @@ SIND_Decl :
 // [6d] VFO_Decl
 VFO_Decl :
 		VarDecl
+  | CtxItemDecl
 	| FunctionDecl
 	| OptionDecl
 
@@ -1328,6 +1334,51 @@ ModuleImport :
 		}
 	;
 
+// ContextItemDecl
+
+CtxItemDecl :
+    DECLARE CONTEXT ITEM CtxItemDecl2
+    {
+      $$ = $4;
+    }
+  ;
+
+CtxItemDecl2 :
+    AS ItemType CtxItemDecl3
+    {
+      CtxItemDecl *d = dynamic_cast<CtxItemDecl *> ($3);
+      d->type = dynamic_cast<ItemType *> ($2);
+      $$ = d;
+    }
+  | CtxItemDecl3
+    {
+      $$ = $1;
+    }
+  ;
+
+CtxItemDecl3 :
+    CtxItemDecl4
+    {
+      $$ = $1;
+    }
+  | EXTERNAL CtxItemDecl4
+    {
+      CtxItemDecl *d = dynamic_cast<CtxItemDecl *> ($2);
+      d->ext = true;
+      $$ = d;
+    }
+  ;
+
+CtxItemDecl4 :
+    GETS ExprSingle
+    {
+      $$ = new CtxItemDecl (LOC (@$), $2);
+    }
+  ;
+
+
+// [24] VarDecl
+// ------------
 
 VarNameAndType :
     DOLLAR QNAME
@@ -1341,8 +1392,6 @@ VarNameAndType :
     }
   ;
 
-// [24] VarDecl
-// ------------
 VarDecl :
     DECLARE  VARIABLE  VarNameAndType GETS  ExprSingle
 		{
@@ -4824,6 +4873,7 @@ QNAME :
   | VAL_GT { $$ = driver.symtab.put("gt"); }
   | VAL_GE { $$ = driver.symtab.put("ge"); }
   | AT { $$ = driver.symtab.put("at"); }
+  | CONTEXT { $$ = driver.symtab.put("context"); }
   | VARIABLE { $$ = driver.symtab.put("variable"); }
   | RETURN { $$ = driver.symtab.put("return"); }
   | FOR { $$ = driver.symtab.put("for"); }

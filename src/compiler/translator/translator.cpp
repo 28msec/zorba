@@ -2314,6 +2314,21 @@ void end_visit (const OrderEmptySpec& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
+void *begin_visit (const CtxItemDecl& v) {
+  TRACE_VISIT ();
+  if (xquery_version <= 100)
+    ZORBA_ERROR_LOC (XPST0003, loc);
+  return no_state;
+}
+
+void end_visit (const CtxItemDecl& v, void* /*visit_state*/) {
+  if (v.get_type () != NULL)
+    pop_tstack ();
+  if (v.get_expr () != NULL)
+    pop_nodestack ();
+  TRACE_VISIT_OUT ();
+}
+
 void *begin_visit (const IndexDecl& v) {
   TRACE_VISIT ();
   return no_state;
