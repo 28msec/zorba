@@ -1561,20 +1561,23 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Store& lStore = GENV.getStore();
-  xqpString         uriString;
   xqpString         docString;
+  xqpStringStore_t  tmpString(new xqpStringStore(""));
   std::auto_ptr<std::istringstream> iss;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   consumeNext (result, theChildren [0].getp (), planState);
   docString = result->getStringValueP ();
-  consumeNext (result, theChildren [1].getp (), planState);
-  uriString = result->getStringValueP ();
   iss.reset (new std::istringstream (docString.c_str()));
-  result = lStore.loadDocument(uriString.getStore(), *iss);
+  try {
+    result = lStore.loadDocument(tmpString, *iss, false);
+  } catch (error::ZorbaError& e) {
+    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+  }
   STACK_PUSH(true, state);
-  STACK_END (state);  
+  STACK_END (state);
+
 }
 
 /*______________________________________________________________________
