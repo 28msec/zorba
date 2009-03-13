@@ -51,6 +51,7 @@
 #include "store/api/update_consts.h"
 
 #define SYMTAB( n ) driver.symtab.get ((off_t) n)
+#define SYMTAB_PUT( s ) driver.symtab.put (s)
 #define LOC( p ) driver.createQueryLoc(p)
 
 namespace zorba 
@@ -239,16 +240,15 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token CONSTRUCTION               "'construction'"
 %token EVAL                       "'eval'"
 %token FOR                        "'for'"
-%token OUTER                       "'outer'"
+%token OUTER                      "'outer'"
 %token SLIDING                    "'sliding'"
 %token TUMBLING                   "'tumbling'"
-%token PREVIOUS  "'previous'"
-%token NEXT  "'next'"
-%token ONLY  "'only'"
-%token WHEN  "'when'"
-%token COUNT  "'count'"
+%token PREVIOUS                   "'previous'"
+%token NEXT                       "'next'"
+%token ONLY                       "'only'"
+%token WHEN                       "'when'"
+%token COUNT                      "'count'"
 %token ORDERING                   "'ordering'"
-%token CONT                       "'cont'"
 %token BASE_URI                   "'base-uri'"
 %token SCHEMA_ELEMENT             "'schema-element'"
 %token DOCUMENT_NODE              "'document-node'"
@@ -954,8 +954,8 @@ ModuleDecl :
 		MODULE NAMESPACE  NCNAME  EQUALS  URI_LITERAL  SEMI
 		{
 			$$ = new ModuleDecl(LOC (@$),
-								driver.symtab.get((off_t)$3), 
-								driver.symtab.get((off_t)$5));
+								SYMTAB ($3), 
+								SYMTAB ($5));
 		}
 	;
 
@@ -1084,8 +1084,8 @@ NamespaceDecl :
 		DECLARE NAMESPACE  NCNAME  EQUALS  URI_LITERAL
 		{
 			$$ = new NamespaceDecl(LOC (@$),
-								driver.symtab.get((off_t)$3),
-								driver.symtab.get((off_t)$5));
+								SYMTAB ($3),
+								SYMTAB ($5));
 		}
 	;
 
@@ -1113,13 +1113,13 @@ DefaultNamespaceDecl :
 		{
 			$$ = new DefaultNamespaceDecl(LOC (@$),
 								ParseConstants::ns_element_default,
-								driver.symtab.get((off_t)$5));
+								SYMTAB ($5));
 		}
 	| DECLARE DEFAULT FUNCTION  NAMESPACE  URI_LITERAL
 		{
 			$$ = new DefaultNamespaceDecl(LOC (@$),
 								ParseConstants::ns_function_default,
-								driver.symtab.get((off_t)$5));
+								SYMTAB ($5));
 		}
 	;
 
@@ -1130,8 +1130,8 @@ OptionDecl :
 		DECLARE OPTION  QNAME  STRING_LITERAL
 		{
 			$$ = new OptionDecl(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$3)),
-								driver.symtab.get((off_t)$4));
+								new QName(LOC (@$),SYMTAB ($3)),
+								SYMTAB ($4));
 		}
 	;
 
@@ -1224,7 +1224,7 @@ DefaultCollationDecl :
 		DECLARE DEFAULT COLLATION  URI_LITERAL
 		{
 			$$ = new DefaultCollationDecl(LOC (@$),
-								driver.symtab.get((off_t)$4));
+								SYMTAB ($4));
 		}
 	;
 
@@ -1235,7 +1235,7 @@ BaseURIDecl :
 		DECLARE BASE_URI  URI_LITERAL
 		{
 			$$ = new BaseURIDecl(LOC (@$),
-								driver.symtab.get((off_t)$3));
+								SYMTAB ($3));
 		}
 	;
 
@@ -1247,28 +1247,28 @@ SchemaImport :
 		{
 			$$ = new SchemaImport(LOC (@$),
 								NULL,
-								driver.symtab.get((off_t)$3),
+								SYMTAB ($3),
 								NULL);
 		}
 	| IMPORT SCHEMA  SchemaPrefix  URI_LITERAL
 		{
 			$$ = new SchemaImport(LOC (@$),
 								dynamic_cast<SchemaPrefix*>($3),
-								driver.symtab.get((off_t)$4),
+								SYMTAB ($4),
 								NULL);
 		}
 	|	IMPORT SCHEMA  URI_LITERAL  AT  URILiteralList
 		{
 			$$ = new SchemaImport(LOC (@$),
 								NULL,
-								driver.symtab.get((off_t)$3),
+								SYMTAB ($3),
 								dynamic_cast<URILiteralList*>($5));
 		}
 	|	IMPORT SCHEMA  SchemaPrefix  URI_LITERAL  AT  URILiteralList
 		{
 			$$ = new SchemaImport(LOC (@$),
 								dynamic_cast<SchemaPrefix*>($3),
-								driver.symtab.get((off_t)$4),
+								SYMTAB ($4),
 								dynamic_cast<URILiteralList*>($6));
 		}
 	;
@@ -1280,14 +1280,14 @@ URILiteralList :
 		URI_LITERAL
 		{
 			URILiteralList* uri_list_p = new URILiteralList(LOC (@$));
-			uri_list_p->push_back(driver.symtab.get((off_t)$1));
+			uri_list_p->push_back(SYMTAB ($1));
 			$$ = uri_list_p;
 		}
 	| URILiteralList  COMMA  URI_LITERAL
 		{
 			URILiteralList* uri_list_p = dynamic_cast<URILiteralList*>($1);
 			if (uri_list_p) {
-				uri_list_p->push_back(driver.symtab.get((off_t)$3));
+				uri_list_p->push_back(SYMTAB ($3));
 			}
 			$$ = $1;
 		}
@@ -1300,7 +1300,7 @@ URILiteralList :
 SchemaPrefix :
 		NAMESPACE  NCNAME  EQUALS
 		{
-			$$ = new SchemaPrefix(LOC (@$), driver.symtab.get((off_t)$2));
+			$$ = new SchemaPrefix(LOC (@$), SYMTAB ($2));
 		}
 	|	DEFAULT ELEMENT NAMESPACE
 		{
@@ -1315,27 +1315,27 @@ ModuleImport :
 		IMPORT MODULE  URI_LITERAL
 		{
 			$$ = new ModuleImport(LOC (@$),
-								driver.symtab.get((off_t)$3),
+								SYMTAB ($3),
 								NULL);
 		}
 	|	IMPORT MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL
 		{
 			$$ = new ModuleImport(LOC (@$),
-								driver.symtab.get((off_t)$4),
-								driver.symtab.get((off_t)$6),
+								SYMTAB ($4),
+								SYMTAB ($6),
 								NULL);
 		}
 	|	IMPORT MODULE  URI_LITERAL  AT  URILiteralList
 		{
 			$$ = new ModuleImport(LOC (@$),
-								driver.symtab.get((off_t)$3),
+								SYMTAB ($3),
 								dynamic_cast<URILiteralList*>($5));
 		}
 	|	IMPORT MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URILiteralList
 		{
 			$$ = new ModuleImport(LOC (@$),
-								driver.symtab.get((off_t)$4),
-								driver.symtab.get((off_t)$6),
+								SYMTAB ($4),
+								SYMTAB ($6),
 								dynamic_cast<URILiteralList*>($8));
 		}
 	;
@@ -1389,11 +1389,11 @@ CtxItemDecl4 :
 VarNameAndType :
     DOLLAR QNAME
     {
-      $$ = new VarNameAndType (driver.symtab.get((off_t) $2), NULL);
+      $$ = new VarNameAndType (SYMTAB ($2), NULL);
     }
   | DOLLAR QNAME TypeDeclaration
     {
-      $$ = new VarNameAndType (driver.symtab.get((off_t) $2),
+      $$ = new VarNameAndType (SYMTAB ($2),
                                dynamic_cast<TypeDeclaration *> ($3));
     }
   ;
@@ -1463,12 +1463,12 @@ IndexDecl2 :
 IndexDeclSuffix :
     INDEX URI_LITERAL ON ExprSingle BY IndexFieldList RPAR
     {
-      $$ = new IndexDecl (LOC (@$), SYMTAB (2), $4, "",
+      $$ = new IndexDecl (LOC (@$), SYMTAB ($2), $4, "",
                           dynamic_cast<IndexFieldList *> ($6));
     }
   | INDEX URI_LITERAL ON ExprSingle IndexingMethod BY IndexFieldList RPAR
     {
-      IndexDecl *d = new IndexDecl (LOC (@$), SYMTAB (2), $4, SYMTAB (5),
+      IndexDecl *d = new IndexDecl (LOC (@$), SYMTAB ($2), $4, SYMTAB ($5),
                                     dynamic_cast<IndexFieldList *> ($7));
       d->method = $5;
       $$ = d;
@@ -1482,7 +1482,7 @@ IndexField :
     }
   | IndexField1 COLLATION URI_LITERAL
     {
-      dynamic_cast<IndexField *> ($1)->coll = driver.symtab.get ((off_t) $3);
+      dynamic_cast<IndexField *> ($1)->coll = SYMTAB ($3);
       $$ = $1;
     }
   ;
@@ -1568,7 +1568,7 @@ Block :
 AssignExpr :
     SET DOLLAR QNAME GETS ExprSingle
     {
-      $$ = new AssignExpr (LOC (@$), driver.symtab.get ((off_t)$3), $5);
+      $$ = new AssignExpr (LOC (@$), SYMTAB ($3), $5);
     }
   ;
 
@@ -1591,7 +1591,7 @@ FlowCtlStatement :
     {
       $$ = new FlowCtlStatement (LOC (@$), FlowCtlStatement::BREAK);
     }
-  | CONT LOOP
+  | CONTINUE LOOP
     {
       $$ = new FlowCtlStatement (LOC (@$), FlowCtlStatement::CONTINUE);
     }
@@ -1600,11 +1600,11 @@ FlowCtlStatement :
 IndexStatement :
     CREATE INDEX URI_LITERAL
     {
-      $$ = new IndexStatement (LOC (@$), SYMTAB (3), true);
+      $$ = new IndexStatement (LOC (@$), SYMTAB ($3), true);
     }
   | DROP INDEX URI_LITERAL
     {
-      $$ = new IndexStatement (LOC (@$), SYMTAB (3), false);
+      $$ = new IndexStatement (LOC (@$), SYMTAB ($3), false);
     }
   ;
 
@@ -1651,7 +1651,7 @@ FunctionDecl3 :
     FUNCTION QNAME FunctionSig BracedExpr
     {
 			$$ = new FunctionDecl(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+								new QName(LOC (@$),SYMTAB ($2)),
                 &* $3->param, &* $3->ret,
 								$4,
 								ParseConstants::fn_read);
@@ -1660,7 +1660,7 @@ FunctionDecl3 :
   | FUNCTION QNAME FunctionSig EXTERNAL
     {
 			$$ = new FunctionDecl(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+								new QName(LOC (@$),SYMTAB ($2)),
                 &* $3->param, &* $3->ret,
 								NULL,
 								ParseConstants::fn_extern);
@@ -1672,7 +1672,7 @@ FunctionDecl4 :
     FUNCTION QNAME FunctionSig Block
     {
 			$$ = new FunctionDecl(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+								new QName(LOC (@$),SYMTAB ($2)),
                 &* $3->param, &* $3->ret,
 								$4,
 								ParseConstants::fn_sequential);
@@ -1708,13 +1708,13 @@ Param :
 		DOLLAR  QNAME
 		{
 			$$ = new Param(LOC (@$),
-								driver.symtab.get((off_t)$2),
+								SYMTAB ($2),
 								NULL);
 		}
 	|	DOLLAR  QNAME  TypeDeclaration
 		{
 			$$ = new Param(LOC (@$),
-								driver.symtab.get((off_t)$2),
+								SYMTAB ($2),
 								dynamic_cast<TypeDeclaration*>($3));
 		}
 	;
@@ -1904,7 +1904,7 @@ WindowClause :
 CountClause :
     COUNT DOLLAR QNAME
     {
-      $$ = new CountClause (LOC (@$), driver.symtab.get((off_t)$3));
+      $$ = new CountClause (LOC (@$), SYMTAB ($3));
     }
     ;
 
@@ -1983,14 +1983,14 @@ VarInDecl :
 		QNAME  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
-								driver.symtab.get((off_t)$1),
+								SYMTAB ($1),
 								NULL,NULL,NULL,
 								$3);
 		}
 	|	QNAME  TypeDeclaration  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
-								driver.symtab.get((off_t)$1),
+								SYMTAB ($1),
 								dynamic_cast<TypeDeclaration*>($2),
 								NULL,NULL,
 								$4);
@@ -1998,7 +1998,7 @@ VarInDecl :
 	|	QNAME  PositionalVar  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
-								driver.symtab.get((off_t)$1),
+								SYMTAB ($1),
 								NULL,
 								dynamic_cast<PositionalVar*>($2),
 								NULL,
@@ -2007,7 +2007,7 @@ VarInDecl :
 	|	QNAME  TypeDeclaration  PositionalVar  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
-								driver.symtab.get((off_t)$1),
+								SYMTAB ($1),
 								dynamic_cast<TypeDeclaration*>($2),
 								dynamic_cast<PositionalVar*>($3),
 								NULL,
@@ -2017,7 +2017,7 @@ VarInDecl :
 	| QNAME  FTScoreVar  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
-								driver.symtab.get((off_t)$1),
+								SYMTAB ($1),
 								NULL,NULL,
 								dynamic_cast<FTScoreVar*>($2),
 								$4);
@@ -2025,7 +2025,7 @@ VarInDecl :
 	| QNAME  TypeDeclaration  FTScoreVar  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
-								driver.symtab.get((off_t)$1),
+								SYMTAB ($1),
 								dynamic_cast<TypeDeclaration*>($2),
 								NULL,
 								dynamic_cast<FTScoreVar*>($3),
@@ -2034,7 +2034,7 @@ VarInDecl :
 	| QNAME  PositionalVar  FTScoreVar  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
-								driver.symtab.get((off_t)$1),
+								SYMTAB ($1),
 								NULL,
 								dynamic_cast<PositionalVar*>($2),
 								dynamic_cast<FTScoreVar*>($3),
@@ -2043,7 +2043,7 @@ VarInDecl :
 	| QNAME  TypeDeclaration  PositionalVar  FTScoreVar  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
-								driver.symtab.get((off_t)$1),
+								SYMTAB ($1),
 								dynamic_cast<TypeDeclaration*>($2),
 								dynamic_cast<PositionalVar*>($3),
 								dynamic_cast<FTScoreVar*>($4),
@@ -2058,7 +2058,7 @@ PositionalVar :
 		AT  DOLLAR  QNAME
 		{
 			$$ = new PositionalVar(LOC (@$),
-								driver.symtab.get((off_t)$3));
+								SYMTAB ($3));
 		}
 	;
 
@@ -2070,7 +2070,7 @@ FTScoreVar :
 		SCORE  DOLLAR  QNAME
 		{
 			$$ = new FTScoreVar(LOC (@$),
-								driver.symtab.get((off_t)$3));
+								SYMTAB ($3));
 		}
 	;
 
@@ -2131,7 +2131,7 @@ VarGetsDecl :
 		QNAME  GETS  ExprSingle
 		{
 			$$ = new VarGetsDecl(LOC (@$),
-								driver.symtab.get((off_t)$1),
+								SYMTAB ($1),
 								NULL,
 								NULL,
 								$3);
@@ -2139,7 +2139,7 @@ VarGetsDecl :
 	|	QNAME  TypeDeclaration  GETS  ExprSingle
 		{
 			$$ = new VarGetsDecl(LOC (@$),
-								driver.symtab.get((off_t)$1),
+								SYMTAB ($1),
 								dynamic_cast<TypeDeclaration*>($2),
 								NULL,
 								$4);
@@ -2148,7 +2148,7 @@ VarGetsDecl :
 	| QNAME  FTScoreVar  GETS  ExprSingle
 		{
 			$$ = new VarGetsDecl(LOC (@$),
-								driver.symtab.get((off_t)$1),
+								SYMTAB ($1),
 								NULL,
 								dynamic_cast<FTScoreVar*>($2),
 								$4);
@@ -2156,7 +2156,7 @@ VarGetsDecl :
 	| QNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
 		{
 			$$ = new VarGetsDecl(LOC (@$),
-								driver.symtab.get((off_t)$1),
+								SYMTAB ($1),
 								dynamic_cast<TypeDeclaration*>($2),
 								dynamic_cast<FTScoreVar*>($3),
 								$5);
@@ -2168,13 +2168,13 @@ WindowVarDecl :
 		DOLLAR QNAME  _IN  ExprSingle
 		{
 			$$ = new WindowVarDecl(LOC (@$),
-								driver.symtab.get((off_t)$2),
+								SYMTAB ($2),
 								NULL, $4);
 		}
 	|	DOLLAR QNAME  TypeDeclaration  _IN  ExprSingle
 		{
 			$$ = new WindowVarDecl(LOC (@$),
-								driver.symtab.get((off_t)$2),
+								SYMTAB ($2),
 								dynamic_cast<TypeDeclaration*>($3),
 								$5);
 		}
@@ -2184,12 +2184,12 @@ WindowVars :
     WindowVars3
   | DOLLAR QNAME
     {
-      $$ = new WindowVars (LOC (@$), NULL, driver.symtab.get((off_t)$2), "", "");
+      $$ = new WindowVars (LOC (@$), NULL, SYMTAB ($2), "", "");
     }
   | DOLLAR QNAME WindowVars3
     {
       $$ = $3;
-      dynamic_cast<WindowVars *> ($$)->set_curr (driver.symtab.get((off_t)$2));
+      dynamic_cast<WindowVars *> ($$)->set_curr (SYMTAB ($2));
     }
   ;
 
@@ -2209,22 +2209,22 @@ WindowVars3 :
 WindowVars2 :
     PREVIOUS DOLLAR QNAME NEXT DOLLAR QNAME
     {
-      $$ = new WindowVars (LOC (@$), NULL, "", driver.symtab.get((off_t)$3), driver.symtab.get((off_t)$6));
+      $$ = new WindowVars (LOC (@$), NULL, "", SYMTAB ($3), SYMTAB ($6));
     }
   | NEXT DOLLAR QNAME
     {
-      $$ = new WindowVars (LOC (@$), NULL, "", "", driver.symtab.get((off_t)$3));
+      $$ = new WindowVars (LOC (@$), NULL, "", "", SYMTAB ($3));
     }
   | PREVIOUS DOLLAR QNAME
     {
-      $$ = new WindowVars (LOC (@$), NULL, "", driver.symtab.get((off_t)$3), "");
+      $$ = new WindowVars (LOC (@$), NULL, "", SYMTAB ($3), "");
     }
     ;
 
 EvalVarDecl :
     QNAME
     {
-      std::string name = driver.symtab.get ((off_t)$1);
+      std::string name = SYMTAB ($1);
       $$ = new VarGetsDecl(LOC (@$),
                            name, NULL, NULL,
                            new VarRef (LOC (@$), name),
@@ -2275,13 +2275,13 @@ GroupSpec :
     DOLLAR QNAME
     {
       $$ = new GroupSpec(LOC(@$),
-                 driver.symtab.get((off_t)$2),
+                 SYMTAB ($2),
                  NULL);
     }
   | DOLLAR QNAME GroupCollationSpec
     {
       $$ = new GroupSpec(LOC(@$), 
-                 driver.symtab.get((off_t)$2), 
+                 SYMTAB ($2), 
                  dynamic_cast<GroupCollationSpec*>($3)); 
     }
   ;
@@ -2289,7 +2289,7 @@ GroupSpec :
 GroupCollationSpec :
     COLLATION  URI_LITERAL
     {
-      $$ = new GroupCollationSpec(LOC(@$), driver.symtab.get((off_t)$2));
+      $$ = new GroupCollationSpec(LOC(@$), SYMTAB ($2));
     }
   ;
 
@@ -2440,7 +2440,7 @@ OrderCollationSpec :
 		COLLATION  URI_LITERAL
 		{
 			$$ = new OrderCollationSpec(LOC (@$),
-								driver.symtab.get((off_t)$2));
+								SYMTAB ($2));
 		}
 	;
 
@@ -2490,13 +2490,13 @@ QVarInDecl :
 		QNAME  _IN  ExprSingle
 		{
 			$$ = new QVarInDecl(LOC (@$),
-								driver.symtab.get((off_t)$1),
+								SYMTAB ($1),
 								$3);
 		}
 	|	QNAME  TypeDeclaration  _IN  ExprSingle
 		{
 			$$ = new QVarInDecl(LOC (@$),
-								driver.symtab.get((off_t)$1),
+								SYMTAB ($1),
 								dynamic_cast<TypeDeclaration*>($2),
 								$4);
 		}
@@ -2518,7 +2518,7 @@ TypeswitchExpr :
 			$$ = new TypeswitchExpr(LOC (@$),
 								$3,
 								dynamic_cast<CaseClauseList*>($5),
-								driver.symtab.get((off_t)$8),
+								SYMTAB ($8),
 								$10);
 		}
 	;
@@ -2554,7 +2554,7 @@ CaseClause :
 	|	CASE  DOLLAR  QNAME  AS  SequenceType  RETURN  ExprSingle
 		{
 			$$ = new CaseClause(LOC (@$),
-								driver.symtab.get((off_t)$3),
+								SYMTAB ($3),
 								dynamic_cast<SequenceType*>($5),
 								$7);
 		}
@@ -3035,13 +3035,13 @@ Pragma :
 		PRAGMA_BEGIN  QNAME  PRAGMA_LITERAL_AND_END_PRAGMA
 		{
 			$$ = new Pragma(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
-								driver.symtab.get((off_t)$3));
+								new QName(LOC (@$),SYMTAB ($2)),
+								SYMTAB ($3));
 
 		}
   | PRAGMA_BEGIN QNAME_SVAL_AND_END_PRAGMA {
 			$$ = new Pragma(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+								new QName(LOC (@$),SYMTAB ($2)),
 								"");      
     } 
 	;	/* ws: explicit */
@@ -3314,7 +3314,7 @@ NodeTest :
 NameTest :
 		QNAME
 		{
-			$$ = new NameTest(LOC (@$), new QName(LOC (@$),driver.symtab.get((off_t)$1)));
+			$$ = new NameTest(LOC (@$), new QName(LOC (@$),SYMTAB ($1)));
 		}
 	|	Wildcard
 		{
@@ -3336,7 +3336,7 @@ Wildcard :
 	|	ELEM_WILDCARD
 		{
 			$$ = new Wildcard(LOC (@$),
-                        driver.symtab.get((off_t)$1),
+                        SYMTAB ($1),
                         "",
                         ParseConstants::wild_elem);
 		}
@@ -3344,7 +3344,7 @@ Wildcard :
 		{
 			$$ = new Wildcard(LOC (@$),
                         "",
-                        driver.symtab.get((off_t)$1),
+                        SYMTAB ($1),
                         ParseConstants::wild_prefix);
 		}
 	;
@@ -3475,7 +3475,7 @@ NumericLiteral :
 VarRef :
 		DOLLAR  QNAME
 		{
-			$$ = new VarRef(LOC (@$), driver.symtab.get((off_t)$2));
+			$$ = new VarRef(LOC (@$), SYMTAB ($2));
 		}
 	;
 
@@ -3578,13 +3578,13 @@ FunctionCall :
 		QNAME LPAR  RPAR
 		{
 			$$ = new FunctionCall(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$1)),
+								new QName(LOC (@$),SYMTAB ($1)),
 								NULL);
 		}
 	|	QNAME LPAR  ArgList  RPAR
 		{
 			$$ = new FunctionCall(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$1)),
+								new QName(LOC (@$),SYMTAB ($1)),
 								dynamic_cast<ArgList*>($3));
 		}
 	;
@@ -3646,7 +3646,7 @@ DirElemConstructor :
     LT_OR_START_TAG  QNAME  OptionalBlank  EMPTY_TAG_END /* ws: explicitXQ */
 		{
 			$$ = new DirElemConstructor(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+								new QName(LOC (@$),SYMTAB ($2)),
 								NULL,
 								NULL,
 								NULL);
@@ -3654,7 +3654,7 @@ DirElemConstructor :
   | LT_OR_START_TAG  QNAME  DirAttributeList  OptionalBlank  EMPTY_TAG_END /* ws: explicitXQ */
 		{
 			$$ = new DirElemConstructor(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+								new QName(LOC (@$),SYMTAB ($2)),
 								NULL,
 								dynamic_cast<DirAttributeList*>($3), 
 								NULL);
@@ -3662,32 +3662,32 @@ DirElemConstructor :
   | LT_OR_START_TAG  QNAME  OptionalBlank  TAG_END  START_TAG_END  QNAME OptionalBlank TAG_END
 		{
 			$$ = new DirElemConstructor(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
-								new QName(LOC (@$),driver.symtab.get((off_t)$6)),
+								new QName(LOC (@$),SYMTAB ($2)),
+								new QName(LOC (@$),SYMTAB ($6)),
 								NULL,
 								NULL);
 		}
   |	LT_OR_START_TAG  QNAME  OptionalBlank  TAG_END  DirElemContentList  START_TAG_END  QNAME  OptionalBlank  TAG_END
 		{
 			$$ = new DirElemConstructor(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
-								new QName(LOC (@$),driver.symtab.get((off_t)$7)),
+								new QName(LOC (@$),SYMTAB ($2)),
+								new QName(LOC (@$),SYMTAB ($7)),
 								NULL,
 								dynamic_cast<DirElemContentList*>($5));
 		}
   | LT_OR_START_TAG  QNAME  DirAttributeList  OptionalBlank  TAG_END  START_TAG_END  QNAME  OptionalBlank  TAG_END
 		{
 			$$ = new DirElemConstructor(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
-								new QName(LOC (@$),driver.symtab.get((off_t)$7)),
+								new QName(LOC (@$),SYMTAB ($2)),
+								new QName(LOC (@$),SYMTAB ($7)),
 								dynamic_cast<DirAttributeList*>($3),
 								NULL);
 		}
     |	LT_OR_START_TAG  QNAME  DirAttributeList  OptionalBlank  TAG_END  DirElemContentList  START_TAG_END  QNAME  OptionalBlank  TAG_END
 		{
 			$$ = new DirElemConstructor(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
-								new QName(LOC (@$),driver.symtab.get((off_t)$8)),
+								new QName(LOC (@$),SYMTAB ($2)),
+								new QName(LOC (@$),SYMTAB ($8)),
 								dynamic_cast<DirAttributeList*>($3), 
 								dynamic_cast<DirElemContentList*>($6));
 		}
@@ -3738,7 +3738,7 @@ DirAttr :
     BLANK  QNAME  OptionalBlank  EQUALS  OptionalBlank  DirAttributeValue 	/* ws: explicitXQ */
 		{
 			$$ = new DirAttr(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+								new QName(LOC (@$),SYMTAB ($2)),
 								dynamic_cast<DirAttributeValue*>($6));
 		}
 	;
@@ -3861,7 +3861,7 @@ QuoteAttrValueContent :
 		QUOTE_ATTR_CONTENT
 		{
 			$$ = new QuoteAttrValueContent(LOC (@$),
-								driver.symtab.get((off_t)$1));
+								SYMTAB ($1));
 		}
 	|	CommonContent
 		{
@@ -3877,7 +3877,7 @@ AposAttrValueContent :
 		APOS_ATTR_CONTENT
 		{
 			$$ = new AposAttrValueContent(LOC (@$),
-								driver.symtab.get((off_t)$1));
+								SYMTAB ($1));
 		}
 	|	CommonContent
 		{
@@ -3898,7 +3898,7 @@ DirElemContent :
 	|	ELEMENT_CONTENT
 		{
 			$$ = new DirElemContent(LOC (@$),
-								driver.symtab.get((off_t)$1));
+								SYMTAB ($1));
 		}
 	|	CDataSection
 		{
@@ -3922,7 +3922,7 @@ CommonContent :
 		{
 			$$ = new CommonContent(LOC (@$),
                 ParseConstants::cont_charref,
-								driver.symtab.get((off_t)$1));
+								SYMTAB ($1));
 		}
 	|	DOUBLE_LBRACE
 		{
@@ -3948,7 +3948,7 @@ DirCommentConstructor :
 		XML_COMMENT_BEGIN  XML_COMMENT_LITERAL  XML_COMMENT_END 	/* ws: explicitXQ */
 		{
 			$$ = new DirCommentConstructor(LOC (@$),
-								driver.symtab.get((off_t)$2));
+								SYMTAB ($2));
 		}
   | XML_COMMENT_BEGIN  XML_COMMENT_END                        /* ws: explicitXQ */
     {
@@ -3968,13 +3968,13 @@ DirPIConstructor :
 		PI_BEGIN  PI_TARGET_LITERAL PI_END 								/* ws: explicitXQ */
 		{
 			$$ = new DirPIConstructor(LOC (@$),
-								driver.symtab.get((off_t)$2));
+								SYMTAB ($2));
 		}
     |	PI_BEGIN  PI_TARGET_LITERAL CHAR_LITERAL_AND_PI_END 	/* ws: explicitXQ */
 		{
 			$$ = new DirPIConstructor(LOC (@$),
-								driver.symtab.get((off_t)$2),
-								driver.symtab.get((off_t)$3));
+								SYMTAB ($2),
+								SYMTAB ($3));
 		}
 	;
 
@@ -3989,7 +3989,7 @@ DirPIConstructor :
 CDataSection :
 		CDATA_BEGIN  CHAR_LITERAL_AND_CDATA_END 				/* ws: explicitXQ */
 		{
-			$$ = new CDataSection(LOC (@$),driver.symtab.get((off_t)$2));
+			$$ = new CDataSection(LOC (@$),SYMTAB ($2));
 		}
 	;
 
@@ -4046,13 +4046,13 @@ CompElemConstructor :
 		ELEMENT QNAME LBRACE  RBRACE
 		{
 			$$ = new CompElemConstructor(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+								new QName(LOC (@$),SYMTAB ($2)),
 								NULL);
 		}
 	|	ELEMENT QNAME LBRACE  Expr  RBRACE
 		{
 			$$ = new CompElemConstructor(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+								new QName(LOC (@$),SYMTAB ($2)),
 								$4);
 		}
 	|	ELEMENT LBRACE  Expr  RBRACE  LBRACE  RBRACE
@@ -4085,13 +4085,13 @@ CompAttrConstructor :
 		ATTRIBUTE QNAME LBRACE  RBRACE
 		{
 			$$ = new CompAttrConstructor(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+								new QName(LOC (@$),SYMTAB ($2)),
 								NULL);
 		}
 	|	ATTRIBUTE QNAME LBRACE  Expr  RBRACE
 		{
 			$$ = new CompAttrConstructor(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
+								new QName(LOC (@$),SYMTAB ($2)),
 								$4);
 		}
 	|	ATTRIBUTE LBRACE  Expr  RBRACE  LBRACE  RBRACE
@@ -4133,13 +4133,13 @@ CompPIConstructor :
 		PROCESSING_INSTRUCTION  NCNAME  LBRACE  RBRACE
 		{
 			$$ = new CompPIConstructor(LOC (@$),
-								driver.symtab.get((off_t)$2),
+								SYMTAB ($2),
 								NULL);
 		}
 	|	PROCESSING_INSTRUCTION  NCNAME  LBRACE  Expr  RBRACE
 		{
 			$$ = new CompPIConstructor(LOC (@$),
-								driver.symtab.get((off_t)$2),
+								SYMTAB ($2),
 								$4);
 		}
 	|	PROCESSING_INSTRUCTION LBRACE  Expr  RBRACE LBRACE  RBRACE
@@ -4279,7 +4279,7 @@ AtomicType :
 		QNAME
 		{
 			$$ = new AtomicType(LOC (@$),
-								new QName(LOC (@$), driver.symtab.get((off_t)$1)));
+								new QName(LOC (@$), SYMTAB ($1)));
 		}
 	;
 
@@ -4385,11 +4385,11 @@ PITest :
 		}
 	|	PROCESSING_INSTRUCTION LPAR  NCNAME  RPAR
 		{
-			$$ = new PITest(LOC (@$), driver.symtab.get((off_t)$3));
+			$$ = new PITest(LOC (@$), SYMTAB ($3));
 		}
   |	PROCESSING_INSTRUCTION LPAR  STRING_LITERAL  RPAR
 		{
-			$$ = new PITest(LOC (@$), driver.symtab.get((off_t)$3));
+			$$ = new PITest(LOC (@$), SYMTAB ($3));
 		}
 	;
 
@@ -4406,13 +4406,13 @@ AttributeTest :
 	|	ATTRIBUTE LPAR  QNAME  RPAR
 		{
 			$$ = new AttributeTest(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$3)),
+								new QName(LOC (@$),SYMTAB ($3)),
 								NULL);
 		}
 	|	ATTRIBUTE LPAR  QNAME  COMMA  TypeName  RPAR
 		{
 			$$ = new AttributeTest(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$3)),
+								new QName(LOC (@$),SYMTAB ($3)),
 								dynamic_cast<TypeName*>($5));
 		}
 	|	ATTRIBUTE LPAR  STAR  RPAR
@@ -4436,7 +4436,7 @@ SchemaAttributeTest :
 		SCHEMA_ATTRIBUTE_LPAR  QNAME  RPAR
 		{
 			$$ = new SchemaAttributeTest(LOC (@$),
-								new QName(LOC (@$), driver.symtab.get((off_t)$2)));
+								new QName(LOC (@$), SYMTAB ($2)));
 		}
 	;
 
@@ -4454,21 +4454,21 @@ ElementTest :
 	|	ELEMENT LPAR  QNAME  RPAR
 		{
 			$$ = new ElementTest(LOC (@$),
-                           new QName(LOC(@$), driver.symtab.get((off_t)$3)),
+                           new QName(LOC(@$), SYMTAB ($3)),
                            NULL,
                            true);
 		}
 	|	ELEMENT LPAR  QNAME  COMMA  TypeName  RPAR
 		{
 			$$ = new ElementTest(LOC (@$),
-                           new QName(LOC(@$),driver.symtab.get((off_t)$3)),
+                           new QName(LOC(@$),SYMTAB ($3)),
                            dynamic_cast<TypeName*>($5),
                            false);
 		}
 	|	ELEMENT LPAR  QNAME  COMMA  TypeName_WITH_HOOK RPAR
 		{
 			$$ = new ElementTest(LOC (@$),
-                           new QName(LOC(@$), driver.symtab.get((off_t)$3)),
+                           new QName(LOC(@$), SYMTAB ($3)),
                            dynamic_cast<TypeName*>($5),
                            true);
 		}
@@ -4502,7 +4502,7 @@ SchemaElementTest :
 		SCHEMA_ELEMENT LPAR  QNAME  RPAR
 		{
 			$$ = new SchemaElementTest(LOC (@$),
-									new QName(LOC (@$),driver.symtab.get((off_t)$3)));
+									new QName(LOC (@$),SYMTAB ($3)));
 		}
 	;
 
@@ -4523,14 +4523,14 @@ TypeName :
 		QNAME
 		{
 			$$ = new TypeName(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$1)));
+								new QName(LOC (@$),SYMTAB ($1)));
 		};
     
 TypeName_WITH_HOOK :
 	  QNAME  HOOK
 		{
 			$$ = new TypeName(LOC (@$),
-								new QName(LOC (@$),driver.symtab.get((off_t)$1)),
+								new QName(LOC (@$),SYMTAB ($1)),
 								true);
 		}
 	;
@@ -4549,7 +4549,7 @@ TypeName_WITH_HOOK :
 StringLiteral :
 		STRING_LITERAL
 		{
-			$$ = new StringLiteral(LOC (@$), driver.symtab.get((off_t)$1));
+			$$ = new StringLiteral(LOC (@$), SYMTAB ($1));
 		}
 	;
 
@@ -4761,7 +4761,7 @@ VarNameList :
 VarNameDecl :
     QNAME GETS ExprSingle
     {
-       $$ = new VarBinding(LOC(@$), driver.symtab.get((off_t)$1), $3);  
+       $$ = new VarBinding(LOC(@$), SYMTAB ($1), $3);  
     }
   ; 
 
@@ -4809,7 +4809,7 @@ CatchExpr :
     {
        $$ = new CatchExpr(LOC (@$),
                           static_cast<NameTest*>($3),
-                          driver.symtab.get((off_t)$6),
+                          SYMTAB ($6),
                           $8);
     }
   |
@@ -4817,8 +4817,8 @@ CatchExpr :
     {
        $$ = new CatchExpr(LOC (@$),
                           static_cast<NameTest*>($3),
-                          driver.symtab.get((off_t)$6),
-                          driver.symtab.get((off_t)$9),
+                          SYMTAB ($6),
+                          SYMTAB ($9),
                           $11);
     }
   |
@@ -4826,9 +4826,9 @@ CatchExpr :
     {
        $$ = new CatchExpr(LOC (@$),
                           static_cast<NameTest*>($3),
-                          driver.symtab.get((off_t)$6),
-                          driver.symtab.get((off_t)$9),
-                          driver.symtab.get((off_t)$12),
+                          SYMTAB ($6),
+                          SYMTAB ($9),
+                          SYMTAB ($12),
                           $14);
     }
   ;
@@ -4840,7 +4840,7 @@ URI_LITERAL :
 NCNAME :
   QNAME_SVAL
   {
-    std::string tmp = driver.symtab.get((off_t)$1);
+    std::string tmp = SYMTAB ($1);
     for (unsigned int i = 0; i<tmp.size(); i++)
       if (tmp[i] == ':')
       {
@@ -4857,169 +4857,179 @@ NCNAME :
  *_______________________________________________________________________*/
 QNAME :
     QNAME_SVAL { $$ = $1; }
-  | _EMPTY { $$ = driver.symtab.put("empty"); }
-  | ATTRIBUTE { $$ = driver.symtab.put("attribute"); }
-  | COMMENT { $$ = driver.symtab.put("comment"); }
-  | DOCUMENT_NODE { $$ = driver.symtab.put("document-node"); }
-  | ELEMENT { $$ = driver.symtab.put("element"); }
-  | ITEM { $$ = driver.symtab.put("item"); }
-  | IF { $$ = driver.symtab.put("if"); }
-  | NODE { $$ = driver.symtab.put("node"); }
-  | PROCESSING_INSTRUCTION { $$ = driver.symtab.put("processing-instruction"); }
-  | SCHEMA_ATTRIBUTE { $$ = driver.symtab.put("schema-attribute"); }
-  | SCHEMA_ELEMENT { $$ = driver.symtab.put("schema-element"); }
-  | TEXT { $$ = driver.symtab.put("text"); }
-  | TYPESWITCH { $$ = driver.symtab.put("typeswitch"); }
-  | EMPTY_SEQUENCE { $$ = driver.symtab.put("empty-sequence"); }
-  | BOUNDARY_SPACE { $$ = driver.symtab.put("boundary-space"); }
-  | FT_OPTION { $$ = driver.symtab.put("ft-option"); }
-  | BASE_URI { $$ = driver.symtab.put("base-uri"); }
-  | LAX { $$ = driver.symtab.put("lax"); }
-  | _STRICT { $$ = driver.symtab.put("strict"); }
-  | IDIV { $$ = driver.symtab.put("idiv"); }
-  | DOCUMENT { $$ = driver.symtab.put("document"); }
-  | FTNOT { $$ = driver.symtab.put("not"); }
-  | SENSITIVE { $$ = driver.symtab.put("sensitive"); }
-  | INSENSITIVE { $$ = driver.symtab.put("insensitive"); }
-  | DIACRITICS { $$ = driver.symtab.put("diacritics"); }
-  | WITHOUT { $$ = driver.symtab.put("without"); }
-  | STEMMING { $$ = driver.symtab.put("stemming"); }
-  | THESAURUS { $$ = driver.symtab.put("thesaurus"); }
-  | STOP { $$ = driver.symtab.put("stop"); }
-  | WILDCARDS { $$ = driver.symtab.put("wildcards"); }
-  | ENTIRE { $$ = driver.symtab.put("entire"); }
-  | CONTENT { $$ = driver.symtab.put("content"); }
-  | WORD { $$ = driver.symtab.put("word"); }
-  | START { $$ = driver.symtab.put("start"); }
-  | END { $$ = driver.symtab.put("end"); }
-  | MOST { $$ = driver.symtab.put("most"); }
-  | SKIP { $$ = driver.symtab.put("skip"); }
-  | COPY { $$ = driver.symtab.put("copy"); }
-  | VALUE { $$ = driver.symtab.put("value"); }
-  | VAL_EQ { $$ = driver.symtab.put("eq"); }
-  | VAL_NE { $$ = driver.symtab.put("ne"); }
-  | VAL_LT { $$ = driver.symtab.put("lt"); }
-  | VAL_LE { $$ = driver.symtab.put("le"); }
-  | VAL_GT { $$ = driver.symtab.put("gt"); }
-  | VAL_GE { $$ = driver.symtab.put("ge"); }
-  | AT { $$ = driver.symtab.put("at"); }
-  | CONTEXT { $$ = driver.symtab.put("context"); }
-  | VARIABLE { $$ = driver.symtab.put("variable"); }
-  | RETURN { $$ = driver.symtab.put("return"); }
-  | FOR { $$ = driver.symtab.put("for"); }
-  | OUTER { $$ = driver.symtab.put("outer"); }
-  | SLIDING { $$ = driver.symtab.put("sliding"); }
-  | TUMBLING { $$ = driver.symtab.put("tumbling"); }
-  | PREVIOUS { $$ = driver.symtab.put("previous"); }
-  | NEXT { $$ = driver.symtab.put("next"); }
-  | ONLY { $$ = driver.symtab.put("only"); }
-  | WHEN { $$ = driver.symtab.put("when"); }
-  | COUNT { $$ = driver.symtab.put("count"); }
-  | _IN { $$ = driver.symtab.put("in"); }
-  | LET { $$ = driver.symtab.put("let"); }
-  | WHERE { $$ = driver.symtab.put("where"); }
-  | BY { $$ = driver.symtab.put("by"); }
-  | GROUP { $$ = driver.symtab.put("group"); }
-  | ORDER { $$ = driver.symtab.put("order"); }
-  | STABLE { $$ = driver.symtab.put("stable"); }
-  | ASCENDING { $$ = driver.symtab.put("ascending"); }
-  | DESCENDING { $$ = driver.symtab.put("descending"); }
-  | GREATEST { $$ = driver.symtab.put("greatest"); }
-  | LEAST { $$ = driver.symtab.put("least"); }
-  | COLLATION { $$ = driver.symtab.put("collation"); }
-  | SOME { $$ = driver.symtab.put("some"); }
-  | EVERY { $$ = driver.symtab.put("every"); }
-  | SATISFIES { $$ = driver.symtab.put("satisfies"); }
-  | CASE { $$ = driver.symtab.put("case"); }
-  | AS { $$ = driver.symtab.put("as"); }
-  | THEN { $$ = driver.symtab.put("then"); }
-  | ELSE { $$ = driver.symtab.put("else"); }
-  | OR { $$ = driver.symtab.put("or"); }
-  | AND { $$ = driver.symtab.put("and"); }
-  | INSTANCE { $$ = driver.symtab.put("instance"); }
-  | OF { $$ = driver.symtab.put("of"); }
-  | CASTABLE { $$ = driver.symtab.put("castable"); }
-  | TO { $$ = driver.symtab.put("to"); }
-  | DIV { $$ = driver.symtab.put("div"); }
-  | MOD { $$ = driver.symtab.put("mod"); }
-  | UNION { $$ = driver.symtab.put("union"); }
-  | INTERSECT { $$ = driver.symtab.put("intersect"); }
-  | EXCEPT { $$ = driver.symtab.put("except"); }
-  | VALIDATE { $$ = driver.symtab.put("validate"); }
-  | CAST { $$ = driver.symtab.put("cast"); }
-  | TREAT { $$ = driver.symtab.put("treat"); }
-  | IS { $$ = driver.symtab.put("is"); }
-  | PRESERVE { $$ = driver.symtab.put("preserve"); }
-  | STRIP { $$ = driver.symtab.put("strip"); }
-  | NAMESPACE { $$ = driver.symtab.put("namespace"); }
-  | EXTERNAL { $$ = driver.symtab.put("external"); }
-  | ENCODING { $$ = driver.symtab.put("encoding"); }
-  | NO_PRESERVE { $$ = driver.symtab.put("no-preserve"); }
-  | INHERIT { $$ = driver.symtab.put("inherit"); }
-  | NO_INHERIT { $$ = driver.symtab.put("no-inherit"); }
-  | DECLARE { $$ = driver.symtab.put("declare"); }
-  | CONSTRUCTION { $$ = driver.symtab.put("construction"); }
-  | ORDERING { $$ = driver.symtab.put("ordering"); }
-  | DEFAULT { $$ = driver.symtab.put("default"); }
-  | COPY_NAMESPACES { $$ = driver.symtab.put("copy-namespaces"); }
-  | OPTION { $$ = driver.symtab.put("option"); }
-  | VERSION { $$ = driver.symtab.put("version"); }
-  | IMPORT { $$ = driver.symtab.put("import"); }
-  | SCHEMA { $$ = driver.symtab.put("schema"); }
-  | MODULE { $$ = driver.symtab.put("module"); }
-  | FUNCTION { $$ = driver.symtab.put("function"); }
-  | SCORE { $$ = driver.symtab.put("score"); }
-  | FTCONTAINS { $$ = driver.symtab.put("ftcontains"); }
-  | WEIGHT { $$ = driver.symtab.put("weight"); }
-  | WINDOW { $$ = driver.symtab.put("window"); }
-  | DISTANCE { $$ = driver.symtab.put("distance"); }
-  | OCCURS { $$ = driver.symtab.put("occurs"); }
-  | TIMES { $$ = driver.symtab.put("times"); }
-  | SAME { $$ = driver.symtab.put("same"); }
-  | DIFFERENT { $$ = driver.symtab.put("different"); }
-  | LOWERCASE { $$ = driver.symtab.put("lowercase"); }
-  | UPPERCASE { $$ = driver.symtab.put("uppercase"); }
-  | RELATIONSHIP { $$ = driver.symtab.put("relationship"); }
-  | LEVELS { $$ = driver.symtab.put("levels"); }
-  | LANGUAGE { $$ = driver.symtab.put("language"); }
-  | ANY { $$ = driver.symtab.put("any"); }
-  | ALL { $$ = driver.symtab.put("all"); }
-  | PHRASE { $$ = driver.symtab.put("phrase"); }
-  | EXACTLY { $$ = driver.symtab.put("exactly"); }
-  | FROM { $$ = driver.symtab.put("from"); }
-  | WORDS { $$ = driver.symtab.put("words"); }
-  | SENTENCES { $$ = driver.symtab.put("sentences"); }
-  | SENTENCE { $$ = driver.symtab.put("sentence"); }
-  | PARAGRAPH { $$ = driver.symtab.put("paragraph"); }
-  | REPLACE { $$ = driver.symtab.put("replace"); }
-  | MODIFY { $$ = driver.symtab.put("modify"); }
-  | FIRST { $$ = driver.symtab.put("first"); }
-  | INSERT { $$ = driver.symtab.put("insert"); }
-  | BEFORE { $$ = driver.symtab.put("bofer"); }
-  | AFTER { $$ = driver.symtab.put("after"); }
-  | REVALIDATION { $$ = driver.symtab.put("revalidation"); }
-  | WITH { $$ = driver.symtab.put("with"); }
-  | NODES { $$ = driver.symtab.put("nodes"); }
-  | RENAME { $$ = driver.symtab.put("rename"); }
-  | LAST { $$ = driver.symtab.put("last"); }
-  | _DELETE { $$ = driver.symtab.put("delete"); }
-  | INTO { $$ = driver.symtab.put("into"); }
-  | UPDATING { $$ = driver.symtab.put("updating"); }
-  | ORDERED { $$ = driver.symtab.put("ordered"); }
-  | UNORDERED { $$ = driver.symtab.put("unordered"); }
-  | BLOCK { $$ = driver.symtab.put("block"); }
-  | EXIT { $$ = driver.symtab.put("exit"); }
-  | LOOP { $$ = driver.symtab.put("loop"); }
-  | BREAK { $$ = driver.symtab.put("break"); }
-  | CONT { $$ = driver.symtab.put("cont"); }
-  | SET { $$ = driver.symtab.put("set"); }
-  | INDEX { $$ = driver.symtab.put("index"); }
-  | CREATE { $$ = driver.symtab.put("create"); }
-  | UNIQUE { $$ = driver.symtab.put("unique"); }
-  | ON { $$ = driver.symtab.put("on"); }
-  | HASH { $$ = driver.symtab.put("hash"); }
-  | BTREE { $$ = driver.symtab.put("btree"); }
-  | DROP { $$ = driver.symtab.put("DROP"); }
+  | XQUERY { $$ = SYMTAB_PUT ("xquery"); }
+  | _EMPTY { $$ = SYMTAB_PUT ("empty"); }
+  | ATTRIBUTE { $$ = SYMTAB_PUT ("attribute"); }
+  | COMMENT { $$ = SYMTAB_PUT ("comment"); }
+  | DOCUMENT_NODE { $$ = SYMTAB_PUT ("document-node"); }
+  | ELEMENT { $$ = SYMTAB_PUT ("element"); }
+  | ITEM { $$ = SYMTAB_PUT ("item"); }
+  | IF { $$ = SYMTAB_PUT ("if"); }
+  | NODE { $$ = SYMTAB_PUT ("node"); }
+  | PROCESSING_INSTRUCTION { $$ = SYMTAB_PUT ("processing-instruction"); }
+  | SCHEMA_ATTRIBUTE { $$ = SYMTAB_PUT ("schema-attribute"); }
+  | SCHEMA_ELEMENT { $$ = SYMTAB_PUT ("schema-element"); }
+  | TEXT { $$ = SYMTAB_PUT ("text"); }
+  | TYPESWITCH { $$ = SYMTAB_PUT ("typeswitch"); }
+  | EMPTY_SEQUENCE { $$ = SYMTAB_PUT ("empty-sequence"); }
+  | BOUNDARY_SPACE { $$ = SYMTAB_PUT ("boundary-space"); }
+  | FT_OPTION { $$ = SYMTAB_PUT ("ft-option"); }
+  | BASE_URI { $$ = SYMTAB_PUT ("base-uri"); }
+  | LAX { $$ = SYMTAB_PUT ("lax"); }
+  | _STRICT { $$ = SYMTAB_PUT ("strict"); }
+  | IDIV { $$ = SYMTAB_PUT ("idiv"); }
+  | DOCUMENT { $$ = SYMTAB_PUT ("document"); }
+  | FTNOT { $$ = SYMTAB_PUT ("not"); }
+  | SENSITIVE { $$ = SYMTAB_PUT ("sensitive"); }
+  | INSENSITIVE { $$ = SYMTAB_PUT ("insensitive"); }
+  | DIACRITICS { $$ = SYMTAB_PUT ("diacritics"); }
+  | WITHOUT { $$ = SYMTAB_PUT ("without"); }
+  | STEMMING { $$ = SYMTAB_PUT ("stemming"); }
+  | THESAURUS { $$ = SYMTAB_PUT ("thesaurus"); }
+  | STOP { $$ = SYMTAB_PUT ("stop"); }
+  | WILDCARDS { $$ = SYMTAB_PUT ("wildcards"); }
+  | ENTIRE { $$ = SYMTAB_PUT ("entire"); }
+  | CONTENT { $$ = SYMTAB_PUT ("content"); }
+  | WORD { $$ = SYMTAB_PUT ("word"); }
+  | START { $$ = SYMTAB_PUT ("start"); }
+  | END { $$ = SYMTAB_PUT ("end"); }
+  | MOST { $$ = SYMTAB_PUT ("most"); }
+  | SKIP { $$ = SYMTAB_PUT ("skip"); }
+  | COPY { $$ = SYMTAB_PUT ("copy"); }
+  | VALUE { $$ = SYMTAB_PUT ("value"); }
+  | VAL_EQ { $$ = SYMTAB_PUT ("eq"); }
+  | VAL_NE { $$ = SYMTAB_PUT ("ne"); }
+  | VAL_LT { $$ = SYMTAB_PUT ("lt"); }
+  | VAL_LE { $$ = SYMTAB_PUT ("le"); }
+  | VAL_GT { $$ = SYMTAB_PUT ("gt"); }
+  | VAL_GE { $$ = SYMTAB_PUT ("ge"); }
+  | AT { $$ = SYMTAB_PUT ("at"); }
+  | CONTEXT { $$ = SYMTAB_PUT ("context"); }
+  | VARIABLE { $$ = SYMTAB_PUT ("variable"); }
+  | RETURN { $$ = SYMTAB_PUT ("return"); }
+  | FOR { $$ = SYMTAB_PUT ("for"); }
+  | OUTER { $$ = SYMTAB_PUT ("outer"); }
+  | SLIDING { $$ = SYMTAB_PUT ("sliding"); }
+  | TUMBLING { $$ = SYMTAB_PUT ("tumbling"); }
+  | PREVIOUS { $$ = SYMTAB_PUT ("previous"); }
+  | NEXT { $$ = SYMTAB_PUT ("next"); }
+  | ONLY { $$ = SYMTAB_PUT ("only"); }
+  | WHEN { $$ = SYMTAB_PUT ("when"); }
+  | COUNT { $$ = SYMTAB_PUT ("count"); }
+  | _IN { $$ = SYMTAB_PUT ("in"); }
+  | LET { $$ = SYMTAB_PUT ("let"); }
+  | WHERE { $$ = SYMTAB_PUT ("where"); }
+  | BY { $$ = SYMTAB_PUT ("by"); }
+  | GROUP { $$ = SYMTAB_PUT ("group"); }
+  | ORDER { $$ = SYMTAB_PUT ("order"); }
+  | STABLE { $$ = SYMTAB_PUT ("stable"); }
+  | ASCENDING { $$ = SYMTAB_PUT ("ascending"); }
+  | DESCENDING { $$ = SYMTAB_PUT ("descending"); }
+  | GREATEST { $$ = SYMTAB_PUT ("greatest"); }
+  | LEAST { $$ = SYMTAB_PUT ("least"); }
+  | COLLATION { $$ = SYMTAB_PUT ("collation"); }
+  | SOME { $$ = SYMTAB_PUT ("some"); }
+  | EVERY { $$ = SYMTAB_PUT ("every"); }
+  | SATISFIES { $$ = SYMTAB_PUT ("satisfies"); }
+  | CASE { $$ = SYMTAB_PUT ("case"); }
+  | AS { $$ = SYMTAB_PUT ("as"); }
+  | THEN { $$ = SYMTAB_PUT ("then"); }
+  | ELSE { $$ = SYMTAB_PUT ("else"); }
+  | OR { $$ = SYMTAB_PUT ("or"); }
+  | AND { $$ = SYMTAB_PUT ("and"); }
+  | INSTANCE { $$ = SYMTAB_PUT ("instance"); }
+  | OF { $$ = SYMTAB_PUT ("of"); }
+  | CASTABLE { $$ = SYMTAB_PUT ("castable"); }
+  | TO { $$ = SYMTAB_PUT ("to"); }
+  | DIV { $$ = SYMTAB_PUT ("div"); }
+  | MOD { $$ = SYMTAB_PUT ("mod"); }
+  | UNION { $$ = SYMTAB_PUT ("union"); }
+  | INTERSECT { $$ = SYMTAB_PUT ("intersect"); }
+  | EXCEPT { $$ = SYMTAB_PUT ("except"); }
+  | VALIDATE { $$ = SYMTAB_PUT ("validate"); }
+  | CAST { $$ = SYMTAB_PUT ("cast"); }
+  | TREAT { $$ = SYMTAB_PUT ("treat"); }
+  | IS { $$ = SYMTAB_PUT ("is"); }
+  | PRESERVE { $$ = SYMTAB_PUT ("preserve"); }
+  | STRIP { $$ = SYMTAB_PUT ("strip"); }
+  | NAMESPACE { $$ = SYMTAB_PUT ("namespace"); }
+  | EXTERNAL { $$ = SYMTAB_PUT ("external"); }
+  | ENCODING { $$ = SYMTAB_PUT ("encoding"); }
+  | NO_PRESERVE { $$ = SYMTAB_PUT ("no-preserve"); }
+  | INHERIT { $$ = SYMTAB_PUT ("inherit"); }
+  | NO_INHERIT { $$ = SYMTAB_PUT ("no-inherit"); }
+  | DECLARE { $$ = SYMTAB_PUT ("declare"); }
+  | CONSTRUCTION { $$ = SYMTAB_PUT ("construction"); }
+  | ORDERING { $$ = SYMTAB_PUT ("ordering"); }
+  | DEFAULT { $$ = SYMTAB_PUT ("default"); }
+  | COPY_NAMESPACES { $$ = SYMTAB_PUT ("copy-namespaces"); }
+  | OPTION { $$ = SYMTAB_PUT ("option"); }
+  | VERSION { $$ = SYMTAB_PUT ("version"); }
+  | IMPORT { $$ = SYMTAB_PUT ("import"); }
+  | SCHEMA { $$ = SYMTAB_PUT ("schema"); }
+  | MODULE { $$ = SYMTAB_PUT ("module"); }
+  | FUNCTION { $$ = SYMTAB_PUT ("function"); }
+  | SCORE { $$ = SYMTAB_PUT ("score"); }
+  | FTCONTAINS { $$ = SYMTAB_PUT ("ftcontains"); }
+  | WEIGHT { $$ = SYMTAB_PUT ("weight"); }
+  | WINDOW { $$ = SYMTAB_PUT ("window"); }
+  | DISTANCE { $$ = SYMTAB_PUT ("distance"); }
+  | OCCURS { $$ = SYMTAB_PUT ("occurs"); }
+  | TIMES { $$ = SYMTAB_PUT ("times"); }
+  | SAME { $$ = SYMTAB_PUT ("same"); }
+  | DIFFERENT { $$ = SYMTAB_PUT ("different"); }
+  | LOWERCASE { $$ = SYMTAB_PUT ("lowercase"); }
+  | UPPERCASE { $$ = SYMTAB_PUT ("uppercase"); }
+  | RELATIONSHIP { $$ = SYMTAB_PUT ("relationship"); }
+  | LEVELS { $$ = SYMTAB_PUT ("levels"); }
+  | LANGUAGE { $$ = SYMTAB_PUT ("language"); }
+  | ANY { $$ = SYMTAB_PUT ("any"); }
+  | ALL { $$ = SYMTAB_PUT ("all"); }
+  | PHRASE { $$ = SYMTAB_PUT ("phrase"); }
+  | EXACTLY { $$ = SYMTAB_PUT ("exactly"); }
+  | FROM { $$ = SYMTAB_PUT ("from"); }
+  | WORDS { $$ = SYMTAB_PUT ("words"); }
+  | SENTENCES { $$ = SYMTAB_PUT ("sentences"); }
+  | SENTENCE { $$ = SYMTAB_PUT ("sentence"); }
+  | PARAGRAPH { $$ = SYMTAB_PUT ("paragraph"); }
+  | REPLACE { $$ = SYMTAB_PUT ("replace"); }
+  | MODIFY { $$ = SYMTAB_PUT ("modify"); }
+  | FIRST { $$ = SYMTAB_PUT ("first"); }
+  | INSERT { $$ = SYMTAB_PUT ("insert"); }
+  | BEFORE { $$ = SYMTAB_PUT ("before"); }
+  | AFTER { $$ = SYMTAB_PUT ("after"); }
+  | REVALIDATION { $$ = SYMTAB_PUT ("revalidation"); }
+  | WITH { $$ = SYMTAB_PUT ("with"); }
+  | NODES { $$ = SYMTAB_PUT ("nodes"); }
+  | RENAME { $$ = SYMTAB_PUT ("rename"); }
+  | LAST { $$ = SYMTAB_PUT ("last"); }
+  | _DELETE { $$ = SYMTAB_PUT ("delete"); }
+  | INTO { $$ = SYMTAB_PUT ("into"); }
+  | SIMPLE { $$ = SYMTAB_PUT ("simple"); }
+  | SEQUENTIAL { $$ = SYMTAB_PUT ("sequential"); }
+  | UPDATING { $$ = SYMTAB_PUT ("updating"); }
+  | DETERMINISTIC { $$ = SYMTAB_PUT ("deterministic"); }
+  | NONDETERMINISTIC { $$ = SYMTAB_PUT ("nondeterministic"); }
+  | ORDERED { $$ = SYMTAB_PUT ("ordered"); }
+  | UNORDERED { $$ = SYMTAB_PUT ("unordered"); }
+  | BLOCK { $$ = SYMTAB_PUT ("block"); }
+  | EXIT { $$ = SYMTAB_PUT ("exit"); }
+  | LOOP { $$ = SYMTAB_PUT ("loop"); }
+  | WHILE { $$ = SYMTAB_PUT ("while"); }
+  | BREAK { $$ = SYMTAB_PUT ("break"); }
+  | CONTINUE { $$ = SYMTAB_PUT ("continue"); }
+  | TRY { $$ = SYMTAB_PUT ("try"); }
+  | CATCH { $$ = SYMTAB_PUT ("catch"); }
+  | EVAL { $$ = SYMTAB_PUT ("eval"); }
+  | USING { $$ = SYMTAB_PUT ("using"); }  
+  | SET { $$ = SYMTAB_PUT ("set"); }
+  | INDEX { $$ = SYMTAB_PUT ("index"); }
+  | CREATE { $$ = SYMTAB_PUT ("create"); }
+  | UNIQUE { $$ = SYMTAB_PUT ("unique"); }
+  | ON { $$ = SYMTAB_PUT ("on"); }
+  | HASH { $$ = SYMTAB_PUT ("hash"); }
+  | BTREE { $$ = SYMTAB_PUT ("btree"); }
+  | DROP { $$ = SYMTAB_PUT ("drop"); }
     ;
 
 

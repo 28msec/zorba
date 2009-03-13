@@ -515,11 +515,8 @@ typedef zorba::xquery_parser::token token;
 "replace" { return token::REPLACE; }
 "value" { return token::VALUE; }
 "of" { return token::OF; }
-"rename" {
-  // TODO:
-  // getDriver()->set_rename(true);
-  return token::RENAME;
-}
+ /* TODO: getDriver()->set_rename(true); */
+"rename" { return token::RENAME; }
 "copy" { return token::COPY; }
 "nodes" { return token::NODES; }
 "into" { return token::INTO; }
@@ -553,12 +550,11 @@ typedef zorba::xquery_parser::token token;
 "descending" { return token::DESCENDING; }
 "encoding" { return token::ENCODING; }
 
-"ftcontains" {
-  // TODO: this flag should not be needed anymore
-  // BEGIN INITIAL;
-  // getDriver()->set_ftcontains(true);
-  return token::FTCONTAINS;
-}
+ /* TODO: this flag should not be needed anymore
+    BEGIN INITIAL;
+    getDriver()->set_ftcontains(true);
+  */
+"ftcontains" { return token::FTCONTAINS; }
 
 
   /* TODO: fix 'if (1) then 2 else processing-instruction' */
