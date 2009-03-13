@@ -410,7 +410,6 @@ main(int argc, char** argv)
 
   zorba::Zorba *  engine;
   int             errors;
-  bool            is_xqueryx;
 
   for( int i=1; i < argc; i++ )
   {
@@ -422,11 +421,6 @@ main(int argc, char** argv)
     int path_flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;
     zorba::file lQueryFile (zorba::RBKT_SRC_DIR + Queriesdir + argv[i], path_flags);
     
-    if(lQueryFile.get_path().substr(lQueryFile.get_path().length()-4) != ".xqx")
-      is_xqueryx = false;
-    else
-      is_xqueryx = true;
-
     std::string lQueryWithoutSuffix = std::string(argv[i]).substr( 0, std::string(argv[i]).rfind('.') );
     std::cout << "test " << lQueryWithoutSuffix << std::endl;
 
