@@ -1,0 +1,43 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use File::Basename;
+
+my $yfname = shift;
+my $lfname = dirname ($yfname) . "/xquery_scanner.l";
+
+my %ykwmap;
+my %lkwmap;
+
+    print ("Parser: $yfname\nScanner: $lfname\n\n");
+
+open YF, $yfname or die;
+open LF, $lfname or die;
+
+while (<YF>) {
+    if (m@ *(\|)? *([A-Z0-9_]+) \{ *\$\$ *= *SYMTAB_PUT \(("[^"]+")\); *\} *$@) {
+        # print "KW: $2 $3\n";
+        my $tok = $2; my $kw = $3;
+        $ykwmap {$tok} = $kw;
+    }
+}
+
+while (<LF>) {
+    if (m@^ *("[^"]+") *\{ *return token::([A-Z0-9_]+); *} *$@) {
+        my $tok = $2; my $kw = $1;
+        $lkwmap {$tok} = $kw;
+        my $ykw = $ykwmap {$tok};
+        if ($ykw && ! ($ykw eq $kw)) { print "$tok should be $kw as qname, is $ykw\n"; }
+        if ($kw =~ m@"[a-zA-Z0-9_][a-zA-Z0-9_-]*"@ && ! $ykw) {
+            print "Token $tok ($kw in lexer) not listed as qname in parser\n";
+        }
+    }
+}
+
+foreach my $tok (keys %ykwmap) {
+    my $ykw = $ykwmap {$tok};
+    if ($ykw =~ m@"[a-zA-Z0-9_][a-zA-Z0-9_-]*"@ && ! $lkwmap {$tok}) {
+        print "Token $tok ($ykw in parser) not recognized in lexer\n";
+    }
+}
