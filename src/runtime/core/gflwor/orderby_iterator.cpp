@@ -303,7 +303,9 @@ namespace zorba {
       } else {
         // danm: both valueCompare (x, NaN) and valueCompare (NaN, x) return 2.
         // That's why empty_item is needed.
-        int8_t result = CompareIterator::valueCompare ( aRuntimeCB, s1 , s2, collator );
+        store::Item_t ls1(s1);
+        store::Item_t ls2(s2);
+        int8_t result = CompareIterator::valueCompare ( aRuntimeCB, ls1 , ls2, collator );
         if ( result > 1 || result < -1 ) {
           ZORBA_ERROR_DESC ( XPTY0004, "Non-comparable types found while sorting" );
 

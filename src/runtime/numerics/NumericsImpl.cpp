@@ -281,21 +281,27 @@ bool AddOperation::compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_DOUBLE>(
     return GENV_ITEMFACTORY->createDecimal (result,  ld0 % ld1  );
   }
 
-  template<>
-  bool ModOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER> 
-  ( store::Item_t& result, RuntimeCB* /* aRuntimeCB */, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
-  {
-    xqp_integer ll0 = i0->getIntegerValue();
-    xqp_integer ll1 = i1->getIntegerValue();
-    if ( ll1 == Integer::parseInt(0) )
-    {
-      ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Modulo by zero (decimals)");
-    }
-    return GENV_ITEMFACTORY->createInteger (result,  ll0 % ll1 );
-  }
-  /* end class ModOperations */
 
-  /* begin class NumArithIterator */
+template<>
+bool ModOperation::compute<TypeConstants::XS_INTEGER, TypeConstants::XS_INTEGER>(
+    store::Item_t& result,
+    RuntimeCB* /* aRuntimeCB */,
+    const QueryLoc* loc,
+    const store::Item* i0,
+    const store::Item* i1 )
+{
+  xqp_integer ll0 = i0->getIntegerValue();
+  xqp_integer ll1 = i1->getIntegerValue();
+  if ( ll1 == Integer::parseInt(0) )
+  {
+    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Modulo by zero (decimals)");
+  }
+  return GENV_ITEMFACTORY->createInteger (result,  ll0 % ll1 );
+}
+/* end class ModOperations */
+
+  
+/* begin class NumArithIterator */
   template< class Operations>
   NumArithIterator<Operations>::NumArithIterator
   ( const QueryLoc& loc, PlanIter_t& iter0, PlanIter_t& iter1 )
@@ -320,7 +326,7 @@ bool NumArithIterator<Operation>::nextImpl (
   {
     if (consumeNext( n1, this->theChild1.getp(), planState ))
     {
-      res = compute(result, planState.theRuntimeCB, this->loc, n0.getp(), n1.getp());
+      res = compute(result, planState.theRuntimeCB, this->loc, n0, n1);
       
       if (consumeNext(n0, this->theChild0.getp(), planState) ||
           consumeNext(n1, this->theChild1.getp(), planState))
@@ -338,8 +344,8 @@ bool NumArithIterator<Operation>::compute(
     store::Item_t& result,
     RuntimeCB* aRuntimeCB,
     const QueryLoc& aLoc, 
-    store::Item *n0,
-    store::Item *n1)
+    store::Item_t& n0,
+    store::Item_t& n1)
 {
   assert(n0->isAtomic());
   assert(n1->isAtomic());
@@ -358,9 +364,9 @@ bool NumArithIterator<Operation>::computeAtomic(
     store::Item_t& result,
     RuntimeCB* aRuntimeCB,
     const QueryLoc& aLoc,
-    store::Item *item0,
+    store::Item_t& item0,
     xqtref_t type0,
-    store::Item *item1,
+    store::Item_t& item1,
     xqtref_t type1)
 {
   bool res;

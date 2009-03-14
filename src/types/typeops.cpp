@@ -30,25 +30,32 @@ namespace zorba {
 // Worth using if a function needs GENV_TYPESYSTEM more than once
 #define CACHE_ROOT_TS( var ) RootTypeManager &var = GENV_TYPESYSTEM
 
-  const char *TypeOps::decode_quantifier (TypeConstants::quantifier_t quant) {
-    switch (quant) {
-    case TypeConstants::QUANT_ONE:
-      return "";
-    case TypeConstants::QUANT_QUESTION:
-      return "?";
-    case TypeConstants::QUANT_STAR:
-      return "*";
-    case TypeConstants::QUANT_PLUS:
+
+/*******************************************************************************
+
+********************************************************************************/
+const char *TypeOps::decode_quantifier (TypeConstants::quantifier_t quant) 
+{
+  switch (quant) {
+  case TypeConstants::QUANT_ONE:
+    return "";
+  case TypeConstants::QUANT_QUESTION:
+    return "?";
+  case TypeConstants::QUANT_STAR:
+    return "*";
+  case TypeConstants::QUANT_PLUS:
       return "+";
-    default:
-      return "<unknown-quant>";
-    }
+  default:
+    return "<unknown-quant>";
   }
+}
+
 
 std::ostream& TypeOps::serialize(std::ostream& os, const XQType& type)
 {
   return type.serialize(os);
 }
+
 
 std::string TypeOps::toString (const XQType& type)
 {
@@ -57,19 +64,37 @@ std::string TypeOps::toString (const XQType& type)
   return os.str ();
 }
 
-const TypeManager *TypeOps::get_lower_manager(const TypeManager* m1, const TypeManager* m2)
+
+/*******************************************************************************
+
+********************************************************************************/
+const TypeManager *TypeOps::get_lower_manager(
+    const TypeManager* m1,
+    const TypeManager* m2)
 {
   return m1->level() > m2->level() ? m2 : m1;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 TypeConstants::quantifier_t TypeOps::quantifier(const XQType &type)
 {
   return type.get_quantifier();
 }
 
+
+/*******************************************************************************
+  Returns the castability fron the source ItemType to the target ItemType. It
+  works only if both source and target types are builtin atomic types.
+  Otherwise, it returns NOT_CASTABLE.
+********************************************************************************/
 TypeConstants::castable_t TypeOps::castability(const XQType& src, const XQType& target)
 {
-  if (src.type_kind() == XQType::ATOMIC_TYPE_KIND && target.type_kind() == XQType::ATOMIC_TYPE_KIND) {
+  if (src.type_kind() == XQType::ATOMIC_TYPE_KIND &&
+      target.type_kind() == XQType::ATOMIC_TYPE_KIND) 
+  {
     const AtomicXQType& aSrc = static_cast<const AtomicXQType&>(src);
     const AtomicXQType& aTarget = static_cast<const AtomicXQType&>(target);
     return RootTypeManager::ATOMIC_CAST_MATRIX[aSrc.get_type_code()][aTarget.get_type_code()];
@@ -78,54 +103,65 @@ TypeConstants::castable_t TypeOps::castability(const XQType& src, const XQType& 
   return TypeConstants::NOT_CASTABLE;
 }
 
+
+/*******************************************************************************
+  Returns true iff type1 is equal to type2 including the quantifier.
+********************************************************************************/
 bool TypeOps::is_equal(const XQType& type1, const XQType& type2)
 {
   if (&type1 == &type2) return true;
-  if (type1.get_quantifier() != type2.get_quantifier()) {
+
+  if (type1.get_quantifier() != type2.get_quantifier()) 
+  {
     return false;
   }
-  if (type1.type_kind() != type2.type_kind()) {
+
+  if (type1.type_kind() != type2.type_kind()) 
+  {
     return false;
   }
-  switch(type1.type_kind()) {
+
+  switch(type1.type_kind()) 
+  {
     case XQType::ATOMIC_TYPE_KIND:
     {
       const AtomicXQType& a1 = static_cast<const AtomicXQType&>(type1);
       const AtomicXQType& a2 = static_cast<const AtomicXQType&>(type2);
+
       return a1.get_type_code() == a2.get_type_code();
     }
     case XQType::NODE_TYPE_KIND:
     {
       const NodeXQType& n1 = static_cast<const NodeXQType&>(type1);
       const NodeXQType& n2 = static_cast<const NodeXQType&>(type2);
+
+      // Must compare content type as well ????
       return *n1.get_nodetest() == *n2.get_nodetest();
     }
     case XQType::USER_DEFINED_KIND:
     {
       const UserDefinedXQType& udt1 = static_cast<const UserDefinedXQType&>(type1);
       const UserDefinedXQType& udt2 = static_cast<const UserDefinedXQType&>(type2);
-      return udt1.getQName()->equals( udt2.getQName());
+      return udt1.getQName()->equals(udt2.getQName());
     }
     default:
       break;
   }
+
   return true;
 }
 
+
+/*******************************************************************************
+  Returns true iff "subtype" is a subtype of "supertype".
+********************************************************************************/
 bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
 {
-  if (subtype.type_kind () == XQType::NONE_KIND)
+  if (subtype.type_kind() == XQType::NONE_KIND)
     return true;
 
-  if (is_equal (subtype, supertype))
-    return true;
-
-  TypeConstants::quantifier_t superq = quantifier(supertype);
-  if (is_empty (subtype) &&
-      superq != TypeConstants::QUANT_ONE && superq != TypeConstants::QUANT_PLUS)
-    return true;
-
-  if (!RootTypeManager::QUANT_SUBTYPE_MATRIX[subtype.get_quantifier()][superq])
+  if (!RootTypeManager::QUANT_SUBTYPE_MATRIX[subtype.get_quantifier()]
+                                            [supertype.get_quantifier()])
     return false;
 
   switch(supertype.type_kind()) 
@@ -138,15 +174,28 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
       {
         const AtomicXQType& a1 = static_cast<const AtomicXQType&>(subtype);
         const AtomicXQType& a2 = static_cast<const AtomicXQType&>(supertype);
+
         return RootTypeManager::ATOMIC_SUBTYPE_MATRIX[a1.get_type_code()][a2.get_type_code()];
       }
       case XQType::USER_DEFINED_KIND:
       {
-        //const UserDefinedXQType& udSubType = static_cast<const UserDefinedXQType&>(subtype);
-        return false; //udSubType.isSubTypeOf(supertype);
+        const UserDefinedXQType& udSubType = static_cast<const UserDefinedXQType&>(subtype);
+        if (!udSubType.isAtomic())
+          return false;
+
+        //std::cout << "!!!!!!!!!!!! atomic-udt" << std::endl;
+        // ????
+        return false; 
+      }
+      case XQType::EMPTY_KIND:
+      {
+        return true;
       }
       default:
+      {
+        // NODE, ITEM, ANY, ANY_SIMPLE, UNTYPED, EMPTY 
         return false;
+      }
       }
       break;
     }
@@ -159,9 +208,44 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
       {
         const NodeXQType& n1 = static_cast<const NodeXQType&>(subtype);
         const NodeXQType& n2 = static_cast<const NodeXQType&>(supertype);
+
+        //std::cout << "!!!!!!!!!!!! node-node" << std::endl;
+        // ??? What about content type?
         return n1.get_nodetest()->is_sub_nodetest_of(*n2.get_nodetest());
       }
+      case XQType::EMPTY_KIND:
+      {
+        return true;
+      }
       default:
+      {
+        // ATOMIC, ITEM, ANY, ANY_SIMPLE, UNTYPED, USER_DEFINED (???)
+        return false;
+      }
+      }
+      break;
+    }
+
+    case XQType::ITEM_KIND:
+    {
+      switch(subtype.type_kind())
+      {
+      case XQType::ATOMIC_TYPE_KIND:
+      case XQType::NODE_TYPE_KIND:
+      case XQType::ITEM_KIND:
+      case XQType::EMPTY_KIND:
+        return true;
+
+      case XQType::USER_DEFINED_KIND:
+      {
+        const UserDefinedXQType& udSubType = static_cast<const UserDefinedXQType&>(subtype);
+
+        // What about union of atomic types ????
+        return udSubType.isAtomic();
+      }
+
+      default:
+        // ANY, ANY_SIMPLE, UNTYPED
         return false;
       }
       break;
@@ -171,123 +255,127 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
     {
       switch(subtype.type_kind()) 
       {
-        case XQType::ATOMIC_TYPE_KIND:
-        case XQType::NODE_TYPE_KIND:
-        case XQType::ANY_TYPE_KIND:
-        case XQType::ANY_SIMPLE_TYPE_KIND:
-        case XQType::UNTYPED_KIND:
-        case XQType::USER_DEFINED_KIND:
-          return true;
+      case XQType::ATOMIC_TYPE_KIND:
+      case XQType::NODE_TYPE_KIND:
+      case XQType::ITEM_KIND:
+      case XQType::ANY_TYPE_KIND:
+      case XQType::ANY_SIMPLE_TYPE_KIND:
+      case XQType::UNTYPED_KIND:
+      case XQType::EMPTY_KIND:
+      case XQType::USER_DEFINED_KIND:
+        return true;
 
-        default:
-          return false;
+      default:
+        ZORBA_ASSERT(false);
       }
       break;
     }
 
-    case XQType::ITEM_KIND:
-    {
-      switch(subtype.type_kind()) {
-        case XQType::ATOMIC_TYPE_KIND:
-        case XQType::NODE_TYPE_KIND:
-        case XQType::ITEM_KIND:
-          return true;
-
-        default:
-          return false;
-      }
-      break;
-    }
     case XQType::ANY_SIMPLE_TYPE_KIND:
     {
-      switch(subtype.type_kind()) {
-        case XQType::ATOMIC_TYPE_KIND:
-        case XQType::ANY_SIMPLE_TYPE_KIND:
+      switch(subtype.type_kind())
+      {
+      case XQType::ATOMIC_TYPE_KIND:
+      case XQType::ANY_SIMPLE_TYPE_KIND:
+      case XQType::EMPTY_KIND:
           return true;
 
-        case XQType::USER_DEFINED_KIND:
-        {
-            const UserDefinedXQType& udSubType = static_cast<const UserDefinedXQType&>(subtype);
-            return udSubType.isAtomic();
-        }
+      case XQType::USER_DEFINED_KIND:
+      {
+        const UserDefinedXQType& udSubType = static_cast<const UserDefinedXQType&>(subtype);
+        return (udSubType.isAtomic() || udSubType.isList() || udSubType.isUnion());
+      }
 
-        default:
-          return false;
+      default:
+        // ANY, UNTYPED
+        return false;
       }
       break;
     }
+
     case XQType::UNTYPED_KIND:
     {
-      switch(subtype.type_kind()) {
-        case XQType::UNTYPED_KIND:
-          return true;
+      switch(subtype.type_kind()) 
+      {
+      case XQType::UNTYPED_KIND:
+        return true;
 
-        default:
-          return false;
+      default:
+        return false;
       }
       break;
     }
+
     case XQType::EMPTY_KIND:
     {
-      switch(subtype.type_kind()) {
-        case XQType::EMPTY_KIND:
-          return true;
+      switch(subtype.type_kind()) 
+      {
+      case XQType::EMPTY_KIND:
+        return true;
 
-        default:
-          return false;
+      default:
+        return false;
       }
       break;
     }
+
     case XQType::NONE_KIND:
+    {
       return false;
+    }
 
     case XQType::USER_DEFINED_KIND:
     {
       const UserDefinedXQType& udSuperType = dynamic_cast<const UserDefinedXQType&>(supertype);
+
+      // std::cout << "!!!!!!!!!!!! udt" << std::endl;
+      // ????
       return udSuperType.isSuperTypeOf(subtype);
     }
   }
+
   return false;
 }
 
 
-bool TypeOps::is_promotable(const XQType& srctype, const XQType& targettype)
+/*******************************************************************************
+  
+********************************************************************************/
+bool TypeOps::is_treatable(const store::Item_t& item, const XQType& type)
 {
-  return false;
-}
-
-bool TypeOps::is_treatable(const store::Item_t item, const XQType& type)
-{
-  switch(type.type_kind()) {
-  case XQType::NODE_TYPE_KIND: {
+  switch(type.type_kind()) 
+  {
+  case XQType::NODE_TYPE_KIND: 
+  {
     if (!item->isNode())
       return false;
     
     const NodeXQType& nType = static_cast<const NodeXQType&>(type);
     rchandle<NodeTest> nodeTest = nType.get_nodetest();
-    store::StoreConsts::NodeKind kind = nodeTest->get_kind ();
+    store::StoreConsts::NodeKind kind = nodeTest->get_node_kind();
     rchandle<NodeNameTest> nameTest = nodeTest->get_nametest();
 
-    if (kind != store::StoreConsts::anyNode && kind != item->getNodeKind ())
+    if (kind != store::StoreConsts::anyNode && kind != item->getNodeKind())
       return false;
+
     if (nameTest != NULL && ! nameTest->matches (item->getNodeName ()))
       return false;
 
-    // TODO: check content type
-    // switch(nodeTest->get_kind()) {
-    // default: return true;
-    // }
-      return true;
+    // TODO: check content type ????
+    return true;
   }
 
   default:
     break;
   }
 
-  return is_subtype(*type.get_manager()->create_value_type (item.getp()), type);
+  return is_subtype(*type.get_manager()->create_value_type(item.getp()), type);
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool TypeOps::is_atomic(const XQType& type)
 {
   return type.get_quantifier() == TypeConstants::QUANT_ONE &&
@@ -295,12 +383,18 @@ bool TypeOps::is_atomic(const XQType& type)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool TypeOps::is_simple(const XQType& type)
 {
   return type.type_kind() == XQType::ATOMIC_TYPE_KIND;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool TypeOps::is_numeric(const XQType& type)
 {
   CACHE_ROOT_TS (genv_ts);
@@ -316,10 +410,15 @@ bool TypeOps::is_empty(const XQType& type)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool TypeOps::maybe_date_time(const XQType& type) 
 {
-  const XQType &prime = *prime_type (type);
-  switch (prime.type_kind ()) {
+  const XQType &prime = *prime_type(type);
+
+  switch (prime.type_kind()) 
+  {
   case XQType::ATOMIC_TYPE_KIND:
     switch (static_cast<const AtomicXQType &> (type).get_type_code ()) {
     case TypeConstants::XS_ANY_ATOMIC:
@@ -335,22 +434,33 @@ bool TypeOps::maybe_date_time(const XQType& type)
     default: return false;
     }
     break;
+
   case XQType::ANY_TYPE_KIND:
   case XQType::ANY_SIMPLE_TYPE_KIND:
   case XQType::ITEM_KIND:
     return true;
   case XQType::USER_DEFINED_KIND:
     return true;  // TODO: finer analysis
-  default: return false;
+  default:
+    // NODE, EMPTY, NONE
+    return false;
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 TypeConstants::atomic_type_code_t TypeOps::get_atomic_type_code(const XQType& type)
 {
   assert(type.type_kind() == XQType::ATOMIC_TYPE_KIND);
   return (static_cast<const AtomicXQType&>(type)).get_type_code();
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 xqtref_t TypeOps::union_type(const XQType& type1, const XQType& type2)
 {
   const TypeManager *mgr = get_lower_manager(type1.get_manager(), type2.get_manager());
@@ -384,6 +494,10 @@ xqtref_t TypeOps::union_type(const XQType& type1, const XQType& type2)
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 xqtref_t TypeOps::intersect_type(const XQType& type1, const XQType& type2)
 {
   const TypeManager *mgr = get_lower_manager(type1.get_manager(), type2.get_manager());
@@ -441,6 +555,9 @@ xqtref_t TypeOps::intersect_type(const XQType& type1, const XQType& type2)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 xqtref_t TypeOps::prime_type(const XQType& type) 
 {
   switch (type.type_kind ()) 
@@ -448,9 +565,11 @@ xqtref_t TypeOps::prime_type(const XQType& type)
   case XQType::EMPTY_KIND:
     return GENV_TYPESYSTEM.NONE_TYPE;
 
-  case XQType::ATOMIC_TYPE_KIND: {
+  case XQType::ATOMIC_TYPE_KIND: 
+  {
     const AtomicXQType& atype = static_cast<const AtomicXQType&>(type);
-    return type.get_manager()->create_atomic_type(atype.get_type_code(), TypeConstants::QUANT_ONE);
+    return type.get_manager()->create_atomic_type(atype.get_type_code(),
+                                                  TypeConstants::QUANT_ONE);
   }
   case XQType::NONE_KIND:
     return &type;
@@ -470,7 +589,10 @@ xqtref_t TypeOps::prime_type(const XQType& type)
   case XQType::NODE_TYPE_KIND: 
   {
     const NodeXQType& ntype = static_cast<const NodeXQType&>(type);
-    return type.get_manager()->create_node_type(ntype.get_nodetest(), ntype.get_content_type(), TypeConstants::QUANT_ONE, ntype.get_nillable());
+    return type.get_manager()->create_node_type(ntype.get_nodetest(),
+                                                ntype.get_content_type(),
+                                                TypeConstants::QUANT_ONE,
+                                                ntype.get_nillable());
   }
   case XQType::USER_DEFINED_KIND:
   {
@@ -487,62 +609,42 @@ xqtref_t TypeOps::prime_type(const XQType& type)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 xqtref_t TypeOps::cast_primitive_type(const XQType& type)
 {
-  // TODO more efficient?
   CACHE_ROOT_TS (genv_ts);
 
-  if (is_subtype(type, *genv_ts.UNTYPED_ATOMIC_TYPE_ONE))
-    return genv_ts.UNTYPED_ATOMIC_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.INTEGER_TYPE_ONE))
-    return genv_ts.INTEGER_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.YM_DURATION_TYPE_ONE))
-    return genv_ts.YM_DURATION_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.DT_DURATION_TYPE_ONE))
-    return genv_ts.DT_DURATION_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.STRING_TYPE_ONE))
-    return genv_ts.STRING_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.BOOLEAN_TYPE_ONE))
-    return genv_ts.BOOLEAN_TYPE_ONE; 
-  else if (is_subtype(type, *genv_ts.DECIMAL_TYPE_ONE))
-    return genv_ts.DECIMAL_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.FLOAT_TYPE_ONE))
-    return genv_ts.FLOAT_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.DOUBLE_TYPE_ONE))
-    return genv_ts.DOUBLE_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.DURATION_TYPE_ONE))
-    return genv_ts.DURATION_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.DATETIME_TYPE_ONE))
-    return genv_ts.DATETIME_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.TIME_TYPE_ONE))
-    return genv_ts.TIME_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.DATE_TYPE_ONE))
-    return genv_ts.DATE_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.GYEAR_MONTH_TYPE_ONE))
-    return genv_ts.GYEAR_MONTH_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.GYEAR_TYPE_ONE))
-    return genv_ts.GYEAR_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.GMONTH_DAY_TYPE_ONE))
-    return genv_ts.GMONTH_DAY_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.GDAY_TYPE_ONE))
-    return genv_ts.GDAY_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.GMONTH_TYPE_ONE))
-    return genv_ts.GMONTH_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.HEXBINARY_TYPE_ONE))
-    return genv_ts.HEXBINARY_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.BASE64BINARY_TYPE_ONE))
-    return genv_ts.BASE64BINARY_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.ANY_URI_TYPE_ONE))
-    return genv_ts.ANY_URI_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.QNAME_TYPE_ONE))
-    return genv_ts.QNAME_TYPE_ONE;
-  else if (is_subtype(type, *genv_ts.NOTATION_TYPE_ONE))
-    return genv_ts.NOTATION_TYPE_ONE;
+  ZORBA_ASSERT(type.get_quantifier() == TypeConstants::QUANT_ONE);
+  ZORBA_ASSERT(type.type_kind() == XQType::ATOMIC_TYPE_KIND);
 
-  ZORBA_ASSERT (false);
-  return genv_ts.ANY_ATOMIC_TYPE_ONE;  
+  TypeConstants::atomic_type_code_t code = 
+    reinterpret_cast<const AtomicXQType&>(type).get_type_code();
+
+  if (TypeConstants::XS_STRING <= code && code <= TypeConstants::XS_ENTITY)
+  {
+    return genv_ts.STRING_TYPE_ONE;
+  }
+  else if (TypeConstants::XS_INTEGER <= code &&
+           code <= TypeConstants::XS_POSITIVE_INTEGER)
+  {
+    return genv_ts.INTEGER_TYPE_ONE;
+  }
+  else if (code == TypeConstants::XS_ANY_ATOMIC)
+  {
+    ZORBA_ASSERT (false);
+  }
+  else
+  {
+    return &type;
+  }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 xqtref_t TypeOps::arithmetic_type(const XQType& type1, const XQType& type2)
 {
   CACHE_ROOT_TS (genv_ts);
@@ -567,6 +669,10 @@ xqtref_t TypeOps::arithmetic_type(const XQType& type1, const XQType& type2)
 #undef decimal_but_not_int
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 rchandle<NodeNameTest> TypeOps::get_nametest(const XQType& type)
 {
   if (type.type_kind() == XQType::NODE_TYPE_KIND) {
@@ -579,6 +685,10 @@ rchandle<NodeNameTest> TypeOps::get_nametest(const XQType& type)
   return rchandle<NodeNameTest>(0);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 static inline IdentTypes::quantifier_t get_typeident_quant(TypeConstants::quantifier_t quant)
 {
   switch(quant) {
@@ -602,6 +712,9 @@ static inline IdentTypes::quantifier_t get_typeident_quant(TypeConstants::quanti
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 type_ident_ref_t TypeOps::get_type_identifier(const XQType& type)
 {
   IdentTypes::quantifier_t q = get_typeident_quant(quantifier(type));
@@ -621,7 +734,7 @@ type_ident_ref_t TypeOps::get_type_identifier(const XQType& type)
     type_ident_ref_t content_type = nt.get_content_type() != NULL ? get_type_identifier(*nt.get_content_type()) : type_ident_ref_t();
     const NodeTest *test = nt.get_nodetest().getp();
     const NodeNameTest *nametest = test->get_nametest().getp();
-    switch(test->get_kind()) 
+    switch(test->get_node_kind()) 
     {
     case store::StoreConsts::anyNode:
       return TypeIdentifier::createAnyNodeType(q);
@@ -675,21 +788,36 @@ type_ident_ref_t TypeOps::get_type_identifier(const XQType& type)
 }
 
 
-int TypeOps::type_max_cnt (const XQType& type) {
+/*******************************************************************************
+
+********************************************************************************/
+int TypeOps::type_max_cnt (const XQType& type) 
+{
   return is_empty (type)
     ? 0
     : QUANT_MAX_CNT [quantifier (type)];
 }
 
-int TypeOps::type_min_cnt (const XQType& type) {
+
+/*******************************************************************************
+
+********************************************************************************/
+int TypeOps::type_min_cnt (const XQType& type) 
+{
   return is_empty (type)
     ? 0
     : QUANT_MIN_CNT [quantifier (type)];
 }
 
-int TypeOps::type_cnt (const XQType& type) {
+
+/*******************************************************************************
+
+********************************************************************************/
+int TypeOps::type_cnt (const XQType& type) 
+{
   if (is_empty (type))
     return 0;
+
   TypeConstants::quantifier_t q = quantifier (type);
   if (QUANT_MIN_CNT [q] == QUANT_MAX_CNT [q])
     return QUANT_MIN_CNT [q];

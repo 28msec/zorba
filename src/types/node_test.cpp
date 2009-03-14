@@ -28,6 +28,7 @@ const rchandle<NodeTest> NodeTest::TEXT_TEST(new NodeTest(store::StoreConsts::te
 const rchandle<NodeTest> NodeTest::COMMENT_TEST(new NodeTest(store::StoreConsts::commentNode));
 const rchandle<NodeTest> NodeTest::DOCUMENT_TEST(new NodeTest(store::StoreConsts::documentNode));
 
+
 NodeNameTest::NodeNameTest(
     rchandle<xqpStringStore> uri,
     rchandle<xqpStringStore> local)
@@ -99,7 +100,9 @@ bool NodeNameTest::matches(
 }
 
 
-NodeTest::NodeTest(store::StoreConsts::NodeKind kind) : m_kind(kind)
+NodeTest::NodeTest(store::StoreConsts::NodeKind kind) 
+  :
+  m_node_kind(kind)
 {
 }
 
@@ -108,40 +111,28 @@ NodeTest::NodeTest(
     store::StoreConsts::NodeKind kind,
     rchandle<NodeNameTest> name_test)
   :
-  m_kind(kind),
+  m_node_kind(kind),
   m_name_test(name_test)
 {
 }
 
 
-store::StoreConsts::NodeKind NodeTest::get_kind() const
-{
-  return m_kind;
-}
-
-
-rchandle<NodeNameTest> NodeTest::get_nametest() const
-{
-  return m_name_test;
-}
-
-
 bool NodeTest::is_sub_nodetest_of(const NodeTest& other) const
 {
-  return other.m_kind == store::StoreConsts::anyNode
-    || (other.m_kind == m_kind
-      && (other.m_name_test.getp() == 0
-        || (m_name_test.getp() != 0 && m_name_test->is_subname_of(*other.m_name_test))));
+  return (other.m_node_kind == store::StoreConsts::anyNode ||
+          (other.m_node_kind == m_node_kind &&
+           (other.m_name_test.getp() == 0 ||
+            (m_name_test.getp() != 0 &&
+             m_name_test->is_subname_of(*other.m_name_test)))));
 }
 
 
 bool NodeTest::operator ==(const NodeTest& other) const
 {
-  return other.m_kind == m_kind
-    && (
-      (other.m_name_test.getp() == 0 && m_name_test.getp() == 0)
-        || (other.m_name_test.getp() != 0 && m_name_test.getp() != 0
-          && *other.m_name_test == *m_name_test));
+  return (other.m_node_kind == m_node_kind &&
+          ( (other.m_name_test.getp() == 0 && m_name_test.getp() == 0) ||
+            (other.m_name_test.getp() != 0 && m_name_test.getp() != 0 &&
+             *other.m_name_test == *m_name_test)));
 }
 
 /* vim:set ts=2 sw=2: */

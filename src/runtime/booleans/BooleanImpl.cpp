@@ -247,10 +247,14 @@ CompareIterator::nextImpl ( store::Item_t& result, PlanState& planState ) const
         int i1 = 1;
         while(!found && tSeq1->containsItem(i1)) 
         {
+          store::Item_t item0;
+          store::Item_t item1;
+          tSeq0->getItem(i0, item0);
+          tSeq1->getItem(i1, item1);
           if (CompareIterator::generalComparison(loc,
                                                  planState.theRuntimeCB,
-                                                 tSeq0->getItem(i0),
-                                                 tSeq1->getItem(i1),
+                                                 item0,
+                                                 item1,
                                                  theCompType)) 
           {
             found = true;
@@ -301,8 +305,8 @@ CompareIterator::nextImpl ( store::Item_t& result, PlanState& planState ) const
 
 void CompareIterator::valueCasting(
     RuntimeCB*     aRuntimeCB,
-    const store::Item_t& aItem0,
-    const store::Item_t& aItem1,
+    store::Item_t& aItem0,
+    store::Item_t& aItem1,
     store::Item_t& castItem0,
     store::Item_t& castItem1)
 {
@@ -324,13 +328,11 @@ void CompareIterator::valueCasting(
     }
     else
     {
-      GenericCast::instance()->promote(const_cast<store::Item_t&>(castItem0),
-                                       castItem0,
-                                       &*type1);
+      GenericCast::instance()->promote(castItem0, castItem0, &*type1);
 
       if (!GenericCast::instance()->promote(castItem1, aItem1,
                                             &*GENV_TYPESYSTEM.STRING_TYPE_ONE))
-        castItem1 = aItem1;
+        castItem1.transfer(aItem1);
     }  
   }
   else if  (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
@@ -338,7 +340,7 @@ void CompareIterator::valueCasting(
     if (!GenericCast::instance()->promote(const_cast<store::Item_t&>(castItem0),
                                           aItem0,
                                           &*GENV_TYPESYSTEM.STRING_TYPE_ONE))
-      castItem0 = aItem0;
+      castItem0.transfer(aItem0);
 
     GenericCast::instance()->castToAtomic(castItem1, aItem1,
                                   &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
@@ -348,18 +350,18 @@ void CompareIterator::valueCasting(
   else
   {
     if (!GenericCast::instance()->promote(castItem0, aItem0, &*type1))
-      castItem0 = aItem0;
+      castItem0.transfer(aItem0);
 
     if (!GenericCast::instance()->promote(castItem1, aItem1, &*type0))
-      castItem1 = aItem1;
+      castItem1.transfer(aItem1);
   }
 }
   
 
 void CompareIterator::generalCasting(
     RuntimeCB*     aRuntimeCB,
-    const store::Item_t& aItem0,
-    const store::Item_t& aItem1,
+    store::Item_t& aItem0,
+    store::Item_t& aItem1,
     store::Item_t& castItem0,
     store::Item_t& castItem1)
 {
@@ -374,7 +376,7 @@ void CompareIterator::generalCasting(
     if (TypeOps::is_numeric(*type1))
     {
       GenericCast::instance()->castToAtomic(castItem0, aItem0,
-                                    &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+                                            &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 
       GenericCast::instance()->promote(castItem1, aItem1,
                                        &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
@@ -382,20 +384,20 @@ void CompareIterator::generalCasting(
     else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
     {
       GenericCast::instance()->castToAtomic(castItem0, aItem0,
-                                    &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
+                                            &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
       GenericCast::instance()->castToAtomic(castItem1, aItem1,
-                                    &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
+                                            &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
     }
     else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
     {
       GenericCast::instance()->castToAtomic(castItem0, aItem0,
-                                    &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
-      castItem1 = aItem1;
+                                            &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
+      castItem1.transfer(aItem1);
     }
     else
     {
       GenericCast::instance()->castToAtomic(castItem0, aItem0, &*type1);
-      castItem1 = aItem1;
+      castItem1.transfer(aItem1);
     }
   }
   else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
@@ -403,7 +405,7 @@ void CompareIterator::generalCasting(
     if (TypeOps::is_numeric(*type0))
     {
       GenericCast::instance()->castToAtomic(castItem1, aItem1,
-                                    &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+                                            &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
       GenericCast::instance()->promote(castItem0, aItem0,
                                        &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
       //castItem0 = aItem0;
@@ -411,22 +413,22 @@ void CompareIterator::generalCasting(
     else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
     {
       GenericCast::instance()->castToAtomic(castItem1, aItem1,
-                                    &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
-      castItem0 = aItem0;
+                                            &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
+      castItem0.transfer(aItem0);
     }
     else
     {
       GenericCast::instance()->castToAtomic(castItem1, aItem1, &*type0);
-      castItem0 = aItem0;
+      castItem0.transfer(aItem0);
     }
   }
   else
   {
     if (!GenericCast::instance()->promote(castItem0, aItem0, &*type1))
-      castItem0 = aItem0;
+      castItem0.transfer(aItem0);
 
     if (!GenericCast::instance()->promote(castItem1, aItem1, &*type0))
-      castItem1 = aItem1;
+      castItem1.transfer(aItem1);
   }  
 }
   
@@ -477,8 +479,8 @@ bool CompareIterator::boolResult(
 bool CompareIterator::valueComparison(
     const QueryLoc &loc,
     RuntimeCB* aRuntimeCB, 
-    const store::Item_t& aItem0,
-    const store::Item_t& aItem1, 
+    store::Item_t& aItem0,
+    store::Item_t& aItem1, 
     CompareConsts::CompareType aCompType,
     XQPCollator* aCollation)
 {
@@ -503,10 +505,10 @@ bool CompareIterator::valueComparison(
   
 
 int8_t CompareIterator::valueEqual(
-    RuntimeCB*           aRuntimeCB,
-    const store::Item_t& aItem0,
-    const store::Item_t& aItem1, 
-    XQPCollator*         aCollation)
+    RuntimeCB*     aRuntimeCB,
+    store::Item_t& aItem0,
+    store::Item_t& aItem1, 
+    XQPCollator*   aCollation)
 {
   store::Item_t castItem0, castItem1;
   valueCasting(aRuntimeCB, aItem0, aItem1, castItem0, castItem1);
@@ -516,8 +518,8 @@ int8_t CompareIterator::valueEqual(
 
 int8_t CompareIterator::valueCompare(
     RuntimeCB* aRuntimeCB,
-    const store::Item_t& aItem0,
-    const store::Item_t& aItem1, 
+    store::Item_t& aItem0,
+    store::Item_t& aItem1, 
     XQPCollator* aCollation)
 {
   store::Item_t castItem0, castItem1;
@@ -529,8 +531,8 @@ int8_t CompareIterator::valueCompare(
 bool CompareIterator::generalComparison(
     const QueryLoc& loc,
     RuntimeCB* aRuntimeCB,
-    const store::Item_t& aItem0,
-    const store::Item_t& aItem1, 
+    store::Item_t& aItem0,
+    store::Item_t& aItem1, 
     CompareConsts::CompareType aCompType,
     XQPCollator* aCollation)
 {
@@ -557,8 +559,8 @@ bool CompareIterator::generalComparison(
 
 int8_t CompareIterator::generalEqual(
     RuntimeCB* aRuntimeCB,
-    const store::Item_t& aItem0,
-    const store::Item_t& aItem1, 
+    store::Item_t& aItem0,
+    store::Item_t& aItem1, 
     XQPCollator*   aCollation)
 {
   store::Item_t castItem0, castItem1;
@@ -569,8 +571,8 @@ int8_t CompareIterator::generalEqual(
 
 int8_t CompareIterator::generalCompare(
     RuntimeCB* aRuntimeCB,
-    const store::Item_t& aItem0,
-    const store::Item_t& aItem1, 
+    store::Item_t& aItem0,
+    store::Item_t& aItem1, 
     XQPCollator* aCollation)
 {
   store::Item_t castItem0, castItem1;

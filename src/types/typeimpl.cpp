@@ -126,7 +126,7 @@ NodeXQType::NodeXQType(
 std::ostream& NodeXQType::serialize(std::ostream& os) const
 {
   rchandle<NodeTest> node_test = get_nodetest ();
-  store::StoreConsts::NodeKind node_kind = node_test->get_kind ();
+  store::StoreConsts::NodeKind node_kind = node_test->get_node_kind();
   xqtref_t content_type = get_content_type ();
   rchandle<NodeNameTest> nametest = node_test->get_nametest();
   os << "[NodeXQType " << store::StoreConsts::toString (node_kind)
@@ -233,8 +233,8 @@ bool UserDefinedXQType::isSuperTypeOf(const XQType& subType) const
       
     case XQType::USER_DEFINED_KIND:
     {
-      const UserDefinedXQType* udBaseType_ptr = static_cast<const UserDefinedXQType*>(baseType_ptr);
-      baseType_ptr = udBaseType_ptr->getBaseType().getp();
+      const UserDefinedXQType* tmp = static_cast<const UserDefinedXQType*>(baseType_ptr);
+      baseType_ptr = tmp->getBaseType().getp();
     }
     break;
     

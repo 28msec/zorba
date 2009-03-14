@@ -265,6 +265,8 @@ public:
   UserDefinedXQType does NOT really correspond to a sequence type. Instead, it
   represents a XMLSchema user-defined type that describes the content of an
   element or attribute node.
+
+  Note: m_base_type is NULL for list or union user-defined types.
 ********************************************************************************/
 class UserDefinedXQType : public XQType
 {
@@ -315,9 +317,8 @@ public:
   virtual ~UserDefinedXQType() {}
 
   virtual content_kind_t content_kind() const { return m_contentKind; };
-  bool isSuperTypeOf(const XQType& subType) const;
 
-  store::Item_t getQName()        const { return m_qname;    }
+  store::Item_t getQName() const { return m_qname;    }
 
   bool isAtomic()                 const { return m_typeCategory == ATOMIC_TYPE;  }
   bool isList()                   const { return m_typeCategory == LIST_TYPE;    }
@@ -328,6 +329,8 @@ public:
   xqtref_t getBaseType()                            const { return m_baseType; }
   const XQType*  getListItemType()                  const { return m_listItemType; }
   std::vector<const XQType*> getUnionItemTypes()    const { return m_unionItemTypes; }
+
+  bool isSuperTypeOf(const XQType& subType) const;
 
   virtual std::ostream& serialize(std::ostream& os) const;
 };

@@ -84,11 +84,16 @@ class ItemValuesCollHandleHashMap
         {
           return false;
         }
-        else if(CompareIterator::valueEqual(theCompareParam->theRuntimeCB,
-                                            *iter1, *iter2,
-                                            ( *lCollIter ) ) != 0)
+        else
         {
-          return false;                                 
+          store::Item_t item1 = *iter1;
+          store::Item_t item2 = *iter2;
+          if(CompareIterator::valueEqual(theCompareParam->theRuntimeCB,
+                                            item1, item2,
+                                            ( *lCollIter ) ) != 0)
+          {
+            return false;                                 
+          }
         }
 
         ++lCollIter;

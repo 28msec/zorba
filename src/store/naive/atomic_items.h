@@ -147,6 +147,36 @@ public:
 };
 
 
+#if 0
+/*******************************************************************************
+  class NotationItem
+********************************************************************************/
+class NotationItemNaive : public AtomicItem
+{
+protected:
+  xqpStringStore_t theValue;
+
+public:
+  NotationItemNaive(xqpStringStore_t& value) { theValue.transfer(value); }
+  
+  virtual store::Item* getType( ) const;
+
+  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  virtual bool equals(
+        const store::Item*,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const;
+
+  virtual store::Item_t getEBV( ) const;
+
+  virtual xqpStringStore_t getStringValue() const { return theValue; }
+  virtual xqpStringStore* getStringValueP() const { return theValue.getp(); }
+  virtual xqp_string show() const;
+};
+#endif
+
+
 /*******************************************************************************
   class StringItem
 ********************************************************************************/

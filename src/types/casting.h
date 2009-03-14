@@ -32,7 +32,7 @@ class GenericCast
 
   typedef bool (*CastFunc)(
                             store::Item_t&,
-                            const store::Item_t&, 
+                            const store::Item*, 
                             store::ItemFactory*, 
                             namespace_context *nsCtx,
                             const ErrorInfo& aErrorInfo
@@ -75,13 +75,15 @@ public:
    */
   bool castToAtomic (
         store::Item_t&       result,
-        const store::Item_t& aItem, 
+        store::Item_t&       aItem, 
         const XQType*        aTargetType, 
         namespace_context*   aNCtx = 0) const;
 
-  bool castToSimple (const xqpString aStr, 
-                     const xqtref_t& aTargetType,
-                     std::vector<store::Item_t> &aResultList) const;
+  bool castToSimple (
+        const xqpString aStr, 
+        const xqtref_t& aTargetType,
+        std::vector<store::Item_t> &aResultList) const;
+
   /**
    * Casts the passed string to xs:QName if possible.
    */
@@ -127,9 +129,9 @@ public:
    *         the passed item is returned
    */
   bool promote(
-        store::Item_t&       result,
-        const store::Item_t& aItem,
-        const XQType*        aTargetType) const;
+        store::Item_t& result,
+        store::Item_t& aItem,
+        const XQType*  aTargetType) const;
 
   
 }; /* class GenericCast */

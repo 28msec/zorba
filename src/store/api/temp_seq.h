@@ -116,7 +116,7 @@ public:
    * @param position (first position in XQuery is 1 and not 0!)
    * @return item
    */
-  virtual Item_t getItem(int32_t position) = 0;
+  virtual void getItem(int32_t position, Item_t& result) = 0;
 		
 		
   /**

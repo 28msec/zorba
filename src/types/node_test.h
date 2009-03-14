@@ -28,16 +28,23 @@ namespace zorba {
 
 class NodeNameTest : virtual public SimpleRCObject
 {
- public:
+public:
   typedef enum 
   {
     CONSTANT,
     CONSTANT_WILDCARD,
     WILDCARD_CONSTANT,
     WILDCARD
-  } kind_t;
+  } wildcard_kind_t;
 
+private:
+  wildcard_kind_t          m_kind;
+  rchandle<xqpStringStore> m_uri;
+  rchandle<xqpStringStore> m_local;
+
+public:
   NodeNameTest(rchandle<xqpStringStore> uri, rchandle<xqpStringStore> local);
+
   NodeNameTest(rchandle<store::Item> qname);
     
   rchandle<xqpStringStore> get_uri() const;
@@ -52,17 +59,16 @@ class NodeNameTest : virtual public SimpleRCObject
   bool matches(
         const xqpStringStore* lname,
         const xqpStringStore* ns) const;
-
- private:
-  kind_t                   m_kind;
-  rchandle<xqpStringStore> m_uri;
-  rchandle<xqpStringStore> m_local;
 };
 
 
 class NodeTest : virtual public SimpleRCObject
 {
- public:
+private:
+  store::StoreConsts::NodeKind  m_node_kind;
+  rchandle<NodeNameTest>        m_name_test;
+
+public:
   static const rchandle<NodeTest> ANY_NODE_TEST;
   static const rchandle<NodeTest> ELEMENT_TEST;
   static const rchandle<NodeTest> ATTRIBUTE_TEST;
@@ -76,16 +82,13 @@ class NodeTest : virtual public SimpleRCObject
 
   NodeTest(store::StoreConsts::NodeKind kind, rchandle<NodeNameTest> name_test);
 
-  store::StoreConsts::NodeKind get_kind() const;
-  rchandle<NodeNameTest> get_nametest() const;
-  store::Item_t get_type_name() const;
+  store::StoreConsts::NodeKind get_node_kind() const { return m_node_kind; }
+
+  rchandle<NodeNameTest> get_nametest() const { return m_name_test; }
 
   bool is_sub_nodetest_of(const NodeTest& other) const;
-  bool operator ==(const NodeTest& other) const;
 
- private:
-  store::StoreConsts::NodeKind  m_kind;
-  rchandle<NodeNameTest>        m_name_test;
+  bool operator==(const NodeTest& other) const;
 };
 
 }

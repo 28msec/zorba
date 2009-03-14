@@ -55,8 +55,8 @@ public:
         store::Item_t& result,
         RuntimeCB* aRuntimeCB,
         const QueryLoc& loc,
-        store::Item *item0,
-        store::Item *item1);
+        store::Item_t& item0,
+        store::Item_t& item1);
       
   /**
    * Computes Operation on passed items.
@@ -72,9 +72,9 @@ public:
         store::Item_t& result,
         RuntimeCB* aRuntimeCB,
         const QueryLoc&,
-        store::Item *item0,
+        store::Item_t& item0,
         xqtref_t type0,
-        store::Item *item1,
+        store::Item_t& item1,
         xqtref_t type1);
 }; /* class NumArithIterator */
 

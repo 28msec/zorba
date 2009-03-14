@@ -40,7 +40,10 @@ public:
 
   static std::string toString (const XQType& type);
 
-  static const TypeManager *get_lower_manager(const TypeManager* m1, const TypeManager* m2);
+  /**
+   * Of the 2 given type managers, return the one with a lower level.
+   */
+  static const TypeManager* get_lower_manager(const TypeManager* m1, const TypeManager* m2);
 
   /*
    * Returns the quantifier of the argument.
@@ -48,12 +51,14 @@ public:
   static TypeConstants::quantifier_t quantifier(const XQType& type);
 
   /*
-   * Returns the castability fron the source type to the target type
+   * Returns the castability fron the source ItemType to the target ItemType. It
+   * works only if both source and target types are builtin atomic types.
+   * Otherwise, it returns NOT_CASTABLE.
    */
   static TypeConstants::castable_t castability(const XQType& src, const XQType& target);
 
   /*
-   * Returns true iff _type1_ is equal to _type2_ including the quantifier,
+   * Returns true iff type1 is equal to type2 including the quantifier,
    * false otherwise.
    */
   static bool is_equal(const XQType& type1, const XQType& type2);
@@ -64,34 +69,31 @@ public:
   static bool is_subtype(const XQType& subtype, const XQType& supertype);
 
   /*
-   * Returns true if _srctype_ is promotable to _targettype_, false otherwise.
-   */
-  static bool is_promotable(const XQType& srctype, const XQType& targettype);
-
-  /*
    * Returns true if _item_ is treatable as _type_, false otherwise.
    */
-  static bool is_treatable(const store::Item_t item, const XQType& type);
+  static bool is_treatable(const store::Item_t& item, const XQType& type);
 
   /*
-   * Returns true if the given type is an atomic type. The quantifier of such
-   * a type MUST be QUANT_ONE.
+   * Returns true if the quantifier of the given sequence type is QUANT_ONE and
+   * its ItemType is a builtin atomic type.
    */
   static bool is_atomic(const XQType& type);
 
   /*
-   * Returns true if the given type is simple. A simple type means that its
-   * primetype is atomic.
+   * Returns true if the ItemType of the given sequence type is a builtin
+   * atomic type.
+   *
    */
   static bool is_simple(const XQType& type);
 
   /*
-   * Returns true is the given type is a numeric type.
+   * Returns true is the given sequence type is a subtype of an atomic builtin
+   * nu,eric type (xs:decimal, xs:double, or xs:float)
    */
   static bool is_numeric(const XQType& type);
   
   /*
-   * Returns true is the given type is the empty type.
+   * Returns true is the given sequence type is the empty sequence.
    */
   static bool is_empty(const XQType& type);
   

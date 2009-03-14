@@ -27,99 +27,121 @@ using namespace zorba;
 namespace zorba {
   namespace gflwor {
 
-    /////////////////////////////////////////////////////////////////////////////////
-    //                                                                             //
-    //  WindowVars                                                                 //
-    //                                                                             //
-    /////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  WindowVars                                                                 //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-    WindowVars::WindowVars() {
+WindowVars::WindowVars() 
+{
+}
+
+
+WindowVars::WindowVars (
+    std::vector<ForVarIter_t >& aCurVars,
+    std::vector<ForVarIter_t >& aPrevVars,
+    std::vector<ForVarIter_t >& aNextVars,
+    std::vector<ForVarIter_t >& aPosVars,
+    std::vector<ForVarIter_t >& aCurOuterVars,
+    std::vector<ForVarIter_t >& aPrevOuterVars,
+    std::vector<ForVarIter_t >& aNextOuterVars,
+    std::vector<ForVarIter_t >& aPosOuterVars)
+  :
+  theCurVars ( aCurVars ),
+  thePrevVars ( aPrevVars ),
+  theNextVars ( aNextVars ),
+  thePosVars ( aPosVars ),
+  theCurOuterVars ( aCurOuterVars ),
+  thePrevOuterVars ( aPrevOuterVars ),
+  theNextOuterVars ( aNextOuterVars ),
+  thePosOuterVars ( aPosOuterVars ) {
+ 
+}
+
+
+WindowVars::~WindowVars() 
+{
+}
+
+
+void WindowVars::accept ( PlanIterVisitor& ) const 
+{
+  //TODO More infos
+}
+
+
+void WindowVars::bindIntern (
+    PlanState& aPlanState,
+    const store::TempSeq_t& aInputSeq, 
+    const uint32_t aPosition ) const 
+{
+  store::Item_t lItem;
+
+  if ( !theCurVars.empty() ) {
+    aInputSeq->getItem ( aPosition, lItem );
+    bindVariables ( lItem, theCurVars, aPlanState );
+  }
+
+  if ( !thePrevVars.empty() ) {
+    if ( aPosition > 1 ) {
+      aInputSeq->getItem ( aPosition - 1, lItem );
+    } else {
+      lItem = 0;
     }
+    bindVariables ( lItem, thePrevVars, aPlanState );
+  }
 
-    WindowVars::WindowVars ( std::vector<ForVarIter_t >& aCurVars,
-                             std::vector<ForVarIter_t >& aPrevVars,
-                             std::vector<ForVarIter_t >& aNextVars,
-                             std::vector<ForVarIter_t >& aPosVars,
-                             std::vector<ForVarIter_t >& aCurOuterVars,
-                             std::vector<ForVarIter_t >& aPrevOuterVars,
-                             std::vector<ForVarIter_t >& aNextOuterVars,
-                             std::vector<ForVarIter_t >& aPosOuterVars
-                           ) :
-        theCurVars ( aCurVars ),
-        thePrevVars ( aPrevVars ),
-        theNextVars ( aNextVars ),
-        thePosVars ( aPosVars ),
-        theCurOuterVars ( aCurOuterVars ),
-        thePrevOuterVars ( aPrevOuterVars ),
-        theNextOuterVars ( aNextOuterVars ),
-        thePosOuterVars ( aPosOuterVars ) {
-
+  if ( !theNextVars.empty() ) {
+    if ( aInputSeq->containsItem ( aPosition + 1 ) ) {
+      aInputSeq->getItem ( aPosition + 1, lItem );
+    } else {
+      lItem = 0;
     }
+    bindVariables ( lItem, theNextVars, aPlanState );
+  }
 
+  if ( !thePosVars.empty() ) {
+    store::Item_t lPosItem;
+    GENV_ITEMFACTORY->createInteger ( lPosItem, Integer::parseInt ( aPosition ) );
+    bindVariables ( lPosItem, thePosVars, aPlanState );
+  }
+}
+    
 
-    WindowVars::~WindowVars() {
+void WindowVars::bindExtern ( 
+    PlanState& aPlanState,
+    const store::TempSeq_t& aInputSeq,
+    const uint32_t aPosition ) const 
+{
+  store::Item_t lItem;
+  if ( !theCurOuterVars.empty() ) {
+    aInputSeq->getItem ( aPosition, lItem );
+    bindVariables ( lItem, theCurOuterVars, aPlanState );
+  }
+
+  if ( !thePrevOuterVars.empty() ) {
+    if ( aPosition > 1 ) {
+      aInputSeq->getItem ( aPosition - 1, lItem );
+    } else {
+      lItem = 0;
     }
+    bindVariables ( lItem, thePrevOuterVars, aPlanState );
+  }
 
-    void WindowVars::accept ( PlanIterVisitor& ) const {
-      //TODO More infos
+  if ( !theNextOuterVars.empty() ) {
+    if ( aInputSeq->containsItem ( aPosition + 1 ) ) {
+      aInputSeq->getItem ( aPosition + 1, lItem );
+    } else {
+      lItem = 0;
     }
-
-    void WindowVars::bindIntern ( PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition ) const {
-      store::Item_t lItem;
-      if ( !theCurVars.empty() ) {
-        lItem = aInputSeq->getItem ( aPosition );
-        bindVariables ( lItem, theCurVars, aPlanState );
-      }
-      if ( !thePrevVars.empty() ) {
-        if ( aPosition > 1 ) {
-          lItem = aInputSeq->getItem ( aPosition - 1 );
-        } else {
-          lItem = 0;
-        }
-        bindVariables ( lItem, thePrevVars, aPlanState );
-      }
-      if ( !theNextVars.empty() ) {
-        if ( aInputSeq->containsItem ( aPosition + 1 ) ) {
-          lItem = aInputSeq->getItem ( aPosition + 1 );
-        } else {
-          lItem = 0;
-        }
-        bindVariables ( lItem, theNextVars, aPlanState );
-      }
-      if ( !thePosVars.empty() ) {
-        store::Item_t lPosItem;
-        GENV_ITEMFACTORY->createInteger ( lPosItem, Integer::parseInt ( aPosition ) );
-        bindVariables ( lPosItem, thePosVars, aPlanState );
-      }
-    }
-
-    void WindowVars::bindExtern ( PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition ) const {
-      store::Item_t lItem;
-      if ( !theCurOuterVars.empty() ) {
-        lItem = aInputSeq->getItem ( aPosition );
-        bindVariables ( lItem, theCurOuterVars, aPlanState );
-      }
-      if ( !thePrevOuterVars.empty() ) {
-        if ( aPosition > 1 ) {
-          lItem = aInputSeq->getItem ( aPosition - 1 );
-        } else {
-          lItem = 0;
-        }
-        bindVariables ( lItem, thePrevOuterVars, aPlanState );
-      }
-      if ( !theNextOuterVars.empty() ) {
-        if ( aInputSeq->containsItem ( aPosition + 1 ) ) {
-          lItem = aInputSeq->getItem ( aPosition + 1 );
-        } else {
-          lItem = 0;
-        }
-        bindVariables ( lItem, theNextOuterVars, aPlanState );
-      }
-      if ( !thePosOuterVars.empty() ) {
-        GENV_ITEMFACTORY->createInteger ( lItem, Integer::parseInt ( aPosition ) );
-        bindVariables ( lItem, thePosOuterVars, aPlanState );
-      }
-    }
+    bindVariables ( lItem, theNextOuterVars, aPlanState );
+  }
+  if ( !thePosOuterVars.empty() ) {
+    GENV_ITEMFACTORY->createInteger ( lItem, Integer::parseInt ( aPosition ) );
+    bindVariables ( lItem, thePosOuterVars, aPlanState );
+  }
+}
 
 
     /////////////////////////////////////////////////////////////////////////////////

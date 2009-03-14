@@ -68,8 +68,10 @@ public:
   public:
     CompareFunction(ValueCompareParam* comp) : theCompareParam(comp) {}
 
-    bool equal(const store::Item_t& t1, const store::Item_t& t2)
+    bool equal(const store::Item_t& item1, const store::Item_t& item2)
     {
+      store::Item_t t1(item1);
+      store::Item_t t2(item2);
       return CompareIterator::valueEqual(theCompareParam->theRuntimeCB, t1, t2) == 0; 
     }
 
@@ -123,10 +125,12 @@ public:
   public:
     CompareFunction(ValueCollCompareParam* comp) : theCompareParam(comp) {}
 
-    bool equal(const store::Item_t& t1, const store::Item_t& t2)
+    bool equal(const store::Item_t& item1, const store::Item_t& item2)
     {
-      assert (t1 != NULL);
-      assert (t2 != NULL);
+      assert (item1 != NULL);
+      assert (item2 != NULL);
+      store::Item_t t1(item1);
+      store::Item_t t2(item2);
       return CompareIterator::valueEqual(theCompareParam->theRuntimeCB,
                                          t1, t2,
                                          (theCompareParam->theCollator)) == 0; 

@@ -218,29 +218,11 @@ public:
   static bool valueComparison(
         const QueryLoc &,
         RuntimeCB* aRuntimeCB,
-        const store::Item_t& aItem0,
-        const store::Item_t& aItem1, 
+        store::Item_t& aItem0,
+        store::Item_t& aItem1, 
         CompareConsts::CompareType aCompType,
         XQPCollator* aCollation = 0);
-      
-  /**
-   * General comparison of the passed two items with the operator 
-   * which is defined in the CompareIterator object.
-   *
-   * @param item0 
-   * @param item1 
-   * @param aCompType
-   * @param aCollation optional collation parameter
-   * @return 
-   */
-  static bool generalComparison(
-        const QueryLoc &,
-        RuntimeCB*     aRuntimeCB,
-        const store::Item_t& aItem0,
-        const store::Item_t& aItem_1,
-        CompareConsts::CompareType aCompType,
-        XQPCollator*   aCollation = 0);
-  
+
   /**
    * Value Equal on the passed items
    *
@@ -251,21 +233,8 @@ public:
    */
   static int8_t valueEqual(
         RuntimeCB*     aRuntimeCB,
-        const store::Item_t& aItem0,
-        const store::Item_t& aItem1, 
-        XQPCollator*   aCollation = 0);
-      
-  /**
-   * General Equal on the passed items
-   * @param aItem0 
-   * @param aItem1 
-   * @param aCollation options collation parameter 
-   * @return 0 (equal), 1 (not equal), -2 (general equal not possible)
-   */
-  static int8_t generalEqual(
-        RuntimeCB*     aRuntimeCB,
-        const store::Item_t& aItem0,
-        const store::Item_t& aItem1, 
+        store::Item_t& aItem0,
+        store::Item_t& aItem1, 
         XQPCollator*   aCollation = 0);
       
   /**
@@ -281,9 +250,40 @@ public:
    */
   static int8_t valueCompare(
         RuntimeCB* aRuntimeCB,
-        const store::Item_t& aItem0,
-        const store::Item_t& aItem1, 
+        store::Item_t& aItem0,
+        store::Item_t& aItem1, 
         XQPCollator* aCollation = 0);
+
+  /**
+   * General comparison of the passed two items with the operator 
+   * which is defined in the CompareIterator object.
+   *
+   * @param item0 
+   * @param item1 
+   * @param aCompType
+   * @param aCollation optional collation parameter
+   * @return 
+   */
+  static bool generalComparison(
+        const QueryLoc &,
+        RuntimeCB*     aRuntimeCB,
+        store::Item_t& aItem0,
+        store::Item_t& aItem_1,
+        CompareConsts::CompareType aCompType,
+        XQPCollator*   aCollation = 0);
+      
+  /**
+   * General Equal on the passed items
+   * @param aItem0 
+   * @param aItem1 
+   * @param aCollation options collation parameter 
+   * @return 0 (equal), 1 (not equal), -2 (general equal not possible)
+   */
+  static int8_t generalEqual(
+        RuntimeCB*     aRuntimeCB,
+        store::Item_t& aItem0,
+        store::Item_t& aItem1, 
+        XQPCollator*   aCollation = 0);
       
   /**
    * General Comparison on the passed items
@@ -295,24 +295,24 @@ public:
    */
   static int8_t generalCompare(
         RuntimeCB* aRuntimeCB,
-        const store::Item_t& aItem0,
-        const store::Item_t& aItem1, 
+        store::Item_t& aItem0,
+        store::Item_t& aItem1, 
         XQPCollator* aCollation = 0);
       
 private:
   static void valueCasting(
         RuntimeCB*     aRuntimeCB, 
-        const store::Item_t& aItem0,
-        const store::Item_t& aItem1,
-        store::Item_t&       castItem0,
-        store::Item_t&       castItem1);
+        store::Item_t& aItem0,
+        store::Item_t& aItem1,
+        store::Item_t& castItem0,
+        store::Item_t& castItem1);
 
   static void generalCasting(
         RuntimeCB*     aRuntimeCB, 
-        const store::Item_t& aItem0,
-        const store::Item_t& aItem1,
-        store::Item_t&       castItem0,
-        store::Item_t&       castItem1);
+        store::Item_t& aItem0,
+        store::Item_t& aItem1,
+        store::Item_t& castItem0,
+        store::Item_t& castItem1);
 
   static bool boolResult(
         const QueryLoc &,

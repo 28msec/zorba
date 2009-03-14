@@ -140,6 +140,7 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lSequenceItem;
   store::Item_t lCollationItem;
   xqtref_t      lCollationItemType;
+  store::Item_t searchItem;
 
   FnIndexOfIteratorState* state;
   DEFAULT_STACK_INIT(FnIndexOfIteratorState, state, planState);
@@ -158,13 +159,16 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
     // inc the position in the sequence; do it at the beginning of the loop because index-of starts with one
     ++state->theCurrentPos;
     
+    searchItem = state->theSearchItem;
     if (CompareIterator::valueEqual(planState.theRuntimeCB,
-                                    lSequenceItem, state->theSearchItem, state->theCollator) == 0)
-      STACK_PUSH(GENV_ITEMFACTORY->createInteger(
-        result,
-        Integer::parseInt(state->theCurrentPos)), 
-        state
-      );
+                                    lSequenceItem,
+                                    searchItem,
+                                    state->theCollator) == 0)
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createInteger(result,
+                                                 Integer::parseInt(state->theCurrentPos)), 
+                 state);
+    }
   }
 
   STACK_END (state);
@@ -1003,16 +1007,19 @@ FnMinMaxIterator::FnMinMaxIterator
        : CompareConsts::VALUE_GREATER)) 
 { }
 
+
 bool 
-FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
   store::Item_t lRunningItem = NULL;
   xqtref_t lMaxType;
   XQPCollator*  lCollator = 0;
   bool  elems_in_seq = 0;
-
   result = NULL;
+
+  try
+  {
   PlanIteratorState* state;
-  try{
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (theChildren.size() == 2)
@@ -1020,18 +1027,23 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
 
   if (consumeNext(lRunningItem, theChildren[0].getp(), planState))
   {
-    do {
+    do 
+    {
       // casting of untyped atomic
       xqtref_t lRunningType = planState.theCompilerCB->m_sctx->get_typemanager()->
                               create_value_type (lRunningItem);
 
-      if (TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) {
-        GenericCast::instance()->castToAtomic(lRunningItem, lRunningItem, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+      if (TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) 
+      {
+        GenericCast::instance()->castToAtomic(lRunningItem,
+                                              lRunningItem,
+                                              &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
         lRunningType = GENV_TYPESYSTEM.DOUBLE_TYPE_ONE;
       }
 
       // implementation dependent: return the first occurence)
-      if (lRunningItem->isNaN()) {
+      if (lRunningItem->isNaN()) 
+      {
         /** It must be checked if the sequence contains any 
          * xs:double("NaN") [xs:double("NaN") is returned] or 
          * only xs:float("NaN")'s [xs:float("NaN") is returned]'.
@@ -1043,46 +1055,73 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
         lMaxType = planState.theCompilerCB->m_sctx->get_typemanager()->
                    create_value_type (result);
       }
-      if (result != 0) {
+
+      if (result != 0) 
+      {
         // Type Promotion
         store::Item_t lItemCur;
-        if (!GenericCast::instance()->promote(lItemCur, lRunningItem, &*lMaxType)) {
-          if (GenericCast::instance()->promote(lItemCur, result, &*lRunningType)) {
-            result = lItemCur;
+        if (!GenericCast::instance()->promote(lItemCur, lRunningItem, &*lMaxType)) 
+        {
+          if (GenericCast::instance()->promote(lItemCur, result, &*lRunningType)) 
+          {
+            result.transfer(lItemCur);
             lMaxType = planState.theCompilerCB->m_sctx->get_typemanager()->
                        create_value_type (result);
-          } else {
+          } 
+          else 
+          {
             ZORBA_ERROR_LOC_DESC( FORG0006, loc,  "Promote not possible");
           }
-        } else {
-          lRunningItem = lItemCur;
+        }
+        else 
+        {
+          lRunningItem.transfer(lItemCur);
           lRunningType = planState.theCompilerCB->m_sctx->get_typemanager()->
                          create_value_type (lRunningItem);
         }
 
-        if (CompareIterator::valueComparison(loc, planState.theRuntimeCB, lRunningItem, result, theCompareType, lCollator) ) {
+        store::Item_t current_copy(lRunningItem);
+        store::Item_t max_copy(result);
+        if (CompareIterator::valueComparison(loc,
+                                             planState.theRuntimeCB,
+                                             current_copy,
+                                             max_copy,
+                                             theCompareType,
+                                             lCollator) ) 
+        {
           lMaxType = lRunningType;
-          result = lRunningItem;
+          result.transfer(lRunningItem);
         }
-      } else {
-        lMaxType = lRunningType;
-        result = lRunningItem;
       }
+      else 
+      {
+        lMaxType = lRunningType;
+        result.transfer(lRunningItem);
+      }
+
       elems_in_seq++;
     } while (consumeNext(lRunningItem, theChildren[0].getp(), planState));
     
     if(elems_in_seq == 1)
     {
       //check type compatibility
-      CompareIterator::valueComparison(loc, planState.theRuntimeCB, result, result, theCompareType, lCollator);
+      store::Item_t dummy1(result);
+      store::Item_t dummy2(result);
+      CompareIterator::valueComparison(loc,
+                                       planState.theRuntimeCB,
+                                       dummy1,
+                                       dummy2,
+                                       theCompareType,
+                                       lCollator);
     }
 
     STACK_PUSH(result != NULL, state);
-  }
+  } // if non-empty seq
 
   STACK_END (state);
   
-  }catch(error::ZorbaError &e)
+  }
+  catch(error::ZorbaError &e)
   {
     if(e.localName() == "XPTY0004")
     {

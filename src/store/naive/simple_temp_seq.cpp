@@ -83,15 +83,15 @@ int32_t SimpleTempSeq::getSize()
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t SimpleTempSeq::getItem(int32_t position)
+void SimpleTempSeq::getItem(int32_t position, store::Item_t& res)
 {
   if ( this->containsItem(position))
 	{
-    return theItems[position - 1];
+    res = theItems[position - 1];
   }
   else
 	{
-    return NULL;
+    res = NULL;
   }
 }
 	
