@@ -107,7 +107,7 @@ IF(LIBXML2_FOUND)
     SET(CXXFLAGS ${CXXFLAGS} ${LIBXML2_DEFINITONS})
 
 ELSE(LIBXML2_FOUND)
-    MESSAGE(FATAL_ERROR "The libxml2 library is required in order to build simple store.")
+    MESSAGE(FATAL_ERROR "The libxml2 library and headers are required in order to build simple store.")
 ENDIF(LIBXML2_FOUND)
 
 #
