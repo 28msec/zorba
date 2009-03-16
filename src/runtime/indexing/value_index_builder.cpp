@@ -22,37 +22,40 @@ bool ValueIndexInsertSessionOpener::nextImpl(store::Item_t& result, PlanState& p
   bool status;
   ValueIndex_t index;
   PlanIteratorState *state;
+  ValueIndexInsertSession_t session;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   status = consumeNext(result, theChild, planState);
   ZORBA_ASSERT(status);
   index = planState.sctx()->lookup_index(result->getStringValueP());
-  index->startBulkInsertSession();
+  session = index->createBulkInsertSession();
+  // TODO - Add to dynamic context.
   STACK_END (state);
 }
 
 bool ValueIndexInsertSessionCloser::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   bool status;
-  ValueIndex_t index;
+  ValueIndexInsertSession_t index;
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   status = consumeNext(result, theChild, planState);
   ZORBA_ASSERT(status);
-  index = planState.sctx()->lookup_index(result->getStringValueP());
-  index->commitBulkInsertSession();
+  // TODO - look in dynamic context
+  //index = planState.sctx()->lookup_index(result->getStringValueP());
+  //index->commitBulkInsertSession();
   STACK_END (state);
 }
 
 void ValueIndexBuilderState::init(PlanState& state)
 {
   PlanIteratorState::init(state);
-  theIndex = NULL;
+  theSession = NULL;
 }
 
 void ValueIndexBuilderState::reset(PlanState& state)
 {
   PlanIteratorState::reset(state);
-  theIndex = NULL;
+  theSession = NULL;
 }
 
 bool ValueIndexBuilder::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -61,17 +64,18 @@ bool ValueIndexBuilder::nextImpl(store::Item_t& result, PlanState& planState) co
   store::IndexKey key;
   ValueIndexBuilderState *state;
   DEFAULT_STACK_INIT(ValueIndexBuilderState, state, planState);
-  if (state->theIndex == NULL) {
+  if (state->theSession == NULL) {
     store::Item_t iName;
     consumeNext(iName, theChildren[0], planState);
-    state->theIndex = planState.sctx()->lookup_index(iName->getStringValueP());
+    // TODO Look in dynamic context for the session
+    // state->theIndex = planState.sctx()->lookup_index(iName->getStringValueP());
   }
   consumeNext(dValue, theChildren[1], planState);
   for(unsigned int i = 1; i < theChildren.size(); ++i) {
     store::Item_t cValue;
     key.push_back(consumeNext(cValue, theChildren[i], planState) ? cValue : NULL);
   }
-  state->theIndex->getBulkInsertSession()->receive(key, dValue);
+  state->theSession->getBulkInsertSession()->receive(key, dValue);
   STACK_END (state);
 }
 

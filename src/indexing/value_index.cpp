@@ -22,18 +22,20 @@ ValueIndex::~ValueIndex()
 {
 }
 
-void ValueIndex::startBulkInsertSession()
+ValueIndexInsertSession_t ValueIndex::createBulkInsertSession()
 {
-  m_bulkInsertSession = m_store_index->createInsertSession();
+  store::IndexEntryReceiver_t receiver = m_store_index->createInsertSession();
+  ValueIndexInsertSession_t session = new ValueIndexInsertSession(receiver);
+  return session;
 }
 
-void ValueIndex::commitBulkInsertSession()
+void ValueIndexInsertSession::commitBulkInsertSession()
 {
   m_bulkInsertSession->commit();
   m_bulkInsertSession = NULL;
 }
 
-void ValueIndex::abortBulkInsertSession()
+void ValueIndexInsertSession::abortBulkInsertSession()
 {
   m_bulkInsertSession->abort();
   m_bulkInsertSession = NULL;

@@ -48,7 +48,7 @@ class ValueIndexInsertSessionCloser : public UnaryBaseIterator<ValueIndexInsertS
 
 class ValueIndexBuilderState : public PlanIteratorState {
   public:
-    ValueIndex_t theIndex;
+    ValueIndexInsertSession_t theSession;
 
     void init(PlanState&);
     void reset(PlanState&);

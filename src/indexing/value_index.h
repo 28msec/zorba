@@ -26,6 +26,10 @@ namespace zorba {
 
 typedef rchandle<var_expr> var_expr_t;
 
+class ValueIndexInsertSession;
+
+typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
+
 class ValueIndex : public RCObject {
   public:
     ValueIndex(static_context *sCtx, xqpStringStore_t indexUri)
@@ -51,13 +55,7 @@ class ValueIndex : public RCObject {
     const std::vector<xqtref_t>& getIndexFieldTypes() const { return m_index_field_types; }
     void setIndexFieldTypes(const std::vector<xqtref_t>& indexFieldTypes) { m_index_field_types = indexFieldTypes; }
 
-    void startBulkInsertSession();
-
-    void commitBulkInsertSession();
-
-    void abortBulkInsertSession();
-
-    store::IndexEntryReceiver_t& getBulkInsertSession() { return m_bulkInsertSession; }
+    ValueIndexInsertSession_t createBulkInsertSession();
 
   private:
     static_context *m_static_context;
@@ -67,10 +65,26 @@ class ValueIndex : public RCObject {
     var_expr_t m_domain_var;
     std::vector<expr_t> m_index_field_exprs;
     std::vector<xqtref_t> m_index_field_types;
-    store::IndexEntryReceiver_t m_bulkInsertSession;
 };
 
 typedef rchandle<ValueIndex> ValueIndex_t;
+
+class ValueIndexInsertSession : public RCObject {
+  public:
+    ValueIndexInsertSession(store::IndexEntryReceiver_t receiver)
+      : m_bulkInsertSession(receiver) { }
+
+    void commitBulkInsertSession();
+
+    void abortBulkInsertSession();
+
+    store::IndexEntryReceiver_t& getBulkInsertSession() { return m_bulkInsertSession; }
+
+  private:
+    ValueIndex_t m_vi;
+
+    store::IndexEntryReceiver_t m_bulkInsertSession;
+};
 
 }
 
