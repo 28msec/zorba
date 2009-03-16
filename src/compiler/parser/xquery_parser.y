@@ -1582,7 +1582,12 @@ ExitExpr :
 WhileExpr :
     WHILE LPAR ExprSingle RPAR Block
     {
-      $$ = new WhileExpr (LOC (@$), $3, dynamic_cast<BlockBody *> ($5));
+      BlockBody *b = dynamic_cast<BlockBody *> ($5);
+      if (b == NULL) {
+        b = new BlockBody ($5->get_location ()); 
+        b->add ($5);
+      }
+      $$ = new WhileExpr (LOC (@$), $3, b);
     }
   ;
 
