@@ -29,6 +29,7 @@ namespace zorba { namespace storeminimal {
  */
 typedef rchandle<class SimpleTempSeq> SimpleTempSeq_t;
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -48,12 +49,14 @@ public:
 
   virtual bool empty();
   
-  store::Item_t operator[](int32_t aIndex);
   int32_t getSize();
 
   virtual void append(store::Iterator_t iter, bool copy);
 
-  virtual store::Item_t getItem(int32_t position);
+  store::Item_t operator[](int32_t aIndex);
+
+  virtual void getItem(int32_t position, store::Item_t& res);
+
   virtual bool containsItem(int32_t position);
 
   virtual store::Iterator_t getIterator();
@@ -87,7 +90,6 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-
 class SimpleTempSeqIter : public store::TempSeqIterator
 {
  private:

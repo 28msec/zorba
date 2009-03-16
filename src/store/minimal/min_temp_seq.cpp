@@ -44,12 +44,12 @@ SimpleTempSeq::SimpleTempSeq(store::Iterator_t iter, bool copy)
 ********************************************************************************/
 SimpleTempSeq::~SimpleTempSeq()
 {
-  ulong numItems = theItems.size();
-  for (ulong i = 0; i < numItems; i++)
-  {
-    store::Item* n = theItems[i];
-    //n->removeReference(n->getSharedRefCounter() SYNC_PARAM2(n->getRCLock()));
-  }
+//ulong numItems = theItems.size();
+//for (ulong i = 0; i < numItems; i++)
+//{
+//  store::Item* n = theItems[i];
+//  //n->removeReference(n->getSharedRefCounter() SYNC_PARAM2(n->getRCLock()));
+//}
 }
 
 
@@ -83,15 +83,15 @@ int32_t SimpleTempSeq::getSize()
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t SimpleTempSeq::getItem(int32_t position)
+void SimpleTempSeq::getItem(int32_t position, store::Item_t& res)
 {
   if ( this->containsItem(position))
 	{
-    return theItems[position - 1];
+    res = theItems[position - 1];
   }
   else
 	{
-    return NULL;
+    res = NULL;
   }
 }
 	
@@ -147,7 +147,7 @@ store::Iterator_t SimpleTempSeq::getIterator(
     int32_t endPos,
     bool streaming)
 {
-  return new SimpleTempSeqIter(this, startPos, endPos);
+  return new SimpleTempSeqIter ( this, startPos, endPos );
 }
 
 
@@ -179,8 +179,8 @@ store::Iterator_t SimpleTempSeq::getIterator(
 
 ********************************************************************************/
 store::Iterator_t SimpleTempSeq::getIterator(
-  store::Iterator_t positions, 
-  bool streaming)
+    store::Iterator_t positions,
+    bool streaming)
 {
   return store::Iterator_t(NULL);
 }
