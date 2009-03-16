@@ -2897,9 +2897,12 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
         xqpStringStore_t   uri_string = uri_value->getStringValue();
         try{
           xqpString   xqp_uri_string(uri_string);
-          xqpString   xqp_base_uri("http://website/");
-          URI   baseURI(xqp_base_uri, false);
-          URI   docURI(baseURI, xqp_uri_string, true);//with validate
+          //xqpString   xqp_base_uri("http://website/");
+          //URI   baseURI(xqp_base_uri, false);
+          if(uri_string->indexOf(":/") >= 0)
+          {
+            URI   docURI(xqp_uri_string, true);//with validate`
+          }
         }
         catch(error::ZorbaError &e)
         {
