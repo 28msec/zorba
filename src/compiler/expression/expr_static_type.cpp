@@ -153,20 +153,26 @@ static xqtref_t print_expr_ant_type(expr *e, xqtref_t t)
   
   xqtref_t order_expr::return_type_impl(static_context *sctx) { return expr_h->return_type (sctx); }
   
-  xqtref_t var_expr::return_type_impl(static_context *sctx) {
-    xqtref_t type1 = NULL;
-    if (kind == for_var || kind == let_var || kind == win_var) {
-      assert (m_forlet_clause != NULL);
-      type1 = m_forlet_clause->get_expr()->return_type(sctx);
-      if (kind == for_var) {
-        type1 = TypeOps::prime_type(*type1);
-      }
+
+xqtref_t wrapper_expr::return_type_impl(static_context *sctx) {
+  return wrapped->return_type(sctx);
+}
+
+
+xqtref_t var_expr::return_type_impl(static_context *sctx) {
+  xqtref_t type1 = NULL;
+  if (kind == for_var || kind == let_var || kind == win_var) {
+    assert (m_forlet_clause != NULL);
+    type1 = m_forlet_clause->get_expr()->return_type(sctx);
+    if (kind == for_var) {
+      type1 = TypeOps::prime_type(*type1);
     }
-    if (type1 == NULL) {
-      return type == NULL ? GENV_TYPESYSTEM.ITEM_TYPE_STAR : type;
-    }
-    return type == NULL ? type1 : TypeOps::intersect_type(*type1, *type);
   }
+  if (type1 == NULL) {
+    return type == NULL ? GENV_TYPESYSTEM.ITEM_TYPE_STAR : type;
+  }
+  return type == NULL ? type1 : TypeOps::intersect_type(*type1, *type);
+}
 
 
   bool castable_expr::is_optional() const { return TypeOps::quantifier(*target_type) == TypeConstants::QUANT_QUESTION; }

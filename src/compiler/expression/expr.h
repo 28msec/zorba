@@ -297,6 +297,7 @@ public:
   wrapper_expr (const QueryLoc &loc_, expr_t wrapped_)
     : expr (loc_), wrapped (wrapped_)
   {}
+
   expr_t get_expr () const {
     return wrapped;
   }
@@ -305,7 +306,10 @@ public:
 
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
+
+  xqtref_t return_type_impl (static_context *sctx);
 };
+
 
 // [42] [http://www.w3.org/TR/xquery/#prod-xquery-QuantifiedExpr]
 
