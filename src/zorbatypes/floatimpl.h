@@ -63,113 +63,132 @@ template <typename FloatType> class FloatImplTraits;
 
 
 #ifndef ZORBA_NO_BIGNUMBERS
-  /**
-   * Specialization for double
-   */
-  template <>
-  class  FloatImplTraits<double> {
-    public:
-      static bool 
-      isPosInf(MAPM aMAPM);
+/**
+ * Specialization for double
+ */
+template <>
+class  FloatImplTraits<double> 
+{
+public:
+  static bool 
+  isPosInf(MAPM aMAPM);
       
-      static bool
-      isZero(MAPM aMAPM); 
+  static bool
+  isZero(MAPM aMAPM); 
       
-      static bool
-      isNegInf(MAPM aMAPM); 
+  static bool
+  isNegInf(MAPM aMAPM); 
       
-      static MAPM
-      cutMantissa(MAPM aMAPM);
+  static MAPM
+  cutMantissa(MAPM aMAPM);
 
-      static uint32_t 
-      hash(FloatCommons::NumType, MAPM aMAPM);
-  };
+  static uint32_t 
+  hash(FloatCommons::NumType, MAPM aMAPM);
+};
 
-  /**
-   * Specialization for float
-   */
-  template <>
-  class  FloatImplTraits<float> {
-    public:
-      static bool
-      isPosInf(MAPM aMAPM);
-      
-      static bool
-      isZero(MAPM aMAPM); 
-      
-      static bool
-      isNegInf(MAPM aMAPM); 
-      
-      static MAPM
-      cutMantissa(MAPM aMAPM);
 
-      static uint32_t 
-      hash(FloatCommons::NumType, MAPM aMAPM);
-  };
-#else
-  template <typename FloatType>
-  class FloatImplTraits {
-    public:
-      static bool
-      isPosInf(FloatType aMAPM);
+/**
+ * Specialization for float
+ */
+template <>
+class  FloatImplTraits<float> 
+{
+public:
+  static bool
+  isPosInf(MAPM aMAPM);
       
-      static bool
-      isZero(FloatType aMAPM); 
+  static bool
+  isZero(MAPM aMAPM); 
       
-      static bool
-      isNegInf(FloatType aMAPM); 
-      
-      static FloatType
-      cutMantissa(FloatType aMAPM);
+  static bool
+  isNegInf(MAPM aMAPM); 
+  
+  static MAPM
+  cutMantissa(MAPM aMAPM);
 
-      static uint32_t 
-      hash(FloatCommons::NumType, FloatType aMAPM);
-  };
+  static uint32_t 
+  hash(FloatCommons::NumType, MAPM aMAPM);
+};
+
+#else // ZORBA_NO_BIGNUMBERS
+
+template <typename FloatType>
+class FloatImplTraits 
+{
+public:
+  static bool
+  isPosInf(FloatType aMAPM);
+      
+  static bool
+  isZero(FloatType aMAPM); 
+      
+  static bool
+  isNegInf(FloatType aMAPM); 
+      
+  static FloatType
+  cutMantissa(FloatType aMAPM);
+
+  static uint32_t 
+  hash(FloatCommons::NumType, FloatType aMAPM);
+};
 #endif
 
-  // exported for testing only
-  template <typename FloatType>
-  class ZORBA_DLL_PUBLIC FloatImpl {
-    friend class Integer;
-    friend class Decimal;
-    friend class FloatCommons;
-    template <typename Type>
-      friend class FloatImplTraits;
-    friend class NumConversions;
 
-    private:
-      FloatCommons::NumType theType;
+// exported for testing only
+template <typename FloatType>
+class ZORBA_DLL_PUBLIC FloatImpl 
+{
+  friend class Integer;
+  friend class Decimal;
+  friend class FloatCommons;
+  template <typename Type>
+    friend class FloatImplTraits;
+  friend class NumConversions;
+
+private:
+  FloatCommons::NumType theType;
 #ifndef ZORBA_NO_BIGNUMBERS
-      MAPM theFloatImpl;
+  MAPM                  theFloatImpl;
 #else
-      FloatType  theFloatImpl;
+  FloatType             theFloatImpl;
 #endif
 
-      FloatImpl(FloatCommons::NumType aType, MAPM aFloatImpl) : theType(aType), theFloatImpl(aFloatImpl) { }
+  FloatImpl(FloatCommons::NumType aType, MAPM aFloatImpl) 
+    :
+    theType(aType),
+    theFloatImpl(aFloatImpl)
+  {
+  }
 
-      public:
-      FloatImpl() : theType(FloatCommons::NORMAL), theFloatImpl(0) { }
-      FloatImpl(const FloatImpl& aFloatImpl) : theType(aFloatImpl.theType), theFloatImpl(aFloatImpl.theFloatImpl) {}
+public:
+  FloatImpl() : theType(FloatCommons::NORMAL), theFloatImpl(0) { }
 
-    protected:
-      /**
-       * Checks if the MAPM value is to big, too small, or too precise 
-       * => possible type change to 0, INF or -INF, or reduced precision
-       */
-      static void checkInfZeroPrecision(FloatImpl& aFloatImpl);
+  FloatImpl(const FloatImpl& aFloatImpl) 
+    :
+    theType(aFloatImpl.theType),
+    theFloatImpl(aFloatImpl.theFloatImpl)
+  {
+  }
 
-    public:
-      /**
-       * @return float or double that represents 0
-       */
-      static FloatImpl<FloatType>&
-      zero();
+protected:
+  /**
+   * Checks if the MAPM value is to big, too small, or too precise 
+   * => possible type change to 0, INF or -INF, or reduced precision
+   */
+  static void checkInfZeroPrecision(FloatImpl& aFloatImpl);
 
-      /**
-       * @return float or double that represents -0
-       */
-      static FloatImpl<FloatType>&
-      zero_neg();
+public:
+  /**
+   * @return float or double that represents 0
+   */
+  static FloatImpl<FloatType>&
+  zero();
+
+  /**
+   * @return float or double that represents -0
+   */
+  static FloatImpl<FloatType>&
+  zero_neg();
 
       /**
        * @return float or double that represents +1
@@ -391,54 +410,55 @@ template <typename FloatType> class FloatImplTraits;
       uint32_t
       hash() const;
 
-  }; // class FloatImpl
+}; // class FloatImpl
 
-  std::ostream&
-  operator<<(std::ostream& os, const Double& aFloatImpl); 
+
+std::ostream&
+operator<<(std::ostream& os, const Double& aFloatImpl); 
   
   
-  std::ostream&
-  operator<<(std::ostream& os, const Float& aFloatImpl);
+std::ostream&
+operator<<(std::ostream& os, const Float& aFloatImpl);
   
   
-   Double
-  operator+(const Double&, const Float&);
+Double
+operator+(const Double&, const Float&);
   
   
-   Double
-  operator+(const Float&, const Double&);
+Double
+operator+(const Float&, const Double&);
   
   
-   Double
-  operator-(const Double&, const Float&);
+Double
+operator-(const Double&, const Float&);
   
   
-   Double
-  operator-(const Float&, const Double&);
+Double
+operator-(const Float&, const Double&);
   
   
-   Double
-  operator*(const Double&, const Float&);
+Double
+operator*(const Double&, const Float&);
   
   
-   Double
-  operator*(const Float&, const Double&);
+Double
+operator*(const Float&, const Double&);
   
   
-   Double
-  operator/(const Double&, const Float&);
+Double
+operator/(const Double&, const Float&);
   
   
-   Double
-  operator/(const Float&, const Double&);
+Double
+operator/(const Float&, const Double&);
   
   
-   Double
-  operator%(const Double&, const Float&);
+Double
+operator%(const Double&, const Float&);
   
   
-   Double
-  operator%(const Float&, const Double&);
+Double
+operator%(const Float&, const Double&);
   
 } /* namespace zorba */
 

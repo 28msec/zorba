@@ -196,6 +196,12 @@ public:
   virtual xqpStringStore_t 
   getStringValue( ) const;
 
+  virtual void
+  getStringValue(xqpStringStore_t& strval) const;
+
+  virtual void
+  getStringValue(std::string& buf) const;
+
   /**
    * Helper method with is used to return a StringValue of an Item
    * by pointer instead of rchandle

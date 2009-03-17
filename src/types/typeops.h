@@ -93,9 +93,14 @@ public:
   static bool is_numeric(const XQType& type);
   
   /*
-   * Returns true is the given sequence type is the empty sequence.
+   * Returns true if the given sequence type is the empty sequence.
    */
   static bool is_empty(const XQType& type);
+
+  /*
+   * Returns true if the given sequence type is the none type.
+   */
+  static bool is_none(const XQType& type);
   
   /*
    * Returns true is the given type could be a date / time type.
@@ -132,8 +137,6 @@ public:
    * Returns the prime type of the given type.
    */
   static xqtref_t prime_type(const XQType& type);
-
-  static xqtref_t cast_primitive_type(const XQType& type);
 
   /*
    * Returns the type to be used for arithmetic ops.

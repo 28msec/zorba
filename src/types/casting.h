@@ -32,7 +32,8 @@ class GenericCast
 
   typedef bool (*CastFunc)(
                             store::Item_t&,
-                            const store::Item*, 
+                            const store::Item*,
+                            xqpStringStore_t& strval,
                             store::ItemFactory*, 
                             namespace_context *nsCtx,
                             const ErrorInfo& aErrorInfo

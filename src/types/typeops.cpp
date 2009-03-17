@@ -410,6 +410,12 @@ bool TypeOps::is_empty(const XQType& type)
 }
 
 
+bool TypeOps::is_none(const XQType& type) 
+{
+  return type.type_kind () == XQType::NONE_KIND;
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -612,39 +618,6 @@ xqtref_t TypeOps::prime_type(const XQType& type)
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t TypeOps::cast_primitive_type(const XQType& type)
-{
-  CACHE_ROOT_TS (genv_ts);
-
-  ZORBA_ASSERT(type.get_quantifier() == TypeConstants::QUANT_ONE);
-  ZORBA_ASSERT(type.type_kind() == XQType::ATOMIC_TYPE_KIND);
-
-  TypeConstants::atomic_type_code_t code = 
-    reinterpret_cast<const AtomicXQType&>(type).get_type_code();
-
-  if (TypeConstants::XS_STRING <= code && code <= TypeConstants::XS_ENTITY)
-  {
-    return genv_ts.STRING_TYPE_ONE;
-  }
-  else if (TypeConstants::XS_INTEGER <= code &&
-           code <= TypeConstants::XS_POSITIVE_INTEGER)
-  {
-    return genv_ts.INTEGER_TYPE_ONE;
-  }
-  else if (code == TypeConstants::XS_ANY_ATOMIC)
-  {
-    ZORBA_ASSERT (false);
-  }
-  else
-  {
-    return &type;
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 xqtref_t TypeOps::arithmetic_type(const XQType& type1, const XQType& type2)
 {
   CACHE_ROOT_TS (genv_ts);
@@ -815,7 +788,7 @@ int TypeOps::type_min_cnt (const XQType& type)
 ********************************************************************************/
 int TypeOps::type_cnt (const XQType& type) 
 {
-  if (is_empty (type))
+  if (is_empty(type) || is_none(type))
     return 0;
 
   TypeConstants::quantifier_t q = quantifier (type);

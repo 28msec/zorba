@@ -333,9 +333,17 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   STACK_END (lState);
 }
 
-TreatIterator::TreatIterator(const QueryLoc& aLoc, std::vector<PlanIter_t>& aChildren, const xqtref_t& aTreatType, bool check_prime_, XQUERY_ERROR aErrorCode)
-  : NaryBaseIterator<TreatIterator, PlanIteratorState>(aLoc, aChildren),
-    check_prime (check_prime_), theErrorCode (aErrorCode)
+
+TreatIterator::TreatIterator(
+    const QueryLoc& aLoc,
+    std::vector<PlanIter_t>& aChildren,
+    const xqtref_t& aTreatType,
+    bool check_prime_,
+    XQUERY_ERROR aErrorCode)
+  :
+  NaryBaseIterator<TreatIterator, PlanIteratorState>(aLoc, aChildren),
+  check_prime (check_prime_),
+  theErrorCode (aErrorCode)
 {
   theTreatType = TypeOps::prime_type (*aTreatType);
   theQuantifier = TypeOps::quantifier(*aTreatType);
@@ -358,6 +366,12 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       "Cannot treat empty sequence as <type>+ or <type>.");
     }
   }
+#if 0
+  else
+  {
+    STACK_PUSH(true, lState);
+  }
+#else
   else if(theQuantifier == TypeConstants::QUANT_QUESTION 
          || theQuantifier == TypeConstants::QUANT_ONE) 
   {
@@ -390,6 +404,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
     } while (CONSUME (result, 0));
   }
+#endif
   STACK_END (lState);
 }
 

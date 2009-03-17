@@ -686,6 +686,7 @@ int Duration::parseDayTimeDuration(const xqpString& s, Duration& d, bool dont_ch
   return 0;
 }
 
+
 int Duration::parseDuration(const xqpString& s, Duration& d)
 {
   int pos, t_pos;
@@ -725,6 +726,7 @@ int Duration::parseDuration(const xqpString& s, Duration& d)
   d.facet = DURATION_FACET;
   return 0;
 }
+
 
 xqpString Duration::toString() const
 {

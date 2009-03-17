@@ -25,67 +25,123 @@ Decimal& Decimal::zero() {
   return lValue;
 }
 
-bool Decimal::parseString(const char* aCharStar, Decimal& aDecimal) {
+bool Decimal::parseString(const char* aCharStar, Decimal& aDecimal) 
+{
   // correctness check
   const char* lCur = aCharStar;
   bool lGotPoint = false;
   bool lGotSign = false;
   bool lStop = false;
   bool lGotDigit = false;
-  while (*lCur != '\0' && !lStop) {
-    char lTmp = *lCur++;
-    switch(lTmp) {
-      case '+': 
-        if (lGotSign || lGotDigit || lGotPoint) {
-          lStop = true;
-        } else {
-          lGotSign = true;
-        }
-        break;
-      case '-':
-        if(lGotSign || lGotDigit || lGotPoint) {
-          lStop = true;
-        } else {
-          lGotSign = true;
-        }
-        break;
-      case '.': 
-        if (lGotPoint) {
-          lStop = true;
-        } else {
-          lGotPoint = true;
-        }
-        break;
-      case '0':
-      case '1':
-      case '2':
-      case '3':
-      case '4':
-      case '5':
-      case '6':
-      case '7':
-      case '8':
-      case '9': 
-        lGotDigit = true;
-        break;
-      default:
-        lStop = true;
-        break;
-    }
+  bool lGotSpace = false;
+
+  char ch = *lCur;
+
+  // Skip leading space
+  while (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n')
+  {
+    ++lCur;
+    aCharStar++;
+    ch = *lCur;
   }
-  if (lStop || !lGotDigit) {
+
+  while (*lCur != '\0' && !lStop) 
+  {
+    ch = *lCur;
+
+    switch(ch) 
+    {
+    case '+': 
+      if (lGotSign || lGotDigit || lGotPoint) {
+        lStop = true;
+      } else {
+        lGotSign = true;
+      }
+      break;
+    case '-':
+      if(lGotSign || lGotDigit || lGotPoint) {
+        lStop = true;
+      } else {
+        lGotSign = true;
+      }
+      break;
+    case '.': 
+      if (lGotPoint) {
+        lStop = true;
+      } else {
+        lGotPoint = true;
+      }
+      break;
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9': 
+      lGotDigit = true;
+      break;
+      
+    case ' ':
+    case '\t':
+    case '\n':
+    case '\r':
+    {
+      const char* firstSpace = lCur;
+        
+      // Skip trailing space
+      while(ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n') 
+      {
+        ch = *lCur++;
+      }
+      
+      if (*lCur != 0)
+      {
+        lStop = true;
+      }
+      else
+      {
+        int len = firstSpace - aCharStar + 1;
+        char* copy = new char[firstSpace - aCharStar + 1];
+        strncpy(copy, aCharStar, len);
+        copy[len-1] = 0;
+        aCharStar = copy;
+        lCur--;
+      }
+      
+      break;
+    }
+
+    default:
+      lStop = true;
+      break;
+    }
+
+    lCur++;
+  }
+
+  if (lStop || !lGotDigit) 
+  {
     return false;
-  } else {
+  }
+  else
+  {
 #ifndef ZORBA_NO_BIGNUMBERS
     MAPM lNumber = aCharStar;
     aDecimal.theDecimal = lNumber;
-    return true;
 #else
     aDecimal.theDecimal = atof(aCharStar);
     if(aDecimal.theDecimal == -0)
       aDecimal.theDecimal = 0;
-    return true;
 #endif
+
+    if (lGotSpace)
+      delete [] aCharStar;
+
+    return true;
   }
 }
 

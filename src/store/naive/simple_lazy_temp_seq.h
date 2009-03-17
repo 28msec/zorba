@@ -58,21 +58,20 @@ class SimpleLazyTempSeq : public store::TempSeq
 
   void append ( store::Iterator_t iter, bool copy );
 
-  store::Item_t getItem(int32_t position);
-
-  bool getItem(store::Item_t& result, int32_t position)
+  void getItem(int32_t position, store::Item_t& result)
   {
     if ( this->containsItem ( position ) ) 
     {
       result = theItems[position - thePurgedUpTo - 1];
-      return true;
+      //return true;
     }
     else 
     {
       result = NULL;
-      return false;
+      //return false;
     }
   }
+
 
   inline bool containsItem ( int32_t position ) 
   {

@@ -124,11 +124,13 @@ public:
 
   void printCommons(const PlanIterator* aIter, int theId) {
     if (! Properties::instance()->noTreeIds()) {
+      /*
       {
         std::stringstream lStream;
         lStream << aIter->loc;
         thePrinter.addAttribute("loc", lStream.str());
       }
+      */
       {
         std::stringstream lStream;
         if (Properties::instance()->stableIteratorIds())

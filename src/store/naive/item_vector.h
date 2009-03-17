@@ -41,6 +41,8 @@ public:
   bool isError() const  { return false; }
 
   xqpStringStore_t getStringValue() const;
+  void getStringValue(xqpStringStore_t& strval) const;
+  void getStringValue(std::string& buf) const;
 
   ulong size() const { return theItems.size(); }
 

@@ -310,26 +310,34 @@ FloatImpl<FloatType>& FloatImpl<FloatType>::one_neg() {
   return lValue;
 }
 
+
 template <typename FloatType>
-FloatImpl<FloatType>& FloatImpl<FloatType>::nan() {
+FloatImpl<FloatType>& FloatImpl<FloatType>::nan() 
+{
   static FloatImpl<FloatType> lValue(FloatCommons::NOT_A_NUM, MAPM(0));
   return lValue;
 }
 
+
 template <typename FloatType>
-FloatImpl<FloatType>& FloatImpl<FloatType>::inf_pos() {
+FloatImpl<FloatType>& FloatImpl<FloatType>::inf_pos() 
+{
   static FloatImpl<FloatType> lValue(FloatCommons::INF_POS, MAPM(0));
   return lValue;
 }
 
+
 template <typename FloatType>
-FloatImpl<FloatType>& FloatImpl<FloatType>::inf_neg() {
+FloatImpl<FloatType>& FloatImpl<FloatType>::inf_neg() 
+{
   static FloatImpl<FloatType> lValue(FloatCommons::INF_NEG, MAPM(0));
   return lValue;
 }
 
+
 template <typename FloatType>
-void FloatImpl<FloatType>::checkInfZeroPrecision(FloatImpl& aFloatImpl) {
+void FloatImpl<FloatType>::checkInfZeroPrecision(FloatImpl& aFloatImpl) 
+{
   if (aFloatImpl.theType == FloatCommons::NORMAL || aFloatImpl.theType == FloatCommons::NORMAL_NEG) {
     aFloatImpl.theFloatImpl = FloatImplTraits<FloatType>::cutMantissa(aFloatImpl.theFloatImpl);
     if (FloatImplTraits<FloatType>::isPosInf(aFloatImpl.theFloatImpl)) {
@@ -345,8 +353,10 @@ void FloatImpl<FloatType>::checkInfZeroPrecision(FloatImpl& aFloatImpl) {
   }
 }
 
+
 template <typename FloatType>
-FloatCommons::NumType FloatImpl<FloatType>::checkInfNaNNeg(const char* aCharStar) {
+FloatCommons::NumType FloatImpl<FloatType>::checkInfNaNNeg(const char* aCharStar) 
+{
 #if defined (ZORBA_HAVE_STRCASECMP_FUNCTION) && (! defined (WIN32) )
     if (strcasecmp(aCharStar, "inf") == 0 || strcasecmp(aCharStar, "+inf") == 0 )
 #else
@@ -381,8 +391,10 @@ FloatCommons::NumType FloatImpl<FloatType>::checkInfNaNNeg(const char* aCharStar
     }
 }
 
+
 template <typename FloatType>
-FloatCommons::NumType FloatImpl<FloatType>::checkInfNaNNeg(FloatType aFloat) {
+FloatCommons::NumType FloatImpl<FloatType>::checkInfNaNNeg(FloatType aFloat) 
+{
 #ifndef ZORBA_NO_BIGNUMBERS
   if (aFloat != aFloat) {
     return FloatCommons::NOT_A_NUM;
@@ -437,8 +449,10 @@ FloatCommons::NumType FloatImpl<FloatType>::checkInfNaNNeg(FloatType aFloat) {
 #endif
 }
 
+
 template <typename FloatType>
-bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatImpl) {
+bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatImpl) 
+{
   const char* lCur = aCharStar;
 
   bool lGotBase = false;
@@ -447,26 +461,45 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
   bool lGotDigit = false;
   bool lStop = false;
   bool lIsNegative = false;
+  bool lGotSpace = false;
 
-  char lTmp;
-  while(!lStop && *lCur != 0) {
-    lTmp = *lCur++;
+  char ch = *lCur;
+
+  // Skip leading space
+  while (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n')
+  {
+    ++lCur;
+    aCharStar++;
+    ch = *lCur;
+  }
+
+  while(!lStop && *lCur != 0) 
+  {
+    ch = *lCur;
     
-    switch(lTmp) {
-
-    case '+': {
-      if(lGotSign || lGotDigit) {
+    switch(ch) 
+    {
+    case '+': 
+    {
+      if(lGotSign || lGotDigit) 
+      {
         lStop = true;
-      } else {
+      }
+      else 
+      {
         lGotSign = true;
       }
       break;
     }
              
-    case '-': {
-      if(lGotSign || lGotSign) {
+    case '-': 
+    {
+      if(lGotSign || lGotSign) \
+      {
         lStop = true;
-      } else {
+      }
+      else 
+      {
         lGotSign = true;
         if(!lGotBase) lIsNegative = true;
       }
@@ -474,7 +507,8 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
     }
              
     case 'E':
-    case 'e': {
+    case 'e': 
+    {
       if(!lGotDigit || lGotBase) {
         lStop = true;
       } else {
@@ -486,7 +520,8 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
       break;
     }
              
-    case '.': {
+    case '.': 
+    {
       if(lGotPoint || lGotBase) {
         lStop = true;
       } else {
@@ -504,23 +539,58 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
     case '6':
     case '7':
     case '8':
-    case '9': {
+    case '9': 
+    {
       lGotDigit = true;
       break;
     }
              
+    case ' ':
+    case '\t':
+    case '\n':
+    case '\r':
+    {
+      const char* firstSpace = lCur;
+
+      // Skip trailing space
+      while(ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n') 
+      {
+        lCur++;
+        ch = *lCur;
+      }
+      
+      if (*lCur != 0)
+      {
+        lStop = true;
+      }
+      else
+      {
+        int len = firstSpace - aCharStar + 1;
+        char* copy = new char[len];
+        strncpy(copy, aCharStar, len);
+        copy[len-1] = 0;
+        aCharStar = copy;
+        lCur--;
+      }
+
+      break;
+    }
+
     default:
       lStop = true;
       break;
-             
     }
+
+    lCur++;
   }
 
   FloatCommons::NumType lType;
   MAPM lNumber = 0;
 
-  if(!lGotDigit || lStop) {
-    switch(lType = checkInfNaNNeg(aCharStar)) {
+  if(!lGotDigit || lStop) 
+  {
+    switch(lType = checkInfNaNNeg(aCharStar)) 
+    {
     case FloatCommons::INF_NEG:
     case FloatCommons::NOT_A_NUM:
     case FloatCommons::INF_POS:
@@ -529,17 +599,18 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
       return false;
       break;
     }
-  } else {
+  }
+  else 
+  {
 #ifndef ZORBA_NO_BIGNUMBERS
     lNumber = aCharStar;
 #else
     lNumber = atof(aCharStar);
 #endif
-    if (lIsNegative) {
-      lType = FloatCommons::NORMAL_NEG;
-    } else {
-      lType = FloatCommons::NORMAL;
-    }
+    lType = (lIsNegative ? FloatCommons::NORMAL_NEG : FloatCommons::NORMAL);
+
+    if (lGotSpace)
+      delete [] aCharStar;
   }
 
   aFloatImpl.theType = lType;
@@ -547,11 +618,8 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
 
   checkInfZeroPrecision(aFloatImpl);
   return true;
-
-
-
-
 }
+
 
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::parseFloatType(FloatType aFloatImpl){
@@ -907,13 +975,19 @@ FloatImpl<FloatType> FloatImpl<FloatType>::operator/(const FloatImpl& aFloatImpl
 }
 
 template <typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::operator%(const FloatImpl& aFloatImpl) const{
+FloatImpl<FloatType> FloatImpl<FloatType>::operator%(const FloatImpl& aFloatImpl) const
+{
   FloatImpl lFloatImpl;
-  if (isNaN() || aFloatImpl.isNaN() || !isFinite() || aFloatImpl.isZero()) {
+  if (isNaN() || aFloatImpl.isNaN() || !isFinite() || aFloatImpl.isZero()) 
+  {
     lFloatImpl.theType = FloatCommons::NOT_A_NUM;
-  } else if (!aFloatImpl.isFinite() || isZero()) {
+  }
+  else if (!aFloatImpl.isFinite() || isZero()) 
+  {
     lFloatImpl = *this;
-  } else {
+  }
+  else 
+  {
 #ifndef ZORBA_NO_BIGNUMBERS
     MAPM lRes = theFloatImpl % aFloatImpl.theFloatImpl;
 #else
@@ -959,8 +1033,10 @@ FloatImpl<FloatType> FloatImpl<FloatType>::operator-() const{
   return lFloatImpl;
 }
 
+
 template <typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::floor() const { 
+FloatImpl<FloatType> FloatImpl<FloatType>::floor() const 
+{ 
   FloatImpl lFloatImpl;
 
   switch(theType) {
@@ -980,11 +1056,14 @@ FloatImpl<FloatType> FloatImpl<FloatType>::floor() const {
   return lFloatImpl;
 }
 
+
 template <typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::ceil() const { 
+FloatImpl<FloatType> FloatImpl<FloatType>::ceil() const 
+{ 
   FloatImpl lFloatImpl;
 
-  switch(theType) {
+  switch(theType) 
+  {
   case FloatCommons::NORMAL_NEG:
   case FloatCommons::NORMAL:
 #ifndef ZORBA_NO_BIGNUMBERS
@@ -1097,6 +1176,7 @@ bool FloatImpl<FloatType>::operator==(const FloatImpl& aFloatImpl) const{
   return false;
 }
 
+
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::sqrt() const
 {
@@ -1108,6 +1188,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::sqrt() const
   return FloatImpl (getType (), ::sqrt(theFloatImpl));
 #endif
 }
+
 
 #ifndef ZORBA_NO_BIGNUMBERS
 #define PASSTHRU( fn )                                    \
@@ -1121,6 +1202,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::sqrt() const
   FloatImpl<FloatType> FloatImpl<FloatType>::fn() const   \
 { return FloatImpl (getType (), ::fn(theFloatImpl)); }
 #endif
+
 
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::log() const

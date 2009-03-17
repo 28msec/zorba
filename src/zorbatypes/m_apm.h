@@ -173,13 +173,13 @@ extern "C" {
 typedef unsigned char UCHAR;
 
 typedef struct  {
-  UCHAR *m_apm_data;
-  long m_apm_id;
+  UCHAR * m_apm_data;
+  long    m_apm_id;
   int     m_apm_refcount;       /* <- used only by C++ MAPM class */
-  int m_apm_malloclength;
-  int m_apm_datalength;
-  int m_apm_exponent;
-  int m_apm_sign;
+  int     m_apm_malloclength;
+  int     m_apm_datalength;
+  int     m_apm_exponent;
+  int     m_apm_sign;
 } M_APM_struct;
 
 typedef M_APM_struct *M_APM;

@@ -750,6 +750,28 @@ xqpStringStore_t DocumentNode::getStringValue() const
 }
 
 
+void DocumentNode::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = new xqpStringStore("");
+  getStringValue(strval->str());
+}
+
+
+void DocumentNode::getStringValue(std::string& buf) const
+{
+  ulong numChildren = this->numChildren();
+
+  for (ulong i = 0; i < numChildren; i++)
+  {
+    store::StoreConsts::NodeKind kind = getChild(i)->getNodeKind();
+
+    if (kind != store::StoreConsts::commentNode &&
+        kind != store::StoreConsts::piNode)
+      getChild(i)->getStringValue(buf);
+  }
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1262,19 +1284,54 @@ store::Item_t ElementNode::getAtomizationValue() const
 ********************************************************************************/
 xqpStringStore_t ElementNode::getStringValue() const
 {
-  std::string buf;
+  xqpStringStore_t strval;
+  getStringValue(strval);
+  return strval;
+}
 
+
+/*******************************************************************************
+
+********************************************************************************/
+void ElementNode::getStringValue(xqpStringStore_t& strval) const
+{
+  if (this->numChildren() == 1)
+  {
+    store::StoreConsts::NodeKind kind = getChild(0)->getNodeKind();
+
+    if (kind != store::StoreConsts::commentNode &&
+        kind != store::StoreConsts::piNode)
+    {
+      getChild(0)->getStringValue(strval);
+    }
+    else
+    {
+      strval = new xqpStringStore("");
+    }
+  }
+  else
+  {
+    strval = new xqpStringStore("");
+    getStringValue(strval->str());
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void ElementNode::getStringValue(std::string& buf) const
+{
   ulong numChildren = this->numChildren();
+
   for (ulong i = 0; i < numChildren; i++)
   {
     store::StoreConsts::NodeKind kind = getChild(i)->getNodeKind();
 
     if (kind != store::StoreConsts::commentNode &&
         kind != store::StoreConsts::piNode)
-      buf += getChild(i)->getStringValue()->str();
+      getChild(i)->getStringValue(buf);
   }
-
-  return new xqpStringStore(buf);
 }
 
 
@@ -2113,24 +2170,44 @@ void AttributeNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) c
 ********************************************************************************/
 xqpStringStore_t AttributeNode::getStringValue() const
 {
+  xqpStringStore_t strval;
+  getStringValue(strval);
+  return strval;
+}
+
+
+void AttributeNode::getStringValue(xqpStringStore_t& strval) const
+{
+  if (haveListValue())
+  {
+    strval = new xqpStringStore("");
+    getStringValue(strval->str());
+  }
+  else
+  {
+    theTypedValue->getStringValue(strval);
+  }
+}
+
+
+void AttributeNode::getStringValue(std::string& buf) const 
+{
   if (haveListValue())
   {
     const std::vector<store::Item_t>& items = getValueVector().getItems();
 
-    std::string str = items[0]->getStringValue()->c_str();
+    items[0]->getStringValue(buf);
 
     ulong size = items.size();
     for (ulong i = 1; i < size; i++)
     {
-      str += " ";
-      str += items[i]->getStringValue()->str();
+      buf += " ";
+      items[i]->getStringValue(buf);
     }
-
-    return new xqpStringStore(str);
   }
   else
   {
-    return theTypedValue->getStringValue();
+    theTypedValue->getStringValue(buf);
   }
 }
 
@@ -2538,6 +2615,32 @@ xqpStringStore_t TextNode::getStringValue() const
   else
   {
     return getText();
+  }
+}
+
+
+void TextNode::getStringValue(xqpStringStore_t& strval) const
+{
+  if (isTyped())
+  {
+    getValue()->getStringValue(strval);
+  }
+  else
+  {
+    strval = getText();
+  }
+}
+
+
+void TextNode::getStringValue(std::string& buf) const
+{
+  if (isTyped())
+  {
+    getValue()->getStringValue(buf);
+  }
+  else
+  {
+    buf += getText()->c_str();
   }
 }
 

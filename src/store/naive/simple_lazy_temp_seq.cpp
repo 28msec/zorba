@@ -75,22 +75,6 @@ bool SimpleLazyTempSeq::empty()
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t SimpleLazyTempSeq::getItem ( int32_t position ) 
-{
-  if ( this->containsItem ( position ) ) 
-  {
-    return theItems[position - thePurgedUpTo - 1];
-  }
-  else
-  {
-    return NULL;
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void SimpleLazyTempSeq::append ( store::Iterator_t iter, bool copy ) 
 {
   while ( !theMatFinished ) 
@@ -236,11 +220,12 @@ bool SimpleLazyTempSeqIter::next ( store::Item_t& result )
 {
   if(theCurPos < theEndPos)
   {
-    return theTempSeq->getItem(result, ++theCurPos);
+    theTempSeq->getItem(++theCurPos, result);
+    return true;
   }
   else
   {
-    result=NULL;
+    result = NULL;
     return false;
   }
 }
