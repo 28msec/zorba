@@ -36,6 +36,8 @@
 
 #include "zorbautils/strutil.h"
 
+#include "indexing/value_index.h"
+
 using namespace std;
 namespace zorba {
 
@@ -266,6 +268,7 @@ void dynamic_context::set_default_collection(const store::Item_t& default_collec
 }
 
   ValueIndexInsertSession_t dynamic_context::get_val_idx_insert_session () {
+    return NULL;
   }
 
   void dynamic_context::set_val_idx_insert_session (ValueIndexInsertSession_t) {
