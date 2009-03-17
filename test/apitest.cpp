@@ -45,20 +45,21 @@ void set_var (string name, string val, DynamicContext* dctx)
 {
   if (name [name.size () - 1] == ':') 
   {
+    name = name.substr (0, name.size () - 1);
     Item lItem = Zorba::getInstance(NULL)->getItemFactory()->createString(val);
-		if(name != ".") {
-			dctx->setVariable(name.substr (0, name.size () - 1), lItem);
-		} else
-			dctx->setContextItem(lItem);
+    if(name != ".") {
+      dctx->setVariable(name, lItem);
+    } else
+      dctx->setContextItem(lItem);
   }
   else if (name[name.size () - 1] != ':')
   {
     ifstream* is = new ifstream(val.c_str ());
     assert (*is);
-		if(name != ".")
-			dctx->setVariableAsDocument(name, val.c_str(), std::auto_ptr<std::istream>(is));
-		else
-			dctx->setContextItemAsDocument(val.c_str(), std::auto_ptr<std::istream>(is));
+    if(name != ".")
+      dctx->setVariableAsDocument(name, val.c_str(), std::auto_ptr<std::istream>(is));
+    else
+      dctx->setContextItemAsDocument(val.c_str(), std::auto_ptr<std::istream>(is));
   }
 }
 
