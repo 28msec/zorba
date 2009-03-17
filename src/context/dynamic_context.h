@@ -30,15 +30,27 @@ class dynamic_context
 protected:
 
   struct dctx_value_t {
-    typedef enum { no_val, var_iterator_val, temp_seq_val } val_type_t;
+    typedef enum { no_val, var_iterator_val, temp_seq_val, val_idx_ins_session_val } val_type_t;
     val_type_t type;
     bool in_progress;
     union
     {
       store::Iterator* var_iterator;
       store::TempSeq*  temp_seq;
+      ValueIndexInsertSession *val_idx_ins_session;
     } val;
   };
+
+  bool lookup_once (xqp_string key, dctx_value_t &val) const {
+    return keymap.get (key, val); 
+  }
+  bool context_value(xqp_string key, dctx_value_t &val) const {
+    if (lookup_once (key, val))
+      return true;
+    else
+      return parent == NULL ? false : parent->context_value (key, val);
+	}
+  
 
 protected:
 	static bool static_init;
