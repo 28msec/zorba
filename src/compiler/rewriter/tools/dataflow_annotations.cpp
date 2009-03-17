@@ -25,7 +25,7 @@ namespace zorba {
 #define DISTINCT_NODES(e) e->put_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES, TSVAnnotationValue::TRUE_VAL)
 #define PROPOGATE_SORTED_NODES(src, tgt) tgt->put_annotation(AnnotationKey::PRODUCES_SORTED_NODES, src->get_annotation(AnnotationKey::PRODUCES_SORTED_NODES))
 #define PROPOGATE_DISTINCT_NODES(src, tgt) tgt->put_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES, src->get_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES))
-#define LOOKUP_FN( pfx, local, arity ) static_cast<function *> (m_ctx->lookup_fn (pfx, local, arity))
+#define LOOKUP_FN( pfx, local, arity ) (m_ctx->lookup_fn (pfx, local, arity))
 
 void DataflowAnnotationsComputer::compute(expr *e)
 {

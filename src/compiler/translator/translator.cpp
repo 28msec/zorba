@@ -68,11 +68,11 @@ using namespace std;
 
 namespace zorba {
 
-#define LOOKUP_FN( pfx, local, arity ) static_cast<function *> (sctx_p->lookup_fn (pfx, local, arity))
-#define LOOKUP_OP1( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, 1))
-#define LOOKUP_OP2( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, 2))
-#define LOOKUP_OP3( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, 3))
-#define LOOKUP_OPN( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
+#define LOOKUP_FN( pfx, local, arity ) (sctx_p->lookup_fn (pfx, local, arity))
+#define LOOKUP_OP1( local ) (sctx_p->lookup_builtin_fn (":" local, 1))
+#define LOOKUP_OP2( local ) (sctx_p->lookup_builtin_fn (":" local, 2))
+#define LOOKUP_OP3( local ) (sctx_p->lookup_builtin_fn (":" local, 3))
+#define LOOKUP_OPN( local ) (sctx_p->lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
 
 #define CACHED( cache, val ) ((cache == NULL) ? (cache = val) : cache)
 

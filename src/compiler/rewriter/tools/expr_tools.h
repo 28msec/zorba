@@ -27,11 +27,11 @@
 #include <set>
 #include <algorithm>
 
-#define LOOKUP_FN( pfx, local, arity ) static_cast<function *> (GENV.getRootStaticContext ().lookup_fn (pfx, local, arity))
-#define LOOKUP_OP1( local ) static_cast<function *> (GENV.getRootStaticContext ().lookup_builtin_fn (":" local, 1))
-#define LOOKUP_OP2( local ) static_cast<function *> (GENV.getRootStaticContext ().lookup_builtin_fn (":" local, 2))
-#define LOOKUP_OP3( local ) static_cast<function *> (GENV.getRootStaticContext ().lookup_builtin_fn (":" local, 3))
-#define LOOKUP_OPN( local ) static_cast<function *> (GENV.getRootStaticContext ().lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
+#define LOOKUP_FN( pfx, local, arity ) (GENV.getRootStaticContext ().lookup_fn (pfx, local, arity))
+#define LOOKUP_OP1( local ) (GENV.getRootStaticContext ().lookup_builtin_fn (":" local, 1))
+#define LOOKUP_OP2( local ) (GENV.getRootStaticContext ().lookup_builtin_fn (":" local, 2))
+#define LOOKUP_OP3( local ) (GENV.getRootStaticContext ().lookup_builtin_fn (":" local, 3))
+#define LOOKUP_OPN( local ) (GENV.getRootStaticContext ().lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
 
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 

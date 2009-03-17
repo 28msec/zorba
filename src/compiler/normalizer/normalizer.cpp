@@ -25,7 +25,8 @@
 
 namespace zorba {
 
-#define LOOKUP_FN( pfx, local, arity ) static_cast<function *> (sctx->lookup_fn (pfx, local, arity))
+#define LOOKUP_FN( pfx, local, arity ) (sctx->lookup_fn (pfx, local, arity))
+#define LOOKUP_OP1( local ) (m_sctx->lookup_builtin_fn (":" local, 1))
 
 static inline expr::expr_t wrap_in_bev(static_context *sctx, expr::expr_t e)
 {
@@ -271,8 +272,6 @@ bool begin_visit (doc_expr& node)
   return true;
 }
 
-// FIXME => static inline function (see also translator)
-#define LOOKUP_OP1( local ) static_cast<function *> (m_sctx->lookup_builtin_fn (":" local, 1))
 
 void end_visit (attr_expr&) {}
 bool begin_visit (attr_expr& node)

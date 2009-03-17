@@ -313,7 +313,7 @@ void op_node_sort_distinct::compute_annotation (AnnotationHolder *parent, std::v
 }
 
 const function *op_node_sort_distinct::op_for_action (const static_context *sctx, const bool *a, const AnnotationHolder *parent, const AnnotationHolder *child, nodes_or_atomics_t noa) {
-#define LOOKUP_OP1( local ) (static_cast<const function *> (sctx->lookup_builtin_fn ((xqp_string (":") + local).c_str (), 1)))
+#define LOOKUP_OP1( local ) (sctx->lookup_builtin_fn ((xqp_string (":") + local).c_str (), 1))
   bool distinct = A_DISTINCT 
     && (parent == NULL || parent->get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VAL)
     && (child == NULL || child->get_annotation (AnnotationKey::PRODUCES_DISTINCT_NODES) != TSVAnnotationValue::TRUE_VAL);
