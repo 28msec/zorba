@@ -265,6 +265,12 @@ void dynamic_context::set_default_collection(const store::Item_t& default_collec
 	this->default_collection_uri = default_collection_uri;
 }
 
+  ValueIndexInsertSession_t dynamic_context::get_val_idx_insert_session () {
+  }
+
+  void dynamic_context::set_val_idx_insert_session (ValueIndexInsertSession_t) {
+  }
+
 
 }	/* namespace zorba */
 

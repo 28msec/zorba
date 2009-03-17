@@ -23,6 +23,8 @@
 
 namespace zorba {
 
+  class ValueIndexInsertSession;
+
 class dynamic_context
 {
 protected:
@@ -104,6 +106,9 @@ public:
 
   store::Item_t get_default_collection();
 	void set_default_collection(const store::Item_t& default_collection_uri);
+
+  rchandle<ValueIndexInsertSession> get_val_idx_insert_session ();
+  void set_val_idx_insert_session (rchandle<ValueIndexInsertSession>);
 
 };
 
