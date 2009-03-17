@@ -58,21 +58,28 @@ static void replace_with_constant_if_typequant_one(static_context *sctx, expr_t 
 
 static expr_t get_constant_if_typequant_one(static_context *sctx, expr_t e)
 {
-  if (e->get_expr_kind() != const_expr_kind) {
-    if (TypeOps::quantifier(*(e->return_type(sctx))) == TypeConstants::QUANT_ONE) {
+  if (e->get_expr_kind() != const_expr_kind) 
+  {
+    if (TypeOps::type_cnt(*(e->return_type(sctx))) == 1) 
+    {
       return new const_expr(e->get_loc(), 1);
-    } else {
+    }
+    else
+    {
       replace_with_constant_if_typequant_one(sctx, e);
     }
   }
   return NULL;
 }
 
-RULE_REWRITE_PRE(ReplaceExprWithConstantOneWhenPossible) {
+
+RULE_REWRITE_PRE(ReplaceExprWithConstantOneWhenPossible) 
+{
   static_context *sctx = rCtx.getStaticContext();
-  if (node->get_expr_kind() != fo_expr_kind) {
+
+  if (node->get_expr_kind() != fo_expr_kind)
     return NULL;
-  }
+
   fo_expr *fo = static_cast<fo_expr *>(&*node);
   const function *fn = fo->get_func();
 
@@ -81,14 +88,17 @@ RULE_REWRITE_PRE(ReplaceExprWithConstantOneWhenPossible) {
       || fn == LOOKUP_FN("fn", "exists", 1)) {
     expr_t child = (*fo)[0];
     expr_t nc = get_constant_if_typequant_one(sctx, child);
-    if (nc != NULL) {
+    if (nc != NULL) 
+    {
       (*fo)[0] = nc;
+      return node;
     }
   }
   return NULL;
 }
 
-RULE_REWRITE_POST(ReplaceExprWithConstantOneWhenPossible) {
+RULE_REWRITE_POST(ReplaceExprWithConstantOneWhenPossible) 
+{
   return NULL;
 }
 

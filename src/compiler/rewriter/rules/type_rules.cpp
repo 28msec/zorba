@@ -93,7 +93,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
     xqtref_t target_type = pe->get_target_type();
 
-    // If arg type is subtype of targeet type, we can eliminate treat and promote
+    // If arg type is subtype of target type, we can eliminate treat and promote
     // (because they are noops in this case), but not cast (which will actually
     // create a new item with the target type).
     if (TypeOps::is_equal(*arg_type, *target_type)

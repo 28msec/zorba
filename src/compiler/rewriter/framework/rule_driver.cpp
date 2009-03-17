@@ -35,17 +35,24 @@ void RuleMajorDriver::rewriteRuleMajor(RewriterContext& rCtx)
 {
   bool modified = false;
   rules_t::const_iterator end = m_rules.end();
-  do {
+  do 
+  {
     modified = false;
 
-    for(rules_t::iterator i = m_rules.begin(); i != end; ++i) {
-      expr_t newRoot = rewriteRec(rCtx, &**i, &*rCtx.getRoot(), modified);
+    for(rules_t::iterator i = m_rules.begin(); i != end; ++i) 
+    {
+      bool rule_modified = false;
+      expr_t newRoot = rewriteRec(rCtx, &**i, &*rCtx.getRoot(), rule_modified);
+
+      if (rule_modified)
+        modified = true;
 
       if (newRoot != NULL) {
         rCtx.setRoot(newRoot);
       }
 
-      if (modified && Properties::instance()->printIntermediateOpt ()) {
+      if (rule_modified && Properties::instance()->printIntermediateOpt ()) 
+      {
         std::cout << "After " << (*i)->getRuleName () << ":" << std::endl;
         rCtx.getRoot ()->put (std::cout) << std::endl;
       }
@@ -53,24 +60,35 @@ void RuleMajorDriver::rewriteRuleMajor(RewriterContext& rCtx)
   } while(modified);
 }
 
-expr_t RuleMajorDriver::rewriteRec(RewriterContext& rCtx, RewriteRule *rule, expr *parent, bool& modified)
+
+expr_t RuleMajorDriver::rewriteRec(
+    RewriterContext& rCtx,
+    RewriteRule *rule,
+    expr* curExpr,
+    bool& modified)
 {
   expr_t result = NULL;
-  expr_t newParent = rule->rewritePre(&*parent, rCtx);
-  if (newParent != NULL) {
-    parent = newParent;
-    result = newParent;
+
+  expr_t newExpr = rule->rewritePre(&*curExpr, rCtx);
+  if (newExpr != NULL) 
+  {
+    curExpr = newExpr;
+    result = newExpr;
     modified = true;
   }
-  for(expr_iterator i = parent->expr_begin(); !i.done(); ++i) {
+
+  for(expr_iterator i = curExpr->expr_begin(); !i.done(); ++i) 
+  {
     expr_t new_e = rewriteRec(rCtx, rule, &**i, modified);
     if (new_e != NULL) {
       *i = &*new_e;
     }
   }
-  newParent = rule->rewritePost(&*parent, rCtx);
-  if (newParent != NULL) {
-    result = newParent;
+
+  newExpr = rule->rewritePost(&*curExpr, rCtx);
+  if (newExpr != NULL) 
+  {
+    result = newExpr;
     modified = true;
   }
   return result;

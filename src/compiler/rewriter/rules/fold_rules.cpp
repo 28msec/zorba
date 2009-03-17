@@ -249,23 +249,30 @@ RULE_REWRITE_POST(MarkImpureExprs)
   // TODO: propagate non-discardable prop for FLWOR vars (see nodeid_rules.cpp)
 
   Annotation::key_t k = AnnotationKey::NONDISCARDABLE_EXPR;
-  switch (node->get_expr_kind ()) {
-    // TODO: update exprs probably non-discardable as well
-  case fo_expr_kind: {
+  switch (node->get_expr_kind ()) 
+  {
+  // TODO: update exprs probably non-discardable as well
+  case fo_expr_kind: 
+  {
     fo_expr *fo = static_cast<fo_expr *> (node);
     const function *f = fo->get_func ();
-    if (f == LOOKUP_OP2 ("ctxvar-assign")
-        || dynamic_cast<const fn_error *> (f) != NULL)
+
+    if (f == LOOKUP_OP2 ("ctxvar-assign") ||
+        dynamic_cast<const fn_error *> (f) != NULL)
       node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
+
     break;
   }
   default:
+  {
     if (dynamic_cast<cast_base_expr *> (node) != NULL)
       node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
   }
+  }
   
-  if (node->get_annotation (k) != TSVAnnotationValue::TRUE_VAL)
+  if (node->get_annotation(k) != TSVAnnotationValue::TRUE_VAL.getp())
     propagate_any_child_up (node, k);
+
   return NULL;
 }
 
@@ -327,7 +334,10 @@ RULE_REWRITE_POST(FoldConst)
 
 ********************************************************************************/
 
-static expr_t partial_eval_logic (fo_expr *fo, bool shortcircuit_val, RewriterContext& rCtx) 
+static expr_t partial_eval_logic (
+    fo_expr *fo,
+    bool shortcircuit_val,
+    RewriterContext& rCtx) 
 {
   // fo is a logical "and" or "or" expr
 
@@ -420,22 +430,25 @@ static expr_t partial_eval_fo (RewriterContext& rCtx, fo_expr *fo)
 RULE_REWRITE_PRE(PartialEval) 
 {
   castable_base_expr *cbe;
-  if ((cbe = dynamic_cast<castable_base_expr *>(node)) != NULL) {
+  if ((cbe = dynamic_cast<castable_base_expr *>(node)) != NULL) 
+  {
     expr_t arg = cbe->get_input();
     if (arg->get_annotation (AnnotationKey::NONDISCARDABLE_EXPR).getp() == TSVAnnotationValue::TRUE_VAL.getp())
       return NULL;
+
     xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
+
     if (TypeOps::is_subtype(*arg_type, *cbe->get_target_type()))
       return new const_expr (LOC (node), true);
-    else if (node->get_expr_kind () == instanceof_expr_kind)
-      return TypeOps::intersect_type (*arg_type, *cbe->get_target_type ()) == GENV_TYPESYSTEM.NONE_TYPE 
+    else if (node->get_expr_kind() == instanceof_expr_kind)
+      return TypeOps::intersect_type(*arg_type, *cbe->get_target_type ()) == GENV_TYPESYSTEM.NONE_TYPE 
         ? new const_expr (LOC (node), false) : NULL;
     else
       return NULL;
   }
 
-  switch (node->get_expr_kind ()) {
-
+  switch (node->get_expr_kind ()) 
+  {
   case if_expr_kind: {
     if_expr *ite = dynamic_cast<if_expr *> (node);
     const_expr *cond = ite->get_cond_expr ().dyn_cast<const_expr> ().getp ();
