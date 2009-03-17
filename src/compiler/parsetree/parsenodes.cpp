@@ -934,7 +934,7 @@ void FLWORExpr::compute_general () {
 void WindowVarDecl::accept(parsenode_visitor& v) const {
   BEGIN_VISITOR ();
   ACCEPT (typedecl_h);
-  ACCEPT (get_valexpr ());
+  ACCEPT (get_initexpr ());
   END_VISITOR ();
 }
 
@@ -1052,7 +1052,7 @@ void VarInDecl::accept(parsenode_visitor& v) const
   ACCEPT (typedecl_h);
   ACCEPT (posvar_h);
   ACCEPT (ftscorevar_h);
-  ACCEPT (get_valexpr ());
+  ACCEPT (get_initexpr ());
   END_VISITOR ();
 }
 
@@ -1133,7 +1133,7 @@ void VarGetsDecl::accept(parsenode_visitor& v) const
   BEGIN_VISITOR ();
   ACCEPT (typedecl_h);
   ACCEPT (ftscorevar_h);
-  ACCEPT (get_valexpr ());
+  ACCEPT (get_initexpr ());
   END_VISITOR ();
 }
 

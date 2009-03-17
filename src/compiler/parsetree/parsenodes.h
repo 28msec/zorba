@@ -927,7 +927,6 @@ public:
   {}
 
 	rchandle<exprnode> get_initexpr() const { return initexpr_h; }
-	rchandle<exprnode> get_valexpr() const { return get_initexpr (); }
 };
 
 class CtxItemDecl : public parsenode {
