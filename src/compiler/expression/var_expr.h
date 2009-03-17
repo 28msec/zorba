@@ -92,7 +92,19 @@ protected:
   flwor_initial_clause *m_forlet_clause;
 };
 
-  typedef rchandle<var_expr> varref_t;
+typedef rchandle<var_expr> varref_t;
+
+  struct global_binding : public std::pair<varref_t, expr_t> {
+    bool ext;
+    global_binding () : ext (false) {}
+    global_binding (varref_t v, expr_t e)
+      : std::pair<varref_t, expr_t>  (v, e), ext (e == NULL)
+    {}
+    global_binding (varref_t v, expr_t e, bool ext_)
+      : std::pair<varref_t, expr_t> (v, e), ext (ext_)
+    {}
+    bool is_external () { return ext; }
+  };
 
 }
 

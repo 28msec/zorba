@@ -38,8 +38,6 @@
 #define LOC( expr ) (expr)->get_loc ()
 namespace zorba {
 
-typedef rchandle<var_expr> varref_t;
-
 typedef std::set<var_expr *> var_ptr_set;
 
 class VarSetAnnVal : public AnnotationValue {

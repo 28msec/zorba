@@ -96,8 +96,6 @@ namespace zorba {
 
 #define CTXTS sctx_p->get_typemanager ()
 
-  typedef pair<varref_t, expr_t> global_binding;
-
   template<class T> T &peek_stack (stack<T> &stk) {
     ZORBA_ASSERT (! stk.empty ());
     return stk.top ();
@@ -480,6 +478,7 @@ expr_t wrap_in_atomization (expr_t e) {
 expr_t wrap_in_globalvar_assign(expr_t e) {
   const function *ctx_set = LOOKUP_OP2 ("ctxvar-assign");
   const function *ctx_get = LOOKUP_OP1 ("ctxvariable");
+  const function *ctx_exists = LOOKUP_OP1 ("ctxvar-exists");
 
   for (list<global_binding>::iterator i = theGlobalVars.begin ();
       i != theGlobalVars.end ();
@@ -497,8 +496,12 @@ expr_t wrap_in_globalvar_assign(expr_t e) {
 
       if (var_type != NULL)
         expr = new treat_expr (expr->get_loc (), expr, var->get_type (), XPTY0004);
-      minfo->init_exprs.push_back (new fo_expr (var->get_loc(),
-                                         ctx_set, qname_expr, expr));
+      expr = new fo_expr (var->get_loc(),
+                          ctx_set, qname_expr, expr);
+      if (b.is_external ())
+        expr = new if_expr (var->get_loc (), expr_t (new fo_expr (var->get_loc (), ctx_exists, qname_expr)),
+                            expr_t (create_seq (var->get_loc ())), expr);
+      minfo->init_exprs.push_back (expr);
     } else if (var_type != NULL) {
       expr_t get = new fo_expr (var->get_loc (), ctx_get, qname_expr);
       minfo->init_exprs.push_back (new treat_expr (var->get_loc (), get, var->get_type (), XPTY0004));
@@ -2398,8 +2401,8 @@ void end_visit (const VarDecl& v, void* /*visit_state*/) {
     if (export_sctx != NULL)
       bind_var (ve, export_sctx);
   }
-  expr_t val = v.is_extern() ? expr_t(NULL) : pop_nodestack();
-  theGlobalVars.push_back(global_binding(ve, val));
+  expr_t val = v.get_initexpr () == NULL ? expr_t(NULL) : pop_nodestack();
+  theGlobalVars.push_back(global_binding(ve, val, v.is_extern ()));
 #ifdef ZORBA_DEBUGGER
   theScopedVariables.push_back( ve );
 #endif

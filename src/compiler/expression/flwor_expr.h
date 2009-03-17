@@ -44,7 +44,6 @@ public:
 #ifdef ZORBA_DEBUGGER
 
 typedef rchandle<var_expr> var_expr_t;
-typedef std::pair<var_expr_t, expr_t> global_binding;
 
 class bound_var
 {

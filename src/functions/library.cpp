@@ -1140,6 +1140,10 @@ DECL(sctx, ctx_var_assign,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.EMPTY_TYPE));
+DECL(sctx, ctx_var_exists,
+     (createQName(XQUERY_FN_NS,"fn", ":ctxvar-exists"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 // end context functions
 
   populateContext_Math (sctx);

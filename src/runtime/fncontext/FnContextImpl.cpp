@@ -30,6 +30,7 @@
 #include "store/api/store.h"
 #include "store/api/iterator.h"
 #include "store/api/temp_seq.h"
+#include "store/api/item_factory.h"
 
 #include "system/globalenv.h"
 
@@ -152,6 +153,26 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
   planState.theRuntimeCB->theDynamicContext->add_variable (xqp_string (varName->getStringValue ()),
                                                            new PlanIteratorWrapper (theChildren [1], planState));
 
+  STACK_END (state);
+}
+
+bool CtxVarExistsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  xqpStringStore dot (".");
+  store::Item_t varName;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  CONSUME (varName, 0);
+
+	if(varName->getStringValue ()->equals (&dot)) {
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean (result, planState.theRuntimeCB->theDynamicContext->context_item() != NULL),
+               state);
+	} else {
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean (result, planState.theRuntimeCB->theDynamicContext->get_variable(varName) != NULL),
+               state);
+  }
   STACK_END (state);
 }
 
