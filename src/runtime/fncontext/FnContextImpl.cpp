@@ -144,14 +144,24 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
 bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t varName;
+  xqpStringStore dot (".");
+  store::Item_t item;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   CONSUME (varName, 0);
 
-  planState.theRuntimeCB->theDynamicContext->add_variable (xqp_string (varName->getStringValue ()),
-                                                           new PlanIteratorWrapper (theChildren [1], planState));
+	if(varName->getStringValue ()->equals (&dot)) {
+    if (! CONSUME (item, 1))
+			ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "context item must be a single item");
+    planState.theRuntimeCB->theDynamicContext->set_context_item(item, 0);
+    if (CONSUME (item, 1))
+      ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "context item must be a single item");
+  } else {
+    planState.theRuntimeCB->theDynamicContext->add_variable (xqp_string (varName->getStringValue ()),
+                                                             new PlanIteratorWrapper (theChildren [1], planState));
+  }
 
   STACK_END (state);
 }

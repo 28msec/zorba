@@ -176,6 +176,8 @@ protected:
    the var_expr for V to the expr E that defines V (E is NULL for external vars)
   ********************************************************************************/
   list<global_binding> theGlobalVars;
+  expr_t ctx_item_default;
+  xqtref_t ctx_item_type;
 #ifdef ZORBA_DEBUGGER
   checked_vector<unsigned int> theScopes;
   checked_vector<varref_t> theScopedVariables;
@@ -205,7 +207,8 @@ protected:
   // TODO: should be static
   // functions accepting . as default arg
   set<string> xquery_fns_def_dot;
-  const function *op_concatenate, *op_enclosed_expr, *op_or, *fn_data;
+  const function *op_concatenate, *op_enclosed_expr, *op_or, *fn_data,
+    *ctx_set, *ctx_get, *ctx_exists;
 
   set<string> zorba_predef_mod_ns;
   
@@ -475,30 +478,27 @@ expr_t wrap_in_atomization (expr_t e) {
   return new fo_expr (e->get_loc (), CACHED (fn_data, LOOKUP_FN ("fn", "data", 1)), e);
 }
 
-expr_t wrap_in_globalvar_assign(expr_t e) {
-  const function *ctx_set = LOOKUP_OP2 ("ctxvar-assign");
-  const function *ctx_get = LOOKUP_OP1 ("ctxvariable");
-  const function *ctx_exists = LOOKUP_OP1 ("ctxvar-exists");
+  void add_single_global_assign (const global_binding &b) {
+    CACHED (ctx_set, LOOKUP_OP2 ("ctxvar-assign"));
+    CACHED (ctx_get, LOOKUP_OP1 ("ctxvariable"));
+    CACHED (ctx_exists, LOOKUP_OP1 ("ctxvar-exists"));
 
-  for (list<global_binding>::iterator i = theGlobalVars.begin ();
-      i != theGlobalVars.end ();
-      i++)
-  {
-    global_binding b = *i;
     varref_t var = b.first;
     xqtref_t var_type = var->get_type ();
     expr_t expr = b.second;
-    expr_t qname_expr = new const_expr (var->get_loc(), dynamic_context::var_key (&*var));
-
+    xqpStringStore dot (".");
+    expr_t qname_expr =
+      new const_expr (var->get_loc(), var->get_varname ()->getStringValue ()->equals (&dot) ? "." : dynamic_context::var_key (&*var));
+    
     if (expr != NULL) {
       if (expr->isUpdating())
-        ZORBA_ERROR_LOC(XUST0001, e->get_loc());
+        ZORBA_ERROR_LOC(XUST0001, expr->get_loc());
 
       if (var_type != NULL)
-        expr = new treat_expr (expr->get_loc (), expr, var->get_type (), XPTY0004);
+        expr = new treat_expr (expr->get_loc (), expr, var_type, XPTY0004);
       expr = new fo_expr (var->get_loc(),
                           ctx_set, qname_expr, expr);
-      if (b.is_external ())
+      if (b.is_extern ())
         expr = new if_expr (var->get_loc (), expr_t (new fo_expr (var->get_loc (), ctx_exists, qname_expr)),
                             expr_t (create_seq (var->get_loc ())), expr);
       minfo->init_exprs.push_back (expr);
@@ -506,6 +506,14 @@ expr_t wrap_in_globalvar_assign(expr_t e) {
       expr_t get = new fo_expr (var->get_loc (), ctx_get, qname_expr);
       minfo->init_exprs.push_back (new treat_expr (var->get_loc (), get, var->get_type (), XPTY0004));
     }
+  }
+
+expr_t wrap_in_globalvar_assign(expr_t e) {
+  for (list<global_binding>::iterator i = theGlobalVars.begin ();
+      i != theGlobalVars.end ();
+      i++)
+  {
+    add_single_global_assign (*i);
   }
 
   if (! minfo->init_exprs.empty ()) {
@@ -2325,11 +2333,20 @@ void *begin_visit (const CtxItemDecl& v) {
 }
 
 void end_visit (const CtxItemDecl& v, void* /*visit_state*/) {
-  if (v.get_type () != NULL)
-    pop_tstack ();
-  if (v.get_expr () != NULL)
-    pop_nodestack ();
   TRACE_VISIT_OUT ();
+  if (v.get_type () != NULL)
+    ctx_item_type = pop_tstack ();
+  else
+    ctx_item_type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
+  if (v.get_expr () != NULL)
+    ctx_item_default = pop_nodestack ();
+  if (v.get_type () != NULL || v.get_expr () != NULL) {
+    store::Item_t dotname;
+    GENV_ITEMFACTORY->createQName(dotname, "", "", ".");
+    varref_t var = new var_expr (loc, var_expr::context_var, dotname);
+    global_binding b (var, ctx_item_default, true);
+    add_single_global_assign (b);
+  }
 }
 
 void *begin_visit (const IndexDecl& v) {
@@ -2987,7 +3004,7 @@ void end_visit (const LibraryModule& v, void* /*visit_state*/) {
 void *begin_visit (const MainModule & v) {
   TRACE_VISIT ();
 
-  theDotVar = bind_var(QueryLoc::null, DOT_VARNAME, var_expr::context_var, GENV_TYPESYSTEM.ITEM_TYPE_ONE);
+  theDotVar = bind_var (loc, DOT_VARNAME, var_expr::context_var, ctx_item_type);
   
   parse_xquery_version (v.get_version_decl ());
   return no_state;

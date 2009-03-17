@@ -103,7 +103,7 @@ typedef rchandle<var_expr> varref_t;
     global_binding (varref_t v, expr_t e, bool ext_)
       : std::pair<varref_t, expr_t> (v, e), ext (ext_)
     {}
-    bool is_external () { return ext; }
+    bool is_extern () const { return ext; }
   };
 
 }
