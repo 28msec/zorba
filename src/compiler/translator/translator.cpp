@@ -207,8 +207,8 @@ protected:
   // TODO: should be static
   // functions accepting . as default arg
   set<string> xquery_fns_def_dot;
-  const function *op_concatenate, *op_enclosed_expr, *op_or, *fn_data,
-    *ctx_set, *ctx_get, *ctx_exists;
+  const function *op_concatenate = NULL, *op_enclosed_expr = NULL, *op_or = NULL, *fn_data = NULL,
+    *ctx_set = NULL, *ctx_get = NULL, *ctx_exists = NULL;
 
   set<string> zorba_predef_mod_ns;
   
@@ -247,7 +247,6 @@ protected:
     xquery_fns_def_dot.insert ("name");
     xquery_fns_def_dot.insert ("string");
 
-    op_concatenate = op_enclosed_expr = op_or = fn_data = NULL;
     zorba_predef_mod_ns.insert (ZORBA_FN_NS);
     zorba_predef_mod_ns.insert (ZORBA_MATH_FN_NS);
     zorba_predef_mod_ns.insert (ZORBA_REST_FN_NS);
