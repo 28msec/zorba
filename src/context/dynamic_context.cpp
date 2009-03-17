@@ -96,9 +96,6 @@ void dynamic_context::destroy_dctx_value (const dctx_value_t* val) {
   case dynamic_context::dctx_value_t::temp_seq_val:
     RCHelper::removeReference (val->val.temp_seq);
     break;
-  case dynamic_context::dctx_value_t::val_idx_ins_session_val:
-    RCHelper::removeReference (val->val.val_idx_ins_session);
-    break;
   default:
     ZORBA_ASSERT (false);
   }
@@ -270,19 +267,18 @@ void dynamic_context::set_default_collection(const store::Item_t& default_collec
 	this->default_collection_uri = default_collection_uri;
 }
 
-  ValueIndexInsertSession_t dynamic_context::get_val_idx_insert_session () {
-    dctx_value_t v;
-    if (! context_value ("val_idx_ins_session:", v))
+  ValueIndexInsertSession_t dynamic_context::get_val_idx_insert_session (xqpString key) {
+    ValueIndexInsertSession_t v;
+    if (val_idx_ins_session_map.get (key, v))
+      return v;
+    else if (parent != NULL)
+      return parent->get_val_idx_insert_session (key);
+    else
       return NULL;
-    return v.val.val_idx_ins_session;
   }
 
-  void dynamic_context::set_val_idx_insert_session (ValueIndexInsertSession_t s) {
-    RCHelper::addReference (s);
-    dctx_value_t v;
-    v.type = dynamic_context::dctx_value_t::val_idx_ins_session_val;
-    v.val.val_idx_ins_session = s.getp ();
-    keymap.put ("val_idx_ins_session:", v);
+  void dynamic_context::set_val_idx_insert_session (xqpString key, ValueIndexInsertSession_t s) {
+    val_idx_ins_session_map.put (key, s);
   }
 
 

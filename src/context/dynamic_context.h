@@ -37,7 +37,6 @@ protected:
     {
       store::Iterator* var_iterator;
       store::TempSeq*  temp_seq;
-      ValueIndexInsertSession *val_idx_ins_session;
     } val;
   };
 
@@ -65,6 +64,8 @@ protected:
   store::Item_t		        ctxt_item;
 	unsigned long		        ctxt_position;
 	//+context size is determined by fn:last() at runtime
+
+  hashmap<rchandle<ValueIndexInsertSession> > val_idx_ins_session_map;
 
 protected:
   xqp_string qname_internal_key (store::Item_t qname) const;
@@ -119,8 +120,8 @@ public:
   store::Item_t get_default_collection();
 	void set_default_collection(const store::Item_t& default_collection_uri);
 
-  rchandle<ValueIndexInsertSession> get_val_idx_insert_session ();
-  void set_val_idx_insert_session (rchandle<ValueIndexInsertSession>);
+  rchandle<ValueIndexInsertSession> get_val_idx_insert_session (xqpString);
+  void set_val_idx_insert_session (xqpString, rchandle<ValueIndexInsertSession>);
 
 };
 
