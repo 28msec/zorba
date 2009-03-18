@@ -416,7 +416,7 @@ main(int argc, char** argv)
 #ifndef ZORBA_XQUERYX
     std::string   Queriesdir = "/Queries/";
 #else
-    std::string   Queriesdir = "/XQueryX/";
+    std::string   Queriesdir = "/";//"/XQueryX/";
 #endif
     int path_flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;
     zorba::file lQueryFile (zorba::RBKT_SRC_DIR + Queriesdir + argv[i], path_flags);
