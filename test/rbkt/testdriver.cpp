@@ -439,13 +439,18 @@ main(int argc, char** argv)
 #else
     std::string   w3c_str;
     int xqueryx_off = 0;
-    if(!stricmp(lQueryWithoutSuffix.substr(0, 7).c_str(), "xqueryx"))
+    if(!strcmp(lQueryWithoutSuffix.substr(0, 7).c_str(), "xqueryx"))
     {
       w3c_str = "w3c_testsuite";
       xqueryx_off = 7;
     }
-    zorba::file lSpecFile (zorba::RBKT_SRC_DIR + "/Queries/" + w3c_str;
-                           + lQueryWithoutSuffix.substr(xqueryx_off) +".spec", path_flags);
+    std::string   spec_fname = zorba::RBKT_SRC_DIR + "/Queries/" + w3c_str
+                           + lQueryWithoutSuffix.substr(xqueryx_off) +".spec";
+    zorba::file lSpecFile (spec_fname, path_flags);
+    std::cout << "spec fname " << spec_fname << std::endl;
+    std::string   ref_fname = zorba::RBKT_SRC_DIR + "/ExpQueryResults/" 
+                          + lQueryWithoutSuffix +".xml.res";
+    std::cout << "lRefFile fname " << ref_fname << std::endl;
 #endif
     // does the query file exists
     if ( (! lQueryFile.exists ()) || lQueryFile.is_directory () ) 
