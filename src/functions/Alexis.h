@@ -42,7 +42,7 @@ namespace zorba {
 
   class zorba_schema_type : public function
   {
-    public:
+  public:
       zorba_schema_type(const signature& sig): function(sig){}
 
       PlanIter_t codegen (const QueryLoc& loc,
@@ -53,7 +53,7 @@ namespace zorba {
 #ifdef ZORBA_WITH_TIDY
   class zorba_tidy : public function
   {
-    public:
+  public:
       zorba_tidy(const signature& sig): function(sig){}
 
       PlanIter_t codegen (const QueryLoc& loc,
@@ -74,22 +74,24 @@ namespace zorba {
 
   class zorba_random : public function
   {
-    public:
-      zorba_random(const signature& sig): function(sig){}
-
-      PlanIter_t codegen (const QueryLoc& loc,
-                          std::vector<PlanIter_t>& argv,
-                          AnnotationHolder &ann) const;
+  public:
+    zorba_random(const signature& sig): function(sig){}
+    
+    PlanIter_t codegen (const QueryLoc& loc,
+                        std::vector<PlanIter_t>& argv,
+                        AnnotationHolder &ann) const;
+    bool isPureFunction () const { return false; }
   };
 
   class zorba_uuid : public function
   {
-    public:
-      zorba_uuid(const signature& sig): function(sig){}
-
-      PlanIter_t codegen (const QueryLoc& loc,
-                          std::vector<PlanIter_t>& argv,
-                          AnnotationHolder &ann) const;
+  public:
+    zorba_uuid(const signature& sig): function(sig){}
+    
+    PlanIter_t codegen (const QueryLoc& loc,
+                        std::vector<PlanIter_t>& argv,
+                        AnnotationHolder &ann) const;
+    bool isPureFunction () const { return false; }
   };
 
 }

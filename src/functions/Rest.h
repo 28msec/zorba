@@ -28,14 +28,16 @@ public:
   rest_get(const signature&);
 
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  bool isPureFunction () const { return false; }
 };
 
 class rest_get_tidy : public function
 {
-  public:
-    rest_get_tidy(const signature&);
+public:
+  rest_get_tidy(const signature&);
 
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  bool isPureFunction () const { return false; }
 };
 
 class rest_post : public function
@@ -45,6 +47,7 @@ public:
 
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+  bool isPureFunction () const { return false; }
 };
 
 class rest_put : public function
@@ -54,6 +57,7 @@ public:
 
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+  bool isPureFunction () const { return false; }
 };
 
 class rest_delete : public function
@@ -63,6 +67,7 @@ public:
 
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+  bool isPureFunction () const { return false; }
 };
 
 class rest_head : public function
@@ -72,6 +77,7 @@ public:
 
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+  bool isPureFunction () const { return false; }
 };
 
 
