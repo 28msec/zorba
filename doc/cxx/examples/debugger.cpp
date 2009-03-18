@@ -20,7 +20,6 @@
 #include <zorba/debugger_client.h>
 #include <zorba/debugger_default_event_handler.h>
 #include <simplestore/simplestore.h>
-#include <zorbaerrors/errors.h>
 #ifdef WIN32
 #include <windows.h>
 #define sleep(s) Sleep(s*1000)
@@ -110,7 +109,7 @@ bool debugger_example_3(Zorba *aZorba)
     lQuery->compile("1+2");
     lQuery->debug();
     lQuery->close();
-  } catch( error::ZorbaError& ) {
+  } catch( ZorbaException &e ) {
     return true;
   }
   return false;
