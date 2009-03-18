@@ -2336,7 +2336,6 @@ void end_visit (const CtxItemDecl& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   if (v.get_type () != NULL) {
     ctx_item_type = pop_tstack ();
-    cout << "ctx type: " << ctx_item_type->toString() <<endl;
   } else
     ctx_item_type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
   if (v.get_expr () != NULL)
