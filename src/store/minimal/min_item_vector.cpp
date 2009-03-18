@@ -30,6 +30,7 @@ ItemVector::ItemVector(std::vector<store::Item_t>& items)
     theItems[i].transfer(items[i]);
 }
 
+
 xqpStringStore_t ItemVector::getStringValue() const
 {
   std::ostringstream ostr;
@@ -40,9 +41,31 @@ xqpStringStore_t ItemVector::getStringValue() const
     ostr << theItems[i]->getStringValue()->c_str() << " ";
   }
 
-  ostr << std::endl;
-
   return new xqpStringStore(ostr.str());
+}
+
+
+void ItemVector::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = new xqpStringStore("");
+  getStringValue(strval->str());
+}
+
+
+void ItemVector::getStringValue(std::string& buf) const
+{
+  ulong numItems = theItems.size();
+
+  if (numItems > 0)
+  {
+    theItems[0]->getStringValue(buf);
+
+    for (ulong i = 1; i < numItems; i++)
+    {
+      buf += " ";
+      theItems[i]->getStringValue(buf);
+    }
+  }
 }
 
 } // namespace storeminimal

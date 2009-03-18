@@ -133,6 +133,34 @@ xqpStringStore_t QNameItemImpl::getStringValue( ) const
 }
 
 
+void QNameItemImpl::getStringValue(xqpStringStore_t& strval) const
+{
+  if (thePrefix->empty()) 
+  {
+    strval = getLocalName();
+  }
+  else 
+  {
+    strval = new xqpStringStore(thePrefix->str() + ":" + getLocalName()->str());
+  }
+}
+
+
+void QNameItemImpl::getStringValue(std::string& buf) const
+{
+  if (thePrefix->empty()) 
+  {
+    buf += getLocalName()->str();
+  }
+  else 
+  {
+    buf += thePrefix->str();
+    buf += ":";
+    buf += getLocalName()->str();
+  }
+}
+
+
 bool QNameItemImpl::isId() const
 {
   if (getLocalName()->byteEqual("id", 2))
@@ -435,7 +463,18 @@ xqpStringStore_t DateTimeItemNaive::getStringValue() const
   return theValue.toString().getStore();
 }
 
-  
+
+void DateTimeItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = theValue.toString().getStore();
+}
+
+void DateTimeItemNaive::getStringValue(std::string& buf) const
+{
+  buf += theValue.toString().c_str();
+}
+
+
 store::Item* DateTimeItemNaive::getType() const
 {
   switch (theValue.getFacet())
@@ -569,6 +608,17 @@ xqpStringStore_t DurationItemNaive::getStringValue() const
   return theValue.toString().getStore();
 }
 
+void DurationItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = theValue.toString().getStore();
+}
+
+void DurationItemNaive::getStringValue(std::string& buf) const
+{
+  buf += theValue.toString().c_str();
+}
+
+
 store::Item* DurationItemNaive::getType() const
 {
   switch (theValue.getFacet())
@@ -642,6 +692,16 @@ xqpStringStore_t DecimalItemNaive::getStringValue() const
   return NumConversions::decimalToStr(theValue).getStore();
 }
 
+void DecimalItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = NumConversions::decimalToStr(theValue).getStore();
+}
+
+void DecimalItemNaive::getStringValue(std::string& buf) const
+{
+  buf += NumConversions::decimalToStr(theValue).c_str();
+}
+
 xqp_string DecimalItemNaive::show() const
 {
   return "xs:decimal(" + getStringValue()->str() + ")";
@@ -685,6 +745,16 @@ xqpStringStore_t IntegerItemNaive::getStringValue() const
   return NumConversions::integerToStr(theValue).getStore();
 }
 
+void IntegerItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = NumConversions::integerToStr(theValue).getStore();
+}
+
+void IntegerItemNaive::getStringValue(std::string& buf) const
+{
+  buf += NumConversions::integerToStr(theValue).c_str();
+}
+
 xqp_string IntegerItemNaive::show() const
 {
   return "xs:integer(" + getStringValue()->str() + ")";
@@ -723,6 +793,16 @@ store::Item_t NonPositiveIntegerItemNaive::getEBV() const
 xqpStringStore_t NonPositiveIntegerItemNaive::getStringValue() const 
 {
   return NumConversions::uintegerToStr(theValue).getStore();
+}
+
+void NonPositiveIntegerItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval =  NumConversions::uintegerToStr(theValue).getStore();
+}
+
+void NonPositiveIntegerItemNaive::getStringValue(std::string& buf) const
+{
+  buf +=  NumConversions::uintegerToStr(theValue).c_str();
 }
 
 xqp_string NonPositiveIntegerItemNaive::show() const 
@@ -768,6 +848,16 @@ store::Item_t NegativeIntegerItemNaive::getEBV() const
 xqpStringStore_t NegativeIntegerItemNaive::getStringValue() const 
 {
   return NumConversions::integerToStr(theValue).getStore();
+}
+
+void NegativeIntegerItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = NumConversions::integerToStr(theValue).getStore();
+}
+
+void NegativeIntegerItemNaive::getStringValue(std::string& buf) const
+{
+  buf += NumConversions::integerToStr(theValue).c_str();
 }
 
 xqp_string NegativeIntegerItemNaive::show() const 
@@ -821,7 +911,18 @@ xqpStringStore_t NonNegativeIntegerItemNaive::getStringValue() const
   return NumConversions::uintegerToStr(theValue).getStore();
 }
 
-xqp_string NonNegativeIntegerItemNaive::show() const {
+void NonNegativeIntegerItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = NumConversions::uintegerToStr(theValue).getStore();
+}
+
+void NonNegativeIntegerItemNaive::getStringValue(std::string& buf) const
+{
+  buf += NumConversions::uintegerToStr(theValue).c_str();
+}
+
+xqp_string NonNegativeIntegerItemNaive::show() const 
+{
   return "xs:nonNegativeInteger(" + getStringValue()->str() + ")";
 }
 
@@ -869,6 +970,16 @@ store::Item_t PositiveIntegerItemNaive::getEBV() const
 xqpStringStore_t PositiveIntegerItemNaive::getStringValue() const 
 {
   return NumConversions::uintegerToStr(theValue).getStore();
+}
+
+void PositiveIntegerItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = NumConversions::uintegerToStr(theValue).getStore();
+}
+
+void PositiveIntegerItemNaive::getStringValue(std::string& buf) const
+{
+  buf += NumConversions::uintegerToStr(theValue).c_str();
 }
 
 xqp_string PositiveIntegerItemNaive::show() const 
@@ -919,6 +1030,16 @@ xqpStringStore_t IntItemNaive::getStringValue() const
   return NumConversions::intToStr(theValue).getStore();
 }
 
+void IntItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = NumConversions::intToStr(theValue).getStore();
+}
+
+void IntItemNaive::getStringValue(std::string& buf) const
+{
+  buf += NumConversions::intToStr(theValue).c_str();
+}
+
 xqp_string IntItemNaive::show() const
 {
   return "xs:int(" + getStringValue()->str() + ")";
@@ -962,6 +1083,15 @@ xqpStringStore_t DoubleItemNaive::getStringValue() const
   return NumConversions::doubleToStr(theValue).getStore();
 }
 
+void DoubleItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = NumConversions::doubleToStr(theValue).getStore();
+}
+
+void DoubleItemNaive::getStringValue(std::string& buf) const
+{
+  buf += NumConversions::doubleToStr(theValue).c_str();
+}
 
 xqp_string DoubleItemNaive::show() const
 {
@@ -1022,6 +1152,16 @@ xqpStringStore_t FloatItemNaive::getStringValue() const
   return NumConversions::floatToStr(theValue).getStore();
 }
 
+void FloatItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = NumConversions::floatToStr(theValue).getStore();
+}
+
+void FloatItemNaive::getStringValue(std::string& buf) const
+{
+  buf += NumConversions::floatToStr(theValue).c_str();
+}
+
 xqp_string FloatItemNaive::show() const
 {
   return "xs:float(" + getStringValue()->str() + ")";
@@ -1075,6 +1215,22 @@ xqpStringStore_t BooleanItemNaive::getStringValue() const
     return new xqpStringStore("false");
 }
 
+void BooleanItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  if (theValue)
+    strval = new xqpStringStore("true");
+  else
+    strval = new xqpStringStore("false");
+}
+
+void BooleanItemNaive::getStringValue(std::string& buf) const
+{
+  if (theValue)
+    buf += "true";
+  else
+    buf += "false";
+}
+
 xqp_string BooleanItemNaive::show() const
 {
   return "xs:boolean(" + getStringValue()->str() + ")";
@@ -1118,6 +1274,17 @@ store::Item_t LongItemNaive::getEBV() const
 xqpStringStore_t LongItemNaive::getStringValue() const 
 {
   return NumConversions::longLongToStr(theValue).getStore();
+}
+
+
+void LongItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = NumConversions::longLongToStr(theValue).getStore();
+}
+
+void LongItemNaive::getStringValue(std::string& buf) const
+{
+  buf +=  NumConversions::longLongToStr(theValue).c_str();
 }
 
 xqp_string LongItemNaive::show() const 
@@ -1178,6 +1345,16 @@ store::Item_t ShortItemNaive::getEBV() const
 xqpStringStore_t ShortItemNaive::getStringValue() const 
 {
   return NumConversions::shortToStr(theValue).getStore();
+}
+
+void ShortItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = NumConversions::shortToStr(theValue).getStore();
+}
+
+void ShortItemNaive::getStringValue(std::string& buf) const
+{
+  buf += NumConversions::shortToStr(theValue).c_str();
 }
 
 xqp_string ShortItemNaive::show() const 
@@ -1244,6 +1421,16 @@ xqpStringStore_t ByteItemNaive::getStringValue() const
   return NumConversions::byteToStr(theValue).getStore();
 }
 
+void ByteItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = NumConversions::byteToStr(theValue).getStore();
+}
+
+void ByteItemNaive::getStringValue(std::string& buf) const
+{
+  buf += NumConversions::byteToStr(theValue).c_str();
+}
+
 xqp_string ByteItemNaive::show() const 
 {
   return "xs:byte(" + getStringValue()->str() + ")";
@@ -1259,41 +1446,59 @@ ByteItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 /*******************************************************************************
   class UnsignedLongItemNaive
 ********************************************************************************/
-xqp_integer UnsignedLongItemNaive::getIntegerValue() const {
+xqp_integer UnsignedLongItemNaive::getIntegerValue() const 
+{
   return Integer::parseULongLong(theValue);
 }
 
-xqp_decimal UnsignedLongItemNaive::getDecimalValue() const {
+xqp_decimal UnsignedLongItemNaive::getDecimalValue() const 
+{
   return Decimal::parseULongLong(theValue);
 }
 
-xqp_uinteger UnsignedLongItemNaive::getUnsignedIntegerValue() const {
+xqp_uinteger UnsignedLongItemNaive::getUnsignedIntegerValue() const 
+{
   return Integer::parseULongLong(theValue);
 }
 
-store::Item* UnsignedLongItemNaive::getType() const {
+store::Item* UnsignedLongItemNaive::getType() const 
+{
   return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_LONG];
 }
 
 bool UnsignedLongItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    const XQPCollator* coll ) const {
+    const XQPCollator* coll ) const 
+{
   return theValue == aItem->getUnsignedLongValue();
 }
 
-store::Item_t UnsignedLongItemNaive::getEBV() const {
+store::Item_t UnsignedLongItemNaive::getEBV() const 
+{
   bool b = (theValue != 0);
   store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
 
-xqpStringStore_t UnsignedLongItemNaive::getStringValue() const {
+xqpStringStore_t UnsignedLongItemNaive::getStringValue() const 
+{
   return NumConversions::ulongLongToStr(theValue).getStore();
 }
 
-xqp_string UnsignedLongItemNaive::show() const {
+void UnsignedLongItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = NumConversions::ulongLongToStr(theValue).getStore();
+}
+
+void UnsignedLongItemNaive::getStringValue(std::string& buf) const
+{
+  buf += NumConversions::ulongLongToStr(theValue).c_str();
+}
+
+xqp_string UnsignedLongItemNaive::show() const 
+{
   return "xs:unsignedLong(" + getStringValue()->str() + ")";
 }
 
@@ -1311,41 +1516,59 @@ xqp_integer UnsignedIntItemNaive::getIntegerValue() const
   return Integer::parseInt(theValue);
 }
 
-xqp_decimal UnsignedIntItemNaive::getDecimalValue() const {
+xqp_decimal UnsignedIntItemNaive::getDecimalValue() const 
+{
   return Decimal::parseUInt(theValue);
 }
 
-xqp_uinteger UnsignedIntItemNaive::getUnsignedIntegerValue() const {
+xqp_uinteger UnsignedIntItemNaive::getUnsignedIntegerValue() const 
+{
   return Integer::parseInt(theValue);
 }
 
-xqp_ulong UnsignedIntItemNaive::getUnsignedLongValue() const {
+xqp_ulong UnsignedIntItemNaive::getUnsignedLongValue() const 
+{
   return static_cast<xqp_ulong>(theValue);
 }
 
-store::Item* UnsignedIntItemNaive::getType() const {
+store::Item* UnsignedIntItemNaive::getType() const 
+{
   return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_INT];
 }
 
 bool UnsignedIntItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    const XQPCollator* coll ) const {
+    const XQPCollator* coll ) const 
+{
   return theValue == aItem->getUnsignedIntValue();
 }
 
-store::Item_t UnsignedIntItemNaive::getEBV() const {
+store::Item_t UnsignedIntItemNaive::getEBV() const 
+{
   bool b = (theValue != 0);
   store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
 
-xqpStringStore_t UnsignedIntItemNaive::getStringValue() const {
+xqpStringStore_t UnsignedIntItemNaive::getStringValue() const 
+{
   return NumConversions::uintToStr(theValue).getStore();
 }
 
-xqp_string UnsignedIntItemNaive::show() const {
+void UnsignedIntItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = NumConversions::uintToStr(theValue).getStore();
+}
+
+void UnsignedIntItemNaive::getStringValue(std::string& buf) const
+{
+  buf += NumConversions::uintToStr(theValue).c_str();
+}
+
+xqp_string UnsignedIntItemNaive::show() const 
+{
   return "xs:unsignedInt(" + getStringValue()->str() + ")";
 }
 
@@ -1367,41 +1590,59 @@ xqp_decimal UnsignedShortItemNaive::getDecimalValue() const {
   return Decimal::parseInt((uint32_t)theValue);
 }
 
-xqp_uinteger UnsignedShortItemNaive::getUnsignedIntegerValue() const {
+xqp_uinteger UnsignedShortItemNaive::getUnsignedIntegerValue() const 
+{
   return Integer::parseInt((uint32_t)theValue);
 }
 
-xqp_ulong UnsignedShortItemNaive::getUnsignedLongValue() const {
+xqp_ulong UnsignedShortItemNaive::getUnsignedLongValue() const 
+{
   return static_cast<xqp_ulong>(theValue);
 }
 
-xqp_uint UnsignedShortItemNaive::getUnsignedIntValue() const {
+xqp_uint UnsignedShortItemNaive::getUnsignedIntValue() const 
+{
   return static_cast<xqp_uint>(theValue);
 }
 
-store::Item* UnsignedShortItemNaive::getType() const {
+store::Item* UnsignedShortItemNaive::getType() const 
+{
   return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_SHORT];
 }
 
 bool UnsignedShortItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    const XQPCollator* coll ) const {
+    const XQPCollator* coll ) const 
+{
   return theValue == aItem->getUnsignedShortValue();
 }
 
-store::Item_t UnsignedShortItemNaive::getEBV() const {
+store::Item_t UnsignedShortItemNaive::getEBV() const 
+{
   bool b = (theValue != 0);
   store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
 
-xqpStringStore_t UnsignedShortItemNaive::getStringValue() const {
+xqpStringStore_t UnsignedShortItemNaive::getStringValue() const 
+{
   return NumConversions::ushortToStr(theValue).getStore();
 }
 
-xqp_string UnsignedShortItemNaive::show() const {
+void UnsignedShortItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = NumConversions::ushortToStr(theValue).getStore();
+}
+
+void UnsignedShortItemNaive::getStringValue(std::string& buf) const
+{
+  buf += NumConversions::ushortToStr(theValue).c_str();
+}
+
+xqp_string UnsignedShortItemNaive::show() const 
+{
   return "xs:unsignedShort(" + getStringValue()->str() + ")";
 }
 
@@ -1426,41 +1667,59 @@ xqp_uinteger UnsignedByteItemNaive::getUnsignedIntegerValue() const {
   return Integer::parseInt(theValue);
 }
 
-xqp_ulong UnsignedByteItemNaive::getUnsignedLongValue() const {
+xqp_ulong UnsignedByteItemNaive::getUnsignedLongValue() const 
+{
   return static_cast<xqp_ulong>(theValue);
 }
 
-xqp_uint UnsignedByteItemNaive::getUnsignedIntValue() const {
+xqp_uint UnsignedByteItemNaive::getUnsignedIntValue() const 
+{
   return static_cast<xqp_uint>(theValue);
 }
 
-xqp_ushort UnsignedByteItemNaive::getUnsignedShortValue() const {
+xqp_ushort UnsignedByteItemNaive::getUnsignedShortValue() const 
+{
   return static_cast<xqp_ushort>(theValue);
 }
 
-store::Item* UnsignedByteItemNaive::getType() const {
+store::Item* UnsignedByteItemNaive::getType() const 
+{
   return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_BYTE];
 }
 
 bool UnsignedByteItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    const XQPCollator* coll ) const {
+    const XQPCollator* coll ) const 
+{
   return theValue == aItem->getUnsignedByteValue();
 }
 
-store::Item_t UnsignedByteItemNaive::getEBV() const {
+store::Item_t UnsignedByteItemNaive::getEBV() const 
+{
   bool b = (theValue != 0);
   store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
 
-xqpStringStore_t UnsignedByteItemNaive::getStringValue() const {
+xqpStringStore_t UnsignedByteItemNaive::getStringValue() const 
+{
   return NumConversions::ubyteToStr(theValue).getStore();
 }
 
-xqp_string UnsignedByteItemNaive::show() const {
+void UnsignedByteItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = NumConversions::ubyteToStr(theValue).getStore();
+}
+
+void UnsignedByteItemNaive::getStringValue(std::string& buf) const
+{
+  buf += NumConversions::ubyteToStr(theValue).c_str();
+}
+
+xqp_string UnsignedByteItemNaive::show() const 
+{
   return "xs:unsignedByte(" + getStringValue()->str() + ")";
 }
 
@@ -1482,15 +1741,28 @@ store::Item* Base64BinaryItemNaive::getType() const
 bool Base64BinaryItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    const XQPCollator* coll ) const {
+    const XQPCollator* coll ) const 
+{
   return theValue.equal(aItem->getBase64BinaryValue());
 }
 
-xqpStringStore_t Base64BinaryItemNaive::getStringValue() const {
+xqpStringStore_t Base64BinaryItemNaive::getStringValue() const 
+{
   return theValue.str().getStore();
 }
 
-xqp_string Base64BinaryItemNaive::show() const {
+void Base64BinaryItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = theValue.str().getStore();
+}
+
+void Base64BinaryItemNaive::getStringValue(std::string& buf) const
+{
+  buf += theValue.str().c_str();
+}
+
+xqp_string Base64BinaryItemNaive::show() const 
+{
   return "xs:base64Binary(" + getStringValue()->str() + ")";
 }
 
@@ -1511,15 +1783,28 @@ store::Item* HexBinaryItemNaive::getType() const
 bool HexBinaryItemNaive::equals(
     const store::Item* aItem,
     long timezone,
-    const XQPCollator* coll ) const {
+    const XQPCollator* coll ) const 
+{
   return theValue.equal(aItem->getHexBinaryValue());
 }
 
-xqpStringStore_t HexBinaryItemNaive::getStringValue() const {
+xqpStringStore_t HexBinaryItemNaive::getStringValue() const 
+{
   return theValue.str().getStore();
 }
 
-xqp_string HexBinaryItemNaive::show() const {
+void HexBinaryItemNaive::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = theValue.str().getStore();
+}
+
+void HexBinaryItemNaive::getStringValue(std::string& buf) const
+{
+  buf += theValue.str().c_str();
+}
+
+xqp_string HexBinaryItemNaive::show() const 
+{
   return "xs:hexBinary(" + getStringValue()->str() + ")";
 }
 

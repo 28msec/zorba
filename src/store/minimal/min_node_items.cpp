@@ -781,6 +781,34 @@ xqpStringStore_t DocumentNode::getStringValue() const
   return new xqpStringStore(buf);
 }
 
+
+void DocumentNode::getStringValue(xqpStringStore_t& strval) const
+{
+  strval = new xqpStringStore("");
+  getStringValue(strval->str());
+}
+
+
+void DocumentNode::getStringValue(std::string& buf) const
+{
+//  ulong numChildren = this->numChildren();
+//
+//  for (ulong i = 0; i < numChildren; i++)
+//  {
+    store::Iterator_t    child_iter = this->getChildren();
+    child_iter->open();
+    store::Item_t  child_item;
+    while(child_iter->next(child_item))
+    {
+	  XmlNode* child = reinterpret_cast<XmlNode*>(child_item.getp());
+    store::StoreConsts::NodeKind kind = child->getNodeKind();
+
+    if (kind != store::StoreConsts::commentNode &&
+        kind != store::StoreConsts::piNode)
+      child->getStringValue(buf);
+  }
+}
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1325,6 +1353,63 @@ xqpStringStore_t ElementNode::getStringValue() const
   child_iter->close();
 
   return new xqpStringStore(buf);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void ElementNode::getStringValue(xqpStringStore_t& strval) const
+{
+  store::Iterator_t    child_iter = this->getChildren();
+  child_iter->open();
+  store::Item_t  child_item1 = NULL;
+  store::Item_t  child_item2 = NULL;
+  child_iter->next(child_item1);
+  child_iter->next(child_item2);
+  if (child_item1.getp() != NULL && child_item2.getp() == NULL)
+  {
+    XmlNode* child1 = reinterpret_cast<XmlNode*>(child_item1.getp());
+    store::StoreConsts::NodeKind kind = child1->getNodeKind();
+
+    if (kind != store::StoreConsts::commentNode &&
+        kind != store::StoreConsts::piNode)
+    {
+      child1->getStringValue(strval);
+    }
+    else
+    {
+      strval = new xqpStringStore("");
+    }
+  }
+  else
+  {
+    strval = new xqpStringStore("");
+    getStringValue(strval->str());
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void ElementNode::getStringValue(std::string& buf) const
+{
+//  ulong numChildren = this->numChildren();
+//
+//  for (ulong i = 0; i < numChildren; i++)
+//  {
+  store::Iterator_t    child_iter = this->getChildren();
+  child_iter->open();
+  store::Item_t  child_item;
+  while(child_iter->next(child_item))
+  {
+    XmlNode* child = reinterpret_cast<XmlNode*>(child_item.getp());
+    store::StoreConsts::NodeKind kind = child->getNodeKind();
+
+    if (kind != store::StoreConsts::commentNode &&
+        kind != store::StoreConsts::piNode)
+      child->getStringValue(buf);
+  }
 }
 
 
@@ -2208,6 +2293,41 @@ xqpStringStore_t AttributeNode::getStringValue() const
   }
 }
 
+void AttributeNode::getStringValue(xqpStringStore_t& strval) const
+{
+  if (haveListValue())
+  {
+    strval = new xqpStringStore("");
+    getStringValue(strval->str());
+  }
+  else
+  {
+    theTypedValue->getStringValue(strval);
+  }
+}
+
+
+void AttributeNode::getStringValue(std::string& buf) const 
+{
+  if (haveListValue())
+  {
+    const std::vector<store::Item_t>& items = getValueVector().getItems();
+
+    items[0]->getStringValue(buf);
+
+    ulong size = items.size();
+    for (ulong i = 1; i < size; i++)
+    {
+      buf += " ";
+      items[i]->getStringValue(buf);
+    }
+  }
+  else
+  {
+    theTypedValue->getStringValue(buf);
+  }
+}
+
 
 /*******************************************************************************
 
@@ -2612,6 +2732,32 @@ xqpStringStore_t TextNode::getStringValue() const
     return getText();
   }
 }
+
+void TextNode::getStringValue(xqpStringStore_t& strval) const
+{
+  if (isTyped())
+  {
+    getValue()->getStringValue(strval);
+  }
+  else
+  {
+    strval = getText();
+  }
+}
+
+
+void TextNode::getStringValue(std::string& buf) const
+{
+  if (isTyped())
+  {
+    getValue()->getStringValue(buf);
+  }
+  else
+  {
+    buf += getText()->c_str();
+  }
+}
+
 
 
 /*******************************************************************************

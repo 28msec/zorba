@@ -475,7 +475,10 @@ public:
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
+  
   xqpStringStore_t getStringValue() const;
+  void getStringValue(xqpStringStore_t& strval) const;
+  void getStringValue(std::string& buf) const;
 
   store::Item* getNodeName() const { return NULL; }
 
@@ -603,6 +606,8 @@ public:
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const;
+  void getStringValue(xqpStringStore_t& strval) const;
+  void getStringValue(std::string& buf) const;
   store::Item_t getNilled() const;
 
   store::Iterator_t getAttributes() const;
@@ -890,6 +895,9 @@ public:
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
   xqpStringStore_t getStringValue() const;
+  void getStringValue(xqpStringStore_t& strval) const;
+  void getStringValue(std::string& buf) const;
+
   store::Item_t getAtomizationValue() const;
 
   xqp_string show() const;
@@ -962,6 +970,8 @@ public:
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const;
+  void getStringValue(xqpStringStore_t& strval) const;
+  void getStringValue(std::string& buf) const;
 			
   store::Item* getNodeName() const { return NULL; }
 
@@ -1024,6 +1034,8 @@ public:
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const    { return theContent; }
   xqpStringStore* getStringValueP() const    { return theContent.getp(); }
+  void getStringValue(xqpStringStore_t& strval) const { strval = theContent; }
+  void getStringValue(std::string& buf) const { buf += theContent->str(); }
 
   store::Item* getNodeName() const { return theName.getp(); }
   xqpStringStore* getTarget() const { return theTarget.getp(); }
@@ -1076,6 +1088,8 @@ public:
   store::Item_t getAtomizationValue() const;
   xqpStringStore_t getStringValue() const   { return theContent; }
   xqpStringStore* getStringValueP() const   { return theContent.getp(); }
+  void getStringValue(xqpStringStore_t& strval) const { strval = theContent; }
+  void getStringValue(std::string& buf) const { buf += theContent->str(); }
 
   store::Item* getNodeName() const { return NULL; }
 
