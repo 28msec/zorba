@@ -934,10 +934,10 @@ class CtxItemDecl : public parsenode {
 
 public:
   bool ext;
-  rchandle<ItemType> type;
+  rchandle<parsenode> type;
 
   CtxItemDecl (const QueryLoc& loc_, rchandle<exprnode> expr_)
-    : parsenode (loc_), expr (expr_)
+    : parsenode (loc_), expr (expr_), ext (false)
   {}
 
   rchandle<exprnode> get_expr () const { return expr; }

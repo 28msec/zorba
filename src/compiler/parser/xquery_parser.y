@@ -1353,7 +1353,7 @@ CtxItemDecl2 :
     AS ItemType CtxItemDecl3
     {
       CtxItemDecl *d = dynamic_cast<CtxItemDecl *> ($3);
-      d->type = dynamic_cast<ItemType *> ($2);
+      d->type = $2;
       $$ = d;
     }
   | CtxItemDecl3
@@ -1365,13 +1365,17 @@ CtxItemDecl2 :
 CtxItemDecl3 :
     CtxItemDecl4
     {
-      $$ = $1;
+      CtxItemDecl *d = dynamic_cast<CtxItemDecl *> ($1);
+      d->ext = false;
+      $$ = d;
+    }
+  | EXTERNAL
+    {
+      $$ = new CtxItemDecl (LOC (@$), NULL);
     }
   | EXTERNAL CtxItemDecl4
     {
-      CtxItemDecl *d = dynamic_cast<CtxItemDecl *> ($2);
-      d->ext = true;
-      $$ = d;
+      $$ = $2;
     }
   ;
 

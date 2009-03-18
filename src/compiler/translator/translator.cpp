@@ -495,15 +495,14 @@ expr_t wrap_in_atomization (expr_t e) {
       if (expr->isUpdating())
         ZORBA_ERROR_LOC(XUST0001, expr->get_loc());
 
-      if (var_type != NULL)
-        expr = new treat_expr (expr->get_loc (), expr, var_type, XPTY0004);
       expr = new fo_expr (var->get_loc(),
                           ctx_set, qname_expr, expr);
       if (b.is_extern ())
         expr = new if_expr (var->get_loc (), expr_t (new fo_expr (var->get_loc (), ctx_exists, qname_expr)),
                             expr_t (create_seq (var->get_loc ())), expr);
       minfo->init_exprs.push_back (expr);
-    } else if (var_type != NULL) {
+    }
+    if (var_type != NULL) {
       expr_t get = new fo_expr (var->get_loc (), ctx_get, qname_expr);
       minfo->init_exprs.push_back (new treat_expr (var->get_loc (), get, var->get_type (), XPTY0004));
     }
@@ -2335,16 +2334,16 @@ void *begin_visit (const CtxItemDecl& v) {
 
 void end_visit (const CtxItemDecl& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  if (v.get_type () != NULL)
+  if (v.get_type () != NULL) {
     ctx_item_type = pop_tstack ();
-  else
+    cout << "ctx type: " << ctx_item_type->toString() <<endl;
+  } else
     ctx_item_type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
   if (v.get_expr () != NULL)
     ctx_item_default = pop_nodestack ();
   if (v.get_type () != NULL || v.get_expr () != NULL) {
     store::Item_t dotname;
-    GENV_ITEMFACTORY->createQName(dotname, "", "", ".");
-    varref_t var = new var_expr (loc, var_expr::context_var, dotname);
+    varref_t var = create_var (loc, ".", var_expr::context_var, ctx_item_type);
     global_binding b (var, ctx_item_default, true);
     add_single_global_assign (b);
   }

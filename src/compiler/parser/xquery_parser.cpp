@@ -1834,7 +1834,7 @@ namespace zorba
 #line 1354 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       CtxItemDecl *d = dynamic_cast<CtxItemDecl *> ((yysemantic_stack_[(3) - (3)].node));
-      d->type = dynamic_cast<ItemType *> ((yysemantic_stack_[(3) - (2)].node));
+      d->type = (yysemantic_stack_[(3) - (2)].node);
       (yyval.node) = d;
     ;}
     break;
@@ -1849,43 +1849,50 @@ namespace zorba
   case 73:
 #line 1367 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
-    ;}
-    break;
-
-  case 74:
-#line 1371 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-      CtxItemDecl *d = dynamic_cast<CtxItemDecl *> ((yysemantic_stack_[(2) - (2)].node));
-      d->ext = true;
+      CtxItemDecl *d = dynamic_cast<CtxItemDecl *> ((yysemantic_stack_[(1) - (1)].node));
+      d->ext = false;
       (yyval.node) = d;
     ;}
     break;
 
-  case 75:
-#line 1380 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 74:
+#line 1373 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new CtxItemDecl (LOC ((yyloc)), (yysemantic_stack_[(2) - (2)].expr));
+      (yyval.node) = new CtxItemDecl (LOC ((yyloc)), NULL);
+    ;}
+    break;
+
+  case 75:
+#line 1377 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+      (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
     ;}
     break;
 
   case 76:
-#line 1391 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1384 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.varnametype) = new VarNameAndType (SYMTAB ((yysemantic_stack_[(2) - (2)].sval)), NULL);
+      (yyval.node) = new CtxItemDecl (LOC ((yyloc)), (yysemantic_stack_[(2) - (2)].expr));
     ;}
     break;
 
   case 77:
 #line 1395 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
+      (yyval.varnametype) = new VarNameAndType (SYMTAB ((yysemantic_stack_[(2) - (2)].sval)), NULL);
+    ;}
+    break;
+
+  case 78:
+#line 1399 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
       (yyval.varnametype) = new VarNameAndType (SYMTAB ((yysemantic_stack_[(3) - (2)].sval)),
                                dynamic_cast<TypeDeclaration *> ((yysemantic_stack_[(3) - (3)].node)));
     ;}
     break;
 
-  case 78:
-#line 1403 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 79:
+#line 1407 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       VarNameAndType *nt = dynamic_cast<VarNameAndType *> (yysemantic_stack_[(5) - (3)].varnametype);
 			(yyval.node) = new VarDecl(LOC ((yyloc)),
@@ -1896,8 +1903,8 @@ namespace zorba
 		;}
     break;
 
-  case 79:
-#line 1412 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 80:
+#line 1416 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       VarNameAndType *nt = dynamic_cast<VarNameAndType *> (yysemantic_stack_[(4) - (3)].varnametype);
 			(yyval.node) = new VarDecl(LOC ((yyloc)), nt->name, nt->type,
@@ -1906,8 +1913,8 @@ namespace zorba
 		;}
     break;
 
-  case 80:
-#line 1419 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 81:
+#line 1423 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       VarNameAndType *nt = dynamic_cast<VarNameAndType *> (yysemantic_stack_[(6) - (3)].varnametype);
 			(yyval.node) = new VarDecl(LOC ((yyloc)), nt->name, nt->type,
@@ -1916,18 +1923,18 @@ namespace zorba
 		;}
     break;
 
-  case 81:
-#line 1429 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 82:
+#line 1433 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "hash"; ;}
     break;
 
-  case 82:
-#line 1431 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 83:
+#line 1435 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "btree"; ;}
     break;
 
-  case 83:
-#line 1438 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 84:
+#line 1442 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       IndexDecl *d = dynamic_cast<IndexDecl *> ((yysemantic_stack_[(2) - (2)].node));
       d->create = false;
@@ -1935,8 +1942,8 @@ namespace zorba
     ;}
     break;
 
-  case 84:
-#line 1444 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 85:
+#line 1448 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       IndexDecl *d = dynamic_cast<IndexDecl *> ((yysemantic_stack_[(2) - (2)].node));
       d->create = true;
@@ -1944,31 +1951,31 @@ namespace zorba
     ;}
     break;
 
-  case 85:
-#line 1453 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 86:
+#line 1457 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     ;}
     break;
 
-  case 86:
-#line 1457 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 87:
+#line 1461 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       dynamic_cast<IndexDecl *> ((yysemantic_stack_[(2) - (2)].node))->uniq = true;
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
     ;}
     break;
 
-  case 87:
-#line 1465 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 88:
+#line 1469 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new IndexDecl (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(7) - (2)].sval)), (yysemantic_stack_[(7) - (4)].expr), "",
                           dynamic_cast<IndexFieldList *> ((yysemantic_stack_[(7) - (6)].node)));
     ;}
     break;
 
-  case 88:
-#line 1470 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 89:
+#line 1474 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       IndexDecl *d = new IndexDecl (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(8) - (2)].sval)), (yysemantic_stack_[(8) - (4)].expr), SYMTAB ((yysemantic_stack_[(8) - (5)].strval)),
                                     dynamic_cast<IndexFieldList *> ((yysemantic_stack_[(8) - (7)].node)));
@@ -1977,37 +1984,37 @@ namespace zorba
     ;}
     break;
 
-  case 89:
-#line 1480 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 90:
+#line 1484 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     ;}
     break;
 
-  case 90:
-#line 1484 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 91:
+#line 1488 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       dynamic_cast<IndexField *> ((yysemantic_stack_[(3) - (1)].node))->coll = SYMTAB ((yysemantic_stack_[(3) - (3)].sval));
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node);
     ;}
     break;
 
-  case 91:
-#line 1492 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 92:
+#line 1496 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new IndexField (LOC ((yyloc)), (yysemantic_stack_[(1) - (1)].expr), NULL);
     ;}
     break;
 
-  case 92:
-#line 1496 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 93:
+#line 1500 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new IndexField (LOC ((yyloc)), (yysemantic_stack_[(2) - (1)].expr), dynamic_cast<TypeDeclaration *> ((yysemantic_stack_[(2) - (2)].node)));
     ;}
     break;
 
-  case 93:
-#line 1503 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 94:
+#line 1507 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       IndexFieldList *l = new IndexFieldList (LOC ((yyloc)));
       l->fields.push_back (dynamic_cast<IndexField *> ((yysemantic_stack_[(2) - (2)].node)));
@@ -2016,88 +2023,88 @@ namespace zorba
     ;}
     break;
 
-  case 94:
-#line 1510 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 95:
+#line 1514 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       dynamic_cast<IndexFieldList *> ((yysemantic_stack_[(3) - (1)].node))->fields.push_back (dynamic_cast<IndexField *> ((yysemantic_stack_[(3) - (3)].node)));
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node);
     ;}
     break;
 
-  case 95:
-#line 1520 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 96:
+#line 1524 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ConstructionDecl(LOC ((yyloc)),
 								StaticContextConsts::cons_preserve);
 		;}
     break;
 
-  case 96:
-#line 1525 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 97:
+#line 1529 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ConstructionDecl(LOC ((yyloc)),
 								StaticContextConsts::cons_strip);
 		;}
     break;
 
-  case 97:
-#line 1537 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-      (yyval.fnsig) = new FunctionSig (NULL);
-    ;}
-    break;
-
   case 98:
 #line 1541 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.fnsig) = new FunctionSig (dynamic_cast<ParamList *> ((yysemantic_stack_[(3) - (2)].node)));
+      (yyval.fnsig) = new FunctionSig (NULL);
     ;}
     break;
 
   case 99:
 #line 1545 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.fnsig) = new FunctionSig (NULL, dynamic_cast<SequenceType *> ((yysemantic_stack_[(4) - (4)].node)));
+      (yyval.fnsig) = new FunctionSig (dynamic_cast<ParamList *> ((yysemantic_stack_[(3) - (2)].node)));
     ;}
     break;
 
   case 100:
 #line 1549 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.fnsig) = new FunctionSig (dynamic_cast<ParamList *> ((yysemantic_stack_[(5) - (2)].node)), dynamic_cast<SequenceType *> ((yysemantic_stack_[(5) - (5)].node)));
+      (yyval.fnsig) = new FunctionSig (NULL, dynamic_cast<SequenceType *> ((yysemantic_stack_[(4) - (4)].node)));
     ;}
     break;
 
   case 101:
-#line 1556 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1553 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+      (yyval.fnsig) = new FunctionSig (dynamic_cast<ParamList *> ((yysemantic_stack_[(5) - (2)].node)), dynamic_cast<SequenceType *> ((yysemantic_stack_[(5) - (5)].node)));
+    ;}
+    break;
+
+  case 102:
+#line 1560 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(2) - (2)].expr);
     ;}
     break;
 
-  case 102:
-#line 1563 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 103:
+#line 1567 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
     ;}
     break;
 
-  case 103:
-#line 1570 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 104:
+#line 1574 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new AssignExpr (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(5) - (3)].sval)), (yysemantic_stack_[(5) - (5)].expr));
     ;}
     break;
 
-  case 104:
-#line 1577 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 105:
+#line 1581 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new ExitExpr (LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr));
     ;}
     break;
 
-  case 105:
-#line 1584 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 106:
+#line 1588 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       BlockBody *b = dynamic_cast<BlockBody *> ((yysemantic_stack_[(5) - (5)].expr));
       if (b == NULL) {
@@ -2108,72 +2115,72 @@ namespace zorba
     ;}
     break;
 
-  case 106:
-#line 1596 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 107:
+#line 1600 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new FlowCtlStatement (LOC ((yyloc)), FlowCtlStatement::BREAK);
     ;}
     break;
 
-  case 107:
-#line 1600 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 108:
+#line 1604 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new FlowCtlStatement (LOC ((yyloc)), FlowCtlStatement::CONTINUE);
-    ;}
-    break;
-
-  case 108:
-#line 1607 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-      (yyval.expr) = new IndexStatement (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (3)].sval)), true);
     ;}
     break;
 
   case 109:
 #line 1611 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.expr) = new IndexStatement (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (3)].sval)), false);
+      (yyval.expr) = new IndexStatement (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (3)].sval)), true);
     ;}
     break;
 
   case 110:
-#line 1618 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1615 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
+      (yyval.expr) = new IndexStatement (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (3)].sval)), false);
     ;}
     break;
 
   case 111:
 #line 1622 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
+      (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
     ;}
     break;
 
   case 112:
 #line 1626 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      //
       (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
     ;}
     break;
 
   case 113:
-#line 1634 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1630 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
+      //
+      (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
     ;}
     break;
 
   case 114:
 #line 1638 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
+      (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     ;}
     break;
 
   case 115:
 #line 1642 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+      (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
+    ;}
+    break;
+
+  case 116:
+#line 1646 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       FunctionDecl *d = dynamic_cast<FunctionDecl *> ((yysemantic_stack_[(2) - (2)].node));
       d->type = (d->type == ParseConstants::fn_extern)
@@ -2183,15 +2190,15 @@ namespace zorba
     ;}
     break;
 
-  case 116:
-#line 1650 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 117:
+#line 1654 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
     ;}
     break;
 
-  case 117:
-#line 1657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 118:
+#line 1661 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (2)].sval))),
@@ -2202,8 +2209,8 @@ namespace zorba
     ;}
     break;
 
-  case 118:
-#line 1666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 119:
+#line 1670 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (2)].sval))),
@@ -2214,8 +2221,8 @@ namespace zorba
     ;}
     break;
 
-  case 119:
-#line 1678 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 120:
+#line 1682 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (2)].sval))),
@@ -2226,8 +2233,8 @@ namespace zorba
     ;}
     break;
 
-  case 120:
-#line 1692 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 121:
+#line 1696 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			ParamList* plist_p = new ParamList(LOC ((yyloc)));
 			if (plist_p) {
@@ -2237,8 +2244,8 @@ namespace zorba
 		;}
     break;
 
-  case 121:
-#line 1700 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 122:
+#line 1704 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			ParamList* plist_p = dynamic_cast<ParamList*>((yysemantic_stack_[(3) - (1)].node));
 			if (plist_p) {
@@ -2248,8 +2255,8 @@ namespace zorba
 		;}
     break;
 
-  case 122:
-#line 1714 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 123:
+#line 1718 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Param(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(2) - (2)].sval)),
@@ -2257,8 +2264,8 @@ namespace zorba
 		;}
     break;
 
-  case 123:
-#line 1720 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 124:
+#line 1724 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Param(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (2)].sval)),
@@ -2266,38 +2273,38 @@ namespace zorba
 		;}
     break;
 
-  case 124:
-#line 1732 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 125:
+#line 1736 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new EnclosedExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
-  case 125:
-#line 1740 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 126:
+#line 1744 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
 		;}
     break;
 
-  case 126:
-#line 1751 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 127:
+#line 1755 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new QueryBody(LOC ((yyloc)),
 								(yysemantic_stack_[(1) - (1)].expr));
 		;}
     break;
 
-  case 127:
-#line 1763 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 128:
+#line 1767 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     ;}
     break;
 
-  case 128:
-#line 1767 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 129:
+#line 1771 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       BlockBody *blk = dynamic_cast<BlockBody *> ((yysemantic_stack_[(2) - (2)].expr)),
         *blk2 = new BlockBody (LOC ((yyloc)));
@@ -2308,15 +2315,15 @@ namespace zorba
     ;}
     break;
 
-  case 129:
-#line 1779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 130:
+#line 1783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new BlockBody (LOC ((yyloc)));
     ;}
     break;
 
-  case 130:
-#line 1783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 131:
+#line 1787 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       BlockBody *blk = dynamic_cast<BlockBody *> ((yysemantic_stack_[(3) - (1)].expr));
       blk->add ((yysemantic_stack_[(3) - (2)].expr));
@@ -2324,15 +2331,15 @@ namespace zorba
     ;}
     break;
 
-  case 131:
-#line 1792 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 132:
+#line 1796 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
-  case 132:
-#line 1796 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 133:
+#line 1800 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			Expr* expr_p = dynamic_cast<Expr*>((yysemantic_stack_[(3) - (1)].expr));
 			if (expr_p == NULL) {
@@ -2344,8 +2351,8 @@ namespace zorba
 		;}
     break;
 
-  case 151:
-#line 1843 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 152:
+#line 1847 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       ReturnExpr* lReturnExpr = dynamic_cast<ReturnExpr*>((yysemantic_stack_[(2) - (2)].expr));
       (yyval.expr) = new FLWORExpr (LOC ((yyloc)), dynamic_cast<FLWORClauseList*>((yysemantic_stack_[(2) - (1)].node)), lReturnExpr->get_return_val(), lReturnExpr->get_location(), driver.theCompilerCB->m_config.force_gflwor);
@@ -2353,87 +2360,87 @@ namespace zorba
     ;}
     break;
 
-  case 152:
-#line 1852 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 153:
+#line 1856 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new ReturnExpr(LOC((yyloc)), (yysemantic_stack_[(2) - (2)].expr));
-    ;}
-    break;
-
-  case 153:
-#line 1859 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-      (yyval.strval) = parser::the_sliding;
     ;}
     break;
 
   case 154:
 #line 1863 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.strval) = parser::the_tumbling;
+      (yyval.strval) = parser::the_sliding;
     ;}
     break;
 
   case 155:
-#line 1871 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1867 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.strval) = parser::the_start;
+      (yyval.strval) = parser::the_tumbling;
     ;}
     break;
 
   case 156:
 #line 1875 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.strval) = parser::the_end;
+      (yyval.strval) = parser::the_start;
     ;}
     break;
 
   case 157:
 #line 1879 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.strval) = parser::the_only_end;
+      (yyval.strval) = parser::the_end;
     ;}
     break;
 
   case 158:
-#line 1886 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1883 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new FLWORWinCond (LOC ((yyloc)), dynamic_cast<WindowVars *> ((yysemantic_stack_[(4) - (2)].node)), (yysemantic_stack_[(4) - (4)].expr), (yysemantic_stack_[(4) - (1)].strval) == parser::the_start, (yysemantic_stack_[(4) - (1)].strval) == parser::the_only_end);
+      (yyval.strval) = parser::the_only_end;
     ;}
     break;
 
   case 159:
 #line 1890 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new FLWORWinCond (LOC ((yyloc)), NULL, (yysemantic_stack_[(3) - (3)].expr), (yysemantic_stack_[(3) - (1)].strval) == parser::the_start, (yysemantic_stack_[(3) - (1)].strval) == parser::the_only_end);
+      (yyval.node) = new FLWORWinCond (LOC ((yyloc)), dynamic_cast<WindowVars *> ((yysemantic_stack_[(4) - (2)].node)), (yysemantic_stack_[(4) - (4)].expr), (yysemantic_stack_[(4) - (1)].strval) == parser::the_start, (yysemantic_stack_[(4) - (1)].strval) == parser::the_only_end);
     ;}
     break;
 
   case 160:
-#line 1897 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1894 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+      (yyval.node) = new FLWORWinCond (LOC ((yyloc)), NULL, (yysemantic_stack_[(3) - (3)].expr), (yysemantic_stack_[(3) - (1)].strval) == parser::the_start, (yysemantic_stack_[(3) - (1)].strval) == parser::the_only_end);
+    ;}
+    break;
+
+  case 161:
+#line 1901 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowClause (LOC ((yyloc)), ((yysemantic_stack_[(5) - (2)].strval) == parser::the_tumbling) ? WindowClause::tumbling_window : WindowClause::sliding_window, dynamic_cast<WindowVarDecl *> ((yysemantic_stack_[(5) - (3)].node)),
                              dynamic_cast<FLWORWinCond *> ((yysemantic_stack_[(5) - (4)].node)), dynamic_cast<FLWORWinCond *> ((yysemantic_stack_[(5) - (5)].node)));
     ;}
     break;
 
-  case 161:
-#line 1902 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 162:
+#line 1906 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowClause (LOC ((yyloc)), ((yysemantic_stack_[(4) - (2)].strval) == parser::the_tumbling) ? WindowClause::tumbling_window : WindowClause::sliding_window, dynamic_cast<WindowVarDecl *> ((yysemantic_stack_[(4) - (3)].node)),
                              dynamic_cast<FLWORWinCond *> ((yysemantic_stack_[(4) - (4)].node)), NULL);
     ;}
     break;
 
-  case 162:
-#line 1911 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 163:
+#line 1915 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CountClause (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (3)].sval)));
     ;}
     break;
 
-  case 171:
-#line 1929 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 172:
+#line 1933 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       FLWORClauseList *l = new FLWORClauseList (LOC ((yyloc)));
       l->push_back (dynamic_cast<FLWORClause *> ((yysemantic_stack_[(1) - (1)].node)));
@@ -2441,8 +2448,8 @@ namespace zorba
     ;}
     break;
 
-  case 172:
-#line 1935 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 173:
+#line 1939 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       FLWORClauseList *l = dynamic_cast<FLWORClauseList *> ((yysemantic_stack_[(2) - (1)].node));
       l->push_back (dynamic_cast<FLWORClause *> ((yysemantic_stack_[(2) - (2)].node)));
@@ -2450,30 +2457,30 @@ namespace zorba
     ;}
     break;
 
-  case 173:
-#line 1944 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 174:
+#line 1948 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.strval) = NULL;
     ;}
     break;
 
-  case 174:
-#line 1948 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 175:
+#line 1952 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.strval) = parser::the_ofor;
     ;}
     break;
 
-  case 175:
-#line 1958 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 176:
+#line 1962 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForClause(LOC ((yyloc)),
                          dynamic_cast<VarInDeclList*>((yysemantic_stack_[(2) - (2)].node)), (yysemantic_stack_[(2) - (1)].strval) != NULL);
 		;}
     break;
 
-  case 176:
-#line 1969 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 177:
+#line 1973 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VarInDeclList* vardecl_list_p = new VarInDeclList(LOC ((yyloc)));
 			vardecl_list_p->push_back(dynamic_cast<VarInDecl*>((yysemantic_stack_[(1) - (1)].node)));
@@ -2481,8 +2488,8 @@ namespace zorba
 		;}
     break;
 
-  case 177:
-#line 1975 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 178:
+#line 1979 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VarInDeclList* vardecl_list_p = dynamic_cast<VarInDeclList*>((yysemantic_stack_[(4) - (1)].node));
 			if (vardecl_list_p) {
@@ -2492,8 +2499,8 @@ namespace zorba
 		;}
     break;
 
-  case 178:
-#line 1989 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 179:
+#line 1993 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (1)].sval)),
@@ -2502,8 +2509,8 @@ namespace zorba
 		;}
     break;
 
-  case 179:
-#line 1996 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 180:
+#line 2000 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (1)].sval)),
@@ -2513,8 +2520,8 @@ namespace zorba
 		;}
     break;
 
-  case 180:
-#line 2004 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 181:
+#line 2008 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (1)].sval)),
@@ -2525,8 +2532,8 @@ namespace zorba
 		;}
     break;
 
-  case 181:
-#line 2013 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 182:
+#line 2017 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (1)].sval)),
@@ -2537,8 +2544,8 @@ namespace zorba
 		;}
     break;
 
-  case 182:
-#line 2023 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 183:
+#line 2027 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (1)].sval)),
@@ -2548,8 +2555,8 @@ namespace zorba
 		;}
     break;
 
-  case 183:
-#line 2031 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 184:
+#line 2035 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (1)].sval)),
@@ -2560,8 +2567,8 @@ namespace zorba
 		;}
     break;
 
-  case 184:
-#line 2040 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 185:
+#line 2044 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (1)].sval)),
@@ -2572,8 +2579,8 @@ namespace zorba
 		;}
     break;
 
-  case 185:
-#line 2049 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 186:
+#line 2053 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(6) - (1)].sval)),
@@ -2584,24 +2591,24 @@ namespace zorba
 		;}
     break;
 
-  case 186:
-#line 2064 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 187:
+#line 2068 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new PositionalVar(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (3)].sval)));
 		;}
     break;
 
-  case 187:
-#line 2076 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 188:
+#line 2080 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FTScoreVar(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (3)].sval)));
 		;}
     break;
 
-  case 188:
-#line 2087 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 189:
+#line 2091 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new LetClause(LOC ((yyloc)),
 								dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(3) - (3)].node)));
@@ -2609,37 +2616,17 @@ namespace zorba
 		;}
     break;
 
-  case 189:
-#line 2099 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 190:
+#line 2103 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VarGetsDeclList* vgdl_p = new VarGetsDeclList(LOC ((yyloc)));
 			vgdl_p->push_back(dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = vgdl_p;
-		;}
-    break;
-
-  case 190:
-#line 2105 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			VarGetsDeclList* vgdl_p = dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(4) - (1)].node));
-			if (vgdl_p) {
-				vgdl_p->push_back(dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(4) - (4)].node)));
-			}
-			(yyval.node) = (yysemantic_stack_[(4) - (1)].node);
 		;}
     break;
 
   case 191:
-#line 2117 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			VarGetsDeclList* vgdl_p = new VarGetsDeclList(LOC ((yyloc)));
-			vgdl_p->push_back(dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(1) - (1)].node)));
-			(yyval.node) = vgdl_p;
-		;}
-    break;
-
-  case 192:
-#line 2123 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2109 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VarGetsDeclList* vgdl_p = dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(4) - (1)].node));
 			if (vgdl_p) {
@@ -2649,8 +2636,28 @@ namespace zorba
 		;}
     break;
 
+  case 192:
+#line 2121 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+			VarGetsDeclList* vgdl_p = new VarGetsDeclList(LOC ((yyloc)));
+			vgdl_p->push_back(dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(1) - (1)].node)));
+			(yyval.node) = vgdl_p;
+		;}
+    break;
+
   case 193:
-#line 2137 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2127 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+			VarGetsDeclList* vgdl_p = dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(4) - (1)].node));
+			if (vgdl_p) {
+				vgdl_p->push_back(dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(4) - (4)].node)));
+			}
+			(yyval.node) = (yysemantic_stack_[(4) - (1)].node);
+		;}
+    break;
+
+  case 194:
+#line 2141 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (1)].sval)),
@@ -2660,8 +2667,8 @@ namespace zorba
 		;}
     break;
 
-  case 194:
-#line 2145 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 195:
+#line 2149 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (1)].sval)),
@@ -2671,8 +2678,8 @@ namespace zorba
 		;}
     break;
 
-  case 195:
-#line 2154 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 196:
+#line 2158 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (1)].sval)),
@@ -2682,8 +2689,8 @@ namespace zorba
 		;}
     break;
 
-  case 196:
-#line 2162 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 197:
+#line 2166 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (1)].sval)),
@@ -2693,8 +2700,8 @@ namespace zorba
 		;}
     break;
 
-  case 197:
-#line 2174 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 198:
+#line 2178 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new WindowVarDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (2)].sval)),
@@ -2702,8 +2709,8 @@ namespace zorba
 		;}
     break;
 
-  case 198:
-#line 2180 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 199:
+#line 2184 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new WindowVarDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (2)].sval)),
@@ -2712,59 +2719,59 @@ namespace zorba
 		;}
     break;
 
-  case 200:
-#line 2191 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 201:
+#line 2195 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowVars (LOC ((yyloc)), NULL, SYMTAB ((yysemantic_stack_[(2) - (2)].sval)), "", "");
     ;}
     break;
 
-  case 201:
-#line 2195 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 202:
+#line 2199 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
       dynamic_cast<WindowVars *> ((yyval.node))->set_curr (SYMTAB ((yysemantic_stack_[(3) - (2)].sval)));
     ;}
     break;
 
-  case 202:
-#line 2203 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 203:
+#line 2207 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowVars (LOC ((yyloc)), dynamic_cast<PositionalVar *> ((yysemantic_stack_[(1) - (1)].node)), "", "", "");
     ;}
     break;
 
-  case 203:
-#line 2207 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 204:
+#line 2211 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
       dynamic_cast<WindowVars *> ((yyval.node))->set_posvar (dynamic_cast<PositionalVar *> ((yysemantic_stack_[(2) - (1)].node)));
     ;}
     break;
 
-  case 205:
-#line 2216 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-      (yyval.node) = new WindowVars (LOC ((yyloc)), NULL, "", SYMTAB ((yysemantic_stack_[(6) - (3)].sval)), SYMTAB ((yysemantic_stack_[(6) - (6)].sval)));
-    ;}
-    break;
-
   case 206:
 #line 2220 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new WindowVars (LOC ((yyloc)), NULL, "", "", SYMTAB ((yysemantic_stack_[(3) - (3)].sval)));
+      (yyval.node) = new WindowVars (LOC ((yyloc)), NULL, "", SYMTAB ((yysemantic_stack_[(6) - (3)].sval)), SYMTAB ((yysemantic_stack_[(6) - (6)].sval)));
     ;}
     break;
 
   case 207:
 #line 2224 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new WindowVars (LOC ((yyloc)), NULL, "", SYMTAB ((yysemantic_stack_[(3) - (3)].sval)), "");
+      (yyval.node) = new WindowVars (LOC ((yyloc)), NULL, "", "", SYMTAB ((yysemantic_stack_[(3) - (3)].sval)));
     ;}
     break;
 
   case 208:
-#line 2231 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2228 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+      (yyval.node) = new WindowVars (LOC ((yyloc)), NULL, "", SYMTAB ((yysemantic_stack_[(3) - (3)].sval)), "");
+    ;}
+    break;
+
+  case 209:
+#line 2235 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       std::string name = SYMTAB ((yysemantic_stack_[(1) - (1)].sval));
       (yyval.node) = new VarGetsDecl(LOC ((yyloc)),
@@ -2775,16 +2782,16 @@ namespace zorba
     ;}
     break;
 
-  case 209:
-#line 2246 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 210:
+#line 2250 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new WhereClause(LOC ((yyloc)),
 								(yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
-  case 210:
-#line 2254 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 211:
+#line 2258 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupByClause(LOC((yyloc)),
                  dynamic_cast<GroupSpecList*>((yysemantic_stack_[(3) - (3)].node)),
@@ -2793,8 +2800,8 @@ namespace zorba
     ;}
     break;
 
-  case 211:
-#line 2264 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 212:
+#line 2268 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       GroupSpecList* gsl_p = new GroupSpecList(LOC((yyloc)));
       gsl_p->push_back(dynamic_cast<GroupSpec*>((yysemantic_stack_[(1) - (1)].node)));
@@ -2802,8 +2809,8 @@ namespace zorba
     ;}
     break;
 
-  case 212:
-#line 2270 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 213:
+#line 2274 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       GroupSpecList* gsl_p = dynamic_cast<GroupSpecList*>((yysemantic_stack_[(3) - (1)].node));
       if (gsl_p) {
@@ -2813,8 +2820,8 @@ namespace zorba
     ;}
     break;
 
-  case 213:
-#line 2281 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 214:
+#line 2285 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)),
                  SYMTAB ((yysemantic_stack_[(2) - (2)].sval)),
@@ -2822,8 +2829,8 @@ namespace zorba
     ;}
     break;
 
-  case 214:
-#line 2287 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 215:
+#line 2291 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)), 
                  SYMTAB ((yysemantic_stack_[(3) - (2)].sval)), 
@@ -2831,23 +2838,23 @@ namespace zorba
     ;}
     break;
 
-  case 215:
-#line 2296 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 216:
+#line 2300 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupCollationSpec(LOC((yyloc)), SYMTAB ((yysemantic_stack_[(2) - (2)].sval)));
     ;}
     break;
 
-  case 216:
-#line 2306 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 217:
+#line 2310 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderByClause(LOC ((yyloc)),
 								dynamic_cast<OrderSpecList*>((yysemantic_stack_[(3) - (3)].node)));
 		;}
     break;
 
-  case 217:
-#line 2311 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 218:
+#line 2315 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderByClause(LOC ((yyloc)),
 								dynamic_cast<OrderSpecList*>((yysemantic_stack_[(4) - (4)].node)),
@@ -2855,8 +2862,8 @@ namespace zorba
 		;}
     break;
 
-  case 218:
-#line 2323 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 219:
+#line 2327 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			OrderSpecList* osl_p = new OrderSpecList(LOC ((yyloc)));
 			osl_p->push_back(dynamic_cast<OrderSpec*>((yysemantic_stack_[(1) - (1)].node)));
@@ -2864,8 +2871,8 @@ namespace zorba
 		;}
     break;
 
-  case 219:
-#line 2329 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 220:
+#line 2333 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			OrderSpecList* osl_p = dynamic_cast<OrderSpecList*>((yysemantic_stack_[(3) - (1)].node));
 			if (osl_p) {
@@ -2875,8 +2882,8 @@ namespace zorba
 		;}
     break;
 
-  case 220:
-#line 2343 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 221:
+#line 2347 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderSpec(LOC ((yyloc)),
 								(yysemantic_stack_[(1) - (1)].expr),
@@ -2884,8 +2891,8 @@ namespace zorba
 		;}
     break;
 
-  case 221:
-#line 2349 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 222:
+#line 2353 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderSpec(LOC ((yyloc)),
 								(yysemantic_stack_[(2) - (1)].expr),
@@ -2893,8 +2900,8 @@ namespace zorba
 		;}
     break;
 
-  case 222:
-#line 2361 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 223:
+#line 2365 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(1) - (1)].node)),
@@ -2903,8 +2910,8 @@ namespace zorba
 		;}
     break;
 
-  case 223:
-#line 2368 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 224:
+#line 2372 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								NULL,
@@ -2913,8 +2920,8 @@ namespace zorba
 		;}
     break;
 
-  case 224:
-#line 2375 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 225:
+#line 2379 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								NULL,
@@ -2923,8 +2930,8 @@ namespace zorba
 		;}
     break;
 
-  case 225:
-#line 2382 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 226:
+#line 2386 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(2) - (1)].node)),
@@ -2933,8 +2940,8 @@ namespace zorba
 		;}
     break;
 
-  case 226:
-#line 2389 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 227:
+#line 2393 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(2) - (1)].node)),
@@ -2943,8 +2950,8 @@ namespace zorba
 		;}
     break;
 
-  case 227:
-#line 2396 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 228:
+#line 2400 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								NULL,
@@ -2953,8 +2960,8 @@ namespace zorba
 		;}
     break;
 
-  case 228:
-#line 2403 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 229:
+#line 2407 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(3) - (1)].node)),
@@ -2963,46 +2970,46 @@ namespace zorba
 		;}
     break;
 
-  case 229:
-#line 2416 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 230:
+#line 2420 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderDirSpec(LOC ((yyloc)), ParseConstants::dir_ascending);
 		;}
     break;
 
-  case 230:
-#line 2420 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 231:
+#line 2424 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderDirSpec(LOC ((yyloc)), ParseConstants::dir_descending);
 		;}
     break;
 
-  case 231:
-#line 2430 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 232:
+#line 2434 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderEmptySpec(LOC ((yyloc)),
 								StaticContextConsts::empty_greatest);
 		;}
     break;
 
-  case 232:
-#line 2435 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 233:
+#line 2439 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderEmptySpec(LOC ((yyloc)),
 								StaticContextConsts::empty_least);
 		;}
     break;
 
-  case 233:
-#line 2446 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 234:
+#line 2450 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderCollationSpec(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(2) - (2)].sval)));
 		;}
     break;
 
-  case 234:
-#line 2457 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 235:
+#line 2461 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new QuantifiedExpr(LOC ((yyloc)),
 								ParseConstants::quant_some,
@@ -3011,8 +3018,8 @@ namespace zorba
 		;}
     break;
 
-  case 235:
-#line 2464 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 236:
+#line 2468 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new QuantifiedExpr(LOC ((yyloc)),
 								ParseConstants::quant_every,
@@ -3021,8 +3028,8 @@ namespace zorba
 		;}
     break;
 
-  case 236:
-#line 2477 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 237:
+#line 2481 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			QVarInDeclList* qvid_list_p = new QVarInDeclList(LOC ((yyloc)));
 			qvid_list_p->push_back(dynamic_cast<QVarInDecl*>((yysemantic_stack_[(1) - (1)].node)));
@@ -3031,8 +3038,8 @@ namespace zorba
 		;}
     break;
 
-  case 237:
-#line 2484 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 238:
+#line 2488 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			QVarInDeclList* qvid_list_p = dynamic_cast<QVarInDeclList*>((yysemantic_stack_[(4) - (1)].node));
             qvid_list_p->push_back(dynamic_cast<QVarInDecl*>((yysemantic_stack_[(4) - (4)].node)));
@@ -3040,8 +3047,8 @@ namespace zorba
 		;}
     break;
 
-  case 238:
-#line 2496 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 239:
+#line 2500 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new QVarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (1)].sval)),
@@ -3049,8 +3056,8 @@ namespace zorba
 		;}
     break;
 
-  case 239:
-#line 2502 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 240:
+#line 2506 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new QVarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (1)].sval)),
@@ -3059,8 +3066,8 @@ namespace zorba
 		;}
     break;
 
-  case 240:
-#line 2515 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 241:
+#line 2519 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new TypeswitchExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(8) - (3)].expr),
@@ -3069,8 +3076,8 @@ namespace zorba
 		;}
     break;
 
-  case 241:
-#line 2522 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 242:
+#line 2526 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new TypeswitchExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(10) - (3)].expr),
@@ -3080,8 +3087,8 @@ namespace zorba
 		;}
     break;
 
-  case 242:
-#line 2536 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 243:
+#line 2540 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			CaseClauseList* cc_list_p = new CaseClauseList(LOC ((yyloc)));
 			cc_list_p->push_back(dynamic_cast<CaseClause*>((yysemantic_stack_[(1) - (1)].node)));
@@ -3089,8 +3096,8 @@ namespace zorba
 		;}
     break;
 
-  case 243:
-#line 2542 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 244:
+#line 2546 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			CaseClauseList* cc_list_p = dynamic_cast<CaseClauseList*>((yysemantic_stack_[(2) - (1)].node));
 			cc_list_p->push_back(dynamic_cast<CaseClause*>((yysemantic_stack_[(2) - (2)].node)));
@@ -3098,8 +3105,8 @@ namespace zorba
 		;}
     break;
 
-  case 244:
-#line 2554 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 245:
+#line 2558 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CaseClause(LOC ((yyloc)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(4) - (2)].node)),
@@ -3107,8 +3114,8 @@ namespace zorba
 		;}
     break;
 
-  case 245:
-#line 2560 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 246:
+#line 2564 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CaseClause(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(7) - (3)].sval)),
@@ -3117,53 +3124,53 @@ namespace zorba
 		;}
     break;
 
-  case 246:
-#line 2573 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 247:
+#line 2577 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new IfExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(8) - (3)].expr), (yysemantic_stack_[(8) - (6)].expr), (yysemantic_stack_[(8) - (8)].expr));
 		;}
     break;
 
-  case 247:
-#line 2584 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 248:
+#line 2588 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
-  case 248:
-#line 2588 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 249:
+#line 2592 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new OrExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
-  case 249:
-#line 2599 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 250:
+#line 2603 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
-  case 250:
-#line 2603 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 251:
+#line 2607 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AndExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
-  case 251:
-#line 2622 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 252:
+#line 2626 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
-  case 252:
-#line 2626 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 253:
+#line 2630 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			/*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
 			(yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3173,8 +3180,8 @@ namespace zorba
 		;}
     break;
 
-  case 253:
-#line 2634 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 254:
+#line 2638 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       /*  ::=  "is" | "<<" | ">>" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3184,8 +3191,8 @@ namespace zorba
     ;}
     break;
 
-  case 254:
-#line 2642 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 255:
+#line 2646 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
 			(yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3195,8 +3202,8 @@ namespace zorba
 		;}
     break;
 
-  case 255:
-#line 2650 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 256:
+#line 2654 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3206,13 +3213,13 @@ namespace zorba
     ;}
     break;
 
-  case 256:
-#line 2657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 257:
+#line 2661 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { /* this call is needed */  driver.lexer->interpretAsLessThan(); ;}
     break;
 
-  case 257:
-#line 2658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 258:
+#line 2662 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3222,8 +3229,8 @@ namespace zorba
     ;}
     break;
 
-  case 258:
-#line 2666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 259:
+#line 2670 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3233,8 +3240,8 @@ namespace zorba
     ;}
     break;
 
-  case 259:
-#line 2674 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 260:
+#line 2678 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3244,8 +3251,8 @@ namespace zorba
     ;}
     break;
 
-  case 260:
-#line 2682 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 261:
+#line 2686 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3255,15 +3262,15 @@ namespace zorba
     ;}
     break;
 
-  case 261:
-#line 2696 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 262:
+#line 2700 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
-  case 262:
-#line 2700 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 263:
+#line 2704 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FTContainsExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr),
@@ -3272,8 +3279,8 @@ namespace zorba
 		;}
     break;
 
-  case 263:
-#line 2707 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 264:
+#line 2711 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FTContainsExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -3282,94 +3289,86 @@ namespace zorba
 		;}
     break;
 
-  case 264:
-#line 2720 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 265:
+#line 2724 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
-  case 265:
-#line 2724 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 266:
+#line 2728 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new RangeExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
-  case 266:
-#line 2735 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
-		;}
-    break;
-
   case 267:
 #line 2739 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new AdditiveExpr(LOC ((yyloc)), ParseConstants::op_plus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 268:
 #line 2743 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new AdditiveExpr(LOC ((yyloc)), ParseConstants::op_minus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new AdditiveExpr(LOC ((yyloc)), ParseConstants::op_plus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 269:
-#line 2753 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2747 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+			(yyval.expr) = new AdditiveExpr(LOC ((yyloc)), ParseConstants::op_minus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 270:
 #line 2757 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_mul, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 271:
 #line 2761 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_div, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_mul, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 272:
 #line 2765 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_idiv, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_div, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 273:
 #line 2769 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_mod, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_idiv, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 274:
-#line 2779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2773 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_mod, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 275:
 #line 2783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new UnionExpr(LOC ((yyloc)),
-								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 276:
-#line 2788 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2787 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new UnionExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -3377,35 +3376,43 @@ namespace zorba
     break;
 
   case 277:
-#line 2799 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2792 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+			(yyval.expr) = new UnionExpr(LOC ((yyloc)),
+								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 278:
 #line 2803 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new IntersectExceptExpr(LOC ((yyloc)), ParseConstants::op_intersect, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 279:
 #line 2807 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new IntersectExceptExpr(LOC ((yyloc)), ParseConstants::op_except, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new IntersectExceptExpr(LOC ((yyloc)), ParseConstants::op_intersect, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 280:
-#line 2817 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2811 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+			(yyval.expr) = new IntersectExceptExpr(LOC ((yyloc)), ParseConstants::op_except, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 281:
 #line 2821 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+		;}
+    break;
+
+  case 282:
+#line 2825 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new InstanceofExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -3413,15 +3420,15 @@ namespace zorba
 		;}
     break;
 
-  case 282:
-#line 2833 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 283:
+#line 2837 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
-  case 283:
-#line 2837 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 284:
+#line 2841 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new TreatExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -3429,15 +3436,15 @@ namespace zorba
 		;}
     break;
 
-  case 284:
-#line 2849 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 285:
+#line 2853 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
-  case 285:
-#line 2853 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 286:
+#line 2857 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CastableExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -3445,15 +3452,15 @@ namespace zorba
 		;}
     break;
 
-  case 286:
-#line 2865 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 287:
+#line 2869 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
-  case 287:
-#line 2869 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 288:
+#line 2873 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CastExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -3461,15 +3468,15 @@ namespace zorba
 		;}
     break;
 
-  case 288:
-#line 2881 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 289:
+#line 2885 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
-  case 289:
-#line 2885 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 290:
+#line 2889 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new UnaryExpr(LOC ((yyloc)),
 								dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node)),
@@ -3477,40 +3484,33 @@ namespace zorba
 		;}
     break;
 
-  case 290:
-#line 2897 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.node) = new SignList(LOC ((yyloc)), true);
-		;}
-    break;
-
   case 291:
 #line 2901 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new SignList(LOC ((yyloc)), false);
+			(yyval.node) = new SignList(LOC ((yyloc)), true);
 		;}
     break;
 
   case 292:
 #line 2905 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = (yysemantic_stack_[(2) - (1)].node);
+			(yyval.node) = new SignList(LOC ((yyloc)), false);
 		;}
     break;
 
   case 293:
 #line 2909 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			SignList* slist_p = dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node));
-			if (slist_p) slist_p->negate();
 			(yyval.node) = (yysemantic_stack_[(2) - (1)].node);
 		;}
     break;
 
   case 294:
-#line 2921 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2913 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+			SignList* slist_p = dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node));
+			if (slist_p) slist_p->negate();
+			(yyval.node) = (yysemantic_stack_[(2) - (1)].node);
 		;}
     break;
 
@@ -3529,77 +3529,84 @@ namespace zorba
     break;
 
   case 297:
-#line 2939 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2933 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_eq);
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 298:
 #line 2943 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_ne);
+			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_eq);
 		;}
     break;
 
   case 299:
 #line 2947 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_lt);
+			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_ne);
 		;}
     break;
 
   case 300:
 #line 2951 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_le);
+			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_lt);
 		;}
     break;
 
   case 301:
 #line 2955 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_gt);
+			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_le);
 		;}
     break;
 
   case 302:
 #line 2959 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_ge);
+			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_gt);
 		;}
     break;
 
   case 303:
-#line 2969 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2963 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_is);
+			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_ge);
 		;}
     break;
 
   case 304:
 #line 2973 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_precedes);
+			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_is);
 		;}
     break;
 
   case 305:
 #line 2977 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_follows);
+			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_precedes);
 		;}
     break;
 
   case 306:
-#line 2987 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2981 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new ValidateExpr(LOC ((yyloc)), "strict", (yysemantic_stack_[(4) - (3)].expr));
+			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_follows);
 		;}
     break;
 
   case 307:
 #line 2991 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.expr) = new ValidateExpr(LOC ((yyloc)), "strict", (yysemantic_stack_[(4) - (3)].expr));
+		;}
+    break;
+
+  case 308:
+#line 2995 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new ValidateExpr(LOC ((yyloc)),
                             dynamic_cast<TypeName*>((yysemantic_stack_[(5) - (2)].node))->get_name(),
@@ -3607,8 +3614,8 @@ namespace zorba
     ;}
     break;
 
-  case 308:
-#line 3003 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 309:
+#line 3007 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new ExtensionExpr(LOC ((yyloc)),
 								dynamic_cast<PragmaList*>((yysemantic_stack_[(3) - (1)].node)),
@@ -3616,8 +3623,8 @@ namespace zorba
 		;}
     break;
 
-  case 309:
-#line 3009 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 310:
+#line 3013 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new ExtensionExpr(LOC ((yyloc)),
 								dynamic_cast<PragmaList*>((yysemantic_stack_[(4) - (1)].node)),
@@ -3625,8 +3632,8 @@ namespace zorba
 		;}
     break;
 
-  case 310:
-#line 3021 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 311:
+#line 3025 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			PragmaList* pragma_list_p = new PragmaList(LOC ((yyloc)));
 			pragma_list_p->push_back(dynamic_cast<Pragma*>((yysemantic_stack_[(1) - (1)].node)));
@@ -3634,8 +3641,8 @@ namespace zorba
 		;}
     break;
 
-  case 311:
-#line 3027 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 312:
+#line 3031 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			PragmaList* pragma_list_p = dynamic_cast<PragmaList*>((yysemantic_stack_[(2) - (1)].node));
 			if (pragma_list_p) {
@@ -3645,8 +3652,8 @@ namespace zorba
 		;}
     break;
 
-  case 312:
-#line 3041 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 313:
+#line 3045 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Pragma(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(3) - (2)].sval))),
@@ -3655,8 +3662,8 @@ namespace zorba
 		;}
     break;
 
-  case 313:
-#line 3047 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 314:
+#line 3051 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Pragma(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(2) - (2)].sval))),
@@ -3664,29 +3671,29 @@ namespace zorba
     ;}
     break;
 
-  case 314:
-#line 3089 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_lone_slash, NULL);
-		;}
-    break;
-
   case 315:
 #line 3093 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_slash, (yysemantic_stack_[(2) - (2)].expr));
+			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_lone_slash, NULL);
 		;}
     break;
 
   case 316:
 #line 3097 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_slashslash, (yysemantic_stack_[(2) - (2)].expr));
+			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_slash, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 317:
 #line 3101 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_slashslash, (yysemantic_stack_[(2) - (2)].expr));
+		;}
+    break;
+
+  case 318:
+#line 3105 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        RelativePathExpr *rpe = dynamic_cast<RelativePathExpr *>((yysemantic_stack_[(1) - (1)].expr));
        (yyval.expr) = (rpe == NULL ?
@@ -3695,15 +3702,15 @@ namespace zorba
 		;}
     break;
 
-  case 318:
-#line 3113 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 319:
+#line 3117 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = NULL;
     ;}
     break;
 
-  case 319:
-#line 3123 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 320:
+#line 3127 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        AxisStep *as = dynamic_cast<AxisStep *>((yysemantic_stack_[(1) - (1)].expr));
        (yyval.expr) = (as != NULL ?
@@ -3715,24 +3722,17 @@ namespace zorba
 		;}
     break;
 
-  case 320:
-#line 3134 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 321:
+#line 3138 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
-  case 321:
-#line 3139 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 322:
+#line 3143 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slashslash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
-		;}
-    break;
-
-  case 322:
-#line 3149 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
@@ -3744,7 +3744,14 @@ namespace zorba
     break;
 
   case 324:
-#line 3163 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3157 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+		;}
+    break;
+
+  case 325:
+#line 3167 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ForwardStep*>((yysemantic_stack_[(1) - (1)].node)),
@@ -3752,8 +3759,8 @@ namespace zorba
 		;}
     break;
 
-  case 325:
-#line 3169 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 326:
+#line 3173 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ForwardStep*>((yysemantic_stack_[(2) - (1)].node)),
@@ -3761,8 +3768,8 @@ namespace zorba
 		;}
     break;
 
-  case 326:
-#line 3175 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 327:
+#line 3179 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ReverseStep*>((yysemantic_stack_[(1) - (1)].node)),
@@ -3770,8 +3777,8 @@ namespace zorba
 		;}
     break;
 
-  case 327:
-#line 3181 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 328:
+#line 3185 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ReverseStep*>((yysemantic_stack_[(2) - (1)].node)),
@@ -3779,8 +3786,8 @@ namespace zorba
 		;}
     break;
 
-  case 328:
-#line 3193 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 329:
+#line 3197 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardStep(LOC ((yyloc)),
 								dynamic_cast<ForwardAxis*>((yysemantic_stack_[(2) - (1)].node)),
@@ -3788,79 +3795,79 @@ namespace zorba
 		;}
     break;
 
-  case 329:
-#line 3199 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 330:
+#line 3203 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardStep(LOC ((yyloc)),
 								dynamic_cast<AbbrevForwardStep*>((yysemantic_stack_[(1) - (1)].node)));
 		;}
     break;
 
-  case 330:
-#line 3210 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_child);
-		;}
-    break;
-
   case 331:
 #line 3214 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_descendant);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_child);
 		;}
     break;
 
   case 332:
 #line 3218 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_attribute);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_descendant);
 		;}
     break;
 
   case 333:
 #line 3222 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_self);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_attribute);
 		;}
     break;
 
   case 334:
 #line 3226 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_descendant_or_self);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_self);
 		;}
     break;
 
   case 335:
 #line 3230 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_following_sibling);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_descendant_or_self);
 		;}
     break;
 
   case 336:
 #line 3234 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_following);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_following_sibling);
 		;}
     break;
 
   case 337:
-#line 3244 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3238 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new AbbrevForwardStep(LOC ((yyloc)), (yysemantic_stack_[(1) - (1)].node));
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_following);
 		;}
     break;
 
   case 338:
 #line 3248 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new AbbrevForwardStep(LOC ((yyloc)), (yysemantic_stack_[(2) - (2)].node), true);
+			(yyval.node) = new AbbrevForwardStep(LOC ((yyloc)), (yysemantic_stack_[(1) - (1)].node));
 		;}
     break;
 
   case 339:
-#line 3258 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3252 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.node) = new AbbrevForwardStep(LOC ((yyloc)), (yysemantic_stack_[(2) - (2)].node), true);
+		;}
+    break;
+
+  case 340:
+#line 3262 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ReverseStep(LOC ((yyloc)),
 								dynamic_cast<ReverseAxis*>((yysemantic_stack_[(2) - (1)].node)),
@@ -3868,8 +3875,8 @@ namespace zorba
 		;}
     break;
 
-  case 340:
-#line 3264 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 341:
+#line 3268 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			ReverseAxis* rev_p = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_parent);
 			(yyval.node) = new ReverseStep(LOC ((yyloc)),
@@ -3877,45 +3884,38 @@ namespace zorba
 		;}
     break;
 
-  case 341:
-#line 3276 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_parent);
-		;}
-    break;
-
   case 342:
 #line 3280 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_ancestor);
+			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_parent);
 		;}
     break;
 
   case 343:
 #line 3284 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_preceding_sibling);
+			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_ancestor);
 		;}
     break;
 
   case 344:
 #line 3288 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_preceding);
+			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_preceding_sibling);
 		;}
     break;
 
   case 345:
 #line 3292 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_ancestor_or_self);
+			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_preceding);
 		;}
     break;
 
   case 346:
-#line 3307 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3296 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
+			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_ancestor_or_self);
 		;}
     break;
 
@@ -3927,21 +3927,28 @@ namespace zorba
     break;
 
   case 348:
-#line 3321 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3315 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new NameTest(LOC ((yyloc)), new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(1) - (1)].sval))));
+			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 349:
 #line 3325 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new NameTest(LOC ((yyloc)), dynamic_cast<Wildcard*>((yysemantic_stack_[(1) - (1)].node)));
+			(yyval.node) = new NameTest(LOC ((yyloc)), new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(1) - (1)].sval))));
 		;}
     break;
 
   case 350:
-#line 3335 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3329 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.node) = new NameTest(LOC ((yyloc)), dynamic_cast<Wildcard*>((yysemantic_stack_[(1) - (1)].node)));
+		;}
+    break;
+
+  case 351:
+#line 3339 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Wildcard(LOC ((yyloc)),
                         "",
@@ -3950,8 +3957,8 @@ namespace zorba
 		;}
     break;
 
-  case 351:
-#line 3342 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 352:
+#line 3346 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Wildcard(LOC ((yyloc)),
                         SYMTAB ((yysemantic_stack_[(1) - (1)].sval)),
@@ -3960,8 +3967,8 @@ namespace zorba
 		;}
     break;
 
-  case 352:
-#line 3349 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 353:
+#line 3353 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Wildcard(LOC ((yyloc)),
                         "",
@@ -3970,15 +3977,15 @@ namespace zorba
 		;}
     break;
 
-  case 353:
-#line 3362 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 354:
+#line 3366 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
-  case 354:
-#line 3366 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 355:
+#line 3370 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FilterExpr(LOC ((yyloc)),
                           (yysemantic_stack_[(2) - (1)].expr),
@@ -3986,8 +3993,8 @@ namespace zorba
 		;}
     break;
 
-  case 355:
-#line 3378 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 356:
+#line 3382 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			PredicateList* pred_list_p = new PredicateList(LOC ((yyloc)));
 			pred_list_p->push_back(dynamic_cast<exprnode*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -3995,8 +4002,8 @@ namespace zorba
 		;}
     break;
 
-  case 356:
-#line 3384 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 357:
+#line 3388 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			PredicateList* pred_list_p = dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (1)].node));
 			if (pred_list_p) {
@@ -4006,17 +4013,10 @@ namespace zorba
 		;}
     break;
 
-  case 357:
-#line 3398 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 358:
+#line 3402 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
-		;}
-    break;
-
-  case 358:
-#line 3409 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
@@ -4070,7 +4070,7 @@ namespace zorba
     break;
 
   case 366:
-#line 3447 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3441 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
@@ -4084,76 +4084,83 @@ namespace zorba
     break;
 
   case 368:
-#line 3461 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3455 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+		;}
+    break;
+
+  case 369:
+#line 3465 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = NumericLiteral::new_literal(LOC ((yyloc)), ParseConstants::num_decimal, *(yysemantic_stack_[(1) - (1)].decval));
       delete yylval.decval;
 		;}
     break;
 
-  case 369:
-#line 3466 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 370:
+#line 3470 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = NumericLiteral::new_literal(LOC ((yyloc)), ParseConstants::num_integer, *(yysemantic_stack_[(1) - (1)].ival));
       delete yylval.ival;
 		;}
     break;
 
-  case 370:
-#line 3471 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 371:
+#line 3475 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = NumericLiteral::new_literal(LOC ((yyloc)), ParseConstants::num_double, *(yysemantic_stack_[(1) - (1)].dval));
       delete yylval.dval;
 		;}
     break;
 
-  case 371:
-#line 3482 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 372:
+#line 3486 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new VarRef(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(2) - (2)].sval)));
-		;}
-    break;
-
-  case 372:
-#line 3492 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.expr) = new ParenthesizedExpr(LOC ((yyloc)), NULL);
 		;}
     break;
 
   case 373:
 #line 3496 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
+			(yyval.expr) = new ParenthesizedExpr(LOC ((yyloc)), NULL);
+		;}
+    break;
+
+  case 374:
+#line 3500 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
 			(yyval.expr) = new ParenthesizedExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
-  case 374:
-#line 3507 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 375:
+#line 3511 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new ContextItemExpr(LOC ((yyloc)));
 		;}
     break;
 
-  case 375:
-#line 3517 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 376:
+#line 3521 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new OrderedExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (3)].expr));
 		;}
     break;
 
-  case 376:
-#line 3528 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 377:
+#line 3532 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new UnorderedExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (3)].expr));
 		;}
     break;
 
-  case 377:
-#line 3584 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 378:
+#line 3588 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FunctionCall(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(3) - (1)].sval))),
@@ -4161,8 +4168,8 @@ namespace zorba
 		;}
     break;
 
-  case 378:
-#line 3590 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 379:
+#line 3594 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FunctionCall(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (1)].sval))),
@@ -4170,8 +4177,8 @@ namespace zorba
 		;}
     break;
 
-  case 379:
-#line 3602 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 380:
+#line 3606 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			ArgList* a_list_p = new ArgList(LOC ((yyloc))); 
 			a_list_p->push_back((yysemantic_stack_[(1) - (1)].expr));
@@ -4179,19 +4186,12 @@ namespace zorba
 		;}
     break;
 
-  case 380:
-#line 3608 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 381:
+#line 3612 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			ArgList* a_list_p = dynamic_cast<ArgList*>((yysemantic_stack_[(3) - (1)].node));
 			if (a_list_p) a_list_p->push_back((yysemantic_stack_[(3) - (3)].expr));
 			(yyval.node) = (yysemantic_stack_[(3) - (1)].node);
-		;}
-    break;
-
-  case 381:
-#line 3620 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
@@ -4203,7 +4203,7 @@ namespace zorba
     break;
 
   case 383:
-#line 3634 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3628 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
@@ -4224,7 +4224,14 @@ namespace zorba
     break;
 
   case 386:
-#line 3652 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3646 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+		;}
+    break;
+
+  case 387:
+#line 3656 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (2)].sval))),
@@ -4234,8 +4241,8 @@ namespace zorba
 		;}
     break;
 
-  case 387:
-#line 3660 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 388:
+#line 3664 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(5) - (2)].sval))),
@@ -4245,8 +4252,8 @@ namespace zorba
 		;}
     break;
 
-  case 388:
-#line 3668 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 389:
+#line 3672 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(8) - (2)].sval))),
@@ -4256,8 +4263,8 @@ namespace zorba
 		;}
     break;
 
-  case 389:
-#line 3676 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 390:
+#line 3680 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(9) - (2)].sval))),
@@ -4267,8 +4274,8 @@ namespace zorba
 		;}
     break;
 
-  case 390:
-#line 3684 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 391:
+#line 3688 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(9) - (2)].sval))),
@@ -4278,8 +4285,8 @@ namespace zorba
 		;}
     break;
 
-  case 391:
-#line 3692 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 392:
+#line 3696 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(10) - (2)].sval))),
@@ -4289,8 +4296,8 @@ namespace zorba
 		;}
     break;
 
-  case 392:
-#line 3707 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 393:
+#line 3711 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			DirElemContentList* elem_content_list_p = new DirElemContentList(LOC ((yyloc)));
 			elem_content_list_p->push_back(dynamic_cast<DirElemContent*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -4298,8 +4305,8 @@ namespace zorba
 		;}
     break;
 
-  case 393:
-#line 3713 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 394:
+#line 3717 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			DirElemContentList* elem_content_list_p = dynamic_cast<DirElemContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (elem_content_list_p) elem_content_list_p->push_back(dynamic_cast<DirElemContent*>((yysemantic_stack_[(2) - (2)].expr)));
@@ -4307,8 +4314,8 @@ namespace zorba
 		;}
     break;
 
-  case 394:
-#line 3725 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 395:
+#line 3729 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			DirAttributeList* at_list_p = new DirAttributeList(LOC ((yyloc)));
 			at_list_p->push_back(dynamic_cast<DirAttr*>((yysemantic_stack_[(1) - (1)].node)));
@@ -4316,8 +4323,8 @@ namespace zorba
 		;}
     break;
 
-  case 395:
-#line 3731 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 396:
+#line 3735 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			DirAttributeList* at_list_p = dynamic_cast<DirAttributeList*>((yysemantic_stack_[(2) - (1)].node));
 			if (at_list_p) {
@@ -4327,8 +4334,8 @@ namespace zorba
 		;}
     break;
 
-  case 396:
-#line 3744 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 397:
+#line 3748 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DirAttr(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(6) - (2)].sval))),
@@ -4336,38 +4343,38 @@ namespace zorba
 		;}
     break;
 
-  case 399:
-#line 3761 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 400:
+#line 3765 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DirAttributeValue(LOC ((yyloc)),
 								dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
 		;}
     break;
 
-  case 400:
-#line 3766 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 401:
+#line 3770 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DirAttributeValue(LOC ((yyloc)),
 								dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
 		;}
     break;
 
-  case 401:
-#line 3777 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 402:
+#line 3781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new QuoteAttrContentList(LOC ((yyloc)));
 		;}
     break;
 
-  case 402:
-#line 3781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 403:
+#line 3785 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
-  case 403:
-#line 3788 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 404:
+#line 3792 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(LOC ((yyloc)));
 			qo_list_p->push_back(new QuoteAttrValueContent(LOC ((yyloc)),std::string("\"")));
@@ -4375,8 +4382,8 @@ namespace zorba
 		;}
     break;
 
-  case 404:
-#line 3794 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 405:
+#line 3798 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(LOC ((yyloc)));
 			qo_list_p->push_back(dynamic_cast<QuoteAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)));
@@ -4384,8 +4391,8 @@ namespace zorba
 		;}
     break;
 
-  case 405:
-#line 3800 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 406:
+#line 3804 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (qo_list_p) {
@@ -4395,8 +4402,8 @@ namespace zorba
 		;}
     break;
 
-  case 406:
-#line 3808 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 407:
+#line 3812 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (qo_list_p) {
@@ -4406,22 +4413,22 @@ namespace zorba
 		;}
     break;
 
-  case 407:
-#line 3822 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 408:
+#line 3826 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AposAttrContentList(LOC ((yyloc)));
 		;}
     break;
 
-  case 408:
-#line 3826 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 409:
+#line 3830 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
-  case 409:
-#line 3833 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 410:
+#line 3837 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			AposAttrContentList* at_list_p = new AposAttrContentList(LOC ((yyloc)));
 			at_list_p->push_back(new AposAttrValueContent(LOC ((yyloc)),"'"));
@@ -4429,8 +4436,8 @@ namespace zorba
 		;}
     break;
 
-  case 410:
-#line 3839 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 411:
+#line 3843 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			AposAttrContentList* at_list_p = new AposAttrContentList(LOC ((yyloc)));
 			at_list_p->push_back(dynamic_cast<AposAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)));
@@ -4438,8 +4445,8 @@ namespace zorba
 		;}
     break;
 
-  case 411:
-#line 3845 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 412:
+#line 3849 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (at_list_p) {
@@ -4449,8 +4456,8 @@ namespace zorba
 		;}
     break;
 
-  case 412:
-#line 3853 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 413:
+#line 3857 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (at_list_p) {
@@ -4460,56 +4467,56 @@ namespace zorba
 		;}
     break;
 
-  case 413:
-#line 3867 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 414:
+#line 3871 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new QuoteAttrValueContent(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(1) - (1)].sval)));
-		;}
-    break;
-
-  case 414:
-#line 3872 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.node) = new QuoteAttrValueContent(LOC ((yyloc)),
-								dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
 		;}
     break;
 
   case 415:
-#line 3883 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3876 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.node) = new QuoteAttrValueContent(LOC ((yyloc)),
+								dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
+		;}
+    break;
+
+  case 416:
+#line 3887 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AposAttrValueContent(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
-  case 416:
-#line 3888 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 417:
+#line 3892 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AposAttrValueContent(LOC ((yyloc)),
 								dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
 		;}
     break;
 
-  case 417:
-#line 3899 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 418:
+#line 3903 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
 								(yysemantic_stack_[(1) - (1)].expr));
 		;}
     break;
 
-  case 418:
-#line 3904 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 419:
+#line 3908 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
-  case 419:
-#line 3909 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 420:
+#line 3913 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>((yysemantic_stack_[(1) - (1)].expr));
 			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
@@ -4517,8 +4524,8 @@ namespace zorba
 		;}
     break;
 
-  case 420:
-#line 3915 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 421:
+#line 3919 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr));
 			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
@@ -4526,8 +4533,8 @@ namespace zorba
 		;}
     break;
 
-  case 421:
-#line 3927 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 422:
+#line 3931 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CommonContent(LOC ((yyloc)),
                 ParseConstants::cont_charref,
@@ -4535,55 +4542,55 @@ namespace zorba
 		;}
     break;
 
-  case 422:
-#line 3933 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 423:
+#line 3937 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CommonContent(LOC ((yyloc)),
 								ParseConstants::cont_escape_lbrace);
 		;}
     break;
 
-  case 423:
-#line 3938 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 424:
+#line 3942 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CommonContent(LOC ((yyloc)),
 								ParseConstants::cont_escape_rbrace);
 		;}
     break;
 
-  case 424:
-#line 3943 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 425:
+#line 3947 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CommonContent(LOC ((yyloc)),
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(1) - (1)].expr)));
 		;}
     break;
 
-  case 425:
-#line 3954 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 426:
+#line 3958 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirCommentConstructor(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (2)].sval)));
 		;}
     break;
 
-  case 426:
-#line 3959 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 427:
+#line 3963 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new DirCommentConstructor(LOC ((yyloc)), "");
     ;}
     break;
 
-  case 427:
-#line 3974 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 428:
+#line 3978 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirPIConstructor(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (2)].sval)));
 		;}
     break;
 
-  case 428:
-#line 3979 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 429:
+#line 3983 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirPIConstructor(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (2)].sval)),
@@ -4591,17 +4598,10 @@ namespace zorba
 		;}
     break;
 
-  case 429:
-#line 3996 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 430:
+#line 4000 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CDataSection(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(2) - (2)].sval)));
-		;}
-    break;
-
-  case 430:
-#line 4011 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
@@ -4641,49 +4641,56 @@ namespace zorba
     break;
 
   case 436:
-#line 4041 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4035 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+		;}
+    break;
+
+  case 437:
+#line 4045 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompDocConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (3)].expr));
 		;}
     break;
 
-  case 437:
-#line 4052 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 438:
+#line 4056 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (2)].sval))),
 								NULL);
-		;}
-    break;
-
-  case 438:
-#line 4058 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
-								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(5) - (2)].sval))),
-								(yysemantic_stack_[(5) - (4)].expr));
 		;}
     break;
 
   case 439:
-#line 4064 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4062 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(5) - (2)].sval))),
+								(yysemantic_stack_[(5) - (4)].expr));
+		;}
+    break;
+
+  case 440:
+#line 4068 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(6) - (3)].expr), NULL);
 		;}
     break;
 
-  case 440:
-#line 4069 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 441:
+#line 4073 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr));
 		;}
     break;
 
-  case 441:
-#line 4091 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 442:
+#line 4095 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (2)].sval))),
@@ -4691,8 +4698,8 @@ namespace zorba
 		;}
     break;
 
-  case 442:
-#line 4097 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 443:
+#line 4101 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(5) - (2)].sval))),
@@ -4700,38 +4707,38 @@ namespace zorba
 		;}
     break;
 
-  case 443:
-#line 4103 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 444:
+#line 4107 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(6) - (3)].expr), NULL);
 		;}
     break;
 
-  case 444:
-#line 4108 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 445:
+#line 4112 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr));
 		;}
     break;
 
-  case 445:
-#line 4119 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 446:
+#line 4123 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompTextConstructor(LOC ((yyloc)), (yysemantic_stack_[(4) - (3)].expr));
 		;}
     break;
 
-  case 446:
-#line 4129 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 447:
+#line 4133 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompCommentConstructor(LOC ((yyloc)), (yysemantic_stack_[(4) - (3)].expr));
 		;}
     break;
 
-  case 447:
-#line 4139 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 448:
+#line 4143 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (2)].sval)),
@@ -4739,8 +4746,8 @@ namespace zorba
 		;}
     break;
 
-  case 448:
-#line 4145 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 449:
+#line 4149 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (2)].sval)),
@@ -4748,24 +4755,24 @@ namespace zorba
 		;}
     break;
 
-  case 449:
-#line 4151 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 450:
+#line 4155 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(6) - (3)].expr), NULL);
 		;}
     break;
 
-  case 450:
-#line 4156 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 451:
+#line 4160 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr));
 		;}
     break;
 
-  case 451:
-#line 4167 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 452:
+#line 4171 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SingleType(LOC ((yyloc)),
 								dynamic_cast<AtomicType*>((yysemantic_stack_[(1) - (1)].node)),
@@ -4773,8 +4780,8 @@ namespace zorba
 		;}
     break;
 
-  case 452:
-#line 4173 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 453:
+#line 4177 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SingleType(LOC ((yyloc)),
 								dynamic_cast<AtomicType*>((yysemantic_stack_[(2) - (1)].node)),
@@ -4782,16 +4789,16 @@ namespace zorba
 		;}
     break;
 
-  case 453:
-#line 4185 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 454:
+#line 4189 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new TypeDeclaration(LOC ((yyloc)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
-  case 454:
-#line 4197 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 455:
+#line 4201 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SequenceType(LOC ((yyloc)),
 								(yysemantic_stack_[(1) - (1)].node),
@@ -4799,8 +4806,8 @@ namespace zorba
 		;}
     break;
 
-  case 455:
-#line 4203 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 456:
+#line 4207 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SequenceType(LOC ((yyloc)),
 								(yysemantic_stack_[(2) - (1)].node),
@@ -4808,41 +4815,34 @@ namespace zorba
 		;}
     break;
 
-  case 456:
-#line 4209 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 457:
+#line 4213 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SequenceType(LOC ((yyloc)), NULL, NULL);
 		;}
     break;
 
-  case 457:
-#line 4246 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 458:
+#line 4250 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OccurrenceIndicator(LOC ((yyloc)),
 								ParseConstants::occurs_optionally);
 		;}
     break;
 
-  case 458:
-#line 4251 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 459:
+#line 4255 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OccurrenceIndicator(LOC ((yyloc)),
 								ParseConstants::occurs_zero_or_more);
 		;}
     break;
 
-  case 459:
-#line 4256 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 460:
+#line 4260 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OccurrenceIndicator(LOC ((yyloc)),
 								ParseConstants::occurs_one_or_more);
-		;}
-    break;
-
-  case 460:
-#line 4267 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
@@ -4856,22 +4856,22 @@ namespace zorba
   case 462:
 #line 4275 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ItemType(LOC ((yyloc)),true);
+			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 463:
-#line 4285 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4279 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new AtomicType(LOC ((yyloc)),
-								new QName(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(1) - (1)].sval))));
+			(yyval.node) = new ItemType(LOC ((yyloc)),true);
 		;}
     break;
 
   case 464:
-#line 4296 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4289 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
+			(yyval.node) = new AtomicType(LOC ((yyloc)),
+								new QName(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(1) - (1)].sval))));
 		;}
     break;
 
@@ -4932,60 +4932,60 @@ namespace zorba
     break;
 
   case 473:
-#line 4338 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4332 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new AnyKindTest(LOC ((yyloc)));
+			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 474:
-#line 4348 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4342 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new DocumentTest(LOC ((yyloc)));
+			(yyval.node) = new AnyKindTest(LOC ((yyloc)));
 		;}
     break;
 
   case 475:
 #line 4352 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
+			(yyval.node) = new DocumentTest(LOC ((yyloc)));
+		;}
+    break;
+
+  case 476:
+#line 4356 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
 			(yyval.node) = new DocumentTest(LOC ((yyloc)),
 								dynamic_cast<ElementTest*>((yysemantic_stack_[(4) - (3)].node)));
 		;}
     break;
 
-  case 476:
-#line 4357 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 477:
+#line 4361 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DocumentTest(LOC ((yyloc)),
 								dynamic_cast<SchemaElementTest*>((yysemantic_stack_[(4) - (3)].node)));
 		;}
     break;
 
-  case 477:
-#line 4368 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 478:
+#line 4372 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new TextTest(LOC ((yyloc)));
 		;}
     break;
 
-  case 478:
-#line 4378 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 479:
+#line 4382 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CommentTest(LOC ((yyloc)));
-		;}
-    break;
-
-  case 479:
-#line 4388 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.node) = new PITest(LOC ((yyloc)), "");
 		;}
     break;
 
   case 480:
 #line 4392 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new PITest(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(4) - (3)].sval)));
+			(yyval.node) = new PITest(LOC ((yyloc)), "");
 		;}
     break;
 
@@ -4997,7 +4997,14 @@ namespace zorba
     break;
 
   case 482:
-#line 4406 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4400 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.node) = new PITest(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(4) - (3)].sval)));
+		;}
+    break;
+
+  case 483:
+#line 4410 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								NULL,
@@ -5005,8 +5012,8 @@ namespace zorba
 		;}
     break;
 
-  case 483:
-#line 4412 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 484:
+#line 4416 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (3)].sval))),
@@ -5014,8 +5021,8 @@ namespace zorba
 		;}
     break;
 
-  case 484:
-#line 4418 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 485:
+#line 4422 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(6) - (3)].sval))),
@@ -5023,8 +5030,8 @@ namespace zorba
 		;}
     break;
 
-  case 485:
-#line 4424 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 486:
+#line 4428 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								NULL,
@@ -5032,8 +5039,8 @@ namespace zorba
 		;}
     break;
 
-  case 486:
-#line 4430 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 487:
+#line 4434 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								NULL,
@@ -5041,16 +5048,16 @@ namespace zorba
 		;}
     break;
 
-  case 487:
-#line 4442 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 488:
+#line 4446 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaAttributeTest(LOC ((yyloc)),
 								new QName(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (2)].sval))));
 		;}
     break;
 
-  case 488:
-#line 4453 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 489:
+#line 4457 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
                            NULL,
@@ -5059,8 +5066,8 @@ namespace zorba
 		;}
     break;
 
-  case 489:
-#line 4460 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 490:
+#line 4464 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
                            new QName(LOC((yyloc)), SYMTAB ((yysemantic_stack_[(4) - (3)].sval))),
@@ -5069,8 +5076,8 @@ namespace zorba
 		;}
     break;
 
-  case 490:
-#line 4467 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 491:
+#line 4471 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
                            new QName(LOC((yyloc)),SYMTAB ((yysemantic_stack_[(6) - (3)].sval))),
@@ -5079,8 +5086,8 @@ namespace zorba
 		;}
     break;
 
-  case 491:
-#line 4474 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 492:
+#line 4478 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
                            new QName(LOC((yyloc)), SYMTAB ((yysemantic_stack_[(6) - (3)].sval))),
@@ -5089,8 +5096,8 @@ namespace zorba
 		;}
     break;
 
-  case 492:
-#line 4481 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 493:
+#line 4485 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									NULL,
@@ -5099,8 +5106,8 @@ namespace zorba
 		;}
     break;
 
-  case 493:
-#line 4488 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 494:
+#line 4492 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									NULL,
@@ -5109,8 +5116,8 @@ namespace zorba
 		;}
     break;
 
-  case 494:
-#line 4495 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 495:
+#line 4499 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									NULL,
@@ -5119,24 +5126,24 @@ namespace zorba
 		;}
     break;
 
-  case 495:
-#line 4508 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 496:
+#line 4512 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaElementTest(LOC ((yyloc)),
 									new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (3)].sval))));
 		;}
     break;
 
-  case 496:
-#line 4529 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 497:
+#line 4533 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new TypeName(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(1) - (1)].sval))));
 		;}
     break;
 
-  case 497:
-#line 4536 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 498:
+#line 4540 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new TypeName(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(2) - (1)].sval))),
@@ -5144,89 +5151,44 @@ namespace zorba
 		;}
     break;
 
-  case 498:
-#line 4556 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 499:
+#line 4560 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new StringLiteral(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
-  case 499:
-#line 4596 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 500:
+#line 4600 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 //			$$ = new OrderingModeDecl(@$,
 //								StaticQueryContext::ordered);
 		;}
     break;
 
-  case 500:
-#line 4601 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-    ;}
-    break;
-
   case 501:
-#line 4604 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4605 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
     ;}
     break;
 
   case 502:
-#line 4612 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4608 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+    ;}
+    break;
+
+  case 503:
+#line 4616 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
                   store::UpdateConsts::INTO, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
-		;}
-    break;
-
-  case 503:
-#line 4618 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-       (yyval.expr) = new InsertExpr(
-                  LOC ((yyloc)),
-                  store::UpdateConsts::AS_FIRST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr));
 		;}
     break;
 
   case 504:
-#line 4624 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-       (yyval.expr) = new InsertExpr(
-                  LOC ((yyloc)),
-                  store::UpdateConsts::AS_LAST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr));
-		;}
-    break;
-
-  case 505:
-#line 4630 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-       (yyval.expr) = new InsertExpr(
-                  LOC ((yyloc)),
-                  store::UpdateConsts::AFTER, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
-		;}
-    break;
-
-  case 506:
-#line 4636 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-       (yyval.expr) = new InsertExpr(
-                  LOC ((yyloc)),
-                  store::UpdateConsts::BEFORE, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
-		;}
-    break;
-
-  case 507:
-#line 4643 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-       (yyval.expr) = new InsertExpr(
-                  LOC ((yyloc)),
-                  store::UpdateConsts::INTO, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
-		;}
-    break;
-
-  case 508:
-#line 4649 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4622 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5234,8 +5196,8 @@ namespace zorba
 		;}
     break;
 
-  case 509:
-#line 4655 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 505:
+#line 4628 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5243,8 +5205,8 @@ namespace zorba
 		;}
     break;
 
-  case 510:
-#line 4661 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 506:
+#line 4634 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5252,8 +5214,8 @@ namespace zorba
 		;}
     break;
 
-  case 511:
-#line 4667 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 507:
+#line 4640 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5261,22 +5223,67 @@ namespace zorba
 		;}
     break;
 
-  case 512:
-#line 4679 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 508:
+#line 4647 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-       (yyval.expr) = new DeleteExpr( LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr));
+       (yyval.expr) = new InsertExpr(
+                  LOC ((yyloc)),
+                  store::UpdateConsts::INTO, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
+		;}
+    break;
+
+  case 509:
+#line 4653 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+       (yyval.expr) = new InsertExpr(
+                  LOC ((yyloc)),
+                  store::UpdateConsts::AS_FIRST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr));
+		;}
+    break;
+
+  case 510:
+#line 4659 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+       (yyval.expr) = new InsertExpr(
+                  LOC ((yyloc)),
+                  store::UpdateConsts::AS_LAST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr));
+		;}
+    break;
+
+  case 511:
+#line 4665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+       (yyval.expr) = new InsertExpr(
+                  LOC ((yyloc)),
+                  store::UpdateConsts::AFTER, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
+		;}
+    break;
+
+  case 512:
+#line 4671 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+       (yyval.expr) = new InsertExpr(
+                  LOC ((yyloc)),
+                  store::UpdateConsts::BEFORE, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
 		;}
     break;
 
   case 513:
-#line 4684 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4683 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new DeleteExpr( LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 514:
-#line 4694 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4688 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+       (yyval.expr) = new DeleteExpr( LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr));
+		;}
+    break;
+
+  case 515:
+#line 4698 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new ReplaceExpr(
                   LOC ((yyloc)),
@@ -5284,8 +5291,8 @@ namespace zorba
 		;}
     break;
 
-  case 515:
-#line 4700 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 516:
+#line 4704 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new ReplaceExpr(
                   LOC ((yyloc)),
@@ -5293,24 +5300,24 @@ namespace zorba
 		;}
     break;
 
-  case 516:
-#line 4712 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 517:
+#line 4716 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new RenameExpr(
                   LOC ((yyloc)), (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
 		;}
     break;
 
-  case 517:
-#line 4738 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 518:
+#line 4742 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       VarNameList* lList = dynamic_cast<VarNameList*>((yysemantic_stack_[(7) - (3)].expr));
       (yyval.expr) = new TransformExpr(LOC((yyloc)), lList, (yysemantic_stack_[(7) - (5)].expr), (yysemantic_stack_[(7) - (7)].expr));
 		;}
     break;
 
-  case 518:
-#line 4749 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 519:
+#line 4753 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        VarNameList* lList = new VarNameList(LOC((yyloc)));
        lList->push_back (dynamic_cast<VarBinding*> ((yysemantic_stack_[(1) - (1)].expr)));
@@ -5318,8 +5325,8 @@ namespace zorba
 		;}
     break;
 
-  case 519:
-#line 4755 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 520:
+#line 4759 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        VarNameList* lList = dynamic_cast<VarNameList*>((yysemantic_stack_[(4) - (1)].expr));
        VarBinding* lBinding = dynamic_cast<VarBinding*>((yysemantic_stack_[(4) - (4)].expr));
@@ -5328,23 +5335,23 @@ namespace zorba
 		;}
     break;
 
-  case 520:
-#line 4768 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 521:
+#line 4772 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new VarBinding(LOC((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (1)].sval)), (yysemantic_stack_[(3) - (3)].expr));  
     ;}
     break;
 
-  case 521:
-#line 4782 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 522:
+#line 4786 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new TryExpr(LOC ((yyloc)),
 								       (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
     ;}
     break;
 
-  case 522:
-#line 4789 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 523:
+#line 4793 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        CatchListExpr* aCatchListExpr = new CatchListExpr(LOC ((yyloc)));
        aCatchListExpr->push_back(static_cast<CatchExpr*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -5352,8 +5359,8 @@ namespace zorba
     ;}
     break;
 
-  case 523:
-#line 4796 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 524:
+#line 4800 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       CatchListExpr* aCatchListExpr = dynamic_cast<CatchListExpr*>((yysemantic_stack_[(2) - (1)].expr));
       if (aCatchListExpr) {
@@ -5363,8 +5370,8 @@ namespace zorba
     ;}
     break;
 
-  case 524:
-#line 4807 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 525:
+#line 4811 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC ((yyloc)),
                           static_cast<NameTest*>((yysemantic_stack_[(5) - (3)].node)),
@@ -5372,8 +5379,8 @@ namespace zorba
     ;}
     break;
 
-  case 525:
-#line 4814 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 526:
+#line 4818 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC ((yyloc)),
                           static_cast<NameTest*>((yysemantic_stack_[(8) - (3)].node)),
@@ -5382,8 +5389,8 @@ namespace zorba
     ;}
     break;
 
-  case 526:
-#line 4822 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 527:
+#line 4826 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC ((yyloc)),
                           static_cast<NameTest*>((yysemantic_stack_[(11) - (3)].node)),
@@ -5393,8 +5400,8 @@ namespace zorba
     ;}
     break;
 
-  case 527:
-#line 4831 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 528:
+#line 4835 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC ((yyloc)),
                           static_cast<NameTest*>((yysemantic_stack_[(14) - (3)].node)),
@@ -5405,8 +5412,8 @@ namespace zorba
     ;}
     break;
 
-  case 529:
-#line 4847 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 530:
+#line 4851 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
     std::string tmp = SYMTAB ((yysemantic_stack_[(1) - (1)].sval));
     for (unsigned int i = 0; i<tmp.size(); i++)
@@ -5419,878 +5426,878 @@ namespace zorba
   ;}
     break;
 
-  case 530:
-#line 4864 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 531:
+#line 4868 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval); ;}
     break;
 
-  case 531:
-#line 4865 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 532:
+#line 4869 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("xquery"); ;}
     break;
 
-  case 532:
-#line 4866 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 533:
+#line 4870 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("empty"); ;}
     break;
 
-  case 533:
-#line 4867 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 534:
+#line 4871 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("attribute"); ;}
     break;
 
-  case 534:
-#line 4868 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 535:
+#line 4872 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("comment"); ;}
     break;
 
-  case 535:
-#line 4869 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 536:
+#line 4873 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("document-node"); ;}
     break;
 
-  case 536:
-#line 4870 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 537:
+#line 4874 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("element"); ;}
     break;
 
-  case 537:
-#line 4871 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 538:
+#line 4875 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("item"); ;}
     break;
 
-  case 538:
-#line 4872 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 539:
+#line 4876 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("if"); ;}
     break;
 
-  case 539:
-#line 4873 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 540:
+#line 4877 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("node"); ;}
     break;
 
-  case 540:
-#line 4874 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 541:
+#line 4878 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("processing-instruction"); ;}
     break;
 
-  case 541:
-#line 4875 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 542:
+#line 4879 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("schema-attribute"); ;}
     break;
 
-  case 542:
-#line 4876 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 543:
+#line 4880 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("schema-element"); ;}
     break;
 
-  case 543:
-#line 4877 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 544:
+#line 4881 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("text"); ;}
     break;
 
-  case 544:
-#line 4878 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 545:
+#line 4882 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("typeswitch"); ;}
     break;
 
-  case 545:
-#line 4879 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 546:
+#line 4883 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("empty-sequence"); ;}
     break;
 
-  case 546:
-#line 4880 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 547:
+#line 4884 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("boundary-space"); ;}
     break;
 
-  case 547:
-#line 4881 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 548:
+#line 4885 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("ft-option"); ;}
     break;
 
-  case 548:
-#line 4882 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 549:
+#line 4886 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("base-uri"); ;}
     break;
 
-  case 549:
-#line 4883 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 550:
+#line 4887 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("lax"); ;}
     break;
 
-  case 550:
-#line 4884 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 551:
+#line 4888 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("strict"); ;}
     break;
 
-  case 551:
-#line 4885 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 552:
+#line 4889 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("idiv"); ;}
     break;
 
-  case 552:
-#line 4886 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 553:
+#line 4890 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("document"); ;}
     break;
 
-  case 553:
-#line 4887 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 554:
+#line 4891 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("not"); ;}
     break;
 
-  case 554:
-#line 4888 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 555:
+#line 4892 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("sensitive"); ;}
     break;
 
-  case 555:
-#line 4889 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 556:
+#line 4893 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("insensitive"); ;}
     break;
 
-  case 556:
-#line 4890 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 557:
+#line 4894 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("diacritics"); ;}
     break;
 
-  case 557:
-#line 4891 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 558:
+#line 4895 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("without"); ;}
     break;
 
-  case 558:
-#line 4892 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 559:
+#line 4896 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("stemming"); ;}
     break;
 
-  case 559:
-#line 4893 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 560:
+#line 4897 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("thesaurus"); ;}
     break;
 
-  case 560:
-#line 4894 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 561:
+#line 4898 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("stop"); ;}
     break;
 
-  case 561:
-#line 4895 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 562:
+#line 4899 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("wildcards"); ;}
     break;
 
-  case 562:
-#line 4896 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 563:
+#line 4900 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("entire"); ;}
     break;
 
-  case 563:
-#line 4897 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 564:
+#line 4901 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("content"); ;}
     break;
 
-  case 564:
-#line 4898 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 565:
+#line 4902 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("word"); ;}
     break;
 
-  case 565:
-#line 4899 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 566:
+#line 4903 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("start"); ;}
     break;
 
-  case 566:
-#line 4900 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 567:
+#line 4904 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("end"); ;}
     break;
 
-  case 567:
-#line 4901 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 568:
+#line 4905 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("most"); ;}
     break;
 
-  case 568:
-#line 4902 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 569:
+#line 4906 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("skip"); ;}
     break;
 
-  case 569:
-#line 4903 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 570:
+#line 4907 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("copy"); ;}
     break;
 
-  case 570:
-#line 4904 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 571:
+#line 4908 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("value"); ;}
     break;
 
-  case 571:
-#line 4905 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 572:
+#line 4909 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("eq"); ;}
     break;
 
-  case 572:
-#line 4906 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 573:
+#line 4910 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("ne"); ;}
     break;
 
-  case 573:
-#line 4907 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 574:
+#line 4911 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("lt"); ;}
     break;
 
-  case 574:
-#line 4908 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 575:
+#line 4912 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("le"); ;}
     break;
 
-  case 575:
-#line 4909 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 576:
+#line 4913 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("gt"); ;}
     break;
 
-  case 576:
-#line 4910 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 577:
+#line 4914 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("ge"); ;}
     break;
 
-  case 577:
-#line 4911 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 578:
+#line 4915 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("at"); ;}
     break;
 
-  case 578:
-#line 4912 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 579:
+#line 4916 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("context"); ;}
     break;
 
-  case 579:
-#line 4913 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 580:
+#line 4917 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("variable"); ;}
     break;
 
-  case 580:
-#line 4914 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 581:
+#line 4918 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("return"); ;}
     break;
 
-  case 581:
-#line 4915 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 582:
+#line 4919 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("for"); ;}
     break;
 
-  case 582:
-#line 4916 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 583:
+#line 4920 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("outer"); ;}
     break;
 
-  case 583:
-#line 4917 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 584:
+#line 4921 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("sliding"); ;}
     break;
 
-  case 584:
-#line 4918 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 585:
+#line 4922 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("tumbling"); ;}
     break;
 
-  case 585:
-#line 4919 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 586:
+#line 4923 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("previous"); ;}
     break;
 
-  case 586:
-#line 4920 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 587:
+#line 4924 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("next"); ;}
     break;
 
-  case 587:
-#line 4921 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 588:
+#line 4925 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("only"); ;}
     break;
 
-  case 588:
-#line 4922 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 589:
+#line 4926 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("when"); ;}
     break;
 
-  case 589:
-#line 4923 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 590:
+#line 4927 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("count"); ;}
     break;
 
-  case 590:
-#line 4924 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 591:
+#line 4928 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("in"); ;}
     break;
 
-  case 591:
-#line 4925 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 592:
+#line 4929 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("let"); ;}
     break;
 
-  case 592:
-#line 4926 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 593:
+#line 4930 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("where"); ;}
     break;
 
-  case 593:
-#line 4927 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 594:
+#line 4931 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("by"); ;}
     break;
 
-  case 594:
-#line 4928 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 595:
+#line 4932 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("group"); ;}
     break;
 
-  case 595:
-#line 4929 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 596:
+#line 4933 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("order"); ;}
     break;
 
-  case 596:
-#line 4930 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 597:
+#line 4934 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("stable"); ;}
     break;
 
-  case 597:
-#line 4931 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 598:
+#line 4935 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("ascending"); ;}
     break;
 
-  case 598:
-#line 4932 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 599:
+#line 4936 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("descending"); ;}
     break;
 
-  case 599:
-#line 4933 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 600:
+#line 4937 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("greatest"); ;}
     break;
 
-  case 600:
-#line 4934 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 601:
+#line 4938 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("least"); ;}
     break;
 
-  case 601:
-#line 4935 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 602:
+#line 4939 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("collation"); ;}
     break;
 
-  case 602:
-#line 4936 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 603:
+#line 4940 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("some"); ;}
     break;
 
-  case 603:
-#line 4937 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 604:
+#line 4941 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("every"); ;}
     break;
 
-  case 604:
-#line 4938 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 605:
+#line 4942 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("satisfies"); ;}
     break;
 
-  case 605:
-#line 4939 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 606:
+#line 4943 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("case"); ;}
     break;
 
-  case 606:
-#line 4940 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 607:
+#line 4944 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("as"); ;}
     break;
 
-  case 607:
-#line 4941 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 608:
+#line 4945 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("then"); ;}
     break;
 
-  case 608:
-#line 4942 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 609:
+#line 4946 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("else"); ;}
     break;
 
-  case 609:
-#line 4943 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 610:
+#line 4947 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("or"); ;}
     break;
 
-  case 610:
-#line 4944 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 611:
+#line 4948 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("and"); ;}
     break;
 
-  case 611:
-#line 4945 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 612:
+#line 4949 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("instance"); ;}
     break;
 
-  case 612:
-#line 4946 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 613:
+#line 4950 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("of"); ;}
     break;
 
-  case 613:
-#line 4947 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 614:
+#line 4951 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("castable"); ;}
     break;
 
-  case 614:
-#line 4948 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 615:
+#line 4952 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("to"); ;}
     break;
 
-  case 615:
-#line 4949 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 616:
+#line 4953 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("div"); ;}
     break;
 
-  case 616:
-#line 4950 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 617:
+#line 4954 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("mod"); ;}
     break;
 
-  case 617:
-#line 4951 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 618:
+#line 4955 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("union"); ;}
     break;
 
-  case 618:
-#line 4952 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 619:
+#line 4956 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("intersect"); ;}
     break;
 
-  case 619:
-#line 4953 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 620:
+#line 4957 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("except"); ;}
     break;
 
-  case 620:
-#line 4954 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 621:
+#line 4958 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("validate"); ;}
     break;
 
-  case 621:
-#line 4955 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 622:
+#line 4959 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("cast"); ;}
     break;
 
-  case 622:
-#line 4956 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 623:
+#line 4960 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("treat"); ;}
     break;
 
-  case 623:
-#line 4957 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 624:
+#line 4961 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("is"); ;}
     break;
 
-  case 624:
-#line 4958 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 625:
+#line 4962 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("preserve"); ;}
     break;
 
-  case 625:
-#line 4959 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 626:
+#line 4963 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("strip"); ;}
     break;
 
-  case 626:
-#line 4960 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 627:
+#line 4964 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("namespace"); ;}
     break;
 
-  case 627:
-#line 4961 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 628:
+#line 4965 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("external"); ;}
     break;
 
-  case 628:
-#line 4962 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 629:
+#line 4966 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("encoding"); ;}
     break;
 
-  case 629:
-#line 4963 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 630:
+#line 4967 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("no-preserve"); ;}
     break;
 
-  case 630:
-#line 4964 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 631:
+#line 4968 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("inherit"); ;}
     break;
 
-  case 631:
-#line 4965 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 632:
+#line 4969 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("no-inherit"); ;}
     break;
 
-  case 632:
-#line 4966 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 633:
+#line 4970 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("declare"); ;}
     break;
 
-  case 633:
-#line 4967 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 634:
+#line 4971 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("construction"); ;}
     break;
 
-  case 634:
-#line 4968 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 635:
+#line 4972 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("ordering"); ;}
     break;
 
-  case 635:
-#line 4969 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 636:
+#line 4973 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("default"); ;}
     break;
 
-  case 636:
-#line 4970 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 637:
+#line 4974 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("copy-namespaces"); ;}
     break;
 
-  case 637:
-#line 4971 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 638:
+#line 4975 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("option"); ;}
     break;
 
-  case 638:
-#line 4972 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 639:
+#line 4976 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("version"); ;}
     break;
 
-  case 639:
-#line 4973 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 640:
+#line 4977 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("import"); ;}
     break;
 
-  case 640:
-#line 4974 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 641:
+#line 4978 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("schema"); ;}
     break;
 
-  case 641:
-#line 4975 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 642:
+#line 4979 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("module"); ;}
     break;
 
-  case 642:
-#line 4976 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 643:
+#line 4980 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("function"); ;}
     break;
 
-  case 643:
-#line 4977 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 644:
+#line 4981 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("score"); ;}
     break;
 
-  case 644:
-#line 4978 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 645:
+#line 4982 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("ftcontains"); ;}
     break;
 
-  case 645:
-#line 4979 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 646:
+#line 4983 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("weight"); ;}
     break;
 
-  case 646:
-#line 4980 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 647:
+#line 4984 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("window"); ;}
     break;
 
-  case 647:
-#line 4981 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 648:
+#line 4985 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("distance"); ;}
     break;
 
-  case 648:
-#line 4982 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 649:
+#line 4986 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("occurs"); ;}
     break;
 
-  case 649:
-#line 4983 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 650:
+#line 4987 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("times"); ;}
     break;
 
-  case 650:
-#line 4984 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 651:
+#line 4988 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("same"); ;}
     break;
 
-  case 651:
-#line 4985 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 652:
+#line 4989 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("different"); ;}
     break;
 
-  case 652:
-#line 4986 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 653:
+#line 4990 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("lowercase"); ;}
     break;
 
-  case 653:
-#line 4987 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 654:
+#line 4991 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("uppercase"); ;}
     break;
 
-  case 654:
-#line 4988 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 655:
+#line 4992 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("relationship"); ;}
     break;
 
-  case 655:
-#line 4989 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 656:
+#line 4993 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("levels"); ;}
     break;
 
-  case 656:
-#line 4990 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 657:
+#line 4994 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("language"); ;}
     break;
 
-  case 657:
-#line 4991 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 658:
+#line 4995 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("any"); ;}
     break;
 
-  case 658:
-#line 4992 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 659:
+#line 4996 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("all"); ;}
     break;
 
-  case 659:
-#line 4993 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 660:
+#line 4997 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("phrase"); ;}
     break;
 
-  case 660:
-#line 4994 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 661:
+#line 4998 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("exactly"); ;}
     break;
 
-  case 661:
-#line 4995 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 662:
+#line 4999 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("from"); ;}
     break;
 
-  case 662:
-#line 4996 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 663:
+#line 5000 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("words"); ;}
     break;
 
-  case 663:
-#line 4997 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 664:
+#line 5001 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("sentences"); ;}
     break;
 
-  case 664:
-#line 4998 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 665:
+#line 5002 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("sentence"); ;}
     break;
 
-  case 665:
-#line 4999 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 666:
+#line 5003 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("paragraph"); ;}
     break;
 
-  case 666:
-#line 5000 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 667:
+#line 5004 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("replace"); ;}
     break;
 
-  case 667:
-#line 5001 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 668:
+#line 5005 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("modify"); ;}
     break;
 
-  case 668:
-#line 5002 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 669:
+#line 5006 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("first"); ;}
     break;
 
-  case 669:
-#line 5003 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 670:
+#line 5007 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("insert"); ;}
     break;
 
-  case 670:
-#line 5004 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 671:
+#line 5008 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("before"); ;}
     break;
 
-  case 671:
-#line 5005 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 672:
+#line 5009 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("after"); ;}
     break;
 
-  case 672:
-#line 5006 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 673:
+#line 5010 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("revalidation"); ;}
     break;
 
-  case 673:
-#line 5007 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 674:
+#line 5011 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("with"); ;}
     break;
 
-  case 674:
-#line 5008 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 675:
+#line 5012 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("nodes"); ;}
     break;
 
-  case 675:
-#line 5009 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 676:
+#line 5013 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("rename"); ;}
     break;
 
-  case 676:
-#line 5010 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 677:
+#line 5014 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("last"); ;}
     break;
 
-  case 677:
-#line 5011 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 678:
+#line 5015 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("delete"); ;}
     break;
 
-  case 678:
-#line 5012 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 679:
+#line 5016 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("into"); ;}
     break;
 
-  case 679:
-#line 5013 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 680:
+#line 5017 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("simple"); ;}
     break;
 
-  case 680:
-#line 5014 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 681:
+#line 5018 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("sequential"); ;}
     break;
 
-  case 681:
-#line 5015 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 682:
+#line 5019 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("updating"); ;}
     break;
 
-  case 682:
-#line 5016 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 683:
+#line 5020 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("deterministic"); ;}
     break;
 
-  case 683:
-#line 5017 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 684:
+#line 5021 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("nondeterministic"); ;}
     break;
 
-  case 684:
-#line 5018 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 685:
+#line 5022 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("ordered"); ;}
     break;
 
-  case 685:
-#line 5019 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 686:
+#line 5023 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("unordered"); ;}
     break;
 
-  case 686:
-#line 5020 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 687:
+#line 5024 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("block"); ;}
     break;
 
-  case 687:
-#line 5021 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 688:
+#line 5025 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("exit"); ;}
     break;
 
-  case 688:
-#line 5022 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 689:
+#line 5026 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("loop"); ;}
     break;
 
-  case 689:
-#line 5023 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 690:
+#line 5027 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("while"); ;}
     break;
 
-  case 690:
-#line 5024 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 691:
+#line 5028 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("break"); ;}
     break;
 
-  case 691:
-#line 5025 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 692:
+#line 5029 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("continue"); ;}
     break;
 
-  case 692:
-#line 5026 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 693:
+#line 5030 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("try"); ;}
     break;
 
-  case 693:
-#line 5027 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 694:
+#line 5031 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("catch"); ;}
     break;
 
-  case 694:
-#line 5028 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 695:
+#line 5032 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("eval"); ;}
     break;
 
-  case 695:
-#line 5029 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 696:
+#line 5033 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("using"); ;}
     break;
 
-  case 696:
-#line 5030 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 697:
+#line 5034 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("set"); ;}
     break;
 
-  case 697:
-#line 5031 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 698:
+#line 5035 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("index"); ;}
     break;
 
-  case 698:
-#line 5032 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 699:
+#line 5036 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("create"); ;}
     break;
 
-  case 699:
-#line 5033 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 700:
+#line 5037 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("unique"); ;}
     break;
 
-  case 700:
-#line 5034 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 701:
+#line 5038 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("on"); ;}
     break;
 
-  case 701:
-#line 5035 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 702:
+#line 5039 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("hash"); ;}
     break;
 
-  case 702:
-#line 5036 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 703:
+#line 5040 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("btree"); ;}
     break;
 
-  case 703:
-#line 5037 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 704:
+#line 5041 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = SYMTAB_PUT ("drop"); ;}
     break;
 
-  case 704:
-#line 5049 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 705:
+#line 5053 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new EvalExpr (LOC ((yyloc)),
                           dynamic_cast<VarGetsDeclList *> ((yysemantic_stack_[(7) - (3)].node)),
@@ -6298,197 +6305,190 @@ namespace zorba
     ;}
     break;
 
-  case 705:
-#line 5055 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 706:
+#line 5059 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new EvalExpr (LOC ((yyloc)), new VarGetsDeclList (LOC ((yyloc))), (yysemantic_stack_[(4) - (3)].expr));
     ;}
     break;
 
-  case 706:
-#line 5072 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-      (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(1) - (1)].node)), NULL, NULL);
-		;}
-    break;
-
   case 707:
 #line 5076 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(2) - (1)].node)), static_cast<FTMatchOptionProximityList *> ((yysemantic_stack_[(2) - (2)].node)), NULL);
+      (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(1) - (1)].node)), NULL, NULL);
 		;}
     break;
 
   case 708:
 #line 5080 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(3) - (1)].node)), NULL, static_cast<RangeExpr *> ((yysemantic_stack_[(3) - (3)].expr)));
+      (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(2) - (1)].node)), static_cast<FTMatchOptionProximityList *> ((yysemantic_stack_[(2) - (2)].node)), NULL);
 		;}
     break;
 
   case 709:
 #line 5084 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(4) - (1)].node)), static_cast<FTMatchOptionProximityList *> ((yysemantic_stack_[(4) - (2)].node)), static_cast<RangeExpr *> ((yysemantic_stack_[(4) - (4)].expr)));
+      (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(3) - (1)].node)), NULL, static_cast<RangeExpr *> ((yysemantic_stack_[(3) - (3)].expr)));
 		;}
     break;
 
   case 710:
-#line 5094 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5088 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
+      (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(4) - (1)].node)), static_cast<FTMatchOptionProximityList *> ((yysemantic_stack_[(4) - (2)].node)), static_cast<RangeExpr *> ((yysemantic_stack_[(4) - (4)].expr)));
 		;}
     break;
 
   case 711:
-#line 5097 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5098 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 712:
-#line 5100 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5101 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 713:
-#line 5103 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5104 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 714:
-#line 5112 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5107 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 715:
-#line 5115 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5116 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 716:
-#line 5124 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5119 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 717:
-#line 5127 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5128 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 718:
-#line 5136 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5131 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 719:
-#line 5139 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5140 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 720:
-#line 5148 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5143 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 721:
-#line 5151 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5152 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 722:
-#line 5160 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5155 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 723:
-#line 5163 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5164 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 724:
-#line 5166 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5167 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 725:
-#line 5175 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5170 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 726:
-#line 5178 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5179 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 727:
-#line 5187 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5182 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new FTWordsValue (LOC ((yyloc)), static_cast<StringLiteral *> ((yysemantic_stack_[(1) - (1)].expr)), NULL);
 		;}
     break;
 
   case 728:
 #line 5191 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new FTWordsValue (LOC ((yyloc)), NULL, (yysemantic_stack_[(3) - (2)].expr));
+      (yyval.node) = new FTWordsValue (LOC ((yyloc)), static_cast<StringLiteral *> ((yysemantic_stack_[(1) - (1)].expr)), NULL);
 		;}
     break;
 
   case 729:
-#line 5201 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5195 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
+      (yyval.node) = new FTWordsValue (LOC ((yyloc)), NULL, (yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 730:
-#line 5204 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5205 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 731:
-#line 5207 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5208 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 732:
-#line 5210 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5211 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 733:
-#line 5213 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5214 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 734:
-#line 5222 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5217 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 735:
-#line 5231 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5226 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
@@ -6535,378 +6535,385 @@ namespace zorba
     break;
 
   case 742:
-#line 5265 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5259 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
+			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 743:
-#line 5268 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5269 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 744:
-#line 5271 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5272 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 745:
-#line 5274 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5275 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 746:
-#line 5283 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5278 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 747:
-#line 5286 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5287 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 748:
-#line 5289 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5290 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 749:
-#line 5292 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5293 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 750:
-#line 5301 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5296 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 751:
-#line 5304 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5305 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 752:
-#line 5313 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5308 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 753:
-#line 5316 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5317 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 754:
-#line 5319 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5320 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 755:
-#line 5322 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5323 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 756:
-#line 5325 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5326 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 757:
-#line 5328 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5329 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 758:
-#line 5331 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5332 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 759:
-#line 5340 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5335 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 760:
-#line 5343 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5344 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 761:
-#line 5352 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5347 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 762:
-#line 5355 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5356 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 763:
-#line 5358 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5359 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 764:
-#line 5361 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5362 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 765:
-#line 5370 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5365 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 766:
-#line 5373 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5374 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 767:
-#line 5376 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5377 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 768:
-#line 5379 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5380 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 769:
-#line 5382 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5383 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 770:
-#line 5391 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5386 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 771:
-#line 5394 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5395 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 772:
-#line 5403 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5398 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 773:
-#line 5406 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5407 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 774:
-#line 5415 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5410 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 775:
-#line 5418 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5419 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 776:
-#line 5427 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5422 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 777:
-#line 5430 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5431 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 778:
-#line 5439 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5434 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 779:
-#line 5448 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5443 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 780:
-#line 5451 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5452 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 781:
-#line 5460 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5455 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 782:
-#line 5463 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5464 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 783:
-#line 5466 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5467 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 784:
-#line 5475 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5470 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 785:
-#line 5478 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5479 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 786:
-#line 5481 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5482 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 787:
-#line 5484 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5485 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 788:
-#line 5487 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5488 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 789:
-#line 5496 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5491 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::exactly, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 790:
 #line 5500 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::at_least, (yysemantic_stack_[(3) - (3)].expr));
+       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::exactly, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 791:
 #line 5504 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::at_most, (yysemantic_stack_[(3) - (3)].expr));
+       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::at_least, (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 792:
 #line 5508 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::from_to, (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr));
+       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::at_most, (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 793:
-#line 5518 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5512 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
+       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::from_to, (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr));
 		;}
     break;
 
   case 794:
-#line 5527 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5522 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+		;}
+    break;
+
+  case 795:
+#line 5531 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FTWindow (LOC ((yyloc)), static_cast<UnionExpr *> ((yysemantic_stack_[(3) - (2)].expr)), static_cast<FTUnit *> ((yysemantic_stack_[(3) - (3)].node)));
 		;}
     break;
 
-  case 795:
-#line 5537 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-		;}
-    break;
-
   case 796:
-#line 5546 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5541 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 797:
-#line 5549 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5550 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 798:
-#line 5558 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5553 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 799:
-#line 5561 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5562 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 800:
-#line 5564 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5565 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 801:
-#line 5573 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5568 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 802:
-#line 5576 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5577 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 803:
-#line 5585 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5580 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+		;}
+    break;
+
+  case 804:
+#line 5589 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FTIgnoreOption (LOC ((yyloc)), static_cast<UnionExpr *> ((yysemantic_stack_[(3) - (3)].expr)));
 		;}
@@ -6914,7 +6921,7 @@ namespace zorba
 
 
     /* Line 675 of lalr1.cc.  */
-#line 6918 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 6925 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	default: break;
       }
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
@@ -7270,143 +7277,143 @@ namespace zorba
   const unsigned short int
   xquery_parser::yydefact_[] =
   {
-         0,   351,   352,   530,   498,   686,   687,   690,   688,   691,
-     689,   620,   544,   536,   552,   543,   534,   632,   642,   681,
-     680,   682,   683,   679,   538,   540,   567,   639,   602,   596,
-     641,   637,   564,   640,   696,   591,   633,   694,   581,   582,
-     583,   584,   585,   586,   587,   588,   589,   634,   548,   542,
-     535,   636,   611,   541,   546,   342,   345,   610,   606,   597,
-     577,   533,   332,     0,   605,   613,   621,   330,   601,   368,
-     578,   579,   635,   331,   334,   598,   615,     0,   374,   340,
-     370,   608,   532,   599,   600,   628,   603,   619,   627,   336,
-     335,   551,   590,   630,   369,   618,   623,   537,     0,     0,
-     291,   616,   626,   631,   629,   609,   684,   595,   593,   594,
-     341,     0,   290,     0,   344,   343,   624,   580,   604,     0,
-     333,   318,     0,   350,   625,   607,   614,   622,   617,   685,
-     571,   576,   575,   574,   573,   572,   545,   592,     0,   531,
-     638,   565,   671,   670,   672,   550,   549,   568,   677,   539,
-     669,   674,   675,   666,   570,   612,   668,   678,   676,   667,
-     569,   673,   692,   693,   695,   658,   657,   554,   547,   556,
-     555,   651,   647,   562,   566,   563,   660,   661,   644,   553,
-     656,   655,   652,   648,   665,   659,   654,   650,   643,   664,
-     663,   649,   653,   645,   646,   557,   558,   560,   662,   559,
-     561,   698,   703,   699,   697,   701,   702,   700,     0,     0,
+         0,   352,   353,   531,   499,   687,   688,   691,   689,   692,
+     690,   621,   545,   537,   553,   544,   535,   633,   643,   682,
+     681,   683,   684,   680,   539,   541,   568,   640,   603,   597,
+     642,   638,   565,   641,   697,   592,   634,   695,   582,   583,
+     584,   585,   586,   587,   588,   589,   590,   635,   549,   543,
+     536,   637,   612,   542,   547,   343,   346,   611,   607,   598,
+     578,   534,   333,     0,   606,   614,   622,   331,   602,   369,
+     579,   580,   636,   332,   335,   599,   616,     0,   375,   341,
+     371,   609,   533,   600,   601,   629,   604,   620,   628,   337,
+     336,   552,   591,   631,   370,   619,   624,   538,     0,     0,
+     292,   617,   627,   632,   630,   610,   685,   596,   594,   595,
+     342,     0,   291,     0,   345,   344,   625,   581,   605,     0,
+     334,   319,     0,   351,   626,   608,   615,   623,   618,   686,
+     572,   577,   576,   575,   574,   573,   546,   593,     0,   532,
+     639,   566,   672,   671,   673,   551,   550,   569,   678,   540,
+     670,   675,   676,   667,   571,   613,   669,   679,   677,   668,
+     570,   674,   693,   694,   696,   659,   658,   555,   548,   557,
+     556,   652,   648,   563,   567,   564,   661,   662,   645,   554,
+     657,   656,   653,   649,   666,   660,   655,   651,   644,   665,
+     664,   650,   654,   646,   647,   558,   559,   561,   663,   560,
+     562,   699,   704,   700,   698,   702,   703,   701,     0,     0,
        2,     0,     4,     6,     0,     0,     0,     0,    17,    19,
       21,    22,    23,    31,    24,    28,    29,    35,    36,    37,
-      32,    33,    39,    40,    26,    25,    30,    34,   149,   148,
-     145,   146,   147,   150,    27,    11,   126,   127,   131,   133,
-     165,   171,     0,     0,   163,   164,   134,   135,   136,   137,
-     247,   249,   251,   261,   264,   266,   269,   274,   277,   280,
-     282,   284,   286,     0,   288,   294,   296,     0,   310,   295,
-     314,   317,   319,   322,   324,     0,   329,   326,     0,   337,
-     347,   349,   323,   353,   358,   366,   359,   360,   361,   364,
-     365,   362,   363,   381,   383,   384,   385,   382,   430,   431,
-     432,   433,   434,   435,   346,   472,   464,   471,   470,   469,
-     466,   468,   465,   467,   367,    38,   138,   139,   141,   140,
-     142,   143,   348,   144,     0,   101,     0,   106,   107,     0,
-     686,   687,   690,   691,   689,   620,   544,   536,   552,   543,
-     534,   632,   538,   540,   639,   602,   641,   696,   591,   694,
-     581,   582,   542,   535,   533,   603,     0,   684,   685,   531,
-     677,   539,   669,   675,   666,   569,   692,   695,   698,   703,
-       0,   496,     0,     0,     0,     0,     0,     0,     0,     0,
+      32,    33,    39,    40,    26,    25,    30,    34,   150,   149,
+     146,   147,   148,   151,    27,    11,   127,   128,   132,   134,
+     166,   172,     0,     0,   164,   165,   135,   136,   137,   138,
+     248,   250,   252,   262,   265,   267,   270,   275,   278,   281,
+     283,   285,   287,     0,   289,   295,   297,     0,   311,   296,
+     315,   318,   320,   323,   325,     0,   330,   327,     0,   338,
+     348,   350,   324,   354,   359,   367,   360,   361,   362,   365,
+     366,   363,   364,   382,   384,   385,   386,   383,   431,   432,
+     433,   434,   435,   436,   347,   473,   465,   472,   471,   470,
+     467,   469,   466,   468,   368,    38,   139,   140,   142,   141,
+     143,   144,   349,   145,     0,   102,     0,   107,   108,     0,
+     687,   688,   691,   692,   690,   621,   545,   537,   553,   544,
+     535,   633,   539,   541,   640,   603,   642,   697,   592,   695,
+     582,   583,   543,   536,   534,   604,     0,   685,   686,   532,
+     678,   540,   670,   676,   667,   570,   693,   696,   699,   704,
+       0,   497,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,    83,    85,   110,   113,     0,   529,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,   173,
-       0,     0,     0,     0,     0,     0,     0,   536,   543,   534,
-     540,   533,   338,   348,   371,     0,   372,   698,     0,   397,
-       0,     0,   313,     0,     0,   316,     0,     0,   426,     0,
+       0,    84,    86,   111,   114,     0,   530,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,   174,
+       0,     0,     0,     0,     0,     0,     0,   537,   544,   535,
+     541,   534,   339,   349,   372,     0,   373,   699,     0,   398,
+       0,     0,   314,     0,     0,   317,     0,     0,   427,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,    84,     0,     3,     1,     5,     7,     0,     0,
-       0,    12,    10,    14,    15,     0,   129,   128,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,   151,   170,   166,
-     172,   167,   169,   168,   175,   176,     0,     0,     0,     0,
-     305,     0,     0,   303,     0,   256,     0,   304,   297,   302,
-     301,   300,   299,   298,     0,     0,     0,     0,     0,     0,
+       0,     0,    85,     0,     3,     1,     5,     7,     0,     0,
+       0,    12,    10,    14,    15,     0,   130,   129,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,   152,   171,   167,
+     173,   168,   170,   169,   176,   177,     0,     0,     0,     0,
+     306,     0,     0,   304,     0,   257,     0,   305,   298,   303,
+     302,   301,   300,   299,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,   293,   292,   289,     0,   311,   315,     0,     0,
-       0,   325,   355,   328,   327,   339,   354,     0,     0,   104,
-       0,     0,     0,     0,     0,   488,     0,     0,     0,     0,
-       0,   477,     0,   478,     0,   115,     0,   116,   112,   111,
-     114,     0,    95,    96,    48,    49,   528,    57,     0,     0,
+       0,     0,   294,   293,   290,     0,   312,   316,     0,     0,
+       0,   326,   356,   329,   328,   340,   355,     0,     0,   105,
+       0,     0,     0,     0,     0,   489,     0,     0,     0,     0,
+       0,   478,     0,   479,     0,   116,     0,   117,   113,   112,
+     115,     0,    96,    97,    48,    49,   529,    57,     0,     0,
       42,    43,     0,     0,     0,     0,     0,     0,     0,     0,
-     499,   500,   501,     0,     0,     0,     0,   742,   743,     0,
-      47,   735,   736,   737,   738,   739,   740,   741,    86,     0,
-       0,     0,     0,   479,     0,     0,     0,    66,     0,     0,
-       0,    58,     0,   236,     0,     0,     0,   188,   189,     0,
-       0,   153,   154,     0,     0,   174,     0,     0,     0,   474,
-       0,     0,     0,   482,     0,     0,     0,     0,     0,   373,
-     398,   397,   394,     0,     0,   428,   427,   312,   487,     0,
-     425,     0,   512,   513,   473,     0,     0,     0,     0,     0,
-       0,   518,     0,     0,     0,   191,   208,   108,   109,     0,
-      18,     0,    20,   132,     0,     0,     0,     0,     0,   152,
-     209,     0,     0,     0,     0,     0,     0,     0,     0,   248,
-     250,   254,   260,   259,   258,     0,   255,   252,   253,     0,
-       0,     0,   727,   262,   706,   714,   716,   718,   720,   722,
-     725,   268,   267,   265,   271,   272,   273,   270,   275,   276,
-     279,   278,     0,     0,     0,     0,   308,     0,   320,   321,
-       0,   356,   377,   379,     0,   102,     0,   306,     0,     0,
-       0,     0,   492,     0,   489,   437,     0,   436,   445,   446,
-       0,     0,     0,    46,     0,     0,     0,     0,     0,    70,
-      72,    73,    76,    79,     0,     0,     0,    56,     0,     0,
-     744,   745,     0,   746,   750,     0,     0,   779,   748,   749,
-     778,   747,   751,     0,   758,   780,     0,     0,     0,   481,
-     480,   447,     0,     0,     0,     0,     0,    59,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,   705,
-       0,     0,   155,   156,     0,   161,   495,   475,   476,     0,
-       0,   485,     0,   483,   441,     0,     0,   108,   397,   395,
-       0,   386,     0,   375,   376,     0,     8,     0,     0,     0,
+     500,   501,   502,     0,     0,     0,     0,   743,   744,     0,
+      47,   736,   737,   738,   739,   740,   741,   742,    87,     0,
+       0,     0,     0,   480,     0,     0,     0,    66,     0,     0,
+       0,    58,     0,   237,     0,     0,     0,   189,   190,     0,
+       0,   154,   155,     0,     0,   175,     0,     0,     0,   475,
+       0,     0,     0,   483,     0,     0,     0,     0,     0,   374,
+     399,   398,   395,     0,     0,   429,   428,   313,   488,     0,
+     426,     0,   513,   514,   474,     0,     0,     0,     0,     0,
+       0,   519,     0,     0,     0,   192,   209,   109,   110,     0,
+      18,     0,    20,   133,     0,     0,     0,     0,     0,   153,
+     210,     0,     0,     0,     0,     0,     0,     0,     0,   249,
+     251,   255,   261,   260,   259,     0,   256,   253,   254,     0,
+       0,     0,   728,   263,   707,   715,   717,   719,   721,   723,
+     726,   269,   268,   266,   272,   273,   274,   271,   276,   277,
+     280,   279,     0,     0,     0,     0,   309,     0,   321,   322,
+       0,   357,   378,   380,     0,   103,     0,   307,     0,     0,
+       0,     0,   493,     0,   490,   438,     0,   437,   446,   447,
+       0,     0,     0,    46,     0,     0,     0,    74,     0,    70,
+      72,    73,    77,    80,     0,     0,     0,    56,     0,     0,
+     745,   746,     0,   747,   751,     0,     0,   780,   749,   750,
+     779,   748,   752,     0,   759,   781,     0,     0,     0,   482,
+     481,   448,     0,     0,     0,     0,     0,    59,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,   706,
+       0,     0,   156,   157,     0,   162,   496,   476,   477,     0,
+       0,   486,     0,   484,   442,     0,     0,   109,   398,   396,
+       0,   387,     0,   376,   377,     0,     8,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,    16,   130,     0,   162,   220,   216,
-     218,     0,   210,   211,     0,   537,   545,   453,   454,   460,
-     461,   463,     0,   178,     0,     0,     0,     0,     0,     0,
-       0,   257,     0,     0,   721,     0,   263,     0,   734,     0,
-       0,     0,     0,     0,     0,     0,   707,   711,   729,   710,
-     733,   731,   730,   732,     0,     0,     0,   723,   786,   784,
-     788,   726,   281,   283,   285,   451,   287,   309,   357,     0,
-     378,   105,   307,     0,     0,   242,     0,     0,     0,   496,
-       0,     0,   438,     0,    97,     0,   120,   118,     0,   117,
-       0,    54,    55,    52,    53,     0,    74,    75,    77,     0,
-      78,    44,    45,    50,    51,    41,     0,     0,     0,   753,
-       0,   752,   769,     0,     0,     0,   448,     0,    68,    62,
-      65,    64,     0,    60,     0,   234,   238,     0,     0,   103,
-       0,   193,     0,     0,     0,     0,     0,   157,     0,     0,
-       0,     0,   202,     0,   199,   204,   160,     0,     0,     0,
-     442,   235,   398,     0,   387,     0,   421,   418,     0,   422,
-     423,     0,     0,   424,   417,     0,   392,   420,   419,     0,
-       0,     0,   505,   506,   502,     0,     0,   510,   511,   507,
-     516,   514,     0,     0,     0,   520,     0,   521,   522,     0,
-       0,   217,   229,     0,   230,     0,   221,   222,   223,   224,
-       0,   213,     0,   177,     0,     0,   457,   459,   458,   455,
-     186,   187,   180,     0,   182,   179,     0,     0,     0,   728,
-     724,     0,   781,   782,   802,   801,   797,     0,     0,     0,
-       0,   783,   715,   796,   708,     0,     0,   713,   712,   717,
-       0,     0,   787,   785,   452,   380,     0,     0,     0,   243,
-     439,     0,   493,   494,   497,   490,   491,   122,     0,     0,
-      98,     0,   119,    71,    80,   767,     0,     0,   765,   761,
-       0,     0,     0,    81,    82,     0,     0,   449,     0,    67,
-       0,    61,   237,   239,    13,   190,   195,   194,     0,   197,
-       0,     0,     0,   159,   200,   203,     0,   443,     0,   486,
-     484,   397,     0,     0,   429,     0,   397,     0,   393,     9,
-       0,     0,     0,     0,     0,   519,     0,     0,   523,     0,
-     192,   233,   231,   232,   225,   226,   227,   219,     0,   214,
-     212,   462,   456,   184,   181,     0,   183,   803,     0,     0,
-     789,     0,   800,   799,   798,   793,   794,   709,   719,   795,
-       0,     0,     0,     0,   440,   123,    99,   121,     0,   125,
-       0,     0,   768,   770,   772,   774,     0,   766,     0,     0,
-       0,   756,     0,   754,     0,     0,     0,     0,   450,     0,
-      63,   196,   198,   207,   206,   201,   158,   444,     0,   397,
-       0,   124,     0,   397,   503,   504,   508,   509,   515,   517,
-       0,   704,   228,   215,   185,   791,   790,     0,     0,   244,
-       0,   240,   100,   777,   776,   771,   775,   773,   762,   763,
-       0,   759,     0,    93,    89,    91,     0,    87,     0,   246,
-      69,     0,   407,   401,   396,     0,   397,   388,     0,     0,
-       0,   792,     0,     0,     0,     0,   757,   755,     0,    92,
-      94,    88,     0,   415,   409,     0,   408,   410,   416,   413,
-     403,     0,   402,   404,   414,   390,     0,   389,     0,   524,
-       0,   241,   764,   760,    90,   205,   400,   411,   412,   399,
-     405,   406,   391,     0,   245,     0,     0,     0,   525,     0,
-       0,     0,     0,   526,     0,     0,   527
+       0,     0,     0,     0,    16,   131,     0,   163,   221,   217,
+     219,     0,   211,   212,     0,   538,   546,   454,   455,   461,
+     462,   464,     0,   179,     0,     0,     0,     0,     0,     0,
+       0,   258,     0,     0,   722,     0,   264,     0,   735,     0,
+       0,     0,     0,     0,     0,     0,   708,   712,   730,   711,
+     734,   732,   731,   733,     0,     0,     0,   724,   787,   785,
+     789,   727,   282,   284,   286,   452,   288,   310,   358,     0,
+     379,   106,   308,     0,     0,   243,     0,     0,     0,   497,
+       0,     0,   439,     0,    98,     0,   121,   119,     0,   118,
+       0,    54,    55,    52,    53,     0,    75,    76,    78,     0,
+      79,    44,    45,    50,    51,    41,     0,     0,     0,   754,
+       0,   753,   770,     0,     0,     0,   449,     0,    68,    62,
+      65,    64,     0,    60,     0,   235,   239,     0,     0,   104,
+       0,   194,     0,     0,     0,     0,     0,   158,     0,     0,
+       0,     0,   203,     0,   200,   205,   161,     0,     0,     0,
+     443,   236,   399,     0,   388,     0,   422,   419,     0,   423,
+     424,     0,     0,   425,   418,     0,   393,   421,   420,     0,
+       0,     0,   506,   507,   503,     0,     0,   511,   512,   508,
+     517,   515,     0,     0,     0,   521,     0,   522,   523,     0,
+       0,   218,   230,     0,   231,     0,   222,   223,   224,   225,
+       0,   214,     0,   178,     0,     0,   458,   460,   459,   456,
+     187,   188,   181,     0,   183,   180,     0,     0,     0,   729,
+     725,     0,   782,   783,   803,   802,   798,     0,     0,     0,
+       0,   784,   716,   797,   709,     0,     0,   714,   713,   718,
+       0,     0,   788,   786,   453,   381,     0,     0,     0,   244,
+     440,     0,   494,   495,   498,   491,   492,   123,     0,     0,
+      99,     0,   120,    71,    81,   768,     0,     0,   766,   762,
+       0,     0,     0,    82,    83,     0,     0,   450,     0,    67,
+       0,    61,   238,   240,    13,   191,   196,   195,     0,   198,
+       0,     0,     0,   160,   201,   204,     0,   444,     0,   487,
+     485,   398,     0,     0,   430,     0,   398,     0,   394,     9,
+       0,     0,     0,     0,     0,   520,     0,     0,   524,     0,
+     193,   234,   232,   233,   226,   227,   228,   220,     0,   215,
+     213,   463,   457,   185,   182,     0,   184,   804,     0,     0,
+     790,     0,   801,   800,   799,   794,   795,   710,   720,   796,
+       0,     0,     0,     0,   441,   124,   100,   122,     0,   126,
+       0,     0,   769,   771,   773,   775,     0,   767,     0,     0,
+       0,   757,     0,   755,     0,     0,     0,     0,   451,     0,
+      63,   197,   199,   208,   207,   202,   159,   445,     0,   398,
+       0,   125,     0,   398,   504,   505,   509,   510,   516,   518,
+       0,   705,   229,   216,   186,   792,   791,     0,     0,   245,
+       0,   241,   101,   778,   777,   772,   776,   774,   763,   764,
+       0,   760,     0,    94,    90,    92,     0,    88,     0,   247,
+      69,     0,   408,   402,   397,     0,   398,   389,     0,     0,
+       0,   793,     0,     0,     0,     0,   758,   756,     0,    93,
+      95,    89,     0,   416,   410,     0,   409,   411,   417,   414,
+     404,     0,   403,   405,   415,   391,     0,   390,     0,   525,
+       0,   242,   765,   761,    91,   206,   401,   412,   413,   400,
+     406,   407,   392,     0,   246,     0,     0,     0,   526,     0,
+       0,     0,     0,   527,     0,     0,   528
   };
 
   /* YYPGOTO[NTERM-NUM].  */
@@ -9389,52 +9396,53 @@ namespace zorba
      298,   299,   300,   300,   301,   301,   302,   303,   304,   304,
      305,   305,   306,   306,   306,   306,   307,   308,   309,   309,
      309,   309,   310,   310,   311,   311,   312,   312,   312,   312,
-     313,   314,   314,   315,   315,   316,   317,   317,   318,   318,
-     318,   319,   319,   320,   320,   321,   321,   322,   322,   323,
-     323,   324,   324,   325,   325,   326,   326,   327,   327,   327,
-     327,   328,   329,   330,   331,   332,   333,   333,   334,   334,
-     335,   335,   335,   336,   336,   336,   336,   337,   337,   338,
-     339,   339,   340,   340,   341,   342,   343,   344,   344,   345,
-     345,   346,   346,   347,   347,   347,   347,   347,   347,   347,
+     313,   314,   314,   315,   315,   315,   316,   317,   317,   318,
+     318,   318,   319,   319,   320,   320,   321,   321,   322,   322,
+     323,   323,   324,   324,   325,   325,   326,   326,   327,   327,
+     327,   327,   328,   329,   330,   331,   332,   333,   333,   334,
+     334,   335,   335,   335,   336,   336,   336,   336,   337,   337,
+     338,   339,   339,   340,   340,   341,   342,   343,   344,   344,
+     345,   345,   346,   346,   347,   347,   347,   347,   347,   347,
      347,   347,   347,   347,   347,   347,   347,   347,   347,   347,
-     347,   348,   349,   350,   350,   351,   351,   351,   352,   352,
-     353,   353,   354,   355,   355,   355,   356,   356,   356,   356,
-     356,   357,   357,   358,   358,   359,   360,   360,   361,   361,
-     361,   361,   361,   361,   361,   361,   362,   363,   364,   365,
-     365,   366,   366,   367,   367,   367,   367,   368,   368,   369,
-     369,   369,   370,   370,   370,   371,   371,   371,   372,   373,
-     374,   375,   375,   376,   376,   377,   378,   378,   379,   379,
-     380,   380,   381,   381,   381,   381,   381,   381,   381,   382,
-     382,   383,   383,   384,   385,   385,   386,   386,   387,   387,
-     388,   388,   389,   389,   390,   390,   391,   392,   392,   393,
-     393,   394,   394,   394,   394,   394,   395,   394,   394,   394,
-     394,   396,   396,   396,   397,   397,   398,   398,   398,   399,
-     399,   399,   399,   399,   400,   400,   400,   401,   401,   401,
-     402,   402,   403,   403,   404,   404,   405,   405,   406,   406,
-     407,   407,   407,   407,   408,   408,   408,   409,   409,   409,
-     409,   409,   409,   410,   410,   410,   411,   411,   412,   412,
-     413,   413,   414,   414,   415,   415,   415,   415,   416,   417,
-     417,   417,   418,   418,   419,   419,   419,   419,   420,   420,
-     421,   421,   421,   421,   421,   421,   421,   422,   422,   423,
-     423,   424,   424,   424,   424,   424,   425,   425,   426,   426,
-     427,   427,   427,   428,   428,   429,   429,   430,   431,   431,
-     431,   431,   431,   431,   431,   431,   432,   432,   433,   433,
-     433,   434,   435,   435,   436,   437,   438,   439,   439,   440,
-     440,   441,   441,   442,   442,   442,   443,   443,   443,   443,
-     443,   443,   444,   444,   445,   445,   446,   447,   447,   448,
-     448,   449,   449,   450,   450,   450,   450,   451,   451,   452,
-     452,   452,   452,   453,   453,   454,   454,   455,   455,   455,
-     455,   456,   456,   456,   456,   457,   457,   458,   458,   459,
-     460,   460,   460,   460,   460,   460,   461,   462,   462,   462,
-     462,   463,   463,   463,   463,   464,   465,   466,   466,   466,
-     466,   467,   467,   468,   469,   469,   469,   470,   470,   470,
-     471,   471,   471,   472,   473,   473,   473,   473,   473,   473,
-     473,   473,   473,   474,   475,   475,   475,   476,   477,   478,
-     478,   478,   479,   479,   479,   479,   479,   480,   481,   481,
-     481,   481,   481,   481,   481,   482,   483,   484,   485,   486,
-     486,   486,   487,   487,   487,   487,   487,   487,   487,   487,
-     487,   487,   488,   488,   489,   489,   490,   491,   492,   492,
-     493,   494,   495,   495,   496,   496,   496,   496,   497,   498,
+     347,   347,   348,   349,   350,   350,   351,   351,   351,   352,
+     352,   353,   353,   354,   355,   355,   355,   356,   356,   356,
+     356,   356,   357,   357,   358,   358,   359,   360,   360,   361,
+     361,   361,   361,   361,   361,   361,   361,   362,   363,   364,
+     365,   365,   366,   366,   367,   367,   367,   367,   368,   368,
+     369,   369,   369,   370,   370,   370,   371,   371,   371,   372,
+     373,   374,   375,   375,   376,   376,   377,   378,   378,   379,
+     379,   380,   380,   381,   381,   381,   381,   381,   381,   381,
+     382,   382,   383,   383,   384,   385,   385,   386,   386,   387,
+     387,   388,   388,   389,   389,   390,   390,   391,   392,   392,
+     393,   393,   394,   394,   394,   394,   394,   395,   394,   394,
+     394,   394,   396,   396,   396,   397,   397,   398,   398,   398,
+     399,   399,   399,   399,   399,   400,   400,   400,   401,   401,
+     401,   402,   402,   403,   403,   404,   404,   405,   405,   406,
+     406,   407,   407,   407,   407,   408,   408,   408,   409,   409,
+     409,   409,   409,   409,   410,   410,   410,   411,   411,   412,
+     412,   413,   413,   414,   414,   415,   415,   415,   415,   416,
+     417,   417,   417,   418,   418,   419,   419,   419,   419,   420,
+     420,   421,   421,   421,   421,   421,   421,   421,   422,   422,
+     423,   423,   424,   424,   424,   424,   424,   425,   425,   426,
+     426,   427,   427,   427,   428,   428,   429,   429,   430,   431,
+     431,   431,   431,   431,   431,   431,   431,   432,   432,   433,
+     433,   433,   434,   435,   435,   436,   437,   438,   439,   439,
+     440,   440,   441,   441,   442,   442,   442,   443,   443,   443,
+     443,   443,   443,   444,   444,   445,   445,   446,   447,   447,
+     448,   448,   449,   449,   450,   450,   450,   450,   451,   451,
+     452,   452,   452,   452,   453,   453,   454,   454,   455,   455,
+     455,   455,   456,   456,   456,   456,   457,   457,   458,   458,
+     459,   460,   460,   460,   460,   460,   460,   461,   462,   462,
+     462,   462,   463,   463,   463,   463,   464,   465,   466,   466,
+     466,   466,   467,   467,   468,   469,   469,   469,   470,   470,
+     470,   471,   471,   471,   472,   473,   473,   473,   473,   473,
+     473,   473,   473,   473,   474,   475,   475,   475,   476,   477,
+     478,   478,   478,   479,   479,   479,   479,   479,   480,   481,
+     481,   481,   481,   481,   481,   481,   482,   483,   484,   485,
+     486,   486,   486,   487,   487,   487,   487,   487,   487,   487,
+     487,   487,   487,   488,   488,   489,   489,   490,   491,   492,
+     492,   493,   494,   495,   495,   496,   496,   496,   496,   497,
+     498,   499,   499,   499,   499,   499,   499,   499,   499,   499,
      499,   499,   499,   499,   499,   499,   499,   499,   499,   499,
      499,   499,   499,   499,   499,   499,   499,   499,   499,   499,
      499,   499,   499,   499,   499,   499,   499,   499,   499,   499,
@@ -9451,18 +9459,17 @@ namespace zorba
      499,   499,   499,   499,   499,   499,   499,   499,   499,   499,
      499,   499,   499,   499,   499,   499,   499,   499,   499,   499,
      499,   499,   499,   499,   499,   499,   499,   499,   499,   499,
-     499,   499,   499,   499,   499,   499,   499,   499,   499,   499,
-     499,   499,   499,   499,   500,   500,   501,   501,   501,   501,
-     502,   502,   502,   502,   503,   503,   504,   504,   505,   505,
-     506,   506,   507,   507,   507,   508,   508,   509,   509,   510,
-     510,   510,   510,   510,   511,   512,   512,   512,   512,   512,
-     512,   512,   513,   513,   513,   513,   514,   514,   514,   514,
-     515,   515,   516,   516,   516,   516,   516,   516,   516,   517,
-     517,   518,   518,   518,   518,   519,   519,   519,   519,   519,
-     520,   520,   521,   521,   522,   522,   523,   523,   524,   525,
-     525,   526,   526,   526,   527,   527,   527,   527,   527,   528,
-     528,   528,   528,   529,   530,   531,   532,   532,   533,   533,
-     533,   534,   534,   535
+     499,   499,   499,   499,   499,   500,   500,   501,   501,   501,
+     501,   502,   502,   502,   502,   503,   503,   504,   504,   505,
+     505,   506,   506,   507,   507,   507,   508,   508,   509,   509,
+     510,   510,   510,   510,   510,   511,   512,   512,   512,   512,
+     512,   512,   512,   513,   513,   513,   513,   514,   514,   514,
+     514,   515,   515,   516,   516,   516,   516,   516,   516,   516,
+     517,   517,   518,   518,   518,   518,   519,   519,   519,   519,
+     519,   520,   520,   521,   521,   522,   522,   523,   523,   524,
+     525,   525,   526,   526,   526,   527,   527,   527,   527,   527,
+     528,   528,   528,   528,   529,   530,   531,   532,   532,   533,
+     533,   533,   534,   534,   535
   };
 
   /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -9476,52 +9483,52 @@ namespace zorba
        1,     5,     3,     3,     5,     5,     4,     3,     3,     3,
        5,     5,     5,     5,     5,     5,     4,     3,     3,     4,
        5,     6,     1,     3,     3,     3,     3,     6,     5,     8,
-       4,     3,     1,     1,     2,     2,     2,     3,     5,     4,
-       6,     1,     1,     2,     2,     1,     2,     7,     8,     1,
-       3,     1,     2,     2,     3,     3,     3,     2,     3,     4,
-       5,     2,     3,     5,     3,     5,     2,     2,     3,     3,
-       2,     3,     3,     1,     2,     2,     2,     4,     4,     4,
-       1,     3,     2,     3,     3,     3,     1,     1,     2,     1,
-       3,     1,     3,     1,     1,     1,     1,     1,     1,     1,
+       4,     3,     1,     1,     1,     2,     2,     2,     3,     5,
+       4,     6,     1,     1,     2,     2,     1,     2,     7,     8,
+       1,     3,     1,     2,     2,     3,     3,     3,     2,     3,
+       4,     5,     2,     3,     5,     3,     5,     2,     2,     3,
+       3,     2,     3,     3,     1,     2,     2,     2,     4,     4,
+       4,     1,     3,     2,     3,     3,     3,     1,     1,     2,
+       1,     3,     1,     3,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     2,     2,     2,     2,     1,     1,     2,     4,     3,
-       5,     4,     3,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     2,     2,     3,     2,     1,     4,     3,     4,
-       4,     5,     4,     5,     5,     6,     3,     3,     3,     1,
-       4,     1,     4,     3,     4,     4,     5,     4,     5,     1,
-       2,     3,     1,     2,     1,     6,     3,     3,     1,     2,
-       3,     1,     3,     2,     3,     2,     3,     4,     1,     3,
-       1,     2,     1,     1,     1,     2,     2,     2,     3,     1,
-       1,     2,     2,     2,     5,     5,     1,     4,     3,     4,
-       8,    10,     1,     2,     4,     7,     8,     1,     3,     1,
-       3,     1,     3,     3,     3,     3,     0,     4,     3,     3,
-       3,     1,     3,     4,     1,     3,     1,     3,     3,     1,
-       3,     3,     3,     3,     1,     3,     3,     1,     3,     3,
-       1,     4,     1,     4,     1,     4,     1,     4,     1,     2,
+       1,     1,     2,     2,     2,     2,     1,     1,     2,     4,
+       3,     5,     4,     3,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     2,     2,     3,     2,     1,     4,     3,
+       4,     4,     5,     4,     5,     5,     6,     3,     3,     3,
+       1,     4,     1,     4,     3,     4,     4,     5,     4,     5,
+       1,     2,     3,     1,     2,     1,     6,     3,     3,     1,
+       2,     3,     1,     3,     2,     3,     2,     3,     4,     1,
+       3,     1,     2,     1,     1,     1,     2,     2,     2,     3,
+       1,     1,     2,     2,     2,     5,     5,     1,     4,     3,
+       4,     8,    10,     1,     2,     4,     7,     8,     1,     3,
+       1,     3,     1,     3,     3,     3,     3,     0,     4,     3,
+       3,     3,     1,     3,     4,     1,     3,     1,     3,     3,
+       1,     3,     3,     3,     3,     1,     3,     3,     1,     3,
+       3,     1,     4,     1,     4,     1,     4,     1,     4,     1,
+       2,     1,     1,     2,     2,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     4,     5,     3,
+       4,     1,     2,     3,     2,     1,     2,     2,     1,     1,
+       1,     3,     3,     1,     1,     1,     2,     1,     2,     2,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     2,
+       2,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     2,     1,     2,     3,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     2,     2,     3,     1,     4,     4,     3,     4,
+       1,     3,     1,     1,     1,     1,     1,     4,     5,     8,
+       9,     9,    10,     1,     2,     1,     2,     6,     0,     1,
+       3,     3,     0,     1,     1,     1,     2,     2,     0,     1,
        1,     1,     2,     2,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     4,     5,     3,     4,
-       1,     2,     3,     2,     1,     2,     2,     1,     1,     1,
-       3,     3,     1,     1,     1,     2,     1,     2,     2,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     2,     2,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     2,     1,     2,     3,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     2,     2,     3,     1,     4,     4,     3,     4,     1,
-       3,     1,     1,     1,     1,     1,     4,     5,     8,     9,
-       9,    10,     1,     2,     1,     2,     6,     0,     1,     3,
-       3,     0,     1,     1,     1,     2,     2,     0,     1,     1,
-       1,     2,     2,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     3,     2,     3,     3,     2,
-       1,     1,     1,     1,     1,     1,     4,     4,     5,     6,
-       7,     4,     5,     6,     7,     4,     4,     4,     5,     6,
-       7,     1,     2,     2,     1,     2,     3,     1,     1,     1,
-       1,     1,     3,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     3,     3,     4,     4,     3,     3,     3,
-       4,     4,     3,     4,     6,     4,     6,     3,     3,     4,
-       6,     6,     4,     6,     6,     4,     1,     2,     1,     3,
-       3,     3,     5,     7,     7,     5,     5,     5,     7,     7,
-       5,     5,     3,     3,     5,     7,     5,     7,     1,     4,
-       3,     5,     1,     2,     5,     8,    11,    14,     1,     1,
+       1,     1,     1,     1,     1,     1,     3,     2,     3,     3,
+       2,     1,     1,     1,     1,     1,     1,     4,     4,     5,
+       6,     7,     4,     5,     6,     7,     4,     4,     4,     5,
+       6,     7,     1,     2,     2,     1,     2,     3,     1,     1,
+       1,     1,     1,     3,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     3,     3,     4,     4,     3,     3,
+       3,     4,     4,     3,     4,     6,     4,     6,     3,     3,
+       4,     6,     6,     4,     6,     6,     4,     1,     2,     1,
+       3,     3,     3,     5,     7,     7,     5,     5,     5,     7,
+       7,     5,     5,     3,     3,     5,     7,     5,     7,     1,
+       4,     3,     5,     1,     2,     5,     8,    11,    14,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
@@ -9539,17 +9546,17 @@ namespace zorba
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     7,     4,     1,     2,     3,     4,
-       1,     1,     2,     2,     1,     3,     1,     3,     1,     4,
-       1,     2,     1,     2,     3,     1,     2,     1,     3,     1,
+       1,     1,     1,     1,     1,     7,     4,     1,     2,     3,
+       4,     1,     1,     2,     2,     1,     3,     1,     3,     1,
+       4,     1,     2,     1,     2,     3,     1,     2,     1,     3,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     2,     2,     2,     2,     2,     2,
-       2,     2,     3,     3,     5,     7,     5,     7,     2,     1,
-       3,     2,     4,     4,     6,     4,     5,     4,     5,     3,
-       1,     2,     2,     3,     1,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     1,     2,     1,     2,     1,     2,
-       3,     3,     4,     3,     3,     3,     2,     2,     1,     1,
-       1,     1,     1,     3
+       1,     1,     1,     1,     1,     2,     2,     2,     2,     2,
+       2,     2,     2,     3,     3,     5,     7,     5,     7,     2,
+       1,     3,     2,     4,     4,     6,     4,     5,     4,     5,
+       3,     1,     2,     2,     3,     1,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     1,     2,     1,     2,     1,
+       2,     3,     3,     4,     3,     3,     3,     2,     2,     1,
+       1,     1,     1,     1,     3
   };
 
 #if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
@@ -9727,236 +9734,237 @@ namespace zorba
      117,   497,    -1,    48,    51,   497,    83,   310,    -1,    48,
       51,   144,   498,   117,   497,    83,   310,    -1,    38,    98,
      136,   314,    -1,    81,   471,   315,    -1,   315,    -1,   316,
-      -1,   122,   316,    -1,   127,   347,    -1,   105,   499,    -1,
-     105,   499,   468,    -1,    38,    99,   317,   127,   347,    -1,
-      38,    99,   317,   122,    -1,    38,    99,   317,   122,   127,
-     347,    -1,   267,    -1,   268,    -1,    38,   321,    -1,   263,
-     321,    -1,   322,    -1,   265,   322,    -1,   266,   497,   269,
-     347,   154,   325,   170,    -1,   266,   497,   269,   347,   319,
-     154,   325,   170,    -1,   324,    -1,   324,    93,   497,    -1,
-     347,    -1,   347,   468,    -1,   140,   323,    -1,   325,    94,
-     323,    -1,    38,    58,   165,    -1,    38,    58,   179,    -1,
-     140,   170,    -1,   140,   339,   170,    -1,   140,   170,    81,
-     469,    -1,   140,   339,   170,    81,   469,    -1,    26,   329,
-      -1,   137,   344,   167,    -1,    56,   105,   499,   127,   347,
-      -1,    27,   221,   347,    -1,    31,   140,   347,   170,   329,
-      -1,    28,    29,    -1,    30,    29,    -1,   263,   266,   497,
-      -1,   264,   266,   497,    -1,    38,   336,    -1,    38,    43,
-     336,    -1,    38,    42,   336,    -1,   337,    -1,    44,   337,
-      -1,    40,   337,    -1,    41,   338,    -1,    39,   499,   327,
-     342,    -1,    39,   499,   327,   122,    -1,    39,   499,   327,
-     329,    -1,   340,    -1,   339,    94,   340,    -1,   105,   499,
-      -1,   105,   499,   468,    -1,   137,   344,   167,    -1,   137,
-     344,   167,    -1,   344,    -1,   346,    -1,   346,   345,    -1,
-     174,    -1,   345,   346,   174,    -1,   347,    -1,   346,    94,
-     347,    -1,   348,    -1,   385,    -1,   388,    -1,   391,    -1,
-     392,    -1,   487,    -1,   488,    -1,   490,    -1,   489,    -1,
-     491,    -1,   494,    -1,   500,    -1,   331,    -1,   332,    -1,
-     333,    -1,   330,    -1,   328,    -1,   334,    -1,   357,   349,
-      -1,   169,   347,    -1,    62,   256,    -1,    63,   256,    -1,
-     201,    -1,   234,    -1,    66,   234,    -1,   351,   369,    67,
-     347,    -1,   351,    67,   347,    -1,    60,   350,   368,   352,
-     352,    -1,    60,   350,   368,   352,    -1,    68,   105,   499,
-      -1,   359,    -1,   364,    -1,   353,    -1,   355,    -1,   373,
-      -1,   378,    -1,   374,    -1,   354,    -1,   355,    -1,   357,
-     356,    -1,    60,   105,    -1,    61,    60,   105,    -1,   358,
-     360,    -1,   361,    -1,   360,    94,   105,   361,    -1,   499,
-     131,   347,    -1,   499,   468,   131,   347,    -1,   499,   362,
-     131,   347,    -1,   499,   468,   362,   131,   347,    -1,   499,
-     363,   131,   347,    -1,   499,   468,   363,   131,   347,    -1,
-     499,   362,   363,   131,   347,    -1,   499,   468,   362,   363,
-     131,   347,    -1,    83,   105,   499,    -1,   250,   105,   499,
-      -1,    57,   105,   365,    -1,   367,    -1,   365,    94,   105,
-     367,    -1,   372,    -1,   366,    94,   105,   372,    -1,   499,
-     127,   347,    -1,   499,   468,   127,   347,    -1,   499,   363,
-     127,   347,    -1,   499,   468,   363,   127,   347,    -1,   105,
-     499,   131,   347,    -1,   105,   499,   468,   131,   347,    -1,
-     370,    -1,   105,   499,    -1,   105,   499,   370,    -1,   362,
-      -1,   362,   371,    -1,   371,    -1,    64,   105,   499,    65,
-     105,   499,    -1,    65,   105,   499,    -1,    64,   105,   499,
-      -1,   499,    -1,   195,   347,    -1,   155,   154,   375,    -1,
-     376,    -1,   375,    94,   376,    -1,   105,   499,    -1,   105,
-     499,   377,    -1,    93,   497,    -1,   153,   154,   379,    -1,
-      50,   153,   154,   379,    -1,   380,    -1,   379,    94,   380,
-      -1,   347,    -1,   347,   381,    -1,   382,    -1,   383,    -1,
-     384,    -1,   382,   383,    -1,   382,   384,    -1,   383,   384,
-      -1,   382,   383,   384,    -1,    82,    -1,   103,    -1,   112,
-     113,    -1,   112,   114,    -1,    93,   497,    -1,    49,   105,
-     386,   171,   347,    -1,   120,   105,   386,   171,   347,    -1,
-     387,    -1,   386,    94,   105,   387,    -1,   499,   131,   347,
-      -1,   499,   468,   131,   347,    -1,    33,   140,   344,   170,
-     389,   100,   169,   347,    -1,    33,   140,   344,   170,   389,
-     100,   105,   499,   169,   347,    -1,   390,    -1,   389,   390,
-      -1,    87,   469,   169,   347,    -1,    87,   105,   499,    81,
-     469,   169,   347,    -1,    45,   140,   344,   170,   181,   347,
-     111,   347,    -1,   393,    -1,   392,   151,   393,    -1,   394,
-      -1,   393,    79,   394,    -1,   396,    -1,   396,   409,   396,
-      -1,   396,   410,   396,    -1,   396,   117,   396,    -1,   396,
-     146,   396,    -1,    -1,   396,   141,   395,   396,    -1,   396,
-     139,   396,    -1,   396,   128,   396,    -1,   396,   126,   396,
-      -1,   397,    -1,   397,   239,   501,    -1,   397,   239,   501,
-     535,    -1,   398,    -1,   398,   182,   398,    -1,   399,    -1,
-     398,   159,   399,    -1,   398,   142,   399,    -1,   400,    -1,
-     399,   177,   400,    -1,   399,   104,   400,    -1,   399,   130,
-     400,    -1,   399,   143,   400,    -1,   401,    -1,   400,   184,
-     401,    -1,   400,   193,   401,    -1,   402,    -1,   401,   134,
-     402,    -1,   401,   121,   402,    -1,   403,    -1,   403,    74,
-     215,   469,    -1,   404,    -1,   404,   183,    81,   469,    -1,
-     405,    -1,   405,    88,    81,   467,    -1,   406,    -1,   406,
-      89,    81,   467,    -1,   408,    -1,   407,   408,    -1,   159,
-      -1,   142,    -1,   407,   159,    -1,   407,   142,    -1,   411,
-      -1,   415,    -1,   412,    -1,   186,    -1,   191,    -1,   190,
-      -1,   189,    -1,   188,    -1,   187,    -1,   135,    -1,   162,
-      -1,   125,    -1,    32,   137,   344,   167,    -1,    32,   483,
-     137,   344,   167,    -1,   413,   137,   167,    -1,   413,   137,
-     344,   167,    -1,   414,    -1,   413,   414,    -1,   160,   499,
-      15,    -1,   160,    16,    -1,   416,    -1,   416,   417,    -1,
-     176,   417,    -1,   417,    -1,   175,    -1,   418,    -1,   418,
-     175,   417,    -1,   418,   176,   417,    -1,   419,    -1,   428,
-      -1,   420,    -1,   420,   429,    -1,   423,    -1,   423,   429,
-      -1,   421,   425,    -1,   422,    -1,    92,    -1,   101,    -1,
-      85,    -1,   173,    -1,   102,    -1,   124,    -1,   123,    -1,
-     425,    -1,    86,   425,    -1,   424,   425,    -1,   107,    -1,
-     156,    -1,    77,    -1,   164,    -1,   163,    -1,    78,    -1,
-     473,    -1,   426,    -1,   499,    -1,   427,    -1,   177,    -1,
-      10,    -1,    17,    -1,   431,    -1,   431,   429,    -1,   430,
-      -1,   429,   430,    -1,   138,   344,   168,    -1,   432,    -1,
-     434,    -1,   435,    -1,   436,    -1,   439,    -1,   441,    -1,
-     437,    -1,   438,    -1,   433,    -1,   485,    -1,    97,    -1,
-     133,    -1,   109,    -1,   105,   499,    -1,   140,   170,    -1,
-     140,   344,   170,    -1,   106,    -1,   152,   137,   344,   167,
-      -1,   185,   137,   344,   167,    -1,   499,   140,   170,    -1,
-     499,   140,   440,   170,    -1,   347,    -1,   440,    94,   347,
-      -1,   442,    -1,   460,    -1,   443,    -1,   457,    -1,   458,
-      -1,   141,   499,   447,   115,    -1,   141,   499,   445,   447,
-     115,    -1,   141,   499,   447,   180,   178,   499,   447,   180,
-      -1,   141,   499,   447,   180,   444,   178,   499,   447,   180,
-      -1,   141,   499,   445,   447,   180,   178,   499,   447,   180,
-      -1,   141,   499,   445,   447,   180,   444,   178,   499,   447,
-     180,    -1,   455,    -1,   444,   455,    -1,   446,    -1,   445,
-     446,    -1,    25,   499,   447,   117,   447,   448,    -1,    -1,
-      25,    -1,   166,   449,   166,    -1,    80,   451,    80,    -1,
-      -1,   450,    -1,   119,    -1,   453,    -1,   450,   119,    -1,
-     450,   453,    -1,    -1,   452,    -1,   118,    -1,   454,    -1,
-     452,   118,    -1,   452,   454,    -1,    19,    -1,   456,    -1,
-       4,    -1,   456,    -1,   442,    -1,     9,    -1,   459,    -1,
-     456,    -1,     8,    -1,   108,    -1,   110,    -1,   341,    -1,
-     196,    21,   197,    -1,   196,   197,    -1,   157,    14,   158,
-      -1,   157,    14,     7,    -1,    90,     6,    -1,   461,    -1,
-     462,    -1,   463,    -1,   464,    -1,   465,    -1,   466,    -1,
-      35,   137,   344,   167,    -1,    34,   499,   137,   167,    -1,
-      34,   499,   137,   344,   167,    -1,    34,   137,   344,   167,
-     137,   167,    -1,    34,   137,   344,   167,   137,   344,   167,
-      -1,    84,   499,   137,   167,    -1,    84,   499,   137,   344,
-     167,    -1,    84,   137,   344,   167,   137,   167,    -1,    84,
-     137,   344,   167,   137,   344,   167,    -1,    36,   137,   344,
-     167,    -1,    37,   137,   344,   167,    -1,    46,   498,   137,
-     167,    -1,    46,   498,   137,   344,   167,    -1,    46,   137,
-     344,   167,   137,   167,    -1,    46,   137,   344,   167,   137,
-     344,   167,    -1,   472,    -1,   472,   129,    -1,    81,   469,
-      -1,   471,    -1,   471,   470,    -1,   194,   140,   170,    -1,
-     129,    -1,   177,    -1,   159,    -1,   472,    -1,   473,    -1,
-     136,   140,   170,    -1,   499,    -1,   475,    -1,   481,    -1,
-     479,    -1,   482,    -1,   480,    -1,   478,    -1,   477,    -1,
-     476,    -1,   474,    -1,   209,   140,   170,    -1,    72,   140,
-     170,    -1,    72,   140,   481,   170,    -1,    72,   140,   482,
-     170,    -1,    36,   140,   170,    -1,    37,   140,   170,    -1,
-      46,   140,   170,    -1,    46,   140,   498,   170,    -1,    46,
-     140,    20,   170,    -1,    84,   140,   170,    -1,    84,   140,
-     499,   170,    -1,    84,   140,   499,    94,   483,   170,    -1,
-      84,   140,   177,   170,    -1,    84,   140,   177,    94,   483,
-     170,    -1,   172,   499,   170,    -1,    34,   140,   170,    -1,
-      34,   140,   499,   170,    -1,    34,   140,   499,    94,   483,
-     170,    -1,    34,   140,   499,    94,   484,   170,    -1,    34,
-     140,   177,   170,    -1,    34,   140,   177,    94,   483,   170,
-      -1,    34,   140,   177,    94,   484,   170,    -1,    71,   140,
-     499,   170,    -1,   499,    -1,   499,   129,    -1,    20,    -1,
-      38,   204,   205,    -1,    38,   204,   206,    -1,    38,   204,
-     207,    -1,   210,   209,   347,   217,   347,    -1,   210,   209,
-     347,    81,   216,   217,   347,    -1,   210,   209,   347,    81,
-     218,   217,   347,    -1,   210,   209,   347,   202,   347,    -1,
-     210,   209,   347,   203,   347,    -1,   210,   211,   347,   217,
-     347,    -1,   210,   211,   347,    81,   216,   217,   347,    -1,
-     210,   211,   347,    81,   218,   217,   347,    -1,   210,   211,
-     347,   202,   347,    -1,   210,   211,   347,   203,   347,    -1,
-     208,   209,   347,    -1,   208,   211,   347,    -1,   213,   209,
-     347,   221,   347,    -1,   213,   214,   215,   209,   347,   221,
-     347,    -1,   212,   209,   347,    81,   347,    -1,   220,   105,
-     492,   219,   347,   169,   347,    -1,   493,    -1,   492,    94,
-     105,   493,    -1,   499,   127,   347,    -1,   222,   137,   347,
-     167,   495,    -1,   496,    -1,   495,   496,    -1,   223,   140,
-     426,   170,   342,    -1,   223,   140,   426,    94,   105,   499,
-     170,   342,    -1,   223,   140,   426,    94,   105,   499,    94,
+      -1,   122,    -1,   122,   316,    -1,   127,   347,    -1,   105,
+     499,    -1,   105,   499,   468,    -1,    38,    99,   317,   127,
+     347,    -1,    38,    99,   317,   122,    -1,    38,    99,   317,
+     122,   127,   347,    -1,   267,    -1,   268,    -1,    38,   321,
+      -1,   263,   321,    -1,   322,    -1,   265,   322,    -1,   266,
+     497,   269,   347,   154,   325,   170,    -1,   266,   497,   269,
+     347,   319,   154,   325,   170,    -1,   324,    -1,   324,    93,
+     497,    -1,   347,    -1,   347,   468,    -1,   140,   323,    -1,
+     325,    94,   323,    -1,    38,    58,   165,    -1,    38,    58,
+     179,    -1,   140,   170,    -1,   140,   339,   170,    -1,   140,
+     170,    81,   469,    -1,   140,   339,   170,    81,   469,    -1,
+      26,   329,    -1,   137,   344,   167,    -1,    56,   105,   499,
+     127,   347,    -1,    27,   221,   347,    -1,    31,   140,   347,
+     170,   329,    -1,    28,    29,    -1,    30,    29,    -1,   263,
+     266,   497,    -1,   264,   266,   497,    -1,    38,   336,    -1,
+      38,    43,   336,    -1,    38,    42,   336,    -1,   337,    -1,
+      44,   337,    -1,    40,   337,    -1,    41,   338,    -1,    39,
+     499,   327,   342,    -1,    39,   499,   327,   122,    -1,    39,
+     499,   327,   329,    -1,   340,    -1,   339,    94,   340,    -1,
+     105,   499,    -1,   105,   499,   468,    -1,   137,   344,   167,
+      -1,   137,   344,   167,    -1,   344,    -1,   346,    -1,   346,
+     345,    -1,   174,    -1,   345,   346,   174,    -1,   347,    -1,
+     346,    94,   347,    -1,   348,    -1,   385,    -1,   388,    -1,
+     391,    -1,   392,    -1,   487,    -1,   488,    -1,   490,    -1,
+     489,    -1,   491,    -1,   494,    -1,   500,    -1,   331,    -1,
+     332,    -1,   333,    -1,   330,    -1,   328,    -1,   334,    -1,
+     357,   349,    -1,   169,   347,    -1,    62,   256,    -1,    63,
+     256,    -1,   201,    -1,   234,    -1,    66,   234,    -1,   351,
+     369,    67,   347,    -1,   351,    67,   347,    -1,    60,   350,
+     368,   352,   352,    -1,    60,   350,   368,   352,    -1,    68,
+     105,   499,    -1,   359,    -1,   364,    -1,   353,    -1,   355,
+      -1,   373,    -1,   378,    -1,   374,    -1,   354,    -1,   355,
+      -1,   357,   356,    -1,    60,   105,    -1,    61,    60,   105,
+      -1,   358,   360,    -1,   361,    -1,   360,    94,   105,   361,
+      -1,   499,   131,   347,    -1,   499,   468,   131,   347,    -1,
+     499,   362,   131,   347,    -1,   499,   468,   362,   131,   347,
+      -1,   499,   363,   131,   347,    -1,   499,   468,   363,   131,
+     347,    -1,   499,   362,   363,   131,   347,    -1,   499,   468,
+     362,   363,   131,   347,    -1,    83,   105,   499,    -1,   250,
+     105,   499,    -1,    57,   105,   365,    -1,   367,    -1,   365,
+      94,   105,   367,    -1,   372,    -1,   366,    94,   105,   372,
+      -1,   499,   127,   347,    -1,   499,   468,   127,   347,    -1,
+     499,   363,   127,   347,    -1,   499,   468,   363,   127,   347,
+      -1,   105,   499,   131,   347,    -1,   105,   499,   468,   131,
+     347,    -1,   370,    -1,   105,   499,    -1,   105,   499,   370,
+      -1,   362,    -1,   362,   371,    -1,   371,    -1,    64,   105,
+     499,    65,   105,   499,    -1,    65,   105,   499,    -1,    64,
+     105,   499,    -1,   499,    -1,   195,   347,    -1,   155,   154,
+     375,    -1,   376,    -1,   375,    94,   376,    -1,   105,   499,
+      -1,   105,   499,   377,    -1,    93,   497,    -1,   153,   154,
+     379,    -1,    50,   153,   154,   379,    -1,   380,    -1,   379,
+      94,   380,    -1,   347,    -1,   347,   381,    -1,   382,    -1,
+     383,    -1,   384,    -1,   382,   383,    -1,   382,   384,    -1,
+     383,   384,    -1,   382,   383,   384,    -1,    82,    -1,   103,
+      -1,   112,   113,    -1,   112,   114,    -1,    93,   497,    -1,
+      49,   105,   386,   171,   347,    -1,   120,   105,   386,   171,
+     347,    -1,   387,    -1,   386,    94,   105,   387,    -1,   499,
+     131,   347,    -1,   499,   468,   131,   347,    -1,    33,   140,
+     344,   170,   389,   100,   169,   347,    -1,    33,   140,   344,
+     170,   389,   100,   105,   499,   169,   347,    -1,   390,    -1,
+     389,   390,    -1,    87,   469,   169,   347,    -1,    87,   105,
+     499,    81,   469,   169,   347,    -1,    45,   140,   344,   170,
+     181,   347,   111,   347,    -1,   393,    -1,   392,   151,   393,
+      -1,   394,    -1,   393,    79,   394,    -1,   396,    -1,   396,
+     409,   396,    -1,   396,   410,   396,    -1,   396,   117,   396,
+      -1,   396,   146,   396,    -1,    -1,   396,   141,   395,   396,
+      -1,   396,   139,   396,    -1,   396,   128,   396,    -1,   396,
+     126,   396,    -1,   397,    -1,   397,   239,   501,    -1,   397,
+     239,   501,   535,    -1,   398,    -1,   398,   182,   398,    -1,
+     399,    -1,   398,   159,   399,    -1,   398,   142,   399,    -1,
+     400,    -1,   399,   177,   400,    -1,   399,   104,   400,    -1,
+     399,   130,   400,    -1,   399,   143,   400,    -1,   401,    -1,
+     400,   184,   401,    -1,   400,   193,   401,    -1,   402,    -1,
+     401,   134,   402,    -1,   401,   121,   402,    -1,   403,    -1,
+     403,    74,   215,   469,    -1,   404,    -1,   404,   183,    81,
+     469,    -1,   405,    -1,   405,    88,    81,   467,    -1,   406,
+      -1,   406,    89,    81,   467,    -1,   408,    -1,   407,   408,
+      -1,   159,    -1,   142,    -1,   407,   159,    -1,   407,   142,
+      -1,   411,    -1,   415,    -1,   412,    -1,   186,    -1,   191,
+      -1,   190,    -1,   189,    -1,   188,    -1,   187,    -1,   135,
+      -1,   162,    -1,   125,    -1,    32,   137,   344,   167,    -1,
+      32,   483,   137,   344,   167,    -1,   413,   137,   167,    -1,
+     413,   137,   344,   167,    -1,   414,    -1,   413,   414,    -1,
+     160,   499,    15,    -1,   160,    16,    -1,   416,    -1,   416,
+     417,    -1,   176,   417,    -1,   417,    -1,   175,    -1,   418,
+      -1,   418,   175,   417,    -1,   418,   176,   417,    -1,   419,
+      -1,   428,    -1,   420,    -1,   420,   429,    -1,   423,    -1,
+     423,   429,    -1,   421,   425,    -1,   422,    -1,    92,    -1,
+     101,    -1,    85,    -1,   173,    -1,   102,    -1,   124,    -1,
+     123,    -1,   425,    -1,    86,   425,    -1,   424,   425,    -1,
+     107,    -1,   156,    -1,    77,    -1,   164,    -1,   163,    -1,
+      78,    -1,   473,    -1,   426,    -1,   499,    -1,   427,    -1,
+     177,    -1,    10,    -1,    17,    -1,   431,    -1,   431,   429,
+      -1,   430,    -1,   429,   430,    -1,   138,   344,   168,    -1,
+     432,    -1,   434,    -1,   435,    -1,   436,    -1,   439,    -1,
+     441,    -1,   437,    -1,   438,    -1,   433,    -1,   485,    -1,
+      97,    -1,   133,    -1,   109,    -1,   105,   499,    -1,   140,
+     170,    -1,   140,   344,   170,    -1,   106,    -1,   152,   137,
+     344,   167,    -1,   185,   137,   344,   167,    -1,   499,   140,
+     170,    -1,   499,   140,   440,   170,    -1,   347,    -1,   440,
+      94,   347,    -1,   442,    -1,   460,    -1,   443,    -1,   457,
+      -1,   458,    -1,   141,   499,   447,   115,    -1,   141,   499,
+     445,   447,   115,    -1,   141,   499,   447,   180,   178,   499,
+     447,   180,    -1,   141,   499,   447,   180,   444,   178,   499,
+     447,   180,    -1,   141,   499,   445,   447,   180,   178,   499,
+     447,   180,    -1,   141,   499,   445,   447,   180,   444,   178,
+     499,   447,   180,    -1,   455,    -1,   444,   455,    -1,   446,
+      -1,   445,   446,    -1,    25,   499,   447,   117,   447,   448,
+      -1,    -1,    25,    -1,   166,   449,   166,    -1,    80,   451,
+      80,    -1,    -1,   450,    -1,   119,    -1,   453,    -1,   450,
+     119,    -1,   450,   453,    -1,    -1,   452,    -1,   118,    -1,
+     454,    -1,   452,   118,    -1,   452,   454,    -1,    19,    -1,
+     456,    -1,     4,    -1,   456,    -1,   442,    -1,     9,    -1,
+     459,    -1,   456,    -1,     8,    -1,   108,    -1,   110,    -1,
+     341,    -1,   196,    21,   197,    -1,   196,   197,    -1,   157,
+      14,   158,    -1,   157,    14,     7,    -1,    90,     6,    -1,
+     461,    -1,   462,    -1,   463,    -1,   464,    -1,   465,    -1,
+     466,    -1,    35,   137,   344,   167,    -1,    34,   499,   137,
+     167,    -1,    34,   499,   137,   344,   167,    -1,    34,   137,
+     344,   167,   137,   167,    -1,    34,   137,   344,   167,   137,
+     344,   167,    -1,    84,   499,   137,   167,    -1,    84,   499,
+     137,   344,   167,    -1,    84,   137,   344,   167,   137,   167,
+      -1,    84,   137,   344,   167,   137,   344,   167,    -1,    36,
+     137,   344,   167,    -1,    37,   137,   344,   167,    -1,    46,
+     498,   137,   167,    -1,    46,   498,   137,   344,   167,    -1,
+      46,   137,   344,   167,   137,   167,    -1,    46,   137,   344,
+     167,   137,   344,   167,    -1,   472,    -1,   472,   129,    -1,
+      81,   469,    -1,   471,    -1,   471,   470,    -1,   194,   140,
+     170,    -1,   129,    -1,   177,    -1,   159,    -1,   472,    -1,
+     473,    -1,   136,   140,   170,    -1,   499,    -1,   475,    -1,
+     481,    -1,   479,    -1,   482,    -1,   480,    -1,   478,    -1,
+     477,    -1,   476,    -1,   474,    -1,   209,   140,   170,    -1,
+      72,   140,   170,    -1,    72,   140,   481,   170,    -1,    72,
+     140,   482,   170,    -1,    36,   140,   170,    -1,    37,   140,
+     170,    -1,    46,   140,   170,    -1,    46,   140,   498,   170,
+      -1,    46,   140,    20,   170,    -1,    84,   140,   170,    -1,
+      84,   140,   499,   170,    -1,    84,   140,   499,    94,   483,
+     170,    -1,    84,   140,   177,   170,    -1,    84,   140,   177,
+      94,   483,   170,    -1,   172,   499,   170,    -1,    34,   140,
+     170,    -1,    34,   140,   499,   170,    -1,    34,   140,   499,
+      94,   483,   170,    -1,    34,   140,   499,    94,   484,   170,
+      -1,    34,   140,   177,   170,    -1,    34,   140,   177,    94,
+     483,   170,    -1,    34,   140,   177,    94,   484,   170,    -1,
+      71,   140,   499,   170,    -1,   499,    -1,   499,   129,    -1,
+      20,    -1,    38,   204,   205,    -1,    38,   204,   206,    -1,
+      38,   204,   207,    -1,   210,   209,   347,   217,   347,    -1,
+     210,   209,   347,    81,   216,   217,   347,    -1,   210,   209,
+     347,    81,   218,   217,   347,    -1,   210,   209,   347,   202,
+     347,    -1,   210,   209,   347,   203,   347,    -1,   210,   211,
+     347,   217,   347,    -1,   210,   211,   347,    81,   216,   217,
+     347,    -1,   210,   211,   347,    81,   218,   217,   347,    -1,
+     210,   211,   347,   202,   347,    -1,   210,   211,   347,   203,
+     347,    -1,   208,   209,   347,    -1,   208,   211,   347,    -1,
+     213,   209,   347,   221,   347,    -1,   213,   214,   215,   209,
+     347,   221,   347,    -1,   212,   209,   347,    81,   347,    -1,
+     220,   105,   492,   219,   347,   169,   347,    -1,   493,    -1,
+     492,    94,   105,   493,    -1,   499,   127,   347,    -1,   222,
+     137,   347,   167,   495,    -1,   496,    -1,   495,   496,    -1,
+     223,   140,   426,   170,   342,    -1,   223,   140,   426,    94,
      105,   499,   170,   342,    -1,   223,   140,   426,    94,   105,
-     499,    94,   105,   499,    94,   105,   499,   170,   342,    -1,
-      20,    -1,    18,    -1,    18,    -1,   198,    -1,   112,    -1,
-      84,    -1,    37,    -1,    72,    -1,    34,    -1,   136,    -1,
-      45,    -1,   209,    -1,    46,    -1,    75,    -1,    71,    -1,
-      36,    -1,    33,    -1,   194,    -1,    76,    -1,   228,    -1,
-      70,    -1,   206,    -1,   205,    -1,   130,    -1,    35,    -1,
-     240,    -1,   227,    -1,   230,    -1,   229,    -1,   257,    -1,
-     258,    -1,   261,    -1,   259,    -1,   262,    -1,   233,    -1,
-     235,    -1,    53,    -1,   201,    -1,   234,    -1,    47,    -1,
-     207,    -1,   220,    -1,   214,    -1,   186,    -1,   191,    -1,
-     190,    -1,   189,    -1,   188,    -1,   187,    -1,    83,    -1,
-      98,    -1,    99,    -1,   169,    -1,    60,    -1,    61,    -1,
-      62,    -1,    63,    -1,    64,    -1,    65,    -1,    66,    -1,
-      67,    -1,    68,    -1,   131,    -1,    57,    -1,   195,    -1,
-     154,    -1,   155,    -1,   153,    -1,    50,    -1,    82,    -1,
-     103,    -1,   113,    -1,   114,    -1,    93,    -1,    49,    -1,
-     120,    -1,   171,    -1,    87,    -1,    81,    -1,   181,    -1,
-     111,    -1,   151,    -1,    79,    -1,    74,    -1,   215,    -1,
-      88,    -1,   182,    -1,   104,    -1,   143,    -1,   184,    -1,
-     134,    -1,   121,    -1,    32,    -1,    89,    -1,   183,    -1,
-     135,    -1,   165,    -1,   179,    -1,   144,    -1,   122,    -1,
-     116,    -1,   150,    -1,   132,    -1,   149,    -1,    38,    -1,
-      58,    -1,    69,    -1,   100,    -1,    73,    -1,    52,    -1,
-     199,    -1,    48,    -1,    54,    -1,    51,    -1,    39,    -1,
-     250,    -1,   239,    -1,   255,    -1,   256,    -1,   232,    -1,
-     245,    -1,   253,    -1,   249,    -1,   231,    -1,   244,    -1,
-     254,    -1,   248,    -1,   243,    -1,   242,    -1,   226,    -1,
-     225,    -1,   247,    -1,   236,    -1,   237,    -1,   260,    -1,
-     252,    -1,   251,    -1,   246,    -1,   213,    -1,   219,    -1,
-     216,    -1,   210,    -1,   203,    -1,   202,    -1,   204,    -1,
-     221,    -1,   211,    -1,   212,    -1,   218,    -1,   208,    -1,
-     217,    -1,    44,    -1,    41,    -1,    40,    -1,    42,    -1,
-      43,    -1,   152,    -1,   185,    -1,    26,    -1,    27,    -1,
-      29,    -1,    31,    -1,    28,    -1,    30,    -1,   222,    -1,
-     223,    -1,    59,    -1,   224,    -1,    56,    -1,   266,    -1,
-     263,    -1,   265,    -1,   269,    -1,   267,    -1,   268,    -1,
-     264,    -1,   224,   105,   366,    59,   137,   347,   167,    -1,
-      59,   137,   347,   167,    -1,   503,    -1,   503,   502,    -1,
-     503,   255,   397,    -1,   503,   502,   255,   397,    -1,   512,
-      -1,   510,    -1,   502,   512,    -1,   502,   510,    -1,   504,
-      -1,   503,   241,   504,    -1,   505,    -1,   504,   238,   505,
-      -1,   506,    -1,   505,   240,   131,   506,    -1,   507,    -1,
-     240,   507,    -1,   508,    -1,   508,   531,    -1,   140,   501,
-     170,    -1,   509,    -1,   509,   527,    -1,   432,    -1,   137,
-     344,   167,    -1,   511,    -1,   530,    -1,   529,    -1,   532,
-      -1,   526,    -1,   152,    -1,   513,    -1,   514,    -1,   515,
-      -1,   516,    -1,   519,    -1,   524,    -1,   525,    -1,   244,
-      -1,   254,    -1,    87,   227,    -1,    87,   230,    -1,   221,
-     229,    -1,   257,   229,    -1,   229,   227,    -1,   229,   230,
-      -1,   221,   258,    -1,   257,   258,    -1,   221,   261,   518,
-      -1,   221,   261,   100,    -1,   221,   261,   140,   518,   170,
-      -1,   221,   261,   140,   518,    94,   517,   170,    -1,   221,
-     261,   140,   100,   170,    -1,   221,   261,   140,   100,    94,
-     517,   170,    -1,   257,   261,    -1,   518,    -1,   517,    94,
-     518,    -1,    83,    20,    -1,    83,    20,   248,    20,    -1,
-      83,    20,   528,   243,    -1,    83,    20,   248,    20,   528,
-     243,    -1,   221,   259,   260,   521,    -1,   221,   259,   260,
-     521,   520,    -1,   221,   100,   259,   260,    -1,   221,   100,
-     259,   260,   520,    -1,   257,   259,   260,    -1,   523,    -1,
-     520,   523,    -1,    83,    20,    -1,   140,   522,   170,    -1,
-      20,    -1,   522,    20,    -1,   184,   521,    -1,   121,   521,
-      -1,   242,    20,    -1,   221,   262,    -1,   257,   262,    -1,
-      83,   201,    -1,    83,   234,    -1,   233,   235,    -1,   226,
-      -1,   226,    53,    -1,   225,    -1,   225,   260,    -1,   247,
-      -1,   236,   400,    -1,    83,   114,   400,    -1,    83,    47,
-     400,    -1,   237,   400,   182,   400,    -1,   232,   528,   533,
-      -1,   256,   400,   533,    -1,   245,   528,   253,    -1,   249,
-     534,    -1,   231,   534,    -1,   260,    -1,   252,    -1,   246,
-      -1,   251,    -1,   246,    -1,   257,   235,   400,    -1
+     499,    94,   105,   499,   170,   342,    -1,   223,   140,   426,
+      94,   105,   499,    94,   105,   499,    94,   105,   499,   170,
+     342,    -1,    20,    -1,    18,    -1,    18,    -1,   198,    -1,
+     112,    -1,    84,    -1,    37,    -1,    72,    -1,    34,    -1,
+     136,    -1,    45,    -1,   209,    -1,    46,    -1,    75,    -1,
+      71,    -1,    36,    -1,    33,    -1,   194,    -1,    76,    -1,
+     228,    -1,    70,    -1,   206,    -1,   205,    -1,   130,    -1,
+      35,    -1,   240,    -1,   227,    -1,   230,    -1,   229,    -1,
+     257,    -1,   258,    -1,   261,    -1,   259,    -1,   262,    -1,
+     233,    -1,   235,    -1,    53,    -1,   201,    -1,   234,    -1,
+      47,    -1,   207,    -1,   220,    -1,   214,    -1,   186,    -1,
+     191,    -1,   190,    -1,   189,    -1,   188,    -1,   187,    -1,
+      83,    -1,    98,    -1,    99,    -1,   169,    -1,    60,    -1,
+      61,    -1,    62,    -1,    63,    -1,    64,    -1,    65,    -1,
+      66,    -1,    67,    -1,    68,    -1,   131,    -1,    57,    -1,
+     195,    -1,   154,    -1,   155,    -1,   153,    -1,    50,    -1,
+      82,    -1,   103,    -1,   113,    -1,   114,    -1,    93,    -1,
+      49,    -1,   120,    -1,   171,    -1,    87,    -1,    81,    -1,
+     181,    -1,   111,    -1,   151,    -1,    79,    -1,    74,    -1,
+     215,    -1,    88,    -1,   182,    -1,   104,    -1,   143,    -1,
+     184,    -1,   134,    -1,   121,    -1,    32,    -1,    89,    -1,
+     183,    -1,   135,    -1,   165,    -1,   179,    -1,   144,    -1,
+     122,    -1,   116,    -1,   150,    -1,   132,    -1,   149,    -1,
+      38,    -1,    58,    -1,    69,    -1,   100,    -1,    73,    -1,
+      52,    -1,   199,    -1,    48,    -1,    54,    -1,    51,    -1,
+      39,    -1,   250,    -1,   239,    -1,   255,    -1,   256,    -1,
+     232,    -1,   245,    -1,   253,    -1,   249,    -1,   231,    -1,
+     244,    -1,   254,    -1,   248,    -1,   243,    -1,   242,    -1,
+     226,    -1,   225,    -1,   247,    -1,   236,    -1,   237,    -1,
+     260,    -1,   252,    -1,   251,    -1,   246,    -1,   213,    -1,
+     219,    -1,   216,    -1,   210,    -1,   203,    -1,   202,    -1,
+     204,    -1,   221,    -1,   211,    -1,   212,    -1,   218,    -1,
+     208,    -1,   217,    -1,    44,    -1,    41,    -1,    40,    -1,
+      42,    -1,    43,    -1,   152,    -1,   185,    -1,    26,    -1,
+      27,    -1,    29,    -1,    31,    -1,    28,    -1,    30,    -1,
+     222,    -1,   223,    -1,    59,    -1,   224,    -1,    56,    -1,
+     266,    -1,   263,    -1,   265,    -1,   269,    -1,   267,    -1,
+     268,    -1,   264,    -1,   224,   105,   366,    59,   137,   347,
+     167,    -1,    59,   137,   347,   167,    -1,   503,    -1,   503,
+     502,    -1,   503,   255,   397,    -1,   503,   502,   255,   397,
+      -1,   512,    -1,   510,    -1,   502,   512,    -1,   502,   510,
+      -1,   504,    -1,   503,   241,   504,    -1,   505,    -1,   504,
+     238,   505,    -1,   506,    -1,   505,   240,   131,   506,    -1,
+     507,    -1,   240,   507,    -1,   508,    -1,   508,   531,    -1,
+     140,   501,   170,    -1,   509,    -1,   509,   527,    -1,   432,
+      -1,   137,   344,   167,    -1,   511,    -1,   530,    -1,   529,
+      -1,   532,    -1,   526,    -1,   152,    -1,   513,    -1,   514,
+      -1,   515,    -1,   516,    -1,   519,    -1,   524,    -1,   525,
+      -1,   244,    -1,   254,    -1,    87,   227,    -1,    87,   230,
+      -1,   221,   229,    -1,   257,   229,    -1,   229,   227,    -1,
+     229,   230,    -1,   221,   258,    -1,   257,   258,    -1,   221,
+     261,   518,    -1,   221,   261,   100,    -1,   221,   261,   140,
+     518,   170,    -1,   221,   261,   140,   518,    94,   517,   170,
+      -1,   221,   261,   140,   100,   170,    -1,   221,   261,   140,
+     100,    94,   517,   170,    -1,   257,   261,    -1,   518,    -1,
+     517,    94,   518,    -1,    83,    20,    -1,    83,    20,   248,
+      20,    -1,    83,    20,   528,   243,    -1,    83,    20,   248,
+      20,   528,   243,    -1,   221,   259,   260,   521,    -1,   221,
+     259,   260,   521,   520,    -1,   221,   100,   259,   260,    -1,
+     221,   100,   259,   260,   520,    -1,   257,   259,   260,    -1,
+     523,    -1,   520,   523,    -1,    83,    20,    -1,   140,   522,
+     170,    -1,    20,    -1,   522,    20,    -1,   184,   521,    -1,
+     121,   521,    -1,   242,    20,    -1,   221,   262,    -1,   257,
+     262,    -1,    83,   201,    -1,    83,   234,    -1,   233,   235,
+      -1,   226,    -1,   226,    53,    -1,   225,    -1,   225,   260,
+      -1,   247,    -1,   236,   400,    -1,    83,   114,   400,    -1,
+      83,    47,   400,    -1,   237,   400,   182,   400,    -1,   232,
+     528,   533,    -1,   256,   400,   533,    -1,   245,   528,   253,
+      -1,   249,   534,    -1,   231,   534,    -1,   260,    -1,   252,
+      -1,   246,    -1,   251,    -1,   246,    -1,   257,   235,   400,
+      -1
   };
 
   /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
@@ -9971,52 +9979,52 @@ namespace zorba
      106,   108,   114,   118,   122,   128,   134,   139,   143,   147,
      151,   157,   163,   169,   175,   181,   187,   192,   196,   200,
      205,   211,   218,   220,   224,   228,   232,   236,   243,   249,
-     258,   263,   267,   269,   271,   274,   277,   280,   284,   290,
-     295,   302,   304,   306,   309,   312,   314,   317,   325,   334,
-     336,   340,   342,   345,   348,   352,   356,   360,   363,   367,
-     372,   378,   381,   385,   391,   395,   401,   404,   407,   411,
-     415,   418,   422,   426,   428,   431,   434,   437,   442,   447,
-     452,   454,   458,   461,   465,   469,   473,   475,   477,   480,
-     482,   486,   488,   492,   494,   496,   498,   500,   502,   504,
+     258,   263,   267,   269,   271,   273,   276,   279,   282,   286,
+     292,   297,   304,   306,   308,   311,   314,   316,   319,   327,
+     336,   338,   342,   344,   347,   350,   354,   358,   362,   365,
+     369,   374,   380,   383,   387,   393,   397,   403,   406,   409,
+     413,   417,   420,   424,   428,   430,   433,   436,   439,   444,
+     449,   454,   456,   460,   463,   467,   471,   475,   477,   479,
+     482,   484,   488,   490,   494,   496,   498,   500,   502,   504,
      506,   508,   510,   512,   514,   516,   518,   520,   522,   524,
-     526,   528,   531,   534,   537,   540,   542,   544,   547,   552,
-     556,   562,   567,   571,   573,   575,   577,   579,   581,   583,
-     585,   587,   589,   592,   595,   599,   602,   604,   609,   613,
-     618,   623,   629,   634,   640,   646,   653,   657,   661,   665,
-     667,   672,   674,   679,   683,   688,   693,   699,   704,   710,
-     712,   715,   719,   721,   724,   726,   733,   737,   741,   743,
-     746,   750,   752,   756,   759,   763,   766,   770,   775,   777,
-     781,   783,   786,   788,   790,   792,   795,   798,   801,   805,
-     807,   809,   812,   815,   818,   824,   830,   832,   837,   841,
-     846,   855,   866,   868,   871,   876,   884,   893,   895,   899,
-     901,   905,   907,   911,   915,   919,   923,   924,   929,   933,
-     937,   941,   943,   947,   952,   954,   958,   960,   964,   968,
-     970,   974,   978,   982,   986,   988,   992,   996,   998,  1002,
-    1006,  1008,  1013,  1015,  1020,  1022,  1027,  1029,  1034,  1036,
-    1039,  1041,  1043,  1046,  1049,  1051,  1053,  1055,  1057,  1059,
-    1061,  1063,  1065,  1067,  1069,  1071,  1073,  1078,  1084,  1088,
-    1093,  1095,  1098,  1102,  1105,  1107,  1110,  1113,  1115,  1117,
-    1119,  1123,  1127,  1129,  1131,  1133,  1136,  1138,  1141,  1144,
-    1146,  1148,  1150,  1152,  1154,  1156,  1158,  1160,  1162,  1165,
-    1168,  1170,  1172,  1174,  1176,  1178,  1180,  1182,  1184,  1186,
-    1188,  1190,  1192,  1194,  1196,  1199,  1201,  1204,  1208,  1210,
+     526,   528,   530,   533,   536,   539,   542,   544,   546,   549,
+     554,   558,   564,   569,   573,   575,   577,   579,   581,   583,
+     585,   587,   589,   591,   594,   597,   601,   604,   606,   611,
+     615,   620,   625,   631,   636,   642,   648,   655,   659,   663,
+     667,   669,   674,   676,   681,   685,   690,   695,   701,   706,
+     712,   714,   717,   721,   723,   726,   728,   735,   739,   743,
+     745,   748,   752,   754,   758,   761,   765,   768,   772,   777,
+     779,   783,   785,   788,   790,   792,   794,   797,   800,   803,
+     807,   809,   811,   814,   817,   820,   826,   832,   834,   839,
+     843,   848,   857,   868,   870,   873,   878,   886,   895,   897,
+     901,   903,   907,   909,   913,   917,   921,   925,   926,   931,
+     935,   939,   943,   945,   949,   954,   956,   960,   962,   966,
+     970,   972,   976,   980,   984,   988,   990,   994,   998,  1000,
+    1004,  1008,  1010,  1015,  1017,  1022,  1024,  1029,  1031,  1036,
+    1038,  1041,  1043,  1045,  1048,  1051,  1053,  1055,  1057,  1059,
+    1061,  1063,  1065,  1067,  1069,  1071,  1073,  1075,  1080,  1086,
+    1090,  1095,  1097,  1100,  1104,  1107,  1109,  1112,  1115,  1117,
+    1119,  1121,  1125,  1129,  1131,  1133,  1135,  1138,  1140,  1143,
+    1146,  1148,  1150,  1152,  1154,  1156,  1158,  1160,  1162,  1164,
+    1167,  1170,  1172,  1174,  1176,  1178,  1180,  1182,  1184,  1186,
+    1188,  1190,  1192,  1194,  1196,  1198,  1201,  1203,  1206,  1210,
     1212,  1214,  1216,  1218,  1220,  1222,  1224,  1226,  1228,  1230,
-    1232,  1234,  1237,  1240,  1244,  1246,  1251,  1256,  1260,  1265,
-    1267,  1271,  1273,  1275,  1277,  1279,  1281,  1286,  1292,  1301,
-    1311,  1321,  1332,  1334,  1337,  1339,  1342,  1349,  1350,  1352,
-    1356,  1360,  1361,  1363,  1365,  1367,  1370,  1373,  1374,  1376,
-    1378,  1380,  1383,  1386,  1388,  1390,  1392,  1394,  1396,  1398,
-    1400,  1402,  1404,  1406,  1408,  1410,  1414,  1417,  1421,  1425,
-    1428,  1430,  1432,  1434,  1436,  1438,  1440,  1445,  1450,  1456,
-    1463,  1471,  1476,  1482,  1489,  1497,  1502,  1507,  1512,  1518,
-    1525,  1533,  1535,  1538,  1541,  1543,  1546,  1550,  1552,  1554,
-    1556,  1558,  1560,  1564,  1566,  1568,  1570,  1572,  1574,  1576,
-    1578,  1580,  1582,  1584,  1588,  1592,  1597,  1602,  1606,  1610,
-    1614,  1619,  1624,  1628,  1633,  1640,  1645,  1652,  1656,  1660,
-    1665,  1672,  1679,  1684,  1691,  1698,  1703,  1705,  1708,  1710,
-    1714,  1718,  1722,  1728,  1736,  1744,  1750,  1756,  1762,  1770,
-    1778,  1784,  1790,  1794,  1798,  1804,  1812,  1818,  1826,  1828,
-    1833,  1837,  1843,  1845,  1848,  1854,  1863,  1875,  1890,  1892,
+    1232,  1234,  1236,  1239,  1242,  1246,  1248,  1253,  1258,  1262,
+    1267,  1269,  1273,  1275,  1277,  1279,  1281,  1283,  1288,  1294,
+    1303,  1313,  1323,  1334,  1336,  1339,  1341,  1344,  1351,  1352,
+    1354,  1358,  1362,  1363,  1365,  1367,  1369,  1372,  1375,  1376,
+    1378,  1380,  1382,  1385,  1388,  1390,  1392,  1394,  1396,  1398,
+    1400,  1402,  1404,  1406,  1408,  1410,  1412,  1416,  1419,  1423,
+    1427,  1430,  1432,  1434,  1436,  1438,  1440,  1442,  1447,  1452,
+    1458,  1465,  1473,  1478,  1484,  1491,  1499,  1504,  1509,  1514,
+    1520,  1527,  1535,  1537,  1540,  1543,  1545,  1548,  1552,  1554,
+    1556,  1558,  1560,  1562,  1566,  1568,  1570,  1572,  1574,  1576,
+    1578,  1580,  1582,  1584,  1586,  1590,  1594,  1599,  1604,  1608,
+    1612,  1616,  1621,  1626,  1630,  1635,  1642,  1647,  1654,  1658,
+    1662,  1667,  1674,  1681,  1686,  1693,  1700,  1705,  1707,  1710,
+    1712,  1716,  1720,  1724,  1730,  1738,  1746,  1752,  1758,  1764,
+    1772,  1780,  1786,  1792,  1796,  1800,  1806,  1814,  1820,  1828,
+    1830,  1835,  1839,  1845,  1847,  1850,  1856,  1865,  1877,  1892,
     1894,  1896,  1898,  1900,  1902,  1904,  1906,  1908,  1910,  1912,
     1914,  1916,  1918,  1920,  1922,  1924,  1926,  1928,  1930,  1932,
     1934,  1936,  1938,  1940,  1942,  1944,  1946,  1948,  1950,  1952,
@@ -10034,17 +10042,17 @@ namespace zorba
     2174,  2176,  2178,  2180,  2182,  2184,  2186,  2188,  2190,  2192,
     2194,  2196,  2198,  2200,  2202,  2204,  2206,  2208,  2210,  2212,
     2214,  2216,  2218,  2220,  2222,  2224,  2226,  2228,  2230,  2232,
-    2234,  2236,  2238,  2240,  2242,  2250,  2255,  2257,  2260,  2264,
-    2269,  2271,  2273,  2276,  2279,  2281,  2285,  2287,  2291,  2293,
-    2298,  2300,  2303,  2305,  2308,  2312,  2314,  2317,  2319,  2323,
+    2234,  2236,  2238,  2240,  2242,  2244,  2252,  2257,  2259,  2262,
+    2266,  2271,  2273,  2275,  2278,  2281,  2283,  2287,  2289,  2293,
+    2295,  2300,  2302,  2305,  2307,  2310,  2314,  2316,  2319,  2321,
     2325,  2327,  2329,  2331,  2333,  2335,  2337,  2339,  2341,  2343,
-    2345,  2347,  2349,  2351,  2353,  2356,  2359,  2362,  2365,  2368,
-    2371,  2374,  2377,  2381,  2385,  2391,  2399,  2405,  2413,  2416,
-    2418,  2422,  2425,  2430,  2435,  2442,  2447,  2453,  2458,  2464,
-    2468,  2470,  2473,  2476,  2480,  2482,  2485,  2488,  2491,  2494,
-    2497,  2500,  2503,  2506,  2509,  2511,  2514,  2516,  2519,  2521,
-    2524,  2528,  2532,  2537,  2541,  2545,  2549,  2552,  2555,  2557,
-    2559,  2561,  2563,  2565
+    2345,  2347,  2349,  2351,  2353,  2355,  2358,  2361,  2364,  2367,
+    2370,  2373,  2376,  2379,  2383,  2387,  2393,  2401,  2407,  2415,
+    2418,  2420,  2424,  2427,  2432,  2437,  2444,  2449,  2455,  2460,
+    2466,  2470,  2472,  2475,  2478,  2482,  2484,  2487,  2490,  2493,
+    2496,  2499,  2502,  2505,  2508,  2511,  2513,  2516,  2518,  2521,
+    2523,  2526,  2530,  2534,  2539,  2543,  2547,  2551,  2554,  2557,
+    2559,  2561,  2563,  2565,  2567
   };
 
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
@@ -10058,80 +10066,80 @@ namespace zorba
     1072,  1084,  1096,  1101,  1112,  1118,  1130,  1143,  1154,  1159,
     1171,  1176,  1187,  1193,  1199,  1205,  1224,  1235,  1246,  1253,
     1260,  1267,  1280,  1286,  1301,  1305,  1315,  1321,  1328,  1334,
-    1346,  1353,  1359,  1366,  1370,  1379,  1390,  1394,  1402,  1411,
-    1418,  1428,  1430,  1437,  1443,  1452,  1456,  1464,  1469,  1479,
-    1483,  1491,  1495,  1502,  1509,  1519,  1524,  1536,  1540,  1544,
-    1548,  1555,  1562,  1569,  1576,  1583,  1595,  1599,  1606,  1610,
-    1617,  1621,  1625,  1633,  1637,  1641,  1649,  1656,  1665,  1677,
-    1691,  1699,  1713,  1719,  1731,  1739,  1750,  1762,  1766,  1778,
-    1782,  1791,  1795,  1811,  1812,  1813,  1814,  1815,  1818,  1819,
-    1820,  1821,  1822,  1824,  1825,  1828,  1829,  1830,  1831,  1832,
-    1835,  1842,  1851,  1858,  1862,  1870,  1874,  1878,  1885,  1889,
-    1896,  1901,  1910,  1919,  1920,  1921,  1925,  1925,  1925,  1925,
-    1925,  1928,  1934,  1943,  1947,  1957,  1968,  1974,  1988,  1995,
-    2003,  2012,  2022,  2030,  2039,  2048,  2063,  2075,  2086,  2098,
-    2104,  2116,  2122,  2136,  2144,  2153,  2161,  2173,  2179,  2189,
-    2190,  2194,  2202,  2206,  2211,  2215,  2219,  2223,  2230,  2245,
-    2253,  2263,  2269,  2280,  2286,  2295,  2305,  2310,  2322,  2328,
-    2342,  2348,  2360,  2367,  2374,  2381,  2388,  2395,  2402,  2415,
-    2419,  2429,  2434,  2445,  2456,  2463,  2476,  2483,  2495,  2501,
-    2514,  2521,  2535,  2541,  2553,  2559,  2572,  2583,  2587,  2598,
-    2602,  2621,  2625,  2633,  2641,  2649,  2657,  2657,  2665,  2673,
-    2681,  2695,  2699,  2706,  2719,  2723,  2734,  2738,  2742,  2752,
-    2756,  2760,  2764,  2768,  2778,  2782,  2787,  2798,  2802,  2806,
-    2816,  2820,  2832,  2836,  2848,  2852,  2864,  2868,  2880,  2884,
-    2896,  2900,  2904,  2908,  2920,  2924,  2928,  2938,  2942,  2946,
-    2950,  2954,  2958,  2968,  2972,  2976,  2986,  2990,  3002,  3008,
-    3020,  3026,  3040,  3047,  3088,  3092,  3096,  3100,  3112,  3122,
-    3133,  3138,  3148,  3152,  3162,  3168,  3174,  3180,  3192,  3198,
-    3209,  3213,  3217,  3221,  3225,  3229,  3233,  3243,  3247,  3257,
-    3263,  3275,  3279,  3283,  3287,  3291,  3306,  3310,  3320,  3324,
-    3334,  3341,  3348,  3361,  3365,  3377,  3383,  3397,  3408,  3412,
-    3416,  3420,  3424,  3428,  3432,  3436,  3446,  3450,  3460,  3465,
-    3470,  3481,  3491,  3495,  3506,  3516,  3527,  3583,  3589,  3601,
-    3607,  3619,  3623,  3633,  3637,  3641,  3651,  3659,  3667,  3675,
-    3683,  3691,  3706,  3712,  3724,  3730,  3743,  3752,  3754,  3760,
-    3765,  3777,  3780,  3787,  3793,  3799,  3807,  3822,  3825,  3832,
-    3838,  3844,  3852,  3866,  3871,  3882,  3887,  3898,  3903,  3908,
-    3914,  3926,  3932,  3937,  3942,  3953,  3958,  3973,  3978,  3995,
-    4010,  4014,  4018,  4022,  4026,  4030,  4040,  4051,  4057,  4063,
-    4068,  4090,  4096,  4102,  4107,  4118,  4128,  4138,  4144,  4150,
-    4155,  4166,  4172,  4184,  4196,  4202,  4208,  4245,  4250,  4255,
-    4266,  4270,  4274,  4284,  4295,  4299,  4303,  4307,  4311,  4315,
-    4319,  4323,  4327,  4337,  4347,  4351,  4356,  4367,  4377,  4387,
-    4391,  4395,  4405,  4411,  4417,  4423,  4429,  4441,  4452,  4459,
-    4466,  4473,  4480,  4487,  4494,  4507,  4528,  4535,  4555,  4595,
-    4600,  4603,  4611,  4617,  4623,  4629,  4635,  4642,  4648,  4654,
-    4660,  4666,  4678,  4683,  4693,  4699,  4711,  4737,  4748,  4754,
-    4767,  4781,  4788,  4795,  4806,  4813,  4821,  4830,  4843,  4846,
-    4864,  4865,  4866,  4867,  4868,  4869,  4870,  4871,  4872,  4873,
-    4874,  4875,  4876,  4877,  4878,  4879,  4880,  4881,  4882,  4883,
-    4884,  4885,  4886,  4887,  4888,  4889,  4890,  4891,  4892,  4893,
-    4894,  4895,  4896,  4897,  4898,  4899,  4900,  4901,  4902,  4903,
-    4904,  4905,  4906,  4907,  4908,  4909,  4910,  4911,  4912,  4913,
-    4914,  4915,  4916,  4917,  4918,  4919,  4920,  4921,  4922,  4923,
-    4924,  4925,  4926,  4927,  4928,  4929,  4930,  4931,  4932,  4933,
-    4934,  4935,  4936,  4937,  4938,  4939,  4940,  4941,  4942,  4943,
-    4944,  4945,  4946,  4947,  4948,  4949,  4950,  4951,  4952,  4953,
-    4954,  4955,  4956,  4957,  4958,  4959,  4960,  4961,  4962,  4963,
-    4964,  4965,  4966,  4967,  4968,  4969,  4970,  4971,  4972,  4973,
-    4974,  4975,  4976,  4977,  4978,  4979,  4980,  4981,  4982,  4983,
-    4984,  4985,  4986,  4987,  4988,  4989,  4990,  4991,  4992,  4993,
-    4994,  4995,  4996,  4997,  4998,  4999,  5000,  5001,  5002,  5003,
-    5004,  5005,  5006,  5007,  5008,  5009,  5010,  5011,  5012,  5013,
-    5014,  5015,  5016,  5017,  5018,  5019,  5020,  5021,  5022,  5023,
-    5024,  5025,  5026,  5027,  5028,  5029,  5030,  5031,  5032,  5033,
-    5034,  5035,  5036,  5037,  5048,  5054,  5071,  5075,  5079,  5083,
-    5093,  5096,  5099,  5102,  5111,  5114,  5123,  5126,  5135,  5138,
-    5147,  5150,  5159,  5162,  5165,  5174,  5177,  5186,  5190,  5200,
-    5203,  5206,  5209,  5212,  5221,  5230,  5234,  5238,  5242,  5246,
-    5250,  5254,  5264,  5267,  5270,  5273,  5282,  5285,  5288,  5291,
-    5300,  5303,  5312,  5315,  5318,  5321,  5324,  5327,  5330,  5339,
-    5342,  5351,  5354,  5357,  5360,  5369,  5372,  5375,  5378,  5381,
-    5390,  5393,  5402,  5405,  5414,  5417,  5426,  5429,  5438,  5447,
-    5450,  5459,  5462,  5465,  5474,  5477,  5480,  5483,  5486,  5495,
-    5499,  5503,  5507,  5517,  5526,  5536,  5545,  5548,  5557,  5560,
-    5563,  5572,  5575,  5584
+    1346,  1353,  1359,  1366,  1372,  1376,  1383,  1394,  1398,  1406,
+    1415,  1422,  1432,  1434,  1441,  1447,  1456,  1460,  1468,  1473,
+    1483,  1487,  1495,  1499,  1506,  1513,  1523,  1528,  1540,  1544,
+    1548,  1552,  1559,  1566,  1573,  1580,  1587,  1599,  1603,  1610,
+    1614,  1621,  1625,  1629,  1637,  1641,  1645,  1653,  1660,  1669,
+    1681,  1695,  1703,  1717,  1723,  1735,  1743,  1754,  1766,  1770,
+    1782,  1786,  1795,  1799,  1815,  1816,  1817,  1818,  1819,  1822,
+    1823,  1824,  1825,  1826,  1828,  1829,  1832,  1833,  1834,  1835,
+    1836,  1839,  1846,  1855,  1862,  1866,  1874,  1878,  1882,  1889,
+    1893,  1900,  1905,  1914,  1923,  1924,  1925,  1929,  1929,  1929,
+    1929,  1929,  1932,  1938,  1947,  1951,  1961,  1972,  1978,  1992,
+    1999,  2007,  2016,  2026,  2034,  2043,  2052,  2067,  2079,  2090,
+    2102,  2108,  2120,  2126,  2140,  2148,  2157,  2165,  2177,  2183,
+    2193,  2194,  2198,  2206,  2210,  2215,  2219,  2223,  2227,  2234,
+    2249,  2257,  2267,  2273,  2284,  2290,  2299,  2309,  2314,  2326,
+    2332,  2346,  2352,  2364,  2371,  2378,  2385,  2392,  2399,  2406,
+    2419,  2423,  2433,  2438,  2449,  2460,  2467,  2480,  2487,  2499,
+    2505,  2518,  2525,  2539,  2545,  2557,  2563,  2576,  2587,  2591,
+    2602,  2606,  2625,  2629,  2637,  2645,  2653,  2661,  2661,  2669,
+    2677,  2685,  2699,  2703,  2710,  2723,  2727,  2738,  2742,  2746,
+    2756,  2760,  2764,  2768,  2772,  2782,  2786,  2791,  2802,  2806,
+    2810,  2820,  2824,  2836,  2840,  2852,  2856,  2868,  2872,  2884,
+    2888,  2900,  2904,  2908,  2912,  2924,  2928,  2932,  2942,  2946,
+    2950,  2954,  2958,  2962,  2972,  2976,  2980,  2990,  2994,  3006,
+    3012,  3024,  3030,  3044,  3051,  3092,  3096,  3100,  3104,  3116,
+    3126,  3137,  3142,  3152,  3156,  3166,  3172,  3178,  3184,  3196,
+    3202,  3213,  3217,  3221,  3225,  3229,  3233,  3237,  3247,  3251,
+    3261,  3267,  3279,  3283,  3287,  3291,  3295,  3310,  3314,  3324,
+    3328,  3338,  3345,  3352,  3365,  3369,  3381,  3387,  3401,  3412,
+    3416,  3420,  3424,  3428,  3432,  3436,  3440,  3450,  3454,  3464,
+    3469,  3474,  3485,  3495,  3499,  3510,  3520,  3531,  3587,  3593,
+    3605,  3611,  3623,  3627,  3637,  3641,  3645,  3655,  3663,  3671,
+    3679,  3687,  3695,  3710,  3716,  3728,  3734,  3747,  3756,  3758,
+    3764,  3769,  3781,  3784,  3791,  3797,  3803,  3811,  3826,  3829,
+    3836,  3842,  3848,  3856,  3870,  3875,  3886,  3891,  3902,  3907,
+    3912,  3918,  3930,  3936,  3941,  3946,  3957,  3962,  3977,  3982,
+    3999,  4014,  4018,  4022,  4026,  4030,  4034,  4044,  4055,  4061,
+    4067,  4072,  4094,  4100,  4106,  4111,  4122,  4132,  4142,  4148,
+    4154,  4159,  4170,  4176,  4188,  4200,  4206,  4212,  4249,  4254,
+    4259,  4270,  4274,  4278,  4288,  4299,  4303,  4307,  4311,  4315,
+    4319,  4323,  4327,  4331,  4341,  4351,  4355,  4360,  4371,  4381,
+    4391,  4395,  4399,  4409,  4415,  4421,  4427,  4433,  4445,  4456,
+    4463,  4470,  4477,  4484,  4491,  4498,  4511,  4532,  4539,  4559,
+    4599,  4604,  4607,  4615,  4621,  4627,  4633,  4639,  4646,  4652,
+    4658,  4664,  4670,  4682,  4687,  4697,  4703,  4715,  4741,  4752,
+    4758,  4771,  4785,  4792,  4799,  4810,  4817,  4825,  4834,  4847,
+    4850,  4868,  4869,  4870,  4871,  4872,  4873,  4874,  4875,  4876,
+    4877,  4878,  4879,  4880,  4881,  4882,  4883,  4884,  4885,  4886,
+    4887,  4888,  4889,  4890,  4891,  4892,  4893,  4894,  4895,  4896,
+    4897,  4898,  4899,  4900,  4901,  4902,  4903,  4904,  4905,  4906,
+    4907,  4908,  4909,  4910,  4911,  4912,  4913,  4914,  4915,  4916,
+    4917,  4918,  4919,  4920,  4921,  4922,  4923,  4924,  4925,  4926,
+    4927,  4928,  4929,  4930,  4931,  4932,  4933,  4934,  4935,  4936,
+    4937,  4938,  4939,  4940,  4941,  4942,  4943,  4944,  4945,  4946,
+    4947,  4948,  4949,  4950,  4951,  4952,  4953,  4954,  4955,  4956,
+    4957,  4958,  4959,  4960,  4961,  4962,  4963,  4964,  4965,  4966,
+    4967,  4968,  4969,  4970,  4971,  4972,  4973,  4974,  4975,  4976,
+    4977,  4978,  4979,  4980,  4981,  4982,  4983,  4984,  4985,  4986,
+    4987,  4988,  4989,  4990,  4991,  4992,  4993,  4994,  4995,  4996,
+    4997,  4998,  4999,  5000,  5001,  5002,  5003,  5004,  5005,  5006,
+    5007,  5008,  5009,  5010,  5011,  5012,  5013,  5014,  5015,  5016,
+    5017,  5018,  5019,  5020,  5021,  5022,  5023,  5024,  5025,  5026,
+    5027,  5028,  5029,  5030,  5031,  5032,  5033,  5034,  5035,  5036,
+    5037,  5038,  5039,  5040,  5041,  5052,  5058,  5075,  5079,  5083,
+    5087,  5097,  5100,  5103,  5106,  5115,  5118,  5127,  5130,  5139,
+    5142,  5151,  5154,  5163,  5166,  5169,  5178,  5181,  5190,  5194,
+    5204,  5207,  5210,  5213,  5216,  5225,  5234,  5238,  5242,  5246,
+    5250,  5254,  5258,  5268,  5271,  5274,  5277,  5286,  5289,  5292,
+    5295,  5304,  5307,  5316,  5319,  5322,  5325,  5328,  5331,  5334,
+    5343,  5346,  5355,  5358,  5361,  5364,  5373,  5376,  5379,  5382,
+    5385,  5394,  5397,  5406,  5409,  5418,  5421,  5430,  5433,  5442,
+    5451,  5454,  5463,  5466,  5469,  5478,  5481,  5484,  5487,  5490,
+    5499,  5503,  5507,  5511,  5521,  5530,  5540,  5549,  5552,  5561,
+    5564,  5567,  5576,  5579,  5588
   };
 
   // Print the state stack on the debug stream.
@@ -10246,7 +10254,7 @@ namespace zorba
 
 } // namespace zorba
 
-#line 5592 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5596 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 
 
 namespace zorba {
