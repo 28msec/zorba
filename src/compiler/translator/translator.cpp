@@ -2514,7 +2514,7 @@ void *begin_visit (const VFO_DeclList& v) {
     case ParseConstants::fn_sequential:
     case ParseConstants::fn_update:
     case ParseConstants::fn_read: {
-      f = new user_function(n->get_location(), sig, NULL, n->get_type () == ParseConstants::fn_update);
+      f = new user_function(n->get_location(), sig, NULL, n->get_type () == ParseConstants::fn_update, n->deterministic);
       break;
     }
     default:

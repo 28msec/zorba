@@ -1624,11 +1624,12 @@ FunctionDecl :
     }
   | DECLARE NONDETERMINISTIC FunctionDecl2
     {
-      $$ = $3;
+      FunctionDecl *d = dynamic_cast<FunctionDecl *> ($3);
+      d->deterministic = false;
+      $$ = d;
     }
   | DECLARE DETERMINISTIC FunctionDecl2
     {
-      //
       $$ = $3;
     }
   ;

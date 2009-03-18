@@ -689,7 +689,8 @@ FunctionDecl::FunctionDecl(
   name_h(_name_h),
   paramlist_h(_paramlist_h),
   body_h(_body_h),
-  return_type_h(_return_type_h)
+  return_type_h(_return_type_h),
+  deterministic (false)
 {}
 
 

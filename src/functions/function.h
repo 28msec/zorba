@@ -48,8 +48,7 @@ public:
 };
 
 
-class function : public SimpleRCObject
-{
+class function : public SimpleRCObject {
 protected:
 	signature sig;
 	
@@ -86,14 +85,13 @@ public:
 };
 
 
-class user_function : public function 
-{
+class user_function : public function {
 public:
-  user_function(
-        const QueryLoc& loc,
-        const signature& _sig,
-        expr_t expr_body, 
-        bool aIsUpdating);
+  user_function(const QueryLoc& loc,
+                const signature& _sig,
+                expr_t expr_body, 
+                bool aIsUpdating,
+                bool deterministic_);
 
   virtual ~user_function();
 
@@ -107,27 +105,29 @@ public:
   void set_params(std::vector<var_expr_t>& params);
   const std::vector<var_expr_t>& get_params() const;
 
-  virtual PlanIter_t codegen(
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv,
-        AnnotationHolder &ann) const;
+  virtual PlanIter_t codegen(const QueryLoc& loc,
+                             std::vector<PlanIter_t>& argv,
+                             AnnotationHolder &ann) const;
 
   virtual PlanIter_t get_plan(CompilerCB *) const;
 
   virtual std::vector<LetVarIter_t>& get_param_iters() const;
 
   bool requires_dyn_ctx () const;
+  bool isPureFunction() const;
 
- private:
-    QueryLoc                m_loc;
-    expr_t                  m_expr_body;
-    std::vector<var_expr_t> m_params;
+private:
+  QueryLoc                m_loc;
+  expr_t                  m_expr_body;
+  std::vector<var_expr_t> m_params;
 
-    expr_update_t           theUpdateType;
+  expr_update_t           theUpdateType;
 
-    mutable PlanIter_t                m_plan;
-    mutable std::vector<LetVarIter_t> m_param_iters;
-    mutable int32_t                   m_state_size;
+  bool deterministic;
+  
+  mutable PlanIter_t                m_plan;
+  mutable std::vector<LetVarIter_t> m_param_iters;
+  mutable int32_t                   m_state_size;
 };
 
 
@@ -143,3 +143,9 @@ class external_function : public function
 } /* namespace zorba */
 #endif  /* ZORBA_FUNCTION_H */
 /* vim:set ts=2 sw=2: */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

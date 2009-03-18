@@ -58,16 +58,17 @@ void function::compute_annotation (
 }
 
 
-user_function::user_function( 
-  const QueryLoc& loc, 
-  const signature& _sig, 
-  expr_t expr_body, 
-  bool aIsUpdating)
+user_function::user_function(const QueryLoc& loc, 
+                             const signature& _sig, 
+                             expr_t expr_body, 
+                             bool aIsUpdating,
+                             bool deterministic_)
   :
   function(_sig), 
   m_loc(loc), 
   m_expr_body(expr_body), 
-  theUpdateType((aIsUpdating ? UPDATE_EXPR : SIMPLE_EXPR))
+  theUpdateType((aIsUpdating ? UPDATE_EXPR : SIMPLE_EXPR)),
+  deterministic (deterministic_)
 { 
 }
 
@@ -105,7 +106,10 @@ const std::vector<var_expr_t>& user_function::get_params() const
 {
   return m_params;
 }
-
+  
+bool user_function::isPureFunction () const {
+  return deterministic;
+}
 
 bool user_function::requires_dyn_ctx () const
 {

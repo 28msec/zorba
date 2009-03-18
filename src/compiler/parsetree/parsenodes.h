@@ -1107,7 +1107,9 @@ protected:
 	rchandle<ParamList> paramlist_h;
 	rchandle<exprnode> body_h;
 	rchandle<SequenceType> return_type_h;
-	bool extern_b;
+
+public:
+	bool deterministic;
 
 public:
 	FunctionDecl(
