@@ -94,6 +94,8 @@ public:
 
   const std::string& str() const { return theString; }
 
+  std::string& str() { return theString; }
+
   const char* c_str() const { return theString.c_str(); }
 
   bool empty() const { return theString.empty(); }
