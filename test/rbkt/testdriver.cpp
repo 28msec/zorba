@@ -333,7 +333,7 @@ trim(std::string& str) {
 // aPos is the character number off the first difference in the file
 // -1 is returned for aLine, aCol, and aPos if the files are equal
 bool
-isEqual(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, int& aPos,
+fileEquals(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, int& aPos,
         std::string& aRefLine, std::string& aResLine)
 {
   std::ifstream li(aRefFile.get_path().c_str());
@@ -425,7 +425,7 @@ main(int argc, char** argv)
     std::cout << "test " << lQueryWithoutSuffix << std::endl;
 
     zorba::file lResultFile (zorba::RBKT_BINARY_DIR + "/QueryResults/" 
-                             + lQueryWithoutSuffix + ".res", path_flags);
+                             + lQueryWithoutSuffix + ".xml.res", path_flags);
 
     zorba::file lErrorFile  (zorba::RBKT_BINARY_DIR + "/" 
                              + lQueryWithoutSuffix + ".err", path_flags);
@@ -474,21 +474,12 @@ main(int argc, char** argv)
     if ( lSpecFile.exists ()) 
       lSpec.parseFile(lSpecFile.get_path());
 
-    // we must either have a reference file or an expected error code
-    if ( (lSpec.errorsSize() == 0) && ((! lRefFile.exists ()) || lRefFile.is_directory ()))
-    {
-      std::cout << "No reference result and no expected errors." << std::endl;
-      return 3;
-    }
-
     // print the query
     std::cout << "Query:" << std::endl;
     printFile(std::cout, lQueryFile.get_path());
     std::cout << std::endl;
 
-    if( i == 1 )
-    {
-      // Instantiate the simple store
+    if( i == 1 ) {  // Instantiate the store
 #ifdef ZORBA_MINIMAL_STORE
       zorba::storeminimal::SimpleStore* store =
       zorba::storeminimal::SimpleStore::getInstance();
@@ -516,22 +507,19 @@ main(int argc, char** argv)
       errors = analyzeError (lSpec, errHandler);
       if( errors == UNEXPECTED_ERROR )
         return 6;
-    }
-    else
-    {
+    } else {  // no compilation errors
+
       // set the variables in the dynamic context
       zorba::DynamicContext* lDynCtxt = lQuery->getDynamicContext();
 
       if (lSpec.hasDateSet()) {
         // set the current date time such that tests that use fn:current-time behave deterministically
         zorba::Item lDateTimeItem = engine->getItemFactory()->createDateTime(lSpec.getDate());
-
         lDynCtxt->setCurrentDateTime(lDateTimeItem);
       }
 
       if (lSpec.hasTimezoneSet()) {
         int lTimezone = atoi(lSpec.getTimezone().c_str());
-
         std::cout << "timezone " << lTimezone << std::endl;
         lDynCtxt->setImplicitTimezone(lTimezone);
       }
@@ -540,12 +528,16 @@ main(int argc, char** argv)
 
       errors = -1;
       {
-        // serialize xml
-        {
+        { // serialize xml
           std::ofstream lResFileStream(lResultFile.get_path().c_str());
           assert (lResFileStream.good());
-
           lResFileStream << lQuery;
+        }
+        
+        if ( (lSpec.errorsSize() == 0) && ((! lRefFile.exists ()) || lRefFile.is_directory ()))
+        {
+          std::cout << "No reference result and no expected errors." << std::endl;
+          return 3;
         }
 
         if (errHandler.errors())
@@ -571,8 +563,7 @@ main(int argc, char** argv)
       }
       if( errors == UNEXPECTED_ERROR)
         return 6;
-      else if( errors == -1 )
-      {
+      else if( errors == -1 ) {
         std::cout << "Result:" << std::endl;
         printFile(std::cout, lResultFile.get_path());
         std::cout << "=== end of result ===" << std::endl;
@@ -581,9 +572,8 @@ main(int argc, char** argv)
         // last, we have to diff the result
         int lLine, lCol, lPos; // where do the files differ
         std::string lRefLine, lResultLine;
-        bool lRes = isEqual(lRefFile, lResultFile, lLine, lCol, lPos, lRefLine, lResultLine);
-        if ( !lRes )  // results differ
-        {
+        bool lRes = fileEquals(lRefFile, lResultFile, lLine, lCol, lPos, lRefLine, lResultLine);
+        if ( !lRes ) {  // results differ
           std::cout << std::endl << "Result does not match expected result:" << std::endl;
           printFile(std::cout, lRefFile.get_path());
           std::cout << "=== end of expected result ===" << std::endl;
