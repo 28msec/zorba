@@ -28,21 +28,20 @@ bool ValueIndexInsertSessionOpener::nextImpl(store::Item_t& result, PlanState& p
   ZORBA_ASSERT(status);
   index = planState.sctx()->lookup_index(result->getStringValueP());
   session = index->createBulkInsertSession();
-  // TODO - Add to dynamic context.
+  planState.dctx()->set_val_idx_insert_session(result->getStringValueP(), session);
   STACK_END (state);
 }
 
 bool ValueIndexInsertSessionCloser::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   bool status;
-  ValueIndexInsertSession_t index;
+  ValueIndexInsertSession_t session;
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   status = consumeNext(result, theChild, planState);
   ZORBA_ASSERT(status);
-  // TODO - look in dynamic context
-  //index = planState.sctx()->lookup_index(result->getStringValueP());
-  //index->commitBulkInsertSession();
+  session = planState.dctx()->get_val_idx_insert_session(result->getStringValueP());
+  session->commitBulkInsertSession();
   STACK_END (state);
 }
 
@@ -67,8 +66,7 @@ bool ValueIndexBuilder::nextImpl(store::Item_t& result, PlanState& planState) co
   if (state->theSession == NULL) {
     store::Item_t iName;
     consumeNext(iName, theChildren[0], planState);
-    // TODO Look in dynamic context for the session
-    // state->theIndex = planState.sctx()->lookup_index(iName->getStringValueP());
+    state->theSession = planState.dctx()->get_val_idx_insert_session(iName->getStringValueP());
   }
   consumeNext(dValue, theChildren[1], planState);
   for(unsigned int i = 1; i < theChildren.size(); ++i) {
