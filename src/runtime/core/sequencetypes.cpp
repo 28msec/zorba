@@ -174,12 +174,20 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     //--
     if (theIsSimpleType) {
       state->reset(planState); 
-      valid = GenericCast::instance()->castToSimple(xqpString(lItem->getStringValue().getp()),
-                                            theCastType,
-                                            state->theSimpleParseItems);
+      try {
+        valid = GenericCast::instance()->castToSimple(xqpString(lItem->getStringValue().getp()),
+            theCastType,
+            state->theSimpleParseItems);
+      } catch (error::ZorbaError &e) {
+        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+      }
     }
     else
-      valid = GenericCast::instance()->castToAtomic(result, lItem, theCastType);
+      try {
+        valid = GenericCast::instance()->castToAtomic(result, lItem, theCastType);
+      } catch (error::ZorbaError &e) {
+        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+      }
     //--
     if (consumeNext(lItem, theChild.getp(), planState))
     {
@@ -201,16 +209,27 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     //--
     if (theIsSimpleType) {
       state->reset(planState); 
-      GenericCast::instance()->castToSimple(xqpString(lItem->getStringValue().getp()),
-                                            theCastType,
-                                            state->theSimpleParseItems);
+      try {
+        GenericCast::instance()->castToSimple(xqpString(lItem->getStringValue().getp()),
+            theCastType,
+            state->theSimpleParseItems);
+      } catch (error::ZorbaError &e) {
+        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+      }
       while(state->theIndex < state->theSimpleParseItems.size()) {
         result = state->theSimpleParseItems[state->theIndex++];
         STACK_PUSH(true, state);
       }
     }
     else
-      STACK_PUSH(GenericCast::instance()->castToAtomic(result, lItem, theCastType), state);
+    {
+      try {
+        GenericCast::instance()->castToAtomic(result, lItem, theCastType);
+      } catch (error::ZorbaError &e) {
+        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+      }
+      STACK_PUSH(true, state);
+    }
     //--
 
     while (consumeNext(lItem, theChild.getp(), planState))
@@ -218,16 +237,27 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       //--
       if (theIsSimpleType) {
         state->reset(planState); 
-        GenericCast::instance()->castToSimple(xqpString(lItem->getStringValue().getp()),
-                                              theCastType,
-                                              state->theSimpleParseItems);
+        try {
+          GenericCast::instance()->castToSimple(xqpString(lItem->getStringValue().getp()),
+              theCastType,
+              state->theSimpleParseItems);
+        } catch (error::ZorbaError &e) {
+          ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+        }
         while(state->theIndex < state->theSimpleParseItems.size()) {
           result = state->theSimpleParseItems[state->theIndex++];
           STACK_PUSH(true, state);
         }
       }
       else
-        STACK_PUSH(GenericCast::instance()->castToAtomic(result, lItem, theCastType), state);
+      {
+        try {
+          GenericCast::instance()->castToAtomic(result, lItem, theCastType);
+        } catch (error::ZorbaError &e) {
+          ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+        }
+        STACK_PUSH(true, state);
+      }
       //--
     }
   }
