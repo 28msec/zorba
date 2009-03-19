@@ -201,14 +201,18 @@ public:
   xqpStringStore_t
   normalizeSpace() const;
 
-  xqpStringStore_t
-  trimL() const;
+  xqpStringStore_t trimL() const {
+    static char seq = ' ';
+    return trimL( &seq, 1 );
+  }
 
   xqpStringStore_t
   trimL(const char* start, uint16_t len) const;
 
-  xqpStringStore_t
-  trimR() const;
+  xqpStringStore_t trimR() const {
+    static char seq = ' ';
+    return trimR( &seq, 1 );
+  }
 
   xqpStringStore_t
   trimR(const char* start, uint16_t len) const;
@@ -372,7 +376,7 @@ public:
   int
   compare(xqpString src, XQPCollator* coll = 0) const
   {
-    return theStrStore->compare(src.theStrStore, coll);
+    return theStrStore->compare(src.getStore (), coll);
   }
 
   int

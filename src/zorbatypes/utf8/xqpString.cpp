@@ -46,28 +46,16 @@ bool xqpStringStore::is_whitespace(uint32_t cp)
 }
 
 /*******************************************************************************
-  Returns true returns true if the characters given as 'start' and 'length'
+  Returns true if the characters given as 'start' and 'length'
   contain the codepoint 'cp'.
 ********************************************************************************/
 bool xqpStringStore::is_contained(const char* start, uint16_t length, uint32_t cp)
 {
-  bool ret = false;
-
-  if( length != 0 && start != NULL) {
-    uint32_t* trimCP;
-    trimCP = new uint32_t[length];
+  if( length != 0 && start != NULL)
     for(uint16_t i = 0; i < length; i++)
-      trimCP[i] = UTF8Decode(start);
-
-    for(uint16_t i = 0; i < length; i++) {
-      if(trimCP[i] == cp) {
-        ret = true;
-        break;
-      }
-    }
-    delete[] trimCP;
-  }
-  return ret;
+      if(UTF8Decode(start) == cp)
+        return true;
+  return false;
 }
 
 /*******************************************************************************
@@ -641,63 +629,41 @@ xqpStringStore_t xqpStringStore::normalizeSpace() const
 xqpStringStore_t xqpStringStore::trimL(const char* start, uint16_t len) const
 {
   if(empty() || 0 == len)
-    return new xqpStringStore(*this);
+    return new xqpStringStore (*this);
 
-  //create the new xqpStringStore
-  std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
+  const char* c = c_str(), *c0 = c;
 
-  uint32_t StrLen = numChars();
-  const char* c = c_str();
-
-  uint32_t* trimCP;//[len];
-  trimCP = new uint32_t[len];
+  uint32_t shortTrimCP [16];
+  uint32_t* trimCP =
+    (len <= 16) ? shortTrimCP : new uint32_t[len];
   for(uint16_t i = 0; i < len; i++)
     trimCP[i] = UTF8Decode(start);
 
-  bool found = false; 
-  bool firstCp = true;
-  
-  while(StrLen > 0 && !found)
-  {
+  uint32_t StrLen;
+  for (StrLen = numChars(); StrLen > 0; --StrLen) {
+    const char *oldc = c;
     uint32_t cp = UTF8Decode(c);
-
-    for(uint16_t i = 0; i < len; i++)
-    {
-      if(trimCP[i] == cp)
-      {
-        firstCp = false;
+    bool found = true;
+    for(uint16_t i = 0; i < len; i++) {
+      if(trimCP[i] == cp) {
+        found = false;
         break;
       }
     }
-
-    if(firstCp)
-    {
-      char seq[5];
-      memset(seq, 0, sizeof(seq));
-      UTF8Encode(cp, seq);
-      newStr->theString += seq;
-      newStr->theString += c;
-      found = true;
+    if (found) {
+      c = oldc;
+      break;
     }
-
-    --StrLen;
-    firstCp = true;
   }
 
-  delete[] trimCP;
-  return newStr.release();
+  if (trimCP != shortTrimCP)
+    delete[] trimCP;
+  if (c == c0)
+    return new xqpStringStore (*this);
+  else
+    return new xqpStringStore (c);
 }
   
-
-/*******************************************************************************
-
-********************************************************************************/
-xqpStringStore_t xqpStringStore::trimL() const
-{
-  char seq = ' ';
-  return trimL( &seq, 1 );
-}
-
 
 /*******************************************************************************
 
@@ -709,8 +675,9 @@ xqpStringStore_t xqpStringStore::trimR(const char* start, uint16_t len) const
     
   uint32_t StrLen = numChars();
 
-  uint32_t* trimCP;//[len];
-  trimCP = new uint32_t[len];
+  uint32_t shortTrimCP [16];
+  uint32_t* trimCP =
+    (len <= 16) ? shortTrimCP : new uint32_t[len];
   for(uint16_t i = 0; i < len; i++)
     trimCP[i] = UTF8Decode(start);
 
@@ -727,21 +694,17 @@ xqpStringStore_t xqpStringStore::trimR(const char* start, uint16_t len) const
 
   bool firstCp = true;
 
-  while(StrLen > 0)
-  {
+  while(StrLen > 0) {
     cp = UTF8DecodePrev(end);
 
-    for(uint16_t i=0; i<len; i++)
-    {
-      if(trimCP[i] == cp)
-      {
+    for(uint16_t i = 0; i < len; i++) {
+      if(trimCP[i] == cp) {
         firstCp = false;
         break;
       }
     }
       
-    if( firstCp )
-    {
+    if( firstCp ) {
       pos = zorba::UTF8Distance(c, end);
       break;
     }
@@ -762,20 +725,11 @@ xqpStringStore_t xqpStringStore::trimR(const char* start, uint16_t len) const
     --pos;
   }
 
-  delete[] trimCP;
+  if (trimCP != shortTrimCP)
+    delete[] trimCP;
   return newStr.release();
 }
   
-
-/*******************************************************************************
-
-********************************************************************************/
-xqpStringStore_t xqpStringStore::trimR() const
-{
-  char seq = ' ';
-  return trimR( &seq, 1 );
-}
-
 
 /*******************************************************************************
 
