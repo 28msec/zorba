@@ -413,11 +413,8 @@ main(int argc, char** argv)
 
   for( int i=1; i < argc; i++ )
   {
-#ifndef ZORBA_XQUERYX
     std::string   Queriesdir = "/Queries/";
-#else
-    std::string   Queriesdir = "/";//"/XQueryX/";
-#endif
+
     int path_flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;
     zorba::file lQueryFile (zorba::RBKT_SRC_DIR + Queriesdir + argv[i], path_flags);
     
@@ -439,7 +436,7 @@ main(int argc, char** argv)
 #else
     std::string   w3c_str;
     int xqueryx_off = 0;
-    if(!strcmp(lQueryWithoutSuffix.substr(0, 7).c_str(), "xqueryx"))
+    if(!strcmp(lQueryWithoutSuffix.substr(0, 7).c_str(), "XQueryX"))
     {
       w3c_str = "w3c_testsuite";
       xqueryx_off = 7;
@@ -447,10 +444,10 @@ main(int argc, char** argv)
     std::string   spec_fname = zorba::RBKT_SRC_DIR + "/Queries/" + w3c_str
                            + lQueryWithoutSuffix.substr(xqueryx_off) +".spec";
     zorba::file lSpecFile (spec_fname, path_flags);
-    std::cout << "spec fname " << spec_fname << std::endl;
+
     std::string   ref_fname = zorba::RBKT_SRC_DIR + "/ExpQueryResults/" 
                           + lQueryWithoutSuffix +".xml.res";
-    std::cout << "lRefFile fname " << ref_fname << std::endl;
+
 #endif
     // does the query file exists
     if ( (! lQueryFile.exists ()) || lQueryFile.is_directory () ) 
