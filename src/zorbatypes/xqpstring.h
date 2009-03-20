@@ -92,8 +92,6 @@ public:
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
 
-  void clear();
-
   const std::string& str() const { return theString; }
 
   std::string& str() { return theString; }
@@ -128,16 +126,16 @@ public:
   }
 
   // Three-way lexicographical comparison of s and a substring of *this
-  int byteCompare (std::string::size_type pos, std::string::size_type n, const std::string &s) {
+  int byteCompare (std::string::size_type pos, std::string::size_type n, const std::string &s) const {
     return theString.compare (pos, n, s);
   }
 
-  bool byteStartsWith (const std::string &s) {
+  bool byteStartsWith (const std::string &s) const {
     return byteCompare (0, s.size (), s) == 0;
   }
 
   // Three-way lexicographical comparison of a substring of s and a substring of *this
-  int byteCompare (std::string::size_type pos, std::string::size_type n, const std::string &s, std::string::size_type pos1, std::string::size_type n1) {
+  int byteCompare (std::string::size_type pos, std::string::size_type n, const std::string &s, std::string::size_type pos1, std::string::size_type n1) const {
     return theString.compare (pos, n, s, pos1, n1);
   }
 
@@ -176,18 +174,6 @@ public:
 
   xqpStringStore_t
   append(const char* suffix) const;
-
-  void append_in_place(const char c);
-
-  void append_in_place(const xqpStringStore *suffix);
-
-  void append_in_place(const xqpStringStore *suffix, const char *s2);
-
-  void append_in_place(const char *str);
-
-  void append_in_place(const char *str, int len);
-
-  void append_in_place(const std::string &str);
 
   xqpStringStore_t
   substr(std::string::size_type index, std::string::size_type length) const;
@@ -241,11 +227,28 @@ public:
   xqpStringStore_t
   normalize(const xqpStringStore* normMode) const;
 
-//   UnicodeString
-//   getUnicodeString() const;
+//   UnicodeString getUnicodeString() const;
 
   checked_vector<uint32_t>
   getCodepoints() const;
+
+
+  // in-place methods break string immutability
+
+  void clear();
+
+  void append_in_place(const char c);
+
+  void append_in_place(const xqpStringStore *suffix);
+
+  void append_in_place(const xqpStringStore *suffix, const char *s2);
+
+  void append_in_place(const char *str);
+
+  void append_in_place(const char *str, int len);
+
+  void append_in_place(const std::string &str);
+
 };
 
 #ifdef ZORBA_WIN_DLL
@@ -483,9 +486,7 @@ public:
     return theStrStore->theString;
   }
 
-//   UnicodeString
-//   getUnicodeString() const
-//   {
+//   UnicodeString getUnicodeString() const {
 //     return theStrStore->getUnicodeString();
 //   }
 
@@ -512,10 +513,10 @@ public:
   xqpString
   normalize(xqpString normMode);
 
-  //escape all characters except for those :
-  //Upper and lowercase letters A-Z
-  //digits 0-9, HYPHEN-MINUS ("-"), LOW LINE ("_"), FULL STOP ".", and TILDE "~"
-  //and also the characters defined by 'start' and 'length'
+  // escape all characters except for those :
+  // Upper and lowercase letters A-Z
+  // digits 0-9, HYPHEN-MINUS ("-"), LOW LINE ("_"), FULL STOP ".", and TILDE "~"
+  // and also the characters defined by 'start' and 'length'
   xqpString
   encodeForUri(const char* start = NULL, uint16_t length = 0) const
   {
