@@ -444,9 +444,11 @@ main(int argc, char** argv)
     std::string   spec_fname = zorba::RBKT_SRC_DIR + "/Queries/" + w3c_str
                            + lQueryWithoutSuffix.substr(xqueryx_off) +".spec";
     zorba::file lSpecFile (spec_fname, path_flags);
+    std::cout << "lSpecFile " << spec_fname << std:endl; 
 
     std::string   ref_fname = zorba::RBKT_SRC_DIR + "/ExpQueryResults/" 
                           + lQueryWithoutSuffix +".xml.res";
+    std::cout << "lRefFile " << ref_fname << std:endl; 
 
 #endif
     // does the query file exists
