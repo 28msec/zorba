@@ -56,7 +56,7 @@ class ValueIndexBuilderState : public PlanIteratorState {
 
 class ValueIndexBuilder : public NaryBaseIterator<ValueIndexBuilder, ValueIndexBuilderState> {
   public:
-    ValueIndexBuilder(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, store::Index_t index)
+    ValueIndexBuilder(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
       : NaryBaseIterator<ValueIndexBuilder, ValueIndexBuilderState>(loc, aChildren) { }
 
     virtual ~ValueIndexBuilder() { }

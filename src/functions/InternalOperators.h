@@ -34,6 +34,30 @@ class zop_unhoist : public function {
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
+class zop_buildindex : public function {
+  public:
+    zop_buildindex(const signature&);
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+class zop_index_session_opener : public function {
+  public:
+    zop_index_session_opener(const signature&);
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+class zop_index_session_closer : public function {
+  public:
+    zop_index_session_closer(const signature&);
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+class zop_index_builder : public function {
+  public:
+    zop_index_builder(const signature&);
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
 }
 
 #endif /* ZORBA_INTERNAL_OPERATORS_H */

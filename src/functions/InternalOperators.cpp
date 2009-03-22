@@ -15,6 +15,7 @@
  */
 #include "functions/InternalOperators.h"
 #include "runtime/core/internal_operators.h"
+#include "runtime/indexing/value_index_builder.h"
 
 namespace zorba {
 
@@ -32,6 +33,38 @@ zop_unhoist::zop_unhoist(const signature& sig)
 PlanIter_t zop_unhoist::codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new UnhoistIterator(loc, argv);
+}
+
+zop_buildindex::zop_buildindex(const signature& sig)
+  : function(sig) { }
+
+PlanIter_t zop_buildindex::codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  ZORBA_ASSERT(false);
+}
+
+zop_index_session_opener::zop_index_session_opener(const signature& sig)
+  : function(sig) { }
+
+PlanIter_t zop_index_session_opener::codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new ValueIndexInsertSessionOpener(loc, argv[0]);
+}
+
+zop_index_session_closer::zop_index_session_closer(const signature& sig)
+  : function(sig) { }
+
+PlanIter_t zop_index_session_closer::codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new ValueIndexInsertSessionCloser(loc, argv[0]);
+}
+
+zop_index_builder::zop_index_builder(const signature& sig)
+  : function(sig) { }
+
+PlanIter_t zop_index_builder::codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new ValueIndexBuilder(loc, argv);
 }
 
 }

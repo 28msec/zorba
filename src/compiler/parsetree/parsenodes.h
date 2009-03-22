@@ -997,8 +997,8 @@ public:
   bool is_decl_only () const { return ! create; }
   bool is_uniq () const { return uniq; }
 
-  rchandle<exprnode> get_expr () { return on_expr; }
-  std::string get_uri () { return uri; }
+  rchandle<exprnode> get_expr () const { return on_expr; }
+  const std::string& get_uri () const { return uri; }
 
   IndexDecl (const QueryLoc& loc_, std::string uri_, rchandle<exprnode> expr_, std::string method_, rchandle<IndexFieldList> fields_)
     : parsenode (loc_), uri (uri_), on_expr (expr_), method (method_), fields (fields_),

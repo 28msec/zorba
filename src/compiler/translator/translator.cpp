@@ -47,6 +47,8 @@
 #include "compiler/api/compiler_api.h"
 #include "compiler/parser/util.h"
 
+#include "indexing/value_index.h"
+
 #include "system/globalenv.h"
 
 #include "functions/signature.h"
@@ -163,6 +165,7 @@ protected:
   vector<rchandle<static_context> >  & sctx_list;
   stack<expr_t>                        nodestack;
   stack<xqtref_t>                      tstack;  // types stack
+  stack<ValueIndex_t>                  indexstack;
 
   set<string> mod_import_ns_set;
   set<string> mod_stack;
@@ -2350,6 +2353,9 @@ void end_visit (const CtxItemDecl& v, void* /*visit_state*/) {
 
 void *begin_visit (const IndexDecl& v) {
   TRACE_VISIT ();
+  xqpStringStore_t uri(new xqpStringStore(v.get_uri()));
+  ValueIndex_t vi = new ValueIndex(sctx_p, uri);
+  indexstack.push(vi);
   return no_state;
 }
 
@@ -2368,10 +2374,26 @@ void end_visit (const IndexField& v, void* /*visit_state*/) {
 
 void *begin_visit (const IndexFieldList& v) {
   TRACE_VISIT ();
+  indexstack.top()->setDomainExpression(pop_nodestack());
+  push_scope();
+  indexstack.top()->setDomainVariable(bind_var(v.get_location(), DOT_VARNAME, var_expr::for_var));
+  indexstack.top()->setDomainPositionVariable(bind_var(v.get_location(), DOT_POS_VARNAME, var_expr::pos_var));
   return no_state;
 }
 
 void end_visit (const IndexFieldList& v, void* /*visit_state*/) {
+  std::vector<expr_t> iCols;
+  std::vector<xqtref_t> iColTypes;
+  for(int i = v.fields.size() - 1; i >= 0; --i) {
+    iCols.push_back(pop_nodestack());
+    xqtref_t type = v.fields[i]->get_type() != NULL ? pop_tstack() : NULL;
+    iColTypes.push_back(type);
+  }
+  std::reverse(iCols.begin(), iCols.end());
+  std::reverse(iColTypes.begin(), iColTypes.end());
+  indexstack.top()->setIndexFieldExpressions(iCols);
+  indexstack.top()->setIndexFieldTypes(iColTypes);
+  pop_scope();
   TRACE_VISIT_OUT ();
 }
 

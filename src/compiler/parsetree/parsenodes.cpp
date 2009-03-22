@@ -594,6 +594,7 @@ void IndexDecl::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
   ACCEPT (on_expr);
+  ACCEPT (fields);
   END_VISITOR ();
 }
 

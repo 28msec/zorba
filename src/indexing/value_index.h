@@ -30,7 +30,7 @@ class ValueIndexInsertSession;
 
 typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
 
-class ValueIndex : public RCObject {
+class ValueIndex : public SimpleRCObject {
   public:
     ValueIndex(static_context *sCtx, xqpStringStore_t indexUri)
       : m_static_context(sCtx),
@@ -49,6 +49,9 @@ class ValueIndex : public RCObject {
     var_expr_t getDomainVariable() const { return m_domain_var; }
     void setDomainVariable(var_expr_t domainVar) { m_domain_var = domainVar; }
 
+    var_expr_t getDomainPositionVariable() const { return m_domain_pos_var; }
+    void setDomainPositionVariable(var_expr_t domainPosVar) { m_domain_pos_var = domainPosVar; }
+
     const std::vector<expr_t>& getIndexFieldExpressions() const { return m_index_field_exprs; }
     void setIndexFieldExpressions(const std::vector<expr_t>& indexFieldExprs) { m_index_field_exprs = indexFieldExprs; }
 
@@ -63,13 +66,14 @@ class ValueIndex : public RCObject {
     store::Index_t m_store_index;
     expr_t m_domain_expr;
     var_expr_t m_domain_var;
+    var_expr_t m_domain_pos_var;
     std::vector<expr_t> m_index_field_exprs;
     std::vector<xqtref_t> m_index_field_types;
 };
 
 typedef rchandle<ValueIndex> ValueIndex_t;
 
-class ValueIndexInsertSession : public RCObject {
+class ValueIndexInsertSession : public SimpleRCObject {
   public:
     ValueIndexInsertSession(store::IndexEntryReceiver_t receiver)
       : m_bulkInsertSession(receiver) { }
