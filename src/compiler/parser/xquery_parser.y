@@ -3001,6 +3001,14 @@ ValidateExpr :
 		{
 			$$ = new ValidateExpr(LOC (@$), "strict", $3);
 		}
+  | VALIDATE  LAX  LBRACE  Expr  RBRACE
+    {
+      $$ = new ValidateExpr(LOC (@$), "lax", $4);
+    }
+  | VALIDATE  _STRICT  LBRACE  Expr  RBRACE
+    {
+      $$ = new ValidateExpr(LOC (@$), "strict", $4);
+    }
   | VALIDATE AS TypeName  LBRACE  Expr  RBRACE
     {
       $$ = new ValidateExpr(LOC (@$),
