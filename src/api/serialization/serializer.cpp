@@ -800,6 +800,9 @@ int is_content_type_meta(const store::Item* item, const store::Item* element_par
 
 static bool is_html_empty_content_model_element(const store::Item* item)
 {
+  if (item == NULL)
+    return false;
+  
   xqpString str(item->getNodeName()->getStringValue());
   str = str.lowercase();
 
@@ -816,6 +819,25 @@ static bool is_html_empty_content_model_element(const store::Item* item)
       str == "link" ||
       str == "meta" ||
       str == "param")
+    return true;
+  else
+    return false;
+}
+
+// Returns true for those elements which are not allowed under HTML to have
+// empty tags (more exactly they are required to have both opening and closing
+// tags).
+static bool is_html_no_empty_tags_element(const store::Item* item)
+{
+  if (item == NULL)
+    return false;
+
+  xqpString str(item->getNodeName()->getStringValue());
+  str = str.lowercase();
+
+  if (str == "script" ||
+      str == "textarea" ||
+      str == "div")
     return true;
   else
     return false;
@@ -932,15 +954,30 @@ void serializer::html_emitter::emit_node(
     else
     {
       /* 
-        The HTML output method MUST NOT output an end-tag for empty elements. For HTML 4.0, the 
-        empty elements are area, base, basefont, br, col, frame, hr, img, input, isindex, link, 
-        meta and param. For example, an element written as <br/> or <br></br> in an XSLT stylesheet 
-        MUST be output as <br>.
-      */
-      if (is_html_empty_content_model_element(item) && ser->version == "4.0")
-        tr << ">";      
+        The HTML 4.01 spec says that both tags (begin and end tags) are REQUIRED
+        for script, textarea and div tags.
+       */
+      if (is_html_no_empty_tags_element(item))
+      {
+        tr << ">";
+        if (prefix->empty())
+          tr << "</" << qname->getLocalName()->c_str() << ">";
+        else
+          tr << "</" << prefix->c_str() << ":" << qname->getLocalName()->c_str() << ">";
+      }
       else
-        tr << "/>";
+      {
+        /* 
+          The HTML output method MUST NOT output an end-tag for empty elements. For HTML 4.0, the 
+          empty elements are area, base, basefont, br, col, frame, hr, img, input, isindex, link, 
+          meta and param. For example, an element written as <br/> or <br></br> in an XSLT stylesheet 
+          MUST be output as <br>.
+        */
+        if (is_html_empty_content_model_element(item) && ser->version == "4.0")
+          tr << ">";      
+        else
+          tr << "/>";
+      }
     }
     
     previous_item = PREVIOUS_ITEM_WAS_NODE;
