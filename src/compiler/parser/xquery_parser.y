@@ -836,6 +836,15 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %nonassoc STEP_REDUCE
 %left SLASH SLASH_SLASH
 
+/*_____________________________________________________________________
+ *
+ * resolve shift-reduce conflicts between reserved words and QNames
+ *_____________________________________________________________________*/
+
+// %right VALIDATE EXIT WITH
+// %right DIV EXCEPT    
+
+
 
 /*
 	To enable memory deallocation during error recovery, use %destructor.
@@ -2992,11 +3001,11 @@ ValidateExpr :
 		{
 			$$ = new ValidateExpr(LOC (@$), "strict", $3);
 		}
-  | VALIDATE TypeName  LBRACE  Expr  RBRACE
+  | VALIDATE AS TypeName  LBRACE  Expr  RBRACE
     {
       $$ = new ValidateExpr(LOC (@$),
-                            dynamic_cast<TypeName*>($2)->get_name(),
-                            $4);
+                            dynamic_cast<TypeName*>($3)->get_name(),
+                            $5);
     }
 	;
 
