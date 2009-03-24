@@ -704,7 +704,10 @@ XQueryImpl::setSerializationParameters(
     ser->set_parameter("undeclare-prefixes", "yes"); break;
   case ZORBA_UNDECLARE_PREFIXES_NO:
     ser->set_parameter("undeclare-prefixes", "no"); break;
-  }    
+  }
+
+  if (opt->media_type != "")
+    ser->set_parameter("media-type", xqpString(opt->media_type.c_str()));
 
   if (opt->doctype_system != "")
     ser->set_parameter("doctype-system", xqpString(opt->doctype_system.c_str()));

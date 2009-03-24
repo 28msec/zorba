@@ -80,6 +80,10 @@ void Zorba_SerializerOptions::SetSerializerOption(const char* parameter, const c
     if (strcmp(value, "yes") == 0) undeclare_prefixes = ZORBA_UNDECLARE_PREFIXES_YES; 
     else if (strcmp(value, "no") == 0) undeclare_prefixes = ZORBA_UNDECLARE_PREFIXES_NO;       
   }
+  else if (strcmp(parameter, "media-type") == 0)
+  {
+    media_type = value;
+  }
   else if (strcmp(parameter, "doctype-system") == 0)
   {
     doctype_system = value;

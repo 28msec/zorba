@@ -409,21 +409,6 @@ int serializer::emitter::emit_node_children(
       closed_parent_tag = 1;
     }
 
-    /* commented out
-    if (ser->indent
-        &&
-        (prev_node_kind == store::StoreConsts::elementNode
-        ||
-        prev_node_kind == store::StoreConsts::commentNode)
-        &&
-        !(child->getNodeKind() == store::StoreConsts::textNode
-          &&
-          (child->getStringValue()->endsWith("\r")
-          ||
-          child->getStringValue()->endsWith("\n"))) )
-      tr << ser->END_OF_LINE;
-    */
-
     if (ser->indent
         &&
         (child->getNodeKind() == store::StoreConsts::elementNode
@@ -920,7 +905,7 @@ void serializer::html_emitter::emit_node(
         &&
         item->getNodeName()->getStringValue()->lowercase()->str() == "head")
     {
-      tr << "/>";
+      tr << ">";
       if (ser->indent)
       {
         tr << ser->END_OF_LINE;
@@ -934,9 +919,8 @@ void serializer::html_emitter::emit_node(
       else if (ser->encoding == PARAMETER_VALUE_UTF_16)
         tr << "UTF-16";
 #endif      
-      tr << "\">";
-
-      closed_parent_tag = 1;
+      tr << "\"";
+      // closed_parent_tag = 1;
     }
 
     closed_parent_tag |= emit_node_children(item, depth+1);
@@ -957,7 +941,11 @@ void serializer::html_emitter::emit_node(
         The HTML 4.01 spec says that both tags (begin and end tags) are REQUIRED
         for script, textarea and div tags.
        */
-      if (is_html_no_empty_tags_element(item))
+      if (is_html_no_empty_tags_element(item)
+          ||
+          (ser->include_content_type == PARAMETER_VALUE_YES
+          &&
+          item->getNodeName()->getStringValue()->lowercase()->str() == "head")) 
       {
         tr << ">";
         if (prefix->empty())
@@ -1103,7 +1091,7 @@ void serializer::xhtml_emitter::emit_node(
         &&
         item->getNodeName()->getStringValue()->lowercase()->str() == "head")
     {
-      tr << "/>";
+      tr << ">";
       if (ser->indent)
       {
         tr << ser->END_OF_LINE;
@@ -1117,9 +1105,8 @@ void serializer::xhtml_emitter::emit_node(
       else if (ser->encoding == PARAMETER_VALUE_UTF_16)
         tr << "UTF-16";
 #endif      
-      tr << "\">";
-
-      closed_parent_tag = 1;
+      tr << "\"/";
+      //closed_parent_tag = 1;
     }
     
     bool should_remove_binding = emit_bindings(item);
@@ -1149,10 +1136,10 @@ void serializer::xhtml_emitter::emit_node(
       tr << "</" << item->getNodeName()->getStringValue()->c_str() << ">";
     else
     {
-      if (!is_html_empty_content_model_element(item))
-        tr << ">" << "</" << item->getNodeName()->getStringValue()->c_str() << ">";
-      else
+      if (is_html_empty_content_model_element(item))
         tr << " />";
+      else
+        tr << ">" << "</" << item->getNodeName()->getStringValue()->c_str() << ">";
     }
     
     previous_item = PREVIOUS_ITEM_WAS_NODE;
