@@ -137,6 +137,9 @@ void SchemaValidatorFilter::reset()
     _fElemNonDeclPool->removeAll();
 
     _errorOccurred = false;
+    
+    _processorStipulatedTypeName = NULL;
+    _processorStipulatedTypeUriId = -1;  
 }
 
 void SchemaValidatorFilter::startDocumentEvent(const XMLCh *documentURI, const XMLCh *encoding)
@@ -186,12 +189,19 @@ void SchemaValidatorFilter::processStartElement()
     unsigned int uriId = fURIStringPool->addOrFind(_uri.getRawBuffer());
 
     // Handle xsi:type
-    if(_xsiType) 
+    if( _xsiType )
     {
         int colonPos = -1;
         unsigned int atUriId = resolveQName(_xsiType, fPrefixBuf, ElemStack::Mode_Element, colonPos);
         ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->setXsiType(fPrefixBuf.getRawBuffer(), _xsiType + colonPos + 1, atUriId);
     }
+    
+    if( _processorStipulatedTypeName )
+    {
+        ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->setXsiType(NULL, _processorStipulatedTypeName, _processorStipulatedTypeUriId);
+        _processorStipulatedTypeName = NULL;
+        _processorStipulatedTypeUriId = -1;                
+    } 
 
     //if schema, check if we should lax or skip the validation of this element
     bool parentValidation = fValidate;
@@ -737,6 +747,52 @@ void SchemaValidatorFilter::piEvent(const XMLCh *target, const XMLCh *value)
     if(_elementToProcess) processStartElement();
 
     next_->piEvent(target, value);
+}
+
+void SchemaValidatorFilter::startTypeEvent(const XMLCh *typeUri, const XMLCh *typeName)
+{
+    reset();
+        
+/*    //todo
+    XMLChArray prefix("zorbaAsTypeValidationPrefix1");
+    XMLChArray uri("simple.xsd");
+    XMLChArray localname("asTypeValidationElement"); 
+    
+    startElementEvent(prefix, uri, localname);
+    
+    XMLChArray xsiTypePrefix("zorbaAsTypeValidationXsiPrefix");
+    std::string xsiTypeValueString = "zorbaAsTypeValidationXsiValuePrefix";
+    XMLChArray xsiTypeValuePrefix(xsiTypeValueString.c_str());
+    
+    StrX typeNameStrX = StrX(typeName);
+    xsiTypeValueString = xsiTypeValueString + ":" + typeNameStrX.localForm();
+    XMLChArray xsiTypeValue(xsiTypeValueString.c_str());
+   
+    namespaceEvent(prefix, uri);
+    namespaceEvent(xsiTypePrefix, SchemaSymbols::fgURI_XSI);
+    namespaceEvent(xsiTypeValuePrefix, typeUri);    
+
+    XMLCh *tURI = NULL; 
+    XMLCh *tName = NULL;
+    attributeEvent(xsiTypePrefix, SchemaSymbols::fgURI_XSI, SchemaSymbols::fgXSI_TYPE, xsiTypeValue, tURI, tName);
+*/
+    _processorStipulatedTypeUriId = fURIStringPool->addOrFind(typeUri);
+    _processorStipulatedTypeName = typeName;
+}
+
+void SchemaValidatorFilter::endTypeEvent()
+{
+/*    //todo    
+    XMLChArray prefix("zorbaAsTypeValidationPrefix");
+    XMLChArray uri("simple.xsd");
+    XMLChArray localname("asTypeValidationElement"); 
+    XMLCh *typeURI = NULL;
+    XMLCh *typeName = NULL;
+    
+    endElementEvent(prefix, uri, localname, typeURI, typeName);    
+*/    
+    if(!fElemStack.isEmpty()) 
+        ZORBA_ASSERT(false);
 }
 
 const XMLCh* SchemaValidatorFilter::getTypeUri()

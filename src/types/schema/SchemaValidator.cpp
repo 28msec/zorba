@@ -151,6 +151,24 @@ xqtref_t SchemaValidator::getType()
     return type;
 }
 
+//
+void SchemaValidator::startType(store::Item_t typeName)
+{
+    XMLChArray uri(typeName->getNamespace()->c_str());
+    XMLChArray localname(typeName->getLocalName()->c_str()); 
+    
+    //cout << "   SType: " << typeName->getLocalName()->c_str() << " @ " << typeQName->getNamespace()->c_str() << "\n";
+
+    _schemaValidatorFilter->startTypeEvent(uri, localname);
+}
+
+void SchemaValidator::endType()
+{
+    //cout << "   EType \n";
+    
+    _schemaValidatorFilter->endTypeEvent();
+}
+
 }  // namespace zorba
 
 #endif // ZORBA_NO_XMLSCHEMA

@@ -78,6 +78,8 @@ public:
     virtual void attributeEvent(const XMLCh *prefix, const XMLCh *uri, const XMLCh *localname, 
         const XMLCh *value, const XMLCh *typeURI, const XMLCh *typeName);
     virtual void namespaceEvent(const XMLCh *prefix, const XMLCh *uri);
+    virtual void startTypeEvent(const XMLCh *uri, const XMLCh *typeName);
+    virtual void endTypeEvent();
     
     virtual const XMLCh* getTypeName();
     virtual const XMLCh* getTypeUri();
@@ -167,6 +169,9 @@ private:
     const XMLCh *_xsiType;
     unsigned int _attrCount;
     ValidationEventHandler *next_;
+    
+    const XMLCh *_processorStipulatedTypeName;
+    unsigned int _processorStipulatedTypeUriId;
 };
 
 }  // namespace zorba

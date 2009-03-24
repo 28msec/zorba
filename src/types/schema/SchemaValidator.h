@@ -74,6 +74,11 @@ public:
     {
         return _validationEventHandler.getTextInfo();
     }
+
+    // for validating content of a schema type
+    void startType(store::Item_t typeName);
+    void endType();
+
 };
 
 } // namespace zorba

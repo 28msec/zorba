@@ -1253,7 +1253,8 @@ void end_visit (validate_expr& v)
 
 #ifndef ZORBA_NO_XMLSCHEMA
   PlanIter_t lChild = pop_itstack();
-
+  //store::Item_t typeName = v.get_type_name();
+  //std::cout << "validate end-visit: type: " << typeName->getLocalName()->c_str() << " @ " << typeName->getNamespace()->c_str() << "\n"; cout.flush();
   itstack.push (new ValidateIterator (qloc,
                                       lChild,
                                       v.get_typemgr(),
