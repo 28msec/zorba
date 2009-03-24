@@ -255,7 +255,7 @@ public:
      *            0, if item0 == item1
      *            1, if item0 &gt; item1
      */
-    inline int8_t compare(
+    inline long compare(
         const store::Item_t& s1,
         const store::Item_t& s2,
         bool asc,
@@ -265,7 +265,7 @@ public:
     /**
      * Helper functions to switch the ordering between ascending and descending
      */
-    inline int8_t descAsc(int8_t result, bool asc) const;
+    inline long descAsc(long result, bool asc) const;
   };
        
   
@@ -413,3 +413,9 @@ public:
 
 } /* namespace zorba */
 #endif  /* ZORBA_ITEM_ITERATOR_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

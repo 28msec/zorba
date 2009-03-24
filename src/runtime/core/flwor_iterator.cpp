@@ -431,11 +431,11 @@ bool FLWORIterator::OrderKeyCmp::operator() (
 
   while ( s1iter != s1.end() )
   {
-    int8_t cmp = compare(*s1iter,
-                         *s2iter,
-                         orderSpecIter->theDescending,
-                         orderSpecIter->theEmptyLeast,
-                         orderSpecIter->theCollator);
+    long cmp = compare(*s1iter,
+                       *s2iter,
+                       orderSpecIter->theDescending,
+                       orderSpecIter->theEmptyLeast,
+                       orderSpecIter->theCollator);
     if ( cmp == 1 )
     {
       return false;
@@ -452,7 +452,7 @@ bool FLWORIterator::OrderKeyCmp::operator() (
 }
 
 
-int8_t FLWORIterator::OrderKeyCmp::compare(
+long FLWORIterator::OrderKeyCmp::compare(
     const store::Item_t& s1,
     const store::Item_t& s2,
     bool desc,
@@ -476,10 +476,10 @@ int8_t FLWORIterator::OrderKeyCmp::compare(
     // That's why empty_item is needed.
     store::Item_t ls1(s1);
     store::Item_t ls2(s2);
-    int8_t result = CompareIterator::valueCompare(ls1 , ls2,
-                                                  theTypeManager,
-                                                  timezone,
-                                                  collator);
+    long result = CompareIterator::valueCompare(ls1 , ls2,
+                                                theTypeManager,
+                                                timezone,
+                                                collator);
     if (result > 1 || result < -1) 
     {
       ZORBA_ERROR_DESC( XPTY0004, "Non-comparable types found while sorting" );
@@ -490,7 +490,7 @@ int8_t FLWORIterator::OrderKeyCmp::compare(
 }
 
 
-int8_t FLWORIterator::OrderKeyCmp::descAsc ( int8_t result, bool desc ) const
+long FLWORIterator::OrderKeyCmp::descAsc (long result, bool desc ) const
 {
   ZORBA_ASSERT (result <= 1 && result >= -1);
   return desc ? -result : result;

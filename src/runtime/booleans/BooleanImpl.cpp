@@ -752,133 +752,48 @@ long CompareIterator::compare(
   xqtref_t type0 = typemgr->create_value_type(aItem0.getp());
   xqtref_t type1 = typemgr->create_value_type(aItem1.getp());
 
-  if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE) &&
-      TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE)) 
+  try
   {
-    int res = aItem0->getStringValue()->compare(aItem1->getStringValue(), aCollation);
-    if (res < 0)
-      return -1;
-    else if (res > 0)
-      return 1;
+    if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE) &&
+        TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)) 
+    {
+      if (TypeOps::is_equal(*type0, *type1) && 
+          !TypeOps::is_equal(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
+        return aItem0->compare(aItem1, timezone, aCollation);
+      else
+        return -2;
+    }
+    else if (TypeOps::is_subtype(*type1, *type0))
+    {
+      return aItem0->compare(aItem1, timezone, aCollation);
+    } 
+    else if (TypeOps::is_subtype(*type0, *type1))
+    {
+      return -aItem1->compare(aItem0, timezone, aCollation);
+    }
     else
-      return 0;
+    {
+      // There is 1 case when two types are order-comparable without one being a
+      // subtype of the other: they belong to different branches under of the
+      // type-inheritance subtree rooted at xs:Integer.
+      if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE) &&
+          TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)) 
+      {
+        return aItem0->getIntegerValue().compare(aItem1->getIntegerValue());
+      }
+      else
+      {
+        return -2;
+      }
+    }
   }
-  else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE) &&
-           TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)) 
+  catch(error::ZorbaError& e)
   {
-    if ( aItem0->getDoubleValue() < aItem1->getDoubleValue())
-      return -1;
-    else if ( aItem0->getDoubleValue() == aItem1->getDoubleValue())
-      return 0;
-    else if (aItem0->getDoubleValue() > aItem1->getDoubleValue())
-      return 1;
+    if (e.theErrorCode == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE)
+      return -2;
     else
-      return 2;
+      throw e;
   }
-  else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE) &&
-           TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE))
-  {
-    if ( aItem0->getFloatValue() < aItem1->getFloatValue())
-      return -1;
-    else if ( aItem0->getFloatValue() == aItem1->getFloatValue())
-      return 0;
-    else if (aItem0->getFloatValue() > aItem1->getFloatValue())
-      return 1;
-    else
-      return 2;
-  }
-  else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE) &&
-           TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)) 
-  {
-    if ( aItem0->getDecimalValue() < aItem1->getDecimalValue())
-      return -1;
-    else if ( aItem0->getDecimalValue() == aItem1->getDecimalValue())
-      return 0;
-    else
-      return 1;
-  }
-  else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE) &&
-           TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE))
-  {
-    int res = aItem0->getStringValue()->compare(aItem1->getStringValue(), aCollation);
-    if (res < 0)
-      return -1;
-    else if (res > 0)
-      return 1;
-    else
-      return 0;
-  } 
-  else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE) &&
-           TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
-  {
-    if (aItem0->getBooleanValue() == aItem1->getBooleanValue())
-      return 0;
-    else if (aItem0->getBooleanValue() < aItem1->getBooleanValue())
-      return -1;
-    else
-      return 1;
-  }
-
-  // catch InvalidTimezoneException
-  try 
-  {
-    if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DATE_TYPE_ONE) &&
-        TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE))
-    {
-      return aItem0->getDateValue().compare(&aItem1->getDateValue(), timezone);
-    }
-    else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.TIME_TYPE_ONE) &&
-             TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE))
-    {
-      return aItem0->getTimeValue().compare(&aItem1->getTimeValue(), timezone);
-    }
-    else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE) &&
-             TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
-    {
-      return aItem0->getDateTimeValue().compare(&aItem1->getDateTimeValue(), timezone);
-    }
-    else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.GYEAR_MONTH_TYPE_ONE) &&
-             TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GYEAR_MONTH_TYPE_ONE))
-    {
-      return aItem0->getGYearMonthValue().compare(&aItem1->getGYearMonthValue(), timezone);
-    }
-    else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.GYEAR_TYPE_ONE) &&
-             TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GYEAR_TYPE_ONE))
-    {
-      return aItem0->getGYearValue().compare(&aItem1->getGYearValue(), timezone);
-    }
-    else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE) &&
-             TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE))
-    {
-      return aItem0->getGMonthDayValue().compare(&aItem1->getGMonthDayValue(), timezone);
-    }
-    else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.GMONTH_TYPE_ONE) &&
-             TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GMONTH_TYPE_ONE))
-    {
-      return aItem0->getGMonthValue().compare(&aItem1->getGMonthValue(), timezone);
-    }
-    else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.GDAY_TYPE_ONE) &&
-             TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GDAY_TYPE_ONE))
-    {
-      return aItem0->getGDayValue().compare(&aItem1->getGDayValue(), timezone);
-    }
-    else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE) &&
-             TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE) &&
-             (!TypeOps::is_equal(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)) &&
-             (!TypeOps::is_equal(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)) &&
-             TypeOps::is_equal(*type0, *type1))
-    {
-      return aItem0->getDurationValue().compare(aItem1->getDurationValue());
-    }
-  } 
-  catch (InvalidTimezoneException)
-  {
-    ZORBA_ERROR(FODT0003);
-  }
-  
-  // TODO comparisons for all types
-
-  return -2;
 }
 
   
