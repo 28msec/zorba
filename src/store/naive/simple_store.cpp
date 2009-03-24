@@ -357,6 +357,22 @@ void SimpleStore::deleteIndex(const xqpStringStore_t& uri)
 
 
 /*******************************************************************************
+
+********************************************************************************/
+store::Index_t SimpleStore::getIndex(const xqpStringStore_t& uri)
+{
+  if (uri == NULL)
+    return NULL;
+
+  store::Index_t idx;
+  if (theIndices.get(uri, idx) )
+    return idx;
+  else
+    return NULL;
+}
+
+
+/*******************************************************************************
   Create a collection with a given URI and return an rchandle to the new
   collection object. If a collection with the given URI exists already, return
   NULL and register an error.

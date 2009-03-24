@@ -96,40 +96,98 @@ public:
   virtual bool createBoolean(Item_t& result, xqp_boolean value) = 0;
 
   /**
+   * @param value double value
+   */
+  virtual bool createDouble(Item_t& result, const xqp_double& value ) = 0;
+
+  /**
+   * @param value
+   */
+  virtual bool createFloat(Item_t& result, const xqp_float& value) = 0;
+
+  /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#decimal]
    * @param value
    */
-  virtual bool createDecimal ( Item_t& result, xqp_decimal value) = 0;
+  virtual bool createDecimal(Item_t& result, const xqp_decimal& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#integer]
    * @param value
    */
-  virtual bool createInteger ( Item_t& result, xqp_integer value ) = 0;
+  virtual bool createInteger(Item_t& result, const xqp_integer& value ) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger]
+   * @param value
+   */
+  virtual bool createNonNegativeInteger(Item_t& result, const xqp_uinteger& value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#positiveInteger]
+   * @param value
+   */
+  virtual bool createPositiveInteger(Item_t& result, const xqp_uinteger& value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger]
+   * @param value
+   */
+  virtual bool createNonPositiveInteger(Item_t& result, const xqp_integer& value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#negativeInteger]
+   * @param value
+   */
+  virtual bool createNegativeInteger(Item_t& result, const xqp_integer& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#long]
    * @param value
    */
-  virtual bool createLong ( Item_t& result, xqp_long value ) = 0;
+  virtual bool createLong(Item_t& result, xqp_long value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#int]
    * @param value
    */
-  virtual bool createInt ( Item_t& result, xqp_int value ) = 0;
+  virtual bool createInt(Item_t& result, xqp_int value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#short]
    * @param value
    */
-  virtual bool createShort ( Item_t& result, xqp_short value ) = 0;
+  virtual bool createShort(Item_t& result, xqp_short value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#byte]
    * @param value
    */
-  virtual bool createByte ( Item_t& result, xqp_byte value ) = 0;
+  virtual bool createByte(Item_t& result, xqp_byte value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedLong]
+   * @param value
+   */
+  virtual bool createUnsignedLong(Item_t& result, xqp_ulong value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedInt]
+   * @param value
+   */
+  virtual bool createUnsignedInt(Item_t& result, xqp_uint value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedShort]
+   * @param value
+   */
+  virtual bool createUnsignedShort(Item_t& result, xqp_ushort value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedByte]
+   * @param value
+   */
+  virtual bool createUnsignedByte(Item_t& result, xqp_ubyte value) = 0;
 
 
   virtual bool createDateTime(
@@ -182,13 +240,13 @@ public:
    * @param month
    * @param day
    */
-  virtual bool createDate ( Item_t& result, short year, short month, short day ) = 0;
+  virtual bool createDate(Item_t& result, short year, short month, short day ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#date]
    * @param value string representation of the value
    */
-  virtual bool createDate ( Item_t& result, const xqp_string& value ) = 0;
+  virtual bool createDate(Item_t& result, const xqp_string& value) = 0;
 
   /**
    *
@@ -284,12 +342,6 @@ public:
    */
   virtual bool createGYearMonth(Item_t& result, short year, short month) = 0;
 
-
-  /**
-   * @param value double value
-   */
-  virtual bool createDouble(Item_t& result, const xqp_double& value ) = 0;
-
   virtual bool createDuration(Item_t& result, xqp_duration* value ) = 0;
 
   virtual bool createYearMonthDuration(Item_t& result, xqp_yearMonthDuration* value ) = 0;
@@ -329,11 +381,6 @@ public:
    * @param value string representation of the value
    */
   virtual bool createENTITY(Item_t& result, xqpStringStore_t& value) = 0;
-
-  /**
-   * @param value
-   */
-  virtual bool createFloat ( Item_t& result, xqp_float value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#hexBinary]
@@ -389,23 +436,6 @@ public:
    */
   virtual bool createName (Item_t& result, xqpStringStore_t& value ) = 0;
 
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#negativeInteger]
-   * @param value
-   */
-  virtual bool createNegativeInteger ( Item_t& result, xqp_integer value ) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger]
-   * @param value
-   */
-  virtual bool createNonNegativeInteger ( Item_t& result, xqp_uinteger value ) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger]
-   * @param value
-   */
-  virtual bool createNonPositiveInteger ( Item_t& result, xqp_integer value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#normalizedString]
@@ -414,41 +444,10 @@ public:
   virtual bool createNormalizedString (Item_t& result, xqpStringStore_t& value ) = 0;
 
   /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#positiveInteger]
-   * @param value
-   */
-  virtual bool createPositiveInteger(Item_t& result, xqp_uinteger value) = 0;
-
-
-  /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#token]
    * @param value string representation of the value
    */
   virtual bool createToken(Item_t& result, xqpStringStore_t& value) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedByte]
-   * @param value
-   */
-  virtual bool createUnsignedByte(Item_t& result, xqp_ubyte value) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedInt]
-   * @param value
-   */
-  virtual bool createUnsignedInt(Item_t& result, xqp_uint value) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedLong]
-   * @param value
-   */
-  virtual bool createUnsignedLong(Item_t& result, xqp_ulong value) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedShort]
-   * @param value
-   */
-  virtual bool createUnsignedShort(Item_t& result, xqp_ushort value) = 0;
 
 
   /**

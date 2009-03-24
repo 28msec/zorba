@@ -79,9 +79,22 @@ public:
 
   bool createBoolean(store::Item_t& result, xqp_boolean value);
 
-  bool createDecimal(store::Item_t& result, xqp_decimal value);
 
-  bool createInteger(store::Item_t& result, xqp_integer value);
+  bool createDouble(store::Item_t& result, const xqp_double& value);
+
+  bool createFloat(store::Item_t& result, const xqp_float& value);
+
+  bool createDecimal(store::Item_t& result, const xqp_decimal& value);
+
+  bool createInteger(store::Item_t& result, const xqp_integer& value);
+
+  bool createNonNegativeInteger(store::Item_t& result, const xqp_uinteger& value);
+
+  bool createPositiveInteger(store::Item_t& result,  const xqp_uinteger& value );
+
+  bool createNonPositiveInteger(store::Item_t& result, const xqp_integer& value);
+
+  bool createNegativeInteger(store::Item_t& result,  const xqp_integer& value);
 
   bool createLong(store::Item_t& result, xqp_long value);
 
@@ -90,6 +103,14 @@ public:
   bool createShort(store::Item_t& result, xqp_short value);
 
   bool createByte(store::Item_t& result, xqp_byte value);
+
+  bool createUnsignedLong(store::Item_t& result, xqp_ulong value);
+
+  bool createUnsignedInt(store::Item_t& result, xqp_uint value);
+
+  bool createUnsignedShort(store::Item_t& result, xqp_ushort value);
+
+  bool createUnsignedByte(store::Item_t& result, xqp_ubyte value);
 
 
   bool createDateTime(store::Item_t& result, const xqp_dateTime* value);
@@ -146,9 +167,6 @@ public:
 
   bool createGYearMonth (store::Item_t& result,  short year, short month );
 
-
-  bool createDouble(store::Item_t& result, const xqp_double& value);
-
   bool createDuration(store::Item_t& result, xqp_duration* value);
   
   bool createDuration(store::Item_t& result, const xqp_string& value);
@@ -163,7 +181,6 @@ public:
 
   bool createENTITY(store::Item_t& result, xqpStringStore_t& value);
 
-  bool createFloat(store::Item_t& result, xqp_float value);
 
   bool createHexBinary (store::Item_t& result,  xqp_hexBinary value );
 
@@ -183,25 +200,9 @@ public:
 
   bool createName (store::Item_t& result,  xqpStringStore_t& value );
 
-  bool createNegativeInteger (store::Item_t& result,  xqp_integer value );
-
-  bool createNonNegativeInteger(store::Item_t& result, xqp_uinteger value );
-
-  bool createNonPositiveInteger(store::Item_t& result, xqp_integer value );
-
   bool createNormalizedString(store::Item_t& result, xqpStringStore_t& value );
 
-  bool createPositiveInteger(store::Item_t& result,  xqp_uinteger value );
-
   bool createToken(store::Item_t& result, xqpStringStore_t& value);
-
-  bool createUnsignedByte(store::Item_t& result, xqp_ubyte value);
-
-  bool createUnsignedInt(store::Item_t& result, xqp_uint value);
-
-  bool createUnsignedLong(store::Item_t& result, xqp_ulong value);
-
-  bool createUnsignedShort(store::Item_t& result, xqp_ushort value);
 
 
 

@@ -45,9 +45,10 @@ namespace simplestore {
 #define COMMENT_NODE(item) (reinterpret_cast<CommentNode*>((item).getp()))
 
 
-enum SchemaTypeNames
+enum SchemaTypeCode
 {
   XS_UNTYPED = 0,
+
   XS_UNTYPED_ATOMIC,
 
   XS_ANY,

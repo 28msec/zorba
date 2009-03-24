@@ -222,7 +222,11 @@ public:
    *  Implementations of the seven kinds of nodes should not override the definition of these
    *  methods.
    */
-  
+
+  /** Accessor for xs:string and its subtypes
+   */
+  virtual xqpStringStore* getString() const;
+
   /** Accessor for xs:base64Binary
    */
   virtual xqp_base64Binary 
@@ -233,46 +237,72 @@ public:
   virtual bool 
   getBooleanValue() const;
 
+  /** Accessor for xs:double
+   */
+  virtual const xqp_double&
+  getDoubleValue() const;
+
+  /** Accessor for xs:float
+   */
+  virtual const xqp_float&
+  getFloatValue() const;
+
   /** Accessor for xs:decimal, xs:(nonPositive | negative | nonNegativeInteger | positive)integer,
    * xs:(unsigned)long, xs:(unsigned)int, xs:(unsigned)short, xs:(unsigned)byte
    */
-  virtual xqp_decimal 
+  virtual xqp_decimal
   getDecimalValue() const;
 
-  /** Accessor for xs:int
-   */
-  virtual xqp_int 
-  getIntValue() const;
-  
   /** Accessor for xs:(nonPositive | negative | nonNegativeInteger | positive)integer,
    * xs:(unsigned)long, xs:(unsigned)int, xs:(unsigned)short, xs:(unsigned)byte
    */
   virtual xqp_integer 
   getIntegerValue() const;
 
+  /** Accessor for xs:nonNegativeInteager, xs:positiveInteger
+   */
+  virtual xqp_uinteger
+  getUnsignedIntegerValue() const;
+
   /** Accessor for xs:long
    */
   virtual xqp_long 
   getLongValue() const;
+
+  /** Accessor for xs:int
+   */
+  virtual xqp_int 
+  getIntValue() const;
 
   /** Accessor for xs:short
    */
   virtual xqp_short
   getShortValue() const;
 
-  /** Accessor for xs:nonNegativeInteager, xs:positiveInteger
+  /** Accessor for xs:byte
    */
-  virtual xqp_uinteger
-  getUnsignedIntegerValue() const;
+  virtual xqp_byte
+  getByteValue() const;
+
+  /** Accessor for xs:unsignedLong
+   */
+  virtual xqp_ulong
+  getUnsignedLongValue() const;
+
+  /** Accessor for xs:nonNegativeIntegerValue, xs:positiveInteger, xs:unsignedInt
+   */
+  virtual xqp_uint
+  getUnsignedIntValue() const;
+
+  /** Accessor for xs:unsignedShort
+   */
+  virtual xqp_ushort
+  getUnsignedShortValue() const;
 
   /** Accessor for xs:unsignedChar, xs:unsignedByte
    */
   virtual xqp_ubyte
   getUnsignedByteValue() const;
-
-
-  virtual xqp_byte
-  getByteValue() const;
 
 
   /** Accessor for xs:dateTime
@@ -315,13 +345,6 @@ public:
   virtual const xqp_gDay&
   getGDayValue() const;
 
-
-  /** Accessor for xs:double
-   */
-  virtual const xqp_double&
-  getDoubleValue() const;
-
-
   /** Accessor for xs:duration
    */
   virtual const xqp_duration&
@@ -346,34 +369,10 @@ public:
   getStringVectorValue() const;
 
 
-  /** Accessor for xs:float
-   */
-  virtual xqp_float
-  getFloatValue() const;
-
-
   /** Accessor for xs:hexBinary
    */
   virtual xqp_hexBinary
   getHexBinaryValue() const;
-
-
-  /** Accessor for xs:nonNegativeIntegerValue, xs:positiveInteger, xs:unsignedInt
-   */
-  virtual xqp_uint
-  getUnsignedIntValue() const;
-  
-
-  /** Accessor for xs:unsignedLong
-   */
-  virtual xqp_ulong
-  getUnsignedLongValue() const;
-
-
-  /** Accessor for xs:unsignedShort
-   */
-  virtual xqp_ushort
-  getUnsignedShortValue() const;
 
 
   /**
