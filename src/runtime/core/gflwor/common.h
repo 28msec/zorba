@@ -37,7 +37,7 @@ namespace zorba {
     
     
       // Utility function -- is this item null or a NaN?
-    inline bool empty_item (RuntimeCB* aRuntimeCB, store::Item_t s)
+    inline bool empty_item (store::Item_t s)
     {
       return (s == 0) || (s->isNaN());
     }

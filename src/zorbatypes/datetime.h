@@ -53,6 +53,27 @@ public:
   // 0.01 seconds as 10000, etc.
   static const int FRAC_SECONDS_UPPER_LIMIT; // = 1000000, maximum 6 digits
 
+protected:
+  // Only year may be negative, all other must be positive
+  // The year gives the sign of DateTime, Date, etc
+      
+  typedef enum 
+  {
+    YEAR_DATA = 0,
+    MONTH_DATA = 1,
+    DAY_DATA = 2,
+    HOUR_DATA = 3,
+    MINUTE_DATA = 4,
+    SECONDS_DATA = 5,
+    FRACSECONDS_DATA = 6
+  } DATA_TYPE;
+  
+  FACET_TYPE facet;
+
+  int data[7];
+      
+  TimeZone the_time_zone;
+
 public:
   /**
    *  Returns 0 on success
@@ -285,7 +306,7 @@ public:
    *
    */
   int 
-  compare(const DateTime* dt, int timezone_seconds) const;
+  compare(const DateTime* dt, long timezone_seconds) const;
       
   uint32_t 
   hash(int implicit_timezone_seconds) const;
@@ -352,27 +373,6 @@ protected:
   void adjustToFacet();
 
   void setFacet(FACET_TYPE a_facet);
-  
-protected:
-  // Only year may be negative, all other must be positive
-  // The year gives the sign of DateTime, Date, etc
-      
-  typedef enum 
-  {
-    YEAR_DATA = 0,
-    MONTH_DATA = 1,
-    DAY_DATA = 2,
-    HOUR_DATA = 3,
-    MINUTE_DATA = 4,
-    SECONDS_DATA = 5,
-    FRACSECONDS_DATA = 6
-  } DATA_TYPE;
-  
-  FACET_TYPE facet;
-
-  int data[7];
-      
-  TimeZone the_time_zone;
 };
 
 } /* namespace xqp */

@@ -116,7 +116,8 @@ namespace zorba {
     }
 
 
-    void GroupByState::init ( PlanState& aState, std::vector<XQPCollator*> * aGroupingCollators ) {
+    void GroupByState::init ( PlanState& aState, std::vector<XQPCollator*> * aGroupingCollators ) 
+    {
       PlanIteratorState::init ( aState );
       theValueCompareParam = new GroupCompareParam ( aState.theRuntimeCB, *aGroupingCollators );
       theGroupMap = new group_map_t ( theValueCompareParam );
@@ -281,10 +282,14 @@ namespace zorba {
     }
 
 
-    void GroupByIterator::openImpl ( PlanState& aPlanState, uint32_t& aOffset ) {
+    void GroupByIterator::openImpl ( PlanState& aPlanState, uint32_t& aOffset ) 
+    {
       StateTraitsImpl <GroupByState>::createState ( aPlanState, this->stateOffset, aOffset );
       GroupByState* lGroupByState = StateTraitsImpl<GroupByState>::getState(aPlanState, this->stateOffset);
       
+      XQPCollator* defaultCollator = aPlanState.theRuntimeCB->
+                                     theCollationCache->getDefaultCollator();
+
       std::vector<XQPCollator*> lCollators;
       std::vector<GroupingSpec>::const_iterator lGroupSpecIter;
       for (lGroupSpecIter = theGroupingSpecs.begin();
@@ -292,12 +297,15 @@ namespace zorba {
            ++lGroupSpecIter )
       {
         xqpString lTmp = lGroupSpecIter->theCollation;
-        if (lTmp.size() != 0) {
-          XQPCollator* lCollator = aPlanState.theRuntimeCB->theCollationCache->
-              getCollator(lTmp.theStrStore);
+        if (lTmp.size() != 0) 
+        {
+          XQPCollator* lCollator = aPlanState.theRuntimeCB->
+                                   theCollationCache->getCollator(lTmp.theStrStore);
           lCollators.push_back(lCollator);
-        }else{
-          lCollators.push_back(NULL);
+        }
+        else
+        {
+          lCollators.push_back(defaultCollator);
         }
       }
       lGroupByState->init(aPlanState, &lCollators); 

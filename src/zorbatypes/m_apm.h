@@ -469,16 +469,22 @@ public:
 	/* Comparison operators */
 	bool operator==(const MAPM &m) const /* Equality operator */
 	 {return m_apm_compare(cval(),m.cval())==0;}
+
 	bool operator!=(const MAPM &m) const /* Inequality operator */
 	 {return m_apm_compare(cval(),m.cval())!=0;}
+
 	bool operator<(const MAPM &m) const
 	 {return m_apm_compare(cval(),m.cval())<0;}
+
 	bool operator<=(const MAPM &m) const
 	 {return m_apm_compare(cval(),m.cval())<=0;}
+
 	bool operator>(const MAPM &m) const
 	 {return m_apm_compare(cval(),m.cval())>0;}
+
 	bool operator>=(const MAPM &m) const
 	 {return m_apm_compare(cval(),m.cval())>=0;}
+
 	long compare(const MAPM &m) const
   {return m_apm_compare(cval(),m.cval());}
 

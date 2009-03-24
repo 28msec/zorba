@@ -85,7 +85,7 @@ void NaryBaseIterator<IterType, StateType>::accept(PlanIterVisitor& v) const
   {                                     
     ( *iter )->accept ( v );                                           
   }                                                                    
-  v.endVisit(*static_cast<const IterType*>(this));                                                   
+  v.endVisit(*static_cast<const IterType*>(this));
 }
 
 

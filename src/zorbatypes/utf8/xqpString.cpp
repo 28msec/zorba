@@ -308,7 +308,7 @@ bool xqpStringStore::byteEqual(const char* src, uint32_t srcBytes) const
 }
 
 
-int xqpStringStore::compare(const xqpStringStore* src, XQPCollator* coll) const
+int xqpStringStore::compare(const xqpStringStore* src, const XQPCollator* coll) const
 {
   if ( ! coll )
   {
@@ -318,7 +318,7 @@ int xqpStringStore::compare(const xqpStringStore* src, XQPCollator* coll) const
   Collator::EComparisonResult result = ::Collator::EQUAL;
 
   result = ((Collator*)coll->theCollator)->compare(getUnicodeString(this),
-                                      getUnicodeString(src));
+                                                   getUnicodeString(src));
 
   return result;
 }

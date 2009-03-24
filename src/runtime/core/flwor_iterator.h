@@ -37,10 +37,12 @@ namespace zorba
 
   class FlworState;
 
- /**
-    Main FLWOR class designed according to http://www.w3.org/TR/xquery/#id-flwor-expressions. 
+/***************************************************************************//**
+  Main FLWOR class designed according to
+  http://www.w3.org/TR/xquery/#id-flwor-expressions. 
+
   The complete tuple-stream handling is done in this class. 
- */
+********************************************************************************/
 class FLWORIterator : public Batcher<FLWORIterator>
 {
 public:
@@ -51,18 +53,19 @@ public:
                         OrderKeyCmp> order_map_t;
 
   typedef ItemValuesCollHandleHashMap<std::vector<store::TempSeq_t>* > group_map_t;
-      
+
   /**
-     Wrappes a FOR or LET clause. 
-     It is combined to avoid dynamic casts during the runtime
-  */
+   * Wrappes a FOR or LET clause. There is one ForLetClause for each for/let
+   * variable. Note: we don't use separate ForClause and LetClause classes to
+   * avoid dynamic casts during the runtime.
+   */
   class ForLetClause 
   {
     friend class FLWORIterator;
     friend class PrinterVisitor;
 
   protected:
-    enum ForLetType {FOR, LET};
+    enum ForLetType { FOR, LET };
 
 #ifndef NDEBUG
     xqpStringStore             theVarName;
@@ -75,29 +78,17 @@ public:
     bool                       theNeedsMaterialization;
     
   public:
-    /**
-     * Creates a new ForClause
-     */
     ForLetClause(
         const var_expr* var,
         std::vector<ForVarIter_t> forVars,
         PlanIter_t& input);
           
-    /**
-     * Creates a new ForClause including positional variable bindings 
-     */
     ForLetClause(
         const var_expr* var,
         std::vector<ForVarIter_t> forVars,
         std::vector<ForVarIter_t> posVars,
         PlanIter_t& input);
     
-    /**
-     * Creates a new LetClause
-     * needsMaterialization indicates if it is necassary to materialize the LET-Binding:
-     * E.g. "let $x := (1,2,3) return ($x, $x)" needs materialization.
-     * but "let $x := (1,2,3) return if(test()) then $x else $x" doesn't
-     */
     ForLetClause(
         const var_expr* var,
         std::vector<LetVarIter_t> letVars,
@@ -110,6 +101,9 @@ public:
   };
 
   
+  /**
+   *
+   */
   class GroupingSpec
   {
     friend class FLWORIterator;
@@ -117,21 +111,28 @@ public:
     friend class GroupByClause;//Just for older gcc's
   
   protected:
-    PlanIter_t              theInput;
+    PlanIter_t                theInput;
     std::vector<ForVarIter_t> theInnerVars;
-    xqpString               theCollation;
+    xqpString                 theCollation;
   
   public:
     GroupingSpec(
         PlanIter_t aInput,
         std::vector<ForVarIter_t> aInnerVars,
         xqpString aCollation );
+
     void accept ( PlanIterVisitor& ) const;
+
     void open ( PlanState& planState, uint32_t& offset );
     void close ( PlanState& planState );
+
     uint32_t getStateSizeOfSubtree() const; 
   };
   
+
+  /**
+   *
+   */
   class GroupingOuterVar
   {
     friend class FLWORIterator;
@@ -139,18 +140,24 @@ public:
     friend class GroupByClause; //Just for older gcc's
   
   protected:
-    PlanIter_t              theInput;
+    PlanIter_t                theInput;
     std::vector<LetVarIter_t> theOuterVars;
   
   public:
     GroupingOuterVar(PlanIter_t aInput, std::vector<LetVarIter_t> aOuterVars);
+
     void accept ( PlanIterVisitor& ) const;
+
     void open ( PlanState& planState, uint32_t& offset );
     void close ( PlanState& planState );
+
     uint32_t getStateSizeOfSubtree() const; 
   };
   
 
+  /**
+   *
+   */
   class GroupByClause
   {
     friend class FLWORIterator;
@@ -173,7 +180,7 @@ public:
 
 
   /**
-   *  Wrapper for a OrderSpec
+   * Wrapper for a OrderSpec
    * http://www.w3.org/TR/xquery/#id-orderby-return
    */
   class OrderSpec
@@ -190,9 +197,10 @@ public:
     mutable XQPCollator  * theCollator; // TODO hack
 
   public:
-    void accept ( PlanIterVisitor& ) const;
     OrderSpec ( PlanIter_t orderByIter, bool empty_least, bool descending );
     OrderSpec ( PlanIter_t orderByIter, bool empty_least, bool descending, const xqpString& collation );
+
+    void accept ( PlanIterVisitor& ) const;
   };
   
 
@@ -209,8 +217,9 @@ public:
     bool                   stable;
 
   public:
-    void accept ( PlanIterVisitor& ) const;
     OrderByClause ( std::vector<OrderSpec> orderSpecs, bool stable );
+
+    void accept ( PlanIterVisitor& ) const;
   };
 
 
@@ -220,43 +229,43 @@ public:
    */
   class OrderKeyCmp
   {
+  private:
+    std::vector<OrderSpec> * mOrderSpecs;
+    TypeManager            * theTypeManager;
+    long                     theTimezone;
+
   public:
-    OrderKeyCmp() : mOrderSpecs ( 0 ) {}
+    OrderKeyCmp() : mOrderSpecs(0), theTypeManager(0), theTimezone(0) {}
 
-    OrderKeyCmp ( std::vector<OrderSpec>* aOrderSpecs ) 
+    OrderKeyCmp(RuntimeCB* rcb, std::vector<OrderSpec>* aOrderSpecs) 
       :
-      mOrderSpecs ( aOrderSpecs ) {}
+      mOrderSpecs ( aOrderSpecs ) 
+    {
+      theTypeManager = rcb->theStaticContext->get_typemanager();
+      theTimezone = rcb->theDynamicContext->get_implicit_timezone();
+    }
 
-    /**
-     * The key comparison function, a Strict Weak Ordering whose argument type is key_type;
-     * it returns true if its first argument is less than its second argument, and false otherwise.
-     * This is also defined as multimap::key_compare.
-     */
     bool operator() (
         const std::vector<store::Item_t>& s1,
         const std::vector<store::Item_t>& s2 ) const;
           
     /**
      * Does the actual comparision
-     * @return    -1, if item0 &lt; item1
+     * @return   -1, if item0 &lt; item1
      *            0, if item0 == item1
      *            1, if item0 &gt; item1
      */
     inline int8_t compare(
-        RuntimeCB* aRuntimeCB,
         const store::Item_t& s1,
         const store::Item_t& s2,
         bool asc,
         bool emptyLeast,
-        XQPCollator* collator = 0) const;
+        XQPCollator* collator) const;
     
     /**
      * Helper functions to switch the ordering between ascending and descending
      */
     inline int8_t descAsc(int8_t result, bool asc) const;
-    
-  private:
-    std::vector<OrderSpec>* mOrderSpecs; //Pointer to the OrderSpec to do the comparison accordingly  
   };
        
   

@@ -38,7 +38,7 @@ namespace zorba
 {
 
   // Utility function -- is this item null or a NaN?
-static bool empty_item (RuntimeCB* aRuntimeCB, store::Item_t s)
+static bool empty_item(store::Item_t s)
 {
   return (s == 0) || (s->isNaN());
 }
@@ -51,6 +51,14 @@ static bool empty_item (RuntimeCB* aRuntimeCB, store::Item_t s)
 /////////////////////////////////////////////////////////////////////////////////
 
 
+/***************************************************************************//**
+  Creates a new ForClause for a FOR variable
+
+  @param var The var_expr for this FOR variable.
+  @param aForVars Vector of ForVar iterators representing the references to this
+         variable.
+  @param aInput The iterator computing the value of this variable.
+********************************************************************************/
 FLWORIterator::ForLetClause::ForLetClause(
     const var_expr* var,
     std::vector<ForVarIter_t> aForVars,
@@ -62,9 +70,20 @@ FLWORIterator::ForLetClause::ForLetClause(
   theType ( FOR ),
   theForVars ( aForVars ),
   theInput ( aInput )
-{ }
+{ 
+}
 
 
+/***************************************************************************//**
+  Creates a new ForClause for a FOR var and its associated positional var.
+
+  @param var The var_expr for this FOR variable.
+  @param aForVars Vector of ForVar iterators representing the references to this
+         variable.
+  @param aPosVars Vector of ForVar iterators representing the references to the
+         associated positional variable.
+  @param aInput The iterator computing the value of this variable.
+********************************************************************************/
 FLWORIterator::ForLetClause::ForLetClause (
     const var_expr* var,
     std::vector<ForVarIter_t> aForVars,
@@ -82,6 +101,18 @@ FLWORIterator::ForLetClause::ForLetClause (
 }
 
 
+/***************************************************************************//**
+  Creates a new ForClause for a LET variable
+
+  @param var The var_expr for this LET variable.
+  @param aLetVars Vector of ForVar iterators representing the references to this
+         variable.
+  @param aInput The iterator computing the value of this variable.
+  @param needsMaterialization Indicates if it is necassary to materialize the
+         LET variable. For example "let $x := (1,2,3) return ($x, $x)" needs
+         materialization, but "let $x := (1,2,3) return if(test()) then $x else $x"
+         doesn't.
+********************************************************************************/
 FLWORIterator::ForLetClause::ForLetClause (
     const var_expr* var,
     std::vector<LetVarIter_t> aLetVars,
@@ -127,63 +158,84 @@ xqpStringStore FLWORIterator::ForLetClause::getVarName() const
 #endif
 }
 
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  GroupByClause                                                               //
+//  GroupByClause                                                              //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
 
 
 FLWORIterator::GroupingOuterVar::GroupingOuterVar(
-  PlanIter_t aInput, 
-  std::vector<LetVarIter_t> aOuterVars)
-  : theInput(aInput), theOuterVars(aOuterVars)
-{}
+    PlanIter_t aInput, 
+    std::vector<LetVarIter_t> aOuterVars)
+  : 
+  theInput(aInput),
+  theOuterVars(aOuterVars)
+{
+}
+
 
 void FLWORIterator::GroupingOuterVar::accept ( PlanIterVisitor& v ) const
 {
   theInput->accept(v);
 }
 
+
 void FLWORIterator::GroupingOuterVar::open ( PlanState& planState, uint32_t& offset )
 {
   theInput->open(planState, offset);
 }
+
 
 void FLWORIterator::GroupingOuterVar::close ( PlanState& planState )
 {
   theInput->close(planState);
 }
 
+
 FLWORIterator::GroupingSpec::GroupingSpec(
-  PlanIter_t aInput, std::vector<ForVarIter_t> aInnerVars, xqpString aCollation )
-  : theInput(aInput), theInnerVars(aInnerVars), theCollation(aCollation)
-{}
+    PlanIter_t aInput,
+    std::vector<ForVarIter_t> aInnerVars,
+    xqpString aCollation )
+  :
+  theInput(aInput),
+  theInnerVars(aInnerVars),
+  theCollation(aCollation)
+{
+}
+
 
 void FLWORIterator::GroupingSpec::accept ( PlanIterVisitor& v ) const
 {
   theInput->accept(v);
 }
 
+
 void FLWORIterator::GroupingSpec::open ( PlanState& planState, uint32_t& offset )
 {
   theInput->open(planState, offset);
 }
+
 
 void FLWORIterator::GroupingSpec::close ( PlanState& planState )
 {
   theInput->close(planState);
 }
 
+
 FLWORIterator::GroupByClause::GroupByClause (
-  std::vector<GroupingSpec> aGroupingSpecs,
-  std::vector<GroupingOuterVar> aOuterVars,
-  PlanIter_t aWhere)
-: theGroupingSpecs ( aGroupingSpecs ), 
+    std::vector<GroupingSpec> aGroupingSpecs,
+    std::vector<GroupingOuterVar> aOuterVars,
+    PlanIter_t aWhere)
+  :
+  theGroupingSpecs ( aGroupingSpecs ), 
   theOuterVars ( aOuterVars ),
   theWhere(aWhere)
-{}
+{
+}
+
 
 void FLWORIterator::GroupByClause::accept ( PlanIterVisitor& v ) const
 { 
@@ -195,8 +247,11 @@ void FLWORIterator::GroupByClause::accept ( PlanIterVisitor& v ) const
     iter->accept(v);
     v.endVisitFlworGroupBySpec();
   }
+
   std::vector<GroupingOuterVar>::const_iterator iterOuterVars;
-  for ( iterOuterVars = theOuterVars.begin() ; iterOuterVars != theOuterVars.end(); iterOuterVars++ )
+  for ( iterOuterVars = theOuterVars.begin() ;
+        iterOuterVars != theOuterVars.end();
+        iterOuterVars++ )
   {
     v.beginVisitFlworGroupByOuterVar();
     iterOuterVars->accept(v);
@@ -205,6 +260,7 @@ void FLWORIterator::GroupByClause::accept ( PlanIterVisitor& v ) const
   v.endVisitFlworGroupBy();
 }
 
+
 void FLWORIterator::GroupByClause::open ( PlanState& planState, uint32_t& offset )
 { 
   std::vector<GroupingSpec>::iterator iter;
@@ -212,6 +268,7 @@ void FLWORIterator::GroupByClause::open ( PlanState& planState, uint32_t& offset
   {
     iter->open ( planState, offset  );
   }
+
   std::vector<GroupingOuterVar>::iterator iterOuterVars;
   for ( iterOuterVars = theOuterVars.begin() ; iterOuterVars != theOuterVars.end(); iterOuterVars++ )
   {
@@ -221,6 +278,7 @@ void FLWORIterator::GroupByClause::open ( PlanState& planState, uint32_t& offset
   if (theWhere != 0)
     theWhere->open ( planState, offset );
 }
+
 
 void FLWORIterator::GroupByClause::close ( PlanState& planState )
 {
@@ -276,6 +334,7 @@ uint32_t FLWORIterator::GroupByClause::getStateSizeOfSubtree() const
   return size;
 }
 
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  OrderSpec                                                                  //
@@ -287,12 +346,14 @@ FLWORIterator::OrderSpec::OrderSpec (
     bool aEmpty_least,
     bool aDescending )
   :
-  theOrderByIter ( aOrderByIter ),
-  theEmptyLeast ( aEmpty_least ),
-  theDescending ( aDescending ),
+  theOrderByIter( aOrderByIter ),
+  theEmptyLeast( aEmpty_least ),
+  theDescending( aDescending ),
+  theRuntimeCB(0),
   theCollator(0)
 {
 }
+
 
 FLWORIterator::OrderSpec::OrderSpec (
     PlanIter_t aOrderByIter,
@@ -300,13 +361,15 @@ FLWORIterator::OrderSpec::OrderSpec (
     bool aDescending,
     const xqpString& aCollation)
   :
-  theOrderByIter ( aOrderByIter ),
-  theEmptyLeast ( aEmpty_least ),
-  theDescending ( aDescending ),
+  theOrderByIter( aOrderByIter ),
+  theEmptyLeast( aEmpty_least ),
+  theDescending( aDescending ),
+  theRuntimeCB(0),
   theCollation(aCollation),
   theCollator(0)
 {
 }
+
 
 void FLWORIterator::OrderSpec::accept ( PlanIterVisitor& v ) const
 {
@@ -350,48 +413,11 @@ void FLWORIterator::OrderByClause::accept ( PlanIterVisitor& v ) const
 /////////////////////////////////////////////////////////////////////////////////
 
 
-int8_t FLWORIterator::OrderKeyCmp::compare(
-    RuntimeCB* aRuntimeCB,
-    const store::Item_t& s1,
-    const store::Item_t& s2,
-    bool desc,
-    bool emptyLeast,
-    XQPCollator* collator) const
-{
-  if ( empty_item (aRuntimeCB, s1) )
-  {
-    if ( empty_item (aRuntimeCB, s2) )
-      return descAsc ( 0, desc );
-    else
-      return descAsc (emptyLeast ? -1 : 1, desc);
-  }
-  else if ( empty_item (aRuntimeCB, s2) )
-  {
-    return descAsc (emptyLeast ? 1 : -1, desc);
-  }
-  else
-  {
-    // danm: both valueCompare (x, NaN) and valueCompare (NaN, x) return 2.
-    // That's why empty_item is needed.
-    store::Item_t ls1(s1);
-    store::Item_t ls2(s2);
-    int8_t result = CompareIterator::valueCompare ( aRuntimeCB, ls1 , ls2, collator );
-    if (result > 1 || result < -1) {
-      ZORBA_ERROR_DESC( XPTY0004, "Non-comparable types found while sorting" );
-      
-    }
-    return descAsc (result , desc );
-  }
-}
-
-
-int8_t FLWORIterator::OrderKeyCmp::descAsc ( int8_t result, bool desc ) const
-{
-  ZORBA_ASSERT (result <= 1 && result >= -1);
-  return desc ? -result : result;
-}
-
-
+/*******************************************************************************
+  The key comparison function, a Strict Weak Ordering whose argument type is
+  key_type. It returns true if its first argument is less than its second argument,
+  and false otherwise. This is also defined as multimap::key_compare.
+********************************************************************************/
 bool FLWORIterator::OrderKeyCmp::operator() (
     const std::vector<store::Item_t>& s1,
     const std::vector<store::Item_t>& s2 ) const
@@ -405,8 +431,7 @@ bool FLWORIterator::OrderKeyCmp::operator() (
 
   while ( s1iter != s1.end() )
   {
-    int8_t cmp = compare(orderSpecIter->theRuntimeCB,
-                         *s1iter,
+    int8_t cmp = compare(*s1iter,
                          *s2iter,
                          orderSpecIter->theDescending,
                          orderSpecIter->theEmptyLeast,
@@ -426,6 +451,50 @@ bool FLWORIterator::OrderKeyCmp::operator() (
   return false;
 }
 
+
+int8_t FLWORIterator::OrderKeyCmp::compare(
+    const store::Item_t& s1,
+    const store::Item_t& s2,
+    bool desc,
+    bool emptyLeast,
+    XQPCollator* collator) const
+{
+  if ( empty_item(s1) )
+  {
+    if ( empty_item(s2) )
+      return descAsc ( 0, desc );
+    else
+      return descAsc (emptyLeast ? -1 : 1, desc);
+  }
+  else if ( empty_item (s2) )
+  {
+    return descAsc (emptyLeast ? 1 : -1, desc);
+  }
+  else
+  {
+    // danm: both valueCompare (x, NaN) and valueCompare (NaN, x) return 2.
+    // That's why empty_item is needed.
+    store::Item_t ls1(s1);
+    store::Item_t ls2(s2);
+    int8_t result = CompareIterator::valueCompare(ls1 , ls2,
+                                                  theTypeManager,
+                                                  timezone,
+                                                  collator);
+    if (result > 1 || result < -1) 
+    {
+      ZORBA_ERROR_DESC( XPTY0004, "Non-comparable types found while sorting" );
+      
+    }
+    return descAsc (result , desc );
+  }
+}
+
+
+int8_t FLWORIterator::OrderKeyCmp::descAsc ( int8_t result, bool desc ) const
+{
+  ZORBA_ASSERT (result <= 1 && result >= -1);
+  return desc ? -result : result;
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -483,6 +552,9 @@ FLWORIterator::~FLWORIterator()
 
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool FLWORIterator::nextImpl ( store::Item_t& result, PlanState& planState ) const
 {
   //Needed variables
@@ -608,8 +680,12 @@ bool FLWORIterator::nextImpl ( store::Item_t& result, PlanState& planState ) con
 }
 
 
-void FLWORIterator::groupAndOrder ( FlworState* flworState,
-                                    PlanState& planState ) const
+/*******************************************************************************
+
+********************************************************************************/
+void FLWORIterator::groupAndOrder(
+    FlworState* flworState,
+    PlanState& planState ) const
 {
   FLWORIterator::group_map_t* lGroupMap = flworState->groupMap;
   FLWORIterator::group_map_t::iterator lGroupMapIter = lGroupMap->begin();
@@ -623,6 +699,7 @@ void FLWORIterator::groupAndOrder ( FlworState* flworState,
     ++lGroupMapIter;
   }
 }
+
 
 void FLWORIterator::bindGroupBy ( FLWORIterator::group_map_t::iterator lGroupMapIter,
                                   FlworState* flworState,
@@ -936,7 +1013,10 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
   FlworState* flworState = StateTraitsImpl<FlworState>::getState(planState, this->stateOffset);
 
   //we allocate resources
-  if(doGroupBy){
+  if(doGroupBy)
+  {
+    XQPCollator* defaultCollator = planState.theRuntimeCB->
+                                   theCollationCache->getDefaultCollator();
     std::vector<XQPCollator*> lCollators;
     std::vector<GroupingSpec>::const_iterator lGroupSpecIter;
     for (lGroupSpecIter = theGroupByClause->theGroupingSpecs.begin();
@@ -944,24 +1024,32 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
          ++lGroupSpecIter )
     {
       xqpString lTmp = lGroupSpecIter->theCollation;
-      if (lTmp.size() != 0) {
-        XQPCollator* lCollator = planState.theRuntimeCB->theCollationCache->
-            getCollator(lTmp.theStrStore);
+      if (lTmp.size() != 0) 
+      {
+        XQPCollator* lCollator = planState.theRuntimeCB->
+                                 theCollationCache->getCollator(lTmp.theStrStore);
         lCollators.push_back(lCollator);
-      }else{
-        lCollators.push_back(NULL);
+      }
+      else
+      {
+        lCollators.push_back(defaultCollator);
       }
     }
+
     flworState->init(planState,
                        theNumBindings,
                        &orderByClause->orderSpecs,
                        &lCollators); 
-  }else if ( doOrderBy ) {
+  }
+  else if ( doOrderBy ) 
+  {
     flworState->init(planState,
                      theNumBindings,
                      &orderByClause->orderSpecs,
                      0);
-  } else {
+  }
+  else 
+  {
     flworState->init(planState, theNumBindings);
   }
 
@@ -993,12 +1081,18 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
          iter++ )
     {
       iter->theOrderByIter->open ( planState, offset );
-      iter->theRuntimeCB = planState.theRuntimeCB; // TODO check if this is the right place and the right runtimecb
+
+      iter->theRuntimeCB = planState.theRuntimeCB;
       if (iter->theCollation.size() != 0) 
       {
         xqpString lTmp = iter->theCollation;
         iter->theCollator = planState.theRuntimeCB->theCollationCache->
                             getCollator(lTmp.theStrStore);
+      }
+      else
+      {
+        iter->theCollator = planState.theRuntimeCB->theCollationCache->
+                            getDefaultCollator();
       }
     }
   }
@@ -1006,6 +1100,9 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void FLWORIterator::resetImpl ( PlanState& planState ) const
 {
   returnClause->reset(planState);
@@ -1051,6 +1148,9 @@ void FLWORIterator::resetImpl ( PlanState& planState ) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void FLWORIterator::closeImpl ( PlanState& planState )
 {
   returnClause->close(planState);
@@ -1082,8 +1182,18 @@ void FLWORIterator::closeImpl ( PlanState& planState )
 }
 
 
-uint32_t FLWORIterator::getStateSize() const  { return sizeof ( FlworState); }
+/*******************************************************************************
 
+********************************************************************************/
+uint32_t FLWORIterator::getStateSize() const  
+{
+  return sizeof ( FlworState); 
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 uint32_t FLWORIterator::getStateSizeOfSubtree() const
 {
   int32_t size = this->getStateSize();
@@ -1116,6 +1226,9 @@ uint32_t FLWORIterator::getStateSizeOfSubtree() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void FLWORIterator::accept ( PlanIterVisitor& v ) const
 {
   // TODO
@@ -1188,6 +1301,9 @@ FlworState::~FlworState()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void FlworState::init(PlanState& planState, size_t numVars)
 {
   PlanIteratorState::init(planState);
@@ -1197,6 +1313,9 @@ void FlworState::init(PlanState& planState, size_t numVars)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void FlworState::init(
     PlanState& planState,
     size_t numVars,
@@ -1204,17 +1323,23 @@ void FlworState::init(
     std::vector<XQPCollator*> * groupingCollators)
 {
   init (planState, numVars);
-  if(orderSpecs!=0){
-    orderMap = new FLWORIterator::order_map_t(orderSpecs);
+  if(orderSpecs != 0)
+  {
+    FLWORIterator::OrderKeyCmp keyCmp(planState.theRuntimeCB, orderSpecs);
+    orderMap = new FLWORIterator::order_map_t(keyCmp);
   }
   
-  if(groupingCollators!=0){
+  if(groupingCollators != 0)
+  {
     valueCompareParam = new GroupCompareParam(planState.theRuntimeCB, *groupingCollators);
     groupMap = new FLWORIterator::group_map_t(valueCompareParam);
   }
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void FlworState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);

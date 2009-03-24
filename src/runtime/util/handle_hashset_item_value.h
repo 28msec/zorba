@@ -31,24 +31,18 @@ namespace zorba
 class ValueCompareParam
 {
 public:
-  ValueCompareParam(RuntimeCB* aRuntimeCB) : theRuntimeCB(aRuntimeCB) {}
-
-  RuntimeCB * theRuntimeCB;
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class ValueCollCompareParam
-{
-public:
-  ValueCollCompareParam(RuntimeCB* aRuntimeCB)
+  ValueCompareParam(RuntimeCB* aRuntimeCB)
     :
     theRuntimeCB(aRuntimeCB),
-    theCollator(0) {}
+    theTypeManager(theRuntimeCB->theStaticContext->get_typemanager()),
+    theTimezone(theRuntimeCB->theDynamicContext->get_implicit_timezone()),
+    theCollator(theRuntimeCB->theCollationCache->getDefaultCollator()) 
+  {
+  }
 
   RuntimeCB   * theRuntimeCB;
+  TypeManager * theTypeManager;
+  long          theTimezone;
   XQPCollator * theCollator;
 };
 
@@ -66,13 +60,16 @@ public:
     ValueCompareParam * theCompareParam;
 
   public:
-    CompareFunction(ValueCompareParam* comp) : theCompareParam(comp) {}
+    CompareFunction(ValueCompareParam* comp) : theCompareParam(comp) { }
 
     bool equal(const store::Item_t& item1, const store::Item_t& item2)
     {
       store::Item_t t1(item1);
       store::Item_t t2(item2);
-      return CompareIterator::valueEqual(theCompareParam->theRuntimeCB, t1, t2) == 0; 
+      return 1 == CompareIterator::valueEqual(t1, t2,
+                                              theCompareParam->theTypeManager,
+                                              theCompareParam->theTimezone,
+                                              theCompareParam->theCollator); 
     }
 
     uint32_t hash(const store::Item_t& t)
@@ -120,10 +117,10 @@ public:
   class CompareFunction
   {
   private:
-    ValueCollCompareParam * theCompareParam;
+    ValueCompareParam * theCompareParam;
 
   public:
-    CompareFunction(ValueCollCompareParam* comp) : theCompareParam(comp) {}
+    CompareFunction(ValueCompareParam* comp) : theCompareParam(comp) {}
 
     bool equal(const store::Item_t& item1, const store::Item_t& item2)
     {
@@ -131,26 +128,26 @@ public:
       assert (item2 != NULL);
       store::Item_t t1(item1);
       store::Item_t t2(item2);
-      return CompareIterator::valueEqual(theCompareParam->theRuntimeCB,
-                                         t1, t2,
-                                         (theCompareParam->theCollator)) == 0; 
+      return CompareIterator::valueEqual(t1, t2,
+                                         theCompareParam->theTypeManager,
+                                         theCompareParam->theTimezone,
+                                         theCompareParam->theCollator); 
     }
 
     uint32_t hash(const store::Item_t& t)
     {
       assert (t != NULL);
-      return t->hash(theCompareParam->theRuntimeCB->theDynamicContext->get_implicit_timezone(),
-                     theCompareParam->theCollator);
+      return t->hash(theCompareParam->theTimezone,  theCompareParam->theCollator);
     }
   };
 
 private:
-  ValueCollCompareParam                  * theCompareParam;
+  ValueCompareParam                      * theCompareParam;
   CompareFunction                          theCompareFunction;
   HashSet<store::Item_t, CompareFunction>  theSet;
 
 public:
-  ItemValueCollHandleHashSet(ValueCollCompareParam* compParam, ulong size = 1024)
+  ItemValueCollHandleHashSet(ValueCompareParam* compParam, ulong size = 1024)
   :
   theCompareParam(compParam),
   theCompareFunction(compParam),

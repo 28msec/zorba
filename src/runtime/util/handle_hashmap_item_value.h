@@ -39,12 +39,16 @@ class GroupCompareParam
  public:
   GroupCompareParam(RuntimeCB* aRuntimeCB, std::vector<XQPCollator*> aCollators)
     :
-    theRuntimeCB ( aRuntimeCB ),
+    theRuntimeCB(aRuntimeCB),
+    theTypeManager(theRuntimeCB->theStaticContext->get_typemanager()),
+    theTimezone(theRuntimeCB->theDynamicContext->get_implicit_timezone()),
     theCollators(aCollators)
-    {
-    }
+  {
+  }
 
   RuntimeCB                 * theRuntimeCB;
+  TypeManager               * theTypeManager;
+  long                        theTimezone;
   std::vector<XQPCollator*>   theCollators;
 };
 
@@ -60,7 +64,7 @@ class ItemValuesCollHandleHashMap
     GroupCompareParam * theCompareParam;
 
   public:
-    CompareFunction(GroupCompareParam* comp) : theCompareParam(comp) {}
+    CompareFunction(GroupCompareParam* comp) : theCompareParam(comp) { }
 
     bool equal(const GroupKey* t1, const GroupKey* t2)
     {
@@ -88,9 +92,11 @@ class ItemValuesCollHandleHashMap
         {
           store::Item_t item1 = *iter1;
           store::Item_t item2 = *iter2;
-          if(CompareIterator::valueEqual(theCompareParam->theRuntimeCB,
-                                            item1, item2,
-                                            ( *lCollIter ) ) != 0)
+          if(CompareIterator::valueEqual(item1,
+                                         item2,
+                                         theCompareParam->theTypeManager,
+                                         theCompareParam->theTimezone,
+                                         (*lCollIter)) != 1)
           {
             return false;                                 
           }
@@ -112,9 +118,9 @@ class ItemValuesCollHandleHashMap
       while(lItemIter != t->theTypedKey.end())
       {
         store::Item_t lCurItem = (*lItemIter);
-        if(lCurItem != NULL){
-          hash += (*lItemIter)->hash(theCompareParam->theRuntimeCB->theDynamicContext->get_implicit_timezone(),
-                                     *lCollIter );
+        if(lCurItem != NULL)
+        {
+          hash += (*lItemIter)->hash(theCompareParam->theTimezone, *lCollIter);
         }
         ++lCollIter;
         ++lItemIter;

@@ -138,6 +138,17 @@ public:
   bool operator>=(const Integer&) const;
   bool operator>=(const Decimal& aDecimal) const { return theDecimal >= aDecimal.theDecimal; }
 
+  long compare(const Decimal& other) const
+  {
+#ifndef ZORBA_NO_BIGNUMBERS
+    return theDecimal.compare(other.theDecimal);
+#else
+    return (theDecimal < other.theDecimal ?
+            -1 :
+            (theDecimal == other.theDecimal ? 0 : 1)); 
+#endif
+  }
+
   xqpString toString() const;
   xqpString toIntegerString() const;
   uint32_t hash() const;

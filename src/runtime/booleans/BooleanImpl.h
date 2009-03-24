@@ -30,19 +30,19 @@ namespace zorba
   class RuntimeCB; // TODO we should have a shared_runtime_types.h
   class GenericCast;
 
-  /*______________________________________________________________________
-  |
-  | 15.1.1 fn:boolean
-  | fn:boolean($arg as item()*) as xs:boolean
-  |
-  | Computes the effective boolean value of the sequence $arg.
-  |_______________________________________________________________________*/
+
+/*******************************************************************************
+  15.1.1 fn:boolean
+  fn:boolean($arg as item()*) as xs:boolean
+  
+  Computes the effective boolean value of the sequence $arg.
+********************************************************************************/
 class FnBooleanIterator : public UnaryBaseIterator<FnBooleanIterator, PlanIteratorState>
 {
 private:
   bool theNegate;
 
- public:
+public:
   FnBooleanIterator ( const QueryLoc& loc, PlanIter_t& aIter, bool aNegate = false );
 
   virtual ~FnBooleanIterator();
@@ -67,7 +67,10 @@ private:
   virtual void accept(PlanIterVisitor&) const;
 };
 
-  
+
+/*******************************************************************************
+
+********************************************************************************/
 class LogicIterator : public BinaryBaseIterator<LogicIterator, PlanIteratorState>
 {
 public:
@@ -75,100 +78,54 @@ public:
     AND, OR
   };
     
- private:
+private:
   LogicType theLogicType;
       
- public:
-  LogicIterator ( const QueryLoc& loc, PlanIter_t aChild0, PlanIter_t aChild1, LogicType aLogicType);
+public:
+  LogicIterator(
+        const QueryLoc& loc,
+        PlanIter_t aChild0,
+        PlanIter_t aChild1,
+        LogicType aLogicType);
+
   virtual ~LogicIterator();
       
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
-}; /* class LogicIterator */
-
+};
 
 
 /*******************************************************************************
-
+  Iterator for general and value comparisons
 ********************************************************************************/
 class CompareIterator : public BinaryBaseIterator<CompareIterator, PlanIteratorState>
 {
 private:
-  CompareConsts::CompareType theCompType;
+  CompareConsts::CompareType  theCompType;
+  bool                        theIsGeneralComparison;
+  TypeManager               * theTypeManager;
+  long                        theTimezone;
+  XQPCollator               * theCollation;
 
 public:
   CompareIterator (
         const QueryLoc& loc,
         PlanIter_t theChild0,
         PlanIter_t theChild1,
-        CompareConsts::CompareType aCompType );
+        CompareConsts::CompareType aCompType);
 
   virtual ~CompareIterator();
 
+  void openImpl(PlanState& planState, uint32_t& offset);
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
       
-  bool isValueComparison() const
-  {
-    bool retVal = false;
-    switch(theCompType)
-    {
-    case CompareConsts::VALUE_EQUAL:
-    case CompareConsts::VALUE_NOT_EQUAL:
-    case CompareConsts::VALUE_LESS:
-    case CompareConsts::VALUE_LESS_EQUAL:
-    case CompareConsts::VALUE_GREATER:
-    case CompareConsts::VALUE_GREATER_EQUAL:
-      retVal = true;
-      break;
-    default:
-      retVal = false;
-      break;
-    }
-    return retVal;
-  }
-
-  bool isGeneralComparison() const
-  {
-    bool retVal = false;
-    switch(theCompType)
-    {
-    case CompareConsts::GENERAL_EQUAL:
-    case CompareConsts::GENERAL_NOT_EQUAL:
-    case CompareConsts::GENERAL_LESS:
-    case CompareConsts::GENERAL_LESS_EQUAL:
-    case CompareConsts::GENERAL_GREATER:
-    case CompareConsts::GENERAL_GREATER_EQUAL:
-      retVal = true;
-      break;
-    default:
-      retVal = false;
-      break;
-    }
-    return retVal;
-  }
-
-  bool isNodeComparison() const
-  {
-    bool retVal = false;
-    switch(theCompType)
-    {
-    case CompareConsts::NODE_EQUAL:
-    case CompareConsts::NODE_NOT_EQUAL:
-      retVal = true;
-      break;
-    default:
-      retVal = false;
-      break;
-    }
-    return retVal;
-  }
-
   virtual void accept(PlanIterVisitor&) const;
     
 
   /**
-   * Checks if the two passed items contains the same value (without castings
+   * Checks if the two passed items contain the same value (without castings
    * and promotions which are used in general and value comparison).
    *
    * @param item0 
@@ -179,11 +136,12 @@ public:
    *          1, if item0 != item1
    *         -2, if it is not possible to compare the values of the passed items
    */
-  static int8_t equal(
-        RuntimeCB* aRuntimeCB,
+  static long equal(
         const store::Item_t& aItem0,
-        const store::Item_t& aItem1, 
-        XQPCollator* aCollation = 0);
+        const store::Item_t& aItem1,
+        TypeManager* typemgr,
+        long timezone,
+        XQPCollator* aCollation);
 
   /**
    * Compares two items (without castings and promotions which are used in general 
@@ -199,11 +157,12 @@ public:
    *             when an Item has the value NaN)
    *         -2, if it is not possible to compare the values the two passed items
    */
-  static int8_t compare(
-        RuntimeCB* aRuntimeCB,
+  static long compare(
         const store::Item_t& aItem0,
-        const store::Item_t& aItem1, 
-        XQPCollator* aCollation = 0);
+        const store::Item_t& aItem1,
+        TypeManager* typemgr,
+        long timezone, 
+        XQPCollator* aCollation);
 
   /**
    * Value comparison of the passed two items with the operator 
@@ -216,12 +175,13 @@ public:
    * @return 
    */
   static bool valueComparison(
-        const QueryLoc &,
-        RuntimeCB* aRuntimeCB,
+        const QueryLoc& loc,
         store::Item_t& aItem0,
         store::Item_t& aItem1, 
         CompareConsts::CompareType aCompType,
-        XQPCollator* aCollation = 0);
+        TypeManager* typemgr,
+        long timezone,
+        XQPCollator* aCollation);
 
   /**
    * Value Equal on the passed items
@@ -231,11 +191,12 @@ public:
    * @param aCollation optional collation parameter 
    * @return 0 (equal), 1 (not equal), -2 (value equal not possible)
    */
-  static int8_t valueEqual(
-        RuntimeCB*     aRuntimeCB,
+  static long valueEqual(
         store::Item_t& aItem0,
-        store::Item_t& aItem1, 
-        XQPCollator*   aCollation = 0);
+        store::Item_t& aItem1,
+        TypeManager* typemgr,
+        long timezone, 
+        XQPCollator* aCollation);
       
   /**
    * Value Comparison on the passed items
@@ -248,11 +209,12 @@ public:
    *          2 (not equal, not bigger, not smaller),
    *         -2 (value comparison not possible)
    */
-  static int8_t valueCompare(
-        RuntimeCB* aRuntimeCB,
+  static long valueCompare(
         store::Item_t& aItem0,
-        store::Item_t& aItem1, 
-        XQPCollator* aCollation = 0);
+        store::Item_t& aItem1,
+        TypeManager* typemgr,
+        long timezone, 
+        XQPCollator* aCollation);
 
   /**
    * General comparison of the passed two items with the operator 
@@ -265,12 +227,13 @@ public:
    * @return 
    */
   static bool generalComparison(
-        const QueryLoc &,
-        RuntimeCB*     aRuntimeCB,
+        const QueryLoc& loc,
         store::Item_t& aItem0,
         store::Item_t& aItem_1,
         CompareConsts::CompareType aCompType,
-        XQPCollator*   aCollation = 0);
+        TypeManager* typemgr,
+        long timezone,
+        XQPCollator*   aCollation);
       
   /**
    * General Equal on the passed items
@@ -279,11 +242,12 @@ public:
    * @param aCollation options collation parameter 
    * @return 0 (equal), 1 (not equal), -2 (general equal not possible)
    */
-  static int8_t generalEqual(
-        RuntimeCB*     aRuntimeCB,
+  static long generalEqual(
         store::Item_t& aItem0,
-        store::Item_t& aItem1, 
-        XQPCollator*   aCollation = 0);
+        store::Item_t& aItem1,
+        TypeManager* typemgr,
+        long timezone,
+        XQPCollator* aCollation);
       
   /**
    * General Comparison on the passed items
@@ -293,22 +257,23 @@ public:
    * @return -1 (smaller), 0 (equal), 1 (bigger), 
    *          2 (not equal, not bigger, not smaller), -2 (general comparison not possible)
    */
-  static int8_t generalCompare(
-        RuntimeCB* aRuntimeCB,
+  static long generalCompare(
         store::Item_t& aItem0,
-        store::Item_t& aItem1, 
-        XQPCollator* aCollation = 0);
+        store::Item_t& aItem1,
+        TypeManager* typemgr,
+        long timezone,
+        XQPCollator* aCollation);
       
 private:
   static void valueCasting(
-        RuntimeCB*     aRuntimeCB, 
+        TypeManager* typemgr,
         store::Item_t& aItem0,
         store::Item_t& aItem1,
         store::Item_t& castItem0,
         store::Item_t& castItem1);
 
   static void generalCasting(
-        RuntimeCB*     aRuntimeCB, 
+        TypeManager* typemgr,
         store::Item_t& aItem0,
         store::Item_t& aItem1,
         store::Item_t& castItem0,
@@ -316,12 +281,14 @@ private:
 
   static bool boolResult(
         const QueryLoc &,
-        RuntimeCB* aRuntimeCB, 
         int8_t aCompValue,
         CompareConsts::CompareType aCompType);
-}; /* class CompareIterator */
+};
 
 
+/*******************************************************************************
+  Node comparison iterators
+********************************************************************************/
 NARY_ITER(OpIsSameNodeIterator); 
 
 

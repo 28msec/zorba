@@ -134,13 +134,17 @@ FnConcatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
+
 //15.1.3 fn:index-of
 bool 
-FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
   store::Item_t lSequenceItem;
   store::Item_t lCollationItem;
   xqtref_t      lCollationItemType;
   store::Item_t searchItem;
+  TypeManager* typemgr = planState.theRuntimeCB->theStaticContext->get_typemanager();
+  long timezone = 0;
 
   FnIndexOfIteratorState* state;
   DEFAULT_STACK_INIT(FnIndexOfIteratorState, state, planState);
@@ -160,10 +164,11 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
     ++state->theCurrentPos;
     
     searchItem = state->theSearchItem;
-    if (CompareIterator::valueEqual(planState.theRuntimeCB,
-                                    lSequenceItem,
+    if (CompareIterator::valueEqual(lSequenceItem,
                                     searchItem,
-                                    state->theCollator) == 0)
+                                    typemgr,
+                                    timezone,
+                                    state->theCollator) > 0)
     {
       STACK_PUSH(GENV_ITEMFACTORY->createInteger(result,
                                                  Integer::parseInt(state->theCurrentPos)), 
@@ -174,6 +179,7 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   STACK_END (state);
 }
 
+
 void
 FnIndexOfIteratorState::init(PlanState& planState) 
 {
@@ -182,6 +188,7 @@ FnIndexOfIteratorState::init(PlanState& planState)
  theSearchItem = NULL;
  theCollator = 0;
 }
+
 
 void
 FnIndexOfIteratorState::reset(PlanState& planState) {
@@ -264,7 +271,7 @@ FnDistinctValuesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   store::Item_t lItem;
   xqtref_t lItemType;
   XQPCollator* lCollator;
-  ValueCollCompareParam* theValueCompare;
+  ValueCompareParam* theValueCompare;
   
   FnDistinctValuesIteratorState* state;
   DEFAULT_STACK_INIT(FnDistinctValuesIteratorState, state, planState);
@@ -272,10 +279,10 @@ FnDistinctValuesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   if (theChildren.size() == 2) {
     lCollator = getCollator(planState.theRuntimeCB, loc, planState, theChildren[1].getp());
 
-    theValueCompare = new ValueCollCompareParam(planState.theRuntimeCB);
+    theValueCompare = new ValueCompareParam(planState.theRuntimeCB);
     theValueCompare->theCollator = lCollator;
   } else {
-    theValueCompare = new ValueCollCompareParam(planState.theRuntimeCB);
+    theValueCompare = new ValueCompareParam(planState.theRuntimeCB);
   }
   // theValueCompare managed by state->theAlreadySeenMap
   state->theAlreadySeenMap.reset (new ItemValueCollHandleHashSet (theValueCompare));
@@ -625,7 +632,11 @@ FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
 //15.3.1 fn:deep-equal
 
-bool DeepEqual(store::Item_t& item1, store::Item_t& item2, XQPCollator* collator, RuntimeCB* theRuntimeCB);
+bool DeepEqual(
+    store::Item_t& item1,
+    store::Item_t& item2,
+    XQPCollator* collator,
+    RuntimeCB* theRuntimeCB);
     
 
 bool DeepEqual(
@@ -675,10 +686,15 @@ bool DeepEqual(
   if (item1->isAtomic())
   {
     assert(item2->isAtomic());
-    
+    TypeManager* typemgr = theRuntimeCB->theStaticContext->get_typemanager();
+    long timezone = theRuntimeCB->theDynamicContext->get_implicit_timezone();
+
+    if (collator == NULL)
+      collator = theRuntimeCB->theCollationCache->getDefaultCollator();
+
     // check NaN
-    xqtref_t type1 = theRuntimeCB->theStaticContext->get_typemanager()->create_value_type(item1.getp());
-    xqtref_t type2 = theRuntimeCB->theStaticContext->get_typemanager()->create_value_type(item2.getp());
+    xqtref_t type1 = typemgr->create_value_type(item1.getp());
+    xqtref_t type2 = typemgr->create_value_type(item2.getp());
     
     if (((TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)
           &&
@@ -697,8 +713,7 @@ bool DeepEqual(
           item2->getDoubleValue().isNaN())))
       return true;
     
-    int result = CompareIterator::valueEqual(theRuntimeCB, item1, item2, collator);
-    return (result == 0);
+    return CompareIterator::valueEqual(item1, item2, typemgr, timezone, collator) > 0;
   }
   else
   {
@@ -1013,6 +1028,8 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lRunningItem = NULL;
   xqtref_t lMaxType;
+  TypeManager* typemgr = planState.theRuntimeCB->theStaticContext->get_typemanager();
+  long timezone = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
   XQPCollator*  lCollator = 0;
   bool  elems_in_seq = 0;
   result = NULL;
@@ -1024,14 +1041,15 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (theChildren.size() == 2)
     lCollator = getCollator(planState.theRuntimeCB, loc, planState, theChildren[1].getp());
+  else
+    lCollator = planState.theRuntimeCB->theCollationCache->getDefaultCollator();
 
   if (consumeNext(lRunningItem, theChildren[0].getp(), planState))
   {
     do 
     {
       // casting of untyped atomic
-      xqtref_t lRunningType = planState.theCompilerCB->m_sctx->get_typemanager()->
-                              create_value_type (lRunningItem);
+      xqtref_t lRunningType = typemgr->create_value_type (lRunningItem);
 
       if (TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) 
       {
@@ -1052,8 +1070,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         if (TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
           break;
 
-        lMaxType = planState.theCompilerCB->m_sctx->get_typemanager()->
-                   create_value_type (result);
+        lMaxType = typemgr->create_value_type (result);
       }
 
       if (result != 0) 
@@ -1065,8 +1082,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           if (GenericCast::instance()->promote(lItemCur, result, &*lRunningType)) 
           {
             result.transfer(lItemCur);
-            lMaxType = planState.theCompilerCB->m_sctx->get_typemanager()->
-                       create_value_type (result);
+            lMaxType = typemgr->create_value_type (result);
           } 
           else 
           {
@@ -1076,17 +1092,17 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         else 
         {
           lRunningItem.transfer(lItemCur);
-          lRunningType = planState.theCompilerCB->m_sctx->get_typemanager()->
-                         create_value_type (lRunningItem);
+          lRunningType = typemgr->create_value_type (lRunningItem);
         }
 
         store::Item_t current_copy(lRunningItem);
         store::Item_t max_copy(result);
         if (CompareIterator::valueComparison(loc,
-                                             planState.theRuntimeCB,
                                              current_copy,
                                              max_copy,
                                              theCompareType,
+                                             typemgr,
+                                             timezone,
                                              lCollator) ) 
         {
           lMaxType = lRunningType;
@@ -1108,10 +1124,11 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       store::Item_t dummy1(result);
       store::Item_t dummy2(result);
       CompareIterator::valueComparison(loc,
-                                       planState.theRuntimeCB,
                                        dummy1,
                                        dummy2,
                                        theCompareType,
+                                       typemgr,
+                                       timezone,
                                        lCollator);
     }
 

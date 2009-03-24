@@ -401,6 +401,11 @@ public:
       bool 
       operator>=(const FloatImpl& aFloatImpl) const;
 
+      long compare(const FloatImpl& aFloatImpl) const
+      {
+        return (*this < aFloatImpl ? -1 : (*this == aFloatImpl ? 0 : 1));
+      }
+
       xqpString 
       toIntegerString() const;
       

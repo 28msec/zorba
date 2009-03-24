@@ -125,18 +125,29 @@ public:
     return byteEqual(src, ::strlen(src));
   }
 
-  // Three-way lexicographical comparison of s and a substring of *this
-  int byteCompare (std::string::size_type pos, std::string::size_type n, const std::string &s) const {
-    return theString.compare (pos, n, s);
+  int byteCompare(const std::string& s) 
+  {
+    return theString.compare(0, theString.size(), s);
   }
 
-  bool byteStartsWith (const std::string &s) const {
-    return byteCompare (0, s.size (), s) == 0;
+  // Three-way lexicographical comparison of s and a substring of *this
+  int byteCompare(
+        std::string::size_type pos,
+        std::string::size_type n,
+        const std::string& s) 
+  {
+    return theString.compare(pos, n, s);
   }
 
   // Three-way lexicographical comparison of a substring of s and a substring of *this
-  int byteCompare (std::string::size_type pos, std::string::size_type n, const std::string &s, std::string::size_type pos1, std::string::size_type n1) const {
-    return theString.compare (pos, n, s, pos1, n1);
+  int byteCompare(
+        std::string::size_type pos,
+        std::string::size_type n,
+        const std::string& s,
+        std::string::size_type pos1,
+        std::string::size_type n1) 
+  {
+    return theString.compare(pos, n, s, pos1, n1);
   }
 
   bool
@@ -146,7 +157,7 @@ public:
   }
 
   int
-  compare(const xqpStringStore* src, XQPCollator* coll = 0) const;
+  compare(const xqpStringStore* src, const XQPCollator* coll = 0) const;
   
   int32_t
   indexOf(const char* pattern) const;
@@ -159,6 +170,11 @@ public:
 
   int32_t
   lastIndexOf(const xqpStringStore* pattern, XQPCollator* coll) const;
+
+  bool byteStartsWith(const std::string &s) 
+  {
+    return byteCompare (0, s.size (), s) == 0;
+  }
 
   bool
   endsWith(const char* pattern) const;

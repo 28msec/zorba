@@ -28,18 +28,18 @@ namespace zorba
 template <class IterType, class StateType>
 class BinaryBaseIterator : public Batcher<IterType>
 {
- protected:
+protected:
   PlanIter_t theChild0;
   PlanIter_t theChild1;
 
- public:
+public:
   BinaryBaseIterator ( const QueryLoc& loc, PlanIter_t& arg0, PlanIter_t& arg1 );
 
   virtual ~BinaryBaseIterator();
 
-  void openImpl( PlanState& planState, uint32_t& offset);
-  void resetImpl ( PlanState& planState ) const;
-  void closeImpl ( PlanState& planState );
+  void openImpl(PlanState& planState, uint32_t& offset);
+  void resetImpl(PlanState& planState ) const;
+  void closeImpl(PlanState& planState );
 
   virtual uint32_t getStateSize() const 
   {

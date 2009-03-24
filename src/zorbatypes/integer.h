@@ -102,186 +102,186 @@ public:
    */
   static bool parseDouble(const Double&, Integer&);
 
-      /**
-       * Parsing form float to Integer. Decimal places are cut of.
-       */
-      static bool parseFloat(const Float&, Integer&);
+  /**
+   * Parsing form float to Integer. Decimal places are cut of.
+   */
+  static bool parseFloat(const Float&, Integer&);
 
-      /**
-       * Parsing form Decimal to Integer. Decimal places are cut of.
-       */
-      static Integer
-      parseDecimal(const Decimal&);
-
-      static Integer
-      parseLongLong(long long);
-
-      static Integer
-      parseULongLong(unsigned long long);
-
-      static Integer
-      parseInt(int32_t);
-
-      static Integer
-      parseUInt(uint32_t);
-
-      static Integer
-      parseLong(long aLong);
-
-      static Integer
-      parseULong(unsigned long);
-
-      static Integer
-      parseSizeT(size_t);
-
-      Integer& 
-      operator=(const Integer&);
-
-      Integer 
-      operator+(const Integer&) const;
-      
-      Decimal 
-      operator+(const Decimal&) const;
-
-      Integer& 
-      operator+=(const Integer&);
-
-      Integer
-      operator-(const Integer&) const;
-      
-      Decimal 
-      operator-(const Decimal&) const;
-
-      Integer& operator-=(const Integer&);
-
-      Integer 
-      operator*(const Integer&) const;
-      
-      Decimal 
-      operator*(const Decimal&) const;
-
-      Integer& 
-      operator*=(const Integer&);
-
-      Integer 
-      operator/(const Integer&) const;
-      
-      Decimal 
-      operator/(const Decimal&) const;
-
-      Integer& operator/=(const Integer&);
-
-      Integer 
-      operator%(const Integer&) const;
-      
-      Decimal 
-      operator%(const Decimal&) const;
-
-      Integer& 
-      operator%=(const Integer&);
-
-      Integer 
-      operator-() const; 
-      
-      /** prefix */
-      Integer& 
-      operator++();
-      
-      /** postfix */
-      Integer 
-      operator++(int);
-      
-      /** prefix */
-      Integer& 
-      operator--();
-      
-      /** postfix */
-      Integer 
-      operator--(int);
-      
-      Integer 
-      round(Integer aPrecision) const; 
-      
-      Integer 
-      roundHalfToEven(Integer aPrecision) const;
-
-      Integer sqrt() const;
-
-      bool
-      operator==(const Integer& aInteger) const { return theInteger == aInteger.theInteger; } 
-      
-      bool
-      operator!=(const Integer& aInteger) const { return theInteger != aInteger.theInteger; } 
-      
-      bool
-      operator<(const Integer& aInteger) const { return theInteger < aInteger.theInteger; } 
-
-      bool
-      operator>(const Integer& aInteger) const 
-      {
-        return theInteger > aInteger.theInteger; 
-      } 
-      
-
-      bool
-      operator>=(const Integer& aInteger) const 
-      {
-        return theInteger >= aInteger.theInteger; 
-      } 
+  /**
+   * Parsing form Decimal to Integer. Decimal places are cut of.
+   */
+  static Integer
+  parseDecimal(const Decimal&);
   
-      bool
-      operator<=(const Integer& aInteger) const 
-      {
-        return theInteger <= aInteger.theInteger; 
-      } 
+  static Integer
+  parseLongLong(long long);
 
-      long compare(const Integer &aInteger) const
-      {
+  static Integer
+  parseULongLong(unsigned long long);
+
+  static Integer
+  parseInt(int32_t);
+
+  static Integer
+  parseUInt(uint32_t);
+
+  static Integer
+  parseLong(long aLong);
+
+  static Integer
+  parseULong(unsigned long);
+
+  static Integer
+  parseSizeT(size_t);
+
+  Integer& 
+  operator=(const Integer&);
+
+  Integer 
+  operator+(const Integer&) const;
+      
+  Decimal 
+  operator+(const Decimal&) const;
+
+  Integer& 
+  operator+=(const Integer&);
+
+  Integer
+  operator-(const Integer&) const;
+      
+  Decimal 
+  operator-(const Decimal&) const;
+
+  Integer& operator-=(const Integer&);
+      
+  Integer 
+  operator*(const Integer&) const;
+      
+  Decimal 
+  operator*(const Decimal&) const;
+
+  Integer& 
+  operator*=(const Integer&);
+
+  Integer 
+  operator/(const Integer&) const;
+     
+  Decimal 
+  operator/(const Decimal&) const;
+
+  Integer& operator/=(const Integer&);
+      
+  Integer 
+  operator%(const Integer&) const;
+      
+  Decimal 
+  operator%(const Decimal&) const;
+
+  Integer& 
+  operator%=(const Integer&);
+
+  Integer 
+  operator-() const; 
+      
+  /** prefix */
+  Integer& 
+  operator++();
+      
+  /** postfix */
+  Integer 
+  operator++(int);
+      
+  /** prefix */
+  Integer& 
+  operator--();
+      
+  /** postfix */
+  Integer 
+  operator--(int);
+      
+  Integer 
+  round(Integer aPrecision) const; 
+      
+  Integer 
+  roundHalfToEven(Integer aPrecision) const;
+
+  Integer sqrt() const;
+
+  bool
+  operator==(const Integer& aInteger) const { return theInteger == aInteger.theInteger; } 
+      
+  bool
+  operator!=(const Integer& aInteger) const { return theInteger != aInteger.theInteger; } 
+      
+  bool
+  operator<(const Integer& aInteger) const { return theInteger < aInteger.theInteger; } 
+
+  bool
+  operator>(const Integer& aInteger) const 
+  {
+    return theInteger > aInteger.theInteger; 
+  } 
+      
+
+  bool
+  operator>=(const Integer& aInteger) const 
+  {
+    return theInteger >= aInteger.theInteger; 
+  } 
+  
+  bool
+  operator<=(const Integer& aInteger) const 
+  {
+    return theInteger <= aInteger.theInteger; 
+  } 
+
+  long compare(const Integer& aInteger) const
+  {
 #ifndef ZORBA_NO_BIGNUMBERS
-        return theInteger.compare(aInteger.theInteger);
+    return theInteger.compare(aInteger.theInteger);
 #else
-        if(theInteger < aInteger.theInteger)
-          return -1;
-        else if(theInteger == aInteger.theInteger)
-          return 0;
-        else
-          return 1;
+    if(theInteger < aInteger.theInteger)
+      return -1;
+    else if(theInteger == aInteger.theInteger)
+      return 0;
+    else
+      return 1;
 #endif
-      }
+  }
 
-      bool
-      operator==(const Decimal&) const;
+  bool
+  operator==(const Decimal&) const;
 
-      bool
-      operator!=(const Decimal&) const;
+  bool
+  operator!=(const Decimal&) const;
       
-      bool
-      operator<(const Decimal&) const;
+  bool
+  operator<(const Decimal&) const;
 
-      bool
-      operator<=(const Decimal&) const;
+  bool
+  operator<=(const Decimal&) const;
 
-      bool
-      operator>(const Decimal&) const;
+  bool
+  operator>(const Decimal&) const;
       
-      bool
-      operator>=(const Decimal&) const;
+  bool
+  operator>=(const Decimal&) const;
 
-      bool
-      operator<=(const Double&) const;
+  bool
+  operator<=(const Double&) const;
       
-      bool
-      operator>=(const Double&) const;
+  bool
+  operator>=(const Double&) const;
 
-      xqpString
-      toString() const;
+  xqpString
+  toString() const;
 
-      uint32_t 
-      hash() const;
-  }; // class Integer
+  uint32_t 
+  hash() const;
+}; // class Integer
 
    
-   std::ostream& operator<<(std::ostream& os, const Integer&);
+std::ostream& operator<<(std::ostream& os, const Integer&);
 
 } /* namespace zorba */
 #endif // ZORBA_INTEGER_H
