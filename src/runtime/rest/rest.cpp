@@ -586,7 +586,7 @@ static void processPayload(Item_t& payload_data, struct curl_httppost** first, s
 
   if (payload_data->getNodeKind() != store::StoreConsts::elementNode)
   {
-	// top node should be element node
+    // top node should be element node
     ZORBA_ERROR(API0051_REST_ERROR_PAYLOAD);
     return; 
   }
@@ -596,7 +596,8 @@ static void processPayload(Item_t& payload_data, struct curl_httppost** first, s
     it = payload_data->getChildren();
     it->open();
     while (it->next(child))
-      processPayload(child, first, last);
+      if (child->getNodeKind() == store::StoreConsts::elementNode)
+        processPayload(child, first, last);
     return;
   }
 
@@ -692,12 +693,12 @@ static bool processSinglePayload(Item_t& payload_data, CURL* EasyHandle, curl_sl
   {
     xqpString test = filename->getStringValue()->c_str();
     ifstream ifs(filename->getStringValue()->c_str());
-
+    
     if (!ifs)
-	{
-	  ZORBA_ERROR(API0051_REST_ERROR_PAYLOAD);
-      return false; 
-	}
+    {
+      ZORBA_ERROR(API0051_REST_ERROR_PAYLOAD);
+      return false;
+    }
 
     filebuf* pbuf = ifs.rdbuf();
     long size = pbuf->pubseekoff(0,ios::end,ios::in);
@@ -763,7 +764,8 @@ static xqpString processGetPayload(Item_t& payload_data, xqpString& Uri)
     it = payload_data->getChildren();
     it->open();
     while (it->next(child))
-      Uri = processGetPayload(child, Uri);
+      if (child->getNodeKind() == store::StoreConsts::elementNode)
+        Uri = processGetPayload(child, Uri);
     return Uri;
   }
 
@@ -802,11 +804,11 @@ static xqpString processGetPayload(Item_t& payload_data, xqpString& Uri)
 bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item, lUri, payload_data, headers, tidyUserOpt;
-  xqpString     Uri;
-  curl_slist    *headers_list = NULL;
-  int           code;
-  uint32_t      index;
-
+  xqpString Uri;
+  curl_slist *headers_list = NULL;
+  int code;
+  unsigned int index = 1;
+  
   ZorbaRestGetIteratorState* state;
   DEFAULT_STACK_INIT(ZorbaRestGetIteratorState, state, planState);
 
@@ -819,23 +821,14 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   Uri = lUri->getStringValue()->str();
 
-#ifndef ZORBA_WITH_TIDY
-  if (theChildren.size() > 1)
-    while (CONSUME(payload_data, 1))
-      Uri = processGetPayload(payload_data, Uri);
-
-  if (theChildren.size() > 2)
-    while (CONSUME(headers, 2))
-      processHeader(headers, &headers_list);
-#else
+#ifdef ZORBA_WITH_TIDY
   if(isGetTidy)
   {
     index = 2;
     if (theChildren.size() > 1)
       CONSUME(tidyUserOpt, 1);
   }
-  else
-    index = 1;
+#endif
 
   if (theChildren.size() > index)
     while (CONSUME(payload_data, index))
@@ -844,8 +837,6 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
   if (theChildren.size() > (index + 1))
     while (CONSUME(headers, (index + 1)))
       processHeader(headers, &headers_list);
-
-#endif
 
   curl_easy_setopt(state->EasyHandle, CURLOPT_URL, Uri.c_str());
   curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
