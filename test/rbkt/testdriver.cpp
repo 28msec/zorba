@@ -286,6 +286,9 @@ void
 set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicContext* dctx)
 {
   zorba::str_replace_all (val, "$RBKT_SRC_DIR", zorba::RBKT_SRC_DIR);
+#ifdef ZORBA_XQUERYX
+  std::cout << "set_var " << name << " = " << val << std::endl;
+#endif
   if (!inlineFile) {
     zorba::Item lItem = createItem(val);
 		if(name != ".")
@@ -444,7 +447,7 @@ main(int argc, char** argv)
     std::string   spec_fname = zorba::RBKT_SRC_DIR + "/Queries/" + w3c_str
                            + lQueryWithoutSuffix.substr(xqueryx_off) +".spec";
     zorba::file lSpecFile (spec_fname, path_flags);
-    std::cout << "lSpecFile " << spec_fname << std::endl; 
+    std::cout << "lSpecFile " << spec_fname << " exists " << lSpecFile.exists() << std::endl; 
 
     std::string   ref_fname = zorba::RBKT_SRC_DIR + "/ExpQueryResults/" 
                           + lQueryWithoutSuffix +".xml.res";
