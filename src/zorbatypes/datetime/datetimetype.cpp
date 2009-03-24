@@ -844,7 +844,7 @@ TimeZone DateTime::getTimezone() const
 }
 
 
-int DateTime::compare(const DateTime* dt, int timezone_seconds) const
+int DateTime::compare(const DateTime* dt, long timezone_seconds) const
 {
   std::auto_ptr<DateTime> d1_t;
   std::auto_ptr<DateTime> d2_t;
@@ -1046,7 +1046,7 @@ DateTime* DateTime::normalizeTimeZone(int tz_seconds) const
     if (tz_seconds > 14*3600 || tz_seconds < -14*3600)
       throw InvalidTimezoneException();
     
-    d = Duration(Duration::DAYTIMEDURATION_FACET, 0, 0, (tz_seconds < 0), 0, 0, 0, tz_seconds, 0);
+    d = Duration(Duration::DAYTIMEDURATION_FACET, (tz_seconds < 0), 0, 0, 0, 0, 0, tz_seconds, 0);
   }
   else
   {

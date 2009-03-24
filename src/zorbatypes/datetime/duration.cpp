@@ -253,7 +253,7 @@ Duration* Duration::operator+(const Duration& d) const
   result = new Duration(facet);
   long carry = 0;
   bool right_operand_sign = (is_negative != d.is_negative);
-  for (int i=start_data; i>=end_data; i--)
+  for (int i = start_data; i >= end_data; i--)
   {
     if (i == FRACSECONDS_DATA)
     {
