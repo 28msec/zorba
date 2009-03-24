@@ -1453,9 +1453,9 @@ IndexDecl :
       d->create = false;
       $$ = d;
     }
-  | CREATE IndexDecl2
+  | DECLARE AND CREATE IndexDecl2
     {
-      IndexDecl *d = dynamic_cast<IndexDecl *> ($2);
+      IndexDecl *d = dynamic_cast<IndexDecl *> ($4);
       d->create = true;
       $$ = d;
     }
