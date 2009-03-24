@@ -1,4 +1,7 @@
 Zorba - The XQuery Processor
+version 1.0.0 (comming)
+  * XQueryX execution
+  
 version 0.9.5 (2008.02.17)
   * Unified the Tidy and Rest API's
   * Added new sinatures to zorba-util:tidy and zorba-util:tdoc that
@@ -25,7 +28,7 @@ version 0.9.5 (2008.02.17)
   * Added support "default element namespace" schema imports
   * Added support variable initializers that refer to forward variable
 	declarations.
-  * Varioius bug fixes and performance enhancements.
+  * Various bug fixes and performance enhancements.
 
 version 0.9.4 (2008.10.06)
   * added General FLWOR (GFLWOR)
