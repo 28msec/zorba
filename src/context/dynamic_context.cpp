@@ -267,19 +267,19 @@ void dynamic_context::set_default_collection(const store::Item_t& default_collec
 	this->default_collection_uri = default_collection_uri;
 }
 
-  ValueIndexInsertSession_t dynamic_context::get_val_idx_insert_session (xqpString key) {
-    ValueIndexInsertSession_t v;
-    if (val_idx_ins_session_map.get (key, v))
-      return v;
+ValueIndexInsertSession_t dynamic_context::get_val_idx_insert_session (std::string key) {
+  ValueIndexInsertSession_t v;
+  if (val_idx_ins_session_map.get (key, v))
+    return v;
     else if (parent != NULL)
       return parent->get_val_idx_insert_session (key);
     else
       return NULL;
-  }
+}
 
-  void dynamic_context::set_val_idx_insert_session (xqpString key, ValueIndexInsertSession_t s) {
-    val_idx_ins_session_map.put (key, s);
-  }
+void dynamic_context::set_val_idx_insert_session (std::string key, ValueIndexInsertSession_t s) {
+  val_idx_ins_session_map.put (key, s);
+}
 
 
 }	/* namespace zorba */

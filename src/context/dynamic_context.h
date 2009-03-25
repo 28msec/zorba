@@ -120,8 +120,8 @@ public:
   store::Item_t get_default_collection();
 	void set_default_collection(const store::Item_t& default_collection_uri);
 
-  rchandle<ValueIndexInsertSession> get_val_idx_insert_session (xqpString);
-  void set_val_idx_insert_session (xqpString, rchandle<ValueIndexInsertSession>);
+  rchandle<ValueIndexInsertSession> get_val_idx_insert_session (std::string);
+  void set_val_idx_insert_session (std::string, rchandle<ValueIndexInsertSession>);
 
 };
 
