@@ -215,6 +215,8 @@ void SimpleStore::shutdown()
 {
   theItemUris.clear();
 
+  theIndices.clear();
+
   theCollections.clear();
 
   theDocuments.clear();
@@ -343,6 +345,19 @@ store::Index_t SimpleStore::createIndex(
   return index;
 }
 
+store::Index *SimpleStore::getIndex(const xqpStringStore_t& uri)
+{
+  if (uri == NULL)
+    return NULL;
+
+  store::Index_t index;
+  bool found = theIndices.get(uri, index);
+  if (found)
+    return index.getp();
+
+  return NULL;
+
+}
     
 /*******************************************************************************
 
@@ -353,22 +368,6 @@ void SimpleStore::deleteIndex(const xqpStringStore_t& uri)
     return;
 
   theIndices.remove(uri);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-store::Index_t SimpleStore::getIndex(const xqpStringStore_t& uri)
-{
-  if (uri == NULL)
-    return NULL;
-
-  store::Index_t idx;
-  if (theIndices.get(uri, idx) )
-    return idx;
-  else
-    return NULL;
 }
 
 

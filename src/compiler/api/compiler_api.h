@@ -43,7 +43,7 @@ class XQueryCompiler
     
  protected:
   expr_t normalize(parsenode_t);
-    
+
   expr_t optimize(expr_t lExpr);
 };
 
@@ -57,6 +57,7 @@ class XQueryCompilerSubsystem
 
   virtual ~XQueryCompilerSubsystem() throw ();
 
+  virtual Rewriter *getPhase1Rewriter() = 0;
   virtual Rewriter *getDefaultOptimizingRewriter() = 0;
 
  private:

@@ -74,6 +74,9 @@ typedef rchandle<IndexBoxCondition> IndexBoxCondition_t;
 
 class IndexKey;
 
+class IndexProbeIterator;
+typedef rchandle<IndexProbeIterator> IndexProbeIterator_t;
+
 class Store;
 class XmlDataManager_Impl;
 

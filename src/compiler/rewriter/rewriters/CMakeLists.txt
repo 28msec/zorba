@@ -12,4 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 SET(REWRITER_REWRITERS_SRCS
-    default_optimizer.cpp)
+    default_optimizer.cpp
+    phase1_rewriter.cpp)

@@ -38,24 +38,35 @@ class zop_buildindex : public function {
   public:
     zop_buildindex(const signature&);
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    virtual bool requires_dyn_ctx () const { return true; }
+};
+
+class zop_probeindexpoint : public function {
+  public:
+    zop_probeindexpoint(const signature&);
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    virtual bool requires_dyn_ctx () const { return true; }
 };
 
 class zop_index_session_opener : public function {
   public:
     zop_index_session_opener(const signature&);
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    virtual bool requires_dyn_ctx () const { return true; }
 };
 
 class zop_index_session_closer : public function {
   public:
     zop_index_session_closer(const signature&);
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    virtual bool requires_dyn_ctx () const { return true; }
 };
 
 class zop_index_builder : public function {
   public:
     zop_index_builder(const signature&);
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    virtual bool requires_dyn_ctx () const { return true; }
 };
 
 }

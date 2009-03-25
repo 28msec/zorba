@@ -149,9 +149,10 @@ public:
         const xqpStringStore_t& uri,
         const store::IndexSpecification& spec);
 
-  void deleteIndex(const xqpStringStore_t& uri);
+  store::Index *getIndex(
+        const xqpStringStore_t& uri);
 
-  store::Index_t getIndex(const xqpStringStore_t& uri);
+  void deleteIndex(const xqpStringStore_t& uri);
 
   store::Collection_t createCollection(const xqpStringStore_t& uri);
 

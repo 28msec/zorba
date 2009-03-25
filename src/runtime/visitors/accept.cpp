@@ -41,6 +41,7 @@
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/indexing/value_index_builder.h"
+#include "runtime/indexing/value_index_probe.h"
 #include "runtime/accessors/AccessorsImpl.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/dateTime/DurationsDatesTimes.h"
@@ -165,6 +166,7 @@ namespace zorba {
 
   // nary iterators
   NARY_ACCEPT(ValueIndexBuilder);
+  NARY_ACCEPT(ValueIndexPointProbe);
   NARY_ACCEPT(FnDistinctValuesIterator);
   NARY_ACCEPT(UDFunctionCallIterator);
   NARY_ACCEPT(StatelessExtFunctionCallIterator);

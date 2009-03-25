@@ -251,6 +251,16 @@ public:
         const IndexSpecification& spec) = 0;
 
   /**
+   * Gets an existing index.
+   *
+   * @param uri The uri identifying the index. For non-temporary indices,
+   *        the store maintains the map between uris and indices and makes
+   *        sure that there are no two indices with the same uri.
+   */
+  virtual Index *getIndex(
+        const xqpStringStore_t& uri) = 0;
+
+  /**
    *  Destroy the index with the given uri. The index must not be a temporary one.
    */
   virtual void deleteIndex(const xqpStringStore_t& uri) = 0;

@@ -32,6 +32,7 @@
 #define LOOKUP_OP2( local ) (GENV.getRootStaticContext ().lookup_builtin_fn (":" local, 2))
 #define LOOKUP_OP3( local ) (GENV.getRootStaticContext ().lookup_builtin_fn (":" local, 3))
 #define LOOKUP_OPN( local ) (GENV.getRootStaticContext ().lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
+#define LOOKUP_RESOLVED_FN( ns, local, arity ) (GENV.getRootStaticContext().lookup_resolved_fn(ns, local, arity))
 
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
@@ -88,6 +89,17 @@ inline expr_t fix_if_annotations (rchandle<if_expr> ite) {
   fix_annotations (&*ite, ite->get_then_expr ());
   fix_annotations (&*ite, ite->get_else_expr ());
   return &*ite;
+}
+
+inline bool is_data(expr *e)
+{
+  return e->get_expr_kind() == fo_expr_kind && static_cast<fo_expr *>(e)->get_func() == LOOKUP_FN("fn", "data", 1);
+}
+
+inline expr *get_fo_arg(expr *e, int arg_idx)
+{
+  ZORBA_ASSERT(e != NULL && e->get_expr_kind() == fo_expr_kind);
+  return (*static_cast<fo_expr *>(e))[arg_idx];
 }
 
 }

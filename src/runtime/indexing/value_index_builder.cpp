@@ -69,7 +69,7 @@ bool ValueIndexBuilder::nextImpl(store::Item_t& result, PlanState& planState) co
     state->theSession = planState.dctx()->get_val_idx_insert_session(iName->getStringValueP()->str ());
   }
   consumeNext(dValue, theChildren[1], planState);
-  for(unsigned int i = 1; i < theChildren.size(); ++i) {
+  for(unsigned int i = 2; i < theChildren.size(); ++i) {
     store::Item_t cValue;
     key.push_back(consumeNext(cValue, theChildren[i], planState) ? cValue : NULL);
   }

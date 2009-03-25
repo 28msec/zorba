@@ -48,6 +48,7 @@ SET(RUNTIME_SRCS
     debug/debug_iterators.cpp
     fncontext/FnContextImpl.cpp
     indexing/value_index_builder.cpp
+    indexing/value_index_probe.cpp
     numerics/NumericsImpl.cpp
     qnames/QNamesImpl.cpp
     sequences/SequencesImpl.cpp

@@ -44,6 +44,7 @@
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/internal_operators.h"
 #include "runtime/indexing/value_index_builder.h"
+#include "runtime/indexing/value_index_probe.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/sequences/SequencesImpl.h"
@@ -921,6 +922,7 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
   PRINTER_VISITOR_DEFINITION(ValueIndexInsertSessionOpener);
   PRINTER_VISITOR_DEFINITION(ValueIndexInsertSessionCloser);
   PRINTER_VISITOR_DEFINITION(ValueIndexBuilder);
+  PRINTER_VISITOR_DEFINITION(ValueIndexPointProbe);
 
   PRINTER_VISITOR_DEFINITION(ZorbaSchemaTypeIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaBase64EncodeIterator);

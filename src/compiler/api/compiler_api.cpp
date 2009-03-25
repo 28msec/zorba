@@ -201,6 +201,9 @@ XQueryCompiler::normalize(parsenode_t aParsenode)
 #endif
   }
 #endif
+  RewriterContext rCtx(theCompilerCB, lExpr);
+  GENV_COMPILERSUBSYS.getPhase1Rewriter()->rewrite(rCtx);
+  lExpr = rCtx.getRoot();
   normalize_expr_tree ("query", theCompilerCB, lExpr, NULL);
   return lExpr;
 }

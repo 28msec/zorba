@@ -16,6 +16,7 @@
 #include "functions/InternalOperators.h"
 #include "runtime/core/internal_operators.h"
 #include "runtime/indexing/value_index_builder.h"
+#include "runtime/indexing/value_index_probe.h"
 
 namespace zorba {
 
@@ -41,6 +42,14 @@ zop_buildindex::zop_buildindex(const signature& sig)
 PlanIter_t zop_buildindex::codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   ZORBA_ASSERT(false);
+}
+
+zop_probeindexpoint::zop_probeindexpoint(const signature& sig)
+  : function(sig) { }
+
+PlanIter_t zop_probeindexpoint::codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new ValueIndexPointProbe(loc, argv);
 }
 
 zop_index_session_opener::zop_index_session_opener(const signature& sig)

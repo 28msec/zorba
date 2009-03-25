@@ -57,6 +57,8 @@ RULE(MarkImpureExprs);
 RULE(HoistExprsOutOfLoops);
 RULE(PlanPrinter);
 
+RULE(ExpandBuildIndex);
+
 class FoldConst : public RewriteRule {
 protected:
   bool fold_expensive_ops;

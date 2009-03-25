@@ -15,6 +15,8 @@
  */
 #include "runtime/base/plan_iterator.h"
 #include "indexing/value_index.h"
+#include "system/globalenv.h"
+#include "store/api/store.h"
 
 namespace zorba {
 
@@ -24,8 +26,11 @@ ValueIndex::~ValueIndex()
 
 ValueIndexInsertSession_t ValueIndex::createBulkInsertSession()
 {
+  xqpStringStore_t uristore(getIndexUri());
+  store::IndexSpecification spec(m_index_field_exprs.size());
+  m_store_index = GENV_STORE.createIndex(uristore, spec);
   store::IndexEntryReceiver_t receiver = m_store_index->createInsertSession();
-  ValueIndexInsertSession_t session = new ValueIndexInsertSession(receiver);
+  ValueIndexInsertSession_t session = new ValueIndexInsertSession(this, receiver);
   return session;
 }
 

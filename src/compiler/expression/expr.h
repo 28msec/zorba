@@ -71,6 +71,14 @@ public:
     sequence.push_back (result);
   }
 
+  sequential_expr(
+        const QueryLoc& loc,
+        checked_vector<expr_t> sequence_)
+    :
+    expr (loc), sequence (sequence_)
+  {
+  }
+
   unsigned size () const { return sequence.size (); }
 
   const expr_t &operator [] (int i) const { return sequence [i]; }
@@ -693,6 +701,11 @@ public:
   {
     assert (f != NULL);
     add (arg1); add (arg2); add (arg3);
+  }
+  fo_expr (const QueryLoc& loc, const function *f, const std::vector<expr_t>& args)
+   : expr(loc), argv(args), func(f)
+  {
+    assert (f != NULL);
   }
 
 

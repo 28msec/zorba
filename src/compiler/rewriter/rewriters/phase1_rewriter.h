@@ -13,34 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "compiler/api/compiler_api_impl.h"
-#include "compiler/rewriter/rewriters/phase1_rewriter.h"
-#include "compiler/rewriter/rewriters/default_optimizer.h"
+#ifndef ZORBA_PHASE1_REWRITER_H
+#define ZORBA_PHASE1_REWRITER_H
+
+#include "common/shared_types.h"
+#include "compiler/rewriter/framework/sequential_rewriter.h"
 
 namespace zorba {
 
-XQueryCompilerSubsystemImpl::XQueryCompilerSubsystemImpl()
-  :
-  m_phase1Rewriter(new Phase1Rewriter()),
-  m_defaultOptimizer(new DefaultOptimizer())
-{
-}
-
-
-XQueryCompilerSubsystemImpl::~XQueryCompilerSubsystemImpl() throw ()
-{
-}
-
-
-Rewriter *XQueryCompilerSubsystemImpl::getDefaultOptimizingRewriter()
-{
-  return m_defaultOptimizer.get();
-}
-
-Rewriter *XQueryCompilerSubsystemImpl::getPhase1Rewriter()
-{
-  return m_phase1Rewriter.get();
-}
+class Phase1Rewriter : public SequentialRewriter {
+  public:
+    Phase1Rewriter();
+    ~Phase1Rewriter() throw ();
+};
 
 }
+
+#endif /* ZORBA_PHASE1_REWRITER_H */
 /* vim:set ts=2 sw=2: */

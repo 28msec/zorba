@@ -1173,19 +1173,24 @@ DECL(sctx, zop_buildindex,
      (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "build-index"),
       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_ONE));
+DECL(sctx, zop_probeindexpoint,
+     (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "probe-index-point"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      true,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 DECL(sctx, zop_index_session_opener,
-     (createQName(ZORBA_OPEXTENSIONS_NS,"fn", ":index-session-opener"),
+     (createQName(XQUERY_FN_NS,"fn", ":index-session-opener"),
       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_ONE));
 DECL(sctx, zop_index_session_closer,
-     (createQName(ZORBA_OPEXTENSIONS_NS,"fn", ":index-session-closer"),
+     (createQName(XQUERY_FN_NS,"fn", ":index-session-closer"),
       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
-      GENV_TYPESYSTEM.ITEM_TYPE_ONE));
+      GENV_TYPESYSTEM.ITEM_TYPE_QUESTION));
 DECL(sctx, zop_index_builder,
-     (createQName(ZORBA_OPEXTENSIONS_NS,"fn", ":index-builder"),
+     (createQName(XQUERY_FN_NS,"fn", ":index-builder"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       true,
-      GENV_TYPESYSTEM.ITEM_TYPE_ONE));
+      GENV_TYPESYSTEM.ITEM_TYPE_QUESTION));
 }
 
 } /* namespace zorba */

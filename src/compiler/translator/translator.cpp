@@ -75,6 +75,7 @@ namespace zorba {
 #define LOOKUP_OP2( local ) (sctx_p->lookup_builtin_fn (":" local, 2))
 #define LOOKUP_OP3( local ) (sctx_p->lookup_builtin_fn (":" local, 3))
 #define LOOKUP_OPN( local ) (sctx_p->lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
+#define LOOKUP_RESOLVED_FN( ns, local, arity ) (sctx_p->lookup_resolved_fn(ns, local, arity))
 
 #define CACHED( cache, val ) ((cache == NULL) ? (cache = val) : cache)
 
@@ -2361,6 +2362,10 @@ void *begin_visit (const IndexDecl& v) {
 
 void end_visit (const IndexDecl& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+  ValueIndex_t vi = indexstack.top();
+  indexstack.pop();
+  xqp_string uri(vi->getIndexUri());
+  sctx_p->bind_index(uri, vi.getp());
 }
 
 void *begin_visit (const IndexField& v) {
@@ -2403,6 +2408,14 @@ void *begin_visit (const IndexStatement& v) {
 }
 
 void end_visit (const IndexStatement& v, void* /*visit_state*/) {
+  if (v.type == IndexStatement::build_stmt) {
+    rchandle<fo_expr> fo = new fo_expr(v.get_location(), LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "build-index", 1));
+    store::Item_t uri_item;
+    GENV_ITEMFACTORY->createAnyURI(uri_item, v.get_uri().c_str());
+    expr_t uri(new const_expr(v.get_location(), uri_item));
+    fo->add(uri);
+    nodestack.push(fo);
+  }
   TRACE_VISIT_OUT ();
 }
 

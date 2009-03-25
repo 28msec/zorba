@@ -13,31 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_COMPILER_API_IMPL_H
-#define ZORBA_COMPILER_API_IMPL_H
+#ifndef ZORBA_COMMON_REWRITER
+#define ZORBA_COMMON_REWRITER
 
-#include "compiler/api/compiler_api.h"
+#define ADD_DRIVER( d ) \
+  m_childRewriters.push_back(rewriter_ptr_t (new d))
+#define ADD_SINGLETON_DRIVER(rule) m_childRewriters.push_back(rewriter_ptr_t(new SingletonRuleMajorDriver<rule>))
+#define ADD_SINGLETON_DRIVER_BASE(rule) \
+  m_childRewriters.push_back(rewriter_ptr_t(new SingletonRuleMajorDriverBase (RuleMajorDriver::rule_ptr_t (new rule))))
 
-namespace zorba {
+#define ADD_RULE( rule ) \
+  m_rules.push_back (rule_ptr_t (new rule))
 
-class XQueryCompilerSubsystemImpl : public XQueryCompilerSubsystem 
-{
- friend class XQueryCompilerSubsystem;
-
- private:
-  std::auto_ptr<Rewriter> m_phase1Rewriter;
-  std::auto_ptr<Rewriter> m_defaultOptimizer;
-
- public:
-  ~XQueryCompilerSubsystemImpl() throw ();
-
-  Rewriter *getPhase1Rewriter();
-  Rewriter *getDefaultOptimizingRewriter();
-
- private:
-  XQueryCompilerSubsystemImpl();
-};
-
-} /* namespace zorba */
-#endif /* ZORBA_COMPILER_API_IMPL_H */
-/* vim:set ts=2 sw=2: */
+#endif /* ZORBA_COMMON_REWRITER */

@@ -100,6 +100,7 @@ namespace zorba
   class ValueIndexInsertSessionOpener;
   class ValueIndexInsertSessionCloser;
   class ValueIndexBuilder;
+  class ValueIndexPointProbe;
   class OpNumericUnaryIterator;
   class FnAbsIterator;
   class FnCeilingIterator;
@@ -466,6 +467,7 @@ namespace zorba
     PLAN_ITER_VISITOR (ValueIndexInsertSessionOpener);
     PLAN_ITER_VISITOR (ValueIndexInsertSessionCloser);
     PLAN_ITER_VISITOR (ValueIndexBuilder);
+    PLAN_ITER_VISITOR (ValueIndexPointProbe);
 
     PLAN_ITER_VISITOR (OpNumericUnaryIterator);
     

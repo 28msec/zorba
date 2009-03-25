@@ -75,8 +75,9 @@ typedef rchandle<ValueIndex> ValueIndex_t;
 
 class ValueIndexInsertSession : public SimpleRCObject {
   public:
-    ValueIndexInsertSession(store::IndexEntryReceiver_t receiver)
-      : m_bulkInsertSession(receiver) { }
+    ValueIndexInsertSession(ValueIndex_t vi, store::IndexEntryReceiver_t receiver)
+      : m_vi(vi),
+      m_bulkInsertSession(receiver) { }
 
     void commitBulkInsertSession();
 
