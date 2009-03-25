@@ -127,6 +127,11 @@ bool begin_visit (flwor_expr& node)
   return true;
 }
 
+  void wrap_flwor_wincond (static_context *sctx, flwor_wincond *c) {
+    if (c == NULL) return;
+    c->set_cond (wrap_in_bev (sctx, c->get_cond ()));
+  }
+
 void end_visit (gflwor_expr& node) {
   for (int i = 0; i < node.size (); i++) {
     flwor_clause &c = *(node [i]);
@@ -136,6 +141,10 @@ void end_visit (gflwor_expr& node) {
     } else if (typeid (c) == typeid (orderby_gclause)) {
       orderby_gclause *obc = static_cast<orderby_gclause *> (&c);
       obc->set_expr (wrap_in_atomization (m_sctx, obc->get_expr ()));
+    } else if (typeid (c) == typeid (forletwin_gclause)) {
+      forletwin_gclause *flc = static_cast<forletwin_gclause *> (&c);
+      wrap_flwor_wincond (m_sctx, flc->win_start.get ());
+      wrap_flwor_wincond (m_sctx, flc->win_stop.get ());
     }
   }
 }

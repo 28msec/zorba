@@ -57,6 +57,7 @@ public:
     : isOnly (isOnly_), in_vars (in_vars_), out_vars (out_vars_), cond (cond_)
   {}
   expr_t get_cond() const { return cond; }
+  void set_cond (expr_t cond_) { cond = cond_; }
   bool is_only () const { return isOnly; }
 
   const vars &get_in_vars () const { return in_vars; }
