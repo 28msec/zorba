@@ -461,6 +461,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* Indexes */
 
 %token CREATE "'create'"
+%token BUILD  "'build'"
 %token DROP   "'drop'"
 %token UNIQUE "'unique'"
 %token INDEX  "'index'"
@@ -1452,14 +1453,7 @@ IndexDecl :
       IndexDecl *d = dynamic_cast<IndexDecl *> ($2);
       d->create = false;
       $$ = d;
-    }
-  | DECLARE AND CREATE IndexDecl2
-    {
-      IndexDecl *d = dynamic_cast<IndexDecl *> ($4);
-      d->create = true;
-      $$ = d;
-    }
-  ;
+    };
 
 IndexDecl2 :
     IndexDeclSuffix
@@ -1618,11 +1612,15 @@ FlowCtlStatement :
 IndexStatement :
     CREATE INDEX URI_LITERAL
     {
-      $$ = new IndexStatement (LOC (@$), SYMTAB ($3), true);
+      $$ = new IndexStatement (LOC (@$), SYMTAB ($3), IndexStatement::create_stmt);
     }
   | DROP INDEX URI_LITERAL
     {
-      $$ = new IndexStatement (LOC (@$), SYMTAB ($3), false);
+      $$ = new IndexStatement (LOC (@$), SYMTAB ($3), IndexStatement::drop_stmt);
+    }
+  | BUILD INDEX URI_LITERAL
+    {
+      $$ = new IndexStatement (LOC (@$), SYMTAB ($3), IndexStatement::build_stmt);
     }
   ;
 
@@ -5052,6 +5050,7 @@ QNAME :
   | SET { $$ = SYMTAB_PUT ("set"); }
   | INDEX { $$ = SYMTAB_PUT ("index"); }
   | CREATE { $$ = SYMTAB_PUT ("create"); }
+  | BUILD { $$ = SYMTAB_PUT ("build"); }
   | UNIQUE { $$ = SYMTAB_PUT ("unique"); }
   | ON { $$ = SYMTAB_PUT ("on"); }
   | HASH { $$ = SYMTAB_PUT ("hash"); }

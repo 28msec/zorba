@@ -415,6 +415,7 @@ typedef zorba::xquery_parser::token token;
 
 "index" { return token::INDEX; }
 "create" { return token::CREATE; }
+"build" { return token::BUILD; }
 "unique" { return token::UNIQUE; }
 "hash" { return token::HASH; }
 "btree" { return token::BTREE; }

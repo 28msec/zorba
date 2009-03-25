@@ -1012,14 +1012,14 @@ public:
 
 class IndexStatement : public exprnode {
   std::string uri;
-  bool create;  //< create or drop?
 
 public:
-  IndexStatement (const QueryLoc& loc_, std::string uri_, bool create_)
-    : exprnode (loc_), uri (uri_), create (create_)
+  typedef enum { create_stmt, build_stmt, drop_stmt } stmt_type;
+  stmt_type type;
+  IndexStatement (const QueryLoc& loc_, std::string uri_, stmt_type type_)
+    : exprnode (loc_), uri (uri_), type (type_)
   {}
   std::string get_uri () const { return uri; }
-  bool is_create () const { return create; }
 
 
 public:
