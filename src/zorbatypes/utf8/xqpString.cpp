@@ -629,7 +629,7 @@ xqpStringStore_t xqpStringStore::normalizeSpace() const
 xqpStringStore_t xqpStringStore::trimL(const char* start, uint16_t len) const
 {
   if(empty() || 0 == len)
-    return new xqpStringStore (*this);
+    return const_cast<xqpStringStore *> (this);
 
   const char* c = c_str(), *c0 = c;
 
@@ -659,7 +659,7 @@ xqpStringStore_t xqpStringStore::trimL(const char* start, uint16_t len) const
   if (trimCP != shortTrimCP)
     delete[] trimCP;
   if (c == c0)
-    return new xqpStringStore (*this);
+    return const_cast<xqpStringStore *> (this);
   else
     return new xqpStringStore (c);
 }
@@ -671,63 +671,36 @@ xqpStringStore_t xqpStringStore::trimL(const char* start, uint16_t len) const
 xqpStringStore_t xqpStringStore::trimR(const char* start, uint16_t len) const
 {
   if(empty() || 0 == len )
-    return new xqpStringStore(*this);
+    return const_cast<xqpStringStore *> (this);
     
-  uint32_t StrLen = numChars();
-
   uint32_t shortTrimCP [16];
   uint32_t* trimCP =
     (len <= 16) ? shortTrimCP : new uint32_t[len];
   for(uint16_t i = 0; i < len; i++)
     trimCP[i] = UTF8Decode(start);
 
-  //create the new xqpStringStore
-  std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
+  const char* str = c_str(), *end = str, *end0 = end;
+  end += bytes ();
 
-  uint32_t pos = 0;
-  uint32_t cp = 0;
-  const char* end = c_str();
-  const char* c = c_str();
-  char seq[5];
+  uint32_t StrLen = numChars();
 
-  zorba::advance(end, StrLen, end + bytes());
+  for (; StrLen > 0; --StrLen) {
+    const char *old_end = end;
+    uint32_t cp = UTF8DecodePrev(end);
 
-  bool firstCp = true;
-
-  while(StrLen > 0) {
-    cp = UTF8DecodePrev(end);
-
-    for(uint16_t i = 0; i < len; i++) {
-      if(trimCP[i] == cp) {
-        firstCp = false;
-        break;
-      }
-    }
-      
-    if( firstCp ) {
-      pos = zorba::UTF8Distance(c, end);
+    uint16_t i;
+    for(i = 0; i < len && trimCP[i] != cp; i++);
+    if (i == len) {
+      end = old_end;
       break;
     }
-    --StrLen;
-    firstCp = true;
-  }
-    
-  ++pos;
-
-  while(pos > 0)
-  {
-    cp = UTF8Decode(c);
-      
-    memset(seq, 0, sizeof(seq));
-    UTF8Encode(cp, seq);
-    newStr->theString += seq;
-    
-    --pos;
   }
 
   if (trimCP != shortTrimCP)
     delete[] trimCP;
-  return newStr.release();
+
+  if (end0 == end) return const_cast<xqpStringStore *> (this);
+  else return new xqpStringStore (str, end - str);
 }
   
 
@@ -739,8 +712,7 @@ xqpStringStore_t xqpStringStore::trim(const char* start, uint16_t len) const
   if(empty() || 0 == len)
     return new xqpStringStore(*this);
 
-  xqpStringStore_t tmp = trimL(start, len);
-  return tmp->trimR(start, len);
+  return trimL(start, len)->trimR(start, len);
 }
 
 
