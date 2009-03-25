@@ -298,7 +298,7 @@ bool xqpStringStore::byteEqual(const char* src) const
 }
 
 
-int xqpStringStore::compare(const xqpStringStore* src, XQPCollator* coll) const
+int xqpStringStore::compare(const xqpStringStore* src, const XQPCollator* coll) const
 {
 //  if ( ! coll )
     return theString.compare(src->theString);
@@ -694,7 +694,7 @@ xqpStringStore_t xqpStringStore::trimL(const char* start, uint16_t len) const
 ********************************************************************************/
 xqpStringStore_t xqpStringStore::trimL() const
 {
-  char seq = ' ';
+  static char seq = ' ';
   return trimL( &seq, 1 );
 }
 
@@ -801,7 +801,7 @@ xqpStringStore_t xqpStringStore::trimR(const char* start, uint16_t len) const
 ********************************************************************************/
 xqpStringStore_t xqpStringStore::trimR() const
 {
-  char seq = ' ';
+  static char seq = ' ';
   return trimR( &seq, 1 );
 }
 
