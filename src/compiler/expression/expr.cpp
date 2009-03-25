@@ -1409,5 +1409,69 @@ void while_expr::next_iter (expr_iterator_data& v)
   END_EXPR_ITER();
 }
 
+expr_t if_expr::clone (substitution_t& s) {
+  return new if_expr (get_loc (),
+                      get_cond_expr ()->clone (s),
+                      get_then_expr ()->clone (s),
+                      get_else_expr ()->clone (s));
+}
+
+expr_t const_expr::clone (substitution_t&) {
+  return new const_expr (get_loc (), get_val ());
+}
+
+expr_t wrapper_expr::clone (substitution_t& s) {
+  return new wrapper_expr (get_loc (), get_expr ()->clone (s));
+}
+
+expr_t fo_expr::clone (substitution_t& s) {
+  fo_expr *fo = new fo_expr (get_loc (), get_func ());
+  for (unsigned i = 0; i < argv.size (); i++)
+    fo->add (argv [i]->clone (s));
+  return fo;
+}
+
+expr_t match_expr::clone (substitution_t& s) {
+  match_expr *me = new match_expr (get_loc ());
+  me->setTestKind (getTestKind ());
+  me->setDocTestKind (getDocTestKind ());
+  me->setWildName (getWildName ());
+  me->setWildKind (getWildKind ());
+  me->setQName (getQName ());
+  me->setTypeName (getTypeName ());
+  me->setNilledAllowed (getNilledAllowed ());
+  return me;
+}
+
+expr_t axis_step_expr::clone (substitution_t& s) {
+  axis_step_expr *ae = new axis_step_expr (get_loc ());
+  ae->setAxis (getAxis ());
+  ae->setTest (getTest ());
+  return ae;
+}
+
+expr_t relpath_expr::clone (substitution_t& s) {
+  auto_ptr<relpath_expr> re (new relpath_expr (get_loc ()));
+  for (unsigned i = 0; i < size (); i++)
+    re->add_back ((*this) [i]->clone (s));
+  return re.release ();
+}
+
+expr_t promote_expr::clone (substitution_t& s) {
+  return new promote_expr (get_loc (), get_input ()->clone (s), get_target_type ());
+}
+
+expr_t treat_expr::clone (substitution_t& s) {
+  return new treat_expr (get_loc (), get_input ()->clone (s), get_target_type (), get_err (), get_check_prime ());
+}
+
+expr_t castable_expr::clone (substitution_t& s) {
+  return new castable_expr (get_loc (), get_input ()->clone (s), get_target_type ());
+}
+
+expr_t instanceof_expr::clone (substitution_t& s) {
+  return new instanceof_expr (get_loc (), get_input ()->clone (s), get_target_type ());
+}
+
 } /* namespace zorba */
 /* vim:set ts=2 sw=2: */

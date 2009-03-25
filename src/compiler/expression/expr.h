@@ -308,6 +308,7 @@ public:
   void accept (expr_visitor&);
 
   xqtref_t return_type_impl (static_context *sctx);
+  virtual expr_t clone(substitution_t& substitution);
 };
 
 
@@ -372,6 +373,7 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
+  expr_t clone (substitution_t& s);
 };
 
 class castable_base_expr : public cast_or_castable_base_expr {
@@ -403,6 +405,7 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
+  expr_t clone (substitution_t& s);
 };
 
 
@@ -435,6 +438,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
   xqtref_t return_type_impl (static_context *sctx);  
+  expr_t clone (substitution_t& s);
 };
 
 
@@ -461,6 +465,7 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
+  expr_t clone (substitution_t& s);
 };
 
 
@@ -619,6 +624,7 @@ public:
   std::ostream& put(std::ostream&) const;
 
   xqtref_t return_type_impl (static_context *sctx);
+  virtual expr_t clone(substitution_t& substitution);
 };
 
 class signature;
@@ -665,7 +671,7 @@ public:
   expr_kind_t get_expr_kind () const { return fo_expr_kind; }
 protected:
   checked_vector<expr_t>   argv;
-  const function                * func;
+  const function         * func;
 
 public:
   fo_expr (const QueryLoc& loc, const function *f)
@@ -718,6 +724,7 @@ public:
   std::ostream& put(std::ostream&) const;
 
   virtual xqtref_t return_type_impl(static_context *sctx);
+  virtual expr_t clone(substitution_t& substitution);
 };
 
 
@@ -910,6 +917,7 @@ public:
   std::ostream& put(std::ostream&) const;
 
   xqtref_t return_type_impl(static_context *sctx);
+  expr_t clone (substitution_t &);
 };
 
 
@@ -981,6 +989,7 @@ public:
   store::StoreConsts::NodeKind getNodeKind() const;
 
   xqtref_t return_type_impl(static_context *sctx);
+  expr_t clone (substitution_t &);
 };
 
 
@@ -1017,6 +1026,7 @@ public:
   std::ostream& put(std::ostream&) const;
 
   xqtref_t return_type_impl(static_context *sctx);
+  expr_t clone (substitution_t &);
 
 public:
   static bool is_reverse_axis (axis_kind_t kind);
@@ -1066,6 +1076,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
   virtual xqtref_t return_type_impl(static_context *sctx);
+  virtual expr_t clone(substitution_t& substitution);
 };
 
 
