@@ -43,9 +43,10 @@ namespace storeminimal {
 #define COMMENT_NODE(item) (reinterpret_cast<CommentNode*>((item).getp()))
 
 
-enum SchemaTypeNames
+enum SchemaTypeCodes
 {
   XS_UNTYPED = 0,
+
   XS_UNTYPED_ATOMIC,
 
   XS_ANY,

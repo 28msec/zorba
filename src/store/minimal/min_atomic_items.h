@@ -180,6 +180,50 @@ public:
 
 
 /*******************************************************************************
+  class AnyUriItem
+********************************************************************************/
+class AnyUriItemImpl : public AtomicItem
+{
+protected:
+  xqpStringStore_t theValue;
+
+public:
+  AnyUriItemImpl(xqpStringStore_t& value) { theValue.transfer(value); }
+
+  store::Item* getType( ) const;
+
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  bool equals(
+        const store::Item* item,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return item->getString()->byteEqual(theValue->str());
+  }
+
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return theValue->byteCompare(other->getString()->str());
+  }
+
+  store::Item_t getEBV( ) const;
+
+  xqpStringStore_t getStringValue( ) const { return theValue.getp(); }
+  xqpStringStore* getStringValueP() const  { return theValue.getp(); }
+  void getStringValue(xqpStringStore_t& strval) const { strval = theValue; }
+  void getStringValue(std::string& buf) const { buf += theValue->str(); }
+
+  xqpStringStore* getString() const { return theValue.getp(); }
+
+  xqp_string show() const;
+};
+
+
+/*******************************************************************************
   class StringItem
 ********************************************************************************/
 class StringItemNaive : public AtomicItem
@@ -192,19 +236,26 @@ public:
   
   virtual store::Item* getType( ) const;
 
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
-  virtual bool equals(
+  bool equals(
         const store::Item*,
         long timezone = 0,
         const XQPCollator* aCollation = 0) const;
 
-  virtual store::Item_t getEBV( ) const;
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const;
 
-  virtual xqpStringStore_t getStringValue() const { return theValue; }
-  virtual xqpStringStore* getStringValueP() const { return theValue.getp(); }
-  virtual void getStringValue(xqpStringStore_t& strval) const { strval = theValue; }
-  virtual void getStringValue(std::string& buf) const { buf += theValue->str(); }
+  store::Item_t getEBV( ) const;
+
+  xqpStringStore_t getStringValue() const { return theValue; }
+  xqpStringStore* getStringValueP() const { return theValue.getp(); }
+  void getStringValue(xqpStringStore_t& strval) const { strval = theValue; }
+  void getStringValue(std::string& buf) const { buf += theValue->str(); }
+
+  xqpStringStore* getString() const { return theValue.getp(); }
 
   virtual xqp_string show() const;
 };
@@ -338,31 +389,6 @@ public:
 
 
 /*******************************************************************************
-  class AnyUriItem
-********************************************************************************/
-class AnyUriItemImpl : public AtomicItem
-{
-protected:
-  xqpStringStore_t theValue;
-
-public:
-  AnyUriItemImpl(xqpStringStore_t& value) { theValue.transfer(value); }
-
-  store::Item* getType( ) const;
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-  bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0) const;
-  store::Item_t getEBV( ) const;
-
-  xqpStringStore_t getStringValue( ) const { return theValue.getp(); }
-  xqpStringStore* getStringValueP() const  { return theValue.getp(); }
-  void getStringValue(xqpStringStore_t& strval) const { strval = theValue; }
-  void getStringValue(std::string& buf) const { buf += theValue->str(); }
-
-  xqp_string show() const;
-};
-
-
-/*******************************************************************************
   class UntypedAtomicItem
 ********************************************************************************/
 class UntypedAtomicItemImpl : public AtomicItem
@@ -374,8 +400,14 @@ public:
   UntypedAtomicItemImpl(xqpStringStore_t& value) { theValue.transfer(value); }
 
   store::Item* getType( ) const;
+
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-  bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0 ) const;
+
+  bool equals(
+        const store::Item*,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const;
+
   store::Item_t getEBV( ) const;
 
   xqpStringStore_t getStringValue() const { return theValue; }
@@ -414,8 +446,17 @@ public:
   
   store::Item* getType() const;
 
-  bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0) const;
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  bool equals(
+        const store::Item*,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const;
+
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const;
 
   store::Item_t getEBV( ) const;
 
@@ -448,63 +489,148 @@ public:
   const xqp_duration& getDurationValue() const;
   const xqp_dayTimeDuration& getDayTimeDurationValue() const;
   const xqp_yearMonthDuration& getYearMonthDurationValue() const;
+
   store::Item* getType() const;
-  bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0) const;
-  store::Item_t getEBV( ) const;
-  xqp_string show() const;
+
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  bool equals(
+        const store::Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return theValue == other->getDurationValue();
+  }
+
+
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return theValue.compare(other->getDurationValue());
+  }
+
+  store::Item_t getEBV( ) const;
+
+  xqp_string show() const;
 };
 
 
 /*******************************************************************************
-  class DayTimeDurationItem
+  class DoubleItemNaive
 ********************************************************************************/
-/*
-class DayTimeDurationItemNaive : public AtomicItem
+class DoubleItemNaive : public AtomicItem
 {
 protected:
-  DayTimeDuration theValue;
-  Duration durationCastValue;
+	xqp_double theValue;
 
 public:
-  DayTimeDurationItemNaive(const xqp_dayTimeDuration* aValue);
+	DoubleItemNaive(const xqp_double& aValue ) : theValue( aValue ) {}
+
+	const xqp_double& getDoubleValue() const { return theValue; }
+	
+  bool isNaN() const;
+  bool isPosOrNegInf() const;
+
+	store::Item* getType() const;
+
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  bool equals(
+        const store::Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return theValue == other->getDoubleValue();
+  }
+
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return theValue.compare(other->getDoubleValue());
+  }
+
+	store::Item_t getEBV( ) const;
 
   xqpStringStore_t getStringValue() const;
-  const xqp_dayTimeDuration& getDayTimeDurationValue() const;
-  const xqp_duration& getDurationValue() const;
-  store::Item* getType() const;
-  bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0) const;
-  store::Item_t getEBV( ) const;
+  void getStringValue(xqpStringStore_t& strval) const;
+  void getStringValue(std::string& buf) const;
+
   xqp_string show() const;
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 };
-*/
+	
 
 /*******************************************************************************
-  class YearMonthDurationItem
+  class FloatItemNaive
 ********************************************************************************/
-/*
-class YearMonthDurationItemNaive : public AtomicItem
+class FloatItemNaive : public AtomicItem
 {
-protected:
-  YearMonthDuration theValue;
-  Duration durationCastValue;
+  xqp_float theValue;
 
 public:
-  YearMonthDurationItemNaive(const xqp_yearMonthDuration* aValue);
-  xqpStringStore_t getStringValue() const;
-  const xqp_yearMonthDuration& getYearMonthDurationValue() const;
-  const xqp_duration& getDurationValue() const;
+  FloatItemNaive(const xqp_float& aValue) : theValue ( aValue ) {}
+
+  const xqp_float& getFloatValue() const { return theValue; }
+	
+  bool isNaN() const;
+  bool isPosOrNegInf() const;
+
   store::Item* getType() const;
-  bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0) const;
-  store::Item_t getEBV( ) const;
-  xqp_string show() const;
+
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  bool equals(
+        const store::Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return theValue == other->getFloatValue();
+  }
+
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return theValue.compare(other->getFloatValue());
+  }
+
+  store::Item_t getEBV( ) const;
+
+  xqpStringStore_t getStringValue() const;
+  void getStringValue(xqpStringStore_t& strval) const;
+  void getStringValue(std::string& buf) const;
+
+  xqp_string show() const;
 };
-*/
+
 
 /*******************************************************************************
   class DecimalItemNaive
+
+                               decimal
+                                  |
+                                  |
+                               integer
+                                  |
+              ------------------------------------------
+              |                   |                    |
+       nonPositiveInteger  nonNegativeInteger         long
+              |                   |                    |
+              |            -----------------          int
+        negativeInteger    |               |           |
+                           |               |         short
+                     positiveInteger   unsignedLong    |
+                                           |         byte
+                                       unsignedInt 
+                                           |
+                                       unsingedShort
+                                           |
+                                       unsingedByte
+
 ********************************************************************************/
 class DecimalItemNaive : public AtomicItem
 {
@@ -512,21 +638,42 @@ private:
   xqp_decimal theValue;
 
 public:
-  DecimalItemNaive ( xqp_decimal aValue ) : theValue( aValue ) {}
+  DecimalItemNaive(const xqp_decimal& aValue) : theValue(aValue) {}
 
-  virtual xqp_decimal getDecimalValue() const { return theValue; }
+  xqp_decimal getDecimalValue() const { return theValue; }
 
-  virtual store::Item* getType( ) const;
-  virtual bool equals(const store::Item*, long timezone = 0 , const XQPCollator* aCollation = 0 ) const;
-  virtual store::Item_t getEBV( ) const;
+  store::Item* getType() const;
 
-  virtual xqpStringStore_t getStringValue( ) const;
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
+  {
+    return theValue.hash();
+  }
+
+  bool equals(
+        const store::Item* other,
+        long timezone = 0 ,
+        const XQPCollator* aCollation = 0) const
+  {
+    return theValue == other->getDecimalValue();
+  }
+
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return theValue.compare(other->getDecimalValue());
+  }
+
+  store::Item_t getEBV( ) const;
+
+  xqpStringStore_t getStringValue( ) const;
   void getStringValue(xqpStringStore_t& strval) const;
   void getStringValue(std::string& buf) const;
 
-  virtual xqp_string show() const;
-  virtual bool isNaN() const;
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+  bool isNaN() const;
+
+  xqp_string show() const;
 };
 
 
@@ -535,31 +682,31 @@ public:
 ********************************************************************************/
 class IntegerItemNaive : public AtomicItem
 {
- protected:
+protected:
   xqp_integer theValue;
 
- public:
-  IntegerItemNaive ( xqp_integer aValue ) : theValue ( aValue ) {}
+public:
+  IntegerItemNaive(const xqp_integer& aValue) : theValue ( aValue ) {}
 
-  virtual xqp_integer getIntegerValue() const { return theValue; }
-  virtual xqp_decimal getDecimalValue() const;
+  xqp_integer getIntegerValue() const { return theValue; }
+  xqp_decimal getDecimalValue() const;
 
   virtual store::Item* getType() const;
 
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
   {
     return theValue.hash();
   }
 
-  virtual bool equals(
+  bool equals(
         const store::Item* other,
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
-    return other->getIntegerValue() == theValue;
+    return theValue == other->getIntegerValue();
   }
 
-  virtual long compare(
+  long compare(
         const Item* other,
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
@@ -567,125 +714,124 @@ class IntegerItemNaive : public AtomicItem
     return theValue.compare(other->getIntegerValue());
   }
 
-  virtual store::Item_t getEBV( ) const;
+  store::Item_t getEBV( ) const;
 
   xqpStringStore_t getStringValue() const;
   void getStringValue(xqpStringStore_t& strval) const;
   void getStringValue(std::string& buf) const;
 
+  bool isNaN() const { return false; }
+
   virtual xqp_string show() const;
-  virtual bool isNaN() const { return false; }
 };
 
 
 /*******************************************************************************
   class NonPositiveIntegerItemNaive
 ********************************************************************************/
-class NonPositiveIntegerItemNaive : public AtomicItem 
+class NonPositiveIntegerItemNaive : public IntegerItemNaive
 {
- private:
-  xqp_integer theValue;
+public:
+  NonPositiveIntegerItemNaive(const xqp_integer& aValue) : IntegerItemNaive(aValue) {}
     
- public:
-  NonPositiveIntegerItemNaive ( xqp_integer aValue) : theValue(aValue) {}
-  virtual xqp_integer getIntegerValue() const { return theValue; }
-  virtual xqp_decimal getDecimalValue() const;
-    
-  virtual store::Item* getType() const;
-  virtual bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0 ) const;
-  virtual store::Item_t getEBV( ) const;
+  store::Item* getType() const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
-
-  virtual xqp_string show() const;
-  virtual bool isNaN() const { return false; }
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+  xqp_string show() const;
 };
 
 
 /*******************************************************************************
   class NegativeIntegerItemNaive
 ********************************************************************************/
-class NegativeIntegerItemNaive : public AtomicItem 
+class NegativeIntegerItemNaive : public IntegerItemNaive
 {
- private:
-  xqp_integer theValue;
+public:
+  NegativeIntegerItemNaive(const xqp_integer& aValue) : IntegerItemNaive(aValue) {}
     
- public:
-  NegativeIntegerItemNaive ( xqp_integer aValue) : theValue(aValue) {}
-  virtual xqp_integer getIntegerValue() const { return theValue; }
-  virtual xqp_decimal getDecimalValue() const;
-    
-  virtual store::Item* getType() const;
-  virtual bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0 ) const;
-  virtual store::Item_t getEBV( ) const;
+  store::Item* getType() const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
-
-  virtual xqp_string show() const;
-  virtual bool isNaN() const { return false; }
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+  xqp_string show() const;
 };
   
 
 /*******************************************************************************
   class NonNegativeIntegerItemNaive
+
+  Note: xqp_uinteger is typedef of Integer
 ********************************************************************************/
-class NonNegativeIntegerItemNaive : public AtomicItem 
+class NonNegativeIntegerItemNaive : public IntegerItemNaive
 {
- private:
-  xqp_uinteger theValue;
-  
- public:
-  NonNegativeIntegerItemNaive ( xqp_uinteger aValue) : theValue(aValue) {}
+public:
+  NonNegativeIntegerItemNaive(const xqp_uinteger& aValue) : IntegerItemNaive(aValue) {}
 
-  virtual xqp_uinteger getUnsingedIntegerValue() const { return theValue; }
-  virtual xqp_integer getIntegerValue() const;
-  virtual xqp_decimal getDecimalValue() const;
-  
+  xqp_uinteger getUnsingedIntegerValue() const { return theValue; }
+
   store::Item* getType() const;
-  bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0 ) const;
-  store::Item_t getEBV() const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
-
-  virtual xqp_string show() const;
-  virtual bool isNaN() const { return false; }
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+  xqp_string show() const;
 };
 
 
 /*******************************************************************************
   class PositiveIntegerItemNaive
 ********************************************************************************/
-class PositiveIntegerItemNaive : public AtomicItem 
+class PositiveIntegerItemNaive : public  IntegerItemNaive
 {
- private:
-  xqp_uinteger theValue;
+public:
+  PositiveIntegerItemNaive(const xqp_uinteger& aValue) : IntegerItemNaive(aValue) { }
+
+  xqp_uinteger getUnsingedIntegerValue() const { return theValue; }
+
+  store::Item* getType() const;
+
+  xqp_string show() const;
+};
+
+
+/*******************************************************************************
+  class LongItemNaive
+********************************************************************************/
+class LongItemNaive : public AtomicItem 
+{
+private:
+  xqp_long theValue;
   
- public:
-  PositiveIntegerItemNaive ( xqp_uinteger aValue) : theValue(aValue) {}
-  virtual xqp_uinteger getUnsignedIntegerValue() const { return theValue; }
-  virtual xqp_integer getIntegerValue() const;
-  virtual xqp_decimal getDecimalValue() const;
+public:
+  LongItemNaive(xqp_long aValue) : theValue(aValue) {}
+
+  xqp_long getLongValue() const { return theValue; }
+  xqp_integer getIntegerValue() const;
+  xqp_decimal getDecimalValue() const;
   
-  virtual store::Item* getType() const;
-  virtual bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0 ) const;
-  virtual store::Item_t getEBV() const;
+  store::Item* getType() const;
+
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  bool equals(
+        const store::Item* aItem,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0 ) const
+  {
+    return theValue == aItem->getLongValue();
+  }
+
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return theValue - other->getLongValue();
+  }
+
+  store::Item_t getEBV( ) const;
 
   xqpStringStore_t getStringValue() const;
   void getStringValue(xqpStringStore_t& strval) const;
   void getStringValue(std::string& buf) const;
 
-  virtual xqp_string show() const;
-  virtual bool isNaN() const { return false; }
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+  bool isNaN() const { return false; }
+
+  xqp_string show() const;
 };
 
 
@@ -694,15 +840,16 @@ class PositiveIntegerItemNaive : public AtomicItem
 ********************************************************************************/
 class IntItemNaive : public AtomicItem
 {
- protected:
+protected:
   xqp_int theValue;
 
- public:
+public:
   IntItemNaive ( xqp_int aValue ) : theValue ( aValue ) {}
 
   virtual bool isNaN() const { return false; }
 
   virtual int32_t getIntValue() const { return theValue; }
+
   virtual xqp_integer getIntegerValue() const;
   virtual xqp_decimal getDecimalValue() const;
   virtual xqp_long getLongValue() const;
@@ -741,108 +888,14 @@ class IntItemNaive : public AtomicItem
 
 
 /*******************************************************************************
-  class UnsignedIntItemNaive
-********************************************************************************/
-class UnsignedIntItemNaive : public AtomicItem 
-{
- private:
-  xqp_uint theValue;
-  
- public:
-  UnsignedIntItemNaive ( xqp_uint aValue) : theValue(aValue) {}
-
-  virtual bool isNaN() const { return false; }
-
-  virtual xqp_uint getUnsignedIntValue() const { return theValue; }
-  virtual xqp_integer getIntegerValue() const;
-  virtual xqp_decimal getDecimalValue() const;
-  virtual xqp_uinteger getUnsignedIntegerValue() const;
-  virtual xqp_ulong getUnsignedLongValue() const;
-  
-  virtual store::Item* getType() const;
-
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-
-  virtual bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0 ) const;
-
-  virtual store::Item_t getEBV( ) const;
-
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
- 
-  virtual xqp_string show() const;
-};
-
-
-/*******************************************************************************
-  class LongItemNaive
-********************************************************************************/
-class LongItemNaive : public AtomicItem 
-{
- private:
-  xqp_long theValue;
-  
- public:
-  LongItemNaive ( xqp_long aValue) : theValue(aValue) {}
-
-  virtual xqp_long getLongValue() const { return theValue; }
-  virtual xqp_integer getIntegerValue() const;
-  virtual xqp_decimal getDecimalValue() const;
-  
-  virtual store::Item* getType() const;
-  virtual bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0 ) const;
-  virtual store::Item_t getEBV( ) const;
-
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
-
-  virtual xqp_string show() const;
-  virtual bool isNaN() const { return false; }
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-};
-
-
-/*******************************************************************************
-  class UnsignedLongItemNaive
-********************************************************************************/
-class UnsignedLongItemNaive : public AtomicItem 
-{
- private:
-  xqp_ulong theValue;
-  
- public:
-  UnsignedLongItemNaive ( xqp_ulong aValue) : theValue(aValue) {}
-
-  virtual xqp_ulong getUnsignedLongValue() const { return theValue; }
-  virtual xqp_integer getIntegerValue() const;
-  virtual xqp_decimal getDecimalValue() const;
-  virtual xqp_uinteger getUnsignedIntegerValue() const;
-  
-  virtual store::Item* getType() const;
-  virtual bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0 ) const;
-  virtual store::Item_t getEBV( ) const;
-
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
-
-  virtual xqp_string show() const;
-  virtual bool isNaN() const { return false; }
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-};
-
-
-/*******************************************************************************
   class ShortItemNaive
 ********************************************************************************/  
 class ShortItemNaive : public AtomicItem 
 {
- private:
+private:
   xqp_short theValue;
   
- public:
+public:
   ShortItemNaive ( xqp_short aValue)  : theValue(aValue) {}
   virtual xqp_short getShortValue() const { return theValue; }
   virtual xqp_integer getIntegerValue() const;
@@ -851,7 +904,22 @@ class ShortItemNaive : public AtomicItem
   virtual xqp_int getIntValue() const;
   
   virtual store::Item* getType() const;
-  virtual bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0 ) const;
+
+  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  virtual bool equals(
+        const store::Item*,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0 ) const;
+
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return theValue - other->getShortValue();
+  }
+
   virtual store::Item_t getEBV( ) const;
 
   xqpStringStore_t getStringValue() const;
@@ -860,39 +928,6 @@ class ShortItemNaive : public AtomicItem
 
   virtual xqp_string show() const;
   virtual bool isNaN() const { return false; }
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-};
-  
-
-/*******************************************************************************
-  class UnsignedShortItemNaive
-********************************************************************************/
-class UnsignedShortItemNaive : public AtomicItem 
-{
- private:
-  xqp_ushort theValue;
-  
- public:
-  UnsignedShortItemNaive ( xqp_ushort aValue) : theValue(aValue) {}
-
-  virtual xqp_ushort getUnsignedShortValue() const { return theValue; }
-  virtual xqp_integer getIntegerValue() const;
-  virtual xqp_decimal getDecimalValue() const;
-  virtual xqp_uinteger getUnsignedIntegerValue() const;
-  virtual xqp_ulong getUnsignedLongValue() const;
-  virtual xqp_uint getUnsignedIntValue() const;
-  
-  virtual store::Item* getType() const;
-  virtual bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0 ) const;
-  virtual store::Item_t getEBV( ) const;
-
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
-
-  virtual xqp_string show() const;
-  virtual bool isNaN() const { return false; }
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 };
 
 
@@ -914,7 +949,22 @@ class ByteItemNaive : public AtomicItem
   virtual xqp_short getShortValue() const;
   
   virtual store::Item* getType() const;
-  virtual bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0 ) const;
+
+  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  virtual bool equals(
+        const store::Item*,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0 ) const;
+
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return theValue - other->getByteValue();
+  }
+
   virtual store::Item_t getEBV( ) const;
 
   xqpStringStore_t getStringValue() const;
@@ -923,7 +973,159 @@ class ByteItemNaive : public AtomicItem
 
   virtual xqp_string show() const;
   virtual bool isNaN() const { return false; }
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+};
+
+
+/*******************************************************************************
+  class UnsignedLongItemNaive
+********************************************************************************/
+class UnsignedLongItemNaive : public AtomicItem 
+{
+ private:
+  xqp_ulong theValue;
+  
+ public:
+  UnsignedLongItemNaive ( xqp_ulong aValue) : theValue(aValue) {}
+
+  bool isNaN() const { return false; }
+
+  xqp_ulong getUnsignedLongValue() const { return theValue; }
+  xqp_decimal getDecimalValue() const;
+  xqp_integer getIntegerValue() const;
+  xqp_uinteger getUnsignedIntegerValue() const;
+  
+  store::Item* getType() const;
+
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  bool equals(
+        const store::Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0 ) const
+  {
+    return theValue == other->getUnsignedLongValue();
+  }
+
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return (theValue < other->getUnsignedLongValue() ?
+            -1 :
+            (theValue == other->getUnsignedLongValue() ? 0 : 1));
+  }
+
+  store::Item_t getEBV( ) const;
+
+  xqpStringStore_t getStringValue() const;
+  void getStringValue(xqpStringStore_t& strval) const;
+  void getStringValue(std::string& buf) const;
+
+  virtual xqp_string show() const;
+};
+
+
+/*******************************************************************************
+  class UnsignedIntItemNaive
+********************************************************************************/
+class UnsignedIntItemNaive : public AtomicItem 
+{
+private:
+  xqp_uint theValue;
+  
+public:
+  UnsignedIntItemNaive ( xqp_uint aValue) : theValue(aValue) {}
+
+  bool isNaN() const { return false; }
+
+  xqp_uint getUnsignedIntValue() const { return theValue; }
+  xqp_decimal getDecimalValue() const;
+  xqp_integer getIntegerValue() const;
+  xqp_uinteger getUnsignedIntegerValue() const;
+  xqp_ulong getUnsignedLongValue() const;
+  
+  store::Item* getType() const;
+
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  bool equals(
+        const store::Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0 ) const
+  {
+    return theValue == other->getUnsignedIntValue();
+  }
+
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return (theValue < other->getUnsignedIntValue() ?
+            -1 :
+            (theValue == other->getUnsignedIntValue() ? 0 : 1));
+  }
+
+  store::Item_t getEBV( ) const;
+
+  xqpStringStore_t getStringValue() const;
+  void getStringValue(xqpStringStore_t& strval) const;
+  void getStringValue(std::string& buf) const;
+ 
+  xqp_string show() const;
+};
+
+
+/*******************************************************************************
+  class UnsignedShortItemNaive
+********************************************************************************/
+class UnsignedShortItemNaive : public AtomicItem 
+{
+private:
+  xqp_ushort theValue;
+  
+public:
+  UnsignedShortItemNaive ( xqp_ushort aValue) : theValue(aValue) {}
+
+  xqp_ushort getUnsignedShortValue() const { return theValue; }
+  xqp_decimal getDecimalValue() const;
+  xqp_integer getIntegerValue() const;
+  xqp_uinteger getUnsignedIntegerValue() const;
+  xqp_ulong getUnsignedLongValue() const;
+  xqp_uint getUnsignedIntValue() const;
+  
+  bool isNaN() const { return false; }
+
+  store::Item* getType() const;
+
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  bool equals(
+        const store::Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0 ) const
+  {
+    return theValue == other->getUnsignedShortValue();
+  }
+
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return (theValue < other->getUnsignedShortValue() ?
+            -1 :
+            (theValue == other->getUnsignedShortValue() ? 0 : 1));
+  }
+
+  store::Item_t getEBV( ) const;
+
+  xqpStringStore_t getStringValue() const;
+  void getStringValue(xqpStringStore_t& strval) const;
+  void getStringValue(std::string& buf) const;
+
+  xqp_string show() const;
 };
 
 
@@ -932,85 +1134,51 @@ class ByteItemNaive : public AtomicItem
 ********************************************************************************/
 class UnsignedByteItemNaive : public AtomicItem 
 {
- private:
+private:
   xqp_ubyte theValue;
   
- public:
+public:
   UnsignedByteItemNaive ( xqp_ubyte aValue) : theValue(aValue) {}
 
-  virtual xqp_ubyte getUnsignedByteValue() const { return theValue; }
-  virtual xqp_integer getIntegerValue() const;
-  virtual xqp_decimal getDecimalValue() const;
-  virtual xqp_uinteger getUnsignedIntegerValue() const;
-  virtual xqp_ulong getUnsignedLongValue() const;
-  virtual xqp_uint getUnsignedIntValue() const;
-  virtual xqp_ushort getUnsignedShortValue() const;
+  xqp_ubyte getUnsignedByteValue() const { return theValue; }
+  xqp_decimal getDecimalValue() const;
+  xqp_integer getIntegerValue() const;
+  xqp_uinteger getUnsignedIntegerValue() const;
+  xqp_ulong getUnsignedLongValue() const;
+  xqp_uint getUnsignedIntValue() const;
+  xqp_ushort getUnsignedShortValue() const;
   
-  virtual store::Item* getType() const;
-  virtual bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0 ) const;
-  virtual store::Item_t getEBV( ) const;
+  bool isNaN() const { return false; }
+
+  store::Item* getType() const;
+
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  bool equals(
+        const store::Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0 ) const
+  {
+    return theValue == other->getUnsignedByteValue();
+  }
+
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return (theValue < other->getUnsignedByteValue() ?
+            -1 :
+            (theValue == other->getUnsignedByteValue() ? 0 : 1));
+  }
+
+  store::Item_t getEBV() const;
 
   xqpStringStore_t getStringValue() const;
   void getStringValue(xqpStringStore_t& strval) const;
   void getStringValue(std::string& buf) const;
 
-  virtual xqp_string show() const;
-  virtual bool isNaN() const { return false; }
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-};
-
-
-/*******************************************************************************
-  class DoubleItemNaive
-********************************************************************************/
-class DoubleItemNaive : public AtomicItem
-{
-protected:
-	xqp_double theValue;
-
-public:
-	DoubleItemNaive(const xqp_double& aValue ) : theValue( aValue ) {}
-
-	virtual const xqp_double& getDoubleValue() const { return theValue; }
-	
-	virtual store::Item* getType() const;
-  virtual bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0 ) const;
-	virtual store::Item_t getEBV( ) const;
-
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
-
-  virtual xqp_string show() const;
-  virtual bool isNaN() const;
-  virtual bool isPosOrNegInf() const;
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-};
-	
-
-/*******************************************************************************
-  class FloatItemNaive
-********************************************************************************/
-class FloatItemNaive : public AtomicItem
-{
-  xqp_float theValue;
-
-public:
-  FloatItemNaive ( xqp_float aValue ) : theValue ( aValue ) {}
-  virtual xqp_float getFloatValue() const { return theValue; }
-	
-  virtual store::Item* getType() const;
-  virtual bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0 ) const;
-  virtual store::Item_t getEBV( ) const;
-
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
-
-  virtual xqp_string show() const;
-  virtual bool isNaN() const;
-  virtual bool isPosOrNegInf() const;
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+  xqp_string show() const;
 };
 
 
@@ -1019,23 +1187,30 @@ public:
 ********************************************************************************/
 class BooleanItemNaive : public AtomicItem
 {
- private:
+private:
   xqp_boolean theValue;
 
- public:
-  BooleanItemNaive ( xqp_boolean aValue ) : theValue(aValue) {}
-  virtual xqp_boolean getBooleanValue() const { return theValue; }
+public:
+  BooleanItemNaive(xqp_boolean aValue) : theValue(aValue) {}
 
-  virtual store::Item* getType() const;
-  virtual bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0 ) const;
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-  virtual store::Item_t getEBV( ) const;
+  xqp_boolean getBooleanValue() const { return theValue; }
+
+  store::Item* getType() const;
+
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  bool equals(
+        const store::Item*,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0 ) const;
+
+  store::Item_t getEBV( ) const;
 
   xqpStringStore_t getStringValue() const;
   void getStringValue(xqpStringStore_t& strval) const;
   void getStringValue(std::string& buf) const;
 
-  virtual xqp_string show() const;
+  xqp_string show() const;
 };
   
 
@@ -1049,17 +1224,23 @@ private:
 
 public:
   Base64BinaryItemNaive(xqp_base64Binary aValue) : theValue(aValue) {}
-  virtual xqp_base64Binary getBase64BinaryValue() const { return theValue; }
 
-  virtual store::Item* getType() const;
-  virtual bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0 ) const;
+  xqp_base64Binary getBase64BinaryValue() const { return theValue; }
+
+  store::Item* getType() const;
+
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  bool equals(
+        const store::Item*,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0 ) const;
 
   xqpStringStore_t getStringValue() const;
   void getStringValue(xqpStringStore_t& strval) const;
   void getStringValue(std::string& buf) const;
 
-  virtual xqp_string show() const;
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+  xqp_string show() const;
 };
 
 
@@ -1068,22 +1249,28 @@ public:
 ********************************************************************************/
 class HexBinaryItemNaive : public AtomicItem 
 {
- private:
+private:
   xqp_hexBinary theValue;
 
- public:
- HexBinaryItemNaive(xqp_hexBinary aValue) : theValue(aValue) {}
-  virtual xqp_hexBinary getHexBinaryValue() const { return theValue; }
+public:
+  HexBinaryItemNaive(xqp_hexBinary aValue) : theValue(aValue) {}
 
-  virtual store::Item* getType() const;
-  virtual bool equals(const store::Item*, long timezone = 0, const XQPCollator* aCollation = 0 ) const;
+  xqp_hexBinary getHexBinaryValue() const { return theValue; }
+
+  store::Item* getType() const;
+
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  bool equals(
+        const store::Item*,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0 ) const;
   
   xqpStringStore_t getStringValue() const;
   void getStringValue(xqpStringStore_t& strval) const;
   void getStringValue(std::string& buf) const;
 
-  virtual xqp_string show() const;
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+  xqp_string show() const;
 };
 
 

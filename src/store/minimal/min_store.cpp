@@ -329,7 +329,16 @@ void SimpleStore::deleteIndex(const xqpStringStore_t& uri)
   ZORBA_ERROR(XQP0015_SYSTEM_NOT_YET_IMPLEMENTED);
 }
 
+/*******************************************************************************
 
+********************************************************************************/
+store::Index_t SimpleStore::getIndex(const xqpStringStore_t& uri)
+{
+  if (uri == NULL)
+    return NULL;
+
+  ZORBA_ERROR(XQP0015_SYSTEM_NOT_YET_IMPLEMENTED);
+}
 /*******************************************************************************
   Create a collection with a given URI and return an rchandle to the new
   collection object. If a collection with the given URI exists already, return

@@ -57,7 +57,7 @@ BasicItemFactory::~BasicItemFactory()
 
 
 bool BasicItemFactory::createQName(
-    store::Item_t&                 result,
+    store::Item_t&          result,
     const xqpStringStore_t& ns,
     const xqpStringStore_t& pre,
     const xqpStringStore_t& local)
@@ -68,14 +68,15 @@ bool BasicItemFactory::createQName(
 
 
 bool BasicItemFactory::createQName(
-    store::Item_t&     result,
-    const char* ns,
-    const char* pre,
-    const char* ln)
+    store::Item_t& result,
+    const char*    ns,
+    const char*    pre,
+    const char*    ln)
 {
   result = theQNamePool->insert(ns, pre, ln);
   return true;
 }
+
 
 
 bool BasicItemFactory::createAnyURI(store::Item_t& result, xqpStringStore_t& value)
@@ -96,18 +97,12 @@ bool BasicItemFactory::createAnyURI(store::Item_t& result, const char* value)
 }
 
 
-bool BasicItemFactory::createUntypedAtomic(store::Item_t& result, xqpStringStore_t& value)
-{
-  result = new UntypedAtomicItemImpl(value);
-  return true;
-}
-
-
 bool BasicItemFactory::createString(store::Item_t& result, xqpStringStore_t& value)
 {
   result = new StringItemNaive(value);
   return true;
 }
+
 
 bool BasicItemFactory::createNormalizedString(
     store::Item_t&    result,
@@ -117,11 +112,13 @@ bool BasicItemFactory::createNormalizedString(
   return true;
 }
 
+
 bool BasicItemFactory::createToken(store::Item_t& result, xqpStringStore_t& value )
 {
   result = new TokenItemImpl(value);
   return true;
 }
+
 
 bool BasicItemFactory::createLanguage(store::Item_t& result, xqpStringStore_t& value )
 {
@@ -129,11 +126,13 @@ bool BasicItemFactory::createLanguage(store::Item_t& result, xqpStringStore_t& v
   return true;
 }
 
+
 bool BasicItemFactory::createNMTOKEN(store::Item_t& result, xqpStringStore_t& value )
 {
   result = new NMTOKENItemImpl(value);
   return true;
 }
+
 
 bool BasicItemFactory::createNMTOKENS(
     store::Item_t& result,
@@ -143,11 +142,13 @@ bool BasicItemFactory::createNMTOKENS(
   return false;
 }
 
+
 bool BasicItemFactory::createName(store::Item_t& result, xqpStringStore_t& value )
 {
   result = new NameItemImpl(value);
   return true;
 }
+
 
 bool BasicItemFactory::createNCName(store::Item_t& result, xqpStringStore_t& value )
 {
@@ -155,11 +156,13 @@ bool BasicItemFactory::createNCName(store::Item_t& result, xqpStringStore_t& val
   return true;
 }
 
+
 bool BasicItemFactory::createID(store::Item_t& result, xqpStringStore_t& value )
 {
   result = new IDItemImpl(value);
   return true;
 }
+
 
 bool BasicItemFactory::createIDREF(store::Item_t& result, xqpStringStore_t& value )
 {
@@ -186,12 +189,138 @@ bool BasicItemFactory::createENTITIES(store::Item_t& result, xqpStringStore_t& v
 }
 
 
-
-bool BasicItemFactory::createBase64Binary(store::Item_t& result, xqp_base64Binary value)
+bool BasicItemFactory::createUntypedAtomic(store::Item_t& result, xqpStringStore_t& value)
 {
-  result = new Base64BinaryItemNaive ( value );
+  result = new UntypedAtomicItemImpl(value);
   return true;
 }
+
+
+bool BasicItemFactory::createDouble(
+    store::Item_t& result,
+    const xqp_double& value )
+{
+  result = new DoubleItemNaive( value );
+  return true;
+}
+
+
+bool BasicItemFactory::createFloat(store::Item_t& result,  const xqp_float& value)
+{
+  result = new FloatItemNaive( value );
+  return true;
+}
+
+
+bool BasicItemFactory::createDecimal(store::Item_t& result, const xqp_decimal& value)
+{
+  result = new DecimalItemNaive(value);
+  return true;
+}
+
+
+bool BasicItemFactory::createInteger(store::Item_t& result, const xqp_integer& value)
+{
+  result = new IntegerItemNaive ( value );
+  return true;
+}
+
+
+bool BasicItemFactory::createNonPositiveInteger(
+    store::Item_t& result,
+    const xqp_integer& value)
+{
+  ZORBA_ASSERT(value <= Integer::parseInt(0));
+  result = new NonPositiveIntegerItemNaive( value );
+  return true;
+}
+
+
+bool BasicItemFactory::createNegativeInteger(
+    store::Item_t& result,
+    const xqp_integer& value)
+{
+  ZORBA_ASSERT(value < xqp_integer::parseInt(0));
+  result = new NegativeIntegerItemNaive(value);
+  return true;
+}
+
+
+bool BasicItemFactory::createNonNegativeInteger(
+    store::Item_t& result,
+    const xqp_uinteger& value )
+{
+  result = new NonNegativeIntegerItemNaive ( value );
+  return true;
+}
+
+
+
+bool BasicItemFactory::createPositiveInteger(
+    store::Item_t& result,
+    const xqp_uinteger& value)
+{
+  ZORBA_ASSERT(value > Integer::parseInt(0));
+  result = new PositiveIntegerItemNaive( value );
+  return true;
+}
+
+
+bool BasicItemFactory::createLong(store::Item_t& result,  xqp_long value)
+{
+  result = new LongItemNaive ( value );
+  return true;
+}
+
+
+bool BasicItemFactory::createInt(store::Item_t& result,  xqp_int value)
+{
+  result = new IntItemNaive ( value );
+  return true;
+}
+
+
+bool BasicItemFactory::createShort(store::Item_t& result,  xqp_short value)
+{
+  result = new ShortItemNaive ( value );
+  return true;
+}
+
+
+bool BasicItemFactory::createByte(store::Item_t& result,  xqp_byte value)
+{
+  result = new ByteItemNaive ( value );
+  return true;
+}
+
+
+bool BasicItemFactory::createUnsignedLong(store::Item_t& result, xqp_ulong value)
+{
+  result = new UnsignedLongItemNaive( value );
+  return true;
+}
+
+
+bool BasicItemFactory::createUnsignedInt(store::Item_t& result,  xqp_uint value)
+{
+  result = new UnsignedIntItemNaive( value );
+  return true;
+}
+
+
+bool BasicItemFactory::createUnsignedShort(store::Item_t& result, xqp_ushort value)
+{
+  result = new UnsignedShortItemNaive( value );
+  return true;
+}
+
+
+bool BasicItemFactory::createUnsignedByte(store::Item_t& result,  xqp_ubyte value)
+{
+  result = new UnsignedByteItemNaive ( value );
+  return true;
+}
+
 
 bool BasicItemFactory::createBoolean(store::Item_t& result, xqp_boolean value)
 {
@@ -200,47 +329,11 @@ bool BasicItemFactory::createBoolean(store::Item_t& result, xqp_boolean value)
 }
 
 
-bool BasicItemFactory::createDecimal(store::Item_t& result, xqp_decimal value)
+bool BasicItemFactory::createBase64Binary(store::Item_t& result, xqp_base64Binary value)
 {
-  result = new DecimalItemNaive(value);
+  result = new Base64BinaryItemNaive ( value );
   return true;
 }
-
-
-bool BasicItemFactory::createInteger(store::Item_t& result, xqp_integer value)
-{
-  result = new IntegerItemNaive ( value );
-  return true;
-}
-
-
-bool BasicItemFactory::createLong (store::Item_t& result,  xqp_long value )
-{
-  result = new LongItemNaive ( value );
-  return true;
-}
-
-
-bool BasicItemFactory::createInt (store::Item_t& result,  xqp_int value )
-{
-  result = new IntItemNaive ( value );
-  return true;
-}
-
-
-bool BasicItemFactory::createShort (store::Item_t& result,  xqp_short value )
-{
-  result = new ShortItemNaive ( value );
-  return true;
-}
-
-
-bool BasicItemFactory::createByte (store::Item_t& result,  xqp_byte value )
-{
-  result = new ByteItemNaive ( value );
-  return true;
-}
-
 
 
 bool BasicItemFactory::createDateTime(store::Item_t& result, const xqp_dateTime* value)
@@ -349,7 +442,7 @@ bool BasicItemFactory::createDate(store::Item_t& result, const xqp_date* value)
 }
 
 
-bool BasicItemFactory::createDate (
+bool BasicItemFactory::createDate(
     store::Item_t& result,
     short year,
     short month,
@@ -442,7 +535,7 @@ bool BasicItemFactory::createTime(
     short          timeZone_hours)
 {
   DateTime dt;
-  TimeZone tz (timeZone_hours);
+  TimeZone tz(timeZone_hours);
   
   if(DateTime::createTime(hour, minute, second, &tz, dt) == 0) 
   {
@@ -669,16 +762,6 @@ bool BasicItemFactory::createGYearMonth(
 }
 
 
-
-bool BasicItemFactory::createDouble(
-    store::Item_t& result,
-    const xqp_double& value )
-{
-  result = new DoubleItemNaive( value );
-  return true;
-}
-
-
 bool BasicItemFactory::createDuration(
     store::Item_t& result,
     xqp_duration* value )
@@ -731,13 +814,6 @@ bool BasicItemFactory::createDayTimeDuration(store::Item_t& result, xqp_dayTimeD
 }
 
 
-bool BasicItemFactory::createFloat (store::Item_t& result,  xqp_float value )
-{
-  result = new FloatItemNaive( value );
-  return true;
-}
-
-
 
 bool BasicItemFactory::createHexBinary (store::Item_t& result,  xqp_hexBinary value )
 {
@@ -746,77 +822,12 @@ bool BasicItemFactory::createHexBinary (store::Item_t& result,  xqp_hexBinary va
 }
 
 
-
 bool BasicItemFactory::createNOTATION(
     store::Item_t& result,
     xqpStringStore_t& /*value*/ )
 {
   result = NULL;
   return false;
-}
-
-
-bool BasicItemFactory::createNegativeInteger(
-    store::Item_t& result,
-    xqp_integer value )
-{
-  ZORBA_ASSERT(value < xqp_integer::parseInt(0));
-  result = new NegativeIntegerItemNaive ( value );
-  return true;
-}
-
-
-bool BasicItemFactory::createNonNegativeInteger(
-    store::Item_t& result,
-    xqp_uinteger value )
-{
-  result = new NonNegativeIntegerItemNaive ( value );
-  return true;
-}
-
-
-bool BasicItemFactory::createNonPositiveInteger(
-    store::Item_t& result,
-    xqp_integer    value )
-{
-  ZORBA_ASSERT(value <= Integer::parseInt(0));
-  result = new NonPositiveIntegerItemNaive( value );
-  return true;
-}
-
-
-bool BasicItemFactory::createPositiveInteger(
-    store::Item_t& result,
-    xqp_uinteger value)
-{
-  ZORBA_ASSERT(value > Integer::parseInt(0));
-  result = new PositiveIntegerItemNaive( value );
-  return true;
-}
-
-
-bool BasicItemFactory::createUnsignedByte (store::Item_t& result,  xqp_ubyte value )
-{
-  result = new UnsignedByteItemNaive ( value );
-  return true;
-}
-
-bool BasicItemFactory::createUnsignedInt (store::Item_t& result,  xqp_uint value )
-{
-  result = new UnsignedIntItemNaive( value );
-  return true;
-}
-
-bool BasicItemFactory::createUnsignedLong(store::Item_t& result, xqp_ulong value)
-{
-  result = new UnsignedLongItemNaive( value );
-  return true;
-}
-
-bool BasicItemFactory::createUnsignedShort(store::Item_t& result, xqp_ushort value)
-{
-  result = new UnsignedShortItemNaive( value );
-  return true;
 }
 
 

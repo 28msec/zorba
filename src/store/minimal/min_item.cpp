@@ -127,6 +127,17 @@ xqpStringStore* Item::getStringValueP() const
  *  methods.
  */
   
+
+/** Accessor for xs:string and its subtypes
+ */
+xqpStringStore* Item::getString() const
+{
+  ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                        __FUNCTION__, getType()->getStringValue());
+  return NULL;
+}
+
+
 /** Accessor for xs:base64Binary
  */
 xqp_base64Binary Item::getBase64BinaryValue() const
@@ -282,11 +293,11 @@ std::vector<xqp_string> Item::getStringVectorValue() const
 
 /** Accessor for xs:float
  */
-xqp_float Item::getFloatValue() const
+const xqp_float& Item::getFloatValue() const
 {
   ZORBA_ERROR_PARAM_OSS(XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return xqp_float::parseInt(0);
+  return *(new xqp_float);
 }
 
 /** Accessor for xs:gDay

@@ -150,6 +150,8 @@ public:
 
   void deleteIndex(const xqpStringStore_t& uri);
 
+  store::Index_t getIndex(const xqpStringStore_t& uri);
+
   store::Collection_t createCollection(const xqpStringStore_t& uri);
   store::Collection_t createCollection();
   store::Collection_t getCollection(const xqpStringStore_t& uri);
