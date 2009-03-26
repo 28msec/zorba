@@ -480,7 +480,7 @@ long FLWORIterator::OrderKeyCmp::compare(
     store::Item_t ls2(s2);
     long result = CompareIterator::valueCompare(ls1 , ls2,
                                                 theTypeManager,
-                                                timezone,
+                                                theTimezone,
                                                 collator);
     if (result > 1 || result < -1) 
     {
