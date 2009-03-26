@@ -64,7 +64,7 @@ bool ValueIndexPointProbe::nextImpl(store::Item_t& result, PlanState& planState)
     cond->pushItem(temp);
   }
 
-  state->theIterator->init(cond);
+  state->theIterator->init((const zorba::store::IndexPointCondition_t&)cond);
   state->theIterator->open();
   while(state->theIterator->next(result)) {
     STACK_PUSH(true, state);
