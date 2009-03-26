@@ -550,6 +550,9 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
+    if (theValue.isNaN() || other->getDoubleValue().isNaN())
+      return 2;
+
     return theValue.compare(other->getDoubleValue());
   }
 
@@ -595,6 +598,9 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
+    if (theValue.isNaN() || other->getFloatValue().isNaN())
+      return 2;
+
     return theValue.compare(other->getFloatValue());
   }
 
@@ -820,7 +826,9 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
-    return theValue - other->getLongValue();
+    return (theValue < other->getLongValue() ?
+            -1 :
+            (theValue == other->getLongValue() ? 0 : 1));
   }
 
   store::Item_t getEBV( ) const;
@@ -874,7 +882,9 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
-    return theValue - other->getIntValue();
+    return (theValue < other->getIntValue() ?
+            -1 :
+            (theValue == other->getIntValue() ? 0 : 1));
   }
 
   store::Item_t getEBV() const;
@@ -917,7 +927,9 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
-    return theValue - other->getShortValue();
+    return (theValue < other->getShortValue() ?
+            -1 :
+            (theValue == other->getShortValue() ? 0 : 1));
   }
 
   virtual store::Item_t getEBV( ) const;
@@ -962,7 +974,9 @@ class ByteItemNaive : public AtomicItem
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
-    return theValue - other->getByteValue();
+    return (theValue < other->getByteValue() ?
+            -1 :
+            (theValue == other->getByteValue() ? 0 : 1));
   }
 
   virtual store::Item_t getEBV( ) const;
@@ -1203,6 +1217,16 @@ public:
         const store::Item*,
         long timezone = 0,
         const XQPCollator* aCollation = 0 ) const;
+
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return (theValue == other->getBooleanValue() ?
+            0 :
+            (theValue == false ? -1 : 1));
+  }
 
   store::Item_t getEBV( ) const;
 
