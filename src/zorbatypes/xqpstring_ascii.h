@@ -122,7 +122,8 @@ public:
 
   int byteCompare(const std::string& s) 
   {
-    return theString.compare(0, theString.size(), s);
+    int res = theString.compare(0, theString.size(), s);
+    return (res < 0 ? -1 : (res > 0 ? 1 : 0));
   }
 
   // Three-way lexicographical comparison of s and a substring of *this
@@ -131,7 +132,8 @@ public:
         std::string::size_type n,
         const std::string& s) 
   {
-    return theString.compare (pos, n, s);
+   int res = theString.compare(pos, n, s);
+   return (res < 0 ? -1 : (res > 0 ? 1 : 0));
   }
 
   // Three-way lexicographical comparison of a substring of s and a substring of *this
@@ -142,7 +144,8 @@ public:
         std::string::size_type pos1,
         std::string::size_type n1) 
   {
-    return theString.compare (pos, n, s, pos1, n1);
+    int res = theString.compare(pos, n, s, pos1, n1);
+    return (res < 0 ? -1 : (res > 0 ? 1 : 0));
   }
 
   bool
