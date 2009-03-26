@@ -33,6 +33,8 @@
 #include "store/api/item_factory.h"
 #include "context/collation_cache.h"
 
+#include <time.h>
+
 
 namespace zorba
 {
