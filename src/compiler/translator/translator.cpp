@@ -2414,7 +2414,7 @@ void end_visit (const IndexStatement& v, void* /*visit_state*/) {
     GENV_ITEMFACTORY->createAnyURI(uri_item, v.get_uri().c_str());
     expr_t uri(new const_expr(v.get_location(), uri_item));
     fo->add(uri);
-    nodestack.push(fo);
+    nodestack.push((const rchandle<fo_expr>&)fo);
   }
   TRACE_VISIT_OUT ();
 }
