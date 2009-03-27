@@ -6,6 +6,8 @@
 #include <list>
 #include <vector>
 #include <assert.h>
+#include <iostream>
+
 
 namespace zorba{
 
@@ -28,6 +30,11 @@ struct ClassVersion
 class class_deserializer
 {
 public:
+  virtual ~class_deserializer() 
+  {
+  //  std::cout << "~class_deserializer" << std::endl;
+  }
+
   virtual SerializeBaseClass* create_new(Archiver &ar) = 0;
   virtual void cast_ptr(SerializeBaseClass* ptr, void **class_ptr) = 0;
 };
@@ -35,12 +42,23 @@ public:
 
 #define SERIALIZABLE_CLASS(class_name) \
 SERIALIZABLE_CLASS_PREFIX(class_name) \
+static const struct zorba::serialization::ClassVersion class_versions[]; \
 SERIALIZABLE_CLASS_FACTORY_DECL(class_name, new class_name(ar))
 
 #define SERIALIZABLE_ABSTRACT_CLASS(class_name) \
 SERIALIZABLE_CLASS_PREFIX(class_name) \
+static const struct zorba::serialization::ClassVersion class_versions[]; \
 SERIALIZABLE_CLASS_FACTORY_DECL(class_name, NULL)
 
+#define SERIALIZABLE_TEMPLATE_CLASS(class_name) \
+SERIALIZABLE_CLASS_PREFIX(class_name) \
+static const struct zorba::serialization::ClassVersion *class_versions; \
+SERIALIZABLE_CLASS_FACTORY_DECL(class_name, new class_name(ar))
+
+#define SERIALIZABLE_TEMPLATE_ABSTRACT_CLASS(class_name) \
+SERIALIZABLE_CLASS_PREFIX(class_name) \
+static const struct zorba::serialization::ClassVersion *class_versions; \
+SERIALIZABLE_CLASS_FACTORY_DECL(class_name, NULL)
 
 
 
@@ -52,20 +70,20 @@ virtual void serialize_internal(zorba::serialization::Archiver &ar)\
     ar.set_class_type(typeid(this).name()+6);\
   class_name::serialize(ar);\
 }\
-virtual zorba::serialization::ClassVersion &get_classversion(int v) {return class_versions[v];}\
+virtual const zorba::serialization::ClassVersion &get_classversion(int v) {return class_versions[v];}\
 virtual int get_version_count() {return class_versions_count;}\
-static struct zorba::serialization::ClassVersion class_versions[]; \
-static int class_versions_count;
+static const int class_versions_count;
 
 
 #define SERIALIZABLE_CLASS_FACTORY_DECL(class_name, creator) \
-class class_name##_factory : public zorba::serialization::class_deserializer\
+template<class T> \
+class class_factory : public zorba::serialization::class_deserializer\
 { \
 public:\
-  class_name##_factory()\
+  class_factory()\
   {\
     /*register this class into plan serializer*/  \
-    zorba::serialization::ClassSerializer::getInstance()->register_class_factory(#class_name, this);\
+    zorba::serialization::ClassSerializer::getInstance()->register_class_factory(typeid(T).name()+6, this);\
   }\
   virtual zorba::serialization::SerializeBaseClass *create_new(zorba::serialization::Archiver &ar)\
   {\
@@ -77,14 +95,14 @@ public:\
   }\
 \
 };\
-static class_name##_factory   g_class_factory;
+static class_factory<class_name>   g_class_factory;
 
-
+////////////////////
+//////////////////////define the class versions
 
 #define SERIALIZABLE_CLASS_VERSIONS(class_name) \
-class_name::class_name##_factory   class_name::g_class_factory;\
-  zorba::serialization::ClassVersion class_name::class_versions[] = {{ 1, ZORBA_VERSION_0_9_5, BACKWARD_COMPATIBLE}
-
+  class_name::class_factory<class_name>   class_name::g_class_factory;\
+  const zorba::serialization::ClassVersion class_name::class_versions[] = {{ 1, ZORBA_VERSION_0_9_5, BACKWARD_COMPATIBLE}
 
 
 
@@ -95,9 +113,31 @@ class_name::class_name##_factory   class_name::g_class_factory;\
 
 #define END_SERIALIZABLE_CLASS_VERSIONS(class_name) \
 };\
-int class_name::class_versions_count = sizeof(class_name::class_versions)/sizeof(struct zorba::serialization::ClassVersion);
+const int class_name::class_versions_count = sizeof(class_name::class_versions)/sizeof(struct zorba::serialization::ClassVersion);
 
 
+////////////////////
+//////////////////////define the template class versions
+
+#define SERIALIZABLE_TEMPLATE_VERSIONS(template_name) \
+  const zorba::serialization::ClassVersion g_##template_name##_class_versions[] = {{ 1, ZORBA_VERSION_0_9_5, BACKWARD_COMPATIBLE}
+
+//add CLASS_VERSION here
+
+#define END_SERIALIZABLE_TEMPLATE_VERSIONS(template_name) \
+  };\
+  const int g_##template_name##_class_versions_count = sizeof(g_##template_name##_class_versions)/sizeof(struct zorba::serialization::ClassVersion);
+
+
+///////////////////
+/////////////////////define the versions dependency from template instance to template versions
+
+#define SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(template_name, instance_name) \
+  instance_name::class_factory<instance_name>   instance_name::g_class_factory;\
+  const zorba::serialization::ClassVersion *instance_name::class_versions = g_##template_name##_class_versions;\
+  const int instance_name::class_versions_count = g_##template_name##_class_versions_count;
+
+//no need to add CLASS_VERSION and END_SERIALIZABLE_CLASS_VERSIONS
 
 
 #define   SERIALIZABLE_CLASS_CONSTRUCTOR(class_name) \
@@ -119,7 +159,9 @@ int class_name::class_versions_count = sizeof(class_name::class_versions)/sizeof
 #define   CHECK_CLASS_NAME(class_name)\
 if(ar.is_serializing_out() && !ar.is_serialize_base_class())\
 {\
-  assert(!strcmp(typeid(*this).name()+6, #class_name));\
+  const char  *this_name = typeid(*this).name()+6; \
+  assert(!strcmp(this_name, #class_name) || \
+        (!strncmp(this_name, #class_name, sizeof(#class_name)-1) && (this_name[sizeof(#class_name)-1] == '<')));\
 }
 
 
@@ -131,7 +173,7 @@ class SerializeBaseClass
 {
 public:
   virtual void serialize_internal(Archiver &ar) = 0;
-  virtual ClassVersion &get_classversion(int v) = 0;
+  virtual const ClassVersion &get_classversion(int v) = 0;
   virtual int get_version_count() = 0;
 
 };
@@ -141,9 +183,13 @@ public:
 //stateless class, multithreading safe
 class ClassSerializer
 {
+  char  *class_name_pool;
+  int   class_name_pool_size;
+  int   class_name_pool_filled;
   struct registered_factory
   {
-    char  class_name[50];
+    //char  class_name[50];
+    int cls_name_off;
     class_deserializer  *class_factory;
   };
   std::list<struct registered_factory>    class_factories;

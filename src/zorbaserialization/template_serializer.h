@@ -271,7 +271,7 @@ void operator&(Archiver &ar, T *&obj)
       }
       for(v = obj->get_version_count()-1; v >= 0; v--)
       {
-        ClassVersion  &ver = obj->get_classversion(v);
+        const ClassVersion  &ver = obj->get_classversion(v);
         if(version == ver.class_version)
           break;//supported version
         else if((version < ver.class_version) && !ver.is_backward_compatible)

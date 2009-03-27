@@ -13,10 +13,14 @@ ClassSerializer  *g_class_serializer = NULL;
 ///////////////////////////////////////////Global serialization Operators
 ClassSerializer::ClassSerializer()
 {
+  class_name_pool_size = 10000;
+  class_name_pool = (char*)malloc(class_name_pool_size);
+  class_name_pool_filled = 0;
 }
 
 ClassSerializer::~ClassSerializer()
 {
+  free(class_name_pool);
 }
 
 ClassSerializer* ClassSerializer::getInstance()
@@ -34,9 +38,26 @@ void ClassSerializer::deleteInstance()
 
 void ClassSerializer::register_class_factory(const char *class_name, class_deserializer *class_factory)
 {
+#ifdef DEBUG
+  //check for class name duplicates
+  if(get_class_factory(class_name))
+  {
+    assert(false);
+  }
+#endif
+  int name_size = strlen(class_name);
+  if((name_size + class_name_pool_filled + 1) > class_name_pool_size)
+  {
+    class_name_pool_size += 10000;
+    class_name_pool = (char*)realloc(class_name_pool, class_name_pool_size);
+  }
+//  std::cout << "register class factory " << class_name << std::endl;
   class_factories.resize(class_factories.size()+1);
   ClassSerializer::registered_factory  &r = class_factories.back();
-  strcpy(r.class_name, class_name);
+  //strcpy(r.class_name, class_name);
+  strcpy(class_name_pool + class_name_pool_filled, class_name);
+  r.cls_name_off = class_name_pool_filled;
+  class_name_pool_filled += name_size + 1;
   r.class_factory = class_factory;
 }
 
@@ -45,7 +66,7 @@ class_deserializer *ClassSerializer::get_class_factory(const char *classname)
   std::list<struct registered_factory>::iterator  it;
   for(it = class_factories.begin(); it != class_factories.end(); it++)
   {
-    if(!strcmp((*it).class_name, classname))
+    if(!strcmp(class_name_pool + (*it).cls_name_off, classname))
       return (*it).class_factory;
   }
   return NULL;
