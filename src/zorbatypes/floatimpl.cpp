@@ -555,7 +555,7 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
       // Skip trailing space
       while(ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n') 
       {
-        lCur++;
+        ++lCur;
         ch = *lCur;
       }
       

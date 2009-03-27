@@ -90,7 +90,7 @@ bool Integer::parseString(const char* aCharStar, Integer& aInteger)
       // Skip trailing space
       while(ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n') 
       {
-        lCur++;
+        ++lCur;
         ch = *lCur;
       }
       

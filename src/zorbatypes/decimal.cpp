@@ -95,7 +95,8 @@ bool Decimal::parseString(const char* aCharStar, Decimal& aDecimal)
       // Skip trailing space
       while(ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n') 
       {
-        ch = *lCur++;
+        ++lCur;
+        ch = *lCur;
       }
       
       if (*lCur != 0)
