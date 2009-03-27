@@ -40,9 +40,6 @@ class ValueIndex : public SimpleRCObject {
     static_context *getStaticContext() const { return m_static_context; }
     xqpStringStore_t getIndexUri() const { return m_index_uri; }
 
-    store::Index_t getStoreIndex() const { return m_store_index; }
-    void setStoreIndex(store::Index_t storeIndex) { m_store_index = storeIndex; }
-
     expr_t getDomainExpression() const { return m_domain_expr; }
     void setDomainExpression(expr_t domainExpr) { m_domain_expr = domainExpr; }
 
@@ -63,7 +60,6 @@ class ValueIndex : public SimpleRCObject {
   private:
     static_context *m_static_context;
     xqpStringStore_t m_index_uri;
-    store::Index_t m_store_index;
     expr_t m_domain_expr;
     var_expr_t m_domain_var;
     var_expr_t m_domain_pos_var;

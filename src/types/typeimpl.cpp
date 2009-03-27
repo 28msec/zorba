@@ -106,6 +106,26 @@ std::ostream& AtomicXQType::serialize(std::ostream& os) const
             << TypeOps::decode_quantifier (get_quantifier()) << "]";
 }
 
+store::Item_t AtomicXQType::get_qname() const
+{
+  return GENV_TYPESYSTEM.m_atomic_typecode_qname_map[m_type_code];
+}
+
+store::Item_t AnyXQType::get_qname() const
+{
+  return GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME;
+}
+
+store::Item_t AnySimpleXQType::get_qname() const
+{
+  return GENV_TYPESYSTEM.XS_ANY_SIMPLE_TYPE_QNAME;
+}
+
+store::Item_t UntypedXQType::get_qname() const
+{
+  return GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+}
+
 
 NodeXQType::NodeXQType(
     const TypeManager *manager,

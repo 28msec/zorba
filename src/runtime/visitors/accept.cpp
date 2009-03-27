@@ -142,6 +142,8 @@ namespace zorba {
   UNARY_ACCEPT(DeleteIterator);
   UNARY_ACCEPT(FnDataIterator);
   UNARY_ACCEPT(gflwor::CountIterator);
+  UNARY_ACCEPT(CreateValueIndex);
+  UNARY_ACCEPT(DropValueIndex);
   UNARY_ACCEPT(ValueIndexInsertSessionOpener);
   UNARY_ACCEPT(ValueIndexInsertSessionCloser);
 

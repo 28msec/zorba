@@ -34,6 +34,20 @@ class zop_unhoist : public function {
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
+class zop_createindex : public function {
+  public:
+    zop_createindex(const signature&);
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    virtual bool requires_dyn_ctx () const { return true; }
+};
+
+class zop_dropindex : public function {
+  public:
+    zop_dropindex(const signature&);
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    virtual bool requires_dyn_ctx () const { return true; }
+};
+
 class zop_buildindex : public function {
   public:
     zop_buildindex(const signature&);

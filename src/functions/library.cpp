@@ -1169,6 +1169,14 @@ DECL(sctx, zop_unhoist,
      (createQName(XQUERY_FN_NS,"fn", ":unhoist"),
       GENV_TYPESYSTEM.ITEM_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+DECL(sctx, zop_createindex,
+     (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "create-index"),
+      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_ONE));
+DECL(sctx, zop_dropindex,
+     (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "drop-index"),
+      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_ONE));
 DECL(sctx, zop_buildindex,
      (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "build-index"),
       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,

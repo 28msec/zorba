@@ -36,6 +36,22 @@ PlanIter_t zop_unhoist::codegen(const QueryLoc& loc, std::vector<PlanIter_t>& ar
   return new UnhoistIterator(loc, argv);
 }
 
+zop_createindex::zop_createindex(const signature& sig)
+  : function(sig) { }
+
+PlanIter_t zop_createindex::codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new CreateValueIndex(loc, argv[0]);
+}
+
+zop_dropindex::zop_dropindex(const signature& sig)
+  : function(sig) { }
+
+PlanIter_t zop_dropindex::codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new DropValueIndex(loc, argv[0]);
+}
+
 zop_buildindex::zop_buildindex(const signature& sig)
   : function(sig) { }
 

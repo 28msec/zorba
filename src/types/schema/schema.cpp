@@ -614,7 +614,7 @@ void Schema::addTypeToCache(xqtref_t itemXQType)
     ZORBA_ASSERT( itemXQType->type_kind() == XQType::USER_DEFINED_KIND );
 
     const UserDefinedXQType* itemUDType = static_cast<const UserDefinedXQType*>(itemXQType.getp());
-    const store::Item* qname = itemUDType->getQName();
+    const store::Item* qname = itemUDType->get_qname();
     std::string key = qname->getLocalName()->str() + ":" + qname->getNamespace()->str() + " " + 
         TypeOps::decode_quantifier (itemXQType->get_quantifier());
     xqtref_t res;
@@ -708,7 +708,7 @@ bool Schema::parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aT
     const UserDefinedXQType* udXQType = static_cast<const UserDefinedXQType*>(aTargetType.getp());
     ZORBA_ASSERT( udXQType->isAtomic() );
 
-    store::Item_t typeQName = udXQType->getQName();
+    store::Item_t typeQName = udXQType->get_qname();
 #ifndef ZORBA_NO_XMLSCHEMA
     XMLChArray localPart (typeQName->getLocalName());
     XMLChArray uriStr (typeQName->getNamespace());

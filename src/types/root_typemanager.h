@@ -225,6 +225,7 @@ private:
   friend class root_static_context;
   friend class TypeOps;
   friend class TypeManagerImpl;
+  friend class AtomicXQType;
 };
 
 }

@@ -14,8 +14,46 @@
  * limitations under the License.
  */
 #include "runtime/indexing/value_index_builder.h"
+#include "store/api/store.h"
+#include "system/globalenv.h"
 
 namespace zorba {
+
+bool CreateValueIndex::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  bool status;
+  ValueIndex_t index;
+  PlanIteratorState *state;
+  ValueIndexInsertSession_t session;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  status = consumeNext(result, theChild, planState);
+  ZORBA_ASSERT(status);
+  index = planState.sctx()->lookup_index(result->getStringValueP());
+  {
+    const std::vector<xqtref_t>& iTypes(index->getIndexFieldTypes());
+    int n = iTypes.size();
+    store::IndexSpecification spec(n);
+    for(int i = 0; i < n; ++i) {
+      const XQType& t = *iTypes[i];
+      spec.theKeyTypes[i] = t.get_qname();
+    }
+    GENV_STORE.createIndex(result->getStringValueP(), spec);
+  }
+  STACK_END (state);
+}
+
+bool DropValueIndex::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  bool status;
+  ValueIndex_t index;
+  PlanIteratorState *state;
+  ValueIndexInsertSession_t session;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  status = consumeNext(result, theChild, planState);
+  ZORBA_ASSERT(status);
+  GENV_STORE.deleteIndex(result->getStringValueP());
+  STACK_END (state);
+}
 
 bool ValueIndexInsertSessionOpener::nextImpl(store::Item_t& result, PlanState& planState) const
 {

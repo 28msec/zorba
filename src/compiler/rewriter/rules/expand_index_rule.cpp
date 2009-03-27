@@ -58,21 +58,33 @@ RULE_REWRITE_PRE(ExpandBuildIndex)
       expr_t open_index(new fo_expr(fo->get_loc(), LOOKUP_OP1("index-session-opener"), open_index_arg));
       se_args.push_back(open_index);
 
+      expr::substitution_t subst;
+
       flwor_expr::clause_list_t clauses;
-      flwor_expr::forletref_t fc = new forlet_clause(forlet_clause::for_clause, vi->getDomainVariable(), vi->getDomainPositionVariable(), NULL, vi->getDomainExpression());
+      expr_t de = vi->getDomainExpression()->clone(subst);
+      var_expr_t dot = vi->getDomainVariable();
+      var_expr_t pos = vi->getDomainPositionVariable();
+      var_expr_t newdot = new var_expr(dot->get_loc(), dot->get_kind(), dot->get_varname());
+      var_expr_t newpos = new var_expr(pos->get_loc(), pos->get_kind(), pos->get_varname());
+      subst[dot] = newdot;
+      subst[pos] = newpos;
+      flwor_expr::forletref_t fc = new forlet_clause(forlet_clause::for_clause, newdot, newpos, NULL, de);
+      newdot->set_forlet_clause(fc);
+      newpos->set_forlet_clause(fc);
+
       clauses.push_back(fc);
 
       std::vector<expr_t> index_insert_args;
       expr_t insert_index_uri(new const_expr(fo->get_loc(), uri_item));
       index_insert_args.push_back(insert_index_uri);
 
-      expr_t insert_index_var(new wrapper_expr(fo->get_loc(), vi->getDomainVariable().getp()));
+      expr_t insert_index_var(new wrapper_expr(fo->get_loc(), newdot));
       index_insert_args.push_back(insert_index_var);
 
       const std::vector<expr_t>& idx_fields(vi->getIndexFieldExpressions());
       int n = idx_fields.size();
       for(int i = 0; i < n; ++i) {
-        index_insert_args.push_back(idx_fields[i]);
+        index_insert_args.push_back(idx_fields[i]->clone(subst));
       }
       expr_t re(new fo_expr(fo->get_loc(), LOOKUP_OPN("index-builder"), index_insert_args));
       

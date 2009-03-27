@@ -142,7 +142,7 @@ bool TypeOps::is_equal(const XQType& type1, const XQType& type2)
     {
       const UserDefinedXQType& udt1 = static_cast<const UserDefinedXQType&>(type1);
       const UserDefinedXQType& udt2 = static_cast<const UserDefinedXQType&>(type2);
-      return udt1.getQName()->equals(udt2.getQName());
+      return udt1.get_qname()->equals(udt2.get_qname());
     }
     default:
       break;
@@ -605,7 +605,7 @@ xqtref_t TypeOps::prime_type(const XQType& type)
     const UserDefinedXQType& udType = static_cast<const UserDefinedXQType&>(type);
     const DelegatingTypeManager* delTM = static_cast<const DelegatingTypeManager*>(type.get_manager());
 
-    return delTM->create_named_type(udType.getQName(), TypeConstants::QUANT_ONE);
+    return delTM->create_named_type(udType.get_qname(), TypeConstants::QUANT_ONE);
   }
 
   default:
@@ -797,6 +797,10 @@ int TypeOps::type_cnt (const XQType& type)
   return -1;
 }
 
+store::Item_t TypeOps::getQName(const XQType& type)
+{
+  return type.get_qname();
+}
 
 //                                       1  ?  *  +
 const int TypeOps::QUANT_MIN_CNT [4] = { 1, 0, 0, 1 };

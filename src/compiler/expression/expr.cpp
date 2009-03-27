@@ -1473,5 +1473,13 @@ expr_t instanceof_expr::clone (substitution_t& s) {
   return new instanceof_expr (get_loc (), get_input ()->clone (s), get_target_type ());
 }
 
+expr_t cast_expr::clone (substitution_t& s) {
+  return new cast_expr (get_loc (), get_input ()->clone (s), get_target_type ());
+}
+
+expr_t name_cast_expr::clone (substitution_t& s) {
+  return new name_cast_expr (get_loc (), get_input ()->clone (s), getNamespaceContext());
+}
+
 } /* namespace zorba */
 /* vim:set ts=2 sw=2: */

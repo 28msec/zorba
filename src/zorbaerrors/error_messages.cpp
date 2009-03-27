@@ -243,6 +243,8 @@ DEF_ERR_CODE (XQP0030_DEADLOCK, XQP0029, "Lock upgrade request will result in de
 DEF_ERR_CODE (XQP0031_MALFORMED_XQUERYX_INPUT, XQP0031, "XQueryX Xml input is malformed.")
 DEF_ERR_CODE (XQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY, XQP0031, "Error transforming XQueryX to XQuery using XSLT engine.")
 
+DEF_ERR_CODE(XQP0033_INDEX_DOES_NOT_EXIST, XQP0033, "No index with URI /s exists.")
+
 //
 // XPDY
 //

@@ -97,6 +97,8 @@ namespace zorba
   template < class DivideOperation> class GenericArithIterator;
   template < class IntegerDivideOperation> class GenericArithIterator;
   template < class ModOperation> class GenericArithIterator;
+  class CreateValueIndex;
+  class DropValueIndex;
   class ValueIndexInsertSessionOpener;
   class ValueIndexInsertSessionCloser;
   class ValueIndexBuilder;
@@ -464,6 +466,8 @@ namespace zorba
     virtual void endVisit ( const GenericArithIterator<IntegerDivideOperation>& ) = 0;
     virtual void endVisit ( const GenericArithIterator<ModOperation>& ) = 0;
     
+    PLAN_ITER_VISITOR (CreateValueIndex);
+    PLAN_ITER_VISITOR (DropValueIndex);
     PLAN_ITER_VISITOR (ValueIndexInsertSessionOpener);
     PLAN_ITER_VISITOR (ValueIndexInsertSessionCloser);
     PLAN_ITER_VISITOR (ValueIndexBuilder);

@@ -602,6 +602,7 @@ void IndexField::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
   ACCEPT (expr);
+  ACCEPT (type);
   END_VISITOR ();
 }
 

@@ -21,6 +21,7 @@
 #include "common/shared_types.h"
 #include "types/typeconstants.h"
 #include "zorba/typeident.h"
+#include "store/api/item.h"
 
 
 namespace zorba {
@@ -169,6 +170,11 @@ public:
    * @return 0, 1 or -1 (-1 means "not certain")
    */
   static int type_cnt (const XQType& type);
+
+  /*
+   * @return QName of the type if known.
+   */
+  static store::Item_t getQName(const XQType& type);
 
 public:
   static const int QUANT_MAX_CNT [TypeConstants::QUANTIFIER_LIST_SIZE];

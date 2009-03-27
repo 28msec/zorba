@@ -919,6 +919,8 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
   PRINTER_VISITOR_DEFINITION(ZorbaIndexOfIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaExportXmlIterator);
 
+  PRINTER_VISITOR_DEFINITION(CreateValueIndex);
+  PRINTER_VISITOR_DEFINITION(DropValueIndex);
   PRINTER_VISITOR_DEFINITION(ValueIndexInsertSessionOpener);
   PRINTER_VISITOR_DEFINITION(ValueIndexInsertSessionCloser);
   PRINTER_VISITOR_DEFINITION(ValueIndexBuilder);

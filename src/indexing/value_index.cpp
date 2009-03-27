@@ -27,9 +27,11 @@ ValueIndex::~ValueIndex()
 ValueIndexInsertSession_t ValueIndex::createBulkInsertSession()
 {
   xqpStringStore_t uristore(getIndexUri());
-  store::IndexSpecification spec(m_index_field_exprs.size());
-  m_store_index = GENV_STORE.createIndex(uristore, spec);
-  store::IndexEntryReceiver_t receiver = m_store_index->createInsertSession();
+  store::Index *store_index = GENV_STORE.getIndex(uristore);
+  if (store_index == NULL) {
+    ZORBA_ERROR_PARAM(XQP0033_INDEX_DOES_NOT_EXIST, getIndexUri(), "");
+  }
+  store::IndexEntryReceiver_t receiver = store_index->createInsertSession();
   ValueIndexInsertSession_t session = new ValueIndexInsertSession(this, receiver);
   return session;
 }

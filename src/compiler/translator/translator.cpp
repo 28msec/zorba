@@ -2391,7 +2391,7 @@ void end_visit (const IndexFieldList& v, void* /*visit_state*/) {
   std::vector<xqtref_t> iColTypes;
   for(int i = v.fields.size() - 1; i >= 0; --i) {
     iCols.push_back(pop_nodestack());
-    xqtref_t type = v.fields[i]->get_type() != NULL ? pop_tstack() : NULL;
+    xqtref_t type = v.fields[i]->get_type() != NULL ? pop_tstack() : GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION;
     iColTypes.push_back(type);
   }
   std::reverse(iCols.begin(), iCols.end());
@@ -2408,14 +2408,25 @@ void *begin_visit (const IndexStatement& v) {
 }
 
 void end_visit (const IndexStatement& v, void* /*visit_state*/) {
-  if (v.type == IndexStatement::build_stmt) {
-    rchandle<fo_expr> fo = new fo_expr(v.get_location(), LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "build-index", 1));
-    store::Item_t uri_item;
-    GENV_ITEMFACTORY->createAnyURI(uri_item, v.get_uri().c_str());
-    expr_t uri(new const_expr(v.get_location(), uri_item));
-    fo->add(uri);
-    nodestack.push((const rchandle<fo_expr>&)fo);
+  rchandle<fo_expr> fo;
+  switch(v.type) {
+    case IndexStatement::build_stmt:
+      fo = new fo_expr(v.get_location(), LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "build-index", 1));
+      break;
+
+    case IndexStatement::create_stmt:
+      fo = new fo_expr(v.get_location(), LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "create-index", 1));
+      break;
+
+    case IndexStatement::drop_stmt:
+      fo = new fo_expr(v.get_location(), LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "drop-index", 1));
+      break;
   }
+  store::Item_t uri_item;
+  GENV_ITEMFACTORY->createAnyURI(uri_item, v.get_uri().c_str());
+  expr_t uri(new const_expr(v.get_location(), uri_item));
+  fo->add(uri);
+  nodestack.push((const rchandle<fo_expr>&)fo);
   TRACE_VISIT_OUT ();
 }
 

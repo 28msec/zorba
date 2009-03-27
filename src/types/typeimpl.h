@@ -20,7 +20,7 @@
 #include "types/node_test.h"
 #include "types/typeconstants.h"
 #include "zorbatypes/rchandle.h"
-
+#include "store/api/item.h"
 
 namespace zorba {
 
@@ -79,6 +79,8 @@ public:
 
   const TypeManager* get_manager() const { return m_manager; }
 
+  virtual store::Item_t get_qname() const { return NULL; }
+
   void free() 
   {
     if (!theIsBuiltin)
@@ -133,6 +135,8 @@ class AtomicXQType : public XQType
    content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
 
    virtual std::ostream& serialize(std::ostream& os) const;
+
+   store::Item_t get_qname() const;
 };
 
 
@@ -196,6 +200,8 @@ public:
     XQType(manager, ANY_TYPE_KIND, TypeConstants::QUANT_STAR, builtin) 
   {
   }
+
+  store::Item_t get_qname() const;
 };
 
 
@@ -212,6 +218,8 @@ public:
   }
 
   content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
+
+  store::Item_t get_qname() const;
 };
 
 
@@ -226,6 +234,8 @@ public:
     XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR, builtin)
   {
   }
+
+  store::Item_t get_qname() const;
 };
 
 
@@ -318,7 +328,7 @@ public:
 
   virtual content_kind_t content_kind() const { return m_contentKind; };
 
-  store::Item_t getQName() const { return m_qname;    }
+  store::Item_t get_qname() const { return m_qname;    }
 
   bool isAtomic()                 const { return m_typeCategory == ATOMIC_TYPE;  }
   bool isList()                   const { return m_typeCategory == LIST_TYPE;    }

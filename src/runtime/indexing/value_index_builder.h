@@ -22,6 +22,30 @@
 
 namespace zorba {
 
+class CreateValueIndex : public UnaryBaseIterator<CreateValueIndex, PlanIteratorState> {
+  public:
+    CreateValueIndex(const QueryLoc& loc, PlanIter_t aChild)
+      : UnaryBaseIterator<CreateValueIndex, PlanIteratorState>(loc, aChild) { }
+
+    virtual ~CreateValueIndex() { }
+
+    bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+    virtual void accept(PlanIterVisitor& v) const;
+};
+
+class DropValueIndex : public UnaryBaseIterator<DropValueIndex, PlanIteratorState> {
+  public:
+    DropValueIndex(const QueryLoc& loc, PlanIter_t aChild)
+      : UnaryBaseIterator<DropValueIndex, PlanIteratorState>(loc, aChild) { }
+
+    virtual ~DropValueIndex() { }
+
+    bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+    virtual void accept(PlanIterVisitor& v) const;
+};
+
 class ValueIndexInsertSessionOpener : public UnaryBaseIterator<ValueIndexInsertSessionOpener, PlanIteratorState> {
   public:
     ValueIndexInsertSessionOpener(const QueryLoc& loc, PlanIter_t aChild)
