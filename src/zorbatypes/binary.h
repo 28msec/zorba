@@ -23,17 +23,10 @@
 namespace zorba {
 
 class Base16;
-class   Base64
+class ZORBA_DLL_PUBLIC Base64
 {
 private:
   std::vector<char> theData;
-
-  static const char* ENCODE_TABLE; 
-  static const unsigned char DECODE_TABLE[0x80];
-  static size_t ENCODE_INPUT;
-  static size_t ENCODE_OUTPUT;
-  static size_t DECODE_INPUT;
-  static size_t DECODE_OUTPUT;
 
 public:
   Base64(const Base64& aBase64) { theData = aBase64.theData; }
@@ -54,21 +47,24 @@ public:
   bool equal(const Base64& aBase64) const;
   xqpString str() const;
 
-  static std::vector<char> encode(const std::vector<char>&);
+  static void encode(const std::vector<char>&, std::vector<char>&);
   static xqpString encode(std::istream& aStream);
   static void encode(const xqpStringStore* aString, Base64&);
 
-  static std::vector<char> decode(const std::vector<char>&);
+  static void decode(const std::vector<char>&, std::vector<char>&);
 
   xqpString
   decode() const;
+
+  void
+  decode(std::vector<char>&);
 
   uint32_t hash() const;
 };
 
  std::ostream& operator<<(std::ostream& os, const Base64& aBase64);
 
-class  Base16
+class ZORBA_DLL_PUBLIC Base16
 {
 private:
   std::vector<char> theData;
@@ -99,8 +95,8 @@ public:
   bool equal(const Base16& aBase16) const;
   xqpString str() const;
 
-  static std::vector<char> encode(const std::vector<char>&);
-  static std::vector<char> decode(const std::vector<char>&);
+  static void encode(const std::vector<char>&, std::vector<char>&);
+  static void decode(const std::vector<char>&, std::vector<char>&);
 
   uint32_t hash() const;
 };

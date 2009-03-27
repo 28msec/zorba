@@ -14,41 +14,18 @@
  * limitations under the License.
  */
 #include <cassert>
+#include <cctype>
 #include <zorba/error.h>
 #include "zorbatypes/binary.h"
 #include "zorbaerrors/error_manager.h"
 
 namespace zorba {
 
-const char* Base64::ENCODE_TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-const unsigned char Base64::DECODE_TABLE[ 0x80 ] = {
-  /*00-07*/ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-  /*08-0f*/ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-  /*10-17*/ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-  /*18-1f*/ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-  /*20-27*/ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-  /*28-2f*/ 0xFF, 0xFF, 0xFF, 0x3e, 0xFF, 0xFF, 0xFF, 0x3f, //2 = '+' and '/'
-  /*30-37*/ 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, //8 = '0'-'7'
-  /*38-3f*/ 0x3c, 0x3d, 0xFF, 0xFF, 0xFF, 0x40, 0xFF, 0xFF, //2 = '8'-'9' and '='
-  /*40-47*/ 0xFF, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, //7 = 'A'-'G'
-  /*48-4f*/ 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, //8 = 'H'-'O'
-  /*50-57*/ 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, //8 = 'P'-'W'
-  /*58-5f*/ 0x17, 0x18, 0x19, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //3 = 'X'-'Z'
-  /*60-67*/ 0xFF, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20, //7 = 'a'-'g'
-  /*68-6f*/ 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, //8 = 'h'-'o'
-  /*70-77*/ 0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f, 0x30, //8 = 'p'-'w'
-  /*78-7f*/ 0x31, 0x32, 0x33, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF  //3 = 'x'-'z'
-};
-
-size_t Base64::ENCODE_INPUT = 3;
-size_t Base64::ENCODE_OUTPUT = 4;
-size_t Base64::DECODE_INPUT = 4;
-size_t Base64::DECODE_OUTPUT = 3;
-
 Base64::Base64(const Base16& aBase16)
 {
-  std::vector<char> lOrig = Base16::decode(aBase16.getData());
-  theData = Base64::encode(lOrig);
+  std::vector<char> lOrig;
+  Base16::decode(aBase16.getData(), lOrig);
+  Base64::encode(lOrig, theData);
 }
 
 bool Base64::parseString(const char* aString, size_t aLength,  Base64& aBase64)
@@ -139,64 +116,56 @@ xqpString Base64::str() const {
   return lStream.str();
 }
 
-std::vector<char> Base64::encode(const std::vector<char>& aSource)
+inline bool is_base64(char c) {
+  return (isalnum(c) || (c == '+') || (c == '/'));
+}
+
+static const std::string base64_chars = 
+             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+             "abcdefghijklmnopqrstuvwxyz"
+             "0123456789+/";
+
+
+void Base64::encode(const std::vector<char>& aSource, std::vector<char>& aResult)
 {
-  std::vector<char> lRes;
-  size_t lSourceSize = aSource.size();
-  size_t lSourcePos = 0;
+  size_t in_len = aSource.size();
+  size_t lCurPos = 0;
+  int i = 0;
+  int j = 0;
+  char char_array_3[3];
+  char char_array_4[4];
 
-  while (lSourceSize >= 1)
-  {
-    size_t lBlockSize = (lSourceSize < ENCODE_INPUT ? lSourceSize : ENCODE_INPUT);
-    assert( 1 <= lBlockSize && lBlockSize <= ENCODE_INPUT );
+  while (in_len--) {
+    char_array_3[i++] = aSource[lCurPos++];
+    if (i == 3) {
+      char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+      char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+      char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+      char_array_4[3] = char_array_3[2] & 0x3f;
 
-    // Encode inputs...
-    char n1 = 0, n2 = 0, n3 = 0, n4 = 0;
-
-    switch (lBlockSize)
-    {
-      case 3:
-        n4  =  (aSource[ lSourcePos+2 ] & 0x3f);
-        n3  = ((aSource[ lSourcePos+2 ] & 0xc0) >> 6);
-      case 2:
-        n3 |= ((aSource[ lSourcePos+1 ] & 0x0f) << 2);
-        n2  = ((aSource[ lSourcePos+1 ] & 0xf0) >> 4);
-      case 1:
-        n2 |= ((aSource[ lSourcePos ] & 0x03) << 4);
-        n1  = ((aSource[ lSourcePos ] & 0xfc) >> 2);
-        break;
-      default:
-        assert( false );
+      for(i = 0; (i <4) ; i++)
+        aResult.push_back(base64_chars[char_array_4[i]]);
+      i = 0;
     }
-
-    lSourcePos += lBlockSize;
-    lSourceSize -= lBlockSize;
-
-    // Validate...
-    assert( 0 <= n1 && n1 <= 63 );
-    assert( 0 <= n2 && n2 <= 63 );
-    assert( 0 <= n3 && n3 <= 63 );
-    assert( 0 <= n4 && n4 <= 63 );
-
-    // Padding...
-    switch (lBlockSize)
-    {
-      case 1: n3 = 64;
-      case 2: n4 = 64;
-      case 3:
-              break;
-      default:
-              assert( false );
-    }
-
-    // 4 outputs...
-    lRes.push_back(ENCODE_TABLE[(int)n1]);
-    lRes.push_back(ENCODE_TABLE[(int)n2]);
-    lRes.push_back(ENCODE_TABLE[(int)n3]);
-    lRes.push_back(ENCODE_TABLE[(int)n4]);
   }
 
-  return lRes;
+  if (i)
+  {
+    for(j = i; j < 3; j++)
+      char_array_3[j] = '\0';
+
+    char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+    char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+    char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+    char_array_4[3] = char_array_3[2] & 0x3f;
+
+    for (j = 0; (j < i + 1); j++)
+      aResult.push_back(base64_chars[char_array_4[j]]);
+
+    while((i++ < 3))
+      aResult.push_back('=');
+
+  }  
 }
 
 xqpString Base64::encode(std::istream& aStream)
@@ -207,7 +176,7 @@ xqpString Base64::encode(std::istream& aStream)
   while (aStream.good())
     source.push_back((char)(aStream.get()));
 
-  result = encode(source);
+  encode(source, result);
   for (unsigned int i=0; i<result.size(); i++)
     xqpResult.append_in_place(result[i]);
   return xqpResult;
@@ -229,71 +198,64 @@ void Base64::encode(const xqpStringStore* aString, Base64& aResult)
   }
   std::cout << std::endl;
   aResult.theData.clear();
-  aResult.theData = encode(source);
+  encode(source, aResult.theData);
 }
 
-std::vector<char> Base64::decode(const std::vector<char>& aSource)
+void Base64::decode(const std::vector<char>& aSource, std::vector<char>& aResult)
 {
-  std::vector<char> lRes;
-  size_t lSrcSize = aSource.size();
-  size_t lSrcPos = 0;
-  assert(lSrcSize % DECODE_INPUT == 0); 
+  size_t in_len = aSource.size();
+  int i = 0;
+  int j = 0;
+  int in_ = 0;
+  char char_array_4[4], char_array_3[3];
 
-  while (lSrcSize >= 1)
-  {
-    char lChar;
+  while (in_len-- && ( aSource[in_] != '=') && is_base64(aSource[in_])) {
+    char_array_4[i++] = aSource[in_]; in_++;
+    if (i ==4) {
+      for (i = 0; i <4; i++)
+        char_array_4[i] = base64_chars.find(char_array_4[i]);
 
-    // 4 inputs...
-    char in1 = aSource[lSrcPos++];
-    char in2 = aSource[lSrcPos++];
-    char in3 = aSource[lSrcPos++];
-    char in4 = aSource[lSrcPos++];
+      char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+      char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+      char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
 
-    lSrcSize -= DECODE_INPUT; //4
-
-    // Validate ascii...
-    assert( 0 <= in1 /*&& in1 <= 0x7f*/ );
-    assert( 0 <= in2 /*&& in2 <= 0x7f*/ );
-    assert( 0 <= in1 /*&& in3 <= 0x7f*/ );
-    assert( 0 <= in2 /*&& in4 <= 0x7f*/ );
-
-    // Convert ascii to base16...
-    in1 = DECODE_TABLE[ int(in1) ];
-    in2 = DECODE_TABLE[ int(in2) ];
-    assert( 0 <= in1 && in1 <= 63 );
-    assert( 0 <= in2 && in2 <= 63 );
-    
-    lChar = ((in1 & 0x3f) << 2) | ((in2 & 0x30) >> 4);
-    lRes.push_back(lChar);
-
-    if (in3 != '=') {
-      in3 = DECODE_TABLE[ int(in3) ];
-      assert( 0 <= in3 && in3 <= 64 ); //possible padding
-      lChar = ((in2 & 0x0f) << 4) | ((in3 & 0x3c) >> 2);
-      lRes.push_back(lChar);
+      for (i = 0; (i < 3); i++)
+        aResult.push_back(char_array_3[i]);
+      i = 0;
     }
-
-    if (in4 != '=') {
-      in4 = DECODE_TABLE[ int(in4) ];
-      assert( 0 <= in4 && in4 <= 64 ); //possible padding
-      lChar = ((in3 & 0x03) << 6) | (in4 & 0x3f);
-      lRes.push_back(lChar);
-    }
-
   }
 
-  return lRes;
+  if (i) {
+    for (j = i; j <4; j++)
+      char_array_4[j] = 0;
+
+    for (j = 0; j <4; j++)
+      char_array_4[j] = base64_chars.find(char_array_4[j]);
+
+    char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+    char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+    char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+    for (j = 0; (j < i - 1); j++) aResult.push_back(char_array_3[j]);
+  }
 }
 
 xqpString
 Base64::decode() const
 {
-  std::vector<char> lDecodedData = Base64::decode(theData);
+  std::vector<char> lDecodedData;
+  Base64::decode(theData, lDecodedData);
 
   xqpString lResult;
   for (unsigned int i=0; i< lDecodedData.size(); i++)
     lResult.append_in_place( lDecodedData[i] );
   return lResult;
+}
+
+void
+Base64::decode(std::vector<char>& aResult)
+{
+  Base64::decode(theData, aResult);
 }
 
 uint32_t Base64::hash() const
@@ -352,8 +314,9 @@ size_t Base16::DECODE_OUTPUT = 1;
 
 Base16::Base16(const Base64& aBase64)
 {
-  std::vector<char> lOrig = Base64::decode(aBase64.getData());
-  theData = Base16::encode(lOrig);
+  std::vector<char> lOrig;
+  Base64::decode(aBase64.getData(), lOrig);
+  Base16::encode(lOrig, theData);
 }
 
 bool Base16::parseString(const char* aString, size_t aLength, Base16& aBase16)
@@ -416,9 +379,8 @@ xqpString Base16::str() const {
   return lStream.str();
 }
 
-std::vector<char> Base16::encode(const std::vector<char>& aSource)
+void Base16::encode(const std::vector<char>& aSource, std::vector<char>& aResult)
 {
-  std::vector<char> lRes;
   size_t lSrcPos = 0;
   size_t lSrcSize = aSource.size();
 
@@ -429,17 +391,13 @@ std::vector<char> Base16::encode(const std::vector<char>& aSource)
     lSrcSize -= ENCODE_INPUT; //1
 
     // 2 outputs...
-    lRes.push_back(ENCODE_TABLE[ (ch & 0xf0) >> 4 ]);
-    lRes.push_back(ENCODE_TABLE[ (ch & 0x0f)      ]);
+    aResult.push_back(ENCODE_TABLE[ (ch & 0xf0) >> 4 ]);
+    aResult.push_back(ENCODE_TABLE[ (ch & 0x0f)      ]);
   }
-
-  return lRes;
 }
 
-std::vector<char> Base16::decode(const std::vector<char>& aSource)
+void Base16::decode(const std::vector<char>& aSource, std::vector<char>& aResult)
 {
-  std::vector<char> lRes;
-
   size_t lSrcSize = aSource.size();
   size_t lSrcPos = 0;
   assert(lSrcSize % DECODE_INPUT == 0);
@@ -465,9 +423,8 @@ std::vector<char> Base16::decode(const std::vector<char>& aSource)
     assert( 0 <= in2 && in2 <= 15 );
 
     // 1 output...
-    lRes.push_back(((in1 << 4) | in2));
+    aResult.push_back(((in1 << 4) | in2));
   }
-  return lRes;
 }
 
 uint32_t Base16::hash() const
