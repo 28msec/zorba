@@ -347,7 +347,8 @@ fileEquals(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, in
   aLine = 1; aCol = 0; aPos = -1;
   while (! li.eof() )
   {
-    if ( ri.eof() ) {
+    if ( ri.eof() ) 
+    {
       std::getline(li, lLine);
       if (li.peek() == -1) // ignore end-of-line in the ref result
         return true;
@@ -368,15 +369,21 @@ fileEquals(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, in
 }
 
 void 
-slurp_file (const char *fname, std::string &result) {
-  std::ifstream qfile(fname, std::ios::binary | std::ios_base::in); assert (qfile);
+slurp_file (const char *fname, std::string &result) 
+{
+  std::ifstream qfile(fname, std::ios::binary | std::ios_base::in);
+  assert (qfile);
 
   qfile.seekg (0, std::ios::end);
   size_t len = qfile.tellg ();
   qfile.seekg (0, std::ios::beg);
+
   char *str = new char [len];
+
   qfile.read (str, len);
+
   len = qfile.gcount();
+
   std::string sstr (str, len);
 
   if(sstr.find("$RBKT_SRC_DIR",0) != std::string::npos)

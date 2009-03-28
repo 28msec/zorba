@@ -20,6 +20,7 @@
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
@@ -97,6 +98,8 @@ public:
 
   volatile bool                 theHaveErrors;
 
+  long                          theNumThreads;
+
   std::vector<zorba::Mutex*>    theQueryLocks;
   zorba::Mutex                  theGlobalLock;
 
@@ -135,6 +138,25 @@ void Queries::clear()
 
 long Queries::getQuery()
 {
+  static long nextQuery = 0;
+
+  if (theNumThreads == 1)
+  {
+    if (nextQuery == theNumQueries)
+      return -1;
+
+    if (theNumQueryRuns[nextQuery] == theNumRunsPerQuery)
+    {
+      ++nextQuery;
+
+      if (nextQuery == theNumQueries)
+        return -1;
+    }
+
+    theNumQueryRuns[nextQuery]++;
+    return nextQuery;
+  }
+
   long randomNum = rand();
 
   long q1 = randomNum % theNumQueries;
@@ -254,6 +276,18 @@ private:
 
 
 /*******************************************************************************
+  Signal handler function
+********************************************************************************/
+void sigHandler(int sigNum)
+{
+  signal(SIGSEGV, sigHandler);
+
+  std::cerr << "Received signal " << sigNum << std::endl;
+  abort();
+}
+
+
+/*******************************************************************************
   Check if an error that was repored was expected by the given specification
   object.
 ********************************************************************************/
@@ -317,7 +351,7 @@ printErrors(const TestErrorHandler& errHandler, const char *msg, bool printInFil
 /*******************************************************************************
 
 ********************************************************************************/
-bool checkErrors(const Specification &lSpec, const TestErrorHandler& errHandler) 
+bool checkErrors(const Specification& lSpec, const TestErrorHandler& errHandler) 
 {
   if (isErrorExpected(errHandler, &lSpec)) 
   {
@@ -382,26 +416,36 @@ printPart(std::ostream& os, std::string filename, int startPos, int len)
 
 ********************************************************************************/
 void 
-slurp_file (const char* fname, std::string& result) 
+slurp_file(const char* fname, std::string& result) 
 {
   std::ifstream qfile(fname, std::ios::binary | std::ios_base::in);
   assert (qfile);
 
   qfile.seekg(0, std::ios::end);
   size_t len = qfile.tellg();
+  qfile.seekg (0, std::ios::beg);
 
   char* str = new char [len];
 
-  qfile.seekg (0, std::ios::beg);
   qfile.read(str, len);
 
   len = qfile.gcount();
 
   std::string sstr(str, len);
-  std::string rbkt_src_uri = zorba::URI::encode_file_URI(zorba::RBKT_SRC_DIR)->str();
-  zorba::str_replace_all(sstr, "$RBKT_SRC_DIR", rbkt_src_uri);
-  result.swap(sstr);
 
+  if(sstr.find("$RBKT_SRC_DIR",0) != std::string::npos)
+  {
+    std::string rbkt_src_uri = zorba::URI::encode_file_URI(zorba::RBKT_SRC_DIR)->str();
+    zorba::str_replace_all(sstr, "$RBKT_SRC_DIR", rbkt_src_uri);
+  }
+
+  if(sstr.find("$RBKT_BINARY_DIR",0) != std::string::npos)
+  {
+    std::string rbkt_bin_uri = zorba::URI::encode_file_URI(zorba::RBKT_BINARY_DIR)->str();
+    zorba::str_replace_all(sstr, "$RBKT_BINARY_DIR", rbkt_bin_uri);
+  }
+
+  result.swap(sstr);
   delete [] str;
 }
 
@@ -431,6 +475,76 @@ getCompilerHints()
 
 
 /*******************************************************************************
+  Tries to create a ZorbaItem given a string in the form xs:TYPE(VALUE)
+********************************************************************************/
+zorba::Item
+createItem(std::string strValue)
+{
+  std::cout << strValue << std::endl;
+  zorba::ItemFactory* itemfactory = zorba::Zorba::getInstance(NULL)->getItemFactory();
+  size_t              pos = strValue.find("xs:");
+
+  if(pos == std::string::npos)
+  {
+    strValue = zorba::URI::encode_file_URI (strValue)->str ();
+    return  itemfactory->createString(strValue);
+  }
+  else
+  {
+    pos += 3;
+    std::string type = strValue.substr(pos, (strValue.find("(") - pos));
+    pos += type.length() + 1;
+    std::string val = strValue.substr(pos, (strValue.length() - 1 - pos));
+    if(type == "string")
+      return itemfactory->createString(val);
+    else if(type == "boolean")
+      return itemfactory->createBoolean(((val == "true" || val == "1")? true: false));
+    else if(type == "decimal")
+      return itemfactory->createDecimal(val);
+    else if(type == "integer")
+      return itemfactory->createInteger(val);
+    else if(type == "float")
+      return itemfactory->createFloat(val);
+    else if(type == "double")
+      return itemfactory->createDouble(val);
+    else if(type == "duration")
+      return itemfactory->createDuration(val);
+    else if(type == "dateTime")
+      return itemfactory->createDateTime(val);
+    else if(type == "time")
+      return itemfactory->createTime(val);
+    else if(type == "date")
+      return itemfactory->createDate(val);
+    else if(type == "gYearMonth")
+      return itemfactory->createGYearMonth(val);
+    else if(type == "gYear")
+      return itemfactory->createGYear(val);
+    else if(type == "gMonthDay")
+      return itemfactory->createGMonthDay(val);
+    else if(type == "gDay")
+      return itemfactory->createGDay(val);
+    else if(type == "gMonth")
+      return itemfactory->createGDay(val);
+    else if(type == "hexBinary" ||
+            type == "base64Binary" ||
+            type == "QName" ||
+            type == "NOTATION")
+    {
+      //not supported
+      std::cout << "Type {" << type << "} not supported." << std::endl;
+      return  NULL; 
+    }
+    else if(type == "anyURI")
+      return itemfactory->createAnyURI(val);
+    else
+      //only primitive types allowed, see http://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes
+      std::cout << "Type {" << type << "} is not a primitive data type.\n Derived types not supported." << std::endl;
+      return  NULL;
+  }
+}
+
+
+/*******************************************************************************
   Set a variable in the dynamic context
   inlineFile specifies whether the given parameter is a file and its value
   should be inlined or not
@@ -438,13 +552,11 @@ getCompilerHints()
 void
 set_var(bool inlineFile, std::string name, std::string val, zorba::DynamicContext* dctx)
 {
-  zorba::ItemFactory* lFactory = zorba::Zorba::getInstance(NULL)->getItemFactory();
-
   zorba::str_replace_all(val, "$RBKT_SRC_DIR", zorba::RBKT_SRC_DIR);
+
   if (!inlineFile)
   {
-    val = zorba::URI::encode_file_URI (val)->str ();
-    zorba::Item lItem = lFactory->createString(val);
+    zorba::Item lItem = createItem(val);
 		if(name != ".")
 			dctx->setVariable (name, lItem);
 		else
@@ -509,10 +621,10 @@ isEqual(fs::path aRefFile, fs::path aResFile, int& aLine, int& aCol, int& aPos)
     }
     std::getline(li, lLine);
     std::getline(ri, rLine);
-    ++aLine;
     if ( (aCol = lLine.compare(rLine)) != 0) {
       return false;
     }
+    ++aLine;
   }
 
   return true;
@@ -563,10 +675,8 @@ void* thread_main(void* param)
       return 0;
     }
 
-    std::cout << "**********************************************************************"
-              << std::endl << std::endl << "Thread " << tno << " starting query "
-              << queryNo << std::endl << "in file " << queries->theQueryFilenames[queryNo]
-              << std::endl << std::endl;
+    std::cout << "*** " << queryNo << " in file " << queries->theQueryFilenames[queryNo]
+              << " by thread " << tno << std::endl << std::endl;
 
     //
     // Release the global lock on the queries container and acquire the 
@@ -617,10 +727,25 @@ void* thread_main(void* param)
       // Read the query string from the query file
       slurp_file(queryPath.native_file_string().c_str(), queryString);
 
+      zorba::XQuery_t query;
+
       // Compile the query
-      zorba::XQuery_t query = zorba->createQuery(&errHandler);
-      query->setFileName(queryPath.native_file_string());
-      query->compile(queryString.c_str(), getCompilerHints());
+      try
+      {
+        query = zorba->createQuery(&errHandler);
+        query->setFileName(queryPath.native_file_string());
+        query->compile(queryString.c_str(), getCompilerHints());
+      }
+      catch(...)
+      {
+        std::cerr << "FAILURE : thread " << tno << " query " << queryNo
+                  << " : " << queries->theQueryFilenames[queryNo]
+                  << std::endl << std::endl 
+                  << "Reason: received an unexpected exception during compilation"
+                  << std::endl << std::endl;
+
+        continue;
+      }
 
       if (errHandler.errors())
       {
@@ -690,8 +815,21 @@ void* thread_main(void* param)
     std::ofstream resFileStream(resultPath.native_file_string().c_str());
     assert (resFileStream.good());
 
-    resFileStream << query << std::endl;
-    resFileStream.flush();
+    try
+    {
+      resFileStream << query;
+      resFileStream.flush();
+    }
+    catch(...)
+    {
+      std::cerr << "FAILURE : thread " << tno << " query " << queryNo
+                << " : " << queries->theQueryFilenames[queryNo]
+                << std::endl << std::endl 
+                << "Reason: received an unexpected exception during execution"
+                << std::endl << std::endl;
+      
+      continue;
+    }
 
     //
     // Check result agains expected result
@@ -784,12 +922,16 @@ main(int argc, char** argv)
   std::string queriesDir;
   std::string resultsDir;
   std::string refsDir;
+  std::string reportFilename = "mt.log";
+  std::string reportFilepath;
 
   fs::path bucketPath;
 
   long numThreads = 0;
 
   Queries queries;
+
+  signal(SIGSEGV, sigHandler);
 
   // Parse the arg list
   if ( argc != 7 )
@@ -818,6 +960,11 @@ main(int argc, char** argv)
       arg++;
       bucketName = argv[arg]; 
     }
+    else if (!strcmp(argv[arg], "-o"))
+    {
+      arg++;
+      reportFilename = argv[arg]; 
+    }
     else
     {
       usage();
@@ -826,12 +973,16 @@ main(int argc, char** argv)
     arg++;
   }
 
+  queries.theNumThreads = numThreads;
+
   //
   // Create the full pathnames for the bucket query, results, and ref-results directories
   //
   queriesDir = zorba::RBKT_SRC_DIR +"/Queries/" + bucketName;
   refsDir = zorba::RBKT_SRC_DIR +"/ExpQueryResults/" + bucketName;
   resultsDir = zorba::RBKT_BINARY_DIR +"/QueryResults/" + bucketName;
+
+  reportFilepath = zorba::RBKT_BINARY_DIR + "/../../Testing/" + reportFilename;
 
   //
   // Make sure the directories exists
@@ -939,21 +1090,31 @@ main(int argc, char** argv)
     pthread_join(threads[i], &thread_result);
   }
 
+  //
+  // Produce report about failed tests
+  //
+  std::ofstream reportFile(reportFilepath.c_str());
+
   std::ostringstream tmp;
   long numFailures = 0;
   
   if (queries.theHaveErrors)
   {
+    std::string pathPrefix = "test/rbkt/" + bucketName;
+
     for (long i = 0; i < queries.theNumQueries; i++)
     {
       if (queries.theQueryStates[i] == false)
       {
         numFailures++;
 
-        fs::path queryPath = fs::path(queries.theQueriesDir) /
+        fs::path queryPath = fs::path(pathPrefix) /
                              (queries.theQueryFilenames[i]);
 
-        tmp << queryPath.file_string() << std::endl;
+        fs::path queryName = fs::change_extension(queryPath, "");
+
+        tmp << i << ":" << queryName.file_string() << std::endl;
+        reportFile << i << ":" << queryName.file_string() << std::endl;
       }
     }
   }

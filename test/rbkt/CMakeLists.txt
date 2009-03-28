@@ -37,21 +37,63 @@ IF (ZORBA_BUILD_STATIC_LIBRARY)
   TARGET_LINK_LIBRARIES(testdriver_static zorba_${ZORBA_STORE_LIB_EXTENSION}_static)
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
-#
-# Compile and build the multi-threaded testdriver executable
-#
-#ADD_EXECUTABLE(testdriver_mt testdriver_mt.cpp)
-
-#TARGET_LINK_LIBRARIES(testdriver_mt zorba)
-
 IF(WIN32)
 #for Windows and Cygwin
   SET(TESTDRIVER_EXE_PATH   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/testdriver)
 ELSE(WIN32)
   SET(TESTDRIVER_EXE_PATH   testdriver)
 ENDIF(WIN32)
- 
 
+
+#
+# Compile and build the multi-threaded testdriver executable
+#
+
+#SET(ZORBA_BUILD_MT_TESTDRIVER 1)
+
+IF (ZORBA_BUILD_MT_TESTDRIVER)
+
+INCLUDE(${CMAKE_MODULE_PATH}/FindBoost.cmake)
+
+SET (REQUIRED_BOOST_PACKAGES filesystem)
+
+FIND_PACKAGE(Boost REQUIRED COMPONENTS ${REQUIRED_BOOST_PACKAGES})
+
+IF (NOT Boost_FOUND)
+  MESSAGE(FATAL "Boost not found")
+ELSE (NOT Boost_FOUND)
+  MESSAGE(STATUS "Found Boost: ${Boost_INCLUDE_DIRS}")
+  MESSAGE(STATUS "      Boost: ${Boost_LIBRARY_DIRS}")
+
+  INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+  LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+ENDIF (NOT Boost_FOUND)
+
+
+ADD_EXECUTABLE(testdriver_mt testdriver_mt.cpp)
+
+TARGET_LINK_LIBRARIES(testdriver_mt
+                      zorba_${ZORBA_STORE_LIB_EXTENSION}
+                      boost_filesystem-mt)
+
+IF (ZORBA_BUILD_STATIC_LIBRARY)
+
+  ADD_EXECUTABLE(testdriver_mt_static testdriver_mt.cpp)
+
+  SET_TARGET_PROPERTIES(testdriver_mt_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
+
+  TARGET_LINK_LIBRARIES(testdriver_mt_static
+                        zorba_${ZORBA_STORE_LIB_EXTENSION}_static
+                        boost_filesystem-mt)
+
+ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
+
+ENDIF(ZORBA_BUILD_MT_TESTDRIVER)
+
+
+#
+#
+#
 MESSAGE(STATUS "Adding tests for CTest")
 
 IF(NOT ZORBA_XQUERYX)
