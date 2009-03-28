@@ -21,12 +21,13 @@
 #include "common/shared_types.h"
 
 #include "runtime/base/plan_iterator.h"
+#include "runtime/core/gflwor/common.h"
 
 #include "store/api/temp_seq.h" //FIXME not sure why this is needed here
 
 namespace zorba 
 {
-namespace gflwor 
+namespace flwor 
 {
 
 class OrderByIterator;
@@ -43,86 +44,17 @@ protected:
   std::vector<store::TempSeq_t > theSequences;
   
 public:
-  OrderValue ( std::vector<store::Item_t >& aItems,std::vector<store::TempSeq_t >& aSequences ) :
+  OrderValue(
+        std::vector<store::Item_t >& aItems,
+        std::vector<store::TempSeq_t >& aSequences)
+    :
     theItems ( aItems ),
     theSequences ( aSequences ) {}
 };
 
 
-class OrderKeyCmp;
-
-
 typedef std::multimap<std::vector<store::Item_t >, OrderValue, OrderKeyCmp> order_map_t;
 
-
-class OrderSpec 
-{
-  friend class OrderByIterator;
-  friend class OrderKeyCmp;
-
-protected:
-  PlanIter_t             theOrderByIter;
-  bool                   theEmptyLeast;
-  bool                   theDescending;
-  xqpString              theCollation;
-  XQPCollator  * theCollator; // TODO hack
-  RuntimeCB    * theRuntimeCB; // TODO hack
-
-public:
-  void accept ( PlanIterVisitor& ) const;
-  void open (PlanState& aPlanState, uint32_t& offset) const;
-  void reset ( PlanState& aPlanState ) const;
-  void close (PlanState& aPlanState) const;
-  uint32_t getStateSizeOfSubtree() const;
-  OrderSpec ( PlanIter_t orderByIter, bool empty_least, bool descending );
-  OrderSpec ( PlanIter_t orderByIter, bool empty_least, bool descending, const xqpString& collation );
-};
-
-
-/**
- * Class to pass to the MultiMap to do the comparison according to the OrderByClause.
- * Luckily the MultiMap is stable already :-)
- */
-class OrderKeyCmp 
-{
-private:
-  std::vector<OrderSpec>* mOrderSpecs; 
-  TypeManager            * theTypeManager;
-  long                     theTimezone;
-
-public:
-  OrderKeyCmp() : mOrderSpecs(0), theTypeManager(0), theTimezone(0) {}
-
-  OrderKeyCmp(RuntimeCB* aRuntimeCB, std::vector<OrderSpec>* aOrderSpecs);
-
-  /**
-   * The key comparison function, a Strict Weak Ordering whose argument type is key_type;
-   * it returns true if its first argument is less than its second argument, and false otherwise.
-   * This is also defined as multimap::key_compare.
-   */
-  bool operator() (
-        const std::vector<store::Item_t>& s1,
-        const std::vector<store::Item_t>& s2 ) const;
-
-  /**
-   * Does the actual comparision
-   * @return    -1, if item0 &lt; item1
-   *            0, if item0 == item1
-   *            1, if item0 &gt; item1
-   */
-  int8_t compare (
-        const store::Item_t& s1,
-        const store::Item_t& s2,
-        bool asc,
-        bool emptyLeast,
-        XQPCollator* collator = 0 ) const;
-
-  /**
-   * Helper functions to switch the ordering between ascending and descending
-   */
-  inline int8_t descAsc ( int8_t result, bool asc ) const;
-};
-  
 
 class OrderByState : public PlanIteratorState 
 {

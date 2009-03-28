@@ -21,259 +21,197 @@
 #include "common/shared_types.h"
 
 #include "runtime/base/plan_iterator.h"
+#include "runtime/core/gflwor/common.h"
 #include "runtime/util/handle_hashmap_item_value.h"
 
 namespace zorba
 {
 
-  namespace store 
-  {
-    class PUL;
-    //template<class V>
-    //class ItemValuesCollHandleHashMap;
-    //class ValueCollCompareParam;
-    //class GroupCompareParam;
-  }
+namespace store { class PUL; }
 
-  class FlworState;
+namespace flwor
+{
+
+class FlworState;
+
+
+/***************************************************************************//**
+ Wraps a FOR or LET clause. There is one ForLetClause for each for/let
+ variable. Note: we don't use separate ForClause and LetClause classes to
+ avoid dynamic casts during the runtime.
+
+  Syntax:
+
+  ForClause ::= "for" "$" VarName TypeDeclaration? PositionalVar? "in" ExprSingle
+
+	LetClause ::= "let" "$" VarName TypeDeclaration? ":=" ExprSingle
+
+  TypeDeclaration ::= "as" SequenceType
+
+  PositionalVar ::= "at" "$" VarName
+
+
+  Data Members:
+
+  theType    : Whether this is a FOR or a LET var.
+
+  theForVars : Vector of ForVarIters representing all references to this FOR var.
+               Each ForVarIter holds the current value of the var (as an Item_t)
+               and its next() method simply returns that value. The value is 
+               computed and stored in the ForVarIter by the bindValiable() method
+               of the FLWORIterator.
+
+  thePosVars : Vector of ForVarIters representing all references to the positional
+               var (if any) associated with this FOR var.
+
+  theLetVars : Vector of LetVarIters representing all references to this LET var.
+               Each LetVarIter holds the current value of the var. The "value" of
+               a LET var is acually an iterator I; if the var is materialized,
+               I is an iterator over a temp sequence, otherwise, I is an iterator
+               wrapper over theInput iterator.
+               
+  theInput   : The iterator producing the domain (if FOR var) or the value (if
+               LET var) of this var.
+
+  theNeedsMaterialization : Whther this LET var must be materialized or not.
+********************************************************************************/
+class ForLetClause 
+{
+  friend class FLWORIterator;
+  friend class PrinterVisitor;
+
+protected:
+  enum ForLetType { FOR, LET };
+
+#ifndef NDEBUG
+  xqpStringStore             theVarName;
+#endif
+  ForLetType                 theType;
+  std::vector<ForVarIter_t>  theForVars;
+  std::vector<ForVarIter_t>  thePosVars;
+  std::vector<LetVarIter_t>  theLetVars;
+  PlanIter_t                 theInput;
+  bool                       theNeedsMaterialization;
+    
+public:
+  ForLetClause(
+        const var_expr* var,
+        std::vector<ForVarIter_t> forVars,
+        PlanIter_t& input);
+          
+  ForLetClause(
+        const var_expr* var,
+        std::vector<ForVarIter_t> forVars,
+        std::vector<ForVarIter_t> posVars,
+        PlanIter_t& input);
+    
+  ForLetClause(
+        const var_expr* var,
+        std::vector<LetVarIter_t> letVars,
+        PlanIter_t& input,
+        bool needsMaterialization);
+          
+  void accept (PlanIterVisitor&) const;
+
+  xqpStringStore getVarName() const;
+};
+
+
+/***************************************************************************//**
+  Wrapper for a GroupByClause
+  See http://www.w3.org/TR/xquery-11/#id-group-by
+
+  Syntax:
+
+  GroupByClause ::= "group" "by" GroupingSpecList
+
+  GroupingSpecList ::= GroupingSpec ("," GroupingSpec)*
+
+  GroupingSpec ::= "$" VarName ("collation" URILiteral)?
+
+********************************************************************************/
+class GroupByClause
+{
+  friend class FLWORIterator;
+  friend class PrinterVisitor;
+  
+private:
+  std::vector<GroupingSpec>     theGroupingSpecs;
+  std::vector<GroupingOuterVar> theOuterVars;
+  PlanIter_t                    theWhere;
+    
+public:
+  GroupByClause(
+        std::vector<GroupingSpec> aGroupingSpecs, 
+        std::vector<GroupingOuterVar> aOuterVars,
+        PlanIter_t aWhere);
+
+  void accept ( PlanIterVisitor& ) const;
+
+  uint32_t getStateSizeOfSubtree() const;
+
+  void open ( PlanState& planState, uint32_t& offset );
+  void close( PlanState& planState); 
+};
+  
+
+/***************************************************************************//**
+ Wrapper for an OrderByClause
+ See http://www.w3.org/TR/xquery/#id-orderby-return
+
+  Syntax:
+
+	OrderByClause ::= (("order" "by") | ("stable" "order" "by")) OrderSpecList
+
+	OrderSpecList ::= OrderSpec ("," OrderSpec)*
+
+  OrderSpec ::= ExprSingle OrderModifier
+
+  OrderModifier ::= ("ascending" | "descending")?
+                    ("empty" ("greatest" | "least"))?
+                    ("collation" URILiteral)?
+
+********************************************************************************/
+class OrderByClause
+{
+  friend class FLWORIterator;
+  
+public:
+  std::vector<OrderSpec> theOrderSpecs;
+  bool                   theStable;
+  
+public:
+  OrderByClause ( std::vector<OrderSpec> orderSpecs, bool stable );
+
+  void accept ( PlanIterVisitor& ) const;
+};
+
+
 
 /***************************************************************************//**
   Main FLWOR class designed according to
-  http://www.w3.org/TR/xquery/#id-flwor-expressions. 
+  http://www.w3.org/TR/xquery/#id-flwor-expressions
+
+  Syntax:
+
+  FLWORExpr ::= (ForClause | LetClause)+
+                WhereClause?
+                GroupByClause ?
+                OrderByClause?
+                "return" ExprSingle
 
   The complete tuple-stream handling is done in this class. 
 ********************************************************************************/
 class FLWORIterator : public Batcher<FLWORIterator>
 {
 public:
-  class OrderKeyCmp;
-  
   typedef std::multimap<std::vector<store::Item_t>,
                         store::Iterator_t,
                         OrderKeyCmp> order_map_t;
 
   typedef ItemValuesCollHandleHashMap<std::vector<store::TempSeq_t>* > group_map_t;
 
-  /**
-   * Wrappes a FOR or LET clause. There is one ForLetClause for each for/let
-   * variable. Note: we don't use separate ForClause and LetClause classes to
-   * avoid dynamic casts during the runtime.
-   */
-  class ForLetClause 
-  {
-    friend class FLWORIterator;
-    friend class PrinterVisitor;
-
-  protected:
-    enum ForLetType { FOR, LET };
-
-#ifndef NDEBUG
-    xqpStringStore             theVarName;
-#endif
-    ForLetType                 theType;
-    std::vector<ForVarIter_t>  theForVars;
-    std::vector<ForVarIter_t>  thePosVars;
-    std::vector<LetVarIter_t>  theLetVars;
-    PlanIter_t                 theInput;
-    bool                       theNeedsMaterialization;
-    
-  public:
-    ForLetClause(
-        const var_expr* var,
-        std::vector<ForVarIter_t> forVars,
-        PlanIter_t& input);
-          
-    ForLetClause(
-        const var_expr* var,
-        std::vector<ForVarIter_t> forVars,
-        std::vector<ForVarIter_t> posVars,
-        PlanIter_t& input);
-    
-    ForLetClause(
-        const var_expr* var,
-        std::vector<LetVarIter_t> letVars,
-        PlanIter_t& input,
-        bool needsMaterialization);
-          
-    void accept (PlanIterVisitor&) const;
-
-    xqpStringStore getVarName() const;
-  };
-
-  
-  /**
-   *
-   */
-  class GroupingSpec
-  {
-    friend class FLWORIterator;
-    friend class PrinterVisitor;
-    friend class GroupByClause;//Just for older gcc's
-  
-  protected:
-    PlanIter_t                theInput;
-    std::vector<ForVarIter_t> theInnerVars;
-    xqpString                 theCollation;
-  
-  public:
-    GroupingSpec(
-        PlanIter_t aInput,
-        std::vector<ForVarIter_t> aInnerVars,
-        xqpString aCollation );
-
-    void accept ( PlanIterVisitor& ) const;
-
-    void open ( PlanState& planState, uint32_t& offset );
-    void close ( PlanState& planState );
-
-    uint32_t getStateSizeOfSubtree() const; 
-  };
-  
-
-  /**
-   *
-   */
-  class GroupingOuterVar
-  {
-    friend class FLWORIterator;
-    friend class PrinterVisitor;
-    friend class GroupByClause; //Just for older gcc's
-  
-  protected:
-    PlanIter_t                theInput;
-    std::vector<LetVarIter_t> theOuterVars;
-  
-  public:
-    GroupingOuterVar(PlanIter_t aInput, std::vector<LetVarIter_t> aOuterVars);
-
-    void accept ( PlanIterVisitor& ) const;
-
-    void open ( PlanState& planState, uint32_t& offset );
-    void close ( PlanState& planState );
-
-    uint32_t getStateSizeOfSubtree() const; 
-  };
-  
-
-  /**
-   *
-   */
-  class GroupByClause
-  {
-    friend class FLWORIterator;
-    friend class PrinterVisitor;
-  
-  private:
-    std::vector<GroupingSpec> theGroupingSpecs;
-    std::vector<GroupingOuterVar> theOuterVars;
-    PlanIter_t theWhere;
-    
-  public:
-    GroupByClause(std::vector<GroupingSpec> aGroupingSpecs, 
-                  std::vector<GroupingOuterVar> aOuterVars,
-                  PlanIter_t aWhere);
-    void accept ( PlanIterVisitor& ) const;
-    void open ( PlanState& planState, uint32_t& offset );
-    void close( PlanState& planState);
-    uint32_t getStateSizeOfSubtree() const; 
-  };
-
-
-  /**
-   * Wrapper for a OrderSpec
-   * http://www.w3.org/TR/xquery/#id-orderby-return
-   */
-  class OrderSpec
-  {
-    friend class FLWORIterator;
-    friend class OrderKeyCmp;
-
-  protected:
-    PlanIter_t             theOrderByIter;
-    bool                   theEmptyLeast;
-    bool                   theDescending;
-    mutable RuntimeCB    * theRuntimeCB; // TODO hack
-    xqpString              theCollation;
-    mutable XQPCollator  * theCollator; // TODO hack
-
-  public:
-    OrderSpec ( PlanIter_t orderByIter, bool empty_least, bool descending );
-    OrderSpec ( PlanIter_t orderByIter, bool empty_least, bool descending, const xqpString& collation );
-
-    void accept ( PlanIterVisitor& ) const;
-  };
-  
-
-  /**
-   * Wrapper for a orderByClause
-   * See http://www.w3.org/TR/xquery/#id-orderby-return
-   */
-  class OrderByClause
-  {
-    friend class FLWORIterator;
-  
-  public:
-    std::vector<OrderSpec> orderSpecs;
-    bool                   stable;
-
-  public:
-    OrderByClause ( std::vector<OrderSpec> orderSpecs, bool stable );
-
-    void accept ( PlanIterVisitor& ) const;
-  };
-
-
-  /**
-   * Class to pass to the MultiMap to do the comparison according to the OrderByClause. 
-   * Luckily the MultiMap is stable already :-)
-   */
-  class OrderKeyCmp
-  {
-  private:
-    std::vector<OrderSpec> * mOrderSpecs;
-    TypeManager            * theTypeManager;
-    long                     theTimezone;
-
-  public:
-    OrderKeyCmp() : mOrderSpecs(0), theTypeManager(0), theTimezone(0) {}
-
-    OrderKeyCmp(RuntimeCB* rcb, std::vector<OrderSpec>* aOrderSpecs) 
-      :
-      mOrderSpecs ( aOrderSpecs ) 
-    {
-      theTypeManager = rcb->theStaticContext->get_typemanager();
-      theTimezone = rcb->theDynamicContext->get_implicit_timezone();
-    }
-
-    bool operator() (
-        const std::vector<store::Item_t>& s1,
-        const std::vector<store::Item_t>& s2 ) const;
-          
-    /**
-     * Does the actual comparision
-     * @return   -1, if item0 &lt; item1
-     *            0, if item0 == item1
-     *            1, if item0 &gt; item1
-     */
-    inline long compare(
-        const store::Item_t& s1,
-        const store::Item_t& s2,
-        bool asc,
-        bool emptyLeast,
-        XQPCollator* collator) const;
-    
-    /**
-     * Helper functions to switch the ordering between ascending and descending
-     */
-    inline long descAsc(long result, bool asc) const;
-  };
-       
-  
-  /* ####################################################
-   * Here we have the actual FLWOR class
-   * #################################################### 
-   */
-    
+         
 public:
   /**
    * Constructor
@@ -347,7 +285,6 @@ private:
   bool                      doOrderBy; //just indicates if the FLWOR has an orderby
   bool                      doGroupBy;
   PlanIter_t                returnClause; 
-  //bool                      whereClauseReturnsBooleanPlus;
   bool                      theIsUpdating;
   const int                 theNumBindings; //Number of FORs and LETs (overall)  
 };
@@ -401,7 +338,7 @@ public:
   void init(
         PlanState& state,
         size_t numVars,
-        std::vector<FLWORIterator::OrderSpec>* orderSpecs,
+        std::vector<OrderSpec>* orderSpecs,
         std::vector<XQPCollator*>* groupingCollation );
   
   /**
@@ -411,8 +348,9 @@ public:
 };  
 
 
+}
 } /* namespace zorba */
-#endif  /* ZORBA_ITEM_ITERATOR_H */
+#endif
 
 /*
  * Local variables:

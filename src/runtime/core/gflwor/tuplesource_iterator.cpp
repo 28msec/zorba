@@ -29,8 +29,10 @@
 #include "system/globalenv.h"
 
 
-namespace zorba {
-  namespace gflwor {
+namespace zorba 
+{
+namespace flwor 
+{
     TupleSourceIterator::TupleSourceIterator ( const QueryLoc& aLoc ) :
         NoaryBaseIterator<TupleSourceIterator, PlanIteratorState> ( aLoc ) {}
 

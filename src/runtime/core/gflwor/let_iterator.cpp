@@ -18,8 +18,10 @@
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/gflwor/common.h"
 
-namespace zorba {
-  namespace gflwor {
+namespace zorba 
+{
+namespace flwor 
+{
     LetIterator::LetIterator ( const QueryLoc& aLoc,
                                store::Item_t aVarName, 
                                PlanIter_t aTupleIter,

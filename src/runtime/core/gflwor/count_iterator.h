@@ -20,9 +20,11 @@
 #include "runtime/base/unarybase.h"
 
 
-namespace zorba {
+namespace zorba 
+{
 
-  namespace gflwor {
+namespace flwor 
+{
 
     class CountState : public PlanIteratorState {
       private:

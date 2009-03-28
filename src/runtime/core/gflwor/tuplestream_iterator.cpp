@@ -26,8 +26,10 @@
 
 using namespace zorba;
 
-namespace zorba {
-    namespace gflwor {
+namespace zorba 
+{
+namespace flwor 
+{
 
         TupleStreamIterator::TupleStreamIterator (
           const QueryLoc&             aLoc,

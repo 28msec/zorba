@@ -18,8 +18,10 @@
 
 #include "runtime/base/noarybase.h"
 
-namespace zorba {
-  namespace gflwor {
+namespace zorba 
+{
+namespace flwor 
+{
     /**
      * The TupleSourceIterator initializes a TupleStream. This iterator is always the first iterator. 
      * 
@@ -38,3 +40,9 @@ namespace zorba {
 
 
 #endif  /* ZORBA_RUNTIME_FLWOR_TUPLESTREAM_ITERATOR */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

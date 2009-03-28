@@ -22,11 +22,12 @@
 #include "runtime/base/binarybase.h"
 
 
-namespace zorba {
-  namespace store {
-    class PUL;
-  }
-  namespace gflwor {
+namespace zorba 
+{
+namespace store { class PUL; }
+
+namespace flwor 
+{
 
     class TupleStreamIterator : public BinaryBaseIterator<TupleStreamIterator, PlanIteratorState> {
       private:
@@ -55,3 +56,10 @@ namespace zorba {
   }/* namespace gflwor */
 } /* namespace zorba */
 #endif  /* ZORBA_RUNTIME_GFLWOR_TUPLESTREAM_ITERATOR */
+
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

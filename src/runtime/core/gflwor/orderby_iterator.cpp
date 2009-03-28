@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include "runtime/api/runtimecb.h"
 #include "runtime/core/gflwor/orderby_iterator.h"
 #include "runtime/core/gflwor/common.h"
 
 #include "zorbautils/fatal.h"
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
-
-#include "runtime/api/runtimecb.h"
 
 #include "system/globalenv.h"
 #include "context/collation_cache.h"
@@ -35,75 +35,8 @@ using namespace zorba;
 namespace zorba 
 {
 
-namespace gflwor 
+namespace flwor 
 {
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  OrderSpec                                                                  //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-OrderSpec::OrderSpec (
-    PlanIter_t aOrderByIter,
-    bool aEmpty_least,
-    bool aDescending )
-  :
-  theOrderByIter ( aOrderByIter ),
-  theEmptyLeast ( aEmpty_least ),
-  theDescending ( aDescending ),
-  theCollator ( 0 ),
-  theRuntimeCB ( 0 ) 
-{
-}
-
-
-OrderSpec::OrderSpec (
-    PlanIter_t aOrderByIter,
-    bool aEmpty_least,
-    bool aDescending,
-    const xqpString& aCollation )
-  :
-  theOrderByIter ( aOrderByIter ),
-  theEmptyLeast ( aEmpty_least ),
-  theDescending ( aDescending ),
-  theCollation ( aCollation ),
-  theCollator ( 0 ),
-  theRuntimeCB ( 0 ) 
-{
-}
-
-
-void OrderSpec::reset ( PlanState& aPlanState ) const 
-{
-  theOrderByIter->reset ( aPlanState );
-}
-
-
-void OrderSpec::accept ( PlanIterVisitor& v ) const 
-{
-  v.beginVisitFlworOrderBy ( *theOrderByIter );
-  v.endVisitFlworOrderBy ( *theOrderByIter );
-}
-
-
-void OrderSpec::open ( PlanState& aPlanState, uint32_t& offset ) const 
-{
-  theOrderByIter->open ( aPlanState, offset );
-}
-
-
-void OrderSpec::close ( PlanState& aPlanState ) const 
-{
-  theOrderByIter->close ( aPlanState );
-}
-
-
-uint32_t OrderSpec::getStateSizeOfSubtree() const 
-{
-  return theOrderByIter->getStateSizeOfSubtree();
-}
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -185,7 +118,7 @@ void OrderByIterator::openImpl ( PlanState& aPlanState, uint32_t& aOffset )
         iter != theOrderSpecs.end();
         iter++ ) {
     iter->open ( aPlanState, aOffset );
-    iter->theRuntimeCB = aPlanState.theRuntimeCB; // HACK should be done in a seperate class
+
     if ( iter->theCollation.size() != 0 ) {
       xqpString lTmp = iter->theCollation;
       iter->theCollator = aPlanState.theRuntimeCB->theCollationCache->
@@ -321,97 +254,5 @@ void OrderByIterator::bindOrderBy (
 }
   
   
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  OrderKeyCmp                                                                //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-OrderKeyCmp::OrderKeyCmp(RuntimeCB* rcb, std::vector<OrderSpec>* aOrderSpecs)
-  :
-  mOrderSpecs ( aOrderSpecs )
-{
-  theTypeManager = rcb->theStaticContext->get_typemanager();
-  theTimezone = rcb->theDynamicContext->get_implicit_timezone();
-}
-  
-
-bool OrderKeyCmp::operator() (
-    const std::vector<store::Item_t>& s1,
-    const std::vector<store::Item_t>& s2 ) const 
-{
-  ZORBA_ASSERT ( s1.size() == s2.size() );
-  ZORBA_ASSERT ( s1.size() == mOrderSpecs->size() );
-      
-  std::vector<store::Item_t>::const_iterator s1iter = s1.begin();
-  std::vector<store::Item_t>::const_iterator s2iter = s2.begin();
-  std::vector<OrderSpec>::const_iterator orderSpecIter = mOrderSpecs->begin();
-  
-  while ( s1iter != s1.end() ) 
-  {
-    int8_t cmp = compare ( *s1iter,
-                           *s2iter,
-                           orderSpecIter->theDescending,
-                           orderSpecIter->theEmptyLeast,
-                           orderSpecIter->theCollator );
-    if ( cmp == 1 ) {
-      return false;
-    } else if ( cmp == -1 ) {
-      return true;
-    }
-    ++s1iter;
-    ++s2iter;
-    ++orderSpecIter;
-  }
-  return false;
-}
-
-
-int8_t OrderKeyCmp::compare (
-    const store::Item_t& s1,
-    const store::Item_t& s2,
-    bool desc,
-    bool emptyLeast,
-    XQPCollator* collator ) const 
-{
-  if ( empty_item(s1) ) 
-  {
-    if ( empty_item(s2) )
-      return descAsc ( 0, desc );
-    else
-      return descAsc ( emptyLeast ? -1 : 1, desc );
-  }
-  else if ( empty_item(s2) ) 
-  {
-    return descAsc ( emptyLeast ? 1 : -1, desc );
-  } 
-  else 
-  {
-    // danm: both valueCompare (x, NaN) and valueCompare (NaN, x) return 2.
-    // That's why empty_item is needed.
-    store::Item_t ls1(s1);
-    store::Item_t ls2(s2);
-    int8_t result = CompareIterator::valueCompare(ls1,
-                                                  ls2,
-                                                  theTypeManager,
-                                                  theTimezone,
-                                                  collator);
-    if ( result > 1 || result < -1 ) 
-    {
-      ZORBA_ERROR_DESC ( XPTY0004, "Non-comparable types found while sorting" );    
-    }
-    return descAsc ( result , desc );
-  }
-}
-  
-
-int8_t OrderKeyCmp::descAsc ( int8_t result, bool desc ) const 
-{
-  ZORBA_ASSERT ( result <= 1 && result >= -1 );
-  return desc ? -result : result;
-}
-  
-
 } //Namespace flwor
 }//Namespace zorba

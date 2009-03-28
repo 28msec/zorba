@@ -20,8 +20,10 @@
 #include "common/shared_types.h"
 #include "runtime/base/plan_iterator.h"
 
-namespace zorba {
-  namespace gflwor {
+namespace zorba 
+{
+namespace flwor 
+{
     class WindowIterator;
 
     class WindowVars {

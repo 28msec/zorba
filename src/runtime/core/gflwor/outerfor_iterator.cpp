@@ -24,8 +24,10 @@
 
 using namespace zorba;
 
-namespace zorba {
-  namespace gflwor {
+namespace zorba 
+{
+namespace flwor 
+{
 
     // theChild0 --> TupleIterator
     // theChild1 --> InputIterator

@@ -20,9 +20,11 @@
 #include "runtime/base/binarybase.h"
 
 
-namespace zorba {
+namespace zorba 
+{
 
-  namespace gflwor {
+namespace flwor 
+{
 
     class WhereIterator : public BinaryBaseIterator<WhereIterator, PlanIteratorState> {
       public:

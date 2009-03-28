@@ -22,7 +22,8 @@
 
 namespace zorba {
  
-  namespace gflwor {   
+namespace flwor 
+{   
     
     class ForState : public PlanIteratorState {
       private:

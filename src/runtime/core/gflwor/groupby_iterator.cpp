@@ -27,70 +27,12 @@
 
 using namespace zorba;
 
-namespace zorba {
-  namespace gflwor {
+namespace zorba 
+{
 
+namespace flwor 
+{
 
-    /////////////////////////////////////////////////////////////////////////////////
-    //                                                                             //
-    //  GroupingOuterVar                                                           //
-    //                                                                             //
-    /////////////////////////////////////////////////////////////////////////////////
-
-    GroupingOuterVar::GroupingOuterVar (
-      PlanIter_t aInput,
-      std::vector<LetVarIter_t> aOuterVars )
-        : theInput ( aInput ), theOuterVars ( aOuterVars ) {}
-
-    void GroupingOuterVar::accept ( PlanIterVisitor& v ) const {
-      theInput->accept ( v );
-    }
-
-    void GroupingOuterVar::open ( PlanState& planState, uint32_t& offset ) const {
-      theInput->open ( planState, offset );
-    }
-
-    void GroupingOuterVar::close ( PlanState& planState ) const {
-      theInput->close ( planState );
-    }
-
-    void GroupingOuterVar::reset ( PlanState& planState ) const {
-      theInput->reset ( planState );
-    }
-
-    uint32_t GroupingOuterVar::getStateSizeOfSubtree() const {
-      return theInput->getStateSizeOfSubtree();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////
-    //                                                                             //
-    //  GroupingOuterVar                                                           //
-    //                                                                             //
-    /////////////////////////////////////////////////////////////////////////////////
-
-    GroupingSpec::GroupingSpec (
-      PlanIter_t aInput, std::vector<ForVarIter_t> aInnerVars, xqpString aCollation )
-        : theInput ( aInput ), theInnerVars ( aInnerVars ), theCollation ( aCollation ) {}
-
-    void GroupingSpec::accept ( PlanIterVisitor& v ) const {
-      theInput->accept ( v );
-    }
-
-    void GroupingSpec::open ( PlanState& planState, uint32_t& offset ) const {
-      theInput->open ( planState, offset );
-    }
-
-    void GroupingSpec::close ( PlanState& planState ) const {
-      theInput->close ( planState );
-    }
-
-    void GroupingSpec::reset ( PlanState& planState ) const {
-      theInput->reset ( planState );
-    }
-
-    uint32_t GroupingSpec::getStateSizeOfSubtree() const {
-      return theInput->getStateSizeOfSubtree();
-    }
 
     /////////////////////////////////////////////////////////////////////////////////
     //                                                                             //
@@ -400,5 +342,5 @@ namespace zorba {
     }
 
 
-  } //Namespace flwor
+} //Namespace flwor
 }//Namespace zorba

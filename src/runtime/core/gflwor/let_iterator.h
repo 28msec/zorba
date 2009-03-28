@@ -19,8 +19,11 @@
 #include "zorbautils/checked_vector.h"
 #include "runtime/base/binarybase.h"
 
-namespace zorba {
-  namespace gflwor {
+namespace zorba 
+{
+namespace flwor 
+{
+
     class LetIterator : public BinaryBaseIterator<LetIterator, PlanIteratorState> {
       private:
         store::Item_t theVarName;

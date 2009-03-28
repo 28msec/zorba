@@ -20,8 +20,11 @@
 #include "runtime/base/binarybase.h"
 
 
-namespace zorba {
-  namespace gflwor {
+namespace zorba 
+{
+
+namespace flwor 
+{
 
     class OuterForIterator : public BinaryBaseIterator<OuterForIterator, PlanIteratorState> {
       private:
