@@ -652,23 +652,23 @@ public:
 
   PRINTER_VISITOR_DEFINITION (FnTimezoneFromTimeIterator)
 
-  PRINTER_VISITOR_DEFINITION (FLWORIterator)
+  PRINTER_VISITOR_DEFINITION (flwor::FLWORIterator)
       
-  PRINTER_VISITOR_DEFINITION (gflwor::TupleStreamIterator)
+  PRINTER_VISITOR_DEFINITION (flwor::TupleStreamIterator)
       
-  PRINTER_VISITOR_DEFINITION (gflwor::TupleSourceIterator)
+  PRINTER_VISITOR_DEFINITION (flwor::TupleSourceIterator)
       
-  PRINTER_VISITOR_DEFINITION (gflwor::ForIterator)
+  PRINTER_VISITOR_DEFINITION (flwor::ForIterator)
       
-  PRINTER_VISITOR_DEFINITION (gflwor::OuterForIterator)
+  PRINTER_VISITOR_DEFINITION (flwor::OuterForIterator)
 
-  PRINTER_VISITOR_DEFINITION (gflwor::LetIterator)
+  PRINTER_VISITOR_DEFINITION (flwor::LetIterator)
       
-  PRINTER_VISITOR_DEFINITION (gflwor::WhereIterator)
+  PRINTER_VISITOR_DEFINITION (flwor::WhereIterator)
       
-  PRINTER_VISITOR_DEFINITION (gflwor::CountIterator)
+  PRINTER_VISITOR_DEFINITION (flwor::CountIterator)
       
- PRINTER_VISITOR_DEFINITION (gflwor::GroupByIterator)
+ PRINTER_VISITOR_DEFINITION (flwor::GroupByIterator)
 
  PRINTER_VISITOR_DEFINITION (CreateTupleIterator)
  PRINTER_VISITOR_DEFINITION (GetTupleFieldIterator)

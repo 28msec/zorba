@@ -20,77 +20,100 @@
 #include "runtime/base/narybase.h"
 #include "indexing/value_index.h"
 
-namespace zorba {
+namespace zorba 
+{
 
-class CreateValueIndex : public UnaryBaseIterator<CreateValueIndex, PlanIteratorState> {
-  public:
-    CreateValueIndex(const QueryLoc& loc, PlanIter_t aChild)
-      : UnaryBaseIterator<CreateValueIndex, PlanIteratorState>(loc, aChild) { }
+class CreateValueIndex : public UnaryBaseIterator<CreateValueIndex, PlanIteratorState> 
+{
+public:
+  CreateValueIndex(const QueryLoc& loc, PlanIter_t aChild)
+    :
+    UnaryBaseIterator<CreateValueIndex, PlanIteratorState>(loc, aChild) { }
 
-    virtual ~CreateValueIndex() { }
+  virtual ~CreateValueIndex() { }
 
-    bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
-    virtual void accept(PlanIterVisitor& v) const;
+  virtual void accept(PlanIterVisitor& v) const;
 };
 
-class DropValueIndex : public UnaryBaseIterator<DropValueIndex, PlanIteratorState> {
-  public:
-    DropValueIndex(const QueryLoc& loc, PlanIter_t aChild)
-      : UnaryBaseIterator<DropValueIndex, PlanIteratorState>(loc, aChild) { }
 
-    virtual ~DropValueIndex() { }
+class DropValueIndex : public UnaryBaseIterator<DropValueIndex, PlanIteratorState> 
+{
+public:
+  DropValueIndex(const QueryLoc& loc, PlanIter_t aChild)
+    :
+    UnaryBaseIterator<DropValueIndex, PlanIteratorState>(loc, aChild) { }
 
-    bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  virtual ~DropValueIndex() { }
 
-    virtual void accept(PlanIterVisitor& v) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+  virtual void accept(PlanIterVisitor& v) const;
 };
 
-class ValueIndexInsertSessionOpener : public UnaryBaseIterator<ValueIndexInsertSessionOpener, PlanIteratorState> {
-  public:
-    ValueIndexInsertSessionOpener(const QueryLoc& loc, PlanIter_t aChild)
-      : UnaryBaseIterator<ValueIndexInsertSessionOpener, PlanIteratorState>(loc, aChild) { }
 
-    virtual ~ValueIndexInsertSessionOpener() { }
+class ValueIndexInsertSessionOpener : public UnaryBaseIterator<ValueIndexInsertSessionOpener, PlanIteratorState> 
+{
+public:
+  ValueIndexInsertSessionOpener(const QueryLoc& loc, PlanIter_t aChild)
+    :
+    UnaryBaseIterator<ValueIndexInsertSessionOpener, PlanIteratorState>(loc, aChild) { }
 
-    bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  virtual ~ValueIndexInsertSessionOpener() { }
 
-    virtual void accept(PlanIterVisitor& v) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+  virtual void accept(PlanIterVisitor& v) const;
 };
 
-class ValueIndexInsertSessionCloser : public UnaryBaseIterator<ValueIndexInsertSessionCloser, PlanIteratorState> {
-  public:
-    ValueIndexInsertSessionCloser(const QueryLoc& loc, PlanIter_t aChild)
-      : UnaryBaseIterator<ValueIndexInsertSessionCloser, PlanIteratorState>(loc, aChild) { }
 
-    virtual ~ValueIndexInsertSessionCloser() { }
+class ValueIndexInsertSessionCloser : public UnaryBaseIterator<ValueIndexInsertSessionCloser, PlanIteratorState> 
+{
+public:
+  ValueIndexInsertSessionCloser(const QueryLoc& loc, PlanIter_t aChild)
+    :
+    UnaryBaseIterator<ValueIndexInsertSessionCloser, PlanIteratorState>(loc, aChild) { }
 
-    bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  virtual ~ValueIndexInsertSessionCloser() { }
 
-    virtual void accept(PlanIterVisitor& v) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+  virtual void accept(PlanIterVisitor& v) const;
 };
 
-class ValueIndexBuilderState : public PlanIteratorState {
-  public:
-    ValueIndexInsertSession_t theSession;
 
-    void init(PlanState&);
-    void reset(PlanState&);
+class ValueIndexBuilderState : public PlanIteratorState 
+{
+public:
+  ValueIndexInsertSession_t theSession;
+
+  void init(PlanState&);
+  void reset(PlanState&);
 };
 
-class ValueIndexBuilder : public NaryBaseIterator<ValueIndexBuilder, ValueIndexBuilderState> {
-  public:
-    ValueIndexBuilder(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
-      : NaryBaseIterator<ValueIndexBuilder, ValueIndexBuilderState>(loc, aChildren) { }
 
-    virtual ~ValueIndexBuilder() { }
+class ValueIndexBuilder : public NaryBaseIterator<ValueIndexBuilder, ValueIndexBuilderState> 
+{
+public:
+  ValueIndexBuilder(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
+    :
+    NaryBaseIterator<ValueIndexBuilder, ValueIndexBuilderState>(loc, aChildren) { }
 
-    bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  virtual ~ValueIndexBuilder() { }
 
-    virtual void accept(PlanIterVisitor& v) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+  virtual void accept(PlanIterVisitor& v) const;
 };
 
 }
 
 #endif /* ZORBA_VALUE_INDEX_BUILDER_H */
 /* vim:set ts=2 sw=2: */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

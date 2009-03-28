@@ -98,7 +98,7 @@ namespace zorba {
   NOARY_ACCEPT(EmptyIterator);
   NOARY_ACCEPT(SingletonIterator);
   NOARY_ACCEPT(ForVarIterator);
-  NOARY_ACCEPT(gflwor::TupleSourceIterator);
+  NOARY_ACCEPT(flwor::TupleSourceIterator);
   
   // unary iterators
   UNARY_ACCEPT(NodeDistinctIterator);
@@ -141,7 +141,7 @@ namespace zorba {
   UNARY_ACCEPT(FnAdjustToTimeZoneIterator_1);
   UNARY_ACCEPT(DeleteIterator);
   UNARY_ACCEPT(FnDataIterator);
-  UNARY_ACCEPT(gflwor::CountIterator);
+  UNARY_ACCEPT(flwor::CountIterator);
   UNARY_ACCEPT(CreateValueIndex);
   UNARY_ACCEPT(DropValueIndex);
   UNARY_ACCEPT(ValueIndexInsertSessionOpener);
@@ -160,11 +160,11 @@ namespace zorba {
   BINARY_ACCEPT(InsertIterator);
   BINARY_ACCEPT(ReplaceIterator);
   BINARY_ACCEPT(RenameIterator);
-  BINARY_ACCEPT(gflwor::TupleStreamIterator);
-  BINARY_ACCEPT(gflwor::ForIterator);
-  BINARY_ACCEPT(gflwor::OuterForIterator);
-  BINARY_ACCEPT(gflwor::LetIterator);
-  BINARY_ACCEPT(gflwor::WhereIterator);
+  BINARY_ACCEPT(flwor::TupleStreamIterator);
+  BINARY_ACCEPT(flwor::ForIterator);
+  BINARY_ACCEPT(flwor::OuterForIterator);
+  BINARY_ACCEPT(flwor::LetIterator);
+  BINARY_ACCEPT(flwor::WhereIterator);
 
   // nary iterators
   NARY_ACCEPT(ValueIndexBuilder);

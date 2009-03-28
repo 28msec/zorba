@@ -746,7 +746,7 @@ long CompareIterator::compare(
     const store::Item_t& aItem0,
     const store::Item_t& aItem1, 
     TypeManager* typemgr,
-    long timezone, 
+    long timezone,
     XQPCollator* aCollation)
 {
   xqtref_t type0 = typemgr->create_value_type(aItem0.getp());

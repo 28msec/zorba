@@ -32,6 +32,7 @@ SET(RUNTIME_SRCS
     core/sequencetypes.cpp
     core/trycatch.cpp
     core/var_iterators.cpp
+    core/gflwor/common.cpp
     core/gflwor/tuplestream_iterator.cpp
     core/gflwor/for_iterator.cpp
     core/gflwor/let_iterator.cpp

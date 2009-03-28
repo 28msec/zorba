@@ -58,7 +58,6 @@ namespace zorba
   class LetVarIterator;
   class EnclosedIterator;
   class IfThenElseIterator;
-  class FLWORIterator;
   class TryCatchIterator;
   class NodeDistinctIterator;
   class NodeSortIterator;
@@ -272,7 +271,9 @@ namespace zorba
   class ZorbaJSONParseIterator;
   class ZorbaJSONSerializeIterator;
 
-  namespace gflwor{
+  namespace flwor
+  {
+    class FLWORIterator;
     class TupleStreamIterator;
     class TupleSourceIterator;
     class ForIterator;
@@ -315,21 +316,23 @@ namespace zorba
 
     PLAN_ITER_VISITOR(NodeByReferenceIterator);
     
-    PLAN_ITER_VISITOR (gflwor::TupleStreamIterator);
+    PLAN_ITER_VISITOR (flwor::FLWORIterator);
+
+    PLAN_ITER_VISITOR (flwor::TupleStreamIterator);
     
-    PLAN_ITER_VISITOR (gflwor::TupleSourceIterator);
+    PLAN_ITER_VISITOR (flwor::TupleSourceIterator);
     
-    PLAN_ITER_VISITOR (gflwor::ForIterator);
+    PLAN_ITER_VISITOR (flwor::ForIterator);
     
-    PLAN_ITER_VISITOR (gflwor::OuterForIterator);
+    PLAN_ITER_VISITOR (flwor::OuterForIterator);
     
-    PLAN_ITER_VISITOR (gflwor::LetIterator);
+    PLAN_ITER_VISITOR (flwor::LetIterator);
     
-    PLAN_ITER_VISITOR (gflwor::GroupByIterator);
+    PLAN_ITER_VISITOR (flwor::GroupByIterator);
     
-    PLAN_ITER_VISITOR (gflwor::WhereIterator);
+    PLAN_ITER_VISITOR (flwor::WhereIterator);
     
-    PLAN_ITER_VISITOR (gflwor::CountIterator);
+    PLAN_ITER_VISITOR (flwor::CountIterator);
     
     PLAN_ITER_VISITOR (SequentialIterator);
 
@@ -400,8 +403,6 @@ namespace zorba
     PLAN_ITER_VISITOR (EnclosedIterator);
       
     PLAN_ITER_VISITOR (IfThenElseIterator);
-       
-    PLAN_ITER_VISITOR (FLWORIterator);
  
     PLAN_ITER_VISITOR (TryCatchIterator);
 
