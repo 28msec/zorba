@@ -146,10 +146,14 @@ void StringPool::garbageCollect()
         entry->setNext(freeList);
         freeList = entry;
         theNumEntries--;
-      }
 
-      prevEntry = entry;
-      entry = entry->getNext();
+        entry = prevEntry->getNext();
+      }
+      else
+      {
+        prevEntry = entry;
+        entry = entry->getNext();
+      }
     }
   }
 
