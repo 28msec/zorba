@@ -17,10 +17,8 @@
 #ifndef ZORBA_NO_UNICODE
 #include <unicode/regex.h>
 #endif
-
 #include <memory>
 #include "zorbatypes/xqpstring.h"
-#include "zorbaerrors/Assert.h"
 
 #ifndef ZORBA_NO_UNICODE
 #include "zorbatypes/Unicode_util.h"
@@ -218,8 +216,7 @@ static UnicodeString getUnicodeString(const xqpStringStore* src)
 
   if(U_FAILURE(status))
   {
-    ZORBA_ERROR(XQP0005_SYSTEM_ASSERT_FAILED);
-    ZORBA_ASSERT(false);
+    assert(false);
   }
 
   ret.releaseBuffer(U_SUCCESS(status) ? len : 0);
@@ -591,8 +588,7 @@ xqpStringStore_t xqpStringStore::lowercase() const
 ********************************************************************************/
 xqpStringStore_t xqpStringStore::normalizeSpace() const
 {
-  //create the new xqpStringStore
-  std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
+  xqpStringStore_t newStr = new xqpStringStore;
 
   uint32_t len = numChars();
   const char* c = c_str();
@@ -629,49 +625,6 @@ xqpStringStore_t xqpStringStore::normalizeSpace() const
   given set S of chars. S is defined as the 1st "len" chars in the "start"
   string. 
 ********************************************************************************/
-#if 1
-xqpStringStore_t xqpStringStore::trimL(const char* start, uint16_t len) const
-{
-  if(empty() || 0 == len)
-    return new xqpStringStore (*this);
- 
-  const char* c = c_str(), *c0 = c;
- 
-  uint32_t shortTrimCP [16];
-  uint32_t* trimCP = (len <= 16) ? shortTrimCP : new uint32_t[len];
-
-  for(uint16_t i = 0; i < len; i++)
-    trimCP[i] = UTF8Decode(start);
-  
-  uint32_t StrLen;
-  for (StrLen = numChars(); StrLen > 0; --StrLen) 
-  {
-    const char *oldc = c;
-    uint32_t cp = UTF8Decode(c);
-    bool found = true;
-    for(uint16_t i = 0; i < len; i++) 
-    {
-      if(trimCP[i] == cp) {
-        found = false;
-        break;
-      }
-    }
-    if (found) {
-      c = oldc;
-      break;
-    }
-  }
- 
-  if (trimCP != shortTrimCP)
-    delete[] trimCP;
-
-  if (c == c0)
-    return new xqpStringStore (*this);
-  else
-     return new xqpStringStore (c);
-}
-
-#else
 xqpStringStore_t xqpStringStore::trimL(const char* start, uint16_t len) const
 {
   if(empty() || 0 == len)
@@ -709,79 +662,11 @@ xqpStringStore_t xqpStringStore::trimL(const char* start, uint16_t len) const
   else
     return new xqpStringStore (c);
 }
-#endif
-
+  
 
 /*******************************************************************************
 
 ********************************************************************************/
-#if 1
-xqpStringStore_t xqpStringStore::trimR(const char* start, uint16_t len) const
-{
-  if(empty() || 0 == len )
-    return new xqpStringStore(*this);
-    
-  uint32_t StrLen = numChars();
-
-  uint32_t shortTrimCP [16];
-  uint32_t* trimCP = (len <= 16) ? shortTrimCP : new uint32_t[len];
-
-  for(uint16_t i = 0; i < len; i++)
-    trimCP[i] = UTF8Decode(start);
-
-  //create the new xqpStringStore
-  std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
-
-  uint32_t pos = 0;
-  uint32_t cp = 0;
-  const char* end = c_str();
-  const char* c = c_str();
-  char seq[5];
-
-  zorba::advance(end, StrLen, end + bytes());
-
-  bool firstCp = true;
-
-  while(StrLen > 0) 
-  {
-    cp = UTF8DecodePrev(end);
-
-    for(uint16_t i = 0; i < len; i++) 
-    {
-      if(trimCP[i] == cp) {
-        firstCp = false;
-        break;
-      }
-    }
-      
-    if( firstCp ) 
-    {
-      pos = zorba::UTF8Distance(c, end);
-      break;
-    }
-    --StrLen;
-    firstCp = true;
-  }
-    
-  ++pos;
-
-  while(pos > 0)
-  {
-    cp = UTF8Decode(c);
-      
-    memset(seq, 0, sizeof(seq));
-    UTF8Encode(cp, seq);
-    newStr->theString += seq;
-    
-    --pos;
-  }
-
-  if (trimCP != shortTrimCP)
-    delete[] trimCP;
-  return newStr.release();
-}
-
-#else
 xqpStringStore_t xqpStringStore::trimR(const char* start, uint16_t len) const
 {
   if(empty() || 0 == len )
@@ -816,7 +701,6 @@ xqpStringStore_t xqpStringStore::trimR(const char* start, uint16_t len) const
   if (end0 == end) return const_cast<xqpStringStore *> (this);
   else return new xqpStringStore (str, end - str);
 }
-#endif
   
 
 /*******************************************************************************
