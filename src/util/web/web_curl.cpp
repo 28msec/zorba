@@ -36,8 +36,7 @@ static size_t
 WriteMemoryCallback(void *ptr, size_t size, size_t nmemb, void* data)
 {
   size_t realsize = size * nmemb;
-  std::string* str = (std::string*)data;
-  str->append((char*)ptr, realsize);
+  ((std::iostream*)data)->write((char*)ptr, realsize);
   return realsize;
 }
 
@@ -45,12 +44,11 @@ int http_get(const char* url, std::iostream& result)
 {
   int result_code;
   CURL* curl_handle;
-  std::string temp;
-
+  
   curl_handle = curl_easy_init();                                             /* init the curl session */
   curl_easy_setopt(curl_handle, CURLOPT_URL, url);                            /* specify URL to get */
   curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);  /* send all data to this function  */
-  curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&temp);            /* we pass our 'result' struct to the callback function */
+  curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&result);            /* we pass our 'result' struct to the callback function */
   curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);        /* tells the library to fail silently if the HTTP code returned >= 400*/
   curl_easy_setopt(curl_handle, CURLOPT_FOLLOWLOCATION, 1); /*Tells cURL to follow redirects. CURLOPT_MAXREDIRS is by default set to -1 thus cURL will do an infinite number of redirects */
 
@@ -78,7 +76,6 @@ int http_get(const char* url, std::iostream& result)
 
   curl_easy_cleanup(curl_handle);
 
-  result << temp.c_str();
   return result_code;
 }
 
