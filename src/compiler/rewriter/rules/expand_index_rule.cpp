@@ -78,7 +78,7 @@ RULE_REWRITE_PRE(ExpandBuildIndex)
       expr_t insert_index_uri(new const_expr(fo->get_loc(), uri_item));
       index_insert_args.push_back(insert_index_uri);
 
-      expr_t insert_index_var(new wrapper_expr(fo->get_loc(), newdot));
+      expr_t insert_index_var(new wrapper_expr(fo->get_loc(), newdot.getp()));
       index_insert_args.push_back(insert_index_var);
 
       const std::vector<expr_t>& idx_fields(vi->getIndexFieldExpressions());
