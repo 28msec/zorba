@@ -1259,7 +1259,7 @@ void end_visit (validate_expr& v)
   itstack.push (new ValidateIterator (qloc,
                                       lChild,
                                       v.get_typemgr(),
-									  v.get_type_name(),
+                                      v.get_type_name(),
                                       v.get_valmode()));
 #else
   //no schema support
