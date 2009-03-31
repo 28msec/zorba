@@ -838,9 +838,9 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
     }
 
     flworState->init(planState,
-                       theNumBindings,
-                       &orderByClause->theOrderSpecs,
-                       &lCollators); 
+                     theNumBindings,
+                     (orderByClause ? &orderByClause->theOrderSpecs : NULL),
+                     &lCollators); 
   }
   else if ( doOrderBy ) 
   {
