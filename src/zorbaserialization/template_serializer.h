@@ -188,6 +188,15 @@ void operator&(Archiver &ar, T *&obj)
 {
   if(ar.is_serializing_out())
   {
+    if(obj == NULL)
+    {
+      ar.add_compound_field("NULL", 
+                            1 ,//class_version
+                            FIELD_IS_CLASS, "NULL", 
+                            NULL,//(SerializeBaseClass*)obj, 
+                            ARCHIVE_FIELD_IS_NULL);
+      return;
+    }
     char  strtemp[20];
     sprintf(strtemp, "%d", 0);
     bool is_ref;
@@ -224,6 +233,12 @@ void operator&(Archiver &ar, T *&obj)
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     ar.check_class_field(retval, "", "", is_simple, is_class, (ArchiveFieldTreat)0, (ArchiveFieldTreat)0, id);
+    if(field_treat == ARCHIVE_FIELD_IS_NULL)
+    {
+      obj = NULL;
+      ar.read_end_current_level();
+      return;
+    }
     ar.set_class_version(version);
 
 

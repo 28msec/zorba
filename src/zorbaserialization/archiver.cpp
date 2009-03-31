@@ -101,7 +101,7 @@ bool Archiver::add_simple_field(const char *type,
   archive_field  *ref_field = NULL;
   bool      exch_fields = false;
   //int id = 0;
-  if(field_treat != ARCHIVE_FIELD_IS_BASECLASS)//always
+  if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && orig_ptr)//always
     ref_field = check_nonclass_pointer(orig_ptr);
   if(ref_field)
   {
@@ -180,7 +180,7 @@ bool Archiver::add_compound_field(const char *type,
   archive_field  *ref_field = NULL;
   bool      exch_fields = false;
   //int id = 0;
-  if(field_treat != ARCHIVE_FIELD_IS_BASECLASS)
+  if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && ptr)
   {
     if(!is_class)
       ref_field = check_nonclass_pointer(ptr);
@@ -209,7 +209,7 @@ bool Archiver::add_compound_field(const char *type,
     else
       current_compound_field->first_child = new_field;
     current_compound_field->last_child = new_field;
-    if(!ref_field)
+    if(!ref_field && ptr)
       current_compound_field = new_field;
   }
   else

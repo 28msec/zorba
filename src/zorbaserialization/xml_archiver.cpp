@@ -126,6 +126,7 @@ const char *XmlArchiver::get_field_treat_string(enum ArchiveFieldTreat field_tre
   {
   case ARCHIVE_FIELD_NORMAL : return "ARCHIVE_FIELD_NORMAL"; break;
   case ARCHIVE_FIELD_IS_PTR : return "ARCHIVE_FIELD_IS_PTR"; break;
+  case ARCHIVE_FIELD_IS_NULL : return "ARCHIVE_FIELD_IS_NULL"; break;
   case ARCHIVE_FIELD_IS_BASECLASS : return "ARCHIVE_FIELD_IS_BASECLASS"; break;
   case ARCHIVE_FIELD_IS_REFERENCING : return "ARCHIVE_FIELD_IS_REFERENCING"; break;
   }
@@ -247,6 +248,8 @@ process_attr:
           *field_treat = ARCHIVE_FIELD_NORMAL;
         else if(!strcmp(attrib_value, "ARCHIVE_FIELD_IS_PTR"))
           *field_treat = ARCHIVE_FIELD_IS_PTR;
+        else if(!strcmp(attrib_value, "ARCHIVE_FIELD_IS_NULL"))
+          *field_treat = ARCHIVE_FIELD_IS_NULL;
         else if(!strcmp(attrib_value, "ARCHIVE_FIELD_IS_BASECLASS"))
           *field_treat = ARCHIVE_FIELD_IS_BASECLASS;
         else if(!strcmp(attrib_value, "ARCHIVE_FIELD_IS_REFERENCING"))

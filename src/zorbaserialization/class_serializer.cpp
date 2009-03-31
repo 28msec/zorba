@@ -132,7 +132,7 @@ void operator&(Archiver &ar, char* &obj)//like char *p=strdup("io");
 {
   if(ar.is_serializing_out())
   {
-    ar.add_simple_field("char*", obj, obj, ARCHIVE_FIELD_IS_PTR);
+    ar.add_simple_field("char*", obj, obj, obj ? ARCHIVE_FIELD_IS_PTR : ARCHIVE_FIELD_IS_NULL);
   }
   else
   {
@@ -147,6 +147,11 @@ void operator&(Archiver &ar, char* &obj)//like char *p=strdup("io");
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     ar.check_simple_field(retval, type, "char*", is_simple, (ArchiveFieldTreat)0, (ArchiveFieldTreat)0, id);
+    if(field_treat == ARCHIVE_FIELD_IS_NULL)
+    {
+      obj = NULL;
+      return;
+    }
     if((field_treat != ARCHIVE_FIELD_IS_PTR) && (field_treat != ARCHIVE_FIELD_IS_REFERENCING))
     {
       ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
