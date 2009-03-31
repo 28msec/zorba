@@ -87,7 +87,7 @@ void operator&(Archiver &ar, int &obj)
   else
   {
     char  *type;
-    char  *value;
+    std::string value;
     int   id;
     int   version;
     bool  is_simple;
@@ -97,7 +97,7 @@ void operator&(Archiver &ar, int &obj)
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     ar.check_simple_field(retval, type, "int", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
-    sscanf(value, "%d", &obj);
+    sscanf(value.c_str(), "%d", &obj);
 
     ar.register_reference(id, &obj);
   }
@@ -112,7 +112,7 @@ void operator&(Archiver &ar, std::string &obj)
   else
   {
     char  *type;
-    char  *value;
+    std::string value;
     int   id;
     int   version;
     bool  is_simple;
@@ -137,7 +137,7 @@ void operator&(Archiver &ar, char* &obj)//like char *p=strdup("io");
   else
   {
     char  *type;
-    char  *value;
+    std::string value;
     int   id;
     int   version;
     bool  is_simple;
@@ -153,7 +153,7 @@ void operator&(Archiver &ar, char* &obj)//like char *p=strdup("io");
     }
     if(field_treat == ARCHIVE_FIELD_IS_PTR)
     {
-      obj = _strdup(value);
+      obj = _strdup(value.c_str());
       ar.register_reference(id, obj);
     }
     else if(id > referencing)// ARCHIVE_FIELD_IS_REFERENCING
@@ -172,7 +172,7 @@ void serialize_charvector(Archiver &ar, char *&obj)//like char p[20]
   else
   {
     char  *type;
-    char  *value;
+    std::string value;
     int   id;
     int   version;
     bool  is_simple;
@@ -182,7 +182,7 @@ void serialize_charvector(Archiver &ar, char *&obj)//like char p[20]
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     ar.check_simple_field(retval, type, "char[]", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
-    strcpy(obj, value);
+    strcpy(obj, value.c_str());
 
     ar.register_reference(id, &obj);
   }

@@ -17,12 +17,12 @@ archive_field::archive_field(const char *type, bool is_simple, bool is_class,
   this->type = _strdup(type);
   this->is_simple = is_simple;
   this->is_class = is_class;
-  if(is_simple && value)
+  if(value)
   {
     this->value = _strdup((char*)value);
   }
   else
-    this->value = (char*)value;
+    this->value = NULL;
   this->assoc_ptr = assoc_ptr;
   this->version = version;
   this->field_treat = field_treat;
@@ -59,8 +59,6 @@ Archiver::Archiver(bool is_serializing_out)
   //this->ser = ser;
 
   this->serialize_base_class = false;
-  archive_name = NULL;
-  archive_info = NULL;
   archive_version = ARCHIVER_LATEST_VERSION;
 
   out_fields = NULL;
@@ -78,11 +76,6 @@ Archiver::Archiver(bool is_serializing_out)
 
 Archiver::~Archiver()
 {
-  if(archive_name)
-    free((void*)archive_name);
-  if(archive_info)
-    free((void*)archive_info);
-
   if(out_fields)
     delete out_fields; 
 }

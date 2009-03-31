@@ -32,7 +32,7 @@ void operator&(Archiver &ar, std::list<T> &obj)
   else
   {
     char  *type;
-    char  *value;
+    std::string value;
     int   id;
     int   version;
     bool  is_simple;
@@ -80,7 +80,7 @@ void operator&(Archiver &ar, std::vector<T> &obj)
   else
   {
     char  *type;
-    char  *value;
+    std::string value;
     int   id;
     int   version;
     bool  is_simple;
@@ -131,7 +131,7 @@ void operator&(Archiver &ar, T &obj)
   {
     int prev_class_version = ar.get_class_version();
     char  *type;
-    char  *value;
+    std::string value;
     int   id;
     int   version;
     bool  is_simple;
@@ -214,7 +214,7 @@ void operator&(Archiver &ar, T *&obj)
   {
     int prev_class_version = ar.get_class_version();
     char  *type;
-    char  *value;
+    std::string value;
     int   id;
     int   version;
     bool  is_simple;

@@ -12,7 +12,7 @@ void MemArchiver::reset_serialize_in()
 }
 
 bool MemArchiver::read_next_field( char **type, 
-                      char **value,
+                      std::string *value,
                       int *id, 
                       int *version, 
                       bool *is_simple, 

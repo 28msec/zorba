@@ -66,8 +66,8 @@ SERIALIZABLE_CLASS_FACTORY_DECL(class_name, NULL)
 virtual void serialize_internal(zorba::serialization::Archiver &ar)\
 {\
   CHECK_CLASS_NAME(class_name) \
-  if(!ar.is_serializing_out())\
-    ar.set_class_type(typeid(this).name()+6);\
+  /*if(ar.is_serializing_out())*/ \
+    /*ar.set_class_type(typeid(this).name()+6);*/ \
   class_name::serialize(ar);\
 }\
 virtual const zorba::serialization::ClassVersion &get_classversion(int v) {return class_versions[v];}\

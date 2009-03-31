@@ -21,7 +21,7 @@ public:
   }
 
   virtual bool read_next_field( char **type, 
-                                char **value,
+                                std::string *value,
                                 int *id, 
                                 int *version, 
                                 bool *is_simple, 
@@ -35,14 +35,6 @@ public:
 ///////////////////////////////////
   virtual void serialize_out() {}
 
-  virtual bool read_archive_description(char **archive_name,
-                                        char **archive_info,
-                                        int *archive_version, 
-                                        int *nr_ids) 
-  {
-    return false;
-  }
-  virtual void close_archive() {}
 public:
   void reset_serialize_in();
 

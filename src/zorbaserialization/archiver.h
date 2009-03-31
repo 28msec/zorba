@@ -96,8 +96,8 @@ protected:
   
   std::list<struct fwd_ref>   fwd_reference_list;
 
-  const char *archive_name;
-  const char *archive_info;
+  std::string archive_name;
+  std::string archive_info;
   int       archive_version;
 
   class archive_field  *out_fields;
@@ -134,7 +134,7 @@ public:
   
 
   virtual bool read_next_field( char **type, 
-                                char **value,
+                                std::string *value,
                                 int *id, 
                                 int *version, 
                                 bool *is_simple, 
@@ -153,11 +153,16 @@ protected:
 
   virtual void serialize_out() = 0;
 
-  virtual bool read_archive_description(char **archive_name,
-                                        char **archive_info,
+  virtual void read_archive_description(std::string *archive_name,
+                                        std::string *archive_info,
                                         int *archive_version, 
-                                        int *nr_ids) = 0;
-  virtual void close_archive() = 0;
+                                        int *nr_ids)
+  {
+    *archive_name = this->archive_name;
+    *archive_info = this->archive_info;
+    *archive_version = this->archive_version;
+    *nr_ids = this->nr_ids;
+  }
 protected:
   archive_field* check_nonclass_pointer_internal(void *ptr, archive_field *fields);
   archive_field* check_class_pointer_internal(SerializeBaseClass *ptr, archive_field *fields);
