@@ -132,9 +132,8 @@ store::Item_t QNamePool::insert(
   QNameItemImpl* qn;
   QNameItemImpl* normVictim = NULL;
   SYNC_CODE(bool haveLock = false;)
-  bool haveNormQName = false;
   store::Item_t normItem;
-  QNameItemImpl* normQName;
+  QNameItemImpl* normQName = NULL;
 
   bool normalized = (pre == NULL || *pre == '\0');
 
@@ -168,7 +167,7 @@ retry:
       }
       else
       {
-        if (!haveNormQName)
+        if (normQName == NULL)
         {
           SYNC_CODE(theHashSet.theMutex.unlock();\
           haveLock = false;)
@@ -177,8 +176,6 @@ retry:
 
           normQName = reinterpret_cast<QNameItemImpl*>(normItem.getp());
 
-
-          haveNormQName = true;
           goto retry;
         }
 
@@ -234,9 +231,8 @@ store::Item_t QNamePool::insert(
   QNameItemImpl* qn;
   QNameItemImpl* normVictim = NULL;
   SYNC_CODE(bool haveLock = false;)
-  bool haveNormQName = false;
   store::Item_t normItem;
-  QNameItemImpl* normQName;
+  QNameItemImpl* normQName = NULL;
 
   bool normalized = pre->empty();
 
@@ -267,7 +263,7 @@ retry:
       }
       else
       {
-        if (!haveNormQName)
+        if (normQName == NULL)
         {
           SYNC_CODE(theHashSet.theMutex.unlock();\
           haveLock = false;)
@@ -279,7 +275,6 @@ retry:
 
           normQName = reinterpret_cast<QNameItemImpl*>(normItem.getp());
 
-          haveNormQName = true;
           goto retry;
         }
 
