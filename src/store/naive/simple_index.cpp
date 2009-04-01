@@ -175,7 +175,7 @@ bool HashIndex::insert(store::IndexKey& key, store::Item_t& value)
                       theUri->getStringValue()->c_str(), key.toString());
   }
 
-  ValueSet* valueSet;
+  ValueSet* valueSet = NULL;
 
   if (!isUnique() &&
       theMap.get(&key, valueSet))

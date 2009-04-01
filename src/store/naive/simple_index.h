@@ -412,3 +412,9 @@ std::ostream& operator<<(std::ostream& os, const IndexBoxConditionImpl& cond);
 }
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
