@@ -501,8 +501,6 @@ void CompareIterator::valueCasting(
     }
     else
     {
-      // GenericCast::instance()->promote(castItem0, castItem0, &*type1);
-
       if (!GenericCast::instance()->promote(castItem1, aItem1,
                                             &*GENV_TYPESYSTEM.STRING_TYPE_ONE))
         castItem1.transfer(aItem1);
@@ -517,8 +515,6 @@ void CompareIterator::valueCasting(
 
     GenericCast::instance()->castToAtomic(castItem1, aItem1,
                                   &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
-
-    // GenericCast::instance()->promote(castItem1, castItem1, &*type0);
   }
   else
   {
@@ -699,11 +695,11 @@ long CompareIterator::equal(
   {
     if (TypeOps::is_subtype(*type0, *type1))
     {
-      return aItem1->equals(aItem0, timezone, aCollation);
+      return (aItem1->equals(aItem0, timezone, aCollation) ? 1 : 0);
     } 
     else if (TypeOps::is_subtype(*type1, *type0))
     {
-      return aItem0->equals(aItem1, timezone, aCollation);
+      return (aItem0->equals(aItem1, timezone, aCollation) ? 1 : 0);
     }
     else
     {
@@ -716,12 +712,12 @@ long CompareIterator::equal(
       if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE) &&
           TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)) 
       {
-        return aItem0->getIntegerValue() == aItem1->getIntegerValue();
+        return (aItem0->getIntegerValue() == aItem1->getIntegerValue() ? 1 : 0);
       }
       else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE) &&
                TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)) 
       {
-        return aItem0->getDurationValue() == aItem1->getDurationValue();
+        return (aItem0->getDurationValue() == aItem1->getDurationValue() ? 1 : 0);
       }
       else
       {

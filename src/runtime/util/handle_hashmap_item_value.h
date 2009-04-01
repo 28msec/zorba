@@ -26,11 +26,11 @@ namespace zorba
 {
 
 //TODO Do this nice when refactoring the FLWOR
-class GroupKey
+class GroupTuple
 {
  public:
-  std::vector<store::Item_t> theKey;
-  std::vector<store::Item_t> theTypedKey;    
+  std::vector<store::Item_t> theItems;
+  std::vector<store::Item_t> theTypedValues;    
 };
 
 
@@ -66,16 +66,16 @@ class ItemValuesCollHandleHashMap
   public:
     CompareFunction(GroupCompareParam* comp) : theCompareParam(comp) { }
 
-    bool equal(const GroupKey* t1, const GroupKey* t2)
+    bool equal(const GroupTuple* t1, const GroupTuple* t2)
     {
-      assert(theCompareParam->theCollators.size() == t1->theTypedKey.size());
-      assert(t2->theTypedKey.size() == t1->theTypedKey.size());
+      assert(theCompareParam->theCollators.size() == t1->theTypedValues.size());
+      assert(t2->theTypedValues.size() == t1->theTypedValues.size());
 
-      std::vector<store::Item_t>::const_iterator iter1 = t1->theTypedKey.begin();
-      std::vector<store::Item_t>::const_iterator iter2 = t2->theTypedKey.begin();
+      std::vector<store::Item_t>::const_iterator iter1 = t1->theTypedValues.begin();
+      std::vector<store::Item_t>::const_iterator iter2 = t2->theTypedValues.begin();
       std::vector<XQPCollator*>::iterator lCollIter = theCompareParam->theCollators.begin();
 
-      while(iter1 != t1->theTypedKey.end())
+      while(iter1 != t1->theTypedValues.end())
       {
         if(*iter1 == NULL)
         {      
@@ -109,13 +109,13 @@ class ItemValuesCollHandleHashMap
       return true;
     }
 
-    uint32_t hash (GroupKey* t)
+    uint32_t hash (GroupTuple* t)
     {
       uint32_t hash = 0;
-      assert(theCompareParam->theCollators.size() == t->theTypedKey.size());
-      std::vector<store::Item_t>::iterator lItemIter = t->theTypedKey.begin();
+      assert(theCompareParam->theCollators.size() == t->theTypedValues.size());
+      std::vector<store::Item_t>::iterator lItemIter = t->theTypedValues.begin();
       std::vector<XQPCollator*>::iterator lCollIter = theCompareParam->theCollators.begin();
-      while(lItemIter != t->theTypedKey.end())
+      while(lItemIter != t->theTypedValues.end())
       {
         store::Item_t lCurItem = (*lItemIter);
         if(lCurItem != NULL)
@@ -131,12 +131,12 @@ class ItemValuesCollHandleHashMap
   };
 
 
-  typedef typename HashMap<GroupKey*, V, CompareFunction>::iterator iterator;
+  typedef typename HashMap<GroupTuple*, V, CompareFunction>::iterator iterator;
 
 private:
   GroupCompareParam                     * theCompareParam;
   CompareFunction                         theCompareFunction;
-  HashMap<GroupKey*, V, CompareFunction>  theMap;
+  HashMap<GroupTuple*, V, CompareFunction>  theMap;
 
 public:
   ItemValuesCollHandleHashMap(
@@ -160,11 +160,11 @@ public:
 
   bool empty() const { return theMap.empty(); }
 
-  bool get(GroupKey* key, V& value) { return theMap.get(key, value); }
+  bool get(GroupTuple* key, V& value) { return theMap.get(key, value); }
 
-  bool insert(GroupKey* key, V& value) { return theMap.insert(key, value); }
+  bool insert(GroupTuple* key, V& value) { return theMap.insert(key, value); }
 
-  bool remove(GroupKey* key) { return theMap.remove(key); }
+  bool remove(GroupTuple* key) { return theMap.remove(key); }
 
   void clear() { theMap.clear(); }
 };

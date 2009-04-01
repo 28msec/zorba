@@ -77,7 +77,7 @@ getCollator(
   xqtref_t lCollationItemType = planState.theCompilerCB->m_sctx->get_typemanager()->
                                 create_value_type (lCollationItem);
 
-  return planState.theRuntimeCB->theCollationCache->getCollator(lCollationItem->getStringValue());
+  return planState.theRuntimeCB->theCollationCache->getCollator(lCollationItem->getStringValue()->str());
 }
 
 

@@ -22,7 +22,6 @@
 
 #include "runtime/base/plan_iterator.h"
 #include "runtime/core/gflwor/common.h"
-#include "runtime/util/handle_hashmap_item_value.h"
 
 namespace zorba
 {
@@ -36,11 +35,11 @@ class FlworState;
 
 
 /***************************************************************************//**
- Wraps a FOR or LET clause. There is one ForLetClause for each for/let
- variable. Note: we don't use separate ForClause and LetClause classes to
- avoid dynamic casts during the runtime.
+  Wraps a FOR or LET clause. There is one ForLetClause for each for/let variable.
+  Note: we don't use separate ForClause and LetClause classes to avoid dynamic
+  casts during the runtime.
 
-  Syntax:
+  - Syntax:
 
   ForClause ::= "for" "$" VarName TypeDeclaration? PositionalVar? "in" ExprSingle
 
@@ -50,30 +49,31 @@ class FlworState;
 
   PositionalVar ::= "at" "$" VarName
 
+  - Data Members:
 
-  Data Members:
+  theType       : Whether this is a FOR or a LET var.
 
-  theType    : Whether this is a FOR or a LET var.
+  theForVarRefs : Vector of ForVarIters representing all references to this FOR
+                  var. Each ForVarIter holds the current value of the var (as an
+                  Item_t) and its next() method simply returns that value. The
+                  value is computed and stored in the ForVarIter by the 
+                  bindValiable() method of the FLWORIterator.
 
-  theForVars : Vector of ForVarIters representing all references to this FOR var.
-               Each ForVarIter holds the current value of the var (as an Item_t)
-               and its next() method simply returns that value. The value is 
-               computed and stored in the ForVarIter by the bindValiable() method
-               of the FLWORIterator.
+  thePosVarRefs : Vector of ForVarIters representing all references to the positional
+                  var (if any) associated with this FOR var.
 
-  thePosVars : Vector of ForVarIters representing all references to the positional
-               var (if any) associated with this FOR var.
-
-  theLetVars : Vector of LetVarIters representing all references to this LET var.
-               Each LetVarIter holds the current value of the var. The "value" of
-               a LET var is acually an iterator I; if the var is materialized,
-               I is an iterator over a temp sequence, otherwise, I is an iterator
-               wrapper over theInput iterator.
+  theLetVarRefs : Vector of LetVarIters representing all references to this LET
+                  var. Each LetVarIter holds the current value of the var. The
+                  "value" of a LET var is acually an iterator I; if the var is
+                  materialized, I is an iterator over a temp sequence; otherwise,
+                  I is an iterator wrapper over theInput iterator.
                
-  theInput   : The iterator producing the domain (if FOR var) or the value (if
-               LET var) of this var.
+  theInput      : The iterator producing the domain (if FOR var) or the value (if
+                  LET var) of this var.
 
-  theNeedsMaterialization : Whther this LET var must be materialized or not.
+  theMaterialize : Whether this LET var must be materialized or not. For example
+                   "let $x := (1,2,3) return ($x, $x)" needs materialization, but
+                   "let $x := (1,2,3) return if(test()) then $x else $x" doesn't.
 ********************************************************************************/
 class ForLetClause 
 {
@@ -87,11 +87,11 @@ protected:
   xqpStringStore             theVarName;
 #endif
   ForLetType                 theType;
-  std::vector<ForVarIter_t>  theForVars;
-  std::vector<ForVarIter_t>  thePosVars;
-  std::vector<LetVarIter_t>  theLetVars;
+  std::vector<ForVarIter_t>  theForVarRefs;
+  std::vector<ForVarIter_t>  thePosVarRefs;
+  std::vector<LetVarIter_t>  theLetVarRefs;
   PlanIter_t                 theInput;
-  bool                       theNeedsMaterialization;
+  bool                       theMaterialize;
     
 public:
   ForLetClause(
@@ -118,6 +118,49 @@ public:
 
 
 /***************************************************************************//**
+ Wrapper for an OrderByClause
+ See http://www.w3.org/TR/xquery/#id-orderby-return
+
+  Syntax:
+
+	OrderByClause ::= (("order" "by") | ("stable" "order" "by")) OrderSpecList
+
+	OrderSpecList ::= OrderSpec ("," OrderSpec)*
+
+  OrderSpec ::= ExprSingle OrderModifier
+
+  OrderModifier ::= ("ascending" | "descending")?
+                    ("empty" ("greatest" | "least"))?
+                    ("collation" URILiteral)?
+
+  - Data Members:
+
+  theOrderSpecs : The vector of OrderSpecs for this OrderByClause (see common.h
+                  the the definition of class OrderSpec).
+  theStable     : Whether the sorting must be stable or not.
+********************************************************************************/
+class OrderByClause
+{
+  friend class FLWORIterator;
+  
+public:
+  std::vector<OrderSpec> theOrderSpecs;
+  bool                   theStable;
+  
+public:
+  OrderByClause(std::vector<OrderSpec> orderSpecs, bool stable);
+
+  void accept(PlanIterVisitor& v) const;
+
+  uint32_t getStateSizeOfSubtree() const;
+
+  void open(PlanState& planState, uint32_t& offset);
+  void reset(PlanState& planState);
+  void close(PlanState& planState); 
+};
+
+
+/***************************************************************************//**
   Wrapper for a GroupByClause
   See http://www.w3.org/TR/xquery-11/#id-group-by
 
@@ -129,6 +172,11 @@ public:
 
   GroupingSpec ::= "$" VarName ("collation" URILiteral)?
 
+  - Data Members:
+
+  theGroupingSpecs :
+  theOuterVars     :
+  theWhere         :
 ********************************************************************************/
 class GroupByClause
 {
@@ -146,51 +194,21 @@ public:
         std::vector<GroupingOuterVar> aOuterVars,
         PlanIter_t aWhere);
 
-  void accept ( PlanIterVisitor& ) const;
+  void accept(PlanIterVisitor& v) const;
 
   uint32_t getStateSizeOfSubtree() const;
 
-  void open ( PlanState& planState, uint32_t& offset );
-  void close( PlanState& planState); 
-};
-  
-
-/***************************************************************************//**
- Wrapper for an OrderByClause
- See http://www.w3.org/TR/xquery/#id-orderby-return
-
-  Syntax:
-
-	OrderByClause ::= (("order" "by") | ("stable" "order" "by")) OrderSpecList
-
-	OrderSpecList ::= OrderSpec ("," OrderSpec)*
-
-  OrderSpec ::= ExprSingle OrderModifier
-
-  OrderModifier ::= ("ascending" | "descending")?
-                    ("empty" ("greatest" | "least"))?
-                    ("collation" URILiteral)?
-
-********************************************************************************/
-class OrderByClause
-{
-  friend class FLWORIterator;
-  
-public:
-  std::vector<OrderSpec> theOrderSpecs;
-  bool                   theStable;
-  
-public:
-  OrderByClause ( std::vector<OrderSpec> orderSpecs, bool stable );
-
-  void accept ( PlanIterVisitor& ) const;
+  void open(PlanState& planState, uint32_t& offset);
+  void reset(PlanState& planState);
+  void close(PlanState& planState); 
 };
 
 
 
 /***************************************************************************//**
   Main FLWOR class designed according to
-  http://www.w3.org/TR/xquery/#id-flwor-expressions
+  http://www.w3.org/TR/xquery/#id-flwor-expressions, extended to support one
+  optional group-by clause.
 
   Syntax:
 
@@ -200,29 +218,28 @@ public:
                 OrderByClause?
                 "return" ExprSingle
 
-  The complete tuple-stream handling is done in this class. 
+  - Data Members:
+
 ********************************************************************************/
 class FLWORIterator : public Batcher<FLWORIterator>
 {
 public:
   typedef std::multimap<std::vector<store::Item_t>,
                         store::Iterator_t,
-                        OrderKeyCmp> order_map_t;
+                        OrderTupleCmp> order_map_t;
 
-  typedef ItemValuesCollHandleHashMap<std::vector<store::TempSeq_t>* > group_map_t;
-
+private:
+  std::vector<ForLetClause> theForLetClauses;
+  PlanIter_t                theWhereClause; //can be null
+  GroupByClause           * theGroupByClause;
+  OrderByClause           * theOrderByClause;  //can be null
+  bool                      doOrderBy; //just indicates if the FLWOR has an orderby
+  bool                      doGroupBy;
+  PlanIter_t                theReturnClause; 
+  bool                      theIsUpdating;
+  const int                 theNumBindings; //Number of FORs and LETs (overall) 
          
 public:
-  /**
-   * Constructor
-   * @param loc location
-   * @param forLetClauses For and Lets: Attention the order matters!
-   * @param whereClause The where-clause iterator. Can be null
-   * @param orderByClause The order by expressions. Can be null
-   * @param returnClause The return expressions
-   * @param whereClauseReturnsBooleanPlus Optional flag.
-   *  If true => The iterator has to return xs:boolean+
-   */
   FLWORIterator(
         const QueryLoc&             loc,
         std::vector<ForLetClause>&  forLetClauses,
@@ -235,7 +252,8 @@ public:
   ~FLWORIterator();
 
   virtual bool isUpdating() const { return theIsUpdating; }
-  void openImpl ( PlanState& planState, uint32_t& offset );
+
+  void openImpl(PlanState& planState, uint32_t& offset);
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
   void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
@@ -246,104 +264,73 @@ public:
   void accept ( PlanIterVisitor& ) const;
 
 private:
-  /**
-   * Resets a input of a FOR or LET
-   */
-  void resetInput(const int& varNb, FlworState* flworState, PlanState& planState) const;
-      
-  /**
-   * Binds the variable to all its places
-   */
-  bool bindVariable ( int varNb, FlworState* flworState, PlanState& planState ) const;
+  bool bindVariable(int varNb, FlworState* flworState, PlanState& planState) const;
+
+  void resetVariable(int varNb, FlworState* flworState, PlanState& planState) const;
     
-  /**
-   * Evaluates the checkItere to the EBV. If the checkIter = NULL true is returned
-   */
-  bool evalToBool(const PlanIter_t& checkIter, PlanState& planState ) const;
+  bool evalToBool(const PlanIter_t& checkIter, PlanState& planState) const;
     
-  /**
-   * Materialized the result after binding the variables (needed for OrderBy)
-   */
-  void matResultAndOrder (FlworState* flworState, PlanState& planState) const;
+  void matResultAndOrder(FlworState* flworState, PlanState& planState) const;
   
-  /**
-   * Materialized the result after binding the variables and do the grouping
-   */
   void matVarsAndGroupBy(FlworState* flworState, PlanState& planState) const;
       
   void groupAndOrder(FlworState* flworState, PlanState& planStat) const;
       
-  void bindGroupBy(FLWORIterator::group_map_t::iterator lGroupMapIter,
-                       FlworState* flworState,
-                       PlanState& planState) const;
-      
-private:
-  std::vector<ForLetClause> forLetClauses;
-  PlanIter_t                whereClause; //can be null
-  GroupByClause           * theGroupByClause;
-  OrderByClause           * orderByClause;  //can be null
-  bool                      doOrderBy; //just indicates if the FLWOR has an orderby
-  bool                      doGroupBy;
-  PlanIter_t                returnClause; 
-  bool                      theIsUpdating;
-  const int                 theNumBindings; //Number of FORs and LETs (overall)  
+  void bindGroupBy(
+        GroupHashMap::iterator lGroupMapIter,
+        FlworState* flworState,
+        PlanState& planState) const; 
 };
 
 
 
 /*******************************************************************************
 
-  varBindingState : A vector that stores, for each LET, if the LET is already
-                    bound or not, and for for each FOR its positional integer
-                    value.
+  theVarBindingState : A vector that stores, for each LET var, if the var is
+                       already bound or not, and for for each FOR var its
+                       positional integer value.
 
-  orderMap        : An std::multimap used to implement the order-by clause.
-                    For each binding V of the for/let variables, the order-by
-                    tuple T is evaluated and stored in this multimap. The value
-                    associated with T is an iterator over a temp sequence that
-                    computes the return clause for the V binding.
+  theOderMap         : An std::multimap used to implement the order-by clause.
+                       For each full binding V of the for/let variables, the 
+                       order-by tuple T is evaluated and stored in this multimap.
+                       The value associated with T is an iterator I over a temp
+                       sequence that stores the return-clause sequence R for the
+                       V binding.
+  theOrderMapIter    : Iterator over theOrderMap. Used, together with theOrderResultIter,
+                       to return individual flwor results after the full result set
+                       has been materialized and ordered. 
+  theOrderResultIter : The iterator I associated with the tuple T that is pointed
+                       to by theOrderMapIter.
 
+  theGroupMap        :
+
+  theGroupMapIter    :
 ********************************************************************************/
 class FlworState : public PlanIteratorState
 {
 public:
-  checked_vector<uint32_t>                    varBindingState;
+  checked_vector<uint32_t>                    theVarBindingState;
           
-  //When returning the result, this indicates, which return sequence we are
-  // touching at the moment and the curOrderPos indicates 
-  FLWORIterator::order_map_t                * orderMap; 
-  FLWORIterator::group_map_t                * groupMap; 
-  GroupCompareParam                         * valueCompareParam;
-  store::Iterator_t                           curOrderResultSeq; 
-  FLWORIterator::order_map_t::const_iterator  curOrderPos; 
-  FLWORIterator::group_map_t::iterator        curGroupPos;
+  FLWORIterator::order_map_t                * theOrderMap; 
+  FLWORIterator::order_map_t::const_iterator  theOrderMapIter;
+  store::Iterator_t                           theOrderResultIter; 
+
+  GroupHashMap                              * theGroupMap; 
+  GroupHashMap::iterator                      theGroupMapIter;
 
 public:
   FlworState();
 
   ~FlworState();
 
-  /**
-   * Init the state for a certain nb of variables but not the ordering
-   * @nb_variables  Number of FOR and LET clauses
-   */
   void init(PlanState& state, size_t numVars);
           
-  /**
-   * Init the state for a certain nb of variables, ordering and goruping
-   * @nb_variables  Number of FOR and LET clauses
-   * @orderSpecs    The OrderSpec which defines how to compare during ordering
-   * @groupingCollation    The GoupingColaltion which defines how to compare during grouping
-   */
   void init(
         PlanState& state,
         size_t numVars,
         std::vector<OrderSpec>* orderSpecs,
-        std::vector<XQPCollator*>* groupingCollation );
+        std::vector<GroupingSpec>* groupingSpecs);
   
-  /**
-   * Resets the state
-   */
   void reset(PlanState&);
 };  
 

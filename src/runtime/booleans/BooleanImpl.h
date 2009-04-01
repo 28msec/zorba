@@ -132,8 +132,8 @@ public:
    * @param item1 
    * @param aCollation optional collation parameter (passed as pointer to make
    *        it possible to be set to 0)
-   * @return  0, if item0 == item1
-   *          1, if item0 != item1
+   * @return  1, if item0 == item1
+   *          0, if item0 != item1
    *         -2, if it is not possible to compare the values of the passed items
    */
   static long equal(
@@ -189,7 +189,7 @@ public:
    * @param aItem0 
    * @param aItem1 
    * @param aCollation optional collation parameter 
-   * @return 0 (equal), 1 (not equal), -2 (value equal not possible)
+   * @return 1 (equal), 0 (not equal), -2 (value equal not possible)
    */
   static long valueEqual(
         store::Item_t& aItem0,
@@ -240,7 +240,7 @@ public:
    * @param aItem0 
    * @param aItem1 
    * @param aCollation options collation parameter 
-   * @return 0 (equal), 1 (not equal), -2 (general equal not possible)
+   * @return 1 (equal), 0 (not equal), -2 (general equal not possible)
    */
   static long generalEqual(
         store::Item_t& aItem0,

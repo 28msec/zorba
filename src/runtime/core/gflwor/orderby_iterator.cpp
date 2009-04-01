@@ -62,9 +62,9 @@ void OrderByState::init ( PlanState& aState, std::vector<OrderSpec>* orderSpecs 
 {
   PlanIteratorState::init ( aState );
 
-  OrderKeyCmp keyCmp(aState.theRuntimeCB, orderSpecs);
+  OrderTupleCmp cmp(aState.theRuntimeCB, orderSpecs);
 
-  theOrderMap = order_map_t (keyCmp);
+  theOrderMap = order_map_t(cmp);
 }
 
 
@@ -119,10 +119,10 @@ void OrderByIterator::openImpl ( PlanState& aPlanState, uint32_t& aOffset )
         iter++ ) {
     iter->open ( aPlanState, aOffset );
 
-    if ( iter->theCollation.size() != 0 ) {
-      xqpString lTmp = iter->theCollation;
+    if (! iter->theCollation.empty())
+    {
       iter->theCollator = aPlanState.theRuntimeCB->theCollationCache->
-        getCollator ( lTmp.theStrStore );
+                          getCollator(iter->theCollation);
     }
   }
   
@@ -205,13 +205,13 @@ void OrderByIterator::matVarsAndOrderBy (
         ++lSpecIter ) {
     orderKey.push_back ( NULL );
     store::Item_t& lKeyLocation = orderKey.back();
-    if ( consumeNext ( lKeyLocation, lSpecIter->theOrderByIter.getp(), aPlanState ) ) {
+    if ( consumeNext ( lKeyLocation, lSpecIter->theInput.getp(), aPlanState ) ) {
       store::Item_t temp;
-      if ( consumeNext ( temp, lSpecIter->theOrderByIter.getp(), aPlanState ) ) {
+      if ( consumeNext ( temp, lSpecIter->theInput.getp(), aPlanState ) ) {
         ZORBA_ERROR_DESC ( XPTY0004, "Expected a singleton" );
       }
     }
-    lSpecIter->theOrderByIter->reset ( aPlanState );
+    lSpecIter->theInput->reset ( aPlanState );
   }
   
   //Materialize the tuple

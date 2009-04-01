@@ -18,10 +18,12 @@
 
 #include "zorba/api_shared_types.h"
 #include "zorbautils/checked_vector.h"
+#include "zorbautils/hashmap.h"
 #include "runtime/core/var_iterators.h"
 #include "system/globalenv.h"
-#include "store/api/store.h"
 #include "runtime/api/plan_iterator_wrapper.h"
+
+#include "store/api/store.h"
 #include "store/api/temp_seq.h"
 
 namespace zorba 
@@ -30,29 +32,142 @@ namespace zorba
 namespace flwor
 {
 
+
 /***************************************************************************//**
   Wrapper for a OrderSpec.
+  http://www.w3.org/TR/xquery-11/#id-order-by-clause
+
+  - Syntax:
+
+  OrderSpec ::= ExprSingle OrderModifier
+
+  OrderModifier ::= ("ascending" | "descending")?
+                    ("empty" ("greatest" | "least"))?
+                    ("collation" URILiteral)?
+
+  - Data Members:
+
+  theInput      : The iterator computing the value of this orderby column for
+                  each binding of the in-scope variables.
+  theEmptyLeast : Whether the empty seq should be considered the smallest or
+                  the largest value.
+  theDescending : Whether to order in descending order or not.
+  theCollation  : The collation to use when comparing values of this orderby
+                  column (if the values are of type xs:string or subtype).
+  theCollator   : Pointer to the collator obj corresponding to theCollation.
+                  The pointer is assigned by the OrderByClause::open() method.
+                  Note: no need to delete theCollator in ~OrderSpec() because
+                  the obj is managed by the collation cache.
+********************************************************************************/
+class OrderSpec
+{
+  friend class FLWORIterator;
+  friend class OrderByClause;
+  friend class OrderByIterator;
+  friend class OrderTupleCmp;
+
+protected:
+  PlanIter_t             theInput;
+  bool                   theEmptyLeast;
+  bool                   theDescending;
+  std::string            theCollation;
+  mutable XQPCollator  * theCollator;
+
+public:
+  OrderSpec(
+        PlanIter_t orderByIter,
+        bool empty_least,
+        bool descending);
+
+  OrderSpec(
+        PlanIter_t orderByIter,
+        bool empty_least,
+        bool descending,
+        const std::string& collation);
+
+  void accept(PlanIterVisitor&) const;
+
+  uint32_t getStateSizeOfSubtree() const;
+
+  void open(PlanState& aPlanState, uint32_t& offset) const;
+  void reset(PlanState& aPlanState) const;
+  void close(PlanState& aPlanState) const;
+};
+
+
+/***************************************************************************//**
+  Class acting as a comparison function between to orderby tuples. An instance
+  of this class is passed to the std::multimap that we use to do the sorting.
+  Luckily the MultiMap is stable already :-)
+********************************************************************************/
+class OrderTupleCmp
+{
+private:
+  std::vector<OrderSpec> * theOrderSpecs;
+  TypeManager            * theTypeManager;
+  long                     theTimezone;
+
+public:
+  OrderTupleCmp() : theOrderSpecs(0), theTypeManager(0), theTimezone(0) {}
+
+  OrderTupleCmp(RuntimeCB* rcb, std::vector<OrderSpec>* aOrderSpecs);
+
+  bool operator() (
+        const std::vector<store::Item_t>& s1,
+        const std::vector<store::Item_t>& s2 ) const;
+          
+  inline long compare(
+        const store::Item_t& s1,
+        const store::Item_t& s2,
+        bool asc,
+        bool emptyLeast,
+        XQPCollator* collator) const;
+    
+  inline long descAsc(long result, bool asc) const;
+};
+
+
+/***************************************************************************//**
+  Wrapper for a GroupingSpec.
   http://www.w3.org/TR/xquery-11/#id-group-by
 
+  - Syntax:
+
   GroupingSpec ::= "$" VarName ("collation" URILiteral)?
+
+  - Data Members:
+
+  theInput     : A ForVarIter or LetVarIter referencing the FOR/LET variable
+                 corresponding to this grouping variable in the input tuple 
+                 stream.
+  theInnerVars : All references of this grouping variable in the output tuple
+                 stream.
+  theCollation : The collation to use when comparing values of this grouping
+                 var (if the values are of type xs:string or subtype).
+  theCollator  : Pointer to the collator obj corresponding to theCollation.
+                 The pointer is assigned by the OrderByClause::open() method.
+                 Note: no need to delete theCollator in ~OrderSpec() because
+                 the obj is managed by the collation cache.
 ********************************************************************************/
 class GroupingSpec
 {
   friend class FLWORIterator;
   friend class PrinterVisitor;
+  friend class GroupTupleCmp;
   friend class GroupByIterator;
   friend class GroupByClause;//Just for older gcc's
   
 protected:
   PlanIter_t                theInput;
   std::vector<ForVarIter_t> theInnerVars;
-  xqpString                 theCollation;
-  
+  std::string               theCollation;
+  XQPCollator             * theCollator;
+
 public:
   GroupingSpec(
         PlanIter_t aInput,
         std::vector<ForVarIter_t> aInnerVars,
-        xqpString aCollation );
+        const std::string& aCollation);
 
   void accept ( PlanIterVisitor& ) const;
 
@@ -64,6 +179,18 @@ public:
 };
 
 
+/***************************************************************************//**
+  Wrapper for a GroupingOuterVar.
+  http://www.w3.org/TR/xquery-11/#id-group-by
+
+  - Data Members:
+
+  theInput     : A ForVarIter or LetVarIter referencing the FOR/LET variable
+                 corresponding to this non-grouping variable in the input tuple
+                 stream.
+  theOuterVars : All references to this non-grouping variable in the output
+                 tuple stream.
+********************************************************************************/
 class GroupingOuterVar
 {
   friend class FLWORIterator;
@@ -89,80 +216,59 @@ public:
 
 
 /***************************************************************************//**
-  Wrapper for a OrderSpec.
-  http://www.w3.org/TR/xquery-11/#id-order-by-clause
+  Each tuple it in the input tuple stream is assigned to a group based on the
+  typed values of the items to which the grouping variables are bound in it.
 
-  OrderSpec ::= ExprSingle OrderModifier
+  For each such group G, there is a GroupTuple T, which stores the typed values
+  that define the group. Let itg be the 1st tuple in the input tuple stream that
+  is assigned to G. Then T also stores the items to which the grouping variables
+  are bound in itg. These items are needed because if otg is the tuple 
+  corresponding to G in the output tuple stream, the grouping variables in otg
+  will be bound to these items.
 
-  OrderModifier ::= ("ascending" | "descending")?
-                    ("empty" ("greatest" | "least"))?
-                    ("collation" URILiteral)?
+  theItems       : The values of the grouping variables it itg and otg.
+  theTypedValues : The typed values of theItems.
 ********************************************************************************/
-class OrderSpec
+class GroupTuple
 {
-  friend class FLWORIterator;
-  friend class OrderByIterator;
-  friend class OrderKeyCmp;
-
-protected:
-  PlanIter_t             theOrderByIter;
-  bool                   theEmptyLeast;
-  bool                   theDescending;
-  xqpString              theCollation;
-  mutable XQPCollator  * theCollator; // TODO hack
-
-public:
-  OrderSpec(
-        PlanIter_t orderByIter,
-        bool empty_least,
-        bool descending);
-
-  OrderSpec(
-        PlanIter_t orderByIter,
-        bool empty_least,
-        bool descending,
-        const xqpString& collation);
-
-  void accept(PlanIterVisitor&) const;
-
-  uint32_t getStateSizeOfSubtree() const;
-
-  void open(PlanState& aPlanState, uint32_t& offset) const;
-  void reset(PlanState& aPlanState) const;
-  void close(PlanState& aPlanState) const;
+ public:
+  std::vector<store::Item_t> theItems;
+  std::vector<store::Item_t> theTypedValues;    
 };
 
 
 /***************************************************************************//**
-  Class to pass to the MultiMap to do the comparison according to the OrderByClause. 
-  Luckily the MultiMap is stable already :-)
+  Class acting as a comparison function between to groupby tuples. An instance
+  of this class is passed to the GroupHashMap that we use to do the grouping.
 ********************************************************************************/
-class OrderKeyCmp
+class GroupTupleCmp
 {
 private:
-  std::vector<OrderSpec> * theOrderSpecs;
-  TypeManager            * theTypeManager;
-  long                     theTimezone;
+  std::vector<GroupingSpec> * theGroupingSpecs;
+  TypeManager               * theTypeManager;
+  long                        theTimezone;
 
 public:
-  OrderKeyCmp() : theOrderSpecs(0), theTypeManager(0), theTimezone(0) {}
+  GroupTupleCmp() : theGroupingSpecs(0), theTypeManager(0), theTimezone(0) {}
 
-  OrderKeyCmp(RuntimeCB* rcb, std::vector<OrderSpec>* aOrderSpecs);
+  GroupTupleCmp(RuntimeCB* rcb, std::vector<GroupingSpec>* groupSpecs);
 
-  bool operator() (
-        const std::vector<store::Item_t>& s1,
-        const std::vector<store::Item_t>& s2 ) const;
-          
-  inline long compare(
-        const store::Item_t& s1,
-        const store::Item_t& s2,
-        bool asc,
-        bool emptyLeast,
-        XQPCollator* collator) const;
-    
-  inline long descAsc(long result, bool asc) const;
+  uint32_t hash(GroupTuple* t) const;
+
+  bool equal(const GroupTuple* t1, const GroupTuple* t2) const;
 };
 
+
+/***************************************************************************//**
+  The hash map used to do the grouping. For each GroupTuple T, it stores
+  the tuple itself and one temp sequence for each non-grouping variable. The
+  temp seq for a non-grouping var v stores the concatenation of all the values
+  that v was bound to in each input tuple it that matched with T. These sequences
+  are the values to which the non-grouping vars will be bound in tuple otg.
+********************************************************************************/
+typedef zorba::HashMap<GroupTuple*,
+                       std::vector<store::TempSeq_t>*,
+                       GroupTupleCmp> GroupHashMap;
 
 
 /***************************************************************************//**

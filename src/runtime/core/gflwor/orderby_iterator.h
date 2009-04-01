@@ -53,7 +53,9 @@ public:
 };
 
 
-typedef std::multimap<std::vector<store::Item_t >, OrderValue, OrderKeyCmp> order_map_t;
+typedef std::multimap<std::vector<store::Item_t >,
+                      OrderValue,
+                      OrderTupleCmp> order_map_t;
 
 
 class OrderByState : public PlanIteratorState 

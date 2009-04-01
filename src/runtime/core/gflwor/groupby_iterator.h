@@ -23,7 +23,6 @@
 #include "runtime/base/plan_iterator.h"
 #include "runtime/core/gflwor/common.h"
 
-#include "runtime/util/handle_hashmap_item_value.h"
 
 namespace zorba 
 {
@@ -32,23 +31,21 @@ namespace flwor
 
 class GroupByIterator;
   
-typedef ItemValuesCollHandleHashMap<std::vector<store::TempSeq_t>* > group_map_t;
-
 
 class GroupByState : public PlanIteratorState 
 {
   friend class GroupByIterator;
 protected:
-  group_map_t* theGroupMap; //Needs to be a pointer because of the Collators
-  GroupCompareParam* theValueCompareParam;
-  group_map_t::iterator theCurGroupPos;
+  GroupHashMap           * theGroupMap;
+  GroupHashMap::iterator   theGroupMapIter;
        
-
 public:
-  ~GroupByState();
   GroupByState();
-  void init ( PlanState& aState, std::vector<XQPCollator*> * aGroupingCollators );
-  void reset ( PlanState& );
+
+  ~GroupByState();
+
+  void init(PlanState& aState, std::vector<GroupingSpec>* groupingSpecs);
+  void reset(PlanState& state );
 };
 
 
@@ -84,7 +81,7 @@ private:
         PlanState& aPlanState ) const;
 
   void bindGroupBy (
-        group_map_t::iterator aGroupMapIter,
+        GroupHashMap::iterator aGroupMapIter,
         GroupByState* aGroupByState,
         PlanState& aPlanState ) const;
 };
