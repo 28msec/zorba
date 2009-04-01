@@ -376,3 +376,10 @@ public:
 }
 
 #endif
+
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
