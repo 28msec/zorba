@@ -96,3 +96,10 @@ class CollationFactory
 } /* namespace xqp */
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
+

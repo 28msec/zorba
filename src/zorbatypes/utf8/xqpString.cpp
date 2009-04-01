@@ -245,21 +245,24 @@ uint32_t xqpStringStore::hash(const char* str)
 ********************************************************************************/
 uint32_t xqpStringStore::hash(const XQPCollator* coll) const
 {
-    if(!coll) {
-      return hash(c_str());
-    }
+  if(!coll) 
+  {
+    return hash(c_str());
+  }
 
-    CollationKey collKey;
-    UErrorCode status = U_ZERO_ERROR;
+  CollationKey collKey;
+  UErrorCode status = U_ZERO_ERROR;
     
-    ((Collator*)coll->theCollator)->getCollationKey(getUnicodeString(this), collKey, status);
+  ((Collator*)coll->theCollator)->getCollationKey(getUnicodeString(this),
+                                                  collKey,
+                                                  status);
 
-    if(U_FAILURE(status))
-    {
-      assert(false);
-    }
+  if(U_FAILURE(status))
+  {
+    assert(false);
+  }
     
-    return collKey.hashCode();
+  return collKey.hashCode();
 }
 
 
