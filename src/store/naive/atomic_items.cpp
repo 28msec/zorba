@@ -235,6 +235,9 @@ store::Item* StringItemNaive::getType() const
 
 uint32_t StringItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
+  if (aCollation == NULL || aCollation->doMemCmp())
+    return xqpStringStore::hash(theValue->c_str());
+
   return theValue->hash(aCollation);
 }
 
