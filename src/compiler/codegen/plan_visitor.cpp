@@ -433,14 +433,18 @@ void end_visit (flwor_expr& v)
        i != v.orderspec_rend ();
        i++)
   {
-    flwor_expr::orderspec_t spec = *i;
+    rchandle<order_modifier> spec = i->second;
     orderSpecs.push_back(flwor::OrderSpec(pop_itstack(),
-                                          spec.second->empty_mode == StaticContextConsts::empty_least,
-                                          spec.second->dir == ParseConstants::dir_descending, spec.second->collation));
+                                          spec->empty_mode == StaticContextConsts::empty_least,
+                                          spec->dir == ParseConstants::dir_descending,
+                                          spec->collation));
   }
   reverse (orderSpecs.begin (), orderSpecs.end ());
   
-  auto_ptr<flwor::OrderByClause> orderby(orderSpecs.empty() ? NULL : new flwor::OrderByClause(orderSpecs, v.get_order_stable ()));
+  auto_ptr<flwor::OrderByClause> orderby(orderSpecs.empty() ?
+                                         NULL :
+                                         new flwor::OrderByClause(orderSpecs,
+                                                                  v.get_order_stable()));
   
   PlanIter_t group_where = 0;
   if (v.get_group_where() != 0)
