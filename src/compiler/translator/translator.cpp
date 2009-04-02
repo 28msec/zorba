@@ -2352,6 +2352,12 @@ void end_visit (const CtxItemDecl& v, void* /*visit_state*/) {
   }
 }
 
+
+/***************************************************************************//**
+  IndexDecl ::= "DECLARE" ["UNIQUE"] "INDEX" UriLiteral
+                "ON" ExprSingle ["HASH" | "BTREE"]
+                "BY" "(" IndexFieldList ")"
+********************************************************************************/
 void *begin_visit (const IndexDecl& v) {
   TRACE_VISIT ();
   xqpStringStore_t uri(new xqpStringStore(v.get_uri()));
@@ -2368,6 +2374,52 @@ void end_visit (const IndexDecl& v, void* /*visit_state*/) {
   sctx_p->bind_index(uri, vi.getp());
 }
 
+
+/***************************************************************************//**
+  IndexFieldList ::= IndexField (COMMA IndexField)*
+********************************************************************************/
+void *begin_visit (const IndexFieldList& v) {
+  TRACE_VISIT ();
+
+  indexstack.top()->setDomainExpression(pop_nodestack());
+
+  push_scope();
+
+  indexstack.top()->setDomainVariable(bind_var(v.get_location(),
+                                               DOT_VARNAME,
+                                               var_expr::for_var));
+
+  indexstack.top()->setDomainPositionVariable(bind_var(v.get_location(),
+                                                       DOT_POS_VARNAME,
+                                                       var_expr::pos_var));
+  return no_state;
+}
+
+void end_visit (const IndexFieldList& v, void* /*visit_state*/) {
+  std::vector<expr_t> iCols;
+  std::vector<xqtref_t> iColTypes;
+  for(int i = v.fields.size() - 1; i >= 0; --i) {
+    iCols.push_back(pop_nodestack());
+    xqtref_t type = (v.fields[i]->get_type() != NULL ?
+                     pop_tstack() :
+                     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION);
+    iColTypes.push_back(type);
+  }
+  std::reverse(iCols.begin(), iCols.end());
+  std::reverse(iColTypes.begin(), iColTypes.end());
+
+  indexstack.top()->setIndexFieldExpressions(iCols);
+  indexstack.top()->setIndexFieldTypes(iColTypes);
+
+  pop_scope();
+
+  TRACE_VISIT_OUT ();
+}
+
+
+/***************************************************************************//**
+  IndexField ::= ExprSingle [TypeDeclaration] ["COLLATION" UriLiteral]
+********************************************************************************/
 void *begin_visit (const IndexField& v) {
   TRACE_VISIT ();
   return no_state;
@@ -2377,31 +2429,10 @@ void end_visit (const IndexField& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit (const IndexFieldList& v) {
-  TRACE_VISIT ();
-  indexstack.top()->setDomainExpression(pop_nodestack());
-  push_scope();
-  indexstack.top()->setDomainVariable(bind_var(v.get_location(), DOT_VARNAME, var_expr::for_var));
-  indexstack.top()->setDomainPositionVariable(bind_var(v.get_location(), DOT_POS_VARNAME, var_expr::pos_var));
-  return no_state;
-}
 
-void end_visit (const IndexFieldList& v, void* /*visit_state*/) {
-  std::vector<expr_t> iCols;
-  std::vector<xqtref_t> iColTypes;
-  for(int i = v.fields.size() - 1; i >= 0; --i) {
-    iCols.push_back(pop_nodestack());
-    xqtref_t type = v.fields[i]->get_type() != NULL ? pop_tstack() : GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION;
-    iColTypes.push_back(type);
-  }
-  std::reverse(iCols.begin(), iCols.end());
-  std::reverse(iColTypes.begin(), iColTypes.end());
-  indexstack.top()->setIndexFieldExpressions(iCols);
-  indexstack.top()->setIndexFieldTypes(iColTypes);
-  pop_scope();
-  TRACE_VISIT_OUT ();
-}
-
+/***************************************************************************//**
+  IndexStatement ::= ["CREATE" | "BUILD" | "DROP"] "INDEX" UriLiteral
+********************************************************************************/
 void *begin_visit (const IndexStatement& v) {
   TRACE_VISIT ();
   return no_state;
@@ -2427,6 +2458,7 @@ void end_visit (const IndexStatement& v, void* /*visit_state*/) {
   expr_t uri(new const_expr(v.get_location(), uri_item));
   fo->add(uri);
   nodestack.push((const rchandle<fo_expr>&)fo);
+
   TRACE_VISIT_OUT ();
 }
 
