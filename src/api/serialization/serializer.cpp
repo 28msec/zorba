@@ -569,7 +569,7 @@ void serializer::emitter::emit_node(
     }
     else
     {
-      tr << " />";
+      tr << "/>";
     }
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;

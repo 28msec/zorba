@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zorba-rest:payload xmlns:zorba-rest="http://www.zorba-xquery.com/zorba/rest-functions"><html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <title>HTML Tidy Configuration Options Quick Reference</title>
-<link type="text/css" rel="stylesheet" href="tidy.css" />
+<link type="text/css" rel="stylesheet" href="tidy.css"/>
 </head>
 <body>
 <h1 id="top">Quick Reference</h1>
 <h2>HTML Tidy Configuration Options</h2>
 <p><em>Generated automatically with HTML Tidy released on 18 June
 2008.</em></p>
-<p><a class="h3" href="#MarkupHeader">HTML, XHTML, XML</a><br />
-<a class="h3" href="#DiagnosticsHeader">Diagnostics</a><br />
-<a class="h3" href="#PrettyPrintHeader">Pretty Print</a><br />
-<a class="h3" href="#EncodingHeader">Character Encoding</a><br />
+<p><a class="h3" href="#MarkupHeader">HTML, XHTML, XML</a><br/>
+<a class="h3" href="#DiagnosticsHeader">Diagnostics</a><br/>
+<a class="h3" href="#PrettyPrintHeader">Pretty Print</a><br/>
+<a class="h3" href="#EncodingHeader">Character Encoding</a><br/>
 <a class="h3" href="#MiscellaneousHeader">Miscellaneous</a></p>
 <table summary="Tidy Options Quick Reference Header Section" border="0" cellpadding="3" cellspacing="0">
 <colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" /></colgroup>
+<col width="33%"/>
+<col width="33%"/>
+<col width="33%"/></colgroup>
 <tr valign="bottom">
 <td class="h3" colspan="2" id="MarkupHeader">HTML, XHTML, XML
 Options</td>
@@ -533,10 +533,10 @@ add-xml-decl</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top"><a href="#char-encoding">char-encoding</a><br />
+<td align="right" valign="top"><a href="#char-encoding">char-encoding</a><br/>
 <a href="#output-encoding">output-encoding</a></td>
 </tr>
 <tr>
@@ -556,10 +556,10 @@ add-xml-space</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should add
@@ -576,10 +576,10 @@ having access to the DTD.</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>String</strong><br />
-Default: <strong>-</strong><br />
+<td valign="top">Type: <strong>String</strong><br/>
+Default: <strong>-</strong><br/>
 Example: <strong>-</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies the default "alt=" text Tidy
@@ -597,10 +597,10 @@ anchor-as-name</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>yes</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>yes</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option controls the deletion or addition of
@@ -619,10 +619,10 @@ assume-xml-procins</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should change the
@@ -638,10 +638,10 @@ the input is in XML.</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should strip
@@ -656,8 +656,8 @@ rather than non-breaking spaces where they exist in the input.</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
 <td align="right" valign="top"><a href="#drop-font-tags">drop-font-tags</a></td>
 </tr>
@@ -675,10 +675,10 @@ HTML saved by Microsoft Office products.</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>String</strong><br />
-Default: <strong>-</strong><br />
+<td valign="top">Type: <strong>String</strong><br/>
+Default: <strong>-</strong><br/>
 Example: <strong>-</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies the prefix that Tidy uses for
@@ -693,10 +693,10 @@ decorate-inferred-ul</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should decorate
@@ -711,11 +711,11 @@ the right.</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>DocType</strong><br />
-Default: <strong>auto</strong><br />
+<td valign="top">Type: <strong>DocType</strong><br/>
+Default: <strong>auto</strong><br/>
 Example: <strong>omit, auto, strict, transitional,
 user</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies the DOCTYPE declaration
@@ -725,11 +725,11 @@ an educated guess based upon the contents of the document. If set
 to "strict", Tidy will set the DOCTYPE to the strict DTD. If set to
 "loose", the DOCTYPE is set to the loose (transitional) DTD.
 Alternatively, you can supply a string for the formal public
-identifier (FPI).<br />
-<br />
-For example:<br />
-doctype: "-//ACME//DTD HTML 3.14159//EN"<br />
-<br />
+identifier (FPI).<br/>
+<br/>
+For example:<br/>
+doctype: "-//ACME//DTD HTML 3.14159//EN"<br/>
+<br/>
 If you specify the FPI for an XHTML document, Tidy will set the
 system identifier to an empty string. For an HTML document, Tidy
 adds a system identifier only if one was already present in order
@@ -748,10 +748,10 @@ drop-empty-paras</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>yes</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>yes</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should discard empty
@@ -766,8 +766,8 @@ drop-font-tags</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
 <td align="right" valign="top"><a href="#clean">clean</a></td>
 </tr>
@@ -785,10 +785,10 @@ the clean option.</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should strip out
@@ -803,10 +803,10 @@ enclose-block-text</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should insert a
@@ -823,10 +823,10 @@ enclose-text</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should enclose any
@@ -843,10 +843,10 @@ escape-cdata</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should convert
@@ -861,10 +861,10 @@ fix-backslash</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>yes</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>yes</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should replace
@@ -880,10 +880,10 @@ fix-bad-comments</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>yes</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>yes</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should replace
@@ -900,10 +900,10 @@ users of Cold Fusion which uses the comment syntax: &lt;!---
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>yes</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>yes</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should check
@@ -919,10 +919,10 @@ hide-comments</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should print out
@@ -937,10 +937,10 @@ hide-endtags</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should omit optional
@@ -956,10 +956,10 @@ indent-cdata</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should indent
@@ -973,10 +973,10 @@ Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should use the XML
@@ -991,10 +991,10 @@ join-classes</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top"><a href="#join-styles">join-styles</a><br />
+<td align="right" valign="top"><a href="#join-styles">join-styles</a><br/>
 <a href="#repeated-attributes">repeated-attributes</a></td>
 </tr>
 <tr>
@@ -1011,10 +1011,10 @@ join-styles</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>yes</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>yes</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top"><a href="#join-classes">join-classes</a><br />
+<td align="right" valign="top"><a href="#join-classes">join-classes</a><br/>
 <a href="#repeated-attributes">repeated-attributes</a></td>
 </tr>
 <tr>
@@ -1031,10 +1031,10 @@ literal-attributes</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should ensure that
@@ -1050,10 +1050,10 @@ logical-emphasis</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should replace any
@@ -1071,10 +1071,10 @@ lower-literals</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>yes</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>yes</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should convert the
@@ -1089,11 +1089,11 @@ lower case. This is required for XHTML documents.</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>AutoBool</strong><br />
-Default: <strong>auto</strong><br />
+<td valign="top">Type: <strong>AutoBool</strong><br/>
+Default: <strong>auto</strong><br/>
 Example: <strong>auto, y/n, yes/no, t/f, true/false,
 1/0</strong></td>
-<td align="right" valign="top"><a href="#clean">clean</a><br />
+<td align="right" valign="top"><a href="#clean">clean</a><br/>
 <a href="#merge-spans">merge-spans</a></td>
 </tr>
 <tr>
@@ -1115,11 +1115,11 @@ merge-spans</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>AutoBool</strong><br />
-Default: <strong>auto</strong><br />
+<td valign="top">Type: <strong>AutoBool</strong><br/>
+Default: <strong>auto</strong><br/>
 Example: <strong>auto, y/n, yes/no, t/f, true/false,
 1/0</strong></td>
-<td align="right" valign="top"><a href="#clean">clean</a><br />
+<td align="right" valign="top"><a href="#clean">clean</a><br/>
 <a href="#merge-divs">merge-divs</a></td>
 </tr>
 <tr>
@@ -1137,10 +1137,10 @@ algorithm is identical to the one used by --merge-divs.</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>yes</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>yes</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should allow numeric
@@ -1155,11 +1155,11 @@ new-blocklevel-tags</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Tag names</strong><br />
-Default: <strong>-</strong><br />
+<td valign="top">Type: <strong>Tag names</strong><br/>
+Default: <strong>-</strong><br/>
 Example: <strong>tagX, tagY, ...</strong></td>
-<td align="right" valign="top"><a href="#new-empty-tags">new-empty-tags</a><br />
-<a href="#new-inline-tags">new-inline-tags</a><br />
+<td align="right" valign="top"><a href="#new-empty-tags">new-empty-tags</a><br/>
+<a href="#new-inline-tags">new-inline-tags</a><br/>
 <a href="#new-pre-tags">new-pre-tags</a></td>
 </tr>
 <tr>
@@ -1179,11 +1179,11 @@ new-empty-tags</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Tag names</strong><br />
-Default: <strong>-</strong><br />
+<td valign="top">Type: <strong>Tag names</strong><br/>
+Default: <strong>-</strong><br/>
 Example: <strong>tagX, tagY, ...</strong></td>
-<td align="right" valign="top"><a href="#new-blocklevel-tags">new-blocklevel-tags</a><br />
-<a href="#new-inline-tags">new-inline-tags</a><br />
+<td align="right" valign="top"><a href="#new-blocklevel-tags">new-blocklevel-tags</a><br/>
+<a href="#new-inline-tags">new-inline-tags</a><br/>
 <a href="#new-pre-tags">new-pre-tags</a></td>
 </tr>
 <tr>
@@ -1203,11 +1203,11 @@ new-inline-tags</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Tag names</strong><br />
-Default: <strong>-</strong><br />
+<td valign="top">Type: <strong>Tag names</strong><br/>
+Default: <strong>-</strong><br/>
 Example: <strong>tagX, tagY, ...</strong></td>
-<td align="right" valign="top"><a href="#new-blocklevel-tags">new-blocklevel-tags</a><br />
-<a href="#new-empty-tags">new-empty-tags</a><br />
+<td align="right" valign="top"><a href="#new-blocklevel-tags">new-blocklevel-tags</a><br/>
+<a href="#new-empty-tags">new-empty-tags</a><br/>
 <a href="#new-pre-tags">new-pre-tags</a></td>
 </tr>
 <tr>
@@ -1226,11 +1226,11 @@ new-pre-tags</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Tag names</strong><br />
-Default: <strong>-</strong><br />
+<td valign="top">Type: <strong>Tag names</strong><br/>
+Default: <strong>-</strong><br/>
 Example: <strong>tagX, tagY, ...</strong></td>
-<td align="right" valign="top"><a href="#new-blocklevel-tags">new-blocklevel-tags</a><br />
-<a href="#new-empty-tags">new-empty-tags</a><br />
+<td align="right" valign="top"><a href="#new-blocklevel-tags">new-blocklevel-tags</a><br/>
+<a href="#new-empty-tags">new-empty-tags</a><br/>
 <a href="#new-inline-tags">new-inline-tags</a></td>
 </tr>
 <tr>
@@ -1251,10 +1251,10 @@ numeric-entities</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top"><a href="#doctype">doctype</a><br />
+<td align="right" valign="top"><a href="#doctype">doctype</a><br/>
 <a href="#preserve-entities">preserve-entities</a></td>
 </tr>
 <tr>
@@ -1274,10 +1274,10 @@ output-html</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should generate
@@ -1292,10 +1292,10 @@ output-xhtml</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should generate
@@ -1317,10 +1317,10 @@ of other options.</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should pretty print
@@ -1338,10 +1338,10 @@ preserve-entities</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should preserve the
@@ -1356,10 +1356,10 @@ quote-ampersand</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>yes</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>yes</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should output
@@ -1374,10 +1374,10 @@ quote-marks</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should output "
@@ -1394,10 +1394,10 @@ environments. The apostrophe character ' is written out as
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>yes</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>yes</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should output
@@ -1413,10 +1413,10 @@ repeated-attributes</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>enum</strong><br />
-Default: <strong>keep-last</strong><br />
+<td valign="top">Type: <strong>enum</strong><br/>
+Default: <strong>keep-last</strong><br/>
 Example: <strong>keep-first, keep-last</strong></td>
-<td align="right" valign="top"><a href="#join-classes">join-classes</a><br />
+<td align="right" valign="top"><a href="#join-classes">join-classes</a><br/>
 <a href="#join-styles">join-styles</a></td>
 </tr>
 <tr>
@@ -1433,10 +1433,10 @@ replace-color</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should replace
@@ -1452,11 +1452,11 @@ show-body-only</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>AutoBool</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>AutoBool</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>auto, y/n, yes/no, t/f, true/false,
 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should print only the
@@ -1474,10 +1474,10 @@ uppercase-attributes</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should output
@@ -1494,10 +1494,10 @@ uppercase-tags</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should output tag
@@ -1513,10 +1513,10 @@ preserved.</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should go to great
@@ -1544,11 +1544,11 @@ accessibility-check</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>enum</strong><br />
-Default: <strong>0 (Tidy Classic)</strong><br />
+<td valign="top">Type: <strong>enum</strong><br/>
+Default: <strong>0 (Tidy Classic)</strong><br/>
 Example: <strong>0 (Tidy Classic), 1 (Priority 1 Checks), 2
 (Priority 2 Checks), 3 (Priority 3 Checks)</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies what level of accessibility
@@ -1566,10 +1566,10 @@ show-errors</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Integer</strong><br />
-Default: <strong>6</strong><br />
+<td valign="top">Type: <strong>Integer</strong><br/>
+Default: <strong>6</strong><br/>
 Example: <strong>0, 1, 2, ...</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies the number Tidy uses to
@@ -1585,10 +1585,10 @@ show-warnings</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>yes</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>yes</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should suppress
@@ -1614,10 +1614,10 @@ break-before-br</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should output a line
@@ -1631,8 +1631,8 @@ break before each &lt;BR&gt; element.</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>AutoBool</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>AutoBool</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>auto, y/n, yes/no, t/f, true/false,
 1/0</strong></td>
 <td align="right" valign="top"><a href="#indent-spaces">indent-spaces</a></td>
@@ -1654,10 +1654,10 @@ indent-attributes</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should begin each
@@ -1672,8 +1672,8 @@ indent-spaces</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Integer</strong><br />
-Default: <strong>2</strong><br />
+<td valign="top">Type: <strong>Integer</strong><br/>
+Default: <strong>2</strong><br/>
 Example: <strong>0, 1, 2, ...</strong></td>
 <td align="right" valign="top"><a href="#indent">indent</a></td>
 </tr>
@@ -1689,10 +1689,10 @@ uses to indent content, when indentation is enabled.</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>yes</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>yes</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should generate a
@@ -1709,10 +1709,10 @@ punctuation-wrap</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should line wrap
@@ -1727,10 +1727,10 @@ sort-attributes</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>enum</strong><br />
-Default: <strong>none</strong><br />
+<td valign="top">Type: <strong>enum</strong><br/>
+Default: <strong>none</strong><br/>
 Example: <strong>none, alpha</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies that tidy should sort
@@ -1745,10 +1745,10 @@ set to "alpha", the algorithm is an ascending alphabetic sort.</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">Currently not used. Tidy Classic only.</td>
@@ -1761,10 +1761,10 @@ Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Integer</strong><br />
-Default: <strong>8</strong><br />
+<td valign="top">Type: <strong>Integer</strong><br/>
+Default: <strong>8</strong><br/>
 Example: <strong>0, 1, 2, ...</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies the number of columns that
@@ -1780,10 +1780,10 @@ vertical-space</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should add some empty
@@ -1797,10 +1797,10 @@ lines for readability.</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Integer</strong><br />
-Default: <strong>68</strong><br />
+<td valign="top">Type: <strong>Integer</strong><br/>
+Default: <strong>68</strong><br/>
 Example: <strong>0 (no wrapping), 1, 2, ...</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies the right margin Tidy uses
@@ -1816,10 +1816,10 @@ wrapping.</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>yes</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>yes</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should line wrap text
@@ -1835,8 +1835,8 @@ wrap-attributes</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
 <td align="right" valign="top"><a href="#wrap-script-literals">wrap-script-literals</a></td>
 </tr>
@@ -1853,10 +1853,10 @@ independently of wrap-script-literals.</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>yes</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>yes</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should line wrap text
@@ -1871,10 +1871,10 @@ contained within JSTE pseudo elements, which look like: &lt;# ...
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>yes</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>yes</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should line wrap text
@@ -1890,8 +1890,8 @@ wrap-script-literals</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
 <td align="right" valign="top"><a href="#wrap-attributes">wrap-attributes</a></td>
 </tr>
@@ -1910,10 +1910,10 @@ wrap-sections</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>yes</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>yes</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should line wrap text
@@ -1938,8 +1938,8 @@ ascii-chars</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
 <td align="right" valign="top"><a href="#clean">clean</a></td>
 </tr>
@@ -1958,12 +1958,12 @@ char-encoding</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Encoding</strong><br />
-Default: <strong>ascii</strong><br />
+<td valign="top">Type: <strong>Encoding</strong><br/>
+Default: <strong>ascii</strong><br/>
 Example: <strong>raw, ascii, latin0, latin1, utf8, iso2022, mac,
 win1252, ibm858, utf16le, utf16be, utf16, big5,
 shiftjis</strong></td>
-<td align="right" valign="top"><a href="#input-encoding">input-encoding</a><br />
+<td align="right" valign="top"><a href="#input-encoding">input-encoding</a><br/>
 <a href="#output-encoding">output-encoding</a></td>
 </tr>
 <tr>
@@ -1989,8 +1989,8 @@ input-encoding</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Encoding</strong><br />
-Default: <strong>latin1</strong><br />
+<td valign="top">Type: <strong>Encoding</strong><br/>
+Default: <strong>latin1</strong><br/>
 Example: <strong>raw, ascii, latin0, latin1, utf8, iso2022, mac,
 win1252, ibm858, utf16le, utf16be, utf16, big5,
 shiftjis</strong></td>
@@ -2008,10 +2008,10 @@ uses for the input. See char-encoding for more info.</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>String</strong><br />
-Default: <strong>-</strong><br />
+<td valign="top">Type: <strong>String</strong><br/>
+Default: <strong>-</strong><br/>
 Example: <strong>-</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">Currently not used, but this option specifies the
@@ -2025,10 +2025,10 @@ language Tidy uses (for instance "en").</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>enum</strong><br />
-Default: <strong><em>Platform dependent</em></strong><br />
+<td valign="top">Type: <strong>enum</strong><br/>
+Default: <strong><em>Platform dependent</em></strong><br/>
 Example: <strong>LF, CRLF, CR</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">The default is appropriate to the current platform:
@@ -2043,11 +2043,11 @@ everywhere else (Unix and Linux).</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>AutoBool</strong><br />
-Default: <strong>auto</strong><br />
+<td valign="top">Type: <strong>AutoBool</strong><br/>
+Default: <strong>auto</strong><br/>
 Example: <strong>auto, y/n, yes/no, t/f, true/false,
 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should write a
@@ -2067,8 +2067,8 @@ output-encoding</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Encoding</strong><br />
-Default: <strong>ascii</strong><br />
+<td valign="top">Type: <strong>Encoding</strong><br/>
+Default: <strong>ascii</strong><br/>
 Example: <strong>raw, ascii, latin0, latin1, utf8, iso2022, mac,
 win1252, ibm858, utf16le, utf16be, utf16, big5,
 shiftjis</strong></td>
@@ -2097,8 +2097,8 @@ latin1, mac, win1252, ibm858).</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>String</strong><br />
-Default: <strong>-</strong><br />
+<td valign="top">Type: <strong>String</strong><br/>
+Default: <strong>-</strong><br/>
 Example: <strong>-</strong></td>
 <td align="right" valign="top"><a href="#output-file">output-file</a></td>
 </tr>
@@ -2116,10 +2116,10 @@ force-output</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should produce output
@@ -2136,10 +2136,10 @@ intention.</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should change the
@@ -2155,10 +2155,10 @@ gnu-emacs-file</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>String</strong><br />
-Default: <strong>-</strong><br />
+<td valign="top">Type: <strong>String</strong><br/>
+Default: <strong>-</strong><br/>
 Example: <strong>-</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">Used internally.</td>
@@ -2171,10 +2171,10 @@ Example: <strong>-</strong></td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should keep the
@@ -2193,8 +2193,8 @@ output-file</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>String</strong><br />
-Default: <strong>-</strong><br />
+<td valign="top">Type: <strong>String</strong><br/>
+Default: <strong>-</strong><br/>
 Example: <strong>-</strong></td>
 <td align="right" valign="top"><a href="#error-file">error-file</a></td>
 </tr>
@@ -2210,10 +2210,10 @@ markup. Normally markup is written to "stdout".</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should output the
@@ -2229,10 +2229,10 @@ slide-style</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>String</strong><br />
-Default: <strong>-</strong><br />
+<td valign="top">Type: <strong>String</strong><br/>
+Default: <strong>-</strong><br/>
 Example: <strong>-</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">Currently not used. Tidy Classic only.</td>
@@ -2245,10 +2245,10 @@ Example: <strong>-</strong></td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>yes</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>yes</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should add a meta
@@ -2264,10 +2264,10 @@ present.</td>
 <td class="tabletitlelink" valign="top" align="right"><a href="#top">Top</a></td>
 </tr>
 <tr>
-<td valign="top">Type: <strong>Boolean</strong><br />
-Default: <strong>no</strong><br />
+<td valign="top">Type: <strong>Boolean</strong><br/>
+Default: <strong>no</strong><br/>
 Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
-<td align="right" valign="top" />
+<td align="right" valign="top"/>
 </tr>
 <tr>
 <td colspan="2">This option specifies if Tidy should write back the

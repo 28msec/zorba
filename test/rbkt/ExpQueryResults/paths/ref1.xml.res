@@ -31,12 +31,12 @@
 <homepage>http://www.rwth-aachen.de/~Juric</homepage>
 <creditcard>7833 6950 5399 8913</creditcard>
 <watches>
-<watch open_auction="open_auction2" />
-<watch open_auction="open_auction4" />
-<watch open_auction="open_auction5" />
-<watch open_auction="open_auction6" />
-<watch open_auction="open_auction9" />
-<watch open_auction="open_auction0" />
+<watch open_auction="open_auction2"/>
+<watch open_auction="open_auction4"/>
+<watch open_auction="open_auction5"/>
+<watch open_auction="open_auction6"/>
+<watch open_auction="open_auction9"/>
+<watch open_auction="open_auction0"/>
 </watches>
 </person>
 <person id="person2">
@@ -44,29 +44,29 @@
 <emailaddress>mailto:Unni@llnl.gov</emailaddress>
 <phone>+0 (866) 58076283</phone>
 <watches>
-<watch open_auction="open_auction0" />
-<watch open_auction="open_auction7" />
-<watch open_auction="open_auction2" />
-<watch open_auction="open_auction4" />
+<watch open_auction="open_auction0"/>
+<watch open_auction="open_auction7"/>
+<watch open_auction="open_auction2"/>
+<watch open_auction="open_auction4"/>
 </watches>
 </person>
 <person id="person3">
 <name>Ewing Andrade</name>
 <emailaddress>mailto:Andrade@fsu.edu</emailaddress>
 <profile income="41889.41">
-<interest category="category0" />
-<interest category="category0" />
+<interest category="category0"/>
+<interest category="category0"/>
 <education>Graduate School</education>
 <gender>female</gender>
 <business>Yes</business>
 <age>18</age>
 </profile>
 <watches>
-<watch open_auction="open_auction6" />
-<watch open_auction="open_auction10" />
-<watch open_auction="open_auction2" />
-<watch open_auction="open_auction6" />
-<watch open_auction="open_auction5" />
+<watch open_auction="open_auction6"/>
+<watch open_auction="open_auction10"/>
+<watch open_auction="open_auction2"/>
+<watch open_auction="open_auction6"/>
+<watch open_auction="open_auction5"/>
 </watches>
 </person>
 <person id="person4">
@@ -75,12 +75,12 @@
 <phone>+0 (400) 25499686</phone>
 <homepage>http://www.edu.hk/~Kleiser</homepage>
 <profile income="9876.00">
-<interest category="category0" />
-<interest category="category0" />
-<interest category="category0" />
-<interest category="category0" />
-<interest category="category0" />
-<interest category="category0" />
+<interest category="category0"/>
+<interest category="category0"/>
+<interest category="category0"/>
+<interest category="category0"/>
+<interest category="category0"/>
+<interest category="category0"/>
 <education>High School</education>
 <business>No</business>
 <age>34</age>
@@ -112,11 +112,11 @@
 </address>
 <homepage>http://www.acm.org/~McCay</homepage>
 <watches>
-<watch open_auction="open_auction10" />
-<watch open_auction="open_auction6" />
-<watch open_auction="open_auction7" />
-<watch open_auction="open_auction6" />
-<watch open_auction="open_auction10" />
+<watch open_auction="open_auction10"/>
+<watch open_auction="open_auction6"/>
+<watch open_auction="open_auction7"/>
+<watch open_auction="open_auction6"/>
+<watch open_auction="open_auction10"/>
 </watches>
 </person>
 <person id="person8">
@@ -132,11 +132,11 @@
 </address>
 <creditcard>8940 7694 6616 2527</creditcard>
 <watches>
-<watch open_auction="open_auction2" />
-<watch open_auction="open_auction7" />
-<watch open_auction="open_auction8" />
-<watch open_auction="open_auction8" />
-<watch open_auction="open_auction2" />
+<watch open_auction="open_auction2"/>
+<watch open_auction="open_auction7"/>
+<watch open_auction="open_auction8"/>
+<watch open_auction="open_auction8"/>
+<watch open_auction="open_auction2"/>
 </watches>
 </person>
 <person id="person9">
@@ -146,18 +146,18 @@
 <homepage>http://www.concordia.ca/~Nozawa</homepage>
 <creditcard>2447 4672 2532 3021</creditcard>
 <profile income="57878.50">
-<interest category="category0" />
-<interest category="category0" />
-<interest category="category0" />
-<interest category="category0" />
-<interest category="category0" />
-<interest category="category0" />
-<interest category="category0" />
-<interest category="category0" />
-<interest category="category0" />
-<interest category="category0" />
-<interest category="category0" />
-<interest category="category0" />
+<interest category="category0"/>
+<interest category="category0"/>
+<interest category="category0"/>
+<interest category="category0"/>
+<interest category="category0"/>
+<interest category="category0"/>
+<interest category="category0"/>
+<interest category="category0"/>
+<interest category="category0"/>
+<interest category="category0"/>
+<interest category="category0"/>
+<interest category="category0"/>
 <business>No</business>
 <age>33</age>
 </profile>
@@ -174,16 +174,16 @@
 </address>
 <creditcard>8543 4364 4394 3142</creditcard>
 <profile income="44300.88">
-<interest category="category0" />
-<interest category="category0" />
+<interest category="category0"/>
+<interest category="category0"/>
 <education>Other</education>
 <gender>female</gender>
 <business>Yes</business>
 <age>48</age>
 </profile>
 <watches>
-<watch open_auction="open_auction0" />
-<watch open_auction="open_auction9" />
+<watch open_auction="open_auction0"/>
+<watch open_auction="open_auction9"/>
 </watches>
 </person>
 <person id="person11">
@@ -198,19 +198,19 @@
 <zipcode>28</zipcode>
 </address>
 <profile income="33731.14">
-<interest category="category0" />
+<interest category="category0"/>
 <education>College</education>
 <business>Yes</business>
 <age>23</age>
 </profile>
 <watches>
-<watch open_auction="open_auction3" />
-<watch open_auction="open_auction7" />
-<watch open_auction="open_auction0" />
-<watch open_auction="open_auction1" />
-<watch open_auction="open_auction8" />
-<watch open_auction="open_auction0" />
-<watch open_auction="open_auction9" />
+<watch open_auction="open_auction3"/>
+<watch open_auction="open_auction7"/>
+<watch open_auction="open_auction0"/>
+<watch open_auction="open_auction1"/>
+<watch open_auction="open_auction8"/>
+<watch open_auction="open_auction0"/>
+<watch open_auction="open_auction9"/>
 </watches>
 </person>
 <person id="person12">
@@ -227,7 +227,7 @@
 <homepage>http://www.llnl.gov/~Monkewich</homepage>
 <creditcard>7036 1307 7693 1072</creditcard>
 <profile income="43552.04">
-<interest category="category0" />
+<interest category="category0"/>
 <gender>female</gender>
 <business>Yes</business>
 </profile>
@@ -237,16 +237,16 @@
 <emailaddress>mailto:Halgason@bell-labs.com</emailaddress>
 <phone>+0 (778) 41220156</phone>
 <profile income="41407.27">
-<interest category="category0" />
-<interest category="category0" />
-<interest category="category0" />
-<interest category="category0" />
+<interest category="category0"/>
+<interest category="category0"/>
+<interest category="category0"/>
+<interest category="category0"/>
 <gender>female</gender>
 <business>Yes</business>
 <age>20</age>
 </profile>
 <watches>
-<watch open_auction="open_auction7" />
+<watch open_auction="open_auction7"/>
 </watches>
 </person>
 <person id="person14">
@@ -261,7 +261,7 @@
 </address>
 <creditcard>1021 8216 1485 5908</creditcard>
 <profile income="53231.89">
-<interest category="category0" />
+<interest category="category0"/>
 <gender>male</gender>
 <business>Yes</business>
 <age>28</age>
@@ -278,12 +278,12 @@
 </address>
 <creditcard>1796 7353 7134 5098</creditcard>
 <watches>
-<watch open_auction="open_auction9" />
-<watch open_auction="open_auction1" />
-<watch open_auction="open_auction2" />
-<watch open_auction="open_auction6" />
-<watch open_auction="open_auction8" />
-<watch open_auction="open_auction8" />
+<watch open_auction="open_auction9"/>
+<watch open_auction="open_auction1"/>
+<watch open_auction="open_auction2"/>
+<watch open_auction="open_auction6"/>
+<watch open_auction="open_auction8"/>
+<watch open_auction="open_auction8"/>
 </watches>
 </person>
 <person id="person16">
@@ -298,9 +298,9 @@
 <zipcode>14</zipcode>
 </address>
 <profile income="26302.86">
-<interest category="category0" />
-<interest category="category0" />
-<interest category="category0" />
+<interest category="category0"/>
+<interest category="category0"/>
+<interest category="category0"/>
 <gender>male</gender>
 <business>Yes</business>
 </profile>
@@ -316,7 +316,7 @@
 <phone>+0 (43) 57060411</phone>
 <homepage>http://www.clustra.com/~DuBourdieux</homepage>
 <profile income="32624.17">
-<interest category="category0" />
+<interest category="category0"/>
 <business>Yes</business>
 </profile>
 <watches>
@@ -334,7 +334,7 @@
 </address>
 <homepage>http://www.lri.fr/~Carrere</homepage>
 <watches>
-<watch open_auction="open_auction8" />
+<watch open_auction="open_auction8"/>
 </watches>
 </person>
 <person id="person20">
@@ -353,12 +353,12 @@
 <name>Yechezkel Calmet</name>
 <emailaddress>mailto:Calmet@yorku.ca</emailaddress>
 <watches>
-<watch open_auction="open_auction3" />
-<watch open_auction="open_auction9" />
-<watch open_auction="open_auction0" />
-<watch open_auction="open_auction6" />
-<watch open_auction="open_auction6" />
-<watch open_auction="open_auction2" />
+<watch open_auction="open_auction3"/>
+<watch open_auction="open_auction9"/>
+<watch open_auction="open_auction0"/>
+<watch open_auction="open_auction6"/>
+<watch open_auction="open_auction6"/>
+<watch open_auction="open_auction2"/>
 </watches>
 </person>
 <person id="person22">
@@ -374,8 +374,8 @@
 <homepage>http://www.sfu.ca/~Schiex</homepage>
 <creditcard>1536 3643 2092 5012</creditcard>
 <watches>
-<watch open_auction="open_auction6" />
-<watch open_auction="open_auction4" />
+<watch open_auction="open_auction6"/>
+<watch open_auction="open_auction4"/>
 </watches>
 </person>
 <person id="person24">

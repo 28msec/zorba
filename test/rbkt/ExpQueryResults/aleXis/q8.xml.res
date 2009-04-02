@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>Introduction To TidyLib</title>
-<meta http-equiv="Content-Type" content="text/xhtml; charset=utf-8" />
-<link rel="stylesheet" href="tidy.site.css" type="text/css" />
+<meta http-equiv="Content-Type" content="text/xhtml; charset=utf-8"/>
+<link rel="stylesheet" href="tidy.site.css" type="text/css"/>
 <style type="text/css">
   /**/
   table.info
@@ -281,15 +281,15 @@ others. For more info, see <a href="http://search.cpan.org/src/COOPERCL/XML-Enco
 and <a href="issues.list.html">Tidy Issues</a>.</p>
 </dd>
 <dt>Error Handling</dt>
-<dd><br />
+<dd><br/>
 <ul>
 <li>Categorize errors</li>
 <li>Improve message localization</li>
 <li>Improve separation of parsing and diagnostics</li>
 </ul>
-<br /></dd>
+<br/></dd>
 <dt>Content Model</dt>
-<dd><br />
+<dd><br/>
 <ul>
 <li>Per-element-and-version attribute support</li>
 <li>DTD Internal Subset support</li>

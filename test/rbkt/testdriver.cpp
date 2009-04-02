@@ -323,10 +323,10 @@ set_vars (Specification* aSpec, zorba::DynamicContext* dctx)
 void
 trim(std::string& str) {
 
-  std::string::size_type  notwhite = str.find_first_not_of(" \t\n");
+  std::string::size_type  notwhite = str.find_first_not_of(" \r\t\n");
   str.erase(0,notwhite);
 
-  notwhite = str.find_last_not_of(" \t\n"); 
+  notwhite = str.find_last_not_of(" \t\n\r"); 
   str.erase(notwhite+1); 
 }
 
@@ -342,7 +342,11 @@ fileEquals(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, in
   std::ifstream li(aRefFile.get_path().c_str());
   std::ifstream ri(aResFile.get_path().c_str()); 
   
+  std::string filepath = aResFile.get_path ();
+  std::string::size_type pos = filepath.find ( "w3c_testsuite" );
+  bool w3ctest = pos != std::string::npos;
   std::string lLine, rLine;
+  std::string xmldecl ( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
   aLine = 1; aCol = 0; aPos = -1;
   while (! li.eof() )
@@ -357,6 +361,11 @@ fileEquals(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, in
     }
     std::getline(li, lLine);
     std::getline(ri, rLine);
+    if ( w3ctest && (rLine.compare ( xmldecl ) == 0)  ) {
+      std::getline ( ri, rLine );
+    }
+    trim ( lLine );
+    trim ( rLine );
     if ( (aCol = lLine.compare(rLine)) != 0) {
       aRefLine = lLine;
       aResLine = rLine;
