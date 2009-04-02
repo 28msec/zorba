@@ -12,28 +12,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ADD_SUBDIRECTORY(zorba)
-
-# programming apis
-ADD_SUBDIRECTORY(cxx)
-ADD_SUBDIRECTORY(c)
-
-FIND_PACKAGE(SWIG)
-IF (SWIG_FOUND)
-  ADD_SUBDIRECTORY(java)
-  ADD_SUBDIRECTORY(python)
-  ADD_SUBDIRECTORY(ruby)
-  ADD_SUBDIRECTORY(php)
-ENDIF (SWIG_FOUND)
-
-# workaround: a dir is already needed for the install command. the html directory, however, is generated with the make doc call
 FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/zorba/html)
-FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cxx/html)
-FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/c/html)
 
-IF (SWIG_FOUND)
-  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/python/html)
-  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ruby/html)
-ENDIF (SWIG_FOUND)
+IF (BUILDING_SIMPLESTORE)
+  # programming apis
+  ADD_SUBDIRECTORY(cxx)
+  ADD_SUBDIRECTORY(c)
+  
+  FIND_PACKAGE(SWIG)
+  IF (SWIG_FOUND)
+    ADD_SUBDIRECTORY(java)
+    ADD_SUBDIRECTORY(python)
+    ADD_SUBDIRECTORY(ruby)
+    ADD_SUBDIRECTORY(php)
+  ENDIF (SWIG_FOUND)
+  
+  # workaround: a dir is already needed for the install command. the html directory, however, is generated with the make doc call
+  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/zorba/html)
+  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cxx/html)
+  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/c/html)
+  
+  IF (SWIG_FOUND)
+    FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/python/html)
+    FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ruby/html)
+  ENDIF (SWIG_FOUND)
+ENDIF (BUILDING_SIMPLESTORE)
 
 INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cxx/html 
         DESTINATION share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/cxx)
