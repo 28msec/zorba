@@ -98,6 +98,10 @@ public:
   virtual xqtref_t create_empty_type() const = 0;
 
   virtual xqtref_t create_none_type() const = 0;
+
+  virtual xqtref_t create_schema_element_type(store::Item *eName, TypeConstants::quantifier_t quant) const = 0;
+
+  virtual xqtref_t create_schema_attribute_type(store::Item *aName, TypeConstants::quantifier_t quant) const = 0;
 };
 
 }

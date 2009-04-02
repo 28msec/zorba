@@ -4348,14 +4348,20 @@ void *begin_visit (const SchemaAttributeTest& v) {
   match->setTestKind(match_xs_attr_test);
 
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
+  rchandle<QName> attr_h = v.get_attr();
   if (axisExpr != NULL) {
-    rchandle<QName> attr_h = v.get_attr();
     if (attr_h!=NULL) {
-      match->setQName(sctx_p->lookup_elem_qname (attr_h->get_qname(), loc));
+      match->setQName(sctx_p->lookup_qname ("", attr_h->get_qname(), loc));
     }
     axisExpr->setTest(match);
   } else {
-    // TODO
+    rchandle<NodeTest> nodeTest;
+    store::Item_t qnameItem = sctx_p->lookup_qname("", attr_h->get_qname(), loc);
+
+    xqtref_t seqmatch = CTXTS->
+      create_schema_attribute_type(qnameItem, TypeConstants::QUANT_ONE);
+
+    tstack.push(seqmatch);
   }
   return no_state;
 }
@@ -4369,18 +4375,24 @@ void end_visit (const SchemaAttributeTest& v, void* /*visit_state*/) {
 void *begin_visit (const SchemaElementTest& v) {
   TRACE_VISIT ();
 
+  rchandle<QName> elem_h = v.get_elem();
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
   if (axisExpr != NULL) {
     rchandle<match_expr> match = new match_expr(loc);
     match->setTestKind(match_xs_elem_test);
     
-    rchandle<QName> elem_h = v.get_elem();
     if (elem_h!=NULL) {
       match->setQName (sctx_p->lookup_qname ("", elem_h->get_qname(), loc));
     }
     axisExpr->setTest(match);
   } else {
-    // TODO
+    rchandle<NodeTest> nodeTest;
+    store::Item_t qnameItem = sctx_p->lookup_elem_qname(elem_h->get_qname(), loc);
+
+    xqtref_t seqmatch = CTXTS->
+      create_schema_element_type(qnameItem, TypeConstants::QUANT_ONE);
+
+    tstack.push(seqmatch);
   }
   return no_state;
 }

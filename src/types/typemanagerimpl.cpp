@@ -27,10 +27,13 @@
 #include "types/typemanagerimpl.h"
 #include "types/typeimpl.h"
 #include "types/root_typemanager.h"
+#include "types/delegating_typemanager.h"
+#include "types/schema/schema.h"
 #include "zorbaerrors/Assert.h"
 #include "zorbatypes/representations.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
+#include <zorbatypes/xerces_xmlcharray.h>
 
 #ifdef ZORBA_XBROWSER
 #include "DOMQName.h"
@@ -38,6 +41,7 @@
 
 
 using namespace zorba;
+XERCES_CPP_NAMESPACE_USE
 
 
 /***************************************************************************//**
@@ -382,6 +386,50 @@ xqtref_t TypeManagerImpl::create_empty_type() const
 xqtref_t TypeManagerImpl::create_none_type() const
 {
   return GENV_TYPESYSTEM.NONE_TYPE;
+}
+
+/***************************************************************************//**
+
+********************************************************************************/
+xqtref_t TypeManagerImpl::create_schema_element_type(store::Item *qname, TypeConstants::quantifier_t quant) const
+{
+  Schema *schema = static_cast<const DelegatingTypeManager *>(this)->getSchema();
+  XMLGrammarPool *pool = schema->getGrammarPool();
+  XSModel *model = pool->getXSModel();
+  XMLChArray local (qname->getLocalName()->c_str());
+  XMLChArray uri (qname->getNamespace()->c_str());
+  XSElementDeclaration *eDecl = model->getElementDeclaration(local, uri);
+  XSTypeDefinition *ct = eDecl->getTypeDefinition();
+  const XMLCh *typeName = ct->getName();
+  const XMLCh *typeUri = ct->getNamespace();
+  store::Item_t tName;
+  GENV_ITEMFACTORY->createQName(tName, StrX(typeUri).localForm(), "", StrX(typeName).localForm());
+  xqtref_t cType = schema->createIfExists(this, tName, TypeConstants::QUANT_ONE);
+  rchandle<NodeNameTest> nnTest = new NodeNameTest(qname);
+  rchandle<NodeTest> nTest = new NodeTest(store::StoreConsts::elementNode, nnTest);
+  return new NodeXQType(this, nTest, cType, quant, false);
+}
+
+/***************************************************************************//**
+
+********************************************************************************/
+xqtref_t TypeManagerImpl::create_schema_attribute_type(store::Item *qname, TypeConstants::quantifier_t quant) const
+{
+  Schema *schema = static_cast<const DelegatingTypeManager *>(this)->getSchema();
+  XMLGrammarPool *pool = schema->getGrammarPool();
+  XSModel *model = pool->getXSModel();
+  XMLChArray local (qname->getLocalName()->c_str());
+  XMLChArray uri (qname->getNamespace()->c_str());
+  XSElementDeclaration *eDecl = model->getElementDeclaration(local, uri);
+  XSTypeDefinition *ct = eDecl->getTypeDefinition();
+  const XMLCh *typeName = ct->getName();
+  const XMLCh *typeUri = ct->getNamespace();
+  store::Item_t tName;
+  GENV_ITEMFACTORY->createQName(tName, StrX(typeUri).localForm(), "", StrX(typeName).localForm());
+  xqtref_t cType = schema->createIfExists(this, tName, TypeConstants::QUANT_ONE);
+  rchandle<NodeNameTest> nnTest = new NodeNameTest(qname);
+  rchandle<NodeTest> nTest = new NodeTest(store::StoreConsts::attributeNode, nnTest);
+  return new NodeXQType(this, nTest, cType, quant, false);
 }
 
 
