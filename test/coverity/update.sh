@@ -8,7 +8,7 @@
 echo "Must have cov-build installed."
 echo "   See: http://scan.coverity.com/self-build/"
 
-PATH=$PATH:../../../coverity/prevent-linux-2.4.6/bin
+PATH=$PATH:~/dev/coverity/prevent-linux-2.4.6/bin
 
 cov-configure -co /usr/bin/cc
 cov-configure -co /usr/bin/g++
