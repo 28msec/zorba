@@ -399,6 +399,9 @@ xqtref_t TypeManagerImpl::create_schema_element_type(store::Item *qname, TypeCon
   XMLChArray local (qname->getLocalName()->c_str());
   XMLChArray uri (qname->getNamespace()->c_str());
   XSElementDeclaration *eDecl = model->getElementDeclaration(local, uri);
+  if (!eDecl) {
+    ZORBA_ERROR_PARAM(XPST0008, "schema-element", qname->getStringValueP()->c_str());
+  }
   XSTypeDefinition *ct = eDecl->getTypeDefinition();
   const XMLCh *typeName = ct->getName();
   const XMLCh *typeUri = ct->getNamespace();
@@ -420,8 +423,11 @@ xqtref_t TypeManagerImpl::create_schema_attribute_type(store::Item *qname, TypeC
   XSModel *model = pool->getXSModel();
   XMLChArray local (qname->getLocalName()->c_str());
   XMLChArray uri (qname->getNamespace()->c_str());
-  XSElementDeclaration *eDecl = model->getElementDeclaration(local, uri);
-  XSTypeDefinition *ct = eDecl->getTypeDefinition();
+  XSAttributeDeclaration *aDecl = model->getAttributeDeclaration(local, uri);
+  if (!aDecl) {
+    ZORBA_ERROR_PARAM(XPST0008, "schema-attribute", qname->getStringValueP()->c_str());
+  }
+  XSTypeDefinition *ct = aDecl->getTypeDefinition();
   const XMLCh *typeName = ct->getName();
   const XMLCh *typeUri = ct->getNamespace();
   store::Item_t tName;
