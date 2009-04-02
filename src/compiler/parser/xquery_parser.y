@@ -1475,7 +1475,7 @@ IndexDeclSuffix :
     }
   | INDEX URI_LITERAL ON ExprSingle IndexingMethod BY IndexFieldList RPAR
     {
-      IndexDecl *d = new IndexDecl (LOC (@$), SYMTAB ($2), $4, SYMTAB ($5),
+      IndexDecl *d = new IndexDecl (LOC (@$), SYMTAB ($2), $4, $5,
                                     dynamic_cast<IndexFieldList *> ($7));
       d->method = $5;
       $$ = d;
