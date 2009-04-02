@@ -639,7 +639,7 @@ VarDecl::VarDecl (const QueryLoc& loc_,
                   bool ext_)
 :
   VarDeclWithInit (loc_, _varname, _typedecl_h, _initexpr_h),
-  ext (ext_)
+  ext (ext_), global (true)
 {
   ZORBA_ASSERT (ext_ || _initexpr_h != NULL);
 }
@@ -783,6 +783,7 @@ void EnclosedExpr::accept(parsenode_visitor& v) const
 
 void BlockBody::accept (parsenode_visitor& v) const {
   BEGIN_VISITOR ();
+  ACCEPT (decls);
   for (int i = 0; i < size (); i++)
     (*this) [i]->accept (v);
   END_VISITOR ();

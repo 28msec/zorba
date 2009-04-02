@@ -1070,6 +1070,8 @@ class VarDecl : public VarDeclWithInit
 {
 protected:
   bool ext;
+  bool global;
+
 public:
 	VarDecl(const QueryLoc&,
           std::string varname,
@@ -1078,7 +1080,9 @@ public:
           bool ext_ = false);
 
 public:
-	bool is_extern() const { return ext; }
+	bool is_extern () const { return ext; }
+  bool is_global () const { return global; }
+  void set_global (bool global_) { global = global_; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -1252,9 +1256,12 @@ class BlockBody : public exprnode
 {
 protected:
   std::vector<rchandle <exprnode> > statements;
+  rchandle<VFO_DeclList> decls;
 
 public:
-  BlockBody (const QueryLoc& loc_) : exprnode (loc_) {}
+  BlockBody (const QueryLoc& loc_, rchandle<VFO_DeclList> decls_ = NULL)
+    : exprnode (loc_), decls (decls_)
+  {}
   void add (rchandle<exprnode> statement) {
     statements.push_back (statement);
   }
@@ -1262,6 +1269,7 @@ public:
   rchandle<exprnode> &operator[](int k) { return statements [k]; }
 
   int size () const { return statements.size (); }
+  rchandle<VFO_DeclList> get_decls () const { return decls; }
 
 public:
 	void accept(parsenode_visitor&) const;

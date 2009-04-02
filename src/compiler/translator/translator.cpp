@@ -303,7 +303,7 @@ protected:
   }
 
   varref_t create_var (const QueryLoc& loc, store::Item_t qname, var_expr::var_kind kind, xqtref_t type = NULL) {
-    varref_t e = new var_expr (loc, kind, qname, global_decl_stack.size ());
+    varref_t e = new var_expr (loc, kind, qname, global_decl_stack.empty ());
     if (kind == var_expr::pos_var || kind == var_expr::count_var || kind == var_expr::wincond_pos_var || kind == var_expr::wincond_in_pos_var)
       type = GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE;
     e->set_type (type);
@@ -5273,14 +5273,14 @@ void *begin_visit (const VarRef& v) {
 
 void end_visit (const VarRef& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  var_expr *e = lookup_var (v.get_varname ());
-  if (e == NULL)
-    ZORBA_ERROR_LOC_PARAM( XPST0008, loc, v.get_varname (), "");
-  if (e->get_depth () == 0 && ! global_decl_stack.empty ()) {
-    string key = "V" + static_context::qname_internal_key (e->get_varname ());
+  var_expr *ve = lookup_var (v.get_varname ());
+  if (ve == NULL)
+    ZORBA_ERROR_LOC_PARAM (XPST0008, loc, v.get_varname (), "");
+  if (ve->global && ! global_decl_stack.empty ()) {
+    string key = "V" + static_context::qname_internal_key (ve->get_varname ());
     add_multimap_value (global_deps, global_decl_stack.top (), key);
   }
-  nodestack.push (new wrapper_expr (v.get_location (), rchandle<expr> (e)));
+  nodestack.push (new wrapper_expr (v.get_location (), rchandle<expr> (ve)));
 }
 
 

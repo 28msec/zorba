@@ -28,6 +28,8 @@
 #include "runtime/core/var_iterators.h"
 #include "runtime/misc/MiscImpl.h"  // for ExitException
 #include "runtime/api/plan_iterator_wrapper.h"
+#include "runtime/api/runtimecb.h"
+
 #include "functions/function.h"
 
 #include "api/unmarshaller.h"
@@ -105,7 +107,8 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   state->thePlan = theUDF->get_plan(planState.theCompilerCB).getp();
   state->thePlanStateSize = state->thePlan->getStateSizeOfSubtree();
   std::auto_ptr<PlanState> block(new PlanState(state->thePlanStateSize, planState.theStackDepth + 1));
-  block->theRuntimeCB = planState.theRuntimeCB;
+  block->theRuntimeCB = new RuntimeCB (*planState.theRuntimeCB);
+  block->theRuntimeCB->theDynamicContext = new dynamic_context (block->theRuntimeCB->theDynamicContext);
   block->theCompilerCB = planState.theCompilerCB;
   block->checkDepth (loc);
   state->theFnBodyStateBlock = block.release();
@@ -117,6 +120,8 @@ void UDFunctionCallIterator::closeImpl(PlanState& planState)
   UDFunctionCallIteratorState *state = StateTraitsImpl<UDFunctionCallIteratorState>::getState(planState, this->stateOffset);
 
   state->closePlan();
+  delete state->theFnBodyStateBlock->theRuntimeCB->theDynamicContext;
+  delete state->theFnBodyStateBlock->theRuntimeCB;
   delete state->theFnBodyStateBlock;
   state->resetChildIters();
 
