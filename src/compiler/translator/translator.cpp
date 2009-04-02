@@ -890,7 +890,7 @@ void end_visit (const BlockBody& v, void* /*visit_state*/) {
   for (int i = 0; i < v.size(); i++)
     statements.push_back (pop_nodestack ());
   reverse (statements.begin (), statements.end ());
-  nodestack.push (new sequential_expr (loc, statements, create_seq (loc)));
+  nodestack.push (new sequential_expr (loc, statements));
 }
 
 
