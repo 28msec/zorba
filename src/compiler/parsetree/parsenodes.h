@@ -131,6 +131,8 @@ class ForwardStep;
 class FunctionCall;
 class FunctionDecl;
 class GeneralComp;
+class IndexFieldList;
+class IndexField;
 class IfExpr;
 class InsertExpr;
 class InstanceofExpr;
@@ -949,39 +951,12 @@ public:
 
 };
 
-class IndexField : public parsenode {
-  rchandle<exprnode> expr;
-  rchandle<TypeDeclaration> type;
 
-public:
-  std::string coll;
-
-public:
-  IndexField (const QueryLoc& loc_, rchandle<exprnode> expr_, rchandle<TypeDeclaration> type_)
-    : parsenode (loc_), expr (expr_), type (type_)
-  {}
-  rchandle<exprnode> get_expr () const { return expr; }
-  rchandle<TypeDeclaration> get_type () const { return type; }
-
-public:
-	void accept(parsenode_visitor&) const;
-  
-};
-
-class IndexFieldList : public parsenode {
-public:
-  std::vector<rchandle<IndexField> > fields;
-
-public:
-  IndexFieldList (const QueryLoc& loc_)
-    : parsenode (loc_)
-  {}
-
-public:
-	void accept(parsenode_visitor&) const;
-  
-};
-
+/***************************************************************************//**
+  IndexDecl ::= DECLARE [UNIQUE] INDEX URI_LITERAL
+                ON ExprSingle [HASH | BTREE]
+                BY IndexFieldList ")"
+********************************************************************************/
 class IndexDecl : public parsenode {
 protected:
   std::string uri;
@@ -1000,32 +975,87 @@ public:
   rchandle<exprnode> get_expr () const { return on_expr; }
   const std::string& get_uri () const { return uri; }
 
-  IndexDecl (const QueryLoc& loc_, std::string uri_, rchandle<exprnode> expr_, std::string method_, rchandle<IndexFieldList> fields_)
-    : parsenode (loc_), uri (uri_), on_expr (expr_), method (method_), fields (fields_),
-      create (false), uniq (false)
+  IndexDecl (
+        const QueryLoc& loc_,
+        std::string uri_,
+        rchandle<exprnode> expr_,
+        std::string method_,
+        rchandle<IndexFieldList> fields_)
+    :
+    parsenode (loc_),
+    uri (uri_),
+    on_expr (expr_),
+    method (method_),
+    fields (fields_),
+    create (false),
+    uniq (false)
   {}
 
 public:
 	void accept(parsenode_visitor&) const;
-
 };
 
+
+/***************************************************************************//**
+  IndexFieldList ::= "(" IndexField |
+                      IndexFieldList COMMA IndexField
+********************************************************************************/
+class IndexFieldList : public parsenode {
+public:
+  std::vector<rchandle<IndexField> > fields;
+
+public:
+  IndexFieldList (const QueryLoc& loc_)
+    : parsenode (loc_)
+  {}
+
+public:
+	void accept(parsenode_visitor&) const;
+};
+
+
+/***************************************************************************//**
+  IndexField ::= ExprSingle [TypeDeclaration] [COLLATION URI_LITERAL]
+********************************************************************************/
+class IndexField : public parsenode {
+  rchandle<exprnode> expr;
+  rchandle<TypeDeclaration> type;
+
+public:
+  std::string coll;
+
+public:
+  IndexField (const QueryLoc& loc_, rchandle<exprnode> expr_, rchandle<TypeDeclaration> type_)
+    : parsenode (loc_), expr (expr_), type (type_)
+  {}
+  rchandle<exprnode> get_expr () const { return expr; }
+  rchandle<TypeDeclaration> get_type () const { return type; }
+
+public:
+	void accept(parsenode_visitor&) const;
+};
+
+
+/***************************************************************************//**
+  IndexStatement ::= [CREATE | BUILD | DROP] INDEX URI_LITERAL
+********************************************************************************/
 class IndexStatement : public exprnode {
   std::string uri;
 
 public:
   typedef enum { create_stmt, build_stmt, drop_stmt } stmt_type;
   stmt_type type;
+
   IndexStatement (const QueryLoc& loc_, std::string uri_, stmt_type type_)
     : exprnode (loc_), uri (uri_), type (type_)
   {}
-  std::string get_uri () const { return uri; }
 
+  std::string get_uri () const { return uri; }
 
 public:
 	void accept(parsenode_visitor&) const;
-
 };
+
 
 // [24] VarDecl
 // ------------
