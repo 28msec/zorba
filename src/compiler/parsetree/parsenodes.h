@@ -424,6 +424,7 @@ public:
 	VFO_DeclList(const QueryLoc&);
 
 public:
+  int size () const { return vfo_hv.size (); }
 	void push_back(rchandle<parsenode> vfo_h) { vfo_hv.push_back(vfo_h); }
   void push_front(rchandle<parsenode> vfo_h) { vfo_hv.insert(vfo_hv.begin (), vfo_h); }
 	rchandle<parsenode> operator[](int k) const { return vfo_hv[k]; }

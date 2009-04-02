@@ -881,16 +881,33 @@ void end_visit (const EnclosedExpr& v, void* /*visit_state*/) {
 
 void *begin_visit (const BlockBody& v) {
   TRACE_VISIT ();
+  push_scope ();
   return no_state;
 }
 
 void end_visit (const BlockBody& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   vector<expr_t> statements;
+
+  rchandle<VFO_DeclList> decls = v.get_decls ();
   for (int i = 0; i < v.size(); i++)
     statements.push_back (pop_nodestack ());
+  if (decls != NULL) {
+    CACHED (ctx_set, LOOKUP_OP2 ("ctxvar-assign"));
+    for (int i = decls->size () - 1; i >= 0; --i) {
+      expr_t val = pop_nodestack ();
+      varref_t ve = pop_nodestack ().cast<var_expr> ();
+      expr_t qname_expr =
+        new const_expr (ve->get_loc(), dynamic_context::var_key (&*ve));
+      
+      val = new fo_expr (ve->get_loc(),
+                         ctx_set, qname_expr, val);
+      statements.push_back (val);
+    }
+  }
   reverse (statements.begin (), statements.end ());
   nodestack.push (new sequential_expr (loc, statements));
+  pop_scope ();
 }
 
 
@@ -2471,14 +2488,18 @@ void end_visit (const IndexStatement& v, void* /*visit_state*/) {
 void *begin_visit (const VarDecl& v) {
   TRACE_VISIT ();
   string key = static_context::qname_internal_key (sctx_p->lookup_var_qname (v.get_varname (), loc));
-  global_decl_stack.push ("V" + key);
-  global_var_decls.push_front (key);
+  if (v.is_global ()) {
+    global_var_decls.push_front (key);
+    // TODO: local vars too
+    global_decl_stack.push ("V" + key);
+  }
   return no_state;
 }
 
 void end_visit (const VarDecl& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  pop_stack (global_decl_stack);
+  if (v.is_global ())
+    pop_stack (global_decl_stack);
   xqp_string varname = v.get_varname();
 
   // The declared type of a global or external is never tightened based on
@@ -2488,18 +2509,25 @@ void end_visit (const VarDecl& v, void* /*visit_state*/) {
     type = pop_tstack ();
 
   varref_t ve = bind_var (loc, varname, var_expr::context_var, type);
-  if (! mod_ns.empty () && xqp_string (ve->get_varname ()->getNamespace ()) != mod_ns)
-    ZORBA_ERROR_LOC (XQST0048, loc);
-  if (! v.is_extern ()) {
-    bind_var (ve, minfo->globals.get ());
-    if (export_sctx != NULL)
-      bind_var (ve, export_sctx);
+  if (v.is_global ()) {
+    if (! mod_ns.empty () && xqp_string (ve->get_varname ()->getNamespace ()) != mod_ns)
+      ZORBA_ERROR_LOC (XQST0048, loc);
+    if (! v.is_extern ()) {
+      bind_var (ve, minfo->globals.get ());
+      if (export_sctx != NULL)
+        bind_var (ve, export_sctx);
+    }
+    theScopedVariables.push_back( ve );
   }
   expr_t val = v.get_initexpr () == NULL ? expr_t(NULL) : pop_nodestack();
-  theGlobalVars.push_back(global_binding(ve, val, v.is_extern ()));
+  if (v.is_global ()) {
+    theGlobalVars.push_back(global_binding(ve, val, v.is_extern ()));
 #ifdef ZORBA_DEBUGGER
-  theScopedVariables.push_back( ve );
 #endif
+  } else {
+    nodestack.push (ve.cast<expr> ());
+    nodestack.push (val);
+  }
 }
 
 

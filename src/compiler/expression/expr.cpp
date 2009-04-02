@@ -346,8 +346,8 @@ string var_expr::decode_var_kind(
 }
 
   var_expr::var_expr(const QueryLoc& loc, var_kind k, store::Item_t name, bool global_)
-    : expr (loc), kind (k), varname_h (name), type (NULL), m_forlet_clause(NULL),
-      global (global_)
+    : expr (loc), kind (k), varname_h (name), type (NULL), global (global_),
+      m_forlet_clause(NULL)
   {}
 
 store::Item_t var_expr::get_varname() const { return varname_h; }
