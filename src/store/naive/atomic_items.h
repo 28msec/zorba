@@ -415,6 +415,8 @@ public:
   void getStringValue(xqpStringStore_t& strval) const { strval = theValue; }
   void getStringValue(std::string& buf) const { buf += theValue->str(); }
 
+  xqpStringStore* getString() const { return theValue.getp(); }
+
   xqp_string show() const;
 };
 
