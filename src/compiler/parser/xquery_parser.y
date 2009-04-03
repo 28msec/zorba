@@ -1573,10 +1573,12 @@ Block :
         $$ = $3;
       else {
         BlockBody *b = dynamic_cast<BlockBody *> ($3);
+        VFO_DeclList *vfo = dynamic_cast<VFO_DeclList *> ($2);
         if (b == NULL) {
-          b = new BlockBody ($3->get_location (),
-                             dynamic_cast<VFO_DeclList *> ($2));
+          b = new BlockBody ($3->get_location (), vfo);
           b->add ($3);
+        } else {
+          b->set_decls (vfo);
         }
         $$ = b;
       }

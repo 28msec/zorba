@@ -1271,6 +1271,7 @@ public:
 
   int size () const { return statements.size (); }
   rchandle<VFO_DeclList> get_decls () const { return decls; }
+  void set_decls (rchandle<VFO_DeclList> decls_) { decls = decls_; }
 
 public:
 	void accept(parsenode_visitor&) const;
