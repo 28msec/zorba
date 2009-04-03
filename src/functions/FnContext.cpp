@@ -38,6 +38,14 @@ PlanIter_t ctx_var_assign::codegen (
   return new CtxVarAssignIterator(loc, argv);
 }
 
+PlanIter_t ctx_var_declare::codegen (
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder &ann ) const
+{
+  return new CtxVarDeclIterator(loc, argv);
+}
+
 PlanIter_t ctx_var_exists::codegen (
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,

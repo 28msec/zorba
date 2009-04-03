@@ -55,6 +55,9 @@ NARY_ITER_STATE (CtxVariableIterator, CtxVariableIteratorState);
 /*******************************************************************************
 
 ********************************************************************************/
+
+NARY_ITER (CtxVarDeclIterator);
+
 NARY_ITER (CtxVarAssignIterator);
 
 NARY_ITER (CtxVarExistsIterator);

@@ -209,19 +209,15 @@ int  dynamic_context::get_implicit_timezone()
 var_name is expanded name localname:nsURI
 constructed by static_context::qname_internal_key( .. )
 */
-void dynamic_context::add_variable(xqp_string var_name, store::Iterator_t var_iterator)
+void dynamic_context::set_variable(xqp_string var_name, store::Iterator_t var_iterator)
 {
   if (var_name.empty()) return;
 
-  // TODO: lazy conversion to a temp sequence
   dctx_value_t v;
   string key = "var:" + var_name;
-  if (keymap.get (key, v))
-    destroy_dctx_value (&v);
-
-  v.type = dynamic_context::dctx_value_t::no_val;
-  v.in_progress = true;
-  keymap.put (key, v);
+  hashmap<dctx_value_t> *map;
+  if (! context_value (key, v, &map))
+    ZORBA_ASSERT (false);
 
   var_iterator->open ();
   store::TempSeq_t seq = GENV_STORE.createTempSeq (var_iterator.getp());
@@ -230,9 +226,27 @@ void dynamic_context::add_variable(xqp_string var_name, store::Iterator_t var_it
   v.type = dynamic_context::dctx_value_t::temp_seq_val;
   v.in_progress = false;
   v.val.temp_seq = seq.getp();
+  map->put (key, v);
+}
+
+void dynamic_context::declare_variable(xqp_string var_name)
+{
+  if (var_name.empty()) return;
+
+  dctx_value_t v;
+  string key = "var:" + var_name;
+  if (keymap.get (key, v))
+    destroy_dctx_value (&v);
+
+  v.type = dynamic_context::dctx_value_t::no_val;
+  v.in_progress = true;
   keymap.put (key, v);
 }
 
+void dynamic_context::add_variable(xqp_string varname, store::Iterator_t var_iterator) {
+  declare_variable (varname);
+  set_variable (varname, var_iterator);
+}
 
 store::Iterator_t	dynamic_context::get_variable(store::Item_t varname) {
 	return lookup_var_iter("var:" + xqp_string (&*varname->getStringValue ()));

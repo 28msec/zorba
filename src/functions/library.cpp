@@ -1135,6 +1135,10 @@ DECL(sctx, ctx_variable,
      (createQName(XQUERY_FN_NS,"fn", ":ctxvariable"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+DECL(sctx, ctx_var_declare,
+     (createQName(XQUERY_FN_NS,"fn", ":ctxvar-declare"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.EMPTY_TYPE));
 DECL(sctx, ctx_var_assign,
      (createQName(XQUERY_FN_NS,"fn", ":ctxvar-assign"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,

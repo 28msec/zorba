@@ -212,7 +212,7 @@ protected:
   // functions accepting . as default arg
   set<string> xquery_fns_def_dot;
   const function *op_concatenate, *op_enclosed_expr, *op_or, *fn_data,
-    *ctx_set, *ctx_get, *ctx_exists;
+    * ctx_decl, *ctx_set, *ctx_get, *ctx_exists;
 
   set<string> zorba_predef_mod_ns;
   
@@ -252,7 +252,7 @@ protected:
     xquery_fns_def_dot.insert ("string");
 
     op_concatenate = op_enclosed_expr = op_or = fn_data = NULL;
-    ctx_set = ctx_get = ctx_exists = NULL;
+    ctx_decl = ctx_set = ctx_get = ctx_exists = NULL;
     zorba_predef_mod_ns.insert (ZORBA_FN_NS);
     zorba_predef_mod_ns.insert (ZORBA_MATH_FN_NS);
     zorba_predef_mod_ns.insert (ZORBA_REST_FN_NS);
@@ -482,11 +482,10 @@ protected:
 expr_t wrap_in_atomization (expr_t e) {
   return new fo_expr (e->get_loc (), CACHED (fn_data, LOOKUP_FN ("fn", "data", 1)), e);
 }
-
-  void add_single_global_assign (const global_binding &b) {
+  
+  void declare_var (const global_binding &b, std::vector<expr_t> &stmts) {
+    CACHED (ctx_decl, LOOKUP_OP1 ("ctxvar-declare"));
     CACHED (ctx_set, LOOKUP_OP2 ("ctxvar-assign"));
-    CACHED (ctx_get, LOOKUP_OP1 ("ctxvariable"));
-    CACHED (ctx_exists, LOOKUP_OP1 ("ctxvar-exists"));
 
     varref_t var = b.first;
     xqtref_t var_type = var->get_type ();
@@ -494,22 +493,37 @@ expr_t wrap_in_atomization (expr_t e) {
     xqpStringStore dot (".");
     expr_t qname_expr =
       new const_expr (var->get_loc(), var->get_varname ()->getStringValue ()->equals (&dot) ? "." : dynamic_context::var_key (&*var));
-    
+
+    expr_t decl_expr = new fo_expr (var->get_loc(), ctx_decl, qname_expr->clone ());
     if (expr != NULL) {
       if (expr->isUpdating())
         ZORBA_ERROR_LOC(XUST0001, expr->get_loc());
 
       expr = new fo_expr (var->get_loc(),
-                          ctx_set, qname_expr, expr);
-      if (b.is_extern ())
-        expr = new if_expr (var->get_loc (), expr_t (new fo_expr (var->get_loc (), ctx_exists, qname_expr)),
+                          ctx_set, qname_expr->clone (), expr);
+      expr = new sequential_expr (var->get_loc (), decl_expr, expr);
+      if (b.is_extern ()) {
+        CACHED (ctx_exists, LOOKUP_OP1 ("ctxvar-exists"));
+        expr_t exists_expr =
+          expr_t (new fo_expr (var->get_loc (), ctx_exists, qname_expr->clone ()));
+        expr = new if_expr (var->get_loc (), exists_expr,
                             expr_t (create_seq (var->get_loc ())), expr);
-      minfo->init_exprs.push_back (expr);
+      }
+      stmts.push_back (expr);
+    } else {  // no init expr
+      if (! b.is_extern ())
+        stmts.push_back (decl_expr);
     }
-    if (var_type != NULL) {
-      expr_t get = new fo_expr (var->get_loc (), ctx_get, qname_expr);
-      minfo->init_exprs.push_back (new treat_expr (var->get_loc (), get, var->get_type (), XPTY0004));
+    if (var_type != NULL && (b.is_extern () || b.second != NULL)) {
+      // check type for vars that are external or have an init expr
+      CACHED (ctx_get, LOOKUP_OP1 ("ctxvariable"));
+      expr_t get = new fo_expr (var->get_loc (), ctx_get, qname_expr->clone ());
+      stmts.push_back (new treat_expr (var->get_loc (), get, var->get_type (), XPTY0004));
     }
+  }
+
+  void add_single_global_assign (const global_binding &b) {
+    declare_var (b, minfo->init_exprs);
   }
 
 expr_t wrap_in_globalvar_assign(expr_t e) {
@@ -887,26 +901,24 @@ void *begin_visit (const BlockBody& v) {
 
 void end_visit (const BlockBody& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  vector<expr_t> statements;
+  vector<expr_t> stmts;  // constructed in reverse... maybe not the best choice
 
   rchandle<VFO_DeclList> decls = v.get_decls ();
   for (int i = 0; i < v.size(); i++)
-    statements.push_back (pop_nodestack ());
+    stmts.push_back (pop_nodestack ());
   if (decls != NULL) {
-    CACHED (ctx_set, LOOKUP_OP2 ("ctxvar-assign"));
     for (int i = decls->size () - 1; i >= 0; --i) {
       expr_t val = pop_nodestack ();
       varref_t ve = pop_nodestack ().cast<var_expr> ();
-      expr_t qname_expr =
-        new const_expr (ve->get_loc(), dynamic_context::var_key (&*ve));
-      
-      val = new fo_expr (ve->get_loc(),
-                         ctx_set, qname_expr, val);
-      statements.push_back (val);
+      global_binding b (ve, val, false);
+      vector<expr_t> stmts1;
+      declare_var (b, stmts1);
+      reverse (stmts1.begin (), stmts1.end ());
+      stmts.insert (stmts.end (), stmts1.begin (), stmts1.end ());
     }
   }
-  reverse (statements.begin (), statements.end ());
-  nodestack.push (new sequential_expr (loc, statements));
+  reverse (stmts.begin (), stmts.end ());
+  nodestack.push (new sequential_expr (loc, stmts));
   pop_scope ();
 }
 
@@ -5584,9 +5596,12 @@ void *begin_visit (const AssignExpr& v) {
 
 void end_visit (const AssignExpr& v, void* visit_state) {
   TRACE_VISIT_OUT ();
+  // TODO: add treat_expr to check var type
   const function *ctx_set = LOOKUP_OP2 ("ctxvar-assign");
-  varref_t var = lookup_ctx_var (v.get_varname (), loc);
-  expr_t qname_expr = new const_expr (var->get_loc(), dynamic_context::var_key (&*var));
+  varref_t ve = lookup_ctx_var (v.get_varname (), loc);
+  if (ve->get_kind () != var_expr::context_var)
+    ZORBA_ERROR_LOC (XPST0003, loc);
+  expr_t qname_expr = new const_expr (ve->get_loc(), dynamic_context::var_key (&*ve));
   nodestack.push (new fo_expr (loc, ctx_set, qname_expr, pop_nodestack ()));
 }
 

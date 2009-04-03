@@ -44,26 +44,33 @@ protected:
     return keymap.get (key, val); 
   }
   bool context_value(xqp_string key, dctx_value_t &val) const {
-    if (lookup_once (key, val))
+    if (lookup_once (key, val)) {
       return true;
-    else
-      return parent == NULL ? false : parent->context_value (key, val);
-	}
+    }
+    return parent == NULL ? false : parent->context_value (key, val);
+  }
+  bool context_value(xqp_string key, dctx_value_t &val, hashmap<dctx_value_t> **map) {
+    if (lookup_once (key, val)) {
+      if (map != NULL) *map = &keymap;
+      return true;
+    }
+    return parent == NULL ? false : parent->context_value (key, val, map);
+  }
   
 
 protected:
-	static bool static_init;
+  static bool static_init;
 
-	dynamic_context	      * parent;
+  dynamic_context       * parent;
 
-	hashmap<dctx_value_t>   keymap;
+  hashmap<dctx_value_t>   keymap;
   store::Item_t           current_date_time_item;
-	int			                implicit_timezone;
+  int                     implicit_timezone;
   store::Item_t           default_collection_uri;  //default URI for fn:collection()
 
-  store::Item_t		        ctxt_item;
-	unsigned long		        ctxt_position;
-	//+context size is determined by fn:last() at runtime
+  store::Item_t           ctxt_item;
+  unsigned long           ctxt_position;
+  //+context size is determined by fn:last() at runtime
 
   hashmap<rchandle<ValueIndexInsertSession> > val_idx_ins_session_map;
 
@@ -77,48 +84,50 @@ protected:
   void destroy_dctx_value (const dctx_value_t *);
 
 public:
-	static void init();
+  static void init();
 
-	dynamic_context(dynamic_context *parent=NULL);
-	~dynamic_context();
+  dynamic_context(dynamic_context *parent=NULL);
+  ~dynamic_context();
 
   static std::string var_key (const void *var);
-  xqp_string expand_varname(static_context	*sctx, xqp_string qname) const;
+  xqp_string expand_varname(static_context  *sctx, xqp_string qname) const;
 
 public:
   store::Item_t context_item() const;
-	unsigned long	context_position();
+  unsigned long context_position();
 
-	xqtref_t context_item_type() const;
+  xqtref_t context_item_type() const;
 
-	void set_context_item(store::Item_t, unsigned long position);
-	void set_context_item_type(xqtref_t );
+  void set_context_item(store::Item_t, unsigned long position);
+  void set_context_item_type(xqtref_t );
 
   #if 0
   // return the value of a variable by QName
-	PlanIter_t var_value(const Item*) const;
+  PlanIter_t var_value(const Item*) const;
 
-	const Item& default_element_type_namespace() const;
-	void set_default_element_type_namespace(Item&);
-	PlanIter_t namespaces() const;
-	void add_namespace(Item&);
+  const Item& default_element_type_namespace() const;
+  void set_default_element_type_namespace(Item&);
+  PlanIter_t namespaces() const;
+  void add_namespace(Item&);
   #endif
 
 
 //daniel: get the function directly from library object
-//	const function* get_function(qnamekey_t key) { return lib->get(key); }
+//  const function* get_function(qnamekey_t key) { return lib->get(key); }
 
-	void set_current_date_time( const store::Item_t& );
-  store::Item_t	get_current_date_time();
+  void set_current_date_time( const store::Item_t& );
+  store::Item_t get_current_date_time();
 
-	void set_implicit_timezone( int tzone_seconds );
-	int get_implicit_timezone();
+  void set_implicit_timezone( int tzone_seconds );
+  int get_implicit_timezone();
 
-	void add_variable(xqp_string varname, store::Iterator_t var_iterator);
-  store::Iterator_t	get_variable(store::Item_t);
+  void declare_variable(xqp_string varname);
+  void set_variable(xqp_string varname, store::Iterator_t var_iterator);
+  void add_variable(xqp_string varname, store::Iterator_t var_iterator);
+  store::Iterator_t get_variable(store::Item_t);
 
   store::Item_t get_default_collection();
-	void set_default_collection(const store::Item_t& default_collection_uri);
+  void set_default_collection(const store::Item_t& default_collection_uri);
 
   rchandle<ValueIndexInsertSession> get_val_idx_insert_session (std::string);
   void set_val_idx_insert_session (std::string, rchandle<ValueIndexInsertSession>);
@@ -126,8 +135,8 @@ public:
 };
 
 
-}	/* namespace zorba */
-#endif /*	ZORBA_DYNAMIC_CONTEXT_H */
+} /* namespace zorba */
+#endif /* ZORBA_DYNAMIC_CONTEXT_H */
 
 /*
  * Local variables:
