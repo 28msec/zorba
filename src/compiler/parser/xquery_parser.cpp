@@ -2089,8 +2089,8 @@ namespace zorba
           b = new BlockBody ((yysemantic_stack_[(4) - (3)].expr)->get_location (),
                              dynamic_cast<VFO_DeclList *> ((yysemantic_stack_[(4) - (2)].node)));
           b->add ((yysemantic_stack_[(4) - (3)].expr));
-          (yyval.expr) = b;
         }
+        (yyval.expr) = b;
       }
     ;}
     break;

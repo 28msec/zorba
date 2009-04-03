@@ -1577,8 +1577,8 @@ Block :
           b = new BlockBody ($3->get_location (),
                              dynamic_cast<VFO_DeclList *> ($2));
           b->add ($3);
-          $$ = b;
         }
+        $$ = b;
       }
     }
   ;
