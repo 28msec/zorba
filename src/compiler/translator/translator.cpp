@@ -260,6 +260,7 @@ protected:
     zorba_predef_mod_ns.insert (ZORBA_COLLECTION_FN_NS);
     zorba_predef_mod_ns.insert (ZORBA_ALEXIS_FN_NS);
     zorba_predef_mod_ns.insert (ZORBA_JSON_FN_NS);
+    zorba_predef_mod_ns.insert (ZORBA_OPEXTENSIONS_NS);
   }
 
   varref_t lookup_ctx_var (xqp_string name, const QueryLoc &loc) {
