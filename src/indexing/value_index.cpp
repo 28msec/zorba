@@ -18,11 +18,13 @@
 #include "system/globalenv.h"
 #include "store/api/store.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 ValueIndex::~ValueIndex()
 {
 }
+
 
 ValueIndexInsertSession_t ValueIndex::createBulkInsertSession()
 {
@@ -36,11 +38,13 @@ ValueIndexInsertSession_t ValueIndex::createBulkInsertSession()
   return session;
 }
 
+
 void ValueIndexInsertSession::commitBulkInsertSession()
 {
   m_bulkInsertSession->commit();
   m_bulkInsertSession = NULL;
 }
+
 
 void ValueIndexInsertSession::abortBulkInsertSession()
 {
