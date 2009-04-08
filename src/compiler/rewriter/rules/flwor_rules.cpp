@@ -62,8 +62,8 @@ namespace zorba {
 
   // Returns a set containing all variables (including positional) defined by a FLWOR
   void flwor_vars (flwor_expr *flwor, VarSetAnnVal &vars) {
-    for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
-         i != flwor->clause_end(); i++) {
+    for (flwor_expr::forlet_list_t::iterator i = flwor->forlet_begin();
+         i != flwor->forlet_end(); i++) {
       flwor_expr::forletref_t ref = *i;
       vars.add (ref->get_var ());
       if (ref->get_pos_var () != NULL)
@@ -104,8 +104,8 @@ static bool var_in_try_block_or_in_loop(static_context *sctx, var_expr *v, expr 
     flwor_expr *flwor = static_cast<flwor_expr *>(e);
     
 		expr_t containing_expr = NULL;
-		for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin ();
-				i != flwor->clause_end (); i++) 
+		for (flwor_expr::forlet_list_t::iterator i = flwor->forlet_begin ();
+				i != flwor->forlet_end (); i++) 
 		{
 			flwor_expr::forletref_t ref = *i;
 			if (count_variable_uses(ref->get_expr (), v, 1) == 1) {
@@ -141,8 +141,8 @@ static bool safe_to_fold_single_use(var_expr *v, flwor_expr *flwor, static_conte
 {
   bool declared = false;
   expr_t containing_expr = NULL;
-  for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin ();
-       i != flwor->clause_end (); i++) 
+  for (flwor_expr::forlet_list_t::iterator i = flwor->forlet_begin ();
+       i != flwor->forlet_end (); i++) 
   {
     flwor_expr::forletref_t ref = *i;
     varref_t vref = ref->get_var();
@@ -206,8 +206,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   static_context *sctx = rCtx.getStaticContext();
 
   // FLWOR vars used once or zero times. substitutions
-  for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
-        i != flwor->clause_end(); ) {
+  for (flwor_expr::forlet_list_t::iterator i = flwor->forlet_begin();
+        i != flwor->forlet_end(); ) {
     flwor_expr::forletref_t ref = *i;
     expr *cexpr = ref->get_expr ();
     varref_t vref = ref->get_var();
@@ -229,19 +229,19 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       if (uses > 1) {
         if (is_trivial_expr (cexpr)) {
           subst_vars (rCtx, node, vref, cexpr);
-          MODIFY (i = flwor->remove_forlet_clause (i));
+          MODIFY (i = flwor->remove_forlet(i));
         } else ++i;
       } else {  // uses == 1 or 0
         if (uses == 1) {
           if (is_trivial_expr(cexpr) || safe_to_fold_single_use(&*vref, flwor, sctx))
             {
               subst_vars (rCtx, node, vref, cexpr);
-              MODIFY (i = flwor->remove_forlet_clause (i));
+              MODIFY (i = flwor->remove_forlet(i));
             }
           else ++i;
         } else {  // uses == 0
           if (cexpr->get_annotation (AnnotationKey::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL)
-            MODIFY (i = flwor->remove_forlet_clause(i));
+            MODIFY (i = flwor->remove_forlet(i));
           else ++i;
         }
       }
@@ -251,7 +251,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   }
 
   // FLWOR with no remaining clauses
-  if (flwor->forlet_count() + flwor->group_count () == 0) {
+  if (flwor->forlet_count() + flwor->group_vars_count () == 0) {
     expr_t result = flwor->get_retval();
     if (WHERE != NULL)
       result = fix_if_annotations (new if_expr(LOC (WHERE), WHERE, result, new fo_expr(LOC (WHERE), LOOKUP_OPN("concatenate"))));

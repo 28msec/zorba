@@ -379,8 +379,8 @@ void end_visit (var_expr& v) {
 
 bool begin_visit (flwor_expr& v) {
   CODEGEN_TRACE_IN("");
-  for (vector<rchandle<forlet_clause> >::const_iterator it = v.clause_begin ();
-       it != v.clause_end();
+  for (vector<rchandle<forlet_clause> >::const_iterator it = v.forlet_begin ();
+       it != v.forlet_end();
        ++it) 
   {
     rchandle<var_expr> var = (*it)->get_var ();
@@ -399,8 +399,8 @@ bool begin_visit (flwor_expr& v) {
       ZORBA_ASSERT (false);
   }
   
-  for(flwor_expr::group_list_t::const_iterator it = v.group_begin();
-      it != v.group_end();
+  for(flwor_expr::group_list_t::const_iterator it = v.group_vars_begin();
+      it != v.group_vars_end();
       ++it)
   {
     rchandle<var_expr> var = (*it)->getInnerVar();
@@ -408,8 +408,8 @@ bool begin_visit (flwor_expr& v) {
     fvar_iter_map.put(k, new vector<ForVarIter_t>());
   }
 
-  for(flwor_expr::group_list_t::const_iterator it = v.non_group_begin();
-      it != v.non_group_end();
+  for(flwor_expr::group_list_t::const_iterator it = v.non_group_vars_begin();
+      it != v.non_group_vars_end();
       ++it)
   {
     rchandle<var_expr> var = (*it)->getInnerVar();
@@ -451,8 +451,8 @@ void end_visit (flwor_expr& v)
   group_where = pop_itstack();
    
   vector<flwor::GroupingOuterVar> nonGroupBys;
-  for(flwor_expr::group_list_t::reverse_iterator i = v.non_group_rbegin();
-      i != v.non_group_rend();
+  for(flwor_expr::group_list_t::reverse_iterator i = v.non_group_vars_rbegin();
+      i != v.non_group_vars_rend();
       ++i)
   {
     rchandle<group_clause> group = *i;
@@ -466,8 +466,8 @@ void end_visit (flwor_expr& v)
   }
   
   vector<flwor::GroupingSpec> groupBys;
-  for(flwor_expr::group_list_t::reverse_iterator i = v.group_rbegin();
-      i != v.group_rend();
+  for(flwor_expr::group_list_t::reverse_iterator i = v.group_vars_rbegin();
+      i != v.group_vars_rend();
       ++i)
   {
     rchandle<group_clause> group = *i;
@@ -493,15 +493,15 @@ void end_visit (flwor_expr& v)
   
   vector<flwor::ForLetClause> clauses;
   stack<PlanIter_t> inputs;
-  for (vector<rchandle<forlet_clause> >::const_iterator it = v.clause_begin ();
-       it != v.clause_end();
+  for (vector<rchandle<forlet_clause> >::const_iterator it = v.forlet_begin ();
+       it != v.forlet_end();
        ++it)
   {
     inputs.push(pop_itstack());
   }
 
-  for (vector<rchandle<forlet_clause> >::const_iterator it = v.clause_begin ();
-       it != v.clause_end();
+  for (vector<rchandle<forlet_clause> >::const_iterator it = v.forlet_begin ();
+       it != v.forlet_end();
        ++it) 
   {
     PlanIter_t input = pop_stack(inputs);

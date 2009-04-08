@@ -41,3 +41,9 @@ class XQueryCompilerSubsystemImpl : public XQueryCompilerSubsystem
 } /* namespace zorba */
 #endif /* ZORBA_COMPILER_API_IMPL_H */
 /* vim:set ts=2 sw=2: */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

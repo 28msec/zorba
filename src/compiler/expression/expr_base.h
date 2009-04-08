@@ -70,6 +70,9 @@ enum expr_kind_t {
 class expr_visitor;
 
 class expr_iterator_data;
+
+class expr_iterator;
+
 class expr_iterator {
   // should be an auto_ptr, but older gcc's don't like auto_ptr w/ forward decl
   expr_iterator_data *iter;
@@ -95,11 +98,13 @@ public:
  | base class for the expression tree node hierarchy
  |_______________________________________________________________________*/
 
-class expr : public SimpleRCObject, public AnnotationHolder {
+class expr : public SimpleRCObject, public AnnotationHolder 
+{
 public:
-  virtual expr_kind_t get_expr_kind () const { return expr_kind; }
   typedef rchandle<expr> expr_t;
+
   typedef std::map<var_expr *, expr_t> substitution_t;
+
   typedef substitution_t::iterator subst_iter_t;
 
 protected:
@@ -117,7 +122,9 @@ protected:
       static_context *sctx;
     } type;
   } cache;
+
   void invalidate () { cache.type.valid = false; }
+
   // Returns true if all modifiers, as well as all accessors that permit future
   // modifications of child expressions, call invalidate(). Note that expr
   // iterators are compliant.
@@ -129,7 +136,10 @@ protected:
 public:
   expr() {};
   expr(const QueryLoc&);
+
   virtual ~expr();
+
+  virtual expr_kind_t get_expr_kind () const { return expr_kind; }
 
 public:
   const QueryLoc &get_loc() const { return loc; }
@@ -152,9 +162,11 @@ public:
   virtual bool is_updating() { return false; }
 };
 
+
 typedef rchandle<expr> expr_t;
 
-class expr_iterator_data {
+class expr_iterator_data 
+{
 protected:
   expr *e;
   
@@ -164,10 +176,11 @@ public:
   
 public:
   expr_iterator_data (expr *e_) : e (e_), i (NULL), state (0) {}
+
   virtual ~expr_iterator_data () {}
-  virtual void next () {
-    e->next_iter (*this);
-  }
+
+  virtual void next () { e->next_iter (*this); }
+
   bool done () const;
 };
 

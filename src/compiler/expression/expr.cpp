@@ -81,7 +81,7 @@ public:
 
 class flwor_expr_iterator_data : public expr_iterator_data {
 public:
-  flwor_expr::clause_list_t::iterator clause_iter;
+  flwor_expr::forlet_list_t::iterator clause_iter;
   flwor_expr::group_list_t::iterator group_iter;
   flwor_expr::group_list_t::iterator non_group_iter;
   flwor_expr::orderspec_list_t::iterator order_mod_iter;
@@ -369,20 +369,54 @@ expr::expr_t var_expr::clone(expr::substitution_t& substitution)
 }
 
 forlet_clause *var_expr::get_forlet_clause() const
-{ return dynamic_cast<forlet_clause *> (m_forlet_clause); }
+{
+  return dynamic_cast<forlet_clause *> (m_forlet_clause); 
+}
 
-// [33] [http://www.w3.org/TR/xquery/#prod-xquery-FLWORExpr]
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  FLWORExpr : [http://www.w3.org/TR/xquery/#prod-xquery-FLWORExpr]           //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 
+#ifdef ZORBA_DEBUGGER
+/******************************************************************************
+
+********************************************************************************/
+void flwor_clause::set_bound_variables(checked_vector<var_expr_t> &aScopedVariables)
+{
+  std::set<store::Item_t> lQNames;
+  checked_vector<var_expr_t>::reverse_iterator it;
+  for ( it = aScopedVariables.rbegin(); it != aScopedVariables.rend(); ++it )
+  {
+    if ( lQNames.find( (*it)->get_varname() ) == lQNames.end() )
+    {
+      lQNames.insert( (*it)->get_varname() );
+      var_expr_t lValue = (*it);
+      //var_expr_t lVariable( new var_expr( lValue->get_loc(), var_expr::eval_var, lValue->get_varname() ) );
+      //lVariable->set_type( lValue->get_type() );
+      //theBoundVariables.push_back(bound_var(&*lVariable, lVariable, lValue.getp()));
+      theBoundVariables.push_back(bound_var(&*lValue, lValue, lValue.getp()));
+    }
+  } 
+}
+#endif
+
+
+/******************************************************************************
+
+********************************************************************************/
 forlet_clause::forlet_clause(
-  enum forlet_t _type,
+  enum forlet_t kind,
   varref_t _var_h,
   varref_t _pos_var_h,
   varref_t _score_var_h,
   expr_t _expr_h)
-:
+  :
   flwor_initial_clause (_var_h, _expr_h),
-  type(_type),
+  theKind(kind),
   pos_var_h(_pos_var_h),
   score_var_h(_score_var_h)
 {
@@ -397,6 +431,10 @@ forlet_clause::forlet_clause(
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 rchandle<forlet_clause> forlet_clause::clone(expr::substitution_t& substitution)
 {
   expr_t expr_copy_h = expr_h->clone(substitution);
@@ -418,14 +456,117 @@ rchandle<forlet_clause> forlet_clause::clone(expr::substitution_t& substitution)
     substitution[score_var_ptr] = score_var_copy_h.getp();
   }
 
-  return new forlet_clause(type, var_copy_h, pos_var_copy_h, score_var_copy_h, expr_copy_h);
+  return new forlet_clause(theKind,
+                           var_copy_h,
+                           pos_var_copy_h,
+                           score_var_copy_h,
+                           expr_copy_h);
 }
 
-void orderby_gclause::init_clauses () {
+
+/*******************************************************************************
+
+********************************************************************************/
+expr_iterator_data *flwor_expr::make_iter () 
+{
+  return new flwor_expr_iterator_data (this);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void flwor_expr::next_iter (expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER2 (flwor_expr);
+
+  ITER_FOR_EACH (clause_iter,
+                 theForLetClauses.begin (),
+                 theForLetClauses.end (),
+                 (*vv.clause_iter)->expr_h);
+  
+  ITER (where_h);
+
+  ITER_FOR_EACH (group_iter,
+                 theGroupingVarClauses.begin(),
+                 theGroupingVarClauses.end(),
+                 (*vv.group_iter)->theOuterVar);
+
+  ITER_FOR_EACH (non_group_iter,
+                 theNonGroupingVarClauses.begin(),
+                 theNonGroupingVarClauses.end(),
+                 (*vv.non_group_iter)->theOuterVar);
+
+  ITER (group_where_h);
+
+  ITER_FOR_EACH (order_mod_iter, orderspec_begin (), orderspec_end (),
+                 (*vv.order_mod_iter).first);
+
+  ITER (retval_h);
+  
+  END_EXPR_ITER(); 
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+flwor_expr::forlet_list_t::iterator flwor_expr::remove_forlet(
+    flwor_expr::forlet_list_t::iterator i) 
+{
+  (*i)->get_var ()->set_forlet_clause (NULL);
+  var_expr *pvar = (*i)->get_pos_var ();
+  if (pvar != NULL)
+    pvar->set_forlet_clause (NULL);
+  return theForLetClauses.erase(i);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+expr::expr_t flwor_expr::clone(expr::substitution_t& substitution)
+{
+  expr_t flwor_copy = new flwor_expr(get_loc());
+
+  flwor_copy->setUpdateType(getUpdateType());
+
+  flwor_expr *flwor_copy_ptr = static_cast<flwor_expr *>(flwor_copy.getp());
+
+  for(forlet_list_t::iterator i = theForLetClauses.begin();
+      i != theForLetClauses.end(); ++i) 
+  {
+    flwor_copy_ptr->add((*i)->clone(substitution));
+  }
+
+  for(orderspec_list_t::iterator i = orderspec_v.begin(); i != orderspec_v.end(); ++i) 
+  {
+    expr_t e_copy = i->first->clone(substitution);
+    flwor_copy_ptr->add(orderspec_t(e_copy, i->second));
+  }
+
+  flwor_copy_ptr->set_order_stable(order_stable);
+
+  if (where_h.getp()) {
+    flwor_copy_ptr->set_where(where_h->clone(substitution));
+  }
+
+  flwor_copy_ptr->set_retval(retval_h->clone(substitution));
+
+  return flwor_copy;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void orderby_gclause::init_clauses () 
+{
   for (unsigned i = 0; i < rebind_list.size (); i++) {
     rebind_list [i].second->set_forlet_clause (rebind_list [i].first->get_flwor_clause ());
   }
 }
+
 
 forletwin_gclause::forletwin_gclause(enum forlet_t _type,
                                      varref_t _var_h,
@@ -455,67 +596,6 @@ forletwin_gclause::forletwin_gclause(enum forlet_t _type,
     win_stop->set_forlet_clause (this);
 }
 
-flwor_expr::clause_list_t::iterator flwor_expr::remove_forlet_clause(flwor_expr::clause_list_t::iterator i) {
-  (*i)->get_var ()->set_forlet_clause (NULL);
-  var_expr *pvar = (*i)->get_pos_var ();
-  if (pvar != NULL)
-    pvar->set_forlet_clause (NULL);
-  return clause_v.erase(i);
-}
-
-expr_iterator_data *flwor_expr::make_iter () {
-  return new flwor_expr_iterator_data (this);
-}
-
-void flwor_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER2 (flwor_expr);
-
-  ITER_FOR_EACH (clause_iter, clause_v.begin (), clause_v.end (),
-                 (*vv.clause_iter)->expr_h);
-  
-  ITER (where_h);
-
-  ITER_FOR_EACH (group_iter, group_v.begin(), group_v.end(),
-                 (*vv.group_iter)->theOuterVar);
-
-  ITER_FOR_EACH (non_group_iter, non_group_v.begin(), non_group_v.end(),
-                 (*vv.non_group_iter)->theOuterVar);
-
-  ITER (group_where_h);
-
-  ITER_FOR_EACH (order_mod_iter, orderspec_begin (), orderspec_end (),
-                 (*vv.order_mod_iter).first);
-
-  ITER (retval_h);
-  
-  END_EXPR_ITER(); 
-}
-
-expr::expr_t flwor_expr::clone(expr::substitution_t& substitution)
-{
-  expr_t flwor_copy = new flwor_expr(get_loc());
-  flwor_copy->setUpdateType(getUpdateType());
-  flwor_expr *flwor_copy_ptr = static_cast<flwor_expr *>(flwor_copy.getp());
-
-  for(clause_list_t::iterator i = clause_v.begin(); i != clause_v.end(); ++i) {
-    flwor_copy_ptr->add((*i)->clone(substitution));
-  }
-
-  for(orderspec_list_t::iterator i = orderspec_v.begin(); i != orderspec_v.end(); ++i) {
-    expr_t e_copy = i->first->clone(substitution);
-    flwor_copy_ptr->add(orderspec_t(e_copy, i->second));
-  }
-
-  flwor_copy_ptr->set_order_stable(order_stable);
-
-  if (where_h.getp()) {
-    flwor_copy_ptr->set_where(where_h->clone(substitution));
-  }
-
-  flwor_copy_ptr->set_retval(retval_h->clone(substitution));
-
-  return flwor_copy;
-}
 
 void flwor_wincond::vars::set_forlet_clause (forletwin_gclause *c) {
   if (posvar != NULL) posvar->set_forlet_clause (c);
@@ -572,6 +652,8 @@ void gflwor_expr::next_iter (expr_iterator_data& v) {
   
   END_EXPR_ITER(); 
 }
+
+
 
 catch_clause::catch_clause()
   : nametest_h(NULL),

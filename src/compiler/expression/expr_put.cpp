@@ -163,8 +163,8 @@ ostream& flwor_expr::put( ostream& os) const
 {
   BEGIN_EXPR (flwor_expr);;
 
-  vector<forletref_t>::const_iterator it = clause_begin();
-  for (; it!=clause_end(); ++it)
+  vector<forletref_t>::const_iterator it = forlet_begin();
+  for (; it != forlet_end(); ++it)
   {
     forletref_t fl_h = *it;
     fl_h->put(os);
@@ -172,8 +172,8 @@ ostream& flwor_expr::put( ostream& os) const
 
   PUT_SUB ("WHERE", where_h);
 
-  for (flwor_expr::group_list_t::const_iterator lIter = group_begin();
-       lIter != group_end();
+  for (flwor_expr::group_list_t::const_iterator lIter = group_vars_begin();
+       lIter != group_vars_end();
        ++lIter)
   {
     groupref_t lGroup = *lIter;

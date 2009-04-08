@@ -59,8 +59,10 @@ template<typename T> void exprs_to_holders (T exprs_begin, T exprs_end, vector <
 static void mark_for_vars_ignoring_sort (flwor_expr *flwor) {
   Annotation::key_t k = AnnotationKey::IGNORES_SORTED_NODES;
   Annotation::value_ref_t v = flwor->get_annotation (k);
-  for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
-        i != flwor->clause_end(); i++) {
+  for (flwor_expr::forlet_list_t::iterator i = flwor->forlet_begin();
+       i != flwor->forlet_end();
+       ++i) 
+  {
     flwor_expr::forletref_t ref = *i;
     varref_t vref = ref->get_var();
     varref_t pvref = ref->get_pos_var ();
@@ -73,8 +75,8 @@ static void mark_for_vars_ignoring_sort (flwor_expr *flwor) {
 // Assume all LET var values could ignore sort order and duplicate nodes,
 // and allow expressions further down the tree to challenge this assumption.
 static void init_let_vars_consumer_props (flwor_expr *flwor) {
-  for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
-        i != flwor->clause_end(); i++)
+  for (flwor_expr::forlet_list_t::iterator i = flwor->forlet_begin();
+        i != flwor->forlet_end(); i++)
   {
     int todo = 0;
     flwor_expr::forletref_t ref = *i;
@@ -102,8 +104,8 @@ static void init_let_vars_consumer_props (flwor_expr *flwor) {
 static bool analyze_let_vars_consumer_props (flwor_expr *flwor) {
   bool modified = false;
 
-  for (flwor_expr::clause_list_t::reverse_iterator i = flwor->clause_rbegin();
-       i != flwor->clause_rend(); i++)
+  for (flwor_expr::forlet_list_t::reverse_iterator i = flwor->forlet_rbegin();
+       i != flwor->forlet_rend(); i++)
   {
     flwor_expr::forletref_t ref = *i;
     varref_t vref = ref->get_var();

@@ -37,70 +37,129 @@ static store::Item_t get_uri(expr *e)
   return NULL;
 }
 
+
 RULE_REWRITE_PRE(ExpandBuildIndex)
 {
-  if (node->get_expr_kind() == fo_expr_kind) {
+  if (node->get_expr_kind() == fo_expr_kind) 
+  {
     fo_expr *fo = static_cast<fo_expr *>(&*node);
-    if (fo->get_func() == LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "build-index", 1)) {
+
+    if (fo->get_func() == LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "build-index", 1)) 
+    {
+      //
+      // Get index uri
+      //
       store::Item_t uri_item(get_uri((*fo)[0].getp()));
       if (uri_item == NULL) {
         ZORBA_ASSERT(false);
       }
       xqpStringStore_t uristore;
       uri_item->getStringValue(uristore);
+
+      //
+      // Get ValueIndex obj from static ctx.
+      //
       xqp_string uri(uristore);
       ValueIndex *vi = rCtx.getStaticContext()->lookup_index(uri);
       if (vi == NULL) {
         ZORBA_ASSERT(false);
       }
+
       std::vector<expr_t> se_args;
+
+      //
+      // create index-session-opener(uri) expr
+      // 
       expr_t open_index_arg(new const_expr(fo->get_loc(), uri_item));
-      expr_t open_index(new fo_expr(fo->get_loc(), LOOKUP_OP1("index-session-opener"), open_index_arg));
+      expr_t open_index(new fo_expr(fo->get_loc(),
+                                    LOOKUP_OP1("index-session-opener"),
+                                    open_index_arg));
       se_args.push_back(open_index);
 
+      //
+      // Create FOR clause:
+      // for $$dot at $$pos in domain_expr
+      //
       expr::substitution_t subst;
-
-      flwor_expr::clause_list_t clauses;
-      expr_t de = vi->getDomainExpression()->clone(subst);
+      flwor_expr::forlet_list_t clauses;
       var_expr_t dot = vi->getDomainVariable();
       var_expr_t pos = vi->getDomainPositionVariable();
-      var_expr_t newdot = new var_expr(dot->get_loc(), dot->get_kind(), dot->get_varname());
-      var_expr_t newpos = new var_expr(pos->get_loc(), pos->get_kind(), pos->get_varname());
+
+      expr_t newdom = vi->getDomainExpression()->clone(subst);
+
+      var_expr_t newdot = new var_expr(dot->get_loc(),
+                                       dot->get_kind(),
+                                       dot->get_varname());
+      var_expr_t newpos = new var_expr(pos->get_loc(),
+                                       pos->get_kind(),
+                                       pos->get_varname());
       subst[dot] = newdot;
       subst[pos] = newpos;
-      flwor_expr::forletref_t fc = new forlet_clause(forlet_clause::for_clause, newdot, newpos, NULL, de);
+      flwor_expr::forletref_t fc = new forlet_clause(forlet_clause::for_clause,
+                                                     newdot,
+                                                     newpos,
+                                                     NULL,
+                                                     newdom);
       newdot->set_forlet_clause(fc);
       newpos->set_forlet_clause(fc);
 
       clauses.push_back(fc);
 
-      std::vector<expr_t> index_insert_args;
-      expr_t insert_index_uri(new const_expr(fo->get_loc(), uri_item));
-      index_insert_args.push_back(insert_index_uri);
+      //
+      // Create RETURN clause:
+      // return index-builder(uri, $$dot, field1_expr, ..., fieldN_expr)
+      //
+      std::vector<expr_t> index_builder_args;
+      expr_t insert_builder_uri(new const_expr(fo->get_loc(), uri_item));
+      index_builder_args.push_back(insert_builder_uri);
 
-      expr_t insert_index_var(new wrapper_expr(fo->get_loc(), newdot.getp()));
-      index_insert_args.push_back(insert_index_var);
+      expr_t index_builder_var(new wrapper_expr(fo->get_loc(), newdot.getp()));
+      index_builder_args.push_back(index_builder_var);
 
       const std::vector<expr_t>& idx_fields(vi->getIndexFieldExpressions());
       int n = idx_fields.size();
-      for(int i = 0; i < n; ++i) {
-        index_insert_args.push_back(idx_fields[i]->clone(subst));
+      for(int i = 0; i < n; ++i) 
+      {
+        index_builder_args.push_back(idx_fields[i]->clone(subst));
       }
-      expr_t re(new fo_expr(fo->get_loc(), LOOKUP_OPN("index-builder"), index_insert_args));
+
+      expr_t ret_clause(new fo_expr(fo->get_loc(),
+                                    LOOKUP_OPN("index-builder"),
+                                    index_builder_args));
       
-      rchandle<flwor_expr> flwor = new flwor_expr(fo->get_loc(), clauses, re);
+      //
+      // Create flwor_expr with the above FOR and RETURN clauses.
+      //
+      rchandle<flwor_expr> flwor = new flwor_expr(fo->get_loc(), clauses, ret_clause);
 
       se_args.push_back(flwor.getp());
 
+      //
+      // Create index-session-closer(uri) expr.
+      //
       expr_t close_index_arg(new const_expr(fo->get_loc(), uri_item));
-      expr_t close_index(new fo_expr(fo->get_loc(), LOOKUP_OP1("index-session-closer"), close_index_arg));
+      expr_t close_index(new fo_expr(fo->get_loc(),
+                                     LOOKUP_OP1("index-session-closer"),
+                                     close_index_arg));
       se_args.push_back(close_index);
+
+      //
+      // Create sequential_expr:
+      //
+      // index-session-opener(uri);
+      //
+      // for $$dot at $$pos in domain_expr
+      // return index-builder(uri, $$dot, field1_expr, ..., fieldN_expr);
+      //
+      // index-session-closer(uri);
+      //
       expr_t se = new sequential_expr(fo->get_loc(), se_args);
       return se;
     }
   }
   return NULL;
 }
+
 
 RULE_REWRITE_POST(ExpandBuildIndex)
 {

@@ -117,8 +117,8 @@ RULE_REWRITE_POST(MarkFreeVars)
     if (node->get_expr_kind () == flwor_expr_kind) 
     {
       flwor_expr *flwor = dynamic_cast<flwor_expr *> (node);
-      for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin ();
-           i != flwor->clause_end ();
+      for (flwor_expr::forlet_list_t::iterator i = flwor->forlet_begin ();
+           i != flwor->forlet_end ();
            i++) 
       {
         flwor_expr::forletref_t clause = *i;
