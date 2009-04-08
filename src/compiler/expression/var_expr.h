@@ -22,7 +22,36 @@ namespace zorba {
 
 /******************************************************************************
 
-  var_expr represents a variable reference within any kind of expression.
+  var_expr represents a variable. There is one var_expr for each distinct
+  variable declared anywhere inside a query body or prolog. 
+
+  var_expr represents both the var declaration and all references of the var.
+  However, each distinct reference to a var is wrapped in wrapper_expr. For
+  example, the exprs F($x) and G($x) are modelled in the expr tree as:
+
+       F               G
+       |               |
+   wrapper_expr    wrapper_expr 
+         \             /
+          \           /
+           var_expr($x)
+  
+
+  For context vars with a defining expr, the mapping between the var qname and
+  the defining expr is explicitly stored by creating an 
+  fn:ctxvar-assign(qname_expr, def_expr) expr (see method
+  wrap_in_globalvar_assign() in translator.cpp).
+
+  For vars declared in FOR, LET, or WINDOW clauses, their defining expr is
+  stored in the associated clause (see theForletClause data member below).
+
+  theKind        : The kind of the variable (see var_kind enum below)
+  theVarName     : The fully expanded qname of the var (qname item) 
+  theStaticType  : The static type of the variable
+  theForletClause: If this is a var declared in a FOR, LET, or WINDOW clause,
+                   theForletClause points to the defining clause. That clause
+                   also contains the defining expr for the var and a pointer
+                   back to this var_exr. 
 
 *******************************************************************************/
 
