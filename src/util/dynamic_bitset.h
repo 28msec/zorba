@@ -22,105 +22,141 @@
 
 namespace zorba {
 
-class DynamicBitset {
-  private:
-    typedef std::vector<uint8_t> bits_t;
+class DynamicBitset 
+{
+private:
+  typedef std::vector<uint8_t> bits_t;
 
-  public:
-    DynamicBitset() { }
-    DynamicBitset(int size)
-      : m_size(size),
-      m_bits((size >> 3) + ((size & 7) ? 1 : 0)) { }
-    ~DynamicBitset() { }
+private:
+  int    m_num_bits;
+  bits_t m_bits;
 
-    int size() const
+public:
+  DynamicBitset() { }
+
+  DynamicBitset(int size)
+    :
+    m_num_bits(size),
+    m_bits((size >> 3) + ((size & 7) ? 1 : 0)) 
+  { 
+  }
+
+  ~DynamicBitset() { }
+
+  int size() const
+  {
+    return m_num_bits;
+  }
+
+  void getSet(std::vector<int>& set) const
+  {
+    int numBytes = m_bits.size();
+    for (int i = 0; i < numBytes; ++i)
     {
-      return m_size;
-    }
+      if (m_bits[i] == 0)
+        continue;
 
-    bool get(int bit) const
-    {
-      int off = getByteIndex(bit);
-      if (m_bits.size() <= (unsigned)off) {
-        return false;
-      }
-      uint8_t byte = m_bits[off];
-      return (byte & (1 << getBitWithinByte(bit))) != 0;
-    }
-
-    void set(int bit, bool value)
-    {
-      int off = getByteIndex(bit);
-      if (!value && m_bits.size() <= (unsigned)off) {
-        return;
-      }
-      if (m_bits.size() <= (unsigned)off) {
-        m_bits.resize(off + 1);
-      }
-      int bitnum = getBitWithinByte(bit);
-      if (value) {
-        m_bits[off] |= (1 << bitnum);
-      } else {
-        m_bits[off] &= ~(1 << bitnum);
+      for (int j = 0; j < 8; ++j) 
+      {
+        if ((m_bits[i] & (128 >> j)) != 0) // 128 = 1000 0000
+          set.push_back(i * 8 + j);
       }
     }
+  }
 
-    void reset()
+
+  bool get(int bit) const
+  {
+    int off = getByteIndex(bit);
+    if (m_bits.size() <= (unsigned)off) {
+      return false;
+    }
+    uint8_t byte = m_bits[off];
+    return (byte & (1 << getBitWithinByte(bit))) != 0;
+  }
+
+  void set(int bit, bool value)
+  {
+    int off = getByteIndex(bit);
+    if (!value && m_bits.size() <= (unsigned)off) {
+      return;
+    }
+    if (m_bits.size() <= (unsigned)off) {
+      m_bits.resize(off + 1);
+    }
+    int bitnum = getBitWithinByte(bit);
+    if (value) 
     {
-      bits_t::iterator end = m_bits.end();
-      for(bits_t::iterator i = m_bits.begin(); i != end; ++i) {
-        *i = 0;
-      }
+      m_bits[off] |= (1 << bitnum);
+    }
+    else 
+    {
+      m_bits[off] &= ~(1 << bitnum);
+    }
+  }
+  
+  void reset()
+  {
+    bits_t::iterator end = m_bits.end();
+    for(bits_t::iterator i = m_bits.begin(); i != end; ++i) 
+    {
+      *i = 0;
+    }
+  }
+  
+  DynamicBitset& set_union(const DynamicBitset& rhs)
+  {
+    int idx = 0;
+    while((unsigned)idx < m_bits.size() && (unsigned)idx < rhs.m_bits.size()) 
+    {
+      m_bits[idx] |= rhs.m_bits[idx];
+      ++idx;
     }
 
-    DynamicBitset& set_union(const DynamicBitset& rhs)
+    if ((unsigned)idx < rhs.m_bits.size()) 
     {
-      int idx = 0;
-      while((unsigned)idx < m_bits.size() && (unsigned)idx < rhs.m_bits.size()) {
-        m_bits[idx] |= rhs.m_bits[idx];
-        ++idx;
+      m_bits.resize(rhs.m_bits.size());
+      while((unsigned)idx < rhs.m_bits.size()) {
+        m_bits.push_back(rhs.m_bits[idx++]);
       }
-      if ((unsigned)idx < rhs.m_bits.size()) {
-        m_bits.resize(rhs.m_bits.size());
-        while((unsigned)idx < rhs.m_bits.size()) {
-          m_bits.push_back(rhs.m_bits[idx++]);
-        }
-      }
-      return *this;
     }
-
-    DynamicBitset& set_intersect(const DynamicBitset& rhs)
-    {
-      int idx = 0;
-      while((unsigned)idx < m_bits.size() && (unsigned)idx < rhs.m_bits.size()) {
-        m_bits[idx] &= rhs.m_bits[idx];
-        ++idx;
-      }
-      while((unsigned)idx < m_bits.size()) {
-        m_bits[idx++] = 0;
-      }
-      return *this;
+    return *this;
+  }
+  
+  DynamicBitset& set_intersect(const DynamicBitset& rhs)
+  {
+    int idx = 0;
+    while((unsigned)idx < m_bits.size() && (unsigned)idx < rhs.m_bits.size()) {
+      m_bits[idx] &= rhs.m_bits[idx];
+      ++idx;
     }
-
-  private:
-    int m_size;
-    bits_t m_bits;
-
-    static int getByteIndex(int bit)
-    {
-      return bit >> 3;
+    while((unsigned)idx < m_bits.size()) {
+      m_bits[idx++] = 0;
     }
+    return *this;
+  }
 
-    static int getBitWithinByte(int bit)
-    {
-      return bit & 7;
-    }
+
+private:
+  static int getByteIndex(int bit)
+  {
+    return bit >> 3;
+  }
+  
+  static int getBitWithinByte(int bit)
+  {
+    // bit = 8 ==> bit & 7 = 0,
+    // bit = 9 ==> bit & 7 = 1, etc
+    return bit & 7;
+  }
 };
+
 
 std::ostream& operator <<(std::ostream& s, const DynamicBitset& set)
 {
   s << "BitSet[" << set.size() << "] = {";
-  for(int i = 0; i < set.size(); ++i) {
+  for(int i = 0; i < set.size(); ++i) 
+  {
     if (set.get(i)) {
       s << i << ", ";
     }
