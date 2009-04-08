@@ -25,30 +25,51 @@ namespace zorba {
 class RewriterContext;
 class RewriteRule;
 
-class RuleMajorDriver : public Rewriter {
-  public:
-    RuleMajorDriver();;
-    virtual ~RuleMajorDriver();
+/***************************************************************************//**
+  Represents a class of rules that are applied "together". This means that the
+  rules that are registered with a RuleMajorDriver R are applied one after the
+  other in the order that they were registerred; if any of these rules modifies
+  the expression graph, the whole set of rules are applied again. This process
+  (which is implemented by the rewrite() method) repeats until the first full
+  appliaction of the rule set that produces no graph modifications. No rules
+  other than those belonging to R are applied while R->rewrite() is running.
+********************************************************************************/
+class RuleMajorDriver : public Rewriter 
+{
+public:
+  typedef rchandle<RewriteRule> rule_ptr_t;
+  typedef std::vector<rule_ptr_t> rules_t;
 
-    void rewrite(RewriterContext& rCtx);
+protected:
+  rules_t m_rules;
 
-    typedef rchandle<RewriteRule> rule_ptr_t;
-    typedef std::vector<rule_ptr_t> rules_t;
+public:
+  RuleMajorDriver();;
 
-  protected:
-    rules_t m_rules;
+  virtual ~RuleMajorDriver();
 
-    void rewriteRuleMajor(RewriterContext& rCtx);
-    expr_t rewriteRec(RewriterContext& rCtx, RewriteRule *rule, expr *parent, bool& modified);
+  void rewrite(RewriterContext& rCtx);
+
+protected:
+  void rewriteRuleMajor(RewriterContext& rCtx);
+
+  expr_t rewriteRec(RewriterContext& rCtx, RewriteRule *rule, expr *parent, bool& modified);
 };
 
-class SingletonRuleMajorDriverBase : public RuleMajorDriver {
+
+/***************************************************************************//**
+  A RuleMajorDriver whose rule set contains a single rule.
+********************************************************************************/
+class SingletonRuleMajorDriverBase : public RuleMajorDriver 
+{
 public:
   SingletonRuleMajorDriverBase (rule_ptr_t rule) { m_rules.push_back(rule); }
 };
 
+
 template <class R>
-class SingletonRuleMajorDriver : public SingletonRuleMajorDriverBase {
+class SingletonRuleMajorDriver : public SingletonRuleMajorDriverBase 
+{
 public:
   SingletonRuleMajorDriver() : SingletonRuleMajorDriverBase (rule_ptr_t (new R ())) {}
 };

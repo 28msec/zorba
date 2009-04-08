@@ -25,17 +25,24 @@ namespace zorba {
 class CompilerCB;
 class RewriterContext;
 
-class RewriteRule : public SimpleRCObject {
-  public:
-    virtual ~RewriteRule() { }
+class RewriteRule : public SimpleRCObject 
+{
+public:
+  virtual ~RewriteRule() { }
 
-    virtual const std::string& getRuleName() const = 0;
+  virtual const std::string& getRuleName() const = 0;
 
-    virtual expr_t rewritePre(expr *node, RewriterContext& rCtx) = 0;
-    virtual expr_t rewritePost(expr *node, RewriterContext& rCtx) = 0;
+  virtual expr_t rewritePre(expr *node, RewriterContext& rCtx) = 0;
+  virtual expr_t rewritePost(expr *node, RewriterContext& rCtx) = 0;
 };
 
 }
 
 #endif /* ZORBA_REWRITE_RULE_H */
 /* vim:set ts=2 sw=2: */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

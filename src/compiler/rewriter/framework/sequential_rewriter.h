@@ -20,22 +20,37 @@
 #include "common/shared_types.h"
 #include "compiler/rewriter/framework/rewriter.h"
 
-namespace zorba {
+namespace zorba 
+{
 
-class SequentialRewriter : public Rewriter {
-  public:
-    void rewrite(RewriterContext& rCtx);
+/***************************************************************************//**
+  Contains a vector V of other rewrites. SequentialRewriter::rewrite() simply
+  invokes the rewrtite() method on the rewriters in V, in the order that these
+  rewriters appear in V.
+********************************************************************************/
+class SequentialRewriter : public Rewriter 
+{
+public:
+  void rewrite(RewriterContext& rCtx);
 
-  protected:
-    typedef rchandle<Rewriter> rewriter_ptr_t;
-    typedef std::vector<rewriter_ptr_t> rewriters_t;
-    SequentialRewriter();
-    ~SequentialRewriter() throw ();
+protected:
+  typedef rchandle<Rewriter> rewriter_ptr_t;
+  typedef std::vector<rewriter_ptr_t> rewriters_t;
 
-    rewriters_t m_childRewriters;
+  SequentialRewriter();
+
+  ~SequentialRewriter() throw ();
+
+  rewriters_t m_childRewriters;
 };
 
 }
 
 #endif /* ZORBA_SEQUENTIAL_REWRITER_H */
 /* vim:set ts=2 sw=2: */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

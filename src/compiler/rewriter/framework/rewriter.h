@@ -21,7 +21,8 @@
 
 namespace zorba {
 
-class Rewriter : public SimpleRCObject {
+class Rewriter : public SimpleRCObject 
+{
   public:
     virtual ~Rewriter() { }
 
@@ -32,3 +33,9 @@ class Rewriter : public SimpleRCObject {
 
 #endif /* ZORBA_REWRITER_H */
 /* vim:set ts=2 sw=2: */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

@@ -22,14 +22,21 @@
 
 namespace zorba {
 
-RuleMajorDriver::RuleMajorDriver() { }
+RuleMajorDriver::RuleMajorDriver() 
+{ 
+}
 
-RuleMajorDriver::~RuleMajorDriver() { }
+
+RuleMajorDriver::~RuleMajorDriver() 
+{
+}
+
 
 void RuleMajorDriver::rewrite(RewriterContext& rCtx)
 {
   rewriteRuleMajor(rCtx);
 }
+
 
 void RuleMajorDriver::rewriteRuleMajor(RewriterContext& rCtx)
 {
