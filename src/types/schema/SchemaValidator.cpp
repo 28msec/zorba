@@ -28,7 +28,8 @@
 //using namespace std;
 using namespace XERCES_CPP_NAMESPACE;
 
-namespace zorba {
+namespace zorba
+{
 
 SchemaValidator::SchemaValidator(TypeManager *typeManager, XERCES_CPP_NAMESPACE::XMLGrammarPool *grammarPool,
     bool isLax, const QueryLoc& loc)
@@ -127,12 +128,12 @@ store::Item_t SchemaValidator::getTypeQName()
     StrX typeName(_schemaValidatorFilter->getTypeName());
     StrX typeUri(_schemaValidatorFilter->getTypeUri());
 
-    //cout << "  - getTypeQName: " << typeName << "@" << typeUri <<" "; 
+    //cout << "  - getTypeQName: " << typeName << "@" << typeUri <<" ";
 
     store::Item_t typeQName;
     GENV_ITEMFACTORY->createQName(typeQName, typeUri.localFormOrDefault (Schema::XSD_NAMESPACE), "", typeName.localFormOrDefault ("anyType"));
 
-    //cout << " : " << typeQName->getLocalName()->c_str() << " @ " << typeQName->getNamespace()->c_str() <<"\n"; 
+    //cout << " : " << typeQName->getLocalName()->c_str() << " @ " << typeQName->getNamespace()->c_str() <<"\n";
 
     return typeQName;
 }
@@ -142,7 +143,7 @@ xqtref_t SchemaValidator::getType()
     StrX typeName(_schemaValidatorFilter->getTypeName());
     StrX typeUri(_schemaValidatorFilter->getTypeUri());
 
-    //cout << "  - getType: " << typeName << "@" << typeUri <<"\n"; 
+    //cout << "  - getType: " << typeName << "@" << typeUri <<"\n";
     
     store::Item_t typeQName;
     GENV_ITEMFACTORY->createQName(typeQName, typeUri.localFormOrDefault (Schema::XSD_NAMESPACE), "", typeName.localFormOrDefault ("anyType"));
@@ -152,12 +153,12 @@ xqtref_t SchemaValidator::getType()
 }
 
 //
-void SchemaValidator::startType(store::Item_t typeName)
+void SchemaValidator::startType(store::Item_t typeQName)
 {
-    XMLChArray uri(typeName->getNamespace()->c_str());
-    XMLChArray localname(typeName->getLocalName()->c_str()); 
+    XMLChArray uri(typeQName->getNamespace()->c_str());
+    XMLChArray localname(typeQName->getLocalName()->c_str());
     
-    //cout << "   SType: " << typeName->getLocalName()->c_str() << " @ " << typeQName->getNamespace()->c_str() << "\n";
+    //cout << "   SType: " << typeQName->getLocalName()->c_str() << " @ " << typeQName->getNamespace()->c_str() << "\n";
 
     _schemaValidatorFilter->startTypeEvent(uri, localname);
 }

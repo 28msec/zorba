@@ -23,10 +23,12 @@
 
 #include <xercesc/framework/XMLDocumentHandler.hpp>
 #include <xercesc/framework/XMLErrorReporter.hpp>
-#include <xercesc/validators/schema/SchemaValidator.hpp>
 #include <xercesc/validators/schema/identity/IdentityConstraintHandler.hpp>
 #include <xercesc/internal/XMLScanner.hpp>
 #include <xercesc/util/RefHash3KeysIdPool.hpp>
+
+#include "types/schema/XercSchemaValidator.h"
+
 //daniel: this is to make cygwin work; xerces defines WIN32 in case of cygwin, which is wrong
 #ifdef CYGWIN
 #undef WIN32
@@ -146,12 +148,12 @@ private:
         unsigned int parentElemDepth);
     bool anyAttributeValidation(XERCES_CPP_NAMESPACE_QUALIFIER SchemaAttDef* attWildCard, unsigned int uriId, bool& skipThisOne, bool& laxThisOne);
     XERCES_CPP_NAMESPACE_QUALIFIER XMLElementDecl *createElementDecl(unsigned int uriId, unsigned int currentScope,
-        bool laxThisOne);
+        bool laxThisOne, bool isProcessorStipulatedTypeName);
 
     const LocationInfo *info_;
     const QueryLoc& _loc;
 
-    XERCES_CPP_NAMESPACE_QUALIFIER SchemaValidator *_fSchemaValidator;
+    XercSchemaValidator *_fSchemaValidator;
     XERCES_CPP_NAMESPACE_QUALIFIER SchemaGrammar *_fSchemaGrammar;
     XERCES_CPP_NAMESPACE_QUALIFIER XMLBuffer _fContent;
     XERCES_CPP_NAMESPACE_QUALIFIER IdentityConstraintHandler *_fICHandler;
@@ -170,7 +172,7 @@ private:
     unsigned int _attrCount;
     ValidationEventHandler *next_;
     
-    const XMLCh *_processorStipulatedTypeName;
+    XMLCh *_processorStipulatedTypeName;
     unsigned int _processorStipulatedTypeUriId;
 };
 

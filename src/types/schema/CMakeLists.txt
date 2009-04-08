@@ -24,6 +24,7 @@ IF (NOT ZORBA_NO_XMLSCHEMA)
         ValidationEventHandler.cpp
         Utils.cpp
         XercesParseUtils.cpp
+        XercSchemaValidator.cpp
         )
 ELSE (NOT ZORBA_NO_XMLSCHEMA)
     SET(SCHEMA_SRCS

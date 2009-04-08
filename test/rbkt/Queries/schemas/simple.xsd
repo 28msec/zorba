@@ -4,6 +4,7 @@
   xmlns="simple.xsd"
   elementFormDefault="qualified">
 
+
   <xs:element name="product" type="ProductType"/>
   <xs:element name="item" type="ItemType"/>
   <xs:element name="items" type="ItemsType"/>

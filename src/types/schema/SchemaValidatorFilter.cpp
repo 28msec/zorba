@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include <zorba/config.h>
+#include <xercesc/util/XMLString.hpp>
 #ifndef ZORBA_NO_XMLSCHEMA 
 
 #include "types/schema/SchemaValidatorFilter.h"
@@ -35,6 +36,7 @@
 #include "zorbaerrors/error_messages.h"
 #include "zorbaerrors/errors.h"
 #include "zorbatypes/xerces_xmlcharray.h"
+#include "types/schema/XercSchemaValidator.h"
 
 //using namespace std;
 XERCES_CPP_NAMESPACE_USE;
@@ -60,7 +62,7 @@ SchemaValidatorFilter::SchemaValidatorFilter(bool strictValidation, ValidationEv
     XMLScanner(0, grammarResolver, mm),
     info_(info),
     _loc(loc),
-    _fSchemaValidator(new (mm) XERCES_CPP_NAMESPACE::SchemaValidator(0, mm)),
+    _fSchemaValidator(new (mm) XercSchemaValidator(0, mm)),
     _fSchemaGrammar(0),
     _fContent(1023, mm),
     _fICHandler(0),
@@ -193,14 +195,13 @@ void SchemaValidatorFilter::processStartElement()
     {
         int colonPos = -1;
         unsigned int atUriId = resolveQName(_xsiType, fPrefixBuf, ElemStack::Mode_Element, colonPos);
-        ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->setXsiType(fPrefixBuf.getRawBuffer(), _xsiType + colonPos + 1, atUriId);
+        ((XercSchemaValidator*)fValidator)->setXsiType(fPrefixBuf.getRawBuffer(), _xsiType + colonPos + 1, atUriId);
     }
-    
-    if( _processorStipulatedTypeName )
+    bool isProcessorStipulatedTypeName = false;
+    if( _processorStipulatedTypeName && isRoot )
     {
-        ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->setXsiType(NULL, _processorStipulatedTypeName, _processorStipulatedTypeUriId);
-        _processorStipulatedTypeName = NULL;
-        _processorStipulatedTypeUriId = -1;                
+        isProcessorStipulatedTypeName = true;                
+        ((XercSchemaValidator*)fValidator)->setXsiType(NULL, _processorStipulatedTypeName, _processorStipulatedTypeUriId);
     } 
 
     //if schema, check if we should lax or skip the validation of this element
@@ -217,7 +218,7 @@ void SchemaValidatorFilter::processStartElement()
 
         if(fValidate) 
         {
-            currType = ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->getCurrentTypeInfo();
+            currType = ((XercSchemaValidator*)fValidator)->getCurrentTypeInfo();
             if (currType)
                 modelType = (SchemaElementDecl::ModelTypes)currType->getContentType();
             else // something must have gone wrong
@@ -245,14 +246,23 @@ void SchemaValidatorFilter::processStartElement()
         }
     }
 
-    XMLElementDecl* elemDecl = createElementDecl(uriId, currentScope, laxThisOne);
+    XMLElementDecl* elemDecl = createElementDecl(uriId, currentScope, laxThisOne, isProcessorStipulatedTypeName);
     assert(elemDecl);
     fElemStack.setElement(elemDecl, fReaderMgr.getCurrentReaderNum());
 
-    if(fValidate) 
-        fValidator->validateElement(elemDecl);
-
-    ComplexTypeInfo* typeinfo = fValidate ? ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->getCurrentTypeInfo() : ((SchemaElementDecl*)elemDecl)->getComplexTypeInfo();
+    if(fValidate)
+    {
+        if (isProcessorStipulatedTypeName)
+        {
+            ((XercSchemaValidator*)fValidator)->validateProcessorStipulatedTypeName(elemDecl);
+        }
+        else
+        {
+           fValidator->validateElement(elemDecl);
+        }
+    }
+    
+    ComplexTypeInfo* typeinfo = fValidate ? ((XercSchemaValidator*)fValidator)->getCurrentTypeInfo() : ((SchemaElementDecl*)elemDecl)->getComplexTypeInfo();
     if(typeinfo) 
     {
         currentScope = typeinfo->getScopeDefined();
@@ -281,6 +291,7 @@ void SchemaValidatorFilter::processStartElement()
             }
         }
     }
+
     fElemStack.setCurrentScope(currentScope);
 
     // We commandeer fCurrentURI to keep the element state in
@@ -314,9 +325,9 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
 
     if(fValidate) 
     {
-        currType = ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->getCurrentTypeInfo();
+        currType = ((XercSchemaValidator*)fValidator)->getCurrentTypeInfo();
         if(!currType)
-            currDV = ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->getCurrentDatatypeValidator();
+            currDV = ((XercSchemaValidator*)fValidator)->getCurrentDatatypeValidator();
     }
 
     //   XMLBufBid bbNormal(&fBufMgr);
@@ -442,15 +453,15 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
             if(tempDV && tempDV->getWSFacet() != DatatypeValidator::PRESERVE) 
             {
                 // normalize the attribute according to schema whitespace facet
-                ((XERCES_CPP_NAMESPACE::SchemaValidator*) fValidator)->normalizeWhiteSpace(tempDV, value, fWSNormalizeBuf);
+                ((XercSchemaValidator*) fValidator)->normalizeWhiteSpace(tempDV, value, fWSNormalizeBuf);
                 value = fWSNormalizeBuf.getRawBuffer();
             }
 
             if(fValidate && !skipThisOne) 
             {
                 fValidator->validateAttrValue(attDef, value, false, elemDecl);
-                attrValidator = ((XERCES_CPP_NAMESPACE::SchemaValidator *)fValidator)->getMostRecentAttrValidator();
-                if(((XERCES_CPP_NAMESPACE::SchemaValidator *)fValidator)->getErrorOccurred())
+                attrValidator = ((XercSchemaValidator *)fValidator)->getMostRecentAttrValidator();
+                if(((XercSchemaValidator *)fValidator)->getErrorOccurred())
                     attrValid = false;
             }
         }
@@ -507,7 +518,7 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
                         if(fValidate)
                         {
                             fValidator->validateAttrValue(curDef, curDef->getValue(), false, elemDecl);
-                            attrValidator = ((XERCES_CPP_NAMESPACE::SchemaValidator *)fValidator)->getMostRecentAttrValidator();
+                            attrValidator = ((XercSchemaValidator *)fValidator)->getMostRecentAttrValidator();
                         }
 
                         if(attrValidator)
@@ -549,7 +560,7 @@ void SchemaValidatorFilter::endElementEvent(const XMLCh *prefix, const XMLCh *ur
         DatatypeValidator *currentDV = 0;
         if(topElem->fThisElement->isDeclared()) 
         {
-            ComplexTypeInfo *currentTypeInfo = ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->getCurrentTypeInfo();
+            ComplexTypeInfo *currentTypeInfo = ((XercSchemaValidator*)fValidator)->getCurrentTypeInfo();
             if(currentTypeInfo) 
             {
                 typeURI = currentTypeInfo->getTypeUri();
@@ -557,7 +568,7 @@ void SchemaValidatorFilter::endElementEvent(const XMLCh *prefix, const XMLCh *ur
             }
             else 
             {
-                currentDV = ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->getCurrentDatatypeValidator();
+                currentDV = ((XercSchemaValidator*)fValidator)->getCurrentDatatypeValidator();
                 typeURI = currentDV->getTypeUri();
                 typeName = currentDV->getTypeLocalName();
             }
@@ -601,7 +612,7 @@ void SchemaValidatorFilter::endElementEvent(const XMLCh *prefix, const XMLCh *ur
 
     const bool isRoot = fElemStack.isEmpty();
 
-    ((XERCES_CPP_NAMESPACE::SchemaValidator *)fValidator)->clearDatatypeBuffer();
+    ((XercSchemaValidator *)fValidator)->clearDatatypeBuffer();
 
     if(!isRoot) 
     {
@@ -657,7 +668,7 @@ void SchemaValidatorFilter::attributeEvent(const XMLCh *prefix, const XMLCh *uri
         else if(XMLString::equals(localname, SchemaSymbols::fgATT_NILL) &&
                 XMLString::equals(value, SchemaSymbols::fgATTVAL_TRUE)) 
         {
-            ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->setNillable(true);
+            ((XercSchemaValidator*)fValidator)->setNillable(true);
         }
         --_attrCount;  // remove att from the list but still needs to be reported
         
@@ -686,7 +697,7 @@ void SchemaValidatorFilter::textEvent(const XMLCh *chars)
     {
         // Get the character data opts for the current element
         XMLElementDecl::CharDataOpts charOpts = XMLElementDecl::AllCharData;
-        ComplexTypeInfo *currType = ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->getCurrentTypeInfo();
+        ComplexTypeInfo *currType = ((XercSchemaValidator*)fValidator)->getCurrentTypeInfo();
         if(currType) 
         {
             SchemaElementDecl::ModelTypes modelType = (SchemaElementDecl::ModelTypes)currType->getContentType(); 
@@ -698,17 +709,17 @@ void SchemaValidatorFilter::textEvent(const XMLCh *chars)
 
         if(charOpts == XMLElementDecl::AllCharData) 
         {
-            DatatypeValidator *tempDV = ((XERCES_CPP_NAMESPACE::SchemaValidator*) fValidator)->getCurrentDatatypeValidator();
+            DatatypeValidator *tempDV = ((XercSchemaValidator*) fValidator)->getCurrentDatatypeValidator();
             if(tempDV && tempDV->getWSFacet() != DatatypeValidator::PRESERVE) 
             {
                 // normalize the character according to schema whitespace facet
-                ((XERCES_CPP_NAMESPACE::SchemaValidator*) fValidator)->normalizeWhiteSpace(tempDV, chars, fWSNormalizeBuf);
+                ((XercSchemaValidator*) fValidator)->normalizeWhiteSpace(tempDV, chars, fWSNormalizeBuf);
                 chars = fWSNormalizeBuf.getRawBuffer();
                 len = fWSNormalizeBuf.getLen();
             }
 
             // tell the schema validation about the character data for checkContent later
-            ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->setDatatypeBuffer(chars);
+            ((XercSchemaValidator*)fValidator)->setDatatypeBuffer(chars);
         }
         else if(charOpts == XMLElementDecl::NoCharData) 
         {
@@ -777,7 +788,8 @@ void SchemaValidatorFilter::startTypeEvent(const XMLCh *typeUri, const XMLCh *ty
     attributeEvent(xsiTypePrefix, SchemaSymbols::fgURI_XSI, SchemaSymbols::fgXSI_TYPE, xsiTypeValue, tURI, tName);
 */
     _processorStipulatedTypeUriId = fURIStringPool->addOrFind(typeUri);
-    _processorStipulatedTypeName = typeName;
+    _processorStipulatedTypeName = XMLString::replicate(typeName);
+    std::cout << "  startTypeEvent:  " <<  StrX(typeName) << " @ " << StrX(typeUri) << "\n";
 }
 
 void SchemaValidatorFilter::endTypeEvent()
@@ -791,6 +803,13 @@ void SchemaValidatorFilter::endTypeEvent()
     
     endElementEvent(prefix, uri, localname, typeURI, typeName);    
 */    
+    if (_processorStipulatedTypeName)
+    {
+        XMLString::release(&_processorStipulatedTypeName);
+        _processorStipulatedTypeName = NULL;
+        _processorStipulatedTypeUriId = -1;
+    }
+
     if(!fElemStack.isEmpty()) 
         ZORBA_ASSERT(false);
 }
@@ -804,19 +823,26 @@ const XMLCh* SchemaValidatorFilter::getTypeUri()
     
     if(fValidate) 
     {
-        const ElemStack::StackElem* topElem = fElemStack.topElement();
-        DatatypeValidator *currentDV = 0;
-        if(topElem->fThisElement->isDeclared()) 
+        if (_processorStipulatedTypeName && _parentStack == 0)
         {
-            ComplexTypeInfo *currentTypeInfo = ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->getCurrentTypeInfo();
-            if(currentTypeInfo) 
+            typeURI = fURIStringPool->getValueForId(_processorStipulatedTypeUriId);
+        }
+        else
+        {
+            const ElemStack::StackElem* topElem = fElemStack.topElement();
+            DatatypeValidator *currentDV = 0;
+            if(topElem->fThisElement->isDeclared())
             {
-                typeURI = currentTypeInfo->getTypeUri();
-            }
-            else 
-            {
-                currentDV = ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->getCurrentDatatypeValidator();
-                typeURI = currentDV->getTypeUri();
+                ComplexTypeInfo *currentTypeInfo = ((XercSchemaValidator*)fValidator)->getCurrentTypeInfo();
+                if(currentTypeInfo)
+                {
+                    typeURI = currentTypeInfo->getTypeUri();
+                }
+                else
+                {
+                    currentDV = ((XercSchemaValidator*)fValidator)->getCurrentDatatypeValidator();
+                    typeURI = currentDV->getTypeUri();
+                }
             }
         }
     }
@@ -833,19 +859,27 @@ const XMLCh* SchemaValidatorFilter::getTypeName()
     
     if(fValidate) 
     {
-        const ElemStack::StackElem* topElem = fElemStack.topElement();
-        DatatypeValidator *currentDV = 0;
-        if(topElem->fThisElement->isDeclared()) 
+        //std::cout << "  - getTypeQName: _elemDepth: " << _elemDepth << "\n";
+        if (_processorStipulatedTypeName && _elemDepth == 0 )
         {
-            ComplexTypeInfo *currentTypeInfo = ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->getCurrentTypeInfo();
-            if(currentTypeInfo) 
+            typeName = _processorStipulatedTypeName;
+        }
+        else
+        {
+            const ElemStack::StackElem* topElem = fElemStack.topElement();
+            DatatypeValidator *currentDV = 0;
+            if(topElem->fThisElement->isDeclared())
             {
-                typeName = currentTypeInfo->getTypeLocalName();
-            }
-            else 
-            {
-                currentDV = ((XERCES_CPP_NAMESPACE::SchemaValidator*)fValidator)->getCurrentDatatypeValidator();
-                typeName = currentDV->getTypeLocalName();
+                ComplexTypeInfo *currentTypeInfo = ((XercSchemaValidator*)fValidator)->getCurrentTypeInfo();
+                if(currentTypeInfo)
+                {
+                    typeName = currentTypeInfo->getTypeLocalName();
+                }
+                else
+                {
+                    currentDV = ((XercSchemaValidator*)fValidator)->getCurrentDatatypeValidator();
+                    typeName = currentDV->getTypeLocalName();
+                }
             }
         }
     }
@@ -1052,7 +1086,7 @@ bool SchemaValidatorFilter::anyAttributeValidation(SchemaAttDef* attWildCard, un
 }
 
 XMLElementDecl *SchemaValidatorFilter::createElementDecl(unsigned int uriId, unsigned int currentScope,
-                                                         bool laxThisOne)
+    bool laxThisOne, bool isProcessorStipulatedTypeName)
 {
     //  Look up the element now in the grammar. This will get us back a
     //  generic element decl object. We tell him to fault one in if he does
@@ -1133,7 +1167,7 @@ XMLElementDecl *SchemaValidatorFilter::createElementDecl(unsigned int uriId, uns
             fValidate = false;
             fElemStack.setValidationFlag(fValidate);
         }
-        else if(fValidate) 
+        else if(fValidate && !isProcessorStipulatedTypeName) 
         {
             // This is to tell the reuse Validator that this element was
             // faulted-in, was not an element in the grammar pool originally
@@ -1165,7 +1199,7 @@ XMLElementDecl *SchemaValidatorFilter::createElementDecl(unsigned int uriId, uns
 
 void SchemaValidatorFilter::docCharacters(const XMLCh* const chars, const unsigned int length, const bool cdataSection)
 {
-    // The SchemaValidator calls this method to report default element values
+    // The XercSchemaValidator calls this method to report default element values
     ///next_->textEvent(chars, length);
 }
 
