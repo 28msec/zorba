@@ -24,7 +24,7 @@
 #include "types/casting.h"
 #include "types/delegating_typemanager.h"
 #include "types/schema/schema.h"
-#include "types/schema/SchemaValidator.h"
+#include "types/schema/EventSchemaValidator.h"
 #include "types/schema/StrX.h"
 #include "types/typeimpl.h"
 #include "types/typeops.h"
@@ -48,21 +48,21 @@ void validateAfterUpdate(zorba::store::Item* item, zorba::store::Item_t& pul,
     static_context* staticContext, const QueryLoc& loc);
 
 void processElement( store::Item_t& pul, static_context* staticContext, 
-    DelegatingTypeManager* delegatingTypeManager, SchemaValidator& schemaValidator, 
+    DelegatingTypeManager* delegatingTypeManager, EventSchemaValidator& schemaValidator,
     store::Item_t element);
     
-void validateAttributes( SchemaValidator& schemaValidator, store::Iterator_t attributes);
+void validateAttributes( EventSchemaValidator& schemaValidator, store::Iterator_t attributes);
     
 void processAttributes( store::Item_t& pul, namespace_context& nsCtx, 
-    DelegatingTypeManager* delegatingTypeManager, SchemaValidator& schemaValidator, 
+    DelegatingTypeManager* delegatingTypeManager, EventSchemaValidator& schemaValidator,
     store::Item* parent, store::Iterator_t attributes);
         
 void processChildren( store::Item_t& pul, static_context* staticContext, 
     namespace_context& nsCtx, DelegatingTypeManager* delegatingTypeManager, 
-    SchemaValidator& schemaValidator, store::Iterator_t children,
+    EventSchemaValidator& schemaValidator, store::Iterator_t children,
     std::vector<store::Item_t>& typedValues);
     
-void processNamespaces ( SchemaValidator& schemaValidator, const store::Item *item);
+void processNamespaces ( EventSchemaValidator& schemaValidator, const store::Item *item);
 
 void processTextValue (store::Item_t& pul, DelegatingTypeManager* delegatingTypeManager, 
     namespace_context &nsCtx, store::Item_t typeQName, xqpStringStore_t& textValue, 
@@ -124,7 +124,7 @@ void validateAfterUpdate(
         return;
     }
         
-    SchemaValidator schemaValidator = SchemaValidator(delegatingTypeManager, 
+    EventSchemaValidator schemaValidator = EventSchemaValidator(delegatingTypeManager,
                                                         schema->getGrammarPool(),
                                                         isLax,
                                                         loc);
@@ -183,7 +183,7 @@ void processElement(
     store::Item_t& pul,
     static_context* staticContext, 
     DelegatingTypeManager* delegatingTypeManager,
-    SchemaValidator& schemaValidator, 
+    EventSchemaValidator& schemaValidator,
     store::Item_t element)
 {
     ZORBA_ASSERT(element->isNode());
@@ -278,7 +278,7 @@ void processElement(
 }
 
 
-void validateAttributes( SchemaValidator& schemaValidator, store::Iterator_t attributes)
+void validateAttributes( EventSchemaValidator& schemaValidator, store::Iterator_t attributes)
 {
     store::Item_t attribute;
     
@@ -296,7 +296,7 @@ void validateAttributes( SchemaValidator& schemaValidator, store::Iterator_t att
 
 
 void processAttributes( store::Item_t& pul, namespace_context& nsCtx, 
-    DelegatingTypeManager* delegatingTypeManager, SchemaValidator& schemaValidator, 
+    DelegatingTypeManager* delegatingTypeManager, EventSchemaValidator& schemaValidator,
     store::Item* parent, store::Iterator_t attributes)
 {
     std::list<AttributeValidationInfo*>* attList = schemaValidator.getAttributeList();
@@ -370,7 +370,7 @@ void processChildren(
     static_context* staticContext,
     namespace_context& nsCtx,
     DelegatingTypeManager* delegatingTypeManager, 
-    SchemaValidator& schemaValidator,
+    EventSchemaValidator& schemaValidator,
     store::Iterator_t children,
     std::vector<store::Item_t>& typedValues)
 {
@@ -438,7 +438,7 @@ void processChildren(
     }
 }
 
-void processNamespaces ( SchemaValidator& schemaValidator, const store::Item *item)
+void processNamespaces ( EventSchemaValidator& schemaValidator, const store::Item *item)
 {
     store::NsBindings bindings;
     item->getNamespaceBindings(bindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);

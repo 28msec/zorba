@@ -27,13 +27,15 @@
 #include "store/api/item.h"
 #include "zorbatypes/xqpstring.h"
 #include "util/hashmap.h"
-#include "types/schema/SchemaValidator.h"
+#include "types/schema/EventSchemaValidator.h"
 
 namespace zorba
 {
 
 #ifndef ZORBA_NO_XMLSCHEMA
-class SchemaLocationEntityResolver : public EntityResolver {
+class SchemaLocationEntityResolver 
+    : public EntityResolver
+{
   protected:
     std::string theLocation;
     const XMLCh* theLogicalURI;

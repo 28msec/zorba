@@ -18,7 +18,7 @@ IF (NOT ZORBA_NO_XMLSCHEMA)
         schema.cpp
         LoadSchemaErrorHandler.cpp
         PrintSchema.cpp
-        SchemaValidator.cpp
+        EventSchemaValidator.cpp
         SchemaValidatorFilter.cpp
         StrX.cpp
         ValidationEventHandler.cpp

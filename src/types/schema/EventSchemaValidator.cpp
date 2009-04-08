@@ -17,7 +17,7 @@
 #ifndef ZORBA_NO_XMLSCHEMA
 
 #include "system/globalenv.h"
-#include "types/schema/SchemaValidator.h"
+#include "types/schema/EventSchemaValidator.h"
 #include "types/schema/StrX.h"
 #include "types/typeimpl.h"
 #include <zorbatypes/xerces_xmlcharray.h>
@@ -31,7 +31,7 @@ using namespace XERCES_CPP_NAMESPACE;
 namespace zorba
 {
 
-SchemaValidator::SchemaValidator(TypeManager *typeManager, XERCES_CPP_NAMESPACE::XMLGrammarPool *grammarPool,
+EventSchemaValidator::EventSchemaValidator(TypeManager *typeManager, XERCES_CPP_NAMESPACE::XMLGrammarPool *grammarPool,
     bool isLax, const QueryLoc& loc)
     : _typeManager(typeManager), _validationEventHandler()
 {
@@ -41,34 +41,34 @@ SchemaValidator::SchemaValidator(TypeManager *typeManager, XERCES_CPP_NAMESPACE:
     _grammarResolver->useCachedGrammarInParse(true);
 
 #if 0                   // enable this to debug registered user defined schema types
-    //cout << "SchemaValidator::SchemaValidator typeManager: " << typeManager << endl;
+    //cout << "EventSchemaValidator::EventSchemaValidator typeManager: " << typeManager << endl;
     PrintSchema::printInfo( true, grammarPool);
 #endif 
 
     _schemaValidatorFilter = new SchemaValidatorFilter(!isLax, &_validationEventHandler, _grammarResolver, memoryManager, NULL, loc);
 }
 
-SchemaValidator::~SchemaValidator()
+EventSchemaValidator::~EventSchemaValidator()
 {
     delete _schemaValidatorFilter;
     delete _grammarResolver;
 }
 
-void SchemaValidator::startDoc()
+void EventSchemaValidator::startDoc()
 {
     //cout << "   SDoc \n";
 
     _schemaValidatorFilter->startDocumentEvent(NULL, NULL);
 }
 
-void SchemaValidator::endDoc()
+void EventSchemaValidator::endDoc()
 {
     //cout << "   EDoc \n";
     
     _schemaValidatorFilter->endDocumentEvent();
 }
 
-void SchemaValidator::startElem(store::Item_t elemName)
+void EventSchemaValidator::startElem(store::Item_t elemName)
 {   
     //cout << "  sv SElem: " << elemName->getLocalName()->c_str() << "\n";
 
@@ -78,7 +78,7 @@ void SchemaValidator::startElem(store::Item_t elemName)
     _schemaValidatorFilter->startElementEvent(prefix, uri, localname);
 }
 
-void SchemaValidator::endElem(store::Item_t elemName)
+void EventSchemaValidator::endElem(store::Item_t elemName)
 {
     //cout << "  sv EElem: " << elemName->getLocalName()->c_str() << "\n";
 
@@ -90,7 +90,7 @@ void SchemaValidator::endElem(store::Item_t elemName)
     _schemaValidatorFilter->endElementEvent(prefix, uri, localname, typeURI, typeName);
 }
 
-void SchemaValidator::attr(store::Item_t attrName, xqpStringStore_t textValue)
+void EventSchemaValidator::attr(store::Item_t attrName, xqpStringStore_t textValue)
 {
     //cout << "  sv   Attr: " << attrName->getPrefix()->c_str() << ":" << 
     //    attrName->getLocalName()->c_str() << " = '" << textValue->c_str() << "'\n";
@@ -104,7 +104,7 @@ void SchemaValidator::attr(store::Item_t attrName, xqpStringStore_t textValue)
     _schemaValidatorFilter->attributeEvent(prefix, uri, localname, value, typeURI, typeName);
 }
 
-void SchemaValidator::text(xqpStringStore_t textValue)
+void EventSchemaValidator::text(xqpStringStore_t textValue)
 {
     //cout << "  sv   Text: " << textValue->c_str() << "\n";
 
@@ -113,7 +113,7 @@ void SchemaValidator::text(xqpStringStore_t textValue)
     //_validationEventHandler.resetAttList();
 }
 
-void SchemaValidator::ns(xqpStringStore_t prefix, xqpStringStore_t uri)
+void EventSchemaValidator::ns(xqpStringStore_t prefix, xqpStringStore_t uri)
 {
     //cout << "     Ns  : " << prefix->c_str() << " = '" << uri->c_str() << "'\n";
 
@@ -123,7 +123,7 @@ void SchemaValidator::ns(xqpStringStore_t prefix, xqpStringStore_t uri)
 }
 
 
-store::Item_t SchemaValidator::getTypeQName()
+store::Item_t EventSchemaValidator::getTypeQName()
 {
     StrX typeName(_schemaValidatorFilter->getTypeName());
     StrX typeUri(_schemaValidatorFilter->getTypeUri());
@@ -138,7 +138,7 @@ store::Item_t SchemaValidator::getTypeQName()
     return typeQName;
 }
 
-xqtref_t SchemaValidator::getType()
+xqtref_t EventSchemaValidator::getType()
 {
     StrX typeName(_schemaValidatorFilter->getTypeName());
     StrX typeUri(_schemaValidatorFilter->getTypeUri());
@@ -153,7 +153,7 @@ xqtref_t SchemaValidator::getType()
 }
 
 //
-void SchemaValidator::startType(store::Item_t typeQName)
+void EventSchemaValidator::startType(store::Item_t typeQName)
 {
     XMLChArray uri(typeQName->getNamespace()->c_str());
     XMLChArray localname(typeQName->getLocalName()->c_str());
@@ -163,7 +163,7 @@ void SchemaValidator::startType(store::Item_t typeQName)
     _schemaValidatorFilter->startTypeEvent(uri, localname);
 }
 
-void SchemaValidator::endType()
+void EventSchemaValidator::endType()
 {
     //cout << "   EType \n";
     

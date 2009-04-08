@@ -152,7 +152,7 @@ bool ValidateIterator::effectiveValidationValue (
                     final_baseuri().getStore();
     
                 
-                SchemaValidator schemaValidator = SchemaValidator(typeManager, 
+                EventSchemaValidator schemaValidator = EventSchemaValidator(typeManager,
                     schema->getGrammarPool(), validationMode == ParseConstants::val_lax, loc);  // TODO: removed isLax
                 
     
@@ -273,7 +273,7 @@ bool ValidateIterator::effectiveValidationValue (
 
 #ifndef ZORBA_NO_XMLSCHEMA
     store::Item_t ValidateIterator::processElement( PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
-        SchemaValidator& schemaValidator, store::Item *parent, const store::Item_t& element)
+        EventSchemaValidator& schemaValidator, store::Item *parent, const store::Item_t& element)
     {
         ZORBA_ASSERT(element->isNode());
         ZORBA_ASSERT(element->getNodeKind() == store::StoreConsts::elementNode);
@@ -318,7 +318,7 @@ bool ValidateIterator::effectiveValidationValue (
         return newElem;
     }
 
-    void ValidateIterator::validateAttributes( SchemaValidator& schemaValidator, store::Iterator_t attributes)
+    void ValidateIterator::validateAttributes( EventSchemaValidator& schemaValidator, store::Iterator_t attributes)
     {
         store::Item_t attribute;
         
@@ -335,7 +335,7 @@ bool ValidateIterator::effectiveValidationValue (
     }
 
     void ValidateIterator::processAttributes( PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
-        SchemaValidator& schemaValidator, store::Item *parent, store::Iterator_t attributes)
+        EventSchemaValidator& schemaValidator, store::Item *parent, store::Iterator_t attributes)
     {
         std::list<AttributeValidationInfo*>* attList = schemaValidator.getAttributeList();
         std::list<AttributeValidationInfo*>::iterator curAtt;
@@ -374,7 +374,7 @@ bool ValidateIterator::effectiveValidationValue (
     }
 
     void ValidateIterator::processChildren( PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
-        SchemaValidator& schemaValidator, store::Item *parent, store::Iterator_t children)
+        EventSchemaValidator& schemaValidator, store::Item *parent, store::Iterator_t children)
     {
         store::Item_t child;
 
@@ -467,7 +467,7 @@ bool ValidateIterator::effectiveValidationValue (
         }
     }
 
-    void ValidateIterator::processNamespaces ( SchemaValidator& schemaValidator, const store::Item_t& item)
+    void ValidateIterator::processNamespaces ( EventSchemaValidator& schemaValidator, const store::Item_t& item)
     {
         store::NsBindings bindings;
         item->getNamespaceBindings(bindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);

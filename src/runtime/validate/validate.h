@@ -25,7 +25,7 @@
 #include "runtime/base/unarybase.h"
 #include "runtime/booleans/compare_types.h"
 #include "types/delegating_typemanager.h"
-#include "types/schema/SchemaValidator.h"
+#include "types/schema/EventSchemaValidator.h"
 #include "zorbatypes/xqpstring.h"
 
 namespace zorba
@@ -93,30 +93,30 @@ public:
   static store::Item_t processElement (
         PlanState& planState,
         DelegatingTypeManager* delegatingTypeManager, 
-        SchemaValidator& schemaValidator,
+        EventSchemaValidator& schemaValidator,
         store::Item *parent,
         const store::Item_t& element);
   
   static void validateAttributes (
-        SchemaValidator& schemaValidator,
+        EventSchemaValidator& schemaValidator,
         store::Iterator_t attributes);
 
   static void processAttributes(
         PlanState& planState,
         DelegatingTypeManager* delegatingTypeManager,
-        SchemaValidator& schemaValidator,
+        EventSchemaValidator& schemaValidator,
         store::Item *parent,
         store::Iterator_t attributes);
 
   static void processChildren (
         PlanState& planState,
         DelegatingTypeManager* delegatingTypeManager,
-        SchemaValidator& schemaValidator,
+        EventSchemaValidator& schemaValidator,
         store::Item *parent,
         store::Iterator_t children);
 
   static void processNamespaces (
-        SchemaValidator& schemaValidator,
+        EventSchemaValidator& schemaValidator,
         const store::Item_t& item);
         
   static void processTextValue (

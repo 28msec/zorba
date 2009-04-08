@@ -1,20 +1,27 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_SCHEMAVALIDATOR_H_
-#define ZORBA_SCHEMAVALIDATOR_H_
+
+/*
+ * Code modified from Apache Xerces's SchemaValidator.
+ *   - added validateProcessorStipulatedTypeName
+ *      - a XMLSchema 1.0 feature not implemented by Xerces
+ */
+
+#ifndef ZORBA_EVENTSCHEMAVALIDATOR_H_
+#define ZORBA_EVENTSCHEMAVALIDATOR_H_
 
 #include "common/common.h"
 #ifndef ZORBA_NO_XMLSCHEMA
@@ -30,10 +37,7 @@
 namespace zorba
 {
 
-class SchemaValidator;
-
-
-class SchemaValidator
+class EventSchemaValidator
 {
 private:
     TypeManager *_typeManager;
@@ -42,9 +46,9 @@ private:
     ValidationEventHandler _validationEventHandler;
     
 public:
-    SchemaValidator(TypeManager* typeManager, XERCES_CPP_NAMESPACE::XMLGrammarPool *grammarPool, bool isLax, 
+    EventSchemaValidator(TypeManager* typeManager, XERCES_CPP_NAMESPACE::XMLGrammarPool *grammarPool, bool isLax,
         const QueryLoc& loc);
-    virtual ~SchemaValidator();
+    virtual ~EventSchemaValidator();
 
     void startDoc();
     void endDoc();
@@ -84,5 +88,5 @@ public:
 } // namespace zorba
 
 #endif //ZORBA_NO_XMLSCHEMA
-#endif /*ZORBA_SCHEMAVALIDATOR_H_*/
+#endif /*ZORBA_EVENTSCHEMAVALIDATOR_H_*/
 
