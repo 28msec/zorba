@@ -19,7 +19,8 @@
 
 namespace zorba {
 
-class var_counter : public abstract_expr_visitor {
+class var_counter : public abstract_expr_visitor 
+{
 private:
   var_expr *m_var;
   int m_counter;
@@ -41,6 +42,7 @@ public:
     return true;
   }
 };
+
   
 int count_variable_uses(expr *root, var_expr *var, int limit = 0)
 {

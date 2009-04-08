@@ -183,8 +183,8 @@ void DataflowAnnotationsComputer::compute_var_expr(var_expr *e)
 
 void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr *e)
 {
-  flwor_expr::clause_list_t::iterator ci = e->clause_begin();
-  flwor_expr::clause_list_t::iterator cend = e->clause_end();
+  flwor_expr::forlet_list_t::iterator ci = e->forlet_begin();
+  flwor_expr::forlet_list_t::iterator cend = e->forlet_end();
   while(ci != cend) {
     flwor_expr::forletref_t& flc = *ci;
     compute(flc->get_expr().getp());

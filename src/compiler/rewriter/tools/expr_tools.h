@@ -37,11 +37,16 @@
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
 #define LOC( expr ) (expr)->get_loc ()
-namespace zorba {
+
+
+namespace zorba 
+{
 
 typedef std::set<var_expr *> var_ptr_set;
 
-class VarSetAnnVal : public AnnotationValue {
+
+class VarSetAnnVal : public AnnotationValue 
+{
 public:
   var_ptr_set varset;
 
@@ -50,12 +55,18 @@ public:
   void add (var_expr *v) { varset.insert (varset.begin (), v); }
 };
   
-const var_ptr_set &get_varset_annotation (const expr *e, Annotation::key_t k);
+
+const var_ptr_set& get_varset_annotation(const expr *e, Annotation::key_t k);
+
 
 int count_variable_uses(expr *root, var_expr *var, int limit);
 
-// copy annotations when wrapping an expression in a new one
-inline expr_t fix_annotations (expr_t new_expr, expr *old_expr = NULL) {
+
+/*******************************************************************************
+  copy annotations when wrapping an expression in a new one
+********************************************************************************/
+inline expr_t fix_annotations (expr_t new_expr, expr *old_expr = NULL) 
+{
   if (old_expr == NULL) {
     switch (new_expr->get_expr_kind ()) {
     case fo_expr_kind:
@@ -84,19 +95,24 @@ inline expr_t fix_annotations (expr_t new_expr, expr *old_expr = NULL) {
   return new_expr;
 }
 
-inline expr_t fix_if_annotations (rchandle<if_expr> ite) {
+
+inline expr_t fix_if_annotations (rchandle<if_expr> ite) 
+{
   fix_annotations (&*ite, ite->get_cond_expr ());
   fix_annotations (&*ite, ite->get_then_expr ());
   fix_annotations (&*ite, ite->get_else_expr ());
   return &*ite;
 }
 
+
 inline bool is_data(expr *e)
 {
-  return e->get_expr_kind() == fo_expr_kind && static_cast<fo_expr *>(e)->get_func() == LOOKUP_FN("fn", "data", 1);
+  return (e->get_expr_kind() == fo_expr_kind &&
+          static_cast<fo_expr *>(e)->get_func() == LOOKUP_FN("fn", "data", 1));
 }
 
-inline expr *get_fo_arg(expr *e, int arg_idx)
+
+inline expr* get_fo_arg(expr* e, int arg_idx)
 {
   ZORBA_ASSERT(e != NULL && e->get_expr_kind() == fo_expr_kind);
   return (*static_cast<fo_expr *>(e))[arg_idx];
