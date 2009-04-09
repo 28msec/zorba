@@ -336,7 +336,7 @@ static bool hoist_expressions(
       expr *ce = &*(*i);
       if (ce) 
       {
-        rchandle<var_expr> var = try_hoisting(rCtx, ce, varmap, freevarMap, fholder);
+        expr_t var = try_hoisting(rCtx, ce, varmap, freevarMap, fholder);
         if (var != NULL)
         {
           *i = var.getp();
