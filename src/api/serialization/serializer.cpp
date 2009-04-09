@@ -1687,7 +1687,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       method = PARAMETER_VALUE_XHTML;
     else if (value == "text")
       method = PARAMETER_VALUE_TEXT;
-    else if (value == "text")
+    else if (value == "json")
       method = PARAMETER_VALUE_JSON;
     else
     {
