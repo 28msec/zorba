@@ -1190,6 +1190,11 @@ DECL(sctx, zop_probeindexpoint,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       true,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+DECL(sctx, zop_probeindexrange,
+     (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "probe-index-range"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      true,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 DECL(sctx, zop_index_session_opener,
      (createQName(XQUERY_FN_NS,"fn", ":index-session-opener"),
       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,

@@ -2384,8 +2384,8 @@ void end_visit (const CtxItemDecl& v, void* /*visit_state*/) {
 
 
 /***************************************************************************//**
-  IndexDecl ::= "DECLARE" ["UNIQUE"] "INDEX" UriLiteral
-                "ON" ExprSingle ["HASH" | "BTREE"]
+  IndexDecl ::= "DECLARE" ["UNIQUE"] ["HASH" | "BTREE"] "INDEX" UriLiteral
+                "ON" ExprSingle
                 "BY" "(" IndexFieldList ")"
 ********************************************************************************/
 void *begin_visit (const IndexDecl& v) {
@@ -2400,6 +2400,8 @@ void end_visit (const IndexDecl& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   ValueIndex_t vi = indexstack.top();
   indexstack.pop();
+  vi->setUnique(v.uniq);
+  vi->setMethod("btree" == v.method ? ValueIndex::BTREE : ValueIndex::HASH);
   xqp_string uri(vi->getIndexUri());
   sctx_p->bind_index(uri, vi.getp());
 }
@@ -2411,7 +2413,22 @@ void end_visit (const IndexDecl& v, void* /*visit_state*/) {
 void *begin_visit (const IndexFieldList& v) {
   TRACE_VISIT ();
 
-  indexstack.top()->setDomainExpression(pop_nodestack());
+  expr_t dExpr = pop_nodestack();
+  const std::string& uri = indexstack.top()->getIndexUri()->str();
+  if (compilerCB->m_config.translate_cb != NULL)
+    compilerCB->m_config.translate_cb (&*dExpr, uri);
+
+  normalize_expr_tree(uri.c_str(), compilerCB, dExpr, &*GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR);
+
+  if (compilerCB->m_config.opt_level == CompilerCB::config_t::O1) {
+    RewriterContext rCtx(compilerCB, dExpr);
+    GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
+    dExpr = rCtx.getRoot();
+    if (compilerCB->m_config.optimize_cb != NULL)
+      compilerCB->m_config.optimize_cb (&*dExpr, uri.c_str());
+  }
+
+  indexstack.top()->setDomainExpression(dExpr);
 
   push_scope();
 
@@ -2428,18 +2445,22 @@ void *begin_visit (const IndexFieldList& v) {
 void end_visit (const IndexFieldList& v, void* /*visit_state*/) {
   std::vector<expr_t> iCols;
   std::vector<xqtref_t> iColTypes;
+  std::vector<std::string> iColColls;
   for(int i = v.fields.size() - 1; i >= 0; --i) {
     iCols.push_back(pop_nodestack());
     xqtref_t type = (v.fields[i]->get_type() != NULL ?
                      pop_tstack() :
                      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION);
     iColTypes.push_back(type);
+    iColColls.push_back(v.fields[i]->coll);
   }
   std::reverse(iCols.begin(), iCols.end());
   std::reverse(iColTypes.begin(), iColTypes.end());
+  std::reverse(iColColls.begin(), iColColls.end());
 
   indexstack.top()->setIndexFieldExpressions(iCols);
   indexstack.top()->setIndexFieldTypes(iColTypes);
+  indexstack.top()->setIndexFieldCollations(iColColls);
 
   pop_scope();
 

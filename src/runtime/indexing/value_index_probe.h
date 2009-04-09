@@ -48,6 +48,28 @@ class ValueIndexPointProbe : public NaryBaseIterator<ValueIndexPointProbe, Value
     virtual void accept(PlanIterVisitor& v) const;
 };
 
+class ValueIndexRangeProbeState : public PlanIteratorState {
+  public:
+    xqpStringStore_t theUri;
+    store::Index *theIndex;
+    store::IndexProbeIterator_t theIterator;
+
+    void init(PlanState&);
+    void reset(PlanState&);
+};
+
+class ValueIndexRangeProbe : public NaryBaseIterator<ValueIndexRangeProbe, ValueIndexRangeProbeState> {
+  public:
+    ValueIndexRangeProbe(const QueryLoc& loc, std::vector<PlanIter_t> aChildren)
+      : NaryBaseIterator<ValueIndexRangeProbe, ValueIndexRangeProbeState>(loc, aChildren) { }
+
+    virtual ~ValueIndexRangeProbe() { }
+
+    bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+    virtual void accept(PlanIterVisitor& v) const;
+};
+
 }
 
 #endif /* ZORBA_VALUE_INDEX_PROBE_H */

@@ -41,8 +41,8 @@ typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
 
   Note: The DECLARE INDEX sysntax is the following:
 
-  IndexDecl ::= "DECLARE" ["UNIQUE"] "INDEX" UriLiteral
-                "ON" ExprSingle ["HASH" | "BTREE"]
+  IndexDecl ::= "DECLARE" ["UNIQUE"] ["HASH" | "BTREE"] "INDEX" UriLiteral
+                "ON" ExprSingle
                 "BY" "(" IndexField+ ")"
 
   IndexField ::= ExprSingle [TypeDeclaration] ["COLLATION" UriLiteral]
@@ -50,14 +50,22 @@ typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
 ********************************************************************************/
 class ValueIndex : public SimpleRCObject 
 {
+public:
+  typedef enum {
+    HASH,
+    BTREE
+  } index_method_t;
 private:
   static_context *m_static_context;
   xqpStringStore_t m_index_uri;
+  bool m_unique;
+  index_method_t m_method;
   expr_t m_domain_expr;
   var_expr_t m_domain_var;
   var_expr_t m_domain_pos_var;
   std::vector<expr_t> m_index_field_exprs;
   std::vector<xqtref_t> m_index_field_types;
+  std::vector<std::string> m_index_field_collations;
 
 public:
   ValueIndex(static_context *sCtx, xqpStringStore_t indexUri)
@@ -72,6 +80,12 @@ public:
   static_context *getStaticContext() const { return m_static_context; }
 
   xqpStringStore_t getIndexUri() const { return m_index_uri; }
+
+  bool getUnique() const { return m_unique; }
+  void setUnique(bool unique) { m_unique = unique; }
+
+  index_method_t getMethod() const { return m_method; }
+  void setMethod(index_method_t method) { m_method = method; }
 
   expr_t getDomainExpression() const { return m_domain_expr; }
   void setDomainExpression(expr_t domainExpr) { m_domain_expr = domainExpr; }
@@ -107,6 +121,16 @@ public:
   void setIndexFieldTypes(const std::vector<xqtref_t>& indexFieldTypes) 
   {
     m_index_field_types = indexFieldTypes;
+  }
+
+  const std::vector<std::string>& getIndexFieldCollations() const 
+  {
+    return m_index_field_collations; 
+  }
+
+  void setIndexFieldCollations(const std::vector<std::string>& indexFieldCollations) 
+  {
+    m_index_field_collations = indexFieldCollations;
   }
 
   ValueIndexInsertSession_t createBulkInsertSession();

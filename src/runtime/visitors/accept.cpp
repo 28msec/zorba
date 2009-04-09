@@ -169,6 +169,7 @@ namespace zorba {
   // nary iterators
   NARY_ACCEPT(ValueIndexBuilder);
   NARY_ACCEPT(ValueIndexPointProbe);
+  NARY_ACCEPT(ValueIndexRangeProbe);
   NARY_ACCEPT(FnDistinctValuesIterator);
   NARY_ACCEPT(UDFunctionCallIterator);
   NARY_ACCEPT(StatelessExtFunctionCallIterator);

@@ -62,6 +62,13 @@ class zop_probeindexpoint : public function {
     virtual bool requires_dyn_ctx () const { return true; }
 };
 
+class zop_probeindexrange : public function {
+  public:
+    zop_probeindexrange(const signature&);
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    virtual bool requires_dyn_ctx () const { return true; }
+};
+
 class zop_index_session_opener : public function {
   public:
     zop_index_session_opener(const signature&);

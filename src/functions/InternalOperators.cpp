@@ -68,6 +68,14 @@ PlanIter_t zop_probeindexpoint::codegen(const QueryLoc& loc, std::vector<PlanIte
   return new ValueIndexPointProbe(loc, argv);
 }
 
+zop_probeindexrange::zop_probeindexrange(const signature& sig)
+  : function(sig) { }
+
+PlanIter_t zop_probeindexrange::codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new ValueIndexRangeProbe(loc, argv);
+}
+
 zop_index_session_opener::zop_index_session_opener(const signature& sig)
   : function(sig) { }
 

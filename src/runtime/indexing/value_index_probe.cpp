@@ -72,4 +72,82 @@ bool ValueIndexPointProbe::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END(state);
 }
 
+void ValueIndexRangeProbeState::init(PlanState& state)
+{
+  PlanIteratorState::init(state);
+  theUri = NULL;
+  theIndex = NULL;
+  theIterator = NULL;
+}
+
+void ValueIndexRangeProbeState::reset(PlanState& state)
+{
+  PlanIteratorState::reset(state);
+  if (theIterator != NULL) {
+    theIterator->close();
+  }
+}
+
+bool ValueIndexRangeProbe::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  ValueIndexRangeProbeState *state;
+  store::Item_t uri;
+  store::IndexBoxCondition_t cond;
+  int numChildren;
+  bool status;
+  xqpStringStore *tempUri;
+  DEFAULT_STACK_INIT(ValueIndexRangeProbeState, state, planState);
+
+  status = consumeNext(uri, theChildren[0], planState);
+  ZORBA_ASSERT(status);
+
+  tempUri = uri->getStringValueP();
+  if (state->theUri == NULL || !state->theUri->equals(tempUri)) {
+    state->theUri = tempUri;
+    state->theIndex = GENV_STORE.getIndex(state->theUri);
+    ZORBA_ASSERT(state->theIndex != NULL);
+    state->theIterator = GENV_STORE.getIteratorFactory()->createIndexProbeIterator(state->theIndex);
+  }
+  cond = state->theIndex->createBoxCondition();
+  numChildren = theChildren.size();
+  for(int i = 1; i < numChildren; i += 6) {
+    store::Item_t tempLeft;
+    store::Item_t tempRight;
+    store::Item_t tempHaveLeft;
+    store::Item_t tempHaveRight;
+    store::Item_t tempInclLeft;
+    store::Item_t tempInclRight;
+    if (!consumeNext(tempLeft, theChildren[i], planState)) {
+      tempLeft = NULL;
+    }
+    if (!consumeNext(tempRight, theChildren[i + 1], planState)) {
+      tempRight = NULL;
+    }
+    if (!consumeNext(tempHaveLeft, theChildren[i + 2], planState)) {
+      tempHaveLeft = NULL;
+    }
+    if (!consumeNext(tempHaveRight, theChildren[i + 3], planState)) {
+      tempHaveRight = NULL;
+    }
+    if (!consumeNext(tempInclLeft, theChildren[i + 4], planState)) {
+      tempInclLeft = NULL;
+    }
+    if (!consumeNext(tempInclRight, theChildren[i + 5], planState)) {
+      tempInclRight = NULL;
+    }
+    bool haveLeft = tempHaveLeft != NULL && tempHaveLeft->getBooleanValue();
+    bool haveRight = tempHaveRight != NULL && tempHaveRight->getBooleanValue();
+    bool inclLeft = tempInclLeft != NULL && tempInclLeft->getBooleanValue();
+    bool inclRight = tempInclRight != NULL && tempInclRight->getBooleanValue();
+    cond->pushRange(tempLeft, tempRight, haveLeft, haveRight, inclLeft, inclRight);
+  }
+
+  state->theIterator->init((const zorba::store::IndexBoxCondition_t&)cond);
+  state->theIterator->open();
+  while(state->theIterator->next(result)) {
+    STACK_PUSH(true, state);
+  }
+  STACK_END(state);
+}
+
 }

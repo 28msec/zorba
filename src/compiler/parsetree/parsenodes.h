@@ -954,8 +954,8 @@ public:
 
 
 /***************************************************************************//**
-  IndexDecl ::= DECLARE [UNIQUE] INDEX URI_LITERAL
-                ON ExprSingle [HASH | BTREE]
+  IndexDecl ::= DECLARE [UNIQUE] [HASH | BTREE] INDEX URI_LITERAL
+                ON ExprSingle
                 BY IndexFieldList ")"
 ********************************************************************************/
 class IndexDecl : public parsenode {

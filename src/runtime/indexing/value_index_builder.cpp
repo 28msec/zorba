@@ -31,12 +31,21 @@ bool CreateValueIndex::nextImpl(store::Item_t& result, PlanState& planState) con
   index = planState.sctx()->lookup_index(result->getStringValueP());
   {
     const std::vector<xqtref_t>& iTypes(index->getIndexFieldTypes());
+    const std::vector<std::string>& iColls(index->getIndexFieldCollations());
     int n = iTypes.size();
     store::IndexSpecification spec(n);
+    xqp_string dColl;
+    std::string dCollString(planState.sctx()->lookup_default_collation(dColl) ? dColl.getStore()->str() : "");
     for(int i = 0; i < n; ++i) {
       const XQType& t = *iTypes[i];
       spec.theKeyTypes[i] = t.get_qname();
+      const std::string& coll = iColls[i];
+      spec.theCollations.push_back(coll.empty() ? dCollString : coll);
     }
+    spec.theIsUnique = index->getUnique();
+    spec.theIsSorted = index->getMethod() == ValueIndex::BTREE;
+    spec.theIsTemp = false;
+    spec.theIsThreadSafe = true;
     GENV_STORE.createIndex(result->getStringValueP(), spec);
   }
   STACK_END (state);
