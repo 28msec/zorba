@@ -178,6 +178,22 @@ example_10( Zorba * aZorba )
   return true;
 }
 
+bool
+example_11( Zorba * aZorba )
+{
+  StaticContext_t lContextWithProlog = aZorba->createStaticContext();
+  String prolog (
+"declare variable $x := 2;\n"
+"declare function local:f ($n) { $x + $n };\n"
+);
+  const Zorba_CompilerHints_t hints;
+  lContextWithProlog->loadProlog(prolog, hints);
+  
+  XQuery_t lQuery = aZorba->compileQuery("local:f ($x + 1)", lContextWithProlog);
+  std::cout << lQuery << std::endl;
+  return true;
+}
+
 
 int 
 simple(int argc, char* argv[])
@@ -234,6 +250,11 @@ simple(int argc, char* argv[])
 
   std::cout << "executing example 10" << std::endl;
   res = example_10(lZorba);
+  if (!res) return 1;
+  std::cout << std::endl;
+
+  std::cout << "executing example 11" << std::endl;
+  res = example_11(lZorba);
   if (!res) return 1;
   std::cout << std::endl;
 

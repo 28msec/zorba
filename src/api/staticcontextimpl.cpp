@@ -32,6 +32,8 @@
 #include "types/typeops.h"
 #include "api/functionimpl.h"
 
+#include "api/xqueryimpl.h"
+
 namespace zorba {
 
 
@@ -785,4 +787,13 @@ StaticContextImpl::getSMTPUpwd( ) const
   return "";
 }
 #endif  /* ZORBA_WITH_EMAIL */
+
+void
+StaticContextImpl::loadProlog(const String& prolog, const Zorba_CompilerHints_t &hints)
+{
+  XQueryImpl impl;
+  impl.loadProlog (prolog, this, hints);
+}
+
+
 } /* namespace zorba */

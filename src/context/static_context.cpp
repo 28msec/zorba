@@ -179,7 +179,7 @@ static_context::static_context (static_context *_parent)
   theSchemaResolver(0),
   theModuleResolver(0)
 {
-  if (parent)
+  if (parent != NULL)
     RCHelper::addReference (parent);
 }
 
@@ -1074,6 +1074,16 @@ void static_context::set_SMTP_upwd (xqp_string SMTP_password)
   str_keymap.put ("int:" "smtp_upwd", SMTP_password);
 }
 #endif  /* ZORBA_WITH_EMAIL */
+
+void static_context::get_global_bindings (std::list<global_binding> &bs) {
+  if (parent != NULL)
+    static_cast<static_context *> (parent)->get_global_bindings (bs);
+  bs.insert (bs.end (), theGlobalVars.begin (), theGlobalVars.end ());
+}
+
+void static_context::set_global_bindings (const std::list<global_binding> &bs) {
+  theGlobalVars = bs;
+}
 
 } /* namespace zorba */
 

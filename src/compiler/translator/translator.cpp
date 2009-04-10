@@ -261,6 +261,14 @@ protected:
     zorba_predef_mod_ns.insert (ZORBA_ALEXIS_FN_NS);
     zorba_predef_mod_ns.insert (ZORBA_JSON_FN_NS);
     zorba_predef_mod_ns.insert (ZORBA_OPEXTENSIONS_NS);
+
+    sctx_p->get_global_bindings (theGlobalVars);
+    for (list<global_binding>::iterator i = theGlobalVars.begin ();
+         i != theGlobalVars.end (); i++)
+    {
+      varref_t ve = (*i).first;
+      global_var_decls.push_back (static_context::qname_internal_key (ve->get_varname ()));
+    }
   }
 
   varref_t lookup_ctx_var (xqp_string name, const QueryLoc &loc) {
@@ -752,6 +760,7 @@ void end_visit (const QueryBody& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   pop_stack (global_decl_stack);
   nodestack.push(wrap_in_globalvar_assign(pop_nodestack()));
+  sctx_p->set_global_bindings (theGlobalVars);
 }
 
 

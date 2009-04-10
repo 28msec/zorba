@@ -106,6 +106,7 @@ class XQueryImpl : public XQuery
 {
   friend class ResultIteratorImpl;
   friend class ZorbaImpl; // only ZorbaImpl is allowed to create us
+  friend class StaticContextImpl;  // StaticContextImpl::loadProlog() needs this
   friend class DynamicContextImpl;
 
  protected:
@@ -206,6 +207,9 @@ class XQueryImpl : public XQuery
   compile(std::istream&, const StaticContext_t&, const Zorba_CompilerHints_t& aHints);
 
   void
+  loadProlog (const String&, const StaticContext_t&, const Zorba_CompilerHints_t& aHints);
+
+  void
   setFileName( const String& );
 
   String
@@ -230,7 +234,7 @@ class XQueryImpl : public XQuery
   XQueryImpl();
       
   void
-  doCompile(std::istream&, const Zorba_CompilerHints_t& aHints);
+  doCompile(std::istream&, const Zorba_CompilerHints_t& aHints, bool fork_sctx = true);
 
   CompilerCB::config_t
   getCompilerConfig(const Zorba_CompilerHints_t&);

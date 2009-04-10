@@ -439,6 +439,22 @@ XQueryImpl::compile(
   ZORBA_CATCH
 }
 
+void
+XQueryImpl::loadProlog(
+    const String& aQuery,
+    const StaticContext_t& aStaticContext, 
+    const Zorba_CompilerHints_t& aHints)
+{
+  ZORBA_TRY
+    checkNotClosed();
+    checkNotCompiled();
+    theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
+    xqpString lQuery = Unmarshaller::getInternalString(aQuery);
+    std::istringstream lQueryStream(lQuery + "()");
+    doCompile(lQueryStream, aHints, false);
+  ZORBA_CATCH
+}
+
 
 void
 XQueryImpl::compile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints)
@@ -468,17 +484,21 @@ XQueryImpl::compile(
 
 
 void
-XQueryImpl::doCompile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints)
+XQueryImpl::doCompile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints, bool fork_sctx)
 {
   checkNotClosed();
   checkNotCompiled();
 
   if ( ! theStaticContext ) {
     // no context given => use the default one (i.e. a child of the root static context)
-    theStaticContext = GENV.getRootStaticContext().create_child_context();
+    if (fork_sctx)
+      theStaticContext = GENV.getRootStaticContext().create_child_context();
+    else
+      theStaticContext = &GENV.getRootStaticContext();
   } else {
     // otherwise create a child and we have ownership over that one
-    theStaticContext = theStaticContext->create_child_context();
+    if (fork_sctx)
+      theStaticContext = theStaticContext->create_child_context();
   }
   RCHelper::addReference (theStaticContext);
 

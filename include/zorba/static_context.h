@@ -20,6 +20,7 @@
 #include <zorba/zorbastring.h>
 #include <zorba/typeident.h> 
 #include <zorba/static_context_consts.h>
+#include <zorba/options.h>  // for compiler hints class
 #include <vector>
 #include <zorba/function.h>
 #include <zorba/smart_ptr.h>
@@ -47,6 +48,9 @@ namespace zorba {
       /** \brief Destructor
        */
       virtual ~StaticContext() {}
+
+      virtual void
+      loadProlog(const String&, const Zorba_CompilerHints_t &hints) = 0;
 
       /** \brief Create a child static context, i.e. a context with the same information,
        *         of the given static context.

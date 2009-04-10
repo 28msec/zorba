@@ -58,6 +58,9 @@ class StaticContextImpl : public StaticContext
 
   virtual ~StaticContextImpl();
 
+  void
+  loadProlog(const String&, const Zorba_CompilerHints_t &hints);
+
   virtual StaticContext_t
   createChildContext() const;
       

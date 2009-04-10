@@ -16,18 +16,22 @@
 #ifndef ZORBA_CONTEXT_STATIC_CONTEXT_H
 #define ZORBA_CONTEXT_STATIC_CONTEXT_H
 
-#include "context/static_context_consts.h"
 #include <memory>
+#include <list>
+
 #include "store/api/item.h" // TODO remove by moving all functions into the cpp file
 
+#include "context/static_context_consts.h"
 #include "context/context.h"
 #include "context/static_context_consts.h"
+
 #include "types/typemanager.h"
 #include "zorbaerrors/Assert.h"
 
 #include <zorba/api_shared_types.h>
 #include "common/shared_types.h"
 
+#include "compiler/expression/var_expr.h"
 
 namespace zorba {
 
@@ -50,6 +54,7 @@ protected:
   InternalCollectionURIResolver* theColResolver;
   InternalSchemaURIResolver*     theSchemaResolver;
   InternalModuleURIResolver*     theModuleResolver;
+  std::list<global_binding> theGlobalVars;
 
 public:
   virtual ~static_context();
@@ -62,11 +67,14 @@ public:
     if (tm != NULL) {
       return tm;
     }
-    return dynamic_cast<static_context *>(parent)->get_typemanager();
+    return static_cast<static_context *>(parent)->get_typemanager();
   }
 
   void set_typemanager(rchandle<TypeManager>);
-  
+
+  void get_global_bindings (std::list<global_binding> &bs);
+  void set_global_bindings (const std::list<global_binding> &bs);
+
 	StaticContextConsts::xpath1_0compatib_mode_t xpath1_0compatib_mode() const;
 	StaticContextConsts::construction_mode_t construction_mode() const;
 	StaticContextConsts::order_empty_mode_t order_empty_mode() const;
