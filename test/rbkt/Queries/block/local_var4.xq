@@ -1,7 +1,7 @@
 declare variable $x := 100;
 
 declare sequential function local:f ($n) {
-  declare variable $x := $n;
+  declare $x := $n;
   set $x := $x - 1;
   if ($n eq 0)
     then -1

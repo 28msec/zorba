@@ -2612,7 +2612,7 @@ void *begin_visit (const VFO_DeclList& v) {
          ++it)
     {
       const Param *p = (*it).getp ();
-      const TypeDeclaration *td = p->get_typedecl ().getp ();
+      const SequenceType *td = p->get_typedecl ().getp ();
       if (td == NULL) {
         arg_types.push_back (GENV_TYPESYSTEM.ITEM_TYPE_STAR);
       } else {

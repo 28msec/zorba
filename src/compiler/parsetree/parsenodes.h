@@ -427,6 +427,7 @@ public:
   int size () const { return vfo_hv.size (); }
 	void push_back(rchandle<parsenode> vfo_h) { vfo_hv.push_back(vfo_h); }
   void push_front(rchandle<parsenode> vfo_h) { vfo_hv.insert(vfo_hv.begin (), vfo_h); }
+  void push_back (const VFO_DeclList &other) { vfo_hv.insert (vfo_hv.end (), other.vfo_hv.begin (), other.vfo_hv.end ()); }
 	rchandle<parsenode> operator[](int k) const { return vfo_hv[k]; }
   std::vector<rchandle<parsenode> >::iterator begin () { return vfo_hv.begin (); }
   std::vector<rchandle<parsenode> >::iterator end   () { return vfo_hv.end   (); }
@@ -908,16 +909,16 @@ class VarDeclBase : public parsenode
 {
 protected:
 	std::string varname;
-	rchandle<TypeDeclaration> typedecl_h;
+	rchandle<SequenceType> typedecl_h;
 
 public:
-	VarDeclBase(const QueryLoc& loc_, std::string varname_, rchandle<TypeDeclaration> td_)
+	VarDeclBase(const QueryLoc& loc_, std::string varname_, rchandle<SequenceType> td_)
     : parsenode (loc_), varname (varname_), typedecl_h (td_)
   {}
 
 public:
 	std::string get_varname() const { return varname; }
-	rchandle<TypeDeclaration> get_typedecl() const { return typedecl_h; }
+	rchandle<SequenceType> get_typedecl() const { return typedecl_h; }
 };
 
 class VarDeclWithInit : public VarDeclBase {
@@ -925,7 +926,7 @@ protected:
 	rchandle<exprnode> initexpr_h;
 
 public:
-	VarDeclWithInit(const QueryLoc& loc_, std::string varname_, rchandle<TypeDeclaration> td_, rchandle<exprnode> init_)
+	VarDeclWithInit(const QueryLoc& loc_, std::string varname_, rchandle<SequenceType> td_, rchandle<exprnode> init_)
     : VarDeclBase (loc_, varname_, td_), initexpr_h (init_)
   {}
 
@@ -1020,17 +1021,17 @@ public:
 ********************************************************************************/
 class IndexField : public parsenode {
   rchandle<exprnode> expr;
-  rchandle<TypeDeclaration> type;
+  rchandle<SequenceType> type;
 
 public:
   std::string coll;
 
 public:
-  IndexField (const QueryLoc& loc_, rchandle<exprnode> expr_, rchandle<TypeDeclaration> type_)
+  IndexField (const QueryLoc& loc_, rchandle<exprnode> expr_, rchandle<SequenceType> type_)
     : parsenode (loc_), expr (expr_), type (type_)
   {}
   rchandle<exprnode> get_expr () const { return expr; }
-  rchandle<TypeDeclaration> get_type () const { return type; }
+  rchandle<SequenceType> get_type () const { return type; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -1076,7 +1077,7 @@ protected:
 public:
 	VarDecl(const QueryLoc&,
           std::string varname,
-          rchandle<TypeDeclaration>,
+          rchandle<SequenceType>,
           rchandle<exprnode>,
           bool ext_ = false);
 
@@ -1209,18 +1210,18 @@ class Param : public parsenode
 {
 protected:
 	std::string name;
-	rchandle<TypeDeclaration> typedecl_h;
+	rchandle<SequenceType> typedecl_h;
 
 public:
 	Param(
 		const QueryLoc&,
 		std::string name,
-		rchandle<TypeDeclaration>);
+		rchandle<SequenceType>);
 
 
 public:
 	std::string get_name() const { return name; }
-	rchandle<TypeDeclaration> get_typedecl() const { return typedecl_h; }
+	rchandle<SequenceType> get_typedecl() const { return typedecl_h; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -1482,7 +1483,7 @@ public:
 
 class WindowVarDecl : public VarDeclWithInit {
 public:
-  WindowVarDecl (const QueryLoc& loc_, std::string varname_, rchandle<TypeDeclaration> td_, rchandle<exprnode> init_)
+  WindowVarDecl (const QueryLoc& loc_, std::string varname_, rchandle<SequenceType> td_, rchandle<exprnode> init_)
     : VarDeclWithInit (loc_, varname_, td_, init_)
   {}
 
@@ -1541,7 +1542,7 @@ public:
 	VarInDecl(
 		const QueryLoc&,
 		std::string varname,
-		rchandle<TypeDeclaration>,
+		rchandle<SequenceType>,
 		rchandle<PositionalVar>,
 		rchandle<FTScoreVar>,
 		rchandle<exprnode>);
@@ -1662,7 +1663,7 @@ protected:
 public:
 	VarGetsDecl(const QueryLoc& loc_,
               std::string varname_,
-              rchandle<TypeDeclaration> typedecl_h_,
+              rchandle<SequenceType> typedecl_h_,
               rchandle<FTScoreVar> ftscorevar_h_,
               rchandle<exprnode> valexpr_h_,
               enum var_kind kind_ = let_var)
@@ -2111,7 +2112,7 @@ class QVarInDecl : public parsenode
 {
 protected:
 	std::string name;
-	rchandle<TypeDeclaration> typedecl_h;
+	rchandle<SequenceType> typedecl_h;
 	rchandle<exprnode> val_h;
 
 public:
@@ -2123,13 +2124,13 @@ public:
 	QVarInDecl(
 		const QueryLoc&,
 		std::string name,
-		rchandle<TypeDeclaration>,
+		rchandle<SequenceType>,
 		rchandle<exprnode>);
 
 
 public:
 	std::string get_name() const { return name; }
-	rchandle<TypeDeclaration> get_typedecl() const { return typedecl_h; }
+	rchandle<SequenceType> get_typedecl() const { return typedecl_h; }
 	rchandle<exprnode> get_val() const { return val_h; }
 
 public:

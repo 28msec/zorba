@@ -78,10 +78,10 @@ public:
 class VarNameAndType {
 public:
   std::string name;
-  rchandle<TypeDeclaration> type;
+  rchandle<SequenceType> type;
 
 
-  VarNameAndType (std::string name_, rchandle<TypeDeclaration> type_)
+  VarNameAndType (std::string name_, rchandle<SequenceType> type_)
     : name (name_), type (type_)
   {}
 };
@@ -594,6 +594,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> VFO_Decl
 %type <node> VFO_DeclList
 %type <node> BlockDecls
+%type <node> BlockVarDeclList
+%type <node> BlockVarDecl
 %type <node> WhereClause
 %type <node> CountClause
 %type <node> Wildcard
@@ -754,7 +756,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // (not <= 0); but Bison never increments the refcount, so we do it manually...
 
 // parsenodes
-%destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp IndexDecl IndexDecl2 IndexDecl3 IndexDeclSuffix IndexField IndexField1 IndexFieldList IndexStatement CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls WhereClause CountClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
+%destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp IndexDecl IndexDecl2 IndexDecl3 IndexDeclSuffix IndexField IndexField1 IndexFieldList IndexStatement CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
 // exprnodes
 %destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement FTContainsExpr
 // internal class
@@ -1410,7 +1412,7 @@ VarNameAndType :
   | DOLLAR QNAME TypeDeclaration
     {
       $$ = new VarNameAndType (SYMTAB ($2),
-                               dynamic_cast<TypeDeclaration *> ($3));
+                               dynamic_cast<SequenceType *> ($3));
     }
   ;
 
@@ -1508,7 +1510,7 @@ IndexField1 :
     }
   | ExprSingle TypeDeclaration
     {
-      $$ = new IndexField (LOC (@$), $1, dynamic_cast<TypeDeclaration *> ($2));
+      $$ = new IndexField (LOC (@$), $1, dynamic_cast<SequenceType *> ($2));
     }
   ;
 
@@ -1592,19 +1594,57 @@ Block :
   ;
 
 BlockDecls:
-    BlockDecls VarDecl SEMI
+    BlockDecls BlockVarDeclList SEMI
     {
       VFO_DeclList *vfo = dynamic_cast<VFO_DeclList *> ($1);
-      VarDecl *d = dynamic_cast<VarDecl *> ($2);
-      d->set_global (false);
+      VFO_DeclList *vfo2 = dynamic_cast<VFO_DeclList *> ($2);
       if ($1 == NULL)
         vfo = new VFO_DeclList (LOC (@$));
-      vfo->push_back ($2);
+      vfo->push_back (*vfo2);
       $$ = vfo;
     }
   |
     {
       $$ = NULL;
+    }
+  ;
+
+BlockVarDeclList:
+    BlockVarDeclList COMMA BlockVarDecl
+    {
+      VFO_DeclList *vfo = dynamic_cast<VFO_DeclList *> ($1);
+      vfo->push_back ($3);
+      $$ = vfo;
+    }
+  | DECLARE BlockVarDecl
+    {
+      VFO_DeclList *vfo = new VFO_DeclList (LOC (@$));
+      vfo->push_back ($2);
+      $$ = vfo;
+    }
+  ;
+
+BlockVarDecl:
+    VarNameAndType
+    {
+      VarNameAndType *nt = dynamic_cast<VarNameAndType *> $1;
+      VarDecl *vd = new VarDecl(LOC (@$),
+                       nt->name,
+                       nt->type,
+                       NULL);
+      vd->set_global (false);
+			$$ = vd;
+      delete nt;
+    }
+  | VarNameAndType GETS ExprSingle
+    {
+      VarNameAndType *nt = dynamic_cast<VarNameAndType *> $1;
+      VarDecl *vd = new VarDecl(LOC (@$),
+                       nt->name,
+                       nt->type,
+                       $3);
+      vd->set_global (false);
+			$$ = vd;
     }
   ;
 
@@ -1768,7 +1808,7 @@ Param :
 		{
 			$$ = new Param(LOC (@$),
 								SYMTAB ($2),
-								dynamic_cast<TypeDeclaration*>($3));
+								dynamic_cast<SequenceType *>($3));
 		}
 	;
 
@@ -2043,7 +2083,7 @@ VarInDecl :
 		{
 			$$ = new VarInDecl(LOC (@$),
 								SYMTAB ($1),
-								dynamic_cast<TypeDeclaration*>($2),
+								dynamic_cast<SequenceType *>($2),
 								NULL,NULL,
 								$4);
 		}
@@ -2060,7 +2100,7 @@ VarInDecl :
 		{
 			$$ = new VarInDecl(LOC (@$),
 								SYMTAB ($1),
-								dynamic_cast<TypeDeclaration*>($2),
+								dynamic_cast<SequenceType *>($2),
 								dynamic_cast<PositionalVar*>($3),
 								NULL,
 								$5);
@@ -2078,7 +2118,7 @@ VarInDecl :
 		{
 			$$ = new VarInDecl(LOC (@$),
 								SYMTAB ($1),
-								dynamic_cast<TypeDeclaration*>($2),
+								dynamic_cast<SequenceType *>($2),
 								NULL,
 								dynamic_cast<FTScoreVar*>($3),
 								$5);
@@ -2096,7 +2136,7 @@ VarInDecl :
 		{
 			$$ = new VarInDecl(LOC (@$),
 								SYMTAB ($1),
-								dynamic_cast<TypeDeclaration*>($2),
+								dynamic_cast<SequenceType *>($2),
 								dynamic_cast<PositionalVar*>($3),
 								dynamic_cast<FTScoreVar*>($4),
 								$6);
@@ -2192,7 +2232,7 @@ VarGetsDecl :
 		{
 			$$ = new VarGetsDecl(LOC (@$),
 								SYMTAB ($1),
-								dynamic_cast<TypeDeclaration*>($2),
+								dynamic_cast<SequenceType *>($2),
 								NULL,
 								$4);
 		}
@@ -2209,7 +2249,7 @@ VarGetsDecl :
 		{
 			$$ = new VarGetsDecl(LOC (@$),
 								SYMTAB ($1),
-								dynamic_cast<TypeDeclaration*>($2),
+								dynamic_cast<SequenceType *>($2),
 								dynamic_cast<FTScoreVar*>($3),
 								$5);
 		}
@@ -2227,7 +2267,7 @@ WindowVarDecl :
 		{
 			$$ = new WindowVarDecl(LOC (@$),
 								SYMTAB ($2),
-								dynamic_cast<TypeDeclaration*>($3),
+								dynamic_cast<SequenceType *>($3),
 								$5);
 		}
 
@@ -2549,7 +2589,7 @@ QVarInDecl :
 		{
 			$$ = new QVarInDecl(LOC (@$),
 								SYMTAB ($1),
-								dynamic_cast<TypeDeclaration*>($2),
+								dynamic_cast<SequenceType *>($2),
 								$4);
 		}
 	;
@@ -4238,8 +4278,7 @@ SingleType :
 TypeDeclaration :
 		AS  SequenceType
 		{
-			$$ = new TypeDeclaration(LOC (@$),
-								dynamic_cast<SequenceType*>($2));
+			$$ = $2;
 		}
 	;
 

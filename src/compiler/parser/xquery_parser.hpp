@@ -48,7 +48,7 @@ namespace zorba
 }
 
 /* First part of user declarations.  */
-#line 38 "/home/vinayakb/work/repositories/external/zorba.svn.sourceforge.net/svnroot/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 38 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 
 
 #include "common/common.h"
@@ -92,10 +92,10 @@ public:
 class VarNameAndType {
 public:
   std::string name;
-  rchandle<TypeDeclaration> type;
+  rchandle<SequenceType> type;
 
 
-  VarNameAndType (std::string name_, rchandle<TypeDeclaration> type_)
+  VarNameAndType (std::string name_, rchandle<SequenceType> type_)
     : name (name_), type (type_)
   {}
 };
@@ -107,7 +107,7 @@ public:
 
 
 /* Line 35 of lalr1.cc.  */
-#line 111 "/home/vinayakb/work/repositories/external/zorba.svn.sourceforge.net/svnroot/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 111 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -158,7 +158,7 @@ namespace zorba
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 139 "/home/vinayakb/work/repositories/external/zorba.svn.sourceforge.net/svnroot/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 139 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 {
   zorba::parsenode * node;
   zorba::exprnode * expr;
@@ -172,7 +172,7 @@ namespace zorba
   XQUERY_ERROR err;
 }
 /* Line 35 of lalr1.cc.  */
-#line 176 "/home/vinayakb/work/repositories/external/zorba.svn.sourceforge.net/svnroot/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 176 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;

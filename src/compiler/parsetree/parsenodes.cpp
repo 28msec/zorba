@@ -634,7 +634,7 @@ void CtxItemDecl::accept(parsenode_visitor& v) const
 // ------------
 VarDecl::VarDecl (const QueryLoc& loc_,
                   std::string _varname,
-                  rchandle<TypeDeclaration> _typedecl_h,
+                  rchandle<SequenceType> _typedecl_h,
                   rchandle<exprnode> _initexpr_h,
                   bool ext_)
 :
@@ -742,7 +742,7 @@ void ParamList::accept(parsenode_visitor& v) const
 Param::Param(
   const QueryLoc& loc_,
   std::string _name,
-  rchandle<TypeDeclaration> _typedecl_h)
+  rchandle<SequenceType> _typedecl_h)
 :
   parsenode(loc_),
   name(_name),
@@ -1037,7 +1037,7 @@ void VarInDeclList::accept(parsenode_visitor& v) const
 VarInDecl::VarInDecl(
   const QueryLoc& loc_,
   std::string _varname,
-  rchandle<TypeDeclaration> _typedecl_h,
+  rchandle<SequenceType> _typedecl_h,
   rchandle<PositionalVar> _posvar_h,
   rchandle<FTScoreVar> _ftscorevar_h,
   rchandle<exprnode> _valexpr_h)
@@ -1496,7 +1496,7 @@ QVarInDecl::QVarInDecl(
 QVarInDecl::QVarInDecl(
   const QueryLoc& loc_,
   std::string _name,
-  rchandle<TypeDeclaration> _typedecl_h,
+  rchandle<SequenceType> _typedecl_h,
   rchandle<exprnode> _val_h)
 :
   parsenode(loc_),

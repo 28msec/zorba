@@ -1,6 +1,6 @@
 declare variable $x := 42;
 declare sequential function local:f ($n) {
-  declare variable $x := $n - 1;
+  declare $x := $n - 1;
   if ($n eq 0)
     then 0
     else local:f ($x) + $x
