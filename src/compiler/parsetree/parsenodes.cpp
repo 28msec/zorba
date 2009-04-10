@@ -922,7 +922,7 @@ void FLWORExpr::compute_general () {
         non_10 = general =true;
       }
     } else if (typeid (*cp) == typeid (WhereClause)) {
-      if (has_where || has_group) non_10 = general = true;
+      if (has_where || has_group || has_order) non_10 = general = true;
       has_where = true;
     } else if (typeid (*cp) == typeid (OrderByClause)) {
       if (has_order) non_10 = general = true;
