@@ -1909,14 +1909,8 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/) {
   }
 
   GroupByClause *lGroupBy = &*v.get_groupby();
-  if (lGroupBy) {
-    if (lGroupBy->get_where() != 0) {
-      expr_t lClauseExpr = pop_nodestack();
-      if (lClauseExpr->isUpdating())
-        ZORBA_ERROR_LOC(XUST0001, loc);
-      flwor->set_group_where(lClauseExpr);
-    }
-
+  if (lGroupBy) 
+  {
     // TODO let after group by
 
     GroupSpecList *lGroupList = lGroupBy->get_spec_list();
@@ -2273,16 +2267,6 @@ void *begin_visit (const GroupCollationSpec& v) {
 }
 
 void end_visit (const GroupCollationSpec& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const LetClauseList& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-
-void end_visit (const LetClauseList& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
@@ -3525,16 +3509,6 @@ void end_visit (const SingleType& v, void* /*visit_state*/) {
   if (v.get_hook_bit ())
     tstack.push (CTXTS->create_type (*pop_tstack (), TypeConstants::QUANT_QUESTION));
   // else leave type as it is on tstack
-}
-
-
-void *begin_visit (const TypeDeclaration& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const TypeDeclaration& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
 }
 
 
