@@ -2339,10 +2339,7 @@ WhereClause :
 GroupByClause :
     GROUP BY GroupSpecList
     {
-      $$ = new GroupByClause(LOC(@$),
-                 dynamic_cast<GroupSpecList*>($3),
-                 NULL,
-                 NULL);
+      $$ = new GroupByClause(LOC(@$), dynamic_cast<GroupSpecList*>($3));
     }
   ;
 
