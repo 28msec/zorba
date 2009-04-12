@@ -341,7 +341,6 @@ class DeweyClassification: public parsenode_visitor
     DECL_CONCRETE_VISIT (GroupSpecList);
     DECL_CONCRETE_VISIT (GroupSpec);
     DECL_CONCRETE_VISIT (GroupCollationSpec);
-    DECL_CONCRETE_VISIT (LetClauseList);
   	DECL_CONCRETE_VISIT (OrderByClause);
   	DECL_CONCRETE_VISIT (OrderCollationSpec);
   	DECL_CONCRETE_VISIT (OrderDirSpec);
@@ -373,7 +372,6 @@ class DeweyClassification: public parsenode_visitor
   	DECL_CONCRETE_VISIT (SignList);
   	DECL_CONCRETE_VISIT (SingleType);
   	DECL_CONCRETE_VISIT (TextTest);
-  	DECL_CONCRETE_VISIT (TypeDeclaration);
   	DECL_CONCRETE_VISIT (TypeName);
   	DECL_CONCRETE_VISIT (URILiteralList);
   	DECL_CONCRETE_VISIT (ValueComp);
