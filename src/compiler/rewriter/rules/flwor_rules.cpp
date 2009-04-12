@@ -52,7 +52,7 @@ namespace zorba {
   // Substitutes @p var with @p subst in @p root
   expr_t subst_vars (RewriterContext rCtx0, expr_t root, var_expr *var, expr *subst) {
     RewriterContext rCtx (rCtx0.getCompilerCB (), root);
-    auto_ptr<Rewriter> rw (new SingletonRuleMajorDriverBase (RuleMajorDriver::rule_ptr_t (new SubstVars (var, subst))));
+    auto_ptr<Rewriter> rw(new SingletonRuleMajorDriverBase(rule_ptr_t(new SubstVars(var, subst))));
     rw->rewrite (rCtx);
 #if 0  // debug substitutions
     cout << "After subst " << var << ":" << endl; rCtx.getRoot()->put (cout) << endl;

@@ -17,7 +17,6 @@
 #ifndef ZORBA_DYNAMIC_BITSET_H
 #define ZORBA_DYNAMIC_BITSET_H
 
-#include <ostream>
 #include <vector>
 
 namespace zorba {
@@ -68,30 +67,30 @@ public:
   bool get(int bit) const
   {
     int off = getByteIndex(bit);
-    if (m_bits.size() <= (unsigned)off) {
+    if (m_bits.size() <= (unsigned)off)
       return false;
-    }
+
     uint8_t byte = m_bits[off];
-    return (byte & (1 << getBitWithinByte(bit))) != 0;
+    return (byte & (128 >> getBitWithinByte(bit))) != 0;
   }
 
   void set(int bit, bool value)
   {
     int off = getByteIndex(bit);
-    if (!value && m_bits.size() <= (unsigned)off) {
+    if (!value && m_bits.size() <= (unsigned)off)
       return;
-    }
-    if (m_bits.size() <= (unsigned)off) {
+
+    if (m_bits.size() <= (unsigned)off)
       m_bits.resize(off + 1);
-    }
+ 
     int bitnum = getBitWithinByte(bit);
     if (value) 
     {
-      m_bits[off] |= (1 << bitnum);
+      m_bits[off] |= (128 >> bitnum);
     }
     else 
     {
-      m_bits[off] &= ~(1 << bitnum);
+      m_bits[off] &= ~(128 >> bitnum);
     }
   }
   
@@ -116,7 +115,8 @@ public:
     if ((unsigned)idx < rhs.m_bits.size()) 
     {
       m_bits.resize(rhs.m_bits.size());
-      while((unsigned)idx < rhs.m_bits.size()) {
+      while((unsigned)idx < rhs.m_bits.size()) 
+      {
         m_bits.push_back(rhs.m_bits[idx++]);
       }
     }
@@ -126,11 +126,13 @@ public:
   DynamicBitset& set_intersect(const DynamicBitset& rhs)
   {
     int idx = 0;
-    while((unsigned)idx < m_bits.size() && (unsigned)idx < rhs.m_bits.size()) {
+    while((unsigned)idx < m_bits.size() && (unsigned)idx < rhs.m_bits.size()) 
+    {
       m_bits[idx] &= rhs.m_bits[idx];
       ++idx;
     }
-    while((unsigned)idx < m_bits.size()) {
+    while((unsigned)idx < m_bits.size()) 
+    {
       m_bits[idx++] = 0;
     }
     return *this;
@@ -152,18 +154,7 @@ private:
 };
 
 
-std::ostream& operator <<(std::ostream& s, const DynamicBitset& set)
-{
-  s << "BitSet[" << set.size() << "] = {";
-  for(int i = 0; i < set.size(); ++i) 
-  {
-    if (set.get(i)) {
-      s << i << ", ";
-    }
-  }
-  s << "}";
-  return s;
-}
+std::ostream& operator <<(std::ostream& s, const DynamicBitset& set);
 
 }
 

@@ -23,6 +23,10 @@
 namespace zorba 
 {
 
+/***************************************************************************//**
+  Implements the "create index <uri>" expr. It creates the index in the store
+  without populating. It returns the empty sequence.
+********************************************************************************/
 class CreateValueIndex : public UnaryBaseIterator<CreateValueIndex, PlanIteratorState> 
 {
 public:
@@ -38,6 +42,10 @@ public:
 };
 
 
+/***************************************************************************//**
+  Implements the "drop index <uri>" expr. It removes the index from the store.
+  It returns the empty sequence.
+********************************************************************************/
 class DropValueIndex : public UnaryBaseIterator<DropValueIndex, PlanIteratorState> 
 {
 public:
@@ -53,6 +61,9 @@ public:
 };
 
 
+/***************************************************************************//**
+
+********************************************************************************/
 class ValueIndexInsertSessionOpener : public UnaryBaseIterator<ValueIndexInsertSessionOpener, PlanIteratorState> 
 {
 public:
@@ -68,6 +79,9 @@ public:
 };
 
 
+/***************************************************************************//**
+
+********************************************************************************/
 class ValueIndexInsertSessionCloser : public UnaryBaseIterator<ValueIndexInsertSessionCloser, PlanIteratorState> 
 {
 public:
@@ -83,6 +97,9 @@ public:
 };
 
 
+/***************************************************************************//**
+
+********************************************************************************/
 class ValueIndexBuilderState : public PlanIteratorState 
 {
 public:

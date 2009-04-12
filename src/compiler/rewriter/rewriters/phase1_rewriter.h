@@ -21,13 +21,22 @@
 
 namespace zorba {
 
-class Phase1Rewriter : public SequentialRewriter {
-  public:
-    Phase1Rewriter();
-    ~Phase1Rewriter() throw ();
+class Phase1Rewriter : public SequentialRewriter 
+{
+public:
+  Phase1Rewriter();
+  ~Phase1Rewriter() throw ();
 };
 
 }
 
 #endif /* ZORBA_PHASE1_REWRITER_H */
 /* vim:set ts=2 sw=2: */
+
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
+

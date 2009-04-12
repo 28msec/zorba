@@ -1099,9 +1099,9 @@ bool BasicItemFactory::createTextNode(
 
 
 /*******************************************************************************
-  Create a new text node N to store the typed value a given element node P (the
-  parent of N) that has simple type or complex type with simple content. P is
-  not allowed to have any other text or element children. 
+  Create a new text node N to store the typed value of a given element node P
+  (the parent of N) that has simple type or complex type with simple content.
+  P is not allowed to have any other text or element children. 
 
   parent        : The parent P of the new text node; must not be NULL.
   content       : The typed value of P.

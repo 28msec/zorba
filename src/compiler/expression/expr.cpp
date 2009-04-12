@@ -467,6 +467,24 @@ rchandle<forlet_clause> forlet_clause::clone(expr::substitution_t& substitution)
 /*******************************************************************************
 
 ********************************************************************************/
+bool flwor_expr::defines_variable(const var_expr* v) const
+{
+  long numVars = theForLetClauses.size();
+
+  for (long i = 0; i < numVars; ++i)
+  {
+    if (theForLetClauses[i]->var_h.getp() == v ||
+        theForLetClauses[i]->pos_var_h.getp() == v)
+      return true;
+  }
+
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 expr_iterator_data *flwor_expr::make_iter () 
 {
   return new flwor_expr_iterator_data (this);
@@ -476,7 +494,7 @@ expr_iterator_data *flwor_expr::make_iter ()
 /*******************************************************************************
 
 ********************************************************************************/
-void flwor_expr::next_iter (expr_iterator_data& v) 
+void flwor_expr::next_iter(expr_iterator_data& v) 
 {
   BEGIN_EXPR_ITER2 (flwor_expr);
 

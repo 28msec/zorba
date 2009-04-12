@@ -42,8 +42,7 @@ typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
   Note: The DECLARE INDEX sysntax is the following:
 
   IndexDecl ::= "DECLARE" ["UNIQUE"] ["HASH" | "BTREE"] "INDEX" UriLiteral
-                "ON" ExprSingle
-                "BY" "(" IndexField+ ")"
+                "ON" ExprSingle "BY" "(" IndexField+ ")"
 
   IndexField ::= ExprSingle [TypeDeclaration] ["COLLATION" UriLiteral]
 
@@ -68,7 +67,7 @@ private:
   std::vector<std::string> m_index_field_collations;
 
 public:
-  ValueIndex(static_context *sCtx, xqpStringStore_t indexUri)
+  ValueIndex(static_context* sCtx, xqpStringStore_t indexUri)
     :
     m_static_context(sCtx),
     m_index_uri(indexUri) 

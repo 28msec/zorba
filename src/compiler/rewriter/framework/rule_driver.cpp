@@ -22,6 +22,10 @@
 
 namespace zorba {
 
+
+static expr_t rewriteRec(RewriterContext&, RewriteRule*, expr*, bool&);
+
+
 RuleMajorDriver::RuleMajorDriver() 
 { 
 }
@@ -33,12 +37,6 @@ RuleMajorDriver::~RuleMajorDriver()
 
 
 void RuleMajorDriver::rewrite(RewriterContext& rCtx)
-{
-  rewriteRuleMajor(rCtx);
-}
-
-
-void RuleMajorDriver::rewriteRuleMajor(RewriterContext& rCtx)
 {
   bool modified = false;
   rules_t::const_iterator end = m_rules.end();
@@ -54,23 +52,43 @@ void RuleMajorDriver::rewriteRuleMajor(RewriterContext& rCtx)
       if (rule_modified)
         modified = true;
 
-      if (newRoot != NULL) {
+      if (newRoot != NULL) 
+      {
         rCtx.setRoot(newRoot);
       }
 
-      if (rule_modified && Properties::instance()->printIntermediateOpt ()) 
+      if (rule_modified && Properties::instance()->printIntermediateOpt()) 
       {
-        std::cout << "After " << (*i)->getRuleName () << ":" << std::endl;
-        rCtx.getRoot ()->put (std::cout) << std::endl;
+        std::cout << "After " << (*i)->getRuleName() << ":" << std::endl;
+        rCtx.getRoot()->put(std::cout) << std::endl;
       }
     }
   } while(modified);
 }
 
 
-expr_t RuleMajorDriver::rewriteRec(
+void RuleOnceDriverBase::rewrite(RewriterContext& rCtx)
+{
+  bool modified;
+
+  expr_t newRoot = rewriteRec(rCtx, theRule, &*rCtx.getRoot(), modified);
+
+  if (newRoot != NULL) 
+  {
+    rCtx.setRoot(newRoot);
+  }
+
+  if (modified && Properties::instance()->printIntermediateOpt()) 
+  {
+    std::cout << "After " << theRule->getRuleName() << ":" << std::endl;
+    rCtx.getRoot()->put(std::cout) << std::endl;
+  }
+}
+
+
+static expr_t rewriteRec(
     RewriterContext& rCtx,
-    RewriteRule *rule,
+    RewriteRule* rule,
     expr* curExpr,
     bool& modified)
 {
@@ -87,7 +105,8 @@ expr_t RuleMajorDriver::rewriteRec(
   for(expr_iterator i = curExpr->expr_begin(); !i.done(); ++i) 
   {
     expr_t new_e = rewriteRec(rCtx, rule, &**i, modified);
-    if (new_e != NULL) {
+    if (new_e != NULL) 
+    {
       *i = &*new_e;
     }
   }
@@ -100,6 +119,7 @@ expr_t RuleMajorDriver::rewriteRec(
   }
   return result;
 }
+
 
 }
 /* vim:set ts=2 sw=2: */

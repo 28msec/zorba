@@ -567,7 +567,26 @@ bool CompareIterator::generalComparison(
   case CompareConsts::GENERAL_LESS_EQUAL:
   {
     compValue = generalCompare(aItem0, aItem1, typemgr, timezone, aCollation);
-    return boolResult(loc, compValue, aCompType);
+
+    if ( compValue != -2 )
+    {
+      switch ( aCompType )
+      {
+      case CompareConsts::GENERAL_GREATER:
+        return compValue == 1;
+      case CompareConsts::GENERAL_GREATER_EQUAL:
+        return compValue >= 0;
+      case CompareConsts::GENERAL_LESS:
+        return compValue == -1;
+      case CompareConsts::GENERAL_LESS_EQUAL:
+        return compValue <= 0;
+      default:
+      {
+        ZORBA_ASSERT(false);
+      }
+      }
+    }
+    break;
   }
   default:
   {

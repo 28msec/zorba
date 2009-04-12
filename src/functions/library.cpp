@@ -1168,10 +1168,10 @@ DECL(sctx, zop_gettuplefield,
 DECL(sctx, zop_hoist,
      (createQName(XQUERY_FN_NS,"fn", ":hoist"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      GENV_TYPESYSTEM.ITEM_TYPE_ONE));
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 DECL(sctx, zop_unhoist,
      (createQName(XQUERY_FN_NS,"fn", ":unhoist"),
-      GENV_TYPESYSTEM.ITEM_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 DECL(sctx, zop_createindex,
      (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "create-index"),

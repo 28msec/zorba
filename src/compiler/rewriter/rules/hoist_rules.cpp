@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 #include <map>
+
 #include "context/static_context.h"
+
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/expression/expr.h"
@@ -26,10 +28,6 @@ using namespace std;
 namespace zorba 
 {
 
-static void index_flvars(expr*, int&, std::map<var_expr *, int>&);
-
-static void compute_freevars(expr*, const std::map<var_expr*, int>&, std::map<expr*, DynamicBitset>&, DynamicBitset&, int);
-
 static bool hoist_expressions(RewriterContext&, expr*, const std::map<var_expr*, int>&, const std::map<expr*, DynamicBitset>&, struct flwor_holder*);
 
 static expr_t try_hoisting(RewriterContext&, expr*, const std::map<var_expr*, int>&, const std::map<expr*, DynamicBitset>&, struct flwor_holder*);
@@ -37,10 +35,6 @@ static expr_t try_hoisting(RewriterContext&, expr*, const std::map<var_expr*, in
 static bool non_hoistable (expr*);
 
 static bool is_already_hoisted(expr*);
-
-static void add_var(var_expr*, int&, std::map<var_expr *, int>&);
-
-static void set_bit(var_expr*, const std::map<var_expr*, int>&, DynamicBitset&, bool);
 
 static bool contains_var(var_expr*, const std::map<var_expr*, int>&, const DynamicBitset&);
 
@@ -76,14 +70,14 @@ RULE_REWRITE_PRE(HoistExprsOutOfLoops)
   if (contains_updates(node))
     return NULL;
 
-  int counter = 0;
+  int numVars = 0;
   std::map<var_expr *, int> varmap;
 
-  index_flvars(node, counter, varmap);
+  index_flwor_vars(node, numVars, varmap, NULL);
 
   std::map<expr *, DynamicBitset> freevarMap;
-  DynamicBitset freeset(counter);
-  compute_freevars(node, varmap, freevarMap, freeset, counter);
+  DynamicBitset freeset(numVars);
+  find_flwor_vars(node, varmap, freevarMap, freeset);
 
   struct flwor_holder root;
   if (hoist_expressions(rCtx, node, varmap, freevarMap, &root)) 
@@ -106,155 +100,6 @@ RULE_REWRITE_POST(HoistExprsOutOfLoops)
 }
 
 
-/*******************************************************************************
-  Let FLWOR(e) be the set of flwor exprs within the expr tree rooted at expr e.
-  Let FV(e) be the set of variables defined in any of the flwor exprs in FLWOR(e).
-  This method assigns a prefix id to each variable in FV(e) and stores the mapping
-  between var_expr and prefix id in "varmap".
-
-  Given 2 vars v1 and v2 in FV(e), their prefix ids allows to check if v1 is
-  defined before v2: v1 is defined before v2 iff id(v1) < id(v2). 
-********************************************************************************/
-static void index_flvars(expr* e, int& counter, std::map<var_expr *, int>& varmap)
-{
-  if (e->get_expr_kind() == flwor_expr_kind) 
-  {
-    flwor_expr *flwor = static_cast<flwor_expr *>(e);
-    for(flwor_expr::forlet_list_t::iterator i = flwor->forlet_begin();
-        i != flwor->forlet_end();
-        ++i) 
-    {
-      forlet_clause *flc = &*(*i);
-      add_var(&*flc->get_var(), counter, varmap);
-      add_var(&*flc->get_pos_var(), counter, varmap);
-      add_var(&*flc->get_score_var(), counter, varmap);
-    }
-
-    for(flwor_expr::group_list_t::const_iterator i = flwor->group_vars_begin();
-        i != flwor->group_vars_end();
-        ++i) 
-    {
-      group_clause *gc = &*(*i);
-      add_var(&*gc->getInnerVar(), counter, varmap);
-    }
-
-    for(flwor_expr::group_list_t::const_iterator i = flwor->non_group_vars_begin();
-        i != flwor->non_group_vars_end(); ++i)
-    {
-      group_clause *gc = &*(*i);
-      add_var(&*gc->getInnerVar(), counter, varmap);
-    }
-  }
-
-  expr_iterator i = e->expr_begin();
-  while(!i.done()) 
-  {
-    expr *ce = &*(*i);
-    if (ce) 
-    {
-      index_flvars(ce, counter, varmap);
-    }
-    ++i;
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-static void add_var(var_expr *v, int& counter, std::map<var_expr *, int>& varmap)
-{
-  if (v != NULL)
-    varmap[v] = counter++;
-}
-
-
-/*******************************************************************************
-  For each expr E in the expr tree rooted at "e", this method computes the set
-  of variables that belong to FV(e) and are referenced by E. Let V(E) be this
-  set. V(E) is implemented as a bitset whose size is equal to the size of FV(e)
-  and whose i-th bit is on iff the var with prefix id i belongs to V(E). The
-  mapping between E and V(E) is stored in "freevarMap".  
-********************************************************************************/
-static void compute_freevars(
-    expr* e,
-    const std::map<var_expr *, int>& varmap,
-    std::map<expr *, DynamicBitset>& freevarMap,
-    DynamicBitset& freeset,
-    int counter)
-{
-  if (e->get_expr_kind() == var_expr_kind) 
-  {
-    set_bit(static_cast<var_expr *>(e), varmap, freeset, true);
-    return;
-  }
-
-  DynamicBitset eFreeset(counter);
-  expr_iterator i = e->expr_begin();
-  while(!i.done()) 
-  {
-    expr* ce = &*(*i);
-    if (ce) 
-    {
-      eFreeset.reset();
-      compute_freevars(ce, varmap, freevarMap, eFreeset, counter);
-      freeset.set_union(eFreeset);
-    }
-    ++i;
-  }
-
-  // A flwor does not depend on the vars that are defined inside the flwor itself,
-  // so remove these vars from the freeset of the flwor, if they have been added
-  // there.
-  if (e->get_expr_kind() == flwor_expr_kind) 
-  {
-    flwor_expr* flwor = static_cast<flwor_expr *>(e);
-    for(flwor_expr::forlet_list_t::iterator i = flwor->forlet_begin();
-        i != flwor->forlet_end(); ++i)
-    {
-      forlet_clause* flc = &*(*i);
-      set_bit(&*flc->get_var(), varmap, freeset, false);
-      set_bit(&*flc->get_pos_var(), varmap, freeset, false);
-      set_bit(&*flc->get_score_var(), varmap, freeset, false);
-    }
-
-    for(flwor_expr::group_list_t::const_iterator i = flwor->group_vars_begin();
-        i != flwor->group_vars_end();
-        ++i) 
-    {
-      group_clause* gc = &*(*i);
-      set_bit(&*gc->getInnerVar(), varmap, freeset, false);
-    }
-
-    for(flwor_expr::group_list_t::const_iterator i = flwor->non_group_vars_begin();
-        i != flwor->non_group_vars_end();
-        ++i) 
-    {
-      group_clause *gc = &*(*i);
-      set_bit(&*gc->getInnerVar(), varmap, freeset, false);
-    }
-  }
-
-  freevarMap[e] = freeset;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-static void set_bit(
-    var_expr *v,
-    const std::map<var_expr *, int>& varmap,
-    DynamicBitset& freeset,
-    bool value)
-{
-  if (v == NULL)
-    return;
-
-  std::map<var_expr *, int>::const_iterator i = varmap.find(v);
-  if (i != varmap.end())
-    freeset.set(i->second, value);
-}
 
 
 /*******************************************************************************

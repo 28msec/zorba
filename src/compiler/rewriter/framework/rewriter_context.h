@@ -16,30 +16,49 @@
 #ifndef ZORBA_REWRITER_CONTEXT_H
 #define ZORBA_REWRITER_CONTEXT_H
 
+#include <map>
+#include <vector>
+
 #include "common/shared_types.h"
+
+#include "util/dynamic_bitset.h"
+
 #include "compiler/expression/var_expr.h"
 
-namespace zorba {
+namespace zorba 
+{
 
-class RewriterContext {
-  public:
-    RewriterContext(CompilerCB*, expr_t root);
-    ~RewriterContext();
+typedef std::map<var_expr *, int> VarIdMap;
+typedef std::vector<var_expr*> IdVarMap;
+typedef std::map<expr *, DynamicBitset> ExprVarsMap;
 
-    static_context *getStaticContext() { return m_sctx; }
+class RewriterContext 
+{
+public:
+  CompilerCB           * compilerCB;
+  static_context       * m_sctx;
+  expr_t                 m_root;
+  int                    m_tempvarCounter;
+  int                    m_tempIndexCounter;
 
-    expr_t getRoot();
-    void setRoot(expr_t root);
+  VarIdMap             * m_varid_map;
+  IdVarMap             * m_idvar_map;
+  ExprVarsMap          * m_exprvars_map;
+  std::vector<expr_t>    m_flwor_exprs;
 
-    CompilerCB* getCompilerCB() { return compilerCB; }
+public:
+  RewriterContext(CompilerCB*, expr_t root);
 
-    rchandle<var_expr> createTempVar(const QueryLoc& loc, var_expr::var_kind kind);
+  ~RewriterContext();
 
-  private:
-    CompilerCB      * compilerCB;
-    static_context  * m_sctx;
-    expr_t            m_root;
-    int               m_tempvarCounter;
+  static_context* getStaticContext() { return m_sctx; }
+
+  expr_t getRoot();
+  void setRoot(expr_t root);
+
+  CompilerCB* getCompilerCB() { return compilerCB; }
+
+  rchandle<var_expr> createTempVar(const QueryLoc& loc, var_expr::var_kind kind);
 };
 
 }

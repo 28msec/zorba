@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 SET(REWRITER_TOOLS_SRCS
+    expr_tools.cpp
     freevars.cpp
     var_counter.cpp
     dataflow_annotations.cpp)

@@ -26,26 +26,36 @@
 
 namespace zorba {
 
-class ValueIndexPointProbeState : public PlanIteratorState {
-  public:
-    xqpStringStore_t theUri;
-    store::Index *theIndex;
-    store::IndexProbeIterator_t theIterator;
 
-    void init(PlanState&);
-    void reset(PlanState&);
+/***************************************************************************//**
+
+********************************************************************************/
+class ValueIndexPointProbeState : public PlanIteratorState 
+{
+public:
+  xqpStringStore_t              theUri;
+  store::Index                * theIndex;
+  store::IndexProbeIterator_t   theIterator;
+
+public:
+  void init(PlanState&);
+  void reset(PlanState&);
 };
 
-class ValueIndexPointProbe : public NaryBaseIterator<ValueIndexPointProbe, ValueIndexPointProbeState> {
-  public:
-    ValueIndexPointProbe(const QueryLoc& loc, std::vector<PlanIter_t> aChildren)
-      : NaryBaseIterator<ValueIndexPointProbe, ValueIndexPointProbeState>(loc, aChildren) { }
 
-    virtual ~ValueIndexPointProbe() { }
+class ValueIndexPointProbe : public NaryBaseIterator<ValueIndexPointProbe,
+                                                     ValueIndexPointProbeState> 
+{
+public:
+  ValueIndexPointProbe(const QueryLoc& loc, std::vector<PlanIter_t> aChildren)
+    :
+    NaryBaseIterator<ValueIndexPointProbe, ValueIndexPointProbeState>(loc, aChildren) { }
 
-    bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  virtual ~ValueIndexPointProbe() { }
 
-    virtual void accept(PlanIterVisitor& v) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+  virtual void accept(PlanIterVisitor& v) const;
 };
 
 class ValueIndexRangeProbeState : public PlanIteratorState {
@@ -74,3 +84,9 @@ class ValueIndexRangeProbe : public NaryBaseIterator<ValueIndexRangeProbe, Value
 
 #endif /* ZORBA_VALUE_INDEX_PROBE_H */
 /* vim:set ts=2 sw=2: */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

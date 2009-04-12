@@ -168,7 +168,8 @@ expr_t
 XQueryCompiler::normalize(parsenode_t aParsenode)
 {
   expr_t lExpr = translate (*aParsenode, theCompilerCB);
-  if ( lExpr == NULL ) { // TODO: can this happen?
+  if ( lExpr == NULL ) 
+  { // TODO: can this happen?
     ZORBA_ERROR( API0002_COMPILE_FAILED);
     return NULL;
   }
@@ -212,11 +213,16 @@ XQueryCompiler::normalize(parsenode_t aParsenode)
 expr_t
 XQueryCompiler::optimize(expr_t lExpr) 
 {
-  if (theCompilerCB->m_config.opt_level > CompilerCB::config_t::O0) {
+  if (theCompilerCB->m_config.opt_level > CompilerCB::config_t::O0) 
+  {
     RewriterContext rCtx(theCompilerCB, lExpr);
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
     lExpr = rCtx.getRoot();
     
+    RewriterContext rCtx1(theCompilerCB, lExpr);
+    GENV_COMPILERSUBSYS.getPhase1Rewriter()->rewrite(rCtx1);
+    lExpr = rCtx1.getRoot();
+
     if (theCompilerCB->m_config.optimize_cb != NULL)
       theCompilerCB->m_config.optimize_cb (&*lExpr, "query");
   }

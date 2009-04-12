@@ -13,19 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_COMMON_REWRITER
-#define ZORBA_COMMON_REWRITER
 
-#define ADD_DRIVER( d ) \
-m_childRewriters.push_back(rewriter_ptr_t (new d))
+#include <ostream>
 
-#define ADD_SINGLETON_DRIVER(rule) \
-m_childRewriters.push_back(rewriter_ptr_t(new SingletonRuleMajorDriver<rule>))
+#include "util/dynamic_bitset.h"
 
-#define ADD_ONCE_DRIVER(rule) \
-m_childRewriters.push_back(rewriter_ptr_t(new RuleOnceDriver<rule>))
+namespace zorba {
 
-#define ADD_RULE( rule ) \
-m_rules.push_back (rule_ptr_t (new rule))
 
-#endif /* ZORBA_COMMON_REWRITER */
+std::ostream& operator <<(std::ostream& s, const DynamicBitset& set)
+{
+  s << "BitSet[" << set.size() << "] = {";
+  for(int i = 0; i < set.size(); ++i) 
+  {
+    if (set.get(i)) {
+      s << i << ", ";
+    }
+  }
+  s << "}";
+  return s;
+}
+
+
+}

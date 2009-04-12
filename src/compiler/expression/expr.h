@@ -58,7 +58,8 @@ public:
   expr_kind_t get_expr_kind () const { return sequential_expr_kind; }
 
   sequential_expr (const QueryLoc& loc, expr_t first, expr_t second)
-    : expr (loc)
+    :
+    expr (loc)
   {
     sequence.push_back (first);
     sequence.push_back (second);
@@ -69,7 +70,8 @@ public:
         checked_vector<expr_t> sequence_,
         expr_t result)
     :
-    expr (loc), sequence (sequence_)
+    expr (loc),
+    sequence (sequence_)
   {
     sequence.push_back (result);
   }
@@ -78,7 +80,8 @@ public:
         const QueryLoc& loc,
         checked_vector<expr_t> sequence_)
     :
-    expr (loc), sequence (sequence_)
+    expr (loc),
+    sequence (sequence_)
   {
   }
 
@@ -87,7 +90,11 @@ public:
   const expr_t &operator [] (int i) const { return sequence [i]; }
   expr_t &operator [] (int i) { invalidate (); return sequence [i]; }
 
-  void push_front (expr_t front) { invalidate (); sequence.insert (sequence.begin(), front); }
+  void push_front (expr_t front) 
+  {
+    invalidate ();
+    sequence.insert (sequence.begin(), front);
+  }
 
   bool is_updating ();
 
@@ -113,20 +120,6 @@ public:
   constructor_expr(const QueryLoc& loc) : expr (loc) {}
 };
 
-
-/////////////////////////////////////////////////////////////////////////
-//                                                                     //
-//  XQuery 1.0 productions                                             //
-//  [http://www.w3.org/TR/xquery/]                                     //
-//                                                                     //
-/////////////////////////////////////////////////////////////////////////
-
-
-// [29] [http://www.w3.org/TR/xquery/#prod-xquery-EnclosedExpr]
-
-// [31] [http://www.w3.org/TR/xquery/#prod-xquery-Expr]
-
-// [41] [http://www.w3.org/TR/xquery/#prod-xquery-OrderModifier]
 
 class catch_clause : public SimpleRCObject {
   friend class trycatch_expr;
@@ -313,27 +306,33 @@ class debugger_expr: public eval_expr
 /***************************************************************************//**
 
 ********************************************************************************/
-class wrapper_expr : public expr {
+class wrapper_expr : public expr 
+{
   expr_t wrapped;
 
 public:
-  expr_kind_t get_expr_kind () const { return wrapper_expr_kind; }
-
-  wrapper_expr (const QueryLoc &loc_, expr_t wrapped_)
-    : expr (loc_), wrapped (wrapped_)
-  {}
-
-  expr_t get_expr () const {
-    return wrapped;
+  wrapper_expr (const QueryLoc& loc_, expr_t wrapped_)
+    :
+    expr (loc_),
+    wrapped (wrapped_)
+  {
   }
 
-  std::ostream& put(std::ostream&) const;
+  expr_kind_t get_expr_kind () const { return wrapper_expr_kind; }
+
+  expr_t get_expr() const { return wrapped; }
+
+  void set_expr(expr* e) { wrapped = e; }
 
   void next_iter (expr_iterator_data&);
+
   void accept (expr_visitor&);
 
   xqtref_t return_type_impl (static_context *sctx);
+
   virtual expr_t clone(substitution_t& substitution);
+
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -716,10 +715,6 @@ public:
 ////////////////////////////////
 
 
-// [46] [http://www.w3.org/TR/xquery/#prod-xquery-OrExpr]
-// [47] [http://www.w3.org/TR/xquery/#prod-xquery-AndExpr]
-// [48] [http://www.w3.org/TR/xquery/#prod-xquery-ComparisonExpr]
-
 /***************************************************************************//**
 
 ********************************************************************************/
@@ -734,24 +729,28 @@ protected:
 public:
   fo_expr (const QueryLoc& loc, const function *f)
    : expr(loc), func (f)  { assert (f != NULL); }
+
   fo_expr (const QueryLoc& loc, const function *f, expr_t arg)
    : expr(loc), func (f)
   {
     assert (f != NULL);
     add (arg);
   }
+
   fo_expr (const QueryLoc& loc, const function *f, expr_t arg1, expr_t arg2)
    : expr(loc), func (f)
   {
     assert (f != NULL);
     add (arg1); add (arg2);
   }
+
   fo_expr (const QueryLoc& loc, const function *f, expr_t arg1, expr_t arg2, expr_t arg3)
    : expr(loc), func (f)
   {
     assert (f != NULL);
     add (arg1); add (arg2); add (arg3);
   }
+
   fo_expr (const QueryLoc& loc, const function *f, const std::vector<expr_t>& args)
    : expr(loc), argv(args), func(f)
   {
@@ -764,7 +763,19 @@ public:
 
   expr_iterator_data *make_iter ();
   
-  void add(expr_t e_h) { invalidate (); assert (e_h != NULL); argv.push_back(e_h); }
+  void add(expr_t e) 
+  {
+    invalidate();
+    assert(e != NULL);
+    argv.push_back(e); 
+  }
+
+  void addFront(expr_t e) 
+  {
+    invalidate();
+    assert(e != NULL);
+    argv.insert(argv.begin(), e); 
+  }
 
   uint32_t size() const { return argv.size(); }
 
@@ -790,57 +801,6 @@ public:
   virtual expr_t clone(substitution_t& substitution);
 };
 
-
-class ft_select_expr : public expr {
-public:
-  ft_select_expr (const QueryLoc &loc) : expr (loc) {}
-};
-
-// [48a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTContainsExpr]
-
-/*______________________________________________________________________
-| ::= RangeExpr ("ftcontains" FTSelection FTIgnoreOption?)?
-|_______________________________________________________________________*/
-
-class ft_contains_expr : public expr {
-public:
-  expr_kind_t get_expr_kind () const { return ft_contains_expr_kind; }
-protected:
-  expr_t range_h;
-  expr_t ft_select_h;
-  expr_t ft_ignore_h;
-
-public:
-  ft_contains_expr(
-    const QueryLoc&,
-    expr_t,
-    expr_t,
-    expr_t);
-
-
-public:
-  expr_t get_range() const { return range_h; }
-  expr_t get_ft_select() const { return ft_select_h; }
-  expr_t get_ignore() const { return ft_ignore_h; }
-
-public:
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
-  std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [49] [http://www.w3.org/TR/xquery/#prod-xquery-RangeExpr]
-// [50] [http://www.w3.org/TR/xquery/#prod-xquery-AdditiveExpr]
-// [51] [http://www.w3.org/TR/xquery/#prod-xquery-MultiplicativeExpr]
-// [52] [http://www.w3.org/TR/xquery/#prod-xquery-UnionExpr]
-// [53] [http://www.w3.org/TR/xquery/#prod-xquery-IntersectExceptExpr]
-// [54] [http://www.w3.org/TR/xquery/#prod-xquery-InstanceofExpr]
-
-
-// [63] [http://www.w3.org/TR/xquery/#prod-xquery-ValidateExpr]
 
 /*______________________________________________________________________
 | ::= "validate" ValidationMode? "{" Expr "}"
@@ -877,7 +837,6 @@ public:
 
 
 
-// [65] [http://www.w3.org/TR/xquery/#prod-xquery-ExtensionExpr]
 /***************************************************************************//**
 
 ********************************************************************************/
@@ -992,8 +951,6 @@ public:
 
 /*******************************************************************************
 
-  [70] [http://www.w3.org/TR/xquery/#prod-xquery-StepExpr]
-
   StepExpr ::= AxisStep  |  FilterExpr
 
 ********************************************************************************/
@@ -1064,8 +1021,6 @@ public:
 
 /*******************************************************************************
 
-  [71] [http://www.w3.org/TR/xquery/#prod-xquery-AxisStep]
-
   AxisStep ::= Axis NodeTest Predicate*
 
 ********************************************************************************/
@@ -1105,7 +1060,6 @@ public:
 /***************************************************************************//**
 
 ********************************************************************************/
-// [84] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]
 /*______________________________________________________________________
 | primary_expr ::=
 |       Literal
@@ -1120,15 +1074,14 @@ public:
 
 
 
-// [85] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]
-
 /*______________________________________________________________________
 | ::= NumericLiteral | StringLiteral
 |_______________________________________________________________________*/
 /***************************************************************************//**
 
 ********************************************************************************/
-class const_expr : public expr {
+class const_expr : public expr 
+{
 public:
   expr_kind_t get_expr_kind () const { return const_expr_kind; }
 protected:
@@ -1155,9 +1108,6 @@ public:
 };
 
 
-
-// [87] [http://www.w3.org/TR/xquery/#prod-xquery-VarRef]
-// [91] [http://www.w3.org/TR/xquery/#prod-xquery-OrderedExpr]
 
 /*______________________________________________________________________
 | ::= ORDERED_LBRACE  Expr  RBRACE
@@ -1198,8 +1148,6 @@ public:
 };
 
 
-
-// [93] [http://www.w3.org/TR/xquery/#prod-xquery-FunctionCall]
 /*______________________________________________________________________
 | ::= QNAME  LPAR  ArgList  RPAR  
 |                                 gn:parensXQ
@@ -1248,8 +1196,6 @@ public:
 
 
 
-// [110] [http://www.w3.org/TR/xquery/#prod-xquery-CompDocConstructor]
-
 /*______________________________________________________________________
 | ::= DOCUMENT_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
@@ -1279,9 +1225,6 @@ public:
 
 };
 
-
-
-// // [111] [http://www.w3.org/TR/xquery/#prod-xquery-CompElemConstructor]
 
 
 /******************************************************************************
@@ -1328,8 +1271,6 @@ public:
 
 
 
-// [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompTextConstructor]
-
 /*______________________________________________________________________
 | ::= TEXT_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
@@ -1365,13 +1306,10 @@ public:
 
 
 
-// [115] [http://www.w3.org/TR/xquery/#prod-xquery-CompCommentConstructor]
 /*______________________________________________________________________
 | ::= COMMENT_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 
-
-// [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompPIConstructor]
 
 /*______________________________________________________________________
  |      ::= PROCESSING_INSTRUCTION  NCNAME  LBRACE  RBRACE
@@ -1423,7 +1361,6 @@ public:
 //                                                                     //
 /////////////////////////////////////////////////////////////////////////
 
-// [242] [http://www.w3.org/TR/xqupdate/#prod-xquery-InsertExpr]
 class insert_expr : public expr
 /*______________________________________________________________________
 |	::= DO_INSERT  ExprSingle  INTO  ExprSingle
@@ -1670,6 +1607,40 @@ public:
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 };
+
+
+class ft_select_expr : public expr 
+{
+public:
+  ft_select_expr (const QueryLoc &loc) : expr (loc) {}
+};
+
+
+class ft_contains_expr : public expr 
+{
+protected:
+  expr_t range_h;
+  expr_t ft_select_h;
+  expr_t ft_ignore_h;
+
+public:
+  ft_contains_expr(
+        const QueryLoc&,
+        expr_t,
+        expr_t,
+        expr_t);
+
+  expr_kind_t get_expr_kind () const { return ft_contains_expr_kind; }
+
+  expr_t get_range() const { return range_h; }
+  expr_t get_ft_select() const { return ft_select_h; }
+  expr_t get_ignore() const { return ft_ignore_h; }
+
+  void next_iter (expr_iterator_data&);
+  void accept (expr_visitor&);
+  std::ostream& put(std::ostream&) const;
+};
+
 
 } /* namespace zorba */
 #endif  /*  ZORBA_EXPR_H */

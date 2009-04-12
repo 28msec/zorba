@@ -40,28 +40,50 @@ bool AddOperation::compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_DOUBLE>(
     const store::Item* i0,
     const store::Item* i1 )
 {
-  return GENV_ITEMFACTORY->createDouble(result, i0->getDoubleValue() + i1->getDoubleValue());
+  return GENV_ITEMFACTORY->
+         createDouble(result, i0->getDoubleValue() + i1->getDoubleValue());
 }
 
-  template<>
-  bool AddOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
-  ( store::Item_t& result, RuntimeCB* /* aRuntimeCB */, const QueryLoc*,  const store::Item* i0, const store::Item* i1 )
-  {
-    return GENV_ITEMFACTORY->createFloat (result,  i0->getFloatValue() + i1->getFloatValue() );
-  }
-  template<>
-  bool AddOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL> 
-  ( store::Item_t& result, RuntimeCB* /* aRuntimeCB */, const QueryLoc*,  const store::Item* i0, const store::Item* i1 )
-  {
-    return GENV_ITEMFACTORY->createDecimal (result,  i0->getDecimalValue() + i1->getDecimalValue() );
-  }
-  template<>
-  bool AddOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER> 
-  ( store::Item_t& result, RuntimeCB* /* aRuntimeCB */, const QueryLoc*, const store::Item* i0, const store::Item* i1 )
-  {
-    return GENV_ITEMFACTORY->createInteger (result,  i0->getIntegerValue() + i1->getIntegerValue() );
-  }
-  /* end class AddOperations */
+
+template<>
+bool AddOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
+    store::Item_t& result,
+    RuntimeCB* /* aRuntimeCB */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1 )
+{
+  return GENV_ITEMFACTORY->
+         createFloat(result, i0->getFloatValue() + i1->getFloatValue());
+}
+
+
+template<>
+bool AddOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
+    store::Item_t& result,
+    RuntimeCB* /* aRuntimeCB */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1 )
+{
+  return GENV_ITEMFACTORY->
+         createDecimal(result,  i0->getDecimalValue() + i1->getDecimalValue());
+}
+
+
+template<>
+bool AddOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
+    store::Item_t& result,
+    RuntimeCB* /* aRuntimeCB */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1 )
+{
+  return GENV_ITEMFACTORY->
+         createInteger(result, i0->getIntegerValue() + i1->getIntegerValue());
+}
+/* end class AddOperations */
+
 
   /* start class SubtractOperations */
   template<>
@@ -92,6 +114,8 @@ bool AddOperation::compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_DOUBLE>(
     return GENV_ITEMFACTORY->createInteger (result,  i0->getIntegerValue() - i1->getIntegerValue() );
   }
   /* end class SubtractOperations */
+
+
 
   /* start class MultiplyOperations */
   template<>

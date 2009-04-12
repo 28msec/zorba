@@ -21,13 +21,20 @@
 
 namespace zorba {
 
-class DefaultOptimizer : public SequentialRewriter {
-  public:
-    DefaultOptimizer();
-    ~DefaultOptimizer() throw ();
+class DefaultOptimizer : public SequentialRewriter 
+{
+public:
+  DefaultOptimizer();
+  ~DefaultOptimizer() throw ();
 };
 
 }
 
 #endif /* ZORBA_DEFAULT_OPTIMIZER_H */
 /* vim:set ts=2 sw=2: */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

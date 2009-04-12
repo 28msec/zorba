@@ -91,11 +91,13 @@ static xqtref_t print_expr_ant_type(expr *e, xqtref_t t)
       return target_type;
   }
 
-  xqtref_t relpath_expr::return_type_impl(static_context *sctx) {
-    if (theSteps.empty ())
-      return GENV_TYPESYSTEM.EMPTY_TYPE;
-    return sctx->get_typemanager()->create_type_x_quant (*theSteps [size () - 1]->return_type (sctx), TypeConstants::QUANT_STAR);
-  }
+xqtref_t relpath_expr::return_type_impl(static_context *sctx) 
+{
+  if (theSteps.empty())
+    return GENV_TYPESYSTEM.EMPTY_TYPE;
+
+  return sctx->get_typemanager()->create_type_x_quant(*theSteps[size() - 1]->return_type(sctx), TypeConstants::QUANT_STAR);
+}
 
   xqtref_t axis_step_expr::return_type_impl(static_context *sctx) {
     return theNodeTest == NULL ? GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE : theNodeTest->return_type (sctx);

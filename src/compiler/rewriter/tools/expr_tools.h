@@ -17,22 +17,36 @@
 #define ZORBA_EXPR_TOOLS_H
 
 #include "common/shared_types.h"
+
 #include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/expression/expr.h"
+#include "compiler/rewriter/framework/rewriter_context.h"
+
 #include "functions/signature.h"
+
 #include "store/api/item_factory.h"
-#include "store/api/store.h"
 #include "system/globalenv.h"
 
 #include <set>
 #include <algorithm>
 
-#define LOOKUP_FN( pfx, local, arity ) (GENV.getRootStaticContext ().lookup_fn (pfx, local, arity))
-#define LOOKUP_OP1( local ) (GENV.getRootStaticContext ().lookup_builtin_fn (":" local, 1))
-#define LOOKUP_OP2( local ) (GENV.getRootStaticContext ().lookup_builtin_fn (":" local, 2))
-#define LOOKUP_OP3( local ) (GENV.getRootStaticContext ().lookup_builtin_fn (":" local, 3))
-#define LOOKUP_OPN( local ) (GENV.getRootStaticContext ().lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
-#define LOOKUP_RESOLVED_FN( ns, local, arity ) (GENV.getRootStaticContext().lookup_resolved_fn(ns, local, arity))
+#define LOOKUP_FN( pfx, local, arity ) \
+(GENV.getRootStaticContext ().lookup_fn (pfx, local, arity))
+
+#define LOOKUP_OP1( local ) \
+(GENV.getRootStaticContext ().lookup_builtin_fn (":" local, 1))
+
+#define LOOKUP_OP2( local ) \
+(GENV.getRootStaticContext ().lookup_builtin_fn (":" local, 2))
+
+#define LOOKUP_OP3( local ) \
+(GENV.getRootStaticContext ().lookup_builtin_fn (":" local, 3))
+
+#define LOOKUP_OPN( local ) \
+(GENV.getRootStaticContext ().lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
+
+#define LOOKUP_RESOLVED_FN( ns, local, arity ) \
+(GENV.getRootStaticContext().lookup_resolved_fn(ns, local, arity))
 
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
@@ -58,7 +72,6 @@ public:
 
 const var_ptr_set& get_varset_annotation(const expr *e, Annotation::key_t k);
 
-
 int count_variable_uses(expr *root, var_expr *var, int limit);
 
 
@@ -82,7 +95,7 @@ inline expr_t fix_annotations (expr_t new_expr, expr *old_expr = NULL)
       const var_ptr_set & old_set = get_varset_annotation (old_expr, AnnotationKey::FREE_VARS),
         &new_set = get_varset_annotation (old_expr, AnnotationKey::FREE_VARS);
       var_ptr_set s;
-      std::set_union (old_set.begin (), old_set.end (), new_set.begin (), new_set.end (), inserter (s, s.begin ()));
+      std::set_union (old_set.begin(), old_set.end(), new_set.begin(), new_set.end(), inserter(s, s.begin()));
       new_expr->put_annotation (k, Annotation::value_ref_t (new VarSetAnnVal (s)));
     } else {
       Annotation::value_ref_t v = old_expr->get_annotation (k);
@@ -117,6 +130,17 @@ inline expr* get_fo_arg(expr* e, int arg_idx)
   ZORBA_ASSERT(e != NULL && e->get_expr_kind() == fo_expr_kind);
   return (*static_cast<fo_expr *>(e))[arg_idx];
 }
+
+
+/*******************************************************************************
+  Util functions used by rules: HoistExprsOutOfLoops and IndexJoin.
+********************************************************************************/
+
+void index_flwor_vars(expr*, int&, VarIdMap&, IdVarMap*);
+
+void find_flwor_vars(expr*, const VarIdMap&, ExprVarsMap&, DynamicBitset&);
+
+void replace_var(expr*, var_expr* oldVar, var_expr* newVar);
 
 }
 

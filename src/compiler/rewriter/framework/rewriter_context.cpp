@@ -23,31 +23,54 @@
 namespace zorba {
 
 RewriterContext::RewriterContext(CompilerCB* aCompilerCB, expr_t root)
-  : compilerCB(aCompilerCB),
-    m_sctx(aCompilerCB->m_sctx),
-    m_root(root),
-    m_tempvarCounter(0) { }
+  :
+  compilerCB(aCompilerCB),
+  m_sctx(aCompilerCB->m_sctx),
+  m_root(root),
+  m_tempvarCounter(0),
+  m_tempIndexCounter(0),
+  m_varid_map(NULL),
+  m_idvar_map(NULL),
+  m_exprvars_map(NULL)
+{ 
+}
 
-RewriterContext::~RewriterContext() { }
+
+RewriterContext::~RewriterContext() 
+{
+  if (m_varid_map != NULL)
+    delete m_varid_map;
+
+  if (m_idvar_map != NULL)
+    delete m_idvar_map;
+  
+  if (m_exprvars_map != NULL)
+    delete m_exprvars_map;
+}
+
 
 expr_t RewriterContext::getRoot()
 {
   return m_root;
 }
 
+
 void RewriterContext::setRoot(expr_t root)
 {
   m_root = root;
 }
 
-rchandle<var_expr> RewriterContext::createTempVar(const QueryLoc& loc, var_expr::var_kind kind)
+
+rchandle<var_expr> RewriterContext::createTempVar(
+    const QueryLoc& loc,
+    var_expr::var_kind kind)
 {
   std::stringstream ss;
   ss << "$$opt_temp_" << (m_tempvarCounter++);
   std::string varname = ss.str();
   store::Item_t qname;
   GENV_ITEMFACTORY->createQName(qname, "", "", varname.c_str());
-  rchandle<var_expr> var = new var_expr(loc, var_expr::let_var, qname);
+  rchandle<var_expr> var = new var_expr(loc, kind, qname);
 
   return var;
 }

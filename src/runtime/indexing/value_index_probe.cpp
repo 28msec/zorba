@@ -48,7 +48,9 @@ bool ValueIndexPointProbe::nextImpl(store::Item_t& result, PlanState& planState)
   ZORBA_ASSERT(status);
 
   tempUri = uri->getStringValueP();
-  if (state->theUri == NULL || !state->theUri->equals(tempUri)) {
+
+  if (state->theUri == NULL || !state->theUri->equals(tempUri)) 
+  {
     state->theUri = tempUri;
     state->theIndex = GENV_STORE.getIndex(state->theUri);
     ZORBA_ASSERT(state->theIndex != NULL);
@@ -56,7 +58,8 @@ bool ValueIndexPointProbe::nextImpl(store::Item_t& result, PlanState& planState)
   }
   cond = state->theIndex->createPointCondition();
   numChildren = theChildren.size();
-  for(int i = 1; i < numChildren; ++i) {
+  for(int i = 1; i < numChildren; ++i) 
+  {
     store::Item_t temp;
     if (!consumeNext(temp, theChildren[i], planState)) {
       temp = NULL;
@@ -66,7 +69,8 @@ bool ValueIndexPointProbe::nextImpl(store::Item_t& result, PlanState& planState)
 
   state->theIterator->init((const zorba::store::IndexPointCondition_t&)cond);
   state->theIterator->open();
-  while(state->theIterator->next(result)) {
+  while(state->theIterator->next(result)) 
+  {
     STACK_PUSH(true, state);
   }
   STACK_END(state);

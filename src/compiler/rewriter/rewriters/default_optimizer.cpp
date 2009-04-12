@@ -20,20 +20,23 @@
 
 namespace zorba {
 
-class FoldRules : public RuleMajorDriver {
-  public:
-    FoldRules() {
-      ADD_RULE(MarkExpensiveOps);
-      ADD_RULE(MarkUnfoldableExprs);
-      ADD_RULE(MarkImpureExprs);
-      // Most rules try to update the freevars annotations, but for now let's stay on the safe side
-      ADD_RULE(MarkFreeVars);
-      ADD_RULE(FoldConst (false));
-      ADD_RULE(PartialEval);      
-      ADD_RULE(RefactorPredFLWOR);
-      ADD_RULE(EliminateUnusedLetVars);
-    }
+class FoldRules : public RuleMajorDriver 
+{
+public:
+  FoldRules() 
+  {
+    ADD_RULE(MarkExpensiveOps);
+    ADD_RULE(MarkUnfoldableExprs);
+    ADD_RULE(MarkImpureExprs);
+    // Most rules try to update the freevars annotations, but for now let's stay on the safe side
+    ADD_RULE(MarkFreeVars);
+    ADD_RULE(FoldConst (false));
+    ADD_RULE(PartialEval);      
+    ADD_RULE(RefactorPredFLWOR);
+    ADD_RULE(EliminateUnusedLetVars);
+  }
 };
+
 
 DefaultOptimizer::DefaultOptimizer()
 {
@@ -58,6 +61,8 @@ DefaultOptimizer::DefaultOptimizer()
   // For UDFs, which need this annotation in udf::requires_dyn_ctx()
   // TODO: only do this for UDFs
   ADD_SINGLETON_DRIVER(MarkUnfoldableExprs);
+
+  //  ADD_ONCE_DRIVER(IndexJoin);
 }
 
 DefaultOptimizer::~DefaultOptimizer() throw ()

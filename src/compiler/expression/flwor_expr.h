@@ -266,7 +266,7 @@ public:
 };
 
 
-/******************************************************************************
+/***************************************************************************//**
 
 
 ********************************************************************************/
@@ -314,7 +314,9 @@ public: // ctor,dtor
   expr_kind_t get_expr_kind () const { return flwor_expr_kind; }
 
 public:
-  expr_iterator_data *make_iter ();
+  expr_iterator_data* make_iter();
+
+  bool defines_variable(const var_expr* v) const;
 
   //
   // ForLet Clauses

@@ -21,9 +21,17 @@
 #include "compiler/expression/flwor_expr.h"
 #include <memory>
 
-namespace zorba {
+namespace zorba 
+{
 
-class gflwor_clause : public flwor_clause {
+class forletwin_gclause;
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+class gflwor_clause : public flwor_clause 
+{
 public:
   typedef std::vector<std::pair <varref_t, varref_t> > rebind_list_t;
 
@@ -32,14 +40,19 @@ protected:
 
 public:
   gflwor_clause (const QueryLoc &loc_) : loc (loc_) {}
+
   const QueryLoc &get_loc () const { return loc; }
 };
 
-class forletwin_gclause;
 
-class flwor_wincond {
+/***************************************************************************//**
+
+********************************************************************************/
+class flwor_wincond 
+{
 public:
-  struct vars {
+  struct vars 
+  {
     varref_t posvar, curr, prev, next;
     void set_forlet_clause (forletwin_gclause *c);
 
@@ -68,7 +81,12 @@ public:
   std::ostream& put(std::ostream&) const;
 };
 
-class forletwin_gclause : public flwor_initial_clause {
+
+/***************************************************************************//**
+
+********************************************************************************/
+class forletwin_gclause : public flwor_initial_clause 
+{
   friend class gflwor_expr;
 
 public:
@@ -122,28 +140,54 @@ public:
   std::ostream& put(std::ostream&) const;
 };
 
-class where_gclause : public gflwor_clause {
+
+/***************************************************************************//**
+
+********************************************************************************/
+class where_gclause : public gflwor_clause 
+{
   friend class gflwor_expr;
 
   expr_t where;
 
 public:
-  where_gclause (const QueryLoc &loc_, expr_t where_) : gflwor_clause (loc_), where (where_) {}
+  where_gclause (const QueryLoc &loc_, expr_t where_) 
+    :
+    gflwor_clause (loc_),
+    where (where_)
+  {
+  }
+
   expr_t get_where () const { return where; }
+
   void set_where (expr_t where_) { where = where_; }
 };
 
-class count_gclause : public gflwor_clause {
+
+/***************************************************************************//**
+
+********************************************************************************/
+class count_gclause : public gflwor_clause 
+{
   varref_t var;
 
 public:
-  count_gclause (const QueryLoc &loc_, varref_t var_) : gflwor_clause (loc_), var (var_)
-  {}
+  count_gclause (const QueryLoc &loc_, varref_t var_) 
+    :
+    gflwor_clause (loc_),
+    var (var_)
+  {
+  }
+
   varref_t get_var () const { return var; }
 };
 
-class orderby_gclause : public gflwor_clause {
 
+/***************************************************************************//**
+
+********************************************************************************/
+class orderby_gclause : public gflwor_clause 
+{
 protected:
   friend class gflwor_expr;
 
@@ -157,26 +201,44 @@ protected:
 
 public:
   orderby_gclause (const QueryLoc &loc_, ParseConstants::dir_spec_t _dir, StaticContextConsts::order_empty_mode_t _empty_mode, std::string _collation, bool stable_, expr_t order_)
-    : gflwor_clause (loc_), dir (_dir), empty_mode (_empty_mode), collation (_collation), stable (stable_),
-      order (order_)
-  {}
-  ParseConstants::dir_spec_t get_dir () const { return dir; }
-  StaticContextConsts::order_empty_mode_t get_empty_mode () const { return empty_mode; }
-  std::string get_collation () const { return collation; }
-  bool is_stable () const { return stable; }
-  expr_t get_expr () { return order; }
-  void set_expr (expr_t e_) { order = e_; }
-  const rebind_list_t &get_rebind () const { return rebind_list; }
-  void init_clauses ();
-  void set_rebind (const rebind_list_t &rebind_list_) {
-    rebind_list = rebind_list_;
+    :
+    gflwor_clause (loc_),
+    dir (_dir),
+    empty_mode (_empty_mode),
+    collation (_collation),
+    stable (stable_),
+    order (order_)
+  {
   }
+
+  ParseConstants::dir_spec_t get_dir () const { return dir; }
+
+  StaticContextConsts::order_empty_mode_t get_empty_mode () const { return empty_mode; }
+
+  std::string get_collation () const { return collation; }
+
+  bool is_stable () const { return stable; }
+
+  expr_t get_expr () { return order; }
+
+  void set_expr (expr_t e_) { order = e_; }
+
+  const rebind_list_t& get_rebind () const { return rebind_list; }
+
+  void set_rebind (const rebind_list_t &rebind_list_) { rebind_list = rebind_list_; }
+
+  void init_clauses ();
 
 public:
   std::ostream& put(std::ostream&) const;
 };
 
-class group_gclause : public gflwor_clause {
+
+/***************************************************************************//**
+
+********************************************************************************/
+class group_gclause : public gflwor_clause 
+{
   friend class gflwor_expr;
 
 protected:
@@ -197,28 +259,40 @@ public:
   // TODO clone?
 };
 
-class gflwor_expr : public expr {
+
+/***************************************************************************//**
+
+********************************************************************************/
+class gflwor_expr : public expr 
+{
 public:
   typedef std::vector<rchandle<flwor_clause> > clause_list_t;
+
 protected:
   clause_list_t clauses;
-  expr_t retval_h;
+  expr_t        retval_h;
 
 public:
+  gflwor_expr(const QueryLoc &loc_, expr_t retval_) : expr (loc_), retval_h (retval_) {}
+
   expr_kind_t get_expr_kind () const { return gflwor_expr_kind; }
+
   int size () const { return clauses.size (); }
+
   rchandle<flwor_clause> operator[] (int i) { return clauses [i]; }
   const flwor_clause *operator[] (int i) const { return clauses [i].getp (); }
+
   void push_back (rchandle<flwor_clause> c);
 
-public:
-  gflwor_expr (const QueryLoc &loc_, expr_t retval_) : expr (loc_), retval_h (retval_) {}
   clause_list_t::const_iterator clause_begin () const { return clauses.begin (); }
   clause_list_t::const_iterator clause_end () const { return clauses.end (); }
 
-  expr_iterator_data *make_iter ();
+  expr_iterator_data* make_iter ();
+
   void next_iter (expr_iterator_data&);
+
   void accept (expr_visitor&);
+
   std::ostream& put(std::ostream&) const;
 };
 

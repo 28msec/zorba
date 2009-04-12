@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 #include "context/static_context.h"
+
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/expression/expr.h"
 #include "compiler/codegen/plan_visitor.h"
+
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
 #include "types/casting.h"
+
 #include "system/globalenv.h"
 
 #include "runtime/util/plan_wrapper_holder.h"
@@ -32,6 +35,9 @@
 
 #include "zorbaerrors/error_messages.h"
 #include "zorbaerrors/errors.h"
+
+#include "store/api/store.h"
+#include "store/api/item_factory.h"
 
 using namespace std;
 

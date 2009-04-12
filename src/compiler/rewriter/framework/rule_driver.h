@@ -20,10 +20,14 @@
 #include "common/shared_types.h"
 #include "compiler/rewriter/framework/rewriter.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 class RewriterContext;
 class RewriteRule;
+
+typedef rchandle<RewriteRule> rule_ptr_t;
+
 
 /***************************************************************************//**
   Represents a class of rules that are applied "together". This means that the
@@ -37,23 +41,17 @@ class RewriteRule;
 class RuleMajorDriver : public Rewriter 
 {
 public:
-  typedef rchandle<RewriteRule> rule_ptr_t;
   typedef std::vector<rule_ptr_t> rules_t;
 
 protected:
   rules_t m_rules;
 
 public:
-  RuleMajorDriver();;
+  RuleMajorDriver();
 
   virtual ~RuleMajorDriver();
 
   void rewrite(RewriterContext& rCtx);
-
-protected:
-  void rewriteRuleMajor(RewriterContext& rCtx);
-
-  expr_t rewriteRec(RewriterContext& rCtx, RewriteRule *rule, expr *parent, bool& modified);
 };
 
 
@@ -73,6 +71,31 @@ class SingletonRuleMajorDriver : public SingletonRuleMajorDriverBase
 public:
   SingletonRuleMajorDriver() : SingletonRuleMajorDriverBase (rule_ptr_t (new R ())) {}
 };
+
+
+/***************************************************************************//**
+  Contains a single rule and applies this rule once on each expr in the expr
+  tree (it does not repeat the rule if anything changes).
+********************************************************************************/
+class RuleOnceDriverBase : public Rewriter 
+{
+private:
+  rule_ptr_t theRule;
+
+public:
+  RuleOnceDriverBase (rule_ptr_t rule) : theRule(rule) { }
+
+  void rewrite(RewriterContext& rCtx);
+};
+
+
+template <class R>
+class RuleOnceDriver : public RuleOnceDriverBase 
+{
+public:
+  RuleOnceDriver() : RuleOnceDriverBase(rule_ptr_t(new R())) {}
+};
+
 
 }
 

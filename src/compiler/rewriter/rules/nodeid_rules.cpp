@@ -303,7 +303,7 @@ RULE_REWRITE_PRE(EliminateNodeOps)
       else {
         // re-compute IGNORES_*
         fo->set_func (LOOKUP_FN ("fn", "reverse", 1));  // HACK: need fn:identity here
-        auto_ptr<Rewriter> rw (new SingletonRuleMajorDriverBase (RuleMajorDriver::rule_ptr_t (new MarkConsumerNodeProps ())));
+        auto_ptr<Rewriter> rw (new SingletonRuleMajorDriverBase(rule_ptr_t(new MarkConsumerNodeProps())));
         rw->rewrite (rCtx);
         return (*fo)[0];
       }

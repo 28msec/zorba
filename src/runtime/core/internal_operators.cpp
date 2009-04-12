@@ -42,10 +42,14 @@ HoistIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   HoistIteratorState *state;
   DEFAULT_STACK_INIT(HoistIteratorState, state, planState);
 
-  while(!state->theDone) {
-    try {
+  while(!state->theDone) 
+  {
+    try 
+    {
       state->theDone = !consumeNext(result, theChildren[0].getp(), planState);
-    } catch(error::ZorbaError& e) {
+    }
+    catch(error::ZorbaError& e) 
+    {
       error = true;
       state->theDone = true;
       std::auto_ptr<error::ZorbaError> error = e.clone();
@@ -63,8 +67,10 @@ UnhoistIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  while(consumeNext(result, theChildren[0].getp(), planState)) {
-    if (result->isError()) {
+  while(consumeNext(result, theChildren[0].getp(), planState)) 
+  {
+    if (result->isError()) 
+    {
       error::ZorbaError *err = result->getError();
       err->raise();
     }
