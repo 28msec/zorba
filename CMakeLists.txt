@@ -230,8 +230,10 @@ IF (NOT ZORBA_NO_XMLSCHEMA)
   # Xerces-C
   #
   INCLUDE(${CMAKE_MODULE_PATH}/FindXercesC.cmake)
+
   IF (XERCESC_FOUND)
-    
+
+    MESSAGE(STATUS "Found Xerces library -- " ${XERCES_LIBRARY})    
     INCLUDE_DIRECTORIES(${XERCESC_INCLUDE})
     
     SET(requiredlibs ${requiredlibs} ${XERCESC_LIBRARY})
