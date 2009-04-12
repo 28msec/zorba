@@ -971,8 +971,9 @@ FLWORClauseList::FLWORClauseList(
 void FLWORClauseList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  vector<rchandle<FLWORClause> >::const_iterator it = forlet_hv.begin();
-  for (; it!=forlet_hv.end(); ++it) {
+  vector<rchandle<FLWORClause> >::const_iterator it = theClauses.begin();
+  for (; it != theClauses.end(); ++it) 
+  {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
@@ -1191,22 +1192,17 @@ void CountClause::accept(parsenode_visitor& v) const
 
 GroupByClause::GroupByClause(
   const QueryLoc& loc_,
-  rchandle<GroupSpecList> _spec_list_h,
-  rchandle<LetClauseList> _let_h,
-  rchandle<WhereClause> _where_h)
+  rchandle<GroupSpecList> _spec_list_h)
 :
   FLWORClause(loc_),
-  spec_list_h(_spec_list_h),
-  let_h(_let_h),
-  where_h(_where_h)
-{}
+  spec_list_h(_spec_list_h)
+{
+}
 
 void GroupByClause::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
   ACCEPT (spec_list_h);
-//  ACCEPT (let_h);
-  ACCEPT (where_h);
   END_VISITOR ();
 }
 
@@ -1256,23 +1252,6 @@ void GroupCollationSpec::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
-}
-
-LetClauseList::LetClauseList(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
-{}
-
-void LetClauseList::accept(parsenode_visitor& v) const
-{
-  BEGIN_VISITOR ();
-  vector<rchandle<LetClause> >::const_reverse_iterator it = let_hv.rbegin();
-  for (; it!=let_hv.rend(); ++it) {
-    const LetClause *e_p = &**it;
-    ACCEPT_CHK (e_p);
-  }
-  END_VISITOR ();
 }
 
 
@@ -3431,27 +3410,6 @@ void SingleType::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
   ACCEPT (atomic_type_h);
-  END_VISITOR ();
-}
-
-
-// [116] TypeDeclaration
-// ---------------------
-TypeDeclaration::TypeDeclaration(
-  const QueryLoc& loc_,
-  rchandle<SequenceType> _seqtype_h)
-:
-  parsenode(loc_),
-  seqtype_h(_seqtype_h)
-{}
-
-
-//-TypeDeclaration::
-
-void TypeDeclaration::accept(parsenode_visitor& v) const
-{
-  BEGIN_VISITOR ();
-  ACCEPT (seqtype_h);
   END_VISITOR ();
 }
 

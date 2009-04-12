@@ -122,10 +122,6 @@ class FTWords;
 class FTWordsSelection;
 class FTWordsValue;
 class FilterExpr;
-class ForOrLetClause;
-class ForClause;
-class FLWORClause;
-class FLWORClauseList;
 class ForwardAxis;
 class ForwardStep;
 class FunctionCall;
@@ -138,7 +134,6 @@ class InsertExpr;
 class InstanceofExpr;
 class IntersectExceptExpr;
 class ItemType;
-class LetClause;
 class MultiplicativeExpr;
 class NameTest;
 class NamespaceDecl;
@@ -147,11 +142,25 @@ class NumericLiteral;
 class OccurrenceIndicator;
 class OptionDecl;
 class OrExpr;
+
+class FLWORExpr;
+class FLWORClauseList;
+class FLWORClause;
+class FLWORInitialClause;
+class ForOrLetClause;
+class ForClause;
+class VarInDeclList;
+class VarInDecl;
+class PositionalVar;
+class LetClause;
+class VarGetsDeclList;
+class VarGetsDecl;
+class FTScoreVar;
+class WhereClause;
 class GroupByClause;
 class GroupSpecList;
 class GroupSpec;
 class GroupCollationSpec;
-class LetClauseList;
 class OrderByClause;
 class OrderCollationSpec;
 class OrderDirSpec;
@@ -161,6 +170,7 @@ class OrderSpec;
 class OrderSpecList;
 class OrderedExpr;
 class OrderingModeDecl;
+
 class PITest;
 class Param;
 class ParamList;
@@ -194,7 +204,6 @@ class SingleType;
 class TextTest;
 class TransformExpr;
 class TreatExpr;
-class TypeDeclaration;
 class TypeName;
 class UnaryExpr;
 class UnionExpr;
@@ -1306,14 +1315,10 @@ public:
 };
 
 
-// [31] Expr
-// ---------
+/*******************************************************************************
+  Expr ::= ExprSingle | Expr  COMMA  ExprSingle
+********************************************************************************/
 class Expr : public exprnode
-/*______________________________________________________________________
-|
-|	::= ExprSingle
-|			|	Expr  COMMA  ExprSingle
-|_______________________________________________________________________*/
 {
 protected:
 	std::vector<rchandle<exprnode> > expr_hv;
@@ -1321,71 +1326,444 @@ protected:
 public:
 	Expr(const QueryLoc&);
 
-public:
 	void push_back(rchandle<exprnode> expr_h) { expr_hv.push_back(expr_h); }
+
 	rchandle<exprnode> operator[](int i) const { return expr_hv[i]; }
-    int  numberOfChildren() const;
 
-public:
+  int  numberOfChildren() const;
+
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [32] ExprSingle
-/*______________________________________________________________________
-|	::= FLWORExpr
-|			|	QuantifiedExpr
-|			|	TypeswitchExpr
-|			|	IfExpr
-|			|	OrExpr
-|_______________________________________________________________________*/
+/*******************************************************************************
+  ExprSingle ::= FLWORExpr |
+                 QuantifiedExpr |
+                 TypeswitchExpr |
+                 IfExpr |
+                 OrExpr
+********************************************************************************/
 
 
-class FLWORClause : public parsenode {
+
+/*******************************************************************************
+  FLWORExpr ::= InitialClause FLWORClauseList? ReturnClause
+********************************************************************************/
+class FLWORExpr : public exprnode
+{
+protected:
+	rchandle<FLWORClauseList> clauses;
+	rchandle<exprnode>        return_val_h;
+  bool                      general;  //< needs to be translated into gflwor_expr?
+  bool                      non_10;   //< non-conformant to XQuery 1.0 spec?
+  QueryLoc                  return_location;
+
+public:
+	FLWORExpr(
+        const QueryLoc& loc_,
+        rchandle<FLWORClauseList> clauses_,
+        rchandle<exprnode> ret_,
+        const QueryLoc& return_loc_,
+        bool force_general = false);
+
+public:
+  bool is_general () const { return general; }
+
+  bool is_non_10 () const { return non_10; }
+
+  const QueryLoc& get_return_location() const { return return_location; }
+
+	rchandle<FLWORClauseList> get_clause_list() const { return clauses; }
+
+	rchandle<exprnode> get_return_val() const { return return_val_h; }
+
+  GroupByClause* get_groupby() const;
+  OrderByClause* get_orderby() const;
+  WhereClause* get_where() const;
+
+	void accept(parsenode_visitor&) const;
+
+protected:
+  void compute_general ();
+};
+
+
+/*******************************************************************************
+  - For the Generazed FLWOR:
+
+  FLWORClauseList ::= FLWORClause | FLWORClause  FLWORClauseList
+
+  - For the traditional FLWOR:
+
+  FLWORClauseList ::= (ForClause | LetClause)+ 
+                      WhereCluase?
+                      GroupByClause?
+                      OrderByClause?
+********************************************************************************/
+class FLWORClauseList : public parsenode
+{
+protected:
+	std::vector<rchandle<FLWORClause> > theClauses;
+
+public:
+	FLWORClauseList(const QueryLoc&);
+
+public:
+	void push_back(rchandle<FLWORClause> cl) { theClauses.push_back(cl); }
+
+	rchandle<FLWORClause> operator[](int i) const { return theClauses[i]; }
+
+  size_t size() const { return theClauses.size(); }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  FLWORClause ::= InitialClause | IntermediateClause
+********************************************************************************/
+class FLWORClause : public parsenode 
+{
 public:
   FLWORClause (const QueryLoc& loc_) : parsenode (loc_) {}
 };
 
-// [33] FLWORExpr
-// --------------
-class FLWORExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= FLWORClauseList  RETURN  ExprSingle
-|			|	FLWORClauseList  WhereClause  RETURN  ExprSingle
-|			|	FLWORClauseList  OrderByClause  RETURN  ExprSingle
-|			|	FLWORClauseList  WhereClause  OrderByClause  RETURN  ExprSingle
-|_______________________________________________________________________*/
+
+/*******************************************************************************
+  InitialClause ::= ForClause | LetClause | WindowClause
+
+  For traditional FLWOR, InitialClause does not include WindowClause.
+********************************************************************************/
+class FLWORInitialClause : public FLWORClause 
+{
+public:
+  FLWORInitialClause (const QueryLoc& loc_) : FLWORClause (loc_) {}
+};
+
+
+/*******************************************************************************
+  IntermediateClause ::= InitialClause |
+                         WhereClause |
+                         GroupByClause |
+                         OrderByClause
+********************************************************************************/
+
+
+/*******************************************************************************
+  ForOrLetClause ::= ForClause | LetClause
+********************************************************************************/
+class ForOrLetClause : public FLWORInitialClause 
+{
+public:
+  typedef enum { for_clause, let_clause } for_or_let_t;
+
+  ForOrLetClause (const QueryLoc& loc_) : FLWORInitialClause (loc_) {}
+
+  virtual for_or_let_t for_or_let () const = 0;
+
+  virtual int get_decl_count () const = 0;
+};
+
+
+/*******************************************************************************
+  ForClause ::= OUTER? FOR DOLLAR  VarInDeclList
+********************************************************************************/
+class ForClause : public ForOrLetClause
 {
 protected:
-	rchandle<FLWORClauseList> clauses;
-	rchandle<exprnode> return_val_h;
-  bool general;  //< needs to be translated into gflwor_expr?
-  bool non_10;  //< non-conformant to XQuery 1.0 spec?
-
-  void compute_general ();
-
-  QueryLoc return_location;
+	rchandle<VarInDeclList> vardecl_list_h;
+  bool                    outer;
 
 public:
-	FLWORExpr(const QueryLoc& loc_, rchandle<FLWORClauseList> clauses_, rchandle<exprnode> ret_, const QueryLoc& return_loc_, bool force_general = false);
+	ForClause(const QueryLoc&, rchandle<VarInDeclList>, bool outer = false);
 
-public:
-	rchandle<FLWORClauseList> get_clause_list() const { return clauses; }
-	rchandle<exprnode> get_return_val() const { return return_val_h; }
-  GroupByClause *get_groupby() const;
-  OrderByClause *get_orderby() const;
-  WhereClause *get_where() const;
+  for_or_let_t for_or_let () const { return for_clause; }
 
-  bool is_general () const { return general; }
-  bool is_non_10 () const { return non_10; }
-  const QueryLoc& get_return_location() const { return return_location; }
+  bool is_outer () const { return outer; }
 
-public:
+	rchandle<VarInDeclList> get_vardecl_list() const { return vardecl_list_h; }
+
+  int get_decl_count () const;
+
 	void accept(parsenode_visitor&) const;
-
 };
+
+
+/*******************************************************************************
+  VarInDeclList ::= VarInDecl | VarInDeclList  COMMA  DOLLAR  VarInDecl
+********************************************************************************/
+class VarInDeclList : public parsenode
+{
+protected:
+	std::vector<rchandle<VarInDecl> > vardecl_hv;
+
+public:
+	VarInDeclList(const QueryLoc&);
+
+	void push_back(rchandle<VarInDecl> vardecl_h) { vardecl_hv.push_back(vardecl_h); }
+
+	rchandle<VarInDecl> operator[](int i) const { return vardecl_hv[i]; }
+
+	size_t size () const { return vardecl_hv.size ();}
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  VarInDecl ::= VARNAME IN ExprSingle |
+                VARNAME TypeDeclaration IN ExprSinge |
+                VARNAME PositionalVar IN ExprSingle |
+                VARNAME TypeDeclaration PositionalVar IN ExprSingle |
+                VARNAME FTScoreVar  IN  ExprSingle |
+                VARNAME TypeDeclaration FTScoreVar IN ExprSingle |
+                VARNAME PositionalVar FTScoreVar IN ExprSingle |
+                VARNAME TypeDeclaration PositionalVar FTScoreVar IN ExprSingle
+********************************************************************************/
+class VarInDecl : public VarDeclWithInit
+{
+protected:
+	rchandle<PositionalVar> posvar_h;
+	rchandle<FTScoreVar>    ftscorevar_h;
+	rchandle<exprnode>      valexpr_h;
+	
+public:
+	VarInDecl(
+		const QueryLoc&,
+		std::string varname,
+		rchandle<SequenceType>,
+		rchandle<PositionalVar>,
+		rchandle<FTScoreVar>,
+		rchandle<exprnode>);
+
+	rchandle<PositionalVar> get_posvar() const { return posvar_h; }
+
+	rchandle<FTScoreVar> get_ftscorevar() const { return ftscorevar_h; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  PositionalVar ::= AT  DOLLAR  VARNAME
+********************************************************************************/
+class PositionalVar : public parsenode
+{
+protected:
+	std::string varname;
+
+public:
+	PositionalVar(const QueryLoc&, std::string const& varname);
+
+	std::string get_varname() const { return varname; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  LetClause ::= LET_DOLLAR VarGetsDeclList |
+                LET_SCORE_DOLLAR VarGetsDeclList
+********************************************************************************/
+class LetClause : public ForOrLetClause
+{
+protected:
+	rchandle<VarGetsDeclList> vardecl_list_h;
+
+public:
+	LetClause(const QueryLoc&, rchandle<VarGetsDeclList>);
+
+	rchandle<VarGetsDeclList> get_vardecl_list() const { return vardecl_list_h; }
+
+  for_or_let_t for_or_let () const { return let_clause; }
+
+  int get_decl_count () const;
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  VarGetsDeclList ::= VarGetsDecl |
+                      VarGetsDeclList  COMMA  DOLLAR  VarGetsDecl
+********************************************************************************/
+class VarGetsDeclList : public parsenode
+{
+protected:
+	std::vector<rchandle<VarGetsDecl> > vardecl_hv;
+
+public:
+	VarGetsDeclList(const QueryLoc&);
+
+	void push_back(rchandle<VarGetsDecl> vardecl_h) { vardecl_hv.push_back(vardecl_h); }
+
+	rchandle<VarGetsDecl> operator[](int i) const { return vardecl_hv[i]; }
+
+  size_t size () const { return vardecl_hv.size (); }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  VarGetsDecl	::= VARNAME  GETS  ExprSingle |
+                  VARNAME  TypeDeclaration  GETS  ExprSingle |
+                  VARNAME  FTScoreVar  GETS  ExprSingle |
+                  VARNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
+
+  Note: This ast node also represents EVAL external vars
+********************************************************************************/
+class VarGetsDecl : public VarDeclWithInit
+{
+public:
+  enum var_kind { let_var, eval_var };
+
+protected:
+	rchandle<FTScoreVar> ftscorevar_h;
+  enum var_kind        kind;
+
+public:
+	VarGetsDecl(
+    const QueryLoc& loc_,
+    std::string varname_,
+    rchandle<SequenceType> typedecl_h_,
+    rchandle<FTScoreVar> ftscorevar_h_,
+    rchandle<exprnode> valexpr_h_,
+    enum var_kind kind_ = let_var)
+    :
+    VarDeclWithInit (loc_, varname_, typedecl_h_, valexpr_h_),
+    ftscorevar_h(ftscorevar_h_),
+    kind (kind_)
+  {
+  }
+
+	rchandle<FTScoreVar> get_ftscorevar() const { return ftscorevar_h; }
+
+
+  enum var_kind get_kind () const { return kind; }
+  void set_kind (enum var_kind kind_) { kind = kind_; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  FTScoreVar ::= SCORE  DOLLAR  VarName
+********************************************************************************/
+class FTScoreVar : public parsenode
+{
+protected:
+	std::string varname;
+
+public:
+	FTScoreVar(const QueryLoc&, std::string varname);
+
+	std::string get_varname() const { return varname; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  WhereClause ::= WHERE  ExprSingle
+********************************************************************************/
+class WhereClause : public FLWORClause
+{
+protected:
+	rchandle<exprnode> predicate_h;
+
+public:
+	WhereClause(const QueryLoc&, rchandle<exprnode>);
+
+	rchandle<exprnode> get_predicate() const { return predicate_h; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  GroupByClause ::= GROUP BY GroupSpecList
+********************************************************************************/
+class GroupByClause : public FLWORClause
+{
+protected:
+  FLWORExpr*              flwor_h;
+  rchandle<GroupSpecList> spec_list_h;
+
+public:
+  GroupByClause(const QueryLoc&, rchandle<GroupSpecList>);
+
+  void set_flwor(FLWORExpr* a) { flwor_h = a; }
+
+  FLWORExpr* get_flwor() const { return flwor_h; }
+
+  GroupSpecList* get_spec_list() const { return &*spec_list_h; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  GroupSpecList ::= GroupSpec | GroupSpecList COMMA GroupSpec
+********************************************************************************/
+class GroupSpecList : public parsenode
+{
+protected:
+  std::vector<rchandle<GroupSpec> > spec_hv;
+ 
+public:
+  GroupSpecList(const QueryLoc&);
+
+	void push_back(rchandle<GroupSpec> spec_h) { spec_hv.push_back(spec_h); }
+
+	GroupSpec* operator[](int i) const { return &*spec_hv[i]; }
+
+  size_t size () const { return spec_hv.size (); }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  GroupSpec ::= QNAME (COLLATION UriLiteral)?
+********************************************************************************/
+class GroupSpec : public parsenode
+{
+protected:
+  std::string                  var_name_h;
+  rchandle<GroupCollationSpec> group_coll_spec_h;
+
+public:
+  GroupSpec(
+    const QueryLoc&,
+    std::string,
+    rchandle<GroupCollationSpec>);
+
+  std::string get_var_name() const  { return var_name_h; }
+
+  rchandle<GroupCollationSpec> group_coll_spec() const { return group_coll_spec_h; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class GroupCollationSpec : public parsenode
+{
+protected:
+	std::string uri;
+
+public:
+	GroupCollationSpec(const QueryLoc&, std::string const& uri);
+
+	std::string get_uri() const { return uri; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
 
 class ReturnExpr: public exprnode
 {
@@ -1398,50 +1776,9 @@ class ReturnExpr: public exprnode
     void accept(parsenode_visitor&) const { /* do nothing... */ }
 };
 
-// [33a] FLWORClauseList
-// ----------------------
-class FLWORClauseList : public parsenode
-/*______________________________________________________________________
-|
-|	::= ForOrLetClause
-|			|	ForOrLetClause  FLWORClauseList
-|_______________________________________________________________________*/
+
+class WindowVars : public parsenode 
 {
-protected:
-	std::vector<rchandle<FLWORClause> > forlet_hv;
-
-public:
-	FLWORClauseList(const QueryLoc&);
-
-public:
-	void push_back(rchandle<FLWORClause> forlet_h) { forlet_hv.push_back(forlet_h); }
-	rchandle<FLWORClause> operator[](int i) const { return forlet_hv[i]; }
-  size_t size () const { return forlet_hv.size (); }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-class FLWORInitialClause : public FLWORClause {
-public:
-  FLWORInitialClause (const QueryLoc& loc_) : FLWORClause (loc_) {}
-};
-
-// [33b] ForOrLetClause
-/*______________________________________________________________________
-|	::= ForClause | LetClause
-|_______________________________________________________________________*/
-
-class ForOrLetClause : public FLWORInitialClause {
-public:
-  ForOrLetClause (const QueryLoc& loc_) : FLWORInitialClause (loc_) {}
-  typedef enum { for_clause, let_clause } for_or_let_t;
-  virtual for_or_let_t for_or_let () const = 0;
-  virtual int get_decl_count () const = 0;
-};
-
-class WindowVars : public parsenode {
   rchandle<PositionalVar> posvar;
   std::string curr, prev, next;
 
@@ -1461,7 +1798,9 @@ public:
 	void accept(parsenode_visitor&) const;
 };
 
-class FLWORWinCond : public parsenode {
+
+class FLWORWinCond : public parsenode 
+{
   rchandle<WindowVars> winvars;
   rchandle<exprnode> val;
 
@@ -1481,17 +1820,27 @@ public:
 	void accept(parsenode_visitor&) const;
 };
 
-class WindowVarDecl : public VarDeclWithInit {
+
+class WindowVarDecl : public VarDeclWithInit 
+{
 public:
-  WindowVarDecl (const QueryLoc& loc_, std::string varname_, rchandle<SequenceType> td_, rchandle<exprnode> init_)
-    : VarDeclWithInit (loc_, varname_, td_, init_)
-  {}
+  WindowVarDecl (
+        const QueryLoc& loc_,
+        std::string varname_,
+        rchandle<SequenceType> td_,
+        rchandle<exprnode> init_)
+    :
+    VarDeclWithInit (loc_, varname_, td_, init_)
+  {
+  }
 
 public:
 	void accept(parsenode_visitor&) const;
 };
 
-class WindowClause : public FLWORInitialClause {
+
+class WindowClause : public FLWORInitialClause 
+{
 public:
   typedef enum { tumbling_window, sliding_window } win_clause_t;
 
@@ -1517,272 +1866,6 @@ public:
 	void accept(parsenode_visitor&) const;
 };
 
-// [34b] VarInDecl
-// ---------------
-class VarInDecl : public VarDeclWithInit
-/*______________________________________________________________________
-|
-|	::= VARNAME  IN  ExprSingle
-|			|	VARNAME  TypeDeclaration  IN  ExprSingle
-|			|	VARNAME  PositionalVar  IN  ExprSingle
-|			|	VARNAME  TypeDeclaration  PositionalVar  IN  ExprSingle
-|	(ft extensions)
-|			| VARNAME  FTScoreVar  IN  ExprSingle
-|			| VARNAME  TypeDeclaration  FTScoreVar  IN  ExprSingle
-|			| VARNAME  PositionalVar  FTScoreVar  IN  ExprSingle
-|			| VARNAME  TypeDeclaration  PositionalVar  FTScoreVar  IN  ExprSingle
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<PositionalVar> posvar_h;
-	rchandle<FTScoreVar> ftscorevar_h;
-	rchandle<exprnode> valexpr_h;
-	
-public:
-	VarInDecl(
-		const QueryLoc&,
-		std::string varname,
-		rchandle<SequenceType>,
-		rchandle<PositionalVar>,
-		rchandle<FTScoreVar>,
-		rchandle<exprnode>);
-
-
-public:
-	rchandle<PositionalVar> get_posvar() const { return posvar_h; }
-	rchandle<FTScoreVar> get_ftscorevar() const { return ftscorevar_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [34a] VarInDeclList
-// -------------------
-class VarInDeclList : public parsenode
-/*______________________________________________________________________
-|
-|	::= VarInDecl
-|			|	VarInDeclList  COMMA  DOLLAR  VarInDecl
-|_______________________________________________________________________*/
-{
-protected:
-	std::vector<rchandle<VarInDecl> > vardecl_hv;
-
-public:
-	VarInDeclList(const QueryLoc&);
-
-public:
-	void push_back(rchandle<VarInDecl> vardecl_h) { vardecl_hv.push_back(vardecl_h); }
-	rchandle<VarInDecl> operator[](int i) const { return vardecl_hv[i]; }
-	size_t size () const { return vardecl_hv.size ();}
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [34] ForClause
-// --------------
-class ForClause : public ForOrLetClause
-/*______________________________________________________________________
-|
-|	::= FOR_DOLLAR  VarInDeclList
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<VarInDeclList> vardecl_list_h;
-  bool outer;
-
-public:
-	ForClause(const QueryLoc&, rchandle<VarInDeclList>, bool outer = false);
-
-
-public:
-	rchandle<VarInDeclList> get_vardecl_list() const { return vardecl_list_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-public:
-  for_or_let_t for_or_let () const { return for_clause; }
-  int get_decl_count () const;
-  bool is_outer () const { return outer; }
-};
-
-
-// [35] PositionalVar
-// ------------------
-class PositionalVar : public parsenode
-/*______________________________________________________________________
-|
-|	::= AT  DOLLAR  VARNAME
-|_______________________________________________________________________*/
-{
-protected:
-	std::string varname;
-
-public:
-	PositionalVar(
-		const QueryLoc&,
-		std::string const& varname);
-
-
-public:
-	std::string get_varname() const { return varname; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [36b] VarGetsDecl
-// ------------------
-class VarGetsDecl : public VarDeclWithInit
-/*______________________________________________________________________
-|
-|	::= VARNAME  GETS  ExprSingle
-|			|	VARNAME  TypeDeclaration  GETS  ExprSingle
-|	(ft extensions)
-|			| VARNAME  FTScoreVar  GETS  ExprSingle
-|			| VARNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
-|_______________________________________________________________________*/
-{
-public:
-  enum var_kind {
-    let_var, eval_var
-  };
-
-protected:
-	rchandle<FTScoreVar> ftscorevar_h;
-  enum var_kind kind;
-
-public:
-	VarGetsDecl(const QueryLoc& loc_,
-              std::string varname_,
-              rchandle<SequenceType> typedecl_h_,
-              rchandle<FTScoreVar> ftscorevar_h_,
-              rchandle<exprnode> valexpr_h_,
-              enum var_kind kind_ = let_var)
-    : VarDeclWithInit (loc_, varname_, typedecl_h_, valexpr_h_),
-      ftscorevar_h(ftscorevar_h_), kind (kind_)
-  {}
-
-	rchandle<FTScoreVar> get_ftscorevar() const { return ftscorevar_h; }
-  enum var_kind get_kind () const { return kind; }
-  void set_kind (enum var_kind kind_) { kind = kind_; }
-	void accept(parsenode_visitor&) const;
-};
-
-
-// [36a] VarGetsDeclList
-// ---------------------
-class VarGetsDeclList : public parsenode
-/*______________________________________________________________________
-|
-|	::= VarGetsDecl
-|			|	VarGetsDeclList  COMMA  DOLLAR  VarGetsDecl
-|_______________________________________________________________________*/
-{
-protected:
-	std::vector<rchandle<VarGetsDecl> > vardecl_hv;
-
-public:
-	VarGetsDeclList(const QueryLoc&);
-
-public:
-	void push_back(rchandle<VarGetsDecl> vardecl_h) { vardecl_hv.push_back(vardecl_h); }
-	rchandle<VarGetsDecl> operator[](int i) const { return vardecl_hv[i]; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-public:
-  size_t size () const { return vardecl_hv.size (); }
-};
-
-
-// [36] LetClause
-// --------------
-class LetClause : public ForOrLetClause
-/*______________________________________________________________________
-|
-|	::= LET_DOLLAR VarGetsDeclList
-|			| LET_SCORE_DOLLAR VarGetsDeclList
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<VarGetsDeclList> vardecl_list_h;
-
-public:
-	LetClause(
-		const QueryLoc&,
-		rchandle<VarGetsDeclList>);
-
-public:
-	rchandle<VarGetsDeclList> get_vardecl_list() const { return vardecl_list_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-public:
-  for_or_let_t for_or_let () const { return let_clause; }
-  int get_decl_count () const;
-};
-
-
-// [36c] FTScoreVar
-// ----------------
-/*______________________________________________________________________
-|
-|	::= SCORE  DOLLAR  VarName
-|______________________________________________________________________*/
-class FTScoreVar : public parsenode
-{
-protected:
-	std::string varname;
-
-public:
-	FTScoreVar(
-		const QueryLoc&,
-		std::string varname);
-
-public:
-	std::string get_varname() const { return varname; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [37] WhereClause
-// ----------------
-class WhereClause : public FLWORClause
-/*______________________________________________________________________
-|
-|	::= WHERE  ExprSingle
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<exprnode> predicate_h;
-
-public:
-	WhereClause(
-		const QueryLoc&,
-		rchandle<exprnode>);
-
-public:
-	rchandle<exprnode> get_predicate() const { return predicate_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
 
 class CountClause : public FLWORClause
 {
@@ -1798,113 +1881,10 @@ public:
 	void accept(parsenode_visitor&) const;
 };
 
-class GroupByClause : public FLWORClause
-{
-protected:
-  FLWORExpr*              flwor_h;
-  rchandle<GroupSpecList> spec_list_h;
-	rchandle<LetClauseList> let_h;
-	rchandle<WhereClause> where_h;
-
-public:
-  GroupByClause(
-    const QueryLoc&,
-    rchandle<GroupSpecList>,
-    rchandle<LetClauseList>,
-    rchandle<WhereClause>);
-
-public:
-  void set_flwor(FLWORExpr* a) { flwor_h = a; }
-  FLWORExpr*     get_flwor() const { return flwor_h; }
-  GroupSpecList* get_spec_list() const { return &*spec_list_h; }
-  LetClauseList* get_let() const { return &*let_h; }
-  WhereClause* get_where() const { return &*where_h; }
-
-public:
-  void accept(parsenode_visitor&) const;
-};
-
-class GroupSpecList : public parsenode
-{
-protected:
-  std::vector<rchandle<GroupSpec> > spec_hv;
- 
-public:
-  GroupSpecList(const QueryLoc&);
-
-public:
-	void push_back(rchandle<GroupSpec> spec_h) { spec_hv.push_back(spec_h); }
-	GroupSpec* operator[](int i) const { return &*spec_hv[i]; }
-  size_t size () const { return spec_hv.size (); }
-
-public:
-	void accept(parsenode_visitor&) const;
-};
-
-class GroupSpec : public parsenode
-{
-protected:
-  std::string            var_name_h;
-  rchandle<GroupCollationSpec> group_coll_spec_h;
-
-public:
-  GroupSpec(
-    const QueryLoc&,
-    std::string,
-    rchandle<GroupCollationSpec>);
-
-public:
-  std::string get_var_name() const  { return var_name_h; }
-  rchandle<GroupCollationSpec> group_coll_spec() const { return group_coll_spec_h; }
-
-public:
-  void accept(parsenode_visitor&) const;
-};
-
-class GroupCollationSpec : public parsenode
-{
-protected:
-	std::string uri;
-
-public:
-	GroupCollationSpec(
-		const QueryLoc&,
-		std::string const& uri);
-
-public:
-	std::string get_uri() const { return uri; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-class LetClauseList : public parsenode
-{
-protected:
-	std::vector<rchandle<LetClause> > let_hv;
-
-public:
-  LetClauseList(const QueryLoc&);
-
-public:
-	void push_back(rchandle<LetClause> let_h) { let_hv.push_back(let_h); }
-	rchandle<LetClause> operator[](int i) const { return let_hv[i]; }
-  int size () const { return let_hv.size (); }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
 
 // [38] OrderByClause
 // ------------------
 class OrderByClause : public FLWORClause
-/*______________________________________________________________________
-|
-|	::= ORDER_BY  OrderSpecList
-|			|	STABLE_ORDER_BY  OrderSpecList
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<OrderSpecList> spec_list_h;
@@ -4475,30 +4455,11 @@ public:
 };
 
 
-// [116] TypeDeclaration
-// ---------------------
-class TypeDeclaration : public parsenode
-/*______________________________________________________________________
-|
-|	::= AS  SequenceType
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<SequenceType> seqtype_h;
+/*******************************************************************************
 
-public:
-	TypeDeclaration(
-		const QueryLoc&,
-		rchandle<SequenceType>);
+  [116] TypeDeclaration ::= AS  SequenceType
 
-
-public:
-	rchandle<SequenceType> get_seqtype() const { return seqtype_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
+********************************************************************************/
 
 
 /*******************************************************************************

@@ -299,17 +299,6 @@ void *begin_visit(GroupCollationSpec const& n)
     return no_state;
 }
 
-void *begin_visit(LetClauseList const& n)
-{
-    INDENT;
-
-    os << "<LetClauseList" << IDS;
-
-    os << ">";
-
-    INDENT_INC; NL;
-    return no_state;
-}
 
 void *begin_visit(const Param &n)
 {
@@ -695,7 +684,6 @@ BEGIN_END_TAG (InstanceofExpr)
 BEGIN_END_TAG (IntersectExceptExpr)
 BEGIN_END_TAG (ItemType)
 BEGIN_END_TAG (LetClause)
-END_TAG (LetClauseList )
 BEGIN_END_TAG (LibraryModule)
 END_TAG (MainModule )
 BEGIN_END_TAG (Module)
@@ -751,7 +739,6 @@ BEGIN_END_TAG (TextTest)
 BEGIN_END_TAG (TransformExpr)
 BEGIN_END_TAG (TreatExpr)
 BEGIN_END_TAG (TryExpr)
-BEGIN_END_TAG (TypeDeclaration)
 BEGIN_END_TAG (TypeName)
 END_TAG (TypeswitchExpr)
 BEGIN_END_TAG (UnaryExpr)
