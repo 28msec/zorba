@@ -20,43 +20,37 @@
 
 #include "util/hashmap.h"
 #include "common/shared_types.h"
+#include "store/api/shared_types.h"
+
 
 namespace zorba {
 
-  class ValueIndexInsertSession;
 
 class dynamic_context
 {
 protected:
 
-  struct dctx_value_t {
-    typedef enum { no_val, var_iterator_val, temp_seq_val, val_idx_ins_session_val } val_type_t;
+  typedef hashmap<std::pair<store::Index_t, ValueIndexInsertSession_t > > IndexMap;
+
+  struct dctx_value_t 
+  {
+    typedef enum 
+    {
+      no_val,
+      var_iterator_val,
+      temp_seq_val,
+      val_idx_ins_session_val 
+    } val_type_t;
+
     val_type_t type;
-    bool in_progress;
+    bool       in_progress;
+
     union
     {
       store::Iterator* var_iterator;
       store::TempSeq*  temp_seq;
-    } val;
+    }          val;
   };
-
-  bool lookup_once (xqp_string key, dctx_value_t &val) const {
-    return keymap.get (key, val); 
-  }
-  bool context_value(xqp_string key, dctx_value_t &val) const {
-    if (lookup_once (key, val)) {
-      return true;
-    }
-    return parent == NULL ? false : parent->context_value (key, val);
-  }
-  bool context_value(xqp_string key, dctx_value_t &val, hashmap<dctx_value_t> **map) {
-    if (lookup_once (key, val)) {
-      if (map != NULL) *map = &keymap;
-      return true;
-    }
-    return parent == NULL ? false : parent->context_value (key, val, map);
-  }
-  
 
 protected:
   static bool static_init;
@@ -72,11 +66,36 @@ protected:
   unsigned long           ctxt_position;
   //+context size is determined by fn:last() at runtime
 
-  hashmap<rchandle<ValueIndexInsertSession> > val_idx_ins_session_map;
+  IndexMap                val_idx_ins_session_map;
 
 protected:
+  bool lookup_once (xqp_string key, dctx_value_t &val) const 
+  {
+    return keymap.get (key, val); 
+  }
+
+  bool context_value(xqp_string key, dctx_value_t &val) const 
+  {
+    if (lookup_once (key, val)) {
+      return true;
+    }
+    return parent == NULL ? false : parent->context_value (key, val);
+  }
+
+  bool context_value(xqp_string key, dctx_value_t &val, hashmap<dctx_value_t> **map) 
+  {
+    if (lookup_once (key, val)) {
+      if (map != NULL) *map = &keymap;
+      return true;
+    }
+    return parent == NULL ? false : parent->context_value (key, val, map);
+  }
+
+
   xqp_string qname_internal_key (store::Item_t qname) const;
+
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const;
+
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string qname) const;
 
   store::Iterator_t lookup_var_iter (xqp_string key);
@@ -92,7 +111,6 @@ public:
   static std::string var_key (const void *var);
   xqp_string expand_varname(static_context  *sctx, xqp_string qname) const;
 
-public:
   store::Item_t context_item() const;
   unsigned long context_position();
 
@@ -111,10 +129,6 @@ public:
   void add_namespace(Item&);
   #endif
 
-
-//daniel: get the function directly from library object
-//  const function* get_function(qnamekey_t key) { return lib->get(key); }
-
   void set_current_date_time( const store::Item_t& );
   store::Item_t get_current_date_time();
 
@@ -129,9 +143,13 @@ public:
   store::Item_t get_default_collection();
   void set_default_collection(const store::Item_t& default_collection_uri);
 
-  rchandle<ValueIndexInsertSession> get_val_idx_insert_session (std::string);
-  void set_val_idx_insert_session (std::string, rchandle<ValueIndexInsertSession>);
+  void bind_index(const std::string& indexUri, store::Index* index);
 
+  store::Index* lookup_index(const std::string& indexUri) const;
+
+  ValueIndexInsertSession* get_index_insert_session(const std::string& indexUri) const;
+
+  void set_index_insert_session(const std::string& indexUri, ValueIndexInsertSession* v);
 };
 
 

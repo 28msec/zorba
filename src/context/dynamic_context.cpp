@@ -137,28 +137,6 @@ xqp_string dynamic_context::expand_varname(static_context	*sctx, xqp_string qnam
 }
 
 
-/*______________________________________________________________________
-|  
-|	XQuery 1.0 context
-|	[http://www.w3.org/TR/xquery/#id-xq-context-components]
-|_______________________________________________________________________*/
-/*
-pair<xqp_string, xqp_string> parse_qname (xqp_string qname);
-xqp_string qname_internal_key2 (xqp_string ns, xqp_string local);
-
-xqp_string dynamic_context::qname_internal_key (QNameItem_t qname) const {
-  return qname_internal_key2 (qname->getNamespace (), qname->getLocalName ());
-}
-xqp_string dynamic_context::qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const {
-  return qname_internal_key2
-    (prefix.empty () ? default_ns : sctx->lookup_ns (prefix), local);
-}
-xqp_string dynamic_context::qname_internal_key (xqp_string default_ns, xqp_string qname) const {
-  pair<xqp_string, xqp_string> rqname = parse_qname (qname);
-  return qname_internal_key (default_ns, rqname.first, rqname.second);
-}
-*/
-
 void dynamic_context::set_context_item(store::Item_t context_item, unsigned long position)
 {
 	this->ctxt_item = context_item;
@@ -243,20 +221,24 @@ void dynamic_context::declare_variable(xqp_string var_name)
   keymap.put (key, v);
 }
 
-void dynamic_context::add_variable(xqp_string varname, store::Iterator_t var_iterator) {
+void dynamic_context::add_variable(xqp_string varname, store::Iterator_t var_iterator) 
+{
   declare_variable (varname);
   set_variable (varname, var_iterator);
 }
 
-store::Iterator_t	dynamic_context::get_variable(store::Item_t varname) {
+
+store::Iterator_t	dynamic_context::get_variable(store::Item_t varname) 
+{
 	return lookup_var_iter("var:" + xqp_string (&*varname->getStringValue ()));
 }
 
 
-store::Iterator_t dynamic_context::lookup_var_iter(xqp_string key) { 
-    dctx_value_t val = {dctx_value_t::no_val, false, {0} };
+store::Iterator_t dynamic_context::lookup_var_iter(xqp_string key) 
+{ 
+  dctx_value_t val = {dctx_value_t::no_val, false, {0} };
 
-  if(!keymap.get (key, val))
+  if(!keymap.get(key, val))
 	{
     if(parent)
       return parent->lookup_var_iter(key);
@@ -265,16 +247,17 @@ store::Iterator_t dynamic_context::lookup_var_iter(xqp_string key) {
 	}
   if (val.in_progress)
     ZORBA_ERROR (XQST0054);
+
   assert (val.type == dynamic_context::dctx_value_t::temp_seq_val);
   return val.val.temp_seq->getIterator ();
 }
 
 
-store::Item_t
-dynamic_context::get_default_collection()
+store::Item_t dynamic_context::get_default_collection()
 {
 	return default_collection_uri;
 }
+
 
 void dynamic_context::set_default_collection(const store::Item_t& default_collection_uri)
 {
@@ -282,23 +265,78 @@ void dynamic_context::set_default_collection(const store::Item_t& default_collec
 }
 
 
-ValueIndexInsertSession_t dynamic_context::get_val_idx_insert_session (std::string key) 
+void dynamic_context::bind_index(
+    const std::string& indexUri,
+    store::Index* index)
 {
-  ValueIndexInsertSession_t v;
-  if (val_idx_ins_session_map.get (key, v))
-    return v;
-  else if (parent != NULL)
-    return parent->get_val_idx_insert_session (key);
-  else
-    return NULL;
+  std::pair<store::Index_t, ValueIndexInsertSession_t> v;
+  ZORBA_ASSERT(!val_idx_ins_session_map.get(indexUri, v));
+
+  v.first = index;
+
+  val_idx_ins_session_map.put(indexUri, v);
 }
 
 
-void dynamic_context::set_val_idx_insert_session (
-    std::string key,
-    ValueIndexInsertSession_t s) 
+store::Index* dynamic_context::lookup_index(const std::string& indexUri) const
 {
-  val_idx_ins_session_map.put (key, s);
+  std::pair<store::Index_t, ValueIndexInsertSession_t> v;
+  bool found = val_idx_ins_session_map.get(indexUri, v);
+  if (found)
+  {
+    return v.first;
+  }
+  else if (parent != NULL)
+  {
+    return parent->lookup_index(indexUri);
+  }
+  else
+  {
+    ZORBA_ERROR_PARAM(XQP0033_INDEX_DOES_NOT_EXIST, indexUri.c_str(), "");
+  }
+}
+
+
+ValueIndexInsertSession* dynamic_context::get_index_insert_session(
+    const std::string& indexUri) const
+{
+  std::pair<store::Index_t, ValueIndexInsertSession_t> v;
+
+  if (val_idx_ins_session_map.get(indexUri, v))
+  {
+    return v.second;
+  }
+  else if (parent != NULL)
+  {
+    return parent->get_index_insert_session(indexUri);
+  }
+  else
+  {
+    ZORBA_ASSERT(false);
+  }
+}
+
+
+void dynamic_context::set_index_insert_session (
+    const std::string& indexUri,
+    ValueIndexInsertSession* s) 
+{
+  std::pair<store::Index_t, ValueIndexInsertSession_t> v;
+
+  if (val_idx_ins_session_map.get(indexUri, v))
+  {
+    v.second = s;
+    val_idx_ins_session_map.put(indexUri, v);
+    return;
+  }
+  else if (parent != NULL)
+  {
+    parent->set_index_insert_session(indexUri, s);
+  }
+  else
+  {
+    ZORBA_ASSERT(false);
+  }
 }
 
 

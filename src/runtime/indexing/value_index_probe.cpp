@@ -52,7 +52,7 @@ bool ValueIndexPointProbe::nextImpl(store::Item_t& result, PlanState& planState)
   if (state->theUri == NULL || !state->theUri->equals(tempUri)) 
   {
     state->theUri = tempUri;
-    state->theIndex = GENV_STORE.getIndex(state->theUri);
+    state->theIndex = planState.dctx()->lookup_index(state->theUri->str());
     ZORBA_ASSERT(state->theIndex != NULL);
     state->theIterator = GENV_STORE.getIteratorFactory()->createIndexProbeIterator(state->theIndex);
   }
@@ -76,6 +76,7 @@ bool ValueIndexPointProbe::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END(state);
 }
 
+
 void ValueIndexRangeProbeState::init(PlanState& state)
 {
   PlanIteratorState::init(state);
@@ -84,6 +85,7 @@ void ValueIndexRangeProbeState::init(PlanState& state)
   theIterator = NULL;
 }
 
+
 void ValueIndexRangeProbeState::reset(PlanState& state)
 {
   PlanIteratorState::reset(state);
@@ -91,6 +93,7 @@ void ValueIndexRangeProbeState::reset(PlanState& state)
     theIterator->close();
   }
 }
+
 
 bool ValueIndexRangeProbe::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -106,9 +109,10 @@ bool ValueIndexRangeProbe::nextImpl(store::Item_t& result, PlanState& planState)
   ZORBA_ASSERT(status);
 
   tempUri = uri->getStringValueP();
-  if (state->theUri == NULL || !state->theUri->equals(tempUri)) {
+  if (state->theUri == NULL || !state->theUri->equals(tempUri)) 
+  {
     state->theUri = tempUri;
-    state->theIndex = GENV_STORE.getIndex(state->theUri);
+    state->theIndex = planState.dctx()->lookup_index(state->theUri->str());
     ZORBA_ASSERT(state->theIndex != NULL);
     state->theIterator = GENV_STORE.getIteratorFactory()->createIndexProbeIterator(state->theIndex);
   }
@@ -148,7 +152,8 @@ bool ValueIndexRangeProbe::nextImpl(store::Item_t& result, PlanState& planState)
 
   state->theIterator->init((const zorba::store::IndexBoxCondition_t&)cond);
   state->theIterator->open();
-  while(state->theIterator->next(result)) {
+  while(state->theIterator->next(result)) 
+  {
     STACK_PUSH(true, state);
   }
   STACK_END(state);

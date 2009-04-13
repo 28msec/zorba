@@ -78,11 +78,9 @@ class DirElemContentList;
 class DirPIConstructor;
 class DocumentTest;
 class ElementTest;
-class EmptyOrderDecl;
 class EnclosedExpr;
 class Expr;
 class ExtensionExpr;
-class FLWORExpr;
 class FTAnd;
 class FTAnyallOption;
 class FTBigUnit;
@@ -141,6 +139,7 @@ class NodeComp;
 class NumericLiteral;
 class OccurrenceIndicator;
 class OptionDecl;
+class OrderingModeDecl;
 class OrExpr;
 
 class FLWORExpr;
@@ -162,14 +161,18 @@ class GroupSpecList;
 class GroupSpec;
 class GroupCollationSpec;
 class OrderByClause;
+class OrderSpecList;
+class OrderSpec;
+class OrderModifier;
 class OrderCollationSpec;
 class OrderDirSpec;
 class OrderEmptySpec;
-class OrderModifier;
-class OrderSpec;
-class OrderSpecList;
-class OrderedExpr;
-class OrderingModeDecl;
+class EmptyOrderDecl;
+class WindowClause;
+class WindowVarDecl;
+class FLWORWinCond;
+class WindowVars;
+class CountClause;
 
 class PITest;
 class Param;
@@ -214,7 +217,6 @@ class ValueComp;
 class VarBinding;
 class VarDecl;
 class VarNameList;
-class WhereClause;
 class Wildcard;
 
 
@@ -930,7 +932,9 @@ public:
 	rchandle<SequenceType> get_typedecl() const { return typedecl_h; }
 };
 
-class VarDeclWithInit : public VarDeclBase {
+
+class VarDeclWithInit : public VarDeclBase 
+{
 protected:
 	rchandle<exprnode> initexpr_h;
 
@@ -942,7 +946,9 @@ public:
 	rchandle<exprnode> get_initexpr() const { return initexpr_h; }
 };
 
-class CtxItemDecl : public parsenode {
+
+class CtxItemDecl : public parsenode 
+{
   rchandle<exprnode> expr;
 
 public:
@@ -1562,8 +1568,8 @@ public:
 
 
 /*******************************************************************************
-  LetClause ::= LET_DOLLAR VarGetsDeclList |
-                LET_SCORE_DOLLAR VarGetsDeclList
+  LetClause ::= "let" "$" VarGetsDeclList |
+                "let" "score $" VarGetsDeclList
 ********************************************************************************/
 class LetClause : public ForOrLetClause
 {
@@ -1585,7 +1591,7 @@ public:
 
 /*******************************************************************************
   VarGetsDeclList ::= VarGetsDecl |
-                      VarGetsDeclList  COMMA  DOLLAR  VarGetsDecl
+                      VarGetsDeclList ","  "$"  VarGetsDecl
 ********************************************************************************/
 class VarGetsDeclList : public parsenode
 {
@@ -1606,10 +1612,8 @@ public:
 
 
 /*******************************************************************************
-  VarGetsDecl	::= VARNAME  GETS  ExprSingle |
-                  VARNAME  TypeDeclaration  GETS  ExprSingle |
-                  VARNAME  FTScoreVar  GETS  ExprSingle |
-                  VARNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
+  VarGetsDecl	::= VarName TypeDeclaration? ":=" ExprSingle |
+                  VarName TypeDeclaration? FTScoreVar ":=" ExprSingle
 
   Note: This ast node also represents EVAL external vars
 ********************************************************************************/
@@ -1665,7 +1669,7 @@ public:
 
 
 /*******************************************************************************
-  WhereClause ::= WHERE  ExprSingle
+  WhereClause ::= "where"  ExprSingle
 ********************************************************************************/
 class WhereClause : public FLWORClause
 {
@@ -1682,7 +1686,7 @@ public:
 
 
 /*******************************************************************************
-  GroupByClause ::= GROUP BY GroupSpecList
+  GroupByClause ::= "group" "by" GroupingSpecList
 ********************************************************************************/
 class GroupByClause : public FLWORClause
 {
@@ -1704,7 +1708,7 @@ public:
 
 
 /*******************************************************************************
-  GroupSpecList ::= GroupSpec | GroupSpecList COMMA GroupSpec
+  GroupSpecList ::= 	GroupingSpec ("," GroupingSpec)*
 ********************************************************************************/
 class GroupSpecList : public parsenode
 {
@@ -1725,7 +1729,7 @@ public:
 
 
 /*******************************************************************************
-  GroupSpec ::= QNAME (COLLATION UriLiteral)?
+  GroupSpec ::= "$" VarName ("collation" URILiteral)?
 ********************************************************************************/
 class GroupSpec : public parsenode
 {
@@ -1764,7 +1768,163 @@ public:
 };
 
 
+/*******************************************************************************
+  OrderByClause ::= (("order" "by") | ("stable" "order" "by")) OrderSpecList
+********************************************************************************/
+class OrderByClause : public FLWORClause
+{
+protected:
+	rchandle<OrderSpecList> spec_list_h;
+	bool stable_b;
+  const FLWORExpr *flwor;
+		
+public:
+	OrderByClause(
+		const QueryLoc&,
+		rchandle<OrderSpecList>,
+		bool stable_b = false);
 
+	rchandle<OrderSpecList> get_spec_list() const { return spec_list_h; }
+
+	bool get_stable_bit() const { return stable_b; }
+
+  const FLWORExpr *get_flwor () const { return flwor; }
+
+  void set_flwor (const FLWORExpr* flwor_) { flwor = flwor_; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  OrderSpecList ::= 	OrderSpec ("," OrderSpec)*
+********************************************************************************/
+class OrderSpecList : public parsenode
+{
+protected:
+	std::vector<rchandle<OrderSpec> > spec_hv;
+
+public:
+	OrderSpecList(const QueryLoc&);
+
+	void push_back(rchandle<OrderSpec> spec_h) { spec_hv.push_back(spec_h); }
+
+	rchandle<OrderSpec> operator[](int i) const { return spec_hv[i]; }
+
+  size_t size () const { return spec_hv.size (); }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  OrderSpec ::= 	ExprSingle OrderModifier
+********************************************************************************/
+class OrderSpec : public parsenode
+{
+protected:
+	rchandle<exprnode> spec_h;
+	rchandle<OrderModifier> modifier_h;
+
+public:
+	OrderSpec(
+		    const QueryLoc&,
+        rchandle<exprnode>,
+        rchandle<OrderModifier>);
+
+	rchandle<exprnode> get_spec() const { return spec_h; }
+	rchandle<OrderModifier> get_modifier() const { return modifier_h; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  OrderModifier ::= OrderDirSpec? OrderEmptySpec? OrderCollationSpec?
+********************************************************************************/
+class OrderModifier : public parsenode
+{
+protected:
+	rchandle<OrderDirSpec> dir_spec_h;
+	rchandle<OrderEmptySpec> empty_spec_h;
+	rchandle<OrderCollationSpec> collation_spec_h;
+
+public:
+	OrderModifier(
+		    const QueryLoc&,
+        rchandle<OrderDirSpec>,
+        rchandle<OrderEmptySpec>,
+        rchandle<OrderCollationSpec>);
+
+	rchandle<OrderDirSpec> get_dir_spec() const	{ return dir_spec_h; }
+
+	rchandle<OrderEmptySpec> get_empty_spec() const	{ return empty_spec_h; }
+
+	rchandle<OrderCollationSpec> get_collation_spec() const { return collation_spec_h; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  OrderDirSpec ::= "ascending" | "descending"
+********************************************************************************/
+class OrderDirSpec : public parsenode
+{
+protected:
+  ParseConstants::dir_spec_t dir_spec;
+
+public:
+	OrderDirSpec(const QueryLoc&, ParseConstants::dir_spec_t dir_spec);
+	
+  ParseConstants::dir_spec_t get_dir_spec() const { return dir_spec; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  OrderEmptySpec ::= "empty" ("greatest" | "least")
+********************************************************************************/
+class OrderEmptySpec : public parsenode
+{
+protected:
+	StaticContextConsts::order_empty_mode_t empty_order_spec;
+
+public:
+	OrderEmptySpec(
+        const QueryLoc&,
+        StaticContextConsts::order_empty_mode_t empty_order_spec);
+
+	StaticContextConsts::order_empty_mode_t get_empty_order_spec() const
+  {
+    return empty_order_spec;
+  }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  OrderCollationSpec ::= "collation" URILiteral
+********************************************************************************/
+class OrderCollationSpec : public parsenode
+{
+protected:
+	std::string uri;
+
+public:
+	OrderCollationSpec(const QueryLoc&, std::string const& uri);
+
+	std::string get_uri() const { return uri; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  ReturnExpr ::= "return" ExprSingle
+********************************************************************************/
 class ReturnExpr: public exprnode
 {
   protected:
@@ -1777,68 +1937,15 @@ class ReturnExpr: public exprnode
 };
 
 
-class WindowVars : public parsenode 
-{
-  rchandle<PositionalVar> posvar;
-  std::string curr, prev, next;
+/*******************************************************************************
+  WindowClause ::= "for" (TumblingWindowClause | SlidingWindowClause)
 
-public:
-  WindowVars (const QueryLoc& loc_, rchandle<PositionalVar> posvar_, std::string curr_, std::string prev_, std::string next_)
-    : parsenode (loc_), posvar (posvar_), curr (curr_), prev (prev_), next (next_)
-  {}
-  rchandle<PositionalVar> get_posvar () const { return posvar; }
-  std::string get_curr () const { return curr; }
-  std::string get_prev () const { return prev; }
-  std::string get_next () const { return next; }
+  TumblingWindowClause ::= "tumbling" "window" "$" VarName TypeDeclaration? "in"
+                           ExprSingle WindowStartCondition WindowEndCondition?
 
-  void set_curr (std::string curr_) { curr = curr_; }
-  void set_posvar (rchandle<PositionalVar> posvar_) { posvar = posvar_; }
-
-public:
-	void accept(parsenode_visitor&) const;
-};
-
-
-class FLWORWinCond : public parsenode 
-{
-  rchandle<WindowVars> winvars;
-  rchandle<exprnode> val;
-
-  bool isStart;
-  bool isOnly;  // only when isStart == false
-
-public:
-  FLWORWinCond (const QueryLoc& loc_, rchandle<WindowVars> winvars_, rchandle<exprnode> val_, bool isStart_, bool isOnly_ = false)
-    : parsenode (loc_), winvars (winvars_), val (val_), isStart (isStart_), isOnly (isOnly_)
-  {}
-  rchandle<WindowVars> get_winvars () const { return winvars; }
-  rchandle<exprnode> get_val () const { return val; }
-  bool is_start () const { return isStart; }
-  bool is_only () const { return isOnly; }
-
-public:
-	void accept(parsenode_visitor&) const;
-};
-
-
-class WindowVarDecl : public VarDeclWithInit 
-{
-public:
-  WindowVarDecl (
-        const QueryLoc& loc_,
-        std::string varname_,
-        rchandle<SequenceType> td_,
-        rchandle<exprnode> init_)
-    :
-    VarDeclWithInit (loc_, varname_, td_, init_)
-  {
-  }
-
-public:
-	void accept(parsenode_visitor&) const;
-};
-
-
+  SlidingWindowClause ::= "sliding" "window" "$" VarName TypeDeclaration? "in"
+                          ExprSingle WindowStartCondition WindowEndCondition
+********************************************************************************/
 class WindowClause : public FLWORInitialClause 
 {
 public:
@@ -1867,6 +1974,95 @@ public:
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
+class WindowVarDecl : public VarDeclWithInit 
+{
+public:
+  WindowVarDecl (
+        const QueryLoc& loc_,
+        std::string varname_,
+        rchandle<SequenceType> td_,
+        rchandle<exprnode> init_)
+    :
+    VarDeclWithInit (loc_, varname_, td_, init_)
+  {
+  }
+
+public:
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  WindowStartCondition ::= "start" WindowVars "when" ExprSingle
+
+  WindowEndCondition ::= "only"? "end" WindowVars "when" ExprSingle
+********************************************************************************/
+class FLWORWinCond : public parsenode 
+{
+  rchandle<WindowVars> winvars;
+  rchandle<exprnode> val;
+
+  bool isStart;
+  bool isOnly;  // only when isStart == false
+
+public:
+  FLWORWinCond (const QueryLoc& loc_, rchandle<WindowVars> winvars_, rchandle<exprnode> val_, bool isStart_, bool isOnly_ = false)
+    : parsenode (loc_), winvars (winvars_), val (val_), isStart (isStart_), isOnly (isOnly_)
+  {}
+  rchandle<WindowVars> get_winvars () const { return winvars; }
+  rchandle<exprnode> get_val () const { return val; }
+  bool is_start () const { return isStart; }
+  bool is_only () const { return isOnly; }
+
+public:
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  WindowVars ::= ("$" CurrentItem)? PositionalVar?
+                 ("previous" "$" PreviousItem)?
+                 ("next" "$" NextItem)?
+********************************************************************************/
+class WindowVars : public parsenode 
+{
+  rchandle<PositionalVar> posvar;
+  std::string curr, prev, next;
+
+public:
+  WindowVars(
+        const QueryLoc& loc_,
+        rchandle<PositionalVar> posvar_,
+        std::string curr_,
+        std::string prev_,
+        std::string next_)
+    : 
+    parsenode (loc_),
+    posvar (posvar_),
+    curr (curr_),
+    prev (prev_),
+    next (next_)
+  {
+  }
+
+  rchandle<PositionalVar> get_posvar () const { return posvar; }
+  std::string get_curr () const { return curr; }
+  std::string get_prev () const { return prev; }
+  std::string get_next () const { return next; }
+
+  void set_curr (std::string curr_) { curr = curr_; }
+  void set_posvar (rchandle<PositionalVar> posvar_) { posvar = posvar_; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
 class CountClause : public FLWORClause
 {
   std::string varname;
@@ -1882,205 +2078,10 @@ public:
 };
 
 
-// [38] OrderByClause
-// ------------------
-class OrderByClause : public FLWORClause
-{
-protected:
-	rchandle<OrderSpecList> spec_list_h;
-	bool stable_b;
-  const FLWORExpr *flwor;
-		
-public:
-	OrderByClause(
-		const QueryLoc&,
-		rchandle<OrderSpecList>,
-		bool stable_b = false);
 
-public:
-	rchandle<OrderSpecList> get_spec_list() const { return spec_list_h; }
-	bool get_stable_bit() const { return stable_b; }
+/*******************************************************************************
 
-  const FLWORExpr *get_flwor () const { return flwor; }
-  void set_flwor (const FLWORExpr *flwor_) { flwor = flwor_; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [39] OrderSpecList
-// ------------------
-class OrderSpecList : public parsenode
-/*______________________________________________________________________
-|
-|	::= OrderSpec
-|			|	OrderSpecList  COMMA  OrderSpec
-|_______________________________________________________________________*/
-{
-protected:
-	std::vector<rchandle<OrderSpec> > spec_hv;
-
-public:
-	OrderSpecList(const QueryLoc&);
-
-public:
-	void push_back(rchandle<OrderSpec> spec_h) { spec_hv.push_back(spec_h); }
-	rchandle<OrderSpec> operator[](int i) const { return spec_hv[i]; }
-  size_t size () const { return spec_hv.size (); }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [40] OrderSpec
-// --------------
-class OrderSpec : public parsenode
-/*______________________________________________________________________
-|
-|	::= ExprSingle
-|			|	ExprSingle OrderModifier
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<exprnode> spec_h;
-	rchandle<OrderModifier> modifier_h;
-
-public:
-	OrderSpec(
-		const QueryLoc&,
-		rchandle<exprnode>,
-		rchandle<OrderModifier>);
-
-public:
-	rchandle<exprnode> get_spec() const { return spec_h; }
-	rchandle<OrderModifier> get_modifier() const { return modifier_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [41] OrderModifier
-// ------------------
-class OrderModifier : public parsenode
-/*______________________________________________________________________
-|
-|	::= OrderDirSpec
-|			|	OrderEmptySpec
-|			|	OrderCollationSpec
-|			|	OrderDirSpec  OrderEmptySpec
-|			|	OrderDirSpec  OrderCollationSpec
-|			|	OrderEmptySpec  OrderCollationSpec
-|			|	OrderDirSpec  OrderEmptySpec  OrderCollationSpec
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<OrderDirSpec> dir_spec_h;
-	rchandle<OrderEmptySpec> empty_spec_h;
-	rchandle<OrderCollationSpec> collation_spec_h;
-
-public:
-	OrderModifier(
-		const QueryLoc&,
-		rchandle<OrderDirSpec>,
-		rchandle<OrderEmptySpec>,
-		rchandle<OrderCollationSpec>);
-
-public:
-	rchandle<OrderDirSpec> get_dir_spec() const
-		{ return dir_spec_h; }
-	rchandle<OrderEmptySpec> get_empty_spec() const
-		{ return empty_spec_h; }
-	rchandle<OrderCollationSpec> get_collation_spec() const
-		{ return collation_spec_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [41a] OrderDirSpec
-// ------------------
-class OrderDirSpec : public parsenode
-/*______________________________________________________________________
-|
-|	::= ASCENDING  |  DESCENDING
-|_______________________________________________________________________*/
-{
-protected:
-  ParseConstants::dir_spec_t dir_spec;
-
-public:
-	OrderDirSpec(
-		const QueryLoc&,
-		ParseConstants::dir_spec_t dir_spec);
-	
-public:
-  ParseConstants::dir_spec_t get_dir_spec() const { return dir_spec; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [41b] OrderEmptySpec
-// --------------------
-class OrderEmptySpec : public parsenode
-/*______________________________________________________________________
-|
-|	::= EMPTY_GREATEST  |  EMPTY_LEAST
-|_______________________________________________________________________*/
-{
-protected:
-	StaticContextConsts::order_empty_mode_t empty_order_spec;
-
-public:
-	OrderEmptySpec(
-		const QueryLoc&,
-		StaticContextConsts::order_empty_mode_t empty_order_spec);
-
-public:
-	StaticContextConsts::order_empty_mode_t get_empty_order_spec() const
-		{ return empty_order_spec; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [41c] OrderCollationSpec
-// ------------------------
-class OrderCollationSpec : public parsenode
-/*______________________________________________________________________
-|
-|	::= COLLATION  URI_LITERAL
-|_______________________________________________________________________*/
-{
-protected:
-	std::string uri;
-
-public:
-	OrderCollationSpec(
-		const QueryLoc&,
-		std::string const& uri);
-
-public:
-	std::string get_uri() const { return uri; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
+********************************************************************************/
 // [42b] QVarInDecl
 // ----------------
 class QVarInDecl : public parsenode

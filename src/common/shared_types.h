@@ -23,39 +23,46 @@
 namespace zorba 
 {
 
-  namespace error 
-  {
-    class ErrorManager;
-    class ZorbaError;
-  }
+namespace error 
+{
+  class ErrorManager;
+  class ZorbaError;
+}
   
-  namespace types 
-  {
-    class TypeIdentifier; 
-  };
+namespace types 
+{
+  class TypeIdentifier; 
+};
+
 
 class TypeManager;
+class XQType;
+class NodeNameTest;
+
 class CollationCache;
+class XQPCollator;
 
 class QueryLoc;
-class XQType;
+
 class namespace_context;
 class function;
 class user_function;
 class ItemIterator;
-class PlanIterator;
-class PlanState;
+
+class CompilerCB;
 class XQueryCompiler;
 class XQueryCompilerSubsystem;
 class Rewriter;
 class RewriterContext;
-class NodeNameTest;
 
 class context;
 class static_context;
 class dynamic_context;
-class CompilerCB;
+
 class PlanWrapper;
+class PlanIterator;
+class PlanState;
+class ValueIndexInsertSession;
 
 // Parsenodes
 class parsenode; class exprnode;
@@ -63,7 +70,6 @@ class parsenode; class exprnode;
 // Expression nodes
 class expr; class var_expr;
 
-class XQPCollator;
 class ItemVariableIterator;
 typedef rchandle<ItemVariableIterator> ItemVariableIterator_t;
 
@@ -79,6 +85,7 @@ typedef rchandle<CompilerCB> CompilerCB_t;
 typedef rchandle<PlanWrapper> PlanWrapper_t;
 typedef rchandle<PlanIterator> PlanIterator_t;
 typedef rchandle<ItemIterator> ItemIterator_t;
+typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
 
 /* datetime stuff */
 class DateTime;

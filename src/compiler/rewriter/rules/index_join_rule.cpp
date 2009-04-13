@@ -25,7 +25,9 @@ struct PredicateInfo;
 
 static bool isIndexJoinPredicate(RewriterContext&, PredicateInfo&);
 
-static void rewriteJoin(RewriterContext& rCtx, PredicateInfo&);
+static void rewriteJoin(RewriterContext&, PredicateInfo&);
+
+static void expandExprVars(RewriterContext& rCtx, expr*, int);
 
 static bool isAndExpr(expr* e);
 
@@ -36,6 +38,7 @@ struct PredicateInfo
   expr       * thePredicate;
   expr       * theOuterOp;
   var_expr   * theOuterVar;
+  int          theOuterVarId;
   expr       * theInnerOp;
   var_expr   * theInnerVar;
 };
@@ -171,8 +174,9 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     if (var1id < var2id)
     {
       predInfo.theOuterOp = op1.getp();
-      predInfo.theInnerOp = op2.getp();
       predInfo.theOuterVar = (*rCtx.m_idvar_map)[var1id];
+      predInfo.theOuterVarId = var1id;
+      predInfo.theInnerOp = op2.getp();
       predInfo.theInnerVar = (*rCtx.m_idvar_map)[var2id];
       outerVarId = var1id;
       innerVarId = var2id;
@@ -180,8 +184,9 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     else
     {
       predInfo.theOuterOp = op2.getp();
-      predInfo.theInnerOp = op1.getp();
       predInfo.theOuterVar = (*rCtx.m_idvar_map)[var2id];
+      predInfo.theOuterVarId = var2id;
+      predInfo.theInnerOp = op1.getp();
       predInfo.theInnerVar = (*rCtx.m_idvar_map)[var1id]; 
       outerVarId = var2id;
       innerVarId = var1id;
@@ -215,9 +220,14 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
 ********************************************************************************/
 static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 {
-  std::cout << "Found Join Index Predicate" << std::endl << std::endl;
+  //std::cout << "Found Join Index Predicate" << std::endl << std::endl;
 
   const QueryLoc& loc = predInfo.thePredicate->get_loc();
+
+  // The index domain expr is the expr that defines the inner var, expanded so that
+  // it does not reference any variables defined after the outer var.
+  expr* innerVarExpr = predInfo.theInnerVar->get_forlet_clause()->get_expr();
+  expandExprVars(rCtx, innerVarExpr, predInfo.theOuterVarId);
 
   //
   // Create the ValueIndex obj
@@ -229,23 +239,29 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   ValueIndex_t idx = new ValueIndex(rCtx.m_sctx, uri.getStore());
 
-  idx->setDomainExpression(predInfo.theInnerVar->get_forlet_clause()->get_expr());
+  idx->setDomainExpression(innerVarExpr);
 
   idx->setDomainVariable(rCtx.createTempVar(loc, var_expr::for_var));
 
   idx->setDomainPositionVariable(rCtx.createTempVar(loc, var_expr::pos_var));
 
+  idx->setTemp(true);
+
   std::vector<expr_t> columnExprs(1);
   std::vector<xqtref_t> columnTypes(1);
+  std::vector<std::string> collations(1);
 
   columnExprs[0] = predInfo.theInnerOp;
   columnTypes[0] = predInfo.theInnerOp->return_type(rCtx.m_sctx);
+  collations[0] = rCtx.m_sctx->default_collation_uri().c_str();
 
   replace_var(columnExprs[0], predInfo.theInnerVar, idx->getDomainVariable());
 
   idx->setIndexFieldExpressions(columnExprs);
 
   idx->setIndexFieldTypes(columnTypes);
+
+  idx->setIndexFieldCollations(collations);
 
   rCtx.m_sctx->bind_index(uri, idx.getp());
 
@@ -301,7 +317,6 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   rchandle<fo_expr> createExpr;
   rchandle<fo_expr> buildExpr;
-  rchandle<fo_expr> dropExpr;
 
   createExpr = new fo_expr(loc, LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
                                                    "create-index",
@@ -313,11 +328,6 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
                                                   1));
   buildExpr->add(uriExpr);
 
-  dropExpr = new fo_expr(loc, LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
-                                                 "drop-index",
-                                                 1));
-  dropExpr->add(uriExpr);
-
   //
   //  Build or adjust outer sequential expr 
   //
@@ -328,7 +338,6 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
     foExpr->add(createExpr);
     foExpr->add(buildExpr);
     foExpr->add(outerFlworExpr);
-    foExpr->add(dropExpr);
 
     outerSeqExpr = foExpr;
     rCtx.m_flwor_exprs[outerExprPos] = outerSeqExpr;
@@ -339,7 +348,6 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
     foExpr->addFront(createExpr);
     foExpr->addFront(buildExpr);
-    foExpr->add(dropExpr);
   }
 
   //
@@ -354,6 +362,42 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   forlet_clause* flclause = predInfo.theInnerVar->get_forlet_clause();
   flclause->set_expr(probeExpr.getp());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+static void expandExprVars(
+    RewriterContext& rCtx,
+    expr* subExpr,
+    int outerVarId)
+{
+  if (subExpr->get_expr_kind() == wrapper_expr_kind)
+  {
+    wrapper_expr* wrapper = reinterpret_cast<wrapper_expr*>(subExpr);
+
+    if (wrapper->get_expr()->get_expr_kind() == var_expr_kind)
+    {
+      var_expr* var = reinterpret_cast<var_expr*>(wrapper->get_expr().getp());
+      int varid = (*rCtx.m_varid_map)[var];
+
+      if (varid > outerVarId)
+      {
+        wrapper->set_expr(var->get_forlet_clause()->get_expr());
+        expandExprVars(rCtx, wrapper->get_expr(), outerVarId);
+        return;
+      }
+    }
+  }
+  
+  expr_iterator iter = subExpr->expr_begin();
+  while (!iter.done())
+  {
+    expandExprVars(rCtx, *iter, outerVarId);
+    ++iter;
+  }
+
 }
 
 

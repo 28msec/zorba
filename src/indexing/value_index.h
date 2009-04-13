@@ -55,14 +55,15 @@ public:
     BTREE
   } index_method_t;
 private:
-  static_context *m_static_context;
-  xqpStringStore_t m_index_uri;
-  bool m_unique;
-  index_method_t m_method;
-  expr_t m_domain_expr;
-  var_expr_t m_domain_var;
-  var_expr_t m_domain_pos_var;
-  std::vector<expr_t> m_index_field_exprs;
+  static_context      * m_static_context;
+  xqpStringStore_t      m_index_uri;
+  bool                  m_unique;
+  bool                  m_temp;
+  index_method_t        m_method;
+  expr_t                m_domain_expr;
+  var_expr_t            m_domain_var;
+  var_expr_t            m_domain_pos_var;
+  std::vector<expr_t>   m_index_field_exprs;
   std::vector<xqtref_t> m_index_field_types;
   std::vector<std::string> m_index_field_collations;
 
@@ -70,7 +71,10 @@ public:
   ValueIndex(static_context* sCtx, xqpStringStore_t indexUri)
     :
     m_static_context(sCtx),
-    m_index_uri(indexUri) 
+    m_index_uri(indexUri),
+    m_unique(false),
+    m_temp(false),
+    m_method(HASH)
   { 
   }
 
@@ -82,6 +86,9 @@ public:
 
   bool getUnique() const { return m_unique; }
   void setUnique(bool unique) { m_unique = unique; }
+
+  bool getTemp() const { return m_temp; }
+  void setTemp(bool tmp) { m_temp = tmp; }
 
   index_method_t getMethod() const { return m_method; }
   void setMethod(index_method_t method) { m_method = method; }
@@ -131,8 +138,6 @@ public:
   {
     m_index_field_collations = indexFieldCollations;
   }
-
-  ValueIndexInsertSession_t createBulkInsertSession();
 };
 
 typedef rchandle<ValueIndex> ValueIndex_t;
@@ -144,14 +149,11 @@ typedef rchandle<ValueIndex> ValueIndex_t;
 class ValueIndexInsertSession : public SimpleRCObject 
 {
 private:
-  ValueIndex_t m_vi;
-
   store::IndexEntryReceiver_t m_bulkInsertSession;
 
 public:
-  ValueIndexInsertSession(ValueIndex_t vi, store::IndexEntryReceiver_t receiver)
+  ValueIndexInsertSession(store::IndexEntryReceiver_t receiver)
     :
-    m_vi(vi),
     m_bulkInsertSession(receiver) { }
 
   void commitBulkInsertSession();
