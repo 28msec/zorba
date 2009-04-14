@@ -187,7 +187,7 @@ String::endsWith(const char* pattern) const
 const String&
 String::append(const char* suffix)
 {
-  xqpStringStore* res = m_string->append( suffix );
+  xqpStringStore_t res = m_string->append( suffix );
   if (m_string != res) {
     if (m_string != NULL) {
       RCHelper::removeReference(m_string);
@@ -203,7 +203,7 @@ String::append(const char* suffix)
 const String&
 String::uppercase()
 {
-  xqpStringStore* res = m_string->uppercase();
+  xqpStringStore_t res = m_string->uppercase();
   if (m_string != res) {
     if (m_string != NULL) {
       RCHelper::removeReference(m_string);
@@ -219,7 +219,7 @@ String::uppercase()
 const String&
 String::lowercase()
 {
-  xqpStringStore* res = m_string->lowercase();
+  xqpStringStore_t res = m_string->lowercase();
   if (m_string != res) {
     if (m_string != NULL) {
       RCHelper::removeReference(m_string);
@@ -235,7 +235,7 @@ String::lowercase()
 const String&
 String::normalizeSpace()
 {
-  xqpStringStore* res = m_string->normalizeSpace();
+  xqpStringStore_t res = m_string->normalizeSpace();
   if (m_string != res) {
     if (m_string != NULL) {
       RCHelper::removeReference(m_string);
@@ -251,7 +251,7 @@ String::normalizeSpace()
 const String&
 String::trim(const char* start, int len)
 {
-  xqpStringStore* res = m_string->trim(start, len);
+  xqpStringStore_t res = m_string->trim(start, len);
   if (m_string != res) {
     if (m_string != NULL) {
       RCHelper::removeReference(m_string);
@@ -267,7 +267,7 @@ String::trim(const char* start, int len)
 const String&
 String::trim()
 {
-  xqpStringStore* res = m_string->trim();
+  xqpStringStore_t res = m_string->trim();
   if (m_string != res) {
     if (m_string != NULL) {
       RCHelper::removeReference(m_string);
@@ -283,7 +283,7 @@ String::trim()
 const String&
 String::formatAsXML()
 {
-  xqpStringStore* res = m_string->formatAsXML();
+  xqpStringStore_t res = m_string->formatAsXML();
   if (m_string != res) {
     if (m_string != NULL) {
       RCHelper::removeReference(m_string);
@@ -299,7 +299,7 @@ String::formatAsXML()
 const String&
 String::escapeHtmlUri()
 {
-  xqpStringStore* res = m_string->escapeHtmlUri();
+  xqpStringStore_t res = m_string->escapeHtmlUri();
   if (m_string != res) {
     if (m_string != NULL) {
       RCHelper::removeReference(m_string);
