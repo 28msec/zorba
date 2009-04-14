@@ -158,6 +158,9 @@ HashIndex::~HashIndex()
  
   for (; ite != end; ++ite)
   {
+    //std::cout << "Index Entry Delete [" << (*ite).first << "," 
+    //          << (*ite).second << "]" << std::endl;
+
     delete (*ite).first;
     delete (*ite).second;
   }
@@ -182,6 +185,7 @@ bool HashIndex::insert(store::IndexKey& key, store::Item_t& value)
   {
     valueSet->resize(valueSet->size() + 1);
     (*valueSet)[valueSet->size()-1].transfer(value);
+    return true;
   }
 
   store::IndexKey* keycopy = new store::IndexKey(key.size());
@@ -193,6 +197,10 @@ bool HashIndex::insert(store::IndexKey& key, store::Item_t& value)
   (*valueSet)[0].transfer(value);
   
   const store::IndexKey* constkey = keycopy;
+
+  //  std::cout << "Index Entry Insert [" << constkey << "," 
+  //          << valueSet << "]" << std::endl;
+
   theMap.insert(constkey, valueSet);
 
   return false;
