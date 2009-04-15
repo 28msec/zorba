@@ -224,6 +224,24 @@ ZORBA_THREAD_RETURN server(void* args)
 }
 #endif
 
+std::vector<std::string>
+tokenize(const std::string& str, const std::string& delimiters)
+{
+  std::vector<std::string> tokens;
+      
+  std::string::size_type lastPos = str.find_first_not_of(delimiters, 0);
+      
+  std::string::size_type pos = str.find_first_of(delimiters, lastPos);
+
+  while (std::string::npos != pos || std::string::npos != lastPos) {
+      tokens.push_back(str.substr(lastPos, pos - lastPos));
+      lastPos = str.find_first_not_of(delimiters, pos);
+      pos = str.find_first_of(delimiters, lastPos);
+  }
+
+  return tokens;
+}
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  Main                                                                       //
@@ -353,7 +371,17 @@ int _tmain(int argc, _TCHAR* argv[])
           // doc function doc("mydoc.xml") work
           zorba::filesystem_path p;
           std::stringstream lTmp;
-          lTmp << "file:///" << p.c_str() << "/";
+#ifdef WIN32
+          std::vector<std::string> lTokens = tokenize(p.c_str(), "\\");
+#else
+          std::vector<std::string> lTokens = tokenize(p.c_str(), "/");
+#endif
+          lTmp << "file:///";
+          for (std::vector<std::string>::const_iterator lIter = lTokens.begin();
+               lIter != lTokens.end(); ++lIter) {
+            zorba::String lTmpString(*lIter);
+            lTmp << "/" << lTmpString.encodeForUri();
+          }
           lStaticContext->setBaseURI(lTmp.str());
         }
         lQuery->parse (*qfile);
@@ -499,7 +527,17 @@ int _tmain(int argc, _TCHAR* argv[])
           // doc function doc("mydoc.xml") work
           zorba::filesystem_path p;
           std::stringstream lTmp;
-          lTmp << "file:///" << p.c_str() << "/";
+#ifdef WIN32
+          std::vector<std::string> lTokens = tokenize(p.c_str(), "\\");
+#else
+          std::vector<std::string> lTokens = tokenize(p.c_str(), "/");
+#endif
+          lTmp << "file:///";
+          for (std::vector<std::string>::const_iterator lIter = lTokens.begin();
+               lIter != lTokens.end(); ++lIter) {
+            zorba::String lTmpString(*lIter);
+            lTmp << "/" << lTmpString.encodeForUri();
+          }
           lStaticContext->setBaseURI(lTmp.str());
         }
         lQuery->compile (*qfile, lStaticContext, lHints);

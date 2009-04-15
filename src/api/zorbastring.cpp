@@ -315,7 +315,7 @@ String::escapeHtmlUri()
 const String&
 String::iriToUri()
 {
-  xqpStringStore* res = m_string->iriToUri();
+  xqpStringStore_t res = m_string->iriToUri();
   if (m_string != res) {
     if (m_string != NULL) {
       RCHelper::removeReference(m_string);
@@ -331,7 +331,7 @@ String::iriToUri()
 const String&
 String::encodeForUri()
 {
-  xqpStringStore* res = m_string->encodeForUri();
+  xqpStringStore_t res = m_string->encodeForUri();
   if (m_string != res) {
     if (m_string != NULL) {
       RCHelper::removeReference(m_string);
