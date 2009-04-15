@@ -5,6 +5,9 @@
 #include "zorbaserialization/class_serializer.h"
 
 namespace zorba{
+namespace store{
+class Item;
+}
 
   namespace serialization{
 
@@ -83,6 +86,7 @@ enum ArchiveFieldTreat
   ARCHIVE_FIELD_IS_REFERENCING
 };
 
+
 //base class
 class Archiver
 {
@@ -106,6 +110,11 @@ protected:
 
   int   nr_ids;
   int   current_class_version;
+
+  bool  read_optional;
+  int   is_temp_field;
+
+  std::vector<store::Item*>   registered_items;
 public:
   Archiver(bool is_serializing_out);
   virtual ~Archiver();
@@ -193,10 +202,12 @@ public:
                                   enum ArchiveFieldTreat  field_treat,
                                   enum ArchiveFieldTreat  required_field_treat,
                                   int id);
-  void register_reference(int id, void *ptr);
+  void register_reference(int id, enum ArchiveFieldTreat field_treat, void *ptr);
   void register_delay_reference(void **ptr, bool is_class, const char *class_name, int referencing);
-  int Archiver::get_class_version();
-  void Archiver::set_class_version(int new_class_version);
+  void register_item(store::Item* i);
+
+  int get_class_version();
+  void set_class_version(int new_class_version);
 
 
   //to help check class name at runtime
@@ -222,6 +233,19 @@ public:
   void *get_reference_value(int refid);
   void finalize_input_serialization();
 
+  void set_read_optional_field(bool activate_optional)
+  {
+    this->read_optional = activate_optional;
+  }
+  bool get_read_optional_field() { return this->read_optional; }
+  void set_is_temp_field(bool is_temp)
+  {
+    if(is_temp)
+      this->is_temp_field++;
+    else
+      this->is_temp_field--;
+  }
+  bool get_is_temp_field() { return (this->is_temp_field > 0); }
 
 };
 

@@ -4,13 +4,22 @@
 
 #include "zorbaserialization/class_serializer.h"
 #include "zorbaserialization/archiver.h"
-#include "zorbaerrors/error_manager.h"
+//#include "zorbaerrors/error_manager.h"
 
 namespace zorba{
   namespace serialization{
 /////////////////////////////templates
 
-template<class T>
+#define ZORBA_SER_ERROR_DESC_OSS(code, desc)                            \
+  do                                                                    \
+  {                                                                     \
+    std::ostringstream lOStringStream;                                  \
+    lOStringStream << desc;                                             \
+    ::zorba::serialization::report_error(code, lOStringStream.str(),                            \
+                 __FILE__, __LINE__);                                   \
+  }while(0);
+
+template<typename T>
 void operator&(Archiver &ar, std::list<T> &obj)
 {
   if(ar.is_serializing_out())
@@ -41,12 +50,14 @@ void operator&(Archiver &ar, std::list<T> &obj)
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
     ar.check_nonclass_field(retval, type, "std::list<T>", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
-    ar.register_reference(id, &obj);
+    ar.register_reference(id, field_treat, &obj);
 
     int i;
     int size;
-    sscanf(value, "%d", &size);
+    sscanf(value.c_str(), "%d", &size);
     obj.resize(size);
     std::list<T>::iterator  it;
     for(it=obj.begin(); it != obj.end(); it++)
@@ -58,7 +69,7 @@ void operator&(Archiver &ar, std::list<T> &obj)
   }
 }
 
-template<class T>
+template<typename T>
 void operator&(Archiver &ar, std::vector<T> &obj)
 {
   if(ar.is_serializing_out())
@@ -89,12 +100,13 @@ void operator&(Archiver &ar, std::vector<T> &obj)
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
     ar.check_nonclass_field(retval, type, "std::vector<T>", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
-    ar.register_reference(id, &obj);
+    ar.register_reference(id, field_treat, &obj);
 
-    int i;
     int size;
-    sscanf(value, "%d", &size);
+    sscanf(value.c_str(), "%d", &size);
     obj.resize(size);
     std::vector<T>::iterator  it;
     for(it=obj.begin(); it != obj.end(); it++)
@@ -106,19 +118,105 @@ void operator&(Archiver &ar, std::vector<T> &obj)
   }
 }
 
+template<typename T>
+void operator&(Archiver &ar, std::vector<T*> &obj)
+{
+  if(ar.is_serializing_out())
+  {
+    char  strtemp[20];
+    sprintf(strtemp, "%d", obj.size());
+    bool is_ref;
+    is_ref = ar.add_compound_field("std::vector<T*>", 0, !FIELD_IS_CLASS, strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    if(!is_ref)
+    {
+      std::vector<T*>::iterator  it;
+      for(it=obj.begin(); it != obj.end(); it++)
+      {
+        ar & (*it);
+      }
+      ar.add_end_compound_field();
+    }
+  }
+  else
+  {
+    char  *type;
+    std::string value;
+    int   id;
+    int   version;
+    bool  is_simple;
+    bool  is_class;
+    enum  ArchiveFieldTreat field_treat;
+    int   referencing;
+    bool  retval;
+    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
+    ar.check_nonclass_field(retval, type, "std::vector<T*>", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.register_reference(id, field_treat, &obj);
+
+    int size;
+    sscanf(value.c_str(), "%d", &size);
+    obj.resize(size);
+    std::vector<T*>::iterator  it;
+    for(it=obj.begin(); it != obj.end(); it++)
+    {
+      ar & (*it);
+    }
+    ar.read_end_current_level();
+
+  }
+}
+
+template<typename T1, typename T2>
+void operator&(Archiver &ar, std::pair<T1, T2> &obj)
+{
+  if(ar.is_serializing_out())
+  {
+    bool is_ref;
+    is_ref = ar.add_compound_field("std::pair<T1, T2>", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
+    if(!is_ref)
+    {
+      ar & obj.first;
+      ar & obj.second;
+      ar.add_end_compound_field();
+    }
+  }
+  else
+  {
+    char  *type;
+    std::string value;
+    int   id;
+    int   version;
+    bool  is_simple;
+    bool  is_class;
+    enum  ArchiveFieldTreat field_treat;
+    int   referencing;
+    bool  retval;
+    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
+    ar.check_nonclass_field(retval, type, "std::pair<T1, T2>", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.register_reference(id, field_treat, &obj);
+
+    ar & obj.first;
+    ar & obj.second;
+    ar.read_end_current_level();
+
+  }
+}
 
 template<class T>
 void operator&(Archiver &ar, T &obj)
 {
   if(ar.is_serializing_out())
   {
-    char  strtemp[20];
-    sprintf(strtemp, "%d", 0);
+    //char  strtemp[20];
+    //sprintf(strtemp, "%d", 0);
     bool is_ref;
     
     is_ref = ar.add_compound_field(typeid(obj).name()+6, 
                                     T::class_versions[T::class_versions_count-1].class_version, 
-                                    FIELD_IS_CLASS, strtemp, 
+                                    FIELD_IS_CLASS, "0",//strtemp, 
                                     (SerializeBaseClass*)&obj, 
                                     ar.is_serialize_base_class() ? ARCHIVE_FIELD_IS_BASECLASS : ARCHIVE_FIELD_NORMAL);
     if(!is_ref)
@@ -140,17 +238,19 @@ void operator&(Archiver &ar, T &obj)
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
     ar.check_class_field(retval, type, typeid(obj).name()+6, is_simple, is_class, field_treat, 
                           ar.is_serialize_base_class() ? ARCHIVE_FIELD_IS_BASECLASS : ARCHIVE_FIELD_NORMAL, 
                           id);
     ar.set_class_version(version);
-    ar.register_reference(id, (SerializeBaseClass*)&obj);
+    ar.register_reference(id, field_treat, (SerializeBaseClass*)&obj);
 
     //check the version
     int v;
     if(version > T::class_versions[T::class_versions_count-1].class_version)
     {
-      ZORBA_ERROR_DESC_OSS(SRL0005_CLASS_VERSION_IS_TOO_NEW, "Class version for " << typeid(obj).name()+6 << " is " << version  << "while the version supported is " << T::class_versions[T::class_versions_count-1].class_version);
+      ZORBA_SER_ERROR_DESC_OSS(SRL0005_CLASS_VERSION_IS_TOO_NEW, "Class version for " << typeid(obj).name()+6 << " is " << version  << "while the version supported is " << T::class_versions[T::class_versions_count-1].class_version);
     }
     for(v = T::class_versions_count-1; v >= 0; v--)
     {
@@ -167,7 +267,7 @@ void operator&(Archiver &ar, T &obj)
         if(oldv < 0)
           oldv = 0;
         
-        ZORBA_ERROR_DESC_OSS(SRL0006_CLASS_VERSION_IS_TOO_OLD, 
+        ZORBA_SER_ERROR_DESC_OSS(SRL0006_CLASS_VERSION_IS_TOO_OLD, 
                         "Class version for " << typeid(obj).name()+6 << " is " << version 
                         << " while the minimal supported version is " << T::class_versions[v].class_version 
                         << ". Use Zorba 0x" << std::hex << T::class_versions[oldv].zorba_version << "instead.");
@@ -197,13 +297,13 @@ void operator&(Archiver &ar, T *&obj)
                             ARCHIVE_FIELD_IS_NULL);
       return;
     }
-    char  strtemp[20];
-    sprintf(strtemp, "%d", 0);
+    //char  strtemp[20];
+    //sprintf(strtemp, "%d", 0);
     bool is_ref;
     
     is_ref = ar.add_compound_field(ar.is_serialize_base_class() ? typeid(T).name()+6 : typeid(*obj).name()+6, 
                                     ar.is_serialize_base_class() ? T::class_versions[T::class_versions_count-1].class_version : obj->get_classversion(obj->get_version_count()-1).class_version , 
-                                    FIELD_IS_CLASS, strtemp, 
+                                    FIELD_IS_CLASS, "0",//strtemp, 
                                     (SerializeBaseClass*)obj, 
                                     ar.is_serialize_base_class() ? ARCHIVE_FIELD_IS_BASECLASS : ARCHIVE_FIELD_IS_PTR);
     if(!is_ref)
@@ -232,6 +332,8 @@ void operator&(Archiver &ar, T *&obj)
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
     ar.check_class_field(retval, "", "", is_simple, is_class, (ArchiveFieldTreat)0, (ArchiveFieldTreat)0, id);
     if(field_treat == ARCHIVE_FIELD_IS_NULL)
     {
@@ -247,18 +349,18 @@ void operator&(Archiver &ar, T *&obj)
     {
       if(strcmp(type, typeid(T).name()+6))
       {
-        ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+        ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
       }
       if(field_treat != ARCHIVE_FIELD_IS_BASECLASS)
       {
-        ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+        ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
       }
     }
     else
     {
       if((field_treat != ARCHIVE_FIELD_IS_PTR) && (field_treat != ARCHIVE_FIELD_IS_REFERENCING))
       {
-        ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+        ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
       }
     }
 
@@ -269,20 +371,20 @@ void operator&(Archiver &ar, T *&obj)
       cls_factory = g_class_serializer->get_class_factory(type);
       if(cls_factory == NULL)
       {
-         ZORBA_ERROR_DESC_OSS(SRL0003_UNRECOGNIZED_CLASS_FIELD, id);
+         ZORBA_SER_ERROR_DESC_OSS(SRL0003_UNRECOGNIZED_CLASS_FIELD, id);
       }
       new_obj = cls_factory->create_new(ar);
       obj = dynamic_cast<T*>(new_obj);
       if(!obj)
       {
-        ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+        ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
       }
 
       //check the version
       int v;
       if(version > obj->get_classversion(obj->get_version_count()-1).class_version)
       {
-        ZORBA_ERROR_DESC_OSS(SRL0005_CLASS_VERSION_IS_TOO_NEW, "Class version for " << typeid(*obj).name()+6 << " is " << version  << "while the version supported is " << obj->get_classversion(obj->get_version_count()-1).class_version);
+        ZORBA_SER_ERROR_DESC_OSS(SRL0005_CLASS_VERSION_IS_TOO_NEW, "Class version for " << typeid(*obj).name()+6 << " is " << version  << "while the version supported is " << obj->get_classversion(obj->get_version_count()-1).class_version);
       }
       for(v = obj->get_version_count()-1; v >= 0; v--)
       {
@@ -300,7 +402,7 @@ void operator&(Archiver &ar, T *&obj)
           if(oldv < 0)
             oldv = 0;
           
-          ZORBA_ERROR_DESC_OSS(SRL0006_CLASS_VERSION_IS_TOO_OLD, 
+          ZORBA_SER_ERROR_DESC_OSS(SRL0006_CLASS_VERSION_IS_TOO_OLD, 
                           "Class version for " << typeid(*obj).name()+6 << " is " << version 
                           << " while the minimal supported version is " << ver.class_version 
                           << ". Use Zorba 0x" << std::hex << obj->get_classversion(oldv).zorba_version << "instead.");
@@ -309,7 +411,7 @@ void operator&(Archiver &ar, T *&obj)
       }
 
 
-      ar.register_reference(id, new_obj);
+      ar.register_reference(id, field_treat, new_obj);
       new_obj->serialize_internal(ar);
       ar.read_end_current_level();
     }
@@ -317,29 +419,29 @@ void operator&(Archiver &ar, T *&obj)
     {
       //check the version
       int v;
-      if(version > T::class_versions[T::class_versions_count-1].class_version)
+      if(version > obj->T::get_classversion(obj->T::get_version_count()-1).class_version)
       {
-        ZORBA_ERROR_DESC_OSS(SRL0005_CLASS_VERSION_IS_TOO_NEW, "Class version for " << typeid(T).name()+6 << " is " << version  << "while the version supported is " << T::class_versions[T::class_versions_count-1].class_version);
+        ZORBA_SER_ERROR_DESC_OSS(SRL0005_CLASS_VERSION_IS_TOO_NEW, "Class version for " << typeid(T).name()+6 << " is " << version  << "while the version supported is " << obj->T::get_classversion(obj->T::get_version_count()-1).class_version);
       }
-      for(v = T::class_versions_count-1; v >= 0; v--)
+      for(v = obj->T::get_version_count()-1; v >= 0; v--)
       {
-        if(version == T::class_versions[v].class_version)
+        if(version == obj->T::get_classversion(v).class_version)
           break;//supported version
-        else if((version < T::class_versions[v].class_version) && !T::class_versions[v].is_backward_compatible)
+        else if((version < obj->T::get_classversion(v).class_version) && !obj->T::get_classversion(v).is_backward_compatible)
         {
           int oldv;
           for(oldv = v; oldv >= 0; oldv--)
           {
-            if(version == T::class_versions[oldv].class_version)
+            if(version == obj->T::get_classversion(oldv).class_version)
               break;
           }
           if(oldv < 0)
             oldv = 0;
           
-          ZORBA_ERROR_DESC_OSS(SRL0006_CLASS_VERSION_IS_TOO_OLD, 
+          ZORBA_SER_ERROR_DESC_OSS(SRL0006_CLASS_VERSION_IS_TOO_OLD, 
                           "Class version for " << typeid(T).name()+6 << " is " << version 
-                          << " while the minimal supported version is " << T::class_versions[v].class_version 
-                          << ". Use Zorba 0x" << std::hex << T::class_versions[oldv].zorba_version << "instead.");
+                          << " while the minimal supported version is " << obj->T::get_classversion(v).class_version 
+                          << ". Use Zorba 0x" << std::hex << obj->T::get_classversion(oldv).zorba_version << "instead.");
         }
                 
       }
@@ -352,7 +454,7 @@ void operator&(Archiver &ar, T *&obj)
       obj = dynamic_cast<T*>(new_obj);
       if(!obj)
       {
-        ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+        ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
       }
     }
     else
@@ -362,6 +464,7 @@ void operator&(Archiver &ar, T *&obj)
 }
 
 
+
 template<class T>
 void serialize_baseclass(Archiver &ar, T *obj)
 {
@@ -369,7 +472,15 @@ void serialize_baseclass(Archiver &ar, T *obj)
 
   ar & obj;
 
-  ar.set_serialize_base_class(false);
+  //ar.set_serialize_base_class(false);
+}
+
+template<class T>
+void read_optional_field(Archiver &ar, T &obj)
+{
+  ar.set_read_optional_field(true);
+  ar & obj;
+  ar.set_read_optional_field(false);
 }
 
 }}

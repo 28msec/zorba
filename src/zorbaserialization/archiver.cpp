@@ -3,6 +3,8 @@
 #include "zorbaerrors/error_manager.h"
 #include <zorba/error.h>
 
+#include "store/api/item.h"
+
 namespace zorba{
   namespace serialization{
 
@@ -72,6 +74,8 @@ Archiver::Archiver(bool is_serializing_out)
 
   nr_ids = 0;
   current_class_version = 0;
+  read_optional = false;
+  is_temp_field = 0;
 }
 
 Archiver::~Archiver()
@@ -101,7 +105,9 @@ bool Archiver::add_simple_field(const char *type,
   archive_field  *ref_field = NULL;
   bool      exch_fields = false;
   //int id = 0;
-  if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && orig_ptr)//always
+  if(!orig_ptr)
+    field_treat = ARCHIVE_FIELD_IS_NULL;
+  else if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && orig_ptr && !get_is_temp_field())
     ref_field = check_nonclass_pointer(orig_ptr);
   if(ref_field)
   {
@@ -132,7 +138,7 @@ bool Archiver::add_simple_field(const char *type,
   {
     exchange_fields(new_field, ref_field);
   }
-  return ref_field;
+  return ref_field != NULL;
 }
 
 void Archiver::exchange_fields(archive_field  *new_field, archive_field  *ref_field)
@@ -180,7 +186,9 @@ bool Archiver::add_compound_field(const char *type,
   archive_field  *ref_field = NULL;
   bool      exch_fields = false;
   //int id = 0;
-  if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && ptr)
+  if(!ptr)
+    field_treat = ARCHIVE_FIELD_IS_NULL;
+  else if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && ptr && !get_is_temp_field())
   {
     if(!is_class)
       ref_field = check_nonclass_pointer(ptr);
@@ -216,7 +224,7 @@ bool Archiver::add_compound_field(const char *type,
   {
     exchange_fields(new_field, ref_field);
   }
-  return ref_field;
+  return ref_field != NULL;
 }
 
 void Archiver::add_end_compound_field()
@@ -303,7 +311,7 @@ void Archiver::check_simple_field(bool retval,
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
   }
-  if(field_treat != required_field_treat)
+  if((field_treat != required_field_treat) && (field_treat != ARCHIVE_FIELD_IS_NULL))
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
   }
@@ -326,7 +334,7 @@ void Archiver::check_nonclass_field(bool retval,
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
   }
-  if(field_treat != required_field_treat)
+  if((field_treat != required_field_treat) && (field_treat != ARCHIVE_FIELD_IS_NULL))
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
   }
@@ -349,18 +357,25 @@ void Archiver::check_class_field(bool retval,
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
   }
-  if(field_treat != required_field_treat)
+  if((field_treat != required_field_treat) && (field_treat != ARCHIVE_FIELD_IS_NULL))
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
   }
 }
 
-void Archiver::register_reference(int id, void *ptr)
+void Archiver::register_reference(int id, enum ArchiveFieldTreat field_treat, void *ptr)
 {
+  if(get_is_temp_field() && (field_treat != ARCHIVE_FIELD_IS_PTR))
+    return;
   struct field_ptr_vs_id    fid;
   fid.field_id = id;
   fid.assoc_ptr = ptr;
   all_reference_list.push_back(fid);
+}
+void Archiver::register_item(store::Item* i)
+{
+  if(i)
+    registered_items.push_back(i);
 }
 
 void Archiver::register_delay_reference(void **ptr, 
@@ -415,7 +430,17 @@ void Archiver::finalize_input_serialization()
          ZORBA_ERROR_DESC_OSS(SRL0003_UNRECOGNIZED_CLASS_FIELD, (*it).class_name);
       }
       cls_factory->cast_ptr((SerializeBaseClass*)ptr, (*it).ptr);
+      RCObject *rcobj = dynamic_cast<RCObject*>((SerializeBaseClass*)ptr);
+      if(rcobj)
+        rcobj->addReference(rcobj->getSharedRefCounter() SYNC_PARAM2(rcobj->getRCLock()));
     }
+  }
+
+  //decrement RC on Items
+  std::vector<store::Item*>::iterator item_it;
+  for(item_it = registered_items.begin(); item_it != registered_items.end(); item_it++)
+  {
+    (*item_it)->removeReference((*item_it)->getSharedRefCounter() SYNC_PARAM2((*item_it)->getRCLock()));
   }
 }
 
