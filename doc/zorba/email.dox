@@ -1,12 +1,9 @@
-/** \page email The "Zorba mail" functions
+/** \page email Functions for sending emails
 
 <ul>
   <li> Table of Contents
   <ul>
     <li> \ref intro_mail
-    <ul>
-      <li> \ref namespace_mail
-    </ul>
     <li> \ref configuring_mail
     <ul>
       <li> \ref mail_installation
@@ -14,6 +11,9 @@
       <li> \ref mail_static_context
     </ul>
     <li> \ref signatures_mail
+    <ul>
+      <li> \ref namespace_mail
+    </ul>
     <ul>
       <li> \ref mail
     </ul>
@@ -25,14 +25,6 @@
 
 \section intro_mail 1 Introduction
 This document defines functions used to send emails part of "zorba-util" namespace.
-
-\subsection namespace_mail 1.1 Namespace
-In order to use these functions, the module <tt>"http://www.zorba-xquery.com/zorba/util-functions"</tt> has
-to be included at the beginning of a query. For example
-
-\code
-  import module namespace zorba-util = "http://www.zorba-xquery.com/zorba/util-functions";
-\endcode
 
 \section configuring_mail 2 Configuring
 Zorba provides email support through the C-Client library part of <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>. \n
@@ -73,7 +65,15 @@ This is the remote username password used to authenticate to the SMTP server. \n
 
 \section signatures_mail 3 Function Signatures and Descriptions
 
-\subsection mail 3.1 zorba-util:mail
+\subsection namespace_mail 3.1 Namespace
+In order to use these functions, the module <tt>"http://www.zorba-xquery.com/zorba/util-functions"</tt> has
+to be included at the beginning of a query. For example
+
+\code
+  import module namespace zorba-util = "http://www.zorba-xquery.com/zorba/util-functions";
+\endcode
+
+\subsection mail 3.2 zorba-util:mail
 
 \code
   declare function mail(  $to       as xs:string
