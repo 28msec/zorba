@@ -813,7 +813,12 @@ void* thread_main(void* param)
     set_vars(&querySpec, lDynCtxt);
 
     std::ofstream resFileStream(resultPath.native_file_string().c_str());
-    assert (resFileStream.good());
+    if (!resFileStream.good())
+    {
+      std::cout << "Could not open results file: " 
+                << resultPath.native_file_string().c_str() << std::endl;
+      abort();
+    }
 
     try
     {
