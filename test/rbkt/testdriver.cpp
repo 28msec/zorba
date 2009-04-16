@@ -23,6 +23,7 @@
 
 #include "testdriverconfig.h" // SRC and BIN dir definitions
 #include "specification.h" // parsing spec files
+#include "testuriresolver.h"
 
 #include <zorba/zorba.h>
 #include <zorba/error_handler.h>
@@ -30,6 +31,7 @@
 
 #include "util/properties.h"
 
+#include <zorba/static_context.h>
 #include <zorba/util/file.h>
 
 #include <zorbatypes/URI.h>
@@ -341,7 +343,32 @@ fileEquals(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, in
 {
   std::ifstream li(aRefFile.get_path().c_str());
   std::ifstream ri(aResFile.get_path().c_str()); 
+#ifdef ENABLE_SAXON_COMPARE
   
+  std::ofstream refwrapped ( "/tmp/ref.xml" );
+  std::ofstream reswrapped ( "/tmp/res.xml" );
+  li.seekg( 0, std::ifstream::end );
+  long size = li.tellg();
+  li.seekg( 0 );
+  refwrapped << "<root>" << std::endl;
+  char * buffer = new char [size ];
+  li.read ( buffer, size );
+  refwrapped.write ( buffer, size );
+  refwrapped << "</root>" << std::endl;
+  refwrapped.close();
+  delete [] buffer;
+  ri.seekg ( 0, std::ifstream::end );
+  size = ri.tellg();
+  ri.seekg ( 0 );
+  reswrapped << "<root>" << std::endl;
+  buffer = new char [size];
+  ri.read ( buffer, size );
+  reswrapped.write ( buffer, size );
+  reswrapped << "</root>" << std::endl;
+  reswrapped.close ();
+  delete [] buffer;
+  return true;
+#endif
   std::string filepath = aResFile.get_path ();
   std::string::size_type pos = filepath.find ( "w3c_testsuite" );
   bool w3ctest = pos != std::string::npos;
@@ -419,7 +446,6 @@ main(int argc, char** argv)
 #endif
 {
   loadProperties ();
-
   Specification lSpec;
   if ( argc < 2 )
   {
@@ -427,7 +453,6 @@ main(int argc, char** argv)
     return 1;
   }
 
-  zorba::Zorba *  engine;
   int             errors;
 
   for( int i=1; i < argc; i++ )
@@ -496,7 +521,7 @@ main(int argc, char** argv)
     std::cout << "Query:" << std::endl;
     printFile(std::cout, lQueryFile.get_path());
     std::cout << std::endl;
-
+    zorba::Zorba * engine;
     if( i == 1 ) {  // Instantiate the store
 #ifdef ZORBA_MINIMAL_STORE
       zorba::storeminimal::SimpleStore* store =
@@ -509,7 +534,10 @@ main(int argc, char** argv)
       // Instantiate zorba query processor
       engine = zorba::Zorba::getInstance(store);
     }
-
+    zorba::StaticContext_t lContext = engine->createStaticContext();
+    std::string uri_map_file = zorba::RBKT_SRC_DIR + "/Queries/uri.txt";
+    zorba::TestSchemaURIResolver  resolver ( uri_map_file.c_str() );
+    lContext->setSchemaURIResolver ( & resolver );
     TestErrorHandler errHandler;
 
     // create and compile the query
@@ -517,7 +545,7 @@ main(int argc, char** argv)
     slurp_file(lQueryFile.get_path().c_str(), lQueryString);
     zorba::XQuery_t lQuery = engine->createQuery (&errHandler);
     lQuery->setFileName (lQueryFile.get_path ());
-    lQuery->compile (lQueryString.c_str(), getCompilerHints());
+    lQuery->compile (lQueryString.c_str(), lContext, getCompilerHints());
 
     errors = -1;
     if ( errHandler.errors() )

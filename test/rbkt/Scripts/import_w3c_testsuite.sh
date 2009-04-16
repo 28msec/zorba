@@ -24,11 +24,24 @@ cd "$d"
 echo Unzipping test suite...
 unzip $ZIP &>/dev/null
 
+uq=`mktemp /tmp/rwts.XXXXXX`
+cat >$uq <<"EOF"
+declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
+declare option saxon:output "omit-xml-declaration=yes";
+for $sch in //schema 
+return string-join( concat ($sch/@uri, "=", $sch/@FileName), "
+")
+EOF
+echo Processing URI of catalog...
+$SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/uri.txt $uq 
+
+
 q=`mktemp /tmp/rwts.XXXXXX`
 cat >$q <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
 declare option saxon:output "omit-xml-declaration=yes";
 string-join ((
+for $sch in //schema return concat ("%uri ", $sch/@uri, " ", $sch/@FileName), 
 for $src in //source return concat ("%src ", $src/@ID, " ", $src/@FileName),
 for $tc in //test-case
 let $out := $tc/output-file[1]/text()
@@ -53,8 +66,18 @@ use File::Copy;
 
 my $repo=shift;
 my %sources;
+my $test_src_path = "$repo/test/rbkt/Queries/w3c_testsuite";
+my $test_uris = "$test_src_path/uri.txt\n";
+print "URI file at $test_uris\n";
+open (URIS, ">> $test_uris" );
 while (<>) {
 chomp;
+if (m/^%uri /) {
+  my ( $info, $uri, $file) = split (/ /);
+  print "$uri=$file \n";
+  print URIS " $uri=$file\n";
+  next;
+}
 if (m/^%src /) {
   my ($info, $id, $path) = split (/ /);
   $sources {$id} = $path;
@@ -65,7 +88,6 @@ my ($name, $path, $query, $inlist, $urilist, $out, $errlist) = split (/ /);
 my @inbnd = split (/:/, $inlist);
 my @uribnd = split (/:/, $urilist);
 my @errs = split (/:/, $errlist);
-my $test_src_path = "$repo/test/rbkt/Queries/w3c_testsuite";
 my $inpath = "Queries/XQuery/$path";
 my $dstqpath="$repo/test/rbkt/Queries/w3c_testsuite/$path";
 my $dstrespath = "$repo/test/rbkt/ExpQueryResults/w3c_testsuite/$path";
@@ -77,6 +99,7 @@ copy ("$inpath/$query.xq", "$dstqpath/$name.xq");
 if ($out) {
   copy ("ExpectedTestResults/$path/$out", $fullout);
 }
+
 
 if (@inbnd || @uribnd) {
   open (SPEC, ">>$specfile");
@@ -100,8 +123,9 @@ if (@errs) {
   }
   close (SPEC);
 }
+
 }
-' $SRC
+close (URIS);' $SRC
 rm -f $q
 
 echo "Importing test sources..."
@@ -110,6 +134,7 @@ find TestSources  -name '*.xq' -exec rm {} \;
 mv TestSources $SRC/test/rbkt/Queries/w3c_testsuite/
 
 echo "Cleaning up work directory..."
+
 cd $d0; rm -rf "$d"
 
 echo Done.

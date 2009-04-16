@@ -28,7 +28,7 @@ CONFIGURE_FILE(testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/testdriverconfi
 #
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
-ADD_EXECUTABLE(testdriver testdriver.cpp)
+ADD_EXECUTABLE(testdriver testdriver.cpp testuriresolver.cpp)
 TARGET_LINK_LIBRARIES(testdriver zorba_${ZORBA_STORE_LIB_EXTENSION})
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)
@@ -90,6 +90,12 @@ ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
 ENDIF(ZORBA_BUILD_MT_TESTDRIVER)
 
+
+# Option to build test driver to use Saxon to compare results
+SET ( ZORBA_BUILD_SAXON_TESTDRIVER 1)	   
+If ( ZORBA_BUILD_SAXON_TESTDRIVER )
+   add_definitions ( -DENABLE_SAXON_COMPARE )
+Endif ( ZORBA_BUILD_SAXON_TESTDRIVER )
 
 #
 #
