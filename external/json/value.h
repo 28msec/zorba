@@ -2,6 +2,7 @@
 #include <list>
 #include <istream>
 #include <map>
+#include <vector>
 #include <cstring>
 
 namespace json{
@@ -18,6 +19,7 @@ namespace json{
 
 	typedef std::list<value*> array_list_t;
 	typedef std::map<wchar_t *,value*,wstrCmp> object_list_t;
+  typedef std::vector<value*> vector_list_t;
 
 	namespace literals{
 		enum literals{
@@ -30,8 +32,10 @@ namespace json{
 	namespace datatype{
 		enum dt{
 			_undefined,
+   
 			_string,
-			_unquoted_string,
+// 			_unquoted_string, //not used
+   
 			_literal,
 
 			_number,
@@ -47,14 +51,15 @@ namespace json{
 		static value global_object;
 	private:
 		value *parent;
-		/*std::wstring name;*/
+		std::wstring name;
 		void *val;
 		datatype::dt dt;
+    vector_list_t children;
 	public:
 		bool separatevalues;
-		/*bool setname(std::wstring &newname);
+		bool setname(std::wstring &newname);
 		bool setname(wchar_t *newname);
-		std::wstring &getname();*/
+		std::wstring &getname();
 
 		datatype::dt getdatatype();
 		bool setstring(const wchar_t *newval);
@@ -98,6 +103,8 @@ namespace json{
 
 		array_list_t *getarraylist();
 		object_list_t *getobjectlist();
+
+    vector_list_t *getchildrenlist();
 
 		bool deletevalue();
 		

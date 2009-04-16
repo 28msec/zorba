@@ -24,7 +24,8 @@
 
 namespace zorba {
 
-  bool JSON_parse(const char* json_string,
+  bool JSON_parse(const char* aJSON_string,
+                  const unsigned int aLength,
                   store::Item_t& element,
                   xqpStringStore_t baseUri,
                   xqp_string& error_log);

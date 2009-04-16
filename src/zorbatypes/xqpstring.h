@@ -307,6 +307,11 @@ public:
    */
   xqpString(const char* src);
 
+  /**Construct a xqpString given a wchar_t.
+   * @param src %Source wchar_t string
+   */
+  xqpString(const wchar_t * src);
+
   ~xqpString(){};
 
   xqpStringStore* 
@@ -631,7 +636,10 @@ public:
   xqpString
   tokenize(xqpString pattern, xqpString flags, int32_t *start_pos, bool *hasmatched) const;
 
-
+  /**  Return a sequence of wchar_t units given a xqpString (UTF-8 encoded)
+   */
+  wchar_t *
+  getWCS(xqpString source) const;
   // Removes the leading and trailing whitespace (one of the " \t\r\n")
   // TODO: xqpString trim_whitespace() const;
 public:
@@ -660,11 +668,6 @@ public:
                             const char *s5);
   
 private:
-
-  /**  Return a sequence of wchar_t units given a xqpString (UTF-8 encoded)
-   */
-  wchar_t * 
-  getWCS(xqpString source) const;
 
   /**Sets the capacity of the string to at least size
    */

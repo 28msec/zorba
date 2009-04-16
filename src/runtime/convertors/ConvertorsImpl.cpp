@@ -38,7 +38,7 @@ ZorbaJSONParseIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
   while (consumeNext(strItem, theChildren[0].getp(), planState) && parseOK)
   {
-    parseOK = JSON_parse(strItem->getStringValue()->c_str(), result, baseUri, error_log);
+    parseOK = JSON_parse(strItem->getStringValue()->c_str(), strItem->getStringValue()->bytes(), result, baseUri, error_log);
     if(parseOK &&
        result->isNode() &&
        result->getNodeKind () == store::StoreConsts::elementNode)

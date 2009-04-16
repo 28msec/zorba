@@ -196,7 +196,7 @@ static xqpStringStore_t getXqpString(UnicodeString source)
     return new xqpStringStore("");
   }
 
-  xqpStringStore_t result = new xqpStringStore(target, strlen(target));
+  xqpStringStore_t result = new xqpStringStore(&target[0], strlen(target));
   delete[] target;
   return result;
 }
@@ -686,7 +686,7 @@ xqpStringStore_t xqpStringStore::trimR(const char* start, uint16_t len) const
 
   uint32_t StrLen = numChars();
 
-  for (; StrLen > 0; --StrLen) {
+  for ( ; StrLen > 0; --StrLen) {
     const char *old_end = end;
     uint32_t cp = UTF8DecodePrev(end);
 
@@ -1049,6 +1049,40 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
     theStrStore = new xqpStringStore(src);
   }
 
+  xqpString::xqpString(const wchar_t * src)
+  {
+    UnicodeString tmp;
+    UErrorCode ErrorCode = U_ZERO_ERROR;
+    UChar* dest = tmp.getBuffer(wcslen(src)+1);
+
+    int32_t DestLength;
+
+    //convert from std::wstring to UTF16 encoded string
+    u_strFromWCS(dest, wcslen(src) + 1, &DestLength, src, -1, &ErrorCode);
+
+    if(U_FAILURE(ErrorCode))
+    {
+      assert(false);
+    }
+
+    int32_t targetLen = u_strlen(dest)*4 + 1;
+    char* target = new char[targetLen];
+
+    //convert from UTF16 to UTF8
+    u_strToUTF8(target, targetLen, &DestLength, dest, -1, &ErrorCode);
+    tmp.releaseBuffer (wcslen(src));
+
+    if(U_FAILURE(ErrorCode))
+    {
+      assert(false);
+
+      theStrStore = new xqpStringStore("");
+      delete[] target;
+    }
+
+    theStrStore = new xqpStringStore(&target[0], DestLength);
+    delete[] target;
+  }
 
   xqpString& xqpString::operator=(const std::string& src)
   {

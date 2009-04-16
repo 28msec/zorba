@@ -99,7 +99,7 @@ value::value(std::wstring &nval):separatevalues(false){
 }
 value::value(datatype::dt nval):separatevalues(false){
 		switch(nval){
-		case datatype::_unquoted_string:
+// 		case datatype::_unquoted_string:
 		case datatype::_string:
 			setstring("");
 		break;
@@ -114,9 +114,11 @@ value::value(datatype::dt nval):separatevalues(false){
 		break;
 		case datatype::_array:
 			setarray();
+      children.reserve(8);
 		break;
 		case datatype::_object:
 			setobject();
+      children.reserve(4);
 		break;
 		case datatype::_undefined:
 		default:	
@@ -134,7 +136,7 @@ value::~value(void)
 }
 
 
-/*bool value::setname(std::wstring &newname){
+bool value::setname(std::wstring &newname){
 	name=newname;
 	return true;
 }
@@ -146,13 +148,13 @@ bool value::setname(wchar_t *newname){
 
 std::wstring &value::getname(){
 	return name;
-}*/
+}
 
 bool value::clear(){
 	array_list_t::iterator valaiter;
 	object_list_t::iterator valoiter;
 	switch(dt){
-		case datatype::_unquoted_string:
+// 		case datatype::_unquoted_string:
 		case datatype::_string:
 			((std::wstring *)val)->assign(L"");
 			break;
@@ -179,6 +181,7 @@ bool value::clear(){
 			        //(*valoiter).second->deletevalue();
 			}
 			((object_list_t *)val)->clear();
+      children.clear();
 			break;
 		case datatype::_undefined:
 		default:	
@@ -191,7 +194,7 @@ bool value::deletevalue(){
 	if (val==NULL) return true;
 
 	switch(dt){
-		case datatype::_unquoted_string:
+// 		case datatype::_unquoted_string:
 		case datatype::_string:
 			delete (std::wstring *)val;
 		break;
@@ -313,7 +316,7 @@ bool value::clone(value &oldval){
 	array_list_t::iterator valaiter;
 	object_list_t::iterator valoiter;
 	switch(oldval.dt){
-		case datatype::_unquoted_string:
+// 		case datatype::_unquoted_string:
 		case datatype::_string:
 			setstring((*(std::wstring*)oldval.val));
 			break;
@@ -367,8 +370,8 @@ bool value::addobjectvalue(const std::wstring &oldname,value &oldval){
 		wchar_t *newname =new wchar_t[oldname.length()+1];
 		wcscpy(newname,oldname.c_str());
 		newval->clone(oldval);
-
 		((object_list_t *)val)->insert(std::pair<wchar_t *,value*>(newname,newval));
+    children.push_back(newval);
 		return true;		
 	}else{
 		return false;
@@ -383,6 +386,7 @@ bool value::addobjectvalue(const std::wstring &oldname,value *newval){
 		wchar_t *newname =new wchar_t[oldname.length()+1];
 		wcscpy(newname,oldname.c_str());
  		((object_list_t *)val)->insert(std::pair<wchar_t *,value*>(newname,newval));
+    children.push_back(newval);
 		return true;		
 	}else{
 		return false;
@@ -396,8 +400,8 @@ bool value::addobjectvalue(const wchar_t *oldname,value &oldval){
 		wchar_t *newname =new wchar_t[wcslen(oldname)+1];
 		wcscpy(newname,oldname);
 		newval->clone(oldval);
-
 		((object_list_t *)val)->insert(std::pair<wchar_t *,value*>(newname,newval));
+    children.push_back(newval);
 		return true;		
 	}else{
 		return false;
@@ -410,6 +414,7 @@ bool value::addobjectvalue(const wchar_t *oldname,value *newval){
 		wchar_t *newname =new wchar_t[wcslen(oldname)+1];
 		wcscpy(newname,oldname);
  		((object_list_t *)val)->insert(std::pair<wchar_t *,value*>(newname,newval));
+    children.push_back(newval);
 		return true;		
 	}else{
 		return false;
@@ -421,7 +426,7 @@ std::wstring *value::getstring( const wchar_t *_default,bool enquote){
 	std::wstring *retval=new std::wstring;
 	wchar_t strnum[32];
 	switch(dt){
-		case datatype::_unquoted_string:
+// 		case datatype::_unquoted_string:
 		case datatype::_string:
 			(*retval)=(*(std::wstring *)val);
 			if (enquote)quotestring(retval);
@@ -465,9 +470,15 @@ object_list_t *value::getobjectlist(){
 	return (object_list_t*)val;
 }
 
+vector_list_t *value::getchildrenlist(){
+  if (dt!=datatype::_object || children.empty()) return 0;
+  return &children;
+}
+
+
 __int64 value::getinteger( __int64 _default){
 	switch(dt){
-		case datatype::_unquoted_string:
+// 		case datatype::_unquoted_string:
 		case datatype::_string:
 			return _default;
 		case datatype::_number:
@@ -492,7 +503,7 @@ __int64 value::getinteger( __int64 _default){
 
 double value::getfloat( double _default){
 	switch(dt){
-		case datatype::_unquoted_string:
+// 		case datatype::_unquoted_string:
 		case datatype::_string:
 			return _default;
 		case datatype::_number:
@@ -595,20 +606,3 @@ bool value::deletechildbyname(const wchar_t *name){
 
 //The global parent
 value value::global_object;
-
-
-
-/*
-switch(dt){
-		case datatype::_unquoted_string:
-		case datatype::_string:
-		case datatype::_number:
-		case datatype::_fixed_number:
-		case datatype::_literal:
-		case datatype::_array:
-		case datatype::_object:
-		case datatype::_undefined:
-		default:	
-	}
-*/
-
