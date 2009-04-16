@@ -535,9 +535,15 @@ main(int argc, char** argv)
       engine = zorba::Zorba::getInstance(store);
     }
     zorba::StaticContext_t lContext = engine->createStaticContext();
+
+    // Install special resolver only for w3c_testsuite ...
+    std::string path = lQueryFile.get_path();
+    zorba::TestSchemaURIResolver  * resolver = 0;
     std::string uri_map_file = zorba::RBKT_SRC_DIR + "/Queries/uri.txt";
-    zorba::TestSchemaURIResolver  resolver ( uri_map_file.c_str() );
-    lContext->setSchemaURIResolver ( & resolver );
+    if ( path.find ( "w3c_testsuite" ) != std::string::npos ) {
+      resolver = new zorba::TestSchemaURIResolver ( uri_map_file.c_str() );
+      lContext->setSchemaURIResolver ( resolver );
+    }
     TestErrorHandler errHandler;
 
     // create and compile the query
@@ -547,6 +553,9 @@ main(int argc, char** argv)
     lQuery->setFileName (lQueryFile.get_path ());
     lQuery->compile (lQueryString.c_str(), lContext, getCompilerHints());
 
+    if (resolver != 0 ) {
+      delete resolver;
+    }
     errors = -1;
     if ( errHandler.errors() )
     {

@@ -18,10 +18,8 @@
 
 #include <zorba/zorba.h>
 
-//#include <map>
 #include <fstream>
 #include <string>
-//#include <vector>
 
 using namespace zorba;
 
