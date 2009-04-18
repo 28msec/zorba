@@ -53,8 +53,12 @@ void zorba::TestSchemaURIResolver::initialize ()
   std::string::size_type start = 0;
   std::getline ( urifile, uris );
   while ( true ) {
-    std::string::size_type pos = uris.find ( ' ', start );
-    if ( pos == std::string::npos ) break;
+    bool last = false;
+    std::string::size_type pos = uris.find_first_of ( ' ', start );
+    if ( pos == std::string::npos ) {
+      pos = uris.size ();
+      last = true;
+    }
     std::string::size_type eq = uris.find ( '=', start );
     std::string::size_type len = eq - start;
     String uri ( uris.substr ( start, len ) );
@@ -64,6 +68,7 @@ void zorba::TestSchemaURIResolver::initialize ()
     file.append ( xsd );
     uri_map [ uri ] = file;
     start = pos + 1;
+    if ( last ) break;
   }
 
   urifile.close();
