@@ -28,11 +28,16 @@ CONFIGURE_FILE(testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/testdriverconfi
 #
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
-ADD_EXECUTABLE(testdriver testdriver.cpp testuriresolver.cpp)
+SET (TESTDRIVER_SRCS
+  testdriver.cpp
+  testuriresolver.cpp
+  )
+
+ADD_EXECUTABLE(testdriver ${TESTDRIVER_SRCS})
 TARGET_LINK_LIBRARIES(testdriver zorba_${ZORBA_STORE_LIB_EXTENSION})
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)
-  ADD_EXECUTABLE(testdriver_static testdriver.cpp)
+  ADD_EXECUTABLE(testdriver_static ${TESTDRIVER_SRCS})
   SET_TARGET_PROPERTIES(testdriver_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
   TARGET_LINK_LIBRARIES(testdriver_static zorba_${ZORBA_STORE_LIB_EXTENSION}_static)
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
