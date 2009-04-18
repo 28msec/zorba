@@ -446,6 +446,93 @@ template class NumArithIterator<ModOperation>;
 /* end class NumArithIterator */
 
 
+  /* begin class SpecificNumArithIterator */
+  template< class Operations, TypeConstants::atomic_type_code_t Type >
+  SpecificNumArithIterator<Operations, Type>::SpecificNumArithIterator
+  ( const QueryLoc& loc, PlanIter_t& iter0, PlanIter_t& iter1 )
+      :
+      BinaryBaseIterator<SpecificNumArithIterator<Operations, Type>, PlanIteratorState > ( loc, iter0, iter1 )
+  { }
+
+
+template < class Operation, TypeConstants::atomic_type_code_t Type >
+bool SpecificNumArithIterator<Operation, Type>::nextImpl (
+    store::Item_t& result,
+    PlanState& planState ) const
+{
+  bool res;
+  store::Item_t n0;
+  store::Item_t n1;
+  
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  if (consumeNext( n0, this->theChild0.getp(), planState ))
+  {
+    if (consumeNext( n1, this->theChild1.getp(), planState ))
+    {
+      res = compute(result, planState.theRuntimeCB, this->loc, n0.getp(), n1.getp());
+      
+      if (consumeNext(n0, this->theChild0.getp(), planState) ||
+          consumeNext(n1, this->theChild1.getp(), planState))
+        ZORBA_ERROR_DESC(XPTY0004,
+                         "Arithmetic operation has a sequences greater than one as an operator.");
+      STACK_PUSH ( res, state );
+    }
+  }
+  STACK_END (state);
+}
+
+
+template < class Operation, TypeConstants::atomic_type_code_t Type >
+bool SpecificNumArithIterator<Operation, Type>::compute(
+    store::Item_t& result,
+    RuntimeCB* aRuntimeCB,
+    const QueryLoc& aLoc, 
+    store::Item *n0,
+    store::Item *n1)
+{
+  assert(n0->isAtomic());
+  assert(n1->isAtomic());
+
+  return Operation::template computeSingleType<Type> (result, aRuntimeCB, &aLoc, n0, n1 );
+}
+
+  
+/**
+ * Information: It is not possible to move this function to
+ * runtime/visitors/accept.cpp!
+ */
+template < class Operation, TypeConstants::atomic_type_code_t Type >
+void SpecificNumArithIterator<Operation, Type>::accept(PlanIterVisitor& v) const 
+{ 
+  v.beginVisit(*this); 
+  this->theChild0->accept(v); 
+  this->theChild1->accept(v); 
+  v.endVisit(*this); 
+}
+
+template class SpecificNumArithIterator<AddOperation, TypeConstants::XS_DOUBLE>;
+template class SpecificNumArithIterator<AddOperation, TypeConstants::XS_FLOAT>;
+template class SpecificNumArithIterator<AddOperation, TypeConstants::XS_DECIMAL>;
+template class SpecificNumArithIterator<AddOperation, TypeConstants::XS_INTEGER>;
+template class SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DOUBLE>;
+template class SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_FLOAT>;
+template class SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DECIMAL>;
+template class SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_INTEGER>;
+template class SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DOUBLE>;
+template class SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_FLOAT>;
+template class SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DECIMAL>;
+template class SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_INTEGER>;
+template class SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DOUBLE>;
+template class SpecificNumArithIterator<DivideOperation, TypeConstants::XS_FLOAT>;
+template class SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DECIMAL>;
+template class SpecificNumArithIterator<DivideOperation, TypeConstants::XS_INTEGER>;
+template class SpecificNumArithIterator<ModOperation, TypeConstants::XS_DOUBLE>;
+template class SpecificNumArithIterator<ModOperation, TypeConstants::XS_FLOAT>;
+template class SpecificNumArithIterator<ModOperation, TypeConstants::XS_DECIMAL>;
+template class SpecificNumArithIterator<ModOperation, TypeConstants::XS_INTEGER>;
+
   /*______________________________________________________________________
   |
   | 6.2.1 op:numeric-add

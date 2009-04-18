@@ -407,6 +407,7 @@ public:
   expr_kind_t get_expr_kind () const { return promote_expr_kind; }
 
   promote_expr(const QueryLoc& loc, expr_t input, xqtref_t type);
+  xqtref_t return_type_impl (static_context *sctx);
 
 public:
   void next_iter (expr_iterator_data&);

@@ -49,14 +49,18 @@ DefaultOptimizer::DefaultOptimizer()
 
   ADD_SINGLETON_DRIVER(ReplaceExprWithConstantOneWhenPossible);
 
-  ADD_SINGLETON_DRIVER(HoistExprsOutOfLoops);
-
   ADD_SINGLETON_DRIVER(MarkFreeVars);
   ADD_SINGLETON_DRIVER(EliminateUnusedLetVars);
 
   ADD_SINGLETON_DRIVER(MarkConsumerNodeProps);
   ADD_SINGLETON_DRIVER(MarkProducerNodeProps);
   ADD_SINGLETON_DRIVER(EliminateNodeOps);
+
+  ADD_SINGLETON_DRIVER(SpecializeOperations);
+  
+  ADD_DRIVER(FoldRules);
+
+  ADD_SINGLETON_DRIVER(HoistExprsOutOfLoops);
 
   // For UDFs, which need this annotation in udf::requires_dyn_ctx()
   // TODO: only do this for UDFs

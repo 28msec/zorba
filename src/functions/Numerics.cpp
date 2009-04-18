@@ -35,12 +35,14 @@ namespace zorba {
   public:
     single_numeric_func (const signature &sig) : function (sig) {}
     virtual xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+    virtual bool isArithmeticFunction() const { return true; }
   };
 
   class binary_arith_func : public function {
   public:
     binary_arith_func (const signature &sig) : function (sig) {}
     virtual xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+    virtual bool isArithmeticFunction() const { return true; }
   };
 
 /*______________________________________________________________________
@@ -74,6 +76,35 @@ class op_numeric_multiply : public binary_arith_func
 {
 public:
 	op_numeric_multiply(const signature&);
+	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    const function *specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const;
+};
+
+class op_numeric_multiply_double : public binary_arith_func
+{
+public:
+	op_numeric_multiply_double(const signature&);
+	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+class op_numeric_multiply_decimal : public binary_arith_func
+{
+public:
+	op_numeric_multiply_decimal(const signature&);
+	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+class op_numeric_multiply_integer : public binary_arith_func
+{
+public:
+	op_numeric_multiply_integer(const signature&);
+	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+class op_numeric_multiply_float : public binary_arith_func
+{
+public:
+	op_numeric_multiply_float(const signature&);
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
@@ -274,8 +305,84 @@ PlanIter_t op_numeric_multiply::codegen (const QueryLoc& loc, std::vector<PlanIt
 	return new NumArithIterator<MultiplyOperation>(loc, argv[0], argv[1]);
 }
 
+const function *op_numeric_multiply::specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const
+{
+    xqtref_t t0 = argTypes[0];
+    xqtref_t t1 = argTypes[1];
 
+    if (TypeOps::is_atomic(*t0)) {
+        TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
+        TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
 
+        if (tc0 == tc1) {
+            switch(tc0) {
+                case TypeConstants::XS_DOUBLE:
+                    return sctx->lookup_builtin_fn (":" "numeric-multiply-double", 2);
+
+                case TypeConstants::XS_DECIMAL:
+                    return sctx->lookup_builtin_fn (":" "numeric-multiply-decimal", 2);
+
+                case TypeConstants::XS_FLOAT:
+                    return sctx->lookup_builtin_fn (":" "numeric-multiply-float", 2);
+
+                case TypeConstants::XS_INTEGER:
+                    return sctx->lookup_builtin_fn (":" "numeric-multiply-integer", 2);
+
+                default:
+                    return NULL;
+            }
+        }
+    }
+    return NULL;
+}
+
+op_numeric_multiply_double::op_numeric_multiply_double(
+	const signature& sig)
+:
+	binary_arith_func(sig)
+{
+}
+
+PlanIter_t op_numeric_multiply_double::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+	return new SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DOUBLE>(loc, argv[0], argv[1]);
+}
+
+op_numeric_multiply_decimal::op_numeric_multiply_decimal(
+	const signature& sig)
+:
+	binary_arith_func(sig)
+{
+}
+
+PlanIter_t op_numeric_multiply_decimal::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+	return new SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DECIMAL>(loc, argv[0], argv[1]);
+}
+
+op_numeric_multiply_integer::op_numeric_multiply_integer(
+	const signature& sig)
+:
+	binary_arith_func(sig)
+{
+}
+
+PlanIter_t op_numeric_multiply_integer::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+	return new SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_INTEGER>(loc, argv[0], argv[1]);
+}
+
+op_numeric_multiply_float::op_numeric_multiply_float(
+	const signature& sig)
+:
+	binary_arith_func(sig)
+{
+}
+
+PlanIter_t op_numeric_multiply_float::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+	return new SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_FLOAT>(loc, argv[0], argv[1]);
+}
 
 
 /*______________________________________________________________________
@@ -615,6 +722,30 @@ DECL(sctx, op_numeric_multiply,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(sctx, op_numeric_multiply_double,
+     (createQName (XQUERY_OP_NS,"fn", ":numeric-multiply-double"),
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION));
+
+DECL(sctx, op_numeric_multiply_decimal,
+     (createQName (XQUERY_OP_NS,"fn", ":numeric-multiply-decimal"),
+      GENV_TYPESYSTEM.DECIMAL_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_QUESTION));
+
+DECL(sctx, op_numeric_multiply_float,
+     (createQName (XQUERY_OP_NS,"fn", ":numeric-multiply-float"),
+      GENV_TYPESYSTEM.FLOAT_TYPE_QUESTION,
+      GENV_TYPESYSTEM.FLOAT_TYPE_QUESTION,
+      GENV_TYPESYSTEM.FLOAT_TYPE_QUESTION));
+
+DECL(sctx, op_numeric_multiply_integer,
+     (createQName (XQUERY_OP_NS,"fn", ":numeric-multiply-integer"),
+      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION,
+      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION,
+      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 DECL(sctx, op_numeric_divide,
      (createQName (XQUERY_OP_NS,"fn", ":numeric-divide"),

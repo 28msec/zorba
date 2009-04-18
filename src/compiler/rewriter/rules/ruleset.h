@@ -50,6 +50,7 @@ RULE(MarkProducerNodeProps);
 RULE(EliminateNodeOps);
 RULE(ReplaceExprWithConstantOneWhenPossible);
 
+RULE(SpecializeOperations);
 RULE(EliminateTypeEnforcingOperations);
 RULE(EliminateUnusedLetVars);
 RULE(RefactorPredFLWOR);

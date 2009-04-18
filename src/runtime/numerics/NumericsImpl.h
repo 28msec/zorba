@@ -78,6 +78,39 @@ public:
         xqtref_t type1);
 }; /* class NumArithIterator */
 
+/**
+ * Specific Iterator for Numeric Arithmetic Operations. Specific operation
+ * (add, mod, etc.) is passed over the template parameter along with the type.
+ */
+template < class Operation, TypeConstants::atomic_type_code_t Type >
+class SpecificNumArithIterator
+    : public BinaryBaseIterator<SpecificNumArithIterator<Operation, Type>, PlanIteratorState>
+{
+public:
+  SpecificNumArithIterator ( const QueryLoc&, PlanIter_t&, PlanIter_t& );
+
+  virtual ~SpecificNumArithIterator(){}
+
+  bool nextImpl(store::Item_t& result, PlanState&) const;
+      
+  virtual void accept(PlanIterVisitor&) const;
+
+  /**
+   * Computes Operation on passed items.
+   *
+   * @param loc
+   * @param item0
+   * @param item1
+   */
+  static bool
+  compute(
+        store::Item_t& result,
+        RuntimeCB* aRuntimeCB,
+        const QueryLoc& loc,
+        store::Item *item0,
+        store::Item *item1);
+}; /* class SpecificNumArithIterator */
+
   /*______________________________________________________________________
   |
   | 6.2 Operators on Numeric Values

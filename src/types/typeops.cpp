@@ -398,9 +398,9 @@ bool TypeOps::is_simple(const XQType& type)
 bool TypeOps::is_numeric(const XQType& type)
 {
   CACHE_ROOT_TS (genv_ts);
-  return is_subtype(type, *genv_ts.DOUBLE_TYPE_ONE)
-    || is_subtype(type, *genv_ts.FLOAT_TYPE_ONE)
-    || is_subtype(type, *genv_ts.DECIMAL_TYPE_ONE);
+  return is_subtype(type, *genv_ts.DOUBLE_TYPE_QUESTION)
+    || is_subtype(type, *genv_ts.FLOAT_TYPE_QUESTION)
+    || is_subtype(type, *genv_ts.DECIMAL_TYPE_QUESTION);
 }
 
 
@@ -618,31 +618,64 @@ xqtref_t TypeOps::prime_type(const XQType& type)
 /*******************************************************************************
 
 ********************************************************************************/
+xqtref_t TypeOps::arithmetic_type_exact(const XQType& type1, const XQType& type2)
+{
+  CACHE_ROOT_TS (genv_ts);
+  if (TypeOps::is_subtype(type1, *genv_ts.UNTYPED_ATOMIC_TYPE_ONE)
+    || TypeOps::is_subtype(type2, *genv_ts.UNTYPED_ATOMIC_TYPE_ONE)) {
+    return genv_ts.DOUBLE_TYPE_ONE;
+  }
+ 
+  if (TypeOps::is_subtype(type1, *genv_ts.DOUBLE_TYPE_ONE)
+    || TypeOps::is_subtype(type2, *genv_ts.DOUBLE_TYPE_ONE)) {
+    return genv_ts.DOUBLE_TYPE_ONE;
+  }
+ 
+  if (TypeOps::is_subtype(type1, *genv_ts.FLOAT_TYPE_ONE)
+    || TypeOps::is_subtype(type2, *genv_ts.FLOAT_TYPE_ONE)) {
+    return genv_ts.FLOAT_TYPE_ONE;
+  }
+
+  if (TypeOps::is_subtype(type1, *genv_ts.INTEGER_TYPE_ONE)
+    && TypeOps::is_subtype(type2, *genv_ts.INTEGER_TYPE_ONE)) {
+    return genv_ts.INTEGER_TYPE_ONE;
+  }
+
+  if (TypeOps::is_subtype(type1, *genv_ts.DECIMAL_TYPE_ONE)
+    && TypeOps::is_subtype(type2, *genv_ts.DECIMAL_TYPE_ONE)) {
+    return genv_ts.DECIMAL_TYPE_ONE;
+  }
+
+  return NULL;
+}
+
+xqtref_t TypeOps::arithmetic_type_static(const XQType& type1, const XQType& type2)
+{
+  xqtref_t aType = arithmetic_type_exact(type1, type2);
+  if (aType != NULL) {
+    return aType;
+  }
+  xqtref_t pt1 = TypeOps::prime_type(type1);
+  xqtref_t pt2 = TypeOps::prime_type(type2);
+
+  TypeConstants::quantifier_t iquant = RootTypeManager::QUANT_UNION_MATRIX[type1.get_quantifier()][type2.get_quantifier()];
+
+  aType = arithmetic_type_exact(*pt1, *pt2);
+  if (aType == NULL) {
+    return NULL;
+  }
+  return aType->get_manager()->create_type(*aType, iquant);
+}
+
 xqtref_t TypeOps::arithmetic_type(const XQType& type1, const XQType& type2)
 {
   CACHE_ROOT_TS (genv_ts);
-#define decimal_but_not_int( type1 )                  \
-  (is_subtype(type1, *genv_ts.DECIMAL_TYPE_ONE)       \
-   && !is_subtype(type1, *genv_ts.INTEGER_TYPE_ONE))
-
-  if (is_subtype(type1, *genv_ts.UNTYPED_ATOMIC_TYPE_ONE)
-      || is_subtype(type2, *genv_ts.UNTYPED_ATOMIC_TYPE_ONE)
-      || is_subtype(type1, *genv_ts.DOUBLE_TYPE_ONE)
-      || is_subtype(type2, *genv_ts.DOUBLE_TYPE_ONE)) {
-    return genv_ts.DOUBLE_TYPE_ONE;
+  xqtref_t aType = arithmetic_type_static(type1, type2);
+  if (aType == NULL) {
+    return genv_ts.INTEGER_TYPE_ONE;
   }
-  if (is_subtype(type1, *genv_ts.FLOAT_TYPE_ONE)
-      || is_subtype(type2, *genv_ts.FLOAT_TYPE_ONE)) {
-    return genv_ts.FLOAT_TYPE_ONE;
-  }
-  if (decimal_but_not_int (type1) || decimal_but_not_int (type2))
-    return genv_ts.DECIMAL_TYPE_ONE;
-
-  return genv_ts.INTEGER_TYPE_ONE;
-#undef decimal_but_not_int
+  return aType;
 }
-
-
 /*******************************************************************************
 
 ********************************************************************************/

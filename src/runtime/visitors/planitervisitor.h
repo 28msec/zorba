@@ -21,6 +21,7 @@
 #include "common/common.h"
 
 #include "zorbatypes/rchandle.h"
+#include "types/typeconstants.h"
 
 namespace zorba
 {
@@ -96,6 +97,10 @@ namespace zorba
   template < class DivideOperation> class GenericArithIterator;
   template < class IntegerDivideOperation> class GenericArithIterator;
   template < class ModOperation> class GenericArithIterator;
+  template < class AddOperation, TypeConstants::atomic_type_code_t > class SpecificNumArithIterator;
+  template < class SubtractOperation, TypeConstants::atomic_type_code_t > class SpecificNumArithIterator;
+  template < class MultiplyOperation, TypeConstants::atomic_type_code_t > class SpecificNumArithIterator;
+  template < class DivideOperation, TypeConstants::atomic_type_code_t > class SpecificNumArithIterator;
   class CreateValueIndex;
   class DropValueIndex;
   class ValueIndexInsertSessionOpener;
@@ -469,6 +474,46 @@ namespace zorba
     virtual void endVisit ( const GenericArithIterator<IntegerDivideOperation>& ) = 0;
     virtual void endVisit ( const GenericArithIterator<ModOperation>& ) = 0;
     
+    virtual void beginVisit ( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_DECIMAL>& ) = 0;
+    virtual void beginVisit ( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_INTEGER>& ) = 0;
+    virtual void beginVisit ( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_FLOAT>& ) = 0;
+    virtual void beginVisit ( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_DOUBLE>& ) = 0;
+    virtual void beginVisit ( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DECIMAL>& ) = 0;
+    virtual void beginVisit ( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_INTEGER>& ) = 0;
+    virtual void beginVisit ( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_FLOAT>& ) = 0;
+    virtual void beginVisit ( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DOUBLE>& ) = 0;
+    virtual void beginVisit ( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DECIMAL>& ) = 0;
+    virtual void beginVisit ( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_INTEGER>& ) = 0;
+    virtual void beginVisit ( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_FLOAT>& ) = 0;
+    virtual void beginVisit ( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DOUBLE>& ) = 0;
+    virtual void beginVisit ( const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DECIMAL>& ) = 0;
+    virtual void beginVisit ( const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_INTEGER>& ) = 0;
+    virtual void beginVisit ( const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_FLOAT>& ) = 0;
+    virtual void beginVisit ( const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DOUBLE>& ) = 0;
+    virtual void beginVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_DECIMAL>& ) = 0;
+    virtual void beginVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_INTEGER>& ) = 0;
+    virtual void beginVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_FLOAT>& ) = 0;
+    virtual void beginVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_DOUBLE>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_DECIMAL>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_INTEGER>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_FLOAT>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_DOUBLE>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DECIMAL>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_INTEGER>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_FLOAT>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DOUBLE>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DECIMAL>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_INTEGER>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_FLOAT>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DOUBLE>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DECIMAL>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_INTEGER>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_FLOAT>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DOUBLE>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_DECIMAL>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_INTEGER>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_FLOAT>& ) = 0;
+    virtual void endVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_DOUBLE>& ) = 0;
     PLAN_ITER_VISITOR (CreateValueIndex);
     PLAN_ITER_VISITOR (DropValueIndex);
     PLAN_ITER_VISITOR (ValueIndexInsertSessionOpener);

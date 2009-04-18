@@ -137,6 +137,7 @@ namespace zorba {
   public:
     fn_exactly_one_noraise(const signature& sig) : function (sig), raise_err (false) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
 
   protected:
     bool raise_err;

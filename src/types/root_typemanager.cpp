@@ -348,10 +348,10 @@ RootTypeManager::RootTypeManager()
   ITEM_TYPE_PLUS = new ItemXQType(this, TypeConstants::QUANT_PLUS, true);
 
 #define NODE_TYPE_DEFN(basename) \
-  basename##_TYPE_ONE = new NodeXQType(this, NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_ONE, false, true); \
-  basename##_TYPE_QUESTION = new NodeXQType(this, NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_QUESTION, false, true); \
-  basename##_TYPE_STAR = new NodeXQType(this, NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_STAR, false, true); \
-  basename##_TYPE_PLUS = new NodeXQType(this, NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_PLUS, false, true);
+  basename##_TYPE_ONE = new NodeXQType(this, NodeTest::basename##_TEST, ANY_TYPE, TypeConstants::QUANT_ONE, false, true); \
+  basename##_TYPE_QUESTION = new NodeXQType(this, NodeTest::basename##_TEST, ANY_TYPE, TypeConstants::QUANT_QUESTION, false, true); \
+  basename##_TYPE_STAR = new NodeXQType(this, NodeTest::basename##_TEST, ANY_TYPE, TypeConstants::QUANT_STAR, false, true); \
+  basename##_TYPE_PLUS = new NodeXQType(this, NodeTest::basename##_TEST, ANY_TYPE, TypeConstants::QUANT_PLUS, false, true);
 
   NODE_TYPE_DEFN(ANY_NODE)
   NODE_TYPE_DEFN(DOCUMENT)

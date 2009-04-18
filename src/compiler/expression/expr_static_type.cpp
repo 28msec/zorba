@@ -153,6 +153,15 @@ xqtref_t relpath_expr::return_type_impl(static_context *sctx)
   
   xqtref_t cast_base_expr::return_type_impl (static_context *sctx) { return target_type; }
   
+  xqtref_t promote_expr::return_type_impl (static_context *sctx)
+  {
+    xqtref_t inType = input_expr_h->return_type(sctx);
+    if (TypeOps::is_subtype(*inType, *target_type)) {
+        return inType;
+    }
+    return TypeOps::intersect_type(*inType, *target_type);
+  }
+  
   xqtref_t order_expr::return_type_impl(static_context *sctx) { return expr_h->return_type (sctx); }
   
 

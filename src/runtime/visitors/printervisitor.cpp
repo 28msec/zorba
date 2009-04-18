@@ -451,6 +451,227 @@ public:
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
+  void beginVisit ( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_DECIMAL>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_AddOperation_DECIMAL", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void beginVisit ( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_INTEGER>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_AddOperation_INTEGER", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void beginVisit ( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_FLOAT>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_AddOperation_FLOAT", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void beginVisit ( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_DOUBLE>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_AddOperation_DOUBLE", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void beginVisit ( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DECIMAL>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_SubtractOperation_DECIMAL", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void beginVisit ( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_INTEGER>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_SubtractOperation_INTEGER", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void beginVisit ( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_FLOAT>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_SubtractOperation_FLOAT", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void beginVisit ( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DOUBLE>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_SubtractOperation_DOUBLE", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void beginVisit ( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DECIMAL>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_MultiplyOperation_DECIMAL", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void beginVisit ( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_INTEGER>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_MultiplyOperation_INTEGER", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void beginVisit ( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_FLOAT>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_MultiplyOperation_FLOAT", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void beginVisit ( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DOUBLE>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_MultiplyOperation_DOUBLE", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void beginVisit ( const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DECIMAL>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_DivideOperation_DECIMAL", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void beginVisit ( const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_INTEGER>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_DivideOperation_INTEGER", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void beginVisit ( const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_FLOAT>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_DivideOperation_FLOAT", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void beginVisit ( const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DOUBLE>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_DivideOperation_DOUBLE", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void beginVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_DECIMAL>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_ModOperation_DECIMAL", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void beginVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_INTEGER>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_ModOperation_INTEGER", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void beginVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_FLOAT>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_ModOperation_FLOAT", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void beginVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_DOUBLE>& a)
+  {
+    thePrinter.startBeginVisit("SpecificNumArithIterator_ModOperation_DOUBLE", ++theId);
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+  void endVisit ( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_DECIMAL>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void endVisit ( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_INTEGER>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void endVisit ( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_FLOAT>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void endVisit ( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_DOUBLE>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void endVisit ( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DECIMAL>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void endVisit ( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_INTEGER>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void endVisit ( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_FLOAT>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void endVisit ( const SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DOUBLE>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void endVisit ( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DECIMAL>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void endVisit ( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_INTEGER>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void endVisit ( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_FLOAT>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void endVisit ( const SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DOUBLE>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void endVisit ( const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DECIMAL>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void endVisit ( const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_INTEGER>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void endVisit ( const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_FLOAT>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void endVisit ( const SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DOUBLE>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void endVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_DECIMAL>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void endVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_INTEGER>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void endVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_FLOAT>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void endVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_DOUBLE>& )
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
 
   PRINTER_VISITOR_DEFINITION (OpNumericUnaryIterator)
 

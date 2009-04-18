@@ -82,6 +82,10 @@ public:
 
   virtual expr_update_t getUpdateType() const { return SIMPLE_EXPR; }
   bool isUpdating() const { return getUpdateType() == UPDATE_EXPR; }
+
+  virtual const function *specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const { return NULL; }
+
+  virtual bool isArithmeticFunction() const { return false; }
 };
 
 

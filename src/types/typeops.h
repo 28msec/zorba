@@ -142,6 +142,16 @@ public:
   /*
    * Returns the type to be used for arithmetic ops.
    */
+  static xqtref_t arithmetic_type_exact(const XQType& type1, const XQType& type2);
+
+  /*
+   * Returns the type to be used for arithmetic ops.
+   */
+  static xqtref_t arithmetic_type_static(const XQType& type1, const XQType& type2);
+
+  /*
+   * Returns the type to be used for arithmetic ops.
+   */
   static xqtref_t arithmetic_type(const XQType& type1, const XQType& type2);
 
   /*

@@ -19,6 +19,7 @@
 #include "functions/arithmetic.h"
 #include "functions/function_impl.h"
 #include "runtime/core/arithmetic_impl.h"
+#include "types/typeops.h"
 
 using namespace std;
 
@@ -30,6 +31,7 @@ namespace zorba {
   {
   public:
 	op_add(const signature& sig) : function (sig) {}
+    virtual bool isArithmeticFunction() const { return true; }
 	
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -41,7 +43,9 @@ namespace zorba {
   {
   public:
 	op_multiply(const signature& sig) : function (sig) {}
+    virtual bool isArithmeticFunction() const { return true; }
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    const function *specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const;
   };
 
 
@@ -51,6 +55,7 @@ namespace zorba {
   {
   public:
 	op_divide(const signature& sig) : function (sig) {}
+    virtual bool isArithmeticFunction() const { return true; }
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
@@ -60,6 +65,7 @@ namespace zorba {
   {
   public:
 	op_integer_divide(const signature& sig) : function (sig) {}
+    virtual bool isArithmeticFunction() const { return true; }
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
@@ -69,6 +75,7 @@ namespace zorba {
   {
   public:
 	op_mod(const signature& sig) : function (sig) {}
+    virtual bool isArithmeticFunction() const { return true; }
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
@@ -85,7 +92,36 @@ PlanIter_t op_subtract::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& a
 	return new GenericArithIterator<SubtractOperation>(loc, argv[0], argv[1]);
 }
 
+const function *op_multiply::specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const
+{
+    xqtref_t t0 = argTypes[0];
+    xqtref_t t1 = argTypes[1];
 
+    if (TypeOps::is_simple(*t0) && TypeOps::is_simple(*t1)) {
+        TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
+        TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
+
+        if (tc0 == tc1) {
+            switch(tc0) {
+                case TypeConstants::XS_DOUBLE:
+                    return sctx->lookup_builtin_fn (":" "numeric-multiply-double", 2);
+
+                case TypeConstants::XS_DECIMAL:
+                    return sctx->lookup_builtin_fn (":" "numeric-multiply-decimal", 2);
+
+                case TypeConstants::XS_FLOAT:
+                    return sctx->lookup_builtin_fn (":" "numeric-multiply-float", 2);
+
+                case TypeConstants::XS_INTEGER:
+                    return sctx->lookup_builtin_fn (":" "numeric-multiply-integer", 2);
+
+                default:
+                    return NULL;
+            }
+        }
+    }
+    return NULL;
+}
 
 PlanIter_t op_multiply::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
