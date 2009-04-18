@@ -335,8 +335,8 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   {
     fo_expr* foExpr = new fo_expr(loc, LOOKUP_OPN ("concatenate"));
     
-    foExpr->add(createExpr);
-    foExpr->add(buildExpr);
+    foExpr->add(createExpr.getp());
+    foExpr->add(buildExpr.getp());
     foExpr->add(outerFlworExpr);
 
     outerSeqExpr = foExpr;
@@ -346,8 +346,8 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   {
     fo_expr* foExpr = reinterpret_cast<fo_expr*>(outerSeqExpr.getp());
 
-    foExpr->addFront(createExpr);
-    foExpr->addFront(buildExpr);
+    foExpr->addFront(createExpr.getp());
+    foExpr->addFront(buildExpr.getp());
   }
 
   //

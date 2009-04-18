@@ -17,6 +17,8 @@
 #ifndef ZORBA_DYNAMIC_BITSET_H
 #define ZORBA_DYNAMIC_BITSET_H
 
+#include "zorbamisc/config/stdint.h"
+
 #include <vector>
 
 namespace zorba {
