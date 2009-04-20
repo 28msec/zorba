@@ -32,7 +32,7 @@ namespace zorba {
 
   bool JSON_serialize(store::Item_t element,
                       xqpStringStore_t& json_string,
-                      xqp_string& error_log);
+                      xqpStringStore_t& error_log);
 
 }/*namespace zorba*/
 

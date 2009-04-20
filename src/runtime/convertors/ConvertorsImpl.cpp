@@ -68,10 +68,9 @@ FnJSONParseIteratorState::reset(PlanState& planState) {
 bool
 ZorbaJSONSerializeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  xqp_string        error_log;
   bool              parseOK = true;
   store::Item_t     elemItem;
-  xqpStringStore_t  str;
+  xqpStringStore_t  str, error_log;
 
   FnJSONSerializeIteratorState *state;
   DEFAULT_STACK_INIT(FnJSONSerializeIteratorState, state, planState);
@@ -85,7 +84,7 @@ ZorbaJSONSerializeIterator::nextImpl(store::Item_t& result, PlanState& planState
     {
       parseOK = JSON_serialize(elemItem, str, error_log);
       if(!parseOK)
-        ZORBA_ERROR_LOC_PARAM(API0061_CONV_JSON_SERIALIZE, loc, elemItem->getStringValue()->c_str() , error_log.c_str());
+        ZORBA_ERROR_LOC_PARAM(API0061_CONV_JSON_SERIALIZE, loc, elemItem->getStringValue()->c_str() , error_log);
       else
       {
         ++state->theCurrentPos;

@@ -29,8 +29,11 @@ namespace zorba {
   bool create_Attribute_Helper(store::Item_t parent, xqpStringStore_t name, xqpStringStore_t value, store::Item_t* result = NULL);
   bool create_Pair_Helper(store::Item_t parent, xqpStringStore_t baseUri, store::Item_t* result,
                           xqpStringStore_t name, xqpStringStore_t type, xqpStringStore_t value = NULL);
+  void parse_value(json::value** value, store::Item_t parent, xqpStringStore_t baseUri, store::Item_t* result);
 
-  void print_type(json::value** value, store::Item_t parent, xqpStringStore_t baseUri, store::Item_t* result);
+  bool parse_element(store::Item_t element, xqpStringStore_t& json_string, xqpStringStore_t& error_log);
+  bool parse_child(store::Item_t element, xqpStringStore_t& json_string, xqpStringStore_t& error_log);
+  void get_value(store::Item_t element, xqpStringStore_t& value);
 
   bool JSON_parse(const char* aJSON_string, const unsigned int aLength,
                   store::Item_t& element, xqpStringStore_t baseUri,
@@ -48,14 +51,14 @@ namespace zorba {
       for ( vectIter=vect->begin(); vectIter != vect->end(); ++vectIter )
       {
         store::Item_t new_node = NULL;
-        print_type(&*vectIter, element, baseUri, &new_node);
+        parse_value(&*vectIter, element, baseUri, &new_node);
       }
     }
 
     return true;
   }
 
-  void print_type(json::value** value, store::Item_t parent, xqpStringStore_t baseUri, store::Item_t* result)
+  void parse_value(json::value** value, store::Item_t parent, xqpStringStore_t baseUri, store::Item_t* result)
   {
     json::vector_list_t::iterator vectIter;
     json::vector_list_t *vect;
@@ -77,14 +80,14 @@ namespace zorba {
           size = arr->size();
           if(arr != 0)
             for ( arrtIter=arr->begin(); arrtIter != arr->end(); ++arrtIter )
-              print_type(&*arrtIter, *result, baseUri, &itemArr);
+              parse_value(&*arrtIter, *result, baseUri, &itemArr);
           break;
         case json::datatype::_object:
           create_Pair_Helper(parent, baseUri, result, name, new xqpStringStore("object"), NULL);
           vect = (*value)->getchildrenlist();
           if(vect != 0)
             for ( vectIter=vect->begin(); vectIter != vect->end(); ++vectIter )
-              print_type(&*vectIter, *result, baseUri, &itemObj);
+              parse_value(&*vectIter, *result, baseUri, &itemObj);
           break;
         default:
           val = xqpString((*((*value)->getstring())).c_str()).getStore();
@@ -110,10 +113,30 @@ namespace zorba {
     }
   }
 
-  bool JSON_serialize(store::Item_t element, xqpStringStore_t& json_string, xqp_string& error_log)
+  bool JSON_serialize(store::Item_t element, xqpStringStore_t& json_string, xqpStringStore_t& error_log)
   {
-    json_string = new xqpStringStore("NOT implemented yet");
-    return true;
+    json_string = new xqpStringStore("");
+    bool result = true;
+
+    store::Iterator_t childrenIt;
+    store::Item_t     child;
+
+    xqpStringStore_t name = element->getNodeName()->getStringValue();
+
+    if( name->byteCompare("json") != 0 )
+    {
+      error_log = new xqpStringStore("This is not a JSON element.");
+      return false;
+    }
+
+    json_string->append_in_place('{');
+
+    result = parse_child(element, json_string, error_log);
+
+    if(result)
+      json_string->append_in_place('}');
+
+    return result;
   }
 
 
@@ -216,4 +239,117 @@ namespace zorba {
     return lValue;
   }
 
+
+  bool parse_element(store::Item_t element, xqpStringStore_t& json_string, xqpStringStore_t& error_log)
+  {
+    store::Iterator_t attrIt, childrenIt;
+    store::Item_t     attr, child;
+
+    bool result = true;
+    xqpStringStore_t name, type, value;
+
+    attrIt = element->getAttributes();
+    attrIt->open();
+    while (attrIt->next(attr))
+    {
+      if (attr->getNodeKind() == store::StoreConsts::attributeNode)
+      {
+        if(attr->getNodeName()->getStringValue()->byteCompare("type") == 0)
+          type = attr->getStringValue();
+        else if(attr->getNodeName()->getStringValue()->byteCompare("name") == 0)
+          name = attr->getStringValue();
+      }
+    }
+    attrIt->close();
+
+    if(type->byteCompare("object") == 0)
+    {
+      json_string->append_in_place('"');
+      json_string->append_in_place(name->c_str());
+      json_string->append_in_place("\": {");
+      //parse every children
+      result = parse_child(element, json_string, error_log);
+      json_string->append_in_place('}');
+    }
+    else if(type->byteCompare("array") == 0)
+    {
+      json_string->append_in_place('"');
+      json_string->append_in_place(name->c_str());
+      json_string->append_in_place("\": [");
+      //parse every children
+      result = parse_child(element, json_string, error_log);
+      json_string->append_in_place(']');
+    }
+    else if(type->byteCompare("string") == 0)
+    {
+      get_value(element, value);
+      if(element->getNodeName()->getStringValue()->byteCompare("pair") == 0)
+      {
+        json_string->append_in_place('"');
+        json_string->append_in_place(name->c_str());
+        json_string->append_in_place("\": ");
+      }
+      json_string->append_in_place('"');
+      json_string->append_in_place(value->c_str());
+      json_string->append_in_place('"');
+    }
+    else if(type->byteCompare("null") == 0)
+    {
+      if(element->getNodeName()->getStringValue()->byteCompare("pair") == 0)
+      {
+        json_string->append_in_place('"');
+        json_string->append_in_place(name->c_str());
+        json_string->append_in_place("\": ");
+      }
+      json_string->append_in_place("null");
+    }
+    else //number,boolean
+    {
+      get_value(element, value);
+      if(element->getNodeName()->getStringValue()->byteCompare("pair") == 0)
+      {
+        json_string->append_in_place('"');
+        json_string->append_in_place(name->c_str());
+        json_string->append_in_place("\": ");
+      }
+      json_string->append_in_place(value->c_str());
+    }
+
+    return result;
+  }
+
+  void get_value(store::Item_t element, xqpStringStore_t& value)
+  {
+    store::Iterator_t childrenIt;
+    store::Item_t     child;
+
+    childrenIt = element->getChildren();
+    childrenIt->open();
+    while (childrenIt->next(child))
+    {
+      if (child->getNodeKind() == store::StoreConsts::textNode)
+        value = child->getStringValue();
+    }
+    childrenIt->close();
+  }
+
+  bool parse_child(store::Item_t element, xqpStringStore_t& json_string, xqpStringStore_t& error_log)
+  {
+    bool result = true, first = true;
+    store::Iterator_t childrenIt;
+    store::Item_t     child;
+    childrenIt = element->getChildren();
+    childrenIt->open();
+    while (childrenIt->next(child) && result)
+    {
+      if(!first)
+        json_string->append_in_place(',');
+
+      if (child->getNodeKind() == store::StoreConsts::elementNode)
+        result = parse_element(&*child, json_string, error_log);
+      first = false;
+    }
+    childrenIt->close();
+    return result;
+  }
 } /*namespace Zorba */
