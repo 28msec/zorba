@@ -183,6 +183,7 @@ public:
 	void *begin_visit(const UnorderedExpr &);
 	void *begin_visit(const ValidateExpr &);
 	void *begin_visit(const VarRef &);
+  void *begin_visit(const DecimalFormatNode &);
 
 /* update-related */
 	void *begin_visit(const DeleteExpr &);
@@ -382,6 +383,7 @@ public:
 	void end_visit(const UnorderedExpr &, void *visit_state);
 	void end_visit(const ValidateExpr &, void *visit_state);
 	void end_visit(const VarRef &, void *visit_state);
+  void end_visit(const DecimalFormatNode &, void *visit_state);
 
 /* update-related */
 	void end_visit(const DeleteExpr &, void *visit_state);

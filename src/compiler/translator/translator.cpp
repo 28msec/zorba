@@ -3410,6 +3410,33 @@ void end_visit (const SIND_DeclList& v, void* /*visit_state*/) {
 }
 
 
+void *begin_visit (const DecimalFormatNode& v) {
+  // cout << "Got DecimalFormat declaration: " << std::endl;
+  TRACE_VISIT ();
+
+  store::Item_t qname;
+  if (!v.is_default)
+  {
+    string::size_type pos = v.format_name.find(":");
+    string prefix = v.format_name.substr(0, pos == string::npos ? 0 : pos);
+    string name = v.format_name.substr(pos == string::npos ? 0 : pos+1);
+    xqp_string ns;
+    ns_ctx->findBinding(prefix, ns);
+    GENV_ITEMFACTORY->createQName(qname, ns.c_str(), prefix.c_str(), name.c_str());
+  }
+  
+  DecimalFormat_t df = new DecimalFormat(v.is_default, qname, v.param_list);
+  sctx_p->add_decimal_format(df);
+    
+  return no_state;
+}
+
+void end_visit (const DecimalFormatNode& v, void* /*visit_state*/) {
+  // std::cout << "end_visit() Got DecimalFormat declaration: " << std::endl;
+  TRACE_VISIT_OUT ();
+}
+
+
 void *begin_visit (const SchemaImport& v) {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_XMLSCHEMA

@@ -218,6 +218,7 @@ class VarBinding;
 class VarDecl;
 class VarNameList;
 class Wildcard;
+class DecimalFormatNode;
 
 
 // [2] VersionDecl
@@ -389,7 +390,14 @@ public:
 	rchandle<SIND_DeclList> get_sind_list() const { return sind_list_h; }
 	rchandle<VFO_DeclList> get_vfo_list() const { return vfo_list_h; }
 
-	void set_vfo_list(rchandle<VFO_DeclList> vfo_list_) { vfo_list_h = vfo_list_; }
+  // returns true if the value was NULL before the call
+  bool set_sind_list(SIND_DeclList* list);
+  bool set_vfo_list(VFO_DeclList* list);
+
+  // sets one of the above, returns false if it was set before
+  bool set_list(parsenode* list);
+
+  void set_vfo_list(rchandle<VFO_DeclList> vfo_list_) { vfo_list_h = vfo_list_; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -469,6 +477,29 @@ public:
 
 ********************************************************************************/
 
+/******************************************************************************
+
+  [6e] DecimalFormat
+
+
+********************************************************************************/
+class DecimalFormatNode : public parsenode
+{
+public:
+  bool is_default;
+  std::string format_name;
+  std::vector<std::pair<std::string, std::string > > param_list;
+
+  DecimalFormatNode(const QueryLoc& _loc, const std::string& qname, std::vector<std::pair<std::string, std::string> >* param_list)
+    :
+    parsenode(_loc), is_default(false), format_name(qname), param_list(*param_list) { }
+
+  DecimalFormatNode(const QueryLoc& _loc, std::vector<std::pair<std::string, std::string> >* param_list)
+    :
+    parsenode(_loc), is_default(true), param_list(*param_list) { }
+
+  void accept(parsenode_visitor&) const;
+};
 
 /******************************************************************************
 

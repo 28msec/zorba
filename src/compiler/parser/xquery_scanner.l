@@ -411,6 +411,18 @@ typedef zorba::xquery_parser::token token;
 "revalidation" { return token::REVALIDATION;}
 "as" { return token::AS; }
 
+"decimal-format" { return token::DECIMAL_FORMAT; }
+"decimal-separator" { return token::DECIMAL_SEPARATOR; }
+"grouping-separator" { return token::GROUPING_SEPARATOR; }
+"infinity" { return token::INFINITY; }
+"minus-sign" { return token::MINUS_SIGN; }
+"NaN" { return token::NaN; }
+"percent" { return token::PERCENT; }
+"per-mille" { return token::PER_MILLE; }
+"zero-digit" { return token::ZERO_DIGIT; }
+"digit" { return token::DIGIT; }
+"pattern-separator" { return token::PATTERN_SEPARATOR; }
+
 "try" { return token::TRY;}
 
 "index" { return token::INDEX; }

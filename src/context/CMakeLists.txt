@@ -13,6 +13,7 @@
 # limitations under the License.
 SET(CONTEXT_SRCS
     collation_cache.cpp
+    decimal_format.cpp
     dynamic_context.cpp
     static_context.cpp
     namespace_context.cpp

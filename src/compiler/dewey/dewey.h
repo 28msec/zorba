@@ -508,6 +508,7 @@ class DeweyClassification: public parsenode_visitor
     DECL_CONCRETE_VISIT (FlowCtlStatement);
   
     DECL_CONCRETE_VISIT (ParseErrorNode);
+    DECL_CONCRETE_VISIT (DecimalFormatNode);
 };
 }//end of namespace
 #endif

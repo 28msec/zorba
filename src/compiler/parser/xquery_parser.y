@@ -147,9 +147,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 	xqp_double* dval;
 	xqp_decimal* decval;
   XQUERY_ERROR err;
+  std::vector<std::pair<std::string, std::string> >* pair_vector;
+  std::pair<std::string, std::string>* pair;
 };
-
-
 
 
 /*
@@ -256,6 +256,24 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token INSTANCE                   "'instance'"
 %token SCHEMA_ATTRIBUTE           "'schema-attribute'"
 %token BOUNDARY_SPACE             "'boundary-space'"
+
+%token DECIMAL_FORMAT             "'decimal-format'"
+%token DECIMAL_SEPARATOR          "'decimal-separator'"
+%token GROUPING_SEPARATOR         "'grouping-separator'"
+%token INFINITY                   "'infinity'"
+%token MINUS_SIGN                 "'minus-sign'"
+%token NaN                        "'NaN'"
+%token PERCENT                    "'percent'"
+%token PER_MILLE                  "'per-mille'"
+%token ZERO_DIGIT                 "'zero-digit'"
+%token DIGIT                      "'digit'"
+%token PATTERN_SEPARATOR          "'pattern-separator'"
+%type <strval> DecimalFormatParamName
+%type <node> DecimalFormatDecl
+%type <pair> DecimalFormatParam
+%type <pair_vector> DecimalFormatParamList
+
+
     
 %token ANCESTOR_AXIS							"'ancestor::'"
 %token ANCESTOR_OR_SELF_AXIS			"'ancestor-or-self::'"
@@ -996,7 +1014,7 @@ Prolog :
 								static_cast<VFO_DeclList*>($3));
 		}
 	;
-
+  
 
 // [6a] SIDN_DeclList
 // ------------------
@@ -1060,9 +1078,57 @@ VFO_Decl :
 
   /* Index */
   | IndexDecl
+
+  | DecimalFormatDecl
 	;
 
+// [6e] DecimalFormatDecl
+// ----------------------
+DecimalFormatDecl :
+    DECLARE  DEFAULT  DECIMAL_FORMAT  DecimalFormatParamList
+    {
+      $$ = new DecimalFormatNode(LOC(@$), $4);
+    }
+  | DECLARE  DECIMAL_FORMAT  QNAME  DecimalFormatParamList
+    {
+      $$ = new DecimalFormatNode(LOC(@$), SYMTAB($3), $4); 
+    }
+    ;
 
+DecimalFormatParamList :
+    DecimalFormatParam
+    { 
+      $$ = new std::vector<std::pair<std::string, std::string> > ();
+      $$->push_back(*$1);
+    }
+  | DecimalFormatParamList  DecimalFormatParam
+    {
+      $1->push_back(*$2);
+      $$ = $1;
+    }
+    ;
+
+DecimalFormatParam :
+    DecimalFormatParamName  EQUALS  StringLiteral 
+    {
+      $$ = new std::pair<std::string, std::string>($1, static_cast<StringLiteral *>($3)->get_strval());
+    }
+    ;
+
+DecimalFormatParamName :
+    DECIMAL_SEPARATOR { $$ = "decimal-separator"; }
+    | GROUPING_SEPARATOR { $$ = "grouping-separator"; }
+    | INFINITY { $$ = "infinty"; }
+    | MINUS_SIGN { $$ = "minus-sign"; }
+    | NaN { $$ = "NaN"; }
+    | PERCENT { $$ = "percent"; }
+    | PER_MILLE { $$ = "per-mille"; }
+    | ZERO_DIGIT { $$ = "zero-digit"; }
+    | DIGIT { $$ = "digit"; }
+    | PATTERN_SEPARATOR { $$ = "pattern-separator"; }
+    ;
+    
+          
 // [7] Setter
 // ----------
 Setter :
@@ -5127,6 +5193,17 @@ QNAME :
   | HASH { $$ = SYMTAB_PUT ("hash"); }
   | BTREE { $$ = SYMTAB_PUT ("btree"); }
   | DROP { $$ = SYMTAB_PUT ("drop"); }
+  | DECIMAL_FORMAT { $$ = SYMTAB_PUT ("decimal-format"); }
+  | DECIMAL_SEPARATOR { $$ = SYMTAB_PUT ("decimal-separator"); }
+  | GROUPING_SEPARATOR { $$ = SYMTAB_PUT ("grouping-separator"); }
+  | INFINITY { $$ = SYMTAB_PUT ("infinity"); }
+  | MINUS_SIGN { $$ = SYMTAB_PUT ("minus-sign"); }
+  | NaN { $$ = SYMTAB_PUT ("NaN"); }
+  | PERCENT { $$ = SYMTAB_PUT ("percent"); }
+  | PER_MILLE { $$ = SYMTAB_PUT ("per-mille"); }
+  | ZERO_DIGIT { $$ = SYMTAB_PUT ("zero-digit"); }
+  | DIGIT { $$ = SYMTAB_PUT ("digit"); }
+  | PATTERN_SEPARATOR { $$ = SYMTAB_PUT ("pattern-separator"); }
     ;
 
 

@@ -24,6 +24,7 @@
 #include "context/context_impl.h"
 #include "context/uri_resolver_wrapper.h"
 #include "context/standard_uri_resolvers.h"
+#include "context/decimal_format.h"
 
 
 #include "compiler/expression/expr_base.h"
@@ -231,6 +232,26 @@ static_context::~static_context()
 void static_context::set_typemanager(rchandle<TypeManager> typemgr_)
 {
   typemgr = typemgr_;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void static_context::add_decimal_format(const DecimalFormat_t& decimalFormat)
+{
+  theDecimalFormats.push_back(decimalFormat);
+}
+
+DecimalFormat_t static_context::get_decimal_format(const store::Item_t qname)
+{  
+  for (std::vector<DecimalFormat_t>::iterator it = theDecimalFormats.begin(); it != theDecimalFormats.end(); it++)
+  {
+    if ((qname.isNull() && (*it)->isDefaultFormat())
+        ||
+        qname->compare((*it)->getFormatName()) == 0)
+      return (*it);    
+  }
+  return NULL;
 }
 
 

@@ -188,6 +188,33 @@ Prolog::Prolog(
 
 
 //-Prolog::
+bool Prolog::set_sind_list(SIND_DeclList* list) { 
+  bool result = true; 
+  if (!sind_list_h.isNull()) 
+    result = false; 
+  sind_list_h = list; 
+  return result;
+}
+
+bool Prolog::set_vfo_list(VFO_DeclList* list) { 
+  bool result = true; 
+  if (!vfo_list_h.isNull()) 
+    result = false; 
+  vfo_list_h = list; 
+  return result;
+}
+
+bool Prolog::set_list(parsenode* list) {
+  SIND_DeclList* sdl = dynamic_cast<SIND_DeclList*>(list);
+  if (sdl != NULL)
+    return set_sind_list(sdl);
+  
+  VFO_DeclList* vdl = dynamic_cast<VFO_DeclList*>(list);
+  if (vdl != NULL)
+    return set_vfo_list(vdl);
+  
+  return false;
+}
 
 void Prolog::accept(parsenode_visitor& v) const
 {
@@ -245,6 +272,13 @@ void VFO_DeclList::accept(parsenode_visitor& v) const
   END_VISITOR ();
 }
 
+// [6e] DecimalFormat
+// -----------------
+void DecimalFormatNode::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  END_VISITOR ();
+}
 
 // pass-through rules generate no classes
 

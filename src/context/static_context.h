@@ -24,6 +24,7 @@
 #include "context/static_context_consts.h"
 #include "context/context.h"
 #include "context/static_context_consts.h"
+#include "context/decimal_format.h"
 
 #include "types/typemanager.h"
 #include "zorbaerrors/Assert.h"
@@ -55,6 +56,7 @@ protected:
   InternalSchemaURIResolver*     theSchemaResolver;
   InternalModuleURIResolver*     theModuleResolver;
   std::list<global_binding> theGlobalVars;
+  std::vector<DecimalFormat_t> theDecimalFormats;
 
 public:
   virtual ~static_context();
@@ -71,6 +73,9 @@ public:
   }
 
   void set_typemanager(rchandle<TypeManager>);
+
+  void add_decimal_format(const DecimalFormat_t& decimal_format);
+  DecimalFormat_t get_decimal_format(const store::Item_t qname);
 
   void get_global_bindings (std::list<global_binding> &bs);
   void set_global_bindings (const std::list<global_binding> &bs);
