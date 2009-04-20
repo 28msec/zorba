@@ -562,6 +562,30 @@ struct XQC_StaticContext_s
   XQUERY_ERROR
   (*get_default_collation)(XQC_StaticContext context, const char** uri);
 
+  /**
+  * Sets the XQuery processor's version to either xquery_version_1_0 or xquery_version_1_1.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param mode The xquery_version_t to set in the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
+  XQUERY_ERROR
+  (*set_xquery_version)(XQC_StaticContext context, xquery_version_t mode );
+
+ /**
+  * Returns the XQuery processor's version that is set in the given static context.
+  *
+  * \param context The XQC_StaticContext that this function pointer is a member of
+  * \param[out] mode The xquery_version_t that is set in the given context.
+  *
+  * \retval ::XQC_NO_ERROR
+  * \retval ::XQC_INTERNAL_ERROR
+  */
+  XQUERY_ERROR 
+  (*get_xquery_version)(XQC_StaticContext context, xquery_version_t* mode);
+ 
  /**
   * Sets the XPath 1.0 compatibility mode to either xpath1_0 or xpath2_0.
   *

@@ -288,6 +288,11 @@ std::string::size_type xqpStringStore::numChars() const
 /*******************************************************************************
 
 ********************************************************************************/
+bool xqpStringStore::operator==(xqpStringStore::char_type ch) const
+{
+  return (numChars() == 1) && (charAt(0) == ch);
+}
+
 bool xqpStringStore::byteEqual(const xqpStringStore& src) const
 {
   if (this == &src)
@@ -331,12 +336,12 @@ int xqpStringStore::compare(const xqpStringStore* src, const XQPCollator* coll) 
   Locate in "this" the first occurrence of the "pattern" substring. Return the
   offset into this of the start of "pattern", or -1 if not found.
 ********************************************************************************/
-int32_t xqpStringStore::indexOf(const char* pattern) const
+int32_t xqpStringStore::indexOf(const char* pattern, unsigned int pos) const
 {
   if (empty())
     return -1;
 
-  size_t lRes = theString.find(pattern);
+  size_t lRes = theString.find(pattern, pos);
   if (lRes == std::string::npos)
     return -1;
   else
@@ -530,6 +535,26 @@ xqpStringStore_t xqpStringStore::substr(
   return new xqpStringStore(theString.substr(index, length));
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore_t xqpStringStore::reverse() const
+{
+  xqpStringStore_t result = new xqpStringStore();
+  char_type ch;
+  const char* c = c_str();
+  unsigned int len = numChars();
+  for (unsigned int i=0; i<len; i++)
+    UTF8Decode(c);
+
+  for (unsigned int i=0; i<len; i++)
+  {
+    ch = UTF8DecodePrev(c);
+    result->append_in_place(ch);
+  }
+
+  return result;
+}
 
 /*******************************************************************************
 
@@ -691,7 +716,8 @@ xqpStringStore_t xqpStringStore::trimR(const char* start, uint16_t len) const
     uint32_t cp = UTF8DecodePrev(end);
 
     uint16_t i;
-    for(i = 0; i < len && trimCP[i] != cp; i++);
+    for(i = 0; i < len && trimCP[i] != cp; i++)
+      ;
     if (i == len) {
       end = old_end;
       break;
@@ -1010,6 +1036,15 @@ xqpStringStore_t xqpStringStore::normalize(const xqpStringStore* normMode) const
 /*******************************************************************************
 
 ********************************************************************************/
+xqpStringStore::char_type xqpStringStore::charAt(std::string::size_type pos) const
+{
+  const char* c = c_str();
+  while (pos--)
+    UTF8Decode(c);
+
+  return UTF8Decode(c);
+}
+
 checked_vector<uint32_t> xqpStringStore::getCodepoints() const
 {
   checked_vector<uint32_t> tt;

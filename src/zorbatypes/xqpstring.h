@@ -40,6 +40,7 @@ class ZORBA_DLL_PUBLIC xqpStringStore : public RCObject
 
 public:
   typedef ptrdiff_t distance_type;
+  typedef uint32_t char_type;
 
 protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
@@ -106,12 +107,18 @@ public:
 
   std::string::size_type numChars() const;
 
+  // This function should be rewritten to work in an iterator-style
+  char_type charAt(std::string::size_type pos) const;
+
   char byteAt (std::string::size_type i) const { return str () [i]; }
 
   char operator[](std::string::size_type i) const { return str()[i]; }
 
   uint32_t 
   hash(const XQPCollator* = 0) const;
+
+  bool
+  operator==(char_type ch) const;
 
   bool
   byteEqual(const xqpStringStore& src) const;
@@ -163,7 +170,7 @@ public:
   compare(const xqpStringStore* src, const XQPCollator* coll = 0) const;
   
   int32_t
-  indexOf(const char* pattern) const;
+  indexOf(const char* pattern, unsigned int pos = 0) const;
 
   int32_t
   indexOf(const xqpStringStore* pattern, XQPCollator* col) const;
@@ -196,6 +203,9 @@ public:
 
   xqpStringStore_t
   substr(std::string::size_type index, std::string::size_type length) const;
+
+  xqpStringStore_t
+  reverse() const;
 
   xqpStringStore_t
   uppercase() const;
@@ -374,6 +384,12 @@ public:
   operator==(const char* src) const
   {
     return (compare(src) == 0);
+  }
+
+  bool
+  operator==(uint32_t codepoint) const
+  {
+    return (*theStrStore == codepoint);
   }
 
   bool
@@ -640,8 +656,7 @@ public:
    */
   wchar_t *
   getWCS(xqpString source) const;
-  // Removes the leading and trailing whitespace (one of the " \t\r\n")
-  // TODO: xqpString trim_whitespace() const;
+
 public:
     static xqpString concat(const char *s1, 
                             const char *s2);

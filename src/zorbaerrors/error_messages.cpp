@@ -123,6 +123,8 @@ DEF_ERR_CODE(SERE0015, SERE0015, "SERE0015")
 
 DEF_ERR_CODE(SEPM0016, SEPM0016, "Invalid parameter value")
 
+DEF_ERR_CODE(XTDE1310, XTDE1310, "It is a non-recoverable dynamic error if the picture string does not satisfy the format-number function rules.")
+
 DEF_ERR_CODE(XTDE1340, XTDE1340, "It is a non-recoverable dynamic error if the syntax of the picture is incorrect.")
 
 DEF_ERR_CODE(XTDE1350, XTDE1350, "It is a non-recoverable dynamic error if a component specifier within the picture refers to components that are not available in the given type of $value.")

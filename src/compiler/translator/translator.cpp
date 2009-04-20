@@ -31,6 +31,7 @@
 #include "compiler/api/compilercb.h"
 
 #include "context/static_context.h"
+#include "context/static_context_consts.h"
 #include "context/namespace_context.h"
 #include "context/internal_uri_resolvers.h"
 #include "context/standard_uri_resolvers.h"
@@ -477,15 +478,24 @@ protected:
     return SIMPLE_EXPR;
   }
   
-  void parse_xquery_version (rchandle<VersionDecl> vh) {
-    if (vh != NULL) {
-      string ver = vh->get_version ();
-      if (ver == "1.0")
-        xquery_version = 100;
-      else if (ver == "1.1")
-        xquery_version = 110;
-      // ignore otherwise
+  StaticContextConsts::xquery_version_t parse_xquery_version(const VersionDecl* vh) 
+  {
+    if (vh == NULL)
+      return StaticContextConsts::xquery_version_1_0; // TODO: the spec says the default should be 1.1 for a 1.1 processor
+
+    string ver = vh->get_version ();
+    if (ver == "1.0")
+    {
+      xquery_version = StaticContextConsts::xquery_version_1_0;
+      return StaticContextConsts::xquery_version_1_0;
     }
+    else if (ver == "1.1")
+    {
+      xquery_version = StaticContextConsts::xquery_version_1_1;
+      return StaticContextConsts::xquery_version_1_1;
+    }
+    // ignore otherwise
+    return StaticContextConsts::xquery_version_1_0; // TODO: the spec says the default should be 1.1 for a 1.1 processor
   }
   
 expr_t wrap_in_atomization (expr_t e) {
@@ -1692,7 +1702,7 @@ void translate_gflwor (const FLWORExpr& v) {
       eclauses.push_back (flwc);
     } else if (typeid (c) == typeid (ForClause)) {
       const ForClause &flc = *static_cast<const ForClause *> (&c);
-      if (xquery_version <= 100 && flc.is_outer ())
+      if (xquery_version <= StaticContextConsts::xquery_version_1_0 && flc.is_outer ())
         ZORBA_ERROR_LOC (XPST0003, loc);
       nvars = flc.get_decl_count ();
       VarInDeclList *decl_list = &*flc.get_vardecl_list ();
@@ -1864,7 +1874,7 @@ void translate_gflwor (const FLWORExpr& v) {
 void end_visit (const FLWORExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 
-  if (xquery_version <= 100 && v. is_non_10 ())
+  if (xquery_version <= StaticContextConsts::xquery_version_1_0 && v. is_non_10 ())
     ZORBA_ERROR_LOC (XPST0003, loc);
   if (v.is_general ()) {
     translate_gflwor (v);
@@ -2017,7 +2027,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/) {
 
 void *begin_visit (const WindowClause& v) {
   TRACE_VISIT ();
-  if (xquery_version <= 100)
+  if (xquery_version <= StaticContextConsts::xquery_version_1_0)
     ZORBA_ERROR_LOC (XPST0003, loc);
   push_scope ();  // for window conditions
   return no_state;
@@ -2181,7 +2191,7 @@ void end_visit (const WhereClause& v, void* /*visit_state*/) {
 
 void *begin_visit (const CountClause& v) {
   TRACE_VISIT ();
-  if (xquery_version <= 100)
+  if (xquery_version <= StaticContextConsts::xquery_version_1_0)
     ZORBA_ERROR_LOC (XPST0003, loc);
   return no_state;
 }
@@ -2354,7 +2364,7 @@ void end_visit (const OrderEmptySpec& v, void* /*visit_state*/) {
 
 void *begin_visit (const CtxItemDecl& v) {
   TRACE_VISIT ();
-  if (xquery_version <= 100)
+  if (xquery_version <= StaticContextConsts::xquery_version_1_0)
     ZORBA_ERROR_LOC (XPST0003, loc);
   return no_state;
 }
@@ -3128,7 +3138,7 @@ void *begin_visit (const LibraryModule& v) {
 
 void end_visit (const LibraryModule& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  parse_xquery_version (v.get_version_decl ());
+  sctx_p->set_xquery_version(parse_xquery_version(v.get_version_decl().getp()));
   nodestack.push (wrap_in_globalvar_assign (create_seq (loc)));
 }
 
@@ -3138,7 +3148,7 @@ void *begin_visit (const MainModule & v) {
 
   theDotVar = bind_var (loc, DOT_VARNAME, var_expr::context_var, ctx_item_type);
   
-  parse_xquery_version (v.get_version_decl ());
+  sctx_p->set_xquery_version(parse_xquery_version(v.get_version_decl().getp()));
   return no_state;
 }
 
@@ -3572,6 +3582,7 @@ void *begin_visit (const VersionDecl& v) {
   TRACE_VISIT ();
   if (! xqp_string (v.get_encoding ()).matches ("^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
     ZORBA_ERROR_LOC (XQST0087, loc);
+  sctx_p->set_xquery_version(parse_xquery_version(&v));
   return no_state;
 }
 
@@ -5518,7 +5529,7 @@ void end_visit (const TryExpr& v, void* visit_state) {
 
 void *begin_visit (const EvalExpr& v) {
   TRACE_VISIT ();
-  if (xquery_version <= 100)
+  if (xquery_version <= StaticContextConsts::xquery_version_1_0)
     ZORBA_ERROR_LOC (XPST0003, loc);
   return no_state;
 }

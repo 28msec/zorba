@@ -410,7 +410,7 @@ public:
       toIntegerString() const;
       
       xqpString 
-      toString() const;
+      toString(bool no_scientific_mode = false) const;
 
       uint32_t
       hash() const;

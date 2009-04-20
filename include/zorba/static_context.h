@@ -165,6 +165,23 @@ namespace zorba {
       virtual String 
       getDefaultCollation() const = 0;
 
+      /** \brief Set the XQuery processing mode (version 1.0 or 1.1).
+       *         
+       *
+       * @param aMode the XQuery version.
+       * @return true if the version was set, false otherwise.
+       */
+      virtual bool   
+      setXqueryVersion( xquery_version_t aMode ) = 0;
+
+      /** \brief Get the XQuery processing mode (version 1.0 or 1.1).
+       *         
+       *
+       * @return xquery_version_t the XQuery version processing mode.
+       */
+      virtual xquery_version_t  
+      getXqueryVersion( ) const = 0;
+
       /** \brief Set the XPath 1.0 compatibility mode.
        *         (see http://www.w3.org/TR/xquery/#static_context)
        *

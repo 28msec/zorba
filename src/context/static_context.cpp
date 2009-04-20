@@ -258,6 +258,7 @@ DecimalFormat_t static_context::get_decimal_format(const store::Item_t qname)
 /*******************************************************************************
   Methods for setting and retrieving certain "simple" context properties
 ********************************************************************************/
+DECL_ENUM_PARAM (static_context, xquery_version)
 DECL_ENUM_PARAM (static_context, xpath1_0compatib_mode)
 DECL_ENUM_PARAM (static_context, construction_mode)
 DECL_ENUM_PARAM (static_context, order_empty_mode)

@@ -38,7 +38,12 @@ using namespace std;
 namespace zorba
 {
 
-static const int FACET_MEMBERS[][8] = {
+  
+static const char separators[] = { '-', '-', 'T', ':', ':', '.'};
+static const char min_length[] = { 4, 2, 2, 2, 2, 2, 0};
+  
+
+const int DateTime::FACET_MEMBERS[][8] = {
   { 1, 1, 1, 1, 1, 1, 1, 0},    // DATETIME_FACET = 0,
   { 1, 1, 1, 0, 0, 0, 0, 0},    // DATE_FACET = 1,
   { 0, 0, 0, 1, 1, 1, 1, 0},    // TIME_FACET = 2,
@@ -49,12 +54,7 @@ static const int FACET_MEMBERS[][8] = {
   { 0, 0, 1, 0, 0, 0, 0, 0}     // GDAY_FACET = 7
 };
 
-static const char separators[] = { '-', '-', 'T', ':', ':', '.'};
-static const char min_length[] = { 4, 2, 2, 2, 2, 2, 0};
-  
-  
 const int DateTime::FRAC_SECONDS_UPPER_LIMIT = 1000000;
-
 
 DateTime::DateTime()
   : 
@@ -909,9 +909,9 @@ Duration* DateTime::toDayTimeDuration() const
     return new Duration(Duration::DAYTIMEDURATION_FACET, false, 0, 0,
                         365 * (abs<int>(data[YEAR_DATA]) - 1) +
                           leap_years_count(data[YEAR_DATA]) +
-                          days_since_year_start(data[YEAR_DATA],
+                          DateTime::getDayOfYear(data[YEAR_DATA],
                             data[MONTH_DATA],
-                            data[DAY_DATA]),
+                            data[DAY_DATA])-1,
                         data[HOUR_DATA],
                         data[MINUTE_DATA],
                         data[SECONDS_DATA],
@@ -921,9 +921,9 @@ Duration* DateTime::toDayTimeDuration() const
     Duration days(Duration::DAYTIMEDURATION_FACET, true, 0, 0,
                          365 * abs<int>(data[YEAR_DATA]) -
                          leap_years_count(data[YEAR_DATA]) -
-                         days_since_year_start(data[YEAR_DATA],
+                         DateTime::getDayOfYear(data[YEAR_DATA],
                                                data[MONTH_DATA],
-                                               data[DAY_DATA]),
+                                               data[DAY_DATA])-1,
                          0, 0, 0, 0);
     
     Duration remainder(Duration::DAYTIMEDURATION_FACET, false, 0, 0, 0,
@@ -1221,21 +1221,15 @@ void DateTime::adjustToFacet()
   }
 }
 
-int DateTime::getDayOfWeek() const
+int DateTime::getDayOfWeek(int year, int month, int day)
 {
-  if (facet != DATE_FACET && facet != DATETIME_FACET)
-    return -1;
-  
-  int month = data[MONTH_DATA];
-  int year = data[YEAR_DATA];
-  
   if (month < 3)
   {
     month = month + 12;
     year = year - 1;
   }
   
-  return (data[DAY_DATA]
+  return (day
       + (2 * month)
       + int(6 * (month + 1) / 10)
       + year
@@ -1246,12 +1240,68 @@ int DateTime::getDayOfWeek() const
          ) % 7;
 }
 
-int DateTime::getDayOfYear() const
+int DateTime::getWeekInYear(int year, int month, int day)
 {
-  if (facet != DATE_FACET && facet != DATETIME_FACET && facet != GMONTHDAY_FACET)
+  int day_of_year = DateTime::getDayOfYear(year, month, day);
+  int year_first_day_of_week = DateTime::getDayOfWeek(year, 1, 1);
+  if (year_first_day_of_week > 4 && (year_first_day_of_week + day_of_year) <= 8)
+    return DateTime::getWeekInYear(year-1, 12, 31);
+  
+  return ((day_of_year + year_first_day_of_week - 2) / 7) + year_first_day_of_week < 5 ? 1 : 0;
+}
+
+int DateTime::getDayOfYear(int year, int month, int day)
+{
+  static const int days[] = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365};
+
+  if (month > 12)
     return -1;
   
-  return 1 + days_since_year_start(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA]);
+  if (DateTime::isLeapYear(year) && month >= 3)
+    day++;
+  
+  return days[month-1] + day;
+}
+
+bool DateTime::isLeapYear(int year)
+{
+  if (((year%4 == 0) && (year%100 != 0))
+        ||
+        (year%400 == 0))
+    return true;
+  else
+    return false;
+}
+
+int DateTime::getWeekInMonth(int year, int month, int day)
+{
+  int first_day_of_week = DateTime::getDayOfWeek(year, month, 1);
+  return ((day + first_day_of_week - 2) / 7) + (first_day_of_week < 5 ? 1 : 0);
+}
+
+bool DateTime::isLeapYear() const
+{
+  return DateTime::isLeapYear(data[YEAR_DATA]);
+}
+
+int DateTime::getDayOfWeek() const
+{  
+	return DateTime::getDayOfWeek(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA]);
+}
+
+int DateTime::getDayOfYear() const
+{
+  return DateTime::getDayOfYear(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA]);
+}
+
+int DateTime::getWeekInYear() const
+{
+  return DateTime::getWeekInYear(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA]);
+}
+
+int DateTime::getWeekInMonth() const
+{
+  return DateTime::getWeekInMonth(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA]);
 }
 
 } // namespace xqp

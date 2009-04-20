@@ -666,6 +666,37 @@ public:
   }
 };
 
+/*______________________________________________________________________
+|
+| XQuery 1.1 functions
+|_______________________________________________________________________*/
+
+class fn_format_number_2 : public function
+{
+public:
+  fn_format_number_2(const signature& sig) : function(sig) {};
+  PlanIter_t codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  {
+    return new FnFormatNumberIterator(loc, argv);
+  }
+};
+
+class fn_format_number_3 : public function
+{
+public:
+  fn_format_number_3(const signature& sig) : function(sig) {};
+  PlanIter_t codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  {
+    return new FnFormatNumberIterator(loc, argv);
+  }
+};
+
+/*______________________________________________________________________
+|  
+| Functions declarations
+|_______________________________________________________________________*/
+
+
 #define DECL_DOUBLE_MATH_FUN( name, iter )                              \
   class fn_##name : public function_impl<Fn##iter##Iterator> {          \
   public:                                                               \
@@ -805,6 +836,25 @@ DECL(sctx, fn_round_half_to_even,
      (createQName(XQUERY_FN_NS, "fn", "round-half-to-even"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+/*______________________________________________________________________
+|  
+| XQuery 1.1 functions
+|_______________________________________________________________________*/
+
+DECL(sctx, fn_format_number_2,
+     (createQName(XQUERY_FN_NS, "fn", "format-number"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+DECL(sctx, fn_format_number_3,
+     (createQName(XQUERY_FN_NS, "fn", "format-number"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+	    GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+      
 // end Numerics
 
 }

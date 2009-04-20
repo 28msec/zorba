@@ -234,6 +234,22 @@ public:
   NARY_ITER (FnArcCosIterator);
   NARY_ITER (FnArcTanIterator);
 
+/*______________________________________________________________________
+|
+| XQuery 1.1 functions
+|_______________________________________________________________________*/
+class FnFormatNumberIterator: public NaryBaseIterator<FnFormatNumberIterator, PlanIteratorState >
+{
+public:
+  FnFormatNumberIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
+    :
+    NaryBaseIterator<FnFormatNumberIterator, PlanIteratorState >(loc, aChildren)
+  {}
+
+public:
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
 } /* namespace zorba */
 #endif  /* ZORBA_NUMERICS_H */
 

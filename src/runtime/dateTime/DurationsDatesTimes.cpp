@@ -30,6 +30,7 @@
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
 #include "zorbatypes/numconversions.h"
+#include "zorbatypes/datetime/parse.h"
 
 using namespace std;
 
@@ -843,74 +844,125 @@ FnAdjustToTimeZoneIterator_2::nextImpl(store::Item_t& result, PlanState& planSta
  * 
  *_______________________________________________________________________*/
 
-void output_number(xqpStringStore_t& str, long number, xqpStringStore& presentation_modifier, xqpStringStore& second_modifier)
+
+class Modifier
+{
+public:
+  xqpStringStore_t presentation_modifier;
+  xqpStringStore_t second_modifier;
+
+  // for min_width and max_width 
+  // -3 means an error in the picture
+  // -2 means width modifiers are not specified
+  // -1 means '*'
+  // >=0 means explicitly specified width 
+  int min_width_modifier;
+  int max_width_modifier;
+
+  Modifier() : presentation_modifier(new xqpStringStore()), second_modifier(new xqpStringStore()),min_width_modifier(-2), max_width_modifier(-2) 
+	{};
+};
+
+static void format_number(xqpStringStore_t& str, long number, Modifier& modifier)
 {
   // Presentation modifier can be:
   // 'Ww', "Nn', 'W', 'w', 'N', 'n'
   // 'i', 'I', '1', '00...01'
   // the modifier will not be checked if it is supported or not
+  xqpString temp;
     
-  if (presentation_modifier.byteAt(0) == '0')
+  if (modifier.presentation_modifier->bytes() > 0 && modifier.presentation_modifier->byteAt(0) == '0')
   {
-    xqpString temp = xqpString("");
     temp.append_in_place(NumConversions::longToStr(number));
-    while (temp.bytes() < presentation_modifier.bytes())      
-      temp = "0" + temp;    
-    str->append_in_place(temp);
+    while (temp.bytes() < modifier.presentation_modifier->bytes())      
+      temp = "0" + temp;
   }
   else // "1" or fallback
   {  
-    str->append_in_place(NumConversions::longToStr(number));
+    temp.append_in_place(NumConversions::longToStr(number));
   }
   
-  if (second_modifier.byteEqual("o"))
+  if (modifier.second_modifier->byteEqual("o"))
   {
     if ((number % 10) == 1 && (number % 100) != 11)
-      str->append_in_place("st");
+      temp.append_in_place("st");
     else if ((number % 10) == 2 && (number % 100) != 12)
-      str->append_in_place("nd");
+      temp.append_in_place("nd");
     else if ((number % 10) == 3 && (number % 100) != 13)
-      str->append_in_place("rd");
+      temp.append_in_place("rd");
     else
-      str->append_in_place("th");
-  }  
+      temp.append_in_place("th");
+  }
+
+  if (modifier.min_width_modifier >= 0)
+    while (temp.bytes() < (unsigned int)modifier.min_width_modifier)
+	  temp = "0" + temp;
+
+  str->append_in_place(temp);
 }
 
-void output_month(xqpStringStore_t& str, long number, xqpStringStore& presentation_modifier, xqpStringStore& second_modifier)
+static void format_string_width(xqpStringStore_t& destination, xqpStringStore_t& source, Modifier& modifier)
 {
-  static const char* n_month[12]  = { "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"};
-  static const char* Nn_month[12] = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-  static const char* N_month[12]  = { "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"};
+  xqpStringStore temp = *source;
+  while (modifier.max_width_modifier > 0 && temp.bytes() < (unsigned int)modifier.max_width_modifier)
+	temp.append_in_place(" ");
+  destination->append_in_place(temp.c_str());
+}
 
-  if (presentation_modifier.byteEqual("n"))
-    str->append_in_place(n_month[number-1]);
-  else if (presentation_modifier.byteEqual("N"))
-    str->append_in_place(N_month[number-1]);
-  else if (presentation_modifier.byteEqual("Nn"))
-    str->append_in_place(Nn_month[number-1]);
+static bool format_string(xqpStringStore_t& destination, xqpStringStore& source, Modifier& modifier)
+{
+  xqpString temp;
+  if (modifier.presentation_modifier->bytes() == 0 || modifier.presentation_modifier->byteEqual("n"))
+    temp.append_in_place(source.lowercase());
+  else if (modifier.presentation_modifier->byteEqual("N"))
+    temp.append_in_place(source.uppercase());
+  else if (modifier.presentation_modifier->byteEqual("Nn"))
+  {
+    temp.append_in_place(source.substr(0, 1)->uppercase());
+    temp.append_in_place(source.substr(1,source.size()-1)->lowercase());
+  }
   else
-    output_number(str, number, presentation_modifier, second_modifier);
+    return false;
+
+  format_string_width(destination, temp.theStrStore, modifier);
+  return true;
 }
 
-void output_day_of_week(xqpStringStore_t& str, long number, xqpStringStore& presentation_modifier, xqpStringStore& second_modifier)
+static bool format_string(xqpStringStore_t& destination, const char* source, Modifier& modifier)
 {
-  static const char* n_day[7]  = { "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
-  static const char* Nn_day[7] = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-  static const char* N_day[7]  = { "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"};
+  xqpStringStore temp(source);
+  return format_string(destination, temp, modifier);
+}
+
+static void format_component(xqpStringStore_t& destination, long number, xqpStringStore& source, Modifier& modifier)
+{
+  if (!format_string(destination, source, modifier))
+    format_number(destination, number, modifier);
+}
+
+static void output_month(xqpStringStore_t& destination, long number, Modifier& modifier)
+{
+  static const char* month[12]  = { "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"};
+  xqpString temp(month[number-1]);
+  if (modifier.max_width_modifier > 0 && (unsigned int)modifier.max_width_modifier < temp.size())
+    temp = temp.substr(0, modifier.max_width_modifier);
   
-  if (presentation_modifier.byteEqual("n"))
-    str->append_in_place(n_day[number]);
-  else if (presentation_modifier.byteEqual("N"))
-    str->append_in_place(N_day[number]);
-  else if (presentation_modifier.byteEqual("Nn"))
-    str->append_in_place(Nn_day[number]);
-  else
-    output_number(str, number, presentation_modifier, second_modifier);
+  format_component(destination, number, *temp.theStrStore, modifier);
 }
 
-void parse_presentation_modifier(xqpStringStore_t& str, unsigned int& position, xqpStringStore& result)
+static void output_day_of_week(xqpStringStore_t& destination, long number, Modifier& modifier)
 {
-  result = xqpStringStore("");
+  static const char* day[7]  = { "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
+  xqpString temp(day[number]);
+  if (modifier.max_width_modifier > 0 && (unsigned int)modifier.max_width_modifier < temp.size())
+    temp = temp.substr(0, modifier.max_width_modifier);
+  
+  format_component(destination, number, *temp.theStrStore, modifier);
+}
+
+static void parse_presentation_modifier(xqpStringStore_t& str, unsigned int& position, xqpStringStore_t& result)
+{
+  result = new xqpStringStore("");
   
   if (position+1 >= str->bytes())
     return;
@@ -950,28 +1002,113 @@ void parse_presentation_modifier(xqpStringStore_t& str, unsigned int& position, 
     position++;
   }
   
-  result = *modifier.theStrStore;
+  result = modifier.theStrStore;
 }
 
-void parse_second_modifier(xqpStringStore_t& str, unsigned int& position, xqpStringStore& result)
+static void parse_second_modifier(xqpStringStore_t& str, unsigned int& position, xqpStringStore_t& result)
 {
-  result = xqpStringStore("");
+  result = new xqpStringStore("");
   
   if (position+1 >= str->bytes())
     return;
   
   position++;
   if (str->byteAt(position) == 't')
-    result = xqpStringStore("t");
+    result = new xqpStringStore("t");
   else if (str->byteAt(position) == 'o')
-    result = xqpStringStore("o");
+    result = new xqpStringStore("o");
   else
     position--;
 }
 
-void parse_width_modifier(xqpStringStore_t& str, unsigned int& position, xqpStringStore& result)
+// for min_width and max_width 
+// -3 means an error in the picture
+// -2 means width modifiers are not specified
+// -1 means '*'
+// >=0 means explicitly specified width 
+static void parse_width_modifier(xqpStringStore_t& str, unsigned int& position, int& min_width, int& max_width)
 {
-  // TODO
+  min_width = -2;
+  max_width = -2;
+    
+  if (position+1 >= str->bytes() || str->byteAt(position+1) != ',')
+    return;
+    
+  position++;
+  
+  // The min_width must be present if there is a comma symbol
+  min_width = -3;  
+  if (position+1 >= str->bytes())
+    return;
+  
+  if (str->byteAt(position+1) == '*')
+  {
+    min_width = -1;
+    position++;
+  }
+  else 
+  {
+    if (parse_int(*str, position, min_width, -1, -1, 1))
+      min_width = -3;
+  }
+
+  if (position+1 >= str->bytes() || str->byteAt(position+1) != '-')
+    return;
+
+  position++;
+  if (str->byteAt(position+1) == '*')
+  {
+    max_width = -1;
+    position++;
+  }
+  else
+  {
+    if (parse_int(*str, position, max_width, -1, -1, 1))
+      min_width = -3;
+  }
+}
+
+static int get_data_type(char component)
+{
+  switch (component)
+  {
+  case 'Y':
+    return DateTime::YEAR_DATA;
+  case 'M':
+    return DateTime::MONTH_DATA;
+  case 'D':
+    return DateTime::DAY_DATA;
+  case 'd':  // day in year
+    return DateTime::DAY_DATA;
+  case 'F':  // day of week
+    return DateTime::DAY_DATA;
+  case 'W':  // week in year
+    return DateTime::DAY_DATA;
+  case 'w':  // week in month
+    return DateTime::DAY_DATA;
+  case 'H':  // hour in day (24 hours)
+    return DateTime::HOUR_DATA;
+  case 'h':  // hour in half-day (12 hours)
+    return DateTime::HOUR_DATA;
+  case 'P':  // am/pm marker
+    return DateTime::HOUR_DATA;
+  case 'm':
+    return DateTime::MINUTE_DATA;
+  case 's':
+    return DateTime::SECONDS_DATA;
+  case 'f': // fractional seconds
+    return DateTime::FRACSECONDS_DATA;
+  case 'Z': // timezone as a time offset from UTC, or if an alphabetic modifier is present the conventional name of a timezone (such as PST)
+    return -1;
+  case 'z': // timezone as a time offset using GMT, for example GMT+1
+    return -1;
+  case 'C': // calendar: the name or abbreviation of a calendar name
+    return -1;
+  case 'E': // era: the name of a baseline for the numbering of years, for example the reign of a monarch
+    return -1;
+  default:
+    return -1;
+  }
 }
 
 /*begin class FnFormatDateTimeIterator */
@@ -984,6 +1121,9 @@ FnFormatDateTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
+  if (planState.theCompilerCB->m_sctx->xquery_version() == StaticContextConsts::xquery_version_1_0)
+    ZORBA_ERROR_LOC_DESC(XPST0017, loc, "The date/time formatting functions are only available in the XQuery 1.1 processing mode.");
+
   if (!consumeNext(dateTimeItem, theChildren[0].getp(), planState))
   {
     // Got void, returning void
@@ -993,16 +1133,14 @@ FnFormatDateTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   { 
   	consumeNext(picture, theChildren[1].getp(), planState);
     pictureString = picture->getStringValue();
-    resultString = xqpString("").theStrStore;
+    resultString = new xqpStringStore("");
     variable_marker = false;
     for (unsigned int i=0; i<pictureString->bytes(); i++)
     {      
       if (variable_marker)
       {
         char component = 0;
-        xqpStringStore presentation_modifier;
-        xqpStringStore second_modifier;
-        xqpStringStore width_modifier;
+        Modifier modifier;
 
         switch (pictureString->byteAt(i))
         {
@@ -1017,75 +1155,86 @@ FnFormatDateTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) 
           break;
 
         default:          
-          ZORBA_ERROR(XTDE1340);          
+          ZORBA_ERROR_LOC(XTDE1340, loc);
           break;
         }
         
         if (variable_marker == false)
           continue;
 
-        parse_presentation_modifier(pictureString, i, presentation_modifier);
-        parse_second_modifier(pictureString, i, second_modifier);
-        parse_width_modifier(pictureString, i, width_modifier);
+        parse_presentation_modifier(pictureString, i, modifier.presentation_modifier);
+        parse_second_modifier(pictureString, i, modifier.second_modifier);
+        parse_width_modifier(pictureString, i, modifier.min_width_modifier, modifier.max_width_modifier);
+
+        // min_width_modifier is -3, there was an error in the picture
+        if (modifier.min_width_modifier == -3)
+          ZORBA_ERROR_LOC(XTDE1340, loc);
         
-        // TODO: width modifier
-        
-        // std::cout << "Got pres. modifier: " << presentation_modifier << "  Second modifier: " << second_modifier << std::endl;
+        int data_type = get_data_type(component);
+        if (data_type != -1 && (!DateTime::FACET_MEMBERS[facet_type][data_type]))
+          ZORBA_ERROR_LOC(XTDE1350, loc);
 
         switch (component)
         {
         case 'Y': 
           // TODO: year can be negative
-          output_number(resultString, dateTimeItem->getDateTimeValue().getYear(), presentation_modifier, second_modifier);
+          format_number(resultString, dateTimeItem->getDateTimeValue().getYear(), modifier);
           break;
         case 'M': 
-          output_month(resultString, dateTimeItem->getDateTimeValue().getMonth(), presentation_modifier, second_modifier);
+          output_month(resultString, dateTimeItem->getDateTimeValue().getMonth(), modifier);
           break; 
         case 'D': 
-          output_number(resultString, dateTimeItem->getDateTimeValue().getDay(), presentation_modifier, second_modifier);
+          format_number(resultString, dateTimeItem->getDateTimeValue().getDay(), modifier);
           break; 
         case 'd':  // day in year
-          output_number(resultString, dateTimeItem->getDateTimeValue().getDayOfYear(), presentation_modifier, second_modifier);
+          format_number(resultString, dateTimeItem->getDateTimeValue().getDayOfYear(), modifier);
           break;
         case 'F':  // day of week
-          output_day_of_week(resultString, dateTimeItem->getDateTimeValue().getDayOfWeek(), presentation_modifier, second_modifier);
+          output_day_of_week(resultString, dateTimeItem->getDateTimeValue().getDayOfWeek(), modifier);
           break;
         case 'W':  // week in year
+          format_number(resultString, dateTimeItem->getDateTimeValue().getWeekInYear(), modifier);
           break;
         case 'w':  // week in month
+          format_number(resultString, dateTimeItem->getDateTimeValue().getWeekInMonth(), modifier);
           break;
         case 'H':  // hour in day (24 hours)
-          output_number(resultString, dateTimeItem->getDateTimeValue().getHours(), presentation_modifier, second_modifier);
+          format_number(resultString, dateTimeItem->getDateTimeValue().getHours(), modifier);
           break;
         case 'h':  // hour in half-day (12 hours)
-          if (dateTimeItem->getDateTimeValue().getHours() >= 12)
-            output_number(resultString, dateTimeItem->getDateTimeValue().getHours() - 12, presentation_modifier, second_modifier);
-          else
-            output_number(resultString, dateTimeItem->getDateTimeValue().getHours(), presentation_modifier, second_modifier);
+          format_number(resultString, dateTimeItem->getDateTimeValue().getHours() - (dateTimeItem->getDateTimeValue().getHours() >= 12? 12 : 0),
+                        modifier);
           break;
         case 'P':  // am/pm marker
-          if (presentation_modifier.byteEqual("N"))
-            resultString->append_in_place(dateTimeItem->getDateTimeValue().getHours() >= 12? "PM" : "AM");
-          else if (presentation_modifier.byteEqual("Nn"))
-            resultString->append_in_place(dateTimeItem->getDateTimeValue().getHours() >= 12? "Pm" : "Am");
-          else
-            resultString->append_in_place(dateTimeItem->getDateTimeValue().getHours() >= 12? "pm" : "am");          
+          format_string(resultString, dateTimeItem->getDateTimeValue().getHours() >= 12 ? "pm" : "am", modifier);
           break;
-        case 'm':  
-          output_number(resultString, dateTimeItem->getDateTimeValue().getMinutes(), presentation_modifier, second_modifier);
+        case 'm':
+          if (modifier.presentation_modifier->size() == 0)
+            modifier.presentation_modifier->append_in_place("01");
+          format_number(resultString, dateTimeItem->getDateTimeValue().getMinutes(), modifier);
           break;
         case 's':
-          output_number(resultString, dateTimeItem->getDateTimeValue().getIntSeconds(), presentation_modifier, second_modifier);
+          if (modifier.presentation_modifier->size() == 0)
+            modifier.presentation_modifier->append_in_place("01");
+          format_number(resultString, dateTimeItem->getDateTimeValue().getIntSeconds(), modifier);
           break;
         case 'f': // fractional seconds
+          format_number(resultString, (long)(dateTimeItem->getDateTimeValue().getFractionalSeconds()*1000.0/DateTime::FRAC_SECONDS_UPPER_LIMIT),
+                        modifier);
           break;
         case 'Z': // timezone as a time offset from UTC, or if an alphabetic modifier is present the conventional name of a timezone (such as PST)
-          break;
+          // deliberate fall-through
         case 'z': // timezone as a time offset using GMT, for example GMT+1
+          {
+		        xqpString temp = "gmt" + dateTimeItem->getDateTimeValue().getTimezone().toString();
+            format_string(resultString, *temp.theStrStore, modifier);
+		      }
           break;
         case 'C': // calendar: the name or abbreviation of a calendar name
+          format_string(resultString, "gregorian", modifier);
           break;
         case 'E': // era: the name of a baseline for the numbering of years, for example the reign of a monarch
+          format_string(resultString, dateTimeItem->getDateTimeValue().getYear() < 0 ? "ad" : "bc", modifier);
           break;
         }
       }
@@ -1119,7 +1268,5 @@ FnFormatDateTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   STACK_END (state);
 }
 /*end class FnFormatDateTimeIterator */
-
-
 
 }

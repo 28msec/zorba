@@ -166,6 +166,26 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
+  StaticContext::set_xquery_version(XQC_StaticContext context, xquery_version_t mode )
+  {
+    SC_TRY
+      zorba::StaticContext* lContext = getStaticContext(context);
+
+      lContext->setXqueryVersion(mode);
+    SC_CATCH
+  }
+
+  XQUERY_ERROR 
+  StaticContext::get_xquery_version(XQC_StaticContext context, xquery_version_t* mode)
+  {
+    SC_TRY
+      zorba::StaticContext* lContext = getStaticContext(context);;
+
+      *mode = lContext->getXqueryVersion();
+    SC_CATCH
+  }
+
+  XQUERY_ERROR
   StaticContext::set_xpath1_0_mode(XQC_StaticContext context, xpath1_0compatib_mode_t mode )
   {
     SC_TRY
@@ -388,6 +408,8 @@ namespace zorbac {
     context->add_collation                     = StaticContext::add_collation;
     context->set_default_collation             = StaticContext::set_default_collation;
     context->get_default_collation             = StaticContext::get_default_collation;
+    context->set_xquery_version                = StaticContext::set_xquery_version;
+    context->get_xquery_version                = StaticContext::get_xquery_version;
     context->set_xpath1_0_mode                 = StaticContext::set_xpath1_0_mode;
     context->get_xpath1_0_mode                 = StaticContext::get_xpath1_0_mode;
     context->set_construction_mode             = StaticContext::set_construction_mode;

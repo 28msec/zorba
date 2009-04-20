@@ -36,6 +36,7 @@ public:
 
   bool isDefaultFormat() const { return isDefault; };
   const store::Item_t getFormatName() const { return formatName; };
+  const param_vector_type* getParamVector() const { return &paramVector; }
 };
 
 typedef rchandle<DecimalFormat> DecimalFormat_t;

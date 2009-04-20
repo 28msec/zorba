@@ -61,6 +61,12 @@ namespace zorbac {
       get_default_collation(XQC_StaticContext context, const char** uri);
 
       static XQUERY_ERROR
+      set_xquery_version(XQC_StaticContext context, xquery_version_t mode );
+
+      static XQUERY_ERROR 
+      get_xquery_version(XQC_StaticContext context, xquery_version_t* mode);
+
+      static XQUERY_ERROR
       set_xpath1_0_mode(XQC_StaticContext context, xpath1_0compatib_mode_t mode );
 
       static XQUERY_ERROR 

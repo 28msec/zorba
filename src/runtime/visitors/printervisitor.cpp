@@ -1116,10 +1116,9 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
   PRINTER_VISITOR_DEFINITION(ReplaceIterator);
 
   PRINTER_VISITOR_DEFINITION(RenameIterator);
-
   PRINTER_VISITOR_DEFINITION(TransformIterator);
-
   PRINTER_VISITOR_DEFINITION(FnDeepEqualIterator);
+  PRINTER_VISITOR_DEFINITION(FnFormatNumberIterator);
 
   PRINTER_VISITOR_DEFINITION(ZorbaCollectionExistsIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaImportXmlIterator);

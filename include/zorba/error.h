@@ -740,6 +740,9 @@ typedef enum
   SEPM0016,
   // It is a an error if a parameter value is invalid for the defined domain.
 
+  XTDE1310,
+  // It is a non-recoverable dynamic error if the picture string does not satisfy the format-number function rules.
+
   XTDE1340,
   // It is a non-recoverable dynamic error if the syntax of the picture is incorrect. 
 

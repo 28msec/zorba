@@ -237,6 +237,35 @@ StaticContextImpl::getDefaultCollation() const
 
 
 bool   
+StaticContextImpl::setXqueryVersion(xquery_version_t version)
+{
+  ZORBA_TRY
+    if ( version == xquery_version_1_0)
+      theCtx->set_xquery_version(StaticContextConsts::xquery_version_1_0);
+    else
+      theCtx->set_xquery_version(StaticContextConsts::xquery_version_1_1);
+    return true;
+  ZORBA_CATCH
+  return false;
+}
+
+
+xquery_version_t  
+StaticContextImpl::getXqueryVersion() const
+{
+  try {
+    return theCtx->xquery_version()==StaticContextConsts::xquery_version_1_0?
+      xquery_version_1_0:xquery_version_1_1;
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  } catch (std::exception& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e.what());
+  }
+  return xquery_version_1_0;
+}
+
+
+bool   
 StaticContextImpl::setXPath1_0CompatibMode( xpath1_0compatib_mode_t mode )
 {
   ZORBA_TRY

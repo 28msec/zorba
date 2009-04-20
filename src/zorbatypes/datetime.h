@@ -46,18 +46,11 @@ public:
     GMONTHDAY_FACET = 6,
     GDAY_FACET = 7
   } FACET_TYPE;
-  
 
-public:
-  // fractional seconds have 6 digits. 0.1 seconds are represented as 100000,
-  // 0.01 seconds as 10000, etc.
-  static const int FRAC_SECONDS_UPPER_LIMIT; // = 1000000, maximum 6 digits
-
-protected:
   // Only year may be negative, all other must be positive
   // The year gives the sign of DateTime, Date, etc
       
-  typedef enum 
+  typedef enum
   {
     YEAR_DATA = 0,
     MONTH_DATA = 1,
@@ -67,12 +60,13 @@ protected:
     SECONDS_DATA = 5,
     FRACSECONDS_DATA = 6
   } DATA_TYPE;
-  
-  FACET_TYPE facet;
 
-  int data[7];
-      
-  TimeZone the_time_zone;
+  static const int FACET_MEMBERS[8][8];
+
+  // fractional seconds have 6 digits. 0.1 seconds are represented as 100000,
+  // 0.01 seconds as 10000, etc.
+  static const int FRAC_SECONDS_UPPER_LIMIT; // = 1000000, maximum 6 digits
+
 
 public:
   /**
@@ -347,9 +341,16 @@ public:
    *
    */ 
   int getDayOfWeek() const;
-  
-  
   int getDayOfYear() const;
+  int getWeekInYear() const;
+  int getWeekInMonth() const;
+  bool isLeapYear() const;
+
+  static int getDayOfWeek(int year, int month, int day);
+  static int getDayOfYear(int year, int month, int day);
+  static int getWeekInYear(int year, int month, int day);
+  static int getWeekInMonth(int year, int month, int day);
+  static bool isLeapYear(int year);  
   
       
 protected:
@@ -373,6 +374,14 @@ protected:
   void adjustToFacet();
 
   void setFacet(FACET_TYPE a_facet);
+
+  
+protected:
+  FACET_TYPE facet;
+
+  int data[7];
+      
+  TimeZone the_time_zone;
 };
 
 } /* namespace xqp */

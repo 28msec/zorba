@@ -20,6 +20,7 @@
 #include "runtime/base/binarybase.h" // TODO remove after iterator refactoring
 #include "runtime/base/unarybase.h" // TODO remove after iterator refactoring
 #include "runtime/base/narybase.h"
+#include "zorbatypes/datetime.h"
 
 
 namespace zorba
@@ -154,7 +155,24 @@ NARY_ITER(FnSecondsFromTimeIterator);
 NARY_ITER(FnTimezoneFromTimeIterator);
 
 // XQuery 1.1 DateTime formatting
-NARY_ITER(FnFormatDateTimeIterator);
+// NARY_ITER(FnFormatDateTimeIterator);
+
+class FnFormatDateTimeIterator : public NaryBaseIterator<FnFormatDateTimeIterator, PlanIteratorState >
+{
+private:
+  DateTime::FACET_TYPE facet_type;
+    
+public:
+  FnFormatDateTimeIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, DateTime::FACET_TYPE a_facet_type = DateTime::DATETIME_FACET)
+    :
+    NaryBaseIterator<FnFormatDateTimeIterator, PlanIteratorState >(loc, aChildren), facet_type(a_facet_type)
+  {
+  }
+
+public:
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
 
   /* begin 10.6 Arithmetic Operators on Durations
   10.6 Arithmetic Operators on Durations

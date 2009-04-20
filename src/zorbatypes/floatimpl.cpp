@@ -1401,7 +1401,7 @@ xqpString FloatImpl<FloatType>::toIntegerString() const {
 
 #ifndef ZORBA_NO_BIGNUMBERS
 template <typename FloatType>
-xqpString FloatImpl<FloatType>::toString() const {
+xqpString FloatImpl<FloatType>::toString(bool no_scientific_format) const {
   switch(theType) {
     case FloatCommons::NOT_A_NUM:
       return FloatCommons::get_NOT_A_NUM_STR();
@@ -1418,7 +1418,7 @@ xqpString FloatImpl<FloatType>::toString() const {
 
   MAPM absVal = theFloatImpl.abs();
   MAPM lower("0.000001"), upper("1000000");
-  if((absVal < upper && absVal >= lower) || absVal == 0) {
+  if (no_scientific_format || (absVal < upper && absVal >= lower) || absVal == 0) {
     return Decimal::decimalToString(theFloatImpl);
   } else {
     char lBuffer[1024];

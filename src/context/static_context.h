@@ -80,6 +80,7 @@ public:
   void get_global_bindings (std::list<global_binding> &bs);
   void set_global_bindings (const std::list<global_binding> &bs);
 
+  StaticContextConsts::xquery_version_t xquery_version() const;
 	StaticContextConsts::xpath1_0compatib_mode_t xpath1_0compatib_mode() const;
 	StaticContextConsts::construction_mode_t construction_mode() const;
 	StaticContextConsts::order_empty_mode_t order_empty_mode() const;
@@ -92,6 +93,7 @@ public:
   xqp_string default_function_namespace() const;
   xqp_string default_elem_type_ns () const;
 
+  void set_xquery_version(StaticContextConsts::xquery_version_t v);
 	void set_xpath1_0compatib_mode(StaticContextConsts::xpath1_0compatib_mode_t v);
 	void set_construction_mode(StaticContextConsts::construction_mode_t v);
 	void set_order_empty_mode(StaticContextConsts::order_empty_mode_t v);

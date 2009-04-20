@@ -242,6 +242,7 @@ namespace zorba
   class FnDeepEqualIterator;
   class CreateTupleIterator;
   class GetTupleFieldIterator;
+  class FnFormatNumberIterator;
 
   class ZorbaCollectionExistsIterator;
   class ZorbaImportXmlIterator;
@@ -786,10 +787,9 @@ namespace zorba
     PLAN_ITER_VISITOR(ReplaceIterator);
 
     PLAN_ITER_VISITOR(RenameIterator);
-
     PLAN_ITER_VISITOR(TransformIterator);
-
     PLAN_ITER_VISITOR(FnDeepEqualIterator);
+	PLAN_ITER_VISITOR(FnFormatNumberIterator);
 
     PLAN_ITER_VISITOR(ZorbaCollectionExistsIterator);
     PLAN_ITER_VISITOR(ZorbaImportXmlIterator);

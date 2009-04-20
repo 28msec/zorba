@@ -181,7 +181,7 @@ ZorbaError::isXQueryDynamicError() const
       ||
           theErrorCode == XUDY0030 
       ||
-          (XTDE1340 <= theErrorCode && theErrorCode <= XTDE1350));
+          (XTDE1310 <= theErrorCode && theErrorCode <= XTDE1350));
 }
 
   

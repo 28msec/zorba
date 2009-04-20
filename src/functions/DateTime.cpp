@@ -432,29 +432,71 @@ PlanIter_t fn_datetime_ctor::codegen (const QueryLoc& loc, std::vector<PlanIter_
   return new FnDateTimeConstructorIterator(loc, argv[0], argv[1]);
 }
 
+  /*
+   * XQuery1.1 formatting functions
+   *------------------------------------------------*/
+
 class fn_format_datetime_4 : public function
 {
 public:
   fn_format_datetime_4(const signature& sig) : function (sig) {}
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  {
+    return new FnFormatDateTimeIterator(loc, argv, DateTime::DATETIME_FACET);
+  }
 };
-
-PlanIter_t fn_format_datetime_4::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
-{
-  return new FnFormatDateTimeIterator(loc, argv);
-}
 
 class fn_format_datetime_2 : public function
 {
 public:
   fn_format_datetime_2(const signature& sig) : function (sig) {}
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  {
+    return new FnFormatDateTimeIterator(loc, argv, DateTime::DATETIME_FACET);
+  }
 };
 
-PlanIter_t fn_format_datetime_2::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+
+class fn_format_date_4 : public function
 {
-  return new FnFormatDateTimeIterator(loc, argv);
-}
+public:
+  fn_format_date_4(const signature& sig) : function (sig) {}
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  {
+    return new FnFormatDateTimeIterator(loc, argv, DateTime::DATE_FACET);
+  }
+};
+
+class fn_format_date_2 : public function
+{
+public:
+  fn_format_date_2(const signature& sig) : function (sig) {}
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  {
+    return new FnFormatDateTimeIterator(loc, argv, DateTime::DATE_FACET);
+  }
+};
+
+
+class fn_format_time_4 : public function
+{
+public:
+  fn_format_time_4(const signature& sig) : function (sig) {}
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  {
+    return new FnFormatDateTimeIterator(loc, argv, DateTime::TIME_FACET);
+  }
+};
+
+class fn_format_time_2 : public function
+{
+public:
+  fn_format_time_2(const signature& sig) : function (sig) {}
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  {
+    return new FnFormatDateTimeIterator(loc, argv, DateTime::TIME_FACET);
+  }
+};
 
 /*
  * 10.6.1 op:add-yearMonthDurations
@@ -999,6 +1041,36 @@ DECL(sctx, fn_format_datetime_4,
 DECL(sctx, fn_format_datetime_2,
      (createQName (XQUERY_FN_NS, "fn", "format-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION));
+
+DECL(sctx, fn_format_date_4,
+     (createQName (XQUERY_FN_NS, "fn", "format-date"),
+      GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION));
+
+DECL(sctx, fn_format_date_2,
+     (createQName (XQUERY_FN_NS, "fn", "format-date"),
+      GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION));
+
+DECL(sctx, fn_format_time_4,
+     (createQName (XQUERY_FN_NS, "fn", "format-time"),
+      GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION));
+
+DECL(sctx, fn_format_time_2,
+     (createQName (XQUERY_FN_NS, "fn", "format-TIME"),
+      GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION));
 

@@ -37,6 +37,7 @@ ZORBA_DLL_PUBLIC void skip_whitespace(std::string& s, unsigned int& position);
  * @param result Contains the result of the parsing
  * @param min_digits Minimum number of digits
  * @param max_digits Maximum number od digits
+ * @param delta Where to start parsing, the first digit being pointed by position+delta
  * @return Returns 1 on an error, 0 on success
  */
 template <typename T, typename S> 
@@ -45,16 +46,17 @@ int parse_int(
     unsigned int& position,
     T& result,
     int min_digits = -1,
-    int max_digits = -1)
+    int max_digits = -1,
+	int delta = 0)
 {
   int digits = 0;
-  if (s[position] < '0' || s[position] > '9')
+  if (s[position+delta] < '0' || s[position+delta] > '9')
     return 1;
 
   result = 0;
-  while (s[position] >= '0' && s[position] <= '9' && position < s.size())
+  while (s[position+delta] >= '0' && s[position+delta] <= '9' && position+delta < s.size())
   {
-    result = 10*result + s[position] - '0';
+    result = 10*result + s[position+delta] - '0';
     position++;
     digits++;
   }
@@ -124,15 +126,7 @@ ZORBA_DLL_PUBLIC inline std::string to_string(int value, int min_digits = 0)
  */
 ZORBA_DLL_PUBLIC int leap_years_count(int year);
 
-/**
- * Returns the number of days passed from the start of the year. 1st of January will return 0. 
- * @param month 
- * @param day 
- * @return 
- */
-ZORBA_DLL_PUBLIC int days_since_year_start(int year, int month, int day);
-  
-template <typename T> 
+template <typename T>
 T quotient(T a, T b)
 {
   if (a >= 0)
