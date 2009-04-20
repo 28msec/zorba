@@ -248,7 +248,7 @@ DecimalFormat_t static_context::get_decimal_format(const store::Item_t qname)
   {
     if ((qname.isNull() && (*it)->isDefaultFormat())
         ||
-        qname->compare((*it)->getFormatName()) == 0)
+        (!qname.isNull() &&qname->getStringValue()->compare((*it)->getFormatName()->getStringValue()) == 0))
       return (*it);    
   }
   return NULL;
