@@ -764,45 +764,14 @@ void SchemaValidatorFilter::startTypeEvent(const XMLCh *typeUri, const XMLCh *ty
 {
     reset();
         
-/*    //todo
-    XMLChArray prefix("zorbaAsTypeValidationPrefix1");
-    XMLChArray uri("simple.xsd");
-    XMLChArray localname("asTypeValidationElement"); 
-    
-    startElementEvent(prefix, uri, localname);
-    
-    XMLChArray xsiTypePrefix("zorbaAsTypeValidationXsiPrefix");
-    std::string xsiTypeValueString = "zorbaAsTypeValidationXsiValuePrefix";
-    XMLChArray xsiTypeValuePrefix(xsiTypeValueString.c_str());
-    
-    StrX typeNameStrX = StrX(typeName);
-    xsiTypeValueString = xsiTypeValueString + ":" + typeNameStrX.localForm();
-    XMLChArray xsiTypeValue(xsiTypeValueString.c_str());
-   
-    namespaceEvent(prefix, uri);
-    namespaceEvent(xsiTypePrefix, SchemaSymbols::fgURI_XSI);
-    namespaceEvent(xsiTypeValuePrefix, typeUri);    
-
-    XMLCh *tURI = NULL; 
-    XMLCh *tName = NULL;
-    attributeEvent(xsiTypePrefix, SchemaSymbols::fgURI_XSI, SchemaSymbols::fgXSI_TYPE, xsiTypeValue, tURI, tName);
-*/
     _processorStipulatedTypeUriId = fURIStringPool->addOrFind(typeUri);
     _processorStipulatedTypeName = XMLString::replicate(typeName);
-    std::cout << "  startTypeEvent:  " <<  StrX(typeName) << " @ " << StrX(typeUri) << "\n";
+    //std::cout << "  startTypeEvent:  " <<  StrX(typeName) << " @ " << StrX(typeUri) << "\n";
 }
 
 void SchemaValidatorFilter::endTypeEvent()
 {
-/*    //todo    
-    XMLChArray prefix("zorbaAsTypeValidationPrefix");
-    XMLChArray uri("simple.xsd");
-    XMLChArray localname("asTypeValidationElement"); 
-    XMLCh *typeURI = NULL;
-    XMLCh *typeName = NULL;
     
-    endElementEvent(prefix, uri, localname, typeURI, typeName);    
-*/    
     if (_processorStipulatedTypeName)
     {
         XMLString::release(&_processorStipulatedTypeName);

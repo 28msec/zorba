@@ -51,12 +51,22 @@ public:
     // -----------------------------------------------------------------------
     //  Implementation of the XMLValidator interface
     // -----------------------------------------------------------------------
+#if _XERCES_VERSION >= 30000
+    virtual bool checkContent
+    (
+        XMLElementDecl* const   elemDecl
+        , XERCES_CPP_NAMESPACE::QName** const         children
+        , XMLSize_t             childCount
+        , XMLSize_t*            indexFailingChild
+    );
+#else
     virtual int checkContent
     (
         XMLElementDecl* const   elemDecl
         , XERCES_CPP_NAMESPACE::QName** const         children
         , const unsigned int    childCount
     );
+#endif                
 
     virtual void faultInAttr
     (
@@ -208,6 +218,14 @@ private:
                       const bool toLax = false);
     void checkNSSubset(const ContentSpecNode* const derivedSpecNode,
                        const ContentSpecNode* const baseSpecNode);
+
+#if _XERCES_VERSION >= 30000
+    bool checkNSSubsetChoiceRoot(const ContentSpecNode* const derivedSpecNode,
+                       const ContentSpecNode* const baseSpecNode);
+    bool checkNSSubsetChoice(const ContentSpecNode* const derivedSpecNode,
+                       const ContentSpecNode* const baseSpecNode);
+#endif
+
     bool isWildCardEltSubset(const ContentSpecNode* const derivedSpecNode,
                              const ContentSpecNode* const baseSpecNode);
     void checkNSRecurseCheckCardinality(SchemaGrammar* const currentGrammar,
@@ -263,6 +281,11 @@ private:
     //  fTrailing
     //      Previous chunk had a trailing space
     //
+#if _XERCES_VERSION >= 30000
+    //  fSeenNonWhiteSpace
+    //      Seen a non-whitespace character in the previous chunk
+    //
+#endif
     //  fSeenId
     //      Indicate if an attribute of ID type has been seen already, reset per element.
     //
@@ -286,7 +309,19 @@ private:
     DatatypeValidator*              fCurrentDatatypeValidator;
     XMLBuffer*                      fNotationBuf;
     XMLBuffer                       fDatatypeBuffer;
+
+#if _XERCES_VERSION >= 30000
+    // Only for 3.0.1.
+    //
+    union
+    {
+      bool old;
+      unsigned char flags; // fTrailing - big 0; fSeenNonWhiteSpace - bit 1
+    } fTrailingSeenNonWhiteSpace;
+#else
     bool                            fTrailing;
+#endif
+
     bool                            fSeenId;
     XSDErrorReporter                fSchemaErrorReporter;
     ValueStackOf<ComplexTypeInfo*>* fTypeStack;

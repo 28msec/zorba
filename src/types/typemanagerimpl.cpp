@@ -395,7 +395,14 @@ xqtref_t TypeManagerImpl::create_schema_element_type(store::Item *qname, TypeCon
 {
   Schema *schema = static_cast<const DelegatingTypeManager *>(this)->getSchema();
   XMLGrammarPool *pool = schema->getGrammarPool();
+
+#if _XERCES_VERSION >= 30000
+  bool xsModelWasChanged;
+  XSModel *model = pool->getXSModel(xsModelWasChanged);
+#else
   XSModel *model = pool->getXSModel();
+#endif
+
   XMLChArray local (qname->getLocalName()->c_str());
   XMLChArray uri (qname->getNamespace()->c_str());
   XSElementDeclaration *eDecl = model->getElementDeclaration(local, uri);
@@ -420,7 +427,8 @@ xqtref_t TypeManagerImpl::create_schema_attribute_type(store::Item *qname, TypeC
 {
   Schema *schema = static_cast<const DelegatingTypeManager *>(this)->getSchema();
   XMLGrammarPool *pool = schema->getGrammarPool();
-  XSModel *model = pool->getXSModel();
+  bool xsModelWasChanged;
+  XSModel *model = pool->getXSModel(xsModelWasChanged);
   XMLChArray local (qname->getLocalName()->c_str());
   XMLChArray uri (qname->getNamespace()->c_str());
   XSAttributeDeclaration *aDecl = model->getAttributeDeclaration(local, uri);
