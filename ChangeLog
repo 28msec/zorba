@@ -1,7 +1,9 @@
 Zorba - The XQuery Processor
 version 1.0.0 (comming)
   * XQueryX execution
-  
+  * Added converter functions to/from JSON and XML
+  * Added functions for sending emails
+
 version 0.9.5 (2008.02.17)
   * Unified the Tidy and Rest API's
   * Added new sinatures to zorba-util:tidy and zorba-util:tdoc that

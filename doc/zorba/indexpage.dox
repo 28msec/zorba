@@ -42,6 +42,7 @@
          <li> \ref util
          <li> \ref collections
          <li> \ref email
+         <li> \ref converters
        </ul>
      </ul>
      <li> \ref commandline

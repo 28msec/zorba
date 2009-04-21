@@ -1,0 +1,163 @@
+/** \page converters Conversion functions
+
+<ul>
+   <li> Table of Contents
+   <ul>
+     <li> \ref conv_intro
+     <li> \ref conv_json
+     <ul>
+       <li> \ref json_namespace
+       <li> \ref json_signatures
+       <ul>
+        <li> \ref json_parse
+        <li> \ref json_serialize
+       </ul>
+     </ul>
+    <li> \ref apendix_converters
+   </ul>
+ </ul>
+
+\section conv_intro 1 Introduction
+This document defines a general set of conversion functions.
+
+\section conv_json 2 JSON
+JSON (JavaScript Object Notation) is a lightweight data-interchange format. It is easy for humans to read and write. It is easy for machines to parse and generate. \n
+JSON is a text format that is completely language independent but uses conventions that are familiar to programmers of the C-family of languages, including C, C++, C#, Java, JavaScript, Perl, Python, and many others. \n
+In order to parsing JSON into XQuery Zorba implements the following mapping between JSON and XML proposed by John Snelson in the following article: <a href="http://snelson.org.uk/archives/2008/02/parsing_json_in.php#more" target="_blank">Parsing JSON into XQuery</a> \n
+
+<table border="1" cellpadding="0" cellspacing="0">
+<tr>
+  <td><b>JSON</b></td>
+  <td><b>type(JSON)</b></td>
+  <td><b>toXML(JSON)</b></td>
+</tr>
+<tr>
+  <td>JSON</td>
+  <td>N/A</td>
+  <td><json type="type(JSON)">toXML(JSON)</json></td>
+</tr>
+<tr>
+  <td>{ "key1": value1, "key2": value2 }</td>
+  <td>object</td>
+  <td>\<pair name="key1" type="type(value1)">toXML(value1)</pair><pair name="key2" type="type(value2)">toXML(value2)</pair></td>
+</tr>
+<tr>
+  <td>[ value1, value2 ]</td>
+  <td>array</td>
+  <td>\<item type="type(value1)">toXML(value1)</item><item type="type(value2)">toXML(value2)</item></td>
+</tr>
+<tr>
+  <td>"value"</td>
+  <td>string</td>
+  <td>value</td>
+</tr>
+<tr>
+  <td>number</td>
+  <td>number</td>
+  <td>number</td>
+</tr>
+<tr>
+  <td>true / false</td>
+  <td>boolean</td>
+  <td>true / false</td>
+</tr>
+<tr>
+  <td>null</td>
+  <td>null</td>
+  <td>empty</td>
+</tr>
+</table>
+
+\subsection json_namespace 2.1 Namespace
+
+In order to use Zorba JSON functions, the module <tt>"http://www.zorba-xquery.com/zorba/json-functions"</tt> has
+to be included at the beginning of a query. For example
+
+\code
+  import module namespace zorba-json = "http://www.zorba-xquery.com/zorba/json-functions";
+\endcode
+
+\subsection json_signatures 2.2 Function Signatures and Descriptions
+
+\subsection json_parse 2.2.1 zorba-json:parse
+
+\code
+  declare function parse($text as xs:string*) as xs:element*
+\endcode
+
+\subsection ex_json_parse Example:
+\include parse3.xq
+
+\subsection res_json_parse Result:
+\code
+  <?xml version="1.0" encoding="UTF-8"?>
+  <json type="object">
+    <pair name="firstName" type="string">John</pair>
+    <pair name="lastName" type="string">Smith</pair>
+    <pair name="address" type="object">
+      <pair name="streetAddress" type="string">21 2nd Street</pair>
+      <pair name="city" type="string">New York</pair>
+      <pair name="state" type="string">NY</pair>
+      <pair name="postalCode" type="number">10021</pair>
+    </pair>
+    <pair name="phoneNumbers" type="array">
+      <item type="string">212 732-1234</item>
+      <item type="string">646 123-4567</item>
+    </pair>
+  </json>
+  <json type="object">
+    <pair name="firstName" type="string">John</pair>
+    <pair name="state" type="null"/>
+    <pair name="bool" type="boolean">true</pair>
+    <pair name="numbers" type="array">
+      <item type="number">1</item>
+      <item type="number">2</item>
+      <item type="number">3</item>
+    </pair>
+    <pair name="address" type="object">
+      <pair name="streetAddress" type="string">21 2nd Street</pair>
+      <pair name="state" type="null"/>
+      <pair name="postalCode" type="number">10021</pair>
+      <pair name="literals" type="array">
+        <item type="boolean">true</item>
+        <item type="boolean">false</item>
+        <item type="null"/>
+      </pair>
+      <pair name="delivery" type="object">
+        <pair name="streetAddress" type="string">StreetName</pair>
+        <pair name="city" type="string">CityName</pair>
+        <pair name="state" type="string">StateName</pair>
+      </pair>
+    </pair>
+    <pair name="strings" type="array">
+      <item type="string">one</item>
+      <item type="string">two</item>
+      <item type="string">three</item>
+      <item type="string">four</item>
+    </pair>
+  </json>
+\endcode
+
+Error conditions:\n
+If the string that was passed is not a valid JSON string, an error is raised API0060 (see \ref apendix_converters).\n
+
+\subsection json_serialize 2.2.2 zorba-json:serialize
+
+\code
+  declare function json:serialize($xml as xs:element*) as xs:string*
+\endcode
+
+\subsection ex_json_serialize Example:
+\include serialize2.xq
+
+Error conditions:\n
+If the passed element does not have a valid JSON structure, an error is raised API0061 (see \ref apendix_converters).\n
+If the passed parameter is not an element, an error is raised API0062 (see \ref apendix_converters).\n
+
+\section apendix_converters Appendix A:  Error codes
+
+  API0060 - API0060_CONV_JSON_PARSE - is returned if the string could not be parsed.\n
+  API0061 - API0061_CONV_JSON_SERIALIZE - is returned if the element could not be serialized.\n
+  API0062 - API0062_CONV_JSON_PARAM - is returned is the passed param is not an element.\n
+
+*/
