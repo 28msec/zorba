@@ -126,6 +126,10 @@ class ZorbaImpl : public Zorba
         const Zorba_CompilerHints_t& aHints, 
         ErrorHandler* aErrorHandler = 0);
 
+  virtual void populateRootStaticContext(
+                   const String &prolog,
+                   const Zorba_CompilerHints_t& aHints);
+
   StaticContext_t
   createStaticContext(ErrorHandler* aErrorHandler = 0);
 

@@ -267,6 +267,10 @@ namespace zorba {
                    const Zorba_CompilerHints_t& aCompilerHints,
                    ErrorHandler* aErrorHandler = 0) = 0;
 
+      virtual void populateRootStaticContext(
+                   const String &prolog,
+                   const Zorba_CompilerHints_t& aHints) = 0;
+
       /** \brief Creates a new StaticContext.
        * 
        * The method returns a StaticContext object that can be used

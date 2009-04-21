@@ -180,6 +180,12 @@ ZorbaImpl::compileQuery(
   return lXQuery;
 }
 
+void ZorbaImpl::populateRootStaticContext(const String &prolog, const Zorba_CompilerHints_t& aHints)
+{
+  std::auto_ptr<XQueryImpl> lXQuery(new XQueryImpl());
+  lXQuery->loadProlog (prolog, NULL, aHints);
+}
+
 
 /*******************************************************************************
 
