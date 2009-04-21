@@ -85,6 +85,20 @@ public:
     return lStream.str();
   }
 
+  std::string printPlanAsXML()
+  {
+    std::ostringstream lStream;
+    theQuery->printPlan(lStream);
+    return lStream.str();
+  }
+
+  std::string printPlanAsDOT()
+  {
+    std::ostringstream lStream;
+    theQuery->printPlan(lStream, true);
+    return lStream.str();
+  }
+
 #ifdef SWIGPYTHON
   void executeSAX(SAX2ContentHandlerProxy* contentHandlerProxy)
   {
@@ -190,6 +204,8 @@ public:
 class XQuery {
 public:
   std::string execute();
+  std::string printPlanAsXML();
+  std::string printPlanAsDOT();
 
 #ifdef SWIGPYTHON
   void executeSAX(SAX2ContentHandlerProxy* contentHandlerProxy);
