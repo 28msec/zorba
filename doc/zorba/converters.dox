@@ -44,7 +44,7 @@ In order to parsing JSON into XQuery Zorba implements the following mapping betw
 <tr>
   <td>[ value1, value2 ]</td>
   <td>array</td>
-  <td>\<item type="type(value1)">toXML(value1)</item><item type="type(value2)">toXML(value2)</item></td>
+  <td>\<item type="type(value1)">toXML(value1)</item><item type="type(value2)">toXML(value2)\</item></td>
 </tr>
 <tr>
   <td>"value"</td>
