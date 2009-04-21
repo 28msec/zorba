@@ -3,6 +3,7 @@ version 1.0.0 (comming)
   * XQueryX execution
   * Added converter functions to/from JSON and XML
   * Added functions for sending emails
+  * Added a printPlan function to the XQuery class of the API.
 
 version 0.9.5 (2008.02.17)
   * Unified the Tidy and Rest API's

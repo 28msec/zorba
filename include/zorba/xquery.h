@@ -223,6 +223,17 @@ namespace zorba {
       compile(std::istream& aQuery, const StaticContext_t& aStaticContext, 
               const Zorba_CompilerHints_t& aHints) = 0;
 
+      /** \brief Print the execution plan of this query to the given output stream.
+       *
+       * @param aStream the output stream to which the execution plan is printed
+       * @param aDotFormat specifies the format of the printed execution plan. If this is true, then
+       *        the execution plan is printed in the DOT format. If this is false, the plan is printed
+       *        as XML.
+       * @throw ZorbaException if the query has been closed or is not compiled.
+       */
+      virtual void
+      printPlan( std::ostream& aStream, bool aDotFormat = false ) const = 0;
+
       /** \brief Set the filename of a query.
        *
        * This (after URI-encoding) becomes the encapsulating entity's

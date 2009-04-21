@@ -207,6 +207,9 @@ class XQueryImpl : public XQuery
   compile(std::istream&, const StaticContext_t&, const Zorba_CompilerHints_t& aHints);
 
   void
+  printPlan( std::ostream& aStream, bool aDotFormat = false ) const;
+
+  void
   loadProlog (const String&, const StaticContext_t&, const Zorba_CompilerHints_t& aHints);
 
   void

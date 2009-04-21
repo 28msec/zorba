@@ -49,6 +49,8 @@
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/base/plan_iterator.h"  // maybe we can separate the batcher from the plan iterator
 #include "runtime/api/plan_wrapper.h"
+#include "runtime/visitors/iterprinter.h"
+#include "runtime/visitors/printervisitor.h"
 
 #include "util/properties.h"
 
@@ -436,6 +438,21 @@ XQueryImpl::compile(
     xqpString lQuery = Unmarshaller::getInternalString(aQuery);
     std::istringstream lQueryStream(lQuery);
     doCompile(lQueryStream, aHints);
+  ZORBA_CATCH
+}
+
+void
+XQueryImpl::printPlan( std::ostream& aStream, bool aDotFormat ) const
+{
+  ZORBA_TRY
+    checkNotClosed();
+    checkCompiled();
+    std::auto_ptr<IterPrinter> lPrinter;
+    if (aDotFormat)
+      lPrinter.reset(new DOTIterPrinter(aStream));
+    else
+      lPrinter.reset(new XMLIterPrinter(aStream));
+    print_iter_plan(*(lPrinter.get()), thePlan->theRootIter.getp());
   ZORBA_CATCH
 }
 
