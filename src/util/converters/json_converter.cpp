@@ -31,9 +31,9 @@ namespace zorba {
                           xqpStringStore_t name, xqpStringStore_t type, xqpStringStore_t value = NULL);
   void parse_value(json::value** value, store::Item_t parent, xqpStringStore_t baseUri, store::Item_t* result);
 
-  bool parse_element(store::Item_t element, xqpStringStore_t& json_string, xqpStringStore_t& error_log);
-  bool parse_child(store::Item_t element, xqpStringStore_t& json_string, xqpStringStore_t& error_log);
-  void get_value(store::Item_t element, xqpStringStore_t& value);
+  bool parse_element(const store::Item* element, xqpStringStore_t& json_string, xqpStringStore_t& error_log);
+  bool parse_child(const store::Item* element, xqpStringStore_t& json_string, xqpStringStore_t& error_log);
+  void get_value(const store::Item* element, xqpStringStore_t& value);
 
   bool JSON_parse(const char* aJSON_string, const unsigned int aLength,
                   store::Item_t& element, xqpStringStore_t baseUri,
@@ -113,10 +113,16 @@ namespace zorba {
     }
   }
 
-  bool JSON_serialize(store::Item_t element, xqpStringStore_t& json_string, xqpStringStore_t& error_log)
+  bool JSON_serialize(const store::Item* element, xqpStringStore_t& json_string, xqpStringStore_t& error_log)
   {
     json_string = new xqpStringStore("");
     bool result = true;
+    
+    if (element == NULL)
+    {
+      error_log = new xqpStringStore("Passed a NULL element to the JSON serializer.");
+      return false;
+    }
 
     store::Iterator_t childrenIt;
     store::Item_t     child;
@@ -240,7 +246,7 @@ namespace zorba {
   }
 
 
-  bool parse_element(store::Item_t element, xqpStringStore_t& json_string, xqpStringStore_t& error_log)
+  bool parse_element(const store::Item* element, xqpStringStore_t& json_string, xqpStringStore_t& error_log)
   {
     store::Iterator_t attrIt, childrenIt;
     store::Item_t     attr, child;
@@ -318,7 +324,7 @@ namespace zorba {
     return result;
   }
 
-  void get_value(store::Item_t element, xqpStringStore_t& value)
+  void get_value(const store::Item* element, xqpStringStore_t& value)
   {
     store::Iterator_t childrenIt;
     store::Item_t     child;
@@ -333,7 +339,7 @@ namespace zorba {
     childrenIt->close();
   }
 
-  bool parse_child(store::Item_t element, xqpStringStore_t& json_string, xqpStringStore_t& error_log)
+  bool parse_child(const store::Item* element, xqpStringStore_t& json_string, xqpStringStore_t& error_log)
   {
     bool result = true, first = true;
     store::Iterator_t childrenIt;

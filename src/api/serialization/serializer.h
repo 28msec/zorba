@@ -334,18 +334,16 @@ protected:
   //  class json_emitter                                   //
   //                                                       //
   ///////////////////////////////////////////////////////////
-  
+
   class json_emitter : public emitter
   {
     public:
       json_emitter(serializer* the_serializer, transcoder& the_transcoder);
-    
+
       virtual void emit_declaration();
-      virtual void emit_node(const store::Item* item, int depth);
-      virtual int emit_node_children(const store::Item* item, int depth, bool perform_escaping = true);
       virtual void emit_item(const store::Item* item);
   };
-  
+
 
   ///////////////////////////////////////////////////////////
   //                                                       //

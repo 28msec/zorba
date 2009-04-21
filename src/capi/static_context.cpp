@@ -350,7 +350,6 @@ namespace zorbac {
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);;
-      zorbac::StaticContext* lWrapper = static_cast<zorbac::StaticContext*>(context->data);
 
       (*enabled) = lContext->getRevalidationEnabled ();
     SC_CATCH

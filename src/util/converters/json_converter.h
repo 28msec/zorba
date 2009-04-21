@@ -30,7 +30,7 @@ namespace zorba {
                   xqpStringStore_t baseUri,
                   xqp_string& error_log);
 
-  bool JSON_serialize(store::Item_t element,
+  bool JSON_serialize(const store::Item* element,
                       xqpStringStore_t& json_string,
                       xqpStringStore_t& error_log);
 

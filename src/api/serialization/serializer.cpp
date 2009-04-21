@@ -15,13 +15,15 @@
  */
 #include <sstream>
 
+#include <zorba/zorbastring.h>
+#include <zorba/error.h>
 #include "runtime/api/plan_wrapper.h"
 #include "api/serialization/serializer.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/Assert.h"
 #include "zorbatypes/utf8.h"
-#include <zorba/zorbastring.h>
+#include "util/converters/json_converter.h"
 
 #include "system/globalenv.h"
 #include "store/api/iterator.h"
@@ -1486,77 +1488,11 @@ void serializer::json_emitter::emit_declaration()
 
 void serializer::json_emitter::emit_item(const store::Item* item)
 {
-  if (item->isAtomic())
-  {
-    if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
-      tr << " ";
-    
-    tr << item->getStringValue()->c_str();
-    
-    previous_item = PREVIOUS_ITEM_WAS_TEXT;
-  }
+  xqpStringStore_t result, error_log;
+  if (JSON_serialize(item, result, error_log))
+    tr << result->c_str();
   else
-  {
-    if (item->getNodeKind() == store::StoreConsts::attributeNode)
-      ZORBA_ERROR(SENR0001);
-    else
-      emit_node(item, 0);
-  }
-}
-
-void serializer::json_emitter::emit_node(const store::Item* item, int depth)
-{
-  if( item->getNodeKind() == store::StoreConsts::documentNode )
-  {
-    emit_node_children(item, depth+1);
-  }
-  else if (item->getNodeKind() == store::StoreConsts::elementNode)
-  {
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
-
-    emit_node_children(item, depth);
-    
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
-  }
-  else if (item->getNodeKind() == store::StoreConsts::attributeNode )
-  {
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
-  }
-  else if (item->getNodeKind() == store::StoreConsts::textNode)
-  {
-    tr << item->getStringValue()->c_str();
-    previous_item = PREVIOUS_ITEM_WAS_TEXT;
-  }
-  else if (item->getNodeKind() == store::StoreConsts::commentNode)
-  {
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
-  }
-  else if (item->getNodeKind() == store::StoreConsts::piNode )
-  {
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
-  }
-  else
-  {
-    assert(0);
-  }
-}
-
-int serializer::json_emitter::emit_node_children(const store::Item* item, int depth, bool perform_escaping)
-{
-  store::Item* child;
-  store::ChildrenIterator* iter = getChildIter();
-  store::Item_t parent = const_cast<store::Item*>(item);
-
-  iter->init(parent);
-  iter->open();
-  while ((child = iter->next()) != NULL)
-  {
-    emit_node(child, depth);
-  }
-  iter->close();
-  releaseChildIter(iter);
-
-  return 0;
+    ZORBA_ERROR(API0061_CONV_JSON_SERIALIZE);
 }
 
 
