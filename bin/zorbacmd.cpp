@@ -73,6 +73,10 @@
 using namespace zorba;
 namespace zorbatm = zorba::time;
 
+const char *copyright_str =
+  "Copyright 2006-2008 The FLWOR Foundation.\n"
+  "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>";
+
 bool
 populateStaticContext(
     zorba::StaticContext_t& aStaticContext,
@@ -266,15 +270,15 @@ int _tmain(int argc, _TCHAR* argv[])
 #endif
 
   // time compilation and execution per each query
-  zorba::DateTime lStartCompileTime, lStopCompileTime;
-  zorba::DateTime lStartFirstExecutionTime, lStopFirstExecutionTime;
-  zorba::DateTime lStartExecutionTime, lStopExecutionTime;
+  zorba::DateTime lStartCompileTime, lStopCompileTime,
+    lStartFirstExecutionTime, lStopFirstExecutionTime,
+    lStartExecutionTime, lStopExecutionTime;
   std::auto_ptr<zorba::Duration> lDiffCompileTime,
     lDiffFirstExecutionTime, lDiffExecutionTime;
 
-  zorbatm::timeinfo lStartCompileTimeInfo, lStopCompileTimeInfo;
-  zorbatm::timeinfo lStartFirstExecutionTimeInfo, lStopFirstExecutionTimeInfo;
-  zorbatm::timeinfo lStartExecutionTimeInfo, lStopExecutionTimeInfo;
+  zorbatm::timeinfo lStartCompileTimeInfo, lStopCompileTimeInfo,
+    lStartFirstExecutionTimeInfo, lStopFirstExecutionTimeInfo,
+    lStartExecutionTimeInfo, lStopExecutionTimeInfo;
   double lDiffCompileUserTime,
     lDiffFirstExecutionUserTime, lDiffExecutionUserTime;
 
@@ -429,18 +433,15 @@ int _tmain(int argc, _TCHAR* argv[])
         lArgs->theEventPort = lProperties.getEventPort();
         lArgs->theQuery = lQuery;
      
-       // debug server
-       if ( lProperties.debugServer() ) {
-         std::cout << "Zorba XQuery debugger server." << std::endl;
-         std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
-         std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
-         server((void *)lArgs.get());
-         return 0;  
-       } else if (lProperties.debugClient()) {
-         std::cout << "Zorba XQuery debugger client." << std::endl;
-         std::cout << "Copyright 2006-2008 The FLWOR Foundation." << std::endl;
-         std::cout << "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>" << std::endl;
-         //start the server thread
+        // debug server
+        
+        if ( lProperties.debugServer() ) {
+          std::cout << "Zorba XQuery debugger server.\n" << copyright_str << std::endl;
+          server((void *)lArgs.get());
+          return 0;  
+        } else if (lProperties.debugClient()) {
+         std::cout << "Zorba XQuery debugger client.\n" << copyright_str << std::endl;
+         // start the server thread
 #ifdef ZORBA_HAVE_PTHREAD_H
          pthread_t lServerThread;
          if ( pthread_create( &lServerThread, 0, server, lArgs.get() ) != 0 )
@@ -529,8 +530,7 @@ int _tmain(int argc, _TCHAR* argv[])
           zorba::DateTime::getLocalTime(lStopCompileTime);
           zorbatm::get_timeinfo (lStopCompileTimeInfo);
         }
-      }
-      catch (zorba::QueryException& qe) {
+      } catch (zorba::QueryException& qe) {
         std::cerr << qe << std::endl;
         return 5;
       } catch (zorba::ZorbaException& ze) {
