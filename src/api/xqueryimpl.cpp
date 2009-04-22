@@ -46,9 +46,10 @@
 
 #include "types/schema/Utils.h"
 
-#include "runtime/api/plan_wrapper.h"
 #include "runtime/base/plan_iterator.h"  // maybe we can separate the batcher from the plan iterator
 #include "runtime/api/plan_wrapper.h"
+#include "runtime/api/plan_wrapper.h"
+#include "runtime/api/runtimecb.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/visitors/printervisitor.h"
 
@@ -82,7 +83,8 @@ XQueryImpl::XQueryImpl()
   theStaticContextWrapper(0),
   theUserErrorHandler(false),
   theSAX2Handler(0),
-  theIsClosed(false)
+  theIsClosed(false),
+  theDocLoadingUserTime (0.0)
 #ifdef ZORBA_DEBUGGER
   , theDebugger(0)
   , theProfileName("xquery_profile.out")
@@ -373,6 +375,7 @@ XQueryImpl::executeSAX()
     return;
   }
 
+  theDocLoadingUserTime = lPlan->getRuntimeCB ()->docLoadingUserTime;
   lPlan->close();
   //SAX2_XMLReaderNative xmlreader( theSAXHandler, 0, 0, 0, 0 );
   //xmlreader.parse( this, theErrorHandler );
@@ -575,6 +578,7 @@ XQueryImpl::serialize(std::ostream& os, const Zorba_SerializerOptions_t* opt)
       throw;
     }
 
+    theDocLoadingUserTime = lPlan->getRuntimeCB ()->docLoadingUserTime;
     lPlan->close();
   ZORBA_CATCH
 }
@@ -630,6 +634,7 @@ XQueryImpl::applyUpdates()
       throw;
     }
 
+    theDocLoadingUserTime = lPlan->getRuntimeCB ()->docLoadingUserTime;
     lPlan->close();
   ZORBA_CATCH
 }
@@ -790,6 +795,13 @@ XQueryImpl::checkNotCompiled() const
                      "Can't perform the operation because the query has already been compiled");
   }
 }
+
+double
+XQueryImpl::getDocLoadingUserTime ()
+{
+  return theDocLoadingUserTime;
+}
+
 
 #ifdef ZORBA_DEBUGGER
 void XQueryImpl::setDebugMode( bool aDebugMode )

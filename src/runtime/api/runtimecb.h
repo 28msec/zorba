@@ -26,29 +26,37 @@ namespace store
   class Item;
 }
 
-  class static_context;
-  class dynamic_context;
-  class CollationCache;
+class static_context;
+class dynamic_context;
+class CollationCache;
   
 
-class RuntimeCB 
-{
+class RuntimeCB {
 public:
-  RuntimeCB() 
+  RuntimeCB()
     :
     theStaticContext(0),
     theDynamicContext(0),
-    theCollationCache(0)
+    theCollationCache(0),
+    docLoadingUserTime (0.0)
   {
   }
 
   // TODO remove the static context from here
-  static_context           * theStaticContext;  
-  dynamic_context          * theDynamicContext; 
-  CollationCache           * theCollationCache; 
+  static_context           * theStaticContext;
+  dynamic_context          * theDynamicContext;
+  CollationCache           * theCollationCache;
 
-  std::stack<store::Item*>   theNodeConstuctionPath; 
+  double                     docLoadingUserTime;
+
+  std::stack<store::Item*>   theNodeConstuctionPath;
 };
 
 } /* namespace zorba */
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

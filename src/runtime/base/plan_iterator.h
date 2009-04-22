@@ -119,6 +119,8 @@ public:
   ~PlanState();
 
   void checkDepth (const QueryLoc &loc);
+
+  const RuntimeCB *getRuntimeCB () const { return theRuntimeCB; }
 };
 
 

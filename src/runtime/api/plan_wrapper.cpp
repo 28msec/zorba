@@ -136,8 +136,9 @@ PlanWrapper::isUpdating() const
 }
 
 void PlanWrapper::checkDepth (const QueryLoc &loc)
-{
-  theStateBlock->checkDepth (loc); 
-}
+{ theStateBlock->checkDepth (loc); }
+
+const RuntimeCB *PlanWrapper::getRuntimeCB () const
+{ return theStateBlock->getRuntimeCB (); }
 
 } /* namespace zorba */

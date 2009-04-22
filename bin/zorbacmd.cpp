@@ -280,7 +280,8 @@ int _tmain(int argc, _TCHAR* argv[])
     lStartFirstExecutionTimeInfo, lStopFirstExecutionTimeInfo,
     lStartExecutionTimeInfo, lStopExecutionTimeInfo;
   double lDiffCompileUserTime,
-    lDiffFirstExecutionUserTime, lDiffExecutionUserTime;
+    lDiffFirstExecutionUserTime, lDiffExecutionUserTime,
+    lDiffDocLoadingUserTime;
 
   // parse the command line and/or the properties file
   ZorbaCMDProperties lProperties;
@@ -580,6 +581,7 @@ int _tmain(int argc, _TCHAR* argv[])
             zorbatm::get_timeinfo (lStopFirstExecutionTimeInfo);
             zorba::DateTime::getLocalTime(lStartExecutionTime);
             zorbatm::get_timeinfo (lStartExecutionTimeInfo);
+            lDiffDocLoadingUserTime = lQuery->getDocLoadingUserTime ();
           }
         }
 
@@ -633,6 +635,8 @@ int _tmain(int argc, _TCHAR* argv[])
             << " (user: " << lDiffExecutionUserTime << ")"
             << " milliseconds" << std::endl;
         }
+
+        std::cout << "Doc loading user time: " << lDiffDocLoadingUserTime << std::endl;
       }
       queryNo++;
     }

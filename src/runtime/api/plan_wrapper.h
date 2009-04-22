@@ -64,7 +64,14 @@ namespace zorba {
       virtual bool
       isUpdating() const;
 
+      const RuntimeCB *getRuntimeCB () const;
   };
 
 } /* namespace zorba */
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

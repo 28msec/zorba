@@ -266,6 +266,9 @@ namespace zorba {
       virtual void
       executeSAX() = 0;
 
+      virtual double
+      getDocLoadingUserTime () = 0;
+
       /** \brief Close the query and release all aquired ressources.
        *
        * While a query is compiled and/or active, it holds on to a couple of ressources.

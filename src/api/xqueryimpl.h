@@ -161,6 +161,8 @@ class XQueryImpl : public XQuery
 
   SYNC_CODE(mutable Mutex          theCloningMutex;)
 
+  double theDocLoadingUserTime;
+
  public:
   virtual ~XQueryImpl();
 
@@ -225,6 +227,9 @@ class XQueryImpl : public XQuery
   executeSAX( SAX2_ContentHandler *  aSAXHandler );
 
   void executeSAX();
+
+  virtual double
+  getDocLoadingUserTime ();
 
   void
   close();
@@ -303,3 +308,9 @@ class XQueryImpl : public XQuery
 
 } /* namespace zorba */
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

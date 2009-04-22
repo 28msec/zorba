@@ -49,6 +49,14 @@
 #include "runtime/booleans/compare_types.h"
 #include "runtime/util/handle_hashset_item_value.h"
 
+// For timing
+#include <zorbatypes/zorbatypes_decl.h>
+#include <zorbatypes/datetime.h>
+#include <zorbatypes/duration.h>
+#include <zorbatypes/floatimpl.h>
+#include "util/time.h"
+namespace zorbatm = zorba::time;
+
 using namespace std;
 namespace zorba {
   
@@ -1569,19 +1577,38 @@ FnDocIterator::~FnDocIterator()
 {
 }
 
+static void fillTime (const zorba::DateTime &t0, const zorbatm::timeinfo t0user, RuntimeCB *runtimeCB) {
+  zorba::DateTime   t1;
+  zorbatm::timeinfo t1user;
+  std::auto_ptr<zorba::Duration> duration;
+
+  zorba::DateTime::getLocalTime(t1);
+  zorbatm::get_timeinfo (t1user);
+  runtimeCB->docLoadingUserTime +=
+    zorbatm::get_time_elapsed (zorbatm::extract_user_time_detail (t0user),
+                               zorbatm::extract_user_time_detail (t1user));
+}
+
 bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t     uriItem;
   xqpString         uriString;
   xqpStringStore_t  resolvedURIString;
   store::Item_t     resolvedURIItem;
+  RuntimeCB        *runtimeCB;
+  zorba::DateTime   t0;
+  zorbatm::timeinfo t0user;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
+  runtimeCB = planState.theRuntimeCB;
   if (consumeNext(uriItem, theChild.getp(), planState)) {
 
     uriString = uriItem->getStringValueP();
+
+    zorba::DateTime::getLocalTime(t0);
+    zorbatm::get_timeinfo (t0user);
 
     try {
       // maybe the document is stored with the uri that is given by the user
@@ -1590,6 +1617,7 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
     }
     if (result != NULL) {
+      fillTime (t0, t0user, runtimeCB);
       STACK_PUSH(true, state);
     } else {
       try {
@@ -1607,6 +1635,7 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
       }
 
+      fillTime (t0, t0user, runtimeCB);
       STACK_PUSH(true, state);
     }
 
