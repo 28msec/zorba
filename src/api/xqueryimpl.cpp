@@ -360,8 +360,13 @@ XQueryImpl::executeSAX()
 
   try { 
     lPlan->open();
-    lSerializer.serializeSAX2(&*lPlan, std::cerr, theSAX2Handler );
-    std::cerr << std::endl;
+    if (theSAX2Handler != NULL) {
+      lSerializer.serializeSAX2(&*lPlan, std::cerr, theSAX2Handler );
+      std::cerr << std::endl;
+    } else {
+      store::Item_t item;
+      while (lPlan->next(item));
+    }
   } catch (error::ZorbaError& e) {
     lPlan->close();
     ZorbaImpl::notifyError(theErrorHandler, e);

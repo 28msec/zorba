@@ -581,7 +581,7 @@ int _tmain(int argc, _TCHAR* argv[])
       try
       {
         Zorba_SerializerOptions lSerOptions = Zorba_SerializerOptions::SerializerOptionsFromStringParams(lProperties.getSerializerParameters());
-        createSerializerOptions(lSerOptions, &lProperties);        
+        createSerializerOptions(lSerOptions, &lProperties);
 
         if (lTiming) 
         {
@@ -592,10 +592,14 @@ int _tmain(int argc, _TCHAR* argv[])
         // RUN THE QUERY ONCE
         if (lQuery->isUpdateQuery()) 
           lQuery->applyUpdates();
-        else
-          lQuery->serialize(*lOutputStream, &lSerOptions);
+        else {
+          if (lProperties.noSerializer ())
+            lQuery->executeSAX ();
+          else
+            lQuery->serialize(*lOutputStream, &lSerOptions);
+        }
 
-        if (lTiming) 
+        if (lTiming)
         {
           zorba::DateTime::getLocalTime(lStopFirstExecutionTime);
           zorbatm::get_timeinfo (lStopFirstExecutionTimeInfo);
@@ -659,7 +663,7 @@ int _tmain(int argc, _TCHAR* argv[])
         std::cout << "First Execution time: "
           << lDiffFirstExecutionTime->getTotalMilliseconds()
           << " (user: " << lDiffFirstExecutionUserTime << ")"
-          << " milliseconds (i.e. parsing the document is included)" << std::endl;
+          << " milliseconds (parsing the document is included)" << std::endl;
 
         if (lNumExecutions > 1) 
         {
