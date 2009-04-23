@@ -131,6 +131,11 @@ PlanIter_t fn_subsequence::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
   return new FnSubsequenceIterator(loc, argv);
 }
 
+bool fn_subsequence::propagatesInputToOutput(uint32_t aProducer) const
+{
+  return aProducer==0;
+}
+
 void fn_subsequence::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const {
   switch (k) {
   case AnnotationKey::IGNORES_SORTED_NODES:
@@ -253,6 +258,10 @@ PlanIter_t fn_doc_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& a
   return new FnDocIterator(loc, argv[0]);
 }
 
+bool fn_doc_func::propagatesInputToOutput(uint32_t aProducer) const
+{
+  return false;
+}
 
 //fn:parse
 //-------------

@@ -18,6 +18,7 @@
 #include "compiler/semantic_annotations/tsv_annotation.h"
 #include "types/typeops.h"
 #include "context/static_context.h"
+#include "functions/function.h"
 
 namespace zorba {
 
@@ -245,9 +246,34 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr *e)
   default_walk(e);
   if (!generic_compute(e)) {
     const function *f = e->get_func();
-    if (f == LOOKUP_FN("fn", "doc", 1)) {
+    uint32_t nArgs = e->size();
+    function::AnnotationProperty_t sorted = f->producesNodeIdSorted();
+    if (sorted == function::YES) {
       SORTED_NODES(e);
+    } else if (sorted == function::NO) {
+      // do nothing
+    } else {
+      Annotation::value_ref_t sortedAnnot = TSVAnnotationValue::TRUE_VAL;
+      for(uint32_t i = 0; i < nArgs; ++i) {
+        if (f->propagatesInputToOutput(i)) {
+          sortedAnnot = TSVAnnotationValue::and3(sortedAnnot, (*e)[i]->get_annotation(AnnotationKey::PRODUCES_SORTED_NODES));
+        }
+      }
+      e->put_annotation(AnnotationKey::PRODUCES_SORTED_NODES, sortedAnnot);
+    }
+    function::AnnotationProperty_t duplicates = f->producesDuplicates();
+    if (duplicates == function::NO) {
       DISTINCT_NODES(e);
+    } else if (duplicates == function::YES) {
+      // do nothing
+    } else {
+      Annotation::value_ref_t distinctAnnot = TSVAnnotationValue::TRUE_VAL;
+      for(uint32_t i = 0; i < nArgs; ++i) {
+        if (f->propagatesInputToOutput(i)) {
+          distinctAnnot = TSVAnnotationValue::and3(distinctAnnot, (*e)[i]->get_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES));
+        }
+      }
+      e->put_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES, distinctAnnot);
     }
   }
 }

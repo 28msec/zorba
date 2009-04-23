@@ -117,6 +117,10 @@ namespace zorba {
     fn_subsequence(const signature&sig) : single_seq_opt_function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
+
+    bool propagatesInputToOutput(uint32_t aProducer) const;
+    ZORBA_PRESERVE_SORTED
+    ZORBA_PRESERVE_DISTINCT
   };
 
 
@@ -241,6 +245,11 @@ namespace zorba {
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     virtual bool isSource() const { return true; }
     bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
+
+    bool propagatesInputToOutput(uint32_t aProducer) const;
+    ZORBA_PRODUCES_SORTED
+    ZORBA_PRODUCES_DISTINCT
+
   };
 
   class fn_parse_func : public function

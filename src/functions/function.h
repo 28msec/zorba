@@ -31,6 +31,23 @@ class fo_expr;
 
 typedef rchandle<var_expr> var_expr_t;
 
+#define ZORBA_PRESERVE_SORTED \
+  function::AnnotationProperty_t producesNodeIdSorted() const { return PRESERVE; }
+
+#define ZORBA_PRESERVE_DISTINCT \
+  function::AnnotationProperty_t producesDuplicates() const { return PRESERVE; }
+
+#define ZORBA_NOT_PRODUCES_SORTED \
+  function::AnnotationProperty_t producesNodeIdSorted() const { return NO; }
+
+#define ZORBA_NOT_PRODUCES_DISTINCT \
+  function::AnnotationProperty_t producesDuplicates() const { return NO; }
+
+#define ZORBA_PRODUCES_SORTED \
+  function::AnnotationProperty_t producesNodeIdSorted() const { return YES; }
+
+#define ZORBA_PRODUCES_DISTINCT \
+  function::AnnotationProperty_t producesDuplicates() const { return YES; }
 
 class function_typechecker {
 public:
@@ -49,9 +66,16 @@ public:
 
 
 class function : public SimpleRCObject {
+public:
+  typedef enum {
+    NO = 0,
+    YES,
+    PRESERVE
+  } AnnotationProperty_t;
+
 protected:
 	signature sig;
-	
+
 public:
 	function(const signature& _sig) : sig(_sig) {}
 	virtual ~function() {}
@@ -82,6 +106,10 @@ public:
 
   virtual expr_update_t getUpdateType() const { return SIMPLE_EXPR; }
   bool isUpdating() const { return getUpdateType() == UPDATE_EXPR; }
+
+  virtual AnnotationProperty_t producesDuplicates() const { return YES; }
+  virtual AnnotationProperty_t producesNodeIdSorted() const { return NO; }
+  virtual bool propagatesInputToOutput(uint32_t aProducer) const { return true; }
 
   virtual const function *specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const { return NULL; }
 

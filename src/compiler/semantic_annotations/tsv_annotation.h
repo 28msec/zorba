@@ -47,6 +47,28 @@ class TSVAnnotationValue : public AnnotationValue {
     return x ? TRUE_VAL : FALSE_VAL;
   }
 
+  static Annotation::value_ref_t and3(Annotation::value_ref_t v1, Annotation::value_ref_t v2)
+  {
+    if (v1.getp() == FALSE_VAL.getp() || v2.getp() == FALSE_VAL.getp()) {
+      return FALSE_VAL;
+    }
+    if (v1.getp() == MAYBE_VAL.getp() || v2.getp() == MAYBE_VAL.getp()) {
+      return MAYBE_VAL;
+    }
+    return TRUE_VAL;
+  }
+
+  static Annotation::value_ref_t or3(Annotation::value_ref_t v1, Annotation::value_ref_t v2)
+  {
+    if (v1.getp() == TRUE_VAL.getp() || v2.getp() == TRUE_VAL.getp()) {
+      return TRUE_VAL;
+    }
+    if (v1.getp() == MAYBE_VAL.getp() || v2.getp() == MAYBE_VAL.getp()) {
+      return MAYBE_VAL;
+    }
+    return FALSE_VAL;
+  }
+
   private:
     TSVAnnotationValue(tsv_t value)
       : m_value(value) { }
