@@ -75,6 +75,7 @@ void
 DOTIterPrinter::start() 
 {
   theOStream << "digraph {" << std::endl;
+  theOStream << "node [ color=gray, fontname=\"Arial\" ]" << std::endl;
 }
 
 void
