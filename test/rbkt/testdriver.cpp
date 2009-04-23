@@ -539,10 +539,14 @@ main(int argc, char** argv)
     // Install special resolver only for w3c_testsuite ...
     std::string path = lQueryFile.get_path();
     zorba::TestSchemaURIResolver  * resolver = 0;
+    zorba::TestModuleURIResolver  * mresolver = 0;
     std::string uri_map_file = zorba::RBKT_SRC_DIR + "/Queries/uri.txt";
+    std::string mod_map_file = zorba::RBKT_SRC_DIR + "/Queries/module.txt";
     if ( path.find ( "w3c_testsuite" ) != std::string::npos ) {
       resolver = new zorba::TestSchemaURIResolver ( uri_map_file.c_str() );
+      mresolver = new zorba::TestModuleURIResolver ( mod_map_file.c_str() );
       lContext->setSchemaURIResolver ( resolver );
+      lContext->setModuleURIResolver ( mresolver );
     }
     TestErrorHandler errHandler;
 

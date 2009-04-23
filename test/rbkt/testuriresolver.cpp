@@ -19,6 +19,7 @@
 #include <zorba/zorba.h>
 
 #include <fstream>
+#include <sstream>
 #include <string>
 
 using namespace zorba;
@@ -100,4 +101,78 @@ zorba::TestSchemaURIResolver::resolve ( const Item & aURI,
 
     return std::auto_ptr<SchemaURIResolverResult> ( result );
   }
+
+std::istream *
+zorba::TestModuleURIResolverResult::getModule () const
+{
+  return theModule;
+}
+
+zorba::TestModuleURIResolver::TestModuleURIResolver ( const char * file ) :
+  map_file ( file )
+{}
+
+void zorba::TestModuleURIResolver::initialize ()
+{
+  std::string path ( map_file );
+  std::string::size_type slash = path.find_last_of ( '/' );
+  path.erase ( slash );
+  path += "/w3c_testsuite/";
+  std::string url ( "file://" );
+  std::ifstream urifile ( map_file );
+  if ( urifile.good () == false ) return;
+  std::string uris;
+  std::string::size_type start = 0;
+  std::getline ( urifile, uris );
+  while ( true ) {
+    bool last = false;
+    std::string::size_type pos = uris.find_first_of ( ' ', start );
+    if ( pos == std::string::npos ) {
+      pos = uris.size ();
+      last = true;
+    }
+    std::string::size_type eq = uris.find ( '=', start );
+    std::string::size_type len = eq - start;
+    String uri ( uris.substr ( start, len ) );
+    len = pos - eq - 1;
+    String file ( path );
+    const char * xsd = uris.substr ( eq+1, len ).c_str(); 
+    file.append ( xsd );
+    file.append ( ".xq" );
+    uri_map [ uri ] = file;
+    start = pos + 1;
+    if ( last ) break;
+  }
+
+  urifile.close();
+}
+
+zorba::TestModuleURIResolver::~TestModuleURIResolver ()
+{}
+
+std::auto_ptr < ModuleURIResolverResult >
+zorba::TestModuleURIResolver::
+resolve ( const Item & aURI, StaticContext* aStaticContext )
+{
+  if ( uri_map.empty () ) {
+    initialize ();
+  }
+  std::auto_ptr < TestModuleURIResolverResult >
+    lResult ( new TestModuleURIResolverResult () );
+
+  String request = aURI.getStringValue ();
+  std::map < String, String > :: iterator it = uri_map.find ( request );
+  if ( it != uri_map.end () ) {
+    const String target = uri_map [ request ];
+    const char * file = target.c_str();
+    lResult -> theModule = new std::ifstream ( file );
+    lResult -> setError ( URIResolverResult::UR_NOERROR );
+  } else {
+    lResult -> setError ( URIResolverResult::UR_XQST0046 );
+    std::stringstream lErrorStream;
+    lErrorStream << "Module not found " << aURI.getStringValue();
+    lResult->setErrorDescription(lErrorStream.str());
+  }
+  return std::auto_ptr<ModuleURIResolverResult>(lResult.release());
+}
 

@@ -51,4 +51,34 @@ public:
 	    StaticContext * aStaticContext );
 };
 
+  class TestModuleURIResolver : public ModuleURIResolver
+  {
+  private:
+    const char * map_file;
+    std::map < String, String > uri_map;
+
+    void initialize ();
+
+  public :
+    TestModuleURIResolver ( const char * file );
+    virtual ~TestModuleURIResolver ();
+
+    virtual std::auto_ptr< ModuleURIResolverResult >
+    resolve ( const Item &, StaticContext * aStaticContext );
+  };
+
+  class TestModuleURIResolverResult : public ModuleURIResolverResult
+  {
+  public:
+
+    virtual std::istream *
+    getModule ( ) const;
+
+  protected:
+
+    friend class TestModuleURIResolver;
+    std::istream * theModule;
+  };
+
+
 } // namespace zorba
