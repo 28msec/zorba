@@ -321,6 +321,8 @@ expr_iterator::expr_iterator (const expr_iterator &other) : iter (new expr_itera
 // [29]
 // [33a]
 
+#define CLONE( e, s ) ((e) == NULL ? NULL : (e)->clone (s))
+
 string var_expr::decode_var_kind(
   enum var_kind k)
 {
@@ -1253,6 +1255,14 @@ void elem_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
+expr_t elem_expr::clone(substitution_t& s) {
+  return new elem_expr (get_loc (),
+                        CLONE (getQNameExpr (), s),
+                        CLONE (getAttrs (), s),
+                        CLONE (getContent (), s),
+                        getNSCtx ());
+}
+
 
 // [110] [http://www.w3.org/TR/xquery/#prod-xquery-CompDocConstructor]
 
@@ -1307,6 +1317,11 @@ void attr_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
+expr_t attr_expr::clone(substitution_t& s) {
+  return new attr_expr (get_loc (),
+                        CLONE (getQNameExpr (), s), CLONE (getValueExpr (), s));
+}
+
 // [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompTextConstructor]
 
 text_expr::text_expr(
@@ -1325,6 +1340,10 @@ void text_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER();
   ITER (text);
   END_EXPR_ITER();
+}
+
+expr_t text_expr::clone(substitution_t& s) {
+  return new text_expr (get_loc (), get_type (), CLONE (get_text (), s));
 }
 
 // [115] [http://www.w3.org/TR/xquery/#prod-xquery-CompCommentConstructor]

@@ -1192,6 +1192,8 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
+  virtual expr_t clone(substitution_t& substitution);  
+
   xqtref_t return_type_impl (static_context *);
 };
 
@@ -1266,6 +1268,8 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
+  virtual expr_t clone(substitution_t& substitution);
+
   virtual xqtref_t return_type_impl(static_context *sctx);
 
 };
@@ -1301,6 +1305,8 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
+
+  virtual expr_t clone(substitution_t& substitution);  
 
   virtual xqtref_t return_type_impl(static_context *sctx);
 };
