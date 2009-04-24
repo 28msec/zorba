@@ -131,31 +131,40 @@ RULE_REWRITE_POST(SpecializeOperations)
   if (node->get_expr_kind() == fo_expr_kind) {
     fo_expr *fo = static_cast<fo_expr *>(node);
     const function *fn = fo->get_func();
-    if (fn->isArithmeticFunction() && fo->size() == 2) {
+    if (fo->size() == 2) {
       xqtref_t t0 = (*fo)[0]->return_type(rCtx.getStaticContext());
       xqtref_t t1 = (*fo)[1]->return_type(rCtx.getStaticContext());
-
-      xqtref_t aType = TypeOps::arithmetic_type_static(*t0, *t1);
-
-      if (aType == NULL || !TypeOps::is_numeric(*aType)) {
-        return NULL;
-      }
-
       std::vector<xqtref_t> argTypes;
-      argTypes.push_back(aType);
-      argTypes.push_back(aType);
 
-      const function *replacement = fn->specialize(rCtx.getStaticContext(), argTypes);
-      if (replacement != NULL) {
-        fo->set_func(replacement);
-        bool a0Promote = !TypeOps::is_subtype(*t0, *aType);
-        bool a1Promote = !TypeOps::is_subtype(*t1, *aType);
-
-        if (a0Promote) {
-          (*fo)[0] = new promote_expr(fo->get_loc(), (*fo)[0], aType);
+      if (fn->isArithmeticFunction()) {
+        xqtref_t aType = TypeOps::arithmetic_type_static(*t0, *t1);
+        
+        if (aType == NULL || !TypeOps::is_numeric(*aType)) {
+          return NULL;
         }
-        if (a1Promote) {
-          (*fo)[1] = new promote_expr(fo->get_loc(), (*fo)[1], aType);
+        
+        argTypes.push_back(aType);
+        argTypes.push_back(aType);
+        
+        const function *replacement = fn->specialize(rCtx.getStaticContext(), argTypes);
+        if (replacement != NULL) {
+          fo->set_func(replacement);
+          bool a0Promote = !TypeOps::is_subtype(*t0, *aType);
+          bool a1Promote = !TypeOps::is_subtype(*t1, *aType);
+          
+          if (a0Promote) {
+            (*fo)[0] = new promote_expr(fo->get_loc(), (*fo)[0], aType);
+          }
+          if (a1Promote) {
+            (*fo)[1] = new promote_expr(fo->get_loc(), (*fo)[1], aType);
+          }
+        }
+      } else if (fn->isComparisonFunction ()) {
+        argTypes.push_back(t0);
+        argTypes.push_back(t1);
+        const function *replacement = fn->specialize(rCtx.getStaticContext(), argTypes);
+        if (replacement != NULL) {
+          fo->set_func(replacement);
         }
       }
     }

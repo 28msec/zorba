@@ -46,6 +46,21 @@ namespace zorba
     }
   }
 
+  const function *GenericOpComparison::specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const {
+    xqtref_t t0 = argTypes[0];
+    xqtref_t t1 = argTypes[1];
+
+    if (! (TypeOps::is_atomic (*t0) && TypeOps::is_atomic (*t1)))
+      return NULL;
+    
+    TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
+    TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
+    if (tc0 == TypeConstants::XS_UNTYPED_ATOMIC || tc1 == TypeConstants::XS_UNTYPED_ATOMIC)
+      return NULL;
+
+    return toValueComp (sctx);
+  }
+
   /* end class GenericOpComparison */
 
   xqtref_t ValueOpComparison::return_type (const std::vector<xqtref_t> &arg_types) const {

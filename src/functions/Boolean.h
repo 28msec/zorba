@@ -30,7 +30,10 @@ namespace zorba
     
     virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
-    
+    virtual function *toValueComp (static_context *) const { return NULL; }
+    bool isComparisonFunction () const { return true; }
+    const function *specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const;
+
   protected:
     virtual PlanIter_t createIterator( const QueryLoc& loc, std::vector<PlanIter_t>& ) const = 0;
   };
@@ -41,19 +44,23 @@ namespace zorba
     xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
   };
   
+  template<enum CompareConsts::CompareType CC> class SpecificValueComparison : public ValueOpComparison {
+  public:
+    SpecificValueComparison (const signature &sig) : ValueOpComparison (sig) {}
+    virtual PlanIter_t createIterator( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const {
+      return new CompareIterator (loc, argv[0], argv[1], CC);
+    }
+  };
+
   template<enum CompareConsts::CompareType CC> class SpecificGenericComparison : public GenericOpComparison {
   public:
     SpecificGenericComparison (const signature &sig) : GenericOpComparison (sig) {}
     virtual PlanIter_t createIterator( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const {
       return new CompareIterator (loc, argv[0], argv[1], CC);
     }
-  };
-
-  template<enum CompareConsts::CompareType CC> class SpecificValueComparison : public ValueOpComparison {
-  public:
-    SpecificValueComparison (const signature &sig) : ValueOpComparison (sig) {}
-    virtual PlanIter_t createIterator( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const {
-      return new CompareIterator (loc, argv[0], argv[1], CC);
+    function *toValueComp (static_context *sctx) const {
+      std::string name = get_fname ()->getLocalName ()->str ();
+      return sctx->lookup_builtin_fn (name.substr (0, 1) + "value-" + name.substr (1), 2);
     }
   };
 

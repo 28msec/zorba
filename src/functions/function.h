@@ -114,6 +114,7 @@ public:
   virtual const function *specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const { return NULL; }
 
   virtual bool isArithmeticFunction() const { return false; }
+  virtual bool isComparisonFunction() const { return false; }
 };
 
 
