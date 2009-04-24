@@ -47,8 +47,7 @@ namespace zorba
   }
 
   /* end class GenericOpComparison */
-  
-  
+
   xqtref_t ValueOpComparison::return_type (const std::vector<xqtref_t> &arg_types) const {
     xqtref_t empty = GENV_TYPESYSTEM.EMPTY_TYPE;
     TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
@@ -62,103 +61,7 @@ namespace zorba
     }
     return quant == TypeConstants::QUANT_QUESTION ? GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION : GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
   }
-
   
-  /* begin class op_equal */
-  PlanIter_t 
-  op_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
-  {
-    return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::GENERAL_EQUAL );
-  }
-  /* end class op_equal */
-  
-  /* begin class op_not_equal */
-  PlanIter_t 
-  op_not_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
-  {
-    return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::GENERAL_NOT_EQUAL );
-  }
-  /* end class op_not_equal */
-  
-  /* begin class op_greater */
-  PlanIter_t 
-  op_greater::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
-  {
-    return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::GENERAL_GREATER );
-  }
-  /* end class op_greater */
-  
-  /* begin class op_greater_equal */
-  PlanIter_t 
-  op_greater_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
-  {
-    return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::GENERAL_GREATER_EQUAL );
-  }
-  /* end class op_greater_equal */
-  
-  /* begin class op_less */
-  PlanIter_t 
-  op_less::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
-  {
-    return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::GENERAL_LESS );
-  }
-  /* end class op_less */
-  
-  /* begin class op_less_equal */
-  PlanIter_t 
-  op_less_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
-  {
-    return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::GENERAL_LESS_EQUAL );
-  }
-  /* end class op_less_equal */
-
-  /* begin class op_value_equal */
-  PlanIter_t 
-  op_value_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
-  {
-    return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::VALUE_EQUAL );
-  }
-  /* end class op_value_equal */
-  
-  /* begin class op_value_not_equal */
-  PlanIter_t 
-  op_value_not_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
-  {
-    return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::VALUE_NOT_EQUAL );
-  }
-  /* end class op_value_not_equal */
-  
-  /* begin class op_value_greater */
-  PlanIter_t 
-  op_value_greater::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
-  {
-    return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::VALUE_GREATER );
-  }
-  /* end class value_op_greater */
-  
-  /* begin class op_value_greater_equal */
-  PlanIter_t 
-  op_value_greater_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
-  {
-    return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::VALUE_GREATER_EQUAL );
-  }
-  /* end class op_greater_equal */
-  
-  /* begin class op_value_less */
-  PlanIter_t 
-  op_value_less::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
-  {
-    return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::VALUE_LESS );
-  }
-  /* end class op_value_less */
-  
-  /* begin class op_value_less_equal */
-  PlanIter_t 
-  op_value_less_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
-  {
-    return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::VALUE_LESS_EQUAL );
-  }
-  /* end class op_value_less_equal */
 
   /* begin class op_is_same_node */
   PlanIter_t

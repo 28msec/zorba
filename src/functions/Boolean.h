@@ -19,6 +19,8 @@
 #include <vector>
 #include "common/shared_types.h"
 #include "functions/function.h"
+#include "runtime/booleans/compare_types.h"
+#include "runtime/booleans/BooleanImpl.h"
 
 namespace zorba
 {
@@ -39,92 +41,39 @@ namespace zorba
     xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
   };
   
+  template<enum CompareConsts::CompareType CC> class SpecificGenericComparison : public GenericOpComparison {
+  public:
+    SpecificGenericComparison (const signature &sig) : GenericOpComparison (sig) {}
+    virtual PlanIter_t createIterator( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const {
+      return new CompareIterator (loc, argv[0], argv[1], CC);
+    }
+  };
+
+  template<enum CompareConsts::CompareType CC> class SpecificValueComparison : public ValueOpComparison {
+  public:
+    SpecificValueComparison (const signature &sig) : ValueOpComparison (sig) {}
+    virtual PlanIter_t createIterator( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const {
+      return new CompareIterator (loc, argv[0], argv[1], CC);
+    }
+  };
+
   /*----------------------------------- generic comparison --------------------------------*/
-  class op_equal : public GenericOpComparison {
-  public:
-    op_equal (const signature &sig) : GenericOpComparison (sig) {}
-  protected:
-    virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
-  };
-  
-  class op_not_equal : public GenericOpComparison {
-  public:
-    op_not_equal (const signature &sig) : GenericOpComparison (sig) {}
-  protected:
-    virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
-  };
-  
-  class op_greater : public GenericOpComparison {
-  public:
-    op_greater (const signature &sig) : GenericOpComparison (sig) {}
-  protected:
-    virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
-  };
-  
-  class op_greater_equal : public GenericOpComparison {
-  public:
-    op_greater_equal (const signature &sig) : GenericOpComparison (sig) {}
-  protected:
-    virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
-  };
-  
-  class op_less : public GenericOpComparison {
-  public:
-    op_less (const signature &sig) : GenericOpComparison (sig) {}
-  protected:
-    virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
-  };
-  
-  class op_less_equal : public GenericOpComparison {
-  public:
-    op_less_equal (const signature &sig) : GenericOpComparison (sig) {}
-  protected:
-    virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
-  };
+
+  typedef SpecificGenericComparison<CompareConsts::GENERAL_EQUAL> op_equal;
+  typedef SpecificGenericComparison<CompareConsts::GENERAL_NOT_EQUAL> op_not_equal;
+  typedef SpecificGenericComparison<CompareConsts::GENERAL_GREATER> op_greater;
+  typedef SpecificGenericComparison<CompareConsts::GENERAL_GREATER_EQUAL> op_greater_equal;
+  typedef SpecificGenericComparison<CompareConsts::GENERAL_LESS> op_less;
+  typedef SpecificGenericComparison<CompareConsts::GENERAL_LESS_EQUAL> op_less_equal;
   
   /*----------------------------------- value comparison --------------------------------*/
-  class op_value_equal : public ValueOpComparison {
-  public:
-    op_value_equal (const signature &sig) : ValueOpComparison (sig) {}
-  protected:
-    virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
-  };
   
-  class op_value_not_equal : public ValueOpComparison {
-  public:
-    op_value_not_equal (const signature &sig) : ValueOpComparison (sig) {}
-  protected:
-    virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
-  };
-  
-  class op_value_greater : public ValueOpComparison {
-  public:
-    op_value_greater (const signature &sig) : ValueOpComparison (sig) {}
-  protected:
-    virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
-  };
-  
-  class op_value_greater_equal : public ValueOpComparison {
-  public:
-    op_value_greater_equal (const signature &sig) : ValueOpComparison (sig) {}
-  protected:
-    virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
-  };
-  
-  class op_value_less : public ValueOpComparison {
-  public:
-    op_value_less (const signature &sig) : ValueOpComparison (sig) {}
-  protected:
-    virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
-  };
-  
-  class op_value_less_equal : public ValueOpComparison {
-  public:
-    op_value_less_equal (const signature &sig) : ValueOpComparison (sig) {}
-  protected:
-    virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
-  };
-  
+  typedef SpecificValueComparison<CompareConsts::VALUE_EQUAL> op_value_equal;
+  typedef SpecificGenericComparison<CompareConsts::VALUE_NOT_EQUAL> op_value_not_equal;
+  typedef SpecificGenericComparison<CompareConsts::VALUE_GREATER> op_value_greater;
+  typedef SpecificGenericComparison<CompareConsts::VALUE_GREATER_EQUAL> op_value_greater_equal;
+  typedef SpecificGenericComparison<CompareConsts::VALUE_LESS> op_value_less;
+  typedef SpecificGenericComparison<CompareConsts::VALUE_LESS_EQUAL> op_value_less_equal;  
 
   /*-------------------------- Node Comparison -------------------------------------------*/
 
