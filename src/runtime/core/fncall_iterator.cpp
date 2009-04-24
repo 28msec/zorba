@@ -120,8 +120,12 @@ void UDFunctionCallIterator::closeImpl(PlanState& planState)
   UDFunctionCallIteratorState *state = StateTraitsImpl<UDFunctionCallIteratorState>::getState(planState, this->stateOffset);
 
   state->closePlan();
-  delete state->theFnBodyStateBlock->theRuntimeCB->theDynamicContext;
-  delete state->theFnBodyStateBlock->theRuntimeCB;
+  if (state->theFnBodyStateBlock != NULL
+      && state->theFnBodyStateBlock->theRuntimeCB != NULL)
+  {
+    delete state->theFnBodyStateBlock->theRuntimeCB->theDynamicContext;
+    delete state->theFnBodyStateBlock->theRuntimeCB;
+  }
   delete state->theFnBodyStateBlock;
   state->resetChildIters();
 
