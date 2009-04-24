@@ -50,7 +50,7 @@ echo Processing URI of catalog...
 $SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/module.txt $mq 
 
 
-q=`mktemp /tmp/rwts.XXXXXX`
+q=`mktemp /tmp/rwts.XXXXXX`o
 cat >$q <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
 declare option saxon:output "omit-xml-declaration=yes";
@@ -59,10 +59,13 @@ for $sch in //schema return concat ("%uri ", $sch/@uri, " ", $sch/@FileName),
 for $src in //source return concat ("%src ", $src/@ID, " ", $src/@FileName),
 for $tc in //test-case
 let $out := $tc/output-file[1]/text()
+(: assuming only one input-query and x is variable naame :)
+let $inq := $tc/input-query/@name
 return string-join ((
 $tc/@name, $tc/@FilePath, $tc/query/@name,
 string-join (for $i in $tc/input-file return concat (data ($i/@variable), "=", $i/text ()), ":"),
 string-join (for $i in $tc/input-URI return concat (data ($i/@variable), "=", $i/text ()), ":"),
+if ($inq) then $inq else "noquery",
 if ($out) then $out else "",
 string-join ($tc/expected-error/text(), ":")
 ), " ")),
@@ -82,13 +85,11 @@ my $repo=shift;
 my %sources;
 my $test_src_path = "$repo/test/rbkt/Queries/w3c_testsuite";
 my $test_uris = "$test_src_path/uri.txt\n";
-print "URI file at $test_uris\n";
 open (URIS, ">> $test_uris" );
 while (<>) {
 chomp;
 if (m/^%uri /) {
   my ( $info, $uri, $file) = split (/ /);
-  print "$uri=$file \n";
   print URIS " $uri=$file\n";
   next;
 }
@@ -98,7 +99,7 @@ if (m/^%src /) {
   next;
 }
 
-my ($name, $path, $query, $inlist, $urilist, $out, $errlist) = split (/ /);
+my ($name, $path, $query, $inlist, $urilist, $inpq, $out, $errlist) = split (/ /);
 my @inbnd = split (/:/, $inlist);
 my @uribnd = split (/:/, $urilist);
 my @errs = split (/:/, $errlist);
@@ -130,6 +131,11 @@ if (@inbnd || @uribnd) {
   close (SPEC);
 }
 
+if ( $inpq ne "noquery" ) {
+   open (SPEC, ">>$specfile");
+   print SPEC "INPUTQUERY: " . $dstqpath . $inpq . ".xq" . "\n";
+   copy ( "$inpath/$inpq.xq", "$dstqpath/$inpq.xq" );
+}
 if (@errs) {
   open (SPEC, ">>$specfile");
   foreach (@errs) {
