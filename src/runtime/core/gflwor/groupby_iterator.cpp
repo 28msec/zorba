@@ -131,7 +131,13 @@ bool GroupByIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState )
 
   while ( consumeNext ( aResult, theTupleIter, aPlanState ) ) 
   {
+    try {
     matVarsAndGroupBy ( lState, aPlanState );
+    }
+    catch (error::ZorbaError& lError)
+    {
+      ZORBA_ERROR_LOC_DESC(lError.theErrorCode, loc, lError.theDescription);
+    }
   }
 
   if ( !lState->theGroupMap->empty() ) 
