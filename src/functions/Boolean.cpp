@@ -55,7 +55,8 @@ namespace zorba
     
     TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
     TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
-    if (tc0 == TypeConstants::XS_UNTYPED_ATOMIC || tc1 == TypeConstants::XS_UNTYPED_ATOMIC)
+    if (tc0 == TypeConstants::XS_UNTYPED_ATOMIC || tc1 == TypeConstants::XS_UNTYPED_ATOMIC
+        || tc0 == TypeConstants::XS_ANY_ATOMIC || tc1 == TypeConstants::XS_ANY_ATOMIC)
       return NULL;
 
     return toValueComp (sctx);
