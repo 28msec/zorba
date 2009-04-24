@@ -1282,6 +1282,10 @@ void doc_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
+expr_t doc_expr::clone(substitution_t& s) {
+  return new doc_expr (get_loc (), CLONE (getContent (), s));
+}
+
 
 // [111] [http://www.w3.org/TR/xquery/#prod-xquery-CompElemConstructor]
 
@@ -1372,6 +1376,12 @@ void pi_expr::next_iter (expr_iterator_data& v) {
 
 void function_def_expr::next_iter (expr_iterator_data& v) {
 }
+
+expr_t pi_expr::clone(substitution_t& s) {
+  return new pi_expr (get_loc (),
+                      CLONE (get_target_expr (), s), CLONE (get_text (), s));
+}
+
 
 function_def_expr::function_def_expr (const QueryLoc& loc, store::Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type_impl)
   : expr (loc), name (name_)
