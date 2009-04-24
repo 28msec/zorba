@@ -22,10 +22,9 @@
 
 namespace zorba
 {
-  class GenericOpComparison : public function
-  {
+  class GenericOpComparison : public function {
   public:
-    GenericOpComparison ( const signature&);
+    GenericOpComparison (const signature &sig) : function (sig) {}
     
     virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
@@ -41,99 +40,87 @@ namespace zorba
   };
   
   /*----------------------------------- generic comparison --------------------------------*/
-  class op_equal : public GenericOpComparison
-  {
+  class op_equal : public GenericOpComparison {
   public:
-    op_equal( const signature&);
+    op_equal (const signature &sig) : GenericOpComparison (sig) {}
   protected:
     virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
   };
   
-  class op_not_equal : public GenericOpComparison
-  {
+  class op_not_equal : public GenericOpComparison {
   public:
-    op_not_equal( const signature&);
+    op_not_equal (const signature &sig) : GenericOpComparison (sig) {}
   protected:
     virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
   };
   
-  class op_greater : public GenericOpComparison
-  {
+  class op_greater : public GenericOpComparison {
   public:
-    op_greater( const signature&);
+    op_greater (const signature &sig) : GenericOpComparison (sig) {}
   protected:
     virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
   };
   
-  class op_greater_equal : public GenericOpComparison
-  {
+  class op_greater_equal : public GenericOpComparison {
   public:
-    op_greater_equal( const signature&);
+    op_greater_equal (const signature &sig) : GenericOpComparison (sig) {}
   protected:
     virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
   };
   
-  class op_less : public GenericOpComparison
-  {
+  class op_less : public GenericOpComparison {
   public:
-    op_less( const signature&);
+    op_less (const signature &sig) : GenericOpComparison (sig) {}
   protected:
     virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
   };
   
-  class op_less_equal : public GenericOpComparison
-  {
+  class op_less_equal : public GenericOpComparison {
   public:
-    op_less_equal( const signature&);
+    op_less_equal (const signature &sig) : GenericOpComparison (sig) {}
   protected:
     virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
   };
   
   /*----------------------------------- value comparison --------------------------------*/
-  class op_value_equal : public ValueOpComparison
-  {
+  class op_value_equal : public ValueOpComparison {
   public:
-    op_value_equal( const signature&);
+    op_value_equal (const signature &sig) : ValueOpComparison (sig) {}
   protected:
     virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
   };
   
-  class op_value_not_equal : public ValueOpComparison
-  {
+  class op_value_not_equal : public ValueOpComparison {
   public:
-    op_value_not_equal( const signature&);
+    op_value_not_equal (const signature &sig) : ValueOpComparison (sig) {}
   protected:
     virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
   };
   
-  class op_value_greater : public ValueOpComparison
-  {
+  class op_value_greater : public ValueOpComparison {
   public:
-    op_value_greater( const signature&);
+    op_value_greater (const signature &sig) : ValueOpComparison (sig) {}
   protected:
     virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
   };
   
-  class op_value_greater_equal : public ValueOpComparison
-  {
+  class op_value_greater_equal : public ValueOpComparison {
   public:
-    op_value_greater_equal( const signature&);
+    op_value_greater_equal (const signature &sig) : ValueOpComparison (sig) {}
   protected:
     virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
   };
   
-  class op_value_less : public ValueOpComparison
-  {
+  class op_value_less : public ValueOpComparison {
   public:
-    op_value_less( const signature&);
+    op_value_less (const signature &sig) : ValueOpComparison (sig) {}
   protected:
     virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
   };
   
-  class op_value_less_equal : public ValueOpComparison
-  {
+  class op_value_less_equal : public ValueOpComparison {
   public:
-    op_value_less_equal( const signature&);
+    op_value_less_equal (const signature &sig) : ValueOpComparison (sig) {}
   protected:
     virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
   };
@@ -141,85 +128,65 @@ namespace zorba
 
   /*-------------------------- Node Comparison -------------------------------------------*/
 
-  class op_is_same_node : public function
-  {
+  class op_is_same_node : public function {
   public:
-    op_is_same_node( const signature& aSig) : function(aSig) {}
-  public:
+    op_is_same_node( const signature &sig) : function(sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
   
-  class op_node_before : public function
-  {
+  class op_node_before : public function {
   public:
-    op_node_before( const signature& aSig) : function(aSig) {}
-  public:
+    op_node_before( const signature &sig) : function(sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
   
-  class op_node_after : public function
-  {
+  class op_node_after : public function {
   public:
-    op_node_after( const signature& aSig) : function(aSig) {}
-  public:
+    op_node_after( const signature &sig) : function(sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
   
   /*-------------------------- Logical Expressions ---------------------------------------*/
-  class op_and : public function
-  {
-    public:
-      op_and ( const signature& );
-      
-    public:
-      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  class op_and : public function {
+  public:
+    op_and (const signature &sig) : function (sig) {}
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
   
-  class op_or : public function
-  {
-    public:
-      op_or ( const signature& );
-      
-    public:
-      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  class op_or : public function {
+  public:
+    op_or (const signature &sig) : function (sig) {}
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
 
   // 9 Functions and Operators on Boolean Values
   // 9.1.1 fn:true
-  class fn_true : public function
-  {
-    public:
-      fn_true ( const signature& );
-      
-    public:
-      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  class fn_true : public function {
+  public:
+    fn_true (const signature &sig) : function (sig) {}
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   }; /* class fn_true */
   
   // 9.1.2 fn:false
-  class fn_false : public function
-  {
-    public:
-      fn_false ( const signature& );
-      
-    public:
-      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  class fn_false : public function {
+  public:
+    fn_false (const signature &sig) : function (sig) {}
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   }; /* class fn_false */
   
   // 9.3.1 fn:not
-  class fn_not : public function
-  {
+  class fn_not : public function {
   public:
-    fn_not ( const signature& );
+    fn_not (const signature &sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   // 15 Functions and Operators on Sequences
   // 15.1.1 fn:boolean
-  class fn_boolean : public function
-  {
+  class fn_boolean : public function {
     public:
-      fn_boolean ( const signature& );
+    fn_boolean (const signature &sig) : function (sig) {}
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   }; /* class fn_false */
 }
