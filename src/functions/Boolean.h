@@ -76,11 +76,11 @@ namespace zorba
   /*----------------------------------- value comparison --------------------------------*/
   
   typedef SpecificValueComparison<CompareConsts::VALUE_EQUAL> op_value_equal;
-  typedef SpecificGenericComparison<CompareConsts::VALUE_NOT_EQUAL> op_value_not_equal;
-  typedef SpecificGenericComparison<CompareConsts::VALUE_GREATER> op_value_greater;
-  typedef SpecificGenericComparison<CompareConsts::VALUE_GREATER_EQUAL> op_value_greater_equal;
-  typedef SpecificGenericComparison<CompareConsts::VALUE_LESS> op_value_less;
-  typedef SpecificGenericComparison<CompareConsts::VALUE_LESS_EQUAL> op_value_less_equal;  
+  typedef SpecificValueComparison<CompareConsts::VALUE_NOT_EQUAL> op_value_not_equal;
+  typedef SpecificValueComparison<CompareConsts::VALUE_GREATER> op_value_greater;
+  typedef SpecificValueComparison<CompareConsts::VALUE_GREATER_EQUAL> op_value_greater_equal;
+  typedef SpecificValueComparison<CompareConsts::VALUE_LESS> op_value_less;
+  typedef SpecificValueComparison<CompareConsts::VALUE_LESS_EQUAL> op_value_less_equal;  
 
   /*-------------------------- Node Comparison -------------------------------------------*/
 
