@@ -21,12 +21,21 @@
 #include "functions/function.h"
 
 namespace zorba {
+
+  class binary_arith_func : public function {
+  public:
+    binary_arith_func (const signature &sig) : function (sig) {}
+    virtual bool isArithmeticFunction() const { return true; }
+    virtual const char *op_name () const = 0;
+    const function *specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const;
+  };
+
   // 6.2.2 op:numeric-subtract
   // -------------------------
-  class op_subtract : public function
-  {
+  class op_subtract : public binary_arith_func {
   public:
-	op_subtract(const signature& sig) : function (sig) {}
+    op_subtract(const signature& sig) : binary_arith_func (sig) {}
+    const char *op_name () const { return "subtract"; }
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 

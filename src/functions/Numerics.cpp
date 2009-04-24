@@ -38,9 +38,9 @@ namespace zorba {
     virtual bool isArithmeticFunction() const { return true; }
   };
 
-  class binary_arith_func : public function {
+  class bin_num_arith_func : public function {
   public:
-    binary_arith_func (const signature &sig) : function (sig) {}
+    bin_num_arith_func (const signature &sig) : function (sig) {}
     virtual xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
     virtual bool isArithmeticFunction() const { return true; }
   };
@@ -50,89 +50,132 @@ namespace zorba {
 | 6.2 Operators on Numeric Values
 |_______________________________________________________________________*/
 
+template<class op, TypeConstants::atomic_type_code_t t>
+class binary_specific_arith_func : public bin_num_arith_func
+{
+public:
+	binary_specific_arith_func (const signature &sig) : bin_num_arith_func (sig) {}
+	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
+    return new SpecificNumArithIterator<op, t> (loc, argv[0], argv[1]);
+  }
+};
+
+#define DECL_SPECIFIC_OPS( op, opc, t, xqt )                        \
+  typedef binary_specific_arith_func<opc, TypeConstants::XS_##xqt>  \
+  op_numeric_##op##_##t;
+#define DECL_ALL_SPECIFIC_OPS( op, opc )          \
+  DECL_SPECIFIC_OPS (op, opc, double, DOUBLE);    \
+  DECL_SPECIFIC_OPS (op, opc, decimal, DECIMAL);  \
+  DECL_SPECIFIC_OPS (op, opc, float, FLOAT);      \
+  DECL_SPECIFIC_OPS (op, opc, integer, INTEGER)  \
+
+  DECL_ALL_SPECIFIC_OPS (add, AddOperation);
+  DECL_ALL_SPECIFIC_OPS (subtract, SubtractOperation);
+  DECL_ALL_SPECIFIC_OPS (multiply, MultiplyOperation);
+  DECL_ALL_SPECIFIC_OPS (divide, DivideOperation);
+
+static const function *specialize_numeric (static_context *sctx, const std::vector<xqtref_t>& argTypes, const char *op) {
+  xqtref_t t0 = argTypes[0];
+  xqtref_t t1 = argTypes[1];
+  ostringstream oss;
+
+  oss << ":" "numeric-" << op << "-";
+  if (TypeOps::is_atomic(*t0)) {
+    TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
+    TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
+    
+    if (tc0 == tc1) {
+      switch(tc0) {
+      case TypeConstants::XS_DOUBLE:
+        oss << "double";
+        return sctx->lookup_builtin_fn (oss.str (), 2);
+        
+      case TypeConstants::XS_DECIMAL:
+        oss << "decimal";
+        return sctx->lookup_builtin_fn (oss.str (), 2);
+        
+      case TypeConstants::XS_FLOAT:
+        oss << "float";
+        return sctx->lookup_builtin_fn (oss.str (), 2);
+        
+      case TypeConstants::XS_INTEGER:
+        oss << "integer";
+        return sctx->lookup_builtin_fn (oss.str (), 2);
+        
+      default:
+        return NULL;
+      }
+    }
+  }
+  return NULL;
+}
+
+class specializable_bin_num_arith_func : public bin_num_arith_func {
+public:
+  specializable_bin_num_arith_func (const signature &sig)
+    : bin_num_arith_func (sig) {};
+  virtual const char *op_name () const = 0;
+  const function *specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const {
+    return specialize_numeric (sctx, argTypes, op_name ());
+  }  
+};
 
 // 6.2.1 op:numeric-add
 // --------------------
-class op_numeric_add : public binary_arith_func
+class op_numeric_add : public specializable_bin_num_arith_func
 {
 public:
-	op_numeric_add(const signature&);
+  const char *op_name () const { return "add"; }
+	op_numeric_add(const signature &sig) : specializable_bin_num_arith_func (sig) {};
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 // 6.2.2 op:numeric-subtract
 // -------------------------
-class op_numeric_subtract : public binary_arith_func
+class op_numeric_subtract : public specializable_bin_num_arith_func
 {
 public:
-	op_numeric_subtract(const signature&);
+  const char *op_name () const { return "subtract"; }
+	op_numeric_subtract(const signature &sig) : specializable_bin_num_arith_func (sig) {};
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 
 // 6.2.3 op:numeric-multiply
 // -------------------------
-class op_numeric_multiply : public binary_arith_func
+class op_numeric_multiply : public specializable_bin_num_arith_func
 {
 public:
-	op_numeric_multiply(const signature&);
-	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    const function *specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const;
-};
-
-class op_numeric_multiply_double : public binary_arith_func
-{
-public:
-	op_numeric_multiply_double(const signature&);
+  const char *op_name () const { return "multiply"; }
+	op_numeric_multiply(const signature &sig) : specializable_bin_num_arith_func (sig) {};
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
-
-class op_numeric_multiply_decimal : public binary_arith_func
-{
-public:
-	op_numeric_multiply_decimal(const signature&);
-	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-};
-
-class op_numeric_multiply_integer : public binary_arith_func
-{
-public:
-	op_numeric_multiply_integer(const signature&);
-	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-};
-
-class op_numeric_multiply_float : public binary_arith_func
-{
-public:
-	op_numeric_multiply_float(const signature&);
-	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-};
-
 
 // 6.2.4 op:numeric-divide
 // -----------------------
-class op_numeric_divide : public binary_arith_func
+class op_numeric_divide : public specializable_bin_num_arith_func
 {
 public:
-	op_numeric_divide(const signature&);
+  const char *op_name () const { return "divide"; }
+	op_numeric_divide(const signature &sig) : specializable_bin_num_arith_func (sig) {};
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 // 6.2.5 op:numeric-integer-divide
 // -------------------------------
-class op_numeric_integer_divide : public binary_arith_func
+class op_numeric_integer_divide : public bin_num_arith_func
 {
 public:
-	op_numeric_integer_divide(const signature&);
+	op_numeric_integer_divide(const signature &sig) : bin_num_arith_func (sig) {};
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 // 6.2.6 op:numeric-mod
 // --------------------
-class op_numeric_mod : public binary_arith_func
+class op_numeric_mod : public bin_num_arith_func
 {
 public:
-	op_numeric_mod(const signature&);
+	op_numeric_mod(const signature &sig) : bin_num_arith_func (sig) {};
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
@@ -206,7 +249,7 @@ xqtref_t single_numeric_func::return_type (const std::vector<xqtref_t> &arg_type
   return arg_types [0];
 }
 
-xqtref_t binary_arith_func::return_type (const std::vector<xqtref_t> &arg_types) const {
+xqtref_t bin_num_arith_func::return_type (const std::vector<xqtref_t> &arg_types) const {
   if (TypeOps::is_empty (*arg_types [0]))
     return arg_types [0];
   if (TypeOps::is_empty (*arg_types [1]))
@@ -229,13 +272,6 @@ xqtref_t binary_arith_func::return_type (const std::vector<xqtref_t> &arg_types)
 |	-INF is returned. If one of the operands is INF and the other is -INF, 
 |	NaN is returned.
 |_______________________________________________________________________*/
-
-op_numeric_add::op_numeric_add(
-	const signature& sig)
-:
-	binary_arith_func(sig)
-{
-}
 
 PlanIter_t op_numeric_add::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
@@ -262,13 +298,6 @@ PlanIter_t op_numeric_add::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
 |	infinity of the appropriate sign is returned.
 |_______________________________________________________________________*/
 
-op_numeric_subtract::op_numeric_subtract(
-	const signature& sig)
-:
-	binary_arith_func(sig)
-{
-}
-
 PlanIter_t op_numeric_subtract::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
 	return new NumArithIterator<SubtractOperation>(loc, argv[0], argv[1]);
@@ -293,95 +322,9 @@ PlanIter_t op_numeric_subtract::codegen (const QueryLoc& loc, std::vector<PlanIt
 |	appropriate sign is returned.
 |_______________________________________________________________________*/
 
-op_numeric_multiply::op_numeric_multiply(
-	const signature& sig)
-:
-	binary_arith_func(sig)
-{
-}
-
 PlanIter_t op_numeric_multiply::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
 	return new NumArithIterator<MultiplyOperation>(loc, argv[0], argv[1]);
-}
-
-const function *op_numeric_multiply::specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const
-{
-    xqtref_t t0 = argTypes[0];
-    xqtref_t t1 = argTypes[1];
-
-    if (TypeOps::is_atomic(*t0)) {
-        TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
-        TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
-
-        if (tc0 == tc1) {
-            switch(tc0) {
-                case TypeConstants::XS_DOUBLE:
-                    return sctx->lookup_builtin_fn (":" "numeric-multiply-double", 2);
-
-                case TypeConstants::XS_DECIMAL:
-                    return sctx->lookup_builtin_fn (":" "numeric-multiply-decimal", 2);
-
-                case TypeConstants::XS_FLOAT:
-                    return sctx->lookup_builtin_fn (":" "numeric-multiply-float", 2);
-
-                case TypeConstants::XS_INTEGER:
-                    return sctx->lookup_builtin_fn (":" "numeric-multiply-integer", 2);
-
-                default:
-                    return NULL;
-            }
-        }
-    }
-    return NULL;
-}
-
-op_numeric_multiply_double::op_numeric_multiply_double(
-	const signature& sig)
-:
-	binary_arith_func(sig)
-{
-}
-
-PlanIter_t op_numeric_multiply_double::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-	return new SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DOUBLE>(loc, argv[0], argv[1]);
-}
-
-op_numeric_multiply_decimal::op_numeric_multiply_decimal(
-	const signature& sig)
-:
-	binary_arith_func(sig)
-{
-}
-
-PlanIter_t op_numeric_multiply_decimal::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-	return new SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DECIMAL>(loc, argv[0], argv[1]);
-}
-
-op_numeric_multiply_integer::op_numeric_multiply_integer(
-	const signature& sig)
-:
-	binary_arith_func(sig)
-{
-}
-
-PlanIter_t op_numeric_multiply_integer::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-	return new SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_INTEGER>(loc, argv[0], argv[1]);
-}
-
-op_numeric_multiply_float::op_numeric_multiply_float(
-	const signature& sig)
-:
-	binary_arith_func(sig)
-{
-}
-
-PlanIter_t op_numeric_multiply_float::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-	return new SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_FLOAT>(loc, argv[0], argv[1]);
 }
 
 
@@ -409,13 +352,6 @@ PlanIter_t op_numeric_multiply_float::codegen (const QueryLoc& loc, std::vector<
 |	negative zero returns NaN. Also, INF or -INF divided by INF or -INF 
 |	returns NaN.
 |_______________________________________________________________________*/
-
-op_numeric_divide::op_numeric_divide(
-	const signature& sig)
-:
-	binary_arith_func(sig)
-{
-}
 
 PlanIter_t op_numeric_divide::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
@@ -452,13 +388,6 @@ PlanIter_t op_numeric_divide::codegen (const QueryLoc& loc, std::vector<PlanIter
 |	The semantics of this function are different from integer division as 
 |	defined in programming languages such as Java and C++.
 |_______________________________________________________________________*/
-
-op_numeric_integer_divide::op_numeric_integer_divide(
-	const signature& sig)
-:
-	binary_arith_func(sig)
-{
-}
 
 PlanIter_t op_numeric_integer_divide::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
@@ -503,13 +432,6 @@ PlanIter_t op_numeric_integer_divide::codegen (const QueryLoc& loc, std::vector<
 |			division i.e. additional digits are truncated, not rounded to the 
 |			required precision.
 |_______________________________________________________________________*/
-
-op_numeric_mod::op_numeric_mod(
-	const signature& sig)
-:
-	binary_arith_func(sig)
-{
-}
 
 PlanIter_t op_numeric_mod::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
@@ -734,55 +656,30 @@ void populateContext_Math (static_context *sctx) {
   REGISTER_DOUBLE_MATH_FUN (atan);
 }
 
+#define DECL_ARITH( sctx, op, type, xqt )                              \
+  DECL(sctx, op_numeric_##op##_##type,                                   \
+       (createQName (XQUERY_OP_NS,"fn", ":numeric-" #op "-" #type),    \
+        GENV_TYPESYSTEM.xqt##_TYPE_QUESTION,                           \
+        GENV_TYPESYSTEM.xqt##_TYPE_QUESTION,                           \
+        GENV_TYPESYSTEM.xqt##_TYPE_QUESTION))
+
+#define DECL_ALL_ARITH( sctx, op )                             \
+  DECL(sctx, op_numeric_##op,                                  \
+       (createQName (XQUERY_OP_NS, "fn", ":numeric-" #op),     \
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,              \
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,              \
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));            \
+  DECL_ARITH( sctx, op, double, DOUBLE );                      \
+  DECL_ARITH( sctx, op, float, FLOAT );                        \
+  DECL_ARITH( sctx, op, decimal, DECIMAL );                    \
+  DECL_ARITH( sctx, op, integer, INTEGER )
+
 void populateContext_Numerics(static_context *sctx) {
 // Numerics
-DECL(sctx, op_numeric_add,
-     (createQName (XQUERY_OP_NS,"fn", ":numeric-add"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
-
-DECL(sctx, op_numeric_subtract,
-     (createQName (XQUERY_OP_NS,"fn", ":numeric-subtract"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
-
-DECL(sctx, op_numeric_multiply,
-     (createQName (XQUERY_OP_NS,"fn", ":numeric-multiply"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
-
-DECL(sctx, op_numeric_multiply_double,
-     (createQName (XQUERY_OP_NS,"fn", ":numeric-multiply-double"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION));
-
-DECL(sctx, op_numeric_multiply_decimal,
-     (createQName (XQUERY_OP_NS,"fn", ":numeric-multiply-decimal"),
-      GENV_TYPESYSTEM.DECIMAL_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DECIMAL_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DECIMAL_TYPE_QUESTION));
-
-DECL(sctx, op_numeric_multiply_float,
-     (createQName (XQUERY_OP_NS,"fn", ":numeric-multiply-float"),
-      GENV_TYPESYSTEM.FLOAT_TYPE_QUESTION,
-      GENV_TYPESYSTEM.FLOAT_TYPE_QUESTION,
-      GENV_TYPESYSTEM.FLOAT_TYPE_QUESTION));
-
-DECL(sctx, op_numeric_multiply_integer,
-     (createQName (XQUERY_OP_NS,"fn", ":numeric-multiply-integer"),
-      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION,
-      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION,
-      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
-
-DECL(sctx, op_numeric_divide,
-     (createQName (XQUERY_OP_NS,"fn", ":numeric-divide"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+DECL_ALL_ARITH (sctx, add);
+DECL_ALL_ARITH (sctx, subtract);
+DECL_ALL_ARITH (sctx, multiply);
+DECL_ALL_ARITH (sctx, divide);
 
 DECL(sctx, op_numeric_integer_divide,
      (createQName (XQUERY_OP_NS,"fn", ":numeric-integer-divide"),

@@ -25,37 +25,48 @@ using namespace std;
 
 namespace zorba {
 
+  const function *binary_arith_func::specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const {
+    xqtref_t t0 = argTypes[0];
+    xqtref_t t1 = argTypes[1];
+    
+    if (TypeOps::is_simple(*t0) && TypeOps::is_simple(*t1)) {
+      TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
+      TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
+      
+      if (TypeOps::is_numeric (*t0) && TypeOps::is_numeric (*t1) && tc0 == tc1)
+        return sctx->lookup_builtin_fn (std::string (":numeric-") + op_name (), 2)->specialize (sctx, argTypes);
+    }
+    return NULL;
+  }
+
   // 6.2.1 op:add
   // --------------------
-  class op_add : public function
+  class op_add : public binary_arith_func
   {
   public:
-	op_add(const signature& sig) : function (sig) {}
-    virtual bool isArithmeticFunction() const { return true; }
-	
-  public:
+    op_add(const signature& sig) : binary_arith_func (sig) {}
+    const char *op_name () const { return "add"; }
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   // 6.2.3 op:numeric-multiply
   // -------------------------
-  class op_multiply : public function
+  class op_multiply : public binary_arith_func
   {
   public:
-	op_multiply(const signature& sig) : function (sig) {}
-    virtual bool isArithmeticFunction() const { return true; }
+    op_multiply(const signature& sig) : binary_arith_func (sig) {}
+    const char *op_name () const { return "multiply"; }
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    const function *specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const;
   };
 
 
   // 6.2.4 op:numeric-divide
   // -----------------------
-  class op_divide : public function
+  class op_divide : public binary_arith_func
   {
   public:
-	op_divide(const signature& sig) : function (sig) {}
-    virtual bool isArithmeticFunction() const { return true; }
+    op_divide(const signature& sig) : binary_arith_func (sig) {}
+    const char *op_name () const { return "divide"; }
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
@@ -90,37 +101,6 @@ PlanIter_t op_add::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, 
 PlanIter_t op_subtract::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
 	return new GenericArithIterator<SubtractOperation>(loc, argv[0], argv[1]);
-}
-
-const function *op_multiply::specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const
-{
-    xqtref_t t0 = argTypes[0];
-    xqtref_t t1 = argTypes[1];
-
-    if (TypeOps::is_simple(*t0) && TypeOps::is_simple(*t1)) {
-        TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
-        TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
-
-        if (tc0 == tc1) {
-            switch(tc0) {
-                case TypeConstants::XS_DOUBLE:
-                    return sctx->lookup_builtin_fn (":" "numeric-multiply-double", 2);
-
-                case TypeConstants::XS_DECIMAL:
-                    return sctx->lookup_builtin_fn (":" "numeric-multiply-decimal", 2);
-
-                case TypeConstants::XS_FLOAT:
-                    return sctx->lookup_builtin_fn (":" "numeric-multiply-float", 2);
-
-                case TypeConstants::XS_INTEGER:
-                    return sctx->lookup_builtin_fn (":" "numeric-multiply-integer", 2);
-
-                default:
-                    return NULL;
-            }
-        }
-    }
-    return NULL;
 }
 
 PlanIter_t op_multiply::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
