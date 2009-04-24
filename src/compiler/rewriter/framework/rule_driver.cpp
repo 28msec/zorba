@@ -69,7 +69,7 @@ void RuleMajorDriver::rewrite(RewriterContext& rCtx)
 
 void RuleOnceDriverBase::rewrite(RewriterContext& rCtx)
 {
-  bool modified;
+  bool modified = false;
 
   expr_t newRoot = rewriteRec(rCtx, theRule, &*rCtx.getRoot(), modified);
 
