@@ -584,7 +584,7 @@ protected:
   expr_t  default_var_h;
   expr_t default_clause_h;
 
-public:
+  // typeswitch_expr is not fully supported, so prevent instantiation
   typeswitch_expr(const QueryLoc&);
 
 public:
@@ -688,16 +688,15 @@ class signature;
 
 ********************************************************************************/
 class function_def_expr : public expr {
-public:
-  expr_kind_t get_expr_kind () const { return function_def_expr_kind; }
 protected:
   store::Item_t name;
   std::vector<rchandle<var_expr> > params;
   expr_t body;
   std::auto_ptr<signature> sig;
 
-public:
   function_def_expr (const QueryLoc& loc, store::Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type_impl);
+
+public:
 
   store::Item_t get_name () const { return name; }
   expr_t get_body () { return body; }
@@ -1395,14 +1394,14 @@ public:
 	insert_expr(
 		const QueryLoc&,
     store::UpdateConsts::InsertType,
-		expr_t,
-		expr_t);
+		expr_t aSourceExpr,
+		expr_t aTargetExpr);
 
   expr_kind_t get_expr_kind () const { return insert_expr_kind; }
 
 public:
   store::UpdateConsts::InsertType getType() const { return theType; }
-	expr_t getSouceExpr() const { return theSourceExpr; }
+	expr_t getSourceExpr() const { return theSourceExpr; }
 	expr_t getTargetExpr() const { return theTargetExpr; }
   
 
@@ -1412,6 +1411,7 @@ public:
 	std::ostream& put(std::ostream&) const;
   bool is_updating() { return true; }
 
+  virtual expr_t clone (substitution_t& s);
 };
 
 
@@ -1440,6 +1440,8 @@ public:
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
   bool is_updating() { return true; }
+
+  virtual expr_t clone (substitution_t& s);
 };
 
 
@@ -1476,6 +1478,7 @@ public:
 	std::ostream& put(std::ostream&) const;
   bool is_updating() { return true; }
 
+  virtual expr_t clone (substitution_t& s);
 };
 
 
@@ -1507,6 +1510,7 @@ public:
 	std::ostream& put(std::ostream&) const;
   bool is_updating() { return true; }
 
+  virtual expr_t clone (substitution_t& s);
 };
 
 
@@ -1594,6 +1598,8 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
+
+  virtual expr_t clone(substitution_t &s);
 };
 
 class flowctl_expr : public expr {
@@ -1614,6 +1620,8 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
+
+  virtual expr_t clone(substitution_t &s);
 };
 
 class while_expr : public expr {
@@ -1630,6 +1638,8 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
+
+  virtual expr_t clone(substitution_t &s);
 };
 
 
@@ -1653,8 +1663,6 @@ public:
         expr_t,
         expr_t,
         expr_t);
-
-  expr_kind_t get_expr_kind () const { return ft_contains_expr_kind; }
 
   expr_t get_range() const { return range_h; }
   expr_t get_ft_select() const { return ft_select_h; }

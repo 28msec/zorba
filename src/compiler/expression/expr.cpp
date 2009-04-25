@@ -1437,7 +1437,9 @@ insert_expr::next_iter(expr_iterator_data& v)
   END_EXPR_ITER(); 
 }
 
-
+expr_t insert_expr::clone (substitution_t& s) {
+  return new insert_expr (get_loc (), getType (), getSourceExpr ()->clone (s), getTargetExpr ()->clone (s));
+}
 
 // [243] [http://www.w3.org/TR/xqupdate/#prod-xquery-DeleteExpr]
 
@@ -1458,6 +1460,9 @@ void delete_expr::next_iter(expr_iterator_data& v)
   END_EXPR_ITER(); 
 }
 
+expr_t delete_expr::clone (substitution_t& s) {
+  return new delete_expr (get_loc (), getTargetExpr ()->clone (s));
+}
 
 
 // [244] [http://www.w3.org/TR/xqupdate/#prod-xquery-ReplaceExpr]
@@ -1484,7 +1489,9 @@ void replace_expr::next_iter(expr_iterator_data& v)
   END_EXPR_ITER();
 }
 
-
+expr_t replace_expr::clone (substitution_t& s) {
+  return new replace_expr (get_loc (), getType (), getTargetExpr ()->clone (s), getReplaceExpr ()->clone (s));
+}
 
 // [245] [http://www.w3.org/TR/xqupdate/#prod-xquery-RenameExpr]
 
@@ -1506,6 +1513,10 @@ void rename_expr::next_iter(expr_iterator_data& v)
   ITER(theTargetExpr);
   ITER(theNameExpr);
   END_EXPR_ITER();
+}
+
+expr_t rename_expr::clone (substitution_t& s) {
+  return new rename_expr (get_loc (), getTargetExpr ()->clone (s), getNameExpr ()->clone (s));
 }
 
 
@@ -1543,10 +1554,18 @@ void exit_expr::next_iter (expr_iterator_data& v)
   END_EXPR_ITER();
 }
 
+expr_t exit_expr::clone (substitution_t& s) {
+  return new exit_expr (get_loc (), get_value ()->clone (s));
+}
+
 void flowctl_expr::next_iter (expr_iterator_data& v)
 {
   BEGIN_EXPR_ITER();
   END_EXPR_ITER();
+}
+
+expr_t flowctl_expr::clone (substitution_t& s) {
+  return new flowctl_expr (get_loc (), get_action ());
 }
 
 void while_expr::next_iter (expr_iterator_data& v)
@@ -1554,6 +1573,10 @@ void while_expr::next_iter (expr_iterator_data& v)
   BEGIN_EXPR_ITER();
   ITER (body);
   END_EXPR_ITER();
+}
+
+expr_t while_expr::clone (substitution_t& s) {
+  return new while_expr (get_loc (), get_body ()->clone (s));
 }
 
 expr_t if_expr::clone (substitution_t& s) {

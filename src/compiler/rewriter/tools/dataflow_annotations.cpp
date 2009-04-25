@@ -63,16 +63,8 @@ void DataflowAnnotationsComputer::compute(expr *e)
       compute_if_expr(static_cast<if_expr *>(e));
       break;
 
-    case function_def_expr_kind:
-      compute_function_def_expr(static_cast<function_def_expr *>(e));
-      break;
-
     case fo_expr_kind:
       compute_fo_expr(static_cast<fo_expr *>(e));
-      break;
-
-    case ft_contains_expr_kind:
-      compute_ft_contains_expr(static_cast<ft_contains_expr *>(e));
       break;
 
     case instanceof_expr_kind:
