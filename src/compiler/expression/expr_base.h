@@ -30,13 +30,11 @@
 namespace zorba {
 
 enum expr_kind_t {
-  expr_kind,
   wrapper_expr_kind,
   sequential_expr_kind,
   exit_expr_kind,
   flowctl_expr_kind,
   while_expr_kind,
-  constructor_expr_kind,
   var_expr_kind,
   flwor_expr_kind,
   gflwor_expr_kind,
@@ -64,6 +62,13 @@ enum expr_kind_t {
   attr_expr_kind,
   text_expr_kind,
   pi_expr_kind,
+  insert_expr_kind,
+  delete_expr_kind,
+  rename_expr_kind,
+  replace_expr_kind,
+  transform_expr_kind,
+  eval_expr_kind,
+  debugger_expr_kind,
   unknown_expr_kind
 };
 
@@ -133,13 +138,13 @@ protected:
 protected:
   virtual expr_iterator_data *make_iter ();
   
-public:
-  expr() {};
+protected:
   expr(const QueryLoc&);
 
+public:
   virtual ~expr();
 
-  virtual expr_kind_t get_expr_kind () const { return expr_kind; }
+  virtual expr_kind_t get_expr_kind () const = 0;
 
 public:
   const QueryLoc &get_loc() const { return loc; }

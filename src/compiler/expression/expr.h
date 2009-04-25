@@ -106,6 +106,8 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
+
+  virtual expr_t clone(substitution_t &s);
 };
 
 
@@ -114,9 +116,7 @@ public:
 ********************************************************************************/
 class constructor_expr : public expr 
 {
-public:
-  expr_kind_t get_expr_kind () const { return constructor_expr_kind; }
-
+protected:
   constructor_expr(const QueryLoc& loc) : expr (loc) {}
 };
 
@@ -157,24 +157,22 @@ class catch_clause : public SimpleRCObject {
 class trycatch_expr : public expr {
 public:
   expr_kind_t get_expr_kind () const { return trycatch_expr_kind; }
-private:
-  public:
+
+public:
     typedef rchandle<catch_clause> clauseref_t;
 
-  protected:
+protected:
     expr_t try_expr_h;
     std::vector<clauseref_t> catch_clause_hv;
 
-  public:
+public:
     trycatch_expr(const QueryLoc&);
 
-  public:
     expr_t get_try_expr() const
     { return try_expr_h; }
     void set_try_expr(expr_t e_h)
     { try_expr_h = e_h; }
 
-  public:
     void add_clause(clauseref_t cc_h)
     { catch_clause_hv.push_back(cc_h); }
 
@@ -198,7 +196,6 @@ private:
     clauseref_t const& operator[](int i) const
     { return catch_clause_hv[i]; }
 
-  public:
     expr_iterator_data *make_iter ();
 
     void next_iter (expr_iterator_data&);
@@ -219,7 +216,7 @@ public:
     xqtref_t type;
     expr_t val;
 
-    eval_var() {};
+    eval_var() {}
     eval_var (var_expr *ve, expr_t val);
   };
 
@@ -228,7 +225,8 @@ protected:
   checked_vector<eval_var> vars;
 
 public:
-  eval_expr() {};
+  expr_kind_t get_expr_kind () const { return eval_expr_kind; }
+
   eval_expr (const QueryLoc &loc, expr_t expr_)
     : expr (loc), expr_h (expr_)
   {}
@@ -253,11 +251,14 @@ public:
 //debugger expression
 class debugger_expr: public eval_expr
 {
-  private:
+public:
+  expr_kind_t get_expr_kind () const { return debugger_expr_kind; }
+
+private:
     std::list<global_binding> theGlobals;
     bool theForExpr;
     
-  public:
+public:
     debugger_expr( const QueryLoc& loc, expr_t aChild, std::list<global_binding> aGlobals ):
       eval_expr(loc, aChild ), theGlobals( aGlobals ){}
     
@@ -282,7 +283,7 @@ class debugger_expr: public eval_expr
 
     bool isForExpr() const { return theForExpr; }
 
-  private:
+private:
     void store_local_variables(checked_vector<var_expr_t> &aScopedVariables)
     {
       std::set<store::Item_t> lQNames;
@@ -330,7 +331,7 @@ public:
 
   xqtref_t return_type_impl (static_context *sctx);
 
-  virtual expr_t clone(substitution_t& substitution);
+  virtual expr_t clone(substitution_t &s);
 
   std::ostream& put(std::ostream&) const;
 };
@@ -371,7 +372,7 @@ public:
 
 ********************************************************************************/
 class cast_or_castable_base_expr : public expr {
-public:  
+protected:
   cast_or_castable_base_expr(const QueryLoc& loc, expr_t input, xqtref_t type);
 
 protected:
@@ -421,9 +422,10 @@ public:
 
 ********************************************************************************/
 class castable_base_expr : public cast_or_castable_base_expr {
-public:
+protected:
   castable_base_expr (const QueryLoc&, expr_t, xqtref_t);
 
+public:
   xqtref_t return_type_impl (static_context *sctx);
 };
 
@@ -676,7 +678,7 @@ public:
   std::ostream& put(std::ostream&) const;
 
   xqtref_t return_type_impl (static_context *sctx);
-  virtual expr_t clone(substitution_t& substitution);
+  virtual expr_t clone(substitution_t &s);
 };
 
 class signature;
@@ -799,7 +801,7 @@ public:
   std::ostream& put(std::ostream&) const;
 
   virtual xqtref_t return_type_impl(static_context *sctx);
-  virtual expr_t clone(substitution_t& substitution);
+  virtual expr_t clone(substitution_t &s);
 };
 
 
@@ -834,6 +836,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
+  virtual expr_t clone(substitution_t &s);
 };
 
 
@@ -1105,7 +1108,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
   virtual xqtref_t return_type_impl(static_context *sctx);
-  virtual expr_t clone(substitution_t& substitution);
+  virtual expr_t clone(substitution_t &s);
 };
 
 
@@ -1146,6 +1149,8 @@ public:
   std::ostream& put(std::ostream&) const;
 
   virtual xqtref_t return_type_impl(static_context *sctx);
+
+  virtual expr_t clone(substitution_t &s);
 };
 
 
@@ -1192,7 +1197,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
-  virtual expr_t clone(substitution_t& substitution);  
+  virtual expr_t clone(substitution_t &s);  
 
   xqtref_t return_type_impl (static_context *);
 };
@@ -1224,7 +1229,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
-  virtual expr_t clone(substitution_t& substitution);  
+  virtual expr_t clone(substitution_t &s);  
 
   virtual xqtref_t return_type_impl(static_context *sctx);
 
@@ -1270,7 +1275,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
-  virtual expr_t clone(substitution_t& substitution);
+  virtual expr_t clone(substitution_t &s);
 
   virtual xqtref_t return_type_impl(static_context *sctx);
 
@@ -1308,7 +1313,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
-  virtual expr_t clone(substitution_t& substitution);  
+  virtual expr_t clone(substitution_t &s);  
 
   virtual xqtref_t return_type_impl(static_context *sctx);
 };
@@ -1346,7 +1351,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
-  virtual expr_t clone(substitution_t& substitution);  
+  virtual expr_t clone(substitution_t &s);  
 };
 
 /* (some proposed optimizer interface methods:)
@@ -1393,6 +1398,8 @@ public:
 		expr_t,
 		expr_t);
 
+  expr_kind_t get_expr_kind () const { return insert_expr_kind; }
+
 public:
   store::UpdateConsts::InsertType getType() const { return theType; }
 	expr_t getSouceExpr() const { return theSourceExpr; }
@@ -1422,6 +1429,8 @@ public:
 	delete_expr(
 		const QueryLoc&,
 		expr_t);
+
+  expr_kind_t get_expr_kind () const { return delete_expr_kind; }
 
 public:
 	expr_t getTargetExpr() const { return theTargetExpr; }
@@ -1454,6 +1463,8 @@ public:
 		expr_t,
 		expr_t);
 
+  expr_kind_t get_expr_kind () const { return replace_expr_kind; }
+
 public:
   store::UpdateConsts::ReplaceType getType() const { return theType; }
 	expr_t getTargetExpr() const { return theTargetExpr; }
@@ -1484,6 +1495,7 @@ public:
 		const QueryLoc&,
 		expr_t,
 		expr_t);
+  expr_kind_t get_expr_kind () const { return rename_expr_kind; }
 
 public:
 	expr_t getTargetExpr() const { return theTargetExpr; }
@@ -1532,6 +1544,7 @@ public:
 		const QueryLoc&,
 		expr_t aModifyExpr,
 		expr_t aReturnExpr);
+  expr_kind_t get_expr_kind () const { return transform_expr_kind; }
 
 public:
 	expr_t getModifyExpr() const { return theModifyExpr; }

@@ -39,10 +39,6 @@ void DataflowAnnotationsComputer::compute(expr *e)
       compute_wrapper_expr(static_cast<wrapper_expr *>(e));
       break;
 
-    case constructor_expr_kind:
-      compute_constructor_expr(static_cast<constructor_expr *>(e));
-      break;
-
     case var_expr_kind:
       compute_var_expr(static_cast<var_expr *>(e));
       break;

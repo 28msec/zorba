@@ -311,6 +311,14 @@ expr_iterator::expr_iterator (const expr_iterator &other) : iter (new expr_itera
   END_EXPR_ITER ();
   }
 
+  expr_t sequential_expr::clone(substitution_t& s) {
+    vector<expr_t> seq2;
+    for (unsigned i = 0; i < sequence.size (); i++)
+      seq2.push_back (sequence [i]->clone (s));
+    return new sequential_expr (get_loc (), seq2);
+  }
+
+
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
 //  XQuery 1.0 productions                                             //
@@ -977,6 +985,10 @@ void validate_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER ();
 }
 
+expr_t validate_expr::clone(substitution_t &s) {
+  return new validate_expr (get_loc (), get_valmode (), get_type_name (), get_expr ()->clone (s), get_typemgr ());
+}
+
 
 // [65] [http://www.w3.org/TR/xquery/#prod-xquery-ExtensionExpr]
 
@@ -1209,6 +1221,11 @@ void order_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
   ITER (expr_h);
   END_EXPR_ITER ();
+}
+
+
+expr_t order_expr::clone(substitution_t& s) {
+  return new order_expr (get_loc (), get_type (), get_expr ()->clone (s));
 }
 
 

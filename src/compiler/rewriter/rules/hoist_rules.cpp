@@ -357,11 +357,10 @@ static bool is_already_hoisted(expr *e)
 static bool contains_node_construction(expr *e)
 {
   if (e->get_expr_kind() == elem_expr_kind
-    || e->get_expr_kind() == attr_expr_kind
-    || e->get_expr_kind() == text_expr_kind
-    || e->get_expr_kind() == doc_expr_kind
-    || e->get_expr_kind() == pi_expr_kind
-    || e->get_expr_kind() == constructor_expr_kind) 
+      || e->get_expr_kind() == attr_expr_kind
+      || e->get_expr_kind() == text_expr_kind
+      || e->get_expr_kind() == doc_expr_kind
+      || e->get_expr_kind() == pi_expr_kind)
   {
     return true;
   }
