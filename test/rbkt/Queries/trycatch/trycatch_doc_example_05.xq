@@ -7,6 +7,6 @@ declare function local:squares() {
 
 try {
     local:squares()
-} catch(err:XPTY0004) {
+} catch err:XPTY0004 {
     "Caught a type error"
 }

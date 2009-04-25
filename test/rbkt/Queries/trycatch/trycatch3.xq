@@ -4,8 +4,8 @@ return
 try {
   let $y := $x
   return $y
-} catch (err:XPST0051) { 
+} catch err:XPST0051 { 
   "Cast failed: item does not have a known, atomic type"
-} catch (err:XPST0050) {
+} catch err:XPST0050 {
     "Ha! It worked"
 }
