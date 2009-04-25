@@ -1,12 +1,12 @@
 try { 
   <a/> 
 } 
-catch (err:XPST0051) { 
+catch err:XPST0051 { 
   <b/> 
 }
-catch (err:XPST0080) {
+catch err:XPST0080 {
   "text"
 }
-catch (*, $error) {
+catch * ($error) {
   "Error: " ,$error 
 }
