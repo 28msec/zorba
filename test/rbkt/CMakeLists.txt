@@ -30,6 +30,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 SET (TESTDRIVER_SRCS
   testdriver.cpp
+  testdriver_common.cpp
   testuriresolver.cpp
   )
 
@@ -74,8 +75,13 @@ ELSE (NOT Boost_FOUND)
   LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 ENDIF (NOT Boost_FOUND)
 
+SET (TESTDRIVER_MT_SRCS
+  testdriver_mt.cpp
+  testdriver_common.cpp
+  testuriresolver.cpp
+  )
 
-ADD_EXECUTABLE(testdriver_mt testdriver_mt.cpp)
+ADD_EXECUTABLE(testdriver_mt ${TESTDRIVER_MT_SRCS})
 
 TARGET_LINK_LIBRARIES(testdriver_mt
                       zorba_${ZORBA_STORE_LIB_EXTENSION}
