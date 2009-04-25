@@ -5256,8 +5256,10 @@ class CatchExpr : public exprnode
 | ::= CATCH_LPAR NameTest (COMMA DOLLAR VARNAME)? RPAR LBRACE ExprSingle RBRACE  *
 |________________________________________________________________________________*/
 {
+public:
+  typedef std::vector<rchandle<NameTest> > NameTestList;
 protected:
-  rchandle<NameTest> theNameTest;
+  NameTestList theNameTests;
   std::string theVarErrorCode;
   std::string theVarErrorDescr;
   std::string theVarErrorVal;
@@ -5266,10 +5268,10 @@ protected:
 public:
   CatchExpr(
     const QueryLoc& aQueryLoc,
-    rchandle<NameTest> aNameTest,
+    NameTestList &aNameTest,
     rchandle<parsenode> aExprSingle)
   : exprnode(aQueryLoc),
-    theNameTest(aNameTest),
+    theNameTests(aNameTest),
     theVarErrorCode(""),
     theVarErrorDescr(""),
     theVarErrorVal(""),
@@ -5278,12 +5280,12 @@ public:
 
   CatchExpr(
     const QueryLoc& aQueryLoc,
-    rchandle<NameTest> aNameTest,
+    NameTestList &aNameTest,
     const std::string& aVarErrorCode,
     rchandle<parsenode> aExprSingle)
   :
     exprnode(aQueryLoc),
-    theNameTest(aNameTest),
+    theNameTests(aNameTest),
     theVarErrorCode(aVarErrorCode),
     theVarErrorDescr(""),
     theVarErrorVal(""),
@@ -5292,13 +5294,13 @@ public:
 
   CatchExpr(
     const QueryLoc& aQueryLoc,
-    rchandle<NameTest> aNameTest,
+    NameTestList &aNameTest,
     const std::string& aVarErrorCode,
     const std::string& aVarErrorDescr,
     rchandle<parsenode> aExprSingle)
   :
     exprnode(aQueryLoc),
-    theNameTest(aNameTest),
+    theNameTests(aNameTest),
     theVarErrorCode(aVarErrorCode),
     theVarErrorDescr(aVarErrorDescr),
     theVarErrorVal(""),
@@ -5307,14 +5309,14 @@ public:
 
   CatchExpr(
     const QueryLoc& aQueryLoc,
-    rchandle<NameTest> aNameTest,
+    NameTestList &aNameTest,
     const std::string& aVarErrorCode,
     const std::string& aVarErrorDescr,
     const std::string& aVarErrorVal,
     rchandle<parsenode> aExprSingle)
   :
     exprnode(aQueryLoc),
-    theNameTest(aNameTest),
+    theNameTests(aNameTest),
     theVarErrorCode(aVarErrorCode),
     theVarErrorDescr(aVarErrorDescr),
     theVarErrorVal(aVarErrorVal),
@@ -5322,7 +5324,10 @@ public:
   {}
 
 public:
-  rchandle<NameTest> getNameTest() const { return theNameTest; }
+  // TODO: remove
+  rchandle<NameTest> getNameTest() const { return theNameTests [0]; }
+
+  const NameTestList &getNameTests() const { return theNameTests; }
   const std::string& getVarErrorCode() const { return theVarErrorCode; }
   const std::string& getVarErrorDescr() const { return theVarErrorDescr; }
   const std::string& getVarErrorVal() const { return theVarErrorVal; }

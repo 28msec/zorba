@@ -149,6 +149,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
   XQUERY_ERROR err;
   std::vector<std::pair<std::string, std::string> >* pair_vector;
   std::pair<std::string, std::string>* pair;
+  CatchExpr::NameTestList *name_test_list;
 };
 
 
@@ -268,12 +269,13 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token ZERO_DIGIT                 "'zero-digit'"
 %token DIGIT                      "'digit'"
 %token PATTERN_SEPARATOR          "'pattern-separator'"
+
 %type <strval> DecimalFormatParamName
 %type <node> DecimalFormatDecl
 %type <pair> DecimalFormatParam
 %type <pair_vector> DecimalFormatParamList
 
-
+%type <name_test_list> NameTestList
     
 %token ANCESTOR_AXIS							"'ancestor::'"
 %token ANCESTOR_OR_SELF_AXIS			"'ancestor-or-self::'"
@@ -777,8 +779,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp IndexDecl IndexDecl2 IndexDecl3 IndexDeclSuffix IndexField IndexField1 IndexFieldList IndexStatement CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
 // exprnodes
 %destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement FTContainsExpr
-// internal class
-%destructor { delete $$; } FunctionSig VarNameAndType
+// internal non-terminals with values
+%destructor { delete $$; } FunctionSig VarNameAndType NameTestList
 
 /*_____________________________________________________________________
  *
@@ -1128,7 +1130,7 @@ DecimalFormatParamName :
     | PATTERN_SEPARATOR { $$ = "pattern-separator"; }
     ;
     
-          
+
 // [7] Setter
 // ----------
 Setter :
@@ -4948,8 +4950,7 @@ CatchListExpr:
        aCatchListExpr->push_back(static_cast<CatchExpr*>($1));
        $$ = aCatchListExpr;
     }
-  |
-    CatchListExpr CatchExpr
+  | CatchListExpr CatchExpr
     {
       CatchListExpr* aCatchListExpr = dynamic_cast<CatchListExpr*>($1);
       if (aCatchListExpr) {
@@ -4960,41 +4961,58 @@ CatchListExpr:
   ;
 
 CatchExpr :
-    CATCH LPAR NameTest RPAR BracedExpr
+    CATCH NameTestList BracedExpr
     {
        $$ = new CatchExpr(LOC (@$),
-                          static_cast<NameTest*>($3),
-                          $5);
+                          *$2,
+                          $3);
+       delete $2;
+    }
+  | CATCH NameTestList LPAR DOLLAR QNAME RPAR BracedExpr
+    {
+       $$ = new CatchExpr(LOC (@$),
+                          *$2,
+                          SYMTAB ($5),
+                          $7);
+       delete $2;
     }
   |
-    CATCH LPAR NameTest COMMA DOLLAR QNAME RPAR BracedExpr
+    CATCH NameTestList LPAR DOLLAR QNAME COMMA DOLLAR QNAME RPAR BracedExpr
     {
        $$ = new CatchExpr(LOC (@$),
-                          static_cast<NameTest*>($3),
-                          SYMTAB ($6),
-                          $8);
+                          *$2,
+                          SYMTAB ($5),
+                          SYMTAB ($8),
+                          $10);
+       delete $2;
     }
-  |
-    CATCH LPAR NameTest COMMA DOLLAR QNAME COMMA DOLLAR QNAME RPAR BracedExpr
+  | CATCH NameTestList LPAR DOLLAR QNAME COMMA DOLLAR QNAME COMMA DOLLAR QNAME RPAR BracedExpr
     {
        $$ = new CatchExpr(LOC (@$),
-                          static_cast<NameTest*>($3),
-                          SYMTAB ($6),
-                          SYMTAB ($9),
-                          $11);
-    }
-  |
-    CATCH LPAR NameTest COMMA DOLLAR QNAME COMMA DOLLAR QNAME COMMA DOLLAR QNAME RPAR BracedExpr
-    {
-       $$ = new CatchExpr(LOC (@$),
-                          static_cast<NameTest*>($3),
-                          SYMTAB ($6),
-                          SYMTAB ($9),
-                          SYMTAB ($12),
-                          $14);
+                          *$2,
+                          SYMTAB ($5),
+                          SYMTAB ($8),
+                          SYMTAB ($11),
+                          $13);
+       delete $2;
     }
   ;
 
+NameTestList :
+    NameTest
+    {
+      CatchExpr::NameTestList *name_test_list = new CatchExpr::NameTestList;
+      name_test_list->push_back (static_cast<NameTest *> ($1));
+      $$ = name_test_list;
+    }
+  | NameTestList VBAR NameTest
+    {
+      CatchExpr::NameTestList *name_test_list =
+        static_cast<CatchExpr::NameTestList *> ($1);
+      name_test_list->push_back (static_cast<NameTest *> ($3));
+      $$ = name_test_list;
+    }
+  ;
 
 URI_LITERAL :
     STRING_LITERAL;
