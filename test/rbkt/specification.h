@@ -19,6 +19,8 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <sstream>
+
 
 #undef WIN32_LEAN_AND_MEAN
 
