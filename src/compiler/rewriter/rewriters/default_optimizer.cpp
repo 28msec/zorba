@@ -67,6 +67,7 @@ DefaultOptimizer::DefaultOptimizer()
   ADD_SINGLETON_DRIVER(MarkUnfoldableExprs);
 
   ADD_ONCE_DRIVER(IndexJoin);
+  ADD_SINGLETON_DRIVER(ExpandBuildIndex);
 }
 
 DefaultOptimizer::~DefaultOptimizer() throw ()
