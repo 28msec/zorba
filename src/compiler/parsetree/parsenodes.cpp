@@ -936,7 +936,7 @@ void FLWORWinCond::accept(parsenode_visitor& v) const
 }
 
 void FLWORExpr::compute_general () {
-  general = false;
+  general = non_10 = false;
 #ifdef ZORBA_FORCE_GFLWOR
   general = true;
 #endif
