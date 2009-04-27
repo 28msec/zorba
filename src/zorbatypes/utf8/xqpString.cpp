@@ -28,6 +28,8 @@
 
 #include "zorbatypes/libicu.h"
 
+#include <cstdio>
+
 using namespace std;
 
 

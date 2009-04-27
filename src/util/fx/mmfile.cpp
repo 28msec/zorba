@@ -19,6 +19,7 @@
 
 #ifndef WIN32
 	#include <sys/mman.h>
+#include <cstdio>
 #elif _WIN32_WCE
 	#include <winbase.h>
 #else

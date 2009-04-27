@@ -16,6 +16,10 @@
 #ifndef ZORBA_FILE_H
 #define ZORBA_FILE_H
 
+#ifndef WIN32
+#include <stdint.h>
+#endif
+
 #include <cstdio>
 
 #include <time.h>

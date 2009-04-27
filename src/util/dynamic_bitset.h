@@ -19,6 +19,8 @@
 
 #ifdef _MSC_VER
 #include "zorbamisc/config/stdint.h"
+#else
+#include <stdint.h>
 #endif
 
 #include <vector>

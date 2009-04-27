@@ -70,7 +70,7 @@ xqpString NumConversions::uintegerToStr(xqp_uinteger aUInteger)
 bool NumConversions::starCharToInt(const char* aCharStar, xqp_int& aInt)
 {
   std::stringstream lStream;
-  return lStream << aCharStar && lStream >> aInt && lStream.get() == EOF;
+  return lStream << aCharStar && lStream >> aInt && lStream.eof();
 }
 
 bool NumConversions::strToInt(const xqpString& aStr, xqp_int& aInt) 
@@ -92,7 +92,7 @@ bool NumConversions::strToUInt(const xqpString& aStr, xqp_uint& aUInt)
     return true;
   }
   std::stringstream lStream;
-  return lStream << aStr.c_str() && lStream >> aUInt && lStream.get() == EOF;
+  return lStream << aStr.c_str() && lStream >> aUInt && lStream.eof ();
 }
 xqpString NumConversions::uintToStr(xqp_uint aUInt){
   std::stringstream lStream;
@@ -102,7 +102,7 @@ xqpString NumConversions::uintToStr(xqp_uint aUInt){
 
 bool NumConversions::strToLongLong(const xqpString& aStr, xqp_long& aLong){
   std::stringstream lStream;
-  return lStream << aStr.c_str() && lStream >> aLong && lStream.get() == EOF;
+  return lStream << aStr.c_str() && lStream >> aLong && lStream.eof ();
 }
 
 xqpString NumConversions::longLongToStr(xqp_long aLong){
@@ -113,7 +113,7 @@ xqpString NumConversions::longLongToStr(xqp_long aLong){
 
 bool NumConversions::strToLong(const xqpString& aStr, long& aLong){
   std::stringstream lStream;
-  return lStream << aStr.c_str() && lStream >> aLong && lStream.get() == EOF;
+  return lStream << aStr.c_str() && lStream >> aLong && lStream.eof ();
 }
   
 xqpString NumConversions::longToStr(long aLong) {
@@ -127,7 +127,7 @@ bool NumConversions::strToULongLong(const xqpString& aStr, xqp_ulong& aULong){
     return true;
   }
   std::stringstream lStream;
-  return lStream << aStr.c_str() && lStream >> aULong && lStream.get() == EOF;
+  return lStream << aStr.c_str() && lStream >> aULong && lStream.eof ();
 }
 xqpString NumConversions::ulongLongToStr(xqp_ulong aULong){
   std::stringstream lStream;
@@ -141,7 +141,7 @@ xqpString NumConversions::ulongToStr(unsigned long aULong) {
 }
 bool NumConversions::strToShort(const xqpString& aStr, xqp_short& aShort){
   std::stringstream lStream;
-  return lStream << aStr.c_str() && lStream >> aShort && lStream.get() == EOF;
+  return lStream << aStr.c_str() && lStream >> aShort && lStream.eof ();
 }
 xqpString NumConversions::shortToStr(xqp_short aShort){
   std::stringstream lStream;
@@ -154,7 +154,7 @@ bool NumConversions::strToUShort(const xqpString& aStr, xqp_ushort& aUShort){
     return true;
   }
   std::stringstream lStream;
-  return lStream << aStr.c_str() && lStream >> aUShort && lStream.get() == EOF;
+  return lStream << aStr.c_str() && lStream >> aUShort && lStream.eof ();
 }
 xqpString NumConversions::ushortToStr(xqp_ushort aUShort){
   std::stringstream lStream;
