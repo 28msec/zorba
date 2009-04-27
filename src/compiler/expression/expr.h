@@ -1502,7 +1502,7 @@ public:
 
 public:
 	expr_t getTargetExpr() const { return theTargetExpr; }
-	expr_t getNameExpr() const { return theTargetExpr; }
+	expr_t getNameExpr() const { return theNameExpr; }
 
 public:
   void next_iter (expr_iterator_data&);
