@@ -158,6 +158,7 @@ RULE_REWRITE_POST(SpecializeOperations)
           if (a1Promote) {
             (*fo)[1] = new promote_expr(fo->get_loc(), (*fo)[1], aType);
           }
+          return node;
         }
       } else if (fn->isComparisonFunction ()) {
         argTypes.push_back(t0);
@@ -165,6 +166,7 @@ RULE_REWRITE_POST(SpecializeOperations)
         const function *replacement = fn->specialize(rCtx.getStaticContext(), argTypes);
         if (replacement != NULL) {
           fo->set_func(replacement);
+          return node;
         }
       }
     }
