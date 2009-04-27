@@ -63,9 +63,9 @@ RULE(HoistExprsOutOfLoops);
 RULE(PlanPrinter);
 
 RULE(ExpandBuildIndex);
-
 RULE(IndexJoin);
 
+RULE(InlineFunctions);
 
 class FoldConst : public RewriteRule 
 {

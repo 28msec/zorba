@@ -215,6 +215,9 @@ public:
   function*
   lookup_resolved_fn (xqp_string ns, xqp_string local, int arity) const;
 
+  function*
+  lookup_fn_int (xqp_string key, int arity) const;
+
   void
   find_functions (const store::Item *qname, std::vector<function *>& functions) const;
 
@@ -429,11 +432,7 @@ protected:
   static_context();
 
   static_context (static_context *_parent);
-
-
-  function*
-  lookup_fn_int (xqp_string key, int arity) const;
-
+ 
   void
   find_functions_int (xqp_string key,
                       std::vector<function *>& functions,

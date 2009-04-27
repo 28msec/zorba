@@ -111,6 +111,13 @@ namespace zorba {
     return x;
   }
 
+  template <typename T> T pop_stack (list<T> &stk) {
+    ZORBA_ASSERT (! stk.empty ());
+    T x =  stk.back ();
+    stk.pop_back ();
+    return x;
+  }
+
   template <class T> class RCSet : public SimpleRCObject {
   public:
     set<T> theSet;
@@ -220,7 +227,8 @@ protected:
   // format of strings: type_char + qname_internal_key
   // where type_char is F or V
   stack<string> global_decl_stack;
-  list<string> global_fn_decls, global_var_decls;
+  list<string> global_var_decls;
+  list<function *> global_fn_decls, fn_decl_stack;
   hashmap<strset_t> global_deps;
 
   TranslatorImpl (CompilerCB* aCompilerCB, ModulesInfo *minfo_, set<string> mod_stack_)
@@ -2672,20 +2680,20 @@ void *begin_visit (const VFO_DeclList& v) {
 
 void reorder_globals () {
   // STEP 1: Floyd-Warshall transitive closure of edges starting from functions
-  for (list<string>::iterator k = global_fn_decls.begin ();
+  for (list<function *>::iterator k = global_fn_decls.begin ();
        k != global_fn_decls.end (); k++)
   {
-    string kkey = "F" + *k;
+    string kkey = "F" + static_context::qname_internal_key ((*k)->get_fname ());
     strset_t kedges;    
     if (! global_deps.get (kkey, kedges))
       continue;
 
     for (set<string>::iterator j = kedges->begin (); j != kedges->end (); j++) {
       string jkey = *j;
-      for (list<string>::iterator i = global_fn_decls.begin ();
+      for (list<function *>::iterator i = global_fn_decls.begin ();
            i != global_fn_decls.end (); i++)
       {
-        string ikey = "F" + *i;
+        string ikey = "F" + static_context::qname_internal_key ((*i)->get_fname ());
         strset_t iedges, new_iedges;
         if (global_deps.get (ikey, iedges)
             && iedges->find (kkey) != iedges->end ()
@@ -2799,7 +2807,9 @@ void *begin_visit (const FunctionDecl& v) {
                                                 v.get_location ());
   string key = sctx_p->qname_internal_key (qname);
   global_decl_stack.push ("F" + key);
-  global_fn_decls.push_front (key);
+  function *f = sctx_p->lookup_fn_int (key, v.get_param_count ());
+  global_fn_decls.push_front (f);
+  fn_decl_stack.push_front (f);
   return no_state;
 }
 
@@ -2807,6 +2817,7 @@ void *begin_visit (const FunctionDecl& v) {
 void end_visit (const FunctionDecl& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   pop_stack (global_decl_stack);
+  pop_stack (fn_decl_stack);
   ParseConstants::function_type_t lFuncType = v.get_type();
   expr_t body;
   bool is_external = 
@@ -3091,10 +3102,20 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
         || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
       ZORBA_ERROR_LOC_PARAM( XPST0017,  loc, prefix + ":" + fname, sz);
     nodestack.push (create_cast_expr (loc, arguments [0], type, true));
-  } else {
+  } else {  // a real function
       function *f = LOOKUP_FN (prefix, fname, sz);
       if (f == NULL)
         ZORBA_ERROR_LOC_PARAM (XPST0017, loc, (prefix.empty () ? prefix : (prefix + ":")) + fname, to_string (sz));
+
+      if (NULL != dynamic_cast<user_function *> (f)) {
+        if (! fn_decl_stack.empty ()) {
+          user_function *udf = dynamic_cast<user_function *> (fn_decl_stack.back ());
+          ZORBA_ASSERT (udf != NULL);
+          udf->setLeaf (false);
+          // cout << "UDF " << udf->get_fname ()->getStringValue () << " non-leaf due to " << f->get_fname ()->getStringValue () << endl;
+        }
+      }
+
       rchandle<fo_expr> fo_h = new fo_expr (loc, f);
       fo_h->setUpdateType(fo_h->get_func()->getUpdateType());
 

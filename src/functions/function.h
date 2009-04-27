@@ -147,8 +147,11 @@ public:
   virtual std::vector<LetVarIter_t>& get_param_iters() const;
 
   bool requires_dyn_ctx () const;
-  bool isPureFunction() const;
-  bool isSequential() const { return sequential; }
+  bool isPureFunction () const;
+  bool isSequential () const { return sequential; }
+
+  void setLeaf (bool leaf_) { leaf = leaf_; }
+  bool isLeaf() const { return leaf; }
 
 private:
   QueryLoc                m_loc;
@@ -159,6 +162,7 @@ private:
   bool sequential;
 
   bool deterministic;
+  bool leaf;  // does not call other UDF's
   
   mutable PlanIter_t                m_plan;
   mutable std::vector<LetVarIter_t> m_param_iters;

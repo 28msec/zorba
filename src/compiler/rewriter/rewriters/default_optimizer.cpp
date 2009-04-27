@@ -40,6 +40,7 @@ public:
 
 DefaultOptimizer::DefaultOptimizer()
 {
+  ADD_SINGLETON_DRIVER(InlineFunctions);
   ADD_SINGLETON_DRIVER(InferVarTypes);
   ADD_SINGLETON_DRIVER(EliminateTypeEnforcingOperations);
 

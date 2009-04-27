@@ -478,4 +478,34 @@ RULE_REWRITE_POST(PartialEval)
   return NULL;
 }
 
+RULE_REWRITE_PRE(InlineFunctions)
+{
+  return NULL;
+}
+
+RULE_REWRITE_POST(InlineFunctions)
+{
+  if (node->get_expr_kind () == fo_expr_kind) {
+    fo_expr *fo = static_cast<fo_expr *> (node);
+    const user_function *udf = dynamic_cast<const user_function *> (fo->get_func ());
+    expr_t body;
+    if (NULL != udf && ! udf->isSequential () && udf->isLeaf ()
+        && (NULL != (body = udf->get_body ())))
+    {
+      expr_t body = udf->get_body ();
+      const std::vector<var_expr_t>& params = udf->get_params();
+      expr::substitution_t subst;
+      for (unsigned i = 0; i < params.size (); ++i) {
+        var_expr_t p = params [i];
+        subst [p] = (*fo) [i];
+      }
+      try {
+        body = body->clone (subst);
+        return body;
+      } catch (...) {}
+    }
+  }
+  return NULL;
+}
+
 }

@@ -69,7 +69,8 @@ user_function::user_function(const QueryLoc& loc,
   m_expr_body(expr_body), 
   theUpdateType((ftype == ParseConstants::fn_update) ? UPDATE_EXPR : SIMPLE_EXPR),
   sequential (ftype == ParseConstants::fn_sequential),
-  deterministic (deterministic_)
+  deterministic (deterministic_),
+  leaf (true)
 { 
 }
 
