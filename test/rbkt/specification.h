@@ -43,6 +43,7 @@ private:
   std::vector<Variable> theVariables;
   std::vector<std::string> theErrors;
   std::string theDate, theTimezone;
+  std::string theInputQueryFile;
 
   void setInline() {
     theInline = true;
@@ -99,6 +100,14 @@ public:
 
   bool hasTimezoneSet() const {
     return theTimezone.size() != 0;
+  }
+
+  bool hasInputQuery () const {
+    return theInputQueryFile.size() != 0;
+  }
+
+  const std::string & getInputQueryFile () const {
+    return theInputQueryFile;
   }
 
   std::string getDate() const {
@@ -173,6 +182,9 @@ public:
             addVariable();
           }
           break;
+	} else if ( *lIter == "INPUTQUERY:" ) {
+	  ++lIter;
+	  theInputQueryFile = *lIter;
         } else if ( *lIter == "Error:" ) { 
           ++lIter;
           if(lIter == tokens.end() ) { return false; }

@@ -277,8 +277,8 @@ main(int argc, char** argv)
       // Instantiate zorba query processor
       engine = zorba::Zorba::getInstance(store);
     }
-    zorba::StaticContext_t lContext = engine->createStaticContext();
 
+    zorba::StaticContext_t lContext = engine->createStaticContext();
     // Install special resolver only for w3c_testsuite ...
     std::string path = lQueryFile.get_path();
     zorba::TestSchemaURIResolver  * resolver = 0;
@@ -302,6 +302,9 @@ main(int argc, char** argv)
 
     if (resolver != 0 ) {
       delete resolver;
+    }
+    if (mresolver != 0 ) {
+      delete mresolver;
     }
     errors = -1;
     if ( errHandler.errors() )
@@ -327,6 +330,13 @@ main(int argc, char** argv)
       }
 
       set_vars(&lSpec, lDynCtxt);
+      if ( lSpec.hasInputQuery () ) {
+	const std::string & inputqueryfile = lSpec.getInputQueryFile ();
+	std::ifstream inputquery ( inputqueryfile.c_str() );
+	zorba::XQuery_t inputQuery = engine -> compileQuery ( inputquery, lContext, getCompilerHints () );
+	zorba::ResultIterator_t riter = inputQuery -> iterator ();
+	lDynCtxt -> setVariable ( zorba::String ("x"), riter );
+    }
 
       errors = -1;
       {
