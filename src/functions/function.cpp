@@ -61,13 +61,14 @@ void function::compute_annotation (
 user_function::user_function(const QueryLoc& loc, 
                              const signature& _sig, 
                              expr_t expr_body, 
-                             bool aIsUpdating,
+                             enum ParseConstants::function_type_t ftype,
                              bool deterministic_)
   :
   function(_sig), 
   m_loc(loc), 
   m_expr_body(expr_body), 
-  theUpdateType((aIsUpdating ? UPDATE_EXPR : SIMPLE_EXPR)),
+  theUpdateType((ftype == ParseConstants::fn_update) ? UPDATE_EXPR : SIMPLE_EXPR),
+  sequential (ftype == ParseConstants::fn_sequential),
   deterministic (deterministic_)
 { 
 }

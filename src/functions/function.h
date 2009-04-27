@@ -123,7 +123,7 @@ public:
   user_function(const QueryLoc& loc,
                 const signature& _sig,
                 expr_t expr_body, 
-                bool aIsUpdating,
+                enum ParseConstants::function_type_t,
                 bool deterministic_);
 
   virtual ~user_function();
@@ -148,6 +148,7 @@ public:
 
   bool requires_dyn_ctx () const;
   bool isPureFunction() const;
+  bool isSequential() const { return sequential; }
 
 private:
   QueryLoc                m_loc;
@@ -155,6 +156,7 @@ private:
   std::vector<var_expr_t> m_params;
 
   expr_update_t           theUpdateType;
+  bool sequential;
 
   bool deterministic;
   
