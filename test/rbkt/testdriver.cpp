@@ -197,6 +197,7 @@ main(int argc, char** argv)
   }
 
   int errors;
+  zorba::Zorba * engine = NULL;
 
   for( int i=1; i < argc; i++ )
   {
@@ -264,7 +265,7 @@ main(int argc, char** argv)
     std::cout << "Query:" << std::endl;
     printFile(std::cout, lQueryFile.get_path());
     std::cout << std::endl;
-    zorba::Zorba * engine;
+
     if( i == 1 ) {  // Instantiate the store
 #ifdef ZORBA_MINIMAL_STORE
       zorba::storeminimal::SimpleStore* store =

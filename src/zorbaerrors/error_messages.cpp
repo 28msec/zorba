@@ -38,9 +38,15 @@ struct err_msg_wrapper
   public:
   err_msg_wrapper () 
   {
-#define DEF_ERR_CODE( code, name, msg )                              \
-  canonical_err_names [ code ] = strdup(#name); \
+#ifdef WIN32  
+#define DEF_ERR_CODE( code, name, msg )          \
+  canonical_err_names [ code ] = _strdup(#name); \
+  err_msg [code] = _strdup(msg);
+#else
+#define DEF_ERR_CODE( code, name, msg )          \
+  canonical_err_names [ code ] = strdup(#name);  \
   err_msg [code] = strdup(msg);
+#endif
 
     for (int i = 0; i < MAX_ZORBA_ERROR_CODE; i++) 
     {
