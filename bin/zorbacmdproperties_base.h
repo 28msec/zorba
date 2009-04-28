@@ -30,7 +30,7 @@
 #ifndef ZORBACMD_ZORBACMDPROPERTIESBASE
 #define ZORBACMD_ZORBACMDPROPERTIESBASE
 namespace zorbacmd { 
-class ZORBA_DLL_PUBLIC ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
+class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
     static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--parse-only", "--no-serializer", "--debug-ports", "--debug-client", "--debug-server", "--no-colors", NULL };

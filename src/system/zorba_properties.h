@@ -30,7 +30,7 @@
 #ifndef ZORBA_ZORBAPROPERTIES
 #define ZORBA_ZORBAPROPERTIES
 namespace zorba { 
-class ZORBA_DLL_PUBLIC ZorbaProperties : public ::zorba::PropertiesBase {
+class ZorbaProperties : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
     static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--force-gflwor", "--reorder-globals", "--result-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--trace-translator", "--trace-codegen", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", NULL };
@@ -96,7 +96,7 @@ public:
   const bool &forceGflwor () const { return theForceGflwor; }
   const bool &reorderGlobals () const { return theReorderGlobals; }
   const std::string &resultFile () const { return theResultFile; }
-  const bool &get_abort () const { return theAbort; }
+  const bool &abort () const { return theAbort; }
   const std::string &query () const { return theQuery; }
   const bool &printQuery () const { return thePrintQuery; }
   const bool &printTime () const { return thePrintTime; }
