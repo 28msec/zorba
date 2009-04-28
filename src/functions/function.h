@@ -115,6 +115,7 @@ public:
 
   virtual bool isArithmeticFunction() const { return false; }
   virtual bool isComparisonFunction() const { return false; }
+  virtual bool specializable() const { return false; }
 };
 
 

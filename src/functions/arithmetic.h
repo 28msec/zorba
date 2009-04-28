@@ -30,6 +30,7 @@ namespace zorba {
     xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
 
     const function *specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const;
+    virtual bool specializable() const { return true; }
   };
 
   // 6.2.2 op:numeric-subtract

@@ -88,8 +88,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
 
   cast_base_expr *pe;
   // Note: the if cond is true for promote_expr, treat_expr, and cast_expr
-  if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL) 
-  {
+  if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL) {
     expr_t arg = pe->get_input();
     xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
     xqtref_t target_type = pe->get_target_type();
@@ -101,13 +100,17 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
         || (node->get_expr_kind () != cast_expr_kind
             && TypeOps::is_subtype(*arg_type, *target_type)))
       return arg;
+    
+    xqtref_t arg_ptype = TypeOps::prime_type (*arg_type),
+      target_ptype = TypeOps::prime_type (*target_type);
+    if (node->get_expr_kind () == cast_expr_kind
+        && TypeOps::is_equal (*arg_ptype, *target_ptype))
+      return new treat_expr (node->get_loc (), pe->get_input (), target_type, XPTY0004, false);
 
-    if (node->get_expr_kind () == treat_expr_kind) 
-    {
+    if (node->get_expr_kind () == treat_expr_kind) {
       treat_expr *te = dynamic_cast<treat_expr *> (pe);
       if (te->get_check_prime ()
-          && TypeOps::is_subtype (*TypeOps::prime_type (*arg_type),
-                                  *TypeOps::prime_type (*target_type)))
+          && TypeOps::is_subtype (*arg_ptype, *target_ptype))
       {
         te->set_check_prime (false);
         return node;
@@ -134,6 +137,7 @@ RULE_REWRITE_POST(SpecializeOperations)
   if (node->get_expr_kind() == fo_expr_kind) {
     fo_expr *fo = static_cast<fo_expr *>(node);
     const function *fn = fo->get_func();
+    if (! fn->specializable ()) return NULL;
     if (fo->size() == 2) {
       xqtref_t t0 = (*fo)[0]->return_type(rCtx.getStaticContext());
       xqtref_t t1 = (*fo)[1]->return_type(rCtx.getStaticContext());

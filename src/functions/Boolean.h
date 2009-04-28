@@ -34,6 +34,7 @@ namespace zorba
     bool isComparisonFunction () const { return true; }
     const function *specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const;
 
+  virtual bool specializable() const { return true; }
   protected:
     virtual PlanIter_t createIterator( const QueryLoc& loc, std::vector<PlanIter_t>& ) const = 0;
   };
@@ -42,6 +43,7 @@ namespace zorba
   public:
     ValueOpComparison (const signature &sig) : GenericOpComparison (sig) {}
     xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+    virtual bool specializable() const { return false; }
   };
   
   template<enum CompareConsts::CompareType CC> class SpecificValueComparison : public ValueOpComparison {

@@ -43,6 +43,7 @@ namespace zorba {
     bin_num_arith_func (const signature &sig) : function (sig) {}
     virtual xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
     virtual bool isArithmeticFunction() const { return true; }
+    virtual bool specializable() const { return true; }
   };
 
 /*______________________________________________________________________
@@ -58,6 +59,7 @@ public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
     return new SpecificNumArithIterator<op, t> (loc, argv[0], argv[1]);
   }
+  virtual bool specializable() const { return false; }
 };
 
 #define DECL_SPECIFIC_OPS( op, opc, t, xqt )                        \
