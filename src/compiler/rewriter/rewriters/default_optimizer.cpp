@@ -67,7 +67,7 @@ DefaultOptimizer::DefaultOptimizer()
   // TODO: only do this for UDFs
   ADD_SINGLETON_DRIVER(MarkUnfoldableExprs);
 
-  ADD_ONCE_DRIVER(IndexJoin);
+  // ADD_ONCE_DRIVER(IndexJoin);  // broken for now
   ADD_SINGLETON_DRIVER(ExpandBuildIndex);
 }
 
