@@ -72,6 +72,7 @@ bool DropValueIndex::nextImpl(store::Item_t& result, PlanState& planState) const
   status = consumeNext(result, theChild, planState);
   ZORBA_ASSERT(status);
 
+  planState.dctx()->unbind_index(result->getStringValueP()->str());
   GENV_STORE.deleteIndex(result->getStringValueP());
 
   STACK_END (state);
