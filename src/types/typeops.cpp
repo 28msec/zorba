@@ -510,7 +510,6 @@ xqtref_t TypeOps::intersect_type(const XQType& type1, const XQType& type2)
   XQType::type_kind_t tk1 = type1.type_kind (), tk2 = type2.type_kind ();
 
   if (tk1 < tk2)
-    //return intersect_type (type2, type2);
     return intersect_type (type2, type1);
 
   TypeConstants::quantifier_t q1 = quantifier (type1), q2 = quantifier (type2);
@@ -560,6 +559,11 @@ xqtref_t TypeOps::intersect_type(const XQType& type1, const XQType& type2)
   }
 }
 
+TypeConstants::quantifier_t TypeOps::intersect_quant(TypeConstants::quantifier_t q1,
+                                                        TypeConstants::quantifier_t q2)
+{
+  return RootTypeManager::QUANT_INTERS_MATRIX [q1] [q2];
+}
 
 /*******************************************************************************
 

@@ -134,6 +134,9 @@ public:
    */
   static xqtref_t intersect_type(const XQType& type1, const XQType& type2);
 
+  static TypeConstants::quantifier_t
+  intersect_quant (TypeConstants::quantifier_t, TypeConstants::quantifier_t);
+
   /*
    * Returns the prime type of the given type.
    */
