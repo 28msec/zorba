@@ -31,10 +31,9 @@ namespace zorba {
 #define DEBUG_RT(e, t) t
 
 #ifndef DEBUG_RT
-#define DEBUG_RT(e, t) print_expr_ant_type(e, t)
+#define DEBUG_RT(e, t) print_expr_and_type(e, t)
 
-static xqtref_t print_expr_ant_type(expr *e, xqtref_t t)
-{
+static xqtref_t print_expr_and_type(expr *e, xqtref_t t) {
   e->put(std::cout);
   std::cout << t->toString() << std::endl;
   return t;
@@ -155,11 +154,44 @@ xqtref_t relpath_expr::return_type_impl(static_context *sctx)
   
   xqtref_t promote_expr::return_type_impl (static_context *sctx)
   {
-    xqtref_t inType = input_expr_h->return_type(sctx);
-    if (TypeOps::is_subtype(*inType, *target_type)) {
-        return inType;
+    RootTypeManager& ts = GENV_TYPESYSTEM;
+    TypeManager *tm = sctx->get_typemanager();
+    xqtref_t in_type = input_expr_h->return_type(sctx),
+      in_typeP = TypeOps::prime_type (*in_type),
+      target_typeP = TypeOps::prime_type (*target_type);
+    TypeConstants::quantifier_t q =
+      TypeOps::intersect_quant (TypeOps::quantifier (*in_type),
+                                TypeOps::quantifier (*target_type));
+    if (TypeOps::is_subtype(*in_typeP, *target_typeP))
+      return tm->create_type_x_quant (*in_typeP, q);
+
+    // be liberal
+    return tm->create_type_x_quant (*target_typeP, q);
+
+#if 0
+    // TODO: for nodes, the result would be none
+    if (TypeOps::is_equal (*in_typeP, *ts.UNTYPED_ATOMIC_TYPE_ONE))
+      return tm->create_type_x_quant (*target_typeP, q);
+    
+    // decimal --> float
+    if (TypeOps::is_subtype(*target_typeP, *ts.FLOAT_TYPE_ONE)) {
+      if (TypeOps::is_subtype(*in_typeP, *ts.DECIMAL_TYPE_ONE))
+        return tm->create_type_x_quant (*target_typeP, q);
     }
-    return TypeOps::intersect_type(*inType, *target_type);
+
+    // decimal/float --> double
+    if (TypeOps::is_subtype(*target_typeP, *ts.DOUBLE_TYPE_ONE)) {
+      if (TypeOps::is_subtype(*in_typeP, *ts.DECIMAL_TYPE_ONE)
+          || TypeOps::is_subtype(*in_typeP, *ts.FLOAT_TYPE_ONE))
+        return tm->create_type_x_quant (*target_typeP, q);
+    }
+
+    // uri --> string
+    if (TypeOps::is_subtype(*target_typeP, *ts.STRING_TYPE_ONE)) {
+      if (TypeOps::is_subtype(*in_typeP, *ts.ANY_URI_TYPE_ONE))
+        return tm->create_type_x_quant (*target_typeP, q);
+    }
+#endif
   }
   
   xqtref_t order_expr::return_type_impl(static_context *sctx) { return expr_h->return_type (sctx); }

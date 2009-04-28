@@ -1591,7 +1591,11 @@ expr_t const_expr::clone (substitution_t&) {
 }
 
 expr_t wrapper_expr::clone (substitution_t& s) {
-  return new wrapper_expr (get_loc (), get_expr ()->clone (s));
+  expr_t e = wrapped->clone (s);
+  if (wrapped->get_expr_kind () == var_expr_kind && e->get_expr_kind () != var_expr_kind)
+    return e;
+  else
+    return new wrapper_expr (get_loc (), e);
 }
 
 expr_t fo_expr::clone (substitution_t& s) {

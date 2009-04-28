@@ -108,7 +108,10 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
       if (te->get_check_prime ()
           && TypeOps::is_subtype (*TypeOps::prime_type (*arg_type),
                                   *TypeOps::prime_type (*target_type)))
+      {
         te->set_check_prime (false);
+        return node;
+      }
     }
     return NULL;
   }

@@ -39,6 +39,17 @@ namespace zorba {
     return NULL;
   }
 
+  xqtref_t binary_arith_func::return_type (const std::vector<xqtref_t> &arg_types) const {
+    if (TypeOps::is_empty (*arg_types [0]))
+      return arg_types [0];
+    if (TypeOps::is_empty (*arg_types [1]))
+      return arg_types [1];
+    if (TypeOps::is_numeric (*arg_types [0]) && TypeOps::is_numeric (*arg_types [1])) {
+      return TypeOps::arithmetic_type (*arg_types [0], *arg_types [1]);
+    }
+    return function::return_type (arg_types);
+  }
+
   // 6.2.1 op:add
   // --------------------
   class op_add : public binary_arith_func
@@ -68,6 +79,9 @@ namespace zorba {
     op_divide(const signature& sig) : binary_arith_func (sig) {}
     const char *op_name () const { return "divide"; }
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const {
+      return function::return_type (arg_types);
+    }
   };
 
   // 6.2.5 op:numeric-integer-divide
