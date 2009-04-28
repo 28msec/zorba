@@ -269,22 +269,40 @@ void dynamic_context::bind_index(
     const std::string& indexUri,
     store::Index* index)
 {
+  if (val_idx_ins_session_map.find(indexUri) != val_idx_ins_session_map.end()) {
+    ZORBA_ERROR_PARAM(XQP0034_INDEX_ALREADY_EXISTS, indexUri.c_str(), "");
+  }
   std::pair<store::Index_t, ValueIndexInsertSession_t> v;
-  ZORBA_ASSERT(!val_idx_ins_session_map.get(indexUri, v));
-
   v.first = index;
+  v.second = NULL;
+  val_idx_ins_session_map[indexUri] = v;
+}
 
-  val_idx_ins_session_map.put(indexUri, v);
+void dynamic_context::unbind_index(
+    const std::string& indexUri)
+{
+  IndexMap::iterator i = val_idx_ins_session_map.find(indexUri);
+  if (i != val_idx_ins_session_map.end())
+  {
+    val_idx_ins_session_map.erase(i);
+  }
+  else if (parent != NULL)
+  {
+    return parent->unbind_index(indexUri);
+  }
+  else
+  {
+    ZORBA_ERROR_PARAM(XQP0033_INDEX_DOES_NOT_EXIST, indexUri.c_str(), "");
+  }
 }
 
 
 store::Index* dynamic_context::lookup_index(const std::string& indexUri) const
 {
-  std::pair<store::Index_t, ValueIndexInsertSession_t> v;
-  bool found = val_idx_ins_session_map.get(indexUri, v);
-  if (found)
+  IndexMap::const_iterator i = val_idx_ins_session_map.find(indexUri);
+  if (i != val_idx_ins_session_map.end())
   {
-    return v.first;
+    return i->second.first.getp();
   }
   else if (parent != NULL)
   {
@@ -300,11 +318,10 @@ store::Index* dynamic_context::lookup_index(const std::string& indexUri) const
 ValueIndexInsertSession* dynamic_context::get_index_insert_session(
     const std::string& indexUri) const
 {
-  std::pair<store::Index_t, ValueIndexInsertSession_t> v;
-
-  if (val_idx_ins_session_map.get(indexUri, v))
+  IndexMap::const_iterator i = val_idx_ins_session_map.find(indexUri);
+  if (i != val_idx_ins_session_map.end())
   {
-    return v.second;
+    return i->second.second.getp();
   }
   else if (parent != NULL)
   {
@@ -321,13 +338,10 @@ void dynamic_context::set_index_insert_session (
     const std::string& indexUri,
     ValueIndexInsertSession* s) 
 {
-  std::pair<store::Index_t, ValueIndexInsertSession_t> v;
-
-  if (val_idx_ins_session_map.get(indexUri, v))
+  IndexMap::iterator i = val_idx_ins_session_map.find(indexUri);
+  if (i != val_idx_ins_session_map.end())
   {
-    v.second = s;
-    val_idx_ins_session_map.put(indexUri, v);
-    return;
+    i->second.second = s;
   }
   else if (parent != NULL)
   {

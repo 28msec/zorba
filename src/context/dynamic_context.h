@@ -19,6 +19,7 @@
 #include "zorbatypes/representations.h"
 
 #include "util/hashmap.h"
+#include <map>
 #include "common/shared_types.h"
 #include "store/api/shared_types.h"
 
@@ -30,7 +31,7 @@ class dynamic_context
 {
 protected:
 
-  typedef hashmap<std::pair<store::Index_t, ValueIndexInsertSession_t > > IndexMap;
+  typedef std::map<std::string, std::pair<store::Index_t, ValueIndexInsertSession_t > > IndexMap;
 
   struct dctx_value_t 
   {
@@ -144,6 +145,7 @@ public:
   void set_default_collection(const store::Item_t& default_collection_uri);
 
   void bind_index(const std::string& indexUri, store::Index* index);
+  void unbind_index(const std::string& indexUri);
 
   store::Index* lookup_index(const std::string& indexUri) const;
 
