@@ -55,7 +55,7 @@ ENDIF(WIN32)
 # Compile and build the multi-threaded testdriver executable
 #
 
-#SET(ZORBA_BUILD_MT_TESTDRIVER 1)
+SET(ZORBA_BUILD_MT_TESTDRIVER 1)
 
 IF (ZORBA_BUILD_MT_TESTDRIVER)
 
@@ -103,7 +103,7 @@ ENDIF(ZORBA_BUILD_MT_TESTDRIVER)
 
 
 # Option to build test driver to use Saxon to compare results
-SET ( ZORBA_BUILD_SAXON_TESTDRIVER 1)	   
+#SET ( ZORBA_BUILD_SAXON_TESTDRIVER 1)	   
 If ( ZORBA_BUILD_SAXON_TESTDRIVER )
    add_definitions ( -DENABLE_SAXON_COMPARE )
 Endif ( ZORBA_BUILD_SAXON_TESTDRIVER )
