@@ -74,6 +74,9 @@
 /* email support*/
 #cmakedefine ZORBA_WITH_EMAIL
 
+/* fop support */
+#cmakedefine ZORBA_WITH_FOP
+
 /* allow file system access */
 #cmakedefine ZORBA_WITH_FILE_ACCESS
 

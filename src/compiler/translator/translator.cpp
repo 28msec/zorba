@@ -270,6 +270,7 @@ protected:
     zorba_predef_mod_ns.insert (ZORBA_ALEXIS_FN_NS);
     zorba_predef_mod_ns.insert (ZORBA_JSON_FN_NS);
     zorba_predef_mod_ns.insert (ZORBA_OPEXTENSIONS_NS);
+	zorba_predef_mod_ns.insert (ZORBA_FOP_FN_NS);
 
     sctx_p->get_global_bindings (theGlobalVars);
     for (list<global_binding>::iterator i = theGlobalVars.begin ();

@@ -276,6 +276,9 @@ namespace zorba
 #ifdef ZORBA_WITH_EMAIL
   class ZorbaMailIterator;
 #endif  /* ZORBA_WITH_EMAIL */
+#ifdef ZORBA_WITH_FOP
+  class ZorbaFopIterator;
+#endif
   class ZorbaJSONParseIterator;
   class ZorbaJSONSerializeIterator;
 
@@ -823,6 +826,9 @@ namespace zorba
 #ifdef ZORBA_WITH_EMAIL
     PLAN_ITER_VISITOR(ZorbaMailIterator);
 #endif  /* ZORBA_WITH_EMAIL */
+#ifdef ZORBA_WITH_FOP
+	PLAN_ITER_VISITOR(ZorbaFopIterator);
+#endif // ZORBA_WITH_FOP
     PLAN_ITER_VISITOR(ZorbaJSONParseIterator);
     PLAN_ITER_VISITOR(ZorbaJSONSerializeIterator);
 

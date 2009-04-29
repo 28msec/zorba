@@ -47,6 +47,10 @@
 #include "functions/Email.h"
 #endif
 
+#ifdef ZORBA_WITH_FOP
+#include "functions/Fop.h"
+#endif // ZORBA_WITH_FOP
+
 #include "types/node_test.h"
 
 using namespace std;
@@ -864,6 +868,13 @@ DECL(sctx, rest_head,
 
 #endif // ZORBA_WITH_REST
 
+//begin fop functions
+#ifdef ZORBA_WITH_FOP
+DECL(sctx, zorba_fop,
+	 (createQName(ZORBA_FOP_FN_NS, "fn-zorba-fop", "zorba-fop"),
+	 GENV_TYPESYSTEM.ITEM_TYPE_ONE,
+	 GENV_TYPESYSTEM.ITEM_TYPE_ONE));
+#endif
 
 //begin collection functions
 DECL(sctx, zorba_collection_exists,

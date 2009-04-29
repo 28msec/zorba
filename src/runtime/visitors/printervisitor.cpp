@@ -59,6 +59,9 @@
 #ifdef ZORBA_WITH_REST
 #include "runtime/rest/rest.h"
 #endif
+#ifdef ZORBA_WITH_FOP
+#include "runtime/fop/FopImpl.h"
+#endif // ZORBA_WITH_FOP
 #ifdef ZORBA_WITH_EMAIL
 #include "runtime/email/EmailImpl.h"
 #endif
@@ -1160,7 +1163,6 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
 #ifdef ZORBA_WITH_EMAIL
   PRINTER_VISITOR_DEFINITION(ZorbaMailIterator);
 #endif  /* ZORBA_WITH_EMAIL */
-
 #ifdef ZORBA_DEBUGGER
   PRINTER_VISITOR_DEFINITION(FnDebugIterator);
 #endif
@@ -1172,6 +1174,10 @@ void endVisitFlworGroupBy(const PlanIterator& a) {
   PRINTER_VISITOR_DEFINITION(ZorbaRestDeleteIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaRestHeadIterator);
 #endif
+
+#ifdef ZORBA_WITH_FOP
+  PRINTER_VISITOR_DEFINITION(ZorbaFopIterator);
+#endif /* ZORBA_WITH_FOP */
 
   PRINTER_VISITOR_DEFINITION(HoistIterator);
   PRINTER_VISITOR_DEFINITION(UnhoistIterator);
