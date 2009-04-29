@@ -124,7 +124,7 @@ public:
   user_function(const QueryLoc& loc,
                 const signature& _sig,
                 expr_t expr_body, 
-                enum ParseConstants::function_type_t,
+                ParseConstants::function_type_t,
                 bool deterministic_);
 
   virtual ~user_function();
