@@ -47,6 +47,10 @@ void DataflowAnnotationsComputer::compute(expr *e)
       compute_flwor_expr(static_cast<flwor_expr *>(e));
       break;
 
+    case gflwor_expr_kind:
+      compute_gflwor_expr(static_cast<gflwor_expr *>(e));
+      break;
+
     case trycatch_expr_kind:
       compute_trycatch_expr(static_cast<trycatch_expr *>(e));
       break;
@@ -168,6 +172,12 @@ void DataflowAnnotationsComputer::compute_var_expr(var_expr *e)
       PROPOGATE_DISTINCT_NODES(e->get_flwor_clause()->get_expr().getp(), e);
     }
   }
+}
+
+void DataflowAnnotationsComputer::compute_gflwor_expr(gflwor_expr *e)
+{
+  default_walk(e);
+  generic_compute(e);
 }
 
 void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr *e)

@@ -36,6 +36,7 @@ namespace zorba {
     void compute_constructor_expr(constructor_expr *e);
     void compute_var_expr(var_expr *e);
     void compute_flwor_expr(flwor_expr *e);
+    void compute_gflwor_expr(gflwor_expr *e);
     void compute_trycatch_expr(trycatch_expr *e);
     void compute_promote_expr(promote_expr *e);
     void compute_typeswitch_expr(typeswitch_expr *e);
