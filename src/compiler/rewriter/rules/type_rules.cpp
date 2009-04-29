@@ -144,6 +144,8 @@ RULE_REWRITE_POST(SpecializeOperations)
       std::vector<xqtref_t> argTypes;
 
       if (fn->isArithmeticFunction()) {
+        if (! TypeOps::is_numeric (*t0) || ! TypeOps::is_numeric (*t0))
+          return NULL;
         xqtref_t aType = TypeOps::arithmetic_type_static(*t0, *t1);
         
         if (aType == NULL || !TypeOps::is_numeric(*aType)) {
