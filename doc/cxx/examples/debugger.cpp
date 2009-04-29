@@ -109,7 +109,7 @@ bool debugger_example_3(Zorba *aZorba)
     lQuery->compile("1+2");
     lQuery->debug();
     lQuery->close();
-  } catch( ZorbaException &e ) {
+  } catch( ZorbaException & ) {
     return true;
   }
   return false;
