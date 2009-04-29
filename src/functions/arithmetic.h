@@ -27,6 +27,7 @@ namespace zorba {
     binary_arith_func (const signature &sig) : function (sig) {}
     virtual bool isArithmeticFunction() const { return true; }
     virtual const char *op_name () const = 0;
+    static xqtref_t atomic_return_type (const std::vector<xqtref_t> &arg_types);
     xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
 
     const function *specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const;

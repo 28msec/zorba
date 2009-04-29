@@ -39,15 +39,24 @@ namespace zorba {
     return NULL;
   }
 
-  xqtref_t binary_arith_func::return_type (const std::vector<xqtref_t> &arg_types) const {
+  xqtref_t binary_arith_func::atomic_return_type (const std::vector<xqtref_t> &arg_types) {
     if (TypeOps::is_empty (*arg_types [0]))
       return arg_types [0];
     if (TypeOps::is_empty (*arg_types [1]))
       return arg_types [1];
+    int cnt1 = TypeOps::type_min_cnt (*arg_types [0]),
+        cnt2 = TypeOps::type_min_cnt (*arg_types [0]);
+    if (cnt2 < cnt1) cnt1 = cnt2;
+    return cnt1 == 0
+      ? GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION
+      : GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
+  }
+
+  xqtref_t binary_arith_func::return_type (const std::vector<xqtref_t> &arg_types) const {
     if (TypeOps::is_numeric (*arg_types [0]) && TypeOps::is_numeric (*arg_types [1])) {
       return TypeOps::arithmetic_type (*arg_types [0], *arg_types [1]);
     }
-    return function::return_type (arg_types);
+    return atomic_return_type (arg_types);
   }
 
   // 6.2.1 op:add
@@ -80,7 +89,7 @@ namespace zorba {
     const char *op_name () const { return "divide"; }
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const {
-      return function::return_type (arg_types);
+      return atomic_return_type (arg_types);
     }
   };
 
