@@ -51,15 +51,35 @@ namespace zorba {
 | 6.2 Operators on Numeric Values
 |_______________________________________________________________________*/
 
+// base class factored out for benefit of divide specialization
 template<class op, TypeConstants::atomic_type_code_t t>
-class binary_specific_arith_func : public bin_num_arith_func
+class bin_specific_arith_func_base : public bin_num_arith_func
 {
 public:
-	binary_specific_arith_func (const signature &sig) : bin_num_arith_func (sig) {}
+	bin_specific_arith_func_base (const signature &sig) : bin_num_arith_func (sig) {}
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
     return new SpecificNumArithIterator<op, t> (loc, argv[0], argv[1]);
   }
   virtual bool specializable() const { return false; }
+};
+
+template<class op, TypeConstants::atomic_type_code_t t>
+class binary_specific_arith_func : public bin_specific_arith_func_base<op, t>
+{
+public:
+	binary_specific_arith_func (const signature &sig)
+    : bin_specific_arith_func_base<op, t> (sig)
+  {}
+};
+
+template<TypeConstants::atomic_type_code_t t>
+class binary_specific_arith_func<DivideOperation, t> : public bin_specific_arith_func_base<DivideOperation, t>
+{
+public:
+	binary_specific_arith_func (const signature &sig) : bin_specific_arith_func_base<DivideOperation, t> (sig) {}
+  xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const {
+    return function::return_type (arg_types);
+  }
 };
 
 #define DECL_SPECIFIC_OPS( op, opc, t, xqt )                        \
@@ -161,6 +181,9 @@ public:
   const char *op_name () const { return "divide"; }
 	op_numeric_divide(const signature &sig) : specializable_bin_num_arith_func (sig) {};
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const {
+    return function::return_type (arg_types);
+  }
 };
 
 // 6.2.5 op:numeric-integer-divide

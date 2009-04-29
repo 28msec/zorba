@@ -89,7 +89,7 @@ namespace zorba {
   class op_integer_divide : public function
   {
   public:
-	op_integer_divide(const signature& sig) : function (sig) {}
+    op_integer_divide(const signature& sig) : function (sig) {}
     virtual bool isArithmeticFunction() const { return true; }
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
