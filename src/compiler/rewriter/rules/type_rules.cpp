@@ -15,11 +15,17 @@
  */
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/tools/expr_tools.h"
+
 #include "context/static_context.h"
+
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
-#include "system/globalenv.h"
+
 #include "functions/function.h"
+
+#include "system/globalenv.h"
+
+#include "util/properties.h"
 
 using namespace std;
 
@@ -134,6 +140,7 @@ RULE_REWRITE_PRE(SpecializeOperations)
 
 RULE_REWRITE_POST(SpecializeOperations)
 {
+  const Properties &props = *Properties::instance ();
   if (node->get_expr_kind() == fo_expr_kind) {
     fo_expr *fo = static_cast<fo_expr *>(node);
     const function *fn = fo->get_func();
@@ -143,7 +150,7 @@ RULE_REWRITE_POST(SpecializeOperations)
       xqtref_t t1 = (*fo)[1]->return_type(rCtx.getStaticContext());
       std::vector<xqtref_t> argTypes;
 
-      if (fn->isArithmeticFunction()) {
+      if (props.specializeNum () && fn->isArithmeticFunction()) {
         if (! TypeOps::is_numeric (*t0) || ! TypeOps::is_numeric (*t0))
           return NULL;
         xqtref_t aType = TypeOps::arithmetic_type_static(*t0, *t1);
@@ -169,7 +176,7 @@ RULE_REWRITE_POST(SpecializeOperations)
           }
           return node;
         }
-      } else if (fn->isComparisonFunction ()) {
+      } else if (props.specializeCmp () && fn->isComparisonFunction ()) {
         argTypes.push_back(t0);
         argTypes.push_back(t1);
         const function *replacement = fn->specialize(rCtx.getStaticContext(), argTypes);

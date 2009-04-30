@@ -64,7 +64,7 @@
 
 // toggle this to allow configuration via a system properties file
 // (see src/util/properties.*)
-#define ZORBACMD_LOAD_SYSTEM_PROPERTIES 0
+#define ZORBACMD_LOAD_SYSTEM_PROPERTIES 1
 
 #if ZORBACMD_LOAD_SYSTEM_PROPERTIES
 #include "util/properties.h"

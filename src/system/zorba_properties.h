@@ -33,15 +33,13 @@ namespace zorba {
 class ZorbaProperties : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--force-gflwor", "--reorder-globals", "--result-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--trace-translator", "--trace-codegen", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", NULL };
+    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--trace-translator", "--trace-codegen", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", NULL };
     return result;
   }
   bool theTraceParsing;
   bool theTraceScanning;
   bool theUseSerializer;
   bool theOptimizer;
-  bool theForceGflwor;
-  bool theReorderGlobals;
   std::string theResultFile;
   bool theAbort;
   std::string theQuery;
@@ -56,6 +54,11 @@ protected:
   bool theStableIteratorIds;
   bool theNoTreeIds;
   bool thePrintIntermediateOpt;
+  bool theForceGflwor;
+  bool theReorderGlobals;
+  bool theSpecializeNum;
+  bool theSpecializeCmp;
+  bool theInlineUdf;
   bool theTraceTranslator;
   bool theTraceCodegen;
   bool theDebug;
@@ -69,8 +72,6 @@ protected:
     theTraceScanning = false;
     theUseSerializer = false;
     theOptimizer = true;
-    theForceGflwor = false;
-    theReorderGlobals = true;
     theAbort = false;
     thePrintQuery = false;
     thePrintTime = false;
@@ -83,6 +84,11 @@ protected:
     theStableIteratorIds = false;
     theNoTreeIds = false;
     thePrintIntermediateOpt = false;
+    theForceGflwor = false;
+    theReorderGlobals = true;
+    theSpecializeNum = true;
+    theSpecializeCmp = true;
+    theInlineUdf = true;
     theTraceTranslator = false;
     theTraceCodegen = false;
     theDebug = false;
@@ -93,8 +99,6 @@ public:
   const bool &traceScanning () const { return theTraceScanning; }
   const bool &useSerializer () const { return theUseSerializer; }
   const bool &optimizer () const { return theOptimizer; }
-  const bool &forceGflwor () const { return theForceGflwor; }
-  const bool &reorderGlobals () const { return theReorderGlobals; }
   const std::string &resultFile () const { return theResultFile; }
   const bool &abort () const { return theAbort; }
   const std::string &query () const { return theQuery; }
@@ -109,6 +113,11 @@ public:
   const bool &stableIteratorIds () const { return theStableIteratorIds; }
   const bool &noTreeIds () const { return theNoTreeIds; }
   const bool &printIntermediateOpt () const { return thePrintIntermediateOpt; }
+  const bool &forceGflwor () const { return theForceGflwor; }
+  const bool &reorderGlobals () const { return theReorderGlobals; }
+  const bool &specializeNum () const { return theSpecializeNum; }
+  const bool &specializeCmp () const { return theSpecializeCmp; }
+  const bool &inlineUdf () const { return theInlineUdf; }
   const bool &traceTranslator () const { return theTraceTranslator; }
   const bool &traceCodegen () const { return theTraceCodegen; }
   const bool &debug () const { return theDebug; }
@@ -139,14 +148,6 @@ public:
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         init_val (*argv, theOptimizer, d);
-      }
-      else if (strcmp (*argv, "--force-gflwor") == 0) {
-        theForceGflwor = true;
-      }
-      else if (strcmp (*argv, "--reorder-globals") == 0) {
-        int d = 2;
-        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theReorderGlobals, d);
       }
       else if (strcmp (*argv, "--result-file") == 0 || strncmp (*argv, "-o", 2) == 0) {
         int d = 2;
@@ -193,6 +194,29 @@ public:
       }
       else if (strcmp (*argv, "--print-intermediate-opt") == 0) {
         thePrintIntermediateOpt = true;
+      }
+      else if (strcmp (*argv, "--force-gflwor") == 0) {
+        theForceGflwor = true;
+      }
+      else if (strcmp (*argv, "--reorder-globals") == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        init_val (*argv, theReorderGlobals, d);
+      }
+      else if (strcmp (*argv, "--specialize-num") == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        init_val (*argv, theSpecializeNum, d);
+      }
+      else if (strcmp (*argv, "--specialize-cmp") == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        init_val (*argv, theSpecializeCmp, d);
+      }
+      else if (strcmp (*argv, "--inline-udf") == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        init_val (*argv, theInlineUdf, d);
       }
 #ifndef NDEBUG
       else if (strcmp (*argv, "--trace-translator") == 0 || strncmp (*argv, "-l", 2) == 0) {
@@ -245,8 +269,6 @@ public:
 "--trace-scanning, -s\ntrace scanning\n\n"
 "--use-serializer, -r\nuse serializer\n\n"
 "--optimizer, -O\noptimization level (1=enabled (default), 0=off)\n\n"
-"--force-gflwor\nforce compiler to generate GFLWOR iterators\n\n"
-"--reorder-globals\nreorder global variables (1=enabled (default), 0=off)\n\n"
 "--result-file, -o\nresult file\n\n"
 "--abort\nabort when fatal error happens\n\n"
 "--query, -e\nexecute inline query\n\n"
@@ -261,6 +283,11 @@ public:
 "--stable-iterator-ids\nprint the iterator plan with stable ids\n\n"
 "--no-tree-ids\nsuppress ids and locations from compiler tree dumps\n\n"
 "--print-intermediate-opt\nprint intermediate optimizations\n\n"
+"--force-gflwor\nforce compiler to generate GFLWOR iterators\n\n"
+"--reorder-globals\nreorder global variables (1=enabled (default), 0=off)\n\n"
+"--specialize-num\nspecialize numerics (1=enabled (default), 0=off)\n\n"
+"--specialize-cmp\nspecialize generic comparisons (1=enabled (default), 0=off)\n\n"
+"--inline-udf\ninline functions (1=enabled (default), 0=off)\n\n"
 #ifndef NDEBUG
 "--trace-translator, -l\ntrace the translator\n\n"
 "--trace-codegen, -c\ntrace the codegenerator\n\n"

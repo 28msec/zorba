@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "compiler/rewriter/framework/rule_driver.h"
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/rewriters/common_rewriter.h"
 #include "compiler/rewriter/rewriters/default_optimizer.h"
+
+#include "util/properties.h"
 
 namespace zorba {
 
@@ -40,7 +43,8 @@ public:
 
 DefaultOptimizer::DefaultOptimizer()
 {
-  ADD_SINGLETON_DRIVER(InlineFunctions);
+  if (Properties::instance ()->inlineUdf ())
+    ADD_SINGLETON_DRIVER(InlineFunctions);
   ADD_SINGLETON_DRIVER(InferVarTypes);
   ADD_SINGLETON_DRIVER(EliminateTypeEnforcingOperations);
 
