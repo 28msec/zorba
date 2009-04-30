@@ -663,19 +663,15 @@ xqtref_t TypeOps::arithmetic_type_exact(const XQType& type1, const XQType& type2
 
 xqtref_t TypeOps::arithmetic_type_static(const XQType& type1, const XQType& type2)
 {
-  xqtref_t aType = arithmetic_type_exact(type1, type2);
-  if (aType != NULL) {
-    return aType;
-  }
   xqtref_t pt1 = TypeOps::prime_type(type1);
   xqtref_t pt2 = TypeOps::prime_type(type2);
 
-  TypeConstants::quantifier_t iquant = RootTypeManager::QUANT_UNION_MATRIX[type1.get_quantifier()][type2.get_quantifier()];
-
-  aType = arithmetic_type_exact(*pt1, *pt2);
+  xqtref_t aType = arithmetic_type_exact(*pt1, *pt2);
   if (aType == NULL) {
     return NULL;
   }
+  TypeConstants::quantifier_t iquant =
+    RootTypeManager::QUANT_UNION_MATRIX[type1.get_quantifier()][type2.get_quantifier()];
   return aType->get_manager()->create_type(*aType, iquant);
 }
 
