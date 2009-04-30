@@ -19,7 +19,7 @@
 #include "runtime/base/narybase.h"
 
 namespace zorba {
-	NARY_ITER(ZorbaFopIterator);
+  NARY_ITER(ZorbaFopIterator);
 }
 
 #endif // FOP_IMPL_H
