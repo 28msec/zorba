@@ -220,7 +220,7 @@ void processElement(
     bool tHasValue;
     bool tHasTypedValue;
     bool tHasEmptyValue;
-    store::PUL* p;
+    store::PUL* p = NULL;
     store::Item_t elm;
     
     if ( !typeQName->equals(element->getType()) )
@@ -272,7 +272,7 @@ void processElement(
                                 tHasTypedValue,
                                 element->isId(),
                                 element->isIdRefs());
-    }    
+    }
 
     schemaValidator.endElem(nodeName);
 }

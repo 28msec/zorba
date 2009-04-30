@@ -270,7 +270,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   //
   flwor_expr* outerFlworExpr = NULL;
   expr_t outerSeqExpr;
-  long outerExprPos;
+  long outerExprPos = -1;
 
   for (long i = rCtx.m_flwor_exprs.size() - 1; i >= 0; --i)
   {
@@ -340,6 +340,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
     foExpr->add(outerFlworExpr);
 
     outerSeqExpr = foExpr;
+    assert (outerExprPos >= 0);
     rCtx.m_flwor_exprs[outerExprPos] = outerSeqExpr;
   }
   else

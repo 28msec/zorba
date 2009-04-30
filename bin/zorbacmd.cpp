@@ -281,7 +281,7 @@ int _tmain(int argc, _TCHAR* argv[])
     lStartExecutionTimeInfo, lStopExecutionTimeInfo;
   double lDiffCompileUserTime,
     lDiffFirstExecutionUserTime, lDiffExecutionUserTime,
-    lDiffDocLoadingUserTime;
+    lDiffDocLoadingUserTime = 0;
 
   // parse the command line and/or the properties file
   ZorbaCMDProperties lProperties;

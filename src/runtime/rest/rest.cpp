@@ -244,11 +244,12 @@ ZorbaRestGetIteratorState::reset(PlanState& planState)
   PlanIteratorState::reset(planState);
 }
 
-static int readSome(std::istream& stream, char *buffer, int maxlen)
-{
+#if 0
+static int readSome(std::istream& stream, char *buffer, int maxlen) {
   stream.read(buffer, maxlen);
   return stream.gcount();
 }
+#endif
 
 int processReply(store::Item_t& result,
                  PlanState& planState,
