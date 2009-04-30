@@ -403,6 +403,14 @@ bool TypeOps::is_numeric(const XQType& type)
     || is_subtype(type, *genv_ts.DECIMAL_TYPE_QUESTION);
 }
 
+bool TypeOps::is_numeric_or_untyped(const XQType& type)
+{
+  CACHE_ROOT_TS (genv_ts);
+  return is_subtype(type, *genv_ts.DOUBLE_TYPE_QUESTION)
+    || is_subtype(type, *genv_ts.FLOAT_TYPE_QUESTION)
+    || is_subtype(type, *genv_ts.DECIMAL_TYPE_QUESTION)
+    || is_subtype (type, *genv_ts.UNTYPED_ATOMIC_TYPE_QUESTION);
+}
 
 bool TypeOps::is_empty(const XQType& type) 
 {

@@ -92,7 +92,9 @@ public:
    * nu,eric type (xs:decimal, xs:double, or xs:float)
    */
   static bool is_numeric(const XQType& type);
-  
+ 
+  static bool is_numeric_or_untyped(const XQType& type);
+
   /*
    * Returns true if the given sequence type is the empty sequence.
    */
