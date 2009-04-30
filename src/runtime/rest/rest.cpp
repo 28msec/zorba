@@ -244,7 +244,7 @@ ZorbaRestGetIteratorState::reset(PlanState& planState)
   PlanIteratorState::reset(planState);
 }
 
-#if 0
+#ifdef ZORBA_WITH_TIDY
 static int readSome(std::istream& stream, char *buffer, int maxlen) {
   stream.read(buffer, maxlen);
   return stream.gcount();
