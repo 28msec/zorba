@@ -38,11 +38,21 @@
 
 #include "zorbautils/mutex.h"
 
+#include "util/properties.h"
+
 #include "testdriverconfig.h" // SRC and BIN dir definitions
 #include "specification.h" // parsing spec files
 #include "testdriver_common.h"
 
 namespace fs = boost::filesystem;
+
+
+zorba::Properties *lProp;
+
+void loadProperties() 
+{
+  zorba::Properties::load(0, NULL);
+}
 
 
 /*******************************************************************************
@@ -219,19 +229,23 @@ bool checkErrors(const Specification& lSpec, const TestErrorHandler& errHandler)
 {
   if (isErrorExpected(errHandler, &lSpec)) 
   {
-    printErrors(errHandler, "The following execution errors occurred as expected", true);
+    printErrors(errHandler, "The following execution errors occurred as expected",
+                true);
     return true;
   }
   else
   {
     printErrors(errHandler, "Unexpected errors executing query", true);
-    std::cerr << "Expected error(s)";
+
+    std::ofstream errFile(errHandler.getErrorFile().c_str());
+
+    errFile << "Expected error(s)";
     for (std::vector<std::string>::const_iterator lIter = lSpec.errorsBegin();
          lIter != lSpec.errorsEnd(); ++lIter)
     {
-      std::cerr << " " << *lIter;
+      errFile << " " << *lIter;
     }
-    std::cerr << std::endl;
+    errFile << std::endl;
     return false;
   }
 }
@@ -241,8 +255,7 @@ bool checkErrors(const Specification& lSpec, const TestErrorHandler& errHandler)
   Open the file with name "filename" and, starting from position "startPos", 
   print up to "len" bytes from that file into "os".
 ********************************************************************************/
-void
-printPart(std::ostream& os, std::string filename, int startPos, int len)
+void printPart(std::ostream& os, std::string filename, int startPos, int len)
 {
   char* buffer = new char [len];
   try 
@@ -323,9 +336,9 @@ void* thread_main(void* param)
   std::string relativeQueryFile;
   fs::path queryPath;
   fs::path specPath;
-  fs::path refPath;
-  fs::path resultPath;
-  fs::path errorPath;
+  fs::path refFilePath;
+  fs::path resultFilePath;
+  fs::path errorFilePath;
 
   std::string queryString;
 
@@ -345,7 +358,8 @@ void* thread_main(void* param)
       return 0;
     }
 
-    std::cout << "*** " << queryNo << " in file " << queries->theQueryFilenames[queryNo]
+    std::cout << "*** " << queryNo << " in file " 
+              << queries->theQueryFilenames[queryNo]
               << " by thread " << tno << std::endl << std::endl;
 
     //
@@ -366,28 +380,27 @@ void* thread_main(void* param)
 
     queryPath = fs::path(queries->theQueriesDir) / (relativeQueryFile);
     specPath = fs::change_extension(queryPath, ".spec");
-    refPath = fs::path(queries->theRefsDir) / (relativeQueryFile);
-    refPath = fs::change_extension(refPath, ".xml.res");
-    resultPath = fs::path(queries->theResultsDir) / (relativeQueryFile);
-    resultPath = fs::change_extension(resultPath, (".res_" + tnoStr));
-    errorPath = fs::path(queries->theResultsDir) / (relativeQueryFile);
-    errorPath = fs::change_extension(errorPath, (".err_" + tnoStr));
+    refFilePath = fs::path(queries->theRefsDir) / (relativeQueryFile);
+    refFilePath = fs::change_extension(refFilePath, ".xml.res");
+    resultFilePath = fs::path(queries->theResultsDir) / (relativeQueryFile);
+    resultFilePath = fs::change_extension(resultFilePath, (".res_" + tnoStr));
+    errorFilePath = fs::path(queries->theResultsDir) / (relativeQueryFile);
+    errorFilePath = fs::change_extension(errorFilePath, (".err_" + tnoStr));
 
-    if (fs::exists(resultPath)) fs::remove(resultPath);
-    if (fs::exists(errorPath)) fs::remove(errorPath);
+    if (fs::exists(resultFilePath)) fs::remove(resultFilePath);
+    if (fs::exists(errorFilePath)) fs::remove(errorFilePath);
 
     //
     // Set the error file to be used by the error handler for the current query
     //
-    errHandler.setErrorFile(errorPath.native_file_string());
+    errHandler.setErrorFile(errorFilePath.native_file_string());
 
     //
     // Read the xargs and expected errors from the spec file, if it exists
     //
     Specification querySpec;
-    if (fs::exists(specPath)) 
+    if (fs::exists(specPath))
       querySpec.parseFile(specPath.native_file_string()); 
-
 
     //
     // Compile the current query, if it has not been compiled already. 
@@ -431,7 +444,7 @@ void* thread_main(void* param)
         }
         else
         {
-          std::cerr << "FAILURE : thread " << tno << " query " << queryNo
+          std::cout << "FAILURE : thread " << tno << " query " << queryNo
                     << " : " << queries->theQueryFilenames[queryNo]
                     << std::endl << std::endl 
                     << "Reason: received the following unexpected compilation errors : ";
@@ -485,14 +498,30 @@ void* thread_main(void* param)
       lDynCtxt->setImplicitTimezone(lTimezone);
     }
 
+    // Set external vars
     set_vars(&querySpec, lDynCtxt);
 
-    std::ofstream resFileStream(resultPath.native_file_string().c_str());
+    // create and open results file 
+    std::ofstream resFileStream(resultFilePath.native_file_string().c_str());
     if (!resFileStream.good())
     {
-      std::cout << "Could not open results file: " 
-                << resultPath.native_file_string().c_str() << std::endl;
-      abort();
+      fs::path save = resultFilePath;
+      fs::path dirPath = resultFilePath.remove_leaf();
+      resultFilePath = save;
+
+      if (!fs::exists(dirPath))
+      {
+        fs::create_directories(dirPath);
+
+        resFileStream.open(resultFilePath.native_file_string().c_str());
+      }
+
+      if (!resFileStream.good())
+      {
+        std::cout << "Could not open results file: " 
+                  << resultFilePath.native_file_string().c_str() << std::endl;
+        abort();
+      }
     }
 
     try
@@ -537,9 +566,9 @@ void* thread_main(void* param)
         continue;
       }
     }
-    else if (querySpec.errorsSize() > 0 && !fs::exists(refPath))
+    else if (querySpec.errorsSize() > 0 && !fs::exists(refFilePath))
     {
-      std::cerr << "FAILURE : thread " << tno << " query " << queryNo
+      std::cout << "FAILURE : thread " << tno << " query " << queryNo
                 << " : " << queries->theQueryFilenames[queryNo]
                 << std::endl << std::endl
                 << "Reason: should have received one of the following expected errors : ";
@@ -558,10 +587,24 @@ void* thread_main(void* param)
       errHandler.clear();
       continue;
     }
+    else if (!fs::exists(refFilePath))
+    {
+      std::cout << "FAILURE : thread " << tno << " query " << queryNo
+                << " : " << queries->theQueryFilenames[queryNo]
+                << std::endl << std::endl
+                << "Reason: reference result file : " << refFilePath
+                << " does not exist" << std::endl << std::endl;
+
+      zorba::AutoMutex(queries->theQueryLocks[queryNo]);
+      queries->theHaveErrors = true;
+      queries->theQueryStates[queryNo] = false;
+      errHandler.clear();
+      continue;
+    }
     else
     {
       int lLine, lCol, lPos;
-      bool success = isEqual(refPath, resultPath, lLine, lCol, lPos);
+      bool success = isEqual(refFilePath, resultFilePath, lLine, lCol, lPos);
       if (!success)
       {
         std::cerr << "FAILURE : thread " << tno << " query " << queryNo
@@ -598,6 +641,8 @@ _tmain(int argc, _TCHAR* argv[])
 main(int argc, char** argv)
 #endif
 {
+  loadProperties();
+
   std::string bucketName;
   std::string queriesDir;
   std::string resultsDir;
