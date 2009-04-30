@@ -24,25 +24,32 @@ namespace zorba
 namespace flwor 
 {
 
-    class LetIterator : public BinaryBaseIterator<LetIterator, PlanIteratorState> {
-      private:
-        store::Item_t theVarName;
-        std::vector<LetVarIter_t> theLetVars;
-        bool theNeedsMat;
+class LetIterator : public BinaryBaseIterator<LetIterator, PlanIteratorState> 
+{
+private:
+  store::Item_t theVarName;
+  std::vector<LetVarIter_t> theLetVars;
+  bool theNeedsMat;
+  
+public:
+  LetIterator ( 
+        const QueryLoc& aLoc,  
+        store::Item_t aVarName, 
+        PlanIter_t aTupleIter, 
+        PlanIter_t aInputIter, 
+        const std::vector<PlanIter_t>& aLetVars, 
+        bool aNeedsMaterialization);
+
+  ~LetIterator();
         
-      public:
-        LetIterator ( const QueryLoc& aLoc,  
-                      store::Item_t aVarName, 
-                      PlanIter_t aTupleIter, 
-                      PlanIter_t aInputIter, 
-                      std::vector<LetVarIter_t>& aLetVars, 
-                      bool aNeedsMaterialization);
-        ~LetIterator();
-        
-        bool nextImpl ( store::Item_t& result, PlanState& planState ) const;
-        virtual void accept ( PlanIterVisitor& ) const;
-    };
-  }
+  store::Item* getVarName() const { return theVarName.getp(); }
+
+  bool nextImpl ( store::Item_t& result, PlanState& planState ) const;
+
+  virtual void accept ( PlanIterVisitor& ) const;
+};
+
+}
 }
 
 

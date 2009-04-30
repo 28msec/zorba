@@ -877,26 +877,39 @@ int Expr::numberOfChildren() const
 // ---------------
 
 
-//-FLWORExpr::
 
-  FLWORExpr::FLWORExpr(const QueryLoc& loc_, rchandle<FLWORClauseList> clauses_, rchandle<exprnode> ret_, const QueryLoc& return_loc_, bool force_general)
-    : exprnode (loc_), clauses (clauses_), return_val_h (ret_), return_location(return_loc_) 
+FLWORExpr::FLWORExpr(
+    const QueryLoc& loc_,
+    rchandle<FLWORClauseList> clauses_,
+    rchandle<exprnode> ret_,
+    const QueryLoc& return_loc_,
+    bool force_general)
+  :
+  exprnode (loc_),
+  clauses (clauses_),
+  return_val_h (ret_),
+  return_location(return_loc_) 
+{
+  for (unsigned i = 0; i < clauses->size (); i++) 
   {
-    for (unsigned i = 0; i < clauses->size (); i++) {
-      {
-        GroupByClause *c = dynamic_cast<GroupByClause *> ((*clauses) [i].getp ());
-        if (c != NULL)
-          c->set_flwor (this);
-      }
-      {
-        OrderByClause *c = dynamic_cast<OrderByClause *> ((*clauses) [i].getp ());
-        if (c != NULL)
-          c->set_flwor (this);
-      }
+    {
+      GroupByClause *c = dynamic_cast<GroupByClause *> ((*clauses) [i].getp ());
+      if (c != NULL)
+        c->set_flwor (this);
     }
-    compute_general ();
-    if (force_general) general = true;
+    {
+      OrderByClause *c = dynamic_cast<OrderByClause *> ((*clauses) [i].getp ());
+      if (c != NULL)
+        c->set_flwor (this);
+    }
   }
+
+  compute_general ();
+
+  if (force_general)
+    general = true;
+}
+
 
 void FLWORExpr::accept(parsenode_visitor& v) const
 {
@@ -906,13 +919,17 @@ void FLWORExpr::accept(parsenode_visitor& v) const
   END_VISITOR ();
 }
 
-template<class T> void get_flwor_clause (const FLWORExpr &f, T **p) {
+
+template<class T> void get_flwor_clause (const FLWORExpr &f, T **p) 
+{
   *p = NULL;
   rchandle<FLWORClauseList> clauses = f.get_clause_list ();
-  for (unsigned i = 0; i < clauses->size (); i++) {
+  for (unsigned i = 0; i < clauses->size (); i++) 
+  {
     FLWORClause* cp = (*clauses) [i].getp ();
     *p = dynamic_cast<T *> (cp);
-    if (*p != NULL) return;
+    if (*p != NULL)
+      return;
   }
 }
 
@@ -927,15 +944,11 @@ DEF_FLWOR_GETTER (GroupByClause, groupby)
 DEF_FLWOR_GETTER (OrderByClause, orderby)
 DEF_FLWOR_GETTER (WhereClause, where)
 
-void FLWORWinCond::accept(parsenode_visitor& v) const
-{
-  BEGIN_VISITOR ();
-  ACCEPT (get_winvars ());
-  ACCEPT (get_val ());
-  END_VISITOR ();
-}
 
-void FLWORExpr::compute_general () {
+
+
+void FLWORExpr::compute_general () 
+{
   general = non_10 = false;
 #ifdef ZORBA_FORCE_GFLWOR
   general = true;
@@ -969,23 +982,62 @@ void FLWORExpr::compute_general () {
   }
 }
 
-void WindowVarDecl::accept(parsenode_visitor& v) const {
+
+/*******************************************************************************
+  WindowClause ::= "for" (TumblingWindowClause | SlidingWindowClause)
+
+  TumblingWindowClause ::= "tumbling" "window" WindowVarDecl
+                           WindowStartCondition WindowEndCondition?
+
+  SlidingWindowClause ::= "sliding" "window" WindowVarDecl
+                          WindowStartCondition WindowEndCondition
+********************************************************************************/
+void WindowClause::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+
+  for (int i = 0; i < 2; i++)
+    ACCEPT (conditions [i]);
+
+  ACCEPT (var);
+
+  END_VISITOR ();
+}
+
+
+/*******************************************************************************
+  WindowVarDecl ::= "$" VarName TypeDeclaration? "in"  ExprSingle
+********************************************************************************/
+void WindowVarDecl::accept(parsenode_visitor& v) const 
+{
   BEGIN_VISITOR ();
   ACCEPT (typedecl_h);
   ACCEPT (get_initexpr ());
   END_VISITOR ();
 }
 
-void WindowClause::accept(parsenode_visitor& v) const
+
+/*******************************************************************************
+  WindowStartCondition ::= "start" WindowVars "when" ExprSingle
+
+  WindowEndCondition ::= "only"? "end" WindowVars "when" ExprSingle
+********************************************************************************/
+void FLWORWinCond::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  for (int i = 0; i < 2; i++)
-    ACCEPT (conditions [i]);
-  ACCEPT (var);
+  ACCEPT (get_winvars ());
+  ACCEPT (get_val ());
   END_VISITOR ();
 }
 
-void WindowVars::accept(parsenode_visitor& v) const {
+
+/*******************************************************************************
+  WindowVars ::= ("$" CurrentItem)? PositionalVar?
+                 ("previous" "$" PreviousItem)?
+                 ("next" "$" NextItem)?
+********************************************************************************/
+void WindowVars::accept(parsenode_visitor& v) const 
+{
   BEGIN_VISITOR ();
   ACCEPT (posvar);
   END_VISITOR ();
@@ -1000,8 +1052,6 @@ FLWORClauseList::FLWORClauseList(
 {}
 
 
-//-FLWORClauseList::
-
 void FLWORClauseList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
@@ -1014,9 +1064,6 @@ void FLWORClauseList::accept(parsenode_visitor& v) const
   END_VISITOR ();
 }
 
-
-// [33b] ForOrLetClause
-// ------------------
 
 
 // [34] ForClause
@@ -1165,8 +1212,6 @@ void VarGetsDeclList::accept(parsenode_visitor& v) const
 // [36b] VarGetsDecl
 // ------------------
 
-//-VarGetsDecl::
-
 void VarGetsDecl::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
@@ -1188,8 +1233,6 @@ FTScoreVar::FTScoreVar(
 {}
 
 
-//-FTScoreVar::
-
 void FTScoreVar::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
@@ -1207,8 +1250,6 @@ WhereClause::WhereClause(
   predicate_h(_predicate_h)
 {}
 
-
-//-WhereClause::
 
 void WhereClause::accept(parsenode_visitor& v) const
 {
@@ -1292,23 +1333,22 @@ void GroupCollationSpec::accept(parsenode_visitor& v) const
 // [38] OrderByClause
 // ------------------
 OrderByClause::OrderByClause(
-  const QueryLoc& loc_,
-  rchandle<OrderSpecList> _spec_list_h,
-  bool _stable_b)
-:
+    const QueryLoc& loc_,
+    rchandle<OrderSpecList> _spec_list_h,
+    bool _stable_b)
+  :
   FLWORClause(loc_),
   spec_list_h(_spec_list_h),
   stable_b(_stable_b)
-{}
+{
+}
 
-
-//-OrderByClause::
 
 void OrderByClause::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
-  ACCEPT (spec_list_h);
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  ACCEPT(spec_list_h);
+  END_VISITOR();
 }
 
 
@@ -1320,8 +1360,6 @@ OrderSpecList::OrderSpecList(
   parsenode(loc_)
 {}
 
-
-//-OrderSpecList::
 
 void OrderSpecList::accept(parsenode_visitor& v) const
 {

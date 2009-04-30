@@ -30,7 +30,8 @@ namespace zorba {
 
 void DataflowAnnotationsComputer::compute(expr *e)
 {
-  switch(e->get_expr_kind()) {
+  switch(e->get_expr_kind()) 
+  {
     case sequential_expr_kind:
       compute_sequential_expr(static_cast<sequential_expr *>(e));
       break;
@@ -42,15 +43,16 @@ void DataflowAnnotationsComputer::compute(expr *e)
     case var_expr_kind:
       compute_var_expr(static_cast<var_expr *>(e));
       break;
-
+#if 1
+    case gflwor_expr_kind:
     case flwor_expr_kind:
       compute_flwor_expr(static_cast<flwor_expr *>(e));
       break;
-
-    case gflwor_expr_kind:
-      compute_gflwor_expr(static_cast<gflwor_expr *>(e));
+#else
+    case flwor_expr_kind:
+      compute_flwor_expr(static_cast<flwor_expr *>(e));
       break;
-
+#endif
     case trycatch_expr_kind:
       compute_trycatch_expr(static_cast<trycatch_expr *>(e));
       break;
@@ -168,50 +170,80 @@ void DataflowAnnotationsComputer::compute_var_expr(var_expr *e)
 {
   if (!generic_compute(e)) {
     if (e->get_kind() == var_expr::let_var) {
-      PROPOGATE_SORTED_NODES(e->get_flwor_clause()->get_expr().getp(), e);
-      PROPOGATE_DISTINCT_NODES(e->get_flwor_clause()->get_expr().getp(), e);
+      PROPOGATE_SORTED_NODES(e->get_forletwin_clause()->get_expr(), e);
+      PROPOGATE_DISTINCT_NODES(e->get_forletwin_clause()->get_expr(), e);
     }
   }
 }
 
-void DataflowAnnotationsComputer::compute_gflwor_expr(gflwor_expr *e)
+
+#if 1
+void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr *e)
 {
   default_walk(e);
   generic_compute(e);
 }
-
+#else
 void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr *e)
 {
-  flwor_expr::forlet_list_t::iterator ci = e->forlet_begin();
-  flwor_expr::forlet_list_t::iterator cend = e->forlet_end();
-  while(ci != cend) {
-    flwor_expr::forletref_t& flc = *ci;
-    compute(flc->get_expr().getp());
+  flwor_expr::clause_list_t::const_iterator ci = e->clause_begin();
+  flwor_expr::clause_list_t::const_iterator cend = e->clause_end();
+
+  while(ci != cend) 
+  {
+    const flwor_clause* c = *ci;
+
+    if (c->get_kind() == flwor_clause::for_clause ||
+        c->get_kind() == flwor_clause::let_clause)
+    {
+      const forletwin_clause* cl = static_cast<const forletwin_clause *>(c);
+
+      compute(cl->get_expr());
+    }
+    else if (c->get_kind() == flwor_clause::window_clause)
+    {
+      const window_clause* cl = static_cast<const window_clause *>(c);
+
+      compute(cl->get_expr());
+
+      const flwor_wincond* startCond = cl->get_win_start();
+      const flwor_wincond* stopCond = cl->get_win_stop();
+
+      compute(startCond->get_cond());
+      compute(stopCond->get_cond());
+    }
+    else if (c->get_kind() == flwor_clause::where_clause)
+    {
+      const where_clause* cl = static_cast<const where_clause *>(c);
+
+      compute(cl->get_where());
+    }
+    else if (c->get_kind() == flwor_clause::order_clause)
+    {
+      const orderby_clause* cl = static_cast<const orderby_clause *>(c);
+
+      for (unsigned i = 0; i < cl->num_columns(); ++i)
+      {
+        compute(cl->get_column_expr(i));
+      }
+    }
+
     ++ci;
   }
-  expr *where = e->get_where().getp();
-  if (where != NULL) {
-    compute(where);
-  }
-  
-  flwor_expr::orderspec_list_t::iterator oi = e->orderspec_begin();
-  flwor_expr::orderspec_list_t::iterator oend = e->orderspec_end();
-  while(oi != oend) {
-    flwor_expr::orderspec_t& ospec = *oi;
-    compute(ospec.first);
-    ++oi;
-  }
 
-  compute(e->get_retval().getp());
+  compute(e->get_return_expr());
+
   if (!generic_compute(e)) {
   }
 }
+#endif
 
 void DataflowAnnotationsComputer::compute_trycatch_expr(trycatch_expr *e)
 {
   default_walk(e);
   generic_compute(e);
 }
+
 
 void DataflowAnnotationsComputer::compute_promote_expr(promote_expr *e)
 {
@@ -220,11 +252,13 @@ void DataflowAnnotationsComputer::compute_promote_expr(promote_expr *e)
   PROPOGATE_DISTINCT_NODES(e->get_input().getp(), e);
 }
 
+
 void DataflowAnnotationsComputer::compute_typeswitch_expr(typeswitch_expr *e)
 {
   default_walk(e);
   generic_compute(e);
 }
+
 
 void DataflowAnnotationsComputer::compute_if_expr(if_expr *e)
 {
@@ -232,12 +266,14 @@ void DataflowAnnotationsComputer::compute_if_expr(if_expr *e)
   generic_compute(e);
 }
 
+
 void DataflowAnnotationsComputer::compute_function_def_expr(function_def_expr *e)
 {
   default_walk(e);
   if (!generic_compute(e)) {
   }
 }
+
 
 void DataflowAnnotationsComputer::compute_fo_expr(fo_expr *e)
 {
@@ -276,6 +312,7 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr *e)
   }
 }
 
+
 void DataflowAnnotationsComputer::compute_ft_contains_expr(ft_contains_expr *e)
 {
   default_walk(e);
@@ -283,12 +320,14 @@ void DataflowAnnotationsComputer::compute_ft_contains_expr(ft_contains_expr *e)
   }
 }
 
+
 void DataflowAnnotationsComputer::compute_instanceof_expr(instanceof_expr *e)
 {
   default_walk(e);
   PROPOGATE_SORTED_NODES(e->get_input().getp(), e);
   PROPOGATE_DISTINCT_NODES(e->get_input().getp(), e);
 }
+
 
 void DataflowAnnotationsComputer::compute_treat_expr(treat_expr *e)
 {
@@ -298,6 +337,7 @@ void DataflowAnnotationsComputer::compute_treat_expr(treat_expr *e)
     PROPOGATE_DISTINCT_NODES(e->get_input().getp(), e);
   }
 }
+
 
 void DataflowAnnotationsComputer::compute_castable_expr(castable_expr *e)
 {
@@ -450,7 +490,8 @@ void DataflowAnnotationsComputer::compute_pi_expr(pi_expr *e)
 void DataflowAnnotationsComputer::default_walk(expr *e)
 {
   expr_iterator i = e->expr_begin();
-  while(!i.done()) {
+  while(!i.done()) 
+  {
     expr *child = (*i).getp();
     if (child != NULL) {
       compute(child);

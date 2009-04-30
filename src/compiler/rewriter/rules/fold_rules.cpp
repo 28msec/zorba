@@ -117,20 +117,30 @@ RULE_REWRITE_POST(MarkFreeVars)
     {
       expr *e = *i;
       const var_ptr_set &kfv = get_varset_annotation (e, AnnotationKey::FREE_VARS);
-      copy (kfv.begin (), kfv.end (), inserter (freevars->varset, freevars->varset.begin ()));
+      copy (kfv.begin(), kfv.end(), inserter(freevars->varset, freevars->varset.begin()));
     }
 
     if (node->get_expr_kind () == flwor_expr_kind) 
     {
-      flwor_expr *flwor = dynamic_cast<flwor_expr *> (node);
-      for (flwor_expr::forlet_list_t::iterator i = flwor->forlet_begin ();
-           i != flwor->forlet_end ();
-           i++) 
+      flwor_expr* flwor = dynamic_cast<flwor_expr *> (node);
+      for (flwor_expr::clause_list_t::const_iterator i = flwor->clause_begin();
+           i != flwor->clause_end();
+           ++i)
       {
-        flwor_expr::forletref_t clause = *i;
-        freevars->varset.erase (clause->get_var ());
-        if (clause->get_pos_var () != NULL)
-          freevars->varset.erase (clause->get_pos_var ());
+        const flwor_clause* c = *i;
+
+        if (c->get_kind() == flwor_clause::for_clause)
+        {
+          const for_clause* fc = static_cast<const for_clause *>(c);
+          freevars->varset.erase(fc->get_var());
+          if (fc->get_pos_var() != NULL)
+            freevars->varset.erase(fc->get_pos_var());
+        }
+        else if (c->get_kind() == flwor_clause::let_clause)
+        {
+          const let_clause* lc = static_cast<const let_clause *>(c);
+          freevars->varset.erase(lc->get_var());
+        }
       }
     }
   }

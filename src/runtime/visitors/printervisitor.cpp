@@ -38,6 +38,7 @@
 #include "runtime/core/gflwor/tuplesource_iterator.h"
 #include "runtime/core/gflwor/tuplestream_iterator.h"
 #include "runtime/core/gflwor/groupby_iterator.h"
+#include "runtime/core/gflwor/window_iterator.h"
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/core/tuple_iterators.h"
 #include "runtime/core/trycatch.h"
@@ -114,37 +115,45 @@ private:
   int            theId;
 
 public:
-  PrinterVisitor(IterPrinter& aPrinter, PlanIterator* aIter)
-    : thePrinter(aPrinter),
-      theIterator(aIter),
-      theId(0)
-  {}
 
-  void print() {
-    thePrinter.start();
-    theIterator->accept(*this);
-    thePrinter.stop();
-  }
+PrinterVisitor(IterPrinter& aPrinter, PlanIterator* aIter)
+  :
+  thePrinter(aPrinter),
+  theIterator(aIter),
+  theId(0)
+{
+}
+  
 
-  void printCommons(const PlanIterator* aIter, int theId) {
-    if (! Properties::instance()->noTreeIds()) {
-      /*
+void print() 
+{
+  thePrinter.start();
+  theIterator->accept(*this);
+  thePrinter.stop();
+}
+
+
+void printCommons(const PlanIterator* aIter, int theId) 
+{
+  if (! Properties::instance()->noTreeIds()) 
+  {
+    /*
       {
-        std::stringstream lStream;
-        lStream << aIter->loc;
-        thePrinter.addAttribute("loc", lStream.str());
+      std::stringstream lStream;
+      lStream << aIter->loc;
+      thePrinter.addAttribute("loc", lStream.str());
       }
-      */
-      {
-        std::stringstream lStream;
-        if (Properties::instance()->stableIteratorIds())
-          lStream << theId;
-        else
-          lStream << aIter;
-        thePrinter.addAttribute("id", lStream.str());
-      }
+    */
+    {
+      std::stringstream lStream;
+      if (Properties::instance()->stableIteratorIds())
+        lStream << theId;
+      else
+        lStream << aIter;
+      thePrinter.addAttribute("id", lStream.str());
     }
   }
+}
 
   void printNameOrKindTest(const AxisIteratorHelper* a) 
   {
@@ -244,28 +253,6 @@ public:
   }
 
   PRINTER_VISITOR_DEFINITION (EmptyIterator)
-
-  void beginVisit ( const ForVarIterator& a ) {
-    thePrinter.startBeginVisit("ForVarIterator", ++theId);
-    thePrinter.addAttribute("varname", a.getVarName());
-    printCommons( &a, theId );
-    thePrinter.endBeginVisit(theId);
-  }
-  void endVisit ( const ForVarIterator& /*a*/) {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
-  void beginVisit ( const LetVarIterator& a ) {
-    thePrinter.startBeginVisit("LetVarIterator", ++theId);
-    thePrinter.addAttribute("varname", a.getVarName());
-    printCommons( &a, theId );
-    thePrinter.endBeginVisit(theId);
-  }
-  void endVisit ( const LetVarIterator& /*a*/) {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
 
   void beginVisit ( const EnclosedIterator& a ) {
     thePrinter.startBeginVisit("EnclosedIterator", ++theId);
@@ -876,65 +863,107 @@ public:
 
   PRINTER_VISITOR_DEFINITION (FnTimezoneFromTimeIterator)
 
-  PRINTER_VISITOR_DEFINITION (flwor::FLWORIterator)
-      
-  PRINTER_VISITOR_DEFINITION (flwor::TupleStreamIterator)
-      
-  PRINTER_VISITOR_DEFINITION (flwor::TupleSourceIterator)
-      
-  PRINTER_VISITOR_DEFINITION (flwor::ForIterator)
-      
-  PRINTER_VISITOR_DEFINITION (flwor::OuterForIterator)
+  PRINTER_VISITOR_DEFINITION (CreateTupleIterator)
 
-  PRINTER_VISITOR_DEFINITION (flwor::LetIterator)
+  PRINTER_VISITOR_DEFINITION (GetTupleFieldIterator)
       
-  PRINTER_VISITOR_DEFINITION (flwor::WhereIterator)
-      
-  PRINTER_VISITOR_DEFINITION (flwor::CountIterator)
-      
- PRINTER_VISITOR_DEFINITION (flwor::GroupByIterator)
-
- PRINTER_VISITOR_DEFINITION (CreateTupleIterator)
- PRINTER_VISITOR_DEFINITION (GetTupleFieldIterator)
-      
-  PRINTER_VISITOR_DEFINITION (TryCatchIterator)
-
-  void beginVisitFlworWhereClause(const  PlanIterator& a){
-    thePrinter.startBeginVisit("WhereClause", ++theId);
-    thePrinter.endBeginVisit(theId);
-    a.accept(*this);
-  }
-
-  void endVisitFlworWhereClause(const PlanIterator& /*a*/){
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
-  //void beginVisitFlworVariables(){
-  //  thePrinter.startBeginVisit("FlworVariables", ++theId);
-  //}
-  //
-  //void endVisitFlworVariables(){
-  //  thePrinter.startEndVisit();
-  //  thePrinter.endEndVisit();
-  //}
+ PRINTER_VISITOR_DEFINITION (TryCatchIterator)
 
 
-void beginVisitFlworLetVariable(
-      const PlanIterator& a,
-      bool materialize,
-      const xqpStringStore& varName)
+void beginVisit(const ForVarIterator& a) 
 {
-  thePrinter.startBeginVisit("LetVariable", ++theId);
-#ifndef NDEBUG
-  thePrinter.addAttribute("name", varName.str());
-#endif
-  thePrinter.addAttribute("materialize", materialize ? "true" : "false");
+  thePrinter.startBeginVisit("ForVarIterator", ++theId);
+  thePrinter.addAttribute("varname", a.getVarName()->getStringValue()->c_str());
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit(theId);
+}
+
+void endVisit(const ForVarIterator& /*a*/) 
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+
+void beginVisit(const LetVarIterator& a) 
+{
+  thePrinter.startBeginVisit("LetVarIterator", ++theId);
+  thePrinter.addAttribute("varname", a.getVarName()->getStringValue()->c_str());
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit(theId);
+}
+
+void endVisit(const LetVarIterator& /*a*/) 
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+
+PRINTER_VISITOR_DEFINITION (flwor::FLWORIterator)
+     
+PRINTER_VISITOR_DEFINITION (flwor::TupleStreamIterator)
+      
+PRINTER_VISITOR_DEFINITION (flwor::TupleSourceIterator)
+      
+PRINTER_VISITOR_DEFINITION (flwor::ForIterator)
+      
+PRINTER_VISITOR_DEFINITION (flwor::OuterForIterator)
+
+PRINTER_VISITOR_DEFINITION (flwor::LetIterator)
+      
+PRINTER_VISITOR_DEFINITION (flwor::WhereIterator)
+      
+PRINTER_VISITOR_DEFINITION (flwor::CountIterator)
+      
+PRINTER_VISITOR_DEFINITION (flwor::GroupByIterator)
+
+PRINTER_VISITOR_DEFINITION (flwor::OrderByIterator)
+
+PRINTER_VISITOR_DEFINITION (flwor::WindowIterator)
+
+
+void beginVisitFlworWhereClause(const PlanIterator& a)
+{
+  thePrinter.startBeginVisit("WhereClause", ++theId);
   thePrinter.endBeginVisit(theId);
   a.accept(*this);
 }
 
-void endVisitFlworLetVariable(const PlanIterator& /*a*/)
+void endVisitFlworWhereClause(const PlanIterator& /*a*/)
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+
+void beginVisitFlworLetVariable(
+    bool materialize,
+    const xqpStringStore& varName,
+    const std::vector<LetVarIter_t>& varRefs)
+{
+  thePrinter.startBeginVisit("LetVariable", ++theId);
+
+  thePrinter.addAttribute("name", varName.str());
+
+  thePrinter.addAttribute("materialize", materialize ? "true" : "false");
+
+  std::ostringstream str;
+
+  ulong numRefs = varRefs.size();
+  for (ulong i = 0; i < numRefs; i++)
+  {
+    str << varRefs[i].getp();
+    if (i < numRefs-1)
+      str << " ";
+  }
+
+  thePrinter.addAttribute("referenced-by", str.str());
+
+  thePrinter.endBeginVisit(theId);
+}
+
+void endVisitFlworLetVariable()
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
@@ -942,102 +971,303 @@ void endVisitFlworLetVariable(const PlanIterator& /*a*/)
 
 
 void beginVisitFlworForVariable(
-      const PlanIterator& a,
-      const xqpStringStore& varName,
-      const std::vector<ForVarIter_t>& varReferences)
+    const xqpStringStore& varName,
+    const std::vector<ForVarIter_t>& varRefs,
+    const std::vector<ForVarIter_t>& posRefs)
 {
   thePrinter.startBeginVisit("ForVariable", ++theId);
 
-#ifndef NDEBUG
   thePrinter.addAttribute("name", varName.str());
 
   std::ostringstream str;
 
-  ulong numRefs = varReferences.size();
+  ulong numRefs = varRefs.size();
   for (ulong i = 0; i < numRefs; i++)
   {
-    str << varReferences[i].getp();
+    str << varRefs[i].getp();
     if (i < numRefs-1)
       str << " ";
   }
 
   thePrinter.addAttribute("referenced-by", str.str());
-#endif
+
+  if (!posRefs.empty())
+  {
+    std::ostringstream str;
+
+    ulong numRefs = posRefs.size();
+    for (ulong i = 0; i < numRefs; i++)
+    {
+      str << posRefs[i].getp();
+      if (i < numRefs-1)
+        str << " ";
+    }
+    
+    thePrinter.addAttribute("pos-referenced-by", str.str());
+  }
+
 
   thePrinter.endBeginVisit(theId);
-  a.accept(*this);
 }
 
 
-void endVisitFlworForVariable(const PlanIterator& /*a*/)
+void endVisitFlworForVariable()
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void beginVisitFlworGroupBy(const PlanIterator& a) {
+
+void beginVisitGroupByClause()
+{
   thePrinter.startBeginVisit("GroupByClause", ++theId);
   thePrinter.endBeginVisit(theId);
-  a.accept(*this);
 }
+  
 
-void endVisitFlworGroupBy(const PlanIterator& a) {
+void endVisitGroupByClause()
+{
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
 
-  void beginVisitFlworGroupBy(){
-    thePrinter.startBeginVisit("GroupByClause", ++theId);
-    thePrinter.endBeginVisit(theId);
-  }
+void beginVisitGroupBySpec()
+{
+  thePrinter.startBeginVisit("Spec", theId);
+  thePrinter.endBeginVisit(theId);
+}
   
-  void endVisitFlworGroupBy(){
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
+
+void endVisitGroupBySpec()
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+void beginVisitGroupByOuter()
+{
+  thePrinter.startBeginVisit("Spec", theId);
+  thePrinter.endBeginVisit(theId);
+}
   
-  void beginVisitFlworGroupBySpec(){
-    thePrinter.startBeginVisit("Spec", ++theId);
-    thePrinter.endBeginVisit(theId);
-  }
-  
-  void endVisitFlworGroupBySpec(){
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-  
-  void beginVisitFlworGroupByOuterVar(){
-    thePrinter.startBeginVisit("OuterVar", ++theId);
-    thePrinter.endBeginVisit(theId);
-  }
-  
-  void endVisitFlworGroupByOuterVar(){
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
+
+void endVisitGroupByOuter()
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+void beginVisitGroupVariable(const std::vector<ForVarIter_t>& varRefs)
+{
+  thePrinter.startBeginVisit("GroupVariable", ++theId);
+
+  std::ostringstream str;
+
+  ulong numRefs = varRefs.size();
+  for (ulong i = 0; i < numRefs; i++)
+  {
+    str << varRefs[i].getp();
+    if (i < numRefs-1)
+      str << " ";
   }
 
-  void beginVisitFlworOrderBy(const PlanIterator& a){
-    thePrinter.startBeginVisit("OrderByClause", ++theId);
-    thePrinter.endBeginVisit(theId);
-    a.accept(*this);
+  thePrinter.addAttribute("referenced-by", str.str());
+
+  thePrinter.endBeginVisit(theId);
+}
+
+
+void endVisitGroupVariable()
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+
+void beginVisitNonGroupVariable(
+      const std::vector<LetVarIter_t>& varRefs)
+{
+  thePrinter.startBeginVisit("NonGroupVariable", ++theId);
+
+  std::ostringstream str;
+
+  ulong numRefs = varRefs.size();
+  for (ulong i = 0; i < numRefs; i++)
+  {
+    str << varRefs[i].getp();
+    if (i < numRefs-1)
+      str << " ";
   }
 
-  void endVisitFlworOrderBy(const PlanIterator& /*a*/){
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
+  thePrinter.addAttribute("referenced-by", str.str());
+
+  thePrinter.endBeginVisit(theId);
+}
+
+
+void endVisitNonGroupVariable()
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+  
+
+void beginVisitOrderBy(const PlanIterator& a)
+{
+  thePrinter.startBeginVisit("OrderByClause", ++theId);
+  thePrinter.endBeginVisit(theId);
+  a.accept(*this);
+}
+
+
+void endVisitOrderBy(const PlanIterator& /*a*/)
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+
+void beginVisitOrderByForVariable(
+    ForVarIter_t inputVar,
+    const std::vector<ForVarIter_t>& varRefs)
+{
+  thePrinter.startBeginVisit("OrderByForVariable", theId);
+
+  std::ostringstream str1;
+  std::ostringstream str2;
+
+  str1 << inputVar->getVarName()->getStringValue()->str() << " : " << inputVar.getp();
+
+  ulong numRefs = varRefs.size();
+  for (ulong i = 0; i < numRefs; i++)
+  {
+    str2 << varRefs[i].getp();
+    if (i < numRefs-1)
+      str2 << " ";
   }
 
-  void beginVisitFlworReturn(const PlanIterator& a){
-    thePrinter.startBeginVisit("ReturnClause", ++theId);
-    thePrinter.endBeginVisit(theId);
-    a.accept(*this);
+  thePrinter.addAttribute("inputVar : ", str1.str());
+  thePrinter.addAttribute("referenced-by", str2.str());
+
+  thePrinter.endBeginVisit(theId);
+}
+
+
+void endVisitOrderByForVariable()
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+
+void beginVisitOrderByLetVariable(
+    LetVarIter_t inputVar,
+    const std::vector<LetVarIter_t>& varRefs)
+{
+  thePrinter.startBeginVisit("OrderByLetVariable", theId);
+
+  std::ostringstream str1;
+  std::ostringstream str2;
+
+  str1 << inputVar->getVarName()->getStringValue()->str() << " : " << inputVar.getp();
+
+  ulong numRefs = varRefs.size();
+  for (ulong i = 0; i < numRefs; i++)
+  {
+    str2 << varRefs[i].getp();
+    if (i < numRefs-1)
+      str2 << " ";
   }
 
-  void endVisitFlworReturn(const PlanIterator& /*a*/){
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
+  thePrinter.addAttribute("inputVar : ", str1.str());
+  thePrinter.addAttribute("referenced-by", str2.str());
+
+  thePrinter.endBeginVisit(theId);
+}
+
+
+void endVisitOrderByLetVariable()
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+
+void beginVisitWindowVariable(
+    const std::string& varName,
+    const std::vector<LetVarIter_t>& varRefs)
+{
+  thePrinter.startBeginVisit("WindowVariable", theId);
+
+  thePrinter.addAttribute("name", varName);
+
+  std::ostringstream str;
+
+  ulong numRefs = varRefs.size();
+  for (ulong i = 0; i < numRefs; i++)
+  {
+    str << varRefs[i].getp();
+    if (i < numRefs-1)
+      str << " ";
   }
+
+  thePrinter.addAttribute("referenced-by", str.str());
+
+  thePrinter.endBeginVisit(theId);
+}
+
+void endVisitWindowVariable()
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+
+void beginVisitWinCondVariable(
+    const std::string& varName,
+    const std::vector<ForVarIter_t>& varRefs)
+{
+  thePrinter.startBeginVisit("WinCondVariable", theId);
+
+  thePrinter.addAttribute("name", varName);
+
+  std::ostringstream str;
+
+  ulong numRefs = varRefs.size();
+  for (ulong i = 0; i < numRefs; i++)
+  {
+    str << varRefs[i].getp();
+    if (i < numRefs-1)
+      str << " ";
+  }
+
+  thePrinter.addAttribute("referenced-by", str.str());
+
+  thePrinter.endBeginVisit(theId);
+}
+
+void endVisitWinCondVariable()
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+
+void beginVisitFlworReturn(const PlanIterator& a)
+{
+  thePrinter.startBeginVisit("ReturnClause", ++theId);
+  thePrinter.endBeginVisit(theId);
+  a.accept(*this);
+}
+
+
+void endVisitFlworReturn(const PlanIterator& /*a*/)
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
 
   void beginVisit(const CastIterator& a) {
     thePrinter.startBeginVisit("CastIterator", ++theId);

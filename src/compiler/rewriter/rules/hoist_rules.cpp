@@ -84,7 +84,7 @@ RULE_REWRITE_PRE(HoistExprsOutOfLoops)
   {
     if (root.flwor != NULL) 
     {
-      root.flwor->set_retval(node);
+      root.flwor->set_return_expr(node);
       return root.flwor.getp();
     }
     return node;
@@ -115,29 +115,38 @@ static bool hoist_expressions(
   bool status = false;
   if (e->get_expr_kind() == flwor_expr_kind) 
   {
-    flwor_expr *flwor = static_cast<flwor_expr *>(e);
+    flwor_expr* flwor = static_cast<flwor_expr *>(e);
 
     struct flwor_holder curr_holder;
     curr_holder.prev = fholder;
     curr_holder.flwor = &*flwor;
 
-    int i = 0;
-    while((unsigned)i < flwor->forlet_count()) 
+    ulong numForLetClauses = flwor->num_forlet_clauses();
+    ulong i = 0;
+    while(i < numForLetClauses) 
     {
-      forlet_clause *flc = &*((*flwor)[i]);
-      expr *flcexpr = flc->get_expr();
-      expr_t var = try_hoisting(rCtx, flcexpr, varmap, freevarMap, &curr_holder);
+      forletwin_clause* flc = static_cast<forletwin_clause*>((*flwor)[i]);
+
+      expr* domainExpr = flc->get_expr();
+
+      expr_t var = try_hoisting(rCtx, domainExpr, varmap, freevarMap, &curr_holder);
       if (var != NULL) 
       {
         flc->set_expr(var.getp());
+        numForLetClauses = flwor->num_forlet_clauses();
         status = true;
       }
       else 
       {
-        status = hoist_expressions(rCtx, flcexpr, varmap, freevarMap, &curr_holder) ||
+        status = hoist_expressions(rCtx, domainExpr, varmap, freevarMap, &curr_holder) ||
                  status;
+
+        if (status)
+          numForLetClauses = flwor->num_forlet_clauses();
       }
       i = ++(curr_holder.clause_count);
+
+      assert(numForLetClauses == flwor->num_forlet_clauses());
     }
 
     expr_t we = flwor->get_where();
@@ -155,11 +164,11 @@ static bool hoist_expressions(
       }
     }
 
-    expr_t re = flwor->get_retval();
+    expr_t re = flwor->get_return_expr();
     expr_t rvar = try_hoisting(rCtx, re, varmap, freevarMap, &curr_holder);
     if (rvar != NULL) 
     {
-      flwor->set_retval(rvar.getp());
+      flwor->set_return_expr(rvar.getp());
       status = true;
     }
     else 
@@ -205,10 +214,10 @@ static bool hoist_expressions(
 ********************************************************************************/
 static expr_t try_hoisting(
     RewriterContext& rCtx,
-    expr *e,
-    const std::map<var_expr *, int>& varmap,
-    const std::map<expr *, DynamicBitset>& freevarMap,
-    struct flwor_holder *holder)
+    expr* e,
+    const std::map<var_expr*, int>& varmap,
+    const std::map<expr*, DynamicBitset>& freevarMap,
+    struct flwor_holder* holder)
 {
   if (non_hoistable (e) || 
       contains_node_construction(e) ||
@@ -217,33 +226,54 @@ static expr_t try_hoisting(
     return NULL;
   }
 
-  std::map<expr *, DynamicBitset>::const_iterator fvme = freevarMap.find(e);
+  std::map<expr*, DynamicBitset>::const_iterator fvme = freevarMap.find(e);
   ZORBA_ASSERT(fvme != freevarMap.end());
   const DynamicBitset& varset = fvme->second;
   bool inloop = false;
-  struct flwor_holder *h = holder;
+  struct flwor_holder* h = holder;
   int i = 0;
   bool found = false;
 
   while(h->prev != NULL && !found) 
   {
-    // If any free variable is a group-by variable, give up.
-    for(flwor_expr::group_list_t::const_iterator j = h->flwor->group_vars_begin();
-        j != h->flwor->group_vars_end();
-        ++j) 
-    {
-      group_clause *gc = &*(*j);
-      if (contains_var(&*gc->getInnerVar(), varmap, varset))
-        return NULL;
-    }
+    group_clause* gc = h->flwor->get_group_clause();
 
-    for(flwor_expr::group_list_t::const_iterator j = h->flwor->non_group_vars_begin();
-        j != h->flwor->non_group_vars_end();
-        ++j) 
+    // If any free variable is a group-by variable, give up.
+    if (gc != NULL)
     {
-      group_clause *gc = &*(*j);
-      if (contains_var(&*gc->getInnerVar(), varmap, varset))
-        return NULL;
+      for(flwor_expr::clause_list_t::const_iterator iter = h->flwor->clause_begin();
+          iter != h->flwor->clause_end();
+          ++iter)
+      {
+        if ((*iter) != gc)
+          continue;
+
+        const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
+        unsigned numGroupVars = gvars.size();
+
+        for (unsigned i = 0; i < numGroupVars; ++i)
+        {
+          if (contains_var(gvars[i].second.getp(), varmap, varset))
+            return NULL;
+        }
+      }
+
+      for(flwor_expr::clause_list_t::const_iterator iter = h->flwor->clause_begin();
+          iter != h->flwor->clause_end();
+          ++iter) 
+      {
+        if ((*iter) != gc)
+          continue;
+
+        const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
+        unsigned numNonGroupVars = ngvars.size();
+
+        for (unsigned i = 0; i < numNonGroupVars; ++i)
+        {
+          if (contains_var(ngvars[i].second.getp(), varmap, varset))
+            return NULL;
+        }
+      }
     }
 
     // Check whether expr e references any variables from the current flwor. If 
@@ -252,7 +282,7 @@ static expr_t try_hoisting(
     // be hoisted out of any such FOR vars. Otherwise, e cannot be hoisted.  
     for(i = h->clause_count - 1; i >= 0; --i) 
     {
-      forlet_clause *flc = (*h->flwor)[i];
+      forletwin_clause* flc = reinterpret_cast<forletwin_clause*>((*h->flwor)[i]);
       if (contains_var(flc->get_var(), varmap, varset) ||
           contains_var(flc->get_pos_var(), varmap, varset) ||
           contains_var(flc->get_score_var(), varmap, varset)) 
@@ -260,7 +290,7 @@ static expr_t try_hoisting(
         found = true;
         break;
       }
-      inloop = inloop || (flc->get_type() == forlet_clause::for_clause);
+      inloop = inloop || (flc->get_kind() == flwor_clause::for_clause);
     }
 
     if (!found)
@@ -276,24 +306,20 @@ static expr_t try_hoisting(
 
   rchandle<var_expr> letvar(rCtx.createTempVar(e->get_loc(), var_expr::let_var));
   expr_t hoisted = new fo_expr(e->get_loc(), LOOKUP_OP1("hoist"), e);
-  flwor_expr::forletref_t flref(new forlet_clause(forlet_clause::let_clause,
-                                                  letvar,
-                                                  NULL,
-                                                  NULL,
-                                                  hoisted));
-  letvar->set_forlet_clause(flref.getp());
+  let_clause_t flref(new let_clause(e->get_loc(), letvar, hoisted));
+  letvar->set_flwor_clause(flref.getp());
 
   if (h->prev == NULL) 
   {
     if (h->flwor == NULL) 
     {
-      h->flwor = new flwor_expr(e->get_loc());
+      h->flwor = new flwor_expr(e->get_loc(), false);
     }
-    h->flwor->add(flref);
+    h->flwor->addClause(flref);
   }
   else 
   {
-    h->flwor->add(i + 1, flref);
+    h->flwor->addClause(i + 1, flref);
     ++h->clause_count;
   }
 
@@ -306,15 +332,18 @@ static expr_t try_hoisting(
   Check if the given var is contained in the given varset.
 ********************************************************************************/
 static bool contains_var(
-    var_expr *v,
+    var_expr* v,
     const std::map<var_expr *, int>& varmap,
     const DynamicBitset& varset)
 {
-  if (v == NULL) {
+  if (v == NULL) 
+  {
     return false;
   }
+
   std::map<var_expr *, int>::const_iterator i = varmap.find(v);
-  if (i == varmap.end()) {
+  if (i == varmap.end()) 
+  {
     return false;
   }
   int bit = i->second;
@@ -325,7 +354,7 @@ static bool contains_var(
 /*******************************************************************************
 
 ********************************************************************************/
-static bool non_hoistable (expr *e) 
+static bool non_hoistable (expr* e) 
 {
   expr_kind_t k = e->get_expr_kind();
   return k == var_expr_kind

@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "runtime/core/gflwor/let_iterator.h"
+
 #include "zorbaerrors/Assert.h"
+
+#include "runtime/visitors/planitervisitor.h"
+#include "runtime/core/gflwor/let_iterator.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/gflwor/common.h"
 
@@ -22,33 +25,59 @@ namespace zorba
 {
 namespace flwor 
 {
-    LetIterator::LetIterator ( const QueryLoc& aLoc,
-                               store::Item_t aVarName, 
-                               PlanIter_t aTupleIter,
-                               PlanIter_t aInput,
-                               std::vector<LetVarIter_t>& aLetVars,
-                               bool aNeedsMaterialization ) :
-        BinaryBaseIterator<LetIterator, PlanIteratorState> ( aLoc, aTupleIter, aInput),
-        theVarName(aVarName), 
-        theLetVars ( aLetVars ),
-        theNeedsMat ( aNeedsMaterialization ) {
-          
-    }
 
-    LetIterator::~LetIterator() {}
+LetIterator::LetIterator (
+    const QueryLoc& aLoc,
+    store::Item_t aVarName, 
+    PlanIter_t aTupleIter,
+    PlanIter_t aInput,
+    const std::vector<PlanIter_t>& aLetVars,
+    bool aNeedsMaterialization ) 
+  :
+  BinaryBaseIterator<LetIterator, PlanIteratorState> ( aLoc, aTupleIter, aInput),
+  theVarName(aVarName), 
+  theNeedsMat ( aNeedsMaterialization ) 
+{
+  castIterVector<LetVarIterator>(theLetVars, aLetVars);
+}
 
-    //theChild0 == TupleIter
-    //theChild1 == InputIter
-    bool LetIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const {
-      PlanIteratorState* lState;
-      DEFAULT_STACK_INIT ( PlanIteratorState, lState, aPlanState );
-      while ( consumeNext ( aResult, theChild0, aPlanState ) ) {
-        bindVariables ( theChild1 ,theLetVars,aPlanState,theNeedsMat);
-        STACK_PUSH ( true, lState );
-        theChild1->reset ( aPlanState );
-      }
-      STACK_END ( lState );
-    }
 
-  } //Namespace flwor
+LetIterator::~LetIterator() 
+{
+}
+
+
+void LetIterator::accept(PlanIterVisitor& v) const 
+{ 
+  v.beginVisit(*this); 
+
+  v.beginVisitFlworLetVariable(theNeedsMat, 
+                               *theVarName->getStringValue().getp(),
+                               theLetVars);
+  v.endVisitFlworLetVariable();
+
+  theChild0->accept(v); 
+  theChild1->accept(v); 
+
+  v.endVisit(*this);
+}
+
+
+
+//theChild0 == TupleIter
+//theChild1 == InputIter
+bool LetIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const 
+{
+  PlanIteratorState* lState;
+  DEFAULT_STACK_INIT ( PlanIteratorState, lState, aPlanState );
+  while ( consumeNext ( aResult, theChild0, aPlanState ) ) {
+    bindVariables ( theChild1 ,theLetVars,aPlanState,theNeedsMat);
+    STACK_PUSH ( true, lState );
+    theChild1->reset ( aPlanState );
+  }
+  STACK_END ( lState );
+}
+
+
+} //Namespace flwor
 }//Namespace zorba

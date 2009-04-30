@@ -39,30 +39,37 @@ class ForVarState : public PlanIteratorState
 public:
   store::Item_t theValue;
 
-  void init(PlanState& planState)  { PlanIteratorState::init(planState); }
-  void reset(PlanState& planState) { PlanIteratorState::reset(planState); }
+  void init(PlanState& planState)  
+  {
+    PlanIteratorState::init(planState); 
+  }
+
+  void reset(PlanState& planState) 
+  {
+    PlanIteratorState::reset(planState); 
+  }
 };
 
 
 class ForVarIterator : public NoaryBaseIterator<ForVarIterator, ForVarState>
 {
 protected:
-  xqpString     theVarName;
-  const void  * theOrigin;  ///< origin expr, used as a kind of ID
+  store::Item_t  theVarName;
   
 public:
-  ForVarIterator(xqpString vn,const QueryLoc& loc, const void* origin);
+  ForVarIterator(const QueryLoc& loc, const store::Item_t& name);
 
   ~ForVarIterator() { }
   
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  store::Item* getVarName() const { return theVarName.getp(); }
 
   void accept(PlanIterVisitor&) const;
-  
-public:
-  xqpString getVarName() const { return theVarName; }
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   void bind(store::Item *value, PlanState& planState);
+
+  void foo();
 };
 
 
@@ -82,6 +89,7 @@ public:
   store::Iterator_t theSourceIter;
 
   LetVarState();
+
   ~LetVarState();
 
   void init(PlanState& planState)  { PlanIteratorState::init(planState); }
@@ -92,19 +100,18 @@ public:
 class LetVarIterator : public NoaryBaseIterator<LetVarIterator, LetVarState>
 {
 private:
-  xqpString     theVarName;
-  const void  * theOrigin;  ///< like origin in var_iterator
+  store::Item_t  theVarName;
   
 public:
-  LetVarIterator(xqpString vn,const QueryLoc& loc, const void *origin);
+  LetVarIterator(const QueryLoc& loc, const store::Item_t& name);
 
   ~LetVarIterator() {}
   
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  store::Item* getVarName() const { return theVarName.getp(); }
 
   void accept(PlanIterVisitor&) const;
 
-  xqpString getVarName() const { return theVarName; }
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   void bind(store::Iterator_t it, PlanState& planState);
 };
@@ -113,3 +120,8 @@ public:
 } 
 #endif
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

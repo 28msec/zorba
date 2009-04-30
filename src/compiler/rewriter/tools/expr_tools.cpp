@@ -69,29 +69,48 @@ void index_flwor_vars(
   if (e->get_expr_kind() == flwor_expr_kind) 
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(e);
-    for(flwor_expr::forlet_list_t::iterator i = flwor->forlet_begin();
-        i != flwor->forlet_end();
+
+    for(flwor_expr::clause_list_t::const_iterator i = flwor->clause_begin();
+        i != flwor->clause_end();
         ++i) 
     {
-      forlet_clause* flc = &*(*i);
-      add_var(&*flc->get_var(), numVars, varidmap, idvarmap);
-      add_var(&*flc->get_pos_var(), numVars, varidmap, idvarmap);
-      add_var(&*flc->get_score_var(), numVars, varidmap, idvarmap);
-    }
+      const flwor_clause* c = *i;
 
-    for(flwor_expr::group_list_t::const_iterator i = flwor->group_vars_begin();
-        i != flwor->group_vars_end();
-        ++i) 
-    {
-      group_clause* gc = &*(*i);
-      add_var(&*gc->getInnerVar(), numVars, varidmap, idvarmap);
-    }
+      if (c->get_kind() == flwor_clause::for_clause)
+      {
+        const for_clause* fc = static_cast<const for_clause *>(c);
 
-    for(flwor_expr::group_list_t::const_iterator i = flwor->non_group_vars_begin();
-        i != flwor->non_group_vars_end(); ++i)
-    {
-      group_clause* gc = &*(*i);
-      add_var(&*gc->getInnerVar(), numVars, varidmap, idvarmap);
+        add_var(fc->get_var(), numVars, varidmap, idvarmap);
+        add_var(fc->get_pos_var(), numVars, varidmap, idvarmap);
+        add_var(fc->get_score_var(), numVars, varidmap, idvarmap);
+      }
+      else if (c->get_kind() == flwor_clause::let_clause)
+      {
+        const let_clause* lc = static_cast<const let_clause *>(c);
+
+        add_var(lc->get_var(), numVars, varidmap, idvarmap);
+        add_var(lc->get_score_var(), numVars, varidmap, idvarmap);
+      }
+      else if (c->get_kind() == flwor_clause::group_clause)
+      {
+        const group_clause* gc = static_cast<const group_clause *>(c);
+
+        const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
+        unsigned numGroupVars = gvars.size();
+
+        for (unsigned i = 0; i < numGroupVars; ++i)
+        {
+          add_var(gvars[i].second.getp(), numVars, varidmap, idvarmap);
+        }
+
+        const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
+        unsigned numNonGroupVars = ngvars.size();
+
+        for (unsigned i = 0; i < numNonGroupVars; ++i)
+        {
+          add_var(ngvars[i].second.getp(), numVars, varidmap, idvarmap);
+        }
+      }
     }
   }
 
@@ -111,11 +130,7 @@ void index_flwor_vars(
 /*******************************************************************************
 
 ********************************************************************************/
-static void add_var(
-    var_expr* v,
-    int& numVars,
-    VarIdMap& varidmap,
-    IdVarMap* idvarmap)
+static void add_var(var_expr* v, int& numVars, VarIdMap& varidmap, IdVarMap* idvarmap)
 {
   if (v != NULL)
   {
@@ -167,29 +182,48 @@ void find_flwor_vars(
   if (e->get_expr_kind() == flwor_expr_kind) 
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(e);
-    for(flwor_expr::forlet_list_t::iterator i = flwor->forlet_begin();
-        i != flwor->forlet_end(); ++i)
-    {
-      forlet_clause* flc = &*(*i);
-      set_bit(&*flc->get_var(), varmap, freeset, false);
-      set_bit(&*flc->get_pos_var(), varmap, freeset, false);
-      set_bit(&*flc->get_score_var(), varmap, freeset, false);
-    }
 
-    for(flwor_expr::group_list_t::const_iterator i = flwor->group_vars_begin();
-        i != flwor->group_vars_end();
-        ++i) 
+    for(flwor_expr::clause_list_t::const_iterator i = flwor->clause_begin();
+        i != flwor->clause_end();
+        ++i)
     {
-      group_clause* gc = &*(*i);
-      set_bit(&*gc->getInnerVar(), varmap, freeset, false);
-    }
+      const flwor_clause* c = *i;
 
-    for(flwor_expr::group_list_t::const_iterator i = flwor->non_group_vars_begin();
-        i != flwor->non_group_vars_end();
-        ++i) 
-    {
-      group_clause *gc = &*(*i);
-      set_bit(&*gc->getInnerVar(), varmap, freeset, false);
+      if (c->get_kind() == flwor_clause::for_clause)
+      {
+        const for_clause* fc = static_cast<const for_clause *>(c);
+
+        set_bit(fc->get_var(), varmap, freeset, false);
+        set_bit(fc->get_pos_var(), varmap, freeset, false);
+        set_bit(fc->get_score_var(), varmap, freeset, false);
+      }
+      else if (c->get_kind() == flwor_clause::let_clause)
+      {
+        const let_clause* lc = static_cast<const let_clause *>(c);
+
+        set_bit(lc->get_var(), varmap, freeset, false);
+        set_bit(lc->get_score_var(), varmap, freeset, false);
+      }
+      else if (c->get_kind() == flwor_clause::group_clause)
+      {
+        const group_clause* gc = static_cast<const group_clause *>(c);
+
+        const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
+        unsigned numGroupVars = gvars.size();
+
+        for (unsigned i = 0; i < numGroupVars; ++i)
+        {
+          set_bit(gvars[i].second.getp(), varmap, freeset, false);
+        }
+
+        const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
+        unsigned numNonGroupVars = ngvars.size();
+        
+        for (unsigned i = 0; i < numNonGroupVars; ++i)
+        {
+          set_bit(ngvars[i].second.getp(), varmap, freeset, false);
+        }
+      }
     }
   }
 

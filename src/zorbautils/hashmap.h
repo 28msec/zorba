@@ -269,7 +269,7 @@ void clear()
 
   ulong n = (ulong)theHashTab.size();
 
-  for (ulong i = 0; i < n; i++)
+  for (ulong i = 0; i < n; ++i)
   {
     theHashTab[i].~HashEntry<T, V>();
   }

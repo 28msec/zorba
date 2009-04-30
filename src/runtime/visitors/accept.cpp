@@ -161,9 +161,7 @@ namespace zorba {
   BINARY_ACCEPT(ReplaceIterator);
   BINARY_ACCEPT(RenameIterator);
   BINARY_ACCEPT(flwor::TupleStreamIterator);
-  BINARY_ACCEPT(flwor::ForIterator);
   BINARY_ACCEPT(flwor::OuterForIterator);
-  BINARY_ACCEPT(flwor::LetIterator);
   BINARY_ACCEPT(flwor::WhereIterator);
 
   // nary iterators

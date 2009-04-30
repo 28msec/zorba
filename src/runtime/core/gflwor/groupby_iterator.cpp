@@ -369,27 +369,25 @@ void GroupByIterator::closeImpl ( PlanState& planState )
 /***************************************************************************//**
 
 ********************************************************************************/
-void GroupByIterator::accept ( PlanIterVisitor& v ) const 
+void GroupByIterator::accept(PlanIterVisitor& v) const 
 {
-  v.beginVisitFlworGroupBy();
+  v.beginVisit(*this);
       
-  theTupleIter->accept ( v );
+  theTupleIter->accept(v);
       
   std::vector<GroupingSpec>::const_iterator iter;
-  for ( iter = theGroupingSpecs.begin() ; iter != theGroupingSpecs.end(); iter++ ) 
+  for (iter = theGroupingSpecs.begin(); iter != theGroupingSpecs.end(); ++iter) 
   {
-    v.beginVisitFlworGroupBySpec();
-    iter->accept ( v );
-    v.endVisitFlworGroupBySpec();
+    iter->accept(v);
   }
+
   std::vector<GroupingOuterVar>::const_iterator iterOuterVars;
-  for ( iterOuterVars = theOuterVars.begin() ; iterOuterVars != theOuterVars.end(); iterOuterVars++ ) 
+  for (iterOuterVars = theOuterVars.begin(); iterOuterVars != theOuterVars.end(); ++iterOuterVars) 
   {
-    v.beginVisitFlworGroupByOuterVar();
-    iterOuterVars->accept ( v );
-    v.endVisitFlworGroupByOuterVar();
+    iterOuterVars->accept(v);
   }
-  v.endVisitFlworGroupBy();
+
+  v.endVisit(*this);
 }
   
 
@@ -411,13 +409,15 @@ uint32_t GroupByIterator::getStateSizeOfSubtree() const
   size  += theTupleIter->getStateSizeOfSubtree();
 
   std::vector<GroupingSpec>::const_iterator iter;
-  for ( iter = theGroupingSpecs.begin() ; iter != theGroupingSpecs.end(); iter++ ) 
+  for (iter = theGroupingSpecs.begin(); iter != theGroupingSpecs.end(); iter++) 
   {
     size += iter->getStateSizeOfSubtree();
   }
 
   std::vector<GroupingOuterVar>::const_iterator iterOuterVars;
-  for ( iterOuterVars = theOuterVars.begin() ; iterOuterVars != theOuterVars.end(); iterOuterVars++ ) 
+  for (iterOuterVars = theOuterVars.begin();
+       iterOuterVars != theOuterVars.end();
+       iterOuterVars++) 
   {
     size += iterOuterVars->getStateSizeOfSubtree();
   }

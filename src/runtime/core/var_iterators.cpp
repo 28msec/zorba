@@ -30,13 +30,11 @@ namespace zorba
 
 
 ForVarIterator::ForVarIterator(
-    xqpString name,
     const QueryLoc& loc,
-    const void* origin) 
+    const store::Item_t& name)
   : 
   NoaryBaseIterator<ForVarIterator, ForVarState >(loc), 
-  theVarName(name),
-  theOrigin(origin)
+  theVarName(name)
 {
 }
 
@@ -52,12 +50,19 @@ bool ForVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
+
 void ForVarIterator::bind(store::Item* value, PlanState& planState)
 {
   ForVarState* state;
   state = StateTraitsImpl<ForVarState>::getState(planState, this->stateOffset);
 
   state->theValue = value;
+}
+
+
+void ForVarIterator::foo()
+{
+  std::cout << "DESTRUCTOR" << std::endl;
 }
 
 
@@ -87,11 +92,12 @@ void LetVarState::reset(PlanState& planState)
 }
 
 
-LetVarIterator::LetVarIterator(xqpString vn, const QueryLoc& loc, const void* origin)
+LetVarIterator::LetVarIterator(
+    const QueryLoc& loc,
+    const store::Item_t& name)
   :
   NoaryBaseIterator<LetVarIterator, LetVarState>(loc),
-  theVarName(vn),
-  theOrigin(origin)
+  theVarName(name)
 {
 }
 

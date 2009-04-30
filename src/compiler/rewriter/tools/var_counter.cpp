@@ -32,7 +32,8 @@ public:
   int get_counter() { return m_counter; }
   
   using abstract_expr_visitor::begin_visit;
-  
+  using abstract_expr_visitor::end_visit;
+
   bool begin_visit(var_expr& v)
   {
     if (m_limit > 0 && m_counter >= m_limit) return false;

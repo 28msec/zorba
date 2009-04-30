@@ -31,6 +31,7 @@ using namespace std;
 
 namespace zorba {
 
+
 RULE_REWRITE_PRE(InferVarTypes) 
 {
   return NULL;
@@ -39,24 +40,33 @@ RULE_REWRITE_PRE(InferVarTypes)
 
 RULE_REWRITE_POST(InferVarTypes) 
 {
-  static_context *sctx = rCtx.getStaticContext();
+  static_context* sctx = rCtx.getStaticContext();
 
-  if (node->get_expr_kind () == flwor_expr_kind) 
+  if (node->get_expr_kind() == flwor_expr_kind ||
+      node->get_expr_kind() == gflwor_expr_kind) 
   {
-    flwor_expr *flwor = dynamic_cast<flwor_expr *> (node);
+    flwor_expr* flwor = dynamic_cast<flwor_expr *>(node);
 
-    for (uint32_t i = 0; i < flwor->forlet_count (); i++) 
+    for (uint32_t i = 0; i < flwor->num_clauses(); i++) 
     {
-      flwor_expr::forletref_t clause = (*flwor) [i];
-      expr_t e = clause->get_expr ();
-      xqtref_t explicitType = clause->get_var ()->get_type ();
-      xqtref_t domainType = e->return_type (sctx);
+      const flwor_clause& c = *(*flwor)[i];
 
-      if (clause->get_type () == forlet_clause::for_clause)
-        domainType = TypeOps::prime_type (*domainType);
+      if (c.get_kind() == flwor_clause::for_clause ||
+          c.get_kind() == flwor_clause::let_clause ||
+          c.get_kind() == flwor_clause::window_clause)
+      {
+        const forletwin_clause* flwc = static_cast<const forletwin_clause *>(&c);
+        varref_t var = flwc->get_var();
+        expr_t domainExpr = flwc->get_expr();
+        xqtref_t explicitType = var->get_type();
+        xqtref_t domainType = domainExpr->return_type(sctx);
 
-      if (explicitType == NULL || TypeOps::is_subtype (*domainType, *explicitType))
-        clause->get_var ()->set_type (domainType);
+        if (c.get_kind() == flwor_clause::for_clause)
+          domainType = TypeOps::prime_type(*domainType);
+
+        if (explicitType == NULL || TypeOps::is_subtype(*domainType, *explicitType))
+          var->set_type(domainType);
+      }
     }
   }
   return NULL;

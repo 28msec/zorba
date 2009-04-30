@@ -24,21 +24,33 @@ namespace zorba {
  */
 XMLIterPrinter::XMLIterPrinter(std::ostream& aOStream) : IterPrinter(aOStream), theOpenStart(false) {}
 
-void
-XMLIterPrinter::start() {}
-void
-XMLIterPrinter::stop() {}
+
+void XMLIterPrinter::start() 
+{
+}
+
+
+void XMLIterPrinter::stop() 
+{
+}
+
   
-void XMLIterPrinter::startBeginVisit(const std::string& aName, int) {
+void XMLIterPrinter::startBeginVisit(const std::string& aName, int) 
+{
   if (theOpenStart)
     theOStream << ">\n";
-  printSpaces(theNameStack.size());
+
+  printSpaces(2 * theNameStack.size());
   theOStream << "<" << aName;
   theNameStack.push(aName);
   theOpenStart = true;
 }
 
-void XMLIterPrinter::endBeginVisit(int) {}
+
+void XMLIterPrinter::endBeginVisit(int) 
+{
+}
+
 
 void XMLIterPrinter::addAttribute(const std::string& aName, const std::string& aValue)
 {
@@ -47,19 +59,24 @@ void XMLIterPrinter::addAttribute(const std::string& aName, const std::string& a
 }
 
 
-void XMLIterPrinter::startEndVisit() {
+void XMLIterPrinter::startEndVisit() 
+{
   assert(!theNameStack.empty());
   if (theOpenStart)
     theOStream << "/>" << std::endl;
-  else {
-    printSpaces(theNameStack.size() - 1);
+  else 
+  {
+    printSpaces(2 * (theNameStack.size() - 1));
     theOStream << "</" << theNameStack.top() << ">" << std::endl;
   }
   theNameStack.pop();
   theOpenStart = false;
 }
 
-void XMLIterPrinter::endEndVisit() {}
+
+void XMLIterPrinter::endEndVisit() 
+{
+}
   
 
 /**
@@ -71,25 +88,25 @@ DOTIterPrinter::DOTIterPrinter(std::ostream& aOStream)
 {
 }
 
-void
-DOTIterPrinter::start() 
+void DOTIterPrinter::start() 
 {
   theOStream << "digraph {" << std::endl;
   theOStream << "node [ color=gray, fontname=\"Arial\" ]" << std::endl;
 }
 
-void
-DOTIterPrinter::stop() 
+void DOTIterPrinter::stop() 
 {
   theOStream << "}" << std::endl;
 }
   
+
 void DOTIterPrinter::startBeginVisit(const std::string& aName, int aAddr) 
 {
   printSpaces(theIndent);
   theOStream << aAddr << " [ label=\"" << aName;
   ++theIndent;
 }
+
 
 void DOTIterPrinter::endBeginVisit(int aAddr) 
 {
@@ -102,14 +119,18 @@ void DOTIterPrinter::endBeginVisit(int aAddr)
   theNameStack.push(aAddr);
 }
 
+
 void DOTIterPrinter::addAttribute(const std::string& aName, const std::string& aValue)
 {
   printSpaces(theIndent);
   theOStream << "\\n" << aName << "=" << aValue;
 }
 
-void DOTIterPrinter::startEndVisit() {
+
+void DOTIterPrinter::startEndVisit() 
+{
 }
+
 
 void DOTIterPrinter::endEndVisit() 
 {

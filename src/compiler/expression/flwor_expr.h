@@ -17,19 +17,33 @@
 #ifndef ZORBA_FLWOR_EXPR_H
 #define ZORBA_FLWOR_EXPR_H
 
+#include "common/shared_types.h"
+
 #include "compiler/expression/expr_base.h"
+#include "compiler/expression/var_expr.h"
+
 #include "context/dynamic_context.h"
 
-namespace zorba {
+namespace zorba 
+{
+
+class order_modifier;
+class for_clause;
+class let_clause;
+class window_clause;
+class flwor_wincond;
+
+typedef rchandle<flwor_clause> flwor_clause_t;
+typedef rchandle<for_clause> for_clause_t;
+typedef rchandle<let_clause> let_clause_t;
+typedef rchandle<window_clause> window_clause_t;
+
+typedef rchandle<flwor_wincond> flwor_wincond_t;
 
 
 #ifdef ZORBA_DEBUGGER
 
-typedef rchandle<var_expr> var_expr_t;
-
-
-/******************************************************************************
-
+/***************************************************************************//**
 
 ********************************************************************************/
 class bound_var
@@ -39,36 +53,58 @@ public:
   std::string var_key;
   xqtref_t type;
   expr_t val;
-  var_expr_t var;
+  varref_t var;
 
   bound_var() {};
 
-  bound_var(var_expr* ve, var_expr_t var, expr_t val_)
-    :
-    varname (ve->get_varname ()),
-    var_key (dynamic_context::var_key (ve)),
-    type(ve->get_type()),
-    val (val_),
-    var(var){}
+  bound_var(var_expr* ve, varref_t var, expr_t val_);
 };
 #endif
 
 
-/******************************************************************************
-
-  flwor_clause represents a syntactic entity that defines a variable within
-  a flwor expr.
+/***************************************************************************//**
 
 ********************************************************************************/
 class flwor_clause : public SimpleRCObject 
 {
+public:
+  typedef std::vector<std::pair<wrapper_expr_t, varref_t> > rebind_list_t;
+
+  typedef enum
+  {
+    for_clause,
+    let_clause,
+    window_clause,
+    group_clause,
+    order_clause,
+    count_clause,
+    where_clause
+  } ClauseKind;
+
+protected:
+  QueryLoc                  theLocation;
+
+  ClauseKind                theKind;
+  
 #ifdef ZORBA_DEBUGGER
-private:
   std::list<global_binding> theGlobals;
   checked_vector<bound_var> theBoundVariables;
+#endif
 
 public:
-  void set_bound_variables( checked_vector<var_expr_t> &aScopedVariables );
+  flwor_clause (const QueryLoc& loc, ClauseKind kind) 
+    :
+    theLocation(loc),
+    theKind(kind)
+  {
+  }
+
+  const QueryLoc& get_loc() const { return theLocation; }
+
+  ClauseKind get_kind() const { return theKind; }
+
+#ifdef ZORBA_DEBUGGER
+  void set_bound_variables(checked_vector<varref_t> &aScopedVariables );
   
   checked_vector<bound_var> get_bound_variables() const
   {
@@ -90,365 +126,532 @@ public:
 
 /***************************************************************************//**
 
-  - Syntax:
+  ForClause ::=	"outer"? "for" "$" VarName TypeDeclaration? PositionalVar?
+                "in" DomainExpr
 
-  InitialClause ::= ForClause | LetClause | WindowClause
+  LetClause ::= "let" "$" VarName TypeDeclaration? ":=" DomainExpr
 
-  - Data Members:
+  WindowClause ::= "for" (TumblingWindowClause | SlidingWindowClause)
 
-  var_h  : The var_expr representing the variable defined by this clause (see
-           compiler/expression/var_expr.h).
-  expr_h : The expr that produces the value of the variable.
+  TumblingWindowClause ::= "tumbling" "window"
+                           "$" VarName TypeDeclaration? "in" DomainExpr
+                           WindowStartCondition
+                           WindowEndCondition?
 
-********************************************************************************/
-class flwor_initial_clause : public flwor_clause 
-{
-protected:
-  varref_t var_h;
-  expr_t expr_h;
+  SlidingWindowClause ::= "sliding" "window"
+                          "$" VarName TypeDeclaration? "in" DomainExpr
+                          WindowStartCondition
+                          WindowEndCondition
 
-public:
-  flwor_initial_clause (varref_t var_, expr_t expr_)
-    :
-    var_h (var_),
-    expr_h (expr_) 
-  {
-  }
-
-  void set_expr(expr_t v) { expr_h = v; }
-
-  expr_t get_expr() const { return expr_h; }
-
-  varref_t get_var() const { return var_h; }
-
-  void set_var(varref_t v) 
-  { 
-    var_h = v;
-    if (var_h != NULL)
-      var_h->set_forlet_clause(this); 
-  }
-};
-
-
-/******************************************************************************
-  Represents a single FOR/LET variable definition
-
-  - Syntax:
-
-  ForClause ::=	"for" "$" VarName TypeDeclaration? PositionalVar? "in" ExprSingle
-
-  LetClause ::= "let" "$" VarName TypeDeclaration? ":=" ExprSingle
+  DomainExpr ::= ExprSingle
 
   PositionalVar ::= "at" "$" VarName
 
   TypeDeclaration ::= "as" SequenceType
 
 ********************************************************************************/
-class forlet_clause : public flwor_initial_clause
+class forletwin_clause : public flwor_clause 
 {
   friend class flwor_expr;
-public:
-  enum forlet_t { for_clause, let_clause };
 
 protected:
-  enum forlet_t theKind;
-  varref_t pos_var_h;
-  varref_t score_var_h;
+  varref_t   theVarExpr;
+  expr_t     theDomainExpr;
 
-public: 
-  forlet_clause(
-    enum forlet_t kind,
-    varref_t _var_h,
-    varref_t _pos_var_h,
-    varref_t _score_var_h,
-    expr_t _expr_h);
+public:
+  forletwin_clause(
+        const QueryLoc& loc,
+        ClauseKind kind,
+        varref_t varExpr,
+        expr_t domainExpr);
 
-  enum forlet_t get_type() const { return theKind; }
+  void set_expr(expr_t v) { theDomainExpr = v; }
 
-  varref_t get_pos_var() const { return pos_var_h; }
+  expr* get_expr() const { return theDomainExpr.getp(); }
 
-  varref_t get_score_var() const { return score_var_h; }
+  var_expr* get_var() const { return theVarExpr.getp(); }
 
-  void set_type(enum forlet_t v) { theKind = v; }
+  void set_var(varref_t v) 
+  { 
+    theVarExpr = v;
+    if (theVarExpr != NULL)
+      theVarExpr->set_flwor_clause(this); 
+  }
+
+  virtual var_expr* get_pos_var() const { return NULL; }
+
+  virtual var_expr* get_score_var() const { return NULL; }
+};
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+class for_clause : public forletwin_clause 
+{
+  friend class flwor_expr;
+
+protected:
+  varref_t              thePosVarExpr;
+  varref_t              theScoreVarExpr;
+  bool                  theIsOuter;
+
+public:
+  for_clause(
+        const QueryLoc& loc,
+        varref_t varExpr,
+        expr_t domainExpr,
+        varref_t posVarExpr = NULL,
+        varref_t scoreVarExpr = NULL);
+
+  ~for_clause();
+
+public:
+  bool is_outer() const { return theIsOuter; }
+
+  void set_outer(bool outer) { theIsOuter = outer; }
+
+  var_expr* get_pos_var() const { return thePosVarExpr.getp(); }
+
+  var_expr* get_score_var() const { return theScoreVarExpr.getp(); }
 
   void set_pos_var(varref_t v) 
   {
-    pos_var_h = v;
-    if (pos_var_h != NULL)
-      pos_var_h->set_forlet_clause(this);
+    thePosVarExpr = v;
+    if (thePosVarExpr != NULL)
+      thePosVarExpr->set_flwor_clause(this);
   }
 
   void set_score_var(varref_t v) 
   {
-    score_var_h = v;
-    if (score_var_h != NULL)
-      score_var_h->set_forlet_clause(this); 
+    theScoreVarExpr = v;
+    if (theScoreVarExpr != NULL)
+      theScoreVarExpr->set_flwor_clause(this); 
   }
 
-
   std::ostream& put(std::ostream&) const;
-  
-  rchandle<forlet_clause> clone(expr::substitution_t& substitution);
 };
 
 
-/******************************************************************************
-  If a flwor expr has a GroupBy clause, then there is one group_clause for
-  each FOR/LET variable V that is defined in the flwor expr. For each V, the
-  associated group_clause says whether V is a grouping variable or not, and
-  if yes, it also specifies the colation to use when grouping the values of V.
+/***************************************************************************//**
 
-  theOuterVar  : Reference to FOR/LET var V, if V is a grouping var; NULL
-                 otherwise. 
-  theInnerVar  : Reference to FOR/LET var V, if V is a non-grouping var; NULL
-                 otherwise. 
-  theCollation : The collation to use when comapring values of V, if V is a
-                 gouping var.
+********************************************************************************/
+class let_clause : public forletwin_clause 
+{
+  friend class flwor_expr;
+
+protected:
+  varref_t  theScoreVarExpr;
+
+public:
+  let_clause(
+        const QueryLoc& loc,
+        varref_t varExpr,
+        expr_t domainExpr,
+        varref_t scoreVarExpr = NULL);
+
+  ~let_clause();
+
+public:
+  var_expr* get_score_var() const { return theScoreVarExpr.getp(); }
+
+  void set_score_var(varref_t v) 
+  {
+    theScoreVarExpr = v;
+    if (theScoreVarExpr != NULL)
+      theScoreVarExpr->set_flwor_clause(this); 
+  }
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+class window_clause : public forletwin_clause 
+{
+  friend class flwor_expr;
+
+public:
+  typedef enum { tumbling_window, sliding_window } window_t;
+
+protected:
+  window_t          theWindowKind;
+  flwor_wincond_t   theWinStartCond;
+  flwor_wincond_t   theWinStopCond;
+
+public:
+  window_clause(
+        const QueryLoc& loc,
+        varref_t varExpr,
+        expr_t domainExpr,
+        window_t winKind,
+        flwor_wincond_t winStart = NULL,
+        flwor_wincond_t winStop = NULL);
+
+  ~window_clause();
+
+public:
+  window_t get_winkind() const { return theWindowKind; }
+
+  flwor_wincond* get_win_start() const { return theWinStartCond.getp(); }
+
+  flwor_wincond* get_win_stop() const { return theWinStopCond.getp(); }
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+/***************************************************************************//**
+
+  Class flwor_wincond represents a start/stop condition of a window clause.
+ 
+  - Syntax:
+
+  WindowStartCondition ::= "start" WindowVars "when" ExprSingle
+
+  WindowEndCondition ::= "only"? "end" WindowVars "when" ExprSingle
+
+  WindowVars ::= ("$" CurrentItem)?
+                 PositionalVar?
+                 ("previous" "$" PreviousItem)?
+                 ("next" "$" NextItem)?
+
+  - Data Members:
+
+  theIsOnly    : The "only" flag, if this is an end condition
+  theInputVars : The var_exprs for the 4 condition vars that iterate over the
+                 window domain expr and whose values are used to compute the
+                 condition expr during each iteration. These vars are visible
+                 only during the evaluation of the condition expr.
+  theOutputVars: When the condition expr evaluates to true, the current values
+                 of theInputVars are copied to theOutputVars. So, theOutputVars
+                 describe the starting/ending point of an established window
+                 and they are visible to the rest of the query (i.e., they 
+                 become columns in the output stream produced by the window
+                 clause).
+  theCondExpr  : The start/end condition expr.
+********************************************************************************/
+class flwor_wincond : public SimpleRCObject
+{
+  friend class flwor_expr;
+
+public:
+  struct vars 
+  {
+    varref_t posvar;
+    varref_t curr;
+    varref_t prev;
+    varref_t next;
+
+    void set_flwor_clause(flwor_clause* c);
+
+    std::ostream& put(std::ostream&) const;
+  };
+
+protected:
+  bool    theIsOnly;
+  vars    theInputVars;
+  vars    theOutputVars;
+  expr_t  theCondExpr;
+
+public:
+  flwor_wincond(bool isOnly, vars in_vars, vars out_vars, expr_t cond)
+    :
+    theIsOnly(isOnly),
+    theInputVars(in_vars),
+    theOutputVars(out_vars),
+    theCondExpr(cond)
+  {
+  }
+
+  expr* get_cond() const { return theCondExpr.getp(); }
+
+  void set_cond(expr* cond) { theCondExpr = cond; }
+
+  bool is_only() const { return theIsOnly; }
+
+  const vars& get_in_vars() const { return theInputVars; }
+
+  const vars& get_out_vars() const { return theOutputVars; }
+
+  void set_flwor_clause(flwor_clause *);
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+/***************************************************************************//**
+  - Syntax:
+
+  GroupByClause ::= "group" "by" GroupingSpecList
+
+  GroupSpecList ::= 	GroupingSpec ("," GroupingSpec)*
+
+  GroupSpec ::= "$" VarName ("collation" URILiteral)?
+
+  - Data Members:
+
+  theGroupVars    : For each grouping var X, theGroupVars contains a pair of
+                    exprs: the 1st element of the pair is a reference to X in
+                    the groupby's input tuple stream, and the 2nd element is
+                    a var_expr representing the variable gX that the groupby
+                    produces for X in its output tuple stream.
+  theNonGroupVars : For each non-grouping var Y, theGroupVars contains a pair of
+                    exprs: the 1st element of the pair is a reference to Y in
+                    the groupby's input tuple stream, and the 2nd element is
+                    a var_expr representing the variable gY that the groupby
+                    produces for Y in its output tuple stream. For each tuple
+                    T produced by the groupby, gY is the concatenation of all
+                    the Y values in the input tuples that were grouped into T.
+  theCollations   : The collations to use when comparing values for grouping. 
 ********************************************************************************/
 class group_clause : public flwor_clause 
 {
   friend class flwor_expr;
 
 protected:
-  varref_t    theOuterVar;
-  varref_t    theInnerVar;
-  std::string theCollation;
+  rebind_list_t            theGroupVars;
+  rebind_list_t            theNonGroupVars;
+  std::vector<std::string> theCollations;
 
 public:
-  group_clause(rchandle<var_expr> aOuterVar, rchandle<var_expr> aInnerVar) 
-    :
-    theOuterVar(aOuterVar.getp()),
-    theInnerVar(aInnerVar.getp()),
-    theCollation("") {}
-
   group_clause(
-        rchandle<var_expr> aOuterVar,
-        rchandle<var_expr> aInnerVar,
-        const std::string aCollation)
+        const QueryLoc& loc,
+        const rebind_list_t& gvars,
+        rebind_list_t ngvars,
+        const std::vector<std::string>& collations)
     :
-    theOuterVar(aOuterVar.getp()),
-    theInnerVar(aInnerVar.getp()),
-    theCollation(aCollation) {}
+    flwor_clause(loc, flwor_clause::group_clause),
+    theGroupVars(gvars),
+    theNonGroupVars(ngvars),
+    theCollations(collations)
+  {
+  }
 
-  rchandle<var_expr> getOuterVar() const { return theOuterVar; }
+  const std::vector<std::string>& get_collations() const { return theCollations; }
 
-  rchandle<var_expr> getInnerVar() const {  return theInnerVar; }
+  const rebind_list_t& get_grouping_vars() const { return theGroupVars; }
 
-  std::string getCollation() const { return theCollation; }
+  const rebind_list_t& get_nongrouping_vars() const { return theNonGroupVars; }
   
+  std::ostream& put(std::ostream&) const;
+
   // TODO clone?
 };
 
 
-/******************************************************************************
+
+/***************************************************************************//**
+
+  OrderByClause ::= (("order" "by") | ("stable" "order" "by")) OrderSpecList
+
+  OrderSpecList ::= 	OrderSpec ("," OrderSpec)*
+
+  OrderSpec ::= 	ExprSingle OrderModifier
 
   OrderModifier ::= ("ascending" | "descending")?
                     ("empty" ("greatest" | "least"))?
                     ("collation" URILiteral)?
 
 ********************************************************************************/
+class orderby_clause : public flwor_clause 
+{
+protected:
+  friend class flwor_expr;
+
+  bool                        theStableOrder;
+  std::vector<order_modifier> theModifiers;
+  std::vector<expr_t>         theOrderingExprs;
+
+public:
+  orderby_clause (
+        const QueryLoc& loc,
+        bool stable,
+        const std::vector<order_modifier>& modifiers,
+        const std::vector<expr_t>& orderingExprs)
+    :
+    flwor_clause(loc, flwor_clause::order_clause),
+    theStableOrder(stable),
+    theModifiers(modifiers),
+    theOrderingExprs(orderingExprs)
+  {
+  }
+
+  bool is_stable() const { return theStableOrder; }
+
+  const std::vector<order_modifier>& get_modifiers() const { return theModifiers; }
+
+  const std::vector<expr_t>& get_column_exprs() const { return theOrderingExprs; }
+
+  ulong num_columns() const { return theOrderingExprs.size(); }
+
+  expr* get_column_expr(ulong i) const { return theOrderingExprs[i].getp(); }
+
+  void set_column_expr(ulong i, expr_t e) { theOrderingExprs[i] = e; }
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+
+/******************************************************************************
+
+********************************************************************************/
 class order_modifier : public SimpleRCObject 
 {
 public:
-  ParseConstants::dir_spec_t dir;
-  StaticContextConsts::order_empty_mode_t empty_mode;
-  std::string collation;
+  ParseConstants::dir_spec_t theDirection;
+  StaticContextConsts::order_empty_mode_t theEmptyMode;
+  std::string theCollation;
 
 public:
-  order_modifier(
-        ParseConstants::dir_spec_t _dir,
-        StaticContextConsts::order_empty_mode_t _empty_mode,
-        std::string _collation)
+  order_modifier() 
     :
-    dir (_dir), empty_mode (_empty_mode), collation (_collation)
+    theDirection(ParseConstants::dir_ascending),
+    theEmptyMode(StaticContextConsts::empty_least)
+  {
+  }
+
+  order_modifier(
+        ParseConstants::dir_spec_t dir,
+        StaticContextConsts::order_empty_mode_t empty_mode,
+        const std::string& collation)
+    :
+    theDirection(dir), theEmptyMode(empty_mode), theCollation(collation)
   {
   }
 };
 
 
 /***************************************************************************//**
+  CountClause ::= "count" "$" VarName
+********************************************************************************/
+class count_clause : public flwor_clause 
+{
+protected:
+  varref_t var;
+
+public:
+  count_clause(const QueryLoc& loc, varref_t var_) 
+    :
+    flwor_clause(loc, flwor_clause::count_clause),
+    var(var_)
+  {
+  }
+
+  var_expr* get_var() const { return var.getp(); }
+};
 
 
+/***************************************************************************//**
+   WhereClause ::= ExprSingle
+********************************************************************************/
+class where_clause : public flwor_clause 
+{
+  friend class flwor_expr;
+
+  expr_t theWhereExpr;
+
+public:
+  where_clause(const QueryLoc& loc, expr_t where) 
+    :
+    flwor_clause(loc, flwor_clause::where_clause),
+    theWhereExpr(where)
+  {
+  }
+
+  expr* get_where() const { return theWhereExpr.getp(); }
+
+  void set_where(expr_t where) { theWhereExpr = where; }
+};
+
+
+/***************************************************************************//**
+  FLWORExpr ::= InitialClause IntermediateClause* ReturnClause
+
+  InitialClause ::= ForClause | LetClause | WindowClause
+
+  IntermediateClause ::= InitialClause |
+                         WhereClause |
+                         GroupByClause |
+                         OrderByClause |
+                         CountClause
 ********************************************************************************/
 class flwor_expr : public expr 
 {
 public:
-  typedef rchandle<forlet_clause> forletref_t;
-  typedef std::vector<forletref_t> forlet_list_t;
-
-  typedef rchandle<order_modifier> orderref_t;
-  typedef std::pair<expr_t,orderref_t> orderspec_t;
-  typedef std::vector<orderspec_t> orderspec_list_t;
-
-  typedef rchandle<group_clause> groupref_t;
-  typedef std::vector<groupref_t> group_list_t;
+  typedef std::vector<rchandle<flwor_clause> > clause_list_t;
 
 protected:
-  forlet_list_t     theForLetClauses;
+  bool          theIsGeneral;
+  clause_list_t theClauses;
+  expr_t        theReturnExpr;
 
-  orderspec_list_t  orderspec_v;
-  bool              order_stable;  // per clause, not per spec!
-
-  group_list_t      theGroupingVarClauses;
-  group_list_t      theNonGroupingVarClauses;
-  expr_t            group_where_h;
-
-  expr_t            where_h;
-  expr_t            retval_h;
-
-public: // ctor,dtor
-  flwor_expr(const QueryLoc& loc) : expr(loc), order_stable (false) {}
-
-  flwor_expr(
-        const QueryLoc& loc,
-        forlet_list_t forletClauses,
-        expr_t retExpr)
+public:
+  flwor_expr(const QueryLoc& loc, bool general) 
     :
     expr(loc),
-    theForLetClauses(forletClauses),
-    order_stable (false),
-    retval_h (retExpr)
+    theIsGeneral(general)
   {
   }
 
-  expr_kind_t get_expr_kind () const { return flwor_expr_kind; }
+  expr_kind_t get_expr_kind() const 
+  {
+    return (theIsGeneral ? gflwor_expr_kind : flwor_expr_kind);
+  }
 
-public:
+  bool is_general() const { return theIsGeneral; }
+
+  expr* get_return_expr() const { return theReturnExpr.getp(); }
+
+  void set_return_expr(expr_t e) { theReturnExpr = e; }
+
+  ulong num_clauses() const { return theClauses.size(); }
+
+  void addClause(flwor_clause* c);
+
+  void addClause(int idx, flwor_clause* c);
+
+  const flwor_clause* operator[](int i) const { return theClauses[i].getp(); }
+
+  flwor_clause* operator[](int i) { return theClauses[i].getp(); }
+
+  clause_list_t::const_iterator clause_begin() const { return theClauses.begin(); }
+
+  clause_list_t::const_iterator clause_end() const { return theClauses.end(); }
+
+  xqtref_t return_type_impl(static_context* sctx);
+
+  long defines_variable(const var_expr* v, const flwor_clause* limit) const;
+
   expr_iterator_data* make_iter();
 
-  bool defines_variable(const var_expr* v) const;
+  void next_iter(expr_iterator_data&);
 
-  //
-  // ForLet Clauses
-  //
-  unsigned forlet_count() const 
-  { return theForLetClauses.size(); }
+  void add_where(expr_t e);
 
-  forletref_t const& operator[](int i) const 
-  { return theForLetClauses[i]; }
+  expr* get_where() const;
 
-  forletref_t & operator[](int i) 
-  { return theForLetClauses[i]; }
+  void set_where(expr* e);
 
-  void add(forletref_t v) 
-  { theForLetClauses.push_back(v); }
+  void remove_where_clause();
 
-  void add(int idx, forletref_t v) 
-  { theForLetClauses.insert(theForLetClauses.begin() + idx, v); }
+  ulong num_forlet_clauses();
 
-  forlet_list_t::const_iterator forlet_begin() const
-  { return theForLetClauses.begin(); }
+  void remove_forlet_clause(ulong i);
 
-  forlet_list_t::iterator forlet_begin()
-  { return theForLetClauses.begin(); }
+  group_clause* get_group_clause() const;
 
-  forlet_list_t::const_iterator forlet_end() const
-  { return theForLetClauses.end(); }
+  void accept(expr_visitor&);
 
-  forlet_list_t::iterator forlet_end()
-  { return theForLetClauses.end(); }
+  void accept_children(expr_visitor&);
 
-  forlet_list_t::reverse_iterator forlet_rbegin()
-  { return theForLetClauses.rbegin(); }
-
-  forlet_list_t::reverse_iterator forlet_rend()
-  { return theForLetClauses.rend(); }
-
-  forlet_list_t::iterator remove_forlet(forlet_list_t::iterator i);
-
-
-  //
-  // GroupBy Clause
-  //
-  unsigned group_vars_count() const { return theGroupingVarClauses.size(); }
-
-  group_list_t::const_iterator group_vars_begin() const
-  { return theGroupingVarClauses.begin(); }
-
-  group_list_t::reverse_iterator group_vars_rbegin()
-  { return theGroupingVarClauses.rbegin(); }
-
-  group_list_t::const_iterator group_vars_end() const
-  { return theGroupingVarClauses.end(); }
-
-  group_list_t::reverse_iterator group_vars_rend()
-  { return theGroupingVarClauses.rend(); }
-
-  group_list_t::const_iterator non_group_vars_begin() const
-  { return theNonGroupingVarClauses.begin(); }
-
-  group_list_t::const_iterator non_group_vars_end() const
-  { return theNonGroupingVarClauses.end(); }
-
-  group_list_t::reverse_iterator non_group_vars_rbegin()
-  { return theNonGroupingVarClauses.rbegin(); }
-
-  group_list_t::reverse_iterator non_group_vars_rend()
-  { return theNonGroupingVarClauses.rend(); }
-
-  void add(rchandle<group_clause> v)
-  { theGroupingVarClauses.push_back(v); }
-
-  void add_non_group(rchandle<group_clause> v)
-  { theNonGroupingVarClauses.push_back(v); }
-
-  expr_t get_group_where() const { return group_where_h; }
-
-  void set_group_where(expr_t e_h) { group_where_h = e_h; }
-
-  //
-  // OrderBy Clause
-  //
-  void add(orderspec_t const& v)
-  { orderspec_v.push_back(v); } 
-
-  uint32_t orderspec_count() const
-  { return orderspec_v.size(); }
-
-  orderspec_t & orderspec_at(int i)
-  { return orderspec_v[i]; }
-
-  orderspec_t const& orderspec_at(int i) const
-  { return orderspec_v[i]; }
-
-  orderspec_list_t::const_iterator orderspec_begin() const
-  { return orderspec_v.begin(); }
-
-  orderspec_list_t::const_iterator orderspec_end() const
-  { return orderspec_v.end(); }
-
-  orderspec_list_t::iterator orderspec_begin()
-  { return orderspec_v.begin(); }
-
-  orderspec_list_t::iterator orderspec_end()
-  { return orderspec_v.end(); }
-
-  orderspec_list_t::reverse_iterator orderspec_rbegin()
-  { return orderspec_v.rbegin(); }
-
-  orderspec_list_t::reverse_iterator orderspec_rend()
-  { return orderspec_v.rend(); }
-
-  bool get_order_stable () const { return order_stable; }
-  void set_order_stable (bool x) { order_stable = x; }
-
-  //
-  // WhereClause and ReturnClause
-  //
-  expr_t get_where() const { return where_h; }
-  void set_where(expr_t e_h) { where_h = e_h; }
-
-  expr_t get_retval() const { return retval_h; }
-  void set_retval(expr_t e_h) { retval_h = e_h; }
-
-public:
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
-
-  virtual expr_t clone(substitution_t& substitution);
-  xqtref_t return_type_impl (static_context *sctx);
 };
+
+
 
 }  // namespace zorba
 

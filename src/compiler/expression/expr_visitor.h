@@ -40,7 +40,6 @@ public:
   EXPR_VISITOR_METHODS (sequential_expr);
   EXPR_VISITOR_METHODS (var_expr);
   EXPR_VISITOR_METHODS (flwor_expr);
-  EXPR_VISITOR_METHODS (gflwor_expr);
   EXPR_VISITOR_METHODS (promote_expr);
   EXPR_VISITOR_METHODS (trycatch_expr);
   EXPR_VISITOR_METHODS (eval_expr);
@@ -75,6 +74,10 @@ public:
   EXPR_VISITOR_METHODS (exit_expr);
   EXPR_VISITOR_METHODS (while_expr);
   EXPR_VISITOR_METHODS (flowctl_expr);
+
+  virtual void visit_flwor_clause(const flwor_clause* c, bool general)
+  {
+  }
 
 #undef EXPR_VISITOR_METHODS
 };

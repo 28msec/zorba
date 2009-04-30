@@ -29,46 +29,54 @@ namespace zorba
 namespace flwor 
 {
 
-    /////////////////////////////////////////////////////////////////////////////////
-    //                                                                             //
-    //  For  State                                                                 //
-    //                                                                             //
-    /////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  For  State                                                                 //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-    void
-    CountState::init ( PlanState& planState ) {
-      PlanIteratorState::init ( planState );
-      theCount=0;
-    }
-
-    void
-    CountState::reset ( PlanState& planState ) {
-      PlanIteratorState::reset ( planState );
-      theCount=0;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////
-    //                                                                             //
-    //  ForIterator                                                                //
-    //                                                                             //
-    /////////////////////////////////////////////////////////////////////////////////
-
-    // theChild0 --> TupleIterator
-    // theChild1 --> InputIterator
-    CountIterator::CountIterator ( const QueryLoc& loc,
-                                   const store::Item_t& aVarName,
-                                   PlanIter_t aTupleIterator,
-                                   std::vector<ForVarIter_t> aCountVars ) :
-        UnaryBaseIterator<CountIterator, CountState> ( loc, aTupleIterator ),
-        theVarName ( aVarName ),
-        theCountVars ( aCountVars ) {
-
-    }
+void
+CountState::init ( PlanState& planState ) {
+  PlanIteratorState::init ( planState );
+  theCount=0;
+}
 
 
-    CountIterator::~CountIterator() {}
+void
+CountState::reset ( PlanState& planState ) {
+  PlanIteratorState::reset ( planState );
+  theCount=0;
+}
+  
+  
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  ForIterator                                                                //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-    bool CountIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const {
+// theChild0 --> TupleIterator
+// theChild1 --> InputIterator
+CountIterator::CountIterator (
+    const QueryLoc& loc,
+    const store::Item_t& aVarName,
+    PlanIter_t aTupleIterator,
+    const std::vector<PlanIter_t>& aCountVars ) 
+  :
+  UnaryBaseIterator<CountIterator, CountState> ( loc, aTupleIterator ),
+  theVarName ( aVarName )
+{
+  castIterVector<ForVarIterator>(theCountVars, aCountVars);
+}
+
+
+CountIterator::~CountIterator() 
+{
+}
+
+
+bool CountIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const 
+{
       CountState* lState;
       store::Item_t lItem;
 

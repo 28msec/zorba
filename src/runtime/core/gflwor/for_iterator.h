@@ -25,44 +25,75 @@ namespace zorba {
 namespace flwor 
 {   
     
-    class ForState : public PlanIteratorState {
-      private:
-        int thePosition;
+class ForState : public PlanIteratorState 
+{
+private:
+  int thePosition;
 
-      public:
-        void init ( PlanState& );
-        void reset ( PlanState& );
-        inline int incReturnPosition() {return ++thePosition;}
-        inline void resetCount() { thePosition=0;}
+public:
+  void init ( PlanState& );
 
-    };
+  void reset ( PlanState& );
 
-    class ForIterator : public BinaryBaseIterator<ForIterator, ForState> {
-      private:
-        store::Item_t theVarName;
-        bool theHasPosVars;
-        std::vector<ForVarIter_t> theForVars;
-        std::vector<ForVarIter_t> thePosVars;
-      public:
-        ForIterator ( const QueryLoc& aLoc,
-                      const store::Item_t& aVarName,
-                      PlanIter_t aTupleIterator,
-                      PlanIter_t aInput,
-                      std::vector<ForVarIter_t> aForVars );
-        
-        ForIterator ( const QueryLoc& loc,
-                      const store::Item_t& aVarName,
-                      PlanIter_t aTupleIterator,
-                      PlanIter_t aInput,
-                      std::vector<ForVarIter_t> aForVars,
-                      std::vector<ForVarIter_t> aPosVars );
-        ~ForIterator();
+  inline int incReturnPosition() {return ++thePosition;}
 
-      public:
-        bool nextImpl ( store::Item_t& result, PlanState& planState ) const;
-        virtual void accept ( PlanIterVisitor& ) const;
-    };
-  }
+  inline void resetPosition() { thePosition = 0;}
+};
+
+
+/***************************************************************************//**
+
+  theChild0     : The input tuple iterator.
+
+  theChild1     : The domain expr iterator.
+
+  theVarRefs    : Vector of ForVarIters representing all references to this FOR
+                  var. Each ForVarIter holds the current value of the var (as an
+                  Item_t) and its next() method simply returns that value. The
+                  value is computed and stored in the ForVarIter by the 
+                  bindVariable() method.
+
+  thePosVarRefs : Vector of ForVarIters representing all references to the positional
+                  var (if any) associated with this FOR var.
+
+  theInput      : The iterator producing the domain (if FOR var) or the value (if
+                  LET var) of this var.
+********************************************************************************/
+class ForIterator : public BinaryBaseIterator<ForIterator, ForState> 
+{
+private:
+  store::Item_t             theVarName;
+  bool                      theHasPosVars;
+  std::vector<ForVarIter_t> theVarRefs;
+  std::vector<ForVarIter_t> thePosVarRefs;
+
+public:
+  ForIterator(
+        const QueryLoc& loc,
+        const store::Item_t& varName,
+        PlanIter_t tupleIter,
+        PlanIter_t domainIter,
+        const std::vector<PlanIter_t>& varRefs);
+
+  ForIterator(
+        const QueryLoc& loc,
+        const store::Item_t& varName,
+        PlanIter_t tupleIter,
+        PlanIter_t domainIter,
+        const std::vector<PlanIter_t>& varRefs,
+        const std::vector<PlanIter_t>& posRefs);
+
+  ~ForIterator();
+  
+  store::Item* getVarName() const { return theVarName.getp(); }
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+  virtual void accept(PlanIterVisitor& v) const;
+};
+
+
+}
 }
 
 

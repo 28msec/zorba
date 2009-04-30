@@ -35,7 +35,9 @@
 #include "system/globalenv.h"
 
 using namespace std;
-namespace zorba {
+
+namespace zorba 
+{
   
   static inline xqp_string qname_to_string (store::Item_t qname) {
     xqp_string result;
@@ -61,7 +63,9 @@ static int printdepth0 = -2;
 #define INDENT    (printdepth0 += 2, DENT)
 
 #define BEGIN_EXPR( descr) os << INDENT << #descr << expr_addr (this) << " [\n"
+
 #define CLOSE_EXPR os << DENT << "]\n"; UNDENT; return os;
+
 #define PUT_SUB( descr, sub ) do { if ((sub) != NULL) { os << DENT << (descr) << "\n"; (sub)->put (os); } } while (0)
 
 static inline string expr_addr (const void *e) {
@@ -114,20 +118,49 @@ ostream& var_expr::put(ostream& os) const
   return os;
 }
 
-ostream & forlet_clause::put( ostream& os) const
+
+ostream& for_clause::put(ostream& os) const
 {
-  BEGIN_EXPR (forlet);
+  BEGIN_EXPR(FOR);
 
-  var_h->put(os);
-  PUT_SUB ("AT", pos_var_h);
-  PUT_SUB ("SCORE", score_var_h);
+  theVarExpr->put(os);
+  PUT_SUB ("AT", thePosVarExpr);
+  PUT_SUB ("SCORE", theScoreVarExpr);
 
-  PUT_SUB (var_h->get_kind() == var_expr::for_var ? "IN" : ":=", expr_h);
+  PUT_SUB("IN", theDomainExpr);
 
   CLOSE_EXPR;
 }
 
-ostream & flwor_wincond::vars::put( ostream& os) const
+
+ostream& let_clause::put(ostream& os) const
+{
+  BEGIN_EXPR(LET);
+
+  theVarExpr->put(os);
+  PUT_SUB ("SCORE", theScoreVarExpr);
+
+  PUT_SUB(":=", theDomainExpr);
+
+  CLOSE_EXPR;
+}
+
+ostream& window_clause::put(ostream& os) const
+{
+  BEGIN_EXPR (WINDOW);
+
+  theVarExpr->put(os);
+
+  PUT_SUB("IN", theDomainExpr);
+
+  PUT_SUB ("START", theWinStartCond.getp());
+  PUT_SUB ("STOP", theWinStopCond.getp());
+
+  CLOSE_EXPR;
+}
+
+
+ostream& flwor_wincond::vars::put( ostream& os) const
 {
   BEGIN_EXPR (flwor_wincond::vars);
   PUT_SUB ("AT", posvar);
@@ -137,139 +170,119 @@ ostream & flwor_wincond::vars::put( ostream& os) const
   CLOSE_EXPR;
 }
 
-ostream & flwor_wincond::put( ostream& os) const
+ostream& flwor_wincond::put( ostream& os) const
 {
   BEGIN_EXPR (flwor_wincond);
-  PUT_SUB ("IN-VARS", &get_in_vars ());
-  PUT_SUB ("OUT-VARS", &get_out_vars ());
-  PUT_SUB ("WHEN", cond);
+  PUT_SUB ("IN-VARS", &get_in_vars());
+  PUT_SUB ("OUT-VARS", &get_out_vars());
+  PUT_SUB ("WHEN", theCondExpr);
   CLOSE_EXPR;
 }
 
-ostream & forletwin_gclause::put( ostream& os) const
+
+ostream& group_clause::put( ostream& os ) const 
 {
-  BEGIN_EXPR (forletwin);
+  BEGIN_EXPR (group_clause);
 
-  get_var ()->put(os);
-  PUT_SUB ("AT", pos_var_h);
-  PUT_SUB ("SCORE", score_var_h);
-  PUT_SUB (var_h->get_kind() == var_expr::let_var ? ":=" : "IN", expr_h);
-  PUT_SUB ("START", win_start.get());
-  PUT_SUB ("STOP", win_stop.get());
+  os << DENT << "GROUP BY EXPRS";
+
+  for (unsigned i = 0; i < theGroupVars.size(); i++) 
+  {
+    PUT_SUB("", theGroupVars[i].first);
+    os << DENT << "-->" << theGroupVars[i].second.getp() << std::endl;
+  }
+  os << endl;
+
+  os << DENT << "NON GROUP BY VARS ";
+
+  for (unsigned i = 0; i < theNonGroupVars.size(); i++) 
+  {
+    PUT_SUB("", theNonGroupVars[i].first);
+    os << DENT << "-->" << theNonGroupVars[i].second.getp() << std::endl;
+  }
+  os << endl;
+
   CLOSE_EXPR;
 }
+
+
+ostream& orderby_clause::put( ostream &os ) const 
+{
+  BEGIN_EXPR(orderby_clause);
+
+  //os << DENT << "ORDER BY ";
+
+  unsigned numColumns = num_columns();
+
+  for (unsigned i = 0; i < numColumns; i++) 
+  {
+    theOrderingExprs[i]->put(os);
+  }
+#if 0
+  os << endl;
+
+  os << DENT << "VAR REBINDS ";
+  for (unsigned i = 0; i < theRebindList.size (); i++) 
+  {
+    os << "$";
+    put_qname(theRebindList[i].first->get_varname(), os);
+    os << " (" << theRebindList[i].first.getp() << " -> " 
+       << theRebindList[i].second.getp() << ") ";
+  }
+  os << endl;
+#endif
+  CLOSE_EXPR;
+}
+
 
 ostream& flwor_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (flwor_expr);;
+  BEGIN_EXPR (flwor_expr);
 
-  vector<forletref_t>::const_iterator it = forlet_begin();
-  for (; it != forlet_end(); ++it)
+  for (unsigned i = 0; i < num_clauses(); i++) 
   {
-    forletref_t fl_h = *it;
-    fl_h->put(os);
-  }
+    const flwor_clause& c = *((*this)[i]);
 
-  PUT_SUB ("WHERE", where_h);
-
-  for (flwor_expr::group_list_t::const_iterator lIter = group_vars_begin();
-       lIter != group_vars_end();
-       ++lIter)
-  {
-    groupref_t lGroup = *lIter;
-    os << INDENT << "GROUP BY [\n";
-    os << INDENT << "Outer:\n";
-    lGroup->getOuterVar()->put(os);
-    PUT_SUB ("Inner:", lGroup->getInnerVar());
-    UNDENT;
-    os << DENT << "]\n"; UNDENT;
-  }
-  
-  for (vector<orderspec_t>::const_iterator ord_it = orderspec_begin();
-       ord_it!=orderspec_end(); ++ord_it) 
-  {
-    orderspec_t spec = *ord_it;
-    expr_t e_h = spec.first;
-    orderref_t ord_h = spec.second;
-
-    os << DENT << "ORDER BY ";
-    switch (ord_h->dir) 
+    if (c.get_kind() == flwor_clause::where_clause)
     {
-    case ParseConstants::dir_ascending: os << "ASCENDING "; break;
-    case ParseConstants::dir_descending: os << "DESCENDING "; break;
-    default: os << "?? ";
+      PUT_SUB ("WHERE", static_cast<const where_clause *>(&c)->get_where());
     }
-    switch (ord_h->empty_mode) 
+    else if (c.get_kind() == flwor_clause::count_clause) 
     {
-    case StaticContextConsts::empty_greatest: os << "EMPTY GREATEST "; break;
-    case StaticContextConsts::empty_least: os << "EMPTY LEAST "; break;
-    default: os << "?? ";
+      os << DENT << "COUNT $"; 
+      put_qname(static_cast<const count_clause *>(&c)->get_var()->get_varname(), os);
+      os << endl;
     }
-    os << ord_h->collation << endl;
-    os << DENT; e_h->put(os);
+    else if (c.get_kind() == flwor_clause::for_clause) 
+    {
+      static_cast<const for_clause *>(&c)->put(os);
+    }
+    else if (c.get_kind() == flwor_clause::let_clause) 
+    {
+      static_cast<const let_clause *>(&c)->put(os);
+    }
+    else if (c.get_kind() == flwor_clause::window_clause) 
+    {
+      static_cast<const window_clause *>(&c)->put(os);
+    }
+    else if (c.get_kind() == flwor_clause::group_clause) 
+    {
+      static_cast<const group_clause *>(&c)->put(os);
+    }
+    else if (c.get_kind() == flwor_clause::order_clause) 
+    {
+      static_cast<const orderby_clause *>(&c)->put(os);
+    }
   }
 
   os << DENT << "RETURN\n";
-  if (retval_h == NULL) {
-    os << DENT << "  NULL\n";
-  } else {
-    retval_h->put(os);
-  }
-
-  CLOSE_EXPR;
-}
-
-ostream &orderby_gclause::put( ostream &os ) const {
-  BEGIN_EXPR (orderby_gclause);
-  order->put (os);
-  os << DENT << "REBIND ";
-  for (unsigned i = 0; i < rebind_list.size (); i++) {
-    os << "$";
-    put_qname (rebind_list [i].first->get_varname (), os) << " (" << rebind_list [i].first.getp () << " -> " << rebind_list [i].second.getp () << ") ";
-  }
-  os << endl;
-  CLOSE_EXPR;
-}
-
-ostream &group_gclause::put( ostream &os ) const {
-  BEGIN_EXPR (group_gclause);
-  os << DENT << "GROUP ";
-  for (unsigned i = 0; i < inner_rebind.size (); i++) {
-    os << "$";
-    put_qname (inner_rebind [i].first->get_varname (), os) << " (" << inner_rebind [i].first.getp () << " -> " << inner_rebind [i].second.getp () << ") ";
-  }
-  os << endl;
-  os << DENT << "REBIND ";
-  for (unsigned i = 0; i < outer_rebind.size (); i++) {
-    os << "$";
-    put_qname (outer_rebind [i].first->get_varname (), os) << " (" << outer_rebind [i].first.getp () << " -> " << outer_rebind [i].second.getp () << ") ";
-  }
-  os << endl;
-  CLOSE_EXPR;
-}
-
-ostream& gflwor_expr::put( ostream& os) const
-{
-  BEGIN_EXPR (gflwor_expr);
-  for (int i = 0; i < size (); i++) {
-    const flwor_clause &c = *((*this) [i]);
-    if (typeid (c) == typeid (where_gclause))
-      PUT_SUB ("WHERE", static_cast<const where_gclause *> (&c)->get_where ());
-    else if (typeid (c) == typeid (count_gclause)) {
-      os << DENT << "COUNT $"; put_qname (static_cast<const count_gclause *> (&c)->get_var ()->get_varname (), os) << endl;
-    } else if (typeid (c) == typeid (forletwin_gclause)) {
-      static_cast<const forletwin_gclause *> (&c)->put (os);
-    } else if (typeid (c) == typeid (group_gclause)) {
-      static_cast<const group_gclause *> (&c)->put (os);
-    } else if (typeid (c) == typeid (orderby_gclause)) {
-      static_cast<const orderby_gclause *> (&c)->put (os);
-    }
-  }
-  os << DENT << "RETURN\n";
-  if (retval_h == NULL) {
+  if (theReturnExpr == NULL) 
+  {
     os << "NULL";
-  } else {
-    retval_h->put(os);
+  }
+  else 
+  {
+    theReturnExpr->put(os);
   }
   CLOSE_EXPR;
 }
@@ -430,16 +443,22 @@ ostream& relpath_expr::put( ostream& os) const
   {
     expr_t expr = *it;
     if (it == begin ())
+    {
       expr->put (os);
+    }
     else
-      PUT_SUB ("REL STEP", expr);
+    {
+      os << INDENT << "REL STEP " ;
+      expr->put(os);
+      os << std::endl;
+      UNDENT;
+    }
   }
   CLOSE_EXPR;
 }
 
 ostream& axis_step_expr::put(ostream& os) const
 {
-  os << INDENT;
   switch (theAxis)
   {
   case axis_kind_self:                os << "self::"; break;
@@ -456,22 +475,23 @@ ostream& axis_step_expr::put(ostream& os) const
   case axis_kind_attribute:           os << "attribute::"; break;
   default: os << "??";
   }
-  UNDENT;
 
-  if (theNodeTest != NULL) {
-    int spd = printdepth0;
-    printdepth0 = -2;
+  if (theNodeTest != NULL) 
+  {
     theNodeTest->put(os);
-    printdepth0 = spd;
-  } else
+  }
+  else
+  {
     os << endl;
+  }
 
   return os;
 }
 
+
 ostream& match_expr::put(ostream& os) const
 {
-  os << INDENT << "match_expr [";
+  os << "match_expr [";
   switch (theTestKind)
   {
   case match_no_test:   os << "no_test("; break;
@@ -523,9 +543,10 @@ ostream& match_expr::put(ostream& os) const
     put_qname (theTypeName, os) << endl;
   }
 
-  os << ")" << "]\n"; UNDENT;
+  os << ")]";
   return os;
 }
+
 
 ostream& const_expr::put( ostream& os) const
 {

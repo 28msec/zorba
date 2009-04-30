@@ -26,34 +26,39 @@ namespace zorba
 namespace flwor 
 {
 
-    class CountState : public PlanIteratorState {
-      private:
-        int theCount;
+class CountState : public PlanIteratorState 
+{
+private:
+  int theCount;
+  
+public:
+  void init ( PlanState& );
+  void reset ( PlanState& );
+  inline int incCount() {return ++theCount;}
+};
+  
 
-      public:
-        void init ( PlanState& );
-        void reset ( PlanState& );
-        inline int incCount() {return ++theCount;}
+class CountIterator : public UnaryBaseIterator<CountIterator, CountState> 
+{
+private:
+  store::Item_t theVarName;
+  std::vector<ForVarIter_t> theCountVars;
 
-    };
+public:
+  CountIterator (
+        const QueryLoc& aLoc,
+        const store::Item_t& aVarName,
+        PlanIter_t aTupleIterator,
+        const std::vector<PlanIter_t>& aCountVars );
+  
+  ~CountIterator();
+  
+public:
+  bool nextImpl ( store::Item_t& result, PlanState& planState ) const;
+  virtual void accept ( PlanIterVisitor& ) const;
+};
 
-    class CountIterator : public UnaryBaseIterator<CountIterator, CountState> {
-      private:
-        store::Item_t theVarName;
-        std::vector<ForVarIter_t> theCountVars;
-      public:
-        CountIterator ( const QueryLoc& aLoc,
-                      const store::Item_t& aVarName,
-                      PlanIter_t aTupleIterator,
-                      std::vector<ForVarIter_t> aCountVars );
-
-        ~CountIterator();
-
-      public:
-        bool nextImpl ( store::Item_t& result, PlanState& planState ) const;
-        virtual void accept ( PlanIterVisitor& ) const;
-    };
-  }
+}
 }
 
 

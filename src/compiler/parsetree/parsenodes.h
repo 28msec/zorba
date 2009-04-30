@@ -1503,7 +1503,7 @@ public:
 
 
 /*******************************************************************************
-  ForClause ::= OUTER? FOR DOLLAR  VarInDeclList
+  ForClause ::= "outer"? "for" "$"  VarInDeclList
 ********************************************************************************/
 class ForClause : public ForOrLetClause
 {
@@ -1527,7 +1527,7 @@ public:
 
 
 /*******************************************************************************
-  VarInDeclList ::= VarInDecl | VarInDeclList  COMMA  DOLLAR  VarInDecl
+  VarInDeclList ::= VarInDecl | VarInDeclList  ","  "$"  VarInDecl
 ********************************************************************************/
 class VarInDeclList : public parsenode
 {
@@ -1548,14 +1548,7 @@ public:
 
 
 /*******************************************************************************
-  VarInDecl ::= VARNAME IN ExprSingle |
-                VARNAME TypeDeclaration IN ExprSinge |
-                VARNAME PositionalVar IN ExprSingle |
-                VARNAME TypeDeclaration PositionalVar IN ExprSingle |
-                VARNAME FTScoreVar  IN  ExprSingle |
-                VARNAME TypeDeclaration FTScoreVar IN ExprSingle |
-                VARNAME PositionalVar FTScoreVar IN ExprSingle |
-                VARNAME TypeDeclaration PositionalVar FTScoreVar IN ExprSingle
+  VarInDecl ::= VarName TypeDeclaration? PositionalVar? FTScoreVar? "in" ExprSingle
 ********************************************************************************/
 class VarInDecl : public VarDeclWithInit
 {
@@ -1582,7 +1575,7 @@ public:
 
 
 /*******************************************************************************
-  PositionalVar ::= AT  DOLLAR  VARNAME
+  PositionalVar ::= "at" "$"  VarName
 ********************************************************************************/
 class PositionalVar : public parsenode
 {
@@ -1732,7 +1725,7 @@ public:
 
   FLWORExpr* get_flwor() const { return flwor_h; }
 
-  GroupSpecList* get_spec_list() const { return &*spec_list_h; }
+  GroupSpecList* get_spec_list() const { return spec_list_h.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -1751,7 +1744,7 @@ public:
 
 	void push_back(rchandle<GroupSpec> spec_h) { spec_hv.push_back(spec_h); }
 
-	GroupSpec* operator[](int i) const { return &*spec_hv[i]; }
+	GroupSpec* operator[](int i) const { return spec_hv[i].getp(); }
 
   size_t size () const { return spec_hv.size (); }
 
@@ -1815,7 +1808,7 @@ public:
 		rchandle<OrderSpecList>,
 		bool stable_b = false);
 
-	rchandle<OrderSpecList> get_spec_list() const { return spec_list_h; }
+	OrderSpecList* get_spec_list() const { return spec_list_h.getp(); }
 
 	bool get_stable_bit() const { return stable_b; }
 
@@ -1840,7 +1833,7 @@ public:
 
 	void push_back(rchandle<OrderSpec> spec_h) { spec_hv.push_back(spec_h); }
 
-	rchandle<OrderSpec> operator[](int i) const { return spec_hv[i]; }
+	OrderSpec* operator[](int i) const { return spec_hv[i].getp(); }
 
   size_t size () const { return spec_hv.size (); }
 
@@ -1864,7 +1857,8 @@ public:
         rchandle<OrderModifier>);
 
 	rchandle<exprnode> get_spec() const { return spec_h; }
-	rchandle<OrderModifier> get_modifier() const { return modifier_h; }
+
+	OrderModifier* get_modifier() const { return modifier_h.getp(); }
 
 	void accept(parsenode_visitor&) const;
 };
@@ -1971,11 +1965,11 @@ class ReturnExpr: public exprnode
 /*******************************************************************************
   WindowClause ::= "for" (TumblingWindowClause | SlidingWindowClause)
 
-  TumblingWindowClause ::= "tumbling" "window" "$" VarName TypeDeclaration? "in"
-                           ExprSingle WindowStartCondition WindowEndCondition?
+  TumblingWindowClause ::= "tumbling" "window" WindowVarDecl
+                           WindowStartCondition WindowEndCondition?
 
-  SlidingWindowClause ::= "sliding" "window" "$" VarName TypeDeclaration? "in"
-                          ExprSingle WindowStartCondition WindowEndCondition
+  SlidingWindowClause ::= "sliding" "window" WindowVarDecl
+                          WindowStartCondition WindowEndCondition
 ********************************************************************************/
 class WindowClause : public FLWORInitialClause 
 {
@@ -1988,25 +1982,37 @@ private:
   rchandle<FLWORWinCond> conditions [2];
 
 public:
-  WindowClause (const QueryLoc& loc_, win_clause_t type_, rchandle<WindowVarDecl> var_, rchandle<FLWORWinCond> start_, rchandle<FLWORWinCond> end_)
-    : FLWORInitialClause (loc_), var (var_), type (type_)
+  WindowClause (
+        const QueryLoc& loc_,
+        win_clause_t type_,
+        rchandle<WindowVarDecl> var_,
+        rchandle<FLWORWinCond> start_,
+        rchandle<FLWORWinCond> end_)
+    :
+    FLWORInitialClause (loc_),
+    var (var_),
+    type (type_)
   {
     conditions [0] = start_;
     conditions [1] = end_;
   }
 
   win_clause_t get_wintype () const { return type; }
-  rchandle<WindowVarDecl> get_var () const { return var; }
-  rchandle<FLWORWinCond> operator[] (unsigned i) const
-  { assert (i <= 2); return conditions [i]; }
 
-public:
+  rchandle<WindowVarDecl> get_var () const { return var; }
+
+  rchandle<FLWORWinCond> operator[] (unsigned i) const
+  {
+    assert (i <= 2);
+    return conditions [i];
+  }
+
 	void accept(parsenode_visitor&) const;
 };
 
 
 /*******************************************************************************
-
+  WindowVarDecl ::= "$" VarName TypeDeclaration? "in"  ExprSingle
 ********************************************************************************/
 class WindowVarDecl : public VarDeclWithInit 
 {
@@ -2021,7 +2027,6 @@ public:
   {
   }
 
-public:
 	void accept(parsenode_visitor&) const;
 };
 
@@ -2035,20 +2040,30 @@ class FLWORWinCond : public parsenode
 {
   rchandle<WindowVars> winvars;
   rchandle<exprnode> val;
-
   bool isStart;
   bool isOnly;  // only when isStart == false
 
 public:
-  FLWORWinCond (const QueryLoc& loc_, rchandle<WindowVars> winvars_, rchandle<exprnode> val_, bool isStart_, bool isOnly_ = false)
-    : parsenode (loc_), winvars (winvars_), val (val_), isStart (isStart_), isOnly (isOnly_)
-  {}
+  FLWORWinCond (
+        const QueryLoc& loc_,
+        rchandle<WindowVars> winvars_,
+        rchandle<exprnode> val_,
+        bool isStart_,
+        bool isOnly_ = false)
+    :
+    parsenode (loc_),
+    winvars (winvars_),
+    val (val_),
+    isStart (isStart_),
+    isOnly (isOnly_)
+  {
+  }
+
   rchandle<WindowVars> get_winvars () const { return winvars; }
   rchandle<exprnode> get_val () const { return val; }
   bool is_start () const { return isStart; }
   bool is_only () const { return isOnly; }
 
-public:
 	void accept(parsenode_visitor&) const;
 };
 
@@ -2061,7 +2076,9 @@ public:
 class WindowVars : public parsenode 
 {
   rchandle<PositionalVar> posvar;
-  std::string curr, prev, next;
+  std::string curr;
+  std::string prev;
+  std::string next;
 
 public:
   WindowVars(
@@ -2092,7 +2109,7 @@ public:
 
 
 /*******************************************************************************
-
+  CountClause ::= "count" "$" VarName
 ********************************************************************************/
 class CountClause : public FLWORClause
 {

@@ -18,7 +18,15 @@
 
 #include "compiler/expression/expr_base.h"
 
-namespace zorba {
+namespace zorba 
+{
+
+class flwor_clause;
+class forletwin_clause;
+class for_clause;
+class var_expr;
+
+typedef rchandle<var_expr> varref_t;
 
 /******************************************************************************
 
@@ -54,10 +62,6 @@ namespace zorba {
                    back to this var_exr. 
 
 *******************************************************************************/
-
-class forlet_clause;
-class flwor_initial_clause;
-
 class var_expr : public expr 
 {
 public:
@@ -68,8 +72,8 @@ public:
     pos_var,
     win_var,
     score_var,
-    wincond_var,
-    wincond_pos_var,
+    wincond_out_var,
+    wincond_out_pos_var,
     wincond_in_var,
     wincond_in_pos_var,
     count_var,
@@ -90,49 +94,64 @@ public:
   bool global;
 
 protected:
-  flwor_initial_clause *m_forlet_clause;
+  flwor_clause * theFlworClause;
 
 public:
   static std::string decode_var_kind(enum var_kind);
 
 public:
-  var_expr(const QueryLoc& loc, var_kind k, store::Item_t name, bool global_ = true);
+  var_expr(const QueryLoc& loc, var_kind k, store::Item_t name, bool global = true);
 
   expr_kind_t get_expr_kind () const { return var_expr_kind; }
 
   store::Item_t get_varname() const;
 
   var_kind get_kind() const { return kind; }
+
   void set_kind(var_kind k) { kind = k; }
 
   xqtref_t get_type() const;
+
   void set_type(xqtref_t t);
 
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
-  std::ostream& put(std::ostream&) const;
-
   virtual expr_t clone(substitution_t& substitution);
+
   virtual xqtref_t return_type_impl (static_context *);
 
-  void set_forlet_clause(flwor_initial_clause *flclause) { m_forlet_clause = flclause; }
-  forlet_clause *get_forlet_clause() const;
-  flwor_initial_clause *get_flwor_clause() const { return m_forlet_clause; }
+  void set_flwor_clause(flwor_clause* clause) { theFlworClause = clause; }
+
+  flwor_clause* get_flwor_clause() const { return theFlworClause; }
+
+  forletwin_clause* get_forletwin_clause() const;
+
+  for_clause* get_for_clause() const;
+
+  var_expr* get_pos_var() const;
+
+  void next_iter(expr_iterator_data&);
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
 };
 
-typedef rchandle<var_expr> varref_t;
 
-  struct global_binding : public std::pair<varref_t, expr_t> {
-    bool ext;
-    global_binding () : ext (false) {}
-    global_binding (varref_t v, expr_t e)
-      : std::pair<varref_t, expr_t>  (v, e), ext (e == NULL)
-    {}
-    global_binding (varref_t v, expr_t e, bool ext_)
-      : std::pair<varref_t, expr_t> (v, e), ext (ext_)
-    {}
-    bool is_extern () const { return ext; }
-  };
+struct global_binding : public std::pair<varref_t, expr_t> 
+{
+  bool ext;
+
+  global_binding () : ext (false) {}
+
+  global_binding (varref_t v, expr_t e)
+    : std::pair<varref_t, expr_t>  (v, e), ext (e == NULL)
+  {}
+
+  global_binding (varref_t v, expr_t e, bool ext_)
+    : std::pair<varref_t, expr_t> (v, e), ext (ext_)
+  {}
+
+  bool is_extern () const { return ext; }
+};
 
 }
 

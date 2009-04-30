@@ -81,7 +81,7 @@ RULE_REWRITE_PRE(ExpandBuildIndex)
       // for $$dot at $$pos in domain_expr
       //
       expr::substitution_t subst;
-      flwor_expr::forlet_list_t clauses;
+      flwor_expr::clause_list_t clauses;
       var_expr_t dot = vi->getDomainVariable();
       var_expr_t pos = vi->getDomainPositionVariable();
 
@@ -95,13 +95,9 @@ RULE_REWRITE_PRE(ExpandBuildIndex)
                                        pos->get_varname());
       subst[dot] = newdot;
       subst[pos] = newpos;
-      flwor_expr::forletref_t fc = new forlet_clause(forlet_clause::for_clause,
-                                                     newdot,
-                                                     newpos,
-                                                     NULL,
-                                                     newdom);
-      newdot->set_forlet_clause(fc);
-      newpos->set_forlet_clause(fc);
+      for_clause* fc = new for_clause(dot->get_loc(), newdot, newdom, newpos);
+      newdot->set_flwor_clause(fc);
+      newpos->set_flwor_clause(fc);
 
       clauses.push_back(fc);
 
@@ -123,15 +119,19 @@ RULE_REWRITE_PRE(ExpandBuildIndex)
         index_builder_args.push_back(idx_fields[i]->clone(subst));
       }
 
-      expr_t ret_clause(new fo_expr(fo->get_loc(),
-                                    LOOKUP_OPN("index-builder"),
-                                    index_builder_args));
+      expr_t ret_expr(new fo_expr(fo->get_loc(),
+                                  LOOKUP_OPN("index-builder"),
+                                  index_builder_args));
       
       //
       // Create flwor_expr with the above FOR and RETURN clauses.
       //
-      rchandle<flwor_expr> flwor = new flwor_expr(fo->get_loc(), clauses, ret_clause);
-
+      rchandle<flwor_expr> flwor = new flwor_expr(fo->get_loc(), false);
+      flwor->set_return_expr(ret_expr);
+      for (unsigned i = 0; i < clauses.size(); ++i)
+      {
+        flwor->addClause(clauses[i]);
+      }
       se_args.push_back(flwor.getp());
 
       //

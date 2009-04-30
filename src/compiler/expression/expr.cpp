@@ -43,25 +43,33 @@
 #include "store/api/item_factory.h"
 
 using namespace std;
-namespace zorba {
+
+namespace zorba 
+{
   
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
-  static QueryLoc null_loc;
+static QueryLoc null_loc;
 
-  static expr_t dummy_expr;
-  static expr_t *expr_iter_done = &dummy_expr;
+static expr_t dummy_expr;
+static expr_t* expr_iter_done = &dummy_expr;
+
+#define CLONE( e, s ) ((e) == NULL ? NULL : (e)->clone (s))
 
 #define BEGIN_EXPR_ITER() switch (v.state) { case 0:
+
 #define BEGIN_EXPR_ITER2( type )                                        \
   type##_iterator_data &vv = dynamic_cast<type##_iterator_data &> (v);  \
   BEGIN_EXPR_ITER()
+
 #define END_EXPR_ITER()   v.i = expr_iter_done; }
+
 #define ITER( m )                                                \
   do {                                                           \
     v.state = __LINE__; v.i = reinterpret_cast<expr_t *> (&(m)); \
     if ((m) != NULL) { invalidate (); return; }                  \
   case __LINE__:; } while (0)
+
 #define ITER_FOR_EACH( iter, begin, end, expr )                      \
   for (vv.iter = (begin); vv.iter != (end); ++(vv.iter))  {          \
     ITER (expr);                                                     \
@@ -77,26 +85,6 @@ public:
   
 public:
   fo_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
-};
-
-class flwor_expr_iterator_data : public expr_iterator_data {
-public:
-  flwor_expr::forlet_list_t::iterator clause_iter;
-  flwor_expr::group_list_t::iterator group_iter;
-  flwor_expr::group_list_t::iterator non_group_iter;
-  flwor_expr::orderspec_list_t::iterator order_mod_iter;
-  
-public:
-  flwor_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
-};
-
-class gflwor_expr_iterator_data : public expr_iterator_data {
-public:
-  gflwor_expr::clause_list_t::iterator clause_iter;
-  int wincond_iter;
-
-public:
-  gflwor_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
 };
 
 class trycatch_expr_iterator_data : public expr_iterator_data {
@@ -157,6 +145,7 @@ public:
   sequential_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
 };
 
+
 #define DEF_ACCEPT( type )                         \
   void type::accept (expr_visitor &v) {            \
     if (v.begin_visit (*this))                     \
@@ -172,7 +161,6 @@ DEF_ACCEPT (wrapper_expr)
 DEF_ACCEPT (sequential_expr)
 DEF_ACCEPT (var_expr)
 DEF_ACCEPT (flwor_expr)
-DEF_ACCEPT (gflwor_expr)
 DEF_ACCEPT (promote_expr)
 DEF_ACCEPT (trycatch_expr)
 DEF_ACCEPT (eval_expr)
@@ -209,70 +197,117 @@ DEF_ACCEPT (while_expr)
 
 #undef DEF_ACCEPT
 
-expr_iterator::expr_iterator (const expr_iterator &other) : iter (new expr_iterator_data (*other.iter)) {}
-  expr_iterator &expr_iterator::operator= (const expr_iterator &other) {
-    if (this != &other) {
-      delete iter;
-      iter = new expr_iterator_data (*other.iter);
-    }
-    return *this;
-  }
-  expr_iterator &expr_iterator::operator++ () { iter->next (); return *this; }
-  expr_iterator expr_iterator::operator++ (int) { expr_iterator old; old = *this; ++*this; return old; }
-  expr_t &expr_iterator::operator* () { return *(iter->i); }
-  bool expr_iterator::done () const { return iter->done (); }
-  expr_iterator::~expr_iterator () { delete iter; }
+expr_iterator::expr_iterator (const expr_iterator &other) 
+:
+iter (new expr_iterator_data (*other.iter)) 
+{
+}
 
-  
-  expr::expr(const QueryLoc& _loc)
-    : loc(_loc)
+
+expr_iterator &expr_iterator::operator= (const expr_iterator &other) 
+{
+  if (this != &other) 
   {
-    invalidate ();
+    delete iter;
+    iter = new expr_iterator_data (*other.iter);
   }
+  return *this;
+}
+
+
+expr_iterator &expr_iterator::operator++ ()
+{
+  iter->next ();
+  return *this; 
+}
+
+
+expr_iterator expr_iterator::operator++ (int)
+{
+  expr_iterator old; old = *this; ++*this; return old;
+}
+
+expr_t& expr_iterator::operator* ()
+{
+  return *(iter->i);
+}
+
+bool expr_iterator::done () const 
+{
+  return iter->done ();
+}
+
+expr_iterator::~expr_iterator () 
+{
+  delete iter; 
+}
+
   
-  expr::~expr() {}
+expr::expr(const QueryLoc& _loc) : loc(_loc)
+{
+  invalidate ();
+}
+
   
-  string expr::toString () const {
-    ostringstream oss;
-    put (oss);
-    return oss.str ();
-  }
+expr::~expr()
+{
+}
 
-  expr_iterator_data *expr::make_iter () {
-    return new expr_iterator_data (this);
-  }
   
-  void expr::accept_children (expr_visitor &v) {
-    for (expr_iterator i = expr_begin (); ! i.done (); ++i) {
-      if (*i != NULL)
-        (*i)->accept (v);
-    }
-  }
+string expr::toString () const 
+{
+  ostringstream oss;
+  put (oss);
+  return oss.str ();
+}
 
-  expr_iterator expr::expr_begin() {
-    invalidate ();
-    expr_iterator_data *iter_data = make_iter ();
-    iter_data->next ();
-    return expr_iterator (iter_data);
-  }
 
-  void expr::next_iter (expr_iterator_data &v) {
-    BEGIN_EXPR_ITER();
-    ZORBA_ASSERT (false);
-    END_EXPR_ITER();
-  }
+expr_iterator_data *expr::make_iter () 
+{
+  return new expr_iterator_data (this);
+}
+  
 
-  expr_t expr::clone()
-  {
-      substitution_t s;
-      return clone(s);
-  }
+expr_iterator expr::expr_begin() 
+{
+  invalidate ();
+  expr_iterator_data *iter_data = make_iter ();
+  iter_data->next ();
+  return expr_iterator (iter_data);
+}
 
-  expr_t expr::clone(substitution_t& substitution)
-  {
-    ZORBA_ASSERT(false);
-    return NULL; // Make the compiler happy
+  
+void expr::next_iter (expr_iterator_data &v) 
+{
+  BEGIN_EXPR_ITER();
+  ZORBA_ASSERT (false);
+  END_EXPR_ITER();
+}
+
+
+void expr::accept_children (expr_visitor &v) 
+{
+  for (expr_iterator i = expr_begin (); ! i.done (); ++i) {
+    if (*i != NULL)
+      (*i)->accept (v);
   }
+}
+
+ 
+expr_t expr::clone()
+{
+  substitution_t s;
+  return clone(s);
+}
+
+
+expr_t expr::clone(substitution_t& substitution)
+{
+  ZORBA_ASSERT(false);
+  return NULL; // Make the compiler happy
+}
+
+
 #ifdef ZORBA_DEBUGGER
   expr_iterator_data *debugger_expr::make_iter()
   {
@@ -326,22 +361,17 @@ expr_iterator::expr_iterator (const expr_iterator &other) : iter (new expr_itera
 //                                                                     //
 /////////////////////////////////////////////////////////////////////////
 
-// [29]
-// [33a]
 
-#define CLONE( e, s ) ((e) == NULL ? NULL : (e)->clone (s))
-
-string var_expr::decode_var_kind(
-  enum var_kind k)
+string var_expr::decode_var_kind(enum var_kind k)
 {
   switch (k) {
   case for_var: return "FOR"; break;
   case let_var: return "LET"; break;
   case win_var: return "WIN"; break;
   case pos_var: return "POS"; break;
-  case wincond_var: return "WINCOND"; break;
+  case wincond_out_var: return "WINCOND"; break;
   case wincond_in_var: return "WINCOND IN"; break;
-  case wincond_pos_var: return "WINCOND POS"; break;
+  case wincond_out_pos_var: return "WINCOND POS"; break;
   case wincond_in_pos_var: return "WINCOND IN POS"; break;
   case count_var: return "CNT"; break;
   case score_var: return "SCORE"; break;
@@ -350,24 +380,74 @@ string var_expr::decode_var_kind(
   case catch_var: return "CATCH"; break;
   case copy_var: return "COPY"; break;
   case groupby_var: return "GROUPBY"; break;
+  case non_groupby_var: return "NON-GROUPBY"; break;
   case param_var: return "PARAM"; break;
   default: return "???";
   }
 }
 
-  var_expr::var_expr(const QueryLoc& loc, var_kind k, store::Item_t name, bool global_)
-    : expr (loc), kind (k), varname_h (name), type (NULL), global (global_),
-      m_forlet_clause(NULL)
-  {}
 
-store::Item_t var_expr::get_varname() const { return varname_h; }
-xqtref_t var_expr::get_type() const { return type; }
-void var_expr::set_type(xqtref_t t) { type = t; }
+var_expr::var_expr(const QueryLoc& loc, var_kind k, store::Item_t name, bool global_)
+  :
+  expr (loc),
+  kind (k),
+  varname_h (name),
+  type (NULL),
+  global (global_),
+  theFlworClause(NULL)
+{
+}
 
-void var_expr::next_iter (expr_iterator_data& v) {
+
+store::Item_t var_expr::get_varname() const 
+{
+  return varname_h;
+}
+
+
+xqtref_t var_expr::get_type() const 
+{
+  return type;
+}
+
+
+void var_expr::set_type(xqtref_t t) 
+{
+  type = t;
+}
+
+
+var_expr* var_expr::get_pos_var() const
+{
+  if (kind == for_var)
+  {
+    return reinterpret_cast<for_clause*>(theFlworClause)->get_pos_var();
+  }
+  else
+  {
+    return NULL;
+  }
+}
+
+
+forletwin_clause* var_expr::get_forletwin_clause() const 
+{
+  return dynamic_cast<forletwin_clause*>(theFlworClause);
+}
+
+
+for_clause* var_expr::get_for_clause() const 
+{
+  return dynamic_cast<for_clause*>(theFlworClause);
+}
+
+
+void var_expr::next_iter(expr_iterator_data& v) 
+{
   BEGIN_EXPR_ITER();
   END_EXPR_ITER();
 }
+
 
 expr::expr_t var_expr::clone(expr::substitution_t& substitution)
 {
@@ -378,33 +458,35 @@ expr::expr_t var_expr::clone(expr::substitution_t& substitution)
   return i->second->clone(substitution);
 }
 
-forlet_clause *var_expr::get_forlet_clause() const
+
+/*******************************************************************************
+
+********************************************************************************/
+bound_var::bound_var(var_expr* ve, varref_t var, expr_t val_)
+  :
+  varname(ve->get_varname ()),
+  var_key(dynamic_context::var_key (ve)),
+  type(ve->get_type()),
+  val(val_),
+  var(var)
 {
-  return dynamic_cast<forlet_clause *> (m_forlet_clause); 
 }
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  FLWORExpr : [http://www.w3.org/TR/xquery/#prod-xquery-FLWORExpr]           //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
 
 
 #ifdef ZORBA_DEBUGGER
 /******************************************************************************
 
 ********************************************************************************/
-void flwor_clause::set_bound_variables(checked_vector<var_expr_t> &aScopedVariables)
+void flwor_clause::set_bound_variables(checked_vector<varref_t>& aScopedVariables)
 {
   std::set<store::Item_t> lQNames;
-  checked_vector<var_expr_t>::reverse_iterator it;
+  checked_vector<varref_t>::reverse_iterator it;
   for ( it = aScopedVariables.rbegin(); it != aScopedVariables.rend(); ++it )
   {
     if ( lQNames.find( (*it)->get_varname() ) == lQNames.end() )
     {
       lQNames.insert( (*it)->get_varname() );
-      var_expr_t lValue = (*it);
+      varref_t lValue = (*it);
       //var_expr_t lVariable( new var_expr( lValue->get_loc(), var_expr::eval_var, lValue->get_varname() ) );
       //lVariable->set_type( lValue->get_type() );
       //theBoundVariables.push_back(bound_var(&*lVariable, lVariable, lValue.getp()));
@@ -415,272 +497,559 @@ void flwor_clause::set_bound_variables(checked_vector<var_expr_t> &aScopedVariab
 #endif
 
 
-/******************************************************************************
+/*******************************************************************************
 
 ********************************************************************************/
-forlet_clause::forlet_clause(
-  enum forlet_t kind,
-  varref_t _var_h,
-  varref_t _pos_var_h,
-  varref_t _score_var_h,
-  expr_t _expr_h)
+forletwin_clause::forletwin_clause(
+    const QueryLoc& loc,
+    flwor_clause::ClauseKind kind,
+    varref_t varExpr,
+    expr_t domainExpr)
   :
-  flwor_initial_clause (_var_h, _expr_h),
-  theKind(kind),
-  pos_var_h(_pos_var_h),
-  score_var_h(_score_var_h)
+  flwor_clause(loc, kind),
+  theVarExpr(varExpr),
+  theDomainExpr(domainExpr)
 {
-  if (var_h != NULL) {
-    var_h->set_forlet_clause(this);
-  }
-  if (pos_var_h != NULL) {
-    pos_var_h->set_forlet_clause(this);
-  }
-  if (score_var_h != NULL) {
-    score_var_h->set_forlet_clause(this);
-  }
+  if (theVarExpr != NULL)
+    theVarExpr->set_flwor_clause(this);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-rchandle<forlet_clause> forlet_clause::clone(expr::substitution_t& substitution)
+for_clause::for_clause(
+    const QueryLoc& loc,
+    varref_t varExpr,
+    expr_t domainExpr,
+    varref_t posVarExpr,
+    varref_t scoreVarExpr)
+  :
+  forletwin_clause(loc, flwor_clause::for_clause, varExpr, domainExpr),
+  thePosVarExpr(posVarExpr),
+  theScoreVarExpr(scoreVarExpr)
 {
-  expr_t expr_copy_h = expr_h->clone(substitution);
+  if (thePosVarExpr != NULL)
+    thePosVarExpr->set_flwor_clause(this);
 
-  varref_t var_copy_h(new var_expr(*var_h));
-  substitution[var_h.getp()] = var_copy_h.getp();
+  if (theScoreVarExpr != NULL)
+    theScoreVarExpr->set_flwor_clause(this);
+}
 
-  varref_t pos_var_copy_h;
-  var_expr *pos_var_ptr = pos_var_h.getp();
-  if (pos_var_ptr) {
-    pos_var_copy_h = new var_expr(*pos_var_ptr);
-    substitution[pos_var_ptr] = pos_var_copy_h.getp();
-  }
 
-  varref_t score_var_copy_h;
-  var_expr *score_var_ptr = score_var_h.getp();
-  if (score_var_ptr) {
-    score_var_copy_h = new var_expr(*score_var_ptr);
-    substitution[score_var_ptr] = score_var_copy_h.getp();
-  }
-
-  return new forlet_clause(theKind,
-                           var_copy_h,
-                           pos_var_copy_h,
-                           score_var_copy_h,
-                           expr_copy_h);
+for_clause::~for_clause() 
+{
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-bool flwor_expr::defines_variable(const var_expr* v) const
+let_clause::let_clause(
+    const QueryLoc& loc,
+    varref_t varExpr,
+    expr_t domainExpr,
+    varref_t scoreVarExpr)
+  :
+  forletwin_clause(loc, flwor_clause::let_clause, varExpr, domainExpr),
+  theScoreVarExpr(scoreVarExpr)
 {
-  long numVars = theForLetClauses.size();
+  if (theScoreVarExpr != NULL)
+    theScoreVarExpr->set_flwor_clause(this);
+}
 
-  for (long i = 0; i < numVars; ++i)
+
+let_clause::~let_clause() 
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+window_clause::window_clause(
+    const QueryLoc& loc,
+    varref_t varExpr,
+    expr_t domainExpr,
+    window_t winKind,
+    flwor_wincond_t winStart,
+    flwor_wincond_t winStop)
+  :
+  forletwin_clause(loc, flwor_clause::window_clause, varExpr, domainExpr),
+  theWindowKind(winKind),
+  theWinStartCond(winStart),
+  theWinStopCond(winStop)
+{
+  if (theWinStartCond != NULL)
+    theWinStartCond->set_flwor_clause(this);
+
+  if (theWinStopCond != NULL)
+    theWinStopCond->set_flwor_clause(this);
+}
+
+
+window_clause::~window_clause() 
+{
+  if (theWinStartCond != NULL)
+    theWinStartCond->set_flwor_clause(NULL);
+
+  if (theWinStopCond != NULL)
+    theWinStopCond->set_flwor_clause(NULL);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void flwor_wincond::vars::set_flwor_clause(flwor_clause* c) 
+{
+  if (posvar != NULL) posvar->set_flwor_clause(c);
+  if (curr != NULL) curr->set_flwor_clause(c);
+  if (prev != NULL) prev->set_flwor_clause(c);
+  if (next != NULL) next->set_flwor_clause(c);
+}
+
+
+void flwor_wincond::set_flwor_clause(flwor_clause* c) 
+{
+  theInputVars.set_flwor_clause(c);
+  theOutputVars.set_flwor_clause(c);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class flwor_expr_iterator_data : public expr_iterator_data 
+{
+public:
+  flwor_expr::clause_list_t::iterator    theClausesIter;
+  flwor_expr::clause_list_t::iterator    theClausesEnd;
+  std::vector<expr_t>::iterator          theOrderExprsIter;
+  std::vector<expr_t>::iterator          theOrderExprsEnd;
+  flwor_clause::rebind_list_t::iterator  theGroupVarsIter;
+  flwor_clause::rebind_list_t::iterator  theGroupVarsEnd;
+  flwor_clause::rebind_list_t::iterator  theNonGroupVarsIter;
+  flwor_clause::rebind_list_t::iterator  theNonGroupVarsEnd;
+  int                                    theWincondIter;
+
+public:
+  flwor_expr_iterator_data(expr* e) : expr_iterator_data(e) {}
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void flwor_expr::addClause(flwor_clause* c) 
+{
+  theClauses.push_back(c);
+}
+
+
+void flwor_expr::addClause(int idx, flwor_clause* c) 
+{
+  theClauses.insert(theClauses.begin() + idx, c);
+}
+
+
+void flwor_expr::add_where(expr_t e)
+{
+  where_clause* whereClause = new where_clause(e->get_loc(), e);
+
+  theClauses.push_back(whereClause);
+}
+
+
+expr* flwor_expr::get_where() const
+{
+  unsigned numClauses = num_clauses();
+  for (unsigned i = 0; i < numClauses; ++i)
   {
-    if (theForLetClauses[i]->var_h.getp() == v ||
-        theForLetClauses[i]->pos_var_h.getp() == v)
-      return true;
+    if (theClauses[i]->get_kind() == flwor_clause::where_clause)
+      return reinterpret_cast<where_clause*>(theClauses[i].getp())->get_where();
   }
 
-  return false;
+  return NULL;
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-expr_iterator_data *flwor_expr::make_iter () 
+void flwor_expr::set_where(expr* e)
 {
-  return new flwor_expr_iterator_data (this);
-}
+  ZORBA_ASSERT(e != NULL);
 
+  unsigned numClauses = num_clauses();
+  unsigned i;
 
-/*******************************************************************************
-
-********************************************************************************/
-void flwor_expr::next_iter(expr_iterator_data& v) 
-{
-  BEGIN_EXPR_ITER2 (flwor_expr);
-
-  ITER_FOR_EACH (clause_iter,
-                 theForLetClauses.begin (),
-                 theForLetClauses.end (),
-                 (*vv.clause_iter)->expr_h);
-  
-  ITER (where_h);
-
-  ITER_FOR_EACH (group_iter,
-                 theGroupingVarClauses.begin(),
-                 theGroupingVarClauses.end(),
-                 (*vv.group_iter)->theOuterVar);
-
-  ITER_FOR_EACH (non_group_iter,
-                 theNonGroupingVarClauses.begin(),
-                 theNonGroupingVarClauses.end(),
-                 (*vv.non_group_iter)->theOuterVar);
-
-  ITER (group_where_h);
-
-  ITER_FOR_EACH (order_mod_iter, orderspec_begin (), orderspec_end (),
-                 (*vv.order_mod_iter).first);
-
-  ITER (retval_h);
-  
-  END_EXPR_ITER(); 
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-flwor_expr::forlet_list_t::iterator flwor_expr::remove_forlet(
-    flwor_expr::forlet_list_t::iterator i) 
-{
-  (*i)->get_var ()->set_forlet_clause (NULL);
-  var_expr *pvar = (*i)->get_pos_var ();
-  if (pvar != NULL)
-    pvar->set_forlet_clause (NULL);
-  return theForLetClauses.erase(i);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-expr::expr_t flwor_expr::clone(expr::substitution_t& substitution)
-{
-  expr_t flwor_copy = new flwor_expr(get_loc());
-
-  flwor_copy->setUpdateType(getUpdateType());
-
-  flwor_expr *flwor_copy_ptr = static_cast<flwor_expr *>(flwor_copy.getp());
-
-  for(forlet_list_t::iterator i = theForLetClauses.begin();
-      i != theForLetClauses.end(); ++i) 
+  for (i = 0; i < numClauses; ++i)
   {
-    flwor_copy_ptr->add((*i)->clone(substitution));
-  }
-
-  for(orderspec_list_t::iterator i = orderspec_v.begin(); i != orderspec_v.end(); ++i) 
-  {
-    expr_t e_copy = i->first->clone(substitution);
-    flwor_copy_ptr->add(orderspec_t(e_copy, i->second));
-  }
-
-  flwor_copy_ptr->set_order_stable(order_stable);
-
-  if (where_h.getp()) {
-    flwor_copy_ptr->set_where(where_h->clone(substitution));
-  }
-
-  flwor_copy_ptr->set_retval(retval_h->clone(substitution));
-
-  return flwor_copy;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void orderby_gclause::init_clauses () 
-{
-  for (unsigned i = 0; i < rebind_list.size (); i++) {
-    rebind_list [i].second->set_forlet_clause (rebind_list [i].first->get_flwor_clause ());
-  }
-}
-
-
-forletwin_gclause::forletwin_gclause(enum forlet_t _type,
-                                     varref_t _var_h,
-                                     expr_t _expr_h,
-                                     varref_t _pos_var_h,
-                                     varref_t _score_var_h,
-                                     window_t wintype_,
-                                     std::auto_ptr<flwor_wincond> win_start_,
-                                     std::auto_ptr<flwor_wincond> win_stop_)
-    : flwor_initial_clause (_var_h, _expr_h),
-      type (_type), wintype (wintype_),
-      pos_var_h (_pos_var_h),
-      win_start (win_start_), win_stop (win_stop_)
-{
-  if (_var_h != NULL) {
-    _var_h->set_forlet_clause(this);
-  }
-  if (_pos_var_h != NULL) {
-    _pos_var_h->set_forlet_clause(this);
-  }
-  if (_score_var_h != NULL) {
-    _score_var_h->set_forlet_clause(this);
-  }
-  if (win_start.get () != NULL)
-    win_start->set_forlet_clause (this);
-  if (win_stop.get () != NULL)
-    win_stop->set_forlet_clause (this);
-}
-
-
-void flwor_wincond::vars::set_forlet_clause (forletwin_gclause *c) {
-  if (posvar != NULL) posvar->set_forlet_clause (c);
-  if (curr != NULL) curr->set_forlet_clause (c);
-  if (prev != NULL) prev->set_forlet_clause (c);
-  if (next != NULL) next->set_forlet_clause (c);
-}
-
-void flwor_wincond::set_forlet_clause (forletwin_gclause *c) {
-  in_vars.set_forlet_clause (c);
-  out_vars.set_forlet_clause (c);
-}
-
-void gflwor_expr::push_back (rchandle<flwor_clause> c) {
-  clauses.push_back (c);
-  if (typeid (*c) == typeid (orderby_gclause)) {
-    c.cast<orderby_gclause> ()->init_clauses ();
-  }
-}
-
-expr_iterator_data *gflwor_expr::make_iter () {
-  return new gflwor_expr_iterator_data (this);
-}
-
-void gflwor_expr::next_iter (expr_iterator_data& v) {
-  flwor_clause *c;
-  forletwin_gclause *flc;
-  flwor_wincond *wincond;
-  BEGIN_EXPR_ITER2 (gflwor_expr);
-
-  for (vv.clause_iter = clauses.begin (); vv.clause_iter != clauses.end (); vv.clause_iter++) {
-    c = (vv.clause_iter)->getp ();
-    if (typeid (*c) == typeid (forletwin_gclause)) {
-      if (static_cast<forletwin_gclause *> (c)->get_type () == forletwin_gclause::win_clause) {
-        for (vv.wincond_iter = 0; vv.wincond_iter < 2; vv.wincond_iter++) {
-          flc = static_cast<forletwin_gclause *> ((vv.clause_iter)->getp ());
-          wincond = vv.wincond_iter == 0 ? flc->win_start.get () : flc->win_stop.get ();
-          if (wincond != 0)
-            ITER (wincond->cond);
-        }
-      }
-      flc = static_cast<forletwin_gclause *> ((vv.clause_iter)->getp ());
-      ITER (flc->expr_h);
-    } else if (typeid (*c) == typeid (where_gclause)) {
-      ITER (static_cast<where_gclause *> (c)->where);
-    } else if (typeid (*c) == typeid (orderby_gclause)) {
-      // TODO: we should probably iterate over inner vars as well.
-      // If so these need to become expr_t's.
-      ITER (static_cast<orderby_gclause *> (c)->order);
+    if (theClauses[i]->get_kind() != flwor_clause::for_clause &&
+        theClauses[i]->get_kind() != flwor_clause::let_clause)
+    {
+      break;
     }
   }
 
-  ITER (retval_h);
+  if (i == numClauses)
+  {
+    add_where(e);
+    return;
+  }
+
+  if (theClauses[i]->get_kind() == flwor_clause::where_clause)
+  {
+    where_clause* wc = reinterpret_cast<where_clause*>(theClauses[i].getp());
+    wc->set_where(e);
+    return;
+  }
+
+  where_clause* wc = new where_clause(e->get_loc(), e);
+  theClauses.insert(theClauses.begin() + i, wc);
+}
+
+
+void flwor_expr::remove_where_clause()
+{
+  unsigned numClauses = num_clauses();
+  for (unsigned i = 0; i < numClauses; ++i)
+  {
+    if (theClauses[i]->get_kind() == flwor_clause::where_clause)
+    {
+      theClauses.erase(theClauses.begin() + i);
+      return;
+    }
+  }
+}
+
+
+group_clause* flwor_expr::get_group_clause() const
+{
+  ulong numClauses = num_clauses();
+  for (ulong i = 0; i < numClauses; ++i)
+  {
+    if (theClauses[i]->get_kind() == flwor_clause::group_clause)
+      return reinterpret_cast<group_clause*>(theClauses[i].getp());
+  }
+
+  return NULL;
+}
+
+
+ulong flwor_expr::num_forlet_clauses()
+{
+  ulong num = 0;
+  ulong numClauses = num_clauses();
+  for (ulong i = 0; i < numClauses; ++i)
+  {
+    const flwor_clause* c = theClauses[i];
+    
+    if (c->get_kind() == flwor_clause::for_clause ||
+        c->get_kind() == flwor_clause::let_clause)
+    {
+      ++num;
+    }
+  }
+
+  return num;
+}
+
+
+void flwor_expr::remove_forlet_clause(ulong i) 
+{
+  if (theClauses[i]->get_kind() == flwor_clause::for_clause)
+  {
+    for_clause* c = reinterpret_cast<for_clause*>(theClauses[i].getp());
+
+    c->get_var()->set_flwor_clause(NULL);
+    var_expr* pvar = c->get_pos_var();
+    if (pvar != NULL)
+      pvar->set_flwor_clause(NULL);
+  }
+  else
+  {
+    let_clause* c = reinterpret_cast<let_clause*>(theClauses[i].getp());
+
+    c->get_var()->set_flwor_clause(NULL);
+  }
+
+  theClauses.erase(theClauses.begin() + i);
+}
+
+
+long flwor_expr::defines_variable(const var_expr* v, const flwor_clause* limit) const
+{
+  ulong numClauses = theClauses.size();
+
+  for (ulong i = 0; i < numClauses; ++i)
+  {
+    const flwor_clause* c = theClauses[i];
+
+    if (v->get_flwor_clause() == limit)
+      break;
+
+    if (c->get_kind() == flwor_clause::for_clause)
+    {
+      const for_clause* fc = static_cast<const for_clause *>(c);
+
+      if (fc->get_var() == v || fc->get_pos_var() == v)
+        return i;
+    }
+    if (c->get_kind() == flwor_clause::let_clause)
+    {
+      const let_clause* lc = static_cast<const let_clause *>(c);
+
+      if (lc->get_var() == v)
+        return i;
+    }
+    else if (c->get_kind() == flwor_clause::window_clause)
+    {
+      const window_clause* wc = static_cast<const window_clause *>(c);
+
+      if (wc->get_var() == v)
+        return i;
+
+      const flwor_wincond* startCond = wc->get_win_start();
+      const flwor_wincond* stopCond = wc->get_win_stop();
+      const flwor_wincond::vars& startVars = startCond->get_out_vars();
+      const flwor_wincond::vars& stopVars = stopCond->get_out_vars();
+
+      if (startVars.posvar.getp() == v) return i;
+      if (startVars.curr.getp() == v) return i;
+      if (startVars.prev.getp() == v) return i;
+      if (startVars.next.getp() == v) return i;
+
+      if (stopVars.posvar.getp() == v) return i;
+      if (stopVars.curr.getp() == v) return i;
+      if (stopVars.prev.getp() == v) return i;
+      if (stopVars.next.getp() == v) return i;
+    }
+    else if (c->get_kind() == flwor_clause::group_clause)
+    {
+      const group_clause* gc = static_cast<const group_clause *>(c);
+
+      const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
+      ulong numGroupVars = gvars.size();
+
+      for (ulong k = 0; k < numGroupVars; ++k)
+      {
+        if (gvars[k].second.getp() == v)
+          return i;
+      }
+
+      const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
+      ulong numNonGroupVars = ngvars.size();
+
+      for (ulong k = 0; k < numNonGroupVars; ++k)
+      {
+        if (ngvars[k].second.getp() == v)
+          return i;
+      }
+    }
+  }
+
+  return -1;
+}
+
+
+void flwor_expr::accept_children(expr_visitor& v) 
+{
+  ulong numClauses = num_clauses();
+
+  for (ulong i = 0; i < numClauses; ++i) 
+  {
+    const flwor_clause* c = theClauses[i];
+
+    switch (c->get_kind())
+    {
+    case flwor_clause::for_clause:
+    {
+      v.visit_flwor_clause(c, theIsGeneral);
+
+      const for_clause* fc = reinterpret_cast<const for_clause*>(c);
+      fc->get_expr()->accept(v);
+      break;
+    }
+    case flwor_clause::let_clause:
+    {
+      v.visit_flwor_clause(c, theIsGeneral);
+
+      const for_clause* fc = reinterpret_cast<const for_clause*>(c);
+      fc->get_expr()->accept(v);
+      break;
+    }
+    case flwor_clause::window_clause:
+    {
+      v.visit_flwor_clause(c, theIsGeneral);
+
+      const window_clause* wc = reinterpret_cast<const window_clause*>(c);
+
+      flwor_wincond* startCond = wc->get_win_start();
+      flwor_wincond* stopCond = wc->get_win_stop();
+
+      if (startCond)
+        startCond->get_cond()->accept(v);
+
+      if (stopCond)
+        stopCond->get_cond()->accept(v);
+
+      wc->get_expr()->accept(v);
+
+      break;
+    }
+    case flwor_clause::group_clause:
+    {
+      const group_clause* gc = reinterpret_cast<const group_clause*>(c);
+
+      const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
+      const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
+      
+      for (ulong i = 0; i < gvars.size(); ++i)
+      {
+        gvars[i].first->accept(v);
+      }
+
+      for (ulong i = 0; i < ngvars.size(); ++i)
+      {
+        ngvars[i].first->accept(v);
+      }
+
+      v.visit_flwor_clause(c, theIsGeneral);
+
+      break;
+    }
+    case flwor_clause::order_clause:
+    {
+      const orderby_clause* oc = reinterpret_cast<const orderby_clause*>(c);
+
+      ulong numCols = oc->num_columns();
+      for (ulong i = 0; i < numCols; ++i)
+      {
+        oc->get_column_expr(i)->accept(v);
+      }
+
+      v.visit_flwor_clause(c, theIsGeneral);
+
+      break;
+    }
+    case flwor_clause::count_clause:
+    {
+      v.visit_flwor_clause(c, theIsGeneral);
+      break;
+    }
+    case flwor_clause::where_clause:
+    {
+      const where_clause* wc = reinterpret_cast<const where_clause*>(c);
+      wc->get_where()->accept(v);
+      break;
+    }
+    default:
+      ZORBA_ASSERT(false);
+    }
+  }
+
+  theReturnExpr->accept(v);
+}
+
+
+expr_iterator_data* flwor_expr::make_iter() 
+{
+  return new flwor_expr_iterator_data(this);
+}
+
+
+void flwor_expr::next_iter(expr_iterator_data& v) 
+{
+  flwor_clause* c = NULL;
+  window_clause* wc = NULL;
+  flwor_wincond* wincond = NULL;
+  orderby_clause* oc = NULL;
+  group_clause* gc = NULL;
+
+  flwor_expr_iterator_data& iter = dynamic_cast<flwor_expr_iterator_data &>(v);
+
+  BEGIN_EXPR_ITER();
+
+  iter.theClausesIter = theClauses.begin();
+  iter.theClausesEnd = theClauses.end();
+
+  for (; iter.theClausesIter != iter.theClausesEnd; ++(iter.theClausesIter))
+  {
+    c = (iter.theClausesIter)->getp();
+
+    if (c->get_kind() == flwor_clause::for_clause) 
+    {
+      ITER(static_cast<for_clause *>(c)->theDomainExpr);
+    }
+
+    else if (c->get_kind() == flwor_clause::let_clause) 
+    {
+      ITER(static_cast<let_clause *>(c)->theDomainExpr);
+    }
+
+    else if (c->get_kind() == flwor_clause::window_clause) 
+    {
+      for (iter.theWincondIter = 0; iter.theWincondIter < 2; iter.theWincondIter++) 
+      {
+        wc = static_cast<window_clause *>((iter.theClausesIter)->getp());
+
+        wincond = (iter.theWincondIter == 0 ?
+                   wc->theWinStartCond.getp() :
+                   wc->theWinStopCond.getp());
+
+        if (wincond != 0)
+          ITER(wincond->theCondExpr);
+      }
+
+      wc = static_cast<window_clause *>((iter.theClausesIter)->getp());
+
+      ITER(wc->theDomainExpr);
+    }
+
+    else if (c->get_kind() == flwor_clause::where_clause) 
+    {
+      ITER(static_cast<where_clause *>(c)->theWhereExpr);
+    }
+
+    else if (c->get_kind() == flwor_clause::group_clause) 
+    {
+      gc = static_cast<group_clause *>(c);
+
+      iter.theGroupVarsIter = gc->theGroupVars.begin();
+      iter.theGroupVarsEnd = gc->theGroupVars.end();
+      iter.theNonGroupVarsIter = gc->theNonGroupVars.begin();
+      iter.theNonGroupVarsEnd = gc->theNonGroupVars.end();
+
+      for (; iter.theGroupVarsIter != iter.theGroupVarsEnd; ++iter.theGroupVarsIter)
+      {
+        ITER((*iter.theGroupVarsIter).first);
+      }
+
+      for (;
+           iter.theNonGroupVarsIter != iter.theNonGroupVarsEnd;
+           ++iter.theNonGroupVarsIter)
+      {
+        ITER((*iter.theNonGroupVarsIter).first);
+      }
+    }
+
+    else if (c->get_kind() == flwor_clause::order_clause) 
+    {
+      oc = static_cast<orderby_clause *>(c);
+
+      iter.theOrderExprsIter = oc->theOrderingExprs.begin();
+      iter.theOrderExprsEnd = oc->theOrderingExprs.end();
+
+      for (; iter.theOrderExprsIter != iter.theOrderExprsEnd; ++iter.theOrderExprsIter)
+      {
+        ITER(*iter.theOrderExprsIter);
+      }
+    }
+  }
+
+  ITER(theReturnExpr);
   
   END_EXPR_ITER(); 
 }
-
 
 
 catch_clause::catch_clause()

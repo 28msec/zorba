@@ -19,8 +19,10 @@
 #include "zorba/api_shared_types.h"
 #include "zorbautils/checked_vector.h"
 #include "zorbautils/hashmap.h"
-#include "runtime/core/var_iterators.h"
+
 #include "system/globalenv.h"
+
+#include "runtime/core/var_iterators.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 
 #include "store/api/store.h"
@@ -33,103 +35,36 @@ namespace flwor
 {
 
 
-/***************************************************************************//**
-  Wrapper for a OrderSpec.
-  http://www.w3.org/TR/xquery-11/#id-order-by-clause
+/*******************************************************************************
+  Holds the value of a tuple in the flwor tuple stream.
 
-  - Syntax:
-
-  OrderSpec ::= ExprSingle OrderModifier
-
-  OrderModifier ::= ("ascending" | "descending")?
-                    ("empty" ("greatest" | "least"))?
-                    ("collation" URILiteral)?
-
-  - Data Members:
-
-  theInput      : The iterator computing the value of this orderby column for
-                  each binding of the in-scope variables.
-  theEmptyLeast : Whether the empty seq should be considered the smallest or
-                  the largest value.
-  theDescending : Whether to order in descending order or not.
-  theCollation  : The collation to use when comparing values of this orderby
-                  column (if the values are of type xs:string or subtype).
-  theCollator   : Pointer to the collator obj corresponding to theCollation.
-                  The pointer is assigned by the OrderByClause::open() method.
-                  Note: no need to delete theCollator in ~OrderSpec() because
-                  the obj is managed by the collation cache.
+  theItems     : The values of the FOR vars in the tuple
+  theSequences : The values of the LET vars in the tuple
 ********************************************************************************/
-class OrderSpec
+class StreamTuple
 {
-  friend class FLWORIterator;
-  friend class OrderByClause;
   friend class OrderByIterator;
-  friend class OrderTupleCmp;
 
 protected:
-  PlanIter_t             theInput;
-  bool                   theEmptyLeast;
-  bool                   theDescending;
-  std::string            theCollation;
-  mutable XQPCollator  * theCollator;
-
+  std::vector<store::Item_t >    theItems;
+  std::vector<store::TempSeq_t > theSequences;
+  
 public:
-  OrderSpec(
-        PlanIter_t orderByIter,
-        bool empty_least,
-        bool descending);
+  StreamTuple() {}
 
-  OrderSpec(
-        PlanIter_t orderByIter,
-        bool empty_least,
-        bool descending,
-        const std::string& collation);
-
-  void accept(PlanIterVisitor&) const;
-
-  uint32_t getStateSizeOfSubtree() const;
-
-  void open(PlanState& aPlanState, uint32_t& offset) const;
-  void reset(PlanState& aPlanState) const;
-  void close(PlanState& aPlanState) const;
-};
-
-
-/***************************************************************************//**
-  Class acting as a comparison function between to orderby tuples. An instance
-  of this class is passed to the std::multimap that we use to do the sorting.
-  Luckily the MultiMap is stable already :-)
-********************************************************************************/
-class OrderTupleCmp
-{
-private:
-  std::vector<OrderSpec> * theOrderSpecs;
-  TypeManager            * theTypeManager;
-  long                     theTimezone;
-
-public:
-  OrderTupleCmp() : theOrderSpecs(0), theTypeManager(0), theTimezone(0) {}
-
-  OrderTupleCmp(RuntimeCB* rcb, std::vector<OrderSpec>* aOrderSpecs);
-
-  bool operator() (
-        const std::vector<store::Item_t>& s1,
-        const std::vector<store::Item_t>& s2 ) const;
-          
-  inline long compare(
-        const store::Item_t& s1,
-        const store::Item_t& s2,
-        bool asc,
-        bool emptyLeast,
-        XQPCollator* collator) const;
-    
-  inline long descAsc(long result, bool asc) const;
+  StreamTuple(
+        std::vector<store::Item_t >& items,
+        std::vector<store::TempSeq_t >& sequences)
+    :
+    theItems(items),
+    theSequences(sequences) 
+  {
+  }
 };
 
 
 /***************************************************************************//**
   Wrapper for a GroupingSpec.
-  http://www.w3.org/TR/xquery-11/#id-group-by
 
   - Syntax:
 
@@ -165,8 +100,8 @@ protected:
 
 public:
   GroupingSpec(
-        PlanIter_t aInput,
-        std::vector<ForVarIter_t> aInnerVars,
+        PlanIter_t inputVar,
+        const std::vector<PlanIter_t>& outputVarRefs,
         const std::string& aCollation);
 
   void accept ( PlanIterVisitor& ) const;
@@ -181,7 +116,6 @@ public:
 
 /***************************************************************************//**
   Wrapper for a GroupingOuterVar.
-  http://www.w3.org/TR/xquery-11/#id-group-by
 
   - Data Members:
 
@@ -203,9 +137,11 @@ protected:
   std::vector<LetVarIter_t> theOuterVars;
   
 public:
-  GroupingOuterVar(PlanIter_t aInput, std::vector<LetVarIter_t> aOuterVars);
+  GroupingOuterVar(
+        PlanIter_t inputVar,
+        const std::vector<PlanIter_t>& outputVarRefs);
 
-  void accept ( PlanIterVisitor& ) const;
+  void accept(PlanIterVisitor& v) const;
 
   uint32_t getStateSizeOfSubtree() const; 
 
@@ -226,12 +162,12 @@ public:
   corresponding to G in the output tuple stream, the grouping variables in otg
   will be bound to these items.
 
-  theItems       : The values of the grouping variables it itg and otg.
+  theItems       : The values of the grouping variables in itg and otg.
   theTypedValues : The typed values of theItems.
 ********************************************************************************/
 class GroupTuple
 {
- public:
+public:
   std::vector<store::Item_t> theItems;
   std::vector<store::Item_t> theTypedValues;    
 };
@@ -274,7 +210,7 @@ typedef zorba::HashMap<GroupTuple*,
 /***************************************************************************//**
   Utility function -- is this item null or a NaN?
 ********************************************************************************/
-inline bool empty_item (store::Item_t s)
+inline bool empty_item (const store::Item* s)
 {
   return (s == 0) || (s->isNaN());
 }
@@ -286,6 +222,18 @@ inline bool empty_item (store::Item_t s)
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
     
+
+template <class T> inline void castIterVector(
+    std::vector<rchandle<T> >& destVector,
+    const std::vector<PlanIter_t>& sourceVector)
+{
+  ulong numIters = sourceVector.size();
+  destVector.resize(numIters);
+
+  for (ulong i = 0; i < numIters; ++i)
+    destVector[i] = reinterpret_cast<T*>(sourceVector[i].getp());
+ }
+
 
 template <class T> inline void callAcceptVector(
     const std::vector<T >& aVector,
@@ -352,7 +300,7 @@ template <class T> inline void openVector(
   typename std::vector<T >::iterator lIter;
   for (lIter = aVector.begin();
        lIter != aVector.end();
-       ++lIter )
+       ++lIter)
   {
     lIter->open(aPlanState, aOffset);
   }
@@ -435,10 +383,10 @@ inline void bindVariables (
     const std::vector<ForVarIter_t>& aForVariables,
     PlanState& aPlanState ) 
 {
-  std::vector<ForVarIter_t>::const_iterator forIter;
-  for ( forIter = aForVariables.begin();
-        forIter != aForVariables.end();
-        ++forIter ) {
+  std::vector<ForVarIter_t>::const_iterator forIter = aForVariables.begin();
+  std::vector<ForVarIter_t>::const_iterator forEnd = aForVariables.end();
+  for (; forIter != forEnd; ++forIter) 
+  {
     const ForVarIter_t& variable = ( *forIter );
     variable->bind ( aItem.getp(), aPlanState );
   }
@@ -450,13 +398,13 @@ inline void bindVariables (
     const std::vector<LetVarIter_t>& aLetVariables,
     PlanState& aPlanState ) 
 {
-  std::vector<LetVarIter_t>::const_iterator letIter;
-  for ( letIter = aLetVariables.begin();
-        letIter != aLetVariables.end();
-        ++letIter ) {
+  std::vector<LetVarIter_t>::const_iterator letIter = aLetVariables.begin();
+  std::vector<LetVarIter_t>::const_iterator letEnd = aLetVariables.end();
+  for (; letIter != letEnd; ++letIter) 
+  {
     store::Iterator_t iter = aTmpSeq->getIterator();
     iter->open();
-    ( *letIter )->bind ( iter, aPlanState );
+    ( *letIter )->bind(iter, aPlanState);
   }
 }
   

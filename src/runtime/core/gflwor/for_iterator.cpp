@@ -15,9 +15,9 @@
  */
 #include "runtime/core/gflwor/for_iterator.h"
 #include "runtime/core/gflwor/common.h"
-
 #include "runtime/core/var_iterators.h"
 #include "runtime/visitors/planitervisitor.h"
+
 #include "store/api/store.h"
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
@@ -29,79 +29,114 @@ namespace zorba
 namespace flwor 
 {
 
-    /////////////////////////////////////////////////////////////////////////////////
-    //                                                                             //
-    //  For  State                                                                 //
-    //                                                                             //
-    /////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  For  State                                                                 //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-    void
-    ForState::init ( PlanState& planState ) {
-      PlanIteratorState::init ( planState );
-      thePosition=0;
-    }
+void ForState::init(PlanState& planState) 
+{
+  PlanIteratorState::init(planState);
+  thePosition = 0;
+}
 
-    void
-    ForState::reset ( PlanState& planState ) {
-      PlanIteratorState::reset ( planState );
-      thePosition=0;
-    }
+void ForState::reset(PlanState& planState) 
+{
+  PlanIteratorState::reset(planState);
+  thePosition = 0;
+}
 
-    /////////////////////////////////////////////////////////////////////////////////
-    //                                                                             //
-    //  ForIterator                                                                //
-    //                                                                             //
-    /////////////////////////////////////////////////////////////////////////////////
 
-    // theChild0 --> TupleIterator
-    // theChild1 --> InputIterator
-    ForIterator::ForIterator ( const QueryLoc& loc,
-                               const store::Item_t& aVarName,
-                               PlanIter_t aTupleIterator,
-                               PlanIter_t aInput,
-                               std::vector<ForVarIter_t> aForVars,
-                               std::vector<ForVarIter_t> aPosVars ) :
-        BinaryBaseIterator<ForIterator, ForState> ( loc, aTupleIterator, aInput ),
-        theVarName ( aVarName ), theForVars ( aForVars ),
-        thePosVars ( aPosVars ) {
-          theHasPosVars = !thePosVars.empty();
-    }
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  ForIterator                                                                //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-    ForIterator::ForIterator ( const QueryLoc& loc,
-                               const store::Item_t& aVarName,
-                               PlanIter_t aTupleIterator,
-                               PlanIter_t aInput,
-                               std::vector<ForVarIter_t> aForVars ) :
-        BinaryBaseIterator<ForIterator, ForState> ( loc, aTupleIterator, aInput ),
-        theVarName ( aVarName ),
-        theHasPosVars(false),
-        theForVars ( aForVars ){
-    }
 
-    ForIterator::~ForIterator() {}
+ForIterator::ForIterator (
+    const QueryLoc& loc,
+    const store::Item_t& varName,
+    PlanIter_t tupleIter,
+    PlanIter_t domainIter,
+    const std::vector<PlanIter_t>& varRefs)
+  :
+  BinaryBaseIterator<ForIterator, ForState>(loc, tupleIter, domainIter),
+  theVarName(varName),
+  theHasPosVars(false)
+{
+  castIterVector<ForVarIterator>(theVarRefs, varRefs);
+}
 
-    bool ForIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const {
-      ForState* lState;
-      store::Item_t lItem;
+
+ForIterator::ForIterator (
+    const QueryLoc& loc,
+    const store::Item_t& varName,
+    PlanIter_t tupleIter,
+    PlanIter_t domainIter,
+    const std::vector<PlanIter_t>& varRefs,
+    const std::vector<PlanIter_t>& posRefs) 
+  :
+  BinaryBaseIterator<ForIterator, ForState>(loc, tupleIter, domainIter),
+  theVarName(varName)
+{
+  castIterVector<ForVarIterator>(theVarRefs, varRefs);
+  castIterVector<ForVarIterator>(thePosVarRefs, posRefs);
+
+  theHasPosVars = !thePosVarRefs.empty();
+}
+
+
+ForIterator::~ForIterator() 
+{
+}
+
+
+void ForIterator::accept(PlanIterVisitor& v) const 
+{ 
+  v.beginVisit(*this); 
+
+  v.beginVisitFlworForVariable(*theVarName->getStringValue().getp(),
+                               theVarRefs,
+                               thePosVarRefs);
+  v.endVisitFlworLetVariable();
+
+  theChild0->accept(v); 
+  theChild1->accept(v); 
+
+  v.endVisit(*this);
+}
+
+
+bool ForIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const 
+{
+  ForState* lState;
+  store::Item_t lItem;
       
-      DEFAULT_STACK_INIT ( ForState, lState, aPlanState );
-      while ( consumeNext ( aResult, theChild0, aPlanState ) ) {
-        while ( consumeNext ( lItem, theChild1, aPlanState ) ) {
-          bindVariables ( lItem, theForVars, aPlanState );
-          if ( theHasPosVars ) {
-            store::Item_t lPosItem;
-            GENV_ITEMFACTORY->createInteger(lPosItem, Integer::parseInt(lState->incReturnPosition()));
-            bindVariables ( lPosItem, thePosVars, aPlanState );
-          }
-          STACK_PUSH ( true, lState );
-        }
-        lState->resetCount();
-        theChild1->reset(aPlanState);
-        
+  DEFAULT_STACK_INIT ( ForState, lState, aPlanState );
+
+  while (consumeNext(aResult, theChild0, aPlanState)) 
+  {
+    while (consumeNext(lItem, theChild1, aPlanState)) 
+    {
+      bindVariables(lItem, theVarRefs, aPlanState);
+      if (theHasPosVars) 
+      {
+        store::Item_t lPosItem;
+        GENV_ITEMFACTORY->createInteger(lPosItem, Integer::parseInt(lState->incReturnPosition()));
+        bindVariables(lPosItem, thePosVarRefs, aPlanState);
       }
-      STACK_PUSH ( false, lState );
-      STACK_END ( lState );
+      STACK_PUSH(true, lState);
     }
 
-  } //Namespace flwor
+    lState->resetPosition();
+
+    theChild1->reset(aPlanState);
+  }
+
+  STACK_END(lState);
+}
+  
+} //Namespace flwor
 }//Namespace zorba

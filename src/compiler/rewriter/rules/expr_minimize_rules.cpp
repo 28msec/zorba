@@ -41,13 +41,15 @@ static expr_t get_constant_if_typequant_one(static_context *sctx, expr_t e);
 
 static void replace_with_constant_if_typequant_one(static_context *sctx, expr_t expr)
 {
-  switch(expr->get_expr_kind()) {
-    case flwor_expr_kind: {
-      flwor_expr *flwor = static_cast<flwor_expr *>(&*expr);
-      expr_t ret = flwor->get_retval();
+  switch(expr->get_expr_kind()) 
+  {
+    case flwor_expr_kind: 
+    {
+      flwor_expr* flwor = static_cast<flwor_expr *>(&*expr);
+      expr_t ret = flwor->get_return_expr();
       expr_t nret = get_constant_if_typequant_one(sctx, ret);
       if (nret != NULL) {
-        flwor->set_retval(nret);
+        flwor->set_return_expr(nret);
       }
       break;
     }

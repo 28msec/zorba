@@ -68,7 +68,7 @@ expr_t IndexJoin::rewritePre(expr* node, RewriterContext& rCtx)
   if (isIndexJoinPredicate(rCtx, predInfo))
   {
     rewriteJoin(rCtx, predInfo);
-    flworExpr->set_where(NULL);
+    flworExpr->remove_where_clause();
   }
   else if (isAndExpr(whereExpr))
   {
@@ -193,19 +193,19 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     }
 
     // Both inner and outer vars must be FOR vars.
-    if (predInfo.theOuterVar->get_kind() != var_expr::for_var &&
+    if (predInfo.theOuterVar->get_kind() != var_expr::for_var ||
         predInfo.theInnerVar->get_kind() != var_expr::for_var)
       return false;
 
     // The expr that defines the inner var must not depend on the outer var.
-    expr* innerVarExpr = predInfo.theInnerVar->get_forlet_clause()->get_expr();
+    expr* innerVarExpr = predInfo.theInnerVar->get_for_clause()->get_expr();
 
     if ((*rCtx.m_exprvars_map)[innerVarExpr].get(outerVarId))
       return false;
 
     // The predicate must be in the same flwor that defines the inner var (this
     // way we can be sure that the pred acts as a filter over the inner var).
-    if (!predInfo.theFlworExpr->defines_variable(predInfo.theInnerVar))
+    if (predInfo.theFlworExpr->defines_variable(predInfo.theInnerVar, NULL) < 0)
       return false;
     
     return true;
@@ -224,9 +224,11 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   const QueryLoc& loc = predInfo.thePredicate->get_loc();
 
+  for_clause* fc = predInfo.theInnerVar->get_for_clause();
+
   // The index domain expr is the expr that defines the inner var, expanded so that
   // it does not reference any variables defined after the outer var.
-  expr* innerVarExpr = predInfo.theInnerVar->get_forlet_clause()->get_expr();
+  expr* innerVarExpr = fc->get_expr();
   expandExprVars(rCtx, innerVarExpr, predInfo.theOuterVarId);
 
   //
@@ -296,7 +298,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
     assert(outerFlworExpr != NULL);
 
-    if (outerFlworExpr->defines_variable(predInfo.theOuterVar))
+    if (outerFlworExpr->defines_variable(predInfo.theOuterVar, NULL) >= 0)
     {
       outerExprPos = i;
       break;
@@ -361,8 +363,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   probeExpr->add(uriExpr);
   probeExpr->add(predInfo.theOuterOp);
 
-  forlet_clause* flclause = predInfo.theInnerVar->get_forlet_clause();
-  flclause->set_expr(probeExpr.getp());
+  fc->set_expr(probeExpr.getp());
 }
 
 
@@ -385,7 +386,7 @@ static void expandExprVars(
 
       if (varid > outerVarId)
       {
-        wrapper->set_expr(var->get_forlet_clause()->get_expr());
+        wrapper->set_expr(var->get_forletwin_clause()->get_expr());
         expandExprVars(rCtx, wrapper->get_expr(), outerVarId);
         return;
       }

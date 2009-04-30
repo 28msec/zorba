@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-#include "runtime/api/runtimecb.h"
-#include "runtime/core/gflwor/orderby_iterator.h"
-#include "runtime/core/gflwor/common.h"
-
 #include "zorbautils/fatal.h"
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
 
 #include "system/globalenv.h"
+
 #include "context/collation_cache.h"
 #include "context/dynamic_context.h"
+
+#include "runtime/api/runtimecb.h"
 #include "runtime/visitors/planitervisitor.h"
 #include "runtime/booleans/BooleanImpl.h"
+#include "runtime/core/gflwor/orderby_iterator.h"
+#include "runtime/core/gflwor/common.h"
+#include "runtime/core/gflwor/comp_function.h"
+
 #include "zorbautils/checked_vector.h"
 #include <vector>
 
@@ -41,37 +44,109 @@ namespace flwor
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
+//  OrderSpec                                                                  //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+OrderSpec::OrderSpec (
+    PlanIter_t domainIter,
+    bool emptyLeast,
+    bool descending,
+    const std::string& collation)
+  :
+  theDomainIter(domainIter),
+  theEmptyLeast(emptyLeast),
+  theDescending(descending),
+  theCollation(collation),
+  theCollator(0)
+{
+}
+
+
+void OrderSpec::accept(PlanIterVisitor& v) const
+{
+  v.beginVisitOrderBy(*theDomainIter);
+  v.endVisitOrderBy(*theDomainIter);
+}
+
+
+uint32_t OrderSpec::getStateSizeOfSubtree() const 
+{
+  return theDomainIter->getStateSizeOfSubtree();
+}
+
+
+void OrderSpec::open(PlanState& aPlanState, uint32_t& offset) const 
+{
+  theDomainIter->open(aPlanState, offset);
+}
+
+
+void OrderSpec::reset(PlanState& aPlanState) const 
+{
+  theDomainIter->reset(aPlanState);
+}
+
+
+void OrderSpec::close(PlanState& aPlanState) const 
+{
+  theDomainIter->close(aPlanState);
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
 //  OrderByState                                                               //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
 
-OrderByState::OrderByState() : theOrderMap() 
+OrderByState::OrderByState() 
+  :
+  theNumTuples(0),
+  theCurTuplePos(0)
 {
 }
 
 
 OrderByState::~OrderByState() 
 {
-  //delete theOrderMap;
-  //theOrderMap = 0;
+  clearSortTable();
 }
 
 
-void OrderByState::init ( PlanState& aState, std::vector<OrderSpec>* orderSpecs ) 
+void OrderByState::init(PlanState& planState, std::vector<OrderSpec>* orderSpecs) 
 {
-  PlanIteratorState::init ( aState );
+  PlanIteratorState::init(planState);
 
-  OrderTupleCmp cmp(aState.theRuntimeCB, orderSpecs);
-
-  theOrderMap = order_map_t(cmp);
+  theNumTuples = 0;
+  theCurTuplePos = 0;
 }
 
 
-void OrderByState::reset ( PlanState& aPlanState ) 
+void OrderByState::reset(PlanState& planState) 
 {
-  PlanIteratorState::reset ( aPlanState );
-  theOrderMap.clear();
+  PlanIteratorState::reset(planState);
+
+  clearSortTable();
+  theDataTable.clear();
+  theNumTuples = 0;
+  theCurTuplePos = 0;
+}
+
+
+void OrderByState::clearSortTable()
+{
+  ulong numTuples = theSortTable.size();
+
+  for (ulong i = 0; i < numTuples; ++i)
+  {
+    theSortTable[i].clear();
+  }
+
+  theSortTable.clear();
 }
 
 
@@ -84,20 +159,22 @@ void OrderByState::reset ( PlanState& aPlanState )
 
 OrderByIterator::OrderByIterator (
     const QueryLoc& aLoc,
-    PlanIter_t aTupleIterator,
-    std::vector<OrderSpec>& aOrderSpecs,
-    std::vector<ForVarIter_t>& aForVariableInput,
-    std::vector<LetVarIter_t>& aLetVariableInput,
-    std::vector< std::vector<ForVarIter_t> >& aForVariableOutput,
-    std::vector< std::vector<LetVarIter_t> >& aLetVariableOutput ) 
+    bool stable,
+    std::vector<OrderSpec>& orderSpecs,
+    PlanIter_t tupleIterator,
+    std::vector<ForVarIter_t>& inputForVars,
+    std::vector<LetVarIter_t>& inputLetVars,
+    std::vector<std::vector<ForVarIter_t> >& outputForVarsRefs,
+    std::vector<std::vector<LetVarIter_t> >& outputLetVarsRefs) 
   :
-  Batcher<OrderByIterator> ( aLoc ),
-  theTupleIter ( aTupleIterator ),
-  theOrderSpecs ( aOrderSpecs ),
-  theForVariableInput ( aForVariableInput ),
-  theLetVariableInput ( aLetVariableInput ),
-  theForVariableOutput ( aForVariableOutput ),
-  theLetVariableOutput ( aLetVariableOutput ) 
+  Batcher<OrderByIterator>(aLoc),
+  theStable(stable),
+  theOrderSpecs(orderSpecs),
+  theTupleIter(tupleIterator),
+  theInputForVars(inputForVars),
+  theInputLetVars(inputLetVars),
+  theOutputForVarsRefs(outputForVarsRefs),
+  theOutputLetVarsRefs(outputLetVarsRefs) 
 {  
 }
   
@@ -107,152 +184,244 @@ OrderByIterator::~OrderByIterator()
 }
 
 
-void OrderByIterator::openImpl ( PlanState& aPlanState, uint32_t& aOffset ) 
+uint32_t OrderByIterator::getStateSize() const 
 {
-  StateTraitsImpl<OrderByState>::createState ( aPlanState, this->stateOffset, aOffset );
-  OrderByState* lOrderByState = StateTraitsImpl<OrderByState>::getState ( aPlanState, this->stateOffset );
-
-  //Do a manually pass to set the Collator
-  std::vector<OrderSpec>::iterator iter;
-  for ( iter = theOrderSpecs.begin();
-        iter != theOrderSpecs.end();
-        iter++ ) {
-    iter->open ( aPlanState, aOffset );
-
-    if (! iter->theCollation.empty())
-    {
-      iter->theCollator = aPlanState.theRuntimeCB->theCollationCache->
-                          getCollator(iter->theCollation);
-    }
-  }
-  
-  lOrderByState->init ( aPlanState, &theOrderSpecs );
-  
-  theTupleIter->open ( aPlanState, aOffset );
-  openVectorPtr<ForVarIter_t> ( theForVariableInput, aPlanState, aOffset );
-  openVectorPtr<LetVarIter_t> ( theLetVariableInput, aPlanState, aOffset );
-}
-
-  
-void OrderByIterator::resetImpl ( PlanState& aPlanState ) const {
-  OrderByState* lOrderByState = StateTraitsImpl<OrderByState>::getState ( aPlanState, this->stateOffset );
-  lOrderByState->reset ( aPlanState );
-  
-  theTupleIter->reset ( aPlanState );
-  resetVector<OrderSpec> ( theOrderSpecs, aPlanState );
-  resetVectorPtr<ForVarIter_t > ( theForVariableInput, aPlanState );
-  resetVectorPtr<LetVarIter_t > ( theLetVariableInput, aPlanState );
-}
-
-
-void OrderByIterator::closeImpl ( PlanState& aPlanState ) {
-  theTupleIter->close ( aPlanState );
-  closeVector<OrderSpec> ( theOrderSpecs, aPlanState );
-  closeVectorPtr<ForVarIter_t> ( theForVariableInput, aPlanState );
-  closeVectorPtr<LetVarIter_t> ( theLetVariableInput, aPlanState );
-  StateTraitsImpl<OrderByState>::destroyState ( aPlanState, this->stateOffset );
+  return sizeof(OrderByState);
 }
   
   
-uint32_t OrderByIterator::getStateSize() const {
-  return sizeof ( OrderByState );
-}
-  
-  
-uint32_t OrderByIterator::getStateSizeOfSubtree() const {
+uint32_t OrderByIterator::getStateSizeOfSubtree() const 
+{
   int32_t lSize = this->getStateSize();
   lSize += theTupleIter->getStateSizeOfSubtree();
   lSize += getStateSizeOfSubtreeVector<OrderSpec> ( theOrderSpecs );
-  lSize += getStateSizeOfSubtreeVectorPtr<ForVarIter_t> ( theForVariableInput );
-  lSize += getStateSizeOfSubtreeVectorPtr<LetVarIter_t> ( theLetVariableInput );
+  lSize += getStateSizeOfSubtreeVectorPtr<ForVarIter_t> ( theInputForVars );
+  lSize += getStateSizeOfSubtreeVectorPtr<LetVarIter_t> ( theInputLetVars );
   return lSize;
 }
   
   
-void OrderByIterator::accept ( PlanIterVisitor& v ) const {
-  theTupleIter->accept(v);
-  callAcceptVector(theOrderSpecs,v);
-}
-  
-  
-bool OrderByIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const {
-  OrderByState* lState;
-  store::Item_t lItem;
-  DEFAULT_STACK_INIT ( OrderByState, lState, aPlanState );
-  while ( consumeNext ( aResult, theTupleIter, aPlanState ) ) {
-    matVarsAndOrderBy(lState, aPlanState);
-  }
-  lState->theCurOrderPos = lState->theOrderMap.begin();
-  while(lState->theCurOrderPos != lState->theOrderMap.end()){
-    bindOrderBy(lState->theCurOrderPos,aPlanState);
-    STACK_PUSH ( true, lState );
-    ++(lState->theCurOrderPos);
-  }
-  STACK_PUSH ( false, lState );
-  STACK_END ( lState );
-}
-    
-
-void OrderByIterator::matVarsAndOrderBy ( 
-    OrderByState* aOrderByState,
-    PlanState& aPlanState ) const 
+void OrderByIterator::accept(PlanIterVisitor& v) const 
 {
-  //Create the key
+  v.beginVisit(*this);
+
+  ulong numVars = theInputForVars.size();
+  for (ulong i = 0; i < numVars; ++i)
+  {
+    v.beginVisitOrderByForVariable(theInputForVars[i], theOutputForVarsRefs[i]);
+    v.endVisitOrderByForVariable();
+  }
+
+  numVars = theInputLetVars.size();
+  for (ulong i = 0; i < numVars; ++i)
+  {
+    v.beginVisitOrderByLetVariable(theInputLetVars[i], theOutputLetVarsRefs[i]);
+    v.endVisitOrderByLetVariable();
+  }
+
+  callAcceptVector(theOrderSpecs, v);
+
+  theTupleIter->accept(v);
+
+  v.endVisit(*this);
+}
+
+
+void OrderByIterator::openImpl(PlanState& planState, uint32_t& aOffset) 
+{
+  StateTraitsImpl<OrderByState>::createState(planState, this->stateOffset, aOffset);
+
+  OrderByState* iterState = StateTraitsImpl<OrderByState>::getState(planState,
+                                                                    this->stateOffset);
+  // Do a manual pass to set the Collator
+  ulong numSpecs = theOrderSpecs.size();
+  for (ulong i = 0; i < numSpecs; ++i)
+  {
+    theOrderSpecs[i].open(planState, aOffset);
+
+    if (! theOrderSpecs[i].theCollation.empty())
+    {
+      theOrderSpecs[i].theCollator = planState.theRuntimeCB->theCollationCache->
+                                     getCollator(theOrderSpecs[i].theCollation);
+    }
+  }
   
-  std::vector<store::Item_t> orderKey;
-  for ( std::vector<OrderSpec>::const_iterator lSpecIter = theOrderSpecs.begin();
-        lSpecIter != theOrderSpecs.end();
-        ++lSpecIter ) {
-    orderKey.push_back ( NULL );
-    store::Item_t& lKeyLocation = orderKey.back();
-    if ( consumeNext ( lKeyLocation, lSpecIter->theInput.getp(), aPlanState ) ) {
+  iterState->init(planState, &theOrderSpecs);
+  
+  theTupleIter->open(planState, aOffset);
+
+  openVectorPtr<ForVarIter_t>(theInputForVars, planState, aOffset);
+  openVectorPtr<LetVarIter_t>(theInputLetVars, planState, aOffset);
+}
+
+  
+void OrderByIterator::resetImpl(PlanState& planState) const 
+{
+  OrderByState* iterState = StateTraitsImpl<OrderByState>::getState(planState,
+                                                                    this->stateOffset);
+  iterState->reset(planState);
+  
+  theTupleIter->reset(planState);
+  resetVector<OrderSpec>(theOrderSpecs, planState);
+  resetVectorPtr<ForVarIter_t >(theInputForVars, planState);
+  resetVectorPtr<LetVarIter_t >(theInputLetVars, planState);
+}
+
+
+void OrderByIterator::closeImpl(PlanState& planState) 
+{
+  theTupleIter->close(planState);
+  closeVector<OrderSpec>(theOrderSpecs, planState);
+  closeVectorPtr<ForVarIter_t>(theInputForVars, planState);
+  closeVectorPtr<LetVarIter_t>(theInputLetVars, planState);
+
+  StateTraitsImpl<OrderByState>::destroyState(planState, this->stateOffset);
+}
+  
+  
+
+bool OrderByIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
+  OrderByState* iterState;
+
+  DEFAULT_STACK_INIT(OrderByState, iterState, planState);
+
+  while (consumeNext(result, theTupleIter, planState)) 
+  {
+    materializeResultForSort(iterState, planState);
+  }
+
+  {
+  SortTupleCmp cmp(planState.theRuntimeCB, &theOrderSpecs);
+
+  if (theStable)
+  {
+    std::stable_sort(iterState->theSortTable.begin(),
+                     iterState->theSortTable.end(),
+                     cmp);
+  }
+  else
+  {
+    std::sort(iterState->theSortTable.begin(),
+              iterState->theSortTable.end(),
+              cmp);
+  }
+  }
+
+  iterState->theCurTuplePos = 0;
+  iterState->theNumTuples = iterState->theSortTable.size();
+
+  while(iterState->theCurTuplePos < iterState->theNumTuples)
+  {
+    bindOrderBy(iterState, planState);
+
+    STACK_PUSH(true, iterState);
+
+    ++(iterState->theCurTuplePos);
+  }
+
+  STACK_PUSH(false, iterState);
+  STACK_END(iterState);
+}
+
+
+/***************************************************************************//**
+  All FOR and LET vars are bound when this method is called. The method computes
+  the order-by tuple T and the return-clause sequence R for the current var
+  bindings. Then, it inserts the pair (T, I(R)) into theOrderMap (where I is
+  an iterator over the temp seq storing R).
+********************************************************************************/
+void OrderByIterator::materializeResultForSort( 
+    OrderByState* iterState,
+    PlanState& planState) const 
+{
+  OrderByState::SortTable& sortTable = iterState->theSortTable;
+  OrderByState::DataTable& dataTable = iterState->theDataTable;
+
+  ulong numTuples = sortTable.size();
+  sortTable.resize(numTuples + 1);
+  dataTable.resize(numTuples + 1);
+
+  // Create the sort tuple
+
+  ulong numSpecs = theOrderSpecs.size();
+
+  std::vector<store::Item*>& sortKey = sortTable[numTuples].theKeyValues;
+  sortKey.resize(numSpecs);
+
+  for (ulong i = 0; i < numSpecs; ++i)
+  {
+    store::Item_t sortKeyItem;
+    if (consumeNext(sortKeyItem, theOrderSpecs[i].theDomainIter, planState)) 
+    {
+      sortKey[i] = sortKeyItem.transfer();
+
       store::Item_t temp;
-      if ( consumeNext ( temp, lSpecIter->theInput.getp(), aPlanState ) ) {
-        ZORBA_ERROR_DESC ( XPTY0004, "Expected a singleton" );
+      if (consumeNext(temp, theOrderSpecs[i].theDomainIter, planState)) 
+      {
+        ZORBA_ERROR_DESC(XPTY0004, "Expected a singleton");
       }
     }
-    lSpecIter->theInput->reset ( aPlanState );
+    else
+    {
+      sortKey[i] = NULL;
+    }
+
+    theOrderSpecs[i].theDomainIter->reset(planState);
   }
   
-  //Materialize the tuple
-  std::vector<store::Item_t > lItems;
-  for ( std::vector<ForVarIter_t>::const_iterator lForInputIter = theForVariableInput.begin();
-        lForInputIter != theForVariableInput.end();
-        ++lForInputIter ) {
-    lItems.push_back ( NULL );
-    store::Item_t& lItemLocation = lItems.back();
-    consumeNext ( lItemLocation, lForInputIter->getp(), aPlanState );
-    ( *lForInputIter )->reset ( aPlanState );
+  sortTable[numTuples].theDataPos = numTuples;
+
+  // create the data tuple
+
+  ulong numForVars = theInputForVars.size();
+  ulong numLetVars = theInputLetVars.size();
+
+  StreamTuple& streamTuple = dataTable[numTuples];
+  streamTuple.theItems.resize(numForVars);
+  streamTuple.theSequences.resize(numLetVars);
+
+  for(ulong i = 0;  i < numForVars; ++i)
+  {
+    store::Item_t forItem;
+    consumeNext(forItem, theInputForVars[i], planState);
+
+    streamTuple.theItems[i].transfer(forItem);
+
+    theInputForVars[i]->reset(planState);
   }
 
-  std::vector<store::TempSeq_t > lSequences;
-  for ( std::vector<LetVarIter_t>::const_iterator lLetInputIter = theLetVariableInput.begin();
-        lLetInputIter != theLetVariableInput.end();
-        ++lLetInputIter ) {
-    lSequences.push_back ( NULL );
-    store::TempSeq_t& lTempSeqLocation = lSequences.back();
-    createTempSeq ( lTempSeqLocation, *lLetInputIter, aPlanState, false );
-    ( *lLetInputIter )->reset ( aPlanState );
+  for (ulong i = 0; i < numLetVars; ++i)
+  {
+    store::TempSeq_t letTempSeq;
+    createTempSeq(letTempSeq, theInputLetVars[i], planState, false);
+
+    streamTuple.theSequences[i].transfer(letTempSeq);
+
+    theInputLetVars[i]->reset(planState);
   }
-  OrderValue lOrderValue ( lItems, lSequences );
-  
-  aOrderByState->theOrderMap.insert ( std::pair<std::vector<store::Item_t>, OrderValue> ( orderKey, lOrderValue ) );
 }
   
 
-void OrderByIterator::bindOrderBy ( 
-    order_map_t::const_iterator& aOrderMapIter,
-    PlanState& aPlanState ) const 
+void OrderByIterator::bindOrderBy( 
+    OrderByState* iterState,
+    PlanState& planState) const 
 {
-  const OrderValue& lOrderValue = aOrderMapIter->second;
-  for(size_t i=0; i < theForVariableOutput.size(); ++i){
-    bindVariables(lOrderValue.theItems[i], theForVariableOutput[i], aPlanState);
+  const StreamTuple& streamTuple = iterState->theDataTable[iterState->theSortTable[iterState->theCurTuplePos].theDataPos];
+
+  ulong numForVarsRefs = theOutputForVarsRefs.size();
+  for(ulong i = 0; i < numForVarsRefs; ++i)
+  {
+    bindVariables(streamTuple.theItems[i], theOutputForVarsRefs[i], planState);
   }
-  for(size_t i=0; i < theLetVariableOutput.size(); ++i){
-    bindVariables(lOrderValue.theSequences[i], theLetVariableOutput[i], aPlanState);
+
+  ulong numLetVarsRefs = theOutputLetVarsRefs.size();
+  for(ulong i = 0; i < numLetVarsRefs; ++i)
+  {
+    bindVariables(streamTuple.theSequences[i], theOutputLetVarsRefs[i], planState);
   }
 }
   
   
 } //Namespace flwor
-}//Namespace zorba
+} //Namespace zorba

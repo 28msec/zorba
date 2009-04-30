@@ -29,7 +29,8 @@
 
 namespace zorba {
 
-enum expr_kind_t {
+enum expr_kind_t 
+{
   wrapper_expr_kind,
   sequential_expr_kind,
   exit_expr_kind,
@@ -70,13 +71,21 @@ enum expr_kind_t {
   unknown_expr_kind
 };
 
+class expr;
+typedef rchandle<expr> expr_t;
+
+class wrapper_expr;
+typedef rchandle<wrapper_expr> wrapper_expr_t;
+
 class expr_visitor;
 
 class expr_iterator_data;
 
 class expr_iterator;
 
-class expr_iterator {
+
+class expr_iterator 
+{
   // should be an auto_ptr, but older gcc's don't like auto_ptr w/ forward decl
   expr_iterator_data *iter;
   // comparisson forbidden; use done()
@@ -166,16 +175,14 @@ public:
 };
 
 
-typedef rchandle<expr> expr_t;
-
 class expr_iterator_data 
 {
 protected:
-  expr *e;
+  expr   * e;
   
 public:
-  expr_t *i;
-  int state;
+  expr_t * i;
+  int      state;
   
 public:
   expr_iterator_data (expr *e_) : e (e_), i (NULL), state (0) {}

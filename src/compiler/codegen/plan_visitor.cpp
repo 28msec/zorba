@@ -46,6 +46,7 @@
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/core/trycatch.h"
+#include "runtime/core/gflwor/common.h"
 #include "runtime/core/gflwor/groupby_iterator.h"
 #include "runtime/core/gflwor/tuplestream_iterator.h"
 #include "runtime/core/gflwor/for_iterator.h"
@@ -79,7 +80,9 @@
 
 
 #define QLOCDECL const QueryLoc &qloc = v.get_loc(); (void) qloc
+
 #ifndef NDEBUG
+
 #define CODEGEN_TRACE(msg)                      \
   QLOCDECL;                                     \
   if (Properties::instance()->traceCodegen()) { \
@@ -89,10 +92,13 @@
     cout << "StackTop:" << endl; \
     print_stack(); \
   }
+
 #define CODEGEN_TRACE_IN( msg )  \
   CODEGEN_TRACE (string (++depth, ' ') + msg)
+
 #define CODEGEN_TRACE_OUT( msg ) \
   CODEGEN_TRACE (string (depth--, ' ') + msg)
+
 #else
 #define CODEGEN_TRACE(msg) QLOCDECL
 #define CODEGEN_TRACE_IN(msg) CODEGEN_TRACE(msg)
@@ -104,32 +110,93 @@
 #define LAST_IDX_VAR "$$last-idx"
 
 using namespace std;
+
 namespace zorba 
 {
 
+typedef rchandle<ForVarIterator> ForVarIter_t;
+typedef rchandle<LetVarIterator> LetVarIter_t;
+
+
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
-template <typename T> T pop_stack (stack<T> &stk) {
-    assert (! stk.empty ());
-    T x = stk.top ();
-    stk.pop ();
-    return x;
-  }
+template <typename T> T pop_stack (stack<T> &stk) 
+{
+  assert (! stk.empty ());
+  T x = stk.top ();
+  stk.pop ();
+  return x;
+}
 
 
-template<class T> T &peek_stack (stack<T> &stk) {
-    ZORBA_ASSERT (! stk.empty ());
-    return stk.top ();
-  }
+template<class T> T &peek_stack (stack<T> &stk) 
+{
+  ZORBA_ASSERT (! stk.empty ());
+  return stk.top ();
+}
 
 
 template <typename V>
-struct vector_destroyer {
-    void operator()(const struct hash64map<vector<V> *>::entry& entry)
-    {
-        delete (const_cast<struct hash64map<vector<V> *>::entry&>(entry)).val;
-    }
+struct vector_destroyer 
+{
+  void operator()(const struct hash64map<vector<V> *>::entry& entry)
+  {
+    delete (const_cast<struct hash64map<vector<V> *>::entry&>(entry)).val;
+  }
 };
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class VarRebind : public SimpleRCObject
+{
+public:
+  PlanIter_t               theInputVar;
+  std::vector<PlanIter_t>  theOutputVarRefs;
+};
+
+
+typedef rchandle<VarRebind> VarRebind_t;
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class FlworClauseVarMap : public SimpleRCObject
+{
+public:
+  bool                          theIsGeneral;
+  const flwor_clause          * theClause;
+
+  std::vector<const var_expr*>  theVarExprs;
+  std::vector<VarRebind_t>      theVarRebinds;
+
+public:
+  FlworClauseVarMap(const flwor_clause* cl, bool general)
+    :
+    theIsGeneral(general),
+    theClause(cl) 
+  {
+  }
+
+  ~FlworClauseVarMap() { }
+
+  long find_var(const var_expr* var) const
+  {
+    ulong numVars = theVarExprs.size();
+    for (ulong i = 0; i < numVars; ++i)
+    {
+      if (theVarExprs[i] == var)
+        return i;
+    }
+
+    return -1;
+  }
+};
+
+
+typedef rchandle<FlworClauseVarMap> FlworClauseVarMap_t;
 
 
 /*******************************************************************************
@@ -137,11 +204,8 @@ struct vector_destroyer {
 ********************************************************************************/
 class plan_visitor : public expr_visitor
 {
-public:
-
-  typedef rchandle<expr> expr_h_t;
-  typedef rchandle<ForVarIterator> ForVarIter_t;
-  typedef rchandle<LetVarIterator> LetVarIter_t;
+protected:
+  static vector<PlanIter_t> no_var_iters;
 
 protected:
   uint32_t depth;
@@ -151,14 +215,11 @@ protected:
   stack<expr*>                           theConstructorsStack;
   stack<bool>                            theAttrContentStack;
 
-  hash64map<vector<ForVarIter_t> *>      fvar_iter_map;
-  hash64map<vector<ForVarIter_t> *>      pvar_iter_map;
-  hash64map<vector<LetVarIter_t> *>      lvar_iter_map;
   hash64map<vector<LetVarIter_t> *>    * param_var_iter_map;
   hash64map<vector<LetVarIter_t> *>      catchvar_iter_map;
   hash64map<vector<ForVarIter_t> *>      copy_var_iter_map;
 
-  static vector<ForVarIter_t> no_var_iters;
+  std::vector<FlworClauseVarMap_t>       theClauseStack;
 
   CompilerCB                           * ccb;
 
@@ -166,34 +227,34 @@ protected:
 
 public:
 
-	plan_visitor(CompilerCB *ccb_, hash64map<vector<LetVarIter_t> *> *param_var_map = NULL)
-    :
-    depth (0),
-    param_var_iter_map(param_var_map),
-    ccb (ccb_)
-  {}
+plan_visitor(CompilerCB *ccb_, hash64map<vector<LetVarIter_t> *> *param_var_map = NULL)
+  :
+  depth (0),
+  param_var_iter_map(param_var_map),
+  ccb (ccb_)
+{
+}
 
-	~plan_visitor() {
-    for_each(fvar_iter_map.begin(), fvar_iter_map.end(), vector_destroyer<ForVarIter_t>());
-    for_each(pvar_iter_map.begin(), pvar_iter_map.end(), vector_destroyer<ForVarIter_t>());
-    for_each(lvar_iter_map.begin(), lvar_iter_map.end(), vector_destroyer<LetVarIter_t>());
-    for_each(catchvar_iter_map.begin(), catchvar_iter_map.end(), vector_destroyer<LetVarIter_t>());
-    for_each(copy_var_iter_map.begin(), copy_var_iter_map.end(), vector_destroyer<ForVarIter_t>());
-  }
+
+~plan_visitor() 
+{
+  for_each(catchvar_iter_map.begin(), catchvar_iter_map.end(), vector_destroyer<LetVarIter_t>());
+  for_each(copy_var_iter_map.begin(), copy_var_iter_map.end(), vector_destroyer<ForVarIter_t>());
+}
 
 public:
-	PlanIter_t pop_itstack() {
-    return pop_stack (itstack);
-	}
 
-  bool is_enclosed_expr(expr* e) {
-    fo_expr* foe = dynamic_cast<fo_expr*>(e);
-    if (foe != NULL &&
-        foe->get_fname()->getLocalName()->byteEqual(":enclosed-expr", 14))
-      return true;
+PlanIter_t pop_itstack() 
+{
+  return pop_stack(itstack);
+}
 
-    return false;
-  }
+
+void push_itstack(PlanIterator* iter)
+{
+  itstack.push(iter);
+}
+
 
 void print_stack()
 {
@@ -203,6 +264,17 @@ void print_stack()
     XMLIterPrinter vp (cout);
     print_iter_plan (vp, peek_stack(itstack));
   }
+}
+
+
+bool is_enclosed_expr(expr* e) 
+{
+  fo_expr* foe = dynamic_cast<fo_expr*>(e);
+  if (foe != NULL &&
+      foe->get_fname()->getLocalName()->byteEqual(":enclosed-expr", 14))
+    return true;
+  
+  return false;
 }
 
 
@@ -243,7 +315,7 @@ void end_visit (debugger_expr& v) {
   }
   argv.push_back (pop_itstack ());
   reverse (argv.begin (), argv.end ());
-  itstack.push (new FnDebugIterator(qloc, varnames, var_keys, vartypes, globals, argv, v.isForExpr()));
+  push_itstack(new FnDebugIterator(qloc, varnames, var_keys, vartypes, globals, argv, v.isForExpr()));
 }
 #endif
 
@@ -256,7 +328,7 @@ void end_visit (wrapper_expr& v) {
   CODEGEN_TRACE_OUT("");
   PlanIter_t iter = pop_itstack ();
   iter->setLocation (v.get_loc ());
-  itstack.push (iter);
+  push_itstack(iter);
 }
 
 bool begin_visit (sequential_expr& v) {
@@ -272,93 +344,188 @@ void end_visit (sequential_expr& v) {
     argv.push_back (pop_itstack ());
   reverse (argv.begin (), argv.end ());
 
-  itstack.push (new SequentialIterator (qloc, argv, v.is_updating ()));
+  push_itstack(new SequentialIterator (qloc, argv, v.is_updating ()));
 }
 
-bool begin_visit (var_expr& v) {
+
+/*******************************************************************************
+  VarRef expr
+********************************************************************************/
+
+bool begin_visit (var_expr& v) 
+{
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-template<class Iter>
-void var_codegen (const var_expr &v, hash64map<vector<rchandle<Iter> > *> &mmap) {
-  const QueryLoc &qloc = v.get_loc ();
-  vector<rchandle<Iter> > *map = NULL;
-  bool bound = mmap.get ((uint64_t) &v, map);
-  
-  ZORBA_ASSERT (bound);
-  Iter *v_p =
-    new Iter(v.get_varname()->getLocalName(), qloc, (void *) &v);
-  map->push_back (v_p);
-  itstack.push(v_p);
+
+void end_visit (var_expr& v) 
+{
+  CODEGEN_TRACE_OUT("");
+  general_var_codegen (v);
 }
 
-void general_var_codegen (const var_expr& v)
+
+template<class Iter>
+PlanIter_t base_var_codegen(
+    const var_expr& var,
+    hash64map<vector<rchandle<Iter> > *>& varMap) 
 {
-  const QueryLoc &qloc = v.get_loc ();
-  switch (v.kind) 
+  vector<rchandle<Iter> >* varRefs = NULL;
+  bool bound = varMap.get((uint64_t) &var, varRefs);
+  ZORBA_ASSERT(bound);
+
+  Iter* iter = new Iter(var.get_loc(), var.get_varname());
+
+  varRefs->push_back(iter);
+
+  return iter;
+}
+
+
+PlanIter_t create_var_iter(const var_expr& var, bool forvar)
+{
+  PlanIter_t iter;
+  if (forvar)
   {
-  case var_expr::count_var:
-  case var_expr::wincond_var:
-  case var_expr::wincond_in_var:
-  case var_expr::wincond_pos_var:
-  case var_expr::wincond_in_pos_var:
+    iter = new ForVarIterator(var.get_loc(), var.get_varname());
+  }
+  else
+  {
+    iter = new LetVarIterator(var.get_loc(), var.get_varname());
+  }
+  return iter;
+}
+
+
+void general_var_codegen (const var_expr& var)
+{
+  const QueryLoc& qloc = var.get_loc();
+
+  bool isForVar = false;
+
+  switch (var.kind)
+  {
+  case var_expr::for_var:
+  case var_expr::pos_var:
+  case var_expr::wincond_out_var:
+  case var_expr::wincond_out_pos_var:
   case var_expr::groupby_var:
-  case var_expr::for_var: {
-    var_codegen (v, fvar_iter_map);
-    break;
+  case var_expr::count_var:
+
+  case var_expr::wincond_in_var:
+  case var_expr::wincond_in_pos_var:
+  {
+    isForVar = true;
+    // fall through
   }
 
-  case var_expr::pos_var: {
-    var_codegen (v, pvar_iter_map);
-    break;
-  }
-    
+  case var_expr::let_var:
   case var_expr::win_var:
   case var_expr::non_groupby_var:
-  case var_expr::let_var: {
-    var_codegen (v, lvar_iter_map);
+  {
+    ZORBA_ASSERT(!theClauseStack.empty());
+
+    long stackSize = theClauseStack.size();
+    long varPos;
+    VarRebind_t varRebind;
+    PlanIter_t varIter;
+
+    // Look for the inner-most clause C that knows about this variable. C is
+    // either the clause D_C that defines the var, or the inner-most orderby
+    // clause the comes after D_C and rebinds the var to its output.
+    long i = stackSize - 1;
+    while(true)
+    {
+      if ((varPos = theClauseStack[i]->find_var(&var)) >= 0)
+        break;
+
+      --i;
+      ZORBA_ASSERT(i >= 0);
+    }
+
+    // Create a var iter in the output of C.
+    varIter = create_var_iter(var, isForVar);
+
+    theClauseStack[i]->theVarRebinds[varPos]->theOutputVarRefs.push_back(varIter);
+
+    if (theClauseStack[i]->theIsGeneral)
+    {
+      // For each orderby O after C, bind the var iter created by the previous
+      // clause to the input of O, and then create a new var iter and put it to
+      // the output of O.
+      for (++i; i < stackSize; ++i)
+      {
+        ZORBA_ASSERT(theClauseStack[i]->find_var(&var) < 0);
+
+        if (theClauseStack[i]->theClause->get_kind() == flwor_clause::order_clause)
+        {
+          varRebind = new VarRebind;
+          varRebind->theInputVar = varIter;
+          theClauseStack[i]->theVarExprs.push_back(&var);
+          theClauseStack[i]->theVarRebinds.push_back(varRebind);
+          
+          varIter = create_var_iter(var, isForVar);
+
+          varRebind->theOutputVarRefs.push_back(varIter);
+        }
+      }
+    }
+
+    push_itstack(varIter);
     break;
   }
 
-  case var_expr::param_var: {
-    var_codegen (v, *param_var_iter_map);
+  case var_expr::param_var: 
+  {
+    PlanIter_t iter = base_var_codegen(var, *param_var_iter_map);
+    push_itstack(iter);
     break;
   }
 
   case var_expr::catch_var:
   {
-    var_codegen (v, catchvar_iter_map);
+    PlanIter_t iter = base_var_codegen(var, catchvar_iter_map);
+    push_itstack(iter);
     break;
   }
 
   case var_expr::copy_var:
   {
-    var_codegen (v, copy_var_iter_map);
+    PlanIter_t iter = base_var_codegen(var, copy_var_iter_map);
+    push_itstack(iter);
     break;
   }
 
-  case var_expr::context_var: {
-    xqpString varname = v.get_varname()->getStringValue().getp();
-    if (varname == DOT_VAR) {
+  case var_expr::context_var: 
+  {
+    xqpString varname = var.get_varname()->getStringValue().getp();
+    if (varname == DOT_VAR) 
+    {
       vector<PlanIter_t> ctx_args;
       store::Item_t qname;
       xqpStringStore_t dot = new xqpStringStore (".");
       ITEM_FACTORY->createString (qname, dot);
       ctx_args.push_back (new SingletonIterator (qloc, qname));
-      itstack.push (new CtxVariableIterator (qloc, ctx_args));
-    } else if (varname == DOT_POS_VAR) {
+      push_itstack(new CtxVariableIterator (qloc, ctx_args));
+    }
+    else if (varname == DOT_POS_VAR) 
+    {
       store::Item_t i;
       ITEM_FACTORY->createInteger (i, Integer::parseInt((int32_t)1));
-      itstack.push (new SingletonIterator (qloc, i));
-    } else if (varname == LAST_IDX_VAR) {
+      push_itstack(new SingletonIterator (qloc, i));
+    }
+    else if (varname == LAST_IDX_VAR) 
+    {
       store::Item_t i;
       ITEM_FACTORY->createInteger (i, Integer::parseInt((int32_t)1));
-      itstack.push (new SingletonIterator (qloc, i));
-    } else {
+      push_itstack(new SingletonIterator (qloc, i));
+    }
+    else 
+    {
       expr_t lookup_expr =
         new fo_expr (qloc, LOOKUP_OP1 ("ctxvariable"),
-                     new const_expr (qloc, dynamic_context::var_key (&v)));
+                     new const_expr (qloc, dynamic_context::var_key(&var)));
       lookup_expr->accept (*this);
     }
  
@@ -372,419 +539,757 @@ void general_var_codegen (const var_expr& v)
   }
 }
 
-void end_visit (var_expr& v) {
-  CODEGEN_TRACE_OUT("");
-  general_var_codegen (v);
-}
 
-bool begin_visit (flwor_expr& v) {
+/*******************************************************************************
+  FLWOR expr
+********************************************************************************/
+bool begin_visit(flwor_expr& v) 
+{
   CODEGEN_TRACE_IN("");
-  for (vector<rchandle<forlet_clause> >::const_iterator it = v.forlet_begin ();
-       it != v.forlet_end();
-       ++it) 
-  {
-    rchandle<var_expr> var = (*it)->get_var ();
-    uint64_t k = (uint64_t) &*var;
-
-    if (var->kind == var_expr::for_var) {
-      fvar_iter_map.put(k, new vector<ForVarIter_t>());
-      var_expr* pos_var = (*it)->get_pos_var().getp();
-      if (pos_var != NULL)
-        pvar_iter_map.put((uint64_t)pos_var, new vector<ForVarIter_t>());
-    }
-    else if (var->kind == var_expr::let_var) {
-      lvar_iter_map.put(k, new vector<LetVarIter_t>());
-    }
-    else
-      ZORBA_ASSERT (false);
-  }
-  
-  for(flwor_expr::group_list_t::const_iterator it = v.group_vars_begin();
-      it != v.group_vars_end();
-      ++it)
-  {
-    rchandle<var_expr> var = (*it)->getInnerVar();
-    uint64_t k = (uint64_t) &*var;
-    fvar_iter_map.put(k, new vector<ForVarIter_t>());
-  }
-
-  for(flwor_expr::group_list_t::const_iterator it = v.non_group_vars_begin();
-      it != v.non_group_vars_end();
-      ++it)
-  {
-    rchandle<var_expr> var = (*it)->getInnerVar();
-    uint64_t k = (uint64_t) &*var;
-    lvar_iter_map.put(k, new vector<LetVarIter_t>());
-  }
-
   return true;
 }
 
 
-
-void end_visit (flwor_expr& v) 
+void end_visit(flwor_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  PlanIter_t ret = pop_itstack ();
-
-  vector<flwor::OrderSpec> orderSpecs;
-  for (flwor_expr::orderspec_list_t::reverse_iterator i = v.orderspec_rbegin ();
-       i != v.orderspec_rend ();
-       i++)
+  if (!v.is_general())
   {
-    rchandle<order_modifier> spec = i->second;
-    orderSpecs.push_back(flwor::OrderSpec(pop_itstack(),
-                                          spec->empty_mode == StaticContextConsts::empty_least,
-                                          spec->dir == ParseConstants::dir_descending,
-                                          spec->collation));
+    flwor_codegen(v);
   }
-  reverse (orderSpecs.begin (), orderSpecs.end ());
-  
-  auto_ptr<flwor::OrderByClause> orderby(orderSpecs.empty() ?
-                                         NULL :
-                                         new flwor::OrderByClause(orderSpecs,
-                                                                  v.get_order_stable()));
-  
-  PlanIter_t group_where = 0;
-  if (v.get_group_where() != 0)
-  group_where = pop_itstack();
-   
-  vector<flwor::GroupingOuterVar> nonGroupBys;
-  for(flwor_expr::group_list_t::reverse_iterator i = v.non_group_vars_rbegin();
-      i != v.non_group_vars_rend();
-      ++i)
+  else
   {
-    rchandle<group_clause> group = *i;
-    vector<LetVarIter_t>* lInnerVars = 0;
-    var_expr* lVar = group->getInnerVar();
-    ZORBA_ASSERT(lvar_iter_map.get((uint64_t)lVar, lInnerVars));
+    PlanIter_t ret = pop_itstack();
 
-    PlanIter_t lInput = pop_itstack();
+    PlanIter_t gflwor = gflwor_codegen(v, v.num_clauses() - 1);
 
-    nonGroupBys.push_back(flwor::GroupingOuterVar(lInput, *lInnerVars));
+    push_itstack(new flwor::TupleStreamIterator(qloc, gflwor, ret, false));
   }
-  
-  vector<flwor::GroupingSpec> groupBys;
-  for(flwor_expr::group_list_t::reverse_iterator i = v.group_vars_rbegin();
-      i != v.group_vars_rend();
-      ++i)
+}
+
+
+void visit_flwor_clause(const flwor_clause* c, bool general)
+{
+  if (c->get_kind() == flwor_clause::where_clause)
+    return;
+
+  FlworClauseVarMap_t clauseVarMap = new FlworClauseVarMap(c, general);
+
+  switch (c->get_kind())
   {
-    rchandle<group_clause> group = *i;
-    vector<ForVarIter_t>* lInnerVars = 0;
-    var_expr* lVar = group->getInnerVar();
-    ZORBA_ASSERT(fvar_iter_map.get((uint64_t)lVar, lInnerVars));
+  case flwor_clause::for_clause:
+  {
+    const for_clause* fc = static_cast<const for_clause *>(c);
     
-    PlanIter_t lInput = pop_itstack();
+    VarRebind_t varRebind = new VarRebind;
+    clauseVarMap->theVarExprs.push_back(fc->get_var());
+    clauseVarMap->theVarRebinds.push_back(varRebind);
+      
+    if (fc->get_pos_var() != NULL)
+    {
+      varRebind = new VarRebind;
+      clauseVarMap->theVarExprs.push_back(fc->get_pos_var());
+      clauseVarMap->theVarRebinds.push_back(varRebind);
+    }
+
+    break;
+  }
+
+  case flwor_clause::let_clause: 
+  {
+    const let_clause* lc = static_cast<const let_clause *>(c);
     
-    xqp_string lCollation = group->getCollation();
+    VarRebind_t varRebind = new VarRebind;
+    clauseVarMap->theVarExprs.push_back(lc->get_var());
+    clauseVarMap->theVarRebinds.push_back(varRebind);
+
+    break;
+  }
+
+  case flwor_clause::window_clause: 
+  {
+    const window_clause* wc = static_cast<const window_clause *>(c);
+
+    VarRebind_t varRebind = new VarRebind;
+    clauseVarMap->theVarExprs.push_back(wc->get_var());
+    clauseVarMap->theVarRebinds.push_back(varRebind);
+
+    init_wincond_var_maps(wc->get_win_stop(), clauseVarMap);
+    init_wincond_var_maps(wc->get_win_start(), clauseVarMap);
+
+    break;
+  }
+
+  case flwor_clause::group_clause: 
+  {
+    const group_clause* gbc = static_cast<const group_clause *>(c);
+    const group_clause::rebind_list_t& grouping_vars = gbc->get_grouping_vars();
+    const group_clause::rebind_list_t& nongrouping_vars = gbc->get_nongrouping_vars();
+
+    for (unsigned i = 0; i < grouping_vars.size(); i++)
+    {
+      VarRebind_t varRebind = new VarRebind;
+      clauseVarMap->theVarExprs.push_back(grouping_vars[i].second.getp());
+      clauseVarMap->theVarRebinds.push_back(varRebind);
+    }
     
-    groupBys.push_back(flwor::GroupingSpec(lInput, *lInnerVars, lCollation));
+    for (unsigned i = 0; i < nongrouping_vars.size(); i++)
+    {
+      VarRebind_t varRebind = new VarRebind;
+      clauseVarMap->theVarExprs.push_back(nongrouping_vars[i].second.getp());
+      clauseVarMap->theVarRebinds.push_back(varRebind);
+    }
+
+    break;
   }
   
-  auto_ptr<flwor::GroupByClause> groupby(
-  groupBys.empty() 
-  ? NULL 
-  : new flwor::GroupByClause(groupBys, nonGroupBys, group_where));
-
-  PlanIter_t where = NULL;
-  if (v.get_where () != NULL)
-    where = pop_itstack ();
-  
-  vector<flwor::ForLetClause> clauses;
-  stack<PlanIter_t> inputs;
-  for (vector<rchandle<forlet_clause> >::const_iterator it = v.forlet_begin ();
-       it != v.forlet_end();
-       ++it)
+  case flwor_clause::order_clause:
   {
-    inputs.push(pop_itstack());
+    break;
   }
 
-  for (vector<rchandle<forlet_clause> >::const_iterator it = v.forlet_begin ();
-       it != v.forlet_end();
-       ++it) 
+  case flwor_clause::count_clause:
   {
-    PlanIter_t input = pop_stack(inputs);
+    const count_clause* cl = static_cast<const count_clause *>(c);
+    
+    VarRebind_t varRebind = new VarRebind;
+    clauseVarMap->theVarExprs.push_back(cl->get_var());
+    clauseVarMap->theVarRebinds.push_back(varRebind);
 
-    if ((*it)->get_type () == forlet_clause::for_clause) {
-      vector<ForVarIter_t> *var_iters = NULL, *pvar_iters = NULL;
-      var_expr* var = (*it)->get_var ().getp();
-      var_expr* pos_var = (*it)->get_pos_var().getp();
-      ZORBA_ASSERT( fvar_iter_map.get((uint64_t)var, var_iters) );
-      if (pos_var == NULL) {
-        clauses.push_back(flwor::ForLetClause(var, *var_iters, input));
-      } else {
-        ZORBA_ASSERT( pvar_iter_map.get((uint64_t) pos_var, pvar_iters) );
-        clauses.push_back(flwor::ForLetClause(var, *var_iters, *pvar_iters, input));
-      }
-    }
-    else if ((*it)->get_type () == forlet_clause::let_clause) {
-      vector<LetVarIter_t> *var_iters = NULL;
-      var_expr* var = (*it)->get_var ().getp ();
-      ZORBA_ASSERT( lvar_iter_map.get((uint64_t)var, var_iters) );
-      clauses.push_back(flwor::ForLetClause(var, *var_iters, input, true));
-    }
+    break;
   }
 
-  flwor::FLWORIterator *iter = new flwor::FLWORIterator(
-      qloc, clauses, where, groupby.release(), 
-      orderby.release(), ret, v.isUpdating());
-  itstack.push(iter);
-}
-
-void init_wincond_var_map2 (const flwor_wincond::vars vars) {
-  if (vars.posvar != NULL)
-    fvar_iter_map.put((uint64_t) &*vars.posvar, new vector<ForVarIter_t>());
-  if (vars.curr != NULL)
-    fvar_iter_map.put((uint64_t) &*vars.curr, new vector<ForVarIter_t>());
-  if (vars.prev != NULL)
-    fvar_iter_map.put((uint64_t) &*vars.prev, new vector<ForVarIter_t>());
-  if (vars.next != NULL)
-    fvar_iter_map.put((uint64_t) &*vars.next, new vector<ForVarIter_t>());
-}
-
-void init_wincond_var_map (const flwor_wincond *wc) {
-  if (wc == NULL) return;
-  init_wincond_var_map2 (wc->get_in_vars ());
-  init_wincond_var_map2 (wc->get_out_vars ());
-}
-
-void init_var_maps (varref_t var, const forletwin_gclause *flc) {
-  enum var_expr::var_kind kind = var->get_kind ();
-  uint64_t k = (uint64_t) &*var;
-  if (kind == var_expr::for_var 
-      || (flc == NULL && (kind == var_expr::groupby_var || kind == var_expr::count_var || kind == var_expr::wincond_var || kind == var_expr::wincond_pos_var))) {
-    fvar_iter_map.put(k, new vector<ForVarIter_t>());
-    if (flc != NULL) {
-      var_expr* pos_var = flc->get_pos_var().getp();
-      if (pos_var != NULL)
-        pvar_iter_map.put((uint64_t)pos_var, new vector<ForVarIter_t>());
-    }
-  } else if (kind == var_expr::let_var || kind == var_expr::non_groupby_var) {
-    lvar_iter_map.put(k, new vector<LetVarIter_t>());
-  } else if (kind == var_expr::win_var) {
-    lvar_iter_map.put(k, new vector<LetVarIter_t>());
-    if (flc != NULL) {
-      init_wincond_var_map (flc->get_win_start ());
-      init_wincond_var_map (flc->get_win_stop ());
-    }
+  default:
+    ZORBA_ASSERT(false);
   }
-  else ZORBA_ASSERT (false);
+
+  if (clauseVarMap != NULL)
+    theClauseStack.push_back(clauseVarMap);
 }
 
-bool begin_visit (gflwor_expr& v) {
-  CODEGEN_TRACE_IN("");
-  for (gflwor_expr::clause_list_t::const_iterator it = v.clause_begin ();
-       it != v.clause_end(); ++it)
+
+void init_wincond_var_maps(
+    const flwor_wincond* cond,
+    FlworClauseVarMap* clauseVarMap) 
+{
+  if (cond == NULL)
+    return;
+
+  const flwor_wincond::vars& inVars = cond->get_in_vars();
+  const flwor_wincond::vars& outVars = cond->get_out_vars();
+
+  if (inVars.posvar != NULL)
   {
-    const flwor_clause &c = *(*it);
-    if (typeid (c) == typeid (forletwin_gclause)) {
-      const forletwin_gclause *flc = static_cast<const forletwin_gclause *> (&c);
-      init_var_maps (flc->get_var (), flc);
-    } else if (typeid (c) == typeid (group_gclause)) {
-      const group_gclause *gbc = static_cast<const group_gclause *> (&c);
-      const group_gclause::rebind_list_t &inner_rebind = gbc->get_inner_rebind (), &outer_rebind = gbc->get_outer_rebind ();
-      for (unsigned i = 0; i < inner_rebind.size (); i++)
-        init_var_maps (inner_rebind [i].second, NULL);
-      for (unsigned i = 0; i < outer_rebind.size (); i++)
-        init_var_maps (outer_rebind [i].second, NULL);
-    } else if (typeid (c) == typeid (count_gclause)) {
-      rchandle<var_expr> var = static_cast<const count_gclause *> (&c)->get_var();
-      uint64_t k = (uint64_t) &*var;
-      fvar_iter_map.put(k, new vector<ForVarIter_t>());
-    } else if (typeid (c) == typeid (orderby_gclause)) {
-      const orderby_gclause::rebind_list_t &list = static_cast<const orderby_gclause *> (&c)->get_rebind ();
-      for (unsigned i = 0; i < list.size (); i++)
-        init_var_maps (list [i].second, NULL);
-    }
+    VarRebind_t varRebind = new VarRebind;
+    clauseVarMap->theVarExprs.push_back(inVars.posvar.getp());
+    clauseVarMap->theVarRebinds.push_back(varRebind);
   }
 
-  return true;
+  if (inVars.curr != NULL)
+  {
+    VarRebind_t varRebind = new VarRebind;
+    clauseVarMap->theVarExprs.push_back(inVars.curr.getp());
+    clauseVarMap->theVarRebinds.push_back(varRebind);
+  }
+
+  if (inVars.prev != NULL)
+  {
+    VarRebind_t varRebind = new VarRebind;
+    clauseVarMap->theVarExprs.push_back(inVars.prev.getp());
+    clauseVarMap->theVarRebinds.push_back(varRebind);
+  }
+
+  if (inVars.next != NULL)
+  {
+    VarRebind_t varRebind = new VarRebind;
+    clauseVarMap->theVarExprs.push_back(inVars.next.getp());
+    clauseVarMap->theVarRebinds.push_back(varRebind);
+  }
+
+  if (outVars.posvar != NULL)
+  {
+    VarRebind_t varRebind = new VarRebind;
+    clauseVarMap->theVarExprs.push_back(outVars.posvar.getp());
+    clauseVarMap->theVarRebinds.push_back(varRebind);
+  }
+
+  if (outVars.curr != NULL)
+  {
+    VarRebind_t varRebind = new VarRebind;
+    clauseVarMap->theVarExprs.push_back(outVars.curr.getp());
+    clauseVarMap->theVarRebinds.push_back(varRebind);
+  }
+
+  if (outVars.prev != NULL)
+  {
+    VarRebind_t varRebind = new VarRebind;
+    clauseVarMap->theVarExprs.push_back(outVars.prev.getp());
+    clauseVarMap->theVarRebinds.push_back(varRebind);
+  }
+
+  if (outVars.next != NULL)
+  {
+    VarRebind_t varRebind = new VarRebind;
+    clauseVarMap->theVarExprs.push_back(outVars.next.getp());
+    clauseVarMap->theVarRebinds.push_back(varRebind);
+  }
 }
 
-struct gflwor_codegen_data {
+
+struct wincond_var_iters 
+{
+  vector<PlanIter_t> * inPos;
+  vector<PlanIter_t> * inCurr;
+  vector<PlanIter_t> * inPrev;
+  vector<PlanIter_t> * inNext;
+
+  vector<PlanIter_t> * outPos;
+  vector<PlanIter_t> * outCurr;
+  vector<PlanIter_t> * outPrev;
+  vector<PlanIter_t> * outNext;
+
+  wincond_var_iters(
+        const flwor_wincond* cond,
+        FlworClauseVarMap* clauseVarMap,
+        ulong& varPos)
+  {
+    const flwor_wincond::vars& inVars = cond->get_in_vars();
+    const flwor_wincond::vars& outVars = cond->get_out_vars();
+
+    inPos = ((inVars.posvar != NULL) ?
+             &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs : 
+             &plan_visitor::no_var_iters);
+
+    inCurr = (inVars.curr != NULL ?
+              &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs : 
+              &plan_visitor::no_var_iters);
+
+    inPrev = (inVars.prev != NULL ?
+              &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs : 
+              &plan_visitor::no_var_iters);
+
+    inNext = (inVars.next != NULL ?
+              &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs : 
+              &plan_visitor::no_var_iters);
+
+    outPos = (outVars.posvar != NULL ?
+              &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs : 
+              &plan_visitor::no_var_iters);
+
+    outCurr = (outVars.curr != NULL ?
+               &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs : 
+               &plan_visitor::no_var_iters);
+
+    outPrev = (outVars.prev != NULL ?
+               &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs : 
+               &plan_visitor::no_var_iters);
+
+    outNext = (outVars.next != NULL ?
+               &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs : 
+               &plan_visitor::no_var_iters);
+  }
 };
 
-struct window_var_iters {
-  vector<ForVarIter_t > *posvar, *curr, *prev, *next;
-  vector<ForVarIter_t > *lookup (varref_t var, hash64map<vector<ForVarIter_t> *> &map) {
-    vector<ForVarIter_t > *vi = &plan_visitor::no_var_iters;
-    if (var != NULL)
-      ZORBA_ASSERT (map.get((uint64_t)&*var, vi));
-    return vi;
-  }
-  window_var_iters (flwor_wincond::vars vars, hash64map<vector<ForVarIter_t> *> &map) {
-    posvar = lookup (vars.posvar, map);
-    curr = lookup (vars.curr, map);
-    next = lookup (vars.next, map);
-    prev = lookup (vars.prev, map);
-  }
-};
 
-PlanIter_t gflwor_codegen(gflwor_expr& v, int ccnt, gflwor_codegen_data &gdata) {
-#define PREV_ITER gflwor_codegen (v, ccnt - 1, gdata)
-  const QueryLoc& qloc = v.get_loc ();
-  if (ccnt < 0)
+
+PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause) 
+{
+#define PREV_ITER gflwor_codegen(flworExpr, currentClause - 1)
+
+  const QueryLoc& qloc = flworExpr.get_loc();
+
+  if (currentClause < 0)
+  {
     return new flwor::TupleSourceIterator(qloc);
+  }
 
-  const flwor_clause &c = *(v [ccnt]);
-  if (typeid (c) == typeid (where_gclause)) {
-    PlanIter_t where = pop_itstack ();
-    return new flwor::WhereIterator(static_cast<const where_gclause *>(&c)->get_loc (), PREV_ITER, where);
-  } else if (typeid (c) == typeid (forletwin_gclause)) {
-    const forletwin_gclause *flwc = static_cast<const forletwin_gclause *> (&c);
-    var_expr* var = flwc->get_var ().getp ();
-    PlanIter_t input = pop_itstack ();
-    if (flwc->get_type () == forletwin_gclause::for_clause) {
-      vector<ForVarIter_t> *var_iters = NULL, *pvar_iters = &no_var_iters;
-      var_expr* pos_var = flwc->get_pos_var().getp();
-      ZORBA_ASSERT (fvar_iter_map.get((uint64_t)var, var_iters));
-      if (pos_var != NULL)
-        ZORBA_ASSERT (pvar_iter_map.get((uint64_t) pos_var, pvar_iters));
-      if (! flwc->is_outer ()) {
+  const flwor_clause& c = *(flworExpr[currentClause]);
+
+  FlworClauseVarMap_t clauseVarMap;
+
+  if (c.get_kind() != flwor_clause::where_clause) 
+  {
+    ZORBA_ASSERT(!theClauseStack.empty());
+    ulong stackSize = theClauseStack.size();
+
+    clauseVarMap = theClauseStack[stackSize-1];
+    theClauseStack.resize(stackSize - 1);
+
+    ZORBA_ASSERT(clauseVarMap->theClause == &c);
+  }
+
+  //
+  // WHERE
+  //
+  if (c.get_kind() == flwor_clause::where_clause) 
+  {
+    PlanIter_t where = pop_itstack();
+    return new flwor::WhereIterator(c.get_loc(), PREV_ITER, where);
+  }
+
+  //
+  // FOR
+  //
+  else if (c.get_kind() == flwor_clause::for_clause)
+  {
+    const for_clause* fc = static_cast<const for_clause *>(&c);
+
+    ZORBA_ASSERT(clauseVarMap->theVarRebinds.size() >= 1);
+
+    var_expr* var = fc->get_var();
+
+    PlanIter_t domainIter = pop_itstack();
+
+    vector<PlanIter_t>& varRefs = clauseVarMap->theVarRebinds[0]->theOutputVarRefs;
+    vector<PlanIter_t>* posVarRefs = &no_var_iters;
+
+    if (fc->get_pos_var())
+    {
+      ZORBA_ASSERT(clauseVarMap->theVarRebinds.size() == 2);
+
+      posVarRefs = &clauseVarMap->theVarRebinds[1]->theOutputVarRefs;
+    }
+
+    if (! fc->is_outer()) 
+    {
 #ifdef ZORBA_DEBUGGER
-        if(ccb->m_debugger != 0)
+      if(ccb->m_debugger != 0)
+      {
+        checked_vector<PlanIter_t> argv;
+        checked_vector<store::Item_t> varnames;
+        checked_vector<string> var_keys;
+        checked_vector<global_binding> globals;
+        checked_vector<xqtref_t> vartypes;
+   
+        checked_vector<bound_var> lVars = fc->get_bound_variables();
+        checked_vector<bound_var>::iterator lIter;
+   
+        for ( lIter = lVars.begin(); lIter != lVars.end(); ++lIter )
         {
-          
-            checked_vector<PlanIter_t> argv;
-             checked_vector<store::Item_t> varnames;
-            checked_vector<string> var_keys;
-             checked_vector<global_binding> globals;
-             checked_vector<xqtref_t> vartypes;
-   
-             checked_vector<bound_var> lVars = flwc->get_bound_variables();
-             checked_vector<bound_var>::iterator lIter;
-   
-             for ( lIter = lVars.begin(); lIter != lVars.end(); ++lIter )
-             {
-               varnames.push_back (lIter->varname);
-               var_keys.push_back (lIter->var_key);
-               vartypes.push_back (lIter->type);
-               lIter->var->accept(*this);
-               argv.push_back(pop_itstack());
-             }
-             reverse(argv.begin(), argv.end());
-             list<global_binding> lGlobals = flwc->get_global_variables();
-             list<global_binding>::iterator it;
-             for ( it = lGlobals.begin(); it != lGlobals.end(); ++it )
-             {
-               globals.push_back( *it );
-             }
-             argv.push_back(new flwor::ForIterator(var->get_loc (), var->get_varname(), PREV_ITER, input, *var_iters, *pvar_iters));
-             reverse (argv.begin (), argv.end ());
-             return new FnDebugIterator(var->get_loc(), varnames, var_keys, vartypes, globals, argv, true);
+          varnames.push_back (lIter->varname);
+          var_keys.push_back (lIter->var_key);
+          vartypes.push_back (lIter->type);
+          lIter->var->accept(*this);
+          argv.push_back(pop_itstack());
+        }
+        reverse(argv.begin(), argv.end());
+        list<global_binding> lGlobals = fc->get_global_variables();
+        list<global_binding>::iterator it;
+        for ( it = lGlobals.begin(); it != lGlobals.end(); ++it )
+        {
+          globals.push_back( *it );
+        }
+        argv.push_back(new flwor::ForIterator(var->get_loc (),
+                                              var->get_varname(),
+                                              PREV_ITER,
+                                              domainIter,
+                                              varRefs,
+                                              *posVarRefs));
+        reverse (argv.begin (), argv.end ());
+        return new FnDebugIterator(var->get_loc(),
+                                   varnames,
+                                   var_keys,
+                                   vartypes,
+                                   globals,
+                                   argv,
+                                   true);
       }
 #endif
-        return new flwor::ForIterator(var->get_loc (), var->get_varname(), PREV_ITER, input, *var_iters, *pvar_iters);
-      } else {
-        ZORBA_ASSERT (pos_var == NULL);
-        return new flwor::OuterForIterator(var->get_loc (), var->get_varname(),
-                                            PREV_ITER, input, *var_iters);
-      }
-    } else if (flwc->get_type () == forletwin_gclause::let_clause) {
-      vector<LetVarIter_t> *var_iters = NULL;
-      ZORBA_ASSERT (lvar_iter_map.get((uint64_t)var, var_iters));
-      return new flwor::LetIterator(var->get_loc (), var->get_varname(), PREV_ITER, input, *var_iters, true);
-   } else if (flwc->get_type () == forletwin_gclause::win_clause) {
-      vector<LetVarIter_t> *var_iters = NULL;
-      ZORBA_ASSERT (lvar_iter_map.get((uint64_t)var, var_iters));
-      auto_ptr<flwor::StartClause> start_clause;
-      auto_ptr<flwor::EndClause> end_clause;
-      const flwor_wincond *cond;
-      if (NULL == (cond = flwc->get_win_stop ()))
-        end_clause.reset (new flwor::EndClause);
-      else {
-        window_var_iters wvi_in  (cond->get_in_vars (), fvar_iter_map);
-        window_var_iters wvi_out (cond->get_out_vars (), fvar_iter_map);
-        flwor::WindowVars wvars (*wvi_in.curr, *wvi_in.prev, *wvi_in.next, *wvi_in.posvar,
-                                  *wvi_out.curr, *wvi_out.prev, *wvi_out.next, *wvi_out.posvar);
-        end_clause.reset (new flwor::EndClause (pop_itstack (), wvars, cond->is_only ()));
-      }
-      if (NULL != (cond = flwc->get_win_start ())) {
-        window_var_iters wvi_in  (cond->get_in_vars (), fvar_iter_map);
-        window_var_iters wvi_out (cond->get_out_vars (), fvar_iter_map);
-        flwor::WindowVars wvars (*wvi_in.curr, *wvi_in.prev, *wvi_in.next, *wvi_in.posvar,
-                                  *wvi_out.curr, *wvi_out.prev, *wvi_out.next, *wvi_out.posvar);
-        start_clause.reset (new flwor::StartClause (pop_itstack (), wvars));
-      }
-      return new flwor::WindowIterator (var->get_loc (), PREV_ITER, input, flwc->get_wintype () == forletwin_gclause::tumbling_window ? flwor::WindowIterator::TUMBLING : flwor::WindowIterator::SLIDING, *var_iters, *start_clause, *end_clause);
+      return new flwor::ForIterator(var->get_loc(),
+                                    var->get_varname(),
+                                    PREV_ITER,
+                                    domainIter,
+                                    varRefs,
+                                    *posVarRefs);
     }
-  } else if (typeid (c) == typeid (count_gclause)) {
-    rchandle<var_expr> var = static_cast<const count_gclause *> (&c)->get_var();
-    vector<ForVarIter_t> *var_iters = NULL;
-    ZORBA_ASSERT( fvar_iter_map.get((uint64_t)&*var, var_iters) );
-    return new flwor::CountIterator(var->get_loc (), var->get_varname (), PREV_ITER, *var_iters);
-  } else if (typeid (c) == typeid (orderby_gclause)) {
-    vector<ForVarIter_t> theForVariableInput;
-    vector<LetVarIter_t> theLetVariableInput;
-    vector< vector< ForVarIter_t > > theForVariableOutput;
-    vector< vector< LetVarIter_t > > theLetVariableOutput;
-    // TODO: collapse sequences of orderby_gclause into ONE OrderByIterator
-    const orderby_gclause *obc = static_cast<const orderby_gclause *> (&c);
-    vector<flwor::OrderSpec> lOrderSpecs;
-    string col = obc->get_collation ();
-    if (col.empty ())
-      lOrderSpecs.push_back (flwor::OrderSpec (pop_itstack (), 
-                                               obc->get_empty_mode() == StaticContextConsts::empty_least, 
-                                               obc->get_dir() == ParseConstants::dir_descending));
     else
-      lOrderSpecs.push_back (flwor::OrderSpec (pop_itstack (), 
-                                               obc->get_empty_mode() == StaticContextConsts::empty_least, 
-                                               obc->get_dir() == ParseConstants::dir_descending, 
-                                               col));
-    
-    const orderby_gclause::rebind_list_t &rebind_list = obc->get_rebind ();
-    for (unsigned i = 0; i < rebind_list.size (); i++) {
-      varref_t inner = rebind_list [i].first, outer = rebind_list [i].second;
-      general_var_codegen (*inner);
-      PlanIter_t iter = pop_itstack ();
-      if (typeid (*iter) == typeid (ForVarIterator)) {
-        theForVariableInput.push_back (iter.cast<ForVarIterator> ());
-        vector<ForVarIter_t> *var_iters = NULL;
-        ZORBA_ASSERT (fvar_iter_map.get((uint64_t) &*outer, var_iters));
-        theForVariableOutput.push_back (*var_iters);
-      } else {  // let
-        theLetVariableInput.push_back (iter.cast<LetVarIterator> ());
-        vector<LetVarIter_t> *var_iters = NULL;
-        ZORBA_ASSERT (lvar_iter_map.get((uint64_t) &*outer, var_iters));
-        theLetVariableOutput.push_back (*var_iters);
-      }
+    {
+      ZORBA_ASSERT(fc->get_pos_var() == NULL);
+
+      return new flwor::OuterForIterator(var->get_loc(),
+                                         var->get_varname(),
+                                         PREV_ITER,
+                                         domainIter,
+                                         varRefs);
     }
-    return new flwor::OrderByIterator (obc->get_loc (), PREV_ITER, lOrderSpecs, theForVariableInput, theLetVariableInput, theForVariableOutput, theLetVariableOutput);
-  } else if (typeid (c) == typeid (group_gclause)) {
-    const group_gclause *gbc = static_cast<const group_gclause *> (&c);
-    const group_gclause::rebind_list_t &inner_rebind = gbc->get_inner_rebind (), &outer_rebind = gbc->get_outer_rebind ();
-    const vector<string> &collations = gbc->getCollations ();
-    vector<flwor::GroupingSpec> gspecs;
-    vector<flwor::GroupingOuterVar> gouters;
-    
-    for (unsigned i = 0; i < collations.size (); i++) {
-      vector<ForVarIter_t> *var_iters = NULL;
-      ZORBA_ASSERT (fvar_iter_map.get((uint64_t) &*inner_rebind [i].second, var_iters));
-      general_var_codegen (*inner_rebind [i].first);
-      gspecs.push_back (flwor::GroupingSpec (pop_itstack (), *var_iters, collations [i]));
+  }
+
+  //
+  // LET
+  //
+  else if (c.get_kind() == flwor_clause::let_clause)
+  {
+    const let_clause* lc = static_cast<const let_clause *>(&c);
+
+    ZORBA_ASSERT(clauseVarMap->theVarRebinds.size() == 1);
+
+    var_expr* var = lc->get_var();
+
+    PlanIter_t domainIter = pop_itstack();
+
+    vector<PlanIter_t>& varRefs = clauseVarMap->theVarRebinds[0]->theOutputVarRefs;
+
+    return new flwor::LetIterator(var->get_loc(),
+                                  var->get_varname(),
+                                  PREV_ITER,
+                                  domainIter,
+                                  varRefs,
+                                  true);
+  }
+
+  //
+  // WINDOW
+  //
+  else if (c.get_kind() == flwor_clause::window_clause)
+  {
+    const window_clause* wc = static_cast<const window_clause *>(&c);
+
+    var_expr* var = wc->get_var();
+    PlanIter_t domainIter = pop_itstack();
+
+    vector<PlanIter_t>& varRefs = clauseVarMap->theVarRebinds[0]->theOutputVarRefs;
+
+    auto_ptr<flwor::StartClause> start_clause;
+    auto_ptr<flwor::EndClause> end_clause;
+    const flwor_wincond* cond;
+    ulong varPos = 1;
+
+    if (NULL == (cond = wc->get_win_stop()))
+    {
+      end_clause.reset(new flwor::EndClause);
+    }
+    else 
+    {
+      wincond_var_iters wcv(cond, clauseVarMap, varPos);
+
+      flwor::WindowVars wvars(*wcv.inCurr, *wcv.inPrev, *wcv.inNext, *wcv.inPos,
+                              *wcv.outCurr, *wcv.outPrev, *wcv.outNext, *wcv.outPos);
+
+      end_clause.reset(new flwor::EndClause(pop_itstack(), wvars, cond->is_only()));
     }
 
-    for (unsigned i = 0; i < outer_rebind.size (); i++) {
-      vector<LetVarIter_t> *var_iters = NULL;
-      ZORBA_ASSERT (lvar_iter_map.get((uint64_t) &*outer_rebind [i].second, var_iters));
-      general_var_codegen (*outer_rebind [i].first);
-      gouters.push_back (flwor::GroupingOuterVar (pop_itstack (), *var_iters));
+    if (NULL != (cond = wc->get_win_start())) 
+    {
+      wincond_var_iters wcv(cond, clauseVarMap, varPos);
+
+      flwor::WindowVars wvars(*wcv.inCurr, *wcv.inPrev, *wcv.inNext, *wcv.inPos,
+                              *wcv.outCurr, *wcv.outPrev, *wcv.outNext, *wcv.outPos);
+
+      start_clause.reset(new flwor::StartClause(pop_itstack(), wvars));
     }
-    return new flwor::GroupByIterator (gbc->get_loc (), PREV_ITER, gspecs, gouters);
+
+    return new flwor::WindowIterator(var->get_loc(),
+                                     wc->get_winkind() == window_clause::tumbling_window ? flwor::WindowIterator::TUMBLING : flwor::WindowIterator::SLIDING,
+                                     PREV_ITER,
+                                     domainIter,
+                                     var->get_varname(),
+                                     varRefs,
+                                     *start_clause,
+                                     *end_clause);
   }
+
+  //
+  // COUNT
+  //
+  else if (c.get_kind() == flwor_clause::count_clause) 
+  {
+    varref_t var = static_cast<const count_clause *>(&c)->get_var();
+
+    ZORBA_ASSERT(clauseVarMap->theVarRebinds.size() == 1);
+
+    vector<PlanIter_t>& var_iters = clauseVarMap->theVarRebinds[0]->theOutputVarRefs;
+
+    return new flwor::CountIterator(var->get_loc(),
+                                    var->get_varname(),
+                                    PREV_ITER,
+                                    var_iters);
+  }
+
+  //
+  // ORDERBY
+  //
+  else if (c.get_kind() == flwor_clause::order_clause) 
+  {
+    ulong numVars = clauseVarMap->theVarRebinds.size();
+    ulong numForVars = 0;
+    ulong numLetVars = 0;
+
+    vector<ForVarIter_t> inputForVars(numVars);
+    vector<LetVarIter_t> inputLetVars(numVars);
+    vector<vector<ForVarIter_t> > outputForVarsRefs(numVars);
+    vector<vector<LetVarIter_t> > outputLetVarsRefs(numVars);
+
+    for (ulong i = 0; i < numVars; ++i)
+    {
+      VarRebind* varRebind = clauseVarMap->theVarRebinds[i].getp();
+
+      ForVarIterator* forIter = dynamic_cast<ForVarIterator*>
+                                (varRebind->theInputVar.getp());
+
+      if (forIter != NULL)
+      {
+        inputForVars[numForVars] = forIter;
+
+        flwor::castIterVector<ForVarIterator>(outputForVarsRefs[numForVars],
+                                              varRebind->theOutputVarRefs);
+        ++numForVars;
+      }
+      else
+      {
+        LetVarIterator* letIter = dynamic_cast<LetVarIterator*>
+                                (varRebind->theInputVar.getp());
+        ZORBA_ASSERT(letIter != NULL);
+
+        inputLetVars[numLetVars] = letIter;
+
+        flwor::castIterVector<LetVarIterator>(outputLetVarsRefs[numLetVars],
+                                              varRebind->theOutputVarRefs);
+        ++numLetVars;
+      }
+    }
+
+    inputForVars.resize(numForVars);
+    outputForVarsRefs.resize(numForVars);
+    inputLetVars.resize(numLetVars);
+    outputLetVarsRefs.resize(numLetVars);
+
+    const orderby_clause* obc = static_cast<const orderby_clause *>(&c);
+    ulong numColumns = obc->num_columns();
+    const std::vector<order_modifier>& modifiers = obc->get_modifiers();
+
+    std::vector<flwor::OrderSpec> orderSpecs(numColumns);
+
+    for (long i = numColumns - 1; i >= 0; --i)
+    {
+      bool emptyLeast = (modifiers[i].theEmptyMode == StaticContextConsts::empty_least);
+      bool descending = (modifiers[i].theDirection == ParseConstants::dir_descending);
+
+      orderSpecs[i] = flwor::OrderSpec(pop_itstack(), 
+                                       emptyLeast,
+                                       descending,
+                                       modifiers[i].theCollation);
+    }
+
+    return new flwor::OrderByIterator(c.get_loc(),
+                                      obc->is_stable(),
+                                      orderSpecs,
+                                      PREV_ITER,
+                                      inputForVars,
+                                      inputLetVars,
+                                      outputForVarsRefs,
+                                      outputLetVarsRefs);
+  }
+
+  //
+  // GROUPBY
+  //
+  else if (c.get_kind() == flwor_clause::group_clause) 
+  {
+    vector<flwor::GroupingSpec> gspecs;
+    vector<flwor::GroupingOuterVar> gouters;
+
+    generate_groupby(clauseVarMap, gspecs, gouters);
+
+    return new flwor::GroupByIterator(c.get_loc(), PREV_ITER, gspecs, gouters);
+  }
+
   ZORBA_ASSERT (false);
   return NULL;
 #undef PREV_ITER
 }
 
-void end_visit (gflwor_expr& v) {
-  CODEGEN_TRACE_OUT("");
-  PlanIter_t ret = pop_itstack ();
-  gflwor_codegen_data gdata;
-  PlanIter_t gflwor = gflwor_codegen (v, v.size () - 1, gdata);
-  itstack.push (new flwor::TupleStreamIterator(qloc, gflwor, ret, false));
+
+void flwor_codegen(const flwor_expr& flworExpr) 
+{
+  const QueryLoc& qloc = flworExpr.get_loc();
+
+  flwor::FLWORIterator* flworIter;
+  PlanIter_t returnIter;
+  auto_ptr<flwor::OrderByClause> orderClause(NULL);
+  auto_ptr<flwor::GroupByClause> groupClause(NULL);
+  PlanIter_t whereIter;
+  vector<flwor::ForLetClause> forletClauses;
+
+  unsigned numClauses = flworExpr.num_clauses();
+
+  returnIter = pop_itstack();
+
+  for (int it = numClauses - 1; it >= 0; --it)
+  {
+    const flwor_clause& c = *flworExpr[it];
+
+    FlworClauseVarMap_t clauseVarMap;
+
+    if (c.get_kind() != flwor_clause::where_clause) 
+    {
+      ZORBA_ASSERT(!theClauseStack.empty());
+      ulong stackSize = theClauseStack.size();
+      
+      clauseVarMap = theClauseStack[stackSize-1];
+      theClauseStack.resize(stackSize - 1);
+      
+      ZORBA_ASSERT(clauseVarMap->theClause == &c);
+    }
+
+    //
+    // ORDERBY
+    //
+    if (c.get_kind() == flwor_clause::order_clause)
+    {
+      const orderby_clause* obc = static_cast<const orderby_clause*>(&c);
+      unsigned numColumns = obc->num_columns();
+      const std::vector<order_modifier>& modifiers = obc->get_modifiers();
+
+      vector<flwor::OrderSpec> orderSpecs(numColumns);
+
+      for (int i = numColumns - 1; i >= 0; --i)
+      {
+        bool emptyLeast = (modifiers[i].theEmptyMode == StaticContextConsts::empty_least);
+        bool descending = (modifiers[i].theDirection == ParseConstants::dir_descending);
+
+        orderSpecs[i] = flwor::OrderSpec(pop_itstack(),
+                                         emptyLeast,
+                                         descending,
+                                         modifiers[i].theCollation);
+      }
+
+      orderClause.reset(new flwor::OrderByClause(orderSpecs, obc->is_stable()));
+    }
+
+    //
+    // GROUPBY
+    //
+    else if (c.get_kind() == flwor_clause::group_clause)
+    {
+      vector<flwor::GroupingSpec> gspecs;
+      vector<flwor::GroupingOuterVar> gouters;
+
+      generate_groupby(clauseVarMap, gspecs, gouters);
+
+      groupClause.reset(new flwor::GroupByClause(gspecs, gouters));
+    }
+
+    //
+    // WHERE
+    //
+    else if (c.get_kind() == flwor_clause::where_clause)
+    {
+      whereIter = pop_itstack();
+    }
+
+    //
+    // FOR
+    //
+    else if (c.get_kind() == flwor_clause::for_clause)
+    {
+      const for_clause* fc = static_cast<const for_clause *>(&c);
+
+      ZORBA_ASSERT(clauseVarMap->theVarRebinds.size() >= 1);
+
+      var_expr* var = fc->get_var();
+
+      PlanIter_t domainIter = pop_itstack();
+
+      vector<PlanIter_t>& varRefs = clauseVarMap->theVarRebinds[0]->theOutputVarRefs;
+
+      if (fc->get_pos_var())
+      {
+        ZORBA_ASSERT(clauseVarMap->theVarRebinds.size() == 2);
+        
+        vector<PlanIter_t>& posVarRefs = clauseVarMap->theVarRebinds[1]->theOutputVarRefs;
+
+        forletClauses.push_back(flwor::ForLetClause(var->get_varname(),
+                                                    varRefs,
+                                                    posVarRefs,
+                                                    domainIter));
+      }
+      else
+      {
+        ZORBA_ASSERT(clauseVarMap->theVarRebinds.size() == 1);
+
+        forletClauses.push_back(flwor::ForLetClause(var->get_varname(),
+                                                    varRefs,
+                                                    domainIter));
+      }
+    }
+
+    //
+    // LET
+    //
+    else if (c.get_kind() == flwor_clause::let_clause)
+    {
+      const let_clause* lc = static_cast<const let_clause *>(&c);
+
+      ZORBA_ASSERT(clauseVarMap->theVarRebinds.size() == 1);
+
+      var_expr* var = lc->get_var();
+
+      PlanIter_t domainIter = pop_itstack();
+
+      vector<PlanIter_t>& varRefs = clauseVarMap->theVarRebinds[0]->theOutputVarRefs;
+ 
+      forletClauses.push_back(flwor::ForLetClause(var->get_varname(),
+                                                  varRefs,
+                                                  domainIter,
+                                                  true));
+    }
+
+    else
+    {
+      ZORBA_ASSERT(false);
+    }
+  }
+
+  std::reverse(forletClauses.begin(), forletClauses.end());
+
+  flworIter = new flwor::FLWORIterator(qloc,
+                                       forletClauses,
+                                       whereIter,
+                                       groupClause.release(), 
+                                       orderClause.release(),
+                                       returnIter,
+                                       flworExpr.isUpdating());
+  push_itstack(flworIter);
 }
+
+
+void generate_groupby(
+    const FlworClauseVarMap* clauseVarMap,
+    vector<flwor::GroupingSpec>& gspecs,
+    vector<flwor::GroupingOuterVar>& gouters)
+{
+  const group_clause* gbc = static_cast<const group_clause*>(clauseVarMap->theClause);
+  const group_clause::rebind_list_t& gvars = gbc->get_grouping_vars();
+  const group_clause::rebind_list_t& ngvars = gbc->get_nongrouping_vars();
+  const vector<string>& collations = gbc->get_collations();
+  long numVars = gvars.size() + ngvars.size();
+  long numGroupVars = gvars.size();
+  long i = numVars - 1;
+
+  for (; i >= numGroupVars; --i) 
+  {
+    VarRebind* varRebind = clauseVarMap->theVarRebinds[i].getp();
+        
+    const vector<PlanIter_t>& varRefs = varRebind->theOutputVarRefs;
+
+    gouters.push_back(flwor::GroupingOuterVar(pop_itstack(), varRefs));
+  }
+
+  for (; i >= 0; --i) 
+  {
+    VarRebind* varRebind = clauseVarMap->theVarRebinds[i].getp();
+    
+    const vector<PlanIter_t>& varRefs = varRebind->theOutputVarRefs;
+    
+    gspecs.push_back(flwor::GroupingSpec(pop_itstack(), varRefs, collations[i]));
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 
 bool begin_visit (promote_expr& v) {
   CODEGEN_TRACE_IN("");
@@ -795,7 +1300,7 @@ void end_visit (promote_expr& v) {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
   // TODO: Currently we use cast. Promotion may be more efficient.
-  itstack.push(new PromoteIterator(qloc, lChild, v.get_target_type()));
+  push_itstack(new PromoteIterator(qloc, lChild, v.get_target_type()));
 }
 
 bool begin_visit (trycatch_expr& v) {
@@ -843,7 +1348,7 @@ void end_visit (trycatch_expr& v) {
   }
   vector<TryCatchIterator::CatchClause> ccs(rev_ccs.rbegin(), rev_ccs.rend());
   PlanIter_t lChild = pop_itstack();
-  itstack.push(new TryCatchIterator(qloc, lChild, ccs));
+  push_itstack(new TryCatchIterator(qloc, lChild, ccs));
 }
 
 bool begin_visit (eval_expr& v) {
@@ -864,7 +1369,7 @@ void end_visit (eval_expr& v) {
   }
   argv.push_back (pop_itstack ());
   reverse (argv.begin (), argv.end ());
-  itstack.push (new EvalIterator (qloc, varnames, var_keys, vartypes, argv));
+  push_itstack (new EvalIterator (qloc, varnames, var_keys, vartypes, argv));
 }
 
 bool begin_visit (typeswitch_expr& v) {
@@ -891,7 +1396,7 @@ void end_visit (if_expr& v) {
   PlanIter_t iterCond = pop_itstack();
   PlanIter_t iterIfThenElse = new IfThenElseIterator(
     qloc, iterCond, iterThen, iterElse, v.isUpdating());
-  itstack.push(&*iterIfThenElse);
+  push_itstack(&*iterIfThenElse);
 }
 
 
@@ -941,7 +1446,7 @@ void end_visit (insert_expr& v) {
   PlanIter_t lTarget = pop_itstack();
   PlanIter_t lSource = pop_itstack();
   PlanIter_t lInsert = new InsertIterator(qloc, v.getType(), lSource, lTarget); 
-  itstack.push(&*lInsert);
+  push_itstack(&*lInsert);
 }
 
 bool begin_visit (delete_expr& v) {
@@ -964,7 +1469,7 @@ void end_visit (delete_expr& v) {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lTarget = pop_itstack();
   PlanIter_t lDelete = new DeleteIterator(qloc, lTarget);
-  itstack.push(&*lDelete);
+  push_itstack(&*lDelete);
 }
 
 bool begin_visit (replace_expr& v) {
@@ -994,7 +1499,7 @@ void end_visit (replace_expr& v) {
                                             v.getType(),
                                             lTarget,
                                             lReplacement);
-  itstack.push(&*lReplace);
+  push_itstack(&*lReplace);
 }
 
 bool begin_visit (rename_expr& v) {
@@ -1025,7 +1530,7 @@ void end_visit (rename_expr& v) {
   PlanIter_t lName = pop_itstack();
   PlanIter_t lTarget = pop_itstack();
   PlanIter_t lRename = new RenameIterator(qloc, lTarget, lName);
-  itstack.push(&*lRename);
+  push_itstack(&*lRename);
 }
 
 bool begin_visit (transform_expr& v) {
@@ -1067,7 +1572,7 @@ void end_visit (transform_expr& v) {
   }
 
   TransformIterator* lTransform = new TransformIterator(qloc, lClauses, lModify, lReturn); 
-  itstack.push(lTransform);
+  push_itstack(lTransform);
 }
 
 
@@ -1080,7 +1585,7 @@ void end_visit (exit_expr& v) {
   CODEGEN_TRACE_OUT("");
   checked_vector<PlanIter_t> argv;
   argv.push_back (pop_itstack ());
-  itstack.push (new FlowCtlIterator (qloc, argv, FlowCtlIterator::EXIT));
+  push_itstack (new FlowCtlIterator (qloc, argv, FlowCtlIterator::EXIT));
 }
 
 bool begin_visit (flowctl_expr& v) {
@@ -1102,7 +1607,7 @@ void end_visit (flowctl_expr& v) {
     ZORBA_FATAL(false, "");
   }
   checked_vector<PlanIter_t> argv;
-  itstack.push (new FlowCtlIterator (qloc, argv, a));
+  push_itstack (new FlowCtlIterator (qloc, argv, a));
 }
 
 bool begin_visit (while_expr& v) {
@@ -1114,7 +1619,7 @@ void end_visit (while_expr& v) {
   CODEGEN_TRACE_OUT("");
   checked_vector<PlanIter_t> argv;
   argv.push_back (pop_itstack ());
-  itstack.push (new LoopIterator (qloc, argv));
+  push_itstack (new LoopIterator (qloc, argv));
 }
 
 
@@ -1146,7 +1651,7 @@ void end_visit (fo_expr& v) {
   if (func->validate_args (argv)) {
     PlanIter_t iter = func->codegen (loc, argv, v);
     ZORBA_ASSERT(iter != NULL);
-    itstack.push(iter);
+    push_itstack(iter);
 
     if (is_enclosed_expr(&v)) {
       expr *e = pop_stack(theConstructorsStack);
@@ -1181,7 +1686,7 @@ bool begin_visit (instanceof_expr& v) {
 void end_visit (instanceof_expr& v) {
   CODEGEN_TRACE_OUT("");
   PlanIter_t p = pop_itstack ();
-  itstack.push (new InstanceOfIterator (qloc, p, v.get_target_type ()));
+  push_itstack (new InstanceOfIterator (qloc, p, v.get_target_type ()));
 }
 
 bool begin_visit (treat_expr& v) {
@@ -1193,7 +1698,7 @@ void end_visit (treat_expr& v) {
   CODEGEN_TRACE_OUT("");
   vector<PlanIter_t> argv;
   argv.push_back (pop_itstack ());
-  itstack.push (new TreatIterator (qloc, argv, v.get_target_type (), v.get_check_prime (), v.get_err ()));
+  push_itstack (new TreatIterator (qloc, argv, v.get_target_type (), v.get_check_prime (), v.get_err ()));
 }
 
 bool begin_visit (castable_expr& v) {
@@ -1204,7 +1709,7 @@ bool begin_visit (castable_expr& v) {
 void end_visit (castable_expr& v) {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
-  itstack.push(new CastableIterator(qloc, lChild, v.get_target_type()));
+  push_itstack(new CastableIterator(qloc, lChild, v.get_target_type()));
 }
 
 bool begin_visit (cast_expr& v) {
@@ -1215,7 +1720,7 @@ bool begin_visit (cast_expr& v) {
 void end_visit (cast_expr& v) {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
-  itstack.push(new CastIterator(qloc, lChild, v.get_target_type()));
+  push_itstack(new CastIterator(qloc, lChild, v.get_target_type()));
 }
 
 bool begin_visit (name_cast_expr& v) {
@@ -1242,7 +1747,7 @@ bool begin_visit (name_cast_expr& v) {
 void end_visit (name_cast_expr& v) {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
-  itstack.push(new NameCastIterator(qloc, lChild, v.getNamespaceContext()));
+  push_itstack(new NameCastIterator(qloc, lChild, v.getNamespaceContext()));
 }
 
 
@@ -1260,7 +1765,7 @@ void end_visit (validate_expr& v)
   PlanIter_t lChild = pop_itstack();
   //store::Item_t typeName = v.get_type_name();
   //std::cout << "validate end-visit: type: " << typeName->getLocalName()->c_str() << " @ " << typeName->getNamespace()->c_str() << "\n"; cout.flush();
-  itstack.push (new ValidateIterator (qloc,
+  push_itstack (new ValidateIterator (qloc,
                                       lChild,
                                       v.get_typemgr(),
                                       v.get_type_name(),
@@ -1289,7 +1794,7 @@ bool begin_visit (relpath_expr& v) {
   //PlanIter_t input = pop_itstack();
   //ZORBA_ASSERT(input != NULL);
   //PlanIter_t pathIte(new PathIterator(qloc, input));
-  //itstack.push(pathIte);
+  //push_itstack(pathIte);
 
   return true;
 }
@@ -1315,7 +1820,7 @@ bool begin_visit (axis_step_expr& v) {
   if (pathIte == NULL) {
     PlanIter_t inputStep = pop_itstack();
     pathIte = new PathIterator(qloc, inputStep);
-    itstack.push(pathIte);
+    push_itstack(pathIte);
   }
   //ZORBA_ASSERT(pathIte != NULL);
 
@@ -1486,7 +1991,7 @@ bool begin_visit (axis_step_expr& v) {
     ZORBA_ASSERT (false && "Unknown axis kind");
   }
 
-  itstack.push(axisIte);
+  push_itstack(axisIte);
 
   return result;
 }
@@ -1546,7 +2051,7 @@ bool begin_visit (match_expr& v) {
     axisItep->setNilledAllowed(v.getNilledAllowed());
   }
 
-  itstack.push(axisIte);
+  push_itstack(axisIte);
   return true;
 }
 
@@ -1580,7 +2085,7 @@ void end_visit (doc_expr& v) {
   PlanIter_t lContent = pop_itstack();
   PlanIter_t lContIter = new DocumentContentIterator(qloc, lContent);
   PlanIter_t lDocIter = new DocumentIterator(qloc, lContIter);
-  itstack.push(lDocIter);
+  push_itstack(lDocIter);
 
   theAttrContentStack.pop();
   expr* e = pop_stack(theConstructorsStack);
@@ -1627,7 +2132,7 @@ void end_visit (elem_expr& v) {
                                         lContentIter,
                                         v.getNSCtx().getp(),
                                         isRoot);
-  itstack.push(iter);
+  push_itstack(iter);
 }
 
 
@@ -1667,7 +2172,7 @@ void end_visit (attr_expr& v) {
 
   lAttrIter = new AttributeIterator(qloc, lQNameIter, lVarIter, isRoot);
   
-  itstack.push(lAttrIter);
+  push_itstack(lAttrIter);
 }
 
 
@@ -1696,11 +2201,11 @@ void end_visit (text_expr& v) {
 
   switch (v.get_type ()) {
   case text_expr::text_constructor:
-    itstack.push (new TextIterator(qloc, content, isRoot));
+    push_itstack (new TextIterator(qloc, content, isRoot));
     break;
 
   case text_expr::comment_constructor:
-    itstack.push (new CommentIterator (qloc, content, isRoot));
+    push_itstack (new CommentIterator (qloc, content, isRoot));
     break;
 
   default:
@@ -1732,7 +2237,7 @@ void end_visit (pi_expr& v) {
 
   PlanIter_t content = pop_itstack ();
   PlanIter_t target = pop_itstack ();
-  itstack.push (new PiIterator (qloc, target, content, isRoot));
+  push_itstack (new PiIterator (qloc, target, content, isRoot));
 }
 
 
@@ -1754,7 +2259,7 @@ bool begin_visit (const_expr& v) {
 void end_visit (const_expr& v) {
   CODEGEN_TRACE_OUT("");
   PlanIter_t it = new SingletonIterator (qloc, v.get_val ());
-  itstack.push (it);
+  push_itstack (it);
 }
 
 
@@ -1828,7 +2333,7 @@ PlanIter_t codegen(
   return result;
 }
 
-vector<ForVarIter_t> plan_visitor::no_var_iters;
+vector<PlanIter_t> plan_visitor::no_var_iters;
 
 
 } /* namespace zorba */

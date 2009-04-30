@@ -30,7 +30,6 @@
 
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/flwor_expr.h"
-#include "compiler/expression/gflwor_expr.h"
 
 #include "context/static_context.h"
 #include "types/node_test.h"
@@ -45,6 +44,7 @@ namespace zorba {
 
 class expr_visitor;
 class NodeNameTest;
+class match_expr;
 
 
 /***************************************************************************//**
@@ -121,7 +121,8 @@ protected:
 };
 
 
-class catch_clause : public SimpleRCObject {
+class catch_clause : public SimpleRCObject 
+{
   friend class trycatch_expr;
   protected:
     rchandle<NodeNameTest> nametest_h;
@@ -154,7 +155,9 @@ class catch_clause : public SimpleRCObject {
     expr_t get_catch_expr_h() const { return catch_expr_h; }
 };
 
-class trycatch_expr : public expr {
+
+class trycatch_expr : public expr 
+{
 public:
   expr_kind_t get_expr_kind () const { return trycatch_expr_kind; }
 
@@ -207,7 +210,8 @@ public:
 /***************************************************************************//**
 
 ********************************************************************************/
-class eval_expr : public expr {
+class eval_expr : public expr 
+{
 public:
   class eval_var {
   public:
@@ -262,44 +266,44 @@ public:
     debugger_expr( const QueryLoc& loc, expr_t aChild, std::list<global_binding> aGlobals ):
       eval_expr(loc, aChild ), theGlobals( aGlobals ){}
     
-    debugger_expr( const QueryLoc& loc, expr_t aChild,
-                   checked_vector<var_expr_t> aScopedVariables,
-                   std::list<global_binding> aGlobals,
-                   bool aForExpr = false):
-      eval_expr(loc, aChild ), theGlobals( aGlobals ), theForExpr(aForExpr)
-    {
-      store_local_variables( aScopedVariables );
-    }
+  debugger_expr( const QueryLoc& loc, expr_t aChild,
+                 checked_vector<varref_t> aScopedVariables,
+                 std::list<global_binding> aGlobals,
+                 bool aForExpr = false):
+    eval_expr(loc, aChild ), theGlobals( aGlobals ), theForExpr(aForExpr)
+  {
+    store_local_variables( aScopedVariables );
+  }
 
-    expr_iterator_data *make_iter();
-    void next_iter (expr_iterator_data&);
-    void accept (expr_visitor&);
-    std::ostream& put(std::ostream&) const;
+  expr_iterator_data *make_iter();
+  void next_iter (expr_iterator_data&);
+  void accept (expr_visitor&);
+  std::ostream& put(std::ostream&) const;
 
-    std::list<global_binding> getGlobals() const
-    {
-      return theGlobals;
-    }
+  std::list<global_binding> getGlobals() const
+  {
+    return theGlobals;
+  }
 
-    bool isForExpr() const { return theForExpr; }
+  bool isForExpr() const { return theForExpr; }
 
 private:
-    void store_local_variables(checked_vector<var_expr_t> &aScopedVariables)
+  void store_local_variables(checked_vector<varref_t> &aScopedVariables)
+  {
+    std::set<store::Item_t> lQNames;
+    checked_vector<varref_t>::reverse_iterator it;
+    for ( it = aScopedVariables.rbegin(); it != aScopedVariables.rend(); ++it )
     {
-      std::set<store::Item_t> lQNames;
-      checked_vector<var_expr_t>::reverse_iterator it;
-      for ( it = aScopedVariables.rbegin(); it != aScopedVariables.rend(); ++it )
-		  {
-        if ( lQNames.find( (*it)->get_varname() ) == lQNames.end() )
-        {
-          lQNames.insert( (*it)->get_varname() );
-          var_expr_t lValue = (*it);
-          var_expr_t lVariable( new var_expr( loc, var_expr::eval_var, lValue->get_varname() ) );
-          lVariable->set_type( lValue->get_type() );
-          add_var(eval_expr::eval_var(&*lVariable, lValue.getp()));
-        }
+      if ( lQNames.find( (*it)->get_varname() ) == lQNames.end() )
+      {
+        lQNames.insert( (*it)->get_varname() );
+        varref_t lValue = (*it);
+        varref_t lVariable( new var_expr( loc, var_expr::eval_var, lValue->get_varname() ) );
+        lVariable->set_type( lValue->get_type() );
+        add_var(eval_expr::eval_var(&*lVariable, lValue.getp()));
       }
     }
+  }
 };
 #endif  // ZORBA_DEBUGGER
 
@@ -905,7 +909,12 @@ public:
 
 /*******************************************************************************
 
-  [69] [http://www.w3.org/TR/xquery/#prod-xquery-RelativePathExpr]
+  PathExpr ::= 	("/" RelativePathExpr?) |
+                ("//" RelativePathExpr) |
+                RelativePathExpr
+
+  RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
+
 
   Formal Semantics [http://www.w3.org/TR/xquery-semantics]:
     /    == fn:root(self::node())
@@ -916,10 +925,6 @@ public:
   relative path is defined as follows:
 
  RelativPathExpr ::= "/" | ("/" | "//")?  StepExpr (("/" | "//") StepExpr)*
-
-  p:l == (match "p:l" (children $dot))
-  p1:l1/p2:l2 == (for ( ($x (match "p1:l1" (children $dot))) )
-                     (match "p2:l2" (children $x)))
 
 ********************************************************************************/
 class relpath_expr : public expr {
@@ -959,6 +964,43 @@ public:
 ********************************************************************************/
 
 
+/*******************************************************************************
+
+  AxisStep ::= Axis NodeTest Predicate*
+
+********************************************************************************/
+class axis_step_expr : public expr {
+public:
+  expr_kind_t get_expr_kind () const { return axis_step_expr_kind; }
+protected:
+  axis_kind_t             theAxis;
+  expr_t                  theNodeTest;
+  checked_vector<expr_t>  thePreds;
+
+public:
+  axis_step_expr(const QueryLoc&);
+
+public:
+  axis_kind_t getAxis() const          { return theAxis; }
+  void setAxis(axis_kind_t v)          { theAxis = v; }
+  bool is_reverse_axis () const        { return is_reverse_axis (getAxis ()); }
+
+  rchandle<match_expr> getTest() const 
+  { return reinterpret_cast<match_expr*>(theNodeTest.getp()); }
+
+  void setTest(rchandle<match_expr> v) { theNodeTest = v.getp(); }
+
+  expr_iterator_data *make_iter ();
+  void next_iter (expr_iterator_data&);
+  void accept (expr_visitor&);
+  std::ostream& put(std::ostream&) const;
+
+  xqtref_t return_type_impl(static_context *sctx);
+  expr_t clone (substitution_t &);
+
+public:
+  static bool is_reverse_axis (axis_kind_t kind);
+};
 
 
 /*******************************************************************************
@@ -1021,43 +1063,6 @@ public:
   expr_t clone (substitution_t &);
 };
 
-
-/*******************************************************************************
-
-  AxisStep ::= Axis NodeTest Predicate*
-
-********************************************************************************/
-class axis_step_expr : public expr {
-public:
-  expr_kind_t get_expr_kind () const { return axis_step_expr_kind; }
-protected:
-  axis_kind_t             theAxis;
-  expr_t                  theNodeTest;
-  checked_vector<expr_t>  thePreds;
-
-public:
-  axis_step_expr(const QueryLoc&);
-
-public:
-  axis_kind_t getAxis() const          { return theAxis; }
-  void setAxis(axis_kind_t v)          { theAxis = v; }
-  bool is_reverse_axis () const        { return is_reverse_axis (getAxis ()); }
-
-  rchandle<match_expr> getTest() const 
-  { return rchandle<match_expr>(static_cast<match_expr*>(theNodeTest.getp())); }
-  void setTest(rchandle<match_expr> v) { theNodeTest = v.getp(); }
-
-  expr_iterator_data *make_iter ();
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
-  std::ostream& put(std::ostream&) const;
-
-  xqtref_t return_type_impl(static_context *sctx);
-  expr_t clone (substitution_t &);
-
-public:
-  static bool is_reverse_axis (axis_kind_t kind);
-};
 
 
 /***************************************************************************//**

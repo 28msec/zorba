@@ -27,178 +27,6 @@ namespace zorba
 namespace flwor
 {
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  OrderSpec                                                                  //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-OrderSpec::OrderSpec (
-    PlanIter_t aOrderByIter,
-    bool aEmpty_least,
-    bool aDescending )
-  :
-  theInput( aOrderByIter ),
-  theEmptyLeast( aEmpty_least ),
-  theDescending( aDescending ),
-  theCollator(0)
-{
-}
-
-
-OrderSpec::OrderSpec (
-    PlanIter_t aOrderByIter,
-    bool aEmpty_least,
-    bool aDescending,
-    const std::string& aCollation)
-  :
-  theInput( aOrderByIter ),
-  theEmptyLeast( aEmpty_least ),
-  theDescending( aDescending ),
-  theCollation(aCollation),
-  theCollator(0)
-{
-}
-
-
-void OrderSpec::accept(PlanIterVisitor& v) const
-{
-  v.beginVisitFlworOrderBy(*theInput);
-  v.endVisitFlworOrderBy(*theInput);
-}
-
-
-uint32_t OrderSpec::getStateSizeOfSubtree() const 
-{
-  return theInput->getStateSizeOfSubtree();
-}
-
-
-void OrderSpec::open(PlanState& aPlanState, uint32_t& offset) const 
-{
-  theInput->open(aPlanState, offset);
-}
-
-
-void OrderSpec::reset(PlanState& aPlanState) const 
-{
-  theInput->reset ( aPlanState );
-}
-
-
-void OrderSpec::close(PlanState& aPlanState) const 
-{
-  theInput->close(aPlanState);
-}
-
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  OrderTupleCmp                                                              //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-OrderTupleCmp::OrderTupleCmp(RuntimeCB* rcb, std::vector<OrderSpec>* aOrderSpecs) 
-  :
-  theOrderSpecs ( aOrderSpecs ) 
-{
-  theTypeManager = rcb->theStaticContext->get_typemanager();
-  theTimezone = rcb->theDynamicContext->get_implicit_timezone();
-}
-
-
-/*******************************************************************************
-  The key comparison function, a Strict Weak Ordering whose argument type is
-  key_type. It returns true if its first argument is less than its second argument,
-  and false otherwise. This is also defined as multimap::key_compare.
-********************************************************************************/
-bool OrderTupleCmp::operator() (
-    const std::vector<store::Item_t>& s1,
-    const std::vector<store::Item_t>& s2 ) const
-{
-  ZORBA_ASSERT ( s1.size() == s2.size() );
-  ZORBA_ASSERT ( s1.size() == theOrderSpecs->size() );
-
-  std::vector<store::Item_t>::const_iterator s1iter = s1.begin();
-  std::vector<store::Item_t>::const_iterator s2iter = s2.begin();
-  std::vector<OrderSpec>::const_iterator orderSpecIter = theOrderSpecs->begin();
-
-  while ( s1iter != s1.end() )
-  {
-    long cmp = compare(*s1iter,
-                       *s2iter,
-                       orderSpecIter->theDescending,
-                       orderSpecIter->theEmptyLeast,
-                       orderSpecIter->theCollator);
-    if ( cmp == 1 )
-    {
-      return false;
-    }
-    else if ( cmp == -1 )
-    {
-      return true;
-    }
-    ++s1iter;
-    ++s2iter;
-    ++orderSpecIter;
-  }
-  return false;
-}
-
-
-/*******************************************************************************
-  Does the actual comparision. Returns:
-   -1, if s1 < s2
-    0, if s1 == s2
-    1, if s1 > s2
-********************************************************************************/
-long OrderTupleCmp::compare(
-    const store::Item_t& s1,
-    const store::Item_t& s2,
-    bool desc,
-    bool emptyLeast,
-    XQPCollator* collator) const
-{
-  if (empty_item(s1))
-  {
-    if (empty_item(s2))
-      return descAsc(0, desc);
-    else
-      return descAsc(emptyLeast ? -1 : 1, desc);
-  }
-  else if (empty_item (s2))
-  {
-    return descAsc(emptyLeast ? 1 : -1, desc);
-  }
-  else
-  {
-    // danm: both valueCompare (x, NaN) and valueCompare (NaN, x) return 2.
-    // That's why empty_item is needed.
-    store::Item_t ls1(s1);
-    store::Item_t ls2(s2);
-    long result = CompareIterator::valueCompare(ls1 , ls2,
-                                                theTypeManager,
-                                                theTimezone,
-                                                collator);
-    if (result > 1 || result < -1) 
-    {
-      ZORBA_ERROR_DESC( XPTY0004, "Non-comparable types found while sorting" );
-    }
-    return descAsc (result , desc );
-  }
-}
-
-
-/*******************************************************************************
-  Helper functions to switch the ordering between ascending and descending.
-********************************************************************************/
-long OrderTupleCmp::descAsc(long result, bool desc) const
-{
-  ZORBA_ASSERT (result <= 1 && result >= -1);
-  return desc ? -result : result;
-}
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -208,20 +36,27 @@ long OrderTupleCmp::descAsc(long result, bool desc) const
 /////////////////////////////////////////////////////////////////////////////////
 
 GroupingSpec::GroupingSpec(
-    PlanIter_t aInput,
-    std::vector<ForVarIter_t> aInnerVars,
-    const std::string& aCollation )
+    PlanIter_t inputVar,
+    const std::vector<PlanIter_t>& outputVarRefs,
+    const std::string& collation)
   :
-  theInput(aInput),
-  theInnerVars(aInnerVars),
-  theCollation(aCollation)
+  theInput(inputVar),
+  theCollation(collation)
 {
+  castIterVector<ForVarIterator>(theInnerVars, outputVarRefs);
 }
 
 
-void GroupingSpec::accept ( PlanIterVisitor& v ) const
+void GroupingSpec::accept(PlanIterVisitor& v) const
 {
+  v.beginVisitGroupBySpec();
+
   theInput->accept(v);
+
+  v.beginVisitGroupVariable(theInnerVars);
+  v.endVisitGroupVariable();
+
+  v.endVisitGroupBySpec();
 }
 
 
@@ -230,19 +65,19 @@ uint32_t GroupingSpec::getStateSizeOfSubtree() const
   return theInput->getStateSizeOfSubtree();
 }
 
-void GroupingSpec::open ( PlanState& planState, uint32_t& offset )
+void GroupingSpec::open(PlanState& planState, uint32_t& offset)
 {
   theInput->open(planState, offset);
 }
 
 
-void GroupingSpec::reset ( PlanState& planState ) const 
+void GroupingSpec::reset(PlanState& planState) const 
 {
   theInput->reset ( planState );
 }
 
 
-void GroupingSpec::close ( PlanState& planState )
+void GroupingSpec::close(PlanState& planState)
 {
   theInput->close(planState);
 }
@@ -255,18 +90,25 @@ void GroupingSpec::close ( PlanState& planState )
 /////////////////////////////////////////////////////////////////////////////////
 
 GroupingOuterVar::GroupingOuterVar(
-    PlanIter_t aInput, 
-    std::vector<LetVarIter_t> aOuterVars)
+    PlanIter_t inputVar, 
+    const std::vector<PlanIter_t>& outputVarRefs)
   : 
-  theInput(aInput),
-  theOuterVars(aOuterVars)
+  theInput(inputVar)
 {
+  castIterVector<LetVarIterator>(theOuterVars, outputVarRefs);
 }
 
 
-void GroupingOuterVar::accept ( PlanIterVisitor& v ) const
+void GroupingOuterVar::accept(PlanIterVisitor& v) const
 {
+  v.beginVisitGroupByOuter();
+
   theInput->accept(v);
+
+  v.beginVisitNonGroupVariable(theOuterVars);
+  v.endVisitNonGroupVariable();
+
+  v.endVisitGroupByOuter();
 }
 
 

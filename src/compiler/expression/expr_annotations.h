@@ -28,6 +28,7 @@ class ExpressionPropertyComputer {
     bool returnsDescendantNodes(expr *e);
 };
 
+#if 0 // Fix before using!! 
 class SourceFinder {
   public:
     typedef std::set<expr *> sources_t;
@@ -44,6 +45,7 @@ class SourceFinder {
 
     void findSourcesInChildren(expr *e);
 };
+#endif
 
 }
 

@@ -26,24 +26,28 @@ namespace zorba
 namespace flwor 
 {
 
-    class OuterForIterator : public BinaryBaseIterator<OuterForIterator, PlanIteratorState> {
-      private:
-        store::Item_t theVarName;
-        std::vector<ForVarIter_t> theOuterForVars;
-      public:
-        OuterForIterator (const QueryLoc& aLoc,
-                     const store::Item_t& aVarName,
-                     PlanIter_t aTupleIterator,
-                     PlanIter_t aInput,
-                     std::vector<ForVarIter_t> aOuterForVars);
+class OuterForIterator : public BinaryBaseIterator<OuterForIterator, PlanIteratorState> 
+{
+private:
+  store::Item_t theVarName;
+  std::vector<ForVarIter_t> theOuterForVars;
 
-        ~OuterForIterator();
+public:
+  OuterForIterator(
+        const QueryLoc& aLoc,
+        const store::Item_t& aVarName,
+        PlanIter_t aTupleIterator,
+        PlanIter_t aInput,
+        const std::vector<PlanIter_t>& aOuterForVars);
+  
+  ~OuterForIterator();
 
-      public:
-        bool nextImpl (store::Item_t& result, PlanState& planState) const;
-        virtual void accept (PlanIterVisitor&) const;
-      };
-  }
+public:
+  bool nextImpl (store::Item_t& result, PlanState& planState) const;
+  virtual void accept (PlanIterVisitor&) const;
+};
+
+}
 }
 
 

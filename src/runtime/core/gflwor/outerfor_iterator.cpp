@@ -29,41 +29,49 @@ namespace zorba
 namespace flwor 
 {
 
-    // theChild0 --> TupleIterator
-    // theChild1 --> InputIterator
+// theChild0 --> TupleIterator
+// theChild1 --> InputIterator
 
-    OuterForIterator::OuterForIterator (const QueryLoc& loc,
-                              const store::Item_t& aVarName,
-                              PlanIter_t aTupleIterator,
-                              PlanIter_t aInput,
-                              std::vector<ForVarIter_t> aOuterForVars) :
-        BinaryBaseIterator<OuterForIterator, PlanIteratorState> (loc, aTupleIterator, aInput),
-        theVarName (aVarName),
-        theOuterForVars (aOuterForVars) {
+OuterForIterator::OuterForIterator (
+    const QueryLoc& loc,
+    const store::Item_t& aVarName,
+    PlanIter_t aTupleIterator,
+    PlanIter_t aInput,
+    const std::vector<PlanIter_t>& aOuterForVars) 
+  :
+  BinaryBaseIterator<OuterForIterator, PlanIteratorState>(loc, aTupleIterator, aInput),
+  theVarName (aVarName)
+{
+  castIterVector<ForVarIterator>(theOuterForVars, aOuterForVars);
+}
+  
+
+OuterForIterator::~OuterForIterator() 
+{
+}
+
+
+bool OuterForIterator::nextImpl (store::Item_t& aResult, PlanState& aPlanState) const 
+{
+  store::Item_t lItem;
+  PlanIteratorState* lState;
+  DEFAULT_STACK_INIT (PlanIteratorState, lState, aPlanState);
+  while (consumeNext (aResult, theChild0, aPlanState)) {
+    //using a if, to avoid an additional state
+    if(consumeNext (lItem, theChild1, aPlanState)){
+      do{
+        bindVariables (lItem, theOuterForVars, aPlanState);
+        STACK_PUSH (true, lState);
+      } while (consumeNext (lItem, theChild1, aPlanState));
+    }else{
+      bindVariables (lItem, theOuterForVars, aPlanState);
+      STACK_PUSH (true, lState);
     }
-
-    OuterForIterator::~OuterForIterator() {}
-
-    bool OuterForIterator::nextImpl (store::Item_t& aResult, PlanState& aPlanState) const {
-        store::Item_t lItem;
-        PlanIteratorState* lState;
-        DEFAULT_STACK_INIT (PlanIteratorState, lState, aPlanState);
-        while (consumeNext (aResult, theChild0, aPlanState)) {
-            //using a if, to avoid an additional state
-            if(consumeNext (lItem, theChild1, aPlanState)){
-              do{
-                bindVariables (lItem, theOuterForVars, aPlanState);
-                STACK_PUSH (true, lState);
-              } while (consumeNext (lItem, theChild1, aPlanState));
-            }else{
-              bindVariables (lItem, theOuterForVars, aPlanState);
-              STACK_PUSH (true, lState);
-            }
-            theChild1->reset (aPlanState);
-          }
-        STACK_PUSH (false, lState);
-        STACK_END (lState);
-      }
-
-  } //Namespace flwor
+    theChild1->reset (aPlanState);
+  }
+  STACK_PUSH (false, lState);
+  STACK_END (lState);
+}
+  
+} //Namespace flwor
 }//Namespace zorba

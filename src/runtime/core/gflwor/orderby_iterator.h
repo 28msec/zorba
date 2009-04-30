@@ -33,83 +33,183 @@ namespace flwor
 class OrderByIterator;
 
 class OrderValue;
-    
 
-class OrderValue 
+
+/***************************************************************************//**
+  Wrapper for a OrderSpec.
+
+  - Syntax:
+
+  OrderSpec ::= ExprSingle OrderModifier
+
+  OrderModifier ::= ("ascending" | "descending")?
+                    ("empty" ("greatest" | "least"))?
+                    ("collation" URILiteral)?
+
+  - Data Members:
+
+  theInput      : The iterator computing the value of this orderby column for
+                  each binding of the in-scope variables.
+  theEmptyLeast : Whether the empty seq should be considered the smallest or
+                  the largest value.
+  theDescending : Whether to order in descending order or not.
+  theCollation  : The collation to use when comparing values of this orderby
+                  column (if the values are of type xs:string or subtype).
+  theCollator   : Pointer to the collator obj corresponding to theCollation.
+                  The pointer is assigned by the OrderByClause::open() method.
+                  Note: no need to delete theCollator in ~OrderSpec() because
+                  the obj is managed by the collation cache.
+********************************************************************************/
+class OrderSpec
 {
-  friend class OrderByIterator;
-
-protected:
-  std::vector<store::Item_t > theItems;
-  std::vector<store::TempSeq_t > theSequences;
-  
 public:
-  OrderValue(
-        std::vector<store::Item_t >& aItems,
-        std::vector<store::TempSeq_t >& aSequences)
-    :
-    theItems ( aItems ),
-    theSequences ( aSequences ) {}
+  PlanIter_t             theDomainIter;
+
+  bool                   theEmptyLeast;
+  bool                   theDescending;
+  std::string            theCollation;
+  XQPCollator          * theCollator;
+
+public:
+  OrderSpec() : theCollator(NULL) {}
+
+  OrderSpec(
+        PlanIter_t domainIter,
+        bool emptyLeast,
+        bool descending,
+        const std::string& collation);
+
+  void accept(PlanIterVisitor&) const;
+
+  uint32_t getStateSizeOfSubtree() const;
+
+  void open(PlanState& aPlanState, uint32_t& offset) const;
+  void reset(PlanState& aPlanState) const;
+  void close(PlanState& aPlanState) const;
 };
 
 
-typedef std::multimap<std::vector<store::Item_t >,
-                      OrderValue,
-                      OrderTupleCmp> order_map_t;
+/***************************************************************************//**
+  A SortTuple ST stores the key values computed by the ordering exprs of an
+  orderby clause for some input-stream tuple T. 
+
+  For the generalized flwor, ST also stores the position of T in a data table
+  that buffers the input tuple stream in inder to sort it.
+
+  For a simple flwor, the T data is an iterator I over a temp sequence that
+  stores the result of the return clause computed for the current input-
+  stream tuple.
+********************************************************************************/
+class SortTuple
+{
+public:
+  std::vector<store::Item*>   theKeyValues;
+  ulong                       theDataPos;
+
+public:
+  SortTuple() { }
+
+  ~SortTuple() { }
+
+  void clear()
+  {
+    ulong numColumns = theKeyValues.size();
+    for (ulong i = 0; i < numColumns; ++i)
+    {
+      if (theKeyValues[i] != NULL)
+      {
+        RCHelper::removeReference(theKeyValues[i]);
+        theKeyValues[i] = NULL;
+      }
+
+      theKeyValues.clear();
+    }
+  }
+};
 
 
+/*******************************************************************************
+  theOderMap     : The table that materializes a flwor tuple stream in inder to
+                   sort it. The entries of this table are instances of OrderByTuple.
+  theNumTuples   : The number of tuples in theOrderMap.
+  theCurTuplePos : A position inside theOrderMap. Used to return individual flwor
+                   results after the full result set has been materialized and
+                   sorted. 
+********************************************************************************/
 class OrderByState : public PlanIteratorState 
 {
   friend class OrderByIterator;
-protected:
-  order_map_t theOrderMap;
-  order_map_t::const_iterator  theCurOrderPos;
 
 public:
-  ~OrderByState();
+  typedef std::vector<SortTuple> SortTable;
+  typedef std::vector<StreamTuple> DataTable;
+
+protected:
+  SortTable   theSortTable;
+  DataTable   theDataTable;
+  ulong       theNumTuples;
+  ulong       theCurTuplePos;
+
+public:
   OrderByState();
-  void init ( PlanState& aState, std::vector<OrderSpec>* orderSpecs );
-  void reset ( PlanState& );
+
+  ~OrderByState();
+
+  void init(PlanState& planState, std::vector<OrderSpec>* orderSpecs);
+  void reset(PlanState&);
+
+private:
+  void clearSortTable();
 };
 
-    
+
+/*******************************************************************************
+
+********************************************************************************/    
 class OrderByIterator : public Batcher<OrderByIterator> 
 {
 private:
-  PlanIter_t theTupleIter;
-  std::vector<OrderSpec> theOrderSpecs;
-  std::vector<ForVarIter_t> theForVariableInput;
-  std::vector<LetVarIter_t> theLetVariableInput;
-  std::vector< std::vector< ForVarIter_t > > theForVariableOutput;
-  std::vector< std::vector< LetVarIter_t > > theLetVariableOutput;
+  bool                                    theStable;
+  std::vector<OrderSpec>                  theOrderSpecs;
+
+  PlanIter_t                              theTupleIter;
+
+  std::vector<ForVarIter_t>               theInputForVars;
+  std::vector<LetVarIter_t>               theInputLetVars;
+  std::vector<std::vector<ForVarIter_t> > theOutputForVarsRefs;
+  std::vector<std::vector<LetVarIter_t> > theOutputLetVarsRefs;
   
 public:
-  OrderByIterator ( const QueryLoc& aLoc,
-                    PlanIter_t aTupleIterator,
-                    std::vector<OrderSpec>& aOrderSpecs,
-                    std::vector<ForVarIter_t>& aForVariableInput,
-                    std::vector<LetVarIter_t>& aLetVariableInput,
-                    std::vector< std::vector< ForVarIter_t > >& aForVariableOutput,
-                    std::vector< std::vector< LetVarIter_t > >& aLetVariableOutput );
+  OrderByIterator(
+        const QueryLoc& loc,
+        bool stable,
+        std::vector<OrderSpec>& orderSpecs,
+        PlanIter_t tupleIterator,
+        std::vector<ForVarIter_t>& inputForVars,
+        std::vector<LetVarIter_t>& inputLetVars,
+        std::vector<std::vector<ForVarIter_t> >& outputForVarsRefs,
+        std::vector<std::vector<LetVarIter_t> >& outputLetVarsRefs);
   
   ~OrderByIterator();
 
-  void openImpl ( PlanState& planState, uint32_t& offset );
-  bool nextImpl ( store::Item_t& result, PlanState& planState ) const;
-  void resetImpl ( PlanState& planState ) const;
-  void closeImpl ( PlanState& planState );
+  void openImpl(PlanState& planState, uint32_t& offset);
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  void resetImpl(PlanState& planState) const;
+  void closeImpl(PlanState& planState);
   
   virtual uint32_t getStateSize() const;
   virtual uint32_t getStateSizeOfSubtree() const;
 
-  virtual void accept ( PlanIterVisitor& ) const;
+  virtual void accept(PlanIterVisitor&) const;
 
 private:
-  void matVarsAndOrderBy ( OrderByState* aOrderByState,
-                           PlanState& aPlanState ) const;
+  void materializeResultForSort(
+        OrderByState* iterState,
+        PlanState& planState) const;
 
-  void bindOrderBy ( order_map_t::const_iterator& aOrderMapIter,
-                     PlanState& aPlanState ) const;
+  void bindOrderBy(
+        OrderByState* iterState,
+        PlanState& planState) const;
 };
 
 

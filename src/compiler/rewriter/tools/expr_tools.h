@@ -56,7 +56,7 @@
 namespace zorba 
 {
 
-typedef std::set<var_expr *> var_ptr_set;
+typedef std::set<const var_expr *> var_ptr_set;
 
 
 class VarSetAnnVal : public AnnotationValue 
@@ -65,8 +65,10 @@ public:
   var_ptr_set varset;
 
   VarSetAnnVal () {}
+
   VarSetAnnVal (var_ptr_set varset_) : varset (varset_) {}
-  void add (var_expr *v) { varset.insert (varset.begin (), v); }
+
+  void add (const var_expr* v) { varset.insert(varset.begin(), v); }
 };
   
 

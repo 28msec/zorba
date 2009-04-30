@@ -19,48 +19,51 @@
 
 namespace zorba {
 
+#if 0
 void SourceFinder::findSources(expr *e)
 {
-  switch(e->get_expr_kind()) {
-    case flwor_expr_kind:
-      findSources(static_cast<flwor_expr *>(e)->get_retval());
+  switch(e->get_expr_kind()) 
+  {
+  case flwor_expr_kind:
+  case gflwor_expr_kind:
+    findSources(static_cast<flwor_expr *>(e)->getReturnExpr());
+    break;
+
+  case fo_expr_kind:
+  {
+    fo_expr *fo = static_cast<fo_expr *>(e);
+    const function *fn = fo->get_func();
+    if (fn->isSource()) {
+      m_sources.insert(fo);
+    } else {
+      findSourcesInChildren(fo);
+    }
+  }
+  break;
+
+  case var_expr_kind:
+  {
+    var_expr *var = static_cast<var_expr *>(e);
+    switch(var->get_kind()) {
+    case var_expr::for_var:
+    case var_expr::let_var:
+      findSources(&*var->get_flwor_clause()->get_expr());
       break;
-
-    case fo_expr_kind:
-      {
-        fo_expr *fo = static_cast<fo_expr *>(e);
-        const function *fn = fo->get_func();
-        if (fn->isSource()) {
-          m_sources.insert(fo);
-        } else {
-          findSourcesInChildren(fo);
-        }
-      }
+      
+    case var_expr::context_var:
+    case var_expr::param_var:
+      m_sources.insert(var);
       break;
-
-    case var_expr_kind:
-      {
-        var_expr *var = static_cast<var_expr *>(e);
-        switch(var->get_kind()) {
-          case var_expr::for_var:
-          case var_expr::let_var:
-            findSources(&*var->get_flwor_clause()->get_expr());
-            break;
-
-          case var_expr::context_var:
-          case var_expr::param_var:
-            m_sources.insert(var);
-            break;
-
-          default:
-            break;
-        }
-      }
-      break;
-
+      
     default:
-      findSourcesInChildren(e);
       break;
+    }
+  }
+  break;
+
+  default:
+    findSourcesInChildren(e);
+    break;
   }
 }
 
@@ -72,11 +75,14 @@ void SourceFinder::findSourcesInChildren(expr *e)
     }
   }
 }
+#endif
+
 
 bool ExpressionPropertyComputer::returnsDuplicateNodes(expr *e)
 {
   return true;
 }
+
 
 bool ExpressionPropertyComputer::returnsDescendantNodes(expr *e)
 {
@@ -112,6 +118,7 @@ bool ExpressionPropertyComputer::returnsDescendantNodes(expr *e)
   }
   return false;
 }
+
 
 bool ExpressionPropertyComputer::returnsAncestorNodes(expr *e)
 {

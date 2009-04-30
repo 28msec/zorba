@@ -41,24 +41,24 @@ WindowVars::WindowVars()
 
 
 WindowVars::WindowVars (
-    std::vector<ForVarIter_t >& aCurVars,
-    std::vector<ForVarIter_t >& aPrevVars,
-    std::vector<ForVarIter_t >& aNextVars,
-    std::vector<ForVarIter_t >& aPosVars,
-    std::vector<ForVarIter_t >& aCurOuterVars,
-    std::vector<ForVarIter_t >& aPrevOuterVars,
-    std::vector<ForVarIter_t >& aNextOuterVars,
-    std::vector<ForVarIter_t >& aPosOuterVars)
-  :
-  theCurVars ( aCurVars ),
-  thePrevVars ( aPrevVars ),
-  theNextVars ( aNextVars ),
-  thePosVars ( aPosVars ),
-  theCurOuterVars ( aCurOuterVars ),
-  thePrevOuterVars ( aPrevOuterVars ),
-  theNextOuterVars ( aNextOuterVars ),
-  thePosOuterVars ( aPosOuterVars ) {
- 
+    const std::vector<PlanIter_t >& aCurVars,
+    const std::vector<PlanIter_t >& aPrevVars,
+    const std::vector<PlanIter_t >& aNextVars,
+    const std::vector<PlanIter_t >& aPosVars,
+    const std::vector<PlanIter_t >& aCurOutVars,
+    const std::vector<PlanIter_t >& aPrevOutVars,
+    const std::vector<PlanIter_t >& aNextOutVars,
+    const std::vector<PlanIter_t >& aPosOutVars)
+{
+  castIterVector<ForVarIterator>(theCurVars, aCurVars);
+  castIterVector<ForVarIterator>(thePrevVars, aPrevVars);
+  castIterVector<ForVarIterator>(theNextVars, aNextVars);
+  castIterVector<ForVarIterator>(thePosVars, aPosVars);
+
+  castIterVector<ForVarIterator>(theCurOuterVars, aCurOutVars);
+  castIterVector<ForVarIterator>(thePrevOuterVars, aPrevOutVars);
+  castIterVector<ForVarIterator>(theNextOuterVars, aNextOutVars);
+  castIterVector<ForVarIterator>(thePosOuterVars, aPosOutVars);
 }
 
 
@@ -67,9 +67,28 @@ WindowVars::~WindowVars()
 }
 
 
-void WindowVars::accept ( PlanIterVisitor& ) const 
+void WindowVars::accept(PlanIterVisitor& v) const 
 {
-  //TODO More infos
+  if (!theCurVars.empty())
+  {
+    v.beginVisitWinCondVariable("CurrentIn", theCurVars);
+    v.endVisitWinCondVariable();
+  }
+  if (!thePrevVars.empty())
+  {
+    v.beginVisitWinCondVariable("PrevIn", thePrevVars);
+    v.endVisitWinCondVariable();
+  }
+  if (!theNextVars.empty())
+  {
+    v.beginVisitWinCondVariable("NextIn", theNextVars);
+    v.endVisitWinCondVariable();
+  }
+  if (!thePosVars.empty())
+  {
+    v.beginVisitWinCondVariable("PosIn", thePosVars);
+    v.endVisitWinCondVariable();
+  }
 }
 
 
@@ -146,341 +165,520 @@ void WindowVars::bindExtern (
 }
 
 
-    /////////////////////////////////////////////////////////////////////////////////
-    //                                                                             //
-    //  StartClause                                                                //
-    //                                                                             //
-    /////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  StartClause                                                                //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-    StartClause::StartClause ( PlanIter_t aStartClauseIter,
-                               WindowVars& aWindowVars
-                             ) :
-        theStartClauseIter ( aStartClauseIter ),
-        theWindowVars ( aWindowVars ) {
+StartClause::StartClause(
+    PlanIter_t aStartClauseIter,
+    WindowVars& aWindowVars)
+  :
+  theStartClauseIter ( aStartClauseIter ),
+  theWindowVars ( aWindowVars ) 
+{
+}
 
+
+StartClause::~StartClause() 
+{
+}
+
+
+void StartClause::accept ( PlanIterVisitor& v ) const 
+{
+  theWindowVars.accept ( v );
+  theStartClauseIter->accept ( v );
+}
+
+
+void StartClause::open ( PlanState& aPlanState, uint32_t& aOffset ) const 
+{
+  theStartClauseIter->open ( aPlanState, aOffset );
+}
+
+
+void StartClause::reset ( PlanState& aPlanState ) const 
+{
+  theStartClauseIter->reset ( aPlanState );
+}
+
+
+void StartClause::close ( PlanState& aPlanState ) const 
+{
+  theStartClauseIter->close ( aPlanState );
+}
+
+
+uint32_t StartClause::getStateSizeOfSubtree() const 
+{
+  return theStartClauseIter->getStateSizeOfSubtree();
+}
+
+
+bool StartClause::evaluate(
+    PlanState& aPlanState,
+    const store::TempSeq_t& aInputSeq,
+    const uint32_t aPosition) const 
+{
+  theWindowVars.bindIntern ( aPlanState, aInputSeq, aPosition );
+  return evalToBool ( theStartClauseIter, aPlanState );
+}
+  
+
+void StartClause::bindExtern(
+    PlanState& aPlanState,
+    const store::TempSeq_t& aInputSeq,
+    const uint32_t aPosition ) const 
+{
+  theWindowVars.bindExtern ( aPlanState, aInputSeq, aPosition );
+}
+
+
+void StartClause::bindIntern(
+    PlanState& aPlanState,
+    const store::TempSeq_t& aInputSeq,
+    const uint32_t aPosition ) const 
+{
+  theWindowVars.bindIntern ( aPlanState, aInputSeq, aPosition );
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  EndClause                                                                //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+EndClause::EndClause() 
+  :
+  theEndClauseIter ( NULL ),
+  theOnlyEnd(false),
+  theHasEndClause ( false ) 
+{
+}
+
+
+EndClause::EndClause (
+    PlanIter_t aEndClauseIter,
+    WindowVars& aWindowVars,
+    bool aOnlyEnd) 
+  :
+  theEndClauseIter ( aEndClauseIter ),
+  theWindowVars ( aWindowVars ),
+  theOnlyEnd ( aOnlyEnd ),
+  theHasEndClause ( true ) 
+{
+}
+
+
+EndClause::~EndClause() 
+{
+}
+
+
+void EndClause::accept ( PlanIterVisitor& v ) const 
+{
+  //TODO more output
+  if ( theHasEndClause ) {
+    theWindowVars.accept ( v );
+    theEndClauseIter->accept ( v );
+  }
+}
+  
+
+void EndClause::open ( PlanState& aPlanState, uint32_t& aOffset ) const 
+{
+  if ( theHasEndClause )
+    theEndClauseIter->open ( aPlanState, aOffset );
+}
+
+
+void EndClause::reset ( PlanState& aPlanState ) const 
+{
+  if ( theHasEndClause )
+    theEndClauseIter->reset ( aPlanState );
+}
+
+
+void EndClause::close ( PlanState& aPlanState ) const 
+{
+  if ( theHasEndClause )
+    theEndClauseIter->close ( aPlanState );
+}
+
+
+uint32_t EndClause::getStateSizeOfSubtree() const 
+{
+  if ( theHasEndClause )
+    return theEndClauseIter->getStateSizeOfSubtree();
+  else
+    return 0;
+}
+
+
+bool EndClause::evaluate ( PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition ) const 
+{
+  theWindowVars.bindIntern ( aPlanState, aInputSeq, aPosition );
+  return evalToBool ( theEndClauseIter, aPlanState );
+}
+
+
+void EndClause::bindIntern ( PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition ) const 
+{
+  theWindowVars.bindIntern ( aPlanState, aInputSeq, aPosition );
+}
+
+
+void EndClause::bindExtern ( PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition ) const 
+{
+  theWindowVars.bindExtern ( aPlanState, aInputSeq, aPosition );
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  WindowState                                                                //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+WindowState::WindowState() : theInputSeq ( NULL ) , theCurInputPos ( 1 ) 
+{
+}
+
+
+WindowState::~WindowState() 
+{
+}
+
+
+void WindowState::init ( PlanState& aState ) 
+{
+  PlanIteratorState::init ( aState );
+  theCurInputPos = 1;
+  theInputSeq = NULL;
+}
+  
+
+void WindowState::reset ( PlanState& aPlanState ) 
+{
+  PlanIteratorState::reset ( aPlanState );
+  tupleReset();
+}
+  
+
+void WindowState::tupleReset ( ) 
+{
+  theCurInputPos = 1;
+  theInputSeq = NULL;
+  theOpenWindowsStartPos.clear();
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  WindowIterator                                                             //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+const uint32_t WindowIterator::MAX_HISTORY = 2147483647; //TODO should be set platform dependent, but somebody hat comment out everything in platform.h!
+
+WindowIterator::WindowIterator (
+    const QueryLoc& loc,
+    WindowType windowType,
+    PlanIter_t tupleIter,
+    PlanIter_t domainIterator,
+    const store::Item_t& varName,
+    const std::vector<PlanIter_t >& varRefs,
+    StartClause& startClause,
+    EndClause& endClause,
+    bool lazyEval,
+    uint32_t maxNeededHistory) 
+  :
+  Batcher<WindowIterator>(loc),
+  theWindowType(windowType),
+  theTupleIter(tupleIter),
+  theInputIter(domainIterator),
+  theVarName(varName),
+  theStartClause(startClause),
+  theEndClause(endClause),
+  theLazyEval(lazyEval),
+  theMaxNeededHistory(maxNeededHistory) 
+{
+  castIterVector<LetVarIterator>(theVarRefs, varRefs);
+}
+
+
+WindowIterator::~WindowIterator() 
+{
+}
+
+
+uint32_t WindowIterator::getStateSize() const 
+{
+  return StateTraitsImpl<WindowState>::getStateSize();
+}
+
+
+uint32_t WindowIterator::getStateSizeOfSubtree() const 
+{
+  int32_t lSize = this->getStateSize();
+  lSize += theTupleIter->getStateSizeOfSubtree();
+  lSize += theInputIter->getStateSizeOfSubtree();
+  lSize += theStartClause.getStateSizeOfSubtree();
+  lSize += theEndClause.getStateSizeOfSubtree();
+  return lSize;
+}
+
+
+void WindowIterator::openImpl ( PlanState& aPlanState, uint32_t& aOffset ) 
+{
+  StateTraitsImpl<WindowState>::createState ( aPlanState, this->stateOffset, aOffset );
+  theTupleIter->open ( aPlanState, aOffset );
+  theInputIter->open ( aPlanState, aOffset );
+  theStartClause.open ( aPlanState, aOffset );
+  theEndClause.open ( aPlanState, aOffset );
+}
+
+
+void WindowIterator::resetImpl ( PlanState& aPlanState ) const 
+{
+  WindowState* lState = StateTraitsImpl<WindowState>::getState ( aPlanState, this->stateOffset );
+  lState->reset ( aPlanState );
+
+  theTupleIter->reset ( aPlanState );
+  theInputIter->reset ( aPlanState );
+  theStartClause.reset ( aPlanState );
+  theEndClause.reset ( aPlanState );
+}
+
+
+void WindowIterator::closeImpl ( PlanState& aPlanState ) 
+{
+  theTupleIter->close ( aPlanState );
+  theInputIter->close ( aPlanState );
+  theStartClause.close ( aPlanState );
+  theEndClause.close ( aPlanState );
+  StateTraitsImpl<WindowState>::destroyState ( aPlanState, this->stateOffset );
+}
+
+
+void WindowIterator::accept ( PlanIterVisitor& v ) const 
+{
+  v.beginVisit(*this);
+
+  v.beginVisitWindowVariable(theVarName->getStringValue()->str(), theVarRefs);
+
+  theInputIter->accept(v);
+
+  v.endVisitWindowVariable();
+
+  theStartClause.accept(v);
+  theEndClause.accept(v);
+
+  theTupleIter->accept(v);
+
+  v.endVisit(*this);
+}
+
+
+void WindowIterator::bindVariable(
+    PlanState& aPlanState,
+    const store::TempSeq_t& aInputSeq,
+    const uint32_t aStartPos,
+    const uint32_t aEndPos ) const 
+{
+  for ( std::vector<LetVarIter_t>::const_iterator lVarIter = theVarRefs.begin();
+        lVarIter != theVarRefs.end();
+        ++lVarIter) 
+  {
+    store::Iterator_t lIter = aInputSeq->getIterator ( aStartPos, aEndPos, true );
+    lIter->open(); //FIXME We need to close the iterator! So far this only works because close is a empty function
+    ( *lVarIter )->bind ( lIter  , aPlanState );
+  }
+}
+
+
+void WindowIterator::doGarbageCollection(WindowState* lState) const 
+{
+  if (theMaxNeededHistory != MAX_HISTORY) 
+  {
+    if ( lState->theOpenWindowsStartPos.empty() ) {
+      if ( lState->theCurInputPos > theMaxNeededHistory )
+        lState->theInputSeq->purgeUpTo ( lState->theCurInputPos - theMaxNeededHistory );
+    } else {
+      int32_t lPurgeTo = lState->theOpenWindowsStartPos.back() - theMaxNeededHistory;
+      if ( lPurgeTo > 0 )
+        lState->theInputSeq->purgeUpTo ( lPurgeTo );
     }
+  }
+}
 
 
-    StartClause::~StartClause() {
+bool WindowIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const
+{
+  WindowState* lState;
+  DEFAULT_STACK_INIT ( WindowState, lState, aPlanState );
+
+  while ( consumeNext ( aResult, theTupleIter, aPlanState ) ) 
+  {
+    lState->theInputSeq = GENV_STORE.createTempSeq(new PlanIteratorWrapper(theInputIter, aPlanState), false, theLazyEval);
+
+    //Its clever to switch quite early to avoid a lot of if-else statements
+    if ( theWindowType == WindowIterator::SLIDING ) 
+    {
+      while ( lState->theInputSeq->containsItem ( lState->theCurInputPos ) ) 
+      {
+        if (theStartClause.evaluate(aPlanState,
+                                    lState->theInputSeq,
+                                    lState->theCurInputPos)) 
+        {
+          lState->theOpenWindowsStartPos.push_back ( lState->theCurInputPos );
+        }
+
+        lState->theCurWindow = lState->theOpenWindowsStartPos.begin();
+
+        while ( lState->theCurWindow != lState->theOpenWindowsStartPos.end() ) 
+        {
+          theStartClause.bindIntern(aPlanState,
+                                    lState->theInputSeq,
+                                    *lState->theCurWindow);
+
+          if ( theEndClause.evaluate(aPlanState,
+                                     lState->theInputSeq,
+                                     lState->theCurInputPos))
+          {
+            theStartClause.bindExtern(aPlanState,
+                                      lState->theInputSeq,
+                                      *lState->theCurWindow);
+
+            theEndClause.bindExtern(aPlanState,
+                                    lState->theInputSeq,
+                                    lState->theCurInputPos);
+
+            bindVariable(aPlanState,
+                         lState->theInputSeq,
+                         *lState->theCurWindow,
+                         lState->theCurInputPos );
+
+            lState->theCurWindow = lState->theOpenWindowsStartPos.erase(lState->theCurWindow);
+            doGarbageCollection ( lState );
+
+            STACK_PUSH ( true, lState );
+          }
+          else
+          {
+            ++ ( lState->theCurWindow );
+          }
+        }
+        ++lState->theCurInputPos;
+      }
     }
+    else //Tumpling window 
+    { 
+      if ( theEndClause.theHasEndClause ) 
+      { 
+        //Doing this switch now also avoids further overhad
+        while (lState->theInputSeq->containsItem(lState->theCurInputPos)) 
+        {
+          if (lState->theOpenWindowsStartPos.empty() &&
+              theStartClause.evaluate(aPlanState,
+                                      lState->theInputSeq,
+                                      lState->theCurInputPos)) 
+          {
+            theStartClause.bindExtern(aPlanState,
+                                      lState->theInputSeq,
+                                      lState->theCurInputPos );
 
-    void StartClause::accept ( PlanIterVisitor& v ) const {
-      //TODO more output
-      theWindowVars.accept ( v );
-      theStartClauseIter->accept ( v );
-    }
+            lState->theOpenWindowsStartPos.push_back(lState->theCurInputPos);
+          }
 
-    void StartClause::open ( PlanState& aPlanState, uint32_t& aOffset ) const {
-      theStartClauseIter->open ( aPlanState, aOffset );
-    }
+          if ( !lState->theOpenWindowsStartPos.empty() &&
+               theEndClause.evaluate(aPlanState,
+                                     lState->theInputSeq,
+                                     lState->theCurInputPos))
+          {
+            theEndClause.bindExtern(aPlanState,
+                                    lState->theInputSeq,
+                                    lState->theCurInputPos);
 
-    void StartClause::reset ( PlanState& aPlanState ) const {
-      theStartClauseIter->reset ( aPlanState );
-    }
+            bindVariable(aPlanState,
+                         lState->theInputSeq,
+                         lState->theOpenWindowsStartPos[0],
+                         lState->theCurInputPos);
 
-    void StartClause::close ( PlanState& aPlanState ) const {
-      theStartClauseIter->close ( aPlanState );
-    }
+            lState->theOpenWindowsStartPos.pop_back();
 
-    uint32_t StartClause::getStateSizeOfSubtree() const {
-      return theStartClauseIter->getStateSizeOfSubtree();
-    }
+            assert ( lState->theOpenWindowsStartPos.empty() );
 
-    bool StartClause::evaluate ( PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition ) const {
-      theWindowVars.bindIntern ( aPlanState, aInputSeq, aPosition );
-      return evalToBool ( theStartClauseIter, aPlanState );
-    }
+            doGarbageCollection ( lState );
 
-    void StartClause::bindExtern ( PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition ) const {
-      theWindowVars.bindExtern ( aPlanState, aInputSeq, aPosition );
-    }
+            STACK_PUSH ( true, lState );
+          }
+          ++lState->theCurInputPos;
+        }
+      }
+      else 
+      {
+        while ( lState->theInputSeq->containsItem ( lState->theCurInputPos ) ) 
+        {
+          if ( theStartClause.evaluate(aPlanState,
+                                       lState->theInputSeq,
+                                       lState->theCurInputPos)) 
+          {
+            if ( !lState->theOpenWindowsStartPos.empty() ) 
+            {
+              assert ( lState->theOpenWindowsStartPos.size() == 1 ); //In no case there should be more than 1 position inside
+              theStartClause.bindExtern(aPlanState,
+                                        lState->theInputSeq,
+                                        lState->theOpenWindowsStartPos[0]);
 
-    void StartClause::bindIntern ( PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition ) const {
-      theWindowVars.bindIntern ( aPlanState, aInputSeq, aPosition );
-    }
+              bindVariable(aPlanState,
+                           lState->theInputSeq,
+                           lState->theOpenWindowsStartPos[0],
+                           lState->theCurInputPos  -1);
 
-    /////////////////////////////////////////////////////////////////////////////////
-    //                                                                             //
-    //  EndClause                                                                //
-    //                                                                             //
-    /////////////////////////////////////////////////////////////////////////////////
+              lState->theOpenWindowsStartPos.pop_back();
 
-    EndClause::EndClause () : theEndClauseIter ( NULL ), theOnlyEnd(false), theHasEndClause ( false ) {
+              doGarbageCollection ( lState );
 
-    }
+              STACK_PUSH ( true, lState );
+            }
 
-    EndClause::EndClause ( PlanIter_t aEndClauseIter,
-                           WindowVars& aWindowVars,
-                           bool aOnlyEnd
-                         ) : theEndClauseIter ( aEndClauseIter ),
-        theWindowVars ( aWindowVars ),
-        theOnlyEnd ( aOnlyEnd ),
-        theHasEndClause ( true ) {
+            lState->theOpenWindowsStartPos.push_back ( lState->theCurInputPos );
+          }
 
-    }
-
-    EndClause::~EndClause() {
-    }
-
-    void EndClause::accept ( PlanIterVisitor& v ) const {
-      //TODO more output
-      if ( theHasEndClause ) {
-        theWindowVars.accept ( v );
-        theEndClauseIter->accept ( v );
+          ++lState->theCurInputPos;
+        }
       }
     }
 
-    void EndClause::open ( PlanState& aPlanState, uint32_t& aOffset ) const {
-      if ( theHasEndClause )
-        theEndClauseIter->open ( aPlanState, aOffset );
-    }
+    //Check if we have open windows
+    while(!lState->theOpenWindowsStartPos.empty() && (!theEndClause.theOnlyEnd))
+    {
+      bindVariable(aPlanState,
+                   lState->theInputSeq,
+                   lState->theOpenWindowsStartPos[0],
+                   lState->theCurInputPos - 1);
 
-    void EndClause::reset ( PlanState& aPlanState ) const {
-      if ( theHasEndClause )
-        theEndClauseIter->reset ( aPlanState );
-    }
+      theEndClause.bindExtern(aPlanState,
+                              lState->theInputSeq,
+                              lState->theCurInputPos-1);
 
-    void EndClause::close ( PlanState& aPlanState ) const {
-      if ( theHasEndClause )
-        theEndClauseIter->close ( aPlanState );
-    }
+      lState->theCurWindow = lState->theOpenWindowsStartPos.erase(lState->theOpenWindowsStartPos.begin());
 
-    uint32_t EndClause::getStateSizeOfSubtree() const {
-      if ( theHasEndClause )
-        return theEndClauseIter->getStateSizeOfSubtree();
-      else
-        return 0;
-    }
-
-    bool EndClause::evaluate ( PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition ) const {
-      theWindowVars.bindIntern ( aPlanState, aInputSeq, aPosition );
-      return evalToBool ( theEndClauseIter, aPlanState );
-    }
-
-    void EndClause::bindIntern ( PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition ) const {
-      theWindowVars.bindIntern ( aPlanState, aInputSeq, aPosition );
-    }
-
-    void EndClause::bindExtern ( PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition ) const {
-      theWindowVars.bindExtern ( aPlanState, aInputSeq, aPosition );
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////
-    //                                                                             //
-    //  WindowState                                                                //
-    //                                                                             //
-    /////////////////////////////////////////////////////////////////////////////////
-
-    WindowState::WindowState() : theInputSeq ( NULL ) , theCurInputPos ( 1 ) {
-    }
-
-
-    WindowState::~WindowState() {
-
-    }
-
-
-    void WindowState::init ( PlanState& aState ) {
-      PlanIteratorState::init ( aState );
-      theCurInputPos = 1;
-      theInputSeq = NULL;
-    }
-
-    void WindowState::reset ( PlanState& aPlanState ) {
-      PlanIteratorState::reset ( aPlanState );
-      tupleReset();
+      STACK_PUSH(true, lState);
     }
     
-    void WindowState::tupleReset ( ) {
-      theCurInputPos = 1;
-      theInputSeq = NULL;
-      theOpenWindowsStartPos.clear();
-    }
-
-
-    /////////////////////////////////////////////////////////////////////////////////
-    //                                                                             //
-    //  WindowIterator                                                             //
-    //                                                                             //
-    /////////////////////////////////////////////////////////////////////////////////
-
-    const uint32_t WindowIterator::MAX_HISTORY = 2147483647; //TODO should be set platform dependent, but somebody hat comment out everything in platform.h!
-
-    WindowIterator::WindowIterator ( const QueryLoc& aLoc,
-                                     PlanIter_t aTupleIterator,
-                                     PlanIter_t aInputIterator,
-                                     WindowType aWindowType,
-                                     std::vector<LetVarIter_t >& aVars,
-                                     StartClause& aStartclause,
-                                     EndClause& aEndClause,
-                                     bool aLazyEval,
-                                     uint32_t aMaxNeededHistory ) :
-        Batcher<WindowIterator> ( aLoc ),
-        theTupleIter ( aTupleIterator ),
-        theInputIter ( aInputIterator ),
-        theWindowType ( aWindowType ),
-        theVars ( aVars ),
-        theStartClause ( aStartclause ),
-        theEndClause ( aEndClause ),
-        theLazyEval ( aLazyEval ),
-        theMaxNeededHistory ( aMaxNeededHistory ) {
-
-    }
-
-    WindowIterator::~WindowIterator() {
-
-    }
-
-    uint32_t WindowIterator::getStateSize() const {
-      return StateTraitsImpl<WindowState>::getStateSize();
-    }
-
-    uint32_t WindowIterator::getStateSizeOfSubtree() const {
-      int32_t lSize = this->getStateSize();
-      lSize += theTupleIter->getStateSizeOfSubtree();
-      lSize += theInputIter->getStateSizeOfSubtree();
-      lSize += theStartClause.getStateSizeOfSubtree();
-      lSize += theEndClause.getStateSizeOfSubtree();
-      return lSize;
-    }
-
-    void WindowIterator::openImpl ( PlanState& aPlanState, uint32_t& aOffset ) {
-      StateTraitsImpl<WindowState>::createState ( aPlanState, this->stateOffset, aOffset );
-      theTupleIter->open ( aPlanState, aOffset );
-      theInputIter->open ( aPlanState, aOffset );
-      theStartClause.open ( aPlanState, aOffset );
-      theEndClause.open ( aPlanState, aOffset );
-    }
-
-
-    void WindowIterator::resetImpl ( PlanState& aPlanState ) const {
-      WindowState* lState = StateTraitsImpl<WindowState>::getState ( aPlanState, this->stateOffset );
-      lState->reset ( aPlanState );
-
-      theTupleIter->reset ( aPlanState );
-      theInputIter->reset ( aPlanState );
-      theStartClause.reset ( aPlanState );
-      theEndClause.reset ( aPlanState );
-    }
-
-    void WindowIterator::closeImpl ( PlanState& aPlanState ) {
-      theTupleIter->close ( aPlanState );
-      theInputIter->close ( aPlanState );
-      theStartClause.close ( aPlanState );
-      theEndClause.close ( aPlanState );
-      StateTraitsImpl<WindowState>::destroyState ( aPlanState, this->stateOffset );
-    }
-
-
-    void WindowIterator::accept ( PlanIterVisitor& v ) const {
-      //TODO More infos and more precise
-      theTupleIter->accept ( v );
-      theInputIter->accept ( v );
-      theStartClause.accept ( v );
-      theEndClause.accept ( v );
-    }
-
-    void WindowIterator::bindVariable ( PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aStartPos, const uint32_t aEndPos ) const {
-      for ( std::vector<LetVarIter_t>::const_iterator lVarIter = theVars.begin();
-            lVarIter != theVars.end();
-            ++lVarIter ) {
-        store::Iterator_t lIter = aInputSeq->getIterator ( aStartPos, aEndPos, true );
-        lIter->open(); //FIXME We need to close the iterator! So far this only works because close is a empty function
-        ( *lVarIter )->bind ( lIter  , aPlanState );
-      }
-    }
-
-    void WindowIterator::doGarbageCollection ( WindowState* lState ) const {
-      if ( theMaxNeededHistory != MAX_HISTORY ) {
-        if ( lState->theOpenWindowsStartPos.empty() ) {
-          if ( lState->theCurInputPos > theMaxNeededHistory )
-            lState->theInputSeq->purgeUpTo ( lState->theCurInputPos - theMaxNeededHistory );
-        } else {
-          int32_t lPurgeTo = lState->theOpenWindowsStartPos.back() - theMaxNeededHistory;
-          if ( lPurgeTo > 0 )
-            lState->theInputSeq->purgeUpTo ( lPurgeTo );
-        }
-      }
-    }
-
-    bool WindowIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const {
-      WindowState* lState;
-      DEFAULT_STACK_INIT ( WindowState, lState, aPlanState );
-      while ( consumeNext ( aResult, theTupleIter, aPlanState ) ) {
-        lState->theInputSeq = GENV_STORE.createTempSeq ( new PlanIteratorWrapper ( theInputIter, aPlanState ), false, theLazyEval );
-
-        //Its clever to switch quite early to avoid a lot of if-else statements
-        if ( theWindowType == WindowIterator::SLIDING ) {
-          while ( lState->theInputSeq->containsItem ( lState->theCurInputPos ) ) {
-            if ( theStartClause.evaluate ( aPlanState, lState->theInputSeq, lState->theCurInputPos ) ) {
-              lState->theOpenWindowsStartPos.push_back ( lState->theCurInputPos );
-            }
-            lState->theCurWindow = lState->theOpenWindowsStartPos.begin();
-            while ( lState->theCurWindow != lState->theOpenWindowsStartPos.end() ) {
-              theStartClause.bindIntern ( aPlanState, lState->theInputSeq, *lState->theCurWindow );
-              if ( theEndClause.evaluate ( aPlanState, lState->theInputSeq, lState->theCurInputPos ) ) {
-                theStartClause.bindExtern ( aPlanState, lState->theInputSeq, *lState->theCurWindow );
-                theEndClause.bindExtern ( aPlanState, lState->theInputSeq, lState->theCurInputPos );
-                bindVariable ( aPlanState, lState->theInputSeq, *lState->theCurWindow, lState->theCurInputPos );
-                lState->theCurWindow = lState->theOpenWindowsStartPos.erase ( lState->theCurWindow );
-                doGarbageCollection ( lState );
-                STACK_PUSH ( true, lState );
-              } else {
-                ++ ( lState->theCurWindow );
-              }
-            }
-            ++lState->theCurInputPos;
-          }
-        } else { //Tumpling window
-          if ( theEndClause.theHasEndClause ) {//Doing this switch now also avoids further overhad
-            while ( lState->theInputSeq->containsItem ( lState->theCurInputPos ) ) {
-              if ( lState->theOpenWindowsStartPos.empty() && theStartClause.evaluate ( aPlanState, lState->theInputSeq, lState->theCurInputPos ) ) {
-                theStartClause.bindExtern ( aPlanState, lState->theInputSeq, lState->theCurInputPos );
-                lState->theOpenWindowsStartPos.push_back ( lState->theCurInputPos );
-              }
-              if ( !lState->theOpenWindowsStartPos.empty() && theEndClause.evaluate ( aPlanState, lState->theInputSeq, lState->theCurInputPos ) ) {
-                theEndClause.bindExtern ( aPlanState, lState->theInputSeq, lState->theCurInputPos );
-                bindVariable ( aPlanState, lState->theInputSeq, lState->theOpenWindowsStartPos[0], lState->theCurInputPos);
-                lState->theOpenWindowsStartPos.pop_back();
-                assert ( lState->theOpenWindowsStartPos.empty() );
-                doGarbageCollection ( lState );
-                STACK_PUSH ( true, lState );
-              }
-              ++lState->theCurInputPos;
-            }
-          } else {
-            while ( lState->theInputSeq->containsItem ( lState->theCurInputPos ) ) {
-              if ( theStartClause.evaluate ( aPlanState, lState->theInputSeq, lState->theCurInputPos ) ) {
-                if ( !lState->theOpenWindowsStartPos.empty() ) {
-                  assert ( lState->theOpenWindowsStartPos.size() == 1 ); //In no case there should be more than 1 position inside
-                  theStartClause.bindExtern ( aPlanState, lState->theInputSeq, lState->theOpenWindowsStartPos[0] );
-                  bindVariable ( aPlanState, lState->theInputSeq, lState->theOpenWindowsStartPos[0], lState->theCurInputPos  -1);
-                  lState->theOpenWindowsStartPos.pop_back();
-                  doGarbageCollection ( lState );
-                  STACK_PUSH ( true, lState );
-                }
-                lState->theOpenWindowsStartPos.push_back ( lState->theCurInputPos );
-              }
-              ++lState->theCurInputPos;
-              
-            }
-          }
-        }
-        //Check if we have open windows
-        while(!lState->theOpenWindowsStartPos.empty() && (!theEndClause.theOnlyEnd)){
-          bindVariable ( aPlanState, lState->theInputSeq, lState->theOpenWindowsStartPos[0], lState->theCurInputPos - 1 );
-          theEndClause.bindExtern ( aPlanState, lState->theInputSeq, lState->theCurInputPos-1 );
-          lState->theCurWindow = lState->theOpenWindowsStartPos.erase ( lState->theOpenWindowsStartPos.begin());
-          STACK_PUSH ( true, lState );
-        }
-        
-        theInputIter->reset ( aPlanState );
-        lState->tupleReset();
-      }
-      STACK_PUSH ( false, lState );
-      STACK_END ( lState );
-      std::cout << "END" << std::endl;
-    }
+    theInputIter->reset(aPlanState);
+    lState->tupleReset();
+  }
+  STACK_PUSH ( false, lState );
+  STACK_END ( lState );
+  std::cout << "END" << std::endl;
+}
 
   } //Namespace flwor
 }//Namespace zorba
