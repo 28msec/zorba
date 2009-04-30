@@ -164,6 +164,7 @@ RULE_REWRITE_POST(SpecializeOperations)
         argTypes.push_back(aType);
         
         const function *replacement = fn->specialize(rCtx.getStaticContext(), argTypes);
+        std::cout << "specialize func " << node << " " << t0->toString () << " " << t1->toString () << " -> " << (aType == NULL ? std::string ("null") : aType->toString ()) << " replace " << replacement << std::endl;
         if (replacement != NULL) {
           fo->set_func(replacement);
           bool a0Promote = !TypeOps::is_subtype(*t0, *aType);
