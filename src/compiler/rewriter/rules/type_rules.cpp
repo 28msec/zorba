@@ -133,6 +133,19 @@ RULE_REWRITE_POST(EliminateTypeEnforcingOperations)
   return NULL;
 }
 
+static expr_t wrap_in_num_promotion (expr_t arg, xqtref_t t) {
+  if (arg->get_expr_kind () == promote_expr_kind
+      && TypeOps::type_max_cnt (*t) <= 1)
+  {
+    promote_expr *pe = arg.cast<promote_expr> ();
+    expr_t inner_e = pe->get_input ();
+    xqtref_t inner_t = pe->get_target_type ();
+    if (TypeOps::is_equal (*inner_t, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
+      arg = inner_e;
+  }
+  return new promote_expr (arg->get_loc (), arg, t);
+}
+
 RULE_REWRITE_PRE(SpecializeOperations)
 {
   return NULL;
@@ -146,8 +159,9 @@ RULE_REWRITE_POST(SpecializeOperations)
     const function *fn = fo->get_func();
     if (! fn->specializable ()) return NULL;
     if (fo->size() == 2) {
-      xqtref_t t0 = (*fo)[0]->return_type(rCtx.getStaticContext());
-      xqtref_t t1 = (*fo)[1]->return_type(rCtx.getStaticContext());
+      expr_t arg0 = (*fo)[0], arg1 = (*fo)[1];
+      xqtref_t t0 = arg0->return_type(rCtx.getStaticContext());
+      xqtref_t t1 = arg1->return_type(rCtx.getStaticContext());
       std::vector<xqtref_t> argTypes;
 
       if (props.specializeNum () && fn->isArithmeticFunction()) {
@@ -171,10 +185,10 @@ RULE_REWRITE_POST(SpecializeOperations)
           bool a1Promote = !TypeOps::is_subtype(*t1, *aType);
           
           if (a0Promote) {
-            (*fo)[0] = new promote_expr(fo->get_loc(), (*fo)[0], aType);
+            (*fo)[0] = wrap_in_num_promotion (arg0, aType);
           }
           if (a1Promote) {
-            (*fo)[1] = new promote_expr(fo->get_loc(), (*fo)[1], aType);
+            (*fo)[1] = wrap_in_num_promotion (arg1, aType);
           }
           return node;
         }
