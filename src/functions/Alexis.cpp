@@ -16,6 +16,7 @@
 #include "functions/Alexis.h"
 
 #include "runtime/util/UtilImpl.h"
+#include "runtime/misc/MiscImpl.h"
 
 using namespace std;
 
@@ -65,5 +66,9 @@ zorba_uuid::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Annotat
   return new ZorbaUUIDIterator(loc, argv);
 }
 
+zorba::PlanIter_t zorba_serialize_to_string::codegen( const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+{
+	return new FnPrintIterator(loc, argv, false);
+}
 }
 /* vim:set ts=2 sw=2: */

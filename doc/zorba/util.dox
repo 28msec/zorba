@@ -20,6 +20,10 @@
       <li> \ref uuid
       <li> \ref random
     </ul>
+    <li> \ref serialize_util
+    <ul>
+      <li> \ref serialize_to_string
+    </ul>
     <li> \ref apendix_util
    </ul>
  </ul>
@@ -156,6 +160,16 @@ If the seed is not passed as an argument the same number will be generated every
   import module namespace zu = "http://www.zorba-xquery.com/zorba/util-functions";
   for $i in (1 to 10)
     return zu:random()
+\endcode
+
+\section serialize_util 3 Functions for serialization
+
+\subsection serialize_to_string 3.1 zorba-util:serialize-to-string
+This functions takes a sequence of nodes, serializes them into strings and returns the concatenation of all strings.
+
+\code
+  import module namespace zu = "http://www.zorba-xquery.com/zorba/util-functions";
+  fn:concat("test", zu:serialize-to-xml(<a><b>textnode</b></a>))
 \endcode
 
 \section apendix_util Appendix A:  Error codes

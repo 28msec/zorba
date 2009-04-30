@@ -94,6 +94,15 @@ namespace zorba {
     bool isPureFunction () const { return false; }
   };
 
+  class zorba_serialize_to_string : public function {
+  public:
+	  zorba_serialize_to_string(const signature& sig) : function(sig) {}
+
+	  PlanIter_t codegen (const QueryLoc& loc,
+		  std::vector<PlanIter_t>& argv,
+		  AnnotationHolder &ann) const;
+	  bool isPureFunction () const { return false; }
+  };
 }
 
 #endif /* ZORBA_FUNCTIONS_ALEXIS_H */

@@ -293,6 +293,11 @@ DECL(sctx, fn_parse_func,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE));
 
+DECL (sctx, zorba_serialize_to_string,
+	  (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "serialize-to-string"),
+	  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+	  GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
 DECL(sctx, op_concatenate,
      (createQName(XQUERY_FN_NS,"fn",":concatenate"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,

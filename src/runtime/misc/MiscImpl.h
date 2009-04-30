@@ -86,7 +86,20 @@ NARY_ITER (LoopIterator);
 
 NARY_ITER (FnReadStringIterator);
 
-NARY_ITER (FnPrintIterator);
+class FnPrintIterator : public NaryBaseIterator<FnPrintIterator, PlanIteratorState>
+{
+public:
+	FnPrintIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool printToConsole = true) :
+	  NaryBaseIterator<FnPrintIterator, PlanIteratorState >(loc, aChildren), m_printToConsole(printToConsole)
+	  {
+	  }
+
+public:
+	bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+private:
+	bool m_printToConsole;
+};
 
 } /* namespace zorba */
 

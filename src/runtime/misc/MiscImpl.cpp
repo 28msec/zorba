@@ -29,6 +29,8 @@
 #include "context/static_context.h"
 #include "api/serialization/serializer.h"
 
+#include <iostream>
+
 
 namespace zorba {
 
@@ -181,14 +183,17 @@ bool FnReadStringIterator::nextImpl (store::Item_t& result, PlanState& planState
 
 bool FnPrintIterator::nextImpl (store::Item_t& result, PlanState& planState) const 
 {
+  std::ostringstream os;
   serializer* lSerializer = NULL;
+  store::Item_t item;
+  xqpStringStore_t resString;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  while (CONSUME (result, theChildren.size () - 1))
+  while (CONSUME (item, theChildren.size () - 1))
   {
-    if (result->isNode())
+    if (item->isNode())
     {
       if (lSerializer == NULL)
       {
@@ -196,12 +201,24 @@ bool FnPrintIterator::nextImpl (store::Item_t& result, PlanState& planState) con
         lSerializer->set_parameter("omit-xml-declaration", "yes");
       }
 
-      lSerializer->serialize(result.getp(), std::cout);
+	  if (m_printToConsole) {
+		  lSerializer->serialize(item.getp(), std::cout);
+	  } else {
+		  lSerializer->serialize(item.getp(), os);
+	  }
     }
     else
     {
-      std::cout << result->getStringValue ();
+	  if (m_printToConsole) {
+        std::cout << item->getStringValue ();
+	  } else {
+	    os << item->getStringValue();
+	  }
     }
+  }
+  if (!m_printToConsole) {
+    resString = new xqpStringStore(os.str());
+    STACK_PUSH(GENV_ITEMFACTORY->createString(result, resString) , state);
   }
   STACK_END (state);
 }
