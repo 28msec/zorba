@@ -20,18 +20,18 @@
 #include <jni.h>
 
 namespace zorba {
-	class JavaVMSingelton {
-	public:
-		static JavaVMSingelton* getInstance();
-		virtual ~JavaVMSingelton();
-		JavaVM* getVM();
-		JNIEnv* getEnv();
-	protected:
-		JavaVMSingelton();
-		static JavaVMSingelton* instance;
-		JavaVM* m_vm;
-		JNIEnv* m_env;
-	};
+  class JavaVMSingelton {
+  public:
+    static JavaVMSingelton* getInstance();
+    virtual ~JavaVMSingelton();
+    JavaVM* getVM();
+    JNIEnv* getEnv();
+  protected:
+    JavaVMSingelton();
+    static JavaVMSingelton* instance;
+    JavaVM* m_vm;
+    JNIEnv* m_env;
+  };
 }
 
 #endif // JAVA_VM_SINGELTON
