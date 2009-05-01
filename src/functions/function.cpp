@@ -13,15 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "system/globalenv.h"
 #include "compiler/expression/expr.h"
 #include "compiler/codegen/plan_visitor.h"
-#include "runtime/core/fncall_iterator.h"
-#include "functions/function.h"
-#include "runtime/core/var_iterators.h"
-#include "util/hashmap.h"
 #include "compiler/semantic_annotations/tsv_annotation.h"
 #include "compiler/semantic_annotations/annotation_keys.h"
+
+#include "runtime/core/fncall_iterator.h"
+#include "runtime/core/var_iterators.h"
+
+#include "functions/function.h"
+
+#include "util/hashmap.h"
+
+#include "types/typeops.h"
 
 using namespace std;
 
@@ -55,6 +61,19 @@ void function::compute_annotation (
     break;
   default: break;
   }  
+}
+
+function::AnnotationProperty_t function::producesDuplicates() const {
+  xqtref_t rt = sig.return_type ();
+  if (TypeOps::type_max_cnt (*rt) <= 1 || TypeOps::is_simple (*rt))
+    return NO;
+  return YES;
+}
+function::AnnotationProperty_t function::producesNodeIdSorted() const {
+  xqtref_t rt = sig.return_type ();
+  if (TypeOps::type_max_cnt (*rt) <= 1 || TypeOps::is_simple (*rt))
+    return YES;
+  return NO;
 }
 
 

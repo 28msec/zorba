@@ -31,10 +31,10 @@ class fo_expr;
 
 typedef rchandle<var_expr> var_expr_t;
 
-#define ZORBA_PRESERVE_SORTED \
+#define ZORBA_PRESERVES_SORTED \
   function::AnnotationProperty_t producesNodeIdSorted() const { return PRESERVE; }
 
-#define ZORBA_PRESERVE_DISTINCT \
+#define ZORBA_PRESERVES_DISTINCT \
   function::AnnotationProperty_t producesDuplicates() const { return PRESERVE; }
 
 #define ZORBA_NOT_PRODUCES_SORTED \
@@ -107,8 +107,8 @@ public:
   virtual expr_update_t getUpdateType() const { return SIMPLE_EXPR; }
   bool isUpdating() const { return getUpdateType() == UPDATE_EXPR; }
 
-  virtual AnnotationProperty_t producesDuplicates() const { return YES; }
-  virtual AnnotationProperty_t producesNodeIdSorted() const { return NO; }
+  virtual AnnotationProperty_t producesDuplicates() const;
+  virtual AnnotationProperty_t producesNodeIdSorted() const;
   virtual bool propagatesInputToOutput(uint32_t aProducer) const { return true; }
 
   virtual const function *specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const { return NULL; }

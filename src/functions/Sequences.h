@@ -119,8 +119,8 @@ namespace zorba {
     void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
 
     bool propagatesInputToOutput(uint32_t aProducer) const;
-    ZORBA_PRESERVE_SORTED
-    ZORBA_PRESERVE_DISTINCT
+    ZORBA_PRESERVES_SORTED
+    ZORBA_PRESERVES_DISTINCT
   };
 
 
@@ -238,8 +238,7 @@ namespace zorba {
   typedef function_impl<FnIdRefIterator> fn_id_ref;
 
   //15.5.4 fn:doc
-  class fn_doc_func : public function
-  {
+  class fn_doc_func : public function {
   public:
     fn_doc_func(const signature& sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -247,9 +246,6 @@ namespace zorba {
     bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
 
     bool propagatesInputToOutput(uint32_t aProducer) const;
-    ZORBA_PRODUCES_SORTED
-    ZORBA_PRODUCES_DISTINCT
-
   };
 
   class fn_parse_func : public function
