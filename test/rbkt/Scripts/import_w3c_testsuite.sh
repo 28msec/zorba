@@ -50,7 +50,7 @@ echo Processing URI of catalog...
 $SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/module.txt $mq 
 
 
-q=`mktemp /tmp/rwts.XXXXXX`o
+q=`mktemp /tmp/rwts.XXXXXX`
 cat >$q <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
 declare option saxon:output "omit-xml-declaration=yes";
@@ -75,6 +75,7 @@ EOF
 
 echo Cleaning up previous data...
 rm -rf $SRC/test/rbkt/Queries/w3c_testsuite $SRC/test/rbkt/ExpQueryResults/w3c_testsuite $SRC/test/rbkt/TestSources
+rm -rf $SRC/test/rbkt/InputQueries
 
 echo Processing catalog...
 $SRC/test/zorbatest/xquery -s XQTSCatalog.xml $q | tee /tmp/xq-res.txt | perl -e '
@@ -105,11 +106,12 @@ my @uribnd = split (/:/, $urilist);
 my @errs = split (/:/, $errlist);
 my $inpath = "Queries/XQuery/$path";
 my $dstqpath="$repo/test/rbkt/Queries/w3c_testsuite/$path";
+my $inpqpath="$repo/test/rbkt/InputQueries";
 my $dstrespath = "$repo/test/rbkt/ExpQueryResults/w3c_testsuite/$path";
 my $fullout = "$dstrespath/$name.xml.res";
 my $specfile = "$dstqpath/$name.spec";
-`mkdir -p $dstqpath`; `mkdir -p $dstrespath`;
-
+`mkdir -p $dstqpath`; `mkdir -p $dstrespath`; `mkdir -p $inpqpath`;
+ 
 copy ("$inpath/$query.xq", "$dstqpath/$name.xq");
 if ($out) {
   copy ("ExpectedTestResults/$path/$out", $fullout);
@@ -133,8 +135,8 @@ if (@inbnd || @uribnd) {
 
 if ( $inpq ne "noquery" ) {
    open (SPEC, ">>$specfile");
-   print SPEC "INPUTQUERY: " . $dstqpath . $inpq . ".xq" . "\n";
-   copy ( "$inpath/$inpq.xq", "$dstqpath/$inpq.xq" );
+   print SPEC "INPUTQUERY: " . $inpqpath . "/" . $inpq . ".ixq" . "\n";
+   copy ( "$inpath/$inpq.xq", "$inpqpath/$inpq.ixq" );
 }
 if (@errs) {
   open (SPEC, ">>$specfile");
