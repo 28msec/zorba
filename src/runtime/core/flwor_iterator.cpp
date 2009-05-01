@@ -41,6 +41,8 @@
 
 #include <sys/time.h>
 
+#include <algorithm>
+
 
 namespace zorba
 {

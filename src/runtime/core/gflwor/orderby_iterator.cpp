@@ -31,7 +31,9 @@
 #include "runtime/core/gflwor/comp_function.h"
 
 #include "zorbautils/checked_vector.h"
+
 #include <vector>
+#include <algorithm>
 
 using namespace zorba;
 
