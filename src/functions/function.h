@@ -49,6 +49,13 @@ typedef rchandle<var_expr> var_expr_t;
 #define ZORBA_PRODUCES_DISTINCT \
   function::AnnotationProperty_t producesDuplicates() const { return YES; }
 
+#define ZORBA_NOT_PROPAGATES_I2O \
+  bool propagatesInputToOutput(uint32_t aProducer) const { return false; }
+#define ZORBA_PROPAGATES_I2O \
+  bool propagatesInputToOutput(uint32_t aProducer) const { return true; }
+#define ZORBA_PROPAGATES_ONE_I2O( n ) \
+  bool propagatesInputToOutput(uint32_t aProducer) const { return n == aProducer; }
+
 class function_typechecker {
 public:
   function_typechecker() {}

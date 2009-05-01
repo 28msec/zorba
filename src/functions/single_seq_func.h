@@ -20,24 +20,32 @@
 
 namespace zorba {
 
+// A function that processes a single sequence. Assumptions:
+// Return type is the same as type of the sequence argument.
+// Preserves sorted/disctinct node annotations from children.
+// Propagates IGNORES_* properties downward.
+// Only propagates sequence arg to output.
 class single_seq_function : public function {
 protected:
-  int src;
+  unsigned src;
   
 public:
-  single_seq_function (const signature &sig, int src_ = 0) : function (sig), src (src_) {}
+  single_seq_function (const signature &sig, unsigned src_ = 0) : function (sig), src (src_) {}
   xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
   void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
+  ZORBA_PROPAGATES_ONE_I2O (src);
+  ZORBA_PRESERVES_SORTED
+  ZORBA_PRESERVES_DISTINCT
 };
 
+// Like single_seq_function, but may not return all items in the sequence arg.
 class single_seq_opt_function : public function {
 protected:
-  int src;
+  unsigned src;
   
 public:
-  single_seq_opt_function (const signature &sig, int src_ = 0) : function (sig), src (src_) {}
+  single_seq_opt_function (const signature &sig, unsigned src_ = 0) : function (sig), src (src_) {}
   xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
-  void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
 };
 
 }
