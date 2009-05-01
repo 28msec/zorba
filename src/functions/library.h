@@ -36,7 +36,6 @@ private:
   static void populateContext_AnyURI(static_context *sctx);
   static void populateContext_Context(static_context *sctx);
   static void populateContext_QNames(static_context *sctx);
-  static void populateContext_Sequences(static_context *sctx);
   static void populateContext_Comparison(static_context *sctx);
   static void populateContext_Boolean(static_context *sctx);
   static void populateContext_Constructors(static_context *sctx);

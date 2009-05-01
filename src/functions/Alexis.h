@@ -43,32 +43,32 @@ namespace zorba {
   class zorba_schema_type : public function
   {
   public:
-      zorba_schema_type(const signature& sig): function(sig){}
+    zorba_schema_type(const signature& sig): function(sig){}
 
-      PlanIter_t codegen (const QueryLoc& loc,
-                          std::vector<PlanIter_t>& argv,
-                          AnnotationHolder &ann) const;
+    PlanIter_t codegen (const QueryLoc& loc,
+                        std::vector<PlanIter_t>& argv,
+                        AnnotationHolder &ann) const;
   };
 
 #ifdef ZORBA_WITH_TIDY
   class zorba_tidy : public function
   {
   public:
-      zorba_tidy(const signature& sig): function(sig){}
-
-      PlanIter_t codegen (const QueryLoc& loc,
-                          std::vector<PlanIter_t>& argv,
-                          AnnotationHolder &ann) const;
+    zorba_tidy(const signature& sig): function(sig){}
+    
+    PlanIter_t codegen (const QueryLoc& loc,
+                        std::vector<PlanIter_t>& argv,
+                        AnnotationHolder &ann) const;
   };
 
   class zorba_tdoc : public function
   {
   public:
-      zorba_tdoc(const signature& sig): function(sig){}
-      bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
-      PlanIter_t codegen (const QueryLoc& loc,
-                          std::vector<PlanIter_t>& argv,
-                          AnnotationHolder &ann) const;
+    zorba_tdoc(const signature& sig): function(sig){}
+    bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
+    PlanIter_t codegen (const QueryLoc& loc,
+                        std::vector<PlanIter_t>& argv,
+                        AnnotationHolder &ann) const;
   };
 #endif/* ZORBA_WITH_TIDY */
 
@@ -96,12 +96,12 @@ namespace zorba {
 
   class zorba_serialize_to_string : public function {
   public:
-	  zorba_serialize_to_string(const signature& sig) : function(sig) {}
-
-	  PlanIter_t codegen (const QueryLoc& loc,
-		  std::vector<PlanIter_t>& argv,
-		  AnnotationHolder &ann) const;
-	  bool isPureFunction () const { return false; }
+    zorba_serialize_to_string(const signature& sig) : function(sig) {}
+    
+    PlanIter_t codegen (const QueryLoc& loc,
+      std::vector<PlanIter_t>& argv,
+      AnnotationHolder &ann) const;
+    bool isPureFunction () const { return false; }
   };
 }
 
