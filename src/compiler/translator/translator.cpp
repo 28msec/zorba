@@ -275,7 +275,7 @@ protected:
     zorba_predef_mod_ns.insert (ZORBA_ALEXIS_FN_NS);
     zorba_predef_mod_ns.insert (ZORBA_JSON_FN_NS);
     zorba_predef_mod_ns.insert (ZORBA_OPEXTENSIONS_NS);
-	zorba_predef_mod_ns.insert (ZORBA_FOP_FN_NS);
+    zorba_predef_mod_ns.insert (ZORBA_FOP_FN_NS);
 
     sctx_p->get_global_bindings (theGlobalVars);
     for (list<global_binding>::iterator i = theGlobalVars.begin ();
@@ -284,6 +284,8 @@ protected:
       varref_t ve = (*i).first;
       global_var_decls.push_back (static_context::qname_internal_key (ve->get_varname ()));
     }
+
+    ctx_item_type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
   }
 
 
@@ -2721,8 +2723,7 @@ void end_visit (const CtxItemDecl& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
   if (v.get_type () != NULL) {
     ctx_item_type = pop_tstack ();
-  } else
-    ctx_item_type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
+  }
   if (v.get_expr () != NULL)
     ctx_item_default = pop_nodestack ();
   if (v.get_type () != NULL || v.get_expr () != NULL) {
