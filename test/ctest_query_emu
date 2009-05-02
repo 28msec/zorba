@@ -1,0 +1,53 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use File::Find;
+use Cwd 'abs_path';
+
+my $rbktdir = `dirname $0`; chomp $rbktdir; $rbktdir = "$rbktdir/rbkt";
+my $builddir = shift; $builddir = abs_path ($builddir) || die;
+my $bucket = ".";
+my $exclude;
+my $include;
+
+while (1) {
+    my $arg = shift;
+    if (! defined ($arg)) { last; }
+    if ($arg eq "-b") { $bucket = shift; }
+    elsif ($arg eq "-E") { $exclude = shift; }
+    elsif ($arg eq "-R") { $include = shift; }
+    elsif ($arg eq "--suite") { $rbktdir = shift; }
+    else { die; }
+}
+
+$rbktdir = abs_path ($rbktdir);
+
+my $testdriver = "$builddir/test/rbkt/testdriver";
+-f $testdriver || die;
+
+my @failed;
+my $testcnt = 0;
+
+sub ffun {
+    my $fname = $_;
+    if (! ($fname =~ m/.*[.]xq$/)) { return; }
+    ++$testcnt;
+    if (defined ($exclude) && $fname =~ m/$exclude/) { return; }
+    if (defined ($include) && ! ($fname =~ m/$include/)) { return; }
+    my $f = $File::Find::name; $f =~ s/[.]xq$//g;
+    my $cmd = "$testdriver --rbkt-src $rbktdir/ $f.xq";
+    print "Command: $cmd\n";
+    my $rc = system ($cmd);
+    if (($rc & 127) == 2) { print "Signal death (" . ($rc & 127) . ")\n"; die; }
+    if ($rc != 0) {
+        print "Test failed (code " . ($? >> 8) . ")\n";
+        push (@failed, "$testcnt:$f");
+    }
+    print ("\n\n--- End test $f\n\n");
+}
+
+chdir ("$rbktdir/Queries") || die;
+find (\&ffun, "$bucket/");
+print ("Failed tests:\n" . join ("\n", @failed) . "\n");
