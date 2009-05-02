@@ -303,7 +303,7 @@ expr_t expr::clone()
 
 expr_t expr::clone(substitution_t& substitution)
 {
-  ZORBA_ASSERT(false);
+  ZORBA_ERROR_LOC (XQP0019_INTERNAL_ERROR, get_loc ());
   return NULL; // Make the compiler happy
 }
 
