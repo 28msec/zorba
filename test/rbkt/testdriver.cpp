@@ -47,6 +47,8 @@ zorba::Properties *lProp;
 #define EXPECTED_ERROR  0
 #define UNEXPECTED_ERROR  6
 
+std::string rbkt_src_dir = zorba::RBKT_SRC_DIR, rbkt_bin_dir = zorba::RBKT_BINARY_DIR;
+
 void loadProperties () 
 {
   zorba::Properties::load(0, NULL);
@@ -199,27 +201,38 @@ main(int argc, char** argv)
   int errors;
   zorba::Zorba * engine = NULL;
 
-  for( int i=1; i < argc; i++ )
+  int i = 1;
+  for (;;) {
+    if (strcmp (argv [i], "--rbkt-src") == 0) {
+      rbkt_src_dir = argv [i + 1];
+      i += 2;
+    } else if (strcmp (argv [i], "--rbkt-bin") == 0) {
+      rbkt_bin_dir = argv [i + 1];
+      i += 2;
+    } else break;
+  }
+
+  for (int testcnt = 1; i < argc; ++i, ++testcnt)
   {
     std::string   Queriesdir = "/Queries/";
 
     int path_flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;
-    zorba::file lQueryFile (zorba::RBKT_SRC_DIR + Queriesdir + argv[i], path_flags);
+    zorba::file lQueryFile (rbkt_src_dir + Queriesdir + argv[i], path_flags);
     
     std::string lQueryWithoutSuffix = std::string(argv[i]).substr( 0, std::string(argv[i]).rfind('.') );
     std::cout << "test " << lQueryWithoutSuffix << std::endl;
 
-    zorba::file lResultFile (zorba::RBKT_BINARY_DIR + "/QueryResults/" 
+    zorba::file lResultFile (rbkt_bin_dir + "/QueryResults/" 
                              + lQueryWithoutSuffix + ".xml.res", path_flags);
 
-    zorba::file lErrorFile  (zorba::RBKT_BINARY_DIR + "/" 
+    zorba::file lErrorFile  (rbkt_bin_dir + "/" 
                              + lQueryWithoutSuffix + ".err", path_flags);
 
-    zorba::file lRefFile (zorba::RBKT_SRC_DIR + "/ExpQueryResults/" 
+    zorba::file lRefFile (rbkt_src_dir + "/ExpQueryResults/" 
                           + lQueryWithoutSuffix +".xml.res", path_flags);
 
 #ifndef ZORBA_XQUERYX
-    zorba::file lSpecFile (zorba::RBKT_SRC_DIR + "/Queries/"
+    zorba::file lSpecFile (rbkt_src_dir + "/Queries/"
                            + lQueryWithoutSuffix +".spec", path_flags);
 #else
     std::string   w3c_str;
@@ -229,12 +242,12 @@ main(int argc, char** argv)
       w3c_str = "w3c_testsuite";
       xqueryx_off = 7;
     }
-    std::string   spec_fname = zorba::RBKT_SRC_DIR + "/Queries/" + w3c_str
+    std::string   spec_fname = rbkt_src_dir + "/Queries/" + w3c_str
                            + lQueryWithoutSuffix.substr(xqueryx_off) +".spec";
     zorba::file lSpecFile (spec_fname, path_flags);
     std::cout << "lSpecFile " << spec_fname << " exists " << lSpecFile.exists() << std::endl; 
 
-    std::string   ref_fname = zorba::RBKT_SRC_DIR + "/ExpQueryResults/" 
+    std::string   ref_fname = rbkt_src_dir + "/ExpQueryResults/" 
                           + lQueryWithoutSuffix +".xml.res";
     std::cout << "lRefFile " << ref_fname << std::endl; 
 
@@ -266,7 +279,7 @@ main(int argc, char** argv)
     printFile(std::cout, lQueryFile.get_path());
     std::cout << std::endl;
 
-    if( i == 1 ) {  // Instantiate the store
+    if( testcnt == 1 ) {  // Instantiate the store
 #ifdef ZORBA_MINIMAL_STORE
       zorba::storeminimal::SimpleStore* store =
       zorba::storeminimal::SimpleStore::getInstance();
@@ -275,8 +288,10 @@ main(int argc, char** argv)
       zorba::simplestore::SimpleStoreManager::getStore();
 #endif
 
+      if (store == NULL) return 20;
       // Instantiate zorba query processor
       engine = zorba::Zorba::getInstance(store);
+      if (engine == NULL) return 21;
     }
 
     zorba::StaticContext_t lContext = engine->createStaticContext();
@@ -284,8 +299,8 @@ main(int argc, char** argv)
     std::string path = lQueryFile.get_path();
     zorba::TestSchemaURIResolver  * resolver = 0;
     zorba::TestModuleURIResolver  * mresolver = 0;
-    std::string uri_map_file = zorba::RBKT_SRC_DIR + "/Queries/uri.txt";
-    std::string mod_map_file = zorba::RBKT_SRC_DIR + "/Queries/module.txt";
+    std::string uri_map_file = rbkt_src_dir + "/Queries/uri.txt";
+    std::string mod_map_file = rbkt_src_dir + "/Queries/module.txt";
     if ( path.find ( "w3c_testsuite" ) != std::string::npos ) {
       resolver = new zorba::TestSchemaURIResolver ( uri_map_file.c_str() );
       mresolver = new zorba::TestModuleURIResolver ( mod_map_file.c_str() );
@@ -296,7 +311,7 @@ main(int argc, char** argv)
 
     // create and compile the query
     std::string lQueryString;
-    slurp_file(lQueryFile.get_path().c_str(), lQueryString);
+    slurp_file(lQueryFile.get_path().c_str(), lQueryString, rbkt_src_dir, rbkt_bin_dir);
     zorba::XQuery_t lQuery = engine->createQuery (&errHandler);
     lQuery->setFileName (lQueryFile.get_path ());
     lQuery->compile (lQueryString.c_str(), lContext, getCompilerHints());
@@ -330,7 +345,7 @@ main(int argc, char** argv)
         lDynCtxt->setImplicitTimezone(lTimezone);
       }
 
-      set_vars(&lSpec, lDynCtxt);
+      set_vars(&lSpec, lDynCtxt, rbkt_src_dir);
       if ( lSpec.hasInputQuery () ) {
 	const std::string & inputqueryfile = lSpec.getInputQueryFile ();
 	std::ifstream inputquery ( inputqueryfile.c_str() );

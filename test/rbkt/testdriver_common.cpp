@@ -38,8 +38,7 @@ void printFile(std::ostream& os, std::string aInFile)
 /*******************************************************************************
 
 ********************************************************************************/
-void slurp_file (const char *fname, std::string &result) 
-{
+void slurp_file (const char *fname, std::string &result, const std::string &rbkt_src_dir, const std::string &rbkt_bin_dir) {
   std::ifstream qfile(fname, std::ios::binary | std::ios_base::in);
   assert (qfile);
 
@@ -57,13 +56,13 @@ void slurp_file (const char *fname, std::string &result)
 
   if(sstr.find("$RBKT_SRC_DIR",0) != std::string::npos)
   {
-    std::string rbkt_src_uri = zorba::URI::encode_file_URI (zorba::RBKT_SRC_DIR)->str ();
+    std::string rbkt_src_uri = zorba::URI::encode_file_URI (rbkt_src_dir)->str ();
     zorba::str_replace_all(sstr, "$RBKT_SRC_DIR", rbkt_src_uri);
   }
 
   if(sstr.find("$RBKT_BINARY_DIR",0) != std::string::npos)
   {
-    std::string rbkt_bin_uri = zorba::URI::encode_file_URI(zorba::RBKT_BINARY_DIR)->str();
+    std::string rbkt_bin_uri = zorba::URI::encode_file_URI(rbkt_bin_dir)->str();
     zorba::str_replace_all(sstr, "$RBKT_BINARY_DIR", rbkt_bin_uri);
   }
 
@@ -244,9 +243,8 @@ zorba::Item createItem(std::string strValue)
   should be inlined or not
 ********************************************************************************/
 void
-set_var(bool inlineFile, std::string name, std::string val, zorba::DynamicContext* dctx)
-{
-  zorba::str_replace_all (val, "$RBKT_SRC_DIR", zorba::RBKT_SRC_DIR);
+set_var(bool inlineFile, std::string name, std::string val, zorba::DynamicContext* dctx, const std::string &rbkt_src_dir) {
+  zorba::str_replace_all (val, "$RBKT_SRC_DIR", rbkt_src_dir);
 
 #ifdef ZORBA_XQUERYX
   std::cout << "set_var " << name << " = " << val << std::endl;
@@ -281,11 +279,10 @@ set_var(bool inlineFile, std::string name, std::string val, zorba::DynamicContex
 /*******************************************************************************
 
 ********************************************************************************/
-void set_vars(Specification* aSpec, zorba::DynamicContext* dctx) 
-{
+void set_vars(Specification* aSpec, zorba::DynamicContext* dctx, const std::string &rbkt_src_dir) {
   std::vector<Specification::Variable>::const_iterator lIter;
   for (lIter = aSpec->variablesBegin(); lIter != aSpec->variablesEnd(); ++lIter)
   {
-    set_var((*lIter).theInline, (*lIter).theVarName, (*lIter).theVarValue, dctx);
+    set_var((*lIter).theInline, (*lIter).theVarName, (*lIter).theVarValue, dctx, rbkt_src_dir);
   }
 }

@@ -101,7 +101,7 @@ private:
 
 void printFile(std::ostream& os, std::string aInFile);
 
-void slurp_file (const char* fname, std::string& result);
+void slurp_file (const char* fname, std::string& result, const std::string &rbkt_src_dir, const std::string &rbkt_bin_dir);
 
 bool isErrorExpected(const TestErrorHandler& errHandler, const Specification* aSpec);
 
@@ -112,8 +112,8 @@ Zorba_CompilerHints getCompilerHints();
 zorba::Item createItem(std::string strValue);
 
 void
-set_var(bool inlineFile, std::string name, std::string val, zorba::DynamicContext* dctx);
+set_var(bool inlineFile, std::string name, std::string val, zorba::DynamicContext* dctx, const std::string &rbkt_src_dir);
 
-void set_vars(Specification* aSpec, zorba::DynamicContext* dctx);
+void set_vars(Specification* aSpec, zorba::DynamicContext* dctx, const std::string &rbkt_src_dir);
 
 #endif
