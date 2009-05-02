@@ -153,6 +153,7 @@ fileEquals(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, in
   std::string lLine, rLine;
   std::string xmldecl ( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
+  if (w3ctest) std::cout << "This is a w3c test.\n";
   aLine = 1; aCol = 0; aPos = -1;
   while (! li.eof() )
   {
@@ -168,6 +169,9 @@ fileEquals(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, in
     std::getline(ri, rLine);
     if ( w3ctest && (rLine.compare ( xmldecl ) == 0)  ) {
       std::getline ( ri, rLine );
+    }
+    if ( w3ctest && (lLine.compare ( xmldecl ) == 0)  ) {
+      std::getline ( li, lLine );
     }
     trim ( lLine );
     trim ( rLine );
