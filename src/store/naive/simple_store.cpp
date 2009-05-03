@@ -595,6 +595,15 @@ void SimpleStore::deleteDocument(const xqpStringStore_t& uri)
 
 
 /*******************************************************************************
+  Delete all the documents.
+********************************************************************************/
+void SimpleStore::deleteAllDocuments()
+{
+  theDocuments.clear();
+}
+
+
+/*******************************************************************************
   Compare two nodes, based on their node id. Return -1 if node1 < node2, 0, if
   node1 == node2, or 1 if node1 > node2.
 ********************************************************************************/

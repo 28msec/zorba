@@ -57,6 +57,8 @@ XmlTree::XmlTree(XmlNode* root, ulong id)
 
 void XmlTree::free() throw()
 {
+  //std::cout << "Deleting Xml Tree: " << this << std::endl;
+
   if (theRootNode != 0)
   {
     theRootNode->deleteTree();

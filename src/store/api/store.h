@@ -150,30 +150,34 @@ public:
   /**
    * Load a document to the store. The document is loaded from an input stream.
    *
-   * @param uri The uri of the document to load. This uri can be used to refer the document in the store.
-   * @return rchandle to the newly created document or NULL if a document
-   *         with the given uri exists already.
+   * @param uri The uri of the document to load. This uri can be used to refer
+   *        to the document in the store.
+   * @return rchandle to the newly created document or NULL if a document with
+   *         the given uri exists already.
    */
-  virtual Item_t loadDocument(const xqpStringStore_t& uri,
-                              std::istream& stream,
-                              bool storeDocument = true) = 0;
+  virtual Item_t loadDocument
+        (const xqpStringStore_t& uri,
+         std::istream& stream,
+         bool storeDocument = true) = 0;
 
   /**
    * Load a document to the store. The document is loaded from an input stream.
-     Do the lazy loading of document. The stream will be freed by Zorba when finished.
+   * Do the lazy loading of document. The stream will be freed by Zorba when finished.
    *
-   * @param uri The uri of the document to load. This uri can be used to refer the document in the store.
-   * @param stream User heap allocated stream. This will be freed by Zorba when finishing loading doc.
-   * @param storeDocument The optional parameter storeDocument specifies whether the document should
-   *                      be kept in the store (i.e. added to the set of documents)
-   * @return rchandle to the newly created document or NULL if a document
-   *         with the given uri exists already.
+   * @param uri The uri of the document to load. This uri can be used to refer to
+   *        the document in the store.
+   * @param stream User heap allocated stream. This will be freed by Zorba when
+   *        finishing loading doc.
+   * @param storeDocument The optional parameter storeDocument specifies whether
+   *        the document should be kept in the store (i.e. added to the set of
+   *        documents)
+   * @return rchandle to the newly created document or NULL if a document with
+   *         the given uri exists already.
    */
-  virtual Item_t loadDocument(const xqpStringStore_t& uri,
-                              std::istream* stream,
-                              bool storeDocument = true) = 0;
-
-  virtual void addNode(const xqpStringStore* uri, const Item_t& node) = 0;
+  virtual Item_t loadDocument(
+        const xqpStringStore_t& uri,
+        std::istream* stream,
+        bool storeDocument = true) = 0;
 
   /**
    * Get an rchandle to the root node of the document with the given uri.
@@ -189,6 +193,12 @@ public:
    */
   virtual void deleteDocument(const xqpStringStore_t& uri) = 0;
 		
+  /**
+   * Delete all the documents in the store
+   */
+  virtual void deleteAllDocuments() = 0;
+
+  virtual void addNode(const xqpStringStore* uri, const Item_t& node) = 0;
 
   /* ------------------------ Collection Management ---------------------------*/
 

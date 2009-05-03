@@ -17,7 +17,9 @@
 #include <simplestore/simplestore.h>
 #include "store/naive/simple_store.h"
 
-namespace zorba { namespace simplestore {
+namespace zorba { 
+
+namespace simplestore {
 
 SimpleStore*
 SimpleStoreManager::getStore()
