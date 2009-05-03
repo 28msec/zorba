@@ -8,8 +8,15 @@ use File::Path;
 use Cwd 'abs_path';
 use IO::Handle;
 
+sub usage {
+    print "Arguments: BUILD_DIR [--suite SUITE_DIR] [-b BUCKET] [-E EXCLUDE_PATTERN] [-R INCLUDE_PATTERN]\n";
+}
+
 my $rbktdir = `dirname $0`; chomp $rbktdir; $rbktdir = "$rbktdir/rbkt";
-my $builddir = shift; $builddir = abs_path ($builddir) || die $!;
+my $builddir = shift;
+if (! defined $builddir || ($builddir eq "-h") || ($builddir eq "--help"))
+{ usage; exit (1); }
+$builddir = abs_path ($builddir) || die $!;
 my $bucket = ".";
 my $exclude;
 my $include;
@@ -38,8 +45,8 @@ my @failed;
 my $testcnt = 0;
 
 sub finish {
-    print LOG "--- Testing interrupted\n";
     close LOG;
+    print "\n\n";
     if (@failed > 0) {
         print ("Failed tests:\n" . join ("\n", @failed) . "\n");
     } else {
@@ -62,7 +69,7 @@ sub ffun {
     print LOG "--- Start test $f\n";
     print LOG "Command: $cmd\n";
     close LOG;
-    my $rc = system ("$cmd >>$logfile");
+    my $rc = system ("$cmd >>$logfile 2>&1");
     open (LOG, ">>$logfile") || die $!;
     
     if (($rc & 127) == 2) {
@@ -83,6 +90,7 @@ sub ffun {
 $SIG{'INT'} = 'CLEANUP';
 sub CLEANUP {
     print "Signal 2\n";
+    print LOG "--- Testing interrupted\n";
     finish;
     exit (1);
 }
