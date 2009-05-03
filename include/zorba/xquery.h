@@ -267,7 +267,10 @@ namespace zorba {
       executeSAX() = 0;
 
       virtual double
-      getDocLoadingUserTime () = 0;
+      getDocLoadingUserTime() const = 0;
+
+      virtual long
+      getDocLoadingTime() const = 0;
 
       /** \brief Close the query and release all aquired ressources.
        *

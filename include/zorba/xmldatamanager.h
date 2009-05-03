@@ -122,6 +122,9 @@ namespace zorba {
       virtual bool
       deleteDocument(const String& aURI) = 0;
 
+      virtual void 
+      deleteAllDocuments() = 0;
+
       /** \brief Create a collection.
        *
        * @param aURI the URI of the collection to create.
