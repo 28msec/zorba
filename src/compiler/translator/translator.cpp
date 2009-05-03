@@ -2905,13 +2905,13 @@ void end_visit (const VarDecl& v, void* /*visit_state*/) {
       if (export_sctx != NULL)
         bind_var (ve, export_sctx);
     }
+#ifdef ZORBA_DEBUGGER
     theScopedVariables.push_back( ve );
+#endif
   }
   expr_t val = v.get_initexpr () == NULL ? expr_t(NULL) : pop_nodestack();
   if (v.is_global ()) {
     theGlobalVars.push_back(global_binding(ve, val, v.is_extern ()));
-#ifdef ZORBA_DEBUGGER
-#endif
   } else {
     nodestack.push (ve.cast<expr> ());
     nodestack.push (val);
