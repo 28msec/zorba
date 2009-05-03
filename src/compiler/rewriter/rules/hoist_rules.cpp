@@ -315,11 +315,11 @@ static expr_t try_hoisting(
     {
       h->flwor = new flwor_expr(e->get_loc(), false);
     }
-    h->flwor->addClause(flref);
+    h->flwor->add_clause(flref);
   }
   else 
   {
-    h->flwor->addClause(i + 1, flref);
+    h->flwor->add_clause(i + 1, flref);
     ++h->clause_count;
   }
 

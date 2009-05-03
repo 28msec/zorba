@@ -131,6 +131,7 @@ bool FnResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END (state);
 }
 
+
 bool SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   PlanIteratorState *state;
   rchandle<store::PUL> lPul;
@@ -154,6 +155,7 @@ bool SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
   STACK_END (state);
 }
+
 
 bool FlowCtlIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   PlanIteratorState *state;

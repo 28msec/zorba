@@ -90,7 +90,7 @@ void PULImpl::addDelete(store::Item_t& target)
 {
   XmlNode* n = BASE_NODE(target);
 
-  NodeUpdates* updates;
+  NodeUpdates* updates = NULL;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
   if (!found)
@@ -315,7 +315,7 @@ void PULImpl::addReplaceContent(
 {
   XmlNode* n = BASE_NODE(target);
 
-  NodeUpdates* updates;
+  NodeUpdates* updates = NULL;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
   if (!found)
@@ -351,7 +351,7 @@ void PULImpl::addReplaceValue(store::Item_t& target, xqpStringStore_t& newValue)
   XmlNode* n = BASE_NODE(target);
   store::StoreConsts::NodeKind targetKind = n->getNodeKind();
 
-  NodeUpdates* updates;
+  NodeUpdates* updates = NULL;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
   UpdatePrimitive* upd;
@@ -407,7 +407,7 @@ void PULImpl::addRename(store::Item_t& target, store::Item_t& newName)
   XmlNode* n = BASE_NODE(target);
   store::StoreConsts::NodeKind targetKind = n->getNodeKind();
 
-  NodeUpdates* updates;
+  NodeUpdates* updates = NULL;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
   UpdatePrimitive* upd;
@@ -751,7 +751,7 @@ void PULImpl::mergeUpdateList(
     else
       target = BASE_NODE(upd->theTarget);
 
-    NodeUpdates* targetUpdates;
+    NodeUpdates* targetUpdates = NULL;
     bool found = (target == NULL ?
                   false : 
                   theNodeToUpdatesMap.get(target, targetUpdates));

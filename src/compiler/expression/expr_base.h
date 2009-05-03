@@ -84,12 +84,22 @@ class expr_iterator_data;
 class expr_iterator;
 
 
+/*******************************************************************************
+
+  A class to iterate over the subexpressions of an expr. 
+
+  Each actual instance of the abstract expr class has its own way of storing
+  pointers to its subexpressions. So, to make expr_iterator work with any
+  kind of expr, the actual work of expr_iterator is done by an actual instance
+  of expr_iterator_data (there is a subclass of expr_iterator_data for each
+  kind of expr).
+
+********************************************************************************/
 class expr_iterator 
 {
+private:
   // should be an auto_ptr, but older gcc's don't like auto_ptr w/ forward decl
   expr_iterator_data *iter;
-  // comparisson forbidden; use done()
-  bool operator== (const expr_iterator &other) { return false; }
 
 public:
   expr_iterator () : iter (0) {}
@@ -102,14 +112,16 @@ public:
   expr_iterator operator++ (int);
   expr_t &operator* ();
   bool done () const;
+
+private:
+  // comparisson forbidden; use done()
+  bool operator== (const expr_iterator &other) { return false; }
 };
 
 
-/*______________________________________________________________________
- |  
- | base class for the expression tree node hierarchy
- |_______________________________________________________________________*/
-
+/*******************************************************************************
+  Base class for the expression tree node hierarchy
+********************************************************************************/
 class expr : public SimpleRCObject, public AnnotationHolder 
 {
 public:
@@ -142,22 +154,14 @@ protected:
   // iterators are compliant.
   virtual bool cache_compliant () { return false; }
 
-protected:
-  virtual expr_iterator_data *make_iter ();
-  
-protected:
-  expr(const QueryLoc&);
-
 public:
   virtual ~expr();
 
   virtual expr_kind_t get_expr_kind () const = 0;
 
-public:
   const QueryLoc &get_loc() const { return loc; }
   void set_loc(const QueryLoc& aLoc) { loc = aLoc; }
 
-public:
   virtual expr_iterator expr_begin ();
   virtual void accept(expr_visitor&);
   virtual void accept_children(expr_visitor &v);
@@ -171,25 +175,35 @@ public:
   expr_t clone();
   virtual expr_t clone(substitution_t& substitution);
 
-  virtual bool is_updating() { return false; }
+  virtual bool is_updating() const { return false; }
+
+protected:
+  expr(const QueryLoc&);
+
+  virtual expr_iterator_data *make_iter ();
 };
 
 
+/*******************************************************************************
+  Base class for iterators that iterate over the subexpressions of a given expr.
+
+  Notice that theCurrentSubexpr is a pointer to expr_t.
+********************************************************************************/
 class expr_iterator_data 
 {
 protected:
-  expr   * e;
+  expr   * theExpr;
   
 public:
   expr_t * i;
   int      state;
   
 public:
-  expr_iterator_data (expr *e_) : e (e_), i (NULL), state (0) {}
+  expr_iterator_data (expr* e) : theExpr(e), i(NULL), state(0) {}
 
   virtual ~expr_iterator_data () {}
 
-  virtual void next () { e->next_iter (*this); }
+  virtual void next () { theExpr->next_iter (*this); }
 
   bool done () const;
 };

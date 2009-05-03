@@ -68,9 +68,16 @@ xqpStringStore_t QNameItemImpl::theEmptyPrefix(new xqpStringStore(""));
 
 QNameItemImpl::~QNameItemImpl() 
 {
-  if (isValid() && !isNormalized())
+  if (isValid())
   {
-    unsetNormalized();
+    if (isNormalized())
+    {
+      unsetLocal();
+    }
+    else
+    {
+      unsetNormalized();
+    }
   }
 }
 
@@ -81,28 +88,44 @@ void QNameItemImpl::free()
 }
 
 
+void QNameItemImpl::setLocal(xqpStringStore* local)  
+{
+  assert(theUnion.theLocal == NULL);
+
+  theUnion.theLocal = local;
+  local->addReference(NULL SYNC_PARAM2(local->getRCLock()));
+}
+
+
+void QNameItemImpl::unsetLocal()  
+{
+  assert(theUnion.theLocal != NULL && isNormalized());
+
+  theUnion.theLocal->removeReference(NULL SYNC_PARAM2(theUnion.theLocal->getRCLock()));
+  theUnion.theLocal = NULL;
+}
+
+
 void QNameItemImpl::setNormalized(QNameItemImpl* qn)  
 {
-  assert(theLocal == NULL);
+  assert(theUnion.theNormQN == NULL);
 
-  *reinterpret_cast<QNameItemImpl**>(&theLocal) = qn;
+  theUnion.theNormQN = qn;
   qn->addReference(NULL SYNC_PARAM2(qn->getRCLock()));
 }
 
 
 void QNameItemImpl::unsetNormalized()  
 {
-  assert(theLocal != NULL && !isNormalized());
+  assert(theUnion.theNormQN != NULL && !isNormalized());
 
-  QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(theLocal.getp());
-  qn->removeReference(NULL SYNC_PARAM2(qn->getRCLock()));
-  theLocal.setNull();
+  theUnion.theNormQN->removeReference(NULL SYNC_PARAM2(theUnion.theNormQN->getRCLock()));
+  theUnion.theNormQN = NULL;
 }
 
 
 uint32_t QNameItemImpl::hash(long timezone, const XQPCollator* aCollation) const
 {
-  //return (uint32_t)getNormalized();
   const void* tmp = getNormalized();
   return hashfun::h32(tmp, FNV_32_INIT);
 }

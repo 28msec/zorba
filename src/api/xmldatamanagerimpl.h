@@ -48,17 +48,11 @@ class XmlDataManagerImpl : public XmlDataManager
   Item
   parseDocument(std::istream& aStream);
 
-  Item 
-  loadDocument(const String& uri, std::istream& stream);
-
-  Item 
-  loadDocument(const String& uri, std::istream& stream, ErrorHandler* aErrorHandler);
-
   Item
   loadDocument(const String& local_file_uri);
 
-  Item
-  loadDocument(const String& local_file_uri, ErrorHandler* aErrorHandler);
+  Item 
+  loadDocument(const String& uri, std::istream& stream);
 
   Item
   loadDocumentFromUri(const String& aUri);
@@ -74,6 +68,9 @@ class XmlDataManagerImpl : public XmlDataManager
 
   bool
   deleteDocument(const String& uri, ErrorHandler* aErrorHandler);
+
+  void 
+  deleteAllDocuments();
 
   Collection_t
   createCollection(const String& uri);
@@ -108,3 +105,9 @@ class XmlDataManagerImpl : public XmlDataManager
 
 } /* namespace zorba */
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

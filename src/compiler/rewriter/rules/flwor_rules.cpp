@@ -200,7 +200,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
           if (is_trivial_expr(domainExpr)) 
           {
             subst_vars(rCtx, node, var, domainExpr);
-            MODIFY(flwor.remove_forlet_clause(i));
+            MODIFY(flwor.remove_clause(i));
             --numClauses;
             --numForLetClauses;
           }
@@ -216,7 +216,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
             if (is_trivial_expr(domainExpr) || safe_to_fold_single_use(var, flwor, sctx))
             {
               subst_vars(rCtx, node, var, domainExpr);
-              MODIFY(flwor.remove_forlet_clause(i));
+              MODIFY(flwor.remove_clause(i));
               --numClauses;
               --numForLetClauses;
             }
@@ -230,7 +230,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
             if (domainExpr->get_annotation(AnnotationKey::NONDISCARDABLE_EXPR) !=
                 TSVAnnotationValue::TRUE_VAL)
             {
-              MODIFY(flwor.remove_forlet_clause(i));
+              MODIFY(flwor.remove_clause(i));
               --numClauses;
               --numForLetClauses;
             }

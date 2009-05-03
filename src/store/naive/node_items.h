@@ -1109,3 +1109,9 @@ public:
 #endif//#ifdef ZORBA_STORE_MSDOM
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

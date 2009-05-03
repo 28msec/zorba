@@ -84,7 +84,8 @@ XQueryImpl::XQueryImpl()
   theUserErrorHandler(false),
   theSAX2Handler(0),
   theIsClosed(false),
-  theDocLoadingUserTime (0.0)
+  theDocLoadingUserTime(0.0),
+  theDocLoadingTime(0)
 #ifdef ZORBA_DEBUGGER
   , theDebugger(0)
   , theProfileName("xquery_profile.out")
@@ -376,6 +377,8 @@ XQueryImpl::executeSAX()
   }
 
   theDocLoadingUserTime = lPlan->getRuntimeCB ()->docLoadingUserTime;
+  theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
+
   lPlan->close();
   //SAX2_XMLReaderNative xmlreader( theSAXHandler, 0, 0, 0, 0 );
   //xmlreader.parse( this, theErrorHandler );
@@ -579,6 +582,8 @@ XQueryImpl::serialize(std::ostream& os, const Zorba_SerializerOptions_t* opt)
     }
 
     theDocLoadingUserTime = lPlan->getRuntimeCB ()->docLoadingUserTime;
+    theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
+
     lPlan->close();
   ZORBA_CATCH
 }
@@ -634,7 +639,9 @@ XQueryImpl::applyUpdates()
       throw;
     }
 
-    theDocLoadingUserTime = lPlan->getRuntimeCB ()->docLoadingUserTime;
+    theDocLoadingUserTime = lPlan->getRuntimeCB()->docLoadingUserTime;
+    theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
+
     lPlan->close();
   ZORBA_CATCH
 }
@@ -797,10 +804,18 @@ XQueryImpl::checkNotCompiled() const
 }
 
 double
-XQueryImpl::getDocLoadingUserTime ()
+XQueryImpl::getDocLoadingUserTime() const
 {
   return theDocLoadingUserTime;
 }
+
+
+long
+XQueryImpl::getDocLoadingTime() const
+{
+  return theDocLoadingTime;
+}
+
 
 
 #ifdef ZORBA_DEBUGGER

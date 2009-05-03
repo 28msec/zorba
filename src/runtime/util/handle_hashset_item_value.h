@@ -19,7 +19,9 @@
 #include "zorbautils/hashset.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/api/runtimecb.h"
+
 #include "context/dynamic_context.h"
+#include "context/collation_cache.h"
 
 namespace zorba 
 { 

@@ -130,7 +130,7 @@ RULE_REWRITE_PRE(ExpandBuildIndex)
       flwor->set_return_expr(ret_expr);
       for (unsigned i = 0; i < clauses.size(); ++i)
       {
-        flwor->addClause(clauses[i]);
+        flwor->add_clause(clauses[i]);
       }
       se_args.push_back(flwor.getp());
 

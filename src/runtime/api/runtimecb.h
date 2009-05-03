@@ -29,16 +29,18 @@ namespace store
 class static_context;
 class dynamic_context;
 class CollationCache;
-  
+ 
 
-class RuntimeCB {
+class RuntimeCB 
+{
 public:
   RuntimeCB()
     :
     theStaticContext(0),
     theDynamicContext(0),
     theCollationCache(0),
-    docLoadingUserTime (0.0)
+    docLoadingUserTime(0.0),
+    docLoadingTime(0)
   {
   }
 
@@ -48,6 +50,7 @@ public:
   CollationCache           * theCollationCache;
 
   double                     docLoadingUserTime;
+  long                       docLoadingTime;
 
   std::stack<store::Item*>   theNodeConstuctionPath;
 };

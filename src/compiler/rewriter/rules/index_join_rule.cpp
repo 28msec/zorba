@@ -335,22 +335,22 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   //
   if (outerSeqExpr == NULL)
   {
-    fo_expr* foExpr = new fo_expr(loc, LOOKUP_OPN ("concatenate"));
+    sequential_expr* seqExpr = new sequential_expr(loc);
     
-    foExpr->add(createExpr.getp());
-    foExpr->add(buildExpr.getp());
-    foExpr->add(outerFlworExpr);
+    seqExpr->push_back(createExpr.getp());
+    seqExpr->push_back(buildExpr.getp());
+    seqExpr->push_back(outerFlworExpr);
 
-    outerSeqExpr = foExpr;
-    assert (outerExprPos >= 0);
+    outerSeqExpr = seqExpr;
+    assert(outerExprPos >= 0);
     rCtx.m_flwor_exprs[outerExprPos] = outerSeqExpr;
   }
   else
   {
-    fo_expr* foExpr = reinterpret_cast<fo_expr*>(outerSeqExpr.getp());
+    sequential_expr* seqExpr = reinterpret_cast<sequential_expr*>(outerSeqExpr.getp());
 
-    foExpr->addFront(createExpr.getp());
-    foExpr->addFront(buildExpr.getp());
+    seqExpr->push_front(createExpr.getp());
+    seqExpr->push_front(buildExpr.getp());
   }
 
   //

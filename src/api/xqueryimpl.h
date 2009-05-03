@@ -33,9 +33,10 @@ namespace zorba {
 #ifdef ZORBA_DEBUGGER
 class ZorbaDebugger;
 #endif
-  class DynamicContextImpl;
-  class StaticContextImpl;
-  class ResultIteratorImpl;
+class DynamicContextImpl;
+class StaticContextImpl;
+class ResultIteratorImpl;
+
 
 /*******************************************************************************
 
@@ -161,7 +162,8 @@ class XQueryImpl : public XQuery
 
   SYNC_CODE(mutable Mutex          theCloningMutex;)
 
-  double theDocLoadingUserTime;
+  double                           theDocLoadingUserTime;
+  long                             theDocLoadingTime;
 
  public:
   virtual ~XQueryImpl();
@@ -229,7 +231,10 @@ class XQueryImpl : public XQuery
   void executeSAX();
 
   virtual double
-  getDocLoadingUserTime ();
+  getDocLoadingUserTime() const;
+
+  long
+  getDocLoadingTime() const;
 
   void
   close();

@@ -217,13 +217,18 @@ bool Duration::isZero() const
 int Duration::compare(const Duration& d, bool ignore_sign) const
 {
   for (int i=0; i<=FRACSECONDS_DATA; i++)
-    if ( (is_negative && !ignore_sign ? -1 : 1)*data[i] > (d.is_negative && !ignore_sign? -1 : 1)*d.data[i])
+  {
+    if ( (is_negative && !ignore_sign ? -1 : 1) * data[i] >
+         (d.is_negative && !ignore_sign ? -1 : 1) * d.data[i])
       return 1;
-    else if ((is_negative && !ignore_sign? -1 : 1)*data[i] < (d.is_negative && !ignore_sign? -1 : 1)*d.data[i])
+
+    else if ((is_negative && !ignore_sign ? -1 : 1) * data[i] <
+             (d.is_negative && !ignore_sign? -1 : 1) * d.data[i])
       return -1;
-  
+  }
   return 0;
 }
+
 
 Duration* Duration::operator+(const Duration& d) const
 {

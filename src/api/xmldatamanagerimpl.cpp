@@ -101,14 +101,6 @@ void XmlDataManagerImpl::registerErrorHandler(ErrorHandler* aErrorHandler)
 
 
 Item
-XmlDataManagerImpl::loadDocument(
-    const String& uri,
-    std::istream& stream)
-{
-  return loadDocument(uri, stream, theErrorHandler);
-}
-
-Item
 XmlDataManagerImpl::parseDocument(std::istream& aStream)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
@@ -124,11 +116,30 @@ XmlDataManagerImpl::parseDocument(std::istream& aStream)
 
 
 Item
-XmlDataManagerImpl::loadDocument(
-    const String& uri,
-    std::istream& stream,
-    ErrorHandler* aErrorHandler)
+XmlDataManagerImpl::loadDocument(const String& local_file_uri)
 {
+  ErrorHandler* aErrorHandler = NULL;
+
+  SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
+
+  ZORBA_DM_TRY
+  {
+    xqpStringStore* lString = Unmarshaller::getInternalString(local_file_uri);
+
+    std::ifstream lFileIn(lString->c_str());
+
+    return loadDocument(local_file_uri, lFileIn);
+  }
+  ZORBA_DM_CATCH
+  return Item();
+}
+
+
+Item
+XmlDataManagerImpl::loadDocument(const String& uri, std::istream& stream)
+{
+  ErrorHandler* aErrorHandler = NULL;
+
   SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
 
   ZORBA_DM_TRY
@@ -145,32 +156,6 @@ XmlDataManagerImpl::loadDocument(
   return Item(); 
 }
 
-
-Item
-XmlDataManagerImpl::loadDocument(const String& local_file_uri)
-{
-  return loadDocument(local_file_uri, (ErrorHandler*)NULL);
-}
-
-
-Item
-XmlDataManagerImpl::loadDocument(
-    const String& local_file_uri,
-    ErrorHandler* aErrorHandler)
-{
-  SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
-
-  ZORBA_DM_TRY
-  {
-    xqpStringStore* lString = Unmarshaller::getInternalString(local_file_uri);
-
-    std::ifstream lFileIn(lString->c_str());
-
-    return loadDocument(local_file_uri, lFileIn, aErrorHandler);
-  }
-  ZORBA_DM_CATCH
-  return Item();
-}
 
 Item
 XmlDataManagerImpl::loadDocumentFromUri(const String& aUri)
@@ -246,6 +231,20 @@ XmlDataManagerImpl::deleteDocument(const String& uri, ErrorHandler* aErrorHandle
   }
   ZORBA_DM_CATCH
   return false;
+}
+
+
+void XmlDataManagerImpl::deleteAllDocuments()
+{
+  ErrorHandler* aErrorHandler = NULL;
+
+  SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
+
+  ZORBA_DM_TRY
+  {
+    theStore->deleteAllDocuments();
+  }
+  ZORBA_DM_CATCH
 }
 
 

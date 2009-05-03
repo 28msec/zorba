@@ -22,22 +22,30 @@
 
 namespace zorba {
 
-class AnnotationHolder {
-  public:
-    AnnotationHolder() : theUpdateType(SIMPLE_EXPR) {}
-    virtual ~AnnotationHolder() { }
-    void put_annotation(Annotation::key_t key, Annotation::value_ref_t annot);
-    const Annotation::value_ref_t get_annotation(Annotation::key_t key) const;
-    void remove_annotation(Annotation::key_t key);
+class AnnotationHolder 
+{
+public:
+  AnnotationHolder() : theUpdateType(SIMPLE_EXPR) {}
 
-    bool isUpdating() const { return theUpdateType == UPDATE_EXPR; }
-    expr_update_t getUpdateType() const { return theUpdateType; } 
-    void setUpdateType(expr_update_t aUpdateType) { theUpdateType = aUpdateType; }
+  virtual ~AnnotationHolder() { }
 
-  protected:
-    typedef std::map<Annotation::key_t, Annotation::value_ref_t> annotations_t;
-    annotations_t m_annotations;
-    expr_update_t theUpdateType;
+  void put_annotation(Annotation::key_t key, Annotation::value_ref_t annot);
+
+  const Annotation::value_ref_t get_annotation(Annotation::key_t key) const;
+
+  void remove_annotation(Annotation::key_t key);
+
+  bool isUpdating() const { return theUpdateType == UPDATE_EXPR; }
+
+  expr_update_t getUpdateType() const { return theUpdateType; } 
+
+  void setUpdateType(expr_update_t aUpdateType) { theUpdateType = aUpdateType; }
+
+protected:
+  typedef std::map<Annotation::key_t, Annotation::value_ref_t> annotations_t;
+
+  annotations_t m_annotations;
+  expr_update_t theUpdateType;
 };
 
 }

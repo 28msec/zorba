@@ -68,8 +68,9 @@ QNamePool::~QNamePool()
     {
       QNameItemImpl* qn = theHashSet.theHashTab[i].theItem;
 
+      // Make sure that the associated normalized QN will not be destroyed here
       if (!qn->isNormalized())
-        qn->theLocal.setNull();
+        qn->detachNormalized();
 
       if (theHashSet.theHashTab[i].theItem->isOverflow())
         delete theHashSet.theHashTab[i].theItem;
@@ -163,7 +164,7 @@ retry:
 
         qn->theNamespace.transfer(pooledNs);
         qn->thePrefix = QNameItemImpl::theEmptyPrefix;
-        qn->theLocal = new xqpStringStore(ln);
+        qn->setLocal(new xqpStringStore(ln));
       }
       else
       {
@@ -228,7 +229,7 @@ store::Item_t QNamePool::insert(
     const xqpStringStore_t& ln,
     bool                    sync)
 {
-  QNameItemImpl* qn;
+  QNameItemImpl* qn = NULL;
   QNameItemImpl* normVictim = NULL;
   SYNC_CODE(bool haveLock = false;)
   store::Item_t normItem;
@@ -259,7 +260,7 @@ retry:
 
         qn->theNamespace.transfer(pooledNs);
         qn->thePrefix = QNameItemImpl::theEmptyPrefix;
-        qn->theLocal = ln;
+        qn->setLocal(ln.getp());
       }
       else
       {
@@ -352,9 +353,9 @@ QNameItemImpl* QNamePool::cacheInsert(QNameItemImpl*& normVictim)
       }
       else
       {
-        // Set qn->theLocal so that the assertion in setNormalized() (which is
+        // Unset qn->theLocal so that the assertion in setNormalized() (which is
         // invoked later by the caller of this method) will not trigger.
-        qn->theLocal = NULL;
+        qn->unsetLocal();
       }
     }
 

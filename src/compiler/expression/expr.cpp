@@ -296,12 +296,12 @@ void expr::accept_children (expr_visitor &v)
  
 expr_t expr::clone()
 {
-  substitution_t s;
-  return clone(s);
+  substitution_t subst;
+  return clone(subst);
 }
 
 
-expr_t expr::clone(substitution_t& substitution)
+expr_t expr::clone(substitution_t& subst)
 {
   ZORBA_ERROR_LOC (XQP0019_INTERNAL_ERROR, get_loc ());
   return NULL; // Make the compiler happy
@@ -329,7 +329,7 @@ expr_t expr::clone(substitution_t& substitution)
     END_EXPR_ITER ();
   }
 
-  bool sequential_expr::is_updating () {
+  bool sequential_expr::is_updating() const {
     return sequence.size () == 0 ? false : sequence [sequence.size () - 1]->is_updating ();
   }
 
@@ -346,10 +346,10 @@ expr_t expr::clone(substitution_t& substitution)
   END_EXPR_ITER ();
   }
 
-  expr_t sequential_expr::clone(substitution_t& s) {
+  expr_t sequential_expr::clone(substitution_t& subst) {
     vector<expr_t> seq2;
     for (unsigned i = 0; i < sequence.size (); i++)
-      seq2.push_back (sequence [i]->clone (s));
+      seq2.push_back (sequence [i]->clone (subst));
     return new sequential_expr (get_loc (), seq2);
   }
 
@@ -449,13 +449,16 @@ void var_expr::next_iter(expr_iterator_data& v)
 }
 
 
-expr::expr_t var_expr::clone(expr::substitution_t& substitution)
+expr::expr_t var_expr::clone(expr::substitution_t& subst)
 {
-  expr::subst_iter_t i = substitution.find(this);
-  if (i == substitution.end()) {
+  expr::subst_iter_t i = subst.find(this);
+
+  if (i == subst.end()) 
+  {
     return this;
   }
-  return i->second->clone(substitution);
+
+  return i->second->clone(subst);
 }
 
 
@@ -515,6 +518,13 @@ forletwin_clause::forletwin_clause(
 }
 
 
+forletwin_clause::~forletwin_clause()
+{
+  if (theVarExpr != NULL)
+    theVarExpr->set_flwor_clause(NULL);
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -539,6 +549,38 @@ for_clause::for_clause(
 
 for_clause::~for_clause() 
 {
+  if (thePosVarExpr != NULL)
+    thePosVarExpr->set_flwor_clause(NULL);
+
+  if (theScoreVarExpr != NULL)
+    theScoreVarExpr->set_flwor_clause(NULL);
+}
+
+
+flwor_clause_t for_clause::clone(expr::substitution_t& subst)
+{
+  expr_t domainCopy = theDomainExpr->clone(subst);
+
+  varref_t varCopy(new var_expr(*theVarExpr));
+  subst[theVarExpr.getp()] = varCopy.getp();
+
+  varref_t posvarCopy;
+  var_expr *pos_var_ptr = thePosVarExpr.getp();
+  if (pos_var_ptr) 
+  {
+    posvarCopy = new var_expr(*pos_var_ptr);
+    subst[pos_var_ptr] = posvarCopy.getp();
+  }
+
+  varref_t scorevarCopy;
+  var_expr* score_var_ptr = theScoreVarExpr.getp();
+  if (score_var_ptr) 
+  {
+    scorevarCopy = new var_expr(*score_var_ptr);
+    subst[score_var_ptr] = scorevarCopy.getp();
+  }
+
+  return new for_clause(get_loc(), varCopy, domainCopy, posvarCopy, scorevarCopy);
 }
 
 
@@ -561,6 +603,27 @@ let_clause::let_clause(
 
 let_clause::~let_clause() 
 {
+  if (theScoreVarExpr != NULL)
+    theScoreVarExpr->set_flwor_clause(NULL);
+}
+
+
+flwor_clause_t let_clause::clone(expr::substitution_t& subst)
+{
+  expr_t domainCopy = theDomainExpr->clone(subst);
+
+  varref_t varCopy(new var_expr(*theVarExpr));
+  subst[theVarExpr.getp()] = varCopy.getp();
+
+  varref_t scorevarCopy;
+  var_expr* score_var_ptr = theScoreVarExpr.getp();
+  if (score_var_ptr) 
+  {
+    scorevarCopy = new var_expr(*score_var_ptr);
+    subst[score_var_ptr] = scorevarCopy.getp();
+  }
+
+  return new let_clause(get_loc(), varCopy, domainCopy, scorevarCopy);
 }
 
 
@@ -569,9 +632,9 @@ let_clause::~let_clause()
 ********************************************************************************/
 window_clause::window_clause(
     const QueryLoc& loc,
+    window_t winKind,
     varref_t varExpr,
     expr_t domainExpr,
-    window_t winKind,
     flwor_wincond_t winStart,
     flwor_wincond_t winStop)
   :
@@ -598,6 +661,31 @@ window_clause::~window_clause()
 }
 
 
+flwor_clause_t window_clause::clone(expr::substitution_t& subst)
+{
+  expr_t domainCopy = theDomainExpr->clone(subst);
+
+  varref_t varCopy(new var_expr(*theVarExpr));
+  subst[theVarExpr.getp()] = varCopy.getp();
+
+  flwor_wincond_t cloneStartCond;
+  flwor_wincond_t cloneStopCond;
+
+  if (theWinStartCond != NULL)
+    cloneStartCond = theWinStartCond->clone(subst);
+
+  if (theWinStopCond != NULL)
+    cloneStopCond = theWinStopCond->clone(subst);
+
+  return new window_clause(get_loc(),
+                           theWindowKind,
+                           varCopy,
+                           domainCopy,
+                           cloneStartCond,
+                           cloneStopCond);
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -610,10 +698,148 @@ void flwor_wincond::vars::set_flwor_clause(flwor_clause* c)
 }
 
 
+void flwor_wincond::vars::clone(
+    flwor_wincond::vars& cloneVars,
+    expr::substitution_t& subst) 
+{
+  if (posvar != NULL)
+  {
+    varref_t varCopy(new var_expr(*posvar));
+    subst[posvar.getp()] = varCopy.getp();
+    cloneVars.posvar = varCopy;
+  }
+ 
+  if (curr != NULL) 
+  {
+    varref_t varCopy(new var_expr(*curr));
+    subst[curr.getp()] = varCopy.getp();
+    cloneVars.curr = varCopy;
+  }
+
+  if (prev != NULL) 
+  {
+    varref_t varCopy(new var_expr(*prev));
+    subst[prev.getp()] = varCopy.getp();
+    cloneVars.prev = varCopy;
+  }
+
+  if (next != NULL)
+  {
+    varref_t varCopy(new var_expr(*next));
+    subst[next.getp()] = varCopy.getp();
+    cloneVars.next = varCopy;
+  }
+}
+
+
 void flwor_wincond::set_flwor_clause(flwor_clause* c) 
 {
   theInputVars.set_flwor_clause(c);
   theOutputVars.set_flwor_clause(c);
+}
+
+
+flwor_wincond_t flwor_wincond::clone(expr::substitution_t& subst)
+{
+  flwor_wincond::vars cloneInVars;
+  flwor_wincond::vars cloneOutVars;
+
+  theInputVars.clone(cloneInVars, subst);
+  theOutputVars.clone(cloneOutVars, subst);
+
+  expr_t cloneCondExpr = theCondExpr->clone(subst);
+
+  return new flwor_wincond(theIsOnly, cloneInVars, cloneOutVars, cloneCondExpr);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+group_clause::~group_clause()
+{
+  ulong numGVars = theGroupVars.size();
+  ulong numNGVars = theNonGroupVars.size();
+  
+  for (ulong i = 0; i < numGVars; ++i)
+    theGroupVars[i].second->set_flwor_clause(NULL);
+
+  for (ulong i = 0; i < numNGVars; ++i)
+    theNonGroupVars[i].second->set_flwor_clause(NULL);
+}
+
+
+flwor_clause_t group_clause::clone(expr::substitution_t& subst)
+{
+  ulong numGroupVars = theGroupVars.size();
+  ulong numNonGroupVars = theNonGroupVars.size();
+
+  rebind_list_t cloneGroupVars(numGroupVars);
+  rebind_list_t cloneNonGroupVars(numNonGroupVars);
+
+  for (ulong i = 0; i < numGroupVars; ++i)
+  {
+    cloneGroupVars[i].first = theGroupVars[i].first->clone(subst);
+    cloneGroupVars[i].second = new var_expr(*theGroupVars[i].second);
+    subst[theGroupVars[i].second.getp()] = cloneGroupVars[i].second.getp();
+  }
+
+  for (ulong i = 0; i < numNonGroupVars; ++i)
+  {
+    cloneNonGroupVars[i].first = theNonGroupVars[i].first->clone(subst);
+    cloneNonGroupVars[i].second = new var_expr(*theNonGroupVars[i].second);
+    subst[theNonGroupVars[i].second.getp()] = cloneNonGroupVars[i].second.getp();
+  }
+
+  return new group_clause(get_loc(), cloneGroupVars, cloneNonGroupVars, theCollations);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+flwor_clause_t orderby_clause::clone(expr::substitution_t& subst)
+{
+  ulong numColumns = num_columns();
+
+  std::vector<expr_t> cloneExprs(numColumns);
+
+  for (ulong i = 0; i < numColumns; ++i)
+  {
+    cloneExprs[i] = theOrderingExprs[i]->clone(subst);
+  }
+
+  return new orderby_clause(get_loc(), theStableOrder, theModifiers, cloneExprs);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+count_clause::~count_clause()
+{
+  if (theVarExpr != NULL)
+    theVarExpr->set_flwor_clause(NULL);
+}
+
+
+flwor_clause_t count_clause::clone(expr::substitution_t& subst)
+{
+  varref_t cloneVar = new var_expr(*theVarExpr);
+  subst[theVarExpr.getp()] = cloneVar;
+
+  return new count_clause(get_loc(), cloneVar);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+flwor_clause_t where_clause::clone(expr::substitution_t& subst)
+{
+  expr_t cloneExpr = theWhereExpr->clone(subst);
+
+  return new where_clause(get_loc(), cloneExpr);
 }
 
 
@@ -641,15 +867,15 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-void flwor_expr::addClause(flwor_clause* c) 
+void flwor_expr::add_clause(flwor_clause* c) 
 {
   theClauses.push_back(c);
 }
 
 
-void flwor_expr::addClause(int idx, flwor_clause* c) 
+void flwor_expr::add_clause(ulong pos, flwor_clause* c) 
 {
-  theClauses.insert(theClauses.begin() + idx, c);
+  theClauses.insert(theClauses.begin() + pos, c);
 }
 
 
@@ -754,25 +980,9 @@ ulong flwor_expr::num_forlet_clauses()
 }
 
 
-void flwor_expr::remove_forlet_clause(ulong i) 
+void flwor_expr::remove_clause(ulong pos) 
 {
-  if (theClauses[i]->get_kind() == flwor_clause::for_clause)
-  {
-    for_clause* c = reinterpret_cast<for_clause*>(theClauses[i].getp());
-
-    c->get_var()->set_flwor_clause(NULL);
-    var_expr* pvar = c->get_pos_var();
-    if (pvar != NULL)
-      pvar->set_flwor_clause(NULL);
-  }
-  else
-  {
-    let_clause* c = reinterpret_cast<let_clause*>(theClauses[i].getp());
-
-    c->get_var()->set_flwor_clause(NULL);
-  }
-
-  theClauses.erase(theClauses.begin() + i);
+  theClauses.erase(theClauses.begin() + pos);
 }
 
 
@@ -848,6 +1058,25 @@ long flwor_expr::defines_variable(const var_expr* v, const flwor_clause* limit) 
   }
 
   return -1;
+}
+
+
+expr_t flwor_expr::clone(substitution_t& subst)
+{
+  ulong numClauses = num_clauses();
+
+  flwor_expr_t cloneFlwor = new flwor_expr(get_loc(), theIsGeneral);
+
+  for (ulong i = 0; i < numClauses; ++i) 
+  {
+    flwor_clause_t cloneClause = theClauses[i]->clone(subst);
+
+    cloneFlwor->add_clause(cloneClause.getp());
+  }
+
+  cloneFlwor->set_return_expr(theReturnExpr->clone(subst));
+
+  return cloneFlwor.getp();
 }
 
 
@@ -1354,8 +1583,8 @@ void validate_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER ();
 }
 
-expr_t validate_expr::clone(substitution_t &s) {
-  return new validate_expr (get_loc (), get_valmode (), get_type_name (), get_expr ()->clone (s), get_typemgr ());
+expr_t validate_expr::clone(substitution_t &subst) {
+  return new validate_expr (get_loc (), get_valmode (), get_type_name (), get_expr ()->clone (subst), get_typemgr ());
 }
 
 
@@ -1593,8 +1822,8 @@ void order_expr::next_iter (expr_iterator_data& v) {
 }
 
 
-expr_t order_expr::clone(substitution_t& s) {
-  return new order_expr (get_loc (), get_type (), get_expr ()->clone (s));
+expr_t order_expr::clone(substitution_t& subst) {
+  return new order_expr (get_loc (), get_type (), get_expr ()->clone (subst));
 }
 
 
@@ -1641,11 +1870,11 @@ void elem_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
-expr_t elem_expr::clone(substitution_t& s) {
+expr_t elem_expr::clone(substitution_t& subst) {
   return new elem_expr (get_loc (),
-                        CLONE (getQNameExpr (), s),
-                        CLONE (getAttrs (), s),
-                        CLONE (getContent (), s),
+                        CLONE (getQNameExpr (), subst),
+                        CLONE (getAttrs (), subst),
+                        CLONE (getContent (), subst),
                         getNSCtx ());
 }
 
@@ -1668,8 +1897,8 @@ void doc_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
-expr_t doc_expr::clone(substitution_t& s) {
-  return new doc_expr (get_loc (), CLONE (getContent (), s));
+expr_t doc_expr::clone(substitution_t& subst) {
+  return new doc_expr (get_loc (), CLONE (getContent (), subst));
 }
 
 
@@ -1707,9 +1936,9 @@ void attr_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
-expr_t attr_expr::clone(substitution_t& s) {
+expr_t attr_expr::clone(substitution_t& subst) {
   return new attr_expr (get_loc (),
-                        CLONE (getQNameExpr (), s), CLONE (getValueExpr (), s));
+                        CLONE (getQNameExpr (), subst), CLONE (getValueExpr (), subst));
 }
 
 // [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompTextConstructor]
@@ -1732,8 +1961,8 @@ void text_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
-expr_t text_expr::clone(substitution_t& s) {
-  return new text_expr (get_loc (), get_type (), CLONE (get_text (), s));
+expr_t text_expr::clone(substitution_t& subst) {
+  return new text_expr (get_loc (), get_type (), CLONE (get_text (), subst));
 }
 
 // [115] [http://www.w3.org/TR/xquery/#prod-xquery-CompCommentConstructor]
@@ -1763,9 +1992,9 @@ void pi_expr::next_iter (expr_iterator_data& v) {
 void function_def_expr::next_iter (expr_iterator_data& v) {
 }
 
-expr_t pi_expr::clone(substitution_t& s) {
+expr_t pi_expr::clone(substitution_t& subst) {
   return new pi_expr (get_loc (),
-                      CLONE (get_target_expr (), s), CLONE (get_text (), s));
+                      CLONE (get_target_expr (), subst), CLONE (get_text (), subst));
 }
 
 
@@ -1806,8 +2035,8 @@ insert_expr::next_iter(expr_iterator_data& v)
   END_EXPR_ITER(); 
 }
 
-expr_t insert_expr::clone (substitution_t& s) {
-  return new insert_expr (get_loc (), getType (), getSourceExpr ()->clone (s), getTargetExpr ()->clone (s));
+expr_t insert_expr::clone (substitution_t& subst) {
+  return new insert_expr (get_loc (), getType (), getSourceExpr ()->clone (subst), getTargetExpr ()->clone (subst));
 }
 
 // [243] [http://www.w3.org/TR/xqupdate/#prod-xquery-DeleteExpr]
@@ -1829,8 +2058,8 @@ void delete_expr::next_iter(expr_iterator_data& v)
   END_EXPR_ITER(); 
 }
 
-expr_t delete_expr::clone (substitution_t& s) {
-  return new delete_expr (get_loc (), getTargetExpr ()->clone (s));
+expr_t delete_expr::clone (substitution_t& subst) {
+  return new delete_expr (get_loc (), getTargetExpr ()->clone (subst));
 }
 
 
@@ -1858,8 +2087,8 @@ void replace_expr::next_iter(expr_iterator_data& v)
   END_EXPR_ITER();
 }
 
-expr_t replace_expr::clone (substitution_t& s) {
-  return new replace_expr (get_loc (), getType (), getTargetExpr ()->clone (s), getReplaceExpr ()->clone (s));
+expr_t replace_expr::clone (substitution_t& subst) {
+  return new replace_expr (get_loc (), getType (), getTargetExpr ()->clone (subst), getReplaceExpr ()->clone (subst));
 }
 
 // [245] [http://www.w3.org/TR/xqupdate/#prod-xquery-RenameExpr]
@@ -1884,8 +2113,8 @@ void rename_expr::next_iter(expr_iterator_data& v)
   END_EXPR_ITER();
 }
 
-expr_t rename_expr::clone (substitution_t& s) {
-  return new rename_expr (get_loc (), getTargetExpr ()->clone (s), getNameExpr ()->clone (s));
+expr_t rename_expr::clone (substitution_t& subst) {
+  return new rename_expr (get_loc (), getTargetExpr ()->clone (subst), getNameExpr ()->clone (subst));
 }
 
 
@@ -1923,8 +2152,8 @@ void exit_expr::next_iter (expr_iterator_data& v)
   END_EXPR_ITER();
 }
 
-expr_t exit_expr::clone (substitution_t& s) {
-  return new exit_expr (get_loc (), get_value ()->clone (s));
+expr_t exit_expr::clone (substitution_t& subst) {
+  return new exit_expr (get_loc (), get_value ()->clone (subst));
 }
 
 void flowctl_expr::next_iter (expr_iterator_data& v)
@@ -1933,7 +2162,7 @@ void flowctl_expr::next_iter (expr_iterator_data& v)
   END_EXPR_ITER();
 }
 
-expr_t flowctl_expr::clone (substitution_t& s) {
+expr_t flowctl_expr::clone (substitution_t& subst) {
   return new flowctl_expr (get_loc (), get_action ());
 }
 
@@ -1944,37 +2173,37 @@ void while_expr::next_iter (expr_iterator_data& v)
   END_EXPR_ITER();
 }
 
-expr_t while_expr::clone (substitution_t& s) {
-  return new while_expr (get_loc (), get_body ()->clone (s));
+expr_t while_expr::clone (substitution_t& subst) {
+  return new while_expr (get_loc (), get_body ()->clone (subst));
 }
 
-expr_t if_expr::clone (substitution_t& s) {
+expr_t if_expr::clone (substitution_t& subst) {
   return new if_expr (get_loc (),
-                      get_cond_expr ()->clone (s),
-                      get_then_expr ()->clone (s),
-                      get_else_expr ()->clone (s));
+                      get_cond_expr ()->clone (subst),
+                      get_then_expr ()->clone (subst),
+                      get_else_expr ()->clone (subst));
 }
 
 expr_t const_expr::clone (substitution_t&) {
   return new const_expr (get_loc (), get_val ());
 }
 
-expr_t wrapper_expr::clone (substitution_t& s) {
-  expr_t e = wrapped->clone (s);
+expr_t wrapper_expr::clone (substitution_t& subst) {
+  expr_t e = wrapped->clone (subst);
   if (wrapped->get_expr_kind () == var_expr_kind && e->get_expr_kind () != var_expr_kind)
     return e;
   else
     return new wrapper_expr (get_loc (), e);
 }
 
-expr_t fo_expr::clone (substitution_t& s) {
+expr_t fo_expr::clone (substitution_t& subst) {
   fo_expr *fo = new fo_expr (get_loc (), get_func ());
   for (unsigned i = 0; i < argv.size (); i++)
-    fo->add (argv [i]->clone (s));
+    fo->add (argv [i]->clone (subst));
   return fo;
 }
 
-expr_t match_expr::clone (substitution_t& s) {
+expr_t match_expr::clone (substitution_t& subst) {
   match_expr *me = new match_expr (get_loc ());
   me->setTestKind (getTestKind ());
   me->setDocTestKind (getDocTestKind ());
@@ -1986,42 +2215,42 @@ expr_t match_expr::clone (substitution_t& s) {
   return me;
 }
 
-expr_t axis_step_expr::clone (substitution_t& s) {
+expr_t axis_step_expr::clone (substitution_t& subst) {
   axis_step_expr *ae = new axis_step_expr (get_loc ());
   ae->setAxis (getAxis ());
   ae->setTest (getTest ());
   return ae;
 }
 
-expr_t relpath_expr::clone (substitution_t& s) {
+expr_t relpath_expr::clone (substitution_t& subst) {
   auto_ptr<relpath_expr> re (new relpath_expr (get_loc ()));
   for (unsigned i = 0; i < size (); i++)
-    re->add_back ((*this) [i]->clone (s));
+    re->add_back ((*this) [i]->clone (subst));
   return re.release ();
 }
 
-expr_t promote_expr::clone (substitution_t& s) {
-  return new promote_expr (get_loc (), get_input ()->clone (s), get_target_type ());
+expr_t promote_expr::clone (substitution_t& subst) {
+  return new promote_expr (get_loc (), get_input ()->clone (subst), get_target_type ());
 }
 
-expr_t treat_expr::clone (substitution_t& s) {
-  return new treat_expr (get_loc (), get_input ()->clone (s), get_target_type (), get_err (), get_check_prime ());
+expr_t treat_expr::clone (substitution_t& subst) {
+  return new treat_expr (get_loc (), get_input ()->clone (subst), get_target_type (), get_err (), get_check_prime ());
 }
 
-expr_t castable_expr::clone (substitution_t& s) {
-  return new castable_expr (get_loc (), get_input ()->clone (s), get_target_type ());
+expr_t castable_expr::clone (substitution_t& subst) {
+  return new castable_expr (get_loc (), get_input ()->clone (subst), get_target_type ());
 }
 
-expr_t instanceof_expr::clone (substitution_t& s) {
-  return new instanceof_expr (get_loc (), get_input ()->clone (s), get_target_type ());
+expr_t instanceof_expr::clone (substitution_t& subst) {
+  return new instanceof_expr (get_loc (), get_input ()->clone (subst), get_target_type ());
 }
 
-expr_t cast_expr::clone (substitution_t& s) {
-  return new cast_expr (get_loc (), get_input ()->clone (s), get_target_type ());
+expr_t cast_expr::clone (substitution_t& subst) {
+  return new cast_expr (get_loc (), get_input ()->clone (subst), get_target_type ());
 }
 
-expr_t name_cast_expr::clone (substitution_t& s) {
-  return new name_cast_expr (get_loc (), get_input ()->clone (s), getNamespaceContext());
+expr_t name_cast_expr::clone (substitution_t& subst) {
+  return new name_cast_expr (get_loc (), get_input ()->clone (subst), getNamespaceContext());
 }
 
 } /* namespace zorba */

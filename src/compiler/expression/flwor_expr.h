@@ -32,13 +32,19 @@ class for_clause;
 class let_clause;
 class window_clause;
 class flwor_wincond;
+class orderby_clause;
+class group_clause;
+class flwor_expr;
 
 typedef rchandle<flwor_clause> flwor_clause_t;
 typedef rchandle<for_clause> for_clause_t;
 typedef rchandle<let_clause> let_clause_t;
 typedef rchandle<window_clause> window_clause_t;
-
 typedef rchandle<flwor_wincond> flwor_wincond_t;
+typedef rchandle<orderby_clause> orderby_clause_t;
+typedef rchandle<group_clause> group_clause_t;
+
+typedef rchandle<flwor_expr> flwor_expr_t;
 
 
 #ifdef ZORBA_DEBUGGER
@@ -68,7 +74,7 @@ public:
 class flwor_clause : public SimpleRCObject 
 {
 public:
-  typedef std::vector<std::pair<wrapper_expr_t, varref_t> > rebind_list_t;
+  typedef std::vector<std::pair<expr_t, varref_t> > rebind_list_t;
 
   typedef enum
   {
@@ -102,6 +108,8 @@ public:
   const QueryLoc& get_loc() const { return theLocation; }
 
   ClauseKind get_kind() const { return theKind; }
+
+  virtual flwor_clause_t clone(expr::substitution_t& substitution) = 0;
 
 #ifdef ZORBA_DEBUGGER
   void set_bound_variables(checked_vector<varref_t> &aScopedVariables );
@@ -164,6 +172,8 @@ public:
         ClauseKind kind,
         varref_t varExpr,
         expr_t domainExpr);
+
+  ~forletwin_clause();
 
   void set_expr(expr_t v) { theDomainExpr = v; }
 
@@ -229,6 +239,8 @@ public:
       theScoreVarExpr->set_flwor_clause(this); 
   }
 
+  flwor_clause_t clone(expr::substitution_t& substitution);
+
   std::ostream& put(std::ostream&) const;
 };
 
@@ -262,6 +274,8 @@ public:
       theScoreVarExpr->set_flwor_clause(this); 
   }
 
+  flwor_clause_t clone(expr::substitution_t& substitution);
+
   std::ostream& put(std::ostream&) const;
 };
 
@@ -284,9 +298,9 @@ protected:
 public:
   window_clause(
         const QueryLoc& loc,
+        window_t winKind,
         varref_t varExpr,
         expr_t domainExpr,
-        window_t winKind,
         flwor_wincond_t winStart = NULL,
         flwor_wincond_t winStop = NULL);
 
@@ -298,6 +312,8 @@ public:
   flwor_wincond* get_win_start() const { return theWinStartCond.getp(); }
 
   flwor_wincond* get_win_stop() const { return theWinStopCond.getp(); }
+
+  flwor_clause_t clone(expr::substitution_t& substitution);
 
   std::ostream& put(std::ostream&) const;
 };
@@ -347,6 +363,10 @@ public:
 
     void set_flwor_clause(flwor_clause* c);
 
+    void clone(
+        vars& cloneVars,
+        expr::substitution_t& subst); 
+      
     std::ostream& put(std::ostream&) const;
   };
 
@@ -357,7 +377,7 @@ protected:
   expr_t  theCondExpr;
 
 public:
-  flwor_wincond(bool isOnly, vars in_vars, vars out_vars, expr_t cond)
+  flwor_wincond(bool isOnly, const vars& in_vars, const vars& out_vars, expr_t cond)
     :
     theIsOnly(isOnly),
     theInputVars(in_vars),
@@ -377,6 +397,8 @@ public:
   const vars& get_out_vars() const { return theOutputVars; }
 
   void set_flwor_clause(flwor_clause *);
+
+  flwor_wincond_t clone(expr::substitution_t& substitution);
 
   std::ostream& put(std::ostream&) const;
 };
@@ -430,15 +452,17 @@ public:
   {
   }
 
+  ~group_clause();
+
   const std::vector<std::string>& get_collations() const { return theCollations; }
 
   const rebind_list_t& get_grouping_vars() const { return theGroupVars; }
 
   const rebind_list_t& get_nongrouping_vars() const { return theNonGroupVars; }
   
-  std::ostream& put(std::ostream&) const;
+  flwor_clause_t clone(expr::substitution_t& substitution);
 
-  // TODO clone?
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -491,6 +515,8 @@ public:
 
   void set_column_expr(ulong i, expr_t e) { theOrderingExprs[i] = e; }
 
+  flwor_clause_t clone(expr::substitution_t& substitution);
+
   std::ostream& put(std::ostream&) const;
 };
 
@@ -531,17 +557,21 @@ public:
 class count_clause : public flwor_clause 
 {
 protected:
-  varref_t var;
+  varref_t theVarExpr;
 
 public:
-  count_clause(const QueryLoc& loc, varref_t var_) 
+  count_clause(const QueryLoc& loc, varref_t var) 
     :
     flwor_clause(loc, flwor_clause::count_clause),
-    var(var_)
+    theVarExpr(var)
   {
   }
 
-  var_expr* get_var() const { return var.getp(); }
+  ~count_clause();
+
+  var_expr* get_var() const { return theVarExpr.getp(); }
+
+  flwor_clause_t clone(expr::substitution_t& substitution);
 };
 
 
@@ -565,6 +595,8 @@ public:
   expr* get_where() const { return theWhereExpr.getp(); }
 
   void set_where(expr_t where) { theWhereExpr = where; }
+
+  flwor_clause_t clone(expr::substitution_t& substitution);
 };
 
 
@@ -604,15 +636,23 @@ public:
 
   bool is_general() const { return theIsGeneral; }
 
+  bool is_updating() const { return theReturnExpr->is_updating(); }
+
   expr* get_return_expr() const { return theReturnExpr.getp(); }
 
   void set_return_expr(expr_t e) { theReturnExpr = e; }
 
+  xqtref_t return_type_impl(static_context* sctx);
+
   ulong num_clauses() const { return theClauses.size(); }
 
-  void addClause(flwor_clause* c);
+  void add_clause(flwor_clause* c);
 
-  void addClause(int idx, flwor_clause* c);
+  void add_clause(ulong pos, flwor_clause* c);
+
+  void add_where(expr_t e);
+
+  void remove_clause(ulong pos);
 
   const flwor_clause* operator[](int i) const { return theClauses[i].getp(); }
 
@@ -622,27 +662,21 @@ public:
 
   clause_list_t::const_iterator clause_end() const { return theClauses.end(); }
 
-  xqtref_t return_type_impl(static_context* sctx);
-
   long defines_variable(const var_expr* v, const flwor_clause* limit) const;
+
+  expr_t clone(substitution_t& substitution);
 
   expr_iterator_data* make_iter();
 
   void next_iter(expr_iterator_data&);
 
-  void add_where(expr_t e);
-
+  // The following 5 methods are for the simple flwor only. They should be
+  // removed eventually.
   expr* get_where() const;
-
   void set_where(expr* e);
-
   void remove_where_clause();
-
-  ulong num_forlet_clauses();
-
-  void remove_forlet_clause(ulong i);
-
   group_clause* get_group_clause() const;
+  ulong num_forlet_clauses();
 
   void accept(expr_visitor&);
 

@@ -153,3 +153,9 @@ class ZorbaImpl : public Zorba
 
 } /* namespace zorba */
 #endif /* XQP_ZORBA_IMPL_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

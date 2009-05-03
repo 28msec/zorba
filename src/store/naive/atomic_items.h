@@ -71,27 +71,37 @@ public:
 class QNameItemImpl : public AtomicItem
 {
   friend class QNamePool;
-  friend class QNamePoolHashSet;
-  friend class ElementNode;
 
 private:
   static xqpStringStore_t theEmptyPrefix;
 
 private:
-  xqpStringStore_t  theNamespace;
-  xqpStringStore_t  thePrefix;
-  xqpStringStore_t  theLocal;
+  xqpStringStore_t    theNamespace;
+  xqpStringStore_t    thePrefix;
 
-  uint16_t          thePosition;
-  uint16_t          theNextFree;
-  uint16_t          thePrevFree;
+  union
+  {
+    xqpStringStore  * theLocal;
+    QNameItemImpl   * theNormQN;
+  }                   theUnion;
+
+  uint16_t            thePosition;
+  uint16_t            theNextFree;
+  uint16_t            thePrevFree;
 
 protected:
-  QNameItemImpl() : thePosition(0), theNextFree(0), thePrevFree(0) {}
+ QNameItemImpl() 
+   :
+  thePosition(0),
+  theNextFree(0),
+  thePrevFree(0) 
+  {
+    theUnion.theLocal = NULL;
+  }
 
   void free();
 
-  bool isValid() const      { return theLocal != NULL; }
+  bool isValid() const      { return theUnion.theLocal != NULL; }
 
   bool isInCache() const    { return thePosition != 0; }
   bool isOverflow() const   { return thePosition == 0; }
@@ -102,20 +112,24 @@ protected:
   {
     return (isNormalized() ?
             const_cast<QNameItemImpl*>(this) :
-            reinterpret_cast<QNameItemImpl*>(theLocal.getp()));
+            theUnion.theNormQN);
   }
 
   QNameItemImpl* detachNormalized() 
   {
     assert(!isNormalized());
-    QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(theLocal.getp());
-    theLocal.setNull();
+    QNameItemImpl* qn = theUnion.theNormQN;
+    theUnion.theNormQN = NULL;
     return qn;
   }
 
   void setNormalized(QNameItemImpl* qn);  
 
   void unsetNormalized();
+
+  void setLocal(xqpStringStore* local);
+
+  void unsetLocal();
 
 public:
   virtual ~QNameItemImpl();
@@ -133,7 +147,7 @@ public:
 
   xqpStringStore* getNamespace() const { return theNamespace.getp(); }
   xqpStringStore* getPrefix() const    { return thePrefix.getp(); }
-  xqpStringStore* getLocalName() const { return getNormalized()->theLocal.getp(); }
+  xqpStringStore* getLocalName() const { return getNormalized()->theUnion.theLocal; }
 
   store::Item* getType() const;
   store::Item_t getEBV() const;
@@ -1341,3 +1355,9 @@ private:
 } // namespace store
 } // namespace zorba
 #endif /* ZORBA_STORE_ATOMIC_ITEMS_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

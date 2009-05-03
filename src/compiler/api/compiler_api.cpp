@@ -80,6 +80,10 @@ PlanIter_t XQueryCompiler::compile(parsenode_t ast)
   expr_t lExpr = normalize(ast);
   lExpr = optimize(lExpr);
 
+#if 0
+  lExpr = lExpr->clone();
+#endif
+
   // TODO we might pass the CompilerCB here, however, we also need it in the runtime
   // because codegeneration for udfs is triggered there
   // then however, the compilercb can not be const in the runtime?!
@@ -155,6 +159,9 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
     xqxconvertor->freeResult(converted_xquery_str);
   }
 #endif
+  assert(aXQuery.eof());
+  assert(!aXQuery.bad());
+
   parsenode_t node = lDriver.get_expr();
   if (typeid (*node) == typeid (ParseErrorNode)) {
     ParseErrorNode *err = static_cast<ParseErrorNode *> (&*node);

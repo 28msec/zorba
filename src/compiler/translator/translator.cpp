@@ -703,9 +703,9 @@ rchandle<flwor_expr> wrap_expr_in_flwor(expr* inputExpr, bool withContextSize)
                                            loc,
                                            DOT_VARNAME,
                                            DOT_POS_VARNAME);
-    flworExpr->addClause(lcInputSeq);
-    flworExpr->addClause(lcLast);
-    flworExpr->addClause(fcDot);
+    flworExpr->add_clause(lcInputSeq);
+    flworExpr->add_clause(lcLast);
+    flworExpr->add_clause(fcDot);
   }
   else
   {
@@ -714,7 +714,7 @@ rchandle<flwor_expr> wrap_expr_in_flwor(expr* inputExpr, bool withContextSize)
                                            loc,
                                            DOT_VARNAME,
                                            DOT_POS_VARNAME);
-    flworExpr->addClause(fcDot);
+    flworExpr->add_clause(fcDot);
   }
 
   return flworExpr;
@@ -1966,9 +1966,9 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
       }
 
       window_clause* flwc = new window_clause(c.get_location(),
+                                              winKind,
                                               windowVarExpr,
                                               windowDomainExpr,
-                                              winKind,
                                               econds[0],
                                               econds[1]);
       eclauses.push_back(flwc);
@@ -2102,7 +2102,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
   }
 
   for (int i = eclauses.size() - 1; i >= 0; --i)
-    flwor->addClause(eclauses[i]);
+    flwor->add_clause(eclauses[i]);
 
   nodestack.push(&*flwor);
 }
@@ -3234,10 +3234,16 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
 
     normalize_expr_tree(v.get_name ()->get_qname().c_str(), compilerCB, body, *&(udf->get_signature().return_type()));
 
-    if (compilerCB->m_config.opt_level == CompilerCB::config_t::O1) {
+    if (compilerCB->m_config.opt_level == CompilerCB::config_t::O1) 
+    {
       RewriterContext rCtx(compilerCB, body);
       GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
       body = rCtx.getRoot();
+
+      RewriterContext rCtx1(compilerCB, body);
+      GENV_COMPILERSUBSYS.getPhase1Rewriter()->rewrite(rCtx1);
+      body = rCtx1.getRoot();
+
       if (compilerCB->m_config.optimize_cb != NULL)
         compilerCB->m_config.optimize_cb (&*body, v.get_name ()->get_qname ());
     }
@@ -3296,7 +3302,7 @@ void end_visit (const Param& v, void* /*visit_state*/) {
   }
 #endif
 
-  flwor->addClause(wrap_in_letclause(&*param_var, subst_var));
+  flwor->add_clause(wrap_in_letclause(&*param_var, subst_var));
 
   if (v.get_typedecl () != NULL)  {
     param_var->set_type (pop_tstack ());
@@ -4902,7 +4908,7 @@ varref_t tempvar(const QueryLoc& loc, var_expr::var_kind kind)
 rchandle<flwor_expr> wrap_in_let_flwor (expr_t expr, varref_t lv, expr_t ret) 
 {
   rchandle<flwor_expr> fe = new flwor_expr(lv->get_loc(), false);
-  fe->addClause(wrap_in_letclause (expr, lv));
+  fe->add_clause(wrap_in_letclause (expr, lv));
   fe->set_return_expr(ret);
   return fe;
 }
@@ -5228,7 +5234,7 @@ void post_primary_visit(const FilterExpr& v, void* /*visit_state*/)
     
     let_clause_t lcPredSeq = wrap_in_letclause(primaryExpr.getp());
 
-    flworExpr->addClause(lcPredSeq);
+    flworExpr->add_clause(lcPredSeq);
 
     nodestack.push(flworExpr);
     nodestack.push(lcPredSeq->get_var());
@@ -5290,7 +5296,7 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
     
   rchandle<let_clause> lcPredSeq = wrap_in_letclause(pathStepExpr.getp());
 
-  flworExpr->addClause(lcPredSeq);
+  flworExpr->add_clause(lcPredSeq);
 
   nodestack.push(flworExpr);
   nodestack.push(lcPredSeq->get_var());
@@ -5346,7 +5352,7 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   let_clause_t lcPred = wrap_in_letclause(predExpr);
   var_expr* predvar = lcPred->get_var();
 
-  flworExpr->addClause(lcPred);
+  flworExpr->add_clause(lcPred);
 
   expr_t dotvar = DOT_VAR;
 
@@ -5549,7 +5555,7 @@ void end_visit (const QuantifiedExpr& v, void* /*visit_state*/)
   {
     pop_scope ();
     varref_t ve = vars_vals [2 * i + 1].cast<var_expr> ();
-    flwor->addClause(wrap_in_forclause (&*vars_vals [2 * i], ve, NULL));
+    flwor->add_clause(wrap_in_forclause (&*vars_vals [2 * i], ve, NULL));
   }
 
   flwor->add_where(sat);
