@@ -4,15 +4,17 @@ use strict;
 use warnings;
 
 use File::Find;
+use File::Path;
 use Cwd 'abs_path';
+use IO::Handle;
 
 my $rbktdir = `dirname $0`; chomp $rbktdir; $rbktdir = "$rbktdir/rbkt";
-my $builddir = shift; $builddir = abs_path ($builddir) || die;
+my $builddir = shift; $builddir = abs_path ($builddir) || die $!;
 my $bucket = ".";
 my $exclude;
 my $include;
 
-while (1) {
+while (1) {  # iterate over args
     my $arg = shift;
     if (! defined ($arg)) { last; }
     if ($arg eq "-b") { $bucket = shift; }
@@ -25,29 +27,66 @@ while (1) {
 $rbktdir = abs_path ($rbktdir);
 
 my $testdriver = "$builddir/test/rbkt/testdriver";
--f $testdriver || die;
+-f $testdriver || die $!;
+my $logfile = "$builddir/Testing/Temporary/LastTest.log";
+
+mkpath "$builddir/Testing/Temporary";
+open (LOG, ">$logfile") || die $!;
+# LOG->autoflush (1);
 
 my @failed;
 my $testcnt = 0;
 
-sub ffun {
-    my $fname = $_;
-    if (! ($fname =~ m/.*[.]xq$/)) { return; }
-    ++$testcnt;
-    if (defined ($exclude) && $fname =~ m/$exclude/) { return; }
-    if (defined ($include) && ! ($fname =~ m/$include/)) { return; }
-    my $f = $File::Find::name; $f =~ s/[.]xq$//g;
-    my $cmd = "$testdriver --rbkt-src $rbktdir/ $f.xq";
-    print "Command: $cmd\n";
-    my $rc = system ($cmd);
-    if (($rc & 127) == 2) { print "Signal death (" . ($rc & 127) . ")\n"; die; }
-    if ($rc != 0) {
-        print "Test failed (code " . ($? >> 8) . ")\n";
-        push (@failed, "$testcnt:$f");
+sub finish {
+    print LOG "--- Testing interrupted\n";
+    close LOG;
+    if (@failed > 0) {
+        print ("Failed tests:\n" . join ("\n", @failed) . "\n");
+    } else {
+        print "All tests passed\n";
     }
-    print ("\n\n--- End test $f\n\n");
+    open SUMMARY, ">$builddir/Testing/Temporary/LastTestsFailed.log";
+    print SUMMARY (join ("\n", @failed) . "\n");
+    close SUMMARY;
 }
 
-chdir ("$rbktdir/Queries") || die;
-find (\&ffun, "$bucket/");
-print ("Failed tests:\n" . join ("\n", @failed) . "\n");
+sub ffun {
+    my $fname = $_;
+    if (! ($fname =~ m/[.]xq$/)) { return 1; }
+    ++$testcnt;
+    my $f = $File::Find::name; $f =~ s/[.]xq$//g; $f =~ s@^[.]/@@;
+    if (defined ($exclude) && $f =~ m/$exclude/) { return; }
+    if (defined ($include) && ! ($f =~ m/$include/)) { return; }
+    my $cmd = "$testdriver --rbkt-src $rbktdir/ $f.xq";
+    print "$testcnt $f... ";
+    print LOG "--- Start test $f\n";
+    print LOG "Command: $cmd\n";
+    close LOG;
+    my $rc = system ("$cmd >>$logfile");
+    open (LOG, ">>$logfile") || die $!;
+    
+    if (($rc & 127) == 2) {
+        print "Signal " . ($rc & 127) . "\n";
+        finish;
+        exit (1);
+    }
+    if ($rc != 0) {
+        print "\tFAILED\n";
+        print LOG "Test failed (code " . ($? >> 8) . ")\n";
+        push (@failed, "$testcnt:$f");
+    } else {
+        print "\tPASSED\n";
+    }
+    print LOG "\n\n--- End test $f\n\n";
+}
+
+$SIG{'INT'} = 'CLEANUP';
+sub CLEANUP {
+    print "Signal 2\n";
+    finish;
+    exit (1);
+}
+
+chdir ("$rbktdir/Queries") || die $!;
+finddepth ({ wanted => \&ffun, follow_fast => 1 }, "$bucket/");
+finish;
