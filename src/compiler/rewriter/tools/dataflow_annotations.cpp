@@ -280,6 +280,10 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr *e)
   default_walk(e);
   if (!generic_compute(e)) {
     const function *f = e->get_func();
+#if 0
+    // VRB
+    // This code has been commented until we phase out the old
+    // "compute_annotation" code. temporarily for this release
     uint32_t nArgs = e->size();
     function::AnnotationProperty_t sorted = f->producesNodeIdSorted();
     if (sorted == function::YES) {
@@ -309,6 +313,12 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr *e)
       }
       e->put_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES, distinctAnnot);
     }
+#else
+    if (f == LOOKUP_FN("fn", "doc", 1)) {
+      SORTED_NODES(e);
+      DISTINCT_NODES(e);
+    }
+#endif
   }
 }
 
