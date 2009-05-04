@@ -223,6 +223,35 @@ void sigHandler(int sigNum)
 
 
 /*******************************************************************************
+  Create all the directories in a filepath, if thehy don't exist already, and
+  make sure the file can be created/opened. 
+********************************************************************************/
+void createPath(const fs::path& filePath, std::ofstream& fileStream)
+{
+  fileStream.open(filePath.native_file_string().c_str());
+  if (!fileStream.good())
+  {
+    fs::path dirPath = filePath;
+    dirPath = dirPath.remove_leaf();
+    
+    if (!fs::exists(dirPath))
+    {
+      fs::create_directories(dirPath);
+
+      fileStream.open(filePath.native_file_string().c_str());
+    }
+
+    if (!fileStream.good())
+    {
+      std::cout << "Could not open file: " 
+                << filePath.native_file_string().c_str() << std::endl;
+      abort();
+    }
+  }
+}
+
+
+/*******************************************************************************
 
 ********************************************************************************/
 bool checkErrors(const Specification& lSpec, const TestErrorHandler& errHandler) 
@@ -283,8 +312,7 @@ void printPart(std::ostream& os, std::string filename, int startPos, int len)
   aPos is the character number off the first difference in the file
   -1 is returned for aLine, aCol, and aPos if the files are equal
 ********************************************************************************/
-bool
-isEqual(fs::path aRefFile, fs::path aResFile, int& aLine, int& aCol, int& aPos)
+bool isEqual(fs::path aRefFile, fs::path aResFile, int& aLine, int& aCol, int& aPos)
 {
   std::ifstream li(aRefFile.native_file_string().c_str());
   std::ifstream ri(aResFile.native_file_string().c_str()); 
@@ -374,7 +402,8 @@ void* thread_main(void* param)
 
     //
     // Determine the full pathnames for the spec, ref, result, and error files.
-    // Then, delete previous result and error files, if they exist.
+    // Then, delete previous result and error files, if they exist, and create
+    // new (empty) instance of them.
     //
     relativeQueryFile = queries->theQueryFilenames[queryNo];
 
@@ -389,6 +418,11 @@ void* thread_main(void* param)
 
     if (fs::exists(resultFilePath)) fs::remove(resultFilePath);
     if (fs::exists(errorFilePath)) fs::remove(errorFilePath);
+
+    std::ofstream resFileStream;
+    std::ofstream errFileStream;
+    createPath(resultFilePath, resFileStream);
+    createPath(errorFilePath, errFileStream);
 
     //
     // Set the error file to be used by the error handler for the current query
@@ -500,29 +534,6 @@ void* thread_main(void* param)
 
     // Set external vars
     set_vars(&querySpec, lDynCtxt);
-
-    // create and open results file 
-    std::ofstream resFileStream(resultFilePath.native_file_string().c_str());
-    if (!resFileStream.good())
-    {
-      fs::path save = resultFilePath;
-      fs::path dirPath = resultFilePath.remove_leaf();
-      resultFilePath = save;
-
-      if (!fs::exists(dirPath))
-      {
-        fs::create_directories(dirPath);
-
-        resFileStream.open(resultFilePath.native_file_string().c_str());
-      }
-
-      if (!resFileStream.good())
-      {
-        std::cout << "Could not open results file: " 
-                  << resultFilePath.native_file_string().c_str() << std::endl;
-        abort();
-      }
-    }
 
     try
     {
