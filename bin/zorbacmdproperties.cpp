@@ -97,7 +97,7 @@ bool ZorbaCMDProperties::loadProperties(int argc, char* argv[]) {
   }  
 }
 
-std::vector<std::pair<std::string,std::string> > ZorbaCMDProperties::getSerializerParameters() 
+std::vector<std::pair<std::string,std::string> > ZorbaCMDProperties::getSerializerParameters() const
 {
   std::vector<std::pair<std::string,std::string> > lResult;
   std::vector<std::string>::const_iterator lEnd = theSerializationParameter.end();

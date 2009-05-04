@@ -238,7 +238,7 @@ public:
     return result;
   }
 
-  const char *get_help_msg () {
+  const char *get_help_msg () const {
     return
 "--timing, -t\nPrint timing information. In case of multiple queries the timing information is provided per each query. Both wallclock time and user time (which excludes I/O, network delays and other kernel waits) are shown.\n\n"
 "--output-file, -o\nWrite the result to the given file.\n\n"

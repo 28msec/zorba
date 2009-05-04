@@ -40,19 +40,19 @@ protected:
 
 public:
   ExternalVars_t::const_iterator
-  externalVarsBegin()   { return theExternalVars.begin(); }
+  externalVarsBegin() const  { return theExternalVars.begin(); }
 
   ExternalVars_t::const_iterator
-  externalVarsEnd()     { return theExternalVars.end(); }
+  externalVarsEnd() const    { return theExternalVars.end(); }
 
   QueriesOrFiles_t::const_iterator
-  queriesOrFilesBegin() { return theQueriesOrFiles.begin(); }
+  queriesOrFilesBegin() const { return theQueriesOrFiles.begin(); }
 
   QueriesOrFiles_t::const_iterator
-  queriesOrFilesEnd()   { return theQueriesOrFiles.end(); }
+  queriesOrFilesEnd() const   { return theQueriesOrFiles.end(); }
   
   std::vector<std::pair<std::string,std::string> > 
-  getSerializerParameters();
+  getSerializerParameters() const;
   
 #ifdef ZORBA_DEBUGGER
   bool hasNoSyntaxHighlighting(){ return theNoColors; }
@@ -67,11 +67,13 @@ public:
 
 #endif
   std::string check_args ();
-  void printHelp(std::ostream& os) {
+
+  void printHelp(std::ostream& os) const {
     os << "Zorba XQuery Engine\n";
     os << "Available options:\n";
     os << get_help_msg ();
   }
+
   bool loadProperties(int argc, char* argv[]);
 };
 #endif
