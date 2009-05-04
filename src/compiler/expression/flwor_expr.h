@@ -212,7 +212,8 @@ public:
         varref_t varExpr,
         expr_t domainExpr,
         varref_t posVarExpr = NULL,
-        varref_t scoreVarExpr = NULL);
+        varref_t scoreVarExpr = NULL,
+        bool isOuter = false);
 
   ~for_clause();
 

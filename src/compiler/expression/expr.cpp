@@ -533,11 +533,13 @@ for_clause::for_clause(
     varref_t varExpr,
     expr_t domainExpr,
     varref_t posVarExpr,
-    varref_t scoreVarExpr)
+    varref_t scoreVarExpr,
+    bool isOuter)
   :
   forletwin_clause(loc, flwor_clause::for_clause, varExpr, domainExpr),
   thePosVarExpr(posVarExpr),
-  theScoreVarExpr(scoreVarExpr)
+  theScoreVarExpr(scoreVarExpr),
+  theIsOuter(isOuter)
 {
   if (thePosVarExpr != NULL)
     thePosVarExpr->set_flwor_clause(this);
@@ -580,7 +582,12 @@ flwor_clause_t for_clause::clone(expr::substitution_t& subst)
     subst[score_var_ptr] = scorevarCopy.getp();
   }
 
-  return new for_clause(get_loc(), varCopy, domainCopy, posvarCopy, scorevarCopy);
+  return new for_clause(get_loc(),
+                        varCopy,
+                        domainCopy,
+                        posvarCopy,
+                        scorevarCopy,
+                        theIsOuter);
 }
 
 
