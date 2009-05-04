@@ -278,11 +278,6 @@ private:
         store::Item_t& aItem1,
         store::Item_t& castItem0,
         store::Item_t& castItem1);
-
-  static bool boolResult(
-        const QueryLoc &,
-        int8_t aCompValue,
-        CompareConsts::CompareType aCompType);
 };
 
 

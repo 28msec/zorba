@@ -359,45 +359,6 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 }
   
 
-
-bool CompareIterator::boolResult(
-    const QueryLoc &loc,
-    int8_t aCompValue,
-    CompareConsts::CompareType aCompType)
-{
-  if ( aCompValue > -2 )
-  {
-    switch ( aCompType )
-    {
-    case CompareConsts::VALUE_GREATER:
-    case CompareConsts::GENERAL_GREATER:
-      return aCompValue == 1;
-      break;
-    case CompareConsts::VALUE_GREATER_EQUAL:
-    case CompareConsts::GENERAL_GREATER_EQUAL:
-      return (aCompValue == 0) || (aCompValue == 1);
-      break;
-    case CompareConsts::VALUE_LESS:
-    case CompareConsts::GENERAL_LESS:
-      return aCompValue == -1;
-      break;
-    case CompareConsts::VALUE_LESS_EQUAL:
-    case CompareConsts::GENERAL_LESS_EQUAL:
-      return (aCompValue == -1) || (aCompValue == 0);
-      break;
-    default:
-    {
-      ZORBA_ASSERT(false);
-    }
-    }
-  }
-
-  ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                       "Dynamic type of a value does not match a required type.");
-  return false;
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -416,8 +377,8 @@ bool CompareIterator::valueComparison(
   {
   case CompareConsts::VALUE_EQUAL:
   {
-    compValue = CompareIterator::valueEqual(aItem0, aItem1,
-                                            typemgr, timezone, aCollation);
+    compValue = valueEqual(aItem0, aItem1, typemgr, timezone, aCollation);
+
     if (compValue >= 0)
       return compValue;
 
@@ -425,21 +386,45 @@ bool CompareIterator::valueComparison(
   }
   case CompareConsts::VALUE_NOT_EQUAL:
   {
-    compValue = CompareIterator::valueEqual(aItem0, aItem1,
-                                            typemgr, timezone, aCollation);
+    compValue = valueEqual(aItem0, aItem1, typemgr, timezone, aCollation);
+
     if (compValue >= 0)
       return (compValue > 0 ? false : true);
 
     break;
   }
   case CompareConsts::VALUE_GREATER:
+  {
+    compValue = valueCompare(aItem0, aItem1, typemgr, timezone, aCollation);
+    if ( compValue > -2 )
+      return compValue == 1;
+
+    break;
+  }
   case CompareConsts::VALUE_GREATER_EQUAL:
+  {
+    compValue = valueCompare(aItem0, aItem1, typemgr, timezone, aCollation);
+    if ( compValue > -2 )
+      return (compValue == 0 || compValue == 1);
+
+    break;
+  }
   case CompareConsts::VALUE_LESS:
+  {
+    compValue = valueCompare(aItem0, aItem1, typemgr, timezone, aCollation);
+    if ( compValue > -2 )
+      return compValue == -1;
+
+    break;
+  }
   case CompareConsts::VALUE_LESS_EQUAL:
   {
-    compValue = CompareIterator::valueCompare(aItem0, aItem1,
-                                              typemgr, timezone, aCollation);
-    return boolResult(loc, compValue, aCompType);
+    compValue = valueCompare(aItem0, aItem1, typemgr, timezone, aCollation);
+
+    if ( compValue > -2 )
+      return (compValue == -1 || compValue == 0);
+
+    break;
   }
   default:
   {
@@ -485,36 +470,34 @@ void CompareIterator::valueCasting(
     store::Item_t& castItem0,
     store::Item_t& castItem1)
 {
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
   xqtref_t type0 = typemgr->create_value_type(aItem0);
   xqtref_t type1 = typemgr->create_value_type(aItem1);
 
   // all untyped Atomics to String
-  if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+  if (TypeOps::is_subtype(*type0, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
   {
-    GenericCast::instance()->castToAtomic(castItem0, aItem0,
-                                          &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
+    GenericCast::instance()->castToAtomic(castItem0, aItem0, &*rtm.STRING_TYPE_ONE);
 
-    if  (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+    if  (TypeOps::is_subtype(*type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      GenericCast::instance()->castToAtomic(castItem1, aItem1,
-                                            &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
+      GenericCast::instance()->castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE);
     }
     else
     {
-      if (!GenericCast::instance()->promote(castItem1, aItem1,
-                                            &*GENV_TYPESYSTEM.STRING_TYPE_ONE))
+      if (!GenericCast::instance()->promote(castItem1, aItem1, &*rtm.STRING_TYPE_ONE))
         castItem1.transfer(aItem1);
     }  
   }
-  else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+  else if (TypeOps::is_subtype(*type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
   {
     if (!GenericCast::instance()->promote(const_cast<store::Item_t&>(castItem0),
                                           aItem0,
-                                          &*GENV_TYPESYSTEM.STRING_TYPE_ONE))
+                                          &*rtm.STRING_TYPE_ONE))
       castItem0.transfer(aItem0);
 
-    GenericCast::instance()->castToAtomic(castItem1, aItem1,
-                                  &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
+    GenericCast::instance()->castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE);
   }
   else
   {
@@ -562,30 +545,39 @@ bool CompareIterator::generalComparison(
     break;
   }
   case CompareConsts::GENERAL_GREATER:
+  {
+    compValue = generalCompare(aItem0, aItem1, typemgr, timezone, aCollation);
+
+    if ( compValue != -2 )
+      return compValue == 1;
+
+    break;
+  }
   case CompareConsts::GENERAL_GREATER_EQUAL:
+  {
+    compValue = generalCompare(aItem0, aItem1, typemgr, timezone, aCollation);
+
+    if ( compValue != -2 )
+      return (compValue == 0 || compValue == 1);
+
+    break;
+  }
   case CompareConsts::GENERAL_LESS:
+  {
+    compValue = generalCompare(aItem0, aItem1, typemgr, timezone, aCollation);
+
+    if ( compValue != -2 )
+      return compValue == -1;
+
+    break;
+  }
   case CompareConsts::GENERAL_LESS_EQUAL:
   {
     compValue = generalCompare(aItem0, aItem1, typemgr, timezone, aCollation);
 
     if ( compValue != -2 )
-    {
-      switch ( aCompType )
-      {
-      case CompareConsts::GENERAL_GREATER:
-        return compValue == 1;
-      case CompareConsts::GENERAL_GREATER_EQUAL:
-        return compValue >= 0;
-      case CompareConsts::GENERAL_LESS:
-        return compValue == -1;
-      case CompareConsts::GENERAL_LESS_EQUAL:
-        return compValue <= 0;
-      default:
-      {
-        ZORBA_ASSERT(false);
-      }
-      }
-    }
+      return compValue == 0 || compValue == -1;
+
     break;
   }
   default:
@@ -672,7 +664,6 @@ void CompareIterator::generalCasting(
                                             &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
       GenericCast::instance()->promote(castItem0, aItem0,
                                        &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
-      //castItem0 = aItem0;
     }
     else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
     {
