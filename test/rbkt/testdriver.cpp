@@ -121,36 +121,11 @@ fileEquals(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, in
 {
   std::ifstream li(aRefFile.get_path().c_str());
   std::ifstream ri(aResFile.get_path().c_str()); 
-#ifdef ENABLE_SAXON_COMPARE
-  
-  std::ofstream refwrapped ( "/tmp/ref.xml" );
-  std::ofstream reswrapped ( "/tmp/res.xml" );
-  li.seekg( 0, std::ifstream::end );
-  long size = li.tellg();
-  li.seekg( 0 );
-  refwrapped << "<root>" << std::endl;
-  char * buffer = new char [size ];
-  li.read ( buffer, size );
-  refwrapped.write ( buffer, size );
-  refwrapped << "</root>" << std::endl;
-  refwrapped.close();
-  delete [] buffer;
-  ri.seekg ( 0, std::ifstream::end );
-  size = ri.tellg();
-  ri.seekg ( 0 );
-  reswrapped << "<root>" << std::endl;
-  buffer = new char [size];
-  ri.read ( buffer, size );
-  reswrapped.write ( buffer, size );
-  reswrapped << "</root>" << std::endl;
-  reswrapped.close ();
-  delete [] buffer;
-  return true;
-#endif
+  std::string lLine, rLine;
+
   std::string filepath = aResFile.get_path ();
   std::string::size_type pos = filepath.find ( "w3c_testsuite" );
   bool w3ctest = pos != std::string::npos;
-  std::string lLine, rLine;
   std::string xmldecl ( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
   if (w3ctest) std::cout << "This is a w3c test.\n";
@@ -167,15 +142,19 @@ fileEquals(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, in
     }
     std::getline(li, lLine);
     std::getline(ri, rLine);
+
     if ( w3ctest && (rLine.compare ( xmldecl ) == 0)  ) {
       std::getline ( ri, rLine );
     }
+
     if ( w3ctest && (lLine.compare ( xmldecl ) == 0)  ) {
       std::getline ( li, lLine );
     }
+
     trim ( lLine );
     trim ( rLine );
-    if ( (aCol = lLine.compare(rLine)) != 0) {
+    if ( (aCol = lLine.compare(rLine)) != 0) 
+    {
       aRefLine = lLine;
       aResLine = rLine;
       return false;
@@ -305,12 +284,17 @@ main(int argc, char** argv)
     zorba::TestModuleURIResolver  * mresolver = 0;
     std::string uri_map_file = rbkt_src_dir + "/Queries/uri.txt";
     std::string mod_map_file = rbkt_src_dir + "/Queries/module.txt";
-    if ( path.find ( "w3c_testsuite" ) != std::string::npos ) {
+
+#ifdef W3C_CLEAN
+    if ( path.find ( "w3c_testsuite" ) != std::string::npos ) 
+    {
       resolver = new zorba::TestSchemaURIResolver ( uri_map_file.c_str() );
       mresolver = new zorba::TestModuleURIResolver ( mod_map_file.c_str() );
       lContext->setSchemaURIResolver ( resolver );
       lContext->setModuleURIResolver ( mresolver );
     }
+#endif
+
     TestErrorHandler errHandler;
 
     // create and compile the query

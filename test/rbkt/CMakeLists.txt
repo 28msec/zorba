@@ -102,12 +102,6 @@ ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 ENDIF(ZORBA_BUILD_MT_TESTDRIVER)
 
 
-# Option to build test driver to use Saxon to compare results
-#SET ( ZORBA_BUILD_SAXON_TESTDRIVER 1)	   
-If ( ZORBA_BUILD_SAXON_TESTDRIVER )
-   add_definitions ( -DENABLE_SAXON_COMPARE )
-Endif ( ZORBA_BUILD_SAXON_TESTDRIVER )
-
 #
 #
 #
@@ -221,7 +215,7 @@ SET_TESTS_PROPERTIES (test/rbkt/zorba/dblp/q1 PROPERTIES TIMEOUT "200")
 SET_TESTS_PROPERTIES (test/rbkt/zorba/paths/path17 PROPERTIES TIMEOUT "200")
 
 IF(ZORBA_NO_BIGNUMBERS)
-  SET_TESTS_PROPERTIES (test/rbkt/Operations/ArithExpr/DurationArith/DayTimeDurationDivideDTD/DayTimeDurationDivideDTD1 PROPERTIES WILL_FAIL TRUE)
+  SET_TESTS_PROPERTIES (test/rbkt/zorba/Operations/ArithExpr/DurationArith/DayTimeDurationDivideDTD/DayTimeDurationDivideDTD1 PROPERTIES WILL_FAIL TRUE)
 ENDIF(ZORBA_NO_BIGNUMBERS)
 
 IF(ZORBA_NO_XMLSCHEMA)

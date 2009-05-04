@@ -47,6 +47,10 @@
 namespace fs = boost::filesystem;
 
 
+std::string rbkt_src_dir = zorba::RBKT_SRC_DIR;
+std::string rbkt_bin_dir = zorba::RBKT_BINARY_DIR;
+
+
 zorba::Properties *lProp;
 
 void loadProperties() 
@@ -442,7 +446,10 @@ void* thread_main(void* param)
     if (queries->theQueryObjects[queryNo] == 0)
     {
       // Read the query string from the query file
-      slurp_file(queryPath.native_file_string().c_str(), queryString);
+      slurp_file(queryPath.native_file_string().c_str(),
+                 queryString,
+                 rbkt_src_dir,
+                 rbkt_bin_dir);
 
       zorba::XQuery_t query;
 
@@ -533,7 +540,7 @@ void* thread_main(void* param)
     }
 
     // Set external vars
-    set_vars(&querySpec, lDynCtxt);
+    set_vars(&querySpec, lDynCtxt, rbkt_src_dir);
 
     try
     {
