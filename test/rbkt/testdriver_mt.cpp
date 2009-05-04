@@ -110,15 +110,15 @@ public:
 
   std::vector<bool>             theQueryStates;
 
-  volatile bool                 theHaveErrors;
-
   long                          theNumThreads;
+
+  volatile bool                 theHaveErrors;
 
   std::vector<zorba::Mutex*>    theQueryLocks;
   zorba::Mutex                  theGlobalLock;
 
 public:
-  Queries() : theHaveErrors(false) {}
+  Queries() : theNumRunsPerQuery(1), theNumThreads(1), theHaveErrors(false) {}
 
   ~Queries();
 
@@ -646,7 +646,7 @@ void* thread_main(void* param)
 
 void usage()
 {
-  std::cerr << "\nusage: testdriver_mt -b <bucket> -t <numThreads> -n <runsPerQuery>"
+  std::cerr << "\nusage: testdriver_mt -b <bucket> [-t <numThreads>] [-n <runsPerQuery>]"
             << std::endl;
   exit(1);
 }
@@ -670,14 +670,14 @@ main(int argc, char** argv)
 
   fs::path bucketPath;
 
-  long numThreads = 0;
+  long numThreads = 1;
 
   Queries queries;
 
   signal(SIGSEGV, sigHandler);
 
   // Parse the arg list
-  if ( argc != 7 )
+  if ( argc < 3 || argc > 7)
     usage();
 
   long arg = 1;
