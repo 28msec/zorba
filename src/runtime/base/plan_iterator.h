@@ -480,3 +480,8 @@ public:
 
 #endif  /* ZORBA_ITERATOR_H */
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
