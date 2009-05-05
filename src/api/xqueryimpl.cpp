@@ -139,9 +139,11 @@ XQueryImpl::close()
     if (!theUserErrorHandler) // see registerErrorHandler
       delete theErrorHandler;
 
-    RCHelper::removeReference (theStaticContext);
+    if (theStaticContext)
+      RCHelper::removeReference (theStaticContext);
 
-    delete theDynamicContext;
+    if (theDynamicContext)
+      delete theDynamicContext;
 
     if (theDynamicContextWrapper)
       delete theDynamicContextWrapper;
