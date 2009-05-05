@@ -404,7 +404,7 @@ varref_t create_var(
   }
 
   fo_expr *create_seq (const QueryLoc& loc) {
-    return new fo_expr (loc, CACHED (op_concatenate, LOOKUP_OPN ("concatenate")));
+    return fo_expr::create_seq (loc);
   }
 
   void push_scope () {
@@ -487,8 +487,7 @@ var_expr *lookup_var (store::Item_t varname)
     switch(lType1)
     {
     case VACUOUS_EXPR:
-      switch(lType2)
-      {
+      switch(lType2) {
       case VACUOUS_EXPR:
         return VACUOUS_EXPR;
         break;
@@ -499,9 +498,9 @@ var_expr *lookup_var (store::Item_t varname)
         return UPDATE_EXPR;
         break;
       }
+      break;
     case SIMPLE_EXPR:
-      switch(lType2)
-      {
+      switch(lType2) {
       case VACUOUS_EXPR:
         return SIMPLE_EXPR;
         break;
@@ -512,9 +511,9 @@ var_expr *lookup_var (store::Item_t varname)
         ZORBA_ERROR_LOC(XUST0001, aLoc);
         break;
       }
+      break;
     case UPDATE_EXPR:
-      switch(lType2)
-      {
+      switch(lType2) {
       case VACUOUS_EXPR:
         return UPDATE_EXPR;
         break;
@@ -525,8 +524,10 @@ var_expr *lookup_var (store::Item_t varname)
         return UPDATE_EXPR;
         break;
       }
+      break;
+    default:
+      ZORBA_ASSERT(false);
     }
-    ZORBA_ASSERT(false);
     return SIMPLE_EXPR;
   }
   
@@ -567,7 +568,7 @@ expr_t wrap_in_atomization (expr_t e) {
 
     expr_t decl_expr = new fo_expr (var->get_loc(), ctx_decl, qname_expr->clone ());
     if (expr != NULL) {
-      if (expr->isUpdating())
+      if (expr->is_updating())
         ZORBA_ERROR_LOC(XUST0001, expr->get_loc());
 
       expr = new fo_expr (var->get_loc(),
@@ -606,9 +607,7 @@ expr_t wrap_in_globalvar_assign(expr_t e) {
   }
 
   if (! minfo->init_exprs.empty ()) {
-    expr_update_t lUpdateType = e->getUpdateType();
     e = new sequential_expr (e->get_loc(), minfo->init_exprs, e);
-    e->setUpdateType(lUpdateType);
   }
 
   return e;
@@ -1663,27 +1662,6 @@ void end_visit (const CompPIConstructor& v, void* /*visit_state*/) {
   if (v.get_target_expr() != NULL) {
     target = pop_nodestack();
 
-/*    //check if target is a sequence of more than 1 item
-    expr_kind_t target_kind = target->get_expr_kind();
-    if(target_kind == fo_expr_kind)
-    {
-      fo_expr *fo_target = reinterpret_cast<fo_expr*>(&*target);
-      uint32_t  s = fo_target->size();
-      store::Item_t   fname_item = fo_target->get_fname();
-      xqpStringStore  *fname_local = fname_item->getLocalName();
-      if(fname_local->byteEqual(":concatenate", 12))
-      {
-        if(s != 1)
-        {
-          //fire error: target cannot be a sequence of more than 1 item
-          ZORBA_ERROR_LOC(XPTY0004, v.get_location());
-        }
-      }
-//      const expr_t  arg0 = fo_target[0];
-//      expr_kind_t target_kind = target->get_expr_kind();
-      
-    }
-*/
     rchandle<fo_expr> atomExpr = (fo_expr*)wrap_in_atomization (target).getp();
 
     rchandle<cast_expr> castExpr =
@@ -1777,7 +1755,6 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
   }
 #endif
 
-  flwor->setUpdateType(retExpr->getUpdateType());
   flwor->set_return_expr(retExpr);
 
   for (int i = clauses.size() - 1; i >= 0; i--) 
@@ -1819,7 +1796,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
         }
 
         expr_t domainExpr = pop_nodestack();
-        if (domainExpr->isUpdating())
+        if (domainExpr->is_updating())
           ZORBA_ERROR_LOC(XUST0001, loc);
         domainExprs.push_back(domainExpr);
 
@@ -1884,7 +1861,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
         varExprs.push_back(ve);
 
         expr_t domainExpr = pop_nodestack();
-        if (domainExpr->isUpdating())
+        if (domainExpr->is_updating())
           ZORBA_ERROR_LOC(XUST0001, loc);
         domainExprs.push_back(domainExpr);
 
@@ -1980,7 +1957,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
     else if (typeid (c) == typeid (WhereClause)) 
     {
       expr_t whereExpr = pop_nodestack();
-      if (whereExpr->isUpdating())
+      if (whereExpr->is_updating())
         ZORBA_ERROR_LOC(XUST0001, loc);
 
       eclauses.push_back(new where_clause(c.get_location(), whereExpr));
@@ -2078,7 +2055,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
           ZORBA_ERROR_LOC(XQST0076, loc);
 
         expr_t orderExpr = pop_nodestack();
-        if (orderExpr->isUpdating())
+        if (orderExpr->is_updating())
           ZORBA_ERROR_LOC(XUST0001, loc);
 
         modifiers[i] = order_modifier(dirSpec, emptySpec, collation);
@@ -3195,7 +3172,6 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
     if (body != NULL) 
     {
       flwor->set_return_expr(body);
-      flwor->setUpdateType(body->getUpdateType());
     }
     body = &*flwor;
   }
@@ -3213,11 +3189,11 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
   case ParseConstants::fn_read:
   {
     if (lFuncType == ParseConstants::fn_read) {
-      if (body->isUpdating())
+      if (body->is_updating())
         ZORBA_ERROR_LOC(XUST0001, loc);
     }
     else if (lFuncType == ParseConstants::fn_update) {
-      if (body->getUpdateType() == SIMPLE_EXPR)
+      if (! body->is_updating_or_vacuous ())
         ZORBA_ERROR_LOC(XUST0002, loc);
     }
 
@@ -3473,7 +3449,6 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
       }
 
       rchandle<fo_expr> fo_h = new fo_expr (loc, f);
-      fo_h->setUpdateType(fo_h->get_func()->getUpdateType());
 
       // TODO this should be a const iterator
       vector<expr_t>::reverse_iterator iter = arguments.rbegin();
@@ -4158,22 +4133,14 @@ void end_visit (const Expr& v, void* /*visit_state*/) {
     std::auto_ptr<fo_expr> elist_h(create_seq (loc));
     for (int i = 0; i < v.numberOfChildren (); i++) {
       expr_t e_h = pop_nodestack();
-      lUpdateType = update_type_check_for_if(
-                      e_h->getUpdateType(), 
-                      lUpdateType, 
-                      loc);
+      lUpdateType = update_type_check_for_if(e_h->get_update_type(),
+                                             lUpdateType, 
+                                             loc);
       elist_h->add(e_h);
     }
-    elist_h->setUpdateType(lUpdateType);
     nodestack.push(elist_h.release());
   }
 }
-
-// void *begin_visit(const ExprSingle& v)
-// {
-// TRACE_VISIT ();
-//  return no_state;
-// }
 
 void *begin_visit (const ExtensionExpr& v) {
   TRACE_VISIT ();
@@ -4199,14 +4166,13 @@ void end_visit (const IfExpr& v, void* /*visit_state*/) {
   expr_t t_h = pop_nodestack ();
   expr_t c_h = pop_nodestack ();
 
-  if (c_h->isUpdating()) {
+  if (c_h->is_updating()) {
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
 
-  expr_update_t lUpdateType = update_type_check_for_if(
-    t_h->getUpdateType(), 
-    e_h->getUpdateType(),
-    loc);
+  update_type_check_for_if(t_h->get_update_type(), 
+                           e_h->get_update_type(),
+                           loc);
 
 #ifdef ZORBA_DEBUGGER
   if (compilerCB->m_debugger != 0) {
@@ -4216,7 +4182,6 @@ void end_visit (const IfExpr& v, void* /*visit_state*/) {
   }
 #endif
   if_expr *lIfExpr = new if_expr(loc,c_h,t_h,e_h);
-  lIfExpr->setUpdateType(lUpdateType);
   nodestack.push(lIfExpr);
 }
 
@@ -4353,7 +4318,6 @@ void end_visit (const ParenthesizedExpr& v, void* /*visit_state*/) {
     nodestack.push(expr);
   } else {
     fo_expr* lSeq = create_seq (loc);
-    lSeq->setUpdateType(VACUOUS_EXPR);
     nodestack.push(lSeq);
   }
 }
@@ -5628,9 +5592,7 @@ void *begin_visit (const TypeswitchExpr& v) {
     defret = pop_nodestack ();
     if (! defvar_name.empty ()) {
       pop_scope ();
-      expr_update_t lUpdateType = (defret->isUpdating() ? UPDATE_EXPR : SIMPLE_EXPR);
       defret = &*wrap_in_let_flwor (&*sv, defvar, defret);
-      defret->setUpdateType(lUpdateType);
     }
   }
 
@@ -5652,28 +5614,24 @@ void *begin_visit (const TypeswitchExpr& v) {
       pop_scope ();
       expr_t lExpr = pop_nodestack();
       expr_t lFlwor = wrap_in_let_flwor (new cast_expr (loc, &*sv, type), var, lExpr);
-      lFlwor->setUpdateType(lExpr->getUpdateType());
       nodestack.push (lFlwor);
     }
     expr_t lThen = pop_nodestack();
-    expr_update_t lUpdateType = update_type_check_for_if(
-      lThen->getUpdateType(), 
-      defret->getUpdateType(),
-      loc);
+    update_type_check_for_if(lThen->get_update_type(), 
+                             defret->get_update_type(),
+                             loc);
     defret = new if_expr (e_p->get_location (),
                           new instanceof_expr (loc, &*sv, type),
                           lThen, defret);
-    defret->setUpdateType(lUpdateType);
   }
 
   {
     v.get_switch_expr ()->accept (*this);
     expr_t se = pop_nodestack ();
-    if (se->isUpdating()) {
+    if (se->is_updating()) {
       ZORBA_ERROR_LOC(XUST0001, loc);
     }
     expr_t lFlwor = wrap_in_let_flwor (se, sv, defret);
-    lFlwor->setUpdateType(defret->getUpdateType());
     nodestack.push (lFlwor);
   }
 
@@ -5782,7 +5740,7 @@ void *begin_visit (const DeleteExpr& v) {
 void end_visit (const DeleteExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   expr_t lTarget = pop_nodestack();
-  if (lTarget->isUpdating()) {
+  if (lTarget->is_updating()) {
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
   expr_t aDelete = new delete_expr(loc, lTarget);
@@ -5798,7 +5756,7 @@ void end_visit (const InsertExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   expr_t lTarget = pop_nodestack();
   expr_t lSource = pop_nodestack();
-  if (lTarget->isUpdating() || lSource->isUpdating()) {
+  if (lTarget->is_updating() || lSource->is_updating()) {
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
   fo_expr* lEnclosed = new fo_expr(loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
@@ -5821,7 +5779,7 @@ void end_visit (const RenameExpr& v, void* /*visit_state*/) {
   expr_t nameExpr = pop_nodestack();
   expr_t targetExpr = pop_nodestack();
 
-  if (nameExpr->isUpdating() || targetExpr->isUpdating()) {
+  if (nameExpr->is_updating() || targetExpr->is_updating()) {
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
 
@@ -5842,7 +5800,7 @@ void end_visit (const ReplaceExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   expr_t lReplacement = pop_nodestack();
   expr_t lTarget = pop_nodestack();
-  if (lReplacement->isUpdating() || lTarget->isUpdating()) {
+  if (lReplacement->is_updating() || lTarget->is_updating()) {
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
 
@@ -5878,11 +5836,11 @@ void *begin_visit (const TransformExpr& v) {
 void end_visit (const TransformExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   expr_t lReturn = pop_nodestack();
-  if (lReturn->isUpdating()) {
+  if (lReturn->is_updating()) {
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
   expr_t lModify = pop_nodestack();
-  if (lModify->getUpdateType() == SIMPLE_EXPR) {
+  if (! lModify->is_updating_or_vacuous ()) {
     ZORBA_ERROR_LOC(XUST0002, loc);
   }
   std::auto_ptr<transform_expr> lTransform(new transform_expr(loc, lModify, lReturn));
@@ -5890,7 +5848,7 @@ void end_visit (const TransformExpr& v, void* /*visit_state*/) {
   for (size_t i = 0; i < lSize; ++i)
   {
     expr_t lExpr = pop_nodestack();
-    if (lExpr->isUpdating()) {
+    if (lExpr->is_updating()) {
       ZORBA_ERROR_LOC(XUST0001, loc);
     }
     varref_t lVarExpr = pop_nodestack_var ();

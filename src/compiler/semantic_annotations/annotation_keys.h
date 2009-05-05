@@ -33,6 +33,8 @@ enum {
   EXPENSIVE_OP,
   UNFOLDABLE_OP,
   NONDISCARDABLE_EXPR,
+
+  CONCAT_EXPR,  // for fo_expr (op:concatenate)
   
   MAX_ANNOTATION
 };

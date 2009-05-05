@@ -103,11 +103,12 @@ public:
     sequence.insert (sequence.begin(), front);
   }
 
-  bool is_updating() const;
+  bool is_updating_kind() const;
 
   bool cache_compliant () { return true; }
 
   virtual xqtref_t return_type_impl (static_context *);
+  void compute_upd_seq_kind () const;
 
   expr_iterator_data *make_iter ();
   void next_iter (expr_iterator_data&);
@@ -691,6 +692,7 @@ public:
   std::ostream& put(std::ostream&) const;
 
   xqtref_t return_type_impl (static_context *sctx);
+  void compute_upd_seq_kind () const;
   virtual expr_t clone(substitution_t &s);
 };
 
@@ -772,8 +774,9 @@ public:
     assert (f != NULL);
   }
 
+  static fo_expr *create_seq (const QueryLoc &);
+  bool is_concatenation () const;
 
-public:
   bool cache_compliant () { return true; }
 
   expr_iterator_data *make_iter ();
@@ -802,7 +805,6 @@ public:
   std::vector<expr_t>::iterator begin() { invalidate (); return argv.begin(); }
   std::vector<expr_t>::iterator end() { invalidate (); return argv.end(); }
 
-public:
   const function* get_func() const { return func; }
   void set_func (const function *f) { invalidate (); func = f; }
   const signature &get_signature () const;
@@ -813,6 +815,7 @@ public:
   std::ostream& put(std::ostream&) const;
 
   virtual xqtref_t return_type_impl(static_context *sctx);
+  void compute_upd_seq_kind () const;
   virtual expr_t clone(substitution_t &s);
 };
 
@@ -1413,17 +1416,15 @@ public:
 
   expr_kind_t get_expr_kind () const { return insert_expr_kind; }
 
-public:
   store::UpdateConsts::InsertType getType() const { return theType; }
 	expr_t getSourceExpr() const { return theSourceExpr; }
 	expr_t getTargetExpr() const { return theTargetExpr; }
   
-
-public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
-  bool is_updating() const { return true; }
+  bool is_updating_kind() const { return true; }
+  void compute_upd_seq_kind () const;
 
   virtual expr_t clone (substitution_t& s);
 };
@@ -1453,7 +1454,8 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
-  bool is_updating() const { return true; }
+  bool is_updating_kind() const { return true; }
+  void compute_upd_seq_kind () const;
 
   virtual expr_t clone (substitution_t& s);
 };
@@ -1490,7 +1492,8 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
-  bool is_updating() const { return true; }
+  bool is_updating_kind() const { return true; }
+  void compute_upd_seq_kind () const;
 
   virtual expr_t clone (substitution_t& s);
 };
@@ -1522,7 +1525,8 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
-  bool is_updating() const { return true; }
+  bool is_updating_kind() const { return true; }
+  void compute_upd_seq_kind () const;
 
   virtual expr_t clone (substitution_t& s);
 };
@@ -1542,7 +1546,6 @@ public:
   expr_t             getExpr() const { return theExpr; }
 
   std::ostream& put(std::ostream&) const;
-  bool is_updating() const { return true; }
 };
 
 // [249] [http://www.w3.org/TR/xqupdate/#prod-xquery-TransformExpr]
@@ -1594,8 +1597,6 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
 	std::ostream& put(std::ostream&) const;
-  bool is_updating() const { return false; }
-
 };
 
 class exit_expr : public expr {

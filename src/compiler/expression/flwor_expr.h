@@ -627,11 +627,9 @@ public:
     :
     expr(loc),
     theIsGeneral(general)
-  {
-  }
+  {}
 
-  expr_kind_t get_expr_kind() const 
-  {
+  expr_kind_t get_expr_kind() const {
     return (theIsGeneral ? gflwor_expr_kind : flwor_expr_kind);
   }
 
@@ -644,6 +642,8 @@ public:
   void set_return_expr(expr_t e) { theReturnExpr = e; }
 
   xqtref_t return_type_impl(static_context* sctx);
+
+  void compute_upd_seq_kind () const;
 
   ulong num_clauses() const { return theClauses.size(); }
 

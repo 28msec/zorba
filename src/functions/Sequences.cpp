@@ -46,7 +46,7 @@ namespace zorba {
   public:
     op_concatenate(const signature& sig) : function (sig) {}
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-      return new FnConcatIterator(loc, argv, ann.isUpdating());
+      return new FnConcatIterator(loc, argv, ann.is_updating());
     }
     xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
     void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;

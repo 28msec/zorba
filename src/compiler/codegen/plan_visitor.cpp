@@ -1249,7 +1249,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
                                        groupClause.release(), 
                                        orderClause.release(),
                                        returnIter,
-                                       flworExpr.isUpdating());
+                                       flworExpr.is_updating());
   push_itstack(flworIter);
 }
 
@@ -1395,7 +1395,7 @@ void end_visit (if_expr& v) {
   PlanIter_t iterThen = pop_itstack();
   PlanIter_t iterCond = pop_itstack();
   PlanIter_t iterIfThenElse = new IfThenElseIterator(
-    qloc, iterCond, iterThen, iterElse, v.isUpdating());
+    qloc, iterCond, iterThen, iterElse, v.is_updating());
   push_itstack(&*iterIfThenElse);
 }
 

@@ -306,7 +306,7 @@ inline bool already_folded (expr_t e, RewriterContext& rCtx)
   if (e->get_expr_kind () != fo_expr_kind)
     return false;
   const fo_expr *fo = e.dyn_cast<fo_expr> ().getp ();
-  return fo->get_func () == LOOKUP_OPN ("concatenate") && fo->size () == 0;
+  return fo->is_concatenation () && fo->size () == 0;
 }
 
 inline bool standalone_expr (expr_t e) 
@@ -334,7 +334,7 @@ RULE_REWRITE_PRE(FoldConst)
       folded =
         result.size () == 1
         ? ((expr *) (new const_expr (LOC (node), result [0])))
-        : ((expr *) (new fo_expr (LOC (node), LOOKUP_OPN ("concatenate"))));
+        : ((expr *) (fo_expr::create_seq (LOC (node))));
     }
     return folded;
   }

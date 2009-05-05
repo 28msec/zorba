@@ -144,8 +144,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       return fix_if_annotations(new if_expr(LOC(node),
                                             oldWhere,
                                             &flwor,
-                                            new fo_expr(LOC(node),
-                                                        LOOKUP_OPN("concatenate"))));
+                                            fo_expr::create_seq (LOC(node))));
     }
   }
 
@@ -186,7 +185,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       if (is_let || quant_cnt < 2) 
       {
         if (quant_cnt == 0)
-          return new fo_expr(LOC(node), LOOKUP_OPN("concatenate"));
+          return fo_expr::create_seq (LOC(node));
 
         if (pvar != NULL)
           MODIFY(subst_vars(rCtx,
@@ -261,8 +260,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       result = fix_if_annotations(new if_expr(LOC(whereExpr),
                                               whereExpr,
                                               result,
-                                              new fo_expr(LOC(whereExpr),
-                                                          LOOKUP_OPN("concatenate"))));
+                                              fo_expr::create_seq(LOC(whereExpr))));
     return result;
   }
 

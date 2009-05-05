@@ -29,8 +29,7 @@
 
 namespace zorba {
 
-enum expr_kind_t 
-{
+enum expr_kind_t {
   wrapper_expr_kind,
   sequential_expr_kind,
   exit_expr_kind,
@@ -122,8 +121,7 @@ private:
 /*******************************************************************************
   Base class for the expression tree node hierarchy
 ********************************************************************************/
-class expr : public SimpleRCObject, public AnnotationHolder 
-{
+class expr : public SimpleRCObject, public AnnotationHolder {
 public:
   typedef rchandle<expr> expr_t;
 
@@ -145,9 +143,15 @@ protected:
       xqtref_t t;
       static_context *sctx;
     } type;
+    mutable struct {
+      bool valid;
+      bool vacuous;
+      bool updating;
+      bool sequential;
+    } upd_seq_kind;
   } cache;
 
-  void invalidate () { cache.type.valid = false; }
+  void invalidate () { cache.type.valid = cache.upd_seq_kind.valid = false; }
 
   // Returns true if all modifiers, as well as all accessors that permit future
   // modifications of child expressions, call invalidate(). Note that expr
@@ -175,7 +179,14 @@ public:
   expr_t clone();
   virtual expr_t clone(substitution_t& substitution);
 
-  virtual bool is_updating() const { return false; }
+  virtual void compute_upd_seq_kind () const;
+  virtual bool is_updating_kind () const { return false; }
+  virtual bool is_updating () const;
+  virtual bool is_sequential () const;
+  virtual bool is_vacuous () const;
+  virtual bool is_simple () const;
+  virtual bool is_updating_or_vacuous () const;
+  virtual expr_update_t get_update_type () const;
 
 protected:
   expr(const QueryLoc&);

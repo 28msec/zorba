@@ -67,7 +67,7 @@ static inline expr::expr_t wrap_in_type_conversion(expr::expr_t e, xqtref_t type
 
 static inline void checkNonUpdating(const expr* lExpr)
 {
-  if (lExpr != 0 && lExpr->isUpdating())
+  if (lExpr != 0 && lExpr->is_updating())
     ZORBA_ERROR_LOC(XUST0001, lExpr->get_loc());
 }
 
@@ -225,7 +225,7 @@ bool begin_visit (fo_expr& node)
   int n = node.size();
   for(int i = 0; i < n; ++i) {
     expr::expr_t arg = node[i];
-    if (!node.isUpdating())
+    if (!node.is_updating())
       checkNonUpdating(&*arg);
     const xqtref_t& arg_type = sign[i];
     xqtref_t arg_prime_type = TypeOps::prime_type(*arg_type);
