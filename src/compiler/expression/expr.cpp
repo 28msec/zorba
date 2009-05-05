@@ -2205,7 +2205,9 @@ expr_t wrapper_expr::clone (substitution_t& subst) {
 }
 
 expr_t fo_expr::clone (substitution_t& subst) {
-  fo_expr *fo = new fo_expr (get_loc (), get_func ());
+  fo_expr *fo = is_concatenation ()
+    ? create_seq (get_loc ())
+    : new fo_expr (get_loc (), get_func ());
   for (unsigned i = 0; i < argv.size (); i++)
     fo->add (argv [i]->clone (subst));
   return fo;
