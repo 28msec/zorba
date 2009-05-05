@@ -219,13 +219,13 @@ IF(ZORBA_NO_BIGNUMBERS)
 ENDIF(ZORBA_NO_BIGNUMBERS)
 
 IF(ZORBA_NO_XMLSCHEMA)
-  SET_TESTS_PROPERTIES (test/rbkt/schemas/userDefinedAtomicType01 PROPERTIES WILL_FAIL TRUE)
+  SET_TESTS_PROPERTIES (test/rbkt/zorba/schemas/userDefinedAtomicType01 PROPERTIES WILL_FAIL TRUE)
 ENDIF(ZORBA_NO_XMLSCHEMA)
 
 IF(ZORBA_NO_UNICODE)
-  SET_TESTS_PROPERTIES (test/rbkt/string/CodepointToStringFunc/CodepointToStringFunc1 PROPERTIES WILL_FAIL TRUE)
-  SET_TESTS_PROPERTIES (test/rbkt/string/CompareFunc/CompareFunc3 PROPERTIES WILL_FAIL TRUE)
-  SET_TESTS_PROPERTIES (test/rbkt/string/StringToCodepointFunc/StringToCodepointFunc1 PROPERTIES WILL_FAIL TRUE)
+  SET_TESTS_PROPERTIES (test/rbkt/zorba/string/CodepointToStringFunc/CodepointToStringFunc1 PROPERTIES WILL_FAIL TRUE)
+  SET_TESTS_PROPERTIES (test/rbkt/zorba/string/CompareFunc/CompareFunc3 PROPERTIES WILL_FAIL TRUE)
+  SET_TESTS_PROPERTIES (test/rbkt/zorba/string/StringToCodepointFunc/StringToCodepointFunc1 PROPERTIES WILL_FAIL TRUE)
 ENDIF(ZORBA_NO_UNICODE)
 ENDIF(NOT ZORBA_XQUERYX)
 
