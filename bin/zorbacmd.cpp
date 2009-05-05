@@ -394,13 +394,13 @@ void TimingInfo::stopTimer(TimerKind kind, ulong iteration)
     break;
   }
   case COMP_TIMER: {
-    STOP_TIMER(Init);
+    STOP_TIMER(Comp);
     compTime += diffTime->getTotalMilliseconds();
     compClock += diffClock;
     break;
   }
   case EXEC_TIMER: {
-    STOP_TIMER(Init);
+    STOP_TIMER(Exec);
     execTime += diffTime->getTotalMilliseconds();
     execClock += diffClock;
     break;
@@ -435,7 +435,7 @@ std::ostream& TimingInfo::print(std::ostream& os)
   double uClock = unloadClock / timeDiv;
   double tClock = totalClock / timeDiv;
   
-  os << "Engine Startup Time: " << initTime
+  os << "Engine Startup Time     : " << initTime
      << " (user: " << initClock << ")"
      << " milliseconds" << std::endl;
 
@@ -484,7 +484,8 @@ int executeQueryWithTiming(
   Zorba_SerializerOptions lSerOptions = Zorba_SerializerOptions::SerializerOptionsFromStringParams(properties.getSerializerParameters());
   createSerializerOptions(lSerOptions, properties);
 
-  for (ulong i = 0; i < timing.numExecs; ++i) {
+  for (ulong i = 0; i < timing.numExecs; ++i) 
+  {
     qfile.clear();
     qfile.seekg(0); // go back to the beginning
     assert (qfile.tellg() >= 0);
@@ -535,11 +536,9 @@ int executeQueryWithTiming(
     //
     // Run the query
     //
-    try {
-      if (i > 0 || lNumExecutions == 1) {
-        zorba::DateTime::getLocalTime(timing.startExecTime);
-        zorbatm::get_timeinfo(timing.startExecClock);
-      }
+    try 
+    {
+      timing.startTimer(TimingInfo::EXEC_TIMER, i);
 
       if (query->isUpdateQuery()) {
         query->applyUpdates();
@@ -550,20 +549,11 @@ int executeQueryWithTiming(
           query->serialize(outputStream, &lSerOptions);
       }
       
-      if (i > 0 || lNumExecutions == 1) {
-        zorba::DateTime::getLocalTime(timing.stopExecTime);
-        std::auto_ptr<zorba::Duration> diffTime; 
-        diffTime.reset(timing.stopExecTime.subtractDateTime(&timing.startExecTime, 0));
-        timing.execTime += diffTime->getTotalMilliseconds();
+      timing.stopTimer(TimingInfo::EXEC_TIMER, i);
 
+      if (i > 0 || lNumExecutions == 1) 
+      {
         timing.loadTime += query->getDocLoadingTime();
-
-        zorbatm::get_timeinfo(timing.stopExecClock);
-        double diffClock = zorbatm::get_time_elapsed
-        (zorbatm::extract_user_time_detail(timing.startExecClock),
-         zorbatm::extract_user_time_detail(timing.stopExecClock));
-        timing.execClock += diffClock;
-
         timing.loadClock += query->getDocLoadingUserTime();
       }
     } catch (zorba::QueryException& qe) {
@@ -577,25 +567,11 @@ int executeQueryWithTiming(
     //
     // Delete all loaded docs from the store
     //
-    if (i > 0 || lNumExecutions == 1) {
-      zorba::DateTime::getLocalTime(timing.startUnloadTime);
-      zorbatm::get_timeinfo(timing.startUnloadClock);
-    }
+    timing.startTimer(TimingInfo::UNLOAD_TIMER, i);
 
     store->deleteAllDocuments();
 
-    if (i > 0 || lNumExecutions == 1) {
-      zorba::DateTime::getLocalTime(timing.stopUnloadTime);
-      std::auto_ptr<zorba::Duration> diffTime;
-      diffTime.reset(timing.stopUnloadTime.subtractDateTime(&timing.startUnloadTime, 0));
-      timing.unloadTime += diffTime->getTotalMilliseconds();
-
-      zorbatm::get_timeinfo(timing.stopUnloadClock);
-      double diffClock = zorbatm::get_time_elapsed
-      (zorbatm::extract_user_time_detail(timing.startUnloadClock),
-       zorbatm::extract_user_time_detail(timing.stopUnloadClock));
-      timing.unloadClock += diffClock;
-    }
+    timing.stopTimer(TimingInfo::UNLOAD_TIMER, i);
 
     timing.stopTimer(TimingInfo::TOTAL_TIMER, i);
   }
@@ -730,6 +706,9 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   // Start the engine
+
+  timing.startTimer(TimingInfo::INIT_TIMER, 2);
+
 #ifndef ZORBA_MINIMAL_STORE
   zorba::simplestore::SimpleStore* store = zorba::simplestore::SimpleStoreManager::getStore();
 #else
@@ -738,8 +717,10 @@ int _tmain(int argc, _TCHAR* argv[])
 
   zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(store);
 
+  timing.stopTimer(TimingInfo::INIT_TIMER, 2);
 
   // For each query ...
+
   int queryNo = 1;
   ZorbaCMDProperties::QueriesOrFiles_t::const_iterator lIter;
   for (lIter = lProperties.queriesOrFilesBegin();
