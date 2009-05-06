@@ -933,14 +933,14 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   if (!consumeNext(result, theChild.getp(), planState))
   {
     ZORBA_ERROR_LOC_DESC(XPTY0004, loc, 
-                         "Empty sequences cannot be cased to QName.");
+                         "Empty sequences cannot be cast to QName.");
   }
   valid = true;
 
   if (consumeNext(temp, theChild, planState))
   {
     ZORBA_ERROR_LOC_DESC(XPTY0004, loc, 
-                         "Non single sequences cannot be cased to QName.");
+                         "Sequences with more than one item cannot be cast to QName.");
   }
 
   lItemType = planState.theCompilerCB->m_sctx->get_typemanager()->
@@ -954,7 +954,7 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
            !TypeOps::is_equal(*lItemType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
   {
     ZORBA_ERROR_LOC_DESC(XPTY0004, loc, 
-                         "Item cannot be casted to QName.");
+                         "Item cannot be cast to QName.");
   }
   else
   {
@@ -967,7 +967,7 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
     {
       // the returned error codes are wrong for name casting => they must be changed
       ZORBA_ERROR_LOC_DESC(XQDY0074, loc, 
-                           "Item cannot be casted to QName.");
+                           "Item cannot be cast to QName.");
     }
   }
 

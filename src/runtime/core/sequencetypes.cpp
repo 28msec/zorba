@@ -164,7 +164,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         theQuantifier == TypeConstants::QUANT_ONE)
     {
       ZORBA_ERROR_LOC_DESC( XPTY0004, loc, 
-        "Empty sequences cannot be casted to a type with quantifier ONE or PLUS!"
+        "Empty sequences cannot be cast to a type with quantifier ONE or PLUS!"
       );
     }
   }
@@ -192,7 +192,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (consumeNext(lItem, theChild.getp(), planState))
     {
       ZORBA_ERROR_LOC_DESC( XPTY0004, loc, 
-                        "Sequence with more than one item cannot be casted to a type with quantifier ONE or QUESTION!");
+                        "Sequence with more than one item cannot be cast to a type with quantifier ONE or QUESTION!");
     }
     
     if (theIsSimpleType) {
