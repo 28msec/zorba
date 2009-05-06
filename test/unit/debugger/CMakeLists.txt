@@ -38,8 +38,9 @@ SET (TestsToRun ${DebuggerTests})
 REMOVE (TestsToRun DebuggerTests.cpp)
 
 # add all the ADD_TEST for each testing
-FOREACH (test ${TestToRun})
+FOREACH (test ${TestsToRun})
 	GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
 	MESSAGE(STATUS ${TName})
-	ADD_TEST(${TName} ${DebuggerTests} ${TName})
+  	SET (TestName "test/unit/debugger/${TName}")
+	ADD_TEST(${TestName} ${DebuggerTests_EXE_PATH} ${TName})
 ENDFOREACH(test)
