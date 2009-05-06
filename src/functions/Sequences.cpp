@@ -76,9 +76,7 @@ namespace zorba {
   class fn_distinct_values : public single_seq_function {
   public:
     fn_distinct_values(const signature& sig) : single_seq_function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-      return new FnDistinctValuesIterator(loc, argv);
-    }
+    DEFAULT_CODEGEN (FnDistinctValuesIterator)
     ZORBA_PRODUCES_SORTED
     ZORBA_PRODUCES_DISTINCT
   };
@@ -89,9 +87,7 @@ namespace zorba {
   class fn_insert_before : public function {
   public:
     fn_insert_before(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-      return new FnInsertBeforeIterator(loc, argv);
-    }
+    DEFAULT_CODEGEN (FnInsertBeforeIterator)
     bool propagatesInputToOutput(uint32_t aProducer) const { return 1 != aProducer; }
   };
 
@@ -101,9 +97,7 @@ namespace zorba {
   class fn_remove : public single_seq_opt_function {
   public:
     fn_remove(const signature& sig) : single_seq_opt_function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-      return new FnRemoveIterator(loc, argv);
-    }
+    DEFAULT_CODEGEN (FnRemoveIterator)
   };
 
 
@@ -112,9 +106,7 @@ namespace zorba {
   class fn_reverse : public single_seq_function {
   public:
     fn_reverse(const signature& sig) : single_seq_function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-      return new FnReverseIterator(loc, argv);
-    }
+    DEFAULT_CODEGEN (FnReverseIterator)
     ZORBA_NOT_PRODUCES_SORTED
   };
 
@@ -124,9 +116,7 @@ namespace zorba {
   class fn_subsequence : public single_seq_opt_function {
   public:
     fn_subsequence(const signature&sig) : single_seq_opt_function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-      return new FnSubsequenceIterator(loc, argv);
-    }
+    DEFAULT_CODEGEN (FnSubsequenceIterator);
     void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
   };
 
@@ -145,9 +135,7 @@ namespace zorba {
     fn_one_or_more (const signature& sig)
       : single_seq_function (sig)
     {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-      return new FnOneOrMoreIterator (loc, argv);
-    }
+    DEFAULT_CODEGEN (FnOneOrMoreIterator)
   };
 
   //15.2.3 fn:exactly-one
@@ -171,9 +159,7 @@ namespace zorba {
   class fn_deep_equal : public function {
   public:
     fn_deep_equal(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-      return new FnDeepEqualIterator(loc, argv);
-    }
+    DEFAULT_CODEGEN (FnDeepEqualIterator)
     ZORBA_NOT_PROPAGATES_I2O
   };
 
@@ -276,9 +262,7 @@ namespace zorba {
   class fn_parse_func : public function {
   public:
     fn_parse_func(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-      return new FnParseIterator(loc, argv);
-    }
+    DEFAULT_CODEGEN (FnParseIterator)
     virtual bool isSource() const { return true; }
     bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
   };
@@ -288,9 +272,7 @@ namespace zorba {
   class fn_doc_available_func : public function {
   public:
     fn_doc_available_func(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-      return new FnDocAvailableIterator(loc, argv);
-    }
+    DEFAULT_CODEGEN (FnDocAvailableIterator)
     ZORBA_NOT_PROPAGATES_I2O
   };
 

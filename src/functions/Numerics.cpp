@@ -81,19 +81,21 @@ public:
   }
 };
 
-#define DECL_SPECIFIC_OPS( op, opc, t, xqt )                        \
+#define DECL_SPECIFIC_OP( op, opc, t, xqt )                        \
   typedef bin_num_specific_arith_func<opc, TypeConstants::XS_##xqt>  \
   op_numeric_##op##_##t;
 #define DECL_ALL_SPECIFIC_OPS( op, opc )          \
-  DECL_SPECIFIC_OPS (op, opc, double, DOUBLE);    \
-  DECL_SPECIFIC_OPS (op, opc, decimal, DECIMAL);  \
-  DECL_SPECIFIC_OPS (op, opc, float, FLOAT);      \
-  DECL_SPECIFIC_OPS (op, opc, integer, INTEGER)  \
+  DECL_SPECIFIC_OP (op, opc, double, DOUBLE);    \
+  DECL_SPECIFIC_OP (op, opc, decimal, DECIMAL);  \
+  DECL_SPECIFIC_OP (op, opc, float, FLOAT);      \
+  DECL_SPECIFIC_OP (op, opc, integer, INTEGER)  \
 
   DECL_ALL_SPECIFIC_OPS (add, AddOperation);
   DECL_ALL_SPECIFIC_OPS (subtract, SubtractOperation);
   DECL_ALL_SPECIFIC_OPS (multiply, MultiplyOperation);
   DECL_ALL_SPECIFIC_OPS (divide, DivideOperation);
+#undef DECL_ALL_SPECIFIC_OPS
+#undef DECL_SPECIFIC_OP
 
 static const function *specialize_numeric (static_context *sctx, const std::vector<xqtref_t>& argTypes, const char *op) {
   xqtref_t t0 = argTypes[0];
