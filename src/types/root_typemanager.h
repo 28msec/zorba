@@ -95,20 +95,25 @@ public:
    *  the "item" type or one of the 6 node types. Note: these types are not part
    *  of XMLSchema, and as a result, do not have qnames.
    */
-#define ALL_NODE_OR_ITEM_TYPE_DECL(basename) \
-    xqtref_t basename##_TYPE_ONE; \
-    xqtref_t basename##_TYPE_QUESTION; \
-    xqtref_t basename##_TYPE_STAR; \
-    xqtref_t basename##_TYPE_PLUS;
+#define ALL_NODE_OR_ITEM_TYPE_DECL(basename)    \
+  xqtref_t basename##_TYPE_ONE;                 \
+  xqtref_t basename##_TYPE_QUESTION;            \
+  xqtref_t basename##_TYPE_STAR;                \
+  xqtref_t basename##_TYPE_PLUS
+#define ALL_NODE_TYPE_DECL(basename)                  \
+  ALL_NODE_OR_ITEM_TYPE_DECL(basename);               \
+  ALL_NODE_OR_ITEM_TYPE_DECL(basename##_UNTYPED_CONT)
 
-  ALL_NODE_OR_ITEM_TYPE_DECL(ITEM)
-  ALL_NODE_OR_ITEM_TYPE_DECL(ANY_NODE)
-  ALL_NODE_OR_ITEM_TYPE_DECL(DOCUMENT)
-  ALL_NODE_OR_ITEM_TYPE_DECL(ELEMENT)
-  ALL_NODE_OR_ITEM_TYPE_DECL(ATTRIBUTE)
-  ALL_NODE_OR_ITEM_TYPE_DECL(TEXT)
-  ALL_NODE_OR_ITEM_TYPE_DECL(PI)
-  ALL_NODE_OR_ITEM_TYPE_DECL(COMMENT)
+  ALL_NODE_OR_ITEM_TYPE_DECL(ITEM);
+  ALL_NODE_TYPE_DECL(ANY_NODE);
+  ALL_NODE_TYPE_DECL(DOCUMENT);
+  ALL_NODE_TYPE_DECL(ELEMENT);
+  ALL_NODE_TYPE_DECL(ATTRIBUTE);
+  ALL_NODE_TYPE_DECL(TEXT);
+  ALL_NODE_TYPE_DECL(PI);
+  ALL_NODE_TYPE_DECL(COMMENT);
+
+#undef ALL_NODE_TYPE_DECL
 #undef ALL_NODE_OR_ITEM_TYPE_DECL
 
 
