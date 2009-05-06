@@ -150,38 +150,7 @@ DECL(sctx, fn_error,
 //end Errror function
 
 }
-void BuiltinFunctionLibrary::populateContext_Nodes(static_context *sctx)
-{
-//begin functions on nodes
-DECL(sctx, fn_local_name,
-     (createQName(XQUERY_FN_NS, "fn", "local-name"),
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
-DECL(sctx, fn_namespace_uri,
-     (createQName(XQUERY_FN_NS, "fn", "namespace-uri"),
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
-
-// lang / - handled by translator
-DECL(sctx, fn_lang,
-     (createQName(XQUERY_FN_NS, "fn", "lang"),
-      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
-
-DECL(sctx, fn_collection,
-     (createQName(XQUERY_FN_NS, "fn", "collection"),
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
-
-DECL(sctx, fn_collection,
-     (createQName(XQUERY_FN_NS, "fn", "collection"),
-      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
-//end functions on nodes
-
-
-}
 void BuiltinFunctionLibrary::populateContext_AnyURI(static_context *sctx)
 {
 //begin functions on AnyURI
@@ -316,16 +285,6 @@ void BuiltinFunctionLibrary::populateContext_Zorba(static_context *sctx)
 DECL(sctx, zor_numgen,
      (createQName(XQUERY_FN_NS,"fn", "zorba:numgen"),
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
-
-DECL(sctx, node_reference,
-     (createQName(ZORBA_NODEREF_FN_NS, "fn-zorba", "node-reference"),
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
-
-DECL(sctx, node_by_reference,
-     (createQName(ZORBA_NODEREF_FN_NS, "fn-zorba", "node-by-reference"),
-      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION));
 
 // end zorba functions
 

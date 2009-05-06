@@ -22,54 +22,7 @@
 
 namespace zorba {
 
-class node_reference : public function
-{
-public:
-  node_reference(const signature&); 
-
-  PlanIter_t codegen(
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv,
-        AnnotationHolder &ann) const;
-};
-
-
-class node_by_reference : public function
-{
-public:
-  node_by_reference(const signature&);    
-
-  PlanIter_t codegen(
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv,
-        AnnotationHolder &ann) const;
-};
-
-
-  class fn_local_name : public function {
-  public:
-    fn_local_name(const signature&);    
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
-
-  class fn_namespace_uri : public function {
-  public:
-    fn_namespace_uri(const signature&);
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
-
-  class fn_lang : public function {
-  public:
-    fn_lang(const signature&);
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
-
-  class fn_collection : public function {
-  public:
-    fn_collection(const signature&);
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
-  };
+void populateContext_Nodes(static_context *sctx);
 
 }
 

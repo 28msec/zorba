@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include "system/globalenv.h"
+
 #include "functions/Nodes.h"
+#include "functions/function_impl.h"
 
 #include "runtime/nodes/NodesImpl.h"
 
@@ -24,95 +28,89 @@ using namespace std;
 namespace zorba {
 
 
-/*******************************************************************************
-  zorba:node-reference
-********************************************************************************/
-node_reference::node_reference(const signature& sig)
-  :
-  function(sig)
+class node_reference : public function
 {
-}
+public:
+  node_reference(const signature &sig) : function (sig) {} 
+  DEFAULT_CODEGEN (NodeReferenceIterator)
+};
 
 
-PlanIter_t node_reference::codegen(
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann) const
+class node_by_reference : public function
 {
-  return new NodeReferenceIterator(loc, argv);
-}
+public:
+  node_by_reference(const signature &sig) : function (sig) {}    
+  DEFAULT_CODEGEN (NodeByReferenceIterator)
+};
 
 
-/*******************************************************************************
-  zorba:node-by-reference
-********************************************************************************/
-node_by_reference::node_by_reference(const signature& sig)
-  :
-  function(sig)
+  class fn_local_name : public function {
+  public:
+    fn_local_name(const signature &sig) : function (sig) {}
+    DEFAULT_CODEGEN (FnLocalNameIterator)
+  };
+
+  class fn_namespace_uri : public function {
+  public:
+    fn_namespace_uri(const signature &sig) : function (sig) {}
+    DEFAULT_CODEGEN (FnNamespaceUriIterator)
+  };
+
+  class fn_lang : public function {
+  public:
+    fn_lang(const signature &sig) : function (sig) {}
+    DEFAULT_CODEGEN (FnLangIterator)
+  };
+
+  class fn_collection : public function {
+  public:
+    fn_collection(const signature &sig) : function (sig) {}
+    bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
+    DEFAULT_CODEGEN (FnCollectionIterator)
+  };
+
+
+
+void populateContext_Nodes(static_context *sctx)
 {
-}
+//begin functions on nodes
+DECL(sctx, fn_local_name,
+     (createQName(XQUERY_FN_NS, "fn", "local-name"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
+DECL(sctx, fn_namespace_uri,
+     (createQName(XQUERY_FN_NS, "fn", "namespace-uri"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
 
-PlanIter_t node_by_reference::codegen(
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann) const
-{
-  return new NodeByReferenceIterator(loc, argv);
-}
+// lang / - handled by translator
+DECL(sctx, fn_lang,
+     (createQName(XQUERY_FN_NS, "fn", "lang"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
+DECL(sctx, fn_collection,
+     (createQName(XQUERY_FN_NS, "fn", "collection"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
-/*******************************************************************************
-  14.2 fn:local-name
-********************************************************************************/
+DECL(sctx, fn_collection,
+     (createQName(XQUERY_FN_NS, "fn", "collection"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+//end functions on nodes
 
-fn_local_name::fn_local_name(const signature& sig)
-  :
-  function(sig)
-{
-}
+DECL(sctx, node_reference,
+     (createQName(ZORBA_NODEREF_FN_NS, "fn-zorba", "node-reference"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
 
+DECL(sctx, node_by_reference,
+     (createQName(ZORBA_NODEREF_FN_NS, "fn-zorba", "node-by-reference"),
+      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION));
 
-PlanIter_t fn_local_name::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnLocalNameIterator ( loc, argv );
-}
-
-
-
-/*******************************************************************************
-  14.3 fn:namespace-uri
-********************************************************************************/
-fn_namespace_uri::fn_namespace_uri(const signature& sig)
-  : function(sig) { }
-
-PlanIter_t fn_namespace_uri::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnNamespaceUriIterator ( loc, argv );
-}
-
-
-
-/*******************************************************************************
-  14.5 fn:lang
-********************************************************************************/
-fn_lang::fn_lang (const signature &sig) : function (sig) {}
-
-
-PlanIter_t fn_lang::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnLangIterator(loc, argv);
-}
-
-
-/*******************************************************************************
-  15.5.6 fn:collection
-********************************************************************************/
-fn_collection::fn_collection (const signature &sig) : function (sig) {}
-
-PlanIter_t fn_collection::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnCollectionIterator(loc, argv);
 }
 
 }/* namespace zorba */

@@ -32,7 +32,6 @@ private:
 
   static void populateContext_Accesors(static_context *sctx);
   static void populateContext_Error(static_context *sctx);
-  static void populateContext_Nodes(static_context *sctx);
   static void populateContext_AnyURI(static_context *sctx);
   static void populateContext_Context(static_context *sctx);
   static void populateContext_QNames(static_context *sctx);
