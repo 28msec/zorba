@@ -25,6 +25,8 @@
 #include "debugger/utils.h"
 #include "debugger/debugger_protocol.h"
 
+#include "synchronous_logger.h"
+
 namespace zorba
 {
 /**
@@ -163,7 +165,7 @@ class MessageFactory
         //unserialize the packet
         lMessage =  MessageFactory::buildMessage( lPacket.get(), length + MESSAGE_HEADER_SIZE );
       } catch ( DebuggerSocketException &e ) {
-        std::cerr << e.what() << std::endl;
+        synchronous_logger::cerr << e.what() << "\n";
         return new ReplyMessage(0, DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT);
       }
       return lMessage;
@@ -294,8 +296,8 @@ class MessageFactory
           }
         } 
       } catch(MessageFormatException &e) {
-          std::cerr << "The following error happened: " << std::endl;
-          std::cerr << e.what() << std::endl;
+          synchronous_logger::cerr << "The following error happened:\n";
+          synchronous_logger::cerr << e.what() << "\n";
           return new ReplyMessage(0, DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT);
       }
     }

@@ -223,10 +223,10 @@ ReplyMessage *ZorbaDebuggerClientImpl::send( AbstractCommandMessage * aMessage )
       return lReplyMessage;
     } else {
     //TODO: print the error message.
-      std::cerr << "Internal error occured" << std::endl;
+      synchronous_logger::cerr << "Internal error occured\n";
     }
   } catch( DebuggerSocketException &e ) {
-    std::cerr << "Request client:" << e.what() << std::endl;
+    synchronous_logger::cerr << "Request client:" << e.what() << "\n";
   }
   return 0;
 }
@@ -342,7 +342,7 @@ QueryLocation_t ZorbaDebuggerClientImpl::addBreakpoint(QueryLoc& aLocation)
       return location;
     }
   } else {
-    std::cerr << "An error occured" << std::endl;
+    synchronous_logger::cerr << "An error occured\n";
   }
   return 0;  
 }

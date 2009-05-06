@@ -39,7 +39,9 @@
 #include "store/api/item_factory.h"
 
 
+#ifndef WIN32
 #include <sys/time.h>
+#endif
 
 #include <algorithm>
 

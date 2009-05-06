@@ -21,4 +21,5 @@ SET(DEBUGGER_SRCS
     debugger_exception.cpp
     debugger_protocol.cpp
     profiler.cpp
+    synchronous_logger.cpp
 )

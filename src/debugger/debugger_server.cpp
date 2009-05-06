@@ -52,6 +52,8 @@
 
 #include "common/shared_types.h"
 
+#include "debugger/synchronous_logger.h"
+
 #ifdef WIN32
 #include <windows.h>
 #define sleep(s) Sleep(s*1000)
@@ -116,7 +118,7 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
   lSock.reset(theRequestServerSocket->accept());
   assert( lSock.get() != 0 );
 #ifndef NDEBUG
-  clog << "[Server Thread] Client connected" << std::endl;
+  synchronous_logger::clog << "[Server Thread] Client connected\n";
 #endif
   //Try to connect to the event server 3 times
   for ( unsigned int i = 0; i < 3 && ! theEventSocket; i++ ) {
@@ -128,13 +130,13 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
       break;
     } catch ( DebuggerSocketException &e )  {
       if ( i < 2 ) continue;
-      cerr << "[Server Thread] Couldn't connect to the debugger server event: " << std::endl;
-      cerr << "[Server Thread] " <<  e.what() << std::endl;
+      synchronous_logger::cerr << "[Server Thread] Couldn't connect to the debugger server event: \n";
+      synchronous_logger::cerr << "[Server Thread] " <<  e.what() << "\n";
       return;
     }
   }
 #ifndef NDEBUG
-  clog << "[Server Thread] Connected to the event server" << std::endl;
+  synchronous_logger::clog << "[Server Thread] Connected to the event server\n";
 #endif
 
   //Perform handshake
@@ -146,11 +148,11 @@ void ZorbaDebugger::start( XQueryImpl *aQuery,
     handleTcpClient( lSock.get() );
   }
 #ifndef NDEBUG
-  clog << "[Server Thread] server quited" << std::endl;
+  synchronous_logger::clog << "[Server Thread] server quited\n";
 #endif
   delete theRuntimeThread;
 #ifndef NDEBUG
-  clog << "[Server Thread] runtime thread quited" << std::endl;
+  synchronous_logger::clog << "[Server Thread] runtime thread quited\n";
 #endif 
 }
 
@@ -189,29 +191,29 @@ void ZorbaDebugger::sendEvent( AbstractCommandMessage * aMessage )
     try
     {
 #ifndef NDEBUG
-      clog << "[Server Thread] send an event: ";
+      synchronous_logger::clog << "[Server Thread] send an event: ";
       switch ( aMessage->getCommand() )
       {
         case STARTED:
-          cerr << "started" << std::endl;
+          synchronous_logger::cerr << "started\n";
           break;
         case TERMINATED:
-          cerr << "terminated" << std::endl;
+          synchronous_logger::cerr << "terminated\n";
           break;
         case SUSPENDED:
-          cerr << "suspended" << std::endl;
+          synchronous_logger::cerr << "suspended\n";
           break;
         case RESUMED:
-          cerr << "resumed" << std::endl;
+          synchronous_logger::cerr << "resumed\n";
           break;
         case EVALUATED:
-          cerr << "evaluated" << std::endl;
+          synchronous_logger::cerr << "evaluated\n";
           break;
       }
 #endif
       theEventSocket->send( lMessage.get(), length );
 #ifndef NDEBUG
-      clog << "[Server Thread] event sent" << std::endl;
+      synchronous_logger::clog << "[Server Thread] event sent\n";
 #endif
     } catch( DebuggerSocketException &e ) {
       cerr << e.what() << std::endl;
@@ -256,15 +258,15 @@ void ZorbaDebugger::runQuery()
       theOutputStream->flush();
     }
   }catch(zorba::StaticException& se){
-    std::cerr << se << std::endl;
+    synchronous_logger::cerr << se.getDescription().c_str() << "\n";
   }catch(zorba::DynamicException& e){
-    std::cerr << e << std::endl;  
+    synchronous_logger::cerr << e.getDescription().c_str() << "\n";  
   }catch(zorba::SystemException& e){
-    std::cerr << e << std::endl;
+    synchronous_logger::cerr << e.getDescription().c_str() << "\n";
   } catch(zorba::TypeException& e) {
-    std::cerr << e << std::endl;
+    synchronous_logger::cerr << e.getDescription().c_str() << "\n";
   } catch(...) {
-    std::cerr << "Unknown exception" << std::endl;
+    synchronous_logger::cerr << "Unknown exception" << "\n";
   }
   setStatus( QUERY_TERMINATED );
 }
@@ -326,8 +328,8 @@ void ZorbaDebugger::handshake( TCPSocket * aSock )
     aSock->recv( msg.get(), 11 );
     aSock->send( msg.get(), 11 );
   } catch( DebuggerSocketException &e ) {
-    clog << "[Server Thread] handshake failed" << endl; 
-    clog << "[Server Thread]" << e.what() << endl;
+    synchronous_logger::clog << "[Server Thread] handshake failed\n";
+    synchronous_logger::clog << "[Server Thread]" << e.what() << "\n";
   }
 }
 
@@ -356,7 +358,7 @@ void ZorbaDebugger::handleTcpClient( TCPSocket * aSock )
       aSock->send( lByteMessage.get(), length );
     } else {
 #ifndef NDEBUG
-      clog << "[Server Thread] Received something wrong" << std::endl;
+      synchronous_logger::clog << "[Server Thread] Received something wrong\n";
 #endif
       //If something goes wrong, buildMessage() receive a Reply Message containing the error description
       //Send it back to the client right away
@@ -365,16 +367,16 @@ void ZorbaDebugger::handleTcpClient( TCPSocket * aSock )
         lByteMessage.reset(lReplyMessage->serialize( length ));
         aSock->send( lByteMessage.get(), length );
       } else {
-        cerr << "[Server Thread] Internal error occured. Couldn't send the error message." << std::endl;
+        synchronous_logger::cerr << "[Server Thread] Internal error occured. Couldn't send the error message.\n";
       }
     }    
   } catch ( exception &e ) {
 #ifndef NDEBUG
-    clog << "[Server Thread] The connection with the client is closed" << std::endl;
-    clog <<  e.what() << std::endl;
+    synchronous_logger::clog << "[Server Thread] The connection with the client is closed\n";
+    synchronous_logger::clog <<  e.what() << "\n";
 #endif
   } catch(...) {
-    clog << "[Server Thread] unknown exception" << endl;
+    synchronous_logger::clog << "[Server Thread] unknown exception\n";
   }
 }
 
