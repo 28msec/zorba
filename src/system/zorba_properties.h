@@ -33,7 +33,7 @@ namespace zorba {
 class ZorbaProperties : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--trace-translator", "--trace-codegen", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", NULL };
+    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--trace-translator", "--trace-codegen", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", NULL };
     return result;
   }
   bool theTraceParsing;
@@ -51,6 +51,7 @@ protected:
   bool thePrintOptimized;
   bool thePrintIteratorTree;
   bool thePrintItemFlow;
+  bool thePrintStaticTypes;
   bool theStableIteratorIds;
   bool theNoTreeIds;
   bool thePrintIntermediateOpt;
@@ -59,6 +60,8 @@ protected:
   bool theSpecializeNum;
   bool theSpecializeCmp;
   bool theInlineUdf;
+  bool theLoopHoisting;
+  bool theInferJoins;
   bool theTraceTranslator;
   bool theTraceCodegen;
   bool theDebug;
@@ -81,6 +84,7 @@ protected:
     thePrintOptimized = false;
     thePrintIteratorTree = false;
     thePrintItemFlow = false;
+    thePrintStaticTypes = true;
     theStableIteratorIds = false;
     theNoTreeIds = false;
     thePrintIntermediateOpt = false;
@@ -89,6 +93,8 @@ protected:
     theSpecializeNum = true;
     theSpecializeCmp = true;
     theInlineUdf = true;
+    theLoopHoisting = true;
+    theInferJoins = true;
     theTraceTranslator = false;
     theTraceCodegen = false;
     theDebug = false;
@@ -110,6 +116,7 @@ public:
   const bool &printOptimized () const { return thePrintOptimized; }
   const bool &printIteratorTree () const { return thePrintIteratorTree; }
   const bool &printItemFlow () const { return thePrintItemFlow; }
+  const bool &printStaticTypes () const { return thePrintStaticTypes; }
   const bool &stableIteratorIds () const { return theStableIteratorIds; }
   const bool &noTreeIds () const { return theNoTreeIds; }
   const bool &printIntermediateOpt () const { return thePrintIntermediateOpt; }
@@ -118,6 +125,8 @@ public:
   const bool &specializeNum () const { return theSpecializeNum; }
   const bool &specializeCmp () const { return theSpecializeCmp; }
   const bool &inlineUdf () const { return theInlineUdf; }
+  const bool &loopHoisting () const { return theLoopHoisting; }
+  const bool &inferJoins () const { return theInferJoins; }
   const bool &traceTranslator () const { return theTraceTranslator; }
   const bool &traceCodegen () const { return theTraceCodegen; }
   const bool &debug () const { return theDebug; }
@@ -177,7 +186,7 @@ public:
       else if (strcmp (*argv, "--print-normalized") == 0 || strncmp (*argv, "-n", 2) == 0) {
         thePrintNormalized = true;
       }
-      else if (strcmp (*argv, "--print-optimized") == 0) {
+      else if (strcmp (*argv, "--print-optimized") == 0 || strncmp (*argv, "-P", 2) == 0) {
         thePrintOptimized = true;
       }
       else if (strcmp (*argv, "--print-iterator-tree") == 0 || strncmp (*argv, "-i", 2) == 0) {
@@ -185,6 +194,11 @@ public:
       }
       else if (strcmp (*argv, "--print-item-flow") == 0 || strncmp (*argv, "-f", 2) == 0) {
         thePrintItemFlow = true;
+      }
+      else if (strcmp (*argv, "--print-static-types") == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        init_val (*argv, thePrintStaticTypes, d);
       }
       else if (strcmp (*argv, "--stable-iterator-ids") == 0) {
         theStableIteratorIds = true;
@@ -217,6 +231,16 @@ public:
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         init_val (*argv, theInlineUdf, d);
+      }
+      else if (strcmp (*argv, "--loop-hoisting") == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        init_val (*argv, theLoopHoisting, d);
+      }
+      else if (strcmp (*argv, "--infer-joins") == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        init_val (*argv, theInferJoins, d);
       }
 #ifndef NDEBUG
       else if (strcmp (*argv, "--trace-translator") == 0 || strncmp (*argv, "-l", 2) == 0) {
@@ -272,14 +296,15 @@ public:
 "--result-file, -o\nresult file\n\n"
 "--abort\nabort when fatal error happens\n\n"
 "--query, -e\nexecute inline query\n\n"
-"--print-query, -q\nprint the query query\n\n"
+"--print-query, -q\nprint the query\n\n"
 "--print-time, -t\nprint the execution time\n\n"
 "--print-ast, -a\nprint the parse tree\n\n"
 "--print-translated\nprint the normalized expression tree\n\n"
 "--print-normalized, -n\nprint the translated expression tree\n\n"
-"--print-optimized\nprint the optimized expression tree\n\n"
+"--print-optimized, -P\nprint the optimized expression tree\n\n"
 "--print-iterator-tree, -i\nprint the iterator tree\n\n"
 "--print-item-flow, -f\nshow items produced by all iterators\n\n"
+"--print-static-types\nprint static type inference\n\n"
 "--stable-iterator-ids\nprint the iterator plan with stable ids\n\n"
 "--no-tree-ids\nsuppress ids and locations from compiler tree dumps\n\n"
 "--print-intermediate-opt\nprint intermediate optimizations\n\n"
@@ -288,6 +313,8 @@ public:
 "--specialize-num\nspecialize numerics (1=enabled (default), 0=off)\n\n"
 "--specialize-cmp\nspecialize generic comparisons (1=enabled (default), 0=off)\n\n"
 "--inline-udf\ninline functions (1=enabled (default), 0=off)\n\n"
+"--loop-hoisting\nhoist expressions out of loops (1=enabled (default), 0=off)\n\n"
+"--infer-joins\ninfer joins (1=enabled (default), 0=off)\n\n"
 #ifndef NDEBUG
 "--trace-translator, -l\ntrace the translator\n\n"
 "--trace-codegen, -c\ntrace the codegenerator\n\n"

@@ -65,13 +65,15 @@ DefaultOptimizer::DefaultOptimizer()
   
   ADD_DRIVER(FoldRules);
 
-  ADD_SINGLETON_DRIVER(HoistExprsOutOfLoops);
+  if (Properties::instance ()->loopHoisting ())
+    ADD_SINGLETON_DRIVER(HoistExprsOutOfLoops);
 
   // For UDFs, which need this annotation in udf::requires_dyn_ctx()
   // TODO: only do this for UDFs
   ADD_SINGLETON_DRIVER(MarkUnfoldableExprs);
 
-  ADD_ONCE_DRIVER(IndexJoin);  // broken for now
+  if (Properties::instance ()->inferJoins ())
+    ADD_ONCE_DRIVER(IndexJoin);
   ADD_SINGLETON_DRIVER(ExpandBuildIndex);
 }
 

@@ -27,7 +27,7 @@ namespace zorba {
 
   class ZORBA_DLL_PUBLIC Properties : public ZorbaProperties {
       /**
-       * Gets the Operation System folger where the properties of the current 
+       * Gets the Operation System folder where the properties of the current 
        * user are saved.
        * Linux, Mac: /home/username
        * Windows Vista: C:\Users\username\Application Data
