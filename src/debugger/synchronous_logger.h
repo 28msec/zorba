@@ -28,3 +28,4 @@ namespace zorba {
 }
 
 #endif // SYNCHRONOUS_LOGGER
+
