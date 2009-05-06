@@ -22,7 +22,6 @@ using namespace zorba;
 
 int test_debugger_protocol( int argc, char* argv[] )
 {
-	Sleep(8000);
 	bool lResult;
 	zorba::TestDebuggerSerialization * test = new zorba::TestDebuggerSerialization();
 	lResult = test->testReplyMessage();
