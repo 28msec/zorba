@@ -545,7 +545,7 @@ void populateContext_Sequences(static_context *sctx) {
 DECL(sctx, fn_doc_func,
      (createQName(XQUERY_FN_NS,"fn","doc"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DOCUMENT_TYPE_QUESTION));
+      GENV_TYPESYSTEM.DOCUMENT_UNTYPED_CONT_TYPE_QUESTION));
 
 DECL(sctx, fn_doc_available_func,
      (createQName(XQUERY_FN_NS,"fn","doc-available"),

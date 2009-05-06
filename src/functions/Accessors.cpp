@@ -35,17 +35,19 @@ fn_data_func::codegen(
 xqtref_t fn_data_func::return_type (const std::vector<xqtref_t> &arg_types) const {
   if (TypeOps::is_subtype (*arg_types [0], *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
     return arg_types [0];  // includes () case
-  else if (TypeOps::is_subtype(*arg_types[0], *GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR)) {
+  TypeConstants::quantifier_t q = TypeOps::quantifier (*arg_types [0]);
+  if (TypeOps::is_subtype(*arg_types[0], *GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR)) {
     const XQType& type = *arg_types[0];
     if (type.type_kind() == XQType::NODE_TYPE_KIND) {
       const NodeXQType& nType = static_cast<const NodeXQType&>(type);
       xqtref_t cType = nType.get_content_type();
-      if (cType != NULL && TypeOps::is_equal(*cType, *GENV_TYPESYSTEM.ANY_TYPE)) {
-        return GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_STAR;
+      if (cType != NULL) {
+        if (TypeOps::is_equal(*cType, *GENV_TYPESYSTEM.UNTYPED_TYPE))
+          return GENV_TYPESYSTEM.create_type_x_quant (*GENV_TYPESYSTEM.UNTYPED_TYPE, q);
       }
     }
   }
-  return GENV_TYPESYSTEM.create_atomic_type (TypeConstants::XS_ANY_ATOMIC, TypeOps::quantifier (*arg_types [0]));
+  return GENV_TYPESYSTEM.create_atomic_type (TypeConstants::XS_ANY_ATOMIC, q);
 }
 
 /*******************************************************************************

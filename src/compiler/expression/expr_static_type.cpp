@@ -25,6 +25,8 @@
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
 
+#include "util/properties.h"
+
 using namespace std;
 namespace zorba {
 
@@ -34,26 +36,27 @@ namespace zorba {
 #define DEBUG_RT(e, t) print_expr_and_type(e, t)
 
 static xqtref_t print_expr_and_type(expr *e, xqtref_t t) {
-  std::cout << "Return type for:\n";
-  e->put(std::cout);
-  std::cout << " => " << t->toString() << std::endl;
+  if (Properties::instance()->printStaticTypes ()) {
+    std::cout << "Return type for " << e << ":\n";
+    e->put(std::cout);
+    std::cout << " => " << t->toString() << std::endl;
+  }
   return t;
 }
 
 #endif
 
   xqtref_t expr::return_type(static_context *sctx) {
-    bool cc = cache_compliant ();
-    if (! cc)
+    if (! cache_compliant ())
       return DEBUG_RT(this, return_type_impl (sctx));
     if (! cache.type.valid
         || (cache.type.sctx != sctx && ! TypeOps::is_subtype (*cache.type.t, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE)))
-      {
-        cache.type.t = return_type_impl (sctx);
-        cache.type.sctx = sctx;
-        cache.type.valid = true;
-      }
-    return DEBUG_RT(this, cache.type.t);
+    {
+      cache.type.t = DEBUG_RT (this, return_type_impl (sctx));
+      cache.type.sctx = sctx;
+      cache.type.valid = true;
+    }
+    return cache.type.t;
   }
 
   xqtref_t expr::return_type_impl(static_context *sctx)
@@ -100,12 +103,31 @@ xqtref_t flwor_expr::return_type_impl(static_context *sctx)
     return target_type;
   }
 
-xqtref_t relpath_expr::return_type_impl(static_context *sctx) 
-{
-  if (theSteps.empty())
+xqtref_t relpath_expr::return_type_impl(static_context *sctx) {
+  if (size () == 0)
     return GENV_TYPESYSTEM.EMPTY_TYPE;
+  if (size () == 1)
+    return theSteps [0]->return_type(sctx);
 
-  return sctx->get_typemanager()->create_type_x_quant(*theSteps[size() - 1]->return_type(sctx), TypeConstants::QUANT_STAR);
+  for (unsigned i = 1; i < size (); i++) {
+    switch (theSteps [i].cast<axis_step_expr> ()->getAxis ()) {
+    case axis_kind_self:
+    case axis_kind_descendant:
+    case axis_kind_descendant_or_self:
+    case axis_kind_child:
+    case axis_kind_attribute:
+      break;
+    default:
+      return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
+    }
+  }
+  xqtref_t base_xqt = TypeOps::prime_type (*theSteps [0]->return_type(sctx));
+  if (base_xqt->type_kind () != XQType::NODE_TYPE_KIND)
+    return GENV_TYPESYSTEM.NONE_TYPE;
+  base_xqt = static_cast<const NodeXQType &> (*base_xqt).get_content_type ();
+  if (base_xqt != NULL && base_xqt->type_kind () == XQType::UNTYPED_KIND)
+    return GENV_TYPESYSTEM.ANY_NODE_UNTYPED_CONT_TYPE_STAR;
+  return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
 }
 
   xqtref_t axis_step_expr::return_type_impl(static_context *sctx) {
