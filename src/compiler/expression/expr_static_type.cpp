@@ -103,6 +103,19 @@ xqtref_t flwor_expr::return_type_impl(static_context *sctx)
     return target_type;
   }
 
+  static xqtref_t path_rt (const axis_step_expr *last, bool untyped) {
+    switch (last->getAxis ()) {
+    case axis_kind_attribute:
+      return untyped
+        ? GENV_TYPESYSTEM.ATTRIBUTE_UNTYPED_CONT_TYPE_STAR
+        : GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR;
+    default:
+      return untyped
+        ? GENV_TYPESYSTEM.ANY_NODE_UNTYPED_CONT_TYPE_STAR
+        : GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
+    }
+  }
+
 xqtref_t relpath_expr::return_type_impl(static_context *sctx) {
   if (size () == 0)
     return GENV_TYPESYSTEM.EMPTY_TYPE;
@@ -125,9 +138,8 @@ xqtref_t relpath_expr::return_type_impl(static_context *sctx) {
   if (base_xqt->type_kind () != XQType::NODE_TYPE_KIND)
     return GENV_TYPESYSTEM.NONE_TYPE;
   base_xqt = static_cast<const NodeXQType &> (*base_xqt).get_content_type ();
-  if (base_xqt != NULL && base_xqt->type_kind () == XQType::UNTYPED_KIND)
-    return GENV_TYPESYSTEM.ANY_NODE_UNTYPED_CONT_TYPE_STAR;
-  return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
+  return path_rt (theSteps [size () - 1].cast<axis_step_expr> (), 
+                  base_xqt != NULL && base_xqt->type_kind () == XQType::UNTYPED_KIND);
 }
 
   xqtref_t axis_step_expr::return_type_impl(static_context *sctx) {
