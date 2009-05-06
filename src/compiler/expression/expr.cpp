@@ -1655,8 +1655,6 @@ expr_iterator_data *axis_step_expr::make_iter () {
 void axis_step_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER2 (axis_step_expr);
 
-  ITER_FOR_EACH (pred_iter, thePreds.begin (), thePreds.end (), *vv.pred_iter);
-
   ITER (theNodeTest);
 
   END_EXPR_ITER();

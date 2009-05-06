@@ -987,7 +987,6 @@ public:
 protected:
   axis_kind_t             theAxis;
   expr_t                  theNodeTest;
-  checked_vector<expr_t>  thePreds;
 
 public:
   axis_step_expr(const QueryLoc&);
