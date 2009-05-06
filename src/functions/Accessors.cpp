@@ -43,7 +43,7 @@ xqtref_t fn_data_func::return_type (const std::vector<xqtref_t> &arg_types) cons
       xqtref_t cType = nType.get_content_type();
       if (cType != NULL) {
         if (TypeOps::is_equal(*cType, *GENV_TYPESYSTEM.UNTYPED_TYPE))
-          return GENV_TYPESYSTEM.create_type_x_quant (*GENV_TYPESYSTEM.UNTYPED_TYPE, q);
+          return GENV_TYPESYSTEM.create_atomic_type (TypeConstants::XS_UNTYPED_ATOMIC, q);
       }
     }
   }
