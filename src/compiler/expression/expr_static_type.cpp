@@ -34,8 +34,9 @@ namespace zorba {
 #define DEBUG_RT(e, t) print_expr_and_type(e, t)
 
 static xqtref_t print_expr_and_type(expr *e, xqtref_t t) {
+  std::cout << "Return type for:\n";
   e->put(std::cout);
-  std::cout << t->toString() << std::endl;
+  std::cout << " => " << t->toString() << std::endl;
   return t;
 }
 
