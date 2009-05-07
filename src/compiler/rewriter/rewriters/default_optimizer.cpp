@@ -45,6 +45,7 @@ DefaultOptimizer::DefaultOptimizer()
 {
   if (Properties::instance ()->inlineUdf ())
     ADD_SINGLETON_DRIVER(InlineFunctions);
+
   ADD_SINGLETON_DRIVER(InferVarTypes);
   ADD_SINGLETON_DRIVER(EliminateTypeEnforcingOperations);
 
@@ -74,6 +75,7 @@ DefaultOptimizer::DefaultOptimizer()
 
   if (Properties::instance ()->inferJoins ())
     ADD_ONCE_DRIVER(IndexJoin);
+
   ADD_SINGLETON_DRIVER(ExpandBuildIndex);
 }
 
