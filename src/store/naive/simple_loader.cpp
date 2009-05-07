@@ -128,14 +128,14 @@ store::Item_t SimpleXmlLoader::loadXml(
 
     if (numChars < 0)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, XQP0016_LOADER_IO_ERROR,
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, STR0007_LOADER_IO_ERROR,
                                 "Unknown I/O error");
       abortload();
       return NULL;
     }
     else if (numChars == 0)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, XQP0016_LOADER_IO_ERROR,
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, STR0007_LOADER_IO_ERROR,
                                 "No input data.");
       abortload();
       return NULL;
@@ -145,7 +145,7 @@ store::Item_t SimpleXmlLoader::loadXml(
 
     if (ctxt == NULL)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, XQP0017_LOADER_PARSING_ERROR, 
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, STR0008_LOADER_PARSING_ERROR, 
                                 "Failed to initialize parser");
       abortload();
 			return NULL;
@@ -165,7 +165,7 @@ store::Item_t SimpleXmlLoader::loadXml(
 
     if (numChars < 0)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, XQP0016_LOADER_IO_ERROR,
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, STR0007_LOADER_IO_ERROR,
                                 "Unknown I/O error");
       xmlFreeParserCtxt(ctxt);
       abortload();
@@ -190,14 +190,14 @@ store::Item_t SimpleXmlLoader::loadXml(
     if (theDocUri != NULL)
     {
       ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
-                                     XQP0017_LOADER_PARSING_ERROR,
+                                     STR0008_LOADER_PARSING_ERROR,
                                      "The document with URI " << *theDocUri
                                      <<" is not well formed", "");
     }
     else
     {
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                XQP0017_LOADER_PARSING_ERROR,
+                                STR0008_LOADER_PARSING_ERROR,
                                 "Not well formed XML");
     }
 
@@ -227,7 +227,7 @@ long SimpleXmlLoader::readPacket(std::istream& stream, char* buf, long size)
     if (stream.bad())
     {
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                XQP0016_LOADER_IO_ERROR,
+                                STR0007_LOADER_IO_ERROR,
                                 "Input stream in bad state");
     }
 
@@ -236,12 +236,12 @@ long SimpleXmlLoader::readPacket(std::istream& stream, char* buf, long size)
   catch (std::iostream::failure e)
   {
     ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                              XQP0016_LOADER_IO_ERROR, e.what());
+                              STR0007_LOADER_IO_ERROR, e.what());
   }
   catch (...)
   {
     ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
-                              XQP0016_LOADER_IO_ERROR,
+                              STR0007_LOADER_IO_ERROR,
                               "Unknown exception");
   }
 
@@ -705,7 +705,7 @@ void  SimpleXmlLoader::error(void * ctx, const char * msg, ... )
   vsprintf(buf, msg, args);
   va_end(args);
   ZORBA_ERROR_DESC_CONTINUE(loader->theErrorManager,
-                            XQP0017_LOADER_PARSING_ERROR, buf);
+                            STR0008_LOADER_PARSING_ERROR, buf);
 }
 
 

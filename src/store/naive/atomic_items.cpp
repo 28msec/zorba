@@ -60,6 +60,36 @@ void AtomicItem::getTypedValue(store::Item_t& val, store::Iterator_t& iter) cons
 
 
 /*******************************************************************************
+  class UntypedAtomicItem
+********************************************************************************/
+store::Item* UntypedAtomicItemImpl::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+}
+
+
+uint32_t UntypedAtomicItemImpl::hash(long timezone, const XQPCollator* aCollation) const
+{
+  return theValue->hash();
+}
+
+
+store::Item_t UntypedAtomicItemImpl::getEBV() const
+{
+  bool b = ! ( theValue->str() == "" );
+  store::Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
+}
+
+
+xqp_string UntypedAtomicItemImpl::show() const
+{
+  return "xs:untypedAtomic(" + theValue->str() + ")";
+}
+
+
+/*******************************************************************************
   class QNameItemImpl
 ********************************************************************************/
 
@@ -432,46 +462,6 @@ store::Item* ENTITYItemImpl::getType() const
 xqp_string ENTITYItemImpl::show() const
 {
   return "xs:ENTITY(" + theValue->str() + ")";
-}
-
-
-
-/*******************************************************************************
-  class UntypedAtomicItem
-********************************************************************************/
-store::Item* UntypedAtomicItemImpl::getType() const
-{
-  return GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
-}
-
-
-uint32_t UntypedAtomicItemImpl::hash(long timezone, const XQPCollator* aCollation) const
-{
-  return theValue->hash();
-}
-
-
-bool UntypedAtomicItemImpl::equals(
-    const store::Item* other,
-    long timezone,
-    const XQPCollator* aCollation) const
-{
-  return theValue->byteEqual(other->getString()->str());
-}
-
-
-store::Item_t UntypedAtomicItemImpl::getEBV() const
-{
-  bool b = ! ( theValue->str() == "" );
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
-}
-
-
-xqp_string UntypedAtomicItemImpl::show() const
-{
-  return "xs:untypedAtomic(" + theValue->str() + ")";
 }
 
 
@@ -1227,13 +1217,6 @@ store::Item* ShortItemNaive::getType() const
   return GET_STORE().theSchemaTypeNames[XS_SHORT];
 }
 
-bool ShortItemNaive::equals(
-    const store::Item* aItem,
-    long timezone,
-    const XQPCollator* coll ) const
-{
-  return theValue == aItem->getLongValue();
-}
 
 store::Item_t ShortItemNaive::getEBV() const 
 {
@@ -1369,13 +1352,6 @@ store::Item* ByteItemNaive::getType() const {
   return GET_STORE().theSchemaTypeNames[XS_BYTE];
 }
 
-bool ByteItemNaive::equals(
-    const store::Item* aItem,
-    long timezone,
-    const XQPCollator* coll ) const
-{
-  return theValue == aItem->getLongValue();
-}
 
 store::Item_t ByteItemNaive::getEBV() const 
 {
@@ -1493,14 +1469,6 @@ store::Item* BooleanItemNaive::getType() const
   return GET_STORE().theSchemaTypeNames[XS_BOOLEAN];
 }
 
-bool BooleanItemNaive::equals (
-    const store::Item* item,
-    long timezone,
-    const XQPCollator* aCollation ) const
-{
-  return item->getBooleanValue() == theValue;
-}
-
 uint32_t BooleanItemNaive::hash ( long timezone, const XQPCollator* aCollation ) const
 {
   return theValue?0:1;
@@ -1551,13 +1519,6 @@ store::Item* Base64BinaryItemNaive::getType() const
   return GET_STORE().theSchemaTypeNames[XS_BASE64BINARY];
 }
 
-bool Base64BinaryItemNaive::equals(
-    const store::Item* aItem,
-    long timezone,
-    const XQPCollator* coll ) const 
-{
-  return theValue.equal(aItem->getBase64BinaryValue());
-}
 
 xqpStringStore_t Base64BinaryItemNaive::getStringValue() const 
 {
@@ -1593,13 +1554,6 @@ store::Item* HexBinaryItemNaive::getType() const
   return GET_STORE().theSchemaTypeNames[XS_HEXBINARY];
 }
 
-bool HexBinaryItemNaive::equals(
-    const store::Item* aItem,
-    long timezone,
-    const XQPCollator* coll ) const 
-{
-  return theValue.equal(aItem->getHexBinaryValue());
-}
 
 xqpStringStore_t HexBinaryItemNaive::getStringValue() const 
 {

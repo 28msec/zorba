@@ -66,6 +66,42 @@ public:
 
 
 /*******************************************************************************
+  class UntypedAtomicItem
+********************************************************************************/
+class UntypedAtomicItemImpl : public AtomicItem
+{
+private:
+  xqpStringStore_t theValue;
+
+public:
+  UntypedAtomicItemImpl(xqpStringStore_t& value) { theValue.transfer(value); }
+
+  store::Item* getType( ) const;
+
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  bool equals(
+        const store::Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return theValue->byteEqual(other->getString()->str());
+  }
+
+  store::Item_t getEBV( ) const;
+
+  xqpStringStore_t getStringValue() const { return theValue; }
+  xqpStringStore* getStringValueP() const { return theValue.getp(); }
+  void getStringValue(xqpStringStore_t& strval) const { strval = theValue; }
+  void getStringValue(std::string& buf) const { buf += theValue->str(); }
+
+  xqpStringStore* getString() const { return theValue.getp(); }
+
+  xqp_string show() const;
+};
+
+
+/*******************************************************************************
   class QNameItem
 ********************************************************************************/
 class QNameItemImpl : public AtomicItem
@@ -398,40 +434,6 @@ public:
   store::Item* getType() const;
 
   virtual xqp_string show() const;
-};
-
-
-
-/*******************************************************************************
-  class UntypedAtomicItem
-********************************************************************************/
-class UntypedAtomicItemImpl : public AtomicItem
-{
-private:
-  xqpStringStore_t theValue;
-
-public:
-  UntypedAtomicItemImpl(xqpStringStore_t& value) { theValue.transfer(value); }
-
-  store::Item* getType( ) const;
-
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-
-  bool equals(
-        const store::Item*,
-        long timezone = 0,
-        const XQPCollator* aCollation = 0) const;
-
-  store::Item_t getEBV( ) const;
-
-  xqpStringStore_t getStringValue() const { return theValue; }
-  xqpStringStore* getStringValueP() const { return theValue.getp(); }
-  void getStringValue(xqpStringStore_t& strval) const { strval = theValue; }
-  void getStringValue(std::string& buf) const { buf += theValue->str(); }
-
-  xqpStringStore* getString() const { return theValue.getp(); }
-
-  xqp_string show() const;
 };
 
 
@@ -786,7 +788,7 @@ class NonNegativeIntegerItemNaive : public IntegerItemNaive
 public:
   NonNegativeIntegerItemNaive(const xqp_uinteger& aValue) : IntegerItemNaive(aValue) {}
 
-  xqp_uinteger getUnsingedIntegerValue() const { return theValue; }
+  xqp_uinteger getUnsignedIntegerValue() const { return theValue; }
 
   store::Item* getType() const;
 
@@ -802,7 +804,7 @@ class PositiveIntegerItemNaive : public  IntegerItemNaive
 public:
   PositiveIntegerItemNaive(const xqp_uinteger& aValue) : IntegerItemNaive(aValue) { }
 
-  xqp_uinteger getUnsingedIntegerValue() const { return theValue; }
+  xqp_uinteger getUnsignedIntegerValue() const { return theValue; }
 
   store::Item* getType() const;
 
@@ -934,9 +936,12 @@ public:
   virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   virtual bool equals(
-        const store::Item*,
+        const store::Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0 ) const;
+        const XQPCollator* aCollation = 0 ) const
+  {
+    return theValue == other->getLongValue();
+  }
 
   long compare(
         const Item* other,
@@ -981,9 +986,12 @@ class ByteItemNaive : public AtomicItem
   virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   virtual bool equals(
-        const store::Item*,
+        const store::Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0 ) const;
+        const XQPCollator* aCollation = 0 ) const
+  {
+    return theValue == other->getLongValue();
+  }
 
   long compare(
         const Item* other,
@@ -1230,9 +1238,12 @@ public:
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   bool equals(
-        const store::Item*,
+        const store::Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0 ) const;
+        const XQPCollator* aCollation = 0) const
+  {
+    return other->getBooleanValue() == theValue;
+  }
 
   long compare(
         const Item* other,
@@ -1272,9 +1283,12 @@ public:
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   bool equals(
-        const store::Item*,
+        const store::Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0 ) const;
+        const XQPCollator* aCollation = 0 ) const
+  {
+    return theValue.equal(other->getBase64BinaryValue());
+  }
 
   xqpStringStore_t getStringValue() const;
   void getStringValue(xqpStringStore_t& strval) const;
@@ -1302,9 +1316,12 @@ public:
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   bool equals(
-        const store::Item*,
+        const store::Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0 ) const;
+        const XQPCollator* aCollation = 0 ) const
+  {
+    return theValue.equal(other->getHexBinaryValue());
+  }
   
   xqpStringStore_t getStringValue() const;
   void getStringValue(xqpStringStore_t& strval) const;
