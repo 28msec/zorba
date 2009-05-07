@@ -1485,8 +1485,6 @@ bool begin_visit (replace_expr& v) {
 
   if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
     ZORBA_ERROR_LOC(XUDY0027, qloc);
-  else
-    ZORBA_ERROR_LOC(XUTY0008, qloc);
 
   return true;
 }
