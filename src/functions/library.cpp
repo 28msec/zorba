@@ -36,6 +36,7 @@
 #include "functions/Nodes.h"
 #include "functions/tuple_functions.h"
 #include "functions/InternalOperators.h"
+#include "functions/Index.h"
 #include "functions/Alexis.h"
 #include "functions/Convertors.h"
 
