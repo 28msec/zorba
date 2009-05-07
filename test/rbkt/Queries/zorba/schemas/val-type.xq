@@ -2,7 +2,7 @@ import module namespace
     fn-zorba-util="http://www.zorba-xquery.com/zorba/util-functions";
 
 import schema namespace 
-  s = "simple.xsd" 
+  s = "http://www.zorba-xquery.com/simple.xsd" 
   at "simple.xsd";
 
 (:
@@ -21,7 +21,7 @@ import schema namespace
 (
   let $x := validate as s:ProductType
   {
-    <produ xmlns='simple.xsd'>
+    <produ xmlns='http://www.zorba-xquery.com/simple.xsd'>
     	<s:name>p1</s:name>
     	<s:number>1</s:number>
     	<!--this is a comment -->
@@ -35,7 +35,7 @@ import schema namespace
 ,
   let $x := validate as s:ProductType
   {
-    <product xmlns='simple.xsd'>
+    <product xmlns='http://www.zorba-xquery.com/simple.xsd'>
     	<s:name>p1</s:name>
     	<s:number>1</s:number>
     	<!--this is a comment -->
@@ -47,7 +47,7 @@ import schema namespace
   (: -- regular validate -- :)
   let $x := validate
   {
-    <product xmlns='simple.xsd'>
+    <product xmlns='http://www.zorba-xquery.com/simple.xsd'>
     	<s:name>p1</s:name>
     	<s:number>1</s:number>
     	<!--this is a comment -->

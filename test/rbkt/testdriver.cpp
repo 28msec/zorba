@@ -42,6 +42,13 @@
 #include "store/minimal/min_store.h"
 #endif
 
+// used for Canonical XML
+#define LIBXML_C14N_ENABLED
+#define LIBXML_OUTPUT_ENABLED
+#include <libxml/c14n.h>
+#include <libxml/tree.h>
+
+
 zorba::Properties *lProp;
 
 #define EXPECTED_ERROR  0
@@ -116,19 +123,13 @@ trim(std::string& str) {
 // aPos is the character number off the first difference in the file
 // -1 is returned for aLine, aCol, and aPos if the files are equal
 bool
-fileEquals(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, int& aPos,
+fileEquals(const char* aRefFile, const char* aResFile, int& aLine, int& aCol, int& aPos,
         std::string& aRefLine, std::string& aResLine)
 {
-  std::ifstream li(aRefFile.get_path().c_str());
-  std::ifstream ri(aResFile.get_path().c_str()); 
+  std::ifstream li(aRefFile);
+  std::ifstream ri(aResFile); 
   std::string lLine, rLine;
 
-  std::string filepath = aResFile.get_path ();
-  std::string::size_type pos = filepath.find ( "w3c_testsuite" );
-  bool w3ctest = pos != std::string::npos;
-  std::string xmldecl ( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-
-  if (w3ctest) std::cout << "This is a w3c test.\n";
   aLine = 1; aCol = 0; aPos = -1;
   while (! li.eof() )
   {
@@ -142,14 +143,6 @@ fileEquals(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, in
     }
     std::getline(li, lLine);
     std::getline(ri, rLine);
-
-    if ( w3ctest && (rLine.compare ( xmldecl ) == 0)  ) {
-      std::getline ( ri, rLine );
-    }
-
-    if ( w3ctest && (lLine.compare ( xmldecl ) == 0)  ) {
-      std::getline ( li, lLine );
-    }
 
     trim ( lLine );
     trim ( rLine );
@@ -201,9 +194,8 @@ main(int argc, char** argv)
 
     int path_flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;
     zorba::file lQueryFile (rbkt_src_dir + Queriesdir + argv[i], path_flags);
-    
+
     std::string lQueryWithoutSuffix = std::string(argv[i]).substr( 0, std::string(argv[i]).rfind('.') );
-    std::cout << "test " << lQueryWithoutSuffix << std::endl;
 
     zorba::file lResultFile (rbkt_bin_dir + "/QueryResults/" 
                              + lQueryWithoutSuffix + ".xml.res", path_flags);
@@ -211,30 +203,21 @@ main(int argc, char** argv)
     zorba::file lErrorFile  (rbkt_bin_dir + "/" 
                              + lQueryWithoutSuffix + ".err", path_flags);
 
-    zorba::file lRefFile (rbkt_src_dir + "/ExpQueryResults/" 
-                          + lQueryWithoutSuffix +".xml.res", path_flags);
-
-#ifndef ZORBA_XQUERYX
-    zorba::file lSpecFile (rbkt_src_dir + "/Queries/"
-                           + lQueryWithoutSuffix +".spec", path_flags);
-#else
-    std::string   w3c_str;
-    int xqueryx_off = 0;
-    if(!strcmp(lQueryWithoutSuffix.substr(0, 7).c_str(), "XQueryX"))
-    {
-      w3c_str = "w3c_testsuite";
-      xqueryx_off = 7;
+    std::string lRefFileTmpString = lQueryWithoutSuffix;
+    // the ref file is the same for xqueryx and xquery tests
+    // hence, we remove the string xqueryx or xquery from the path
+    if (lQueryWithoutSuffix.find("w3c_testsuite") == 0) {
+      if (lQueryWithoutSuffix.find("XQueryX") != std::string::npos)
+        lRefFileTmpString = lRefFileTmpString.erase(14, 8);
+      else
+        lRefFileTmpString = lRefFileTmpString.erase(14, 7);
     }
-    std::string   spec_fname = rbkt_src_dir + "/Queries/" + w3c_str
-                           + lQueryWithoutSuffix.substr(xqueryx_off) +".spec";
-    zorba::file lSpecFile (spec_fname, path_flags);
-    std::cout << "lSpecFile " << spec_fname << " exists " << lSpecFile.exists() << std::endl; 
+    zorba::file lRefFile(zorba::RBKT_SRC_DIR + "/ExpQueryResults/"
+                         + lRefFileTmpString +".xml.res", path_flags);
 
-    std::string   ref_fname = rbkt_src_dir + "/ExpQueryResults/" 
-                          + lQueryWithoutSuffix +".xml.res";
-    std::cout << "lRefFile " << ref_fname << std::endl; 
+    zorba::file lSpecFile (zorba::RBKT_SRC_DIR + "/Queries/"
+                           + lQueryWithoutSuffix +".spec", path_flags);
 
-#endif
     // does the query file exists
     if ( (! lQueryFile.exists ()) || lQueryFile.is_directory () ) 
     {
@@ -280,20 +263,22 @@ main(int argc, char** argv)
     zorba::StaticContext_t lContext = engine->createStaticContext();
     // Install special resolver only for w3c_testsuite ...
     std::string path = lQueryFile.get_path();
-    zorba::TestSchemaURIResolver  * resolver = 0;
-    zorba::TestModuleURIResolver  * mresolver = 0;
+    std::auto_ptr<zorba::TestSchemaURIResolver>      resolver;
+    std::auto_ptr<zorba::TestModuleURIResolver>      mresolver;
+    std::auto_ptr<zorba::TestCollectionURIResolver>  cresolver;
     std::string uri_map_file = rbkt_src_dir + "/Queries/uri.txt";
     std::string mod_map_file = rbkt_src_dir + "/Queries/module.txt";
+    std::string col_map_file = rbkt_src_dir + "/Queries/collection.txt";
 
-#ifdef W3C_CLEAN
     if ( path.find ( "w3c_testsuite" ) != std::string::npos ) 
     {
-      resolver = new zorba::TestSchemaURIResolver ( uri_map_file.c_str() );
-      mresolver = new zorba::TestModuleURIResolver ( mod_map_file.c_str() );
-      lContext->setSchemaURIResolver ( resolver );
-      lContext->setModuleURIResolver ( mresolver );
+      resolver.reset(new zorba::TestSchemaURIResolver ( uri_map_file.c_str() ));
+      mresolver.reset(new zorba::TestModuleURIResolver ( mod_map_file.c_str() ));
+      cresolver.reset(new zorba::TestCollectionURIResolver ( col_map_file.c_str(), rbkt_src_dir));
+      lContext->setSchemaURIResolver ( resolver.get() );
+      lContext->setModuleURIResolver ( mresolver.get() );
+      lContext->setCollectionURIResolver ( cresolver.get() );
     }
-#endif
 
     TestErrorHandler errHandler;
 
@@ -304,12 +289,6 @@ main(int argc, char** argv)
     lQuery->setFileName (lQueryFile.get_path ());
     lQuery->compile (lQueryString.c_str(), lContext, getCompilerHints());
 
-    if (resolver != 0 ) {
-      delete resolver;
-    }
-    if (mresolver != 0 ) {
-      delete mresolver;
-    }
     errors = -1;
     if ( errHandler.errors() )
     {
@@ -327,6 +306,11 @@ main(int argc, char** argv)
         lDynCtxt->setCurrentDateTime(lDateTimeItem);
       }
 
+      if (lSpec.getDefaultCollection().size() != 0) {
+        zorba::Item lDefaultCollection = engine->getItemFactory()->createAnyURI(lSpec.getDefaultCollection());
+        lDynCtxt->setDefaultCollection(lDefaultCollection);
+      }
+
       if (lSpec.hasTimezoneSet()) {
         int lTimezone = atoi(lSpec.getTimezone().c_str());
         std::cout << "timezone " << lTimezone << std::endl;
@@ -335,11 +319,11 @@ main(int argc, char** argv)
 
       set_vars(&lSpec, lDynCtxt, rbkt_src_dir);
       if ( lSpec.hasInputQuery () ) {
-	const std::string & inputqueryfile = lSpec.getInputQueryFile ();
-	std::ifstream inputquery ( inputqueryfile.c_str() );
-	zorba::XQuery_t inputQuery = engine -> compileQuery ( inputquery, lContext, getCompilerHints () );
-	zorba::ResultIterator_t riter = inputQuery -> iterator ();
-	lDynCtxt -> setVariable ( zorba::String ("x"), riter );
+        const std::string & inputqueryfile = lSpec.getInputQueryFile ();
+        std::ifstream inputquery ( inputqueryfile.c_str() );
+        zorba::XQuery_t inputQuery = engine -> compileQuery ( inputquery, lContext, getCompilerHints () );
+        zorba::ResultIterator_t riter = inputQuery -> iterator ();
+        lDynCtxt -> setVariable ( zorba::String ("x"), riter );
     }
 
       errors = -1;
@@ -347,7 +331,12 @@ main(int argc, char** argv)
         { // serialize xml
           std::ofstream lResFileStream(lResultFile.get_path().c_str());
           assert (lResFileStream.good());
-          lResFileStream << lQuery;
+          Zorba_SerializerOptions lSerOptions;
+          lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
+          lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+          lSerOptions.indent = ZORBA_INDENT_NO;
+
+          lQuery->serialize(lResFileStream, &lSerOptions);
         }
         
         if ( (lSpec.errorsSize() == 0) && ((! lRefFile.exists ()) || lRefFile.is_directory ()))
@@ -388,31 +377,115 @@ main(int argc, char** argv)
         printFile(std::cout, lResultFile.get_path());
         std::cout << "=== end of result ===" << std::endl;
         std::cout.flush();
+        {
+          int lLine, lCol, lPos; // where do the files differ
+          std::string lRefLine, lResultLine;
+          bool lRes = fileEquals(lRefFile.c_str(), lResultFile.c_str(), lLine, lCol, lPos, lRefLine, lResultLine);
+          if (lRes) {
+            std::cout << "testdriver: success (non-canonical result matches)" << std::endl;
+            return 0;
+          }
+        }
 
-        // last, we have to diff the result
-        int lLine, lCol, lPos; // where do the files differ
-        std::string lRefLine, lResultLine;
-        bool lRes = fileEquals(lRefFile, lResultFile, lLine, lCol, lPos, lRefLine, lResultLine);
-        if ( !lRes ) {  // results differ
-          std::cout << std::endl << "Result does not match expected result:" << std::endl;
-          printFile(std::cout, lRefFile.get_path());
-          std::cout << "=== end of expected result ===" << std::endl;
+        // canonicalize XML and perform comparison
+        {
+          xmlDocPtr lRefResult_ptr;
+          xmlDocPtr lResult_ptr;
+  
+          LIBXML_TEST_VERSION
 
-          std::cout << "See line " << lLine << ", col " << lCol << " of expected result. " << std::endl;
-          std::cout << "Actual:   <";
-          if( -1 != lPos )
-            printPart(std::cout, lResultFile.get_path(), lPos, 15);
-          else
-            std::cout << lResultLine;
-          std::cout << ">" << std::endl;
-          std::cout << "Expected: <";
-          if( -1 != lPos )
-            printPart(std::cout, lRefFile.get_path(), lPos, 15);
-          else
-            std::cout << lRefLine;
-          std::cout << ">" << std::endl;
+          std::string lComparisonMethod = lSpec.getComparisonMethod();
+          if (lComparisonMethod.compare("XML") == 0) {
+            lRefResult_ptr = xmlReadFile(lRefFile.c_str(), 0, 0);
+            lResult_ptr    = xmlReadFile(lResultFile.c_str(), 0, 0);
+          } else if (lComparisonMethod.compare("Text") == 0 || lComparisonMethod.compare("Fragment") == 0) {
+            // prepend and append an artifical root tag as requested by the guidelines
+            std::ostringstream lTmpRefResult;
+            lTmpRefResult << "<root>" << std::endl;
+            std::ifstream lRefInStream(lRefFile.c_str());
+            char buf[1024];
 
-          return 8;
+            while (!lRefInStream.eof()) {
+              lRefInStream.read(buf, 1024);
+              lTmpRefResult.write(buf, lRefInStream.gcount());
+            }
+            if (buf[lRefInStream.gcount()-1] != '\n')
+              lTmpRefResult << std::endl;
+            lTmpRefResult << "</root>";
+            lRefResult_ptr = xmlReadMemory(lTmpRefResult.str().c_str(), lTmpRefResult.str().size(), "ref_result.xml", 0, 0);
+
+            // prepend and append an artifical root tag as requested by the guidelines
+            std::ostringstream lTmpResult;
+            lTmpResult << "<root>" << std::endl;
+            std::ifstream lInStream(lResultFile.c_str());
+
+            while (!lInStream.eof()) {
+              lInStream.read(buf, 1024);
+              lTmpResult.write(buf, lInStream.gcount());
+            }
+            lTmpResult << std::endl << "</root>";
+            lResult_ptr = xmlReadMemory(lTmpResult.str().c_str(), lTmpResult.str().size(), "result.xml", 0, 0);
+            
+          } else if (lComparisonMethod.compare("Error") == 0 ) {
+            std::cout << "an error was expected but we got a result" << std::endl;
+            return 8;
+          } else if (lComparisonMethod.compare("Inspect") == 0 ) {
+            std::cout << "result must be inspected by humans." << std::endl;
+            return 0;
+          } else if (lComparisonMethod.compare("Ignore") == 0 ) {
+            // safely return no error here
+            return 0;
+          }
+
+          if (lRefResult_ptr == NULL || lResult_ptr == NULL) {
+              std::cerr << "couldn't read reference result or result file" << std::endl;
+              return 8;
+          }
+
+          std::string lCanonicalRefFile = rbkt_bin_dir + "/canonical_ref.xml";
+          std::string lCanonicalResFile = rbkt_bin_dir + "/canonical_res.xml";
+
+          int lRefResultRes = xmlC14NDocSave(lRefResult_ptr, 0, 0, NULL, 0, lCanonicalRefFile.c_str(), 0);
+          int lResultRes    = xmlC14NDocSave(lResult_ptr, 0, 0, NULL, 0, lCanonicalResFile.c_str(), 0);
+
+          xmlFreeDoc(lRefResult_ptr);
+          xmlFreeDoc(lResult_ptr);
+
+          if (lRefResultRes < 0) {
+            std::cerr << "error canonicalizing reference result" << std::endl;
+            return 10;
+          }
+      
+          if (lResultRes < 0) {
+            std::cerr << "error canonicalizing result" << std::endl;
+            return 10;
+          }
+
+          // last, we have to diff the result
+          int lLine, lCol, lPos; // where do the files differ
+          std::string lRefLine, lResultLine;
+          bool lRes = fileEquals(lCanonicalRefFile.c_str(), lCanonicalResFile.c_str(), lLine, lCol, lPos, lRefLine, lResultLine);
+          if (!lRes) {
+            std::cout << std::endl << "Canonical result does not match canonical expected result:" << std::endl;
+            printFile(std::cout, lRefFile.get_path());
+            std::cout << "=== end of expected result ===" << std::endl;
+
+            std::cout << "See line " << lLine << ", col " << lCol << " of expected result. " << std::endl;
+            std::cout << "Actual:   <";
+            if( -1 != lPos )
+              printPart(std::cout, lResultFile.get_path(), lPos, 15);
+            else
+              std::cout << lResultLine;
+            std::cout << ">" << std::endl;
+            std::cout << "Expected: <";
+            if( -1 != lPos )
+              printPart(std::cout, lRefFile.get_path(), lPos, 15);
+            else
+              std::cout << lRefLine;
+            std::cout << ">" << std::endl;
+
+            return 8;
+          }
         }
       }
     }

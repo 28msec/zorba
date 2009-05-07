@@ -29,9 +29,14 @@
 void printFile(std::ostream& os, std::string aInFile)
 {
   std::ifstream lInFileStream(aInFile.c_str());
-  assert(lInFileStream);
+  assert(lInFileStream.good());
 
-  os << lInFileStream.rdbuf() << std::endl;
+  char buf[1024];
+  while (!lInFileStream.eof()) {
+    lInFileStream.read(buf, 1024);
+    os.write(buf, lInFileStream.gcount());
+  }
+
 }
 
 
@@ -76,7 +81,7 @@ void slurp_file (const char *fname, std::string &result, const std::string &rbkt
 ********************************************************************************/
 bool isErrorExpected(const TestErrorHandler& errHandler, const Specification* aSpec)
 {
-  char star = '*';
+  std::string star("*");
   const std::vector<std::string>& errors = errHandler.getErrorList();
   for(std::vector<std::string>::const_iterator i = errors.begin();
       i != errors.end();
@@ -86,7 +91,7 @@ bool isErrorExpected(const TestErrorHandler& errHandler, const Specification* aS
         j != aSpec->errorsEnd();
         ++j) 
     {
-      if ((i->compare(*j) == 0) || (j->compare(&star)) == 0)
+      if ((i->compare(*j) == 0) || (j->compare(star)) == 0)
         return true;
     }
   }
@@ -245,10 +250,6 @@ zorba::Item createItem(std::string strValue)
 void
 set_var(bool inlineFile, std::string name, std::string val, zorba::DynamicContext* dctx, const std::string &rbkt_src_dir) {
   zorba::str_replace_all (val, "$RBKT_SRC_DIR", rbkt_src_dir);
-
-#ifdef ZORBA_XQUERYX
-  std::cout << "set_var " << name << " = " << val << std::endl;
-#endif
 
   if (!inlineFile) 
   {

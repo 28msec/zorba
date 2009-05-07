@@ -47,7 +47,7 @@ void XQueryXConvertor::XQueryX_init()
   if(!inited)
   {
     xmlDocPtr doc;
-    doc = xmlParseDoc((const xmlChar*)xqueryx2005_xslt);
+    doc = xmlParseDoc((xmlChar*)xqueryx2005_xslt);
 
     xqueryx2005 = (xsltStylesheet*)xsltParseStylesheetDoc(doc);
   //	xmlFreeDoc(doc);
@@ -61,7 +61,7 @@ char* XQueryXConvertor::XQueryX2XQuery( const char *xqueryx)
 
   xmlDocPtr doc, res;
 
-  doc = xmlParseDoc((const xmlChar*)xqueryx);
+  doc = xmlParseDoc((xmlChar*)xqueryx);
 
   if(!doc)
   {

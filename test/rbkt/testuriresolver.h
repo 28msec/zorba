@@ -51,34 +51,67 @@ public:
 	    StaticContext * aStaticContext );
 };
 
-  class TestModuleURIResolver : public ModuleURIResolver
-  {
-  private:
-    const char * map_file;
-    std::map < String, String > uri_map;
+class TestModuleURIResolver : public ModuleURIResolver
+{
+private:
+  const char * map_file;
+  std::map < String, String > uri_map;
 
-    void initialize ();
+  void initialize ();
 
-  public :
-    TestModuleURIResolver ( const char * file );
-    virtual ~TestModuleURIResolver ();
+public :
+  TestModuleURIResolver ( const char * file );
+  virtual ~TestModuleURIResolver ();
 
-    virtual std::auto_ptr< ModuleURIResolverResult >
-    resolve ( const Item &, StaticContext * aStaticContext );
-  };
+  virtual std::auto_ptr< ModuleURIResolverResult >
+  resolve ( const Item &, StaticContext * aStaticContext );
+};
 
-  class TestModuleURIResolverResult : public ModuleURIResolverResult
-  {
-  public:
+class TestModuleURIResolverResult : public ModuleURIResolverResult
+{
+public:
 
-    virtual std::istream *
-    getModule ( ) const;
+  virtual std::istream *
+  getModule ( ) const;
 
-  protected:
+protected:
 
-    friend class TestModuleURIResolver;
-    std::istream * theModule;
-  };
+  friend class TestModuleURIResolver;
+  std::istream * theModule;
+};
+
+class TestCollectionURIResolver : public CollectionURIResolver
+{
+private:
+  const char * map_file;
+  std::string  rbkt_src;
+  std::map < std::string, std::vector<std::string> > uri_map;
+
+public :
+  TestCollectionURIResolver ( const char * file, const std::string& rbkt_src_dir );
+  virtual ~TestCollectionURIResolver ();
+
+  static void
+  trim(std::string& str);
+
+  virtual std::auto_ptr< CollectionURIResolverResult >
+  resolve ( const Item &, StaticContext * aStaticContext, XmlDataManager* aXmlDataManager );
+  void initialize ();
+
+};
+
+class TestCollectionURIResolverResult : public CollectionURIResolverResult
+{
+public:
+
+  virtual Collection_t
+  getCollection ( ) const;
+
+protected:
+
+  friend class TestCollectionURIResolver;
+  Collection_t theCollection;
+};
 
 
 } // namespace zorba

@@ -1,11 +1,11 @@
 import schema namespace 
-  s = "simple.xsd" 
+  s = "http://www.zorba-xquery.com/simple.xsd" 
   at "simple.xsd";
 
 
 validate strict
 {
-	<items xmlns="simple.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	<items xmlns="http://www.zorba-xquery.com/simple.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	  xsi:schemaLocation="simple.xsd simple.xsd">
 	  <product>
 	    <name>Generic product</name>

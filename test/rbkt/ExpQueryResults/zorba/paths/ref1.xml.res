@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <people>
 <person id="person0">
 <name>Huei Demke</name>

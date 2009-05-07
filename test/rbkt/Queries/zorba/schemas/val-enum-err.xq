@@ -1,12 +1,12 @@
 import schema namespace 
-  s = "simple.xsd" 
+  s = "http://www.zorba-xquery.com/simple.xsd" 
   at "simple.xsd";
 
 
 validate strict
 {
   <product xsi:type="ShirtType"  
-      xmlns="simple.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      xmlns="http://www.zorba-xquery.com/simple.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <name>shirt product</name>
     <number>13221</number>
     <size>sMXL</size>

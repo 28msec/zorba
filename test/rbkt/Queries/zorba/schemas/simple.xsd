@@ -1,7 +1,7 @@
 <xs:schema
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  targetNamespace="simple.xsd"
-  xmlns="simple.xsd"
+  targetNamespace="http://www.zorba-xquery.com/simple.xsd"
+  xmlns="http://www.zorba-xquery.com/simple.xsd"
   elementFormDefault="qualified">
 
 

@@ -17,7 +17,10 @@
 #include "testuriresolver.h"
 
 #include <zorba/zorba.h>
+#include <zorbautils/strutil.h>
 
+#include <iostream>
+#include <vector>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -174,5 +177,108 @@ resolve ( const Item & aURI, StaticContext* aStaticContext )
     lResult->setErrorDescription(lErrorStream.str());
   }
   return std::auto_ptr<ModuleURIResolverResult>(lResult.release());
+}
+
+// Collection Resolver
+Collection_t
+zorba::TestCollectionURIResolverResult::getCollection () const
+{
+  return theCollection;
+}
+
+zorba::TestCollectionURIResolver::TestCollectionURIResolver ( const char * file, const std::string& rbkt_src_dir ) :
+  map_file ( file ),
+  rbkt_src ( rbkt_src_dir )
+{}
+
+void
+std_string_tokenize(const std::string& aStr, const std::string& aDelims, std::vector<std::string>& aTokens, const std::string& rbkt_src)
+{
+  std::string::size_type lastPos = aStr.find_first_not_of(aDelims, 0); 
+  std::string::size_type pos     = aStr.find_first_of(aDelims, lastPos);
+
+  while (std::string::npos != pos || std::string::npos != lastPos) {   
+    // Found a token, add it to the vector.
+    aTokens.push_back(aStr.substr(lastPos, pos - lastPos));
+    zorba::str_replace_all(aTokens.back(), "$RBKT_SRC_DIR", rbkt_src);
+
+    lastPos = aStr.find_first_not_of(aDelims, pos);
+    pos = aStr.find_first_of(aDelims, lastPos);
+  }
+}
+
+
+void zorba::TestCollectionURIResolver::trim(std::string& str)
+{
+  std::string::size_type pos = str.find_last_not_of(' ');
+  if(pos != std::string::npos) {
+    str.erase(pos + 1);
+    pos = str.find_first_not_of(' ');
+    if(pos != std::string::npos) str.erase(0, pos);
+  }
+  else str.erase(str.begin(), str.end());
+}
+
+void zorba::TestCollectionURIResolver::initialize ()
+{
+  std::ifstream urifile ( map_file );
+  if ( urifile.bad() ) return;
+
+  while ( !urifile.eof() ) {
+    std::string lCollectionMapping;
+    std::getline( urifile, lCollectionMapping );
+
+    if (lCollectionMapping.size() == 0) continue;
+
+    std::string::size_type eq = lCollectionMapping.find ( '=' );
+    assert(eq != std::string::npos);
+
+    std::string id ( lCollectionMapping.substr ( 0, eq ) );
+    trim(id);
+
+    std::vector<std::string>& lCollections = uri_map[id];
+
+    std_string_tokenize(lCollectionMapping.substr(eq+1), ";", lCollections, rbkt_src);
+  }
+}
+
+zorba::TestCollectionURIResolver::~TestCollectionURIResolver ()
+{}
+
+std::auto_ptr < CollectionURIResolverResult >
+zorba::TestCollectionURIResolver::
+resolve ( const Item & aURI, StaticContext* aStaticContext, XmlDataManager* aXmlDataManager )
+{
+  if ( uri_map.empty () ) {
+    initialize ();
+  }
+  std::auto_ptr < TestCollectionURIResolverResult >
+    lResult ( new TestCollectionURIResolverResult () );
+
+  std::string request = aURI.getStringValue ().c_str();
+  std::string search  = request.substr(request.find_last_of('/')+1);
+  std::map < std::string, std::vector<std::string> > :: iterator it = uri_map.find ( search );
+  if ( it != uri_map.end () ) {
+    const std::vector<std::string>& target = it->second;
+    Collection_t lCol = aXmlDataManager->getCollection(request);
+    if (lCol.isNull())  {
+      lCol = aXmlDataManager->createCollection(request);
+      for (std::vector<std::string>::const_iterator lIter = target.begin();
+          lIter != target.end(); ++lIter) {
+        std::ifstream lIn(lIter->c_str());
+        assert(lIn.good());
+  
+        lCol->addDocument(lIn);
+      }
+    }
+    lResult -> theCollection = lCol;
+    lResult -> setError ( URIResolverResult::UR_NOERROR );
+  } else {
+    lResult -> setError ( URIResolverResult::UR_FODC0004 );
+    std::stringstream lErrorStream;
+    lErrorStream << "Collection not found " << aURI.getStringValue();
+    lResult->setErrorDescription(lErrorStream.str());
+  }
+  return std::auto_ptr<CollectionURIResolverResult>(lResult.release());
 }
 

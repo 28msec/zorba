@@ -35,7 +35,7 @@ public:
     std::string theVarName, theVarValue;
   };
 
-  Specification() : theInline(false) {}
+  Specification() : theInline(false), theComparisonMethod("Fragment") {}
 
 private:
   bool theInline;
@@ -44,6 +44,8 @@ private:
   std::vector<std::string> theErrors;
   std::string theDate, theTimezone;
   std::string theInputQueryFile;
+  std::string theComparisonMethod; // default is Fragment such that the user doesn't need to care about root tags for sequences etc
+  std::string theDefaultCollection;
 
   void setInline() {
     theInline = true;
@@ -118,6 +120,14 @@ public:
     return theTimezone;
   }
 
+  std::string getComparisonMethod() const {
+    return theComparisonMethod;
+  }
+
+  std::string getDefaultCollection() const {
+    return theDefaultCollection;
+  }
+
   void tokenize(const std::string& str,
                 std::vector<std::string>& tokens,
                 const std::string& delimiters)
@@ -182,9 +192,15 @@ public:
             addVariable();
           }
           break;
-	} else if ( *lIter == "INPUTQUERY:" ) {
-	  ++lIter;
-	  theInputQueryFile = *lIter;
+        } else if ( *lIter == "InputQuery:" ) {
+          ++lIter;
+          theInputQueryFile = *lIter;
+        } else if ( *lIter == "Comparison:" ) {
+          ++lIter;
+          theComparisonMethod = *lIter;
+        } else if ( *lIter == "DefaultCollection:" ) {
+          ++lIter;
+          theDefaultCollection = *lIter;
         } else if ( *lIter == "Error:" ) { 
           ++lIter;
           if(lIter == tokens.end() ) { return false; }

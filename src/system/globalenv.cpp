@@ -186,7 +186,8 @@ void GlobalEnvironment::init(store::Store* store)
 
   LIBXML_TEST_VERSION
  
-  xsltInit();
+  // TODO function not available on mac
+  //xsltInit();
   m_globalEnv->xqueryx_convertor = new XQueryXConvertor;
 #endif
 

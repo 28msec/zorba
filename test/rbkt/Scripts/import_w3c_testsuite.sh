@@ -49,6 +49,17 @@ EOF
 echo Processing URI of catalog...
 $SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/module.txt $mq 
 
+mq=`mktemp /tmp/rwts.XXXXXX`
+cat >$mq <<"EOF"
+declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
+declare option saxon:output "omit-xml-declaration=yes";
+for $t in //collection
+return concat ($t/@ID, "=", string-join( for $x in $t/input-document return fn:concat( "$RBKT_SRC_DIR/Queries/w3c_testsuite/TestSources/", $x, ".xml"), ";" ), "
+")
+EOF
+echo Processing URI of catalog...
+$SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/collection.txt $mq 
+
 
 q=`mktemp /tmp/rwts.XXXXXX`
 cat >$q <<"EOF"
@@ -59,15 +70,21 @@ for $sch in //schema return concat ("%uri ", $sch/@uri, " ", $sch/@FileName),
 for $src in //source return concat ("%src ", $src/@ID, " ", $src/@FileName),
 for $tc in //test-case
 let $out := $tc/output-file[1]/text()
+let $cmp := $tc/output-file[1]/@compare
+let $ctx := $tc/contextItem
+let $dc  := $tc/defaultCollection
 (: assuming only one input-query and x is variable naame :)
 let $inq := $tc/input-query/@name
 return string-join ((
 $tc/@name, $tc/@FilePath, $tc/query/@name,
-string-join (for $i in $tc/input-file return concat (data ($i/@variable), "=", $i/text ()), ":"),
-string-join (for $i in $tc/input-URI return concat (data ($i/@variable), "=", $i/text ()), ":"),
+if ($tc/input-file) then string-join (for $i in $tc/input-file return concat (data ($i/@variable), "=", $i/text ()), ";") else "noinlist",
+if ($tc/input-URI) then string-join (for $i in $tc/input-URI return concat (data ($i/@variable), "=", $i/text ()), ";") else "nourilist",
 if ($inq) then $inq else "noquery",
+if ($cmp) then $cmp else "nocomparison",
+if ($ctx) then $ctx else "nocontext",
+if ($dc) then $dc else "nodefaultcollection",
 if ($out) then $out else "",
-string-join ($tc/expected-error/text(), ":")
+string-join ($tc/expected-error/text(), ";")
 ), " ")),
 "
 ")
@@ -75,7 +92,7 @@ EOF
 
 echo Cleaning up previous data...
 rm -rf $SRC/test/rbkt/Queries/w3c_testsuite $SRC/test/rbkt/ExpQueryResults/w3c_testsuite $SRC/test/rbkt/TestSources
-rm -rf $SRC/test/rbkt/InputQueries
+rm -rf $SRC/test/rbkt/Queries/w3c_testsuite/InputQueries
 
 echo Processing catalog...
 $SRC/test/zorbatest/xquery -s XQTSCatalog.xml $q | tee /tmp/xq-res.txt | perl -e '
@@ -100,50 +117,92 @@ if (m/^%src /) {
   next;
 }
 
-my ($name, $path, $query, $inlist, $urilist, $inpq, $out, $errlist) = split (/ /);
-my @inbnd = split (/:/, $inlist);
-my @uribnd = split (/:/, $urilist);
-my @errs = split (/:/, $errlist);
+my ($name, $path, $query, $inlist, $urilist, $inpq, $cmp, $ctx, $dc, $out, $errlist) = split (/ /);
+my @inbnd = split (/;/, $inlist);
+my @uribnd = split (/;/, $urilist);
+my @errs = split (/;/, $errlist);
 my $inpath = "Queries/XQuery/$path";
-my $dstqpath="$repo/test/rbkt/Queries/w3c_testsuite/$path";
-my $inpqpath="$repo/test/rbkt/InputQueries";
+my $inxqueryxpath = "Queries/XQueryX/$path";
+my $dstqpath="$repo/test/rbkt/Queries/w3c_testsuite/XQuery/$path";
+my $dstxqueryxqpath="$repo/test/rbkt/Queries/w3c_testsuite/XQueryX/$path";
+my $inpqpath="$repo/test/rbkt/Queries/w3c_testsuite/InputQueries";
 my $dstrespath = "$repo/test/rbkt/ExpQueryResults/w3c_testsuite/$path";
 my $fullout = "$dstrespath/$name.xml.res";
 my $specfile = "$dstqpath/$name.spec";
-`mkdir -p $dstqpath`; `mkdir -p $dstrespath`; `mkdir -p $inpqpath`;
+my $xqueryxspecfile = "$dstxqueryxqpath/$name.spec";
+`mkdir -p $dstqpath`; `mkdir -p $dstxqueryxqpath`; `mkdir -p $dstrespath`; `mkdir -p $inpqpath`;
  
 copy ("$inpath/$query.xq", "$dstqpath/$name.xq");
+copy ("$inxqueryxpath/$query.xqx", "$dstxqueryxqpath/$name.xqx");
 if ($out) {
   copy ("ExpectedTestResults/$path/$out", $fullout);
 }
 
-
-if (@inbnd || @uribnd) {
+if ( $inlist ne "noinlist" || $urilist ne "nourilist" || $ctx ne "nocontext" ) {
   open (SPEC, ">>$specfile");
+  open (SPECX, ">>$xqueryxspecfile");
+
   print SPEC "Args:";
-  foreach (@inbnd) {
-    my ($var, $srcid) = split /=/;
-    print SPEC " -x $var=$test_src_path/" . $sources {$srcid};
+  print SPECX "Args:";
+
+  if ( $inlist ne "noinlist" ) {
+    foreach (@inbnd) {
+      my ($var, $srcid) = split /=/;
+      print SPEC " -x $var=$test_src_path/" . $sources {$srcid};
+      print SPECX " -x $var=$test_src_path/" . $sources {$srcid};
+    }
   }
-  foreach (@uribnd) {
-    my ($var, $srcid) = split /=/;
-    print SPEC " -x $var:=$test_src_path/" . $sources {$srcid};
+
+  if ( $urilist ne "nourilist" ) {
+    foreach (@uribnd) {
+      my ($var, $srcid) = split /=/;
+      print SPEC " -x $var:=" . $srcid;
+      print SPECX " -x $var:=" . $srcid;
+    }
+  }
+
+  if ( $ctx ne "nocontext" ) {
+    print SPEC " -x .=$test_src_path/" . $sources {$ctx};
+    print SPECX " -x .=$test_src_path/" . $sources {$ctx};
   }
   print SPEC "\n";
+  print SPECX "\n";
   close (SPEC);
+  close (SPECX);
+}
+
+if ( $cmp ne "nocomparison" ) {
+   open (SPEC, ">>$specfile");
+   open (SPECX, ">>$xqueryxspecfile");
+   print SPEC "Comparison: " . $cmp . "\n";
+   print SPECX "Comparison: " . $cmp . "\n";
 }
 
 if ( $inpq ne "noquery" ) {
    open (SPEC, ">>$specfile");
-   print SPEC "INPUTQUERY: " . $inpqpath . "/" . $inpq . ".ixq" . "\n";
+   open (SPECX, ">>$xqueryxspecfile");
+   print SPEC "InputQuery: " . $inpqpath . "/" . $inpq . ".ixq" . "\n";
+   print SPECX "InputQuery: " . $inpqpath . "/" . $inpq . ".ixq" . "\n";
    copy ( "$inpath/$inpq.xq", "$inpqpath/$inpq.ixq" );
+   copy ( "$inxqueryxpath/$inpq.xq", "$inpqpath/$inpq.ixqx" );
 }
+
+if ( $dc ne "nodefaultcollection" ) {
+   open (SPEC, ">>$specfile");
+   open (SPECX, ">>$xqueryxspecfile");
+   print SPEC "DefaultCollection: " . $dc . "\n";
+   print SPECX "DefaultCollection: " . $dc . "\n";
+}
+
 if (@errs) {
   open (SPEC, ">>$specfile");
+  open (SPECX, ">>$xqueryxspecfile");
   foreach (@errs) {
     print SPEC "Error:$_\n";
+    print SPECX "Error:$_\n";
   }
   close (SPEC);
+  close (SPECX);
 }
 
 }
