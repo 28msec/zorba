@@ -20,6 +20,7 @@
 
 namespace zorba {
 
+
 zop_hoist::zop_hoist(const signature& sig) : function(sig) 
 {
 }
@@ -52,115 +53,6 @@ PlanIter_t zop_unhoist::codegen(const QueryLoc& loc, std::vector<PlanIter_t>& ar
   return new UnhoistIterator(loc, argv);
 }
 
-
-zop_createindex::zop_createindex(const signature& sig)
-  : function(sig) { }
-
-PlanIter_t zop_createindex::codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new CreateValueIndex(loc, argv[0]);
-}
-
-zop_dropindex::zop_dropindex(const signature& sig)
-  : function(sig) { }
-
-PlanIter_t zop_dropindex::codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new DropValueIndex(loc, argv[0]);
-}
-
-
-zop_buildindex::zop_buildindex(const signature& sig)
-  :
-  function(sig) 
-{ 
-}
-
-
-PlanIter_t zop_buildindex::codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  ZORBA_ASSERT(false);
-}
-
-
-zop_probeindexpoint::zop_probeindexpoint(const signature& sig)
-  :
-  function(sig) 
-{
-}
-
-
-PlanIter_t zop_probeindexpoint::codegen(
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann) const
-{
-  return new ValueIndexPointProbe(loc, argv);
-}
-
-
-zop_probeindexrange::zop_probeindexrange(const signature& sig)
-  : 
-  function(sig) 
-{
-}
-
-
-PlanIter_t zop_probeindexrange::codegen(
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann) const
-{
-  return new ValueIndexRangeProbe(loc, argv);
-}
-
-
-zop_index_session_opener::zop_index_session_opener(const signature& sig)
-  :
-  function(sig) 
-{
-}
-
-
-PlanIter_t zop_index_session_opener::codegen(
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann) const
-{
-  return new ValueIndexInsertSessionOpener(loc, argv[0]);
-}
-
-
-zop_index_session_closer::zop_index_session_closer(const signature& sig)
-  :
-  function(sig) 
-{
-}
-
-
-PlanIter_t zop_index_session_closer::codegen(
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann) const
-{
-  return new ValueIndexInsertSessionCloser(loc, argv[0]);
-}
-
-
-zop_index_builder::zop_index_builder(const signature& sig)
-  :
-  function(sig) 
-{
-}
-
-
-PlanIter_t zop_index_builder::codegen(
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann) const
-{
-  return new ValueIndexBuilder(loc, argv);
-}
 
 }
 /* vim:set ts=2 sw=2: */

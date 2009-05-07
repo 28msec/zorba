@@ -20,7 +20,8 @@
 #include "common/shared_types.h"
 #include "functions/function.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 class zop_hoist : public function 
 {
@@ -41,97 +42,6 @@ public:
   xqtref_t return_type (const std::vector<xqtref_t>& arg_types) const;
 
   PlanIter_t codegen(const QueryLoc&, std::vector<PlanIter_t>&, AnnotationHolder&) const;
-};
-
-
-class zop_createindex : public function 
-{
-public:
-  zop_createindex(const signature&);
-
-  PlanIter_t codegen(const QueryLoc&, std::vector<PlanIter_t>&, AnnotationHolder&) const;
-
-  virtual bool requires_dyn_ctx () const { return true; }
-};
-
-
-class zop_dropindex : public function 
-{
-public:
-  zop_dropindex(const signature&);
-
-  PlanIter_t codegen(const QueryLoc&, std::vector<PlanIter_t>&, AnnotationHolder&) const;
-
-  virtual bool requires_dyn_ctx () const { return true; }
-};
-
-
-class zop_buildindex : public function 
-{
-public:
-  zop_buildindex(const signature&);
-
-  PlanIter_t codegen(const QueryLoc&, std::vector<PlanIter_t>&, AnnotationHolder&) const;
-
-  virtual bool requires_dyn_ctx () const { return true; }
-};
-
-
-class zop_index_session_opener : public function 
-{
-public:
-  zop_index_session_opener(const signature&);
-
-  PlanIter_t codegen(const QueryLoc&, std::vector<PlanIter_t>&, AnnotationHolder&) const;
-
-  virtual bool requires_dyn_ctx () const { return true; }
-};
-
-
-class zop_index_session_closer : public function 
-{
-public:
-  zop_index_session_closer(const signature&);
-
-  PlanIter_t codegen(const QueryLoc&, std::vector<PlanIter_t>&, AnnotationHolder&) const;
-
-  virtual bool requires_dyn_ctx () const { return true; }
-};
-
-
-class zop_index_builder : public function 
-{
-public:
-  zop_index_builder(const signature&);
-
-  PlanIter_t codegen (const QueryLoc&, std::vector<PlanIter_t>&, AnnotationHolder&) const;
-
-  virtual bool requires_dyn_ctx () const { return true; }
-};
-
-
-/***************************************************************************//**
-  probe-index-point(uriLiteral, column1Expr, ... columnNExpr)
-********************************************************************************/
-class zop_probeindexpoint : public function 
-{
-public:
-  zop_probeindexpoint(const signature&);
-
-  PlanIter_t codegen(const QueryLoc&, std::vector<PlanIter_t>&, AnnotationHolder&) const;
-
-  virtual bool requires_dyn_ctx () const { return true; }
-};
-
-
-class zop_probeindexrange : public function 
-{
-public:
-  zop_probeindexrange(const signature&);
-
-  PlanIter_t codegen(const QueryLoc&, std::vector<PlanIter_t>&, AnnotationHolder&) const;
-
-  virtual bool requires_dyn_ctx () const { return true; }
 };
 
 
