@@ -200,11 +200,26 @@ DEF_ERR_CODE(API0062_CONV_JSON_PARAM, API0062, "Parameter {/s} is not an element
 // Store Errors
 //
 DEF_ERR_CODE(STR0001_INDEX_ALREADY_EXISTS, STR0001, "An index with URI /s exists already.")
+
 DEF_ERR_CODE(STR0002_INDEX_PARTIAL_KEY_INSERT, STR0002, "Partial key insertion in index \"/s\". Key = /s")
+
 DEF_ERR_CODE(STR0003_INDEX_PARTIAL_KEY_REMOVE, STR0003, "Partial key deletion from index \"/s\"")
+
 DEF_ERR_CODE(STR0004_INDEX_PARTIAL_KEY_PROBE, STR0004, "Partial key probe into index \"/s\"")
+
 DEF_ERR_CODE(STR0005_INDEX_INVALID_BOX_PROBE, STR0005, "Invalid box probe condition for index \"/s\" : /s")
+
 DEF_ERR_CODE(STR0006_INDEX_UNSUPPORTED_PROBE_CONDITION, STR0006, "Index \"/s\" does not support probe conditions of kind /s")
+
+DEF_ERR_CODE(STR0007_LOADER_IO_ERROR, STR0007, "Loader I/O error: /s")
+
+DEF_ERR_CODE(STR0008_LOADER_PARSING_ERROR, STR0008, "Loader parsing error: /s")
+
+DEF_ERR_CODE(STR0009_NODEID_ERROR, STR0009, "Nodeid error: /s")
+
+DEF_ERR_CODE(STR0010_TYPE_ERROR, STR0010, "Type error: /s")
+
+DEF_ERR_CODE (STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE, STR0024, "The function called {/s} is not available for the given item type {/s}.")
 
 //
 // ZORBA-specific errors
@@ -220,12 +235,6 @@ DEF_ERR_CODE (XQP0004_SYSTEM_NOT_SUPPORTED, XQP0004, "/s not implemented or not 
 
 DEF_ERR_CODE (XQP0005_SYSTEM_ASSERT_FAILED, XQP0005, "Assertion /s failed in /s")
 
-DEF_ERR_CODE (XQP0016_LOADER_IO_ERROR, XQP0016, "Loader I/O error: /s")
-
-DEF_ERR_CODE (XQP0017_LOADER_PARSING_ERROR, XQP0017, "Loader parsing error: /s")
-
-DEF_ERR_CODE (XQP0018_NODEID_ERROR, XQP0018, "Nodeid error: /s")
-
 DEF_ERR_CODE (XQP0019_INTERNAL_ERROR, XQP0019, "Zorba internal error /s")
 
 DEF_ERR_CODE (XQP0020_INVALID_URI, XQP0020, "Invalid URI /s")
@@ -235,8 +244,6 @@ DEF_ERR_CODE (XQP0021_USER_ERROR, XQP0021, "User error")
 DEF_ERR_CODE (XQP0022_GET_RESULTS_AS_DOM_FAILED, XQP0022, "Couldn't get result as DOM")
 
 DEF_ERR_CODE (XQP0023_GET_RESULTS_AS_SAX_FAILED, XQP0023, "Couldn't get result as SAX")
-
-DEF_ERR_CODE (XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE, XQP0024, "The function called {/s} is not available for the given item type {/s}.")
 
 DEF_ERR_CODE (XQP0025_COULD_NOT_CREATE_ITEM, XQP0025, "The item could not be created.")
 
