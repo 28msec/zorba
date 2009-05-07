@@ -39,12 +39,30 @@ typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
   that appears in a query. A (index_uri --> ValueIndex obj) mapping is also
   registered in the static context during translation.
 
-  Note: The DECLARE INDEX sysntax is the following:
+  - The DECLARE INDEX sysntax is the following:
 
   IndexDecl ::= "DECLARE" ["UNIQUE"] ["HASH" | "BTREE"] "INDEX" UriLiteral
                 "ON" ExprSingle "BY" "(" IndexField+ ")"
 
   IndexField ::= ExprSingle [TypeDeclaration] ["COLLATION" UriLiteral]
+
+
+  - Other index-related syntax:
+
+  IndexStatement ::= [CREATE | BUILD | DROP] UriLiteral
+
+
+  - Index-related functions (see src/functions/Index.h):
+
+  create-index(xs:uri)
+
+  drop-index(xs:uri)
+
+  build-index(xs:uri)
+
+  probe-index-point(xs:uri, xs:anyAtomic?, ..., xs:anyAtomic?) as item*
+
+  probe-index-range(xs:uri, xs:anyAtomic?, ..., xs:anyAtomic?) as item*
 
 ********************************************************************************/
 class ValueIndex : public SimpleRCObject 
