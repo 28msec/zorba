@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "types/typeops.h"
+
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/expression/expr.h"
 #include "compiler/rewriter/tools/expr_tools.h"
@@ -27,7 +29,11 @@ static bool isIndexJoinPredicate(RewriterContext&, PredicateInfo&);
 
 static void rewriteJoin(RewriterContext&, PredicateInfo&);
 
-static void expandExprVars(RewriterContext& rCtx, expr*, int);
+static var_expr* findForVar(RewriterContext&, expr*, int&);
+
+static bool checkVarDependency(RewriterContext&, expr*, int);
+
+static void expandVars(RewriterContext&, expr*, int);
 
 static bool isAndExpr(expr* e);
 
@@ -107,7 +113,8 @@ expr_t IndexJoin::rewritePost(expr* node, RewriterContext& rCtx)
 
 
 /*******************************************************************************
-  Check whether this expr a value-equal or a general-equal
+  Check whether the given predicate is a join predicate that can be conversted 
+  to a hashjoin.
 ********************************************************************************/
 static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
 {
@@ -115,6 +122,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   const function* fn;
   const expr* predExpr = predInfo.thePredicate;
 
+  // skip fn:boolean() wrapper
   while (true)
   {
     if (predExpr->get_expr_kind() != fo_expr_kind)
@@ -151,67 +159,95 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     find_flwor_vars(rCtx.m_root, *rCtx.m_varid_map, *rCtx.m_exprvars_map, freeset);
   }
 
-  std::vector<int> varidSet1;
-  std::vector<int> varidSet2;
+  // Analyze each operand of the eq to see if it depends on a single for
+  // variable. If that is not true, we reject this predicate.
+  int var1id;
+  var_expr* var1 = findForVar(rCtx, op1.getp(), var1id);
+  if (var1 == NULL)
+    return false;
 
-  const DynamicBitset& bitset1 = (*rCtx.m_exprvars_map)[op1.getp()];
-  const DynamicBitset& bitset2 = (*rCtx.m_exprvars_map)[op2.getp()];
+  int var2id;
+  var_expr* var2 = findForVar(rCtx, op2.getp(), var2id);
+  if (var2 == NULL)
+    return false;
 
-  bitset1.getSet(varidSet1);
-  bitset2.getSet(varidSet2);
+  if (var1 == var2)
+    return false;
 
-  if (varidSet1.size() == 1 && varidSet2.size() == 1)
+  // Determine the outer and inner side of the join
+  int outerVarId;
+  int innerVarId;
+
+  if (var1id < var2id)
   {
-    int var1id = varidSet1[0];
-    int var2id = varidSet2[0];
-
-    if (var1id == var2id)
-      return false;
-    
-    int outerVarId;
-    int innerVarId;
-
-    if (var1id < var2id)
-    {
-      predInfo.theOuterOp = op1.getp();
-      predInfo.theOuterVar = (*rCtx.m_idvar_map)[var1id];
-      predInfo.theOuterVarId = var1id;
-      predInfo.theInnerOp = op2.getp();
-      predInfo.theInnerVar = (*rCtx.m_idvar_map)[var2id];
-      outerVarId = var1id;
-      innerVarId = var2id;
-    }
-    else
-    {
-      predInfo.theOuterOp = op2.getp();
-      predInfo.theOuterVar = (*rCtx.m_idvar_map)[var2id];
-      predInfo.theOuterVarId = var2id;
-      predInfo.theInnerOp = op1.getp();
-      predInfo.theInnerVar = (*rCtx.m_idvar_map)[var1id]; 
-      outerVarId = var2id;
-      innerVarId = var1id;
-    }
-
-    // Both inner and outer vars must be FOR vars.
-    if (predInfo.theOuterVar->get_kind() != var_expr::for_var ||
-        predInfo.theInnerVar->get_kind() != var_expr::for_var)
-      return false;
-
-    // The expr that defines the inner var must not depend on the outer var.
-    expr* innerVarExpr = predInfo.theInnerVar->get_for_clause()->get_expr();
-
-    if ((*rCtx.m_exprvars_map)[innerVarExpr].get(outerVarId))
-      return false;
-
-    // The predicate must be in the same flwor that defines the inner var (this
-    // way we can be sure that the pred acts as a filter over the inner var).
-    if (predInfo.theFlworExpr->defines_variable(predInfo.theInnerVar, NULL) < 0)
-      return false;
-    
-    return true;
+    predInfo.theOuterOp = op1.getp();
+    predInfo.theOuterVar = var1;
+    predInfo.theOuterVarId = var1id;
+    predInfo.theInnerOp = op2.getp();
+    predInfo.theInnerVar = var2;
+    outerVarId = var1id;
+    innerVarId = var2id;
+  }
+  else
+  {
+    predInfo.theOuterOp = op2.getp();
+    predInfo.theOuterVar = var2;
+    predInfo.theOuterVarId = var2id;
+    predInfo.theInnerOp = op1.getp();
+    predInfo.theInnerVar = var1; 
+    outerVarId = var2id;
+    innerVarId = var1id;
   }
 
-  return false;
+  // The expr that defines the inner var must not depend on the outer var.
+  expr* innerDomainExpr = predInfo.theInnerVar->get_for_clause()->get_expr();
+  if (checkVarDependency(rCtx, innerDomainExpr, outerVarId))
+    return false;
+
+  // The predicate must be in the same flwor that defines the inner var (this
+  // way we can be sure that the pred acts as a filter over the inner var).
+  if (predInfo.theFlworExpr->defines_variable(predInfo.theInnerVar, NULL) < 0)
+    return false;
+    
+  // Type checks
+  xqtref_t outerType = predInfo.theOuterOp->return_type(rCtx.m_sctx);
+  xqtref_t innerType = predInfo.theInnerOp->return_type(rCtx.m_sctx);
+  xqtref_t primeOuterType = TypeOps::prime_type(*outerType);
+  xqtref_t primeInnerType = TypeOps::prime_type(*innerType);
+  TypeConstants::quantifier_t outerQuant = TypeOps::quantifier(*outerType);
+  TypeConstants::quantifier_t innerQuant = TypeOps::quantifier(*innerType);
+
+  // Normally, other rewrite rules should have added the necessary casting
+  // to the eq operands so that their static types have quantifiers ONE
+  // or QUESTION and the associated prime types are not xs:untypedAtomic.
+  // But just in case those rules have been disabled, we check again here
+  // and reject the hashjoin rewrite if these condition are violated.
+  if (innerQuant != TypeConstants::QUANT_ONE &&
+      innerQuant != TypeConstants::QUANT_QUESTION)
+    return false;
+
+  if (outerQuant != TypeConstants::QUANT_ONE &&
+      outerQuant != TypeConstants::QUANT_QUESTION)
+    return false;
+
+  if (TypeOps::is_equal(*primeOuterType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+    return false;
+
+  if (TypeOps::is_equal(*primeInnerType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+    return false;
+
+  // The type of the outer/inner operands in the join predicate must not be
+  // xs:anyAtomic.
+  if (TypeOps::is_equal(*primeOuterType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE) ||
+      TypeOps::is_equal(*primeInnerType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE))
+    return false;
+
+  // The type of the outer operand in the join predicate must be a subtype
+  // of the inner operand.
+  if (!TypeOps::is_subtype(*outerType, *innerType))
+    return false;
+
+  return true;
 }
 
 
@@ -220,7 +256,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
 ********************************************************************************/
 static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 {
-  //std::cout << "Found Join Index Predicate" << std::endl << std::endl;
+  std::cout << "!!!!! Found Join Index Predicate !!!!!" << std::endl << std::endl;
 
   const QueryLoc& loc = predInfo.thePredicate->get_loc();
 
@@ -228,8 +264,8 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   // The index domain expr is the expr that defines the inner var, expanded so that
   // it does not reference any variables defined after the outer var.
-  expr* innerVarExpr = fc->get_expr();
-  expandExprVars(rCtx, innerVarExpr, predInfo.theOuterVarId);
+  expr* domainExpr = fc->get_expr();
+  expandVars(rCtx, domainExpr, predInfo.theOuterVarId);
 
   //
   // Create the ValueIndex obj
@@ -241,7 +277,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   ValueIndex_t idx = new ValueIndex(rCtx.m_sctx, uri.getStore());
 
-  idx->setDomainExpression(innerVarExpr);
+  idx->setDomainExpression(domainExpr);
 
   idx->setDomainVariable(rCtx.createTempVar(loc, var_expr::for_var));
 
@@ -370,7 +406,76 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 /*******************************************************************************
 
 ********************************************************************************/
-static void expandExprVars(
+static var_expr* findForVar(RewriterContext& rCtx, expr* curExpr, int& varid)
+{
+  var_expr* var = NULL;
+
+  while (true)
+  {
+    std::vector<int> varidSet;
+
+    const DynamicBitset& bitset = (*rCtx.m_exprvars_map)[curExpr];
+
+    bitset.getSet(varidSet);
+
+    if (varidSet.size() != 1)
+      return NULL;
+
+    varid = varidSet[0];
+    var = (*rCtx.m_idvar_map)[varid];
+
+    if (var->get_kind() == var_expr::for_var)
+    {
+      break;
+    }
+    else if (var->get_kind() == var_expr::let_var)
+    {
+      curExpr = var->get_forletwin_clause()->get_expr();
+    }
+    else 
+    {
+      return NULL;
+    }
+  }
+
+  return var;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+static bool checkVarDependency(
+    RewriterContext& rCtx,
+    expr* curExpr,
+    int searchVarId)
+{
+  const DynamicBitset& bitset = (*rCtx.m_exprvars_map)[curExpr];
+
+  if (bitset.get(searchVarId))
+    return true;
+
+  std::vector<int> varidSet;
+  bitset.getSet(varidSet);
+
+  ulong numVars = varidSet.size();
+  for (ulong i = 0; i < numVars; ++i)
+  {
+    var_expr* var = (*rCtx.m_idvar_map)[varidSet[i]];
+    curExpr = var->get_forletwin_clause()->get_expr();
+
+    if (checkVarDependency(rCtx, curExpr, searchVarId))
+      return true;
+  }
+
+  return false;
+}
+
+
+
+/*******************************************************************************
+
+********************************************************************************/
+static void expandVars(
     RewriterContext& rCtx,
     expr* subExpr,
     int outerVarId)
@@ -387,7 +492,7 @@ static void expandExprVars(
       if (varid > outerVarId)
       {
         wrapper->set_expr(var->get_forletwin_clause()->get_expr());
-        expandExprVars(rCtx, wrapper->get_expr(), outerVarId);
+        expandVars(rCtx, wrapper->get_expr(), outerVarId);
         return;
       }
     }
@@ -396,7 +501,7 @@ static void expandExprVars(
   expr_iterator iter = subExpr->expr_begin();
   while (!iter.done())
   {
-    expandExprVars(rCtx, *iter, outerVarId);
+    expandVars(rCtx, *iter, outerVarId);
     ++iter;
   }
 
