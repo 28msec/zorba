@@ -870,8 +870,8 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
           varnames.push_back (lIter->varname);
           var_keys.push_back (lIter->var_key);
           vartypes.push_back (lIter->type);
-          lIter->var->accept(*this);
-          argv.push_back(pop_itstack());
+          //lIter->var->accept(*this);
+          //argv.push_back(pop_itstack());
         }
         reverse(argv.begin(), argv.end());
         list<global_binding> lGlobals = fc->get_global_variables();
