@@ -87,10 +87,17 @@ bool GenericArithIterator<Operation>::nextImpl ( store::Item_t& result, PlanStat
   STACK_END (state);
 }
 
+
 template < class Operation >
-bool GenericArithIterator<Operation>::compute(store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc& aLoc, 
-                                                store::Item_t& n0, store::Item_t& n1)
+bool GenericArithIterator<Operation>::compute(
+    store::Item_t& result,
+    RuntimeCB* aRuntimeCB,
+    const QueryLoc& aLoc, 
+    store::Item_t& n0,
+    store::Item_t& n1)
 {
+  assert(n0->isAtomic());
+  assert(n1->isAtomic());
   store::Item_t an0 = n0->getAtomizationValue();
   store::Item_t an1 = n1->getAtomizationValue();
 
@@ -107,16 +114,27 @@ bool GenericArithIterator<Operation>::compute(store::Item_t& result, RuntimeCB* 
       TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE )))
   {
     GenericCast::instance()->castToAtomic(an0, an0, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+
     if (TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE ))
-      return Operation::template compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_YM_DURATION>(result, aRuntimeCB, &aLoc, an0, an1);
+    {
+      return Operation::template
+             compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_YM_DURATION>
+             (result, aRuntimeCB, &aLoc, an0, an1);
+    }
     else
-      return Operation::template compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DT_DURATION>(result, aRuntimeCB, &aLoc, an0, an1);
+    {
+      return Operation::template
+             compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DT_DURATION>
+             (result, aRuntimeCB, &aLoc, an0, an1);
+    }
   }
   else if (TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE )
-      &&
-      TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE))
+           &&
+           TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE))
   {
-    return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_TIME> (result, aRuntimeCB, &aLoc, an0, an1);
+    return Operation::template
+           compute<TypeConstants::XS_DURATION,TypeConstants::XS_TIME>
+           (result, aRuntimeCB, &aLoc, an0, an1);
   }
   else if (TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE ))
   {

@@ -737,7 +737,7 @@ long CompareIterator::equal(
   }
   catch(error::ZorbaError& e)
   {
-    if (e.theErrorCode == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE)
+    if (e.theErrorCode == STR0010_TYPE_ERROR)
       return -2;
     else
       throw e;
@@ -795,7 +795,7 @@ long CompareIterator::compare(
   }
   catch(error::ZorbaError& e)
   {
-    if (e.theErrorCode == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE)
+    if (e.theErrorCode == STR0010_TYPE_ERROR)
       return -2;
     else
       throw e;

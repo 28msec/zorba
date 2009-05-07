@@ -392,7 +392,7 @@ int processReply(store::Item_t& result,
         else
         {
           // xml could not parsed
-          ZORBA_ERROR(XQP0017_LOADER_PARSING_ERROR);
+          ZORBA_ERROR(STR0008_LOADER_PARSING_ERROR);
         }
       }
       break;
@@ -413,7 +413,7 @@ int processReply(store::Item_t& result,
         else
         {
           // xml could not be parsed
-          ZORBA_ERROR(XQP0017_LOADER_PARSING_ERROR);
+          ZORBA_ERROR(STR0008_LOADER_PARSING_ERROR);
         }
       }
       break;

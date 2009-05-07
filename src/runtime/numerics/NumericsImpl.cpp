@@ -379,8 +379,6 @@ bool NumArithIterator<Operation>::compute(
 {
   assert(n0->isAtomic());
   assert(n1->isAtomic());
-  //store::Item_t an0 = n0->getAtomizationValue();
-  //store::Item_t an1 = n1->getAtomizationValue();
 
   xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->create_value_type(n0);
   xqtref_t type1 = aRuntimeCB->theStaticContext->get_typemanager()->create_value_type(n1);
@@ -730,7 +728,7 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
   if (consumeNext(item, theChild.getp(), planState ))
   {
     assert(item->isAtomic());
-    //item = item->getAtomizationValue();
+
     type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
     if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
     {
@@ -802,7 +800,7 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
     if (consumeNext(result, theChildren[0].getp(), planState ))
     {
       assert(result->isAtomic());
-      //result = result->getAtomizationValue();
+
       type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
       if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
@@ -868,7 +866,7 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
     {
       //get the value and the type of the item
       assert(result->isAtomic());
-      //result = result->getAtomizationValue();
+
       type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( result);
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
@@ -923,7 +921,7 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
     {
       //get the value and the type of the item
       assert(result->isAtomic());
-      //result = result->getAtomizationValue();
+
       type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
@@ -979,7 +977,7 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
     {
       //get the value and the type of the item
       assert(result->isAtomic());
-      //result = result->getAtomizationValue();
+
       type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
@@ -1039,13 +1037,13 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
       {
         consumeNext(itemPrec, theChildren[1].getp(), planState);
         assert(itemPrec->isAtomic());
-        //itemPrec = itemPrec->getAtomizationValue();
+
         precision = itemPrec->getIntegerValue();
       }
       
       //get the value and the type of the item
       assert(result->isAtomic());
-      //result = result->getAtomizationValue();
+
       type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
@@ -1098,7 +1096,6 @@ bool FnSQRTIterator::nextImpl (store::Item_t& result, PlanState& planState) cons
   if (consumeNext(result, theChildren[0].getp(), planState ))
   {
     assert(result->isAtomic());
-    //result = result->getAtomizationValue();
 
     //get the value and the type of the item
     
