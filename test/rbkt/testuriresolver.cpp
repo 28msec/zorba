@@ -18,6 +18,7 @@
 
 #include <zorba/zorba.h>
 #include <zorbautils/strutil.h>
+#include <cassert>
 
 #include <iostream>
 #include <vector>
