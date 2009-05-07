@@ -53,7 +53,7 @@ checkType(const Item& aItem, const String& aLocalname)
     object.member;\
     UNIT_ASSERT(false); \
   } catch (SystemException &e) { \
-    UNIT_ASSERT (e.getErrorCode() == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE); \
+    UNIT_ASSERT (e.getErrorCode() == STR0010_TYPE_ERROR); \
   }
 
 
