@@ -15,6 +15,8 @@
  */
 #include "types/typeops.h"
 
+#include "functions/function.h"
+
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/expression/expr.h"
 #include "compiler/rewriter/tools/expr_tools.h"
@@ -140,7 +142,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     break;
   }
 
-  if (fn != LOOKUP_OP2("value-equal"))
+  if (!fn->isValueComparisonFunction())
     return false;
 
   const expr_t& op1 = (*foExpr)[0];
