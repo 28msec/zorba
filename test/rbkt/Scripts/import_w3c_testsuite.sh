@@ -91,7 +91,7 @@ if ($tc/input-URI) then
       let $fulluri := /test-suite/sources/source[@ID = $i/text()]
       return 
         if ($fulluri) then
-          concat (data ($i/@variable), "=$RBKT_SRC_DIR/Queries/w3c_testsuite/TestSources/", data($fulluri/@FileName))
+          concat (data ($i/@variable), "=$RBKT_SRC_DIR/Queries/w3c_testsuite/", data($fulluri/@FileName))
         else
           concat (data ($i/@variable), "=", $i/text ()), ";")
 else "nourilist",
@@ -168,8 +168,6 @@ if ( $inlist ne "noinlist" || $urilist ne "nourilist" || $ctx ne "nocontext" ) {
   if ( $urilist ne "nourilist" ) {
     foreach (@uribnd) {
       my ($var, $srcid) = split /=/;
-      my $bla = "$repo/test/rbkt/Queries/w3c_testsuite/";
-      $srcid =~ s|SRC_DIR|$bla|;
       print SPEC " -x $var:=" . $srcid;
       print SPECX " -x $var:=" . $srcid;
     }
