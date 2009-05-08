@@ -792,6 +792,8 @@ int _tmain(int argc, _TCHAR* argv[])
         lTmp << "/" << lTmpString.encodeForUri();
       }
 
+      lTmp << "/";
+
       lStaticContext->setBaseURI(lTmp.str());
     }
 
