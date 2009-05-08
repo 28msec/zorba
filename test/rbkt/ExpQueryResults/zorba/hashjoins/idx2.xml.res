@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <item person="Bassem Manderick"><closed_auction>
 <seller person="person14"/>
 <buyer person="person8"/>
