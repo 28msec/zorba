@@ -9,7 +9,7 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
-
+#include <cassert>
 
 namespace zorba {
 
