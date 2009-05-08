@@ -25,18 +25,27 @@
 
 #include "context/static_context.h"
 
+#include "util/properties.h"
+
 #define ITEM_FACTORY (*(GENV.getStore().getItemFactory()))
 
-#define DECL(sctx, type, sig)                                  \
-do                                                             \
-{                                                              \
-  std::auto_ptr<function> type##_ptr(new type(signature sig)); \
-                                                               \
-  sctx->bind_fn(type##_ptr->get_fname (),                      \
-                type##_ptr.get(),                              \
-                type##_ptr->get_signature().arg_count());      \
-  type##_ptr.release();                                        \
-} while(0)
+#ifndef NDEBUG
+#define DEBUG_FN_DECL( fname, cnt )                                     \
+  if (Properties::instance ()->dumpLib ())                              \
+    std::cout << "Bound function " << fname->getStringValue () << "/" << cnt << std::endl;
+#else
+#define DEBUG_FN_DECL( fname, cnt ) (void) 0
+#endif
+
+#define DECL(sctx, type, sig)                                           \
+  do {                                                                  \
+    std::auto_ptr<function> type##_ptr(new type(signature sig));        \
+    store::Item_t fname = type##_ptr->get_fname ();                     \
+    unsigned cnt = type##_ptr->get_signature().arg_count();             \
+    DEBUG_FN_DECL (fname, cnt);                                         \
+    sctx->bind_fn(fname, type##_ptr.get(), cnt);                        \
+    type##_ptr.release();                                               \
+  } while(0)
 
 #define DEFAULT_CODEGEN( Iter ) \
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const { \
