@@ -512,6 +512,8 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
   // because of codegen, it can be assumed that newname is already a qname 
   consumeNext(lNewname, theChild1, aPlanState);
+  xqpStringStore* ns = lNewname->getNamespace();
+  xqpStringStore* local = lNewname->getLocalName();
 
   lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
   lPul->addRename(lTarget, lNewname);

@@ -13,8 +13,8 @@
 # delete all spec files if already generated once (optional)
 #   find . -name "*.spec" -exec rm {} \;
 # ./import_w3c_update_testsuite.sh <zorba-dir> <testsuite-dir (xquery-update-10-test-suite)> <path to saxon*.jar (e.g. saxon9.jar)>
-# ln -s ~/work/28msec/software/xquery-update-10-test-suite/Queries/ zorba/test/update/Queries/xquery_update_testsuite
-# ln -s ~/work/28msec/software/xquery-update-10-test-suite/ExpectedTestResults/ zorba/test/update/ExpectedTestResults/w3c_update_testsuite
+# ln -s xquery-update-10-test-suite/Queries/ zorba/test/update/Queries/xquery_update_testsuite
+# ln -s xquery-update-10-test-suite/ExpectedTestResults/ zorba/test/update/ExpectedTestResults/w3c_update_testsuite
 # commit xquery-update-10-test-suite/Queries/ and xquery-update-10-test-suite/ExpectedTestResults/ to https://fifthelement.inf.ethz.ch/zorba-repos/xqueryw3ctests/w3c_update_testsuite/ 
 
 if test $# != 3 -o ! -d $1/test/zorbatest -o ! -d $2/Queries/XQuery/UpdatePrimitives/AttributeErrors
