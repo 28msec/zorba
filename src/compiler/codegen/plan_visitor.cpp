@@ -1472,19 +1472,21 @@ void end_visit (delete_expr& v) {
   push_itstack(&*lDelete);
 }
 
+
 bool begin_visit (replace_expr& v) {
   CODEGEN_TRACE_IN("");
 
   expr_t targetExpr = v.getTargetExpr();
   xqtref_t targetType = targetExpr->return_type(ccb->m_sctx);
-
-  if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.UNTYPED_TYPE) ||
-      TypeOps::is_subtype(*GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, *targetType) ||
-      TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE))
-    return true;
+  xqtref_t primeType = TypeOps::prime_type(*targetType);
 
   if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
     ZORBA_ERROR_LOC(XUDY0027, qloc);
+
+  if (TypeOps::is_subtype(*primeType, *GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE))
+    return true;
+
+  ZORBA_ERROR_LOC(XUTY0008, qloc);
 
   return true;
 }
