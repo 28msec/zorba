@@ -85,7 +85,16 @@ let $inq := $tc/input-query/@name
 return string-join ((
 $tc/@name, $tc/@FilePath, $tc/query/@name,
 if ($tc/input-file) then string-join (for $i in $tc/input-file return concat (data ($i/@variable), "=", $i/text ()), ";") else "noinlist",
-if ($tc/input-URI) then string-join (for $i in $tc/input-URI return concat (data ($i/@variable), "=", $i/text ()), ";") else "nourilist",
+if ($tc/input-URI) then 
+    string-join (
+      for $i in $tc/input-URI 
+      let $fulluri := /test-suite/sources/source[@ID = $i/text()]
+      return 
+        if ($fulluri) then
+          concat (data ($i/@variable), "=$RBKT_SRC_DIR/Queries/w3c_testsuite/TestSources/", data($fulluri/@FileName))
+        else
+          concat (data ($i/@variable), "=", $i/text ()), ";")
+else "nourilist",
 if ($inq) then $inq else "noquery",
 if ($cmp) then $cmp else "nocomparison",
 if ($ctx) then $ctx else "nocontext",
@@ -159,6 +168,8 @@ if ( $inlist ne "noinlist" || $urilist ne "nourilist" || $ctx ne "nocontext" ) {
   if ( $urilist ne "nourilist" ) {
     foreach (@uribnd) {
       my ($var, $srcid) = split /=/;
+      my $bla = "$repo/test/rbkt/Queries/w3c_testsuite/";
+      $srcid =~ s|SRC_DIR|$bla|;
       print SPEC " -x $var:=" . $srcid;
       print SPECX " -x $var:=" . $srcid;
     }
