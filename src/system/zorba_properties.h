@@ -33,7 +33,7 @@ namespace zorba {
 class ZorbaProperties : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--trace-translator", "--trace-codegen", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", NULL };
+    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--dump-lib", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--trace-translator", "--trace-codegen", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", NULL };
     return result;
   }
   bool theTraceParsing;
@@ -52,6 +52,7 @@ protected:
   bool thePrintIteratorTree;
   bool thePrintItemFlow;
   bool thePrintStaticTypes;
+  bool theDumpLib;
   bool theStableIteratorIds;
   bool theNoTreeIds;
   bool thePrintIntermediateOpt;
@@ -85,6 +86,7 @@ protected:
     thePrintIteratorTree = false;
     thePrintItemFlow = false;
     thePrintStaticTypes = true;
+    theDumpLib = false;
     theStableIteratorIds = false;
     theNoTreeIds = false;
     thePrintIntermediateOpt = false;
@@ -117,6 +119,7 @@ public:
   const bool &printIteratorTree () const { return thePrintIteratorTree; }
   const bool &printItemFlow () const { return thePrintItemFlow; }
   const bool &printStaticTypes () const { return thePrintStaticTypes; }
+  const bool &dumpLib () const { return theDumpLib; }
   const bool &stableIteratorIds () const { return theStableIteratorIds; }
   const bool &noTreeIds () const { return theNoTreeIds; }
   const bool &printIntermediateOpt () const { return thePrintIntermediateOpt; }
@@ -199,6 +202,9 @@ public:
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         init_val (*argv, thePrintStaticTypes, d);
+      }
+      else if (strcmp (*argv, "--dump-lib") == 0) {
+        theDumpLib = true;
       }
       else if (strcmp (*argv, "--stable-iterator-ids") == 0) {
         theStableIteratorIds = true;
@@ -305,6 +311,7 @@ public:
 "--print-iterator-tree, -i\nprint the iterator tree\n\n"
 "--print-item-flow, -f\nshow items produced by all iterators\n\n"
 "--print-static-types\nprint static type inference\n\n"
+"--dump-lib\ndump function library\n\n"
 "--stable-iterator-ids\nprint the iterator plan with stable ids\n\n"
 "--no-tree-ids\nsuppress ids and locations from compiler tree dumps\n\n"
 "--print-intermediate-opt\nprint intermediate optimizations\n\n"
