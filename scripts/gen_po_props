@@ -14,6 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Generates a single property file from a description file
+# DO NOT CALL DIRECTLY -- use gen_all_props
+
 use strict;
 use warnings;
 

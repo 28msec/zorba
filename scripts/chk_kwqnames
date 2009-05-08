@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Checks for common parser and lexer keyword/qname - related problems
 # Usage: chk_kwqnames path/to/xquery_parser.y
 
 use strict;
@@ -26,7 +27,7 @@ my $lfname = dirname ($yfname) . "/xquery_scanner.l";
 my %ykwmap;
 my %lkwmap;
 
-    print ("Parser: $yfname\nScanner: $lfname\n\n");
+print ("Parser: $yfname\nScanner: $lfname\n\n");
 
 open YF, $yfname or die;
 open LF, $lfname or die;

@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Generates all Zorba program-option properties from description files
+# Call with no arguments
+
 add_notice () {
 echo
 echo '// ******************************************'
