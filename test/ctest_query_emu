@@ -1,4 +1,19 @@
 #!/usr/bin/perl
+# Copyright 2006-2008 The FLWOR Foundation.
+#  
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#  
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Call with argument -h for information
 
 use strict;
 use warnings;
@@ -9,12 +24,13 @@ use Cwd 'abs_path';
 use IO::Handle;
 
 sub usage {
+    print "Emulates ctest operation for test/rbkt/ tests.\n";
     print "Arguments: BUILD_DIR [--suite SUITE_DIR] [-b BUCKET] [-E EXCLUDE_PATTERN] [-R INCLUDE_PATTERN]\n";
 }
 
 my $rbktdir = `dirname $0`; chomp $rbktdir; $rbktdir = "$rbktdir/rbkt";
 my $builddir = shift;
-if (! defined $builddir || ($builddir eq "-h") || ($builddir eq "--help"))
+if (! defined $builddir || ($builddir eq "-h") || ($builddir eq "--help") || ! -e $builddir)
 { usage; exit (1); }
 $builddir = abs_path ($builddir) || die $!;
 my $bucket = ".";
