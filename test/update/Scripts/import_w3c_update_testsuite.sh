@@ -12,27 +12,22 @@
 # mv xquery-update-10-test-suite/TestSources xquery-update-10-test-suite/Queries
 # delete all spec files if already generated once (optional)
 #   find . -name "*.spec" -exec rm {} \;
-# ./import_w3c_update_testsuite.sh <zorba-dir> <testsuite-dir (xquery-update-10-test-suite)> <path to saxon*.jar (e.g. saxon9.jar)>
+# ./import_w3c_update_testsuite.sh <testsuite-dir (xquery-update-10-test-suite)> <path to saxon*.jar (e.g. saxon9.jar)>
 # ln -s xquery-update-10-test-suite/Queries/ zorba/test/update/Queries/xquery_update_testsuite
 # ln -s xquery-update-10-test-suite/ExpectedTestResults/ zorba/test/update/ExpectedTestResults/w3c_update_testsuite
 # commit xquery-update-10-test-suite/Queries/ and xquery-update-10-test-suite/ExpectedTestResults/ to https://fifthelement.inf.ethz.ch/zorba-repos/xqueryw3ctests/w3c_update_testsuite/ 
 
-if test $# != 3 -o ! -d $1/test/zorbatest -o ! -d $2/Queries/XQuery/UpdatePrimitives/AttributeErrors
+if test $# != 2 -o ! -d $1/Queries/XQuery/UpdatePrimitives/AttributeErrors
 then
- echo 'Arguments: zorba_repository xquery_update_testsuite'
+ echo 'Arguments: xquery_update_testsuite saxon.jar'
  echo 'where zorba_repository is the top-level SVN working copy'
  exit 1
 fi
 
-ZORBA_SRC=$1
-SUITE_SRC=$2
-SAXON_PATH=$3
+SUITE_SRC=$1
+SAXON_PATH=$2
 
 d0=`pwd`
-
-cd `dirname $ZORBA_SRC`
-ZORBA_SRC=`pwd`/`basename $ZORBA_SRC`
-echo Zorba repository is at $ZORBA_SRC
 
 uq=`mktemp /tmp/rwts.XXXXXX`
 cat >$uq <<"EOF"
@@ -45,7 +40,7 @@ EOF
 echo Processing URI of catalog...
 java -cp $SAXON_PATH net.sf.saxon.Query \
 -s $SUITE_SRC/XQUTSCatalog.xml \
--o:$ZORBA_SRC/test/update/Queries/uri.txt \
+-o:$SUITE_SRC/Queries/TestSources/uri.txt \
 $uq
 
 # XQUTSCatalog does not contain module tags
