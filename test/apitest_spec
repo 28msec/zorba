@@ -1,0 +1,47 @@
+#!/bin/bash
+# Copyright 2006-2009 The FLWOR Foundation.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#  
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Call with argument -h for information
+
+usage () {
+cat <<EOF
+Runs a test under apitest. Usage:
+apitest_spec { --gdb | --valgrind } TEST [ apitest options ]
+where TEST can be a .spec file or a test name (e.g. zorba/paths/path1)
+EOF
+exit 1
+}
+
+test $# -eq 0 || test "$1" = "-h" || test "$1" = "--help" && usage
+DIR=$(cd $(dirname $0); pwd)
+if test "x$1" = "x--valgrind"; then
+  VG="valgrind --num-callers=60"; shift
+elif test "x$1" = "x--gdb"; then
+  VG="gdb --args"; shift
+else
+  VG=""
+fi
+
+SPEC=$1; shift
+test -f $SPEC || SPEC=$DIR/rbkt/Queries/$SPEC.spec
+test -f "$SPEC" && ARGS=`egrep ^Args: $SPEC | cut -f2- -d: | sed -e 's#$RBKT_SRC_DIR#'"$DIR/rbkt"'#g'`
+
+echo
+test -f "$SPEC" && { echo "Spec file: $SPEC"; cat $SPEC; }
+echo
+echo Command: $VG $DIR/zorbatest/build/test/apitest `echo $ARGS` $* `dirname $SPEC`/`basename $SPEC .spec`.xq
+echo
+time -p $VG $DIR/zorbatest/build/test/apitest `echo $ARGS` $* `dirname $SPEC`/`basename $SPEC .spec`.xq
+echo
