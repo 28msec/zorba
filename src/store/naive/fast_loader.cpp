@@ -296,7 +296,14 @@ store::Item_t FastXmlLoader::loadXml(
 
   xmlFreeParserCtxt(ctxt);
 
-  if (!ok)
+  // The doc may be well formed, but it may have other kinds of errors,
+  // e.g., unresolved ns prefixes.
+  if (theErrorManager->hasErrors())
+  {
+    abortload();
+    return NULL;
+  }
+  else if (!ok)
   {
     if (theDocUri != NULL)
     {

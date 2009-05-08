@@ -415,44 +415,8 @@ const xqp_time& Item::getTimeValue() const
 }
 
 
-/** Accessor for xs:duration
- */
-const xqp_duration& Item::getDurationValue() const
-{
-  ZORBA_ERROR_PARAM_OSS(STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                        __FUNCTION__, getType()->getStringValue());
-  return *(new xqp_duration);
-}
-
-/* Accessor for xs:dayTimeDuration
-  */
-const xqp_dayTimeDuration& Item::getDayTimeDurationValue() const
-{
-  ZORBA_ERROR_PARAM_OSS(STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                        __FUNCTION__, getType()->getStringValue());
-  return *(new xqp_dayTimeDuration);
-}
-
-/*Accessor for xs:yearMonthDuration
-  */
-const xqp_yearMonthDuration& Item::getYearMonthDurationValue() const
-{
-  ZORBA_ERROR_PARAM_OSS(STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                        __FUNCTION__, getType()->getStringValue());
-  return *(new xqp_yearMonthDuration);
-}
-
-/** Accessor for xs:ENTITIES, xs:IDREFS, xs:NMTOKENS
- */
-std::vector<xqp_string> Item::getStringVectorValue() const
-{
-  ZORBA_ERROR_PARAM_OSS(STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                        __FUNCTION__, getType()->getStringValue());
-  return std::vector<xqp_string>();
-}
-
-
-/** Accessor for xs:gDay
+/** 
+ * Accessor for xs:gDay
  */
 const xqp_gDay& Item::getGDayValue() const
 {
@@ -461,7 +425,8 @@ const xqp_gDay& Item::getGDayValue() const
   return *(new xqp_gDay);
 }
 
-/** Accessor for xs:gMonth
+/** 
+ * Accessor for xs:gMonth
  */
 const xqp_gMonth& Item::getGMonthValue() const
 {
@@ -470,7 +435,8 @@ const xqp_gMonth& Item::getGMonthValue() const
   return *(new xqp_gMonth);
 }
 
-/** Accessor for xs:gMonthDay
+/** 
+ * Accessor for xs:gMonthDay
  */
 const xqp_gMonthDay& Item::getGMonthDayValue() const
 {
@@ -479,7 +445,8 @@ const xqp_gMonthDay& Item::getGMonthDayValue() const
   return *(new xqp_gMonthDay);
 }
 
-/** Accessor for xs:gYear
+/** 
+ * Accessor for xs:gYear
  */
 const xqp_gYear& Item::getGYearValue() const
 {
@@ -488,7 +455,8 @@ const xqp_gYear& Item::getGYearValue() const
   return *(new xqp_gYear);
 }
 
-/** Accessor for xs:gYearMonth
+/** 
+ * Accessor for xs:gYearMonth
  */
 const xqp_gYearMonth& Item::getGYearMonthValue() const
 {
@@ -497,7 +465,57 @@ const xqp_gYearMonth& Item::getGYearMonthValue() const
   return *(new xqp_gYearMonth);
 }
 
-/** Accessor for xs:hexBinary
+/** 
+ * Accessor for xs:duration
+ */
+const xqp_duration& Item::getDurationValue() const
+{
+  ZORBA_ERROR_PARAM_OSS(STR0010_TYPE_ERROR,
+                        "Item::getDurationValue() not defined for items of type "
+                        << getType()->getStringValue(), "");
+
+  return *(new xqp_duration);
+}
+
+/** 
+ * Accessor for xs:dayTimeDuration
+ */
+const xqp_dayTimeDuration& Item::getDayTimeDurationValue() const
+{
+  ZORBA_ERROR_PARAM_OSS(STR0010_TYPE_ERROR,
+                        "Item::getDayTimeDurationValue() not defined for items of type "
+                        << getType()->getStringValue(), "");
+
+  return *(new xqp_dayTimeDuration);
+}
+
+/**
+ * Accessor for xs:yearMonthDuration
+ */
+const xqp_yearMonthDuration& Item::getYearMonthDurationValue() const
+{
+  ZORBA_ERROR_PARAM_OSS(STR0010_TYPE_ERROR,
+                        "Item::getYearMonthDurationValue() not defined for items of type "
+                        << getType()->getStringValue(), "");
+
+  return *(new xqp_yearMonthDuration);
+}
+
+/** 
+ * Accessor for xs:ENTITIES, xs:IDREFS, xs:NMTOKENS
+ */
+std::vector<xqp_string> Item::getStringVectorValue() const
+{
+  ZORBA_ERROR_PARAM_OSS(STR0010_TYPE_ERROR,
+                        "Item::getStringVectorValue() not defined for items of type "
+                        << getType()->getStringValue(), "");
+
+  return std::vector<xqp_string>();
+}
+
+
+/** 
+ * Accessor for xs:hexBinary
  */
 xqp_hexBinary Item::getHexBinaryValue() const
 {
