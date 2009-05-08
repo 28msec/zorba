@@ -32,46 +32,78 @@
 namespace zorba
 {
 
-  template<enum CompareConsts::CompareType CC> class SpecificValueComparison : public ValueOpComparison {
-  public:
-    SpecificValueComparison (const signature &sig) : ValueOpComparison (sig) {}
-    virtual PlanIter_t createIterator( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const {
-      return new CompareIterator (loc, argv[0], argv[1], CC);
-    }
-  };
+/*******************************************************************************
+  class GenericOpComparison
+********************************************************************************/
 
-  template<enum CompareConsts::CompareType CC, TypeConstants::atomic_type_code_t t> class TypedValueComparison : public SpecificValueComparison<CC> {
-  public:
-    TypedValueComparison (const signature &sig) : SpecificValueComparison<CC> (sig) {}
-    virtual bool specializable() const { return false; }
-  };
-
-  template<enum CompareConsts::CompareType CC> class SpecificGenericComparison : public GenericOpComparison {
-  public:
-    SpecificGenericComparison (const signature &sig) : GenericOpComparison (sig) {}
-    virtual PlanIter_t createIterator( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const {
-      return new CompareIterator (loc, argv[0], argv[1], CC);
-    }
-    function *toValueComp (static_context *sctx) const {
-      std::string name = get_fname ()->getLocalName ()->str ();
-      return sctx->lookup_builtin_fn (name.substr (0, 1) + "value-" + name.substr (1), 2);
-    }
-  };
-
-  /*----------------------------------- generic comparison --------------------------------*/
-
-  typedef SpecificGenericComparison<CompareConsts::GENERAL_EQUAL> op_equal;
-  typedef SpecificGenericComparison<CompareConsts::GENERAL_NOT_EQUAL> op_not_equal;
-  typedef SpecificGenericComparison<CompareConsts::GENERAL_GREATER> op_greater;
-  typedef SpecificGenericComparison<CompareConsts::GENERAL_GREATER_EQUAL> op_greater_equal;
-  typedef SpecificGenericComparison<CompareConsts::GENERAL_LESS> op_less;
-  typedef SpecificGenericComparison<CompareConsts::GENERAL_LESS_EQUAL> op_less_equal;
+void GenericOpComparison::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const
+{
+  switch (k) {
+  case AnnotationKey::IGNORES_SORTED_NODES:
+  case AnnotationKey::IGNORES_DUP_NODES:
+    for (std::vector<AnnotationHolder *>::iterator i = kids.begin (); i < kids.end (); i++)
+      TSVAnnotationValue::update_annotation ((*i), k, TSVAnnotationValue::TRUE_VAL);
+    break;
+  default: break;
+  }
+}
   
-  /*----------------------------------- value comparison --------------------------------*/
   
+const function *GenericOpComparison::specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const {
+  xqtref_t t0 = argTypes[0];
+  xqtref_t t1 = argTypes[1];
+
+  if (! (TypeOps::is_atomic (*t0) && TypeOps::is_atomic (*t1)))
+    return NULL;
+    
+  TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
+  TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
+  if (tc0 == TypeConstants::XS_UNTYPED_ATOMIC || tc1 == TypeConstants::XS_UNTYPED_ATOMIC
+      || tc0 == TypeConstants::XS_ANY_ATOMIC || tc1 == TypeConstants::XS_ANY_ATOMIC)
+    return NULL;
+  
+  return toValueComp (sctx);
+}
+  
+
+/*******************************************************************************
+
+  Specific instances of ValueOpComparison. Specialization is based on both the
+  comparison kind (eq, gt, etc) and the type of the operands. One class is
+  created for each comparison kind, and another class foreach combination of
+  comparison kind and data type. For example:
+
+  class op_value_greater : SpecificValueComparison<CompareConsts::GREATER>
+
+  typedef TypedValueComparison<CompareConsts::GREATER, TypeConstants::XS_DOUBLE>
+          op_value_greater_double
+
+********************************************************************************/
+
+template<enum CompareConsts::CompareType CC>
+class SpecificValueComparison : public ValueOpComparison {
+public:
+  SpecificValueComparison (const signature &sig) : ValueOpComparison (sig) {}
+
+  virtual PlanIter_t createIterator( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const {
+    return new CompareIterator (loc, argv[0], argv[1], CC);
+  }
+};
+
+
+template<enum CompareConsts::CompareType CC, TypeConstants::atomic_type_code_t t>
+class TypedValueComparison : public SpecificValueComparison<CC> {
+public:
+  TypedValueComparison (const signature &sig) : SpecificValueComparison<CC> (sig) {}
+
+  virtual bool specializable() const { return false; }
+};
+
+
 #define DECL_SPECIFIC_OP( cc, op, t, xqt )                              \
   typedef TypedValueComparison <CompareConsts::VALUE_##cc, TypeConstants::XS_##xqt> \
   op_value_##op##_##t
+
 #define DECL_ALL_SPECIFIC_OPS( cc, op, name )                           \
   class op_value_##op                                                   \
   : public SpecificValueComparison<CompareConsts::VALUE_##cc>           \
@@ -80,7 +112,7 @@ namespace zorba
     op_value_##op (const signature &sig)                                \
     : SpecificValueComparison<CompareConsts::VALUE_##cc> (sig)          \
     {}                                                                  \
-    const char *comparison_name () const { return name; }                     \
+    const char *comparison_name () const { return name; }               \
   };                                                                    \
   DECL_SPECIFIC_OP (cc, op, double, DOUBLE);                            \
   DECL_SPECIFIC_OP (cc, op, decimal, DECIMAL);                          \
@@ -88,17 +120,101 @@ namespace zorba
   DECL_SPECIFIC_OP (cc, op, integer, INTEGER);                          \
   DECL_SPECIFIC_OP (cc, op, string, STRING)
   
-  DECL_ALL_SPECIFIC_OPS (EQUAL, equal, "equal");
-  DECL_ALL_SPECIFIC_OPS (NOT_EQUAL, not_equal, "not-equal");
-  DECL_ALL_SPECIFIC_OPS (GREATER, greater, "greater");
-  DECL_ALL_SPECIFIC_OPS (LESS, less, "less");
-  DECL_ALL_SPECIFIC_OPS (GREATER_EQUAL, greater_equal, "greater-equal");
-  DECL_ALL_SPECIFIC_OPS (LESS_EQUAL, less_equal, "less-equal");
+DECL_ALL_SPECIFIC_OPS (EQUAL, equal, "equal");
+DECL_ALL_SPECIFIC_OPS (NOT_EQUAL, not_equal, "not-equal");
+DECL_ALL_SPECIFIC_OPS (GREATER, greater, "greater");
+DECL_ALL_SPECIFIC_OPS (LESS, less, "less");
+DECL_ALL_SPECIFIC_OPS (GREATER_EQUAL, greater_equal, "greater-equal");
+DECL_ALL_SPECIFIC_OPS (LESS_EQUAL, less_equal, "less-equal");
 
 #undef DECL_ALL_SPECIFIC_OPS
 #undef DECL_SPECIFIC_OP
 
-  /*-------------------------- Node Comparison -------------------------------------------*/
+
+const function *ValueOpComparison::specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const {
+  xqtref_t t0 = argTypes[0];
+  xqtref_t t1 = argTypes[1];
+  if (TypeOps::is_simple(*t0) && TypeOps::is_simple (*t1)) {
+    TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
+    TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
+    if (tc0 == tc1) {
+      std::ostringstream oss;
+      oss << ":value-" << comparison_name () << "-";
+      switch(tc0) {
+      case TypeConstants::XS_DOUBLE:
+        oss << "double";
+        return sctx->lookup_builtin_fn (oss.str (), 2);
+        
+      case TypeConstants::XS_DECIMAL:
+        oss << "decimal";
+        return sctx->lookup_builtin_fn (oss.str (), 2);
+        
+      case TypeConstants::XS_FLOAT:
+        oss << "float";
+        return sctx->lookup_builtin_fn (oss.str (), 2);
+        
+      case TypeConstants::XS_INTEGER:
+        oss << "integer";
+        return sctx->lookup_builtin_fn (oss.str (), 2);
+        
+      case TypeConstants::XS_STRING:
+        oss << "string";
+        return sctx->lookup_builtin_fn (oss.str (), 2);
+        
+      default:
+        return NULL;
+      }
+    }
+  }
+  return NULL;
+}
+  
+  
+xqtref_t ValueOpComparison::return_type (const std::vector<xqtref_t> &arg_types) const {
+  xqtref_t empty = GENV_TYPESYSTEM.EMPTY_TYPE;
+  TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
+  for (int i = 0; i < 2; i++) {
+    if (TypeOps::is_equal (*empty, *arg_types [i]))
+      return empty;
+    TypeConstants::quantifier_t aq = TypeOps::quantifier(*arg_types[i]);
+    if (aq == TypeConstants::QUANT_QUESTION || aq == TypeConstants::QUANT_STAR) {
+      quant = TypeConstants::QUANT_QUESTION;
+    }
+  }
+  return quant == TypeConstants::QUANT_QUESTION ? GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION : GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
+}
+  
+
+
+/*******************************************************************************
+  Specific instances of GenericOpComparison.
+********************************************************************************/
+
+template<enum CompareConsts::CompareType CC>
+class SpecificGenericComparison : public GenericOpComparison {
+public:
+  SpecificGenericComparison (const signature &sig) : GenericOpComparison (sig) {}
+
+  virtual PlanIter_t createIterator( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const {
+    return new CompareIterator (loc, argv[0], argv[1], CC);
+  }
+
+  function *toValueComp (static_context *sctx) const {
+    std::string name = get_fname ()->getLocalName ()->str ();
+    return sctx->lookup_builtin_fn (name.substr (0, 1) + "value-" + name.substr (1), 2);
+  }
+};
+
+
+typedef SpecificGenericComparison<CompareConsts::GENERAL_EQUAL> op_equal;
+typedef SpecificGenericComparison<CompareConsts::GENERAL_NOT_EQUAL> op_not_equal;
+typedef SpecificGenericComparison<CompareConsts::GENERAL_GREATER> op_greater;
+typedef SpecificGenericComparison<CompareConsts::GENERAL_GREATER_EQUAL> op_greater_equal;
+typedef SpecificGenericComparison<CompareConsts::GENERAL_LESS> op_less;
+typedef SpecificGenericComparison<CompareConsts::GENERAL_LESS_EQUAL> op_less_equal;
+ 
+
+  /*-------------------------- Node Comparison ---------------------------------------*/
 
   class op_is_same_node : public function {
   public:
@@ -118,7 +234,7 @@ namespace zorba
     DEFAULT_CODEGEN (OpNodeAfterIterator)
   };
   
-  /*-------------------------- Logical Expressions ---------------------------------------*/
+  /*-------------------------- Logical Expressions -----------------------------------*/
   class op_and : public function {
   public:
     op_and (const signature &sig) : function (sig) {}
@@ -162,90 +278,9 @@ namespace zorba
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   }; /* class fn_false */
 
-  /* begin class GenericOpComparison */
 
-  void GenericOpComparison::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const
-  {
-    switch (k) {
-    case AnnotationKey::IGNORES_SORTED_NODES:
-    case AnnotationKey::IGNORES_DUP_NODES:
-      for (std::vector<AnnotationHolder *>::iterator i = kids.begin (); i < kids.end (); i++)
-        TSVAnnotationValue::update_annotation ((*i), k, TSVAnnotationValue::TRUE_VAL);
-      break;
-    default: break;
-    }
-  }
 
-  const function *GenericOpComparison::specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const {
-    xqtref_t t0 = argTypes[0];
-    xqtref_t t1 = argTypes[1];
 
-    if (! (TypeOps::is_atomic (*t0) && TypeOps::is_atomic (*t1)))
-      return NULL;
-    
-    TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
-    TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
-    if (tc0 == TypeConstants::XS_UNTYPED_ATOMIC || tc1 == TypeConstants::XS_UNTYPED_ATOMIC
-        || tc0 == TypeConstants::XS_ANY_ATOMIC || tc1 == TypeConstants::XS_ANY_ATOMIC)
-      return NULL;
-
-    return toValueComp (sctx);
-  }
-
-  /* end class GenericOpComparison */
-
-  const function *ValueOpComparison::specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const {
-    xqtref_t t0 = argTypes[0];
-    xqtref_t t1 = argTypes[1];
-    if (TypeOps::is_simple(*t0) && TypeOps::is_simple (*t1)) {
-      TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
-      TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
-      if (tc0 == tc1) {
-        std::ostringstream oss;
-        oss << ":value-" << comparison_name () << "-";
-        switch(tc0) {
-        case TypeConstants::XS_DOUBLE:
-          oss << "double";
-          return sctx->lookup_builtin_fn (oss.str (), 2);
-          
-        case TypeConstants::XS_DECIMAL:
-          oss << "decimal";
-          return sctx->lookup_builtin_fn (oss.str (), 2);
-          
-        case TypeConstants::XS_FLOAT:
-          oss << "float";
-          return sctx->lookup_builtin_fn (oss.str (), 2);
-          
-        case TypeConstants::XS_INTEGER:
-          oss << "integer";
-          return sctx->lookup_builtin_fn (oss.str (), 2);
-          
-        case TypeConstants::XS_STRING:
-          oss << "string";
-          return sctx->lookup_builtin_fn (oss.str (), 2);
-          
-        default:
-          return NULL;
-        }
-      }
-    }
-    return NULL;
-  }
-
-  xqtref_t ValueOpComparison::return_type (const std::vector<xqtref_t> &arg_types) const {
-    xqtref_t empty = GENV_TYPESYSTEM.EMPTY_TYPE;
-    TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
-    for (int i = 0; i < 2; i++) {
-      if (TypeOps::is_equal (*empty, *arg_types [i]))
-        return empty;
-      TypeConstants::quantifier_t aq = TypeOps::quantifier(*arg_types[i]);
-      if (aq == TypeConstants::QUANT_QUESTION || aq == TypeConstants::QUANT_STAR) {
-        quant = TypeConstants::QUANT_QUESTION;
-      }
-    }
-    return quant == TypeConstants::QUANT_QUESTION ? GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION : GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
-  }
-  
   
   /* start class op_and */
   PlanIter_t

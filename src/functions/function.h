@@ -120,9 +120,12 @@ public:
 
   virtual const function *specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const { return NULL; }
 
+  virtual bool specializable() const { return false; }
+
   virtual bool isArithmeticFunction() const { return false; }
   virtual bool isComparisonFunction() const { return false; }
-  virtual bool specializable() const { return false; }
+  virtual bool isValueComparisonFunction() const { return false; }
+  virtual bool isGeneralComparisonFunction() const { return false; }
 };
 
 
