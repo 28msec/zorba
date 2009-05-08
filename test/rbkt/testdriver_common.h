@@ -99,8 +99,6 @@ private:
 };
 
 
-void printFile(std::ostream& os, std::string aInFile);
-
 void slurp_file (const char* fname, std::string& result, const std::string &rbkt_src_dir, const std::string &rbkt_bin_dir);
 
 bool isErrorExpected(const TestErrorHandler& errHandler, const Specification* aSpec);

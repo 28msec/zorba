@@ -52,16 +52,28 @@ class State
 {
 public:
   enum CompareType {
+    XML = 0,
+    FRAGMENT,
     TEXT,
-    FRAGMENT
+    IGNORE,
+    INSPECT,
+    ERROR
   };
 
   static std::string compareTypeStr(CompareType aType) {
     switch(aType) {
-    case TEXT:
-      return "TEXT";
+    case XML:
+      return "XML";
     case FRAGMENT:
-      return "FRAGMENT";
+      return "Fragment";
+    case TEXT:
+      return "Text";
+    case IGNORE:
+      return "Ignore";
+    case INSPECT:
+      return "Inspect";
+    case ERROR:
+      return "Error";
     }
     assert(false);
   }
@@ -171,26 +183,37 @@ private:
     theCurState->theDate = std::string(str, end);
   }
 
-  void addCompare(iterator_t str, iterator_t end) 
+  void addCompare(const std::string& s)
   {
     theCurState->hasCompare = true;
-    theCurState->theCompares.push_back(std::string(str, end));
+    theCurState->theCompares.push_back(s);
   }
 
-  void addCompareType(iterator_t str, iterator_t end) 
+  void addCompareType(const std::string& aCompareType)
   {
-    std::string lCompareType = std::string(str, end);
-    if (lCompareType.compare("Text") == 0) 
+    if (aCompareType.compare("Text") == 0) 
     {
       theCurState->theCompareTypes.push_back(State::TEXT);
     }
-    else if (lCompareType.compare("Fragment") == 0) 
+    else if (aCompareType.compare("Fragment") == 0) 
     {
       theCurState->theCompareTypes.push_back(State::FRAGMENT);
     }
+    else if (aCompareType.compare("XML") == 0) 
+    {
+      theCurState->theCompareTypes.push_back(State::XML);
+    }
+    else if (aCompareType.compare("Ignore") == 0) 
+    {
+      theCurState->theCompareTypes.push_back(State::IGNORE);
+    }
+    else if (aCompareType.compare("Inspect") == 0) 
+    {
+      theCurState->theCompareTypes.push_back(State::INSPECT);
+    }
     else 
     {
-      std::cerr << lCompareType << std::endl;
+      std::cerr << aCompareType << std::endl;
       assert(false);
     }
   }
@@ -305,16 +328,16 @@ public:
           }
           break;
         }
-        else if ( *lIter == "Compare:" )
+        else if ( lIter->find("Compare:") != std::string::npos)
         {
           ++lIter;
           if(lIter == tokens.end() ) { return false; }
-          addCompare(lIter->begin(), lIter->end());
+          addCompare(*lIter);
           ++lIter;
           if(lIter == tokens.end() ) { return false; }
-          addCompareType(lIter->begin(), lIter->end());
+          addCompareType(*lIter);
         }
-        else if ( *lIter == "State:" ) 
+        else if ( lIter->find("State:") != std::string::npos ) 
         {
           if(first_query){
             first_query = false;
@@ -325,31 +348,11 @@ public:
           if(lIter == tokens.end() ) { return false; }
           addState(lIter->begin(), lIter->end());
         }
-        else if ( *lIter == "Error:" )
+        else if ( lIter->find("Error:") != std::string::npos ) 
         { 
           ++lIter;
           if(lIter == tokens.end() ) { return false; }
           addError(lIter->begin(), lIter->end());
-        }
-        else if ( lIter->find("Compare:") != std::string::npos)
-        {
-          addCompare( lIter->begin()+lIter->find(":")+1, lIter->end() );
-          ++lIter;
-          if(lIter == tokens.end() ) { return false; }
-          addCompareType(lIter->begin(), lIter->end());
-        }
-        else if ( lIter->find("State:") != std::string::npos ) 
-        {
-          if(first_query){
-            first_query = false;
-          } else {
-            addQuery();
-          }
-          addState( lIter->begin()+lIter->find(":")+1, lIter->end());
-        }
-        else if ( lIter->find("Error:") != std::string::npos ) 
-        {
-          addError(lIter->begin()+lIter->find(":")+1, lIter->end());
         }
         else
         {

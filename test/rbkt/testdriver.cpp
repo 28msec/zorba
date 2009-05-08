@@ -42,12 +42,7 @@
 #include "store/minimal/min_store.h"
 #endif
 
-// used for Canonical XML
-#define LIBXML_C14N_ENABLED
-#define LIBXML_OUTPUT_ENABLED
-#include <libxml/c14n.h>
-#include <libxml/tree.h>
-
+#include "testdriver_comparator.h"
 
 zorba::Properties *lProp;
 
@@ -61,31 +56,6 @@ void loadProperties ()
   zorba::Properties::load(0, NULL);
 }
 
-
-
-// print parts of a file
-// starting at aStartPos with the length of aLen
-void printPart(std::ostream& os, std::string aInFile, int aStartPos, int aLen)
-{
-  char* buffer = new char [aLen];
-  try {
-    std::ifstream lIn(aInFile.c_str());
-    lIn.seekg(aStartPos);
-
-#ifdef WIN32
-    int lCharsRead = lIn._Readsome_s (buffer, aLen, aLen);
-#else
-    int lCharsRead = lIn.readsome (buffer, aLen);
-#endif
-    os.write (buffer, lCharsRead);
-    os.flush();
-    delete[] buffer;
-  } catch (...)
-  {
-    delete[] buffer;
-  }
-  return;
-}
 
 
 int analyzeError (const Specification &lSpec, const TestErrorHandler& errHandler) 
@@ -104,58 +74,6 @@ int analyzeError (const Specification &lSpec, const TestErrorHandler& errHandler
     std::cout << std::endl;
     return UNEXPECTED_ERROR;
   }
-}
-
-
-void
-trim(std::string& str) {
-
-  std::string::size_type  notwhite = str.find_first_not_of(" \r\t\n");
-  str.erase(0,notwhite);
-
-  notwhite = str.find_last_not_of(" \t\n\r"); 
-  str.erase(notwhite+1); 
-}
-
-// return false if the files are not equal
-// aLine contains the line number in which the first difference occurs
-// aCol contains the column number in which the first difference occurs
-// aPos is the character number off the first difference in the file
-// -1 is returned for aLine, aCol, and aPos if the files are equal
-bool
-fileEquals(const char* aRefFile, const char* aResFile, int& aLine, int& aCol, int& aPos,
-        std::string& aRefLine, std::string& aResLine)
-{
-  std::ifstream li(aRefFile);
-  std::ifstream ri(aResFile); 
-  std::string lLine, rLine;
-
-  aLine = 1; aCol = 0; aPos = -1;
-  while (! li.eof() )
-  {
-    if ( ri.eof() ) 
-    {
-      std::getline(li, lLine);
-      if (li.peek() == -1) // ignore end-of-line in the ref result
-        return true;
-      else 
-        return false;
-    }
-    std::getline(li, lLine);
-    std::getline(ri, rLine);
-
-    trim ( lLine );
-    trim ( rLine );
-    if ( (aCol = lLine.compare(rLine)) != 0) 
-    {
-      aRefLine = lLine;
-      aResLine = rLine;
-      return false;
-    }
-    ++aLine;
-  }
-
-  return true;
 }
 
 
@@ -242,7 +160,7 @@ main(int argc, char** argv)
 
     // print the query
     std::cout << "Query:" << std::endl;
-    printFile(std::cout, lQueryFile.get_path());
+    zorba::printFile(std::cout, lQueryFile.get_path());
     std::cout << std::endl;
 
     if( testcnt == 1 ) {  // Instantiate the store
@@ -262,16 +180,16 @@ main(int argc, char** argv)
 
     zorba::StaticContext_t lContext = engine->createStaticContext();
     // Install special resolver only for w3c_testsuite ...
-    std::string path = lQueryFile.get_path();
     std::auto_ptr<zorba::TestSchemaURIResolver>      resolver;
+    std::string path = lQueryFile.get_path();
     std::auto_ptr<zorba::TestModuleURIResolver>      mresolver;
     std::auto_ptr<zorba::TestCollectionURIResolver>  cresolver;
-    std::string uri_map_file = rbkt_src_dir + "/Queries/uri.txt";
-    std::string mod_map_file = rbkt_src_dir + "/Queries/module.txt";
-    std::string col_map_file = rbkt_src_dir + "/Queries/collection.txt";
 
     if ( path.find ( "w3c_testsuite" ) != std::string::npos ) 
     {
+      std::string uri_map_file = rbkt_src_dir + "/Queries/w3c_testsuite/TestSources/uri.txt";
+      std::string mod_map_file = rbkt_src_dir + "/Queries/w3c_testsuite/TestSources/module.txt";
+      std::string col_map_file = rbkt_src_dir + "/Queries/w3c_testsuite/TestSources/collection.txt";
       resolver.reset(new zorba::TestSchemaURIResolver ( uri_map_file.c_str() ));
       mresolver.reset(new zorba::TestModuleURIResolver ( mod_map_file.c_str() ));
       cresolver.reset(new zorba::TestCollectionURIResolver ( col_map_file.c_str(), rbkt_src_dir));
@@ -363,7 +281,7 @@ main(int argc, char** argv)
               std::cout << " but got empty result" << std::endl;
             else {
               std::cout << " but got result:" << std::endl;
-              printFile(std::cout, lResultFile.get_path());
+              zorba::printFile(std::cout, lResultFile.get_path());
               std::cout << "=== end of result ===" << std::endl;
             }
             return 7;
@@ -374,119 +292,26 @@ main(int argc, char** argv)
         return 6;
       else if( errors == -1 ) {
         std::cout << "Result:" << std::endl;
-        printFile(std::cout, lResultFile.get_path());
+        zorba::printFile(std::cout, lResultFile.get_path());
         std::cout << "=== end of result ===" << std::endl;
         std::cout.flush();
         {
           int lLine, lCol, lPos; // where do the files differ
           std::string lRefLine, lResultLine;
-          bool lRes = fileEquals(lRefFile.c_str(), lResultFile.c_str(), lLine, lCol, lPos, lRefLine, lResultLine);
+          bool lRes = zorba::fileEquals(lRefFile.c_str(), lResultFile.c_str(), lLine, lCol, lPos, lRefLine, lResultLine);
           if (lRes) {
             std::cout << "testdriver: success (non-canonical result matches)" << std::endl;
             return 0;
           }
         }
 
-        // canonicalize XML and perform comparison
-        {
-          xmlDocPtr lRefResult_ptr;
-          xmlDocPtr lResult_ptr;
-  
-          LIBXML_TEST_VERSION
-
-          std::string lComparisonMethod = lSpec.getComparisonMethod();
-          if (lComparisonMethod.compare("XML") == 0) {
-            lRefResult_ptr = xmlReadFile(lRefFile.c_str(), 0, 0);
-            lResult_ptr    = xmlReadFile(lResultFile.c_str(), 0, 0);
-          } else if (lComparisonMethod.compare("Text") == 0 || lComparisonMethod.compare("Fragment") == 0) {
-            // prepend and append an artifical root tag as requested by the guidelines
-            std::ostringstream lTmpRefResult;
-            lTmpRefResult << "<root>" << std::endl;
-            std::ifstream lRefInStream(lRefFile.c_str());
-            char buf[1024];
-
-            while (!lRefInStream.eof()) {
-              lRefInStream.read(buf, 1024);
-              lTmpRefResult.write(buf, lRefInStream.gcount());
-            }
-            if (buf[lRefInStream.gcount()-1] != '\n')
-              lTmpRefResult << std::endl;
-            lTmpRefResult << "</root>";
-            lRefResult_ptr = xmlReadMemory(lTmpRefResult.str().c_str(), lTmpRefResult.str().size(), "ref_result.xml", 0, 0);
-
-            // prepend and append an artifical root tag as requested by the guidelines
-            std::ostringstream lTmpResult;
-            lTmpResult << "<root>" << std::endl;
-            std::ifstream lInStream(lResultFile.c_str());
-
-            while (!lInStream.eof()) {
-              lInStream.read(buf, 1024);
-              lTmpResult.write(buf, lInStream.gcount());
-            }
-            lTmpResult << std::endl << "</root>";
-            lResult_ptr = xmlReadMemory(lTmpResult.str().c_str(), lTmpResult.str().size(), "result.xml", 0, 0);
-            
-          } else if (lComparisonMethod.compare("Error") == 0 ) {
-            std::cout << "an error was expected but we got a result" << std::endl;
-            return 8;
-          } else if (lComparisonMethod.compare("Inspect") == 0 ) {
-            std::cout << "result must be inspected by humans." << std::endl;
-            return 0;
-          } else if (lComparisonMethod.compare("Ignore") == 0 ) {
-            // safely return no error here
-            return 0;
-          }
-
-          if (lRefResult_ptr == NULL || lResult_ptr == NULL) {
-              std::cerr << "couldn't read reference result or result file" << std::endl;
-              return 8;
-          }
-
-          std::string lCanonicalRefFile = rbkt_bin_dir + "/canonical_ref.xml";
-          std::string lCanonicalResFile = rbkt_bin_dir + "/canonical_res.xml";
-
-          int lRefResultRes = xmlC14NDocSave(lRefResult_ptr, 0, 0, NULL, 0, lCanonicalRefFile.c_str(), 0);
-          int lResultRes    = xmlC14NDocSave(lResult_ptr, 0, 0, NULL, 0, lCanonicalResFile.c_str(), 0);
-
-          xmlFreeDoc(lRefResult_ptr);
-          xmlFreeDoc(lResult_ptr);
-
-          if (lRefResultRes < 0) {
-            std::cerr << "error canonicalizing reference result" << std::endl;
-            return 10;
-          }
-      
-          if (lResultRes < 0) {
-            std::cerr << "error canonicalizing result" << std::endl;
-            return 10;
-          }
-
-          // last, we have to diff the result
-          int lLine, lCol, lPos; // where do the files differ
-          std::string lRefLine, lResultLine;
-          bool lRes = fileEquals(lCanonicalRefFile.c_str(), lCanonicalResFile.c_str(), lLine, lCol, lPos, lRefLine, lResultLine);
-          if (!lRes) {
-            std::cout << std::endl << "Canonical result does not match canonical expected result:" << std::endl;
-            printFile(std::cout, lRefFile.get_path());
-            std::cout << "=== end of expected result ===" << std::endl;
-
-            std::cout << "See line " << lLine << ", col " << lCol << " of expected result. " << std::endl;
-            std::cout << "Actual:   <";
-            if( -1 != lPos )
-              printPart(std::cout, lResultFile.get_path(), lPos, 15);
-            else
-              std::cout << lResultLine;
-            std::cout << ">" << std::endl;
-            std::cout << "Expected: <";
-            if( -1 != lPos )
-              printPart(std::cout, lRefFile.get_path(), lPos, 15);
-            else
-              std::cout << lRefLine;
-            std::cout << ">" << std::endl;
-
-            return 8;
-          }
+        int lCanonicalRes = zorba::canonicalizeAndCompare(lSpec.getComparisonMethod(),
+                                                          lRefFile.c_str(), lResultFile.c_str(), rbkt_bin_dir);
+        if (lCanonicalRes != 0) {
+          return lCanonicalRes;
         }
+        std::cout << "testdriver: success (canonical result matches)" << std::endl;
+        return 0;
       }
     }
   }

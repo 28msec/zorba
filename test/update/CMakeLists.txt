@@ -22,8 +22,12 @@ CONFIGURE_FILE(testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/testdriverconfi
 
 # Compile and build the testdriver executable
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/test/commons)
 
-ADD_EXECUTABLE(updtestdriver updtestdriver.cpp)
+ADD_EXECUTABLE(updtestdriver
+               updtestdriver.cpp
+               ${CMAKE_SOURCE_DIR}/test/commons/testdriver_comparator.cpp
+               ${CMAKE_SOURCE_DIR}/test/commons/testuriresolver.cpp)
 TARGET_LINK_LIBRARIES(updtestdriver zorba_simplestore)
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)
@@ -39,7 +43,7 @@ SET(updtestdriver_EXE_PATH    updtestdriver)
 ENDIF(WIN32)
 
 # collect all spec files (suffix .spec) in all subdirectories of the Queries dir
-FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.spec)
+FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ FOLLOW_SYMLINKS "*.spec")
 
 MESSAGE(STATUS "Adding update tests for CTest $TESTFILES")
 SET(TESTCOUNTER 0)

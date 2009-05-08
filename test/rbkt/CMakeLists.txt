@@ -27,11 +27,13 @@ CONFIGURE_FILE(testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/testdriverconfi
 # Compile and build the testdriver executable
 #
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/test/commons)
 
 SET (TESTDRIVER_SRCS
   testdriver.cpp
   testdriver_common.cpp
-  testuriresolver.cpp
+  ${CMAKE_SOURCE_DIR}/test/commons/testdriver_comparator.cpp
+  ${CMAKE_SOURCE_DIR}/test/commons/testuriresolver.cpp
   )
 
 ADD_EXECUTABLE(testdriver ${TESTDRIVER_SRCS})
@@ -107,14 +109,14 @@ ENDIF(ZORBA_BUILD_MT_TESTDRIVER)
 #
 MESSAGE(STATUS "Adding tests for CTest")
 
-FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries "*.xq")
+FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries FOLLOW_SYMLINKS "*.xq")
 IF(ZORBA_XQUERYX)
-  FILE(GLOB_RECURSE TESTFILES_XQX RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries "*.xqx")
+  FILE(GLOB_RECURSE TESTFILES_XQX RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries FOLLOW_SYMLINKS "*.xqx")
   LIST(APPEND TESTFILES ${TESTFILES_XQX})
 ENDIF(ZORBA_XQUERYX)
 
 # collect all chained test queries (suffix .cxq) in all subdirectories of the Queries dir
-FILE(GLOB_RECURSE CHAINED_TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.cxq)
+FILE(GLOB_RECURSE CHAINED_TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ FOLLOW_SYMLINKS *.cxq)
 
 SET(TESTCOUNTER 0)
 SET(NORMAL_TIMEOUT_VALUE  30)   #let's say 30 seconds for test timeout

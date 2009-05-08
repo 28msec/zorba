@@ -26,23 +26,6 @@
 /*******************************************************************************
 
 ********************************************************************************/
-void printFile(std::ostream& os, std::string aInFile)
-{
-  std::ifstream lInFileStream(aInFile.c_str());
-  assert(lInFileStream.good());
-
-  char buf[1024];
-  while (!lInFileStream.eof()) {
-    lInFileStream.read(buf, 1024);
-    os.write(buf, lInFileStream.gcount());
-  }
-
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void slurp_file (const char *fname, std::string &result, const std::string &rbkt_src_dir, const std::string &rbkt_bin_dir) {
   std::ifstream qfile(fname, std::ios::binary | std::ios_base::in);
   assert (qfile);

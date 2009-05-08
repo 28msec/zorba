@@ -24,6 +24,13 @@ cd "$d"
 echo Unzipping test suite...
 unzip $ZIP &>/dev/null
 
+echo Cleaning up previous data...
+rm -rf "$SRC/test/rbkt/Queries/w3c_testsuite" "$SRC/test/rbkt/ExpQueryResults/w3c_testsuite"
+rm -rf "$SRC/test/rbkt/Queries/w3c_testsuite/InputQueries"
+rm -Rf "$SRC/test/rbkt/Queries/w3c_testsuite/TestSources"
+
+mkdir -p "$SRC/test/rbkt/Queries/w3c_testsuite/TestSources/"
+
 uq=`mktemp /tmp/rwts.XXXXXX`
 cat >$uq <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
@@ -33,7 +40,7 @@ return string-join( concat ($sch/@uri, "=", $sch/@FileName), "
 ")
 EOF
 echo Processing URI of catalog...
-$SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/uri.txt $uq 
+$SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/w3c_testsuite/TestSources/uri.txt $uq 
 
 
 mq=`mktemp /tmp/rwts.XXXXXX`
@@ -47,7 +54,7 @@ return string-join( concat ($t, "=", $m/@FileName), "
 ")
 EOF
 echo Processing URI of catalog...
-$SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/module.txt $mq 
+$SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/w3c_testsuite/TestSources/module.txt $mq 
 
 mq=`mktemp /tmp/rwts.XXXXXX`
 cat >$mq <<"EOF"
@@ -58,7 +65,7 @@ return concat ($t/@ID, "=", string-join( for $x in $t/input-document return fn:c
 ")
 EOF
 echo Processing URI of catalog...
-$SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/collection.txt $mq 
+$SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/w3c_testsuite/TestSources/collection.txt $mq 
 
 
 q=`mktemp /tmp/rwts.XXXXXX`
@@ -73,7 +80,7 @@ let $out := $tc/output-file[1]/text()
 let $cmp := $tc/output-file[1]/@compare
 let $ctx := $tc/contextItem
 let $dc  := $tc/defaultCollection
-(: assuming only one input-query and x is variable naame :)
+(: assuming only one input-query and x is variable name :)
 let $inq := $tc/input-query/@name
 return string-join ((
 $tc/@name, $tc/@FilePath, $tc/query/@name,
@@ -90,10 +97,6 @@ string-join ($tc/expected-error/text(), ";")
 ")
 EOF
 
-echo Cleaning up previous data...
-rm -rf $SRC/test/rbkt/Queries/w3c_testsuite $SRC/test/rbkt/ExpQueryResults/w3c_testsuite $SRC/test/rbkt/TestSources
-rm -rf $SRC/test/rbkt/Queries/w3c_testsuite/InputQueries
-
 echo Processing catalog...
 $SRC/test/zorbatest/xquery -s XQTSCatalog.xml $q | tee /tmp/xq-res.txt | perl -e '
 use strict;
@@ -102,7 +105,7 @@ use File::Copy;
 my $repo=shift;
 my %sources;
 my $test_src_path = "$repo/test/rbkt/Queries/w3c_testsuite";
-my $test_uris = "$test_src_path/uri.txt\n";
+my $test_uris = "$test_src_path/TestSources/uri.txt\n";
 open (URIS, ">> $test_uris" );
 while (<>) {
 chomp;
@@ -211,9 +214,10 @@ rm -f $q
 
 echo "Importing test sources..."
 mv XQTSCatalog.xml $SRC/test/rbkt/Queries/w3c_testsuite/
-# Need the modules which have .xq suffix
-# find TestSources  -name '*.xq' -exec rm {} \;
-mv TestSources $SRC/test/rbkt/Queries/w3c_testsuite/
+#mv TestSources/* $SRC/test/rbkt/Queries/w3c_testsuite/TestSources/
+# Need the modules which have .xq suffix; rename them to .xqi files because we do not want to test them (ctest would find those also)
+find "TestSources" -name '*.xq' -exec mv "{}" "$SRC/test/rbkt/Queries/w3c_testsuite/{}i" \;
+find "TestSources" -type f -exec mv "{}" "$SRC/test/rbkt/Queries/w3c_testsuite/{}" \;
 
 echo "Cleaning up work directory...$d0 $d"
 

@@ -41,6 +41,7 @@ namespace zorba {
         // modules
         UR_XQST0088,
         UR_XQST0046,
+        UR_XQST0059,
         // schemas
         UR_XQST0057
       };

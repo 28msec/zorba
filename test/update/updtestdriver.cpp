@@ -24,6 +24,7 @@
 #include <cstring>
 
 #include "testdriverconfig.h" // SRC and BIN dir definitions
+#include "testuriresolver.h"
 #include "specification.h" // parsing spec files
 #include "common/common.h"
 
@@ -38,46 +39,7 @@
 #include <simplestore/simplestore.h>
 
 #include "util/properties.h"
-
-
-void
-printFile(std::ostream& os, std::string aInFile, std::string message)
-{
-  std::cout << message << " " << aInFile << ":" << std::endl;
-  std::ifstream lInFileStream(aInFile.c_str());
-  if (!lInFileStream) {
-    std::cout << "Error: could not open " << aInFile << std::endl;
-    assert(false);
-  }
-
-  os << lInFileStream.rdbuf() << std::endl;
-}
-
-// print parts of a file
-// starting at aStartPos with the length of aLen
-void
-printPart(std::ostream& os, std::string aInFile, 
-          int aStartPos, int aLen)
-{
-  char* buffer = new char [aLen];
-  try {
-    std::ifstream lIn(aInFile.c_str());
-    lIn.seekg(aStartPos);
-
-#ifdef WIN32
-    int lCharsRead = lIn._Readsome_s (buffer, aLen, aLen);
-#else
-    int lCharsRead = lIn.readsome (buffer, aLen);
-#endif
-    os.write (buffer, lCharsRead);
-    os.flush();
-    delete[] buffer;
-  } catch (...)
-  {
-    delete[] buffer;
-  }
-  return;
-}
+#include "testdriver_comparator.h"
 
 bool isErrorExpected(zorba::ZorbaException& e, State* aState) {
   if ( aState->hasErrors) {
@@ -141,40 +103,6 @@ set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicConte
 	else
 		dctx->setContextItemAsDocument (val.c_str(), std::auto_ptr<std::istream>(is));
   }
-}
-
-// return false if the files are not equal
-// aLine contains the line number in which the first difference occurs
-// aCol contains the column number in which the first difference occurs
-// aPos is the character number off the first difference in the file
-// -1 is returned for aLine, aCol, and aPos if the files are equal
-bool
-isEqual(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, int& aPos)
-{
-  std::ifstream li(aRefFile.get_path().c_str());
-  std::ifstream ri(aResFile.get_path().c_str()); 
-  
-  std::string lLine, rLine;
-
-  aLine = 1; aCol = 0; aPos = -1;
-  while (! li.eof() )
-  {
-    if ( ri.eof() ) {
-      std::getline(li, lLine);
-      if (li.peek() == -1) // ignore end-of-line in the ref result
-        return true;
-      else 
-        return false;
-    }
-    std::getline(li, lLine);
-    std::getline(ri, rLine);
-    ++aLine;
-    if ( (aCol = lLine.compare(rLine)) != 0) {
-      return false;
-    }
-  }
-
-  return true;
 }
 
 int
@@ -243,15 +171,27 @@ main(int argc, char** argv)
         (lSpecPath, zorba::filesystem_path ((*lIter)->theName + ".xq",
                                             zorba::file::CONVERT_SLASHES));
       std::cout << std::endl << "Query (Run " << ++lRun << "):" << std::endl;
-      printFile(std::cout, lQueryFile, "Query file");
+      std::cout << "Query file " << lQueryFile << ": " << std::endl;
+      zorba::printFile(std::cout, lQueryFile);
       std::cout << std::endl;
       std::ifstream lQueryStream(lQueryFile.c_str());
 
       try 
       {
+        zorba::StaticContext_t lContext = engine->createStaticContext();
+        std::string path = lQueryFile.get_path();
+
+        std::auto_ptr<zorba::TestSchemaURIResolver>      resolver;
+        if ( path.find ( "w3c_update_testsuite" ) != std::string::npos ) 
+        {
+          std::string uri_map_file = zorba::UPDATE_SRC_DIR + "/Queries/w3c_update_testsuite/TestSources/uri.txt";
+          resolver.reset(new zorba::TestSchemaURIResolver ( uri_map_file.c_str() ));
+          lContext->setSchemaURIResolver ( resolver.get() );
+        }
+
         zorba::XQuery_t lQuery = engine->createQuery();
         lQuery->setFileName (lQueryFile.c_str());
-        lQuery->compile(lQueryStream, getCompilerHints());
+        lQuery->compile(lQueryStream, lContext, getCompilerHints());
         lQueries.push_back(lQuery);
       }
       catch (zorba::ZorbaException &e) 
@@ -299,40 +239,57 @@ main(int argc, char** argv)
           std::ofstream lResFileStream(lResultFile.get_path().c_str());
           lQueries.back()->serialize(lResFileStream, &lSerOptions);
           lResFileStream.flush();
-          printFile(std::cout, lResultFile.get_path(), "Result ");
+          std::cout << "Result " << lResultFile.get_path() << ": " << std::endl;
+          zorba::printFile(std::cout, lResultFile.get_path());
 
           if (lState->hasCompare) 
           {
             bool lRes = false;
+            bool anyMatch = false;
             ulong numRefs = lState->theCompares.size();
             for (ulong i = 0; i < numRefs && !lRes; i++) 
             {
+              std::string lRefFileTmpString = lRefPath;
+              std::cout << std::endl;
+              // the ref file is the same for xqueryx and xquery tests
+              // hence, we remove the string xqueryx or xquery from the path
+              size_t lPosOfW3C = 0;
+              if ( (lPosOfW3C = lRefPath.get_path().find("w3c_update_testsuite")) != std::string::npos) {
+                if (lRefPath.get_path().find("XQueryX", lPosOfW3C) != std::string::npos)
+                  lRefFileTmpString = lRefFileTmpString.erase(lPosOfW3C + 21, 8);
+                else
+                  lRefFileTmpString = lRefFileTmpString.erase(lPosOfW3C + 21, 7);
+              }
               zorba::filesystem_path lRefFile
-                (lRefPath, zorba::filesystem_path (lState->theCompares[i],
+                (lRefFileTmpString, zorba::filesystem_path (lState->theCompares[i],
                                                    zorba::file::CONVERT_SLASHES));
               int lLine, lCol, lPos;
-              lRes = isEqual(lRefFile, lResultFile, lLine, lCol, lPos);
+              std::string lRefLine, lResultLine;
+              lRes = zorba::fileEquals(lRefFile.get_path().c_str(),
+                                       lResultFile.get_path().c_str(),
+                                       lLine, lCol, lPos, lRefLine, lResultLine);
 
-              if (!lRes) 
-              {
-                printFile(std::cout, lRefFile.get_path(), "Result does not match expected result");
-                std::cout << std::endl;
+               // if the simple comparison doesn't work, we do the full-fledged xml canonical comparison
+               if (lRes) {
+                 std::cout << "updtestdriver: success (non-canonical result matches)" << std::endl;
+                 anyMatch = true;
+                 break;
+               } else {
+                 int lCanonicalRes = zorba::canonicalizeAndCompare(State::compareTypeStr(lState->theCompareTypes[i]),
+                                                                   lRefFile.get_path().c_str(),
+                                                                   lResultFile.get_path().c_str(),
+                                                                   zorba::UPDATE_BINARY_DIR.c_str());
+                 if (lCanonicalRes == 0) {
+                   anyMatch = true;
+                   break;
+                 }
+               }
+             } // multiple compare possible
 
-                std::cout << "See line " << lLine << ", col " << lCol
-                          << " of expected result. " << std::endl;
-                std::cout << "Got: " << std::endl; 
-                printPart(std::cout, lResultFile.get_path(), lPos, 15);
-                std::cout << std::endl << "Expected ";
-                printPart(std::cout, lRefFile.get_path(), lPos, 15);
-                std::cout <<  std::endl;
-              }
-            }
+             if (!anyMatch) {
+               return 4;
+             } 
 
-            if (!lRes) {
-              std::cout << std::endl << "Result does not match any of the expected results"
-                        << std::endl;
-              return 4;
-            }
           } else if (lState->hasErrors) {
             std::cout << "Query must throw an error!" << std::endl;
             return 5; 

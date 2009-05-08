@@ -52,7 +52,7 @@ void zorba::TestSchemaURIResolver::initialize ()
   path += "/w3c_testsuite/";
   std::string url ( "file://" );
   url += path;
-  std::ifstream urifile ( map_file );
+  std::ifstream urifile ( map_file.c_str() );
   if ( urifile.good () == false ) return;
   std::string uris;
   std::string::size_type start = 0;
@@ -121,9 +121,10 @@ void zorba::TestModuleURIResolver::initialize ()
   std::string path ( map_file );
   std::string::size_type slash = path.find_last_of ( '/' );
   path.erase ( slash );
-  path += "/w3c_testsuite/";
+  slash = path.find_last_of ( '/' );
+  path.erase ( slash );
   std::string url ( "file://" );
-  std::ifstream urifile ( map_file );
+  std::ifstream urifile ( map_file.c_str() );
   if ( urifile.good () == false ) return;
   std::string uris;
   std::string::size_type start = 0;
@@ -141,8 +142,9 @@ void zorba::TestModuleURIResolver::initialize ()
     len = pos - eq - 1;
     String file ( path );
     const char * xsd = uris.substr ( eq+1, len ).c_str(); 
+    file.append ("/");
     file.append ( xsd );
-    file.append ( ".xq" );
+    file.append ( ".xqi" );
     uri_map [ uri ] = file;
     start = pos + 1;
     if ( last ) break;
@@ -172,7 +174,7 @@ resolve ( const Item & aURI, StaticContext* aStaticContext )
     lResult -> theModule = new std::ifstream ( file );
     lResult -> setError ( URIResolverResult::UR_NOERROR );
   } else {
-    lResult -> setError ( URIResolverResult::UR_XQST0046 );
+    lResult -> setError ( URIResolverResult::UR_XQST0059 );
     std::stringstream lErrorStream;
     lErrorStream << "Module not found " << aURI.getStringValue();
     lResult->setErrorDescription(lErrorStream.str());
@@ -222,7 +224,7 @@ void zorba::TestCollectionURIResolver::trim(std::string& str)
 
 void zorba::TestCollectionURIResolver::initialize ()
 {
-  std::ifstream urifile ( map_file );
+  std::ifstream urifile ( map_file.c_str() );
   if ( urifile.bad() ) return;
 
   while ( !urifile.eof() ) {

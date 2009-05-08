@@ -35,7 +35,7 @@ class TestSchemaURIResolver : public SchemaURIResolver
 {
 private:
 
-  const char * map_file;
+  std::string map_file;
   std::map< String, String > uri_map;
 
   void initialize ();
@@ -54,7 +54,7 @@ public:
 class TestModuleURIResolver : public ModuleURIResolver
 {
 private:
-  const char * map_file;
+  std::string map_file;
   std::map < String, String > uri_map;
 
   void initialize ();
@@ -83,7 +83,7 @@ protected:
 class TestCollectionURIResolver : public CollectionURIResolver
 {
 private:
-  const char * map_file;
+  std::string map_file;
   std::string  rbkt_src;
   std::map < std::string, std::vector<std::string> > uri_map;
 

@@ -42,6 +42,7 @@
 
 #include "testdriverconfig.h" // SRC and BIN dir definitions
 #include "specification.h" // parsing spec files
+#include "testdriver_comparator.h"
 #include "testdriver_common.h"
 
 namespace fs = boost::filesystem;
@@ -281,31 +282,6 @@ bool checkErrors(const Specification& lSpec, const TestErrorHandler& errHandler)
     errFile << std::endl;
     return false;
   }
-}
-
-
-/*******************************************************************************
-  Open the file with name "filename" and, starting from position "startPos", 
-  print up to "len" bytes from that file into "os".
-********************************************************************************/
-void printPart(std::ostream& os, std::string filename, int startPos, int len)
-{
-  char* buffer = new char [len];
-  try 
-  {
-    std::ifstream lIn(filename.c_str());
-    lIn.seekg(startPos);
-
-    int charsRead = lIn.readsome(buffer, len);
-    os.write(buffer, charsRead);
-    os.flush();
-    delete[] buffer;
-  }
-  catch (...)
-  {
-    delete[] buffer;
-  }
-  return;
 }
 
 
