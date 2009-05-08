@@ -94,6 +94,7 @@ use File::Copy;
 
 my $suite=shift;
 
+print "Creating spec files ...\n";
 while (<>) {
 chomp;
 if (m/^%uri /) {
@@ -103,18 +104,20 @@ elsif (m/^%src /) {
 elsif (m/^case=/) {
   my ($var, $name) = split /=/;
   my $path = $suite . "Queries/XQuery/" . "$name.spec";
+  my $path_xqueryx =  $suite . "Queries/XQueryX/" . "$name.spec";
   open (SPEC, ">>$path");
-  print "START $path\n";
+  open (SPEC_XQUERYX, ">>$path_xqueryx");
 }
 elsif (m/^end/) {
   close (SPEC);
-  print "END\n";
+  close (SPEC_XQUERYX);
 }
 else {
   print SPEC "$_\n"; 
-  print "$_\n";
+  print SPEC_XQUERYX "$_\n"; 
 }
 }
+
 ' $SUITE_SRC
 
 echo Done.
