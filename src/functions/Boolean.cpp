@@ -32,13 +32,6 @@
 namespace zorba
 {
 
-  class ValueOpComparison : public GenericOpComparison {
-  public:
-    ValueOpComparison (const signature &sig) : GenericOpComparison (sig) {}
-    xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
-    virtual bool specializable() const { return false; }
-  };
-  
   template<enum CompareConsts::CompareType CC> class SpecificValueComparison : public ValueOpComparison {
   public:
     SpecificValueComparison (const signature &sig) : ValueOpComparison (sig) {}
@@ -76,12 +69,34 @@ namespace zorba
   
   /*----------------------------------- value comparison --------------------------------*/
   
-  typedef SpecificValueComparison<CompareConsts::VALUE_EQUAL> op_value_equal;
-  typedef SpecificValueComparison<CompareConsts::VALUE_NOT_EQUAL> op_value_not_equal;
-  typedef SpecificValueComparison<CompareConsts::VALUE_GREATER> op_value_greater;
-  typedef SpecificValueComparison<CompareConsts::VALUE_GREATER_EQUAL> op_value_greater_equal;
-  typedef SpecificValueComparison<CompareConsts::VALUE_LESS> op_value_less;
-  typedef SpecificValueComparison<CompareConsts::VALUE_LESS_EQUAL> op_value_less_equal;
+#define DECL_SPECIFIC_OP( cc, op, t, xqt )                              \
+  typedef TypedValueComparison <CompareConsts::VALUE_##cc, TypeConstants::XS_##xqt> \
+  op_value_##op##_##t
+#define DECL_ALL_SPECIFIC_OPS( cc, op, name )                           \
+  class op_value_##op                                                   \
+  : public SpecificValueComparison<CompareConsts::VALUE_##cc>           \
+  {                                                                     \
+  public:                                                               \
+    op_value_##op (const signature &sig)                                \
+    : SpecificValueComparison<CompareConsts::VALUE_##cc> (sig)          \
+    {}                                                                  \
+    const char *comparison_name () const { return name; }                     \
+  };                                                                    \
+  DECL_SPECIFIC_OP (cc, op, double, DOUBLE);                            \
+  DECL_SPECIFIC_OP (cc, op, decimal, DECIMAL);                          \
+  DECL_SPECIFIC_OP (cc, op, float, FLOAT);                              \
+  DECL_SPECIFIC_OP (cc, op, integer, INTEGER);                          \
+  DECL_SPECIFIC_OP (cc, op, string, STRING)
+  
+  DECL_ALL_SPECIFIC_OPS (EQUAL, equal, "equal");
+  DECL_ALL_SPECIFIC_OPS (NOT_EQUAL, not_equal, "not-equal");
+  DECL_ALL_SPECIFIC_OPS (GREATER, greater, "greater");
+  DECL_ALL_SPECIFIC_OPS (LESS, less, "less");
+  DECL_ALL_SPECIFIC_OPS (GREATER_EQUAL, greater_equal, "greater-equal");
+  DECL_ALL_SPECIFIC_OPS (LESS_EQUAL, less_equal, "less-equal");
+
+#undef DECL_ALL_SPECIFIC_OPS
+#undef DECL_SPECIFIC_OP
 
   /*-------------------------- Node Comparison -------------------------------------------*/
 
@@ -178,6 +193,44 @@ namespace zorba
   }
 
   /* end class GenericOpComparison */
+
+  const function *ValueOpComparison::specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const {
+    xqtref_t t0 = argTypes[0];
+    xqtref_t t1 = argTypes[1];
+    if (TypeOps::is_simple(*t0) && TypeOps::is_simple (*t1)) {
+      TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
+      TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
+      if (tc0 == tc1) {
+        std::ostringstream oss;
+        oss << ":value-" << comparison_name () << "-";
+        switch(tc0) {
+        case TypeConstants::XS_DOUBLE:
+          oss << "double";
+          return sctx->lookup_builtin_fn (oss.str (), 2);
+          
+        case TypeConstants::XS_DECIMAL:
+          oss << "decimal";
+          return sctx->lookup_builtin_fn (oss.str (), 2);
+          
+        case TypeConstants::XS_FLOAT:
+          oss << "float";
+          return sctx->lookup_builtin_fn (oss.str (), 2);
+          
+        case TypeConstants::XS_INTEGER:
+          oss << "integer";
+          return sctx->lookup_builtin_fn (oss.str (), 2);
+          
+        case TypeConstants::XS_STRING:
+          oss << "string";
+          return sctx->lookup_builtin_fn (oss.str (), 2);
+          
+        default:
+          return NULL;
+        }
+      }
+    }
+    return NULL;
+  }
 
   xqtref_t ValueOpComparison::return_type (const std::vector<xqtref_t> &arg_types) const {
     xqtref_t empty = GENV_TYPESYSTEM.EMPTY_TYPE;
@@ -297,41 +350,37 @@ DECL(sctx, op_less_equal,
 // end Generic Comparison
 
 // Value Comparison
-DECL(sctx, op_value_equal,
-     (createQName(XQUERY_FN_NS,"fn", ":value-equal"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
+ 
+#define DECL_TYPED_VAL( sctx, op, name, type, xqt )                     \
+  DECL(sctx, op_value_##op##_##type,                                    \
+       (createQName (XQUERY_OP_NS,"fn", ":value-" name "-" #type),     \
+        GENV_TYPESYSTEM.xqt##_TYPE_QUESTION,                            \
+        GENV_TYPESYSTEM.xqt##_TYPE_QUESTION,                            \
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION))
+ 
+#define DECL_ALL_VAL( sctx, op, name )                                  \
+  DECL(sctx, op_value_##op,                                             \
+       (createQName (XQUERY_OP_NS, "fn", ":value-" name),              \
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,                       \
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,                       \
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));                        \
+  DECL_TYPED_VAL( sctx, op, name, double, DOUBLE );                     \
+  DECL_TYPED_VAL( sctx, op, name, float, FLOAT );                       \
+  DECL_TYPED_VAL( sctx, op, name, decimal, DECIMAL );                   \
+  DECL_TYPED_VAL( sctx, op, name, integer, INTEGER );                   \
+  DECL_TYPED_VAL( sctx, op, name, string, STRING )
 
-DECL(sctx, op_value_not_equal,
-     (createQName(XQUERY_FN_NS,"fn", ":value-not-equal"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 
-DECL(sctx, op_value_greater,
-     (createQName(XQUERY_FN_NS,"fn", ":value-greater"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
+ DECL_ALL_VAL (sctx, equal, "equal");
+ DECL_ALL_VAL (sctx, not_equal, "not-equal");
+ DECL_ALL_VAL (sctx, less, "less");
+ DECL_ALL_VAL (sctx, greater, "greater");
+ DECL_ALL_VAL (sctx, less_equal, "less-equal");
+ DECL_ALL_VAL (sctx, greater_equal, "greater-equal");
 
-DECL(sctx, op_value_greater_equal,
-     (createQName(XQUERY_FN_NS,"fn", ":value-greater-equal"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
+#undef DECL_ALL_VAL
+#undef DECL_TYPED_VAL
 
-DECL(sctx, op_value_less,
-     (createQName(XQUERY_FN_NS,"fn", ":value-less"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
-
-DECL(sctx, op_value_less_equal,
-     (createQName(XQUERY_FN_NS,"fn", ":value-less-equal"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 // end Value Comparison
 
 // Node Comparison

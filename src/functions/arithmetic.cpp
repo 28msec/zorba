@@ -33,8 +33,11 @@ namespace zorba {
       TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
       TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
       
-      if (TypeOps::is_numeric (*t0) && TypeOps::is_numeric (*t1) && tc0 == tc1)
-        return sctx->lookup_builtin_fn (std::string (":numeric-") + op_name (), 2)->specialize (sctx, argTypes);
+      if (TypeOps::is_numeric (*t0) && TypeOps::is_numeric (*t1) && tc0 == tc1) {
+        const function *f1 = sctx->lookup_builtin_fn (std::string (":numeric-") + op_name (), 2),
+          *f2 = f1->specialize (sctx, argTypes);
+        return f2 == NULL ? f1 : f2;
+      }
     }
     return NULL;
   }

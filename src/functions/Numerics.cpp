@@ -84,11 +84,11 @@ public:
 #define DECL_SPECIFIC_OP( op, opc, t, xqt )                        \
   typedef bin_num_specific_arith_func<opc, TypeConstants::XS_##xqt>  \
   op_numeric_##op##_##t;
-#define DECL_ALL_SPECIFIC_OPS( op, opc )          \
+#define DECL_ALL_SPECIFIC_OPS( op, opc )         \
   DECL_SPECIFIC_OP (op, opc, double, DOUBLE);    \
   DECL_SPECIFIC_OP (op, opc, decimal, DECIMAL);  \
   DECL_SPECIFIC_OP (op, opc, float, FLOAT);      \
-  DECL_SPECIFIC_OP (op, opc, integer, INTEGER)  \
+  DECL_SPECIFIC_OP (op, opc, integer, INTEGER)
 
   DECL_ALL_SPECIFIC_OPS (add, AddOperation);
   DECL_ALL_SPECIFIC_OPS (subtract, SubtractOperation);

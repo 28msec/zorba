@@ -22,6 +22,7 @@
 #include "types/typeops.h"
 
 #include "functions/function.h"
+#include "functions/Boolean.h"
 
 #include "system/globalenv.h"
 
@@ -143,7 +144,8 @@ RULE_REWRITE_POST(EliminateTypeEnforcingOperations)
   return NULL;
 }
 
-static expr_t wrap_in_num_promotion (expr_t arg, xqtref_t t) {
+static expr_t wrap_in_num_promotion (expr_t arg, xqtref_t oldt, xqtref_t t) {
+  if (TypeOps::is_subtype(*oldt, *t)) return NULL;
   if (arg->get_expr_kind () == promote_expr_kind
       && TypeOps::type_max_cnt (*t) <= 1)
   {
@@ -161,6 +163,39 @@ RULE_REWRITE_PRE(SpecializeOperations)
   return NULL;
 }
 
+
+static void modify_expr (expr_t &old, expr_t ne) {
+  if (ne != NULL)
+    old = ne;
+}
+
+static bool specialize_numeric (fo_expr *fo, static_context *sctx)
+{
+  const function *fn = fo->get_func();
+  expr_t arg0 = (*fo)[0], arg1 = (*fo)[1];
+  xqtref_t t0 = arg0->return_type(sctx);
+  xqtref_t t1 = arg1->return_type(sctx);
+  xqtref_t aType = TypeOps::arithmetic_type_static(*t0, *t1);
+  std::vector<xqtref_t> argTypes;
+  
+  if (aType == NULL || !TypeOps::is_numeric(*aType)) {
+    return NULL;
+  }
+  
+  argTypes.push_back(aType);
+  argTypes.push_back(aType);
+  
+  const function *replacement = fn->specialize(sctx, argTypes);
+  if (replacement != NULL) {
+    fo->set_func(replacement);
+    modify_expr ((*fo)[0], wrap_in_num_promotion (arg0, t0, aType));
+    modify_expr ((*fo)[1], wrap_in_num_promotion (arg1, t1, aType));
+    return true;
+  }
+
+  return false;
+}
+
 RULE_REWRITE_POST(SpecializeOperations)
 {
   const Properties &props = *Properties::instance ();
@@ -169,45 +204,60 @@ RULE_REWRITE_POST(SpecializeOperations)
     const function *fn = fo->get_func();
     if (! fn->specializable ()) return NULL;
     if (fo->size() == 2) {
-      expr_t arg0 = (*fo)[0], arg1 = (*fo)[1];
-      xqtref_t t0 = arg0->return_type(rCtx.getStaticContext());
-      xqtref_t t1 = arg1->return_type(rCtx.getStaticContext());
-      std::vector<xqtref_t> argTypes;
+      expr_t arg [2];
+      arg [0] = (*fo)[0]; arg [1] = (*fo)[1];
+      xqtref_t t [2];
+      t [0] = arg [0]->return_type(rCtx.getStaticContext());
+      t [1] = arg [1]->return_type(rCtx.getStaticContext());
+      if (TypeOps::type_max_cnt (*t [0]) > 1
+          || TypeOps::type_max_cnt (*t [1]) > 1)
+        return NULL;
 
       if (props.specializeNum () && fn->isArithmeticFunction()) {
-        if (! TypeOps::is_numeric_or_untyped (*t0)
-            || ! TypeOps::is_numeric_or_untyped (*t1))
+        if (! TypeOps::is_numeric_or_untyped (*t [0])
+            || ! TypeOps::is_numeric_or_untyped (*t [1]))
           return NULL;
-        xqtref_t aType = TypeOps::arithmetic_type_static(*t0, *t1);
-        
-        if (aType == NULL || !TypeOps::is_numeric(*aType)) {
-          return NULL;
-        }
-        
-        argTypes.push_back(aType);
-        argTypes.push_back(aType);
-        
-        const function *replacement = fn->specialize(rCtx.getStaticContext(), argTypes);
-        if (replacement != NULL) {
-          fo->set_func(replacement);
-          bool a0Promote = !TypeOps::is_subtype(*t0, *aType);
-          bool a1Promote = !TypeOps::is_subtype(*t1, *aType);
-          
-          if (a0Promote) {
-            (*fo)[0] = wrap_in_num_promotion (arg0, aType);
-          }
-          if (a1Promote) {
-            (*fo)[1] = wrap_in_num_promotion (arg1, aType);
-          }
+        if (specialize_numeric (fo, rCtx.getStaticContext()))
           return node;
-        }
       } else if (props.specializeCmp () && fn->isComparisonFunction ()) {
-        argTypes.push_back(t0);
-        argTypes.push_back(t1);
-        const function *replacement = fn->specialize(rCtx.getStaticContext(), argTypes);
-        if (replacement != NULL) {
-          fo->set_func(replacement);
-          return node;
+        if (dynamic_cast<const ValueOpComparison *> (fn) == NULL) {
+          std::vector<xqtref_t> argTypes;
+          argTypes.push_back(t [0]);
+          argTypes.push_back(t [1]);
+          const function *replacement =
+            fn->specialize(rCtx.getStaticContext(), argTypes);
+          if (replacement != NULL) {
+            fo->set_func(replacement);
+            return node;
+          }
+        } else {  // value comparison
+          xqtref_t string_type = GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
+          bool string_cmp = true;
+          expr_t nargs [2];
+          for (int i = 0; i < 2; i++) {
+            if (TypeOps::is_subtype (*t [i], *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_QUESTION)) {
+              nargs [i] = new cast_expr (arg [i]->get_loc (), arg [i], string_type);
+            } else if (! TypeOps::is_subtype (*t [i], *string_type)) {
+              string_cmp = false;
+              break;
+            }
+          }
+          if (string_cmp) {
+            for (int i = 0; i < 2; i++)
+              modify_expr ((*fo) [i], nargs [i]);
+            std::vector<xqtref_t> argTypes;
+            argTypes.push_back(string_type);
+            argTypes.push_back(string_type);
+            const function *replacement =
+              fn->specialize(rCtx.getStaticContext(), argTypes);
+            if (replacement != NULL) {
+              fo->set_func(replacement);
+              return node;
+            } 
+          } else if (TypeOps::is_numeric (*t [0]) && TypeOps::is_numeric (*t [1])) {
+            if (specialize_numeric (fo, rCtx.getStaticContext()))
+              return node;
+          }
         }
       }
     }
