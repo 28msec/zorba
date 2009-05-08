@@ -24,6 +24,7 @@ namespace zorba
 class flwor_clause;
 class forletwin_clause;
 class for_clause;
+class copy_clause;
 class var_expr;
 
 typedef rchandle<var_expr> varref_t;
@@ -56,11 +57,14 @@ typedef rchandle<var_expr> varref_t;
   theKind        : The kind of the variable (see var_kind enum below)
   theVarName     : The fully expanded qname of the var (qname item) 
   theStaticType  : The static type of the variable
-  theForletClause: If this is a var declared in a FOR, LET, or WINDOW clause,
-                   theForletClause points to the defining clause. That clause
-                   also contains the defining expr for the var and a pointer
-                   back to this var_exr. 
-
+  theFlworClause : If this is a var declared in flwor clause, theFlworClause
+                   points to the defining clause. That clause also contains
+                   the defining expr for the var and a pointer back to this
+                   var_exr. 
+  theCopyClause  : If this is a var declared in a copy clause of a transform
+                   expr, theCopyClause points to that clause. That clause 
+                   contains the defining expr for the var and a pointer back
+                   to this var_exr. 
 *******************************************************************************/
 class var_expr : public expr 
 {
@@ -95,6 +99,7 @@ public:
 
 protected:
   flwor_clause * theFlworClause;
+  copy_clause  * theCopyClause;
 
 public:
   static std::string decode_var_kind(enum var_kind);
@@ -118,13 +123,17 @@ public:
 
   virtual xqtref_t return_type_impl (static_context *);
 
-  void set_flwor_clause(flwor_clause* clause) { theFlworClause = clause; }
+  void set_flwor_clause(flwor_clause* c) { theFlworClause = c; }
 
   flwor_clause* get_flwor_clause() const { return theFlworClause; }
 
   forletwin_clause* get_forletwin_clause() const;
 
   for_clause* get_for_clause() const;
+
+  void set_copy_clause(copy_clause* c) { theCopyClause = c; }
+
+  expr* get_domain_expr() const;
 
   var_expr* get_pos_var() const;
 

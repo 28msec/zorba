@@ -46,28 +46,33 @@ static xqtref_t print_expr_and_type(expr *e, xqtref_t t) {
 
 #endif
 
-  xqtref_t expr::return_type(static_context *sctx) {
-    if (! cache_compliant ())
-      return DEBUG_RT(this, return_type_impl (sctx));
-    if (! cache.type.valid
-        || (cache.type.sctx != sctx && ! TypeOps::is_subtype (*cache.type.t, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE)))
-    {
-      cache.type.t = DEBUG_RT (this, return_type_impl (sctx));
-      cache.type.sctx = sctx;
-      cache.type.valid = true;
-    }
-    return cache.type.t;
-  }
+xqtref_t expr::return_type(static_context *sctx) 
+{
+  if (! cache_compliant ())
+    return DEBUG_RT(this, return_type_impl (sctx));
 
-  xqtref_t expr::return_type_impl(static_context *sctx)
+  if (! cache.type.valid ||
+      (cache.type.sctx != sctx &&
+       ! TypeOps::is_subtype (*cache.type.t, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE)))
   {
-    return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+    cache.type.t = DEBUG_RT (this, return_type_impl (sctx));
+    cache.type.sctx = sctx;
+    cache.type.valid = true;
   }
+  return cache.type.t;
+}
 
-  xqtref_t sequential_expr::return_type_impl(static_context *sctx)
-  {
-    return sequence [sequence.size () - 1]->return_type (sctx);
-  }
+
+xqtref_t expr::return_type_impl(static_context *sctx)
+{
+  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
+
+
+xqtref_t sequential_expr::return_type_impl(static_context *sctx)
+{
+  return sequence [sequence.size () - 1]->return_type (sctx);
+}
 
 
 xqtref_t flwor_expr::return_type_impl(static_context *sctx) 
@@ -253,12 +258,14 @@ xqtref_t wrapper_expr::return_type_impl(static_context *sctx) {
 xqtref_t var_expr::return_type_impl(static_context* sctx) 
 {
   xqtref_t type1 = NULL;
-  if (kind == for_var || kind == let_var || kind == win_var) 
-  {
-    assert (theFlworClause != NULL);
+  expr* domainExpr;
 
-    type1 = reinterpret_cast<forletwin_clause*>(get_flwor_clause())->
-            get_expr()->return_type(sctx);
+  if (kind == for_var || kind == let_var || kind == win_var || kind == copy_var) 
+  {
+    domainExpr = get_domain_expr();
+    assert(domainExpr != NULL);
+
+    type1 = domainExpr->return_type(sctx);
 
     if (kind == for_var) 
     {

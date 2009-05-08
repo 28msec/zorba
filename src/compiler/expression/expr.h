@@ -1499,7 +1499,6 @@ public:
 
 
 
-// [245] [http://www.w3.org/TR/xqupdate/#prod-xquery-RenameExpr]
 class rename_expr : public expr
 /*______________________________________________________________________
 |	::= DO_RENAME  expr  AS  expr
@@ -1531,6 +1530,11 @@ public:
 };
 
 
+/*******************************************************************************
+  TransformExpr ::= "copy" "$" VarName ":=" ExprSingle
+                    ("," "$" VarName ":=" ExprSingle)*
+                    "modify"  ExprSingle "return" ExprSingle
+********************************************************************************/
 class copy_clause : public SimpleRCObject
 {
   friend class transform_expr;
@@ -1547,12 +1551,8 @@ public:
   std::ostream& put(std::ostream&) const;
 };
 
-// [249] [http://www.w3.org/TR/xqupdate/#prod-xquery-TransformExpr]
+
 class transform_expr : public expr
-/*______________________________________________________________________
-|	::= TRANSFORM_COPY_DOLLAR  VarNameList
-|				MODIFY  expr  RETURN  expr
-|_______________________________________________________________________*/
 {
 protected:
 	std::vector<rchandle<copy_clause> > theCopyClauses;

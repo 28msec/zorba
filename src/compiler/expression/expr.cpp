@@ -464,8 +464,10 @@ var_expr::var_expr(const QueryLoc& loc, var_kind k, store::Item_t name, bool glo
   varname_h (name),
   type (NULL),
   global (global_),
-  theFlworClause(NULL)
-{}
+  theFlworClause(NULL),
+  theCopyClause(NULL)
+{
+}
 
 
 store::Item_t var_expr::get_varname() const {
@@ -489,6 +491,24 @@ var_expr* var_expr::get_pos_var() const {
   } else {
     return NULL;
   }
+}
+
+
+expr* var_expr::get_domain_expr() const
+{
+  if (theFlworClause)
+  {
+    if (kind == for_var || kind == let_var || kind == win_var)
+    {
+      return reinterpret_cast<forletwin_clause*>(theFlworClause)->get_expr();
+    }
+  }
+  else if (theCopyClause)
+  {
+    return theCopyClause->getExpr();
+  }
+
+  return NULL;
 }
 
 
@@ -1059,7 +1079,9 @@ long flwor_expr::defines_variable(const var_expr* v, const flwor_clause* limit) 
       if (stopVars.curr.getp() == v) return i;
       if (stopVars.prev.getp() == v) return i;
       if (stopVars.next.getp() == v) return i;
-    } else if (c->get_kind() == flwor_clause::group_clause) {
+    }
+    else if (c->get_kind() == flwor_clause::group_clause) 
+    {
       const group_clause* gc = static_cast<const group_clause *>(c);
 
       const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
@@ -2119,25 +2141,31 @@ void rename_expr::next_iter(expr_iterator_data& v)
   END_EXPR_ITER();
 }
 
-expr_t rename_expr::clone (substitution_t& subst) {
+expr_t rename_expr::clone (substitution_t& subst) 
+{
   return new rename_expr (get_loc (), getTargetExpr ()->clone (subst), getNameExpr ()->clone (subst));
 }
 
 
 copy_clause::copy_clause(rchandle<var_expr> aVar, expr_t aExpr)
-: theVar(aVar), theExpr(aExpr) {}
+  :
+  theVar(aVar),
+  theExpr(aExpr)
+{
+  theVar->set_copy_clause(this);
+}
 
-// [249] [http://www.w3.org/TR/xqupdate/#prod-xquery-TransformExpr]
 
 transform_expr::transform_expr(
-	const QueryLoc& loc,
-	expr_t aModifyExpr,
-	expr_t aReturnExpr)
-:
+	  const QueryLoc& loc,
+    expr_t aModifyExpr,
+    expr_t aReturnExpr)
+  :
 	expr(loc),
 	theModifyExpr(aModifyExpr),
 	theReturnExpr(aReturnExpr)
-{}
+{
+}
 
 expr_iterator_data *transform_expr::make_iter () { return new transform_expr_iterator_data(this); }
 
