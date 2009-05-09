@@ -79,7 +79,7 @@ getCollator(
   store::Item_t temp;
 
   if (!PlanIterator::consumeNext(lCollationItem, iter, planState))
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "An empty-sequence is not allowed as collation parameter");
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "An empty sequence is not allowed as collation parameter");
 
   if (PlanIterator::consumeNext(temp, iter, planState))
       ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "A sequence of more then one item is not allowed as collation parameter");
@@ -162,7 +162,7 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (!consumeNext(state->theSearchItem, theChildren[1].getp(), planState))
   {
     ZORBA_ERROR_LOC_DESC( FORG0006, loc, 
-         "An empty sequence is not allowed as search item of fn:index-of");    
+         "An empty sequence is not allowed as the search item of fn:index-of");    
   }
 
   if ( theChildren.size() == 3 )
@@ -572,8 +572,7 @@ FnZeroOrOneIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (consumeNext(lNextSequenceItem, theChildren[0].getp(), planState))
     {
       ZORBA_ERROR_LOC_DESC( FORG0003, 
-        loc,  "fn:zero-or-one called with a sequence containing more than one item."); 
-
+        loc,  "fn:zero-or-one called with a sequence containing more than one item.");
     }
     STACK_PUSH(true, state);
   }
@@ -972,8 +971,8 @@ FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
     if (TypeOps::is_numeric (*lRunningType) || TypeOps::is_equal (*lRunningType, *lUntypedAtomic)) {
       lHitNumeric = true;
       if ( lHitYearMonth )
-        ZORBA_ERROR_LOC_DESC(FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
-                                                        + " for function fn:avg. Expected type " 
+        ZORBA_ERROR_LOC_DESC(FORG0006, loc, "Invalid argument type " + lRunningType->toString()
+                                                        + " for function fn:avg. Expected type "
                                                         + lYearMonthDuration->toString() +".");
       if ( lHitDayTime ) 
         ZORBA_ERROR_LOC_DESC(FORG0006, loc, "Invalid argument type " + lRunningType->toString() 
@@ -1096,7 +1095,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           } 
           else 
           {
-            ZORBA_ERROR_LOC_DESC( FORG0006, loc,  "Promote not possible");
+            ZORBA_ERROR_LOC_DESC( FORG0006, loc,  "Promotion not possible");
           }
         }
         else 
@@ -1206,7 +1205,7 @@ FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
           TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE)))
         GenericArithIterator<AddOperation>::compute(result, planState.theRuntimeCB, loc, result, lRunningItem);
       else
-        ZORBA_ERROR_LOC_DESC( FORG0006, loc, "Sum is not possible with parameters of the type " + TypeOps::toString (*lResultType) + " and " + TypeOps::toString (*lRunningType) );
+        ZORBA_ERROR_LOC_DESC( FORG0006, loc, "Sum is not possible with parameters of type " + TypeOps::toString (*lResultType) + " and " + TypeOps::toString (*lRunningType) );
     }
 
     STACK_PUSH(true, state);

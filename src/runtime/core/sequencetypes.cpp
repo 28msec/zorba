@@ -164,7 +164,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         theQuantifier == TypeConstants::QUANT_ONE)
     {
       ZORBA_ERROR_LOC_DESC( XPTY0004, loc, 
-        "Empty sequences cannot be cast to a type with quantifier ONE or PLUS!"
+        "Empty sequences cannot be cast to a type with quantifier ONE or PLUS."
       );
     }
   }
@@ -192,7 +192,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (consumeNext(lItem, theChild.getp(), planState))
     {
       ZORBA_ERROR_LOC_DESC( XPTY0004, loc, 
-                        "Sequence with more than one item cannot be cast to a type with quantifier ONE or QUESTION!");
+                        "Sequence with more than one item cannot be cast to a type with quantifier ONE or QUESTION.");
     }
     
     if (theIsSimpleType) {
@@ -346,7 +346,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     if(consumeNext(temp, theChild.getp(), planState)) 
     {
       ZORBA_ERROR_LOC_DESC(  XPTY0004, loc,  
-      "Seq with 2 or more items cannot be promoted to a QUANT_QUESTION or QUANT_ONE type.");
+      "Sequence with more than one item cannot be promoted to a QUANT_QUESTION or QUANT_ONE type.");
     }
     STACK_PUSH(true, lState);
   }
@@ -408,7 +408,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (CONSUME (temp, 0)) 
     {
       ZORBA_ERROR_LOC_DESC( theErrorCode, loc, 
-      "Cannot treat sequence with 2 or more items as <type>? or <type>.");
+      "Cannot treat sequence with more than one item as <type>? or <type>.");
     }
 
     if ( check_prime && !TypeOps::is_treatable(result, *theTreatType)) 

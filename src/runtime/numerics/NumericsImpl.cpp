@@ -361,7 +361,7 @@ bool NumArithIterator<Operation>::nextImpl (
       if (consumeNext(n0, this->theChild0.getp(), planState) ||
           consumeNext(n1, this->theChild1.getp(), planState))
         ZORBA_ERROR_DESC(XPTY0004,
-                         "Arithmetic operation has a sequences greater than one as an operator.");
+                         "Arithmetic operation has a sequence longer than one as an operand.");
       STACK_PUSH ( res, state );
     }
   }
@@ -480,7 +480,7 @@ bool SpecificNumArithIterator<Operation, Type>::nextImpl (
       if (consumeNext(n0, this->theChild0.getp(), planState) ||
           consumeNext(n1, this->theChild1.getp(), planState))
         ZORBA_ERROR_DESC(XPTY0004,
-                         "Arithmetic operation has a sequences greater than one as an operator.");
+                         "Arithmetic operation has a sequence longer than one as an operand.");
       STACK_PUSH ( res, state );
     }
   }
@@ -760,12 +760,12 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
     else
     {
       ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                           "Wrong operator type for an unary arithmetic operation.");
+                           "Wrong operand type for a unary arithmetic operation.");
     }
     
     if ( consumeNext(item, theChild.getp(), planState ) )
       ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                           "Arithmetic operation has a sequences greater than one as an operator.");
+                           "Arithmetic operation has a sequence longer than one as an operand.");
     STACK_PUSH (true, state );
   }
   STACK_END (state);
@@ -839,13 +839,13 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
       else
       {
         ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "Wrong operator type for an abs operation.");
+            loc, "Wrong operand type for fn:abs.");
       }
 
       if ( consumeNext(item, theChildren[0].getp(), planState ))
       {
         ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                             "Abs operation has a sequences greater than one as an operator.");
+                             "fn:abs has a sequence longer than one as an operand.");
       }
       STACK_PUSH ( true, state );
     }
@@ -895,13 +895,13 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
       else
       {
         ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "Wrong operator type for a ceiling operation.");
+            loc, "Wrong operand type for fn:ceiling.");
       }
 
       if ( consumeNext(item, theChildren[0].getp(), planState ))
       {
         ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "Ceiling operation has a sequences greater than one as an operator.");
+            loc, "fn:ceiling has a sequence longer than one as an operand.");
       }
       STACK_PUSH ( true, state );
     }
@@ -950,13 +950,13 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
       else
       {
         ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "Wrong operator type for a floor operation.");
+            loc, "Wrong operand type for fn:floor.");
       }
 
       if ( consumeNext(item, theChildren[0].getp(), planState ) )
       {
         ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "Floor operation has a sequences greater than one as an operator.");
+            loc, "fn:floor has a sequence longer than one as an operand.");
       }
       STACK_PUSH (true, state );
     }
@@ -1006,13 +1006,13 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
       else
       {
         ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "Wrong operator type for a round operation.");
+            loc, "Wrong operand type for fn:round.");
       }
 
       if ( consumeNext(item, theChildren[0].getp(), planState ))
       {
         ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "Round operation has a sequence longer than one as an operator.");
+            loc, "fn:round has a sequence longer than one as an operator.");
       }
       STACK_PUSH (true, state );
     }
@@ -1071,13 +1071,13 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
       else
       {
         ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "Wrong operator type for a round-half-to-even operation.");
+            loc, "Wrong operand type for fn:round-half-to-even.");
       }
 
       if ( consumeNext(item, theChildren [0].getp(), planState ))
       {
         ZORBA_ERROR_LOC_DESC( XPTY0004,
-           loc, "Round-half-to-even operation has a sequences greater than one as an operator.");
+           loc, "fn:round-half-to-even has a sequence longer than one as an operand.");
       }
       STACK_PUSH ( true, state );
     }
@@ -1118,12 +1118,12 @@ bool FnSQRTIterator::nextImpl (store::Item_t& result, PlanState& planState) cons
       GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().sqrt());
     else
       ZORBA_ERROR_LOC_DESC( XPTY0004,
-                            loc, "Wrong operator type for a sqrt operation.");
+                            loc, "Wrong operand type for fn:sqrt.");
 
     if ( consumeNext(item, theChildren[0].getp(), planState ))
     {
       ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                           "sqrt operation has a sequence longer than one as an operator.");
+                           "fn:sqrt has a sequence longer than one as an operator.");
     }
     
     STACK_PUSH (true, state);
