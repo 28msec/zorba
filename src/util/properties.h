@@ -19,6 +19,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <memory>
 
 #include <zorba/config.h>
 #include "system/zorba_properties.h"
