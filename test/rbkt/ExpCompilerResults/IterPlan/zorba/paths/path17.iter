@@ -7,15 +7,17 @@ Iterator tree for main query:
         <NodeSortIterator>
           <flwor::FLWORIterator>
             <ForVariable name="$$dot">
-              <NodeDistinctIterator>
-                <DescendantSelfAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
-                  <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-                    <CtxVariableIterator>
-                      <SingletonIterator value="xs:string(input-context)"/>
-                    </CtxVariableIterator>
-                  </TreatIterator>
-                </DescendantSelfAxisIterator>
-              </NodeDistinctIterator>
+              <DescendantSelfAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+                <FnDocIterator>
+                  <PromoteIterator type="[AtomicXQType XS_STRING]">
+                    <FnDataIterator>
+                      <CtxVariableIterator>
+                        <SingletonIterator value="xs:string(input-context)"/>
+                      </CtxVariableIterator>
+                    </FnDataIterator>
+                  </PromoteIterator>
+                </FnDocIterator>
+              </DescendantSelfAxisIterator>
             </ForVariable>
             <ReturnClause>
               <flwor::FLWORIterator>

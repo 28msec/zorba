@@ -1,0 +1,93 @@
+Iterator tree for main query:
+<flwor::FLWORIterator>
+  <LetVariable name="auction" materialize="true">
+    <FnDocIterator>
+      <PromoteIterator type="[AtomicXQType XS_STRING]">
+        <FnDataIterator>
+          <CtxVariableIterator>
+            <SingletonIterator value="xs:string(input-context)"/>
+          </CtxVariableIterator>
+        </FnDataIterator>
+      </PromoteIterator>
+    </FnDocIterator>
+  </LetVariable>
+  <LetVariable name="$$opt_temp_0" materialize="true">
+    <HoistIterator>
+      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,closed_auction)" typename="*" nill allowed="0">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,closed_auctions)" typename="*" nill allowed="0">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+            <LetVarIterator varname="auction"/>
+          </ChildAxisIterator>
+        </ChildAxisIterator>
+      </ChildAxisIterator>
+    </HoistIterator>
+  </LetVariable>
+  <ReturnClause>
+    <flwor::FLWORIterator>
+      <ForVariable name="p">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,people)" typename="*" nill allowed="0">
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+              <LetVarIterator varname="auction"/>
+            </ChildAxisIterator>
+          </ChildAxisIterator>
+        </ChildAxisIterator>
+      </ForVariable>
+      <LetVariable name="$$opt_temp_1" materialize="true">
+        <HoistIterator>
+          <FnDataIterator>
+            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+              <ForVarIterator varname="p"/>
+            </AttributeAxisIterator>
+          </FnDataIterator>
+        </HoistIterator>
+      </LetVariable>
+      <ReturnClause>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,item)"/>
+          <AttributeIterator>
+            <SingletonIterator value="xs:QName(,,person)"/>
+            <EnclosedIterator attr_cont="true">
+              <FnDataIterator>
+                <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
+                    <ForVarIterator varname="p"/>
+                  </ChildAxisIterator>
+                </ChildAxisIterator>
+              </FnDataIterator>
+            </EnclosedIterator>
+          </AttributeIterator>
+          <EnclosedIterator attr_cont="false">
+            <FnCountIterator>
+              <flwor::FLWORIterator>
+                <ForVariable name="t">
+                  <UnhoistIterator>
+                    <LetVarIterator varname="$$opt_temp_0"/>
+                  </UnhoistIterator>
+                </ForVariable>
+                <WhereClause>
+                  <CompareIterator>
+                    <FnDataIterator>
+                      <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+                        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,buyer)" typename="*" nill allowed="0">
+                          <ForVarIterator varname="t"/>
+                        </ChildAxisIterator>
+                      </AttributeAxisIterator>
+                    </FnDataIterator>
+                    <UnhoistIterator>
+                      <LetVarIterator varname="$$opt_temp_1"/>
+                    </UnhoistIterator>
+                  </CompareIterator>
+                </WhereClause>
+                <ReturnClause>
+                  <ForVarIterator varname="t"/>
+                </ReturnClause>
+              </flwor::FLWORIterator>
+            </FnCountIterator>
+          </EnclosedIterator>
+        </ElementIterator>
+      </ReturnClause>
+    </flwor::FLWORIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
+

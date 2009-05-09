@@ -1,0 +1,100 @@
+Iterator tree for main query:
+<flwor::FLWORIterator>
+  <LetVariable name="$$opt_temp_0" materialize="true">
+    <HoistIterator>
+      <FnConcatIterator/>
+    </HoistIterator>
+  </LetVariable>
+  <LetVariable name="$$opt_temp_1" materialize="true">
+    <HoistIterator>
+      <FnConcatIterator/>
+    </HoistIterator>
+  </LetVariable>
+  <ReturnClause>
+    <NodeSortIterator>
+      <flwor::FLWORIterator>
+        <ForVariable name="$$dot">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill allowed="0">
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,a)"/>
+              <FnConcatIterator>
+                <ElementIterator>
+                  <SingletonIterator value="xs:QName(,,b)"/>
+                  <ElementIterator>
+                    <SingletonIterator value="xs:QName(,,c)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(5)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                </ElementIterator>
+                <ElementIterator>
+                  <SingletonIterator value="xs:QName(,,b)"/>
+                  <ElementIterator>
+                    <SingletonIterator value="xs:QName(,,c)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(6)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                </ElementIterator>
+                <ElementIterator>
+                  <SingletonIterator value="xs:QName(,,b)"/>
+                  <ElementIterator>
+                    <SingletonIterator value="xs:QName(,,d)"/>
+                  </ElementIterator>
+                </ElementIterator>
+              </FnConcatIterator>
+            </ElementIterator>
+          </ChildAxisIterator>
+        </ForVariable>
+        <LetVariable name="$$temp3" materialize="true">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,c)" typename="*" nill allowed="0">
+            <ForVarIterator varname="$$dot"/>
+          </ChildAxisIterator>
+        </LetVariable>
+        <ReturnClause>
+          <IfThenElseIterator>
+            <LogicIterator>
+              <LogicIterator>
+                <InstanceOfIterator>
+                  <LetVarIterator varname="$$temp3"/>
+                </InstanceOfIterator>
+                <InstanceOfIterator>
+                  <LetVarIterator varname="$$temp3"/>
+                </InstanceOfIterator>
+              </LogicIterator>
+              <InstanceOfIterator>
+                <LetVarIterator varname="$$temp3"/>
+              </InstanceOfIterator>
+            </LogicIterator>
+            <IfThenElseIterator>
+              <FnBooleanIterator>
+                <CompareIterator>
+                  <ForVarIterator varname="$$pos"/>
+                  <PromoteIterator type="[AtomicXQType XS_ANY_ATOMIC]">
+                    <FnDataIterator>
+                      <LetVarIterator varname="$$temp3"/>
+                    </FnDataIterator>
+                  </PromoteIterator>
+                </CompareIterator>
+              </FnBooleanIterator>
+              <ForVarIterator varname="$$dot"/>
+              <UnhoistIterator>
+                <LetVarIterator varname="$$opt_temp_0"/>
+              </UnhoistIterator>
+            </IfThenElseIterator>
+            <IfThenElseIterator>
+              <FnBooleanIterator>
+                <LetVarIterator varname="$$temp3"/>
+              </FnBooleanIterator>
+              <ForVarIterator varname="$$dot"/>
+              <UnhoistIterator>
+                <LetVarIterator varname="$$opt_temp_1"/>
+              </UnhoistIterator>
+            </IfThenElseIterator>
+          </IfThenElseIterator>
+        </ReturnClause>
+      </flwor::FLWORIterator>
+    </NodeSortIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
+

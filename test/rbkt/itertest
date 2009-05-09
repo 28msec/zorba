@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# Test driver for iterator plan tests
+# Arguments: SRCDIR BINDIR TEST
+
 SRCDIR=$1
 BINDIR=$2
 TEST=`dirname $3`/`basename $3 .iter`
@@ -7,7 +11,11 @@ EXPECTED=$SRCDIR/test/rbkt/ExpCompilerResults/IterPlan/$TEST.iter
 mkdir -p `dirname $OUT`
 QUERY=$SRCDIR/test/rbkt/Queries/$TEST.xq
 test -e $QUERY || exit 0
-$BINDIR/test/apitest -i --compile-only --no-tree-ids $QUERY >$OUT.iter
+
+# Run apitest, strip non-comparable pointers
+$BINDIR/test/apitest --iter-plan-test -i --compile-only --no-tree-ids --debug-file /dev/null $QUERY \
+    | $SRCDIR/test/rbkt/remove_ctxvar_ptr >$OUT.iter
+
 # -w ignores all whitespace -- a bit too lax
 diff -dbu $EXPECTED $OUT.iter >$OUT.iter.diff
 STATUS=$?
@@ -21,6 +29,7 @@ if test $STATUS -ne 0; then
    echo; echo 'Expected plan:'
    cat $EXPECTED
 else
+   echo OK
    rm $OUT.iter.diff
 fi
 exit $STATUS
