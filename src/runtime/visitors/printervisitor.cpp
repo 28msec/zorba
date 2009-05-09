@@ -135,15 +135,14 @@ void print()
 
 void printCommons(const PlanIterator* aIter, int theId) 
 {
-  if (! Properties::instance()->noTreeIds()) 
-  {
-    /*
+  if (! Properties::instance()->noTreeIds()) {
+#if 0
       {
       std::stringstream lStream;
       lStream << aIter->loc;
       thePrinter.addAttribute("loc", lStream.str());
       }
-    */
+#endif
     {
       std::stringstream lStream;
       if (Properties::instance()->stableIteratorIds())
@@ -958,7 +957,7 @@ void beginVisitFlworLetVariable(
       str << " ";
   }
 
-  thePrinter.addAttribute("referenced-by", str.str());
+  if (! Properties::instance()->noTreeIds()) thePrinter.addAttribute("referenced-by", str.str());
 
   thePrinter.endBeginVisit(theId);
 }
@@ -989,7 +988,7 @@ void beginVisitFlworForVariable(
       str << " ";
   }
 
-  thePrinter.addAttribute("referenced-by", str.str());
+  if (! Properties::instance()->noTreeIds()) thePrinter.addAttribute("referenced-by", str.str());
 
   if (!posRefs.empty())
   {
@@ -1003,7 +1002,7 @@ void beginVisitFlworForVariable(
         str << " ";
     }
     
-    thePrinter.addAttribute("pos-referenced-by", str.str());
+    if (! Properties::instance()->noTreeIds()) thePrinter.addAttribute("pos-referenced-by", str.str());
   }
 
 
@@ -1072,7 +1071,7 @@ void beginVisitGroupVariable(const std::vector<ForVarIter_t>& varRefs)
       str << " ";
   }
 
-  thePrinter.addAttribute("referenced-by", str.str());
+  if (! Properties::instance()->noTreeIds()) thePrinter.addAttribute("referenced-by", str.str());
 
   thePrinter.endBeginVisit(theId);
 }
@@ -1100,7 +1099,7 @@ void beginVisitNonGroupVariable(
       str << " ";
   }
 
-  thePrinter.addAttribute("referenced-by", str.str());
+  if (! Properties::instance()->noTreeIds()) thePrinter.addAttribute("referenced-by", str.str());
 
   thePrinter.endBeginVisit(theId);
 }
@@ -1148,7 +1147,7 @@ void beginVisitOrderByForVariable(
   }
 
   thePrinter.addAttribute("inputVar : ", str1.str());
-  thePrinter.addAttribute("referenced-by", str2.str());
+  if (! Properties::instance()->noTreeIds()) thePrinter.addAttribute("referenced-by", str2.str());
 
   thePrinter.endBeginVisit(theId);
 }
@@ -1181,7 +1180,7 @@ void beginVisitOrderByLetVariable(
   }
 
   thePrinter.addAttribute("inputVar : ", str1.str());
-  thePrinter.addAttribute("referenced-by", str2.str());
+  if (! Properties::instance()->noTreeIds()) thePrinter.addAttribute("referenced-by", str2.str());
 
   thePrinter.endBeginVisit(theId);
 }
@@ -1212,7 +1211,7 @@ void beginVisitWindowVariable(
       str << " ";
   }
 
-  thePrinter.addAttribute("referenced-by", str.str());
+  if (! Properties::instance()->noTreeIds()) thePrinter.addAttribute("referenced-by", str.str());
 
   thePrinter.endBeginVisit(theId);
 }
@@ -1242,7 +1241,7 @@ void beginVisitWinCondVariable(
       str << " ";
   }
 
-  thePrinter.addAttribute("referenced-by", str.str());
+  if (! Properties::instance()->noTreeIds()) thePrinter.addAttribute("referenced-by", str.str());
 
   thePrinter.endBeginVisit(theId);
 }
