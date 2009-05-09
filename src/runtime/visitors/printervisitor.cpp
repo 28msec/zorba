@@ -661,6 +661,25 @@ void printCommons(const PlanIterator* aIter, int theId)
     thePrinter.endEndVisit();
   }
 
+#define TYPED_VAL_CMP( xqt )                                            \
+  void beginVisit ( const TypedValueCompareIterator<TypeConstants::XS_##xqt>& a) { \
+    thePrinter.startBeginVisit("TypedValueCompareIterator_" #xqt, ++theId); \
+    printCommons( &a, theId );                                          \
+    thePrinter.endBeginVisit(theId);                                    \
+  }                                                                     \
+                                                                        \
+  void endVisit ( const TypedValueCompareIterator<TypeConstants::XS_##xqt>& a) { \
+    thePrinter.startEndVisit();                                         \
+    thePrinter.endEndVisit();                                           \
+  }
+
+TYPED_VAL_CMP (DECIMAL)
+TYPED_VAL_CMP (INTEGER)
+TYPED_VAL_CMP (DOUBLE)
+TYPED_VAL_CMP (FLOAT)
+TYPED_VAL_CMP (STRING)
+
+#undef TYPED_VAL_CMP
 
   PRINTER_VISITOR_DEFINITION (OpNumericUnaryIterator)
 

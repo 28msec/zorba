@@ -102,6 +102,7 @@ namespace zorba
   template < class SubtractOperation, TypeConstants::atomic_type_code_t > class SpecificNumArithIterator;
   template < class MultiplyOperation, TypeConstants::atomic_type_code_t > class SpecificNumArithIterator;
   template < class DivideOperation, TypeConstants::atomic_type_code_t > class SpecificNumArithIterator;
+  template < TypeConstants::atomic_type_code_t > class TypedValueCompareIterator;
   class CreateValueIndex;
   class DropValueIndex;
   class ValueIndexInsertSessionOpener;
@@ -504,6 +505,18 @@ public:
   virtual void endVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_INTEGER>& ) = 0;
   virtual void endVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_FLOAT>& ) = 0;
   virtual void endVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_DOUBLE>& ) = 0;
+
+  virtual void beginVisit ( const TypedValueCompareIterator<TypeConstants::XS_DOUBLE>& ) = 0;
+  virtual void endVisit ( const TypedValueCompareIterator<TypeConstants::XS_DOUBLE>& ) = 0;
+  virtual void beginVisit ( const TypedValueCompareIterator<TypeConstants::XS_FLOAT>& ) = 0;
+  virtual void endVisit ( const TypedValueCompareIterator<TypeConstants::XS_FLOAT>& ) = 0;
+  virtual void beginVisit ( const TypedValueCompareIterator<TypeConstants::XS_DECIMAL>& ) = 0;
+  virtual void endVisit ( const TypedValueCompareIterator<TypeConstants::XS_DECIMAL>& ) = 0;
+  virtual void beginVisit ( const TypedValueCompareIterator<TypeConstants::XS_INTEGER>& ) = 0;
+  virtual void endVisit ( const TypedValueCompareIterator<TypeConstants::XS_INTEGER>& ) = 0;
+  virtual void beginVisit ( const TypedValueCompareIterator<TypeConstants::XS_STRING>& ) = 0;
+  virtual void endVisit ( const TypedValueCompareIterator<TypeConstants::XS_STRING>& ) = 0;
+
   PLAN_ITER_VISITOR (CreateValueIndex);
   PLAN_ITER_VISITOR (DropValueIndex);
   PLAN_ITER_VISITOR (ValueIndexInsertSessionOpener);

@@ -95,8 +95,10 @@ template<enum CompareConsts::CompareType CC, TypeConstants::atomic_type_code_t t
 class TypedValueComparison : public SpecificValueComparison<CC> {
 public:
   TypedValueComparison (const signature &sig) : SpecificValueComparison<CC> (sig) {}
-
   virtual bool specializable() const { return false; }
+  PlanIter_t createIterator (const QueryLoc& loc, std::vector<PlanIter_t>& argv) const {
+    return new TypedValueCompareIterator<t> (loc, argv, CC);
+  }
 };
 
 

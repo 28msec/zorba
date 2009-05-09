@@ -169,7 +169,7 @@ static void modify_expr (expr_t &old, expr_t ne) {
     old = ne;
 }
 
-static bool specialize_numeric (fo_expr *fo, static_context *sctx)
+static xqtref_t specialize_numeric (fo_expr *fo, static_context *sctx)
 {
   const function *fn = fo->get_func();
   expr_t arg0 = (*fo)[0], arg1 = (*fo)[1];
@@ -189,11 +189,30 @@ static bool specialize_numeric (fo_expr *fo, static_context *sctx)
   if (replacement != NULL) {
     fo->set_func(replacement);
     modify_expr ((*fo)[0], wrap_in_num_promotion (arg0, t0, aType));
-    modify_expr ((*fo)[1], wrap_in_num_promotion (arg1, t1, aType));
-    return true;
+    modify_expr ((*fo)[1], wrap_in_num_promotion (arg1, t1, aType));    
+    return aType;
   }
 
-  return false;
+  return NULL;
+}
+
+static const function *flip_value_cmp (std::string fname) {
+  size_t pos = fname.rfind ('-');
+  std::string n = fname.substr (0, pos), n1;
+
+  if (n == ":value-equal" || n == ":value-not-equal")
+    n1 = n;
+  else if (n == ":value-greater-equal")
+    n1 = ":value-less-equal";
+  else if (n == ":value-less-equal")
+    n1 = ":value-greater-equal";
+  else if (n == ":value-greater")
+    n1 = ":value-less";
+  else if (n == ":value-less")
+    n1 = ":value-greater";
+  else
+    return NULL;
+  return LOOKUP_FN ("fn", n1 + n.substr (pos), 2);
 }
 
 RULE_REWRITE_POST(SpecializeOperations)
@@ -217,10 +236,10 @@ RULE_REWRITE_POST(SpecializeOperations)
         if (! TypeOps::is_numeric_or_untyped (*t [0])
             || ! TypeOps::is_numeric_or_untyped (*t [1]))
           return NULL;
-        if (specialize_numeric (fo, rCtx.getStaticContext()))
+        if (specialize_numeric (fo, rCtx.getStaticContext()) != NULL)
           return node;
       } else if (props.specializeCmp () && fn->isComparisonFunction ()) {
-        if (dynamic_cast<const ValueOpComparison *> (fn) == NULL) {
+        if (fn->isGeneralComparisonFunction ()) {
           std::vector<xqtref_t> argTypes;
           argTypes.push_back(t [0]);
           argTypes.push_back(t [1]);
@@ -230,7 +249,7 @@ RULE_REWRITE_POST(SpecializeOperations)
             fo->set_func(replacement);
             return node;
           }
-        } else {  // value comparison
+        } else if (fn->isValueComparisonFunction ()) {
           xqtref_t string_type = GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
           bool string_cmp = true;
           expr_t nargs [2];
@@ -255,8 +274,18 @@ RULE_REWRITE_POST(SpecializeOperations)
               return node;
             } 
           } else if (TypeOps::is_numeric (*t [0]) && TypeOps::is_numeric (*t [1])) {
-            if (specialize_numeric (fo, rCtx.getStaticContext()))
+            xqtref_t aType = specialize_numeric (fo, rCtx.getStaticContext());
+            if (aType != NULL) {
+              if (TypeOps::is_equal (*TypeOps::prime_type (*aType), *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)
+                  && TypeOps::is_subtype (*t [0], *GENV_TYPESYSTEM.INTEGER_TYPE_ONE))
+              {
+                expr_t tmp = (*fo) [0];
+                (*fo) [0] = (*fo) [1];
+                (*fo) [1] = tmp;
+                fo->set_func (flip_value_cmp (fo->get_fname ()->getLocalName ()->str ()));
+              }
               return node;
+            }
           }
         }
       }

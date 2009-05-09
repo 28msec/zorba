@@ -45,8 +45,6 @@ private:
 public:
   FnBooleanIterator ( const QueryLoc& loc, PlanIter_t& aIter, bool aNegate = false );
 
-  virtual ~FnBooleanIterator();
-
   /**
    * Static function which computes the effective boolean value of a passed iterator.
    *
@@ -88,8 +86,6 @@ public:
         PlanIter_t aChild1,
         LogicType aLogicType);
 
-  virtual ~LogicIterator();
-      
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
@@ -114,8 +110,6 @@ public:
         PlanIter_t theChild0,
         PlanIter_t theChild1,
         CompareConsts::CompareType aCompType);
-
-  virtual ~CompareIterator();
 
   void openImpl(PlanState& planState, uint32_t& offset);
 
@@ -280,6 +274,28 @@ private:
         store::Item_t& castItem1);
 };
 
+template <TypeConstants::atomic_type_code_t ATC>
+class TypedValueCompareIterator
+  : public NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState>
+{
+  CompareConsts::CompareType  theCompType;
+  long                        theTimezone;
+  XQPCollator               * theCollation;
+
+public:
+  TypedValueCompareIterator (const QueryLoc& loc,
+                             std::vector<PlanIter_t>& children,
+                             CompareConsts::CompareType aCompType)
+    : NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState> ( loc, children ), 
+      theCompType(aCompType), theTimezone (0)
+  {}
+
+  ~TypedValueCompareIterator () {}
+
+  void openImpl(PlanState& planState, uint32_t& offset);
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  void accept(PlanIterVisitor&) const;
+};
 
 /*******************************************************************************
   Node comparison iterators

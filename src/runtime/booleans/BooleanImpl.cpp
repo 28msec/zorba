@@ -13,27 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "system/globalenv.h"
+
 #include "runtime/booleans/BooleanImpl.h"
+#include "runtime/api/runtimecb.h"
+#include "runtime/accessors//AccessorsImpl.h"
+#include "runtime/api/plan_iterator_wrapper.h"
+#include "runtime/util/iterator_impl.h"
+
+#include "system/globalenv.h"
+
 #include "types/casting.h"
 #include "types/typeops.h"
-#include "runtime/api/runtimecb.h"
-#include "zorbaerrors/error_manager.h"
-#include "runtime/accessors//AccessorsImpl.h"
+
 #include "store/api/temp_seq.h"
-#include "runtime/api/plan_iterator_wrapper.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
+
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include "context/collation_cache.h"
+
+#include "zorbaerrors/error_manager.h"
+
 #include "zorbatypes/collation_manager.h"
 #include "zorbatypes/duration.h"
 #include "zorbatypes/datetime.h"
 
 
-namespace zorba
-{
+namespace zorba {
 
 /*______________________________________________________________________
 
@@ -49,14 +56,8 @@ FnBooleanIterator::FnBooleanIterator(
   :
   UnaryBaseIterator<FnBooleanIterator, PlanIteratorState>(loc, aIter),
   theNegate(aNegate)
-{
-}
-
+{}
     
-FnBooleanIterator::~FnBooleanIterator() 
-{
-}
-
 
 bool FnBooleanIterator::effectiveBooleanValue(
     const QueryLoc& loc,
@@ -64,9 +65,8 @@ bool FnBooleanIterator::effectiveBooleanValue(
     const PlanIterator* iter,
     bool negate)
 {
-  store::Item_t item;
+  store::Item_t item, temp;
   xqtref_t type;
-  store::Item_t temp;
   bool result;
 
   if (!consumeNext(item, iter, planState))
@@ -93,11 +93,9 @@ bool FnBooleanIterator::effectiveBooleanValue(
       // => effective boolean value is defined in the items
       temp = item->getEBV();
       result = negate ? (negate ^ temp->getBooleanValue()) : temp->getBooleanValue();
-    }
-    else
-    {
-      ZORBA_ERROR_LOC_DESC( FORG0006, loc,  
-                            "Wrong arguments in fn:boolean function.");
+    } else {
+      ZORBA_ERROR_LOC_DESC(FORG0006, loc,  
+                           "Wrong arguments in fn:boolean function.");
     }
   }
 
@@ -133,14 +131,8 @@ LogicIterator::LogicIterator (
   :
   BinaryBaseIterator<LogicIterator, PlanIteratorState>(loc, theChild0, theChild1),
   theLogicType(aLogicType) 
-{
-}
+{}
   
-
-LogicIterator::~LogicIterator()
-{
-}
-
       
 bool
 LogicIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -150,8 +142,7 @@ LogicIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
-  switch(theLogicType)
-  {
+  switch(theLogicType) {
   case AND:
     bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild0)
       && FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild1);
@@ -181,10 +172,9 @@ CompareIterator::CompareIterator(
      CompareConsts::CompareType aCompType)
   :
   BinaryBaseIterator<CompareIterator, PlanIteratorState> ( loc, aChild0, aChild1 ), 
-  theCompType(aCompType) 
+  theCompType(aCompType)
 {
-  switch(theCompType)
-  {
+  switch(theCompType) {
   case CompareConsts::GENERAL_EQUAL:
   case CompareConsts::GENERAL_NOT_EQUAL:
   case CompareConsts::GENERAL_LESS:
@@ -200,10 +190,6 @@ CompareIterator::CompareIterator(
 }
 
   
-CompareIterator::~CompareIterator()
-{
-}
-  
 
 void CompareIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
@@ -217,106 +203,75 @@ void CompareIterator::openImpl(PlanState& planState, uint32_t& offset)
 
 bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lItem0;
-  store::Item_t lItem1;
-  store::Item_t tItem0;
-  store::Item_t tItem1;
-  bool c0Done = false;
-  bool c1Done = false;
-  bool done = false;
-  bool found = false;
-  std::vector<store::Item_t> seq0;
-  std::vector<store::Item_t> seq1;
-  store::TempSeq_t tSeq0;
-  store::TempSeq_t tSeq1;
+  store::Item_t lItem0, lItem1, tItem0, tItem1;
+  bool c0Done = false, c1Done = false, done = false, found = false;
+  std::vector<store::Item_t> seq0, seq1;
+  store::TempSeq_t tSeq0, tSeq1;
     
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
   
-  // If general comparison ...
-  if (theIsGeneralComparison)
-  {
-    if (consumeNext(lItem0, theChild0.getp(), planState)) 
-    {
-      if (consumeNext(tItem0, theChild0.getp(), planState)) 
-      {
+  if (theIsGeneralComparison) {
+    if (consumeNext(lItem0, theChild0.getp(), planState)) {
+      if (consumeNext(tItem0, theChild0.getp(), planState)) {
         seq0.push_back(lItem0);
         seq0.push_back(tItem0);
-      }
-      else 
-      {
+      } else {
         c0Done = true;
-        if (consumeNext(lItem1, theChild1.getp(), planState)) 
-        {
-          if (consumeNext(tItem1, theChild1.getp(), planState)) 
-          {
+        if (consumeNext(lItem1, theChild1.getp(), planState)) {
+          if (consumeNext(tItem1, theChild1.getp(), planState)) {
             seq0.push_back(lItem0);
             seq1.push_back(lItem1);
             seq1.push_back(tItem1);
-          }
-          else 
-          {
+          } else {
             c1Done = true;
             found = CompareIterator::generalComparison(loc,
-                                                       lItem0,
-                                                       lItem1,
+                                                       lItem0, lItem1,
                                                        theCompType,
                                                        theTypeManager,
-                                                       theTimezone,
-                                                       theCollation);
+                                                       theTimezone, theCollation);
             done = true;
           }
-        }
-        else 
-        {
+        } else {
           c1Done = true;
           found = false;
           done = true;
         }
       }
-    }
-    else 
-    {
+    } else {
       c0Done = true;
       found = false;
       done = true;
     }
     
-    if (!done) 
-    {
+    if (!done) {
       store::Iterator_t lIter0;
       store::Iterator_t lIter1;
       tSeq0 = GENV_STORE.createTempSeq(seq0);
       tSeq1 = GENV_STORE.createTempSeq(seq1);
 
-      if (!c0Done) 
-      {
+      if (!c0Done) {
         lIter0 = new PlanIteratorWrapper ( theChild0, planState );
         tSeq0->append(lIter0, false);
       }
-      if (!c1Done) 
-      {
+      if (!c1Done) {
         lIter1 = new PlanIteratorWrapper ( theChild1, planState );
         tSeq1->append(lIter1, false);
       }
 
       int i0 = 1;
-      while(!found && tSeq0->containsItem(i0)) 
-      {
+      while(!found && tSeq0->containsItem(i0)) {
         int i1 = 1;
-        while(!found && tSeq1->containsItem(i1)) 
-        {
+        while(!found && tSeq1->containsItem(i1)) {
           store::Item_t item0;
           store::Item_t item1;
           tSeq0->getItem(i0, item0);
           tSeq1->getItem(i1, item1);
           if (CompareIterator::generalComparison(loc,
-                                                 item0,
-                                                 item1,
+                                                 item0, item1,
                                                  theCompType,
                                                  theTypeManager,
-                                                 theTimezone,
-                                                 theCollation)) 
+                                                 theTimezone, theCollation)) 
           {
             found = true;
           }
@@ -327,11 +282,9 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     }
  
     STACK_PUSH ( GENV_ITEMFACTORY->createBoolean ( result, found ), state );
-  }
- 
-  // else it is a value comparison ...
-  else 
-  {
+
+  } else {  // value comparison
+
     if (consumeNext(lItem0, theChild0.getp(), planState) &&
         consumeNext(lItem1, theChild1.getp(), planState))
     {
@@ -758,8 +711,7 @@ long CompareIterator::compare(
   xqtref_t type0 = typemgr->create_value_type(aItem0.getp());
   xqtref_t type1 = typemgr->create_value_type(aItem1.getp());
 
-  try
-  {
+  try {
     if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE) &&
         TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)) 
     {
@@ -768,17 +720,11 @@ long CompareIterator::compare(
         return aItem0->compare(aItem1, timezone, aCollation);
       else
         return -2;
-    }
-    else if (TypeOps::is_subtype(*type1, *type0))
-    {
+    } else if (TypeOps::is_subtype(*type1, *type0)) {
       return aItem0->compare(aItem1, timezone, aCollation);
-    } 
-    else if (TypeOps::is_subtype(*type0, *type1))
-    {
+    } else if (TypeOps::is_subtype(*type0, *type1)) {
       return -aItem1->compare(aItem0, timezone, aCollation);
-    }
-    else
-    {
+    } else {
       // There is 1 case when two types are order-comparable without one being a
       // subtype of the other: they belong to different branches under of the
       // type-inheritance subtree rooted at xs:Integer.
@@ -786,21 +732,98 @@ long CompareIterator::compare(
           TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)) 
       {
         return aItem0->getIntegerValue().compare(aItem1->getIntegerValue());
-      }
-      else
-      {
+      } else {
         return -2;
       }
     }
-  }
-  catch(error::ZorbaError& e)
-  {
+  } catch(error::ZorbaError& e) {
     if (e.theErrorCode == STR0010_TYPE_ERROR)
       return -2;
     else
       throw e;
   }
 }
+
+
+// TypedValueCompareIterator
+
+template<TypeConstants::atomic_type_code_t ATC>
+void TypedValueCompareIterator<ATC>::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<TypedValueCompareIterator, PlanIteratorState>::openImpl(planState, offset);
+
+  theTimezone = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
+  theCollation = planState.theRuntimeCB->theCollationCache->getDefaultCollator();
+}
+
+template<TypeConstants::atomic_type_code_t ATC>
+void TypedValueCompareIterator<ATC>::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this); 
+  this->theChildren [0]->accept(v); 
+  this->theChildren [1]->accept(v); 
+  v.endVisit(*this); 
+}
+
+template<TypeConstants::atomic_type_code_t ATC>
+bool TypedValueCompareIterator<ATC>::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lItem0, lItem1;
+  bool bRes, neq = false, nonempty = false;
+  int cmp;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  if (CONSUME (lItem0, 0) && CONSUME (lItem1, 1)) {
+
+    switch (theCompType) {
+    case CompareConsts::VALUE_NOT_EQUAL:
+      neq = true;
+    case CompareConsts::VALUE_EQUAL:
+      nonempty = true;
+      bRes = lItem0->equals (lItem1, timezone, theCollation);
+      if (neq) bRes = ! bRes;
+      break;
+
+    default: {
+
+      cmp = lItem0->compare (lItem1, timezone, theCollation);
+
+      switch (theCompType) {
+      case CompareConsts::VALUE_LESS:
+        if (nonempty = (cmp > -2)) bRes = cmp == -1;
+        break;
+      case CompareConsts::VALUE_GREATER:
+        if (nonempty = (cmp > -2)) bRes = cmp == 1;
+        break;        
+      case CompareConsts::VALUE_LESS_EQUAL:
+        if (nonempty = (cmp > -2)) bRes = cmp <= 0;
+        break;
+      case CompareConsts::VALUE_GREATER_EQUAL:
+        if (nonempty = (cmp > -2)) bRes = cmp >= 0;
+        break;
+      default:
+        ZORBA_ASSERT (false);
+      }
+    }
+    }
+    if (nonempty)
+      STACK_PUSH (GENV_ITEMFACTORY->createBoolean (result, bRes), state);
+    if (CONSUME (lItem0, 0) || CONSUME (lItem1, 1)) {
+      ZORBA_ERROR_LOC_DESC(XPTY0004, this->loc, 
+                           "Value comparisons must not be made with sequences longer than one item.");
+    }
+  }
+
+  STACK_END (state);
+}
+
+template class TypedValueCompareIterator<TypeConstants::XS_DOUBLE>;
+template class TypedValueCompareIterator<TypeConstants::XS_FLOAT>;
+template class TypedValueCompareIterator<TypeConstants::XS_DECIMAL>;
+template class TypedValueCompareIterator<TypeConstants::XS_INTEGER>;
+template class TypedValueCompareIterator<TypeConstants::XS_STRING>;
 
   
 /////////////////////////////////////////////////////////////////////////////////
@@ -811,24 +834,22 @@ long CompareIterator::compare(
 
 
 bool
-OpIsSameNodeIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
+OpIsSameNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 { 
   bool lBool;
   store::Item_t lItem0, lItem1;
 
   PlanIteratorState* aState;
-  DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
-    
-  if (consumeNext(lItem0, theChildren[0].getp(), aPlanState)) {
-    if (consumeNext(lItem1, theChildren[1].getp(), aPlanState)) {
+  DEFAULT_STACK_INIT(PlanIteratorState, aState, planState);
+  
+  if (CONSUME (lItem0, 0)) {
+    if (CONSUME (lItem1, 1)) {
       if (!lItem0->isNode() || !lItem0->isNode()) {
         ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "op:is-same-node must have nodes as parameters.");
       }
       lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == 0); 
-      STACK_PUSH ( 
-                  GENV_ITEMFACTORY->createBoolean(result, lBool),
-                  aState
-                   );
+      STACK_PUSH (GENV_ITEMFACTORY->createBoolean(result, lBool),
+                  aState);
     }
   }
   STACK_END (aState);
@@ -836,24 +857,21 @@ OpIsSameNodeIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) con
 
 
 bool
-OpNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
+OpNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 { 
   bool lBool;
   store::Item_t lItem0, lItem1;
 
   PlanIteratorState* aState;
-  DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
+  DEFAULT_STACK_INIT(PlanIteratorState, aState, planState);
 
-  if (consumeNext(lItem0, theChildren[0].getp(), aPlanState)) {
-    if (consumeNext(lItem1, theChildren[1].getp(), aPlanState)) {
+  if (CONSUME (lItem0, 0)) {
+    if (CONSUME (lItem1, 1)) {
       if (!lItem0->isNode() || !lItem0->isNode()) {
         ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "op:node-before must have nodes as parameters.");
       }
       lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == -1); 
-      STACK_PUSH ( 
-                  GENV_ITEMFACTORY->createBoolean(result, lBool),
-                  aState
-                   );
+      STACK_PUSH (GENV_ITEMFACTORY->createBoolean(result, lBool), aState);
     }
   }
   STACK_END (aState);
@@ -861,28 +879,26 @@ OpNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) con
 
 
 bool
-OpNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
+OpNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 { 
   bool lBool;
   store::Item_t lItem0, lItem1;
 
   PlanIteratorState* aState;
-  DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
+  DEFAULT_STACK_INIT(PlanIteratorState, aState, planState);
 
-  if (consumeNext(lItem0, theChildren[0].getp(), aPlanState)) {
-    if (consumeNext(lItem1, theChildren[1].getp(), aPlanState)) {
+  if (CONSUME (lItem0, 0)) {
+    if (CONSUME (lItem1, 1)) {
       if (!lItem0->isNode() || !lItem0->isNode()) {
         ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "op:node-after must have nodes as parameters.");
       }
       lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == 1); 
-      STACK_PUSH ( 
-                  GENV_ITEMFACTORY->createBoolean(result, lBool),
-                  aState
-                   );
-      }
+      STACK_PUSH (GENV_ITEMFACTORY->createBoolean(result, lBool), aState);
+    }
   }
   STACK_END (aState);
 }
+
 
 
 }

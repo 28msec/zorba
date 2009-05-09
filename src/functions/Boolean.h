@@ -30,6 +30,7 @@ public:
   GenericOpComparison (const signature &sig) : function (sig) {}
 
   bool isComparisonFunction () const { return true; }
+  bool isGeneralComparisonFunction () const { return true; }
 
   void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
 
@@ -54,6 +55,7 @@ public:
 
   virtual const char *comparison_name () const { return ""; }
 
+  bool isGeneralComparisonFunction () const { return false; }
   virtual bool isValueComparisonFunction() const { return true; }
 
   xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
