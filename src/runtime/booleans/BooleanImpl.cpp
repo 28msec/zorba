@@ -350,7 +350,7 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
           consumeNext(lItem1, theChild1.getp(), planState))
       {
         ZORBA_ERROR_LOC_DESC(XPTY0004, loc, 
-                             "Value comparisons must not be made with sequences with length greater 1.");
+                             "Value comparisons must not be made with sequences longer than one item.");
       }
     }
   } 
@@ -822,7 +822,7 @@ OpIsSameNodeIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) con
   if (consumeNext(lItem0, theChildren[0].getp(), aPlanState)) {
     if (consumeNext(lItem1, theChildren[1].getp(), aPlanState)) {
       if (!lItem0->isNode() || !lItem0->isNode()) {
-        ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "The IsSameNode function must have nodes as parameters.");
+        ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "op:is-same-node must have nodes as parameters.");
       }
       lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == 0); 
       STACK_PUSH ( 
@@ -847,7 +847,7 @@ OpNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) con
   if (consumeNext(lItem0, theChildren[0].getp(), aPlanState)) {
     if (consumeNext(lItem1, theChildren[1].getp(), aPlanState)) {
       if (!lItem0->isNode() || !lItem0->isNode()) {
-        ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "The IsSameNode function must have nodes as parameters.");
+        ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "op:node-before must have nodes as parameters.");
       }
       lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == -1); 
       STACK_PUSH ( 
@@ -872,7 +872,7 @@ OpNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
   if (consumeNext(lItem0, theChildren[0].getp(), aPlanState)) {
     if (consumeNext(lItem1, theChildren[1].getp(), aPlanState)) {
       if (!lItem0->isNode() || !lItem0->isNode()) {
-        ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "The IsSameNode function must have nodes as parameters.");
+        ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "op:node-after must have nodes as parameters.");
       }
       lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == 1); 
       STACK_PUSH ( 
