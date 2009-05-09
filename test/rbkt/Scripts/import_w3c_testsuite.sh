@@ -113,7 +113,7 @@ use File::Copy;
 
 my $repo=shift;
 my %sources;
-my $test_src_path = "$repo/test/rbkt/Queries/w3c_testsuite";
+my $test_src_path = "\$RBKT_SRC_DIR/Queries/w3c_testsuite";
 my $test_uris = "$test_src_path/TestSources/uri.txt\n";
 open (URIS, ">> $test_uris" );
 while (<>) {
@@ -193,8 +193,8 @@ if ( $cmp ne "nocomparison" ) {
 if ( $inpq ne "noquery" ) {
    open (SPEC, ">>$specfile");
    open (SPECX, ">>$xqueryxspecfile");
-   print SPEC "InputQuery: " . $inpqpath . "/" . $inpq . ".ixq" . "\n";
-   print SPECX "InputQuery: " . $inpqpath . "/" . $inpq . ".ixq" . "\n";
+   print SPEC "InputQuery: \$RBKT_SRC_DIR/Queries/w3c_testsuite/InputQueries/" . $inpq . ".ixq" . "\n";
+   print SPECX "InputQuery: \$RBKT_SRC_DIR/Queries/w3c_testsuite/InputQueries/" . $inpq . ".ixq" . "\n";
    copy ( "$inpath/$inpq.xq", "$inpqpath/$inpq.ixq" );
    copy ( "$inxqueryxpath/$inpq.xq", "$inpqpath/$inpq.ixqx" );
 }

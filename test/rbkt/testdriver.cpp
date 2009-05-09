@@ -237,7 +237,9 @@ main(int argc, char** argv)
 
       set_vars(&lSpec, lDynCtxt, rbkt_src_dir);
       if ( lSpec.hasInputQuery () ) {
-        const std::string & inputqueryfile = lSpec.getInputQueryFile ();
+        std::string  inputqueryfile = lSpec.getInputQueryFile ();
+        zorba::str_replace_all(inputqueryfile, "$RBKT_SRC_DIR", rbkt_src_dir);
+
         std::ifstream inputquery ( inputqueryfile.c_str() );
         zorba::XQuery_t inputQuery = engine -> compileQuery ( inputquery, lContext, getCompilerHints () );
         zorba::ResultIterator_t riter = inputQuery -> iterator ();
