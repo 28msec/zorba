@@ -115,9 +115,9 @@ int _tmain(int argc, _TCHAR* argv[])
   
   // print the query if requested
   if (lProp->printQuery()) {
-    cout << "Query text:\n";
-    copy (istreambuf_iterator<char> (*qfile), istreambuf_iterator<char> (), ostreambuf_iterator<char> (cout));
-    cout << "\n" << endl;
+    lProp->debug_out ()<< "Query text:\n";
+    copy (istreambuf_iterator<char> (*qfile), istreambuf_iterator<char> (), ostreambuf_iterator<char> (lProp->debug_out ()));
+    lProp->debug_out () << "\n" << endl;
     qfile->seekg(0); // go back to the beginning
   }
 

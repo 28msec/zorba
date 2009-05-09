@@ -82,6 +82,10 @@ namespace zorba
     std::string cfgfile;
     getOSConfigFile (cfgfile);
     std::string result = load_all (cfgfile.c_str (), "ZORBA_CFG_", argc, (const char **) argv);
+    if (! debugFile ().empty ()) {
+      debug_stream_ptr.reset (new std::ofstream (debugFile ().c_str ()));
+      debug_stream = debug_stream_ptr.get ();
+    }
     if (result.empty ()) result = check_args ();
     if (result == "!HELP") {
       std::cout << "Allowed options:\n\n";

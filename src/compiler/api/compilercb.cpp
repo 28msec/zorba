@@ -27,9 +27,10 @@ namespace zorba {
 #define DEF_PRINT_EXPR_TREE( phase )                                    \
   static void print_expr_tree_##phase (const expr *e, std::string name) \
   {                                                                     \
-    std::cout << "Expression tree after " << #phase                     \
-              << " for " << name << "\n";                               \
-    e->put (std::cout) << std::endl;                                    \
+    std::ostream &os = Properties::instance ()->debug_out ();           \
+    os << "Expression tree after " << #phase                            \
+       << " for " << name << "\n";                                      \
+    e->put (os) << std::endl;                                           \
   }
 
   DEF_PRINT_EXPR_TREE (translation)

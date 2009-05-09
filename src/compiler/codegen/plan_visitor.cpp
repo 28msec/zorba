@@ -2319,15 +2319,17 @@ PlanIter_t codegen(
   root->accept (c);
   PlanIter_t result = c.result();
 
-  // HACK: print only main query if no-tree-id's is active.
-  // When that happens, we are comparing iterator plans.
   if (result != NULL && descr != NULL && Properties::instance()->printIteratorTree()
-      && (xqp_string ("main query") == descr || ! Properties::instance()->noTreeIds())) 
+      && (xqp_string ("main query") == descr || ! Properties::instance()->iterPlanTest ()))
   {
-    cout << "Iterator tree for " << descr << ":\n";
-    XMLIterPrinter vp (cout);
+    std::ostream &os = Properties::instance()->iterPlanTest ()
+      ? std::cout
+      : Properties::instance ()->debug_out ();
+
+    os << "Iterator tree for " << descr << ":\n";
+    XMLIterPrinter vp (os);
     print_iter_plan (vp, result);
-    cout << endl;
+    os << endl;
   }
 	
   return result;

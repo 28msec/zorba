@@ -33,7 +33,7 @@ namespace zorba {
 class ZorbaProperties : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--dump-lib", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--trace-translator", "--trace-codegen", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", NULL };
+    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--debug-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--dump-lib", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--trace-translator", "--trace-codegen", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", "--iter-plan-test", NULL };
     return result;
   }
   bool theTraceParsing;
@@ -41,6 +41,7 @@ protected:
   bool theUseSerializer;
   bool theOptimizer;
   std::string theResultFile;
+  std::string theDebugFile;
   bool theAbort;
   std::string theQuery;
   bool thePrintQuery;
@@ -70,6 +71,7 @@ protected:
   int theTz;
   std::vector<std::string> theExternalVar;
   std::vector<std::string> theSerializerParam;
+  bool theIterPlanTest;
 
   void initialize () {
     theTraceParsing = false;
@@ -101,6 +103,7 @@ protected:
     theTraceCodegen = false;
     theDebug = false;
     theCompileOnly = false;
+    theIterPlanTest = false;
   }
 public:
   const bool &traceParsing () const { return theTraceParsing; }
@@ -108,6 +111,7 @@ public:
   const bool &useSerializer () const { return theUseSerializer; }
   const bool &optimizer () const { return theOptimizer; }
   const std::string &resultFile () const { return theResultFile; }
+  const std::string &debugFile () const { return theDebugFile; }
   const bool &abort () const { return theAbort; }
   const std::string &query () const { return theQuery; }
   const bool &printQuery () const { return thePrintQuery; }
@@ -137,6 +141,7 @@ public:
   const int &tz () const { return theTz; }
   const std::vector<std::string> &externalVar () const { return theExternalVar; }
   const std::vector<std::string> &serializerParam () const { return theSerializerParam; }
+  const bool &iterPlanTest () const { return theIterPlanTest; }
 
   std::string load_argv (int argc, const char **argv) {
     if (argv == NULL) return "";
@@ -165,6 +170,11 @@ public:
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         init_val (*argv, theResultFile, d);
+      }
+      else if (strcmp (*argv, "--debug-file") == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        init_val (*argv, theDebugFile, d);
       }
       else if (strcmp (*argv, "--abort") == 0) {
         theAbort = true;
@@ -279,6 +289,9 @@ public:
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         init_val (*argv, theSerializerParam, d);
       }
+      else if (strcmp (*argv, "--iter-plan-test") == 0) {
+        theIterPlanTest = true;
+      }
       else if (strcmp (*argv, "--") == 0) {
         copy_args (++argv);
         break;
@@ -300,6 +313,7 @@ public:
 "--use-serializer, -r\nuse serializer\n\n"
 "--optimizer, -O\noptimization level (1=enabled (default), 0=off)\n\n"
 "--result-file, -o\nresult file\n\n"
+"--debug-file\nlog file for debugging information\n\n"
 "--abort\nabort when fatal error happens\n\n"
 "--query, -e\nexecute inline query\n\n"
 "--print-query, -q\nprint the query\n\n"
@@ -333,6 +347,7 @@ public:
 "--tz\nimplicit time zone (in minutes)\n\n"
 "--external-var, -x\nexternal variables (e.g. -x x=file1.xml -x y:=strValue)\n\n"
 "--serializer-param, -z\nserializer parameters\n\n"
+"--iter-plan-test\nrun as iterator plan test\n\n"
 ;
   }
 

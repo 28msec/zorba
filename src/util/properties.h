@@ -26,6 +26,10 @@
 namespace zorba {
 
   class ZORBA_DLL_PUBLIC Properties : public ZorbaProperties {
+  protected:
+    std::ostream *debug_stream;
+    std::auto_ptr<std::ostream> debug_stream_ptr;
+
       /**
        * Gets the Operation System folder where the properties of the current 
        * user are saved.
@@ -53,6 +57,9 @@ namespace zorba {
       getOSConfigFile(std::string& aFileURI);
     
   public:
+      Properties ()
+        : debug_stream (& std::cout)
+      {}
       bool loadProps (int argc, char **argv);
       static bool load (int argc, char **argv);
       static Properties* instance();
@@ -72,6 +79,7 @@ namespace zorba {
         theDebug = mode;
       }
 #endif
+      std::ostream &debug_out () { return *debug_stream; }
   }; /* class Properties */
 } /* namespace zorba */
 #endif
