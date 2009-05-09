@@ -3918,21 +3918,12 @@ void QName::accept(parsenode_visitor& v) const
 
 // [241]  RevalidationDecl
 // -----------------------
-RevalidationDecl::RevalidationDecl(
-  const QueryLoc& loc_,
-  rchandle<QName> _qname_h)
-:
-  parsenode(loc_),
-  qname_h(_qname_h)
-{}
-
 
 //-RevalidationDecl::
 
 void RevalidationDecl::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  //qname_h->accept(v);
   END_VISITOR ();
 }
 

@@ -48,7 +48,7 @@ namespace zorba
 }
 
 /* First part of user declarations.  */
-#line 38 "/home/vinayakb/work/repositories/external/zorba.svn.sourceforge.net/svnroot/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 38 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 
 
 #include "common/common.h"
@@ -107,7 +107,7 @@ public:
 
 
 /* Line 35 of lalr1.cc.  */
-#line 111 "/home/vinayakb/work/repositories/external/zorba.svn.sourceforge.net/svnroot/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 111 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -158,7 +158,7 @@ namespace zorba
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 139 "/home/vinayakb/work/repositories/external/zorba.svn.sourceforge.net/svnroot/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 139 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 {
   zorba::parsenode * node;
   zorba::exprnode * expr;
@@ -175,7 +175,7 @@ namespace zorba
   CatchExpr::NameTestList *name_test_list;
 }
 /* Line 35 of lalr1.cc.  */
-#line 179 "/home/vinayakb/work/repositories/external/zorba.svn.sourceforge.net/svnroot/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 179 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;

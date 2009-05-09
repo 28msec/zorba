@@ -4758,14 +4758,15 @@ StringLiteral :
 RevalidationDecl :
 		DECLARE REVALIDATION _STRICT
 		{
-//			$$ = new OrderingModeDecl(@$,
-//								StaticQueryContext::ordered);
+      $$ = new RevalidationDecl (LOC (@$), StaticContextConsts::strict_validation);
 		}
     | DECLARE REVALIDATION LAX
     {
+      $$ = new RevalidationDecl (LOC (@$), StaticContextConsts::lax_validation);
     }
     | DECLARE REVALIDATION SKIP
     {
+      $$ = new RevalidationDecl (LOC (@$), StaticContextConsts::skip_validation);
     }
 	;
 

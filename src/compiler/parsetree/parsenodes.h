@@ -5009,18 +5009,16 @@ class RevalidationDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<QName> qname_h;
+  enum StaticContextConsts::validation_mode_t mode;
+public:
+	RevalidationDecl(const QueryLoc& loc,
+                   enum StaticContextConsts::validation_mode_t mode_)
+    : parsenode (loc), mode (mode_)
+  {}
+
 
 public:
-	RevalidationDecl(
-		const QueryLoc&,
-		rchandle<QName>);
-
-
-public:
-	rchandle<QName> get_qname() const { return qname_h; }
-
-public:
+  enum StaticContextConsts::validation_mode_t get_mode () const { return mode; }
 	void accept(parsenode_visitor&) const;
 
 };
