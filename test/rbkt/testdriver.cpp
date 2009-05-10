@@ -261,7 +261,7 @@ main(int argc, char** argv)
         
         if ( (lSpec.errorsSize() == 0) && ((! lRefFile.exists ()) || lRefFile.is_directory ()))
         {
-          std::cout << "No reference result and no expected errors." << std::endl;
+          std::cout << "No reference result " << lRefFile.get_path () << " and no expected errors." << std::endl;
           return 3;
         }
 
