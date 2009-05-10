@@ -1,12 +1,17 @@
 #!/bin/bash
 
-if test $# != 1 -o ! -d $1/test/zorbatest; then
+WORK=/tmp
+test "$1" = "--workdir" && { WORK="$2"; shift; shift; }
+
+SRC="$1"
+
+if test ! -d "$SRC/test/zorbatest"; then
+ echo "Invalid zorba repository $SRC"
  echo 'Arguments: zorba_repository'
  echo 'where zorba_repository is the top-level SVN working copy'
  exit 1
 fi
 
-SRC=$1
 ZIP=/tmp/XQTS_1_0_2.zip
 echo Downloading test suite to zip $ZIP ...
 wget -c -O $ZIP http://www.w3.org/XML/Query/test-suite/XQTS_1_0_2.zip
@@ -17,7 +22,7 @@ cd `dirname $SRC`
 SRC=`pwd`/`basename $SRC`
 echo Repository is at $SRC
 
-d="/tmp/rwts.$$"
+d="$WORK/rwts.$$"
 mkdir "$d"
 cd "$d"
 
@@ -31,20 +36,19 @@ rm -Rf "$SRC/test/rbkt/Queries/w3c_testsuite/TestSources"
 
 mkdir -p "$SRC/test/rbkt/Queries/w3c_testsuite/TestSources/"
 
-uq=`mktemp /tmp/rwts.XXXXXX`
-cat >$uq <<"EOF"
+q=`mktemp $WORK/rwts.XXXXXX`
+cat >$q <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
 declare option saxon:output "omit-xml-declaration=yes";
 for $sch in //schema 
 return string-join( concat ($sch/@uri, "=", $sch/@FileName), "
 ")
 EOF
-echo Processing URI of catalog...
-$SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/w3c_testsuite/TestSources/uri.txt $uq 
+echo 'Processing URI of catalog (schemas)...'
+$SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/w3c_testsuite/TestSources/uri.txt $q
 
 
-mq=`mktemp /tmp/rwts.XXXXXX`
-cat >$mq <<"EOF"
+cat >$q <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
 declare option saxon:output "omit-xml-declaration=yes";
 for $t in //module/@namespace
@@ -53,22 +57,20 @@ for $m in //module[@ID = $l]
 return string-join( concat ($t, "=", $m/@FileName), "
 ")
 EOF
-echo Processing URI of catalog...
-$SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/w3c_testsuite/TestSources/module.txt $mq 
+echo 'Processing URI of catalog (modules)...'
+$SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/w3c_testsuite/TestSources/module.txt $q 
 
-mq=`mktemp /tmp/rwts.XXXXXX`
-cat >$mq <<"EOF"
+cat >$q <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
 declare option saxon:output "omit-xml-declaration=yes";
 for $t in //collection
 return concat ($t/@ID, "=", string-join( for $x in $t/input-document return fn:concat( "$RBKT_SRC_DIR/Queries/w3c_testsuite/TestSources/", $x, ".xml"), ";" ), "
 ")
 EOF
-echo Processing URI of catalog...
-$SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/w3c_testsuite/TestSources/collection.txt $mq 
+echo 'Processing URI of catalog (collections)...'
+$SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/w3c_testsuite/TestSources/collection.txt $q
 
 
-q=`mktemp /tmp/rwts.XXXXXX`
 cat >$q <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
 declare option saxon:output "omit-xml-declaration=yes";
@@ -106,7 +108,7 @@ string-join ($tc/expected-error/text(), ";")
 ")
 EOF
 
-echo Processing catalog...
+echo 'Processing catalog...'
 $SRC/test/zorbatest/xquery -s XQTSCatalog.xml $q | tee /tmp/xq-res.txt | perl -e '
 use strict;
 use File::Copy;
@@ -230,6 +232,6 @@ find "TestSources" -type f -exec mv "{}" "$SRC/test/rbkt/Queries/w3c_testsuite/{
 
 echo "Cleaning up work directory...$d0 $d"
 
-cd $d0; rm -rf "$d"
+cd "$d0"; rm -rf "$d"
 
 echo Done.
