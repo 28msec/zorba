@@ -251,7 +251,8 @@ static int readSome(std::istream& stream, char *buffer, int maxlen) {
 }
 #endif
 
-int processReply(store::Item_t& result,
+int processReply(const QueryLoc& aLoc,
+                 store::Item_t& result,
                  PlanState& planState,
                  xqpString& lUriString,
                  int code,
@@ -352,7 +353,12 @@ int processReply(store::Item_t& result,
         if(tidyUserOpt == NULL)
         {
           std::istream is(theStreamBuffer);
-          temp = GENV_STORE.loadDocument(lUriString.theStrStore, is, false);
+          try {
+            temp = GENV_STORE.loadDocument(lUriString.theStrStore, is, false);
+          }
+          catch(error::ZorbaError& lError) {
+            ZORBA_ERROR_LOC_DESC(lError.theErrorCode, aLoc, "Malformed REST response.");
+          }
         }
         else
         {
@@ -855,7 +861,8 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
   #endif
 #endif
   code = state->theStreamBuffer->multi_perform();
-  processReply(result,
+  processReply(loc,
+               result,
                planState,
                Uri,
                code,
@@ -920,7 +927,7 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
   headers_list = curl_slist_append(headers_list , expect_buf);
   curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
   code = state->theStreamBuffer->multi_perform();
-  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL);
+  processReply(loc, result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL);
   
   curl_formfree(first);
   curl_slist_free_all(headers_list);
@@ -980,7 +987,7 @@ bool ZorbaRestPutIterator::nextImpl(store::Item_t& result, PlanState& planState)
   headers_list = curl_slist_append(headers_list , expect_buf);
   curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
   code = state->theStreamBuffer->multi_perform();
-  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL);
+  processReply(loc, result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL);
   
   curl_formfree(first);
   curl_slist_free_all(headers_list);
@@ -1031,7 +1038,7 @@ bool ZorbaRestDeleteIterator::nextImpl(store::Item_t& result, PlanState& planSta
 #endif
 #endif
   code = state->theStreamBuffer->multi_perform();
-  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL, true);
+  processReply(loc, result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL, true);
   
   curl_slist_free_all(headers_list);
   cleanupConnection(state);
@@ -1081,7 +1088,7 @@ bool ZorbaRestHeadIterator::nextImpl(store::Item_t& result, PlanState& planState
 #endif
 #endif
   code = state->theStreamBuffer->multi_perform();
-  processReply(result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL, true);
+  processReply(loc, result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL, true);
   
   curl_slist_free_all(headers_list);
   cleanupConnection(state);
