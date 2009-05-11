@@ -599,7 +599,7 @@ void ElementNode::replaceContent(UpdReplaceElemContent& upd)
   children().copy(upd.theOldChildren);
   children().clear();
 
-  if (upd.theNewChild->getStringValue()->empty())
+  if (upd.theNewChild == NULL || upd.theNewChild->getStringValue()->empty())
     return;
 
   if (upd.theCopyMode.theDoCopy)
