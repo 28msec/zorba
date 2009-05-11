@@ -5819,7 +5819,7 @@ void end_visit (const ReplaceExpr& v, void* /*visit_state*/) {
 
 void *begin_visit (const RevalidationDecl& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_IMPLEMENTED ("revalidation");
+  sctx_p->set_validation_mode (v.get_mode ());
   return no_state;
 }
 
