@@ -17,9 +17,12 @@
 #define ZORBA_COMPARE_TYPES_H
 
 namespace zorba {
+
 class CompareConsts {
 public:
-  enum CompareType{
+  enum CompareType
+  {
+    UNKNOWN,
     VALUE_EQUAL, GENERAL_EQUAL, NODE_EQUAL,
     VALUE_NOT_EQUAL, GENERAL_NOT_EQUAL, NODE_NOT_EQUAL,
     VALUE_LESS, GENERAL_LESS,
@@ -31,3 +34,10 @@ public:
 }
 
 #endif
+
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
