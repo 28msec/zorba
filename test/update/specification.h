@@ -55,9 +55,9 @@ public:
     XML = 0,
     FRAGMENT,
     TEXT,
-    IGNORE,
+    CT_IGNORE,
     INSPECT,
-    ERROR
+    CT_ERROR
   };
 
   static std::string compareTypeStr(CompareType aType) {
@@ -68,11 +68,11 @@ public:
       return "Fragment";
     case TEXT:
       return "Text";
-    case IGNORE:
+    case CT_IGNORE:
       return "Ignore";
     case INSPECT:
       return "Inspect";
-    case ERROR:
+    case CT_ERROR:
       return "Error";
     }
     assert(false);
@@ -205,7 +205,7 @@ private:
     }
     else if (aCompareType.compare("Ignore") == 0) 
     {
-      theCurState->theCompareTypes.push_back(State::IGNORE);
+      theCurState->theCompareTypes.push_back(State::CT_IGNORE);
     }
     else if (aCompareType.compare("Inspect") == 0) 
     {
