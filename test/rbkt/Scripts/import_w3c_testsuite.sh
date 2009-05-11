@@ -51,10 +51,10 @@ $SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/w3c_test
 cat >$q <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
 declare option saxon:output "omit-xml-declaration=yes";
-for $t in //module/@namespace
-for $l in fn:distinct-values($t/../text()) 
-for $m in //module[@ID = $l]
-return string-join( concat ($t, "=", $m/@FileName), "
+string-join (distinct-values (
+  for $mod in //sources/module
+  for $tmod in //test-case/module [text () = $mod/@ID]
+  return concat ($tmod/@namespace, "=", $mod/@FileName)), "
 ")
 EOF
 echo 'Processing URI of catalog (modules)...'
