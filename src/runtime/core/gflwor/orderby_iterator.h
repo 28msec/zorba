@@ -121,9 +121,9 @@ public:
         RCHelper::removeReference(theKeyValues[i]);
         theKeyValues[i] = NULL;
       }
-
-      theKeyValues.clear();
     }
+
+    theKeyValues.clear();
   }
 };
 
