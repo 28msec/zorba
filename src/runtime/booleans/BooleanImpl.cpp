@@ -782,13 +782,13 @@ bool TypedValueCompareIterator<ATC>::nextImpl(store::Item_t& result, PlanState& 
       neq = true;
     case CompareConsts::VALUE_EQUAL:
       nonempty = true;
-      bRes = lItem0->equals (lItem1, timezone, theCollation);
+      bRes = lItem0->equals (lItem1, theTimezone, theCollation);
       if (neq) bRes = ! bRes;
       break;
 
     default: {
 
-      cmp = lItem0->compare (lItem1, timezone, theCollation);
+      cmp = lItem0->compare (lItem1, theTimezone, theCollation);
 
       switch (theCompType) {
       case CompareConsts::VALUE_LESS:
