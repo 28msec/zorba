@@ -3,7 +3,7 @@
 # Creates emacs and vi TAGS / tags files
 # Call with no arguments
 
-files=`for dir in src include; do find $dir -name '*.cpp'; find $dir -name '*.h'; done; for dir in test test/rbkt; do echo $dir/*.cpp $dir/*.h; done `
+files=`for dir in src include test/commons; do find $dir -name '*.cpp'; find $dir -name '*.h'; done; for dir in test test/rbkt test/update; do echo $dir/*.cpp $dir/*.h; done `
 
 for prog in ctags etags; do
   $prog $files

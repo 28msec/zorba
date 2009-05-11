@@ -1,0 +1,16 @@
+#!/bin/bash
+# Updates file svn_log.txt with the latest changes
+# Call with no args from a repository (e.g. top Zorba directory)
+
+test -f svn_log.txt || { touch svn_log.txt; R=1000; }
+test "$R" || R=`grep -m1 '^r[0-9]*' svn_log.txt | awk '{ print $1 }' | cut -c2-`
+URL=`svn info . | grep '^URL' | cut -f 2- -d' '`
+test "$URL" || exit 1
+echo URL: $URL
+R1=`svn info $URL | grep '^Last Changed Rev' | cut -f4 -d' '`
+echo R: $R - $R1
+test $R -eq $R1 && { echo 'No changes'; exit; }
+R=$(($R + 1))
+svn log -rHEAD:$R >svn_log_upd.txt
+cat svn_log_upd.txt svn_log.txt > svn_log_new.txt
+mv svn_log_new.txt svn_log.txt
