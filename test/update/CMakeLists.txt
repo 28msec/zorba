@@ -24,14 +24,16 @@ CONFIGURE_FILE(testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/testdriverconfi
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/test/commons)
 
-ADD_EXECUTABLE(updtestdriver
-               updtestdriver.cpp
-               ${CMAKE_SOURCE_DIR}/test/commons/testdriver_comparator.cpp
-               ${CMAKE_SOURCE_DIR}/test/commons/testuriresolver.cpp)
+SET(UPDTESTDRIVER_SRCS
+    updtestdriver.cpp
+    ${CMAKE_SOURCE_DIR}/test/commons/testdriver_comparator.cpp
+    ${CMAKE_SOURCE_DIR}/test/commons/testuriresolver.cpp)
+
+ADD_EXECUTABLE(updtestdriver ${UPDTESTDRIVER_SRCS})
 TARGET_LINK_LIBRARIES(updtestdriver zorba_simplestore)
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)
-  ADD_EXECUTABLE(updtestdriver_static updtestdriver.cpp)
+  ADD_EXECUTABLE(updtestdriver_static ${UPDTESTDRIVER_SRCS})
   SET_TARGET_PROPERTIES(updtestdriver_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
   TARGET_LINK_LIBRARIES(updtestdriver_static zorba_simplestore_static)
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
