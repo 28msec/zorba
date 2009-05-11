@@ -490,13 +490,19 @@ public:
   std::string format_name;
   std::vector<std::pair<std::string, std::string > > param_list;
 
-  DecimalFormatNode(const QueryLoc& _loc, const std::string& qname, std::vector<std::pair<std::string, std::string> >* param_list)
+  DecimalFormatNode(const QueryLoc& _loc, const std::string& qname, std::vector<std::pair<std::string, std::string> >* param_list_)
     :
-    parsenode(_loc), is_default(false), format_name(qname), param_list(*param_list) { }
+    parsenode(_loc), is_default(false), format_name(qname)
+  {
+    param_list.swap (*param_list_);
+  }
 
-  DecimalFormatNode(const QueryLoc& _loc, std::vector<std::pair<std::string, std::string> >* param_list)
+  DecimalFormatNode(const QueryLoc& _loc, std::vector<std::pair<std::string, std::string> >* param_list_)
     :
-    parsenode(_loc), is_default(true), param_list(*param_list) { }
+    parsenode(_loc), is_default(true)
+  {
+    param_list.swap (*param_list_);
+  }
 
   void accept(parsenode_visitor&) const;
 };
