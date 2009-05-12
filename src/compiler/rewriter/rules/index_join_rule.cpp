@@ -142,7 +142,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     break;
   }
 
-  if (!fn->isValueComparisonFunction())
+  if (fn->comparison_kind() != CompareConsts::VALUE_EQUAL)
     return false;
 
   const expr_t& op1 = (*foExpr)[0];
@@ -158,7 +158,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     index_flwor_vars(rCtx.m_root, numVars, *rCtx.m_varid_map, rCtx.m_idvar_map);
 
     DynamicBitset freeset(numVars);
-    find_flwor_vars(rCtx.m_root, *rCtx.m_varid_map, *rCtx.m_exprvars_map, freeset);
+    find_flwor_vars(rCtx.m_root, *rCtx.m_varid_map, freeset, *rCtx.m_exprvars_map);
   }
 
   // Analyze each operand of the eq to see if it depends on a single for

@@ -77,7 +77,7 @@ RULE_REWRITE_PRE(HoistExprsOutOfLoops)
 
   std::map<expr *, DynamicBitset> freevarMap;
   DynamicBitset freeset(numVars);
-  find_flwor_vars(node, varmap, freevarMap, freeset);
+  find_flwor_vars(node, varmap, freeset, freevarMap);
 
   struct flwor_holder root;
   if (hoist_expressions(rCtx, node, varmap, freevarMap, &root)) 
