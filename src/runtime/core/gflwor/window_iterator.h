@@ -20,15 +20,15 @@
 #include "common/shared_types.h"
 #include "runtime/base/plan_iterator.h"
 
-namespace zorba 
+namespace zorba
 {
-namespace flwor 
+namespace flwor
 {
 
 class WindowIterator;
 
 
-class WindowVars 
+class WindowVars
 {
   friend class WindowIterator;
   friend class StartClause;
@@ -39,7 +39,7 @@ protected:
   std::vector<ForVarIter_t > thePrevVars;
   std::vector<ForVarIter_t > theNextVars;
   std::vector<ForVarIter_t > thePosVars;
-  
+
   std::vector<ForVarIter_t > theCurOuterVars;
   std::vector<ForVarIter_t > thePrevOuterVars;
   std::vector<ForVarIter_t > theNextOuterVars;
@@ -69,16 +69,16 @@ public:
         const std::vector<PlanIter_t >& aPrevVars,
         const std::vector<PlanIter_t >& aNextVars,
         const std::vector<PlanIter_t >& aPosVars,
-               
+
         const std::vector<PlanIter_t >& aCurOuterVars,
         const std::vector<PlanIter_t >& aPrevOuterVars,
         const std::vector<PlanIter_t >& aNextOuterVars,
         const std::vector<PlanIter_t >& aPosOuterVars);
-  
+
   ~WindowVars();
-  
+
   void accept ( PlanIterVisitor& ) const;
-  
+
   /**
    * Binds the variables inside the window clause.
    *
@@ -91,7 +91,7 @@ public:
         PlanState& aPlanState,
         const store::TempSeq_t& aInputSeq,
         const uint32_t aPosition ) const;
-  
+
   /**
    * Binds the variables outside the window clause.
    *
@@ -105,23 +105,23 @@ public:
         const store::TempSeq_t& aInputSeq,
         const uint32_t aPosition ) const;
 };
-  
 
-class StartClause 
+
+class StartClause
 {
   friend class WindowIterator;
 
 protected:
   PlanIter_t theStartClauseIter;
   WindowVars theWindowVars;
-    
+
 public:
   StartClause(PlanIter_t aStartClauseIter, WindowVars& aWindowVars);
 
   ~StartClause();
-  
+
 protected:
-  
+
   void accept ( PlanIterVisitor& ) const;
   void open ( PlanState& aPlanState, uint32_t& offset ) const;
   void reset ( PlanState& aPlanState ) const;
@@ -131,9 +131,9 @@ protected:
   void bindIntern ( PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition ) const;
   void bindExtern(PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition) const;
 };
-  
-  
-class EndClause 
+
+
+class EndClause
 {
   friend class WindowIterator;
 protected:
@@ -141,7 +141,7 @@ protected:
   WindowVars theWindowVars;
   bool theOnlyEnd;
   bool theHasEndClause;
-  
+
 public:
   /**
    * If the EndClause is missing in the case of a tumbling window, this constructor should be used
@@ -152,7 +152,7 @@ public:
               bool aOnlyEnd
               );
   ~EndClause();
-  
+
 protected:
   void accept ( PlanIterVisitor& ) const;
   void open ( PlanState& aPlanState, uint32_t& offset ) const;
@@ -163,17 +163,25 @@ protected:
   void bindIntern ( PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition ) const;
   void bindExtern(PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition) const;
 };
-  
 
-class WindowState : public PlanIteratorState 
+class WindowDef{
+public:
+	~WindowDef();
+	WindowDef(uint32_t aStartPos);
+	uint32_t theStartPos;
+	uint32_t theEndPos;
+};
+
+
+class WindowState : public PlanIteratorState
 {
   friend class WindowIterator;
 protected:
   store::TempSeq_t theInputSeq;
   uint32_t theCurInputPos;
-  std::vector<uint32_t> theOpenWindowsStartPos;
-  std::vector<uint32_t>::iterator theCurWindow;
-  
+  std::vector<WindowDef> theOpenWindows;
+  std::vector<WindowDef>::iterator theCurWindow;
+
 public:
   ~WindowState();
   WindowState();
@@ -181,19 +189,19 @@ public:
   void reset ( PlanState& aState );
   void tupleReset();
 };
-  
-  
-class WindowIterator :public Batcher<WindowIterator> 
+
+
+class WindowIterator :public Batcher<WindowIterator>
 {
 public:
   static const uint32_t MAX_HISTORY; //TODO should be set platform dependent, but somebody hat comment out everything in platform.h!
-  
-  enum WindowType   
+
+  enum WindowType
   {
     TUMBLING,
     SLIDING
   };
-  
+
 private:
   WindowType                 theWindowType;
 
@@ -208,9 +216,9 @@ private:
 
   bool                       theLazyEval;
   uint32_t                   theMaxNeededHistory;
-  
+
 public:
-  
+
   /**
    * Method to construct a WindowIterator.
    *
@@ -228,7 +236,7 @@ public:
    *        other Clauses might require to look back from the start position of
    *        a window. The MaxNeededHistory specifies how much it is required to
    *        look back. If the value is MAX_HISTORY no Garbage Colleciton is performed.
-   * 
+   *
    */
   WindowIterator (
         const QueryLoc& loc,
@@ -241,19 +249,19 @@ public:
         EndClause& endClause,
         bool lazyEval = true,
         uint32_t maxNeededHistory = MAX_HISTORY);
-  
+
   ~WindowIterator();
 
   void openImpl ( PlanState& aPlanState, uint32_t& aOffset );
   bool nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const;
   void resetImpl ( PlanState& aPlanState ) const;
   void closeImpl ( PlanState& aPlanState );
-  
+
   virtual uint32_t getStateSize() const;
   virtual uint32_t getStateSizeOfSubtree() const;
-  
+
   virtual void accept ( PlanIterVisitor& ) const;
-  
+
 private:
   void bindVariable(
         PlanState& aPlanState,
@@ -263,7 +271,7 @@ private:
 
   void doGarbageCollection(WindowState* lState) const;
 };
-  
+
 
 }//namespace gflwor
 } //namespace zorba
