@@ -108,7 +108,7 @@ main(int argc, char** argv)
 
   for (int testcnt = 1; i < argc; ++i, ++testcnt)
   {
-    std::string   Queriesdir = "/Queries/";
+    std::string Queriesdir = "/Queries/";
 
     int path_flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;
     zorba::file lQueryFile (rbkt_src_dir + Queriesdir + argv[i], path_flags);
@@ -190,9 +190,9 @@ main(int argc, char** argv)
       std::string uri_map_file = rbkt_src_dir + "/Queries/w3c_testsuite/TestSources/uri.txt";
       std::string mod_map_file = rbkt_src_dir + "/Queries/w3c_testsuite/TestSources/module.txt";
       std::string col_map_file = rbkt_src_dir + "/Queries/w3c_testsuite/TestSources/collection.txt";
-      resolver.reset(new zorba::TestSchemaURIResolver ( uri_map_file.c_str() ));
-      mresolver.reset(new zorba::TestModuleURIResolver ( mod_map_file.c_str() ));
-      cresolver.reset(new zorba::TestCollectionURIResolver ( col_map_file.c_str(), rbkt_src_dir));
+      resolver.reset(new zorba::TestSchemaURIResolver (uri_map_file.c_str()));
+      mresolver.reset(new zorba::TestModuleURIResolver (mod_map_file.c_str(), lQueryWithoutSuffix));
+      cresolver.reset(new zorba::TestCollectionURIResolver (col_map_file.c_str(), rbkt_src_dir));
       lContext->setSchemaURIResolver ( resolver.get() );
       lContext->setModuleURIResolver ( mresolver.get() );
       lContext->setCollectionURIResolver ( cresolver.get() );

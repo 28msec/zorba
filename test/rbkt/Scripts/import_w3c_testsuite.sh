@@ -54,7 +54,8 @@ declare option saxon:output "omit-xml-declaration=yes";
 string-join (distinct-values (
   for $mod in //sources/module
   for $tmod in //test-case/module [text () = $mod/@ID]
-  return concat ($tmod/@namespace, "=", $mod/@FileName)), "
+  let $tc := $tmod/..
+  return concat ($tc/@FilePath, $tc/@name, ":", $tmod/@namespace, "=", $mod/@FileName)), "
 ")
 EOF
 echo 'Processing URI of catalog (modules)...'

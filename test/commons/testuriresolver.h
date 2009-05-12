@@ -54,13 +54,13 @@ public:
 class TestModuleURIResolver : public ModuleURIResolver
 {
 private:
-  std::string map_file;
+  std::string map_file, theTest;
   std::map < String, String > uri_map;
 
   void initialize ();
 
 public :
-  TestModuleURIResolver ( const char * file );
+  TestModuleURIResolver ( const char * file, const std::string &test_);
   virtual ~TestModuleURIResolver ();
 
   virtual std::auto_ptr< ModuleURIResolverResult >

@@ -103,6 +103,8 @@ zorba::TestSchemaURIResolver::resolve ( const Item & aURI,
       result -> theSchema = aURI;
     }
 
+    std::cout << "Resolved schema " << aURI.getStringValue () << " -> " << result->theSchema.getStringValue () << std::endl;
+
     return std::auto_ptr<SchemaURIResolverResult> ( result );
   }
 
@@ -112,12 +114,20 @@ zorba::TestModuleURIResolverResult::getModule () const
   return theModule;
 }
 
-zorba::TestModuleURIResolver::TestModuleURIResolver ( const char * file ) :
-  map_file ( file )
+zorba::TestModuleURIResolver::TestModuleURIResolver (const char * file, const std::string &test_) 
+  : map_file (file), theTest (test_)
 {}
 
 void zorba::TestModuleURIResolver::initialize ()
 {
+  std::string::size_type pos = theTest.find_first_of ('/');
+  if (pos != std::string::npos && theTest.substr (0, pos) == "w3c_testsuite")
+    pos = theTest.find_first_of ('/', pos + 1);
+  else {
+    return;
+  }
+  std::string pfx = theTest.substr (0, pos) + "/";
+
   std::string path ( map_file );
   std::string::size_type slash = path.find_last_of ( '/' );
   path.erase ( slash );
@@ -125,29 +135,20 @@ void zorba::TestModuleURIResolver::initialize ()
   path.erase ( slash );
   std::string url ( "file://" );
   std::ifstream urifile ( map_file.c_str() );
-  if ( urifile.good () == false ) return;
   std::string uris;
-  std::string::size_type start = 0;
-  std::getline ( urifile, uris );
-  while ( true ) {
-    bool last = false;
-    std::string::size_type pos = uris.find_first_of ( ' ', start );
-    if ( pos == std::string::npos ) {
-      pos = uris.size ();
-      last = true;
-    }
-    std::string::size_type eq = uris.find ( '=', start );
-    std::string::size_type len = eq - start;
-    String uri ( uris.substr ( start, len ) );
-    len = pos - eq - 1;
+  while (std::getline ( urifile, uris )) {
+    uris = pfx + uris;
+    pos = uris.find_first_of (':');
+    assert (pos != std::string::npos);
+    if (uris.substr (0, pos) != theTest) continue;
+    uris = uris.substr (pos + 1);
+    std::string::size_type eq = uris.find ('=');
+    String uri (uris.substr (0, eq));
     String file ( path );
-    const char * xsd = uris.substr ( eq+1, len ).c_str(); 
     file.append ("/");
-    file.append ( xsd );
-    file.append ( ".xqi" );
-    uri_map [ uri ] = file;
-    start = pos + 1;
-    if ( last ) break;
+    file.append (uris.substr (eq+1).c_str());
+    file.append (".xqi");
+    uri_map [uri] = file;
   }
 
   urifile.close();
@@ -171,12 +172,14 @@ resolve ( const Item & aURI, StaticContext* aStaticContext )
   if ( it != uri_map.end () ) {
     const String target = uri_map [ request ];
     const char * file = target.c_str();
+    std::cout << "Resolved module " << aURI.getStringValue() << " -> " << file << std::endl;
     lResult -> theModule = new std::ifstream ( file );
     lResult -> setError ( URIResolverResult::UR_NOERROR );
   } else {
     lResult -> setError ( URIResolverResult::UR_XQST0059 );
     std::stringstream lErrorStream;
     lErrorStream << "Module not found " << aURI.getStringValue();
+    std::cout << "Module not found " << aURI.getStringValue() << std::endl;
     lResult->setErrorDescription(lErrorStream.str());
   }
   return std::auto_ptr<ModuleURIResolverResult>(lResult.release());
