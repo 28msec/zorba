@@ -29,6 +29,7 @@ sub usage {
 }
 
 my $rbktdir = `dirname $0`; chomp $rbktdir; $rbktdir = "$rbktdir/rbkt";
+my $ext_suite = 0;
 my $builddir = shift;
 if (! defined $builddir || ($builddir eq "-h") || ($builddir eq "--help") || ! -e $builddir)
 { usage; exit (1); }
@@ -43,10 +44,14 @@ while (1) {  # iterate over args
     if ($arg eq "-b") { $bucket = shift; }
     elsif ($arg eq "-E") { $exclude = shift; }
     elsif ($arg eq "-R") { $include = shift; }
-    elsif ($arg eq "--suite") { $rbktdir = shift; }
+    elsif ($arg eq "--suite") {
+        $rbktdir = shift;
+        $ext_suite = 1;
+    }
     else { die; }
 }
 
+-e $rbktdir || die $!;
 $rbktdir = abs_path ($rbktdir);
 
 my $testdriver = "$builddir/test/rbkt/testdriver";
@@ -80,7 +85,9 @@ sub ffun {
     my $f = $File::Find::name; $f =~ s/[.]xq$//g; $f =~ s@^[.]/@@;
     if (defined ($exclude) && $f =~ m/$exclude/) { return; }
     if (defined ($include) && ! ($f =~ m/$include/)) { return; }
-    my $cmd = "$testdriver --rbkt-src $rbktdir/ $f.xq";
+    my $cmd = "$testdriver";
+    if ($ext_suite) { $cmd = "$cmd --rbkt-src $rbktdir"; }
+    $cmd = "$cmd $f.xq";
     print "$testcnt $f... ";
     print LOG "--- Start test $f\n";
     print LOG "Command: $cmd\n";
