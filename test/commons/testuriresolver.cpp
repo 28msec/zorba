@@ -47,9 +47,12 @@ zorba::TestSchemaURIResolver::~TestSchemaURIResolver() {}
 void zorba::TestSchemaURIResolver::initialize ()
 {
   std::string path ( map_file );
-  std::string::size_type slash = path.find_last_of ( '/' );
-  path.erase ( slash );
-  path += "/w3c_testsuite/";
+  for (int i = 0; i < 2; i++) {
+    std::string::size_type slash = path.find_last_of ( '/' );
+    assert (slash != std::string::npos);
+    path.erase ( slash );
+  }
+  path += "/";
   std::string url ( "file://" );
   url += path;
   std::ifstream urifile ( map_file.c_str() );
