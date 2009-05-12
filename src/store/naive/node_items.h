@@ -351,6 +351,7 @@ public:
     return copy2(static_cast<XmlNode*>(parent),
                  static_cast<XmlNode*>(parent),
                  pos,
+                 NULL,
                  copymode);
   }
 
@@ -418,6 +419,7 @@ public:
         XmlNode*               rootParent,
         XmlNode*               parent,
         long                   pos,
+        const XmlNode*         rootCopy,
         const store::CopyMode& copyMode) const = 0;
 
   virtual ulong numAttributes() const          { return 0; }
@@ -502,9 +504,10 @@ public:
   // 
 
   XmlNode* copy2(
-        XmlNode*        rootParent,
-        XmlNode*        parent,
-        long            pos,
+        XmlNode*               rootParent,
+        XmlNode*               parent,
+        long                   pos,
+        const XmlNode*         rootCopy,
         const store::CopyMode& copyMode) const;
 
   NsBindingsContext* getNsContext() const                { return NULL; }
@@ -680,6 +683,7 @@ public:
         XmlNode*               rootParent,
         XmlNode*               parent,
         long                   pos,
+        const XmlNode*         rootCopy,
         const store::CopyMode& copymode) const;
 
   void removeAttributes(ulong pos, ulong numAttributes);
@@ -863,6 +867,7 @@ public:
         XmlNode*               rootParent,
         XmlNode*               parent,
         long                   pos,
+        const XmlNode*         rootCopy,
         const store::CopyMode& copymode) const;
 
   store::StoreConsts::NodeKind getNodeKind() const
@@ -956,6 +961,7 @@ public:
         XmlNode*               rootParent,
         XmlNode*               parent,
         long                   pos,
+        const XmlNode*         rootCopy,
         const store::CopyMode& copymode) const;
 
   store::StoreConsts::NodeKind getNodeKind() const
@@ -1023,6 +1029,7 @@ public:
         XmlNode*               rootParent,
         XmlNode*               parent,
         long                   pos,
+        const XmlNode*         rootCopy,
         const store::CopyMode& copymode) const;
 
   store::StoreConsts::NodeKind getNodeKind() const
@@ -1079,6 +1086,7 @@ public:
         XmlNode*               rootParent,
         XmlNode*               parent,
         long                   pos,
+        const XmlNode*         rootCopy,
         const store::CopyMode& copymode) const;
 
   store::StoreConsts::NodeKind getNodeKind() const

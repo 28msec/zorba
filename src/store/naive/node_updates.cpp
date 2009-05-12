@@ -397,7 +397,7 @@ void XmlNode::insertChildren(UpdInsertChildren& upd, ulong pos)
       XmlNode* child = BASE_NODE(upd.theNewChildren[i]);
 
       if (upd.theCopyMode.theDoCopy)
-        upd.theNewChildren[i] = child->copy2(this, this, 0, upd.theCopyMode);
+        upd.theNewChildren[i] = child->copy2(this, this, 0, NULL, upd.theCopyMode);
       else
         child->switchTree(this, 0, upd.theCopyMode);
 
@@ -412,7 +412,11 @@ void XmlNode::insertChildren(UpdInsertChildren& upd, ulong pos)
       XmlNode* child = BASE_NODE(upd.theNewChildren[i]);
 
       if (upd.theCopyMode.theDoCopy)
-        upd.theNewChildren[i] = child->copy2(this, this, pos + i, upd.theCopyMode);
+        upd.theNewChildren[i] = child->copy2(this,
+                                             this,
+                                             pos + i,
+                                             NULL,
+                                             upd.theCopyMode);
       else
         child->switchTree(this, pos + i, upd.theCopyMode);
 
@@ -490,9 +494,17 @@ void ElementNode::insertAttributes(UpdInsertAttributes& upd)
       upd.theNewBindings.push_back(attr->theName);
 
     if (upd.theCopyMode.theDoCopy)
-      upd.theNewAttrs[i] = attr->copy2(this, this, numAttrs + i, upd.theCopyMode);
+    {
+      upd.theNewAttrs[i] = attr->copy2(this,
+                                       this,
+                                       numAttrs + i,
+                                       NULL,
+                                       upd.theCopyMode);
+    }
     else
+    {
       attr->switchTree(this, numAttrs + i, upd.theCopyMode);
+    }
 
     upd.theNumApplied++;
   }
@@ -542,7 +554,7 @@ void ElementNode::replaceAttribute(UpdReplaceAttribute& upd)
       upd.theNewBindings.push_back(attr->theName);
   
     if (upd.theCopyMode.theDoCopy)
-      upd.theNewAttrs[i] = attr->copy2(this, this, pos + i, upd.theCopyMode);
+      upd.theNewAttrs[i] = attr->copy2(this, this, pos + i, NULL, upd.theCopyMode);
     else
       attr->switchTree(this, pos + i, upd.theCopyMode);
 
@@ -597,9 +609,17 @@ void XmlNode::replaceChild(UpdReplaceChild& upd)
     XmlNode* child = BASE_NODE(upd.theNewChildren[i]);
 
     if (upd.theCopyMode.theDoCopy)
-      upd.theNewChildren[i] = child->copy2(this, this, pos + i, upd.theCopyMode);
+    {
+      upd.theNewChildren[i] = child->copy2(this,
+                                           this,
+                                           pos + i,
+                                           NULL,
+                                           upd.theCopyMode);
+    }
     else
+    {
       child->switchTree(this, pos + i, upd.theCopyMode);
+    }
 
     upd.theNumApplied++;
   }
@@ -671,9 +691,17 @@ void ElementNode::replaceContent(UpdReplaceElemContent& upd)
     return;
 
   if (upd.theCopyMode.theDoCopy)
-    TEXT_NODE(upd.theNewChild)->copy2(this, this, 0, upd.theCopyMode);
+  {
+    TEXT_NODE(upd.theNewChild)->copy2(this,
+                                      this,
+                                      0,
+                                      NULL,
+                                      upd.theCopyMode);
+  }
   else
+  {
     TEXT_NODE(upd.theNewChild)->switchTree(this, 0, upd.theCopyMode);
+  }
 
   // Before calling removeType on "this", reset its haveTypedValue flag,
   // so that "this" will not attempt to save its typed value in its

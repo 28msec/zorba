@@ -663,6 +663,7 @@ XmlNode* DocumentNode::copy2(
     XmlNode*               rootParent,
     XmlNode*               parent,
     long                   pos,
+    const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
   ZORBA_ASSERT(rootParent == NULL && parent == NULL);
@@ -682,7 +683,14 @@ XmlNode* DocumentNode::copy2(
     ulong numChildren = this->numChildren();
     for (ulong i = 0; i < numChildren; i++)
     {
-      getChild(i)->copy2(rootParent, copyNode, -1, copymode);
+      XmlNode* child = getChild(i);
+
+      // If we are copying a subtree into its own containing tree, then avoid
+      // copying the root of this subtree again.
+      if (child == rootCopy)
+        continue;
+
+      child->copy2(rootParent, copyNode, -1, NULL, copymode);
     }
   }
   catch (...)
@@ -973,6 +981,7 @@ XmlNode* ElementNode::copy2(
     XmlNode*               rootParent,
     XmlNode*               parent,
     long                   pos,
+    const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
   assert(parent != NULL || rootParent == NULL);
@@ -1023,6 +1032,9 @@ XmlNode* ElementNode::copy2(
     copyNode = new ElementTreeNode(tree, parent, pos, nodeName, typeName,
                                    haveValue, haveEmptyValue, isId, isIdRefs,
                                    NULL, baseUri);
+    if (rootCopy == NULL)
+      rootCopy = copyNode;
+
     if (copymode.theNsPreserve)
     {
       // If we are copying the root of an xml subtree, or a node that does
@@ -1170,7 +1182,7 @@ XmlNode* ElementNode::copy2(
         }
       }
 
-      attr->copy2(rootParent, copyNode, -1, copymode);
+      attr->copy2(rootParent, copyNode, -1, rootCopy, copymode);
     }
 
     if (hiddenBaseUriAttr)
@@ -1198,7 +1210,14 @@ XmlNode* ElementNode::copy2(
     ulong numChildren = this->numChildren();
     for (ulong i = 0; i < numChildren; i++)
     {
-      getChild(i)->copy2(rootParent, copyNode, -1, copymode);
+      XmlNode* child = getChild(i);
+
+      // If we are copying a subtree into its own containing tree, then avoid
+      // copying the root of this subtree again.
+      if (child == rootCopy)
+        continue;
+
+      child->copy2(rootParent, copyNode, -1, rootCopy, copymode);
     }
   }
   catch (...)
@@ -2237,6 +2256,7 @@ XmlNode* AttributeNode::copy2(
     XmlNode*               rootParent,
     XmlNode*               parent,
     long                   pos,
+    const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
   assert(parent != NULL || rootParent == NULL);
@@ -2469,6 +2489,7 @@ XmlNode* TextNode::copy2(
     XmlNode*               rootParent,
     XmlNode*               parent,
     long                   pos,
+    const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
   assert(parent != NULL || rootParent == NULL);
@@ -2733,6 +2754,7 @@ XmlNode* PiNode::copy2(
     XmlNode*               rootParent,
     XmlNode*               parent,
     long                   pos,
+    const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
   assert(parent != NULL || rootParent == NULL);
@@ -2881,6 +2903,7 @@ XmlNode* CommentNode::copy2(
     XmlNode*               rootParent,
     XmlNode*               parent,
     long                   pos,
+    const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
   assert(parent != NULL || rootParent == NULL);

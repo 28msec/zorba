@@ -170,6 +170,7 @@ public:
   virtual void accept(expr_visitor&);
   virtual void accept_children(expr_visitor &v);
   virtual void next_iter (expr_iterator_data &) = 0;
+
   virtual std::ostream& put(std::ostream&) const = 0;
   virtual std::string toString () const;
 
