@@ -349,10 +349,13 @@ public:
 class UpdDelete : public UpdatePrimitive
 {
   friend class PULImpl;
+  friend class XmlNode;
 
 protected:
-  XmlNode     * theParent;
-  ulong         thePos;
+  XmlNode        * theParent;
+  ulong            thePos;
+  store::Item_t    theRightSibling;
+  xqpStringStore_t theLeftContent;
 
 public:
   UpdDelete(PULImpl* pul, store::Item_t& target)

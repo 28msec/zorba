@@ -402,6 +402,9 @@ public:
 
   void removeChildren(ulong pos, ulong numChildren);
 
+  void deleteChild(UpdDelete& upd);
+  void restoreChild(UpdDelete& upd);
+
   void insertChildren(UpdInsertChildren& upd, ulong pos);
   void undoInsertChildren(UpdInsertChildren& upd);
   

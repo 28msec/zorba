@@ -1018,13 +1018,7 @@ void UpdDelete::apply()
 
   if (theParent != NULL)
   {
-    thePos = target->disconnect();
-
-    store::StoreConsts::NodeKind targetKind = target->getNodeKind();
-    if (targetKind == store::StoreConsts::elementNode || 
-        targetKind == store::StoreConsts::attributeNode ||
-        targetKind == store::StoreConsts::textNode)
-      theParent->removeType(*this);
+    theParent->deleteChild(*this);
   }
 
   theIsApplied = true;
@@ -1035,12 +1029,7 @@ void UpdDelete::undo()
 {
   if (theParent != NULL)
   {
-    XmlNode* target = BASE_NODE(theTarget);
-
-    target->connect(theParent, thePos);
-
-    if (!theTypeUndoList.empty())
-      target->theParent->restoreType(theTypeUndoList);
+    theParent->restoreChild(*this);
   }
 }
 

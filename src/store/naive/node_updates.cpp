@@ -319,6 +319,74 @@ void ElementNode::removeAttributes(
 /*******************************************************************************
 
 ********************************************************************************/
+void XmlNode::deleteChild(UpdDelete& upd)
+{
+  XmlNode* child = BASE_NODE(upd.theTarget);
+
+  upd.thePos = child->disconnect();
+
+  store::StoreConsts::NodeKind childKind = child->getNodeKind();
+  store::StoreConsts::NodeKind parentKind = getNodeKind();
+
+  if (childKind == store::StoreConsts::elementNode || 
+      childKind == store::StoreConsts::attributeNode ||
+      childKind == store::StoreConsts::textNode)
+    removeType(upd);
+  
+  // Merge 2 text nodes that become adjacent due to this delete
+
+  if (childKind == store::StoreConsts::attributeNode ||
+      parentKind != store::StoreConsts::elementNode)
+    return;
+
+  if (upd.thePos == 0 || upd.thePos == numChildren())
+    return;
+
+  TextNode* rsib = reinterpret_cast<TextNode*>(getChild(upd.thePos));
+  TextNode* lsib = reinterpret_cast<TextNode*>(getChild(upd.thePos - 1));
+
+  if (lsib->getNodeKind() != store::StoreConsts::textNode ||
+      rsib->getNodeKind() != store::StoreConsts::textNode)
+    return;
+
+  upd.theRightSibling = rsib;
+  upd.theLeftContent = lsib->getText();
+
+  removeChild(upd.thePos);
+
+  xqpStringStore_t newText(new xqpStringStore(lsib->getText()->str() +
+                                              rsib->getText()->str()));
+
+  lsib->setText(newText);
+}
+
+
+void XmlNode::restoreChild(UpdDelete& upd)
+{
+  XmlNode* child = BASE_NODE(upd.theTarget);
+
+  child->connect(this, upd.thePos);
+
+  if (!upd.theTypeUndoList.empty())
+    restoreType(upd.theTypeUndoList);
+
+  if (upd.theRightSibling != NULL)
+  {
+    ZORBA_ASSERT(upd.thePos > 0);
+    ZORBA_ASSERT(getChild(upd.thePos - 1)->getNodeKind() == store::StoreConsts::textNode);
+
+    TextNode* lsib = reinterpret_cast<TextNode*>(getChild(upd.thePos - 1));
+    TextNode* rsib = reinterpret_cast<TextNode*>(upd.theRightSibling.getp());
+
+    rsib->connect(this, upd.thePos+1);
+    lsib->setText(upd.theLeftContent);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void XmlNode::insertChildren(UpdInsertChildren& upd, ulong pos)
 {
   if (pos == 0)
