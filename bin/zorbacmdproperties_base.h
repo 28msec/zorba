@@ -124,12 +124,14 @@ public:
       else if (strcmp (*argv, "--output-file") == 0 || strncmp (*argv, "-o", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theOutputFile, d);
+        if(*argv != NULL) { init_val (*argv, theOutputFile, d); }
+        else { result ="No file was given to after the '--output-file' or '-o' option."; }
       }
       else if (strcmp (*argv, "--serialization-parameter") == 0 || strncmp (*argv, "-z", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theSerializationParameter, d);
+        if(*argv != NULL) { init_val (*argv, theSerializationParameter, d); }
+        else { result = "No parameter was given after '--serialization-parameter' or '-z' option."; }
       }
       else if (strcmp (*argv, "--serialize-html") == 0) {
         theSerializeHtml = true;
@@ -152,37 +154,44 @@ public:
       else if (strcmp (*argv, "--base-uri") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theBaseUri, d);
+        if(*argv != NULL) { init_val (*argv, theBaseUri, d); }
+        else { result = "No base uri was given after '--base-uri' option."; }
       }
       else if (strcmp (*argv, "--boundary-space") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theBoundarySpace, d);
+        if(*argv != NULL) { init_val (*argv, theBoundarySpace, d); }
+        else { result = "No option was given to the '--boundary-space'. Allowed values are 'strip' or 'preserve'."; }
       }
       else if (strcmp (*argv, "--default-collation") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theDefaultCollation, d);
+        if(*argv != NULL) { init_val (*argv, theDefaultCollation, d); }
+        else { result = "No collation was given to the '--default-collation' option."; }
       }
       else if (strcmp (*argv, "--construction-mode") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theConstructionMode, d);
+        if(*argv != NULL) { init_val (*argv, theConstructionMode, d); }
+        else { result = "No option was given to the '--construction-mode'. Allowed values are 'strip' or 'preserve'."; }
       }
       else if (strcmp (*argv, "--ordering-mode") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theOrderingMode, d);
+        if(*argv != NULL) { init_val (*argv, theOrderingMode, d); }
+        else { result = "No option was given to the '--ordering-mode'. Allowed values are 'ordered' or 'unordered'."; }
       }
       else if (strcmp (*argv, "--multiple") == 0 || strncmp (*argv, "-m", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theMultiple, d);
+        if(*argv != NULL) { init_val (*argv, theMultiple, d); }
+        else { result = "No number was given to the '--multiple' or '-m' option."; }
       }
       else if (strcmp (*argv, "--query") == 0 || strncmp (*argv, "-q", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theQueriesOrFiles, d);
+        if(*argv != NULL) { init_val (*argv, theQueriesOrFiles, d); }
+        else { result = "No query test or file URI was passed after the '--query' or '-q' option."; }
       }
       else if (strcmp (*argv, "--as-files") == 0 || strncmp (*argv, "-f", 2) == 0) {
         theAsFiles = true;
@@ -190,17 +199,20 @@ public:
       else if (strcmp (*argv, "--external-variable") == 0 || strncmp (*argv, "-e", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theExternalVariable, d);
+        if(*argv != NULL) { init_val (*argv, theExternalVariable, d); }
+        else { result = "No external variables were given after the '--external-variable' or '-e' option."; }
       }
       else if (strcmp (*argv, "--context-item") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theContextItem, d);
+        if(*argv != NULL) { init_val (*argv, theContextItem, d); }
+        else { result = "No XML file was passed to the '--context-item' option."; }
       }
       else if (strcmp (*argv, "--optimization-level") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theOptimizationLevel, d);
+        if(*argv != NULL) { init_val (*argv, theOptimizationLevel, d); }
+        else { result = "No value was given to the '--optimization-level' option. Allowed values are 'O0' or 'O1'."; }
       }
       else if (strcmp (*argv, "--parse-only") == 0) {
         theParseOnly = true;
@@ -212,7 +224,8 @@ public:
       else if (strcmp (*argv, "--debug-ports") == 0 || strncmp (*argv, "-p", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theDebugPorts, d);
+        if(*argv != NULL) { init_val (*argv, theDebugPorts, d); }
+        else { result = "No value was given to the '--debug-ports' option."; }
       }
       else if (strcmp (*argv, "--debug-client") == 0 || strncmp (*argv, "-c", 2) == 0) {
         theDebugClient = true;
