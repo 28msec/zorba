@@ -21,27 +21,22 @@
 namespace zorba {
 
   class DataflowAnnotationsComputer {
+  private:
+    static_context *m_ctx;
+
   public:
-  DataflowAnnotationsComputer(static_context *ctx)
-    : m_ctx(ctx) { }
+    DataflowAnnotationsComputer(static_context *ctx) : m_ctx(ctx) { }
+
     ~DataflowAnnotationsComputer() { }
 
     void compute(expr *e);
 
   private:
-    static_context *m_ctx;
-
     void compute_sequential_expr(sequential_expr *e);
     void compute_wrapper_expr(wrapper_expr *e);
     void compute_constructor_expr(constructor_expr *e);
     void compute_var_expr(var_expr *e);
-
-#if 1
     void compute_flwor_expr(flwor_expr *e);
-#else
-    void compute_flwor_expr(flwor_expr *e);
-#endif
-
     void compute_trycatch_expr(trycatch_expr *e);
     void compute_promote_expr(promote_expr *e);
     void compute_typeswitch_expr(typeswitch_expr *e);
@@ -66,6 +61,7 @@ namespace zorba {
     void compute_attr_expr(attr_expr *e);
     void compute_text_expr(text_expr *e);
     void compute_pi_expr(pi_expr *e);
+
     void default_walk(expr *e);
     bool generic_compute(expr *e);
   };
@@ -74,3 +70,9 @@ namespace zorba {
 
 #endif /* ZORBA_DATAFLOW_ANNOTATIONS_H */
 /* vim:set ts=2 sw=2: */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

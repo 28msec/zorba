@@ -140,7 +140,7 @@ inline expr* get_fo_arg(expr* e, int arg_idx)
 
 void index_flwor_vars(expr*, int&, VarIdMap&, IdVarMap*);
 
-void find_flwor_vars(expr*, const VarIdMap&, ExprVarsMap&, DynamicBitset&);
+void find_flwor_vars(expr*, const VarIdMap&, DynamicBitset&, ExprVarsMap&);
 
 void replace_var(expr*, var_expr* oldVar, var_expr* newVar);
 

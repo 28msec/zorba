@@ -23,9 +23,13 @@
 namespace zorba {
 
 #define SORTED_NODES(e) e->put_annotation(AnnotationKey::PRODUCES_SORTED_NODES, TSVAnnotationValue::TRUE_VAL)
+
 #define DISTINCT_NODES(e) e->put_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES, TSVAnnotationValue::TRUE_VAL)
+
 #define PROPOGATE_SORTED_NODES(src, tgt) tgt->put_annotation(AnnotationKey::PRODUCES_SORTED_NODES, src->get_annotation(AnnotationKey::PRODUCES_SORTED_NODES))
+
 #define PROPOGATE_DISTINCT_NODES(src, tgt) tgt->put_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES, src->get_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES))
+
 #define LOOKUP_FN( pfx, local, arity ) (m_ctx->lookup_fn (pfx, local, arity))
 
 void DataflowAnnotationsComputer::compute(expr *e)
@@ -43,16 +47,12 @@ void DataflowAnnotationsComputer::compute(expr *e)
     case var_expr_kind:
       compute_var_expr(static_cast<var_expr *>(e));
       break;
-#if 1
+
     case gflwor_expr_kind:
     case flwor_expr_kind:
       compute_flwor_expr(static_cast<flwor_expr *>(e));
       break;
-#else
-    case flwor_expr_kind:
-      compute_flwor_expr(static_cast<flwor_expr *>(e));
-      break;
-#endif
+
     case trycatch_expr_kind:
       compute_trycatch_expr(static_cast<trycatch_expr *>(e));
       break;
@@ -146,6 +146,38 @@ void DataflowAnnotationsComputer::compute(expr *e)
   }
 }
 
+
+void DataflowAnnotationsComputer::default_walk(expr *e)
+{
+  expr_iterator i = e->expr_begin();
+  while(!i.done()) 
+  {
+    expr *child = (*i).getp();
+    if (child != NULL) {
+      compute(child);
+    }
+    ++i;
+  }
+}
+
+/**
+ * Checks if the expression has a return type with a quantifier of
+ * ONE or QUESTION. If so, the expression cannot have dup nodes
+ * or nodes out of sorted order.
+ */
+bool DataflowAnnotationsComputer::generic_compute(expr *e)
+{
+  xqtref_t rt = e->return_type(m_ctx);
+  TypeConstants::quantifier_t quant = TypeOps::quantifier(*rt);
+  if (quant == TypeConstants::QUANT_ONE || quant == TypeConstants::QUANT_QUESTION) {
+    SORTED_NODES(e);
+    DISTINCT_NODES(e);
+    return true;
+  }
+  return false;
+}
+
+
 void DataflowAnnotationsComputer::compute_sequential_expr(sequential_expr *e)
 {
   default_walk(e);
@@ -177,66 +209,12 @@ void DataflowAnnotationsComputer::compute_var_expr(var_expr *e)
 }
 
 
-#if 1
 void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr *e)
 {
   default_walk(e);
   generic_compute(e);
 }
-#else
-void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr *e)
-{
-  flwor_expr::clause_list_t::const_iterator ci = e->clause_begin();
-  flwor_expr::clause_list_t::const_iterator cend = e->clause_end();
 
-  while(ci != cend) 
-  {
-    const flwor_clause* c = *ci;
-
-    if (c->get_kind() == flwor_clause::for_clause ||
-        c->get_kind() == flwor_clause::let_clause)
-    {
-      const forletwin_clause* cl = static_cast<const forletwin_clause *>(c);
-
-      compute(cl->get_expr());
-    }
-    else if (c->get_kind() == flwor_clause::window_clause)
-    {
-      const window_clause* cl = static_cast<const window_clause *>(c);
-
-      compute(cl->get_expr());
-
-      const flwor_wincond* startCond = cl->get_win_start();
-      const flwor_wincond* stopCond = cl->get_win_stop();
-
-      compute(startCond->get_cond());
-      compute(stopCond->get_cond());
-    }
-    else if (c->get_kind() == flwor_clause::where_clause)
-    {
-      const where_clause* cl = static_cast<const where_clause *>(c);
-
-      compute(cl->get_where());
-    }
-    else if (c->get_kind() == flwor_clause::order_clause)
-    {
-      const orderby_clause* cl = static_cast<const orderby_clause *>(c);
-
-      for (unsigned i = 0; i < cl->num_columns(); ++i)
-      {
-        compute(cl->get_column_expr(i));
-      }
-    }
-
-    ++ci;
-  }
-
-  compute(e->get_return_expr());
-
-  if (!generic_compute(e)) {
-  }
-}
-#endif
 
 void DataflowAnnotationsComputer::compute_trycatch_expr(trycatch_expr *e)
 {
@@ -495,36 +473,6 @@ void DataflowAnnotationsComputer::compute_pi_expr(pi_expr *e)
   default_walk(e);
   SORTED_NODES(e);
   DISTINCT_NODES(e);
-}
-
-void DataflowAnnotationsComputer::default_walk(expr *e)
-{
-  expr_iterator i = e->expr_begin();
-  while(!i.done()) 
-  {
-    expr *child = (*i).getp();
-    if (child != NULL) {
-      compute(child);
-    }
-    ++i;
-  }
-}
-
-/**
- * Checks if the expression has a return type with a quantifier of
- * ONE or QUESTION. If so, the expression cannot have dup nodes
- * or nodes out of sorted order.
- */
-bool DataflowAnnotationsComputer::generic_compute(expr *e)
-{
-  xqtref_t rt = e->return_type(m_ctx);
-  TypeConstants::quantifier_t quant = TypeOps::quantifier(*rt);
-  if (quant == TypeConstants::QUANT_ONE || quant == TypeConstants::QUANT_QUESTION) {
-    SORTED_NODES(e);
-    DISTINCT_NODES(e);
-    return true;
-  }
-  return false;
 }
 
 }

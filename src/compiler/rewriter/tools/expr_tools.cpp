@@ -20,7 +20,11 @@
 namespace zorba
 {
 
+static void add_wincond_vars(const flwor_wincond*, int&, VarIdMap&, IdVarMap*);
+
 static void add_var(var_expr*, int&, VarIdMap&, IdVarMap*);
+
+static void remove_wincond_vars(const flwor_wincond*, const VarIdMap&, DynamicBitset&);
 
 static void set_bit(var_expr*, const std::map<var_expr*, int>&, DynamicBitset&, bool);
 
@@ -66,7 +70,8 @@ void index_flwor_vars(
     VarIdMap& varidmap,
     IdVarMap* idvarmap)
 {
-  if (e->get_expr_kind() == flwor_expr_kind) 
+  if (e->get_expr_kind() == flwor_expr_kind ||
+      e->get_expr_kind() == gflwor_expr_kind) 
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(e);
 
@@ -91,6 +96,21 @@ void index_flwor_vars(
         add_var(lc->get_var(), numVars, varidmap, idvarmap);
         add_var(lc->get_score_var(), numVars, varidmap, idvarmap);
       }
+      else if (c->get_kind() == flwor_clause::window_clause)
+      {
+        const window_clause* wc = static_cast<const window_clause *>(c);
+
+        add_var(wc->get_var(), numVars, varidmap, idvarmap);
+
+        flwor_wincond* startCond = wc->get_win_start();
+        flwor_wincond* stopCond = wc->get_win_stop();
+
+        if (startCond != NULL)
+          add_wincond_vars(startCond, numVars, varidmap, idvarmap);
+
+        if (stopCond != NULL)
+          add_wincond_vars(stopCond, numVars, varidmap, idvarmap);
+      }
       else if (c->get_kind() == flwor_clause::group_clause)
       {
         const group_clause* gc = static_cast<const group_clause *>(c);
@@ -111,6 +131,12 @@ void index_flwor_vars(
           add_var(ngvars[i].second.getp(), numVars, varidmap, idvarmap);
         }
       }
+      else if (c->get_kind() == flwor_clause::count_clause)
+      {
+        const count_clause* cc = static_cast<const count_clause *>(c);
+
+        add_var(cc->get_var(), numVars, varidmap, idvarmap);
+      }
     }
   }
 
@@ -124,6 +150,30 @@ void index_flwor_vars(
     }
     ++i;
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+static void add_wincond_vars(
+    const flwor_wincond* cond,
+    int& numVars,
+    VarIdMap& varidmap,
+    IdVarMap* idvarmap)
+{
+  const flwor_wincond::vars& inVars = cond->get_in_vars();
+  const flwor_wincond::vars& outVars = cond->get_out_vars();
+          
+  add_var(inVars.posvar.getp(), numVars, varidmap, idvarmap);
+  add_var(inVars.curr.getp(), numVars, varidmap, idvarmap);
+  add_var(inVars.prev.getp(), numVars, varidmap, idvarmap);
+  add_var(inVars.next.getp(), numVars, varidmap, idvarmap);
+          
+  add_var(outVars.posvar.getp(), numVars, varidmap, idvarmap);
+  add_var(outVars.curr.getp(), numVars, varidmap, idvarmap);
+  add_var(outVars.prev.getp(), numVars, varidmap, idvarmap);
+  add_var(outVars.next.getp(), numVars, varidmap, idvarmap);
 }
 
 
@@ -144,15 +194,15 @@ static void add_var(var_expr* v, int& numVars, VarIdMap& varidmap, IdVarMap* idv
 /*******************************************************************************
   For each expr E in the expr tree rooted at "e", this method computes the set
   of variables that belong to FV(e) and are referenced by E. Let V(E) be this
-  set. V(E) is implemented as a bitset whose size is equal to the size of FV(e)
-  and whose i-th bit is on iff the var with prefix id i belongs to V(E). The
-  mapping between E and V(E) is stored in "freevarMap".  
+  set. V(E) is implemented as a bitset ("freeset") whose size is equal to the
+  size of FV(e) and whose i-th bit is on iff the var with prefix id i belongs
+  to V(E). The mapping between E and V(E) is stored in "freevarMap".  
 ********************************************************************************/
 void find_flwor_vars(
     expr* e,
     const VarIdMap& varmap,
-    ExprVarsMap& freevarMap,
-    DynamicBitset& freeset)
+    DynamicBitset& freeset,
+    ExprVarsMap& freevarMap)
 {
   if (e->get_expr_kind() == var_expr_kind) 
   {
@@ -170,7 +220,7 @@ void find_flwor_vars(
     if (ce) 
     {
       eFreeset.reset();
-      find_flwor_vars(ce, varmap, freevarMap, eFreeset);
+      find_flwor_vars(ce, varmap, eFreeset, freevarMap);
       freeset.set_union(eFreeset);
     }
     ++i;
@@ -179,7 +229,8 @@ void find_flwor_vars(
   // A flwor does not depend on the vars that are defined inside the flwor itself,
   // so remove these vars from the freeset of the flwor, if they have been added
   // there.
-  if (e->get_expr_kind() == flwor_expr_kind) 
+  if (e->get_expr_kind() == flwor_expr_kind ||
+      e->get_expr_kind() == gflwor_expr_kind) 
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(e);
 
@@ -204,6 +255,21 @@ void find_flwor_vars(
         set_bit(lc->get_var(), varmap, freeset, false);
         set_bit(lc->get_score_var(), varmap, freeset, false);
       }
+      else if (c->get_kind() == flwor_clause::window_clause)
+      {
+        const window_clause* wc = static_cast<const window_clause *>(c);
+
+        set_bit(wc->get_var(), varmap, freeset, false);
+
+        flwor_wincond* startCond = wc->get_win_start();
+        flwor_wincond* stopCond = wc->get_win_stop();
+
+        if (startCond != NULL)
+          remove_wincond_vars(startCond, varmap, freeset);
+
+        if (stopCond != NULL)
+          remove_wincond_vars(stopCond, varmap, freeset);
+      }
       else if (c->get_kind() == flwor_clause::group_clause)
       {
         const group_clause* gc = static_cast<const group_clause *>(c);
@@ -224,10 +290,39 @@ void find_flwor_vars(
           set_bit(ngvars[i].second.getp(), varmap, freeset, false);
         }
       }
+      else if (c->get_kind() == flwor_clause::count_clause)
+      {
+        const count_clause* cc = static_cast<const count_clause *>(c);
+
+        set_bit(cc->get_var(), varmap, freeset, false);
+      }
     }
   }
 
   freevarMap[e] = freeset;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+static void remove_wincond_vars(
+    const flwor_wincond* cond,
+    const VarIdMap& varmap,
+    DynamicBitset& freeset)
+{
+  const flwor_wincond::vars& inVars = cond->get_in_vars();
+  const flwor_wincond::vars& outVars = cond->get_out_vars();
+
+  set_bit(inVars.posvar.getp(), varmap, freeset, false);
+  set_bit(inVars.curr.getp(), varmap, freeset, false);
+  set_bit(inVars.prev.getp(), varmap, freeset, false);
+  set_bit(inVars.next.getp(), varmap, freeset, false);
+
+  set_bit(outVars.posvar.getp(), varmap, freeset, false);
+  set_bit(outVars.curr.getp(), varmap, freeset, false);
+  set_bit(outVars.prev.getp(), varmap, freeset, false);
+  set_bit(outVars.next.getp(), varmap, freeset, false);
 }
 
 
