@@ -200,6 +200,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <sval> QNAME                          "'QName'"
 %type <sval> URI_LITERAL                    "'URI'"
 %type <sval> NCNAME                         "'NCName'"
+%type <sval> NCNAME_NOKW                    "'NCName(non keyword)'"
+%type <sval> KEYWORD                        "'KEYWORD'"
 
 /* simple tokens */
 /* ------------- */
@@ -4306,13 +4308,13 @@ CompCommentConstructor :
 // [114] CompPIConstructor
 // -----------------------
 CompPIConstructor :
-		PROCESSING_INSTRUCTION  NCNAME  LBRACE  RBRACE
+		PROCESSING_INSTRUCTION  NCNAME_NOKW  LBRACE  RBRACE
 		{
 			$$ = new CompPIConstructor(LOC (@$),
 								SYMTAB ($2),
 								NULL);
 		}
-	|	PROCESSING_INSTRUCTION  NCNAME  LBRACE  Expr  RBRACE
+	|	PROCESSING_INSTRUCTION  NCNAME_NOKW  LBRACE  Expr  RBRACE
 		{
 			$$ = new CompPIConstructor(LOC (@$),
 								SYMTAB ($2),
@@ -4558,7 +4560,7 @@ PITest :
 		{
 			$$ = new PITest(LOC (@$), "");
 		}
-	|	PROCESSING_INSTRUCTION LPAR  NCNAME  RPAR
+	|	PROCESSING_INSTRUCTION LPAR  NCNAME_NOKW  RPAR
 		{
 			$$ = new PITest(LOC (@$), SYMTAB ($3));
 		}
@@ -5030,17 +5032,20 @@ URI_LITERAL :
     STRING_LITERAL;
 
 NCNAME :
-  QNAME_SVAL
-  {
-    std::string tmp = SYMTAB ($1);
-    for (unsigned int i = 0; i<tmp.size(); i++)
-      if (tmp[i] == ':')
-      {
+    NCNAME_NOKW | KEYWORD { $$ = $1; }
+  ;
+
+NCNAME_NOKW :
+    QNAME_SVAL
+    {
+      std::string tmp = SYMTAB ($1);
+      if (tmp.find (':') != std::string::npos) {
         error(@1, "A NCName is expected, found a QName");
         YYERROR;
       }
-    $$ = $1;
-  }
+      $$ = $1;
+    }
+  ;
 
 /*_______________________________________________________________________
  *                                                                       *
@@ -5048,8 +5053,10 @@ NCNAME :
  *                                                                       *
  *_______________________________________________________________________*/
 QNAME :
-    QNAME_SVAL { $$ = $1; }
-  | XQUERY { $$ = SYMTAB_PUT ("xquery"); }
+    QNAME_SVAL | KEYWORD { $$ = $1; }
+
+KEYWORD :
+    XQUERY { $$ = SYMTAB_PUT ("xquery"); }
   | _EMPTY { $$ = SYMTAB_PUT ("empty"); }
   | ATTRIBUTE { $$ = SYMTAB_PUT ("attribute"); }
   | COMMENT { $$ = SYMTAB_PUT ("comment"); }

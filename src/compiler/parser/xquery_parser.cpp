@@ -38,7 +38,7 @@
 #include "xquery_parser.hpp"
 
 /* User implementation prologue.  */
-#line 887 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 889 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parser/xquery_scanner.h"
@@ -204,1053 +204,1053 @@ namespace zorba
 
     switch (yytype)
       {
-        case 108: /* "\"'DECIMAL'\"" */
-#line 771 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+        case 110: /* "\"'DECIMAL'\"" */
+#line 773 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->decval); };
 #line 211 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 120: /* "\"'DOUBLE'\"" */
-#line 770 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 122: /* "\"'DOUBLE'\"" */
+#line 772 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->dval); };
 #line 216 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 144: /* "\"'INTEGER'\"" */
-#line 769 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 146: /* "\"'INTEGER'\"" */
+#line 771 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->ival); };
 #line 221 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 300: /* "VersionDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 302: /* "VersionDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 226 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 301: /* "MainModule" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 303: /* "MainModule" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 231 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 302: /* "LibraryModule" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 304: /* "LibraryModule" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 236 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 303: /* "ModuleDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 305: /* "ModuleDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 241 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 304: /* "Prolog" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 306: /* "Prolog" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 246 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 305: /* "SIND_DeclList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 307: /* "SIND_DeclList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 251 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 306: /* "VFO_DeclList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 308: /* "VFO_DeclList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 256 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 307: /* "SIND_Decl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 309: /* "SIND_Decl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 261 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 308: /* "VFO_Decl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 310: /* "VFO_Decl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 266 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 309: /* "DecimalFormatDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 311: /* "DecimalFormatDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 271 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 310: /* "DecimalFormatParamList" */
-#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 312: /* "DecimalFormatParamList" */
+#line 785 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->pair_vector); };
 #line 276 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 311: /* "DecimalFormatParam" */
-#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 313: /* "DecimalFormatParam" */
+#line 785 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->pair); };
 #line 281 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 313: /* "Setter" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 315: /* "Setter" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 286 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 314: /* "Import" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 316: /* "Import" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 291 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 315: /* "NamespaceDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 317: /* "NamespaceDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 296 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 316: /* "BoundarySpaceDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 318: /* "BoundarySpaceDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 301 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 317: /* "DefaultNamespaceDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 319: /* "DefaultNamespaceDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 306 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 318: /* "OptionDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 320: /* "OptionDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 311 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 320: /* "OrderingModeDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 322: /* "OrderingModeDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 316 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 321: /* "EmptyOrderDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 323: /* "EmptyOrderDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 321 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 322: /* "CopyNamespacesDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 324: /* "CopyNamespacesDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 326 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 323: /* "DefaultCollationDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 325: /* "DefaultCollationDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 331 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 324: /* "BaseURIDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 326: /* "BaseURIDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 336 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 325: /* "SchemaImport" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 327: /* "SchemaImport" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 341 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 326: /* "URILiteralList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 328: /* "URILiteralList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 346 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 327: /* "SchemaPrefix" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 329: /* "SchemaPrefix" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 351 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 328: /* "ModuleImport" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 330: /* "ModuleImport" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 356 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 329: /* "CtxItemDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 331: /* "CtxItemDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 361 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 330: /* "CtxItemDecl2" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 332: /* "CtxItemDecl2" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 366 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 331: /* "CtxItemDecl3" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 333: /* "CtxItemDecl3" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 371 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 332: /* "CtxItemDecl4" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 334: /* "CtxItemDecl4" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 376 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 333: /* "VarNameAndType" */
-#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 335: /* "VarNameAndType" */
+#line 785 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->varnametype); };
 #line 381 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 334: /* "VarDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 336: /* "VarDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 386 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 336: /* "IndexDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 338: /* "IndexDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 391 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 337: /* "IndexDecl2" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 339: /* "IndexDecl2" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 396 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 338: /* "IndexDecl3" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 340: /* "IndexDecl3" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 401 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 339: /* "IndexDeclSuffix" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 341: /* "IndexDeclSuffix" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 406 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 340: /* "IndexField" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 342: /* "IndexField" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 411 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 341: /* "IndexField1" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 343: /* "IndexField1" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 416 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 342: /* "IndexFieldList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 344: /* "IndexFieldList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 421 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 343: /* "ConstructionDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 345: /* "ConstructionDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 426 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 344: /* "FunctionSig" */
-#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 346: /* "FunctionSig" */
+#line 785 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->fnsig); };
 #line 431 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 345: /* "BlockExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 347: /* "BlockExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 436 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 346: /* "Block" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 348: /* "Block" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 441 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 347: /* "BlockDecls" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 349: /* "BlockDecls" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 446 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 348: /* "BlockVarDeclList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 350: /* "BlockVarDeclList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 451 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 349: /* "BlockVarDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 351: /* "BlockVarDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 456 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 350: /* "AssignExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 352: /* "AssignExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 461 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 351: /* "ExitExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 353: /* "ExitExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 466 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 352: /* "WhileExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 354: /* "WhileExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 471 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 353: /* "FlowCtlStatement" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 355: /* "FlowCtlStatement" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 476 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 354: /* "IndexStatement" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 356: /* "IndexStatement" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 481 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 355: /* "FunctionDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 357: /* "FunctionDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 486 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 356: /* "FunctionDecl2" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 358: /* "FunctionDecl2" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 491 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 357: /* "FunctionDecl3" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 359: /* "FunctionDecl3" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 496 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 358: /* "FunctionDecl4" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 360: /* "FunctionDecl4" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 501 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 359: /* "ParamList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 361: /* "ParamList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 506 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 360: /* "Param" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 362: /* "Param" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 511 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 361: /* "EnclosedExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 363: /* "EnclosedExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 516 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 362: /* "BracedExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 364: /* "BracedExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 521 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 363: /* "QueryBody" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 365: /* "QueryBody" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 526 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 364: /* "Expr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 366: /* "Expr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 531 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 365: /* "ApplyExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 367: /* "ApplyExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 536 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 366: /* "ConcatExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 368: /* "ConcatExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 541 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 367: /* "ExprSingle" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 369: /* "ExprSingle" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 546 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 368: /* "FLWORExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 370: /* "FLWORExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 551 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 369: /* "ReturnExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 371: /* "ReturnExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 556 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 372: /* "FLWORWinCond" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 374: /* "FLWORWinCond" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 561 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 373: /* "WindowClause" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 375: /* "WindowClause" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 566 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 374: /* "CountClause" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 376: /* "CountClause" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 571 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 375: /* "ForLetWinClause" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 377: /* "ForLetWinClause" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 576 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 377: /* "FLWORClauseList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 379: /* "FLWORClauseList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 581 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 379: /* "ForClause" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 381: /* "ForClause" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 586 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 380: /* "VarInDeclList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 382: /* "VarInDeclList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 591 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 381: /* "VarInDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 383: /* "VarInDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 596 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 382: /* "PositionalVar" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 384: /* "PositionalVar" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 601 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 384: /* "LetClause" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 386: /* "LetClause" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 606 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 385: /* "VarGetsDeclList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 387: /* "VarGetsDeclList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 611 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 386: /* "EvalVarDeclList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 388: /* "EvalVarDeclList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 616 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 387: /* "VarGetsDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 389: /* "VarGetsDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 621 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 388: /* "WindowVarDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 390: /* "WindowVarDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 626 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 389: /* "WindowVars" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 391: /* "WindowVars" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 631 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 390: /* "WindowVars3" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 392: /* "WindowVars3" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 636 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 391: /* "WindowVars2" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 393: /* "WindowVars2" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 641 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 392: /* "EvalVarDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 394: /* "EvalVarDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 646 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 393: /* "WhereClause" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 395: /* "WhereClause" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 651 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 394: /* "GroupByClause" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 396: /* "GroupByClause" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 656 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 395: /* "GroupSpecList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 397: /* "GroupSpecList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 661 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 396: /* "GroupSpec" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 398: /* "GroupSpec" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 666 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 397: /* "GroupCollationSpec" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 399: /* "GroupCollationSpec" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 671 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 398: /* "OrderByClause" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 400: /* "OrderByClause" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 676 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 399: /* "OrderSpecList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 401: /* "OrderSpecList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 681 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 400: /* "OrderSpec" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 402: /* "OrderSpec" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 686 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 401: /* "OrderModifier" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 403: /* "OrderModifier" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 691 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 402: /* "OrderDirSpec" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 404: /* "OrderDirSpec" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 696 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 403: /* "OrderEmptySpec" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 405: /* "OrderEmptySpec" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 701 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 404: /* "OrderCollationSpec" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 406: /* "OrderCollationSpec" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 706 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 405: /* "QuantifiedExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 407: /* "QuantifiedExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 711 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 406: /* "QVarInDeclList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 408: /* "QVarInDeclList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 716 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 407: /* "QVarInDecl" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 409: /* "QVarInDecl" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 721 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 408: /* "TypeswitchExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 410: /* "TypeswitchExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 726 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 409: /* "CaseClauseList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 411: /* "CaseClauseList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 731 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 410: /* "CaseClause" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 412: /* "CaseClause" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 736 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 411: /* "IfExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 413: /* "IfExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 741 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 412: /* "OrExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 414: /* "OrExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 746 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 413: /* "AndExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 415: /* "AndExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 751 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 414: /* "ComparisonExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 416: /* "ComparisonExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 756 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 416: /* "FTContainsExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 418: /* "FTContainsExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 761 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 417: /* "RangeExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 419: /* "RangeExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 766 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 418: /* "AdditiveExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 420: /* "AdditiveExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 771 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 419: /* "MultiplicativeExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 421: /* "MultiplicativeExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 776 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 420: /* "UnionExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 422: /* "UnionExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 781 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 421: /* "IntersectExceptExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 423: /* "IntersectExceptExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 786 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 422: /* "InstanceofExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 424: /* "InstanceofExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 791 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 423: /* "TreatExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 425: /* "TreatExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 796 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 424: /* "CastableExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 426: /* "CastableExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 801 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 425: /* "CastExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 427: /* "CastExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 806 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 426: /* "UnaryExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 428: /* "UnaryExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 811 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 427: /* "SignList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 429: /* "SignList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 816 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 428: /* "ValueExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 430: /* "ValueExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 821 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 429: /* "ValueComp" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 431: /* "ValueComp" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 826 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 430: /* "NodeComp" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 432: /* "NodeComp" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 831 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 431: /* "ValidateExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 433: /* "ValidateExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 836 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 432: /* "ExtensionExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 434: /* "ExtensionExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 841 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 433: /* "PragmaList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 435: /* "PragmaList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 846 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 434: /* "Pragma" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 436: /* "Pragma" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 851 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 435: /* "PathExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 437: /* "PathExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 856 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 437: /* "RelativePathExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 439: /* "RelativePathExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 861 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 438: /* "StepExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 440: /* "StepExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 866 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 439: /* "AxisStep" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 441: /* "AxisStep" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 871 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 440: /* "ForwardStep" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 442: /* "ForwardStep" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 876 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 441: /* "ForwardAxis" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 443: /* "ForwardAxis" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 881 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 442: /* "AbbrevForwardStep" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 444: /* "AbbrevForwardStep" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 886 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 443: /* "ReverseStep" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 445: /* "ReverseStep" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 891 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 444: /* "ReverseAxis" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 446: /* "ReverseAxis" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 896 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 445: /* "NodeTest" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 447: /* "NodeTest" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 901 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 446: /* "NameTest" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 448: /* "NameTest" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 906 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 447: /* "Wildcard" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 449: /* "Wildcard" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 911 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 448: /* "FilterExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 450: /* "FilterExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 916 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 449: /* "PredicateList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 451: /* "PredicateList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 921 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 450: /* "Predicate" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 452: /* "Predicate" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 926 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 451: /* "PrimaryExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 453: /* "PrimaryExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 931 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 452: /* "Literal" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 454: /* "Literal" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 936 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 453: /* "NumericLiteral" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 455: /* "NumericLiteral" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 941 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 454: /* "VarRef" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 456: /* "VarRef" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 946 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 455: /* "ParenthesizedExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 457: /* "ParenthesizedExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 951 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 456: /* "ContextItemExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 458: /* "ContextItemExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 956 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 457: /* "OrderedExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 459: /* "OrderedExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 961 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 458: /* "UnorderedExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 460: /* "UnorderedExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 966 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 459: /* "FunctionCall" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 461: /* "FunctionCall" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 971 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 460: /* "ArgList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 462: /* "ArgList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 976 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 461: /* "Constructor" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 463: /* "Constructor" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 981 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 462: /* "DirectConstructor" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 464: /* "DirectConstructor" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 986 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 463: /* "DirElemConstructor" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 465: /* "DirElemConstructor" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 991 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 464: /* "DirElemContentList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 466: /* "DirElemContentList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 996 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 465: /* "DirAttributeList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 467: /* "DirAttributeList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1001 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 466: /* "DirAttr" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 468: /* "DirAttr" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1006 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 468: /* "DirAttributeValue" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 470: /* "DirAttributeValue" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1011 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 469: /* "Opt_QuoteAttrContentList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 471: /* "Opt_QuoteAttrContentList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1016 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 470: /* "QuoteAttrContentList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 472: /* "QuoteAttrContentList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1021 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 471: /* "Opt_AposAttrContentList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 473: /* "Opt_AposAttrContentList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1026 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 472: /* "AposAttrContentList" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 474: /* "AposAttrContentList" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1031 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 473: /* "QuoteAttrValueContent" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 475: /* "QuoteAttrValueContent" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1036 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 474: /* "AposAttrValueContent" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 476: /* "AposAttrValueContent" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1041 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 475: /* "DirElemContent" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 477: /* "DirElemContent" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1046 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 476: /* "CommonContent" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 478: /* "CommonContent" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1051 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 477: /* "DirCommentConstructor" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 479: /* "DirCommentConstructor" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1056 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 478: /* "DirPIConstructor" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 480: /* "DirPIConstructor" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1061 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 479: /* "CDataSection" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 481: /* "CDataSection" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1066 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 480: /* "ComputedConstructor" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 482: /* "ComputedConstructor" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1071 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 481: /* "CompDocConstructor" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 483: /* "CompDocConstructor" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1076 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 482: /* "CompElemConstructor" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 484: /* "CompElemConstructor" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1081 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 483: /* "CompAttrConstructor" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 485: /* "CompAttrConstructor" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1086 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 484: /* "CompTextConstructor" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 486: /* "CompTextConstructor" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1091 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 485: /* "CompCommentConstructor" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 487: /* "CompCommentConstructor" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1096 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 486: /* "CompPIConstructor" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 488: /* "CompPIConstructor" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1101 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 487: /* "SingleType" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 489: /* "SingleType" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1106 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 488: /* "TypeDeclaration" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 490: /* "TypeDeclaration" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1111 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 489: /* "SequenceType" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 491: /* "SequenceType" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1116 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 490: /* "OccurrenceIndicator" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 492: /* "OccurrenceIndicator" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1121 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 491: /* "ItemType" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 493: /* "ItemType" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1126 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 492: /* "AtomicType" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 494: /* "AtomicType" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1131 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 493: /* "KindTest" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 495: /* "KindTest" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1136 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 494: /* "AnyKindTest" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 496: /* "AnyKindTest" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1141 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 495: /* "DocumentTest" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 497: /* "DocumentTest" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1146 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 496: /* "TextTest" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 498: /* "TextTest" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1151 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 497: /* "CommentTest" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 499: /* "CommentTest" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1156 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 498: /* "PITest" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 500: /* "PITest" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1161 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 499: /* "AttributeTest" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 501: /* "AttributeTest" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1166 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 500: /* "SchemaAttributeTest" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 502: /* "SchemaAttributeTest" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1171 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 501: /* "ElementTest" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 503: /* "ElementTest" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1176 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 502: /* "SchemaElementTest" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 504: /* "SchemaElementTest" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1181 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 503: /* "TypeName" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 505: /* "TypeName" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1186 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 504: /* "TypeName_WITH_HOOK" */
-#line 779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 506: /* "TypeName_WITH_HOOK" */
+#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 #line 1191 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 505: /* "StringLiteral" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 507: /* "StringLiteral" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1196 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 507: /* "InsertExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 509: /* "InsertExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1201 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 508: /* "DeleteExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 510: /* "DeleteExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1206 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 509: /* "ReplaceExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 511: /* "ReplaceExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1211 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 510: /* "RenameExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 512: /* "RenameExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1216 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 511: /* "TransformExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 513: /* "TransformExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1221 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 512: /* "VarNameList" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 514: /* "VarNameList" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1226 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 513: /* "VarNameDecl" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 515: /* "VarNameDecl" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1231 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 514: /* "TryExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 516: /* "TryExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1236 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 515: /* "CatchListExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 517: /* "CatchListExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1241 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 516: /* "CatchExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 518: /* "CatchExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1246 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 517: /* "NameTestList" */
-#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 519: /* "NameTestList" */
+#line 785 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->name_test_list); };
 #line 1251 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
-      case 521: /* "EvalExpr" */
-#line 781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+      case 525: /* "EvalExpr" */
+#line 783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 #line 1256 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	break;
@@ -1449,14 +1449,14 @@ namespace zorba
     switch (yyn)
       {
 	  case 3:
-#line 905 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 907 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
     ;}
     break;
 
   case 4:
-#line 915 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 917 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 			driver.set_expr ((yyval.node));
@@ -1464,7 +1464,7 @@ namespace zorba
     break;
 
   case 5:
-#line 920 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 922 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       dynamic_cast<MainModule *> ((yysemantic_stack_[(2) - (2)].node))->set_version_decl (static_cast<VersionDecl *> ((yysemantic_stack_[(2) - (1)].node)));
 			(yyval.node) = (yysemantic_stack_[(2) - (2)].node);
@@ -1473,7 +1473,7 @@ namespace zorba
     break;
 
   case 6:
-#line 926 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 928 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
        driver.set_expr ((yyval.node));
@@ -1481,7 +1481,7 @@ namespace zorba
     break;
 
   case 7:
-#line 931 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 933 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        dynamic_cast<LibraryModule *> ((yysemantic_stack_[(2) - (2)].node))->set_version_decl (static_cast<VersionDecl *> ((yysemantic_stack_[(2) - (1)].node)));
        (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
@@ -1490,7 +1490,7 @@ namespace zorba
     break;
 
   case 8:
-#line 943 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 945 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        std::string encoding = "utf-8";
        (yyval.node) = new VersionDecl (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(4) - (3)].sval)), encoding);
@@ -1498,14 +1498,14 @@ namespace zorba
     break;
 
   case 9:
-#line 948 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 950 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.node) = new VersionDecl (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(6) - (3)].sval)), SYMTAB ((yysemantic_stack_[(6) - (5)].sval)));
     ;}
     break;
 
   case 10:
-#line 958 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 960 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new MainModule(LOC ((yyloc)),
 								static_cast<QueryBody*>((yysemantic_stack_[(2) - (2)].expr)),
@@ -1514,7 +1514,7 @@ namespace zorba
     break;
 
   case 11:
-#line 965 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 967 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new MainModule(LOC ((yyloc)),
 								static_cast<QueryBody*>((yysemantic_stack_[(1) - (1)].expr)),
@@ -1523,7 +1523,7 @@ namespace zorba
     break;
 
   case 12:
-#line 977 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 979 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new LibraryModule(LOC ((yyloc)),
 								static_cast<ModuleDecl*>((yysemantic_stack_[(2) - (1)].node)),
@@ -1532,7 +1532,7 @@ namespace zorba
     break;
 
   case 13:
-#line 989 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 991 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ModuleDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(6) - (3)].sval)), 
@@ -1541,7 +1541,7 @@ namespace zorba
     break;
 
   case 14:
-#line 1001 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1003 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Prolog(LOC ((yyloc)),
 								static_cast<SIND_DeclList*>((yysemantic_stack_[(2) - (1)].node)),
@@ -1550,7 +1550,7 @@ namespace zorba
     break;
 
   case 15:
-#line 1007 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1009 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Prolog(LOC ((yyloc)),
 								NULL,
@@ -1559,7 +1559,7 @@ namespace zorba
     break;
 
   case 16:
-#line 1013 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1015 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Prolog(LOC ((yyloc)),
 								static_cast<SIND_DeclList*>((yysemantic_stack_[(4) - (1)].node)),
@@ -1568,7 +1568,7 @@ namespace zorba
     break;
 
   case 17:
-#line 1025 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1027 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			SIND_DeclList* sindList_p = new SIND_DeclList(LOC ((yyloc)));
 			sindList_p->push_back((yysemantic_stack_[(1) - (1)].node));
@@ -1577,7 +1577,7 @@ namespace zorba
     break;
 
   case 18:
-#line 1031 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1033 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			SIND_DeclList* sindList_p = static_cast<SIND_DeclList*>((yysemantic_stack_[(3) - (1)].node));
 			if (sindList_p) {
@@ -1588,7 +1588,7 @@ namespace zorba
     break;
 
   case 19:
-#line 1045 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1047 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VFO_DeclList* vfoList_p = new VFO_DeclList(LOC ((yyloc)));
 			vfoList_p->push_back((yysemantic_stack_[(1) - (1)].node));
@@ -1597,7 +1597,7 @@ namespace zorba
     break;
 
   case 20:
-#line 1051 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1053 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VFO_DeclList* vfoList_p = dynamic_cast<VFO_DeclList*>((yysemantic_stack_[(3) - (1)].node));
 			if (vfoList_p) {
@@ -1608,7 +1608,7 @@ namespace zorba
     break;
 
   case 32:
-#line 1091 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1093 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new DecimalFormatNode(LOC((yyloc)), (yysemantic_stack_[(4) - (4)].pair_vector));
       delete (yysemantic_stack_[(4) - (4)].pair_vector);
@@ -1616,7 +1616,7 @@ namespace zorba
     break;
 
   case 33:
-#line 1096 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1098 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new DecimalFormatNode(LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (3)].sval)), (yysemantic_stack_[(4) - (4)].pair_vector)); 
       delete (yysemantic_stack_[(4) - (4)].pair_vector);
@@ -1624,7 +1624,7 @@ namespace zorba
     break;
 
   case 34:
-#line 1104 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1106 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { 
       (yyval.pair_vector) = new std::vector<std::pair<std::string, std::string> > ();
       (yyval.pair_vector)->push_back(*(yysemantic_stack_[(1) - (1)].pair));
@@ -1633,7 +1633,7 @@ namespace zorba
     break;
 
   case 35:
-#line 1110 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1112 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yysemantic_stack_[(2) - (1)].pair_vector)->push_back(*(yysemantic_stack_[(2) - (2)].pair));
       delete (yysemantic_stack_[(2) - (2)].pair);
@@ -1642,7 +1642,7 @@ namespace zorba
     break;
 
   case 36:
-#line 1119 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1121 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       StringLiteral *s = static_cast<StringLiteral *>((yysemantic_stack_[(3) - (3)].expr));
       (yyval.pair) = new std::pair<std::string, std::string>((yysemantic_stack_[(3) - (1)].strval), s->get_strval());
@@ -1651,57 +1651,57 @@ namespace zorba
     break;
 
   case 37:
-#line 1127 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1129 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "decimal-separator"; ;}
     break;
 
   case 38:
-#line 1128 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1130 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "grouping-separator"; ;}
     break;
 
   case 39:
-#line 1129 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1131 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "infinty"; ;}
     break;
 
   case 40:
-#line 1130 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1132 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "minus-sign"; ;}
     break;
 
   case 41:
-#line 1131 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1133 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "NaN"; ;}
     break;
 
   case 42:
-#line 1132 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1134 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "percent"; ;}
     break;
 
   case 43:
-#line 1133 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1135 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "per-mille"; ;}
     break;
 
   case 44:
-#line 1134 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1136 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "zero-digit"; ;}
     break;
 
   case 45:
-#line 1135 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1137 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "digit"; ;}
     break;
 
   case 46:
-#line 1136 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1138 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "pattern-separator"; ;}
     break;
 
   case 57:
-#line 1173 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1175 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new NamespaceDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (3)].sval)),
@@ -1710,7 +1710,7 @@ namespace zorba
     break;
 
   case 58:
-#line 1185 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1187 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new BoundarySpaceDecl(LOC ((yyloc)),
 								StaticContextConsts::preserve_space);
@@ -1718,7 +1718,7 @@ namespace zorba
     break;
 
   case 59:
-#line 1190 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1192 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new BoundarySpaceDecl(LOC ((yyloc)),
 								StaticContextConsts::strip_space);
@@ -1726,7 +1726,7 @@ namespace zorba
     break;
 
   case 60:
-#line 1201 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1203 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DefaultNamespaceDecl(LOC ((yyloc)),
 								ParseConstants::ns_element_default,
@@ -1735,7 +1735,7 @@ namespace zorba
     break;
 
   case 61:
-#line 1207 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1209 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DefaultNamespaceDecl(LOC ((yyloc)),
 								ParseConstants::ns_function_default,
@@ -1744,7 +1744,7 @@ namespace zorba
     break;
 
   case 62:
-#line 1219 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1221 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OptionDecl(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (3)].sval))),
@@ -1753,7 +1753,7 @@ namespace zorba
     break;
 
   case 63:
-#line 1232 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1234 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FTOptionDecl(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (3)].node));
@@ -1761,7 +1761,7 @@ namespace zorba
     break;
 
   case 64:
-#line 1243 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1245 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderingModeDecl(LOC ((yyloc)),
 								StaticContextConsts::ordered);
@@ -1769,7 +1769,7 @@ namespace zorba
     break;
 
   case 65:
-#line 1248 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1250 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderingModeDecl(LOC ((yyloc)),
 								StaticContextConsts::unordered);
@@ -1777,7 +1777,7 @@ namespace zorba
     break;
 
   case 66:
-#line 1260 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1262 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new EmptyOrderDecl(LOC ((yyloc)),
 								StaticContextConsts::empty_greatest);
@@ -1785,7 +1785,7 @@ namespace zorba
     break;
 
   case 67:
-#line 1265 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1267 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new EmptyOrderDecl(LOC ((yyloc)),
 								StaticContextConsts::empty_least);
@@ -1793,7 +1793,7 @@ namespace zorba
     break;
 
   case 68:
-#line 1276 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1278 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CopyNamespacesDecl(LOC ((yyloc)),
 								StaticContextConsts::preserve_ns,
@@ -1802,7 +1802,7 @@ namespace zorba
     break;
 
   case 69:
-#line 1282 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1284 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CopyNamespacesDecl(LOC ((yyloc)),
 								StaticContextConsts::preserve_ns,
@@ -1811,7 +1811,7 @@ namespace zorba
     break;
 
   case 70:
-#line 1288 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1290 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CopyNamespacesDecl(LOC ((yyloc)),
 								StaticContextConsts::no_preserve_ns,
@@ -1820,7 +1820,7 @@ namespace zorba
     break;
 
   case 71:
-#line 1294 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1296 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CopyNamespacesDecl(LOC ((yyloc)),
 								StaticContextConsts::no_preserve_ns,
@@ -1829,7 +1829,7 @@ namespace zorba
     break;
 
   case 72:
-#line 1313 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1315 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DefaultCollationDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (4)].sval)));
@@ -1837,7 +1837,7 @@ namespace zorba
     break;
 
   case 73:
-#line 1324 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1326 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new BaseURIDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (3)].sval)));
@@ -1845,7 +1845,7 @@ namespace zorba
     break;
 
   case 74:
-#line 1335 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1337 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaImport(LOC ((yyloc)),
 								NULL,
@@ -1855,7 +1855,7 @@ namespace zorba
     break;
 
   case 75:
-#line 1342 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1344 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaImport(LOC ((yyloc)),
 								dynamic_cast<SchemaPrefix*>((yysemantic_stack_[(4) - (3)].node)),
@@ -1865,7 +1865,7 @@ namespace zorba
     break;
 
   case 76:
-#line 1349 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1351 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaImport(LOC ((yyloc)),
 								NULL,
@@ -1875,7 +1875,7 @@ namespace zorba
     break;
 
   case 77:
-#line 1356 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1358 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaImport(LOC ((yyloc)),
 								dynamic_cast<SchemaPrefix*>((yysemantic_stack_[(6) - (3)].node)),
@@ -1885,7 +1885,7 @@ namespace zorba
     break;
 
   case 78:
-#line 1369 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1371 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			URILiteralList* uri_list_p = new URILiteralList(LOC ((yyloc)));
 			uri_list_p->push_back(SYMTAB ((yysemantic_stack_[(1) - (1)].sval)));
@@ -1894,7 +1894,7 @@ namespace zorba
     break;
 
   case 79:
-#line 1375 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1377 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			URILiteralList* uri_list_p = dynamic_cast<URILiteralList*>((yysemantic_stack_[(3) - (1)].node));
 			if (uri_list_p) {
@@ -1905,21 +1905,21 @@ namespace zorba
     break;
 
   case 80:
-#line 1390 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1392 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaPrefix(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (2)].sval)));
 		;}
     break;
 
   case 81:
-#line 1394 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1396 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaPrefix(LOC ((yyloc)), true);
 		;}
     break;
 
   case 82:
-#line 1404 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1406 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ModuleImport(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (3)].sval)),
@@ -1928,7 +1928,7 @@ namespace zorba
     break;
 
   case 83:
-#line 1410 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1412 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ModuleImport(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(6) - (4)].sval)),
@@ -1938,7 +1938,7 @@ namespace zorba
     break;
 
   case 84:
-#line 1417 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1419 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ModuleImport(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (3)].sval)),
@@ -1947,7 +1947,7 @@ namespace zorba
     break;
 
   case 85:
-#line 1423 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1425 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ModuleImport(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(8) - (4)].sval)),
@@ -1957,14 +1957,14 @@ namespace zorba
     break;
 
   case 86:
-#line 1435 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1437 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(4) - (4)].node);
     ;}
     break;
 
   case 87:
-#line 1442 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1444 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       CtxItemDecl *d = dynamic_cast<CtxItemDecl *> ((yysemantic_stack_[(3) - (3)].node));
       d->type = (yysemantic_stack_[(3) - (2)].node);
@@ -1973,14 +1973,14 @@ namespace zorba
     break;
 
   case 88:
-#line 1448 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1450 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     ;}
     break;
 
   case 89:
-#line 1455 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1457 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       CtxItemDecl *d = dynamic_cast<CtxItemDecl *> ((yysemantic_stack_[(1) - (1)].node));
       d->ext = false;
@@ -1989,35 +1989,35 @@ namespace zorba
     break;
 
   case 90:
-#line 1461 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1463 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CtxItemDecl (LOC ((yyloc)), NULL);
     ;}
     break;
 
   case 91:
-#line 1465 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1467 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
     ;}
     break;
 
   case 92:
-#line 1472 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1474 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CtxItemDecl (LOC ((yyloc)), (yysemantic_stack_[(2) - (2)].expr));
     ;}
     break;
 
   case 93:
-#line 1483 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1485 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.varnametype) = new VarNameAndType (SYMTAB ((yysemantic_stack_[(2) - (2)].sval)), NULL);
     ;}
     break;
 
   case 94:
-#line 1487 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1489 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.varnametype) = new VarNameAndType (SYMTAB ((yysemantic_stack_[(3) - (2)].sval)),
                                dynamic_cast<SequenceType *> ((yysemantic_stack_[(3) - (3)].node)));
@@ -2025,7 +2025,7 @@ namespace zorba
     break;
 
   case 95:
-#line 1495 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1497 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       VarNameAndType *nt = dynamic_cast<VarNameAndType *> (yysemantic_stack_[(5) - (3)].varnametype);
 			(yyval.node) = new VarDecl(LOC ((yyloc)),
@@ -2037,7 +2037,7 @@ namespace zorba
     break;
 
   case 96:
-#line 1504 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1506 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       VarNameAndType *nt = dynamic_cast<VarNameAndType *> (yysemantic_stack_[(4) - (3)].varnametype);
 			(yyval.node) = new VarDecl(LOC ((yyloc)), nt->name, nt->type,
@@ -2047,7 +2047,7 @@ namespace zorba
     break;
 
   case 97:
-#line 1511 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1513 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       VarNameAndType *nt = dynamic_cast<VarNameAndType *> (yysemantic_stack_[(6) - (3)].varnametype);
 			(yyval.node) = new VarDecl(LOC ((yyloc)), nt->name, nt->type,
@@ -2057,17 +2057,17 @@ namespace zorba
     break;
 
   case 98:
-#line 1521 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1523 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "hash"; ;}
     break;
 
   case 99:
-#line 1523 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1525 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "btree"; ;}
     break;
 
   case 100:
-#line 1530 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1532 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       IndexDecl *d = dynamic_cast<IndexDecl *> ((yysemantic_stack_[(2) - (2)].node));
       d->create = false;
@@ -2076,14 +2076,14 @@ namespace zorba
     break;
 
   case 101:
-#line 1538 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1540 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     ;}
     break;
 
   case 102:
-#line 1542 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1544 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       dynamic_cast<IndexDecl *> ((yysemantic_stack_[(2) - (2)].node))->uniq = true;
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
@@ -2091,14 +2091,14 @@ namespace zorba
     break;
 
   case 103:
-#line 1550 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1552 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     ;}
     break;
 
   case 104:
-#line 1554 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1556 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       dynamic_cast<IndexDecl *> ((yysemantic_stack_[(2) - (2)].node))->method = (yysemantic_stack_[(2) - (1)].strval);
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
@@ -2106,7 +2106,7 @@ namespace zorba
     break;
 
   case 105:
-#line 1562 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1564 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new IndexDecl (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(7) - (2)].sval)), (yysemantic_stack_[(7) - (4)].expr), "",
                           dynamic_cast<IndexFieldList *> ((yysemantic_stack_[(7) - (6)].node)));
@@ -2114,14 +2114,14 @@ namespace zorba
     break;
 
   case 106:
-#line 1570 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1572 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     ;}
     break;
 
   case 107:
-#line 1574 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1576 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       dynamic_cast<IndexField *> ((yysemantic_stack_[(3) - (1)].node))->coll = SYMTAB ((yysemantic_stack_[(3) - (3)].sval));
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node);
@@ -2129,21 +2129,21 @@ namespace zorba
     break;
 
   case 108:
-#line 1582 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1584 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new IndexField (LOC ((yyloc)), (yysemantic_stack_[(1) - (1)].expr), NULL);
     ;}
     break;
 
   case 109:
-#line 1586 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1588 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new IndexField (LOC ((yyloc)), (yysemantic_stack_[(2) - (1)].expr), dynamic_cast<SequenceType *> ((yysemantic_stack_[(2) - (2)].node)));
     ;}
     break;
 
   case 110:
-#line 1593 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1595 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       IndexFieldList *l = new IndexFieldList (LOC ((yyloc)));
       l->fields.push_back (dynamic_cast<IndexField *> ((yysemantic_stack_[(2) - (2)].node)));
@@ -2153,7 +2153,7 @@ namespace zorba
     break;
 
   case 111:
-#line 1600 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1602 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       dynamic_cast<IndexFieldList *> ((yysemantic_stack_[(3) - (1)].node))->fields.push_back (dynamic_cast<IndexField *> ((yysemantic_stack_[(3) - (3)].node)));
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node);
@@ -2161,7 +2161,7 @@ namespace zorba
     break;
 
   case 112:
-#line 1610 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1612 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ConstructionDecl(LOC ((yyloc)),
 								StaticContextConsts::cons_preserve);
@@ -2169,7 +2169,7 @@ namespace zorba
     break;
 
   case 113:
-#line 1615 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1617 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ConstructionDecl(LOC ((yyloc)),
 								StaticContextConsts::cons_strip);
@@ -2177,42 +2177,42 @@ namespace zorba
     break;
 
   case 114:
-#line 1627 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1629 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.fnsig) = new FunctionSig (NULL);
     ;}
     break;
 
   case 115:
-#line 1631 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1633 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.fnsig) = new FunctionSig (dynamic_cast<ParamList *> ((yysemantic_stack_[(3) - (2)].node)));
     ;}
     break;
 
   case 116:
-#line 1635 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1637 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.fnsig) = new FunctionSig (NULL, dynamic_cast<SequenceType *> ((yysemantic_stack_[(4) - (4)].node)));
     ;}
     break;
 
   case 117:
-#line 1639 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1641 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.fnsig) = new FunctionSig (dynamic_cast<ParamList *> ((yysemantic_stack_[(5) - (2)].node)), dynamic_cast<SequenceType *> ((yysemantic_stack_[(5) - (5)].node)));
     ;}
     break;
 
   case 118:
-#line 1646 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1648 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(2) - (2)].expr);
     ;}
     break;
 
   case 119:
-#line 1653 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1655 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       if ((yysemantic_stack_[(4) - (2)].node) == NULL)
         (yyval.expr) = (yysemantic_stack_[(4) - (3)].expr);
@@ -2231,7 +2231,7 @@ namespace zorba
     break;
 
   case 120:
-#line 1672 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1674 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       VFO_DeclList *vfo = dynamic_cast<VFO_DeclList *> ((yysemantic_stack_[(3) - (1)].node));
       VFO_DeclList *vfo2 = dynamic_cast<VFO_DeclList *> ((yysemantic_stack_[(3) - (2)].node));
@@ -2243,14 +2243,14 @@ namespace zorba
     break;
 
   case 121:
-#line 1681 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1683 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = NULL;
     ;}
     break;
 
   case 122:
-#line 1688 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1690 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       VFO_DeclList *vfo = dynamic_cast<VFO_DeclList *> ((yysemantic_stack_[(3) - (1)].node));
       vfo->push_back ((yysemantic_stack_[(3) - (3)].node));
@@ -2259,7 +2259,7 @@ namespace zorba
     break;
 
   case 123:
-#line 1694 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1696 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       VFO_DeclList *vfo = new VFO_DeclList (LOC ((yyloc)));
       vfo->push_back ((yysemantic_stack_[(2) - (2)].node));
@@ -2268,7 +2268,7 @@ namespace zorba
     break;
 
   case 124:
-#line 1703 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1705 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       VarNameAndType *nt = dynamic_cast<VarNameAndType *> (yysemantic_stack_[(1) - (1)].varnametype);
       VarDecl *vd = new VarDecl(LOC ((yyloc)),
@@ -2282,7 +2282,7 @@ namespace zorba
     break;
 
   case 125:
-#line 1714 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1716 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       VarNameAndType *nt = dynamic_cast<VarNameAndType *> (yysemantic_stack_[(3) - (1)].varnametype);
       VarDecl *vd = new VarDecl(LOC ((yyloc)),
@@ -2295,21 +2295,21 @@ namespace zorba
     break;
 
   case 126:
-#line 1727 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1729 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new AssignExpr (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(5) - (3)].sval)), (yysemantic_stack_[(5) - (5)].expr));
     ;}
     break;
 
   case 127:
-#line 1734 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1736 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new ExitExpr (LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr));
     ;}
     break;
 
   case 128:
-#line 1741 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1743 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       BlockBody *b = dynamic_cast<BlockBody *> ((yysemantic_stack_[(5) - (5)].expr));
       if (b == NULL) {
@@ -2321,49 +2321,49 @@ namespace zorba
     break;
 
   case 129:
-#line 1753 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1755 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new FlowCtlStatement (LOC ((yyloc)), FlowCtlStatement::BREAK);
     ;}
     break;
 
   case 130:
-#line 1757 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1759 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new FlowCtlStatement (LOC ((yyloc)), FlowCtlStatement::CONTINUE);
     ;}
     break;
 
   case 131:
-#line 1764 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1766 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new IndexStatement (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (3)].sval)), IndexStatement::create_stmt);
     ;}
     break;
 
   case 132:
-#line 1768 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1770 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new IndexStatement (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (3)].sval)), IndexStatement::drop_stmt);
     ;}
     break;
 
   case 133:
-#line 1772 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1774 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new IndexStatement (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (3)].sval)), IndexStatement::build_stmt);
     ;}
     break;
 
   case 134:
-#line 1779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
     ;}
     break;
 
   case 135:
-#line 1783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1785 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       FunctionDecl *d = dynamic_cast<FunctionDecl *> ((yysemantic_stack_[(3) - (3)].node));
       d->deterministic = false;
@@ -2372,28 +2372,28 @@ namespace zorba
     break;
 
   case 136:
-#line 1789 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1791 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
     ;}
     break;
 
   case 137:
-#line 1796 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1798 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     ;}
     break;
 
   case 138:
-#line 1800 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1802 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
     ;}
     break;
 
   case 139:
-#line 1804 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1806 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       FunctionDecl *d = dynamic_cast<FunctionDecl *> ((yysemantic_stack_[(2) - (2)].node));
       d->type = (d->type == ParseConstants::fn_extern)
@@ -2404,14 +2404,14 @@ namespace zorba
     break;
 
   case 140:
-#line 1812 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1814 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
     ;}
     break;
 
   case 141:
-#line 1819 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1821 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (2)].sval))),
@@ -2423,7 +2423,7 @@ namespace zorba
     break;
 
   case 142:
-#line 1828 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1830 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (2)].sval))),
@@ -2435,7 +2435,7 @@ namespace zorba
     break;
 
   case 143:
-#line 1840 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1842 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (2)].sval))),
@@ -2447,7 +2447,7 @@ namespace zorba
     break;
 
   case 144:
-#line 1854 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1856 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			ParamList* plist_p = new ParamList(LOC ((yyloc)));
 			if (plist_p) {
@@ -2458,7 +2458,7 @@ namespace zorba
     break;
 
   case 145:
-#line 1862 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1864 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			ParamList* plist_p = dynamic_cast<ParamList*>((yysemantic_stack_[(3) - (1)].node));
 			if (plist_p) {
@@ -2469,7 +2469,7 @@ namespace zorba
     break;
 
   case 146:
-#line 1876 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1878 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Param(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(2) - (2)].sval)),
@@ -2478,7 +2478,7 @@ namespace zorba
     break;
 
   case 147:
-#line 1882 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1884 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Param(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (2)].sval)),
@@ -2487,7 +2487,7 @@ namespace zorba
     break;
 
   case 148:
-#line 1894 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1896 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new EnclosedExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (2)].expr));
@@ -2495,28 +2495,28 @@ namespace zorba
     break;
 
   case 149:
-#line 1902 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1904 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
 		;}
     break;
 
   case 150:
-#line 1913 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1915 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new QueryBody(LOC ((yyloc)), (yysemantic_stack_[(1) - (1)].expr));
 		;}
     break;
 
   case 151:
-#line 1924 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1926 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     ;}
     break;
 
   case 152:
-#line 1928 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1930 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       BlockBody *blk = dynamic_cast<BlockBody *> ((yysemantic_stack_[(2) - (2)].expr)),
         *blk2 = new BlockBody (LOC ((yyloc)));
@@ -2528,14 +2528,14 @@ namespace zorba
     break;
 
   case 153:
-#line 1940 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1942 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new BlockBody (LOC ((yyloc)));
     ;}
     break;
 
   case 154:
-#line 1944 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1946 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       BlockBody *blk = dynamic_cast<BlockBody *> ((yysemantic_stack_[(3) - (1)].expr));
       blk->add ((yysemantic_stack_[(3) - (2)].expr));
@@ -2544,14 +2544,14 @@ namespace zorba
     break;
 
   case 155:
-#line 1953 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1955 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 156:
-#line 1957 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 1959 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			Expr* expr_p = dynamic_cast<Expr*>((yysemantic_stack_[(3) - (1)].expr));
 			if (expr_p == NULL) {
@@ -2564,7 +2564,7 @@ namespace zorba
     break;
 
   case 175:
-#line 2004 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2006 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       ReturnExpr* lReturnExpr = dynamic_cast<ReturnExpr*>((yysemantic_stack_[(2) - (2)].expr));
       (yyval.expr) = new FLWORExpr (LOC ((yyloc)), dynamic_cast<FLWORClauseList*>((yysemantic_stack_[(2) - (1)].node)), lReturnExpr->get_return_val(), lReturnExpr->get_location(), driver.theCompilerCB->m_config.force_gflwor);
@@ -2573,63 +2573,63 @@ namespace zorba
     break;
 
   case 176:
-#line 2013 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2015 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new ReturnExpr(LOC((yyloc)), (yysemantic_stack_[(2) - (2)].expr));
     ;}
     break;
 
   case 177:
-#line 2020 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2022 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.strval) = parser::the_sliding;
     ;}
     break;
 
   case 178:
-#line 2024 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2026 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.strval) = parser::the_tumbling;
     ;}
     break;
 
   case 179:
-#line 2032 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2034 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.strval) = parser::the_start;
     ;}
     break;
 
   case 180:
-#line 2036 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2038 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.strval) = parser::the_end;
     ;}
     break;
 
   case 181:
-#line 2040 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2042 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.strval) = parser::the_only_end;
     ;}
     break;
 
   case 182:
-#line 2047 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2049 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FLWORWinCond (LOC ((yyloc)), dynamic_cast<WindowVars *> ((yysemantic_stack_[(4) - (2)].node)), (yysemantic_stack_[(4) - (4)].expr), (yysemantic_stack_[(4) - (1)].strval) == parser::the_start, (yysemantic_stack_[(4) - (1)].strval) == parser::the_only_end);
     ;}
     break;
 
   case 183:
-#line 2051 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2053 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FLWORWinCond (LOC ((yyloc)), NULL, (yysemantic_stack_[(3) - (3)].expr), (yysemantic_stack_[(3) - (1)].strval) == parser::the_start, (yysemantic_stack_[(3) - (1)].strval) == parser::the_only_end);
     ;}
     break;
 
   case 184:
-#line 2058 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2060 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowClause (LOC ((yyloc)),
                              ((yysemantic_stack_[(5) - (2)].strval) == parser::the_tumbling) ? WindowClause::tumbling_window : WindowClause::sliding_window,
@@ -2640,7 +2640,7 @@ namespace zorba
     break;
 
   case 185:
-#line 2066 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2068 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowClause (LOC ((yyloc)),
                              ((yysemantic_stack_[(4) - (2)].strval) == parser::the_tumbling) ? WindowClause::tumbling_window : WindowClause::sliding_window,
@@ -2650,14 +2650,14 @@ namespace zorba
     break;
 
   case 186:
-#line 2077 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2079 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CountClause (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (3)].sval)));
     ;}
     break;
 
   case 195:
-#line 2095 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2097 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       FLWORClauseList *l = new FLWORClauseList (LOC ((yyloc)));
       l->push_back (dynamic_cast<FLWORClause *> ((yysemantic_stack_[(1) - (1)].node)));
@@ -2666,7 +2666,7 @@ namespace zorba
     break;
 
   case 196:
-#line 2101 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2103 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       FLWORClauseList *l = dynamic_cast<FLWORClauseList *> ((yysemantic_stack_[(2) - (1)].node));
       l->push_back (dynamic_cast<FLWORClause *> ((yysemantic_stack_[(2) - (2)].node)));
@@ -2675,21 +2675,21 @@ namespace zorba
     break;
 
   case 197:
-#line 2110 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2112 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.strval) = NULL;
     ;}
     break;
 
   case 198:
-#line 2114 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2116 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.strval) = parser::the_ofor;
     ;}
     break;
 
   case 199:
-#line 2124 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2126 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForClause(LOC ((yyloc)),
                          dynamic_cast<VarInDeclList*>((yysemantic_stack_[(2) - (2)].node)), (yysemantic_stack_[(2) - (1)].strval) != NULL);
@@ -2697,7 +2697,7 @@ namespace zorba
     break;
 
   case 200:
-#line 2135 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2137 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VarInDeclList* vardecl_list_p = new VarInDeclList(LOC ((yyloc)));
 			vardecl_list_p->push_back(dynamic_cast<VarInDecl*>((yysemantic_stack_[(1) - (1)].node)));
@@ -2706,7 +2706,7 @@ namespace zorba
     break;
 
   case 201:
-#line 2141 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2143 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VarInDeclList* vardecl_list_p = dynamic_cast<VarInDeclList*>((yysemantic_stack_[(4) - (1)].node));
 			if (vardecl_list_p) {
@@ -2717,7 +2717,7 @@ namespace zorba
     break;
 
   case 202:
-#line 2155 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2157 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (1)].sval)),
@@ -2727,7 +2727,7 @@ namespace zorba
     break;
 
   case 203:
-#line 2162 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2164 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (1)].sval)),
@@ -2738,7 +2738,7 @@ namespace zorba
     break;
 
   case 204:
-#line 2170 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2172 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (1)].sval)),
@@ -2750,7 +2750,7 @@ namespace zorba
     break;
 
   case 205:
-#line 2179 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2181 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (1)].sval)),
@@ -2762,7 +2762,7 @@ namespace zorba
     break;
 
   case 206:
-#line 2189 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2191 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (1)].sval)),
@@ -2773,7 +2773,7 @@ namespace zorba
     break;
 
   case 207:
-#line 2197 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2199 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (1)].sval)),
@@ -2785,7 +2785,7 @@ namespace zorba
     break;
 
   case 208:
-#line 2206 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2208 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (1)].sval)),
@@ -2797,7 +2797,7 @@ namespace zorba
     break;
 
   case 209:
-#line 2215 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2217 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(6) - (1)].sval)),
@@ -2809,7 +2809,7 @@ namespace zorba
     break;
 
   case 210:
-#line 2230 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2232 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new PositionalVar(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (3)].sval)));
@@ -2817,7 +2817,7 @@ namespace zorba
     break;
 
   case 211:
-#line 2242 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2244 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FTScoreVar(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (3)].sval)));
@@ -2825,7 +2825,7 @@ namespace zorba
     break;
 
   case 212:
-#line 2253 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2255 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new LetClause(LOC ((yyloc)),
 								dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(3) - (3)].node)));
@@ -2834,7 +2834,7 @@ namespace zorba
     break;
 
   case 213:
-#line 2265 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2267 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VarGetsDeclList* vgdl_p = new VarGetsDeclList(LOC ((yyloc)));
 			vgdl_p->push_back(dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(1) - (1)].node)));
@@ -2843,7 +2843,7 @@ namespace zorba
     break;
 
   case 214:
-#line 2271 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2273 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VarGetsDeclList* vgdl_p = dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(4) - (1)].node));
 			if (vgdl_p) {
@@ -2854,7 +2854,7 @@ namespace zorba
     break;
 
   case 215:
-#line 2283 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2285 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VarGetsDeclList* vgdl_p = new VarGetsDeclList(LOC ((yyloc)));
 			vgdl_p->push_back(dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(1) - (1)].node)));
@@ -2863,7 +2863,7 @@ namespace zorba
     break;
 
   case 216:
-#line 2289 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2291 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			VarGetsDeclList* vgdl_p = dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(4) - (1)].node));
 			if (vgdl_p) {
@@ -2874,7 +2874,7 @@ namespace zorba
     break;
 
   case 217:
-#line 2303 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2305 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (1)].sval)),
@@ -2885,7 +2885,7 @@ namespace zorba
     break;
 
   case 218:
-#line 2311 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2313 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (1)].sval)),
@@ -2896,7 +2896,7 @@ namespace zorba
     break;
 
   case 219:
-#line 2320 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2322 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (1)].sval)),
@@ -2907,7 +2907,7 @@ namespace zorba
     break;
 
   case 220:
-#line 2328 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2330 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (1)].sval)),
@@ -2918,7 +2918,7 @@ namespace zorba
     break;
 
   case 221:
-#line 2340 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2342 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new WindowVarDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (2)].sval)),
@@ -2927,7 +2927,7 @@ namespace zorba
     break;
 
   case 222:
-#line 2346 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2348 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new WindowVarDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (2)].sval)),
@@ -2937,14 +2937,14 @@ namespace zorba
     break;
 
   case 224:
-#line 2357 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2359 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowVars (LOC ((yyloc)), NULL, SYMTAB ((yysemantic_stack_[(2) - (2)].sval)), "", "");
     ;}
     break;
 
   case 225:
-#line 2361 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2363 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
       dynamic_cast<WindowVars *> ((yyval.node))->set_curr (SYMTAB ((yysemantic_stack_[(3) - (2)].sval)));
@@ -2952,14 +2952,14 @@ namespace zorba
     break;
 
   case 226:
-#line 2369 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2371 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowVars (LOC ((yyloc)), dynamic_cast<PositionalVar *> ((yysemantic_stack_[(1) - (1)].node)), "", "", "");
     ;}
     break;
 
   case 227:
-#line 2373 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2375 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
       dynamic_cast<WindowVars *> ((yyval.node))->set_posvar (dynamic_cast<PositionalVar *> ((yysemantic_stack_[(2) - (1)].node)));
@@ -2967,28 +2967,28 @@ namespace zorba
     break;
 
   case 229:
-#line 2382 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2384 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowVars (LOC ((yyloc)), NULL, "", SYMTAB ((yysemantic_stack_[(6) - (3)].sval)), SYMTAB ((yysemantic_stack_[(6) - (6)].sval)));
     ;}
     break;
 
   case 230:
-#line 2386 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2388 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowVars (LOC ((yyloc)), NULL, "", "", SYMTAB ((yysemantic_stack_[(3) - (3)].sval)));
     ;}
     break;
 
   case 231:
-#line 2390 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2392 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowVars (LOC ((yyloc)), NULL, "", SYMTAB ((yysemantic_stack_[(3) - (3)].sval)), "");
     ;}
     break;
 
   case 232:
-#line 2397 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2399 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       std::string name = SYMTAB ((yysemantic_stack_[(1) - (1)].sval));
       (yyval.node) = new VarGetsDecl(LOC ((yyloc)),
@@ -3000,7 +3000,7 @@ namespace zorba
     break;
 
   case 233:
-#line 2412 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2414 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new WhereClause(LOC ((yyloc)),
 								(yysemantic_stack_[(2) - (2)].expr));
@@ -3008,14 +3008,14 @@ namespace zorba
     break;
 
   case 234:
-#line 2420 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2422 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupByClause(LOC((yyloc)), dynamic_cast<GroupSpecList*>((yysemantic_stack_[(3) - (3)].node)));
     ;}
     break;
 
   case 235:
-#line 2427 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2429 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       GroupSpecList* gsl_p = new GroupSpecList(LOC((yyloc)));
       gsl_p->push_back(dynamic_cast<GroupSpec*>((yysemantic_stack_[(1) - (1)].node)));
@@ -3024,7 +3024,7 @@ namespace zorba
     break;
 
   case 236:
-#line 2433 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2435 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       GroupSpecList* gsl_p = dynamic_cast<GroupSpecList*>((yysemantic_stack_[(3) - (1)].node));
       if (gsl_p) {
@@ -3035,7 +3035,7 @@ namespace zorba
     break;
 
   case 237:
-#line 2444 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2446 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)),
                  SYMTAB ((yysemantic_stack_[(2) - (2)].sval)),
@@ -3044,7 +3044,7 @@ namespace zorba
     break;
 
   case 238:
-#line 2450 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2452 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)), 
                  SYMTAB ((yysemantic_stack_[(3) - (2)].sval)), 
@@ -3053,14 +3053,14 @@ namespace zorba
     break;
 
   case 239:
-#line 2459 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2461 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupCollationSpec(LOC((yyloc)), SYMTAB ((yysemantic_stack_[(2) - (2)].sval)));
     ;}
     break;
 
   case 240:
-#line 2469 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2471 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderByClause(LOC ((yyloc)),
 								dynamic_cast<OrderSpecList*>((yysemantic_stack_[(3) - (3)].node)));
@@ -3068,7 +3068,7 @@ namespace zorba
     break;
 
   case 241:
-#line 2474 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2476 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderByClause(LOC ((yyloc)),
 								dynamic_cast<OrderSpecList*>((yysemantic_stack_[(4) - (4)].node)),
@@ -3077,7 +3077,7 @@ namespace zorba
     break;
 
   case 242:
-#line 2486 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2488 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			OrderSpecList* osl_p = new OrderSpecList(LOC ((yyloc)));
 			osl_p->push_back(dynamic_cast<OrderSpec*>((yysemantic_stack_[(1) - (1)].node)));
@@ -3086,7 +3086,7 @@ namespace zorba
     break;
 
   case 243:
-#line 2492 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2494 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			OrderSpecList* osl_p = dynamic_cast<OrderSpecList*>((yysemantic_stack_[(3) - (1)].node));
 			if (osl_p) {
@@ -3097,7 +3097,7 @@ namespace zorba
     break;
 
   case 244:
-#line 2506 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2508 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderSpec(LOC ((yyloc)),
 								(yysemantic_stack_[(1) - (1)].expr),
@@ -3106,7 +3106,7 @@ namespace zorba
     break;
 
   case 245:
-#line 2512 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2514 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderSpec(LOC ((yyloc)),
 								(yysemantic_stack_[(2) - (1)].expr),
@@ -3115,7 +3115,7 @@ namespace zorba
     break;
 
   case 246:
-#line 2524 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2526 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(1) - (1)].node)),
@@ -3125,7 +3125,7 @@ namespace zorba
     break;
 
   case 247:
-#line 2531 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2533 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								NULL,
@@ -3135,7 +3135,7 @@ namespace zorba
     break;
 
   case 248:
-#line 2538 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2540 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								NULL,
@@ -3145,7 +3145,7 @@ namespace zorba
     break;
 
   case 249:
-#line 2545 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2547 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(2) - (1)].node)),
@@ -3155,7 +3155,7 @@ namespace zorba
     break;
 
   case 250:
-#line 2552 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2554 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(2) - (1)].node)),
@@ -3165,7 +3165,7 @@ namespace zorba
     break;
 
   case 251:
-#line 2559 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2561 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								NULL,
@@ -3175,7 +3175,7 @@ namespace zorba
     break;
 
   case 252:
-#line 2566 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2568 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(3) - (1)].node)),
@@ -3185,21 +3185,21 @@ namespace zorba
     break;
 
   case 253:
-#line 2579 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2581 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderDirSpec(LOC ((yyloc)), ParseConstants::dir_ascending);
 		;}
     break;
 
   case 254:
-#line 2583 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2585 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderDirSpec(LOC ((yyloc)), ParseConstants::dir_descending);
 		;}
     break;
 
   case 255:
-#line 2593 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2595 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderEmptySpec(LOC ((yyloc)),
 								StaticContextConsts::empty_greatest);
@@ -3207,7 +3207,7 @@ namespace zorba
     break;
 
   case 256:
-#line 2598 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2600 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderEmptySpec(LOC ((yyloc)),
 								StaticContextConsts::empty_least);
@@ -3215,7 +3215,7 @@ namespace zorba
     break;
 
   case 257:
-#line 2609 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2611 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderCollationSpec(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(2) - (2)].sval)));
@@ -3223,7 +3223,7 @@ namespace zorba
     break;
 
   case 258:
-#line 2620 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2622 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new QuantifiedExpr(LOC ((yyloc)),
 								ParseConstants::quant_some,
@@ -3233,7 +3233,7 @@ namespace zorba
     break;
 
   case 259:
-#line 2627 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2629 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new QuantifiedExpr(LOC ((yyloc)),
 								ParseConstants::quant_every,
@@ -3243,7 +3243,7 @@ namespace zorba
     break;
 
   case 260:
-#line 2640 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2642 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			QVarInDeclList* qvid_list_p = new QVarInDeclList(LOC ((yyloc)));
 			qvid_list_p->push_back(dynamic_cast<QVarInDecl*>((yysemantic_stack_[(1) - (1)].node)));
@@ -3253,7 +3253,7 @@ namespace zorba
     break;
 
   case 261:
-#line 2647 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2649 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			QVarInDeclList* qvid_list_p = dynamic_cast<QVarInDeclList*>((yysemantic_stack_[(4) - (1)].node));
             qvid_list_p->push_back(dynamic_cast<QVarInDecl*>((yysemantic_stack_[(4) - (4)].node)));
@@ -3262,7 +3262,7 @@ namespace zorba
     break;
 
   case 262:
-#line 2659 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2661 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new QVarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (1)].sval)),
@@ -3271,7 +3271,7 @@ namespace zorba
     break;
 
   case 263:
-#line 2665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2667 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new QVarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (1)].sval)),
@@ -3281,7 +3281,7 @@ namespace zorba
     break;
 
   case 264:
-#line 2678 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2680 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new TypeswitchExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(8) - (3)].expr),
@@ -3291,7 +3291,7 @@ namespace zorba
     break;
 
   case 265:
-#line 2685 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2687 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new TypeswitchExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(10) - (3)].expr),
@@ -3302,7 +3302,7 @@ namespace zorba
     break;
 
   case 266:
-#line 2699 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2701 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			CaseClauseList* cc_list_p = new CaseClauseList(LOC ((yyloc)));
 			cc_list_p->push_back(dynamic_cast<CaseClause*>((yysemantic_stack_[(1) - (1)].node)));
@@ -3311,7 +3311,7 @@ namespace zorba
     break;
 
   case 267:
-#line 2705 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2707 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			CaseClauseList* cc_list_p = dynamic_cast<CaseClauseList*>((yysemantic_stack_[(2) - (1)].node));
 			cc_list_p->push_back(dynamic_cast<CaseClause*>((yysemantic_stack_[(2) - (2)].node)));
@@ -3320,7 +3320,7 @@ namespace zorba
     break;
 
   case 268:
-#line 2717 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2719 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CaseClause(LOC ((yyloc)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(4) - (2)].node)),
@@ -3329,7 +3329,7 @@ namespace zorba
     break;
 
   case 269:
-#line 2723 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2725 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CaseClause(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(7) - (3)].sval)),
@@ -3339,7 +3339,7 @@ namespace zorba
     break;
 
   case 270:
-#line 2736 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2738 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new IfExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(8) - (3)].expr), (yysemantic_stack_[(8) - (6)].expr), (yysemantic_stack_[(8) - (8)].expr));
@@ -3347,14 +3347,14 @@ namespace zorba
     break;
 
   case 271:
-#line 2747 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2749 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 272:
-#line 2751 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2753 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new OrExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -3362,14 +3362,14 @@ namespace zorba
     break;
 
   case 273:
-#line 2762 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2764 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 274:
-#line 2766 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2768 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AndExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -3377,14 +3377,14 @@ namespace zorba
     break;
 
   case 275:
-#line 2785 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2787 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 276:
-#line 2789 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2791 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			/*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
 			(yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3395,7 +3395,7 @@ namespace zorba
     break;
 
   case 277:
-#line 2797 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2799 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       /*  ::=  "is" | "<<" | ">>" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3406,7 +3406,7 @@ namespace zorba
     break;
 
   case 278:
-#line 2805 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2807 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
 			(yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3417,7 +3417,7 @@ namespace zorba
     break;
 
   case 279:
-#line 2813 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2815 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3428,12 +3428,12 @@ namespace zorba
     break;
 
   case 280:
-#line 2820 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2822 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { /* this call is needed */  driver.lexer->interpretAsLessThan(); ;}
     break;
 
   case 281:
-#line 2821 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2823 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3444,7 +3444,7 @@ namespace zorba
     break;
 
   case 282:
-#line 2829 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2831 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3455,7 +3455,7 @@ namespace zorba
     break;
 
   case 283:
-#line 2837 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2839 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3466,7 +3466,7 @@ namespace zorba
     break;
 
   case 284:
-#line 2845 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2847 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -3477,14 +3477,14 @@ namespace zorba
     break;
 
   case 285:
-#line 2859 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2861 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 286:
-#line 2863 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2865 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FTContainsExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr),
@@ -3494,7 +3494,7 @@ namespace zorba
     break;
 
   case 287:
-#line 2870 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2872 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FTContainsExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -3504,14 +3504,14 @@ namespace zorba
     break;
 
   case 288:
-#line 2883 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2885 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 289:
-#line 2887 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2889 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new RangeExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -3519,70 +3519,70 @@ namespace zorba
     break;
 
   case 290:
-#line 2898 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2900 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 291:
-#line 2902 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2904 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AdditiveExpr(LOC ((yyloc)), ParseConstants::op_plus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 292:
-#line 2906 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2908 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AdditiveExpr(LOC ((yyloc)), ParseConstants::op_minus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 293:
-#line 2916 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2918 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 294:
-#line 2920 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2922 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_mul, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 295:
-#line 2924 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2926 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_div, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 296:
-#line 2928 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2930 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_idiv, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 297:
-#line 2932 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2934 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_mod, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 298:
-#line 2942 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2944 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 299:
-#line 2946 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2948 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new UnionExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -3590,7 +3590,7 @@ namespace zorba
     break;
 
   case 300:
-#line 2951 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2953 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new UnionExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -3598,35 +3598,35 @@ namespace zorba
     break;
 
   case 301:
-#line 2962 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2964 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 302:
-#line 2966 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2968 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new IntersectExceptExpr(LOC ((yyloc)), ParseConstants::op_intersect, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 303:
-#line 2970 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2972 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new IntersectExceptExpr(LOC ((yyloc)), ParseConstants::op_except, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 304:
-#line 2980 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2982 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 305:
-#line 2984 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2986 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new InstanceofExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -3635,14 +3635,14 @@ namespace zorba
     break;
 
   case 306:
-#line 2996 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 2998 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 307:
-#line 3000 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3002 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new TreatExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -3651,14 +3651,14 @@ namespace zorba
     break;
 
   case 308:
-#line 3012 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3014 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 309:
-#line 3016 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3018 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CastableExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -3667,14 +3667,14 @@ namespace zorba
     break;
 
   case 310:
-#line 3028 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3030 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 311:
-#line 3032 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3034 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CastExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -3683,14 +3683,14 @@ namespace zorba
     break;
 
   case 312:
-#line 3044 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3046 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 313:
-#line 3048 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3050 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new UnaryExpr(LOC ((yyloc)),
 								dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node)),
@@ -3699,28 +3699,28 @@ namespace zorba
     break;
 
   case 314:
-#line 3060 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3062 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SignList(LOC ((yyloc)), true);
 		;}
     break;
 
   case 315:
-#line 3064 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3066 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SignList(LOC ((yyloc)), false);
 		;}
     break;
 
   case 316:
-#line 3068 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3070 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(2) - (1)].node);
 		;}
     break;
 
   case 317:
-#line 3072 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3074 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			SignList* slist_p = dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node));
 			if (slist_p) slist_p->negate();
@@ -3729,112 +3729,112 @@ namespace zorba
     break;
 
   case 318:
-#line 3084 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3086 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 319:
-#line 3088 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3090 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 320:
-#line 3092 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3094 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 321:
-#line 3102 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3104 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_eq);
 		;}
     break;
 
   case 322:
-#line 3106 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3108 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_ne);
 		;}
     break;
 
   case 323:
-#line 3110 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3112 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_lt);
 		;}
     break;
 
   case 324:
-#line 3114 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3116 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_le);
 		;}
     break;
 
   case 325:
-#line 3118 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3120 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_gt);
 		;}
     break;
 
   case 326:
-#line 3122 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3124 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_ge);
 		;}
     break;
 
   case 327:
-#line 3132 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3134 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_is);
 		;}
     break;
 
   case 328:
-#line 3136 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3138 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_precedes);
 		;}
     break;
 
   case 329:
-#line 3140 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3142 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_follows);
 		;}
     break;
 
   case 330:
-#line 3150 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3152 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new ValidateExpr(LOC ((yyloc)), "strict", (yysemantic_stack_[(4) - (3)].expr));
 		;}
     break;
 
   case 331:
-#line 3154 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3156 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new ValidateExpr(LOC ((yyloc)), "lax", (yysemantic_stack_[(5) - (4)].expr));
     ;}
     break;
 
   case 332:
-#line 3158 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3160 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new ValidateExpr(LOC ((yyloc)), "strict", (yysemantic_stack_[(5) - (4)].expr));
     ;}
     break;
 
   case 333:
-#line 3162 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3164 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new ValidateExpr(LOC ((yyloc)),
                             dynamic_cast<TypeName*>((yysemantic_stack_[(6) - (3)].node))->get_name(),
@@ -3843,7 +3843,7 @@ namespace zorba
     break;
 
   case 334:
-#line 3174 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3176 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new ExtensionExpr(LOC ((yyloc)),
 								dynamic_cast<PragmaList*>((yysemantic_stack_[(3) - (1)].node)),
@@ -3852,7 +3852,7 @@ namespace zorba
     break;
 
   case 335:
-#line 3180 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3182 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new ExtensionExpr(LOC ((yyloc)),
 								dynamic_cast<PragmaList*>((yysemantic_stack_[(4) - (1)].node)),
@@ -3861,7 +3861,7 @@ namespace zorba
     break;
 
   case 336:
-#line 3192 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3194 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			PragmaList* pragma_list_p = new PragmaList(LOC ((yyloc)));
 			pragma_list_p->push_back(dynamic_cast<Pragma*>((yysemantic_stack_[(1) - (1)].node)));
@@ -3870,7 +3870,7 @@ namespace zorba
     break;
 
   case 337:
-#line 3198 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3200 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			PragmaList* pragma_list_p = dynamic_cast<PragmaList*>((yysemantic_stack_[(2) - (1)].node));
 			if (pragma_list_p) {
@@ -3881,7 +3881,7 @@ namespace zorba
     break;
 
   case 338:
-#line 3212 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3214 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Pragma(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(3) - (2)].sval))),
@@ -3891,7 +3891,7 @@ namespace zorba
     break;
 
   case 339:
-#line 3218 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3220 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Pragma(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(2) - (2)].sval))),
@@ -3900,28 +3900,28 @@ namespace zorba
     break;
 
   case 340:
-#line 3260 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3262 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_lone_slash, NULL);
 		;}
     break;
 
   case 341:
-#line 3264 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3266 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_slash, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 342:
-#line 3268 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3270 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_slashslash, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 343:
-#line 3272 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3274 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        RelativePathExpr *rpe = dynamic_cast<RelativePathExpr *>((yysemantic_stack_[(1) - (1)].expr));
        (yyval.expr) = (rpe == NULL ?
@@ -3931,14 +3931,14 @@ namespace zorba
     break;
 
   case 344:
-#line 3284 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3286 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = NULL;
     ;}
     break;
 
   case 345:
-#line 3294 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3296 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        AxisStep *as = dynamic_cast<AxisStep *>((yysemantic_stack_[(1) - (1)].expr));
        (yyval.expr) = (as != NULL ?
@@ -3951,35 +3951,35 @@ namespace zorba
     break;
 
   case 346:
-#line 3305 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3307 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 347:
-#line 3310 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3312 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slashslash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 348:
-#line 3320 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3322 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 349:
-#line 3324 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3326 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 350:
-#line 3334 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3336 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ForwardStep*>((yysemantic_stack_[(1) - (1)].node)),
@@ -3988,7 +3988,7 @@ namespace zorba
     break;
 
   case 351:
-#line 3340 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3342 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ForwardStep*>((yysemantic_stack_[(2) - (1)].node)),
@@ -3997,7 +3997,7 @@ namespace zorba
     break;
 
   case 352:
-#line 3346 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3348 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ReverseStep*>((yysemantic_stack_[(1) - (1)].node)),
@@ -4006,7 +4006,7 @@ namespace zorba
     break;
 
   case 353:
-#line 3352 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3354 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ReverseStep*>((yysemantic_stack_[(2) - (1)].node)),
@@ -4015,7 +4015,7 @@ namespace zorba
     break;
 
   case 354:
-#line 3364 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3366 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardStep(LOC ((yyloc)),
 								dynamic_cast<ForwardAxis*>((yysemantic_stack_[(2) - (1)].node)),
@@ -4024,7 +4024,7 @@ namespace zorba
     break;
 
   case 355:
-#line 3370 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3372 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardStep(LOC ((yyloc)),
 								dynamic_cast<AbbrevForwardStep*>((yysemantic_stack_[(1) - (1)].node)));
@@ -4032,70 +4032,70 @@ namespace zorba
     break;
 
   case 356:
-#line 3381 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3383 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_child);
 		;}
     break;
 
   case 357:
-#line 3385 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3387 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_descendant);
 		;}
     break;
 
   case 358:
-#line 3389 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3391 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_attribute);
 		;}
     break;
 
   case 359:
-#line 3393 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3395 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_self);
 		;}
     break;
 
   case 360:
-#line 3397 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3399 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_descendant_or_self);
 		;}
     break;
 
   case 361:
-#line 3401 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3403 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_following_sibling);
 		;}
     break;
 
   case 362:
-#line 3405 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3407 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_following);
 		;}
     break;
 
   case 363:
-#line 3415 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3417 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AbbrevForwardStep(LOC ((yyloc)), (yysemantic_stack_[(1) - (1)].node));
 		;}
     break;
 
   case 364:
-#line 3419 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3421 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AbbrevForwardStep(LOC ((yyloc)), (yysemantic_stack_[(2) - (2)].node), true);
 		;}
     break;
 
   case 365:
-#line 3429 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3431 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ReverseStep(LOC ((yyloc)),
 								dynamic_cast<ReverseAxis*>((yysemantic_stack_[(2) - (1)].node)),
@@ -4104,7 +4104,7 @@ namespace zorba
     break;
 
   case 366:
-#line 3435 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3437 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			ReverseAxis* rev_p = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_parent);
 			(yyval.node) = new ReverseStep(LOC ((yyloc)),
@@ -4113,70 +4113,70 @@ namespace zorba
     break;
 
   case 367:
-#line 3447 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3449 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_parent);
 		;}
     break;
 
   case 368:
-#line 3451 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3453 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_ancestor);
 		;}
     break;
 
   case 369:
-#line 3455 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3457 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_preceding_sibling);
 		;}
     break;
 
   case 370:
-#line 3459 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3461 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_preceding);
 		;}
     break;
 
   case 371:
-#line 3463 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3465 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_ancestor_or_self);
 		;}
     break;
 
   case 372:
-#line 3478 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3480 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 373:
-#line 3482 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3484 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 374:
-#line 3492 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3494 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new NameTest(LOC ((yyloc)), new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(1) - (1)].sval))));
 		;}
     break;
 
   case 375:
-#line 3496 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3498 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new NameTest(LOC ((yyloc)), dynamic_cast<Wildcard*>((yysemantic_stack_[(1) - (1)].node)));
 		;}
     break;
 
   case 376:
-#line 3506 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3508 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Wildcard(LOC ((yyloc)),
                         "",
@@ -4186,7 +4186,7 @@ namespace zorba
     break;
 
   case 377:
-#line 3513 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3515 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Wildcard(LOC ((yyloc)),
                         SYMTAB ((yysemantic_stack_[(1) - (1)].sval)),
@@ -4196,7 +4196,7 @@ namespace zorba
     break;
 
   case 378:
-#line 3520 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3522 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Wildcard(LOC ((yyloc)),
                         "",
@@ -4206,14 +4206,14 @@ namespace zorba
     break;
 
   case 379:
-#line 3533 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3535 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 380:
-#line 3537 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3539 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FilterExpr(LOC ((yyloc)),
                           (yysemantic_stack_[(2) - (1)].expr),
@@ -4222,7 +4222,7 @@ namespace zorba
     break;
 
   case 381:
-#line 3549 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3551 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			PredicateList* pred_list_p = new PredicateList(LOC ((yyloc)));
 			pred_list_p->push_back(dynamic_cast<exprnode*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -4231,7 +4231,7 @@ namespace zorba
     break;
 
   case 382:
-#line 3555 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3557 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			PredicateList* pred_list_p = dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (1)].node));
 			if (pred_list_p) {
@@ -4242,84 +4242,84 @@ namespace zorba
     break;
 
   case 383:
-#line 3569 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3571 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
 		;}
     break;
 
   case 384:
-#line 3580 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3582 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 385:
-#line 3584 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3586 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 386:
-#line 3588 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3590 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 387:
-#line 3592 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3594 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 388:
-#line 3596 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3598 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 389:
-#line 3600 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3602 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 390:
-#line 3604 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3606 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 391:
-#line 3608 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3610 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 392:
-#line 3618 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3620 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 393:
-#line 3622 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3624 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 394:
-#line 3632 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3634 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = NumericLiteral::new_literal(LOC ((yyloc)), ParseConstants::num_decimal, *(yysemantic_stack_[(1) - (1)].decval));
       delete yylval.decval;
@@ -4327,7 +4327,7 @@ namespace zorba
     break;
 
   case 395:
-#line 3637 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3639 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = NumericLiteral::new_literal(LOC ((yyloc)), ParseConstants::num_integer, *(yysemantic_stack_[(1) - (1)].ival));
       delete yylval.ival;
@@ -4335,7 +4335,7 @@ namespace zorba
     break;
 
   case 396:
-#line 3642 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3644 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = NumericLiteral::new_literal(LOC ((yyloc)), ParseConstants::num_double, *(yysemantic_stack_[(1) - (1)].dval));
       delete yylval.dval;
@@ -4343,21 +4343,21 @@ namespace zorba
     break;
 
   case 397:
-#line 3653 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3655 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new VarRef(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(2) - (2)].sval)));
 		;}
     break;
 
   case 398:
-#line 3663 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new ParenthesizedExpr(LOC ((yyloc)), NULL);
 		;}
     break;
 
   case 399:
-#line 3667 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3669 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new ParenthesizedExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (2)].expr));
@@ -4365,14 +4365,14 @@ namespace zorba
     break;
 
   case 400:
-#line 3678 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3680 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new ContextItemExpr(LOC ((yyloc)));
 		;}
     break;
 
   case 401:
-#line 3688 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3690 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new OrderedExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (3)].expr));
@@ -4380,7 +4380,7 @@ namespace zorba
     break;
 
   case 402:
-#line 3699 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3701 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new UnorderedExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (3)].expr));
@@ -4388,7 +4388,7 @@ namespace zorba
     break;
 
   case 403:
-#line 3755 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3757 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FunctionCall(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(3) - (1)].sval))),
@@ -4397,7 +4397,7 @@ namespace zorba
     break;
 
   case 404:
-#line 3761 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3763 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FunctionCall(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (1)].sval))),
@@ -4406,7 +4406,7 @@ namespace zorba
     break;
 
   case 405:
-#line 3773 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3775 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			ArgList* a_list_p = new ArgList(LOC ((yyloc))); 
 			a_list_p->push_back((yysemantic_stack_[(1) - (1)].expr));
@@ -4415,7 +4415,7 @@ namespace zorba
     break;
 
   case 406:
-#line 3779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3781 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			ArgList* a_list_p = dynamic_cast<ArgList*>((yysemantic_stack_[(3) - (1)].node));
 			if (a_list_p) a_list_p->push_back((yysemantic_stack_[(3) - (3)].expr));
@@ -4424,42 +4424,42 @@ namespace zorba
     break;
 
   case 407:
-#line 3791 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3793 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 408:
-#line 3795 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3797 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 409:
-#line 3805 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3807 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 410:
-#line 3809 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3811 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 411:
-#line 3813 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3815 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 412:
-#line 3823 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3825 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (2)].sval))),
@@ -4470,7 +4470,7 @@ namespace zorba
     break;
 
   case 413:
-#line 3831 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3833 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(5) - (2)].sval))),
@@ -4481,7 +4481,7 @@ namespace zorba
     break;
 
   case 414:
-#line 3839 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3841 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(8) - (2)].sval))),
@@ -4492,7 +4492,7 @@ namespace zorba
     break;
 
   case 415:
-#line 3847 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3849 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(9) - (2)].sval))),
@@ -4503,7 +4503,7 @@ namespace zorba
     break;
 
   case 416:
-#line 3855 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3857 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(9) - (2)].sval))),
@@ -4514,7 +4514,7 @@ namespace zorba
     break;
 
   case 417:
-#line 3863 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3865 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(10) - (2)].sval))),
@@ -4525,7 +4525,7 @@ namespace zorba
     break;
 
   case 418:
-#line 3878 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3880 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			DirElemContentList* elem_content_list_p = new DirElemContentList(LOC ((yyloc)));
 			elem_content_list_p->push_back(dynamic_cast<DirElemContent*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -4534,7 +4534,7 @@ namespace zorba
     break;
 
   case 419:
-#line 3884 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3886 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			DirElemContentList* elem_content_list_p = dynamic_cast<DirElemContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (elem_content_list_p) elem_content_list_p->push_back(dynamic_cast<DirElemContent*>((yysemantic_stack_[(2) - (2)].expr)));
@@ -4543,7 +4543,7 @@ namespace zorba
     break;
 
   case 420:
-#line 3896 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3898 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			DirAttributeList* at_list_p = new DirAttributeList(LOC ((yyloc)));
 			at_list_p->push_back(dynamic_cast<DirAttr*>((yysemantic_stack_[(1) - (1)].node)));
@@ -4552,7 +4552,7 @@ namespace zorba
     break;
 
   case 421:
-#line 3902 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3904 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			DirAttributeList* at_list_p = dynamic_cast<DirAttributeList*>((yysemantic_stack_[(2) - (1)].node));
 			if (at_list_p) {
@@ -4563,7 +4563,7 @@ namespace zorba
     break;
 
   case 422:
-#line 3915 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3917 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DirAttr(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(6) - (2)].sval))),
@@ -4572,7 +4572,7 @@ namespace zorba
     break;
 
   case 425:
-#line 3932 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3934 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DirAttributeValue(LOC ((yyloc)),
 								dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
@@ -4580,7 +4580,7 @@ namespace zorba
     break;
 
   case 426:
-#line 3937 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3939 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DirAttributeValue(LOC ((yyloc)),
 								dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
@@ -4588,21 +4588,21 @@ namespace zorba
     break;
 
   case 427:
-#line 3948 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3950 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new QuoteAttrContentList(LOC ((yyloc)));
 		;}
     break;
 
   case 428:
-#line 3952 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3954 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 429:
-#line 3959 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3961 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(LOC ((yyloc)));
 			qo_list_p->push_back(new QuoteAttrValueContent(LOC ((yyloc)),std::string("\"")));
@@ -4611,7 +4611,7 @@ namespace zorba
     break;
 
   case 430:
-#line 3965 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3967 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(LOC ((yyloc)));
 			qo_list_p->push_back(dynamic_cast<QuoteAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)));
@@ -4620,7 +4620,7 @@ namespace zorba
     break;
 
   case 431:
-#line 3971 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3973 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (qo_list_p) {
@@ -4631,7 +4631,7 @@ namespace zorba
     break;
 
   case 432:
-#line 3979 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3981 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (qo_list_p) {
@@ -4642,21 +4642,21 @@ namespace zorba
     break;
 
   case 433:
-#line 3993 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3995 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AposAttrContentList(LOC ((yyloc)));
 		;}
     break;
 
   case 434:
-#line 3997 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 3999 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 435:
-#line 4004 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4006 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			AposAttrContentList* at_list_p = new AposAttrContentList(LOC ((yyloc)));
 			at_list_p->push_back(new AposAttrValueContent(LOC ((yyloc)),"'"));
@@ -4665,7 +4665,7 @@ namespace zorba
     break;
 
   case 436:
-#line 4010 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4012 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			AposAttrContentList* at_list_p = new AposAttrContentList(LOC ((yyloc)));
 			at_list_p->push_back(dynamic_cast<AposAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)));
@@ -4674,7 +4674,7 @@ namespace zorba
     break;
 
   case 437:
-#line 4016 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4018 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (at_list_p) {
@@ -4685,7 +4685,7 @@ namespace zorba
     break;
 
   case 438:
-#line 4024 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4026 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (at_list_p) {
@@ -4696,7 +4696,7 @@ namespace zorba
     break;
 
   case 439:
-#line 4038 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4040 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new QuoteAttrValueContent(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(1) - (1)].sval)));
@@ -4704,7 +4704,7 @@ namespace zorba
     break;
 
   case 440:
-#line 4043 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4045 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new QuoteAttrValueContent(LOC ((yyloc)),
 								dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -4712,7 +4712,7 @@ namespace zorba
     break;
 
   case 441:
-#line 4054 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4056 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AposAttrValueContent(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(1) - (1)].sval)));
@@ -4720,7 +4720,7 @@ namespace zorba
     break;
 
   case 442:
-#line 4059 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4061 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AposAttrValueContent(LOC ((yyloc)),
 								dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -4728,7 +4728,7 @@ namespace zorba
     break;
 
   case 443:
-#line 4070 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4072 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
 								(yysemantic_stack_[(1) - (1)].expr));
@@ -4736,7 +4736,7 @@ namespace zorba
     break;
 
   case 444:
-#line 4075 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4077 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(1) - (1)].sval)));
@@ -4744,7 +4744,7 @@ namespace zorba
     break;
 
   case 445:
-#line 4080 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4082 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>((yysemantic_stack_[(1) - (1)].expr));
 			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
@@ -4753,7 +4753,7 @@ namespace zorba
     break;
 
   case 446:
-#line 4086 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4088 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr));
 			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
@@ -4762,7 +4762,7 @@ namespace zorba
     break;
 
   case 447:
-#line 4098 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4100 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CommonContent(LOC ((yyloc)),
                 ParseConstants::cont_charref,
@@ -4771,7 +4771,7 @@ namespace zorba
     break;
 
   case 448:
-#line 4104 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4106 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CommonContent(LOC ((yyloc)),
 								ParseConstants::cont_escape_lbrace);
@@ -4779,7 +4779,7 @@ namespace zorba
     break;
 
   case 449:
-#line 4109 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4111 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CommonContent(LOC ((yyloc)),
 								ParseConstants::cont_escape_rbrace);
@@ -4787,7 +4787,7 @@ namespace zorba
     break;
 
   case 450:
-#line 4114 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4116 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CommonContent(LOC ((yyloc)),
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -4795,7 +4795,7 @@ namespace zorba
     break;
 
   case 451:
-#line 4125 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4127 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirCommentConstructor(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (2)].sval)));
@@ -4803,14 +4803,14 @@ namespace zorba
     break;
 
   case 452:
-#line 4130 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4132 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new DirCommentConstructor(LOC ((yyloc)), "");
     ;}
     break;
 
   case 453:
-#line 4145 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4147 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirPIConstructor(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (2)].sval)));
@@ -4818,7 +4818,7 @@ namespace zorba
     break;
 
   case 454:
-#line 4150 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4152 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirPIConstructor(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (2)].sval)),
@@ -4827,56 +4827,56 @@ namespace zorba
     break;
 
   case 455:
-#line 4167 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4169 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CDataSection(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(2) - (2)].sval)));
 		;}
     break;
 
   case 456:
-#line 4182 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4184 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 457:
-#line 4186 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4188 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 458:
-#line 4190 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4192 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 459:
-#line 4194 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4196 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 460:
-#line 4198 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4200 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 461:
-#line 4202 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4204 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 462:
-#line 4212 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4214 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompDocConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (3)].expr));
@@ -4884,7 +4884,7 @@ namespace zorba
     break;
 
   case 463:
-#line 4223 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4225 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (2)].sval))),
@@ -4893,7 +4893,7 @@ namespace zorba
     break;
 
   case 464:
-#line 4229 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4231 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(5) - (2)].sval))),
@@ -4902,7 +4902,7 @@ namespace zorba
     break;
 
   case 465:
-#line 4235 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4237 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(6) - (3)].expr), NULL);
@@ -4910,7 +4910,7 @@ namespace zorba
     break;
 
   case 466:
-#line 4240 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4242 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr));
@@ -4918,7 +4918,7 @@ namespace zorba
     break;
 
   case 467:
-#line 4262 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4264 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (2)].sval))),
@@ -4927,7 +4927,7 @@ namespace zorba
     break;
 
   case 468:
-#line 4268 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4270 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(5) - (2)].sval))),
@@ -4936,7 +4936,7 @@ namespace zorba
     break;
 
   case 469:
-#line 4274 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4276 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(6) - (3)].expr), NULL);
@@ -4944,7 +4944,7 @@ namespace zorba
     break;
 
   case 470:
-#line 4279 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4281 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr));
@@ -4952,21 +4952,21 @@ namespace zorba
     break;
 
   case 471:
-#line 4290 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4292 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompTextConstructor(LOC ((yyloc)), (yysemantic_stack_[(4) - (3)].expr));
 		;}
     break;
 
   case 472:
-#line 4300 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4302 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompCommentConstructor(LOC ((yyloc)), (yysemantic_stack_[(4) - (3)].expr));
 		;}
     break;
 
   case 473:
-#line 4310 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4312 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (2)].sval)),
@@ -4975,7 +4975,7 @@ namespace zorba
     break;
 
   case 474:
-#line 4316 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4318 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (2)].sval)),
@@ -4984,7 +4984,7 @@ namespace zorba
     break;
 
   case 475:
-#line 4322 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4324 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(6) - (3)].expr), NULL);
@@ -4992,7 +4992,7 @@ namespace zorba
     break;
 
   case 476:
-#line 4327 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4329 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr));
@@ -5000,7 +5000,7 @@ namespace zorba
     break;
 
   case 477:
-#line 4338 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4340 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SingleType(LOC ((yyloc)),
 								dynamic_cast<AtomicType*>((yysemantic_stack_[(1) - (1)].node)),
@@ -5009,7 +5009,7 @@ namespace zorba
     break;
 
   case 478:
-#line 4344 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4346 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SingleType(LOC ((yyloc)),
 								dynamic_cast<AtomicType*>((yysemantic_stack_[(2) - (1)].node)),
@@ -5018,14 +5018,14 @@ namespace zorba
     break;
 
   case 479:
-#line 4356 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4358 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(2) - (2)].node);
 		;}
     break;
 
   case 480:
-#line 4367 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4369 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SequenceType(LOC ((yyloc)),
 								(yysemantic_stack_[(1) - (1)].node),
@@ -5034,7 +5034,7 @@ namespace zorba
     break;
 
   case 481:
-#line 4373 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4375 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SequenceType(LOC ((yyloc)),
 								(yysemantic_stack_[(2) - (1)].node),
@@ -5043,14 +5043,14 @@ namespace zorba
     break;
 
   case 482:
-#line 4379 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4381 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SequenceType(LOC ((yyloc)), NULL, NULL);
 		;}
     break;
 
   case 483:
-#line 4416 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4418 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OccurrenceIndicator(LOC ((yyloc)),
 								ParseConstants::occurs_optionally);
@@ -5058,7 +5058,7 @@ namespace zorba
     break;
 
   case 484:
-#line 4421 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4423 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OccurrenceIndicator(LOC ((yyloc)),
 								ParseConstants::occurs_zero_or_more);
@@ -5066,7 +5066,7 @@ namespace zorba
     break;
 
   case 485:
-#line 4426 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4428 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OccurrenceIndicator(LOC ((yyloc)),
 								ParseConstants::occurs_one_or_more);
@@ -5074,28 +5074,28 @@ namespace zorba
     break;
 
   case 486:
-#line 4437 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4439 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 487:
-#line 4441 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4443 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 488:
-#line 4445 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4447 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ItemType(LOC ((yyloc)),true);
 		;}
     break;
 
   case 489:
-#line 4455 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4457 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AtomicType(LOC ((yyloc)),
 								new QName(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(1) - (1)].sval))));
@@ -5103,84 +5103,84 @@ namespace zorba
     break;
 
   case 490:
-#line 4466 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4468 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 491:
-#line 4470 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4472 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 492:
-#line 4474 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4476 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 493:
-#line 4478 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4480 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 494:
-#line 4482 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4484 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 495:
-#line 4486 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4488 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 496:
-#line 4490 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4492 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 497:
-#line 4494 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4496 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 498:
-#line 4498 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4500 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 499:
-#line 4508 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4510 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AnyKindTest(LOC ((yyloc)));
 		;}
     break;
 
   case 500:
-#line 4518 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4520 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DocumentTest(LOC ((yyloc)));
 		;}
     break;
 
   case 501:
-#line 4522 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4524 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DocumentTest(LOC ((yyloc)),
 								dynamic_cast<ElementTest*>((yysemantic_stack_[(4) - (3)].node)));
@@ -5188,7 +5188,7 @@ namespace zorba
     break;
 
   case 502:
-#line 4527 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4529 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DocumentTest(LOC ((yyloc)),
 								dynamic_cast<SchemaElementTest*>((yysemantic_stack_[(4) - (3)].node)));
@@ -5196,42 +5196,42 @@ namespace zorba
     break;
 
   case 503:
-#line 4538 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4540 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new TextTest(LOC ((yyloc)));
 		;}
     break;
 
   case 504:
-#line 4548 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4550 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CommentTest(LOC ((yyloc)));
 		;}
     break;
 
   case 505:
-#line 4558 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4560 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new PITest(LOC ((yyloc)), "");
 		;}
     break;
 
   case 506:
-#line 4562 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4564 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new PITest(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(4) - (3)].sval)));
 		;}
     break;
 
   case 507:
-#line 4566 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4568 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new PITest(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(4) - (3)].sval)));
 		;}
     break;
 
   case 508:
-#line 4576 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4578 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								NULL,
@@ -5240,7 +5240,7 @@ namespace zorba
     break;
 
   case 509:
-#line 4582 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4584 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (3)].sval))),
@@ -5249,7 +5249,7 @@ namespace zorba
     break;
 
   case 510:
-#line 4588 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4590 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(6) - (3)].sval))),
@@ -5258,7 +5258,7 @@ namespace zorba
     break;
 
   case 511:
-#line 4594 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4596 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								NULL,
@@ -5267,7 +5267,7 @@ namespace zorba
     break;
 
   case 512:
-#line 4600 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4602 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								NULL,
@@ -5276,7 +5276,7 @@ namespace zorba
     break;
 
   case 513:
-#line 4612 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4614 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaAttributeTest(LOC ((yyloc)),
 								new QName(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (2)].sval))));
@@ -5284,7 +5284,7 @@ namespace zorba
     break;
 
   case 514:
-#line 4623 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4625 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
                            NULL,
@@ -5294,7 +5294,7 @@ namespace zorba
     break;
 
   case 515:
-#line 4630 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4632 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
                            new QName(LOC((yyloc)), SYMTAB ((yysemantic_stack_[(4) - (3)].sval))),
@@ -5304,7 +5304,7 @@ namespace zorba
     break;
 
   case 516:
-#line 4637 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4639 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
                            new QName(LOC((yyloc)),SYMTAB ((yysemantic_stack_[(6) - (3)].sval))),
@@ -5314,7 +5314,7 @@ namespace zorba
     break;
 
   case 517:
-#line 4644 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4646 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
                            new QName(LOC((yyloc)), SYMTAB ((yysemantic_stack_[(6) - (3)].sval))),
@@ -5324,7 +5324,7 @@ namespace zorba
     break;
 
   case 518:
-#line 4651 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4653 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									NULL,
@@ -5334,7 +5334,7 @@ namespace zorba
     break;
 
   case 519:
-#line 4658 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4660 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									NULL,
@@ -5344,7 +5344,7 @@ namespace zorba
     break;
 
   case 520:
-#line 4665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4667 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									NULL,
@@ -5354,7 +5354,7 @@ namespace zorba
     break;
 
   case 521:
-#line 4678 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4680 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaElementTest(LOC ((yyloc)),
 									new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (3)].sval))));
@@ -5362,7 +5362,7 @@ namespace zorba
     break;
 
   case 522:
-#line 4699 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4701 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new TypeName(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(1) - (1)].sval))));
@@ -5370,7 +5370,7 @@ namespace zorba
     break;
 
   case 523:
-#line 4706 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4708 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new TypeName(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(2) - (1)].sval))),
@@ -5379,35 +5379,35 @@ namespace zorba
     break;
 
   case 524:
-#line 4726 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4728 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new StringLiteral(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
   case 525:
-#line 4766 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4768 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new RevalidationDecl (LOC ((yyloc)), StaticContextConsts::strict_validation);
 		;}
     break;
 
   case 526:
-#line 4770 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4772 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new RevalidationDecl (LOC ((yyloc)), StaticContextConsts::lax_validation);
     ;}
     break;
 
   case 527:
-#line 4774 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4776 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new RevalidationDecl (LOC ((yyloc)), StaticContextConsts::skip_validation);
     ;}
     break;
 
   case 528:
-#line 4783 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4785 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5416,7 +5416,7 @@ namespace zorba
     break;
 
   case 529:
-#line 4789 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4791 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5425,7 +5425,7 @@ namespace zorba
     break;
 
   case 530:
-#line 4795 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4797 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5434,7 +5434,7 @@ namespace zorba
     break;
 
   case 531:
-#line 4801 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4803 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5443,7 +5443,7 @@ namespace zorba
     break;
 
   case 532:
-#line 4807 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4809 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5452,7 +5452,7 @@ namespace zorba
     break;
 
   case 533:
-#line 4814 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4816 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5461,7 +5461,7 @@ namespace zorba
     break;
 
   case 534:
-#line 4820 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4822 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5470,7 +5470,7 @@ namespace zorba
     break;
 
   case 535:
-#line 4826 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4828 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5479,7 +5479,7 @@ namespace zorba
     break;
 
   case 536:
-#line 4832 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4834 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5488,7 +5488,7 @@ namespace zorba
     break;
 
   case 537:
-#line 4838 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4840 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -5497,21 +5497,21 @@ namespace zorba
     break;
 
   case 538:
-#line 4850 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4852 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new DeleteExpr( LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 539:
-#line 4855 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4857 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new DeleteExpr( LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 540:
-#line 4865 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4867 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new ReplaceExpr(
                   LOC ((yyloc)),
@@ -5520,7 +5520,7 @@ namespace zorba
     break;
 
   case 541:
-#line 4871 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4873 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new ReplaceExpr(
                   LOC ((yyloc)),
@@ -5529,7 +5529,7 @@ namespace zorba
     break;
 
   case 542:
-#line 4883 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4885 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new RenameExpr(
                   LOC ((yyloc)), (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
@@ -5537,7 +5537,7 @@ namespace zorba
     break;
 
   case 543:
-#line 4909 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4911 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       VarNameList* lList = dynamic_cast<VarNameList*>((yysemantic_stack_[(7) - (3)].expr));
       (yyval.expr) = new TransformExpr(LOC((yyloc)), lList, (yysemantic_stack_[(7) - (5)].expr), (yysemantic_stack_[(7) - (7)].expr));
@@ -5545,7 +5545,7 @@ namespace zorba
     break;
 
   case 544:
-#line 4920 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4922 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        VarNameList* lList = new VarNameList(LOC((yyloc)));
        lList->push_back (dynamic_cast<VarBinding*> ((yysemantic_stack_[(1) - (1)].expr)));
@@ -5554,7 +5554,7 @@ namespace zorba
     break;
 
   case 545:
-#line 4926 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4928 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        VarNameList* lList = dynamic_cast<VarNameList*>((yysemantic_stack_[(4) - (1)].expr));
        VarBinding* lBinding = dynamic_cast<VarBinding*>((yysemantic_stack_[(4) - (4)].expr));
@@ -5564,14 +5564,14 @@ namespace zorba
     break;
 
   case 546:
-#line 4939 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4941 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new VarBinding(LOC((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (1)].sval)), (yysemantic_stack_[(3) - (3)].expr));  
     ;}
     break;
 
   case 547:
-#line 4953 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4955 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new TryExpr(LOC ((yyloc)),
 								       (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
@@ -5579,7 +5579,7 @@ namespace zorba
     break;
 
   case 548:
-#line 4960 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4962 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        CatchListExpr* aCatchListExpr = new CatchListExpr(LOC ((yyloc)));
        aCatchListExpr->push_back(static_cast<CatchExpr*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -5588,7 +5588,7 @@ namespace zorba
     break;
 
   case 549:
-#line 4966 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4968 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       CatchListExpr* aCatchListExpr = dynamic_cast<CatchListExpr*>((yysemantic_stack_[(2) - (1)].expr));
       if (aCatchListExpr) {
@@ -5599,7 +5599,7 @@ namespace zorba
     break;
 
   case 550:
-#line 4977 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4979 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC ((yyloc)),
                           *(yysemantic_stack_[(3) - (2)].name_test_list),
@@ -5609,7 +5609,7 @@ namespace zorba
     break;
 
   case 551:
-#line 4984 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4986 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC ((yyloc)),
                           *(yysemantic_stack_[(7) - (2)].name_test_list),
@@ -5620,7 +5620,7 @@ namespace zorba
     break;
 
   case 552:
-#line 4993 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 4995 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC ((yyloc)),
                           *(yysemantic_stack_[(10) - (2)].name_test_list),
@@ -5632,7 +5632,7 @@ namespace zorba
     break;
 
   case 553:
-#line 5002 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5004 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC ((yyloc)),
                           *(yysemantic_stack_[(13) - (2)].name_test_list),
@@ -5645,7 +5645,7 @@ namespace zorba
     break;
 
   case 554:
-#line 5015 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5017 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       CatchExpr::NameTestList *name_test_list = new CatchExpr::NameTestList;
       name_test_list->push_back (static_cast<NameTest *> ((yysemantic_stack_[(1) - (1)].node)));
@@ -5654,7 +5654,7 @@ namespace zorba
     break;
 
   case 555:
-#line 5021 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5023 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       CatchExpr::NameTestList *name_test_list =
         static_cast<CatchExpr::NameTestList *> ((yysemantic_stack_[(3) - (1)].name_test_list));
@@ -5663,952 +5663,955 @@ namespace zorba
     ;}
     break;
 
-  case 557:
-#line 5034 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-    std::string tmp = SYMTAB ((yysemantic_stack_[(1) - (1)].sval));
-    for (unsigned int i = 0; i<tmp.size(); i++)
-      if (tmp[i] == ':')
-      {
-        error((yylocation_stack_[(1) - (1)]), "A NCName is expected, found a QName");
-        YYERROR;
-      }
-    (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval);
-  ;}
-    break;
-
   case 558:
-#line 5051 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5035 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     { (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval); ;}
     break;
 
   case 559:
-#line 5052 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("xquery"); ;}
-    break;
-
-  case 560:
-#line 5053 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("empty"); ;}
+#line 5040 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+      std::string tmp = SYMTAB ((yysemantic_stack_[(1) - (1)].sval));
+      if (tmp.find (':') != std::string::npos) {
+        error((yylocation_stack_[(1) - (1)]), "A NCName is expected, found a QName");
+        YYERROR;
+      }
+      (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval);
+    ;}
     break;
 
   case 561:
-#line 5054 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("attribute"); ;}
+#line 5056 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval); ;}
     break;
 
   case 562:
-#line 5055 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("comment"); ;}
+#line 5059 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("xquery"); ;}
     break;
 
   case 563:
-#line 5056 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("document-node"); ;}
+#line 5060 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("empty"); ;}
     break;
 
   case 564:
-#line 5057 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("element"); ;}
+#line 5061 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("attribute"); ;}
     break;
 
   case 565:
-#line 5058 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("item"); ;}
+#line 5062 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("comment"); ;}
     break;
 
   case 566:
-#line 5059 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("if"); ;}
+#line 5063 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("document-node"); ;}
     break;
 
   case 567:
-#line 5060 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("node"); ;}
+#line 5064 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("element"); ;}
     break;
 
   case 568:
-#line 5061 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("processing-instruction"); ;}
+#line 5065 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("item"); ;}
     break;
 
   case 569:
-#line 5062 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("schema-attribute"); ;}
+#line 5066 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("if"); ;}
     break;
 
   case 570:
-#line 5063 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("schema-element"); ;}
+#line 5067 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("node"); ;}
     break;
 
   case 571:
-#line 5064 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("text"); ;}
+#line 5068 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("processing-instruction"); ;}
     break;
 
   case 572:
-#line 5065 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("typeswitch"); ;}
+#line 5069 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("schema-attribute"); ;}
     break;
 
   case 573:
-#line 5066 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("empty-sequence"); ;}
+#line 5070 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("schema-element"); ;}
     break;
 
   case 574:
-#line 5067 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("boundary-space"); ;}
+#line 5071 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("text"); ;}
     break;
 
   case 575:
-#line 5068 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("ft-option"); ;}
+#line 5072 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("typeswitch"); ;}
     break;
 
   case 576:
-#line 5069 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("base-uri"); ;}
+#line 5073 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("empty-sequence"); ;}
     break;
 
   case 577:
-#line 5070 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("lax"); ;}
+#line 5074 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("boundary-space"); ;}
     break;
 
   case 578:
-#line 5071 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("strict"); ;}
+#line 5075 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("ft-option"); ;}
     break;
 
   case 579:
-#line 5072 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("idiv"); ;}
+#line 5076 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("base-uri"); ;}
     break;
 
   case 580:
-#line 5073 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("document"); ;}
+#line 5077 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("lax"); ;}
     break;
 
   case 581:
-#line 5074 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("not"); ;}
+#line 5078 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("strict"); ;}
     break;
 
   case 582:
-#line 5075 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("sensitive"); ;}
+#line 5079 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("idiv"); ;}
     break;
 
   case 583:
-#line 5076 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("insensitive"); ;}
+#line 5080 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("document"); ;}
     break;
 
   case 584:
-#line 5077 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("diacritics"); ;}
+#line 5081 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("not"); ;}
     break;
 
   case 585:
-#line 5078 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("without"); ;}
+#line 5082 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("sensitive"); ;}
     break;
 
   case 586:
-#line 5079 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("stemming"); ;}
+#line 5083 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("insensitive"); ;}
     break;
 
   case 587:
-#line 5080 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("thesaurus"); ;}
+#line 5084 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("diacritics"); ;}
     break;
 
   case 588:
-#line 5081 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("stop"); ;}
+#line 5085 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("without"); ;}
     break;
 
   case 589:
-#line 5082 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("wildcards"); ;}
+#line 5086 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("stemming"); ;}
     break;
 
   case 590:
-#line 5083 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("entire"); ;}
+#line 5087 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("thesaurus"); ;}
     break;
 
   case 591:
-#line 5084 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("content"); ;}
+#line 5088 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("stop"); ;}
     break;
 
   case 592:
-#line 5085 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("word"); ;}
+#line 5089 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("wildcards"); ;}
     break;
 
   case 593:
-#line 5086 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("start"); ;}
+#line 5090 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("entire"); ;}
     break;
 
   case 594:
-#line 5087 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("end"); ;}
+#line 5091 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("content"); ;}
     break;
 
   case 595:
-#line 5088 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("most"); ;}
+#line 5092 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("word"); ;}
     break;
 
   case 596:
-#line 5089 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("skip"); ;}
+#line 5093 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("start"); ;}
     break;
 
   case 597:
-#line 5090 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("copy"); ;}
+#line 5094 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("end"); ;}
     break;
 
   case 598:
-#line 5091 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("value"); ;}
+#line 5095 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("most"); ;}
     break;
 
   case 599:
-#line 5092 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("eq"); ;}
+#line 5096 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("skip"); ;}
     break;
 
   case 600:
-#line 5093 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("ne"); ;}
+#line 5097 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("copy"); ;}
     break;
 
   case 601:
-#line 5094 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("lt"); ;}
+#line 5098 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("value"); ;}
     break;
 
   case 602:
-#line 5095 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("le"); ;}
+#line 5099 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("eq"); ;}
     break;
 
   case 603:
-#line 5096 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("gt"); ;}
+#line 5100 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("ne"); ;}
     break;
 
   case 604:
-#line 5097 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("ge"); ;}
+#line 5101 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("lt"); ;}
     break;
 
   case 605:
-#line 5098 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("at"); ;}
+#line 5102 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("le"); ;}
     break;
 
   case 606:
-#line 5099 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("context"); ;}
+#line 5103 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("gt"); ;}
     break;
 
   case 607:
-#line 5100 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("variable"); ;}
+#line 5104 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("ge"); ;}
     break;
 
   case 608:
-#line 5101 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("return"); ;}
+#line 5105 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("at"); ;}
     break;
 
   case 609:
-#line 5102 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("for"); ;}
+#line 5106 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("context"); ;}
     break;
 
   case 610:
-#line 5103 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("outer"); ;}
+#line 5107 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("variable"); ;}
     break;
 
   case 611:
-#line 5104 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("sliding"); ;}
+#line 5108 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("return"); ;}
     break;
 
   case 612:
-#line 5105 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("tumbling"); ;}
+#line 5109 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("for"); ;}
     break;
 
   case 613:
-#line 5106 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("previous"); ;}
+#line 5110 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("outer"); ;}
     break;
 
   case 614:
-#line 5107 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("next"); ;}
+#line 5111 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("sliding"); ;}
     break;
 
   case 615:
-#line 5108 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("only"); ;}
+#line 5112 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("tumbling"); ;}
     break;
 
   case 616:
-#line 5109 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("when"); ;}
+#line 5113 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("previous"); ;}
     break;
 
   case 617:
-#line 5110 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("count"); ;}
+#line 5114 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("next"); ;}
     break;
 
   case 618:
-#line 5111 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("in"); ;}
+#line 5115 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("only"); ;}
     break;
 
   case 619:
-#line 5112 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("let"); ;}
+#line 5116 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("when"); ;}
     break;
 
   case 620:
-#line 5113 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("where"); ;}
+#line 5117 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("count"); ;}
     break;
 
   case 621:
-#line 5114 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("by"); ;}
+#line 5118 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("in"); ;}
     break;
 
   case 622:
-#line 5115 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("group"); ;}
+#line 5119 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("let"); ;}
     break;
 
   case 623:
-#line 5116 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("order"); ;}
+#line 5120 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("where"); ;}
     break;
 
   case 624:
-#line 5117 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("stable"); ;}
+#line 5121 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("by"); ;}
     break;
 
   case 625:
-#line 5118 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("ascending"); ;}
+#line 5122 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("group"); ;}
     break;
 
   case 626:
-#line 5119 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("descending"); ;}
+#line 5123 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("order"); ;}
     break;
 
   case 627:
-#line 5120 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("greatest"); ;}
+#line 5124 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("stable"); ;}
     break;
 
   case 628:
-#line 5121 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("least"); ;}
+#line 5125 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("ascending"); ;}
     break;
 
   case 629:
-#line 5122 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("collation"); ;}
+#line 5126 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("descending"); ;}
     break;
 
   case 630:
-#line 5123 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("some"); ;}
+#line 5127 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("greatest"); ;}
     break;
 
   case 631:
-#line 5124 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("every"); ;}
+#line 5128 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("least"); ;}
     break;
 
   case 632:
-#line 5125 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("satisfies"); ;}
+#line 5129 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("collation"); ;}
     break;
 
   case 633:
-#line 5126 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("case"); ;}
+#line 5130 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("some"); ;}
     break;
 
   case 634:
-#line 5127 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("as"); ;}
+#line 5131 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("every"); ;}
     break;
 
   case 635:
-#line 5128 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("then"); ;}
+#line 5132 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("satisfies"); ;}
     break;
 
   case 636:
-#line 5129 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("else"); ;}
+#line 5133 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("case"); ;}
     break;
 
   case 637:
-#line 5130 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("or"); ;}
+#line 5134 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("as"); ;}
     break;
 
   case 638:
-#line 5131 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("and"); ;}
+#line 5135 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("then"); ;}
     break;
 
   case 639:
-#line 5132 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("instance"); ;}
+#line 5136 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("else"); ;}
     break;
 
   case 640:
-#line 5133 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("of"); ;}
+#line 5137 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("or"); ;}
     break;
 
   case 641:
-#line 5134 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("castable"); ;}
+#line 5138 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("and"); ;}
     break;
 
   case 642:
-#line 5135 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("to"); ;}
+#line 5139 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("instance"); ;}
     break;
 
   case 643:
-#line 5136 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("div"); ;}
+#line 5140 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("of"); ;}
     break;
 
   case 644:
-#line 5137 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("mod"); ;}
+#line 5141 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("castable"); ;}
     break;
 
   case 645:
-#line 5138 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("union"); ;}
+#line 5142 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("to"); ;}
     break;
 
   case 646:
-#line 5139 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("intersect"); ;}
+#line 5143 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("div"); ;}
     break;
 
   case 647:
-#line 5140 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("except"); ;}
+#line 5144 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("mod"); ;}
     break;
 
   case 648:
-#line 5141 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("validate"); ;}
+#line 5145 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("union"); ;}
     break;
 
   case 649:
-#line 5142 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("cast"); ;}
+#line 5146 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("intersect"); ;}
     break;
 
   case 650:
-#line 5143 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("treat"); ;}
+#line 5147 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("except"); ;}
     break;
 
   case 651:
-#line 5144 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("is"); ;}
+#line 5148 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("validate"); ;}
     break;
 
   case 652:
-#line 5145 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("preserve"); ;}
+#line 5149 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("cast"); ;}
     break;
 
   case 653:
-#line 5146 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("strip"); ;}
+#line 5150 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("treat"); ;}
     break;
 
   case 654:
-#line 5147 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("namespace"); ;}
+#line 5151 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("is"); ;}
     break;
 
   case 655:
-#line 5148 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("external"); ;}
+#line 5152 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("preserve"); ;}
     break;
 
   case 656:
-#line 5149 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("encoding"); ;}
+#line 5153 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("strip"); ;}
     break;
 
   case 657:
-#line 5150 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("no-preserve"); ;}
+#line 5154 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("namespace"); ;}
     break;
 
   case 658:
-#line 5151 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("inherit"); ;}
+#line 5155 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("external"); ;}
     break;
 
   case 659:
-#line 5152 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("no-inherit"); ;}
+#line 5156 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("encoding"); ;}
     break;
 
   case 660:
-#line 5153 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("declare"); ;}
+#line 5157 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("no-preserve"); ;}
     break;
 
   case 661:
-#line 5154 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("construction"); ;}
+#line 5158 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("inherit"); ;}
     break;
 
   case 662:
-#line 5155 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("ordering"); ;}
+#line 5159 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("no-inherit"); ;}
     break;
 
   case 663:
-#line 5156 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("default"); ;}
+#line 5160 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("declare"); ;}
     break;
 
   case 664:
-#line 5157 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("copy-namespaces"); ;}
+#line 5161 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("construction"); ;}
     break;
 
   case 665:
-#line 5158 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("option"); ;}
+#line 5162 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("ordering"); ;}
     break;
 
   case 666:
-#line 5159 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("version"); ;}
+#line 5163 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("default"); ;}
     break;
 
   case 667:
-#line 5160 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("import"); ;}
+#line 5164 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("copy-namespaces"); ;}
     break;
 
   case 668:
-#line 5161 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("schema"); ;}
+#line 5165 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("option"); ;}
     break;
 
   case 669:
-#line 5162 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("module"); ;}
+#line 5166 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("version"); ;}
     break;
 
   case 670:
-#line 5163 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("function"); ;}
+#line 5167 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("import"); ;}
     break;
 
   case 671:
-#line 5164 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("score"); ;}
+#line 5168 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("schema"); ;}
     break;
 
   case 672:
-#line 5165 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("ftcontains"); ;}
+#line 5169 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("module"); ;}
     break;
 
   case 673:
-#line 5166 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("weight"); ;}
+#line 5170 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("function"); ;}
     break;
 
   case 674:
-#line 5167 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("window"); ;}
+#line 5171 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("score"); ;}
     break;
 
   case 675:
-#line 5168 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("distance"); ;}
+#line 5172 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("ftcontains"); ;}
     break;
 
   case 676:
-#line 5169 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("occurs"); ;}
+#line 5173 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("weight"); ;}
     break;
 
   case 677:
-#line 5170 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("times"); ;}
+#line 5174 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("window"); ;}
     break;
 
   case 678:
-#line 5171 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("same"); ;}
+#line 5175 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("distance"); ;}
     break;
 
   case 679:
-#line 5172 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("different"); ;}
+#line 5176 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("occurs"); ;}
     break;
 
   case 680:
-#line 5173 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("lowercase"); ;}
+#line 5177 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("times"); ;}
     break;
 
   case 681:
-#line 5174 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("uppercase"); ;}
+#line 5178 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("same"); ;}
     break;
 
   case 682:
-#line 5175 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("relationship"); ;}
+#line 5179 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("different"); ;}
     break;
 
   case 683:
-#line 5176 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("levels"); ;}
+#line 5180 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("lowercase"); ;}
     break;
 
   case 684:
-#line 5177 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("language"); ;}
+#line 5181 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("uppercase"); ;}
     break;
 
   case 685:
-#line 5178 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("any"); ;}
+#line 5182 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("relationship"); ;}
     break;
 
   case 686:
-#line 5179 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("all"); ;}
+#line 5183 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("levels"); ;}
     break;
 
   case 687:
-#line 5180 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("phrase"); ;}
+#line 5184 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("language"); ;}
     break;
 
   case 688:
-#line 5181 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("exactly"); ;}
+#line 5185 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("any"); ;}
     break;
 
   case 689:
-#line 5182 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("from"); ;}
+#line 5186 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("all"); ;}
     break;
 
   case 690:
-#line 5183 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("words"); ;}
+#line 5187 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("phrase"); ;}
     break;
 
   case 691:
-#line 5184 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("sentences"); ;}
+#line 5188 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("exactly"); ;}
     break;
 
   case 692:
-#line 5185 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("sentence"); ;}
+#line 5189 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("from"); ;}
     break;
 
   case 693:
-#line 5186 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("paragraph"); ;}
+#line 5190 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("words"); ;}
     break;
 
   case 694:
-#line 5187 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("replace"); ;}
+#line 5191 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("sentences"); ;}
     break;
 
   case 695:
-#line 5188 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("modify"); ;}
+#line 5192 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("sentence"); ;}
     break;
 
   case 696:
-#line 5189 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("first"); ;}
+#line 5193 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("paragraph"); ;}
     break;
 
   case 697:
-#line 5190 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("insert"); ;}
+#line 5194 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("replace"); ;}
     break;
 
   case 698:
-#line 5191 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("before"); ;}
+#line 5195 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("modify"); ;}
     break;
 
   case 699:
-#line 5192 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("after"); ;}
+#line 5196 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("first"); ;}
     break;
 
   case 700:
-#line 5193 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("revalidation"); ;}
+#line 5197 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("insert"); ;}
     break;
 
   case 701:
-#line 5194 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("with"); ;}
+#line 5198 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("before"); ;}
     break;
 
   case 702:
-#line 5195 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("nodes"); ;}
+#line 5199 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("after"); ;}
     break;
 
   case 703:
-#line 5196 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("rename"); ;}
+#line 5200 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("revalidation"); ;}
     break;
 
   case 704:
-#line 5197 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("last"); ;}
+#line 5201 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("with"); ;}
     break;
 
   case 705:
-#line 5198 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("delete"); ;}
+#line 5202 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("nodes"); ;}
     break;
 
   case 706:
-#line 5199 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("into"); ;}
+#line 5203 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("rename"); ;}
     break;
 
   case 707:
-#line 5200 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("simple"); ;}
+#line 5204 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("last"); ;}
     break;
 
   case 708:
-#line 5201 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("sequential"); ;}
+#line 5205 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("delete"); ;}
     break;
 
   case 709:
-#line 5202 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("updating"); ;}
+#line 5206 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("into"); ;}
     break;
 
   case 710:
-#line 5203 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("deterministic"); ;}
+#line 5207 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("simple"); ;}
     break;
 
   case 711:
-#line 5204 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("nondeterministic"); ;}
+#line 5208 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("sequential"); ;}
     break;
 
   case 712:
-#line 5205 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("ordered"); ;}
+#line 5209 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("updating"); ;}
     break;
 
   case 713:
-#line 5206 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("unordered"); ;}
+#line 5210 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("deterministic"); ;}
     break;
 
   case 714:
-#line 5207 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("block"); ;}
+#line 5211 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("nondeterministic"); ;}
     break;
 
   case 715:
-#line 5208 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("exit"); ;}
+#line 5212 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("ordered"); ;}
     break;
 
   case 716:
-#line 5209 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("loop"); ;}
+#line 5213 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("unordered"); ;}
     break;
 
   case 717:
-#line 5210 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("while"); ;}
+#line 5214 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("block"); ;}
     break;
 
   case 718:
-#line 5211 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("break"); ;}
+#line 5215 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("exit"); ;}
     break;
 
   case 719:
-#line 5212 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("continue"); ;}
+#line 5216 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("loop"); ;}
     break;
 
   case 720:
-#line 5213 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("try"); ;}
+#line 5217 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("while"); ;}
     break;
 
   case 721:
-#line 5214 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("catch"); ;}
+#line 5218 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("break"); ;}
     break;
 
   case 722:
-#line 5215 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("eval"); ;}
+#line 5219 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("continue"); ;}
     break;
 
   case 723:
-#line 5216 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("using"); ;}
+#line 5220 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("try"); ;}
     break;
 
   case 724:
-#line 5217 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("set"); ;}
+#line 5221 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("catch"); ;}
     break;
 
   case 725:
-#line 5218 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("index"); ;}
+#line 5222 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("eval"); ;}
     break;
 
   case 726:
-#line 5219 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("create"); ;}
+#line 5223 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("using"); ;}
     break;
 
   case 727:
-#line 5220 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("build"); ;}
+#line 5224 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("set"); ;}
     break;
 
   case 728:
-#line 5221 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("unique"); ;}
+#line 5225 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("index"); ;}
     break;
 
   case 729:
-#line 5222 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("on"); ;}
+#line 5226 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("create"); ;}
     break;
 
   case 730:
-#line 5223 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("hash"); ;}
+#line 5227 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("build"); ;}
     break;
 
   case 731:
-#line 5224 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("btree"); ;}
+#line 5228 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("unique"); ;}
     break;
 
   case 732:
-#line 5225 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("drop"); ;}
+#line 5229 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("on"); ;}
     break;
 
   case 733:
-#line 5226 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("decimal-format"); ;}
+#line 5230 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("hash"); ;}
     break;
 
   case 734:
-#line 5227 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("decimal-separator"); ;}
+#line 5231 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("btree"); ;}
     break;
 
   case 735:
-#line 5228 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("grouping-separator"); ;}
+#line 5232 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("drop"); ;}
     break;
 
   case 736:
-#line 5229 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("infinity"); ;}
+#line 5233 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("decimal-format"); ;}
     break;
 
   case 737:
-#line 5230 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("minus-sign"); ;}
+#line 5234 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("decimal-separator"); ;}
     break;
 
   case 738:
-#line 5231 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("NaN"); ;}
+#line 5235 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("grouping-separator"); ;}
     break;
 
   case 739:
-#line 5232 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("percent"); ;}
+#line 5236 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("infinity"); ;}
     break;
 
   case 740:
-#line 5233 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("per-mille"); ;}
+#line 5237 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("minus-sign"); ;}
     break;
 
   case 741:
-#line 5234 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("zero-digit"); ;}
+#line 5238 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("NaN"); ;}
     break;
 
   case 742:
-#line 5235 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("digit"); ;}
+#line 5239 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("percent"); ;}
     break;
 
   case 743:
-#line 5236 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("pattern-separator"); ;}
+#line 5240 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("per-mille"); ;}
     break;
 
   case 744:
-#line 5248 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5241 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("zero-digit"); ;}
+    break;
+
+  case 745:
+#line 5242 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("digit"); ;}
+    break;
+
+  case 746:
+#line 5243 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("pattern-separator"); ;}
+    break;
+
+  case 747:
+#line 5255 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new EvalExpr (LOC ((yyloc)),
                           dynamic_cast<VarGetsDeclList *> ((yysemantic_stack_[(7) - (3)].node)),
@@ -6616,615 +6619,615 @@ namespace zorba
     ;}
     break;
 
-  case 745:
-#line 5254 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 748:
+#line 5261 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new EvalExpr (LOC ((yyloc)), new VarGetsDeclList (LOC ((yyloc))), (yysemantic_stack_[(4) - (3)].expr));
     ;}
     break;
 
-  case 746:
-#line 5271 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 749:
+#line 5278 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(1) - (1)].node)), NULL, NULL);
 		;}
     break;
 
-  case 747:
-#line 5275 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 750:
+#line 5282 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(2) - (1)].node)), static_cast<FTMatchOptionProximityList *> ((yysemantic_stack_[(2) - (2)].node)), NULL);
 		;}
     break;
 
-  case 748:
-#line 5279 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 751:
+#line 5286 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(3) - (1)].node)), NULL, static_cast<RangeExpr *> ((yysemantic_stack_[(3) - (3)].expr)));
 		;}
     break;
 
-  case 749:
-#line 5283 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 752:
+#line 5290 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(4) - (1)].node)), static_cast<FTMatchOptionProximityList *> ((yysemantic_stack_[(4) - (2)].node)), static_cast<RangeExpr *> ((yysemantic_stack_[(4) - (4)].expr)));
 		;}
     break;
 
-  case 750:
-#line 5293 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-		;}
-    break;
-
-  case 751:
-#line 5296 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-		;}
-    break;
-
-  case 752:
-#line 5299 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-		;}
-    break;
-
   case 753:
-#line 5302 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5300 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 754:
-#line 5311 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5303 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 755:
-#line 5314 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5306 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 756:
-#line 5323 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5309 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 757:
-#line 5326 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5318 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 758:
-#line 5335 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5321 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 759:
-#line 5338 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5330 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 760:
-#line 5347 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5333 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 761:
-#line 5350 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5342 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 762:
-#line 5359 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5345 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 763:
-#line 5362 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5354 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 764:
-#line 5365 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5357 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 765:
-#line 5374 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5366 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 766:
-#line 5377 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5369 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 767:
-#line 5386 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5372 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new FTWordsValue (LOC ((yyloc)), static_cast<StringLiteral *> ((yysemantic_stack_[(1) - (1)].expr)), NULL);
 		;}
     break;
 
   case 768:
-#line 5390 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5381 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new FTWordsValue (LOC ((yyloc)), NULL, (yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 769:
-#line 5400 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5384 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 770:
-#line 5403 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5393 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
+      (yyval.node) = new FTWordsValue (LOC ((yyloc)), static_cast<StringLiteral *> ((yysemantic_stack_[(1) - (1)].expr)), NULL);
 		;}
     break;
 
   case 771:
-#line 5406 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5397 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
+      (yyval.node) = new FTWordsValue (LOC ((yyloc)), NULL, (yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 772:
-#line 5409 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5407 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 773:
-#line 5412 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5410 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 774:
-#line 5421 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5413 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 775:
-#line 5430 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5416 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 776:
-#line 5434 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5419 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 777:
-#line 5438 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5428 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 778:
-#line 5442 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5437 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 779:
-#line 5446 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5441 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 780:
-#line 5450 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5445 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 781:
-#line 5454 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5449 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 782:
-#line 5464 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5453 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
+			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 783:
-#line 5467 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5457 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
+			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 784:
-#line 5470 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5461 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
+			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 785:
-#line 5473 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5471 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 786:
-#line 5482 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5474 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 787:
-#line 5485 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5477 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 788:
-#line 5488 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5480 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 789:
-#line 5491 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5489 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 790:
-#line 5500 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5492 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 791:
-#line 5503 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5495 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 792:
-#line 5512 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5498 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 793:
-#line 5515 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5507 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 794:
-#line 5518 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5510 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 795:
-#line 5521 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5519 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 796:
-#line 5524 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5522 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 797:
-#line 5527 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5525 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 798:
-#line 5530 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5528 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 799:
-#line 5539 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5531 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 800:
-#line 5542 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5534 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 801:
-#line 5551 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5537 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 802:
-#line 5554 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5546 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 803:
-#line 5557 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5549 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 804:
-#line 5560 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5558 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 805:
-#line 5569 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5561 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 806:
-#line 5572 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5564 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 807:
-#line 5575 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5567 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 808:
-#line 5578 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5576 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 809:
-#line 5581 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5579 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 810:
-#line 5590 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5582 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 811:
-#line 5593 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5585 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 812:
-#line 5602 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5588 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 813:
-#line 5605 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5597 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 814:
-#line 5614 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5600 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 815:
-#line 5617 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5609 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 816:
-#line 5626 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5612 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 817:
-#line 5629 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5621 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 818:
-#line 5638 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5624 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 819:
-#line 5647 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5633 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 820:
-#line 5650 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5636 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 821:
-#line 5659 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5645 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 822:
-#line 5662 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5654 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 823:
-#line 5665 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5657 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 824:
-#line 5674 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5666 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 825:
-#line 5677 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5669 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 826:
-#line 5680 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5672 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 827:
-#line 5683 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5681 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 828:
-#line 5686 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5684 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 829:
-#line 5695 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5687 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+		;}
+    break;
+
+  case 830:
+#line 5690 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+		;}
+    break;
+
+  case 831:
+#line 5693 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+		;}
+    break;
+
+  case 832:
+#line 5702 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::exactly, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
-  case 830:
-#line 5699 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 833:
+#line 5706 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::at_least, (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
-  case 831:
-#line 5703 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 834:
+#line 5710 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::at_most, (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
-  case 832:
-#line 5707 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+  case 835:
+#line 5714 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
        (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::from_to, (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr));
 		;}
     break;
 
-  case 833:
-#line 5717 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-		;}
-    break;
-
-  case 834:
-#line 5726 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-      (yyval.node) = new FTWindow (LOC ((yyloc)), static_cast<UnionExpr *> ((yysemantic_stack_[(3) - (2)].expr)), static_cast<FTUnit *> ((yysemantic_stack_[(3) - (3)].node)));
-		;}
-    break;
-
-  case 835:
-#line 5736 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
-    {
-		;}
-    break;
-
   case 836:
-#line 5745 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5724 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 837:
-#line 5748 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5733 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
+      (yyval.node) = new FTWindow (LOC ((yyloc)), static_cast<UnionExpr *> ((yysemantic_stack_[(3) - (2)].expr)), static_cast<FTUnit *> ((yysemantic_stack_[(3) - (3)].node)));
 		;}
     break;
 
   case 838:
-#line 5757 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5743 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 839:
-#line 5760 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5752 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 840:
-#line 5763 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5755 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 841:
-#line 5772 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5764 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 842:
-#line 5775 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5767 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
 		;}
     break;
 
   case 843:
-#line 5784 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5770 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+		;}
+    break;
+
+  case 844:
+#line 5779 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+		;}
+    break;
+
+  case 845:
+#line 5782 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+    {
+		;}
+    break;
+
+  case 846:
+#line 5791 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FTIgnoreOption (LOC ((yyloc)), static_cast<UnionExpr *> ((yysemantic_stack_[(3) - (3)].expr)));
 		;}
@@ -7232,7 +7235,7 @@ namespace zorba
 
 
     /* Line 675 of lalr1.cc.  */
-#line 7236 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 7239 "/home/muresan/Projects/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	default: break;
       }
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
@@ -7439,152 +7442,153 @@ namespace zorba
 
   /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
      STATE-NUM.  */
-  const short int xquery_parser::yypact_ninf_ = -1151;
+  const short int xquery_parser::yypact_ninf_ = -1203;
   const short int
   xquery_parser::yypact_[] =
   {
-      1376, -1151, -1151, -1151, -1151,   -61,   -64,   160, -1151,   252,
-     191,    82,   316,  6803,   165,   365,   446,    -6, -1151, -1151,
-   -1151, -1151, -1151, -1151,   338,    97, -1151,   566,   430, -1151,
-     218, -1151, -1151, -1151,   459,   502, -1151,   349,   347,   463,
-   -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,   488,
-     490, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151,  7067, -1151,  6001, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,  8651, -1151,
-   -1151, -1151, -1151, -1151, -1151, -1151, -1151,   537, -1151, -1151,
-   -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,  1649,
-    8651, -1151, -1151, -1151, -1151, -1151, -1151,   513, -1151, -1151,
-   -1151, -1151,   654, -1151,  6539, -1151, -1151, -1151, -1151, -1151,
-    8651, -1151, -1151,  5729, -1151, -1151, -1151, -1151, -1151, -1151,
-     521, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,    19,
-     461, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,   184,
-     522,   405, -1151,   452,   -91, -1151, -1151, -1151, -1151, -1151,
-   -1151,   558, -1151,   529, -1151,   562, -1151, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151,   402,   403,   404, -1151, -1151, -1151, -1151, -1151,
-    4097,   683, -1151,  4369, -1151, -1151,   453,  4641,   499,   500,
-   -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,
-     -31, -1151, -1151, -1151, -1151,   314,  8651, -1151, -1151, -1151,
-   -1151, -1151,   524,   597, -1151,   612,   439,   280,    -8,   -81,
-     408, -1151,   614,   496,   593,   595,  4913, -1151, -1151, -1151,
-      -5, -1151, -1151,  5729, -1151,   115, -1151,   544,  6001, -1151,
-     544,  6001, -1151, -1151, -1151, -1151,   544, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151, -1151,   545, -1151, -1151, -1151,  4641,
-   -1151, -1151,  4641,  8651,  4641,   549,   550,  4641, -1151, -1151,
-   -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151,  4641,  7331, -1151, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,
-     551,  4641,  4641,   520,  4641,   527,  8651,   663,   664,   569,
-     569,   663,  8651,   360,   133,   685,   259,   362,  8651,   559,
-     598,   114,   698,   382,   -53,   326,   685, -1151, -1151,   440,
-   -1151, -1151, -1151, -1151, -1151,  4641, -1151,  4641,    78,   572,
-      28,    46,  8651,   698,  8651,  8651,  4641,   457,   458, -1151,
-     613,   615,  8651,    76,  4641,  7595,   580,   579,   582,   584,
-     585,   586, -1151, -1151, -1151,  8651, -1151,   557,   716,  4641,
-      55, -1151,   727,   571, -1151,  4641,   535, -1151,   730,  4641,
-    4641,   576,  4641,  4641,  4641,  4641,   533,  8651,  4641,  8651,
-     685,   685,   685, -1151, -1151, -1151, -1151,    -6,   566, -1151,
-   -1151,   453,   722,  4641, -1151,  4641,   599,   502,   347,   463,
-     645,   600,   602,  4641,  4641, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151,   665, -1151,     0,  5185,  5185,  5185, -1151,  5185,
-    5185, -1151,  5185, -1151,  5185, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151,  5185,  5185,    12,  5185,  5185,  5185,  5185,  5185,
-    5185,  5185,  5185,  5185,  5185,  5185,   542,   679,   680,   681,
-   -1151, -1151, -1151,  1921, -1151, -1151,  5729,  5729,  4641,   544,
-   -1151, -1151,   544, -1151,   544,  2193,  5457, -1151,   594,   626,
-   -1151,   601,  4641,  4641,   603,   604, -1151,   -26,   123,  2465,
-     605,   608, -1151,   609, -1151,   629, -1151,  8651, -1151, -1151,
-   -1151, -1151,   761, -1151, -1151, -1151, -1151, -1151, -1151,   684,
-     686, -1151, -1151,   565,   333,  8651,   410,   637,   639,   565,
-     685,   673,   670, -1151, -1151, -1151,   381,   168,   385,   779,
-   -1151, -1151,   258, -1151, -1151, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151,   519, -1151,   620,   624,   622, -1151,   625,  2737,
-     698,   711,   773,   698,   685,   714,    -4, -1151,    35,   687,
-     678,   712, -1151,   -19,   640, -1151, -1151,  8651,   -24, -1151,
-     638,   579,   488, -1151,   641,   643,   642, -1151,   141,   162,
-    3009,   178, -1151,  8651,   716, -1151,   -18,   647, -1151, -1151,
-   -1151, -1151,   648, -1151,     1, -1151, -1151, -1151,   -38,    79,
-     729,   596,   607,     4, -1151,   691,   652,    67, -1151, -1151,
-   -1151, -1151, -1151,   646, -1151,    41, -1151, -1151,     7,   667,
-    8651,  4641,   717, -1151, -1151,   718,  8123,   719,  4641,   720,
-     -54,   696,   -47,   597, -1151, -1151, -1151, -1151, -1151,  5185,
-   -1151, -1151, -1151,  4641,    12,   348, -1151,   573,   217,   590,
-     589, -1151, -1151,   587,   275,    -8,    -8,   266,   -81,   -81,
-     -81,   -81,   408,   408, -1151, -1151,  8123,  8123,  8651,  8651,
-   -1151,   666, -1151, -1151,   668, -1151, -1151, -1151,   204,   598,
-       8,   671,   -61,  4641, -1151,   672,   674,   744,   697,  8651,
-   -1151,  8651, -1151, -1151,   675, -1151, -1151, -1151,    15,    -3,
-     629, -1151,   319,   350, -1151, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151,   565, -1151,   723,  8387,   708,  4641,
-   -1151, -1151, -1151,   756,   721,  4641,   685,   685,   565, -1151,
-     504,   685, -1151, -1151,   588, -1151, -1151,   583,   244, -1151,
-   -1151, -1151, -1151, -1151, -1151,   591, -1151, -1151,  4641,   669,
-     707, -1151, -1151, -1151,   682,   728,   685,   702,   735,   770,
-     685,   749,  4641,  4641,   725,   685,  4641,   754,  4641,   734,
-     -66, -1151,   239,   628, -1151, -1151,   438,   -24, -1151, -1151,
-   -1151,   731,  8651, -1151,  8651, -1151, -1151,   699,  4641,   850,
-   -1151,    32, -1151,   116, -1151, -1151,   856, -1151,   407,  4641,
-    4641,  4641,   411,  4641,  4641,  4641,  4641,  4641,  4641,   762,
-    4641,  4641,   649,   732,   765,   722,   805, -1151,  4641, -1151,
-     465,   780, -1151,  8651,   781, -1151,  8651,   733,   736, -1151,
-     257, -1151, -1151, -1151,  8651, -1151,  8651,  4641,   751,  4641,
-    4641,   -36,   753, -1151,   724,   715, -1151,   651, -1151,   105,
-   -1151,   104,    22,   653,    12,   104,  5185,  5185,   479, -1151,
-   -1151, -1151, -1151, -1151, -1151, -1151,    12,   758,    22, -1151,
-     627,   848, -1151, -1151, -1151, -1151, -1151,   763, -1151, -1151,
-   -1151,  4641, -1151,   766, -1151,   598, -1151, -1151, -1151,   737,
-   -1151, -1151,  7859,   472, -1151,  3281,   726,   738,   768,   739,
-     741, -1151,  8651,   813,   209, -1151, -1151,  4641, -1151,   -61,
-   -1151, -1151, -1151, -1151, -1151,   886,   454, -1151, -1151, -1151,
-    4641, -1151, -1151, -1151, -1151, -1151, -1151,   655,   197,   889,
-   -1151,   415, -1151, -1151,   746,  4641,  3553, -1151,   685,   807,
-   -1151, -1151, -1151,   685,   807,  8651, -1151, -1151,  4641,   740,
-   -1151,  8651, -1151,  4641,  4641,   778,  4641,   775, -1151,   802,
-     808,  4641,  8651,   525,   861, -1151, -1151, -1151,  3825,   748,
-     755, -1151, -1151, -1151,   804, -1151,   176, -1151, -1151,   924,
-   -1151, -1151,  4641,  8651, -1151, -1151,   189, -1151, -1151, -1151,
-     750,   706,   709, -1151, -1151, -1151,   710,   713, -1151, -1151,
-   -1151, -1151, -1151,   742,  8651,   760, -1151,  6273,   649, -1151,
-    4641,  8651,   780, -1151,   685, -1151,   508, -1151,   202,   838,
-   -1151,  4641,   839,   717, -1151,   764,   767, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151,  4641, -1151, -1151,  4641,   809,  4641,
-   -1151, -1151,  5185, -1151, -1151, -1151, -1151, -1151,    39,  5185,
-    5185,   315, -1151,   590, -1151, -1151,    99,  5185, -1151, -1151,
-     589,    12,   688, -1151, -1151, -1151, -1151,  4641, -1151, -1151,
-    8651,   769,   166, -1151, -1151,   772, -1151, -1151, -1151, -1151,
-   -1151,   756,  8123,   828,   854,   777, -1151, -1151, -1151, -1151,
-     -33,   927,   933,   -33,   -37,   221,   222,   806,   837, -1151,
-     782,   867,   685,   807, -1151, -1151, -1151, -1151, -1151, -1151,
-    4641, -1151,  4641,  8651,  8651, -1151,   423, -1151,  4641, -1151,
-     784, -1151, -1151,   850,  8651,   211, -1151,   785,   850,  8651,
-   -1151, -1151,  4641,  4641,  4641,  4641,  4641, -1151,  4641, -1151,
-     243, -1151,   786, -1151, -1151, -1151, -1151,   838, -1151, -1151,
-   -1151,   685, -1151, -1151, -1151, -1151, -1151, -1151,  4641, -1151,
-     -81,  5185,  5185,   -81,   387, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151,   873,  4641,  8651,  4641, -1151, -1151,
-   -1151, -1151,  8123, -1151,   197,   197,   -33, -1151, -1151, -1151,
-      45,   -33,   946,   743,   875, -1151,   875, -1151,  4641,   230,
-    4641, -1151,   685, -1151, -1151, -1151,   902, -1151, -1151, -1151,
-   -1151,   -40,   850,  8651, -1151,   787,   850, -1151, -1151, -1151,
-   -1151, -1151, -1151,   855,  6273, -1151, -1151, -1151, -1151, -1151,
-     -81,   -81,  5185,  8123, -1151,   790, -1151, -1151, -1151, -1151,
-   -1151, -1151, -1151,    22, -1151,   234, -1151,   240, -1151,   868,
-     756,  4641, -1151, -1151,   807,   857,   420,   228, -1151,   789,
-     850, -1151,   791,  8651, -1151,   -81,   795,  4641,   745,   875,
-   -1151, -1151,   685, -1151, -1151,  8651, -1151, -1151,   885,   482,
-   -1151, -1151, -1151, -1151,   800,   268, -1151, -1151, -1151,   792,
-   -1151,   249,  4641, -1151, -1151, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151, -1151,   865,   836, -1151,  8651, -1151,
-     283,   869,   836,  8651, -1151,   810,   836, -1151
+      1376, -1203, -1203, -1203, -1203,   -55,  -147,   239, -1203,   362,
+      56,   -27,   111,  6843,   277,   364,   441,    -7, -1203, -1203,
+   -1203, -1203, -1203, -1203,   266,    73, -1203,   568,   313, -1203,
+     333, -1203, -1203, -1203,   363,   397, -1203,   387,   345,   506,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,   422,
+     431, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,
+   -1203, -1203,  7109, -1203,  6035, -1203, -1203, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,  8705, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203,   488, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,  1651,
+    8705, -1203, -1203, -1203, -1203, -1203, -1203,   463, -1203, -1203,
+   -1203, -1203,   603, -1203,  6577, -1203, -1203, -1203, -1203, -1203,
+    8705, -1203, -1203,  5761, -1203, -1203, -1203, -1203, -1203, -1203,
+     473, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,    21,
+     415, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,   -97,
+     478,   227, -1203,   413,   375, -1203, -1203, -1203, -1203, -1203,
+   -1203,   538, -1203,   508, -1203,   549, -1203, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,
+   -1203, -1203,   398,   404,   417, -1203, -1203, -1203, -1203, -1203,
+    4117,   693, -1203,  4391, -1203, -1203,   116,  4665,   513,   514,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,
+     -41, -1203, -1203, -1203, -1203,   286,  8705, -1203, -1203, -1203,
+   -1203, -1203,   531,   610, -1203,   544,   453,   233,   258,    92,
+     351, -1203,   630,   515,   608,   612,  4939, -1203, -1203, -1203,
+     265, -1203, -1203,  5761, -1203,   103, -1203,   566,  6035, -1203,
+     566,  6035, -1203, -1203, -1203, -1203,   566, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203,   565, -1203, -1203, -1203, -1203,
+    4665, -1203, -1203,  4665,  8705,  4665,   571,   572,  4665, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203,  4665,  7375, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,
+   -1203,   573,  4665,  4665,   541,  4665,   542,  8705,   685,   686,
+     600,   600,   685,  8705,    84,   269,   708,   -31,   319,  8705,
+     580,   624,   316,  8971,   336,    48,   370,   708, -1203, -1203,
+     470, -1203, -1203, -1203, -1203, -1203,  4665, -1203,  4665,    80,
+     601,    37,    36,  8705,  8971,  8705,  8705,  4665,   480,   484,
+   -1203,   634,   636,  8705,    16,  4665,  7641,   605,   607,   609,
+     611,   613,   614, -1203, -1203, -1203,  8705, -1203,   578,   736,
+    4665,    51, -1203,   750,   585, -1203,  4665,   560, -1203,   751,
+    4665,  4665,   589,  4665,  4665,  4665,  4665,   545,  8705,  4665,
+    8705,   708,   708,   708, -1203, -1203, -1203, -1203,    -7,   568,
+   -1203, -1203,   116,   734,  4665, -1203,  4665,   616,   397,   345,
+     506,   657,   617,   618,  4665,  4665, -1203, -1203, -1203, -1203,
+   -1203, -1203, -1203,   669, -1203,   -45,  5213,  5213,  5213, -1203,
+    5213,  5213, -1203,  5213, -1203,  5213, -1203, -1203, -1203, -1203,
+   -1203, -1203, -1203,  5213,  5213,    12,  5213,  5213,  5213,  5213,
+    5213,  5213,  5213,  5213,  5213,  5213,  5213,   550,   683,   689,
+     692, -1203, -1203, -1203,  1925, -1203, -1203,  5761,  5761,  4665,
+     566, -1203, -1203,   566, -1203,   566,  2199,  5487, -1203,   604,
+     638, -1203,   615,  4665,  4665,   606,   619, -1203,     0,     5,
+    2473,   620,   622, -1203,   623, -1203,   637, -1203,  8705, -1203,
+   -1203, -1203, -1203,   771, -1203, -1203, -1203, -1203, -1203, -1203,
+     687,   690, -1203, -1203,   652,   324,  8705,   469,   647,   648,
+     652,   708,   681,   678, -1203, -1203, -1203, -1203, -1203,    96,
+     170,   405,   789, -1203, -1203,   229, -1203, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203,   527, -1203,   628,   632,   631,
+   -1203,   633,  2747,  8971,   717,   779,  8971,   708,   721,     2,
+   -1203,    30,   688,   679,   713, -1203,   -39,   641, -1203, -1203,
+    8705,   -35, -1203,   639,   607,   422, -1203,   640,   642,   644,
+   -1203,    22,    57,  3021,    19, -1203,  8705,   736, -1203,   -12,
+     649, -1203, -1203, -1203, -1203,   650, -1203,   -11, -1203, -1203,
+   -1203,    79,   167,   733,   594,   621,   -57, -1203,   691,   653,
+      54, -1203, -1203, -1203, -1203, -1203,   645, -1203,    40, -1203,
+   -1203,   -19,   667,  8705,  4665,   718, -1203, -1203,   719,  8173,
+     720,  4665,   722,   -34,   695,   -36,   610, -1203, -1203, -1203,
+   -1203, -1203,  5213, -1203, -1203, -1203,  4665,    12,   218, -1203,
+     574,   274,   584,   592, -1203, -1203,   588,   235,   258,   258,
+     178,    92,    92,    92,    92,   351,   351, -1203, -1203,  8173,
+    8173,  8705,  8705, -1203,   662, -1203, -1203,   666, -1203, -1203,
+   -1203,   104,   624,    14,   668,   -55,  4665, -1203,   670,   671,
+     749,   702,  8705, -1203,  8705, -1203, -1203,   673, -1203, -1203,
+   -1203,    -5,   228,   637, -1203,   214,   246, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203,   652, -1203,   724,
+    8439,   715,  4665, -1203, -1203, -1203,   762,   723,  4665,   708,
+     708,   652, -1203,   537,   708, -1203, -1203,   586, -1203, -1203,
+     587,   283, -1203, -1203, -1203, -1203, -1203, -1203,   591, -1203,
+   -1203,  4665,   663,   709, -1203, -1203, -1203,   682,   731,   708,
+     710,   735,   770,   708,   752,  4665,  4665,   729,   708,  4665,
+     757,  4665,   728,   -63, -1203,   162,   629, -1203, -1203,   483,
+     -35, -1203, -1203, -1203,   730,  8705, -1203,  8705, -1203, -1203,
+     698,  4665,   852, -1203,    35, -1203,   146, -1203, -1203,   861,
+   -1203,   317,  4665,  4665,  4665,   424,  4665,  4665,  4665,  4665,
+    4665,  4665,   764,  4665,  4665,   651,   738,   765,   734,   805,
+   -1203,  4665, -1203,   407,   778, -1203,  8705,   782, -1203,  8705,
+     737,   743, -1203,   257, -1203, -1203, -1203,  8705, -1203,  8705,
+    4665,   742,  4665,  4665,   -30,   754, -1203,   725,   716, -1203,
+     654, -1203,   236, -1203,   356,   -53,   655,    12,   356,  5213,
+    5213,   392, -1203, -1203, -1203, -1203, -1203, -1203, -1203,    12,
+     756,   -53, -1203,   635,   846, -1203, -1203, -1203, -1203, -1203,
+     767, -1203, -1203, -1203,  4665, -1203,   766, -1203,   624, -1203,
+   -1203, -1203,   727, -1203, -1203,  7907,   438, -1203,  3295,   732,
+     739,   768,   740,   744, -1203,  8705,   810,   128, -1203, -1203,
+    4665, -1203,   -55, -1203, -1203, -1203, -1203, -1203,   891,   490,
+   -1203, -1203, -1203,  4665, -1203, -1203, -1203, -1203, -1203, -1203,
+     646,    24,   892, -1203,   383, -1203, -1203,   747,  4665,  3569,
+   -1203,   708,   811, -1203, -1203, -1203,   708,   811,  8705, -1203,
+   -1203,  4665,   741, -1203,  8705, -1203,  4665,  4665,   781,  4665,
+     785, -1203,   807,   812,  4665,  8705,   599,   862, -1203, -1203,
+   -1203,  3843,   755,   758, -1203, -1203, -1203,   803, -1203,   176,
+   -1203, -1203,   929, -1203, -1203,  4665,  8705, -1203, -1203,   181,
+   -1203, -1203, -1203,   753,   707,   712, -1203, -1203, -1203,   714,
+     726, -1203, -1203, -1203, -1203, -1203,   705,  8705,   761, -1203,
+    6309,   651, -1203,  4665,  8705,   778, -1203,   708, -1203,   543,
+   -1203,    32,   839, -1203,  4665,   840,   718, -1203,   769,   772,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203,  4665, -1203, -1203,
+    4665,   804,  4665, -1203, -1203,  5213, -1203, -1203, -1203, -1203,
+   -1203,    53,  5213,  5213,   349, -1203,   584, -1203, -1203,   207,
+    5213, -1203, -1203,   592,    12,   684, -1203, -1203, -1203, -1203,
+    4665, -1203, -1203,  8705,   776,   141, -1203, -1203,   773, -1203,
+   -1203, -1203, -1203, -1203,   762,  8173,   829,   855,   774, -1203,
+   -1203, -1203, -1203,   132,   931,   940,   132,    -3,   129,   134,
+     813,   841, -1203,   783,   868,   708,   811, -1203, -1203, -1203,
+   -1203, -1203, -1203,  4665, -1203,  4665,  8705,  8705, -1203,   443,
+   -1203,  4665, -1203,   787, -1203, -1203,   852,  8705,   211, -1203,
+     788,   852,  8705, -1203, -1203,  4665,  4665,  4665,  4665,  4665,
+   -1203,  4665, -1203,   160, -1203,   790, -1203, -1203, -1203, -1203,
+     839, -1203, -1203, -1203,   708, -1203, -1203, -1203, -1203, -1203,
+   -1203,  4665, -1203,    92,  5213,  5213,    92,   386, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203,   875,  4665,  8705,
+    4665, -1203, -1203, -1203, -1203,  8173, -1203,    24,    24,   132,
+   -1203, -1203, -1203,    42,   132,   951,   745,   876, -1203,   876,
+   -1203,  4665,   161,  4665, -1203,   708, -1203, -1203, -1203,   906,
+   -1203, -1203, -1203, -1203,   -20,   852,  8705, -1203,   784,   852,
+   -1203, -1203, -1203, -1203, -1203, -1203,   856,  6309, -1203, -1203,
+   -1203, -1203, -1203,    92,    92,  5213,  8173, -1203,   793, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203,   -53, -1203,   171, -1203,
+     179, -1203,   870,   762,  4665, -1203, -1203,   811,   860,   339,
+     450, -1203,   786,   852, -1203,   791,  8705, -1203,    92,   798,
+    4665,   746,   876, -1203, -1203,   708, -1203, -1203,  8705, -1203,
+   -1203,   888,   403, -1203, -1203, -1203, -1203,   806,   457, -1203,
+   -1203, -1203,   794, -1203,   186,  4665, -1203, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,   865,   836,
+   -1203,  8705, -1203,   201,   871,   836,  8705, -1203,   808,   836,
+   -1203
   };
 
   /* YYDEFACT[S] -- default rule to reduce with in state S when YYTABLE
@@ -7593,28 +7597,28 @@ namespace zorba
   const unsigned short int
   xquery_parser::yydefact_[] =
   {
-         0,   377,   378,   558,   524,   714,   715,   718,   716,   719,
-     717,   648,   572,   564,   580,   571,   562,   660,   670,   709,
-     708,   710,   711,   707,   566,   568,   595,   667,   630,   624,
-     669,   665,   592,   668,   724,   619,   661,   722,   609,   610,
-     611,   612,   613,   614,   615,   616,   617,   662,   576,   570,
-     563,   664,   639,   569,   574,   733,   734,   735,   736,   737,
-     738,   739,   740,   741,   742,   743,   368,   371,   638,   634,
-     625,   605,   561,   358,     0,   633,   641,   649,   356,   629,
-     394,   606,   607,   663,   357,   360,   626,   643,     0,   400,
-     366,   396,   636,   560,   627,   628,   656,   631,   647,   655,
-     362,   361,   579,   618,   658,   395,   646,   651,   565,     0,
-       0,   315,   644,   654,   659,   657,   637,   712,   623,   621,
-     622,   367,     0,   314,     0,   370,   369,   652,   608,   632,
-       0,   359,   344,     0,   376,   653,   635,   642,   650,   645,
-     713,   599,   604,   603,   602,   601,   600,   573,   620,     0,
-     559,   666,   593,   699,   698,   700,   578,   577,   596,   705,
-     567,   697,   702,   703,   694,   598,   640,   696,   706,   704,
-     695,   597,   701,   720,   721,   723,   686,   685,   582,   575,
-     584,   583,   679,   675,   590,   594,   591,   688,   689,   672,
-     581,   684,   683,   680,   676,   693,   687,   682,   678,   671,
-     692,   691,   677,   681,   673,   674,   585,   586,   588,   690,
-     587,   589,   726,   727,   732,   728,   725,   730,   731,   729,
+         0,   377,   378,   560,   524,   717,   718,   721,   719,   722,
+     720,   651,   575,   567,   583,   574,   565,   663,   673,   712,
+     711,   713,   714,   710,   569,   571,   598,   670,   633,   627,
+     672,   668,   595,   671,   727,   622,   664,   725,   612,   613,
+     614,   615,   616,   617,   618,   619,   620,   665,   579,   573,
+     566,   667,   642,   572,   577,   736,   737,   738,   739,   740,
+     741,   742,   743,   744,   745,   746,   368,   371,   641,   637,
+     628,   608,   564,   358,     0,   636,   644,   652,   356,   632,
+     394,   609,   610,   666,   357,   360,   629,   646,     0,   400,
+     366,   396,   639,   563,   630,   631,   659,   634,   650,   658,
+     362,   361,   582,   621,   661,   395,   649,   654,   568,     0,
+       0,   315,   647,   657,   662,   660,   640,   715,   626,   624,
+     625,   367,     0,   314,     0,   370,   369,   655,   611,   635,
+       0,   359,   344,     0,   376,   656,   638,   645,   653,   648,
+     716,   602,   607,   606,   605,   604,   603,   576,   623,     0,
+     562,   669,   596,   702,   701,   703,   581,   580,   599,   708,
+     570,   700,   705,   706,   697,   601,   643,   699,   709,   707,
+     698,   600,   704,   723,   724,   726,   689,   688,   585,   578,
+     587,   586,   682,   678,   593,   597,   594,   691,   692,   675,
+     584,   687,   686,   683,   679,   696,   690,   685,   681,   674,
+     695,   694,   680,   684,   676,   677,   588,   589,   591,   693,
+     590,   592,   729,   730,   735,   731,   728,   733,   734,   732,
        0,     0,     2,     0,     4,     6,     0,     0,     0,     0,
       17,    19,    31,    21,    22,    23,    47,    24,    28,    29,
       51,    52,    53,    48,    49,    55,    56,    26,    25,    30,
@@ -7627,146 +7631,148 @@ namespace zorba
      386,   387,   390,   391,   388,   389,   407,   409,   410,   411,
      408,   456,   457,   458,   459,   460,   461,   372,   498,   490,
      497,   496,   495,   492,   494,   491,   493,   393,    54,   162,
-     163,   165,   164,   166,   167,   374,   168,   121,   118,     0,
-     129,   130,     0,     0,     0,     0,     0,     0,   714,   715,
-     718,   719,   717,   648,   572,   564,   580,   571,   562,   660,
-     566,   568,   667,   630,   669,   724,   619,   722,   609,   610,
-     570,   563,   561,   631,     0,     0,   712,   713,   559,   705,
-     567,   697,   703,   694,   597,   720,   723,   726,   727,   732,
+     163,   165,   164,   166,   167,   374,   561,   168,   121,   118,
+       0,   129,   130,     0,     0,     0,     0,     0,     0,   717,
+     718,   721,   722,   720,   651,   575,   567,   583,   574,   565,
+     663,   569,   571,   670,   633,   672,   727,   622,   725,   612,
+     613,   573,   566,   564,   634,     0,     0,   715,   716,   562,
+     708,   570,   700,   706,   697,   600,   723,   726,   729,   730,
+     735,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,    98,    99,
+       0,   100,   101,   103,   134,   137,     0,   559,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,    98,    99,     0,
-     100,   101,   103,   134,   137,     0,   557,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,   197,
-       0,     0,     0,     0,     0,     0,     0,   564,   571,   562,
-     568,   561,   364,   374,   397,     0,   398,     0,   423,     0,
-       0,   339,     0,     0,   342,     0,     0,   452,     0,     0,
+     197,     0,     0,     0,     0,     0,     0,     0,   567,   574,
+     565,   571,   564,   364,   374,   397,     0,   398,     0,   423,
+       0,     0,   339,     0,     0,   342,     0,     0,   452,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     3,     1,     5,     7,     0,     0,    12,
-      10,    14,    15,     0,   153,   152,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,   175,   194,   190,   196,   191,
-     193,   192,   199,   200,     0,     0,     0,     0,   329,     0,
-       0,   327,     0,   280,     0,   328,   321,   326,   325,   324,
-     323,   322,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     3,     1,     5,     7,     0,     0,
+      12,    10,    14,    15,     0,   153,   152,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,   175,   194,   190,   196,
+     191,   193,   192,   199,   200,     0,     0,     0,     0,   329,
+       0,     0,   327,     0,   280,     0,   328,   321,   326,   325,
+     324,   323,   322,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-     317,   316,   313,     0,   337,   341,     0,     0,     0,   351,
-     381,   354,   353,   365,   380,     0,     0,   127,     0,     0,
-     522,     0,     0,     0,     0,     0,   514,     0,     0,     0,
-       0,     0,   503,     0,   504,     0,   139,     0,   140,   136,
-     135,   138,     0,   112,   113,    64,    65,   556,    73,     0,
-       0,    58,    59,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,   525,   526,   527,     0,     0,     0,     0,
-     782,   783,     0,    63,   775,   776,   777,   778,   779,   780,
-     781,   102,     0,   104,     0,     0,     0,   505,     0,     0,
-       0,    82,     0,     0,     0,    74,     0,   260,     0,     0,
-       0,   212,   213,     0,     0,   177,   178,     0,     0,   198,
-       0,     0,     0,   500,     0,     0,     0,   508,     0,     0,
-       0,     0,   399,   424,   423,   420,     0,     0,   454,   453,
-     338,   513,     0,   451,     0,   538,   539,   499,     0,     0,
-       0,     0,     0,     0,   544,     0,     0,     0,   215,   232,
-     131,   133,   132,     0,    18,     0,    20,   156,     0,     0,
-       0,     0,     0,   176,   233,     0,     0,     0,     0,     0,
-       0,     0,     0,   272,   274,   278,   284,   283,   282,     0,
-     279,   276,   277,     0,     0,     0,   767,   286,   746,   754,
-     756,   758,   760,   762,   765,   292,   291,   289,   295,   296,
-     297,   294,   299,   300,   303,   302,     0,     0,     0,     0,
-     334,     0,   346,   347,     0,   382,   403,   405,     0,   660,
-       0,     0,     0,     0,   330,     0,     0,     0,     0,     0,
-     518,     0,   515,   463,     0,   462,   471,   472,     0,     0,
-       0,    62,     0,     0,    37,    38,    39,    40,    41,    42,
-      43,    44,    45,    46,    33,    34,     0,     0,    90,     0,
-      86,    88,    89,    93,    96,     0,     0,     0,    32,    72,
-       0,     0,   784,   785,     0,   786,   790,     0,     0,   819,
-     788,   789,   818,   787,   791,     0,   798,   820,     0,     0,
-       0,   507,   506,   473,     0,     0,     0,     0,     0,    75,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,   745,     0,     0,   179,   180,     0,   185,   521,   501,
-     502,     0,     0,   511,     0,   509,   467,     0,     0,   423,
-     421,     0,   412,     0,   401,   402,     0,     8,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,    16,     0,   154,     0,   186,
-     244,   240,   242,     0,   234,   235,     0,   565,   573,   479,
-     480,   486,   487,   489,     0,   202,     0,     0,     0,     0,
-       0,     0,     0,   281,     0,     0,   761,     0,   287,     0,
-     774,     0,     0,     0,     0,     0,     0,     0,   747,   751,
-     769,   750,   773,   771,   770,   772,     0,     0,     0,   763,
-     826,   824,   828,   766,   305,   307,   309,   477,   311,   335,
-     383,     0,   404,   124,   123,     0,   120,   119,   128,     0,
-     332,   331,     0,     0,   266,     0,     0,     0,   522,     0,
-       0,   464,     0,   114,     0,   144,   142,     0,   141,     0,
-      70,    71,    68,    69,    35,     0,     0,    91,    92,    94,
-       0,    95,    60,    61,    66,    67,    57,     0,     0,     0,
-     793,     0,   792,   809,     0,     0,     0,   474,     0,    84,
-      78,    81,    80,     0,    76,     0,   258,   262,     0,     0,
-     126,     0,   217,     0,     0,     0,     0,     0,   181,     0,
-       0,     0,     0,   226,     0,   223,   228,   184,     0,     0,
-       0,   468,   259,   424,     0,   413,     0,   447,   444,     0,
-     448,   449,     0,     0,   450,   443,     0,   418,   446,   445,
-       0,     0,     0,   531,   532,   528,     0,     0,   536,   537,
-     533,   542,   540,     0,     0,     0,   546,     0,   547,   548,
-       0,     0,   241,   253,     0,   254,     0,   245,   246,   247,
-     248,     0,   237,     0,   201,     0,     0,   483,   485,   484,
-     481,   210,   211,   204,     0,   206,   203,     0,     0,     0,
-     768,   764,     0,   821,   822,   842,   841,   837,     0,     0,
-       0,     0,   823,   755,   836,   748,     0,     0,   753,   752,
-     757,     0,     0,   827,   825,   478,   406,     0,   122,   333,
-       0,     0,     0,   267,   465,     0,   519,   520,   523,   516,
-     517,   146,     0,     0,   115,     0,   143,    36,    87,    97,
-     807,     0,     0,   805,   801,     0,     0,     0,     0,   475,
-       0,    83,     0,    77,   261,   263,    13,   214,   219,   218,
-       0,   221,     0,     0,     0,   183,   224,   227,     0,   469,
-       0,   512,   510,   423,     0,     0,   455,     0,   423,     0,
-     419,     9,     0,     0,     0,     0,     0,   545,     0,   554,
-       0,   549,     0,   216,   257,   255,   256,   249,   250,   251,
-     243,     0,   238,   236,   488,   482,   208,   205,     0,   207,
-     843,     0,     0,   829,     0,   840,   839,   838,   833,   834,
-     749,   759,   835,   125,     0,     0,     0,     0,   466,   147,
-     116,   145,     0,   149,     0,     0,   808,   810,   812,   814,
-       0,   806,     0,     0,     0,   796,     0,   794,     0,     0,
-       0,   476,     0,    79,   220,   222,   231,   230,   225,   182,
-     470,     0,   423,     0,   148,     0,   423,   529,   530,   534,
-     535,   541,   543,     0,     0,   550,   744,   252,   239,   209,
-     831,   830,     0,     0,   268,     0,   264,   117,   817,   816,
-     811,   815,   813,   802,   803,     0,   799,     0,   110,   106,
-     108,     0,   105,   270,    85,     0,   433,   427,   422,     0,
-     423,   414,     0,     0,   555,   832,     0,     0,     0,     0,
-     797,   795,     0,   109,   111,     0,   441,   435,     0,   434,
-     436,   442,   439,   429,     0,   428,   430,   440,   416,     0,
-     415,     0,     0,   265,   804,   800,   107,   229,   426,   437,
-     438,   425,   431,   432,   417,     0,     0,   269,     0,   551,
-       0,     0,     0,     0,   552,     0,     0,   553
+       0,   317,   316,   313,     0,   337,   341,     0,     0,     0,
+     351,   381,   354,   353,   365,   380,     0,     0,   127,     0,
+       0,   522,     0,     0,     0,     0,     0,   514,     0,     0,
+       0,     0,     0,   503,     0,   504,     0,   139,     0,   140,
+     136,   135,   138,     0,   112,   113,    64,    65,   556,    73,
+       0,     0,    58,    59,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,   557,   558,   525,   526,   527,     0,
+       0,     0,     0,   785,   786,     0,    63,   778,   779,   780,
+     781,   782,   783,   784,   102,     0,   104,     0,     0,     0,
+     505,     0,     0,     0,    82,     0,     0,     0,    74,     0,
+     260,     0,     0,     0,   212,   213,     0,     0,   177,   178,
+       0,     0,   198,     0,     0,     0,   500,     0,     0,     0,
+     508,     0,     0,     0,     0,   399,   424,   423,   420,     0,
+       0,   454,   453,   338,   513,     0,   451,     0,   538,   539,
+     499,     0,     0,     0,     0,     0,     0,   544,     0,     0,
+       0,   215,   232,   131,   133,   132,     0,    18,     0,    20,
+     156,     0,     0,     0,     0,     0,   176,   233,     0,     0,
+       0,     0,     0,     0,     0,     0,   272,   274,   278,   284,
+     283,   282,     0,   279,   276,   277,     0,     0,     0,   770,
+     286,   749,   757,   759,   761,   763,   765,   768,   292,   291,
+     289,   295,   296,   297,   294,   299,   300,   303,   302,     0,
+       0,     0,     0,   334,     0,   346,   347,     0,   382,   403,
+     405,     0,   663,     0,     0,     0,     0,   330,     0,     0,
+       0,     0,     0,   518,     0,   515,   463,     0,   462,   471,
+     472,     0,     0,     0,    62,     0,     0,    37,    38,    39,
+      40,    41,    42,    43,    44,    45,    46,    33,    34,     0,
+       0,    90,     0,    86,    88,    89,    93,    96,     0,     0,
+       0,    32,    72,     0,     0,   787,   788,     0,   789,   793,
+       0,     0,   822,   791,   792,   821,   790,   794,     0,   801,
+     823,     0,     0,     0,   507,   506,   473,     0,     0,     0,
+       0,     0,    75,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,   748,     0,     0,   179,   180,     0,
+     185,   521,   501,   502,     0,     0,   511,     0,   509,   467,
+       0,     0,   423,   421,     0,   412,     0,   401,   402,     0,
+       8,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,    16,     0,
+     154,     0,   186,   244,   240,   242,     0,   234,   235,     0,
+     568,   576,   479,   480,   486,   487,   489,     0,   202,     0,
+       0,     0,     0,     0,     0,     0,   281,     0,     0,   764,
+       0,   287,     0,   777,     0,     0,     0,     0,     0,     0,
+       0,   750,   754,   772,   753,   776,   774,   773,   775,     0,
+       0,     0,   766,   829,   827,   831,   769,   305,   307,   309,
+     477,   311,   335,   383,     0,   404,   124,   123,     0,   120,
+     119,   128,     0,   332,   331,     0,     0,   266,     0,     0,
+       0,   522,     0,     0,   464,     0,   114,     0,   144,   142,
+       0,   141,     0,    70,    71,    68,    69,    35,     0,     0,
+      91,    92,    94,     0,    95,    60,    61,    66,    67,    57,
+       0,     0,     0,   796,     0,   795,   812,     0,     0,     0,
+     474,     0,    84,    78,    81,    80,     0,    76,     0,   258,
+     262,     0,     0,   126,     0,   217,     0,     0,     0,     0,
+       0,   181,     0,     0,     0,     0,   226,     0,   223,   228,
+     184,     0,     0,     0,   468,   259,   424,     0,   413,     0,
+     447,   444,     0,   448,   449,     0,     0,   450,   443,     0,
+     418,   446,   445,     0,     0,     0,   531,   532,   528,     0,
+       0,   536,   537,   533,   542,   540,     0,     0,     0,   546,
+       0,   547,   548,     0,     0,   241,   253,     0,   254,     0,
+     245,   246,   247,   248,     0,   237,     0,   201,     0,     0,
+     483,   485,   484,   481,   210,   211,   204,     0,   206,   203,
+       0,     0,     0,   771,   767,     0,   824,   825,   845,   844,
+     840,     0,     0,     0,     0,   826,   758,   839,   751,     0,
+       0,   756,   755,   760,     0,     0,   830,   828,   478,   406,
+       0,   122,   333,     0,     0,     0,   267,   465,     0,   519,
+     520,   523,   516,   517,   146,     0,     0,   115,     0,   143,
+      36,    87,    97,   810,     0,     0,   808,   804,     0,     0,
+       0,     0,   475,     0,    83,     0,    77,   261,   263,    13,
+     214,   219,   218,     0,   221,     0,     0,     0,   183,   224,
+     227,     0,   469,     0,   512,   510,   423,     0,     0,   455,
+       0,   423,     0,   419,     9,     0,     0,     0,     0,     0,
+     545,     0,   554,     0,   549,     0,   216,   257,   255,   256,
+     249,   250,   251,   243,     0,   238,   236,   488,   482,   208,
+     205,     0,   207,   846,     0,     0,   832,     0,   843,   842,
+     841,   836,   837,   752,   762,   838,   125,     0,     0,     0,
+       0,   466,   147,   116,   145,     0,   149,     0,     0,   811,
+     813,   815,   817,     0,   809,     0,     0,     0,   799,     0,
+     797,     0,     0,     0,   476,     0,    79,   220,   222,   231,
+     230,   225,   182,   470,     0,   423,     0,   148,     0,   423,
+     529,   530,   534,   535,   541,   543,     0,     0,   550,   747,
+     252,   239,   209,   834,   833,     0,     0,   268,     0,   264,
+     117,   820,   819,   814,   818,   816,   805,   806,     0,   802,
+       0,   110,   106,   108,     0,   105,   270,    85,     0,   433,
+     427,   422,     0,   423,   414,     0,     0,   555,   835,     0,
+       0,     0,     0,   800,   798,     0,   109,   111,     0,   441,
+     435,     0,   434,   436,   442,   439,   429,     0,   428,   430,
+     440,   416,     0,   415,     0,     0,   265,   807,   803,   107,
+     229,   426,   437,   438,   425,   431,   432,   417,     0,     0,
+     269,     0,   551,     0,     0,     0,     0,   552,     0,     0,
+     553
   };
 
   /* YYPGOTO[NTERM-NUM].  */
   const short int
   xquery_parser::yypgoto_[] =
   {
-     -1151, -1151,   774, -1151,   783,   788, -1151,   776, -1151,   485,
-     486,  -492, -1151,   369,  -370, -1151, -1151, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,  -849,
-   -1151, -1151, -1151, -1151,   -23,   172,   575, -1151, -1151, -1151,
-   -1151,   567,   574,  -355, -1151, -1151, -1151,   198, -1151,  -754,
-   -1151, -1151,    16, -1151, -1151, -1151, -1151, -1151, -1151,   246,
-    -246, -1151, -1151,  -179, -1151, -1150,   793,   -68, -1151,   503,
-    -344, -1151, -1151, -1151, -1151,   128, -1151, -1151,   747, -1151,
-   -1151, -1151, -1151, -1151,    83,  -494,  -641, -1151, -1151, -1151,
-     -41, -1151, -1151,  -203,   -48,   -95, -1151, -1151, -1151,  -106,
-   -1151, -1151,   100,  -102, -1151, -1151,   -97,  -997, -1151,   560,
-     -21, -1151, -1151,    29, -1151, -1151,   501,   505, -1151,  -474,
-    -925,   480,   112,  -535,   107,   108, -1151, -1151, -1151, -1151,
-   -1151,   757, -1151, -1151, -1151, -1151, -1151,   752, -1151, -1151,
-    -112, -1151, -1151, -1151, -1151, -1151, -1151, -1151,   -49, -1083,
-   -1151, -1151,   245,  -126, -1151,  -540, -1151, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151, -1151,  -873, -1151,   -46, -1151,   344,
-    -681, -1151, -1151, -1151, -1151, -1151,  -356,  -346, -1043,  -850,
-   -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151, -1151,
-     265,  -656,  -748, -1151,   219,  -104,  -717, -1151, -1151, -1151,
-   -1151, -1151, -1151, -1151,   592,   606,  -531,   248,    20, -1151,
-   -1151, -1151, -1151, -1151, -1151, -1151,   -67, -1151, -1151,   -62,
-   -1151,  -414,  -399,   -13, -1151,   296, -1151, -1151,    87,    81,
-    -117,   305, -1151, -1151,    93, -1151,  -719, -1151, -1151, -1151,
-   -1151,  -244,  -832, -1151,  -140,  -618, -1151,  -715, -1151, -1151,
-   -1151, -1151,  -951, -1151, -1151, -1151, -1151,  -101,   101, -1151
+     -1203, -1203,   775, -1203,   777,   780, -1203,   792, -1203,   486,
+     492,  -495, -1203,   376,  -428, -1203, -1203, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,  -859,
+   -1203, -1203, -1203, -1203,   -29,   177,   576, -1203, -1203, -1203,
+   -1203,   579,   569,  -350, -1203, -1203, -1203,   203, -1203,  -760,
+   -1203, -1203,    23, -1203, -1203, -1203, -1203, -1203, -1203,   261,
+     164, -1203, -1203,  -178, -1203, -1202,   795,   -78, -1203,   503,
+    -344, -1203, -1203, -1203, -1203,   133, -1203, -1203,   759, -1203,
+   -1203, -1203, -1203, -1203,    83,  -485,  -643, -1203, -1203, -1203,
+     -40, -1203, -1203,  -204,   -49,   -98, -1203, -1203, -1203,  -107,
+   -1203, -1203,    99,  -103, -1203, -1203,   -96, -1052, -1203,   557,
+     -21, -1203, -1203,    33, -1203, -1203,   502,   504, -1203,  -400,
+    -905,   482,   140,  -534,   122,   125, -1203, -1203, -1203, -1203,
+   -1203,   748, -1203, -1203, -1203, -1203, -1203,   760, -1203, -1203,
+    -111, -1203, -1203, -1203, -1203, -1203, -1203, -1203,   -50, -1084,
+   -1203, -1203,   187,    20, -1203,  -532, -1203, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203, -1203,  -875, -1203,   -47, -1203,   346,
+    -686, -1203, -1203, -1203, -1203, -1203,  -352,  -345, -1026,  -772,
+   -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203, -1203,
+     267,  -654,  -750, -1203,   220,   -83,  -724, -1203, -1203, -1203,
+   -1203, -1203, -1203, -1203,   590,   593,  -718,   244,    25, -1203,
+   -1203, -1203, -1203, -1203, -1203, -1203,   -65, -1203, -1203,   -66,
+   -1203,  -413,  -414,   -15,   -13,  -396, -1203,   299, -1203, -1203,
+      91,    85,  -115,   305, -1203, -1203,    94, -1203,  -707, -1203,
+   -1203, -1203, -1203,  -243,  -839, -1203,  -139,  -597, -1203,  -650,
+   -1203, -1203, -1203, -1203,  -960, -1203, -1203, -1203, -1203,  -101,
+     101, -1203
   };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -7774,31 +7780,32 @@ namespace zorba
   xquery_parser::yydefgoto_[] =
   {
         -1,   221,   222,   223,   224,   225,   226,   227,   228,   229,
-     230,   231,   232,   814,   815,   816,   233,   234,   235,   236,
-     237,   238,   239,   240,   241,   242,   243,   244,   245,  1039,
-     654,   246,   247,   820,   821,   822,   983,   248,   429,   249,
-     430,   431,   432,  1348,  1349,  1299,   250,   799,   251,   348,
-     576,   780,   984,   252,   253,   254,   255,   256,   257,   433,
-     434,   598,  1004,  1005,  1084,  1008,   258,   259,   505,   260,
-     261,   262,   515,   450,   876,   877,   263,   516,   264,   518,
-     265,   266,   267,   522,   523,  1063,   731,   268,   661,   707,
-     662,   668,  1064,  1065,  1066,   708,   519,   520,   924,   925,
-    1252,   521,   921,   922,  1117,  1118,  1119,  1120,   269,   656,
-     657,   270,   993,   994,   271,   272,   273,   274,   739,   275,
+     230,   231,   232,   817,   818,   819,   233,   234,   235,   236,
+     237,   238,   239,   240,   241,   242,   243,   244,   245,  1042,
+     657,   246,   247,   823,   824,   825,   986,   248,   430,   249,
+     431,   432,   433,  1351,  1352,  1302,   250,   802,   251,   349,
+     577,   783,   987,   252,   253,   254,   255,   256,   257,   434,
+     435,   599,  1007,  1008,  1087,  1011,   258,   259,   506,   260,
+     261,   262,   516,   451,   879,   880,   263,   517,   264,   519,
+     265,   266,   267,   523,   524,  1066,   734,   268,   664,   710,
+     665,   671,  1067,  1068,  1069,   711,   520,   521,   927,   928,
+    1255,   522,   924,   925,  1120,  1121,  1122,  1123,   269,   659,
+     660,   270,   996,   997,   271,   272,   273,   274,   742,   275,
      276,   277,   278,   279,   280,   281,   282,   283,   284,   285,
-     286,   287,   542,   543,   288,   289,   290,   291,   292,   293,
+     286,   287,   543,   544,   288,   289,   290,   291,   292,   293,
      294,   295,   296,   297,   298,   299,   300,   301,   302,   303,
-     304,   305,   569,   570,   306,   307,   308,   309,   310,   311,
-     312,   313,   314,   778,   315,   316,   317,  1086,   684,   685,
-     686,  1358,  1384,  1385,  1378,  1379,  1386,  1380,  1087,  1088,
-     318,   319,  1089,   320,   321,   322,   323,   324,   325,   326,
-     976,   732,   929,  1130,   930,   931,   327,   328,   329,   330,
-     331,   332,   333,   334,   335,   336,   579,   997,   337,   338,
-     339,   340,   341,   342,   343,   703,   704,   344,  1108,  1109,
-    1240,  1040,   439,   345,   346,   747,   958,   748,   749,   750,
-     751,   752,   753,   754,   959,   960,   633,   634,   635,   636,
-     637,  1345,  1346,   638,  1286,  1193,  1290,  1287,   639,   640,
-     962,   973,  1151,   963,   964,   969,   965,  1268,  1147,   948
+     304,   305,   570,   571,   306,   307,   308,   309,   310,   311,
+     312,   313,   314,   781,   315,   316,   317,  1089,   687,   688,
+     689,  1361,  1387,  1388,  1381,  1382,  1389,  1383,  1090,  1091,
+     318,   319,  1092,   320,   321,   322,   323,   324,   325,   326,
+     979,   735,   932,  1133,   933,   934,   327,   328,   329,   330,
+     331,   332,   333,   334,   335,   336,   580,  1000,   337,   338,
+     339,   340,   341,   342,   343,   706,   707,   344,  1111,  1112,
+    1243,  1043,   623,   624,   345,   346,   347,   750,   961,   751,
+     752,   753,   754,   755,   756,   757,   962,   963,   636,   637,
+     638,   639,   640,  1348,  1349,   641,  1289,  1196,  1293,  1290,
+     642,   643,   965,   976,  1154,   966,   967,   972,   968,  1271,
+    1150,   951
   };
 
   /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -7808,231 +7815,177 @@ namespace zorba
   const unsigned short int
   xquery_parser::yytable_[] =
   {
-       400,   608,   864,   891,   746,   577,  1032,   870,   578,   932,
-     716,  1044,   642,   758,   759,   760,   761,  1162,   974,   975,
-    1085,   474,   869,   622,  1239,   462,   651,   655,   988,   961,
-     730,  1155,     4,   406,   407,   408,   409,   410,   411,   648,
-     476,   467,   873,  1230,   659,   626,   412,   727,   607,   932,
-     932,  1356,   413,   735,   898,   736,   737,  1148,   738,   456,
-     740,   463,   688,   414,   415,  1341,   607,   416,   741,   742,
-     417,   418,  1054,   726,   503,   464,   710,   711,   712,   789,
-     406,   407,   408,   409,   410,   411,  1261,   347,   937,   938,
-    1325,   942,   726,   412,   727,   940,   436,   468,   646,  1284,
-     932,   861,   664,   419,   420,   421,  1137,   548,   892,   909,
-     671,   472,   503,   985,   552,   436,  1148,   473,   418,   868,
-      80,  1248,  1249,   553,  1077,  1078,   913,   726,   896,   485,
-    1006,  1002,    91,   549,   486,   695,   696,  1357,   698,   699,
-     700,   701,   728,   563,   706,  1007,   550,   672,   617,   422,
-     419,   420,   916,   618,   504,   790,   105,   652,  1075,   717,
-     743,   596,  1285,   744,  1262,   601,   124,  1019,   349,   723,
-     724,   902,   914,   893,   353,   899,   900,   863,   862,   627,
-     551,   565,  1230,   650,  1077,  1078,   897,   628,   874,   350,
-     901,   619,   917,   986,  1203,   729,  1003,  1077,  1078,  1196,
-     629,   653,   630,  1085,   746,   746,   829,   729,  1074,   423,
-    1149,  1150,   631,  1085,   729,   632,  1057,  1079,   620,  1077,
-    1078,   875,  1292,  1076,   689,   729,  1342,   477,   791,  1055,
-     354,   777,  1270,   424,   910,  1080,  1077,  1081,   941,  1159,
-     859,  1364,   729,  1293,  1171,   437,   882,  1382,   438,   571,
-    1327,   855,   573,   524,   858,  1186,  1409,   673,   996,   647,
-     999,   729,  1414,   745,  1082,   943,  1417,   884,   110,  1149,
-    1150,   425,   426,   427,   428,   932,  1077,  1079,   621,   834,
-     424,   351,  1276,   861,   122,   463,   581,  1382,   463,   584,
-    1079,  1191,   903,   904,   552,  1080,   605,  1081,   355,   356,
-    1138,   566,   567,   553,   792,  1083,  1114,   905,  1080,   981,
-    1081,   949,  1079,   401,  1183,   626,   585,  1143,   425,   426,
-     427,   428,   883,   149,  1082,  1116,  1294,  1296,   110,   606,
-    1080,   726,  1081,   590,   591,  1351,   593,  1082,  1029,  1369,
-     580,   110,   352,   885,   122,  1369,  1277,  1080,  1192,  1081,
-    1144,  1069,  1085,  1070,  1405,  1030,  1265,   122,  1383,  1082,
-     888,  1145,  1266,   110,   506,  1224,  1146,   644,     4,   645,
-    1267,   507,   588,   443,   508,   509,  1082,   920,  1229,   122,
-     950,  1056,   510,   149,   935,   982,   676,  1080,  1411,  1081,
-    1184,  1007,  1368,   595,  1323,  1031,   149,  1127,  1402,   602,
-    1313,   687,  1295,  1297,   479,   613,   480,   692,   835,   447,
-     448,  1352,  1022,  1023,   746,  1370,  1082,  1026,   149,   545,
-     609,  1371,  1156,   716,  1376,   817,   746,  1128,  1077,   658,
-    1406,   660,   663,   545,  1280,   610,   546,   836,   837,   670,
-     838,   839,   679,   775,  1014,  1129,   775,  1324,   775,   627,
-     546,  1049,   658,  1354,   772,   773,    80,   628,  1014,   951,
-     952,   953,  1010,   449,  1412,   932,   818,   357,    91,   954,
-     629,   819,   630,   547,   705,  1018,   709,   955,   511,  1011,
-     512,  1021,   631,   956,   957,   632,  1376,  1059,  1060,   435,
-    1077,   497,   105,  1012,   513,   771,   743,   446,   843,   744,
-     774,   498,  1059,  1060,  1034,  1061,  1381,  1387,   781,  1029,
-    1013,   970,   971,   402,   785,   786,   403,   727,  1046,  1047,
-     514,   794,  1050,   451,  1052,  1279,  1195,   844,   845,  1381,
-     846,   847,   727,   972,  1337,  1387,   603,  1395,   611,  1080,
-     554,  1081,  1311,   824,  1072,   572,   442,  1315,   825,  1377,
-     604,   574,   612,   555,  1062,  1093,  1094,  1095,  1113,  1098,
-    1099,  1100,  1101,  1102,  1103,   932,  1105,  1106,  1082,  1114,
-     992,  1340,  1265,   949,   920,   444,  1340,   626,  1266,  1115,
-    1332,   854,   552,  1172,   800,  1366,  1267,   818,  1116,  1059,
-    1060,   553,   819,  1133,   404,  1135,  1136,   405,   623,   624,
-     625,  1080,   823,  1081,   426,   427,   428,  1260,   406,   407,
-     408,  1399,   887,   411,  1263,  1264,   932,   440,   445,   832,
-     441,   746,   833,   840,  1201,   482,   841,   483,  1024,  1025,
-    1082,  1359,  1245,  1246,  1091,  1362,  1092,  1166,  1096,   452,
-    1097,   453,   950,   804,   805,   806,   807,   808,   809,   810,
-     811,   812,   813,   465,   872,   599,   600,   755,   756,   762,
-     763,   469,   764,   765,   977,   977,  1338,  1339,   470,   475,
-     889,   478,   484,   481,   487,   944,  1189,   488,   489,  1389,
-     490,   491,   492,   494,   501,   502,   525,   526,   556,   544,
-     557,  1198,   558,   568,  1373,   559,   575,   582,   583,   589,
-    1244,   592,   406,   597,  1205,   607,   614,   919,   594,  1208,
-    1209,   627,  1211,   933,   615,   989,   436,  1215,   426,   628,
-     649,   951,   952,   953,   665,   666,  1330,  1331,   680,   667,
-     385,   669,   629,   403,   630,   405,   438,   455,   682,   955,
-     527,   683,   690,   693,   631,  1157,   957,   632,   528,   529,
-     694,   530,   691,   933,   933,   933,   933,   697,   531,   702,
-     715,   720,   532,   719,   533,   721,  1242,   722,   766,   534,
-     725,   767,   768,   769,   783,   782,   998,   920,   998,   784,
-     798,   801,   788,   795,   787,   535,   796,   797,  1303,   802,
-    1256,   803,   826,  1257,   827,  1259,   830,  1365,   831,   842,
-     848,   849,   850,   851,   933,   856,   852,   857,   860,   536,
-     537,   538,   539,   540,   541,   865,   866,   867,   871,   878,
-     881,   906,   879,  1273,   880,   894,   895,   908,   907,   911,
-     912,   915,   918,   923,   926,   934,   936,  1328,   939,   966,
-     967,   947,   992,   968,   979,   995,   819,   980,   726,   987,
-     990,  1015,   991,  1001,  1028,  1036,  1038,  1041,  1027,  1020,
-    1037,  1035,  1033,  1042,  1043,  1045,  1304,  1048,  1305,   580,
-    1051,   580,  1053,  1058,  1309,  1073,  1090,  1071,  1104,  1068,
-    1110,  1111,   619,  1107,  1125,  1121,  1123,  1126,  1317,  1318,
-    1319,  1320,  1321,  1134,  1322,  1139,  1141,  1142,  1163,  1152,
-    1161,  1164,  1140,  1165,  1167,  1182,     4,  1176,  1178,  1194,
-    1122,  1197,  1202,   524,  1329,  1169,  1210,  1212,  1213,  1177,
-    1179,  1131,  1180,  1132,  1214,  1206,  1190,  1175,  1218,  1221,
-    1226,  1334,  1223,  1336,  1232,  1231,  1222,  1233,  1234,  1185,
-    1238,  1235,  1114,  1251,  1002,  1254,  1282,  1288,  1255,  1275,
-    1278,  1258,  1272,  1289,  1350,  1283,  1353,  1298,  1396,  1300,
-    1301,  1302,  1310,  1314,  1326,  1333,  1343,  1355,  1200,  1029,
-    1367,  1363,  1372,  1375,  1236,  1392,  1398,  1401,  1361,   933,
-    1388,  1408,  1390,  1404,  1007,  1413,   713,   714,   828,  1181,
-    1017,  1416,   641,  1188,   493,   616,  1374,  1344,  1009,  1394,
-    1220,  1168,   499,   643,  1281,  1067,   495,  1350,   718,  1124,
-    1207,   496,   517,  1308,  1227,  1217,  1243,  1253,  1112,  1250,
-     500,  1247,  1173,  1393,  1204,   681,   733,   757,   890,  1403,
-    1225,   734,   658,  1400,   978,  1187,  1016,  1237,   663,  1000,
-     945,  1153,   564,   562,  1271,   674,  1241,  1160,  1407,  1216,
-     946,  1158,  1347,  1291,     0,  1269,  1154,     0,     0,   675,
+       401,   894,  1035,   609,  1047,   935,   578,   867,   719,   579,
+     440,  1165,   873,   749,   645,   761,   762,   763,   764,   977,
+     978,  1088,   475,   872,   463,   991,  1242,   625,   654,   658,
+     662,   468,     4,   876,   407,   408,   409,   410,   411,   412,
+     733,  1328,   477,  1151,   964,   935,   935,   413,   625,   729,
+     912,   730,   674,   414,  1158,   729,   608,   608,   691,   457,
+     730,   464,  1344,  1233,   415,   416,   504,   354,   417,  1251,
+    1252,   418,   419,  1359,   999,   465,  1002,  1057,   713,   714,
+     715,   407,   408,   409,   410,   411,   412,   350,   504,   675,
+     941,   437,   945,  1151,   413,   348,   935,   469,   437,   731,
+     649,   871,  1264,   667,   420,   421,   422,   792,   943,   864,
+     940,   473,   794,  1005,  1140,   916,   895,   474,   899,   419,
+    1194,   988,    80,   355,   729,   480,   864,   481,   738,   885,
+     739,   740,   610,   741,    91,   743,   698,   699,  1117,   701,
+     702,   703,   704,   744,   745,   709,   505,   611,   629,   655,
+     423,   420,   421,   919,  1080,  1081,   498,  1119,   105,  1360,
+     720,   917,   746,  1078,   887,   747,   499,  1072,   920,  1073,
+     726,   727,  1022,   901,   866,   913,   900,  1195,  1006,   877,
+    1265,   896,   566,   793,  1080,  1081,   865,  1206,   795,  1080,
+    1081,   356,   357,   656,   653,  1199,  1152,  1153,  1330,   676,
+     732,   989,  1233,   891,  1088,   886,  1077,  1412,   832,   353,
+     424,   984,   878,  1417,  1088,   749,   749,  1420,   732,  1080,
+    1081,  1060,   692,   438,   732,  1345,   439,   732,  1079,   732,
+    1058,   478,   780,   732,   425,  1186,  1297,  1296,     4,   858,
+     888,  1299,   861,  1367,   862,  1174,  1152,  1153,   572,  1082,
+     944,   574,  1189,   525,  1162,  1273,   729,   625,  1295,  1279,
+     625,   905,   604,   650,   358,   748,  1287,  1083,  1354,  1084,
+     351,   935,   426,   427,   428,   429,   605,   582,  1372,  1082,
+     585,   425,   630,   837,  1082,   464,  1372,   985,   464,   553,
+     631,   567,   568,  1408,   902,   903,  1085,  1083,   554,  1084,
+     110,  1141,  1083,   632,  1084,   633,  1059,   586,  1414,   904,
+    1010,  1187,  1298,  1326,  1082,   634,   122,  1300,   635,   426,
+     427,   428,   429,  1280,   591,   592,  1085,   594,    80,  1288,
+     110,  1085,  1083,   546,  1084,   110,   835,  1086,   507,   836,
+      91,   581,   946,  1379,  1355,   508,   122,  1080,   509,   510,
+     547,   122,   618,  1088,  1373,   149,   511,   619,   647,  1013,
+     648,  1085,  1374,  1009,   105,   110,  1327,  1227,   746,  1409,
+     952,   747,  1232,   589,   629,   549,  1014,   679,  1010,  1032,
+     923,   122,   906,   907,  1415,   149,  1371,   938,   546,  1017,
+     149,  1015,   690,   352,   596,   620,  1033,   908,   695,  1130,
+     603,   550,  1316,  1017,   553,   547,   614,  1379,  1016,   448,
+     449,  1080,   838,   554,   551,   564,  1025,  1026,   820,   436,
+     149,  1029,   621,   719,   651,   749,  1159,   402,   548,  1131,
+     661,   443,   663,   666,   606,  1283,  1034,   749,   124,   953,
+     673,   839,   840,   682,   841,   842,  1357,  1132,   552,   483,
+    1146,   484,   512,   661,   513,  1052,   775,   776,  1080,   821,
+    1083,   935,  1084,   450,   822,  1080,  1268,   607,   514,  1385,
+    1380,   846,  1269,   973,   974,   708,  1385,   712,  1021,  1032,
+    1270,   445,   622,  1147,  1024,   555,   774,   573,   952,  1085,
+     444,   777,   629,   575,   515,   975,  1198,   612,   556,   784,
+     847,   848,  1116,   849,   850,   788,   789,  1037,   630,  1062,
+    1063,   613,   797,  1117,   403,   446,   631,   404,   954,   955,
+     956,  1049,  1050,  1118,  1083,  1053,  1084,  1055,   957,   632,
+    1282,   633,  1119,  1398,  1402,  1340,   958,   447,   995,   730,
+    1314,   634,   959,   960,   635,  1318,  1094,  1075,  1095,  1062,
+    1063,  1175,  1064,  1085,   626,   627,   628,   953,  1096,  1097,
+    1098,   935,  1101,  1102,  1103,  1104,  1105,  1106,   452,  1108,
+    1109,  1083,   597,  1084,   857,   453,   602,   923,  1083,   730,
+    1084,  1335,  1386,   553,   454,   803,  1369,  1384,  1390,  1405,
+     778,   405,   554,   778,   406,   778,  1136,   486,  1138,  1139,
+    1085,  1065,   487,   826,   827,   890,   466,  1085,  1268,   828,
+    1384,  1263,   935,   470,  1269,  1148,  1390,   471,  1266,  1267,
+    1149,   441,  1270,   476,   442,   821,   630,   479,  1204,  1362,
+     822,   482,   749,  1365,   631,   485,   954,   955,   956,  1343,
+    1169,   407,   408,   409,  1343,   843,   412,   632,   844,   633,
+     427,   428,   429,  1099,   958,  1100,   488,   875,   489,   634,
+    1160,   960,   635,  1027,  1028,  1062,  1063,   490,   947,  1248,
+    1249,   600,   601,   892,   528,   765,   766,  1392,   491,  1192,
+     767,   768,   529,   530,   492,   531,   758,   759,   980,   980,
+    1341,  1342,   532,   495,  1201,   526,   533,   493,   534,  1376,
+     502,   503,   527,   535,  1247,   545,   557,  1208,   992,   559,
+     922,   558,  1211,  1212,   560,  1214,   936,   569,   576,   536,
+    1218,   583,   584,   590,   593,   595,   407,   598,   608,   615,
+    1333,  1334,   807,   808,   809,   810,   811,   812,   813,   814,
+     815,   816,   616,   537,   538,   539,   540,   541,   542,   668,
+     427,   652,   670,   669,   672,   683,   936,   936,   936,   936,
+     386,   685,   404,   686,   406,   693,   439,   456,   694,  1245,
+     696,   697,   700,   705,   718,   723,   728,   770,   769,  1001,
+     923,  1001,   722,   771,   724,   725,   772,   785,   786,   790,
+     801,   804,  1306,  1259,   805,   787,  1260,   806,  1262,   791,
+     798,  1368,   799,   800,   829,   830,   833,   936,   834,   845,
+     851,   852,   853,   859,   854,   860,   855,   863,   868,   869,
+     870,   874,   881,   882,   884,   883,  1276,   909,   910,   897,
+     898,   914,   918,   915,   921,   969,   926,   929,   937,   942,
+     939,  1331,   982,   911,   950,   970,   971,   983,   990,   995,
+     993,   994,   998,  1004,  1018,   822,   729,  1038,  1030,  1039,
+    1031,  1041,  1040,  1023,  1036,  1045,  1046,  1044,  1056,  1307,
+    1048,  1308,   581,  1051,   581,  1054,  1061,  1312,  1074,  1076,
+    1071,  1093,  1107,  1114,   620,  1124,  1137,  1110,  1113,  1126,
+    1128,  1320,  1321,  1322,  1323,  1324,  1129,  1325,  1142,  1144,
+    1164,  1167,  1145,  1155,  1185,  1143,  1170,  1172,  1166,  1168,
+    1181,     4,  1197,  1125,  1200,  1179,   525,  1332,  1205,  1193,
+    1178,  1213,  1180,  1182,  1134,  1216,  1135,  1183,  1209,  1215,
+    1217,  1221,  1188,  1226,  1337,  1229,  1339,  1235,  1224,  1239,
+    1234,  1225,  1236,  1241,  1237,  1117,  1254,  1005,  1261,  1285,
+    1275,  1291,  1257,  1281,  1286,  1258,  1238,  1353,  1278,  1356,
+    1292,  1203,  1399,  1304,  1305,  1303,  1301,  1313,  1317,  1336,
+    1329,  1346,  1032,  1358,  1366,  1370,  1375,  1364,  1378,  1391,
+    1395,  1401,   936,  1411,  1393,  1404,  1010,  1407,   716,  1416,
+    1191,  1419,  1184,  1223,   717,   494,   831,   617,  1020,   646,
+     496,  1347,  1397,   497,  1377,   644,  1012,  1230,  1284,   721,
+    1353,  1171,  1127,  1070,  1210,  1311,  1246,  1220,   500,  1256,
+    1115,  1253,   501,   684,   518,  1250,  1396,  1207,   736,  1176,
+     760,   737,  1228,   893,   563,   661,  1406,  1403,  1003,   981,
+    1019,   666,  1240,  1190,   677,  1244,   948,   678,  1156,  1274,
+     565,  1410,  1219,   949,  1163,  1161,  1350,  1294,  1272,  1157,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-    1228,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,  1231,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,   705,     0,     0,   463,     0,     0,     0,   709,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,  1274,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,   933,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-    1306,  1307,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,  1312,     0,     0,     0,     0,  1316,     0,     0,     0,
+       0,     0,     0,     0,   708,     0,     0,   464,     0,     0,
+       0,   712,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,  1335,     0,     0,     0,     0,     0,   933,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+    1277,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,   936,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,  1309,  1310,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,  1315,     0,     0,     0,     0,  1319,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-    1360,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,   463,     0,     0,     0,     0,     0,     0,     0,     0,
-     933,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,  1338,     0,     0,     0,
+       0,     0,   936,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-    1391,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,  1397,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,  1363,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,   464,     0,     0,     0,     0,     0,
+       0,     0,     0,   936,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,  1394,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,  1400,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     1,     0,     0,     0,
-       0,     0,     0,     2,     3,  1410,     4,     0,     0,     0,
-    1415,     0,     5,     6,     7,     8,     9,    10,    11,    12,
-      13,    14,    15,    16,    17,    18,    19,    20,    21,    22,
-      23,    24,    25,    26,    27,    28,    29,    30,    31,    32,
-      33,     0,    34,    35,    36,    37,    38,    39,    40,    41,
-      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
-      52,    53,    54,    55,    56,    57,    58,    59,    60,    61,
-      62,    63,    64,    65,    66,    67,    68,     0,    69,    70,
-      71,    72,    73,    74,    75,    76,    77,     0,     0,    78,
-      79,     0,     0,     0,    80,    81,    82,    83,    84,    85,
-      86,    87,    88,    89,    90,     0,    91,     0,    92,    93,
-      94,    95,     0,    96,     0,     0,     0,    97,    98,    99,
-     100,   101,     0,     0,     0,     0,     0,   102,   103,   104,
-     105,   106,   107,   108,     0,     0,     0,   109,   110,   111,
-     112,   113,     0,     0,     0,     0,   114,   115,   116,   117,
-     118,   119,   120,   121,   122,     0,   123,   124,     0,     0,
-     125,   126,   127,     0,     0,     0,   128,     0,   129,   130,
-     131,     0,   132,   133,   134,     0,   135,     0,   136,   137,
-     138,   139,   140,   141,   142,   143,   144,   145,   146,     0,
-       0,   147,   148,   149,     0,   150,   151,     0,   152,   153,
-     154,   155,   156,   157,   158,   159,   160,   161,   162,   163,
-     164,   165,   166,   167,   168,   169,   170,   171,   172,   173,
-     174,   175,   176,   177,   178,   179,   180,   181,   182,   183,
-     184,   185,   186,   187,   188,     0,   189,   190,     0,   191,
-     192,   193,   194,   195,   196,   197,   198,   199,   200,   201,
-     202,   203,   204,   205,   206,   207,   208,   209,   210,   211,
-     212,   213,   214,   215,   216,   217,   218,   219,   220,     1,
-       0,     0,     0,     0,     0,     0,     2,     3,     0,     4,
-       0,     0,     0,     0,     0,     5,     6,     7,     8,     9,
-      10,    11,    12,    13,    14,    15,    16,   369,    18,    19,
-      20,    21,    22,    23,    24,    25,    26,   372,    28,    29,
-     374,    31,    32,    33,     0,    34,    35,    36,    37,    38,
-      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,    51,    52,    53,    54,    55,    56,    57,    58,
-      59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
-       0,    69,    70,    71,    72,    73,    74,    75,    76,    77,
-       0,     0,    78,    79,     0,     0,     0,    80,    81,    82,
-      83,    84,    85,    86,    87,    88,    89,    90,     0,    91,
-       0,    92,    93,    94,    95,     0,    96,     0,     0,     0,
-      97,    98,    99,   100,   101,     0,     0,     0,     0,     0,
-     102,   103,   104,   105,   106,   107,   108,     0,     0,     0,
-     109,   110,   111,   112,   113,     0,     0,     0,     0,   114,
-     115,   116,   117,   118,   119,   120,   121,   122,     0,   123,
-     124,     0,     0,   125,   126,   127,     0,     0,     0,   128,
-     466,   129,   130,   131,     0,   132,   133,   134,     0,   135,
-       0,   136,   137,   138,   139,   140,   141,   142,   143,   144,
-     145,   146,     0,     0,   147,   148,   149,     0,   388,   151,
-       0,   152,   153,   154,   155,   156,   157,   158,   159,   160,
-     161,   162,   163,   164,   165,   166,   167,   168,   169,   170,
-     171,   172,   173,   174,   175,   176,   177,   178,   179,   180,
-     181,   182,   183,   184,   185,   186,   187,   188,     0,   189,
-     190,     0,   191,   192,   193,   194,   195,   196,   197,   198,
-     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
-     209,   210,   211,   212,   213,   214,   215,   216,   217,   218,
-     219,     1,     0,     0,     0,     0,     0,     0,     2,     3,
-       0,     4,     0,     0,     0,     0,     0,     5,     6,     7,
-       8,     9,    10,    11,    12,    13,    14,    15,    16,   369,
-      18,    19,    20,    21,    22,    23,    24,    25,    26,   372,
-      28,    29,   374,    31,    32,    33,     0,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
-      67,    68,     0,    69,    70,    71,    72,    73,    74,    75,
-      76,    77,     0,     0,    78,    79,     0,     0,     0,    80,
-      81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
-       0,    91,     0,    92,    93,    94,    95,     0,    96,     0,
-       0,     0,    97,    98,    99,   100,   101,     0,     0,     0,
-       0,     0,   102,   103,   104,   105,   106,   107,   108,     0,
-       0,     0,   109,   110,   111,   112,   113,     0,     0,     0,
-       0,   114,   115,   116,   117,   118,   119,   120,   121,   122,
-       0,   123,   124,     0,     0,   125,   126,   127,     0,   770,
-       0,   128,     0,   129,   130,   131,     0,   132,   133,   134,
-       0,   135,     0,   136,   137,   138,   139,   140,   141,   142,
-     143,   144,   145,   146,     0,     0,   147,   148,   149,     0,
-     388,   151,     0,   152,   153,   154,   155,   156,   157,   158,
-     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-     169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
-     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
-       0,   189,   190,     0,   191,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
-     207,   208,   209,   210,   211,   212,   213,   214,   215,   216,
-     217,   218,   219,     1,     0,     0,     0,     0,     0,     0,
-       2,     3,     0,     4,     0,     0,     0,     0,     0,     5,
+       0,     0,     0,     2,     3,     0,     4,     0,  1413,     0,
+       0,     0,     0,  1418,     5,     6,     7,     8,     9,    10,
+      11,    12,    13,    14,    15,    16,    17,    18,    19,    20,
+      21,    22,    23,    24,    25,    26,    27,    28,    29,    30,
+      31,    32,    33,     0,    34,    35,    36,    37,    38,    39,
+      40,    41,    42,    43,    44,    45,    46,    47,    48,    49,
+      50,    51,    52,    53,    54,    55,    56,    57,    58,    59,
+      60,    61,    62,    63,    64,    65,    66,    67,    68,     0,
+      69,    70,    71,    72,    73,    74,    75,    76,    77,     0,
+       0,    78,    79,     0,     0,     0,    80,    81,    82,    83,
+      84,    85,    86,    87,    88,    89,    90,     0,    91,     0,
+      92,    93,    94,    95,     0,    96,     0,     0,     0,    97,
+      98,    99,   100,   101,     0,     0,     0,     0,     0,   102,
+     103,   104,   105,   106,   107,   108,     0,     0,     0,   109,
+     110,   111,   112,   113,     0,     0,     0,     0,   114,   115,
+     116,   117,   118,   119,   120,   121,   122,     0,   123,   124,
+       0,     0,   125,   126,   127,     0,     0,     0,   128,     0,
+     129,   130,   131,     0,   132,   133,   134,     0,   135,     0,
+     136,   137,   138,   139,   140,   141,   142,   143,   144,   145,
+     146,     0,     0,   147,   148,   149,     0,   150,   151,     0,
+     152,   153,   154,   155,   156,   157,   158,   159,   160,   161,
+     162,   163,   164,   165,   166,   167,   168,   169,   170,   171,
+     172,   173,   174,   175,   176,   177,   178,   179,   180,   181,
+     182,   183,   184,   185,   186,   187,   188,     0,   189,   190,
+       0,   191,   192,   193,   194,   195,   196,   197,   198,   199,
+     200,   201,   202,   203,   204,   205,   206,   207,   208,   209,
+     210,   211,   212,   213,   214,   215,   216,   217,   218,   219,
+     220,     1,     0,     0,     0,     0,     0,     0,     2,     3,
+       0,     4,     0,     0,     0,     0,     0,     0,     0,     5,
        6,     7,     8,     9,    10,    11,    12,    13,    14,    15,
-      16,   369,    18,    19,    20,    21,    22,    23,    24,    25,
-      26,   372,    28,    29,   374,    31,    32,    33,     0,    34,
+      16,   370,    18,    19,    20,    21,    22,    23,    24,    25,
+      26,   373,    28,    29,   375,    31,    32,    33,     0,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
       45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
       55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
@@ -8045,10 +7998,10 @@ namespace zorba
      108,     0,     0,     0,   109,   110,   111,   112,   113,     0,
        0,     0,     0,   114,   115,   116,   117,   118,   119,   120,
      121,   122,     0,   123,   124,     0,     0,   125,   126,   127,
-       0,     0,     0,   128,   776,   129,   130,   131,     0,   132,
+       0,     0,     0,   128,   467,   129,   130,   131,     0,   132,
      133,   134,     0,   135,     0,   136,   137,   138,   139,   140,
      141,   142,   143,   144,   145,   146,     0,     0,   147,   148,
-     149,     0,   388,   151,     0,   152,   153,   154,   155,   156,
+     149,     0,   389,   151,     0,   152,   153,   154,   155,   156,
      157,   158,   159,   160,   161,   162,   163,   164,   165,   166,
      167,   168,   169,   170,   171,   172,   173,   174,   175,   176,
      177,   178,   179,   180,   181,   182,   183,   184,   185,   186,
@@ -8057,36 +8010,9 @@ namespace zorba
      205,   206,   207,   208,   209,   210,   211,   212,   213,   214,
      215,   216,   217,   218,   219,     1,     0,     0,     0,     0,
        0,     0,     2,     3,     0,     4,     0,     0,     0,     0,
-       0,     5,     6,     7,     8,     9,    10,    11,    12,    13,
-      14,    15,    16,   369,    18,    19,    20,    21,    22,    23,
-      24,    25,    26,   372,    28,    29,   374,    31,    32,    33,
-       0,    34,    35,    36,    37,    38,    39,    40,    41,    42,
-      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
-      53,    54,    55,    56,    57,    58,    59,    60,    61,    62,
-      63,    64,    65,    66,    67,    68,     0,    69,    70,    71,
-      72,    73,    74,    75,    76,    77,     0,     0,    78,    79,
-       0,     0,     0,    80,    81,    82,    83,    84,    85,    86,
-      87,    88,    89,    90,     0,    91,     0,    92,    93,    94,
-      95,     0,    96,     0,     0,     0,    97,    98,    99,   100,
-     101,     0,     0,     0,     0,     0,   102,   103,   104,   105,
-     106,   107,   108,     0,     0,     0,   109,   110,   111,   112,
-     113,     0,     0,     0,     0,   114,   115,   116,   117,   118,
-     119,   120,   121,   122,     0,   123,   124,     0,     0,   125,
-     126,   127,     0,   793,     0,   128,     0,   129,   130,   131,
-       0,   132,   133,   134,     0,   135,     0,   136,   137,   138,
-     139,   140,   141,   142,   143,   144,   145,   146,     0,     0,
-     147,   148,   149,     0,   388,   151,     0,   152,   153,   154,
-     155,   156,   157,   158,   159,   160,   161,   162,   163,   164,
-     165,   166,   167,   168,   169,   170,   171,   172,   173,   174,
-     175,   176,   177,   178,   179,   180,   181,   182,   183,   184,
-     185,   186,   187,   188,     0,   189,   190,     0,   191,   192,
-     193,   194,   195,   196,   197,   198,   199,   200,   201,   202,
-     203,   204,   205,   206,   207,   208,   209,   210,   211,   212,
-     213,   214,   215,   216,   217,   218,   219,     1,     0,     0,
-       0,     0,     0,     0,     2,     3,     0,     4,     0,     0,
        0,     0,     0,     5,     6,     7,     8,     9,    10,    11,
-      12,    13,    14,    15,    16,   369,    18,    19,    20,    21,
-      22,    23,    24,    25,    26,   372,    28,    29,   374,    31,
+      12,    13,    14,    15,    16,   370,    18,    19,    20,    21,
+      22,    23,    24,    25,    26,   373,    28,    29,   375,    31,
       32,    33,     0,    34,    35,    36,    37,    38,    39,    40,
       41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
       51,    52,    53,    54,    55,    56,    57,    58,    59,    60,
@@ -8099,10 +8025,10 @@ namespace zorba
      104,   105,   106,   107,   108,     0,     0,     0,   109,   110,
      111,   112,   113,     0,     0,     0,     0,   114,   115,   116,
      117,   118,   119,   120,   121,   122,     0,   123,   124,     0,
-       0,   125,   126,   127,     0,   853,     0,   128,     0,   129,
+       0,   125,   126,   127,     0,   773,     0,   128,     0,   129,
      130,   131,     0,   132,   133,   134,     0,   135,     0,   136,
      137,   138,   139,   140,   141,   142,   143,   144,   145,   146,
-       0,     0,   147,   148,   149,     0,   388,   151,     0,   152,
+       0,     0,   147,   148,   149,     0,   389,   151,     0,   152,
      153,   154,   155,   156,   157,   158,   159,   160,   161,   162,
      163,   164,   165,   166,   167,   168,   169,   170,   171,   172,
      173,   174,   175,   176,   177,   178,   179,   180,   181,   182,
@@ -8111,10 +8037,65 @@ namespace zorba
      201,   202,   203,   204,   205,   206,   207,   208,   209,   210,
      211,   212,   213,   214,   215,   216,   217,   218,   219,     1,
        0,     0,     0,     0,     0,     0,     2,     3,     0,     4,
+       0,     0,     0,     0,     0,     0,     0,     5,     6,     7,
+       8,     9,    10,    11,    12,    13,    14,    15,    16,   370,
+      18,    19,    20,    21,    22,    23,    24,    25,    26,   373,
+      28,    29,   375,    31,    32,    33,     0,    34,    35,    36,
+      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
+      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
+      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
+      67,    68,     0,    69,    70,    71,    72,    73,    74,    75,
+      76,    77,     0,     0,    78,    79,     0,     0,     0,    80,
+      81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
+       0,    91,     0,    92,    93,    94,    95,     0,    96,     0,
+       0,     0,    97,    98,    99,   100,   101,     0,     0,     0,
+       0,     0,   102,   103,   104,   105,   106,   107,   108,     0,
+       0,     0,   109,   110,   111,   112,   113,     0,     0,     0,
+       0,   114,   115,   116,   117,   118,   119,   120,   121,   122,
+       0,   123,   124,     0,     0,   125,   126,   127,     0,     0,
+       0,   128,   779,   129,   130,   131,     0,   132,   133,   134,
+       0,   135,     0,   136,   137,   138,   139,   140,   141,   142,
+     143,   144,   145,   146,     0,     0,   147,   148,   149,     0,
+     389,   151,     0,   152,   153,   154,   155,   156,   157,   158,
+     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
+     169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
+     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
+       0,   189,   190,     0,   191,   192,   193,   194,   195,   196,
+     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
+     207,   208,   209,   210,   211,   212,   213,   214,   215,   216,
+     217,   218,   219,     1,     0,     0,     0,     0,     0,     0,
+       2,     3,     0,     4,     0,     0,     0,     0,     0,     0,
+       0,     5,     6,     7,     8,     9,    10,    11,    12,    13,
+      14,    15,    16,   370,    18,    19,    20,    21,    22,    23,
+      24,    25,    26,   373,    28,    29,   375,    31,    32,    33,
+       0,    34,    35,    36,    37,    38,    39,    40,    41,    42,
+      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
+      53,    54,    55,    56,    57,    58,    59,    60,    61,    62,
+      63,    64,    65,    66,    67,    68,     0,    69,    70,    71,
+      72,    73,    74,    75,    76,    77,     0,     0,    78,    79,
+       0,     0,     0,    80,    81,    82,    83,    84,    85,    86,
+      87,    88,    89,    90,     0,    91,     0,    92,    93,    94,
+      95,     0,    96,     0,     0,     0,    97,    98,    99,   100,
+     101,     0,     0,     0,     0,     0,   102,   103,   104,   105,
+     106,   107,   108,     0,     0,     0,   109,   110,   111,   112,
+     113,     0,     0,     0,     0,   114,   115,   116,   117,   118,
+     119,   120,   121,   122,     0,   123,   124,     0,     0,   125,
+     126,   127,     0,   796,     0,   128,     0,   129,   130,   131,
+       0,   132,   133,   134,     0,   135,     0,   136,   137,   138,
+     139,   140,   141,   142,   143,   144,   145,   146,     0,     0,
+     147,   148,   149,     0,   389,   151,     0,   152,   153,   154,
+     155,   156,   157,   158,   159,   160,   161,   162,   163,   164,
+     165,   166,   167,   168,   169,   170,   171,   172,   173,   174,
+     175,   176,   177,   178,   179,   180,   181,   182,   183,   184,
+     185,   186,   187,   188,     0,   189,   190,     0,   191,   192,
+     193,   194,   195,   196,   197,   198,   199,   200,   201,   202,
+     203,   204,   205,   206,   207,   208,   209,   210,   211,   212,
+     213,   214,   215,   216,   217,   218,   219,     1,     0,     0,
+       0,     0,     0,     0,     2,     3,     0,     4,     0,     0,
        0,     0,     0,     0,     0,     5,     6,     7,     8,     9,
-      10,    11,    12,    13,    14,    15,    16,   369,    18,    19,
-      20,    21,    22,    23,    24,    25,    26,   372,    28,    29,
-     374,    31,    32,    33,     0,    34,    35,    36,    37,    38,
+      10,    11,    12,    13,    14,    15,    16,   370,    18,    19,
+      20,    21,    22,    23,    24,    25,    26,   373,    28,    29,
+     375,    31,    32,    33,     0,    34,    35,    36,    37,    38,
       39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
       49,    50,    51,    52,    53,    54,    55,    56,    57,    58,
       59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
@@ -8126,10 +8107,10 @@ namespace zorba
      102,   103,   104,   105,   106,   107,   108,     0,     0,     0,
      109,   110,   111,   112,   113,     0,     0,     0,     0,   114,
      115,   116,   117,   118,   119,   120,   121,   122,     0,   123,
-     124,     0,     0,   125,   126,   127,     0,   886,     0,   128,
+     124,     0,     0,   125,   126,   127,     0,   856,     0,   128,
        0,   129,   130,   131,     0,   132,   133,   134,     0,   135,
        0,   136,   137,   138,   139,   140,   141,   142,   143,   144,
-     145,   146,     0,     0,   147,   148,   149,     0,   388,   151,
+     145,   146,     0,     0,   147,   148,   149,     0,   389,   151,
        0,   152,   153,   154,   155,   156,   157,   158,   159,   160,
      161,   162,   163,   164,   165,   166,   167,   168,   169,   170,
      171,   172,   173,   174,   175,   176,   177,   178,   179,   180,
@@ -8138,37 +8119,10 @@ namespace zorba
      199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
      209,   210,   211,   212,   213,   214,   215,   216,   217,   218,
      219,     1,     0,     0,     0,     0,     0,     0,     2,     3,
-       0,     4,     0,     0,     0,     0,     0,     5,     6,     7,
-       8,     9,    10,    11,    12,    13,    14,    15,    16,   369,
-      18,    19,    20,    21,    22,    23,    24,    25,    26,   372,
-      28,    29,   374,    31,    32,    33,     0,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
-      67,    68,     0,    69,    70,    71,    72,    73,    74,    75,
-      76,    77,     0,     0,    78,    79,     0,     0,     0,    80,
-      81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
-       0,    91,     0,    92,    93,    94,    95,     0,    96,     0,
-       0,     0,    97,    98,    99,   100,   101,     0,     0,     0,
-       0,     0,   102,   103,   104,   105,   106,   107,   108,     0,
-       0,     0,   109,   110,   111,   112,   113,     0,     0,     0,
-       0,   114,   115,   116,   117,   118,   119,   120,   121,   122,
-       0,   123,   124,     0,     0,   125,   126,   127,     0,  1174,
-       0,   128,     0,   129,   130,   131,     0,   132,   133,   134,
-       0,   135,     0,   136,   137,   138,   139,   140,   141,   142,
-     143,   144,   145,   146,     0,     0,   147,   148,   149,     0,
-     388,   151,     0,   152,   153,   154,   155,   156,   157,   158,
-     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-     169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
-     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
-       0,   189,   190,     0,   191,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
-     207,   208,   209,   210,   211,   212,   213,   214,   215,   216,
-     217,   218,   219,     1,     0,     0,     0,     0,     0,     0,
-       2,     3,     0,     4,     0,     0,     0,     0,     0,     5,
+       0,     4,     0,     0,     0,     0,     0,     0,     0,     5,
        6,     7,     8,     9,    10,    11,    12,    13,    14,    15,
-      16,   369,    18,    19,    20,    21,    22,    23,    24,    25,
-      26,   372,    28,    29,   374,    31,    32,    33,     0,    34,
+      16,   370,    18,    19,    20,    21,    22,    23,    24,    25,
+      26,   373,    28,    29,   375,    31,    32,    33,     0,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
       45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
       55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
@@ -8181,10 +8135,10 @@ namespace zorba
      108,     0,     0,     0,   109,   110,   111,   112,   113,     0,
        0,     0,     0,   114,   115,   116,   117,   118,   119,   120,
      121,   122,     0,   123,   124,     0,     0,   125,   126,   127,
-       0,  1199,     0,   128,     0,   129,   130,   131,     0,   132,
+       0,   889,     0,   128,     0,   129,   130,   131,     0,   132,
      133,   134,     0,   135,     0,   136,   137,   138,   139,   140,
      141,   142,   143,   144,   145,   146,     0,     0,   147,   148,
-     149,     0,   388,   151,     0,   152,   153,   154,   155,   156,
+     149,     0,   389,   151,     0,   152,   153,   154,   155,   156,
      157,   158,   159,   160,   161,   162,   163,   164,   165,   166,
      167,   168,   169,   170,   171,   172,   173,   174,   175,   176,
      177,   178,   179,   180,   181,   182,   183,   184,   185,   186,
@@ -8193,36 +8147,9 @@ namespace zorba
      205,   206,   207,   208,   209,   210,   211,   212,   213,   214,
      215,   216,   217,   218,   219,     1,     0,     0,     0,     0,
        0,     0,     2,     3,     0,     4,     0,     0,     0,     0,
-       0,     5,     6,     7,     8,     9,    10,    11,    12,    13,
-      14,    15,    16,   369,    18,    19,    20,    21,    22,    23,
-      24,    25,    26,   372,    28,    29,   374,    31,    32,    33,
-       0,    34,    35,    36,    37,    38,    39,    40,    41,    42,
-      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
-      53,    54,    55,    56,    57,    58,    59,    60,    61,    62,
-      63,    64,    65,    66,    67,    68,     0,    69,    70,    71,
-      72,    73,    74,    75,    76,    77,     0,     0,    78,    79,
-       0,     0,     0,    80,    81,    82,    83,    84,    85,    86,
-      87,    88,    89,    90,     0,    91,     0,    92,    93,    94,
-      95,     0,    96,     0,     0,     0,    97,    98,    99,   100,
-     101,     0,     0,     0,     0,     0,   102,   103,   104,   105,
-     106,   107,   108,     0,     0,     0,   109,   110,   111,   112,
-     113,     0,     0,     0,     0,   114,   115,   116,   117,   118,
-     119,   120,   121,   122,     0,   123,   124,     0,     0,   125,
-     126,   127,     0,  1219,     0,   128,     0,   129,   130,   131,
-       0,   132,   133,   134,     0,   135,     0,   136,   137,   138,
-     139,   140,   141,   142,   143,   144,   145,   146,     0,     0,
-     147,   148,   149,     0,   388,   151,     0,   152,   153,   154,
-     155,   156,   157,   158,   159,   160,   161,   162,   163,   164,
-     165,   166,   167,   168,   169,   170,   171,   172,   173,   174,
-     175,   176,   177,   178,   179,   180,   181,   182,   183,   184,
-     185,   186,   187,   188,     0,   189,   190,     0,   191,   192,
-     193,   194,   195,   196,   197,   198,   199,   200,   201,   202,
-     203,   204,   205,   206,   207,   208,   209,   210,   211,   212,
-     213,   214,   215,   216,   217,   218,   219,     1,     0,     0,
-       0,     0,     0,     0,     2,     3,     0,     4,     0,     0,
        0,     0,     0,     5,     6,     7,     8,     9,    10,    11,
-      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
-      22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
+      12,    13,    14,    15,    16,   370,    18,    19,    20,    21,
+      22,    23,    24,    25,    26,   373,    28,    29,   375,    31,
       32,    33,     0,    34,    35,    36,    37,    38,    39,    40,
       41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
       51,    52,    53,    54,    55,    56,    57,    58,    59,    60,
@@ -8235,10 +8162,10 @@ namespace zorba
      104,   105,   106,   107,   108,     0,     0,     0,   109,   110,
      111,   112,   113,     0,     0,     0,     0,   114,   115,   116,
      117,   118,   119,   120,   121,   122,     0,   123,   124,     0,
-       0,   125,   126,   127,     0,     0,     0,   128,     0,   129,
+       0,   125,   126,   127,     0,  1177,     0,   128,     0,   129,
      130,   131,     0,   132,   133,   134,     0,   135,     0,   136,
      137,   138,   139,   140,   141,   142,   143,   144,   145,   146,
-       0,     0,   147,   148,   149,     0,   150,   151,     0,   152,
+       0,     0,   147,   148,   149,     0,   389,   151,     0,   152,
      153,   154,   155,   156,   157,   158,   159,   160,   161,   162,
      163,   164,   165,   166,   167,   168,   169,   170,   171,   172,
      173,   174,   175,   176,   177,   178,   179,   180,   181,   182,
@@ -8247,6 +8174,61 @@ namespace zorba
      201,   202,   203,   204,   205,   206,   207,   208,   209,   210,
      211,   212,   213,   214,   215,   216,   217,   218,   219,     1,
        0,     0,     0,     0,     0,     0,     2,     3,     0,     4,
+       0,     0,     0,     0,     0,     0,     0,     5,     6,     7,
+       8,     9,    10,    11,    12,    13,    14,    15,    16,   370,
+      18,    19,    20,    21,    22,    23,    24,    25,    26,   373,
+      28,    29,   375,    31,    32,    33,     0,    34,    35,    36,
+      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
+      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
+      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
+      67,    68,     0,    69,    70,    71,    72,    73,    74,    75,
+      76,    77,     0,     0,    78,    79,     0,     0,     0,    80,
+      81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
+       0,    91,     0,    92,    93,    94,    95,     0,    96,     0,
+       0,     0,    97,    98,    99,   100,   101,     0,     0,     0,
+       0,     0,   102,   103,   104,   105,   106,   107,   108,     0,
+       0,     0,   109,   110,   111,   112,   113,     0,     0,     0,
+       0,   114,   115,   116,   117,   118,   119,   120,   121,   122,
+       0,   123,   124,     0,     0,   125,   126,   127,     0,  1202,
+       0,   128,     0,   129,   130,   131,     0,   132,   133,   134,
+       0,   135,     0,   136,   137,   138,   139,   140,   141,   142,
+     143,   144,   145,   146,     0,     0,   147,   148,   149,     0,
+     389,   151,     0,   152,   153,   154,   155,   156,   157,   158,
+     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
+     169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
+     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
+       0,   189,   190,     0,   191,   192,   193,   194,   195,   196,
+     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
+     207,   208,   209,   210,   211,   212,   213,   214,   215,   216,
+     217,   218,   219,     1,     0,     0,     0,     0,     0,     0,
+       2,     3,     0,     4,     0,     0,     0,     0,     0,     0,
+       0,     5,     6,     7,     8,     9,    10,    11,    12,    13,
+      14,    15,    16,   370,    18,    19,    20,    21,    22,    23,
+      24,    25,    26,   373,    28,    29,   375,    31,    32,    33,
+       0,    34,    35,    36,    37,    38,    39,    40,    41,    42,
+      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
+      53,    54,    55,    56,    57,    58,    59,    60,    61,    62,
+      63,    64,    65,    66,    67,    68,     0,    69,    70,    71,
+      72,    73,    74,    75,    76,    77,     0,     0,    78,    79,
+       0,     0,     0,    80,    81,    82,    83,    84,    85,    86,
+      87,    88,    89,    90,     0,    91,     0,    92,    93,    94,
+      95,     0,    96,     0,     0,     0,    97,    98,    99,   100,
+     101,     0,     0,     0,     0,     0,   102,   103,   104,   105,
+     106,   107,   108,     0,     0,     0,   109,   110,   111,   112,
+     113,     0,     0,     0,     0,   114,   115,   116,   117,   118,
+     119,   120,   121,   122,     0,   123,   124,     0,     0,   125,
+     126,   127,     0,  1222,     0,   128,     0,   129,   130,   131,
+       0,   132,   133,   134,     0,   135,     0,   136,   137,   138,
+     139,   140,   141,   142,   143,   144,   145,   146,     0,     0,
+     147,   148,   149,     0,   389,   151,     0,   152,   153,   154,
+     155,   156,   157,   158,   159,   160,   161,   162,   163,   164,
+     165,   166,   167,   168,   169,   170,   171,   172,   173,   174,
+     175,   176,   177,   178,   179,   180,   181,   182,   183,   184,
+     185,   186,   187,   188,     0,   189,   190,     0,   191,   192,
+     193,   194,   195,   196,   197,   198,   199,   200,   201,   202,
+     203,   204,   205,   206,   207,   208,   209,   210,   211,   212,
+     213,   214,   215,   216,   217,   218,   219,     1,     0,     0,
+       0,     0,     0,     0,     2,     3,     0,     4,     0,     0,
        0,     0,     0,     0,     0,     5,     6,     7,     8,     9,
       10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
       20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
@@ -8265,7 +8247,7 @@ namespace zorba
      124,     0,     0,   125,   126,   127,     0,     0,     0,   128,
        0,   129,   130,   131,     0,   132,   133,   134,     0,   135,
        0,   136,   137,   138,   139,   140,   141,   142,   143,   144,
-     145,   146,     0,     0,   147,   148,   149,     0,   388,   151,
+     145,   146,     0,     0,   147,   148,   149,     0,   150,   151,
        0,   152,   153,   154,   155,   156,   157,   158,   159,   160,
      161,   162,   163,   164,   165,   166,   167,   168,   169,   170,
      171,   172,   173,   174,   175,   176,   177,   178,   179,   180,
@@ -8274,91 +8256,37 @@ namespace zorba
      199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
      209,   210,   211,   212,   213,   214,   215,   216,   217,   218,
      219,     1,     0,     0,     0,     0,     0,     0,     2,     3,
-       0,     4,     0,     0,     0,     0,     0,     5,     6,     7,
-       8,     9,    10,    11,    12,    13,    14,    15,    16,   369,
-      18,    19,    20,    21,    22,    23,    24,    25,    26,   372,
-      28,    29,   374,    31,    32,    33,     0,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
-      67,    68,     0,    69,    70,    71,    72,    73,    74,    75,
-      76,    77,     0,     0,    78,    79,     0,     0,     0,    80,
-      81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
-       0,    91,     0,    92,    93,    94,    95,     0,    96,     0,
-       0,     0,    97,    98,    99,   100,   101,     0,     0,     0,
-       0,     0,   102,   103,   104,   105,   106,   107,   108,     0,
-       0,     0,   109,   110,   111,   112,   113,     0,     0,     0,
-       0,   114,   115,   116,   117,   118,   119,   120,   121,   122,
-       0,   123,   124,     0,     0,   125,   126,   127,     0,     0,
-       0,   128,     0,   129,   130,   131,     0,   132,   133,   134,
-       0,   135,     0,   136,   137,   138,   139,   140,   141,   142,
-     143,   144,   145,   146,     0,     0,   147,   148,   149,     0,
-     388,   151,     0,   152,   153,   154,   155,   156,   157,   158,
-     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-     169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
-     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
-       0,   189,   190,     0,   191,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
-     207,   208,   209,   210,   211,   212,   213,   214,   215,   216,
-     217,   218,   219,     1,     0,     0,     0,     0,     0,     0,
-       2,     3,     0,     4,     0,     0,     0,     0,     0,   358,
-     359,   360,     8,   361,   362,    11,   364,    13,    14,    15,
-      16,   369,    18,    19,    20,    21,    22,    23,   370,    25,
-      26,   372,   373,    29,   374,    31,    32,    33,     0,   375,
-     376,    36,   377,   378,   379,    40,    41,    42,    43,    44,
+       0,     4,     0,     0,     0,     0,     0,     0,     0,     5,
+       6,     7,     8,     9,    10,    11,    12,    13,    14,    15,
+      16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
+      26,    27,    28,    29,    30,    31,    32,    33,     0,    34,
+      35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
       45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
       55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
       65,    66,    67,    68,     0,    69,    70,    71,    72,    73,
       74,    75,    76,    77,     0,     0,    78,    79,     0,     0,
        0,    80,    81,    82,    83,    84,    85,    86,    87,    88,
       89,    90,     0,    91,     0,    92,    93,    94,    95,     0,
-      96,     0,     0,     0,   383,    98,    99,   100,   101,     0,
+      96,     0,     0,     0,    97,    98,    99,   100,   101,     0,
        0,     0,     0,     0,   102,   103,   104,   105,   106,   107,
-     108,     0,     0,     0,   109,   110,   560,   112,   113,     0,
+     108,     0,     0,     0,   109,   110,   111,   112,   113,     0,
        0,     0,     0,   114,   115,   116,   117,   118,   119,   120,
-     121,   122,     0,   561,   124,     0,     0,   125,   126,   127,
+     121,   122,     0,   123,   124,     0,     0,   125,   126,   127,
        0,     0,     0,   128,     0,   129,   130,   131,     0,   132,
      133,   134,     0,   135,     0,   136,   137,   138,   139,   140,
      141,   142,   143,   144,   145,   146,     0,     0,   147,   148,
-     149,     0,   388,   151,     0,   152,   153,   154,   155,   156,
-     157,   158,   389,   160,   391,   162,   392,   393,   165,   166,
-     167,   168,   169,   170,   394,   172,   395,   174,   396,   176,
+     149,     0,   389,   151,     0,   152,   153,   154,   155,   156,
+     157,   158,   159,   160,   161,   162,   163,   164,   165,   166,
+     167,   168,   169,   170,   171,   172,   173,   174,   175,   176,
      177,   178,   179,   180,   181,   182,   183,   184,   185,   186,
      187,   188,     0,   189,   190,     0,   191,   192,   193,   194,
      195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
-     205,   206,   207,   208,   209,   210,   211,   397,   398,   399,
+     205,   206,   207,   208,   209,   210,   211,   212,   213,   214,
      215,   216,   217,   218,   219,     1,     0,     0,     0,     0,
        0,     0,     2,     3,     0,     4,     0,     0,     0,     0,
-       0,   358,   359,   360,     8,   361,   362,    11,   364,    13,
-      14,    15,    16,   369,    18,    19,    20,    21,    22,    23,
-     370,    25,    26,   372,   373,    29,   374,    31,    32,    33,
-       0,   375,   376,    36,   377,   378,   379,    40,    41,    42,
-      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
-      53,    54,    55,    56,    57,    58,    59,    60,    61,    62,
-      63,    64,    65,    66,    67,    68,     0,    69,    70,    71,
-      72,    73,    74,    75,    76,    77,     0,     0,    78,    79,
-       0,     0,     0,    80,    81,    82,    83,    84,    85,    86,
-      87,    88,    89,    90,     0,    91,     0,    92,    93,    94,
-      95,     0,    96,     0,     0,     0,   383,    98,    99,   100,
-     101,     0,     0,     0,     0,     0,   102,   103,   104,   105,
-     106,   107,   108,     0,     0,     0,   109,   110,   111,   112,
-     113,     0,     0,     0,     0,   114,   115,   116,   117,   118,
-     119,   120,   121,   122,     0,   123,   124,     0,     0,   125,
-     126,   127,     0,     0,     0,   128,     0,   129,   130,   131,
-       0,   132,   133,   134,     0,   135,     0,   136,   137,   138,
-     139,   140,   141,   142,   143,   144,   145,   146,     0,     0,
-     147,   148,   149,     0,   388,   151,     0,   152,   153,   154,
-     155,   156,   157,   158,   389,   160,   391,   162,   392,   393,
-     165,   166,   167,   168,   169,   170,   394,   172,   395,   174,
-     396,   176,   177,   178,   179,   180,   181,   182,   183,   184,
-     185,   186,   187,   188,     0,   189,   190,     0,   191,   192,
-     193,   194,   195,   196,   197,   198,   199,   200,   201,   202,
-     203,   204,   205,   206,   207,   208,   209,   210,   211,   397,
-     398,   399,   215,   216,   217,   218,   219,     1,     0,     0,
-       0,     0,     0,     0,     2,     3,     0,     4,     0,     0,
        0,     0,     0,     5,     6,     7,     8,     9,    10,    11,
-      12,    13,    14,    15,    16,   779,    18,    19,    20,    21,
-      22,    23,    24,    25,    26,   372,    28,    29,   374,    31,
+      12,    13,    14,    15,    16,   370,    18,    19,    20,    21,
+      22,    23,    24,    25,    26,   373,    28,    29,   375,    31,
       32,    33,     0,    34,    35,    36,    37,    38,    39,    40,
       41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
       51,    52,    53,    54,    55,    56,    57,    58,    59,    60,
@@ -8374,7 +8302,7 @@ namespace zorba
        0,   125,   126,   127,     0,     0,     0,   128,     0,   129,
      130,   131,     0,   132,   133,   134,     0,   135,     0,   136,
      137,   138,   139,   140,   141,   142,   143,   144,   145,   146,
-       0,     0,   147,   148,   149,     0,   388,   151,     0,   152,
+       0,     0,   147,   148,   149,     0,   389,   151,     0,   152,
      153,   154,   155,   156,   157,   158,   159,   160,   161,   162,
      163,   164,   165,   166,   167,   168,   169,   170,   171,   172,
      173,   174,   175,   176,   177,   178,   179,   180,   181,   182,
@@ -8383,1225 +8311,1368 @@ namespace zorba
      201,   202,   203,   204,   205,   206,   207,   208,   209,   210,
      211,   212,   213,   214,   215,   216,   217,   218,   219,     1,
        0,     0,     0,     0,     0,     0,     2,     3,     0,     4,
-       0,     0,     0,     0,     0,   358,   359,   360,     8,   361,
-     362,   363,   364,    13,    14,    15,    16,   369,    18,    19,
-      20,    21,    22,    23,   370,    25,    26,   372,   373,    29,
-     374,    31,    32,    33,     0,   375,   376,    36,   377,   378,
-     379,    40,    41,    42,    43,    44,    45,    46,    47,    48,
+       0,     0,     0,     0,     0,     0,     0,   359,   360,   361,
+       8,   362,   363,    11,   365,    13,    14,    15,    16,   370,
+      18,    19,    20,    21,    22,    23,   371,    25,    26,   373,
+     374,    29,   375,    31,    32,    33,     0,   376,   377,    36,
+     378,   379,   380,    40,    41,    42,    43,    44,    45,    46,
+      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
+      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
+      67,    68,     0,    69,    70,    71,    72,    73,    74,    75,
+      76,    77,     0,     0,    78,    79,     0,     0,     0,    80,
+      81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
+       0,    91,     0,    92,    93,    94,    95,     0,    96,     0,
+       0,     0,   384,    98,    99,   100,   101,     0,     0,     0,
+       0,     0,   102,   103,   104,   105,   106,   107,   108,     0,
+       0,     0,   109,   110,   561,   112,   113,     0,     0,     0,
+       0,   114,   115,   116,   117,   118,   119,   120,   121,   122,
+       0,   562,   124,     0,     0,   125,   126,   127,     0,     0,
+       0,   128,     0,   129,   130,   131,     0,   132,   133,   134,
+       0,   135,     0,   136,   137,   138,   139,   140,   141,   142,
+     143,   144,   145,   146,     0,     0,   147,   148,   149,     0,
+     389,   151,     0,   152,   153,   154,   155,   156,   157,   158,
+     390,   160,   392,   162,   393,   394,   165,   166,   167,   168,
+     169,   170,   395,   172,   396,   174,   397,   176,   177,   178,
+     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
+       0,   189,   190,     0,   191,   192,   193,   194,   195,   196,
+     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
+     207,   208,   209,   210,   211,   398,   399,   400,   215,   216,
+     217,   218,   219,     1,     0,     0,     0,     0,     0,     0,
+       2,     3,     0,     4,     0,     0,     0,     0,     0,     0,
+       0,   359,   360,   361,     8,   362,   363,    11,   365,    13,
+      14,    15,    16,   370,    18,    19,    20,    21,    22,    23,
+     371,    25,    26,   373,   374,    29,   375,    31,    32,    33,
+       0,   376,   377,    36,   378,   379,   380,    40,    41,    42,
+      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
+      53,    54,    55,    56,    57,    58,    59,    60,    61,    62,
+      63,    64,    65,    66,    67,    68,     0,    69,    70,    71,
+      72,    73,    74,    75,    76,    77,     0,     0,    78,    79,
+       0,     0,     0,    80,    81,    82,    83,    84,    85,    86,
+      87,    88,    89,    90,     0,    91,     0,    92,    93,    94,
+      95,     0,    96,     0,     0,     0,   384,    98,    99,   100,
+     101,     0,     0,     0,     0,     0,   102,   103,   104,   105,
+     106,   107,   108,     0,     0,     0,   109,   110,   111,   112,
+     113,     0,     0,     0,     0,   114,   115,   116,   117,   118,
+     119,   120,   121,   122,     0,   123,   124,     0,     0,   125,
+     126,   127,     0,     0,     0,   128,     0,   129,   130,   131,
+       0,   132,   133,   134,     0,   135,     0,   136,   137,   138,
+     139,   140,   141,   142,   143,   144,   145,   146,     0,     0,
+     147,   148,   149,     0,   389,   151,     0,   152,   153,   154,
+     155,   156,   157,   158,   390,   160,   392,   162,   393,   394,
+     165,   166,   167,   168,   169,   170,   395,   172,   396,   174,
+     397,   176,   177,   178,   179,   180,   181,   182,   183,   184,
+     185,   186,   187,   188,     0,   189,   190,     0,   191,   192,
+     193,   194,   195,   196,   197,   198,   199,   200,   201,   202,
+     203,   204,   205,   206,   207,   208,   209,   210,   211,   398,
+     399,   400,   215,   216,   217,   218,   219,     1,     0,     0,
+       0,     0,     0,     0,     2,     3,     0,     4,     0,     0,
+       0,     0,     0,     0,     0,     5,     6,     7,     8,     9,
+      10,    11,    12,    13,    14,    15,    16,   782,    18,    19,
+      20,    21,    22,    23,    24,    25,    26,   373,    28,    29,
+     375,    31,    32,    33,     0,    34,    35,    36,    37,    38,
+      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
       49,    50,    51,    52,    53,    54,    55,    56,    57,    58,
       59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
        0,    69,    70,    71,    72,    73,    74,    75,    76,    77,
        0,     0,    78,    79,     0,     0,     0,    80,    81,    82,
       83,    84,    85,    86,    87,    88,    89,    90,     0,    91,
        0,    92,    93,    94,    95,     0,    96,     0,     0,     0,
-     383,    98,    99,   100,   101,     0,     0,     0,     0,     0,
+      97,    98,    99,   100,   101,     0,     0,     0,     0,     0,
      102,   103,   104,   105,   106,   107,   108,     0,     0,     0,
-     109,   110,     0,   112,   113,     0,     0,     0,     0,   114,
-     115,   116,   117,   118,   119,   120,   121,   122,     0,     0,
-       0,     0,     0,   125,   126,   127,     0,     0,     0,   128,
-       0,   129,   130,   131,     0,     0,     0,   134,     0,   135,
+     109,   110,   111,   112,   113,     0,     0,     0,     0,   114,
+     115,   116,   117,   118,   119,   120,   121,   122,     0,   123,
+     124,     0,     0,   125,   126,   127,     0,     0,     0,   128,
+       0,   129,   130,   131,     0,   132,   133,   134,     0,   135,
        0,   136,   137,   138,   139,   140,   141,   142,   143,   144,
-     145,   146,     0,     0,   147,   148,   149,     0,   388,   151,
-       0,   152,   153,   154,   155,   156,   157,   158,   389,   160,
-     391,   162,   392,   393,   165,   166,   167,   168,   169,   170,
-     394,   172,   395,   174,   396,   176,   177,   178,   179,   180,
+     145,   146,     0,     0,   147,   148,   149,     0,   389,   151,
+       0,   152,   153,   154,   155,   156,   157,   158,   159,   160,
+     161,   162,   163,   164,   165,   166,   167,   168,   169,   170,
+     171,   172,   173,   174,   175,   176,   177,   178,   179,   180,
      181,   182,   183,   184,   185,   186,   187,   188,     0,   189,
      190,     0,   191,   192,   193,   194,   195,   196,   197,   198,
      199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
-     209,   210,   211,   397,   398,   399,   215,   216,   217,   218,
+     209,   210,   211,   212,   213,   214,   215,   216,   217,   218,
      219,     1,     0,     0,     0,     0,     0,     0,     2,     3,
-       0,     0,     0,     0,     0,     0,     0,   358,   359,   360,
-       8,   361,   362,   363,   364,   457,   366,   458,   459,   369,
-      18,    19,    20,    21,    22,    23,   370,   460,    26,   372,
-     373,    29,   374,    31,    32,    33,     0,   375,   376,    36,
-     377,   378,   379,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    65,     0,
-       0,    68,     0,    69,    70,    71,   461,     0,     0,    75,
-      76,    77,     0,     0,     0,    79,     0,     0,     0,     0,
-      81,    82,    83,     0,     0,    86,    87,     0,     0,     0,
-       0,     0,     0,    92,    93,    94,    95,     0,    96,     0,
-       0,     0,   383,    98,    99,     0,     0,     0,     0,     0,
-       0,     0,   102,   103,   104,     0,   106,   107,   108,     0,
-       0,     0,     0,     0,     0,   112,   113,     0,     0,     0,
-       0,   114,   115,   116,   386,   118,   119,   120,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,   127,     0,     0,
-       0,   128,     0,   129,   130,     0,     0,     0,     0,   134,
-       0,   135,     0,   136,   137,   138,   139,   387,   141,   142,
-     143,   144,   145,   146,     0,     0,   147,   148,     0,     0,
-     388,   151,     0,   152,   153,   154,   155,   156,   157,   158,
-     389,   160,   391,   162,   392,   393,   165,   166,   167,   168,
-     169,   170,   394,   172,   395,   174,   396,   176,   177,   178,
-     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
-       0,   189,   190,     0,   191,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
-     207,   208,   209,   210,   211,   397,   398,   399,   215,   216,
-     217,   218,   219,     1,     0,     0,     0,     0,     0,     0,
-       2,     3,     0,     0,     0,     0,     0,     0,     0,   358,
-     359,   360,     8,   361,   362,   363,   364,   365,   366,   367,
-     368,   369,    18,    19,    20,    21,    22,    23,   370,   371,
-      26,   372,   373,    29,   374,    31,    32,    33,     0,   375,
-     376,    36,   377,   378,   379,    40,    41,    42,    43,    44,
-      45,    46,    47,    48,   380,   381,    51,    52,    53,    54,
-      55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
-      65,     0,     0,    68,     0,    69,    70,    71,   382,     0,
-       0,    75,    76,    77,     0,     0,     0,    79,     0,     0,
-       0,     0,    81,    82,    83,     0,     0,    86,    87,     0,
-       0,     0,     0,     0,     0,    92,    93,    94,    95,     0,
-      96,     0,     0,     0,   383,    98,    99,     0,     0,     0,
-       0,     0,     0,     0,   102,   103,   104,     0,   106,   107,
-     108,     0,     0,     0,     0,     0,     0,   112,   113,     0,
-       0,     0,     0,   114,   115,   116,   386,   118,   119,   120,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,   127,
-       0,     0,     0,   128,     0,   129,     0,     0,     0,     0,
-       0,   134,     0,   135,     0,   136,   137,   138,   139,   387,
-     141,   142,   143,   144,   145,   146,     0,     0,   147,   148,
-       0,     0,   388,   151,     0,   152,   153,   154,   155,   156,
-     157,   158,   389,   390,   391,   162,   392,   393,   165,   166,
-     167,   168,   169,   170,   394,   172,   395,   174,   396,   176,
-     177,   178,   179,   180,   181,   182,   183,   184,   185,   186,
-     187,   188,     0,   189,   190,     0,   191,   192,   193,   194,
-     195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
-     205,   206,   207,   208,   209,   210,   211,   397,   398,   399,
-     215,   216,   217,   218,   219,   471,     0,     3,     0,     0,
-       0,     0,     0,     0,     0,   358,   359,   360,     8,   361,
-     362,   363,   364,   365,   366,   367,   368,   369,    18,    19,
-      20,    21,    22,    23,   370,   371,    26,   372,   373,    29,
-     374,    31,    32,    33,     0,   375,   376,    36,   377,   378,
-     379,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-     380,   381,    51,    52,    53,    54,    55,    56,    57,    58,
-      59,    60,    61,    62,    63,    64,    65,     0,     0,    68,
-       0,    69,    70,    71,   382,     0,     0,    75,    76,    77,
-       0,     0,     0,    79,     0,     0,     0,     0,    81,    82,
-      83,     0,     0,    86,    87,     0,     0,     0,     0,     0,
-       0,    92,    93,    94,    95,     0,    96,     0,     0,     0,
-     383,    98,    99,     0,     0,     0,     0,     0,     0,     0,
-     102,   103,   104,     0,   106,   107,   108,     0,     0,     0,
-       0,     0,     0,   112,   113,     0,     0,     0,     0,   114,
-     115,   116,   386,   118,   119,   120,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,   127,     0,     0,     0,   128,
-       0,   129,     0,     0,     0,     0,     0,     0,     0,   135,
-       0,   136,   137,   138,   139,   387,   141,   142,   143,   144,
-     145,   146,     0,     0,   147,   148,     0,     0,   388,   151,
-       0,   152,   153,   154,   155,   156,   157,   158,   389,   390,
-     391,   162,   392,   393,   165,   166,   167,   168,   169,   170,
-     394,   172,   395,   174,   396,   176,   177,   178,   179,   180,
-     181,   182,   183,   184,   185,   186,   187,   188,     0,   189,
-     190,     0,   191,   192,   193,   194,   195,   196,   197,   198,
-     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
-     209,   210,   211,   397,   398,   399,   215,   216,   217,   218,
-     219,     3,     0,     0,     0,     0,     0,     0,     0,   358,
-     359,   360,     8,   361,   362,   363,   364,   365,   366,   367,
-     368,   369,    18,    19,    20,    21,    22,    23,   370,   371,
-      26,   372,   373,    29,   374,    31,    32,    33,     0,   375,
-     376,    36,   377,   378,   379,    40,    41,    42,    43,    44,
-      45,    46,    47,    48,   380,   381,    51,    52,    53,    54,
-      55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
-      65,     0,     0,    68,     0,    69,    70,    71,   382,     0,
-       0,    75,    76,    77,     0,     0,     0,    79,     0,     0,
-       0,     0,    81,    82,    83,     0,     0,    86,    87,     0,
-       0,     0,     0,     0,     0,    92,    93,    94,    95,     0,
-      96,     0,     0,     0,   383,    98,    99,     0,     0,     0,
-       0,     0,     0,     0,   102,   103,   104,     0,   106,   107,
-     108,   384,     0,     0,   385,     0,     0,   112,   113,     0,
-       0,     0,     0,   114,   115,   116,   386,   118,   119,   120,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,   127,
-       0,     0,     0,   128,     0,   129,     0,     0,     0,     0,
-       0,     0,     0,   135,     0,   136,   137,   138,   139,   387,
-     141,   142,   143,   144,   145,   146,     0,     0,   147,   148,
-       0,     0,   388,   151,     0,   152,   153,   154,   155,   156,
-     157,   158,   389,   390,   391,   162,   392,   393,   165,   166,
-     167,   168,   169,   170,   394,   172,   395,   174,   396,   176,
-     177,   178,   179,   180,   181,   182,   183,   184,   185,   186,
-     187,   188,     0,   189,   190,     0,   191,   192,   193,   194,
-     195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
-     205,   206,   207,   208,   209,   210,   211,   397,   398,   399,
-     215,   216,   217,   218,   219,     3,     0,     0,     0,     0,
-       0,     0,     0,   358,   359,   360,     8,   361,   362,   363,
-     364,   365,   366,   367,   368,   369,    18,    19,    20,    21,
-      22,    23,   370,   371,    26,   372,   373,    29,   374,    31,
-      32,    33,     0,   375,   376,    36,   377,   378,   379,    40,
-      41,    42,    43,    44,    45,    46,    47,    48,   380,   381,
-      51,    52,    53,    54,    55,    56,    57,    58,    59,    60,
-      61,    62,    63,    64,    65,     0,     0,    68,     0,    69,
-      70,    71,   382,     0,     0,    75,    76,    77,     0,     0,
-       0,    79,     0,     0,     0,     0,    81,    82,    83,     0,
-       0,    86,    87,     0,     0,     0,     0,     0,     0,    92,
-      93,    94,    95,     0,    96,     0,     0,     0,   383,    98,
-      99,     0,     0,     0,     0,     0,     0,     0,   102,   103,
-     104,     0,   106,   107,   108,   454,     0,     0,   455,     0,
-       0,   112,   113,     0,     0,     0,     0,   114,   115,   116,
-     386,   118,   119,   120,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,   127,     0,     0,     0,   128,     0,   129,
-       0,     0,     0,     0,     0,     0,     0,   135,     0,   136,
-     137,   138,   139,   387,   141,   142,   143,   144,   145,   146,
-       0,     0,   147,   148,     0,     0,   388,   151,     0,   152,
-     153,   154,   155,   156,   157,   158,   389,   390,   391,   162,
-     392,   393,   165,   166,   167,   168,   169,   170,   394,   172,
-     395,   174,   396,   176,   177,   178,   179,   180,   181,   182,
-     183,   184,   185,   186,   187,   188,     0,   189,   190,     0,
-     191,   192,   193,   194,   195,   196,   197,   198,   199,   200,
-     201,   202,   203,   204,   205,   206,   207,   208,   209,   210,
-     211,   397,   398,   399,   215,   216,   217,   218,   219,     3,
-       0,     0,     0,     0,     0,     0,     0,   358,   359,   360,
-       8,   361,   362,   363,   364,   365,   366,   367,   368,   369,
-      18,    19,    20,    21,    22,    23,   370,   371,    26,   372,
-     373,    29,   374,    31,    32,    33,     0,   375,   376,    36,
-     377,   378,   379,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,   380,   381,    51,    52,    53,    54,    55,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    65,     0,
-       0,    68,     0,    69,    70,    71,   382,     0,     0,    75,
-      76,    77,     0,     0,     0,    79,     0,     0,     0,     0,
-      81,    82,    83,     0,     0,    86,    87,     0,     0,     0,
-       0,     0,     0,    92,    93,    94,    95,     0,    96,     0,
-       0,     0,   383,    98,    99,     0,     0,     0,     0,     0,
-       0,     0,   102,   103,   104,     0,   106,   107,   108,     0,
-       0,     0,     0,     0,     0,   112,   113,     0,     0,     0,
-       0,   114,   115,   116,   386,   118,   119,   120,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,   127,     0,     0,
-       0,   128,   586,   129,     0,     0,     0,     0,     0,   587,
-       0,   135,     0,   136,   137,   138,   139,   387,   141,   142,
-     143,   144,   145,   146,     0,     0,   147,   148,     0,     0,
-     388,   151,     0,   152,   153,   154,   155,   156,   157,   158,
-     389,   390,   391,   162,   392,   393,   165,   166,   167,   168,
-     169,   170,   394,   172,   395,   174,   396,   176,   177,   178,
-     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
-       0,   189,   190,     0,   191,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
-     207,   208,   209,   210,   211,   397,   398,   399,   215,   216,
-     217,   218,   219,     3,     0,     0,     0,     0,     0,     0,
-       0,   358,   359,   360,     8,   361,   362,   363,   364,   365,
-     366,   367,   368,   369,    18,    19,    20,    21,    22,    23,
-     370,   371,    26,   372,   373,    29,   374,    31,    32,    33,
-       0,   375,   376,    36,   377,   378,   379,    40,    41,    42,
-      43,    44,    45,    46,    47,    48,   380,   381,    51,    52,
-      53,    54,    55,    56,    57,    58,    59,    60,    61,    62,
-      63,    64,    65,     0,     0,    68,     0,    69,    70,    71,
-     382,     0,     0,    75,    76,    77,     0,     0,     0,    79,
-       0,     0,     0,     0,    81,    82,    83,     0,     0,    86,
-      87,     0,     0,     0,     0,     0,     0,    92,    93,    94,
-      95,     0,    96,     0,     0,     0,   383,    98,    99,     0,
-       0,     0,     0,     0,     0,     0,   102,   103,   104,     0,
-     106,   107,   108,     0,     0,     0,     0,     0,     0,   112,
-     113,     0,     0,     0,     0,   114,   115,   116,   386,   118,
-     119,   120,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,   127,     0,     0,     0,   128,   677,   129,     0,     0,
-       0,     0,     0,   678,     0,   135,     0,   136,   137,   138,
-     139,   387,   141,   142,   143,   144,   145,   146,     0,     0,
-     147,   148,     0,     0,   388,   151,     0,   152,   153,   154,
-     155,   156,   157,   158,   389,   390,   391,   162,   392,   393,
-     165,   166,   167,   168,   169,   170,   394,   172,   395,   174,
-     396,   176,   177,   178,   179,   180,   181,   182,   183,   184,
-     185,   186,   187,   188,     0,   189,   190,     0,   191,   192,
-     193,   194,   195,   196,   197,   198,   199,   200,   201,   202,
-     203,   204,   205,   206,   207,   208,   209,   210,   211,   397,
-     398,   399,   215,   216,   217,   218,   219,     3,     0,     0,
-       0,     0,     0,     0,     0,   358,   359,   360,     8,   361,
-     362,   363,   364,   457,   366,   458,   459,   369,    18,    19,
-      20,    21,    22,    23,   370,   460,    26,   372,   373,    29,
-     374,    31,    32,    33,     0,   375,   376,    36,   377,   378,
-     379,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,    51,    52,    53,    54,    55,    56,    57,    58,
-      59,    60,    61,    62,    63,    64,    65,     0,     0,    68,
-       0,    69,    70,    71,   461,     0,     0,    75,    76,    77,
-       0,     0,     0,    79,     0,     0,     0,     0,    81,    82,
-      83,     0,     0,    86,    87,  1170,     0,     0,     0,     0,
-       0,    92,    93,    94,    95,     0,    96,     0,     0,     0,
-     383,    98,    99,     0,     0,     0,     0,     0,     0,     0,
-     102,   103,   104,     0,   106,   107,   927,     0,     0,     0,
-       0,     0,     0,   112,   113,     0,     0,     0,     0,   114,
-     115,   116,   386,   118,   119,   120,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,   127,     0,     0,     0,   128,
-       0,   129,   130,     0,     0,     0,     0,     0,     0,   135,
-       0,   136,   137,   138,   139,   387,   141,   142,   143,   144,
-     145,   146,     0,     0,   928,   148,     0,     0,   388,   151,
-       0,   152,   153,   154,   155,   156,   157,   158,   389,   160,
-     391,   162,   392,   393,   165,   166,   167,   168,   169,   170,
-     394,   172,   395,   174,   396,   176,   177,   178,   179,   180,
-     181,   182,   183,   184,   185,   186,   187,   188,     0,   189,
-     190,     0,   191,   192,   193,   194,   195,   196,   197,   198,
-     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
-     209,   210,   211,   397,   398,   399,   215,   216,   217,   218,
-     219,     3,     0,     0,     0,     0,     0,     0,     0,   358,
-     359,   360,     8,   361,   362,   363,   364,   457,   366,   458,
-     459,   369,    18,    19,    20,    21,    22,    23,   370,   460,
-      26,   372,   373,    29,   374,    31,    32,    33,     0,   375,
-     376,    36,   377,   378,   379,    40,    41,    42,    43,    44,
+       0,     4,     0,     0,     0,     0,     0,     0,     0,   359,
+     360,   361,     8,   362,   363,   364,   365,    13,    14,    15,
+      16,   370,    18,    19,    20,    21,    22,    23,   371,    25,
+      26,   373,   374,    29,   375,    31,    32,    33,     0,   376,
+     377,    36,   378,   379,   380,    40,    41,    42,    43,    44,
       45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
       55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
-      65,     0,     0,    68,     0,    69,    70,    71,   461,     0,
-       0,    75,    76,    77,     0,     0,     0,    79,     0,     0,
-       0,     0,    81,    82,    83,     0,     0,    86,    87,     0,
-       0,     0,     0,     0,     0,    92,    93,    94,    95,     0,
-      96,     0,     0,     0,   383,    98,    99,     0,     0,     0,
-       0,     0,     0,     0,   102,   103,   104,     0,   106,   107,
-     927,     0,     0,     0,     0,     0,     0,   112,   113,     0,
-       0,     0,     0,   114,   115,   116,   386,   118,   119,   120,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,   127,
-       0,     0,     0,   128,     0,   129,   130,     0,     0,     0,
-       0,     0,     0,   135,     0,   136,   137,   138,   139,   387,
-     141,   142,   143,   144,   145,   146,     0,     0,   928,   148,
-       0,     0,   388,   151,     0,   152,   153,   154,   155,   156,
-     157,   158,   389,   160,   391,   162,   392,   393,   165,   166,
-     167,   168,   169,   170,   394,   172,   395,   174,   396,   176,
+      65,    66,    67,    68,     0,    69,    70,    71,    72,    73,
+      74,    75,    76,    77,     0,     0,    78,    79,     0,     0,
+       0,    80,    81,    82,    83,    84,    85,    86,    87,    88,
+      89,    90,     0,    91,     0,    92,    93,    94,    95,     0,
+      96,     0,     0,     0,   384,    98,    99,   100,   101,     0,
+       0,     0,     0,     0,   102,   103,   104,   105,   106,   107,
+     108,     0,     0,     0,   109,   110,     0,   112,   113,     0,
+       0,     0,     0,   114,   115,   116,   117,   118,   119,   120,
+     121,   122,     0,     0,     0,     0,     0,   125,   126,   127,
+       0,     0,     0,   128,     0,   129,   130,   131,     0,     0,
+       0,   134,     0,   135,     0,   136,   137,   138,   139,   140,
+     141,   142,   143,   144,   145,   146,     0,     0,   147,   148,
+     149,     0,   389,   151,     0,   152,   153,   154,   155,   156,
+     157,   158,   390,   160,   392,   162,   393,   394,   165,   166,
+     167,   168,   169,   170,   395,   172,   396,   174,   397,   176,
      177,   178,   179,   180,   181,   182,   183,   184,   185,   186,
      187,   188,     0,   189,   190,     0,   191,   192,   193,   194,
      195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
-     205,   206,   207,   208,   209,   210,   211,   397,   398,   399,
-     215,   216,   217,   218,   219,     3,     0,     0,     0,     0,
-       0,     0,     0,   358,   359,   360,     8,   361,   362,   363,
-     364,   457,   366,   458,   459,   369,    18,    19,    20,    21,
-      22,    23,   370,   460,    26,   372,   373,    29,   374,    31,
-      32,    33,     0,   375,   376,    36,   377,   378,   379,    40,
+     205,   206,   207,   208,   209,   210,   211,   398,   399,   400,
+     215,   216,   217,   218,   219,     1,     0,     0,     0,     0,
+       0,     0,     2,     3,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,   359,   360,   361,     8,   362,   363,   364,
+     365,   458,   367,   459,   460,   370,    18,    19,    20,    21,
+      22,    23,   371,   461,    26,   373,   374,    29,   375,    31,
+      32,    33,     0,   376,   377,    36,   378,   379,   380,    40,
       41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
       51,    52,    53,    54,    55,    56,    57,    58,    59,    60,
       61,    62,    63,    64,    65,     0,     0,    68,     0,    69,
-      70,    71,   461,     0,     0,    75,    76,    77,     0,     0,
+      70,    71,   462,     0,     0,    75,    76,    77,     0,     0,
        0,    79,     0,     0,     0,     0,    81,    82,    83,     0,
        0,    86,    87,     0,     0,     0,     0,     0,     0,    92,
-      93,    94,    95,     0,    96,     0,     0,     0,   383,    98,
+      93,    94,    95,     0,    96,     0,     0,     0,   384,    98,
       99,     0,     0,     0,     0,     0,     0,     0,   102,   103,
-     104,     0,   106,   107,   927,     0,     0,     0,     0,     0,
+     104,     0,   106,   107,   108,     0,     0,     0,     0,     0,
        0,   112,   113,     0,     0,     0,     0,   114,   115,   116,
-     386,   118,   119,   120,     0,     0,     0,     0,     0,     0,
+     387,   118,   119,   120,     0,     0,     0,     0,     0,     0,
        0,     0,     0,   127,     0,     0,     0,   128,     0,   129,
-     130,     0,     0,     0,     0,     0,     0,   135,     0,   136,
-     137,   138,   139,   387,   141,   142,   143,   144,   145,   146,
-       0,     0,   147,   148,     0,     0,   388,   151,     0,   152,
-     153,   154,   155,   156,   157,   158,   389,   160,   391,   162,
-     392,   393,   165,   166,   167,   168,   169,   170,   394,   172,
-     395,   174,   396,   176,   177,   178,   179,   180,   181,   182,
+     130,     0,     0,     0,     0,   134,     0,   135,     0,   136,
+     137,   138,   139,   388,   141,   142,   143,   144,   145,   146,
+       0,     0,   147,   148,     0,     0,   389,   151,     0,   152,
+     153,   154,   155,   156,   157,   158,   390,   160,   392,   162,
+     393,   394,   165,   166,   167,   168,   169,   170,   395,   172,
+     396,   174,   397,   176,   177,   178,   179,   180,   181,   182,
      183,   184,   185,   186,   187,   188,     0,   189,   190,     0,
      191,   192,   193,   194,   195,   196,   197,   198,   199,   200,
      201,   202,   203,   204,   205,   206,   207,   208,   209,   210,
-     211,   397,   398,   399,   215,   216,   217,   218,   219,     3,
-       0,     0,     0,     0,     0,     0,     0,   358,   359,   360,
-       8,   361,   362,   363,   364,   365,   366,   367,   368,   369,
-      18,    19,    20,    21,    22,    23,   370,   371,    26,   372,
-     373,    29,   374,    31,    32,    33,     0,   375,   376,    36,
-     377,   378,   379,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,   380,   381,    51,    52,    53,    54,    55,    56,
+     211,   398,   399,   400,   215,   216,   217,   218,   219,     1,
+       0,     0,     0,     0,     0,     0,     2,     3,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,   359,   360,   361,
+       8,   362,   363,   364,   365,   366,   367,   368,   369,   370,
+      18,    19,    20,    21,    22,    23,   371,   372,    26,   373,
+     374,    29,   375,    31,    32,    33,     0,   376,   377,    36,
+     378,   379,   380,    40,    41,    42,    43,    44,    45,    46,
+      47,    48,   381,   382,    51,    52,    53,    54,    55,    56,
       57,    58,    59,    60,    61,    62,    63,    64,    65,     0,
-       0,    68,     0,    69,    70,    71,   382,     0,     0,    75,
+       0,    68,     0,    69,    70,    71,   383,     0,     0,    75,
       76,    77,     0,     0,     0,    79,     0,     0,     0,     0,
       81,    82,    83,     0,     0,    86,    87,     0,     0,     0,
        0,     0,     0,    92,    93,    94,    95,     0,    96,     0,
-       0,     0,   383,    98,    99,     0,     0,     0,     0,     0,
+       0,     0,   384,    98,    99,     0,     0,     0,     0,     0,
        0,     0,   102,   103,   104,     0,   106,   107,   108,     0,
        0,     0,     0,     0,     0,   112,   113,     0,     0,     0,
-       0,   114,   115,   116,   386,   118,   119,   120,     0,     0,
+       0,   114,   115,   116,   387,   118,   119,   120,     0,     0,
        0,     0,     0,     0,     0,     0,     0,   127,     0,     0,
-       0,   128,     0,   129,     0,     0,     0,     0,     0,     0,
-       0,   135,     0,   136,   137,   138,   139,   387,   141,   142,
+       0,   128,     0,   129,     0,     0,     0,     0,     0,   134,
+       0,   135,     0,   136,   137,   138,   139,   388,   141,   142,
      143,   144,   145,   146,     0,     0,   147,   148,     0,     0,
-     388,   151,     0,   152,   153,   154,   155,   156,   157,   158,
-     389,   390,   391,   162,   392,   393,   165,   166,   167,   168,
-     169,   170,   394,   172,   395,   174,   396,   176,   177,   178,
+     389,   151,     0,   152,   153,   154,   155,   156,   157,   158,
+     390,   391,   392,   162,   393,   394,   165,   166,   167,   168,
+     169,   170,   395,   172,   396,   174,   397,   176,   177,   178,
      179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
        0,   189,   190,     0,   191,   192,   193,   194,   195,   196,
      197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
-     207,   208,   209,   210,   211,   397,   398,   399,   215,   216,
-     217,   218,   219
+     207,   208,   209,   210,   211,   398,   399,   400,   215,   216,
+     217,   218,   219,   472,     0,     3,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,   359,   360,   361,     8,   362,
+     363,   364,   365,   366,   367,   368,   369,   370,    18,    19,
+      20,    21,    22,    23,   371,   372,    26,   373,   374,    29,
+     375,    31,    32,    33,     0,   376,   377,    36,   378,   379,
+     380,    40,    41,    42,    43,    44,    45,    46,    47,    48,
+     381,   382,    51,    52,    53,    54,    55,    56,    57,    58,
+      59,    60,    61,    62,    63,    64,    65,     0,     0,    68,
+       0,    69,    70,    71,   383,     0,     0,    75,    76,    77,
+       0,     0,     0,    79,     0,     0,     0,     0,    81,    82,
+      83,     0,     0,    86,    87,     0,     0,     0,     0,     0,
+       0,    92,    93,    94,    95,     0,    96,     0,     0,     0,
+     384,    98,    99,     0,     0,     0,     0,     0,     0,     0,
+     102,   103,   104,     0,   106,   107,   108,     0,     0,     0,
+       0,     0,     0,   112,   113,     0,     0,     0,     0,   114,
+     115,   116,   387,   118,   119,   120,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,   127,     0,     0,     0,   128,
+       0,   129,     0,     0,     0,     0,     0,     0,     0,   135,
+       0,   136,   137,   138,   139,   388,   141,   142,   143,   144,
+     145,   146,     0,     0,   147,   148,     0,     0,   389,   151,
+       0,   152,   153,   154,   155,   156,   157,   158,   390,   391,
+     392,   162,   393,   394,   165,   166,   167,   168,   169,   170,
+     395,   172,   396,   174,   397,   176,   177,   178,   179,   180,
+     181,   182,   183,   184,   185,   186,   187,   188,     0,   189,
+     190,     0,   191,   192,   193,   194,   195,   196,   197,   198,
+     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
+     209,   210,   211,   398,   399,   400,   215,   216,   217,   218,
+     219,     3,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,   359,   360,   361,     8,   362,   363,   364,   365,   366,
+     367,   368,   369,   370,    18,    19,    20,    21,    22,    23,
+     371,   372,    26,   373,   374,    29,   375,    31,    32,    33,
+       0,   376,   377,    36,   378,   379,   380,    40,    41,    42,
+      43,    44,    45,    46,    47,    48,   381,   382,    51,    52,
+      53,    54,    55,    56,    57,    58,    59,    60,    61,    62,
+      63,    64,    65,     0,     0,    68,     0,    69,    70,    71,
+     383,     0,     0,    75,    76,    77,     0,     0,     0,    79,
+       0,     0,     0,     0,    81,    82,    83,     0,     0,    86,
+      87,     0,     0,     0,     0,     0,     0,    92,    93,    94,
+      95,     0,    96,     0,     0,     0,   384,    98,    99,     0,
+       0,     0,     0,     0,     0,     0,   102,   103,   104,     0,
+     106,   107,   108,   385,     0,     0,   386,     0,     0,   112,
+     113,     0,     0,     0,     0,   114,   115,   116,   387,   118,
+     119,   120,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,   127,     0,     0,     0,   128,     0,   129,     0,     0,
+       0,     0,     0,     0,     0,   135,     0,   136,   137,   138,
+     139,   388,   141,   142,   143,   144,   145,   146,     0,     0,
+     147,   148,     0,     0,   389,   151,     0,   152,   153,   154,
+     155,   156,   157,   158,   390,   391,   392,   162,   393,   394,
+     165,   166,   167,   168,   169,   170,   395,   172,   396,   174,
+     397,   176,   177,   178,   179,   180,   181,   182,   183,   184,
+     185,   186,   187,   188,     0,   189,   190,     0,   191,   192,
+     193,   194,   195,   196,   197,   198,   199,   200,   201,   202,
+     203,   204,   205,   206,   207,   208,   209,   210,   211,   398,
+     399,   400,   215,   216,   217,   218,   219,     3,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,   359,   360,   361,
+       8,   362,   363,   364,   365,   366,   367,   368,   369,   370,
+      18,    19,    20,    21,    22,    23,   371,   372,    26,   373,
+     374,    29,   375,    31,    32,    33,     0,   376,   377,    36,
+     378,   379,   380,    40,    41,    42,    43,    44,    45,    46,
+      47,    48,   381,   382,    51,    52,    53,    54,    55,    56,
+      57,    58,    59,    60,    61,    62,    63,    64,    65,     0,
+       0,    68,     0,    69,    70,    71,   383,     0,     0,    75,
+      76,    77,     0,     0,     0,    79,     0,     0,     0,     0,
+      81,    82,    83,     0,     0,    86,    87,     0,     0,     0,
+       0,     0,     0,    92,    93,    94,    95,     0,    96,     0,
+       0,     0,   384,    98,    99,     0,     0,     0,     0,     0,
+       0,     0,   102,   103,   104,     0,   106,   107,   108,   455,
+       0,     0,   456,     0,     0,   112,   113,     0,     0,     0,
+       0,   114,   115,   116,   387,   118,   119,   120,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,   127,     0,     0,
+       0,   128,     0,   129,     0,     0,     0,     0,     0,     0,
+       0,   135,     0,   136,   137,   138,   139,   388,   141,   142,
+     143,   144,   145,   146,     0,     0,   147,   148,     0,     0,
+     389,   151,     0,   152,   153,   154,   155,   156,   157,   158,
+     390,   391,   392,   162,   393,   394,   165,   166,   167,   168,
+     169,   170,   395,   172,   396,   174,   397,   176,   177,   178,
+     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
+       0,   189,   190,     0,   191,   192,   193,   194,   195,   196,
+     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
+     207,   208,   209,   210,   211,   398,   399,   400,   215,   216,
+     217,   218,   219,     3,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,   359,   360,   361,     8,   362,   363,   364,
+     365,   366,   367,   368,   369,   370,    18,    19,    20,    21,
+      22,    23,   371,   372,    26,   373,   374,    29,   375,    31,
+      32,    33,     0,   376,   377,    36,   378,   379,   380,    40,
+      41,    42,    43,    44,    45,    46,    47,    48,   381,   382,
+      51,    52,    53,    54,    55,    56,    57,    58,    59,    60,
+      61,    62,    63,    64,    65,     0,     0,    68,     0,    69,
+      70,    71,   383,     0,     0,    75,    76,    77,     0,     0,
+       0,    79,     0,     0,     0,     0,    81,    82,    83,     0,
+       0,    86,    87,     0,     0,     0,     0,     0,     0,    92,
+      93,    94,    95,     0,    96,     0,     0,     0,   384,    98,
+      99,     0,     0,     0,     0,     0,     0,     0,   102,   103,
+     104,     0,   106,   107,   108,     0,     0,     0,     0,     0,
+       0,   112,   113,     0,     0,     0,     0,   114,   115,   116,
+     387,   118,   119,   120,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,   127,     0,     0,     0,   128,   587,   129,
+       0,     0,     0,     0,     0,   588,     0,   135,     0,   136,
+     137,   138,   139,   388,   141,   142,   143,   144,   145,   146,
+       0,     0,   147,   148,     0,     0,   389,   151,     0,   152,
+     153,   154,   155,   156,   157,   158,   390,   391,   392,   162,
+     393,   394,   165,   166,   167,   168,   169,   170,   395,   172,
+     396,   174,   397,   176,   177,   178,   179,   180,   181,   182,
+     183,   184,   185,   186,   187,   188,     0,   189,   190,     0,
+     191,   192,   193,   194,   195,   196,   197,   198,   199,   200,
+     201,   202,   203,   204,   205,   206,   207,   208,   209,   210,
+     211,   398,   399,   400,   215,   216,   217,   218,   219,     3,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,   359,
+     360,   361,     8,   362,   363,   364,   365,   366,   367,   368,
+     369,   370,    18,    19,    20,    21,    22,    23,   371,   372,
+      26,   373,   374,    29,   375,    31,    32,    33,     0,   376,
+     377,    36,   378,   379,   380,    40,    41,    42,    43,    44,
+      45,    46,    47,    48,   381,   382,    51,    52,    53,    54,
+      55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
+      65,     0,     0,    68,     0,    69,    70,    71,   383,     0,
+       0,    75,    76,    77,     0,     0,     0,    79,     0,     0,
+       0,     0,    81,    82,    83,     0,     0,    86,    87,     0,
+       0,     0,     0,     0,     0,    92,    93,    94,    95,     0,
+      96,     0,     0,     0,   384,    98,    99,     0,     0,     0,
+       0,     0,     0,     0,   102,   103,   104,     0,   106,   107,
+     108,     0,     0,     0,     0,     0,     0,   112,   113,     0,
+       0,     0,     0,   114,   115,   116,   387,   118,   119,   120,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,   127,
+       0,     0,     0,   128,   680,   129,     0,     0,     0,     0,
+       0,   681,     0,   135,     0,   136,   137,   138,   139,   388,
+     141,   142,   143,   144,   145,   146,     0,     0,   147,   148,
+       0,     0,   389,   151,     0,   152,   153,   154,   155,   156,
+     157,   158,   390,   391,   392,   162,   393,   394,   165,   166,
+     167,   168,   169,   170,   395,   172,   396,   174,   397,   176,
+     177,   178,   179,   180,   181,   182,   183,   184,   185,   186,
+     187,   188,     0,   189,   190,     0,   191,   192,   193,   194,
+     195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
+     205,   206,   207,   208,   209,   210,   211,   398,   399,   400,
+     215,   216,   217,   218,   219,     3,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,   359,   360,   361,     8,   362,
+     363,   364,   365,   458,   367,   459,   460,   370,    18,    19,
+      20,    21,    22,    23,   371,   461,    26,   373,   374,    29,
+     375,    31,    32,    33,     0,   376,   377,    36,   378,   379,
+     380,    40,    41,    42,    43,    44,    45,    46,    47,    48,
+      49,    50,    51,    52,    53,    54,    55,    56,    57,    58,
+      59,    60,    61,    62,    63,    64,    65,     0,     0,    68,
+       0,    69,    70,    71,   462,     0,     0,    75,    76,    77,
+       0,     0,     0,    79,     0,     0,     0,     0,    81,    82,
+      83,     0,     0,    86,    87,  1173,     0,     0,     0,     0,
+       0,    92,    93,    94,    95,     0,    96,     0,     0,     0,
+     384,    98,    99,     0,     0,     0,     0,     0,     0,     0,
+     102,   103,   104,     0,   106,   107,   930,     0,     0,     0,
+       0,     0,     0,   112,   113,     0,     0,     0,     0,   114,
+     115,   116,   387,   118,   119,   120,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,   127,     0,     0,     0,   128,
+       0,   129,   130,     0,     0,     0,     0,     0,     0,   135,
+       0,   136,   137,   138,   139,   388,   141,   142,   143,   144,
+     145,   146,     0,     0,   931,   148,     0,     0,   389,   151,
+       0,   152,   153,   154,   155,   156,   157,   158,   390,   160,
+     392,   162,   393,   394,   165,   166,   167,   168,   169,   170,
+     395,   172,   396,   174,   397,   176,   177,   178,   179,   180,
+     181,   182,   183,   184,   185,   186,   187,   188,     0,   189,
+     190,     0,   191,   192,   193,   194,   195,   196,   197,   198,
+     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
+     209,   210,   211,   398,   399,   400,   215,   216,   217,   218,
+     219,     3,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,   359,   360,   361,     8,   362,   363,   364,   365,   458,
+     367,   459,   460,   370,    18,    19,    20,    21,    22,    23,
+     371,   461,    26,   373,   374,    29,   375,    31,    32,    33,
+       0,   376,   377,    36,   378,   379,   380,    40,    41,    42,
+      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
+      53,    54,    55,    56,    57,    58,    59,    60,    61,    62,
+      63,    64,    65,     0,     0,    68,     0,    69,    70,    71,
+     462,     0,     0,    75,    76,    77,     0,     0,     0,    79,
+       0,     0,     0,     0,    81,    82,    83,     0,     0,    86,
+      87,     0,     0,     0,     0,     0,     0,    92,    93,    94,
+      95,     0,    96,     0,     0,     0,   384,    98,    99,     0,
+       0,     0,     0,     0,     0,     0,   102,   103,   104,     0,
+     106,   107,   930,     0,     0,     0,     0,     0,     0,   112,
+     113,     0,     0,     0,     0,   114,   115,   116,   387,   118,
+     119,   120,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,   127,     0,     0,     0,   128,     0,   129,   130,     0,
+       0,     0,     0,     0,     0,   135,     0,   136,   137,   138,
+     139,   388,   141,   142,   143,   144,   145,   146,     0,     0,
+     931,   148,     0,     0,   389,   151,     0,   152,   153,   154,
+     155,   156,   157,   158,   390,   160,   392,   162,   393,   394,
+     165,   166,   167,   168,   169,   170,   395,   172,   396,   174,
+     397,   176,   177,   178,   179,   180,   181,   182,   183,   184,
+     185,   186,   187,   188,     0,   189,   190,     0,   191,   192,
+     193,   194,   195,   196,   197,   198,   199,   200,   201,   202,
+     203,   204,   205,   206,   207,   208,   209,   210,   211,   398,
+     399,   400,   215,   216,   217,   218,   219,     3,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,   359,   360,   361,
+       8,   362,   363,   364,   365,   458,   367,   459,   460,   370,
+      18,    19,    20,    21,    22,    23,   371,   461,    26,   373,
+     374,    29,   375,    31,    32,    33,     0,   376,   377,    36,
+     378,   379,   380,    40,    41,    42,    43,    44,    45,    46,
+      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
+      57,    58,    59,    60,    61,    62,    63,    64,    65,     0,
+       0,    68,     0,    69,    70,    71,   462,     0,     0,    75,
+      76,    77,     0,     0,     0,    79,     0,     0,     0,     0,
+      81,    82,    83,     0,     0,    86,    87,     0,     0,     0,
+       0,     0,     0,    92,    93,    94,    95,     0,    96,     0,
+       0,     0,   384,    98,    99,     0,     0,     0,     0,     0,
+       0,     0,   102,   103,   104,     0,   106,   107,   930,     0,
+       0,     0,     0,     0,     0,   112,   113,     0,     0,     0,
+       0,   114,   115,   116,   387,   118,   119,   120,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,   127,     0,     0,
+       0,   128,     0,   129,   130,     0,     0,     0,     0,     0,
+       0,   135,     0,   136,   137,   138,   139,   388,   141,   142,
+     143,   144,   145,   146,     0,     0,   147,   148,     0,     0,
+     389,   151,     0,   152,   153,   154,   155,   156,   157,   158,
+     390,   160,   392,   162,   393,   394,   165,   166,   167,   168,
+     169,   170,   395,   172,   396,   174,   397,   176,   177,   178,
+     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
+       0,   189,   190,     0,   191,   192,   193,   194,   195,   196,
+     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
+     207,   208,   209,   210,   211,   398,   399,   400,   215,   216,
+     217,   218,   219,     3,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,   359,   360,   361,     8,   362,   363,   364,
+     365,   366,   367,   368,   369,   370,    18,    19,    20,    21,
+      22,    23,   371,   372,    26,   373,   374,    29,   375,    31,
+      32,    33,     0,   376,   377,    36,   378,   379,   380,    40,
+      41,    42,    43,    44,    45,    46,    47,    48,   381,   382,
+      51,    52,    53,    54,    55,    56,    57,    58,    59,    60,
+      61,    62,    63,    64,    65,     0,     0,    68,     0,    69,
+      70,    71,   383,     0,     0,    75,    76,    77,     0,     0,
+       0,    79,     0,     0,     0,     0,    81,    82,    83,     0,
+       0,    86,    87,     0,     0,     0,     0,     0,     0,    92,
+      93,    94,    95,     0,    96,     0,     0,     0,   384,    98,
+      99,     0,     0,     0,     0,     0,     0,     0,   102,   103,
+     104,     0,   106,   107,   108,     0,     0,     0,     0,     0,
+       0,   112,   113,     0,     0,     0,     0,   114,   115,   116,
+     387,   118,   119,   120,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,   127,     0,     0,     0,   128,     0,   129,
+       0,     0,     0,     0,     0,     0,     0,   135,     0,   136,
+     137,   138,   139,   388,   141,   142,   143,   144,   145,   146,
+       0,     0,   147,   148,     0,     0,   389,   151,     0,   152,
+     153,   154,   155,   156,   157,   158,   390,   391,   392,   162,
+     393,   394,   165,   166,   167,   168,   169,   170,   395,   172,
+     396,   174,   397,   176,   177,   178,   179,   180,   181,   182,
+     183,   184,   185,   186,   187,   188,     0,   189,   190,     0,
+     191,   192,   193,   194,   195,   196,   197,   198,   199,   200,
+     201,   202,   203,   204,   205,   206,   207,   208,   209,   210,
+     211,   398,   399,   400,   215,   216,   217,   218,   219,   437,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,   359,
+     360,   361,     8,   362,   363,   364,   365,   366,   367,   368,
+     369,   370,    18,    19,    20,    21,    22,    23,   371,   372,
+      26,   373,   374,    29,   375,    31,    32,    33,     0,   376,
+     377,    36,   378,   379,   380,    40,    41,    42,    43,    44,
+      45,    46,    47,    48,   381,   382,    51,    52,    53,    54,
+      55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
+      65,     0,     0,    68,     0,    69,    70,    71,   383,     0,
+       0,    75,    76,    77,     0,     0,     0,    79,     0,     0,
+       0,     0,    81,    82,    83,     0,     0,    86,    87,     0,
+       0,     0,     0,     0,     0,    92,    93,    94,    95,     0,
+      96,     0,     0,     0,   384,    98,    99,     0,     0,     0,
+       0,     0,     0,     0,   102,   103,   104,     0,   106,   107,
+     108,     0,     0,     0,     0,     0,     0,   112,   113,     0,
+       0,     0,     0,   114,   115,   116,   387,   118,   119,   120,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,   127,
+       0,     0,     0,   128,     0,   129,     0,     0,     0,     0,
+       0,     0,     0,   135,     0,   136,   137,   138,   139,   388,
+     141,   142,   143,   144,   145,   146,     0,     0,   147,   148,
+       0,     0,   389,   151,     0,   152,   153,   154,   155,   156,
+     157,   158,   390,   391,   392,   162,   393,   394,   165,   166,
+     167,   168,   169,   170,   395,   172,   396,   174,   397,   176,
+     177,   178,   179,   180,   181,   182,   183,   184,   185,   186,
+     187,   188,     0,   189,   190,     0,   191,   192,   193,   194,
+     195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
+     205,   206,   207,   208,   209,   210,   211,   398,   399,   400,
+     215,   216,   217,   218,   219
   };
 
   /* YYCHECK.  */
   const short int
   xquery_parser::yycheck_[] =
   {
-        13,   415,   658,   684,   544,   349,   838,   663,   352,   726,
-     502,   860,   426,   548,   549,   550,   551,   968,   766,   767,
-     893,   133,   663,   422,  1107,    74,   440,   441,   782,   748,
-     524,   956,    20,    39,    40,    41,    42,    43,    44,   438,
-      21,   109,    66,  1086,   443,    98,    52,    94,    20,   766,
-     767,    91,    58,   527,    92,   529,   530,    94,   532,    72,
-     534,    74,     7,    69,    70,    20,    20,    73,   542,   543,
-      76,    77,   138,    92,   105,    88,   490,   491,   492,   105,
-      39,    40,    41,    42,    43,    44,    47,   148,   142,   730,
-    1240,   732,    92,    52,    94,   142,    18,   110,    20,   132,
-     817,   105,   446,   109,   110,   111,   142,   115,   126,   105,
-      34,   124,   105,   105,   195,    18,    94,   130,    77,   138,
-     108,  1118,  1119,   204,     8,     9,    59,    92,   127,   220,
-     133,   116,   120,   141,   225,   479,   480,   177,   482,   483,
-     484,   485,   142,   148,   488,   148,   154,    71,    34,   155,
-     109,   110,   111,    39,   185,   181,   144,   111,   126,   503,
-     148,   407,   195,   151,   125,   411,   171,   823,   232,   513,
-     514,    92,   105,   191,    92,   213,   214,   142,   182,   232,
-     188,   293,  1225,   155,     8,     9,   185,   240,   212,    29,
-     228,    77,   185,   185,  1043,   261,   181,     8,     9,  1031,
-     253,   155,   255,  1076,   744,   745,   620,   261,   889,   215,
-     247,   248,   265,  1086,   261,   268,   872,   101,   104,     8,
-       9,   245,   259,   191,   169,   261,   181,   208,   105,   870,
-     148,   575,  1157,   239,   230,   119,     8,   121,   732,   958,
-     654,  1324,   261,  1194,   992,   148,   105,    19,   151,   298,
-    1247,   650,   301,   266,   653,  1009,  1406,   181,   789,   181,
-     791,   261,  1412,   251,   148,   739,  1416,   105,   152,   247,
-     248,   277,   278,   279,   280,   992,     8,   101,   164,   111,
-     239,    29,   116,   105,   168,   298,   354,    19,   301,   357,
-     101,    94,   213,   214,   195,   119,   163,   121,   216,   217,
-     941,   186,   187,   204,   181,   189,   104,   228,   119,   105,
-     121,    94,   101,   148,   105,    98,   384,   212,   277,   278,
-     279,   280,   181,   207,   148,   123,   105,   105,   152,   196,
-     119,    92,   121,   401,   402,   105,   404,   148,    94,   105,
-     353,   152,   151,   181,   168,   105,   180,   119,   151,   121,
-     245,   882,  1225,   884,   105,   111,   257,   168,   130,   148,
-     182,   257,   263,   152,    50,   189,   262,   435,    20,   437,
-     271,    57,   385,   155,    60,    61,   148,   721,   189,   168,
-     163,   142,    68,   207,   728,   181,   454,   119,   105,   121,
-     181,   148,  1343,   406,   151,   151,   207,   140,   130,   412,
-     189,   469,   181,   181,   220,   418,   222,   475,   240,    62,
-      63,   181,   826,   827,   954,   181,   148,   831,   207,   153,
-     161,   181,   957,   915,     4,    92,   966,   170,     8,   442,
-     181,   444,   445,   153,  1182,   176,   170,   269,   270,   452,
-     272,   273,   455,   569,   814,   188,   572,   204,   574,   232,
-     170,   865,   465,  1302,   566,   567,   108,   240,   828,   242,
-     243,   244,   143,   116,   181,  1182,   133,   151,   120,   252,
-     253,   138,   255,   193,   487,   819,   489,   260,   164,   160,
-     166,   825,   265,   266,   267,   268,     4,    64,    65,   151,
-       8,    38,   144,   143,   180,   563,   148,   148,   240,   151,
-     568,    48,    64,    65,   848,    67,  1356,  1357,   576,    94,
-     160,   236,   237,   148,   582,   583,   151,    94,   862,   863,
-     206,   589,   866,    60,   868,  1181,   111,   269,   270,  1379,
-     272,   273,    94,   258,  1282,  1385,   176,  1369,   176,   119,
-     132,   121,  1223,   133,   888,   300,   116,  1228,   138,   129,
-     190,   306,   190,   145,   116,   899,   900,   901,    93,   903,
-     904,   905,   906,   907,   908,  1282,   910,   911,   148,   104,
-      98,  1286,   257,    94,   918,   116,  1291,    98,   263,   114,
-     193,   649,   195,   111,   597,  1333,   271,   133,   123,    64,
-      65,   204,   138,   937,   148,   939,   940,   151,   216,   217,
-     218,   119,   615,   121,   278,   279,   280,  1142,    39,    40,
-      41,   129,   680,    44,  1149,  1150,  1333,    51,   116,   238,
-      54,  1161,   241,   238,  1038,   220,   241,   222,   124,   125,
-     148,  1312,   124,   125,   227,  1316,   229,   981,   227,   151,
-     229,   151,   163,    78,    79,    80,    81,    82,    83,    84,
-      85,    86,    87,   116,   667,   409,   410,   545,   546,   552,
-     553,   148,   554,   555,   768,   769,  1284,  1285,    14,   148,
-     683,   210,   220,   151,   116,   743,  1020,   148,   116,  1360,
-     278,   278,   278,     0,   185,   185,   162,    90,    74,   250,
-     194,  1035,    99,   149,  1350,   100,   151,   148,   148,   148,
-    1114,   181,    39,    39,  1048,    20,   147,   720,   181,  1053,
-    1054,   232,  1056,   726,   116,   783,    18,  1061,   278,   240,
-     148,   242,   243,   244,   267,   267,  1261,  1262,   148,   116,
-     151,   116,   253,   151,   255,   151,   151,   151,   181,   260,
-     128,    25,    15,   208,   265,   266,   267,   268,   136,   137,
-      20,   139,   181,   766,   767,   768,   769,   181,   146,   226,
-      38,   116,   150,   164,   152,   165,  1110,   165,   226,   157,
-     105,    92,    92,    92,   148,   181,   789,  1121,   791,   178,
-     151,    20,   178,   178,   181,   173,   178,   178,  1202,   105,
-    1134,   105,   155,  1137,   155,  1139,   123,  1332,   128,    20,
-     281,   181,   178,   181,   817,    94,   181,    34,    94,   197,
-     198,   199,   200,   201,   202,   128,   138,   105,   178,   181,
-     178,    92,   181,  1167,   181,   178,   178,   220,   232,   138,
-     178,   185,   165,   116,   116,   116,   116,  1251,   142,   249,
-     251,   268,    98,   256,   178,   148,   138,   179,    92,   178,
-     178,   128,   178,   178,   271,   148,   128,   155,   270,   138,
-     178,   192,   271,   128,    94,   116,  1210,   142,  1212,   882,
-     116,   884,   138,   245,  1218,    25,    20,   178,   116,   148,
-     148,   116,    77,   234,   151,   105,   105,   151,  1232,  1233,
-    1234,  1235,  1236,   142,  1238,   142,   181,   246,   271,   246,
-     142,    53,   178,   140,   138,    92,    20,   181,   140,    20,
-     923,   165,   105,   926,  1258,   178,   138,   142,   116,   181,
-     181,   934,   181,   936,   116,   185,   271,   995,    67,   181,
-       6,  1275,   128,  1277,   228,   185,   181,   228,   228,  1007,
-     180,   228,   104,   104,   116,   181,    92,    20,   181,   180,
-     178,   142,   264,    20,  1298,   178,  1300,   151,  1372,   122,
-     178,    94,   178,   178,   178,    92,    20,    65,  1036,    94,
-     180,   116,   104,   116,   232,   180,    91,   177,   191,   992,
-     191,   116,   191,   191,   148,   116,   501,   501,   619,  1002,
-     818,   181,   425,  1016,   220,   420,  1351,   254,   800,   254,
-    1068,   985,   226,   429,  1183,   877,   223,  1351,   505,   926,
-    1051,   223,   265,  1216,  1082,  1063,  1111,  1123,   918,  1121,
-     227,  1118,   993,  1367,  1045,   465,   525,   547,   684,  1385,
-    1076,   526,  1045,  1379,   769,  1015,   817,  1104,  1051,   791,
-     744,   954,   290,   286,  1161,   453,  1108,   966,  1392,  1062,
-     745,   958,  1296,  1193,    -1,  1156,   955,    -1,    -1,   453,
+        13,   687,   841,   416,   863,   729,   350,   661,   503,   353,
+      25,   971,   666,   545,   427,   549,   550,   551,   552,   769,
+     770,   896,   133,   666,    74,   785,  1110,   423,   441,   442,
+     444,   109,    20,    68,    41,    42,    43,    44,    45,    46,
+     525,  1243,    21,    96,   751,   769,   770,    54,   444,    94,
+     107,    96,    36,    60,   959,    94,    20,    20,     7,    72,
+      96,    74,    20,  1089,    71,    72,   107,    94,    75,  1121,
+    1122,    78,    79,    93,   792,    88,   794,   140,   491,   492,
+     493,    41,    42,    43,    44,    45,    46,   234,   107,    73,
+     733,    18,   735,    96,    54,   150,   820,   110,    18,   144,
+      20,   140,    49,   447,   111,   112,   113,   107,   144,   107,
+     144,   124,   107,   118,   144,    61,   128,   130,   129,    79,
+      96,   107,   110,   150,    94,   222,   107,   224,   528,   107,
+     530,   531,   163,   533,   122,   535,   480,   481,   106,   483,
+     484,   485,   486,   543,   544,   489,   187,   178,   100,   113,
+     157,   111,   112,   113,     8,     9,    40,   125,   146,   179,
+     504,   107,   150,   128,   107,   153,    50,   885,   187,   887,
+     514,   515,   826,    94,   144,   232,   187,   153,   183,   214,
+     127,   193,   293,   183,     8,     9,   184,  1046,   183,     8,
+       9,   218,   219,   157,   157,  1034,   249,   250,  1250,   183,
+     263,   187,  1228,   184,  1079,   183,   892,  1409,   621,   153,
+     217,   107,   247,  1415,  1089,   747,   748,  1419,   263,     8,
+       9,   875,   171,   150,   263,   183,   153,   263,   193,   263,
+     873,   210,   576,   263,   241,   107,   107,  1197,    20,   653,
+     183,   107,   656,  1327,   657,   995,   249,   250,   298,   103,
+     735,   301,  1012,   266,   961,  1160,    94,   653,   261,   118,
+     656,    94,   178,   183,   153,   253,   134,   121,   107,   123,
+      31,   995,   279,   280,   281,   282,   192,   355,   107,   103,
+     358,   241,   234,   113,   103,   298,   107,   183,   301,   197,
+     242,   188,   189,   107,   215,   216,   150,   121,   206,   123,
+     154,   944,   121,   255,   123,   257,   144,   385,   107,   230,
+     150,   183,   183,   153,   103,   267,   170,   183,   270,   279,
+     280,   281,   282,   182,   402,   403,   150,   405,   110,   197,
+     154,   150,   121,   155,   123,   154,   240,   191,    52,   243,
+     122,   354,   742,     4,   183,    59,   170,     8,    62,    63,
+     172,   170,    36,  1228,   183,   209,    70,    41,   436,   145,
+     438,   150,   183,   135,   146,   154,   206,   191,   150,   183,
+      96,   153,   191,   386,   100,   117,   162,   455,   150,    96,
+     724,   170,   215,   216,   183,   209,  1346,   731,   155,   817,
+     209,   145,   470,    31,   407,    79,   113,   230,   476,   142,
+     413,   143,   191,   831,   197,   172,   419,     4,   162,    64,
+      65,     8,   242,   206,   156,   150,   829,   830,    94,   153,
+     209,   834,   106,   918,   439,   957,   960,   150,   195,   172,
+     443,   118,   445,   446,   165,  1185,   153,   969,   173,   165,
+     453,   271,   272,   456,   274,   275,  1305,   190,   190,   222,
+     214,   224,   166,   466,   168,   868,   567,   568,     8,   135,
+     121,  1185,   123,   118,   140,     8,   259,   198,   182,    19,
+     131,   242,   265,   238,   239,   488,    19,   490,   822,    96,
+     273,   118,   166,   247,   828,   134,   564,   300,    96,   150,
+     157,   569,   100,   306,   208,   260,   113,   178,   147,   577,
+     271,   272,    95,   274,   275,   583,   584,   851,   234,    66,
+      67,   192,   590,   106,   150,   118,   242,   153,   244,   245,
+     246,   865,   866,   116,   121,   869,   123,   871,   254,   255,
+    1184,   257,   125,  1372,   131,  1285,   262,   150,   100,    96,
+    1226,   267,   268,   269,   270,  1231,   229,   891,   231,    66,
+      67,   113,    69,   150,   218,   219,   220,   165,   902,   903,
+     904,  1285,   906,   907,   908,   909,   910,   911,    62,   913,
+     914,   121,   408,   123,   652,   153,   412,   921,   121,    96,
+     123,   195,   132,   197,   153,   598,  1336,  1359,  1360,   132,
+     570,   150,   206,   573,   153,   575,   940,   222,   942,   943,
+     150,   118,   227,   616,   135,   683,   118,   150,   259,   140,
+    1382,  1145,  1336,   150,   265,   259,  1388,    14,  1152,  1153,
+     264,    53,   273,   150,    56,   135,   234,   212,  1041,  1315,
+     140,   153,  1164,  1319,   242,   222,   244,   245,   246,  1289,
+     984,    41,    42,    43,  1294,   240,    46,   255,   243,   257,
+     280,   281,   282,   229,   262,   231,   118,   670,   150,   267,
+     268,   269,   270,   126,   127,    66,    67,   118,   746,   126,
+     127,   410,   411,   686,   130,   553,   554,  1363,   280,  1023,
+     555,   556,   138,   139,   280,   141,   546,   547,   771,   772,
+    1287,  1288,   148,     0,  1038,   164,   152,   280,   154,  1353,
+     187,   187,    92,   159,  1117,   252,    76,  1051,   786,   101,
+     723,   196,  1056,  1057,   102,  1059,   729,   151,   153,   175,
+    1064,   150,   150,   150,   183,   183,    41,    41,    20,   149,
+    1264,  1265,    80,    81,    82,    83,    84,    85,    86,    87,
+      88,    89,   118,   199,   200,   201,   202,   203,   204,   269,
+     280,   150,   118,   269,   118,   150,   769,   770,   771,   772,
+     153,   183,   153,    27,   153,    15,   153,   153,   183,  1113,
+     210,    20,   183,   228,    40,   118,   107,    94,   228,   792,
+    1124,   794,   166,    94,   167,   167,    94,   183,   150,   183,
+     153,    20,  1205,  1137,   107,   180,  1140,   107,  1142,   180,
+     180,  1335,   180,   180,   157,   157,   125,   820,   130,    20,
+     283,   183,   180,    96,   183,    36,   183,    96,   130,   140,
+     107,   180,   183,   183,   180,   183,  1170,    94,   234,   180,
+     180,   140,   187,   180,   167,   251,   118,   118,   118,   144,
+     118,  1254,   180,   222,   270,   253,   258,   181,   180,   100,
+     180,   180,   150,   180,   130,   140,    94,   194,   272,   150,
+     273,   130,   180,   140,   273,   130,    96,   157,   140,  1213,
+     118,  1215,   885,   144,   887,   118,   247,  1221,   180,    27,
+     150,    20,   118,   118,    79,   107,   144,   236,   150,   107,
+     153,  1235,  1236,  1237,  1238,  1239,   153,  1241,   144,   183,
+     144,    55,   248,   248,    94,   180,   140,   180,   273,   142,
+     142,    20,    20,   926,   167,   183,   929,  1261,   107,   273,
+     998,   140,   183,   183,   937,   118,   939,   183,   187,   144,
+     118,    69,  1010,   130,  1278,     6,  1280,   230,   183,   234,
+     187,   183,   230,   182,   230,   106,   106,   118,   144,    94,
+     266,    20,   183,   180,   180,   183,   230,  1301,   182,  1303,
+      20,  1039,  1375,   180,    96,   124,   153,   180,   180,    94,
+     180,    20,    96,    67,   118,   182,   106,   193,   118,   193,
+     182,    93,   995,   118,   193,   179,   150,   193,   502,   118,
+    1019,   183,  1005,  1071,   502,   220,   620,   421,   821,   430,
+     223,   256,   256,   223,  1354,   426,   803,  1085,  1186,   506,
+    1354,   988,   929,   880,  1054,  1219,  1114,  1066,   226,  1126,
+     921,  1124,   227,   466,   265,  1121,  1370,  1048,   526,   996,
+     548,   527,  1079,   687,   286,  1048,  1388,  1382,   794,   772,
+     820,  1054,  1107,  1018,   454,  1111,   747,   454,   957,  1164,
+     290,  1395,  1065,   748,   969,   961,  1299,  1196,  1159,   958,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-    1083,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,  1086,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,  1104,    -1,    -1,  1107,    -1,    -1,    -1,  1111,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,  1170,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,  1182,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-    1213,  1214,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,  1224,    -1,    -1,    -1,    -1,  1229,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,  1107,    -1,    -1,  1110,    -1,    -1,
+      -1,  1114,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,  1276,    -1,    -1,    -1,    -1,    -1,  1282,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+    1173,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,  1185,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,  1216,  1217,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,  1227,    -1,    -1,    -1,    -1,  1232,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-    1313,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,  1324,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-    1333,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,  1279,    -1,    -1,    -1,
+      -1,    -1,  1285,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-    1363,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,  1375,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,  1316,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,  1327,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,  1336,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,  1366,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,  1378,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    10,    -1,    -1,    -1,
-      -1,    -1,    -1,    17,    18,  1408,    20,    -1,    -1,    -1,
-    1413,    -1,    26,    27,    28,    29,    30,    31,    32,    33,
+      -1,    -1,    -1,    17,    18,    -1,    20,    -1,  1411,    -1,
+      -1,    -1,    -1,  1416,    28,    29,    30,    31,    32,    33,
       34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
       44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
-      54,    -1,    56,    57,    58,    59,    60,    61,    62,    63,
+      54,    55,    56,    -1,    58,    59,    60,    61,    62,    63,
       64,    65,    66,    67,    68,    69,    70,    71,    72,    73,
       74,    75,    76,    77,    78,    79,    80,    81,    82,    83,
-      84,    85,    86,    87,    88,    89,    90,    -1,    92,    93,
-      94,    95,    96,    97,    98,    99,   100,    -1,    -1,   103,
-     104,    -1,    -1,    -1,   108,   109,   110,   111,   112,   113,
-     114,   115,   116,   117,   118,    -1,   120,    -1,   122,   123,
-     124,   125,    -1,   127,    -1,    -1,    -1,   131,   132,   133,
-     134,   135,    -1,    -1,    -1,    -1,    -1,   141,   142,   143,
-     144,   145,   146,   147,    -1,    -1,    -1,   151,   152,   153,
-     154,   155,    -1,    -1,    -1,    -1,   160,   161,   162,   163,
-     164,   165,   166,   167,   168,    -1,   170,   171,    -1,    -1,
-     174,   175,   176,    -1,    -1,    -1,   180,    -1,   182,   183,
-     184,    -1,   186,   187,   188,    -1,   190,    -1,   192,   193,
-     194,   195,   196,   197,   198,   199,   200,   201,   202,    -1,
-      -1,   205,   206,   207,    -1,   209,   210,    -1,   212,   213,
+      84,    85,    86,    87,    88,    89,    90,    91,    92,    -1,
+      94,    95,    96,    97,    98,    99,   100,   101,   102,    -1,
+      -1,   105,   106,    -1,    -1,    -1,   110,   111,   112,   113,
+     114,   115,   116,   117,   118,   119,   120,    -1,   122,    -1,
+     124,   125,   126,   127,    -1,   129,    -1,    -1,    -1,   133,
+     134,   135,   136,   137,    -1,    -1,    -1,    -1,    -1,   143,
+     144,   145,   146,   147,   148,   149,    -1,    -1,    -1,   153,
+     154,   155,   156,   157,    -1,    -1,    -1,    -1,   162,   163,
+     164,   165,   166,   167,   168,   169,   170,    -1,   172,   173,
+      -1,    -1,   176,   177,   178,    -1,    -1,    -1,   182,    -1,
+     184,   185,   186,    -1,   188,   189,   190,    -1,   192,    -1,
+     194,   195,   196,   197,   198,   199,   200,   201,   202,   203,
+     204,    -1,    -1,   207,   208,   209,    -1,   211,   212,    -1,
      214,   215,   216,   217,   218,   219,   220,   221,   222,   223,
      224,   225,   226,   227,   228,   229,   230,   231,   232,   233,
      234,   235,   236,   237,   238,   239,   240,   241,   242,   243,
-     244,   245,   246,   247,   248,    -1,   250,   251,    -1,   253,
-     254,   255,   256,   257,   258,   259,   260,   261,   262,   263,
+     244,   245,   246,   247,   248,   249,   250,    -1,   252,   253,
+      -1,   255,   256,   257,   258,   259,   260,   261,   262,   263,
      264,   265,   266,   267,   268,   269,   270,   271,   272,   273,
-     274,   275,   276,   277,   278,   279,   280,   281,   282,    10,
-      -1,    -1,    -1,    -1,    -1,    -1,    17,    18,    -1,    20,
-      -1,    -1,    -1,    -1,    -1,    26,    27,    28,    29,    30,
-      31,    32,    33,    34,    35,    36,    37,    38,    39,    40,
-      41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
-      51,    52,    53,    54,    -1,    56,    57,    58,    59,    60,
-      61,    62,    63,    64,    65,    66,    67,    68,    69,    70,
-      71,    72,    73,    74,    75,    76,    77,    78,    79,    80,
-      81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
-      -1,    92,    93,    94,    95,    96,    97,    98,    99,   100,
-      -1,    -1,   103,   104,    -1,    -1,    -1,   108,   109,   110,
-     111,   112,   113,   114,   115,   116,   117,   118,    -1,   120,
-      -1,   122,   123,   124,   125,    -1,   127,    -1,    -1,    -1,
-     131,   132,   133,   134,   135,    -1,    -1,    -1,    -1,    -1,
-     141,   142,   143,   144,   145,   146,   147,    -1,    -1,    -1,
-     151,   152,   153,   154,   155,    -1,    -1,    -1,    -1,   160,
-     161,   162,   163,   164,   165,   166,   167,   168,    -1,   170,
-     171,    -1,    -1,   174,   175,   176,    -1,    -1,    -1,   180,
-     181,   182,   183,   184,    -1,   186,   187,   188,    -1,   190,
-      -1,   192,   193,   194,   195,   196,   197,   198,   199,   200,
-     201,   202,    -1,    -1,   205,   206,   207,    -1,   209,   210,
-      -1,   212,   213,   214,   215,   216,   217,   218,   219,   220,
-     221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
-     231,   232,   233,   234,   235,   236,   237,   238,   239,   240,
-     241,   242,   243,   244,   245,   246,   247,   248,    -1,   250,
-     251,    -1,   253,   254,   255,   256,   257,   258,   259,   260,
-     261,   262,   263,   264,   265,   266,   267,   268,   269,   270,
-     271,   272,   273,   274,   275,   276,   277,   278,   279,   280,
-     281,    10,    -1,    -1,    -1,    -1,    -1,    -1,    17,    18,
-      -1,    20,    -1,    -1,    -1,    -1,    -1,    26,    27,    28,
+     274,   275,   276,   277,   278,   279,   280,   281,   282,   283,
+     284,    10,    -1,    -1,    -1,    -1,    -1,    -1,    17,    18,
+      -1,    20,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    28,
       29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
       39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,    51,    52,    53,    54,    -1,    56,    57,    58,
+      49,    50,    51,    52,    53,    54,    55,    56,    -1,    58,
       59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
       69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
       79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
-      89,    90,    -1,    92,    93,    94,    95,    96,    97,    98,
-      99,   100,    -1,    -1,   103,   104,    -1,    -1,    -1,   108,
-     109,   110,   111,   112,   113,   114,   115,   116,   117,   118,
-      -1,   120,    -1,   122,   123,   124,   125,    -1,   127,    -1,
-      -1,    -1,   131,   132,   133,   134,   135,    -1,    -1,    -1,
-      -1,    -1,   141,   142,   143,   144,   145,   146,   147,    -1,
-      -1,    -1,   151,   152,   153,   154,   155,    -1,    -1,    -1,
-      -1,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-      -1,   170,   171,    -1,    -1,   174,   175,   176,    -1,   178,
-      -1,   180,    -1,   182,   183,   184,    -1,   186,   187,   188,
-      -1,   190,    -1,   192,   193,   194,   195,   196,   197,   198,
-     199,   200,   201,   202,    -1,    -1,   205,   206,   207,    -1,
-     209,   210,    -1,   212,   213,   214,   215,   216,   217,   218,
+      89,    90,    91,    92,    -1,    94,    95,    96,    97,    98,
+      99,   100,   101,   102,    -1,    -1,   105,   106,    -1,    -1,
+      -1,   110,   111,   112,   113,   114,   115,   116,   117,   118,
+     119,   120,    -1,   122,    -1,   124,   125,   126,   127,    -1,
+     129,    -1,    -1,    -1,   133,   134,   135,   136,   137,    -1,
+      -1,    -1,    -1,    -1,   143,   144,   145,   146,   147,   148,
+     149,    -1,    -1,    -1,   153,   154,   155,   156,   157,    -1,
+      -1,    -1,    -1,   162,   163,   164,   165,   166,   167,   168,
+     169,   170,    -1,   172,   173,    -1,    -1,   176,   177,   178,
+      -1,    -1,    -1,   182,   183,   184,   185,   186,    -1,   188,
+     189,   190,    -1,   192,    -1,   194,   195,   196,   197,   198,
+     199,   200,   201,   202,   203,   204,    -1,    -1,   207,   208,
+     209,    -1,   211,   212,    -1,   214,   215,   216,   217,   218,
      219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
      229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
      239,   240,   241,   242,   243,   244,   245,   246,   247,   248,
-      -1,   250,   251,    -1,   253,   254,   255,   256,   257,   258,
+     249,   250,    -1,   252,   253,    -1,   255,   256,   257,   258,
      259,   260,   261,   262,   263,   264,   265,   266,   267,   268,
      269,   270,   271,   272,   273,   274,   275,   276,   277,   278,
-     279,   280,   281,    10,    -1,    -1,    -1,    -1,    -1,    -1,
-      17,    18,    -1,    20,    -1,    -1,    -1,    -1,    -1,    26,
-      27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,    49,    50,    51,    52,    53,    54,    -1,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
-      67,    68,    69,    70,    71,    72,    73,    74,    75,    76,
-      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
-      87,    88,    89,    90,    -1,    92,    93,    94,    95,    96,
-      97,    98,    99,   100,    -1,    -1,   103,   104,    -1,    -1,
-      -1,   108,   109,   110,   111,   112,   113,   114,   115,   116,
-     117,   118,    -1,   120,    -1,   122,   123,   124,   125,    -1,
-     127,    -1,    -1,    -1,   131,   132,   133,   134,   135,    -1,
-      -1,    -1,    -1,    -1,   141,   142,   143,   144,   145,   146,
-     147,    -1,    -1,    -1,   151,   152,   153,   154,   155,    -1,
-      -1,    -1,    -1,   160,   161,   162,   163,   164,   165,   166,
-     167,   168,    -1,   170,   171,    -1,    -1,   174,   175,   176,
-      -1,    -1,    -1,   180,   181,   182,   183,   184,    -1,   186,
-     187,   188,    -1,   190,    -1,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,    -1,    -1,   205,   206,
-     207,    -1,   209,   210,    -1,   212,   213,   214,   215,   216,
-     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
-     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
-     237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
-     247,   248,    -1,   250,   251,    -1,   253,   254,   255,   256,
-     257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
-     267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
-     277,   278,   279,   280,   281,    10,    -1,    -1,    -1,    -1,
+     279,   280,   281,   282,   283,    10,    -1,    -1,    -1,    -1,
       -1,    -1,    17,    18,    -1,    20,    -1,    -1,    -1,    -1,
-      -1,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+      -1,    -1,    -1,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
       45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
-      -1,    56,    57,    58,    59,    60,    61,    62,    63,    64,
+      55,    56,    -1,    58,    59,    60,    61,    62,    63,    64,
       65,    66,    67,    68,    69,    70,    71,    72,    73,    74,
       75,    76,    77,    78,    79,    80,    81,    82,    83,    84,
-      85,    86,    87,    88,    89,    90,    -1,    92,    93,    94,
-      95,    96,    97,    98,    99,   100,    -1,    -1,   103,   104,
-      -1,    -1,    -1,   108,   109,   110,   111,   112,   113,   114,
-     115,   116,   117,   118,    -1,   120,    -1,   122,   123,   124,
-     125,    -1,   127,    -1,    -1,    -1,   131,   132,   133,   134,
-     135,    -1,    -1,    -1,    -1,    -1,   141,   142,   143,   144,
-     145,   146,   147,    -1,    -1,    -1,   151,   152,   153,   154,
-     155,    -1,    -1,    -1,    -1,   160,   161,   162,   163,   164,
-     165,   166,   167,   168,    -1,   170,   171,    -1,    -1,   174,
-     175,   176,    -1,   178,    -1,   180,    -1,   182,   183,   184,
-      -1,   186,   187,   188,    -1,   190,    -1,   192,   193,   194,
-     195,   196,   197,   198,   199,   200,   201,   202,    -1,    -1,
-     205,   206,   207,    -1,   209,   210,    -1,   212,   213,   214,
+      85,    86,    87,    88,    89,    90,    91,    92,    -1,    94,
+      95,    96,    97,    98,    99,   100,   101,   102,    -1,    -1,
+     105,   106,    -1,    -1,    -1,   110,   111,   112,   113,   114,
+     115,   116,   117,   118,   119,   120,    -1,   122,    -1,   124,
+     125,   126,   127,    -1,   129,    -1,    -1,    -1,   133,   134,
+     135,   136,   137,    -1,    -1,    -1,    -1,    -1,   143,   144,
+     145,   146,   147,   148,   149,    -1,    -1,    -1,   153,   154,
+     155,   156,   157,    -1,    -1,    -1,    -1,   162,   163,   164,
+     165,   166,   167,   168,   169,   170,    -1,   172,   173,    -1,
+      -1,   176,   177,   178,    -1,   180,    -1,   182,    -1,   184,
+     185,   186,    -1,   188,   189,   190,    -1,   192,    -1,   194,
+     195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
+      -1,    -1,   207,   208,   209,    -1,   211,   212,    -1,   214,
      215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
      225,   226,   227,   228,   229,   230,   231,   232,   233,   234,
      235,   236,   237,   238,   239,   240,   241,   242,   243,   244,
-     245,   246,   247,   248,    -1,   250,   251,    -1,   253,   254,
+     245,   246,   247,   248,   249,   250,    -1,   252,   253,    -1,
      255,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-     275,   276,   277,   278,   279,   280,   281,    10,    -1,    -1,
-      -1,    -1,    -1,    -1,    17,    18,    -1,    20,    -1,    -1,
-      -1,    -1,    -1,    26,    27,    28,    29,    30,    31,    32,
-      33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
-      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
-      53,    54,    -1,    56,    57,    58,    59,    60,    61,    62,
-      63,    64,    65,    66,    67,    68,    69,    70,    71,    72,
-      73,    74,    75,    76,    77,    78,    79,    80,    81,    82,
-      83,    84,    85,    86,    87,    88,    89,    90,    -1,    92,
-      93,    94,    95,    96,    97,    98,    99,   100,    -1,    -1,
-     103,   104,    -1,    -1,    -1,   108,   109,   110,   111,   112,
-     113,   114,   115,   116,   117,   118,    -1,   120,    -1,   122,
-     123,   124,   125,    -1,   127,    -1,    -1,    -1,   131,   132,
-     133,   134,   135,    -1,    -1,    -1,    -1,    -1,   141,   142,
-     143,   144,   145,   146,   147,    -1,    -1,    -1,   151,   152,
-     153,   154,   155,    -1,    -1,    -1,    -1,   160,   161,   162,
-     163,   164,   165,   166,   167,   168,    -1,   170,   171,    -1,
-      -1,   174,   175,   176,    -1,   178,    -1,   180,    -1,   182,
-     183,   184,    -1,   186,   187,   188,    -1,   190,    -1,   192,
-     193,   194,   195,   196,   197,   198,   199,   200,   201,   202,
-      -1,    -1,   205,   206,   207,    -1,   209,   210,    -1,   212,
-     213,   214,   215,   216,   217,   218,   219,   220,   221,   222,
-     223,   224,   225,   226,   227,   228,   229,   230,   231,   232,
-     233,   234,   235,   236,   237,   238,   239,   240,   241,   242,
-     243,   244,   245,   246,   247,   248,    -1,   250,   251,    -1,
-     253,   254,   255,   256,   257,   258,   259,   260,   261,   262,
-     263,   264,   265,   266,   267,   268,   269,   270,   271,   272,
-     273,   274,   275,   276,   277,   278,   279,   280,   281,    10,
+     275,   276,   277,   278,   279,   280,   281,   282,   283,    10,
       -1,    -1,    -1,    -1,    -1,    -1,    17,    18,    -1,    20,
-      -1,    -1,    -1,    -1,    -1,    26,    27,    28,    29,    30,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    28,    29,    30,
       31,    32,    33,    34,    35,    36,    37,    38,    39,    40,
       41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
-      51,    52,    53,    54,    -1,    56,    57,    58,    59,    60,
+      51,    52,    53,    54,    55,    56,    -1,    58,    59,    60,
       61,    62,    63,    64,    65,    66,    67,    68,    69,    70,
       71,    72,    73,    74,    75,    76,    77,    78,    79,    80,
       81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
-      -1,    92,    93,    94,    95,    96,    97,    98,    99,   100,
-      -1,    -1,   103,   104,    -1,    -1,    -1,   108,   109,   110,
-     111,   112,   113,   114,   115,   116,   117,   118,    -1,   120,
-      -1,   122,   123,   124,   125,    -1,   127,    -1,    -1,    -1,
-     131,   132,   133,   134,   135,    -1,    -1,    -1,    -1,    -1,
-     141,   142,   143,   144,   145,   146,   147,    -1,    -1,    -1,
-     151,   152,   153,   154,   155,    -1,    -1,    -1,    -1,   160,
-     161,   162,   163,   164,   165,   166,   167,   168,    -1,   170,
-     171,    -1,    -1,   174,   175,   176,    -1,   178,    -1,   180,
-      -1,   182,   183,   184,    -1,   186,   187,   188,    -1,   190,
-      -1,   192,   193,   194,   195,   196,   197,   198,   199,   200,
-     201,   202,    -1,    -1,   205,   206,   207,    -1,   209,   210,
-      -1,   212,   213,   214,   215,   216,   217,   218,   219,   220,
+      91,    92,    -1,    94,    95,    96,    97,    98,    99,   100,
+     101,   102,    -1,    -1,   105,   106,    -1,    -1,    -1,   110,
+     111,   112,   113,   114,   115,   116,   117,   118,   119,   120,
+      -1,   122,    -1,   124,   125,   126,   127,    -1,   129,    -1,
+      -1,    -1,   133,   134,   135,   136,   137,    -1,    -1,    -1,
+      -1,    -1,   143,   144,   145,   146,   147,   148,   149,    -1,
+      -1,    -1,   153,   154,   155,   156,   157,    -1,    -1,    -1,
+      -1,   162,   163,   164,   165,   166,   167,   168,   169,   170,
+      -1,   172,   173,    -1,    -1,   176,   177,   178,    -1,    -1,
+      -1,   182,   183,   184,   185,   186,    -1,   188,   189,   190,
+      -1,   192,    -1,   194,   195,   196,   197,   198,   199,   200,
+     201,   202,   203,   204,    -1,    -1,   207,   208,   209,    -1,
+     211,   212,    -1,   214,   215,   216,   217,   218,   219,   220,
      221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
      231,   232,   233,   234,   235,   236,   237,   238,   239,   240,
-     241,   242,   243,   244,   245,   246,   247,   248,    -1,   250,
-     251,    -1,   253,   254,   255,   256,   257,   258,   259,   260,
+     241,   242,   243,   244,   245,   246,   247,   248,   249,   250,
+      -1,   252,   253,    -1,   255,   256,   257,   258,   259,   260,
      261,   262,   263,   264,   265,   266,   267,   268,   269,   270,
      271,   272,   273,   274,   275,   276,   277,   278,   279,   280,
-     281,    10,    -1,    -1,    -1,    -1,    -1,    -1,    17,    18,
-      -1,    20,    -1,    -1,    -1,    -1,    -1,    26,    27,    28,
+     281,   282,   283,    10,    -1,    -1,    -1,    -1,    -1,    -1,
+      17,    18,    -1,    20,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    28,    29,    30,    31,    32,    33,    34,    35,    36,
+      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
+      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
+      -1,    58,    59,    60,    61,    62,    63,    64,    65,    66,
+      67,    68,    69,    70,    71,    72,    73,    74,    75,    76,
+      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
+      87,    88,    89,    90,    91,    92,    -1,    94,    95,    96,
+      97,    98,    99,   100,   101,   102,    -1,    -1,   105,   106,
+      -1,    -1,    -1,   110,   111,   112,   113,   114,   115,   116,
+     117,   118,   119,   120,    -1,   122,    -1,   124,   125,   126,
+     127,    -1,   129,    -1,    -1,    -1,   133,   134,   135,   136,
+     137,    -1,    -1,    -1,    -1,    -1,   143,   144,   145,   146,
+     147,   148,   149,    -1,    -1,    -1,   153,   154,   155,   156,
+     157,    -1,    -1,    -1,    -1,   162,   163,   164,   165,   166,
+     167,   168,   169,   170,    -1,   172,   173,    -1,    -1,   176,
+     177,   178,    -1,   180,    -1,   182,    -1,   184,   185,   186,
+      -1,   188,   189,   190,    -1,   192,    -1,   194,   195,   196,
+     197,   198,   199,   200,   201,   202,   203,   204,    -1,    -1,
+     207,   208,   209,    -1,   211,   212,    -1,   214,   215,   216,
+     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
+     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
+     237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
+     247,   248,   249,   250,    -1,   252,   253,    -1,   255,   256,
+     257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
+     267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
+     277,   278,   279,   280,   281,   282,   283,    10,    -1,    -1,
+      -1,    -1,    -1,    -1,    17,    18,    -1,    20,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    28,    29,    30,    31,    32,
+      33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
+      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
+      53,    54,    55,    56,    -1,    58,    59,    60,    61,    62,
+      63,    64,    65,    66,    67,    68,    69,    70,    71,    72,
+      73,    74,    75,    76,    77,    78,    79,    80,    81,    82,
+      83,    84,    85,    86,    87,    88,    89,    90,    91,    92,
+      -1,    94,    95,    96,    97,    98,    99,   100,   101,   102,
+      -1,    -1,   105,   106,    -1,    -1,    -1,   110,   111,   112,
+     113,   114,   115,   116,   117,   118,   119,   120,    -1,   122,
+      -1,   124,   125,   126,   127,    -1,   129,    -1,    -1,    -1,
+     133,   134,   135,   136,   137,    -1,    -1,    -1,    -1,    -1,
+     143,   144,   145,   146,   147,   148,   149,    -1,    -1,    -1,
+     153,   154,   155,   156,   157,    -1,    -1,    -1,    -1,   162,
+     163,   164,   165,   166,   167,   168,   169,   170,    -1,   172,
+     173,    -1,    -1,   176,   177,   178,    -1,   180,    -1,   182,
+      -1,   184,   185,   186,    -1,   188,   189,   190,    -1,   192,
+      -1,   194,   195,   196,   197,   198,   199,   200,   201,   202,
+     203,   204,    -1,    -1,   207,   208,   209,    -1,   211,   212,
+      -1,   214,   215,   216,   217,   218,   219,   220,   221,   222,
+     223,   224,   225,   226,   227,   228,   229,   230,   231,   232,
+     233,   234,   235,   236,   237,   238,   239,   240,   241,   242,
+     243,   244,   245,   246,   247,   248,   249,   250,    -1,   252,
+     253,    -1,   255,   256,   257,   258,   259,   260,   261,   262,
+     263,   264,   265,   266,   267,   268,   269,   270,   271,   272,
+     273,   274,   275,   276,   277,   278,   279,   280,   281,   282,
+     283,    10,    -1,    -1,    -1,    -1,    -1,    -1,    17,    18,
+      -1,    20,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    28,
       29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
       39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,    51,    52,    53,    54,    -1,    56,    57,    58,
+      49,    50,    51,    52,    53,    54,    55,    56,    -1,    58,
       59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
       69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
       79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
-      89,    90,    -1,    92,    93,    94,    95,    96,    97,    98,
-      99,   100,    -1,    -1,   103,   104,    -1,    -1,    -1,   108,
-     109,   110,   111,   112,   113,   114,   115,   116,   117,   118,
-      -1,   120,    -1,   122,   123,   124,   125,    -1,   127,    -1,
-      -1,    -1,   131,   132,   133,   134,   135,    -1,    -1,    -1,
-      -1,    -1,   141,   142,   143,   144,   145,   146,   147,    -1,
-      -1,    -1,   151,   152,   153,   154,   155,    -1,    -1,    -1,
-      -1,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-      -1,   170,   171,    -1,    -1,   174,   175,   176,    -1,   178,
-      -1,   180,    -1,   182,   183,   184,    -1,   186,   187,   188,
-      -1,   190,    -1,   192,   193,   194,   195,   196,   197,   198,
-     199,   200,   201,   202,    -1,    -1,   205,   206,   207,    -1,
-     209,   210,    -1,   212,   213,   214,   215,   216,   217,   218,
+      89,    90,    91,    92,    -1,    94,    95,    96,    97,    98,
+      99,   100,   101,   102,    -1,    -1,   105,   106,    -1,    -1,
+      -1,   110,   111,   112,   113,   114,   115,   116,   117,   118,
+     119,   120,    -1,   122,    -1,   124,   125,   126,   127,    -1,
+     129,    -1,    -1,    -1,   133,   134,   135,   136,   137,    -1,
+      -1,    -1,    -1,    -1,   143,   144,   145,   146,   147,   148,
+     149,    -1,    -1,    -1,   153,   154,   155,   156,   157,    -1,
+      -1,    -1,    -1,   162,   163,   164,   165,   166,   167,   168,
+     169,   170,    -1,   172,   173,    -1,    -1,   176,   177,   178,
+      -1,   180,    -1,   182,    -1,   184,   185,   186,    -1,   188,
+     189,   190,    -1,   192,    -1,   194,   195,   196,   197,   198,
+     199,   200,   201,   202,   203,   204,    -1,    -1,   207,   208,
+     209,    -1,   211,   212,    -1,   214,   215,   216,   217,   218,
      219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
      229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
      239,   240,   241,   242,   243,   244,   245,   246,   247,   248,
-      -1,   250,   251,    -1,   253,   254,   255,   256,   257,   258,
+     249,   250,    -1,   252,   253,    -1,   255,   256,   257,   258,
      259,   260,   261,   262,   263,   264,   265,   266,   267,   268,
      269,   270,   271,   272,   273,   274,   275,   276,   277,   278,
-     279,   280,   281,    10,    -1,    -1,    -1,    -1,    -1,    -1,
-      17,    18,    -1,    20,    -1,    -1,    -1,    -1,    -1,    26,
-      27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,    49,    50,    51,    52,    53,    54,    -1,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
-      67,    68,    69,    70,    71,    72,    73,    74,    75,    76,
-      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
-      87,    88,    89,    90,    -1,    92,    93,    94,    95,    96,
-      97,    98,    99,   100,    -1,    -1,   103,   104,    -1,    -1,
-      -1,   108,   109,   110,   111,   112,   113,   114,   115,   116,
-     117,   118,    -1,   120,    -1,   122,   123,   124,   125,    -1,
-     127,    -1,    -1,    -1,   131,   132,   133,   134,   135,    -1,
-      -1,    -1,    -1,    -1,   141,   142,   143,   144,   145,   146,
-     147,    -1,    -1,    -1,   151,   152,   153,   154,   155,    -1,
-      -1,    -1,    -1,   160,   161,   162,   163,   164,   165,   166,
-     167,   168,    -1,   170,   171,    -1,    -1,   174,   175,   176,
-      -1,   178,    -1,   180,    -1,   182,   183,   184,    -1,   186,
-     187,   188,    -1,   190,    -1,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,    -1,    -1,   205,   206,
-     207,    -1,   209,   210,    -1,   212,   213,   214,   215,   216,
-     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
-     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
-     237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
-     247,   248,    -1,   250,   251,    -1,   253,   254,   255,   256,
-     257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
-     267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
-     277,   278,   279,   280,   281,    10,    -1,    -1,    -1,    -1,
+     279,   280,   281,   282,   283,    10,    -1,    -1,    -1,    -1,
       -1,    -1,    17,    18,    -1,    20,    -1,    -1,    -1,    -1,
-      -1,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+      -1,    -1,    -1,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
       45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
-      -1,    56,    57,    58,    59,    60,    61,    62,    63,    64,
+      55,    56,    -1,    58,    59,    60,    61,    62,    63,    64,
       65,    66,    67,    68,    69,    70,    71,    72,    73,    74,
       75,    76,    77,    78,    79,    80,    81,    82,    83,    84,
-      85,    86,    87,    88,    89,    90,    -1,    92,    93,    94,
-      95,    96,    97,    98,    99,   100,    -1,    -1,   103,   104,
-      -1,    -1,    -1,   108,   109,   110,   111,   112,   113,   114,
-     115,   116,   117,   118,    -1,   120,    -1,   122,   123,   124,
-     125,    -1,   127,    -1,    -1,    -1,   131,   132,   133,   134,
-     135,    -1,    -1,    -1,    -1,    -1,   141,   142,   143,   144,
-     145,   146,   147,    -1,    -1,    -1,   151,   152,   153,   154,
-     155,    -1,    -1,    -1,    -1,   160,   161,   162,   163,   164,
-     165,   166,   167,   168,    -1,   170,   171,    -1,    -1,   174,
-     175,   176,    -1,   178,    -1,   180,    -1,   182,   183,   184,
-      -1,   186,   187,   188,    -1,   190,    -1,   192,   193,   194,
-     195,   196,   197,   198,   199,   200,   201,   202,    -1,    -1,
-     205,   206,   207,    -1,   209,   210,    -1,   212,   213,   214,
+      85,    86,    87,    88,    89,    90,    91,    92,    -1,    94,
+      95,    96,    97,    98,    99,   100,   101,   102,    -1,    -1,
+     105,   106,    -1,    -1,    -1,   110,   111,   112,   113,   114,
+     115,   116,   117,   118,   119,   120,    -1,   122,    -1,   124,
+     125,   126,   127,    -1,   129,    -1,    -1,    -1,   133,   134,
+     135,   136,   137,    -1,    -1,    -1,    -1,    -1,   143,   144,
+     145,   146,   147,   148,   149,    -1,    -1,    -1,   153,   154,
+     155,   156,   157,    -1,    -1,    -1,    -1,   162,   163,   164,
+     165,   166,   167,   168,   169,   170,    -1,   172,   173,    -1,
+      -1,   176,   177,   178,    -1,   180,    -1,   182,    -1,   184,
+     185,   186,    -1,   188,   189,   190,    -1,   192,    -1,   194,
+     195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
+      -1,    -1,   207,   208,   209,    -1,   211,   212,    -1,   214,
      215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
      225,   226,   227,   228,   229,   230,   231,   232,   233,   234,
      235,   236,   237,   238,   239,   240,   241,   242,   243,   244,
-     245,   246,   247,   248,    -1,   250,   251,    -1,   253,   254,
+     245,   246,   247,   248,   249,   250,    -1,   252,   253,    -1,
      255,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-     275,   276,   277,   278,   279,   280,   281,    10,    -1,    -1,
-      -1,    -1,    -1,    -1,    17,    18,    -1,    20,    -1,    -1,
-      -1,    -1,    -1,    26,    27,    28,    29,    30,    31,    32,
-      33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
-      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
-      53,    54,    -1,    56,    57,    58,    59,    60,    61,    62,
-      63,    64,    65,    66,    67,    68,    69,    70,    71,    72,
-      73,    74,    75,    76,    77,    78,    79,    80,    81,    82,
-      83,    84,    85,    86,    87,    88,    89,    90,    -1,    92,
-      93,    94,    95,    96,    97,    98,    99,   100,    -1,    -1,
-     103,   104,    -1,    -1,    -1,   108,   109,   110,   111,   112,
-     113,   114,   115,   116,   117,   118,    -1,   120,    -1,   122,
-     123,   124,   125,    -1,   127,    -1,    -1,    -1,   131,   132,
-     133,   134,   135,    -1,    -1,    -1,    -1,    -1,   141,   142,
-     143,   144,   145,   146,   147,    -1,    -1,    -1,   151,   152,
-     153,   154,   155,    -1,    -1,    -1,    -1,   160,   161,   162,
-     163,   164,   165,   166,   167,   168,    -1,   170,   171,    -1,
-      -1,   174,   175,   176,    -1,    -1,    -1,   180,    -1,   182,
-     183,   184,    -1,   186,   187,   188,    -1,   190,    -1,   192,
-     193,   194,   195,   196,   197,   198,   199,   200,   201,   202,
-      -1,    -1,   205,   206,   207,    -1,   209,   210,    -1,   212,
-     213,   214,   215,   216,   217,   218,   219,   220,   221,   222,
-     223,   224,   225,   226,   227,   228,   229,   230,   231,   232,
-     233,   234,   235,   236,   237,   238,   239,   240,   241,   242,
-     243,   244,   245,   246,   247,   248,    -1,   250,   251,    -1,
-     253,   254,   255,   256,   257,   258,   259,   260,   261,   262,
-     263,   264,   265,   266,   267,   268,   269,   270,   271,   272,
-     273,   274,   275,   276,   277,   278,   279,   280,   281,    10,
+     275,   276,   277,   278,   279,   280,   281,   282,   283,    10,
       -1,    -1,    -1,    -1,    -1,    -1,    17,    18,    -1,    20,
-      -1,    -1,    -1,    -1,    -1,    26,    27,    28,    29,    30,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    28,    29,    30,
       31,    32,    33,    34,    35,    36,    37,    38,    39,    40,
       41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
-      51,    52,    53,    54,    -1,    56,    57,    58,    59,    60,
+      51,    52,    53,    54,    55,    56,    -1,    58,    59,    60,
       61,    62,    63,    64,    65,    66,    67,    68,    69,    70,
       71,    72,    73,    74,    75,    76,    77,    78,    79,    80,
       81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
-      -1,    92,    93,    94,    95,    96,    97,    98,    99,   100,
-      -1,    -1,   103,   104,    -1,    -1,    -1,   108,   109,   110,
-     111,   112,   113,   114,   115,   116,   117,   118,    -1,   120,
-      -1,   122,   123,   124,   125,    -1,   127,    -1,    -1,    -1,
-     131,   132,   133,   134,   135,    -1,    -1,    -1,    -1,    -1,
-     141,   142,   143,   144,   145,   146,   147,    -1,    -1,    -1,
-     151,   152,   153,   154,   155,    -1,    -1,    -1,    -1,   160,
-     161,   162,   163,   164,   165,   166,   167,   168,    -1,   170,
-     171,    -1,    -1,   174,   175,   176,    -1,    -1,    -1,   180,
-      -1,   182,   183,   184,    -1,   186,   187,   188,    -1,   190,
-      -1,   192,   193,   194,   195,   196,   197,   198,   199,   200,
-     201,   202,    -1,    -1,   205,   206,   207,    -1,   209,   210,
-      -1,   212,   213,   214,   215,   216,   217,   218,   219,   220,
+      91,    92,    -1,    94,    95,    96,    97,    98,    99,   100,
+     101,   102,    -1,    -1,   105,   106,    -1,    -1,    -1,   110,
+     111,   112,   113,   114,   115,   116,   117,   118,   119,   120,
+      -1,   122,    -1,   124,   125,   126,   127,    -1,   129,    -1,
+      -1,    -1,   133,   134,   135,   136,   137,    -1,    -1,    -1,
+      -1,    -1,   143,   144,   145,   146,   147,   148,   149,    -1,
+      -1,    -1,   153,   154,   155,   156,   157,    -1,    -1,    -1,
+      -1,   162,   163,   164,   165,   166,   167,   168,   169,   170,
+      -1,   172,   173,    -1,    -1,   176,   177,   178,    -1,   180,
+      -1,   182,    -1,   184,   185,   186,    -1,   188,   189,   190,
+      -1,   192,    -1,   194,   195,   196,   197,   198,   199,   200,
+     201,   202,   203,   204,    -1,    -1,   207,   208,   209,    -1,
+     211,   212,    -1,   214,   215,   216,   217,   218,   219,   220,
      221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
      231,   232,   233,   234,   235,   236,   237,   238,   239,   240,
-     241,   242,   243,   244,   245,   246,   247,   248,    -1,   250,
-     251,    -1,   253,   254,   255,   256,   257,   258,   259,   260,
+     241,   242,   243,   244,   245,   246,   247,   248,   249,   250,
+      -1,   252,   253,    -1,   255,   256,   257,   258,   259,   260,
      261,   262,   263,   264,   265,   266,   267,   268,   269,   270,
      271,   272,   273,   274,   275,   276,   277,   278,   279,   280,
-     281,    10,    -1,    -1,    -1,    -1,    -1,    -1,    17,    18,
-      -1,    20,    -1,    -1,    -1,    -1,    -1,    26,    27,    28,
+     281,   282,   283,    10,    -1,    -1,    -1,    -1,    -1,    -1,
+      17,    18,    -1,    20,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    28,    29,    30,    31,    32,    33,    34,    35,    36,
+      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
+      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
+      -1,    58,    59,    60,    61,    62,    63,    64,    65,    66,
+      67,    68,    69,    70,    71,    72,    73,    74,    75,    76,
+      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
+      87,    88,    89,    90,    91,    92,    -1,    94,    95,    96,
+      97,    98,    99,   100,   101,   102,    -1,    -1,   105,   106,
+      -1,    -1,    -1,   110,   111,   112,   113,   114,   115,   116,
+     117,   118,   119,   120,    -1,   122,    -1,   124,   125,   126,
+     127,    -1,   129,    -1,    -1,    -1,   133,   134,   135,   136,
+     137,    -1,    -1,    -1,    -1,    -1,   143,   144,   145,   146,
+     147,   148,   149,    -1,    -1,    -1,   153,   154,   155,   156,
+     157,    -1,    -1,    -1,    -1,   162,   163,   164,   165,   166,
+     167,   168,   169,   170,    -1,   172,   173,    -1,    -1,   176,
+     177,   178,    -1,   180,    -1,   182,    -1,   184,   185,   186,
+      -1,   188,   189,   190,    -1,   192,    -1,   194,   195,   196,
+     197,   198,   199,   200,   201,   202,   203,   204,    -1,    -1,
+     207,   208,   209,    -1,   211,   212,    -1,   214,   215,   216,
+     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
+     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
+     237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
+     247,   248,   249,   250,    -1,   252,   253,    -1,   255,   256,
+     257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
+     267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
+     277,   278,   279,   280,   281,   282,   283,    10,    -1,    -1,
+      -1,    -1,    -1,    -1,    17,    18,    -1,    20,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    28,    29,    30,    31,    32,
+      33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
+      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
+      53,    54,    55,    56,    -1,    58,    59,    60,    61,    62,
+      63,    64,    65,    66,    67,    68,    69,    70,    71,    72,
+      73,    74,    75,    76,    77,    78,    79,    80,    81,    82,
+      83,    84,    85,    86,    87,    88,    89,    90,    91,    92,
+      -1,    94,    95,    96,    97,    98,    99,   100,   101,   102,
+      -1,    -1,   105,   106,    -1,    -1,    -1,   110,   111,   112,
+     113,   114,   115,   116,   117,   118,   119,   120,    -1,   122,
+      -1,   124,   125,   126,   127,    -1,   129,    -1,    -1,    -1,
+     133,   134,   135,   136,   137,    -1,    -1,    -1,    -1,    -1,
+     143,   144,   145,   146,   147,   148,   149,    -1,    -1,    -1,
+     153,   154,   155,   156,   157,    -1,    -1,    -1,    -1,   162,
+     163,   164,   165,   166,   167,   168,   169,   170,    -1,   172,
+     173,    -1,    -1,   176,   177,   178,    -1,    -1,    -1,   182,
+      -1,   184,   185,   186,    -1,   188,   189,   190,    -1,   192,
+      -1,   194,   195,   196,   197,   198,   199,   200,   201,   202,
+     203,   204,    -1,    -1,   207,   208,   209,    -1,   211,   212,
+      -1,   214,   215,   216,   217,   218,   219,   220,   221,   222,
+     223,   224,   225,   226,   227,   228,   229,   230,   231,   232,
+     233,   234,   235,   236,   237,   238,   239,   240,   241,   242,
+     243,   244,   245,   246,   247,   248,   249,   250,    -1,   252,
+     253,    -1,   255,   256,   257,   258,   259,   260,   261,   262,
+     263,   264,   265,   266,   267,   268,   269,   270,   271,   272,
+     273,   274,   275,   276,   277,   278,   279,   280,   281,   282,
+     283,    10,    -1,    -1,    -1,    -1,    -1,    -1,    17,    18,
+      -1,    20,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    28,
       29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
       39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,    51,    52,    53,    54,    -1,    56,    57,    58,
+      49,    50,    51,    52,    53,    54,    55,    56,    -1,    58,
       59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
       69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
       79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
-      89,    90,    -1,    92,    93,    94,    95,    96,    97,    98,
-      99,   100,    -1,    -1,   103,   104,    -1,    -1,    -1,   108,
-     109,   110,   111,   112,   113,   114,   115,   116,   117,   118,
-      -1,   120,    -1,   122,   123,   124,   125,    -1,   127,    -1,
-      -1,    -1,   131,   132,   133,   134,   135,    -1,    -1,    -1,
-      -1,    -1,   141,   142,   143,   144,   145,   146,   147,    -1,
-      -1,    -1,   151,   152,   153,   154,   155,    -1,    -1,    -1,
-      -1,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-      -1,   170,   171,    -1,    -1,   174,   175,   176,    -1,    -1,
-      -1,   180,    -1,   182,   183,   184,    -1,   186,   187,   188,
-      -1,   190,    -1,   192,   193,   194,   195,   196,   197,   198,
-     199,   200,   201,   202,    -1,    -1,   205,   206,   207,    -1,
-     209,   210,    -1,   212,   213,   214,   215,   216,   217,   218,
+      89,    90,    91,    92,    -1,    94,    95,    96,    97,    98,
+      99,   100,   101,   102,    -1,    -1,   105,   106,    -1,    -1,
+      -1,   110,   111,   112,   113,   114,   115,   116,   117,   118,
+     119,   120,    -1,   122,    -1,   124,   125,   126,   127,    -1,
+     129,    -1,    -1,    -1,   133,   134,   135,   136,   137,    -1,
+      -1,    -1,    -1,    -1,   143,   144,   145,   146,   147,   148,
+     149,    -1,    -1,    -1,   153,   154,   155,   156,   157,    -1,
+      -1,    -1,    -1,   162,   163,   164,   165,   166,   167,   168,
+     169,   170,    -1,   172,   173,    -1,    -1,   176,   177,   178,
+      -1,    -1,    -1,   182,    -1,   184,   185,   186,    -1,   188,
+     189,   190,    -1,   192,    -1,   194,   195,   196,   197,   198,
+     199,   200,   201,   202,   203,   204,    -1,    -1,   207,   208,
+     209,    -1,   211,   212,    -1,   214,   215,   216,   217,   218,
      219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
      229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
      239,   240,   241,   242,   243,   244,   245,   246,   247,   248,
-      -1,   250,   251,    -1,   253,   254,   255,   256,   257,   258,
+     249,   250,    -1,   252,   253,    -1,   255,   256,   257,   258,
      259,   260,   261,   262,   263,   264,   265,   266,   267,   268,
      269,   270,   271,   272,   273,   274,   275,   276,   277,   278,
-     279,   280,   281,    10,    -1,    -1,    -1,    -1,    -1,    -1,
-      17,    18,    -1,    20,    -1,    -1,    -1,    -1,    -1,    26,
-      27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,    49,    50,    51,    52,    53,    54,    -1,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
-      67,    68,    69,    70,    71,    72,    73,    74,    75,    76,
-      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
-      87,    88,    89,    90,    -1,    92,    93,    94,    95,    96,
-      97,    98,    99,   100,    -1,    -1,   103,   104,    -1,    -1,
-      -1,   108,   109,   110,   111,   112,   113,   114,   115,   116,
-     117,   118,    -1,   120,    -1,   122,   123,   124,   125,    -1,
-     127,    -1,    -1,    -1,   131,   132,   133,   134,   135,    -1,
-      -1,    -1,    -1,    -1,   141,   142,   143,   144,   145,   146,
-     147,    -1,    -1,    -1,   151,   152,   153,   154,   155,    -1,
-      -1,    -1,    -1,   160,   161,   162,   163,   164,   165,   166,
-     167,   168,    -1,   170,   171,    -1,    -1,   174,   175,   176,
-      -1,    -1,    -1,   180,    -1,   182,   183,   184,    -1,   186,
-     187,   188,    -1,   190,    -1,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,    -1,    -1,   205,   206,
-     207,    -1,   209,   210,    -1,   212,   213,   214,   215,   216,
-     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
-     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
-     237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
-     247,   248,    -1,   250,   251,    -1,   253,   254,   255,   256,
-     257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
-     267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
-     277,   278,   279,   280,   281,    10,    -1,    -1,    -1,    -1,
+     279,   280,   281,   282,   283,    10,    -1,    -1,    -1,    -1,
       -1,    -1,    17,    18,    -1,    20,    -1,    -1,    -1,    -1,
-      -1,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+      -1,    -1,    -1,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
       45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
-      -1,    56,    57,    58,    59,    60,    61,    62,    63,    64,
+      55,    56,    -1,    58,    59,    60,    61,    62,    63,    64,
       65,    66,    67,    68,    69,    70,    71,    72,    73,    74,
       75,    76,    77,    78,    79,    80,    81,    82,    83,    84,
-      85,    86,    87,    88,    89,    90,    -1,    92,    93,    94,
-      95,    96,    97,    98,    99,   100,    -1,    -1,   103,   104,
-      -1,    -1,    -1,   108,   109,   110,   111,   112,   113,   114,
-     115,   116,   117,   118,    -1,   120,    -1,   122,   123,   124,
-     125,    -1,   127,    -1,    -1,    -1,   131,   132,   133,   134,
-     135,    -1,    -1,    -1,    -1,    -1,   141,   142,   143,   144,
-     145,   146,   147,    -1,    -1,    -1,   151,   152,   153,   154,
-     155,    -1,    -1,    -1,    -1,   160,   161,   162,   163,   164,
-     165,   166,   167,   168,    -1,   170,   171,    -1,    -1,   174,
-     175,   176,    -1,    -1,    -1,   180,    -1,   182,   183,   184,
-      -1,   186,   187,   188,    -1,   190,    -1,   192,   193,   194,
-     195,   196,   197,   198,   199,   200,   201,   202,    -1,    -1,
-     205,   206,   207,    -1,   209,   210,    -1,   212,   213,   214,
+      85,    86,    87,    88,    89,    90,    91,    92,    -1,    94,
+      95,    96,    97,    98,    99,   100,   101,   102,    -1,    -1,
+     105,   106,    -1,    -1,    -1,   110,   111,   112,   113,   114,
+     115,   116,   117,   118,   119,   120,    -1,   122,    -1,   124,
+     125,   126,   127,    -1,   129,    -1,    -1,    -1,   133,   134,
+     135,   136,   137,    -1,    -1,    -1,    -1,    -1,   143,   144,
+     145,   146,   147,   148,   149,    -1,    -1,    -1,   153,   154,
+     155,   156,   157,    -1,    -1,    -1,    -1,   162,   163,   164,
+     165,   166,   167,   168,   169,   170,    -1,   172,   173,    -1,
+      -1,   176,   177,   178,    -1,    -1,    -1,   182,    -1,   184,
+     185,   186,    -1,   188,   189,   190,    -1,   192,    -1,   194,
+     195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
+      -1,    -1,   207,   208,   209,    -1,   211,   212,    -1,   214,
      215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
      225,   226,   227,   228,   229,   230,   231,   232,   233,   234,
      235,   236,   237,   238,   239,   240,   241,   242,   243,   244,
-     245,   246,   247,   248,    -1,   250,   251,    -1,   253,   254,
+     245,   246,   247,   248,   249,   250,    -1,   252,   253,    -1,
      255,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-     275,   276,   277,   278,   279,   280,   281,    10,    -1,    -1,
-      -1,    -1,    -1,    -1,    17,    18,    -1,    20,    -1,    -1,
-      -1,    -1,    -1,    26,    27,    28,    29,    30,    31,    32,
-      33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
-      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
-      53,    54,    -1,    56,    57,    58,    59,    60,    61,    62,
-      63,    64,    65,    66,    67,    68,    69,    70,    71,    72,
-      73,    74,    75,    76,    77,    78,    79,    80,    81,    82,
-      83,    84,    85,    86,    87,    88,    89,    90,    -1,    92,
-      93,    94,    95,    96,    97,    98,    99,   100,    -1,    -1,
-     103,   104,    -1,    -1,    -1,   108,   109,   110,   111,   112,
-     113,   114,   115,   116,   117,   118,    -1,   120,    -1,   122,
-     123,   124,   125,    -1,   127,    -1,    -1,    -1,   131,   132,
-     133,   134,   135,    -1,    -1,    -1,    -1,    -1,   141,   142,
-     143,   144,   145,   146,   147,    -1,    -1,    -1,   151,   152,
-     153,   154,   155,    -1,    -1,    -1,    -1,   160,   161,   162,
-     163,   164,   165,   166,   167,   168,    -1,   170,   171,    -1,
-      -1,   174,   175,   176,    -1,    -1,    -1,   180,    -1,   182,
-     183,   184,    -1,   186,   187,   188,    -1,   190,    -1,   192,
-     193,   194,   195,   196,   197,   198,   199,   200,   201,   202,
-      -1,    -1,   205,   206,   207,    -1,   209,   210,    -1,   212,
-     213,   214,   215,   216,   217,   218,   219,   220,   221,   222,
-     223,   224,   225,   226,   227,   228,   229,   230,   231,   232,
-     233,   234,   235,   236,   237,   238,   239,   240,   241,   242,
-     243,   244,   245,   246,   247,   248,    -1,   250,   251,    -1,
-     253,   254,   255,   256,   257,   258,   259,   260,   261,   262,
-     263,   264,   265,   266,   267,   268,   269,   270,   271,   272,
-     273,   274,   275,   276,   277,   278,   279,   280,   281,    10,
+     275,   276,   277,   278,   279,   280,   281,   282,   283,    10,
       -1,    -1,    -1,    -1,    -1,    -1,    17,    18,    -1,    20,
-      -1,    -1,    -1,    -1,    -1,    26,    27,    28,    29,    30,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    28,    29,    30,
       31,    32,    33,    34,    35,    36,    37,    38,    39,    40,
       41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
-      51,    52,    53,    54,    -1,    56,    57,    58,    59,    60,
+      51,    52,    53,    54,    55,    56,    -1,    58,    59,    60,
       61,    62,    63,    64,    65,    66,    67,    68,    69,    70,
       71,    72,    73,    74,    75,    76,    77,    78,    79,    80,
       81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
-      -1,    92,    93,    94,    95,    96,    97,    98,    99,   100,
-      -1,    -1,   103,   104,    -1,    -1,    -1,   108,   109,   110,
-     111,   112,   113,   114,   115,   116,   117,   118,    -1,   120,
-      -1,   122,   123,   124,   125,    -1,   127,    -1,    -1,    -1,
-     131,   132,   133,   134,   135,    -1,    -1,    -1,    -1,    -1,
-     141,   142,   143,   144,   145,   146,   147,    -1,    -1,    -1,
-     151,   152,    -1,   154,   155,    -1,    -1,    -1,    -1,   160,
-     161,   162,   163,   164,   165,   166,   167,   168,    -1,    -1,
-      -1,    -1,    -1,   174,   175,   176,    -1,    -1,    -1,   180,
-      -1,   182,   183,   184,    -1,    -1,    -1,   188,    -1,   190,
-      -1,   192,   193,   194,   195,   196,   197,   198,   199,   200,
-     201,   202,    -1,    -1,   205,   206,   207,    -1,   209,   210,
-      -1,   212,   213,   214,   215,   216,   217,   218,   219,   220,
+      91,    92,    -1,    94,    95,    96,    97,    98,    99,   100,
+     101,   102,    -1,    -1,   105,   106,    -1,    -1,    -1,   110,
+     111,   112,   113,   114,   115,   116,   117,   118,   119,   120,
+      -1,   122,    -1,   124,   125,   126,   127,    -1,   129,    -1,
+      -1,    -1,   133,   134,   135,   136,   137,    -1,    -1,    -1,
+      -1,    -1,   143,   144,   145,   146,   147,   148,   149,    -1,
+      -1,    -1,   153,   154,   155,   156,   157,    -1,    -1,    -1,
+      -1,   162,   163,   164,   165,   166,   167,   168,   169,   170,
+      -1,   172,   173,    -1,    -1,   176,   177,   178,    -1,    -1,
+      -1,   182,    -1,   184,   185,   186,    -1,   188,   189,   190,
+      -1,   192,    -1,   194,   195,   196,   197,   198,   199,   200,
+     201,   202,   203,   204,    -1,    -1,   207,   208,   209,    -1,
+     211,   212,    -1,   214,   215,   216,   217,   218,   219,   220,
      221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
      231,   232,   233,   234,   235,   236,   237,   238,   239,   240,
-     241,   242,   243,   244,   245,   246,   247,   248,    -1,   250,
-     251,    -1,   253,   254,   255,   256,   257,   258,   259,   260,
+     241,   242,   243,   244,   245,   246,   247,   248,   249,   250,
+      -1,   252,   253,    -1,   255,   256,   257,   258,   259,   260,
      261,   262,   263,   264,   265,   266,   267,   268,   269,   270,
      271,   272,   273,   274,   275,   276,   277,   278,   279,   280,
-     281,    10,    -1,    -1,    -1,    -1,    -1,    -1,    17,    18,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    26,    27,    28,
-      29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
-      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,    51,    52,    53,    54,    -1,    56,    57,    58,
-      59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
-      69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
-      79,    80,    81,    82,    83,    84,    85,    86,    87,    -1,
-      -1,    90,    -1,    92,    93,    94,    95,    -1,    -1,    98,
-      99,   100,    -1,    -1,    -1,   104,    -1,    -1,    -1,    -1,
-     109,   110,   111,    -1,    -1,   114,   115,    -1,    -1,    -1,
-      -1,    -1,    -1,   122,   123,   124,   125,    -1,   127,    -1,
-      -1,    -1,   131,   132,   133,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,   141,   142,   143,    -1,   145,   146,   147,    -1,
-      -1,    -1,    -1,    -1,    -1,   154,   155,    -1,    -1,    -1,
-      -1,   160,   161,   162,   163,   164,   165,   166,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   176,    -1,    -1,
-      -1,   180,    -1,   182,   183,    -1,    -1,    -1,    -1,   188,
-      -1,   190,    -1,   192,   193,   194,   195,   196,   197,   198,
-     199,   200,   201,   202,    -1,    -1,   205,   206,    -1,    -1,
-     209,   210,    -1,   212,   213,   214,   215,   216,   217,   218,
-     219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
-     229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
-     239,   240,   241,   242,   243,   244,   245,   246,   247,   248,
-      -1,   250,   251,    -1,   253,   254,   255,   256,   257,   258,
-     259,   260,   261,   262,   263,   264,   265,   266,   267,   268,
-     269,   270,   271,   272,   273,   274,   275,   276,   277,   278,
-     279,   280,   281,    10,    -1,    -1,    -1,    -1,    -1,    -1,
-      17,    18,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    26,
-      27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
+     281,   282,   283,    10,    -1,    -1,    -1,    -1,    -1,    -1,
+      17,    18,    -1,    20,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    28,    29,    30,    31,    32,    33,    34,    35,    36,
       37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,    49,    50,    51,    52,    53,    54,    -1,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
+      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
+      -1,    58,    59,    60,    61,    62,    63,    64,    65,    66,
       67,    68,    69,    70,    71,    72,    73,    74,    75,    76,
       77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
-      87,    -1,    -1,    90,    -1,    92,    93,    94,    95,    -1,
-      -1,    98,    99,   100,    -1,    -1,    -1,   104,    -1,    -1,
-      -1,    -1,   109,   110,   111,    -1,    -1,   114,   115,    -1,
-      -1,    -1,    -1,    -1,    -1,   122,   123,   124,   125,    -1,
-     127,    -1,    -1,    -1,   131,   132,   133,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,   141,   142,   143,    -1,   145,   146,
-     147,    -1,    -1,    -1,    -1,    -1,    -1,   154,   155,    -1,
-      -1,    -1,    -1,   160,   161,   162,   163,   164,   165,   166,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   176,
-      -1,    -1,    -1,   180,    -1,   182,    -1,    -1,    -1,    -1,
-      -1,   188,    -1,   190,    -1,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,    -1,    -1,   205,   206,
-      -1,    -1,   209,   210,    -1,   212,   213,   214,   215,   216,
+      87,    88,    89,    90,    91,    92,    -1,    94,    95,    96,
+      97,    98,    99,   100,   101,   102,    -1,    -1,   105,   106,
+      -1,    -1,    -1,   110,   111,   112,   113,   114,   115,   116,
+     117,   118,   119,   120,    -1,   122,    -1,   124,   125,   126,
+     127,    -1,   129,    -1,    -1,    -1,   133,   134,   135,   136,
+     137,    -1,    -1,    -1,    -1,    -1,   143,   144,   145,   146,
+     147,   148,   149,    -1,    -1,    -1,   153,   154,   155,   156,
+     157,    -1,    -1,    -1,    -1,   162,   163,   164,   165,   166,
+     167,   168,   169,   170,    -1,   172,   173,    -1,    -1,   176,
+     177,   178,    -1,    -1,    -1,   182,    -1,   184,   185,   186,
+      -1,   188,   189,   190,    -1,   192,    -1,   194,   195,   196,
+     197,   198,   199,   200,   201,   202,   203,   204,    -1,    -1,
+     207,   208,   209,    -1,   211,   212,    -1,   214,   215,   216,
      217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
      227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
      237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
-     247,   248,    -1,   250,   251,    -1,   253,   254,   255,   256,
+     247,   248,   249,   250,    -1,   252,   253,    -1,   255,   256,
      257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
      267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
-     277,   278,   279,   280,   281,    16,    -1,    18,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    26,    27,    28,    29,    30,
-      31,    32,    33,    34,    35,    36,    37,    38,    39,    40,
-      41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
-      51,    52,    53,    54,    -1,    56,    57,    58,    59,    60,
-      61,    62,    63,    64,    65,    66,    67,    68,    69,    70,
-      71,    72,    73,    74,    75,    76,    77,    78,    79,    80,
-      81,    82,    83,    84,    85,    86,    87,    -1,    -1,    90,
-      -1,    92,    93,    94,    95,    -1,    -1,    98,    99,   100,
-      -1,    -1,    -1,   104,    -1,    -1,    -1,    -1,   109,   110,
-     111,    -1,    -1,   114,   115,    -1,    -1,    -1,    -1,    -1,
-      -1,   122,   123,   124,   125,    -1,   127,    -1,    -1,    -1,
-     131,   132,   133,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-     141,   142,   143,    -1,   145,   146,   147,    -1,    -1,    -1,
-      -1,    -1,    -1,   154,   155,    -1,    -1,    -1,    -1,   160,
-     161,   162,   163,   164,   165,   166,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   176,    -1,    -1,    -1,   180,
-      -1,   182,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   190,
-      -1,   192,   193,   194,   195,   196,   197,   198,   199,   200,
-     201,   202,    -1,    -1,   205,   206,    -1,    -1,   209,   210,
-      -1,   212,   213,   214,   215,   216,   217,   218,   219,   220,
-     221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
-     231,   232,   233,   234,   235,   236,   237,   238,   239,   240,
-     241,   242,   243,   244,   245,   246,   247,   248,    -1,   250,
-     251,    -1,   253,   254,   255,   256,   257,   258,   259,   260,
-     261,   262,   263,   264,   265,   266,   267,   268,   269,   270,
-     271,   272,   273,   274,   275,   276,   277,   278,   279,   280,
-     281,    18,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    26,
-      27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,    49,    50,    51,    52,    53,    54,    -1,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
-      67,    68,    69,    70,    71,    72,    73,    74,    75,    76,
-      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
-      87,    -1,    -1,    90,    -1,    92,    93,    94,    95,    -1,
-      -1,    98,    99,   100,    -1,    -1,    -1,   104,    -1,    -1,
-      -1,    -1,   109,   110,   111,    -1,    -1,   114,   115,    -1,
-      -1,    -1,    -1,    -1,    -1,   122,   123,   124,   125,    -1,
-     127,    -1,    -1,    -1,   131,   132,   133,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,   141,   142,   143,    -1,   145,   146,
-     147,   148,    -1,    -1,   151,    -1,    -1,   154,   155,    -1,
-      -1,    -1,    -1,   160,   161,   162,   163,   164,   165,   166,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   176,
-      -1,    -1,    -1,   180,    -1,   182,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,   190,    -1,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,    -1,    -1,   205,   206,
-      -1,    -1,   209,   210,    -1,   212,   213,   214,   215,   216,
-     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
-     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
-     237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
-     247,   248,    -1,   250,   251,    -1,   253,   254,   255,   256,
-     257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
-     267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
-     277,   278,   279,   280,   281,    18,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    26,    27,    28,    29,    30,    31,    32,
+     277,   278,   279,   280,   281,   282,   283,    10,    -1,    -1,
+      -1,    -1,    -1,    -1,    17,    18,    -1,    20,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    28,    29,    30,    31,    32,
       33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
       43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
-      53,    54,    -1,    56,    57,    58,    59,    60,    61,    62,
+      53,    54,    55,    56,    -1,    58,    59,    60,    61,    62,
       63,    64,    65,    66,    67,    68,    69,    70,    71,    72,
       73,    74,    75,    76,    77,    78,    79,    80,    81,    82,
-      83,    84,    85,    86,    87,    -1,    -1,    90,    -1,    92,
-      93,    94,    95,    -1,    -1,    98,    99,   100,    -1,    -1,
-      -1,   104,    -1,    -1,    -1,    -1,   109,   110,   111,    -1,
-      -1,   114,   115,    -1,    -1,    -1,    -1,    -1,    -1,   122,
-     123,   124,   125,    -1,   127,    -1,    -1,    -1,   131,   132,
-     133,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   141,   142,
-     143,    -1,   145,   146,   147,   148,    -1,    -1,   151,    -1,
-      -1,   154,   155,    -1,    -1,    -1,    -1,   160,   161,   162,
-     163,   164,   165,   166,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,   176,    -1,    -1,    -1,   180,    -1,   182,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   190,    -1,   192,
-     193,   194,   195,   196,   197,   198,   199,   200,   201,   202,
-      -1,    -1,   205,   206,    -1,    -1,   209,   210,    -1,   212,
-     213,   214,   215,   216,   217,   218,   219,   220,   221,   222,
+      83,    84,    85,    86,    87,    88,    89,    90,    91,    92,
+      -1,    94,    95,    96,    97,    98,    99,   100,   101,   102,
+      -1,    -1,   105,   106,    -1,    -1,    -1,   110,   111,   112,
+     113,   114,   115,   116,   117,   118,   119,   120,    -1,   122,
+      -1,   124,   125,   126,   127,    -1,   129,    -1,    -1,    -1,
+     133,   134,   135,   136,   137,    -1,    -1,    -1,    -1,    -1,
+     143,   144,   145,   146,   147,   148,   149,    -1,    -1,    -1,
+     153,   154,   155,   156,   157,    -1,    -1,    -1,    -1,   162,
+     163,   164,   165,   166,   167,   168,   169,   170,    -1,   172,
+     173,    -1,    -1,   176,   177,   178,    -1,    -1,    -1,   182,
+      -1,   184,   185,   186,    -1,   188,   189,   190,    -1,   192,
+      -1,   194,   195,   196,   197,   198,   199,   200,   201,   202,
+     203,   204,    -1,    -1,   207,   208,   209,    -1,   211,   212,
+      -1,   214,   215,   216,   217,   218,   219,   220,   221,   222,
      223,   224,   225,   226,   227,   228,   229,   230,   231,   232,
      233,   234,   235,   236,   237,   238,   239,   240,   241,   242,
-     243,   244,   245,   246,   247,   248,    -1,   250,   251,    -1,
-     253,   254,   255,   256,   257,   258,   259,   260,   261,   262,
+     243,   244,   245,   246,   247,   248,   249,   250,    -1,   252,
+     253,    -1,   255,   256,   257,   258,   259,   260,   261,   262,
      263,   264,   265,   266,   267,   268,   269,   270,   271,   272,
-     273,   274,   275,   276,   277,   278,   279,   280,   281,    18,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    26,    27,    28,
+     273,   274,   275,   276,   277,   278,   279,   280,   281,   282,
+     283,    10,    -1,    -1,    -1,    -1,    -1,    -1,    17,    18,
+      -1,    20,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    28,
       29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
       39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,    51,    52,    53,    54,    -1,    56,    57,    58,
+      49,    50,    51,    52,    53,    54,    55,    56,    -1,    58,
       59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
       69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
-      79,    80,    81,    82,    83,    84,    85,    86,    87,    -1,
-      -1,    90,    -1,    92,    93,    94,    95,    -1,    -1,    98,
-      99,   100,    -1,    -1,    -1,   104,    -1,    -1,    -1,    -1,
-     109,   110,   111,    -1,    -1,   114,   115,    -1,    -1,    -1,
-      -1,    -1,    -1,   122,   123,   124,   125,    -1,   127,    -1,
-      -1,    -1,   131,   132,   133,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,   141,   142,   143,    -1,   145,   146,   147,    -1,
-      -1,    -1,    -1,    -1,    -1,   154,   155,    -1,    -1,    -1,
-      -1,   160,   161,   162,   163,   164,   165,   166,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   176,    -1,    -1,
-      -1,   180,   181,   182,    -1,    -1,    -1,    -1,    -1,   188,
-      -1,   190,    -1,   192,   193,   194,   195,   196,   197,   198,
-     199,   200,   201,   202,    -1,    -1,   205,   206,    -1,    -1,
-     209,   210,    -1,   212,   213,   214,   215,   216,   217,   218,
+      79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
+      89,    90,    91,    92,    -1,    94,    95,    96,    97,    98,
+      99,   100,   101,   102,    -1,    -1,   105,   106,    -1,    -1,
+      -1,   110,   111,   112,   113,   114,   115,   116,   117,   118,
+     119,   120,    -1,   122,    -1,   124,   125,   126,   127,    -1,
+     129,    -1,    -1,    -1,   133,   134,   135,   136,   137,    -1,
+      -1,    -1,    -1,    -1,   143,   144,   145,   146,   147,   148,
+     149,    -1,    -1,    -1,   153,   154,    -1,   156,   157,    -1,
+      -1,    -1,    -1,   162,   163,   164,   165,   166,   167,   168,
+     169,   170,    -1,    -1,    -1,    -1,    -1,   176,   177,   178,
+      -1,    -1,    -1,   182,    -1,   184,   185,   186,    -1,    -1,
+      -1,   190,    -1,   192,    -1,   194,   195,   196,   197,   198,
+     199,   200,   201,   202,   203,   204,    -1,    -1,   207,   208,
+     209,    -1,   211,   212,    -1,   214,   215,   216,   217,   218,
      219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
      229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
      239,   240,   241,   242,   243,   244,   245,   246,   247,   248,
-      -1,   250,   251,    -1,   253,   254,   255,   256,   257,   258,
+     249,   250,    -1,   252,   253,    -1,   255,   256,   257,   258,
      259,   260,   261,   262,   263,   264,   265,   266,   267,   268,
      269,   270,   271,   272,   273,   274,   275,   276,   277,   278,
-     279,   280,   281,    18,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+     279,   280,   281,   282,   283,    10,    -1,    -1,    -1,    -1,
+      -1,    -1,    17,    18,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
       45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
-      -1,    56,    57,    58,    59,    60,    61,    62,    63,    64,
+      55,    56,    -1,    58,    59,    60,    61,    62,    63,    64,
       65,    66,    67,    68,    69,    70,    71,    72,    73,    74,
       75,    76,    77,    78,    79,    80,    81,    82,    83,    84,
-      85,    86,    87,    -1,    -1,    90,    -1,    92,    93,    94,
-      95,    -1,    -1,    98,    99,   100,    -1,    -1,    -1,   104,
-      -1,    -1,    -1,    -1,   109,   110,   111,    -1,    -1,   114,
-     115,    -1,    -1,    -1,    -1,    -1,    -1,   122,   123,   124,
-     125,    -1,   127,    -1,    -1,    -1,   131,   132,   133,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,   141,   142,   143,    -1,
-     145,   146,   147,    -1,    -1,    -1,    -1,    -1,    -1,   154,
-     155,    -1,    -1,    -1,    -1,   160,   161,   162,   163,   164,
-     165,   166,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,   176,    -1,    -1,    -1,   180,   181,   182,    -1,    -1,
-      -1,    -1,    -1,   188,    -1,   190,    -1,   192,   193,   194,
-     195,   196,   197,   198,   199,   200,   201,   202,    -1,    -1,
-     205,   206,    -1,    -1,   209,   210,    -1,   212,   213,   214,
+      85,    86,    87,    88,    89,    -1,    -1,    92,    -1,    94,
+      95,    96,    97,    -1,    -1,   100,   101,   102,    -1,    -1,
+      -1,   106,    -1,    -1,    -1,    -1,   111,   112,   113,    -1,
+      -1,   116,   117,    -1,    -1,    -1,    -1,    -1,    -1,   124,
+     125,   126,   127,    -1,   129,    -1,    -1,    -1,   133,   134,
+     135,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   143,   144,
+     145,    -1,   147,   148,   149,    -1,    -1,    -1,    -1,    -1,
+      -1,   156,   157,    -1,    -1,    -1,    -1,   162,   163,   164,
+     165,   166,   167,   168,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,   178,    -1,    -1,    -1,   182,    -1,   184,
+     185,    -1,    -1,    -1,    -1,   190,    -1,   192,    -1,   194,
+     195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
+      -1,    -1,   207,   208,    -1,    -1,   211,   212,    -1,   214,
      215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
      225,   226,   227,   228,   229,   230,   231,   232,   233,   234,
      235,   236,   237,   238,   239,   240,   241,   242,   243,   244,
-     245,   246,   247,   248,    -1,   250,   251,    -1,   253,   254,
+     245,   246,   247,   248,   249,   250,    -1,   252,   253,    -1,
      255,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-     275,   276,   277,   278,   279,   280,   281,    18,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    26,    27,    28,    29,    30,
+     275,   276,   277,   278,   279,   280,   281,   282,   283,    10,
+      -1,    -1,    -1,    -1,    -1,    -1,    17,    18,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    28,    29,    30,
       31,    32,    33,    34,    35,    36,    37,    38,    39,    40,
       41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
-      51,    52,    53,    54,    -1,    56,    57,    58,    59,    60,
+      51,    52,    53,    54,    55,    56,    -1,    58,    59,    60,
       61,    62,    63,    64,    65,    66,    67,    68,    69,    70,
       71,    72,    73,    74,    75,    76,    77,    78,    79,    80,
-      81,    82,    83,    84,    85,    86,    87,    -1,    -1,    90,
-      -1,    92,    93,    94,    95,    -1,    -1,    98,    99,   100,
-      -1,    -1,    -1,   104,    -1,    -1,    -1,    -1,   109,   110,
-     111,    -1,    -1,   114,   115,   116,    -1,    -1,    -1,    -1,
-      -1,   122,   123,   124,   125,    -1,   127,    -1,    -1,    -1,
-     131,   132,   133,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-     141,   142,   143,    -1,   145,   146,   147,    -1,    -1,    -1,
-      -1,    -1,    -1,   154,   155,    -1,    -1,    -1,    -1,   160,
-     161,   162,   163,   164,   165,   166,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   176,    -1,    -1,    -1,   180,
-      -1,   182,   183,    -1,    -1,    -1,    -1,    -1,    -1,   190,
-      -1,   192,   193,   194,   195,   196,   197,   198,   199,   200,
-     201,   202,    -1,    -1,   205,   206,    -1,    -1,   209,   210,
-      -1,   212,   213,   214,   215,   216,   217,   218,   219,   220,
+      81,    82,    83,    84,    85,    86,    87,    88,    89,    -1,
+      -1,    92,    -1,    94,    95,    96,    97,    -1,    -1,   100,
+     101,   102,    -1,    -1,    -1,   106,    -1,    -1,    -1,    -1,
+     111,   112,   113,    -1,    -1,   116,   117,    -1,    -1,    -1,
+      -1,    -1,    -1,   124,   125,   126,   127,    -1,   129,    -1,
+      -1,    -1,   133,   134,   135,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   143,   144,   145,    -1,   147,   148,   149,    -1,
+      -1,    -1,    -1,    -1,    -1,   156,   157,    -1,    -1,    -1,
+      -1,   162,   163,   164,   165,   166,   167,   168,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,   178,    -1,    -1,
+      -1,   182,    -1,   184,    -1,    -1,    -1,    -1,    -1,   190,
+      -1,   192,    -1,   194,   195,   196,   197,   198,   199,   200,
+     201,   202,   203,   204,    -1,    -1,   207,   208,    -1,    -1,
+     211,   212,    -1,   214,   215,   216,   217,   218,   219,   220,
      221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
      231,   232,   233,   234,   235,   236,   237,   238,   239,   240,
-     241,   242,   243,   244,   245,   246,   247,   248,    -1,   250,
-     251,    -1,   253,   254,   255,   256,   257,   258,   259,   260,
+     241,   242,   243,   244,   245,   246,   247,   248,   249,   250,
+      -1,   252,   253,    -1,   255,   256,   257,   258,   259,   260,
      261,   262,   263,   264,   265,   266,   267,   268,   269,   270,
      271,   272,   273,   274,   275,   276,   277,   278,   279,   280,
-     281,    18,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    26,
-      27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
+     281,   282,   283,    16,    -1,    18,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    28,    29,    30,    31,    32,
+      33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
+      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
+      53,    54,    55,    56,    -1,    58,    59,    60,    61,    62,
+      63,    64,    65,    66,    67,    68,    69,    70,    71,    72,
+      73,    74,    75,    76,    77,    78,    79,    80,    81,    82,
+      83,    84,    85,    86,    87,    88,    89,    -1,    -1,    92,
+      -1,    94,    95,    96,    97,    -1,    -1,   100,   101,   102,
+      -1,    -1,    -1,   106,    -1,    -1,    -1,    -1,   111,   112,
+     113,    -1,    -1,   116,   117,    -1,    -1,    -1,    -1,    -1,
+      -1,   124,   125,   126,   127,    -1,   129,    -1,    -1,    -1,
+     133,   134,   135,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+     143,   144,   145,    -1,   147,   148,   149,    -1,    -1,    -1,
+      -1,    -1,    -1,   156,   157,    -1,    -1,    -1,    -1,   162,
+     163,   164,   165,   166,   167,   168,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,   178,    -1,    -1,    -1,   182,
+      -1,   184,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   192,
+      -1,   194,   195,   196,   197,   198,   199,   200,   201,   202,
+     203,   204,    -1,    -1,   207,   208,    -1,    -1,   211,   212,
+      -1,   214,   215,   216,   217,   218,   219,   220,   221,   222,
+     223,   224,   225,   226,   227,   228,   229,   230,   231,   232,
+     233,   234,   235,   236,   237,   238,   239,   240,   241,   242,
+     243,   244,   245,   246,   247,   248,   249,   250,    -1,   252,
+     253,    -1,   255,   256,   257,   258,   259,   260,   261,   262,
+     263,   264,   265,   266,   267,   268,   269,   270,   271,   272,
+     273,   274,   275,   276,   277,   278,   279,   280,   281,   282,
+     283,    18,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    28,    29,    30,    31,    32,    33,    34,    35,    36,
       37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,    49,    50,    51,    52,    53,    54,    -1,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
+      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
+      -1,    58,    59,    60,    61,    62,    63,    64,    65,    66,
       67,    68,    69,    70,    71,    72,    73,    74,    75,    76,
       77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
-      87,    -1,    -1,    90,    -1,    92,    93,    94,    95,    -1,
-      -1,    98,    99,   100,    -1,    -1,    -1,   104,    -1,    -1,
-      -1,    -1,   109,   110,   111,    -1,    -1,   114,   115,    -1,
-      -1,    -1,    -1,    -1,    -1,   122,   123,   124,   125,    -1,
-     127,    -1,    -1,    -1,   131,   132,   133,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,   141,   142,   143,    -1,   145,   146,
-     147,    -1,    -1,    -1,    -1,    -1,    -1,   154,   155,    -1,
-      -1,    -1,    -1,   160,   161,   162,   163,   164,   165,   166,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   176,
-      -1,    -1,    -1,   180,    -1,   182,   183,    -1,    -1,    -1,
-      -1,    -1,    -1,   190,    -1,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,    -1,    -1,   205,   206,
-      -1,    -1,   209,   210,    -1,   212,   213,   214,   215,   216,
+      87,    88,    89,    -1,    -1,    92,    -1,    94,    95,    96,
+      97,    -1,    -1,   100,   101,   102,    -1,    -1,    -1,   106,
+      -1,    -1,    -1,    -1,   111,   112,   113,    -1,    -1,   116,
+     117,    -1,    -1,    -1,    -1,    -1,    -1,   124,   125,   126,
+     127,    -1,   129,    -1,    -1,    -1,   133,   134,   135,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,   143,   144,   145,    -1,
+     147,   148,   149,   150,    -1,    -1,   153,    -1,    -1,   156,
+     157,    -1,    -1,    -1,    -1,   162,   163,   164,   165,   166,
+     167,   168,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,   178,    -1,    -1,    -1,   182,    -1,   184,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,   192,    -1,   194,   195,   196,
+     197,   198,   199,   200,   201,   202,   203,   204,    -1,    -1,
+     207,   208,    -1,    -1,   211,   212,    -1,   214,   215,   216,
      217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
      227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
      237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
-     247,   248,    -1,   250,   251,    -1,   253,   254,   255,   256,
+     247,   248,   249,   250,    -1,   252,   253,    -1,   255,   256,
      257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
      267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
-     277,   278,   279,   280,   281,    18,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    26,    27,    28,    29,    30,    31,    32,
-      33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
-      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
-      53,    54,    -1,    56,    57,    58,    59,    60,    61,    62,
-      63,    64,    65,    66,    67,    68,    69,    70,    71,    72,
-      73,    74,    75,    76,    77,    78,    79,    80,    81,    82,
-      83,    84,    85,    86,    87,    -1,    -1,    90,    -1,    92,
-      93,    94,    95,    -1,    -1,    98,    99,   100,    -1,    -1,
-      -1,   104,    -1,    -1,    -1,    -1,   109,   110,   111,    -1,
-      -1,   114,   115,    -1,    -1,    -1,    -1,    -1,    -1,   122,
-     123,   124,   125,    -1,   127,    -1,    -1,    -1,   131,   132,
-     133,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   141,   142,
-     143,    -1,   145,   146,   147,    -1,    -1,    -1,    -1,    -1,
-      -1,   154,   155,    -1,    -1,    -1,    -1,   160,   161,   162,
-     163,   164,   165,   166,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,   176,    -1,    -1,    -1,   180,    -1,   182,
-     183,    -1,    -1,    -1,    -1,    -1,    -1,   190,    -1,   192,
-     193,   194,   195,   196,   197,   198,   199,   200,   201,   202,
-      -1,    -1,   205,   206,    -1,    -1,   209,   210,    -1,   212,
-     213,   214,   215,   216,   217,   218,   219,   220,   221,   222,
-     223,   224,   225,   226,   227,   228,   229,   230,   231,   232,
-     233,   234,   235,   236,   237,   238,   239,   240,   241,   242,
-     243,   244,   245,   246,   247,   248,    -1,   250,   251,    -1,
-     253,   254,   255,   256,   257,   258,   259,   260,   261,   262,
-     263,   264,   265,   266,   267,   268,   269,   270,   271,   272,
-     273,   274,   275,   276,   277,   278,   279,   280,   281,    18,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    26,    27,    28,
+     277,   278,   279,   280,   281,   282,   283,    18,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    28,    29,    30,
+      31,    32,    33,    34,    35,    36,    37,    38,    39,    40,
+      41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
+      51,    52,    53,    54,    55,    56,    -1,    58,    59,    60,
+      61,    62,    63,    64,    65,    66,    67,    68,    69,    70,
+      71,    72,    73,    74,    75,    76,    77,    78,    79,    80,
+      81,    82,    83,    84,    85,    86,    87,    88,    89,    -1,
+      -1,    92,    -1,    94,    95,    96,    97,    -1,    -1,   100,
+     101,   102,    -1,    -1,    -1,   106,    -1,    -1,    -1,    -1,
+     111,   112,   113,    -1,    -1,   116,   117,    -1,    -1,    -1,
+      -1,    -1,    -1,   124,   125,   126,   127,    -1,   129,    -1,
+      -1,    -1,   133,   134,   135,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   143,   144,   145,    -1,   147,   148,   149,   150,
+      -1,    -1,   153,    -1,    -1,   156,   157,    -1,    -1,    -1,
+      -1,   162,   163,   164,   165,   166,   167,   168,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,   178,    -1,    -1,
+      -1,   182,    -1,   184,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,   192,    -1,   194,   195,   196,   197,   198,   199,   200,
+     201,   202,   203,   204,    -1,    -1,   207,   208,    -1,    -1,
+     211,   212,    -1,   214,   215,   216,   217,   218,   219,   220,
+     221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
+     231,   232,   233,   234,   235,   236,   237,   238,   239,   240,
+     241,   242,   243,   244,   245,   246,   247,   248,   249,   250,
+      -1,   252,   253,    -1,   255,   256,   257,   258,   259,   260,
+     261,   262,   263,   264,   265,   266,   267,   268,   269,   270,
+     271,   272,   273,   274,   275,   276,   277,   278,   279,   280,
+     281,   282,   283,    18,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    28,    29,    30,    31,    32,    33,    34,
+      35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
+      45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
+      55,    56,    -1,    58,    59,    60,    61,    62,    63,    64,
+      65,    66,    67,    68,    69,    70,    71,    72,    73,    74,
+      75,    76,    77,    78,    79,    80,    81,    82,    83,    84,
+      85,    86,    87,    88,    89,    -1,    -1,    92,    -1,    94,
+      95,    96,    97,    -1,    -1,   100,   101,   102,    -1,    -1,
+      -1,   106,    -1,    -1,    -1,    -1,   111,   112,   113,    -1,
+      -1,   116,   117,    -1,    -1,    -1,    -1,    -1,    -1,   124,
+     125,   126,   127,    -1,   129,    -1,    -1,    -1,   133,   134,
+     135,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   143,   144,
+     145,    -1,   147,   148,   149,    -1,    -1,    -1,    -1,    -1,
+      -1,   156,   157,    -1,    -1,    -1,    -1,   162,   163,   164,
+     165,   166,   167,   168,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,   178,    -1,    -1,    -1,   182,   183,   184,
+      -1,    -1,    -1,    -1,    -1,   190,    -1,   192,    -1,   194,
+     195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
+      -1,    -1,   207,   208,    -1,    -1,   211,   212,    -1,   214,
+     215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
+     225,   226,   227,   228,   229,   230,   231,   232,   233,   234,
+     235,   236,   237,   238,   239,   240,   241,   242,   243,   244,
+     245,   246,   247,   248,   249,   250,    -1,   252,   253,    -1,
+     255,   256,   257,   258,   259,   260,   261,   262,   263,   264,
+     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
+     275,   276,   277,   278,   279,   280,   281,   282,   283,    18,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    28,
       29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
       39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,    51,    52,    53,    54,    -1,    56,    57,    58,
+      49,    50,    51,    52,    53,    54,    55,    56,    -1,    58,
       59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
       69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
-      79,    80,    81,    82,    83,    84,    85,    86,    87,    -1,
-      -1,    90,    -1,    92,    93,    94,    95,    -1,    -1,    98,
-      99,   100,    -1,    -1,    -1,   104,    -1,    -1,    -1,    -1,
-     109,   110,   111,    -1,    -1,   114,   115,    -1,    -1,    -1,
-      -1,    -1,    -1,   122,   123,   124,   125,    -1,   127,    -1,
-      -1,    -1,   131,   132,   133,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,   141,   142,   143,    -1,   145,   146,   147,    -1,
-      -1,    -1,    -1,    -1,    -1,   154,   155,    -1,    -1,    -1,
-      -1,   160,   161,   162,   163,   164,   165,   166,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   176,    -1,    -1,
-      -1,   180,    -1,   182,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,   190,    -1,   192,   193,   194,   195,   196,   197,   198,
-     199,   200,   201,   202,    -1,    -1,   205,   206,    -1,    -1,
-     209,   210,    -1,   212,   213,   214,   215,   216,   217,   218,
+      79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
+      89,    -1,    -1,    92,    -1,    94,    95,    96,    97,    -1,
+      -1,   100,   101,   102,    -1,    -1,    -1,   106,    -1,    -1,
+      -1,    -1,   111,   112,   113,    -1,    -1,   116,   117,    -1,
+      -1,    -1,    -1,    -1,    -1,   124,   125,   126,   127,    -1,
+     129,    -1,    -1,    -1,   133,   134,   135,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,   143,   144,   145,    -1,   147,   148,
+     149,    -1,    -1,    -1,    -1,    -1,    -1,   156,   157,    -1,
+      -1,    -1,    -1,   162,   163,   164,   165,   166,   167,   168,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   178,
+      -1,    -1,    -1,   182,   183,   184,    -1,    -1,    -1,    -1,
+      -1,   190,    -1,   192,    -1,   194,   195,   196,   197,   198,
+     199,   200,   201,   202,   203,   204,    -1,    -1,   207,   208,
+      -1,    -1,   211,   212,    -1,   214,   215,   216,   217,   218,
      219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
      229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
      239,   240,   241,   242,   243,   244,   245,   246,   247,   248,
-      -1,   250,   251,    -1,   253,   254,   255,   256,   257,   258,
+     249,   250,    -1,   252,   253,    -1,   255,   256,   257,   258,
      259,   260,   261,   262,   263,   264,   265,   266,   267,   268,
      269,   270,   271,   272,   273,   274,   275,   276,   277,   278,
-     279,   280,   281
+     279,   280,   281,   282,   283,    18,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    28,    29,    30,    31,    32,
+      33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
+      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
+      53,    54,    55,    56,    -1,    58,    59,    60,    61,    62,
+      63,    64,    65,    66,    67,    68,    69,    70,    71,    72,
+      73,    74,    75,    76,    77,    78,    79,    80,    81,    82,
+      83,    84,    85,    86,    87,    88,    89,    -1,    -1,    92,
+      -1,    94,    95,    96,    97,    -1,    -1,   100,   101,   102,
+      -1,    -1,    -1,   106,    -1,    -1,    -1,    -1,   111,   112,
+     113,    -1,    -1,   116,   117,   118,    -1,    -1,    -1,    -1,
+      -1,   124,   125,   126,   127,    -1,   129,    -1,    -1,    -1,
+     133,   134,   135,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+     143,   144,   145,    -1,   147,   148,   149,    -1,    -1,    -1,
+      -1,    -1,    -1,   156,   157,    -1,    -1,    -1,    -1,   162,
+     163,   164,   165,   166,   167,   168,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,   178,    -1,    -1,    -1,   182,
+      -1,   184,   185,    -1,    -1,    -1,    -1,    -1,    -1,   192,
+      -1,   194,   195,   196,   197,   198,   199,   200,   201,   202,
+     203,   204,    -1,    -1,   207,   208,    -1,    -1,   211,   212,
+      -1,   214,   215,   216,   217,   218,   219,   220,   221,   222,
+     223,   224,   225,   226,   227,   228,   229,   230,   231,   232,
+     233,   234,   235,   236,   237,   238,   239,   240,   241,   242,
+     243,   244,   245,   246,   247,   248,   249,   250,    -1,   252,
+     253,    -1,   255,   256,   257,   258,   259,   260,   261,   262,
+     263,   264,   265,   266,   267,   268,   269,   270,   271,   272,
+     273,   274,   275,   276,   277,   278,   279,   280,   281,   282,
+     283,    18,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    28,    29,    30,    31,    32,    33,    34,    35,    36,
+      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
+      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
+      -1,    58,    59,    60,    61,    62,    63,    64,    65,    66,
+      67,    68,    69,    70,    71,    72,    73,    74,    75,    76,
+      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
+      87,    88,    89,    -1,    -1,    92,    -1,    94,    95,    96,
+      97,    -1,    -1,   100,   101,   102,    -1,    -1,    -1,   106,
+      -1,    -1,    -1,    -1,   111,   112,   113,    -1,    -1,   116,
+     117,    -1,    -1,    -1,    -1,    -1,    -1,   124,   125,   126,
+     127,    -1,   129,    -1,    -1,    -1,   133,   134,   135,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,   143,   144,   145,    -1,
+     147,   148,   149,    -1,    -1,    -1,    -1,    -1,    -1,   156,
+     157,    -1,    -1,    -1,    -1,   162,   163,   164,   165,   166,
+     167,   168,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,   178,    -1,    -1,    -1,   182,    -1,   184,   185,    -1,
+      -1,    -1,    -1,    -1,    -1,   192,    -1,   194,   195,   196,
+     197,   198,   199,   200,   201,   202,   203,   204,    -1,    -1,
+     207,   208,    -1,    -1,   211,   212,    -1,   214,   215,   216,
+     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
+     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
+     237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
+     247,   248,   249,   250,    -1,   252,   253,    -1,   255,   256,
+     257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
+     267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
+     277,   278,   279,   280,   281,   282,   283,    18,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    28,    29,    30,
+      31,    32,    33,    34,    35,    36,    37,    38,    39,    40,
+      41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
+      51,    52,    53,    54,    55,    56,    -1,    58,    59,    60,
+      61,    62,    63,    64,    65,    66,    67,    68,    69,    70,
+      71,    72,    73,    74,    75,    76,    77,    78,    79,    80,
+      81,    82,    83,    84,    85,    86,    87,    88,    89,    -1,
+      -1,    92,    -1,    94,    95,    96,    97,    -1,    -1,   100,
+     101,   102,    -1,    -1,    -1,   106,    -1,    -1,    -1,    -1,
+     111,   112,   113,    -1,    -1,   116,   117,    -1,    -1,    -1,
+      -1,    -1,    -1,   124,   125,   126,   127,    -1,   129,    -1,
+      -1,    -1,   133,   134,   135,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   143,   144,   145,    -1,   147,   148,   149,    -1,
+      -1,    -1,    -1,    -1,    -1,   156,   157,    -1,    -1,    -1,
+      -1,   162,   163,   164,   165,   166,   167,   168,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,   178,    -1,    -1,
+      -1,   182,    -1,   184,   185,    -1,    -1,    -1,    -1,    -1,
+      -1,   192,    -1,   194,   195,   196,   197,   198,   199,   200,
+     201,   202,   203,   204,    -1,    -1,   207,   208,    -1,    -1,
+     211,   212,    -1,   214,   215,   216,   217,   218,   219,   220,
+     221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
+     231,   232,   233,   234,   235,   236,   237,   238,   239,   240,
+     241,   242,   243,   244,   245,   246,   247,   248,   249,   250,
+      -1,   252,   253,    -1,   255,   256,   257,   258,   259,   260,
+     261,   262,   263,   264,   265,   266,   267,   268,   269,   270,
+     271,   272,   273,   274,   275,   276,   277,   278,   279,   280,
+     281,   282,   283,    18,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    28,    29,    30,    31,    32,    33,    34,
+      35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
+      45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
+      55,    56,    -1,    58,    59,    60,    61,    62,    63,    64,
+      65,    66,    67,    68,    69,    70,    71,    72,    73,    74,
+      75,    76,    77,    78,    79,    80,    81,    82,    83,    84,
+      85,    86,    87,    88,    89,    -1,    -1,    92,    -1,    94,
+      95,    96,    97,    -1,    -1,   100,   101,   102,    -1,    -1,
+      -1,   106,    -1,    -1,    -1,    -1,   111,   112,   113,    -1,
+      -1,   116,   117,    -1,    -1,    -1,    -1,    -1,    -1,   124,
+     125,   126,   127,    -1,   129,    -1,    -1,    -1,   133,   134,
+     135,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   143,   144,
+     145,    -1,   147,   148,   149,    -1,    -1,    -1,    -1,    -1,
+      -1,   156,   157,    -1,    -1,    -1,    -1,   162,   163,   164,
+     165,   166,   167,   168,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,   178,    -1,    -1,    -1,   182,    -1,   184,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,   192,    -1,   194,
+     195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
+      -1,    -1,   207,   208,    -1,    -1,   211,   212,    -1,   214,
+     215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
+     225,   226,   227,   228,   229,   230,   231,   232,   233,   234,
+     235,   236,   237,   238,   239,   240,   241,   242,   243,   244,
+     245,   246,   247,   248,   249,   250,    -1,   252,   253,    -1,
+     255,   256,   257,   258,   259,   260,   261,   262,   263,   264,
+     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
+     275,   276,   277,   278,   279,   280,   281,   282,   283,    18,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    28,
+      29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
+      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
+      49,    50,    51,    52,    53,    54,    55,    56,    -1,    58,
+      59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
+      69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
+      79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
+      89,    -1,    -1,    92,    -1,    94,    95,    96,    97,    -1,
+      -1,   100,   101,   102,    -1,    -1,    -1,   106,    -1,    -1,
+      -1,    -1,   111,   112,   113,    -1,    -1,   116,   117,    -1,
+      -1,    -1,    -1,    -1,    -1,   124,   125,   126,   127,    -1,
+     129,    -1,    -1,    -1,   133,   134,   135,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,   143,   144,   145,    -1,   147,   148,
+     149,    -1,    -1,    -1,    -1,    -1,    -1,   156,   157,    -1,
+      -1,    -1,    -1,   162,   163,   164,   165,   166,   167,   168,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   178,
+      -1,    -1,    -1,   182,    -1,   184,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,   192,    -1,   194,   195,   196,   197,   198,
+     199,   200,   201,   202,   203,   204,    -1,    -1,   207,   208,
+      -1,    -1,   211,   212,    -1,   214,   215,   216,   217,   218,
+     219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
+     229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
+     239,   240,   241,   242,   243,   244,   245,   246,   247,   248,
+     249,   250,    -1,   252,   253,    -1,   255,   256,   257,   258,
+     259,   260,   261,   262,   263,   264,   265,   266,   267,   268,
+     269,   270,   271,   272,   273,   274,   275,   276,   277,   278,
+     279,   280,   281,   282,   283
   };
 
   /* STOS_[STATE-NUM] -- The (internal number of the) accessing
@@ -9609,148 +9680,149 @@ namespace zorba
   const unsigned short int
   xquery_parser::yystos_[] =
   {
-         0,    10,    17,    18,    20,    26,    27,    28,    29,    30,
-      31,    32,    33,    34,    35,    36,    37,    38,    39,    40,
-      41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
-      51,    52,    53,    54,    56,    57,    58,    59,    60,    61,
-      62,    63,    64,    65,    66,    67,    68,    69,    70,    71,
-      72,    73,    74,    75,    76,    77,    78,    79,    80,    81,
-      82,    83,    84,    85,    86,    87,    88,    89,    90,    92,
-      93,    94,    95,    96,    97,    98,    99,   100,   103,   104,
-     108,   109,   110,   111,   112,   113,   114,   115,   116,   117,
-     118,   120,   122,   123,   124,   125,   127,   131,   132,   133,
-     134,   135,   141,   142,   143,   144,   145,   146,   147,   151,
-     152,   153,   154,   155,   160,   161,   162,   163,   164,   165,
-     166,   167,   168,   170,   171,   174,   175,   176,   180,   182,
-     183,   184,   186,   187,   188,   190,   192,   193,   194,   195,
-     196,   197,   198,   199,   200,   201,   202,   205,   206,   207,
-     209,   210,   212,   213,   214,   215,   216,   217,   218,   219,
-     220,   221,   222,   223,   224,   225,   226,   227,   228,   229,
-     230,   231,   232,   233,   234,   235,   236,   237,   238,   239,
-     240,   241,   242,   243,   244,   245,   246,   247,   248,   250,
-     251,   253,   254,   255,   256,   257,   258,   259,   260,   261,
-     262,   263,   264,   265,   266,   267,   268,   269,   270,   271,
-     272,   273,   274,   275,   276,   277,   278,   279,   280,   281,
-     282,   298,   299,   300,   301,   302,   303,   304,   305,   306,
-     307,   308,   309,   313,   314,   315,   316,   317,   318,   319,
-     320,   321,   322,   323,   324,   325,   328,   329,   334,   336,
-     343,   345,   350,   351,   352,   353,   354,   355,   363,   364,
-     366,   367,   368,   373,   375,   377,   378,   379,   384,   405,
-     408,   411,   412,   413,   414,   416,   417,   418,   419,   420,
-     421,   422,   423,   424,   425,   426,   427,   428,   431,   432,
-     433,   434,   435,   436,   437,   438,   439,   440,   441,   442,
-     443,   444,   445,   446,   447,   448,   451,   452,   453,   454,
-     455,   456,   457,   458,   459,   461,   462,   463,   477,   478,
-     480,   481,   482,   483,   484,   485,   486,   493,   494,   495,
-     496,   497,   498,   499,   500,   501,   502,   505,   506,   507,
-     508,   509,   510,   511,   514,   520,   521,   148,   346,   232,
-      29,    29,   151,    92,   148,   216,   217,   151,    26,    27,
-      28,    30,    31,    32,    33,    34,    35,    36,    37,    38,
-      45,    46,    48,    49,    51,    56,    57,    59,    60,    61,
-      71,    72,    95,   131,   148,   151,   163,   196,   209,   219,
-     220,   221,   223,   224,   231,   233,   235,   274,   275,   276,
-     520,   148,   148,   151,   148,   151,    39,    40,    41,    42,
-      43,    44,    52,    58,    69,    70,    73,    76,    77,   109,
-     110,   111,   155,   215,   239,   277,   278,   279,   280,   335,
-     337,   338,   339,   356,   357,   151,    18,   148,   151,   519,
-      51,    54,   116,   155,   116,   116,   148,    62,    63,   116,
-     370,    60,   151,   151,   148,   151,   520,    34,    36,    37,
-      46,    95,   445,   520,   520,   116,   181,   364,   520,   148,
-      14,    16,   520,   520,   437,   148,    21,   208,   210,   220,
-     222,   151,   220,   222,   220,   220,   225,   116,   148,   116,
-     278,   278,   278,   299,     0,   301,   302,    38,    48,   304,
-     363,   185,   185,   105,   185,   365,    50,    57,    60,    61,
-      68,   164,   166,   180,   206,   369,   374,   375,   376,   393,
-     394,   398,   380,   381,   520,   162,    90,   128,   136,   137,
-     139,   146,   150,   152,   157,   173,   197,   198,   199,   200,
-     201,   202,   429,   430,   250,   153,   170,   193,   115,   141,
-     154,   188,   195,   204,   132,   145,    74,   194,    99,   100,
-     153,   170,   428,   148,   434,   437,   186,   187,   149,   449,
-     450,   445,   449,   445,   449,   151,   347,   367,   367,   503,
-     520,   364,   148,   148,   364,   364,   181,   188,   520,   148,
-     364,   364,   181,   364,   181,   520,   357,    39,   358,   356,
-     356,   357,   520,   176,   190,   163,   196,    20,   518,   161,
-     176,   176,   190,   520,   147,   116,   333,    34,    39,    77,
-     104,   164,   519,   216,   217,   218,    98,   232,   240,   253,
-     255,   265,   268,   533,   534,   535,   536,   537,   540,   545,
-     546,   338,   518,   339,   364,   364,    20,   181,   519,   148,
-     155,   518,   111,   155,   327,   518,   406,   407,   520,   519,
-     520,   385,   387,   520,   367,   267,   267,   116,   388,   116,
-     520,    34,    71,   181,   501,   502,   364,   181,   188,   520,
-     148,   406,   181,    25,   465,   466,   467,   364,     7,   169,
-      15,   181,   364,   208,    20,   367,   367,   181,   367,   367,
-     367,   367,   226,   512,   513,   520,   367,   386,   392,   520,
-     518,   518,   518,   306,   307,    38,   308,   367,   366,   164,
-     116,   165,   165,   367,   367,   105,    92,    94,   142,   261,
-     382,   383,   488,   413,   414,   416,   416,   416,   416,   415,
-     416,   416,   416,   148,   151,   251,   452,   522,   524,   525,
-     526,   527,   528,   529,   530,   419,   419,   418,   420,   420,
-     420,   420,   421,   421,   422,   422,   226,    92,    92,    92,
-     178,   364,   437,   437,   364,   450,   181,   367,   460,    38,
-     348,   364,   181,   148,   178,   364,   364,   181,   178,   105,
-     181,   105,   181,   178,   364,   178,   178,   178,   151,   344,
-     520,    20,   105,   105,    78,    79,    80,    81,    82,    83,
-      84,    85,    86,    87,   310,   311,   312,    92,   133,   138,
-     330,   331,   332,   520,   133,   138,   155,   155,   310,   518,
-     123,   128,   238,   241,   111,   240,   269,   270,   272,   273,
-     238,   241,    20,   240,   269,   270,   272,   273,   281,   181,
-     178,   181,   181,   178,   364,   519,    94,    34,   519,   518,
-      94,   105,   182,   142,   488,   128,   138,   105,   138,   383,
-     488,   178,   520,    66,   212,   245,   371,   372,   181,   181,
-     181,   178,   105,   181,   105,   181,   178,   364,   182,   520,
-     466,   467,   126,   191,   178,   178,   127,   185,    92,   213,
-     214,   228,    92,   213,   214,   228,    92,   232,   220,   105,
-     230,   138,   178,    59,   105,   185,   111,   185,   165,   520,
-     367,   399,   400,   116,   395,   396,   116,   147,   205,   489,
-     491,   492,   493,   520,   116,   367,   116,   142,   383,   142,
-     142,   382,   383,   416,   364,   522,   528,   268,   556,    94,
-     163,   242,   243,   244,   252,   260,   266,   267,   523,   531,
-     532,   533,   547,   550,   551,   553,   249,   251,   256,   552,
-     236,   237,   258,   548,   489,   489,   487,   492,   487,   178,
-     179,   105,   181,   333,   349,   105,   185,   178,   346,   364,
-     178,   178,    98,   409,   410,   148,   503,   504,   520,   503,
-     504,   178,   116,   181,   359,   360,   133,   148,   362,   344,
-     143,   160,   143,   160,   311,   128,   491,   332,   367,   488,
-     138,   367,   518,   518,   124,   125,   518,   270,   271,    94,
-     111,   151,   539,   271,   367,   192,   148,   178,   128,   326,
-     518,   155,   128,    94,   326,   116,   367,   367,   142,   518,
-     367,   116,   367,   138,   138,   383,   142,   488,   245,    64,
-      65,    67,   116,   382,   389,   390,   391,   372,   148,   503,
-     503,   178,   367,    25,   467,   126,   191,     8,     9,   101,
-     119,   121,   148,   189,   361,   462,   464,   475,   476,   479,
-      20,   227,   229,   367,   367,   367,   227,   229,   367,   367,
-     367,   367,   367,   367,   116,   367,   367,   234,   515,   516,
-     148,   116,   399,    93,   104,   114,   123,   401,   402,   403,
-     404,   105,   520,   105,   381,   151,   151,   140,   170,   188,
-     490,   520,   520,   367,   142,   367,   367,   142,   383,   142,
-     178,   181,   246,   212,   245,   257,   262,   555,    94,   247,
-     248,   549,   246,   525,   555,   417,   420,   266,   531,   533,
-     526,   142,   549,   271,    53,   140,   367,   138,   349,   178,
-     116,   489,   111,   410,   178,   364,   181,   181,   140,   181,
-     181,   520,    92,   105,   181,   364,   346,   505,   331,   367,
-     271,    94,   151,   542,    20,   111,   539,   165,   367,   178,
-     364,   518,   105,   326,   407,   367,   185,   387,   367,   367,
-     138,   367,   142,   116,   116,   367,   520,   391,    67,   178,
-     364,   181,   181,   128,   189,   464,     6,   364,   520,   189,
-     475,   185,   228,   228,   228,   228,   232,   513,   180,   446,
-     517,   516,   367,   392,   518,   124,   125,   403,   404,   404,
-     400,   104,   397,   396,   181,   181,   367,   367,   142,   367,
-     420,    47,   125,   420,   420,   257,   263,   271,   554,   554,
-     417,   527,   264,   367,   520,   180,   116,   180,   178,   488,
-     489,   360,    92,   178,   132,   195,   541,   544,    20,    20,
-     543,   541,   259,   549,   105,   181,   105,   181,   151,   342,
-     122,   178,    94,   518,   367,   367,   520,   520,   390,   367,
-     178,   467,   520,   189,   178,   467,   520,   367,   367,   367,
-     367,   367,   367,   151,   204,   362,   178,   404,   518,   367,
-     420,   420,   193,    92,   367,   520,   367,   489,   542,   542,
-     544,    20,   181,    20,   254,   538,   539,   538,   340,   341,
-     367,   105,   181,   367,   326,    65,    91,   177,   468,   467,
-     520,   191,   467,   116,   446,   420,   489,   180,   549,   105,
-     181,   181,   104,   488,   340,   116,     4,   129,   471,   472,
-     474,   476,    19,   130,   469,   470,   473,   476,   191,   467,
-     191,   520,   180,   367,   254,   539,   518,   520,    91,   129,
-     474,   177,   130,   473,   191,   105,   181,   367,   116,   362,
-     520,   105,   181,   116,   362,   520,   181,   362
+         0,    10,    17,    18,    20,    28,    29,    30,    31,    32,
+      33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
+      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
+      53,    54,    55,    56,    58,    59,    60,    61,    62,    63,
+      64,    65,    66,    67,    68,    69,    70,    71,    72,    73,
+      74,    75,    76,    77,    78,    79,    80,    81,    82,    83,
+      84,    85,    86,    87,    88,    89,    90,    91,    92,    94,
+      95,    96,    97,    98,    99,   100,   101,   102,   105,   106,
+     110,   111,   112,   113,   114,   115,   116,   117,   118,   119,
+     120,   122,   124,   125,   126,   127,   129,   133,   134,   135,
+     136,   137,   143,   144,   145,   146,   147,   148,   149,   153,
+     154,   155,   156,   157,   162,   163,   164,   165,   166,   167,
+     168,   169,   170,   172,   173,   176,   177,   178,   182,   184,
+     185,   186,   188,   189,   190,   192,   194,   195,   196,   197,
+     198,   199,   200,   201,   202,   203,   204,   207,   208,   209,
+     211,   212,   214,   215,   216,   217,   218,   219,   220,   221,
+     222,   223,   224,   225,   226,   227,   228,   229,   230,   231,
+     232,   233,   234,   235,   236,   237,   238,   239,   240,   241,
+     242,   243,   244,   245,   246,   247,   248,   249,   250,   252,
+     253,   255,   256,   257,   258,   259,   260,   261,   262,   263,
+     264,   265,   266,   267,   268,   269,   270,   271,   272,   273,
+     274,   275,   276,   277,   278,   279,   280,   281,   282,   283,
+     284,   300,   301,   302,   303,   304,   305,   306,   307,   308,
+     309,   310,   311,   315,   316,   317,   318,   319,   320,   321,
+     322,   323,   324,   325,   326,   327,   330,   331,   336,   338,
+     345,   347,   352,   353,   354,   355,   356,   357,   365,   366,
+     368,   369,   370,   375,   377,   379,   380,   381,   386,   407,
+     410,   413,   414,   415,   416,   418,   419,   420,   421,   422,
+     423,   424,   425,   426,   427,   428,   429,   430,   433,   434,
+     435,   436,   437,   438,   439,   440,   441,   442,   443,   444,
+     445,   446,   447,   448,   449,   450,   453,   454,   455,   456,
+     457,   458,   459,   460,   461,   463,   464,   465,   479,   480,
+     482,   483,   484,   485,   486,   487,   488,   495,   496,   497,
+     498,   499,   500,   501,   502,   503,   504,   507,   508,   509,
+     510,   511,   512,   513,   516,   523,   524,   525,   150,   348,
+     234,    31,    31,   153,    94,   150,   218,   219,   153,    28,
+      29,    30,    32,    33,    34,    35,    36,    37,    38,    39,
+      40,    47,    48,    50,    51,    53,    58,    59,    61,    62,
+      63,    73,    74,    97,   133,   150,   153,   165,   198,   211,
+     221,   222,   223,   225,   226,   233,   235,   237,   276,   277,
+     278,   523,   150,   150,   153,   150,   153,    41,    42,    43,
+      44,    45,    46,    54,    60,    71,    72,    75,    78,    79,
+     111,   112,   113,   157,   217,   241,   279,   280,   281,   282,
+     337,   339,   340,   341,   358,   359,   153,    18,   150,   153,
+     522,    53,    56,   118,   157,   118,   118,   150,    64,    65,
+     118,   372,    62,   153,   153,   150,   153,   523,    36,    38,
+      39,    48,    97,   447,   523,   523,   118,   183,   366,   523,
+     150,    14,    16,   523,   523,   439,   150,    21,   210,   212,
+     222,   224,   153,   222,   224,   222,   222,   227,   118,   150,
+     118,   280,   280,   280,   301,     0,   303,   304,    40,    50,
+     306,   365,   187,   187,   107,   187,   367,    52,    59,    62,
+      63,    70,   166,   168,   182,   208,   371,   376,   377,   378,
+     395,   396,   400,   382,   383,   523,   164,    92,   130,   138,
+     139,   141,   148,   152,   154,   159,   175,   199,   200,   201,
+     202,   203,   204,   431,   432,   252,   155,   172,   195,   117,
+     143,   156,   190,   197,   206,   134,   147,    76,   196,   101,
+     102,   155,   172,   430,   150,   436,   439,   188,   189,   151,
+     451,   452,   447,   451,   447,   451,   153,   349,   369,   369,
+     505,   523,   366,   150,   150,   366,   366,   183,   190,   523,
+     150,   366,   366,   183,   366,   183,   523,   359,    41,   360,
+     358,   358,   359,   523,   178,   192,   165,   198,    20,   520,
+     163,   178,   178,   192,   523,   149,   118,   335,    36,    41,
+      79,   106,   166,   521,   522,   524,   218,   219,   220,   100,
+     234,   242,   255,   257,   267,   270,   537,   538,   539,   540,
+     541,   544,   549,   550,   340,   520,   341,   366,   366,    20,
+     183,   522,   150,   157,   520,   113,   157,   329,   520,   408,
+     409,   523,   521,   523,   387,   389,   523,   369,   269,   269,
+     118,   390,   118,   523,    36,    73,   183,   503,   504,   366,
+     183,   190,   523,   150,   408,   183,    27,   467,   468,   469,
+     366,     7,   171,    15,   183,   366,   210,    20,   369,   369,
+     183,   369,   369,   369,   369,   228,   514,   515,   523,   369,
+     388,   394,   523,   520,   520,   520,   308,   309,    40,   310,
+     369,   368,   166,   118,   167,   167,   369,   369,   107,    94,
+      96,   144,   263,   384,   385,   490,   415,   416,   418,   418,
+     418,   418,   417,   418,   418,   418,   150,   153,   253,   454,
+     526,   528,   529,   530,   531,   532,   533,   534,   421,   421,
+     420,   422,   422,   422,   422,   423,   423,   424,   424,   228,
+      94,    94,    94,   180,   366,   439,   439,   366,   452,   183,
+     369,   462,    40,   350,   366,   183,   150,   180,   366,   366,
+     183,   180,   107,   183,   107,   183,   180,   366,   180,   180,
+     180,   153,   346,   523,    20,   107,   107,    80,    81,    82,
+      83,    84,    85,    86,    87,    88,    89,   312,   313,   314,
+      94,   135,   140,   332,   333,   334,   523,   135,   140,   157,
+     157,   312,   520,   125,   130,   240,   243,   113,   242,   271,
+     272,   274,   275,   240,   243,    20,   242,   271,   272,   274,
+     275,   283,   183,   180,   183,   183,   180,   366,   521,    96,
+      36,   521,   520,    96,   107,   184,   144,   490,   130,   140,
+     107,   140,   385,   490,   180,   523,    68,   214,   247,   373,
+     374,   183,   183,   183,   180,   107,   183,   107,   183,   180,
+     366,   184,   523,   468,   469,   128,   193,   180,   180,   129,
+     187,    94,   215,   216,   230,    94,   215,   216,   230,    94,
+     234,   222,   107,   232,   140,   180,    61,   107,   187,   113,
+     187,   167,   523,   369,   401,   402,   118,   397,   398,   118,
+     149,   207,   491,   493,   494,   495,   523,   118,   369,   118,
+     144,   385,   144,   144,   384,   385,   418,   366,   526,   532,
+     270,   560,    96,   165,   244,   245,   246,   254,   262,   268,
+     269,   527,   535,   536,   537,   551,   554,   555,   557,   251,
+     253,   258,   556,   238,   239,   260,   552,   491,   491,   489,
+     494,   489,   180,   181,   107,   183,   335,   351,   107,   187,
+     180,   348,   366,   180,   180,   100,   411,   412,   150,   505,
+     506,   523,   505,   506,   180,   118,   183,   361,   362,   135,
+     150,   364,   346,   145,   162,   145,   162,   313,   130,   493,
+     334,   369,   490,   140,   369,   520,   520,   126,   127,   520,
+     272,   273,    96,   113,   153,   543,   273,   369,   194,   150,
+     180,   130,   328,   520,   157,   130,    96,   328,   118,   369,
+     369,   144,   520,   369,   118,   369,   140,   140,   385,   144,
+     490,   247,    66,    67,    69,   118,   384,   391,   392,   393,
+     374,   150,   505,   505,   180,   369,    27,   469,   128,   193,
+       8,     9,   103,   121,   123,   150,   191,   363,   464,   466,
+     477,   478,   481,    20,   229,   231,   369,   369,   369,   229,
+     231,   369,   369,   369,   369,   369,   369,   118,   369,   369,
+     236,   517,   518,   150,   118,   401,    95,   106,   116,   125,
+     403,   404,   405,   406,   107,   523,   107,   383,   153,   153,
+     142,   172,   190,   492,   523,   523,   369,   144,   369,   369,
+     144,   385,   144,   180,   183,   248,   214,   247,   259,   264,
+     559,    96,   249,   250,   553,   248,   529,   559,   419,   422,
+     268,   535,   537,   530,   144,   553,   273,    55,   142,   369,
+     140,   351,   180,   118,   491,   113,   412,   180,   366,   183,
+     183,   142,   183,   183,   523,    94,   107,   183,   366,   348,
+     507,   333,   369,   273,    96,   153,   546,    20,   113,   543,
+     167,   369,   180,   366,   520,   107,   328,   409,   369,   187,
+     389,   369,   369,   140,   369,   144,   118,   118,   369,   523,
+     393,    69,   180,   366,   183,   183,   130,   191,   466,     6,
+     366,   523,   191,   477,   187,   230,   230,   230,   230,   234,
+     515,   182,   448,   519,   518,   369,   394,   520,   126,   127,
+     405,   406,   406,   402,   106,   399,   398,   183,   183,   369,
+     369,   144,   369,   422,    49,   127,   422,   422,   259,   265,
+     273,   558,   558,   419,   531,   266,   369,   523,   182,   118,
+     182,   180,   490,   491,   362,    94,   180,   134,   197,   545,
+     548,    20,    20,   547,   545,   261,   553,   107,   183,   107,
+     183,   153,   344,   124,   180,    96,   520,   369,   369,   523,
+     523,   392,   369,   180,   469,   523,   191,   180,   469,   523,
+     369,   369,   369,   369,   369,   369,   153,   206,   364,   180,
+     406,   520,   369,   422,   422,   195,    94,   369,   523,   369,
+     491,   546,   546,   548,    20,   183,    20,   256,   542,   543,
+     542,   342,   343,   369,   107,   183,   369,   328,    67,    93,
+     179,   470,   469,   523,   193,   469,   118,   448,   422,   491,
+     182,   553,   107,   183,   183,   106,   490,   342,   118,     4,
+     131,   473,   474,   476,   478,    19,   132,   471,   472,   475,
+     478,   193,   469,   193,   523,   182,   369,   256,   543,   520,
+     523,    93,   131,   476,   179,   132,   475,   193,   107,   183,
+     369,   118,   364,   523,   107,   183,   118,   364,   523,   183,
+     364
   };
 
 #if YYDEBUG
@@ -9788,7 +9860,7 @@ namespace zorba
      515,   516,   517,   518,   519,   520,   521,   522,   523,   524,
      525,   526,   527,   528,   529,   530,   531,   532,   533,   534,
      535,   536,   537,   538,   539,   540,   541,   542,   543,   544,
-     545,   546,   547,   548,   549,   550,   551
+     545,   546,   547,   548,   549,   550,   551,   552,   553
   };
 #endif
 
@@ -9796,91 +9868,91 @@ namespace zorba
   const unsigned short int
   xquery_parser::yyr1_[] =
   {
-         0,   297,   298,   298,   299,   299,   299,   299,   300,   300,
-     301,   301,   302,   303,   304,   304,   304,   305,   305,   306,
-     306,   307,   307,   307,   307,   308,   308,   308,   308,   308,
-     308,   308,   309,   309,   310,   310,   311,   312,   312,   312,
-     312,   312,   312,   312,   312,   312,   312,   313,   313,   313,
-     313,   313,   313,   313,   313,   314,   314,   315,   316,   316,
-     317,   317,   318,   319,   320,   320,   321,   321,   322,   322,
-     322,   322,   323,   324,   325,   325,   325,   325,   326,   326,
-     327,   327,   328,   328,   328,   328,   329,   330,   330,   331,
-     331,   331,   332,   333,   333,   334,   334,   334,   335,   335,
-     336,   337,   337,   338,   338,   339,   340,   340,   341,   341,
-     342,   342,   343,   343,   344,   344,   344,   344,   345,   346,
-     347,   347,   348,   348,   349,   349,   350,   351,   352,   353,
-     353,   354,   354,   354,   355,   355,   355,   356,   356,   356,
-     356,   357,   357,   358,   359,   359,   360,   360,   361,   362,
-     363,   364,   364,   365,   365,   366,   366,   367,   367,   367,
-     367,   367,   367,   367,   367,   367,   367,   367,   367,   367,
-     367,   367,   367,   367,   367,   368,   369,   370,   370,   371,
-     371,   371,   372,   372,   373,   373,   374,   375,   375,   375,
-     376,   376,   376,   376,   376,   377,   377,   378,   378,   379,
-     380,   380,   381,   381,   381,   381,   381,   381,   381,   381,
-     382,   383,   384,   385,   385,   386,   386,   387,   387,   387,
-     387,   388,   388,   389,   389,   389,   390,   390,   390,   391,
-     391,   391,   392,   393,   394,   395,   395,   396,   396,   397,
-     398,   398,   399,   399,   400,   400,   401,   401,   401,   401,
-     401,   401,   401,   402,   402,   403,   403,   404,   405,   405,
-     406,   406,   407,   407,   408,   408,   409,   409,   410,   410,
-     411,   412,   412,   413,   413,   414,   414,   414,   414,   414,
-     415,   414,   414,   414,   414,   416,   416,   416,   417,   417,
-     418,   418,   418,   419,   419,   419,   419,   419,   420,   420,
-     420,   421,   421,   421,   422,   422,   423,   423,   424,   424,
-     425,   425,   426,   426,   427,   427,   427,   427,   428,   428,
-     428,   429,   429,   429,   429,   429,   429,   430,   430,   430,
-     431,   431,   431,   431,   432,   432,   433,   433,   434,   434,
-     435,   435,   435,   435,   436,   437,   437,   437,   438,   438,
-     439,   439,   439,   439,   440,   440,   441,   441,   441,   441,
-     441,   441,   441,   442,   442,   443,   443,   444,   444,   444,
-     444,   444,   445,   445,   446,   446,   447,   447,   447,   448,
-     448,   449,   449,   450,   451,   451,   451,   451,   451,   451,
-     451,   451,   452,   452,   453,   453,   453,   454,   455,   455,
-     456,   457,   458,   459,   459,   460,   460,   461,   461,   462,
-     462,   462,   463,   463,   463,   463,   463,   463,   464,   464,
-     465,   465,   466,   467,   467,   468,   468,   469,   469,   470,
-     470,   470,   470,   471,   471,   472,   472,   472,   472,   473,
-     473,   474,   474,   475,   475,   475,   475,   476,   476,   476,
-     476,   477,   477,   478,   478,   479,   480,   480,   480,   480,
-     480,   480,   481,   482,   482,   482,   482,   483,   483,   483,
-     483,   484,   485,   486,   486,   486,   486,   487,   487,   488,
-     489,   489,   489,   490,   490,   490,   491,   491,   491,   492,
-     493,   493,   493,   493,   493,   493,   493,   493,   493,   494,
-     495,   495,   495,   496,   497,   498,   498,   498,   499,   499,
-     499,   499,   499,   500,   501,   501,   501,   501,   501,   501,
-     501,   502,   503,   504,   505,   506,   506,   506,   507,   507,
-     507,   507,   507,   507,   507,   507,   507,   507,   508,   508,
-     509,   509,   510,   511,   512,   512,   513,   514,   515,   515,
-     516,   516,   516,   516,   517,   517,   518,   519,   520,   520,
-     520,   520,   520,   520,   520,   520,   520,   520,   520,   520,
-     520,   520,   520,   520,   520,   520,   520,   520,   520,   520,
-     520,   520,   520,   520,   520,   520,   520,   520,   520,   520,
-     520,   520,   520,   520,   520,   520,   520,   520,   520,   520,
-     520,   520,   520,   520,   520,   520,   520,   520,   520,   520,
-     520,   520,   520,   520,   520,   520,   520,   520,   520,   520,
-     520,   520,   520,   520,   520,   520,   520,   520,   520,   520,
-     520,   520,   520,   520,   520,   520,   520,   520,   520,   520,
-     520,   520,   520,   520,   520,   520,   520,   520,   520,   520,
-     520,   520,   520,   520,   520,   520,   520,   520,   520,   520,
-     520,   520,   520,   520,   520,   520,   520,   520,   520,   520,
-     520,   520,   520,   520,   520,   520,   520,   520,   520,   520,
-     520,   520,   520,   520,   520,   520,   520,   520,   520,   520,
-     520,   520,   520,   520,   520,   520,   520,   520,   520,   520,
-     520,   520,   520,   520,   520,   520,   520,   520,   520,   520,
-     520,   520,   520,   520,   520,   520,   520,   520,   520,   520,
-     520,   520,   520,   520,   520,   520,   520,   520,   520,   520,
-     520,   520,   520,   520,   520,   520,   520,   520,   520,   520,
-     520,   520,   520,   520,   521,   521,   522,   522,   522,   522,
-     523,   523,   523,   523,   524,   524,   525,   525,   526,   526,
-     527,   527,   528,   528,   528,   529,   529,   530,   530,   531,
-     531,   531,   531,   531,   532,   533,   533,   533,   533,   533,
-     533,   533,   534,   534,   534,   534,   535,   535,   535,   535,
-     536,   536,   537,   537,   537,   537,   537,   537,   537,   538,
-     538,   539,   539,   539,   539,   540,   540,   540,   540,   540,
-     541,   541,   542,   542,   543,   543,   544,   544,   545,   546,
-     546,   547,   547,   547,   548,   548,   548,   548,   548,   549,
-     549,   549,   549,   550,   551,   552,   553,   553,   554,   554,
-     554,   555,   555,   556
+         0,   299,   300,   300,   301,   301,   301,   301,   302,   302,
+     303,   303,   304,   305,   306,   306,   306,   307,   307,   308,
+     308,   309,   309,   309,   309,   310,   310,   310,   310,   310,
+     310,   310,   311,   311,   312,   312,   313,   314,   314,   314,
+     314,   314,   314,   314,   314,   314,   314,   315,   315,   315,
+     315,   315,   315,   315,   315,   316,   316,   317,   318,   318,
+     319,   319,   320,   321,   322,   322,   323,   323,   324,   324,
+     324,   324,   325,   326,   327,   327,   327,   327,   328,   328,
+     329,   329,   330,   330,   330,   330,   331,   332,   332,   333,
+     333,   333,   334,   335,   335,   336,   336,   336,   337,   337,
+     338,   339,   339,   340,   340,   341,   342,   342,   343,   343,
+     344,   344,   345,   345,   346,   346,   346,   346,   347,   348,
+     349,   349,   350,   350,   351,   351,   352,   353,   354,   355,
+     355,   356,   356,   356,   357,   357,   357,   358,   358,   358,
+     358,   359,   359,   360,   361,   361,   362,   362,   363,   364,
+     365,   366,   366,   367,   367,   368,   368,   369,   369,   369,
+     369,   369,   369,   369,   369,   369,   369,   369,   369,   369,
+     369,   369,   369,   369,   369,   370,   371,   372,   372,   373,
+     373,   373,   374,   374,   375,   375,   376,   377,   377,   377,
+     378,   378,   378,   378,   378,   379,   379,   380,   380,   381,
+     382,   382,   383,   383,   383,   383,   383,   383,   383,   383,
+     384,   385,   386,   387,   387,   388,   388,   389,   389,   389,
+     389,   390,   390,   391,   391,   391,   392,   392,   392,   393,
+     393,   393,   394,   395,   396,   397,   397,   398,   398,   399,
+     400,   400,   401,   401,   402,   402,   403,   403,   403,   403,
+     403,   403,   403,   404,   404,   405,   405,   406,   407,   407,
+     408,   408,   409,   409,   410,   410,   411,   411,   412,   412,
+     413,   414,   414,   415,   415,   416,   416,   416,   416,   416,
+     417,   416,   416,   416,   416,   418,   418,   418,   419,   419,
+     420,   420,   420,   421,   421,   421,   421,   421,   422,   422,
+     422,   423,   423,   423,   424,   424,   425,   425,   426,   426,
+     427,   427,   428,   428,   429,   429,   429,   429,   430,   430,
+     430,   431,   431,   431,   431,   431,   431,   432,   432,   432,
+     433,   433,   433,   433,   434,   434,   435,   435,   436,   436,
+     437,   437,   437,   437,   438,   439,   439,   439,   440,   440,
+     441,   441,   441,   441,   442,   442,   443,   443,   443,   443,
+     443,   443,   443,   444,   444,   445,   445,   446,   446,   446,
+     446,   446,   447,   447,   448,   448,   449,   449,   449,   450,
+     450,   451,   451,   452,   453,   453,   453,   453,   453,   453,
+     453,   453,   454,   454,   455,   455,   455,   456,   457,   457,
+     458,   459,   460,   461,   461,   462,   462,   463,   463,   464,
+     464,   464,   465,   465,   465,   465,   465,   465,   466,   466,
+     467,   467,   468,   469,   469,   470,   470,   471,   471,   472,
+     472,   472,   472,   473,   473,   474,   474,   474,   474,   475,
+     475,   476,   476,   477,   477,   477,   477,   478,   478,   478,
+     478,   479,   479,   480,   480,   481,   482,   482,   482,   482,
+     482,   482,   483,   484,   484,   484,   484,   485,   485,   485,
+     485,   486,   487,   488,   488,   488,   488,   489,   489,   490,
+     491,   491,   491,   492,   492,   492,   493,   493,   493,   494,
+     495,   495,   495,   495,   495,   495,   495,   495,   495,   496,
+     497,   497,   497,   498,   499,   500,   500,   500,   501,   501,
+     501,   501,   501,   502,   503,   503,   503,   503,   503,   503,
+     503,   504,   505,   506,   507,   508,   508,   508,   509,   509,
+     509,   509,   509,   509,   509,   509,   509,   509,   510,   510,
+     511,   511,   512,   513,   514,   514,   515,   516,   517,   517,
+     518,   518,   518,   518,   519,   519,   520,   521,   521,   522,
+     523,   523,   524,   524,   524,   524,   524,   524,   524,   524,
+     524,   524,   524,   524,   524,   524,   524,   524,   524,   524,
+     524,   524,   524,   524,   524,   524,   524,   524,   524,   524,
+     524,   524,   524,   524,   524,   524,   524,   524,   524,   524,
+     524,   524,   524,   524,   524,   524,   524,   524,   524,   524,
+     524,   524,   524,   524,   524,   524,   524,   524,   524,   524,
+     524,   524,   524,   524,   524,   524,   524,   524,   524,   524,
+     524,   524,   524,   524,   524,   524,   524,   524,   524,   524,
+     524,   524,   524,   524,   524,   524,   524,   524,   524,   524,
+     524,   524,   524,   524,   524,   524,   524,   524,   524,   524,
+     524,   524,   524,   524,   524,   524,   524,   524,   524,   524,
+     524,   524,   524,   524,   524,   524,   524,   524,   524,   524,
+     524,   524,   524,   524,   524,   524,   524,   524,   524,   524,
+     524,   524,   524,   524,   524,   524,   524,   524,   524,   524,
+     524,   524,   524,   524,   524,   524,   524,   524,   524,   524,
+     524,   524,   524,   524,   524,   524,   524,   524,   524,   524,
+     524,   524,   524,   524,   524,   524,   524,   524,   524,   524,
+     524,   524,   524,   524,   524,   524,   524,   524,   524,   524,
+     524,   524,   524,   524,   524,   524,   524,   525,   525,   526,
+     526,   526,   526,   527,   527,   527,   527,   528,   528,   529,
+     529,   530,   530,   531,   531,   532,   532,   532,   533,   533,
+     534,   534,   535,   535,   535,   535,   535,   536,   537,   537,
+     537,   537,   537,   537,   537,   538,   538,   538,   538,   539,
+     539,   539,   539,   540,   540,   541,   541,   541,   541,   541,
+     541,   541,   542,   542,   543,   543,   543,   543,   544,   544,
+     544,   544,   544,   545,   545,   546,   546,   547,   547,   548,
+     548,   549,   550,   550,   551,   551,   551,   552,   552,   552,
+     552,   552,   553,   553,   553,   553,   554,   555,   556,   557,
+     557,   558,   558,   558,   559,   559,   560
   };
 
   /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -9961,17 +10033,17 @@ namespace zorba
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     7,     4,     1,     2,     3,     4,
-       1,     1,     2,     2,     1,     3,     1,     3,     1,     4,
-       1,     2,     1,     2,     3,     1,     2,     1,     3,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     2,     2,     2,     2,     2,     2,
-       2,     2,     3,     3,     5,     7,     5,     7,     2,     1,
-       3,     2,     4,     4,     6,     4,     5,     4,     5,     3,
-       1,     2,     2,     3,     1,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     1,     2,     1,     2,     1,     2,
-       3,     3,     4,     3,     3,     3,     2,     2,     1,     1,
-       1,     1,     1,     3
+       1,     1,     1,     1,     1,     1,     1,     7,     4,     1,
+       2,     3,     4,     1,     1,     2,     2,     1,     3,     1,
+       3,     1,     4,     1,     2,     1,     2,     3,     1,     2,
+       1,     3,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     2,     2,     2,
+       2,     2,     2,     2,     2,     3,     3,     5,     7,     5,
+       7,     2,     1,     3,     2,     4,     4,     6,     4,     5,
+       4,     5,     3,     1,     2,     2,     3,     1,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     1,     2,     1,
+       2,     1,     2,     3,     3,     4,     3,     3,     3,     2,
+       2,     1,     1,     1,     1,     1,     3
   };
 
 #if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
@@ -9988,13 +10060,13 @@ namespace zorba
   "\"'pi target'\"", "\"'pragma literal'\"", "\"'QName #)'\"",
   "\"'*:QName'\"", "\"'QName_sval'\"", "\"'quote attribute content'\"",
   "\"'STRING'\"", "\"'XML comment'\"", "\"'QName'\"", "\"'URI'\"",
-  "\"'NCName'\"", "\"<blank>\"", "\"'block'\"", "\"'exit'\"",
-  "\"'break'\"", "\"'loop'\"", "\"'continue'\"", "\"'while'\"",
-  "\"'validate'\"", "\"'typeswitch'\"", "\"'element'\"", "\"'document'\"",
-  "\"'text'\"", "\"'comment'\"", "\"'declare'\"", "\"'function'\"",
-  "\"'updating'\"", "\"'sequential'\"", "\"'deterministic'\"",
-  "\"'nondeterministic'\"", "\"'simple'\"", "\"'if'\"",
-  "\"'processing-instruction'\"", "\"'most'\"", "\"'import'\"",
+  "\"'NCName'\"", "\"'NCName(non keyword)'\"", "\"'KEYWORD'\"",
+  "\"<blank>\"", "\"'block'\"", "\"'exit'\"", "\"'break'\"", "\"'loop'\"",
+  "\"'continue'\"", "\"'while'\"", "\"'validate'\"", "\"'typeswitch'\"",
+  "\"'element'\"", "\"'document'\"", "\"'text'\"", "\"'comment'\"",
+  "\"'declare'\"", "\"'function'\"", "\"'updating'\"", "\"'sequential'\"",
+  "\"'deterministic'\"", "\"'nondeterministic'\"", "\"'simple'\"",
+  "\"'if'\"", "\"'processing-instruction'\"", "\"'most'\"", "\"'import'\"",
   "\"'some'\"", "\"'stable'\"", "\"'module'\"", "\"'option'\"",
   "\"'word'\"", "\"'schema'\"", "\"'space'\"", "\"'set'\"", "\"'let'\"",
   "\"'construction'\"", "\"'eval'\"", "\"'for'\"", "\"'outer'\"",
@@ -10110,10 +10182,10 @@ namespace zorba
   "StringLiteral", "RevalidationDecl", "InsertExpr", "DeleteExpr",
   "ReplaceExpr", "RenameExpr", "TransformExpr", "VarNameList",
   "VarNameDecl", "TryExpr", "CatchListExpr", "CatchExpr", "NameTestList",
-  "URI_LITERAL", "NCNAME", "QNAME", "EvalExpr", "FTSelection",
-  "FTMatchOptionProximityList", "FTOr", "FTAnd", "FTMildnot", "FTUnaryNot",
-  "FTWordsSelection", "FTWords", "FTWordsValue", "FTProximity",
-  "FTOrderedIndicator", "FTMatchOption", "FTCaseOption",
+  "URI_LITERAL", "NCNAME", "NCNAME_NOKW", "QNAME", "KEYWORD", "EvalExpr",
+  "FTSelection", "FTMatchOptionProximityList", "FTOr", "FTAnd",
+  "FTMildnot", "FTUnaryNot", "FTWordsSelection", "FTWords", "FTWordsValue",
+  "FTProximity", "FTOrderedIndicator", "FTMatchOption", "FTCaseOption",
   "FTDiacriticsOption", "FTStemOption", "FTThesaurusOption",
   "FTThesaurusList", "FTThesaurusID", "FTStopwordOption",
   "FTInclExclStringLiteralList", "FTRefOrList", "FTStringLiteralList",
@@ -10128,273 +10200,274 @@ namespace zorba
   const xquery_parser::rhs_number_type
   xquery_parser::yyrhs_[] =
   {
-       298,     0,    -1,   299,    -1,   282,   299,    -1,   301,    -1,
-     300,   301,    -1,   302,    -1,   300,   302,    -1,   209,   210,
-      20,   185,    -1,   209,   210,    20,   127,    20,   185,    -1,
-     304,   363,    -1,   363,    -1,   303,   304,    -1,    51,   155,
-     519,   128,   518,   185,    -1,   305,   185,    -1,   306,   185,
-      -1,   305,   185,   306,   185,    -1,   307,    -1,   305,   185,
-     307,    -1,   308,    -1,   306,   185,   308,    -1,   313,    -1,
-     314,    -1,   315,    -1,   317,    -1,   334,    -1,   329,    -1,
-     355,    -1,   318,    -1,   319,    -1,   336,    -1,   309,    -1,
-      38,   111,    77,   310,    -1,    38,    77,   520,   310,    -1,
-     311,    -1,   310,   311,    -1,   312,   128,   505,    -1,    78,
-      -1,    79,    -1,    80,    -1,    81,    -1,    82,    -1,    83,
-      -1,    84,    -1,    85,    -1,    86,    -1,    87,    -1,   316,
-      -1,   323,    -1,   324,    -1,   343,    -1,   320,    -1,   321,
-      -1,   322,    -1,   506,    -1,   325,    -1,   328,    -1,    38,
-     155,   519,   128,   518,    -1,    38,    76,   176,    -1,    38,
-      76,   190,    -1,    38,   111,    34,   155,   518,    -1,    38,
-     111,    39,   155,   518,    -1,    38,    52,   520,    20,    -1,
-      38,   239,   533,    -1,    38,    69,   163,    -1,    38,    69,
-     196,    -1,    38,   111,   164,   123,   124,    -1,    38,   111,
-     164,   123,   125,    -1,    38,    73,   176,   105,   143,    -1,
-      38,    73,   176,   105,   160,    -1,    38,    73,   161,   105,
-     143,    -1,    38,    73,   161,   105,   160,    -1,    38,   111,
-     104,   518,    -1,    38,    70,   518,    -1,    48,    54,   518,
-      -1,    48,    54,   327,   518,    -1,    48,    54,   518,    94,
-     326,    -1,    48,    54,   327,   518,    94,   326,    -1,   518,
-      -1,   326,   105,   518,    -1,   155,   519,   128,    -1,   111,
-      34,   155,    -1,    48,    51,   518,    -1,    48,    51,   155,
-     519,   128,   518,    -1,    48,    51,   518,    94,   326,    -1,
-      48,    51,   155,   519,   128,   518,    94,   326,    -1,    38,
-     109,   147,   330,    -1,    92,   491,   331,    -1,   331,    -1,
-     332,    -1,   133,    -1,   133,   332,    -1,   138,   367,    -1,
-     116,   520,    -1,   116,   520,   488,    -1,    38,   110,   333,
-     138,   367,    -1,    38,   110,   333,   133,    -1,    38,   110,
-     333,   133,   138,   367,    -1,   279,    -1,   280,    -1,    38,
-     337,    -1,   338,    -1,   277,   338,    -1,   339,    -1,   335,
-     339,    -1,   278,   518,   281,   367,   165,   342,   181,    -1,
-     341,    -1,   341,   104,   518,    -1,   367,    -1,   367,   488,
-      -1,   151,   340,    -1,   342,   105,   340,    -1,    38,    58,
-     176,    -1,    38,    58,   190,    -1,   151,   181,    -1,   151,
-     359,   181,    -1,   151,   181,    92,   489,    -1,   151,   359,
-     181,    92,   489,    -1,    26,   346,    -1,   148,   347,   364,
-     178,    -1,   347,   348,   185,    -1,    -1,   348,   105,   349,
-      -1,    38,   349,    -1,   333,    -1,   333,   138,   367,    -1,
-      56,   116,   520,   138,   367,    -1,    27,   232,   367,    -1,
-      31,   151,   367,   181,   346,    -1,    28,    29,    -1,    30,
-      29,    -1,   274,   278,   518,    -1,   276,   278,   518,    -1,
-     275,   278,   518,    -1,    38,   356,    -1,    38,    43,   356,
-      -1,    38,    42,   356,    -1,   357,    -1,    44,   357,    -1,
-      40,   357,    -1,    41,   358,    -1,    39,   520,   344,   362,
-      -1,    39,   520,   344,   133,    -1,    39,   520,   344,   346,
-      -1,   360,    -1,   359,   105,   360,    -1,   116,   520,    -1,
-     116,   520,   488,    -1,   148,   364,   178,    -1,   148,   364,
-     178,    -1,   364,    -1,   366,    -1,   366,   365,    -1,   185,
-      -1,   365,   366,   185,    -1,   367,    -1,   366,   105,   367,
-      -1,   368,    -1,   405,    -1,   408,    -1,   411,    -1,   412,
-      -1,   507,    -1,   508,    -1,   510,    -1,   509,    -1,   511,
-      -1,   514,    -1,   521,    -1,   351,    -1,   352,    -1,   353,
-      -1,   350,    -1,   345,    -1,   354,    -1,   377,   369,    -1,
-     180,   367,    -1,    62,   267,    -1,    63,   267,    -1,   212,
-      -1,   245,    -1,    66,   245,    -1,   371,   389,    67,   367,
-      -1,   371,    67,   367,    -1,    60,   370,   388,   372,   372,
-      -1,    60,   370,   388,   372,    -1,    68,   116,   520,    -1,
-     379,    -1,   384,    -1,   373,    -1,   375,    -1,   393,    -1,
-     398,    -1,   394,    -1,   374,    -1,   375,    -1,   377,   376,
-      -1,    60,   116,    -1,    61,    60,   116,    -1,   378,   380,
-      -1,   381,    -1,   380,   105,   116,   381,    -1,   520,   142,
-     367,    -1,   520,   488,   142,   367,    -1,   520,   382,   142,
-     367,    -1,   520,   488,   382,   142,   367,    -1,   520,   383,
-     142,   367,    -1,   520,   488,   383,   142,   367,    -1,   520,
-     382,   383,   142,   367,    -1,   520,   488,   382,   383,   142,
-     367,    -1,    94,   116,   520,    -1,   261,   116,   520,    -1,
-      57,   116,   385,    -1,   387,    -1,   385,   105,   116,   387,
-      -1,   392,    -1,   386,   105,   116,   392,    -1,   520,   138,
-     367,    -1,   520,   488,   138,   367,    -1,   520,   383,   138,
-     367,    -1,   520,   488,   383,   138,   367,    -1,   116,   520,
-     142,   367,    -1,   116,   520,   488,   142,   367,    -1,   390,
-      -1,   116,   520,    -1,   116,   520,   390,    -1,   382,    -1,
-     382,   391,    -1,   391,    -1,    64,   116,   520,    65,   116,
-     520,    -1,    65,   116,   520,    -1,    64,   116,   520,    -1,
-     520,    -1,   206,   367,    -1,   166,   165,   395,    -1,   396,
-      -1,   395,   105,   396,    -1,   116,   520,    -1,   116,   520,
-     397,    -1,   104,   518,    -1,   164,   165,   399,    -1,    50,
-     164,   165,   399,    -1,   400,    -1,   399,   105,   400,    -1,
-     367,    -1,   367,   401,    -1,   402,    -1,   403,    -1,   404,
-      -1,   402,   403,    -1,   402,   404,    -1,   403,   404,    -1,
-     402,   403,   404,    -1,    93,    -1,   114,    -1,   123,   124,
-      -1,   123,   125,    -1,   104,   518,    -1,    49,   116,   406,
-     182,   367,    -1,   131,   116,   406,   182,   367,    -1,   407,
-      -1,   406,   105,   116,   407,    -1,   520,   142,   367,    -1,
-     520,   488,   142,   367,    -1,    33,   151,   364,   181,   409,
-     111,   180,   367,    -1,    33,   151,   364,   181,   409,   111,
-     116,   520,   180,   367,    -1,   410,    -1,   409,   410,    -1,
-      98,   489,   180,   367,    -1,    98,   116,   520,    92,   489,
-     180,   367,    -1,    45,   151,   364,   181,   192,   367,   122,
-     367,    -1,   413,    -1,   412,   162,   413,    -1,   414,    -1,
-     413,    90,   414,    -1,   416,    -1,   416,   429,   416,    -1,
-     416,   430,   416,    -1,   416,   128,   416,    -1,   416,   157,
-     416,    -1,    -1,   416,   152,   415,   416,    -1,   416,   150,
-     416,    -1,   416,   139,   416,    -1,   416,   137,   416,    -1,
-     417,    -1,   417,   250,   522,    -1,   417,   250,   522,   556,
-      -1,   418,    -1,   418,   193,   418,    -1,   419,    -1,   418,
-     170,   419,    -1,   418,   153,   419,    -1,   420,    -1,   419,
-     188,   420,    -1,   419,   115,   420,    -1,   419,   141,   420,
-      -1,   419,   154,   420,    -1,   421,    -1,   420,   195,   421,
-      -1,   420,   204,   421,    -1,   422,    -1,   421,   145,   422,
-      -1,   421,   132,   422,    -1,   423,    -1,   423,    74,   226,
-     489,    -1,   424,    -1,   424,   194,    92,   489,    -1,   425,
-      -1,   425,    99,    92,   487,    -1,   426,    -1,   426,   100,
-      92,   487,    -1,   428,    -1,   427,   428,    -1,   170,    -1,
-     153,    -1,   427,   170,    -1,   427,   153,    -1,   431,    -1,
-     435,    -1,   432,    -1,   197,    -1,   202,    -1,   201,    -1,
-     200,    -1,   199,    -1,   198,    -1,   146,    -1,   173,    -1,
-     136,    -1,    32,   148,   364,   178,    -1,    32,   217,   148,
-     364,   178,    -1,    32,   216,   148,   364,   178,    -1,    32,
-      92,   503,   148,   364,   178,    -1,   433,   148,   178,    -1,
-     433,   148,   364,   178,    -1,   434,    -1,   433,   434,    -1,
-     171,   520,    15,    -1,   171,    16,    -1,   436,    -1,   436,
-     437,    -1,   187,   437,    -1,   437,    -1,   186,    -1,   438,
-      -1,   438,   186,   437,    -1,   438,   187,   437,    -1,   439,
-      -1,   448,    -1,   440,    -1,   440,   449,    -1,   443,    -1,
-     443,   449,    -1,   441,   445,    -1,   442,    -1,   103,    -1,
-     112,    -1,    96,    -1,   184,    -1,   113,    -1,   135,    -1,
-     134,    -1,   445,    -1,    97,   445,    -1,   444,   445,    -1,
-     118,    -1,   167,    -1,    88,    -1,   175,    -1,   174,    -1,
-      89,    -1,   493,    -1,   446,    -1,   520,    -1,   447,    -1,
-     188,    -1,    10,    -1,    17,    -1,   451,    -1,   451,   449,
-      -1,   450,    -1,   449,   450,    -1,   149,   364,   179,    -1,
-     452,    -1,   454,    -1,   455,    -1,   456,    -1,   459,    -1,
-     461,    -1,   457,    -1,   458,    -1,   453,    -1,   505,    -1,
-     108,    -1,   144,    -1,   120,    -1,   116,   520,    -1,   151,
-     181,    -1,   151,   364,   181,    -1,   117,    -1,   163,   148,
-     364,   178,    -1,   196,   148,   364,   178,    -1,   520,   151,
-     181,    -1,   520,   151,   460,   181,    -1,   367,    -1,   460,
-     105,   367,    -1,   462,    -1,   480,    -1,   463,    -1,   477,
-      -1,   478,    -1,   152,   520,   467,   126,    -1,   152,   520,
-     465,   467,   126,    -1,   152,   520,   467,   191,   189,   520,
-     467,   191,    -1,   152,   520,   467,   191,   464,   189,   520,
-     467,   191,    -1,   152,   520,   465,   467,   191,   189,   520,
-     467,   191,    -1,   152,   520,   465,   467,   191,   464,   189,
-     520,   467,   191,    -1,   475,    -1,   464,   475,    -1,   466,
-      -1,   465,   466,    -1,    25,   520,   467,   128,   467,   468,
-      -1,    -1,    25,    -1,   177,   469,   177,    -1,    91,   471,
-      91,    -1,    -1,   470,    -1,   130,    -1,   473,    -1,   470,
-     130,    -1,   470,   473,    -1,    -1,   472,    -1,   129,    -1,
-     474,    -1,   472,   129,    -1,   472,   474,    -1,    19,    -1,
-     476,    -1,     4,    -1,   476,    -1,   462,    -1,     9,    -1,
-     479,    -1,   476,    -1,     8,    -1,   119,    -1,   121,    -1,
-     361,    -1,   207,    21,   208,    -1,   207,   208,    -1,   168,
-      14,   169,    -1,   168,    14,     7,    -1,   101,     6,    -1,
-     481,    -1,   482,    -1,   483,    -1,   484,    -1,   485,    -1,
-     486,    -1,    35,   148,   364,   178,    -1,    34,   520,   148,
-     178,    -1,    34,   520,   148,   364,   178,    -1,    34,   148,
-     364,   178,   148,   178,    -1,    34,   148,   364,   178,   148,
-     364,   178,    -1,    95,   520,   148,   178,    -1,    95,   520,
-     148,   364,   178,    -1,    95,   148,   364,   178,   148,   178,
-      -1,    95,   148,   364,   178,   148,   364,   178,    -1,    36,
-     148,   364,   178,    -1,    37,   148,   364,   178,    -1,    46,
-     519,   148,   178,    -1,    46,   519,   148,   364,   178,    -1,
-      46,   148,   364,   178,   148,   178,    -1,    46,   148,   364,
-     178,   148,   364,   178,    -1,   492,    -1,   492,   140,    -1,
-      92,   489,    -1,   491,    -1,   491,   490,    -1,   205,   151,
-     181,    -1,   140,    -1,   188,    -1,   170,    -1,   492,    -1,
-     493,    -1,   147,   151,   181,    -1,   520,    -1,   495,    -1,
-     501,    -1,   499,    -1,   502,    -1,   500,    -1,   498,    -1,
-     497,    -1,   496,    -1,   494,    -1,   220,   151,   181,    -1,
-      72,   151,   181,    -1,    72,   151,   501,   181,    -1,    72,
-     151,   502,   181,    -1,    36,   151,   181,    -1,    37,   151,
-     181,    -1,    46,   151,   181,    -1,    46,   151,   519,   181,
-      -1,    46,   151,    20,   181,    -1,    95,   151,   181,    -1,
-      95,   151,   520,   181,    -1,    95,   151,   520,   105,   503,
-     181,    -1,    95,   151,   188,   181,    -1,    95,   151,   188,
-     105,   503,   181,    -1,   183,   520,   181,    -1,    34,   151,
-     181,    -1,    34,   151,   520,   181,    -1,    34,   151,   520,
-     105,   503,   181,    -1,    34,   151,   520,   105,   504,   181,
-      -1,    34,   151,   188,   181,    -1,    34,   151,   188,   105,
-     503,   181,    -1,    34,   151,   188,   105,   504,   181,    -1,
-      71,   151,   520,   181,    -1,   520,    -1,   520,   140,    -1,
-      20,    -1,    38,   215,   216,    -1,    38,   215,   217,    -1,
-      38,   215,   218,    -1,   221,   220,   367,   228,   367,    -1,
-     221,   220,   367,    92,   227,   228,   367,    -1,   221,   220,
-     367,    92,   229,   228,   367,    -1,   221,   220,   367,   213,
-     367,    -1,   221,   220,   367,   214,   367,    -1,   221,   222,
-     367,   228,   367,    -1,   221,   222,   367,    92,   227,   228,
-     367,    -1,   221,   222,   367,    92,   229,   228,   367,    -1,
-     221,   222,   367,   213,   367,    -1,   221,   222,   367,   214,
-     367,    -1,   219,   220,   367,    -1,   219,   222,   367,    -1,
-     224,   220,   367,   232,   367,    -1,   224,   225,   226,   220,
-     367,   232,   367,    -1,   223,   220,   367,    92,   367,    -1,
-     231,   116,   512,   230,   367,   180,   367,    -1,   513,    -1,
-     512,   105,   116,   513,    -1,   520,   138,   367,    -1,   233,
-     148,   367,   178,   515,    -1,   516,    -1,   515,   516,    -1,
-     234,   517,   362,    -1,   234,   517,   151,   116,   520,   181,
-     362,    -1,   234,   517,   151,   116,   520,   105,   116,   520,
-     181,   362,    -1,   234,   517,   151,   116,   520,   105,   116,
-     520,   105,   116,   520,   181,   362,    -1,   446,    -1,   517,
-     204,   446,    -1,    20,    -1,    18,    -1,    18,    -1,   209,
-      -1,   123,    -1,    95,    -1,    37,    -1,    72,    -1,    34,
-      -1,   147,    -1,    45,    -1,   220,    -1,    46,    -1,    75,
-      -1,    71,    -1,    36,    -1,    33,    -1,   205,    -1,    76,
-      -1,   239,    -1,    70,    -1,   217,    -1,   216,    -1,   141,
-      -1,    35,    -1,   251,    -1,   238,    -1,   241,    -1,   240,
-      -1,   268,    -1,   269,    -1,   272,    -1,   270,    -1,   273,
-      -1,   244,    -1,   246,    -1,    53,    -1,   212,    -1,   245,
-      -1,    47,    -1,   218,    -1,   231,    -1,   225,    -1,   197,
-      -1,   202,    -1,   201,    -1,   200,    -1,   199,    -1,   198,
-      -1,    94,    -1,   109,    -1,   110,    -1,   180,    -1,    60,
-      -1,    61,    -1,    62,    -1,    63,    -1,    64,    -1,    65,
-      -1,    66,    -1,    67,    -1,    68,    -1,   142,    -1,    57,
-      -1,   206,    -1,   165,    -1,   166,    -1,   164,    -1,    50,
-      -1,    93,    -1,   114,    -1,   124,    -1,   125,    -1,   104,
-      -1,    49,    -1,   131,    -1,   182,    -1,    98,    -1,    92,
-      -1,   192,    -1,   122,    -1,   162,    -1,    90,    -1,    74,
-      -1,   226,    -1,    99,    -1,   193,    -1,   115,    -1,   154,
-      -1,   195,    -1,   145,    -1,   132,    -1,    32,    -1,   100,
-      -1,   194,    -1,   146,    -1,   176,    -1,   190,    -1,   155,
-      -1,   133,    -1,   127,    -1,   161,    -1,   143,    -1,   160,
-      -1,    38,    -1,    58,    -1,    69,    -1,   111,    -1,    73,
-      -1,    52,    -1,   210,    -1,    48,    -1,    54,    -1,    51,
-      -1,    39,    -1,   261,    -1,   250,    -1,   266,    -1,   267,
-      -1,   243,    -1,   256,    -1,   264,    -1,   260,    -1,   242,
-      -1,   255,    -1,   265,    -1,   259,    -1,   254,    -1,   253,
-      -1,   237,    -1,   236,    -1,   258,    -1,   247,    -1,   248,
-      -1,   271,    -1,   263,    -1,   262,    -1,   257,    -1,   224,
-      -1,   230,    -1,   227,    -1,   221,    -1,   214,    -1,   213,
-      -1,   215,    -1,   232,    -1,   222,    -1,   223,    -1,   229,
-      -1,   219,    -1,   228,    -1,    44,    -1,    41,    -1,    40,
-      -1,    42,    -1,    43,    -1,   163,    -1,   196,    -1,    26,
-      -1,    27,    -1,    29,    -1,    31,    -1,    28,    -1,    30,
-      -1,   233,    -1,   234,    -1,    59,    -1,   235,    -1,    56,
-      -1,   278,    -1,   274,    -1,   275,    -1,   277,    -1,   281,
-      -1,   279,    -1,   280,    -1,   276,    -1,    77,    -1,    78,
-      -1,    79,    -1,    80,    -1,    81,    -1,    82,    -1,    83,
-      -1,    84,    -1,    85,    -1,    86,    -1,    87,    -1,   235,
-     116,   386,    59,   148,   367,   178,    -1,    59,   148,   367,
-     178,    -1,   524,    -1,   524,   523,    -1,   524,   266,   417,
-      -1,   524,   523,   266,   417,    -1,   533,    -1,   531,    -1,
-     523,   533,    -1,   523,   531,    -1,   525,    -1,   524,   252,
-     525,    -1,   526,    -1,   525,   249,   526,    -1,   527,    -1,
-     526,   251,   142,   527,    -1,   528,    -1,   251,   528,    -1,
-     529,    -1,   529,   552,    -1,   151,   522,   181,    -1,   530,
-      -1,   530,   548,    -1,   452,    -1,   148,   364,   178,    -1,
-     532,    -1,   551,    -1,   550,    -1,   553,    -1,   547,    -1,
-     163,    -1,   534,    -1,   535,    -1,   536,    -1,   537,    -1,
-     540,    -1,   545,    -1,   546,    -1,   255,    -1,   265,    -1,
-      98,   238,    -1,    98,   241,    -1,   232,   240,    -1,   268,
-     240,    -1,   240,   238,    -1,   240,   241,    -1,   232,   269,
-      -1,   268,   269,    -1,   232,   272,   539,    -1,   232,   272,
-     111,    -1,   232,   272,   151,   539,   181,    -1,   232,   272,
-     151,   539,   105,   538,   181,    -1,   232,   272,   151,   111,
-     181,    -1,   232,   272,   151,   111,   105,   538,   181,    -1,
-     268,   272,    -1,   539,    -1,   538,   105,   539,    -1,    94,
-      20,    -1,    94,    20,   259,    20,    -1,    94,    20,   549,
-     254,    -1,    94,    20,   259,    20,   549,   254,    -1,   232,
-     270,   271,   542,    -1,   232,   270,   271,   542,   541,    -1,
-     232,   111,   270,   271,    -1,   232,   111,   270,   271,   541,
-      -1,   268,   270,   271,    -1,   544,    -1,   541,   544,    -1,
-      94,    20,    -1,   151,   543,   181,    -1,    20,    -1,   543,
-      20,    -1,   195,   542,    -1,   132,   542,    -1,   253,    20,
-      -1,   232,   273,    -1,   268,   273,    -1,    94,   212,    -1,
-      94,   245,    -1,   244,   246,    -1,   237,    -1,   237,    53,
-      -1,   236,    -1,   236,   271,    -1,   258,    -1,   247,   420,
-      -1,    94,   125,   420,    -1,    94,    47,   420,    -1,   248,
-     420,   193,   420,    -1,   243,   549,   554,    -1,   267,   420,
-     554,    -1,   256,   549,   264,    -1,   260,   555,    -1,   242,
-     555,    -1,   271,    -1,   263,    -1,   257,    -1,   262,    -1,
-     257,    -1,   268,   246,   420,    -1
+       300,     0,    -1,   301,    -1,   284,   301,    -1,   303,    -1,
+     302,   303,    -1,   304,    -1,   302,   304,    -1,   211,   212,
+      20,   187,    -1,   211,   212,    20,   129,    20,   187,    -1,
+     306,   365,    -1,   365,    -1,   305,   306,    -1,    53,   157,
+     521,   130,   520,   187,    -1,   307,   187,    -1,   308,   187,
+      -1,   307,   187,   308,   187,    -1,   309,    -1,   307,   187,
+     309,    -1,   310,    -1,   308,   187,   310,    -1,   315,    -1,
+     316,    -1,   317,    -1,   319,    -1,   336,    -1,   331,    -1,
+     357,    -1,   320,    -1,   321,    -1,   338,    -1,   311,    -1,
+      40,   113,    79,   312,    -1,    40,    79,   523,   312,    -1,
+     313,    -1,   312,   313,    -1,   314,   130,   507,    -1,    80,
+      -1,    81,    -1,    82,    -1,    83,    -1,    84,    -1,    85,
+      -1,    86,    -1,    87,    -1,    88,    -1,    89,    -1,   318,
+      -1,   325,    -1,   326,    -1,   345,    -1,   322,    -1,   323,
+      -1,   324,    -1,   508,    -1,   327,    -1,   330,    -1,    40,
+     157,   521,   130,   520,    -1,    40,    78,   178,    -1,    40,
+      78,   192,    -1,    40,   113,    36,   157,   520,    -1,    40,
+     113,    41,   157,   520,    -1,    40,    54,   523,    20,    -1,
+      40,   241,   537,    -1,    40,    71,   165,    -1,    40,    71,
+     198,    -1,    40,   113,   166,   125,   126,    -1,    40,   113,
+     166,   125,   127,    -1,    40,    75,   178,   107,   145,    -1,
+      40,    75,   178,   107,   162,    -1,    40,    75,   163,   107,
+     145,    -1,    40,    75,   163,   107,   162,    -1,    40,   113,
+     106,   520,    -1,    40,    72,   520,    -1,    50,    56,   520,
+      -1,    50,    56,   329,   520,    -1,    50,    56,   520,    96,
+     328,    -1,    50,    56,   329,   520,    96,   328,    -1,   520,
+      -1,   328,   107,   520,    -1,   157,   521,   130,    -1,   113,
+      36,   157,    -1,    50,    53,   520,    -1,    50,    53,   157,
+     521,   130,   520,    -1,    50,    53,   520,    96,   328,    -1,
+      50,    53,   157,   521,   130,   520,    96,   328,    -1,    40,
+     111,   149,   332,    -1,    94,   493,   333,    -1,   333,    -1,
+     334,    -1,   135,    -1,   135,   334,    -1,   140,   369,    -1,
+     118,   523,    -1,   118,   523,   490,    -1,    40,   112,   335,
+     140,   369,    -1,    40,   112,   335,   135,    -1,    40,   112,
+     335,   135,   140,   369,    -1,   281,    -1,   282,    -1,    40,
+     339,    -1,   340,    -1,   279,   340,    -1,   341,    -1,   337,
+     341,    -1,   280,   520,   283,   369,   167,   344,   183,    -1,
+     343,    -1,   343,   106,   520,    -1,   369,    -1,   369,   490,
+      -1,   153,   342,    -1,   344,   107,   342,    -1,    40,    60,
+     178,    -1,    40,    60,   192,    -1,   153,   183,    -1,   153,
+     361,   183,    -1,   153,   183,    94,   491,    -1,   153,   361,
+     183,    94,   491,    -1,    28,   348,    -1,   150,   349,   366,
+     180,    -1,   349,   350,   187,    -1,    -1,   350,   107,   351,
+      -1,    40,   351,    -1,   335,    -1,   335,   140,   369,    -1,
+      58,   118,   523,   140,   369,    -1,    29,   234,   369,    -1,
+      33,   153,   369,   183,   348,    -1,    30,    31,    -1,    32,
+      31,    -1,   276,   280,   520,    -1,   278,   280,   520,    -1,
+     277,   280,   520,    -1,    40,   358,    -1,    40,    45,   358,
+      -1,    40,    44,   358,    -1,   359,    -1,    46,   359,    -1,
+      42,   359,    -1,    43,   360,    -1,    41,   523,   346,   364,
+      -1,    41,   523,   346,   135,    -1,    41,   523,   346,   348,
+      -1,   362,    -1,   361,   107,   362,    -1,   118,   523,    -1,
+     118,   523,   490,    -1,   150,   366,   180,    -1,   150,   366,
+     180,    -1,   366,    -1,   368,    -1,   368,   367,    -1,   187,
+      -1,   367,   368,   187,    -1,   369,    -1,   368,   107,   369,
+      -1,   370,    -1,   407,    -1,   410,    -1,   413,    -1,   414,
+      -1,   509,    -1,   510,    -1,   512,    -1,   511,    -1,   513,
+      -1,   516,    -1,   525,    -1,   353,    -1,   354,    -1,   355,
+      -1,   352,    -1,   347,    -1,   356,    -1,   379,   371,    -1,
+     182,   369,    -1,    64,   269,    -1,    65,   269,    -1,   214,
+      -1,   247,    -1,    68,   247,    -1,   373,   391,    69,   369,
+      -1,   373,    69,   369,    -1,    62,   372,   390,   374,   374,
+      -1,    62,   372,   390,   374,    -1,    70,   118,   523,    -1,
+     381,    -1,   386,    -1,   375,    -1,   377,    -1,   395,    -1,
+     400,    -1,   396,    -1,   376,    -1,   377,    -1,   379,   378,
+      -1,    62,   118,    -1,    63,    62,   118,    -1,   380,   382,
+      -1,   383,    -1,   382,   107,   118,   383,    -1,   523,   144,
+     369,    -1,   523,   490,   144,   369,    -1,   523,   384,   144,
+     369,    -1,   523,   490,   384,   144,   369,    -1,   523,   385,
+     144,   369,    -1,   523,   490,   385,   144,   369,    -1,   523,
+     384,   385,   144,   369,    -1,   523,   490,   384,   385,   144,
+     369,    -1,    96,   118,   523,    -1,   263,   118,   523,    -1,
+      59,   118,   387,    -1,   389,    -1,   387,   107,   118,   389,
+      -1,   394,    -1,   388,   107,   118,   394,    -1,   523,   140,
+     369,    -1,   523,   490,   140,   369,    -1,   523,   385,   140,
+     369,    -1,   523,   490,   385,   140,   369,    -1,   118,   523,
+     144,   369,    -1,   118,   523,   490,   144,   369,    -1,   392,
+      -1,   118,   523,    -1,   118,   523,   392,    -1,   384,    -1,
+     384,   393,    -1,   393,    -1,    66,   118,   523,    67,   118,
+     523,    -1,    67,   118,   523,    -1,    66,   118,   523,    -1,
+     523,    -1,   208,   369,    -1,   168,   167,   397,    -1,   398,
+      -1,   397,   107,   398,    -1,   118,   523,    -1,   118,   523,
+     399,    -1,   106,   520,    -1,   166,   167,   401,    -1,    52,
+     166,   167,   401,    -1,   402,    -1,   401,   107,   402,    -1,
+     369,    -1,   369,   403,    -1,   404,    -1,   405,    -1,   406,
+      -1,   404,   405,    -1,   404,   406,    -1,   405,   406,    -1,
+     404,   405,   406,    -1,    95,    -1,   116,    -1,   125,   126,
+      -1,   125,   127,    -1,   106,   520,    -1,    51,   118,   408,
+     184,   369,    -1,   133,   118,   408,   184,   369,    -1,   409,
+      -1,   408,   107,   118,   409,    -1,   523,   144,   369,    -1,
+     523,   490,   144,   369,    -1,    35,   153,   366,   183,   411,
+     113,   182,   369,    -1,    35,   153,   366,   183,   411,   113,
+     118,   523,   182,   369,    -1,   412,    -1,   411,   412,    -1,
+     100,   491,   182,   369,    -1,   100,   118,   523,    94,   491,
+     182,   369,    -1,    47,   153,   366,   183,   194,   369,   124,
+     369,    -1,   415,    -1,   414,   164,   415,    -1,   416,    -1,
+     415,    92,   416,    -1,   418,    -1,   418,   431,   418,    -1,
+     418,   432,   418,    -1,   418,   130,   418,    -1,   418,   159,
+     418,    -1,    -1,   418,   154,   417,   418,    -1,   418,   152,
+     418,    -1,   418,   141,   418,    -1,   418,   139,   418,    -1,
+     419,    -1,   419,   252,   526,    -1,   419,   252,   526,   560,
+      -1,   420,    -1,   420,   195,   420,    -1,   421,    -1,   420,
+     172,   421,    -1,   420,   155,   421,    -1,   422,    -1,   421,
+     190,   422,    -1,   421,   117,   422,    -1,   421,   143,   422,
+      -1,   421,   156,   422,    -1,   423,    -1,   422,   197,   423,
+      -1,   422,   206,   423,    -1,   424,    -1,   423,   147,   424,
+      -1,   423,   134,   424,    -1,   425,    -1,   425,    76,   228,
+     491,    -1,   426,    -1,   426,   196,    94,   491,    -1,   427,
+      -1,   427,   101,    94,   489,    -1,   428,    -1,   428,   102,
+      94,   489,    -1,   430,    -1,   429,   430,    -1,   172,    -1,
+     155,    -1,   429,   172,    -1,   429,   155,    -1,   433,    -1,
+     437,    -1,   434,    -1,   199,    -1,   204,    -1,   203,    -1,
+     202,    -1,   201,    -1,   200,    -1,   148,    -1,   175,    -1,
+     138,    -1,    34,   150,   366,   180,    -1,    34,   219,   150,
+     366,   180,    -1,    34,   218,   150,   366,   180,    -1,    34,
+      94,   505,   150,   366,   180,    -1,   435,   150,   180,    -1,
+     435,   150,   366,   180,    -1,   436,    -1,   435,   436,    -1,
+     173,   523,    15,    -1,   173,    16,    -1,   438,    -1,   438,
+     439,    -1,   189,   439,    -1,   439,    -1,   188,    -1,   440,
+      -1,   440,   188,   439,    -1,   440,   189,   439,    -1,   441,
+      -1,   450,    -1,   442,    -1,   442,   451,    -1,   445,    -1,
+     445,   451,    -1,   443,   447,    -1,   444,    -1,   105,    -1,
+     114,    -1,    98,    -1,   186,    -1,   115,    -1,   137,    -1,
+     136,    -1,   447,    -1,    99,   447,    -1,   446,   447,    -1,
+     120,    -1,   169,    -1,    90,    -1,   177,    -1,   176,    -1,
+      91,    -1,   495,    -1,   448,    -1,   523,    -1,   449,    -1,
+     190,    -1,    10,    -1,    17,    -1,   453,    -1,   453,   451,
+      -1,   452,    -1,   451,   452,    -1,   151,   366,   181,    -1,
+     454,    -1,   456,    -1,   457,    -1,   458,    -1,   461,    -1,
+     463,    -1,   459,    -1,   460,    -1,   455,    -1,   507,    -1,
+     110,    -1,   146,    -1,   122,    -1,   118,   523,    -1,   153,
+     183,    -1,   153,   366,   183,    -1,   119,    -1,   165,   150,
+     366,   180,    -1,   198,   150,   366,   180,    -1,   523,   153,
+     183,    -1,   523,   153,   462,   183,    -1,   369,    -1,   462,
+     107,   369,    -1,   464,    -1,   482,    -1,   465,    -1,   479,
+      -1,   480,    -1,   154,   523,   469,   128,    -1,   154,   523,
+     467,   469,   128,    -1,   154,   523,   469,   193,   191,   523,
+     469,   193,    -1,   154,   523,   469,   193,   466,   191,   523,
+     469,   193,    -1,   154,   523,   467,   469,   193,   191,   523,
+     469,   193,    -1,   154,   523,   467,   469,   193,   466,   191,
+     523,   469,   193,    -1,   477,    -1,   466,   477,    -1,   468,
+      -1,   467,   468,    -1,    27,   523,   469,   130,   469,   470,
+      -1,    -1,    27,    -1,   179,   471,   179,    -1,    93,   473,
+      93,    -1,    -1,   472,    -1,   132,    -1,   475,    -1,   472,
+     132,    -1,   472,   475,    -1,    -1,   474,    -1,   131,    -1,
+     476,    -1,   474,   131,    -1,   474,   476,    -1,    19,    -1,
+     478,    -1,     4,    -1,   478,    -1,   464,    -1,     9,    -1,
+     481,    -1,   478,    -1,     8,    -1,   121,    -1,   123,    -1,
+     363,    -1,   209,    21,   210,    -1,   209,   210,    -1,   170,
+      14,   171,    -1,   170,    14,     7,    -1,   103,     6,    -1,
+     483,    -1,   484,    -1,   485,    -1,   486,    -1,   487,    -1,
+     488,    -1,    37,   150,   366,   180,    -1,    36,   523,   150,
+     180,    -1,    36,   523,   150,   366,   180,    -1,    36,   150,
+     366,   180,   150,   180,    -1,    36,   150,   366,   180,   150,
+     366,   180,    -1,    97,   523,   150,   180,    -1,    97,   523,
+     150,   366,   180,    -1,    97,   150,   366,   180,   150,   180,
+      -1,    97,   150,   366,   180,   150,   366,   180,    -1,    38,
+     150,   366,   180,    -1,    39,   150,   366,   180,    -1,    48,
+     522,   150,   180,    -1,    48,   522,   150,   366,   180,    -1,
+      48,   150,   366,   180,   150,   180,    -1,    48,   150,   366,
+     180,   150,   366,   180,    -1,   494,    -1,   494,   142,    -1,
+      94,   491,    -1,   493,    -1,   493,   492,    -1,   207,   153,
+     183,    -1,   142,    -1,   190,    -1,   172,    -1,   494,    -1,
+     495,    -1,   149,   153,   183,    -1,   523,    -1,   497,    -1,
+     503,    -1,   501,    -1,   504,    -1,   502,    -1,   500,    -1,
+     499,    -1,   498,    -1,   496,    -1,   222,   153,   183,    -1,
+      74,   153,   183,    -1,    74,   153,   503,   183,    -1,    74,
+     153,   504,   183,    -1,    38,   153,   183,    -1,    39,   153,
+     183,    -1,    48,   153,   183,    -1,    48,   153,   522,   183,
+      -1,    48,   153,    20,   183,    -1,    97,   153,   183,    -1,
+      97,   153,   523,   183,    -1,    97,   153,   523,   107,   505,
+     183,    -1,    97,   153,   190,   183,    -1,    97,   153,   190,
+     107,   505,   183,    -1,   185,   523,   183,    -1,    36,   153,
+     183,    -1,    36,   153,   523,   183,    -1,    36,   153,   523,
+     107,   505,   183,    -1,    36,   153,   523,   107,   506,   183,
+      -1,    36,   153,   190,   183,    -1,    36,   153,   190,   107,
+     505,   183,    -1,    36,   153,   190,   107,   506,   183,    -1,
+      73,   153,   523,   183,    -1,   523,    -1,   523,   142,    -1,
+      20,    -1,    40,   217,   218,    -1,    40,   217,   219,    -1,
+      40,   217,   220,    -1,   223,   222,   369,   230,   369,    -1,
+     223,   222,   369,    94,   229,   230,   369,    -1,   223,   222,
+     369,    94,   231,   230,   369,    -1,   223,   222,   369,   215,
+     369,    -1,   223,   222,   369,   216,   369,    -1,   223,   224,
+     369,   230,   369,    -1,   223,   224,   369,    94,   229,   230,
+     369,    -1,   223,   224,   369,    94,   231,   230,   369,    -1,
+     223,   224,   369,   215,   369,    -1,   223,   224,   369,   216,
+     369,    -1,   221,   222,   369,    -1,   221,   224,   369,    -1,
+     226,   222,   369,   234,   369,    -1,   226,   227,   228,   222,
+     369,   234,   369,    -1,   225,   222,   369,    94,   369,    -1,
+     233,   118,   514,   232,   369,   182,   369,    -1,   515,    -1,
+     514,   107,   118,   515,    -1,   523,   140,   369,    -1,   235,
+     150,   369,   180,   517,    -1,   518,    -1,   517,   518,    -1,
+     236,   519,   364,    -1,   236,   519,   153,   118,   523,   183,
+     364,    -1,   236,   519,   153,   118,   523,   107,   118,   523,
+     183,   364,    -1,   236,   519,   153,   118,   523,   107,   118,
+     523,   107,   118,   523,   183,   364,    -1,   448,    -1,   519,
+     206,   448,    -1,    20,    -1,   522,    -1,   524,    -1,    18,
+      -1,    18,    -1,   524,    -1,   211,    -1,   125,    -1,    97,
+      -1,    39,    -1,    74,    -1,    36,    -1,   149,    -1,    47,
+      -1,   222,    -1,    48,    -1,    77,    -1,    73,    -1,    38,
+      -1,    35,    -1,   207,    -1,    78,    -1,   241,    -1,    72,
+      -1,   219,    -1,   218,    -1,   143,    -1,    37,    -1,   253,
+      -1,   240,    -1,   243,    -1,   242,    -1,   270,    -1,   271,
+      -1,   274,    -1,   272,    -1,   275,    -1,   246,    -1,   248,
+      -1,    55,    -1,   214,    -1,   247,    -1,    49,    -1,   220,
+      -1,   233,    -1,   227,    -1,   199,    -1,   204,    -1,   203,
+      -1,   202,    -1,   201,    -1,   200,    -1,    96,    -1,   111,
+      -1,   112,    -1,   182,    -1,    62,    -1,    63,    -1,    64,
+      -1,    65,    -1,    66,    -1,    67,    -1,    68,    -1,    69,
+      -1,    70,    -1,   144,    -1,    59,    -1,   208,    -1,   167,
+      -1,   168,    -1,   166,    -1,    52,    -1,    95,    -1,   116,
+      -1,   126,    -1,   127,    -1,   106,    -1,    51,    -1,   133,
+      -1,   184,    -1,   100,    -1,    94,    -1,   194,    -1,   124,
+      -1,   164,    -1,    92,    -1,    76,    -1,   228,    -1,   101,
+      -1,   195,    -1,   117,    -1,   156,    -1,   197,    -1,   147,
+      -1,   134,    -1,    34,    -1,   102,    -1,   196,    -1,   148,
+      -1,   178,    -1,   192,    -1,   157,    -1,   135,    -1,   129,
+      -1,   163,    -1,   145,    -1,   162,    -1,    40,    -1,    60,
+      -1,    71,    -1,   113,    -1,    75,    -1,    54,    -1,   212,
+      -1,    50,    -1,    56,    -1,    53,    -1,    41,    -1,   263,
+      -1,   252,    -1,   268,    -1,   269,    -1,   245,    -1,   258,
+      -1,   266,    -1,   262,    -1,   244,    -1,   257,    -1,   267,
+      -1,   261,    -1,   256,    -1,   255,    -1,   239,    -1,   238,
+      -1,   260,    -1,   249,    -1,   250,    -1,   273,    -1,   265,
+      -1,   264,    -1,   259,    -1,   226,    -1,   232,    -1,   229,
+      -1,   223,    -1,   216,    -1,   215,    -1,   217,    -1,   234,
+      -1,   224,    -1,   225,    -1,   231,    -1,   221,    -1,   230,
+      -1,    46,    -1,    43,    -1,    42,    -1,    44,    -1,    45,
+      -1,   165,    -1,   198,    -1,    28,    -1,    29,    -1,    31,
+      -1,    33,    -1,    30,    -1,    32,    -1,   235,    -1,   236,
+      -1,    61,    -1,   237,    -1,    58,    -1,   280,    -1,   276,
+      -1,   277,    -1,   279,    -1,   283,    -1,   281,    -1,   282,
+      -1,   278,    -1,    79,    -1,    80,    -1,    81,    -1,    82,
+      -1,    83,    -1,    84,    -1,    85,    -1,    86,    -1,    87,
+      -1,    88,    -1,    89,    -1,   237,   118,   388,    61,   150,
+     369,   180,    -1,    61,   150,   369,   180,    -1,   528,    -1,
+     528,   527,    -1,   528,   268,   419,    -1,   528,   527,   268,
+     419,    -1,   537,    -1,   535,    -1,   527,   537,    -1,   527,
+     535,    -1,   529,    -1,   528,   254,   529,    -1,   530,    -1,
+     529,   251,   530,    -1,   531,    -1,   530,   253,   144,   531,
+      -1,   532,    -1,   253,   532,    -1,   533,    -1,   533,   556,
+      -1,   153,   526,   183,    -1,   534,    -1,   534,   552,    -1,
+     454,    -1,   150,   366,   180,    -1,   536,    -1,   555,    -1,
+     554,    -1,   557,    -1,   551,    -1,   165,    -1,   538,    -1,
+     539,    -1,   540,    -1,   541,    -1,   544,    -1,   549,    -1,
+     550,    -1,   257,    -1,   267,    -1,   100,   240,    -1,   100,
+     243,    -1,   234,   242,    -1,   270,   242,    -1,   242,   240,
+      -1,   242,   243,    -1,   234,   271,    -1,   270,   271,    -1,
+     234,   274,   543,    -1,   234,   274,   113,    -1,   234,   274,
+     153,   543,   183,    -1,   234,   274,   153,   543,   107,   542,
+     183,    -1,   234,   274,   153,   113,   183,    -1,   234,   274,
+     153,   113,   107,   542,   183,    -1,   270,   274,    -1,   543,
+      -1,   542,   107,   543,    -1,    96,    20,    -1,    96,    20,
+     261,    20,    -1,    96,    20,   553,   256,    -1,    96,    20,
+     261,    20,   553,   256,    -1,   234,   272,   273,   546,    -1,
+     234,   272,   273,   546,   545,    -1,   234,   113,   272,   273,
+      -1,   234,   113,   272,   273,   545,    -1,   270,   272,   273,
+      -1,   548,    -1,   545,   548,    -1,    96,    20,    -1,   153,
+     547,   183,    -1,    20,    -1,   547,    20,    -1,   197,   546,
+      -1,   134,   546,    -1,   255,    20,    -1,   234,   275,    -1,
+     270,   275,    -1,    96,   214,    -1,    96,   247,    -1,   246,
+     248,    -1,   239,    -1,   239,    55,    -1,   238,    -1,   238,
+     273,    -1,   260,    -1,   249,   422,    -1,    96,   127,   422,
+      -1,    96,    49,   422,    -1,   250,   422,   195,   422,    -1,
+     245,   553,   558,    -1,   269,   422,   558,    -1,   258,   553,
+     266,    -1,   262,   559,    -1,   244,   559,    -1,   273,    -1,
+     265,    -1,   259,    -1,   264,    -1,   259,    -1,   270,   248,
+     422,    -1
   };
 
   /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
@@ -10476,108 +10549,108 @@ namespace zorba
     2271,  2273,  2275,  2277,  2279,  2281,  2283,  2285,  2287,  2289,
     2291,  2293,  2295,  2297,  2299,  2301,  2303,  2305,  2307,  2309,
     2311,  2313,  2315,  2317,  2319,  2321,  2323,  2325,  2327,  2329,
-    2331,  2333,  2335,  2337,  2339,  2347,  2352,  2354,  2357,  2361,
-    2366,  2368,  2370,  2373,  2376,  2378,  2382,  2384,  2388,  2390,
-    2395,  2397,  2400,  2402,  2405,  2409,  2411,  2414,  2416,  2420,
-    2422,  2424,  2426,  2428,  2430,  2432,  2434,  2436,  2438,  2440,
-    2442,  2444,  2446,  2448,  2450,  2453,  2456,  2459,  2462,  2465,
-    2468,  2471,  2474,  2478,  2482,  2488,  2496,  2502,  2510,  2513,
-    2515,  2519,  2522,  2527,  2532,  2539,  2544,  2550,  2555,  2561,
-    2565,  2567,  2570,  2573,  2577,  2579,  2582,  2585,  2588,  2591,
-    2594,  2597,  2600,  2603,  2606,  2608,  2611,  2613,  2616,  2618,
-    2621,  2625,  2629,  2634,  2638,  2642,  2646,  2649,  2652,  2654,
-    2656,  2658,  2660,  2662
+    2331,  2333,  2335,  2337,  2339,  2341,  2343,  2345,  2353,  2358,
+    2360,  2363,  2367,  2372,  2374,  2376,  2379,  2382,  2384,  2388,
+    2390,  2394,  2396,  2401,  2403,  2406,  2408,  2411,  2415,  2417,
+    2420,  2422,  2426,  2428,  2430,  2432,  2434,  2436,  2438,  2440,
+    2442,  2444,  2446,  2448,  2450,  2452,  2454,  2456,  2459,  2462,
+    2465,  2468,  2471,  2474,  2477,  2480,  2484,  2488,  2494,  2502,
+    2508,  2516,  2519,  2521,  2525,  2528,  2533,  2538,  2545,  2550,
+    2556,  2561,  2567,  2571,  2573,  2576,  2579,  2583,  2585,  2588,
+    2591,  2594,  2597,  2600,  2603,  2606,  2609,  2612,  2614,  2617,
+    2619,  2622,  2624,  2627,  2631,  2635,  2640,  2644,  2648,  2652,
+    2655,  2658,  2660,  2662,  2664,  2666,  2668
   };
 
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
   const unsigned short int
   xquery_parser::yyrline_[] =
   {
-         0,   903,   903,   904,   914,   919,   925,   930,   942,   947,
-     957,   964,   976,   988,  1000,  1006,  1012,  1024,  1030,  1044,
-    1050,  1064,  1065,  1066,  1067,  1073,  1074,  1075,  1076,  1079,
-    1082,  1084,  1090,  1095,  1103,  1109,  1118,  1127,  1128,  1129,
-    1130,  1131,  1132,  1133,  1134,  1135,  1136,  1143,  1144,  1145,
-    1146,  1147,  1148,  1149,  1152,  1159,  1160,  1172,  1184,  1189,
-    1200,  1206,  1218,  1231,  1242,  1247,  1259,  1264,  1275,  1281,
-    1287,  1293,  1312,  1323,  1334,  1341,  1348,  1355,  1368,  1374,
-    1389,  1393,  1403,  1409,  1416,  1422,  1434,  1441,  1447,  1454,
-    1460,  1464,  1471,  1482,  1486,  1494,  1503,  1510,  1520,  1522,
-    1529,  1537,  1541,  1549,  1553,  1561,  1569,  1573,  1581,  1585,
-    1592,  1599,  1609,  1614,  1626,  1630,  1634,  1638,  1645,  1652,
-    1671,  1681,  1687,  1693,  1702,  1713,  1726,  1733,  1740,  1752,
-    1756,  1763,  1767,  1771,  1778,  1782,  1788,  1795,  1799,  1803,
-    1811,  1818,  1827,  1839,  1853,  1861,  1875,  1881,  1893,  1901,
-    1912,  1923,  1927,  1939,  1943,  1952,  1956,  1972,  1973,  1974,
-    1975,  1976,  1979,  1980,  1981,  1982,  1983,  1985,  1986,  1989,
-    1990,  1991,  1992,  1993,  1996,  2003,  2012,  2019,  2023,  2031,
-    2035,  2039,  2046,  2050,  2057,  2065,  2076,  2085,  2086,  2087,
-    2091,  2091,  2091,  2091,  2091,  2094,  2100,  2109,  2113,  2123,
-    2134,  2140,  2154,  2161,  2169,  2178,  2188,  2196,  2205,  2214,
-    2229,  2241,  2252,  2264,  2270,  2282,  2288,  2302,  2310,  2319,
-    2327,  2339,  2345,  2355,  2356,  2360,  2368,  2372,  2377,  2381,
-    2385,  2389,  2396,  2411,  2419,  2426,  2432,  2443,  2449,  2458,
-    2468,  2473,  2485,  2491,  2505,  2511,  2523,  2530,  2537,  2544,
-    2551,  2558,  2565,  2578,  2582,  2592,  2597,  2608,  2619,  2626,
-    2639,  2646,  2658,  2664,  2677,  2684,  2698,  2704,  2716,  2722,
-    2735,  2746,  2750,  2761,  2765,  2784,  2788,  2796,  2804,  2812,
-    2820,  2820,  2828,  2836,  2844,  2858,  2862,  2869,  2882,  2886,
-    2897,  2901,  2905,  2915,  2919,  2923,  2927,  2931,  2941,  2945,
-    2950,  2961,  2965,  2969,  2979,  2983,  2995,  2999,  3011,  3015,
-    3027,  3031,  3043,  3047,  3059,  3063,  3067,  3071,  3083,  3087,
-    3091,  3101,  3105,  3109,  3113,  3117,  3121,  3131,  3135,  3139,
-    3149,  3153,  3157,  3161,  3173,  3179,  3191,  3197,  3211,  3218,
-    3259,  3263,  3267,  3271,  3283,  3293,  3304,  3309,  3319,  3323,
-    3333,  3339,  3345,  3351,  3363,  3369,  3380,  3384,  3388,  3392,
-    3396,  3400,  3404,  3414,  3418,  3428,  3434,  3446,  3450,  3454,
-    3458,  3462,  3477,  3481,  3491,  3495,  3505,  3512,  3519,  3532,
-    3536,  3548,  3554,  3568,  3579,  3583,  3587,  3591,  3595,  3599,
-    3603,  3607,  3617,  3621,  3631,  3636,  3641,  3652,  3662,  3666,
-    3677,  3687,  3698,  3754,  3760,  3772,  3778,  3790,  3794,  3804,
-    3808,  3812,  3822,  3830,  3838,  3846,  3854,  3862,  3877,  3883,
-    3895,  3901,  3914,  3923,  3925,  3931,  3936,  3948,  3951,  3958,
-    3964,  3970,  3978,  3993,  3996,  4003,  4009,  4015,  4023,  4037,
-    4042,  4053,  4058,  4069,  4074,  4079,  4085,  4097,  4103,  4108,
-    4113,  4124,  4129,  4144,  4149,  4166,  4181,  4185,  4189,  4193,
-    4197,  4201,  4211,  4222,  4228,  4234,  4239,  4261,  4267,  4273,
-    4278,  4289,  4299,  4309,  4315,  4321,  4326,  4337,  4343,  4355,
-    4366,  4372,  4378,  4415,  4420,  4425,  4436,  4440,  4444,  4454,
-    4465,  4469,  4473,  4477,  4481,  4485,  4489,  4493,  4497,  4507,
-    4517,  4521,  4526,  4537,  4547,  4557,  4561,  4565,  4575,  4581,
-    4587,  4593,  4599,  4611,  4622,  4629,  4636,  4643,  4650,  4657,
-    4664,  4677,  4698,  4705,  4725,  4765,  4769,  4773,  4782,  4788,
-    4794,  4800,  4806,  4813,  4819,  4825,  4831,  4837,  4849,  4854,
-    4864,  4870,  4882,  4908,  4919,  4925,  4938,  4952,  4959,  4965,
-    4976,  4983,  4992,  5001,  5014,  5020,  5030,  5033,  5051,  5052,
-    5053,  5054,  5055,  5056,  5057,  5058,  5059,  5060,  5061,  5062,
-    5063,  5064,  5065,  5066,  5067,  5068,  5069,  5070,  5071,  5072,
-    5073,  5074,  5075,  5076,  5077,  5078,  5079,  5080,  5081,  5082,
-    5083,  5084,  5085,  5086,  5087,  5088,  5089,  5090,  5091,  5092,
-    5093,  5094,  5095,  5096,  5097,  5098,  5099,  5100,  5101,  5102,
-    5103,  5104,  5105,  5106,  5107,  5108,  5109,  5110,  5111,  5112,
-    5113,  5114,  5115,  5116,  5117,  5118,  5119,  5120,  5121,  5122,
-    5123,  5124,  5125,  5126,  5127,  5128,  5129,  5130,  5131,  5132,
-    5133,  5134,  5135,  5136,  5137,  5138,  5139,  5140,  5141,  5142,
-    5143,  5144,  5145,  5146,  5147,  5148,  5149,  5150,  5151,  5152,
-    5153,  5154,  5155,  5156,  5157,  5158,  5159,  5160,  5161,  5162,
-    5163,  5164,  5165,  5166,  5167,  5168,  5169,  5170,  5171,  5172,
-    5173,  5174,  5175,  5176,  5177,  5178,  5179,  5180,  5181,  5182,
-    5183,  5184,  5185,  5186,  5187,  5188,  5189,  5190,  5191,  5192,
-    5193,  5194,  5195,  5196,  5197,  5198,  5199,  5200,  5201,  5202,
-    5203,  5204,  5205,  5206,  5207,  5208,  5209,  5210,  5211,  5212,
-    5213,  5214,  5215,  5216,  5217,  5218,  5219,  5220,  5221,  5222,
-    5223,  5224,  5225,  5226,  5227,  5228,  5229,  5230,  5231,  5232,
-    5233,  5234,  5235,  5236,  5247,  5253,  5270,  5274,  5278,  5282,
-    5292,  5295,  5298,  5301,  5310,  5313,  5322,  5325,  5334,  5337,
-    5346,  5349,  5358,  5361,  5364,  5373,  5376,  5385,  5389,  5399,
-    5402,  5405,  5408,  5411,  5420,  5429,  5433,  5437,  5441,  5445,
-    5449,  5453,  5463,  5466,  5469,  5472,  5481,  5484,  5487,  5490,
-    5499,  5502,  5511,  5514,  5517,  5520,  5523,  5526,  5529,  5538,
-    5541,  5550,  5553,  5556,  5559,  5568,  5571,  5574,  5577,  5580,
-    5589,  5592,  5601,  5604,  5613,  5616,  5625,  5628,  5637,  5646,
-    5649,  5658,  5661,  5664,  5673,  5676,  5679,  5682,  5685,  5694,
-    5698,  5702,  5706,  5716,  5725,  5735,  5744,  5747,  5756,  5759,
-    5762,  5771,  5774,  5783
+         0,   905,   905,   906,   916,   921,   927,   932,   944,   949,
+     959,   966,   978,   990,  1002,  1008,  1014,  1026,  1032,  1046,
+    1052,  1066,  1067,  1068,  1069,  1075,  1076,  1077,  1078,  1081,
+    1084,  1086,  1092,  1097,  1105,  1111,  1120,  1129,  1130,  1131,
+    1132,  1133,  1134,  1135,  1136,  1137,  1138,  1145,  1146,  1147,
+    1148,  1149,  1150,  1151,  1154,  1161,  1162,  1174,  1186,  1191,
+    1202,  1208,  1220,  1233,  1244,  1249,  1261,  1266,  1277,  1283,
+    1289,  1295,  1314,  1325,  1336,  1343,  1350,  1357,  1370,  1376,
+    1391,  1395,  1405,  1411,  1418,  1424,  1436,  1443,  1449,  1456,
+    1462,  1466,  1473,  1484,  1488,  1496,  1505,  1512,  1522,  1524,
+    1531,  1539,  1543,  1551,  1555,  1563,  1571,  1575,  1583,  1587,
+    1594,  1601,  1611,  1616,  1628,  1632,  1636,  1640,  1647,  1654,
+    1673,  1683,  1689,  1695,  1704,  1715,  1728,  1735,  1742,  1754,
+    1758,  1765,  1769,  1773,  1780,  1784,  1790,  1797,  1801,  1805,
+    1813,  1820,  1829,  1841,  1855,  1863,  1877,  1883,  1895,  1903,
+    1914,  1925,  1929,  1941,  1945,  1954,  1958,  1974,  1975,  1976,
+    1977,  1978,  1981,  1982,  1983,  1984,  1985,  1987,  1988,  1991,
+    1992,  1993,  1994,  1995,  1998,  2005,  2014,  2021,  2025,  2033,
+    2037,  2041,  2048,  2052,  2059,  2067,  2078,  2087,  2088,  2089,
+    2093,  2093,  2093,  2093,  2093,  2096,  2102,  2111,  2115,  2125,
+    2136,  2142,  2156,  2163,  2171,  2180,  2190,  2198,  2207,  2216,
+    2231,  2243,  2254,  2266,  2272,  2284,  2290,  2304,  2312,  2321,
+    2329,  2341,  2347,  2357,  2358,  2362,  2370,  2374,  2379,  2383,
+    2387,  2391,  2398,  2413,  2421,  2428,  2434,  2445,  2451,  2460,
+    2470,  2475,  2487,  2493,  2507,  2513,  2525,  2532,  2539,  2546,
+    2553,  2560,  2567,  2580,  2584,  2594,  2599,  2610,  2621,  2628,
+    2641,  2648,  2660,  2666,  2679,  2686,  2700,  2706,  2718,  2724,
+    2737,  2748,  2752,  2763,  2767,  2786,  2790,  2798,  2806,  2814,
+    2822,  2822,  2830,  2838,  2846,  2860,  2864,  2871,  2884,  2888,
+    2899,  2903,  2907,  2917,  2921,  2925,  2929,  2933,  2943,  2947,
+    2952,  2963,  2967,  2971,  2981,  2985,  2997,  3001,  3013,  3017,
+    3029,  3033,  3045,  3049,  3061,  3065,  3069,  3073,  3085,  3089,
+    3093,  3103,  3107,  3111,  3115,  3119,  3123,  3133,  3137,  3141,
+    3151,  3155,  3159,  3163,  3175,  3181,  3193,  3199,  3213,  3220,
+    3261,  3265,  3269,  3273,  3285,  3295,  3306,  3311,  3321,  3325,
+    3335,  3341,  3347,  3353,  3365,  3371,  3382,  3386,  3390,  3394,
+    3398,  3402,  3406,  3416,  3420,  3430,  3436,  3448,  3452,  3456,
+    3460,  3464,  3479,  3483,  3493,  3497,  3507,  3514,  3521,  3534,
+    3538,  3550,  3556,  3570,  3581,  3585,  3589,  3593,  3597,  3601,
+    3605,  3609,  3619,  3623,  3633,  3638,  3643,  3654,  3664,  3668,
+    3679,  3689,  3700,  3756,  3762,  3774,  3780,  3792,  3796,  3806,
+    3810,  3814,  3824,  3832,  3840,  3848,  3856,  3864,  3879,  3885,
+    3897,  3903,  3916,  3925,  3927,  3933,  3938,  3950,  3953,  3960,
+    3966,  3972,  3980,  3995,  3998,  4005,  4011,  4017,  4025,  4039,
+    4044,  4055,  4060,  4071,  4076,  4081,  4087,  4099,  4105,  4110,
+    4115,  4126,  4131,  4146,  4151,  4168,  4183,  4187,  4191,  4195,
+    4199,  4203,  4213,  4224,  4230,  4236,  4241,  4263,  4269,  4275,
+    4280,  4291,  4301,  4311,  4317,  4323,  4328,  4339,  4345,  4357,
+    4368,  4374,  4380,  4417,  4422,  4427,  4438,  4442,  4446,  4456,
+    4467,  4471,  4475,  4479,  4483,  4487,  4491,  4495,  4499,  4509,
+    4519,  4523,  4528,  4539,  4549,  4559,  4563,  4567,  4577,  4583,
+    4589,  4595,  4601,  4613,  4624,  4631,  4638,  4645,  4652,  4659,
+    4666,  4679,  4700,  4707,  4727,  4767,  4771,  4775,  4784,  4790,
+    4796,  4802,  4808,  4815,  4821,  4827,  4833,  4839,  4851,  4856,
+    4866,  4872,  4884,  4910,  4921,  4927,  4940,  4954,  4961,  4967,
+    4978,  4985,  4994,  5003,  5016,  5022,  5032,  5035,  5035,  5039,
+    5056,  5056,  5059,  5060,  5061,  5062,  5063,  5064,  5065,  5066,
+    5067,  5068,  5069,  5070,  5071,  5072,  5073,  5074,  5075,  5076,
+    5077,  5078,  5079,  5080,  5081,  5082,  5083,  5084,  5085,  5086,
+    5087,  5088,  5089,  5090,  5091,  5092,  5093,  5094,  5095,  5096,
+    5097,  5098,  5099,  5100,  5101,  5102,  5103,  5104,  5105,  5106,
+    5107,  5108,  5109,  5110,  5111,  5112,  5113,  5114,  5115,  5116,
+    5117,  5118,  5119,  5120,  5121,  5122,  5123,  5124,  5125,  5126,
+    5127,  5128,  5129,  5130,  5131,  5132,  5133,  5134,  5135,  5136,
+    5137,  5138,  5139,  5140,  5141,  5142,  5143,  5144,  5145,  5146,
+    5147,  5148,  5149,  5150,  5151,  5152,  5153,  5154,  5155,  5156,
+    5157,  5158,  5159,  5160,  5161,  5162,  5163,  5164,  5165,  5166,
+    5167,  5168,  5169,  5170,  5171,  5172,  5173,  5174,  5175,  5176,
+    5177,  5178,  5179,  5180,  5181,  5182,  5183,  5184,  5185,  5186,
+    5187,  5188,  5189,  5190,  5191,  5192,  5193,  5194,  5195,  5196,
+    5197,  5198,  5199,  5200,  5201,  5202,  5203,  5204,  5205,  5206,
+    5207,  5208,  5209,  5210,  5211,  5212,  5213,  5214,  5215,  5216,
+    5217,  5218,  5219,  5220,  5221,  5222,  5223,  5224,  5225,  5226,
+    5227,  5228,  5229,  5230,  5231,  5232,  5233,  5234,  5235,  5236,
+    5237,  5238,  5239,  5240,  5241,  5242,  5243,  5254,  5260,  5277,
+    5281,  5285,  5289,  5299,  5302,  5305,  5308,  5317,  5320,  5329,
+    5332,  5341,  5344,  5353,  5356,  5365,  5368,  5371,  5380,  5383,
+    5392,  5396,  5406,  5409,  5412,  5415,  5418,  5427,  5436,  5440,
+    5444,  5448,  5452,  5456,  5460,  5470,  5473,  5476,  5479,  5488,
+    5491,  5494,  5497,  5506,  5509,  5518,  5521,  5524,  5527,  5530,
+    5533,  5536,  5545,  5548,  5557,  5560,  5563,  5566,  5575,  5578,
+    5581,  5584,  5587,  5596,  5599,  5608,  5611,  5620,  5623,  5632,
+    5635,  5644,  5653,  5656,  5665,  5668,  5671,  5680,  5683,  5686,
+    5689,  5692,  5701,  5705,  5709,  5713,  5723,  5732,  5742,  5751,
+    5754,  5763,  5766,  5769,  5778,  5781,  5790
   };
 
   // Print the state stack on the debug stream.
@@ -10672,7 +10745,7 @@ namespace zorba
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
      285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
-     295,   296
+     295,   296,   297,   298
     };
     if ((unsigned int) t <= yyuser_token_number_max_)
       return translate_table[t];
@@ -10681,20 +10754,20 @@ namespace zorba
   }
 
   const int xquery_parser::yyeof_ = 0;
-  const int xquery_parser::yylast_ = 8932;
-  const int xquery_parser::yynnts_ = 260;
+  const int xquery_parser::yylast_ = 9254;
+  const int xquery_parser::yynnts_ = 262;
   const int xquery_parser::yyempty_ = -2;
-  const int xquery_parser::yyfinal_ = 494;
+  const int xquery_parser::yyfinal_ = 495;
   const int xquery_parser::yyterror_ = 1;
   const int xquery_parser::yyerrcode_ = 256;
-  const int xquery_parser::yyntokens_ = 297;
+  const int xquery_parser::yyntokens_ = 299;
 
-  const unsigned int xquery_parser::yyuser_token_number_max_ = 551;
+  const unsigned int xquery_parser::yyuser_token_number_max_ = 553;
   const xquery_parser::token_number_type xquery_parser::yyundef_token_ = 2;
 
 } // namespace zorba
 
-#line 5791 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
+#line 5798 "/home/muresan/Projects/zorba/src/compiler/parser/xquery_parser.y"
 
 
 namespace zorba {
