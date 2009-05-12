@@ -115,7 +115,12 @@ void validateAfterUpdate(
     DelegatingTypeManager* delegatingTypeManager = 
         static_cast<DelegatingTypeManager*>(typeManager);
         
-    bool isLax = true; //staticContext->isLax();
+    StaticContextConsts::validation_mode_t mode = staticContext->validation_mode();
+
+    if (mode == StaticContextConsts::skip_validation)
+      return;
+
+    bool isLax = (mode == StaticContextConsts::lax_validation);
         
     Schema* schema = delegatingTypeManager->getSchema();
     if ( !schema )
