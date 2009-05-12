@@ -95,7 +95,9 @@ template<enum CompareConsts::CompareType CC, TypeConstants::atomic_type_code_t t
 class TypedValueComparison : public SpecificValueComparison<CC> {
 public:
   TypedValueComparison (const signature &sig) : SpecificValueComparison<CC> (sig) {}
+
   virtual bool specializable() const { return false; }
+
   PlanIter_t createIterator (const QueryLoc& loc, std::vector<PlanIter_t>& argv) const {
     return new TypedValueCompareIterator<t> (loc, argv, CC);
   }
@@ -114,8 +116,15 @@ public:
     op_value_##op (const signature &sig)                                \
     : SpecificValueComparison<CompareConsts::VALUE_##cc> (sig)          \
     {}                                                                  \
+                                                                        \
     const char *comparison_name () const { return name; }               \
+                                                                        \
+    CompareConsts::CompareType comparison_kind() const                  \
+    {                                                                   \
+      return CompareConsts::VALUE_##cc;                                 \
+    }                                                                   \
   };                                                                    \
+                                                                        \
   DECL_SPECIFIC_OP (cc, op, double, DOUBLE);                            \
   DECL_SPECIFIC_OP (cc, op, decimal, DECIMAL);                          \
   DECL_SPECIFIC_OP (cc, op, float, FLOAT);                              \
@@ -193,9 +202,9 @@ xqtref_t ValueOpComparison::return_type (const std::vector<xqtref_t> &arg_types)
 ********************************************************************************/
 
 template<enum CompareConsts::CompareType CC>
-class SpecificGenericComparison : public GenericOpComparison {
+class SpecificGeneralComparison : public GeneralOpComparison {
 public:
-  SpecificGenericComparison (const signature &sig) : GenericOpComparison (sig) {}
+  SpecificGeneralComparison (const signature &sig) : GeneralOpComparison (sig) {}
 
   virtual PlanIter_t createIterator( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const {
     return new CompareIterator (loc, argv[0], argv[1], CC);
@@ -208,12 +217,28 @@ public:
 };
 
 
-typedef SpecificGenericComparison<CompareConsts::GENERAL_EQUAL> op_equal;
-typedef SpecificGenericComparison<CompareConsts::GENERAL_NOT_EQUAL> op_not_equal;
-typedef SpecificGenericComparison<CompareConsts::GENERAL_GREATER> op_greater;
-typedef SpecificGenericComparison<CompareConsts::GENERAL_GREATER_EQUAL> op_greater_equal;
-typedef SpecificGenericComparison<CompareConsts::GENERAL_LESS> op_less;
-typedef SpecificGenericComparison<CompareConsts::GENERAL_LESS_EQUAL> op_less_equal;
+#define DECL_ALL_SPECIFIC_GENERAL_OPS( cc, op, name )                           \
+  class op_##op : public SpecificGeneralComparison<CompareConsts::GENERAL_##cc> \
+  {                                                                             \
+  public:                                                                       \
+    op_##op (const signature &sig)                                              \
+      : SpecificGeneralComparison<CompareConsts::GENERAL_##cc> (sig)            \
+    {}                                                                          \
+                                                                                \
+    const char* comparison_name () const { return name; }                       \
+                                                                                \
+    CompareConsts::CompareType comparison_kind() const                          \
+    {                                                                           \
+      return CompareConsts::GENERAL_##cc;                                       \
+    }                                                                           \
+  };
+
+DECL_ALL_SPECIFIC_GENERAL_OPS(EQUAL, equal, "equal");
+DECL_ALL_SPECIFIC_GENERAL_OPS(NOT_EQUAL, not_equal, "not-equal");
+DECL_ALL_SPECIFIC_GENERAL_OPS(GREATER, greater, "greater");
+DECL_ALL_SPECIFIC_GENERAL_OPS(LESS, less, "less");
+DECL_ALL_SPECIFIC_GENERAL_OPS(GREATER_EQUAL, greater_equal, "greater-equal");
+DECL_ALL_SPECIFIC_GENERAL_OPS(LESS_EQUAL, less_equal, "less-equal");
  
 
   /*-------------------------- Node Comparison ---------------------------------------*/

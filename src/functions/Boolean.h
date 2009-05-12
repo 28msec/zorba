@@ -30,7 +30,8 @@ public:
   GenericOpComparison (const signature &sig) : function (sig) {}
 
   bool isComparisonFunction () const { return true; }
-  bool isGeneralComparisonFunction () const { return true; }
+
+  virtual const char* comparison_name () const { return ""; }
 
   void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
 
@@ -53,9 +54,6 @@ class ValueOpComparison : public GenericOpComparison {
 public:
   ValueOpComparison (const signature &sig) : GenericOpComparison (sig) {}
 
-  virtual const char *comparison_name () const { return ""; }
-
-  bool isGeneralComparisonFunction () const { return false; }
   virtual bool isValueComparisonFunction() const { return true; }
 
   xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
@@ -65,7 +63,16 @@ public:
   const function *specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const;
 };
 
-  
+
+class GeneralOpComparison : public GenericOpComparison {
+public:
+  GeneralOpComparison (const signature &sig) : GenericOpComparison (sig) {}
+
+  bool isGeneralComparisonFunction () const { return true; }
+};
+
+
+
 void populateContext_Boolean(static_context *sctx);
 void populateContext_Comparison(static_context *sctx);
   

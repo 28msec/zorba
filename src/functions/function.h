@@ -24,6 +24,8 @@
 #include "compiler/expression/expr_consts.h"
 #include "compiler/api/compilercb.h"
 
+#include "runtime/booleans/compare_types.h"
+
 namespace zorba {
 
 
@@ -126,6 +128,11 @@ public:
   virtual bool isComparisonFunction() const { return false; }
   virtual bool isValueComparisonFunction() const { return false; }
   virtual bool isGeneralComparisonFunction() const { return false; }
+
+  virtual CompareConsts::CompareType comparison_kind() const 
+  {
+    return CompareConsts::UNKNOWN;
+  }
 };
 
 
