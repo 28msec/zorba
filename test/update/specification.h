@@ -74,8 +74,10 @@ public:
       return "Inspect";
     case CT_ERROR:
       return "Error";
+    default:
+      assert(false);
     }
-    assert(false);
+    return "";
   }
 
   std::string              theName;
