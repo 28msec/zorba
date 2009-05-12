@@ -4,7 +4,7 @@
 
 namespace zorba {
 
-extern const char xqueryx2005_xslt[43813];
+extern const char xqueryx_update_xslt[51384];
 
 }
 

@@ -24,7 +24,7 @@ namespace zorba {
 
 XQueryXConvertor::XQueryXConvertor()
 {
-  xqueryx2005 = NULL;
+  xqueryx_xslt = NULL;
   inited = false;
 
   //setup libxml
@@ -34,7 +34,7 @@ XQueryXConvertor::XQueryXConvertor()
 
 XQueryXConvertor::~XQueryXConvertor()
 {
-  xsltFreeStylesheet((xsltStylesheetPtr)xqueryx2005);
+  xsltFreeStylesheet((xsltStylesheetPtr)xqueryx_xslt);
   //free xslt
   xsltCleanupGlobals();
 
@@ -47,9 +47,9 @@ void XQueryXConvertor::XQueryX_init()
   if(!inited)
   {
     xmlDocPtr doc;
-    doc = xmlParseDoc((xmlChar*)xqueryx2005_xslt);
+    doc = xmlParseDoc((xmlChar*)xqueryx_update_xslt);
 
-    xqueryx2005 = (xsltStylesheet*)xsltParseStylesheetDoc(doc);
+    xqueryx_xslt = (xsltStylesheet*)xsltParseStylesheetDoc(doc);
   //	xmlFreeDoc(doc);
   }
   inited = true;
@@ -70,12 +70,12 @@ char* XQueryXConvertor::XQueryX2XQuery( const char *xqueryx)
   }
 
   //xsltTransformContextPtr ctxt;
-  //ctxt = xsltNewTransformContext((xsltStylesheetPtr)xqueryx2005, doc);
+  //ctxt = xsltNewTransformContext((xsltStylesheetPtr)xqueryx_xslt, doc);
 
   const char  *param[]= {NULL};
-//  res = xsltApplyStylesheetUser((xsltStylesheetPtr)xqueryx2005, doc, param,
+//  res = xsltApplyStylesheetUser((xsltStylesheetPtr)xqueryx_xslt, doc, param,
 //                                  NULL, stderr, ctxt);
-  res = xsltApplyStylesheet((xsltStylesheetPtr)xqueryx2005, doc, param);
+  res = xsltApplyStylesheet((xsltStylesheetPtr)xqueryx_xslt, doc, param);
   if(!res)
   {
 	  xmlFreeDoc(doc);

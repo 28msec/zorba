@@ -8,7 +8,7 @@ struct xsltStylesheet;
 
 class XQueryXConvertor
 {
-  xsltStylesheet*     xqueryx2005;
+  xsltStylesheet*     xqueryx_xslt;
   bool                inited;
 public:
   XQueryXConvertor();
