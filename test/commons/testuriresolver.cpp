@@ -62,7 +62,6 @@ void zorba::TestSchemaURIResolver::initialize ()
     std::string::size_type eq = uris.find ('=');
     String uri (uris.substr (0, eq));
     String file (url + uris.substr (eq+1).c_str());
-    std::cout << "uri_map: " << uri << " -> " << file << std::endl;
     uri_map [uri] = file;
   }
 
@@ -88,7 +87,7 @@ zorba::TestSchemaURIResolver::resolve ( const Item & aURI,
       ItemFactory * factory = zorba -> getItemFactory ();
       Item item = factory -> createAnyURI ( target );
       result -> theSchema = item;
-      
+      std::cout << "Resolved schema " << aURI.getStringValue () << " -> " << result->theSchema.getStringValue () << std::endl;
     } else {
       result -> setError ( URIResolverResult::UR_XQST0059 );
       std::stringstream lErrorStream;
@@ -96,8 +95,6 @@ zorba::TestSchemaURIResolver::resolve ( const Item & aURI,
       std::cout << "Schema not found " << aURI.getStringValue() << std::endl;
       result->setErrorDescription(lErrorStream.str());
     }
-
-    std::cout << "Resolved schema " << aURI.getStringValue () << " -> " << result->theSchema.getStringValue () << std::endl;
 
     return std::auto_ptr<SchemaURIResolverResult> ( result );
   }
