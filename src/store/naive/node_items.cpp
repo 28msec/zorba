@@ -2513,9 +2513,11 @@ XmlNode* TextNode::copy2(
       // Merge adjacent text nodes (if we don't merge, then a query which, say,
       // counts the number of text nodes of some element node will return the
       // wrong result).
-      ulong pos2 = (pos >= 0 ? pos : parent->numChildren());
+      ulong numChildren = parent->numChildren();
+      ulong pos2 = (pos >= 0 ? pos : numChildren);
    
       XmlNode* lsib = (pos2 > 0 ? parent->getChild(pos2-1) : NULL);
+      XmlNode* rsib = (pos2 < numChildren ? parent->getChild(pos2) : NULL);
 
       if (lsib != NULL && lsib->getNodeKind() == store::StoreConsts::textNode)
       {
@@ -2524,7 +2526,7 @@ XmlNode* TextNode::copy2(
         ZORBA_ASSERT(!isTyped());
         ZORBA_ASSERT(!textSibling->isTyped());
 
-        if (lsib->theParent == parent)
+        if (textSibling->theParent == parent)
         {
           textContent = textSibling->getText()->append(getText());
           textSibling->setText(textContent);
@@ -2537,6 +2539,24 @@ XmlNode* TextNode::copy2(
           parent->removeChild(pos2-1);
 
           copyNode = new TextNode(tree, parent, pos2-1, textContent);
+        }
+      }
+      else if (rsib != NULL && rsib->getNodeKind() == store::StoreConsts::textNode)
+      {
+        TextNode* textSibling = reinterpret_cast<TextNode*>(rsib);
+
+        ZORBA_ASSERT(!isTyped());
+        ZORBA_ASSERT(!textSibling->isTyped());
+
+        if (textSibling->theParent == parent)
+        {
+          textContent = getText()->append(textSibling->getText());
+          textSibling->setText(textContent);
+          copyNode = textSibling;
+        }
+        else
+        {
+          ZORBA_ASSERT(0);
         }
       }
       // Skip copy if caller says so.

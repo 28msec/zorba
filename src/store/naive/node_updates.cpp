@@ -385,40 +385,78 @@ void XmlNode::restoreChild(UpdDelete& upd)
 
 
 /*******************************************************************************
-
+  Insert a set of new nodes as children of "this" node. The new children must be
+  inserted in the order they appear in upd.theNewChildren. Let S and E be the
+  first (starting) and last (ending) nodes in this sequence. The new nodes will
+  be inserted between the current children of "this" at positions startPos - 1
+  and startPos. Let L and R be the children at these positions (L is NULL if
+  startPos == 0, and R is NULL if startPos == this->numChildren()). If L and S
+  are both text nodes, S must be merged into L. Similarly, if E and R are both
+  text nodes, E must be merged into R.
 ********************************************************************************/
-void XmlNode::insertChildren(UpdInsertChildren& upd, ulong pos)
+void XmlNode::insertChildren(UpdInsertChildren& upd, ulong startPos)
 {
-  if (pos == 0)
+  ulong pos = startPos;
+  ulong numNewChildren = upd.theNewChildren.size();
+  XmlNode* oldRSibling = (pos < numChildren() ? getChild(pos) : NULL);
+  XmlNode* oldLSibling = (pos > 0 ? getChild(pos-1) : NULL);
+
+  if (oldLSibling == NULL ||
+      oldLSibling->getNodeKind() != store::StoreConsts::textNode)
   {
-    ulong numNewChildren = upd.theNewChildren.size();
     for (long i = numNewChildren - 1; i >= 0; i--)
     {
       XmlNode* child = BASE_NODE(upd.theNewChildren[i]);
 
       if (upd.theCopyMode.theDoCopy)
-        upd.theNewChildren[i] = child->copy2(this, this, 0, NULL, upd.theCopyMode);
+      {
+        XmlNode* newChild = child->copy2(this, this, pos, NULL, upd.theCopyMode);
+
+        if (newChild == oldRSibling)
+        {
+          // E got merged into R.
+          ZORBA_ASSERT(i == ((long)numNewChildren - 1));
+          ZORBA_ASSERT(child->getNodeKind() == store::StoreConsts::textNode);
+        }
+        else
+        {
+          upd.theNewChildren[i] = newChild;
+        }
+      }
       else
-        child->switchTree(this, 0, upd.theCopyMode);
+      {
+        child->switchTree(this, pos, upd.theCopyMode);
+      }
 
       upd.theNumApplied++;
     }
   }
   else
   {
-    ulong numNewChildren = upd.theNewChildren.size();
     for (ulong i = 0; i < numNewChildren; i++)
     {
       XmlNode* child = BASE_NODE(upd.theNewChildren[i]);
 
       if (upd.theCopyMode.theDoCopy)
-        upd.theNewChildren[i] = child->copy2(this,
-                                             this,
-                                             pos + i,
-                                             NULL,
-                                             upd.theCopyMode);
+      {
+        XmlNode* newChild = child->copy2(this, this, pos, NULL, upd.theCopyMode);
+
+        if (newChild == oldLSibling)
+        {
+          // S got merged into L.
+          ZORBA_ASSERT(i == 0);
+          ZORBA_ASSERT(child->getNodeKind() == store::StoreConsts::textNode);
+        }
+        else
+        {
+          ++pos;
+          upd.theNewChildren[i] = newChild;
+        }
+      }
       else
+      {
         child->switchTree(this, pos + i, upd.theCopyMode);
+      }
 
       upd.theNumApplied++;
     }
@@ -429,6 +467,9 @@ void XmlNode::insertChildren(UpdInsertChildren& upd, ulong pos)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void XmlNode::undoInsertChildren(UpdInsertChildren& upd)
 {
   if (upd.theNumApplied == 0)
