@@ -122,7 +122,7 @@ main(int argc, char** argv)
                              + lQueryWithoutSuffix + ".err", path_flags);
 
 
-    zorba::file lSpecFile (zorba::RBKT_SRC_DIR + "/Queries/"
+    zorba::file lSpecFile (rbkt_src_dir + "/Queries/"
                            + lQueryWithoutSuffix +".spec", path_flags);
 
     // does the query file exists
@@ -156,6 +156,8 @@ main(int argc, char** argv)
       zorba::file lRefFile(lTmp, path_flags);
       if (lRefFile.exists()) {
         lRefFileExists = true;
+      } else {
+        std::cout << "Warning: missing reference result file " << lRefFile.get_path () << std::endl;
       }
       lRefFiles.push_back(lRefFile);
     } 
