@@ -72,7 +72,7 @@ public:
   /*
    * Returns true if _item_ is treatable as _type_, false otherwise.
    */
-  static bool is_treatable(const store::Item_t& item, const XQType& type);
+  static bool is_treatable(const store::Item_t& item, const XQType& type, const TypeManager *manager);
 
   /*
    * Returns true if the quantifier of the given sequence type is QUANT_ONE and

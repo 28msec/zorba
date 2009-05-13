@@ -341,7 +341,7 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
 /*******************************************************************************
   
 ********************************************************************************/
-bool TypeOps::is_treatable(const store::Item_t& item, const XQType& type)
+bool TypeOps::is_treatable(const store::Item_t& item, const XQType& type, const TypeManager *manager)
 {
   switch(type.type_kind()) 
   {
@@ -351,9 +351,9 @@ bool TypeOps::is_treatable(const store::Item_t& item, const XQType& type)
       return false;
     
     const NodeXQType& nType = static_cast<const NodeXQType&>(type);
-    rchandle<NodeTest> nodeTest = nType.get_nodetest();
+    NodeTest *nodeTest = nType.get_nodetest().getp();
     store::StoreConsts::NodeKind kind = nodeTest->get_node_kind();
-    rchandle<NodeNameTest> nameTest = nodeTest->get_nametest();
+    NodeNameTest *nameTest = nodeTest->get_nametest().getp();
 
     if (kind != store::StoreConsts::anyNode && kind != item->getNodeKind())
       return false;
@@ -361,7 +361,13 @@ bool TypeOps::is_treatable(const store::Item_t& item, const XQType& type)
     if (nameTest != NULL && ! nameTest->matches (item->getNodeName ()))
       return false;
 
-    // TODO: check content type ????
+    store::Item *contentTypeItem = item->getType();
+    xqtref_t cType = manager->create_named_type(contentTypeItem);
+    xqtref_t ncType = nType.get_content_type();
+    if (ncType != NULL && (cType == NULL || !is_subtype(*cType, *ncType))) {
+      return false;
+    }
+
     return true;
   }
 

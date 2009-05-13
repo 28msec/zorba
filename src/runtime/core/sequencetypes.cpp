@@ -61,7 +61,7 @@ InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lQuantifier = TypeOps::quantifier(*theSequenceType);
   if (consumeNext(lTreatItem, theChild.getp(), planState))
   {
-    if (TypeOps::is_treatable(lTreatItem, *theSequenceType))
+    if (TypeOps::is_treatable(lTreatItem, *theSequenceType, planState.sctx()->get_typemanager()))
     {
       if (consumeNext(lTreatItem, theChild.getp(), planState))
       {
@@ -75,7 +75,7 @@ InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           lResult = true;
           do
           {
-            if (!TypeOps::is_treatable(lTreatItem, *theSequenceType))
+            if (!TypeOps::is_treatable(lTreatItem, *theSequenceType, planState.sctx()->get_typemanager()))
             {
               lResult = false;
             }
@@ -411,7 +411,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       "Cannot treat sequence with more than one item as <type>? or <type>.");
     }
 
-    if ( check_prime && !TypeOps::is_treatable(result, *theTreatType)) 
+    if ( check_prime && !TypeOps::is_treatable(result, *theTreatType, planState.sctx()->get_typemanager())) 
     {
       ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  "Cannot treat " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result)) + " as " + TypeOps::toString (*theTreatType) );
     }
@@ -424,7 +424,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     do 
     {
-      if ( check_prime && !TypeOps::is_treatable(result, *theTreatType)) 
+      if ( check_prime && !TypeOps::is_treatable(result, *theTreatType, planState.sctx()->get_typemanager())) 
       {
         ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  "Cannot treat " + TypeOps::toString (*planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result)) + " as " + TypeOps::toString (*theTreatType) );
       }
