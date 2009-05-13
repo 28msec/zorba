@@ -95,7 +95,7 @@ EOF
 
 sub print_help {
     print <<"EOF";
-  const char *get_help_msg () {
+  const char *get_help_msg () const {
     return
 EOF
 
@@ -136,6 +136,7 @@ EOF
         else {
             print "        int d = 2;\n";
             print "        if ((*argv) [1] == '-' || (*argv) [2] == '\\0') { d = 0; ++argv; }\n";
+            print "        if (*argv == NULL) { result = \"No value given for --$opt->{long} option\"; break; }";
             print "        init_val (*argv, $opt->{member}, d);\n";
         }
         print <<"EOF";
