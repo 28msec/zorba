@@ -324,6 +324,8 @@ main(int argc, char** argv)
           std::cout << "testdriver: canonical result for reference result # " << i << " doesn't match." << std::endl;
           ++i;
         } // for 
+        std::cout << "testdriver: none of the reference results matched" << std::endl;
+        return 8;
       }
     }
   }
