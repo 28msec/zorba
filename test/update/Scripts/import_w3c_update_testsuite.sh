@@ -72,7 +72,7 @@ concat("case=",$tc/@FilePath,$tc/@name),
 for $state in $tc/state
 return (
 concat("State: ",$state/query/@name),
-concat("Args:", string-join(for $infile in $state/input-file return concat(" -x ", $infile/@variable,"=$UPDATE_SRC_DIR/Queries/w3c_update_testsuite/TestSources/",$infile/text(),".xml") ,"")  ,if ($state/query/@date) then concat(" -d ",$state/query/@date) else ()),
+concat("Args:", string-join(for $infile in $state/input-file return concat(" -x ", $infile/@variable,"=$UPDATE_SRC_DIR/Queries/w3c_update_testsuite/",fn:string-replace($infile/text(),"w3c_testsuite/", ""),".xml") ,"")  ,if ($state/query/@date) then concat(" -d ",$state/query/@date) else ()),
 for $outfile in $state/output-file
 return concat("Compare: ", $outfile/text(), " ", $outfile/@compare),
 for $error in $state/expected-error
