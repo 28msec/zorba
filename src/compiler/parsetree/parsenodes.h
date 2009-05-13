@@ -5345,9 +5345,6 @@ public:
   {}
 
 public:
-  // TODO: remove
-  rchandle<NameTest> getNameTest() const { return theNameTests [0]; }
-
   const NameTestList &getNameTests() const { return theNameTests; }
   const std::string& getVarErrorCode() const { return theVarErrorCode; }
   const std::string& getVarErrorDescr() const { return theVarErrorDescr; }

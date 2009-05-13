@@ -45,7 +45,7 @@ namespace zorba
     class CatchClause {
     public:
       ~CatchClause();
-      NodeNameTest_t node_name;
+      std::vector<NodeNameTest_t> node_names;
       PlanIter_t     catch_expr;
       std::vector<LetVarIter_t> errorcode_var;
       std::vector<LetVarIter_t> errordesc_var;

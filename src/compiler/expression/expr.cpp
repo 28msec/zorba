@@ -1315,8 +1315,7 @@ void flwor_expr::next_iter(expr_iterator_data& v) {
 
 
 catch_clause::catch_clause()
-  : nametest_h(NULL),
-  var_h(NULL),
+  : var_h(NULL),
   catch_expr_h(NULL) { }
 
 expr_iterator_data *trycatch_expr::make_iter() {

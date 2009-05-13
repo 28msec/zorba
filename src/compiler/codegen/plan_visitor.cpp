@@ -1327,7 +1327,7 @@ void end_visit (trycatch_expr& v) {
   for(int i = v.clause_count() - 1; i >= 0; --i) {
     catch_clause *cc = &*v[i];
     TryCatchIterator::CatchClause rcc;
-    rcc.node_name = cc->get_nametest_h();
+    rcc.node_names = cc->get_nametests();
     rcc.catch_expr = pop_itstack();
     if (cc->get_errorcode_var_h() != NULL) {
       bool bound = catchvar_iter_map.get((uint64_t)&*cc->get_errorcode_var_h(), vec);

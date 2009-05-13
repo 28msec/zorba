@@ -4479,7 +4479,7 @@ void end_visit (const NameTest& v, void* /*visit_state*/) {
     if (v.getQName() != NULL) {
       string qname = v.getQName()->get_qname();
       store::Item_t qn_h = sctx_p->lookup_elem_qname (qname, loc);
-      cc->set_nametest_h(new NodeNameTest(qn_h));
+      cc->add_nametest_h(new NodeNameTest(qn_h));
     } else {
       rchandle<Wildcard> wildcard = v.getWildcard();
       ZORBA_ASSERT(wildcard != NULL);
@@ -4487,13 +4487,13 @@ void end_visit (const NameTest& v, void* /*visit_state*/) {
       switch (wildcard->getKind())
       {
         case ParseConstants::wild_all:
-          cc->set_nametest_h(new NodeNameTest(xqpString("*").theStrStore, xqpString("*").theStrStore));
+          cc->add_nametest_h(new NodeNameTest(xqpString("*").theStrStore, xqpString("*").theStrStore));
           break;
         case ParseConstants::wild_elem:
-          cc->set_nametest_h(new NodeNameTest(xqpString("*").theStrStore, wildcard->getPrefix().theStrStore));
+          cc->add_nametest_h(new NodeNameTest(xqpString("*").theStrStore, wildcard->getPrefix().theStrStore));
           break;
         case ParseConstants::wild_prefix:
-          cc->set_nametest_h(new NodeNameTest(wildcard->getLocalName().theStrStore, xqpString("*").theStrStore));
+          cc->add_nametest_h(new NodeNameTest(wildcard->getLocalName().theStrStore, xqpString("*").theStrStore));
           break;
       }
     }

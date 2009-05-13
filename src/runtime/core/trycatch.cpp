@@ -131,13 +131,16 @@ TryCatchIterator::matchedCatch(
   for (; lIter!= lEnd; ++lIter )
   {
     const CatchClause& cc = *lIter;
-    const NodeNameTest& nt = *cc.node_name;
-
-    if (nt.matches(e.theLocalName.getStore(), e.theNamespace.getStore()))
-    {
-      state->theCatchIterator = cc.catch_expr;
-      bindErrorVars(e, &cc, planState);
-      return true;
+    const std::vector<NodeNameTest_t>& nts = cc.node_names;
+    std::vector<NodeNameTest_t>::const_iterator i;
+    for(i = nts.begin(); i != nts.end(); ++i) {
+      const NodeNameTest& nt = **i;
+      if (nt.matches(e.theLocalName.getStore(), e.theNamespace.getStore()))
+      {
+        state->theCatchIterator = cc.catch_expr;
+        bindErrorVars(e, &cc, planState);
+        return true;
+      }
     }
   }
   return false;

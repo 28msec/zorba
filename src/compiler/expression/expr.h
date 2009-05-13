@@ -134,8 +134,11 @@ protected:
 class catch_clause : public SimpleRCObject 
 {
   friend class trycatch_expr;
+  public:
+    typedef rchandle<NodeNameTest> nt_t;
+    typedef std::vector<nt_t> nt_list_t;
   protected:
-    rchandle<NodeNameTest> nametest_h;
+    nt_list_t nametests_h;
     expr_t var_h;
     varref_t errorcode_var_h;
     varref_t errordesc_var_h;
@@ -145,8 +148,10 @@ class catch_clause : public SimpleRCObject
   public:
     catch_clause();
 
-    void set_nametest_h(rchandle<NodeNameTest> a) { nametest_h = a; }
-    rchandle<NodeNameTest> get_nametest_h() const { return nametest_h; }
+    void set_nametests(nt_list_t& a) { nametests_h = a; }
+    nt_list_t& get_nametests() { return nametests_h; }
+
+    void add_nametest_h(nt_t n) { nametests_h.push_back(n); }
 
     varref_t get_var_h() const {
       return varref_t(static_cast<var_expr*>(var_h.getp()));
