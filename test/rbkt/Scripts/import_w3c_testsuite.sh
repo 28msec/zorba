@@ -161,7 +161,6 @@ if (@outfiles) {
   foreach (@outfiles) {
     my $txtfile = "$_";
     $txtfile =~ 's/\.txt/.xml.res/';
-    print "blub $txtfile";
     copy ("ExpectedTestResults/$path/$_", "$dstrespath/$txtfile");
     print SPEC " \$RBKT_SRC_DIR/ExpQueryResults/w3c_testsuite/$path/$txtfile";
     print SPECX "\$RBKT_SRC_DIR/ExpQueryResults/w3c_testsuite/$path/$txtfile";
