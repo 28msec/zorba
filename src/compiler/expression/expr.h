@@ -997,7 +997,9 @@ public:
   bool is_reverse_axis () const        { return is_reverse_axis (getAxis ()); }
 
   rchandle<match_expr> getTest() const 
-  { return reinterpret_cast<match_expr*>(theNodeTest.getp()); }
+  {
+    return reinterpret_cast<match_expr*>(theNodeTest.getp());
+  }
 
   void setTest(rchandle<match_expr> v) { theNodeTest = v.getp(); }
 
@@ -1031,8 +1033,6 @@ public:
 
 ********************************************************************************/
 class match_expr : public expr {
-public:
-  expr_kind_t get_expr_kind () const { return match_expr_kind; }
 protected:
   match_test_t  theTestKind;
   match_test_t  theDocTestKind;
@@ -1047,31 +1047,40 @@ protected:
 public:
   match_expr(const QueryLoc&);
 
+  expr_kind_t get_expr_kind () const       { return match_expr_kind; }
+
   match_test_t getTestKind() const         { return theTestKind; }
-  match_test_t getDocTestKind() const      { return theDocTestKind; }
   void setTestKind(enum match_test_t v)    { theTestKind = v; }
+
+  match_test_t getDocTestKind() const      { return theDocTestKind; }
   void setDocTestKind(enum match_test_t v) { theDocTestKind = v; }
 
   match_wild_t getWildKind() const         { return theWildKind; }
-  const xqp_string& getWildName() const    { return theWildName; }
   void setWildKind(enum match_wild_t v)    { theWildKind = v; }
+
+  const xqp_string& getWildName() const    { return theWildName; }
   void setWildName(const xqp_string& v)    { theWildName = v; } 
 
-  store::Item_t getQName() const                  { return theQName; }
-  store::Item_t getTypeName() const               { return theTypeName; }
-  bool getNilledAllowed() const            { return theNilledAllowed; }
-  void setQName(store::Item_t v)                  { theQName = v; }
-  void setTypeName(store::Item_t v)               { theTypeName = v; }
-  void setNilledAllowed(bool v)            { theNilledAllowed = v; }
+  store::Item_t getQName() const           { return theQName; }
+  void setQName(store::Item_t v)           { theQName = v; }
 
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
-  std::ostream& put(std::ostream&) const;
+  store::Item_t getTypeName() const        { return theTypeName; }
+  void setTypeName(store::Item_t v)        { theTypeName = v; }
+
+  bool getNilledAllowed() const            { return theNilledAllowed; }
+  void setNilledAllowed(bool v)            { theNilledAllowed = v; }
 
   store::StoreConsts::NodeKind getNodeKind() const;
 
   xqtref_t return_type_impl(static_context *sctx);
+
   expr_t clone (substitution_t &);
+
+  void next_iter (expr_iterator_data&);
+
+  void accept (expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
 };
 
 

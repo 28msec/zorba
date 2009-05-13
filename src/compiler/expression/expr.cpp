@@ -319,8 +319,24 @@ void flwor_expr::compute_upd_seq_kind () const {
 
 void fo_expr::compute_upd_seq_kind () const {
   bool concat = is_concatenation ();
-  cache.upd_seq_kind.vacuous = get_func ()->getUpdateType () == VACUOUS_EXPR
-    || (concat && size () == 0);
+  ulong numOperands = size();
+
+  cache.upd_seq_kind.vacuous = (get_func ()->getUpdateType () == VACUOUS_EXPR
+                                || (concat && numOperands == 0));
+
+  if (concat && numOperands > 0)
+  {
+    ulong i;
+    for (i = 0; i < numOperands; ++i)
+    {
+      if (!argv[i]->is_vacuous())
+        break;
+    }
+
+    if (i == numOperands)
+      cache.upd_seq_kind.vacuous = true;
+  }
+
   cache.upd_seq_kind.updating = get_func ()->isUpdating ();
   if (! cache.upd_seq_kind.updating && concat)
     for (unsigned i = 0; i < size (); i++)
@@ -1703,7 +1719,8 @@ match_expr::match_expr(const QueryLoc& loc)
   theQName(NULL),
   theTypeName(NULL),
   theNilledAllowed(false)
-{}
+{
+}
 
 
 void match_expr::next_iter (expr_iterator_data& v) {
