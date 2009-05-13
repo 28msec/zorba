@@ -199,14 +199,10 @@ public:
           }
           break;
         } else if ( *lIter == "Result:" ) {
-          ++lIter;
-          std::vector<std::string> lResultTokens;
-          std::vector<std::string>::iterator lResultIter;
-          trim(*lIter);
-          tokenize(*lIter, lResultTokens, " ");
-          for(lResultIter = lResultTokens.begin(); lResultIter != lResultTokens.end(); ++lResultIter)
+          for (++lIter; lIter!=tokens.end(); ++lIter)
           {
-            theResultFiles.push_back(*lResultIter);
+            trim(*lIter);
+            theResultFiles.push_back(*lIter);
           }
         } else if ( *lIter == "InputQuery:" ) {
           ++lIter;
