@@ -30,10 +30,10 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
                        const std::string& aRBKTBinDir);
 
 void
-printFile(std::ostream& os, std::string aInFile);
+printFile(std::ostream& os, const std::string &aInFile);
 
 void
-printPart(std::ostream& os, std::string aInFile, int aStartPos, int aLen);
+printPart(std::ostream& os, const std::string &aInFile, int aStartPos, int aLen);
 
 void
 trim(std::string& str);

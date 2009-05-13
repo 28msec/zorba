@@ -103,7 +103,11 @@ zorba::TestSchemaURIResolver::resolve ( const Item & aURI,
       result -> theSchema = item;
       
     } else {
-      result -> theSchema = aURI;
+      result -> setError ( URIResolverResult::UR_XQST0059 );
+      std::stringstream lErrorStream;
+      lErrorStream << "Schema not found " << aURI.getStringValue();
+      std::cout << "Schema not found " << aURI.getStringValue() << std::endl;
+      result->setErrorDescription(lErrorStream.str());
     }
 
     std::cout << "Resolved schema " << aURI.getStringValue () << " -> " << result->theSchema.getStringValue () << std::endl;

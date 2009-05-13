@@ -166,7 +166,7 @@ fileEquals(const char* aRefFile, const char* aResFile, int& aLine, int& aCol, in
 // print parts of a file
 // starting at aStartPos with the length of aLen
 void
-printPart(std::ostream& os, std::string aInFile, int aStartPos, int aLen)
+printPart(std::ostream& os, const std::string &aInFile, int aStartPos, int aLen)
 {
   char* buffer = new char [aLen];
   try {
@@ -193,7 +193,7 @@ printPart(std::ostream& os, std::string aInFile, int aStartPos, int aLen)
 
 ********************************************************************************/
 void
-printFile(std::ostream& os, std::string aInFile)
+printFile(std::ostream& os, const std::string &aInFile)
 {
   std::ifstream lInFileStream(aInFile.c_str());
   assert(lInFileStream.good());
@@ -203,7 +203,7 @@ printFile(std::ostream& os, std::string aInFile)
     lInFileStream.read(buf, 1024);
     os.write(buf, lInFileStream.gcount());
   }
-
+  os << std::endl;
 }
 
 void
