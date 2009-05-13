@@ -160,7 +160,8 @@ void SchemaValidatorFilter::endDocumentEvent()
 
 void SchemaValidatorFilter::startElementEvent(const XMLCh *prefix, const XMLCh *uri, const XMLCh *localname)
 {
-    if(_elementToProcess) 
+    //std::cout << "   svf startElememntEvent: " << StrX(localname) << "  @ " << StrX(uri) << "\n";
+    if(_elementToProcess)
         processStartElement();
 
     _prefix.set(prefix);
@@ -569,8 +570,12 @@ void SchemaValidatorFilter::endElementEvent(const XMLCh *prefix, const XMLCh *ur
             else 
             {
                 currentDV = ((XercSchemaValidator*)fValidator)->getCurrentDatatypeValidator();
-                typeURI = currentDV->getTypeUri();
-                typeName = currentDV->getTypeLocalName();
+                if (currentDV)
+                {
+                    typeURI = currentDV->getTypeUri();
+                    typeName = currentDV->getTypeLocalName();
+                }
+                // else remains xs:anyType
             }
         }
 
@@ -810,7 +815,10 @@ const XMLCh* SchemaValidatorFilter::getTypeUri()
                 else
                 {
                     currentDV = ((XercSchemaValidator*)fValidator)->getCurrentDatatypeValidator();
-                    typeURI = currentDV->getTypeUri();
+                    if ( currentDV )
+                        typeURI = currentDV->getTypeUri();
+                    else
+                        typeURI = SchemaSymbols::fgURI_SCHEMAFORSCHEMA;
                 }
             }
         }
@@ -847,7 +855,10 @@ const XMLCh* SchemaValidatorFilter::getTypeName()
                 else
                 {
                     currentDV = ((XercSchemaValidator*)fValidator)->getCurrentDatatypeValidator();
-                    typeName = currentDV->getTypeLocalName();
+                    if ( currentDV ) 
+                        typeName = currentDV->getTypeLocalName();
+                    else
+                        typeName = SchemaSymbols::fgATTVAL_ANYTYPE;
                 }
             }
         }
