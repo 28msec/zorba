@@ -216,7 +216,7 @@ protected:
    */
   stack<const DirElemContent*> thePossibleWSContentStack;
 
-  bool hadBSpaceDecl, hadBUriDecl, hadConstrDecl, hadCopyNSDecl, hadDefNSDecl, hadEmptyOrdDecl, hadOrdModeDecl;
+  bool hadBSpaceDecl, hadBUriDecl, hadConstrDecl, hadCopyNSDecl, hadDefNSDecl, hadEmptyOrdDecl, hadOrdModeDecl, hadRevalDecl;
   int xquery_version;  // 100 for 1.0, 110 for 1.1 etc
 
   varref_t theDotVar, theDotPosVar, theLastVar;
@@ -254,6 +254,7 @@ protected:
     hadCopyNSDecl (false),
     hadEmptyOrdDecl (false),
     hadOrdModeDecl (false),
+    hadRevalDecl (false),
     xquery_version (10000)  // fictious version 100.0 -- allow everything
   {
     xquery_fns_def_dot.insert ("string-length");
@@ -5819,6 +5820,7 @@ void end_visit (const ReplaceExpr& v, void* /*visit_state*/) {
 
 void *begin_visit (const RevalidationDecl& v) {
   TRACE_VISIT ();
+  CHK_SINGLE_DECL (hadBUriDecl, XUST0003);
   sctx_p->set_validation_mode (v.get_mode ());
   return no_state;
 }
