@@ -573,7 +573,8 @@ bool WindowIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) 
 
         lState->theCurWindow = lState->theOpenWindows.begin();
 
-        while ( lState->theCurWindow != lState->theOpenWindows.end() && lState->theCurWindow->theEndPos != 0)
+        while ( lState->theCurWindow != lState->theOpenWindows.end() &&
+        		lState->theCurWindow->theEndPos != 0)
         {
 
             theStartClause.bindExtern(aPlanState,
@@ -593,7 +594,7 @@ bool WindowIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) 
             doGarbageCollection ( lState );
 
             STACK_PUSH ( true, lState );
-            ++ ( lState->theCurWindow );
+            //++ ( lState->theCurWindow );
           }
 			++lState->theCurInputPos;
         }
