@@ -40,8 +40,9 @@ q=`mktemp $WORK/rwts.XXXXXX`
 cat >$q <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
 declare option saxon:output "omit-xml-declaration=yes";
-for $sch in //schema 
-return string-join( concat ($sch/@uri, "=", $sch/@FileName), "
+string-join (
+  for $sch in //schema 
+  return concat ($sch/@uri, "=", $sch/@FileName), "
 ")
 EOF
 echo 'Processing URI of catalog (schemas)...'
@@ -152,23 +153,30 @@ copy ("$inpath/$query.xq", "$dstqpath/$name.xq");
 copy ("$inxqueryxpath/$query.xqx", "$dstxqueryxqpath/$name.xqx");
 
 if (@outfiles) {
-  open (SPEC, ">>$specfile");
-  open (SPECX, ">>$xqueryxspecfile");
 
-  print SPEC "Result: ";
-  print SPECX "Result: ";
+  if (@outfiles > 1) {
+    open (SPEC, ">>$specfile");
+    open (SPECX, ">>$xqueryxspecfile");
+    print SPEC "Result: ";
+    print SPECX "Result: ";
+  }
 
   foreach (@outfiles) {
     my $txtfile = "$_";
     $txtfile =~ 's/\.txt/.xml.res/';
     copy ("ExpectedTestResults/$path/$_", "$dstrespath/$txtfile");
-    print SPEC " \$RBKT_SRC_DIR/ExpQueryResults/w3c_testsuite/$path/$txtfile";
-    print SPECX "\$RBKT_SRC_DIR/ExpQueryResults/w3c_testsuite/$path/$txtfile";
+    if (@outfiles > 1) {
+      print SPEC " \$RBKT_SRC_DIR/ExpQueryResults/w3c_testsuite/$path/$txtfile";
+      print SPECX "\$RBKT_SRC_DIR/ExpQueryResults/w3c_testsuite/$path/$txtfile";
+    }
   }
-  print SPEC "\n";
-  print SPECX "\n";
-  close (SPEC);
-  close (SPECX);
+
+  if (@outfiles > 1) {
+    print SPEC "\n";
+    print SPECX "\n";
+    close (SPEC);
+    close (SPECX);
+  }
 }
 
 if ( $inlist ne "noinlist" || $urilist ne "nourilist" || $ctx ne "nocontext" ) {
@@ -248,6 +256,7 @@ mv XQTSCatalog.xml $SRC/test/rbkt/Queries/w3c_testsuite/
 # Need the modules which have .xq suffix; rename them to .xqi files because we do not want to test them (ctest would find those also)
 find "TestSources" -name '*.xq' -exec mv "{}" "$SRC/test/rbkt/Queries/w3c_testsuite/{}i" \;
 find "TestSources" -type f -exec mv "{}" "$SRC/test/rbkt/Queries/w3c_testsuite/{}" \;
+mv "XQTSCatalog.xsd" "$SRC/test/rbkt/Queries/w3c_testsuite/"
 
 echo "Cleaning up work directory...$d0 $d"
 

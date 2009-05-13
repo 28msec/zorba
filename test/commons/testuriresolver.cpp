@@ -58,25 +58,12 @@ void zorba::TestSchemaURIResolver::initialize ()
   std::ifstream urifile ( map_file.c_str() );
   if ( urifile.good () == false ) return;
   std::string uris;
-  std::string::size_type start = 0;
-  std::getline ( urifile, uris );
-  while ( true ) {
-    bool last = false;
-    std::string::size_type pos = uris.find_first_of ( ' ', start );
-    if ( pos == std::string::npos ) {
-      pos = uris.size ();
-      last = true;
-    }
-    std::string::size_type eq = uris.find ( '=', start );
-    std::string::size_type len = eq - start;
-    String uri ( uris.substr ( start, len ) );
-    len = pos - eq - 1;
-    String file ( url );
-    const char * xsd = uris.substr ( eq+1, len ).c_str(); 
-    file.append ( xsd );
-    uri_map [ uri ] = file;
-    start = pos + 1;
-    if ( last ) break;
+  while (std::getline (urifile, uris)) {
+    std::string::size_type eq = uris.find ('=');
+    String uri (uris.substr (0, eq));
+    String file (url + uris.substr (eq+1).c_str());
+    std::cout << "uri_map: " << uri << " -> " << file << std::endl;
+    uri_map [uri] = file;
   }
 
   urifile.close();
