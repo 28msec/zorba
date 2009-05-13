@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+IF (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 IF (NOT WIN32 OR UNIX)
 
 MESSAGE (STATUS "Adding iterator plan tests")
@@ -23,3 +24,4 @@ FOREACH (TESTFILE ${TESTFILES})
 ENDFOREACH(TESTFILE)
 
 ENDIF (NOT WIN32 OR UNIX)
+ENDIF (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
