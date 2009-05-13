@@ -18,8 +18,6 @@
 #include "runtime/debug/debug_iterators.h"
 #include "store/api/item.h"
 
-using namespace std;
-
 namespace zorba {
 
 void 
@@ -27,6 +25,8 @@ FnTraceIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   theTagItem = NULL;
+  theIndex = 0;
+  theOS = planState.sctx()->get_trace_stream();
 }
 
 void 
@@ -34,6 +34,8 @@ FnTraceIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   theTagItem = NULL;
+  theIndex = 0;
+  theOS = planState.sctx()->get_trace_stream();
 }
 
 bool
@@ -48,10 +50,15 @@ FnTraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
 
   while (consumeNext(result, theChildren[0], planState)) {
-    // FIXME: check the standard how to return this
-    cerr << state->theTagItem->getStringValue() << result->getStringValue() << endl;
+    (*state->theOS) << state->theTagItem->getStringValue() 
+                    << " [" << state->theIndex << "]: "
+                    << result->show()
+                    << std::endl;
+    ++state->theIndex;
+
     STACK_PUSH(true, state);
   }
+  
 
   STACK_END (state);
 }

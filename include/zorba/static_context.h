@@ -391,6 +391,20 @@ namespace zorba {
       virtual TypeIdentifier_t
       getContextItemStaticType() const = 0;
 
+      /** \brief Set the output stream that is used by the fn:trace function
+       *
+       * Sets the output stream that is used by the fn:trace function to the given output stream.
+       * The default stream is std::cerr.
+       * 
+       */
+      virtual void
+      setTraceStream(std::ostream&) = 0;
+
+      /** \brief Resets the output stream that is used by the fn:trace function to std::cerr
+       */
+      virtual void
+      resetTraceStream() = 0;
+
 #ifdef ZORBA_WITH_EMAIL
       /** \brief Set the SMTP server.
        *

@@ -58,6 +58,8 @@ protected:
   std::list<global_binding> theGlobalVars;
   std::vector<DecimalFormat_t> theDecimalFormats;
 
+  std::ostream*                  theTraceStream;
+
 public:
   virtual ~static_context();
 
@@ -406,6 +408,12 @@ public:
 
   InternalModuleURIResolver*
   get_module_uri_resolver();
+
+  void
+  set_trace_stream(std::ostream&);
+
+  std::ostream*
+  get_trace_stream() const;
 
 #ifdef ZORBA_WITH_EMAIL
   // SMTP parameter settings

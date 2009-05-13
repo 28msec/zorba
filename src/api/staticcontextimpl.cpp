@@ -712,6 +712,19 @@ StaticContextImpl::getContextItemStaticType() const
   }
   return TypeOps::get_type_identifier(*type);
 }
+
+void
+StaticContextImpl::setTraceStream(std::ostream& os)
+{
+  theCtx->set_trace_stream(os);
+}
+
+void
+StaticContextImpl::resetTraceStream()
+{
+  theCtx->set_trace_stream(std::cerr);
+}
+
 #ifdef ZORBA_WITH_EMAIL
 bool
 StaticContextImpl::setSMTPServer( const String& aSMTP_server )

@@ -27,7 +27,9 @@ namespace zorba {
 class FnTraceIteratorState : public PlanIteratorState {
   public:
     store::Item_t theTagItem;
-    xqpString theTag;
+    xqpString     theTag;
+    uint32_t      theIndex;
+    std::ostream* theOS;
 
     void init(PlanState&);
     void reset(PlanState&);

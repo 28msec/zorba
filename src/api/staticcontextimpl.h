@@ -203,6 +203,13 @@ class StaticContextImpl : public StaticContext
 
   virtual TypeIdentifier_t
   getContextItemStaticType() const;
+
+  virtual void
+  setTraceStream(std::ostream&);
+
+  virtual void
+  resetTraceStream();
+
 #ifdef ZORBA_WITH_EMAIL
   // SMTP parameter settings
   virtual bool

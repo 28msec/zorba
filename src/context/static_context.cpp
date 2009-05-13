@@ -165,7 +165,8 @@ static_context::static_context()
   theDocResolver(0),
   theColResolver(0),
   theSchemaResolver(0),
-  theModuleResolver(0)
+  theModuleResolver(0),
+  theTraceStream(&std::cerr)
 {
   set_encapsulating_entity_baseuri ("");
   set_entity_retrieval_url ("");
@@ -178,7 +179,8 @@ static_context::static_context (static_context *_parent)
   theDocResolver(0),
   theColResolver(0),
   theSchemaResolver(0),
-  theModuleResolver(0)
+  theModuleResolver(0),
+  theTraceStream(&std::cerr)
 {
   if (parent != NULL)
     RCHelper::addReference (parent);
@@ -1053,6 +1055,18 @@ static_context::get_module_uri_resolver()
   if ( theModuleResolver != 0 )
     return theModuleResolver;
   return dynamic_cast<static_context*>(parent)->get_module_uri_resolver();
+}
+
+void
+static_context::set_trace_stream(std::ostream& os)
+{
+  theTraceStream = &os;
+}
+
+std::ostream*
+static_context::get_trace_stream() const
+{
+  return theTraceStream;
 }
 
 #ifdef ZORBA_WITH_EMAIL
