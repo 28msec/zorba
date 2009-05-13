@@ -5931,6 +5931,7 @@ void end_visit (const CatchListExpr& v, void* visit_state) {
   TRACE_VISIT_OUT ();
 }
 
+#if 0
 expr_t cc_component(const QueryLoc& loc, varref_t var, const char *local)
 {
   expr_t exists = new fo_expr(loc, LOOKUP_FN("fn", "exists", 1), &*var);
@@ -5946,6 +5947,7 @@ expr_t cc_component(const QueryLoc& loc, varref_t var, const char *local)
 
   return ite;
 }
+#endif
 
 void *begin_visit (const CatchExpr& v) {
   TRACE_VISIT ();

@@ -305,7 +305,6 @@ ostream& trycatch_expr::put( ostream& os) const
   {
     clauseref_t cc_h = *it;
     os << DENT << "CATCH ";
-    if (cc_h->var_h!=NULL) cc_h->var_h->put(os);
     os << "\n";
     cc_h->catch_expr_h->put(os);
   }

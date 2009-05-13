@@ -139,7 +139,6 @@ class catch_clause : public SimpleRCObject
     typedef std::vector<nt_t> nt_list_t;
   protected:
     nt_list_t nametests_h;
-    expr_t var_h;
     varref_t errorcode_var_h;
     varref_t errordesc_var_h;
     varref_t errorobj_var_h;
@@ -152,10 +151,6 @@ class catch_clause : public SimpleRCObject
     nt_list_t& get_nametests() { return nametests_h; }
 
     void add_nametest_h(nt_t n) { nametests_h.push_back(n); }
-
-    varref_t get_var_h() const {
-      return varref_t(static_cast<var_expr*>(var_h.getp()));
-    }
 
     void set_errorcode_var_h(varref_t a) { errorcode_var_h = a; }
     varref_t get_errorcode_var_h() const { return errorcode_var_h; }

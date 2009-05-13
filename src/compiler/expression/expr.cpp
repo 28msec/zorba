@@ -1315,8 +1315,8 @@ void flwor_expr::next_iter(expr_iterator_data& v) {
 
 
 catch_clause::catch_clause()
-  : var_h(NULL),
-  catch_expr_h(NULL) { }
+  : catch_expr_h(NULL)
+{}
 
 expr_iterator_data *trycatch_expr::make_iter() {
   return new trycatch_expr_iterator_data(this);
@@ -1329,7 +1329,6 @@ void trycatch_expr::next_iter(expr_iterator_data& v) {
   BEGIN_EXPR_ITER2 (trycatch_expr);
   ITER (try_expr_h);
   for (vv.clause_iter = begin (); vv.clause_iter != end (); ++(vv.clause_iter)) {
-    ITER ((*vv.clause_iter)->var_h);
     ITER ((*vv.clause_iter)->catch_expr_h);
   }
   END_EXPR_ITER ();
@@ -1674,7 +1673,7 @@ expr_iterator_data *axis_step_expr::make_iter () {
 }
 
 void axis_step_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER2 (axis_step_expr);
+  BEGIN_EXPR_ITER ();
 
   ITER (theNodeTest);
 
