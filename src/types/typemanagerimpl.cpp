@@ -420,6 +420,44 @@ xqtref_t TypeManagerImpl::create_schema_element_type(store::Item *qname, TypeCon
   return new NodeXQType(this, nTest, cType, quant, false);
 }
 
+
+/***************************************************************************//**
+
+********************************************************************************/
+void TypeManagerImpl::get_schema_element_typename(
+    store::Item* elemName,
+    store::Item_t& typeName)
+{
+  Schema* schema = static_cast<const DelegatingTypeManager *>(this)->getSchema();
+  XMLGrammarPool* pool = schema->getGrammarPool();
+
+#if _XERCES_VERSION >= 30000
+  bool xsModelWasChanged;
+  XSModel* model = pool->getXSModel(xsModelWasChanged);
+#else
+  XSModel* model = pool->getXSModel();
+#endif
+
+  XMLChArray local(elemName->getLocalName()->c_str());
+  XMLChArray uri(elemName->getNamespace()->c_str());
+
+  XSElementDeclaration *eDecl = model->getElementDeclaration(local, uri);
+  if (!eDecl) 
+  {
+    ZORBA_ERROR_PARAM(XPST0008, "schema-element", elemName->getStringValueP()->c_str());
+  }
+
+  XSTypeDefinition* ct = eDecl->getTypeDefinition();
+  const XMLCh* typeNameStr = ct->getName();
+  const XMLCh* typeUri = ct->getNamespace();
+
+  GENV_ITEMFACTORY->createQName(typeName,
+                                StrX(typeUri).localForm(),
+                                "",
+                                StrX(typeNameStr).localForm());
+}
+
+
 /***************************************************************************//**
 
 ********************************************************************************/

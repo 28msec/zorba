@@ -316,12 +316,59 @@ protected:
     return static_cast<var_expr *> (e.getp ());
   }
 
-  xqtref_t pop_tstack()
-  { return pop_stack (tstack); }
 
-  expr_t peek_nodestk_or_null () {
-    return (nodestack.empty ()) ? expr_t (NULL) : peek_stack (nodestack);
+expr_t peek_nodestk_or_null () {
+  return (nodestack.empty ()) ? expr_t (NULL) : peek_stack (nodestack);
+}
+
+
+xqtref_t pop_tstack()
+{
+  return pop_stack (tstack); 
+}
+
+
+/*******************************************************************************
+  Create a type representing an ElementTest, where:
+
+	ElementTest ::= "element" "(" (ElementNameOrWildcard ("," TypeName "?"?)?)? ")"
+********************************************************************************/
+xqtref_t create_element_test(
+    const QueryLoc& loc,
+    QName* elemName,
+    TypeName* typeName,
+    bool nillable)
+{
+  rchandle<NodeTest> nodeTest;
+  xqtref_t contentType;
+
+  if (elemName != NULL) 
+  {
+    store::Item_t qnameItem = sctx_p->lookup_elem_qname(elemName->get_qname(), loc);
+    
+    rchandle<NodeNameTest> nodeNameTest =
+      new NodeNameTest(qnameItem->getNamespace(), qnameItem->getLocalName());
+
+    nodeTest = new NodeTest(store::StoreConsts::elementNode, nodeNameTest);
   }
+  else 
+  {
+    nodeTest = new NodeTest(store::StoreConsts::elementNode);
+  }
+  
+  if (typeName != NULL) 
+  {
+    store::Item_t qnameItem =
+      sctx_p->lookup_elem_qname(typeName->get_name()->get_qname(), loc);
+    
+    contentType = CTXTS->create_named_type(qnameItem, TypeConstants::QUANT_ONE);
+  }
+  
+  return CTXTS->create_node_type(nodeTest,
+                                 contentType,
+                                 TypeConstants::QUANT_ONE,
+                                 nillable);
+}
 
 
 varref_t create_var(
@@ -4550,83 +4597,104 @@ void end_visit (const AnyKindTest& v, void* /*visit_state*/) {
 }
 
 
-void *begin_visit (const DocumentTest& v) {
-  TRACE_VISIT ();
+/*******************************************************************************
 
+  DocumentTest ::= "document-node" "(" (ElementTest | SchemaElementTest)? ")"
+
+********************************************************************************/
+void *begin_visit (const DocumentTest& v) 
+{
+  TRACE_VISIT();
   return no_state;
 }
 
 
-void end_visit (const DocumentTest& v, void* /*visit_state*/) {
+void end_visit (const DocumentTest& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 
-  rchandle<ElementTest> elemTest = v.get_elem_test();
+  ElementTest* elemTest = v.get_elem_test().getp();
+  SchemaElementTest* schemaTest = v.get_schema_elem_test().getp();
+  axis_step_expr* axisExpr = peek_nodestk_or_null().dyn_cast<axis_step_expr>();
+  rchandle<match_expr> match;
 
-  if (elemTest == NULL) {
-    axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-    if (axisExpr != NULL) {
-      rchandle<match_expr> match = new match_expr(loc);
+  if (elemTest == NULL && schemaTest == NULL) 
+  {
+    if (axisExpr != NULL) 
+    {
+      match = new match_expr(loc);
       match->setTestKind(match_doc_test);
 
       axisExpr->setTest(match);
-    } else {
+    }
+    else
+    {
       tstack.push(GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE);
     }
-  } else {
-    rchandle<QName> elemName = elemTest->getElementName();
-    rchandle<TypeName> typeName = elemTest->getTypeName();
-    bool nilled =  elemTest->isNilledAllowed();
-
-    axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-    if (axisExpr != NULL) {
-      rchandle<match_expr> match = new match_expr(loc);
-      match->setTestKind(match_doc_test);
-
-      if (elemName != NULL)
-        match->setQName(sctx_p->lookup_elem_qname(elemName->get_qname(), loc));
-
-      if (typeName != NULL)
-        match->setTypeName(sctx_p->lookup_elem_qname(typeName->get_name()->get_qname(), loc));
-
-      if (nilled)
-        match->setNilledAllowed(true);
-
-      axisExpr->setTest(match);
-    } else {
-      ZORBA_ERROR_LOC_DESC( XQP0004_SYSTEM_NOT_SUPPORTED, loc, "Document kind test");
-    }
+  }
+  else if (axisExpr != NULL) 
+  {
+    match = axisExpr->getTest();
+    match->setDocTestKind(match->getTestKind());
+    match->setTestKind(match_doc_test);
+  }
+  else
+  {
+    xqtref_t elementOrSchemaTest = pop_tstack();
+        
+    rchandle<NodeTest> nodeTest = new NodeTest(store::StoreConsts::documentNode);
+      
+    xqtref_t docTest = CTXTS->create_node_type(nodeTest,
+                                               elementOrSchemaTest,
+                                               TypeConstants::QUANT_ONE,
+                                               false);
+    tstack.push(docTest);
   }
 }
 
 
-void *begin_visit (const ElementTest& v) {
+/*******************************************************************************
+
+	ElementTest ::= "element" "("
+                     (ElementNameOrWildcard ("," TypeName "?"?)?)?
+                  ")"
+
+  ElementNameOrWildcard ::= ElementName | "*"
+
+********************************************************************************/
+void *begin_visit (const ElementTest& v) 
+{
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void end_visit (const ElementTest& v, void* /*visit_state*/) {
+void end_visit (const ElementTest& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 
+  bool nillable =  v.isNilledAllowed();
   rchandle<QName> elemName = v.getElementName();
   rchandle<TypeName> typeName = v.getTypeName();
-  bool nillable =  v.isNilledAllowed();
+  store::Item_t elemNameItem;
+  store::Item_t typeNameItem;
+
+  if (elemName != NULL)
+    elemNameItem = sctx_p->lookup_elem_qname(elemName->get_qname(), loc);
+
+  if (typeName != NULL)
+    typeNameItem = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname(), loc);
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
+
   if (axisExpr != NULL) 
   {
     rchandle<match_expr> me = new match_expr(loc);
     me->setTestKind(match_elem_test);
-
-    if (elemName != NULL)
-      me->setQName(sctx_p->lookup_elem_qname(elemName->get_qname(), loc));
-
-    if (typeName != NULL)
-      me->setTypeName(sctx_p->lookup_elem_qname(typeName->get_name()->get_qname(), loc));
-
-    if (nillable)
-      me->setNilledAllowed(true);
+    me->setQName(elemNameItem);
+    me->setTypeName(typeNameItem);
+    me->setNilledAllowed(nillable);
 
     axisExpr->setTest(me);
   }
@@ -4635,12 +4703,13 @@ void end_visit (const ElementTest& v, void* /*visit_state*/) {
   else 
   {
     rchandle<NodeTest> nodeTest;
+    xqtref_t contentType;
+    rchandle<NodeNameTest> nodeNameTest;
+
     if (elemName != NULL) 
     {
-      store::Item_t qnameItem = sctx_p->lookup_elem_qname(elemName->get_qname(), loc);
-
-      rchandle<NodeNameTest> nodeNameTest =
-        new NodeNameTest(qnameItem->getNamespace(), qnameItem->getLocalName());
+      nodeNameTest = new NodeNameTest(elemNameItem->getNamespace(),
+                                      elemNameItem->getLocalName());
 
       nodeTest = new NodeTest(store::StoreConsts::elementNode, nodeNameTest);
     }
@@ -4648,25 +4717,69 @@ void end_visit (const ElementTest& v, void* /*visit_state*/) {
     {
       nodeTest = new NodeTest(store::StoreConsts::elementNode);
     }
-
-    xqtref_t contentType;
+  
     if (typeName != NULL) 
     {
-      store::Item_t qnameItem =
-        sctx_p->lookup_elem_qname(typeName->get_name()->get_qname(), loc);
-
-      contentType = CTXTS->create_named_type(qnameItem, TypeConstants::QUANT_ONE);
+      contentType = CTXTS->create_named_type(typeNameItem, TypeConstants::QUANT_ONE);
     }
-
-    xqtref_t seqmatch = CTXTS->
-      create_node_type(nodeTest, contentType, TypeConstants::QUANT_ONE, nillable);
-
+  
+    xqtref_t seqmatch = CTXTS->create_node_type(nodeTest,
+                                                contentType,
+                                                TypeConstants::QUANT_ONE,
+                                                nillable);
     tstack.push(seqmatch);
   }
 }
 
 
-void *begin_visit (const AttributeTest& v) {
+/*******************************************************************************
+
+  SchemaElementTest ::= "schema-element" "(" ElementDeclaration ")"
+
+  ElementDeclaration ::= ElementName
+
+********************************************************************************/
+void *begin_visit (const SchemaElementTest& v) 
+{
+  TRACE_VISIT ();
+
+  axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
+  rchandle<QName> elemName = v.get_elem();
+  ZORBA_ASSERT(elemName != NULL);
+
+  store::Item_t elemNameItem = sctx_p->lookup_elem_qname(elemName->get_qname(), loc);
+
+  if (axisExpr != NULL) 
+  {
+    store::Item_t typeNameItem;
+    CTXTS->get_schema_element_typename(elemNameItem, typeNameItem);
+
+    rchandle<match_expr> match = new match_expr(loc);
+    match->setTestKind(match_xs_elem_test);
+    match->setQName(elemNameItem);
+    match->setTypeName(typeNameItem);
+
+    axisExpr->setTest(match);
+  }
+  else
+  {
+    xqtref_t seqmatch = CTXTS->create_schema_element_type(elemNameItem,
+                                                          TypeConstants::QUANT_ONE);
+    tstack.push(seqmatch);
+  }
+
+  return no_state;
+}
+
+
+void end_visit (const SchemaElementTest& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+void *begin_visit (const AttributeTest& v) 
+{
   TRACE_VISIT ();
   return no_state;
 }
@@ -4829,35 +4942,7 @@ void end_visit (const SchemaAttributeTest& v, void* /*visit_state*/) {
 }
 
 
-void *begin_visit (const SchemaElementTest& v) {
-  TRACE_VISIT ();
 
-  rchandle<QName> elem_h = v.get_elem();
-  axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-  if (axisExpr != NULL) {
-    rchandle<match_expr> match = new match_expr(loc);
-    match->setTestKind(match_xs_elem_test);
-    
-    if (elem_h!=NULL) {
-      match->setQName (sctx_p->lookup_qname ("", elem_h->get_qname(), loc));
-    }
-    axisExpr->setTest(match);
-  } else {
-    rchandle<NodeTest> nodeTest;
-    store::Item_t qnameItem = sctx_p->lookup_elem_qname(elem_h->get_qname(), loc);
-
-    xqtref_t seqmatch = CTXTS->
-      create_schema_element_type(qnameItem, TypeConstants::QUANT_ONE);
-
-    tstack.push(seqmatch);
-  }
-  return no_state;
-}
-
-
-void end_visit (const SchemaElementTest& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
 
 xqpString tempname () {
   return "$$temp" + to_string(tempvar_counter++);

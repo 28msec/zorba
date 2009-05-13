@@ -3476,8 +3476,6 @@ SingleType::SingleType(
 {}
 
 
-//-SingleType::
-
 void SingleType::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
@@ -3591,8 +3589,6 @@ AnyKindTest::AnyKindTest(
 {}
 
 
-//-AnyKindTest::
-
 void AnyKindTest::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
@@ -3602,38 +3598,38 @@ void AnyKindTest::accept(parsenode_visitor& v) const
 
 // [125] DocumentTest
 // ------------------
-DocumentTest::DocumentTest(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_),
+DocumentTest::DocumentTest(const QueryLoc& loc)
+  :
+  parsenode(loc),
   elem_test_h(NULL),
   schema_elem_test_h(NULL)
-{}
+{
+}
 
-DocumentTest::DocumentTest(
-  const QueryLoc& loc_,
-  rchandle<ElementTest> _elem_test_h)
-:
-  parsenode(loc_),
+DocumentTest::DocumentTest(const QueryLoc& loc, rchandle<ElementTest> _elem_test_h)
+  :
+  parsenode(loc),
   elem_test_h(_elem_test_h),
   schema_elem_test_h(NULL)
-{}
+{
+}
 
 DocumentTest::DocumentTest(
-  const QueryLoc& loc_,
-  rchandle<SchemaElementTest> _schema_elem_test_h)
-:
-  parsenode(loc_),
+    const QueryLoc& loc,
+    rchandle<SchemaElementTest> _schema_elem_test_h)
+  :
+  parsenode(loc),
   elem_test_h(NULL),
   schema_elem_test_h(_schema_elem_test_h)
-{}
+{
+}
 
-
-//-DocumentTest::
 
 void DocumentTest::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
+  ACCEPT(elem_test_h);
+  ACCEPT(schema_elem_test_h);
   END_VISITOR ();
 }
 
@@ -3646,8 +3642,6 @@ TextTest::TextTest(
   parsenode(loc_)
 {}
 
-
-//-TextTest::
 
 void TextTest::accept(parsenode_visitor& v) const
 {
@@ -3664,8 +3658,6 @@ CommentTest::CommentTest(
   parsenode(loc_)
 {}
 
-
-//-CommentTest::
 
 void CommentTest::accept(parsenode_visitor& v) const
 {
@@ -3739,7 +3731,7 @@ void SchemaAttributeTest::accept(parsenode_visitor& v) const
 
 /*******************************************************************************
 
-  [133] ElementTest ::= ELEMENT_LPAR  RPAR |
+  ElementTest ::= ELEMENT_LPAR  RPAR |
                         ELEMENT_LPAR  ElementNameOrWildcard  RPAR |
                         ELEMENT_LPAR  ElementNameOrWildcard  COMMA  TypeName  RPAR |
                         ELEMENT_LPAR  ElementNameOrWildcard  COMMA  TypeName  HOOK  RPAR

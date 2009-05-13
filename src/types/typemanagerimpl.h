@@ -111,12 +111,27 @@ public:
 
   xqtref_t create_none_type() const;
 
-  xqtref_t create_schema_element_type(store::Item *eName, TypeConstants::quantifier_t quant) const;
+  xqtref_t create_schema_element_type(
+        store::Item *eName,
+        TypeConstants::quantifier_t quant) const;
 
-  xqtref_t create_schema_attribute_type(store::Item *aName, TypeConstants::quantifier_t quant) const;
+  void get_schema_element_typename(
+        store::Item* elemName,
+        store::Item_t& typeName);
+
+  xqtref_t create_schema_attribute_type(
+        store::Item *aName,
+        TypeConstants::quantifier_t quant) const;
 };
 
 }
 
 #endif /* ZORBA_TYPEMANAGER_H */
 /* vim:set ts=2 sw=2: */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
+

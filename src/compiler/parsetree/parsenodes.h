@@ -4651,9 +4651,7 @@ public:
 
 /*******************************************************************************
 
-  [125] DocumentTest ::= DOCUMENT_NODE_LPAR  RPAR |
-                         DOCUMENT_NODE_LPAR  ElementTest  RPAR |
-                         DOCUMENT_NODE_LPAR  SchemaElementTest  RPAR
+  [125] DocumentTest ::= "document-node" "(" (ElementTest | SchemaElementTest)? ")"
 
 ********************************************************************************/
 class DocumentTest : public parsenode
@@ -4665,22 +4663,20 @@ protected:
 public:
 	DocumentTest(const QueryLoc&);
 
-	DocumentTest(
-		const QueryLoc&,
-		rchandle<ElementTest>);
+  DocumentTest(const QueryLoc&, rchandle<ElementTest>);
 	
-	DocumentTest(
-		const QueryLoc&,
-		rchandle<SchemaElementTest>);
+	DocumentTest(const QueryLoc&, rchandle<SchemaElementTest>);
 
-
-public:
 	rchandle<ElementTest> get_elem_test() const
-		{ return elem_test_h; }
-	rchandle<SchemaElementTest> get_schema_elem_test() const
-		{ return schema_elem_test_h; }
+  {
+    return elem_test_h;
+  }
 
-public:
+	rchandle<SchemaElementTest> get_schema_elem_test() const
+  {
+    return schema_elem_test_h;
+  }
+
 	void accept(parsenode_visitor&) const;
 };
 
