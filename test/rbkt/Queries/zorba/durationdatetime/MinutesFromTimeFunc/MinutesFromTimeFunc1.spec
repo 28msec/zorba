@@ -1,0 +1,1 @@
+Result: $RBKT_SRC_DIR/ExpQueryResults/zorba/durationdatetime/MinutesFromTimeFunc/MinutesFromTimeFunc1.xml.res

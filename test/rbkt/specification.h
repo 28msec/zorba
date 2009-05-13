@@ -41,6 +41,7 @@ private:
   bool theInline;
   std::string theVarName, theVarValue;
   std::vector<Variable> theVariables;
+  std::vector<std::string> theResultFiles;
   std::vector<std::string> theErrors;
   std::string theDate, theTimezone;
   std::string theInputQueryFile;
@@ -89,6 +90,11 @@ public:
   errorsBegin() const { return theErrors.begin(); }
   std::vector<std::string>::const_iterator
   errorsEnd() const { return theErrors.end(); }
+
+  std::vector<std::string>::const_iterator
+  resultsBegin() const { return theResultFiles.begin(); }
+  std::vector<std::string>::const_iterator
+  resultsEnd() const { return theResultFiles.end(); }
 
   size_t
   variablesSize() const { return theVariables.size(); }
@@ -192,6 +198,16 @@ public:
             addVariable();
           }
           break;
+        } else if ( *lIter == "Result:" ) {
+          ++lIter;
+          std::vector<std::string> lResultTokens;
+          std::vector<std::string>::iterator lResultIter;
+          trim(*lIter);
+          tokenize(*lIter, lResultTokens, " ");
+          for(lResultIter = lResultTokens.begin(); lResultIter != lResultTokens.end(); ++lResultIter)
+          {
+            theResultFiles.push_back(*lResultIter);
+          }
         } else if ( *lIter == "InputQuery:" ) {
           ++lIter;
           theInputQueryFile = *lIter;

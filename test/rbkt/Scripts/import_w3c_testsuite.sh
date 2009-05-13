@@ -79,8 +79,8 @@ string-join ((
 for $sch in //schema return concat ("%uri ", $sch/@uri, " ", $sch/@FileName), 
 for $src in //source return concat ("%src ", $src/@ID, " ", $src/@FileName),
 for $tc in //test-case
-let $out := $tc/output-file[1]/text()
-let $cmp := $tc/output-file[1]/@compare
+let $out := $tc/output-file
+let $cmp := $tc/output-file[1]/@compare (: assuming that all output-files have to be compared using the same comparison method :)
 let $ctx := $tc/contextItem
 let $dc  := $tc/defaultCollection
 (: assuming only one input-query and x is variable name :)
@@ -102,7 +102,7 @@ if ($inq) then $inq else "noquery",
 if ($cmp) then $cmp else "nocomparison",
 if ($ctx) then $ctx else "nocontext",
 if ($dc) then $dc else "nodefaultcollection",
-if ($out) then $out else "",
+if ($out) then string-join($out/text(), ";") else "",
 string-join ($tc/expected-error/text(), ";")
 ), " ")),
 "
@@ -136,6 +136,7 @@ my ($name, $path, $query, $inlist, $urilist, $inpq, $cmp, $ctx, $dc, $out, $errl
 my @inbnd = split (/;/, $inlist);
 my @uribnd = split (/;/, $urilist);
 my @errs = split (/;/, $errlist);
+my @outfiles = split (/;/, $out);
 my $inpath = "Queries/XQuery/$path";
 my $inxqueryxpath = "Queries/XQueryX/$path";
 my $dstqpath="$repo/test/rbkt/Queries/w3c_testsuite/XQuery/$path";
@@ -149,8 +150,26 @@ my $xqueryxspecfile = "$dstxqueryxqpath/$name.spec";
  
 copy ("$inpath/$query.xq", "$dstqpath/$name.xq");
 copy ("$inxqueryxpath/$query.xqx", "$dstxqueryxqpath/$name.xqx");
-if ($out) {
-  copy ("ExpectedTestResults/$path/$out", $fullout);
+
+if (@outfiles) {
+  open (SPEC, ">>$specfile");
+  open (SPECX, ">>$xqueryxspecfile");
+
+  print SPEC "Result: ";
+  print SPECX "Result: ";
+
+  foreach (@outfiles) {
+    my $txtfile = "$_";
+    $txtfile =~ 's/\.txt/.xml.res/';
+    print "blub $txtfile";
+    copy ("ExpectedTestResults/$path/$_", "$dstrespath/$txtfile");
+    print SPEC " \$RBKT_SRC_DIR/ExpQueryResults/w3c_testsuite/$path/$txtfile";
+    print SPECX "\$RBKT_SRC_DIR/ExpQueryResults/w3c_testsuite/$path/$txtfile";
+  }
+  print SPEC "\n";
+  print SPECX "\n";
+  close (SPEC);
+  close (SPECX);
 }
 
 if ( $inlist ne "noinlist" || $urilist ne "nourilist" || $ctx ne "nocontext" ) {

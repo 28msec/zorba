@@ -1,0 +1,1 @@
+Result: $RBKT_SRC_DIR/ExpQueryResults/zorba/Operations/ArithExpr/DurationArith/YearMonthDurationMultiply/YearMonthDurationMultiply1.xml.res

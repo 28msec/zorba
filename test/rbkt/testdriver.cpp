@@ -121,17 +121,6 @@ main(int argc, char** argv)
     zorba::file lErrorFile  (rbkt_bin_dir + "/" 
                              + lQueryWithoutSuffix + ".err", path_flags);
 
-    std::string lRefFileTmpString = lQueryWithoutSuffix;
-    // the ref file is the same for xqueryx and xquery tests
-    // hence, we remove the string xqueryx or xquery from the path
-    if (lQueryWithoutSuffix.find("w3c_testsuite") == 0) {
-      if (lQueryWithoutSuffix.find("XQueryX") != std::string::npos)
-        lRefFileTmpString = lRefFileTmpString.erase(14, 8);
-      else
-        lRefFileTmpString = lRefFileTmpString.erase(14, 7);
-    }
-    zorba::file lRefFile(zorba::RBKT_SRC_DIR + "/ExpQueryResults/"
-                         + lRefFileTmpString +".xml.res", path_flags);
 
     zorba::file lSpecFile (zorba::RBKT_SRC_DIR + "/Queries/"
                            + lQueryWithoutSuffix +".spec", path_flags);
@@ -157,6 +146,19 @@ main(int argc, char** argv)
     // read the xargs and errors if the spec file exists
     if ( lSpecFile.exists ()) 
       lSpec.parseFile(lSpecFile.get_path());
+
+    std::vector<zorba::file> lRefFiles;
+    bool lRefFileExists = false;
+    for (std::vector<std::string>::const_iterator lIter = lSpec.resultsBegin();
+         lIter != lSpec.resultsEnd(); ++lIter) {
+      std::string lTmp = *lIter;
+      zorba::str_replace_all(lTmp, "$RBKT_SRC_DIR", rbkt_src_dir);
+      zorba::file lRefFile(lTmp, path_flags);
+      if (lRefFile.exists()) {
+        lRefFileExists = true;
+      }
+      lRefFiles.push_back(lRefFile);
+    } 
 
     // print the query
     std::cout << "Query:" << std::endl;
@@ -259,9 +261,9 @@ main(int argc, char** argv)
           lQuery->serialize(lResFileStream, &lSerOptions);
         }
         
-        if ( (lSpec.errorsSize() == 0) && ((! lRefFile.exists ()) || lRefFile.is_directory ()))
+        if (lSpec.errorsSize() == 0 && ! lRefFileExists )
         {
-          std::cout << "No reference result " << lRefFile.get_path () << " and no expected errors." << std::endl;
+          std::cout << "No reference result and no expected errors." << std::endl;
           return 3;
         }
 
@@ -271,7 +273,7 @@ main(int argc, char** argv)
         }
         else if ( lSpec.errorsSize() > 0 ) 
         {
-          if ( ! lRefFile.exists () ) 
+          if ( ! lRefFileExists ) 
           {
             std::cout << "Expected error(s)";
             for (std::vector<std::string>::const_iterator lIter = lSpec.errorsBegin();
@@ -297,23 +299,29 @@ main(int argc, char** argv)
         zorba::printFile(std::cout, lResultFile.get_path());
         std::cout << "=== end of result ===" << std::endl;
         std::cout.flush();
-        {
-          int lLine, lCol, lPos; // where do the files differ
-          std::string lRefLine, lResultLine;
-          bool lRes = zorba::fileEquals(lRefFile.c_str(), lResultFile.c_str(), lLine, lCol, lPos, lRefLine, lResultLine);
-          if (lRes) {
-            std::cout << "testdriver: success (non-canonical result matches)" << std::endl;
+        size_t i = 1;
+        for (std::vector<zorba::file>::const_iterator lIter = lRefFiles.begin();
+             lIter != lRefFiles.end(); ++lIter) {
+          {
+            int lLine, lCol, lPos; // where do the files differ
+            std::string lRefLine, lResultLine;
+            bool lRes = zorba::fileEquals(lIter->c_str(), lResultFile.c_str(), lLine, lCol, lPos, lRefLine, lResultLine);
+            if (lRes) {
+              std::cout << "testdriver: success (non-canonical result # " << i << " matches)" << std::endl;
+              return 0;
+            }
+          }
+          std::cout << "testdriver: non-canonical result for reference result # " << i << " doesn't match." << std::endl;
+
+          int lCanonicalRes = zorba::canonicalizeAndCompare(lSpec.getComparisonMethod(),
+              lIter->c_str(), lResultFile.c_str(), rbkt_bin_dir);
+          if (lCanonicalRes == 0) {
+            std::cout << "testdriver: success (canonical result # " << i  << " matches)" << std::endl;
             return 0;
           }
-        }
-
-        int lCanonicalRes = zorba::canonicalizeAndCompare(lSpec.getComparisonMethod(),
-                                                          lRefFile.c_str(), lResultFile.c_str(), rbkt_bin_dir);
-        if (lCanonicalRes != 0) {
-          return lCanonicalRes;
-        }
-        std::cout << "testdriver: success (canonical result matches)" << std::endl;
-        return 0;
+          std::cout << "testdriver: canonical result for reference result # " << i << " doesn't match." << std::endl;
+          ++i;
+        } // for 
       }
     }
   }

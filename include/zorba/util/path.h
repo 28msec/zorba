@@ -19,7 +19,7 @@ public:
 
 public:
   const std::string &get_path () const { return path; }
-  const char *c_str () { return path.c_str (); }
+  const char *c_str () const { return path.c_str (); }
   operator const std::string & () const { return path; }
   filesystem_path (const std::string &path_, int flags = 0);
   filesystem_path (const filesystem_path &base, const filesystem_path &rel) {
