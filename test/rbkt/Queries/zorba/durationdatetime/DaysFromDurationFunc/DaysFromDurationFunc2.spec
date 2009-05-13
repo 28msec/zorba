@@ -1,1 +1,0 @@
-Result: $RBKT_SRC_DIR/ExpQueryResults/zorba/durationdatetime/DaysFromDurationFunc/DaysFromDurationFunc2.xml.res

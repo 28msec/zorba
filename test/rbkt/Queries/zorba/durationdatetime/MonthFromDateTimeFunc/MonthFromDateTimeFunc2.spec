@@ -1,1 +1,0 @@
-Result: $RBKT_SRC_DIR/ExpQueryResults/zorba/durationdatetime/MonthFromDateTimeFunc/MonthFromDateTimeFunc2.xml.res

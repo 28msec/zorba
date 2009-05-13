@@ -1,1 +1,0 @@
-Result: $RBKT_SRC_DIR/ExpQueryResults/zorba/Operations/ArithExpr/DurationArith/DayTimeDurationSubtract/DayTimeDurationSubtract1.xml.res

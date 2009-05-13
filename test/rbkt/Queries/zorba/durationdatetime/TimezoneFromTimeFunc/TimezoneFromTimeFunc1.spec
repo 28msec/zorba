@@ -1,1 +1,0 @@
-Result: $RBKT_SRC_DIR/ExpQueryResults/zorba/durationdatetime/TimezoneFromTimeFunc/TimezoneFromTimeFunc1.xml.res

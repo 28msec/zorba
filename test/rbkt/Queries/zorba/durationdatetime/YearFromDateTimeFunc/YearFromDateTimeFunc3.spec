@@ -1,1 +1,0 @@
-Result: $RBKT_SRC_DIR/ExpQueryResults/zorba/durationdatetime/YearFromDateTimeFunc/YearFromDateTimeFunc3.xml.res

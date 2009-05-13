@@ -160,7 +160,11 @@ main(int argc, char** argv)
         std::cout << "Warning: missing reference result file " << lRefFile.get_path () << std::endl;
       }
       lRefFiles.push_back(lRefFile);
-    } 
+    }
+    if (lRefFiles.size () == 0) {
+      lRefFiles.push_back (zorba::file (rbkt_src_dir + "/ExpQueryResults/" + lQueryWithoutSuffix + ".xml.res"));
+      if (lRefFiles [0].exists()) lRefFileExists = true;
+    }
 
     // print the query
     std::cout << "Query:" << std::endl;

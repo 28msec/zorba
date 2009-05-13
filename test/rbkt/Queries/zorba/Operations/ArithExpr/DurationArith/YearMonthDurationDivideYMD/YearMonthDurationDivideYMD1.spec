@@ -1,1 +1,0 @@
-Result: $RBKT_SRC_DIR/ExpQueryResults/zorba/Operations/ArithExpr/DurationArith/YearMonthDurationDivideYMD/YearMonthDurationDivideYMD1.xml.res
