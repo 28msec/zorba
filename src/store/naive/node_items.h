@@ -351,6 +351,8 @@ public:
     return copy2(static_cast<XmlNode*>(parent),
                  static_cast<XmlNode*>(parent),
                  pos,
+                 true,
+                 true,
                  NULL,
                  copymode);
   }
@@ -419,6 +421,8 @@ public:
         XmlNode*               rootParent,
         XmlNode*               parent,
         long                   pos,
+        bool                   mergeLeft,
+        bool                   mergeRight,
         const XmlNode*         rootCopy,
         const store::CopyMode& copyMode) const = 0;
 
@@ -445,6 +449,7 @@ protected:
 
   ulong disconnect() throw();
   void connect(XmlNode* node, ulong pos) throw();
+  void insertChild(XmlNode* child, ulong pos);
   void removeChild(ulong pos);
   bool removeChild(XmlNode* child);
   void removeAttr(ulong pos);
@@ -507,6 +512,8 @@ public:
         XmlNode*               rootParent,
         XmlNode*               parent,
         long                   pos,
+        bool                   mergeLeft,
+        bool                   mergeRight,
         const XmlNode*         rootCopy,
         const store::CopyMode& copyMode) const;
 
@@ -683,6 +690,8 @@ public:
         XmlNode*               rootParent,
         XmlNode*               parent,
         long                   pos,
+        bool                   mergeLeft,
+        bool                   mergeRight,
         const XmlNode*         rootCopy,
         const store::CopyMode& copymode) const;
 
@@ -867,6 +876,8 @@ public:
         XmlNode*               rootParent,
         XmlNode*               parent,
         long                   pos,
+        bool                   mergeLeft,
+        bool                   mergeRight,
         const XmlNode*         rootCopy,
         const store::CopyMode& copymode) const;
 
@@ -936,6 +947,7 @@ class TextNode : public XmlNode
   friend class ElementNode;
   friend class BasicItemFactory;
   friend class FastXmlLoader;
+  friend class UpdInsertChildren;
   friend class UpdSetElementType;
 
 protected:
@@ -961,6 +973,8 @@ public:
         XmlNode*               rootParent,
         XmlNode*               parent,
         long                   pos,
+        bool                   mergeLeft,
+        bool                   mergeRight,
         const XmlNode*         rootCopy,
         const store::CopyMode& copymode) const;
 
@@ -1029,6 +1043,8 @@ public:
         XmlNode*               rootParent,
         XmlNode*               parent,
         long                   pos,
+        bool                   mergeLeft,
+        bool                   mergeRight,
         const XmlNode*         rootCopy,
         const store::CopyMode& copymode) const;
 
@@ -1086,6 +1102,8 @@ public:
         XmlNode*               rootParent,
         XmlNode*               parent,
         long                   pos,
+        bool                   mergeLeft,
+        bool                   mergeRight,
         const XmlNode*         rootCopy,
         const store::CopyMode& copymode) const;
 

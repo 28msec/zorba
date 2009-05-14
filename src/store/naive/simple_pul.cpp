@@ -913,14 +913,36 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     std::cerr << "Exception thrown during pul::applyUpdates: "
               << std::endl <<  e.theDescription << std::endl;
 #endif
-    //ZORBA_FATAL(0, "");
-    undoUpdates();
+
+    try
+    {
+      undoUpdates();
+    }
+    catch (...)
+    {
+      ZORBA_FATAL(0, "Error during pul::undoUpdates()");
+    }
+
+    if (e.theErrorCode == XQDY0025)
+      e.theErrorCode = XUDY0021;
+
     throw e;
   }
   catch(...)
   {
-    //ZORBA_FATAL(0, "");
-    undoUpdates();
+#ifndef NDEBUG
+    std::cerr << "Unknown exception thrown during pul::applyUpdates " << std::endl;
+#endif
+
+    try
+    {
+      undoUpdates();
+    }
+    catch (...)
+    {
+      ZORBA_FATAL(0, "Error during pul::undoUpdates()");
+    }
+
     throw;
   }
 
@@ -1052,11 +1074,27 @@ UpdInsertChildren::UpdInsertChildren(
 {
   theSibling.transfer(sibling);
 
+  ulong numNewChildren = 0;
   ulong numChildren = children.size();
   theNewChildren.resize(numChildren);
+
   for (ulong i = 0; i < numChildren; i++)
   {
-    theNewChildren[i].transfer(children[i]);
+    if (i > 0 &&
+        children[i]->getNodeKind() == store::StoreConsts::textNode &&
+        theNewChildren[i-1]->getNodeKind() == store::StoreConsts::textNode)
+    {
+      TextNode* node1 = reinterpret_cast<TextNode*>(theNewChildren[i-1].getp());
+      TextNode* node2 = reinterpret_cast<TextNode*>(children[i].getp());
+
+      xqpStringStore_t newText = node1->getText()->append(node2->getText());
+      node1->setText(newText);
+    }
+    else
+    {
+      theNewChildren[i].transfer(children[i]);
+      ++numNewChildren;
+    }
 
     if (theRemoveType == false)
     {
@@ -1066,6 +1104,8 @@ UpdInsertChildren::UpdInsertChildren(
         theRemoveType = true;
     }
   }
+
+  theNewChildren.resize(numNewChildren);
 }
 
 
@@ -1381,6 +1421,15 @@ void UpdSetAttributeType::apply()
 /*******************************************************************************
 
 ********************************************************************************/
+UpdReplaceTextValue::~UpdReplaceTextValue()
+{
+  if (theIsTyped)
+    theOldContent.setValue(NULL);
+  else
+    theOldContent.setText(NULL);
+}
+
+
 void UpdReplaceTextValue::apply()
 {
   TEXT_NODE(theTarget)->replaceValue(*this);

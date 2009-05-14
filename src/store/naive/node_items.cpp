@@ -314,13 +314,24 @@ xqpStringStore_t XmlNode::getBaseURIInternal(bool& local) const
 
 
 /*******************************************************************************
+
+********************************************************************************/
+void XmlNode::insertChild(XmlNode* child, ulong pos)
+{
+  children().insert(child, pos, false);
+
+  child->theParent = this;
+}
+
+
+/*******************************************************************************
   Remove the i-th child of "this" (it is assumed that i < numChildren).
 ********************************************************************************/
-void XmlNode::removeChild(ulong i)
+void XmlNode::removeChild(ulong pos)
 {
-  XmlNode* child = getChild(i);
+  XmlNode* child = getChild(pos);
 
-  children().remove(i);
+  children().remove(pos);
 
   if (child->theParent == this)
     child->theParent = NULL;
@@ -333,7 +344,7 @@ void XmlNode::removeChild(ulong i)
 ********************************************************************************/
 bool XmlNode::removeChild(XmlNode* child)
 {
-  bool found = (children().find(child) != 0);
+  bool found = children().remove(child);
 
   if (found)
   {
@@ -663,6 +674,8 @@ XmlNode* DocumentNode::copy2(
     XmlNode*               rootParent,
     XmlNode*               parent,
     long                   pos,
+    bool                   mergeLeft,
+    bool                   mergeRight,
     const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
@@ -690,7 +703,7 @@ XmlNode* DocumentNode::copy2(
       if (child == rootCopy)
         continue;
 
-      child->copy2(rootParent, copyNode, -1, NULL, copymode);
+      child->copy2(rootParent, copyNode, -1, false, false, NULL, copymode);
     }
   }
   catch (...)
@@ -981,6 +994,8 @@ XmlNode* ElementNode::copy2(
     XmlNode*               rootParent,
     XmlNode*               parent,
     long                   pos,
+    bool                   mergeLeft,
+    bool                   mergeRight,
     const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
@@ -1182,7 +1197,7 @@ XmlNode* ElementNode::copy2(
         }
       }
 
-      attr->copy2(rootParent, copyNode, -1, rootCopy, copymode);
+      attr->copy2(rootParent, copyNode, -1, false, false, rootCopy, copymode);
     }
 
     if (hiddenBaseUriAttr)
@@ -1217,7 +1232,7 @@ XmlNode* ElementNode::copy2(
       if (child == rootCopy)
         continue;
 
-      child->copy2(rootParent, copyNode, -1, rootCopy, copymode);
+      child->copy2(rootParent, copyNode, -1, mergeLeft, mergeRight, rootCopy, copymode);
     }
   }
   catch (...)
@@ -2256,6 +2271,8 @@ XmlNode* AttributeNode::copy2(
     XmlNode*               rootParent,
     XmlNode*               parent,
     long                   pos,
+    bool                   mergeLeft,
+    bool                   mergeRight,
     const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
@@ -2489,6 +2506,8 @@ XmlNode* TextNode::copy2(
     XmlNode*               rootParent,
     XmlNode*               parent,
     long                   pos,
+    bool                   mergeLeft,
+    bool                   mergeRight,
     const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
@@ -2519,7 +2538,9 @@ XmlNode* TextNode::copy2(
       XmlNode* lsib = (pos2 > 0 ? parent->getChild(pos2-1) : NULL);
       XmlNode* rsib = (pos2 < numChildren ? parent->getChild(pos2) : NULL);
 
-      if (lsib != NULL && lsib->getNodeKind() == store::StoreConsts::textNode)
+      if (mergeLeft && 
+          lsib != NULL &&
+          lsib->getNodeKind() == store::StoreConsts::textNode)
       {
         TextNode* textSibling = reinterpret_cast<TextNode*>(lsib);
 
@@ -2541,7 +2562,9 @@ XmlNode* TextNode::copy2(
           copyNode = new TextNode(tree, parent, pos2-1, textContent);
         }
       }
-      else if (rsib != NULL && rsib->getNodeKind() == store::StoreConsts::textNode)
+      else if (mergeRight &&
+               rsib != NULL &&
+               rsib->getNodeKind() == store::StoreConsts::textNode)
       {
         TextNode* textSibling = reinterpret_cast<TextNode*>(rsib);
 
@@ -2774,6 +2797,8 @@ XmlNode* PiNode::copy2(
     XmlNode*               rootParent,
     XmlNode*               parent,
     long                   pos,
+    bool                   mergeLeft,
+    bool                   mergeRight,
     const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
@@ -2923,6 +2948,8 @@ XmlNode* CommentNode::copy2(
     XmlNode*               rootParent,
     XmlNode*               parent,
     long                   pos,
+    bool                   mergeLeft,
+    bool                   mergeRight,
     const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {

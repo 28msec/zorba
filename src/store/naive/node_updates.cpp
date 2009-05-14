@@ -197,61 +197,9 @@ void XmlNode::restoreType(TypeUndoList& undoList)
 }
 
 
-#if 0
-/*******************************************************************************
-  This method is commented out because the type is removed during the copying
-  of the source nodes.
-********************************************************************************/
-void XmlNode::setToUntyped()
-{
-  if (getNodeKind() == store::StoreConsts::elementNode)
-  {
-    ElementNode* n = reinterpret_cast<ElementNode*>(this);
-
-    n->theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED];
-
-    n->setHaveValue();
-    n->resetHaveEmptyValue();
-    n->resetHaveTypedValue();
-    n->resetIsId();
-    n->resetIsIdRefs();
-
-    ulong numAttrs = n->numAttributes();
-    for (ulong i = 0; i < numAttrs; i++)
-    {
-      n->getAttr(i)->setToUntyped();
-    }
-
-    ulong numChildren = n->numChildren();
-    for (ulong i = 0; i < numChildren; i++)
-    {
-      XmlNode* child = n->getChild(i);
-      if (child->getNodeKind() == store::StoreConsts::elementNode)
-        child->setToUntyped();
-      // TODO: fix text node (if any) anyholding typed value
-    }
-  }
-  else if (getNodeKind() == store::StoreConsts::attributeNode)
-  {
-    AttributeNode* n = reinterpret_cast<AttributeNode*>(this);
-
-    n->theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
-
-    // TODO: recompute theTypedValue
-    n->resetIsId();
-    n->resetIsIdRefs();
-  }
-  else
-  {
-    ZORBA_FATAL(0, "");
-  }
-}
-#endif
-
 
 /*******************************************************************************
-  This method is used by the undo of UpdInsertChildren, UpdInsertSiblings, and
-  UpdReplaceChild.
+  This method is used by the undo of UpdInsertChildren and UpdReplaceChild.
 ********************************************************************************/
 void XmlNode::removeChildren(
     ulong  pos,
@@ -386,102 +334,65 @@ void XmlNode::restoreChild(UpdDelete& upd)
 
 /*******************************************************************************
   Insert a set of new nodes as children of "this" node. The new children must be
-  inserted in the order they appear in upd.theNewChildren. Let S and E be the
-  first (starting) and last (ending) nodes in this sequence. The new nodes will
-  be inserted between the current children of "this" at positions startPos - 1
-  and startPos. Let L and R be the children at these positions (L is NULL if
-  startPos == 0, and R is NULL if startPos == this->numChildren()). If L and S
-  are both text nodes, S must be merged into L. Similarly, if E and R are both
-  text nodes, E must be merged into R.
+  inserted in the order they appear in the given vector (newChildren). Let S and
+  E be the first and last nodes in this sequence. The new nodes will be injected
+  between the current children of "this" at positions pos - 1 and pos.
+  Let L and R be the children at these positions (L is NULL if startPos == 0, and
+  R is NULL if startPos == this->numChildren()). If L and S are both text nodes,
+  S must be merged into L. Similarly, if E and R are both text nodes, E must be
+  merged into R. It is assumed that the newChildren sequence does not contain
+  any 2 adjecent text nodes.
 ********************************************************************************/
-void XmlNode::insertChildren(UpdInsertChildren& upd, ulong startPos)
+void XmlNode::insertChildren(UpdInsertChildren& upd, ulong pos)
 {
-  ulong pos = startPos;
   ulong numNewChildren = upd.theNewChildren.size();
-  XmlNode* oldRSibling = (pos < numChildren() ? getChild(pos) : NULL);
-  XmlNode* oldLSibling = (pos > 0 ? getChild(pos-1) : NULL);
+  XmlNode* rsib = (pos < numChildren() ? getChild(pos) : NULL);
+  XmlNode* lsib = (pos > 0 ? getChild(pos-1) : NULL);
 
-  if (oldLSibling == NULL ||
-      oldLSibling->getNodeKind() != store::StoreConsts::textNode)
+  // Insert the new children without merging text nodes
+  for (ulong i = 0; i < numNewChildren; ++i)
   {
-    for (long i = numNewChildren - 1; i >= 0; i--)
-    {
-      XmlNode* child = BASE_NODE(upd.theNewChildren[i]);
+    XmlNode* child = BASE_NODE(upd.theNewChildren[i]);
 
-      if (upd.theCopyMode.theDoCopy)
-      {
-        XmlNode* newChild = child->copy2(this, this, pos, NULL, upd.theCopyMode);
-
-        if (newChild == oldRSibling)
-        {
-          // E got merged into R.
-          ZORBA_ASSERT(i == ((long)numNewChildren - 1));
-          ZORBA_ASSERT(child->getNodeKind() == store::StoreConsts::textNode);
-        }
-        else
-        {
-          upd.theNewChildren[i] = newChild;
-        }
-      }
-      else
-      {
-        child->switchTree(this, pos, upd.theCopyMode);
-      }
-
-      upd.theNumApplied++;
-    }
+    upd.theNewChildren[i] = 
+    child->copy2(this, this, pos + i, false, false, NULL, upd.theCopyMode);
+    
+    upd.theNumApplied++;
   }
-  else
+
+  // Merge adjacent text nodes (if any) on the left or right boundary.
+  XmlNode* firstNew = BASE_NODE(upd.theNewChildren[0]);
+  XmlNode* lastNew = BASE_NODE(upd.theNewChildren[numNewChildren-1]);
+
+  if (lsib != NULL &&
+      lsib->getNodeKind() == store::StoreConsts::textNode &&
+      firstNew->getNodeKind() == store::StoreConsts::textNode)
   {
-    for (ulong i = 0; i < numNewChildren; i++)
-    {
-      XmlNode* child = BASE_NODE(upd.theNewChildren[i]);
+    TextNode* textNode1 = reinterpret_cast<TextNode*>(lsib);
+    TextNode* textNode2 = reinterpret_cast<TextNode*>(firstNew);
+    xqpStringStore_t content = textNode1->getText()->append(textNode2->getText());
+    textNode2->setText(content);
 
-      if (upd.theCopyMode.theDoCopy)
-      {
-        XmlNode* newChild = child->copy2(this, this, pos, NULL, upd.theCopyMode);
+    upd.theMergedNode = lsib;
 
-        if (newChild == oldLSibling)
-        {
-          // S got merged into L.
-          ZORBA_ASSERT(i == 0);
-          ZORBA_ASSERT(child->getNodeKind() == store::StoreConsts::textNode);
-        }
-        else
-        {
-          ++pos;
-          upd.theNewChildren[i] = newChild;
-        }
-      }
-      else
-      {
-        child->switchTree(this, pos + i, upd.theCopyMode);
-      }
+    removeChild(pos-1);
+  }
+  else if (rsib != NULL &&
+      rsib->getNodeKind() == store::StoreConsts::textNode &&
+      lastNew->getNodeKind() == store::StoreConsts::textNode)
+  {
+    TextNode* textNode1 = reinterpret_cast<TextNode*>(lastNew);
+    TextNode* textNode2 = reinterpret_cast<TextNode*>(rsib);
+    xqpStringStore_t content = textNode1->getText()->append(textNode2->getText());
+    textNode1->setText(content);
 
-      upd.theNumApplied++;
-    }
+    upd.theMergedNode = rsib;
+
+    removeChild(pos + numNewChildren);
   }
 
   if (upd.theRemoveType)
     removeType(upd);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void XmlNode::undoInsertChildren(UpdInsertChildren& upd)
-{
-  if (upd.theNumApplied == 0)
-    return;
-
-  ulong pos = children().find(BASE_NODE(upd.theNewChildren[0]));
-
-  ZORBA_FATAL(pos < children().size(), "");
-
-  removeChildren(pos, upd.theNumApplied);
-
-  restoreType(upd.theTypeUndoList);
 }
 
 
@@ -517,6 +428,27 @@ void XmlNode::insertSiblingsAfter(UpdInsertChildren& upd)
 
 
 /*******************************************************************************
+
+********************************************************************************/
+void XmlNode::undoInsertChildren(UpdInsertChildren& upd)
+{
+  if (upd.theNumApplied == 0)
+    return;
+
+  ulong pos = children().find(BASE_NODE(upd.theNewChildren[0]));
+
+  ZORBA_FATAL(pos < children().size(), "");
+
+  removeChildren(pos, upd.theNumApplied);
+
+  if (upd.theMergedNode)
+    insertChild(BASE_NODE(upd.theMergedNode), pos);
+
+  restoreType(upd.theTypeUndoList);
+}
+
+
+/*******************************************************************************
   ELEMENT - INSERT ATTRIBUTES
 ********************************************************************************/
 void ElementNode::insertAttributes(UpdInsertAttributes& upd)
@@ -534,18 +466,8 @@ void ElementNode::insertAttributes(UpdInsertAttributes& upd)
     if (addBindingForQName(attr->theName, true, false))
       upd.theNewBindings.push_back(attr->theName);
 
-    if (upd.theCopyMode.theDoCopy)
-    {
-      upd.theNewAttrs[i] = attr->copy2(this,
-                                       this,
-                                       numAttrs + i,
-                                       NULL,
-                                       upd.theCopyMode);
-    }
-    else
-    {
-      attr->switchTree(this, numAttrs + i, upd.theCopyMode);
-    }
+    upd.theNewAttrs[i] =
+    attr->copy2(this, this, numAttrs + i, false, false, NULL, upd.theCopyMode);
 
     upd.theNumApplied++;
   }
@@ -594,10 +516,8 @@ void ElementNode::replaceAttribute(UpdReplaceAttribute& upd)
     if (addBindingForQName(attr->theName, true, false))
       upd.theNewBindings.push_back(attr->theName);
   
-    if (upd.theCopyMode.theDoCopy)
-      upd.theNewAttrs[i] = attr->copy2(this, this, pos + i, NULL, upd.theCopyMode);
-    else
-      attr->switchTree(this, pos + i, upd.theCopyMode);
+    upd.theNewAttrs[i] = 
+    attr->copy2(this, this, pos + i, false, false, NULL, upd.theCopyMode);
 
     upd.theNumApplied++;
   }
@@ -641,28 +561,58 @@ void XmlNode::replaceChild(UpdReplaceChild& upd)
 
   ZORBA_FATAL(pos < children().size(), "");
 
-  removeChild(pos);
-
   ulong numNewChildren = upd.theNewChildren.size();
+  XmlNode* rsib = (pos < numChildren() - 1 ? getChild(pos+1) : NULL);
+  XmlNode* lsib = (pos > 0 ? getChild(pos-1) : NULL);
 
+  // Insert the new children without merging text nodes
   for (ulong i = 0; i < numNewChildren; i++)
   {
     XmlNode* child = BASE_NODE(upd.theNewChildren[i]);
 
-    if (upd.theCopyMode.theDoCopy)
-    {
-      upd.theNewChildren[i] = child->copy2(this,
-                                           this,
-                                           pos + i,
-                                           NULL,
-                                           upd.theCopyMode);
-    }
-    else
-    {
-      child->switchTree(this, pos + i, upd.theCopyMode);
-    }
+    upd.theNewChildren[i] =
+    child->copy2(this, this, pos + i, false, false, NULL, upd.theCopyMode);
 
     upd.theNumApplied++;
+  }
+
+  // Remove the child that is being replaced
+  removeChild(pos + numNewChildren);
+
+  // Merge adjacent text nodes (if any) on the left and/or right boundary.
+  if (numNewChildren > 0)
+  {
+    XmlNode* firstNew = BASE_NODE(upd.theNewChildren[0]);
+    XmlNode* lastNew = BASE_NODE(upd.theNewChildren[numNewChildren-1]);
+
+    if (lsib != NULL &&
+        lsib->getNodeKind() == store::StoreConsts::textNode &&
+        firstNew->getNodeKind() == store::StoreConsts::textNode)
+    {
+      TextNode* textNode1 = reinterpret_cast<TextNode*>(lsib);
+      TextNode* textNode2 = reinterpret_cast<TextNode*>(firstNew);
+      xqpStringStore_t content = textNode1->getText()->append(textNode2->getText());
+      textNode2->setText(content);
+
+      upd.theLeftMergedNode = lsib;
+
+      --pos;
+      removeChild(pos);
+    }
+
+    if (rsib != NULL &&
+        rsib->getNodeKind() == store::StoreConsts::textNode &&
+        lastNew->getNodeKind() == store::StoreConsts::textNode)
+    {
+      TextNode* textNode1 = reinterpret_cast<TextNode*>(lastNew);
+      TextNode* textNode2 = reinterpret_cast<TextNode*>(rsib);
+      xqpStringStore_t content = textNode1->getText()->append(textNode2->getText());
+      textNode1->setText(content);
+      
+      upd.theRightMergedNode = rsib;
+      
+      removeChild(pos + numNewChildren);
+    }
   }
 
   if (upd.theRemoveType)
@@ -698,6 +648,18 @@ void XmlNode::restoreChild(UpdReplaceChild& upd)
   removeChildren(pos, upd.theNumApplied);
 
   child->connect(this, pos);
+
+  if (upd.theLeftMergedNode)
+  {
+    ZORBA_ASSERT(pos > 0);
+    insertChild(BASE_NODE(upd.theLeftMergedNode), pos-1);
+  }
+
+  if (upd.theRightMergedNode)
+  {
+    ZORBA_ASSERT(pos < numChildren() - 1);
+    insertChild(BASE_NODE(upd.theRightMergedNode), pos+1);
+  }
 
   if (upd.theRemoveType)
   {
@@ -736,6 +698,8 @@ void ElementNode::replaceContent(UpdReplaceElemContent& upd)
     TEXT_NODE(upd.theNewChild)->copy2(this,
                                       this,
                                       0,
+                                      false,
+                                      false,
                                       NULL,
                                       upd.theCopyMode);
   }

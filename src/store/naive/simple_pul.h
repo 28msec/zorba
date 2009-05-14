@@ -388,7 +388,8 @@ protected:
   store::Item_t                    theSibling;
   store::CopyMode                  theCopyMode;
 
-  ulong                            theNumApplied;
+  long                             theNumApplied;
+  store::Item_t                    theMergedNode;
 
 public:
   UpdInsertChildren(
@@ -486,6 +487,8 @@ protected:
   store::CopyMode             theCopyMode;
 
   ulong                       theNumApplied;
+  store::Item_t               theLeftMergedNode;
+  store::Item_t               theRightMergedNode;
   bool                        theIsTyped;
 
 public:
@@ -781,6 +784,8 @@ public:
   {
     theNewContent.transfer(newValue);
   }
+
+  ~UpdReplaceTextValue();
 
   store::UpdateConsts::UpdPrimKind getKind() 
   {
