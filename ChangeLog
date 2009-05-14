@@ -5,6 +5,8 @@ version 1.0.0 (comming)
   * Added functions for sending emails
   * Added a printPlan function to the XQuery class of the API.
   * Added two plan printing function (printPlanAsXML and printPlanAsDOT) to the SWIG generated APIs
+	* Implemented 'declare option': options are set in the static context
+	* fn:trace can be disabled by setting the option QName("http://www.zorba-xquery.org/option", "trace")  to "disable"
 
 version 0.9.5 (2008.02.17)
   * Unified the Tidy and Rest API's

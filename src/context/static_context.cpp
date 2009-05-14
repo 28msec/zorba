@@ -305,6 +305,19 @@ bool static_context::lookup_ns (xqp_string prefix, xqp_string &ns) const
   return context_value2 ("ns:", prefix, ns) && ! ns.empty();
 }
 
+bool
+static_context::lookup_option(const xqp_string& ns, const xqp_string& localname, xqp_string& option) const
+{
+  xqp_string s = ns + localname;
+  return lookup_once2("option:", s, option);
+}
+
+bool
+static_context::bind_option(const xqp_string& ns, const xqp_string& localname, const xqp_string& option)
+{
+  xqp_string s = ns + localname;
+  return str_keymap.put2("option:", s, option);
+}
 
 xqp_string static_context::lookup_ns (xqp_string prefix, const XQUERY_ERROR& err) const 
 {

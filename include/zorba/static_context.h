@@ -405,6 +405,23 @@ namespace zorba {
       virtual void
       resetTraceStream() = 0;
 
+      /** \brief Get an option that was declared using the declare option syntax
+       *
+       * @param aQName The QName of the option to get.
+       * @return aOptionValue The value of the option if found.
+       * @return true if the option was found, false otherwise.
+       */
+      virtual bool
+      getOption( const Item& aQName, String& aOptionValue) const = 0;
+
+      /** \brief Declare an option (same as using declare option in XQuery)
+       *
+       * @param aQName The QName of the option to declare.
+       * @param aOptionValue The value of the option to declare.
+       */
+      virtual void
+      declareOption( const Item& aQName, const String& aOptionValue) const = 0;
+
 #ifdef ZORBA_WITH_EMAIL
       /** \brief Set the SMTP server.
        *

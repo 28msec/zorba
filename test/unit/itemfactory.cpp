@@ -106,7 +106,13 @@ int itemfactory(int argc, char* argv[])
     UNIT_ASSERT ( lItem.isAtomic() );
     UNIT_ASSERT ( lItem.getStringValue() == "ncname" );
     UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
-    CHECK_NOT_IMPLEMENTED (lItem, getPrefix());
+  try {
+    lItem.getPrefix();
+    UNIT_ASSERT(false);
+  } catch (SystemException &e) {
+    UNIT_ASSERT (e.getErrorCode() == STR0010_TYPE_ERROR);
+  }
+//    CHECK_NOT_IMPLEMENTED (lItem, getPrefix());
     CHECK_NOT_IMPLEMENTED (lItem, getLocalName());
     CHECK_NOT_IMPLEMENTED (lItem, getNamespace());
     CHECK_NOT_IMPLEMENTED (lItem, getBooleanValue() );

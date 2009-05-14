@@ -366,7 +366,7 @@ OptionDecl::OptionDecl(
   parsenode(loc_),
   qname_h(_qname_h),
   val(_val)
-{}
+{ }
 
 
 //-OptionDecl::

@@ -129,6 +129,12 @@ public:
   bool
   lookup_elem_ns(const xqp_string pfx, xqp_string& ns) const;
 
+  bool
+  lookup_option(const xqp_string& prefix, const xqp_string& localname, xqp_string& option) const;
+
+  bool
+  bind_option(const xqp_string& prefix, const xqp_string& localname, const xqp_string& option);
+
   store::Item_t
   lookup_qname (xqp_string default_ns, xqp_string name, const QueryLoc& loc) const;
 

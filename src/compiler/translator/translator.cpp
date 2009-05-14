@@ -3733,6 +3733,10 @@ void *begin_visit (const OptionDecl& v) {
   //check if namespace for option is valid
   rchandle<QName>   qn = v.get_qname();
   xqpString   option_ns = sctx_p->lookup_ns(qn->get_prefix(), loc);
+
+  // ignore if an error occurs
+  sctx_p->bind_option(option_ns, qn->get_localname(), v.get_val());
+
   return no_state;
 }
 

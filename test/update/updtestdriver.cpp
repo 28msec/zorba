@@ -263,6 +263,7 @@ main(int argc, char** argv)
               zorba::filesystem_path lRefFile
                 (lRefFileTmpString, zorba::filesystem_path (lState->theCompares[i],
                                                    zorba::file::CONVERT_SLASHES));
+              std::cout << "Ref " << lRefFile.get_path()  << std::endl;
               int lLine, lCol, lPos;
               std::string lRefLine, lResultLine;
               lRes = zorba::fileEquals(lRefFile.get_path().c_str(),

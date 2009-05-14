@@ -725,6 +725,39 @@ StaticContextImpl::resetTraceStream()
   theCtx->set_trace_stream(std::cerr);
 }
 
+bool
+StaticContextImpl::getOption( const Item& aQName, String& aOptionValue ) const
+{
+  try {
+    store::Item* lQName = Unmarshaller::getInternalItem(aQName);
+    xqp_string lOption;
+    if (theCtx->lookup_option(lQName->getNamespace(), lQName->getLocalName(), lOption)) {
+      aOptionValue = String(lOption.c_str());
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
+  return false;
+}
+
+void
+StaticContextImpl::declareOption( const Item& aQName, const String& aOptionValue) const
+{
+  try {
+    store::Item* lQName = Unmarshaller::getInternalItem(aQName);
+    xqp_string lOptionValue = Unmarshaller::getInternalString(aOptionValue)->c_str();
+    xqp_string lNamespae(lQName->getNamespace());
+    xqp_string lLocalName(lQName->getLocalName());
+    
+    theCtx->bind_option(lNamespae, lLocalName, lOptionValue);
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
+}
+
 #ifdef ZORBA_WITH_EMAIL
 bool
 StaticContextImpl::setSMTPServer( const String& aSMTP_server )

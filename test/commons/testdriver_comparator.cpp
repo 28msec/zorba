@@ -32,6 +32,7 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
     std::ostringstream lTmpRefResult;
     lTmpRefResult << "<root>" << std::endl;
     std::ifstream lRefInStream(aRefFile);
+    std::cout << "reading from file " << aRefFile << std::endl;
     char buf[1024];
 
     while (!lRefInStream.eof()) {
@@ -47,6 +48,7 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
     std::ostringstream lTmpResult;
     lTmpResult << "<root>" << std::endl;
     std::ifstream lInStream(aResultFile);
+    std::cout << "reading from file " << aResultFile << std::endl;
 
     while (!lInStream.eof()) {
       lInStream.read(buf, 1024);

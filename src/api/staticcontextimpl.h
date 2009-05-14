@@ -210,6 +210,12 @@ class StaticContextImpl : public StaticContext
   virtual void
   resetTraceStream();
 
+  virtual bool
+  getOption( const Item& aQName, String& aOptionValue) const;
+
+  virtual void
+  declareOption( const Item& aQName, const String& aOptionValue) const;
+
 #ifdef ZORBA_WITH_EMAIL
   // SMTP parameter settings
   virtual bool
