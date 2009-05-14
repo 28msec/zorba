@@ -204,6 +204,7 @@ public:
             trim(*lIter);
             theResultFiles.push_back(*lIter);
           }
+          break;
         } else if ( *lIter == "InputQuery:" ) {
           ++lIter;
           theInputQueryFile = *lIter;
