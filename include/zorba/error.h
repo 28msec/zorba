@@ -16,6 +16,8 @@
 #ifndef ZORBA_ERROR_API_H
 #define ZORBA_ERROR_API_H
 
+#include <zorba/config.h>
+
 /** \brief The ErrorCode enum contains all error codes that can be reported by the XQuery
  *         processor.
  *
@@ -76,7 +78,7 @@ typedef enum
   // the expanded QName and number of arguments in a function call do not
   // match the name and arity of a function signature in the static context.
 
-  XPST0051,
+  XPST0051, // = 10,
   // a QName that is used as an AtomicType in a SequenceType is not defined
   // in the in-scope schema types as an atomic type.
 
@@ -123,7 +125,7 @@ typedef enum
   // XQuery dynamic errors
   //
 
-  XQDY0025,
+  XQDY0025, // = 20,
   // any attribute of a constructed element does not have a name that is
   // distinct from the names of all other attributes of the constructed
   // element.
@@ -166,7 +168,7 @@ typedef enum
   // the value of the name expression in a computed processing instruction
   // constructor is equal to "XML" (in any combination of upper and lower case).
 
-  XQDY0072,
+  XQDY0072, // = 30,
   // a constructor or replace expression results in a comment node whose
   // content ends with a hyphen or contains two adjacent hyphens.
 
@@ -214,7 +216,7 @@ typedef enum
   XQST0015,
   // (Not currently used.)
 
-  XQST0016,
+  XQST0016, // = 40,
   // An implementation that does not support the Module Feature raises a
   // static error if it encounters a module declaration or a module import.
 
@@ -256,7 +258,7 @@ typedef enum
   //value specified by a default collation declaration is not present in
   // statically known collations.
 
-  XQST0039,
+  XQST0039, // = 50,
   // It is a static error for a function declaration to have more than one
   // parameter with the same name.
 
@@ -297,7 +299,7 @@ typedef enum
   XQST0053,
   // (Not currently used.)
 
-  XQST0054,
+  XQST0054, // = 60,
   // a variable depends on itself.
 
   XQST0055,
@@ -333,7 +335,7 @@ typedef enum
   // element/type namespace declaration, or more than one default function
   // namespace declaration.
 
-  XQST0067,
+  XQST0067, // = 70,
   // A static error is raised if a Prolog contains more than one construction declaration.
 
   XQST0068,
@@ -373,7 +375,7 @@ typedef enum
   XQST0078,
   // (Not currently used.)
 
-  XQST0079,
+  XQST0079, // = 80,
   // an extension expression contains neither a pragma that is recognized by
   // the implementation nor an expression enclosed in curly braces.
 
@@ -417,7 +419,7 @@ typedef enum
   // the content sequence in an element constructor contains an attribute node
   // following a node that is not an attribute node.
 
-  XQTY0028,
+  XQTY0028, // = 90,
   // (Not currently used.)
 
   XQTY0030,
@@ -484,7 +486,7 @@ typedef enum
   // It is a type error if the target expression of a delete expression
   // does not return a sequence of zero or more nodes.
 
-  XUTY0008,
+  XUTY0008, // = 100,
   // In a replace expression, it is a type error if the target expression
   // returns a non-empty result that does not consist of a single element,
   // attribute, text, comment, or processing instruction node.
@@ -531,7 +533,7 @@ typedef enum
   // It is a dynamic error if any node is the target of more than one
   // replace value of expression within the same query.
 
-  XUDY0018,
+  XUDY0018, // = 110,
   // It is a dynamic error if a function that was declared to be external
   // but not updating returns a non-empty pending update list.
 
@@ -577,7 +579,7 @@ typedef enum
   // It is a dynamic error if the target expression of an insert, replace,
   // or rename expression evaluates to an empty sequence.
 
-  XUST0028,
+  XUST0028, // = 120,
   // It is a static error if a function declaration specifies both updating
   // and a return type.
 
@@ -628,7 +630,7 @@ typedef enum
 
   FODC0005, //Invalid argument to fn:doc or fn:doc-available.
 
-  FODT0001, //Overflow/underflow in date/time operation.
+  FODT0001, // = 140, //Overflow/underflow in date/time operation.
 
   FODT0002, //Overflow/underflow in duration operation.
 
@@ -675,7 +677,7 @@ typedef enum
   //
   // Serialization errors
   //
-  SENR0001,
+  SENR0001, // = 160,
   //  It is an error if an item in S6 in sequence normalization is an attribute node or a namespace node.
 
   SERE0003,
@@ -722,7 +724,7 @@ typedef enum
   //  It is an error if the value of the normalization-form parameter specifies a normalization form that 
   //  is not supported by the serializer.
 
-  SERE0012,
+  SERE0012, // = 170,
   //  It is an error if the value of the normalization-form parameter is fully-normalized and any relevant 
   //  construct of the result begins with a combining character.
 
@@ -754,7 +756,7 @@ typedef enum
   //
   XQP0000_DYNAMIC_RUNTIME_ERROR,
   XQP0001_DYNAMIC_ITERATOR_OVERRUN,
-  XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD,
+  XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD, // = 180,
   XQP0003_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND,
   XQP0004_SYSTEM_NOT_SUPPORTED,
   XQP0005_SYSTEM_ASSERT_FAILED,
@@ -764,7 +766,7 @@ typedef enum
   XQP0009_SYSTEM_WRITE_LOCK_FAILED,
   XQP0010_SYSTEM_POP_FROM_EMPTY_LIST,
   XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION,
-  XQP0012_SYSTEM_FXCHARHEAP_IOEXCEPTION,
+  XQP0012_SYSTEM_FXCHARHEAP_IOEXCEPTION, // = 190,
   XQP0013_SYSTEM_MMFILE_IOEXCEPTION,
   XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
   XQP0019_INTERNAL_ERROR,
@@ -774,7 +776,7 @@ typedef enum
   XQP0023_GET_RESULTS_AS_SAX_FAILED,
   XQP0025_COULD_NOT_CREATE_ITEM,
   XQP0026_COULD_NOT_CREATE_THREAD,
-  XQP0026_CANNOT_INIT_STORE,
+  XQP0026_CANNOT_INIT_STORE, // = 200,
   XQP0027_MS_DOM_ERROR,
   XQP0028_FUNCTION_IMPL_NOT_FOUND,
   XQP0030_DEADLOCK,
@@ -789,7 +791,7 @@ typedef enum
   //
   API0001_XQUERY_STRING_IS_EMPTY,
   API0002_COMPILE_FAILED,
-  API0003_XQUERY_NOT_COMPILED,
+  API0003_XQUERY_NOT_COMPILED, // = 210,
   API0004_XQUERY_ALREADY_COMPILED,
   API0005_COLLECTION_ALREADY_EXISTS,
   API0006_COLLECTION_NOT_FOUND,
@@ -799,7 +801,7 @@ typedef enum
   API0011_INVALID_VARIABLE_QNAME,
   API0012_INVALID_INDEX,
   API0013_INAPPROPRIATE_VARIABLE_VALUE,
-  API0014_INVALID_ARGUMENT,
+  API0014_INVALID_ARGUMENT, // = 220,
   API0015_CANNOT_OPEN_FILE,
   API0016_CANNOT_CREATE_COLLECTION,
   API0017_CANNOT_LOAD_DOCUMENT,
@@ -809,7 +811,7 @@ typedef enum
   API0021_ITEM_TO_LOAD_IS_NOT_NODE,
   API0022_QUERY_ALREADY_CLOSED,
   API0023_CANNOT_SERIALIZE_UPDATE_QUERY,
-  API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY,
+  API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY, // = 230,
   API0025_END_OF_SEQUENCE,
   API0026_CANNOT_CLOSE_QUERY_WITH_ITERATORS,
   API0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS,
@@ -821,8 +823,8 @@ typedef enum
   API0032_QUERY_NOT_COMPILED_IN_DEBUG_MODE,
 #endif
   API0033_FILE_OR_FOLDER_DOES_NOT_EXIST,
-  API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED,
-  API0035_COLLECTION_CANNOT_BE_SERIALIZED,
+  API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED, // = 239/240,
+  API0035_COLLECTION_CANNOT_BE_SERIALIZED, // = 240,
   API0036_TIDY_ERROR,
   API0037_TIDY_ERROR_SET_OPTION,
 #ifdef ZORBA_WITH_EMAIL
@@ -841,14 +843,14 @@ typedef enum
   //
   STR0001_INDEX_ALREADY_EXISTS,
   STR0002_INDEX_PARTIAL_KEY_INSERT,
-  STR0003_INDEX_PARTIAL_KEY_REMOVE,
+  STR0003_INDEX_PARTIAL_KEY_REMOVE, // = 250,
   STR0004_INDEX_PARTIAL_KEY_PROBE,
   STR0005_INDEX_INVALID_BOX_PROBE,
   STR0006_INDEX_UNSUPPORTED_PROBE_CONDITION,
   STR0007_LOADER_IO_ERROR,
   STR0008_LOADER_PARSING_ERROR,
   STR0009_NODEID_ERROR,
-  STR0010_TYPE_ERROR,
+  STR0010_TYPE_ERROR, // = 257,
   STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
 
   MAX_ZORBA_ERROR_CODE
