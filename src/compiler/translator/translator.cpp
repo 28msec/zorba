@@ -5919,57 +5919,75 @@ void end_visit (const RevalidationDecl& v, void* /*visit_state*/) {
 }
 
 
-void *begin_visit (const TransformExpr& v) {
+void *begin_visit (const TransformExpr& v) 
+{
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit (const TransformExpr& v, void* /*visit_state*/) {
+void end_visit (const TransformExpr& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
+
   expr_t lReturn = pop_nodestack();
-  if (lReturn->is_updating()) {
+  if (lReturn->is_updating()) 
+  {
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
+
   expr_t lModify = pop_nodestack();
-  if (! lModify->is_updating_or_vacuous ()) {
+  if (! lModify->is_updating_or_vacuous ()) 
+  {
     ZORBA_ERROR_LOC(XUST0002, loc);
   }
+
   std::auto_ptr<transform_expr> lTransform(new transform_expr(loc, lModify, lReturn));
-  const size_t lSize = v.get_varname_list()->size();
+
+  const size_t lSize = v.get_var_list()->size();
   for (size_t i = 0; i < lSize; ++i)
   {
     expr_t lExpr = pop_nodestack();
-    if (lExpr->is_updating()) {
+    if (lExpr->is_updating()) 
+    {
       ZORBA_ERROR_LOC(XUST0001, loc);
     }
+
     varref_t lVarExpr = pop_nodestack_var ();
     lVarExpr->set_kind(var_expr::copy_var);
-    copy_clause* lCCE = new copy_clause( lVarExpr, lExpr);
-    lTransform->add(lCCE);
+
+    copy_clause* copyClause = new copy_clause( lVarExpr, lExpr);
+    lTransform->add_front(copyClause);
+
     pop_scope();
   }
+
   nodestack.push(lTransform.release());
 }
 
-void *begin_visit (const VarNameList& v) {
+void *begin_visit (const CopyVarList& v) 
+{
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit (const VarNameList& v, void* /*visit_state*/) {
+void end_visit (const CopyVarList& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit (const VarBinding& v) {
+void *begin_visit (const VarBinding& v) 
+{
   TRACE_VISIT ();
   push_scope ();
   bind_var_and_push (loc, v.get_varname (), var_expr::copy_var);
   return no_state;
 }
 
-void end_visit (const VarBinding& v, void*) {
+void end_visit (const VarBinding& v, void*) 
+{
   TRACE_VISIT_OUT ();
 }
+
 
 /* try-catch-related */
 void *begin_visit (const TryExpr& v) {

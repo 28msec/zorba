@@ -216,7 +216,7 @@ class ValidateExpr;
 class ValueComp;
 class VarBinding;
 class VarDecl;
-class VarNameList;
+class CopyVarList;
 class Wildcard;
 class DecimalFormatNode;
 
@@ -5167,95 +5167,76 @@ public:
 // folded into [245] RenameExpr
 
 
+/*******************************************************************************
+  TransformExpr := "copy" "$" CopyVarList "modify" ExprSingle "return"  ExprSingle
 
-// [249] TransformExpr
-// -------------------
+  CopyVarList := VarBinding |	CopyVarList "," "$"  VarBinding
+
+  VarBinding := VarName ":=" ExprSingle
+********************************************************************************/
 class TransformExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= TRANSFORM_COPY_DOLLAR  VarNameList
-|				MODIFY  ExprSingle  RETURN  ExprSingle
-|_______________________________________________________________________*/
 {
 protected:
-	rchandle<VarNameList> varname_list_h;
-	rchandle<exprnode> source_expr_h;
-	rchandle<exprnode> target_expr_h;
+	rchandle<CopyVarList> var_list;
+	rchandle<exprnode> source_expr;
+	rchandle<exprnode> target_expr;
 
 public:
 	TransformExpr(
-		const QueryLoc&,
-		rchandle<VarNameList>,
-		rchandle<exprnode> source_expr_h,
-		rchandle<exprnode> target_expr_h);
+		const QueryLoc& loc,
+		rchandle<CopyVarList> var_list,
+		rchandle<exprnode> source_expr,
+		rchandle<exprnode> target_expr);
 
 
-public:
-	rchandle<VarNameList> get_varname_list() const { return varname_list_h; }
-	rchandle<exprnode> get_source_expr() const { return source_expr_h; }
-	rchandle<exprnode> get_target_expr() const { return target_expr_h; }
+	rchandle<CopyVarList> get_var_list() const { return var_list; }
+	rchandle<exprnode> get_source_expr() const { return source_expr; }
+	rchandle<exprnode> get_target_expr() const { return target_expr; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [249a] VarNameList
-// ------------------
-class VarNameList : public exprnode
-/*______________________________________________________________________
-|
-|	::= VarBinding |	VarNameList  COMMA_DOLLAR  VarBinding
-|_______________________________________________________________________*/
+class CopyVarList : public exprnode
 {
 protected:
-	std::vector<rchandle<VarBinding> > varbinding_hv;
+	std::vector<rchandle<VarBinding> > var_bindings;
 	
 public:
-	VarNameList(const QueryLoc&);
+	CopyVarList(const QueryLoc& loc);
 
-public:
-	void push_back(rchandle<VarBinding> varbinding_h)
-  { varbinding_hv.push_back(varbinding_h); }
-	rchandle<VarBinding> operator[](int i) const
-  { return varbinding_hv[i]; }
-  size_t size () const { return varbinding_hv.size (); }
+	void push_back(rchandle<VarBinding> binding) 
+  {
+    var_bindings.push_back(binding);
+  }
 
-public:
+	rchandle<VarBinding> operator[](int i) const 
+  {
+    return var_bindings[i];
+  }
+
+  size_t size () const { return var_bindings.size (); }
+
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [249b] VarBinding
-// -----------------
 class VarBinding : public exprnode
-/*______________________________________________________________________
-|
-|	::= VARNAME	 GETS  ExprSingle
-|_______________________________________________________________________*/
 {
 protected:
-	std::string varname;
-	rchandle<exprnode> val_h;
+	std::string var_name;
+	rchandle<exprnode> expr;
 
 public:
 	VarBinding(
-		const QueryLoc&,
+		const QueryLoc& loc,
 		std::string varname,
-		rchandle<exprnode>);
+		rchandle<exprnode> expr);
 
+	const std::string& get_varname() const { return var_name; }
+	rchandle<exprnode> get_expr() const { return expr; }
 
-public:
-	const std::string& get_varname() const { return varname; }
-	rchandle<exprnode> get_val() const { return val_h; }
-
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 

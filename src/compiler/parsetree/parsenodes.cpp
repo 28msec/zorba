@@ -4030,49 +4030,47 @@ void RenameExpr::accept(parsenode_visitor& v) const
 // folded into [245] RenameExpr
 
 
-// [249] TransformExpr
-// -------------------
+/*******************************************************************************
+  TransformExpr := "copy" "$" CopyVarList "modify" ExprSingle "return"  ExprSingle
+
+  CopyVarList := VarBinding |	CopyVarList "," "$"  VarBinding
+********************************************************************************/
 TransformExpr::TransformExpr(
-  const QueryLoc& loc_,
-  rchandle<VarNameList> _varname_list_h,
-  rchandle<exprnode> _source_expr_h,
-  rchandle<exprnode> _target_expr_h)
-:
-  exprnode(loc_),
-  varname_list_h(_varname_list_h),
-  source_expr_h(_source_expr_h),
-  target_expr_h(_target_expr_h)
-{}
+  const QueryLoc& loc,
+  rchandle<CopyVarList> var_list_h,
+  rchandle<exprnode> source_expr_h,
+  rchandle<exprnode> target_expr_h)
+  :
+  exprnode(loc),
+  var_list(var_list_h),
+  source_expr(source_expr_h),
+  target_expr(target_expr_h)
+{
+}
 
-
-//-TransformExpr::
 
 void TransformExpr::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  ACCEPT (varname_list_h);
-  ACCEPT (source_expr_h);
-  ACCEPT (target_expr_h);
+  ACCEPT (var_list);
+  ACCEPT (source_expr);
+  ACCEPT (target_expr);
   END_VISITOR ();
 }
 
 
-// [249a] VarNameList
-// ------------------
-VarNameList::VarNameList(
-  const QueryLoc& loc_)
-:
-  exprnode(loc_)
-{}
+CopyVarList::CopyVarList(const QueryLoc& loc)
+  :
+  exprnode(loc)
+{
+}
 
 
-//-VarNameList::
-
-void VarNameList::accept(parsenode_visitor& v) const
+void CopyVarList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  for (vector<rchandle<VarBinding> >::const_reverse_iterator it = varbinding_hv.rbegin();
-       it!=varbinding_hv.rend(); ++it)
+  vector<rchandle<VarBinding> >::const_iterator it;
+  for (it = var_bindings.begin(); it != var_bindings.end(); ++it)
   {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
@@ -4081,27 +4079,25 @@ void VarNameList::accept(parsenode_visitor& v) const
 }
 
 
-// [249b] VarBinding
-// -----------------
 VarBinding::VarBinding(
-  const QueryLoc& loc_,
-  std::string _varname,
-  rchandle<exprnode> _val_h)
-:
-  exprnode(loc_),
-  varname(_varname),
-  val_h(_val_h)
-{}
+  const QueryLoc& loc,
+  std::string varname,
+  rchandle<exprnode> expr_h)
+  :
+  exprnode(loc),
+  var_name(varname),
+  expr(expr_h)
+{
+}
 
-
-//-VarBinding::
 
 void VarBinding::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  ACCEPT (val_h);
+  ACCEPT (expr);
   END_VISITOR ();
 }
+
 
 // TryExpr
 // ---

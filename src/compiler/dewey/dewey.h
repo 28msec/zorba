@@ -451,7 +451,7 @@ class DeweyClassification: public parsenode_visitor
   	DECL_CONCRETE_VISIT (ReplaceExpr);
   	DECL_CONCRETE_VISIT (RevalidationDecl);
   	DECL_CONCRETE_VISIT (TransformExpr);
-  	DECL_CONCRETE_VISIT (VarNameList);
+  	DECL_CONCRETE_VISIT (CopyVarList);
     DECL_CONCRETE_VISIT (VarBinding);
   
   /* try-catch-related */

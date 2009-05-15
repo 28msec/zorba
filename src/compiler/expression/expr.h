@@ -1580,32 +1580,39 @@ public:
 	expr_t getReturnExpr() const { return theReturnExpr; }
 
 public:
-	void add(rchandle<copy_clause> aCopyClause)
-  { theCopyClauses.push_back(aCopyClause); }
+	void add_front(rchandle<copy_clause> aCopyClause)
+  { theCopyClauses.insert(theCopyClauses.begin(), aCopyClause); }
 
 	rchandle<copy_clause>& operator[](int i)
   { return theCopyClauses[i]; }
+
 	rchandle<copy_clause> const& operator[](int i) const
   { return theCopyClauses[i]; }
 
 	std::vector<rchandle<copy_clause> >::const_iterator begin() const
   { return theCopyClauses.begin(); }
+
 	std::vector<rchandle<copy_clause> >::iterator begin()
   { return theCopyClauses.begin(); }
+
 	std::vector<rchandle<copy_clause> >::const_iterator end() const
   { return theCopyClauses.end(); }
+
 	std::vector<rchandle<copy_clause> >::iterator end()
   { return theCopyClauses.end(); }
+
 	size_t size() const
   { return theCopyClauses.size(); }
 
   expr_iterator_data *make_iter ();
 
-public:
   void next_iter (expr_iterator_data&);
+
   void accept (expr_visitor&);
+
 	std::ostream& put(std::ostream&) const;
 };
+
 
 class exit_expr : public expr {
   expr_t val;

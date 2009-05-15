@@ -4909,7 +4909,7 @@ RenameExpr :
 TransformExpr :
 		COPY DOLLAR VarNameList MODIFY ExprSingle RETURN ExprSingle
 		{
-      VarNameList* lList = dynamic_cast<VarNameList*>($3);
+      CopyVarList* lList = dynamic_cast<CopyVarList*>($3);
       $$ = new TransformExpr(LOC(@$), lList, $5, $7);
 		}
 	;
@@ -4920,13 +4920,13 @@ TransformExpr :
 VarNameList :
     VarNameDecl
 		{
-       VarNameList* lList = new VarNameList(LOC(@$));
+       CopyVarList* lList = new CopyVarList(LOC(@$));
        lList->push_back (dynamic_cast<VarBinding*> ($1));
        $$ = lList;
 		}
 	|	VarNameList  COMMA  DOLLAR  VarNameDecl 
 		{
-       VarNameList* lList = dynamic_cast<VarNameList*>($1);
+       CopyVarList* lList = dynamic_cast<CopyVarList*>($1);
        VarBinding* lBinding = dynamic_cast<VarBinding*>($4);
        lList->push_back(lBinding);
        $$ = lList;
