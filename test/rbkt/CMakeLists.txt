@@ -57,7 +57,7 @@ ENDIF(WIN32)
 # Compile and build the multi-threaded testdriver executable
 #
 
-#SET(ZORBA_BUILD_MT_TESTDRIVER 1)
+SET(ZORBA_BUILD_MT_TESTDRIVER 1)
 
 IF (ZORBA_BUILD_MT_TESTDRIVER)
 
@@ -80,7 +80,8 @@ ENDIF (NOT Boost_FOUND)
 SET (TESTDRIVER_MT_SRCS
   testdriver_mt.cpp
   testdriver_common.cpp
-  testuriresolver.cpp
+  ${CMAKE_SOURCE_DIR}/test/commons/testdriver_comparator.cpp
+  ${CMAKE_SOURCE_DIR}/test/commons/testuriresolver.cpp
   )
 
 ADD_EXECUTABLE(testdriver_mt ${TESTDRIVER_MT_SRCS})

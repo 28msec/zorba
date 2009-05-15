@@ -13,6 +13,10 @@
 
 namespace zorba {
 
+
+/*******************************************************************************
+
+********************************************************************************/
 int
 canonicalizeAndCompare(const std::string& aComparisonMethod,
                        const char* aRefFile,
@@ -24,23 +28,36 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
   
   LIBXML_TEST_VERSION
 
-  if (aComparisonMethod.compare("XML") == 0) {
+  if (aComparisonMethod.compare("XML") == 0) 
+  {
     lRefResult_ptr = xmlReadFile(aRefFile, 0, 0);
     lResult_ptr    = xmlReadFile(aResultFile, 0, 0);
-  } else if (aComparisonMethod.compare("Text") == 0 || aComparisonMethod.compare("Fragment") == 0) {
+  }
+  else if (aComparisonMethod.compare("Text") == 0 ||
+           aComparisonMethod.compare("Fragment") == 0) 
+  {
     // prepend and append an artifical root tag as requested by the guidelines
     std::ostringstream lTmpRefResult;
     lTmpRefResult << "<root>" << std::endl;
     std::ifstream lRefInStream(aRefFile);
+    if (!lRefInStream.good())
+    {
+      std::cout << "Failed to open ref file " << aRefFile << std::endl;
+      return 8;
+    }
+
     std::cout << "reading from file " << aRefFile << std::endl;
     char buf[1024];
 
-    while (!lRefInStream.eof()) {
+    while (!lRefInStream.eof()) 
+    {
       lRefInStream.read(buf, 1024);
       lTmpRefResult.write(buf, lRefInStream.gcount());
     }
+
     if (buf[lRefInStream.gcount()-1] != '\n')
       lTmpRefResult << std::endl;
+
     lTmpRefResult << "</root>";
     lRefResult_ptr = xmlReadMemory(lTmpRefResult.str().c_str(), lTmpRefResult.str().size(), "ref_result.xml", 0, 0);
 
@@ -48,30 +65,47 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
     std::ostringstream lTmpResult;
     lTmpResult << "<root>" << std::endl;
     std::ifstream lInStream(aResultFile);
+    if (!lInStream.good())
+    {
+      std::cout << "Failed to open result file " << aResultFile << std::endl;
+      return 8;
+    }
+
     std::cout << "reading from file " << aResultFile << std::endl;
 
-    while (!lInStream.eof()) {
+    while (!lInStream.eof()) 
+    {
       lInStream.read(buf, 1024);
       lTmpResult.write(buf, lInStream.gcount());
     }
+
     lTmpResult << std::endl << "</root>";
     lResult_ptr = xmlReadMemory(lTmpResult.str().c_str(), lTmpResult.str().size(), "result.xml", 0, 0);
     
-  } else if (aComparisonMethod.compare("Error") == 0 ) {
+  }
+  else if (aComparisonMethod.compare("Error") == 0 ) 
+  {
     std::cout << "an error was expected but we got a result" << std::endl;
     return 8;
-  } else if (aComparisonMethod.compare("Inspect") == 0 ) {
+  }
+  else if (aComparisonMethod.compare("Inspect") == 0 ) 
+  {
     std::cout << "result must be inspected by humans." << std::endl;
     return 0;
-  } else if (aComparisonMethod.compare("Ignore") == 0 ) {
+  }
+  else if (aComparisonMethod.compare("Ignore") == 0 ) 
+  {
     // safely return no error here
     return 0;
-  } else {
+  }
+  else 
+  {
     std::cout << "comparison method not supported: " << aComparisonMethod << std::endl;
     return 9;
   }
 
-  if (lRefResult_ptr == NULL || lResult_ptr == NULL) {
+  if (lRefResult_ptr == NULL || lResult_ptr == NULL) 
+  {
     std::cerr << "couldn't read reference result or result file" << std::endl;
     return 8;
   }
@@ -85,12 +119,14 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
   xmlFreeDoc(lRefResult_ptr);
   xmlFreeDoc(lResult_ptr);
 
-  if (lRefResultRes < 0) {
+  if (lRefResultRes < 0) 
+  {
     std::cerr << "error canonicalizing reference result" << std::endl;
     return 10;
   }
   
-  if (lResultRes < 0) {
+  if (lResultRes < 0) 
+  {
     std::cerr << "error canonicalizing result" << std::endl;
     return 10;
   }
@@ -98,24 +134,35 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
   // last, we have to diff the result
   int lLine, lCol, lPos; // where do the files differ
   std::string lRefLine, lResultLine;
-  bool lRes = fileEquals(lCanonicalRefFile.c_str(), lCanonicalResFile.c_str(), lLine, lCol, lPos, lRefLine, lResultLine);
-  if (!lRes) {
-    std::cout << std::endl << "Canonical result does not match canonical expected result:" << std::endl;
-    printFile(std::cout, aRefFile);
-    std::cout << "=== end of expected result ===" << std::endl;
+  bool lRes = fileEquals(lCanonicalRefFile.c_str(),
+                         lCanonicalResFile.c_str(),
+                         lLine, lCol, lPos, lRefLine, lResultLine);
+  if (!lRes) 
+  {
+    std::cout << std::endl
+              << "Canonical result does not match canonical expected result:"
+              << std::endl;
 
-    std::cout << "See line " << lLine << ", col " << lCol << " of expected result. " << std::endl;
+    printFile(std::cout, aRefFile);
+
+    std::cout << "=== end of expected result ===" << std::endl;
+    std::cout << "See line " << lLine << ", col " << lCol 
+              << " of expected result. " << std::endl;
     std::cout << "Actual:   <";
+
     if( -1 != lPos )
       printPart(std::cout, aResultFile, lPos, 15);
     else
       std::cout << lResultLine;
+
     std::cout << ">" << std::endl;
     std::cout << "Expected: <";
+
     if( -1 != lPos )
       printPart(std::cout, aRefFile, lPos, 15);
     else
       std::cout << lRefLine;
+
     std::cout << ">" << std::endl;
 
     return 8;
@@ -123,18 +170,39 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
   return 0;
 } 
 
-// return false if the files are not equal
-// aLine contains the line number in which the first difference occurs
-// aCol contains the column number in which the first difference occurs
-// aPos is the character number off the first difference in the file
-// -1 is returned for aLine, aCol, and aPos if the files are equal
+
+/*******************************************************************************
+  Return false if the files are not equal.
+  aLine contains the line number in which the first difference occurs
+  aCol contains the column number in which the first difference occurs
+  aPos is the character number off the first difference in the file
+  -1 is returned for aLine, aCol, and aPos if the files are equal
+********************************************************************************/
 bool
-fileEquals(const char* aRefFile, const char* aResFile, int& aLine, int& aCol, int& aPos,
-        std::string& aRefLine, std::string& aResLine)
+fileEquals(
+    const char* aRefFile,
+    const char* aResFile,
+    int& aLine,
+    int& aCol,
+    int& aPos,
+    std::string& aRefLine,
+    std::string& aResLine)
 {
   std::ifstream li(aRefFile);
   std::ifstream ri(aResFile); 
   std::string lLine, rLine;
+
+  if (!li.good())
+  {
+    std::cout << "Failed to open ref file " << aRefFile << std::endl;
+    return false;
+  }
+
+  if (!ri.good())
+  {
+    std::cout << "Failed to open results file " << aResFile << std::endl;
+    return false;
+  }
 
   aLine = 1; aCol = 0; aPos = -1;
   while (! li.eof() )
@@ -165,8 +233,10 @@ fileEquals(const char* aRefFile, const char* aResFile, int& aLine, int& aCol, in
   return true;
 }
 
-// print parts of a file
-// starting at aStartPos with the length of aLen
+
+/*******************************************************************************
+  Print parts of a file starting at aStartPos with the length of aLen
+********************************************************************************/
 void
 printPart(std::ostream& os, const std::string &aInFile, int aStartPos, int aLen)
 {

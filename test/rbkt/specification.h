@@ -30,23 +30,27 @@ class Specification
   typedef std::string::iterator iterator_t;
 
 public:
-  struct Variable {
-    bool theInline;
-    std::string theVarName, theVarValue;
+  struct Variable 
+  {
+    bool        theInline;
+    std::string theVarName;
+    std::string theVarValue;
   };
 
   Specification() : theInline(false), theComparisonMethod("Fragment") {}
 
 private:
-  bool theInline;
-  std::string theVarName, theVarValue;
-  std::vector<Variable> theVariables;
+  bool                     theInline;
+  std::string              theVarName;
+  std::string              theVarValue;
+  std::vector<Variable>    theVariables;
   std::vector<std::string> theResultFiles;
   std::vector<std::string> theErrors;
-  std::string theDate, theTimezone;
-  std::string theInputQueryFile;
-  std::string theComparisonMethod; // default is Fragment such that the user doesn't need to care about root tags for sequences etc
-  std::string theDefaultCollection;
+  std::string              theDate;
+  std::string              theTimezone;
+  std::string              theInputQueryFile;
+  std::string              theComparisonMethod; // default is Fragment such that the user doesn't need to care about root tags for sequences etc
+  std::string              theDefaultCollection;
 
   void setInline() {
     theInline = true;
@@ -83,16 +87,19 @@ private:
 public:
   std::vector<Variable>::const_iterator
   variablesBegin() const { return theVariables.begin(); }
+
   std::vector<Variable>::const_iterator
   variablesEnd() const { return theVariables.end(); }
 
   std::vector<std::string>::const_iterator
   errorsBegin() const { return theErrors.begin(); }
+
   std::vector<std::string>::const_iterator
   errorsEnd() const { return theErrors.end(); }
 
   std::vector<std::string>::const_iterator
   resultsBegin() const { return theResultFiles.begin(); }
+
   std::vector<std::string>::const_iterator
   resultsEnd() const { return theResultFiles.end(); }
 
@@ -170,16 +177,21 @@ public:
       lContent << (char)lFile.get();
     }
     lFile.close();
+
     std::vector<std::string> lines;
     std::vector<std::string>::iterator it;
+
     tokenize(lContent.str(), lines, "\n");
-    for(it=lines.begin(); it!=lines.end(); ++it)
+
+    for(it = lines.begin(); it != lines.end(); ++it)
     {
       std::vector<std::string> tokens;
       std::vector<std::string>::iterator lIter;
       trim(*it);
+
       tokenize(*it, tokens, " ");
-      for(lIter=tokens.begin(); lIter!=tokens.end(); ++lIter)
+
+      for(lIter = tokens.begin(); lIter != tokens.end(); ++lIter)
       {
         if( *lIter == "Args:" )
         {
@@ -198,41 +210,63 @@ public:
             addVariable();
           }
           break;
-        } else if ( *lIter == "Result:" ) {
-          for (++lIter; lIter!=tokens.end(); ++lIter)
+        }
+        else if ( *lIter == "Result:" ) 
+        {
+          for (++lIter; lIter != tokens.end(); ++lIter)
           {
             trim(*lIter);
             theResultFiles.push_back(*lIter);
           }
           break;
-        } else if ( *lIter == "InputQuery:" ) {
+        }
+        else if ( *lIter == "InputQuery:" ) 
+        {
           ++lIter;
           theInputQueryFile = *lIter;
-        } else if ( *lIter == "Comparison:" ) {
+        }
+        else if ( *lIter == "Comparison:" ) 
+        {
           ++lIter;
           theComparisonMethod = *lIter;
-        } else if ( *lIter == "DefaultCollection:" ) {
+        }
+        else if ( *lIter == "DefaultCollection:" ) 
+        {
           ++lIter;
           theDefaultCollection = *lIter;
-        } else if ( *lIter == "Error:" ) { 
+        }
+        else if ( *lIter == "Error:" ) 
+        { 
           ++lIter;
           if(lIter == tokens.end() ) { return false; }
           addError(lIter->begin(), lIter->end());
-        } else if( *lIter == "Date:" ) {
+        }
+        else if( *lIter == "Date:" ) 
+        {
           ++lIter;
           if(lIter == tokens.end() ) { return false; }
           setDate( lIter->begin(), lIter->end() );
-        } else if ( *lIter == "Timezone:" ) {
+        }
+        else if ( *lIter == "Timezone:" ) 
+        {
           ++lIter;
           if(lIter == tokens.end() ) { return false; }
           setTimezone(lIter->begin(), lIter->end());
-        } else if ( lIter->find("Error:") != std::string::npos ) {
+        }
+        else if ( lIter->find("Error:") != std::string::npos ) 
+        {
           addError(lIter->begin()+lIter->find(":")+1, lIter->end());
-        } else if ( lIter->find("Date:") != std::string::npos  ) {
+        }
+        else if ( lIter->find("Date:") != std::string::npos  ) 
+        {
           setDate(lIter->begin()+lIter->find(":")+1, lIter->end());
-        } else if ( lIter->find("Timezone:") != std::string::npos ) {
+        }
+        else if ( lIter->find("Timezone:") != std::string::npos ) 
+        {
           setTimezone(lIter->begin()+lIter->find(":")+1, lIter->end());
-        } else {
+        }
+        else
+        {
           break;
         }
       }

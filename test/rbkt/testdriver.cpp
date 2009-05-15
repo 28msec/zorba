@@ -150,7 +150,9 @@ main(int argc, char** argv)
     std::vector<zorba::file> lRefFiles;
     bool lRefFileExists = false;
     for (std::vector<std::string>::const_iterator lIter = lSpec.resultsBegin();
-         lIter != lSpec.resultsEnd(); ++lIter) {
+         lIter != lSpec.resultsEnd();
+         ++lIter) 
+    {
       std::string lTmp = *lIter;
       zorba::str_replace_all(lTmp, "$RBKT_SRC_DIR", rbkt_src_dir);
       zorba::file lRefFile(lTmp, path_flags);
@@ -161,7 +163,9 @@ main(int argc, char** argv)
       }
       lRefFiles.push_back(lRefFile);
     }
-    if (lRefFiles.size () == 0) {
+
+    if (lRefFiles.size () == 0) 
+    {
       lRefFiles.push_back (zorba::file (rbkt_src_dir + "/ExpQueryResults/" + lQueryWithoutSuffix + ".xml.res"));
       if (lRefFiles [0].exists()) lRefFileExists = true;
     }
@@ -298,16 +302,21 @@ main(int argc, char** argv)
           }
         }
       }
+
       if( errors == UNEXPECTED_ERROR)
+      {
         return 6;
-      else if( errors == -1 ) {
+      }
+      else if( errors == -1 ) 
+      {
         std::cout << "Result:" << std::endl;
         zorba::printFile(std::cout, lResultFile.get_path());
         std::cout << "=== end of result ===" << std::endl;
         std::cout.flush();
         size_t i = 1;
         for (std::vector<zorba::file>::const_iterator lIter = lRefFiles.begin();
-             lIter != lRefFiles.end(); ++lIter) {
+             lIter != lRefFiles.end(); ++lIter) 
+        {
           {
             int lLine, lCol, lPos; // where do the files differ
             std::string lRefLine, lResultLine;
