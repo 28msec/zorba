@@ -407,7 +407,7 @@ xqtref_t TypeManagerImpl::create_schema_element_type(store::Item *qname, TypeCon
   XMLChArray uri (qname->getNamespace()->c_str());
   XSElementDeclaration *eDecl = model->getElementDeclaration(local, uri);
   if (!eDecl) {
-    ZORBA_ERROR_PARAM(XPST0008, "schema-element", qname->getStringValueP()->c_str());
+    ZORBA_ERROR_PARAM(XPST0008, "schema-element", qname->getStringValue()->c_str());
   }
   XSTypeDefinition *ct = eDecl->getTypeDefinition();
   const XMLCh *typeName = ct->getName();
