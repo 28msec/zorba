@@ -969,15 +969,23 @@ bool BasicItemFactory::createAttributeNode(
   XmlTree* xmlTree = NULL;
   AttributeNode* n = NULL;
 
-  XmlNode* pnode = reinterpret_cast<XmlNode*>(parent);
+  assert(parent == NULL || parent->getNodeKind() == store::StoreConsts::elementNode);
+
+  ElementNode* pnode = reinterpret_cast<ElementNode*>(parent);
 
   try
   {
     if (parent == NULL)
+    {
       xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+    }
+    else
+    {
+      pnode->checkUniqueAttr(nodeName.getp());
+    }
 
     n = new AttributeNode(xmlTree, pnode, pos,
-                          nodeName, typeName, typedValue, isId, isIdRefs, false);
+                          nodeName, typeName, typedValue, false, isId, isIdRefs, false, 0);
   }
   catch (...)
   {
@@ -1003,17 +1011,23 @@ bool BasicItemFactory::createAttributeNode(
   XmlTree* xmlTree = NULL;
   AttributeNode* n = NULL;
 
-  XmlNode* pnode = reinterpret_cast<XmlNode*>(parent);
+  ElementNode* pnode = reinterpret_cast<ElementNode*>(parent);
 
   try
   {
     if (parent == NULL)
+    {
       xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+    }
+    else
+    {
+      pnode->checkUniqueAttr(nodeName.getp());
+    }
 
     store::Item_t typedValue = new ItemVector(typedValueV);
  
     n = new AttributeNode(xmlTree, pnode, pos,
-                          nodeName, typeName, typedValue, isId, isIdRefs, true);
+                          nodeName, typeName, typedValue, true, isId, isIdRefs, false, 0);
   }
   catch (...)
   {

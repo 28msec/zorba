@@ -271,6 +271,17 @@ void PULImpl::addReplaceNode(
 
   if (target->getNodeKind() == store::StoreConsts::attributeNode)
   {
+    ElementNode* elemParent = reinterpret_cast<ElementNode*>(n->theParent);
+
+    if (elemParent != NULL)
+    {
+      ulong numNewAttrs = newNodes.size();
+      for (ulong i = 0; i < numNewAttrs; ++i)
+      {
+        elemParent->checkNamespaceConflict(newNodes[i]->getNodeName(), XUDY0023); 
+      }
+    }
+
     upd = new UpdReplaceAttribute(this, parent, target, newNodes, copymode);
     kind = store::UpdateConsts::UP_REPLACE_ATTRIBUTE;
   }
@@ -415,11 +426,19 @@ void PULImpl::addRename(store::Item_t& target, store::Item_t& newName)
   {
   case store::StoreConsts::elementNode:
   {
+    ElementNode* elemTarget = ELEM_NODE(target);
+    elemTarget->checkNamespaceConflict(newName.getp(), XUDY0023);
+
     upd = new UpdRenameElem(this, target, newName);
     break;
   }
   case store::StoreConsts::attributeNode:
   {
+    ElementNode* elemParent = reinterpret_cast<ElementNode*>(n->theParent);
+
+    if (elemParent != NULL)
+      elemParent->checkNamespaceConflict(newName.getp(), XUDY0023);
+
     upd = new UpdRenameAttr(this, target, newName);
     break;
   }
@@ -748,6 +767,8 @@ void PULImpl::mergeUpdateList(
 
     if (updKind == store::UpdateConsts::UP_REPLACE_CHILD)
       target = BASE_NODE(reinterpret_cast<UpdReplaceChild*>(upd)->theChild);
+    else if (updKind == store::UpdateConsts::UP_REPLACE_ATTRIBUTE)
+      target = BASE_NODE(reinterpret_cast<UpdReplaceAttribute*>(upd)->theAttr);
     else
       target = BASE_NODE(upd->theTarget);
 
@@ -906,6 +927,10 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     applyList(theValidationList);
     applyList(theDeleteFromCollectionList);
     applyList(theDeleteCollectionList);
+
+    ulong numToRecheck = thePrimitivesToRecheck.size();
+    for (ulong i = 0; i < numToRecheck; ++i)
+      thePrimitivesToRecheck[i]->check();
   }
   catch (error::ZorbaError& e)
   {
@@ -922,9 +947,6 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     {
       ZORBA_FATAL(0, "Error during pul::undoUpdates()");
     }
-
-    if (e.theErrorCode == XQDY0025)
-      e.theErrorCode = XUDY0021;
 
     throw e;
   }
@@ -1196,6 +1218,13 @@ void UpdInsertAttributes::undo()
 }
 
 
+void UpdInsertAttributes::check()
+{
+  ElementNode* target = ELEM_NODE(theTarget);
+  target->checkUniqueAttrs();
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1229,6 +1258,13 @@ void UpdReplaceAttribute::apply()
 void UpdReplaceAttribute::undo()
 {
   ELEM_NODE(theTarget)->restoreAttribute(*this);
+}
+
+
+void UpdReplaceAttribute::check()
+{
+  ElementNode* target = ELEM_NODE(theTarget);
+  target->checkUniqueAttrs();
 }
 
 
@@ -1395,6 +1431,17 @@ void UpdRenameAttr::apply()
 void UpdRenameAttr::undo()
 {
   ATTR_NODE(theTarget)->restoreName(*this);
+}
+
+
+void UpdRenameAttr::check()
+{
+  AttributeNode* attr = ATTR_NODE(theTarget);
+  if (attr->getParent() != NULL)
+  {
+    ElementNode* parent = reinterpret_cast<ElementNode*>(attr->getParent());
+    parent->checkUniqueAttrs();
+  }
 }
 
 

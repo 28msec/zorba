@@ -276,6 +276,7 @@ class XmlNode : public store::Item
   friend class TextNode;
   friend class PiNode;
   friend class CommentNode;
+  friend class PULImpl;
   friend class UpdDelete;
   friend class UpdInsertSiblings;
   friend class UpdReplaceChild;
@@ -285,7 +286,7 @@ class XmlNode : public store::Item
   friend class UpdReplaceTextValue;
   friend class BasicItemFactory;
   friend class FastXmlLoader;
-
+ 
 public:
   enum NodeFlags
   {
@@ -346,16 +347,7 @@ public:
   store::Item* copy(
         store::Item*           parent,
         long                   pos,
-        const store::CopyMode& copymode) const
-  {
-    return copy2(static_cast<XmlNode*>(parent),
-                 static_cast<XmlNode*>(parent),
-                 pos,
-                 true,
-                 true,
-                 NULL,
-                 copymode);
-  }
+        const store::CopyMode& copymode) const;
 
   store::Item_t getEBV() const;
 
@@ -685,6 +677,7 @@ public:
         XQUERY_ERROR       ecode) const;
 
   void checkUniqueAttr(const store::Item* attrName) const;
+  void checkUniqueAttrs() const;
 
   XmlNode* copy2(
         XmlNode*               rootParent,
@@ -866,9 +859,10 @@ public:
         store::Item_t&              typeName,
         store::Item_t&              typedValue,
         bool                        isListValue,
-        bool                        isId = false,
-        bool                        isIdRef = false,
-        bool                        hidden = false);
+        bool                        isId,
+        bool                        isIdRef,
+        bool                        hidden,
+        ulong                       checkUnique);
 
   virtual ~AttributeNode();
 

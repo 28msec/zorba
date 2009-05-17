@@ -437,6 +437,30 @@ void XmlNode::connect(XmlNode* parent, ulong pos) throw()
 }
 
 
+store::Item* XmlNode::copy(
+    store::Item*           parent,
+    long                   pos,
+    const store::CopyMode& copymode) const
+{
+  if (getNodeKind() == store::StoreConsts::attributeNode)
+  {
+    if (parent)
+    {
+      ElementNode* pnode = reinterpret_cast<ElementNode*>(parent);
+      pnode->checkUniqueAttr(getNodeName());
+    }
+  }
+
+  return copy2(static_cast<XmlNode*>(parent),
+               static_cast<XmlNode*>(parent),
+               pos,
+               true,
+               true,
+               NULL,
+               copymode);
+}
+
+
 /*******************************************************************************
   Disconnect "this" node and its subtree from its current xml tree and make it
   a child (or attribute) of a given parent node P. The position among P's 
@@ -1170,7 +1194,7 @@ XmlNode* ElementNode::copy2(
         copyNode->theFlags |= HaveLocalBindings;
       }
 
-      if (copymode.theNsInherit)
+      if (copymode.theNsInherit && rootParent)
       {
         copyNode->setNsContext(rootParent->getNsContext());
       }
@@ -1693,15 +1717,42 @@ void ElementNode::checkNamespaceConflict(
   Check that "this" does not have an attr with the same name as the given name.
 ********************************************************************************/
 void ElementNode::checkUniqueAttr(const store::Item* attrName) const
-
 {
   ulong numAttrs = numAttributes();
-  for (ulong i = 0; i < numAttrs; i++)
+  for (ulong i = 0; i < numAttrs; ++i)
   {
     AttributeNode* attr = getAttr(i);
     if (!attr->isHidden() && attr->getNodeName()->equals(attrName))
     {
       ZORBA_ERROR_PARAM_OSS(XQDY0025, *attrName->getStringValue(), "");
+    }
+  }
+}
+
+
+/*******************************************************************************
+  Check that "this" does not have any attrs with the same name.
+********************************************************************************/
+void ElementNode::checkUniqueAttrs() const
+{
+  ulong numAttrs = numAttributes();
+  for (ulong i = 0; i < numAttrs; ++i)
+  {
+    AttributeNode* attr = getAttr(i);
+
+    if (attr->isHidden())
+      continue;
+
+    const store::Item* attrName = attr->theName.getp();
+
+    for (ulong j = i+1; j < numAttrs; ++j)
+    {
+      AttributeNode* otherAttr = getAttr(j);
+
+      if (!otherAttr->isHidden() && otherAttr->getNodeName()->equals(attrName))
+      {
+        ZORBA_ERROR_PARAM_OSS(XUDY0021, *attrName->getStringValue(), "");
+      }
     }
   }
 }
@@ -1750,8 +1801,10 @@ void ElementNode::addBaseUriProperty(
     typedValue = new AnyUriItemImpl(resolvedUriString);
   }
 
+  checkUniqueAttr(qname.getp());
+
   new AttributeNode(NULL, this, 0, qname, tname, typedValue, false,
-                    false, false, true);
+                    false, false, true, 0);
   setHaveBaseUri();
 }
 
@@ -2058,14 +2111,15 @@ AttributeNode::AttributeNode(
     bool                        isListValue,
     bool                        isId,
     bool                        isIdRef,
-    bool                        hidden)
+    bool                        hidden,
+    ulong checkUnique)
   :
   XmlNode(tree, parent, pos, store::StoreConsts::attributeNode),
   theFlags(0)
 {
   ElementNode* p = reinterpret_cast<ElementNode*>(parent);
 
-  if (p)
+  if (p && checkUnique > 0)
     p->checkUniqueAttr(attrName);
 
   // Normally, no exceptions are expected by the rest of the code here, but
@@ -2356,7 +2410,8 @@ docopy:
         tree = new XmlTree(NULL, GET_STORE().getTreeId());
 
       copyNode = new AttributeNode(tree, parent, pos, nodeName,
-                                   typeName, typedValue, isListValue, isId, isIdRefs);
+                                   typeName, typedValue, isListValue,
+                                   isId, isIdRefs, false, 0);
     }
     catch (...)
     {

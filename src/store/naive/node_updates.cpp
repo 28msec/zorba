@@ -460,8 +460,17 @@ void ElementNode::insertAttributes(UpdInsertAttributes& upd)
   {
     AttributeNode* attr = reinterpret_cast<AttributeNode*>(
                           upd.theNewAttrs[i].getp());
-
-    checkUniqueAttr(attr->getNodeName());
+    try
+    {
+      checkUniqueAttr(attr->getNodeName());
+    }
+    catch (error::ZorbaError& e)
+    {
+      if (e.theErrorCode == XQDY0025)
+        upd.thePul->thePrimitivesToRecheck.push_back(&upd);
+      else
+        throw e;
+    }
 
     if (addBindingForQName(attr->theName, true, false))
       upd.theNewBindings.push_back(attr->theName);
@@ -510,8 +519,17 @@ void ElementNode::replaceAttribute(UpdReplaceAttribute& upd)
   {
     AttributeNode* attr = reinterpret_cast<AttributeNode*>(
                           upd.theNewAttrs[i].getp());
-
-    checkUniqueAttr(attr->getNodeName());
+    try
+    {
+      checkUniqueAttr(attr->getNodeName());
+    }
+    catch (error::ZorbaError& e)
+    {
+      if (e.theErrorCode == XQDY0025)
+        upd.thePul->thePrimitivesToRecheck.push_back(&upd);
+      else
+        throw e;
+    }
 
     if (addBindingForQName(attr->theName, true, false))
       upd.theNewBindings.push_back(attr->theName);
@@ -695,13 +713,8 @@ void ElementNode::replaceContent(UpdReplaceElemContent& upd)
 
   if (upd.theCopyMode.theDoCopy)
   {
-    TEXT_NODE(upd.theNewChild)->copy2(this,
-                                      this,
-                                      0,
-                                      false,
-                                      false,
-                                      NULL,
-                                      upd.theCopyMode);
+    TEXT_NODE(upd.theNewChild)->
+    copy2(this, this, 0, false, false, NULL, upd.theCopyMode);
   }
   else
   {
@@ -833,10 +846,17 @@ void AttributeNode::replaceName(UpdRenameAttr& upd)
 
   if (parent)
   {
-    // TODO: this check should actually be done after all updates have been
-    // applied because the conflicting attribute may be deleted by a later
-    // update
-    parent->checkUniqueAttr(upd.theNewName);
+    try
+    {
+      parent->checkUniqueAttr(upd.theNewName);
+    }
+    catch (error::ZorbaError& e)
+    {
+      if (e.theErrorCode == XQDY0025)
+        upd.thePul->thePrimitivesToRecheck.push_back(&upd);
+      else
+        throw e;
+    }
 
     upd.theNewBinding = parent->addBindingForQName(upd.theNewName, true, false);
   }
@@ -895,8 +915,18 @@ void TextNode::replaceValue(UpdReplaceTextValue& upd)
   if (isTyped())
   {
     upd.theIsTyped = true;
-    upd.theOldContent.setValue(theContent.transferValue());
-    setText(upd.theNewContent);
+
+    if (upd.theNewContent->empty())
+    {
+      assert(parent);
+      upd.theOldNode = this;
+      upd.theOldPos = disconnect();
+    }
+    else
+    {
+      upd.theOldContent.setValue(theContent.transferValue());
+      setText(upd.theNewContent);
+    }
 
     // before calling removeType on the parent P, reset P's haveTypedValue
     // flag, so that P will not attempt to save its typed value in its
@@ -908,8 +938,17 @@ void TextNode::replaceValue(UpdReplaceTextValue& upd)
   else
   {
     upd.theIsTyped = false;
-    upd.theOldContent.setText(theContent.transferText());
-    setText(upd.theNewContent);
+
+    if (upd.theNewContent->empty() && parent != NULL)
+    {
+      upd.theOldNode = this;
+      upd.theOldPos = disconnect();
+    }
+    else
+    {
+      upd.theOldContent.setText(theContent.transferText());
+      setText(upd.theNewContent);
+    }
 
     if (parent)
       parent->removeType(upd);
@@ -921,7 +960,16 @@ void TextNode::restoreValue(UpdReplaceTextValue& upd)
 {
   ElementNode* parent = reinterpret_cast<ElementNode*>(theParent);
 
-  if (upd.theIsTyped)
+  if (upd.theOldNode)
+  {
+    parent->insertChild(BASE_NODE(upd.theOldNode), upd.theOldPos);
+
+    parent->restoreType(upd.theTypeUndoList);
+
+    if (upd.theIsTyped)
+      parent->setHaveTypedValue();
+  }
+  else if (upd.theIsTyped)
   {
     setValue(upd.theOldContent.getValue());
     upd.theOldContent.setValue(NULL);

@@ -97,6 +97,8 @@ public:
 class PULImpl : public store::PUL
 {
   friend class UpdatePrimitive;
+  friend class ElementNode;
+  friend class AttributeNode;
 
 protected:
   std::vector<UpdatePrimitive*>      theDoFirstList;
@@ -116,6 +118,8 @@ protected:
   NodeToUpdatesMap                   theNodeToUpdatesMap;
 
   std::set<zorba::store::Item*>    * theValidationNodes;
+
+  std::vector<UpdatePrimitive*>      thePrimitivesToRecheck;
 
 public:
   PULImpl() : theValidationNodes(NULL) {}
@@ -339,6 +343,8 @@ public:
   virtual void apply() = 0;
   virtual void undo() = 0;
 
+  virtual void check() {}
+
   bool isApplied() const { return theIsApplied; }
 };
 
@@ -436,6 +442,7 @@ public:
 
   void apply();
   void undo();
+  void check();
 };
 
 
@@ -470,6 +477,7 @@ public:
 
   void apply();
   void undo();
+  void check();
 };
 
 
@@ -717,6 +725,7 @@ public:
 
   void apply();
   void undo();
+  void check();
 };
 
 
@@ -772,8 +781,11 @@ class UpdReplaceTextValue : public UpdatePrimitive
   friend class TextNode;
 
 protected:
-  TextNodeContent    theOldContent;
   xqpStringStore_t   theNewContent;
+
+  store::Item_t      theOldNode;
+  ulong              theOldPos;
+  TextNodeContent    theOldContent;
   bool               theIsTyped;
 
 public:

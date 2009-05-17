@@ -110,7 +110,7 @@ ZorbaCollectionExistsIterator::nextImpl(store::Item_t& result, PlanState& planSt
   This function will create a new collection and import a given XML document
   into it. The document to import is identified by the $uri parameter; this uri
   will be used as the uri of the collection. If the $uri is found in the 
-  collection poll no import is done.
+  collection pool no import is done.
 
   Error conditions:
   - If the XML file specified by the $uri parameter does not exist, an error is
@@ -338,7 +338,7 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
               }
             }
 
-            xqpStringStore_t    collectionUri = uriFile.toString().getStore();
+            xqpStringStore_t collectionUri = uriFile.toString().getStore();
             theColl = GENV_STORE.createCollection(collectionUri);
             store::CopyMode lCopyMode;
             theColl->addNode(itemXML, lCopyMode, 1);

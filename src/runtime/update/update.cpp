@@ -551,13 +551,28 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   std::vector<ForVarIter_t>::const_iterator lVarRefIter; 
   std::vector<ForVarIter_t>::const_iterator lVarRefEnd;
   rchandle<store::PUL> lPul;
-  store::CopyMode lCopyMode;
   store::Item_t temp;
   store::Item_t lItem;
   store::Item_t lCopyNode;
+  static_context* sctx;
+  store::CopyMode lCopyMode;
+  bool typePreserve;
+  bool nsPreserve;
+  bool nsInherit;
 
   PlanIteratorState* aState;
   DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
+
+  sctx = aPlanState.theRuntimeCB->theStaticContext;
+
+  typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+                  true : false);
+  nsPreserve = (sctx->preserve_mode() == StaticContextConsts::preserve_ns ?
+                true : false);
+  nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
+               true : false);
+
+  lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
 
   {
     ulong numCopyClauses = theCopyClauses.size(); 

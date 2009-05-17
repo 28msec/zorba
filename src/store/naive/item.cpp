@@ -125,8 +125,9 @@ void Item::getStringValue(std::string& buf) const
  */
 xqpStringStore* Item::getStringValueP() const 
 {
-  ZORBA_ERROR_PARAM_OSS(STR0010_TYPE_ERROR,
-                        "String value not defined for items of type "
+  XQUERY_ERROR code = STR0010_TYPE_ERROR;
+  ZORBA_ERROR_PARAM_OSS(code,
+                        "getStringValueP() not defined for items of type "
                         << getType()->getStringValue(), "");
   return 0;
 }
