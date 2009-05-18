@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <string>
+
 #include "common/common.h"
 
 #include "zorba/api_shared_types.h"
@@ -132,7 +134,15 @@ void Schema::registerXSD(const char* xsdURL, std::string& location, const QueryL
 {
 #ifndef ZORBA_NO_XMLSCHEMA
     std::auto_ptr<SAX2XMLReader> parser;
-    
+
+    std::cout << "schema.registerXSD1: url=" << xsdURL << " loc=" << location << std::endl;
+
+    size_t index = location.find_first_of(' ');
+    if ( index!=std::string::npos )
+        location = location.substr(0, index);
+
+    std::cout << "schema.registerXSD2: loc=" << location << std::endl;
+
     try
     {    
         parser.reset (XMLReaderFactory::createXMLReader(XMLPlatformUtils::fgMemoryManager, _grammarPool));

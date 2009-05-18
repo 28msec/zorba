@@ -927,7 +927,7 @@ bool SchemaValidatorFilter::laxElementValidation(QName* element, ContentLeafName
 {
     bool skipThisOne = false;
     bool laxThisOne = false;
-    ///unsigned int elementURI = element->getURI();
+    unsigned int elementURI = element->getURI();
 
     // We commandeer fCurrentURI to keep the element state in
     unsigned int currState = _parentStack->fCurrentURI;
@@ -939,75 +939,89 @@ bool SchemaValidatorFilter::laxElementValidation(QName* element, ContentLeafName
 
     SubstitutionGroupComparator comparator(fGrammarResolver, fURIStringPool);
 
-    ///if(cv) 
-    //{
-        ///unsigned int i = 0;
-        ///unsigned int leafCount = cv->getLeafCount();
+        if (cv)
+        {
+            unsigned int i = 0;
+            unsigned int leafCount = cv->getLeafCount();
 
-        //for(; i < leafCount; ++i) {
-        //  QName* fElemMap = cv->getLeafNameAt(i);
-        //  unsigned int uri = fElemMap->getURI();
-        //  unsigned int nextState;
-        //  bool anyEncountered = false;
-        ///ContentSpecNode::NodeTypes type = cv->getLeafTypeAt(i);
+            for (; i < leafCount; ++i)
+            {
+                QName* fElemMap = cv->getLeafNameAt(i);
+                unsigned int uri = fElemMap->getURI();
+                unsigned int nextState;
+                bool anyEncountered = false;
+                ContentSpecNode::NodeTypes type = cv->getLeafTypeAt(i);
 
-        //if(type == ContentSpecNode::Leaf) {
-        //  if(((uri == elementURI)
-        //      && XMLString::equals(fElemMap->getLocalPart(), element->getLocalPart()))
-        //     || comparator.isEquivalentTo(element, fElemMap)) {
+                if (type == ContentSpecNode::Leaf)
+                {
+                    if (((uri == elementURI)
+                            && XMLString::equals(fElemMap->getLocalPart(), element->getLocalPart()))
+                            || comparator.isEquivalentTo(element, fElemMap))
+                    {
+                        nextState = cm->getNextState(currState, i);
 
-        //    nextState = cm->getNextState(currState, i);
+                        if (nextState != XMLContentModel::gInvalidTrans)
+                        {
+                            // We commandeer fCurrentURI to keep the element state in
+                            _parentStack->fCurrentURI = nextState;
+                            break;
+                        }
+                    }
+                }
+                else if ((type & 0x0f) == ContentSpecNode::Any)
+                {
+                    anyEncountered = true;
+                }
+                else if ((type & 0x0f) == ContentSpecNode::Any_Other)
+                {
+                    if (uri != elementURI)
+                    {
+                        anyEncountered = true;
+                    }
+                }
+                else if ((type & 0x0f) == ContentSpecNode::Any_NS)
+                {
+                    if (uri == elementURI)
+                    {
+                        anyEncountered = true;
+                    }
+                }
 
-        //    if(nextState != XMLContentModel::gInvalidTrans) {
-        //      // We commandeer fCurrentURI to keep the element state in
-        //      _parentStack->fCurrentURI = nextState;
-        //      break;
-        //    }
-        //  }
-        //} else if((type & 0x0f) == ContentSpecNode::Any) {
-        //  anyEncountered = true;
-        //}
-        //else if((type & 0x0f) == ContentSpecNode::Any_Other) {
-        //  if (uri != elementURI) {
-        //    anyEncountered = true;
-        //  }
-        //}
-        //else if((type & 0x0f) == ContentSpecNode::Any_NS) {
-        //  if (uri == elementURI) {
-        //    anyEncountered = true;
-        //  }
-        //}
+                if (anyEncountered)
+                {
 
-        //if(anyEncountered) {
+                    nextState = cm->getNextState(currState, i);
+                    if (nextState != XMLContentModel::gInvalidTrans)
+                    {
+                        // We commandeer fCurrentURI to keep the element state in
+                        _parentStack->fCurrentURI = nextState;
 
-        //  nextState = cm->getNextState(currState, i);
-        //  if(nextState != XMLContentModel::gInvalidTrans) {
-        //    // We commandeer fCurrentURI to keep the element state in
-        //    _parentStack->fCurrentURI = nextState;
+                        if (type == ContentSpecNode::Any_Skip ||
+                                type == ContentSpecNode::Any_NS_Skip ||
+                                type == ContentSpecNode::Any_Other_Skip)
+                        {
+                            skipThisOne = true;
+                        }
+                        else if (type == ContentSpecNode::Any_Lax ||
+                                type == ContentSpecNode::Any_NS_Lax ||
+                                type == ContentSpecNode::Any_Other_Lax)
+                        {
+                            laxThisOne = true;
+                        }
 
-        //    if(type == ContentSpecNode::Any_Skip ||
-        //       type == ContentSpecNode::Any_NS_Skip ||
-        //       type == ContentSpecNode::Any_Other_Skip) {
-        //      skipThisOne = true;
-        //    }
-        //    else if(type == ContentSpecNode::Any_Lax ||
-        //            type == ContentSpecNode::Any_NS_Lax ||
-        //            type == ContentSpecNode::Any_Other_Lax) {
-        //      laxThisOne = true;
-        //    }
+                        break;
+                    }
+                }
+            }
 
-        //    break;
-        //  }
-        //}
-        //}
+            if (i == leafCount)
+            { // no match
+                // We commandeer fCurrentURI to keep the element state in
+                _parentStack->fCurrentURI = XMLContentModel::gInvalidTrans;
+                return laxThisOne;
+            }
 
-        //if(i == leafCount) { // no match
-        //  // We commandeer fCurrentURI to keep the element state in
-        //  _parentStack->fCurrentURI = XMLContentModel::gInvalidTrans;
-        //  return laxThisOne;
-        //}
-
-    //}
+        }
 
     if (skipThisOne) 
     {
