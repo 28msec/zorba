@@ -7,8 +7,6 @@
 #   (Logging in to anonymous@dev.w3.org)
 #   CVS password: anonymous
 #   cvs export -DNOW 2007/xquery-update-10-test-suite/
-# move xquery-update-10-test-suite/ExpectedTestResults/* to xquery-update-10-test-suite/ExpectedTestResults/XQuery 
-#   (not necessary as soon as the testdriver is adapted)
 # mv xquery-update-10-test-suite/TestSources xquery-update-10-test-suite/Queries
 # delete all spec files if already generated once (optional)
 #   find . -name "*.spec" -exec rm {} \;
@@ -33,8 +31,10 @@ uq=`mktemp /tmp/rwts.XXXXXX`
 cat >$uq <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-update";
 declare option saxon:output "omit-xml-declaration=yes";
+string-join((
 for $sch in //schema 
-return string-join( concat ($sch/@uri, "=", $sch/@FileName), "
+return concat ($sch/@uri, "=", $sch/@FileName)
+),"
 ")
 EOF
 echo Processing URI of catalog...
@@ -72,7 +72,10 @@ concat("case=",$tc/@FilePath,$tc/@name),
 for $state in $tc/state
 return (
 concat("State: ",$state/query/@name),
-concat("Args:", string-join(for $infile in $state/input-file return concat(" -x ", $infile/@variable,"=$UPDATE_SRC_DIR/Queries/w3c_update_testsuite/",fn:string-replace($infile/text(),"w3c_testsuite/", ""),".xml") ,"")  ,if ($state/query/@date) then concat(" -d ",$state/query/@date) else ()),
+concat("Args:", string-join(
+  for $infile in $state/input-file 
+  let $source := //source[@ID eq $infile/text()]
+  return concat(" -x ", $infile/@variable,"=$UPDATE_SRC_DIR/Queries/w3c_update_testsuite/",$source/@FileName) ,"")  ,if ($state/query/@date) then concat(" -d ",$state/query/@date) else ()),
 for $outfile in $state/output-file
 return concat("Compare: ", $outfile/text(), " ", $outfile/@compare),
 for $error in $state/expected-error
