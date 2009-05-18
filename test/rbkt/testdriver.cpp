@@ -49,7 +49,8 @@ zorba::Properties *lProp;
 #define EXPECTED_ERROR  0
 #define UNEXPECTED_ERROR  6
 
-std::string rbkt_src_dir = zorba::RBKT_SRC_DIR, rbkt_bin_dir = zorba::RBKT_BINARY_DIR;
+std::string rbkt_src_dir = zorba::RBKT_SRC_DIR, rbkt_bin_dir = zorba::RBKT_BINARY_DIR,
+  w3c_ts = "w3c_testsuite/";
 
 void loadProperties () 
 {
@@ -166,7 +167,10 @@ main(int argc, char** argv)
 
     if (lRefFiles.size () == 0) 
     {
-      lRefFiles.push_back (zorba::file (rbkt_src_dir + "/ExpQueryResults/" + lQueryWithoutSuffix + ".xml.res"));
+      std::string res = lQueryWithoutSuffix;
+      if (res.substr (0, w3c_ts.size ()) == w3c_ts)
+        res = res.substr (0, w3c_ts.size ()) + res.substr (w3c_ts.size () + strlen ("XQuery/"));
+      lRefFiles.push_back (zorba::file (rbkt_src_dir + "/ExpQueryResults/" + res + ".xml.res"));
       if (lRefFiles [0].exists()) lRefFileExists = true;
     }
 
@@ -197,8 +201,7 @@ main(int argc, char** argv)
     std::auto_ptr<zorba::TestModuleURIResolver>      mresolver;
     std::auto_ptr<zorba::TestCollectionURIResolver>  cresolver;
 
-    if ( path.find ( "w3c_testsuite" ) != std::string::npos ) 
-    {
+    if (lQueryWithoutSuffix.substr (0, w3c_ts.size ()) == w3c_ts) {
       std::string uri_map_file = rbkt_src_dir + "/Queries/w3c_testsuite/TestSources/uri.txt";
       std::string mod_map_file = rbkt_src_dir + "/Queries/w3c_testsuite/TestSources/module.txt";
       std::string col_map_file = rbkt_src_dir + "/Queries/w3c_testsuite/TestSources/collection.txt";
