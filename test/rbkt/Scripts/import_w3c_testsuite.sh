@@ -154,7 +154,7 @@ copy ("$inxqueryxpath/$query.xqx", "$dstxqueryxqpath/$name.xqx");
 
 if (@outfiles) {
 
-  if (@outfiles > 1) {
+  if (@outfiles >= 1) {
     open (SPEC, ">>$specfile");
     open (SPECX, ">>$xqueryxspecfile");
     print SPEC "Result: ";
@@ -163,15 +163,21 @@ if (@outfiles) {
 
   foreach (@outfiles) {
     my $txtfile = "$_";
-    $txtfile =~ 's/\.txt/.xml.res/';
+    $txtfile =~ 's/[.]txt$/.xml.res/';
+    if (@outfiles == 1) {
+      $txtfile =~ 's/[.]xml$/.xml.res/';
+    } else {
+      # avoid possible conflict with alternate .txt result
+      $txtfile =~ 's/[.]xml$/-X.xml.res/';
+    }
     copy ("ExpectedTestResults/$path/$_", "$dstrespath/$txtfile");
-    if (@outfiles > 1) {
+    if (@outfiles >= 1) {
       print SPEC " \$RBKT_SRC_DIR/ExpQueryResults/w3c_testsuite/$path/$txtfile";
       print SPECX "\$RBKT_SRC_DIR/ExpQueryResults/w3c_testsuite/$path/$txtfile";
     }
   }
 
-  if (@outfiles > 1) {
+  if (@outfiles >= 1) {
     print SPEC "\n";
     print SPECX "\n";
     close (SPEC);
