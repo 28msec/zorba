@@ -50,6 +50,7 @@ XmlTree::XmlTree(XmlNode* root, ulong id)
   theRefCount(0),
   theId(id),
   theRootNode(root),
+  theIsValidated(false),
   theDataGuideRootNode(NULL)
 {
 }

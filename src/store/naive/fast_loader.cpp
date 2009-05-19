@@ -616,9 +616,9 @@ void FastXmlLoader::startElement(
         const char* valueEnd = reinterpret_cast<const char*>(attributes[index+4]);
 
         store::Item_t qname = qnpool.insert(uri, prefix, lname);
-        xqpStringStore_t value = new xqpStringStore(valueBegin, valueEnd);
-
         store::Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+
+        xqpStringStore_t value = new xqpStringStore(valueBegin, valueEnd);
         store::Item_t typedValue = new UntypedAtomicItemImpl(value);
 
         AttributeNode* attrNode = new AttributeNode(qname, typeName);
@@ -632,10 +632,20 @@ void FastXmlLoader::startElement(
 
         SYNC_CODE(attrNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
-        LOADER_TRACE2("Attribute: node = " << attrNode
-                      << " name [" << (prefix != NULL ? prefix : "") << ":"
-                      << lname << " (" << (uri != NULL ? uri : "NULL") << ")]"
-                      << " value = " << typedValue->getStringValue()->c_str()
+        if (strcmp(lname, "schemaLocation") == 0 &&
+            uri != NULL &&
+            strcmp(uri, "http://www.w3.org/2001/XMLSchema-instance") == 0)
+        {
+          xqpStringStore* value = attrNode->theTypedValue->getStringValue().getp();
+          std::string::size_type pos = value->indexOf(" ");
+          xqpStringStore_t schemaUri = value->substr(0, pos);
+          loader.theTree->setSchemaUri(schemaUri);
+        }
+
+        LOADER_TRACE2("Attribute: node = " << attrNode << " name [" 
+                      << (prefix != NULL ? prefix : "") << ":" << lname << " (" 
+                      << (uri != NULL ? uri : "NULL") << ")]" << " value = " 
+                      << attrNode->theTypedValue->getStringValue()->c_str()
                       << std::endl << " ordpath = "
                       << attrNode->getOrdPath().show() << std::endl);
       }

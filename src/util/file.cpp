@@ -69,15 +69,14 @@ filesystem_path::filesystem_path () {
   char buf [512];
 #ifdef WIN32
   GetCurrentDirectoryA (sizeof (buf), buf);
+
+ // GetCurrentDirectory sometimes misses drive letter
+  resolve_relative ();
 #else
   if (getcwd (buf, sizeof (buf)) == NULL) {
     file::error (__FUNCTION__, "current directory path too long");
   }
   else path = buf;
-#endif
-#ifdef WIN32
-  // GetCurrentDirectory sometimes misses drive letter
-  resolve_relative ();
 #endif
 }
 

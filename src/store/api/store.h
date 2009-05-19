@@ -155,8 +155,8 @@ public:
    * @return rchandle to the newly created document or NULL if a document with
    *         the given uri exists already.
    */
-  virtual Item_t loadDocument
-        (const xqpStringStore_t& uri,
+  virtual Item_t loadDocument(
+         const xqpStringStore_t& uri,
          std::istream& stream,
          bool storeDocument = true) = 0;
 
@@ -281,3 +281,9 @@ public:
 } // namespace zorba
 
 #endif /* ZORBA_STORE_STORE_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

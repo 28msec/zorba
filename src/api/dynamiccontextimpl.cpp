@@ -20,21 +20,27 @@
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
+#include "context/internal_uri_resolvers.h"
 
 #include "system/globalenv.h"
+
 #include "types/typeops.h"
 #include "types/typemanager.h"
 #include "types/root_typemanager.h"
+
 #include "api/unmarshaller.h"
 #include "api/zorbaimpl.h"
 #include "api/resultiteratorimpl.h"
 #include "api/resultiteratorchainer.h"
+
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/util/item_iterator.h"
+#include "runtime/validate/validate.h"
+
 #include "store/api/item.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
-#include "context/internal_uri_resolvers.h"
+
 
 
 namespace zorba {
@@ -107,9 +113,9 @@ DynamicContextImpl::setVariableAsDocument( const String& aQName, const String& x
 
     store::Item_t   uriItem;
 
-    zorba::store::ItemFactory    *item_factory = GENV_ITEMFACTORY;
+    zorba::store::ItemFactory* item_factory = GENV_ITEMFACTORY;
 
-    xqpStringStore_t    uriStore = uriString.getStore();
+    xqpStringStore_t uriStore = uriString.getStore();
     item_factory->createAnyURI(uriItem, uriStore);
 
     store::Item_t   docItem;
@@ -161,10 +167,34 @@ DynamicContextImpl::setVariableAsDocument(
   {
     checkNoIterators();
 
-    xqpStringStore* lInternalDocURI = Unmarshaller::getInternalString(aDocURI);
+    xqpStringStore_t lInternalDocURI = Unmarshaller::getInternalString(aDocURI);
 
     store::Item_t lDocItem = GENV_STORE.loadDocument(lInternalDocURI, *(aStream.get()));
+#if 0
+    if (lDocItem->haveSchemaUri() && !lDocItem->isValidated())
+    {
+      store::Item_t validatedNode;
+      store::Item_t typeName;
+      QueryLoc loc;
 
+      bool success = ValidateIterator::
+                     effectiveValidationValue(validatedNode,
+                                              lDocItem,
+                                              typeName,
+                                              theStaticContext->get_typemanager(),
+                                              ParseConstants::val_strict,
+                                              theStaticContext,
+                                              loc);
+      ZORBA_ASSERT(success);
+
+      if (lDocItem != validatedNode)
+      {
+        GENV_STORE.deleteDocument(lInternalDocURI);
+        lDocItem = validatedNode;
+        GENV_STORE.addNode(lInternalDocURI.getp(), lDocItem);
+      }
+    }
+#endif
     setVariable ( aQName, Item(lDocItem) );
 
     return true;
@@ -177,21 +207,21 @@ DynamicContextImpl::setVariableAsDocument(
 bool
 DynamicContextImpl::setContextItem ( const Item& aItem )
 {
-  ZORBA_DCTX_TRY                                                                                        
-  {                                                                                                     
-    checkNoIterators();                                                                                 
-                                                                                                        
-    store::Item_t lItem(Unmarshaller::getInternalItem(aItem));                                          
-    ZorbaImpl::checkItem(lItem);                                                                        
-                                                                                                        
-    SYNC_CODE(AutoMutex lock(theCloningMutexp);)                                                        
-                                                                                                        
-    theCtx->set_context_item(lItem, 0);                                                                 
-                                                                                                        
-    return true;                                                                                        
-  }                                                                                                     
-  ZORBA_DCTX_CATCH                                                                                      
-  return false;    
+  ZORBA_DCTX_TRY
+  {
+    checkNoIterators();
+
+    store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
+    ZorbaImpl::checkItem(lItem);
+
+    SYNC_CODE(AutoMutex lock(theCloningMutexp);)
+
+    theCtx->set_context_item(lItem, 0);
+
+    return true;
+  }
+  ZORBA_DCTX_CATCH
+  return false;
 }
 
   

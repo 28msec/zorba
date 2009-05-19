@@ -232,6 +232,9 @@ protected:
   ulong                     theId;
   XmlNode                 * theRootNode;
 
+  xqpStringStore_t          theSchemaUri;
+  bool                      theIsValidated;
+
   GuideNode               * theDataGuideRootNode;
 
 public:
@@ -251,6 +254,12 @@ public:
   ulong getId() const                { return theId; }
   XmlNode* getRoot() const           { return theRootNode; }
   void setRoot(XmlNode* root)        { theRootNode = root; }
+
+  xqpStringStore* getSchemaUri() const     { return theSchemaUri.getp(); }
+  void setSchemaUri(xqpStringStore_t& uri) { theSchemaUri.transfer(uri); }
+
+  bool isValidated() const { return theIsValidated; }
+  void markValidated()     { theIsValidated = true; }
 
   GuideNode* getDataGuide() const    { return theDataGuideRootNode; }
   void setDataGuide(GuideNode* root) { theDataGuideRootNode = root; }
@@ -356,6 +365,14 @@ public:
     bool local = false;
     return getBaseURIInternal(local);
   }
+
+  bool haveSchemaUri() const { return getTree()->getSchemaUri() != NULL; }
+
+  xqpStringStore* getSchemaUri() const { return getTree()->getSchemaUri(); }
+
+  bool isValidated() const { return getTree()->isValidated(); }
+
+  void markValidated()     { getTree()->markValidated(); }
 
   virtual xqpStringStore* getDocumentURI() const { return 0; }
 

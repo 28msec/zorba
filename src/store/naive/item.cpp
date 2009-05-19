@@ -421,8 +421,10 @@ const xqp_time& Item::getTimeValue() const
  */
 const xqp_gDay& Item::getGDayValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                        __FUNCTION__, getType()->getStringValue());
+  ZORBA_ERROR_PARAM_OSS(STR0010_TYPE_ERROR,
+                        "Item::getGDayValue() not defined for items of type "
+                        << getType()->getStringValue(), "");
+
   return *(new xqp_gDay);
 }
 
@@ -431,8 +433,10 @@ const xqp_gDay& Item::getGDayValue() const
  */
 const xqp_gMonth& Item::getGMonthValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                        __FUNCTION__, getType()->getStringValue());
+  ZORBA_ERROR_PARAM_OSS(STR0010_TYPE_ERROR,
+                        "Item::getGMonthValue() not defined for items of type "
+                        << getType()->getStringValue(), "");
+
   return *(new xqp_gMonth);
 }
 
@@ -441,8 +445,10 @@ const xqp_gMonth& Item::getGMonthValue() const
  */
 const xqp_gMonthDay& Item::getGMonthDayValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                        __FUNCTION__, getType()->getStringValue());
+  ZORBA_ERROR_PARAM_OSS(STR0010_TYPE_ERROR,
+                        "Item::getGMonthDayValue() not defined for items of type "
+                        << getType()->getStringValue(), "");
+
   return *(new xqp_gMonthDay);
 }
 
@@ -461,8 +467,9 @@ const xqp_gYear& Item::getGYearValue() const
  */
 const xqp_gYearMonth& Item::getGYearMonthValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                        __FUNCTION__, getType()->getStringValue());
+  ZORBA_ERROR_PARAM_OSS(STR0010_TYPE_ERROR,
+                        "Item::getGYearMonthValue() not defined for items of type "
+                        << getType()->getStringValue(), "");
   return *(new xqp_gYearMonth);
 }
 
@@ -520,8 +527,10 @@ std::vector<xqp_string> Item::getStringVectorValue() const
  */
 xqp_hexBinary Item::getHexBinaryValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                        __FUNCTION__, getType()->getStringValue());
+  ZORBA_ERROR_PARAM_OSS(STR0010_TYPE_ERROR,
+                        "Item::getHexBinaryValue() not defined for items of type "
+                        << getType()->getStringValue(), "");
+
   return xqp_hexBinary();
 }
 
@@ -541,23 +550,37 @@ bool Item::isNaN() const
  */
 bool Item::isPosOrNegInf() const
 {
+  ZORBA_ERROR_PARAM_OSS(STR0010_TYPE_ERROR,
+                        "Item::isPosOrNegInf() not defined for items of type "
+                        << getType()->getStringValue(), "");
+  return false;
+}
+
+
+/* -----------------------  Methods for Nodes -------------------------------- */
+
+
+bool Item::haveSchemaUri() const
+{
   ZORBA_ERROR_PARAM_OSS(STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return false;
 }
 
-/* -------------------  Methods for Nodes ------------------------------------- */
 
-/**
- *  getNodeProperty functions - Accessor of XDM (see XDM specification, Section 5)
- *  @return  value of node property
- *
- *  Assuming that the item is a node, return the properties of that particular node.
- *  Since all these properties are defined on all seven kinds of nodes (documents, elements,
- *  attributes, etc.), the implementations of all seven kinds of nodes must override these
- *  methods. Implementations of atomic values should keep the default (error) implementation
- *  of these methods.
- */
+bool Item::isValidated() const
+{
+  ZORBA_ERROR_PARAM_OSS(STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                        __FUNCTION__, getType()->getStringValue());
+  return false;
+}
+
+
+void Item::markValidated()
+{
+  ZORBA_ERROR_PARAM_OSS(STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                        __FUNCTION__, getType()->getStringValue());
+}
 
 
 xqpStringStore* Item::getDocumentURI() const

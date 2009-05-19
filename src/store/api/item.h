@@ -394,15 +394,23 @@ public:
 
   /**
    *  getNodeProperty functions - Accessor of XDM (see XDM specification, Section 5)
-   *  @return  value of node property
    *
-   *  Assuming that the item is a node, return the properties of that particular node.
-   *  Since all these properties are defined on all seven kinds of nodes (documents, elements,
-   *  attributes, etc.), the implementations of all seven kinds of nodes must override these
-   *  methods. Implementations of atomic values should keep the default (error) implementation
-   *  of these methods.
+   * Assuming that the item is a node, return the properties of that particular
+   * node. Since all these properties are defined on all seven kinds of nodes
+   * (documents, elements, attributes, etc.), the implementations of all seven
+   * kinds of nodes must override these methods. Implementations of atomic values
+   * should keep the default (error) implementation of these methods.
    */
-  
+
+  virtual bool
+  haveSchemaUri() const;
+
+  virtual bool
+  isValidated() const;
+
+  virtual void
+  markValidated();
+
   /** Accessor for document node
    *  @return  uri?
    */
