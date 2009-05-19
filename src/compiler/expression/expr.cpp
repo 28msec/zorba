@@ -305,7 +305,7 @@ void expr::compute_upd_seq_kind () const {
 void sequential_expr::compute_upd_seq_kind () const {
   cache.upd_seq_kind.vacuous = false;
   cache.upd_seq_kind.updating = size () >= 1 && ((*this) [size () - 1]->is_updating ());
-  cache.upd_seq_kind.sequential = size () >= 2;
+  cache.upd_seq_kind.sequential = size () >= 2 || (*this) [0]->is_sequential ();
   cache.upd_seq_kind.valid = true;
 }
 
@@ -319,21 +319,17 @@ void flwor_expr::compute_upd_seq_kind () const {
 
 void fo_expr::compute_upd_seq_kind () const {
   bool concat = is_concatenation ();
-  ulong numOperands = size();
 
-  cache.upd_seq_kind.vacuous = (get_func ()->getUpdateType () == VACUOUS_EXPR
-                                || (concat && numOperands == 0));
+  cache.upd_seq_kind.vacuous = get_func ()->getUpdateType () == VACUOUS_EXPR;
 
-  if (concat && numOperands > 0)
-  {
+  if (concat) {
     ulong i;
-    for (i = 0; i < numOperands; ++i)
-    {
+    for (i = 0; i < size (); ++i) {
       if (!argv[i]->is_vacuous())
         break;
     }
 
-    if (i == numOperands)
+    if (i == size ())
       cache.upd_seq_kind.vacuous = true;
   }
 
