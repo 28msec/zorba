@@ -483,7 +483,7 @@ bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
     parent = state->theContextNode->getParent();
 
     if (parent == NULL)
-      return false;
+      continue;
 
     state->theChildren = parent->getChildren();
     state->theChildren->open();
@@ -558,7 +558,7 @@ bool LSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
     parent = state->theContextNode->getParent();
 
     if (parent == NULL)
-      return false;
+      continue;
 
     state->theChildren = parent->getChildren();
     state->theChildren->open();
