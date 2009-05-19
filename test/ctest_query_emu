@@ -37,11 +37,13 @@ $builddir = abs_path ($builddir) || die $!;
 my $bucket = ".";
 my $exclude;
 my $include;
+my $verbose;
 
 while (1) {  # iterate over args
     my $arg = shift;
     if (! defined ($arg)) { last; }
     if ($arg eq "-b") { $bucket = shift; }
+    elsif ($arg eq "-V") { $verbose = 1; }
     elsif ($arg eq "-E") { $exclude = shift; }
     elsif ($arg eq "-R") { $include = shift; }
     elsif ($arg eq "--suite") {
@@ -92,14 +94,22 @@ sub ffun {
     print LOG "--- Start test $f\n";
     print LOG "Command: $cmd\n";
     close LOG;
-    my $rc = system ("$cmd >>$logfile 2>&1");
+    my $rc = system ("$cmd >${logfile}.tmp 2>&1");
     open (LOG, ">>$logfile") || die $!;
+    open (QLOG, "<${logfile}.tmp");
+    while (<QLOG>) {
+        print LOG;
+        if ($verbose) { print; }
+    }
+    close QLOG;
+    unlink "${logfile}.tmp";
     
     if (($rc & 127) == 2) {
         print "Signal " . ($rc & 127) . "\n";
         finish;
         exit (1);
     }
+    if ($verbose) { print "Test $f"; }
     if ($rc != 0) {
         print "\tFAILED\n";
         print LOG "Test failed (code " . ($? >> 8) . ")\n";
