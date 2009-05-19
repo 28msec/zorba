@@ -274,6 +274,11 @@ void createDynamicContext(
     std::cout << "timezone " << lTimezone << std::endl;
     dctx->setImplicitTimezone(lTimezone);
   }
+
+  if (spec.getDefaultCollection().size() != 0) {   
+    zorba::Item lDefaultCollection = factory.createAnyURI(spec.getDefaultCollection());   
+    dctx->setDefaultCollection(lDefaultCollection);   
+  }
   
   // Set external vars
   set_vars(spec, dctx, driverCtx.theRbktSourceDir);
