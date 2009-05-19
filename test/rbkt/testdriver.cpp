@@ -66,12 +66,13 @@ int analyzeError (const Specification &lSpec, const TestErrorHandler& errHandler
     return EXPECTED_ERROR;
   } else {
     printErrors(errHandler, "Unexpected error executing query", false);
-    std::cout << "Expected error(s)";
+    std::cout << "Expected error(s):";
     for (std::vector<std::string>::const_iterator lIter = lSpec.errorsBegin();
          lIter != lSpec.errorsEnd(); ++lIter)
-      {
+    {
         std::cout << " " << *lIter;
-      }
+    }
+    if (lSpec.errorsSize () == 0) { std::cout << " (none)"; }
     std::cout << std::endl;
     return UNEXPECTED_ERROR;
   }
