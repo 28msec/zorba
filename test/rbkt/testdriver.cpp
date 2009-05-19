@@ -44,13 +44,13 @@
 
 #include "testdriver_comparator.h"
 
-zorba::Properties *lProp;
-
 #define EXPECTED_ERROR  0
 #define UNEXPECTED_ERROR  6
 
-std::string rbkt_src_dir = zorba::RBKT_SRC_DIR, rbkt_bin_dir = zorba::RBKT_BINARY_DIR,
-  w3c_ts = "w3c_testsuite/";
+std::string rbkt_src_dir = zorba::RBKT_SRC_DIR;
+std::string rbkt_bin_dir = zorba::RBKT_BINARY_DIR;
+std::string w3c_ts = "w3c_testsuite/";
+
 
 void loadProperties () 
 {
@@ -85,8 +85,6 @@ _tmain(int argc, _TCHAR* argv[])
 main(int argc, char** argv)
 #endif
 {
-  loadProperties ();
-  Specification lSpec;
   if ( argc < 2 )
   {
     std::cout << "\nusage:   testdriver [testfile_1] [testfile_2] ..." << std::endl;
@@ -94,7 +92,22 @@ main(int argc, char** argv)
   }
 
   int errors;
-  zorba::Zorba * engine = NULL;
+  Specification lSpec;
+
+  loadProperties ();
+
+  // Instantiate the store and the zorba query processor
+#ifdef ZORBA_MINIMAL_STORE
+  zorba::storeminimal::SimpleStore* store =
+  zorba::storeminimal::SimpleStore::getInstance();
+#else
+  zorba::simplestore::SimpleStore* store =
+  zorba::simplestore::SimpleStoreManager::getStore();
+#endif
+  if (store == NULL) return 20;
+
+  zorba::Zorba * engine = zorba::Zorba::getInstance(store);
+  if (engine == NULL) return 21;
 
   int i = 1;
   for (;;) {
@@ -107,26 +120,21 @@ main(int argc, char** argv)
     } else break;
   }
 
+  DriverContext driverContext;
+  driverContext.theEngine = engine;
+  driverContext.theRbktSourceDir = rbkt_src_dir;
+  driverContext.theSpec = &lSpec;
+
   for (int testcnt = 1; i < argc; ++i, ++testcnt)
   {
     std::string Queriesdir = "/Queries/";
 
     int path_flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;
+
+    // Form the full pathname for the file containing the query and make sure
+    // that the file exists.
     zorba::file lQueryFile (rbkt_src_dir + Queriesdir + argv[i], path_flags);
 
-    std::string lQueryWithoutSuffix = std::string(argv[i]).substr( 0, std::string(argv[i]).rfind('.') );
-
-    zorba::file lResultFile (rbkt_bin_dir + "/QueryResults/" 
-                             + lQueryWithoutSuffix + ".xml.res", path_flags);
-
-    zorba::file lErrorFile  (rbkt_bin_dir + "/" 
-                             + lQueryWithoutSuffix + ".err", path_flags);
-
-
-    zorba::file lSpecFile (rbkt_src_dir + "/Queries/"
-                           + lQueryWithoutSuffix +".spec", path_flags);
-
-    // does the query file exists
     if ( (! lQueryFile.exists ()) || lQueryFile.is_directory () ) 
     {
       std::cout << "\n query file " << lQueryFile.get_path() 
@@ -134,20 +142,42 @@ main(int argc, char** argv)
       return 2;
     }
 
-    // delete previous files if they exists
+    // Check if this is w3c_testsuite test.
+    std::string path = lQueryFile.get_path();
+    bool isW3Ctest = ( path.find ( "w3c_testsuite" ) != std::string::npos );
+
+    // Form the full pathname for the files that will receive the result or the
+    // errors of this query. Then, delete these files if they exist already from
+    // previous runs of the query. Finaly, create (if necessary) all the dirs
+    // in the pathname of the result and error files.
+    std::string lQueryWithoutSuffix = 
+    std::string(argv[i]).substr( 0, std::string(argv[i]).rfind('.') );
+
+    zorba::file lResultFile (rbkt_bin_dir + "/QueryResults/" 
+                             + lQueryWithoutSuffix + ".xml.res", path_flags);
+
+    zorba::file lErrorFile  (rbkt_bin_dir + "/" 
+                             + lQueryWithoutSuffix + ".err", path_flags);
+
     if ( lResultFile.exists () ) { lResultFile.remove (); }
     if ( lErrorFile.exists () )  { lErrorFile.remove ();  }
 
-    // create the result directory
     zorba::file lBucket (lResultFile.branch_path());
-
     if ( ! lBucket.exists () )
       lBucket.deep_mkdir (); // create deep directories
 
-    // read the xargs and errors if the spec file exists
+    // Form the full pathname for the .spec file that may be associated
+    // with this query. If the .spec file exists, read its contents to
+    // extract args to be passed to the query (e.g., external var bindings),
+    // exprected errors, or the pathnames of reference-result files.
+    zorba::file lSpecFile(rbkt_src_dir + "/Queries/" + lQueryWithoutSuffix + ".spec",
+                          path_flags);
+
     if ( lSpecFile.exists ()) 
       lSpec.parseFile(lSpecFile.get_path());
 
+    // Get the pathnames of the reference-result files found in the .spec
+    // file (if any).
     std::vector<zorba::file> lRefFiles;
     bool lRefFileExists = false;
     for (std::vector<std::string>::const_iterator lIter = lSpec.resultsBegin();
@@ -157,21 +187,39 @@ main(int argc, char** argv)
       std::string lTmp = *lIter;
       zorba::str_replace_all(lTmp, "$RBKT_SRC_DIR", rbkt_src_dir);
       zorba::file lRefFile(lTmp, path_flags);
-      if (lRefFile.exists()) {
+      if (lRefFile.exists()) 
+      {
         lRefFileExists = true;
-      } else {
-        std::cout << "Warning: missing reference result file " << lRefFile.get_path () << std::endl;
+      }
+      else
+      {
+        std::cout << "Warning: missing reference result file " 
+                  << lRefFile.get_path () << std::endl;
       }
       lRefFiles.push_back(lRefFile);
     }
 
+    // If no ref-results file was specified in the .spec file, create a default
+    // finename for that file. For w3c tests, the ref file is the same for
+    // xqueryx and xquery tests, hence, we remove the string xqueryx or xquery
+    // from the path
     if (lRefFiles.size () == 0) 
     {
-      std::string res = lQueryWithoutSuffix;
-      if (res.substr (0, w3c_ts.size ()) == w3c_ts)
-        res = res.substr (0, w3c_ts.size ()) + res.substr (w3c_ts.size () + strlen ("XQuery/"));
-      lRefFiles.push_back (zorba::file (rbkt_src_dir + "/ExpQueryResults/" + res + ".xml.res"));
-      if (lRefFiles [0].exists()) lRefFileExists = true;
+      std::string lRefFileTmpString = lQueryWithoutSuffix;
+
+      if (isW3Ctest) 
+      {
+        if (lQueryWithoutSuffix.find("XQueryX") != std::string::npos)
+          lRefFileTmpString = lRefFileTmpString.erase(14, 8);
+        else if (lQueryWithoutSuffix.find("XQuery") != std::string::npos)
+          lRefFileTmpString = lRefFileTmpString.erase(14, 7);
+      }
+  
+      lRefFiles.push_back(zorba::file(rbkt_src_dir + "/ExpQueryResults/" +
+                                      lRefFileTmpString + ".xml.res"));
+
+      if (lRefFiles [0].exists())
+        lRefFileExists = true;
     }
 
     // print the query
@@ -179,35 +227,28 @@ main(int argc, char** argv)
     zorba::printFile(std::cout, lQueryFile.get_path());
     std::cout << std::endl;
 
-    if( testcnt == 1 ) {  // Instantiate the store
-#ifdef ZORBA_MINIMAL_STORE
-      zorba::storeminimal::SimpleStore* store =
-      zorba::storeminimal::SimpleStore::getInstance();
-#else
-      zorba::simplestore::SimpleStore* store =
-      zorba::simplestore::SimpleStoreManager::getStore();
-#endif
-
-      if (store == NULL) return 20;
-      // Instantiate zorba query processor
-      engine = zorba::Zorba::getInstance(store);
-      if (engine == NULL) return 21;
-    }
-
+    // Create the static context. If this is a w3c query, install special uri
+    // resolvers in the static context.
     zorba::StaticContext_t lContext = engine->createStaticContext();
-    // Install special resolver only for w3c_testsuite ...
+
     std::auto_ptr<zorba::TestSchemaURIResolver>      resolver;
-    std::string path = lQueryFile.get_path();
     std::auto_ptr<zorba::TestModuleURIResolver>      mresolver;
     std::auto_ptr<zorba::TestCollectionURIResolver>  cresolver;
 
-    if (lQueryWithoutSuffix.substr (0, w3c_ts.size ()) == w3c_ts) {
-      std::string uri_map_file = rbkt_src_dir + "/Queries/w3c_testsuite/TestSources/uri.txt";
-      std::string mod_map_file = rbkt_src_dir + "/Queries/w3c_testsuite/TestSources/module.txt";
-      std::string col_map_file = rbkt_src_dir + "/Queries/w3c_testsuite/TestSources/collection.txt";
-      resolver.reset(new zorba::TestSchemaURIResolver (uri_map_file.c_str()));
-      mresolver.reset(new zorba::TestModuleURIResolver (mod_map_file.c_str(), lQueryWithoutSuffix));
-      cresolver.reset(new zorba::TestCollectionURIResolver (col_map_file.c_str(), rbkt_src_dir));
+    if ( isW3Ctest ) 
+    {
+      std::string w3cDataDir = "/Queries/w3c_testsuite/TestSources/";
+      std::string uri_map_file = rbkt_src_dir + w3cDataDir + "uri.txt";
+      std::string mod_map_file = rbkt_src_dir + w3cDataDir + "module.txt";
+      std::string col_map_file = rbkt_src_dir + w3cDataDir + "collection.txt";
+
+      resolver.reset(new zorba::TestSchemaURIResolver(uri_map_file.c_str()));
+
+      mresolver.reset(new zorba::TestModuleURIResolver(mod_map_file.c_str(),
+                                                       lQueryWithoutSuffix));
+
+      cresolver.reset(new zorba::TestCollectionURIResolver(col_map_file.c_str(),
+                                                           rbkt_src_dir));
       lContext->setSchemaURIResolver ( resolver.get() );
       lContext->setModuleURIResolver ( mresolver.get() );
       lContext->setCollectionURIResolver ( cresolver.get() );
@@ -218,6 +259,7 @@ main(int argc, char** argv)
     // create and compile the query
     std::string lQueryString;
     slurp_file(lQueryFile.get_path().c_str(), lQueryString, rbkt_src_dir, rbkt_bin_dir);
+
     zorba::XQuery_t lQuery = engine->createQuery (&errHandler);
     lQuery->setFileName (lQueryFile.get_path ());
     lQuery->compile (lQueryString.c_str(), lContext, getCompilerHints());
@@ -228,38 +270,12 @@ main(int argc, char** argv)
       errors = analyzeError (lSpec, errHandler);
       if( errors == UNEXPECTED_ERROR )
         return 6;
-    } else {  // no compilation errors
-
-      // set the variables in the dynamic context
-      zorba::DynamicContext* lDynCtxt = lQuery->getDynamicContext();
-
-      if (lSpec.hasDateSet()) {
-        // set the current date time such that tests that use fn:current-time behave deterministically
-        zorba::Item lDateTimeItem = engine->getItemFactory()->createDateTime(lSpec.getDate());
-        lDynCtxt->setCurrentDateTime(lDateTimeItem);
-      }
-
-      if (lSpec.getDefaultCollection().size() != 0) {
-        zorba::Item lDefaultCollection = engine->getItemFactory()->createAnyURI(lSpec.getDefaultCollection());
-        lDynCtxt->setDefaultCollection(lDefaultCollection);
-      }
-
-      if (lSpec.hasTimezoneSet()) {
-        int lTimezone = atoi(lSpec.getTimezone().c_str());
-        std::cout << "timezone " << lTimezone << std::endl;
-        lDynCtxt->setImplicitTimezone(lTimezone);
-      }
-
-      set_vars(&lSpec, lDynCtxt, rbkt_src_dir);
-      if ( lSpec.hasInputQuery () ) {
-        std::string  inputqueryfile = lSpec.getInputQueryFile ();
-        zorba::str_replace_all(inputqueryfile, "$RBKT_SRC_DIR", rbkt_src_dir);
-
-        std::ifstream inputquery ( inputqueryfile.c_str() );
-        zorba::XQuery_t inputQuery = engine -> compileQuery ( inputquery, lContext, getCompilerHints () );
-        zorba::ResultIterator_t riter = inputQuery -> iterator ();
-        lDynCtxt -> setVariable ( zorba::String ("x"), riter );
     }
+    else // no compilation errors
+    {  
+      // Create dynamic context and set in it the external variables, the current
+      // date & time, and the timezone.
+      createDynamicContext(driverContext, lContext, lQuery);
 
       errors = -1;
       {
@@ -320,26 +336,37 @@ main(int argc, char** argv)
         for (std::vector<zorba::file>::const_iterator lIter = lRefFiles.begin();
              lIter != lRefFiles.end(); ++lIter) 
         {
+          int lLine, lCol, lPos; // where do the files differ
+          std::string lRefLine, lResultLine;
+          bool lRes = zorba::fileEquals(lIter->c_str(),
+                                        lResultFile.c_str(),
+                                        lLine, lCol, lPos,
+                                        lRefLine, lResultLine);
+          if (lRes) 
           {
-            int lLine, lCol, lPos; // where do the files differ
-            std::string lRefLine, lResultLine;
-            bool lRes = zorba::fileEquals(lIter->c_str(), lResultFile.c_str(), lLine, lCol, lPos, lRefLine, lResultLine);
-            if (lRes) {
-              std::cout << "testdriver: success (non-canonical result # " << i << " matches)" << std::endl;
-              return 0;
-            }
-          }
-          std::cout << "testdriver: non-canonical result for reference result # " << i << " doesn't match." << std::endl;
-
-          int lCanonicalRes = zorba::canonicalizeAndCompare(lSpec.getComparisonMethod(),
-              lIter->c_str(), lResultFile.c_str(), rbkt_bin_dir);
-          if (lCanonicalRes == 0) {
-            std::cout << "testdriver: success (canonical result # " << i  << " matches)" << std::endl;
+            std::cout << "testdriver: success (non-canonical result # " << i 
+                      << " matches)" << std::endl;
             return 0;
           }
-          std::cout << "testdriver: canonical result for reference result # " << i << " doesn't match." << std::endl;
+
+          std::cout << "testdriver: non-canonical result for reference result # " 
+                    << i << " doesn't match." << std::endl;
+
+          int lCanonicalRes = zorba::canonicalizeAndCompare(lSpec.getComparisonMethod(),
+                                                            lIter->c_str(),
+                                                            lResultFile.c_str(),
+                                                            rbkt_bin_dir);
+          if (lCanonicalRes == 0) 
+          {
+            std::cout << "testdriver: success (canonical result # " << i  
+                      << " matches)" << std::endl;
+            return 0;
+          }
+          std::cout << "testdriver: canonical result for reference result # " << i 
+                    << " doesn't match." << std::endl;
           ++i;
         } // for 
+
         std::cout << "testdriver: none of the reference results matched" << std::endl;
         return 8;
       }

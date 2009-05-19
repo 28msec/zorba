@@ -18,67 +18,86 @@
 #include <map>
 #include <vector>
 
-namespace zorba {
+namespace zorba 
+{
+
 class TestSchemaURIResolverResult : public SchemaURIResolverResult
 {
-public:
-
-  virtual ~TestSchemaURIResolverResult();
-  virtual Item getSchema () const;
 protected:
   friend class TestSchemaURIResolver;
+
   Item theSchema;
 
+public:
+  virtual ~TestSchemaURIResolverResult();
+
+  virtual Item getSchema () const;
 };
+
 
 class TestSchemaURIResolver : public SchemaURIResolver 
 {
 private:
-
-  std::string map_file;
+  std::string                map_file;
   std::map< String, String > uri_map;
-
-  void initialize ();
+  bool                       theVerbose;
 
 public:
+  TestSchemaURIResolver(const char* file, bool verbose = true);
 
-  TestSchemaURIResolver ( const char * file);
   virtual ~TestSchemaURIResolver();
 
   virtual std::auto_ptr<SchemaURIResolverResult>
-  resolve ( const Item & aURI,
-	    const std::vector <Item> & aLocationHint,
-	    StaticContext * aStaticContext );
+  resolve(const Item & aURI,
+          const std::vector <Item> & aLocationHint,
+          StaticContext * aStaticContext );
+
+private:
+  void initialize ();
 };
+
 
 class TestModuleURIResolver : public ModuleURIResolver
 {
 private:
-  std::string map_file, theTest;
-  std::map < String, String > uri_map;
-
-  void initialize ();
+  std::string                  map_file;
+    std::string                theTest;
+  std::map < String, String >  uri_map;
+  bool                         theVerbose;
 
 public :
-  TestModuleURIResolver ( const char * file, const std::string &test_);
+  TestModuleURIResolver (
+        const char* file,
+        const std::string& test,
+        bool verbode = true);
+
+  TestModuleURIResolver (
+        const char* file,
+        bool verbode = true);
+
   virtual ~TestModuleURIResolver ();
+
+  void setTest(const std::string& test) { theTest = test; }
 
   virtual std::auto_ptr< ModuleURIResolverResult >
   resolve ( const Item &, StaticContext * aStaticContext );
+
+private:
+  void initialize ();
 };
+
 
 class TestModuleURIResolverResult : public ModuleURIResolverResult
 {
-public:
-
-  virtual std::istream *
-  getModule ( ) const;
-
 protected:
-
   friend class TestModuleURIResolver;
+
   std::istream * theModule;
+
+public:
+  virtual std::istream * getModule ( ) const;
 };
+
 
 class TestCollectionURIResolver : public CollectionURIResolver
 {
@@ -89,6 +108,7 @@ private:
 
 public :
   TestCollectionURIResolver ( const char * file, const std::string& rbkt_src_dir );
+
   virtual ~TestCollectionURIResolver ();
 
   static void
@@ -97,20 +117,19 @@ public :
   virtual std::auto_ptr< CollectionURIResolverResult >
   resolve ( const Item &, StaticContext * aStaticContext, XmlDataManager* aXmlDataManager );
   void initialize ();
-
 };
+
 
 class TestCollectionURIResolverResult : public CollectionURIResolverResult
 {
-public:
+protected:
+  friend class TestCollectionURIResolver;
 
+  Collection_t theCollection;
+
+public:
   virtual Collection_t
   getCollection ( ) const;
-
-protected:
-
-  friend class TestCollectionURIResolver;
-  Collection_t theCollection;
 };
 
 

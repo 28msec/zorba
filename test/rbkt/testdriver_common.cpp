@@ -23,10 +23,28 @@
 #include "specification.h"
 
 
+static void set_var(
+    bool inlineFile,
+    std::string name,
+    std::string val,
+    zorba::DynamicContext* dctx,
+    const std::string& rbkt_src_dir);
+
+static void set_vars(
+    Specification& aSpec,
+    zorba::DynamicContext* dctx,
+    const std::string& rbkt_src_dir);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
-void slurp_file (const char *fname, std::string &result, const std::string &rbkt_src_dir, const std::string &rbkt_bin_dir) {
+void slurp_file (
+    const char *fname,
+    std::string& result,
+    const std::string& rbkt_src_dir,
+    const std::string& rbkt_bin_dir)
+{
   std::ifstream qfile(fname, std::ios::binary | std::ios_base::in);
   assert (qfile);
 
@@ -96,7 +114,7 @@ void printErrors(const TestErrorHandler& errHandler, const char* msg, bool print
 
   if (printInFile)
   {
-    errFile.open(errHandler.getErrorFile().c_str());
+    errFile.open(errHandler.getErrorFile().c_str(), std::ios_base::app);
     if (!errFile.good())
     {
       std::cerr << "Failed to open file : " << errHandler.getErrorFile().c_str()
@@ -226,12 +244,85 @@ zorba::Item createItem(std::string strValue)
 
 
 /*******************************************************************************
+  Create dynamic context and set in it the external variables, the current
+  date & time, and the timezone.
+********************************************************************************/
+void createDynamicContext(
+    DriverContext& driverCtx,
+    const zorba::StaticContext_t& sctx,
+    zorba::XQuery_t& query)
+{
+  zorba::Zorba* engine = driverCtx.theEngine;
+  Specification& spec = *driverCtx.theSpec;
+  zorba::ItemFactory& factory = *engine->getItemFactory();
+
+  zorba::DynamicContext* dctx = query->getDynamicContext();
+
+  // Set the current date time such that tests that use fn:current-time
+  // behave deterministically
+  if (spec.hasDateSet()) 
+  {
+    zorba::Item lDateTimeItem = factory.createDateTime(spec.getDate());
+
+    dctx->setCurrentDateTime(lDateTimeItem);
+  }
+
+  if (spec.hasTimezoneSet()) 
+  {
+    int lTimezone = atoi(spec.getTimezone().c_str());
+    
+    std::cout << "timezone " << lTimezone << std::endl;
+    dctx->setImplicitTimezone(lTimezone);
+  }
+  
+  // Set external vars
+  set_vars(spec, dctx, driverCtx.theRbktSourceDir);
+
+  if (spec.hasInputQuery()) 
+  {
+    std::string inputqueryfile = spec.getInputQueryFile ();
+    zorba::str_replace_all(inputqueryfile, "$RBKT_SRC_DIR", driverCtx.theRbktSourceDir);
+      
+    std::ifstream inputquery ( inputqueryfile.c_str() );
+
+    zorba::XQuery_t inputQuery = engine->compileQuery(inputquery,
+                                                      sctx,
+                                                      getCompilerHints());
+
+    zorba::ResultIterator_t riter = inputQuery->iterator();
+    dctx->setVariable(zorba::String("x"), riter);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void set_vars(
+    Specification& aSpec,
+    zorba::DynamicContext* dctx,
+    const std::string& rbkt_src_dir)
+{
+  std::vector<Specification::Variable>::const_iterator lIter;
+  for (lIter = aSpec.variablesBegin(); lIter != aSpec.variablesEnd(); ++lIter)
+  {
+    set_var((*lIter).theInline, (*lIter).theVarName, (*lIter).theVarValue, dctx, rbkt_src_dir);
+  }
+}
+
+
+/*******************************************************************************
   Set a variable in the dynamic context
   inlineFile specifies whether the given parameter is a file and its value
   should be inlined or not
 ********************************************************************************/
-void
-set_var(bool inlineFile, std::string name, std::string val, zorba::DynamicContext* dctx, const std::string &rbkt_src_dir) {
+void set_var(
+    bool inlineFile,
+    std::string name,
+    std::string val,
+    zorba::DynamicContext* dctx,
+    const std::string& rbkt_src_dir) 
+{
   zorba::str_replace_all (val, "$RBKT_SRC_DIR", rbkt_src_dir);
 
   if (!inlineFile) 
@@ -259,14 +350,3 @@ set_var(bool inlineFile, std::string name, std::string val, zorba::DynamicContex
   }
 }
 
-
-/*******************************************************************************
-
-********************************************************************************/
-void set_vars(Specification* aSpec, zorba::DynamicContext* dctx, const std::string &rbkt_src_dir) {
-  std::vector<Specification::Variable>::const_iterator lIter;
-  for (lIter = aSpec->variablesBegin(); lIter != aSpec->variablesEnd(); ++lIter)
-  {
-    set_var((*lIter).theInline, (*lIter).theVarName, (*lIter).theVarValue, dctx, rbkt_src_dir);
-  }
-}

@@ -42,6 +42,7 @@
 
 #include "testdriverconfig.h" // SRC and BIN dir definitions
 #include "specification.h" // parsing spec files
+#include "testuriresolver.h"
 #include "testdriver_comparator.h"
 #include "testdriver_common.h"
 
@@ -50,14 +51,6 @@ namespace fs = boost::filesystem;
 
 std::string rbkt_src_dir = zorba::RBKT_SRC_DIR;
 std::string rbkt_bin_dir = zorba::RBKT_BINARY_DIR;
-
-
-zorba::Properties *lProp;
-
-void loadProperties() 
-{
-  zorba::Properties::load(0, NULL);
-}
 
 
 /*******************************************************************************
@@ -100,6 +93,8 @@ public:
   std::string                   theResultsDir;
 
   std::vector<std::string>      theQueryFilenames;
+
+  bool                          theIsW3Cbucket;
 
   long                          theNumQueries;
 
@@ -263,7 +258,8 @@ bool checkErrors(const Specification& lSpec, const TestErrorHandler& errHandler)
 {
   if (isErrorExpected(errHandler, &lSpec)) 
   {
-    printErrors(errHandler, "The following execution errors occurred as expected",
+    printErrors(errHandler,
+                "The following execution errors occurred as expected",
                 true);
     return true;
   }
@@ -286,43 +282,6 @@ bool checkErrors(const Specification& lSpec, const TestErrorHandler& errHandler)
 
 
 /*******************************************************************************
-  Return false if the files are not equal.
-  aLine contains the line number in which the first difference occurs
-  aCol contains the column number in which the first difference occurs
-  aPos is the character number off the first difference in the file
-  -1 is returned for aLine, aCol, and aPos if the files are equal
-********************************************************************************/
-bool isEqual(fs::path aRefFile, fs::path aResFile, int& aLine, int& aCol, int& aPos)
-{
-  std::ifstream li(aRefFile.native_file_string().c_str());
-  std::ifstream ri(aResFile.native_file_string().c_str()); 
-  
-  std::string lLine, rLine;
-
-  aLine = 1; aCol = 0; aPos = -1;
-  while (! li.eof() )
-  {
-    if ( ri.eof() ) 
-    {
-      std::getline(li, lLine);
-      if (li.peek() == -1) // ignore end-of-line in the ref result
-        return true;
-      else 
-        return false;
-    }
-    std::getline(li, lLine);
-    std::getline(ri, rLine);
-    if ( (aCol = lLine.compare(rLine)) != 0) {
-      return false;
-    }
-    ++aLine;
-  }
-
-  return true;
-}
-
-
-/*******************************************************************************
 
 ********************************************************************************/
 void* thread_main(void* param)
@@ -339,58 +298,129 @@ void* thread_main(void* param)
 
   TestErrorHandler errHandler;
 
+  ulong numCanon = 0;
+
   long queryNo;
 
-  std::string relativeQueryFile;
-  fs::path queryPath;
-  fs::path specPath;
-  fs::path refFilePath;
-  fs::path resultFilePath;
-  fs::path errorFilePath;
+  std::string w3cDataDir = "/Queries/w3c_testsuite/TestSources/";
+  std::string uri_map_file = rbkt_src_dir + w3cDataDir + "uri.txt";
+  std::string mod_map_file = rbkt_src_dir + w3cDataDir + "module.txt";
+  std::string col_map_file = rbkt_src_dir + w3cDataDir + "collection.txt";
 
-  std::string queryString;
+  std::auto_ptr<zorba::TestSchemaURIResolver>      resolver;
+  std::auto_ptr<zorba::TestModuleURIResolver>      mresolver;
+  std::auto_ptr<zorba::TestCollectionURIResolver>  cresolver;
+
+  resolver.reset(new zorba::TestSchemaURIResolver(uri_map_file.c_str(), false));
+
+  cresolver.reset(new zorba::TestCollectionURIResolver(col_map_file.c_str(),
+                                                       rbkt_src_dir));
 
   while (1)
   {
+    Specification querySpec;
+
+    std::string relativeQueryFile;
+    fs::path queryPath;
+    fs::path specPath;
+    std::vector<fs::path> refFilePaths;
+    bool refFileSpecified = false;
+    fs::path resultFilePath;
+    fs::path errorFilePath;
+
+    std::string queryString;
+
+    bool failure = false;
+
+    DriverContext driverContext;
+    driverContext.theEngine = zorba;
+    driverContext.theRbktSourceDir = rbkt_src_dir;
+    driverContext.theSpec = &querySpec;
+
+    zorba::XQuery_t query;
+
+    // Choose a query to run. If no query is available, the thread finishes. 
+    // To choose the next query, the whole query container must be locked.
+    // After the query is chosen, we release the global container lock and
+    // acquire the query-specific lock for the chosen query. The query lock
+    // is needed to protect the queries->theQueryObjects[queryNo] position and
+    // to make sure that the query will be compiled only once.
     queries->theGlobalLock.lock();
 
-    //
-    // Choose a query to run. If no query is available, the thread finishes. 
-    //
     queryNo = queries->getQuery();
 
     if (queryNo < 0)
     {
       std::cout << "Thread " << tno << " finished " << std::endl;
+      std::cout << std::endl << "Number of canonicaliations = " << numCanon << std::endl;
       queries->theGlobalLock.unlock();
       return 0;
     }
 
-    std::cout << "*** " << queryNo << " in file " 
-              << queries->theQueryFilenames[queryNo]
-              << " by thread " << tno << std::endl << std::endl;
-
-    //
-    // Release the global lock on the queries container and acquire the 
-    // query-specific lock for the chosen query. The query lock is needed
-    // to protect the queries->theQueryObjects[queryNo] position and to
-    // make sure that the query will be compiled only once.
-    //
     queries->theQueryLocks[queryNo]->lock();
     queries->theGlobalLock.unlock();
     sched_yield();
 
-    //
-    // Determine the full pathnames for the spec, ref, result, and error files.
-    // Then, delete previous result and error files, if they exist, and create
-    // new (empty) instance of them.
-    //
+    // Form the full pathname for the file containing the query.
     relativeQueryFile = queries->theQueryFilenames[queryNo];
-
     queryPath = fs::path(queries->theQueriesDir) / (relativeQueryFile);
+
+    std::string testName = fs::change_extension(queryPath, "").native_file_string();
+    ulong pos = testName.find("Queries");
+    testName = testName.substr(pos + 8);
+
+    std::cout << "*** " << queryNo << " : " // << testName
+              << " by thread " << tno << std::endl << std::endl;
+
+    // Form the full pathname for the .spec file that may be associated
+    // with this query. If the .spec file exists, read its contents to
+    // extract args to be passed to the query (e.g., external var bindings),
+    // exprected errors, or the pathnames of reference-result files.
     specPath = fs::change_extension(queryPath, ".spec");
-    refFilePath = fs::path(queries->theRefsDir) / (relativeQueryFile);
-    refFilePath = fs::change_extension(refFilePath, ".xml.res");
+    if (fs::exists(specPath))
+      querySpec.parseFile(specPath.native_file_string()); 
+
+    // Get the pathnames of the ref-result files found in the .spec file (if any).
+    // If no ref-results file was specified in the .spec file, create a default
+    // finename for that file. For w3c tests, the ref file is the same for
+    // xqueryx and xquery tests, hence, we remove the string xqueryx or xquery
+    // from the path
+    for (std::vector<std::string>::const_iterator iter = querySpec.resultsBegin();
+         iter != querySpec.resultsEnd();
+         ++iter) 
+    {
+      std::string tmp = *iter;
+      zorba::str_replace_all(tmp, "$RBKT_SRC_DIR", rbkt_src_dir);
+      fs::path refFilePath(tmp);
+      refFileSpecified = true;
+      refFilePaths.push_back(refFilePath);
+    }
+
+    if (refFilePaths.size() == 0) 
+    {
+      std::string relativeRefFile = relativeQueryFile;
+      if (queries->theIsW3Cbucket)
+      {
+        ulong pos;
+        if ((pos = relativeRefFile.find("XQueryX")) != std::string::npos)
+          relativeRefFile = relativeRefFile.erase(pos, 8);
+        else if ((pos = relativeRefFile.find("XQuery")) != std::string::npos)
+          relativeRefFile = relativeRefFile.erase(pos, 7);
+      }
+
+      fs::path refFilePath = fs::path(queries->theRefsDir) / (relativeRefFile);
+      refFilePath = fs::change_extension(refFilePath, ".xml.res");
+
+      if (fs::exists(refFilePath)) 
+        refFileSpecified = true;
+
+      refFilePaths.push_back(refFilePath);
+    }
+
+    // Form the full pathname for the files that will receive the result or the
+    // errors of this query. Then, delete these files if they exist already from
+    // previous runs of the query. Finaly, create (if necessary) all the dirs
+    // in the pathname of the result and error files.
     resultFilePath = fs::path(queries->theResultsDir) / (relativeQueryFile);
     resultFilePath = fs::change_extension(resultFilePath, (".res_" + tnoStr));
     errorFilePath = fs::path(queries->theResultsDir) / (relativeQueryFile);
@@ -404,37 +434,38 @@ void* thread_main(void* param)
     createPath(resultFilePath, resFileStream);
     createPath(errorFilePath, errFileStream);
 
-    //
+    // Create the static context. If this is a w3c query, install special uri
+    // resolvers in the static context.
+    zorba::StaticContext_t sctx = zorba->createStaticContext();
+
+    if (queries->theIsW3Cbucket) 
+    {
+      mresolver.reset(new zorba::TestModuleURIResolver(mod_map_file.c_str(),
+                                                       testName,
+                                                       false));
+      sctx->setSchemaURIResolver(resolver.get());
+      sctx->setModuleURIResolver(mresolver.get());
+      sctx->setCollectionURIResolver(cresolver.get());
+    }
+
     // Set the error file to be used by the error handler for the current query
-    //
     errHandler.setErrorFile(errorFilePath.native_file_string());
 
     //
-    // Read the xargs and expected errors from the spec file, if it exists
-    //
-    Specification querySpec;
-    if (fs::exists(specPath))
-      querySpec.parseFile(specPath.native_file_string()); 
-
-    //
-    // Compile the current query, if it has not been compiled already. 
+    // Compile the query, if it has not been compiled already. 
     //
     if (queries->theQueryObjects[queryNo] == 0)
     {
-      // Read the query string from the query file
       slurp_file(queryPath.native_file_string().c_str(),
                  queryString,
                  rbkt_src_dir,
                  rbkt_bin_dir);
 
-      zorba::XQuery_t query;
-
-      // Compile the query
       try
       {
         query = zorba->createQuery(&errHandler);
         query->setFileName(queryPath.native_file_string());
-        query->compile(queryString.c_str(), getCompilerHints());
+        query->compile(queryString.c_str(), sctx, getCompilerHints());
       }
       catch(...)
       {
@@ -444,11 +475,9 @@ void* thread_main(void* param)
                   << "Reason: received an unexpected exception during compilation"
                   << std::endl << std::endl;
 
-        queries->theHaveErrors = true;
-        queries->theQueryStates[queryNo] = false;
         queries->theQueryLocks[queryNo]->unlock();
-        errHandler.clear();
-        continue;
+        failure = true;
+        goto done;
       }
 
       if (errHandler.errors())
@@ -456,8 +485,7 @@ void* thread_main(void* param)
         if (checkErrors(querySpec, errHandler))
         {
           queries->theQueryLocks[queryNo]->unlock();
-          errHandler.clear();
-          continue;
+          goto done;
         }
         else
         {
@@ -468,11 +496,9 @@ void* thread_main(void* param)
           printErrors(errHandler, NULL, false);
           std::cerr << std::endl << std::endl;
 
-          queries->theHaveErrors = true;
-          queries->theQueryStates[queryNo] = false;
           queries->theQueryLocks[queryNo]->unlock();
-          errHandler.clear();
-          continue;
+          failure = true;
+          goto done;
         }
       }
 
@@ -485,7 +511,7 @@ void* thread_main(void* param)
     // Clone the compiled query and register with it the error handler of the
     // current thread.
     // 
-    zorba::XQuery_t query = queries->theQueryObjects[queryNo]->clone();
+    query = queries->theQueryObjects[queryNo]->clone();
 
     query->registerErrorHandler(&errHandler);
 
@@ -493,35 +519,17 @@ void* thread_main(void* param)
     //
     // Execute the query
     //
-
-    // set the variables in the dynamic context
-    zorba::DynamicContext* lDynCtxt = query->getDynamicContext();
-
-    if (querySpec.hasDateSet()) 
-    {
-      // set the current date time such that tests that use fn:current-time
-      // behave deterministically
-      zorba::Item lDateTimeItem = zorba->getItemFactory()->
-                                  createDateTime(querySpec.getDate());
-
-      lDynCtxt->setCurrentDateTime(lDateTimeItem);
-    }
-
-    if (querySpec.hasTimezoneSet()) 
-    {
-      int lTimezone = atoi(querySpec.getTimezone().c_str());
-
-      std::cout << "timezone " << lTimezone << std::endl;
-      lDynCtxt->setImplicitTimezone(lTimezone);
-    }
-
-    // Set external vars
-    set_vars(&querySpec, lDynCtxt, rbkt_src_dir);
-
     try
     {
-      resFileStream << query;
-      resFileStream.flush();
+      createDynamicContext(driverContext, sctx, query);
+      
+      Zorba_SerializerOptions lSerOptions;
+      lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
+      lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+      lSerOptions.indent = ZORBA_INDENT_NO;
+
+      query->serialize(resFileStream, &lSerOptions);
+      resFileStream.close();
     }
     catch(...)
     {
@@ -530,8 +538,8 @@ void* thread_main(void* param)
                 << std::endl << std::endl 
                 << "Reason: received an unexpected exception during execution"
                 << std::endl << std::endl;
-      
-      continue;
+      failure = true;
+      goto done;
     }
 
     //
@@ -539,12 +547,7 @@ void* thread_main(void* param)
     //
     if (errHandler.errors())
     {
-      if (checkErrors(querySpec, errHandler))
-      {
-        errHandler.clear();
-        continue;
-      }
-      else
+      if (!checkErrors(querySpec, errHandler))
       {
         std::cerr << "FAILURE : thread " << tno << " query " << queryNo
                   << " : " << queries->theQueryFilenames[queryNo]
@@ -553,14 +556,11 @@ void* thread_main(void* param)
         printErrors(errHandler, NULL, false);
         std::cerr << std::endl << std::endl;
 
-        zorba::AutoMutex(queries->theQueryLocks[queryNo]);
-        queries->theHaveErrors = true;
-        queries->theQueryStates[queryNo] = false;
-        errHandler.clear();
-        continue;
+        failure = true;
+        goto done;
       }
     }
-    else if (querySpec.errorsSize() > 0 && !fs::exists(refFilePath))
+    else if (querySpec.errorsSize() > 0 && !refFileSpecified)
     {
       std::cout << "FAILURE : thread " << tno << " query " << queryNo
                 << " : " << queries->theQueryFilenames[queryNo]
@@ -575,44 +575,74 @@ void* thread_main(void* param)
       }
       std::cerr << std::endl << std::endl;
 
-      zorba::AutoMutex(queries->theQueryLocks[queryNo]);
-      queries->theHaveErrors = true;
-      queries->theQueryStates[queryNo] = false;
-      errHandler.clear();
-      continue;
+      failure = true;
+      goto done;
     }
-    else if (!fs::exists(refFilePath))
+    else 
     {
-      std::cout << "FAILURE : thread " << tno << " query " << queryNo
-                << " : " << queries->theQueryFilenames[queryNo]
-                << std::endl << std::endl
-                << "Reason: reference result file : " << refFilePath
-                << " does not exist" << std::endl << std::endl;
-
-      zorba::AutoMutex(queries->theQueryLocks[queryNo]);
-      queries->theHaveErrors = true;
-      queries->theQueryStates[queryNo] = false;
-      errHandler.clear();
-      continue;
-    }
-    else
-    {
-      int lLine, lCol, lPos;
-      bool success = isEqual(refFilePath, resultFilePath, lLine, lCol, lPos);
-      if (!success)
+      bool foundRefFile = false;
+      ulong i;
+      for (i = 0; i < refFilePaths.size(); i++) 
       {
-        std::cerr << "FAILURE : thread " << tno << " query " << queryNo
-                  << " : " << queries->theQueryFilenames[queryNo]
-                  << std::endl << std::endl
-                  << "Reason: did not receive the expected result"
-                  << std::endl << std::endl;
+        const char* refFilePath = refFilePaths[i].native_file_string().c_str();
+        const char* resFilePath = resultFilePath.native_file_string().c_str();
 
-        zorba::AutoMutex(queries->theQueryLocks[queryNo]);
-        queries->theHaveErrors = true;
-        queries->theQueryStates[queryNo] = false;
-        errHandler.clear();
-        continue;
+        int lLine, lCol, lPos; 
+        std::string lRefLine, lResultLine;
+        bool success = zorba::fileEquals(refFilePath, resFilePath,
+                                         lLine, lCol, lPos,
+                                         lRefLine, lResultLine);
+        if (success)
+        {
+          foundRefFile = true;
+          break;
+        }
+
+        ++numCanon;
+        int lCanonicalRes = zorba::canonicalizeAndCompare(querySpec.getComparisonMethod(),
+                                                          refFilePath,
+                                                          resFilePath,
+                                                          rbkt_bin_dir);
+        if (lCanonicalRes == 0)
+        {
+          foundRefFile = true;
+          break;
+        }
+
+        if (fs::exists(refFilePaths[i]))
+          foundRefFile = true;
       }
+
+      if (!foundRefFile || i == refFilePaths.size())
+      {
+        if (!foundRefFile)
+        {
+          std::cout << "FAILURE : thread " << tno << " query " << queryNo
+                    << " : " << queries->theQueryFilenames[queryNo]
+                    << std::endl << std::endl
+                    << "Reason: no reference result files exist."
+                    << std::endl << std::endl;
+        }
+        else
+        {
+          std::cerr << "FAILURE : thread " << tno << " query " << queryNo
+                    << " : " << queries->theQueryFilenames[queryNo]
+                    << std::endl << std::endl
+                    << "Reason: result does not match any of the expected results"
+                    << std::endl << std::endl;
+        }
+
+        failure = true;
+        goto done;
+      }
+    }
+
+done:
+    if (failure)
+    {
+      zorba::AutoMutex(queries->theQueryLocks[queryNo]);
+      queries->theHaveErrors = true;
+      queries->theQueryStates[queryNo] = false;
     }
 
     errHandler.clear();
@@ -635,7 +665,7 @@ _tmain(int argc, _TCHAR* argv[])
 main(int argc, char** argv)
 #endif
 {
-  loadProperties();
+  zorba::Properties::load(0, NULL);
 
   std::string bucketName;
   std::string queriesDir;
@@ -695,16 +725,29 @@ main(int argc, char** argv)
   queries.theNumThreads = numThreads;
 
   //
-  // Create the full pathnames for the bucket query, results, and ref-results directories
+  // Create the full pathname for the top-level query, results, and ref-results
+  // directories
   //
-  queriesDir = zorba::RBKT_SRC_DIR +"/Queries/" + bucketName;
-  refsDir = zorba::RBKT_SRC_DIR +"/ExpQueryResults/" + bucketName;
-  resultsDir = zorba::RBKT_BINARY_DIR +"/QueryResults/" + bucketName;
+  queriesDir = zorba::RBKT_SRC_DIR + "/Queries/" + bucketName;
+  resultsDir = zorba::RBKT_BINARY_DIR + "/QueryResults/" + bucketName;
+  refsDir = zorba::RBKT_SRC_DIR + "/ExpQueryResults/" + bucketName;
+
+  queries.theIsW3Cbucket = (bucketName.find("w3c_testsuite") != std::string::npos);
+
+  if (queries.theIsW3Cbucket)
+  {
+    ulong pos;
+    if ((pos = refsDir.find("XQueryX")) != std::string::npos)
+      refsDir = refsDir.erase(pos, 8);
+    else if ((pos = refsDir.find("XQuery")) != std::string::npos)
+      refsDir = refsDir.erase(pos, 7);
+  }
 
   reportFilepath = zorba::RBKT_BINARY_DIR + "/../../Testing/" + reportFilename;
 
   //
-  // Make sure the directories exists
+  // Make sure the directories exist. For the results dir, if it doesn't exist,
+  // it is created.
   //
   bucketPath = fs::system_complete(fs::path(queriesDir, fs::native));
   if (!fs::is_directory(bucketPath))
@@ -729,7 +772,7 @@ main(int argc, char** argv)
   }
   else if (!fs::is_directory(bucketPath))
   {
-    std::cerr << "The pathname " << refsDir << " is not a directory" << std::endl;
+    std::cerr << "The pathname " << resultsDir << " is not a directory" << std::endl;
     exit(2);
   }
   queries.theResultsDir = bucketPath.native_directory_string();
@@ -789,7 +832,7 @@ main(int argc, char** argv)
   // Start the store and zorba
   //
   zorba::simplestore::SimpleStore* store =
-    zorba::simplestore::SimpleStoreManager::getStore();
+  zorba::simplestore::SimpleStoreManager::getStore();
 
   zorba::Zorba* zorba = zorba::Zorba::getInstance(store);
 

@@ -99,19 +99,42 @@ private:
 };
 
 
-void slurp_file (const char* fname, std::string& result, const std::string &rbkt_src_dir, const std::string &rbkt_bin_dir);
+/*******************************************************************************
 
-bool isErrorExpected(const TestErrorHandler& errHandler, const Specification* aSpec);
+********************************************************************************/
+class DriverContext
+{
+public:
+  zorba::Zorba  * theEngine;
+  Specification * theSpec;
+  std::string     theRbktSourceDir;
+};
 
-void printErrors(const TestErrorHandler& errHandler, const char* msg, bool printInFile);
+
+void createDynamicContext(
+    DriverContext& driverCtx,
+    const zorba::StaticContext_t& sctx,
+    zorba::XQuery_t& query);
+
+
+void slurp_file(
+    const char* fname,
+    std::string& result,
+    const std::string& rbkt_src_dir,
+    const std::string& rbkt_bin_dir);
+
+bool isErrorExpected(
+    const TestErrorHandler& errHandler,
+    const Specification* aSpec);
+
+void printErrors(
+    const TestErrorHandler& errHandler,
+    const char* msg,
+    bool printInFile);
 
 Zorba_CompilerHints getCompilerHints();
 
 zorba::Item createItem(std::string strValue);
 
-void
-set_var(bool inlineFile, std::string name, std::string val, zorba::DynamicContext* dctx, const std::string &rbkt_src_dir);
-
-void set_vars(Specification* aSpec, zorba::DynamicContext* dctx, const std::string &rbkt_src_dir);
 
 #endif

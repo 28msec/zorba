@@ -26,25 +26,36 @@
 #include <sstream>
 #include <string>
 
-using namespace zorba;
+namespace zorba
+{
 
 
 
-zorba::TestSchemaURIResolverResult::~TestSchemaURIResolverResult()
-{}
+TestSchemaURIResolverResult::~TestSchemaURIResolverResult()
+{
+}
 
-Item zorba::TestSchemaURIResolverResult::getSchema () const
+
+Item TestSchemaURIResolverResult::getSchema () const
 {
   return theSchema;
 }
 
-zorba::TestSchemaURIResolver::TestSchemaURIResolver( const char * file ) :
-  map_file ( file )
-{}
 
-zorba::TestSchemaURIResolver::~TestSchemaURIResolver() {}
+TestSchemaURIResolver::TestSchemaURIResolver( const char* file, bool verbose) 
+  :
+  map_file ( file ),
+  theVerbose(verbose)  
+{
+}
 
-void zorba::TestSchemaURIResolver::initialize ()
+
+TestSchemaURIResolver::~TestSchemaURIResolver() 
+{
+}
+
+
+void TestSchemaURIResolver::initialize ()
 {
   std::string path ( map_file );
   for (int i = 0; i < 2; i++) {
@@ -70,54 +81,93 @@ void zorba::TestSchemaURIResolver::initialize ()
 
 
 std::auto_ptr<SchemaURIResolverResult>
-zorba::TestSchemaURIResolver::resolve ( const Item & aURI,
-				 const std::vector <Item> & aLocationHint,
-				 StaticContext * aStaticContext )
-  {
-    if ( uri_map.empty () ) {
-      initialize ();
-    }
-    std::auto_ptr<TestSchemaURIResolverResult>
-      result ( new TestSchemaURIResolverResult () );
-    String request = aURI.getStringValue ();
-    std::map <String, String >::iterator it = uri_map.find ( request );
-    if ( it != uri_map.end () ) {
-      const String  target = uri_map [ request ];
-      Zorba * zorba = Zorba::getInstance ( 0 );
-      ItemFactory * factory = zorba -> getItemFactory ();
-      Item item = factory -> createAnyURI ( target );
-      result -> theSchema = item;
-      std::cout << "Resolved schema " << aURI.getStringValue () << " -> " << result->theSchema.getStringValue () << std::endl;
-    } else {
-      result -> setError ( URIResolverResult::UR_XQST0059 );
-      std::stringstream lErrorStream;
-      lErrorStream << "Schema not found " << aURI.getStringValue();
-      std::cout << "Schema not found " << aURI.getStringValue() << std::endl;
-      result->setErrorDescription(lErrorStream.str());
-    }
-
-    return std::auto_ptr<SchemaURIResolverResult> ( result );
+TestSchemaURIResolver::resolve (
+    const Item & aURI,
+    const std::vector <Item> & aLocationHint,
+    StaticContext * aStaticContext )
+{
+  if ( uri_map.empty () ) {
+    initialize ();
   }
+  std::auto_ptr<TestSchemaURIResolverResult>result(new TestSchemaURIResolverResult());
+  String request = aURI.getStringValue ();
+  std::map <String, String >::iterator it = uri_map.find ( request );
+  if ( it != uri_map.end () ) {
+    const String  target = uri_map [ request ];
+    Zorba * zorba = Zorba::getInstance ( 0 );
+    ItemFactory * factory = zorba -> getItemFactory ();
+    Item item = factory -> createAnyURI ( target );
+    result -> theSchema = item;
+
+    if (theVerbose)
+      std::cout << "Resolved schema " << aURI.getStringValue () << " -> " 
+                << result->theSchema.getStringValue () << std::endl;
+  } else {
+    result -> setError ( URIResolverResult::UR_XQST0059 );
+    std::stringstream lErrorStream;
+    lErrorStream << "Schema not found " << aURI.getStringValue();
+    std::cout << "Schema not found " << aURI.getStringValue() << std::endl;
+    result->setErrorDescription(lErrorStream.str());
+  }
+  
+  return std::auto_ptr<SchemaURIResolverResult> ( result );
+}
+
 
 std::istream *
-zorba::TestModuleURIResolverResult::getModule () const
+TestModuleURIResolverResult::getModule () const
 {
   return theModule;
 }
 
-zorba::TestModuleURIResolver::TestModuleURIResolver (const char * file, const std::string &test_) 
-  : map_file (file), theTest (test_)
-{}
 
-void zorba::TestModuleURIResolver::initialize ()
+TestModuleURIResolver::TestModuleURIResolver(
+    const char* file,
+    const std::string& test,
+    bool verbose) 
+  :
+  map_file (file),
+  theTest (test),
+  theVerbose(verbose)
 {
-  std::string::size_type pos = theTest.find_first_of ('/');
-  if (pos != std::string::npos && theTest.substr (0, pos) == "w3c_testsuite")
-    pos = theTest.find_first_of ('/', pos + 1);
-  else {
-    return;
+}
+
+
+TestModuleURIResolver::TestModuleURIResolver(
+    const char* file,
+    bool verbose) 
+  :
+  map_file (file),
+  theVerbose(verbose)
+{
+  initialize();
+}
+
+
+TestModuleURIResolver::~TestModuleURIResolver ()
+{
+}
+
+
+void TestModuleURIResolver::initialize ()
+{
+  std::string::size_type pos;
+  std::string pfx;
+
+  if (theTest.empty())
+  {
+    pfx = "w3c_testsuite/XQuery/";
   }
-  std::string pfx = theTest.substr (0, pos) + "/";
+  else
+  {
+    pos = theTest.find_first_of ('/');
+    if (pos != std::string::npos && theTest.substr (0, pos) == "w3c_testsuite")
+      pos = theTest.find_first_of ('/', pos + 1);
+    else {
+      return;
+    }
+    pfx = theTest.substr (0, pos) + "/";
+  }
 
   std::string path ( map_file );
   std::string::size_type slash = path.find_last_of ( '/' );
@@ -127,11 +177,16 @@ void zorba::TestModuleURIResolver::initialize ()
   std::string url ( "file://" );
   std::ifstream urifile ( map_file.c_str() );
   std::string uris;
-  while (std::getline ( urifile, uris )) {
+
+  while (std::getline ( urifile, uris )) 
+  {
     uris = pfx + uris;
     pos = uris.find_first_of (':');
     assert (pos != std::string::npos);
-    if (uris.substr (0, pos) != theTest) continue;
+
+    if (uris.substr (0, pos) != theTest)
+      continue;
+
     uris = uris.substr (pos + 1);
     std::string::size_type eq = uris.find ('=');
     String uri (uris.substr (0, eq));
@@ -145,12 +200,9 @@ void zorba::TestModuleURIResolver::initialize ()
   urifile.close();
 }
 
-zorba::TestModuleURIResolver::~TestModuleURIResolver ()
-{}
 
 std::auto_ptr < ModuleURIResolverResult >
-zorba::TestModuleURIResolver::
-resolve ( const Item & aURI, StaticContext* aStaticContext )
+TestModuleURIResolver::resolve ( const Item & aURI, StaticContext* aStaticContext )
 {
   if ( uri_map.empty () ) {
     initialize ();
@@ -163,7 +215,11 @@ resolve ( const Item & aURI, StaticContext* aStaticContext )
   if ( it != uri_map.end () ) {
     const String target = uri_map [ request ];
     const char * file = target.c_str();
-    std::cout << "Resolved module " << aURI.getStringValue() << " -> " << file << std::endl;
+
+    if (theVerbose)
+      std::cout << "Resolved module " << aURI.getStringValue() << " -> " 
+                << file << std::endl;
+
     lResult -> theModule = new std::ifstream ( file );
     lResult -> setError ( URIResolverResult::UR_NOERROR );
   } else {
@@ -176,17 +232,27 @@ resolve ( const Item & aURI, StaticContext* aStaticContext )
   return std::auto_ptr<ModuleURIResolverResult>(lResult.release());
 }
 
+
 // Collection Resolver
 Collection_t
-zorba::TestCollectionURIResolverResult::getCollection () const
+TestCollectionURIResolverResult::getCollection () const
 {
   return theCollection;
 }
 
-zorba::TestCollectionURIResolver::TestCollectionURIResolver ( const char * file, const std::string& rbkt_src_dir ) :
+
+TestCollectionURIResolver::TestCollectionURIResolver ( const char * file, const std::string& rbkt_src_dir ) 
+  :
   map_file ( file ),
   rbkt_src ( rbkt_src_dir )
-{}
+{
+}
+
+
+TestCollectionURIResolver::~TestCollectionURIResolver ()
+{
+}
+
 
 void
 std_string_tokenize(const std::string& aStr, const std::string& aDelims, std::vector<std::string>& aTokens, const std::string& rbkt_src)
@@ -205,7 +271,7 @@ std_string_tokenize(const std::string& aStr, const std::string& aDelims, std::ve
 }
 
 
-void zorba::TestCollectionURIResolver::trim(std::string& str)
+void TestCollectionURIResolver::trim(std::string& str)
 {
   std::string::size_type pos = str.find_last_not_of(' ');
   if(pos != std::string::npos) {
@@ -216,7 +282,7 @@ void zorba::TestCollectionURIResolver::trim(std::string& str)
   else str.erase(str.begin(), str.end());
 }
 
-void zorba::TestCollectionURIResolver::initialize ()
+void TestCollectionURIResolver::initialize ()
 {
   std::ifstream urifile ( map_file.c_str() );
   if ( urifile.bad() ) return;
@@ -239,11 +305,9 @@ void zorba::TestCollectionURIResolver::initialize ()
   }
 }
 
-zorba::TestCollectionURIResolver::~TestCollectionURIResolver ()
-{}
 
 std::auto_ptr < CollectionURIResolverResult >
-zorba::TestCollectionURIResolver::
+TestCollectionURIResolver::
 resolve ( const Item & aURI, StaticContext* aStaticContext, XmlDataManager* aXmlDataManager )
 {
   if ( uri_map.empty () ) {
@@ -279,3 +343,5 @@ resolve ( const Item & aURI, StaticContext* aStaticContext, XmlDataManager* aXml
   return std::auto_ptr<CollectionURIResolverResult>(lResult.release());
 }
 
+
+}
