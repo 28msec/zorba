@@ -50,73 +50,78 @@ class SchemaLocationEntityResolver
 class Schema
 {
 public:
-    static const char* XSD_NAMESPACE;
+  static const char* XSD_NAMESPACE;
 
-    /* before first use init must be called */
-    static void initialize();
-    /* before finishing up terminate must be called */
-    static void terminate();
+  /* before first use init must be called */
+  static void initialize();
+  /* before finishing up terminate must be called */
+  static void terminate();
+  
+  store::Item_t parseAtomicValue(xqtref_t type, xqp_string textValue);    
 
-    store::Item_t parseAtomicValue(xqtref_t type, xqp_string textValue);    
+  Schema();
 
-    Schema();
-    virtual ~Schema();
+  virtual ~Schema();
 
-    void registerXSD(const char* xsdFileName, std::string& loaction, const QueryLoc& loc);
-    void printXSDInfo(bool excludeBuiltIn = true);
+  void registerXSD(const char* xsdFileName, std::string& loaction, const QueryLoc& loc);
 
-    // user defined simple types, i.e. Atomic, List or Union Types
-    bool parseUserSimpleTypes(const xqp_string textValue, const xqtref_t& aTargetType,
-        std::vector<store::Item_t> &resultList);    
+  void printXSDInfo(bool excludeBuiltIn = true);
 
-    // user defined atomic types
-    bool parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aTargetType, 
-        store::Item_t &result);    
+  // user defined simple types, i.e. Atomic, List or Union Types
+  bool parseUserSimpleTypes(const xqp_string textValue, const xqtref_t& aTargetType,
+                            std::vector<store::Item_t> &resultList);    
 
-    // user defined list types
-    bool parseUserListTypes(const xqp_string textValue, const xqtref_t& aTargetType, 
-        std::vector<store::Item_t> &resultList);    
+  // user defined atomic types
+  bool parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aTargetType, 
+                            store::Item_t &result);    
 
-    // user defined union types
-    bool parseUserUnionTypes(const xqp_string textValue, const xqtref_t& aTargetType, 
-        std::vector<store::Item_t> &resultList);    
+  // user defined list types
+  bool parseUserListTypes(const xqp_string textValue, const xqtref_t& aTargetType, 
+                          std::vector<store::Item_t> &resultList);    
 
-    // user defined simple types, i.e. Atomic, List or Union Types
-    bool isCastableUserSimpleTypes(const xqp_string textValue, const xqtref_t& aTargetType);    
+  // user defined union types
+  bool parseUserUnionTypes(const xqp_string textValue, const xqtref_t& aTargetType, 
+                           std::vector<store::Item_t> &resultList);    
+  
+  // user defined simple types, i.e. Atomic, List or Union Types
+  bool isCastableUserSimpleTypes(const xqp_string textValue, const xqtref_t& aTargetType);
 
-    // user defined atomic types
-    bool isCastableUserAtomicTypes(const xqp_string textValue, const xqtref_t& aTargetType);    
+  // user defined atomic types
+  bool isCastableUserAtomicTypes(const xqp_string textValue, const xqtref_t& aTargetType);
 
-    // user defined list types
-    bool isCastableUserListTypes(const xqp_string textValue, const xqtref_t& aTargetType);    
+  // user defined list types
+  bool isCastableUserListTypes(const xqp_string textValue, const xqtref_t& aTargetType);
 
-    // user defined union types
-    bool isCastableUserUnionTypes(const xqp_string textValue, const xqtref_t& aTargetType);    
+  // user defined union types
+  bool isCastableUserUnionTypes(const xqp_string textValue, const xqtref_t& aTargetType);
 
-    /*
-    * Checks if the Type with the qname exists in the schema as a user-defined type
-    * if it does than return an XQType for it, if not return NULL
-    */
-    xqtref_t createIfExists(
+  /*
+   * Checks if the Type with the qname exists in the schema as a user-defined type
+   * if it does than return an XQType for it, if not return NULL
+   */
+  xqtref_t createIfExists(
         const TypeManager *manager,
         const store::Item* qname,
         TypeConstants::quantifier_t quantifier);
 
 #ifndef ZORBA_NO_XMLSCHEMA
-    XERCES_CPP_NAMESPACE::XMLGrammarPool* getGrammarPool();
+  XERCES_CPP_NAMESPACE::XMLGrammarPool* getGrammarPool();
 
 private:
-    xqtref_t getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XSTypeDefinition* xsTypeDef);
-    void addTypeToCache(xqtref_t itemXQType);
+  xqtref_t getXQTypeForXSTypeDefinition(
+        const TypeManager *typeManager,
+        XSTypeDefinition* xsTypeDef);
+
+  void addTypeToCache(xqtref_t itemXQType);
 #endif //ZORBA_NO_XMLSCHEMA
 
 
 private:
-    static bool _isInitialized;
+  static bool _isInitialized;
 
 #ifndef ZORBA_NO_XMLSCHEMA
-    XERCES_CPP_NAMESPACE::XMLGrammarPool *_grammarPool;
-    hashmap<xqtref_t> *_udTypesCache;
+  XERCES_CPP_NAMESPACE::XMLGrammarPool *_grammarPool;
+  hashmap<xqtref_t> *_udTypesCache;
 #endif //ZORBA_NO_XMLSCHEMA
 };
 
