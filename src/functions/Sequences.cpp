@@ -358,7 +358,10 @@ PlanIter_t fn_exactly_one_noraise::codegen (const QueryLoc& loc, std::vector<Pla
 }
 
 xqtref_t fn_exactly_one_noraise::return_type (const std::vector<xqtref_t> &arg_types) const {
-  return TypeOps::prime_type(*arg_types[0]);
+  if (raise_err)
+    return TypeOps::prime_type(*arg_types[0]);
+  else
+    return function::return_type (arg_types);
 }
 
 
