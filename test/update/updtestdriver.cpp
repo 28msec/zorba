@@ -112,99 +112,104 @@ _tmain(int argc, _TCHAR* argv[])
 main(int argc, char** argv)
 #endif
 {
-  zorba::Properties::load (NULL, NULL);
-
-  Specification lSpec;
-  int flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;
-
   if (argc != 2)
   {
     std::cout << "\nusage:   testdriver [testfile]" << std::endl;
     return 1;
   }
 
-  std::string lSpecFileString  = zorba::UPDATE_SRC_DIR +"/Queries/" + argv[1];
-  zorba::file lSpecFile (lSpecFileString, flags);
-  zorba::filesystem_path lSpecPath (lSpecFile.branch_path());
-  
-  std::string lSpecWithoutSuffix = std::string(argv[1]).substr( 0, std::string(argv[1]).size()-5 );
-  std::cout << "test " << lSpecWithoutSuffix << std::endl;
-  
-  zorba::file lResultFile (zorba::UPDATE_BINARY_DIR +"/QueryResults/" 
-                           + lSpecWithoutSuffix + ".res", flags);
-  
-  zorba::file lRefFile (zorba::UPDATE_SRC_DIR +"/ExpectedTestResults/" 
-                        + lSpecWithoutSuffix +".xml.res", flags);
-  zorba::filesystem_path lRefPath (lRefFile.branch_path());
+  zorba::Properties::load (NULL, NULL);
 
-  if ( (! lSpecFile.exists ()) || lSpecFile.is_directory () ) {
+  zorba::Zorba* engine = zorba::Zorba::getInstance(zorba::simplestore::SimpleStoreManager::getStore());
+
+  Specification lSpec;
+  int flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;
+
+  std::string srcDir = zorba::UPDATE_SRC_DIR;
+  std::string binDir = zorba::UPDATE_BINARY_DIR;
+
+  std::string argString = std::string(argv[1]);
+  std::string lSpecNoSuffix = argString.substr(0, argString.size()-5);
+
+  std::string lSpecFileString  = srcDir + "/Queries/" + argv[1];
+  zorba::file lSpecFile(lSpecFileString, flags);
+  zorba::filesystem_path lSpecPath(lSpecFile.branch_path());
+
+  if ( (! lSpecFile.exists ()) || lSpecFile.is_directory () ) 
+  {
     std::cout << "\n spec file " << lSpecFile.get_path() 
               << " does not exist or is not a file" << std::endl;
     return 2;
   }
 
-  if ( ! lResultFile.exists () )
-    zorba::file (lResultFile.branch_path ()).deep_mkdir ();
+  std::cout << "test " << lSpecNoSuffix << std::endl;
+  
+  std::string lResultFileString = binDir+"/QueryResults/"+lSpecNoSuffix+".res";
+  zorba::file lResultFile(lResultFileString, flags);
+  if (!lResultFile.exists())
+    zorba::file(lResultFile.branch_path()).deep_mkdir();
+
+  std::string lRefFileString = srcDir+"/ExpectedTestResults/"+lSpecNoSuffix+".xml.res";
+  zorba::file lRefFile(lRefFileString, flags);
+  zorba::filesystem_path lRefPath(lRefFile.branch_path());
 
   // read the xargs and errors if the spec file exists
   lSpec.parseFile(lSpecFile.get_path()); 
 
-  zorba::Zorba* engine = zorba::Zorba::getInstance(zorba::simplestore::SimpleStoreManager::getStore());
-
-  std::vector<zorba::XQuery_t> lQueries;
   Zorba_SerializerOptions lSerOptions;
   lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
 
+  int lRun = 0;
+  std::vector<State*>::const_iterator lIter = lSpec.statesBegin();
+  std::vector<State*>::const_iterator lEnd = lSpec.statesEnd();
 
-  // create and compile the query
+  std::vector<zorba::XQuery_t> lQueries;
+
+  for(; lIter != lEnd; ++lIter)
   {
-    std::vector<State*>::const_iterator lIter = lSpec.statesBegin();
-    std::vector<State*>::const_iterator lEnd = lSpec.statesEnd();
+    State* lState = *lIter;
 
-    int lRun = 0;
+    zorba::filesystem_path lQueryName((*lIter)->theName + ".xq",
+                                      zorba::file::CONVERT_SLASHES);
+    zorba::filesystem_path lQueryFile(lSpecPath, lQueryName);
 
-    for(; lIter != lEnd; ++lIter)
+    std::cout << std::endl << "Query (Run " << ++lRun << "):" << std::endl;
+    std::cout << "Query file " << lQueryFile << ": " << std::endl;
+    zorba::printFile(std::cout, lQueryFile);
+    std::cout << std::endl;
+    std::ifstream lQueryStream(lQueryFile.c_str());
+
+    try 
     {
-      State* lState = *lIter;
+      zorba::StaticContext_t lContext = engine->createStaticContext();
+      std::string path = lQueryFile.get_path();
 
-      zorba::filesystem_path lQueryFile
-        (lSpecPath, zorba::filesystem_path ((*lIter)->theName + ".xq",
-                                            zorba::file::CONVERT_SLASHES));
-      std::cout << std::endl << "Query (Run " << ++lRun << "):" << std::endl;
-      std::cout << "Query file " << lQueryFile << ": " << std::endl;
-      zorba::printFile(std::cout, lQueryFile);
-      std::cout << std::endl;
-      std::ifstream lQueryStream(lQueryFile.c_str());
-
-      try 
+      std::auto_ptr<zorba::TestSchemaURIResolver> resolver;
+      if ( path.find ( "w3c_update_testsuite" ) != std::string::npos ) 
       {
-        zorba::StaticContext_t lContext = engine->createStaticContext();
-        std::string path = lQueryFile.get_path();
-
-        std::auto_ptr<zorba::TestSchemaURIResolver>      resolver;
-        if ( path.find ( "w3c_update_testsuite" ) != std::string::npos ) 
-        {
-          std::string uri_map_file = zorba::UPDATE_SRC_DIR + "/Queries/w3c_update_testsuite/TestSources/uri.txt";
-          resolver.reset(new zorba::TestSchemaURIResolver ( uri_map_file.c_str() ));
-          lContext->setSchemaURIResolver ( resolver.get() );
-        }
-
-        zorba::XQuery_t lQuery = engine->createQuery();
-        lQuery->setFileName (lQueryFile.c_str());
-        lQuery->compile(lQueryStream, lContext, getCompilerHints());
-        lQueries.push_back(lQuery);
+        std::string uri_map_file = srcDir + "/Queries/w3c_update_testsuite/TestSources/uri.txt";
+        resolver.reset(new zorba::TestSchemaURIResolver ( uri_map_file.c_str() ));
+        lContext->setSchemaURIResolver ( resolver.get() );
       }
-      catch (zorba::ZorbaException &e) 
-      {
-        if (isErrorExpected(e, lState)) {
-          std::cout << "Expected compiler error:\n" << e << std::endl;
-          return 0;
-        } else {
-          std::cout << "Unexpected compiler error:\n" << e << std::endl;
-          return 3;
-        }
+      
+      zorba::XQuery_t lQuery = engine->createQuery();
+      lQuery->setFileName (lQueryFile.c_str());
+      lQuery->compile(lQueryStream, lContext, getCompilerHints());
+      lQueries.push_back(lQuery);
+    }
+    catch (zorba::ZorbaException &e) 
+    {
+      if (isErrorExpected(e, lState)) {
+        std::cout << "Expected compiler error:\n" << e << std::endl;
+        return 0;
+      } else {
+        std::cout << "Unexpected compiler error:\n" << e << std::endl;
+        return 3;
       }
-
+    }
+    
+    try
+    {
       zorba::DynamicContext* lDynCtx = lQueries.back()->getDynamicContext();
       if (lState->hasDate) 
       {
@@ -214,105 +219,115 @@ main(int argc, char** argv)
         }
         lDynCtx->setCurrentDateTime(engine->getItemFactory()->createDateTime(lDateTime));
       }
-
+      
       std::vector<Variable*>::const_iterator lVarIter = (*lIter)->varsBegin();
       std::vector<Variable*>::const_iterator lVarEnd = (*lIter)->varsEnd();
-
+    
       for(; lVarIter != lVarEnd; ++lVarIter) 
       {
         Variable* lVar = *lVarIter;  
         set_var(lVar->theInline, lVar->theName, lVar->theValue, lDynCtx);
       }
-
-      try 
+    }
+    catch (zorba::ZorbaException &e) 
+    {
+      if (isErrorExpected(e, lState)) {
+        std::cout << "Expected execution error:\n" << e << std::endl;
+        continue;
+      } else {
+        std::cout << "Unexpected execution error:\n" << e << std::endl;
+        return 6;
+      }
+    }
+    
+    try 
+    {
+      if (lQueries.back()->isUpdateQuery()) 
       {
-        if (lQueries.back()->isUpdateQuery()) 
-        {
-          zorba::XQuery_t query = lQueries.back();
-          query->applyUpdates();
+        zorba::XQuery_t query = lQueries.back();
+        query->applyUpdates();
           
-          std::cout << "Updating Query -> no Result" << std::endl;
-        }
-        else 
+        std::cout << "Updating Query -> no Result" << std::endl;
+      }
+      else 
+      {
+        if ( lResultFile.exists ()) { lResultFile.remove (); }
+        std::ofstream lResFileStream(lResultFile.get_path().c_str());
+        lQueries.back()->serialize(lResFileStream, &lSerOptions);
+        lResFileStream.flush();
+        std::cout << "Result " << lResultFile.get_path() << ": " << std::endl;
+        zorba::printFile(std::cout, lResultFile.get_path());
+        
+        if (lState->hasCompare) 
         {
-          if ( lResultFile.exists ()) { lResultFile.remove (); }
-          std::ofstream lResFileStream(lResultFile.get_path().c_str());
-          lQueries.back()->serialize(lResFileStream, &lSerOptions);
-          lResFileStream.flush();
-          std::cout << "Result " << lResultFile.get_path() << ": " << std::endl;
-          zorba::printFile(std::cout, lResultFile.get_path());
-
-          if (lState->hasCompare) 
+          bool lRes = false;
+          bool anyMatch = false;
+          ulong numRefs = lState->theCompares.size();
+          for (ulong i = 0; i < numRefs && !lRes; i++) 
           {
-            bool lRes = false;
-            bool anyMatch = false;
-            ulong numRefs = lState->theCompares.size();
-            for (ulong i = 0; i < numRefs && !lRes; i++) 
-            {
-              std::string lRefFileTmpString = lRefPath;
-              std::cout << std::endl;
-              // the ref file is the same for xqueryx and xquery tests
-              // hence, we remove the string xqueryx or xquery from the path
-              size_t lPosOfW3C = 0;
-              if ( (lPosOfW3C = lRefPath.get_path().find("w3c_update_testsuite")) != std::string::npos) {
-                if (lRefPath.get_path().find("XQueryX", lPosOfW3C) != std::string::npos)
-                  lRefFileTmpString = lRefFileTmpString.erase(lPosOfW3C + 21, 8);
-                else
-                  lRefFileTmpString = lRefFileTmpString.erase(lPosOfW3C + 21, 7);
+            std::string lRefFileTmpString = lRefPath;
+            std::cout << std::endl;
+            // the ref file is the same for xqueryx and xquery tests
+            // hence, we remove the string xqueryx or xquery from the path
+            size_t lPosOfW3C = 0;
+            if ( (lPosOfW3C = lRefPath.get_path().find("w3c_update_testsuite")) != std::string::npos) {
+              if (lRefPath.get_path().find("XQueryX", lPosOfW3C) != std::string::npos)
+                lRefFileTmpString = lRefFileTmpString.erase(lPosOfW3C + 21, 8);
+              else
+                lRefFileTmpString = lRefFileTmpString.erase(lPosOfW3C + 21, 7);
+            }
+            zorba::filesystem_path lRefFile
+              (lRefFileTmpString, zorba::filesystem_path (lState->theCompares[i],
+                                                          zorba::file::CONVERT_SLASHES));
+            std::cout << "Ref " << lRefFile.get_path()  << std::endl;
+            int lLine, lCol, lPos;
+            std::string lRefLine, lResultLine;
+            lRes = zorba::fileEquals(lRefFile.get_path().c_str(),
+                                     lResultFile.get_path().c_str(),
+                                     lLine, lCol, lPos, lRefLine, lResultLine);
+            
+            // if the simple comparison doesn't work, we do the full-fledged xml canonical comparison
+            if (lRes) {
+              std::cout << "updtestdriver: success (non-canonical result matches)" << std::endl;
+              anyMatch = true;
+              break;
+            } else {
+              int lCanonicalRes = zorba::canonicalizeAndCompare(State::compareTypeStr(lState->theCompareTypes[i]),
+                                                                lRefFile.get_path().c_str(),
+                                                                lResultFile.get_path().c_str(),
+                                                                zorba::UPDATE_BINARY_DIR.c_str());
+              if (lCanonicalRes == 0) {
+                anyMatch = true;
+                break;
               }
-              zorba::filesystem_path lRefFile
-                (lRefFileTmpString, zorba::filesystem_path (lState->theCompares[i],
-                                                   zorba::file::CONVERT_SLASHES));
-              std::cout << "Ref " << lRefFile.get_path()  << std::endl;
-              int lLine, lCol, lPos;
-              std::string lRefLine, lResultLine;
-              lRes = zorba::fileEquals(lRefFile.get_path().c_str(),
-                                       lResultFile.get_path().c_str(),
-                                       lLine, lCol, lPos, lRefLine, lResultLine);
-
-               // if the simple comparison doesn't work, we do the full-fledged xml canonical comparison
-               if (lRes) {
-                 std::cout << "updtestdriver: success (non-canonical result matches)" << std::endl;
-                 anyMatch = true;
-                 break;
-               } else {
-                 int lCanonicalRes = zorba::canonicalizeAndCompare(State::compareTypeStr(lState->theCompareTypes[i]),
-                                                                   lRefFile.get_path().c_str(),
-                                                                   lResultFile.get_path().c_str(),
-                                                                   zorba::UPDATE_BINARY_DIR.c_str());
-                 if (lCanonicalRes == 0) {
-                   anyMatch = true;
-                   break;
-                 }
-               }
-             } // multiple compare possible
-
-             if (!anyMatch) {
-               return 4;
-             } 
-
-          } else if (lState->hasErrors) {
-            std::cout << "Query must throw an error!" << std::endl;
-            return 5; 
-          }
-          else {
-            std::cout << "Query returns result but no expected result defined!" << std::endl;
-          }
+            }
+          } // multiple compare possible
+          
+          if (!anyMatch) {
+            return 4;
+          } 
+          
+        } else if (lState->hasErrors) {
+          std::cout << "Query must throw an error!" << std::endl;
+          return 5; 
         }
-      } catch (zorba::ZorbaException &e) {
-        if (isErrorExpected(e, lState)) {
-          std::cout << "Expected execution error:\n" << e << std::endl;
-          continue;
-        } else {
-          std::cout << "Unexpected execution error:\n" << e << std::endl;
-          return 6;
+        else {
+          std::cout << "Query returns result but no expected result defined!" << std::endl;
         }
       }
     }
-
-
+    catch (zorba::ZorbaException &e) 
+    {
+      if (isErrorExpected(e, lState)) {
+        std::cout << "Expected execution error:\n" << e << std::endl;
+        continue;
+      } else {
+        std::cout << "Unexpected execution error:\n" << e << std::endl;
+        return 6;
+      }
+    }
   }
-
+  
   std::cout << "updtestdriver: success" << std::endl;
   return 0;
 }
