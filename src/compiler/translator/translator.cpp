@@ -3236,6 +3236,9 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
   case ParseConstants::fn_sequential:
   case ParseConstants::fn_read:
   {
+    if (body->is_sequential () && lFuncType != ParseConstants::fn_sequential) {
+      ZORBA_ERROR_LOC_DESC (XPST0003, loc, "Only a sequential function can have a body that is sequential expression");
+    }
     if (lFuncType == ParseConstants::fn_read) {
       if (body->is_updating())
         ZORBA_ERROR_LOC(XUST0001, loc);
