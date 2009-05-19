@@ -94,17 +94,38 @@ ValidateIterator::ValidateIterator(
 
 bool ValidateIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
+  store::Item_t item;
+  store::Item_t tmp;
+
   PlanIteratorState* aState;
   DEFAULT_STACK_INIT(PlanIteratorState, aState, planState);
 
-  STACK_PUSH(ValidateIterator::effectiveValidationValue(result,
-                                                        this->loc,
-                                                        planState,
-                                                        theChild,
-                                                        _typemgr.getp(),
-                                                        _validationMode,
-                                                        _typeName),
-             aState);
+  if (consumeNext(item, theChild, planState))
+  {
+    if (consumeNext(tmp, theChild, planState))
+    {
+      ZORBA_ERROR_LOC_DESC(XQTY0030, loc, 
+                           "Argument in validate expression not a single element node.");
+      result = NULL;
+      STACK_PUSH(false, aState);
+    }
+    else
+    {
+      STACK_PUSH(effectiveValidationValue(result,
+                                          item,
+                                          _typeName,
+                                          _typemgr.getp(),
+                                          _validationMode,
+                                          planState.theRuntimeCB->theStaticContext,
+                                          this->loc),
+                 aState);
+    }
+  }
+  else
+  {
+    ZORBA_ERROR_LOC_DESC( XQTY0030, loc, "Wrong arguments in validate expression.");
+    STACK_PUSH(false, aState);
+  }
 
   STACK_END (aState);
 }
@@ -112,417 +133,456 @@ bool ValidateIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
 bool ValidateIterator::effectiveValidationValue (
     store::Item_t& result,
-    const QueryLoc& loc, 
-    PlanState& planState,
-    const PlanIterator* iter,
-    TypeManager *typeManager,
+    const store::Item_t& sourceNode,
+    const store::Item_t& typeName,
+    TypeManager* typeManager,
     ParseConstants::validation_mode_t validationMode,
-    store::Item_t typeName)
+    static_context* sctx,
+    const QueryLoc& loc) 
 {
-        //cout << "Starting Validation   typeManager: " << typeManager << endl; cout.flush();
+  //cout << "Starting Validation   typeManager: " << typeManager << endl; cout.flush();
         
-        bool returnVal = false;
-        store::Item_t item;
-        xqtref_t type;
+  xqtref_t type;
 
-        bool valid = consumeNext(item, iter, planState);
+  if (!sourceNode->isNode())
+  {
+    ZORBA_ERROR_LOC_DESC(XQTY0030, loc,
+                         "Argument in validate expression not a document node.");
+    result = NULL;
+    return false;
+  }
 
-        if ( !valid )
-        {
-             ZORBA_ERROR_LOC_DESC( XQTY0030, loc, "Wrong arguments in validate expression.");
-        }
-        else
-        {
-            DelegatingTypeManager* delegatingTypeManager = 
-                static_cast<DelegatingTypeManager*>(typeManager);
+  DelegatingTypeManager* delegatingTypeManager = 
+  static_cast<DelegatingTypeManager*>(typeManager);
 
-            Schema* schema = delegatingTypeManager->getSchema();
-            if ( !schema )
-            {
-                // no schema available - items remain the same
-                result = item;
-                return true;
-            }
-            
-            if ( item->isNode() )
-            {
-    
+  Schema* schema = delegatingTypeManager->getSchema();
+  if ( !schema )
+  {
+    // no schema available - items remain the same
+    result = sourceNode;
+    return true;
+  }
+  
 #ifndef ZORBA_NO_XMLSCHEMA
-                xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->
-                    final_baseuri().getStore();
-    
+  xqpStringStore_t baseUri = sctx->final_baseuri().getStore();
                 
-                EventSchemaValidator schemaValidator = EventSchemaValidator(typeManager,
-                    schema->getGrammarPool(), validationMode == ParseConstants::val_lax, loc);  // TODO: removed isLax
-                
+  EventSchemaValidator schemaValidator =
+  EventSchemaValidator(typeManager,
+                       schema->getGrammarPool(),
+                       validationMode == ParseConstants::val_lax,
+                       loc);  // TODO: removed isLax
     
-                switch ( item->getNodeKind() )
-                {
-                case store::StoreConsts::documentNode:
-                {
-                    //cout << "Validate document" << "\n"; cout.flush();
+  switch (sourceNode->getNodeKind())
+  {
+  case store::StoreConsts::documentNode:
+  {
+    //cout << "Validate document" << "\n"; cout.flush();
                     
-                    //don't allow more than one child element
-                    store::Iterator_t child_it;
-                    child_it = item->getChildren();
-                    store::Item_t child;
-                    int   nr_child_elements = 0;
-                    while ( child_it->next(child) )
-                    {
-                    if ( child->isNode() &&
-                        ( child->getNodeKind() == store::StoreConsts::elementNode))
-                    { 
-                        if(nr_child_elements)
-                        {
-                        ZORBA_ERROR_LOC_DESC(XQDY0061, loc, 
-                                "Document node has more than one element for validation.");
-                        }
-                        nr_child_elements++;
-                    }
-                    }
-    
-                    if ( validationMode==ParseConstants::val_typename )
-                    {
-                        //cout << "Validate type: " << typeName->getLocalName()->c_str() << " @ " << typeName->getNamespace()->c_str() << "\n"; cout.flush();
-                        schemaValidator.startType(typeName);                
-                    }
-                    else
-                    {
-                        schemaValidator.startDoc();
-                    }
-                        
-                    xqpStringStore_t docBaseUri = item->getBaseURI();
-                    xqpStringStore_t docUri = item->getDocumentURI();
-                    store::Item_t newDoc;
-                    GENV_ITEMFACTORY->createDocumentNode(newDoc, docBaseUri, docUri, true);
-    
-                    processChildren( planState, delegatingTypeManager, schemaValidator, newDoc, item->getChildren());
-    
-                    if ( validationMode==ParseConstants::val_typename )
-                    {
-                        schemaValidator.endType();                
-                        //cout << "End Validate type: " << typeName->getLocalName()->c_str() << " @ " << typeName->getNamespace()->c_str() << "\n"; cout.flush();
-                    }
-                    else
-                    {
-                        schemaValidator.endDoc();
-                    }
-    
-                    //cout << "End Validate doc" << "\n"; cout.flush();
-                    
-                    result = newDoc;
-                    return true;
-                }
-                case store::StoreConsts::elementNode: 
-                {
-                    if ( validationMode==ParseConstants::val_typename )
-                    {
-                        //cout << "Validate type: " << typeName->getLocalName()->c_str() << " @ " << typeName->getNamespace()->c_str() << "\n"; cout.flush();
-                        schemaValidator.startType(typeName);                
-                    }
-                    else
-                    {
-                        //cout << "Validate element" << "\n"; cout.flush();        
-                        schemaValidator.startDoc();                    
-                    }
-                    
-                    store::Item_t newElem = processElement(planState, delegatingTypeManager, schemaValidator, NULL, item);
-    
-                    if ( validationMode==ParseConstants::val_typename )
-                    {
-                        schemaValidator.endType();                
-                        //cout << "End Validate type: " << typeName->getLocalName()->c_str() << " @ " << typeName->getNamespace()->c_str() << "\n"; cout.flush();
-                    }
-                    else
-                    {
-                        schemaValidator.endDoc();
-                        //cout << "End Validate elem" << "\n"; cout.flush();
-                    }
-                        
-                    // check if other values are in the iterator
-                    valid = consumeNext(item, iter, planState);
-                    if ( valid )
-                    {
-                        ZORBA_ERROR_LOC_DESC( XQTY0030, loc, 
-                            "Argument in validate expression not a single element node.");
-                        result = NULL;
-                        return false;
-                    }
-    
-                    result = newElem;
-                    return true;
-                }
-                default:
-                    ZORBA_ERROR_LOC_DESC( XQTY0030, loc, 
-                        "Argument in validate expression not a document or element node.");
-                    returnVal = false;
-                    result = NULL;
-                }
-#endif // ZORBA_NO_XMLSCHEMA
-            }
-            else
-            {
-                ZORBA_ERROR_LOC_DESC( XQTY0030, loc, "Argument in validate expression not a document node.");
-                returnVal = false;
-                result = NULL;
-            }
+    //don't allow more than one child element
+    store::Iterator_t child_it;
+    child_it = sourceNode->getChildren();
+    store::Item_t child;
+    int nr_child_elements = 0;
+    while ( child_it->next(child) )
+    {
+      if ( child->isNode() &&
+           child->getNodeKind() == store::StoreConsts::elementNode)
+      { 
+        if (nr_child_elements)
+        {
+          ZORBA_ERROR_LOC_DESC(XQDY0061, loc, 
+                               "Document node has more than one element for validation.");
         }
-        return returnVal;
+        nr_child_elements++;
+      }
+    }
+    
+    if ( validationMode == ParseConstants::val_typename )
+    {
+      //cout << "Validate type: " << typeName->getLocalName()->c_str() 
+      //     << " @ " << typeName->getNamespace()->c_str() << "\n"; cout.flush();
+      schemaValidator.startType(typeName);                
+    }
+    else
+    {
+      schemaValidator.startDoc();
+    }
+    
+    xqpStringStore_t docBaseUri = sourceNode->getBaseURI();
+    xqpStringStore_t docUri = sourceNode->getDocumentURI();
+    store::Item_t newDoc;
+    GENV_ITEMFACTORY->createDocumentNode(newDoc, docBaseUri, docUri, true);
+    
+    processChildren(sctx,
+                    delegatingTypeManager,
+                    schemaValidator,
+                    newDoc,
+                    sourceNode->getChildren());
+    
+    if ( validationMode == ParseConstants::val_typename )
+    {
+      schemaValidator.endType();                
+      //cout << "End Validate type: " << typeName->getLocalName()->c_str()
+      //     << " @ " << typeName->getNamespace()->c_str() << "\n";
+      //cout.flush();
+    }
+    else
+    {
+      schemaValidator.endDoc();
+    }
+    
+    //cout << "End Validate doc" << "\n"; cout.flush();
+    
+    result = newDoc;
+    return true;
+  }
+  case store::StoreConsts::elementNode: 
+  {
+    if ( validationMode == ParseConstants::val_typename )
+    {
+      //cout << "Validate type: " << typeName->getLocalName()->c_str() << " @ "
+      //     << typeName->getNamespace()->c_str() << "\n";
+      //cout.flush();
+      schemaValidator.startType(typeName);                
+    }
+    else
+    {
+      //cout << "Validate element" << "\n"; cout.flush();        
+      schemaValidator.startDoc();                    
+    }
+    
+    store::Item_t newElem = processElement(sctx,
+                                           delegatingTypeManager,
+                                           schemaValidator,
+                                           NULL,
+                                           sourceNode);
+    
+    if ( validationMode == ParseConstants::val_typename )
+    {
+      schemaValidator.endType();                
+      //cout << "End Validate type: " << typeName->getLocalName()->c_str()
+      //     << " @ " << typeName->getNamespace()->c_str() << "\n"; cout.flush();
+    }
+    else
+    {
+      schemaValidator.endDoc();
+      //cout << "End Validate elem" << "\n"; cout.flush();
+    }
+    
+    result = newElem;
+    return true;
+  }
+  default:
+  {
+    ZORBA_ERROR_LOC_DESC(XQTY0030, loc, 
+                         "Argument in validate expression not a document or element node.");
+    result = NULL;
+    return false;
+  }
+  }
+#endif // ZORBA_NO_XMLSCHEMA
 }
 
 
 #ifndef ZORBA_NO_XMLSCHEMA
-    store::Item_t ValidateIterator::processElement( PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
-        EventSchemaValidator& schemaValidator, store::Item *parent, const store::Item_t& element)
-    {
-        ZORBA_ASSERT(element->isNode());
-        ZORBA_ASSERT(element->getNodeKind() == store::StoreConsts::elementNode);
+store::Item_t ValidateIterator::processElement( 
+    static_context* sctx,
+    DelegatingTypeManager* delegatingTypeManager, 
+    EventSchemaValidator& schemaValidator,
+    store::Item *parent,
+    const store::Item_t& element)
+{
+  ZORBA_ASSERT(element->isNode());
+  ZORBA_ASSERT(element->getNodeKind() == store::StoreConsts::elementNode);
 
         
-        store::Item_t nodeName = element->getNodeName();
-        xqpStringStore_t baseUri = element->getBaseURI();
+  store::Item_t nodeName = element->getNodeName();
+  xqpStringStore_t baseUri = element->getBaseURI();
 
-        schemaValidator.startElem(nodeName);
+  schemaValidator.startElem(nodeName);
 
 
-        // namespace declarations must go first
-        processNamespaces( schemaValidator, element);
+  // namespace declarations must go first
+  processNamespaces( schemaValidator, element);
 
-        // since the type of an element is determined only after the validator receives all 
-        // of it's attributes, and an attribute node needs it's parent when created 
-        // we need to go through the attributes twice: once for validation and once for creation
-        validateAttributes(schemaValidator, element->getAttributes());
+  // since the type of an element is determined only after the validator receives all 
+  // of it's attributes, and an attribute node needs it's parent when created 
+  // we need to go through the attributes twice: once for validation and once for creation
+  validateAttributes(schemaValidator, element->getAttributes());
         
-        store::Item_t typeName = schemaValidator.getTypeQName();
+  store::Item_t typeName = schemaValidator.getTypeQName();
 
-        store::Item_t newElem;
+  store::Item_t newElem;
 
-        store::NsBindings bindings;
-        element->getNamespaceBindings(bindings);
+  store::NsBindings bindings;
+  element->getNamespaceBindings(bindings);
 
-        store::Item_t elemName = element->getNodeName();
-        GENV_ITEMFACTORY->createElementNode(newElem, parent, -1, elemName,
-                                            typeName, true, false, false, false, 
-                                            bindings, baseUri, false);
+  store::Item_t elemName = element->getNodeName();
+  GENV_ITEMFACTORY->createElementNode(newElem, parent, -1, elemName,
+                                      typeName, true, false, false, false, 
+                                      bindings, baseUri, false);
+  
 
-
-        processAttributes( planState, delegatingTypeManager, schemaValidator, (store::Item *)newElem, 
-            element->getAttributes());
+  processAttributes(sctx,
+                    delegatingTypeManager,
+                    schemaValidator,
+                    (store::Item *)newElem, 
+                    element->getAttributes());
         
-        processChildren( planState, delegatingTypeManager, schemaValidator, (store::Item *)newElem, 
-            element->getChildren());
+  processChildren(sctx,
+                  delegatingTypeManager,
+                  schemaValidator,
+                  (store::Item *)newElem, 
+                  element->getChildren());
 
 
-        schemaValidator.endElem(nodeName);
+  schemaValidator.endElem(nodeName);
 
-        return newElem;
-    }
+  return newElem;
+}
 
-    void ValidateIterator::validateAttributes( EventSchemaValidator& schemaValidator, store::Iterator_t attributes)
-    {
-        store::Item_t attribute;
+
+void ValidateIterator::validateAttributes(
+    EventSchemaValidator& schemaValidator,
+    store::Iterator_t attributes)
+{
+  store::Item_t attribute;
         
-        while ( attributes->next(attribute) )
-        {
-            ZORBA_ASSERT(attribute->isNode());
-            ZORBA_ASSERT(attribute->getNodeKind() == store::StoreConsts::attributeNode);
-
-            //cout << " v    - attr: " << attribute->getNodeName()->getLocalName()->c_str() << "\n"; cout.flush();
+  while ( attributes->next(attribute) )
+  {
+    ZORBA_ASSERT(attribute->isNode());
+    ZORBA_ASSERT(attribute->getNodeKind() == store::StoreConsts::attributeNode);
+            
+    //cout << " v    - attr: " << attribute->getNodeName()->getLocalName()->c_str() << "\n"; cout.flush();
                         
-            store::Item_t attName = attribute->getNodeName();
-            schemaValidator.attr(attName, attribute->getStringValue());
-        }
-    }
+    store::Item_t attName = attribute->getNodeName();
+    schemaValidator.attr(attName, attribute->getStringValue());
+  }
+}
 
-    void ValidateIterator::processAttributes( PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
-        EventSchemaValidator& schemaValidator, store::Item *parent, store::Iterator_t attributes)
-    {
-        std::list<AttributeValidationInfo*>* attList = schemaValidator.getAttributeList();
-        std::list<AttributeValidationInfo*>::iterator curAtt;
+
+void ValidateIterator::processAttributes(
+    static_context* sctx,
+    DelegatingTypeManager* delegatingTypeManager, 
+    EventSchemaValidator& schemaValidator,
+    store::Item *parent,
+    store::Iterator_t attributes)
+{
+  std::list<AttributeValidationInfo*>* attList = schemaValidator.getAttributeList();
+  std::list<AttributeValidationInfo*>::iterator curAtt;
          
-        for( curAtt = attList->begin() ; curAtt != attList->end(); ++curAtt )
-        {
-            AttributeValidationInfo* att = *curAtt;
-            //cout << " v    proccessATT2: " << att->_localName << " T: " << att->_typeName << "\n";
-             
-            store::Item_t attQName;
-            GENV_ITEMFACTORY->createQName( attQName, att->_uri, att->_prefix, att->_localName);
+  for( curAtt = attList->begin() ; curAtt != attList->end(); ++curAtt )
+  {
+    AttributeValidationInfo* att = *curAtt;
+    //cout << " v    proccessATT2: " << att->_localName << " T: " << att->_typeName << "\n";
+    
+    store::Item_t attQName;
+    GENV_ITEMFACTORY->createQName( attQName, att->_uri, att->_prefix, att->_localName);
             
           
-            std::string typePrefix;
-            if ( std::strcmp(Schema::XSD_NAMESPACE, att->_typeURI->c_str() )==0 ) // hack around typeManager bug for comparing QNames
-                typePrefix = "xs";
-            else
-                typePrefix = "";
-            
-            store::Item_t typeQName;
-            GENV_ITEMFACTORY->createQName(typeQName, att->_typeURI, new xqpStringStore(typePrefix), att->_typeName);
+    std::string typePrefix;
+    if ( std::strcmp(Schema::XSD_NAMESPACE, att->_typeURI->c_str() )==0 ) // hack around typeManager bug for comparing QNames
+      typePrefix = "xs";
+    else
+      typePrefix = "";
+    
+    store::Item_t typeQName;
+    GENV_ITEMFACTORY->createQName(typeQName, att->_typeURI, new xqpStringStore(typePrefix), att->_typeName);
 
-            store::NsBindings bindings;
-            parent->getNamespaceBindings(bindings);
-            std::vector<store::Item_t> typedValues;
-            processTextValue(planState, delegatingTypeManager, bindings, typeQName, att->_value, typedValues);
-            
-            store::Item_t validatedAttNode;
-            if ( typedValues.size()==1 ) // hack around serialization bug
-                GENV_ITEMFACTORY->createAttributeNode( validatedAttNode, parent, -1, attQName, 
-                    typeQName, typedValues[0], false, false );
-            else            
-                GENV_ITEMFACTORY->createAttributeNode( validatedAttNode, parent, -1, attQName, 
-                    typeQName, typedValues, false, false );
-        }
-    }
+    store::NsBindings bindings;
+    parent->getNamespaceBindings(bindings);
+    std::vector<store::Item_t> typedValues;
+    processTextValue(sctx,
+                     delegatingTypeManager,
+                     bindings,
+                     typeQName,
+                     att->_value,
+                     typedValues);
+    
+    store::Item_t validatedAttNode;
+    if ( typedValues.size()==1 ) // hack around serialization bug
+      GENV_ITEMFACTORY->createAttributeNode( validatedAttNode, parent, -1, attQName, 
+                                             typeQName, typedValues[0], false, false );
+    else            
+      GENV_ITEMFACTORY->createAttributeNode( validatedAttNode, parent, -1, attQName, 
+                                             typeQName, typedValues, false, false );
+  }
+}
 
-    void ValidateIterator::processChildren( PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
-        EventSchemaValidator& schemaValidator, store::Item *parent, store::Iterator_t children)
-    {
-        store::Item_t child;
 
-        store::Item_t typeName;
-        int childIndex = 0;
+void ValidateIterator::processChildren(
+    static_context* sctx,
+    DelegatingTypeManager* delegatingTypeManager, 
+    EventSchemaValidator& schemaValidator,
+    store::Item *parent,
+    store::Iterator_t children)
+{
+  store::Item_t child;
+
+  store::Item_t typeName;
+  int childIndex = 0;
         
-        while ( children->next(child) )
-        {
-            if ( child->isNode() )
-            {
-                //cout << "  > child: " << child->getNodeKind() << " " << child->getType()->getLocalName()->c_str() << "\n"; cout.flush();
-                
-                switch ( child->getNodeKind() )
-                { 
-                case store::StoreConsts::elementNode:                                     
-                    processElement( planState, delegatingTypeManager, schemaValidator, parent, child);
-                    break;
-                    
-                case store::StoreConsts::attributeNode:
-                    ZORBA_ASSERT(false);
-                    break;
-                
-                case store::StoreConsts::documentNode:
-                    ZORBA_ASSERT(false);                    
-                    break;
-                
-                case store::StoreConsts::textNode:
-                    {
-                        //cout << "     - text: " << child->getStringValue() << "\n"; cout.flush();
-                        xqpStringStore_t childStringValue = child->getStringValue();
-                        schemaValidator.text(childStringValue);
-
-                        store::Item_t typeQName = schemaValidator.getTypeQName();
-                        
-                        store::Item_t validatedTextNode;
-                        
-                        TypeIdentifier_t typeIdentifier = TypeIdentifier::createNamedType(typeQName->getNamespace(), typeQName->getLocalName() );
-                        xqtref_t xqType = delegatingTypeManager->create_type(*typeIdentifier);                        
-                        
-                        if ( xqType!=NULL && xqType->content_kind()==XQType::SIMPLE_CONTENT_KIND )
-                        {
-                            store::NsBindings nsBindings;
-                            parent->getNamespaceBindings(nsBindings);
-                            std::vector<store::Item_t> typedValues;
-                            processTextValue(planState, delegatingTypeManager, nsBindings, typeQName, childStringValue, typedValues );
-                            
-                            if ( typedValues.size()==1 ) // hack around serialization bug
-                                GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, typedValues[0]);
-                            else
-                                GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, typedValues);
-                        }
-                        else if ( xqType!=NULL && xqType->content_kind()==XQType::MIXED_CONTENT_KIND )
-                        {
-                            GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, childIndex, childStringValue);                               
-                        }
-                    }
-                    break;
-                
-                case store::StoreConsts::piNode:
-                    {
-                        //cout << "     - pi: " << child->getStringValue() << "\n"; cout.flush();
-                        store::Item_t piNode;
-                        xqpStringStore_t piTarget = child->getTarget();
-                        xqpStringStore_t childStringValue = child->getStringValue();
-                        xqpStringStore_t childBaseUri = child->getBaseURI();
-                        GENV_ITEMFACTORY->createPiNode(piNode, parent, -1, piTarget, childStringValue, childBaseUri);                    
-                    }
-                    break;
-                
-                case store::StoreConsts::commentNode:
-                    {
-                        //cout << "     - comment: " << child->getStringValue() << "\n"; cout.flush();
-                        store::Item_t commentNode;
-                        xqpStringStore_t childStringValue = child->getStringValue();
-                        GENV_ITEMFACTORY->createCommentNode(commentNode, parent, -1, childStringValue);                    
-                    }
-                    break;
-                
-                case store::StoreConsts::anyNode:
-                    //cout << "     - any: " << child->getStringValue() << "\n"; cout.flush();
-                    ZORBA_ASSERT(false);                    
-                    break;
-                                    
-                default:
-                    ZORBA_ASSERT(false);
-                }
-            }
-            
-            childIndex++;
-        }
-    }
-
-    void ValidateIterator::processNamespaces ( EventSchemaValidator& schemaValidator, const store::Item_t& item)
+  while ( children->next(child) )
+  {
+    if ( child->isNode() )
     {
-        store::NsBindings bindings;
-        item->getNamespaceBindings(bindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+      //cout << "  > child: " << child->getNodeKind() << " " << child->getType()->getLocalName()->c_str() << "\n"; cout.flush();
+      
+      switch ( child->getNodeKind() )
+      { 
+      case store::StoreConsts::elementNode:                                     
+        processElement(sctx, delegatingTypeManager, schemaValidator, parent, child);
+        break;
+        
+      case store::StoreConsts::attributeNode:
+        ZORBA_ASSERT(false);
+        break;
+        
+      case store::StoreConsts::documentNode:
+        ZORBA_ASSERT(false);                    
+        break;
+                    
+      case store::StoreConsts::textNode:
+      {
+        //cout << "     - text: " << child->getStringValue() << "\n"; cout.flush();
+        xqpStringStore_t childStringValue = child->getStringValue();
+        schemaValidator.text(childStringValue);
 
-        for (unsigned long i = 0; i < bindings.size(); i++)
+        store::Item_t typeQName = schemaValidator.getTypeQName();
+                        
+        store::Item_t validatedTextNode;
+                        
+        TypeIdentifier_t typeIdentifier = TypeIdentifier::createNamedType(typeQName->getNamespace(), typeQName->getLocalName() );
+        xqtref_t xqType = delegatingTypeManager->create_type(*typeIdentifier);
+                        
+        if ( xqType!=NULL && xqType->content_kind()==XQType::SIMPLE_CONTENT_KIND )
         {
-            schemaValidator.ns( bindings[i].first.getStore(), bindings[i].second.getStore() );
+          store::NsBindings nsBindings;
+          parent->getNamespaceBindings(nsBindings);
+          std::vector<store::Item_t> typedValues;
+          processTextValue(sctx,
+                           delegatingTypeManager,
+                           nsBindings,
+                           typeQName,
+                           childStringValue,
+                           typedValues );
+          
+          if ( typedValues.size()==1 ) // hack around serialization bug
+            GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, typedValues[0]);
+          else
+            GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, typedValues);
         }
+        else if ( xqType!=NULL && xqType->content_kind()==XQType::MIXED_CONTENT_KIND )
+        {
+          GENV_ITEMFACTORY->createTextNode(validatedTextNode,
+                                           parent,
+                                           childIndex,
+                                           childStringValue);
+        }
+      }
+      break;
+      
+      case store::StoreConsts::piNode:
+      {
+        //cout << "     - pi: " << child->getStringValue() << "\n"; cout.flush();
+        store::Item_t piNode;
+        xqpStringStore_t piTarget = child->getTarget();
+        xqpStringStore_t childStringValue = child->getStringValue();
+        xqpStringStore_t childBaseUri = child->getBaseURI();
+        GENV_ITEMFACTORY->createPiNode(piNode, parent, -1, piTarget, childStringValue, childBaseUri);                    
+      }
+      break;
+      
+      case store::StoreConsts::commentNode:
+      {
+        //cout << "     - comment: " << child->getStringValue() << "\n"; cout.flush();
+        store::Item_t commentNode;
+        xqpStringStore_t childStringValue = child->getStringValue();
+        GENV_ITEMFACTORY->createCommentNode(commentNode, parent, -1, childStringValue); 
+      }
+      break;
+                
+      case store::StoreConsts::anyNode:
+        //cout << "     - any: " << child->getStringValue() << "\n"; cout.flush();
+        ZORBA_ASSERT(false);                    
+        break;
+                                    
+      default:
+        ZORBA_ASSERT(false);
+      }
     }
     
-    void ValidateIterator::processTextValue (PlanState& planState, DelegatingTypeManager* delegatingTypeManager, 
-        store::NsBindings& bindings, store::Item_t typeQName, xqpStringStore_t& textValue, 
-        std::vector<store::Item_t> &resultList)
+    childIndex++;
+  }
+}
+
+
+void ValidateIterator::processNamespaces (
+    EventSchemaValidator& schemaValidator,
+    const store::Item_t& item)
+{
+  store::NsBindings bindings;
+  item->getNamespaceBindings(bindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+
+  for (unsigned long i = 0; i < bindings.size(); i++)
+  {
+    schemaValidator.ns( bindings[i].first.getStore(), bindings[i].second.getStore() );
+  }
+}
+    
+
+void ValidateIterator::processTextValue (
+    static_context* sctx,
+    DelegatingTypeManager* delegatingTypeManager, 
+    store::NsBindings& bindings,
+    const store::Item_t& typeQName,
+    xqpStringStore_t& textValue, 
+    std::vector<store::Item_t>& resultList)
+{
+  xqtref_t type = delegatingTypeManager->
+                  create_named_atomic_type(typeQName.getp(), TypeConstants::QUANT_ONE);
+  //cout << "     - processTextValue: " << typeQName->getPrefix()->str() 
+  //     << ":" << typeQName->getLocalName()->str() << "@" 
+  //     << typeQName->getNamespace()->str() ; cout.flush();
+  //cout << " type: " << ( type==NULL ? "NULL" : type->toString() ) << "\n";
+  //cout.flush();                    
+  
+  // TODO: we probably need the ns bindings from the static context
+  // surrounding the original validate_expr, not planState.sctx()
+  namespace_context nsCtx = namespace_context(sctx, bindings);
+  
+  store::Item_t result;                    
+  if (type != NULL)
+  {
+    bool listOrUnion = false;
+    if ( type->type_kind() == XQType::USER_DEFINED_KIND )
     {
-        xqtref_t type = delegatingTypeManager->create_named_atomic_type(typeQName, TypeConstants::QUANT_ONE);
-        //cout << "     - processTextValue: " << typeQName->getPrefix()->str() << ":" << typeQName->getLocalName()->str() << "@" << 
-        //    typeQName->getNamespace()->str() ; cout.flush();
-        //cout << " type: " << ( type==NULL ? "NULL" : type->toString() ) << "\n"; cout.flush();                    
-
-        // TODO: we probably need the ns bindings from the static context
-        // surrounding the original validate_expr, not planState.sctx()
-        namespace_context nsCtx = namespace_context(planState.sctx(), bindings);
-                
-        store::Item_t result;                    
-        if (type!=NULL)
-        {
-            bool listOrUnion = false;
-            if ( type->type_kind() == XQType::USER_DEFINED_KIND )
-            {
-                const UserDefinedXQType udXQType = static_cast<const UserDefinedXQType&>(*type);
-                if ( udXQType.isList() || udXQType.isUnion() )
-                {
-                    listOrUnion = true;
-                }
-            }
-
-            if ( listOrUnion )
-            {
-                xqp_string str(textValue);
-                delegatingTypeManager->getSchema()->
-                    parseUserSimpleTypes(str, type, resultList);
-            }
-            else
-            {
-                bool isResult = GenericCast::instance()->castToAtomic(result, textValue, type.getp(), &nsCtx);
-                if ( isResult )
-                    resultList.push_back(result);
-            }
-        }
-        else
-        {
-            if ( GENV_ITEMFACTORY->createUntypedAtomic( result, textValue) )
-                resultList.push_back(result);
-        }
+      const UserDefinedXQType udXQType = static_cast<const UserDefinedXQType&>(*type);
+      if ( udXQType.isList() || udXQType.isUnion() )
+      {
+        listOrUnion = true;
+      }
     }
+    
+    if ( listOrUnion )
+    {
+      xqp_string str(textValue);
+      delegatingTypeManager->getSchema()->parseUserSimpleTypes(str, type, resultList);
+    }
+    else
+    {
+      bool isResult = GenericCast::instance()->
+                      castToAtomic(result, textValue, type.getp(), &nsCtx);
+      if ( isResult )
+        resultList.push_back(result);
+    }
+  }
+  else
+  {
+    if ( GENV_ITEMFACTORY->createUntypedAtomic( result, textValue) )
+      resultList.push_back(result);
+  }
+}
 
 #endif//#ifndef ZORBA_NO_XMLSCHEMA
     
