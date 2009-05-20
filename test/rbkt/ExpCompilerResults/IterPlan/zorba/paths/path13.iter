@@ -70,7 +70,7 @@ Iterator tree for main query:
               <FnBooleanIterator>
                 <CompareIterator>
                   <ForVarIterator varname="$$pos"/>
-                  <PromoteIterator type="[AtomicXQType XS_ANY_ATOMIC]">
+                  <PromoteIterator type="(AtomicXQType XS_ANY_ATOMIC)">
                     <FnDataIterator>
                       <LetVarIterator varname="$$temp3"/>
                     </FnDataIterator>
