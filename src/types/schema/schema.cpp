@@ -135,13 +135,14 @@ void Schema::registerXSD(const char* xsdURL, std::string& location, const QueryL
 #ifndef ZORBA_NO_XMLSCHEMA
     std::auto_ptr<SAX2XMLReader> parser;
 
-    std::cout << "schema.registerXSD1: url=" << xsdURL << " loc=" << location << std::endl;
+    //cout << "schema.registerXSD1: url=" << xsdURL << " loc=" << location << endl;
 
+    // todo: (cezar) hack to fix bug in Resolver, david remove after fixing
     size_t index = location.find_first_of(' ');
     if ( index!=std::string::npos )
         location = location.substr(0, index);
 
-    std::cout << "schema.registerXSD2: loc=" << location << std::endl;
+    //cout << "schema.registerXSD2: loc=" << location << endl;
 
     try
     {    
@@ -493,6 +494,7 @@ xqtref_t Schema::getXQTypeForXSTypeDefinition(const TypeManager *typeManager, XS
                         new UserDefinedXQType(typeManager, qname, NULL /*GENV_TYPESYSTEM.ANY_SIMPLE_TYPE*/,
                                 TypeConstants::QUANT_ONE, itemXQType.getp()));
 
+                    //cout << "   created UDT Simple List Type: " << xqType->toString() << endl; cout.flush();
                     result = xqType;
                 }
                 break;
@@ -739,7 +741,34 @@ bool Schema::parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aT
 
             if (!xsiTypeDV) 
             {
-                ZORBA_ERROR_DESC_OSS( FORG0001, 
+                // when complex simple content type use the base type
+                // find the first basetype that has a DataTypeValidator
+                const UserDefinedXQType* tmpXQType = udXQType;
+                
+                while (xsiTypeDV==NULL && tmpXQType!=NULL)
+                {
+                    xqtref_t baseXQType = tmpXQType->getBaseType();
+                    if (baseXQType.getp())
+                    {
+                        store::Item_t baseTypeQName = baseXQType->get_qname();
+                        XMLChArray baseLocalPart (baseTypeQName->getLocalName());
+                        XMLChArray baseUriStr (baseTypeQName->getNamespace());
+
+                        xsiTypeDV = fGrammarResolver->getDatatypeValidator(baseUriStr, baseLocalPart);
+
+                        tmpXQType = NULL;
+                        if (baseXQType->type_kind() == XQType::USER_DEFINED_KIND)
+                        {
+                            tmpXQType = static_cast<const UserDefinedXQType*>(baseXQType.getp());
+                        }
+                    }
+                }
+                
+            }
+
+            if (!xsiTypeDV) 
+            {
+                ZORBA_ERROR_DESC_OSS( FORG0001,
                     "Type '" << TypeOps::toString (*aTargetType) << "' not found in current context.");
                 wasError = true;
             }
@@ -830,7 +859,8 @@ bool Schema::parseUserListTypes(const xqp_string textValue,
 
     bool hasResult = true;
     const XQType* listItemType = udXQType->getListItemType();
-   
+    ZORBA_ASSERT( listItemType );
+
     //split text into atoms
     std::vector<xqp_string> atomicTextValues;
     splitToAtomicTextValues(textValue, atomicTextValues);

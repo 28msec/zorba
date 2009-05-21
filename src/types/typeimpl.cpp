@@ -180,22 +180,43 @@ UserDefinedXQType::UserDefinedXQType(
   switch (baseType.getp()->type_kind())
   {
   case USER_DEFINED_KIND:
-  {
-    const UserDefinedXQType& udBaseType = static_cast<const UserDefinedXQType&>(*baseType);
-    m_typeCategory = udBaseType.getTypeCategory();
-    break;
-  }
+    {
+       const UserDefinedXQType& udBaseType = static_cast<const UserDefinedXQType&>(*baseType);
+       m_typeCategory = udBaseType.getTypeCategory();
+       switch (m_typeCategory)
+       {
+            case ATOMIC_TYPE:
+            case COMPLEX_TYPE:
+                break;
+
+           case LIST_TYPE:
+                m_listItemType = udBaseType.getListItemType();
+                break;
+                
+            case UNION_TYPE:
+                m_unionItemTypes = udBaseType.getUnionItemTypes();
+                m_listItemType = NULL;
+                break;
+
+            default:
+                ZORBA_ASSERT(false);
+        }
+
+
+        break;
+    }
   case ATOMIC_TYPE_KIND:
-  {
-    m_typeCategory = ATOMIC_TYPE;
-    break;
-  }
+    {
+      m_typeCategory = ATOMIC_TYPE;
+      break;
+    }
   default:
     m_typeCategory = COMPLEX_TYPE;            
   }        
 }
 
 
+  // Constructor for List types
 UserDefinedXQType::UserDefinedXQType(
     const TypeManager *manager,
     store::Item_t qname,
@@ -208,11 +229,14 @@ UserDefinedXQType::UserDefinedXQType(
   m_baseType(baseType),
   m_typeCategory(LIST_TYPE),
   m_contentKind(SIMPLE_CONTENT_KIND),
-  m_listItemType(listItemType)
+  m_listItemType(listItemType),
+  m_unionItemTypes(NULL)
 {
+    ZORBA_ASSERT( listItemType );
 }
 
 
+  // Constructor for Union types
 UserDefinedXQType::UserDefinedXQType(
     const TypeManager *manager,
     store::Item_t qname,
@@ -225,7 +249,8 @@ UserDefinedXQType::UserDefinedXQType(
   m_baseType(baseType),
   m_typeCategory(UNION_TYPE),
   m_contentKind(SIMPLE_CONTENT_KIND),
-  m_unionItemTypes(unionItemTypes)
+  m_unionItemTypes(unionItemTypes),
+  m_listItemType(NULL)
 {
 }
 
@@ -270,14 +295,39 @@ bool UserDefinedXQType::isSuperTypeOf(const XQType& subType) const
 
 std::ostream& UserDefinedXQType::serialize(std::ostream& os) const
 {
-  return os << "(UserDefinedXQType " << " "
-            << TypeOps::decode_quantifier (get_quantifier()) 
+    std::string info = "";
+
+    switch (m_typeCategory)
+    {
+        case ATOMIC_TYPE:
+            info += "isAtomic";
+            break;
+        case COMPLEX_TYPE:
+            info += "isComplex";
+            break;
+        case LIST_TYPE:
+            info += " isList itemType:";
+            info += m_listItemType->toString();
+            break;
+        case UNION_TYPE:
+            info += " isUnion ";
+            info += m_unionItemTypes.size() + ":";
+            for ( unsigned int i=0; i<m_unionItemTypes.size(); i++)
+            {
+                info += m_unionItemTypes[i]->toString();
+            }
+            break;
+        default:
+            ZORBA_ASSERT(false);
+    }
+
+    return os << "(UserDefinedXQType " << " "
+            << TypeOps::decode_quantifier (get_quantifier())
             << m_qname->getLocalName()->str() << "@"
             << m_qname->getNamespace()->str() << " "
-            << (m_typeCategory == ATOMIC_TYPE ? "isAtomic" : 
-                m_typeCategory == LIST_TYPE ? "isList" : 
-                m_typeCategory == UNION_TYPE ? "isUnion" : 
-                m_typeCategory == COMPLEX_TYPE ? "isComplex" : "" ) << " base:"
-            << TypeOps::toString(*m_baseType) << " )";
+            << info
+            << " base:"
+            << ( m_baseType ? TypeOps::toString(*m_baseType) : "NULL" )
+            << " )";
 }    
 }  // namespace zorba

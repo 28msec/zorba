@@ -40,7 +40,7 @@ EventSchemaValidator::EventSchemaValidator(TypeManager *typeManager, XERCES_CPP_
     _grammarResolver = new (memoryManager) XERCES_CPP_NAMESPACE::GrammarResolver(grammarPool, memoryManager);
     _grammarResolver->useCachedGrammarInParse(true);
 
-#if 1 // enable this to debug registered user defined schema types
+#if 0 // enable this to debug registered user defined schema types
     //cout << "EventSchemaValidator::EventSchemaValidator typeManager: " << typeManager << endl;
     PrintSchema::printInfo( true, grammarPool);
 #endif 
