@@ -110,6 +110,8 @@ xqtref_t TypeManagerImpl::create_type(
                                           quantifier,
                                           udt.content_kind()));
   }
+  default:
+    ZORBA_ASSERT(false);
   }
 
   ZORBA_ASSERT (false);
@@ -234,13 +236,36 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
 xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const 
 {
   if (item->isAtomic())
+  {
     return create_named_atomic_type(item->getType(), TypeConstants::QUANT_ONE);
+  }
+  else if (item->isNode())
+  {
+    store::NodeKind nodeKind = item->getNodeKind();
+    store::Item* nodeName = NULL;
 
-  // Why do we pass NULL as the content type ????
-  return create_node_type(new NodeTest(item->getNodeKind()),
-                          xqtref_t(NULL),
-                          TypeConstants::QUANT_ONE,
-                          false);
+    NodeNameTest* nameTest = NULL;
+    NodeTest* nodeTest = NULL;
+
+    if (nodeKind == store::StoreConsts::elementNode ||
+        nodeKind == store::StoreConsts::attributeNode)
+    {
+      nodeName = item->getNodeName();
+      nameTest = new NodeNameTest(nodeName);
+    }
+
+    nodeTest = new NodeTest(nodeKind, nameTest);
+
+    return create_node_type(nodeTest,
+                            create_named_type(item->getType(), TypeConstants::QUANT_ONE),
+                            TypeConstants::QUANT_ONE,
+                            false);
+  }
+  else
+  {
+    ZORBA_ASSERT(false);
+    return NULL;
+  }
 }
 
 
