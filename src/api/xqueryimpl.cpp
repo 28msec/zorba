@@ -370,7 +370,7 @@ XQueryImpl::executeSAX()
       std::cerr << std::endl;
     } else {
       store::Item_t item;
-      while (lPlan->next(item));
+      while (lPlan->next(item)){};
     }
   } catch (error::ZorbaError& e) {
     lPlan->close();
