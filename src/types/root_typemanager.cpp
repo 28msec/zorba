@@ -17,15 +17,19 @@
 
 #include <zorba/identtypes.h>
 #include <zorba/typeident.h>
+
 #include "zorbatypes/xqpstring.h"
-#include "system/globalenv.h"
-#include "types/node_test.h"
-#include "types/typeops.h"
-#include "store/api/item_factory.h"
-#include "store/api/store.h"
-#include "types/root_typemanager.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
+
+#include "system/globalenv.h"
+
+#include "types/root_typemanager.h"
+#include "types/node_test.h"
+
+#include "store/api/item_factory.h"
+#include "store/api/store.h"
+
 
 
 using namespace zorba;
@@ -178,9 +182,9 @@ const TypeConstants::quantifier_t RootTypeManager::QUANT_INTERS_MATRIX [4] [4] =
 #undef Q
 
 //                                       1  ?  *  +
-const int TypeOps::QUANT_MIN_CNT [4] = { 1, 0, 0, 1 };
+const int RootTypeManager::QUANT_MIN_CNT [4] = { 1, 0, 0, 1 };
 
-const int TypeOps::QUANT_MAX_CNT [4] = { 1, 1, 2, 2 };
+const int RootTypeManager::QUANT_MAX_CNT [4] = { 1, 1, 2, 2 };
 
 
 #define ATOMIC_QNAMETYPE_MAP_SIZE 50
