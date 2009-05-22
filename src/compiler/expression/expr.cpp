@@ -1732,13 +1732,13 @@ store::StoreConsts::NodeKind match_expr::getNodeKind() const
   case match_name_test:
     return store::StoreConsts::elementNode;
   case match_doc_test:
-    return store::StoreConsts::elementNode;
+    return store::StoreConsts::documentNode;
   case match_elem_test:
+    return store::StoreConsts::elementNode;
+  case match_xs_elem_test:
     return store::StoreConsts::elementNode;
   case match_attr_test:
     return store::StoreConsts::attributeNode;
-  case match_xs_elem_test:
-    return store::StoreConsts::elementNode;
   case match_xs_attr_test:
     return store::StoreConsts::attributeNode;
   case match_pi_test:

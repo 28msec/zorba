@@ -285,7 +285,10 @@ bool begin_visit (extension_expr& node)
   return true;
 }
 
-void end_visit (relpath_expr&) {}
+void end_visit (relpath_expr&) 
+{
+}
+
 bool begin_visit (relpath_expr& node)
 {
   if (node.size() > 0) {

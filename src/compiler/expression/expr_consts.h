@@ -40,15 +40,15 @@ enum match_test_t
 {
   match_no_test,
   match_name_test,
+  match_anykind_test,
   match_doc_test,
   match_elem_test,
-  match_attr_test,
   match_xs_elem_test,
+  match_attr_test,
   match_xs_attr_test,
   match_pi_test,
   match_comment_test,
-  match_text_test,
-  match_anykind_test
+  match_text_test
 };
 
 std::string toString(match_test_t a);

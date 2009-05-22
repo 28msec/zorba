@@ -403,79 +403,110 @@ varref_t create_var(
 }
   
 
-  void bind_var (varref_t e, static_context *sctx) {
-    assert (sctx != NULL);
-    store::Item_t qname = e->get_varname ();
-    if (! sctx->bind_var (qname, e.getp ()))
-    {
-      if(e->get_kind () == var_expr::let_var)
-      {
-        ZORBA_ERROR_LOC_PARAM (XQST0039, e->get_loc (), qname->getStringValue (), "");
-      }
-      else
-      {
-        ZORBA_ERROR_LOC_PARAM (XQST0049, e->get_loc (), qname->getStringValue (), "");
-      }
-    }
-  }
-
-  varref_t bind_var (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL) {
-    varref_t e = create_var (loc, varname, kind, type);
-    bind_var (e, sctx_p);
-    return e;
-  }
-  varref_t bind_var (const QueryLoc& loc, store::Item_t varname, var_expr::var_kind kind, xqtref_t type = NULL) {
-    varref_t e = create_var (loc, varname, kind, type);
-    bind_var (e, sctx_p);
-    return e;
-  }
-
-  varref_t bind_var_and_push (const QueryLoc& loc, store::Item_t varname, var_expr::var_kind kind, xqtref_t type = NULL) {
-    varref_t e = bind_var (loc, varname, kind, type);
-    nodestack.push (&*e);
-    return e;
-  }
-
-  varref_t bind_var_and_push (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL) {
-    return bind_var_and_push (loc, sctx_p->lookup_var_qname (varname, loc), kind, type);
-  }
-
-  void bind_udf (store::Item_t qname, function *f, int nargs, static_context *sctx, const QueryLoc& loc) {
-    if (! sctx->bind_fn (qname, f, nargs))
-      ZORBA_ERROR_LOC_PARAM (XQST0034, loc, qname->getStringValue (), loc.getFilenameBegin());
-  }
-  void bind_udf (store::Item_t qname, function *f, int nargs, const QueryLoc& loc) {
-    bind_udf (qname, f, nargs, sctx_p, loc);
-    bind_udf (qname, f, nargs, minfo->globals.get (), loc);
-    if (export_sctx != NULL)
-      bind_udf (qname, f, nargs, export_sctx, loc);
-  }
-
-  fo_expr *create_seq (const QueryLoc& loc) {
-    return fo_expr::create_seq (loc);
-  }
-
-  void push_scope () {
-#ifdef ZORBA_DEBUGGER
-    theScopes.push_back( theScopedVariables.size() );
-#endif
-    sctx_list.push_back (sctx_p = sctx_p->create_child_context());
-    ++scope_depth;
-  }
-
-  void pop_scope (int n = 1)
+void bind_var (varref_t e, static_context *sctx) 
+{
+  assert (sctx != NULL);
+  store::Item_t qname = e->get_varname ();
+  if (! sctx->bind_var (qname, e.getp ()))
   {
-#ifdef ZORBA_DEBUGGER
-    theScopedVariables.erase( theScopedVariables.begin()+theScopes.back(), theScopedVariables.end() );
-    theScopes.pop_back();
-#endif
-    while (n-- > 0) {
-      static_context *parent = (static_context *) sctx_p->get_parent ();
-      sctx_p = parent;
-      --scope_depth;
-      assert (scope_depth >= 0);
+    if(e->get_kind () == var_expr::let_var)
+    {
+      ZORBA_ERROR_LOC_PARAM (XQST0039, e->get_loc (), qname->getStringValue (), "");
+    }
+    else
+    {
+      ZORBA_ERROR_LOC_PARAM (XQST0049, e->get_loc (), qname->getStringValue (), "");
     }
   }
+}
+
+
+varref_t bind_var (
+    const QueryLoc& loc,
+    string varname,
+    var_expr::var_kind kind,
+    xqtref_t type = NULL) 
+{
+  varref_t e = create_var (loc, varname, kind, type);
+  bind_var (e, sctx_p);
+  return e;
+}
+
+
+varref_t bind_var (
+    const QueryLoc& loc,
+    store::Item_t varname,
+    var_expr::var_kind kind,
+    xqtref_t type = NULL) 
+{
+  varref_t e = create_var (loc, varname, kind, type);
+  bind_var (e, sctx_p);
+  return e;
+}
+
+
+varref_t bind_var_and_push (
+    const QueryLoc& loc,
+    store::Item_t varname,
+    var_expr::var_kind kind,
+    xqtref_t type = NULL) 
+{
+  varref_t e = bind_var (loc, varname, kind, type);
+  nodestack.push (&*e);
+  return e;
+}
+
+
+varref_t bind_var_and_push (
+    const QueryLoc& loc,
+    string varname,
+    var_expr::var_kind kind,
+    xqtref_t type = NULL) 
+{
+  return bind_var_and_push (loc, sctx_p->lookup_var_qname (varname, loc), kind, type);
+}
+
+
+void bind_udf (store::Item_t qname, function *f, int nargs, static_context *sctx, const QueryLoc& loc) {
+  if (! sctx->bind_fn (qname, f, nargs))
+    ZORBA_ERROR_LOC_PARAM (XQST0034, loc, qname->getStringValue (), loc.getFilenameBegin());
+}
+
+
+void bind_udf (store::Item_t qname, function *f, int nargs, const QueryLoc& loc) {
+  bind_udf (qname, f, nargs, sctx_p, loc);
+  bind_udf (qname, f, nargs, minfo->globals.get (), loc);
+  if (export_sctx != NULL)
+    bind_udf (qname, f, nargs, export_sctx, loc);
+}
+
+
+fo_expr *create_seq (const QueryLoc& loc) {
+  return fo_expr::create_seq (loc);
+}
+
+
+void push_scope () {
+#ifdef ZORBA_DEBUGGER
+  theScopes.push_back( theScopedVariables.size() );
+#endif
+  sctx_list.push_back (sctx_p = sctx_p->create_child_context());
+  ++scope_depth;
+}
+
+void pop_scope (int n = 1)
+{
+#ifdef ZORBA_DEBUGGER
+  theScopedVariables.erase( theScopedVariables.begin()+theScopes.back(), theScopedVariables.end() );
+  theScopes.pop_back();
+#endif
+  while (n-- > 0) {
+    static_context *parent = (static_context *) sctx_p->get_parent ();
+    sctx_p = parent;
+    --scope_depth;
+    assert (scope_depth >= 0);
+  }
+}
 
   rchandle<axis_step_expr> expect_axis_step_top () {
     rchandle<axis_step_expr> axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();

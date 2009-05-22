@@ -383,7 +383,7 @@ public:
 
 
 /***************************************************************************//**
-
+  Base for cast, treat, promote, castable, instanceof
 ********************************************************************************/
 class cast_or_castable_base_expr : public expr {
 protected:
@@ -404,7 +404,7 @@ public:
 
 
 /***************************************************************************//**
-
+  Base for cast, treat, promote
 ********************************************************************************/
 class cast_base_expr : public cast_or_castable_base_expr {
 public:
@@ -415,25 +415,7 @@ public:
 
 
 /***************************************************************************//**
-
-********************************************************************************/
-class promote_expr : public cast_base_expr {
-public:
-  expr_kind_t get_expr_kind () const { return promote_expr_kind; }
-
-  promote_expr(const QueryLoc& loc, expr_t input, xqtref_t type);
-  xqtref_t return_type_impl (static_context *sctx);
-
-public:
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
-  std::ostream& put(std::ostream&) const;
-  expr_t clone (substitution_t& s);
-};
-
-
-/***************************************************************************//**
-
+  Base for castable, instanceof
 ********************************************************************************/
 class castable_base_expr : public cast_or_castable_base_expr {
 protected:
@@ -445,25 +427,44 @@ public:
 
 
 /***************************************************************************//**
+  CastExpr ::= UnaryExpr ( "cast" "as" SingleType )?
 
+  SingleType ::= AtomicType "?"?
 ********************************************************************************/
-/*______________________________________________________________________
-| ::= TreatExpr ("instance" "of" SequenceType)?
-|_______________________________________________________________________*/
-
-class instanceof_expr : public castable_base_expr {
+class cast_expr : public cast_base_expr {
 public:
-  expr_kind_t get_expr_kind () const { return instanceof_expr_kind; }
-protected:
-  bool forced;  // error if not instance?
+  expr_kind_t get_expr_kind () const { return cast_expr_kind; }
+  cast_expr(
+    const QueryLoc&,
+    expr_t,
+    xqtref_t);
+
+  bool is_optional() const;
+
+  void next_iter (expr_iterator_data&);
+  void accept (expr_visitor&);
+  std::ostream& put(std::ostream&) const;
+  expr_t clone (substitution_t& s);
+};
+
+
+/***************************************************************************//**
+  CastableExpr ::= CastExpr ( "castable" "as" SingleType )?
+
+  SingleType ::= AtomicType "?"?
+********************************************************************************/
+class castable_expr : public castable_base_expr {
+public:
+  expr_kind_t get_expr_kind () const { return castable_expr_kind; }
 
 public:
-  instanceof_expr (const QueryLoc&,
-                   expr_t,
-                   xqtref_t);
+  castable_expr(
+    const QueryLoc&,
+    expr_t,
+    xqtref_t);
 
 public:
-  bool isForced () { return forced; }
+  bool is_optional() const;
 
 public:
   void next_iter (expr_iterator_data&);
@@ -474,14 +475,8 @@ public:
 
 
 /***************************************************************************//**
-
+	TreatExpr ::= CastableExpr ( "treat" "as" SequenceType )?
 ********************************************************************************/
-// [55] [http://www.w3.org/TR/xquery/#prod-xquery-TreatExpr]
-
-/*______________________________________________________________________
-| ::= CastableExpr ("treat" "as" SequenceType)?
-|_______________________________________________________________________*/
-
 class treat_expr : public cast_base_expr {
 protected:
   XQUERY_ERROR err;
@@ -508,24 +503,43 @@ public:
 };
 
 
-// [56] [http://www.w3.org/TR/xquery/#prod-xquery-CastableExpr]
-
-/*______________________________________________________________________
-| ::= CastExpr ("castable" "as" SingleType)?
-|_______________________________________________________________________*/
-
-class castable_expr : public castable_base_expr {
+/***************************************************************************//**
+	InstanceofExpr ::= TreatExpr ( "instance" "of" SequenceType )?
+********************************************************************************/
+class instanceof_expr : public castable_base_expr {
 public:
-  expr_kind_t get_expr_kind () const { return castable_expr_kind; }
 
-public:
-  castable_expr(
-    const QueryLoc&,
-    expr_t,
-    xqtref_t);
+protected:
+  bool forced;  // error if not instance?
 
 public:
-  bool is_optional() const;
+  instanceof_expr (const QueryLoc&,
+                   expr_t,
+                   xqtref_t);
+
+  expr_kind_t get_expr_kind () const { return instanceof_expr_kind; }
+
+  bool isForced () { return forced; }
+
+  expr_t clone (substitution_t& s);
+
+  void next_iter (expr_iterator_data&);
+
+  void accept (expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+class promote_expr : public cast_base_expr {
+public:
+  expr_kind_t get_expr_kind () const { return promote_expr_kind; }
+
+  promote_expr(const QueryLoc& loc, expr_t input, xqtref_t type);
+  xqtref_t return_type_impl (static_context *sctx);
 
 public:
   void next_iter (expr_iterator_data&);
@@ -535,29 +549,9 @@ public:
 };
 
 
+/***************************************************************************//**
 
-// [57] [http://www.w3.org/TR/xquery/#prod-xquery-CastExpr]
-
-/*______________________________________________________________________
-| ::= UnaryExpr ("cast" "as" SingleType)?
-|_______________________________________________________________________*/
-
-class cast_expr : public cast_base_expr {
-public:
-  expr_kind_t get_expr_kind () const { return cast_expr_kind; }
-  cast_expr(
-    const QueryLoc&,
-    expr_t,
-    xqtref_t);
-
-  bool is_optional() const;
-
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
-  std::ostream& put(std::ostream&) const;
-  expr_t clone (substitution_t& s);
-};
-
+********************************************************************************/
 class name_cast_expr : public expr {
 private:
   expr_t input_expr_h;
@@ -580,16 +574,15 @@ public:
 };
 
 
-/*______________________________________________________________________
-| ::= TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT  RETURN  ExprSingle
-|     | TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT 
-|         DOLLAR  VARNAME  RETURN  ExprSingle
-|_______________________________________________________________________*/
+/***************************************************************************//**
+ TypeswitchExpr ::= "typeswitch" "(" Expr ")"
+                    CaseClause+
+                    "default" ("$" VarName)? "return" ExprSingle
 
+  CaseClause ::= "case" ("$" VarName "as")? SequenceType "return" ExprSingle
+********************************************************************************/
 class typeswitch_expr : public expr {
 public:
-  expr_kind_t get_expr_kind () const { return typeswitch_expr_kind; }
-
   typedef rchandle<case_clause> clauseref_t;
 
 protected:
@@ -602,54 +595,52 @@ protected:
   typeswitch_expr(const QueryLoc&);
 
 public:
-  expr_t get_switch_expr() const
-  { return switch_expr_h; }
-  void set_switch_expr(expr_t e_h)
-  { switch_expr_h = e_h; }
+  expr_kind_t get_expr_kind () const { return typeswitch_expr_kind; }
+
+  expr_t get_switch_expr() const { return switch_expr_h; }
+
+  void set_switch_expr(expr_t e_h) { switch_expr_h = e_h; }
   
   varref_t get_default_varname() const
   { return varref_t(static_cast<var_expr*>(default_var_h.getp())); }
+
   void set_default_varname(varref_t const& var_h)
   { default_var_h = var_h.getp(); }
 
-  expr_t get_default_clause() const
-  { return default_clause_h; }
-  void set_default_clause(expr_t const& e_h)
-  { default_clause_h = e_h; }
+  expr_t get_default_clause() const { return default_clause_h; }
+
+  void set_default_clause(expr_t const& e_h) { default_clause_h = e_h; }
   
-public:
-  void add_clause(clauseref_t cc_h)
-  { case_clause_hv.push_back(cc_h); }
+  void add_clause(clauseref_t cc_h) { case_clause_hv.push_back(cc_h); }
   
   std::vector<clauseref_t>::const_iterator begin() const
   { return case_clause_hv.begin(); }
+
   std::vector<clauseref_t>::const_iterator end() const
   { return case_clause_hv.end(); }
+
   std::vector<clauseref_t>::iterator begin()
   { return case_clause_hv.begin(); }
+
   std::vector<clauseref_t>::iterator end()
   { return case_clause_hv.end(); }
   
-  uint32_t clause_count() const
-  { return case_clause_hv.size(); }
+  uint32_t clause_count() const { return case_clause_hv.size(); }
   
-  clauseref_t & operator[](int i)
-  { return case_clause_hv[i]; }
-  clauseref_t const& operator[](int i) const
-  { return case_clause_hv[i]; }
+  clauseref_t & operator[](int i)  { return case_clause_hv[i]; }
+
+  clauseref_t const& operator[](int i) const { return case_clause_hv[i]; }
   
-public:
   expr_iterator_data *make_iter ();
   
   void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
-  std::ostream& put(std::ostream&) const;
 
+  void accept (expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
 };
 
 
-
-// [45] [http://www.w3.org/TR/xquery/#prod-xquery-IfExpr]
 
 /*______________________________________________________________________
 | ::= <"if" "("> Expr ")" "then" ExprSingle "else" ExprSingle
@@ -939,16 +930,17 @@ public:
  RelativPathExpr ::= "/" | ("/" | "//")?  StepExpr (("/" | "//") StepExpr)*
 
 ********************************************************************************/
-class relpath_expr : public expr {
-public:
-  expr_kind_t get_expr_kind () const { return relpath_expr_kind; }
+class relpath_expr : public expr 
+{
 protected:
   std::vector<expr_t> theSteps;
 
 public:
   relpath_expr(const QueryLoc&);
 
-	size_t size() const        { return theSteps.size(); }
+  expr_kind_t get_expr_kind () const { return relpath_expr_kind; }
+
+	size_t size() const          { return theSteps.size(); }
 	void add_back(expr_t step)   { theSteps.push_back(step); }
   void erase(ulong i)          { theSteps.erase(theSteps.begin() + i); }
 
@@ -981,9 +973,8 @@ public:
   AxisStep ::= Axis NodeTest Predicate*
 
 ********************************************************************************/
-class axis_step_expr : public expr {
-public:
-  expr_kind_t get_expr_kind () const { return axis_step_expr_kind; }
+class axis_step_expr : public expr 
+{
 protected:
   axis_kind_t             theAxis;
   expr_t                  theNodeTest;
@@ -991,7 +982,8 @@ protected:
 public:
   axis_step_expr(const QueryLoc&);
 
-public:
+  expr_kind_t get_expr_kind () const { return axis_step_expr_kind; }
+
   axis_kind_t getAxis() const          { return theAxis; }
   void setAxis(axis_kind_t v)          { theAxis = v; }
   bool is_reverse_axis () const        { return is_reverse_axis (getAxis ()); }
@@ -1032,7 +1024,8 @@ public:
   and theNilledAllowed data members are not used.
 
 ********************************************************************************/
-class match_expr : public expr {
+class match_expr : public expr 
+{
 protected:
   match_test_t  theTestKind;
   match_test_t  theDocTestKind;

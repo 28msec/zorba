@@ -69,6 +69,23 @@ xqtref_t expr::return_type_impl(static_context *sctx)
 }
 
 
+xqtref_t const_expr::return_type_impl(static_context *sctx)
+{
+  xqtref_t type = sctx->get_typemanager()->
+    create_named_type(val->getType(), TypeConstants::QUANT_ONE);
+  return type;
+}
+
+
+xqtref_t fo_expr::return_type_impl(static_context *sctx)
+{
+  vector<xqtref_t> types;
+  for (vector<expr_t>::iterator i = begin (); i != end (); i++)
+    types.push_back ((*i)->return_type (sctx));
+  return func->return_type (types);
+}
+
+
 xqtref_t sequential_expr::return_type_impl(static_context *sctx)
 {
   return sequence [sequence.size () - 1]->return_type (sctx);
@@ -83,96 +100,528 @@ xqtref_t flwor_expr::return_type_impl(static_context *sctx)
 }
 
 
-  xqtref_t if_expr::return_type_impl (static_context *sctx) {
-    return TypeOps::union_type (*then_expr_h->return_type (sctx), *else_expr_h->return_type (sctx));
-  }
-
-  xqtref_t fo_expr::return_type_impl(static_context *sctx)
-  {
-    vector<xqtref_t> types;
-    for (vector<expr_t>::iterator i = begin (); i != end (); i++)
-      types.push_back ((*i)->return_type (sctx));
-    return func->return_type (types);
-  }
-
-  xqtref_t treat_expr::return_type_impl (static_context *sctx) {
-    xqtref_t input_type = get_input ()->return_type (sctx);
-    xqtref_t input_ptype = TypeOps::prime_type (*input_type),
-      target_ptype = TypeOps::prime_type (*target_type);
-    if (TypeOps::is_subtype (*input_ptype, *target_ptype)) {
-      TypeConstants::quantifier_t q =
-        TypeOps::intersect_quant (TypeOps::quantifier (*input_type),
-                                  TypeOps::quantifier (*target_type));
-      return sctx->get_typemanager ()->create_type_x_quant (*input_ptype, q);
-    }
-    return target_type;
-  }
-
-  static xqtref_t path_rt (const axis_step_expr *last, bool untyped) {
-    switch (last->getAxis ()) {
-    case axis_kind_attribute:
-      return untyped
-        ? GENV_TYPESYSTEM.ATTRIBUTE_UNTYPED_CONT_TYPE_STAR
-        : GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR;
-    default:
-      return untyped
-        ? GENV_TYPESYSTEM.ANY_NODE_UNTYPED_CONT_TYPE_STAR
-        : GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
-    }
-  }
-
-xqtref_t relpath_expr::return_type_impl(static_context *sctx) {
-  if (size () == 0)
-    return GENV_TYPESYSTEM.EMPTY_TYPE;
-  if (size () == 1)
-    return theSteps [0]->return_type(sctx);
-
-  for (unsigned i = 1; i < size (); i++) {
-    switch (theSteps [i].cast<axis_step_expr> ()->getAxis ()) {
-    case axis_kind_self:
-    case axis_kind_descendant:
-    case axis_kind_descendant_or_self:
-    case axis_kind_child:
-    case axis_kind_attribute:
-      break;
-    default:
-      return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
-    }
-  }
-  xqtref_t base_xqt = TypeOps::prime_type (*theSteps [0]->return_type(sctx));
-  if (base_xqt->type_kind () != XQType::NODE_TYPE_KIND)
-    return GENV_TYPESYSTEM.NONE_TYPE;
-  base_xqt = static_cast<const NodeXQType &> (*base_xqt).get_content_type ();
-  return path_rt (theSteps [size () - 1].cast<axis_step_expr> (), 
-                  base_xqt != NULL && base_xqt->type_kind () == XQType::UNTYPED_KIND);
+xqtref_t if_expr::return_type_impl (static_context *sctx) 
+{
+  return TypeOps::union_type (*then_expr_h->return_type (sctx), *else_expr_h->return_type (sctx));
 }
 
-  xqtref_t axis_step_expr::return_type_impl(static_context *sctx) {
-    return theNodeTest == NULL ? GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE : theNodeTest->return_type (sctx);
+
+xqtref_t treat_expr::return_type_impl (static_context *sctx) 
+{
+  xqtref_t input_type = get_input ()->return_type (sctx);
+  xqtref_t input_ptype = TypeOps::prime_type (*input_type),
+    target_ptype = TypeOps::prime_type (*target_type);
+  if (TypeOps::is_subtype (*input_ptype, *target_ptype)) {
+    TypeConstants::quantifier_t q =
+      TypeOps::intersect_quant (TypeOps::quantifier (*input_type),
+                                TypeOps::quantifier (*target_type));
+    return sctx->get_typemanager ()->create_type_x_quant (*input_ptype, q);
+  }
+  return target_type;
+}
+
+
+
+static xqtref_t axist_step_type(
+    const axis_step_expr* axisStep,
+    const NodeXQType* inputType)
+{
+  RootTypeManager& RTM = GENV_TYPESYSTEM;
+
+  const QueryLoc& loc = axisStep->get_loc();
+
+  axis_kind_t axisKind = axisStep->getAxis();
+  match_expr* nodeTest = axisStep->getTest().getp();
+
+  match_test_t testKind =  nodeTest->getTestKind();
+  store::StoreConsts::NodeKind testNodeKind = nodeTest->getNodeKind();
+  store::Item* testSchemaType = nodeTest->getTypeName().getp();
+  match_wild_t wildKind = nodeTest->getWildKind();
+
+  TypeConstants::quantifier_t inQuant = inputType->get_quantifier();
+  store::StoreConsts::NodeKind inNodeKind = inputType->get_nodetest()->get_node_kind();
+  xqtref_t inContentType = inputType->get_content_type();
+
+  bool inUntyped = (inContentType != NULL && inContentType == RTM.UNTYPED_TYPE);
+
+
+#define returnTypeU(nodekind, untyped)                                  \
+  if (untyped)                                                          \
+  {                                                                     \
+    return RTM.nodekind##_UNTYPED_TYPE_STAR;                            \
+  }                                                                     \
+  else                                                                  \
+  {                                                                     \
+    return RTM.nodekind##_TYPE_STAR;                                    \
   }
 
-  xqtref_t match_expr::return_type_impl(static_context *sctx) {
-    return GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE;
+
+#define returnTypeQ(nodekind, quant)                                    \
+  if (TypeOps::is_sub_quant(quant, TypeConstants::QUANT_QUESTION))      \
+  {                                                                     \
+    return GENV_TYPESYSTEM.nodekind##_TYPE_QUESTION;                    \
+  }                                                                     \
+  else                                                                  \
+  {                                                                     \
+    return GENV_TYPESYSTEM.nodekind##_TYPE_STAR;                        \
   }
 
-  xqtref_t const_expr::return_type_impl(static_context *sctx)
+#define returnType2(nodekind, quant, untyped)                           \
+  if (untyped && TypeOps::is_sub_quant(quant, TypeConstants::QUANT_QUESTION)) \
+  {                                                                     \
+    return RTM.nodekind##_UNTYPED_TYPE_QUESTION;                        \
+  }                                                                     \
+  else if (untyped)                                                     \
+  {                                                                     \
+    return RTM.nodekind##_UNTYPED_TYPE_STAR;                            \
+  }                                                                     \
+  else if (TypeOps::is_sub_quant(quant, TypeConstants::QUANT_QUESTION)) \
+  {                                                                     \
+    return RTM.nodekind##_TYPE_QUESTION;                                \
+  }                                                                     \
+  else                                                                  \
+  {                                                                     \
+    return RTM.nodekind##_TYPE_STAR;                                    \
+  }
+
+
+#define RAISE_XPST0005()                            \
+  {                                                 \
+    ZORBA_ERROR_LOC(XPST0005, loc);                 \
+    return RTM.EMPTY_TYPE;                          \
+  }
+
+
+  if (inUntyped &&
+      (axisKind == axis_kind_self ||
+       axisKind == axis_kind_descendant_or_self ||
+       axisKind == axis_kind_descendant ||
+       axisKind == axis_kind_child ||
+       axisKind == axis_kind_attribute))
   {
-    xqtref_t type = sctx->get_typemanager()->
-      create_named_type(val->getType(), TypeConstants::QUANT_ONE);
-    return type;
+    if (testKind == match_attr_test &&
+        testSchemaType != NULL &&
+        ! testSchemaType->equals(RTM.XS_UNTYPED_ATOMIC_QNAME))
+    {
+      RAISE_XPST0005(); 
+    }
+    else if ((testKind == match_elem_test || testKind == match_doc_test) &&
+             testSchemaType != NULL &&
+             ! testSchemaType->equals(RTM.XS_UNTYPED_QNAME))
+    {
+      RAISE_XPST0005(); 
+    }
   }
 
-  xqtref_t elem_expr::return_type_impl (static_context *sctx) {
-    return
-      sctx->get_typemanager ()->create_node_type (NodeTest::ELEMENT_TEST, theContent == NULL ? NULL : theContent->return_type (sctx), TypeConstants::QUANT_ONE, false);
+  switch (axisKind)
+  {
+  case axis_kind_parent:
+  {
+    // Doc nodes do not have parent
+    if (inNodeKind == store::StoreConsts::documentNode)
+    {
+      RAISE_XPST0005();
+    }
+
+    // Only element or doc nodes are reachable via the parent axis.
+    if (testNodeKind != store::StoreConsts::documentNode &&
+        testNodeKind != store::StoreConsts::elementNode && 
+        testNodeKind != store::StoreConsts::anyNode)
+    {
+      RAISE_XPST0005();
+    }
+
+    // Doc nodes cannot be parents of attribute nodes
+    if (inNodeKind == store::StoreConsts::attributeNode &&
+        testNodeKind == store::StoreConsts::documentNode)
+    {
+      RAISE_XPST0005();
+    }
+
+    if (testNodeKind == store::StoreConsts::elementNode)
+    {
+      returnTypeQ(ELEMENT, inQuant);
+    }
+    else if (testNodeKind == store::StoreConsts::documentNode)
+    {
+      returnTypeQ(DOCUMENT, inQuant);
+    }
+    else
+    {
+      assert(testKind == match_anykind_test);
+      returnTypeQ(ANY_NODE, inQuant);
+    }
+
+    break;
   }
 
-  xqtref_t doc_expr::return_type_impl (static_context *sctx) {
-    return sctx->get_typemanager ()->create_node_type (NodeTest::DOCUMENT_TEST, theContent == NULL ? NULL : theContent->return_type (sctx), TypeConstants::QUANT_ONE, false);
+  case axis_kind_ancestor:
+  {
+    // Doc nodes do not have ancestors
+    if (inNodeKind == store::StoreConsts::documentNode)
+    {
+      RAISE_XPST0005();
+    }
+
+    // Only element or doc nodes are reachable via the ancestor axis.
+    if (testNodeKind != store::StoreConsts::documentNode &&
+        testNodeKind != store::StoreConsts::elementNode && 
+        testNodeKind != store::StoreConsts::anyNode)
+    {
+      RAISE_XPST0005();
+    }
+
+    if (testNodeKind == store::StoreConsts::elementNode)
+    {
+      return RTM.ELEMENT_TYPE_STAR;
+    }
+    else if (testNodeKind == store::StoreConsts::documentNode)
+    {
+      returnTypeQ(DOCUMENT, inQuant);
+    }
+    else
+    {
+      assert(testKind == match_anykind_test);
+      return RTM.ANY_NODE_TYPE_STAR;
+    }
+
+    break;
   }
 
-  xqtref_t attr_expr::return_type_impl (static_context *sctx) {
-    return sctx->get_typemanager ()->create_node_type (NodeTest::ATTRIBUTE_TEST, theValueExpr == NULL ? NULL : theValueExpr->return_type (sctx), TypeConstants::QUANT_ONE, false);
+  case axis_kind_ancestor_or_self:
+  {
+    if (testNodeKind == store::StoreConsts::elementNode)
+    {
+      return RTM.ELEMENT_TYPE_STAR;
+    }
+    else if (testNodeKind == store::StoreConsts::documentNode)
+    {
+      returnTypeQ(DOCUMENT, inQuant);
+    }
+    else if (testNodeKind == store::StoreConsts::anyNode)
+    {
+      return RTM.ANY_NODE_TYPE_STAR;
+    }
+    else 
+    {
+      // We are looking for attribute, test, pi, or comment ancestor nodes. Only
+      // the "self" node may qualify, so we jump to the axis_kind_self case.
+      goto self;
+    }
+
+    break;
+  }
+
+  case axis_kind_self:
+  {
+self:
+    // The node kind of the self node must be compatible with the NodeTest.
+    if (testNodeKind != store::StoreConsts::anyNode &&
+        inNodeKind != store::StoreConsts::anyNode &&
+        inNodeKind != testNodeKind)
+    {
+      RAISE_XPST0005();
+    }
+
+    switch (inNodeKind)
+    {
+    case store::StoreConsts::documentNode:
+      returnType2(DOCUMENT, inQuant, inUntyped);
+
+    case store::StoreConsts::elementNode:
+      returnType2(ELEMENT, inQuant, inUntyped);
+
+    case store::StoreConsts::attributeNode:
+      returnType2(ATTRIBUTE, inQuant, inUntyped);
+
+    case store::StoreConsts::textNode:
+      returnTypeQ(TEXT, inQuant);
+
+    case store::StoreConsts::piNode:
+      returnTypeQ(PI, inQuant);
+
+    case store::StoreConsts::commentNode:
+      returnTypeQ(COMMENT, inQuant);
+
+    case store::StoreConsts::anyNode:
+    {
+      switch (testNodeKind)
+      {
+      case store::StoreConsts::anyNode:
+        returnType2(ANY_NODE, inQuant, inUntyped);
+
+      case store::StoreConsts::documentNode:
+        returnType2(DOCUMENT, inQuant, inUntyped);
+
+      case store::StoreConsts::elementNode:
+        returnType2(ELEMENT, inQuant, inUntyped);
+
+      case store::StoreConsts::attributeNode:
+        returnType2(ATTRIBUTE, inQuant, inUntyped);
+
+      case store::StoreConsts::textNode:
+        returnTypeQ(TEXT, inQuant);
+
+      case store::StoreConsts::piNode:
+        returnTypeQ(PI, inQuant);
+      
+      case store::StoreConsts::commentNode:
+        returnTypeQ(COMMENT, inQuant);
+
+      default:
+        ZORBA_ASSERT(false);
+      }
+
+      break;
+    }
+
+    default:
+      ZORBA_ASSERT(false);
+    }
+
+    break;
+  }
+
+  case axis_kind_descendant_or_self:
+  {
+    // If we are looking for descendants or self of attribute, test, pi, or 
+    // comment nodes, only the "self" node may qualify, so we jump to the
+    // axis_kind_self case.
+    if (inNodeKind == store::StoreConsts::attributeNode ||
+        inNodeKind == store::StoreConsts::textNode ||
+        inNodeKind == store::StoreConsts::piNode ||
+        inNodeKind == store::StoreConsts::commentNode)
+    {
+      goto self;
+    }
+
+    // if we are looking for document or attribute descendants of a node, only
+    // the "self" node may qualify, so we jump to the axis_kind_self case. 
+    if (testNodeKind == store::StoreConsts::documentNode ||
+        testNodeKind == store::StoreConsts::attributeNode)
+    {
+      goto self;
+    }
+
+    switch (testNodeKind)
+    {
+    case store::StoreConsts::anyNode:
+      returnTypeU(ANY_NODE, inUntyped);
+
+    case store::StoreConsts::elementNode:
+      returnTypeU(ELEMENT, inUntyped);
+
+    case store::StoreConsts::textNode:
+      return RTM.TEXT_TYPE_STAR;
+
+    case store::StoreConsts::piNode:
+      return RTM.PI_TYPE_STAR;
+      
+    case store::StoreConsts::commentNode:
+      return RTM.COMMENT_TYPE_STAR;
+
+    default:
+      ZORBA_ASSERT(false);
+    }
+
+    break;
+  }
+
+  case axis_kind_descendant:
+  case axis_kind_child:
+  {
+    if (inNodeKind == store::StoreConsts::attributeNode ||
+        inNodeKind == store::StoreConsts::textNode ||
+        inNodeKind == store::StoreConsts::piNode ||
+        inNodeKind == store::StoreConsts::commentNode)
+    {
+      RAISE_XPST0005();
+    }
+
+    if (testNodeKind == store::StoreConsts::documentNode ||
+        testNodeKind == store::StoreConsts::attributeNode)
+    {
+      RAISE_XPST0005();
+    }
+
+    switch (testNodeKind)
+    {
+    case store::StoreConsts::anyNode:
+      returnTypeU(ANY_NODE, inUntyped);
+
+    case store::StoreConsts::elementNode:
+      returnTypeU(ELEMENT, inUntyped);
+
+    case store::StoreConsts::textNode:
+      return RTM.TEXT_TYPE_STAR;
+
+    case store::StoreConsts::piNode:
+      return RTM.PI_TYPE_STAR;
+      
+    case store::StoreConsts::commentNode:
+      return RTM.COMMENT_TYPE_STAR;
+
+    default:
+      ZORBA_ASSERT(false);
+    }
+
+    break;
+  }
+
+  case axis_kind_attribute:
+  {
+    // only element nodes have attributes.
+    if (inNodeKind != store::StoreConsts::elementNode &&
+        inNodeKind != store::StoreConsts::anyNode)
+    {
+      RAISE_XPST0005();
+    }
+
+    // only attribute nodes are reachable via the attribute axis.
+    if (testKind != match_name_test &&
+        testKind != match_anykind_test && 
+        testKind != match_attr_test &&
+        testKind != match_xs_attr_test)
+    {
+      RAISE_XPST0005();
+    }
+
+    if ((testKind == match_name_test && wildKind == match_no_wild) ||
+        testKind == match_xs_attr_test)
+    {
+      returnType2(ATTRIBUTE, inQuant, inUntyped);
+    }
+    else
+    {
+      returnTypeU(ATTRIBUTE, inUntyped);
+    }
+
+    break;
+  }
+
+  case axis_kind_following_sibling:
+  case axis_kind_preceding_sibling:
+  case axis_kind_following:
+  case axis_kind_preceding:
+  {
+    if (inNodeKind == store::StoreConsts::documentNode ||
+        testNodeKind == store::StoreConsts::documentNode)
+    {
+      RAISE_XPST0005();
+    }
+
+    if ((axisKind == axis_kind_following_sibling ||
+         axisKind == axis_kind_preceding_sibling) &&
+        (inNodeKind == store::StoreConsts::attributeNode ||
+         testNodeKind == store::StoreConsts::attributeNode))
+    {
+      RAISE_XPST0005();
+    }
+
+    switch (testNodeKind)
+    {
+    case store::StoreConsts::anyNode:
+      return RTM.ANY_NODE_TYPE_STAR;
+
+    case store::StoreConsts::elementNode:
+      return RTM.ELEMENT_TYPE_STAR;
+
+    case store::StoreConsts::attributeNode:
+      return RTM.ATTRIBUTE_TYPE_STAR;
+
+    case store::StoreConsts::textNode:
+      return RTM.TEXT_TYPE_STAR;
+
+    case store::StoreConsts::piNode:
+      return RTM.PI_TYPE_STAR;
+      
+    case store::StoreConsts::commentNode:
+      return RTM.COMMENT_TYPE_STAR;
+
+    default:
+      ZORBA_ASSERT(false);
+    }
+
+    break;
+  }
+
+  default:
+  {
+    ZORBA_ASSERT(false);
+    return GENV_TYPESYSTEM.NONE_TYPE;
+  }
+  }
+
+  ZORBA_ASSERT(false);
+  return GENV_TYPESYSTEM.NONE_TYPE;
+}
+
+
+xqtref_t relpath_expr::return_type_impl(static_context* sctx) 
+{
+  if (size() == 0)
+    return GENV_TYPESYSTEM.EMPTY_TYPE;
+
+  if (size() == 1)
+    return theSteps[0]->return_type(sctx);
+
+  xqtref_t sourceType = theSteps[0]->return_type(sctx);
+
+  if (sourceType->type_kind() != XQType::NODE_TYPE_KIND)
+  {
+    ZORBA_ERROR_LOC(XPTY0020, get_loc());
+    return GENV_TYPESYSTEM.NONE_TYPE;
+  }
+
+  xqtref_t stepType = sourceType;
+
+  for (unsigned i = 1; i < size(); i++) 
+  {
+    const axis_step_expr* axisStep = theSteps[i].cast<axis_step_expr>();
+
+    stepType = axist_step_type(axisStep,
+                               reinterpret_cast<const NodeXQType*>(stepType.getp()));
+  }
+
+  return stepType.getp();
+}
+
+
+xqtref_t axis_step_expr::return_type_impl(static_context *sctx) 
+{
+  return theNodeTest == NULL ? GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE : theNodeTest->return_type (sctx);
+}
+
+
+xqtref_t match_expr::return_type_impl(static_context *sctx) 
+{
+  return GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE;
+}
+
+  
+xqtref_t elem_expr::return_type_impl (static_context *sctx) 
+{
+  return sctx->get_typemanager()->
+         create_node_type(NodeTest::ELEMENT_TEST,
+                          theContent == NULL ? NULL : theContent->return_type(sctx),
+                          TypeConstants::QUANT_ONE,
+                          false);
+}
+
+
+xqtref_t doc_expr::return_type_impl (static_context *sctx) 
+{
+  return sctx->get_typemanager()->
+         create_node_type(NodeTest::DOCUMENT_TEST,
+                          theContent == NULL ? NULL : theContent->return_type(sctx),
+                          TypeConstants::QUANT_ONE,
+                          false);
+}
+
+
+xqtref_t attr_expr::return_type_impl (static_context *sctx) 
+{
+  return sctx->get_typemanager ()->create_node_type (NodeTest::ATTRIBUTE_TEST, theValueExpr == NULL ? NULL : theValueExpr->return_type (sctx), TypeConstants::QUANT_ONE, false);
   }
 
   xqtref_t text_expr::return_type_impl (static_context *sctx) {
@@ -247,10 +696,15 @@ xqtref_t relpath_expr::return_type_impl(static_context *sctx) {
 #endif
   }
   
-  xqtref_t order_expr::return_type_impl(static_context *sctx) { return expr_h->return_type (sctx); }
+
+xqtref_t order_expr::return_type_impl(static_context *sctx) 
+{
+  return expr_h->return_type (sctx); 
+}
   
 
-xqtref_t wrapper_expr::return_type_impl(static_context *sctx) {
+xqtref_t wrapper_expr::return_type_impl(static_context *sctx) 
+{
   return wrapped->return_type(sctx);
 }
 
@@ -272,6 +726,9 @@ xqtref_t var_expr::return_type_impl(static_context* sctx)
       type1 = TypeOps::prime_type(*type1);
     }
   }
+
+  // The translator has already set the type of pos_vars, count_vars,
+  // wincond_out_pos_vars, and wincond_in_pos_vars to xs:positiveInteger.
 
   if (type1 == NULL) 
   {
