@@ -142,13 +142,23 @@ static void inferWinCondVarTypes(const flwor_wincond* cond, xqtref_t domainType)
 
   xqtref_t type = TypeOps::prime_type(*domainType.getp());
 
-  invars.curr->set_type(type);
-  invars.prev->set_type(type);
-  invars.next->set_type(type);
+  if (invars.curr)
+    invars.curr->set_type(type);
 
-  outvars.curr->set_type(type);
-  outvars.prev->set_type(type);
-  outvars.next->set_type(type);
+  if (invars.prev)
+    invars.prev->set_type(type);
+
+  if (invars.next)
+    invars.next->set_type(type);
+
+  if (outvars.curr)
+    outvars.curr->set_type(type);
+
+  if (outvars.prev)
+    outvars.prev->set_type(type);
+
+  if (outvars.next)
+    outvars.next->set_type(type);
 }
 
 
