@@ -153,39 +153,59 @@ doctest1:
 
     return true;
   }
-  case match_attr_test:
-  {
-    if (node->getNodeKind() != store::StoreConsts::attributeNode)
-      return false;
-
-    if (theQName != NULL &&
-        !theQName->equals(node->getNodeName()))
-      return false;
-
-    /*
-    if (theTypeName != NULL)
-    {
-      TypeCode etype = Zorba::getSequenceTypeManager()->
-                         getTypecode(reinterpret_cast<QNameItem*>(&*theTypeName));
-      TypeCode atype = contextNode->getType();
-
-      if (atype != etype && !sequence_type::derives_from(atype, etype))
-        skip = true;
-    }
-    */
-    return true;
-  }
   case match_xs_elem_test:
   {
     if (node->getNodeKind() != store::StoreConsts::elementNode)
       return false;
 
 doctest2:
+    assert(theQName != NULL);
+    assert(theType != NULL);
+
+    if (!theQName->equals(node->getNodeName()))
+      return false;
+
+    xqtref_t atype = planState.theCompilerCB->m_sctx->get_typemanager()->
+                     create_value_type(node);
+      
+    if ((!TypeOps::is_subtype(*atype, *theType)) || 
+        (theNilledAllowed == false &&
+         node->getNilled()->getBooleanValue() == true))
+      return false;
+
+    return true;
+  }
+  case match_attr_test:
+  {
+    if (node->getNodeKind() != store::StoreConsts::attributeNode)
+      return false;
+
+    if (theQName != NULL && !theQName->equals(node->getNodeName()))
+      return false;
+
+    if (theType != NULL)
+    {
+      xqtref_t atype = planState.theCompilerCB->m_sctx->get_typemanager()->
+                       create_value_type(node);
+
+      if (! TypeOps::is_subtype(*atype, *theType))
+        return false;
+    }
+
     return true;
   }
   case match_xs_attr_test:
   {
     if (node->getNodeKind() != store::StoreConsts::attributeNode)
+      return false;
+
+    if (!theQName->equals(node->getNodeName()))
+      return false;
+
+    xqtref_t atype = planState.theCompilerCB->m_sctx->get_typemanager()->
+                     create_value_type(node);
+
+    if (! TypeOps::is_subtype(*atype, *theType))
       return false;
 
     return true;
