@@ -3415,7 +3415,7 @@ ForwardAxis :
 AbbrevForwardStep :
 		NodeTest
 		{
-			$$ = new AbbrevForwardStep(LOC (@$), $1);
+			$$ = new AbbrevForwardStep(LOC (@$), $1, false);
 		}
 	|	AT_SIGN  NodeTest
 		{
@@ -3429,15 +3429,12 @@ AbbrevForwardStep :
 ReverseStep :
 		ReverseAxis  NodeTest
 		{
-			$$ = new ReverseStep(LOC (@$),
-								dynamic_cast<ReverseAxis*>($1),
-								$2);
+			$$ = new ReverseStep(LOC(@$), dynamic_cast<ReverseAxis*>($1), $2);
 		}
 	|	DOT_DOT
 		{
 			ReverseAxis* rev_p = new ReverseAxis(LOC (@$), ParseConstants::axis_parent);
-			$$ = new ReverseStep(LOC (@$),
-								rev_p);
+			$$ = new ReverseStep(LOC(@$), rev_p, NULL);
 		}
 	;
 
