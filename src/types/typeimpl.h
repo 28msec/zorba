@@ -147,7 +147,11 @@ namespace zorba {
      the internal structure of element or document nodes that contain other
      elements and/or attributes.
 
+  XMLSchema allows anonymous types, but XQuery Data Model requires that all
+  XMLSchema types have a name, which is a qname and uniquely identifies the
+  type among all types in the "database" and the in-scope schema definitions.
 
+  
   *******************************************************
   The intersection of SequenceTypes and XMLSchema types:
   *******************************************************
@@ -176,8 +180,10 @@ namespace zorba {
   - N(), N()?, N()+, N()*, where N is one of node, document-node, text, comment,
     or processing-instruction.
 
-  - document(element(*, xs:untyped)), document(element(*, xs:untyped))?,
-    document(element(*, xs:untyped))+, document(element(*, xs:untyped))*
+  - N(xs:untyped), N(xs:untyped)?, N(xs:untyped)+, N(xs:untyped)*, where N is
+    one of node or document. Note that these types are not really expressible
+    via the SequenceType syntax, but we include them in zorba because they are
+    convenient for certain type-related optimizations.
 
   - element(*, xs:anyType), element(*, xs:anyType)?, element(*, xs:anyType)+,
     element(*, xs:anyType)*
@@ -239,6 +245,8 @@ public:
 
     USER_DEFINED_KIND,     // Named, user-defined XMLSchema type (may be atomic,
                            // list, union, or complex) + quantifier
+
+    MAX_TYPE_KIND
   } type_kind_t;
 
   //
@@ -254,7 +262,7 @@ public:
 
 
 protected:
-  static const char            * KIND_STRINGS[NONE_KIND + 1];
+  static const char            * KIND_STRINGS[XQType::MAX_TYPE_KIND];
 
   const TypeManager            * m_manager;
   const type_kind_t              m_type_kind;
@@ -500,8 +508,8 @@ private:
   xqtref_t                   m_baseType;
   TYPE_CATEGORY              m_typeCategory;
   content_kind_t             m_contentKind;
-  const XQType*              m_listItemType;
   std::vector<const XQType*> m_unionItemTypes;
+  const XQType*              m_listItemType;
 
 public:
   UserDefinedXQType(

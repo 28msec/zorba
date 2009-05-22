@@ -24,15 +24,15 @@
 
 namespace zorba {
 
-const char *XQType::KIND_STRINGS[XQType::NONE_KIND + 1] =
+const char* XQType::KIND_STRINGS[XQType::MAX_TYPE_KIND] =
 {
+  "EMPTY_KIND",
   "ATOMIC_TYPE_KIND",
+  "ITEM_KIND",
   "NODE_TYPE_KIND",
   "ANY_TYPE_KIND",
-  "ITEM_KIND",
   "ANY_SIMPLE_TYPE_KIND",
   "UNTYPED_KIND",
-  "EMPTY_KIND",
   "NONE_KIND"
 };
 
@@ -126,6 +126,12 @@ store::Item_t UntypedXQType::get_qname() const
   return GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
 }
 
+#if 0
+static void foo()
+{
+  std::cout << "Hell" << std::endl;
+}
+#endif
 
 NodeXQType::NodeXQType(
     const TypeManager *manager,
@@ -140,6 +146,7 @@ NodeXQType::NodeXQType(
   m_content_type(content_type),
   m_nillable(nillable)
 {
+  //foo();
 }
 
 
@@ -173,45 +180,47 @@ UserDefinedXQType::UserDefinedXQType(
   XQType(manager, USER_DEFINED_KIND, quantifier, false),
   m_qname(qname),
   m_baseType(baseType),
-  m_contentKind(contentKind)
+  m_contentKind(contentKind),
+  m_listItemType(NULL)
 {
   ZORBA_ASSERT(baseType!=NULL);
 
   switch (baseType.getp()->type_kind())
   {
   case USER_DEFINED_KIND:
+  {
+    const UserDefinedXQType& udBaseType = static_cast<const UserDefinedXQType&>(*baseType);
+    m_typeCategory = udBaseType.getTypeCategory();
+    switch (m_typeCategory)
     {
-       const UserDefinedXQType& udBaseType = static_cast<const UserDefinedXQType&>(*baseType);
-       m_typeCategory = udBaseType.getTypeCategory();
-       switch (m_typeCategory)
-       {
-            case ATOMIC_TYPE:
-            case COMPLEX_TYPE:
-                break;
-
-           case LIST_TYPE:
-                m_listItemType = udBaseType.getListItemType();
-                break;
-                
-            case UNION_TYPE:
-                m_unionItemTypes = udBaseType.getUnionItemTypes();
-                m_listItemType = NULL;
-                break;
-
-            default:
-                ZORBA_ASSERT(false);
-        }
-
-
-        break;
-    }
-  case ATOMIC_TYPE_KIND:
-    {
-      m_typeCategory = ATOMIC_TYPE;
+    case ATOMIC_TYPE:
+    case COMPLEX_TYPE:
       break;
+      
+    case LIST_TYPE:
+      m_listItemType = udBaseType.getListItemType();
+      break;
+      
+    case UNION_TYPE:
+      m_unionItemTypes = udBaseType.getUnionItemTypes();
+      break;
+      
+    default:
+      ZORBA_ASSERT(false);
     }
+    
+
+    break;
+  }
+  case ATOMIC_TYPE_KIND:
+  {
+    m_typeCategory = ATOMIC_TYPE;
+    break;
+  }
   default:
-    m_typeCategory = COMPLEX_TYPE;            
+  {
+    m_typeCategory = COMPLEX_TYPE;     
+  }       
   }        
 }
 
@@ -229,10 +238,9 @@ UserDefinedXQType::UserDefinedXQType(
   m_baseType(baseType),
   m_typeCategory(LIST_TYPE),
   m_contentKind(SIMPLE_CONTENT_KIND),
-  m_listItemType(listItemType),
-  m_unionItemTypes(NULL)
+  m_listItemType(listItemType)
 {
-    ZORBA_ASSERT( listItemType );
+  ZORBA_ASSERT( listItemType );
 }
 
 
