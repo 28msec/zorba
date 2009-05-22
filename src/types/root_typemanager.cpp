@@ -143,10 +143,11 @@ const bool RootTypeManager::ATOMIC_SUBTYPE_MATRIX[45][45] =
 
 const bool RootTypeManager::QUANT_SUBTYPE_MATRIX[4][4] = 
 {
-  {T, T, T, T}, /* QUANT_ONE */
-  {F, T, T, F}, /* QUANT_QUESTION */
-  {F, F, T, F}, /* QUANT_STAR */
-  {F, F, T, T}, /* QUANT_PLUS */
+  // 1  ?  *  +
+  {  T, T, T, T }, // 1
+  {  F, T, T, F }, // ?
+  {  F, F, T, F }, // *
+  {  F, F, T, T }, // +
 };
 
 #undef T
@@ -175,6 +176,12 @@ const TypeConstants::quantifier_t RootTypeManager::QUANT_INTERS_MATRIX [4] [4] =
 };
 
 #undef Q
+
+//                                       1  ?  *  +
+const int TypeOps::QUANT_MIN_CNT [4] = { 1, 0, 0, 1 };
+
+const int TypeOps::QUANT_MAX_CNT [4] = { 1, 1, 2, 2 };
+
 
 #define ATOMIC_QNAMETYPE_MAP_SIZE 50
  
@@ -346,26 +353,58 @@ RootTypeManager::RootTypeManager()
   ITEM_TYPE_QUESTION = new ItemXQType(this, TypeConstants::QUANT_QUESTION, true);
   ITEM_TYPE_STAR = new ItemXQType(this, TypeConstants::QUANT_STAR, true);
   ITEM_TYPE_PLUS = new ItemXQType(this, TypeConstants::QUANT_PLUS, true);
+  
+#define NODE_TYPE_DEFN(basename, nodeTest, contentType)                 \
+  basename##_TYPE_ONE = new NodeXQType(this,                            \
+                                      nodeTest,                         \
+                                      contentType,                      \
+                                      TypeConstants::QUANT_ONE,         \
+                                      false,                            \
+                                      true);                            \
+                                                                        \
+  basename##_TYPE_QUESTION = new NodeXQType(this,                       \
+                                           nodeTest,                    \
+                                           contentType,                 \
+                                           TypeConstants::QUANT_QUESTION, \
+                                           false,                       \
+                                           true);                       \
+                                                                        \
+  basename##_TYPE_STAR = new NodeXQType(this,                           \
+                                        nodeTest,                       \
+                                        contentType,                    \
+                                        TypeConstants::QUANT_STAR,      \
+                                        false,                          \
+                                        true);                          \
+                                                                        \
+  basename##_TYPE_PLUS = new NodeXQType(this,                           \
+                                        nodeTest,                       \
+                                        contentType,                    \
+                                        TypeConstants::QUANT_PLUS,      \
+                                        false,                          \
+                                        true)
 
-#define NODE_TYPE_DEFN(basename, suffix, xqt)                            \
-  basename##suffix##TYPE_ONE = new NodeXQType(this, NodeTest::basename##_TEST, xqt, TypeConstants::QUANT_ONE, false, true); \
-  basename##suffix##TYPE_QUESTION = new NodeXQType(this, NodeTest::basename##_TEST, xqt, TypeConstants::QUANT_QUESTION, false, true); \
-  basename##suffix##TYPE_STAR = new NodeXQType(this, NodeTest::basename##_TEST, xqt, TypeConstants::QUANT_STAR, false, true); \
-  basename##suffix##TYPE_PLUS = new NodeXQType(this, NodeTest::basename##_TEST, xqt, TypeConstants::QUANT_PLUS, false, true)
+  NODE_TYPE_DEFN(ANY_NODE, NodeTest::ANY_NODE_TEST, ANY_TYPE);
 
-#define ALL_NODE_TYPE_DEFN( basename ) \
-  NODE_TYPE_DEFN (basename, _, ANY_TYPE);                 \
-  NODE_TYPE_DEFN (basename, _UNTYPED_CONT_, UNTYPED_TYPE)
+  NODE_TYPE_DEFN(ANY_NODE_UNTYPED, NodeTest::ANY_NODE_TEST, UNTYPED_TYPE);
 
-  ALL_NODE_TYPE_DEFN(ANY_NODE);
-  ALL_NODE_TYPE_DEFN(DOCUMENT);
-  ALL_NODE_TYPE_DEFN(ELEMENT);
-  ALL_NODE_TYPE_DEFN(ATTRIBUTE);
-  ALL_NODE_TYPE_DEFN(TEXT);
-  ALL_NODE_TYPE_DEFN(PI);
-  ALL_NODE_TYPE_DEFN(COMMENT);
+  NODE_TYPE_DEFN(DOCUMENT, NodeTest::DOCUMENT_TEST, ANY_TYPE);
 
-#undef ALL_NODE_TYPE_DEFN
+  NODE_TYPE_DEFN(DOCUMENT_UNTYPED, NodeTest::DOCUMENT_TEST, UNTYPED_TYPE);
+
+  NODE_TYPE_DEFN(ELEMENT, NodeTest::ELEMENT_TEST, ANY_TYPE);
+
+  NODE_TYPE_DEFN(ELEMENT_UNTYPED, NodeTest::ELEMENT_TEST, UNTYPED_TYPE);
+
+  NODE_TYPE_DEFN(ATTRIBUTE, NodeTest::ATTRIBUTE_TEST, ANY_SIMPLE_TYPE);
+
+  NODE_TYPE_DEFN(ATTRIBUTE_UNTYPED, NodeTest::ATTRIBUTE_TEST, UNTYPED_ATOMIC_TYPE_ONE);
+
+  NODE_TYPE_DEFN(TEXT, NodeTest::TEXT_TEST, NULL);
+
+  NODE_TYPE_DEFN(PI, NodeTest::PI_TEST, NULL);
+
+  NODE_TYPE_DEFN(COMMENT, NodeTest::COMMENT_TEST, NULL);
+
 #undef NODE_TYPE_DEFN
 }
 
@@ -433,19 +472,16 @@ RootTypeManager::~RootTypeManager()
   DELETE_TYPE(ITEM)
 
   DELETE_TYPE(ANY_NODE)
+  DELETE_TYPE(ANY_NODE_UNTYPED)
   DELETE_TYPE(DOCUMENT)
+  DELETE_TYPE(DOCUMENT_UNTYPED)
   DELETE_TYPE(ELEMENT)
+  DELETE_TYPE(ELEMENT_UNTYPED)
   DELETE_TYPE(ATTRIBUTE)
+  DELETE_TYPE(ATTRIBUTE_UNTYPED)
   DELETE_TYPE(TEXT)
   DELETE_TYPE(PI)
   DELETE_TYPE(COMMENT)
-  DELETE_TYPE(ANY_NODE_UNTYPED_CONT)
-  DELETE_TYPE(DOCUMENT_UNTYPED_CONT)
-  DELETE_TYPE(ELEMENT_UNTYPED_CONT)
-  DELETE_TYPE(ATTRIBUTE_UNTYPED_CONT)
-  DELETE_TYPE(TEXT_UNTYPED_CONT)
-  DELETE_TYPE(PI_UNTYPED_CONT)
-  DELETE_TYPE(COMMENT_UNTYPED_CONT)
 #undef DELETE_TYPE
 
   delete ANY_TYPE.getp();

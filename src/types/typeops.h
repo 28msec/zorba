@@ -32,24 +32,53 @@ typedef TypeIdentifier_t type_ident_ref_t;
 class ZORBA_DLL_PUBLIC TypeOps 
 {
 public:
-  /*
-   * Writes a string representation of the given type to the output stream.
-   */
-  static std::ostream& serialize(std::ostream& os, const XQType& type);
-  
-  static const char *decode_quantifier (TypeConstants::quantifier_t quant);
-
-  static std::string toString (const XQType& type);
-
   /**
    * Of the 2 given type managers, return the one with a lower level.
    */
   static const TypeManager* get_lower_manager(const TypeManager* m1, const TypeManager* m2);
 
   /*
+   * @return QName of the type if the type is named.
+   */
+  static store::Item_t getQName(const XQType& type);
+
+  /*
    * Returns the quantifier of the argument.
    */
   static TypeConstants::quantifier_t quantifier(const XQType& type);
+
+  /*
+   * Return true is q1 is a sub-quantifier of q2 (see QUANT_SUBTYPE_MATRIX
+   * in root_typemanger.h).
+   */
+  static bool is_sub_quant(
+        TypeConstants::quantifier_t q1,
+        TypeConstants::quantifier_t q2);
+
+  static TypeConstants::quantifier_t
+  intersect_quant(TypeConstants::quantifier_t, TypeConstants::quantifier_t);
+
+  static TypeConstants::quantifier_t
+  union_quant(TypeConstants::quantifier_t, TypeConstants::quantifier_t);
+
+  /*
+   * @return the maximum number of items that can appear in an instance of a
+   * the given type. Returned value may be 0, 1 or 2, with 2 meaning "infinity".
+   */
+  static int type_max_cnt (const XQType& type);
+  
+  /*
+   * @return the minimum number of items that can appear in an instance of a
+   * the given type. Returned value may be 0 or 1.
+   */
+  static int type_min_cnt (const XQType& type);
+  
+  /*
+   * @return 0 if all instances of the given type consist of exactly 0 items,  
+   * 1 if all instances of the given type consist of exactly 1 item, or -1 
+   * otherwise.
+   */
+  static int type_cnt (const XQType& type);
 
   /*
    * Returns the castability fron the source ItemType to the target ItemType. It
@@ -136,9 +165,6 @@ public:
    */
   static xqtref_t intersect_type(const XQType& type1, const XQType& type2);
 
-  static TypeConstants::quantifier_t
-  intersect_quant (TypeConstants::quantifier_t, TypeConstants::quantifier_t);
-
   /*
    * Returns the prime type of the given type.
    */
@@ -172,29 +198,19 @@ public:
   static type_ident_ref_t get_type_identifier(const XQType& type);
 
   /*
-   * @return 0, 1 or 2 (2 meaning "many")
+   * Writes a textual representation of the given type to the output stream.
    */
-  static int type_max_cnt (const XQType& type);
+  static std::ostream& serialize(std::ostream& os, const XQType& type);
   
   /*
-   * @return 0 or 1
+   * Returns a string with a textual representation of the given type.
    */
-  static int type_min_cnt (const XQType& type);
-  
-  /*
-   * @return 0, 1 or -1 (-1 means "not certain")
-   */
-  static int type_cnt (const XQType& type);
+  static std::string toString (const XQType& type);
 
   /*
-   * @return QName of the type if known.
+   * Returns a string with a textual representation of the given quantifier.
    */
-  static store::Item_t getQName(const XQType& type);
-
-public:
-  static const int QUANT_MAX_CNT [TypeConstants::QUANTIFIER_LIST_SIZE];
-  
-  static const int QUANT_MIN_CNT [TypeConstants::QUANTIFIER_LIST_SIZE];
+  static const char* decode_quantifier (TypeConstants::quantifier_t quant);
 };
 
 }

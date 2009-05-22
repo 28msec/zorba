@@ -25,11 +25,21 @@
 namespace zorba {
 
 
+/*******************************************************************************
+  RootTypeManager instantiates and stores all of the zorba built-in types. It
+  also defines various global, const data structs that are useful in various
+  type-related operations. 
+********************************************************************************/
 class RootTypeManager : public TypeManagerImpl 
 {
+  friend class root_static_context;
+  friend class TypeOps;
+  friend class TypeManagerImpl;
+  friend class AtomicXQType;
+
 public:
   /**
-   * Pre-allocated XQType and QNameItem objects for all of the built-in atomic
+   * Pre-allocated XQType and QNameItem objects for all of the 45 built-in atomic
    * types of XQDM. Specifically, for each built-in atomic XQDM type T, we pre-
    * allocate a QNameItem for the name of T (as defined by XMLSchema), and 4 
    * XQType objects representing the sequence tyoes T, T?, T*, and T+.
@@ -44,37 +54,37 @@ public:
   ATOMIC_DECL(ANY_ATOMIC)
   ATOMIC_DECL(UNTYPED_ATOMIC)
   ATOMIC_DECL(STRING)
-  ATOMIC_DECL(NORMALIZED_STRING)
-  ATOMIC_DECL(TOKEN)
-  ATOMIC_DECL(LANGUAGE)
-  ATOMIC_DECL(NMTOKEN)
-  ATOMIC_DECL(NAME)
-  ATOMIC_DECL(NCNAME)
-  ATOMIC_DECL(ID)
-  ATOMIC_DECL(IDREF)
-  ATOMIC_DECL(ENTITY)
+  ATOMIC_DECL(NORMALIZED_STRING)      // derived
+  ATOMIC_DECL(TOKEN)                  // derived
+  ATOMIC_DECL(LANGUAGE)               // derived
+  ATOMIC_DECL(NMTOKEN)                // derived
+  ATOMIC_DECL(NAME)                   // derived
+  ATOMIC_DECL(NCNAME)                 // derived
+  ATOMIC_DECL(ID)                     // derived
+  ATOMIC_DECL(IDREF)                  // derived
+  ATOMIC_DECL(ENTITY)                 // derived
   ATOMIC_DECL(DATETIME)
   ATOMIC_DECL(DATE)
   ATOMIC_DECL(TIME)
   ATOMIC_DECL(DURATION)
-  ATOMIC_DECL(DT_DURATION)
-  ATOMIC_DECL(YM_DURATION)
+  ATOMIC_DECL(DT_DURATION)            // derived
+  ATOMIC_DECL(YM_DURATION)            // derived
   ATOMIC_DECL(FLOAT)
   ATOMIC_DECL(DOUBLE)
   ATOMIC_DECL(DECIMAL)
-  ATOMIC_DECL(INTEGER)
-  ATOMIC_DECL(NON_POSITIVE_INTEGER)
-  ATOMIC_DECL(NEGATIVE_INTEGER)
-  ATOMIC_DECL(LONG)
-  ATOMIC_DECL(INT)
-  ATOMIC_DECL(SHORT)
-  ATOMIC_DECL(BYTE)
-  ATOMIC_DECL(NON_NEGATIVE_INTEGER)
-  ATOMIC_DECL(UNSIGNED_LONG)
-  ATOMIC_DECL(UNSIGNED_INT)
-  ATOMIC_DECL(UNSIGNED_SHORT)
-  ATOMIC_DECL(UNSIGNED_BYTE)
-  ATOMIC_DECL(POSITIVE_INTEGER)
+  ATOMIC_DECL(INTEGER)                // derived
+  ATOMIC_DECL(NON_POSITIVE_INTEGER)   // derived
+  ATOMIC_DECL(NEGATIVE_INTEGER)       // derived
+  ATOMIC_DECL(LONG)                   // derived
+  ATOMIC_DECL(INT)                    // derived
+  ATOMIC_DECL(SHORT)                  // derived
+  ATOMIC_DECL(BYTE)                   // derived
+  ATOMIC_DECL(NON_NEGATIVE_INTEGER)   // derived
+  ATOMIC_DECL(UNSIGNED_LONG)          // derived
+  ATOMIC_DECL(UNSIGNED_INT)           // derived
+  ATOMIC_DECL(UNSIGNED_SHORT)         // derived
+  ATOMIC_DECL(UNSIGNED_BYTE)          // derived
+  ATOMIC_DECL(POSITIVE_INTEGER)       // derived
   ATOMIC_DECL(GYEAR_MONTH)
   ATOMIC_DECL(GYEAR)
   ATOMIC_DECL(GMONTH_DAY)
@@ -89,22 +99,42 @@ public:
 #undef ATOMIC_DECL
 
   /**
-   *  Pre-allocated XQType objects for all of the XQDM built-in node types and
-   *  for the "item" built-in XQDM type. Specifically, we preallocate 4 XQType
-   *  objects representing the sequence tyoes T, T?, T*, and T+, where T is either
-   *  the "item" type or one of the 6 node types. Note: these types are not part
-   *  of XMLSchema, and as a result, do not have qnames.
+   *  Pre-allocate XQType objects for item(), item()?, item()+, and item()*.
    */
-#define ALL_NODE_OR_ITEM_TYPE_DECL(basename)    \
+  xqtref_t ITEM_TYPE_ONE; 
+  xqtref_t ITEM_TYPE_QUESTION;
+  xqtref_t ITEM_TYPE_STAR;
+  xqtref_t ITEM_TYPE_PLUS;
+
+  /**
+   * Pre-allocate XQType objects for the following KindTest sequence types:
+   *
+   * N(), N()?, N()+, N()*, where N is one of node, document-node, text, comment,
+   * or processing-instruction.
+   *
+   * N(xs:untyped), N(xs:untyped)?, N(xs:untyped)+, N(xs:untyped)*, where N is
+   * one of node or document.
+   *
+   * element(*, xs:anyType), element(*, xs:anyType)?, element(*, xs:anyType)+,
+   * element(*, xs:anyType)*
+   *
+   * element(*, xs:untyped), element(*, xs:untyped)?, element(*, xs:untyped)+,
+   * element(*, xs:untyped)*
+   *
+   * attribute(*, xs:anySimpleType), attribute(*, xs:anySimpleType)?,
+   * attribute(*, xs:anySimpleType)+, attribute(*, xs:anySimpleType)*
+   *
+   * attribute(*, xs:untypedAtomic), attribute(*, xs:untypedAtomic)?,
+   * attribute(*, xs:untypedAtomic)+, attribute(*, xs:untypedAtomic)*
+   *
+   * Note: these types are not part of XMLSchema, and as a result, do not have qnames.
+   */
+#define ALL_NODE_TYPE_DECL(basename)            \
   xqtref_t basename##_TYPE_ONE;                 \
   xqtref_t basename##_TYPE_QUESTION;            \
   xqtref_t basename##_TYPE_STAR;                \
   xqtref_t basename##_TYPE_PLUS
-#define ALL_NODE_TYPE_DECL(basename)                  \
-  ALL_NODE_OR_ITEM_TYPE_DECL(basename);               \
-  ALL_NODE_OR_ITEM_TYPE_DECL(basename##_UNTYPED_CONT)
 
-  ALL_NODE_OR_ITEM_TYPE_DECL(ITEM);
   ALL_NODE_TYPE_DECL(ANY_NODE);
   ALL_NODE_TYPE_DECL(DOCUMENT);
   ALL_NODE_TYPE_DECL(ELEMENT);
@@ -113,13 +143,16 @@ public:
   ALL_NODE_TYPE_DECL(PI);
   ALL_NODE_TYPE_DECL(COMMENT);
 
-#undef ALL_NODE_TYPE_DECL
-#undef ALL_NODE_OR_ITEM_TYPE_DECL
+  ALL_NODE_TYPE_DECL(ANY_NODE_UNTYPED);
+  ALL_NODE_TYPE_DECL(DOCUMENT_UNTYPED);
+  ALL_NODE_TYPE_DECL(ELEMENT_UNTYPED);
+  ALL_NODE_TYPE_DECL(ATTRIBUTE_UNTYPED);
 
+#undef ALL_NODE_TYPE_DECL
 
   /**
    * Pre-allocated XQType and QNameItem objects for the remaining build-in
-   * XQDM types (no including the built-in list types xs:IDREFS, xs:NMTOKENS,
+   * XQDM types (not including the built-in list types xs:IDREFS, xs:NMTOKENS,
    * and xs:ENTITIES).
    */
   xqtref_t ANY_TYPE;
@@ -148,19 +181,19 @@ public:
 private:
 
   /**
-   * Maps each atomic type code and each quantifier code to a pre-allocated XQType
-   * object for that atomic type and quantifier.
+   * Maps each atomic type code and each quantifier code to a built-in XQType
+   * object for that built-in atomic type and quantifier.
    */
   xqtref_t* m_atomic_typecode_map[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE]
                                  [TypeConstants::QUANTIFIER_LIST_SIZE];
 
   /**
-   * Maps the typecode of an atomic type to its qname.
+   * Maps the typecode of a built-in atomic type to its qname.
    */
   store::Item* m_atomic_typecode_qname_map[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
 
   /**
-   *  Maps the qname of an atomic type to its typecode.
+   *  Maps the qname of a built-in atomic type to its typecode.
    */
   typedef zorba::HashMap<store::Item*,
                          TypeConstants::atomic_type_code_t,
@@ -196,7 +229,7 @@ private:
    * QUANT_UNION_MATRIX[q1][q2] = q <==> q is IS(S(q1) union S(q2)) 
    * 
    * In other words, q is the "minimum" quantifier that is equally or more
-   *  permissive than both q1 and q2.
+   * permissive than both q1 and q2.
    */
   static const TypeConstants::quantifier_t
   QUANT_UNION_MATRIX[TypeConstants::QUANTIFIER_LIST_SIZE]
@@ -210,6 +243,19 @@ private:
                      [TypeConstants::QUANTIFIER_LIST_SIZE];
 
   /**
+   * For each quatifier q, QUANT_MAX_CNT[q] gives the maximum number of items
+   * that can appear in an instance of a sequence type quantified with q. 
+   * QUANT_MAX_CNT[q] is either 1 or 2, with 2 meaning infinity.
+   */
+  static const int QUANT_MAX_CNT[TypeConstants::QUANTIFIER_LIST_SIZE];
+  
+  /**
+   * For each quatifier q, QUANT_MIN_CNT[q] gives the minimum number of items
+   * that can appear in an instance of a sequence type quantified with q. 
+   */
+  static const int QUANT_MIN_CNT[TypeConstants::QUANTIFIER_LIST_SIZE];
+
+  /**
    * For each pair T1, T2 of built-in atomic types, ATOMIC_CAST_MATRIX[T1][T2]
    * says whether an instance of T1 can be cast to an instance of T2. There are
    * 3 posiblities: YES means that such a cast is always possible, MAYBE means
@@ -220,17 +266,11 @@ private:
   ATOMIC_CAST_MATRIX[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE]
                     [TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
 
-
 public:
   ~RootTypeManager();
 
 private:
   RootTypeManager();
-
-  friend class root_static_context;
-  friend class TypeOps;
-  friend class TypeManagerImpl;
-  friend class AtomicXQType;
 };
 
 }

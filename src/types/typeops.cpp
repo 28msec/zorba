@@ -34,40 +34,6 @@ namespace zorba {
 /*******************************************************************************
 
 ********************************************************************************/
-const char *TypeOps::decode_quantifier (TypeConstants::quantifier_t quant) 
-{
-  switch (quant) {
-  case TypeConstants::QUANT_ONE:
-    return "";
-  case TypeConstants::QUANT_QUESTION:
-    return "?";
-  case TypeConstants::QUANT_STAR:
-    return "*";
-  case TypeConstants::QUANT_PLUS:
-      return "+";
-  default:
-    return "<unknown-quant>";
-  }
-}
-
-
-std::ostream& TypeOps::serialize(std::ostream& os, const XQType& type)
-{
-  return type.serialize(os);
-}
-
-
-std::string TypeOps::toString (const XQType& type)
-{
-  std::ostringstream os;
-  serialize (os, type);
-  return os.str ();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 const TypeManager *TypeOps::get_lower_manager(
     const TypeManager* m1,
     const TypeManager* m2)
@@ -79,9 +45,66 @@ const TypeManager *TypeOps::get_lower_manager(
 /*******************************************************************************
 
 ********************************************************************************/
+store::Item_t TypeOps::getQName(const XQType& type)
+{
+  return type.get_qname();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 TypeConstants::quantifier_t TypeOps::quantifier(const XQType &type)
 {
   return type.get_quantifier();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool TypeOps::is_sub_quant(
+    TypeConstants::quantifier_t q1,
+    TypeConstants::quantifier_t q2)
+{
+  return RootTypeManager::QUANT_SUBTYPE_MATRIX[q1][q2];
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+int TypeOps::type_max_cnt (const XQType& type) 
+{
+  return is_empty (type)
+    ? 0
+    :  RootTypeManager::QUANT_MAX_CNT [quantifier (type)];
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+int TypeOps::type_min_cnt (const XQType& type) 
+{
+  return is_empty (type)
+    ? 0
+    :  RootTypeManager::QUANT_MIN_CNT [quantifier (type)];
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+int TypeOps::type_cnt (const XQType& type) 
+{
+  if (is_empty(type) || is_none(type))
+    return 0;
+
+  TypeConstants::quantifier_t q = quantifier (type);
+  if ( RootTypeManager::QUANT_MIN_CNT [q] ==  RootTypeManager::QUANT_MAX_CNT [q])
+    return  RootTypeManager::QUANT_MIN_CNT [q];
+  return -1;
 }
 
 
@@ -573,11 +596,22 @@ xqtref_t TypeOps::intersect_type(const XQType& type1, const XQType& type2)
   }
 }
 
-TypeConstants::quantifier_t TypeOps::intersect_quant(TypeConstants::quantifier_t q1,
-                                                        TypeConstants::quantifier_t q2)
+
+TypeConstants::quantifier_t TypeOps::intersect_quant(
+    TypeConstants::quantifier_t q1,
+    TypeConstants::quantifier_t q2)
 {
   return RootTypeManager::QUANT_INTERS_MATRIX [q1] [q2];
 }
+
+
+TypeConstants::quantifier_t TypeOps::union_quant(
+    TypeConstants::quantifier_t q1,
+    TypeConstants::quantifier_t q2)
+{
+  return RootTypeManager::QUANT_UNION_MATRIX [q1] [q2];
+}
+
 
 /*******************************************************************************
 
@@ -811,46 +845,35 @@ type_ident_ref_t TypeOps::get_type_identifier(const XQType& type)
 /*******************************************************************************
 
 ********************************************************************************/
-int TypeOps::type_max_cnt (const XQType& type) 
+const char *TypeOps::decode_quantifier (TypeConstants::quantifier_t quant) 
 {
-  return is_empty (type)
-    ? 0
-    : QUANT_MAX_CNT [quantifier (type)];
+  switch (quant) {
+  case TypeConstants::QUANT_ONE:
+    return "";
+  case TypeConstants::QUANT_QUESTION:
+    return "?";
+  case TypeConstants::QUANT_STAR:
+    return "*";
+  case TypeConstants::QUANT_PLUS:
+      return "+";
+  default:
+    return "<unknown-quant>";
+  }
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-int TypeOps::type_min_cnt (const XQType& type) 
+std::ostream& TypeOps::serialize(std::ostream& os, const XQType& type)
 {
-  return is_empty (type)
-    ? 0
-    : QUANT_MIN_CNT [quantifier (type)];
+  return type.serialize(os);
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-int TypeOps::type_cnt (const XQType& type) 
+std::string TypeOps::toString (const XQType& type)
 {
-  if (is_empty(type) || is_none(type))
-    return 0;
-
-  TypeConstants::quantifier_t q = quantifier (type);
-  if (QUANT_MIN_CNT [q] == QUANT_MAX_CNT [q])
-    return QUANT_MIN_CNT [q];
-  return -1;
+  std::ostringstream os;
+  serialize (os, type);
+  return os.str ();
 }
 
-store::Item_t TypeOps::getQName(const XQType& type)
-{
-  return type.get_qname();
-}
-
-//                                       1  ?  *  +
-const int TypeOps::QUANT_MIN_CNT [4] = { 1, 0, 0, 1 };
-const int TypeOps::QUANT_MAX_CNT [4] = { 1, 1, 2, 2 };
 
 }
