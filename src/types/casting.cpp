@@ -1379,51 +1379,48 @@ GenericCast* GenericCast::instance()
 }
 
 
-store::Item_t castUserDefinedType(
+void castToUserDefinedType(
+    store::Item_t&       result,
     const store::Item_t& aItem,
-    const ErrorInfo& aErrorInfo)
+    const XQType*        aSourceType,
+    const XQType*        aTargetType)
 {
-  const DelegatingTypeManager* lDelegatingTypeManager 
-        = static_cast<const DelegatingTypeManager*>(aErrorInfo.theTargetType->get_manager()); 
+  ErrorInfo lErrorInfo = {aSourceType, aTargetType};
 
-  if (aErrorInfo.theSourceType->type_kind() != XQType::ATOMIC_TYPE_KIND ||
-      (TypeOps::get_atomic_type_code(*aErrorInfo.theSourceType) != TypeConstants::XS_STRING))
+  const DelegatingTypeManager* lDelegatingTypeManager =
+  static_cast<const DelegatingTypeManager*>(aTargetType->get_manager()); 
+
+  if (aSourceType->type_kind() != XQType::ATOMIC_TYPE_KIND ||
+      (TypeOps::get_atomic_type_code(*aSourceType) != TypeConstants::XS_STRING))
   {
-    throwError(FORG0001, aErrorInfo); 
-    return 0;
+    throwError(FORG0001, lErrorInfo); 
   }
 
-  const UserDefinedXQType udXQType = static_cast<const UserDefinedXQType&>(*(aErrorInfo.theTargetType));
+  const UserDefinedXQType* udXQType = static_cast<const UserDefinedXQType*>(aTargetType);
 
-  switch ( udXQType.getTypeCategory() )
+  switch ( udXQType->getTypeCategory() )
   {
   case UserDefinedXQType::ATOMIC_TYPE:
   {
-    store::Item_t atomicResult;
     bool hasResult = lDelegatingTypeManager->getSchema()->
                      parseUserAtomicTypes(xqpString(aItem->getStringValue()), 
-                                          aErrorInfo.theTargetType,
-                                          atomicResult);
+                                          aTargetType,
+                                          result);
     
     if ( hasResult )
-      return atomicResult;
+      return;
   }
   break;
   
   case UserDefinedXQType::LIST_TYPE:
   case UserDefinedXQType::UNION_TYPE:
   case UserDefinedXQType::COMPLEX_TYPE:       
-    //std::cout << "  castUserDefinedType  typeCatego: isComplex:" << (udXQType.getTypeCategory()==UserDefinedXQType::COMPLEX_TYPE) << std::endl;
-    //std::cout << "                       targetType: " << udXQType.getQName()->getLocalName()->str() << " @ " << udXQType.getQName()->getNamespace()->str() << std::endl;
-    //std::cout << "                      stringValue: '" << aItem->getStringValue() << "'" << std::endl;
-    //std::cout << "                      aItem      : " << aItem->getType()->getLocalName()->str() <<  " @ " << aItem->getType()->getNamespace()->str() << std::endl;
-    
   default:
     ZORBA_ASSERT( false);
     break;
   }
   
-  return 0;
+  result = NULL;
 }
 
 
@@ -1443,7 +1440,7 @@ bool GenericCast::castToSimple(
 
 
 /*******************************************************************************
-  Cast, if possible, a given item I1 to an atomic item I2 of a given type T2.
+  Cast, if possible, a given item SI to an atomic item TI of a given type TT.
   If I1 is not  
 ********************************************************************************/
 bool GenericCast::castToAtomic(
@@ -1458,15 +1455,15 @@ bool GenericCast::castToAtomic(
   xqtref_t lSourceType = lTS.create_named_type(aItem->getType(), 
                                                TypeConstants::QUANT_ONE);
 
-  ErrorInfo lErrorInfo = {&*lSourceType, aTargetType};
-
 #ifndef ZORBA_NO_XMLSCHEMA
   if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND) 
   {
-    result = castUserDefinedType(aItem, lErrorInfo);
+    castToUserDefinedType(result, aItem, lSourceType.getp(), aTargetType);
     return result != NULL;
   }
 #endif // ZORBA_NO_XMLSCHEMA
+
+  ErrorInfo lErrorInfo = {&*lSourceType, aTargetType};
 
   if (!TypeOps::is_atomic(*aTargetType))
     throwError(XPST0051, lErrorInfo);
