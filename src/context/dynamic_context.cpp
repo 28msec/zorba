@@ -43,6 +43,28 @@ namespace zorba {
 
 bool dynamic_context::static_init = false;
 
+
+string dynamic_context::var_key (const void *var) 
+{
+  if (var == NULL) return "";
+  const var_expr *ve = static_cast<const var_expr *> (var);
+  return xqpString::concat(to_string(var), ":", ve->get_varname ()->getStringValue ());
+}
+
+
+xqp_string dynamic_context::expand_varname(static_context	*sctx, xqp_string qname)
+{
+  if(!sctx) 
+  {
+    ///actually the whole static context is missing
+    ZORBA_ERROR_PARAM( XPST0001, "entire static context", "");
+    return (const char*)NULL;
+  }
+  void *var = static_cast<void *> (sctx->lookup_var (qname));
+  return var_key (var);
+}
+
+
 void dynamic_context::init()
 {
 	if (!dynamic_context::static_init) {
@@ -119,25 +141,9 @@ dynamic_context::~dynamic_context()
 }
 
 
-string dynamic_context::var_key (const void *var) {
-  if (var == NULL) return "";
-  const var_expr *ve = static_cast<const var_expr *> (var);
-  return xqpString::concat(to_string(var), ":", ve->get_varname ()->getStringValue ());
-}
-
-xqp_string dynamic_context::expand_varname(static_context	*sctx, xqp_string qname) const
-{
-  if(!sctx) {
-    ///actually the whole static context is missing
-    ZORBA_ERROR_PARAM( XPST0001, "entire static context", "");
-			return (const char*)NULL;
-  }
-  void *var = static_cast<void *> (sctx->lookup_var (qname));
-  return var_key (var);
-}
-
-
-void dynamic_context::set_context_item(store::Item_t context_item, unsigned long position)
+void dynamic_context::set_context_item(
+    const store::Item_t& context_item,
+    unsigned long position)
 {
 	this->ctxt_item = context_item;
 	this->ctxt_position = position;
@@ -158,8 +164,7 @@ xqtref_t dynamic_context::context_item_type() const
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
-void dynamic_context::set_context_item_type(
-	xqtref_t v)
+void dynamic_context::set_context_item_type(xqtref_t v)
 {
 }
 
@@ -187,7 +192,9 @@ int  dynamic_context::get_implicit_timezone()
 var_name is expanded name localname:nsURI
 constructed by static_context::qname_internal_key( .. )
 */
-void dynamic_context::set_variable(xqp_string var_name, store::Iterator_t var_iterator)
+void dynamic_context::set_variable(
+    const std::string& var_name,
+    store::Iterator_t var_iterator)
 {
   if (var_name.empty()) return;
 
@@ -207,7 +214,8 @@ void dynamic_context::set_variable(xqp_string var_name, store::Iterator_t var_it
   map->put (key, v);
 }
 
-void dynamic_context::declare_variable(xqp_string var_name)
+
+void dynamic_context::declare_variable(const std::string& var_name)
 {
   if (var_name.empty()) return;
 
@@ -221,20 +229,23 @@ void dynamic_context::declare_variable(xqp_string var_name)
   keymap.put (key, v);
 }
 
-void dynamic_context::add_variable(xqp_string varname, store::Iterator_t var_iterator) 
+
+void dynamic_context::add_variable(
+    const std::string& varname,
+    store::Iterator_t var_iterator) 
 {
   declare_variable (varname);
   set_variable (varname, var_iterator);
 }
 
 
-store::Iterator_t	dynamic_context::get_variable(store::Item_t varname) 
+store::Iterator_t	dynamic_context::get_variable(const store::Item_t& varname) 
 {
-	return lookup_var_iter("var:" + xqp_string (&*varname->getStringValue ()));
+	return lookup_var_iter("var:" + varname->getStringValue()->str());
 }
 
 
-store::Iterator_t dynamic_context::lookup_var_iter(xqp_string key) 
+store::Iterator_t dynamic_context::lookup_var_iter(const std::string& key) 
 { 
   dctx_value_t val = {dctx_value_t::no_val, false, {0} };
 

@@ -70,12 +70,12 @@ protected:
   IndexMap                val_idx_ins_session_map;
 
 protected:
-  bool lookup_once (xqp_string key, dctx_value_t &val) const 
+  bool lookup_once(const std::string& key, dctx_value_t &val) const 
   {
     return keymap.get (key, val); 
   }
 
-  bool context_value(xqp_string key, dctx_value_t &val) const 
+  bool context_value(const std::string& key, dctx_value_t &val) const 
   {
     if (lookup_once (key, val)) {
       return true;
@@ -83,7 +83,7 @@ protected:
     return parent == NULL ? false : parent->context_value (key, val);
   }
 
-  bool context_value(xqp_string key, dctx_value_t &val, hashmap<dctx_value_t> **map) 
+  bool context_value(const std::string& key, dctx_value_t &val, hashmap<dctx_value_t> **map) 
   {
     if (lookup_once (key, val)) {
       if (map != NULL) *map = &keymap;
@@ -93,42 +93,29 @@ protected:
   }
 
 
-  xqp_string qname_internal_key (store::Item_t qname) const;
-
-  xqp_string qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const;
-
-  xqp_string qname_internal_key (xqp_string default_ns, xqp_string qname) const;
-
-  store::Iterator_t lookup_var_iter (xqp_string key);
+  store::Iterator_t lookup_var_iter (const std::string& key);
 
   void destroy_dctx_value (const dctx_value_t *);
 
 public:
+  static std::string var_key (const void *var);
+
+  static xqp_string expand_varname(static_context* sctx, xqp_string qname);
+
   static void init();
 
+public:
   dynamic_context(dynamic_context *parent=NULL);
-  ~dynamic_context();
 
-  static std::string var_key (const void *var);
-  xqp_string expand_varname(static_context  *sctx, xqp_string qname) const;
+  ~dynamic_context();
 
   store::Item_t context_item() const;
   unsigned long context_position();
 
   xqtref_t context_item_type() const;
-
-  void set_context_item(store::Item_t, unsigned long position);
   void set_context_item_type(xqtref_t );
 
-  #if 0
-  // return the value of a variable by QName
-  PlanIter_t var_value(const Item*) const;
-
-  const Item& default_element_type_namespace() const;
-  void set_default_element_type_namespace(Item&);
-  PlanIter_t namespaces() const;
-  void add_namespace(Item&);
-  #endif
+  void set_context_item(const store::Item_t&, unsigned long position);
 
   void set_current_date_time( const store::Item_t& );
   store::Item_t get_current_date_time();
@@ -136,10 +123,10 @@ public:
   void set_implicit_timezone( int tzone_seconds );
   int get_implicit_timezone();
 
-  void declare_variable(xqp_string varname);
-  void set_variable(xqp_string varname, store::Iterator_t var_iterator);
-  void add_variable(xqp_string varname, store::Iterator_t var_iterator);
-  store::Iterator_t get_variable(store::Item_t);
+  void declare_variable(const std::string& varname);
+  void set_variable(const std::string& varname, store::Iterator_t var_iterator);
+  void add_variable(const std::string& varname, store::Iterator_t var_iterator);
+  store::Iterator_t get_variable(const store::Item_t& varname);
 
   store::Item_t get_default_collection();
   void set_default_collection(const store::Item_t& default_collection_uri);
