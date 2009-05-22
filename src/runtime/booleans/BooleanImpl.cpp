@@ -792,16 +792,16 @@ bool TypedValueCompareIterator<ATC>::nextImpl(store::Item_t& result, PlanState& 
 
       switch (theCompType) {
       case CompareConsts::VALUE_LESS:
-        if (nonempty = (cmp > -2)) bRes = cmp == -1;
+        if ((nonempty = (cmp > -2))) bRes = (cmp == -1);
         break;
       case CompareConsts::VALUE_GREATER:
-        if (nonempty = (cmp > -2)) bRes = cmp == 1;
+        if ((nonempty = (cmp > -2))) bRes = (cmp == 1);
         break;        
       case CompareConsts::VALUE_LESS_EQUAL:
-        if (nonempty = (cmp > -2)) bRes = cmp <= 0;
+        if ((nonempty = (cmp > -2))) bRes = (cmp <= 0);
         break;
       case CompareConsts::VALUE_GREATER_EQUAL:
-        if (nonempty = (cmp > -2)) bRes = cmp >= 0;
+        if ((nonempty = (cmp > -2))) bRes = (cmp >= 0);
         break;
       default:
         ZORBA_ASSERT (false);
