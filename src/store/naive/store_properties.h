@@ -30,7 +30,7 @@
 #ifndef ZORBA_STORE_STOREPROPERTIES
 #define ZORBA_STORE_STOREPROPERTIES
 namespace zorba { namespace store { 
-class StoreProperties : public ::zorba::PropertiesBase {
+class ZORBA_DLL_PUBLIC StoreProperties : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
     static const char *result [] = { "--build-dataguide", "--store-trace-level", NULL };
@@ -62,7 +62,7 @@ public:
       else if (strcmp (*argv, "--store-trace-level") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        init_val (*argv, theStoreTraceLevel, d);
+        if (*argv == NULL) { result = "No value given for --store-trace-level option"; break; }        init_val (*argv, theStoreTraceLevel, d);
       }
       else if (strcmp (*argv, "--") == 0) {
         copy_args (++argv);
@@ -78,7 +78,7 @@ public:
     return result;
   }
 
-  const char *get_help_msg () {
+  const char *get_help_msg () const {
     return
 "--build-dataguide\nbuild-dataguide (true/false)\n\n"
 "--store-trace-level\nstore trace level (<= 0 : no tracing)\n\n"

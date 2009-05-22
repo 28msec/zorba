@@ -91,7 +91,6 @@ int _tmain(int argc, _TCHAR* argv[])
   ostream *resultFile = outputFile.get ();
   if (resultFile == NULL)
     resultFile = &cout;
-  
 
   // input file (either from a file or given as parameter)
   auto_ptr<istream> qfile;
@@ -156,6 +155,14 @@ int _tmain(int argc, _TCHAR* argv[])
   for (vector<pair <string, string> >::const_iterator iter = ext_vars.begin ();
        iter != ext_vars.end (); iter++) {
     set_var (iter->first, iter->second, dctx);
+  }
+
+  //if you want to print the plan into a file
+  if( ! lProp->printDotPlan().empty () ) {
+    auto_ptr<ostream> planFile (new ofstream (lProp->printDotPlan().c_str()));
+    ostream *printPlanFile = planFile.get ();
+
+    query->printPlan(*printPlanFile, true);
   }
 
   if (! lProp->compileOnly ()) {
