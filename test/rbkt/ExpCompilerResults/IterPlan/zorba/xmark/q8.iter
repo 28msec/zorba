@@ -2,7 +2,7 @@ Iterator tree for main query:
 <flwor::FLWORIterator>
   <LetVariable name="auction" materialize="true">
     <FnDocIterator>
-      <PromoteIterator type="(AtomicXQType XS_STRING)">
+      <PromoteIterator type="[AtomicXQType XS_STRING]">
         <FnDataIterator>
           <CtxVariableIterator>
             <SingletonIterator value="xs:string(input-context)"/>

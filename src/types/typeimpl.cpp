@@ -87,8 +87,8 @@ const char *AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CO
 
 std::ostream& XQType::serialize(std::ostream& os) const
 {
-  return os << "(XQType " << KIND_STRINGS[type_kind()]
-            << TypeOps::decode_quantifier(get_quantifier()) << ")";
+  return os << "[XQType " << KIND_STRINGS[type_kind()]
+            << TypeOps::decode_quantifier(get_quantifier()) << "]";
 }
 
 
@@ -102,8 +102,8 @@ std::string XQType::toString() const
 
 std::ostream& AtomicXQType::serialize(std::ostream& os) const
 {
-  return os << "(AtomicXQType " << ATOMIC_TYPE_CODE_STRINGS[get_type_code()]
-            << TypeOps::decode_quantifier (get_quantifier()) << ")";
+  return os << "[AtomicXQType " << ATOMIC_TYPE_CODE_STRINGS[get_type_code()]
+            << TypeOps::decode_quantifier (get_quantifier()) << "]";
 }
 
 store::Item_t AtomicXQType::get_qname() const
@@ -149,17 +149,17 @@ std::ostream& NodeXQType::serialize(std::ostream& os) const
   store::StoreConsts::NodeKind node_kind = node_test->get_node_kind();
   xqtref_t content_type = get_content_type ();
   rchandle<NodeNameTest> nametest = node_test->get_nametest();
-  os << "(NodeXQType " << store::StoreConsts::toString (node_kind)
+  os << "[NodeXQType " << store::StoreConsts::toString (node_kind)
      << TypeOps::decode_quantifier (get_quantifier()) << " ";
   if (nametest != NULL) {
-    os << "nametest=(uri: " << nametest->get_uri () << ", local: " << nametest->get_local () << ")";
+    os << "nametest=[uri: " << nametest->get_uri () << ", local: " << nametest->get_local () << "]";
   }
   if (content_type != NULL)
   {
     os << "content=";
     os << content_type->toString ();
   }
-  return os << ")";
+  return os << "]";
 }
 
 
@@ -321,13 +321,13 @@ std::ostream& UserDefinedXQType::serialize(std::ostream& os) const
             ZORBA_ASSERT(false);
     }
 
-    return os << "(UserDefinedXQType " << " "
+    return os << "[UserDefinedXQType " << " "
             << TypeOps::decode_quantifier (get_quantifier())
             << m_qname->getLocalName()->str() << "@"
             << m_qname->getNamespace()->str() << " "
             << info
             << " base:"
             << ( m_baseType ? TypeOps::toString(*m_baseType) : "NULL" )
-            << " )";
+            << " ]";
 }    
 }  // namespace zorba

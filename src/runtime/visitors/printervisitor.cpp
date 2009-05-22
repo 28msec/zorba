@@ -743,7 +743,7 @@ TYPED_VAL_CMP (STRING)
     thePrinter.addAttribute("type",
         ((a.getType() == FnMinMaxIterator::MIN) != 0 ? std::string("min") : std::string("max")));
     printCommons( &a, theId );
-    thePrinter.endBeginVisit(++theId);
+    thePrinter.endBeginVisit(theId);
   }
 
   void endVisit ( const FnMinMaxIterator& ){
@@ -1293,7 +1293,7 @@ void endVisitFlworReturn(const PlanIterator& /*a*/)
     TypeOps::serialize(lStream, *a.theCastType);
     thePrinter.addAttribute("type", lStream.str());
     printCommons( &a, theId );
-    thePrinter.endBeginVisit(++theId);
+    thePrinter.endBeginVisit(theId);
   }
 
   void endVisit(const CastIterator&) {
@@ -1309,7 +1309,7 @@ void endVisitFlworReturn(const PlanIterator& /*a*/)
     TypeOps::serialize(lStream, *a.thePromoteType);
     thePrinter.addAttribute("type", lStream.str());
     printCommons( &a, theId );
-    thePrinter.endBeginVisit(++theId);
+    thePrinter.endBeginVisit(theId);
   }
 
   void endVisit(const PromoteIterator&) {
@@ -1323,7 +1323,7 @@ void endVisitFlworReturn(const PlanIterator& /*a*/)
     TypeOps::serialize(lStream, *a.theCastType);
     thePrinter.addAttribute("type", lStream.str());
     printCommons( &a, theId );
-    thePrinter.endBeginVisit(++theId);
+    thePrinter.endBeginVisit(theId);
   }
 
   void endVisit(const CastableIterator&) {
