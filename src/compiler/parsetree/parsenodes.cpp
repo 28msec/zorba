@@ -2430,7 +2430,8 @@ ForwardStep::ForwardStep(
   forward_axis_h(_forward_axis_h),
   node_test_h(_node_test_h),
   abbrev_step_h(NULL)
-{}
+{
+}
 
 
 ForwardStep::ForwardStep(
@@ -2441,9 +2442,8 @@ ForwardStep::ForwardStep(
   forward_axis_h(NULL),
   node_test_h(NULL),
   abbrev_step_h(_abbrev_step_h)
-{}
-
-
+{
+}
 
 
 void ForwardStep::accept(parsenode_visitor& v) const
@@ -2467,9 +2467,8 @@ ForwardAxis::ForwardAxis(
   :
   parsenode(loc_),
   axis(_axis)
-{}
-
-
+{
+}
 
 
 void ForwardAxis::accept(parsenode_visitor& v) const
@@ -2492,19 +2491,8 @@ AbbrevForwardStep::AbbrevForwardStep(
   parsenode(loc_),
   node_test_h(_node_test_h),
   attr_b(_attr_b)
-{}
-
-
-AbbrevForwardStep::AbbrevForwardStep(
-    const QueryLoc& loc_,
-    rchandle<parsenode> _node_test_h)
-  :
-  parsenode(loc_),
-  node_test_h(_node_test_h),
-  attr_b(false)
-{}
-
-
+{
+}
 
 
 void AbbrevForwardStep::accept(parsenode_visitor& v) const
@@ -2521,26 +2509,19 @@ void AbbrevForwardStep::accept(parsenode_visitor& v) const
 
 ********************************************************************************/
 ReverseStep::ReverseStep(
-    const QueryLoc& loc_,
+    const QueryLoc& loc,
     rchandle<ReverseAxis> _axis_h,
     rchandle<parsenode> _node_test_h)
   :
-  parsenode(loc_),
+  parsenode(loc),
   axis_h(_axis_h),
   node_test_h(_node_test_h)
-{}
-
-
-ReverseStep::ReverseStep(
-    const QueryLoc& loc_,
-    rchandle<ReverseAxis> _axis_h)
-  :
-  parsenode(loc_),
-  axis_h(_axis_h),
-  node_test_h(NULL)
-{}
-
-
+{
+  if (node_test_h == NULL)
+  {
+    node_test_h = new AnyKindTest(loc);
+  }
+}
 
 
 void ReverseStep::accept(parsenode_visitor& v) const

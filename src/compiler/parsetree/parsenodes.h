@@ -3223,15 +3223,11 @@ public:
 		rchandle<ReverseStep>,
 		rchandle<PredicateList>);
 
-
-public:
 	rchandle<ForwardStep> get_forward_step() const { return forward_step_h; }
 	rchandle<ReverseStep> get_reverse_step() const { return reverse_step_h; }
 	rchandle<PredicateList> get_predicate_list() const { return predicate_list_h; }
 
-public:
 	virtual	void accept(parsenode_visitor&) const;
-
 };
 
 
@@ -3257,13 +3253,10 @@ public:
 		const QueryLoc&,
 		rchandle<AbbrevForwardStep>);
 
-
-public:
 	rchandle<ForwardAxis> get_forward_axis() const { return forward_axis_h; }
 	rchandle<parsenode> get_node_test() const { return node_test_h; }
 	rchandle<AbbrevForwardStep> get_abbrev_step() const { return abbrev_step_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
 };
 
@@ -3289,11 +3282,8 @@ public:
 		const QueryLoc&,
 		enum ParseConstants::forward_axis_t);
 
-
-public:
 	enum ParseConstants::forward_axis_t get_axis() const { return axis; }
 
-public:
 	void accept(parsenode_visitor&) const;
 };
 
@@ -3315,16 +3305,9 @@ public:
 		rchandle<parsenode>,
 		bool attr_b);
 		
-	AbbrevForwardStep(
-		const QueryLoc&,
-		rchandle<parsenode>);
-		
-
-public:
 	rchandle<parsenode> get_node_test() const { return node_test_h; }
 	bool get_attr_bit() const { return attr_b; }
 
-public:
 	void accept(parsenode_visitor&) const;
 };
 
@@ -3346,16 +3329,9 @@ public:
 		rchandle<ReverseAxis>,
 		rchandle<parsenode>);
 
-	ReverseStep(
-		const QueryLoc&,
-		rchandle<ReverseAxis>);
-
-
-public:
 	rchandle<ReverseAxis> get_axis() const { return axis_h; }
 	rchandle<parsenode> get_node_test() const { return node_test_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
 };
 
