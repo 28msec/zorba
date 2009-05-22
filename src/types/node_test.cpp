@@ -47,7 +47,7 @@ NodeNameTest::NodeNameTest(
 }
 
 
-NodeNameTest::NodeNameTest(rchandle<store::Item> qname)
+NodeNameTest::NodeNameTest(const store::Item* qname)
   :
   m_kind(CONSTANT),
   m_uri(qname->getNamespace()),

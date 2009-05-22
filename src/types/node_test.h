@@ -45,7 +45,7 @@ private:
 public:
   NodeNameTest(rchandle<xqpStringStore> uri, rchandle<xqpStringStore> local);
 
-  NodeNameTest(rchandle<store::Item> qname);
+  NodeNameTest(const store::Item* qname);
     
   rchandle<xqpStringStore> get_uri() const;
   rchandle<xqpStringStore> get_local() const;
@@ -54,7 +54,7 @@ public:
 
   bool is_subname_of(const NodeNameTest& other) const;
 
-  bool matches(store::Item *qname) const;
+  bool matches(store::Item* qname) const;
 
   bool matches(
         const xqpStringStore* lname,
