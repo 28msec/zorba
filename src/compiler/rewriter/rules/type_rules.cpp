@@ -32,7 +32,15 @@ using namespace std;
 
 namespace zorba {
 
+static void inferWinCondVarTypes(const flwor_wincond* cond, xqtref_t domainType);
 
+static expr_t wrap_in_num_promotion (expr_t arg, xqtref_t oldt, xqtref_t t);
+
+
+
+/*******************************************************************************
+  Set the type of variables defined in flwor expressions.
+********************************************************************************/
 RULE_REWRITE_PRE(InferVarTypes) 
 {
   return NULL;
@@ -48,25 +56,78 @@ RULE_REWRITE_POST(InferVarTypes)
   {
     flwor_expr* flwor = dynamic_cast<flwor_expr *>(node);
 
+    // Node: The translator has already set the type of pos_vars, count_vars,
+    // wincond_out_pos_vars, and wincond_in_pos_vars to xs:positiveInteger.
+
     for (uint32_t i = 0; i < flwor->num_clauses(); i++) 
     {
       const flwor_clause& c = *(*flwor)[i];
 
-      if (c.get_kind() == flwor_clause::for_clause ||
-          c.get_kind() == flwor_clause::let_clause ||
-          c.get_kind() == flwor_clause::window_clause)
+      if (c.get_kind() == flwor_clause::for_clause)
       {
-        const forletwin_clause* flwc = static_cast<const forletwin_clause *>(&c);
-        varref_t var = flwc->get_var();
-        expr_t domainExpr = flwc->get_expr();
-        xqtref_t explicitType = var->get_type();
-        xqtref_t domainType = domainExpr->return_type(sctx);
+        const for_clause* fc = static_cast<const for_clause *>(&c);
 
-        if (c.get_kind() == flwor_clause::for_clause)
-          domainType = TypeOps::prime_type(*domainType);
+        varref_t var = fc->get_var();
+        xqtref_t explicitType = var->get_type();
+        xqtref_t domainType = fc->get_expr()->return_type(sctx);
+        domainType = TypeOps::prime_type(*domainType);
 
         if (explicitType == NULL || TypeOps::is_subtype(*domainType, *explicitType))
           var->set_type(domainType);
+      }
+      else if (c.get_kind() == flwor_clause::let_clause)
+      {
+        const let_clause* lc = static_cast<const let_clause *>(&c);
+
+        varref_t var = lc->get_var();
+        xqtref_t explicitType = var->get_type();
+        xqtref_t domainType = lc->get_expr()->return_type(sctx);
+
+        if (explicitType == NULL || TypeOps::is_subtype(*domainType, *explicitType))
+          var->set_type(domainType);
+      }
+      else if (c.get_kind() == flwor_clause::window_clause)
+      {
+        const window_clause* wc = static_cast<const window_clause *>(&c);
+
+        varref_t var = wc->get_var();
+        xqtref_t explicitType = var->get_type();
+        xqtref_t domainType = wc->get_expr()->return_type(sctx);
+
+        if (explicitType == NULL || TypeOps::is_subtype(*domainType, *explicitType))
+          var->set_type(domainType);
+
+        flwor_wincond* startCond = wc->get_win_start();
+        flwor_wincond* stopCond = wc->get_win_stop();
+
+        if (startCond != NULL)
+          inferWinCondVarTypes(startCond, domainType);
+
+        if (stopCond != NULL)
+          inferWinCondVarTypes(stopCond, domainType);
+      }
+      else if (c.get_kind() == flwor_clause::group_clause)
+      {
+        const group_clause* gc = static_cast<const group_clause *>(&c);
+
+        const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
+        ulong numGroupVars = gvars.size();
+
+        for (ulong i = 0; i < numGroupVars; ++i)
+        {
+          gvars[i].second->set_type(gvars[i].first->return_type(sctx));
+        }
+
+        const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
+        ulong numNonGroupVars = ngvars.size();
+        
+        for (ulong i = 0; i < numNonGroupVars; ++i)
+        {
+          xqtref_t domainType = ngvars[i].first->return_type(sctx);
+          xqtref_t type = GENV_TYPESYSTEM.create_type(*domainType,
+                                                      TypeConstants::QUANT_STAR);
+          ngvars[i].second->set_type(type);
+        }
       }
     }
   }
@@ -74,9 +135,29 @@ RULE_REWRITE_POST(InferVarTypes)
 }
 
 
+static void inferWinCondVarTypes(const flwor_wincond* cond, xqtref_t domainType)
+{
+  const flwor_wincond::vars& invars = cond->get_in_vars();
+  const flwor_wincond::vars& outvars = cond->get_out_vars();
+
+  xqtref_t type = TypeOps::prime_type(*domainType.getp());
+
+  invars.curr->set_type(type);
+  invars.prev->set_type(type);
+  invars.next->set_type(type);
+
+  outvars.curr->set_type(type);
+  outvars.prev->set_type(type);
+  outvars.next->set_type(type);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
 {
-  fo_expr *fo;
+  fo_expr* fo;
 
   if ((fo = dynamic_cast<fo_expr *>(node)) != NULL) 
   {
@@ -103,9 +184,10 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     }
   }
 
-  cast_base_expr *pe;
+  cast_base_expr* pe;
   // Note: the if cond is true for promote_expr, treat_expr, and cast_expr
-  if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL) {
+  if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL) 
+  {
     expr_t arg = pe->get_input();
     xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
     xqtref_t target_type = pe->get_target_type();
@@ -139,25 +221,16 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
   return NULL;
 }
 
+
 RULE_REWRITE_POST(EliminateTypeEnforcingOperations)
 {
   return NULL;
 }
 
-static expr_t wrap_in_num_promotion (expr_t arg, xqtref_t oldt, xqtref_t t) {
-  if (TypeOps::is_subtype(*oldt, *t)) return NULL;
-  if (arg->get_expr_kind () == promote_expr_kind
-      && TypeOps::type_max_cnt (*t) <= 1)
-  {
-    promote_expr *pe = arg.cast<promote_expr> ();
-    expr_t inner_e = pe->get_input ();
-    xqtref_t inner_t = pe->get_target_type ();
-    if (TypeOps::is_equal (*inner_t, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
-      arg = inner_e;
-  }
-  return new promote_expr (arg->get_loc (), arg, t);
-}
 
+/*******************************************************************************
+
+********************************************************************************/
 RULE_REWRITE_PRE(SpecializeOperations)
 {
   return NULL;
@@ -293,6 +366,22 @@ RULE_REWRITE_POST(SpecializeOperations)
   }
   return NULL;
 }
+
+
+static expr_t wrap_in_num_promotion (expr_t arg, xqtref_t oldt, xqtref_t t) {
+  if (TypeOps::is_subtype(*oldt, *t)) return NULL;
+  if (arg->get_expr_kind () == promote_expr_kind
+      && TypeOps::type_max_cnt (*t) <= 1)
+  {
+    promote_expr *pe = arg.cast<promote_expr> ();
+    expr_t inner_e = pe->get_input ();
+    xqtref_t inner_t = pe->get_target_type ();
+    if (TypeOps::is_equal (*inner_t, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
+      arg = inner_e;
+  }
+  return new promote_expr (arg->get_loc (), arg, t);
+}
+
 
 }
 /* vim:set ts=2 sw=2: */
