@@ -38,4 +38,4 @@
       ("external-var,x", po::value<std::vector<std::string> >(), "external variables (e.g. -x x=file1.xml -x y:=strValue)")
       ("serializer-param,z", po::value<std::vector<std::string> >(), "serializer parameters")
       ("iter-plan-test", "run as iterator plan test")
-      ("print-dot-plan", po::value<std::string>(), "print the dot iterator plan into the given file")
+      ("dot-plan-file", po::value<std::string>(), "generate the dot iterator plan")

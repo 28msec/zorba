@@ -33,7 +33,7 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC ZorbaProperties : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--debug-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--dump-lib", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--trace-translator", "--trace-codegen", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", "--iter-plan-test", "--print-dot-plan", NULL };
+    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--debug-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--dump-lib", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--trace-translator", "--trace-codegen", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", "--iter-plan-test", "--dot-plan-file", NULL };
     return result;
   }
   bool theTraceParsing;
@@ -72,7 +72,7 @@ protected:
   std::vector<std::string> theExternalVar;
   std::vector<std::string> theSerializerParam;
   bool theIterPlanTest;
-  std::string thePrintDotPlan;
+  std::string theDotPlanFile;
 
   void initialize () {
     theTraceParsing = false;
@@ -143,7 +143,7 @@ public:
   const std::vector<std::string> &externalVar () const { return theExternalVar; }
   const std::vector<std::string> &serializerParam () const { return theSerializerParam; }
   const bool &iterPlanTest () const { return theIterPlanTest; }
-  const std::string &printDotPlan () const { return thePrintDotPlan; }
+  const std::string &dotPlanFile () const { return theDotPlanFile; }
 
   std::string load_argv (int argc, const char **argv) {
     if (argv == NULL) return "";
@@ -294,10 +294,10 @@ public:
       else if (strcmp (*argv, "--iter-plan-test") == 0) {
         theIterPlanTest = true;
       }
-      else if (strcmp (*argv, "--print-dot-plan") == 0) {
+      else if (strcmp (*argv, "--dot-plan-file") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --print-dot-plan option"; break; }        init_val (*argv, thePrintDotPlan, d);
+        if (*argv == NULL) { result = "No value given for --dot-plan-file option"; break; }        init_val (*argv, theDotPlanFile, d);
       }
       else if (strcmp (*argv, "--") == 0) {
         copy_args (++argv);
@@ -355,7 +355,7 @@ public:
 "--external-var, -x\nexternal variables (e.g. -x x=file1.xml -x y:=strValue)\n\n"
 "--serializer-param, -z\nserializer parameters\n\n"
 "--iter-plan-test\nrun as iterator plan test\n\n"
-"--print-dot-plan\nprint the dot iterator plan into the given file\n\n"
+"--dot-plan-file\ngenerate the dot iterator plan\n\n"
 ;
   }
 

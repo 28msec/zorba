@@ -158,8 +158,8 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   //if you want to print the plan into a file
-  if( ! lProp->printDotPlan().empty () ) {
-    auto_ptr<ostream> planFile (new ofstream (lProp->printDotPlan().c_str()));
+  if( ! lProp->dotPlanFile().empty () ) {
+    auto_ptr<ostream> planFile (new ofstream (lProp->dotPlanFile().c_str()));
     ostream *printPlanFile = planFile.get ();
 
     query->printPlan(*printPlanFile, true);
