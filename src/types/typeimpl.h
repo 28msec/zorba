@@ -362,6 +362,11 @@ public:
         bool nillable,
         bool builtin = false);
 
+  store::StoreConsts::NodeKind get_node_kind() const 
+  {
+    return m_nodetest->get_node_kind(); 
+  }
+
   rchandle<NodeTest> get_nodetest() const { return m_nodetest; }
 
   xqtref_t get_content_type() const { return m_content_type; }
