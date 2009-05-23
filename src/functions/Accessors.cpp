@@ -32,22 +32,46 @@ fn_data_func::codegen(
 }
 
 
-xqtref_t fn_data_func::return_type (const std::vector<xqtref_t> &arg_types) const {
-  if (TypeOps::is_subtype (*arg_types [0], *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
+xqtref_t fn_data_func::return_type (const std::vector<xqtref_t> &arg_types) const 
+{
+  RootTypeManager& RTM = GENV_TYPESYSTEM;
+
+  if (TypeOps::is_subtype (*arg_types [0], *RTM.ANY_ATOMIC_TYPE_STAR))
     return arg_types [0];  // includes () case
+
   TypeConstants::quantifier_t q = TypeOps::quantifier (*arg_types [0]);
-  if (TypeOps::is_subtype(*arg_types[0], *GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR)) {
+
+  if (TypeOps::is_subtype(*arg_types[0], *RTM.ANY_NODE_TYPE_STAR)) 
+  {
     const XQType& type = *arg_types[0];
-    if (type.type_kind() == XQType::NODE_TYPE_KIND) {
+    if (type.type_kind() == XQType::NODE_TYPE_KIND) 
+    {
       const NodeXQType& nType = static_cast<const NodeXQType&>(type);
+
+      store::StoreConsts::NodeKind nodeKind = nType.get_node_kind();
+
+      if (nodeKind == store::StoreConsts::piNode ||
+          nodeKind == store::StoreConsts::commentNode)
+      {
+        return RTM.create_atomic_type(TypeConstants::XS_STRING, q);
+      }
+
+      if (nodeKind == store::StoreConsts::documentNode ||
+          nodeKind == store::StoreConsts::textNode)
+      {
+        return RTM.create_atomic_type(TypeConstants::XS_UNTYPED_ATOMIC, q);
+      }
+
       xqtref_t cType = nType.get_content_type();
-      if (cType != NULL) {
-        if (TypeOps::is_equal(*cType, *GENV_TYPESYSTEM.UNTYPED_TYPE))
-          return GENV_TYPESYSTEM.create_atomic_type (TypeConstants::XS_UNTYPED_ATOMIC, q);
+      if (cType != NULL) 
+      {
+        if (TypeOps::is_equal(*cType, *RTM.UNTYPED_TYPE))
+          return RTM.create_atomic_type(TypeConstants::XS_UNTYPED_ATOMIC, q);
       }
     }
   }
-  return GENV_TYPESYSTEM.create_atomic_type (TypeConstants::XS_ANY_ATOMIC, q);
+
+  return RTM.create_atomic_type (TypeConstants::XS_ANY_ATOMIC, q);
 }
 
 /*******************************************************************************
