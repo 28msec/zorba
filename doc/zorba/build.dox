@@ -1,9 +1,13 @@
-/** \page build Build Instructions
+												/** \page build Build Instructions
 
 \section requirements Requirements
 
+
 \subsection buildsystem Build System
-In order to build Zorba, you need the Cross-Platform Make CMake 2.4 or higher. You can download it from http://www.cmake.org/.
+
+In order to build Zorba, you need the Cross-Platform Make CMake 2.4 or
+higher, but not CMake 2.6.3 which has a serious bug preventing Zorba
+build. You can download it from http://www.cmake.org/.
 
 \subsection compilers Compilers
 Zorba is tested with the following compilers:
