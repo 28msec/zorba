@@ -38,7 +38,9 @@ int uuid_create(uuid_t *uuid)
   xqp_ulong timestamp, last_time;
   xqp_short clockseq;
   uuid_node_t node;
+  memset(&node, 0, sizeof(uuid_node_t));
   uuid_node_t last_node;
+  memset(&last_node, 0, sizeof(uuid_node_t));
   int f;
 
   //acquire system-wide lock so we're alone
@@ -95,7 +97,7 @@ int read_state(xqp_short *clockseq, xqp_ulong *timestamp,
                uuid_node_t *node)
 {
   static int inited = 0;
-  FILE *fp;
+  FILE *fp = 0;
 
   //only need to read state once per boot
   if (!inited) {
@@ -118,7 +120,7 @@ void write_state(xqp_short clockseq, xqp_ulong timestamp,
 {
   volatile static bool inited = false;
   static xqp_ulong next_save;
-  FILE* fp;
+  FILE* fp = 0;
 
   if (!inited) {
     next_save = timestamp;

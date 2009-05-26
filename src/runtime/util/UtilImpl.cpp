@@ -209,6 +209,7 @@ ZorbaUUIDIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t     item;
   uuid_t            u;
+  memset(&u, 0, sizeof(uuid_t));
   xqpStringStore_t  uuidStr;
 
   uuid_create(&u);
