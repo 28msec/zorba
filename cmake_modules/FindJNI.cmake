@@ -25,6 +25,7 @@ SET(JAVA_AWT_LIBRARY_DIRECTORIES
   /usr/lib
   /usr/local/lib
   /usr/lib/jvm/java/lib
+  /usr/lib/jvm/java/jre/lib/i386
   /usr/lib/java/jre/lib/i386
   /usr/local/lib/java/jre/lib/i386
   /usr/local/share/java/jre/lib/i386
