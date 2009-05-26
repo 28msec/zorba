@@ -8,13 +8,21 @@ INCLUDE(InstallRequiredSystemLibraries)
 FILE(GLOB Zorba_DLLS ${Zorba_DLL_DIR_CMAKE}/*.dll)
 INSTALL(PROGRAMS ${Zorba_DLLS} DESTINATION bin)
 
-# cURL
+# cURL and its externals
 STRING( REPLACE ".lib" ".dll" CURL_DLL_TMP ${CURL_LIBRARIES} )
 STRING( REPLACE "_imp" "" CURL_DLL ${CURL_DLL_TMP} )
 INSTALL(PROGRAMS ${CURL_DLL} DESTINATION bin)
+MESSAGE ( STATUS "curl = "${CURL_DLL}  )
+
 # the zlib1 that comes with cURL
 STRING ( REPLACE "libcurl.dll" "zlib1.dll" ZLIB_DLL ${CURL_DLL} )
 INSTALL( PROGRAMS ${ZLIB_DLL} DESTINATION bin )
+MESSAGE ( STATUS "zlib = " ${ZLIB_DLL} )
+STRING ( REPLACE "libcurl.dll" "libeay32.dll" EAY_DLL ${CURL_DLL} )
+MESSAGE ( STATUS "eay= " ${EAY_DLL} )
+INSTALL( PROGRAMS ${EAY_DLL} DESTINATION bin )
+STRING ( REPLACE "libcurl.dll" "ssleay32.dll" SSLEAY_DLL ${CURL_DLL} )
+INSTALL( PROGRAMS ${SSLEAY_DLL} DESTINATION bin )
 
 # Make sure to build the .dll
 STRING ( REPLACE ".lib" ".dll" TIDY_DLL ${LIBTIDY_LIBRARIES} )
