@@ -626,8 +626,8 @@ var_expr *lookup_var (store::Item_t varname)
       xquery_version = StaticContextConsts::xquery_version_1_1;
       return StaticContextConsts::xquery_version_1_1;
     }
-    // ignore otherwise
-    return StaticContextConsts::xquery_version_1_0; // TODO: the spec says the default should be 1.1 for a 1.1 processor
+    else
+      return StaticContextConsts::xquery_version_unknown;
   }
   
 expr_t wrap_in_atomization (expr_t e) {
@@ -4020,7 +4020,12 @@ void *begin_visit (const VersionDecl& v) {
   TRACE_VISIT ();
   if (! xqp_string (v.get_encoding ()).matches ("^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
     ZORBA_ERROR_LOC (XQST0087, loc);
-  sctx_p->set_xquery_version(parse_xquery_version(&v));
+
+  StaticContextConsts::xquery_version_t ver = parse_xquery_version(&v);
+  if (ver == StaticContextConsts::xquery_version_unknown)
+    ZORBA_ERROR_LOC(XQST0031, loc);
+
+  sctx_p->set_xquery_version(ver);
   return no_state;
 }
 
