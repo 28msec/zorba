@@ -185,7 +185,7 @@ bool
 URI::is_unreserved_char(char c)
 {
   std::string lMarkCharacter("-_.!~*'{}");
-  return (is_alphanum(c) || lMarkCharacter.find(c) != std::string::npos);
+  return (is_alphanum(c) || (c == ' ') || lMarkCharacter.find(c) != std::string::npos);
 }
 
 bool
@@ -199,7 +199,7 @@ bool
 URI::is_reservered_or_unreserved_char(char c)
 {
   std::string lMarkOrReservedChars("-_.!~*'();/?:@&=+$,[]");
-  return (is_alphanum(c) || lMarkOrReservedChars.find(c) != std::string::npos);
+  return (is_alphanum(c) || (c == ' ') || lMarkOrReservedChars.find(c) != std::string::npos);
 }
 
 // initialize this uri based on a base-uri (i.e. uri resolving) and a (relative) uri given as string
