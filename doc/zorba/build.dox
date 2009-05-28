@@ -26,7 +26,7 @@ In order to build Zorba, you need the following libraries and development header
   - Tidy (used to enable tidy functions; http://tidy.sourceforge.net)
 - <em>Optional Packages that are required if you want to build the scanner and parser</em>
   - Flex 2.5.33 or higher (http://flex.sourceforge.net/)
-  - Bison 2.3 or higher (http://www.gnu.org/software/bison/)
+  - Bison 2.4 or higher (http://www.gnu.org/software/bison/)
 
 \subsection buildingzorba Building Zorba
 -# Install the Zorba source distribution (see \ref installation). The directory in which the Zorba
