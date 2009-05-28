@@ -834,49 +834,42 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
           parent = child;
           break;
         }
-        else if (pos !=  OrdPath::FOLLOWING)
+        else if (pos != OrdPath::FOLLOWING)
         {
           result = NULL;
           return false;
         }
       }
+    }
 
-      if (i == numAttrs) {
+    ulong numChildren = parent->numChildren();
+    for (i = 0; i < numChildren; i++)
+    {
+      XmlNode* child = parent->getChild(i);
+      
+      OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(op);
+
+      if (pos == OrdPath::SELF)
+      {
+        result = child;
+        return result != NULL;
+      }
+      else if (pos == OrdPath::DESCENDANT)
+      {
+        parent = child;
+        break;
+      }
+      else if (pos != OrdPath::FOLLOWING)
+      {
         result = NULL;
         return false;
       }
     }
-    else
+    
+    if (i == numChildren)
     {
-      ulong numChildren = parent->numChildren();
-      for (i = 0; i < numChildren; i++)
-      {
-        XmlNode* child = parent->getChild(i);
-
-        OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(op);
-
-        if (pos == OrdPath::SELF)
-        {
-          result = child;
-          return result != NULL;
-        }
-        else if (pos == OrdPath::DESCENDANT)
-        {
-          parent = child;
-          break;
-        }
-        else if (pos !=  OrdPath::FOLLOWING)
-        {
-          result = NULL;
-          return false;
-        }
-      }
-
-      if (i == numChildren)
-      {
-        result = NULL;
-        return false;
-      }
+      result = NULL;
+      return false;
     }
   }
 }
