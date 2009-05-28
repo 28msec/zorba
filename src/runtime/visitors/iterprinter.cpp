@@ -16,6 +16,7 @@
 #include <iostream>
 
 #include "runtime/visitors/iterprinter.h"
+#include <zorbautils/strutil.h>
 
 namespace zorba {
 
@@ -123,7 +124,14 @@ void DOTIterPrinter::endBeginVisit(int aAddr)
 void DOTIterPrinter::addAttribute(const std::string& aName, const std::string& aValue)
 {
   printSpaces(theIndent);
-  theOStream << "\\n" << aName << "=" << aValue;
+  if(aValue.find('"') == std::string::npos)
+    theOStream << "\\n" << aName << "=" << aValue;
+  else
+  {
+    std::string mvalue = aValue;
+    zorba::str_replace_all(mvalue, "\"", "\\\"");
+    theOStream << "\\n" << aName << "=" << mvalue;
+  }
 }
 
 
