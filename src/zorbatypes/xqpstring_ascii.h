@@ -37,6 +37,7 @@ class ZORBA_DLL_PUBLIC xqpStringStore : public RCObject
 
 public:
   typedef ptrdiff_t distance_type;
+  typedef uint32_t char_type;
 
 protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
@@ -104,12 +105,18 @@ public:
 
   std::string::size_type numChars() const;
 
+  // This function should be rewritten to work in an iterator-style
+  char_type charAt(std::string::size_type pos) const;
+
   char byteAt (std::string::size_type i) const { return str () [i]; }
 
   char operator[](std::string::size_type i) const { return str()[i]; }
 
   uint32_t 
   hash(const XQPCollator* = 0) const;
+
+  bool
+  operator==(char_type ch) const;
 
   bool
   byteEqual(const xqpStringStore& src) const;
@@ -158,7 +165,7 @@ public:
   compare(const xqpStringStore* src, const XQPCollator* coll = 0) const;
   
   int32_t
-  indexOf(const char* pattern) const;
+  indexOf(const char* pattern, unsigned int pos = 0) const;
 
   int32_t
   indexOf(const xqpStringStore* pattern, XQPCollator* col) const;
@@ -191,6 +198,9 @@ public:
 
   xqpStringStore_t
   substr(std::string::size_type index, std::string::size_type length) const;
+
+  xqpStringStore_t
+  reverse() const;
 
   xqpStringStore_t
   uppercase() const;
@@ -296,6 +306,11 @@ template class  rchandle<xqpStringStore>;
      */
     xqpString(const char* src);
 
+    /**Construct a xqpString given a wchar_t.
+     * @param src %Source wchar_t string
+     */
+    xqpString(const wchar_t * src);
+
     /**
      * @param initial_len preallocates some bytes but the string is empty
     */
@@ -363,6 +378,12 @@ template class  rchandle<xqpStringStore>;
     operator==(const char* src) const
     {
       return (compare(src) == 0);
+    }
+
+    bool
+    operator==(uint32_t codepoint) const
+    {
+      return (*theStrStore == codepoint);
     }
 
     bool
@@ -625,10 +646,12 @@ template class  rchandle<xqpStringStore>;
       replace(xqpString pattern, xqpString replacement, xqpString flags);
 
       xqpString
-      tokenize(xqpString pattern, xqpString flags, /*in-out*/int32_t *match_pos, /*out*/bool *hasmatched) const;
+      tokenize(xqpString pattern, xqpString flags, int32_t *start_pos, bool *hasmatched) const;
 
-      // Removes the leading and trailing whitespace (one of the " \t\r\n")
-      // TODO: xqpString trim_whitespace() const;
+      /**  Return a sequence of wchar_t units given a xqpString (UTF-8 encoded)
+       */
+      //wchar_t *
+      //getWCS(xqpString source) const;
 
 public:
       static xqpString concat(const char *s1, 
@@ -657,11 +680,6 @@ public:
     private:
 
   
-      /**  Return a sequence of wchar_t units given a xqpString (UTF-8 encoded)
-       */
-//      wchar_t * 
-//      getWCS(xqpString source) const;
-
       /**Sets the capacity of the string to at least size
        */
       void
@@ -689,6 +707,7 @@ public:
   std::ostream& 
   operator<<(std::ostream& os, const zorba::xqpStringStore_t src);
 
+  ZORBA_DLL_PUBLIC
   std::ostream& 
   operator<<(std::ostream& os, zorba::xqpString utf8_src);
 

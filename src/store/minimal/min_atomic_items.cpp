@@ -60,6 +60,36 @@ void AtomicItem::getTypedValue(store::Item_t& val, store::Iterator_t& iter) cons
 
 
 /*******************************************************************************
+  class UntypedAtomicItem
+********************************************************************************/
+store::Item* UntypedAtomicItemImpl::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+}
+
+
+uint32_t UntypedAtomicItemImpl::hash(long timezone, const XQPCollator* aCollation) const
+{
+  return theValue->hash();
+}
+
+
+store::Item_t UntypedAtomicItemImpl::getEBV() const
+{
+  bool b = ! ( theValue->str() == "" );
+  store::Item_t bVal;
+  CREATE_BOOLITEM(bVal, b);
+  return bVal;
+}
+
+
+xqp_string UntypedAtomicItemImpl::show() const
+{
+  return "xs:untypedAtomic(" + theValue->str() + ")";
+}
+
+
+/*******************************************************************************
   class QNameItemImpl
 ********************************************************************************/
 
@@ -68,9 +98,16 @@ xqpStringStore_t QNameItemImpl::theEmptyPrefix(new xqpStringStore(""));
 
 QNameItemImpl::~QNameItemImpl() 
 {
-  if (isValid() && !isNormalized())
+  if (isValid())
   {
+    if (isNormalized())
+    {
+      unsetLocal();
+    }
+    else
+    {
     unsetNormalized();
+  }
   }
 }
 
@@ -81,28 +118,44 @@ void QNameItemImpl::free()
 }
 
 
+void QNameItemImpl::setLocal(xqpStringStore* local)  
+{
+  assert(theUnion.theLocal == NULL);
+
+  theUnion.theLocal = local;
+  local->addReference(NULL SYNC_PARAM2(local->getRCLock()));
+}
+
+
+void QNameItemImpl::unsetLocal()  
+{
+  assert(theUnion.theLocal != NULL && isNormalized());
+
+  theUnion.theLocal->removeReference(NULL SYNC_PARAM2(theUnion.theLocal->getRCLock()));
+  theUnion.theLocal = NULL;
+}
+
+
 void QNameItemImpl::setNormalized(QNameItemImpl* qn)  
 {
-  assert(theLocal == NULL);
+  assert(theUnion.theNormQN == NULL);
 
-  *reinterpret_cast<QNameItemImpl**>(&theLocal) = qn;
+  theUnion.theNormQN = qn;
   qn->addReference(NULL SYNC_PARAM2(qn->getRCLock()));
 }
 
 
 void QNameItemImpl::unsetNormalized()  
 {
-  assert(theLocal != NULL && !isNormalized());
+  assert(theUnion.theNormQN != NULL && !isNormalized());
 
-  QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(theLocal.getp());
-  qn->removeReference(NULL SYNC_PARAM2(qn->getRCLock()));
-  theLocal.setNull();
+  theUnion.theNormQN->removeReference(NULL SYNC_PARAM2(theUnion.theNormQN->getRCLock()));
+  theUnion.theNormQN = NULL;
 }
 
 
 uint32_t QNameItemImpl::hash(long timezone, const XQPCollator* aCollation) const
 {
-  //return (uint32_t)getNormalized();
   const void* tmp = getNormalized();
   return hashfun::h32(tmp, FNV_32_INIT);
 }
@@ -235,6 +288,9 @@ store::Item* StringItemNaive::getType() const
 
 uint32_t StringItemNaive::hash(long timezone, const XQPCollator* aCollation) const
 {
+  if (aCollation == NULL || aCollation->doMemCmp())
+    return xqpStringStore::hash(theValue->c_str());
+
   return theValue->hash(aCollation);
 }
 
@@ -406,46 +462,6 @@ store::Item* ENTITYItemImpl::getType() const
 xqp_string ENTITYItemImpl::show() const
 {
   return "xs:ENTITY(" + theValue->str() + ")";
-}
-
-
-
-/*******************************************************************************
-  class UntypedAtomicItem
-********************************************************************************/
-store::Item* UntypedAtomicItemImpl::getType() const
-{
-  return GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
-}
-
-
-uint32_t UntypedAtomicItemImpl::hash(long timezone, const XQPCollator* aCollation) const
-{
-  return theValue->hash();
-}
-
-
-bool UntypedAtomicItemImpl::equals(
-    const store::Item* other,
-    long timezone,
-    const XQPCollator* aCollation) const
-{
-  return theValue->byteEqual(other->getString()->str());
-}
-
-
-store::Item_t UntypedAtomicItemImpl::getEBV() const
-{
-  bool b = ! ( theValue->str() == "" );
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
-}
-
-
-xqp_string UntypedAtomicItemImpl::show() const
-{
-  return "xs:untypedAtomic(" + theValue->str() + ")";
 }
 
 
@@ -1201,13 +1217,6 @@ store::Item* ShortItemNaive::getType() const
   return GET_STORE().theSchemaTypeNames[XS_SHORT];
 }
 
-bool ShortItemNaive::equals(
-    const store::Item* aItem,
-    long timezone,
-    const XQPCollator* coll ) const
-{
-  return theValue == aItem->getLongValue();
-}
 
 store::Item_t ShortItemNaive::getEBV() const 
 {
@@ -1343,13 +1352,6 @@ store::Item* ByteItemNaive::getType() const {
   return GET_STORE().theSchemaTypeNames[XS_BYTE];
 }
 
-bool ByteItemNaive::equals(
-    const store::Item* aItem,
-    long timezone,
-    const XQPCollator* coll ) const
-{
-  return theValue == aItem->getLongValue();
-}
 
 store::Item_t ByteItemNaive::getEBV() const 
 {
@@ -1467,14 +1469,6 @@ store::Item* BooleanItemNaive::getType() const
   return GET_STORE().theSchemaTypeNames[XS_BOOLEAN];
 }
 
-bool BooleanItemNaive::equals (
-    const store::Item* item,
-    long timezone,
-    const XQPCollator* aCollation ) const
-{
-  return item->getBooleanValue() == theValue;
-}
-
 uint32_t BooleanItemNaive::hash ( long timezone, const XQPCollator* aCollation ) const
 {
   return theValue?0:1;
@@ -1525,13 +1519,6 @@ store::Item* Base64BinaryItemNaive::getType() const
   return GET_STORE().theSchemaTypeNames[XS_BASE64BINARY];
 }
 
-bool Base64BinaryItemNaive::equals(
-    const store::Item* aItem,
-    long timezone,
-    const XQPCollator* coll ) const 
-{
-  return theValue.equal(aItem->getBase64BinaryValue());
-}
 
 xqpStringStore_t Base64BinaryItemNaive::getStringValue() const 
 {
@@ -1567,13 +1554,6 @@ store::Item* HexBinaryItemNaive::getType() const
   return GET_STORE().theSchemaTypeNames[XS_HEXBINARY];
 }
 
-bool HexBinaryItemNaive::equals(
-    const store::Item* aItem,
-    long timezone,
-    const XQPCollator* coll ) const 
-{
-  return theValue.equal(aItem->getHexBinaryValue());
-}
 
 xqpStringStore_t HexBinaryItemNaive::getStringValue() const 
 {

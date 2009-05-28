@@ -972,15 +972,23 @@ bool BasicItemFactory::createAttributeNode(
   XmlTree* xmlTree = NULL;
   AttributeNode* n = NULL;
 
-  XmlNode* pnode = reinterpret_cast<XmlNode*>(parent);
+  assert(parent == NULL || parent->getNodeKind() == store::StoreConsts::elementNode);
+
+  ElementNode* pnode = reinterpret_cast<ElementNode*>(parent);
 
   try
   {
     if (parent == NULL)
+    {
       xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+    }
+    else
+    {
+      pnode->checkUniqueAttr(nodeName.getp());
+    }
 
-    n = new AttributeNode(xmlTree, pnode, pos, 
-                          nodeName, typeName, typedValue, isId, isIdRefs, false);
+    n = new AttributeNode(xmlTree, pnode, pos,
+                          nodeName, typeName, typedValue, false, isId, isIdRefs, false, 0);
   }
   catch (...)
   {
@@ -1000,23 +1008,29 @@ bool BasicItemFactory::createAttributeNode(
     store::Item_t&              nodeName,
     store::Item_t&              typeName,
     std::vector<store::Item_t>& typedValueV,
-    bool            isId,
-    bool            isIdRefs)
+    bool                        isId,
+    bool                        isIdRefs)
 {
   XmlTree* xmlTree = NULL;
   AttributeNode* n = NULL;
 
-  XmlNode* pnode = reinterpret_cast<XmlNode*>(parent);
+  ElementNode* pnode = reinterpret_cast<ElementNode*>(parent);
 
   try
   {
     if (parent == NULL)
+    {
       xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+    }
+    else
+    {
+      pnode->checkUniqueAttr(nodeName.getp());
+    }
 
     store::Item_t typedValue = new ItemVector(typedValueV);
  
     n = new AttributeNode(xmlTree, pnode, pos,
-                          nodeName, typeName, typedValue, isId, isIdRefs, true);
+                          nodeName, typeName, typedValue, true, isId, isIdRefs, false, 0);
   }
   catch (...)
   {
@@ -1101,9 +1115,9 @@ bool BasicItemFactory::createTextNode(
 }
 
 /*******************************************************************************
-  Create a new text node N to store the typed value a given element node P (the
-  parent of N) that has simple type or complex type with simple content. P is
-  not allowed to have any other text or element children. 
+  Create a new text node N to store the typed value of a given element node P
+  (the parent of N) that has simple type or complex type with simple content.
+  P is not allowed to have any other text or element children. 
 
   parent        : The parent P of the new text node; must not be NULL.
   content       : The typed value of P.

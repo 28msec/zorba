@@ -1448,7 +1448,7 @@ xqpString FloatImpl<FloatType>::toString(bool no_scientific_format) const {
 
 #else //ZORBA_NO_BIGNUMBERS
 template <typename FloatType>
-xqpString FloatImpl<FloatType>::toString() const {
+xqpString FloatImpl<FloatType>::toString(bool no_scientific_format) const {
   switch(theType) {
     case FloatCommons::NOT_A_NUM:
       return FloatCommons::get_NOT_A_NUM_STR();
@@ -1463,49 +1463,55 @@ xqpString FloatImpl<FloatType>::toString() const {
       break;
   }
 
-  char lBuffer[174];
-  if(theFloatImpl == 0)
-    sprintf(lBuffer, "0.0");
-  else if((fabs(theFloatImpl) < 9.9999997e-7) || (fabs(theFloatImpl) > 9.9999997e5))
-    sprintf(lBuffer, "%#1.10E", (double)theFloatImpl);
-  else
-    sprintf(lBuffer, "%#lf", (double)theFloatImpl);
+  MAPM absVal = fabs(theFloatImpl);
+  MAPM lower = 0.000001, upper = 1000000;
+  if (no_scientific_format || (absVal < upper && absVal >= lower) || absVal == 0) {
+    return Decimal::decimalToString(theFloatImpl);
+  } else {
+    char lBuffer[174];
+    if(theFloatImpl == 0)
+      sprintf(lBuffer, "0.0");
+    else if((fabs(theFloatImpl) < 9.9999997e-7) || (fabs(theFloatImpl) > 9.9999997e5))
+      sprintf(lBuffer, "%#1.10E", (double)theFloatImpl);
+    else
+      sprintf(lBuffer, "%#lf", (double)theFloatImpl);
 
-  char  *lE = strchr(lBuffer, 'E');
-  char  *lZeros;
+    char  *lE = strchr(lBuffer, 'E');
+    char  *lZeros;
 
-  if(lE)
-    lZeros = lE-1;
-  else
-    lZeros = lBuffer + strlen(lBuffer) - 1;
-  while(*lZeros == '0') 
-    --lZeros; 
-  if (lE)
-  {
-    if(*lZeros == '.')
-      ++lZeros;
-    lZeros[1] = 'E';
-    lE++;
-    if(*lE == '+')
-      lE++;
-    else if(*lE == '-')
+    if(lE)
+      lZeros = lE-1;
+    else
+      lZeros = lBuffer + strlen(lBuffer) - 1;
+    while(*lZeros == '0') 
+      --lZeros; 
+    if (lE)
     {
-      lZeros++;
-      lZeros[1] = '-';
+      if(*lZeros == '.')
+        ++lZeros;
+      lZeros[1] = 'E';
       lE++;
+      if(*lE == '+')
+        lE++;
+      else if(*lE == '-')
+      {
+        lZeros++;
+        lZeros[1] = '-';
+        lE++;
+      }
+      while(*lE == '0')
+        lE++;
+      strcpy(lZeros+2, lE);
     }
-    while(*lE == '0')
-      lE++;
-    strcpy(lZeros+2, lE);
-  }
-  else
-  {
-    if(*lZeros == '.')
-      lZeros--;
-    lZeros[1] = 0;
-  }
+    else
+    {
+      if(*lZeros == '.')
+        lZeros--;
+      lZeros[1] = 0;
+    }
 
-  return lBuffer;
+    return lBuffer;
+  }
 }
 
 #endif//ZORBA_NO_BIGNUMBERS

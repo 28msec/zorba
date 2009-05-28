@@ -88,7 +88,7 @@ void PULImpl::addDelete(store::Item_t& target)
 {
   XmlNode* n = BASE_NODE(target);
 
-  NodeUpdates* updates;
+  NodeUpdates* updates = NULL;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
   if (!found)
@@ -269,6 +269,17 @@ void PULImpl::addReplaceNode(
 
   if (target->getNodeKind() == store::StoreConsts::attributeNode)
   {
+    ElementNode* elemParent = reinterpret_cast<ElementNode*>(n->theParent);
+
+    if (elemParent != NULL)
+    {
+      ulong numNewAttrs = newNodes.size();
+      for (ulong i = 0; i < numNewAttrs; ++i)
+      {
+        elemParent->checkNamespaceConflict(newNodes[i]->getNodeName(), XUDY0023); 
+      }
+    }
+
     upd = new UpdReplaceAttribute(this, parent, target, newNodes, copymode);
     kind = store::UpdateConsts::UP_REPLACE_ATTRIBUTE;
   }
@@ -313,7 +324,7 @@ void PULImpl::addReplaceContent(
 {
   XmlNode* n = BASE_NODE(target);
 
-  NodeUpdates* updates;
+  NodeUpdates* updates = NULL;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
   if (!found)
@@ -349,7 +360,7 @@ void PULImpl::addReplaceValue(store::Item_t& target, xqpStringStore_t& newValue)
   XmlNode* n = BASE_NODE(target);
   store::StoreConsts::NodeKind targetKind = n->getNodeKind();
 
-  NodeUpdates* updates;
+  NodeUpdates* updates = NULL;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
   UpdatePrimitive* upd;
@@ -405,7 +416,7 @@ void PULImpl::addRename(store::Item_t& target, store::Item_t& newName)
   XmlNode* n = BASE_NODE(target);
   store::StoreConsts::NodeKind targetKind = n->getNodeKind();
 
-  NodeUpdates* updates;
+  NodeUpdates* updates = NULL;
   bool found = theNodeToUpdatesMap.get(n, updates);
 
   UpdatePrimitive* upd;
@@ -413,11 +424,19 @@ void PULImpl::addRename(store::Item_t& target, store::Item_t& newName)
   {
   case store::StoreConsts::elementNode:
   {
+    ElementNode* elemTarget = ELEM_NODE(target);
+    elemTarget->checkNamespaceConflict(newName.getp(), XUDY0023);
+
     upd = new UpdRenameElem(this, target, newName);
     break;
   }
   case store::StoreConsts::attributeNode:
   {
+    ElementNode* elemParent = reinterpret_cast<ElementNode*>(n->theParent);
+
+    if (elemParent != NULL)
+      elemParent->checkNamespaceConflict(newName.getp(), XUDY0023);
+
     upd = new UpdRenameAttr(this, target, newName);
     break;
   }
@@ -746,10 +765,12 @@ void PULImpl::mergeUpdateList(
 
     if (updKind == store::UpdateConsts::UP_REPLACE_CHILD)
       target = BASE_NODE(reinterpret_cast<UpdReplaceChild*>(upd)->theChild);
+    else if (updKind == store::UpdateConsts::UP_REPLACE_ATTRIBUTE)
+      target = BASE_NODE(reinterpret_cast<UpdReplaceAttribute*>(upd)->theAttr);
     else
       target = BASE_NODE(upd->theTarget);
 
-    NodeUpdates* targetUpdates;
+    NodeUpdates* targetUpdates = NULL;
     bool found = (target == NULL ?
                   false : 
                   theNodeToUpdatesMap.get(target, targetUpdates));
@@ -904,6 +925,10 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     applyList(theValidationList);
     applyList(theDeleteFromCollectionList);
     applyList(theDeleteCollectionList);
+
+    ulong numToRecheck = thePrimitivesToRecheck.size();
+    for (ulong i = 0; i < numToRecheck; ++i)
+      thePrimitivesToRecheck[i]->check();
   }
   catch (error::ZorbaError& e)
   {
@@ -911,14 +936,33 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     std::cerr << "Exception thrown during pul::applyUpdates: "
               << std::endl <<  e.theDescription << std::endl;
 #endif
-    //ZORBA_FATAL(0, "");
-    undoUpdates();
+
+    try
+    {
+      undoUpdates();
+    }
+    catch (...)
+    {
+      ZORBA_FATAL(0, "Error during pul::undoUpdates()");
+    }
+
     throw e;
   }
   catch(...)
   {
-    //ZORBA_FATAL(0, "");
-    undoUpdates();
+#ifndef NDEBUG
+    std::cerr << "Unknown exception thrown during pul::applyUpdates " << std::endl;
+#endif
+
+    try
+    {
+      undoUpdates();
+    }
+    catch (...)
+    {
+      ZORBA_FATAL(0, "Error during pul::undoUpdates()");
+    }
+
     throw;
   }
 
@@ -1016,13 +1060,7 @@ void UpdDelete::apply()
 
   if (theParent != NULL)
   {
-    thePos = target->disconnect();
-
-    store::StoreConsts::NodeKind targetKind = target->getNodeKind();
-    if (targetKind == store::StoreConsts::elementNode || 
-        targetKind == store::StoreConsts::attributeNode ||
-        targetKind == store::StoreConsts::textNode)
-      theParent->removeType(*this);
+    theParent->deleteChild(*this);
   }
 
   theIsApplied = true;
@@ -1033,12 +1071,7 @@ void UpdDelete::undo()
 {
   if (theParent != NULL)
   {
-    XmlNode* target = BASE_NODE(theTarget);
-
-    target->connect(theParent, thePos);
-
-    if (!theTypeUndoList.empty())
-      target->theParent->restoreType(theTypeUndoList);
+    theParent->restoreChild(*this);
   }
 }
 
@@ -1061,11 +1094,27 @@ UpdInsertChildren::UpdInsertChildren(
 {
   theSibling.transfer(sibling);
 
+  ulong numNewChildren = 0;
   ulong numChildren = children.size();
   theNewChildren.resize(numChildren);
+
   for (ulong i = 0; i < numChildren; i++)
   {
-    theNewChildren[i].transfer(children[i]);
+    if (i > 0 &&
+        children[i]->getNodeKind() == store::StoreConsts::textNode &&
+        theNewChildren[i-1]->getNodeKind() == store::StoreConsts::textNode)
+    {
+      TextNode* node1 = reinterpret_cast<TextNode*>(theNewChildren[i-1].getp());
+      TextNode* node2 = reinterpret_cast<TextNode*>(children[i].getp());
+
+      xqpStringStore_t newText = node1->getText()->append(node2->getText());
+      node1->setText(newText);
+    }
+    else
+    {
+      theNewChildren[i].transfer(children[i]);
+      ++numNewChildren;
+    }
 
     if (theRemoveType == false)
     {
@@ -1075,6 +1124,8 @@ UpdInsertChildren::UpdInsertChildren(
         theRemoveType = true;
     }
   }
+
+  theNewChildren.resize(numNewChildren);
 }
 
 
@@ -1165,6 +1216,13 @@ void UpdInsertAttributes::undo()
 }
 
 
+void UpdInsertAttributes::check()
+{
+  ElementNode* target = ELEM_NODE(theTarget);
+  target->checkUniqueAttrs();
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1198,6 +1256,13 @@ void UpdReplaceAttribute::apply()
 void UpdReplaceAttribute::undo()
 {
   ELEM_NODE(theTarget)->restoreAttribute(*this);
+}
+
+
+void UpdReplaceAttribute::check()
+{
+  ElementNode* target = ELEM_NODE(theTarget);
+  target->checkUniqueAttrs();
 }
 
 
@@ -1367,6 +1432,17 @@ void UpdRenameAttr::undo()
 }
 
 
+void UpdRenameAttr::check()
+{
+  AttributeNode* attr = ATTR_NODE(theTarget);
+  if (attr->getParent() != NULL)
+  {
+    ElementNode* parent = reinterpret_cast<ElementNode*>(attr->getParent());
+    parent->checkUniqueAttrs();
+  }
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1390,6 +1466,15 @@ void UpdSetAttributeType::apply()
 /*******************************************************************************
 
 ********************************************************************************/
+UpdReplaceTextValue::~UpdReplaceTextValue()
+{
+  if (theIsTyped)
+    theOldContent.setValue(NULL);
+  else
+    theOldContent.setText(NULL);
+}
+
+
 void UpdReplaceTextValue::apply()
 {
   TEXT_NODE(theTarget)->replaceValue(*this);

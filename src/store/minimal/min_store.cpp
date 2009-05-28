@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include <iostream>
+
 #include <climits>
 
 #include "zorbautils/hashfun.h"
@@ -571,6 +572,15 @@ void SimpleStore::deleteDocument(const xqpStringStore_t& uri)
     return;
 
   theDocuments.remove(uri);
+}
+
+
+/*******************************************************************************
+  Delete all the documents.
+********************************************************************************/
+void SimpleStore::deleteAllDocuments()
+{
+  theDocuments.clear();
 }
 
 

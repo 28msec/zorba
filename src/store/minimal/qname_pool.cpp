@@ -68,7 +68,7 @@ QNamePool::~QNamePool()
       QNameItemImpl* qn = theHashSet.theHashTab[i].theItem;
 
       if (!qn->isNormalized())
-        qn->theLocal.setNull();
+        qn->detachNormalized();
 
       if (theHashSet.theHashTab[i].theItem->isOverflow())
         delete theHashSet.theHashTab[i].theItem;
@@ -114,9 +114,9 @@ void QNamePool::remove(QNameItemImpl* qn)
     }
     else
     {
-      // Set qn->theLocal so that the assertion in setNormalized() (which is
+      // UnSet qn->theLocal so that the assertion in setNormalized() (which is
       // invoked later by the caller of this method) will not trigger.
-      qn->theLocal = NULL;
+      qn->unsetLocal();
     }
   }
   else
@@ -147,12 +147,11 @@ store::Item_t QNamePool::insert(
     const char* ln,
     bool        sync)
 {
-  QNameItemImpl* qn;
+  QNameItemImpl* qn = NULL;
   QNameItemImpl* normVictim = NULL;
   SYNC_CODE(bool haveLock = false;)
-  bool haveNormQName = false;
   store::Item_t normItem;
-  QNameItemImpl* normQName;
+  QNameItemImpl* normQName = NULL;
 
   bool normalized = (pre == NULL || *pre == '\0');
 
@@ -183,11 +182,11 @@ retry:
         qn = cacheInsert(normVictim);
         qn->theNamespace.transfer(pooledNs);
         qn->thePrefix = QNameItemImpl::theEmptyPrefix;
-        qn->theLocal = new xqpStringStore(ln);
+        qn->setLocal(new xqpStringStore(ln));
       }
       else
       {
-        if (!haveNormQName)
+        if (normQName == NULL)
         {
           SYNC_CODE(theHashSet.theMutex.unlock(); \
           haveLock = false;)
@@ -197,7 +196,6 @@ retry:
           normQName = reinterpret_cast<QNameItemImpl*>(normItem.getp());
 
 
-          haveNormQName = true;
           goto retry;
         }
         qn = cacheInsert(normVictim);
@@ -249,12 +247,11 @@ store::Item_t QNamePool::insert(
     const xqpStringStore_t& ln,
     bool                    sync)
 {
-  QNameItemImpl* qn;
+  QNameItemImpl* qn = NULL;
   QNameItemImpl* normVictim = NULL;
   SYNC_CODE(bool haveLock = false;)
-  bool haveNormQName = false;
   store::Item_t normItem;
-  QNameItemImpl* normQName;
+  QNameItemImpl* normQName = NULL;
 
   bool normalized = pre->empty();
 
@@ -279,11 +276,11 @@ retry:
         qn = cacheInsert(normVictim);
         qn->theNamespace.transfer(pooledNs);
         qn->thePrefix = QNameItemImpl::theEmptyPrefix;
-        qn->theLocal = ln;
+        qn->setLocal(ln.getp());
       }
       else
       {
-        if (!haveNormQName)
+        if (normQName == NULL)
         {
           SYNC_CODE(theHashSet.theMutex.unlock(); \
           haveLock = false;)
@@ -293,7 +290,6 @@ retry:
                             ln,
                             false);
           normQName = reinterpret_cast<QNameItemImpl*>(normItem.getp());
-          haveNormQName = true;
           goto retry;
         }
 

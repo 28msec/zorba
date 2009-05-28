@@ -4785,6 +4785,7 @@ void end_visit (const ElementTest& v, void* /*visit_state*/)
 void *begin_visit (const SchemaElementTest& v) 
 {
   TRACE_VISIT ();
+#ifndef ZORBA_NO_XMLSCHEMA
 
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
   rchandle<QName> elemName = v.get_elem();
@@ -4810,7 +4811,9 @@ void *begin_visit (const SchemaElementTest& v)
                                                           TypeConstants::QUANT_ONE);
     tstack.push(seqmatch);
   }
-
+#else//ZORBA_NO_XMLSCHEMA
+    ZORBA_ERROR_LOC (XQP0004_SYSTEM_NOT_SUPPORTED, v.get_location());
+#endif
   return no_state;
 }
 
@@ -4957,6 +4960,7 @@ void end_visit (const PITest& v, void* /*visit_state*/) {
 
 void *begin_visit (const SchemaAttributeTest& v) {
   TRACE_VISIT ();
+#ifndef ZORBA_NO_XMLSCHEMA
   rchandle<match_expr> match = new match_expr(loc);
   match->setTestKind(match_xs_attr_test);
 
@@ -4976,6 +4980,9 @@ void *begin_visit (const SchemaAttributeTest& v) {
 
     tstack.push(seqmatch);
   }
+#else//ZORBA_NO_XMLSCHEMA
+    ZORBA_ERROR_LOC (XQP0004_SYSTEM_NOT_SUPPORTED, v.get_location());
+#endif
   return no_state;
 }
 

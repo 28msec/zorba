@@ -576,6 +576,18 @@ bool XmlLoader::read_attributes(store::NsBindings *nsbindings,//ElementTreeNode 
         nsbindings->push_back(std::pair<xqpString, xqpString>(new xqpStringStore(attr.name.localname), pooledNs.getp()));
       }
     }
+    else if((attr.name.localname_len == 14) && !strcmp(attr.name.localname, "schemaLocation"))
+    {
+      xqpStringStore_t uri;
+      if(fill_in_uri(nsbindings,attr.name.prefix, attr.name.prefix_len, uri) && 
+        uri->byteEqual("http://www.w3.org/2001/XMLSchema-instance"))
+      {
+        xqpStringStore value(temp_buff.c_str());
+        std::string::size_type pos = value.indexOf(" ");
+        xqpStringStore_t schemaUri = value.substr(0, pos);
+        theTree->setSchemaUri(schemaUri);
+      }
+    }
     else
     {
       attr.value = new xqpStringStore(temp_buff.c_str(), temp_buff.length());
@@ -1242,7 +1254,7 @@ XmlNode* XmlLoader::startloadXml(
     {
       endDocument(this);
       ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
-                                     XQP0017_LOADER_PARSING_ERROR,
+                                     STR0008_LOADER_PARSING_ERROR,
                                      "The document with URI " << *theDocUri
                                      <<" is not well formed", "");
       abortload();
@@ -1270,7 +1282,7 @@ bool XmlLoader::continueloadXml(
       if(theErrorManager)
       {
         ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
-                                     XQP0017_LOADER_PARSING_ERROR,
+                                     STR0008_LOADER_PARSING_ERROR,
                                      "The document with URI " << *theDocUri
                                      <<" is not well formed", "");
       }
@@ -1285,7 +1297,7 @@ bool XmlLoader::continueloadXml(
       if(theErrorManager)
       {
         ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
-                                     XQP0017_LOADER_PARSING_ERROR,
+                                     STR0008_LOADER_PARSING_ERROR,
                                      "The document with URI " << *theDocUri
                                      <<" is not well formed", "");
       }
@@ -1304,7 +1316,7 @@ bool XmlLoader::continueloadXml(
     if(theErrorManager)
     {
       ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
-                                   XQP0017_LOADER_PARSING_ERROR,
+                                   STR0008_LOADER_PARSING_ERROR,
                                    "The document with URI " << *theDocUri
                                    <<" is not well formed", "");
     }
@@ -1471,7 +1483,7 @@ void XmlLoader::startElement(
     tag_elem->elemNode->setId(theTree, &theOrdPath);
     theOrdPath.pushChild();
 
-    SYNC_CODE(tag_elem->elemNode->theRCLockPtr = &loader.theTree->getRCLock();)
+    SYNC_CODE(tag_elem->elemNode->theRCLockPtr = &theTree->getRCLock();)
 
     attr_list_t::iterator   attr_it;
     NodeVector& attrNodes = tag_elem->elemNode->attributes();
@@ -1483,7 +1495,7 @@ void XmlLoader::startElement(
       {
         if(!fill_in_uri(NULL, (*attr_it).name.prefix, (*attr_it).name.prefix_len, (*attr_it).name.uri))
         {
-          ZORBA_ERROR_PARAM_OSS(XQP0016_LOADER_IO_ERROR,
+          ZORBA_ERROR_PARAM_OSS(STR0007_LOADER_IO_ERROR,
                 "Cannot find namespace for attribute",  (*attr_it).name.prefix << ":" << (*attr_it).name.localname);
         //  return false;
         }
@@ -1766,7 +1778,7 @@ void  XmlLoader::error(void * ctx, const char * msg, ... )
   if(loader->theErrorManager)
   {
     ZORBA_ERROR_DESC_CONTINUE(loader->theErrorManager,
-                            XQP0017_LOADER_PARSING_ERROR, buf);
+                            STR0008_LOADER_PARSING_ERROR, buf);
   }
 }
 

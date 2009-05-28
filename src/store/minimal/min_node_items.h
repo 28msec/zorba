@@ -220,6 +220,10 @@ protected:
   ulong             theId;
 public:
   XmlNode         * theRootNode;
+
+  xqpStringStore_t          theSchemaUri;
+  bool                      theIsValidated;
+
   //minNodeVector  xml_nodes;//keep all xml nodes here
   XmlLoader_t   attachedloader;
 
@@ -240,6 +244,13 @@ public:
   ulong getId() const           { return theId; }
   XmlNode* getRoot() const      { return theRootNode; }
   void setRoot(XmlNode* root)   { theRootNode = root; }
+
+  xqpStringStore* getSchemaUri() const     { return theSchemaUri.getp(); }
+  void setSchemaUri(xqpStringStore_t& uri) { theSchemaUri.transfer(uri); }
+
+  bool isValidated() const { return theIsValidated; }
+  void markValidated()     { theIsValidated = true; }
+
 };
 
 
@@ -262,6 +273,7 @@ class XmlNode : public store::Item
   friend class TextNode;
   friend class PiNode;
   friend class CommentNode;
+  friend class PULImpl;
   friend class UpdDelete;
   friend class UpdInsertSiblings;
   friend class UpdReplaceChild;
@@ -270,6 +282,7 @@ class XmlNode : public store::Item
   friend class UpdReplaceAttrValue;
   friend class UpdReplaceTextValue;
   friend class BasicItemFactory;
+  friend class XmlLoader;
 
 public:
   enum NodeFlags
@@ -334,13 +347,7 @@ public:
   store::Item* copy(
         store::Item*           parent,
         long            pos,
-        const store::CopyMode& copymode) const
-  {
-    return copy2(static_cast<XmlNode*>(parent),
-                 static_cast<XmlNode*>(parent),
-                 pos,
-                 copymode);
-  }
+        const store::CopyMode& copymode) const;
 
   store::Item_t getEBV() const;
 
@@ -349,6 +356,14 @@ public:
     bool local = false;
     return getBaseURIInternal(local);
   }
+
+  bool haveSchemaUri() const { return getTree()->getSchemaUri() != NULL; }
+
+  xqpStringStore* getSchemaUri() const { return getTree()->getSchemaUri(); }
+
+  bool isValidated() const { return getTree()->isValidated(); }
+
+  void markValidated()     { getTree()->markValidated(); }
 
   virtual xqpStringStore* getDocumentURI() const { return 0; }
 
@@ -388,6 +403,9 @@ public:
 
   void removeChildren(ulong pos, ulong numChildren);
 
+  void deleteChild(UpdDelete& upd);
+  void restoreChild(UpdDelete& upd);
+
   void insertChildren(UpdInsertChildren& upd, ulong pos);
   void undoInsertChildren(UpdInsertChildren& upd);
   
@@ -401,6 +419,9 @@ public:
         XmlNode*        rootParent,
         XmlNode*        parent,
         long            pos,
+        bool                   mergeLeft,
+        bool                   mergeRight,
+        const XmlNode*         rootCopy,
         const store::CopyMode& copyMode) const = 0;
 
   virtual ulong numAttributes() const          { return 0; }
@@ -430,6 +451,7 @@ protected:
 
   ulong disconnect() throw();
   void connect(XmlNode* node, ulong pos) throw();
+  void insertChild(XmlNode* child, ulong pos);
   void removeChild(ulong pos);
   bool removeChild(XmlNode* child);
   void removeAttr(ulong pos);
@@ -492,6 +514,9 @@ public:
         XmlNode*        rootParent,
         XmlNode*        parent,
         long            pos,
+        bool                   mergeLeft,
+        bool                   mergeRight,
+        const XmlNode*         rootCopy,
         const store::CopyMode& copyMode) const;
 
   NsBindingsContext* getNsContext() const                { return NULL; }
@@ -665,11 +690,15 @@ public:
         XQUERY_ERROR ecode) const;
 
   void checkUniqueAttr(const store::Item* attrName) const;
+  void checkUniqueAttrs() const;
 
   XmlNode* copy2(
         XmlNode*        rootParent,
         XmlNode*        parent,
         long            pos,
+        bool                   mergeLeft,
+        bool                   mergeRight,
+        const XmlNode*         rootCopy,
         const store::CopyMode& copymode) const;
 
   void removeAttributes(ulong pos, ulong numAttributes);
@@ -852,9 +881,10 @@ public:
         store::Item_t&   typeName,
         store::Item_t&              typedValue,
         bool                        isListValue,
-        bool                        isId = false,
-        bool                        isIdRef = false,
-        bool                        hidden = false);
+        bool                        isId,
+        bool                        isIdRef,
+        bool                        hidden,
+        ulong                       checkUnique);
 
   virtual ~AttributeNode();
 
@@ -863,6 +893,9 @@ public:
         XmlNode*               rootParent,
         XmlNode*               parent,
         long                   pos,
+        bool                   mergeLeft,
+        bool                   mergeRight,
+        const XmlNode*         rootCopy,
         const store::CopyMode& copymode) const;
 
   store::StoreConsts::NodeKind getNodeKind() const
@@ -930,6 +963,7 @@ class TextNode : public XmlNode
   friend class DocumentDagNode;
   friend class ElementNode;
   friend class BasicItemFactory;
+  friend class UpdInsertChildren;
   friend class UpdSetElementType;
   friend class XmlLoader;
 
@@ -956,6 +990,9 @@ public:
         XmlNode*               rootParent,
         XmlNode*               parent,
         long                   pos,
+        bool                   mergeLeft,
+        bool                   mergeRight,
+        const XmlNode*         rootCopy,
         const store::CopyMode& copymode) const;
 
   store::StoreConsts::NodeKind getNodeKind() const
@@ -1021,6 +1058,9 @@ public:
         XmlNode*        rootParent,
         XmlNode*        parent,
         long            pos,
+        bool                   mergeLeft,
+        bool                   mergeRight,
+        const XmlNode*         rootCopy,
         const store::CopyMode& copymode) const;
 
   store::StoreConsts::NodeKind getNodeKind() const 
@@ -1075,6 +1115,9 @@ public:
         XmlNode*        rootParent,
         XmlNode*        parent,
         long            pos,
+        bool                   mergeLeft,
+        bool                   mergeRight,
+        const XmlNode*         rootCopy,
         const store::CopyMode& copymode) const;
 
   store::StoreConsts::NodeKind getNodeKind() const 

@@ -305,19 +305,29 @@ xqpStringStore_t XmlNode::getBaseURIInternal(bool& local) const
 
 
 /*******************************************************************************
+
+********************************************************************************/
+void XmlNode::insertChild(XmlNode* child, ulong pos)
+{
+  children().insert(child, pos, false);
+
+  child->theParent = this;
+}
+
+
+/*******************************************************************************
   Remove the i-th child of "this" (it is assumed that i < numChildren).
 ********************************************************************************/
-void XmlNode::removeChild(ulong i)
+void XmlNode::removeChild(ulong pos)
 {
+  XmlNode* child = getChild(pos);
 
-  XmlNode* child = getChild(i);
-
-  children().remove(i);
+  children().remove(pos);
 
   if (child->theParent == this)
-      child->theParent = NULL;
-
+    child->theParent = NULL;
 }
+
 
 
 /*******************************************************************************
@@ -327,7 +337,7 @@ void XmlNode::removeChild(ulong i)
 bool XmlNode::removeChild(XmlNode* child)
 {
 
-  bool found = (children().find(child) != 0);
+  bool found = children().remove(child);
 
   if (found)
   {
@@ -424,6 +434,29 @@ void XmlNode::connect(XmlNode* parent, ulong pos) throw()
     parent->children().insert(this, pos, false);
   }
 
+}
+
+store::Item* XmlNode::copy(
+    store::Item*           parent,
+    long                   pos,
+    const store::CopyMode& copymode) const
+{
+  if (getNodeKind() == store::StoreConsts::attributeNode)
+  {
+    if (parent)
+    {
+      ElementNode* pnode = reinterpret_cast<ElementNode*>(parent);
+      pnode->checkUniqueAttr(getNodeName());
+    }
+  }
+
+  return copy2(static_cast<XmlNode*>(parent),
+               static_cast<XmlNode*>(parent),
+               pos,
+               true,
+               true,
+               NULL,
+               copymode);
 }
 
 
@@ -673,6 +706,9 @@ XmlNode* DocumentNode::copy2(
     XmlNode*        rootParent,
     XmlNode*        parent,
     long            pos,
+    bool                   mergeLeft,
+    bool                   mergeRight,
+    const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
   ZORBA_ASSERT(rootParent == NULL && parent == NULL);
@@ -698,7 +734,13 @@ XmlNode* DocumentNode::copy2(
     while(child_iter->next(child_item))
     {
       XmlNode* child = reinterpret_cast<XmlNode*>(child_item.getp());
-      child->copy2(rootParent, copyNode, -1, copymode);
+
+      // If we are copying a subtree into its own containing tree, then avoid
+      // copying the root of this subtree again.
+      if (child == rootCopy)
+        continue;
+
+      child->copy2(rootParent, copyNode, -1, false, false, NULL, copymode);
     }
     child_iter->close();
   }
@@ -1012,6 +1054,9 @@ XmlNode* ElementNode::copy2(
     XmlNode*        rootParent,
     XmlNode*        parent,
     long            pos,
+    bool                   mergeLeft,
+    bool                   mergeRight,
+    const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
   assert(parent != NULL || rootParent == NULL);
@@ -1062,6 +1107,9 @@ XmlNode* ElementNode::copy2(
     copyNode = new ElementTreeNode(tree, parent, pos, nodeName, typeName,
                                    haveValue, haveEmptyValue, isId, isIdRefs,
 								   NULL, false, baseUri);
+
+    if (rootCopy == NULL)
+      rootCopy = copyNode;
 
     if (copymode.theNsPreserve)
     {
@@ -1183,7 +1231,7 @@ XmlNode* ElementNode::copy2(
         copyNode->theFlags |= HaveLocalBindings;
       }
 
-      if (copymode.theNsInherit)
+      if (copymode.theNsInherit && rootParent)
       {
         copyNode->setNsContext(rootParent->getNsContext());
       }
@@ -1210,7 +1258,7 @@ XmlNode* ElementNode::copy2(
         }
       }
 
-      attr->copy2(rootParent, copyNode, -1, copymode);
+      attr->copy2(rootParent, copyNode, -1, false, false, rootCopy, copymode);
     }
 
     if (hiddenBaseUriAttr)
@@ -1244,7 +1292,13 @@ XmlNode* ElementNode::copy2(
     while(child_iter->next(child_item))
     {
       XmlNode* child = reinterpret_cast<XmlNode*>(child_item.getp());
-      child->copy2(rootParent, copyNode, -1, copymode);
+
+      // If we are copying a subtree into its own containing tree, then avoid
+      // copying the root of this subtree again.
+      if (child == rootCopy)
+        continue;
+
+      child->copy2(rootParent, copyNode, -1, mergeLeft, mergeRight, rootCopy, copymode);
     }
     child_iter->close();
   }
@@ -1749,7 +1803,7 @@ void ElementNode::checkNamespaceConflict(
 void ElementNode::checkUniqueAttr(const store::Item* attrName) const
 {
   ulong numAttrs = numAttributes();
-  for (ulong i = 0; i < numAttrs; i++)
+  for (ulong i = 0; i < numAttrs; ++i)
   {
     AttributeNode* attr = getAttr(i);
     if (!attr->isHidden() && attr->getNodeName()->equals(attrName))
@@ -1759,6 +1813,32 @@ void ElementNode::checkUniqueAttr(const store::Item* attrName) const
   }
 }
 
+/*******************************************************************************
+  Check that "this" does not have any attrs with the same name.
+********************************************************************************/
+void ElementNode::checkUniqueAttrs() const
+{
+  ulong numAttrs = numAttributes();
+  for (ulong i = 0; i < numAttrs; ++i)
+  {
+    AttributeNode* attr = getAttr(i);
+
+    if (attr->isHidden())
+      continue;
+
+    const store::Item* attrName = attr->theName.getp();
+
+    for (ulong j = i+1; j < numAttrs; ++j)
+    {
+      AttributeNode* otherAttr = getAttr(j);
+
+      if (!otherAttr->isHidden() && otherAttr->getNodeName()->equals(attrName))
+      {
+        ZORBA_ERROR_PARAM_OSS(XUDY0021, *attrName->getStringValue(), "");
+      }
+    }
+  }
+}
 
 /*******************************************************************************
   Compute the base-uri property of this element node and store it as a a special
@@ -1803,8 +1883,10 @@ void ElementNode::addBaseUriProperty(
     typedValue = new AnyUriItemImpl(resolvedUriString);
   }
 
+  checkUniqueAttr(qname.getp());
+
   new AttributeNode(NULL, this, 0, qname, tname, typedValue, false,
-                    false, false, true);
+                    false, false, true, 0);
   setHaveBaseUri();
 }
 
@@ -2126,14 +2208,15 @@ AttributeNode::AttributeNode(
     bool                        isListValue,
     bool                        isId,
     bool                        isIdRef,
-    bool                        hidden)
+    bool                        hidden,
+    ulong                       checkUnique)
   :
   XmlNode(tree, parent, pos, store::StoreConsts::attributeNode),
   theFlags(0)
 {
   ElementNode* p = reinterpret_cast<ElementNode*>(parent);
 
-  if (p)
+  if (p && checkUnique > 0)
     p->checkUniqueAttr(attrName);
 
   // Normally, no exceptions are expected by the rest of the code here, but
@@ -2272,25 +2355,9 @@ void AttributeNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) c
 ********************************************************************************/
 xqpStringStore_t AttributeNode::getStringValue() const
 {
-  if (haveListValue())
-  {
-    const std::vector<store::Item_t>& items = getValueVector().getItems();
-
-    std::string str = items[0]->getStringValue()->c_str();
-
-    ulong size = items.size();
-    for (ulong i = 1; i < size; i++)
-    {
-      str += " ";
-      str += items[i]->getStringValue()->str();
-    }
-
-    return new xqpStringStore(str);
-  }
-  else
-  {
-    return theTypedValue->getStringValue();
-  }
+  xqpStringStore_t strval;
+  getStringValue(strval);
+  return strval;
 }
 
 void AttributeNode::getStringValue(xqpStringStore_t& strval) const
@@ -2350,6 +2417,9 @@ XmlNode* AttributeNode::copy2(
     XmlNode*               rootParent,
     XmlNode*               parent,
     long                   pos,
+    bool                   mergeLeft,
+    bool                   mergeRight,
+    const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
   assert(parent != NULL || rootParent == NULL);
@@ -2432,7 +2502,8 @@ docopy:
         tree = new XmlTree(NULL, GET_STORE().getTreeId());
 
       copyNode = new AttributeNode(tree, parent, pos, nodeName,
-                                   typeName, typedValue, isListValue, isId, isIdRefs);
+                                   typeName, typedValue, isListValue, 
+                                   isId, isIdRefs, false, 0);
     }
     catch (...)
     {
@@ -2582,6 +2653,9 @@ XmlNode* TextNode::copy2(
     XmlNode*               rootParent,
     XmlNode*               parent,
     long                   pos,
+    bool                   mergeLeft,
+    bool                   mergeRight,
+    const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
   assert(parent != NULL || rootParent == NULL);
@@ -2605,18 +2679,22 @@ XmlNode* TextNode::copy2(
       // Merge adjacent text nodes (if we don't merge, then a query which, say,
       // counts the number of text nodes of some element node will return the
       // wrong result).
-      ulong pos2 = (pos >= 0 ? pos : parent->numChildren());
+      ulong numChildren = parent->numChildren();
+      ulong pos2 = (pos >= 0 ? pos : numChildren);
    
       XmlNode* lsib = (pos2 > 0 ? parent->getChild(pos2-1) : NULL);
+      XmlNode* rsib = (pos2 < numChildren ? parent->getChild(pos2) : NULL);
 
-      if (lsib != NULL && lsib->getNodeKind() == store::StoreConsts::textNode)
+      if (mergeLeft && 
+          lsib != NULL &&
+          lsib->getNodeKind() == store::StoreConsts::textNode)
       {
         TextNode* textSibling = reinterpret_cast<TextNode*>(lsib);
 
         ZORBA_ASSERT(!isTyped());
         ZORBA_ASSERT(!textSibling->isTyped());
 
-        if (lsib->theParent == parent)
+        if (textSibling->theParent == parent)
         {
           textContent = textSibling->getText()->append(getText());
           textSibling->setText(textContent);
@@ -2629,6 +2707,26 @@ XmlNode* TextNode::copy2(
           parent->removeChild(pos2-1);
 
           copyNode = new TextNode(tree, parent, pos2-1, textContent);
+        }
+      }
+      else if (mergeRight &&
+               rsib != NULL &&
+               rsib->getNodeKind() == store::StoreConsts::textNode)
+      {
+        TextNode* textSibling = reinterpret_cast<TextNode*>(rsib);
+
+        ZORBA_ASSERT(!isTyped());
+        ZORBA_ASSERT(!textSibling->isTyped());
+
+        if (textSibling->theParent == parent)
+        {
+          textContent = getText()->append(textSibling->getText());
+          textSibling->setText(textContent);
+          copyNode = textSibling;
+        }
+        else
+        {
+          ZORBA_ASSERT(0);
         }
       }
       // Skip copy if caller says so.
@@ -2846,6 +2944,9 @@ XmlNode* PiNode::copy2(
     XmlNode*               rootParent,
     XmlNode*               parent,
     long                   pos,
+    bool                   mergeLeft,
+    bool                   mergeRight,
+    const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
   assert(parent != NULL || rootParent == NULL);
@@ -2994,6 +3095,9 @@ XmlNode* CommentNode::copy2(
     XmlNode*               rootParent,
     XmlNode*               parent,
     long                   pos,
+    bool                   mergeLeft,
+    bool                   mergeRight,
+    const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
   assert(parent != NULL || rootParent == NULL);

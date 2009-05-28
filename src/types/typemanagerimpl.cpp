@@ -41,7 +41,9 @@
 
 
 using namespace zorba;
+#ifndef ZORBA_NO_XMLSCHEMA
 XERCES_CPP_NAMESPACE_USE
+#endif
 
 
 /***************************************************************************//**
@@ -413,6 +415,7 @@ xqtref_t TypeManagerImpl::create_none_type() const
   return GENV_TYPESYSTEM.NONE_TYPE;
 }
 
+#ifndef ZORBA_NO_XMLSCHEMA
 /***************************************************************************//**
 
 ********************************************************************************/
@@ -508,6 +511,6 @@ xqtref_t TypeManagerImpl::create_schema_attribute_type(store::Item *qname, TypeC
   rchandle<NodeTest> nTest = new NodeTest(store::StoreConsts::attributeNode, nnTest);
   return new NodeXQType(this, nTest, cType, quant, false);
 }
-
+#endif
 
 /* vim:set ts=2 sw=2: */

@@ -97,6 +97,8 @@ public:
 class PULImpl : public store::PUL
 {
   friend class UpdatePrimitive;
+  friend class ElementNode;
+  friend class AttributeNode;
 
 protected:
   std::vector<UpdatePrimitive*>      theDoFirstList;
@@ -116,6 +118,8 @@ protected:
   NodeToUpdatesMap                   theNodeToUpdatesMap;
 
   std::set<zorba::store::Item*>    * theValidationNodes;
+
+  std::vector<UpdatePrimitive*>      thePrimitivesToRecheck;
 
 public:
   PULImpl() : theValidationNodes(NULL) {}
@@ -339,6 +343,8 @@ public:
   virtual void apply() = 0;
   virtual void undo() = 0;
 
+  virtual void check() {}
+
   bool isApplied() const { return theIsApplied; }
 };
 
@@ -349,10 +355,13 @@ public:
 class UpdDelete : public UpdatePrimitive
 {
   friend class PULImpl;
+  friend class XmlNode;
 
 protected:
-  XmlNode     * theParent;
-  ulong         thePos;
+  XmlNode        * theParent;
+  ulong            thePos;
+  store::Item_t    theRightSibling;
+  xqpStringStore_t theLeftContent;
 
 public:
   UpdDelete(PULImpl* pul, store::Item_t& target)
@@ -385,7 +394,8 @@ protected:
   store::Item_t                    theSibling;
   store::CopyMode                  theCopyMode;
 
-  ulong                            theNumApplied;
+  long                             theNumApplied;
+  store::Item_t                    theMergedNode;
 
 public:
   UpdInsertChildren(
@@ -432,6 +442,7 @@ public:
 
   void apply();
   void undo();
+  void check();
 };
 
 
@@ -466,6 +477,7 @@ public:
 
   void apply();
   void undo();
+  void check();
 };
 
 
@@ -483,6 +495,8 @@ protected:
   store::CopyMode             theCopyMode;
 
   ulong                       theNumApplied;
+  store::Item_t               theLeftMergedNode;
+  store::Item_t               theRightMergedNode;
   bool                        theIsTyped;
 
 public:
@@ -711,6 +725,7 @@ public:
 
   void apply();
   void undo();
+  void check();
 };
 
 
@@ -766,8 +781,11 @@ class UpdReplaceTextValue : public UpdatePrimitive
   friend class TextNode;
 
 protected:
-  TextNodeContent    theOldContent;
   xqpStringStore_t   theNewContent;
+
+  store::Item_t      theOldNode;
+  ulong              theOldPos;
+  TextNodeContent    theOldContent;
   bool               theIsTyped;
 
 public:
@@ -778,6 +796,8 @@ public:
   {
     theNewContent.transfer(newValue);
   }
+
+  ~UpdReplaceTextValue();
 
   store::UpdateConsts::UpdPrimKind getKind() 
   {

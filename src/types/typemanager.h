@@ -99,6 +99,7 @@ public:
 
   virtual xqtref_t create_none_type() const = 0;
 
+#ifndef ZORBA_NO_XMLSCHEMA
   virtual xqtref_t create_schema_element_type(
         store::Item *eName,
         TypeConstants::quantifier_t quant) const = 0;
@@ -110,6 +111,7 @@ public:
   virtual xqtref_t create_schema_attribute_type(
         store::Item *aName,
         TypeConstants::quantifier_t quant) const = 0;
+#endif
 };
 
 }

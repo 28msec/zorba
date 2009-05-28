@@ -234,6 +234,11 @@ std::string::size_type xqpStringStore::numChars() const
 /*******************************************************************************
 
 ********************************************************************************/
+bool xqpStringStore::operator==(xqpStringStore::char_type ch) const
+{
+  return (numChars() == 1) && (charAt(0) == ch);
+}
+
 bool xqpStringStore::byteEqual(const xqpStringStore& src) const
 {
   if (this == &src)
@@ -316,13 +321,16 @@ int xqpStringStore::compare(const xqpStringStore* src, const XQPCollator* coll) 
   Locate in "this" the first occurrence of the "pattern" substring. Return the
   offset into this of the start of "pattern", or -1 if not found.
 ********************************************************************************/
-int32_t xqpStringStore::indexOf(const char* pattern) const
+int32_t xqpStringStore::indexOf(const char* pattern, unsigned int pos) const
 {
   if (empty())
     return -1;
 
-  size_t lRes = theString.find(pattern);
-  return (lRes == std::string::npos) ? -1 : lRes;
+  size_t lRes = theString.find(pattern, pos);
+  if (lRes == std::string::npos)
+    return -1;
+  else
+    return lRes;
 }
 
 
@@ -511,6 +519,26 @@ xqpStringStore_t xqpStringStore::substr(
   return new xqpStringStore(theString.substr(index, length));
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore_t xqpStringStore::reverse() const
+{
+  xqpStringStore_t result = new xqpStringStore();
+  char_type ch;
+  const char* c = c_str();
+  unsigned int len = numChars();
+//  for (unsigned int i=0; i<len; i++)
+//    UTF8Decode(c);
+
+  for (unsigned int i=0; i<len; i++)
+  {
+    ch = theString[len-1-i];//UTF8DecodePrev(c);
+    result->append_in_place(ch);
+  }
+
+  return result;
+}
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1158,6 +1186,10 @@ xqpStringStore_t xqpStringStore::normalize(const xqpStringStore* normMode) const
 /*******************************************************************************
 
 ********************************************************************************/
+xqpStringStore::char_type xqpStringStore::charAt(std::string::size_type pos) const
+{
+  return theString[pos];
+}
 checked_vector<uint32_t> xqpStringStore::getCodepoints() const
 {
   checked_vector<uint32_t> tt;
@@ -1195,6 +1227,18 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
   xqpString::xqpString(const char* src)
   {
     theStrStore = new xqpStringStore(src);
+  }
+
+  xqpString::xqpString(const wchar_t * src)
+  {
+    theStrStore = new xqpStringStore;
+    char c;
+    while(*src)
+    {
+      c = (char)*src;
+      theStrStore->theString.append(&c, 1);
+      src++;
+    }
   }
 
   xqpString::xqpString(long initial_len)
