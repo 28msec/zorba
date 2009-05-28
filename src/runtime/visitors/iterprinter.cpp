@@ -124,14 +124,16 @@ void DOTIterPrinter::endBeginVisit(int aAddr)
 void DOTIterPrinter::addAttribute(const std::string& aName, const std::string& aValue)
 {
   printSpaces(theIndent);
-  if(aValue.find('"') == std::string::npos)
-    theOStream << "\\n" << aName << "=" << aValue;
-  else
-  {
-    std::string mvalue = aValue;
+
+  std::string mvalue = aValue;
+
+  if(aValue.find('"') != std::string::npos)
     zorba::str_replace_all(mvalue, "\"", "\\\"");
-    theOStream << "\\n" << aName << "=" << mvalue;
-  }
+
+  if(aValue.find("\n") != std::string::npos)
+    zorba::str_replace_all(mvalue, "\n", " \\n ");
+
+  theOStream << "\\n" << aName << "=" << mvalue;
 }
 
 
