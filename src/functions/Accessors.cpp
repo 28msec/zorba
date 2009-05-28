@@ -53,25 +53,25 @@ xqtref_t fn_data_func::return_type (const std::vector<xqtref_t> &arg_types) cons
       if (nodeKind == store::StoreConsts::piNode ||
           nodeKind == store::StoreConsts::commentNode)
       {
-        return RTM.create_atomic_type(TypeConstants::XS_STRING, q);
+        return RTM.create_builtin_atomic_type(TypeConstants::XS_STRING, q);
       }
 
       if (nodeKind == store::StoreConsts::documentNode ||
           nodeKind == store::StoreConsts::textNode)
       {
-        return RTM.create_atomic_type(TypeConstants::XS_UNTYPED_ATOMIC, q);
+        return RTM.create_builtin_atomic_type(TypeConstants::XS_UNTYPED_ATOMIC, q);
       }
 
       xqtref_t cType = nType.get_content_type();
       if (cType != NULL) 
       {
         if (TypeOps::is_equal(*cType, *RTM.UNTYPED_TYPE))
-          return RTM.create_atomic_type(TypeConstants::XS_UNTYPED_ATOMIC, q);
+          return RTM.create_builtin_atomic_type(TypeConstants::XS_UNTYPED_ATOMIC, q);
       }
     }
   }
 
-  return RTM.create_atomic_type (TypeConstants::XS_ANY_ATOMIC, q);
+  return RTM.create_builtin_atomic_type(TypeConstants::XS_ANY_ATOMIC, q);
 }
 
 /*******************************************************************************
@@ -84,9 +84,6 @@ PlanIter_t fn_root_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
 }
 
 
-
-
-
 /*******************************************************************************
   
 ********************************************************************************/
@@ -95,9 +92,6 @@ PlanIter_t fn_nodename_func::codegen (const QueryLoc& loc, std::vector<PlanIter_
 {
   return new FnNodeNameIterator(loc, argv);
 }
-
-
-
 
 
 /*******************************************************************************
@@ -110,9 +104,6 @@ PlanIter_t fn_nilled_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
 }
 
 
-
-
-
 /*******************************************************************************
   2.5 fn:base-uri
 ********************************************************************************/
@@ -120,7 +111,6 @@ PlanIter_t fn_base_uri_func::codegen (const QueryLoc& loc, std::vector<PlanIter_
 {
   return new FnBaseUriIterator(loc, argv);
 }
-
 
 
 /*******************************************************************************
