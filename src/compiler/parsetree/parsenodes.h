@@ -221,6 +221,31 @@ class Wildcard;
 class DecimalFormatNode;
 
 
+// [] Moved here the definitions for FunctionSig and VarNameAndType from the Bison parser file
+// ---------------
+class FunctionSig {
+  public:
+    rchandle<ParamList> param;
+    rchandle<SequenceType> ret;
+
+    FunctionSig (ParamList *param_, SequenceType *ret_ = NULL)
+  : param (param_), ret (ret_)
+    {}
+};
+
+class VarNameAndType {
+  public:
+    std::string name;
+    rchandle<SequenceType> type;
+
+
+    VarNameAndType (std::string name_, rchandle<SequenceType> type_)
+  : name (name_), type (type_)
+    {}
+};
+
+
+
 // [2] VersionDecl
 // ---------------
 class VersionDecl : public parsenode

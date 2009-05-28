@@ -21,11 +21,18 @@
 */
 
 %skeleton "lalr1.cc"  /*  -*- C++ -*- */
-%require "2.3"
-%defines
+%require "2.4"
+%defines 
 %name-prefix="zorba"
 %define "parser_class_name" "xquery_parser"
 %error-verbose
+
+%code requires {
+#include "compiler/parsetree/parsenodes.h"
+namespace zorba {
+class xquery_driver;
+}
+}
 
 /*
 **	Because the parser uses the xquery_driver and reciprocally, both 
@@ -56,36 +63,10 @@
 
 namespace zorba 
 {
-
-namespace parser 
+namespace parser
 {
   extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end, *the_ofor, *the_declare, *the_create;
 }
-
-class xquery_driver;
-
-
-class FunctionSig {
-public:
-  rchandle<ParamList> param;
-  rchandle<SequenceType> ret;
-
-  FunctionSig (ParamList *param_, SequenceType *ret_ = NULL)
-    : param (param_), ret (ret_)
-  {}
-};
-
-class VarNameAndType {
-public:
-  std::string name;
-  rchandle<SequenceType> type;
-
-
-  VarNameAndType (std::string name_, rchandle<SequenceType> type_)
-    : name (name_), type (type_)
-  {}
-};
-
 }
 
 #define YYDEBUG 1

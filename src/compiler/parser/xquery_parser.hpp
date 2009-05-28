@@ -1,23 +1,23 @@
-/* A Bison parser, made by GNU Bison 2.3.  */
+
+/* A Bison parser, made by GNU Bison 2.4.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
-
-   Copyright (C) 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
-
-   This program is free software; you can redistribute it and/or modify
+   
+      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
+   Foundation, Inc.
+   
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
-
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-
+   
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor,
-   Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -28,7 +28,7 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-
+   
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
@@ -37,77 +37,44 @@
 #ifndef PARSER_HEADER_H
 # define PARSER_HEADER_H
 
+/* "%code requires" blocks.  */
+
+/* Line 35 of lalr1.cc  */
+#line 30 "/home/colea/work/xquery_temp/src/compiler/parser/xquery_parser.y"
+
+#include "compiler/parsetree/parsenodes.h"
+namespace zorba {
+class xquery_driver;
+}
+
+
+
+/* Line 35 of lalr1.cc  */
+#line 54 "/home/colea/work/xquery_temp/build/src/compiler/parser/xquery_parser.hpp"
+
+
 #include <string>
 #include <iostream>
 #include "stack.hh"
 
-namespace zorba
-{
+
+/* Line 35 of lalr1.cc  */
+#line 1 "[Bison:b4_percent_define_default]"
+
+namespace zorba {
+
+/* Line 35 of lalr1.cc  */
+#line 68 "/home/colea/work/xquery_temp/build/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
-}
 
-/* First part of user declarations.  */
-#line 38 "/home/markos/zorba/zorba/src/compiler/parser/xquery_parser.y"
+/* Line 35 of lalr1.cc  */
+#line 1 "[Bison:b4_percent_define_default]"
 
+} // zorba
 
-#include "common/common.h"
-
-#ifdef _WIN32
-#pragma warning(disable: 4786)
-#endif
-
-#include <string>
-
-#include "compiler/parsetree/parsenodes.h"
-#include "compiler/parser/parse_constants.h"
-#include "compiler/api/compilercb.h"
-#include "store/api/update_consts.h"
-
-#define SYMTAB( n ) driver.symtab.get ((off_t) n)
-#define SYMTAB_PUT( s ) driver.symtab.put (s)
-#define LOC( p ) driver.createQueryLoc(p)
-
-namespace zorba 
-{
-
-namespace parser 
-{
-  extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end, *the_ofor, *the_declare, *the_create;
-}
-
-class xquery_driver;
-
-
-class FunctionSig {
-public:
-  rchandle<ParamList> param;
-  rchandle<SequenceType> ret;
-
-  FunctionSig (ParamList *param_, SequenceType *ret_ = NULL)
-    : param (param_), ret (ret_)
-  {}
-};
-
-class VarNameAndType {
-public:
-  std::string name;
-  rchandle<SequenceType> type;
-
-
-  VarNameAndType (std::string name_, rchandle<SequenceType> type_)
-    : name (name_), type (type_)
-  {}
-};
-
-}
-
-#define YYDEBUG 1
-
-
-
-/* Line 35 of lalr1.cc.  */
-#line 111 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
+/* Line 35 of lalr1.cc  */
+#line 78 "/home/colea/work/xquery_temp/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -148,8 +115,14 @@ do {							\
 } while (false)
 #endif
 
-namespace zorba
-{
+
+/* Line 35 of lalr1.cc  */
+#line 1 "[Bison:b4_percent_define_default]"
+
+namespace zorba {
+
+/* Line 35 of lalr1.cc  */
+#line 126 "/home/colea/work/xquery_temp/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -158,8 +131,11 @@ namespace zorba
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 139 "/home/markos/zorba/zorba/src/compiler/parser/xquery_parser.y"
-{
+    {
+
+/* Line 35 of lalr1.cc  */
+#line 122 "/home/colea/work/xquery_temp/src/compiler/parser/xquery_parser.y"
+
   zorba::parsenode * node;
   zorba::exprnode * expr;
   zorba::FunctionSig *fnsig;
@@ -173,10 +149,12 @@ namespace zorba
   std::vector<std::pair<std::string, std::string> >* pair_vector;
   std::pair<std::string, std::string>* pair;
   CatchExpr::NameTestList *name_test_list;
-}
-/* Line 35 of lalr1.cc.  */
-#line 179 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
-	;
+
+
+
+/* Line 35 of lalr1.cc  */
+#line 157 "/home/colea/work/xquery_temp/build/src/compiler/parser/xquery_parser.hpp"
+    };
 #else
     typedef YYSTYPE semantic_type;
 #endif
@@ -493,6 +471,7 @@ namespace zorba
     /// \returns  0 iff parsing succeeded.
     virtual int parse ();
 
+#if YYDEBUG
     /// The current debugging stream.
     std::ostream& debug_stream () const;
     /// Set the current debugging stream.
@@ -504,6 +483,7 @@ namespace zorba
     debug_level_type debug_level () const;
     /// Set the current debugging level.
     void set_debug_level (debug_level_type l);
+#endif
 
   private:
     /// Report a syntax error.
@@ -513,7 +493,7 @@ namespace zorba
 
     /// Generate an error message.
     /// \param state   the state where the error occurred.
-    /// \param tok     the look-ahead token.
+    /// \param tok     the lookahead token.
     virtual std::string yysyntax_error_ (int yystate, int tok);
 
 #if YYDEBUG
@@ -531,7 +511,7 @@ namespace zorba
     virtual void yy_symbol_print_ (int yytype,
 				   const semantic_type* yyvaluep,
 				   const location_type* yylocationp);
-#endif /* ! YYDEBUG */
+#endif
 
 
     /// State numbers.
@@ -608,6 +588,10 @@ namespace zorba
     virtual void yy_reduce_print_ (int r);
     /// Print the state stack on the debug stream.
     virtual void yystack_print_ ();
+
+    /* Debugging.  */
+    int yydebug_;
+    std::ostream* yycdebug_;
 #endif
 
     /// Convert a scanner token number \a t to a symbol number.
@@ -639,15 +623,18 @@ namespace zorba
     static const unsigned int yyuser_token_number_max_;
     static const token_number_type yyundef_token_;
 
-    /* Debugging.  */
-    int yydebug_;
-    std::ostream* yycdebug_;
-
-
     /* User arguments.  */
     xquery_driver& driver;
   };
-}
+
+/* Line 35 of lalr1.cc  */
+#line 1 "[Bison:b4_percent_define_default]"
+
+} // zorba
+
+/* Line 35 of lalr1.cc  */
+#line 637 "/home/colea/work/xquery_temp/build/src/compiler/parser/xquery_parser.hpp"
+
 
 
 #endif /* ! defined PARSER_HEADER_H */
