@@ -339,32 +339,25 @@ xqtref_t create_element_test(
     TypeName* typeName,
     bool nillable)
 {
+  store::Item_t ename;
+  store::Item_t tname;
   rchandle<NodeTest> nodeTest;
   xqtref_t contentType;
 
   if (elemName != NULL) 
   {
-    store::Item_t qnameItem = sctx_p->lookup_elem_qname(elemName->get_qname(), loc);
-    
-    rchandle<NodeNameTest> nodeNameTest =
-      new NodeNameTest(qnameItem->getNamespace(), qnameItem->getLocalName());
-
-    nodeTest = new NodeTest(store::StoreConsts::elementNode, nodeNameTest);
-  }
-  else 
-  {
-    nodeTest = new NodeTest(store::StoreConsts::elementNode);
+    ename = sctx_p->lookup_elem_qname(elemName->get_qname(), loc);
   }
   
   if (typeName != NULL) 
   {
-    store::Item_t qnameItem =
-      sctx_p->lookup_elem_qname(typeName->get_name()->get_qname(), loc);
+    tname = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname(), loc);
     
-    contentType = CTXTS->create_named_type(qnameItem, TypeConstants::QUANT_ONE);
+    contentType = CTXTS->create_named_type(tname, TypeConstants::QUANT_ONE);
   }
   
-  return CTXTS->create_node_type(nodeTest,
+  return CTXTS->create_node_type(store::StoreConsts::elementNode,
+                                 ename,
                                  contentType,
                                  TypeConstants::QUANT_ONE,
                                  nillable);
@@ -4685,9 +4678,8 @@ void end_visit (const DocumentTest& v, void* /*visit_state*/)
   {
     xqtref_t elementOrSchemaTest = pop_tstack();
         
-    rchandle<NodeTest> nodeTest = new NodeTest(store::StoreConsts::documentNode);
-      
-    xqtref_t docTest = CTXTS->create_node_type(nodeTest,
+    xqtref_t docTest = CTXTS->create_node_type(store::StoreConsts::documentNode,
+                                               NULL,
                                                elementOrSchemaTest,
                                                TypeConstants::QUANT_ONE,
                                                false);
@@ -4745,28 +4737,15 @@ void end_visit (const ElementTest& v, void* /*visit_state*/)
   // Else, create a sequence-type match
   else 
   {
-    rchandle<NodeTest> nodeTest;
     xqtref_t contentType;
-    rchandle<NodeNameTest> nodeNameTest;
-
-    if (elemName != NULL) 
-    {
-      nodeNameTest = new NodeNameTest(elemNameItem->getNamespace(),
-                                      elemNameItem->getLocalName());
-
-      nodeTest = new NodeTest(store::StoreConsts::elementNode, nodeNameTest);
-    }
-    else 
-    {
-      nodeTest = new NodeTest(store::StoreConsts::elementNode);
-    }
   
     if (typeName != NULL) 
     {
       contentType = CTXTS->create_named_type(typeNameItem, TypeConstants::QUANT_ONE);
     }
   
-    xqtref_t seqmatch = CTXTS->create_node_type(nodeTest,
+    xqtref_t seqmatch = CTXTS->create_node_type(store::StoreConsts::elementNode,
+                                                elemNameItem,
                                                 contentType,
                                                 TypeConstants::QUANT_ONE,
                                                 nillable);
@@ -4785,8 +4764,8 @@ void end_visit (const ElementTest& v, void* /*visit_state*/)
 void *begin_visit (const SchemaElementTest& v) 
 {
   TRACE_VISIT ();
-#ifndef ZORBA_NO_XMLSCHEMA
 
+#ifndef ZORBA_NO_XMLSCHEMA
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
   rchandle<QName> elemName = v.get_elem();
   ZORBA_ASSERT(elemName != NULL);
@@ -4831,7 +4810,8 @@ void *begin_visit (const AttributeTest& v)
 }
 
 
-void end_visit (const AttributeTest& v, void* /*visit_state*/) {
+void end_visit (const AttributeTest& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT();
 
   rchandle<QName> attrName = v.get_attr_name();
@@ -4854,124 +4834,52 @@ void end_visit (const AttributeTest& v, void* /*visit_state*/) {
   }
   else 
   {
-    rchandle<NodeTest> nodeTest;
-    if (attrName != NULL) {
-      store::Item_t qnameItem = sctx_p->lookup_qname("", attrName->get_qname(), loc);
-
-      rchandle<NodeNameTest> nodeNameTest =
-        new NodeNameTest(qnameItem->getNamespace(),
-                         qnameItem->getLocalName());
-
-      nodeTest = new NodeTest(store::StoreConsts::attributeNode, nodeNameTest);
-    } else {
-      nodeTest = new NodeTest(store::StoreConsts::attributeNode);
-    }
-
+    store::Item_t attrNameItem;
     xqtref_t contentType;
-    if (typeName != NULL) {
-      store::Item_t qnameItem = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname(), loc);
 
-      contentType = CTXTS->create_named_type(qnameItem, TypeConstants::QUANT_ONE);
+    if (attrName != NULL) 
+    {
+      attrNameItem = sctx_p->lookup_qname("", attrName->get_qname(), loc);
     }
 
-    xqtref_t seqmatch = CTXTS->
-      create_node_type(nodeTest, contentType, TypeConstants::QUANT_ONE, false);
+    if (typeName != NULL) 
+    {
+      store::Item_t tname = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname(), loc);
+
+      contentType = CTXTS->create_named_type(tname, TypeConstants::QUANT_ONE);
+    }
+
+    xqtref_t seqmatch = CTXTS->create_node_type(store::StoreConsts::attributeNode,
+                                                attrNameItem.getp(),
+                                                contentType,
+                                                TypeConstants::QUANT_ONE,
+                                                false);
 
     tstack.push(seqmatch);
   }
 }
 
 
-void *begin_visit (const TextTest& v) {
+void *begin_visit (const SchemaAttributeTest& v) 
+{
   TRACE_VISIT ();
-  // no action needed here
-  return no_state;
-}
 
-
-void end_visit (const TextTest& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-
-  axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-  if (axisExpr != NULL) {
-    rchandle<match_expr> match = new match_expr(loc);
-    match->setTestKind(match_text_test);
-    axisExpr->setTest(match);
-  } else {
-    tstack.push(GENV_TYPESYSTEM.TEXT_TYPE_ONE);
-  }
-}
-
-
-void *begin_visit (const CommentTest& v) {
-  TRACE_VISIT ();
-  // no action needed here
-  return no_state;
-}
-
-
-void end_visit (const CommentTest& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-
-  axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-  if (axisExpr != NULL) {
-    rchandle<match_expr> match = new match_expr(loc);
-    match->setTestKind(match_comment_test);
-    axisExpr->setTest(match);
-  } else {
-    tstack.push(GENV_TYPESYSTEM.COMMENT_TYPE_ONE);
-  }
-}
-
-
-void *begin_visit (const PITest& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-
-void end_visit (const PITest& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-  string target = v.get_target();
-  store::Item_t qname = NULL;
-  if (target != "")
-    GENV_ITEMFACTORY->createQName(qname, NULL, NULL, target.c_str ());
-  if (axisExpr != NULL) {
-    rchandle<match_expr> match = new match_expr(loc);
-    match->setTestKind(match_pi_test);
-    if (target != "")
-      match->setQName(qname);
-    axisExpr->setTest(match);
-  } else {
-    if (target == "")
-      tstack.push(GENV_TYPESYSTEM.PI_TYPE_ONE);
-    else {
-      rchandle<NodeTest> nodetest =
-        new NodeTest (store::StoreConsts::piNode, new NodeNameTest (qname));
-      xqtref_t t =
-        GENV_TYPESYSTEM.create_node_type (nodetest, NULL, TypeConstants::QUANT_ONE,
-                                          false);
-      tstack.push (t);
-    }
-  }
-}
-
-
-void *begin_visit (const SchemaAttributeTest& v) {
-  TRACE_VISIT ();
 #ifndef ZORBA_NO_XMLSCHEMA
   rchandle<match_expr> match = new match_expr(loc);
   match->setTestKind(match_xs_attr_test);
 
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
   rchandle<QName> attr_h = v.get_attr();
-  if (axisExpr != NULL) {
+
+  if (axisExpr != NULL) 
+  {
     if (attr_h!=NULL) {
       match->setQName(sctx_p->lookup_qname ("", attr_h->get_qname(), loc));
     }
     axisExpr->setTest(match);
-  } else {
+  }
+  else 
+  {
     rchandle<NodeTest> nodeTest;
     store::Item_t qnameItem = sctx_p->lookup_qname("", attr_h->get_qname(), loc);
 
@@ -4980,18 +4888,115 @@ void *begin_visit (const SchemaAttributeTest& v) {
 
     tstack.push(seqmatch);
   }
+
 #else//ZORBA_NO_XMLSCHEMA
-    ZORBA_ERROR_LOC (XQP0004_SYSTEM_NOT_SUPPORTED, v.get_location());
+  ZORBA_ERROR_LOC (XQP0004_SYSTEM_NOT_SUPPORTED, v.get_location());
 #endif
   return no_state;
 }
 
 
-void end_visit (const SchemaAttributeTest& v, void* /*visit_state*/) {
+void end_visit (const SchemaAttributeTest& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 }
 
 
+void *begin_visit (const TextTest& v) 
+{
+  TRACE_VISIT ();
+  // no action needed here
+  return no_state;
+}
+
+
+void end_visit (const TextTest& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
+  if (axisExpr != NULL) 
+  {
+    rchandle<match_expr> match = new match_expr(loc);
+    match->setTestKind(match_text_test);
+    axisExpr->setTest(match);
+  }
+  else 
+  {
+    tstack.push(GENV_TYPESYSTEM.TEXT_TYPE_ONE);
+  }
+}
+
+
+void *begin_visit (const CommentTest& v) 
+{
+  TRACE_VISIT ();
+  // no action needed here
+  return no_state;
+}
+
+
+void end_visit (const CommentTest& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
+  if (axisExpr != NULL) 
+  {
+    rchandle<match_expr> match = new match_expr(loc);
+    match->setTestKind(match_comment_test);
+    axisExpr->setTest(match);
+  }
+  else 
+  {
+    tstack.push(GENV_TYPESYSTEM.COMMENT_TYPE_ONE);
+  }
+}
+
+
+void *begin_visit (const PITest& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+
+void end_visit (const PITest& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
+  string target = v.get_target();
+
+  store::Item_t qname = NULL;
+  if (target != "")
+    GENV_ITEMFACTORY->createQName(qname, NULL, NULL, target.c_str ());
+
+  if (axisExpr != NULL) 
+  {
+    rchandle<match_expr> match = new match_expr(loc);
+    match->setTestKind(match_pi_test);
+    if (target != "")
+      match->setQName(qname);
+    axisExpr->setTest(match);
+  } 
+  else 
+  {
+    if (target == "")
+    {
+      tstack.push(GENV_TYPESYSTEM.PI_TYPE_ONE);
+    }
+    else 
+    {
+      xqtref_t t = GENV_TYPESYSTEM.create_node_type(store::StoreConsts::piNode,
+                                                    qname,
+                                                    NULL,
+                                                    TypeConstants::QUANT_ONE,
+                                                    false);
+      tstack.push (t);
+    }
+  }
+}
 
 
 xqpString tempname () {
