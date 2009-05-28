@@ -82,7 +82,7 @@ bool NodeNameTest::operator ==(const NodeNameTest& other) const
 }
 
 
-bool NodeNameTest::matches(store::Item *qname) const
+bool NodeNameTest::matches(const store::Item* qname) const
 {
   return ((m_uri->str() == "*" || m_uri->byteEqual(*qname->getNamespace()))
           &&
@@ -117,6 +117,17 @@ NodeTest::NodeTest(
 }
 
 
+NodeTest::NodeTest(
+    store::StoreConsts::NodeKind kind,
+    const store::Item* name)
+  :
+  m_node_kind(kind)
+{
+  if (name != NULL)
+    m_name_test = new NodeNameTest(name);
+}
+
+
 bool NodeTest::is_sub_nodetest_of(const NodeTest& other) const
 {
   return (other.m_node_kind == store::StoreConsts::anyNode ||
@@ -127,7 +138,7 @@ bool NodeTest::is_sub_nodetest_of(const NodeTest& other) const
 }
 
 
-bool NodeTest::operator ==(const NodeTest& other) const
+bool NodeTest::operator==(const NodeTest& other) const
 {
   return (other.m_node_kind == m_node_kind &&
           ( (other.m_name_test.getp() == 0 && m_name_test.getp() == 0) ||

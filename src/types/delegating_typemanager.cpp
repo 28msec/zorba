@@ -29,10 +29,10 @@ xqtref_t DelegatingTypeManager::create_named_type(
   xqtref_t namedType = m_parent->create_named_type(qname, quantifier); 
 
 #ifndef ZORBA_NO_XMLSCHEMA
-  if ( _schema!=NULL && namedType==NULL )
+  if ( _schema != NULL && namedType == NULL )
   {
     xqtref_t userXQType = _schema->createIfExists(this, qname, quantifier);
-    if ( userXQType!=NULL )
+    if ( userXQType != NULL )
       return userXQType;
   }
 #endif

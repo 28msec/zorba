@@ -278,13 +278,15 @@ public:
       delete this;
   }
 
-  type_kind_t type_kind() const { return m_type_kind; }
+  const TypeManager* get_manager() const { return m_manager; }
 
-  virtual content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };
+  type_kind_t type_kind() const { return m_type_kind; }
 
   TypeConstants::quantifier_t get_quantifier() const { return m_quantifier; }
 
-  const TypeManager* get_manager() const { return m_manager; }
+  bool is_builtin() const { return theIsBuiltin; }
+
+  virtual content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };
 
   virtual store::Item_t get_qname() const { return NULL; }
 
@@ -362,6 +364,19 @@ public:
         bool nillable,
         bool builtin = false);
 
+  NodeXQType(
+        const TypeManager* manager,
+        store::StoreConsts::NodeKind nodekind,
+        const store::Item* qname,
+        xqtref_t content_type,
+        TypeConstants::quantifier_t quantifier,
+        bool nillable,
+        bool builtin = false);
+
+  NodeXQType(
+        const NodeXQType& source,
+        TypeConstants::quantifier_t quantifier);
+
   store::StoreConsts::NodeKind get_node_kind() const 
   {
     return m_nodetest->get_node_kind(); 
@@ -370,6 +385,8 @@ public:
   rchandle<NodeTest> get_nodetest() const { return m_nodetest; }
 
   xqtref_t get_content_type() const { return m_content_type; }
+
+  bool is_untyped() const;
 
   content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };
 

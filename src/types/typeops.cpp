@@ -355,6 +355,9 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
       // ????
       return udSuperType.isSuperTypeOf(subtype);
     }
+
+  default:
+    ZORBA_ASSERT(false);
   }
 
   return false;
@@ -364,41 +367,13 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
 /*******************************************************************************
   
 ********************************************************************************/
-bool TypeOps::is_treatable(const store::Item_t& item, const XQType& type, const TypeManager *manager)
+bool TypeOps::is_treatable(
+    const store::Item_t& item,
+    const XQType& targetType,
+    const TypeManager* manager)
 {
-  switch(type.type_kind()) 
-  {
-  case XQType::NODE_TYPE_KIND: 
-  {
-    if (!item->isNode())
-      return false;
-    
-    const NodeXQType& nType = static_cast<const NodeXQType&>(type);
-    NodeTest *nodeTest = nType.get_nodetest().getp();
-    store::StoreConsts::NodeKind kind = nodeTest->get_node_kind();
-    NodeNameTest *nameTest = nodeTest->get_nametest().getp();
-
-    if (kind != store::StoreConsts::anyNode && kind != item->getNodeKind())
-      return false;
-
-    if (nameTest != NULL && ! nameTest->matches (item->getNodeName ()))
-      return false;
-
-    store::Item *contentTypeItem = item->getType();
-    xqtref_t cType = manager->create_named_type(contentTypeItem);
-    xqtref_t ncType = nType.get_content_type();
-    if (ncType != NULL && (cType == NULL || !is_subtype(*cType, *ncType))) {
-      return false;
-    }
-
-    return true;
-  }
-
-  default:
-    break;
-  }
-
-  return is_subtype(*type.get_manager()->create_value_type(item.getp()), type);
+  return is_subtype(*targetType.get_manager()->create_value_type(item.getp()),
+                    targetType);
 }
 
 
@@ -618,7 +593,10 @@ TypeConstants::quantifier_t TypeOps::union_quant(
 ********************************************************************************/
 xqtref_t TypeOps::prime_type(const XQType& type) 
 {
-  switch (type.type_kind ()) 
+  if (type.get_quantifier() == TypeConstants::QUANT_ONE)
+    return &type;
+
+  switch (type.type_kind()) 
   {
   case XQType::EMPTY_KIND:
     return GENV_TYPESYSTEM.NONE_TYPE;
@@ -626,8 +604,8 @@ xqtref_t TypeOps::prime_type(const XQType& type)
   case XQType::ATOMIC_TYPE_KIND: 
   {
     const AtomicXQType& atype = static_cast<const AtomicXQType&>(type);
-    return type.get_manager()->create_atomic_type(atype.get_type_code(),
-                                                  TypeConstants::QUANT_ONE);
+    return type.get_manager()->create_builtin_atomic_type(atype.get_type_code(),
+                                                          TypeConstants::QUANT_ONE);
   }
   case XQType::NONE_KIND:
     return &type;
@@ -646,11 +624,8 @@ xqtref_t TypeOps::prime_type(const XQType& type)
 
   case XQType::NODE_TYPE_KIND: 
   {
-    const NodeXQType& ntype = static_cast<const NodeXQType&>(type);
-    return type.get_manager()->create_node_type(ntype.get_nodetest(),
-                                                ntype.get_content_type(),
-                                                TypeConstants::QUANT_ONE,
-                                                ntype.get_nillable());
+    return type.get_manager()->create_type(type, TypeConstants::QUANT_ONE);
+
   }
   case XQType::USER_DEFINED_KIND:
   {

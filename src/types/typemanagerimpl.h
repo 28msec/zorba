@@ -69,47 +69,48 @@ public:
 
   TypeManager* get_parent_type_manager() const { return m_parent; }
 
-  xqtref_t create_type_x_quant(
-        const XQType& type,
-        TypeConstants::quantifier_t quantifier) const;
-
-  xqtref_t create_type(
-        const XQType& type,
-        TypeConstants::quantifier_t quantifier) const;
-
-  xqtref_t create_type(const TypeIdentifier& ident) const;
-
-  xqtref_t create_value_type(const store::Item* item) const;
-
-  virtual xqtref_t create_named_type(
-        store::Item* qname,
-        TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE) const;
-
-  virtual xqtref_t create_named_atomic_type(
-        store::Item* qname,
-        TypeConstants::quantifier_t quantifier) const;
-
-  xqtref_t create_atomic_type(
-        TypeConstants::atomic_type_code_t type_code,
-        TypeConstants::quantifier_t quantifier) const;
-
-  xqtref_t create_node_type(
-        rchandle<NodeTest> nodetest,
-        xqtref_t content_type,
-        TypeConstants::quantifier_t quantifier,
-        bool nillable) const;
-
-  xqtref_t create_any_item_type(TypeConstants::quantifier_t quantifier) const;
-
   xqtref_t create_any_type() const;
-
-  xqtref_t create_any_simple_type() const;
 
   xqtref_t create_untyped_type() const;
 
   xqtref_t create_empty_type() const;
 
   xqtref_t create_none_type() const;
+
+  xqtref_t create_any_simple_type() const;
+
+  xqtref_t create_builtin_atomic_type(
+        TypeConstants::atomic_type_code_t type_code,
+        TypeConstants::quantifier_t quantifier) const;
+
+  virtual xqtref_t create_named_atomic_type(
+        store::Item* qname,
+        TypeConstants::quantifier_t quantifier) const;
+
+  virtual xqtref_t create_named_type(
+        store::Item* qname,
+        TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE) const;
+
+  xqtref_t create_any_item_type(TypeConstants::quantifier_t quantifier) const;
+
+  xqtref_t create_node_type(
+        store::StoreConsts::NodeKind nodeKind,
+        const store::Item* nodeName,
+        xqtref_t contentType,
+        TypeConstants::quantifier_t quantifier,
+        bool nillable) const;
+
+  xqtref_t create_type(
+        const XQType& type,
+        TypeConstants::quantifier_t quantifier) const;
+
+  xqtref_t create_type_x_quant(
+        const XQType& type,
+        TypeConstants::quantifier_t quantifier) const;
+
+  xqtref_t create_type(const TypeIdentifier& ident) const;
+
+  xqtref_t create_value_type(const store::Item* item) const;
 
 #ifndef ZORBA_NO_XMLSCHEMA
   xqtref_t create_schema_element_type(
@@ -124,6 +125,12 @@ public:
         store::Item *aName,
         TypeConstants::quantifier_t quant) const;
 #endif
+
+private:
+  xqtref_t create_builtin_node_type(
+        store::StoreConsts::NodeKind nodeKind,
+        TypeConstants::quantifier_t quantifier,
+        bool untyped) const;
 };
 
 }

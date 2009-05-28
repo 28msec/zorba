@@ -54,7 +54,7 @@ public:
 
   bool is_subname_of(const NodeNameTest& other) const;
 
-  bool matches(store::Item* qname) const;
+  bool matches(const store::Item* qname) const;
 
   bool matches(
         const xqpStringStore* lname,
@@ -81,6 +81,8 @@ public:
   NodeTest(store::StoreConsts::NodeKind kind);
 
   NodeTest(store::StoreConsts::NodeKind kind, rchandle<NodeNameTest> name_test);
+
+  NodeTest(store::StoreConsts::NodeKind kind, const store::Item* name);
 
   store::StoreConsts::NodeKind get_node_kind() const { return m_node_kind; }
 

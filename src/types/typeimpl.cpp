@@ -134,19 +134,54 @@ static void foo()
 #endif
 
 NodeXQType::NodeXQType(
-    const TypeManager *manager,
+    const TypeManager* manager,
     rchandle<NodeTest> nodetest,
-    xqtref_t content_type,
+    xqtref_t contentType,
     TypeConstants::quantifier_t quantifier,
     bool nillable,
     bool builtin)
   :
   XQType(manager, NODE_TYPE_KIND, quantifier, builtin),
   m_nodetest(nodetest),
-  m_content_type(content_type),
+  m_content_type(contentType),
   m_nillable(nillable)
 {
   //foo();
+}
+
+
+NodeXQType::NodeXQType(
+    const TypeManager* manager,
+    store::StoreConsts::NodeKind nodekind,
+    const store::Item* nodename,
+    xqtref_t contentType,
+    TypeConstants::quantifier_t quantifier,
+    bool nillable,
+    bool builtin)
+  :
+  XQType(manager, NODE_TYPE_KIND, quantifier, builtin),
+  m_nodetest(new NodeTest(nodekind, nodename)),
+  m_content_type(contentType),
+  m_nillable(nillable)
+{
+}
+
+
+NodeXQType::NodeXQType(
+    const NodeXQType& source,
+    TypeConstants::quantifier_t quantifier)
+  :
+  XQType(source.m_manager, NODE_TYPE_KIND, quantifier, false),
+  m_nodetest(source.m_nodetest),
+  m_content_type(source.m_content_type),
+  m_nillable(source.m_nillable)
+{
+}
+
+
+bool NodeXQType::is_untyped() const
+{
+  return m_content_type == GENV_TYPESYSTEM.UNTYPED_TYPE;
 }
 
 
@@ -163,7 +198,7 @@ std::ostream& NodeXQType::serialize(std::ostream& os) const
   }
   if (content_type != NULL)
   {
-    os << "content=";
+    os << " content=";
     os << content_type->toString ();
   }
   return os << "]";
