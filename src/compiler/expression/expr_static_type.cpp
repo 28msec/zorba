@@ -602,7 +602,8 @@ xqtref_t match_expr::return_type_impl(static_context *sctx)
 xqtref_t elem_expr::return_type_impl (static_context *sctx) 
 {
   return sctx->get_typemanager()->
-         create_node_type(NodeTest::ELEMENT_TEST,
+         create_node_type(store::StoreConsts::elementNode,
+                          NULL,
                           theContent == NULL ? NULL : theContent->return_type(sctx),
                           TypeConstants::QUANT_ONE,
                           false);
@@ -612,7 +613,8 @@ xqtref_t elem_expr::return_type_impl (static_context *sctx)
 xqtref_t doc_expr::return_type_impl (static_context *sctx) 
 {
   return sctx->get_typemanager()->
-         create_node_type(NodeTest::DOCUMENT_TEST,
+         create_node_type(store::StoreConsts::documentNode,
+                          NULL,
                           theContent == NULL ? NULL : theContent->return_type(sctx),
                           TypeConstants::QUANT_ONE,
                           false);
@@ -621,32 +623,65 @@ xqtref_t doc_expr::return_type_impl (static_context *sctx)
 
 xqtref_t attr_expr::return_type_impl (static_context *sctx) 
 {
-  return sctx->get_typemanager ()->create_node_type (NodeTest::ATTRIBUTE_TEST, theValueExpr == NULL ? NULL : theValueExpr->return_type (sctx), TypeConstants::QUANT_ONE, false);
-  }
+  return sctx->get_typemanager()->
+         create_node_type(store::StoreConsts::attributeNode,
+                          NULL,
+                          theValueExpr == NULL ? NULL : theValueExpr->return_type(sctx),
+                          TypeConstants::QUANT_ONE,
+                          false);
+}
 
-  xqtref_t text_expr::return_type_impl (static_context *sctx) {
-    rchandle<NodeTest> nt;
-    TypeConstants::quantifier_t q = TypeConstants::QUANT_ONE;
-    switch (type) {
-    case text_constructor: {
-      xqtref_t t  = get_text ()->return_type (sctx);
+ 
+xqtref_t text_expr::return_type_impl (static_context *sctx) 
+{
+  store::StoreConsts::NodeKind nodeKind;
+
+  TypeConstants::quantifier_t q = TypeConstants::QUANT_ONE;
+
+  switch (type) 
+  {
+    case text_constructor: 
+    {
+      xqtref_t t = get_text()->return_type(sctx);
+
       if (TypeOps::is_empty (*t))
         return t;
+
       else if (TypeOps::type_min_cnt (*t) == 0)
         q = TypeConstants::QUANT_QUESTION;
-      nt = NodeTest::TEXT_TEST;
+
+      nodeKind = store::StoreConsts::textNode;
       break;
     }
-    case comment_constructor: nt = NodeTest::COMMENT_TEST; break;
-    case pi_constructor: nt = NodeTest::PI_TEST; break;
-    default: ZORBA_ASSERT (false); break;
-    }
-    return sctx->get_typemanager ()->create_node_type (nt, text == NULL ? NULL : text->return_type (sctx), q, false);
+
+  case comment_constructor:
+    nodeKind = store::StoreConsts::commentNode;
+    break;
+
+  case pi_constructor:
+    nodeKind = store::StoreConsts::piNode;
+    break;
+
+  default:
+    ZORBA_ASSERT (false);
+    break;
   }
 
-  xqtref_t castable_base_expr::return_type_impl (static_context *sctx) {
-    return sctx->get_typemanager ()->create_atomic_type (TypeConstants::XS_BOOLEAN, TypeConstants::QUANT_ONE);
-  }
+  return sctx->get_typemanager()->create_node_type(nodeKind,
+                                                   NULL,
+                                                   NULL,
+                                                   q,
+                                                   false);
+}
+
+
+xqtref_t castable_base_expr::return_type_impl (static_context *sctx) 
+{
+  return sctx->get_typemanager()->
+         create_builtin_atomic_type(TypeConstants::XS_BOOLEAN,
+                                    TypeConstants::QUANT_ONE);
+}
+
   
   xqtref_t cast_base_expr::return_type_impl (static_context *sctx) {
     TypeConstants::quantifier_t q =
