@@ -137,28 +137,54 @@ RULE_REWRITE_POST(InferVarTypes)
 
 static void inferWinCondVarTypes(const flwor_wincond* cond, xqtref_t domainType)
 {
+  RootTypeManager& RTM = GENV_TYPESYSTEM;
+
   const flwor_wincond::vars& invars = cond->get_in_vars();
   const flwor_wincond::vars& outvars = cond->get_out_vars();
 
-  xqtref_t type = TypeOps::prime_type(*domainType.getp());
+  TypeConstants::quantifier_t quant = domainType->get_quantifier();
+
+  xqtref_t nextprevType;
+  xqtref_t currType;
+
+  if (quant == TypeConstants::QUANT_ONE)
+  {
+    currType = domainType;
+    nextprevType = RTM.create_type(*domainType, TypeConstants::QUANT_QUESTION);
+  }
+  else if (quant == TypeConstants::QUANT_QUESTION)
+  {
+    currType = domainType;
+    nextprevType = domainType;
+  }
+  else if (quant == TypeConstants::QUANT_PLUS)
+  {
+    currType = TypeOps::prime_type(*domainType.getp());
+    nextprevType = RTM.create_type(*domainType, TypeConstants::QUANT_QUESTION);
+  }
+  else
+  {
+    nextprevType = RTM.create_type(*domainType, TypeConstants::QUANT_QUESTION);
+    currType = nextprevType;
+  }
 
   if (invars.curr)
-    invars.curr->set_type(type);
+    invars.curr->set_type(currType);
 
   if (invars.prev)
-    invars.prev->set_type(type);
+    invars.prev->set_type(nextprevType);
 
   if (invars.next)
-    invars.next->set_type(type);
+    invars.next->set_type(nextprevType);
 
   if (outvars.curr)
-    outvars.curr->set_type(type);
+    outvars.curr->set_type(currType);
 
   if (outvars.prev)
-    outvars.prev->set_type(type);
+    outvars.prev->set_type(nextprevType);
 
   if (outvars.next)
-    outvars.next->set_type(type);
+    outvars.next->set_type(nextprevType);
 }
 
 
