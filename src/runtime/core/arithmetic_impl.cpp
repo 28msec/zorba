@@ -47,9 +47,9 @@ void ArithOperationsCommons::createError(
   lStream << "The operation '";
   lStream << aOp;
   lStream << "' is not possible with parameters of the type ";
-  aRuntimeCB->theStaticContext->get_typemanager()->create_atomic_type(aType0, TypeConstants::QUANT_ONE)->serialize(lStream);
+  aRuntimeCB->theStaticContext->get_typemanager()->create_builtin_atomic_type(aType0, TypeConstants::QUANT_ONE)->serialize(lStream);
   lStream << " and ";
-  aRuntimeCB->theStaticContext->get_typemanager()->create_atomic_type(aType1, TypeConstants::QUANT_ONE)->serialize(lStream);
+  aRuntimeCB->theStaticContext->get_typemanager()->create_builtin_atomic_type(aType1, TypeConstants::QUANT_ONE)->serialize(lStream);
   lStream << ".";
   ZORBA_ERROR_LOC_DESC( XPTY0004, *aLoc, lStream.str());
 }
