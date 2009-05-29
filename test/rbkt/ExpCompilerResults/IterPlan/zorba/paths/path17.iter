@@ -53,15 +53,11 @@ Iterator tree for main query:
       </ForVariable>
       <ReturnClause>
         <FnStringIterator>
-          <TreatIterator quant="?">
-            <NodeDistinctIterator>
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
-                <ParentAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
-                  <ForVarIterator varname="x"/>
-                </ParentAxisIterator>
-              </AttributeAxisIterator>
-            </NodeDistinctIterator>
-          </TreatIterator>
+          <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
+            <ParentAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+              <ForVarIterator varname="x"/>
+            </ParentAxisIterator>
+          </AttributeAxisIterator>
         </FnStringIterator>
       </ReturnClause>
     </flwor::FLWORIterator>
