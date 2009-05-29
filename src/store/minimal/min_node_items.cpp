@@ -3150,7 +3150,8 @@ XmlNode* CommentNode::copy2(
 ********************************************************************************/
 store::Item* CommentNode::getType() const
 {
-  return GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+  return NULL;
+  //return GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
 }
 
 
