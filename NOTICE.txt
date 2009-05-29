@@ -81,6 +81,6 @@ Optional:
 
      * FLEX 2.5.33 (http://flex.sourceforge.net/)
 
-     * BISON 2.3 (http://www.gnu.org/software/bison/)
+     * BISON 2.4 or higher (http://www.gnu.org/software/bison/)
 
      * CURL 7.12 (http://curl.haxx.se/)
