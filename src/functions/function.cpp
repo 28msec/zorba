@@ -63,15 +63,20 @@ void function::compute_annotation (
   }  
 }
 
-function::AnnotationProperty_t function::producesDuplicates() const {
+
+function::AnnotationProperty_t function::producesDuplicates() const 
+{
   xqtref_t rt = sig.return_type ();
-  if (TypeOps::type_max_cnt (*rt) <= 1 || TypeOps::is_simple (*rt))
+  if (TypeOps::type_max_cnt (*rt) <= 1 || TypeOps::is_builtin_simple (*rt))
     return NO;
   return YES;
 }
-function::AnnotationProperty_t function::producesNodeIdSorted() const {
+
+
+function::AnnotationProperty_t function::producesNodeIdSorted() const 
+{
   xqtref_t rt = sig.return_type ();
-  if (TypeOps::type_max_cnt (*rt) <= 1 || TypeOps::is_simple (*rt))
+  if (TypeOps::type_max_cnt (*rt) <= 1 || TypeOps::is_builtin_simple (*rt))
     return YES;
   return NO;
 }
