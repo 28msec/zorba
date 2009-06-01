@@ -28,6 +28,7 @@
 namespace zorba {
 
 class NodeTest;
+class Schema;
 
 
 /***************************************************************************//**
@@ -57,6 +58,8 @@ public:
   virtual TypeManager *get_parent_type_manager() const = 0;
 
   virtual int level() const { return m_level; }
+
+  virtual Schema* getSchema() const { return NULL; }
 
   /* Factory Methods */
 

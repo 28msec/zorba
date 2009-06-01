@@ -382,7 +382,9 @@ public:
     return m_nodetest->get_node_kind(); 
   }
 
-  rchandle<NodeTest> get_nodetest() const { return m_nodetest; }
+  NodeTest* get_nodetest() const { return m_nodetest.getp(); }
+
+  NodeNameTest* get_node_name_test() const { return m_nodetest->get_nametest(); }
 
   xqtref_t get_content_type() const { return m_content_type; }
 

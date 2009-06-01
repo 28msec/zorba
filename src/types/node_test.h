@@ -86,7 +86,7 @@ public:
 
   store::StoreConsts::NodeKind get_node_kind() const { return m_node_kind; }
 
-  rchandle<NodeNameTest> get_nametest() const { return m_name_test; }
+  NodeNameTest* get_nametest() const { return m_name_test.getp(); }
 
   bool is_sub_nodetest_of(const NodeTest& other) const;
 

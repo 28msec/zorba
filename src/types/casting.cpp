@@ -1455,6 +1455,8 @@ bool GenericCast::castToAtomic(
   xqtref_t lSourceType = lTS.create_named_type(aItem->getType(), 
                                                TypeConstants::QUANT_ONE);
 
+  ZORBA_ASSERT(lSourceType != NULL);
+
 #ifndef ZORBA_NO_XMLSCHEMA
   if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND) 
   {
@@ -1465,14 +1467,14 @@ bool GenericCast::castToAtomic(
 
   ErrorInfo lErrorInfo = {&*lSourceType, aTargetType};
 
-  if (!TypeOps::is_atomic(*aTargetType))
+  if (!TypeOps::is_builtin_atomic(*aTargetType))
     throwError(XPST0051, lErrorInfo);
 
   xqpStringStore_t lSourceString; 
   ATOMICTYPE_T lSourceTypeCode;
   ATOMICTYPE_T lTargetTypeCode = TypeOps::get_atomic_type_code(*aTargetType);
 
-  if (TypeOps::is_atomic(*lSourceType))
+  if (TypeOps::is_builtin_atomic(*lSourceType))
   {
     lSourceTypeCode = TypeOps::get_atomic_type_code(*lSourceType);
 

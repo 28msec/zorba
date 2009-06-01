@@ -188,10 +188,12 @@ xqtref_t TypeManagerImpl::create_node_type(
     TypeConstants::quantifier_t quantifier,
     bool nillable) const
 {
-  bool untyped = (contentType == GENV_TYPESYSTEM.UNTYPED_TYPE);
+  RootTypeManager& RTM = GENV_TYPESYSTEM;
+
+  bool untyped = (contentType == RTM.UNTYPED_TYPE);
 
   if (contentType == NULL)
-    contentType = GENV_TYPESYSTEM.ANY_TYPE;
+    contentType = RTM.ANY_TYPE;
 
   switch (nodeKind)
   {
@@ -200,8 +202,7 @@ xqtref_t TypeManagerImpl::create_node_type(
 
   case store::StoreConsts::documentNode:
   {
-    if (contentType == GENV_TYPESYSTEM.UNTYPED_TYPE ||
-        contentType == GENV_TYPESYSTEM.ANY_TYPE)
+    if (contentType == RTM.UNTYPED_TYPE || contentType == RTM.ANY_TYPE)
     {
       return create_builtin_node_type(nodeKind, quantifier, untyped);
     }
@@ -221,8 +222,7 @@ xqtref_t TypeManagerImpl::create_node_type(
   {
     if (nodeName != NULL || 
         nillable ||
-        (contentType != GENV_TYPESYSTEM.UNTYPED_TYPE &&
-         contentType != GENV_TYPESYSTEM.ANY_TYPE))
+        (contentType != RTM.UNTYPED_TYPE && contentType != RTM.ANY_TYPE))
     {
       return new NodeXQType(this,
                             nodeKind,
@@ -257,7 +257,7 @@ xqtref_t TypeManagerImpl::create_node_type(
       return new NodeXQType(this,
                             nodeKind,
                             nodeName,
-                            contentType,
+                            RTM.STRING_TYPE_ONE,
                             quantifier,
                             nillable);
     }
@@ -265,7 +265,7 @@ xqtref_t TypeManagerImpl::create_node_type(
 
   default:
     ZORBA_ASSERT(false);
-    return GENV_TYPESYSTEM.NONE_TYPE;
+    return RTM.NONE_TYPE;
   }
 }
 
@@ -605,13 +605,12 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const
     case store::StoreConsts::elementNode:
     case store::StoreConsts::attributeNode:
     {
-      return new NodeXQType(this,
-                            nodeKind,
-                            item->getNodeName(),
-                            create_named_type(item->getType(),
-                                              TypeConstants::QUANT_ONE),
-                            TypeConstants::QUANT_ONE,
-                            false);
+      return create_node_type(nodeKind,
+                              item->getNodeName(),
+                              create_named_type(item->getType(),
+                                                TypeConstants::QUANT_ONE),
+                              TypeConstants::QUANT_ONE,
+                              false);
     }
     case store::StoreConsts::documentNode:
     {
@@ -633,22 +632,20 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const
       childrenIte->close();
 
       if (elemChild == NULL)
-        return GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE;;
+        return GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE;
 
-      xqtref_t elemType = new NodeXQType(this,
-                                         store::StoreConsts::elementNode,
-                                         elemChild->getNodeName(),
-                                         create_named_type(elemChild->getType(),
-                                                           TypeConstants::QUANT_ONE),
-                                         TypeConstants::QUANT_ONE,
-                                         false);
+      xqtref_t elemType = create_node_type(store::StoreConsts::elementNode,
+                                           elemChild->getNodeName(),
+                                           create_named_type(elemChild->getType(),
+                                                             TypeConstants::QUANT_ONE),
+                                           TypeConstants::QUANT_ONE,
+                                           false);
 
-      return new NodeXQType(this,
-                            store::StoreConsts::documentNode,
-                            NULL,
-                            elemType,
-                            TypeConstants::QUANT_ONE,
-                            false);
+      return create_node_type(store::StoreConsts::documentNode,
+                              NULL,
+                              elemType,
+                              TypeConstants::QUANT_ONE,
+                              false);
     }
     case store::StoreConsts::textNode:
     {
@@ -656,7 +653,11 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const
     }
     case store::StoreConsts::piNode:
     {
-      return GENV_TYPESYSTEM.PI_TYPE_ONE;
+      return create_node_type(store::StoreConsts::piNode,
+                              item->getNodeName(),
+                              GENV_TYPESYSTEM.STRING_TYPE_ONE,
+                              TypeConstants::QUANT_ONE,
+                              false);
     }
     case store::StoreConsts::commentNode:
     {

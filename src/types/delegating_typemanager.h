@@ -34,7 +34,7 @@ public:
     TypeManagerImpl(parent->level() + 1, parent) 
   {
     _schema = NULL; 
-    initializeSchema();
+    //initializeSchema();
   }
     
   virtual ~DelegatingTypeManager()
@@ -65,3 +65,9 @@ public:
 
 #endif /* ZORBA_DELEGATING_TYPEMANAGER_H */
 /* vim:set ts=2 sw=2: */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
