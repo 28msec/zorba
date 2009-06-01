@@ -203,9 +203,11 @@ void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
 bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::ItemFactory* factory = GENV_ITEMFACTORY;
+  static_context* sctx = planState.theRuntimeCB->theStaticContext;
+
   store::Item* parent;
   store::Item_t nodeName;
-  store::Item_t typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  store::Item_t typeName;
   store::Item_t nullValue;
   xqpStringStore_t baseUri;
   xqpStringStore_t content;
@@ -229,6 +231,10 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                      "Element name must not have an empty local part.");
   }
 
+  typeName = (theTypePreserve ?
+              GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME : 
+              GENV_TYPESYSTEM.XS_UNTYPED_QNAME);
+
   // Get the parent, if any, of the new element node 
   ZORBA_FATAL(theIsRoot || !path.empty(), "");
   parent = (theIsRoot ? NULL : path.top());
@@ -242,7 +248,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     // uris that may appear in the children. If theAttributesIter does produce
     // an explicit base-uri attribute, then the base-uri added here will be
     // replaced with the explicit one.
-    baseUri = planState.theRuntimeCB->theStaticContext->final_baseuri().getStore();
+    baseUri = sctx->final_baseuri().getStore();
     if (baseUri->empty())
       ZORBA_ERROR_LOC(XPST0001, loc);
   }
