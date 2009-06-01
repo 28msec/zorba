@@ -3501,9 +3501,11 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
   sz = arguments.size ();  // recompute size
 
   // try constructor functions
-  xqtref_t type = CTXTS->create_named_type(sctx_p->lookup_elem_qname (prefix, fname, loc), TypeConstants::QUANT_QUESTION);
+  xqtref_t type = CTXTS->create_named_type(sctx_p->lookup_elem_qname(prefix, fname, loc),
+                                           TypeConstants::QUANT_QUESTION);
 
-  if (type != NULL) {
+  if (type != NULL) 
+  {
     if (sz != 1
         || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION)
         || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
@@ -3881,7 +3883,7 @@ void end_visit (const DecimalFormatNode& v, void* /*visit_state*/) {
 void *begin_visit (const SchemaImport& v) {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_XMLSCHEMA
-    SchemaPrefix *sp = &*v.get_prefix();
+    SchemaPrefix* sp = &*v.get_prefix();
     string target_ns = v.get_uri ();
     if (! schema_import_ns_set.insert (target_ns).second)
       ZORBA_ERROR_LOC (XQST0058, loc);
