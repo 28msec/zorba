@@ -250,35 +250,55 @@ bool begin_visit (instanceof_expr& node)
 
 DEF_VISIT_METHODS (treat_expr)
 
-void end_visit (castable_expr&) {}
+void end_visit (castable_expr&) 
+{
+}
+
 bool begin_visit (castable_expr& node)
 {
   checkNonUpdating(&*node.get_input());
   return true;
 }
 
-void end_visit (cast_expr&) {}
+void end_visit (cast_expr&) 
+{
+}
+
 bool begin_visit (cast_expr& node)
 {
   checkNonUpdating(&*node.get_input());
+
+  expr_t arg = wrap_in_atomization(m_sctx, node.get_input());
+
+  node.set_input(arg);
+
   return true;
 }
 
-void end_visit (name_cast_expr&) {}
+void end_visit (name_cast_expr&) 
+{
+}
+
 bool begin_visit (name_cast_expr& node)
 {
   checkNonUpdating(&*node.get_input());
   return true;
 }
 
-void end_visit (validate_expr&) {}
+void end_visit (validate_expr&) 
+{
+}
+
 bool begin_visit (validate_expr& node)
 {
   checkNonUpdating(&*node.get_expr());
   return true;
 }
 
-void end_visit (extension_expr&) {}
+void end_visit (extension_expr&) 
+{
+}
+
 bool begin_visit (extension_expr& node)
 {
   checkNonUpdating(&*node.get_expr());
@@ -392,15 +412,19 @@ void normalize_expr_tree(
 
   root->accept(n);
 
-  if (rType != NULL) 
+  if (rType != NULL)
   {
-    if (TypeOps::is_simple(*rType)) {
+    if (TypeOps::is_builtin_simple(*rType)) 
+    {
       root = wrap_in_atomization(aCompilerCB->m_sctx, root);
       root = wrap_in_type_conversion(root, rType);
-    } else {
+    }
+    else 
+    {
       root = wrap_in_typematch (root, rType);
     }
   }
+
   if (aCompilerCB->m_config.normalize_cb)
     aCompilerCB->m_config.normalize_cb (&*root, norm_descr);
 }
