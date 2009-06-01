@@ -1406,42 +1406,14 @@ bool begin_visit (insert_expr& v) {
   expr_t targetExpr = v.getTargetExpr();
   xqtref_t targetType = targetExpr->return_type(ccb->m_sctx);
 
-  if (v.getType() == store::UpdateConsts::AFTER ||
-      v.getType() == store::UpdateConsts::BEFORE)
-  {
-    if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.UNTYPED_TYPE) ||
-        TypeOps::is_subtype(*GENV_TYPESYSTEM.ELEMENT_TYPE_ONE, *targetType) ||
-        TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ELEMENT_TYPE_ONE) ||
-        TypeOps::is_subtype(*GENV_TYPESYSTEM.TEXT_TYPE_ONE, *targetType) ||
-        TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.TEXT_TYPE_ONE) ||
-        TypeOps::is_subtype(*GENV_TYPESYSTEM.PI_TYPE_ONE, *targetType) ||
-        TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.PI_TYPE_ONE) ||
-        TypeOps::is_subtype(*GENV_TYPESYSTEM.COMMENT_TYPE_ONE, *targetType) ||
-        TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.COMMENT_TYPE_ONE))
-      return true;
-
-    if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
-      ZORBA_ERROR_LOC(XUDY0027, qloc);
-    else
-      ZORBA_ERROR_LOC(XUTY0006, qloc);
-  } else {
-    if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.UNTYPED_TYPE) ||
-        TypeOps::is_subtype(*GENV_TYPESYSTEM.ELEMENT_TYPE_ONE, *targetType) ||
-        TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ELEMENT_TYPE_ONE) ||
-        TypeOps::is_subtype(*GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE, *targetType) ||
-        TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE))
-      return true;
-
-    if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
-      ZORBA_ERROR_LOC(XUDY0027, qloc);
-    else
-      ZORBA_ERROR_LOC(XUTY0005, qloc);
-  }
+  if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
+    ZORBA_ERROR_LOC(XUDY0027, qloc);
 
   return true;
 }
 
-void end_visit (insert_expr& v) {
+void end_visit (insert_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
   PlanIter_t lTarget = pop_itstack();
   PlanIter_t lSource = pop_itstack();
@@ -1449,23 +1421,16 @@ void end_visit (insert_expr& v) {
   push_itstack(&*lInsert);
 }
 
-bool begin_visit (delete_expr& v) {
+
+bool begin_visit (delete_expr& v) 
+{
   CODEGEN_TRACE_IN("");
-
-  expr_t targetExpr = v.getTargetExpr();
-  xqtref_t targetType = targetExpr->return_type(ccb->m_sctx);
-
-  if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.UNTYPED_TYPE) ||
-      TypeOps::is_subtype(*GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, *targetType) ||
-      TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR))
-    return true;
-
-  ZORBA_ERROR_LOC(XUTY0007, qloc);
 
   return true;
 }
 
-void end_visit (delete_expr& v) {
+void end_visit (delete_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
   PlanIter_t lTarget = pop_itstack();
   PlanIter_t lDelete = new DeleteIterator(qloc, lTarget);
@@ -1473,25 +1438,21 @@ void end_visit (delete_expr& v) {
 }
 
 
-bool begin_visit (replace_expr& v) {
+bool begin_visit (replace_expr& v) 
+{
   CODEGEN_TRACE_IN("");
 
   expr_t targetExpr = v.getTargetExpr();
   xqtref_t targetType = targetExpr->return_type(ccb->m_sctx);
-  xqtref_t primeType = TypeOps::prime_type(*targetType);
 
   if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
     ZORBA_ERROR_LOC(XUDY0027, qloc);
 
-  if (TypeOps::is_subtype(*primeType, *GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE))
-    return true;
-
-  ZORBA_ERROR_LOC(XUTY0008, qloc);
-
   return true;
 }
 
-void end_visit (replace_expr& v) {
+void end_visit (replace_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
   PlanIter_t lReplacement = pop_itstack();
   PlanIter_t lTarget = pop_itstack();
@@ -1502,30 +1463,21 @@ void end_visit (replace_expr& v) {
   push_itstack(&*lReplace);
 }
 
-bool begin_visit (rename_expr& v) {
+bool begin_visit (rename_expr& v) 
+{
   CODEGEN_TRACE_IN("");
 
   expr_t targetExpr = v.getTargetExpr();
   xqtref_t targetType = targetExpr->return_type(ccb->m_sctx);
 
-  if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.UNTYPED_TYPE) ||
-      TypeOps::is_subtype(*GENV_TYPESYSTEM.ELEMENT_TYPE_ONE, *targetType) ||
-      TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ELEMENT_TYPE_ONE) ||
-      TypeOps::is_subtype(*GENV_TYPESYSTEM.ATTRIBUTE_TYPE_ONE, *targetType) ||
-      TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_ONE) ||
-      TypeOps::is_subtype(*GENV_TYPESYSTEM.PI_TYPE_ONE, *targetType) ||
-      TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.PI_TYPE_ONE))
-    return true;
-
   if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
     ZORBA_ERROR_LOC(XUDY0027, qloc);
-  else
-    ZORBA_ERROR_LOC(XUTY0012, qloc);
 
   return true;
 }
 
-void end_visit (rename_expr& v) {
+void end_visit (rename_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
   PlanIter_t lName = pop_itstack();
   PlanIter_t lTarget = pop_itstack();
@@ -1533,7 +1485,9 @@ void end_visit (rename_expr& v) {
   push_itstack(&*lRename);
 }
 
-bool begin_visit (transform_expr& v) {
+
+bool begin_visit (transform_expr& v) 
+{
   CODEGEN_TRACE_IN("");
 
   vector<rchandle<copy_clause> >::const_iterator lIter = v.begin();
@@ -1547,7 +1501,8 @@ bool begin_visit (transform_expr& v) {
   return true;
 }
 
-void end_visit (transform_expr& v) {
+void end_visit (transform_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
   PlanIter_t lReturn = pop_itstack();
   PlanIter_t lModify = pop_itstack();
@@ -1562,7 +1517,7 @@ void end_visit (transform_expr& v) {
 
   vector<rchandle<copy_clause> >::const_iterator lIter = v.begin();
   vector<rchandle<copy_clause> >::const_iterator lEnd  = v.end();
-  for(;lIter!=lEnd;++lIter)
+  for(; lIter != lEnd; ++lIter)
   {
     PlanIter_t lInput = pop_stack(lInputs);
     vector<ForVarIter_t>* lVarIters = 0;
