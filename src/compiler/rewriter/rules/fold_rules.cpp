@@ -491,8 +491,9 @@ RULE_REWRITE_PRE(PartialEval)
 
     if (TypeOps::is_subtype(*arg_type, *cbe->get_target_type()))
       return new const_expr (LOC (node), true);
+
     else if (node->get_expr_kind() == instanceof_expr_kind)
-      return TypeOps::intersect_type(*arg_type, *cbe->get_target_type ()) == GENV_TYPESYSTEM.NONE_TYPE 
+      return TypeOps::intersect_type(*arg_type, *cbe->get_target_type()) == GENV_TYPESYSTEM.NONE_TYPE 
         ? new const_expr (LOC (node), false) : NULL;
     else
       return NULL;
