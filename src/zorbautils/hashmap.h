@@ -43,7 +43,7 @@ public:
 
   ~HashEntry() 
   { 
-   theIsFree = true;
+    theIsFree = true;
     theNext = 0;
   }
 
