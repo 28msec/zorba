@@ -25,43 +25,49 @@ using namespace std;
 
 namespace zorba {
 
-  const function *binary_arith_func::specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const {
-    xqtref_t t0 = argTypes[0];
-    xqtref_t t1 = argTypes[1];
+const function *binary_arith_func::specialize(
+    static_context *sctx,
+    const std::vector<xqtref_t>& argTypes) const 
+{
+  xqtref_t t0 = argTypes[0];
+  xqtref_t t1 = argTypes[1];
     
-    if (TypeOps::is_simple(*t0) && TypeOps::is_simple(*t1)) {
-      TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
-      TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
+  if (TypeOps::is_builtin_simple(*t0) &&
+      TypeOps::is_builtin_simple(*t1)) {
+    TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
+    TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
       
-      if (TypeOps::is_numeric (*t0) && TypeOps::is_numeric (*t1) && tc0 == tc1) {
-        const function *f1 = sctx->lookup_builtin_fn (std::string (":numeric-") + op_name (), 2),
-          *f2 = f1->specialize (sctx, argTypes);
-        return f2 == NULL ? f1 : f2;
-      }
+    if (TypeOps::is_numeric (*t0) && TypeOps::is_numeric (*t1) && tc0 == tc1) {
+      const function *f1 = sctx->lookup_builtin_fn (std::string (":numeric-") + op_name (), 2),
+        *f2 = f1->specialize (sctx, argTypes);
+      return f2 == NULL ? f1 : f2;
     }
-    return NULL;
   }
+  return NULL;
+}
+  
 
-  xqtref_t binary_arith_func::atomic_return_type (const std::vector<xqtref_t> &arg_types) {
-    if (TypeOps::is_empty (*arg_types [0]))
-      return arg_types [0];
-    if (TypeOps::is_empty (*arg_types [1]))
-      return arg_types [1];
-    int cnt1 = TypeOps::type_min_cnt (*arg_types [0]),
-        cnt2 = TypeOps::type_min_cnt (*arg_types [0]);
-    if (cnt2 < cnt1) cnt1 = cnt2;
-    return cnt1 == 0
-      ? GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION
-      : GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
+xqtref_t binary_arith_func::atomic_return_type (const std::vector<xqtref_t> &arg_types) {
+  if (TypeOps::is_empty (*arg_types [0]))
+    return arg_types [0];
+  if (TypeOps::is_empty (*arg_types [1]))
+    return arg_types [1];
+  int cnt1 = TypeOps::type_min_cnt (*arg_types [0]),
+    cnt2 = TypeOps::type_min_cnt (*arg_types [0]);
+  if (cnt2 < cnt1) cnt1 = cnt2;
+  return cnt1 == 0
+    ? GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION
+    : GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
+}
+  
+
+xqtref_t binary_arith_func::return_type (const std::vector<xqtref_t> &arg_types) const {
+  if (TypeOps::is_numeric (*arg_types [0]) && TypeOps::is_numeric (*arg_types [1])) {
+    return TypeOps::arithmetic_type (*arg_types [0], *arg_types [1]);
   }
-
-  xqtref_t binary_arith_func::return_type (const std::vector<xqtref_t> &arg_types) const {
-    if (TypeOps::is_numeric (*arg_types [0]) && TypeOps::is_numeric (*arg_types [1])) {
-      return TypeOps::arithmetic_type (*arg_types [0], *arg_types [1]);
-    }
-    return atomic_return_type (arg_types);
-  }
-
+  return atomic_return_type (arg_types);
+}
+  
   // 6.2.1 op:add
   // --------------------
   class op_add : public binary_arith_func

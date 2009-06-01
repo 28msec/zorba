@@ -103,7 +103,7 @@ static const function *specialize_numeric (static_context *sctx, const std::vect
   ostringstream oss;
 
   oss << ":" "numeric-" << op << "-";
-  if (TypeOps::is_simple(*t0) && TypeOps::is_simple (*t1)) {
+  if (TypeOps::is_builtin_simple(*t0) && TypeOps::is_builtin_simple (*t1)) {
     TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
     TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
     

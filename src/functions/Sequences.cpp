@@ -169,33 +169,41 @@ namespace zorba {
     | 15.3 Equals, Union, Intersection and Except
     |_______________________________________________________________________*/
 
-  //15.3.2 op:union
-  class fn_union : public function {
-  public:
-    fn_union(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    ZORBA_PRODUCES_SORTED
-    ZORBA_PRODUCES_DISTINCT
-  };
+class fn_union : public function 
+{
+public:
+  fn_union(const signature& sig) : function (sig) {}
 
-  //15.3.3 op:intersect
-  class fn_intersect : public function {
-  public:
-    fn_intersect(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    ZORBA_PRODUCES_SORTED
-    ZORBA_PRODUCES_DISTINCT
-  };
+  PlanIter_t codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
-  //15.3.4 op:except
-  class fn_except: public function {
-  public:
-    fn_except(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    ZORBA_PRODUCES_SORTED
-    ZORBA_PRODUCES_DISTINCT
-  };
+  ZORBA_PRODUCES_SORTED
+  ZORBA_PRODUCES_DISTINCT
+};
 
+
+class fn_intersect : public function 
+{
+public:
+  fn_intersect(const signature& sig) : function (sig) {}
+
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+
+  ZORBA_PRODUCES_SORTED
+  ZORBA_PRODUCES_DISTINCT
+};
+
+
+class fn_except: public function 
+{
+public:
+  fn_except(const signature& sig) : function (sig) {}
+
+  PlanIter_t codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+
+  ZORBA_PRODUCES_SORTED
+  ZORBA_PRODUCES_DISTINCT
+};
+  
   /*______________________________________________________________________
     |
     | 15.4 Aggregate Functions
