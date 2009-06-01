@@ -232,7 +232,11 @@ protected:
   ulong                     theId;
   XmlNode                 * theRootNode;
 
+  xqpStringStore_t          theBaseUri;
+  xqpStringStore_t          theDocUri;
+
   xqpStringStore_t          theSchemaUri;
+
   bool                      theIsValidated;
 
   GuideNode               * theDataGuideRootNode;
@@ -244,24 +248,37 @@ public:
 
   void free() throw();
 
-  long getRefCount() const      { return theRefCount; }
-  long& getRefCount()           { return theRefCount; }
-  void addReference()           { ++theRefCount; }
-  void removeReference()        { --theRefCount; }
+  long getRefCount() const { return theRefCount; }
+  long& getRefCount()      { return theRefCount; }
+  void addReference()      { ++theRefCount; }
+  void removeReference()   { --theRefCount; }
 
   SYNC_CODE(RCLock& getRCLock() const { return theRCLock; })
 
-  ulong getId() const                { return theId; }
-  XmlNode* getRoot() const           { return theRootNode; }
-  void setRoot(XmlNode* root)        { theRootNode = root; }
+  ulong getId() const { return theId; }
 
-  xqpStringStore* getSchemaUri() const     { return theSchemaUri.getp(); }
-  void setSchemaUri(xqpStringStore_t& uri) { theSchemaUri.transfer(uri); }
+  XmlNode* getRoot() const { return theRootNode; }
+
+  void setRoot(XmlNode* root) { theRootNode = root; }
+
+  xqpStringStore* getBaseUri() const { return theBaseUri.getp(); }
+
+  void setBaseUri(const xqpStringStore_t& uri) { theBaseUri = uri; }
+
+  xqpStringStore* getDocUri() const { return theDocUri.getp(); }
+
+  void setDocUri(const xqpStringStore_t& uri) { theDocUri = uri; }
+
+  xqpStringStore* getSchemaUri() const { return theSchemaUri.getp(); }
+
+  void setSchemaUri(const xqpStringStore_t& uri) { theSchemaUri = uri; }
 
   bool isValidated() const { return theIsValidated; }
-  void markValidated()     { theIsValidated = true; }
 
-  GuideNode* getDataGuide() const    { return theDataGuideRootNode; }
+  void markValidated() { theIsValidated = true; }
+
+  GuideNode* getDataGuide() const { return theDataGuideRootNode; }
+
   void setDataGuide(GuideNode* root) { theDataGuideRootNode = root; }
 };
 
@@ -386,11 +403,21 @@ public:
 
   GuideNode* getDataGuide() const   { return getTree()->getDataGuide(); }
 
+  xqpStringStore* getBaseUri() const { return getTree()->getBaseUri(); }
+
+  void setBaseUri(const xqpStringStore_t& uri) { getTree()->setBaseUri(uri); }
+
+  xqpStringStore* getDocUri() const { return getTree()->getDocUri(); }
+
+  void setDocUri(const xqpStringStore_t& uri) { getTree()->setDocUri(uri); }
+
   void setParent(XmlNode* p)        { theParent = p; }
 
   void setTree(const XmlTree* t);
   XmlTree* getTree() const          { return (XmlTree*)theTreeRCPtr; }
+
   ulong getTreeId() const           { return getTree()->getId(); }
+
   const OrdPath& getOrdPath() const { return theOrdPath; }
   OrdPath& getOrdPath()             { return theOrdPath; }
 
@@ -471,19 +498,13 @@ protected:
 ********************************************************************************/
 class DocumentNode : public XmlNode
 {
-protected:
-  xqpStringStore_t    theBaseUri;
-  xqpStringStore_t    theDocUri;
-
 public:
-  DocumentNode(
-        xqpStringStore_t& baseUri,
-        xqpStringStore_t& docUri);
+  DocumentNode();
 
   DocumentNode(
-        XmlTree*          tree,
-        xqpStringStore_t& baseUri,
-        xqpStringStore_t& docUri);
+        XmlTree*                tree,
+        const xqpStringStore_t& baseUri,
+        const xqpStringStore_t& docUri);
 
   virtual ~DocumentNode();
 
@@ -498,7 +519,7 @@ public:
 
   store::Item* getType() const; 
 
-  xqpStringStore* getDocumentURI() const { return theDocUri.getp(); }
+  xqpStringStore* getDocumentURI() const { return getDocUri(); }
 
   store::Iterator_t getChildren() const;
 
@@ -545,14 +566,12 @@ private:
   LoadedNodeVector theChildren;
 
 public:
-  DocumentTreeNode(
-        xqpStringStore_t& baseUri,
-        xqpStringStore_t& docUri);
+  DocumentTreeNode();
 
   DocumentTreeNode(
-        XmlTree*          tree,
-        xqpStringStore_t& baseUri,
-        xqpStringStore_t& docUri);
+        XmlTree*                tree,
+        const xqpStringStore_t& baseUri,
+        const xqpStringStore_t& docUri);
 
   ulong numChildren() const          { return theChildren.size(); }
   NodeVector& children()             { return theChildren; }
@@ -573,9 +592,9 @@ protected:
 
 public:
   DocumentDagNode(
-        XmlTree*          tree,
-        xqpStringStore_t& baseUri,
-        xqpStringStore_t& docUri);
+        XmlTree*                tree,
+        const xqpStringStore_t& baseUri,
+        const xqpStringStore_t& docUri);
         
   ulong numChildren() const          { return theChildren.size(); }
   NodeVector& children()             { return theChildren; }

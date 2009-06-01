@@ -227,9 +227,21 @@ store::Item_t FastXmlLoader::loadXml(
   xmlParserCtxtPtr ctxt = NULL;
   long numChars;
 
-  theDocUri = uri;
-
   theTree = new XmlTree(NULL, GET_STORE().getTreeId());
+
+  if (uri == NULL)
+  {
+    std::ostringstream uristream;
+    uristream << "zorba://internalDocumentURI-" << theTree->getId();
+    
+    theDocUri = new xqpStringStore(uristream.str().c_str());
+  }
+  else
+  {
+    theDocUri = uri;
+  }
+
+  theTree->setDocUri(theDocUri);
 
   try
   {
@@ -341,17 +353,7 @@ void FastXmlLoader::startDocument(void * ctx)
 
   try
   {
-    xqpStringStore_t docUri = loader.theDocUri;
-    xqpStringStore_t baseUri = loader.theBaseUri;
-    if (docUri == NULL)
-    {
-      std::ostringstream uristream;
-      uristream << "zorba://internalDocumentURI-" << loader.theTree->getId();
-
-      docUri = new xqpStringStore(uristream.str().c_str());
-    }
-
-    XmlNode* docNode = new DocumentTreeNode(baseUri, docUri);
+    XmlNode* docNode = new DocumentTreeNode();
 
     loader.setRoot(docNode);
     loader.theNodeStack.push(docNode);

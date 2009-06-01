@@ -542,7 +542,7 @@ store::Item_t SimpleStore::loadDocument(
   already associated to another node, the method raises an error. If the given
   uri is already associated to the given node, this method is a noop.
 ********************************************************************************/
-void SimpleStore::addNode(const xqpStringStore* uri, const store::Item_t& node)
+void SimpleStore::addNode(const xqpStringStore_t& uri, const store::Item_t& node)
 {
   ZORBA_ASSERT(uri != NULL);
 
@@ -557,6 +557,10 @@ void SimpleStore::addNode(const xqpStringStore* uri, const store::Item_t& node)
   if (!inserted && node.getp() != root.getp())
   {
     ZORBA_ERROR_PARAM(API0020_DOCUMENT_ALREADY_EXISTS, uri, "");
+  }
+  else if (inserted)
+  {
+    root->setDocUri(uri);
   }
 
   ZORBA_FATAL(node.getp() == root.getp(), "");

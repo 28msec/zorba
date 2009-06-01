@@ -198,7 +198,7 @@ public:
    */
   virtual void deleteAllDocuments() = 0;
 
-  virtual void addNode(const xqpStringStore* uri, const Item_t& node) = 0;
+  virtual void addNode(const xqpStringStore_t& uri, const Item_t& node) = 0;
 
   /* ------------------------ Collection Management ---------------------------*/
 
