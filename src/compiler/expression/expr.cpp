@@ -1468,20 +1468,56 @@ void if_expr::next_iter (expr_iterator_data& v) {
 // [52] [http://www.w3.org/TR/xquery/#prod-xquery-UnionExpr]
 // [53] [http://www.w3.org/TR/xquery/#prod-xquery-IntersectExceptExpr]
 
-expr_iterator_data *fo_expr::make_iter () { return new fo_expr_iterator_data (this); }
 
-void fo_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER2 (fo_expr);
-  ITER_FOR_EACH (arg_iter, begin (), end (), *vv.arg_iter);
-  END_EXPR_ITER ();
-}
-
-const signature &fo_expr::get_signature () const {
+const signature &fo_expr::get_signature () const 
+{
   return func->get_signature ();
 }
 
 store::Item_t fo_expr::get_fname () const
-{ return func->get_fname (); }
+{ 
+  return func->get_fname (); 
+}
+
+
+fo_expr *fo_expr::create_seq(const QueryLoc &loc) 
+{
+  auto_ptr<fo_expr> fo (new fo_expr (loc, GENV.getRootStaticContext ().lookup_builtin_fn (":" "concatenate", VARIADIC_SIG_SIZE)));
+  fo->put_annotation (AnnotationKey::CONCAT_EXPR, TSVAnnotationValue::TRUE_VAL);
+  return fo.release ();
+}
+
+bool fo_expr::is_concatenation () const 
+{
+  return get_annotation(AnnotationKey::CONCAT_EXPR).getp() == TSVAnnotationValue::TRUE_VAL.getp ();
+}
+
+
+expr_t fo_expr::clone (substitution_t& subst) 
+{
+  fo_expr *fo = (is_concatenation() ?
+                 create_seq(get_loc()) :
+                 new fo_expr(get_loc(), get_func()));
+
+  for (unsigned i = 0; i < argv.size (); i++)
+    fo->add (argv [i]->clone (subst));
+
+  return fo;
+}
+
+
+expr_iterator_data *fo_expr::make_iter () 
+{
+  return new fo_expr_iterator_data (this); 
+}
+
+
+void fo_expr::next_iter (expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER2 (fo_expr);
+  ITER_FOR_EACH (arg_iter, begin (), end (), *vv.arg_iter);
+  END_EXPR_ITER ();
+}
 
 
 // [48a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTContainsExpr]
@@ -2241,14 +2277,6 @@ expr_t wrapper_expr::clone (substitution_t& subst) {
     return new wrapper_expr (get_loc (), e);
 }
 
-expr_t fo_expr::clone (substitution_t& subst) {
-  fo_expr *fo = is_concatenation ()
-    ? create_seq (get_loc ())
-    : new fo_expr (get_loc (), get_func ());
-  for (unsigned i = 0; i < argv.size (); i++)
-    fo->add (argv [i]->clone (subst));
-  return fo;
-}
 
 expr_t match_expr::clone (substitution_t& subst) {
   match_expr *me = new match_expr (get_loc ());
@@ -2300,15 +2328,6 @@ expr_t name_cast_expr::clone (substitution_t& subst) {
   return new name_cast_expr (get_loc (), get_input ()->clone (subst), getNamespaceContext());
 }
 
-fo_expr *fo_expr::create_seq (const QueryLoc &loc) {
-  auto_ptr<fo_expr> fo (new fo_expr (loc, GENV.getRootStaticContext ().lookup_builtin_fn (":" "concatenate", VARIADIC_SIG_SIZE)));
-  fo->put_annotation (AnnotationKey::CONCAT_EXPR, TSVAnnotationValue::TRUE_VAL);
-  return fo.release ();
-}
-
-bool fo_expr::is_concatenation () const {
-  return get_annotation (AnnotationKey::CONCAT_EXPR).getp () == TSVAnnotationValue::TRUE_VAL.getp ();
-}
 
 } /* namespace zorba */
 /* vim:set ts=2 sw=2: */

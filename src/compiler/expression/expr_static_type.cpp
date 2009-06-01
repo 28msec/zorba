@@ -123,10 +123,12 @@ xqtref_t treat_expr::return_type_impl (static_context *sctx)
 
 
 static xqtref_t axist_step_type(
+    static_context* sctx,
     const axis_step_expr* axisStep,
     const NodeXQType* inputType)
 {
   RootTypeManager& RTM = GENV_TYPESYSTEM;
+  TypeManager* tm = sctx->get_typemanager();
 
   const QueryLoc& loc = axisStep->get_loc();
 
@@ -135,53 +137,101 @@ static xqtref_t axist_step_type(
 
   match_test_t testKind =  nodeTest->getTestKind();
   store::StoreConsts::NodeKind testNodeKind = nodeTest->getNodeKind();
-  store::Item* testSchemaType = nodeTest->getTypeName().getp();
+  store::Item* testSchemaType = nodeTest->getTypeName();
+  store::Item* testNodeName = nodeTest->getQName();
   match_wild_t wildKind = nodeTest->getWildKind();
 
   TypeConstants::quantifier_t inQuant = inputType->get_quantifier();
-  store::StoreConsts::NodeKind inNodeKind = inputType->get_nodetest()->get_node_kind();
+  store::StoreConsts::NodeKind inNodeKind = inputType->get_node_kind();
+  NodeNameTest* inNodeNameTest = inputType->get_node_name_test();
   xqtref_t inContentType = inputType->get_content_type();
 
-  bool inUntyped = (inContentType != NULL && inContentType == RTM.UNTYPED_TYPE);
-
-
-#define returnTypeU(nodekind, untyped)                                  \
-  if (untyped)                                                          \
-  {                                                                     \
-    return RTM.nodekind##_UNTYPED_TYPE_STAR;                            \
-  }                                                                     \
-  else                                                                  \
-  {                                                                     \
-    return RTM.nodekind##_TYPE_STAR;                                    \
+  bool inUntyped = false;
+  if (inContentType != NULL)
+  {
+    if (inContentType == RTM.UNTYPED_TYPE)
+    {
+      inUntyped = true;
+    }
+    else if (inNodeKind == store::StoreConsts::documentNode &&
+             inContentType->type_kind() == XQType::NODE_TYPE_KIND)
+    {
+      const NodeXQType* rootElemType = reinterpret_cast<const NodeXQType*>(
+                                       inContentType.getp());
+      if (rootElemType->get_content_type() == RTM.UNTYPED_TYPE)
+        inUntyped = true;
+    }
   }
 
 
-#define returnTypeQ(nodekind, quant)                                    \
-  if (TypeOps::is_sub_quant(quant, TypeConstants::QUANT_QUESTION))      \
+#define returnTypeU(nodekind, nodename, untyped)                        \
+  if (untyped && nodekind == store::StoreConsts::attributeNode)         \
   {                                                                     \
-    return GENV_TYPESYSTEM.nodekind##_TYPE_QUESTION;                    \
-  }                                                                     \
-  else                                                                  \
-  {                                                                     \
-    return GENV_TYPESYSTEM.nodekind##_TYPE_STAR;                        \
-  }
-
-#define returnType2(nodekind, quant, untyped)                           \
-  if (untyped && TypeOps::is_sub_quant(quant, TypeConstants::QUANT_QUESTION)) \
-  {                                                                     \
-    return RTM.nodekind##_UNTYPED_TYPE_QUESTION;                        \
+    return tm->create_node_type(nodekind,                               \
+                                nodename,                               \
+                                RTM.UNTYPED_ATOMIC_TYPE_ONE,            \
+                                TypeConstants::QUANT_STAR,              \
+                                false);                                 \
   }                                                                     \
   else if (untyped)                                                     \
   {                                                                     \
-    return RTM.nodekind##_UNTYPED_TYPE_STAR;                            \
-  }                                                                     \
-  else if (TypeOps::is_sub_quant(quant, TypeConstants::QUANT_QUESTION)) \
-  {                                                                     \
-    return RTM.nodekind##_TYPE_QUESTION;                                \
+    return tm->create_node_type(nodekind,                               \
+                                nodename,                               \
+                                RTM.UNTYPED_TYPE,                       \
+                                TypeConstants::QUANT_STAR,              \
+                                false);                                 \
   }                                                                     \
   else                                                                  \
   {                                                                     \
-    return RTM.nodekind##_TYPE_STAR;                                    \
+    return tm->create_node_type(nodekind,                               \
+                                nodename,                               \
+                                RTM.ANY_TYPE,                           \
+                                TypeConstants::QUANT_STAR,              \
+                                false);                                 \
+  }
+
+
+#define returnType(nodekind, nodename, quant, untyped)                  \
+  if (untyped)                                                          \
+  {                                                                     \
+    xqtref_t contentType;                                               \
+    if (nodekind == store::StoreConsts::attributeNode)                  \
+      contentType = RTM.UNTYPED_ATOMIC_TYPE_ONE;                        \
+    else                                                                \
+      contentType = RTM.UNTYPED_TYPE;                                   \
+                                                                        \
+    if (TypeOps::is_sub_quant(quant, TypeConstants::QUANT_QUESTION))    \
+    {                                                                   \
+      return tm->create_node_type(nodekind,                             \
+                                  nodename,                             \
+                                  contentType,                          \
+                                  TypeConstants::QUANT_QUESTION,        \
+                                  false);                               \
+    }                                                                   \
+    else                                                                \
+    {                                                                   \
+      return tm->create_node_type(nodekind,                             \
+                                  nodename,                             \
+                                  contentType,                          \
+                                  TypeConstants::QUANT_STAR,            \
+                                  false);                               \
+    }                                                                   \
+  }                                                                     \
+  else if (TypeOps::is_sub_quant(quant, TypeConstants::QUANT_QUESTION)) \
+  {                                                                     \
+    return tm->create_node_type(nodekind,                               \
+                                nodename,                               \
+                                RTM.ANY_TYPE,                           \
+                                TypeConstants::QUANT_QUESTION,          \
+                                false);                                 \
+  }                                                                     \
+  else                                                                  \
+  {                                                                     \
+    return tm->create_node_type(nodekind,                               \
+                                nodename,                               \
+                                RTM.ANY_TYPE,                           \
+                                TypeConstants::QUANT_STAR,              \
+                                false);                                 \
   }
 
 
@@ -238,19 +288,7 @@ static xqtref_t axist_step_type(
       RAISE_XPST0005();
     }
 
-    if (testNodeKind == store::StoreConsts::elementNode)
-    {
-      returnTypeQ(ELEMENT, inQuant);
-    }
-    else if (testNodeKind == store::StoreConsts::documentNode)
-    {
-      returnTypeQ(DOCUMENT, inQuant);
-    }
-    else
-    {
-      assert(testKind == match_anykind_test);
-      returnTypeQ(ANY_NODE, inQuant);
-    }
+    returnType(testNodeKind, testNodeName, inQuant, false);
 
     break;
   }
@@ -277,7 +315,7 @@ static xqtref_t axist_step_type(
     }
     else if (testNodeKind == store::StoreConsts::documentNode)
     {
-      returnTypeQ(DOCUMENT, inQuant);
+      returnType(testNodeKind, testNodeName, inQuant, false);
     }
     else
     {
@@ -296,7 +334,7 @@ static xqtref_t axist_step_type(
     }
     else if (testNodeKind == store::StoreConsts::documentNode)
     {
-      returnTypeQ(DOCUMENT, inQuant);
+      returnType(testNodeKind, testNodeName, inQuant, false);
     }
     else if (testNodeKind == store::StoreConsts::anyNode)
     {
@@ -323,50 +361,39 @@ self:
       RAISE_XPST0005();
     }
 
+    if (testNodeName != NULL &&
+        inNodeNameTest != NULL &&
+        !inNodeNameTest->matches(testNodeName))
+    {
+      RAISE_XPST0005();
+    }
+
     switch (inNodeKind)
     {
     case store::StoreConsts::documentNode:
-      returnType2(DOCUMENT, inQuant, inUntyped);
-
     case store::StoreConsts::elementNode:
-      returnType2(ELEMENT, inQuant, inUntyped);
-
     case store::StoreConsts::attributeNode:
-      returnType2(ATTRIBUTE, inQuant, inUntyped);
+      returnType(inNodeKind, testNodeName, inQuant, inUntyped);
 
     case store::StoreConsts::textNode:
-      returnTypeQ(TEXT, inQuant);
-
     case store::StoreConsts::piNode:
-      returnTypeQ(PI, inQuant);
-
     case store::StoreConsts::commentNode:
-      returnTypeQ(COMMENT, inQuant);
+      returnType(inNodeKind, testNodeName, inQuant, false);
 
     case store::StoreConsts::anyNode:
     {
       switch (testNodeKind)
       {
       case store::StoreConsts::anyNode:
-        returnType2(ANY_NODE, inQuant, inUntyped);
-
       case store::StoreConsts::documentNode:
-        returnType2(DOCUMENT, inQuant, inUntyped);
-
       case store::StoreConsts::elementNode:
-        returnType2(ELEMENT, inQuant, inUntyped);
-
       case store::StoreConsts::attributeNode:
-        returnType2(ATTRIBUTE, inQuant, inUntyped);
+        returnType(testNodeKind, testNodeName, inQuant, inUntyped);
 
       case store::StoreConsts::textNode:
-        returnTypeQ(TEXT, inQuant);
-
       case store::StoreConsts::piNode:
-        returnTypeQ(PI, inQuant);
-      
       case store::StoreConsts::commentNode:
-        returnTypeQ(COMMENT, inQuant);
+        returnType(testNodeKind, testNodeName, inQuant, false);
 
       default:
         ZORBA_ASSERT(false);
@@ -406,10 +433,10 @@ self:
     switch (testNodeKind)
     {
     case store::StoreConsts::anyNode:
-      returnTypeU(ANY_NODE, inUntyped);
+      returnTypeU(testNodeKind, testNodeName, inUntyped);
 
     case store::StoreConsts::elementNode:
-      returnTypeU(ELEMENT, inUntyped);
+      returnTypeU(testNodeKind, testNodeName, inUntyped);
 
     case store::StoreConsts::textNode:
       return RTM.TEXT_TYPE_STAR;
@@ -447,10 +474,10 @@ self:
     switch (testNodeKind)
     {
     case store::StoreConsts::anyNode:
-      returnTypeU(ANY_NODE, inUntyped);
+      returnTypeU(testNodeKind, testNodeName, inUntyped);
 
     case store::StoreConsts::elementNode:
-      returnTypeU(ELEMENT, inUntyped);
+      returnTypeU(testNodeKind, testNodeName, inUntyped);
 
     case store::StoreConsts::textNode:
       return RTM.TEXT_TYPE_STAR;
@@ -489,11 +516,11 @@ self:
     if ((testKind == match_name_test && wildKind == match_no_wild) ||
         testKind == match_xs_attr_test)
     {
-      returnType2(ATTRIBUTE, inQuant, inUntyped);
+      returnType(store::StoreConsts::attributeNode, testNodeName, inQuant, inUntyped);
     }
     else
     {
-      returnTypeU(ATTRIBUTE, inUntyped);
+      returnTypeU(store::StoreConsts::attributeNode, testNodeName, inUntyped);
     }
 
     break;
@@ -579,7 +606,8 @@ xqtref_t relpath_expr::return_type_impl(static_context* sctx)
   {
     const axis_step_expr* axisStep = theSteps[i].cast<axis_step_expr>();
 
-    stepType = axist_step_type(axisStep,
+    stepType = axist_step_type(sctx,
+                               axisStep,
                                reinterpret_cast<const NodeXQType*>(stepType.getp()));
   }
 
@@ -601,10 +629,15 @@ xqtref_t match_expr::return_type_impl(static_context *sctx)
   
 xqtref_t elem_expr::return_type_impl (static_context *sctx) 
 {
+  xqtref_t typeName =
+           (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+            GENV_TYPESYSTEM.ANY_TYPE : 
+            GENV_TYPESYSTEM.UNTYPED_TYPE);
+
   return sctx->get_typemanager()->
          create_node_type(store::StoreConsts::elementNode,
                           NULL,
-                          theContent == NULL ? NULL : theContent->return_type(sctx),
+                          typeName,
                           TypeConstants::QUANT_ONE,
                           false);
 }

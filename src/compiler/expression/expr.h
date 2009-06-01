@@ -387,18 +387,21 @@ public:
 ********************************************************************************/
 class cast_or_castable_base_expr : public expr {
 protected:
-  cast_or_castable_base_expr(const QueryLoc& loc, expr_t input, xqtref_t type);
-
-protected:
   expr_t input_expr_h;
   xqtref_t target_type;
+
+protected:
+  cast_or_castable_base_expr(const QueryLoc& loc, expr_t input, xqtref_t type);
   
 public:
   bool cache_compliant () { return true; }
+
   expr_t get_input() { invalidate (); return input_expr_h; }
+
   void set_input(expr_t input) { invalidate (); input_expr_h = input; }
   
   xqtref_t get_target_type() const;
+
   void set_target_type(xqtref_t target);
 };
 
@@ -408,8 +411,8 @@ public:
 ********************************************************************************/
 class cast_base_expr : public cast_or_castable_base_expr {
 public:
-
   cast_base_expr(const QueryLoc& loc, expr_t input, xqtref_t type);
+
   xqtref_t return_type_impl (static_context *sctx);
 };
 
@@ -433,18 +436,22 @@ public:
 ********************************************************************************/
 class cast_expr : public cast_base_expr {
 public:
-  expr_kind_t get_expr_kind () const { return cast_expr_kind; }
   cast_expr(
     const QueryLoc&,
     expr_t,
     xqtref_t);
 
+  expr_kind_t get_expr_kind () const { return cast_expr_kind; }
+
   bool is_optional() const;
 
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
-  std::ostream& put(std::ostream&) const;
   expr_t clone (substitution_t& s);
+
+  void next_iter (expr_iterator_data&);
+
+  void accept (expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -1054,11 +1061,11 @@ public:
   const xqp_string& getWildName() const    { return theWildName; }
   void setWildName(const xqp_string& v)    { theWildName = v; } 
 
-  store::Item_t getQName() const           { return theQName; }
-  void setQName(store::Item_t v)           { theQName = v; }
+  store::Item* getQName() const            { return theQName.getp(); }
+  void setQName(const store::Item_t& v)    { theQName = v; }
 
-  store::Item_t getTypeName() const        { return theTypeName; }
-  void setTypeName(store::Item_t v)        { theTypeName = v; }
+  store::Item* getTypeName() const         { return theTypeName.getp(); }
+  void setTypeName(const store::Item_t& v) { theTypeName = v; }
 
   bool getNilledAllowed() const            { return theNilledAllowed; }
   void setNilledAllowed(bool v)            { theNilledAllowed = v; }
