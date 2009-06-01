@@ -20,12 +20,26 @@
 
 namespace zorba
 {
-  /* begin class op_enclosed_expr */
-  PlanIter_t op_enclosed_expr::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
-  {
-    return new EnclosedIterator ( loc, argv[0] );
-  }
-  /* end class op_enclosed_expr */
+
+
+xqtref_t op_enclosed_expr::return_type(const std::vector<xqtref_t>& arg_types) const
+{
+  xqtref_t argType = arg_types[0];
+
+  if (argType->type_kind() == XQType::NODE_TYPE_KIND)
+    return argType;
+  else
+    return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
+
+
+PlanIter_t op_enclosed_expr::codegen(
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder& ann) const
+{
+  return new EnclosedIterator ( loc, argv[0] );
+}
   
   
-} /* namespace zorba */
+}

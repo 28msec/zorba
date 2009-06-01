@@ -20,21 +20,21 @@
 #include "functions/function.h"
 
 namespace zorba {
-  class op_enclosed_expr : public function {
-  public:
-    op_enclosed_expr(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  }; /* class op_enclosed_expr */
+ 
+class op_enclosed_expr : public function 
+{
+public:
+  op_enclosed_expr(const signature& sig) : function (sig) {}
 
-#if 0  // not currentyl used
-  class op_docfilter_expr : public function {
-  public:
-    op_docfilter_expr(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  }; /* class op_docfilter_expr */
-#endif
+  xqtref_t return_type(const std::vector<xqtref_t> &arg_types) const;
 
-} /* namespace zorba */
+  PlanIter_t codegen(
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder &ann) const;
+};
+  
+}
 
 #endif
 
