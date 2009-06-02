@@ -38,7 +38,7 @@ IF (ZORBA_MINIMAL_STORE)
     "Path to the store directories. Must contain CMakeLists.txt defining the variables ZORBA_STORE_IMPL_SRCS and ZORBA_STORE_LIB_EXTENSION." FORCE)
 ELSE (ZORBA_MINIMAL_STORE)
   SET(ZORBA_STORE_DIRS "${CMAKE_SOURCE_DIR}/src/store/naive" CACHE PATHS
-    "Path to the store directories. Must contain CMakeLists.txt defining the variables ZORBA_STORE_IMPL_SRCS and ZORBA_STORE_LIB_EXTENSION.")
+    "Path to the store directories. Must contain CMakeLists.txt defining the variables ZORBA_STORE_IMPL_SRCS and ZORBA_STORE_LIB_EXTENSION." FORCE)
 ENDIF (ZORBA_MINIMAL_STORE)
 
 MESSAGE(STATUS "ZORBA_STORE_DIRS " ${ZORBA_STORE_DIRS})
