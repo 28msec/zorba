@@ -3,6 +3,7 @@
 
 #include "zorba/config.h"
 #include "zorba/zorbastring.h"
+#include "zorbatypes/rchandle.h"
 #include "zorbautils/lock.h"
 
 #include <iostream>
@@ -20,7 +21,7 @@ namespace zorba {
 		private:
 			std::ostream &m_stream;
 		};
-		static Lock m_lock;
+		SYNC_CODE(static Lock m_lock;)
 		static SynchronousLogger cerr(std::cerr);
 		static SynchronousLogger clog(std::clog);
 		static SynchronousLogger cout(std::cout);
