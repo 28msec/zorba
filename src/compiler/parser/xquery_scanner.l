@@ -195,13 +195,6 @@ QName       ({NCName}":")?{NCName}
 
   /*_____________________________________________________________________
    |
-   |  VarName definition
-   |______________________________________________________________________*/
-  /* VarName     {QName} */
-
-
-  /*_____________________________________________________________________
-   |
    |  Entity definitions
    |______________________________________________________________________*/
 CharRef               "&#"([0-9]+|x([0-9]|[a-f]|[A-F])+);
@@ -245,9 +238,12 @@ AposAttrContentChar   [\x09\x0A\x0D\x20-\x25\x28-\x3B\x3D-\x7A\x7C\x7E-\xFD]
   PITarget  (({NonXChar}{Char}*)|((X|x){NonMChar}{Char}*)|((X|x)(M|m){NonLChar}*)|({Char}{Char}{Char}{Char}+))
   */
 
-PITargetStart         [_:A-\xFF]
-PITargetName          [.\-_:0-9A-\xFF]
-PITarget              {PITargetStart}{PITargetName}*
+  /*
+  PITargetStart         [_:A-\xFF]
+  PITargetName          [.\-_:0-9A-\xFF]
+  */
+  
+PITarget              {NCName}
 
 NonQuestionMarkChar                 [\x09\x0A\x0D\x20-\x3E\x40-\xFD]
 NonGreaterThanNonQuestionMarkChar   [\x09\x0A\x0D\x20-\x3D\x40-\xFD]
@@ -1049,7 +1045,7 @@ typedef zorba::xquery_parser::token token;
 
 <MODE_PROCESSING_INSTRUCTION>{SP} { BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT; /* continue lexing */ }
 <MODE_PROCESSING_INSTRUCTION>"?>" { POP_STATE(); return token::PI_END; }
-<MODE_PROCESSING_INSTRUCTION>{PITarget} { TRY_SVAL_TOKEN (PI_TARGET_LITERAL, put(yytext, yyleng)); }
+<MODE_PROCESSING_INSTRUCTION>{NCName} /* PITarget */    { TRY_SVAL_TOKEN (NCNAME_SVAL, put(yytext, yyleng)); }
 
   /* } */  /* END <MODE_PROCESSING_INSTRUCTION> */
 

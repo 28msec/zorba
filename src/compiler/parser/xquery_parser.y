@@ -169,7 +169,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> EXPR_COMMENT_LITERAL		      "'comment literal'"
 
 %token <sval> PI_NCNAME_LBRACE              "'pi <NCName {>'"
-%token <sval> PI_TARGET_LITERAL             "'pi target'"
+%token <sval> NCNAME_SVAL                   "'NCName_sval'"
 %token <sval> PRAGMA_LITERAL_AND_END_PRAGMA "'pragma literal'"
 %token <sval> QNAME_SVAL_AND_END_PRAGMA     "'QName #)'"
 %token <sval> PREFIX_WILDCARD					      "'*:QName'"
@@ -181,7 +181,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <sval> QNAME                          "'QName'"
 %type <sval> URI_LITERAL                    "'URI'"
 %type <sval> NCNAME                         "'NCName'"
-%type <sval> NCNAME_NOKW                    "'NCName(non keyword)'"
+  /* %type <sval> NCNAME_NOKW                    "'NCName(non keyword)'" */
 %type <sval> KEYWORD                        "'KEYWORD'"
 
 /* simple tokens */
@@ -4121,12 +4121,12 @@ DirCommentConstructor :
 // [103] DirPIConstructor
 // ----------------------
 DirPIConstructor :
-		PI_BEGIN  PI_TARGET_LITERAL PI_END 								/* ws: explicitXQ */
+		PI_BEGIN  NCNAME  PI_END 								/* ws: explicitXQ */
 		{
 			$$ = new DirPIConstructor(LOC (@$),
 								SYMTAB ($2));
 		}
-    |	PI_BEGIN  PI_TARGET_LITERAL CHAR_LITERAL_AND_PI_END 	/* ws: explicitXQ */
+    |	PI_BEGIN  NCNAME  CHAR_LITERAL_AND_PI_END 	/* ws: explicitXQ */
 		{
 			$$ = new DirPIConstructor(LOC (@$),
 								SYMTAB ($2),
@@ -4286,13 +4286,13 @@ CompCommentConstructor :
 // [114] CompPIConstructor
 // -----------------------
 CompPIConstructor :
-		PROCESSING_INSTRUCTION  NCNAME_NOKW  LBRACE  RBRACE
+		PROCESSING_INSTRUCTION  NCNAME  LBRACE  RBRACE
 		{
 			$$ = new CompPIConstructor(LOC (@$),
 								SYMTAB ($2),
 								NULL);
 		}
-	|	PROCESSING_INSTRUCTION  NCNAME_NOKW  LBRACE  Expr  RBRACE
+	|	PROCESSING_INSTRUCTION  NCNAME  LBRACE  Expr  RBRACE
 		{
 			$$ = new CompPIConstructor(LOC (@$),
 								SYMTAB ($2),
@@ -4538,7 +4538,7 @@ PITest :
 		{
 			$$ = new PITest(LOC (@$), "");
 		}
-	|	PROCESSING_INSTRUCTION LPAR  NCNAME_NOKW  RPAR
+	|	PROCESSING_INSTRUCTION LPAR  NCNAME  RPAR
 		{
 			$$ = new PITest(LOC (@$), SYMTAB ($3));
 		}
@@ -5009,12 +5009,15 @@ NameTestList :
 URI_LITERAL :
     STRING_LITERAL;
 
-NCNAME :
+  /*
+  NCNAME :
     NCNAME_NOKW | KEYWORD { $$ = $1; }
   ;
+  */
 
-NCNAME_NOKW :
-    QNAME_SVAL
+NCNAME :
+    NCNAME_SVAL
+  | QNAME
     {
       std::string tmp = SYMTAB ($1);
       if (tmp.find (':') != std::string::npos) {
