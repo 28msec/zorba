@@ -169,7 +169,14 @@ main(int argc, char** argv)
   {
     State* lState = *lIter;
 
-    zorba::filesystem_path lQueryName((*lIter)->theName + ".xq",
+    std::string   qname_str;
+    if(lSpecPath.get_path().find("XQueryX") == std::string::npos)
+      qname_str = (*lIter)->theName + ".xq";
+    else
+      qname_str = (*lIter)->theName + ".xqx";
+    std::cout << "qname_str " << qname_str << std::endl;
+
+    zorba::filesystem_path lQueryName(qname_str,
                                       zorba::file::CONVERT_SLASHES);
     zorba::filesystem_path lQueryFile(lSpecPath, lQueryName);
 
