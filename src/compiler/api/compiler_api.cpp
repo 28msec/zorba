@@ -135,7 +135,7 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
 
     converted_xquery_str = xqxconvertor->XQueryX2XQuery(xquery_str.c_str());
 
-#ifdef DEBUG
+#ifndef NDEBUG
     //debug
     printf("\n\n");
     printf(converted_xquery_str);
