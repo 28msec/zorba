@@ -167,7 +167,7 @@ public:
           const xqpStringStore_t& uri, 
           std::istream* stream, 
           bool storeDocument);
-  void addNode(const xqpStringStore* uri, const store::Item_t&	 node);
+  void addNode(const xqpStringStore_t& uri, const store::Item_t&	 node);
   store::Item_t getDocument(const xqpStringStore_t& uri);
   void deleteDocument(const xqpStringStore_t& uri);
 

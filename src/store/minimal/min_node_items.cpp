@@ -663,14 +663,10 @@ void XmlNode::deleteTree() throw()
 /*******************************************************************************
 
 ********************************************************************************/
-DocumentNode::DocumentNode(xqpStringStore_t& baseUri, xqpStringStore_t& docUri)
+DocumentNode::DocumentNode()
   :
   XmlNode()
 {
-  if (baseUri != NULL && !baseUri->empty())
-    theBaseUri.transfer(baseUri);
-
-  theDocUri.transfer(docUri);
 }
 
 /*******************************************************************************
@@ -678,15 +674,15 @@ DocumentNode::DocumentNode(xqpStringStore_t& baseUri, xqpStringStore_t& docUri)
 ********************************************************************************/
 DocumentNode::DocumentNode(
     XmlTree*          tree,
-    xqpStringStore_t& baseUri,
-    xqpStringStore_t& docUri)
+    const xqpStringStore_t& baseUri,
+    const xqpStringStore_t& docUri)
   :
   XmlNode(tree, NULL, 0, store::StoreConsts::documentNode)
 {
   if (baseUri != NULL && !baseUri->empty())
-    theBaseUri.transfer(baseUri);
+    tree->setBaseUri(baseUri);
 
-  theDocUri.transfer(docUri);
+  tree->setDocUri(docUri);
 }
 
 
@@ -716,14 +712,11 @@ XmlNode* DocumentNode::copy2(
   XmlTree* tree = NULL;
   XmlNode* copyNode = NULL;
 
-  xqpStringStore_t baseuri = theBaseUri;
-  xqpStringStore_t docuri = theDocUri;
-
   try
   {
     tree = new XmlTree(NULL, GET_STORE().getTreeId());
 
-    copyNode = new DocumentTreeNode(tree, baseuri, docuri);
+    copyNode = new DocumentTreeNode(tree, getBaseUri(), getDocUri());
 
     //ulong numChildren = this->numChildren();
     //for (ulong i = 0; i < numChildren; i++)
@@ -767,7 +760,7 @@ store::Item* DocumentNode::getType() const
 xqpStringStore_t DocumentNode::getBaseURIInternal(bool& local) const
 {
   local = true;
-  return theBaseUri;
+  return getBaseUri();
 }
 
 
@@ -860,10 +853,10 @@ xqp_string DocumentNode::show() const
 
   strStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl
             << "<document";
-  if (theBaseUri != NULL)
-    strStream << " baseUri = \"" << *theBaseUri;
-  if (theDocUri != NULL)
-    strStream << " docUri = \"" << *theDocUri;
+  if (getBaseUri() != NULL)
+    strStream << " baseUri = \"" << *getBaseUri();
+  if (getDocUri() != NULL)
+    strStream << " docUri = \"" << *getDocUri();
   strStream << "\">" << std::endl;
 
   store::Iterator_t iter = getChildren();
@@ -889,16 +882,11 @@ xqp_string DocumentNode::show() const
 /*******************************************************************************
   Node constructor used by FastXmlLoader
 ********************************************************************************/
-DocumentTreeNode::DocumentTreeNode(
-    xqpStringStore_t& baseUri,
-    xqpStringStore_t& docUri)
+DocumentTreeNode::DocumentTreeNode()
   :
-  DocumentNode(baseUri, docUri)
+  DocumentNode()
 {
-  NODE_TRACE1("Loaded doc node " << this << " base uri = "
-              << (theBaseUri != 0 ? theBaseUri->c_str() : "NULL")
-              << " doc uri = " << (theDocUri != 0 ? theDocUri->c_str() : "NULL"));
-
+  NODE_TRACE1("Loaded doc node " << this);
   is_full_loaded = true;
 }
 
@@ -907,14 +895,14 @@ DocumentTreeNode::DocumentTreeNode(
 ********************************************************************************/
 DocumentTreeNode::DocumentTreeNode(
     XmlTree*          tree,
-    xqpStringStore_t& baseUri,
-    xqpStringStore_t& docUri)
+    const xqpStringStore_t& baseUri,
+    const xqpStringStore_t& docUri)
   :
   DocumentNode(tree, baseUri, docUri)
 {
   NODE_TRACE1("{\nConstructing doc node " << this << " tree = "
               << getTree()->getId() << ":" << getTree()
-              << " doc uri = " << (theDocUri != 0 ? theDocUri->c_str() : "NULL"));
+              << " doc uri = " << (docUri != 0 ? docUri->c_str() : "NULL"));
 
   is_full_loaded = true;
 }
@@ -932,14 +920,14 @@ DocumentTreeNode::DocumentTreeNode(
 ********************************************************************************/
 DocumentDagNode::DocumentDagNode(
     XmlTree*          tree,
-    xqpStringStore_t& baseUri,
-    xqpStringStore_t& docUri)
+    const xqpStringStore_t& baseUri,
+    const xqpStringStore_t& docUri)
   :
   DocumentNode(tree, baseUri, docUri)
 {
   NODE_TRACE1("{\nConstructing doc node " << this << " tree = "
               << getTree()->getId() << ":" << getTree()
-              << " doc uri = " << (theDocUri != 0 ? theDocUri->c_str() : "NULL"));
+              << " doc uri = " << (docUri != 0 ? docUri->c_str() : "NULL"));
 }
 
 

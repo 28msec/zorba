@@ -1216,11 +1216,24 @@ XmlNode* XmlLoader::startloadXml(
 {
   end_document = false;
   this->stream = stream;
-  theDocUri = docuri;
   prev_c = 0;
   current_c = 0;
 
   theTree = new XmlTree(NULL, GET_STORE().getTreeId());
+
+  if (docuri == NULL)
+  {
+    std::ostringstream uristream;
+    uristream << "zorba://internalDocumentURI-" << theTree->getId();
+    
+    theDocUri = new xqpStringStore(uristream.str().c_str());
+  }
+  else
+  {
+    theDocUri = docuri;
+  }
+  theTree->setDocUri(theDocUri);
+
 
   startDocument(this);
 
@@ -1345,17 +1358,7 @@ void XmlLoader::startDocument(void * ctx)
 
   try
   {
-    xqpStringStore_t docUri = loader.theDocUri;
-    xqpStringStore_t baseUri = loader.theBaseUri;
-    if (docUri == NULL)
-    {
-      std::ostringstream uristream;
-      uristream << "zorba://internalDocumentURI-" << loader.theTree->getId();
-
-      docUri = new xqpStringStore(uristream.str().c_str());
-    }
-
-    DocumentTreeNode* docNode = new DocumentTreeNode(baseUri, docUri);
+    DocumentTreeNode* docNode = new DocumentTreeNode();
 
     loader.setRoot(docNode);
 
