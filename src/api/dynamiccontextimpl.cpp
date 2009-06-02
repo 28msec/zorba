@@ -100,35 +100,6 @@ DynamicContextImpl::setVariable(
   return false;
 }
 
-bool
-DynamicContextImpl::setVariableAsDocument( const String& aQName, const String& xml_uri )
-{
-  ZORBA_DCTX_TRY
-  {
-    checkNoIterators();
-
-    xqpString uriString (Unmarshaller::getInternalString(xml_uri));
-    InternalDocumentURIResolver   *uri_resolver;
-    uri_resolver = theStaticContext->get_document_uri_resolver();
-
-    store::Item_t   uriItem;
-
-    zorba::store::ItemFactory* item_factory = GENV_ITEMFACTORY;
-
-    xqpStringStore_t uriStore = uriString.getStore();
-    item_factory->createAnyURI(uriItem, uriStore);
-
-    store::Item_t   docItem;
-    docItem = uri_resolver->resolve(uriItem, theStaticContext, true, false);
-    
-    if(docItem.isNull())
-      return false;
-
-    return setVariable(aQName, Item(docItem));
-  }
-  ZORBA_DCTX_CATCH
-  return false;
-}
 
 bool
 DynamicContextImpl::setVariable(
@@ -158,44 +129,91 @@ DynamicContextImpl::setVariable(
 
 
 bool
-DynamicContextImpl::setVariableAsDocument(
-    const String& aQName,
-    const String& aDocURI, 
-    std::auto_ptr<std::istream> aStream )
+DynamicContextImpl::setVariableAsDocument( const String& aQName, const String& xml_uri )
 {
   ZORBA_DCTX_TRY
   {
     checkNoIterators();
 
+    xqpString uriString (Unmarshaller::getInternalString(xml_uri));
+    InternalDocumentURIResolver   *uri_resolver;
+    uri_resolver = theStaticContext->get_document_uri_resolver();
+
+    store::Item_t uriItem;
+
+    zorba::store::ItemFactory* item_factory = GENV_ITEMFACTORY;
+
+    xqpStringStore_t uriStore = uriString.getStore();
+    item_factory->createAnyURI(uriItem, uriStore);
+
+    store::Item_t   docItem;
+    docItem = uri_resolver->resolve(uriItem, theStaticContext, true, false);
+    
+    if(docItem.isNull())
+      return false;
+
+    return setVariable(aQName, Item(docItem));
+  }
+  ZORBA_DCTX_CATCH
+  return false;
+}
+
+
+bool
+DynamicContextImpl::setVariableAsDocument(
+    const String& aQName,
+    const String& aDocURI, 
+    std::auto_ptr<std::istream> aStream)
+{
+  ZORBA_DCTX_TRY
+  {
+    checkNoIterators();
+
+    TypeManager* tm = theStaticContext->get_typemanager();
+
     xqpStringStore_t lInternalDocURI = Unmarshaller::getInternalString(aDocURI);
 
     store::Item_t lDocItem = GENV_STORE.loadDocument(lInternalDocURI, *(aStream.get()));
-#if 0
-    if (lDocItem->haveSchemaUri() && !lDocItem->isValidated())
+#if 1
+    if (!lDocItem->isValidated())
     {
       store::Item_t validatedNode;
       store::Item_t typeName;
       QueryLoc loc;
 
-      bool success = ValidateIterator::
-                     effectiveValidationValue(validatedNode,
-                                              lDocItem,
-                                              typeName,
-                                              theStaticContext->get_typemanager(),
-                                              ParseConstants::val_strict,
-                                              theStaticContext,
-                                              loc);
-      ZORBA_ASSERT(success);
-
-      if (lDocItem != validatedNode)
+      try
       {
-        GENV_STORE.deleteDocument(lInternalDocURI);
-        lDocItem = validatedNode;
-        GENV_STORE.addNode(lInternalDocURI.getp(), lDocItem);
+        bool success = ValidateIterator::
+                       effectiveValidationValue(validatedNode,
+                                                lDocItem,
+                                                typeName,
+                                                tm,
+                                                ParseConstants::val_strict,
+                                                theStaticContext,
+                                                loc);
+        ZORBA_ASSERT(success);
+
+        if (lDocItem != validatedNode)
+        {
+          GENV_STORE.deleteDocument(lInternalDocURI);
+          lDocItem = validatedNode;
+          lDocItem->markValidated();
+          GENV_STORE.addNode(lInternalDocURI.getp(), lDocItem);
+        }
+      }
+      catch(error::ZorbaError& e)
+      {
+        std::cout << "Failed to validate document " << lInternalDocURI->c_str()
+                  << std::endl << "Error : " << e.toString() << std::endl << std::endl;
       }
     }
+    else if (tm->getSchema() == NULL)
+    {
+      GENV_STORE.deleteDocument(lInternalDocURI);
+      lDocItem = GENV_STORE.loadDocument(lInternalDocURI, *(aStream.get()));
+    }
 #endif
-    setVariable ( aQName, Item(lDocItem) );
+    setVariable (aQName, Item(lDocItem));
 
     return true;
   }
