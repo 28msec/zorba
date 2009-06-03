@@ -26,7 +26,7 @@
 
 namespace zorba {
 
-  class Properties : public ZorbaProperties {
+  class ZORBA_DLL_PUBLIC Properties : public ZorbaProperties {
   protected:
     std::ostream *debug_stream;
     std::auto_ptr<std::ostream> debug_stream_ptr;
