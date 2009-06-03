@@ -73,7 +73,7 @@ ForLetClause::ForLetClause (
     const std::vector<PlanIter_t>& varRefs,
     PlanIter_t& aInput)
   :
-  theVarName(aVarName->getStringValue()->c_str()),
+  theVarName(aVarName->getStringValue()),
   theType(FOR),
   theInput(aInput)
 {
@@ -96,7 +96,7 @@ ForLetClause::ForLetClause (
     const std::vector<PlanIter_t>& aPosVars,
     PlanIter_t& aInput)
   :
-  theVarName(aVarName->getStringValue()->c_str()),
+  theVarName(aVarName->getStringValue()),
   theType(FOR),
   theInput(aInput)
 {
@@ -122,7 +122,7 @@ ForLetClause::ForLetClause (
     bool aNeedsMaterialization )
   :
 #ifndef NDEBUG
-  theVarName(aVarName->getStringValue()->c_str()),
+  theVarName(aVarName->getStringValue()),
 #endif
   theType(LET),
   theInput(aInput),
@@ -159,12 +159,12 @@ void ForLetClause::accept(PlanIterVisitor& v) const
 /***************************************************************************//**
 
 ********************************************************************************/
-xqpStringStore ForLetClause::getVarName() const
+xqpStringStore_t ForLetClause::getVarName() const
 {
 #ifndef NDEBUG
   return theVarName;
 #else
-  return std::string("");
+  return new xqpStringStore();
 #endif
 }
 

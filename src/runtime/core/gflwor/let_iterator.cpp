@@ -52,7 +52,7 @@ void LetIterator::accept(PlanIterVisitor& v) const
   v.beginVisit(*this); 
 
   v.beginVisitFlworLetVariable(theNeedsMat, 
-                               *theVarName->getStringValue().getp(),
+                               theVarName->getStringValue(),
                                theLetVars);
   v.endVisitFlworLetVariable();
 

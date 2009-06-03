@@ -21,6 +21,7 @@
 #include "common/common.h"
 
 #include "zorbatypes/rchandle.h"
+#include "zorbatypes/zorbatypes_decl.h"
 #include "types/typeconstants.h"
 
 namespace zorba
@@ -702,13 +703,13 @@ public:
     
   virtual void beginVisitFlworLetVariable(
         bool,
-        const xqpStringStore&,
+        const xqpStringStore_t,
         const std::vector<LetVarIter_t>&) = 0;
 
   virtual void endVisitFlworLetVariable() = 0;
     
   virtual void beginVisitFlworForVariable(
-       const xqpStringStore&,
+       const xqpStringStore_t,
        const std::vector<ForVarIter_t>&,
        const std::vector<ForVarIter_t>&) = 0;
 

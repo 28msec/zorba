@@ -81,7 +81,7 @@ class ForLetClause
 protected:
   enum ForLetType { FOR, LET };
 
-  xqpStringStore             theVarName;
+  xqpStringStore_t           theVarName;
 
   ForLetType                 theType;
   std::vector<ForVarIter_t>  theForVarRefs;
@@ -110,7 +110,7 @@ public:
           
   void accept (PlanIterVisitor&) const;
 
-  xqpStringStore getVarName() const;
+  xqpStringStore_t getVarName() const;
 };
 
 

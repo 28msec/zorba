@@ -957,12 +957,12 @@ void endVisitFlworWhereClause(const PlanIterator& /*a*/)
 
 void beginVisitFlworLetVariable(
     bool materialize,
-    const xqpStringStore& varName,
+    const xqpStringStore_t varName,
     const std::vector<LetVarIter_t>& varRefs)
 {
   thePrinter.startBeginVisit("LetVariable", ++theId);
 
-  thePrinter.addAttribute("name", varName.str());
+  thePrinter.addAttribute("name", varName->str());
 
   thePrinter.addAttribute("materialize", materialize ? "true" : "false");
 
@@ -989,13 +989,13 @@ void endVisitFlworLetVariable()
 
 
 void beginVisitFlworForVariable(
-    const xqpStringStore& varName,
+    const xqpStringStore_t varName,
     const std::vector<ForVarIter_t>& varRefs,
     const std::vector<ForVarIter_t>& posRefs)
 {
   thePrinter.startBeginVisit("ForVariable", ++theId);
 
-  thePrinter.addAttribute("name", varName.str());
+  thePrinter.addAttribute("name", varName->str());
 
   std::ostringstream str;
 

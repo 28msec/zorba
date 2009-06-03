@@ -51,6 +51,8 @@ public:
       abort();
     }
   } 
+  RCLock(const RCLock& ) {RCLock();}
+
 
   ~RCLock()
   {
@@ -100,6 +102,8 @@ public:
     }
     pthread_mutexattr_destroy(&attr);
   } 
+  RCLock(const RCLock& ) {RCLock();}
+
 
   ~RCLock()
   {
@@ -146,6 +150,7 @@ public:
   {
     mutex = ::CreateEvent(NULL, FALSE, TRUE, NULL);
   } 
+  RCLock(const RCLock& ) {RCLock();}
 
   ~RCLock()
   {

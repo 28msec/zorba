@@ -97,7 +97,7 @@ void ForIterator::accept(PlanIterVisitor& v) const
 { 
   v.beginVisit(*this); 
 
-  v.beginVisitFlworForVariable(*theVarName->getStringValue().getp(),
+  v.beginVisitFlworForVariable(theVarName->getStringValue(),
                                theVarRefs,
                                thePosVarRefs);
   v.endVisitFlworLetVariable();
