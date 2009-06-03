@@ -181,6 +181,7 @@ EOF
 # Main
 #
 
+my $export = shift;
 my $namespace = shift;
 my @namespaces = split (/::/, $namespace);
 my $classname = shift;
@@ -204,8 +205,13 @@ EOF
 foreach my $ns (@namespaces) { print "namespace $ns { "; }
 print "\n";
 
+if ($export eq "export") {
+  print "class ZORBA_DLL_PUBLIC $classname : public ::zorba::PropertiesBase {\n";
+} else {
+  print "class $classname : public ::zorba::PropertiesBase {\n";
+}
+
 print <<"EOF";
-class $classname : public ::zorba::PropertiesBase {
 protected:
 EOF
 
