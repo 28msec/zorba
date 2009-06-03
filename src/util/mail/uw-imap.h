@@ -22,7 +22,8 @@
 namespace zorba {
 
   /* smtp_send -- send SMTP email */
-  bool mail(const char* to, const char* subject, const char* message,
+  bool mail(const char* to, const char* cc, const char* bcc,
+            const char* subject, const char* message,
             const char* SMTPServer, const char* SMTPUser, const char* SMTPPwd,
             xqp_string& diagnostics);
 

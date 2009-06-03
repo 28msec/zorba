@@ -115,7 +115,8 @@ If the email could not be sent for some reason an error is raised API0040_MAIL_N
   lStaticContext->setSMTPUname("username");
   lStaticContext->setSMTPUpwd("password");
 
-  XQuery_t lQuery = aZorba->compileQuery("import module namespace zu = 'http://www.zorba-xquery.com/zorba/util-functions'; zu:mail('user@domain.com','this is a test email','it works!')", lStaticContext);
+  XQuery_t lQuery = aZorba->compileQuery("import module namespace zu = 'http://www.zorba-xquery.com/zorba/util-functions';
+  zu:mail('user@domain.com','this is a test email','it works!')", lStaticContext);
 
   try {
     std::cout << lQuery << std::endl;

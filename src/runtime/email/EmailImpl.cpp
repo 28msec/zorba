@@ -53,6 +53,8 @@ ZorbaMailIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           ZORBA_ERROR_LOC(API0039_TO_SET_OPTION, loc);
 
         res = mail(itemTo->getStringValue()->c_str(),
+                   NULL, //CC
+                   NULL, //BCC
                    itemSubj->getStringValue()->c_str(),
                    itemMsg->getStringValue()->c_str(),
                    SMTPServer.c_str(),

@@ -19,9 +19,10 @@
 namespace zorba
 {
 
-bool mail(const char* to, const char* subject, const char* message,
-          const char* SMTPServer, const char* SMTPUser, const char* SMTPPwd,
-          xqp_string& diagnostics)
+  bool mail(const char* to, const char* cc, const char* bcc,
+            const char* subject, const char* message,
+            const char* SMTPServer, const char* SMTPUser, const char* SMTPPwd,
+            xqp_string& diagnostics)
 {
   ZORBA_ERROR_PARAM(  XQP0004_SYSTEM_NOT_SUPPORTED, "MAIL" , "");
 

@@ -25,12 +25,21 @@ char *SMTPUsername, *SMTPPassword;
 namespace zorba {
 
   /*private methods*/
-  void add_envelope(ENVELOPE* msg, const char* to, const char* subject)
+  void add_envelope(ENVELOPE* msg, const char* to, const char* cc,const char* bcc, const char* subject)
   {
     char line[MAILTMPLEN];
 
     //Parse RFC 2822 address list
     rfc822_parse_adrlist (&msg->to, (char*)to, NIL);
+
+    if(msg->to)
+    {
+      //Parse RFC 2822 address list
+      rfc822_parse_adrlist (&msg->cc, (char*)cc, NIL);
+
+      //Parse RFC 2822 address list
+      rfc822_parse_adrlist (&msg->bcc, (char*)bcc, NIL);
+    }
 
     msg->from = mail_newaddr ();
     msg->return_path = mail_newaddr ();
@@ -54,7 +63,8 @@ namespace zorba {
     body->contents.text.size = strlen (text);
   }
 
-  bool mail(const char* to, const char* subject, const char* message,
+  bool mail(const char* to, const char* cc,const char* bcc,
+            const char* subject, const char* message,
             const char* SMTPServer, const char* SMTPUser, const char* SMTPPwd,
             xqp_string& diagnostics)
   {
@@ -84,13 +94,13 @@ namespace zorba {
   }
 #endif
 
-    add_envelope(msg, to, subject);
+    add_envelope(msg, to, cc, bcc, subject);
 
     add_body(body, text, message);
 
     if (msg->to) {
       out << "Sending..." << std::endl;
-      smtp_stream = smtp_open (hostlist,NIL);
+      smtp_stream = smtp_open (hostlist,/*NIL*/1);
       if (smtp_stream){
         sprintf (tmp,"MAIL");
         if (smtp_mail (smtp_stream,tmp,msg,body))
