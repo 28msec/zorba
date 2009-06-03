@@ -516,13 +516,20 @@ DEF_ERR_CODE(XUDY0030, XUDY0030, "It is a dynamic error if an insert expression 
     for (int i = 0; i < MAX_ZORBA_ERROR_CODE; ++i) 
     {
       if (canonical_err_names [i] == NULL)
-        canonical_err_names [i] = strdup("?");
-
+#ifdef WIN32
+          canonical_err_names [i] = _strdup("?");
+#else
+          canonical_err_names [i] = strdup("?");
+#endif
       if (err_msg [i] == NULL)
       {
         std::ostringstream stream;
         stream << "<Unknown errcode " << i << ">";
+#ifdef WIN32
+        err_msg[i] = _strdup(stream.str().c_str());
+#else
         err_msg[i] = strdup(stream.str().c_str());
+#endif
       }
     }
   }

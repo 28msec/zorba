@@ -144,13 +144,38 @@ bool ValidateIterator::effectiveValidationValue (
         
   xqtref_t type;
 
-  if (!sourceNode->isNode())
+  if (!sourceNode->isNode() || 
+      !(sourceNode->getNodeKind()==store::StoreConsts::documentNode ||  
+        sourceNode->getNodeKind()==store::StoreConsts::elementNode
+       ) )
   {
     ZORBA_ERROR_LOC_DESC(XQTY0030, loc,
-                         "Argument in validate expression not a document node.");
-    result = NULL;
-    return false;
+                         "Argument in validate expression not a document or element node.");
   }
+
+  // verify number of child elements when source is a document node
+  if ( sourceNode->getNodeKind()==store::StoreConsts::documentNode )
+  {
+    //don't allow more than one child element in documents
+    store::Iterator_t child_it;
+    child_it = sourceNode->getChildren();
+    store::Item_t child;
+    int nr_child_elements = 0;
+    while ( child_it->next(child) )
+    {
+        if ( child->isNode() &&
+           child->getNodeKind() == store::StoreConsts::elementNode)
+        { 
+            if (nr_child_elements)
+            {
+                ZORBA_ERROR_LOC_DESC(XQDY0061, loc, 
+                               "Document node has more than one element for validation.");
+            }
+            nr_child_elements++;
+        }
+    }
+  }
+
 
   DelegatingTypeManager* delegatingTypeManager = 
   static_cast<DelegatingTypeManager*>(typeManager);
@@ -158,6 +183,7 @@ bool ValidateIterator::effectiveValidationValue (
   Schema* schema = delegatingTypeManager->getSchema();
   if ( !schema )
   {
+    //cout << "No schema: isNode() " << sourceNode->isNode() << "  nodeKind: " << sourceNode->getNodeKind() << endl;
     // no schema available - items remain the same
     result = sourceNode;
     return true;
@@ -176,25 +202,6 @@ bool ValidateIterator::effectiveValidationValue (
   case store::StoreConsts::documentNode:
   {
     //cout << "Validate document" << "\n"; cout.flush();
-                    
-    //don't allow more than one child element
-    store::Iterator_t child_it;
-    child_it = sourceNode->getChildren();
-    store::Item_t child;
-    int nr_child_elements = 0;
-    while ( child_it->next(child) )
-    {
-      if ( child->isNode() &&
-           child->getNodeKind() == store::StoreConsts::elementNode)
-      { 
-        if (nr_child_elements)
-        {
-          ZORBA_ERROR_LOC_DESC(XQDY0061, loc, 
-                               "Document node has more than one element for validation.");
-        }
-        nr_child_elements++;
-      }
-    }
     
     if ( validationMode == ParseConstants::val_typename )
     {
@@ -284,6 +291,7 @@ bool ValidateIterator::effectiveValidationValue (
 
 
 #ifndef ZORBA_NO_XMLSCHEMA
+
 store::Item_t ValidateIterator::processElement( 
     static_context* sctx,
     DelegatingTypeManager* delegatingTypeManager, 
