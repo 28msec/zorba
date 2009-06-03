@@ -30,7 +30,7 @@
 #ifndef ZORBA_STORE_STOREPROPERTIES
 #define ZORBA_STORE_STOREPROPERTIES
 namespace zorba { namespace store { 
-class ZORBA_DLL_PUBLIC StoreProperties : public ::zorba::PropertiesBase {
+class StoreProperties : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
     static const char *result [] = { "--build-dataguide", "--store-trace-level", NULL };

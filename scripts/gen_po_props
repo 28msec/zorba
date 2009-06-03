@@ -205,7 +205,7 @@ foreach my $ns (@namespaces) { print "namespace $ns { "; }
 print "\n";
 
 print <<"EOF";
-class ZORBA_DLL_PUBLIC $classname : public ::zorba::PropertiesBase {
+class $classname : public ::zorba::PropertiesBase {
 protected:
 EOF
 
