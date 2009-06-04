@@ -33,7 +33,7 @@ namespace zorbacmd {
 class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--parse-only", "--no-serializer", "--debug-ports", "--debug-client", "--debug-server", "--no-colors", NULL };
+    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug-client", "--debug-server", "--no-colors", NULL };
     return result;
   }
   bool theTiming;
@@ -57,6 +57,7 @@ protected:
   std::string theContextItem;
   std::string theOptimizationLevel;
   bool theParseOnly;
+  bool theCompileOnly;
   bool theNoSerializer;
   std::string theDebugPorts;
   bool theDebugClient;
@@ -75,6 +76,7 @@ protected:
     theAsFiles = false;
     theOptimizationLevel = "O1";
     theParseOnly = false;
+    theCompileOnly = false;
     theNoSerializer = false;
     theDebugPorts = "8000:9000";
     theDebugClient = false;
@@ -103,6 +105,7 @@ public:
   const std::string &contextItem () const { return theContextItem; }
   const std::string &optimizationLevel () const { return theOptimizationLevel; }
   const bool &parseOnly () const { return theParseOnly; }
+  const bool &compileOnly () const { return theCompileOnly; }
   const bool &noSerializer () const { return theNoSerializer; }
   const std::string &debugPorts () const { return theDebugPorts; }
   const bool &debugClient () const { return theDebugClient; }
@@ -205,6 +208,9 @@ public:
       else if (strcmp (*argv, "--parse-only") == 0) {
         theParseOnly = true;
       }
+      else if (strcmp (*argv, "--compile-only") == 0) {
+        theCompileOnly = true;
+      }
       else if (strcmp (*argv, "--no-serializer") == 0) {
         theNoSerializer = true;
       }
@@ -261,6 +267,7 @@ public:
 "--context-item\nSet the context item to the XML document in a given file.\n\n"
 "--optimization-level\nOptimization level for the query compiler (O0 or O1)\n\n"
 "--parse-only\nStop after parsing the query\n\n"
+"--compile-only\nOnly compile (don't execute)\n\n"
 "--no-serializer\nDo not serialize (discard) result\n\n"
 #ifdef ZORBA_DEBUGGER
 "--debug-ports, -p\nSpecify the ports for zorba debugger. The format is requestPort:eventPort.\n\n"

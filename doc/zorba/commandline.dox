@@ -70,6 +70,9 @@ Optimization level for the query compiler ('O0' or 'O1')
 --parse-only
 Stop after parsing the query
 
+--compile-only
+Only compile (don't execute)
+
 --no-serializer
 Do not serialize (discard) result
 

@@ -532,7 +532,8 @@ int executeQueryWithTiming(
       std::cerr << ze << std::endl;
       return 6;
     }
-    
+
+    if (! properties.compileOnly ()) {
     //
     // Run the query
     //
@@ -562,6 +563,7 @@ int executeQueryWithTiming(
     } catch (zorba::ZorbaException& ze) {
       std::cerr << ze << std::endl;
       return 6;
+    }
     }
 
     //
@@ -627,7 +629,8 @@ int executeQuery(
     std::cerr << ze << std::endl;
     return 6;
   }
-  
+
+  if (! properties.compileOnly ()) {
   //
   // Run the query N times
   //
@@ -651,6 +654,7 @@ int executeQuery(
   } catch (zorba::ZorbaException& ze) {
     std::cerr << ze << std::endl;
     return 6;
+  }
   }
 
   return 0;
@@ -684,6 +688,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
   bool doTiming = lProperties.timing();
   bool debug = (lProperties.debugServer() || lProperties.debugClient());
+  bool compileOnly = lProperties.compileOnly();
  
   // write to file or standard out
   std::auto_ptr<std::ostream> lFileStream(lProperties.outputFile().size() > 0 ?
@@ -798,7 +803,7 @@ int _tmain(int argc, _TCHAR* argv[])
     }
 
     //
-    // Compile the query
+    // Parse the query
     //
     if (lProperties.parseOnly()) {
       try {
@@ -851,7 +856,7 @@ int _tmain(int argc, _TCHAR* argv[])
       //
       // Debug the query
       //
-      if(fname.empty()) 
+      if(fname.empty() && !compileOnly)
       {
         std::cerr << "Cannot debug inline queries." << std::endl; 
         return 0;  // TODO: be able to debug inline query.
@@ -890,7 +895,8 @@ int _tmain(int argc, _TCHAR* argv[])
         std::cerr << e << std::endl;
         return 0;
       }
-      
+
+      if(!compileOnly) {
       // Debugger server arguments
       std::auto_ptr<server_args> lArgs(new server_args());
       lArgs->theRequestPort = lProperties.getRequestPort();
@@ -953,6 +959,7 @@ int _tmain(int argc, _TCHAR* argv[])
           return 0;
         }
       }
+      } //compileOnly
     } // debugger
 #endif
 
