@@ -11,9 +11,9 @@ import schema namespace geometry = "triangle_schema.xsd" at "triangle_schema.xsd
 
 declare function math:createTriangle($triangleType as xs:integer) as geometry:triangle
 {
- if ($triangleType = 1) then 'Right'
- else if ($triangleType = 2) then 'Equilateral'
- else if ($triangleType = 3) then 'Isosceles'
- else if ($triangleType = 4) then 'Obtuse'
- else 'Scalene'
+ if ($triangleType = 1) then 'Right' cast as geometry:triangle
+ else if ($triangleType = 2) then 'Equilateral' cast as geometry:triangle
+ else if ($triangleType = 3) then 'Isosceles' cast as geometry:triangle
+ else if ($triangleType = 4) then 'Obtuse' cast as geometry:triangle
+ else 'Scalene' cast as geometry:triangle
 };
