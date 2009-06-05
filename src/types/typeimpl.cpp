@@ -300,17 +300,19 @@ UserDefinedXQType::UserDefinedXQType(
 
 bool UserDefinedXQType::isSuperTypeOf(const XQType& subType) const
 {
-  const XQType* subtype = &subType;
+  if (subType.type_kind() != XQType::USER_DEFINED_KIND)
+    return false;
+
+  const UserDefinedXQType* subtype = static_cast<const UserDefinedXQType*>(&subType);
 
   do
   {
-    if (this == subtype)
+    if (TypeOps::is_equal(*this, *subtype))
       return true;
         
     if (subtype->type_kind() == XQType::USER_DEFINED_KIND)
     {
-      const UserDefinedXQType* tmp = static_cast<const UserDefinedXQType*>(subtype);
-      subtype = tmp->getBaseType().getp();
+      subtype = static_cast<const UserDefinedXQType*>(subtype->getBaseType().getp());
     }
     else
     {
