@@ -1,33 +1,33 @@
 Iterator tree for main query:
-<NodeSortIterator id="0x80b71f8">
-  <flwor::FLWORIterator id="0x80af478">
-    <ForVariable name="$$dot" referenced-by="0x80b3a30 0x80b71c8">
-      <ChildAxisIterator id="0x80af560" test kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill allowed="0">
-        <ElementIterator id="0x80cb658">
-          <SingletonIterator value="xs:QName(,,a)" id="0x80af200"/>
-          <FnConcatIterator id="0x80b39f0">
-            <ElementIterator id="0x80b66a0">
-              <SingletonIterator value="xs:QName(,,b)" id="0x80b3b78"/>
-              <ElementIterator id="0x80af708">
-                <SingletonIterator value="xs:QName(,,c)" id="0x80af348"/>
-                <TextIterator id="0x80b3d30">
-                  <SingletonIterator value="xs:string(5)" id="0x80b6708"/>
+<NodeSortIterator>
+  <flwor::FLWORIterator>
+    <ForVariable name="$$dot">
+      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill allowed="0">
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,a)"/>
+          <FnConcatIterator>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,b)"/>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(,,c)"/>
+                <TextIterator>
+                  <SingletonIterator value="xs:string(5)"/>
                 </TextIterator>
               </ElementIterator>
             </ElementIterator>
-            <ElementIterator id="0x80cafd8">
-              <SingletonIterator value="xs:QName(,,b)" id="0x80c6350"/>
-              <ElementIterator id="0x80c63f0">
-                <SingletonIterator value="xs:QName(,,c)" id="0x80af620"/>
-                <TextIterator id="0x80cb080">
-                  <SingletonIterator value="xs:string(6)" id="0x80cb050"/>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,b)"/>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(,,c)"/>
+                <TextIterator>
+                  <SingletonIterator value="xs:string(6)"/>
                 </TextIterator>
               </ElementIterator>
             </ElementIterator>
-            <ElementIterator id="0x80b6240">
-              <SingletonIterator value="xs:QName(,,b)" id="0x80caad8"/>
-              <ElementIterator id="0x80b60d8">
-                <SingletonIterator value="xs:QName(,,d)" id="0x80cab08"/>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,b)"/>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(,,d)"/>
               </ElementIterator>
             </ElementIterator>
           </FnConcatIterator>
@@ -35,14 +35,14 @@ Iterator tree for main query:
       </ChildAxisIterator>
     </ForVariable>
     <WhereClause>
-      <FnBooleanIterator id="0x80b67b8">
-        <ChildAxisIterator id="0x80b6768" test kind="match_name_test" qname="xs:QName(,,c)" typename="*" nill allowed="0">
-          <ForVarIterator varname="$$dot" id="0x80b3a30"/>
+      <FnBooleanIterator>
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,c)" typename="*" nill allowed="0">
+          <ForVarIterator varname="$$dot"/>
         </ChildAxisIterator>
       </FnBooleanIterator>
     </WhereClause>
     <ReturnClause>
-      <ForVarIterator varname="$$dot" id="0x80b71c8"/>
+      <ForVarIterator varname="$$dot"/>
     </ReturnClause>
   </flwor::FLWORIterator>
 </NodeSortIterator>
