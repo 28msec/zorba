@@ -28,13 +28,15 @@ namespace zorba {
  */
 class DelegatingTypeManager : public TypeManagerImpl 
 {
+private:
+  Schema * _schema;
+
 public:
-  DelegatingTypeManager(TypeManager *parent)
+  DelegatingTypeManager(TypeManager* parent)
     :
-    TypeManagerImpl(parent->level() + 1, parent) 
+    TypeManagerImpl(parent->level() + 1, parent),
+    _schema(NULL)
   {
-    _schema = NULL; 
-    //initializeSchema();
   }
     
   virtual ~DelegatingTypeManager()
@@ -45,6 +47,10 @@ public:
 
   Schema* getSchema() const { return _schema; }
 
+  void initializeSchema();
+
+  void terminateSchema();
+
   virtual xqtref_t create_named_type(
         store::Item* qname,
         TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE) const;
@@ -53,12 +59,24 @@ public:
         store::Item* qname,
         TypeConstants::quantifier_t quantifier) const;
 
-  void initializeSchema();
+#ifndef ZORBA_NO_XMLSCHEMA
 
-  void terminateSchema();
- 
-  private:
-    Schema *_schema;
+  virtual xqtref_t create_schema_element_type(
+        store::Item* elemName,
+        TypeConstants::quantifier_t quant) const;
+
+  virtual void get_schema_element_typename(
+        store::Item* elemName,
+        store::Item_t& typeName);
+
+  virtual xqtref_t create_schema_attribute_type(
+        store::Item* attrName,
+        TypeConstants::quantifier_t quant) const;
+
+  virtual void get_schema_attribute_typename(
+        store::Item* attrName,
+        store::Item_t& typeName);
+#endif
 };
 
 }

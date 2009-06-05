@@ -113,17 +113,22 @@ public:
   xqtref_t create_value_type(const store::Item* item) const;
 
 #ifndef ZORBA_NO_XMLSCHEMA
-  xqtref_t create_schema_element_type(
+
+  virtual xqtref_t create_schema_element_type(
         store::Item *eName,
         TypeConstants::quantifier_t quant) const;
 
-  void get_schema_element_typename(
+  virtual void get_schema_element_typename(
         store::Item* elemName,
         store::Item_t& typeName);
 
-  xqtref_t create_schema_attribute_type(
+  virtual xqtref_t create_schema_attribute_type(
         store::Item *aName,
         TypeConstants::quantifier_t quant) const;
+  
+  virtual void get_schema_attribute_typename(
+        store::Item* attrName,
+        store::Item_t& typeName);
 #endif
 
 private:

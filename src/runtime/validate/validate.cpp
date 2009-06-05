@@ -192,11 +192,12 @@ bool ValidateIterator::effectiveValidationValue (
 #ifndef ZORBA_NO_XMLSCHEMA
   xqpStringStore_t baseUri = sctx->final_baseuri().getStore();
                 
-  EventSchemaValidator schemaValidator = EventSchemaValidator(typeManager,
-      schema->getGrammarPool(),
-      validationMode == ParseConstants::val_lax,
-      loc);  
-    
+  EventSchemaValidator schemaValidator = 
+  EventSchemaValidator(typeManager,
+                       schema->getGrammarPool(),
+                       validationMode == ParseConstants::val_lax,
+                       loc);  
+  
   switch (sourceNode->getNodeKind())
   {
   case store::StoreConsts::documentNode:

@@ -592,9 +592,11 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const 
 {
+  TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
+
   if (item->isAtomic())
   {
-    return create_named_atomic_type(item->getType(), TypeConstants::QUANT_ONE);
+    return create_named_atomic_type(item->getType(), quant);
   }
   else if (item->isNode())
   {
@@ -605,12 +607,24 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const
     case store::StoreConsts::elementNode:
     case store::StoreConsts::attributeNode:
     {
-      return create_node_type(nodeKind,
-                              item->getNodeName(),
-                              create_named_type(item->getType(),
-                                                TypeConstants::QUANT_ONE),
-                              TypeConstants::QUANT_ONE,
-                              false);
+      xqtref_t contentType = create_named_type(item->getType(), quant);
+
+#ifndef ZORBA_NO_XMLSCHEMA
+      if (contentType == NULL)
+      {
+        return (nodeKind == store::StoreConsts::elementNode ?
+                create_schema_element_type(item->getNodeName(), quant) :
+                create_schema_attribute_type(item->getNodeName(), quant));
+      }
+      else
+#endif
+      {
+        return create_node_type(nodeKind,
+                                item->getNodeName(),
+                                contentType,
+                                quant,
+                                false);
+      }
     }
     case store::StoreConsts::documentNode:
     {
@@ -634,17 +648,12 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const
       if (elemChild == NULL)
         return GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE;
 
-      xqtref_t elemType = create_node_type(store::StoreConsts::elementNode,
-                                           elemChild->getNodeName(),
-                                           create_named_type(elemChild->getType(),
-                                                             TypeConstants::QUANT_ONE),
-                                           TypeConstants::QUANT_ONE,
-                                           false);
+      xqtref_t elemType = create_value_type(elemChild);
 
       return create_node_type(store::StoreConsts::documentNode,
                               NULL,
                               elemType,
-                              TypeConstants::QUANT_ONE,
+                              quant,
                               false);
     }
     case store::StoreConsts::textNode:
@@ -656,7 +665,7 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const
       return create_node_type(store::StoreConsts::piNode,
                               item->getNodeName(),
                               GENV_TYPESYSTEM.STRING_TYPE_ONE,
-                              TypeConstants::QUANT_ONE,
+                              quant,
                               false);
     }
     case store::StoreConsts::commentNode:
@@ -684,44 +693,16 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const
   quant is a given quantifier, ename is a given element qname, ename is a
   globaly declared element name, and tname is the name of the type associated
   with ename in the in-scope declarations.
+
+  This method is redifed by DelegatingTypeManager, which provides the actual
+  implementation.
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_schema_element_type(
     store::Item* qname,
     TypeConstants::quantifier_t quant) const
 {
-  Schema* schema = static_cast<const DelegatingTypeManager *>(this)->getSchema();
-  XMLGrammarPool* pool = schema->getGrammarPool();
-
-#if _XERCES_VERSION >= 30000
-  bool xsModelWasChanged;
-  XSModel *model = pool->getXSModel(xsModelWasChanged);
-#else
-  XSModel *model = pool->getXSModel();
-#endif
-
-  XMLChArray local (qname->getLocalName()->c_str());
-  XMLChArray uri (qname->getNamespace()->c_str());
-
-  XSElementDeclaration* eDecl = model->getElementDeclaration(local, uri);
-  if (!eDecl) 
-  {
-    ZORBA_ERROR_PARAM(XPST0008, "schema-element", qname->getStringValue()->c_str());
-  }
-
-  XSTypeDefinition* ct = eDecl->getTypeDefinition();
-  const XMLCh *typeName = ct->getName();
-  const XMLCh *typeUri = ct->getNamespace();
-  store::Item_t tName;
-  GENV_ITEMFACTORY->createQName(tName,
-                                StrX(typeUri).localForm(),
-                                "",
-                                StrX(typeName).localForm());
-
-  xqtref_t cType = schema->createIfExists(this, tName, TypeConstants::QUANT_ONE);
-
-  rchandle<NodeNameTest> nnTest = new NodeNameTest(qname);
-  rchandle<NodeTest> nTest = new NodeTest(store::StoreConsts::elementNode, nnTest);
-  return new NodeXQType(this, nTest, cType, quant, false);
+  ZORBA_ASSERT(false);
+  return NULL;
 }
 
 
@@ -732,33 +713,7 @@ void TypeManagerImpl::get_schema_element_typename(
     store::Item* elemName,
     store::Item_t& typeName)
 {
-  Schema* schema = static_cast<const DelegatingTypeManager *>(this)->getSchema();
-  XMLGrammarPool* pool = schema->getGrammarPool();
-
-#if _XERCES_VERSION >= 30000
-  bool xsModelWasChanged;
-  XSModel* model = pool->getXSModel(xsModelWasChanged);
-#else
-  XSModel* model = pool->getXSModel();
-#endif
-
-  XMLChArray local(elemName->getLocalName()->c_str());
-  XMLChArray uri(elemName->getNamespace()->c_str());
-
-  XSElementDeclaration *eDecl = model->getElementDeclaration(local, uri);
-  if (!eDecl) 
-  {
-    ZORBA_ERROR_PARAM(XPST0008, "schema-element", elemName->getStringValueP()->c_str());
-  }
-
-  XSTypeDefinition* ct = eDecl->getTypeDefinition();
-  const XMLCh* typeNameStr = ct->getName();
-  const XMLCh* typeUri = ct->getNamespace();
-
-  GENV_ITEMFACTORY->createQName(typeName,
-                                StrX(typeUri).localForm(),
-                                "",
-                                StrX(typeNameStr).localForm());
+  ZORBA_ASSERT(false);
 }
 
 
@@ -767,38 +722,30 @@ void TypeManagerImpl::get_schema_element_typename(
   quant is a given quantifier, aname is a given attribute qname, aname is a
   globaly declared attribute name, and tname is the name of the type associated
   with aname in the in-scope declarations.
+
+  This method is redifed by DelegatingTypeManager, which provides the actual
+  implementation.
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_schema_attribute_type(
     store::Item* qname,
     TypeConstants::quantifier_t quant) const
 {
-  Schema *schema = static_cast<const DelegatingTypeManager *>(this)->getSchema();
-  XMLGrammarPool *pool = schema->getGrammarPool();
-
-  bool xsModelWasChanged;
-  XSModel *model = pool->getXSModel(xsModelWasChanged);
-  XMLChArray local (qname->getLocalName()->c_str());
-  XMLChArray uri (qname->getNamespace()->c_str());
-  XSAttributeDeclaration *aDecl = model->getAttributeDeclaration(local, uri);
-  if (!aDecl) {
-    ZORBA_ERROR_PARAM(XPST0008, "schema-attribute", qname->getStringValueP()->c_str());
-  }
-
-  XSTypeDefinition *ct = aDecl->getTypeDefinition();
-  const XMLCh *typeName = ct->getName();
-  const XMLCh *typeUri = ct->getNamespace();
-  store::Item_t tName;
-  GENV_ITEMFACTORY->createQName(tName,
-                                StrX(typeUri).localForm(),
-                                "",
-                                StrX(typeName).localForm());
-
-  xqtref_t cType = schema->createIfExists(this, tName, TypeConstants::QUANT_ONE);
-
-  rchandle<NodeNameTest> nnTest = new NodeNameTest(qname);
-  rchandle<NodeTest> nTest = new NodeTest(store::StoreConsts::attributeNode, nnTest);
-  return new NodeXQType(this, nTest, cType, quant, false);
+  ZORBA_ASSERT(false);
+  return NULL;
 }
+
+
+/***************************************************************************//**
+  Get the name of the type associated with a given globally declared attribute
+  name.
+********************************************************************************/
+void TypeManagerImpl::get_schema_attribute_typename(
+    store::Item* attrName,
+    store::Item_t& typeName)
+{
+  ZORBA_ASSERT(false);
+}
+
 #endif
 
 /* vim:set ts=2 sw=2: */

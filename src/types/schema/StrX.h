@@ -42,48 +42,50 @@ namespace zorba
 class StrX
 {
 public :
-    StrX(const XMLCh* const toTranscode, unsigned int length)
-    {
-        XMLString::transcode(toTranscode, fLocalForm, length);
-    }
+  StrX(const XMLCh* const toTranscode, unsigned int length)
+  {
+    XMLString::transcode(toTranscode, fLocalForm, length);
+  }
 
-    StrX(const XMLCh* const toTranscode)
-    {
-        // Call the private transcoding method
-        fLocalForm = XMLString::transcode(toTranscode);
-    }
+  StrX(const XMLCh* const toTranscode)
+  {
+    // Call the private transcoding method
+    fLocalForm = XMLString::transcode(toTranscode);
+  }
 
-    ~StrX()
-    {
-        XMLString::release(&fLocalForm);
-    }
+  ~StrX()
+  {
+    XMLString::release(&fLocalForm);
+  }
 
-    // -----------------------------------------------------------------------
-    //  Getter methods
-    // -----------------------------------------------------------------------
-    const char* localForm() const
-    {
-        return fLocalForm;
-    }
-
-    const char *localFormOrDefault (const char *def) {
-      return (fLocalForm == NULL ? def : fLocalForm);
-    }
+  // -----------------------------------------------------------------------
+  //  Getter methods
+  // -----------------------------------------------------------------------
+  const char* localForm() const
+  {
+    return fLocalForm;
+  }
+  
+  const char *localFormOrDefault (const char *def) 
+  {
+    return (fLocalForm == NULL ? def : fLocalForm);
+  }
 
 private :
-    // -----------------------------------------------------------------------
-    //  Private data members
-    //
-    //  fLocalForm
-    //      This is the local code page form of the string.
-    // -----------------------------------------------------------------------
-    char*   fLocalForm;
+  // -----------------------------------------------------------------------
+  //  Private data members
+  //
+  //  fLocalForm
+  //      This is the local code page form of the string.
+  // -----------------------------------------------------------------------
+  char* fLocalForm;
 };
+
 
 inline XERCES_STD_QUALIFIER ostream& operator<<(XERCES_STD_QUALIFIER ostream& target, const StrX& toDump)
 {
-    target << (toDump.localForm()==NULL ? "NULL" : toDump.localForm() );
-    return target;
+  target << (toDump.localForm()==NULL ? "NULL" : toDump.localForm() );
+  return target;
 }
 
 } // namespace zorba
@@ -91,3 +93,8 @@ inline XERCES_STD_QUALIFIER ostream& operator<<(XERCES_STD_QUALIFIER ostream& ta
 #endif  // ZORBA_NO_XMLSCHEMA
 #endif /*ZORBA_STRX_H_*/
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

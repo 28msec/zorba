@@ -372,7 +372,9 @@ bool TypeOps::is_equal(const XQType& type1, const XQType& type2)
     {
       const UserDefinedXQType& udt1 = static_cast<const UserDefinedXQType&>(type1);
       const UserDefinedXQType& udt2 = static_cast<const UserDefinedXQType&>(type2);
-      return udt1.get_qname()->equals(udt2.get_qname());
+
+      return (udt1.getTypeCategory() == udt2.getTypeCategory() &&
+              udt1.get_qname()->equals(udt2.get_qname()));
     }
     default:
       break;

@@ -28,30 +28,26 @@
 namespace zorba
 {
 
-class LoadSchemaErrorHandler 
-    : public XERCES_CPP_NAMESPACE::DefaultHandler
+class LoadSchemaErrorHandler : public XERCES_CPP_NAMESPACE::DefaultHandler
 {
 public:
-    // -----------------------------------------------------------------------
-    //  Constructors and Destructor
-    // -----------------------------------------------------------------------
-    LoadSchemaErrorHandler (const QueryLoc& loc);
-    ~LoadSchemaErrorHandler ();
+  LoadSchemaErrorHandler (const QueryLoc& loc);
 
-    bool getSawErrors() const
-    {
-        return _sawErrors;
-    }
+  ~LoadSchemaErrorHandler ();
 
-    void warning(const XERCES_CPP_NAMESPACE::SAXParseException& exc);
-    void error(const XERCES_CPP_NAMESPACE::SAXParseException& exc);
-    void fatalError(const XERCES_CPP_NAMESPACE::SAXParseException& exc);
-    void resetErrors();
-
-
+  bool getSawErrors() const
+  {
+    return _sawErrors;
+  }
+  
+  void warning(const XERCES_CPP_NAMESPACE::SAXParseException& exc);
+  void error(const XERCES_CPP_NAMESPACE::SAXParseException& exc);
+  void fatalError(const XERCES_CPP_NAMESPACE::SAXParseException& exc);
+  void resetErrors();
+  
 private:
-    const QueryLoc& _loc;
-    bool            _sawErrors;
+  const QueryLoc& _loc;
+  bool            _sawErrors;
 };
 
 } // namespace xqp

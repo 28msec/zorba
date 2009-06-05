@@ -36,27 +36,37 @@ namespace zorba
 class AttributeValidationInfo
 {
 public:
-    AttributeValidationInfo(const XMLCh *prefix, const XMLCh *uri, const XMLCh *localName, 
-    const XMLCh *value, const XMLCh *typeURI, const XMLCh *typeName);
-        
-    ~AttributeValidationInfo(){}
+  xqpStringStore_t _prefix;
+  xqpStringStore_t _uri;
+  xqpStringStore_t _localName;
+  xqpStringStore_t _value;
+  xqpStringStore_t _typeURI;
+  xqpStringStore_t _typeName;  
 
-    xqpStringStore_t _prefix;
-    xqpStringStore_t _uri;
-    xqpStringStore_t _localName;
-    xqpStringStore_t _value;
-    xqpStringStore_t _typeURI;
-    xqpStringStore_t _typeName;  
+public:
+  AttributeValidationInfo(
+        const XMLCh *prefix,
+        const XMLCh *uri,
+        const XMLCh *localName, 
+        const XMLCh *value,
+        const XMLCh *typeURI,
+        const XMLCh *typeName);
+        
+  ~AttributeValidationInfo(){}
 };
+
 
 class TextValidationInfo
 {
-public:          
-    TextValidationInfo(const XMLCh *chars, unsigned int length);
-    ~TextValidationInfo(){}
+public:
+  xqpStringStore_t _value;
 
-    xqpStringStore_t _value;
+public:          
+  TextValidationInfo(const XMLCh *chars, unsigned int length);
+  
+  ~TextValidationInfo(){}
 };
+
 
 /**
 * The ValidationEventHandler receives events from the SchemaValidatorFilter.
@@ -68,45 +78,75 @@ public:
 */
 class ValidationEventHandler 
 {
+private:
+  std::list<AttributeValidationInfo*>   _attributeList;
+  TextValidationInfo                  * _textInfo;
 
 public:
-    ValidationEventHandler() : _attributeList(), _textInfo() {}
-    virtual ~ValidationEventHandler() {}
+  ValidationEventHandler() : _attributeList(), _textInfo() {}
 
-    void startDocumentEvent(const XMLCh *documentURI, const XMLCh *encoding);
-    void endDocumentEvent();
-    void startElementEvent(const XMLCh *prefix, const XMLCh *uri, const XMLCh *localName);
-    void typeElementEvent(const XMLCh *typeURI, const XMLCh *typeName);
-    void endElementEvent(const XMLCh *prefix, const XMLCh *uri, const XMLCh *localName,
-        const XMLCh *typeURI, const XMLCh *typeName);
-    void piEvent(const XMLCh *target, const XMLCh *value);
-    //void textEvent(const XMLCh *value);
-    void textEvent(const XMLCh *chars, unsigned int length);
-    void commentEvent(const XMLCh *value);
-    void attributeEvent(const XMLCh *prefix, const XMLCh *uri, const XMLCh *localName, 
-        const XMLCh *value, const XMLCh *typeURI, const XMLCh *typeName);
-    void namespaceEvent(const XMLCh *prefix, const XMLCh *uri);
-    
-    void resetAttList();
-    void resetTextInfo();
-        
-    std::list<AttributeValidationInfo*>* getAttributeList()
-    {
-        return &_attributeList;
-    }
-    
-    TextValidationInfo* getTextInfo()
-    {
-        return _textInfo;
-    }
-    
-private:
-    std::list<AttributeValidationInfo*> _attributeList;
-    TextValidationInfo *_textInfo;
-    
-}; // class ValidationEventHandler
+  virtual ~ValidationEventHandler() {}
+
+  void startDocumentEvent(
+        const XMLCh *documentURI,
+        const XMLCh *encoding);
+
+  void endDocumentEvent();
+
+  void startElementEvent(
+        const XMLCh *prefix,
+        const XMLCh *uri,
+        const XMLCh *localName);
+
+  void typeElementEvent(
+        const XMLCh *typeURI,
+        const XMLCh *typeName);
+
+  void endElementEvent(
+        const XMLCh *prefix,
+        const XMLCh *uri,
+        const XMLCh *localName,
+        const XMLCh *typeURI,
+        const XMLCh *typeName);
+
+  void piEvent(const XMLCh *target, const XMLCh *value);
+
+  void textEvent(const XMLCh *chars, unsigned int length);
+
+  void commentEvent(const XMLCh *value);
+
+  void attributeEvent(
+        const XMLCh *prefix,
+        const XMLCh *uri,
+        const XMLCh *localName, 
+        const XMLCh *value,
+        const XMLCh *typeURI,
+        const XMLCh *typeName);
+
+  void namespaceEvent(const XMLCh *prefix, const XMLCh *uri);
+  
+  void resetAttList();
+
+  void resetTextInfo();
+  
+  std::list<AttributeValidationInfo*>* getAttributeList()
+  {
+    return &_attributeList;
+  }
+  
+  TextValidationInfo* getTextInfo()
+  {
+    return _textInfo;
+  }
+}; 
 
 }  // namespace zorba
 
 #endif // ZORBA_NO_XMLSCHEMA
 #endif // _VALIDATIONEVENTHANDLER_H
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

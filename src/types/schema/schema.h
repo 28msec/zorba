@@ -23,106 +23,164 @@
 #include <zorba/api_shared_types.h>
 
 #include "common/shared_types.h"
-#include "types/typeconstants.h"
-#include "store/api/item.h"
 #include "zorbatypes/xqpstring.h"
 #include "util/hashmap.h"
+
+#include "types/typeconstants.h"
 #include "types/schema/EventSchemaValidator.h"
+
+#include "store/api/item.h"
 
 namespace zorba
 {
 
 #ifndef ZORBA_NO_XMLSCHEMA
-class SchemaLocationEntityResolver 
-    : public EntityResolver
-{
-  protected:
-    std::string theLocation;
-    const XMLCh* theLogicalURI;
 
-  public:
-    SchemaLocationEntityResolver(const XMLCh* const logical_uri, std::string& location);
-    InputSource* resolveEntity (const XMLCh* const publicId, const XMLCh* const systemId);
+/*******************************************************************************
+
+********************************************************************************/
+class SchemaLocationEntityResolver : public EntityResolver
+{
+protected:
+  std::string   theLocation;
+  const XMLCh * theLogicalURI;
+
+public:
+  SchemaLocationEntityResolver(
+        const XMLCh* const logical_uri,
+        std::string& location);
+
+  InputSource* resolveEntity(
+        const XMLCh* const publicId,
+        const XMLCh* const systemId);
 };        
   
 #endif
 
+
+/*******************************************************************************
+
+********************************************************************************/
 class Schema
 {
 public:
   static const char* XSD_NAMESPACE;
 
-  /* before first use init must be called */
-  static void initialize();
-  /* before finishing up terminate must be called */
-  static void terminate();
-  
-  store::Item_t parseAtomicValue(xqtref_t type, xqp_string textValue);    
+private:
+  static bool                            _isInitialized;
 
+#ifndef ZORBA_NO_XMLSCHEMA
+  XERCES_CPP_NAMESPACE::XMLGrammarPool * _grammarPool;
+  hashmap<xqtref_t>                    * _udTypesCache;
+#endif
+
+public:
+  static void initialize();
+
+  static void terminate();
+
+public:
   Schema();
 
   virtual ~Schema();
 
-  void registerXSD(const char* xsdFileName, std::string& loaction, const QueryLoc& loc);
-
   void printXSDInfo(bool excludeBuiltIn = true);
 
+#ifndef ZORBA_NO_XMLSCHEMA
+
+  XERCES_CPP_NAMESPACE::XMLGrammarPool* getGrammarPool() const 
+  {
+    return _grammarPool;
+  }
+
+  void registerXSD(
+        const char* xsdFileName,
+        std::string& loaction,
+        const QueryLoc& loc);
+
+  void getTypeNameFromElementName(
+        store::Item* qname,
+        store::Item_t& typeName);
+
+  void getTypeNameFromAttributeName(
+        store::Item* qname,
+        store::Item_t& typeName);
+
+  xqtref_t createXQTypeFromElementName(
+        const TypeManager* typeManager,
+        store::Item* qname);
+
+  xqtref_t createXQTypeFromAttributeName(
+        const TypeManager* typeManager,
+        store::Item* qname);
+
+  xqtref_t createXQTypeFromTypeName(
+        const TypeManager* manager,
+        const store::Item* qname);
+
+#endif
+
+  store::Item_t parseAtomicValue(xqtref_t type, xqp_string textValue);    
+
   // user defined simple types, i.e. Atomic, List or Union Types
-  bool parseUserSimpleTypes(const xqp_string textValue, const xqtref_t& aTargetType,
-                            std::vector<store::Item_t> &resultList);    
+  bool parseUserSimpleTypes(
+        const xqp_string textValue,
+        const xqtref_t& aTargetType,
+        std::vector<store::Item_t> &resultList);    
 
   // user defined atomic types
-  bool parseUserAtomicTypes(const xqp_string textValue, const xqtref_t& aTargetType, 
-                            store::Item_t &result);    
+  bool parseUserAtomicTypes(
+        const xqp_string textValue,
+        const xqtref_t& aTargetType, 
+        store::Item_t &result);    
 
   // user defined list types
-  bool parseUserListTypes(const xqp_string textValue, const xqtref_t& aTargetType, 
-                          std::vector<store::Item_t> &resultList);    
+  bool parseUserListTypes(
+        const xqp_string textValue,
+        const xqtref_t& aTargetType, 
+        std::vector<store::Item_t>& resultList);    
 
   // user defined union types
-  bool parseUserUnionTypes(const xqp_string textValue, const xqtref_t& aTargetType, 
-                           std::vector<store::Item_t> &resultList);    
+  bool parseUserUnionTypes(
+        const xqp_string textValue,
+        const xqtref_t& aTargetType, 
+        std::vector<store::Item_t> &resultList);    
   
   // user defined simple types, i.e. Atomic, List or Union Types
-  bool isCastableUserSimpleTypes(const xqp_string textValue, const xqtref_t& aTargetType);
+  bool isCastableUserSimpleTypes(
+        const xqp_string textValue,
+        const xqtref_t& aTargetType);
 
   // user defined atomic types
-  bool isCastableUserAtomicTypes(const xqp_string textValue, const xqtref_t& aTargetType);
+  bool isCastableUserAtomicTypes(
+        const xqp_string textValue,
+        const xqtref_t& aTargetType);
 
   // user defined list types
-  bool isCastableUserListTypes(const xqp_string textValue, const xqtref_t& aTargetType);
+  bool isCastableUserListTypes(
+        const xqp_string textValue,
+        const xqtref_t& aTargetType);
 
   // user defined union types
-  bool isCastableUserUnionTypes(const xqp_string textValue, const xqtref_t& aTargetType);
-
-  /*
-   * Checks if the Type with the qname exists in the schema as a user-defined type
-   * if it does than return an XQType for it, if not return NULL
-   */
-  xqtref_t createIfExists(
-        const TypeManager *manager,
-        const store::Item* qname,
-        TypeConstants::quantifier_t quantifier);
-
-#ifndef ZORBA_NO_XMLSCHEMA
-  XERCES_CPP_NAMESPACE::XMLGrammarPool* getGrammarPool();
+  bool isCastableUserUnionTypes(
+        const xqp_string textValue,
+        const xqtref_t& aTargetType);
 
 private:
-  xqtref_t getXQTypeForXSTypeDefinition(
-        const TypeManager *typeManager,
+
+#ifndef ZORBA_NO_XMLSCHEMA
+
+  XSTypeDefinition* getTypeDefForElement(const store::Item* qname);
+
+  XSTypeDefinition* getTypeDefForAttribute(const store::Item* qname);
+
+  xqtref_t createXQTypeFromTypeDefinition(
+        const TypeManager* typeManager,
         XSTypeDefinition* xsTypeDef);
 
   void addTypeToCache(xqtref_t itemXQType);
-#endif //ZORBA_NO_XMLSCHEMA
 
-
-private:
-  static bool _isInitialized;
-
-#ifndef ZORBA_NO_XMLSCHEMA
-  XERCES_CPP_NAMESPACE::XMLGrammarPool *_grammarPool;
-  hashmap<xqtref_t> *_udTypesCache;
-#endif //ZORBA_NO_XMLSCHEMA
+#endif
 };
 
 } // namespace zorba

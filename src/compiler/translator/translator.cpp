@@ -3880,81 +3880,100 @@ void end_visit (const DecimalFormatNode& v, void* /*visit_state*/) {
 }
 
 
-void *begin_visit (const SchemaImport& v) {
+void *begin_visit (const SchemaImport& v) 
+{
   TRACE_VISIT ();
+
 #ifndef ZORBA_NO_XMLSCHEMA
-    SchemaPrefix* sp = &*v.get_prefix();
-    string target_ns = v.get_uri ();
-    if (! schema_import_ns_set.insert (target_ns).second)
-      ZORBA_ERROR_LOC (XQST0058, loc);
-    if (sp != NULL) {
-      if (target_ns.size() == 0)
-        ZORBA_ERROR_LOC_PARAM (XQST0057, loc, "(no location specified)", target_ns);
 
-      string pfx = sp->get_prefix ();
-      if (pfx == "xml" || pfx == "xmlns")
-        ZORBA_ERROR_LOC (XQST0070, loc);
-      if (sp->get_default_bit ()) {
-        sctx_p->set_default_elem_type_ns (target_ns);
-      }
-      if (! pfx.empty ())
-        sctx_p->bind_ns (pfx, target_ns, XQST0033);
-    }
+  SchemaPrefix* sp = &*v.get_prefix();
+  string target_ns = v.get_uri();
 
-    rchandle<URILiteralList> atlist = v.get_at_list();
+  if (! schema_import_ns_set.insert(target_ns).second)
+    ZORBA_ERROR_LOC (XQST0058, loc);
 
-    std::vector<store::Item_t> lAtURIList;
-    store::Item_t lTargetNamespace = NULL;
-    ITEM_FACTORY->createAnyURI(lTargetNamespace, target_ns.c_str());
-    ZORBA_ASSERT(lTargetNamespace != NULL);
+  if (sp != NULL) 
+  {
+    if (target_ns.size() == 0)
+      ZORBA_ERROR_LOC_PARAM(XQST0057, loc,
+                            "(no target namespace uri specified)",
+                            target_ns);
 
-    if (atlist != NULL) {
-      for (int i = 0; i < atlist->size(); ++i) {
-        string at = sctx_p->resolve_relative_uri((*atlist)[i], xqpString());
-        store::Item_t lAtURIItem = NULL;
-        ITEM_FACTORY->createAnyURI(lAtURIItem, at.c_str());
-        ZORBA_ASSERT(lAtURIItem != NULL);
-        lAtURIList.push_back(lAtURIItem);
+    string pfx = sp->get_prefix();
+    if (pfx == "xml" || pfx == "xmlns")
+      ZORBA_ERROR_LOC (XQST0070, loc);
+
+    if (sp->get_default_bit()) 
+      sctx_p->set_default_elem_type_ns (target_ns);
+
+    if (! pfx.empty())
+      sctx_p->bind_ns (pfx, target_ns, XQST0033);
+  }
+
+  store::Item_t lTargetNamespace = NULL;
+  ITEM_FACTORY->createAnyURI(lTargetNamespace, target_ns.c_str());
+  ZORBA_ASSERT(lTargetNamespace != NULL);
+
+  rchandle<URILiteralList> atlist = v.get_at_list();
+  std::vector<store::Item_t> lAtURIList;
+
+  if (atlist != NULL) 
+  {
+    for (int i = 0; i < atlist->size(); ++i) 
+    {
+      string at = sctx_p->resolve_relative_uri((*atlist)[i], xqpString());
+      store::Item_t lAtURIItem;
+      ITEM_FACTORY->createAnyURI(lAtURIItem, at.c_str());
+      ZORBA_ASSERT(lAtURIItem != NULL);
+      lAtURIList.push_back(lAtURIItem);
 #if 0
       string prefix = sp == NULL ? "" : sp->get_prefix();
       cout << "SchemaImport: " << prefix << " : " << target_ns
            << " @ " << at << endl;
       cout << " Context: " << CTXTS << "\n";
 #endif
-      }
     }
+  }
+  
+  InternalSchemaURIResolver* lSchemaResolver = sctx_p->get_schema_uri_resolver();
+  
+  try 
+  {
+    store::Item_t lSchemaUri = lSchemaResolver->resolve(lTargetNamespace,
+                                                        lAtURIList,
+                                                        sctx_p);
+    ((DelegatingTypeManager*)CTXTS)->initializeSchema();
+    Schema* schema_p = ((DelegatingTypeManager*)CTXTS)->getSchema();
 
-    InternalSchemaURIResolver* lSchemaResolver = sctx_p->get_schema_uri_resolver();
+    std::string lTmp(lSchemaUri->getStringValue()->c_str());
+    schema_p->registerXSD(lTargetNamespace->getStringValue()->c_str(), lTmp, loc);
+  }
+  catch (error::ZorbaError& e) 
+  {
+    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+  }
 
-    try {
-      store::Item_t lSchemaUri = lSchemaResolver->resolve(lTargetNamespace, lAtURIList, sctx_p);
-      
-      ((DelegatingTypeManager*)CTXTS)->initializeSchema();
-      Schema* schema_p = ((DelegatingTypeManager*)CTXTS)->getSchema();
+  return no_state;
 
-      std::string lTmp(lSchemaUri->getStringValue()->c_str());
-      schema_p->registerXSD(lTargetNamespace->getStringValue()->c_str(), lTmp, loc);
-    } catch (error::ZorbaError& e) {
-      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-    }
-
-    return no_state;
 #else
-    ZORBA_ERROR_LOC (XQST0009, loc);
-    return no_state;
+  ZORBA_ERROR_LOC(XQST0009, loc);
+  return no_state;
 #endif
 }
 
-void end_visit (const SchemaImport& v, void* /*visit_state*/) {
+void end_visit (const SchemaImport& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit (const SchemaPrefix& v) {
+void *begin_visit (const SchemaPrefix& v) 
+{
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit (const SchemaPrefix& v, void* /*visit_state*/) {
+void end_visit (const SchemaPrefix& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 }
 
@@ -4772,28 +4791,28 @@ void *begin_visit (const SchemaElementTest& v)
   rchandle<QName> elemName = v.get_elem();
   ZORBA_ASSERT(elemName != NULL);
 
-  store::Item_t elemNameItem = sctx_p->lookup_elem_qname(elemName->get_qname(), loc);
+  store::Item_t elemQNameItem = sctx_p->lookup_elem_qname(elemName->get_qname(), loc);
 
   if (axisExpr != NULL) 
   {
-    store::Item_t typeNameItem;
-    CTXTS->get_schema_element_typename(elemNameItem, typeNameItem);
+    store::Item_t typeQNameItem;
+    CTXTS->get_schema_element_typename(elemQNameItem, typeQNameItem);
 
     rchandle<match_expr> match = new match_expr(loc);
     match->setTestKind(match_xs_elem_test);
-    match->setQName(elemNameItem);
-    match->setTypeName(typeNameItem);
+    match->setQName(elemQNameItem);
+    match->setTypeName(typeQNameItem);
 
     axisExpr->setTest(match);
   }
   else
   {
-    xqtref_t seqmatch = CTXTS->create_schema_element_type(elemNameItem,
+    xqtref_t seqmatch = CTXTS->create_schema_element_type(elemQNameItem,
                                                           TypeConstants::QUANT_ONE);
     tstack.push(seqmatch);
   }
 #else//ZORBA_NO_XMLSCHEMA
-    ZORBA_ERROR_LOC (XQP0004_SYSTEM_NOT_SUPPORTED, v.get_location());
+    ZORBA_ERROR_LOC(XQP0004_SYSTEM_NOT_SUPPORTED, v.get_location());
 #endif
   return no_state;
 }
@@ -4867,32 +4886,34 @@ void *begin_visit (const SchemaAttributeTest& v)
   TRACE_VISIT ();
 
 #ifndef ZORBA_NO_XMLSCHEMA
-  rchandle<match_expr> match = new match_expr(loc);
-  match->setTestKind(match_xs_attr_test);
-
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-  rchandle<QName> attr_h = v.get_attr();
+  rchandle<QName> attrName = v.get_attr();
+  ZORBA_ASSERT(attrName != NULL);
+
+  store::Item_t attrQNameItem = sctx_p->lookup_qname("", attrName->get_qname(), loc);
 
   if (axisExpr != NULL) 
   {
-    if (attr_h!=NULL) {
-      match->setQName(sctx_p->lookup_qname ("", attr_h->get_qname(), loc));
-    }
+    store::Item_t typeQNameItem;
+    CTXTS->get_schema_attribute_typename(attrQNameItem, typeQNameItem);
+
+    rchandle<match_expr> match = new match_expr(loc);
+    match->setTestKind(match_xs_attr_test);
+    match->setQName(attrQNameItem);
+    match->setTypeName(typeQNameItem);
+
     axisExpr->setTest(match);
   }
   else 
   {
-    rchandle<NodeTest> nodeTest;
-    store::Item_t qnameItem = sctx_p->lookup_qname("", attr_h->get_qname(), loc);
-
-    xqtref_t seqmatch = CTXTS->
-      create_schema_attribute_type(qnameItem, TypeConstants::QUANT_ONE);
+    xqtref_t seqmatch = CTXTS->create_schema_attribute_type(attrQNameItem,
+                                                            TypeConstants::QUANT_ONE);
 
     tstack.push(seqmatch);
   }
 
 #else//ZORBA_NO_XMLSCHEMA
-  ZORBA_ERROR_LOC (XQP0004_SYSTEM_NOT_SUPPORTED, v.get_location());
+  ZORBA_ERROR_LOC(XQP0004_SYSTEM_NOT_SUPPORTED, v.get_location());
 #endif
   return no_state;
 }

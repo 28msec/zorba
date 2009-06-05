@@ -119,6 +119,10 @@ public:
   virtual xqtref_t create_schema_attribute_type(
         store::Item *aName,
         TypeConstants::quantifier_t quant) const = 0;
+
+  virtual void get_schema_attribute_typename(
+        store::Item* attrName,
+        store::Item_t& typeName) = 0;
 #endif
 };
 

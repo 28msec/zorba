@@ -40,49 +40,52 @@ namespace zorba
 class EventSchemaValidator
 {
 private:
-    TypeManager *_typeManager;
-    SchemaValidatorFilter *_schemaValidatorFilter;
-    XERCES_CPP_NAMESPACE::GrammarResolver       *_grammarResolver;
-    ValidationEventHandler _validationEventHandler;
+  TypeManager                            * _typeManager;
+  SchemaValidatorFilter                  * _schemaValidatorFilter;
+  XERCES_CPP_NAMESPACE::GrammarResolver  * _grammarResolver;
+  ValidationEventHandler                   _validationEventHandler;
     
 public:
-    EventSchemaValidator(TypeManager* typeManager, XERCES_CPP_NAMESPACE::XMLGrammarPool *grammarPool, bool isLax,
+  EventSchemaValidator(
+        TypeManager* typeManager,
+        XERCES_CPP_NAMESPACE::XMLGrammarPool* grammarPool,
+        bool isLax,
         const QueryLoc& loc);
-    virtual ~EventSchemaValidator();
 
-    void startDoc();
-    void endDoc();
+  virtual ~EventSchemaValidator();
 
-    void startElem(store::Item_t elemName);
-    void endElem(store::Item_t elemName);
+  void startDoc();
+  void endDoc();
 
-    // Must be called only after all ns() have been send if any otherwise only after startElem()
-    void attr(store::Item_t attrName, xqpStringStore_t textValue);
-    void text(xqpStringStore_t textValue);
+  void startElem(store::Item_t elemName);
+  void endElem(store::Item_t elemName);
+
+  // Must be called only after all ns() have been send if any otherwise only after startElem()
+  void attr(store::Item_t attrName, xqpStringStore_t textValue);
+  void text(xqpStringStore_t textValue);
     
-    // Must be called only after startElem()
-    void ns(xqpStringStore_t prefix, xqpStringStore_t uri);
+  // Must be called only after startElem()
+  void ns(xqpStringStore_t prefix, xqpStringStore_t uri);
 
-    // Must be called only after all attr() have been sent
-    store::Item_t getTypeQName();
-    xqtref_t      getType();
+  // Must be called only after all attr() have been sent
+  store::Item_t getTypeQName();
+  xqtref_t      getType();
     
-    // Must be called only after all attr() have been sent and after getTypeQName() has been called
-    std::list<AttributeValidationInfo*>* getAttributeList()
-    {
-        return _validationEventHandler.getAttributeList();
-    }
+  // Must be called only after all attr() have been sent and after getTypeQName() has been called
+  std::list<AttributeValidationInfo*>* getAttributeList()
+  {
+    return _validationEventHandler.getAttributeList();
+  }
     
-    // Must be called only after text() has been called
-    TextValidationInfo* getTextInfo()
-    {
-        return _validationEventHandler.getTextInfo();
-    }
+  // Must be called only after text() has been called
+  TextValidationInfo* getTextInfo()
+  {
+    return _validationEventHandler.getTextInfo();
+  }
 
-    // for validating content of a schema type
-    void startType(store::Item_t typeName);
-    void endType();
-
+  // for validating content of a schema type
+  void startType(store::Item_t typeName);
+  void endType();
 };
 
 } // namespace zorba
@@ -90,3 +93,8 @@ public:
 #endif //ZORBA_NO_XMLSCHEMA
 #endif /*ZORBA_EVENTSCHEMAVALIDATOR_H_*/
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

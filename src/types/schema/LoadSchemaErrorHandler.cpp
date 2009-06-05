@@ -22,14 +22,18 @@
 namespace zorba
 {
 
-LoadSchemaErrorHandler::LoadSchemaErrorHandler(const QueryLoc& loc) :
-    _loc(loc), _sawErrors(false)
+LoadSchemaErrorHandler::LoadSchemaErrorHandler(const QueryLoc& loc) 
+  :
+  _loc(loc),
+  _sawErrors(false)
 {
 }
+
 
 LoadSchemaErrorHandler::~LoadSchemaErrorHandler()
 {
 }
+
 
 // ---------------------------------------------------------------------------
 //  LoadSchemaErrorHandler: Overrides of the SAX ErrorHandler interface
@@ -52,22 +56,22 @@ void LoadSchemaErrorHandler::fatalError(const SAXParseException& e)
      << ", column " << e.getColumnNumber() << "." << std::endl
      << StrX(e.getMessage());
   ZORBA_ERROR_LOC_DESC( XQST0059, _loc, os.str());
-    //ZORBA_ERROR_DESC(XQST0059, StrX(e.getMessage()));
 }
 
 void LoadSchemaErrorHandler::warning(const SAXParseException& e)
 {
-    XERCES_STD_QUALIFIER cerr << "\nWarning at file " << StrX(e.getSystemId())
-    << ", line " << e.getLineNumber()
-    << ", char " << e.getColumnNumber()
-    << "\n  Message: " << StrX(e.getMessage()) << XERCES_STD_QUALIFIER endl;
-    //error::ErrorManager errorManager;
-    //ZORBA_WARNING(&errorManager, XQST0059, StrX(e.getMessage()), _loc);
+  XERCES_STD_QUALIFIER cerr << "\nWarning at file " << StrX(e.getSystemId())
+                            << ", line " << e.getLineNumber()
+                            << ", char " << e.getColumnNumber()
+                            << "\n  Message: " << StrX(e.getMessage())
+                            << XERCES_STD_QUALIFIER endl;
+  //error::ErrorManager errorManager;
+  //ZORBA_WARNING(&errorManager, XQST0059, StrX(e.getMessage()), _loc);
 }
 
 void LoadSchemaErrorHandler::resetErrors()
 {
-    _sawErrors = false;
+  _sawErrors = false;
 }
 
 } // namspace xqp
