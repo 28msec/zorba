@@ -45,6 +45,9 @@ class  Thread
   HANDLE theThread;
 #endif
 
+private:
+	bool m_isSuspended;
+
  public:
   static ThreadId self()
   {

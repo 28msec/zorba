@@ -16,3 +16,7 @@ SET(ZORBAERRORS_SRCS
    errors.cpp
    error_manager.cpp
    error_messages.cpp)
+
+IF (WIN32)
+	SET(ZORBAERRORS_SRCS ${ZORBAERRORS_SRCS} StackWalker.cpp)
+ENDIF (WIN32)

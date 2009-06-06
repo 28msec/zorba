@@ -17,9 +17,10 @@ CREATE_TEST_SOURCELIST(DebuggerTests
     DebuggerTests.cpp
     test_debugger_protocol.cpp
     test_debugger_endianness.cpp
+    test_debugger_server.cpp
 )
  
-ADD_EXECUTABLE(DebuggerTests ${DebuggerTests})
+ADD_EXECUTABLE(DebuggerTests ${DebuggerTests} DebuggerTestClient.cpp DebuggerTestHandler.cpp)
 TARGET_LINK_LIBRARIES(DebuggerTests zorba_simplestore)
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)
@@ -29,7 +30,7 @@ IF (ZORBA_BUILD_STATIC_LIBRARY)
 ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
 IF(WIN32)
-SET(DebuggerTests_EXE_PATH    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test/unit/debugger/Debug/DebuggerTests)
+SET(DebuggerTests_EXE_PATH    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/DebuggerTests)
 ELSE(WIN32)
 SET(DebuggerTests_EXE_PATH    DebuggerTests)
 ENDIF(WIN32)

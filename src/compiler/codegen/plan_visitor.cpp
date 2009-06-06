@@ -315,7 +315,7 @@ void end_visit (debugger_expr& v) {
   }
   argv.push_back (pop_itstack ());
   reverse (argv.begin (), argv.end ());
-  push_itstack(new FnDebugIterator(qloc, varnames, var_keys, vartypes, globals, argv, v.isForExpr()));
+  push_itstack(new FnDebugIterator(this->ccb->m_debugger, qloc, varnames, var_keys, vartypes, globals, argv, v.isForExpr()));
 }
 #endif
 
@@ -887,7 +887,8 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
                                               varRefs,
                                               *posVarRefs));
         reverse (argv.begin (), argv.end ());
-        return new FnDebugIterator(var->get_loc(),
+        return new FnDebugIterator(ccb->m_debugger,
+								   var->get_loc(),
                                    varnames,
                                    var_keys,
                                    vartypes,

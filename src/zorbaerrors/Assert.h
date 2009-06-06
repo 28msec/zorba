@@ -31,9 +31,14 @@
 #include "zorbaerrors/errors.h"
 #include "zorbaerrors/error_manager.h"
 
+#ifdef WIN32
+#include "zorbaerrors/StackWalker.h"
+#endif // WIN32
+
 namespace zorba {
 
-class  StackTracePrinter {
+// exported function for debugging purposes
+class ZORBA_DLL_PUBLIC StackTracePrinter {
 public:
   StackTracePrinter(std::ostream *is)
   {
@@ -47,6 +52,10 @@ public:
     free(syms);
 #undef TRACE_SIZE
 #endif
+#ifdef WIN32
+	StackWalker sw;
+	sw.ShowCallstack();
+#endif // WIN32
   }
 };
 

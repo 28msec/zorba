@@ -35,6 +35,20 @@
 
 using namespace std;
 
+static void printSchnitzel() {
+	zorba::synchronous_logger::cout << "         ___________\n";
+	zorba::synchronous_logger::cout << "        /  .        \\\n";
+	zorba::synchronous_logger::cout << " - - - |    .  :     \\\n";
+	zorba::synchronous_logger::cout << "       |.    :    . . |  <-- Schnitzel\n";
+	zorba::synchronous_logger::cout << " -- - /   .    .       \\\n";
+	zorba::synchronous_logger::cout << "      \\.    :     : :  /\n";
+	zorba::synchronous_logger::cout << " - - - \\       .      |\n";
+	zorba::synchronous_logger::cout << "        |_____________|\n";
+	zorba::synchronous_logger::cout << "        /   \\     /   \\\n";
+	zorba::synchronous_logger::cout << "       |  @  |   |  @  |\n";
+	zorba::synchronous_logger::cout << "        \\___/     \\___/\n";
+}
+
 namespace zorba{
 
 #ifdef SIGINT /* not all system have SIGINT */
@@ -172,7 +186,7 @@ namespace zorba{
 			std::map<unsigned int, String>::const_iterator it;
 			for(it=lBreakpoints.begin(); it!=lBreakpoints.end(); ++it)
 			{
-				synchronous_logger::cerr << "id: " << it->first << '\t' << it->second << "\n"; 
+				synchronous_logger::cerr << "id: " << it->first << "\t" << it->second << "\n"; 
 			}
 		}else if(args.size() >= 2 && args.at(1) == "all"){
 			list(theFileName); 
@@ -320,7 +334,7 @@ namespace zorba{
 				lLineNo++;
 				string lLine;
 				getline(*lInput, lLine, '\n');
-				synchronous_logger::cerr << lLineNo << '\t' << lLine << "\n";
+				synchronous_logger::cerr << lLineNo << "\t" << lLine << "\n";
 			}
 		} else {
 			cerr << "Could'nt find the query file for " << aNamespace << "\n";
@@ -355,19 +369,21 @@ namespace zorba{
 					GetConsoleScreenBufferInfo(lConsole, &lConsoleInfo);
 					const int saved_configuration = lConsoleInfo.wAttributes;
 					SetConsoleTextAttribute(lConsole, 15+0*16); 
-					synchronous_logger::cerr << lLineNo << '\t';
+					synchronous_logger::cerr << lLineNo << "\t";
 					SetConsoleTextAttribute(lConsole, saved_configuration); 
 					for(unsigned int j=1; j<=lLine.length(); j++)
 					{
+						// At this point it seems to be ok to just write to std::cerr
+						// since other threads should be suspended at this time.
 						if((lLineNo==lLineBegin && j >= lColumnBegin) ||
 							(lLineBegin != lLineEnd && lLineNo==lLineEnd && j <= lColumnEnd) ||
 							(lLineNo > lLineBegin && lLineEnd))
 						{
 							SetConsoleTextAttribute(lConsole, 15+0*16); 
-							synchronous_logger::cerr << lLine.at(j-1);
+							std::cerr << lLine.at(j-1);
 							SetConsoleTextAttribute(lConsole, saved_configuration); 
 						} else {
-							synchronous_logger::cerr << lLine.at(j-1);
+							std::cerr << lLine.at(j-1);
 						}
 					}
 #else
@@ -386,7 +402,7 @@ namespace zorba{
 #endif
 					synchronous_logger::cerr << "\n";
 				} else {
-					synchronous_logger::cerr << lLineNo << '\t' << lLine << "\n"; 
+					synchronous_logger::cerr << lLineNo << "\t" << lLine << "\n"; 
 				}
 			}
 			synchronous_logger::cerr << "\n";
@@ -455,6 +471,8 @@ namespace zorba{
 				return;
 			} else if(lCommand == "h" || lCommand == "help"){
 				help();
+			} else if (lCommand == "schnitzel") {
+				printSchnitzel();
 			} else {
 				cerr << "Unknown command " << lCommand << endl;
 				help();

@@ -28,6 +28,7 @@
 
 #include "api/xqueryimpl.h"
 
+#include "debugger/debugger_communication.h"
 #include "debugger/debugger_common.h"
 #include "debugger/profiler.h"
 
@@ -77,6 +78,7 @@ class ZorbaDebugger
                 unsigned short aRequestPort = 8000,
                 unsigned short aEventPort = 9000 );
 
+
   private:
     friend class FnDebugIterator;
     friend class XQueryCompiler;
@@ -114,6 +116,7 @@ class ZorbaDebugger
     checked_vector<global_binding> theGlobals;
 
     //Map of breakpoints and watchpoints
+	std::map<zorba::xqpString, std::vector<std::vector<std::pair<QueryLoc, FnDebugIterator*> > > > theBreaks;
     std::map<unsigned int, QueryLoc> theBreakpoints;
     std::map<unsigned int, xqpString> theWatchpoints;
 
@@ -125,6 +128,8 @@ class ZorbaDebugger
 
     //The list of URIs to import for eval
     std::map<std::string, std::string> theImports;
+
+	DebuggerCommunicator* m_debuggerCommunicator;
    
   public:
     ZorbaDebugger* addModule(parsenode_t& anAST)
@@ -137,6 +142,8 @@ class ZorbaDebugger
     {
       return theModules;
     }
+
+	void registerIterator(const QueryLoc& loc, FnDebugIterator* iter);
 
   private:
     //The dewey classification
@@ -189,10 +196,6 @@ class ZorbaDebugger
 
     void run();
 
-    void handleTcpClient( TCPSocket* aSock );
-
-    void handshake( TCPSocket* aSock );
-
     void processMessage( AbstractCommandMessage* );
 
     void suspend();
@@ -200,8 +203,6 @@ class ZorbaDebugger
     void resume();
 
     void terminate();
-
-    void sendEvent( AbstractCommandMessage* aMessage );
 
     void startedEvent();
 
