@@ -137,9 +137,8 @@ public:
   void setText(xqpStringStore_t& text)
   {
     if (theContent.text != NULL)
-      theContent.text->removeReference(
-                               NULL
-                               SYNC_PARAM2(theContent.text->getRCLock()));
+      theContent.text->removeReference(NULL
+                                       SYNC_PARAM2(theContent.text->getRCLock()));
 
     theContent.text = text.transfer();
   }
@@ -147,12 +146,25 @@ public:
   void setText(xqpStringStore* text)
   {
     if (theContent.text != NULL)
-      theContent.text->removeReference(
-                               NULL
-                               SYNC_PARAM2(theContent.text->getRCLock()));
+      theContent.text->removeReference(NULL
+                                       SYNC_PARAM2(theContent.text->getRCLock()));
 
     theContent.text = text;
   }
+
+  void copyText(xqpStringStore* text)
+  {
+    if (theContent.text != NULL)
+      theContent.text->removeReference(NULL
+                                       SYNC_PARAM2(theContent.text->getRCLock()));
+
+    theContent.text = text;
+
+    if (text)
+      theContent.text->addReference(NULL
+                                    SYNC_PARAM2(theContent.text->getRCLock()));
+  }
+
 
   store::Item* getValue() const
   {
@@ -185,6 +197,19 @@ public:
 
     theContent.value = val;
   }
+
+  void copyValue(store::Item* val)
+  {
+    if (theContent.value != NULL)
+      theContent.value->removeReference(NULL
+                                        SYNC_PARAM2(theContent.value->getRCLock()));
+
+    theContent.value = val;
+
+    if (val)
+      theContent.value->addReference(NULL
+                                     SYNC_PARAM2(theContent.value->getRCLock()));
+  }
 };
 
 
@@ -202,7 +227,9 @@ public:
   bool                theIsTyped;
   uint16_t            theFlags;
 
- NodeTypeInfo() : theIsTyped(false), theFlags(0) { }
+  NodeTypeInfo() : theIsTyped(false), theFlags(0) { }
+
+  NodeTypeInfo(const NodeTypeInfo& other);
 
   ~NodeTypeInfo() 
   {
@@ -211,6 +238,10 @@ public:
     else
       theTextContent.setText(NULL); 
   }
+
+  void transfer(NodeTypeInfo& other);
+
+  NodeTypeInfo& operator=(const NodeTypeInfo&);
 };
 
 

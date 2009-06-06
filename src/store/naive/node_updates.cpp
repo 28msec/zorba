@@ -41,6 +41,7 @@ namespace zorba { namespace simplestore {
 void XmlNode::removeType(UpdatePrimitive& upd)
 {
   TypeUndoList& undoList = upd.theTypeUndoList;
+  ulong undoSize = undoList.size();
 
   zorba::store::Item* revalidationNode = NULL;
   XmlNode* currNode = this;
@@ -85,7 +86,8 @@ void XmlNode::removeType(UpdatePrimitive& upd)
         textChild->setText(newValue);
       }
 
-      undoList.push_back(tinfo);
+      undoList.resize(++undoSize);
+      undoList[undoSize - 1].transfer(tinfo);
 
       n->theTypeName = GET_STORE().theSchemaTypeNames[XS_ANY];
       n->setHaveValue();
@@ -103,13 +105,16 @@ void XmlNode::removeType(UpdatePrimitive& upd)
 
       if (n->theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC])
       {
-        undoList.push_back(tinfo);
+        undoList.resize(++undoSize);
+        undoList[undoSize - 1].transfer(tinfo);
       }
       else
       {
         tinfo.theTypeName.transfer(n->theTypeName);
         tinfo.theFlags = n->theFlags;
-        undoList.push_back(tinfo);
+
+        undoList.resize(++undoSize);
+        undoList[undoSize - 1].transfer(tinfo);
 
         n->theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
         n->resetIsId();
