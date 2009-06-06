@@ -15,14 +15,18 @@
  */
 #include <zorba/identtypes.h>
 #include <zorba/typeident.h>
+
+#include "system/globalenv.h"
+
+#include "store/api/item.h"
+
 #include "types/typeops.h"
 #include "types/typeimpl.h"
 #include "types/node_test.h"
-#include "system/globalenv.h"
-#include "store/api/item.h"
 #include "types/root_typemanager.h"
+
 #include "zorbaerrors/Assert.h"
-#include "types/delegating_typemanager.h"
+
 
 namespace zorba {
 
@@ -307,9 +311,9 @@ xqtref_t TypeOps::prime_type(const XQType& type)
       return &type;
 
     const UserDefinedXQType& udType = static_cast<const UserDefinedXQType&>(type);
-    const DelegatingTypeManager* delTM = static_cast<const DelegatingTypeManager*>(type.get_manager());
+    const TypeManager* tm = type.get_manager();
 
-    return delTM->create_named_type(udType.get_qname(), TypeConstants::QUANT_ONE);
+    return tm->create_named_type(udType.get_qname(), TypeConstants::QUANT_ONE);
   }
 
   default:
@@ -589,8 +593,7 @@ bool TypeOps::is_treatable(
     const XQType& targetType,
     const TypeManager* manager)
 {
-  return is_subtype(*targetType.get_manager()->create_value_type(item.getp()),
-                    targetType);
+  return is_subtype(*manager->create_value_type(item.getp()), targetType);
 }
 
 

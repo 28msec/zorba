@@ -192,7 +192,7 @@ const int RootTypeManager::QUANT_MAX_CNT [4] = { 1, 1, 2, 2 };
  
 RootTypeManager::RootTypeManager()
   :
-  TypeManagerImpl(0, NULL),
+  TypeManagerImpl(NULL),
   m_atomic_qnametype_map(ATOMIC_QNAMETYPE_MAP_SIZE, false)
 {
 #define XS_URI "http://www.w3.org/2001/XMLSchema"

@@ -27,7 +27,6 @@
 #include "types/typemanagerimpl.h"
 #include "types/typeimpl.h"
 #include "types/root_typemanager.h"
-#include "types/delegating_typemanager.h"
 #include "types/schema/schema.h"
 
 #include "store/api/item_factory.h"
@@ -42,6 +41,36 @@ using namespace zorba;
 #ifndef ZORBA_NO_XMLSCHEMA
 XERCES_CPP_NAMESPACE_USE
 #endif
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+TypeManagerImpl::~TypeManagerImpl()
+{
+  if (m_schema != NULL)
+    delete m_schema;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void TypeManagerImpl::initializeSchema()
+{
+  if ( m_schema == NULL )
+    m_schema = new Schema();
+}
+
+
+void TypeManagerImpl::terminateSchema()
+{
+  if ( m_schema != NULL )
+  {
+    delete m_schema;
+    m_schema = NULL;
+  }
+}
 
 
 /***************************************************************************//**
@@ -124,23 +153,48 @@ xqtref_t TypeManagerImpl::create_builtin_atomic_type(
 
 
 /***************************************************************************//**
-  Create a sequence type from the given typename and quantifier.
-
-  Here, the typename is assumed to be of a builtin atomic type. If not, the
-  method will return NULL. Class DelegatingTypeManager redefines this method
-  to handle user-defined atomic types. 
+  Create a sequence type from the given typename and quantifier. The typename
+  is assumed to be of an atomic type. If not, or if no type with this name is
+  found in the in-scope schemaa, the method will return NULL. 
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_named_atomic_type(
     store::Item* qname,
     TypeConstants::quantifier_t quantifier) const
 {
+  // Try to resolve the type name as a builtin atomic type
   RootTypeManager::qnametype_map_t& myMap = GENV_TYPESYSTEM.m_atomic_qnametype_map;
 
   TypeConstants::atomic_type_code_t code = TypeConstants::INVALID_TYPE_CODE;
 
-  return (myMap.get(qname, code) ?
-          create_builtin_atomic_type(code, quantifier) :
-          xqtref_t(NULL));
+  if (myMap.get(qname, code))
+    return create_builtin_atomic_type(code, quantifier);
+
+  // If the type name is an XML Schema builtin type, then it cannot be an atomic
+  // type (because, otherwise it would have been found above). So we return NULL.
+  if (qname->getNamespace()->byteEqual(XML_SCHEMA_NS))
+    return NULL;
+
+#ifndef ZORBA_NO_XMLSCHEMA
+  // See if there is a type declaration for this type name in the in-scope
+  // schema, if any.
+  if (m_schema != NULL)
+  {
+    xqtref_t namedType = m_schema->createXQTypeFromTypeName(this, qname);
+
+    if (namedType == NULL)
+      return NULL;
+
+    ZORBA_ASSERT(namedType->type_kind() == XQType::USER_DEFINED_KIND);
+
+    const UserDefinedXQType* udt =
+    reinterpret_cast<const UserDefinedXQType*>(namedType.getp());
+
+    if (udt->isAtomic())
+      return create_type(*namedType, quantifier);
+  }
+#endif
+
+  return NULL;
 }
 
 
@@ -153,27 +207,53 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_named_type(
     store::Item* qname,
-    TypeConstants::quantifier_t quantifier) const
+    TypeConstants::quantifier_t quant) const
 {
-  if (qname->equals(GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME.getp()))
+  RootTypeManager& RTM = GENV_TYPESYSTEM;
+
+  if (qname->equals(RTM.XS_ANY_TYPE_QNAME.getp()))
   {
     return create_any_type();
   }
-  else if (qname->equals(GENV_TYPESYSTEM.XS_ANY_SIMPLE_TYPE_QNAME.getp()))
+  else if (qname->equals(RTM.XS_ANY_SIMPLE_TYPE_QNAME.getp()))
   {
     return create_any_simple_type();
   }
-  else if (qname->equals(GENV_TYPESYSTEM.XS_UNTYPED_QNAME.getp())) 
+  else if (qname->equals(RTM.XS_UNTYPED_QNAME.getp())) 
   {
     return create_untyped_type();
   }
-  else if (qname->equals(GENV_TYPESYSTEM.ZXSE_TUPLE_QNAME.getp()))
+  else if (qname->equals(RTM.ZXSE_TUPLE_QNAME.getp()))
   {
-    return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
+    return RTM.ITEM_TYPE_ONE;
   }
   else
   {
-    return create_named_atomic_type(qname, quantifier);
+    // Try to resolve the type name as a builtin atomic type
+    RootTypeManager::qnametype_map_t& myMap = RTM.m_atomic_qnametype_map;
+
+    TypeConstants::atomic_type_code_t code = TypeConstants::INVALID_TYPE_CODE;
+
+    if (myMap.get(qname, code))
+      return create_builtin_atomic_type(code, quant);
+
+#ifndef ZORBA_NO_XMLSCHEMA
+    // See if there is a type declaration for this type name in the in-scope
+    // schemas, if any.
+    if (m_schema != NULL)
+    {
+      xqtref_t namedType = m_schema->createXQTypeFromTypeName(this, qname);
+
+      if (namedType == NULL)
+        return NULL;
+
+      ZORBA_ASSERT(namedType->type_kind() == XQType::USER_DEFINED_KIND);
+
+      return create_type(*namedType, quant);
+    }
+#endif
+
+    return NULL;
   }
 }
 
@@ -387,6 +467,174 @@ xqtref_t TypeManagerImpl::create_builtin_node_type(
 
 
 /***************************************************************************//**
+  Create a sequence type based on the kind and content of an item.
+********************************************************************************/
+xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const 
+{
+  TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
+
+  if (item->isAtomic())
+  {
+    return create_named_atomic_type(item->getType(), quant);
+  }
+  else if (item->isNode())
+  {
+    store::NodeKind nodeKind = item->getNodeKind();
+
+    switch (nodeKind)
+    {
+    case store::StoreConsts::elementNode:
+    case store::StoreConsts::attributeNode:
+    {
+      xqtref_t contentType = create_named_type(item->getType(), quant);
+
+#ifndef ZORBA_NO_XMLSCHEMA
+      // TODO: remove this after create_named_type() can handle anonymous types.
+      if (contentType == NULL)
+      {
+        return (nodeKind == store::StoreConsts::elementNode ?
+                create_schema_element_type(item->getNodeName(), quant) :
+                create_schema_attribute_type(item->getNodeName(), quant));
+      }
+      else
+#endif
+      {
+        return create_node_type(nodeKind,
+                                item->getNodeName(),
+                                contentType,
+                                quant,
+                                false);
+      }
+    }
+    case store::StoreConsts::documentNode:
+    {
+      store::Iterator_t childrenIte = item->getChildren();
+      store::Item_t child;
+      store::Item_t elemChild;
+      bool foundElemChild = false;
+      childrenIte->open();
+      while (childrenIte->next(child))
+      {
+        if (child->getNodeKind() == store::StoreConsts::elementNode)
+        {
+          if (!foundElemChild)
+            elemChild.transfer(child);
+          else
+            elemChild = NULL;
+        }
+      }
+      childrenIte->close();
+
+      if (elemChild == NULL)
+        return GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE;
+
+      xqtref_t elemType = create_value_type(elemChild);
+
+      return create_node_type(store::StoreConsts::documentNode,
+                              NULL,
+                              elemType,
+                              quant,
+                              false);
+    }
+    case store::StoreConsts::textNode:
+    {
+      return GENV_TYPESYSTEM.TEXT_TYPE_ONE;
+    }
+    case store::StoreConsts::piNode:
+    {
+      return create_node_type(store::StoreConsts::piNode,
+                              item->getNodeName(),
+                              GENV_TYPESYSTEM.STRING_TYPE_ONE,
+                              quant,
+                              false);
+    }
+    case store::StoreConsts::commentNode:
+    {
+      return GENV_TYPESYSTEM.COMMENT_TYPE_ONE;
+    }
+    default:
+    {
+      ZORBA_ASSERT(false);
+    }
+    }
+  }
+  else
+  {
+    ZORBA_ASSERT(false);
+    return NULL;
+  }
+}
+
+
+#ifndef ZORBA_NO_XMLSCHEMA
+
+/***************************************************************************//**
+  Create a sequence type of the form "element(elemName, tname) quant", where
+  quant is a given quantifier, elemName is a given element qname, elemName is a
+  globaly declared element name, and tname is the name of the type associated
+  with elemName in the in-scope schema declarations.
+********************************************************************************/
+xqtref_t TypeManagerImpl::create_schema_element_type(
+    const store::Item* elemName,
+    TypeConstants::quantifier_t quant) const
+{
+  xqtref_t contentType = m_schema->createXQTypeFromElementName(this, elemName);
+
+  return create_node_type(store::StoreConsts::elementNode,
+                          elemName,
+                          contentType,
+                          quant,
+                          false);
+}
+
+
+/***************************************************************************//**
+  Get the name of the type associated with a given globally declared element name.
+********************************************************************************/
+void TypeManagerImpl::get_schema_element_typename(
+    const store::Item* elemName,
+    store::Item_t& typeName)
+{
+  m_schema->getTypeNameFromElementName(elemName, typeName);
+}
+
+
+/***************************************************************************//**
+  Create a sequence type of the form "attribute(attrName, tname) quant", where
+  quant is a given quantifier, attrName is a given attribute qname, attrName is
+  a globaly declared attribute name, and tname is the name of the type associated
+  with attrName in the in-scope schema declarations.
+********************************************************************************/
+xqtref_t TypeManagerImpl::create_schema_attribute_type(
+    const store::Item* attrName,
+    TypeConstants::quantifier_t quant) const
+{
+  xqtref_t contentType = m_schema->createXQTypeFromElementName(this, attrName);
+
+  return create_node_type(store::StoreConsts::attributeNode,
+                          attrName,
+                          contentType,
+                          quant,
+                          false);
+}
+
+
+/***************************************************************************//**
+  Get the name of the type associated with a given globally declared attribute
+  name.
+********************************************************************************/
+void TypeManagerImpl::get_schema_attribute_typename(
+    const store::Item* attrName,
+    store::Item_t& typeName)
+{
+  m_schema->getTypeNameFromAttributeName(attrName, typeName);
+}
+
+
+#endif // ZORBA_NO_XMLSCHEMA
+
+
+/***************************************************************************//**
   Create a sequence type with a given quantifier and the same ItemType as the
   one of a given type.
 ********************************************************************************/
@@ -586,166 +834,5 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
   return xqtref_t(0);
 }
 
-
-/***************************************************************************//**
-  Create a sequence type based on the kind and content of an item.
-********************************************************************************/
-xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const 
-{
-  TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
-
-  if (item->isAtomic())
-  {
-    return create_named_atomic_type(item->getType(), quant);
-  }
-  else if (item->isNode())
-  {
-    store::NodeKind nodeKind = item->getNodeKind();
-
-    switch (nodeKind)
-    {
-    case store::StoreConsts::elementNode:
-    case store::StoreConsts::attributeNode:
-    {
-      xqtref_t contentType = create_named_type(item->getType(), quant);
-
-#ifndef ZORBA_NO_XMLSCHEMA
-      if (contentType == NULL)
-      {
-        return (nodeKind == store::StoreConsts::elementNode ?
-                create_schema_element_type(item->getNodeName(), quant) :
-                create_schema_attribute_type(item->getNodeName(), quant));
-      }
-      else
-#endif
-      {
-        return create_node_type(nodeKind,
-                                item->getNodeName(),
-                                contentType,
-                                quant,
-                                false);
-      }
-    }
-    case store::StoreConsts::documentNode:
-    {
-      store::Iterator_t childrenIte = item->getChildren();
-      store::Item_t child;
-      store::Item_t elemChild;
-      bool foundElemChild = false;
-      childrenIte->open();
-      while (childrenIte->next(child))
-      {
-        if (child->getNodeKind() == store::StoreConsts::elementNode)
-        {
-          if (!foundElemChild)
-            elemChild.transfer(child);
-          else
-            elemChild = NULL;
-        }
-      }
-      childrenIte->close();
-
-      if (elemChild == NULL)
-        return GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE;
-
-      xqtref_t elemType = create_value_type(elemChild);
-
-      return create_node_type(store::StoreConsts::documentNode,
-                              NULL,
-                              elemType,
-                              quant,
-                              false);
-    }
-    case store::StoreConsts::textNode:
-    {
-      return GENV_TYPESYSTEM.TEXT_TYPE_ONE;
-    }
-    case store::StoreConsts::piNode:
-    {
-      return create_node_type(store::StoreConsts::piNode,
-                              item->getNodeName(),
-                              GENV_TYPESYSTEM.STRING_TYPE_ONE,
-                              quant,
-                              false);
-    }
-    case store::StoreConsts::commentNode:
-    {
-      return GENV_TYPESYSTEM.COMMENT_TYPE_ONE;
-    }
-    default:
-    {
-      ZORBA_ASSERT(false);
-    }
-    }
-  }
-  else
-  {
-    ZORBA_ASSERT(false);
-    return NULL;
-  }
-}
-
-
-#ifndef ZORBA_NO_XMLSCHEMA
-
-/***************************************************************************//**
-  Create a sequence type of the form "element(ename, tname) quant", where
-  quant is a given quantifier, ename is a given element qname, ename is a
-  globaly declared element name, and tname is the name of the type associated
-  with ename in the in-scope declarations.
-
-  This method is redifed by DelegatingTypeManager, which provides the actual
-  implementation.
-********************************************************************************/
-xqtref_t TypeManagerImpl::create_schema_element_type(
-    store::Item* qname,
-    TypeConstants::quantifier_t quant) const
-{
-  ZORBA_ASSERT(false);
-  return NULL;
-}
-
-
-/***************************************************************************//**
-  Get the name of the type associated with a given globally declared element name.
-********************************************************************************/
-void TypeManagerImpl::get_schema_element_typename(
-    store::Item* elemName,
-    store::Item_t& typeName)
-{
-  ZORBA_ASSERT(false);
-}
-
-
-/***************************************************************************//**
-  Create a sequence type of the form "attribute(aname, tname) quant", where
-  quant is a given quantifier, aname is a given attribute qname, aname is a
-  globaly declared attribute name, and tname is the name of the type associated
-  with aname in the in-scope declarations.
-
-  This method is redifed by DelegatingTypeManager, which provides the actual
-  implementation.
-********************************************************************************/
-xqtref_t TypeManagerImpl::create_schema_attribute_type(
-    store::Item* qname,
-    TypeConstants::quantifier_t quant) const
-{
-  ZORBA_ASSERT(false);
-  return NULL;
-}
-
-
-/***************************************************************************//**
-  Get the name of the type associated with a given globally declared attribute
-  name.
-********************************************************************************/
-void TypeManagerImpl::get_schema_attribute_typename(
-    store::Item* attrName,
-    store::Item_t& typeName)
-{
-  ZORBA_ASSERT(false);
-}
-
-#endif
 
 /* vim:set ts=2 sw=2: */

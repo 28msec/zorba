@@ -17,14 +17,18 @@
 
 #include <istream>
 #include <memory>
+
 #include "system/globalenv.h"
-#include "compiler/api/compiler_api_impl.h"
-#include "compiler/api/compilercb.h"
+
+#include "util/properties.h"
+
 #include "context/static_context.h"
 
 #include "types/root_typemanager.h"
-#include "types/delegating_typemanager.h"
+#include "types/typemanagerimpl.h"
 
+#include "compiler/api/compiler_api_impl.h"
+#include "compiler/api/compilercb.h"
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parsetree/parsenode_base.h" 
 #include "compiler/expression/expr_base.h"
@@ -33,11 +37,9 @@
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/framework/rewriter.h"
 #include "compiler/codegen/plan_visitor.h"
+#include "compiler/parsetree/parsenode_print_xml_visitor.h"
 
 #include "runtime/api/plan_wrapper.h"
-#include "util/properties.h"
-
-#include "compiler/parsetree/parsenode_print_xml_visitor.h"
 #include "runtime/visitors/printervisitor.h"
 #include "runtime/visitors/iterprinter.h"
 
@@ -48,14 +50,17 @@
 #ifdef ZORBA_XQUERYX
 #include "compiler/xqueryx/xqueryx_to_xquery.h"
 #endif
-namespace zorba {
 
-  // static context is in the compilercb
+
+namespace zorba 
+{
+
+// static context is in the compilercb
 XQueryCompiler::XQueryCompiler(CompilerCB* aCompilerCB) 
   :
   theCompilerCB(aCompilerCB)
 { 
-  aCompilerCB->m_sctx->set_typemanager(rchandle<TypeManager>(new DelegatingTypeManager(&GENV_TYPESYSTEM)));
+  aCompilerCB->m_sctx->set_typemanager(rchandle<TypeManager>(new TypeManagerImpl(&GENV_TYPESYSTEM)));
 }
 
 

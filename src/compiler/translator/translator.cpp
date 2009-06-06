@@ -23,9 +23,16 @@
 #include "zorbaerrors/error_manager.h"
 
 #include "common/common.h"
+
 #include "util/properties.h"
 #include "util/stl_extra.h"
 #include "util/tracer.h"
+
+#include "types/node_test.h"
+#include "types/casting.h"
+#include "types/typeops.h"
+#include "types/typemanagerimpl.h"
+#include "types/schema/schema.h"
 
 #include "compiler/translator/translator.h"
 #include "compiler/api/compilercb.h"
@@ -35,9 +42,6 @@
 #include "context/namespace_context.h"
 #include "context/internal_uri_resolvers.h"
 #include "context/standard_uri_resolvers.h"
-#include "types/node_test.h"
-#include "types/casting.h"
-#include "types/typeops.h"
 #include "compiler/expression/expr.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
@@ -54,9 +58,6 @@
 
 #include "functions/signature.h"
 #include "functions/external_function_adapters.h"
-
-#include "types/delegating_typemanager.h"
-#include "types/schema/schema.h"
 
 #include "store/api/item.h"
 #include "store/api/update_consts.h"
@@ -3942,8 +3943,8 @@ void *begin_visit (const SchemaImport& v)
     store::Item_t lSchemaUri = lSchemaResolver->resolve(lTargetNamespace,
                                                         lAtURIList,
                                                         sctx_p);
-    ((DelegatingTypeManager*)CTXTS)->initializeSchema();
-    Schema* schema_p = ((DelegatingTypeManager*)CTXTS)->getSchema();
+    CTXTS->initializeSchema();
+    Schema* schema_p = CTXTS->getSchema();
 
     std::string lTmp(lSchemaUri->getStringValue()->c_str());
     schema_p->registerXSD(lTargetNamespace->getStringValue()->c_str(), lTmp, loc);

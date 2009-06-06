@@ -16,21 +16,25 @@
 #include <vector>
 
 #include "zorbatypes/numconversions.h"
-
-#include "store/api/item.h"
-#include "casting.h"
-#include "system/globalenv.h"
-#include "store/api/item_factory.h"
-#include "store/api/store.h"
-#include "zorbaerrors/error_manager.h"
-#include "types/typeops.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
-#include "context/namespace_context.h"
-#include "types/typeconstants.h"
-#include "zorbaerrors/Assert.h"
-#include "types/delegating_typemanager.h"
 #include "zorbatypes/chartype.h"
+
+#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/Assert.h"
+
+#include "context/namespace_context.h"
+
+#include "system/globalenv.h"
+
+#include "store/api/item_factory.h"
+#include "store/api/item.h"
+#include "store/api/store.h"
+
+#include "types/typeops.h"
+#include "types/typemanagerimpl.h"
+#include "types/schema/schema.h"
+#include "types/casting.h"
 
 
 namespace zorba
@@ -1387,8 +1391,7 @@ void castToUserDefinedType(
 {
   ErrorInfo lErrorInfo = {aSourceType, aTargetType};
 
-  const DelegatingTypeManager* lDelegatingTypeManager =
-  static_cast<const DelegatingTypeManager*>(aTargetType->get_manager()); 
+  const TypeManager* lTypeManager = aTargetType->get_manager(); 
 
   if (aSourceType->type_kind() != XQType::ATOMIC_TYPE_KIND ||
       (TypeOps::get_atomic_type_code(*aSourceType) != TypeConstants::XS_STRING))
@@ -1402,7 +1405,7 @@ void castToUserDefinedType(
   {
   case UserDefinedXQType::ATOMIC_TYPE:
   {
-    bool hasResult = lDelegatingTypeManager->getSchema()->
+    bool hasResult = lTypeManager->getSchema()->
                      parseUserAtomicTypes(xqpString(aItem->getStringValue()), 
                                           aTargetType,
                                           result);
@@ -1429,10 +1432,9 @@ bool GenericCast::castToSimple(
     const xqtref_t& aTargetType,
     std::vector<store::Item_t> &aResultList) const
 {
-  const DelegatingTypeManager* lDelegatingTypeManager 
-     = static_cast<const DelegatingTypeManager*>(aTargetType->get_manager()); 
+  const TypeManager* lTypeManager = aTargetType->get_manager(); 
 
-  return lDelegatingTypeManager->getSchema()->
+  return lTypeManager->getSchema()->
          parseUserSimpleTypes(aStr, aTargetType, aResultList);
 }
 
@@ -1779,11 +1781,11 @@ bool GenericCast::isCastable(
     const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(aTargetType);
     if ( !udt->isComplex()) 
     {
-      const DelegatingTypeManager* lDelegatingTypeManager 
-        = static_cast<const DelegatingTypeManager*>(aTargetType->get_manager()); 
+      const TypeManager* lTypeManager = aTargetType->get_manager(); 
     
-      return lDelegatingTypeManager->getSchema()->
-                isCastableUserSimpleTypes(xqpString(aItem->getStringValue().getp()), udt->getBaseType().getp());
+      return lTypeManager->getSchema()->
+             isCastableUserSimpleTypes(xqpString(aItem->getStringValue().getp()),
+                                       udt->getBaseType().getp());
     }
   }
 #endif // ZORBA_NO_XMLSCHEMA

@@ -24,7 +24,6 @@
 #include "common/shared_types.h"
 #include "runtime/base/unarybase.h"
 #include "runtime/booleans/compare_types.h"
-#include "types/delegating_typemanager.h"
 #include "types/schema/EventSchemaValidator.h"
 #include "zorbatypes/xqpstring.h"
 
@@ -33,6 +32,9 @@ namespace zorba
 
 class RuntimeCB; // TODO we should have a shared_runtime_types.h
 class GenericCast;
+class TypeManager;
+class EventSchemaValidator;
+
 
 /*______________________________________________________________________
   | 
@@ -92,7 +94,7 @@ public:
 
   static store::Item_t processElement (
         static_context* sctx,
-        DelegatingTypeManager* delegatingTypeManager, 
+        TypeManager* typeManager, 
         EventSchemaValidator& schemaValidator,
         store::Item* parent,
         const store::Item_t& element);
@@ -103,14 +105,14 @@ public:
 
   static void processAttributes(
         static_context* sctx,
-        DelegatingTypeManager* delegatingTypeManager,
+        TypeManager* typeManager,
         EventSchemaValidator& schemaValidator,
         store::Item* parent,
         store::Iterator_t attributes);
 
   static void processChildren (
         static_context* sctx,
-        DelegatingTypeManager* delegatingTypeManager,
+        TypeManager* typeManager,
         EventSchemaValidator& schemaValidator,
         store::Item* parent,
         store::Iterator_t children);
@@ -121,7 +123,7 @@ public:
         
   static void processTextValue (
         static_context* sctx,
-        DelegatingTypeManager* delegatingTypeManager, 
+        TypeManager* typeManager, 
         store::NsBindings& bindings,
         const store::Item_t& typeQName,
         xqpStringStore_t& textValue, 

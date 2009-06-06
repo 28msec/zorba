@@ -22,6 +22,7 @@
 namespace zorba {
 
 class NodeTest;
+class Schema;
 
 
 class qname_hash_equals 
@@ -56,18 +57,26 @@ class TypeManagerImpl : public TypeManager
 {
 protected:
   TypeManager * m_parent;
+  Schema      * m_schema;
 
 public:
-  TypeManagerImpl(int level, TypeManager* parent)
+  TypeManagerImpl(TypeManager* parent)
     :
-    TypeManager(level),
-    m_parent(parent) 
+    TypeManager(parent ? parent->level() + 1 : 0),
+    m_parent(parent),
+    m_schema(NULL)
   {
   }
 
-  virtual ~TypeManagerImpl() { }
+  virtual ~TypeManagerImpl();
 
   TypeManager* get_parent_type_manager() const { return m_parent; }
+
+  Schema* getSchema() const { return m_schema; }
+
+  void initializeSchema();
+
+  void terminateSchema();
 
   xqtref_t create_any_type() const;
 
@@ -81,32 +90,32 @@ public:
 
   xqtref_t create_builtin_atomic_type(
         TypeConstants::atomic_type_code_t type_code,
-        TypeConstants::quantifier_t quantifier) const;
+        TypeConstants::quantifier_t quant) const;
 
-  virtual xqtref_t create_named_atomic_type(
+  xqtref_t create_named_atomic_type(
         store::Item* qname,
-        TypeConstants::quantifier_t quantifier) const;
+        TypeConstants::quantifier_t quant) const;
 
-  virtual xqtref_t create_named_type(
+  xqtref_t create_named_type(
         store::Item* qname,
-        TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE) const;
+        TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE) const;
 
-  xqtref_t create_any_item_type(TypeConstants::quantifier_t quantifier) const;
+  xqtref_t create_any_item_type(TypeConstants::quantifier_t quant) const;
 
   xqtref_t create_node_type(
         store::StoreConsts::NodeKind nodeKind,
         const store::Item* nodeName,
         xqtref_t contentType,
-        TypeConstants::quantifier_t quantifier,
+        TypeConstants::quantifier_t quant,
         bool nillable) const;
 
   xqtref_t create_type(
         const XQType& type,
-        TypeConstants::quantifier_t quantifier) const;
+        TypeConstants::quantifier_t quant) const;
 
   xqtref_t create_type_x_quant(
         const XQType& type,
-        TypeConstants::quantifier_t quantifier) const;
+        TypeConstants::quantifier_t quant) const;
 
   xqtref_t create_type(const TypeIdentifier& ident) const;
 
@@ -114,20 +123,20 @@ public:
 
 #ifndef ZORBA_NO_XMLSCHEMA
 
-  virtual xqtref_t create_schema_element_type(
-        store::Item *eName,
+  xqtref_t create_schema_element_type(
+        const store::Item* elemName,
         TypeConstants::quantifier_t quant) const;
 
-  virtual void get_schema_element_typename(
-        store::Item* elemName,
+  void get_schema_element_typename(
+        const store::Item* elemName,
         store::Item_t& typeName);
 
-  virtual xqtref_t create_schema_attribute_type(
-        store::Item *aName,
+  xqtref_t create_schema_attribute_type(
+        const store::Item* attrName,
         TypeConstants::quantifier_t quant) const;
   
-  virtual void get_schema_attribute_typename(
-        store::Item* attrName,
+  void get_schema_attribute_typename(
+        const store::Item* attrName,
         store::Item_t& typeName);
 #endif
 

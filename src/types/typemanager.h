@@ -59,7 +59,11 @@ public:
 
   virtual int level() const { return m_level; }
 
-  virtual Schema* getSchema() const { return NULL; }
+  virtual void initializeSchema() = 0;
+
+  virtual void terminateSchema() = 0;
+
+  virtual Schema* getSchema() const = 0;
 
   /* Factory Methods */
 
@@ -108,21 +112,23 @@ public:
   virtual xqtref_t create_type(const TypeIdentifier& ident) const = 0;
 
 #ifndef ZORBA_NO_XMLSCHEMA
+
   virtual xqtref_t create_schema_element_type(
-        store::Item *eName,
+        const store::Item* eName,
         TypeConstants::quantifier_t quant) const = 0;
 
   virtual void get_schema_element_typename(
-        store::Item* elemName,
+        const store::Item* elemName,
         store::Item_t& typeName) = 0;
 
   virtual xqtref_t create_schema_attribute_type(
-        store::Item *aName,
+        const store::Item *aName,
         TypeConstants::quantifier_t quant) const = 0;
 
   virtual void get_schema_attribute_typename(
-        store::Item* attrName,
+        const store::Item* attrName,
         store::Item_t& typeName) = 0;
+
 #endif
 };
 

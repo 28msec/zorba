@@ -22,7 +22,6 @@
 #include "store/api/copymode.h"
 
 #include "types/casting.h"
-#include "types/delegating_typemanager.h"
 #include "types/schema/schema.h"
 #include "types/schema/EventSchemaValidator.h"
 #include "types/schema/StrX.h"
@@ -48,23 +47,23 @@ void validateAfterUpdate(zorba::store::Item* item, zorba::store::Item_t& pul,
     static_context* staticContext, const QueryLoc& loc);
 
 void processElement( store::Item_t& pul, static_context* staticContext, 
-    DelegatingTypeManager* delegatingTypeManager, EventSchemaValidator& schemaValidator,
+    TypeManager* typeManager, EventSchemaValidator& schemaValidator,
     store::Item_t element);
     
 void validateAttributes( EventSchemaValidator& schemaValidator, store::Iterator_t attributes);
     
 void processAttributes( store::Item_t& pul, namespace_context& nsCtx, 
-    DelegatingTypeManager* delegatingTypeManager, EventSchemaValidator& schemaValidator,
+    TypeManager* typeManager, EventSchemaValidator& schemaValidator,
     store::Item* parent, store::Iterator_t attributes);
         
 void processChildren( store::Item_t& pul, static_context* staticContext, 
-    namespace_context& nsCtx, DelegatingTypeManager* delegatingTypeManager, 
+    namespace_context& nsCtx, TypeManager* typeManager, 
     EventSchemaValidator& schemaValidator, store::Iterator_t children,
     std::vector<store::Item_t>& typedValues);
     
 void processNamespaces ( EventSchemaValidator& schemaValidator, const store::Item *item);
 
-void processTextValue (store::Item_t& pul, DelegatingTypeManager* delegatingTypeManager, 
+void processTextValue (store::Item_t& pul, TypeManager* typeManager, 
     namespace_context &nsCtx, store::Item_t typeQName, xqpStringStore_t& textValue, 
     store::Item_t& originalChild, std::vector<store::Item_t> &resultList);
 
@@ -112,9 +111,6 @@ void validateAfterUpdate(
         
     TypeManager* typeManager = staticContext->get_typemanager();
     
-    DelegatingTypeManager* delegatingTypeManager = 
-        static_cast<DelegatingTypeManager*>(typeManager);
-        
     StaticContextConsts::validation_mode_t mode = staticContext->validation_mode();
 
     if (mode == StaticContextConsts::skip_validation)
@@ -122,14 +118,14 @@ void validateAfterUpdate(
 
     bool isLax = (mode == StaticContextConsts::lax_validation);
         
-    Schema* schema = delegatingTypeManager->getSchema();
+    Schema* schema = typeManager->getSchema();
     if ( !schema )
     {
         // no schema available no change to pul
         return;
     }
         
-    EventSchemaValidator schemaValidator = EventSchemaValidator(delegatingTypeManager,
+    EventSchemaValidator schemaValidator = EventSchemaValidator(typeManager,
                                                         schema->getGrammarPool(),
                                                         isLax,
                                                         loc);
@@ -149,7 +145,7 @@ void validateAfterUpdate(
         processChildren(pul,
                         staticContext,
                         nsCtx,
-                        delegatingTypeManager,
+                        typeManager,
                         schemaValidator, 
                         item->getChildren(),
                         typedValues);
@@ -167,7 +163,7 @@ void validateAfterUpdate(
     
         processElement(pul,
                     staticContext,
-                    delegatingTypeManager,
+                    typeManager,
                     schemaValidator,
                     item);
     
@@ -187,7 +183,7 @@ void validateAfterUpdate(
 void processElement(
     store::Item_t& pul,
     static_context* staticContext, 
-    DelegatingTypeManager* delegatingTypeManager,
+    TypeManager* typeManager,
     EventSchemaValidator& schemaValidator,
     store::Item_t element)
 {
@@ -234,7 +230,7 @@ void processElement(
         newTypeIdent = TypeIdentifier::createNamedType(typeQName->getNamespace(),
                                                     typeQName->getLocalName() );
         
-        newType = delegatingTypeManager->create_type(*newTypeIdent);
+        newType = typeManager->create_type(*newTypeIdent);
         
         tHasValue      = typeHasValue(newType);
         tHasTypedValue = typeHasTypedValue(newType);
@@ -248,10 +244,10 @@ void processElement(
     element->getNamespaceBindings(bindings);
     namespace_context nsCtx = namespace_context(staticContext, bindings);
             
-    processAttributes(pul, nsCtx, delegatingTypeManager, schemaValidator, element, element->getAttributes());
+    processAttributes(pul, nsCtx, typeManager, schemaValidator, element, element->getAttributes());
         
     std::vector<store::Item_t> typedValues;
-    processChildren(pul, staticContext, nsCtx, delegatingTypeManager, schemaValidator, 
+    processChildren(pul, staticContext, nsCtx, typeManager, schemaValidator, 
                     element->getChildren(), typedValues);
     
     if ( isNewType )
@@ -301,7 +297,7 @@ void validateAttributes( EventSchemaValidator& schemaValidator, store::Iterator_
 
 
 void processAttributes( store::Item_t& pul, namespace_context& nsCtx, 
-    DelegatingTypeManager* delegatingTypeManager, EventSchemaValidator& schemaValidator,
+    TypeManager* typeManager, EventSchemaValidator& schemaValidator,
     store::Item* parent, store::Iterator_t attributes)
 {
     std::list<AttributeValidationInfo*>* attList = schemaValidator.getAttributeList();
@@ -329,7 +325,7 @@ void processAttributes( store::Item_t& pul, namespace_context& nsCtx,
      
         
         std::vector<store::Item_t> typedValues;        
-        processTextValue(pul, delegatingTypeManager, nsCtx, typeQName, att->_value, attrib, typedValues);
+        processTextValue(pul, typeManager, nsCtx, typeQName, att->_value, attrib, typedValues);
         
         if ( attrib==NULL )
         {
@@ -374,7 +370,7 @@ void processChildren(
     store::Item_t& pul,
     static_context* staticContext,
     namespace_context& nsCtx,
-    DelegatingTypeManager* delegatingTypeManager, 
+    TypeManager* typeManager, 
     EventSchemaValidator& schemaValidator,
     store::Iterator_t children,
     std::vector<store::Item_t>& typedValues)
@@ -392,52 +388,52 @@ void processChildren(
             switch ( child->getNodeKind() )
             { 
             case store::StoreConsts::elementNode:                                     
-                processElement( pul, staticContext, delegatingTypeManager, schemaValidator, child);
-                break;
+              processElement( pul, staticContext, typeManager, schemaValidator, child);
+              break;
                 
             case store::StoreConsts::attributeNode:
-                ZORBA_ASSERT(false);
-                break;
+              ZORBA_ASSERT(false);
+              break;
             
             case store::StoreConsts::documentNode:
-                ZORBA_ASSERT(false);                    
-                break;
+              ZORBA_ASSERT(false);                    
+              break;
             
             case store::StoreConsts::textNode:
-                {
-                    //cout << " vup        - pC text: '" << child->getStringValue()->normalizeSpace()->str() << "'\n"; cout.flush();
-                    xqpStringStore_t childStringValue = child->getStringValue();
-                    schemaValidator.text(childStringValue);
-    
-                    store::Item_t typeQName = schemaValidator.getTypeQName();
+            {
+              //cout << " vup        - pC text: '" << child->getStringValue()->normalizeSpace()->str() << "'\n"; cout.flush();
+              xqpStringStore_t childStringValue = child->getStringValue();
+              schemaValidator.text(childStringValue);
+              
+              store::Item_t typeQName = schemaValidator.getTypeQName();
                     
-                    processTextValue(pul,
-                                    delegatingTypeManager,
-                                    nsCtx,
-                                    typeQName,
-                                    childStringValue,
-                                    child,
-                                    typedValues );                        
-                }
-                break;
+              processTextValue(pul,
+                               typeManager,
+                               nsCtx,
+                               typeQName,
+                               childStringValue,
+                               child,
+                               typedValues );                        
+            }
+            break;
             
             case store::StoreConsts::piNode:
-                //cout << " vup        - pi: " << child->getStringValue() << "\n"; cout.flush();
-                // do nothing
-                break;
+              //cout << " vup        - pi: " << child->getStringValue() << "\n"; cout.flush();
+              // do nothing
+              break;
             
             case store::StoreConsts::commentNode:
-                //cout << " vup        - comment: " << child->getStringValue() << "\n"; cout.flush();
-                // do nothing
-                break;
+              //cout << " vup        - comment: " << child->getStringValue() << "\n"; cout.flush();
+              // do nothing
+              break;
             
             case store::StoreConsts::anyNode:
-                //cout << " vup        - any: " << child->getStringValue() << "\n"; cout.flush();
-                ZORBA_ASSERT(false);                    
-                break;
+              //cout << " vup        - any: " << child->getStringValue() << "\n"; cout.flush();
+              ZORBA_ASSERT(false);                    
+              break;
                                 
             default:
-                ZORBA_ASSERT(false);
+              ZORBA_ASSERT(false);
             }
         }
     }
@@ -454,11 +450,11 @@ void processNamespaces ( EventSchemaValidator& schemaValidator, const store::Ite
     }
 }
 
-void processTextValue (store::Item_t& pul, DelegatingTypeManager* delegatingTypeManager, 
+void processTextValue (store::Item_t& pul, TypeManager* typeManager, 
     namespace_context &nsCtx, store::Item_t typeQName, xqpStringStore_t& textValue, 
     store::Item_t& originalChild, std::vector<store::Item_t> &resultList)
 {
-    xqtref_t type = delegatingTypeManager->create_named_atomic_type(typeQName, TypeConstants::QUANT_ONE);
+    xqtref_t type = typeManager->create_named_atomic_type(typeQName, TypeConstants::QUANT_ONE);
     //cout << " vup        - processTextValue: " << typeQName->getPrefix()->str() << ":" << typeQName->getLocalName()->str() << "@" << typeQName->getNamespace()->str() ; cout.flush();
     //cout << "           type: " << ( type==NULL ? "NULL" : type->toString()) << "\n"; cout.flush();                    
             
@@ -475,7 +471,7 @@ void processTextValue (store::Item_t& pul, DelegatingTypeManager* delegatingType
             if ( udXQType.isList() || udXQType.isUnion() )
             {
                 xqp_string str(textValue);
-                delegatingTypeManager->getSchema()->
+                typeManager->getSchema()->
                     parseUserSimpleTypes(str, type, resultList);
                 
                 return;

@@ -24,15 +24,12 @@
 #include <zorbatypes/xerces_xmlcharray.h>
 
 #include "zorbamisc/ns_consts.h"
-
+#include "zorbaerrors/Assert.h"
 
 #include "types/typeimpl.h"
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
 #include "types/casting.h"
-#include "types/delegating_typemanager.h"
-
-#include "zorbaerrors/Assert.h"
 
 #include "system/globalenv.h"
 
@@ -259,7 +256,7 @@ void Schema::registerXSD(const char* xsdURL, std::string& location, const QueryL
 
 ********************************************************************************/
 void Schema::getTypeNameFromElementName(
-    store::Item* qname,
+    const store::Item* qname,
     store::Item_t& typeName)
 {
   XSTypeDefinition* typeDef = getTypeDefForElement(qname);
@@ -283,7 +280,7 @@ void Schema::getTypeNameFromElementName(
 
 ********************************************************************************/
 void Schema::getTypeNameFromAttributeName(
-    store::Item* qname,
+    const store::Item* qname,
     store::Item_t& typeName)
 {
   XSTypeDefinition* typeDef = getTypeDefForAttribute(qname);
@@ -308,7 +305,7 @@ void Schema::getTypeNameFromAttributeName(
 ********************************************************************************/
 xqtref_t Schema::createXQTypeFromElementName(
     const TypeManager* typeManager,
-    store::Item* qname)
+    const store::Item* qname)
 {
   XSTypeDefinition* typeDef = getTypeDefForElement(qname);
 
@@ -326,7 +323,7 @@ xqtref_t Schema::createXQTypeFromElementName(
 ********************************************************************************/
 xqtref_t Schema::createXQTypeFromAttributeName(
     const TypeManager* typeManager,
-    store::Item* qname)
+    const store::Item* qname)
 {
   XSTypeDefinition* typeDef = getTypeDefForAttribute(qname);
 
@@ -629,9 +626,37 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
       {
         result = GENV_TYPESYSTEM.IDREF_TYPE_ONE;
       }
+      else if ( XMLString::equals(XMLChArray("IDREFS").get (), local) )
+      {
+        store::Item_t qname;
+        GENV_ITEMFACTORY->createQName(qname,
+                                      XML_SCHEMA_NS,
+                                      "XS",
+                                      "IDREFS");
+
+        result = new UserDefinedXQType(typeManager,
+                                       qname,
+                                       NULL,
+                                       TypeConstants::QUANT_ONE,
+                                       GENV_TYPESYSTEM.IDREF_TYPE_ONE.getp());
+      }
       else if ( XMLString::equals(XMLChArray("ENTITY").get (), local) )
       {
-        result = GENV_TYPESYSTEM.ID_TYPE_ONE;
+        store::Item_t qname;
+        GENV_ITEMFACTORY->createQName(qname,
+                                      XML_SCHEMA_NS,
+                                      "XS",
+                                      "ENTITIES");
+
+        result = new UserDefinedXQType(typeManager,
+                                       qname,
+                                       NULL,
+                                       TypeConstants::QUANT_ONE,
+                                       GENV_TYPESYSTEM.ENTITY_TYPE_ONE.getp());
+      }
+      else if ( XMLString::equals(XMLChArray("ENTITIES").get (), local) )
+      {
+        result = GENV_TYPESYSTEM.ENTITY_TYPE_PLUS;
       }
       else if ( XMLString::equals(XMLChArray("NOTATION").get (), local) )
       {
@@ -1055,26 +1080,28 @@ bool Schema::parseUserAtomicTypes(
 }
 
 
-void splitToAtomicTextValues(const xqp_string &textValue, std::vector<xqp_string> &atomicTextValues)
+void splitToAtomicTextValues(
+    const xqp_string& textValue,
+    std::vector<xqp_string>& atomicTextValues)
 {   
-    xqp_string normalizedTextValue = textValue.normalizeSpace();
-    checked_vector<uint32_t> codes = normalizedTextValue.getCodepoints();
+  xqp_string normalizedTextValue = textValue.normalizeSpace();
+  checked_vector<uint32_t> codes = normalizedTextValue.getCodepoints();
 
-    xqpString::size_type start = 0;
-    xqpString::size_type i = 0;
+  xqpString::size_type start = 0;
+  xqpString::size_type i = 0;
 
-    while (  i<codes.size() )
+  while (i < codes.size())
+  {
+    if ( xqpStringStore::is_whitespace(codes[i]) )
     {
-        if ( xqpStringStore::is_whitespace(codes[i]) )
-        {
-            atomicTextValues.push_back( normalizedTextValue.substr(start, i-start));
-            start = i;
-        }
-        i++;
+      atomicTextValues.push_back(normalizedTextValue.substr(start, i - start));
+      start = i+1;
     }
-
-    if ( start < (i-1) )
-        atomicTextValues.push_back( normalizedTextValue.substr(start, i-start));    
+    i++;
+  }
+  
+  if ( start < (i-1) )
+    atomicTextValues.push_back(normalizedTextValue.substr(start, i-start));    
 }
 
 
@@ -1100,7 +1127,7 @@ bool Schema::parseUserListTypes(
     std::vector<xqp_string> atomicTextValues;
     splitToAtomicTextValues(textValue, atomicTextValues);
     
-    for ( unsigned int i = 0; i<atomicTextValues.size() ; i++ )
+    for ( unsigned int i = 0; i< atomicTextValues.size() ; i++)
     {
         bool res = parseUserSimpleTypes(atomicTextValues[i], xqtref_t(listItemType), resultList);
         hasResult = hasResult && res;
