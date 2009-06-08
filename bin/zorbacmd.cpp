@@ -232,6 +232,7 @@ ZORBA_THREAD_RETURN server(void* args)
   unsigned short events = lArgs->theEventPort;
   lQuery->debug(requests, events);
   lQuery->close();
+  std::clog << "Quit server thread\n";
   return 0;
 }
 #endif
@@ -721,7 +722,7 @@ int _tmain(int argc, _TCHAR* argv[])
 #endif
 
   zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(store);
-
+{
   timing.stopTimer(TimingInfo::INIT_TIMER, 2);
 
   // For each query ...
@@ -930,7 +931,6 @@ int _tmain(int argc, _TCHAR* argv[])
             // wait 1 second before trying to reconnect
             sleep(1);
             std::auto_ptr<ZorbaDebuggerClient> debuggerClient(ZorbaDebuggerClient::createClient(lProperties.getRequestPort(), lProperties.getEventPort()));
-            lXQ.release();
             DebuggerHandler lEventHandler(lZorbaInstance, debuggerClient.get(), lFileName);
 #ifdef SIGINT /* not all system have SIGINT */
             setDebugClient(debuggerClient.get());
@@ -955,6 +955,8 @@ int _tmain(int argc, _TCHAR* argv[])
             std::cerr << "Could not start the debugger client: " << std::endl;
             std::cerr << e.what() << std::endl;
           }
+        //zorba::simplestore::SimpleStoreManager::shutdownStore(store);
+        //lZorbaInstance->shutdown();
           return 0;
         }
       }
@@ -964,7 +966,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
     queryNo++;
   } // for each query
-  
+
+  }
   return 0;
 }
 

@@ -179,6 +179,7 @@ ZORBA_THREAD_RETURN listenEvents( void * aClient )
   } catch(std::exception&) {
     //do nothing...
   }
+  synchronous_logger::clog << "Quit listenEventsThread\n";
   return 0;
 }
 

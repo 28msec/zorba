@@ -70,6 +70,7 @@ namespace zorba{
 		//We wait for theRuntimeThread to be allocated
 		while( lDebugger->theRuntimeThread == 0 ){ sleep(1); }
 		lDebugger->runQuery();
+                synchronous_logger::clog << "Quit runtimeThread\n";
 		return 0;
 	}
 

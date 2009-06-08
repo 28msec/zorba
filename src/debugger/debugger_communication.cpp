@@ -52,15 +52,16 @@ void zorba::DebuggerCommunicator::handshake()
 zorba::AbstractCommandMessage* zorba::DebuggerCommunicator::handleTCPClient()
 {
 	ZorbaArrayAutoPointer<Byte> lByteMessage;
-	AbstractMessage* lMessage;
+	std::auto_ptr<AbstractMessage> lMessage;
 	ReplyMessage* lReplyMessage;
 	Length length;
 	try
 	{
-		lMessage = MessageFactory::buildMessage( m_commandSocket );
-		AbstractCommandMessage* lCommandMessage(dynamic_cast< AbstractCommandMessage * >(lMessage));
+		lMessage.reset(MessageFactory::buildMessage( m_commandSocket ));
+		AbstractCommandMessage* lCommandMessage(dynamic_cast< AbstractCommandMessage * >(lMessage.get()));
 		if ( lCommandMessage )
 		{
+			lMessage.release();
 			return lCommandMessage;
 		} else {
 #ifndef NDEBUG
@@ -68,7 +69,7 @@ zorba::AbstractCommandMessage* zorba::DebuggerCommunicator::handleTCPClient()
 #endif
 			//If something goes wrong, buildMessage() receive a Reply Message containing the error description
 			//Send it back to the client right away
-			lReplyMessage = dynamic_cast<ReplyMessage *>(lMessage);
+			lReplyMessage = dynamic_cast<ReplyMessage *>(lMessage.get());
 			if( lReplyMessage != 0 ){
 				lByteMessage.reset(lReplyMessage->serialize( length ));
 				m_commandSocket->send( lByteMessage.get(), length );
