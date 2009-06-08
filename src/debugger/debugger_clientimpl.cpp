@@ -56,28 +56,24 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
    theExecutionStatus( QUERY_IDLE ),
    theEventListener(0)	
 {
-  try
-  {
-    do{
-    theRequestSocket = new TCPSocket(aServerAddress, aRequestPortno);
-    theEventServerSocket = new TCPServerSocket(aEventPortno);
-    sleep(1);
-    //Perform the handshake with the server
-    }while(!handshake());
-    //Start the event listener thread
-    theEventListener = new Thread( listenEvents, this );
-  } catch(DebuggerSocketException &e) {
-    delete theRequestSocket;
-    delete theEventServerSocket;
-    throw e;
+	try
+	{
+		do{
+			theRequestSocket.reset(new TCPSocket(aServerAddress, aRequestPortno));
+			theEventServerSocket.reset(new TCPServerSocket(aEventPortno));
+			sleep(1);
+			//Perform the handshake with the server
+		} while(!handshake());
+		//Start the event listener thread
+		theEventListener = new Thread( listenEvents, this );
+	} catch(DebuggerSocketException &e) {
+		throw e;
   }
 }
 
 ZorbaDebuggerClientImpl::~ZorbaDebuggerClientImpl()
 {
   delete theEventListener;
-  delete theRequestSocket;
-  delete theEventServerSocket;
 }
 
 ZorbaDebuggerClient* ZorbaDebuggerClientImpl::registerEventHandler( DebuggerEventHandler * anEventHandler )
@@ -216,11 +212,11 @@ ReplyMessage *ZorbaDebuggerClientImpl::send( AbstractCommandMessage * aMessage )
     //send the command
     theRequestSocket->send( lMessage.get(), length );
     //check the reply
-    AbstractMessage * lMsg = MessageFactory::buildMessage( theRequestSocket );
-    ReplyMessage * lReplyMessage = dynamic_cast< ReplyMessage * >( lMsg );
-    if ( lReplyMessage )
+    AbstractMessage* lMsg = MessageFactory::buildMessage( theRequestSocket.get() );
+	std::auto_ptr<ReplyMessage> lReplyMessage(dynamic_cast< ReplyMessage * >( lMsg ));
+    if ( lReplyMessage.get() )
     {
-      return lReplyMessage;
+      return lReplyMessage.release();
     } else {
     //TODO: print the error message.
       synchronous_logger::cerr << "Internal error occured\n";

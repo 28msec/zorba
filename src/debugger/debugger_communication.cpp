@@ -14,7 +14,7 @@ zorba::DebuggerCommunicator::DebuggerCommunicator( unsigned short aCommandPort, 
 :
 m_eventSocket(0), m_commandSocket(0)
 {
-	TCPServerSocket* srvSocket = new TCPServerSocket(aCommandPort);
+	std::auto_ptr<TCPServerSocket> srvSocket(new TCPServerSocket(aCommandPort));
 	m_commandSocket = srvSocket->accept();
 	ZORBA_ASSERT(m_commandSocket);
 #ifndef NDEBUG

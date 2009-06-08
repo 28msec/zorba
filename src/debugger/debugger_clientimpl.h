@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <vector>
+#include <memory>
 
 #include <zorba/api_shared_types.h>
 #include <zorba/debugger_client.h>
@@ -108,9 +109,9 @@ namespace zorba{
 
       QueryLoc theRemoteLocation;
 
-      TCPSocket * theRequestSocket;
+	  std::auto_ptr<TCPSocket> theRequestSocket;
       
-      TCPServerSocket * theEventServerSocket;
+	  std::auto_ptr<TCPServerSocket> theEventServerSocket;
 
       ExecutionStatus theExecutionStatus; 
 
