@@ -97,6 +97,7 @@ namespace zorba{
 		delete theProfiler;
 		delete theRequestServerSocket;
 		delete theEventSocket;
+		delete m_debuggerCommunicator;
 	}
 
 	void ZorbaDebugger::start( XQueryImpl *aQuery,
@@ -115,12 +116,11 @@ namespace zorba{
 		//Until the query execution has ended
 		while ( theStatus != QUERY_TERMINATED )
 		{
-			AbstractCommandMessage* message = m_debuggerCommunicator->handleTCPClient();
-			if (message != NULL) {
-				processMessage(message);
-				m_debuggerCommunicator->sendReplyMessage(message);
+			auto_ptr<AbstractCommandMessage> message(m_debuggerCommunicator->handleTCPClient());
+			if (message.get() != NULL) {
+				processMessage(message.get());
+				m_debuggerCommunicator->sendReplyMessage(message.get());
 			}
-			delete message;
 		}
 #ifndef NDEBUG
 		synchronous_logger::clog << "[Server Thread] server quited\n";
