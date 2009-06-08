@@ -162,6 +162,12 @@ namespace zorba{
 		theClient->run();
 	}
 
+	void DebuggerHandler::terminateQuery() const
+	{
+		assert(theClient != 0);
+		theClient->terminate();
+	}
+
 	void DebuggerHandler::status() const
 	{
 		assert(theClient != 0);
@@ -276,23 +282,24 @@ namespace zorba{
 	{
 		cerr << "List of available commands." << endl;
 		cerr << "Execution commands:" << endl;
-		cerr << "  run      -- Start the query execution." << endl;
-		cerr << "  resume   -- Resume the query execution." << endl;
-		cerr << "  status   -- Display the status of the query." << endl;
-		cerr << "  where    -- Print the runtime stack frame." << endl;
+		cerr << "  run       -- Start the query execution." << endl;
+		cerr << "  resume    -- Resume the query execution." << endl;
+		cerr << "  status    -- Display the status of the query." << endl;
+		cerr << "  where     -- Print the runtime stack frame." << endl;
+		cerr << "  terminate -- Terminate the query." << endl;
 		cerr << "Breakpoint commands:" << endl;
-		cerr << "  break    -- Set a breakpoint at the specified file and line." << endl;
-		cerr << "  watch    -- Add watchpoint to the query" << endl;
-		cerr << "  list     -- Display the executed query line." << endl;
-		cerr << "  clear    -- Clear breakpoints." << endl;
-		cerr << "  over     -- Steps over the expression." << endl;
-		cerr << "  in       -- Steps inside the function call." << endl;
-		cerr << "  out      -- Steps outside the function call." << endl;
+		cerr << "  break     -- Set a breakpoint at the specified file and line." << endl;
+		cerr << "  watch     -- Add watchpoint to the query" << endl;
+		cerr << "  list      -- Display the executed query line." << endl;
+		cerr << "  clear     -- Clear breakpoints." << endl;
+		cerr << "  over      -- Steps over the expression." << endl;
+		cerr << "  in        -- Steps inside the function call." << endl;
+		cerr << "  out       -- Steps outside the function call." << endl;
 		cerr << "Data commands:" << endl;
-		cerr << "  vars     -- List all variables that are in scope." << endl;
-		cerr << "  eval     -- Evaluate an xquery expression and print its result." << endl;
+		cerr << "  vars      -- List all variables that are in scope." << endl;
+		cerr << "  eval      -- Evaluate an xquery expression and print its result." << endl;
 		cerr << "Zorba debugger:" << endl;
-		cerr << "  help     -- This help." << endl;
+		cerr << "  help      -- This help." << endl;
 	}
 
 	istream* DebuggerHandler::resolve(const String& aNamespace) const
@@ -442,6 +449,9 @@ namespace zorba{
 				return;
 			} else if(lCommand == "c" || lCommand == "resume"){
 				resume();
+				return;
+			} else if (lCommand == "t" || lCommand == "terminate" ) {
+				terminateQuery();
 				return;
 			} else if(lCommand == "s" || lCommand == "status"){
 				status();

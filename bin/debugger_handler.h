@@ -67,6 +67,9 @@ class DebuggerHandler: public DefaultDebuggerEventHandler
     //Run the query
     void run() const;
 
+	// Terminate the query
+	void terminateQuery() const;
+
     //Display the query execution status
     void status() const;
 
