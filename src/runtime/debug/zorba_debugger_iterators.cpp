@@ -55,10 +55,11 @@ namespace zorba {
 		try{
 			DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-			/**if ( m_break )
+			if ( m_break )
 			{
 				//updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
 				assert(theDebugger->theRuntimeThread);
+				theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_BREAKPOINT);
 				theDebugger->theRuntimeThread->suspend();
 			} else if ( theDebugger->hasToStepOver() ) {
 				//updateInfos(loc, planState, varnames, var_keys, vartypes, globals);
@@ -78,7 +79,7 @@ namespace zorba {
 				theDebugger->setStatus(QUERY_SUSPENDED, CAUSE_STEP);
 				assert(theDebugger->theRuntimeThread);
 				theDebugger->theRuntimeThread->suspend();
-			}*/
+			}
 
 
 			while ( consumeNext( result, theChildren[0], planState )) {

@@ -310,6 +310,11 @@ namespace zorba{
 
 	void ZorbaDebugger::step( const StepCommand aKind )
 	{
+		if (aKind == STEP_INTO) {
+			isSteppingInto = true;
+			resume();
+			return;
+		}
 		//find the current decimal.
 		stack<unsigned int> lCurrentDecimal = getCurrentDecimal();
 		//if the current decimal is not found something really wrong happened
@@ -362,11 +367,6 @@ namespace zorba{
 
 	bool ZorbaDebugger::hasToStepInto() const
 	{
-		stack<unsigned int> lDecimal(getCurrentDecimal());
-		if(lDecimal.empty())
-		{
-			return false;
-		}
 		if(isSteppingInto) //&& lDecimal.size() == theDecimalSize)
 		{
 			return true;
