@@ -33,145 +33,25 @@ namespace zorba {
 
 ********************************************************************************/
 
-#ifdef ZORBA_HAVE_PTHREAD_H
-
-#if defined ZORBA_HAVE_PTHREAD_SPINLOCK
-
-class RCLock
-{
-protected:
-  pthread_spinlock_t  theLock;
-
-public:
-  RCLock()
-  {
-    if (0 != pthread_spin_init(&theLock, PTHREAD_PROCESS_PRIVATE))
-    {
-      std::cerr << "Failed to initialize spinlock" << std::endl; 
-      abort();
-    }
-  } 
-  RCLock(const RCLock& ) {RCLock();}
-
-
-  ~RCLock()
-  {
-    if (0 != pthread_spin_destroy(&theLock))
-    {
-      std::cerr << "Failed to destroy spinlock" << std::endl; 
-      abort();
-    }
-  } 
-
-  void acquire()
-  {
-    if (0 != pthread_spin_lock(&theLock))
-    {
-      std::cerr << "Failed to acquire spinlock" << std::endl; 
-      abort();
-    }
-  }
-
-  void release()
-  {
-    if (0 != pthread_spin_unlock(&theLock))
-    {
-      std::cerr << "Failed to release spinlock" << std::endl; 
-      abort();
-    }
-  }
-};
-
-#elif defined ZORBA_HAVE_PTHREAD_MUTEX
-
-class RCLock
-{
-protected:
-  mutable pthread_mutex_t  theLock;
-
-public:
-  RCLock()
-  {
-    pthread_mutexattr_t attr;
-    pthread_mutexattr_init(&attr);
-    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK | PTHREAD_PROCESS_PRIVATE);
-    if (0 != pthread_mutex_init(&theLock, &attr))
-    {
-      std::cerr << "Failed to initialize mutex" << std::endl; 
-      abort();
-    }
-    pthread_mutexattr_destroy(&attr);
-  } 
-  RCLock(const RCLock& ) {RCLock();}
-
-
-  ~RCLock()
-  {
-    if (0 != pthread_mutex_destroy(&theLock))
-    {
-      std::cerr << "Failed to destroy mutex" << std::endl; 
-      abort();
-    }
-  } 
-
-  void acquire()
-  {
-    if (0 != pthread_mutex_lock(&theLock))
-    {
-      std::cerr << "Failed to acquire mutex" << std::endl; 
-      abort();
-    }
-  }
-
-  void release()
-  {
-    if (0 != pthread_mutex_unlock(&theLock))
-    {
-      std::cerr << "Failed to release mutex" << std::endl; 
-      abort();
-    }
-  }
-};
-
-
-#else
-  #error must have pthread mutex or phread spinlock
-
-#endif // ZORBA_HAVE_PTHREAD_SPINLOCK or ZORBA_HAVE_PTHREAD_MUTEX
-
-#elif defined WIN32 || defined WINCE
-
-class RCLock
-{
-protected:
-  HANDLE    mutex;
-public:
-  RCLock()
-  {
-    mutex = ::CreateEvent(NULL, FALSE, TRUE, NULL);
-  } 
-  RCLock(const RCLock& ) {RCLock();}
-
-  ~RCLock()
-  {
-    ::CloseHandle(mutex);
-  } 
-
-  void acquire()
-  {
-    ::WaitForSingleObject(mutex, INFINITE);
-  }
-
-  void release()
-  {
-    ::SetEvent(mutex);
-  }
-};
-#endif // ZORBA_HAVE_PTHREAD_H or WIN32
-
 //use this macro to activate or deactivate use of sync code
 #define SYNC_CODE(x)    x
 #define SYNC_PARAM2(x)  , x
+
+class SyncLock;
+
+class RCLock
+{
+  SyncLock    *rcp;
+public:
+  RCLock();
+  RCLock(const RCLock& ) {RCLock();}
+
+  void acquire();
+
+  void release();
+
+  static void deletePool();
+};
 
 #else // ZORBA_FOR_ONE_THREAD_ONLY
 
@@ -221,86 +101,10 @@ public:
   SYNC_CODE(RCLock* getRCLock() const { ZORBA_FATAL(0, ""); return NULL; })
 
   void addReference(long* counter
-                    SYNC_PARAM2(RCLock* lock)) const
-  {
-#if defined WIN32 && !defined CYGWIN &&!defined ZORBA_FOR_ONE_THREAD_ONLY
-    if(lock)
-    {
-      if (counter) InterlockedIncrement(counter);
-      InterlockedIncrement(&theRefCount);
-    }
-    else
-    {
-      if (counter) ++(*counter);
-      ++theRefCount;
-    }
-#else
-    SYNC_CODE(if (lock) lock->acquire());
-    if (counter) ++(*counter);
-    ++theRefCount;
-    SYNC_CODE(if (lock) lock->release());
-#endif
-  }
+                    SYNC_PARAM2(RCLock* lock)) const;
 
   void removeReference (long* counter 
-                        SYNC_PARAM2(RCLock* lock))
-  {
-#if defined WIN32 && !defined CYGWIN &&!defined ZORBA_FOR_ONE_THREAD_ONLY
-    if(lock)
-    {
-      if (counter)
-      {
-        InterlockedDecrement(&theRefCount);
-        if (!InterlockedDecrement(counter))
-        {
-          free();
-          return;
-        }
-      }
-      else if (!InterlockedDecrement(&theRefCount))
-      {
-        free();
-        return;
-      }
-    }
-    else
-    {
-      if (counter)
-      {
-        --theRefCount;
-        if (--(*counter) == 0)
-        {
-          free();
-          return;
-        }
-      }
-      else if (--theRefCount == 0)
-      {
-        free();
-        return; 
-      }
-    }
-#else
-    SYNC_CODE(if (lock) lock->acquire());
-    if (counter)
-    {
-      --theRefCount;
-      if (--(*counter) == 0)
-      {
-        SYNC_CODE(if (lock) lock->release());
-        free();
-        return;
-      }
-    }
-    else if (--theRefCount == 0)
-    {
-      SYNC_CODE(if (lock) lock->release());
-      free();
-      return; 
-    }
-    SYNC_CODE(if (lock) lock->release());
-#endif
-  }
+                        SYNC_PARAM2(RCLock* lock));
 
 	RCObject& operator=(const RCObject&) { return *this; }
 };

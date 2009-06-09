@@ -22,7 +22,8 @@ SET(ZORBATYPES_SRCS
   transcoder.cpp
   utf8/Unicode_util.cpp
   collation_manager.cpp
-  chartype.cpp)
+  chartype.cpp
+  rchandle.cpp)
   
 IF(ZORBA_NO_UNICODE)
   LIST(APPEND ZORBATYPES_SRCS 

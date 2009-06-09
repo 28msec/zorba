@@ -242,6 +242,10 @@ void GlobalEnvironment::destroy()
 
   delete m_globalEnv;
 	m_globalEnv = NULL;
+
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
+  RCLock::deletePool();
+#endif
 }
 
 
