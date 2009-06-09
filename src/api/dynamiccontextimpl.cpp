@@ -27,7 +27,7 @@
 #include "types/typeops.h"
 #include "types/typemanager.h"
 #include "types/root_typemanager.h"
-
+#include "runtime/base/plan_iterator.h"
 #include "api/unmarshaller.h"
 #include "api/zorbaimpl.h"
 #include "api/resultiteratorimpl.h"
@@ -143,7 +143,7 @@ DynamicContextImpl::setVariableAsDocument( const String& aQName, const String& x
 
     zorba::store::ItemFactory* item_factory = GENV_ITEMFACTORY;
 
-    xqpStringStore_t uriStore = uriString.getStore();
+    xqpStringStore_t    uriStore = uriString.getStore();
     item_factory->createAnyURI(uriItem, uriStore);
 
     store::Item_t   docItem;
@@ -175,6 +175,7 @@ DynamicContextImpl::setVariableAsDocument(
 
     store::Item_t lDocItem = GENV_STORE.loadDocument(lInternalDocURI, *(aStream.get()));
 #if 1
+#ifndef ZORBA_NO_XMLSCHEMA
     if (!lDocItem->isValidated())
     {
       store::Item_t validatedNode;
@@ -212,6 +213,8 @@ DynamicContextImpl::setVariableAsDocument(
       GENV_STORE.deleteDocument(lInternalDocURI);
       lDocItem = GENV_STORE.loadDocument(lInternalDocURI, *(aStream.get()));
     }
+#else
+#endif//ZORBA_NO_XMLSCHEMA
 #endif
     setVariable (aQName, Item(lDocItem));
 
