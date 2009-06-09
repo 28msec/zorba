@@ -48,7 +48,14 @@ class XMLChArray
 
   operator XMLCh* () { return get (); }
   operator const XMLCh* () const { return get (); }
-    
+
+  friend std::ostream& operator<<(std::ostream& out, const XMLChArray& xmlChArray)
+  {
+      out << XMLString::transcode(xmlChArray.get ());
+      return out;
+  }
+
+ 
   ~XMLChArray () { XMLString::release (&buf); }
 };
 

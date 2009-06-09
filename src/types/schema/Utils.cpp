@@ -209,7 +209,7 @@ void processElement(
         
     store::Item_t typeQName = schemaValidator.getTypeQName();
     
-    //cout << " vup      - elemType old: " 
+    //cout << " vup      - elemType old: "
     //    << element->getType()->getLocalName()->c_str() << " @ "
     //    << element->getType()->getNamespace()->c_str() << "\n"; cout.flush();
     //cout << " vup      - elemType new: " << typeQName->getLocalName()->c_str()
@@ -232,9 +232,6 @@ void processElement(
         
         newType = typeManager->create_type(*newTypeIdent);
         
-        tHasValue      = typeHasValue(newType);
-        tHasTypedValue = typeHasTypedValue(newType);
-        tHasEmptyValue = typeHasEmptyValue(newType);
         
         p = static_cast<store::PUL *>(pul.getp());
         elm = element;
@@ -255,6 +252,10 @@ void processElement(
         //cout << " vup        - addSetElementType: " << elm->getNodeName()->getLocalName()->str() << "   " << newTypeIdent->getLocalName() << " @ " << newTypeIdent->getUri() << "\n"; cout.flush();
         //cout << " vup             - " << ( tHasTypedValue ? "hasTypedValue" : "" ) << " values.size: " << typedValues.size() << (typedValues.size()>0 ? " [0]=" + typedValues[0]->getStringValue()->str() : "" ) << ( tHasValue ? " hasValue" : "" ) << ( tHasEmptyValue ? " hasEmptyValue" : "" ) << "\n"; cout.flush();
             
+        tHasValue      = typeHasValue(newType);
+        tHasTypedValue = typeHasTypedValue(newType);
+        tHasEmptyValue = typeHasEmptyValue(newType);
+
         if ( typedValues.size()==1 )
             p->addSetElementType(elm,
                                 typeQName,

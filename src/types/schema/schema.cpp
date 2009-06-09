@@ -189,13 +189,6 @@ void Schema::registerXSD(const char* xsdURL, std::string& location, const QueryL
 
   TRACE("url=" << xsdURL << " loc=" << location);
 
-  // todo: (cezar) hack to fix bug in Resolver, david remove after fixing
-  size_t index = location.find_first_of(' ');
-  if ( index != std::string::npos ) 
-    location = location.substr(0, index);
-  
-  TRACE("loc=" << location);
-
   try
   {    
     parser.reset(XMLReaderFactory::createXMLReader(XMLPlatformUtils::fgMemoryManager,
@@ -309,12 +302,16 @@ xqtref_t Schema::createXQTypeFromElementName(
 {
   XSTypeDefinition* typeDef = getTypeDefForElement(qname);
 
+  //std::cout << "createXQTypeFromElementName(): " << qname->getLocalName()->str() << " @ " << qname->getNamespace()->str() << "\n";
   if (!typeDef) 
   {
     ZORBA_ERROR_PARAM(XPST0008, "schema-element", qname->getStringValue()->c_str());
   }
 
-  return createXQTypeFromTypeDefinition(typeManager, typeDef);
+  xqtref_t res = createXQTypeFromTypeDefinition(typeManager, typeDef);
+  //std::cout << "createXQTypeFromElementName(): res:" << res->get_qname()->getLocalName()->str() << " @ " << res->get_qname()->getNamespace()->str() << "\n";
+
+  return res;
 }
 
 
@@ -374,13 +371,16 @@ xqtref_t Schema::createXQTypeFromTypeName(
   typeDef = xsModel->getTypeDefinition(local, uri);
   
   if ( typeDef == NULL )
+  {
     res = NULL;
+    TRACE("No type definition for " << local << "@" << uri);
+  }
   else
     res = createXQTypeFromTypeDefinition(typeManager, typeDef);
   
   // stick it in the cache even if it's NULL
   _udTypesCache->put(key, res);
-  
+
   return res;
 }
 
@@ -392,7 +392,7 @@ XSTypeDefinition* Schema::getTypeDefForElement(const store::Item* qname)
 {
   XSTypeDefinition* typeDef = NULL;
 
-  TRACE("typeManager: " << typeManager << " element qname: " 
+  TRACE(/*"typeManager: " << typeManager <<*/ " element qname: "
         << qname->getLocalName()->c_str() << "@"
         << qname->getNamespace()->c_str());
 
@@ -421,7 +421,7 @@ XSTypeDefinition* Schema::getTypeDefForAttribute(const store::Item* qname)
 {
   XSTypeDefinition* typeDef = NULL;
 
-  TRACE("typeManager: " << typeManager << " attribute qname: " 
+  TRACE(/*"typeManager: " << typeManager << */" attribute qname: "
         << qname->getLocalName()->c_str() << "@"
         << qname->getNamespace()->c_str());
 
