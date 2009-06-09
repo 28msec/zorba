@@ -37,6 +37,68 @@
 namespace zorba { namespace storeminimal {
 
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  NodeTypeInfo                                                               //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+NodeTypeInfo::NodeTypeInfo(const NodeTypeInfo& other)
+{
+  theNode = other.theNode;
+  theTypeName = other.theTypeName;
+  theFlags = other.theFlags;
+  theIsTyped = other.theIsTyped;
+  
+  if (theIsTyped)
+    theTextContent.copyValue(other.theTextContent.getValue());
+  else
+    theTextContent.copyText(other.theTextContent.getText());
+}
+
+
+NodeTypeInfo& NodeTypeInfo::operator=(const NodeTypeInfo& other)
+{
+  theNode = other.theNode;
+  theTypeName = other.theTypeName;
+  theFlags = other.theFlags;
+
+  if (theIsTyped)
+    theTextContent.setValue(NULL);
+  else
+    theTextContent.setText(NULL);
+
+  theIsTyped = other.theIsTyped;
+  
+  if (theIsTyped)
+    theTextContent.copyValue(other.theTextContent.getValue());
+  else
+    theTextContent.copyText(other.theTextContent.getText());
+
+  return *this;
+}
+
+
+void NodeTypeInfo::transfer(NodeTypeInfo& other)
+{
+  theNode = other.theNode;
+  theTypeName.transfer(other.theTypeName);
+  theFlags = other.theFlags;
+
+  if (theIsTyped)
+    theTextContent.setValue(NULL);
+  else
+    theTextContent.setText(NULL);
+  
+  theIsTyped = other.theIsTyped;
+
+  if (theIsTyped)
+    theTextContent.setValue(other.theTextContent.transferValue());
+  else
+    theTextContent.setText(other.theTextContent.transferText());
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
