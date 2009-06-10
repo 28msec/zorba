@@ -519,8 +519,8 @@ int executeQueryWithTiming(
       query->compile(qfile, staticContext, lHints);
 
       timing.stopTimer(TimingInfo::COMP_TIMER, i);
-    } catch (zorba::ZorbaException& ze) {
-      std::cerr << ze << std::endl;
+    } catch (zorba::QueryException& qe) {
+      std::cerr << qe << std::endl;
       return 5;
     }
 
@@ -624,8 +624,8 @@ int executeQuery(
   //
   try {
     query->compile(qfile, staticContext, lHints);
-  } catch (zorba::ZorbaException& ze) {
-    std::cerr << ze << std::endl;
+  } catch (zorba::QueryException& qe) {
+    std::cerr << qe << std::endl;
     return 5;
   }
 
