@@ -498,17 +498,6 @@ int executeQueryWithTiming(
     //
     // Compile the query
     //
-    if (properties.compileOnly ()) {
-    //TODO optimize this part
-    //the parsing is done twice: once during the parse call and once during the compile call
-      try {
-        query->parse (qfile);
-      } catch (zorba::ZorbaException& ze) {
-        std::cerr << ze << std::endl;
-        return 6;
-      }
-    }
-
     try {
       timing.startTimer(TimingInfo::COMP_TIMER, i);
 
@@ -607,17 +596,6 @@ int executeQuery(
 
     Zorba_SerializerOptions lSerOptions = Zorba_SerializerOptions::SerializerOptionsFromStringParams(properties.getSerializerParameters());
     createSerializerOptions(lSerOptions, properties);
-
-  if (properties.compileOnly ()) {
-    //TODO optimize this part
-    //the parsing is done twice: once during the parse call and once during the compile call
-    try {
-      query->parse (qfile);
-    } catch (zorba::ZorbaException& ze) {
-      std::cerr << ze << std::endl;
-      return 6;
-    }
-  }
 
   //
   // Create and compile the query
@@ -836,10 +814,24 @@ int _tmain(int argc, _TCHAR* argv[])
       }
     }
 
-    //
-    // Compile and run the query N times and print timing info
-    //
     else if (!debug && doTiming) {
+      if(lProperties.compileOnly ()) {
+        try {
+          zorba::XQuery_t aQuery = lZorbaInstance->createQuery();
+          if (asFile)
+            aQuery->setFileName(path.get_path());
+          aQuery->parse (*qfile);
+          qfile->clear();
+          qfile->seekg(0); // go back to the beginning
+        } catch (zorba::ZorbaException& ze) {
+          std::cerr << ze << std::endl;
+          return 6;
+        }
+      }
+
+      //
+      // Compile and run the query N times and print timing info
+      //
       int status = executeQueryWithTiming(lZorbaInstance,
                                           lProperties,
                                           lStaticContext,
@@ -852,6 +844,20 @@ int _tmain(int argc, _TCHAR* argv[])
 
       timing.print(std::cout);
     } else if (!debug) {
+      if(lProperties.compileOnly ()) {
+        try {
+          zorba::XQuery_t aQuery = lZorbaInstance->createQuery();
+          if (asFile)
+            aQuery->setFileName(path.get_path());
+          aQuery->parse (*qfile);
+          qfile->clear();
+          qfile->seekg(0); // go back to the beginning
+        } catch (zorba::ZorbaException& ze) {
+          std::cerr << ze << std::endl;
+          return 6;
+        }
+      }
+
       //
       // Compile the query once and then run it N times
       //
