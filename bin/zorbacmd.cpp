@@ -498,6 +498,17 @@ int executeQueryWithTiming(
     //
     // Compile the query
     //
+    if (properties.compileOnly ()) {
+    //TODO optimize this part
+    //the parsing is done twice: once during the parse call and once during the compile call
+      try {
+        query->parse (qfile);
+      } catch (zorba::ZorbaException& ze) {
+        std::cerr << ze << std::endl;
+        return 6;
+      }
+    }
+
     try {
       timing.startTimer(TimingInfo::COMP_TIMER, i);
 
@@ -508,14 +519,11 @@ int executeQueryWithTiming(
       query->compile(qfile, staticContext, lHints);
 
       timing.stopTimer(TimingInfo::COMP_TIMER, i);
-    } catch (zorba::QueryException& qe) {
-      std::cerr << qe << std::endl;
-      return 5;
     } catch (zorba::ZorbaException& ze) {
       std::cerr << ze << std::endl;
-      return 6;
+      return 5;
     }
-  
+
     //
     // Create and populate the dynamic context
     //
@@ -600,19 +608,27 @@ int executeQuery(
     Zorba_SerializerOptions lSerOptions = Zorba_SerializerOptions::SerializerOptionsFromStringParams(properties.getSerializerParameters());
     createSerializerOptions(lSerOptions, properties);
 
+  if (properties.compileOnly ()) {
+    //TODO optimize this part
+    //the parsing is done twice: once during the parse call and once during the compile call
+    try {
+      query->parse (qfile);
+    } catch (zorba::ZorbaException& ze) {
+      std::cerr << ze << std::endl;
+      return 6;
+    }
+  }
+
   //
   // Create and compile the query
   //
   try {
     query->compile(qfile, staticContext, lHints);
-  } catch (zorba::QueryException& qe) {
-    std::cerr << qe << std::endl;
-    return 5;
   } catch (zorba::ZorbaException& ze) {
     std::cerr << ze << std::endl;
-    return 6;
+    return 5;
   }
-  
+
   //
   // Create and populate the dynamic context
   //

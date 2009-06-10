@@ -487,7 +487,8 @@ XQueryImpl::loadProlog(
 
 
 void
-XQueryImpl::compile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints)
+XQueryImpl::compile(std::istream& aQuery,
+                    const Zorba_CompilerHints_t& aHints)
 {
   ZORBA_TRY
     checkNotClosed();
@@ -498,10 +499,9 @@ XQueryImpl::compile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints)
 
 
 void
-XQueryImpl::compile(
-    std::istream& aQuery,
-    const StaticContext_t& aStaticContext, 
-    const Zorba_CompilerHints_t& aHints)
+XQueryImpl::compile(std::istream& aQuery,
+                    const StaticContext_t& aStaticContext, 
+                    const Zorba_CompilerHints_t& aHints)
 {
   ZORBA_TRY
     checkNotClosed();
