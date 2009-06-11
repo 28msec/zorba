@@ -726,7 +726,7 @@ printErrorInfo( zorba::QueryException& qe,
     os << "<error code='" << qe.getErrorCodeAsString(qe.getErrorCode()) << "'>";
     if( indent ) os << std::endl << "    ";
     //location
-    os << "<location fileName='" << qe.getFileName();
+    os << "<location fileName='" << qe.getQueryURI();
     os << "' lineNumber='" << qe.getLineBegin();
     os << "' sourceStart='" << qe.getColumnBegin();
     os << "' sourceEnd='-1' />";
@@ -955,8 +955,8 @@ int _tmain(int argc, _TCHAR* argv[])
           aQuery->parse (*qfile);
           qfile->clear();
           qfile->seekg(0); // go back to the beginning
-        } catch (zorba::ZorbaException& ze) {
-          printErrorInfo(ze, std::cerr, lProperties);
+        } catch (zorba::QueryException& qe) {
+          printErrorInfo(qe, std::cerr, lProperties);
           return 6;
         }
       }
@@ -984,8 +984,8 @@ int _tmain(int argc, _TCHAR* argv[])
           aQuery->parse (*qfile);
           qfile->clear();
           qfile->seekg(0); // go back to the beginning
-        } catch (zorba::ZorbaException& ze) {
-          printErrorInfo(ze, std::cerr, lProperties);
+        } catch (zorba::QueryException& qe) {
+          printErrorInfo(qe, std::cerr, lProperties);
           return 6;
         }
       }
