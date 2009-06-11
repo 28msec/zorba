@@ -244,7 +244,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token DECIMAL_FORMAT             "'decimal-format'"
 %token DECIMAL_SEPARATOR          "'decimal-separator'"
 %token GROUPING_SEPARATOR         "'grouping-separator'"
-%token INFINITY                   "'infinity'"
+%token INFINITY_VALUE                   "'infinity'"
 %token MINUS_SIGN                 "'minus-sign'"
 %token NaN                        "'NaN'"
 %token PERCENT                    "'percent'"
@@ -1109,7 +1109,7 @@ DecimalFormatParam :
 DecimalFormatParamName :
     DECIMAL_SEPARATOR { $$ = "decimal-separator"; }
     | GROUPING_SEPARATOR { $$ = "grouping-separator"; }
-    | INFINITY { $$ = "infinty"; }
+    | INFINITY_VALUE { $$ = "infinty"; }
     | MINUS_SIGN { $$ = "minus-sign"; }
     | NaN { $$ = "NaN"; }
     | PERCENT { $$ = "percent"; }
@@ -5214,7 +5214,7 @@ KEYWORD :
   | DECIMAL_FORMAT { $$ = SYMTAB_PUT ("decimal-format"); }
   | DECIMAL_SEPARATOR { $$ = SYMTAB_PUT ("decimal-separator"); }
   | GROUPING_SEPARATOR { $$ = SYMTAB_PUT ("grouping-separator"); }
-  | INFINITY { $$ = SYMTAB_PUT ("infinity"); }
+  | INFINITY_VALUE { $$ = SYMTAB_PUT ("infinity"); }
   | MINUS_SIGN { $$ = SYMTAB_PUT ("minus-sign"); }
   | NaN { $$ = SYMTAB_PUT ("NaN"); }
   | PERCENT { $$ = SYMTAB_PUT ("percent"); }

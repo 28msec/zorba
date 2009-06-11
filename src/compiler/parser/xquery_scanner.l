@@ -410,7 +410,7 @@ typedef zorba::xquery_parser::token token;
 "decimal-format" { return token::DECIMAL_FORMAT; }
 "decimal-separator" { return token::DECIMAL_SEPARATOR; }
 "grouping-separator" { return token::GROUPING_SEPARATOR; }
-"infinity" { return token::INFINITY; }
+"infinity" { return token::INFINITY_VALUE; }
 "minus-sign" { return token::MINUS_SIGN; }
 "NaN" { return token::NaN; }
 "percent" { return token::PERCENT; }
