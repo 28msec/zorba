@@ -5,6 +5,7 @@
 ("serialize-text", "Serialize the result as Text.")
 ("indent", "Indent output.")
 ("print-query", "Print the queries.")
+("print-errors-as-xml", "Print the errors as XML.")
 ("byte-order-mark", "Set the byte-order-mark for the serializer.")
 ("omit-xml-declaration", "Omit the XML declaration from the result.")
 ("base-uri", po::value<std::string>(), "Set the base URI property of the static context")

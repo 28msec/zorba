@@ -77,47 +77,69 @@ const char *copyright_str =
   "Copyright 2006-2008 The FLWOR Foundation.\n"
   "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>";
 
+std::ostream&
+printErrorInfo( zorba::ZorbaException& ze,
+                std::ostream& os,
+                const ZorbaCMDProperties& aProperties);
+
+std::ostream&
+printErrorInfo( zorba::QueryException& qe,
+                std::ostream& os,
+                const ZorbaCMDProperties& aProperties);
+
+std::ostream&
+printErrorInfo( const std::string ErrorCode,
+                const std::string ErrorDescription,
+                std::ostream& os,
+                const ZorbaCMDProperties& aProperties);
+
 bool
 populateStaticContext(
     zorba::StaticContext_t& aStaticContext,
-    ZorbaCMDProperties* aProperties)
+    const ZorbaCMDProperties& aProperties)
 {
   try{
-    if (aProperties->boundarySpace().size() != 0 )
+    if (aProperties.boundarySpace().size() != 0 )
       aStaticContext->setBoundarySpacePolicy(
-                         (aProperties->boundarySpace().compare("preserve") == 0 
+                         (aProperties.boundarySpace().compare("preserve") == 0
                           ? preserve_space 
                           : strip_space));
 
-    if (aProperties->constructionMode().size() != 0)
-      aStaticContext->setConstructionMode( aProperties->boundarySpace().compare("preserve") == 0 
+    if (aProperties.constructionMode().size() != 0)
+      aStaticContext->setConstructionMode( aProperties.boundarySpace().compare("preserve") == 0
                                            ? preserve_cons 
                                            : strip_cons );
 
-    if (aProperties->orderingMode().size() != 0 )
+    if (aProperties.orderingMode().size() != 0 )
     {
-      aStaticContext->setOrderingMode( aProperties->boundarySpace().compare("ordered") == 0 
+      aStaticContext->setOrderingMode( aProperties.boundarySpace().compare("ordered") == 0
                                        ? ordered 
                                        : unordered );
     }
 
-    if (aProperties->baseUri().size() != 0 )
-      aStaticContext->setBaseURI( aProperties->baseUri() );
+    if (aProperties.baseUri().size() != 0 )
+      aStaticContext->setBaseURI( aProperties.baseUri() );
   }
   catch (zorba::ZorbaException& ze) {
-    std::cerr << ze << std::endl;
+    printErrorInfo(ze, std::cerr, aProperties);
     return false;
   }
 
-  if (aProperties->defaultCollation().size() != 0 )
+  if (aProperties.defaultCollation().size() != 0 )
   {
     try {
-      aStaticContext->addCollation( aProperties->defaultCollation() );
+      aStaticContext->addCollation( aProperties.defaultCollation() );
     } catch (zorba::ZorbaException&) {
-      std::cerr << "Error: the given collation '" << aProperties->defaultCollation() << "' is not a valid collation." << std::endl;
+      std::string ErrDesc = "the given collation '";
+      ErrDesc.append(aProperties.defaultCollation());
+      ErrDesc.append("' is not a valid collation.\n");
+      printErrorInfo( "XQP0019",
+                      ErrDesc,
+                      std::cerr,
+                      aProperties);
       return false;
     }
-    aStaticContext->setDefaultCollation( aProperties->defaultCollation() );
+    aStaticContext->setDefaultCollation( aProperties.defaultCollation() );
   }
   return true;
 }
@@ -509,7 +531,7 @@ int executeQueryWithTiming(
 
       timing.stopTimer(TimingInfo::COMP_TIMER, i);
     } catch (zorba::QueryException& qe) {
-      std::cerr << qe << std::endl;
+      printErrorInfo(qe, std::cerr, properties);
       return 5;
     }
 
@@ -524,10 +546,10 @@ int executeQueryWithTiming(
         return 4;
       }
     } catch (zorba::QueryException& qe) {
-      std::cerr << qe << std::endl;
+      printErrorInfo(qe, std::cerr, properties);
       return 5;
     } catch (zorba::ZorbaException& ze) {
-      std::cerr << ze << std::endl;
+      printErrorInfo(ze, std::cerr, properties);
       return 6;
     }
 
@@ -556,10 +578,10 @@ int executeQueryWithTiming(
         timing.loadClock += query->getDocLoadingUserTime();
       }
     } catch (zorba::QueryException& qe) {
-      std::cerr << qe << std::endl;
+      printErrorInfo(qe, std::cerr, properties);
       return 5;
     } catch (zorba::ZorbaException& ze) {
-      std::cerr << ze << std::endl;
+      printErrorInfo(ze, std::cerr, properties);
       return 6;
     }
     }
@@ -603,7 +625,7 @@ int executeQuery(
   try {
     query->compile(qfile, staticContext, lHints);
   } catch (zorba::QueryException& qe) {
-    std::cerr << qe << std::endl;
+    printErrorInfo(qe, std::cerr, properties);
     return 5;
   }
 
@@ -618,10 +640,10 @@ int executeQuery(
       return 4;
     }
   } catch (zorba::QueryException& qe) {
-    std::cerr << qe << std::endl;
+    printErrorInfo(qe, std::cerr, properties);
     return 5;
   } catch (zorba::ZorbaException& ze) {
-    std::cerr << ze << std::endl;
+    printErrorInfo(ze, std::cerr, properties);
     return 6;
   }
 
@@ -644,15 +666,106 @@ int executeQuery(
       }
     }
   } catch (zorba::QueryException& qe) {
-    std::cerr << qe << std::endl;
+    printErrorInfo(qe, std::cerr, properties);
     return 5;
   } catch (zorba::ZorbaException& ze) {
-    std::cerr << ze << std::endl;
+    printErrorInfo(ze, std::cerr, properties);
     return 6;
   }
   }
 
   return 0;
+}
+
+
+std::ostream&
+printErrorInfo( zorba::ZorbaException& ze,
+                std::ostream& os,
+                const ZorbaCMDProperties& aProperties)
+{
+  bool indent = aProperties.indent();
+  if( !aProperties.printErrorsAsXml() ) {
+    os << ze << " ";
+    if( aProperties.indent() ) os << std::endl;
+  }
+  else {
+    os << "<errors>";
+    if( indent ) os << std::endl << "  ";
+    //code
+    os << "<error code='" << ze.getErrorCodeAsString(ze.getErrorCode()) << "'>";
+    if( indent ) os << std::endl << "    ";
+    //location
+    os << "<location fileName='" << ze.getFileName();
+    os << "' lineNumber='" << ze.getFileLineNumber();
+    os << "' sourceStart='-1' sourceEnd='-1' />";
+    if( indent ) os << std::endl << "    ";
+    //description
+    os << "<description>" << ze.getDescription() << "</description>";
+    if( indent ) os << std::endl << "  ";
+    os << "</error>";
+    if( indent ) os << std::endl;
+    os << "</errors>";
+  }
+  return os;
+}
+
+std::ostream&
+printErrorInfo( zorba::QueryException& qe,
+                std::ostream& os,
+                const ZorbaCMDProperties& aProperties)
+{
+  bool indent = aProperties.indent();
+  if( !aProperties.printErrorsAsXml() ) {
+    os << qe << " ";
+    if( aProperties.indent() ) { os << std::endl; };
+  }
+  else {
+    os << "<errors>";
+    if( indent ) os << std::endl << "  ";
+    //code
+    os << "<error code='" << qe.getErrorCodeAsString(qe.getErrorCode()) << "'>";
+    if( indent ) os << std::endl << "    ";
+    //location
+    os << "<location fileName='" << qe.getFileName();
+    os << "' lineNumber='" << qe.getLineBegin();
+    os << "' sourceStart='" << qe.getColumnBegin();
+    os << "' sourceEnd='-1' />";
+    if( indent ) os << std::endl << "    ";
+    //description
+    os << "<description>" << qe.getDescription() << "</description>";
+    if( indent ) os << std::endl << "  ";
+    os << "</error>";
+    if( indent ) os << std::endl;
+    os << "</errors>";
+  }
+  return os;
+}
+
+std::ostream&
+printErrorInfo( const std::string ErrorCode,
+                const std::string ErrorDescription,
+                std::ostream& os,
+                const ZorbaCMDProperties& aProperties)
+{
+  bool indent = aProperties.indent();
+  if( !aProperties.printErrorsAsXml() ) {
+    os << "ErrorCode :[" << ErrorCode << "] ErrorDescription :[" << ErrorDescription << "] ";
+    if( indent ) os << std::endl;
+  }
+  else {
+    os << "<errors>";
+    if( indent ) os << std::endl << "  ";
+    //code
+    os << "<error code='" << ErrorCode << "'>";
+    if( indent ) os << std::endl << "    ";
+    //description
+    os << "<description>" << ErrorDescription << "</description>";
+    if( indent ) os << std::endl << "  ";
+    os << "</error>";
+    if( indent ) os << std::endl;
+    os << "</errors>";
+  }
+  return os;
 }
 
 
@@ -693,14 +806,23 @@ int _tmain(int argc, _TCHAR* argv[])
   if ( lOutputStream == 0 ) {
     lOutputStream = &std::cout;
   } else if ( !lOutputStream->good() ) {
-    std::cerr << "Error: could not write to output file "
-              << lProperties.outputFile() << std::endl;
+    std::string ErrDesc = "could not write to output file [";
+    ErrDesc.append(lProperties.outputFile());
+    ErrDesc.append("]\n");
+    printErrorInfo( "XQP0019",
+                    ErrDesc,
+                    std::cerr,
+                    lProperties);
     lProperties.printHelp(std::cout);
     return 2;
   }
 
   if(lProperties.queriesOrFilesBegin() == lProperties.queriesOrFilesEnd()) {
-    std::cerr << "Error: no queries submitted" << std::endl;
+    std::string ErrDesc = "no queries submitted\n";
+    printErrorInfo( "XQP0019",
+                    ErrDesc,
+                    std::cerr,
+                    lProperties);
     lProperties.printHelp(std::cout);
     return 3;
   }
@@ -744,11 +866,21 @@ int _tmain(int argc, _TCHAR* argv[])
     }
     
     if ( asFile && (!qfile->good() || qfile->eof()) ) {
-      std::cerr << "Error: file " << fname << " not found or not readable" << std::endl;
+      std::string ErrDesc = "file [";
+      ErrDesc.append(fname);
+      ErrDesc.append("] not found or not readable.\n");
+      printErrorInfo( "XQP0019",
+                      ErrDesc,
+                      std::cerr,
+                      lProperties);
       lProperties.printHelp(std::cout);
       return 3;
     } else if (fURI.empty ()) {
-      std::cerr << "Error: empty query" << std::endl;
+      std::string ErrDesc = "empty query. \n";
+      printErrorInfo( "XQP0019",
+                      ErrDesc,
+                      std::cerr,
+                      lProperties);
       lProperties.printHelp(std::cout);
       return 3;
     }
@@ -769,7 +901,7 @@ int _tmain(int argc, _TCHAR* argv[])
     // Create the static context and populate it with info taken from the properties
     //
     zorba::StaticContext_t lStaticContext = lZorbaInstance->createStaticContext();
-    if (! populateStaticContext(lStaticContext, &lProperties) ) {
+    if (! populateStaticContext(lStaticContext, lProperties) ) {
       lProperties.printHelp(std::cout);
       return 3;
     }
@@ -809,7 +941,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
         lQuery->parse (*qfile);
       } catch (zorba::ZorbaException& ze) {
-        std::cerr << ze << std::endl;
+        printErrorInfo(ze, std::cerr, lProperties);
         return 6;
       }
     }
@@ -824,7 +956,7 @@ int _tmain(int argc, _TCHAR* argv[])
           qfile->clear();
           qfile->seekg(0); // go back to the beginning
         } catch (zorba::ZorbaException& ze) {
-          std::cerr << ze << std::endl;
+          printErrorInfo(ze, std::cerr, lProperties);
           return 6;
         }
       }
@@ -853,7 +985,7 @@ int _tmain(int argc, _TCHAR* argv[])
           qfile->clear();
           qfile->seekg(0); // go back to the beginning
         } catch (zorba::ZorbaException& ze) {
-          std::cerr << ze << std::endl;
+          printErrorInfo(ze, std::cerr, lProperties);
           return 6;
         }
       }
@@ -881,7 +1013,11 @@ int _tmain(int argc, _TCHAR* argv[])
       //
       if(fname.empty() && !compileOnly)
       {
-        std::cerr << "Cannot debug inline queries." << std::endl; 
+        std::string ErrDesc = "Cannot debug inline queries. \n";
+        printErrorInfo( "XQP0019",
+                        ErrDesc,
+                        std::cerr,
+                        lProperties);
         return 0;  // TODO: be able to debug inline query.
       }
       std::auto_ptr<std::istream> lXQ(new std::ifstream(path.c_str()));
@@ -907,15 +1043,15 @@ int _tmain(int argc, _TCHAR* argv[])
             return 0;
           }
         } catch (zorba::QueryException& qe) {
-          std::cerr << qe << std::endl;
+          printErrorInfo(qe, std::cerr, lProperties);
           return 0;
         } catch (zorba::ZorbaException& ze) {
-          std::cerr << ze << std::endl;
+          printErrorInfo(ze, std::cerr, lProperties);
           return 0;
           }
       }
       catch( StaticException &e ) {
-        std::cerr << e << std::endl;
+        printErrorInfo(e, std::cerr, lProperties);
         return 0;
       }
 
@@ -943,7 +1079,11 @@ int _tmain(int argc, _TCHAR* argv[])
         if ( ( lServerThread = CreateThread( 0, 0, server, lArgs.get(), 0, 0 ) ) == 0 )
 #endif
         {
-          std::cerr << "Couldn't start the server thread" << std::endl;
+          std::string ErrDesc = "Couldn't start the server thread.\n";
+          printErrorInfo( "XQP0019",
+                          ErrDesc,
+                          std::cerr,
+                          lProperties);
           return 7;
         }
         
@@ -974,8 +1114,14 @@ int _tmain(int argc, _TCHAR* argv[])
 #endif
           } catch( std::exception &e ) {
             if ( i < 2 ){ continue; }
-            std::cerr << "Could not start the debugger client: " << std::endl;
-            std::cerr << e.what() << std::endl;
+
+            std::string ErrDesc = "Could not start the debugger client: ";
+            ErrDesc.append(e.what());
+            ErrDesc.append(".\n");
+            printErrorInfo( "XQP0019",
+                            ErrDesc,
+                            std::cerr,
+                            lProperties);
           }
         //zorba::simplestore::SimpleStoreManager::shutdownStore(store);
         //lZorbaInstance->shutdown();

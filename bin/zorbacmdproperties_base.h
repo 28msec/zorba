@@ -33,7 +33,7 @@ namespace zorbacmd {
 class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug-client", "--debug-server", "--no-colors", NULL };
+    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug-client", "--debug-server", "--no-colors", NULL };
     return result;
   }
   bool theTiming;
@@ -43,6 +43,7 @@ protected:
   bool theSerializeText;
   bool theIndent;
   bool thePrintQuery;
+  bool thePrintErrorsAsXml;
   bool theByteOrderMark;
   bool theOmitXmlDeclaration;
   std::string theBaseUri;
@@ -70,6 +71,7 @@ protected:
     theSerializeText = false;
     theIndent = false;
     thePrintQuery = false;
+    thePrintErrorsAsXml = false;
     theByteOrderMark = false;
     theOmitXmlDeclaration = false;
     theMultiple = 1;
@@ -91,6 +93,7 @@ public:
   const bool &serializeText () const { return theSerializeText; }
   const bool &indent () const { return theIndent; }
   const bool &printQuery () const { return thePrintQuery; }
+  const bool &printErrorsAsXml () const { return thePrintErrorsAsXml; }
   const bool &byteOrderMark () const { return theByteOrderMark; }
   const bool &omitXmlDeclaration () const { return theOmitXmlDeclaration; }
   const std::string &baseUri () const { return theBaseUri; }
@@ -145,6 +148,9 @@ public:
       }
       else if (strcmp (*argv, "--print-query") == 0) {
         thePrintQuery = true;
+      }
+      else if (strcmp (*argv, "--print-errors-as-xml") == 0) {
+        thePrintErrorsAsXml = true;
       }
       else if (strcmp (*argv, "--byte-order-mark") == 0) {
         theByteOrderMark = true;
@@ -253,6 +259,7 @@ public:
 "--serialize-text\nSerialize the result as Text.\n\n"
 "--indent\nIndent output.\n\n"
 "--print-query\nPrint the queries.\n\n"
+"--print-errors-as-xml\nPrint the errors as XML.\n\n"
 "--byte-order-mark\nSet the byte-order-mark for the serializer.\n\n"
 "--omit-xml-declaration\nOmit the XML declaration from the result.\n\n"
 "--base-uri\nSet the base URI property of the static context\n\n"

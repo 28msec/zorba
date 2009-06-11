@@ -28,6 +28,9 @@ Indent output.
 --print-query
 Print the queries.
 
+--print-errors-as-xml
+Print the errors as XML.
+
 --byte-order-mark
 Set the byte-order-mark for the serializer.
 
