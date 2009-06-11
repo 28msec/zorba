@@ -3469,27 +3469,28 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
       if (sz < 2)
         ZORBA_ERROR_LOC_PARAM (XPST0017, loc, "concat", to_string (sz));
     } else if (fname == "doc") {
-      expr_t  doc_uri = arguments[0];
-      //validate uri
-      if(doc_uri->get_expr_kind() == const_expr_kind)
-      {
-        const_expr  *const_uri = reinterpret_cast<const_expr*>(doc_uri.getp());
-        store::Item_t uri_value = const_uri->get_val();
-        xqpStringStore_t   uri_string = uri_value->getStringValue();
-        try{
-          xqpString   xqp_uri_string(uri_string);
-          //xqpString   xqp_base_uri("http://website/");
-          //URI   baseURI(xqp_base_uri, false);
-          if(uri_string->indexOf(":/") >= 0)
+      if (sz > 0) {
+        expr_t  doc_uri = arguments[0];
+        //validate uri
+        if(doc_uri->get_expr_kind() == const_expr_kind)
+        {
+          const_expr  *const_uri = reinterpret_cast<const_expr*>(doc_uri.getp());
+          store::Item_t uri_value = const_uri->get_val();
+          xqpStringStore_t   uri_string = uri_value->getStringValue();
+          try{
+            xqpString   xqp_uri_string(uri_string);
+            //xqpString   xqp_base_uri("http://website/");
+            //URI   baseURI(xqp_base_uri, false);
+            if(uri_string->indexOf(":/") >= 0)
+            {
+              URI   docURI(xqp_uri_string, true);//with validate`
+            }
+          }
+          catch(error::ZorbaError &e)
           {
-            URI   docURI(xqp_uri_string, true);//with validate`
+            ZORBA_ERROR_LOC_PARAM(FODC0005, loc, e.toString(), "");
           }
         }
-        catch(error::ZorbaError &e)
-        {
-          ZORBA_ERROR_LOC_PARAM(FODC0005, loc, e.toString(), "");
-        }
-
       }
     }
   } else if (fn_ns->byteEqual(ZORBA_FN_NS)) {
