@@ -33,7 +33,7 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC ZorbaProperties : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--debug-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--dump-lib", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--trace-translator", "--trace-codegen", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", "--iter-plan-test", "--dot-plan-file", NULL };
+    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--debug-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-xqdoc", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--dump-lib", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--trace-translator", "--trace-codegen", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", "--iter-plan-test", "--dot-plan-file", NULL };
     return result;
   }
   bool theTraceParsing;
@@ -47,6 +47,7 @@ protected:
   bool thePrintQuery;
   bool thePrintTime;
   bool thePrintAst;
+  bool thePrintXqdoc;
   bool thePrintTranslated;
   bool thePrintNormalized;
   bool thePrintOptimized;
@@ -83,6 +84,7 @@ protected:
     thePrintQuery = false;
     thePrintTime = false;
     thePrintAst = false;
+    thePrintXqdoc = false;
     thePrintTranslated = false;
     thePrintNormalized = false;
     thePrintOptimized = false;
@@ -118,6 +120,7 @@ public:
   const bool &printQuery () const { return thePrintQuery; }
   const bool &printTime () const { return thePrintTime; }
   const bool &printAst () const { return thePrintAst; }
+  const bool &printXqdoc () const { return thePrintXqdoc; }
   const bool &printTranslated () const { return thePrintTranslated; }
   const bool &printNormalized () const { return thePrintNormalized; }
   const bool &printOptimized () const { return thePrintOptimized; }
@@ -194,6 +197,9 @@ public:
       }
       else if (strcmp (*argv, "--print-ast") == 0 || strncmp (*argv, "-a", 2) == 0) {
         thePrintAst = true;
+      }
+      else if (strcmp (*argv, "--print-xqdoc") == 0) {
+        thePrintXqdoc = true;
       }
       else if (strcmp (*argv, "--print-translated") == 0) {
         thePrintTranslated = true;
@@ -326,6 +332,7 @@ public:
 "--print-query, -q\nprint the query\n\n"
 "--print-time, -t\nprint the execution time\n\n"
 "--print-ast, -a\nprint the parse tree\n\n"
+"--print-xqdoc\ncreate output for XQDoc\n\n"
 "--print-translated\nprint the normalized expression tree\n\n"
 "--print-normalized, -n\nprint the translated expression tree\n\n"
 "--print-optimized, -P\nprint the optimized expression tree\n\n"

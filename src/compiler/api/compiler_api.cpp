@@ -40,6 +40,7 @@
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
 
 #include "runtime/api/plan_wrapper.h"
+#include "compiler/parsetree/parsenode_xqdoc_visitor.h"
 #include "runtime/visitors/printervisitor.h"
 #include "runtime/visitors/iterprinter.h"
 
@@ -71,6 +72,12 @@ XQueryCompiler::~XQueryCompiler()
 static void print_ast_tree (const parsenode *n, std::string name) {
   std::cout << "AST for " << name << "\n";
   print_parsetree_xml (std::cout, n);
+  std::cout << std::endl;
+}
+
+static void print_xqdoc_tree (const parsenode *n, std::string name) {
+  std::cout << "XQDOC for " << name << "\n";
+  print_parsetree_xqdoc (std::cout, n);
   std::cout << std::endl;
 }
 
@@ -110,8 +117,13 @@ parsenode_t
 XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
 {
   // TODO: move these out
-  if (Properties::instance()->printAst())
+  if (Properties::instance()->printAst()) {
     theCompilerCB->m_config.parse_cb = print_ast_tree;
+  }
+  
+  if (Properties::instance()->printXqdoc()) {
+    theCompilerCB->m_config.parse_cb = print_xqdoc_tree;
+  }
   
   std::istream  *xquery_stream = &aXQuery;
 

@@ -9,6 +9,7 @@
       ("print-query,q", "print the query")
       ("print-time,t", "print the execution time")
       ("print-ast,a", "print the parse tree")
+      ("print-xqdoc", "create output for XQDoc" )
       ("print-translated", "print the normalized expression tree")
       ("print-normalized,n", "print the translated expression tree")
       ("print-optimized,P", "print the optimized expression tree")

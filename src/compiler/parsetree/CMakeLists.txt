@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 SET(PARSETREE_SRCS
+    parsenode_xqdoc_visitor.cpp 
     parsenode_print_xml_visitor.cpp 
     parsenodes.cpp)
     
