@@ -729,7 +729,7 @@ printErrorInfo( zorba::QueryException& qe,
     os << "<location fileName='" << qe.getQueryURI();
     os << "' lineNumber='" << qe.getLineBegin();
     os << "' sourceStart='" << qe.getColumnBegin();
-    os << "' sourceEnd='-1' />";
+    os << "' sourceEnd='" << qe.getColumnBegin() + 1 << "' />";
     if( indent ) os << std::endl << "    ";
     //description
     os << "<description>" << qe.getDescription() << "</description>";
