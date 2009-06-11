@@ -12,7 +12,7 @@
 
 zorba::DebuggerCommunicator::DebuggerCommunicator( unsigned short aCommandPort, unsigned short aEventPort )
 :
-m_eventSocket(0), m_commandSocket(0)
+m_commandSocket(0), m_eventSocket(0)
 {
 	std::auto_ptr<TCPServerSocket> srvSocket(new TCPServerSocket(aCommandPort));
 	m_commandSocket = srvSocket->accept();

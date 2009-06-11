@@ -102,6 +102,9 @@
 /* XQueryX */
 #cmakedefine ZORBA_XQUERYX
 
+/* Add the libxml2 sax parser */
+#cmakedefine ZORBA_WITH_LIBXML2_SAX
+
 /* to use minimal store or simplestore*/
 #cmakedefine  ZORBA_MINIMAL_STORE
 
