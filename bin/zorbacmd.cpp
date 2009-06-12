@@ -697,7 +697,7 @@ printErrorInfo( zorba::ZorbaException& ze,
     //location
     os << "<location fileName='" << ze.getFileName();
     os << "' lineNumber='" << ze.getFileLineNumber();
-    os << "' sourceStart='-1' sourceEnd='-1' />";
+    os << "' lineStart='-1' columnStart='-1' lineEnd='-1' columnEnd='-1' />";
     if( indent ) os << std::endl << "    ";
     //description
     os << "<description>" << ze.getDescription() << "</description>";
@@ -727,9 +727,10 @@ printErrorInfo( zorba::QueryException& qe,
     if( indent ) os << std::endl << "    ";
     //location
     os << "<location fileName='" << qe.getQueryURI();
-    os << "' lineNumber='" << qe.getLineBegin();
-    os << "' sourceStart='" << qe.getColumnBegin();
-    os << "' sourceEnd='" << qe.getColumnBegin() + 1 << "' />";
+    os << "' lineStart='" << qe.getLineBegin();
+    os << "' columnStart='" << qe.getColumnBegin();
+    os << "' lineEnd='" << qe.getLineBegin();
+    os << "' columnEnd='" << qe.getColumnBegin() << "' />";
     if( indent ) os << std::endl << "    ";
     //description
     os << "<description>" << qe.getDescription() << "</description>";
