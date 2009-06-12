@@ -21,11 +21,11 @@ protected:
 
 #if defined ZORBA_HAVE_PTHREAD_SPINLOCK
   pthread_spinlock_t  theLock;
-#elif defined ZORBA_HAVE_PTHREAD_SyncLock
-  mutable pthread_SyncLock_t  theLock;
+#elif defined ZORBA_HAVE_PTHREAD_MUTEX
+  mutable pthread_mutex_t  theLock;
 #else
-  #error must have pthread SyncLock or phread spinlock
-#endif // ZORBA_HAVE_PTHREAD_SPINLOCK or ZORBA_HAVE_PTHREAD_SyncLock
+  #error must have pthread mutex or phread spinlock
+#endif // ZORBA_HAVE_PTHREAD_SPINLOCK or ZORBA_HAVE_PTHREAD_MUTEX
 #elif defined WIN32 || defined WINCE
   HANDLE    theLock;
 #endif
@@ -119,24 +119,24 @@ void SyncLock::release()
   }
 }
 
-#elif defined ZORBA_HAVE_PTHREAD_SyncLock
+#elif defined ZORBA_HAVE_PTHREAD_MUTEX
 
 SyncLock::SyncLock()
 {
-  pthread_SyncLockattr_t attr;
-  pthread_SyncLockattr_init(&attr);
-  pthread_SyncLockattr_settype(&attr, PTHREAD_SyncLock_ERRORCHECK | PTHREAD_PROCESS_PRIVATE);
-  if (0 != pthread_SyncLock_init(&theLock, &attr))
+  pthread_mutexattr_t attr;
+  pthread_mutexattr_init(&attr);
+  pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK | PTHREAD_PROCESS_PRIVATE);
+  if (0 != pthread_mutex_init(&theLock, &attr))
   {
     std::cerr << "Failed to initialize SyncLock" << std::endl; 
     abort();
   }
-  pthread_SyncLockattr_destroy(&attr);
+  pthread_mutexattr_destroy(&attr);
 } 
 
 SyncLock::~SyncLock()
 {
-  if (0 != pthread_SyncLock_destroy(&theLock))
+  if (0 != pthread_mutex_destroy(&theLock))
   {
     std::cerr << "Failed to destroy SyncLock" << std::endl; 
     abort();
@@ -145,7 +145,7 @@ SyncLock::~SyncLock()
 
 void SyncLock::acquire()
 {
-  if (0 != pthread_SyncLock_lock(&theLock))
+  if (0 != pthread_mutex_lock(&theLock))
   {
     std::cerr << "Failed to acquire SyncLock" << std::endl; 
     abort();
@@ -155,7 +155,7 @@ void SyncLock::acquire()
 
 void SyncLock::release()
 {
-  if (0 != pthread_SyncLock_unlock(&theLock))
+  if (0 != pthread_mutex_unlock(&theLock))
   {
     std::cerr << "Failed to release SyncLock" << std::endl; 
     abort();
@@ -163,7 +163,7 @@ void SyncLock::release()
 }
 
 
-#endif // ZORBA_HAVE_PTHREAD_SPINLOCK or ZORBA_HAVE_PTHREAD_SyncLock
+#endif // ZORBA_HAVE_PTHREAD_SPINLOCK or ZORBA_HAVE_PTHREAD_MUTEX
 
 #elif defined WIN32 || defined WINCE
 
