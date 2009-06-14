@@ -84,6 +84,7 @@ private:
   std::vector<expr_t>   m_index_field_exprs;
   std::vector<xqtref_t> m_index_field_types;
   std::vector<std::string> m_index_field_collations;
+  std::vector<store::PatternIECreatorPair> m_creatorPatterns;
 
 public:
   ValueIndex(static_context* sCtx, xqpStringStore_t indexUri)
@@ -155,6 +156,16 @@ public:
   void setIndexFieldCollations(const std::vector<std::string>& indexFieldCollations) 
   {
     m_index_field_collations = indexFieldCollations;
+  }
+
+  std::vector<store::PatternIECreatorPair>& getPatternCreatorPairs()
+  {
+    return m_creatorPatterns;
+  }
+
+  const std::vector<store::PatternIECreatorPair>& getPatternCreatorPairs() const
+  {
+    return m_creatorPatterns;
   }
 };
 

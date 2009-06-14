@@ -53,6 +53,7 @@
 #include "compiler/parser/util.h"
 
 #include "indexing/value_index.h"
+#include "compiler/indexing/index_tools.h"
 
 #include "system/globalenv.h"
 
@@ -2806,6 +2807,7 @@ void end_visit (const IndexDecl& v, void* /*visit_state*/)
   indexstack.pop();
   vi->setUnique(v.uniq);
   vi->setMethod("btree" == v.method ? ValueIndex::BTREE : ValueIndex::HASH);
+  IndexTools::inferIndexCreators(vi.getp());
   xqp_string uri(vi->getIndexUri());
   sctx_p->bind_index(uri, vi.getp());
 }

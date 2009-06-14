@@ -51,6 +51,7 @@ bool CreateValueIndex::nextImpl(store::Item_t& result, PlanState& planState) con
     spec.theIsSorted = indexSpec->getMethod() == ValueIndex::BTREE;
     spec.theIsTemp = indexSpec->getTemp();
     spec.theIsThreadSafe = true;
+    spec.theIECreators = indexSpec->getPatternCreatorPairs();
 
     index = GENV_STORE.createIndex(result->getStringValueP(), spec);
 
@@ -90,7 +91,7 @@ bool ValueIndexInsertSessionOpener::nextImpl(store::Item_t& result, PlanState& p
   ZORBA_ASSERT(status);
 
   {
-    const std::string& indexUri = result->getStringValueP()->str();
+    std::string& indexUri = result->getStringValueP()->str();
 
     store::Index* index = planState.dctx()->lookup_index(indexUri);
 

@@ -18,6 +18,7 @@
 
 #include "store/api/shared_types.h"
 #include "store/util/item_vector.h"
+#include "zorbatypes/xqpstring.h"
 
 namespace zorba 
 {
@@ -135,6 +136,34 @@ public:
   virtual bool probe(const IndexKey& key, Item_t& result) = 0;
 };
 
+/***************************************************************************//**
+  Class IndexKey represents an index key as a vector of item handles. 
+********************************************************************************/
+class IndexKey : public ItemVector
+{
+public:
+  IndexKey(ulong size = 0) : ItemVector(size) {}
+};
+
+/*****************************************************************************
+ Class IndexEntryCreator is used to compute (key, domain_expr) pairs for a
+ given node that has a certain relationship to the domain expression.
+ *****************************************************************************/
+class IndexEntryCreator : public SimpleRCObject
+{
+  public:
+    typedef std::pair<store::IndexKey, store::Item_t> IndexEntry;
+    virtual ~IndexEntryCreator() { }
+
+    /**
+     * Generate index entries for the given item.
+     */
+    virtual void appendIndexEntries(store::Item_t& item, std::vector<IndexEntry>& entries) = 0;
+};
+
+typedef rchandle<IndexEntryCreator> IndexEntryCreator_t;
+
+typedef std::pair<xqpStringStore_t, store::IndexEntryCreator_t> PatternIECreatorPair;
 
 /***************************************************************************//**
   Specification for creating a value index.
@@ -152,18 +181,21 @@ public:
   theIsSorted     : Whether the index is sorted by its key values or not.
   theIsTemp       : Whether the index is temporary or not.
   theIsThreadSafe : Whether the index can be shared among multiple threads or not
+  theIECreators   : A vector of pattern-creator pairs that the store can use to
+                    compute index entries.
 ********************************************************************************/
 class IndexSpecification
 {
 public:
-  std::vector<store::Item_t> theKeyTypes;
-  store::Item_t              theValueType;
-  std::vector<std::string>   theCollations;
-  long                       theTimezone;
-  bool                       theIsUnique;
-  bool                       theIsSorted;
-  bool                       theIsTemp;
-  bool                       theIsThreadSafe;
+  std::vector<store::Item_t>                theKeyTypes;
+  store::Item_t                             theValueType;
+  std::vector<std::string>                  theCollations;
+  long                                      theTimezone;
+  bool                                      theIsUnique;
+  bool                                      theIsSorted;
+  bool                                      theIsTemp;
+  bool                                      theIsThreadSafe;
+  std::vector<PatternIECreatorPair>         theIECreators;
 
 public:
   IndexSpecification(ulong numColumns)
@@ -185,19 +217,9 @@ public:
     theCollations.clear();
     theTimezone = 0;
     theIsUnique = theIsSorted = theIsTemp = theIsThreadSafe = false;
+    theIECreators.clear();
   }
 };
-
-
-/***************************************************************************//**
-  Class IndexKey represents an index key as a vector of item handles. 
-********************************************************************************/
-class IndexKey : public ItemVector
-{
-public:
-  IndexKey(ulong size = 0) : ItemVector(size) {}
-};
-
 
 /***************************************************************************//**
   Class IndexEntryReceiver is used to perform index bulk load. It allows an
@@ -237,8 +259,6 @@ public:
    */
   virtual void abort() = 0;
 };
-
-
 
 /***************************************************************************//**
 
