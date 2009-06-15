@@ -586,14 +586,50 @@ static void getSerializedChildren(store::Item_t node, xqpString& children_string
   }
 }
 
+static bool isHexDigit(char ch)
+{
+  return ('0' <= ch && ch <= '9') || ('a' <= ch && ch <= 'f') || ('A' <= ch && ch <= 'F');
+}
+
+static xqpString urlEncode(xqpString& string)
+{
+  static const char hex_char[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+  static const char reserved[] = { 0x21, 0x2A, 0x27, 0x28, 0x29, 0x3B, 0x3A, 0x40, 0x26, 0x3D, 
+                                   0x2B, 0x24, 0x2C, 0x2F, 0x3F, 0x25, 0x23, 0x5B, 0x5D };
+  static const int reserved_count = 19;
+  xqpString result("");
+
+  int chars = string.bytes();
+  for (int i=0; i<chars; i++)
+  {
+    char ch = string.c_str()[i];
+
+    bool is_reserved = false;
+    for (int j=0; j<reserved_count; j++)
+      if (ch == reserved[j])
+        is_reserved = true;
+
+    if (is_reserved)
+    {
+      result.append_in_place('%');
+      result.append_in_place(hex_char[ch >> 4]);
+      result.append_in_place(hex_char[ch & 0xF]);
+    }
+    else
+      result.append_in_place(ch);
+  }
+
+  return result;
+}
+
 static void processPayload(Item_t& payload_data, struct curl_httppost** first, struct curl_httppost** last)
 {
   store::Iterator_t it;
   store::Item_t child, name, filename, content_type;
 
+  // top node should be an element node
   if (payload_data->getNodeKind() != store::StoreConsts::elementNode)
   {
-    // top node should be element node
     ZORBA_ERROR(API0051_REST_ERROR_PAYLOAD);
     return; 
   }
@@ -648,7 +684,18 @@ static void processPayload(Item_t& payload_data, struct curl_httppost** first, s
     bool has_element_child;
     getSerializedChildren(payload_data, payload_string, has_element_child);
 
-    if (has_element_child)
+    if (content_type.getp() != NULL 
+      && 
+      xqpString("application/x-www-form-urlencoded") == content_type->getStringValue()->c_str())
+    {
+      payload_string = urlEncode(payload_string);
+      curl_formadd(first, last,
+                  CURLFORM_COPYNAME, name->getStringValue()->c_str(),
+                  CURLFORM_COPYCONTENTS, payload_string.c_str(),
+                  CURLFORM_CONTENTTYPE, content_type->getStringValue()->c_str(),
+                  CURLFORM_END);      
+    }
+    else if (has_element_child)
     {
       curl_formadd(first, last,
                   CURLFORM_COPYNAME, name->getStringValue()->c_str(),
@@ -670,7 +717,7 @@ static bool processSinglePayload(Item_t& payload_data, CURL* EasyHandle, curl_sl
 {
   store::Iterator_t it;
   store::Item_t child, name, filename, content_type;
-
+  
   if (payload_data->getNodeKind() != store::StoreConsts::elementNode)
     return false;
 
@@ -730,10 +777,16 @@ static bool processSinglePayload(Item_t& payload_data, CURL* EasyHandle, curl_sl
     xqpString payload_string;
     bool has_element_child;
     getSerializedChildren(payload_data, payload_string, has_element_child);
+    
+    // Handle the "application/x-www-form-urlencoded" content-type
+    if (content_type.getp() != NULL
+        && 
+        xqpString("application/x-www-form-urlencoded") == content_type->getStringValue()->c_str())
+      payload_string = urlEncode(payload_string);
+    
     buffer = std::auto_ptr<char>(new char[payload_string.bytes()]);
     memcpy(buffer.get(), payload_string.c_str(), payload_string.bytes());
 
-    // curl_easy_setopt(EasyHandle, CURLOPT_COPYPOSTFIELDS, payload_string.c_str());
     curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDSIZE , payload_string.bytes());
     curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDS, buffer.get());
     curl_easy_setopt(EasyHandle, CURLOPT_POST, 1);
