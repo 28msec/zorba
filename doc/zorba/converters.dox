@@ -13,6 +13,15 @@
         <li> \ref json_serialize
        </ul>
      </ul>
+     <li> \ref conv_json_ml
+     <ul>
+       <li> \ref json_ml_namespace
+       <li> \ref json_ml_signatures
+       <ul>
+        <li> \ref json_ml_parse
+        <li> \ref json_ml_serialize
+       </ul>
+     </ul>
     <li> \ref apendix_converters
    </ul>
  </ul>
@@ -21,7 +30,7 @@
 This document defines a general set of conversion functions.
 
 \section conv_json 2 JSON
-JSON (JavaScript Object Notation) is a lightweight data-interchange format. It is easy for humans to read and write. It is easy for machines to parse and generate. \n
+<a href="http://www.json.org/" target="_blank">JSON</a>  (JavaScript Object Notation) is a lightweight data-interchange format. It is easy for humans to read and write. It is easy for machines to parse and generate. \n
 JSON is a text format that is completely language independent but uses conventions that are familiar to programmers of the C-family of languages, including C, C++, C#, Java, JavaScript, Perl, Python, and many others. \n
 In order to parsing JSON into XQuery Zorba implements the following mapping between JSON and XML proposed by John Snelson in the following article: <a href="http://snelson.org.uk/archives/2008/02/parsing_json_in.php#more" target="_blank">Parsing JSON into XQuery</a> \n
 
@@ -82,7 +91,7 @@ to be included at the beginning of a query. For example
 \subsection json_parse 2.2.1 zorba-json:parse
 
 \code
-  declare function parse($text as xs:string*) as xs:element*
+  declare function zorba-json:parse($text as xs:string*) as xs:element*
 \endcode
 
 \subsection ex_json_parse Example:
@@ -90,7 +99,6 @@ to be included at the beginning of a query. For example
 
 \subsection res_json_parse Result:
 \code
-  <?xml version="1.0" encoding="UTF-8"?>
   <json type="object">
     <pair name="firstName" type="string">John</pair>
     <pair name="lastName" type="string">Smith</pair>
@@ -144,7 +152,7 @@ If the string that was passed is not a valid JSON string, an error is raised API
 \subsection json_serialize 2.2.2 zorba-json:serialize
 
 \code
-  declare function json:serialize($xml as xs:element*) as xs:string*
+  declare function zorba-json:serialize($xml as xs:element*) as xs:string*
 \endcode
 
 \subsection ex_json_serialize Example:
@@ -154,10 +162,160 @@ Error conditions:\n
 If the passed element does not have a valid JSON structure, an error is raised API0061 (see \ref apendix_converters).\n
 If the passed parameter is not an element, an error is raised API0062 (see \ref apendix_converters).\n
 
+\section conv_json_ml 3 JsonML
+<a href="http://jsonml.org" target="_blank">JsonML</a> (JSON Markup Language) is an application of the <a href="http://www.json.org/" target="_blank">JSON</a> (JavaScript Object Notation) format. \n
+The purpose of JsonML is to provide a compact format for transporting XML-based markup as JSON which allows it to be losslessly converted back to its original form.\n
+Native XML/XHTML doesn't sit well embedded in JavaScript. When XHTML is stored in script it must be properly encoded as an opaque string. JsonML allows easy manipulation of the markup in script before completely rehydrating back to the original form: <a href="http://www.ibm.com/developerworks/library/x-jsonml/#N10106" target="_blank">JsonML usage</a>\n
+
+In order to parsing JsonML into XQuery Zorba uses the following <a href="http://www.ibm.com/developerworks/library/x-jsonml/#N10138" target="_blank">JsonML markup</a> : \n
+
+<table width="100%" cellpadding="0" cellspacing="0" border="1">
+<tr><td><pre>
+element
+    = '[' tag-name ',' attributes ',' element-list ']'
+    | '[' tag-name ',' attributes ']'
+    | '[' tag-name ',' element-list ']'
+    | '[' tag-name ']'
+    | json-string
+    ;
+tag-name
+    = json-string
+    ;
+attributes
+    = '{' attribute-list '}'
+    | '{' '}'
+    ;
+attribute-list
+    = attribute ',' attribute-list
+    | attribute
+    ;
+attribute
+    = attribute-name ':' attribute-value
+    ;
+attribute-name
+    = json-string
+    ;
+attribute-value
+    = json-string
+    ;
+element-list
+    = element ',' element-list
+    | element
+    ;
+</pre></td></tr></table>
+
+More details about <a href="http://jsonml.org" target="_blank">JsonML</a> can be found in the following article: <a href="https://www.ibm.com/developerworks/library/x-jsonml/" target="_blank">Get to know JsonML</a>.
+
+\subsection json_ml_namespace 3.1 Namespace
+
+In order to use Zorba JsonML functions, the module <tt>"http://www.zorba-xquery.com/zorba/json-ml-functions"</tt> has
+to be included at the beginning of a query. For example
+
+\code
+  import module namespace zorba-json-ml = "http://www.zorba-xquery.com/zorba/json-ml-functions";
+\endcode
+
+\subsection json_ml_signatures 3.2 Function Signatures and Descriptions
+
+\subsection json_ml_parse 3.2.1 zorba-json-ml:parse
+
+\code
+  declare function zorba-json-ml:parse($text as xs:string*) as xs:element*
+\endcode
+
+\subsection ex_json_ml_parse Example:
+\include jsonml_parse1.xq
+
+\subsection res_json_ml_parse Result:
+\code
+<ul>
+  <li>true</li>
+  <li href="driving.html" title="Driving">Second item</li>
+  <li/>
+  <li>-1.4E+13</li>
+</ul>
+<table class="maintable">
+  <tr class="odd">
+    <th>Situation</th>
+    <th>Result</th>
+  </tr>
+  <tr class="even">
+    <td><a href="driving.html" title="Driving">Driving</a></td>
+    <td>Busy</td>
+  </tr>
+</table>
+\endcode
+
+
+Error conditions:\n
+If the string that was passed is not a valid JsonML string, an error is raised API0063 (see \ref apendix_converters).\n
+
+\subsection json_ml_serialize 3.2.2 zorba-json-ml:serialize
+
+\code
+  declare function zorba-json-ml:serialize($xml as xs:element*) as xs:string*
+\endcode
+
+\subsection ex_json_ml_serialize Example:
+\include jsonml_serialize1.xq
+
+\subsection res_json_ml_parse Result:
+\code
+["ul",
+  ["li", "true"],
+  ["li",{"href":"driving.html"}, {"title":"Driving"}, "Second item"],
+  ["li"],
+  ["li", "-1.4E+13"]
+]
+["table", {"class":"maintable"},
+  ["tr", {"class":"odd"},
+    ["th", "Situation"],
+    ["th", "Result"]
+  ],
+  ["tr", {"class":"even"},
+    ["td", ["a", {"href":"driving.html"}, {"title":"Driving"}, "Driving"]],
+    ["td", "Busy"]
+  ]
+]
+\endcode
+
+Error conditions:\n
+If the passed element does not have a valid JsonML structure, an error is raised API0064 (see \ref apendix_converters).\n
+If the passed parameter is not an element, an error is raised API0065 (see \ref apendix_converters).\n
+
+\subsection json_ml_note Note:
+Calling <b>zorba-json-ml:serialize(zorba-json-ml:parse($some_string))</b> will not always produce <b>$some_string</b>. \n
+This is caused by the fact that <b>jsonml:serialize</b> does dot know the exact type of the JSON value (true, false, null, numbers) and treats them all as strings. \n
+Here are some possible cases where this can happen:
+
+\code
+  import module namespace jsonml = "http://www.zorba-xquery.com/zorba/json-ml-functions";
+
+  jsonml:serialize(jsonml:parse(('[ "ul",
+                  [ "li", true],
+                  [ "li", null],
+                  [ "li", -14e12]
+                  ]')))
+\endcode
+
+will output the following result:
+
+\code
+["ul",
+  ["li", "true"],
+  ["li"],
+  ["li", "-1.4E+13"]
+]
+\endcode
+
+
 \section apendix_converters Appendix A:  Error codes
 
   API0060 - API0060_CONV_JSON_PARSE - is returned if the string could not be parsed.\n
   API0061 - API0061_CONV_JSON_SERIALIZE - is returned if the element could not be serialized.\n
   API0062 - API0062_CONV_JSON_PARAM - is returned is the passed param is not an element.\n
+  API0063 - API0063_CONV_JSON_ML_PARSE - is returned if the string could not be parsed.\n
+  API0064 - API0064_CONV_JSON_ML_SERIALIZE - is returned if the element could not be serialized.\n
+  API0065 - API0065_CONV_JSON_ML_PARAM - is returned is the passed param is not an element.\n
 
 */

@@ -697,6 +697,15 @@ DECL(sctx, zorba_encode_base64,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.STRING_TYPE_STAR));
 
+  DECL(sctx, zorba_json_ml_parse,
+       (createQName(ZORBA_JSON_ML_FN_NS, "fn-zorba-json-ml", "parse"),
+        GENV_TYPESYSTEM.STRING_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+
+  DECL(sctx, zorba_json_ml_serialize,
+       (createQName(ZORBA_JSON_ML_FN_NS, "fn-zorba-json-ml", "serialize"),
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+        GENV_TYPESYSTEM.STRING_TYPE_STAR));
 #ifdef ZORBA_WITH_EMAIL
   DECL(sctx, zorba_mail,
        (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "mail"),

@@ -20,24 +20,43 @@
 #include "runtime/base/narybase.h"
 
 namespace zorba {
-
-  class FnJSONParseIteratorState : public PlanIteratorState {
+  //Json
+  class FnJsonParseIteratorState : public PlanIteratorState {
     public:
       xqp_integer theCurrentPos; // the current position in the sequence
 
       void init(PlanState&);
       void reset(PlanState&);
   };
-  NARY_ITER_STATE (ZorbaJSONParseIterator, FnJSONParseIteratorState);
+  NARY_ITER_STATE (ZorbaJsonParseIterator, FnJsonParseIteratorState);
 
-  class FnJSONSerializeIteratorState : public PlanIteratorState {
+  class FnJsonSerializeIteratorState : public PlanIteratorState {
     public:
       xqp_integer theCurrentPos; // the current position in the sequence
 
       void init(PlanState&);
       void reset(PlanState&);
   };
-  NARY_ITER_STATE (ZorbaJSONSerializeIterator, FnJSONSerializeIteratorState);
+  NARY_ITER_STATE (ZorbaJsonSerializeIterator, FnJsonSerializeIteratorState);
+
+  //JsonML
+  class FnJsonMLParseIteratorState : public PlanIteratorState {
+    public:
+      xqp_integer theCurrentPos; // the current position in the sequence
+
+      void init(PlanState&);
+      void reset(PlanState&);
+  };
+  NARY_ITER_STATE (ZorbaJsonMLParseIterator, FnJsonMLParseIteratorState);
+
+  class FnJsonMLSerializeIteratorState : public PlanIteratorState {
+    public:
+      xqp_integer theCurrentPos; // the current position in the sequence
+
+      void init(PlanState&);
+      void reset(PlanState&);
+  };
+  NARY_ITER_STATE (ZorbaJsonMLSerializeIterator, FnJsonMLSerializeIteratorState);
 }/*namespace zorba*/
 
 #endif /* ZORBA_RUNTIME_CONVERTORS_IMPL_H */

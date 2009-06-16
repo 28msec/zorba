@@ -22,6 +22,7 @@
 
 namespace zorba {
 
+  //Json
   class zorba_json_parse : public function
   {
     public:
@@ -36,6 +37,27 @@ namespace zorba {
   {
     public:
       zorba_json_serialize(const signature& sig): function(sig){}
+
+      PlanIter_t codegen (const QueryLoc& loc,
+                          std::vector<PlanIter_t>& argv,
+                          AnnotationHolder &ann) const;
+  };
+
+  //Json ML
+  class zorba_json_ml_parse : public function
+  {
+    public:
+      zorba_json_ml_parse(const signature& sig): function(sig){}
+
+      PlanIter_t codegen (const QueryLoc& loc,
+                          std::vector<PlanIter_t>& argv,
+                          AnnotationHolder &ann) const;
+  };
+
+  class zorba_json_ml_serialize : public function
+  {
+    public:
+      zorba_json_ml_serialize(const signature& sig): function(sig){}
 
       PlanIter_t codegen (const QueryLoc& loc,
                           std::vector<PlanIter_t>& argv,

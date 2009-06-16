@@ -282,8 +282,10 @@ namespace zorba
 #ifdef ZORBA_WITH_FOP
   class ZorbaFopIterator;
 #endif
-  class ZorbaJSONParseIterator;
-  class ZorbaJSONSerializeIterator;
+  class ZorbaJsonParseIterator;
+  class ZorbaJsonSerializeIterator;
+  class ZorbaJsonMLParseIterator;
+  class ZorbaJsonMLSerializeIterator;
 
   namespace flwor
   {
@@ -894,8 +896,10 @@ public:
 #ifdef ZORBA_WITH_FOP
 	PLAN_ITER_VISITOR(ZorbaFopIterator);
 #endif // ZORBA_WITH_FOP
-    PLAN_ITER_VISITOR(ZorbaJSONParseIterator);
-    PLAN_ITER_VISITOR(ZorbaJSONSerializeIterator);
+    PLAN_ITER_VISITOR(ZorbaJsonParseIterator);
+    PLAN_ITER_VISITOR(ZorbaJsonSerializeIterator);
+    PLAN_ITER_VISITOR(ZorbaJsonMLParseIterator);
+    PLAN_ITER_VISITOR(ZorbaJsonMLSerializeIterator);
 
 #ifdef ZORBA_DEBUGGER
     PLAN_ITER_VISITOR ( FnDebugIterator );  

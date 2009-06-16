@@ -24,6 +24,7 @@
 
 namespace zorba {
 
+  //Json parse and serialize: http://www.json.org/
   bool JSON_parse(const char* aJSON_string,
                   const unsigned int aLength,
                   store::Item_t& element,
@@ -33,6 +34,18 @@ namespace zorba {
   bool JSON_serialize(const store::Item* element,
                       xqpStringStore_t& json_string,
                       xqpStringStore_t& error_log);
+
+
+  //Json ML parse and serialize: http://jsonml.org/
+  bool JSON_ML_parse( const char* aJSON_string,
+                      const unsigned int aLength,
+                      store::Item_t& element,
+                      xqpStringStore_t baseUri,
+                      xqp_string& error_log);
+
+  bool JSON_ML_serialize( const store::Item* element,
+                          xqpStringStore_t& json_string,
+                          xqpStringStore_t& error_log);
 
 }/*namespace zorba*/
 

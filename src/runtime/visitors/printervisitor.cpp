@@ -1430,8 +1430,11 @@ void endVisitFlworReturn(const PlanIterator& /*a*/)
   PRINTER_VISITOR_DEFINITION(HoistIterator);
   PRINTER_VISITOR_DEFINITION(UnhoistIterator);
 
-  PRINTER_VISITOR_DEFINITION(ZorbaJSONParseIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaJSONSerializeIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaJsonParseIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaJsonSerializeIterator);
+
+  PRINTER_VISITOR_DEFINITION(ZorbaJsonMLParseIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaJsonMLSerializeIterator);
 };
 
 void print_iter_plan (IterPrinter& aPrinter, PlanIterator* aIter) {

@@ -25,15 +25,43 @@
 namespace zorba {
   json::value* getValue(const char* aJSON, const unsigned int aLen);
 
-  bool create_Node_Helper(store::Item_t parent, xqpStringStore_t baseUri, xqpStringStore_t name, store::Item_t* result = NULL);
-  bool create_Attribute_Helper(store::Item_t parent, xqpStringStore_t name, xqpStringStore_t value, store::Item_t* result = NULL);
-  bool create_Pair_Helper(store::Item_t parent, xqpStringStore_t baseUri, store::Item_t* result,
-                          xqpStringStore_t name, xqpStringStore_t type, xqpStringStore_t value = NULL);
-  void parse_value(json::value** value, store::Item_t parent, xqpStringStore_t baseUri, store::Item_t* result);
+  bool create_Node_Helper(store::Item_t parent,
+                          xqpStringStore_t baseUri,
+                          xqpStringStore_t name,
+                          store::Item_t* result = NULL);
 
-  bool parse_element(const store::Item* element, xqpStringStore_t& json_string, xqpStringStore_t& error_log);
-  bool parse_child(const store::Item* element, xqpStringStore_t& json_string, xqpStringStore_t& error_log);
-  void get_value(const store::Item* element, xqpStringStore_t& value);
+  bool create_Attribute_Helper( store::Item_t parent,
+                                xqpStringStore_t name,
+                                xqpStringStore_t value,
+                                store::Item_t* result = NULL);
+
+  bool create_Pair_Helper(store::Item_t parent,
+                          xqpStringStore_t baseUri,
+                          store::Item_t* result,
+                          xqpStringStore_t name,
+                          xqpStringStore_t type,
+                          xqpStringStore_t value = NULL);
+
+  void parse_Json_value(json::value** value,
+                        store::Item_t parent,
+                        xqpStringStore_t baseUri,
+                        store::Item_t* result);
+
+  void parse_Json_ML_value( json::value** value,
+                            store::Item_t parent,
+                            xqpStringStore_t baseUri,
+                            store::Item_t* result);
+
+  bool parse_element( const store::Item* element,
+                      xqpStringStore_t& json_string,
+                      xqpStringStore_t& error_log);
+
+  bool parse_child( const store::Item* element,
+                    xqpStringStore_t& json_string,
+                    xqpStringStore_t& error_log);
+
+  bool get_value( const store::Item* element,
+                  xqpStringStore_t& value);
 
   bool JSON_parse(const char* aJSON_string, const unsigned int aLength,
                   store::Item_t& element, xqpStringStore_t baseUri,
@@ -51,81 +79,23 @@ namespace zorba {
       for ( vectIter=vect->begin(); vectIter != vect->end(); ++vectIter )
       {
         store::Item_t new_node = NULL;
-        parse_value(&*vectIter, element, baseUri, &new_node);
+        parse_Json_value(&*vectIter, element, baseUri, &new_node);
       }
     }
 
     return true;
   }
 
-  void parse_value(json::value** value, store::Item_t parent, xqpStringStore_t baseUri, store::Item_t* result)
-  {
-    json::vector_list_t::iterator vectIter;
-    json::vector_list_t *vect;
-
-    json::array_list_t::iterator arrtIter;
-    json::array_list_t *arr;
-
-    int size;
-    xqpStringStore_t name, type, val;
-    store::Item_t itemObj, itemArr;
-
-    if(value!=0)
-    {
-      name = xqpString((*value)->getname().c_str()).getStore();
-      switch((*value)->getdatatype()){
-        case json::datatype::_array:
-          create_Pair_Helper(parent, baseUri, result, name, new xqpStringStore("array"), NULL);
-          arr = (*value)->getarraylist();
-          size = arr->size();
-          if(arr != 0)
-            for ( arrtIter=arr->begin(); arrtIter != arr->end(); ++arrtIter )
-              parse_value(&*arrtIter, *result, baseUri, &itemArr);
-          break;
-        case json::datatype::_object:
-          create_Pair_Helper(parent, baseUri, result, name, new xqpStringStore("object"), NULL);
-          vect = (*value)->getchildrenlist();
-          if(vect != 0)
-            for ( vectIter=vect->begin(); vectIter != vect->end(); ++vectIter )
-              parse_value(&*vectIter, *result, baseUri, &itemObj);
-          break;
-        default:
-          val = xqpString((*((*value)->getstring())).c_str()).getStore();
-          if ((*value)->getdatatype() == json::datatype::_string)
-            type = new xqpStringStore("string");
-          else if ((*value)->getdatatype() == json::datatype::_literal)
-          {
-            if(val->byteCompare("null")==0)
-            {
-              val = NULL;
-              type = new xqpStringStore("null");
-            }
-            else
-              type = new xqpStringStore("boolean");
-          }
-          else if (((*value)->getdatatype() == json::datatype::_number) ||
-                      ((*value)->getdatatype() == json::datatype::_fixed_number))
-            type = new xqpStringStore("number");
-
-          create_Pair_Helper(parent, baseUri, result, name, type, val);
-          break;
-      }
-    }
-  }
-
   bool JSON_serialize(const store::Item* element, xqpStringStore_t& json_string, xqpStringStore_t& error_log)
   {
     json_string = new xqpStringStore("");
     bool result = true;
-    
+
     if (element == NULL)
     {
       error_log = new xqpStringStore("Passed a NULL element to the JSON serializer.");
       return false;
     }
-
-    store::Iterator_t childrenIt;
-    store::Item_t     child;
 
     xqpStringStore_t name = element->getNodeName()->getStringValue();
 
@@ -245,6 +215,109 @@ namespace zorba {
     return lValue;
   }
 
+  void parse_Json_value(json::value** value, store::Item_t parent, xqpStringStore_t baseUri, store::Item_t* result)
+  {
+    json::vector_list_t::iterator vectIter;
+    json::vector_list_t *vect;
+
+    json::array_list_t::iterator arrtIter;
+    json::array_list_t *arr;
+
+    int size;
+    xqpStringStore_t name, type, val;
+    store::Item_t itemObj, itemArr;
+
+    if(value!=0)
+    {
+      name = xqpString((*value)->getname().c_str()).getStore();
+      switch((*value)->getdatatype()){
+        case json::datatype::_array:
+          create_Pair_Helper(parent, baseUri, result, name, new xqpStringStore("array"), NULL);
+          arr = (*value)->getarraylist();
+          size = arr->size();
+          if(arr != 0)
+            for ( arrtIter=arr->begin(); arrtIter != arr->end(); ++arrtIter )
+              parse_Json_value(&*arrtIter, *result, baseUri, &itemArr);
+          break;
+        case json::datatype::_object:
+          create_Pair_Helper(parent, baseUri, result, name, new xqpStringStore("object"), NULL);
+          vect = (*value)->getchildrenlist();
+          if(vect != 0)
+            for ( vectIter=vect->begin(); vectIter != vect->end(); ++vectIter )
+              parse_Json_value(&*vectIter, *result, baseUri, &itemObj);
+          break;
+        default:
+          val = xqpString((*((*value)->getstring())).c_str()).getStore();
+          if ((*value)->getdatatype() == json::datatype::_string)
+            type = new xqpStringStore("string");
+          else if ((*value)->getdatatype() == json::datatype::_literal)
+          {
+            if(val->byteCompare("null")==0)
+            {
+              val = NULL;
+              type = new xqpStringStore("null");
+            }
+            else
+              type = new xqpStringStore("boolean");
+          }
+          else if (((*value)->getdatatype() == json::datatype::_number) ||
+                      ((*value)->getdatatype() == json::datatype::_fixed_number))
+            type = new xqpStringStore("number");
+
+          create_Pair_Helper(parent, baseUri, result, name, type, val);
+          break;
+      }
+    }
+  }
+
+  void parse_Json_ML_value(json::value** value, store::Item_t parent, xqpStringStore_t baseUri, store::Item_t* result)
+  {
+    json::vector_list_t::iterator vectIter;
+    json::vector_list_t *vect;
+
+    json::array_list_t::iterator arrIter;
+    json::array_list_t *arr;
+
+    xqpStringStore_t name, text;
+    store::Item_t itemObj, text_value;
+
+    if(value != 0)
+    {
+      switch((*value)->getdatatype())
+      {
+        case json::datatype::_array:
+          arr = (*value)->getarraylist();
+          arrIter = arr->begin();
+          if((*arrIter)->getdatatype() == json::datatype::_string)
+          {
+            name = xqpString((*((*arrIter)->getstring())).c_str()).getStore();
+            create_Node_Helper(parent, baseUri, name, result);
+            ++arrIter;
+
+            for ( ; arrIter != arr->end(); ++arrIter )
+              parse_Json_ML_value(&*arrIter, *result, baseUri, &itemObj);
+          }
+          break;
+        case json::datatype::_object:
+          vect = (*value)->getchildrenlist();
+          if(vect != 0)
+          {
+            for ( vectIter=vect->begin(); vectIter != vect->end(); ++vectIter )
+            {
+              name = xqpString((*vectIter)->getname().c_str()).getStore();
+              text = xqpString((*((*vectIter)->getstring())).c_str()).getStore();
+              create_Attribute_Helper(parent, name, text, NULL);
+            }
+          }
+          break;
+        default:
+          text = xqpString((*((*value)->getstring())).c_str()).getStore();
+          if(text->byteCompare("null") != 0)
+            GENV_ITEMFACTORY->createTextNode(text_value, parent, -1, text);
+          break;
+      }
+    }
+  }
 
   bool parse_element(const store::Item* element, xqpStringStore_t& json_string, xqpStringStore_t& error_log)
   {
@@ -324,19 +397,24 @@ namespace zorba {
     return result;
   }
 
-  void get_value(const store::Item* element, xqpStringStore_t& value)
+  bool get_value(const store::Item* element, xqpStringStore_t& value)
   {
     store::Iterator_t childrenIt;
     store::Item_t     child;
+    bool              res = false;
 
     childrenIt = element->getChildren();
     childrenIt->open();
     while (childrenIt->next(child))
     {
       if (child->getNodeKind() == store::StoreConsts::textNode)
+      {
         value = child->getStringValue();
+        res = true;
+      }
     }
     childrenIt->close();
+    return res;
   }
 
   bool parse_child(const store::Item* element, xqpStringStore_t& json_string, xqpStringStore_t& error_log)
@@ -356,6 +434,121 @@ namespace zorba {
       first = false;
     }
     childrenIt->close();
+    return result;
+  }
+
+  bool parse_Json_ML_child(const store::Item* element, xqpStringStore_t& json_string, xqpStringStore_t& error_log)
+  {
+    bool result = true;
+    store::Iterator_t childrenIt, attrIt;
+    store::Item_t     child, attr;
+    xqpStringStore_t  name, value;
+
+    childrenIt = element->getChildren();
+    childrenIt->open();
+
+    json_string->append_in_place('[');
+    name = element->getNodeName()->getStringValue();
+    json_string->append_in_place('"');
+    json_string->append_in_place(name->c_str());
+    json_string->append_in_place("\"");
+
+    attrIt = element->getAttributes();
+    attrIt->open();
+    while (attrIt->next(attr))
+    {
+      if (attr->getNodeKind() == store::StoreConsts::attributeNode)
+      {
+        name = attr->getNodeName()->getStringValue();
+        value = attr->getStringValue();
+
+        json_string->append_in_place(", {\"");
+        json_string->append_in_place(name->c_str());
+        json_string->append_in_place("\":\"");
+        json_string->append_in_place(value->c_str());
+        json_string->append_in_place("\"}");
+      }
+    }
+    attrIt->close();
+
+    while (childrenIt->next(child) && result)
+    {
+      
+
+      if (child->getNodeKind() == store::StoreConsts::elementNode)
+      {
+        json_string->append_in_place(", ");
+        result = parse_Json_ML_child(&*child, json_string, error_log);
+      }
+    }
+    childrenIt->close();
+
+    if(get_value(element, value))
+    {
+      json_string->append_in_place(", \"");
+      json_string->append_in_place(value->c_str());
+      json_string->append_in_place("\"");
+    }
+
+    json_string->append_in_place(']');
+
+    return result;
+  }
+
+  bool JSON_ML_parse(const char* aJSON_string, const unsigned int aLength,
+                     store::Item_t& element, xqpStringStore_t baseUri,
+                     xqp_string& error_log)
+  {
+    std::auto_ptr<json::value> lValue(getValue(aJSON_string, aLength));
+
+    xqpStringStore_t name;
+
+    json::array_list_t::iterator arrIter;
+    json::array_list_t *arr = lValue->getarraylist();
+    if(arr != 0)
+    {
+      arrIter = arr->begin();
+      if((*arrIter)->getdatatype() == json::datatype::_string)
+      {
+        name = xqpString((*((*arrIter)->getstring())).c_str()).getStore();
+        create_Node_Helper(NULL, baseUri, name, &element);
+
+        ++arrIter;
+
+        for ( ; arrIter != arr->end(); ++arrIter )
+        {
+          store::Item_t new_node = NULL;
+          parse_Json_ML_value(&*arrIter, element, baseUri, &new_node);
+        }
+      }
+    }
+
+    return true;
+  }
+
+  bool JSON_ML_serialize(const store::Item* element,
+                         xqpStringStore_t& json_string,
+                         xqpStringStore_t& error_log)
+  {
+    json_string = new xqpStringStore("");
+    bool result = true;
+
+    if (element == NULL)
+    {
+      error_log = new xqpStringStore("Passed a NULL element to the Json ML serializer.");
+      return false;
+    }
+
+    xqpStringStore_t name = element->getNodeName()->getStringValue();
+
+    if( name->byteCompare("json") == 0 )
+    {
+      error_log = new xqpStringStore("This is not a Json ML element.");
+      return false;
+    }
+
+    result = parse_Json_ML_child(element, json_string, error_log);
+
     return result;
   }
 } /*namespace Zorba */

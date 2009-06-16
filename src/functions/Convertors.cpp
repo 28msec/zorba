@@ -18,18 +18,30 @@
 #include "runtime/convertors/ConvertorsImpl.h"
 
 namespace zorba {
-
+//Json
 PlanIter_t
 zorba_json_parse::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new ZorbaJSONParseIterator(loc, argv);
+  return new ZorbaJsonParseIterator(loc, argv);
 }
 
 PlanIter_t
 zorba_json_serialize::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new ZorbaJSONSerializeIterator(loc, argv);
+  return new ZorbaJsonSerializeIterator(loc, argv);
 }
 
+//Json ML
+PlanIter_t
+zorba_json_ml_parse::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new ZorbaJsonMLParseIterator(loc, argv);
+}
+
+PlanIter_t
+zorba_json_ml_serialize::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new ZorbaJsonMLSerializeIterator(loc, argv);
+}
 }
 /* vim:set ts=2 sw=2: */
