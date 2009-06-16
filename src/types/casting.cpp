@@ -1391,6 +1391,10 @@ void castToUserDefinedType(
 {
   ErrorInfo lErrorInfo = {aSourceType, aTargetType};
 
+
+  //std::cout << "-castToUserDefinedType: " << aItem.getp()->getStringValue()->c_str() << " srcType: " << aSourceType->get_qname()->getLocalName()->c_str() << " @ " << aSourceType->get_qname()->getNamespace()->c_str() << "\n";
+  //std::cout << "\t\t           tgtType: " << aTargetType->get_qname()->getLocalName()->c_str() << " @ " << aTargetType->get_qname()->getNamespace()->c_str() << "\n";
+
   const TypeManager* lTypeManager = aTargetType->get_manager(); 
 
   if (aSourceType->type_kind() != XQType::ATOMIC_TYPE_KIND ||
@@ -1434,6 +1438,8 @@ bool GenericCast::castToSimple(
 {
   const TypeManager* lTypeManager = aTargetType->get_manager(); 
 
+  //std::cout << "-castToSimple: " << aStr.c_str() << " tgtType: " << aTargetType->get_qname()->getLocalName()->c_str() << " @ " << aTargetType->get_qname()->getNamespace()->c_str() << "\n";
+
   return lTypeManager->getSchema()->
          parseUserSimpleTypes(aStr, aTargetType, aResultList);
 }
@@ -1458,6 +1464,9 @@ bool GenericCast::castToAtomic(
                                                TypeConstants::QUANT_ONE);
 
   ZORBA_ASSERT(lSourceType != NULL);
+
+  //std::cout << "-castToAtomic: " << aItem.getp()->getStringValue()->c_str() << " srcType: " << lSourceType->get_qname()->getLocalName()->c_str() << " @ " << lSourceType->get_qname()->getNamespace()->c_str() << "\n";
+  //std::cout << "\t\t  tgtType: " << aTargetType->get_qname()->getLocalName()->c_str() << " @ " << aTargetType->get_qname()->getNamespace()->c_str() << "\n";
 
 #ifndef ZORBA_NO_XMLSCHEMA
   if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND) 

@@ -1,3 +1,6 @@
+
+#include "zorbatypes/xqpstring.h"
+
 /*
 * Copyright 2006-2008 The FLWOR Foundation.
 *
@@ -212,6 +215,18 @@ bool ValidateIterator::effectiveValidationValue (
     else
     {
       schemaValidator.startDoc();
+
+      // ask for the type of the root element to populate the cache with anonymous types
+      store::Iterator_t children = sourceNode->getChildren();
+      store::Item_t child;
+      while ( children->next(child) )
+      {
+        if ( child->isNode() && child->getNodeKind()==store::StoreConsts::elementNode )
+        {
+           typeManager->getSchema()->createXQTypeFromElementName(typeManager, child->getNodeName(), false);
+           break;
+        }
+      }
     }
     
     xqpStringStore_t docBaseUri = sourceNode->getBaseURI();
@@ -255,8 +270,11 @@ bool ValidateIterator::effectiveValidationValue (
     {
       //cout << "Validate element" << "\n"; cout.flush();        
       schemaValidator.startDoc();                    
+
+      // ask for the type of the root element to populate the cache with anonymous types
+      typeManager->getSchema()->createXQTypeFromElementName(typeManager, sourceNode->getNodeName(), false);
     }
-    
+
     store::Item_t newElem = processElement(sctx,
                                            typeManager,
                                            schemaValidator,
@@ -426,7 +444,6 @@ void ValidateIterator::processChildren(
 {
   store::Item_t child;
 
-  store::Item_t typeName;
   int childIndex = 0;
         
   while ( children->next(child) )
@@ -451,7 +468,6 @@ void ValidateIterator::processChildren(
                     
       case store::StoreConsts::textNode:
       {
-        //cout << "     - text: " << child->getStringValue() << "\n"; cout.flush();
         xqpStringStore_t childStringValue = child->getStringValue();
         schemaValidator.text(childStringValue);
 
@@ -460,8 +476,17 @@ void ValidateIterator::processChildren(
         store::Item_t validatedTextNode;
                         
         TypeIdentifier_t typeIdentifier = TypeIdentifier::createNamedType(typeQName->getNamespace(), typeQName->getLocalName() );
+        //xqType is NULL, create_type can't find it
         xqtref_t xqType = typeManager->create_type(*typeIdentifier);
-                        
+
+        /*if ( typeQName.getp() && xqType.getp() )
+        {
+          cout << "     - text: " << childStringValue << "  T: " << typeQName->getLocalName()->c_str() << "\n"; cout.flush();
+          cout << "        xqT: " << xqType->toString() << "  content_kind: " << xqType->content_kind() << " tKind:" << xqType->type_kind() << " \n"; cout.flush();
+        }
+        else
+          cout << "     - text2: " << childStringValue << "  tQN: " << typeQName.getp() << " xqT:" << xqType.getp() << "\n"; cout.flush();
+        */
         if ( xqType!=NULL && xqType->content_kind()==XQType::SIMPLE_CONTENT_KIND )
         {
           store::NsBindings nsBindings;

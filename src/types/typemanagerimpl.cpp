@@ -578,7 +578,7 @@ xqtref_t TypeManagerImpl::create_schema_element_type(
     const store::Item* elemName,
     TypeConstants::quantifier_t quant) const
 {
-  xqtref_t contentType = m_schema->createXQTypeFromElementName(this, elemName);
+  xqtref_t contentType = m_schema->createXQTypeFromElementName(this, elemName, true);
 
   return create_node_type(store::StoreConsts::elementNode,
                           elemName,
@@ -609,7 +609,7 @@ xqtref_t TypeManagerImpl::create_schema_attribute_type(
     const store::Item* attrName,
     TypeConstants::quantifier_t quant) const
 {
-  xqtref_t contentType = m_schema->createXQTypeFromElementName(this, attrName);
+  xqtref_t contentType = m_schema->createXQTypeFromElementName(this, attrName, true);
 
   return create_node_type(store::StoreConsts::attributeNode,
                           attrName,

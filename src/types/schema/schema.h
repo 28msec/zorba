@@ -108,7 +108,8 @@ public:
 
   xqtref_t createXQTypeFromElementName(
         const TypeManager* typeManager,
-        const store::Item* qname);
+        const store::Item* qname,
+        const bool riseErrors);
 
   xqtref_t createXQTypeFromAttributeName(
         const TypeManager* typeManager,
@@ -178,6 +179,9 @@ private:
         const TypeManager* typeManager,
         XSTypeDefinition* xsTypeDef);
 
+  void checkForAnonymousTypesInType(const TypeManager* typeManager, XSTypeDefinition* typeDef);
+  void checkForAnonymousTypesInParticle(const TypeManager* typeManager, XSParticle *xsParticle);
+  void addAnonymousTypeToCache(const TypeManager* typeManager, XSTypeDefinition* typeDef);
   void addTypeToCache(xqtref_t itemXQType);
 
 #endif
