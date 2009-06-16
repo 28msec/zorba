@@ -107,31 +107,19 @@ uint32_t symbol_table::size() const
 	return (uint32_t)heap.size();
 }
 
-static void normalize_eol (const char *text, uint32_t length, string *out) {
+// bool attribute == true when an attribute value is normalized
+static void normalize_eol(const char *text, uint32_t length, string *out, bool attribute = false) {
   uint32_t i;
   out->reserve (length + 1);
   char lastCh = '\0';
   for (i = 0; i < length; i++) {
     char ch = text [i];
     if (ch == '\r')
-      *out += '\n';
+      *out += attribute ? ' ' : '\n';
     else if (ch != '\n' || lastCh != '\r')
-      *out += ch;
+      *out += (attribute && (ch == '\t' || ch == '\n'))? ' ' : ch;
+    
     lastCh = ch;
-  }
-}
-
-static void normalize_attribute(const char *text, uint32_t length, string *out)
-{
-  uint32_t i;
-  out->reserve (length + 1);
-  for (i = 0; i < length; i++)
-  {
-    char ch = text[i];
-    if (ch == 0x0D || ch == 0x0A || ch == 0x09)
-      *out += ' ';
-    else 
-      *out += ch;
   }
 }
 
@@ -140,18 +128,13 @@ off_t symbol_table::put(char const* text)
   return put(text, strlen(text));
 }
 
+// normalizationType == 2 is used for normalizing attribute values
 off_t symbol_table::put(char const* text, uint32_t length, int normalizationType)
 {
   string normStr;
-  if (normalizationType == 1)
+  if (normalizationType == 1 || normalizationType == 2)
   {
-    normalize_eol (text, length, &normStr);
-    text = normStr.c_str ();
-    length = normStr.size ();
-  }
-  else if (normalizationType == 2)
-  {
-    normalize_attribute(text, length, &normStr);
+    normalize_eol (text, length, &normStr, normalizationType == 2);
     text = normStr.c_str ();
     length = normStr.size ();
   }
