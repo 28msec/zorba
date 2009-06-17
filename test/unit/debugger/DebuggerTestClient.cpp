@@ -62,6 +62,7 @@ namespace zorba {
 			std::cerr << "Couldn't start the server thread" << std::endl;
 			return;
 		}
+    sleep(1);
 		m_client = ZorbaDebuggerClient::createClient(8000, 9000);
 		m_handler = new DebuggerTestHandler(m_zorbaInstance, m_client, filename);
 		m_client->registerEventHandler(m_handler);

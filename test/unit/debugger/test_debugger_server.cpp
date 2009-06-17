@@ -10,10 +10,8 @@
 
 namespace zorba {
 	int test_run() {
-		sleep(8);
 		std::cout << "Run Test" << std::endl;
 		DebuggerTestClient client("test.xq", "<a>Hello World</a>");
-		sleep(8);
 		client.run();
 		DebuggerTestHandler::DebugEvent evt = client.getNextEvent();
 		/*if (evt != DebuggerTestHandler::TERMINATED) {
