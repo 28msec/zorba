@@ -89,6 +89,8 @@ class ZorbaDebugger
 
     XQueryImpl* theQuery;
 
+    PlanWrapper_t theWrapper;
+
     std::ostream* theOutputStream;
     
     const Zorba_SerializerOptions_t* theSerOptions;

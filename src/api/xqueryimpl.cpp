@@ -412,6 +412,28 @@ XQueryImpl::parse(std::istream& aQuery)
   ZORBA_CATCH
 }
 
+//void
+//XQueryImpl::xqdoc(std::istream& aQuery)
+//{
+//  ZORBA_TRY
+//    if ( ! theStaticContext ) {
+//      // no context given => use the default one (i.e. a child of the root static context)
+//      theStaticContext = GENV.getRootStaticContext().create_child_context();
+//    } else {
+//      // otherwise create a child and we have ownership over that one
+//      theStaticContext = theStaticContext->create_child_context();
+//    }
+//    RCHelper::addReference (theStaticContext);
+//
+//    theStaticContext->set_entity_retrieval_url(xqp_string (&*URI::encode_file_URI (theFileName)));
+//
+//    theCompilerCB->m_sctx = theStaticContext;
+//
+////  XQueryCompiler lCompiler(theCompilerCB);
+////  lCompiler.xqdoc(aQuery, theFileName);
+//  ZORBA_CATCH
+//}
+
 
 /**
  * various ways to compile a query
@@ -563,89 +585,100 @@ XQueryImpl::doCompile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints,
 void
 XQueryImpl::serialize(std::ostream& os, const Zorba_SerializerOptions_t* opt)
 {
-  ZORBA_TRY
-    checkNotClosed();
-    checkCompiled();
+  checkNotClosed();
+  checkCompiled();
 
-    PlanWrapper_t lPlan = generateWrapper();
+  PlanWrapper_t lPlan = generateWrapper();
+  
+  SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+  try {
+    lPlan->open();
+    serialize(os, lPlan, opt);
+  }
+  catch (...) {
+    lPlan->close();
+    throw;
+  }
+
+  theDocLoadingUserTime = lPlan->getRuntimeCB ()->docLoadingUserTime;
+  theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
+
+  lPlan->close();
+}
+
+void
+XQueryImpl::serialize(std::ostream& os, PlanWrapper_t& aWrapper, const Zorba_SerializerOptions_t* opt)
+{
+  ZORBA_TRY
     serializer lSerializer(theErrorManager);
     if (opt != NULL)
       setSerializationParameters(&lSerializer, opt);
     
-    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
-
-    try {
-      lPlan->open();
-      lSerializer.serialize(&*lPlan, os);
-    }
-    catch (error::ZorbaError&) {
-      lPlan->close();
-      throw;
-    }
-
-    theDocLoadingUserTime = lPlan->getRuntimeCB ()->docLoadingUserTime;
-    theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
-
-    lPlan->close();
+    lSerializer.serialize(&*aWrapper, os);
   ZORBA_CATCH
 }
 
+void
+XQueryImpl::applyUpdates(PlanWrapper_t& aWrapper)
+{
+  ZORBA_TRY
+    store::Item_t pul;
+
+    // updating expression might not return a pul because of vacuous expressions
+    if (aWrapper->next(pul))
+    {
+      if (!pul->isPul())
+        ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR,
+                         "Query does not return a pending update list");
+
+      std::set<zorba::store::Item*> validationNodes;
+
+      pul->applyUpdates(validationNodes);
+      /*
+      std::set<zorba::store::Item*>::const_iterator it = validationNodes.begin();
+      std::set<zorba::store::Item*>::const_iterator end = validationNodes.end();
+      for (; it != end; it++)
+      {
+        std::cout << "     Validating node " << *it << std::endl;
+      }
+      */
+      QueryLoc loc;
+      store::Item_t validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
+
+#ifndef ZORBA_NO_XMLSCHEMA
+      validateAfterUpdate(validationNodes, validationPul, theStaticContext, loc);
+#endif
+      validationPul->applyUpdates(validationNodes);
+    }
+  ZORBA_CATCH
+}
 
 void 
 XQueryImpl::applyUpdates()
 {
-  ZORBA_TRY
-    checkNotClosed();
-    checkCompiled();
+  checkNotClosed();
+  checkCompiled();
 
-    PlanWrapper_t lPlan = generateWrapper();
+  PlanWrapper_t lPlan = generateWrapper();
 
-    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
+  SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
-    store::Item_t pul;
-    
-    try 
-    { 
-      lPlan->open();
-
-      // updating expression might not return a pul because of vacuous expressions
-      if (lPlan->next(pul))
-      {
-        if (!pul->isPul())
-          ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR,
-                           "Query does not return a pending update list");
-
-        std::set<zorba::store::Item*> validationNodes;
-
-        pul->applyUpdates(validationNodes);
-        /*
-        std::set<zorba::store::Item*>::const_iterator it = validationNodes.begin();
-        std::set<zorba::store::Item*>::const_iterator end = validationNodes.end();
-        for (; it != end; it++)
-        {
-          std::cout << "     Validating node " << *it << std::endl;
-        }
-        */
-        QueryLoc loc;
-        store::Item_t validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
-
-#ifndef ZORBA_NO_XMLSCHEMA
-        validateAfterUpdate(validationNodes, validationPul, theStaticContext, loc);
-#endif
-        validationPul->applyUpdates(validationNodes);
-      }
-    }
-    catch (error::ZorbaError&)
-    {
-      lPlan->close();
-      throw;
-    }
-
-    theDocLoadingUserTime = lPlan->getRuntimeCB()->docLoadingUserTime;
-    theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
-
+  try 
+  { 
+    lPlan->open();
+    applyUpdates(lPlan);
+  }
+  catch (...)
+  {
     lPlan->close();
-  ZORBA_CATCH
+    throw;
+  }
+
+  theDocLoadingUserTime = lPlan->getRuntimeCB()->docLoadingUserTime;
+  theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
+
+  lPlan->close();
 }
 
 

@@ -51,26 +51,6 @@ static void printSchnitzel() {
 
 namespace zorba{
 
-#ifdef SIGINT /* not all system have SIGINT */
-	ZorbaDebuggerClient* theDebugClient = 0;
-
-	void setDebugClient(ZorbaDebuggerClient* lClient)
-	{
-		theDebugClient = lClient;
-	}
-
-	void suspend(int aSignum)
-	{
-		if(theDebugClient != 0 && theDebugClient->isQueryRunning())
-		{
-			theDebugClient->suspend();
-		} else {
-			//if the query is not running, we calll the default signal handling
-			signal(SIGINT, SIG_DFL);
-			raise(SIGINT);
-		}
-	}
-#endif
 	DebuggerHandler::DebuggerHandler(Zorba* aZorba, ZorbaDebuggerClient* aClient, std::string aFileName):
 	theZorba(aZorba), theClient(aClient), theFileName(aFileName){}
 

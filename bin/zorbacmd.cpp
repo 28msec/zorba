@@ -236,7 +236,7 @@ ZORBA_THREAD_RETURN server(void* args)
   unsigned short requests = lArgs->theRequestPort;
   unsigned short events = lArgs->theEventPort;
   lQuery->debug(requests, events);
-  lQuery->close();
+  //lQuery->close();
   std::clog << "Quit server thread\n";
   return 0;
 }
@@ -834,14 +834,17 @@ int _tmain(int argc, _TCHAR* argv[])
     //
     // Parse the query
     //
-    if (lProperties.parseOnly()) {
+    if (lProperties.parseOnly() /*|| lProperties.xqdoc()*/) {
       try {
         zorba::XQuery_t lQuery = lZorbaInstance->createQuery();
 
         if (asFile)
           lQuery->setFileName(path.get_path());
 
-        lQuery->parse (*qfile);
+//      if (lProperties.xqdoc())
+//        lQuery->xqdoc(*qfile);
+//      else
+          lQuery->parse (*qfile);
       } catch (zorba::ZorbaException& ze) {
         std::cerr << ze << std::endl;
         return 6;
@@ -986,34 +989,27 @@ int _tmain(int argc, _TCHAR* argv[])
           try {
             // wait 1 second before trying to reconnect
             sleep(1);
-            std::auto_ptr<ZorbaDebuggerClient> debuggerClient(ZorbaDebuggerClient::createClient(lProperties.getRequestPort(), lProperties.getEventPort()));
+            std::auto_ptr<ZorbaDebuggerClient> debuggerClient(ZorbaDebuggerClient::createClient(lProperties.getRequestPort(),
+                                                                                                lProperties.getEventPort()));
             DebuggerHandler lEventHandler(lZorbaInstance, debuggerClient.get(), lFileName);
-#ifdef SIGINT /* not all system have SIGINT */
-            setDebugClient(debuggerClient.get());
-#if 0
-            struct sigaction sa;
-            memset(&sa, 0, sizeof(sa));
-            sa.sa_handler = &suspend;
-            sigaction(SIGINT, &sa, 0);
-#endif
-#endif
             debuggerClient->registerEventHandler( &lEventHandler );
-            while(!debuggerClient->isQueryTerminated()){ sleep(1); }
+
+            // wait for the server thread to terminate
+            // this happens if 
+            // (1) query execution finished (in the server thread) or 
+            // (2) the client explicitly terminates the query
 #ifdef ZORBA_HAVE_PTHREAD_H
             pthread_join( lServerThread, 0);
-            //pthread_cancel( lServerThread );
-            //pthread_detach( lServerThread );
 #else
             WaitForSingleObject( lServerThread, INFINITE );
 #endif
+            lQuery->close();
+            break;
           } catch( std::exception &e ) {
             if ( i < 2 ){ continue; }
-
             std::cerr << "Could not start the debugger client: {" << e.what() << "}" << std::endl;
           }
-        //zorba::simplestore::SimpleStoreManager::shutdownStore(store);
-        //lZorbaInstance->shutdown();
-          return 0;
+          return 1;
         }
       }
       } //compileOnly

@@ -47,6 +47,7 @@
 #include "system/globalenv.h"
 #include "store/api/pul.h"
 #include "store/api/item_factory.h"
+#include "store/api/store.h"
 
 #include "zorbatypes/numconversions.h"
 
@@ -115,6 +116,12 @@ namespace zorba{
 		m_debuggerCommunicator = new DebuggerCommunicator(aRequestPortno, aEventPortno);
 		m_debuggerCommunicator->handshake();
 
+    theWrapper = theQuery->generateWrapper();
+
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), theQuery->isUpdateQuery()?Lock::WRITE:Lock::READ);)
+
+    theWrapper->open();
+
 		//Until the query execution has ended
 		while ( theStatus != QUERY_TERMINATED )
 		{
@@ -128,6 +135,7 @@ namespace zorba{
 		synchronous_logger::clog << "[Server Thread] server quited\n";
 #endif
 		delete theRuntimeThread;
+    theWrapper->close();
 #ifndef NDEBUG
 		synchronous_logger::clog << "[Server Thread] runtime thread quited\n";
 #endif 
@@ -191,10 +199,10 @@ namespace zorba{
 		try
 		{
 			if (theQuery->isUpdateQuery()) {
-				theQuery->applyUpdates();
+				theQuery->applyUpdates(theWrapper);
 				*theOutputStream << "Query doesn't have a result because it is an updating query.";
 			} else {
-				theQuery->serialize( *theOutputStream, theSerOptions );
+				theQuery->serialize( *theOutputStream, theWrapper, theSerOptions );
 				theOutputStream->flush();
 			}
 		}catch(zorba::StaticException& se){
