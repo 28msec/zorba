@@ -700,7 +700,7 @@ printErrorInfo( zorba::ZorbaException& ze,
     os << "' lineStart='-1' columnStart='-1' lineEnd='-1' columnEnd='-1' />";
     if( indent ) os << std::endl << "    ";
     //description
-    os << "<description>" << ze.getDescription() << "</description>";
+    os << "<description>" << ze.getDescription().formatAsXML() << "</description>";
     if( indent ) os << std::endl << "  ";
     os << "</error>";
     if( indent ) os << std::endl;
@@ -733,7 +733,7 @@ printErrorInfo( zorba::QueryException& qe,
     os << "' columnEnd='" << qe.getColumnBegin() << "' />";
     if( indent ) os << std::endl << "    ";
     //description
-    os << "<description>" << qe.getDescription() << "</description>";
+    os << "<description>" << qe.getDescription().formatAsXML() << "</description>";
     if( indent ) os << std::endl << "  ";
     os << "</error>";
     if( indent ) os << std::endl;
@@ -760,7 +760,7 @@ printErrorInfo( const std::string ErrorCode,
     os << "<error code='" << ErrorCode << "'>";
     if( indent ) os << std::endl << "    ";
     //description
-    os << "<description>" << ErrorDescription << "</description>";
+    os << "<description>" << xqpString(ErrorDescription).formatAsXML() << "</description>";
     if( indent ) os << std::endl << "  ";
     os << "</error>";
     if( indent ) os << std::endl;
