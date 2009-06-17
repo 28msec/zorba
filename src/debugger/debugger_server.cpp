@@ -83,6 +83,7 @@ namespace zorba{
 		theStatus( QUERY_IDLE  ),
 		thePlanState(0),
 		theRuntimeThread(0),
+    m_debuggerCommunicator(0),
 		isSteppingOver(false),
 		isSteppingInto(false),
 		isSteppingOut(false),
@@ -742,7 +743,7 @@ namespace zorba{
 		unsigned int lineNumber = loc.getLineBegin();
 		xqpString uri = loc.getFilename();
 		std::vector<std::vector<std::pair<QueryLoc,FnDebugIterator*> > >& vec = theBreaks[uri];
-		if (vec.size() < lineNumber) {
+		if (vec.size() <= lineNumber) {
 			vec.resize(lineNumber * 2);
 		}
 		vec[lineNumber].push_back(std::pair<QueryLoc, FnDebugIterator*>(loc, iter));
