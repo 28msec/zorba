@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <memory>
 
 #ifdef WIN32
 #include <windows.h>
@@ -23,11 +24,11 @@ using namespace zorba;
 
 ZORBA_THREAD_RETURN server(void* args) {
 	std::cout << "Server thread started" << std::endl;
-	DebuggerTestClient::ArgStruct* arg = (DebuggerTestClient::ArgStruct*)args;
+  std::auto_ptr<DebuggerTestClient::ArgStruct> arg((DebuggerTestClient::ArgStruct*)args);
 	XQuery_t xquery = arg->xquery;
+  // this call blocks
 	xquery->debug(*(arg->stream), NULL, 8000, 9000);
 	xquery->close();
-	delete arg;
 	std::cout << "Server thread terminated" << std::endl;
 	return 0;
 }
