@@ -31,23 +31,38 @@ ZorbaJsonParseIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   xqp_string        error_log;
   bool              parseOK = true;
   store::Item_t     strItem;
-  xqpStringStore_t  baseUri = planState.theRuntimeCB->theStaticContext->final_baseuri().getStore();
 
   FnJsonParseIteratorState *state;
   DEFAULT_STACK_INIT(FnJsonParseIteratorState, state, planState);
 
-  while (consumeNext(strItem, theChildren[0].getp(), planState) && parseOK)
+  if( state->theBaseUri.empty() )
+    state->theBaseUri = planState.theRuntimeCB->theStaticContext->final_baseuri();
+
+  while (consumeNext(strItem, theChildren[0].getp(), planState))
   {
-    parseOK = JSON_parse(strItem->getStringValue()->c_str(), strItem->getStringValue()->bytes(), result, baseUri, error_log);
+    if( strItem->getStringValue()->empty() )
+      ZORBA_ERROR_LOC_PARAM(API0060_CONV_JSON_PARSE,
+                            loc,
+                            strItem->show(),
+                            "The string representation of the value passed was empty.");
+
+    parseOK = JSON_parse( strItem->getStringValue()->c_str(),
+                          strItem->getStringValue()->bytes(),
+                          result,
+                          state->theBaseUri.getStore(),
+                          error_log);
+
     if(parseOK && result &&
        result->isNode() &&
        result->getNodeKind () == store::StoreConsts::elementNode)
     {
-      ++state->theCurrentPos;
       STACK_PUSH (true, state);
     }
     else
-      ZORBA_ERROR_LOC_PARAM(API0060_CONV_JSON_PARSE, loc, strItem->getStringValue()->c_str() , error_log.c_str());
+      ZORBA_ERROR_LOC_PARAM(API0060_CONV_JSON_PARSE,
+                            loc,
+                            strItem->getStringValue()->c_str(),
+                            error_log.c_str());
   }
 
   STACK_END (state);
@@ -56,39 +71,35 @@ ZorbaJsonParseIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 void
 FnJsonParseIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-  theCurrentPos = xqp_integer::parseInt(0);
+  theBaseUri = xqp_string();
 }
 
 void
 FnJsonParseIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-  theCurrentPos = xqp_integer::parseInt(0);
+  theBaseUri = xqp_string();
 }
 
 bool
 ZorbaJsonSerializeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  bool              parseOK = true;
   store::Item_t     elemItem;
   xqpStringStore_t  str, error_log;
 
-  FnJsonSerializeIteratorState *state;
-  DEFAULT_STACK_INIT(FnJsonSerializeIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  while (consumeNext(elemItem, theChildren[0].getp(), planState) && parseOK)
+  while (consumeNext(elemItem, theChildren[0].getp(), planState))
   {
-    if(!elemItem->isNode() ||
+    if( !elemItem->isNode() ||
        elemItem->getNodeKind () != store::StoreConsts::elementNode)
       ZORBA_ERROR_LOC_PARAM(API0062_CONV_JSON_PARAM, loc, elemItem->getStringValue()->c_str() , "");
     else
     {
-      parseOK = JSON_serialize(elemItem, str, error_log);
-      if(!parseOK)
+      if( !JSON_serialize(elemItem, str, error_log) )
         ZORBA_ERROR_LOC_PARAM(API0061_CONV_JSON_SERIALIZE, loc, elemItem->getStringValue()->c_str() , error_log);
       else
       {
-        ++state->theCurrentPos;
-
         GENV_ITEMFACTORY->createString(result, str);
         STACK_PUSH (true, state);
       }
@@ -98,18 +109,6 @@ ZorbaJsonSerializeIterator::nextImpl(store::Item_t& result, PlanState& planState
   STACK_END (state);
 }
 
-void
-FnJsonSerializeIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-  theCurrentPos = xqp_integer::parseInt(0);
-}
-
-void
-FnJsonSerializeIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-  theCurrentPos = xqp_integer::parseInt(0);
-}
-
 //JsonML
 bool
 ZorbaJsonMLParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -117,25 +116,30 @@ ZorbaJsonMLParseIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   xqp_string        error_log;
   bool              parseOK = true;
   store::Item_t     strItem;
-  xqpStringStore_t  baseUri = planState.theRuntimeCB->theStaticContext->final_baseuri().getStore();
 
   FnJsonMLParseIteratorState *state;
   DEFAULT_STACK_INIT(FnJsonMLParseIteratorState, state, planState);
 
-  while (consumeNext(strItem, theChildren[0].getp(), planState) && parseOK)
+  if( state->theBaseUri.empty() )
+    state->theBaseUri = planState.theRuntimeCB->theStaticContext->final_baseuri();
+
+  while (consumeNext(strItem, theChildren[0].getp(), planState))
   {
+    if( strItem->getStringValue()->empty() )
+      ZORBA_ERROR_LOC_PARAM(API0063_CONV_JSON_ML_PARSE,
+                            loc,
+                            strItem->show(),
+                            "The string representation of the value passed was empty.");
+
     parseOK = JSON_ML_parse(strItem->getStringValue()->c_str(),
                             strItem->getStringValue()->bytes(),
                             result,
-                            baseUri,
+                            state->theBaseUri.getStore(),
                             error_log);
     if(parseOK && result &&
        result->isNode() &&
        result->getNodeKind () == store::StoreConsts::elementNode)
-    {
-      ++state->theCurrentPos;
       STACK_PUSH (true, state);
-    }
     else
       ZORBA_ERROR_LOC_PARAM(API0063_CONV_JSON_ML_PARSE,
                             loc,
@@ -149,26 +153,25 @@ ZorbaJsonMLParseIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 void
 FnJsonMLParseIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-  theCurrentPos = xqp_integer::parseInt(0);
+  theBaseUri = xqp_string();
 }
 
 void
 FnJsonMLParseIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-  theCurrentPos = xqp_integer::parseInt(0);
+  theBaseUri = xqp_string();
 }
 
 bool
 ZorbaJsonMLSerializeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  bool              parseOK = true;
   store::Item_t     elemItem;
   xqpStringStore_t  str, error_log;
 
-  FnJsonMLSerializeIteratorState *state;
-  DEFAULT_STACK_INIT(FnJsonMLSerializeIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  while (consumeNext(elemItem, theChildren[0].getp(), planState) && parseOK)
+  while (consumeNext(elemItem, theChildren[0].getp(), planState))
   {
     if(!elemItem->isNode() ||
        elemItem->getNodeKind () != store::StoreConsts::elementNode)
@@ -178,34 +181,19 @@ ZorbaJsonMLSerializeIterator::nextImpl(store::Item_t& result, PlanState& planSta
                             "");
     else
     {
-      parseOK = JSON_ML_serialize(elemItem, str, error_log);
-      if(!parseOK)
+      if( !JSON_ML_serialize(elemItem, str, error_log) )
         ZORBA_ERROR_LOC_PARAM(API0064_CONV_JSON_ML_SERIALIZE,
                               loc,
                               elemItem->getStringValue()->c_str(),
                               error_log);
       else
       {
-        ++state->theCurrentPos;
-
         GENV_ITEMFACTORY->createString(result, str);
         STACK_PUSH (true, state);
       }
     }
   }
-
   STACK_END (state);
 }
 
-void
-FnJsonMLSerializeIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-  theCurrentPos = xqp_integer::parseInt(0);
-}
-
-void
-FnJsonMLSerializeIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-  theCurrentPos = xqp_integer::parseInt(0);
-}
 } /* namespace zorba */
