@@ -692,12 +692,12 @@ printErrorInfo( zorba::ZorbaException& ze,
     os << "<errors>";
     if( indent ) os << std::endl << "  ";
     //code
-    os << "<error code='" << ze.getErrorCodeAsString(ze.getErrorCode()) << "'>";
+    os << "<error code=&#39;" << ze.getErrorCodeAsString(ze.getErrorCode()) << "&#39;>";
     if( indent ) os << std::endl << "    ";
     //location
-    os << "<location fileName='" << ze.getFileName();
-    os << "' lineNumber='" << ze.getFileLineNumber();
-    os << "' lineStart='-1' columnStart='-1' lineEnd='-1' columnEnd='-1' />";
+    os << "<location fileName=&#39;" << ze.getFileName();
+    os << "&#39; lineNumber=&#39;" << ze.getFileLineNumber();
+    os << "&#39; lineStart=&#39;-1&#39; columnStart=&#39;-1&#39; lineEnd=&#39;-1&#39; columnEnd=&#39;-1&#39; />";
     if( indent ) os << std::endl << "    ";
     //description
     os << "<description>" << ze.getDescription().formatAsXML() << "</description>";
@@ -723,14 +723,14 @@ printErrorInfo( zorba::QueryException& qe,
     os << "<errors>";
     if( indent ) os << std::endl << "  ";
     //code
-    os << "<error code='" << qe.getErrorCodeAsString(qe.getErrorCode()) << "'>";
+    os << "<error code=&#39;" << qe.getErrorCodeAsString(qe.getErrorCode()) << "&#39;>";
     if( indent ) os << std::endl << "    ";
     //location
-    os << "<location fileName='" << qe.getQueryURI();
-    os << "' lineStart='" << qe.getLineBegin();
-    os << "' columnStart='" << qe.getColumnBegin();
-    os << "' lineEnd='" << qe.getLineBegin();
-    os << "' columnEnd='" << qe.getColumnBegin() << "' />";
+    os << "<location fileName=&#39;" << qe.getQueryURI();
+    os << "&#39; lineStart=&#39;" << qe.getLineBegin();
+    os << "&#39; columnStart=&#39;" << qe.getColumnBegin();
+    os << "&#39; lineEnd=&#39;" << qe.getLineBegin();
+    os << "&#39; columnEnd=&#39;" << qe.getColumnBegin() << "&#39; />";
     if( indent ) os << std::endl << "    ";
     //description
     os << "<description>" << qe.getDescription().formatAsXML() << "</description>";
@@ -757,7 +757,7 @@ printErrorInfo( const std::string ErrorCode,
     os << "<errors>";
     if( indent ) os << std::endl << "  ";
     //code
-    os << "<error code='" << ErrorCode << "'>";
+    os << "<error code=&#39;" << ErrorCode << "&#39;>";
     if( indent ) os << std::endl << "    ";
     //description
     os << "<description>" << xqpString(ErrorDescription).formatAsXML() << "</description>";
