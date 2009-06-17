@@ -956,7 +956,13 @@ MainModule :
 // [4] LibraryModule
 // -----------------
 LibraryModule :
-		ModuleDecl  Prolog
+    ModuleDecl
+    {
+      $$ = new LibraryModule(LOC (@$),
+                             static_cast<ModuleDecl*>($1),
+                             NULL);
+    }
+	|	ModuleDecl  Prolog
 		{
 			$$ = new LibraryModule(LOC (@$),
 								static_cast<ModuleDecl*>($1),

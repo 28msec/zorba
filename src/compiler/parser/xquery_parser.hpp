@@ -1,5 +1,5 @@
 
-/* A Bison parser, made by GNU Bison 2.4.  */
+/* A Bison parser, made by GNU Bison 2.4.1.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
@@ -40,7 +40,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 30 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 30 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 
 #include "compiler/parsetree/parsenodes.h"
 namespace zorba {
@@ -50,7 +50,7 @@ class xquery_driver;
 
 
 /* Line 35 of lalr1.cc  */
-#line 54 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 54 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -64,7 +64,7 @@ class xquery_driver;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 68 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 68 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
@@ -74,7 +74,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 78 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 78 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -122,7 +122,7 @@ do {							\
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 126 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 126 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -134,7 +134,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 120 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 120 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 
   zorba::parsenode * node;
   zorba::exprnode * expr;
@@ -153,7 +153,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 157 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 157 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -633,7 +633,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 637 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 637 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

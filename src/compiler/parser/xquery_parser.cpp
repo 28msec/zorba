@@ -1,5 +1,5 @@
 
-/* A Bison parser, made by GNU Bison 2.4.  */
+/* A Bison parser, made by GNU Bison 2.4.1.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
    
@@ -38,7 +38,7 @@
 /* First part of user declarations.  */
 
 /* Line 311 of lalr1.cc  */
-#line 45 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 45 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 
 
 #include "common/common.h"
@@ -71,7 +71,7 @@ namespace parser
 
 
 /* Line 311 of lalr1.cc  */
-#line 75 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 75 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 
 
 #include "xquery_parser.hpp"
@@ -79,7 +79,7 @@ namespace parser
 /* User implementation prologue.  */
 
 /* Line 317 of lalr1.cc  */
-#line 870 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 870 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parser/xquery_scanner.h"
@@ -88,7 +88,7 @@ namespace parser
 
 
 /* Line 317 of lalr1.cc  */
-#line 92 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 92 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 
 #ifndef YY_
 # if YYENABLE_NLS
@@ -157,7 +157,7 @@ do {					\
 namespace zorba {
 
 /* Line 380 of lalr1.cc  */
-#line 161 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 161 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 #if YYERROR_VERBOSE
 
   /* Return YYSTR after stripping away unnecessary quotes and
@@ -260,1892 +260,1892 @@ namespace zorba {
         case 109: /* "\"'DECIMAL'\"" */
 
 /* Line 480 of lalr1.cc  */
-#line 754 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 754 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->decval); };
 
 /* Line 480 of lalr1.cc  */
-#line 268 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 268 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 121: /* "\"'DOUBLE'\"" */
 
 /* Line 480 of lalr1.cc  */
-#line 753 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 753 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->dval); };
 
 /* Line 480 of lalr1.cc  */
-#line 277 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 277 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 145: /* "\"'INTEGER'\"" */
 
 /* Line 480 of lalr1.cc  */
-#line 752 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 752 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->ival); };
 
 /* Line 480 of lalr1.cc  */
-#line 286 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 286 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 301: /* "VersionDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 295 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 295 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 302: /* "MainModule" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 304 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 304 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 303: /* "LibraryModule" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 313 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 313 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 304: /* "ModuleDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 322 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 322 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 305: /* "Prolog" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 331 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 331 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 306: /* "SIND_DeclList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 340 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 340 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 307: /* "VFO_DeclList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 349 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 349 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 308: /* "SIND_Decl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 358 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 358 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 309: /* "VFO_Decl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 367 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 367 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 310: /* "DecimalFormatDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 376 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 376 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 311: /* "DecimalFormatParamList" */
 
 /* Line 480 of lalr1.cc  */
-#line 766 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 766 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->pair_vector); };
 
 /* Line 480 of lalr1.cc  */
-#line 385 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 385 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 312: /* "DecimalFormatParam" */
 
 /* Line 480 of lalr1.cc  */
-#line 766 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 766 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->pair); };
 
 /* Line 480 of lalr1.cc  */
-#line 394 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 394 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 314: /* "Setter" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 403 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 403 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 315: /* "Import" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 412 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 412 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 316: /* "NamespaceDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 421 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 421 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 317: /* "BoundarySpaceDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 430 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 430 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 318: /* "DefaultNamespaceDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 439 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 439 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 319: /* "OptionDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 448 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 448 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 321: /* "OrderingModeDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 457 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 457 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 322: /* "EmptyOrderDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 466 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 466 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 323: /* "CopyNamespacesDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 475 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 475 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 324: /* "DefaultCollationDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 484 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 484 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 325: /* "BaseURIDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 493 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 493 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 326: /* "SchemaImport" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 502 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 502 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 327: /* "URILiteralList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 511 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 511 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 328: /* "SchemaPrefix" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 520 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 520 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 329: /* "ModuleImport" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 529 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 529 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 330: /* "CtxItemDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 538 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 538 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 331: /* "CtxItemDecl2" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 547 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 547 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 332: /* "CtxItemDecl3" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 556 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 556 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 333: /* "CtxItemDecl4" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 565 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 565 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 334: /* "VarNameAndType" */
 
 /* Line 480 of lalr1.cc  */
-#line 766 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 766 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->varnametype); };
 
 /* Line 480 of lalr1.cc  */
-#line 574 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 574 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 335: /* "VarDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 583 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 583 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 337: /* "IndexDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 592 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 592 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 338: /* "IndexDecl2" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 601 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 601 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 339: /* "IndexDecl3" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 610 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 610 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 340: /* "IndexDeclSuffix" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 619 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 619 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 341: /* "IndexField" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 628 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 628 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 342: /* "IndexField1" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 637 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 637 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 343: /* "IndexFieldList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 646 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 646 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 344: /* "ConstructionDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 655 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 655 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 345: /* "FunctionSig" */
 
 /* Line 480 of lalr1.cc  */
-#line 766 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 766 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->fnsig); };
 
 /* Line 480 of lalr1.cc  */
-#line 664 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 664 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 346: /* "BlockExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 673 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 673 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 347: /* "Block" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 682 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 682 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 348: /* "BlockDecls" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 691 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 691 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 349: /* "BlockVarDeclList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 700 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 700 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 350: /* "BlockVarDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 709 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 709 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 351: /* "AssignExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 718 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 718 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 352: /* "ExitExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 727 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 727 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 353: /* "WhileExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 736 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 736 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 354: /* "FlowCtlStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 745 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 745 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 355: /* "IndexStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 754 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 754 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 356: /* "FunctionDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 763 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 763 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 357: /* "FunctionDecl2" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 772 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 772 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 358: /* "FunctionDecl3" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 781 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 781 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 359: /* "FunctionDecl4" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 790 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 790 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 360: /* "ParamList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 799 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 799 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 361: /* "Param" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 808 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 808 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 362: /* "EnclosedExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 817 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 363: /* "BracedExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 826 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 826 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 364: /* "QueryBody" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 835 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 835 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 365: /* "Expr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 844 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 844 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 366: /* "ApplyExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 853 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 853 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 367: /* "ConcatExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 862 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 862 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 368: /* "ExprSingle" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 871 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 871 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 369: /* "FLWORExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 880 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 880 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 370: /* "ReturnExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 889 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 889 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 373: /* "FLWORWinCond" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 898 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 898 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 374: /* "WindowClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 907 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 907 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 375: /* "CountClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 916 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 916 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 376: /* "ForLetWinClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 925 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 925 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 378: /* "FLWORClauseList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 934 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 934 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 380: /* "ForClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 943 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 943 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 381: /* "VarInDeclList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 952 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 952 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 382: /* "VarInDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 961 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 961 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 383: /* "PositionalVar" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 970 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 970 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 385: /* "LetClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 979 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 979 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 386: /* "VarGetsDeclList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 988 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 988 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 387: /* "EvalVarDeclList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 997 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 997 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 388: /* "VarGetsDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1006 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1006 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 389: /* "WindowVarDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1015 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1015 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 390: /* "WindowVars" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1024 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1024 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 391: /* "WindowVars3" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1033 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1033 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 392: /* "WindowVars2" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1042 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1042 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 393: /* "EvalVarDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1051 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1051 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 394: /* "WhereClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1060 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1060 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 395: /* "GroupByClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1069 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1069 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 396: /* "GroupSpecList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1078 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1078 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 397: /* "GroupSpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1087 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1087 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 398: /* "GroupCollationSpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1096 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1096 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 399: /* "OrderByClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1105 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1105 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 400: /* "OrderSpecList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1114 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1114 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 401: /* "OrderSpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1123 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1123 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 402: /* "OrderModifier" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1132 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1132 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 403: /* "OrderDirSpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1141 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1141 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 404: /* "OrderEmptySpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1150 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1150 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 405: /* "OrderCollationSpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1159 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1159 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 406: /* "QuantifiedExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1168 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1168 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 407: /* "QVarInDeclList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1177 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1177 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 408: /* "QVarInDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1186 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1186 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 409: /* "TypeswitchExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1195 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1195 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 410: /* "CaseClauseList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1204 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1204 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 411: /* "CaseClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1213 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1213 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 412: /* "IfExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1222 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1222 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 413: /* "OrExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1231 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1231 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 414: /* "AndExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1240 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1240 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 415: /* "ComparisonExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1249 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1249 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 417: /* "FTContainsExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1258 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1258 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 418: /* "RangeExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1267 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1267 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 419: /* "AdditiveExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1276 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1276 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 420: /* "MultiplicativeExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1285 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1285 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 421: /* "UnionExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1294 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1294 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 422: /* "IntersectExceptExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1303 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1303 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 423: /* "InstanceofExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1312 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1312 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 424: /* "TreatExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1321 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1321 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 425: /* "CastableExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1330 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1330 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 426: /* "CastExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1339 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1339 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 427: /* "UnaryExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1348 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1348 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 428: /* "SignList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1357 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1357 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 429: /* "ValueExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1366 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1366 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 430: /* "ValueComp" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1375 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1375 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 431: /* "NodeComp" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1384 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1384 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 432: /* "ValidateExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1393 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1393 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 433: /* "ExtensionExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1402 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1402 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 434: /* "PragmaList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1411 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1411 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 435: /* "Pragma" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1420 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1420 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 436: /* "PathExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1429 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1429 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 438: /* "RelativePathExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1438 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1438 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 439: /* "StepExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1447 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1447 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 440: /* "AxisStep" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1456 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1456 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 441: /* "ForwardStep" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1465 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1465 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 442: /* "ForwardAxis" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1474 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1474 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 443: /* "AbbrevForwardStep" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1483 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1483 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 444: /* "ReverseStep" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1492 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1492 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 445: /* "ReverseAxis" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1501 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1501 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 446: /* "NodeTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1510 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1510 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 447: /* "NameTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1519 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1519 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 448: /* "Wildcard" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1528 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1528 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 449: /* "FilterExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1537 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1537 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 450: /* "PredicateList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1546 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1546 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 451: /* "Predicate" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1555 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1555 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 452: /* "PrimaryExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1564 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1564 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 453: /* "Literal" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1573 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1573 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 454: /* "NumericLiteral" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1582 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1582 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 455: /* "VarRef" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1591 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1591 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 456: /* "ParenthesizedExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1600 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1600 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 457: /* "ContextItemExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1609 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1609 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 458: /* "OrderedExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1618 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1618 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 459: /* "UnorderedExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1627 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1627 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 460: /* "FunctionCall" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1636 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1636 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 461: /* "ArgList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1645 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1645 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 462: /* "Constructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1654 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1654 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 463: /* "DirectConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1663 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1663 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 464: /* "DirElemConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1672 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1672 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 465: /* "DirElemContentList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1681 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1681 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 466: /* "DirAttributeList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1690 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1690 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 467: /* "DirAttr" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1699 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1699 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 469: /* "DirAttributeValue" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1708 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1708 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 470: /* "Opt_QuoteAttrContentList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1717 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1717 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 471: /* "QuoteAttrContentList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1726 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1726 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 472: /* "Opt_AposAttrContentList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1735 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1735 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 473: /* "AposAttrContentList" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1744 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1744 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 474: /* "QuoteAttrValueContent" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1753 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1753 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 475: /* "AposAttrValueContent" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1762 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1762 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 476: /* "DirElemContent" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1771 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1771 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 477: /* "CommonContent" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1780 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1780 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 478: /* "DirCommentConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1789 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1789 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 479: /* "DirPIConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1798 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1798 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 480: /* "CDataSection" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1807 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1807 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 481: /* "ComputedConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1816 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1816 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 482: /* "CompDocConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1825 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1825 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 483: /* "CompElemConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1834 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1834 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 484: /* "CompAttrConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1843 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1843 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 485: /* "CompTextConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1852 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1852 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 486: /* "CompCommentConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1861 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1861 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 487: /* "CompPIConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1870 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1870 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 488: /* "SingleType" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1879 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1879 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 489: /* "TypeDeclaration" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1888 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1888 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 490: /* "SequenceType" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1897 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1897 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 491: /* "OccurrenceIndicator" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1906 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1906 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 492: /* "ItemType" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1915 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1915 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 493: /* "AtomicType" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1924 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1924 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 494: /* "KindTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1933 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1933 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 495: /* "AnyKindTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1942 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1942 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 496: /* "DocumentTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1951 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1951 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 497: /* "TextTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1960 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1960 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 498: /* "CommentTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1969 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1969 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 499: /* "PITest" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1978 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1978 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 500: /* "AttributeTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1987 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1987 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 501: /* "SchemaAttributeTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 1996 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 1996 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 502: /* "ElementTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 2005 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 2005 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 503: /* "SchemaElementTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 2014 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 2014 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 504: /* "TypeName" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 2023 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 2023 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 505: /* "TypeName_WITH_HOOK" */
 
 /* Line 480 of lalr1.cc  */
-#line 762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->node) != NULL) { RCHelper::addReference ((yyvaluep->node)); RCHelper::removeReference ((yyvaluep->node)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 2032 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 2032 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 506: /* "StringLiteral" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 2041 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 2041 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 508: /* "InsertExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 2050 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 2050 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 509: /* "DeleteExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 2059 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 2059 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 510: /* "ReplaceExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 2068 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 2068 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 511: /* "RenameExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 2077 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 2077 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 512: /* "TransformExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 2086 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 2086 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 513: /* "VarNameList" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 2095 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 2095 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 514: /* "VarNameDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 2104 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 2104 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 515: /* "TryExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 2113 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 2113 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 516: /* "CatchListExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 2122 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 2122 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 517: /* "CatchExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 2131 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 2131 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 518: /* "NameTestList" */
 
 /* Line 480 of lalr1.cc  */
-#line 766 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 766 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ delete (yyvaluep->name_test_list); };
 
 /* Line 480 of lalr1.cc  */
-#line 2140 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 2140 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
       case 523: /* "EvalExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 764 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 764 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 	{ if ((yyvaluep->expr) != NULL) { RCHelper::addReference ((yyvaluep->expr)); RCHelper::removeReference ((yyvaluep->expr)); } };
 
 /* Line 480 of lalr1.cc  */
-#line 2149 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 2149 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	break;
 
 	default:
@@ -2224,13 +2224,13 @@ namespace zorba {
     /* User initialization code.  */
     
 /* Line 553 of lalr1.cc  */
-#line 94 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 94 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 {
   yylloc.begin.filename = yylloc.end.filename = &(driver.theFilename);
 }
 
 /* Line 553 of lalr1.cc  */
-#line 2234 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 2234 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 
     /* Initialize the stacks.  The initial state will be pushed in
        yynewstate, since the latter expects the semantical and the
@@ -2349,7 +2349,7 @@ namespace zorba {
 	  case 3:
 
 /* Line 678 of lalr1.cc  */
-#line 888 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 888 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
     }
@@ -2358,7 +2358,7 @@ namespace zorba {
   case 4:
 
 /* Line 678 of lalr1.cc  */
-#line 898 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 898 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 			driver.set_expr ((yyval.node));
@@ -2368,7 +2368,7 @@ namespace zorba {
   case 5:
 
 /* Line 678 of lalr1.cc  */
-#line 903 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 903 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       dynamic_cast<MainModule *> ((yysemantic_stack_[(2) - (2)].node))->set_version_decl (static_cast<VersionDecl *> ((yysemantic_stack_[(2) - (1)].node)));
 			(yyval.node) = (yysemantic_stack_[(2) - (2)].node);
@@ -2379,7 +2379,7 @@ namespace zorba {
   case 6:
 
 /* Line 678 of lalr1.cc  */
-#line 909 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 909 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
        driver.set_expr ((yyval.node));
@@ -2389,7 +2389,7 @@ namespace zorba {
   case 7:
 
 /* Line 678 of lalr1.cc  */
-#line 914 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 914 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        dynamic_cast<LibraryModule *> ((yysemantic_stack_[(2) - (2)].node))->set_version_decl (static_cast<VersionDecl *> ((yysemantic_stack_[(2) - (1)].node)));
        (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
@@ -2400,7 +2400,7 @@ namespace zorba {
   case 8:
 
 /* Line 678 of lalr1.cc  */
-#line 926 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 926 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        std::string encoding = "utf-8";
        (yyval.node) = new VersionDecl (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(4) - (3)].sval)), encoding);
@@ -2410,7 +2410,7 @@ namespace zorba {
   case 9:
 
 /* Line 678 of lalr1.cc  */
-#line 931 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 931 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        (yyval.node) = new VersionDecl (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(6) - (3)].sval)), SYMTAB ((yysemantic_stack_[(6) - (5)].sval)));
     }
@@ -2419,7 +2419,7 @@ namespace zorba {
   case 10:
 
 /* Line 678 of lalr1.cc  */
-#line 941 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 941 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new MainModule(LOC ((yyloc)),
 								static_cast<QueryBody*>((yysemantic_stack_[(2) - (2)].expr)),
@@ -2430,7 +2430,7 @@ namespace zorba {
   case 11:
 
 /* Line 678 of lalr1.cc  */
-#line 948 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 948 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new MainModule(LOC ((yyloc)),
 								static_cast<QueryBody*>((yysemantic_stack_[(1) - (1)].expr)),
@@ -2441,7 +2441,18 @@ namespace zorba {
   case 12:
 
 /* Line 678 of lalr1.cc  */
-#line 960 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 960 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+      (yyval.node) = new LibraryModule(LOC ((yyloc)),
+                             static_cast<ModuleDecl*>((yysemantic_stack_[(1) - (1)].node)),
+                             NULL);
+    }
+    break;
+
+  case 13:
+
+/* Line 678 of lalr1.cc  */
+#line 966 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new LibraryModule(LOC ((yyloc)),
 								static_cast<ModuleDecl*>((yysemantic_stack_[(2) - (1)].node)),
@@ -2449,10 +2460,10 @@ namespace zorba {
 		}
     break;
 
-  case 13:
+  case 14:
 
 /* Line 678 of lalr1.cc  */
-#line 972 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 978 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ModuleDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(6) - (3)].sval)), 
@@ -2460,10 +2471,10 @@ namespace zorba {
 		}
     break;
 
-  case 14:
+  case 15:
 
 /* Line 678 of lalr1.cc  */
-#line 984 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 990 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Prolog(LOC ((yyloc)),
 								static_cast<SIND_DeclList*>((yysemantic_stack_[(2) - (1)].node)),
@@ -2471,10 +2482,10 @@ namespace zorba {
 		}
     break;
 
-  case 15:
+  case 16:
 
 /* Line 678 of lalr1.cc  */
-#line 990 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 996 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Prolog(LOC ((yyloc)),
 								NULL,
@@ -2482,10 +2493,10 @@ namespace zorba {
 		}
     break;
 
-  case 16:
+  case 17:
 
 /* Line 678 of lalr1.cc  */
-#line 996 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1002 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Prolog(LOC ((yyloc)),
 								static_cast<SIND_DeclList*>((yysemantic_stack_[(4) - (1)].node)),
@@ -2493,10 +2504,10 @@ namespace zorba {
 		}
     break;
 
-  case 17:
+  case 18:
 
 /* Line 678 of lalr1.cc  */
-#line 1008 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1014 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			SIND_DeclList* sindList_p = new SIND_DeclList(LOC ((yyloc)));
 			sindList_p->push_back((yysemantic_stack_[(1) - (1)].node));
@@ -2504,10 +2515,10 @@ namespace zorba {
 		}
     break;
 
-  case 18:
+  case 19:
 
 /* Line 678 of lalr1.cc  */
-#line 1014 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1020 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			SIND_DeclList* sindList_p = static_cast<SIND_DeclList*>((yysemantic_stack_[(3) - (1)].node));
 			if (sindList_p) {
@@ -2517,10 +2528,10 @@ namespace zorba {
 		}
     break;
 
-  case 19:
+  case 20:
 
 /* Line 678 of lalr1.cc  */
-#line 1028 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1034 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			VFO_DeclList* vfoList_p = new VFO_DeclList(LOC ((yyloc)));
 			vfoList_p->push_back((yysemantic_stack_[(1) - (1)].node));
@@ -2528,10 +2539,10 @@ namespace zorba {
 		}
     break;
 
-  case 20:
+  case 21:
 
 /* Line 678 of lalr1.cc  */
-#line 1034 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1040 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			VFO_DeclList* vfoList_p = dynamic_cast<VFO_DeclList*>((yysemantic_stack_[(3) - (1)].node));
 			if (vfoList_p) {
@@ -2541,22 +2552,12 @@ namespace zorba {
 		}
     break;
 
-  case 32:
-
-/* Line 678 of lalr1.cc  */
-#line 1074 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-      (yyval.node) = new DecimalFormatNode(LOC((yyloc)), (yysemantic_stack_[(4) - (4)].pair_vector));
-      delete (yysemantic_stack_[(4) - (4)].pair_vector);
-    }
-    break;
-
   case 33:
 
 /* Line 678 of lalr1.cc  */
-#line 1079 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1080 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new DecimalFormatNode(LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (3)].sval)), (yysemantic_stack_[(4) - (4)].pair_vector)); 
+      (yyval.node) = new DecimalFormatNode(LOC((yyloc)), (yysemantic_stack_[(4) - (4)].pair_vector));
       delete (yysemantic_stack_[(4) - (4)].pair_vector);
     }
     break;
@@ -2564,7 +2565,17 @@ namespace zorba {
   case 34:
 
 /* Line 678 of lalr1.cc  */
-#line 1087 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1085 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+      (yyval.node) = new DecimalFormatNode(LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (3)].sval)), (yysemantic_stack_[(4) - (4)].pair_vector)); 
+      delete (yysemantic_stack_[(4) - (4)].pair_vector);
+    }
+    break;
+
+  case 35:
+
+/* Line 678 of lalr1.cc  */
+#line 1093 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     { 
       (yyval.pair_vector) = new std::vector<std::pair<std::string, std::string> > ();
       (yyval.pair_vector)->push_back(*(yysemantic_stack_[(1) - (1)].pair));
@@ -2572,10 +2583,10 @@ namespace zorba {
     }
     break;
 
-  case 35:
+  case 36:
 
 /* Line 678 of lalr1.cc  */
-#line 1093 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1099 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yysemantic_stack_[(2) - (1)].pair_vector)->push_back(*(yysemantic_stack_[(2) - (2)].pair));
       delete (yysemantic_stack_[(2) - (2)].pair);
@@ -2583,10 +2594,10 @@ namespace zorba {
     }
     break;
 
-  case 36:
+  case 37:
 
 /* Line 678 of lalr1.cc  */
-#line 1102 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1108 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       StringLiteral *s = static_cast<StringLiteral *>((yysemantic_stack_[(3) - (3)].expr));
       (yyval.pair) = new std::pair<std::string, std::string>((yysemantic_stack_[(3) - (1)].strval), s->get_strval());
@@ -2594,80 +2605,80 @@ namespace zorba {
     }
     break;
 
-  case 37:
-
-/* Line 678 of lalr1.cc  */
-#line 1110 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.strval) = "decimal-separator"; }
-    break;
-
   case 38:
 
 /* Line 678 of lalr1.cc  */
-#line 1111 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.strval) = "grouping-separator"; }
+#line 1116 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.strval) = "decimal-separator"; }
     break;
 
   case 39:
 
 /* Line 678 of lalr1.cc  */
-#line 1112 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.strval) = "infinty"; }
+#line 1117 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.strval) = "grouping-separator"; }
     break;
 
   case 40:
 
 /* Line 678 of lalr1.cc  */
-#line 1113 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.strval) = "minus-sign"; }
+#line 1118 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.strval) = "infinty"; }
     break;
 
   case 41:
 
 /* Line 678 of lalr1.cc  */
-#line 1114 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.strval) = "NaN"; }
+#line 1119 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.strval) = "minus-sign"; }
     break;
 
   case 42:
 
 /* Line 678 of lalr1.cc  */
-#line 1115 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.strval) = "percent"; }
+#line 1120 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.strval) = "NaN"; }
     break;
 
   case 43:
 
 /* Line 678 of lalr1.cc  */
-#line 1116 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.strval) = "per-mille"; }
+#line 1121 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.strval) = "percent"; }
     break;
 
   case 44:
 
 /* Line 678 of lalr1.cc  */
-#line 1117 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.strval) = "zero-digit"; }
+#line 1122 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.strval) = "per-mille"; }
     break;
 
   case 45:
 
 /* Line 678 of lalr1.cc  */
-#line 1118 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.strval) = "digit"; }
+#line 1123 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.strval) = "zero-digit"; }
     break;
 
   case 46:
 
 /* Line 678 of lalr1.cc  */
-#line 1119 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1124 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.strval) = "digit"; }
+    break;
+
+  case 47:
+
+/* Line 678 of lalr1.cc  */
+#line 1125 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     { (yyval.strval) = "pattern-separator"; }
     break;
 
-  case 57:
+  case 58:
 
 /* Line 678 of lalr1.cc  */
-#line 1156 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1162 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new NamespaceDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (3)].sval)),
@@ -2675,30 +2686,30 @@ namespace zorba {
 		}
     break;
 
-  case 58:
+  case 59:
 
 /* Line 678 of lalr1.cc  */
-#line 1168 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1174 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new BoundarySpaceDecl(LOC ((yyloc)),
 								StaticContextConsts::preserve_space);
 		}
     break;
 
-  case 59:
+  case 60:
 
 /* Line 678 of lalr1.cc  */
-#line 1173 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1179 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new BoundarySpaceDecl(LOC ((yyloc)),
 								StaticContextConsts::strip_space);
 		}
     break;
 
-  case 60:
+  case 61:
 
 /* Line 678 of lalr1.cc  */
-#line 1184 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1190 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DefaultNamespaceDecl(LOC ((yyloc)),
 								ParseConstants::ns_element_default,
@@ -2706,10 +2717,10 @@ namespace zorba {
 		}
     break;
 
-  case 61:
+  case 62:
 
 /* Line 678 of lalr1.cc  */
-#line 1190 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1196 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DefaultNamespaceDecl(LOC ((yyloc)),
 								ParseConstants::ns_function_default,
@@ -2717,10 +2728,10 @@ namespace zorba {
 		}
     break;
 
-  case 62:
+  case 63:
 
 /* Line 678 of lalr1.cc  */
-#line 1202 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1208 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OptionDecl(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (3)].sval))),
@@ -2728,82 +2739,82 @@ namespace zorba {
 		}
     break;
 
-  case 63:
+  case 64:
 
 /* Line 678 of lalr1.cc  */
-#line 1215 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1221 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FTOptionDecl(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (3)].node));
 		}
     break;
 
-  case 64:
+  case 65:
 
 /* Line 678 of lalr1.cc  */
-#line 1226 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1232 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderingModeDecl(LOC ((yyloc)),
 								StaticContextConsts::ordered);
 		}
     break;
 
-  case 65:
+  case 66:
 
 /* Line 678 of lalr1.cc  */
-#line 1231 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1237 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderingModeDecl(LOC ((yyloc)),
 								StaticContextConsts::unordered);
 		}
     break;
 
-  case 66:
+  case 67:
 
 /* Line 678 of lalr1.cc  */
-#line 1243 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1249 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new EmptyOrderDecl(LOC ((yyloc)),
 								StaticContextConsts::empty_greatest);
 		}
     break;
 
-  case 67:
+  case 68:
 
 /* Line 678 of lalr1.cc  */
-#line 1248 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1254 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new EmptyOrderDecl(LOC ((yyloc)),
 								StaticContextConsts::empty_least);
 		}
     break;
 
-  case 68:
+  case 69:
 
 /* Line 678 of lalr1.cc  */
-#line 1259 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1265 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CopyNamespacesDecl(LOC ((yyloc)),
 								StaticContextConsts::preserve_ns,
 								StaticContextConsts::inherit_ns);
-		}
-    break;
-
-  case 69:
-
-/* Line 678 of lalr1.cc  */
-#line 1265 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.node) = new CopyNamespacesDecl(LOC ((yyloc)),
-								StaticContextConsts::preserve_ns,
-								StaticContextConsts::no_inherit_ns);
 		}
     break;
 
   case 70:
 
 /* Line 678 of lalr1.cc  */
-#line 1271 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1271 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.node) = new CopyNamespacesDecl(LOC ((yyloc)),
+								StaticContextConsts::preserve_ns,
+								StaticContextConsts::no_inherit_ns);
+		}
+    break;
+
+  case 71:
+
+/* Line 678 of lalr1.cc  */
+#line 1277 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CopyNamespacesDecl(LOC ((yyloc)),
 								StaticContextConsts::no_preserve_ns,
@@ -2811,10 +2822,10 @@ namespace zorba {
 		}
     break;
 
-  case 71:
+  case 72:
 
 /* Line 678 of lalr1.cc  */
-#line 1277 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1283 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CopyNamespacesDecl(LOC ((yyloc)),
 								StaticContextConsts::no_preserve_ns,
@@ -2822,30 +2833,30 @@ namespace zorba {
 		}
     break;
 
-  case 72:
+  case 73:
 
 /* Line 678 of lalr1.cc  */
-#line 1296 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1302 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DefaultCollationDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (4)].sval)));
 		}
     break;
 
-  case 73:
+  case 74:
 
 /* Line 678 of lalr1.cc  */
-#line 1307 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1313 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new BaseURIDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (3)].sval)));
 		}
     break;
 
-  case 74:
+  case 75:
 
 /* Line 678 of lalr1.cc  */
-#line 1318 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1324 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaImport(LOC ((yyloc)),
 								NULL,
@@ -2854,10 +2865,10 @@ namespace zorba {
 		}
     break;
 
-  case 75:
+  case 76:
 
 /* Line 678 of lalr1.cc  */
-#line 1325 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1331 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaImport(LOC ((yyloc)),
 								dynamic_cast<SchemaPrefix*>((yysemantic_stack_[(4) - (3)].node)),
@@ -2866,10 +2877,10 @@ namespace zorba {
 		}
     break;
 
-  case 76:
+  case 77:
 
 /* Line 678 of lalr1.cc  */
-#line 1332 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1338 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaImport(LOC ((yyloc)),
 								NULL,
@@ -2878,10 +2889,10 @@ namespace zorba {
 		}
     break;
 
-  case 77:
+  case 78:
 
 /* Line 678 of lalr1.cc  */
-#line 1339 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1345 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaImport(LOC ((yyloc)),
 								dynamic_cast<SchemaPrefix*>((yysemantic_stack_[(6) - (3)].node)),
@@ -2890,10 +2901,10 @@ namespace zorba {
 		}
     break;
 
-  case 78:
+  case 79:
 
 /* Line 678 of lalr1.cc  */
-#line 1352 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1358 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			URILiteralList* uri_list_p = new URILiteralList(LOC ((yyloc)));
 			uri_list_p->push_back(SYMTAB ((yysemantic_stack_[(1) - (1)].sval)));
@@ -2901,10 +2912,10 @@ namespace zorba {
 		}
     break;
 
-  case 79:
+  case 80:
 
 /* Line 678 of lalr1.cc  */
-#line 1358 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1364 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			URILiteralList* uri_list_p = dynamic_cast<URILiteralList*>((yysemantic_stack_[(3) - (1)].node));
 			if (uri_list_p) {
@@ -2914,28 +2925,28 @@ namespace zorba {
 		}
     break;
 
-  case 80:
-
-/* Line 678 of lalr1.cc  */
-#line 1373 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.node) = new SchemaPrefix(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (2)].sval)));
-		}
-    break;
-
   case 81:
 
 /* Line 678 of lalr1.cc  */
-#line 1377 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1379 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new SchemaPrefix(LOC ((yyloc)), true);
+			(yyval.node) = new SchemaPrefix(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (2)].sval)));
 		}
     break;
 
   case 82:
 
 /* Line 678 of lalr1.cc  */
-#line 1387 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1383 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.node) = new SchemaPrefix(LOC ((yyloc)), true);
+		}
+    break;
+
+  case 83:
+
+/* Line 678 of lalr1.cc  */
+#line 1393 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ModuleImport(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (3)].sval)),
@@ -2943,10 +2954,10 @@ namespace zorba {
 		}
     break;
 
-  case 83:
+  case 84:
 
 /* Line 678 of lalr1.cc  */
-#line 1393 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1399 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ModuleImport(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(6) - (4)].sval)),
@@ -2955,10 +2966,10 @@ namespace zorba {
 		}
     break;
 
-  case 84:
+  case 85:
 
 /* Line 678 of lalr1.cc  */
-#line 1400 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1406 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ModuleImport(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (3)].sval)),
@@ -2966,10 +2977,10 @@ namespace zorba {
 		}
     break;
 
-  case 85:
+  case 86:
 
 /* Line 678 of lalr1.cc  */
-#line 1406 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1412 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ModuleImport(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(8) - (4)].sval)),
@@ -2978,19 +2989,19 @@ namespace zorba {
 		}
     break;
 
-  case 86:
+  case 87:
 
 /* Line 678 of lalr1.cc  */
-#line 1418 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1424 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(4) - (4)].node);
     }
     break;
 
-  case 87:
+  case 88:
 
 /* Line 678 of lalr1.cc  */
-#line 1425 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1431 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       CtxItemDecl *d = dynamic_cast<CtxItemDecl *> ((yysemantic_stack_[(3) - (3)].node));
       d->type = (yysemantic_stack_[(3) - (2)].node);
@@ -2998,19 +3009,19 @@ namespace zorba {
     }
     break;
 
-  case 88:
+  case 89:
 
 /* Line 678 of lalr1.cc  */
-#line 1431 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1437 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
     break;
 
-  case 89:
+  case 90:
 
 /* Line 678 of lalr1.cc  */
-#line 1438 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1444 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       CtxItemDecl *d = dynamic_cast<CtxItemDecl *> ((yysemantic_stack_[(1) - (1)].node));
       d->ext = false;
@@ -3018,56 +3029,56 @@ namespace zorba {
     }
     break;
 
-  case 90:
-
-/* Line 678 of lalr1.cc  */
-#line 1444 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-      (yyval.node) = new CtxItemDecl (LOC ((yyloc)), NULL);
-    }
-    break;
-
   case 91:
 
 /* Line 678 of lalr1.cc  */
-#line 1448 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1450 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
+      (yyval.node) = new CtxItemDecl (LOC ((yyloc)), NULL);
     }
     break;
 
   case 92:
 
 /* Line 678 of lalr1.cc  */
-#line 1455 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1454 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new CtxItemDecl (LOC ((yyloc)), (yysemantic_stack_[(2) - (2)].expr));
+      (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
     }
     break;
 
   case 93:
 
 /* Line 678 of lalr1.cc  */
-#line 1466 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1461 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.varnametype) = new VarNameAndType (SYMTAB ((yysemantic_stack_[(2) - (2)].sval)), NULL);
+      (yyval.node) = new CtxItemDecl (LOC ((yyloc)), (yysemantic_stack_[(2) - (2)].expr));
     }
     break;
 
   case 94:
 
 /* Line 678 of lalr1.cc  */
-#line 1470 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1472 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.varnametype) = new VarNameAndType (SYMTAB ((yysemantic_stack_[(3) - (2)].sval)),
-                               dynamic_cast<SequenceType *> ((yysemantic_stack_[(3) - (3)].node)));
+      (yyval.varnametype) = new VarNameAndType (SYMTAB ((yysemantic_stack_[(2) - (2)].sval)), NULL);
     }
     break;
 
   case 95:
 
 /* Line 678 of lalr1.cc  */
-#line 1478 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1476 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+      (yyval.varnametype) = new VarNameAndType (SYMTAB ((yysemantic_stack_[(3) - (2)].sval)),
+                               dynamic_cast<SequenceType *> ((yysemantic_stack_[(3) - (3)].node)));
+    }
+    break;
+
+  case 96:
+
+/* Line 678 of lalr1.cc  */
+#line 1484 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       VarNameAndType *nt = dynamic_cast<VarNameAndType *> (yysemantic_stack_[(5) - (3)].varnametype);
 			(yyval.node) = new VarDecl(LOC ((yyloc)),
@@ -3078,10 +3089,10 @@ namespace zorba {
 		}
     break;
 
-  case 96:
+  case 97:
 
 /* Line 678 of lalr1.cc  */
-#line 1487 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1493 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       VarNameAndType *nt = dynamic_cast<VarNameAndType *> (yysemantic_stack_[(4) - (3)].varnametype);
 			(yyval.node) = new VarDecl(LOC ((yyloc)), nt->name, nt->type,
@@ -3090,10 +3101,10 @@ namespace zorba {
 		}
     break;
 
-  case 97:
+  case 98:
 
 /* Line 678 of lalr1.cc  */
-#line 1494 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1500 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       VarNameAndType *nt = dynamic_cast<VarNameAndType *> (yysemantic_stack_[(6) - (3)].varnametype);
 			(yyval.node) = new VarDecl(LOC ((yyloc)), nt->name, nt->type,
@@ -3102,24 +3113,24 @@ namespace zorba {
 		}
     break;
 
-  case 98:
-
-/* Line 678 of lalr1.cc  */
-#line 1504 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.strval) = "hash"; }
-    break;
-
   case 99:
 
 /* Line 678 of lalr1.cc  */
-#line 1506 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.strval) = "btree"; }
+#line 1510 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.strval) = "hash"; }
     break;
 
   case 100:
 
 /* Line 678 of lalr1.cc  */
-#line 1513 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1512 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.strval) = "btree"; }
+    break;
+
+  case 101:
+
+/* Line 678 of lalr1.cc  */
+#line 1519 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       IndexDecl *d = dynamic_cast<IndexDecl *> ((yysemantic_stack_[(2) - (2)].node));
       d->create = false;
@@ -3127,95 +3138,95 @@ namespace zorba {
     }
     break;
 
-  case 101:
-
-/* Line 678 of lalr1.cc  */
-#line 1521 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-      (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
-    }
-    break;
-
   case 102:
 
 /* Line 678 of lalr1.cc  */
-#line 1525 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1527 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      dynamic_cast<IndexDecl *> ((yysemantic_stack_[(2) - (2)].node))->uniq = true;
-      (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
+      (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
     break;
 
   case 103:
 
 /* Line 678 of lalr1.cc  */
-#line 1533 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1531 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
+      dynamic_cast<IndexDecl *> ((yysemantic_stack_[(2) - (2)].node))->uniq = true;
+      (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
     }
     break;
 
   case 104:
 
 /* Line 678 of lalr1.cc  */
-#line 1537 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1539 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      dynamic_cast<IndexDecl *> ((yysemantic_stack_[(2) - (2)].node))->method = (yysemantic_stack_[(2) - (1)].strval);
-      (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
+      (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
     break;
 
   case 105:
 
 /* Line 678 of lalr1.cc  */
-#line 1545 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1543 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new IndexDecl (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(7) - (2)].sval)), (yysemantic_stack_[(7) - (4)].expr), "",
-                          dynamic_cast<IndexFieldList *> ((yysemantic_stack_[(7) - (6)].node)));
+      dynamic_cast<IndexDecl *> ((yysemantic_stack_[(2) - (2)].node))->method = (yysemantic_stack_[(2) - (1)].strval);
+      (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
     }
     break;
 
   case 106:
 
 /* Line 678 of lalr1.cc  */
-#line 1553 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1551 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
+      (yyval.node) = new IndexDecl (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(7) - (2)].sval)), (yysemantic_stack_[(7) - (4)].expr), "",
+                          dynamic_cast<IndexFieldList *> ((yysemantic_stack_[(7) - (6)].node)));
     }
     break;
 
   case 107:
 
 /* Line 678 of lalr1.cc  */
-#line 1557 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1559 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      dynamic_cast<IndexField *> ((yysemantic_stack_[(3) - (1)].node))->coll = SYMTAB ((yysemantic_stack_[(3) - (3)].sval));
-      (yyval.node) = (yysemantic_stack_[(3) - (1)].node);
+      (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
     break;
 
   case 108:
 
 /* Line 678 of lalr1.cc  */
-#line 1565 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1563 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new IndexField (LOC ((yyloc)), (yysemantic_stack_[(1) - (1)].expr), NULL);
+      dynamic_cast<IndexField *> ((yysemantic_stack_[(3) - (1)].node))->coll = SYMTAB ((yysemantic_stack_[(3) - (3)].sval));
+      (yyval.node) = (yysemantic_stack_[(3) - (1)].node);
     }
     break;
 
   case 109:
 
 /* Line 678 of lalr1.cc  */
-#line 1569 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1571 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new IndexField (LOC ((yyloc)), (yysemantic_stack_[(2) - (1)].expr), dynamic_cast<SequenceType *> ((yysemantic_stack_[(2) - (2)].node)));
+      (yyval.node) = new IndexField (LOC ((yyloc)), (yysemantic_stack_[(1) - (1)].expr), NULL);
     }
     break;
 
   case 110:
 
 /* Line 678 of lalr1.cc  */
-#line 1576 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1575 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+      (yyval.node) = new IndexField (LOC ((yyloc)), (yysemantic_stack_[(2) - (1)].expr), dynamic_cast<SequenceType *> ((yysemantic_stack_[(2) - (2)].node)));
+    }
+    break;
+
+  case 111:
+
+/* Line 678 of lalr1.cc  */
+#line 1582 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       IndexFieldList *l = new IndexFieldList (LOC ((yyloc)));
       l->fields.push_back (dynamic_cast<IndexField *> ((yysemantic_stack_[(2) - (2)].node)));
@@ -3224,85 +3235,85 @@ namespace zorba {
     }
     break;
 
-  case 111:
+  case 112:
 
 /* Line 678 of lalr1.cc  */
-#line 1583 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1589 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       dynamic_cast<IndexFieldList *> ((yysemantic_stack_[(3) - (1)].node))->fields.push_back (dynamic_cast<IndexField *> ((yysemantic_stack_[(3) - (3)].node)));
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node);
     }
     break;
 
-  case 112:
+  case 113:
 
 /* Line 678 of lalr1.cc  */
-#line 1593 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1599 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ConstructionDecl(LOC ((yyloc)),
 								StaticContextConsts::cons_preserve);
 		}
     break;
 
-  case 113:
+  case 114:
 
 /* Line 678 of lalr1.cc  */
-#line 1598 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1604 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ConstructionDecl(LOC ((yyloc)),
 								StaticContextConsts::cons_strip);
 		}
     break;
 
-  case 114:
-
-/* Line 678 of lalr1.cc  */
-#line 1610 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-      (yyval.fnsig) = new FunctionSig (NULL);
-    }
-    break;
-
   case 115:
 
 /* Line 678 of lalr1.cc  */
-#line 1614 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1616 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.fnsig) = new FunctionSig (dynamic_cast<ParamList *> ((yysemantic_stack_[(3) - (2)].node)));
+      (yyval.fnsig) = new FunctionSig (NULL);
     }
     break;
 
   case 116:
 
 /* Line 678 of lalr1.cc  */
-#line 1618 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1620 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.fnsig) = new FunctionSig (NULL, dynamic_cast<SequenceType *> ((yysemantic_stack_[(4) - (4)].node)));
+      (yyval.fnsig) = new FunctionSig (dynamic_cast<ParamList *> ((yysemantic_stack_[(3) - (2)].node)));
     }
     break;
 
   case 117:
 
 /* Line 678 of lalr1.cc  */
-#line 1622 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1624 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.fnsig) = new FunctionSig (dynamic_cast<ParamList *> ((yysemantic_stack_[(5) - (2)].node)), dynamic_cast<SequenceType *> ((yysemantic_stack_[(5) - (5)].node)));
+      (yyval.fnsig) = new FunctionSig (NULL, dynamic_cast<SequenceType *> ((yysemantic_stack_[(4) - (4)].node)));
     }
     break;
 
   case 118:
 
 /* Line 678 of lalr1.cc  */
-#line 1629 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1628 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.expr) = (yysemantic_stack_[(2) - (2)].expr);
+      (yyval.fnsig) = new FunctionSig (dynamic_cast<ParamList *> ((yysemantic_stack_[(5) - (2)].node)), dynamic_cast<SequenceType *> ((yysemantic_stack_[(5) - (5)].node)));
     }
     break;
 
   case 119:
 
 /* Line 678 of lalr1.cc  */
-#line 1636 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1635 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+      (yyval.expr) = (yysemantic_stack_[(2) - (2)].expr);
+    }
+    break;
+
+  case 120:
+
+/* Line 678 of lalr1.cc  */
+#line 1642 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       if ((yysemantic_stack_[(4) - (2)].node) == NULL)
         (yyval.expr) = (yysemantic_stack_[(4) - (3)].expr);
@@ -3320,10 +3331,10 @@ namespace zorba {
     }
     break;
 
-  case 120:
+  case 121:
 
 /* Line 678 of lalr1.cc  */
-#line 1655 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1661 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       VFO_DeclList *vfo = dynamic_cast<VFO_DeclList *> ((yysemantic_stack_[(3) - (1)].node));
       VFO_DeclList *vfo2 = dynamic_cast<VFO_DeclList *> ((yysemantic_stack_[(3) - (2)].node));
@@ -3334,19 +3345,19 @@ namespace zorba {
     }
     break;
 
-  case 121:
+  case 122:
 
 /* Line 678 of lalr1.cc  */
-#line 1664 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1670 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = NULL;
     }
     break;
 
-  case 122:
+  case 123:
 
 /* Line 678 of lalr1.cc  */
-#line 1671 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1677 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       VFO_DeclList *vfo = dynamic_cast<VFO_DeclList *> ((yysemantic_stack_[(3) - (1)].node));
       vfo->push_back ((yysemantic_stack_[(3) - (3)].node));
@@ -3354,10 +3365,10 @@ namespace zorba {
     }
     break;
 
-  case 123:
+  case 124:
 
 /* Line 678 of lalr1.cc  */
-#line 1677 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1683 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       VFO_DeclList *vfo = new VFO_DeclList (LOC ((yyloc)));
       vfo->push_back ((yysemantic_stack_[(2) - (2)].node));
@@ -3365,10 +3376,10 @@ namespace zorba {
     }
     break;
 
-  case 124:
+  case 125:
 
 /* Line 678 of lalr1.cc  */
-#line 1686 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1692 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       VarNameAndType *nt = dynamic_cast<VarNameAndType *> (yysemantic_stack_[(1) - (1)].varnametype);
       VarDecl *vd = new VarDecl(LOC ((yyloc)),
@@ -3381,10 +3392,10 @@ namespace zorba {
     }
     break;
 
-  case 125:
+  case 126:
 
 /* Line 678 of lalr1.cc  */
-#line 1697 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1703 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       VarNameAndType *nt = dynamic_cast<VarNameAndType *> (yysemantic_stack_[(3) - (1)].varnametype);
       VarDecl *vd = new VarDecl(LOC ((yyloc)),
@@ -3396,28 +3407,28 @@ namespace zorba {
     }
     break;
 
-  case 126:
-
-/* Line 678 of lalr1.cc  */
-#line 1710 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-      (yyval.expr) = new AssignExpr (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(5) - (3)].sval)), (yysemantic_stack_[(5) - (5)].expr));
-    }
-    break;
-
   case 127:
 
 /* Line 678 of lalr1.cc  */
-#line 1717 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1716 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.expr) = new ExitExpr (LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr));
+      (yyval.expr) = new AssignExpr (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(5) - (3)].sval)), (yysemantic_stack_[(5) - (5)].expr));
     }
     break;
 
   case 128:
 
 /* Line 678 of lalr1.cc  */
-#line 1724 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1723 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+      (yyval.expr) = new ExitExpr (LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr));
+    }
+    break;
+
+  case 129:
+
+/* Line 678 of lalr1.cc  */
+#line 1730 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       BlockBody *b = dynamic_cast<BlockBody *> ((yysemantic_stack_[(5) - (5)].expr));
       if (b == NULL) {
@@ -3428,64 +3439,64 @@ namespace zorba {
     }
     break;
 
-  case 129:
-
-/* Line 678 of lalr1.cc  */
-#line 1736 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-      (yyval.expr) = new FlowCtlStatement (LOC ((yyloc)), FlowCtlStatement::BREAK);
-    }
-    break;
-
   case 130:
 
 /* Line 678 of lalr1.cc  */
-#line 1740 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1742 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.expr) = new FlowCtlStatement (LOC ((yyloc)), FlowCtlStatement::CONTINUE);
+      (yyval.expr) = new FlowCtlStatement (LOC ((yyloc)), FlowCtlStatement::BREAK);
     }
     break;
 
   case 131:
 
 /* Line 678 of lalr1.cc  */
-#line 1747 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1746 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.expr) = new IndexStatement (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (3)].sval)), IndexStatement::create_stmt);
+      (yyval.expr) = new FlowCtlStatement (LOC ((yyloc)), FlowCtlStatement::CONTINUE);
     }
     break;
 
   case 132:
 
 /* Line 678 of lalr1.cc  */
-#line 1751 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1753 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.expr) = new IndexStatement (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (3)].sval)), IndexStatement::drop_stmt);
+      (yyval.expr) = new IndexStatement (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (3)].sval)), IndexStatement::create_stmt);
     }
     break;
 
   case 133:
 
 /* Line 678 of lalr1.cc  */
-#line 1755 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1757 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.expr) = new IndexStatement (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (3)].sval)), IndexStatement::build_stmt);
+      (yyval.expr) = new IndexStatement (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (3)].sval)), IndexStatement::drop_stmt);
     }
     break;
 
   case 134:
 
 /* Line 678 of lalr1.cc  */
-#line 1762 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1761 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
+      (yyval.expr) = new IndexStatement (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (3)].sval)), IndexStatement::build_stmt);
     }
     break;
 
   case 135:
 
 /* Line 678 of lalr1.cc  */
-#line 1766 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1768 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+      (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
+    }
+    break;
+
+  case 136:
+
+/* Line 678 of lalr1.cc  */
+#line 1772 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       FunctionDecl *d = dynamic_cast<FunctionDecl *> ((yysemantic_stack_[(3) - (3)].node));
       d->deterministic = false;
@@ -3493,37 +3504,37 @@ namespace zorba {
     }
     break;
 
-  case 136:
-
-/* Line 678 of lalr1.cc  */
-#line 1772 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-      (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
-    }
-    break;
-
   case 137:
 
 /* Line 678 of lalr1.cc  */
-#line 1779 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1778 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
+      (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
     }
     break;
 
   case 138:
 
 /* Line 678 of lalr1.cc  */
-#line 1783 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1785 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
+      (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
     break;
 
   case 139:
 
 /* Line 678 of lalr1.cc  */
-#line 1787 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1789 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+      (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
+    }
+    break;
+
+  case 140:
+
+/* Line 678 of lalr1.cc  */
+#line 1793 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       FunctionDecl *d = dynamic_cast<FunctionDecl *> ((yysemantic_stack_[(2) - (2)].node));
       d->type = (d->type == ParseConstants::fn_extern)
@@ -3533,19 +3544,19 @@ namespace zorba {
     }
     break;
 
-  case 140:
+  case 141:
 
 /* Line 678 of lalr1.cc  */
-#line 1795 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1801 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
     }
     break;
 
-  case 141:
+  case 142:
 
 /* Line 678 of lalr1.cc  */
-#line 1802 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1808 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (2)].sval))),
@@ -3556,10 +3567,10 @@ namespace zorba {
     }
     break;
 
-  case 142:
+  case 143:
 
 /* Line 678 of lalr1.cc  */
-#line 1811 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1817 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (2)].sval))),
@@ -3570,10 +3581,10 @@ namespace zorba {
     }
     break;
 
-  case 143:
+  case 144:
 
 /* Line 678 of lalr1.cc  */
-#line 1823 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1829 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (2)].sval))),
@@ -3584,10 +3595,10 @@ namespace zorba {
     }
     break;
 
-  case 144:
+  case 145:
 
 /* Line 678 of lalr1.cc  */
-#line 1837 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1843 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			ParamList* plist_p = new ParamList(LOC ((yyloc)));
 			if (plist_p) {
@@ -3597,10 +3608,10 @@ namespace zorba {
 		}
     break;
 
-  case 145:
+  case 146:
 
 /* Line 678 of lalr1.cc  */
-#line 1845 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1851 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			ParamList* plist_p = dynamic_cast<ParamList*>((yysemantic_stack_[(3) - (1)].node));
 			if (plist_p) {
@@ -3610,10 +3621,10 @@ namespace zorba {
 		}
     break;
 
-  case 146:
+  case 147:
 
 /* Line 678 of lalr1.cc  */
-#line 1859 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1865 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Param(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(2) - (2)].sval)),
@@ -3621,10 +3632,10 @@ namespace zorba {
 		}
     break;
 
-  case 147:
+  case 148:
 
 /* Line 678 of lalr1.cc  */
-#line 1865 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1871 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Param(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (2)].sval)),
@@ -3632,47 +3643,47 @@ namespace zorba {
 		}
     break;
 
-  case 148:
+  case 149:
 
 /* Line 678 of lalr1.cc  */
-#line 1877 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1883 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new EnclosedExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (2)].expr));
 		}
     break;
 
-  case 149:
-
-/* Line 678 of lalr1.cc  */
-#line 1885 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
-		}
-    break;
-
   case 150:
 
 /* Line 678 of lalr1.cc  */
-#line 1896 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1891 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new QueryBody(LOC ((yyloc)), (yysemantic_stack_[(1) - (1)].expr));
+			(yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
 		}
     break;
 
   case 151:
 
 /* Line 678 of lalr1.cc  */
-#line 1907 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1902 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
-    }
+			(yyval.expr) = new QueryBody(LOC ((yyloc)), (yysemantic_stack_[(1) - (1)].expr));
+		}
     break;
 
   case 152:
 
 /* Line 678 of lalr1.cc  */
-#line 1911 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1913 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+      (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+    }
+    break;
+
+  case 153:
+
+/* Line 678 of lalr1.cc  */
+#line 1917 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       BlockBody *blk = dynamic_cast<BlockBody *> ((yysemantic_stack_[(2) - (2)].expr)),
         *blk2 = new BlockBody (LOC ((yyloc)));
@@ -3683,19 +3694,19 @@ namespace zorba {
     }
     break;
 
-  case 153:
+  case 154:
 
 /* Line 678 of lalr1.cc  */
-#line 1923 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1929 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new BlockBody (LOC ((yyloc)));
     }
     break;
 
-  case 154:
+  case 155:
 
 /* Line 678 of lalr1.cc  */
-#line 1927 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1933 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       BlockBody *blk = dynamic_cast<BlockBody *> ((yysemantic_stack_[(3) - (1)].expr));
       blk->add ((yysemantic_stack_[(3) - (2)].expr));
@@ -3703,19 +3714,19 @@ namespace zorba {
     }
     break;
 
-  case 155:
+  case 156:
 
 /* Line 678 of lalr1.cc  */
-#line 1936 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1942 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
     break;
 
-  case 156:
+  case 157:
 
 /* Line 678 of lalr1.cc  */
-#line 1940 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1946 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			Expr* expr_p = dynamic_cast<Expr*>((yysemantic_stack_[(3) - (1)].expr));
 			if (expr_p == NULL) {
@@ -3727,10 +3738,10 @@ namespace zorba {
 		}
     break;
 
-  case 175:
+  case 176:
 
 /* Line 678 of lalr1.cc  */
-#line 1987 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 1993 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       ReturnExpr* lReturnExpr = dynamic_cast<ReturnExpr*>((yysemantic_stack_[(2) - (2)].expr));
       (yyval.expr) = new FLWORExpr (LOC ((yyloc)), dynamic_cast<FLWORClauseList*>((yysemantic_stack_[(2) - (1)].node)), lReturnExpr->get_return_val(), lReturnExpr->get_location(), driver.theCompilerCB->m_config.force_gflwor);
@@ -3738,82 +3749,82 @@ namespace zorba {
     }
     break;
 
-  case 176:
-
-/* Line 678 of lalr1.cc  */
-#line 1996 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-      (yyval.expr) = new ReturnExpr(LOC((yyloc)), (yysemantic_stack_[(2) - (2)].expr));
-    }
-    break;
-
   case 177:
 
 /* Line 678 of lalr1.cc  */
-#line 2003 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2002 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.strval) = parser::the_sliding;
+      (yyval.expr) = new ReturnExpr(LOC((yyloc)), (yysemantic_stack_[(2) - (2)].expr));
     }
     break;
 
   case 178:
 
 /* Line 678 of lalr1.cc  */
-#line 2007 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2009 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.strval) = parser::the_tumbling;
+      (yyval.strval) = parser::the_sliding;
     }
     break;
 
   case 179:
 
 /* Line 678 of lalr1.cc  */
-#line 2015 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2013 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.strval) = parser::the_start;
+      (yyval.strval) = parser::the_tumbling;
     }
     break;
 
   case 180:
 
 /* Line 678 of lalr1.cc  */
-#line 2019 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2021 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.strval) = parser::the_end;
+      (yyval.strval) = parser::the_start;
     }
     break;
 
   case 181:
 
 /* Line 678 of lalr1.cc  */
-#line 2023 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2025 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.strval) = parser::the_only_end;
+      (yyval.strval) = parser::the_end;
     }
     break;
 
   case 182:
 
 /* Line 678 of lalr1.cc  */
-#line 2030 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2029 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new FLWORWinCond (LOC ((yyloc)), dynamic_cast<WindowVars *> ((yysemantic_stack_[(4) - (2)].node)), (yysemantic_stack_[(4) - (4)].expr), (yysemantic_stack_[(4) - (1)].strval) == parser::the_start, (yysemantic_stack_[(4) - (1)].strval) == parser::the_only_end);
+      (yyval.strval) = parser::the_only_end;
     }
     break;
 
   case 183:
 
 /* Line 678 of lalr1.cc  */
-#line 2034 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2036 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new FLWORWinCond (LOC ((yyloc)), NULL, (yysemantic_stack_[(3) - (3)].expr), (yysemantic_stack_[(3) - (1)].strval) == parser::the_start, (yysemantic_stack_[(3) - (1)].strval) == parser::the_only_end);
+      (yyval.node) = new FLWORWinCond (LOC ((yyloc)), dynamic_cast<WindowVars *> ((yysemantic_stack_[(4) - (2)].node)), (yysemantic_stack_[(4) - (4)].expr), (yysemantic_stack_[(4) - (1)].strval) == parser::the_start, (yysemantic_stack_[(4) - (1)].strval) == parser::the_only_end);
     }
     break;
 
   case 184:
 
 /* Line 678 of lalr1.cc  */
-#line 2041 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2040 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+      (yyval.node) = new FLWORWinCond (LOC ((yyloc)), NULL, (yysemantic_stack_[(3) - (3)].expr), (yysemantic_stack_[(3) - (1)].strval) == parser::the_start, (yysemantic_stack_[(3) - (1)].strval) == parser::the_only_end);
+    }
+    break;
+
+  case 185:
+
+/* Line 678 of lalr1.cc  */
+#line 2047 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowClause (LOC ((yyloc)),
                              ((yysemantic_stack_[(5) - (2)].strval) == parser::the_tumbling) ? WindowClause::tumbling_window : WindowClause::sliding_window,
@@ -3823,10 +3834,10 @@ namespace zorba {
     }
     break;
 
-  case 185:
+  case 186:
 
 /* Line 678 of lalr1.cc  */
-#line 2049 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2055 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new WindowClause (LOC ((yyloc)),
                              ((yysemantic_stack_[(4) - (2)].strval) == parser::the_tumbling) ? WindowClause::tumbling_window : WindowClause::sliding_window,
@@ -3835,19 +3846,19 @@ namespace zorba {
     }
     break;
 
-  case 186:
+  case 187:
 
 /* Line 678 of lalr1.cc  */
-#line 2060 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2066 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new CountClause (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (3)].sval)));
     }
     break;
 
-  case 195:
+  case 196:
 
 /* Line 678 of lalr1.cc  */
-#line 2078 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2084 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       FLWORClauseList *l = new FLWORClauseList (LOC ((yyloc)));
       l->push_back (dynamic_cast<FLWORClause *> ((yysemantic_stack_[(1) - (1)].node)));
@@ -3855,10 +3866,10 @@ namespace zorba {
     }
     break;
 
-  case 196:
+  case 197:
 
 /* Line 678 of lalr1.cc  */
-#line 2084 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2090 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       FLWORClauseList *l = dynamic_cast<FLWORClauseList *> ((yysemantic_stack_[(2) - (1)].node));
       l->push_back (dynamic_cast<FLWORClause *> ((yysemantic_stack_[(2) - (2)].node)));
@@ -3866,38 +3877,38 @@ namespace zorba {
     }
     break;
 
-  case 197:
-
-/* Line 678 of lalr1.cc  */
-#line 2093 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-      (yyval.strval) = NULL;
-    }
-    break;
-
   case 198:
 
 /* Line 678 of lalr1.cc  */
-#line 2097 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2099 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.strval) = parser::the_ofor;
+      (yyval.strval) = NULL;
     }
     break;
 
   case 199:
 
 /* Line 678 of lalr1.cc  */
-#line 2107 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2103 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+      (yyval.strval) = parser::the_ofor;
+    }
+    break;
+
+  case 200:
+
+/* Line 678 of lalr1.cc  */
+#line 2113 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForClause(LOC ((yyloc)),
                          dynamic_cast<VarInDeclList*>((yysemantic_stack_[(2) - (2)].node)), (yysemantic_stack_[(2) - (1)].strval) != NULL);
 		}
     break;
 
-  case 200:
+  case 201:
 
 /* Line 678 of lalr1.cc  */
-#line 2118 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2124 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			VarInDeclList* vardecl_list_p = new VarInDeclList(LOC ((yyloc)));
 			vardecl_list_p->push_back(dynamic_cast<VarInDecl*>((yysemantic_stack_[(1) - (1)].node)));
@@ -3905,10 +3916,10 @@ namespace zorba {
 		}
     break;
 
-  case 201:
+  case 202:
 
 /* Line 678 of lalr1.cc  */
-#line 2124 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2130 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			VarInDeclList* vardecl_list_p = dynamic_cast<VarInDeclList*>((yysemantic_stack_[(4) - (1)].node));
 			if (vardecl_list_p) {
@@ -3918,10 +3929,10 @@ namespace zorba {
 		}
     break;
 
-  case 202:
+  case 203:
 
 /* Line 678 of lalr1.cc  */
-#line 2138 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2144 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (1)].sval)),
@@ -3930,10 +3941,10 @@ namespace zorba {
 		}
     break;
 
-  case 203:
+  case 204:
 
 /* Line 678 of lalr1.cc  */
-#line 2145 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2151 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (1)].sval)),
@@ -3943,10 +3954,10 @@ namespace zorba {
 		}
     break;
 
-  case 204:
+  case 205:
 
 /* Line 678 of lalr1.cc  */
-#line 2153 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2159 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (1)].sval)),
@@ -3957,10 +3968,10 @@ namespace zorba {
 		}
     break;
 
-  case 205:
+  case 206:
 
 /* Line 678 of lalr1.cc  */
-#line 2162 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2168 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (1)].sval)),
@@ -3971,10 +3982,10 @@ namespace zorba {
 		}
     break;
 
-  case 206:
+  case 207:
 
 /* Line 678 of lalr1.cc  */
-#line 2172 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2178 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (1)].sval)),
@@ -3984,10 +3995,10 @@ namespace zorba {
 		}
     break;
 
-  case 207:
+  case 208:
 
 /* Line 678 of lalr1.cc  */
-#line 2180 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2186 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (1)].sval)),
@@ -3998,10 +4009,10 @@ namespace zorba {
 		}
     break;
 
-  case 208:
+  case 209:
 
 /* Line 678 of lalr1.cc  */
-#line 2189 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2195 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (1)].sval)),
@@ -4012,10 +4023,10 @@ namespace zorba {
 		}
     break;
 
-  case 209:
+  case 210:
 
 /* Line 678 of lalr1.cc  */
-#line 2198 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2204 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(6) - (1)].sval)),
@@ -4026,22 +4037,12 @@ namespace zorba {
 		}
     break;
 
-  case 210:
-
-/* Line 678 of lalr1.cc  */
-#line 2213 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.node) = new PositionalVar(LOC ((yyloc)),
-								SYMTAB ((yysemantic_stack_[(3) - (3)].sval)));
-		}
-    break;
-
   case 211:
 
 /* Line 678 of lalr1.cc  */
-#line 2225 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2219 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new FTScoreVar(LOC ((yyloc)),
+			(yyval.node) = new PositionalVar(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (3)].sval)));
 		}
     break;
@@ -4049,7 +4050,17 @@ namespace zorba {
   case 212:
 
 /* Line 678 of lalr1.cc  */
-#line 2236 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2231 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.node) = new FTScoreVar(LOC ((yyloc)),
+								SYMTAB ((yysemantic_stack_[(3) - (3)].sval)));
+		}
+    break;
+
+  case 213:
+
+/* Line 678 of lalr1.cc  */
+#line 2242 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new LetClause(LOC ((yyloc)),
 								dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(3) - (3)].node)));
@@ -4057,45 +4068,21 @@ namespace zorba {
 		}
     break;
 
-  case 213:
+  case 214:
 
 /* Line 678 of lalr1.cc  */
-#line 2248 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2254 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			VarGetsDeclList* vgdl_p = new VarGetsDeclList(LOC ((yyloc)));
 			vgdl_p->push_back(dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = vgdl_p;
-		}
-    break;
-
-  case 214:
-
-/* Line 678 of lalr1.cc  */
-#line 2254 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			VarGetsDeclList* vgdl_p = dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(4) - (1)].node));
-			if (vgdl_p) {
-				vgdl_p->push_back(dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(4) - (4)].node)));
-			}
-			(yyval.node) = (yysemantic_stack_[(4) - (1)].node);
 		}
     break;
 
   case 215:
 
 /* Line 678 of lalr1.cc  */
-#line 2266 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			VarGetsDeclList* vgdl_p = new VarGetsDeclList(LOC ((yyloc)));
-			vgdl_p->push_back(dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(1) - (1)].node)));
-			(yyval.node) = vgdl_p;
-		}
-    break;
-
-  case 216:
-
-/* Line 678 of lalr1.cc  */
-#line 2272 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2260 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			VarGetsDeclList* vgdl_p = dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(4) - (1)].node));
 			if (vgdl_p) {
@@ -4105,10 +4092,34 @@ namespace zorba {
 		}
     break;
 
+  case 216:
+
+/* Line 678 of lalr1.cc  */
+#line 2272 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			VarGetsDeclList* vgdl_p = new VarGetsDeclList(LOC ((yyloc)));
+			vgdl_p->push_back(dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(1) - (1)].node)));
+			(yyval.node) = vgdl_p;
+		}
+    break;
+
   case 217:
 
 /* Line 678 of lalr1.cc  */
-#line 2286 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2278 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			VarGetsDeclList* vgdl_p = dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(4) - (1)].node));
+			if (vgdl_p) {
+				vgdl_p->push_back(dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(4) - (4)].node)));
+			}
+			(yyval.node) = (yysemantic_stack_[(4) - (1)].node);
+		}
+    break;
+
+  case 218:
+
+/* Line 678 of lalr1.cc  */
+#line 2292 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (1)].sval)),
@@ -4118,10 +4129,10 @@ namespace zorba {
 		}
     break;
 
-  case 218:
+  case 219:
 
 /* Line 678 of lalr1.cc  */
-#line 2294 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2300 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (1)].sval)),
@@ -4131,10 +4142,10 @@ namespace zorba {
 		}
     break;
 
-  case 219:
+  case 220:
 
 /* Line 678 of lalr1.cc  */
-#line 2303 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2309 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (1)].sval)),
@@ -4144,10 +4155,10 @@ namespace zorba {
 		}
     break;
 
-  case 220:
+  case 221:
 
 /* Line 678 of lalr1.cc  */
-#line 2311 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2317 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (1)].sval)),
@@ -4157,10 +4168,10 @@ namespace zorba {
 		}
     break;
 
-  case 221:
+  case 222:
 
 /* Line 678 of lalr1.cc  */
-#line 2323 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2329 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new WindowVarDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (2)].sval)),
@@ -4168,10 +4179,10 @@ namespace zorba {
 		}
     break;
 
-  case 222:
+  case 223:
 
 /* Line 678 of lalr1.cc  */
-#line 2329 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2335 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new WindowVarDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (2)].sval)),
@@ -4180,75 +4191,75 @@ namespace zorba {
 		}
     break;
 
-  case 224:
-
-/* Line 678 of lalr1.cc  */
-#line 2340 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-      (yyval.node) = new WindowVars (LOC ((yyloc)), NULL, SYMTAB ((yysemantic_stack_[(2) - (2)].sval)), "", "");
-    }
-    break;
-
   case 225:
 
 /* Line 678 of lalr1.cc  */
-#line 2344 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2346 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
-      dynamic_cast<WindowVars *> ((yyval.node))->set_curr (SYMTAB ((yysemantic_stack_[(3) - (2)].sval)));
+      (yyval.node) = new WindowVars (LOC ((yyloc)), NULL, SYMTAB ((yysemantic_stack_[(2) - (2)].sval)), "", "");
     }
     break;
 
   case 226:
 
 /* Line 678 of lalr1.cc  */
-#line 2352 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2350 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new WindowVars (LOC ((yyloc)), dynamic_cast<PositionalVar *> ((yysemantic_stack_[(1) - (1)].node)), "", "", "");
+      (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
+      dynamic_cast<WindowVars *> ((yyval.node))->set_curr (SYMTAB ((yysemantic_stack_[(3) - (2)].sval)));
     }
     break;
 
   case 227:
 
 /* Line 678 of lalr1.cc  */
-#line 2356 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2358 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+      (yyval.node) = new WindowVars (LOC ((yyloc)), dynamic_cast<PositionalVar *> ((yysemantic_stack_[(1) - (1)].node)), "", "", "");
+    }
+    break;
+
+  case 228:
+
+/* Line 678 of lalr1.cc  */
+#line 2362 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
       dynamic_cast<WindowVars *> ((yyval.node))->set_posvar (dynamic_cast<PositionalVar *> ((yysemantic_stack_[(2) - (1)].node)));
     }
     break;
 
-  case 229:
-
-/* Line 678 of lalr1.cc  */
-#line 2365 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-      (yyval.node) = new WindowVars (LOC ((yyloc)), NULL, "", SYMTAB ((yysemantic_stack_[(6) - (3)].sval)), SYMTAB ((yysemantic_stack_[(6) - (6)].sval)));
-    }
-    break;
-
   case 230:
 
 /* Line 678 of lalr1.cc  */
-#line 2369 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2371 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new WindowVars (LOC ((yyloc)), NULL, "", "", SYMTAB ((yysemantic_stack_[(3) - (3)].sval)));
+      (yyval.node) = new WindowVars (LOC ((yyloc)), NULL, "", SYMTAB ((yysemantic_stack_[(6) - (3)].sval)), SYMTAB ((yysemantic_stack_[(6) - (6)].sval)));
     }
     break;
 
   case 231:
 
 /* Line 678 of lalr1.cc  */
-#line 2373 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2375 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new WindowVars (LOC ((yyloc)), NULL, "", SYMTAB ((yysemantic_stack_[(3) - (3)].sval)), "");
+      (yyval.node) = new WindowVars (LOC ((yyloc)), NULL, "", "", SYMTAB ((yysemantic_stack_[(3) - (3)].sval)));
     }
     break;
 
   case 232:
 
 /* Line 678 of lalr1.cc  */
-#line 2380 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2379 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+      (yyval.node) = new WindowVars (LOC ((yyloc)), NULL, "", SYMTAB ((yysemantic_stack_[(3) - (3)].sval)), "");
+    }
+    break;
+
+  case 233:
+
+/* Line 678 of lalr1.cc  */
+#line 2386 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       std::string name = SYMTAB ((yysemantic_stack_[(1) - (1)].sval));
       (yyval.node) = new VarGetsDecl(LOC ((yyloc)),
@@ -4259,29 +4270,29 @@ namespace zorba {
     }
     break;
 
-  case 233:
+  case 234:
 
 /* Line 678 of lalr1.cc  */
-#line 2395 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2401 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new WhereClause(LOC ((yyloc)),
 								(yysemantic_stack_[(2) - (2)].expr));
 		}
     break;
 
-  case 234:
+  case 235:
 
 /* Line 678 of lalr1.cc  */
-#line 2403 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2409 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupByClause(LOC((yyloc)), dynamic_cast<GroupSpecList*>((yysemantic_stack_[(3) - (3)].node)));
     }
     break;
 
-  case 235:
+  case 236:
 
 /* Line 678 of lalr1.cc  */
-#line 2410 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2416 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       GroupSpecList* gsl_p = new GroupSpecList(LOC((yyloc)));
       gsl_p->push_back(dynamic_cast<GroupSpec*>((yysemantic_stack_[(1) - (1)].node)));
@@ -4289,10 +4300,10 @@ namespace zorba {
     }
     break;
 
-  case 236:
+  case 237:
 
 /* Line 678 of lalr1.cc  */
-#line 2416 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2422 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       GroupSpecList* gsl_p = dynamic_cast<GroupSpecList*>((yysemantic_stack_[(3) - (1)].node));
       if (gsl_p) {
@@ -4302,10 +4313,10 @@ namespace zorba {
     }
     break;
 
-  case 237:
+  case 238:
 
 /* Line 678 of lalr1.cc  */
-#line 2427 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2433 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)),
                  SYMTAB ((yysemantic_stack_[(2) - (2)].sval)),
@@ -4313,10 +4324,10 @@ namespace zorba {
     }
     break;
 
-  case 238:
+  case 239:
 
 /* Line 678 of lalr1.cc  */
-#line 2433 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2439 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)), 
                  SYMTAB ((yysemantic_stack_[(3) - (2)].sval)), 
@@ -4324,29 +4335,29 @@ namespace zorba {
     }
     break;
 
-  case 239:
+  case 240:
 
 /* Line 678 of lalr1.cc  */
-#line 2442 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2448 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new GroupCollationSpec(LOC((yyloc)), SYMTAB ((yysemantic_stack_[(2) - (2)].sval)));
     }
     break;
 
-  case 240:
+  case 241:
 
 /* Line 678 of lalr1.cc  */
-#line 2452 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2458 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderByClause(LOC ((yyloc)),
 								dynamic_cast<OrderSpecList*>((yysemantic_stack_[(3) - (3)].node)));
 		}
     break;
 
-  case 241:
+  case 242:
 
 /* Line 678 of lalr1.cc  */
-#line 2457 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2463 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderByClause(LOC ((yyloc)),
 								dynamic_cast<OrderSpecList*>((yysemantic_stack_[(4) - (4)].node)),
@@ -4354,10 +4365,10 @@ namespace zorba {
 		}
     break;
 
-  case 242:
+  case 243:
 
 /* Line 678 of lalr1.cc  */
-#line 2469 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2475 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			OrderSpecList* osl_p = new OrderSpecList(LOC ((yyloc)));
 			osl_p->push_back(dynamic_cast<OrderSpec*>((yysemantic_stack_[(1) - (1)].node)));
@@ -4365,10 +4376,10 @@ namespace zorba {
 		}
     break;
 
-  case 243:
+  case 244:
 
 /* Line 678 of lalr1.cc  */
-#line 2475 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2481 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			OrderSpecList* osl_p = dynamic_cast<OrderSpecList*>((yysemantic_stack_[(3) - (1)].node));
 			if (osl_p) {
@@ -4378,10 +4389,10 @@ namespace zorba {
 		}
     break;
 
-  case 244:
+  case 245:
 
 /* Line 678 of lalr1.cc  */
-#line 2489 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2495 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderSpec(LOC ((yyloc)),
 								(yysemantic_stack_[(1) - (1)].expr),
@@ -4389,10 +4400,10 @@ namespace zorba {
 		}
     break;
 
-  case 245:
+  case 246:
 
 /* Line 678 of lalr1.cc  */
-#line 2495 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2501 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderSpec(LOC ((yyloc)),
 								(yysemantic_stack_[(2) - (1)].expr),
@@ -4400,10 +4411,10 @@ namespace zorba {
 		}
     break;
 
-  case 246:
+  case 247:
 
 /* Line 678 of lalr1.cc  */
-#line 2507 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2513 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(1) - (1)].node)),
@@ -4412,10 +4423,10 @@ namespace zorba {
 		}
     break;
 
-  case 247:
+  case 248:
 
 /* Line 678 of lalr1.cc  */
-#line 2514 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2520 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								NULL,
@@ -4424,10 +4435,10 @@ namespace zorba {
 		}
     break;
 
-  case 248:
+  case 249:
 
 /* Line 678 of lalr1.cc  */
-#line 2521 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2527 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								NULL,
@@ -4436,10 +4447,10 @@ namespace zorba {
 		}
     break;
 
-  case 249:
+  case 250:
 
 /* Line 678 of lalr1.cc  */
-#line 2528 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2534 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(2) - (1)].node)),
@@ -4448,10 +4459,10 @@ namespace zorba {
 		}
     break;
 
-  case 250:
+  case 251:
 
 /* Line 678 of lalr1.cc  */
-#line 2535 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2541 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(2) - (1)].node)),
@@ -4460,10 +4471,10 @@ namespace zorba {
 		}
     break;
 
-  case 251:
+  case 252:
 
 /* Line 678 of lalr1.cc  */
-#line 2542 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2548 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								NULL,
@@ -4472,10 +4483,10 @@ namespace zorba {
 		}
     break;
 
-  case 252:
+  case 253:
 
 /* Line 678 of lalr1.cc  */
-#line 2549 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2555 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(3) - (1)].node)),
@@ -4484,58 +4495,58 @@ namespace zorba {
 		}
     break;
 
-  case 253:
-
-/* Line 678 of lalr1.cc  */
-#line 2562 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.node) = new OrderDirSpec(LOC ((yyloc)), ParseConstants::dir_ascending);
-		}
-    break;
-
   case 254:
 
 /* Line 678 of lalr1.cc  */
-#line 2566 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2568 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new OrderDirSpec(LOC ((yyloc)), ParseConstants::dir_descending);
+			(yyval.node) = new OrderDirSpec(LOC ((yyloc)), ParseConstants::dir_ascending);
 		}
     break;
 
   case 255:
 
 /* Line 678 of lalr1.cc  */
-#line 2576 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2572 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new OrderEmptySpec(LOC ((yyloc)),
-								StaticContextConsts::empty_greatest);
+			(yyval.node) = new OrderDirSpec(LOC ((yyloc)), ParseConstants::dir_descending);
 		}
     break;
 
   case 256:
 
 /* Line 678 of lalr1.cc  */
-#line 2581 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2582 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OrderEmptySpec(LOC ((yyloc)),
-								StaticContextConsts::empty_least);
+								StaticContextConsts::empty_greatest);
 		}
     break;
 
   case 257:
 
 /* Line 678 of lalr1.cc  */
-#line 2592 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2587 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new OrderCollationSpec(LOC ((yyloc)),
-								SYMTAB ((yysemantic_stack_[(2) - (2)].sval)));
+			(yyval.node) = new OrderEmptySpec(LOC ((yyloc)),
+								StaticContextConsts::empty_least);
 		}
     break;
 
   case 258:
 
 /* Line 678 of lalr1.cc  */
-#line 2603 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2598 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.node) = new OrderCollationSpec(LOC ((yyloc)),
+								SYMTAB ((yysemantic_stack_[(2) - (2)].sval)));
+		}
+    break;
+
+  case 259:
+
+/* Line 678 of lalr1.cc  */
+#line 2609 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new QuantifiedExpr(LOC ((yyloc)),
 								ParseConstants::quant_some,
@@ -4544,10 +4555,10 @@ namespace zorba {
 		}
     break;
 
-  case 259:
+  case 260:
 
 /* Line 678 of lalr1.cc  */
-#line 2610 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2616 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new QuantifiedExpr(LOC ((yyloc)),
 								ParseConstants::quant_every,
@@ -4556,10 +4567,10 @@ namespace zorba {
 		}
     break;
 
-  case 260:
+  case 261:
 
 /* Line 678 of lalr1.cc  */
-#line 2623 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2629 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			QVarInDeclList* qvid_list_p = new QVarInDeclList(LOC ((yyloc)));
 			qvid_list_p->push_back(dynamic_cast<QVarInDecl*>((yysemantic_stack_[(1) - (1)].node)));
@@ -4568,10 +4579,10 @@ namespace zorba {
 		}
     break;
 
-  case 261:
+  case 262:
 
 /* Line 678 of lalr1.cc  */
-#line 2630 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2636 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			QVarInDeclList* qvid_list_p = dynamic_cast<QVarInDeclList*>((yysemantic_stack_[(4) - (1)].node));
             qvid_list_p->push_back(dynamic_cast<QVarInDecl*>((yysemantic_stack_[(4) - (4)].node)));
@@ -4579,10 +4590,10 @@ namespace zorba {
 		}
     break;
 
-  case 262:
+  case 263:
 
 /* Line 678 of lalr1.cc  */
-#line 2642 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2648 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new QVarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (1)].sval)),
@@ -4590,10 +4601,10 @@ namespace zorba {
 		}
     break;
 
-  case 263:
+  case 264:
 
 /* Line 678 of lalr1.cc  */
-#line 2648 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2654 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new QVarInDecl(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (1)].sval)),
@@ -4602,10 +4613,10 @@ namespace zorba {
 		}
     break;
 
-  case 264:
+  case 265:
 
 /* Line 678 of lalr1.cc  */
-#line 2661 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2667 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new TypeswitchExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(8) - (3)].expr),
@@ -4614,10 +4625,10 @@ namespace zorba {
 		}
     break;
 
-  case 265:
+  case 266:
 
 /* Line 678 of lalr1.cc  */
-#line 2668 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2674 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new TypeswitchExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(10) - (3)].expr),
@@ -4627,10 +4638,10 @@ namespace zorba {
 		}
     break;
 
-  case 266:
+  case 267:
 
 /* Line 678 of lalr1.cc  */
-#line 2682 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2688 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			CaseClauseList* cc_list_p = new CaseClauseList(LOC ((yyloc)));
 			cc_list_p->push_back(dynamic_cast<CaseClause*>((yysemantic_stack_[(1) - (1)].node)));
@@ -4638,10 +4649,10 @@ namespace zorba {
 		}
     break;
 
-  case 267:
+  case 268:
 
 /* Line 678 of lalr1.cc  */
-#line 2688 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2694 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			CaseClauseList* cc_list_p = dynamic_cast<CaseClauseList*>((yysemantic_stack_[(2) - (1)].node));
 			cc_list_p->push_back(dynamic_cast<CaseClause*>((yysemantic_stack_[(2) - (2)].node)));
@@ -4649,10 +4660,10 @@ namespace zorba {
 		}
     break;
 
-  case 268:
+  case 269:
 
 /* Line 678 of lalr1.cc  */
-#line 2700 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2706 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CaseClause(LOC ((yyloc)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(4) - (2)].node)),
@@ -4660,10 +4671,10 @@ namespace zorba {
 		}
     break;
 
-  case 269:
+  case 270:
 
 /* Line 678 of lalr1.cc  */
-#line 2706 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2712 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new CaseClause(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(7) - (3)].sval)),
@@ -4672,67 +4683,67 @@ namespace zorba {
 		}
     break;
 
-  case 270:
+  case 271:
 
 /* Line 678 of lalr1.cc  */
-#line 2719 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2725 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new IfExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(8) - (3)].expr), (yysemantic_stack_[(8) - (6)].expr), (yysemantic_stack_[(8) - (8)].expr));
 		}
     break;
 
-  case 271:
-
-/* Line 678 of lalr1.cc  */
-#line 2730 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
-		}
-    break;
-
   case 272:
 
 /* Line 678 of lalr1.cc  */
-#line 2734 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2736 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new OrExpr(LOC ((yyloc)),
-								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
     break;
 
   case 273:
 
 /* Line 678 of lalr1.cc  */
-#line 2745 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2740 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+			(yyval.expr) = new OrExpr(LOC ((yyloc)),
+								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		}
     break;
 
   case 274:
 
 /* Line 678 of lalr1.cc  */
-#line 2749 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2751 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new AndExpr(LOC ((yyloc)),
-								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
     break;
 
   case 275:
 
 /* Line 678 of lalr1.cc  */
-#line 2768 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2755 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+			(yyval.expr) = new AndExpr(LOC ((yyloc)),
+								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		}
     break;
 
   case 276:
 
 /* Line 678 of lalr1.cc  */
-#line 2772 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2774 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+		}
+    break;
+
+  case 277:
+
+/* Line 678 of lalr1.cc  */
+#line 2778 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			/*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
 			(yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -4742,10 +4753,10 @@ namespace zorba {
 		}
     break;
 
-  case 277:
+  case 278:
 
 /* Line 678 of lalr1.cc  */
-#line 2780 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2786 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       /*  ::=  "is" | "<<" | ">>" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -4755,10 +4766,10 @@ namespace zorba {
     }
     break;
 
-  case 278:
+  case 279:
 
 /* Line 678 of lalr1.cc  */
-#line 2788 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2794 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
 			(yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -4768,10 +4779,10 @@ namespace zorba {
 		}
     break;
 
-  case 279:
+  case 280:
 
 /* Line 678 of lalr1.cc  */
-#line 2796 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2802 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -4781,17 +4792,17 @@ namespace zorba {
     }
     break;
 
-  case 280:
-
-/* Line 678 of lalr1.cc  */
-#line 2803 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { /* this call is needed */  driver.lexer->interpretAsLessThan(); }
-    break;
-
   case 281:
 
 /* Line 678 of lalr1.cc  */
-#line 2804 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2809 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { /* this call is needed */  driver.lexer->interpretAsLessThan(); }
+    break;
+
+  case 282:
+
+/* Line 678 of lalr1.cc  */
+#line 2810 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -4801,10 +4812,10 @@ namespace zorba {
     }
     break;
 
-  case 282:
+  case 283:
 
 /* Line 678 of lalr1.cc  */
-#line 2812 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2818 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -4814,10 +4825,10 @@ namespace zorba {
     }
     break;
 
-  case 283:
+  case 284:
 
 /* Line 678 of lalr1.cc  */
-#line 2820 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2826 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -4827,10 +4838,10 @@ namespace zorba {
     }
     break;
 
-  case 284:
+  case 285:
 
 /* Line 678 of lalr1.cc  */
-#line 2828 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2834 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       (yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
@@ -4840,19 +4851,19 @@ namespace zorba {
     }
     break;
 
-  case 285:
+  case 286:
 
 /* Line 678 of lalr1.cc  */
-#line 2842 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2848 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
     break;
 
-  case 286:
+  case 287:
 
 /* Line 678 of lalr1.cc  */
-#line 2846 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2852 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FTContainsExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr),
@@ -4861,10 +4872,10 @@ namespace zorba {
 		}
     break;
 
-  case 287:
+  case 288:
 
 /* Line 678 of lalr1.cc  */
-#line 2853 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2859 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FTContainsExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -4873,120 +4884,110 @@ namespace zorba {
 		}
     break;
 
-  case 288:
-
-/* Line 678 of lalr1.cc  */
-#line 2866 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
-		}
-    break;
-
   case 289:
 
 /* Line 678 of lalr1.cc  */
-#line 2870 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2872 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new RangeExpr(LOC ((yyloc)),
-								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
     break;
 
   case 290:
 
 /* Line 678 of lalr1.cc  */
-#line 2881 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2876 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+			(yyval.expr) = new RangeExpr(LOC ((yyloc)),
+								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		}
     break;
 
   case 291:
 
 /* Line 678 of lalr1.cc  */
-#line 2885 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2887 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new AdditiveExpr(LOC ((yyloc)), ParseConstants::op_plus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
     break;
 
   case 292:
 
 /* Line 678 of lalr1.cc  */
-#line 2889 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2891 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new AdditiveExpr(LOC ((yyloc)), ParseConstants::op_minus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new AdditiveExpr(LOC ((yyloc)), ParseConstants::op_plus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		}
     break;
 
   case 293:
 
 /* Line 678 of lalr1.cc  */
-#line 2899 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2895 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+			(yyval.expr) = new AdditiveExpr(LOC ((yyloc)), ParseConstants::op_minus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		}
     break;
 
   case 294:
 
 /* Line 678 of lalr1.cc  */
-#line 2903 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2905 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_mul, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
     break;
 
   case 295:
 
 /* Line 678 of lalr1.cc  */
-#line 2907 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2909 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_div, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_mul, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		}
     break;
 
   case 296:
 
 /* Line 678 of lalr1.cc  */
-#line 2911 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2913 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_idiv, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_div, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		}
     break;
 
   case 297:
 
 /* Line 678 of lalr1.cc  */
-#line 2915 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2917 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_mod, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_idiv, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		}
     break;
 
   case 298:
 
 /* Line 678 of lalr1.cc  */
-#line 2925 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2921 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_mod, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		}
     break;
 
   case 299:
 
 /* Line 678 of lalr1.cc  */
-#line 2929 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2931 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new UnionExpr(LOC ((yyloc)),
-								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
     break;
 
   case 300:
 
 /* Line 678 of lalr1.cc  */
-#line 2934 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2935 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new UnionExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -4996,43 +4997,53 @@ namespace zorba {
   case 301:
 
 /* Line 678 of lalr1.cc  */
-#line 2945 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2940 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+			(yyval.expr) = new UnionExpr(LOC ((yyloc)),
+								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		}
     break;
 
   case 302:
 
 /* Line 678 of lalr1.cc  */
-#line 2949 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2951 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new IntersectExceptExpr(LOC ((yyloc)), ParseConstants::op_intersect, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
     break;
 
   case 303:
 
 /* Line 678 of lalr1.cc  */
-#line 2953 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2955 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new IntersectExceptExpr(LOC ((yyloc)), ParseConstants::op_except, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new IntersectExceptExpr(LOC ((yyloc)), ParseConstants::op_intersect, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		}
     break;
 
   case 304:
 
 /* Line 678 of lalr1.cc  */
-#line 2963 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2959 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+			(yyval.expr) = new IntersectExceptExpr(LOC ((yyloc)), ParseConstants::op_except, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		}
     break;
 
   case 305:
 
 /* Line 678 of lalr1.cc  */
-#line 2967 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2969 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+		}
+    break;
+
+  case 306:
+
+/* Line 678 of lalr1.cc  */
+#line 2973 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new InstanceofExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -5040,19 +5051,19 @@ namespace zorba {
 		}
     break;
 
-  case 306:
+  case 307:
 
 /* Line 678 of lalr1.cc  */
-#line 2979 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2985 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
     break;
 
-  case 307:
+  case 308:
 
 /* Line 678 of lalr1.cc  */
-#line 2983 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 2989 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new TreatExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -5060,19 +5071,19 @@ namespace zorba {
 		}
     break;
 
-  case 308:
+  case 309:
 
 /* Line 678 of lalr1.cc  */
-#line 2995 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3001 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
     break;
 
-  case 309:
+  case 310:
 
 /* Line 678 of lalr1.cc  */
-#line 2999 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3005 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CastableExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -5080,19 +5091,19 @@ namespace zorba {
 		}
     break;
 
-  case 310:
+  case 311:
 
 /* Line 678 of lalr1.cc  */
-#line 3011 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3017 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
     break;
 
-  case 311:
+  case 312:
 
 /* Line 678 of lalr1.cc  */
-#line 3015 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3021 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CastExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
@@ -5100,19 +5111,19 @@ namespace zorba {
 		}
     break;
 
-  case 312:
+  case 313:
 
 /* Line 678 of lalr1.cc  */
-#line 3027 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3033 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
     break;
 
-  case 313:
+  case 314:
 
 /* Line 678 of lalr1.cc  */
-#line 3031 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3037 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new UnaryExpr(LOC ((yyloc)),
 								dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node)),
@@ -5120,40 +5131,29 @@ namespace zorba {
 		}
     break;
 
-  case 314:
-
-/* Line 678 of lalr1.cc  */
-#line 3043 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.node) = new SignList(LOC ((yyloc)), true);
-		}
-    break;
-
   case 315:
 
 /* Line 678 of lalr1.cc  */
-#line 3047 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3049 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new SignList(LOC ((yyloc)), false);
+			(yyval.node) = new SignList(LOC ((yyloc)), true);
 		}
     break;
 
   case 316:
 
 /* Line 678 of lalr1.cc  */
-#line 3051 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3053 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = (yysemantic_stack_[(2) - (1)].node);
+			(yyval.node) = new SignList(LOC ((yyloc)), false);
 		}
     break;
 
   case 317:
 
 /* Line 678 of lalr1.cc  */
-#line 3055 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3057 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			SignList* slist_p = dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node));
-			if (slist_p) slist_p->negate();
 			(yyval.node) = (yysemantic_stack_[(2) - (1)].node);
 		}
     break;
@@ -5161,16 +5161,18 @@ namespace zorba {
   case 318:
 
 /* Line 678 of lalr1.cc  */
-#line 3067 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3061 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+			SignList* slist_p = dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node));
+			if (slist_p) slist_p->negate();
+			(yyval.node) = (yysemantic_stack_[(2) - (1)].node);
 		}
     break;
 
   case 319:
 
 /* Line 678 of lalr1.cc  */
-#line 3071 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3073 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -5179,7 +5181,7 @@ namespace zorba {
   case 320:
 
 /* Line 678 of lalr1.cc  */
-#line 3075 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3077 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -5188,115 +5190,124 @@ namespace zorba {
   case 321:
 
 /* Line 678 of lalr1.cc  */
-#line 3085 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3081 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_eq);
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
     break;
 
   case 322:
 
 /* Line 678 of lalr1.cc  */
-#line 3089 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3091 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_ne);
+			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_eq);
 		}
     break;
 
   case 323:
 
 /* Line 678 of lalr1.cc  */
-#line 3093 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3095 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_lt);
+			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_ne);
 		}
     break;
 
   case 324:
 
 /* Line 678 of lalr1.cc  */
-#line 3097 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3099 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_le);
+			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_lt);
 		}
     break;
 
   case 325:
 
 /* Line 678 of lalr1.cc  */
-#line 3101 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3103 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_gt);
+			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_le);
 		}
     break;
 
   case 326:
 
 /* Line 678 of lalr1.cc  */
-#line 3105 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3107 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_ge);
+			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_gt);
 		}
     break;
 
   case 327:
 
 /* Line 678 of lalr1.cc  */
-#line 3115 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3111 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_is);
+			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_ge);
 		}
     break;
 
   case 328:
 
 /* Line 678 of lalr1.cc  */
-#line 3119 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3121 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_precedes);
+			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_is);
 		}
     break;
 
   case 329:
 
 /* Line 678 of lalr1.cc  */
-#line 3123 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3125 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_follows);
+			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_precedes);
 		}
     break;
 
   case 330:
 
 /* Line 678 of lalr1.cc  */
-#line 3133 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3129 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new ValidateExpr(LOC ((yyloc)), "strict", (yysemantic_stack_[(4) - (3)].expr));
+			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_follows);
 		}
     break;
 
   case 331:
 
 /* Line 678 of lalr1.cc  */
-#line 3137 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3139 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.expr) = new ValidateExpr(LOC ((yyloc)), "lax", (yysemantic_stack_[(5) - (4)].expr));
-    }
+			(yyval.expr) = new ValidateExpr(LOC ((yyloc)), "strict", (yysemantic_stack_[(4) - (3)].expr));
+		}
     break;
 
   case 332:
 
 /* Line 678 of lalr1.cc  */
-#line 3141 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3143 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.expr) = new ValidateExpr(LOC ((yyloc)), "strict", (yysemantic_stack_[(5) - (4)].expr));
+      (yyval.expr) = new ValidateExpr(LOC ((yyloc)), "lax", (yysemantic_stack_[(5) - (4)].expr));
     }
     break;
 
   case 333:
 
 /* Line 678 of lalr1.cc  */
-#line 3145 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3147 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+      (yyval.expr) = new ValidateExpr(LOC ((yyloc)), "strict", (yysemantic_stack_[(5) - (4)].expr));
+    }
+    break;
+
+  case 334:
+
+/* Line 678 of lalr1.cc  */
+#line 3151 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new ValidateExpr(LOC ((yyloc)),
                             dynamic_cast<TypeName*>((yysemantic_stack_[(6) - (3)].node))->get_name(),
@@ -5304,10 +5315,10 @@ namespace zorba {
     }
     break;
 
-  case 334:
+  case 335:
 
 /* Line 678 of lalr1.cc  */
-#line 3157 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3163 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new ExtensionExpr(LOC ((yyloc)),
 								dynamic_cast<PragmaList*>((yysemantic_stack_[(3) - (1)].node)),
@@ -5315,10 +5326,10 @@ namespace zorba {
 		}
     break;
 
-  case 335:
+  case 336:
 
 /* Line 678 of lalr1.cc  */
-#line 3163 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3169 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new ExtensionExpr(LOC ((yyloc)),
 								dynamic_cast<PragmaList*>((yysemantic_stack_[(4) - (1)].node)),
@@ -5326,10 +5337,10 @@ namespace zorba {
 		}
     break;
 
-  case 336:
+  case 337:
 
 /* Line 678 of lalr1.cc  */
-#line 3175 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3181 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			PragmaList* pragma_list_p = new PragmaList(LOC ((yyloc)));
 			pragma_list_p->push_back(dynamic_cast<Pragma*>((yysemantic_stack_[(1) - (1)].node)));
@@ -5337,10 +5348,10 @@ namespace zorba {
 		}
     break;
 
-  case 337:
+  case 338:
 
 /* Line 678 of lalr1.cc  */
-#line 3181 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3187 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			PragmaList* pragma_list_p = dynamic_cast<PragmaList*>((yysemantic_stack_[(2) - (1)].node));
 			if (pragma_list_p) {
@@ -5350,10 +5361,10 @@ namespace zorba {
 		}
     break;
 
-  case 338:
+  case 339:
 
 /* Line 678 of lalr1.cc  */
-#line 3195 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3201 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Pragma(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(3) - (2)].sval))),
@@ -5362,10 +5373,10 @@ namespace zorba {
 		}
     break;
 
-  case 339:
+  case 340:
 
 /* Line 678 of lalr1.cc  */
-#line 3201 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3207 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Pragma(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(2) - (2)].sval))),
@@ -5373,37 +5384,37 @@ namespace zorba {
     }
     break;
 
-  case 340:
-
-/* Line 678 of lalr1.cc  */
-#line 3243 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_lone_slash, NULL);
-		}
-    break;
-
   case 341:
 
 /* Line 678 of lalr1.cc  */
-#line 3247 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3249 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_slash, (yysemantic_stack_[(2) - (2)].expr));
+			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_lone_slash, NULL);
 		}
     break;
 
   case 342:
 
 /* Line 678 of lalr1.cc  */
-#line 3251 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3253 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_slashslash, (yysemantic_stack_[(2) - (2)].expr));
+			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_slash, (yysemantic_stack_[(2) - (2)].expr));
 		}
     break;
 
   case 343:
 
 /* Line 678 of lalr1.cc  */
-#line 3255 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3257 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_slashslash, (yysemantic_stack_[(2) - (2)].expr));
+		}
+    break;
+
+  case 344:
+
+/* Line 678 of lalr1.cc  */
+#line 3261 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        RelativePathExpr *rpe = dynamic_cast<RelativePathExpr *>((yysemantic_stack_[(1) - (1)].expr));
        (yyval.expr) = (rpe == NULL ?
@@ -5412,19 +5423,19 @@ namespace zorba {
 		}
     break;
 
-  case 344:
+  case 345:
 
 /* Line 678 of lalr1.cc  */
-#line 3267 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3273 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = NULL;
     }
     break;
 
-  case 345:
+  case 346:
 
 /* Line 678 of lalr1.cc  */
-#line 3277 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3283 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        AxisStep *as = dynamic_cast<AxisStep *>((yysemantic_stack_[(1) - (1)].expr));
        (yyval.expr) = (as != NULL ?
@@ -5436,37 +5447,28 @@ namespace zorba {
 		}
     break;
 
-  case 346:
-
-/* Line 678 of lalr1.cc  */
-#line 3288 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.expr) = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
-		}
-    break;
-
   case 347:
 
 /* Line 678 of lalr1.cc  */
-#line 3293 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3294 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slashslash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		}
     break;
 
   case 348:
 
 /* Line 678 of lalr1.cc  */
-#line 3303 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3299 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+			(yyval.expr) = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slashslash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		}
     break;
 
   case 349:
 
 /* Line 678 of lalr1.cc  */
-#line 3307 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3309 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -5475,7 +5477,16 @@ namespace zorba {
   case 350:
 
 /* Line 678 of lalr1.cc  */
-#line 3317 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3313 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+		}
+    break;
+
+  case 351:
+
+/* Line 678 of lalr1.cc  */
+#line 3323 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ForwardStep*>((yysemantic_stack_[(1) - (1)].node)),
@@ -5483,10 +5494,10 @@ namespace zorba {
 		}
     break;
 
-  case 351:
+  case 352:
 
 /* Line 678 of lalr1.cc  */
-#line 3323 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3329 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ForwardStep*>((yysemantic_stack_[(2) - (1)].node)),
@@ -5494,10 +5505,10 @@ namespace zorba {
 		}
     break;
 
-  case 352:
+  case 353:
 
 /* Line 678 of lalr1.cc  */
-#line 3329 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3335 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ReverseStep*>((yysemantic_stack_[(1) - (1)].node)),
@@ -5505,10 +5516,10 @@ namespace zorba {
 		}
     break;
 
-  case 353:
+  case 354:
 
 /* Line 678 of lalr1.cc  */
-#line 3335 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3341 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ReverseStep*>((yysemantic_stack_[(2) - (1)].node)),
@@ -5516,10 +5527,10 @@ namespace zorba {
 		}
     break;
 
-  case 354:
+  case 355:
 
 /* Line 678 of lalr1.cc  */
-#line 3347 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3353 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardStep(LOC ((yyloc)),
 								dynamic_cast<ForwardAxis*>((yysemantic_stack_[(2) - (1)].node)),
@@ -5527,174 +5538,165 @@ namespace zorba {
 		}
     break;
 
-  case 355:
+  case 356:
 
 /* Line 678 of lalr1.cc  */
-#line 3353 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3359 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ForwardStep(LOC ((yyloc)),
 								dynamic_cast<AbbrevForwardStep*>((yysemantic_stack_[(1) - (1)].node)));
 		}
     break;
 
-  case 356:
-
-/* Line 678 of lalr1.cc  */
-#line 3364 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_child);
-		}
-    break;
-
   case 357:
 
 /* Line 678 of lalr1.cc  */
-#line 3368 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3370 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_descendant);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_child);
 		}
     break;
 
   case 358:
 
 /* Line 678 of lalr1.cc  */
-#line 3372 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3374 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_attribute);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_descendant);
 		}
     break;
 
   case 359:
 
 /* Line 678 of lalr1.cc  */
-#line 3376 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3378 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_self);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_attribute);
 		}
     break;
 
   case 360:
 
 /* Line 678 of lalr1.cc  */
-#line 3380 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3382 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_descendant_or_self);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_self);
 		}
     break;
 
   case 361:
 
 /* Line 678 of lalr1.cc  */
-#line 3384 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3386 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_following_sibling);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_descendant_or_self);
 		}
     break;
 
   case 362:
 
 /* Line 678 of lalr1.cc  */
-#line 3388 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3390 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_following);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_following_sibling);
 		}
     break;
 
   case 363:
 
 /* Line 678 of lalr1.cc  */
-#line 3398 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3394 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new AbbrevForwardStep(LOC ((yyloc)), (yysemantic_stack_[(1) - (1)].node), false);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_following);
 		}
     break;
 
   case 364:
 
 /* Line 678 of lalr1.cc  */
-#line 3402 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3404 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new AbbrevForwardStep(LOC ((yyloc)), (yysemantic_stack_[(2) - (2)].node), true);
+			(yyval.node) = new AbbrevForwardStep(LOC ((yyloc)), (yysemantic_stack_[(1) - (1)].node), false);
 		}
     break;
 
   case 365:
 
 /* Line 678 of lalr1.cc  */
-#line 3412 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3408 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ReverseStep(LOC((yyloc)), dynamic_cast<ReverseAxis*>((yysemantic_stack_[(2) - (1)].node)), (yysemantic_stack_[(2) - (2)].node));
+			(yyval.node) = new AbbrevForwardStep(LOC ((yyloc)), (yysemantic_stack_[(2) - (2)].node), true);
 		}
     break;
 
   case 366:
 
 /* Line 678 of lalr1.cc  */
-#line 3416 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3418 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			ReverseAxis* rev_p = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_parent);
-			(yyval.node) = new ReverseStep(LOC((yyloc)), rev_p, NULL);
+			(yyval.node) = new ReverseStep(LOC((yyloc)), dynamic_cast<ReverseAxis*>((yysemantic_stack_[(2) - (1)].node)), (yysemantic_stack_[(2) - (2)].node));
 		}
     break;
 
   case 367:
 
 /* Line 678 of lalr1.cc  */
-#line 3427 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3422 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_parent);
+			ReverseAxis* rev_p = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_parent);
+			(yyval.node) = new ReverseStep(LOC((yyloc)), rev_p, NULL);
 		}
     break;
 
   case 368:
 
 /* Line 678 of lalr1.cc  */
-#line 3431 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3433 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_ancestor);
+			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_parent);
 		}
     break;
 
   case 369:
 
 /* Line 678 of lalr1.cc  */
-#line 3435 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3437 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_preceding_sibling);
+			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_ancestor);
 		}
     break;
 
   case 370:
 
 /* Line 678 of lalr1.cc  */
-#line 3439 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3441 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_preceding);
+			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_preceding_sibling);
 		}
     break;
 
   case 371:
 
 /* Line 678 of lalr1.cc  */
-#line 3443 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3445 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_ancestor_or_self);
+			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_preceding);
 		}
     break;
 
   case 372:
 
 /* Line 678 of lalr1.cc  */
-#line 3458 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3449 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
+			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_ancestor_or_self);
 		}
     break;
 
   case 373:
 
 /* Line 678 of lalr1.cc  */
-#line 3462 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3464 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
@@ -5703,25 +5705,34 @@ namespace zorba {
   case 374:
 
 /* Line 678 of lalr1.cc  */
-#line 3472 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3468 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new NameTest(LOC ((yyloc)), new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(1) - (1)].sval))));
+			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
     break;
 
   case 375:
 
 /* Line 678 of lalr1.cc  */
-#line 3476 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3478 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new NameTest(LOC ((yyloc)), dynamic_cast<Wildcard*>((yysemantic_stack_[(1) - (1)].node)));
+			(yyval.node) = new NameTest(LOC ((yyloc)), new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(1) - (1)].sval))));
 		}
     break;
 
   case 376:
 
 /* Line 678 of lalr1.cc  */
-#line 3486 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3482 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.node) = new NameTest(LOC ((yyloc)), dynamic_cast<Wildcard*>((yysemantic_stack_[(1) - (1)].node)));
+		}
+    break;
+
+  case 377:
+
+/* Line 678 of lalr1.cc  */
+#line 3492 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Wildcard(LOC ((yyloc)),
                         "",
@@ -5730,10 +5741,10 @@ namespace zorba {
 		}
     break;
 
-  case 377:
+  case 378:
 
 /* Line 678 of lalr1.cc  */
-#line 3493 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3499 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Wildcard(LOC ((yyloc)),
                         SYMTAB ((yysemantic_stack_[(1) - (1)].sval)),
@@ -5742,10 +5753,10 @@ namespace zorba {
 		}
     break;
 
-  case 378:
+  case 379:
 
 /* Line 678 of lalr1.cc  */
-#line 3500 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3506 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Wildcard(LOC ((yyloc)),
                         "",
@@ -5754,19 +5765,19 @@ namespace zorba {
 		}
     break;
 
-  case 379:
+  case 380:
 
 /* Line 678 of lalr1.cc  */
-#line 3513 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3519 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
     break;
 
-  case 380:
+  case 381:
 
 /* Line 678 of lalr1.cc  */
-#line 3517 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3523 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FilterExpr(LOC ((yyloc)),
                           (yysemantic_stack_[(2) - (1)].expr),
@@ -5774,10 +5785,10 @@ namespace zorba {
 		}
     break;
 
-  case 381:
+  case 382:
 
 /* Line 678 of lalr1.cc  */
-#line 3529 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3535 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			PredicateList* pred_list_p = new PredicateList(LOC ((yyloc)));
 			pred_list_p->push_back(dynamic_cast<exprnode*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -5785,10 +5796,10 @@ namespace zorba {
 		}
     break;
 
-  case 382:
+  case 383:
 
 /* Line 678 of lalr1.cc  */
-#line 3535 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3541 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			PredicateList* pred_list_p = dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (1)].node));
 			if (pred_list_p) {
@@ -5798,28 +5809,19 @@ namespace zorba {
 		}
     break;
 
-  case 383:
-
-/* Line 678 of lalr1.cc  */
-#line 3549 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
-		}
-    break;
-
   case 384:
 
 /* Line 678 of lalr1.cc  */
-#line 3560 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3555 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+			(yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
 		}
     break;
 
   case 385:
 
 /* Line 678 of lalr1.cc  */
-#line 3564 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3566 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -5828,7 +5830,7 @@ namespace zorba {
   case 386:
 
 /* Line 678 of lalr1.cc  */
-#line 3568 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3570 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -5837,7 +5839,7 @@ namespace zorba {
   case 387:
 
 /* Line 678 of lalr1.cc  */
-#line 3572 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3574 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -5846,7 +5848,7 @@ namespace zorba {
   case 388:
 
 /* Line 678 of lalr1.cc  */
-#line 3576 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3578 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -5855,7 +5857,7 @@ namespace zorba {
   case 389:
 
 /* Line 678 of lalr1.cc  */
-#line 3580 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3582 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -5864,7 +5866,7 @@ namespace zorba {
   case 390:
 
 /* Line 678 of lalr1.cc  */
-#line 3584 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3586 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -5873,7 +5875,7 @@ namespace zorba {
   case 391:
 
 /* Line 678 of lalr1.cc  */
-#line 3588 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3590 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -5882,7 +5884,7 @@ namespace zorba {
   case 392:
 
 /* Line 678 of lalr1.cc  */
-#line 3598 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3594 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -5891,7 +5893,7 @@ namespace zorba {
   case 393:
 
 /* Line 678 of lalr1.cc  */
-#line 3602 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3604 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -5900,86 +5902,85 @@ namespace zorba {
   case 394:
 
 /* Line 678 of lalr1.cc  */
-#line 3612 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3608 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = NumericLiteral::new_literal(LOC ((yyloc)), ParseConstants::num_decimal, *(yysemantic_stack_[(1) - (1)].decval));
-      delete yylval.decval;
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
     break;
 
   case 395:
 
 /* Line 678 of lalr1.cc  */
-#line 3617 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3618 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = NumericLiteral::new_literal(LOC ((yyloc)), ParseConstants::num_integer, *(yysemantic_stack_[(1) - (1)].ival));
-      delete yylval.ival;
+			(yyval.expr) = NumericLiteral::new_literal(LOC ((yyloc)), ParseConstants::num_decimal, *(yysemantic_stack_[(1) - (1)].decval));
+      delete yylval.decval;
 		}
     break;
 
   case 396:
 
 /* Line 678 of lalr1.cc  */
-#line 3622 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3623 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = NumericLiteral::new_literal(LOC ((yyloc)), ParseConstants::num_double, *(yysemantic_stack_[(1) - (1)].dval));
-      delete yylval.dval;
+			(yyval.expr) = NumericLiteral::new_literal(LOC ((yyloc)), ParseConstants::num_integer, *(yysemantic_stack_[(1) - (1)].ival));
+      delete yylval.ival;
 		}
     break;
 
   case 397:
 
 /* Line 678 of lalr1.cc  */
-#line 3633 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3628 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new VarRef(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(2) - (2)].sval)));
+			(yyval.expr) = NumericLiteral::new_literal(LOC ((yyloc)), ParseConstants::num_double, *(yysemantic_stack_[(1) - (1)].dval));
+      delete yylval.dval;
 		}
     break;
 
   case 398:
 
 /* Line 678 of lalr1.cc  */
-#line 3643 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3639 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new ParenthesizedExpr(LOC ((yyloc)), NULL);
+			(yyval.expr) = new VarRef(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(2) - (2)].sval)));
 		}
     break;
 
   case 399:
 
 /* Line 678 of lalr1.cc  */
-#line 3647 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3649 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new ParenthesizedExpr(LOC ((yyloc)),
-								(yysemantic_stack_[(3) - (2)].expr));
+			(yyval.expr) = new ParenthesizedExpr(LOC ((yyloc)), NULL);
 		}
     break;
 
   case 400:
 
 /* Line 678 of lalr1.cc  */
-#line 3658 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3653 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new ContextItemExpr(LOC ((yyloc)));
+			(yyval.expr) = new ParenthesizedExpr(LOC ((yyloc)),
+								(yysemantic_stack_[(3) - (2)].expr));
 		}
     break;
 
   case 401:
 
 /* Line 678 of lalr1.cc  */
-#line 3668 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3664 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new OrderedExpr(LOC ((yyloc)),
-								(yysemantic_stack_[(4) - (3)].expr));
+			(yyval.expr) = new ContextItemExpr(LOC ((yyloc)));
 		}
     break;
 
   case 402:
 
 /* Line 678 of lalr1.cc  */
-#line 3679 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3674 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new UnorderedExpr(LOC ((yyloc)),
+			(yyval.expr) = new OrderedExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (3)].expr));
 		}
     break;
@@ -5987,7 +5988,17 @@ namespace zorba {
   case 403:
 
 /* Line 678 of lalr1.cc  */
-#line 3735 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3685 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.expr) = new UnorderedExpr(LOC ((yyloc)),
+								(yysemantic_stack_[(4) - (3)].expr));
+		}
+    break;
+
+  case 404:
+
+/* Line 678 of lalr1.cc  */
+#line 3741 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FunctionCall(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(3) - (1)].sval))),
@@ -5995,10 +6006,10 @@ namespace zorba {
 		}
     break;
 
-  case 404:
+  case 405:
 
 /* Line 678 of lalr1.cc  */
-#line 3741 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3747 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new FunctionCall(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (1)].sval))),
@@ -6006,10 +6017,10 @@ namespace zorba {
 		}
     break;
 
-  case 405:
+  case 406:
 
 /* Line 678 of lalr1.cc  */
-#line 3753 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3759 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			ArgList* a_list_p = new ArgList(LOC ((yyloc))); 
 			a_list_p->push_back((yysemantic_stack_[(1) - (1)].expr));
@@ -6017,10 +6028,10 @@ namespace zorba {
 		}
     break;
 
-  case 406:
+  case 407:
 
 /* Line 678 of lalr1.cc  */
-#line 3759 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3765 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			ArgList* a_list_p = dynamic_cast<ArgList*>((yysemantic_stack_[(3) - (1)].node));
 			if (a_list_p) a_list_p->push_back((yysemantic_stack_[(3) - (3)].expr));
@@ -6028,19 +6039,10 @@ namespace zorba {
 		}
     break;
 
-  case 407:
-
-/* Line 678 of lalr1.cc  */
-#line 3771 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
-		}
-    break;
-
   case 408:
 
 /* Line 678 of lalr1.cc  */
-#line 3775 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3777 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -6049,7 +6051,7 @@ namespace zorba {
   case 409:
 
 /* Line 678 of lalr1.cc  */
-#line 3785 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3781 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -6058,7 +6060,7 @@ namespace zorba {
   case 410:
 
 /* Line 678 of lalr1.cc  */
-#line 3789 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3791 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -6067,7 +6069,7 @@ namespace zorba {
   case 411:
 
 /* Line 678 of lalr1.cc  */
-#line 3793 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3795 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -6076,7 +6078,16 @@ namespace zorba {
   case 412:
 
 /* Line 678 of lalr1.cc  */
-#line 3803 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3799 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+		}
+    break;
+
+  case 413:
+
+/* Line 678 of lalr1.cc  */
+#line 3809 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (2)].sval))),
@@ -6086,10 +6097,10 @@ namespace zorba {
 		}
     break;
 
-  case 413:
+  case 414:
 
 /* Line 678 of lalr1.cc  */
-#line 3811 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3817 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(5) - (2)].sval))),
@@ -6099,10 +6110,10 @@ namespace zorba {
 		}
     break;
 
-  case 414:
+  case 415:
 
 /* Line 678 of lalr1.cc  */
-#line 3819 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3825 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(8) - (2)].sval))),
@@ -6112,10 +6123,10 @@ namespace zorba {
 		}
     break;
 
-  case 415:
+  case 416:
 
 /* Line 678 of lalr1.cc  */
-#line 3827 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3833 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(9) - (2)].sval))),
@@ -6125,10 +6136,10 @@ namespace zorba {
 		}
     break;
 
-  case 416:
+  case 417:
 
 /* Line 678 of lalr1.cc  */
-#line 3835 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3841 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(9) - (2)].sval))),
@@ -6138,10 +6149,10 @@ namespace zorba {
 		}
     break;
 
-  case 417:
+  case 418:
 
 /* Line 678 of lalr1.cc  */
-#line 3843 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3849 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(10) - (2)].sval))),
@@ -6151,10 +6162,10 @@ namespace zorba {
 		}
     break;
 
-  case 418:
+  case 419:
 
 /* Line 678 of lalr1.cc  */
-#line 3858 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3864 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			DirElemContentList* elem_content_list_p = new DirElemContentList(LOC ((yyloc)));
 			elem_content_list_p->push_back(dynamic_cast<DirElemContent*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -6162,10 +6173,10 @@ namespace zorba {
 		}
     break;
 
-  case 419:
+  case 420:
 
 /* Line 678 of lalr1.cc  */
-#line 3864 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3870 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			DirElemContentList* elem_content_list_p = dynamic_cast<DirElemContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (elem_content_list_p) elem_content_list_p->push_back(dynamic_cast<DirElemContent*>((yysemantic_stack_[(2) - (2)].expr)));
@@ -6173,10 +6184,10 @@ namespace zorba {
 		}
     break;
 
-  case 420:
+  case 421:
 
 /* Line 678 of lalr1.cc  */
-#line 3876 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3882 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			DirAttributeList* at_list_p = new DirAttributeList(LOC ((yyloc)));
 			at_list_p->push_back(dynamic_cast<DirAttr*>((yysemantic_stack_[(1) - (1)].node)));
@@ -6184,10 +6195,10 @@ namespace zorba {
 		}
     break;
 
-  case 421:
+  case 422:
 
 /* Line 678 of lalr1.cc  */
-#line 3882 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3888 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			DirAttributeList* at_list_p = dynamic_cast<DirAttributeList*>((yysemantic_stack_[(2) - (1)].node));
 			if (at_list_p) {
@@ -6197,10 +6208,10 @@ namespace zorba {
 		}
     break;
 
-  case 422:
+  case 423:
 
 /* Line 678 of lalr1.cc  */
-#line 3895 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3901 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DirAttr(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(6) - (2)].sval))),
@@ -6208,48 +6219,48 @@ namespace zorba {
 		}
     break;
 
-  case 425:
+  case 426:
 
 /* Line 678 of lalr1.cc  */
-#line 3912 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3918 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DirAttributeValue(LOC ((yyloc)),
 								dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
 		}
     break;
 
-  case 426:
+  case 427:
 
 /* Line 678 of lalr1.cc  */
-#line 3917 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3923 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DirAttributeValue(LOC ((yyloc)),
 								dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
 		}
     break;
 
-  case 427:
-
-/* Line 678 of lalr1.cc  */
-#line 3928 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.node) = new QuoteAttrContentList(LOC ((yyloc)));
-		}
-    break;
-
   case 428:
 
 /* Line 678 of lalr1.cc  */
-#line 3932 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3934 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
+			(yyval.node) = new QuoteAttrContentList(LOC ((yyloc)));
 		}
     break;
 
   case 429:
 
 /* Line 678 of lalr1.cc  */
-#line 3939 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3938 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
+		}
+    break;
+
+  case 430:
+
+/* Line 678 of lalr1.cc  */
+#line 3945 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(LOC ((yyloc)));
 			qo_list_p->push_back(new QuoteAttrValueContent(LOC ((yyloc)),std::string("\"")));
@@ -6257,10 +6268,10 @@ namespace zorba {
 		}
     break;
 
-  case 430:
+  case 431:
 
 /* Line 678 of lalr1.cc  */
-#line 3945 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3951 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(LOC ((yyloc)));
 			qo_list_p->push_back(dynamic_cast<QuoteAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)));
@@ -6268,10 +6279,10 @@ namespace zorba {
 		}
     break;
 
-  case 431:
+  case 432:
 
 /* Line 678 of lalr1.cc  */
-#line 3951 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3957 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (qo_list_p) {
@@ -6281,10 +6292,10 @@ namespace zorba {
 		}
     break;
 
-  case 432:
+  case 433:
 
 /* Line 678 of lalr1.cc  */
-#line 3959 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3965 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (qo_list_p) {
@@ -6294,28 +6305,28 @@ namespace zorba {
 		}
     break;
 
-  case 433:
-
-/* Line 678 of lalr1.cc  */
-#line 3973 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.node) = new AposAttrContentList(LOC ((yyloc)));
-		}
-    break;
-
   case 434:
 
 /* Line 678 of lalr1.cc  */
-#line 3977 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3979 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
+			(yyval.node) = new AposAttrContentList(LOC ((yyloc)));
 		}
     break;
 
   case 435:
 
 /* Line 678 of lalr1.cc  */
-#line 3984 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3983 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
+		}
+    break;
+
+  case 436:
+
+/* Line 678 of lalr1.cc  */
+#line 3990 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			AposAttrContentList* at_list_p = new AposAttrContentList(LOC ((yyloc)));
 			at_list_p->push_back(new AposAttrValueContent(LOC ((yyloc)),"'"));
@@ -6323,10 +6334,10 @@ namespace zorba {
 		}
     break;
 
-  case 436:
+  case 437:
 
 /* Line 678 of lalr1.cc  */
-#line 3990 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 3996 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			AposAttrContentList* at_list_p = new AposAttrContentList(LOC ((yyloc)));
 			at_list_p->push_back(dynamic_cast<AposAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)));
@@ -6334,10 +6345,10 @@ namespace zorba {
 		}
     break;
 
-  case 437:
+  case 438:
 
 /* Line 678 of lalr1.cc  */
-#line 3996 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4002 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (at_list_p) {
@@ -6347,10 +6358,10 @@ namespace zorba {
 		}
     break;
 
-  case 438:
+  case 439:
 
 /* Line 678 of lalr1.cc  */
-#line 4004 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4010 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (at_list_p) {
@@ -6360,70 +6371,70 @@ namespace zorba {
 		}
     break;
 
-  case 439:
-
-/* Line 678 of lalr1.cc  */
-#line 4018 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.node) = new QuoteAttrValueContent(LOC ((yyloc)),
-								SYMTAB ((yysemantic_stack_[(1) - (1)].sval)));
-		}
-    break;
-
   case 440:
 
 /* Line 678 of lalr1.cc  */
-#line 4023 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4024 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new QuoteAttrValueContent(LOC ((yyloc)),
-								dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
+								SYMTAB ((yysemantic_stack_[(1) - (1)].sval)));
 		}
     break;
 
   case 441:
 
 /* Line 678 of lalr1.cc  */
-#line 4034 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4029 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new AposAttrValueContent(LOC ((yyloc)),
-								SYMTAB ((yysemantic_stack_[(1) - (1)].sval)));
+			(yyval.node) = new QuoteAttrValueContent(LOC ((yyloc)),
+								dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
 		}
     break;
 
   case 442:
 
 /* Line 678 of lalr1.cc  */
-#line 4039 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4040 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AposAttrValueContent(LOC ((yyloc)),
-								dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
+								SYMTAB ((yysemantic_stack_[(1) - (1)].sval)));
 		}
     break;
 
   case 443:
 
 /* Line 678 of lalr1.cc  */
-#line 4050 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4045 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
-								(yysemantic_stack_[(1) - (1)].expr));
+			(yyval.node) = new AposAttrValueContent(LOC ((yyloc)),
+								dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
 		}
     break;
 
   case 444:
 
 /* Line 678 of lalr1.cc  */
-#line 4055 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4056 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
-								SYMTAB ((yysemantic_stack_[(1) - (1)].sval)));
+								(yysemantic_stack_[(1) - (1)].expr));
 		}
     break;
 
   case 445:
 
 /* Line 678 of lalr1.cc  */
-#line 4060 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4061 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
+								SYMTAB ((yysemantic_stack_[(1) - (1)].sval)));
+		}
+    break;
+
+  case 446:
+
+/* Line 678 of lalr1.cc  */
+#line 4066 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>((yysemantic_stack_[(1) - (1)].expr));
 			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
@@ -6431,10 +6442,10 @@ namespace zorba {
 		}
     break;
 
-  case 446:
+  case 447:
 
 /* Line 678 of lalr1.cc  */
-#line 4066 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4072 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr));
 			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
@@ -6442,10 +6453,10 @@ namespace zorba {
 		}
     break;
 
-  case 447:
+  case 448:
 
 /* Line 678 of lalr1.cc  */
-#line 4078 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4084 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CommonContent(LOC ((yyloc)),
                 ParseConstants::cont_charref,
@@ -6453,69 +6464,69 @@ namespace zorba {
 		}
     break;
 
-  case 448:
+  case 449:
 
 /* Line 678 of lalr1.cc  */
-#line 4084 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4090 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CommonContent(LOC ((yyloc)),
 								ParseConstants::cont_escape_lbrace);
 		}
     break;
 
-  case 449:
+  case 450:
 
 /* Line 678 of lalr1.cc  */
-#line 4089 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4095 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CommonContent(LOC ((yyloc)),
 								ParseConstants::cont_escape_rbrace);
 		}
     break;
 
-  case 450:
+  case 451:
 
 /* Line 678 of lalr1.cc  */
-#line 4094 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4100 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CommonContent(LOC ((yyloc)),
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(1) - (1)].expr)));
 		}
     break;
 
-  case 451:
+  case 452:
 
 /* Line 678 of lalr1.cc  */
-#line 4105 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4111 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirCommentConstructor(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (2)].sval)));
 		}
     break;
 
-  case 452:
+  case 453:
 
 /* Line 678 of lalr1.cc  */
-#line 4110 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4116 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new DirCommentConstructor(LOC ((yyloc)), "");
     }
     break;
 
-  case 453:
+  case 454:
 
 /* Line 678 of lalr1.cc  */
-#line 4125 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4131 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirPIConstructor(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (2)].sval)));
 		}
     break;
 
-  case 454:
+  case 455:
 
 /* Line 678 of lalr1.cc  */
-#line 4130 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4136 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new DirPIConstructor(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(3) - (2)].sval)),
@@ -6523,28 +6534,19 @@ namespace zorba {
 		}
     break;
 
-  case 455:
-
-/* Line 678 of lalr1.cc  */
-#line 4147 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.expr) = new CDataSection(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(2) - (2)].sval)));
-		}
-    break;
-
   case 456:
 
 /* Line 678 of lalr1.cc  */
-#line 4162 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4153 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
+			(yyval.expr) = new CDataSection(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(2) - (2)].sval)));
 		}
     break;
 
   case 457:
 
 /* Line 678 of lalr1.cc  */
-#line 4166 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4168 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -6553,7 +6555,7 @@ namespace zorba {
   case 458:
 
 /* Line 678 of lalr1.cc  */
-#line 4170 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4172 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -6562,7 +6564,7 @@ namespace zorba {
   case 459:
 
 /* Line 678 of lalr1.cc  */
-#line 4174 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4176 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -6571,7 +6573,7 @@ namespace zorba {
   case 460:
 
 /* Line 678 of lalr1.cc  */
-#line 4178 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4180 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -6580,7 +6582,7 @@ namespace zorba {
   case 461:
 
 /* Line 678 of lalr1.cc  */
-#line 4182 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4184 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
@@ -6589,28 +6591,37 @@ namespace zorba {
   case 462:
 
 /* Line 678 of lalr1.cc  */
-#line 4192 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4188 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new CompDocConstructor(LOC ((yyloc)),
-								(yysemantic_stack_[(4) - (3)].expr));
+			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		}
     break;
 
   case 463:
 
 /* Line 678 of lalr1.cc  */
-#line 4203 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4198 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
-								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (2)].sval))),
-								NULL);
+			(yyval.expr) = new CompDocConstructor(LOC ((yyloc)),
+								(yysemantic_stack_[(4) - (3)].expr));
 		}
     break;
 
   case 464:
 
 /* Line 678 of lalr1.cc  */
-#line 4209 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4209 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (2)].sval))),
+								NULL);
+		}
+    break;
+
+  case 465:
+
+/* Line 678 of lalr1.cc  */
+#line 4215 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(5) - (2)].sval))),
@@ -6618,30 +6629,30 @@ namespace zorba {
 		}
     break;
 
-  case 465:
+  case 466:
 
 /* Line 678 of lalr1.cc  */
-#line 4215 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4221 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(6) - (3)].expr), NULL);
 		}
     break;
 
-  case 466:
+  case 467:
 
 /* Line 678 of lalr1.cc  */
-#line 4220 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4226 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr));
 		}
     break;
 
-  case 467:
+  case 468:
 
 /* Line 678 of lalr1.cc  */
-#line 4242 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4248 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (2)].sval))),
@@ -6649,10 +6660,10 @@ namespace zorba {
 		}
     break;
 
-  case 468:
+  case 469:
 
 /* Line 678 of lalr1.cc  */
-#line 4248 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4254 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(5) - (2)].sval))),
@@ -6660,48 +6671,48 @@ namespace zorba {
 		}
     break;
 
-  case 469:
+  case 470:
 
 /* Line 678 of lalr1.cc  */
-#line 4254 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4260 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(6) - (3)].expr), NULL);
 		}
     break;
 
-  case 470:
+  case 471:
 
 /* Line 678 of lalr1.cc  */
-#line 4259 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4265 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr));
 		}
     break;
 
-  case 471:
-
-/* Line 678 of lalr1.cc  */
-#line 4270 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.expr) = new CompTextConstructor(LOC ((yyloc)), (yysemantic_stack_[(4) - (3)].expr));
-		}
-    break;
-
   case 472:
 
 /* Line 678 of lalr1.cc  */
-#line 4280 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4276 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.expr) = new CompCommentConstructor(LOC ((yyloc)), (yysemantic_stack_[(4) - (3)].expr));
+			(yyval.expr) = new CompTextConstructor(LOC ((yyloc)), (yysemantic_stack_[(4) - (3)].expr));
 		}
     break;
 
   case 473:
 
 /* Line 678 of lalr1.cc  */
-#line 4290 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4286 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.expr) = new CompCommentConstructor(LOC ((yyloc)), (yysemantic_stack_[(4) - (3)].expr));
+		}
+    break;
+
+  case 474:
+
+/* Line 678 of lalr1.cc  */
+#line 4296 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(4) - (2)].sval)),
@@ -6709,10 +6720,10 @@ namespace zorba {
 		}
     break;
 
-  case 474:
+  case 475:
 
 /* Line 678 of lalr1.cc  */
-#line 4296 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4302 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								SYMTAB ((yysemantic_stack_[(5) - (2)].sval)),
@@ -6720,30 +6731,30 @@ namespace zorba {
 		}
     break;
 
-  case 475:
+  case 476:
 
 /* Line 678 of lalr1.cc  */
-#line 4302 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4308 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(6) - (3)].expr), NULL);
 		}
     break;
 
-  case 476:
+  case 477:
 
 /* Line 678 of lalr1.cc  */
-#line 4307 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4313 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr));
 		}
     break;
 
-  case 477:
+  case 478:
 
 /* Line 678 of lalr1.cc  */
-#line 4318 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4324 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SingleType(LOC ((yyloc)),
 								dynamic_cast<AtomicType*>((yysemantic_stack_[(1) - (1)].node)),
@@ -6751,10 +6762,10 @@ namespace zorba {
 		}
     break;
 
-  case 478:
+  case 479:
 
 /* Line 678 of lalr1.cc  */
-#line 4324 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4330 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SingleType(LOC ((yyloc)),
 								dynamic_cast<AtomicType*>((yysemantic_stack_[(2) - (1)].node)),
@@ -6762,19 +6773,19 @@ namespace zorba {
 		}
     break;
 
-  case 479:
+  case 480:
 
 /* Line 678 of lalr1.cc  */
-#line 4336 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4342 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(2) - (2)].node);
 		}
     break;
 
-  case 480:
+  case 481:
 
 /* Line 678 of lalr1.cc  */
-#line 4347 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4353 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SequenceType(LOC ((yyloc)),
 								(yysemantic_stack_[(1) - (1)].node),
@@ -6782,10 +6793,10 @@ namespace zorba {
 		}
     break;
 
-  case 481:
+  case 482:
 
 /* Line 678 of lalr1.cc  */
-#line 4353 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4359 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SequenceType(LOC ((yyloc)),
 								(yysemantic_stack_[(2) - (1)].node),
@@ -6793,58 +6804,49 @@ namespace zorba {
 		}
     break;
 
-  case 482:
-
-/* Line 678 of lalr1.cc  */
-#line 4359 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.node) = new SequenceType(LOC ((yyloc)), NULL, NULL);
-		}
-    break;
-
   case 483:
 
 /* Line 678 of lalr1.cc  */
-#line 4396 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4365 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new OccurrenceIndicator(LOC ((yyloc)),
-								ParseConstants::occurs_optionally);
+			(yyval.node) = new SequenceType(LOC ((yyloc)), NULL, NULL);
 		}
     break;
 
   case 484:
 
 /* Line 678 of lalr1.cc  */
-#line 4401 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4402 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OccurrenceIndicator(LOC ((yyloc)),
-								ParseConstants::occurs_zero_or_more);
+								ParseConstants::occurs_optionally);
 		}
     break;
 
   case 485:
 
 /* Line 678 of lalr1.cc  */
-#line 4406 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4407 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new OccurrenceIndicator(LOC ((yyloc)),
-								ParseConstants::occurs_one_or_more);
+								ParseConstants::occurs_zero_or_more);
 		}
     break;
 
   case 486:
 
 /* Line 678 of lalr1.cc  */
-#line 4417 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4412 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
+			(yyval.node) = new OccurrenceIndicator(LOC ((yyloc)),
+								ParseConstants::occurs_one_or_more);
 		}
     break;
 
   case 487:
 
 /* Line 678 of lalr1.cc  */
-#line 4421 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4423 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
@@ -6853,35 +6855,35 @@ namespace zorba {
   case 488:
 
 /* Line 678 of lalr1.cc  */
-#line 4425 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4427 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new ItemType(LOC ((yyloc)),true);
+			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
     break;
 
   case 489:
 
 /* Line 678 of lalr1.cc  */
-#line 4435 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4431 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new AtomicType(LOC ((yyloc)),
-								new QName(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(1) - (1)].sval))));
+			(yyval.node) = new ItemType(LOC ((yyloc)),true);
 		}
     break;
 
   case 490:
 
 /* Line 678 of lalr1.cc  */
-#line 4446 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4441 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
+			(yyval.node) = new AtomicType(LOC ((yyloc)),
+								new QName(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(1) - (1)].sval))));
 		}
     break;
 
   case 491:
 
 /* Line 678 of lalr1.cc  */
-#line 4450 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4452 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
@@ -6890,7 +6892,7 @@ namespace zorba {
   case 492:
 
 /* Line 678 of lalr1.cc  */
-#line 4454 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4456 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
@@ -6899,7 +6901,7 @@ namespace zorba {
   case 493:
 
 /* Line 678 of lalr1.cc  */
-#line 4458 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4460 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
@@ -6908,7 +6910,7 @@ namespace zorba {
   case 494:
 
 /* Line 678 of lalr1.cc  */
-#line 4462 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4464 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
@@ -6917,7 +6919,7 @@ namespace zorba {
   case 495:
 
 /* Line 678 of lalr1.cc  */
-#line 4466 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4468 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
@@ -6926,7 +6928,7 @@ namespace zorba {
   case 496:
 
 /* Line 678 of lalr1.cc  */
-#line 4470 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4472 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
@@ -6935,7 +6937,7 @@ namespace zorba {
   case 497:
 
 /* Line 678 of lalr1.cc  */
-#line 4474 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4476 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
@@ -6944,7 +6946,7 @@ namespace zorba {
   case 498:
 
 /* Line 678 of lalr1.cc  */
-#line 4478 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4480 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
@@ -6953,81 +6955,81 @@ namespace zorba {
   case 499:
 
 /* Line 678 of lalr1.cc  */
-#line 4488 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4484 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new AnyKindTest(LOC ((yyloc)));
+			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
     break;
 
   case 500:
 
 /* Line 678 of lalr1.cc  */
-#line 4498 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4494 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new DocumentTest(LOC ((yyloc)));
+			(yyval.node) = new AnyKindTest(LOC ((yyloc)));
 		}
     break;
 
   case 501:
 
 /* Line 678 of lalr1.cc  */
-#line 4502 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4504 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new DocumentTest(LOC ((yyloc)),
-								dynamic_cast<ElementTest*>((yysemantic_stack_[(4) - (3)].node)));
+			(yyval.node) = new DocumentTest(LOC ((yyloc)));
 		}
     break;
 
   case 502:
 
 /* Line 678 of lalr1.cc  */
-#line 4507 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4508 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new DocumentTest(LOC ((yyloc)),
-								dynamic_cast<SchemaElementTest*>((yysemantic_stack_[(4) - (3)].node)));
+								dynamic_cast<ElementTest*>((yysemantic_stack_[(4) - (3)].node)));
 		}
     break;
 
   case 503:
 
 /* Line 678 of lalr1.cc  */
-#line 4518 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4513 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new TextTest(LOC ((yyloc)));
+			(yyval.node) = new DocumentTest(LOC ((yyloc)),
+								dynamic_cast<SchemaElementTest*>((yysemantic_stack_[(4) - (3)].node)));
 		}
     break;
 
   case 504:
 
 /* Line 678 of lalr1.cc  */
-#line 4528 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4524 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new CommentTest(LOC ((yyloc)));
+			(yyval.node) = new TextTest(LOC ((yyloc)));
 		}
     break;
 
   case 505:
 
 /* Line 678 of lalr1.cc  */
-#line 4538 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4534 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new PITest(LOC ((yyloc)), "");
+			(yyval.node) = new CommentTest(LOC ((yyloc)));
 		}
     break;
 
   case 506:
 
 /* Line 678 of lalr1.cc  */
-#line 4542 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4544 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new PITest(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(4) - (3)].sval)));
+			(yyval.node) = new PITest(LOC ((yyloc)), "");
 		}
     break;
 
   case 507:
 
 /* Line 678 of lalr1.cc  */
-#line 4546 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4548 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new PITest(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(4) - (3)].sval)));
 		}
@@ -7036,21 +7038,19 @@ namespace zorba {
   case 508:
 
 /* Line 678 of lalr1.cc  */
-#line 4556 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4552 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new AttributeTest(LOC ((yyloc)),
-								NULL,
-								NULL);
+			(yyval.node) = new PITest(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(4) - (3)].sval)));
 		}
     break;
 
   case 509:
 
 /* Line 678 of lalr1.cc  */
-#line 4562 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4562 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AttributeTest(LOC ((yyloc)),
-								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (3)].sval))),
+								NULL,
 								NULL);
 		}
     break;
@@ -7058,7 +7058,18 @@ namespace zorba {
   case 510:
 
 /* Line 678 of lalr1.cc  */
-#line 4568 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4568 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.node) = new AttributeTest(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (3)].sval))),
+								NULL);
+		}
+    break;
+
+  case 511:
+
+/* Line 678 of lalr1.cc  */
+#line 4574 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(6) - (3)].sval))),
@@ -7066,10 +7077,10 @@ namespace zorba {
 		}
     break;
 
-  case 511:
+  case 512:
 
 /* Line 678 of lalr1.cc  */
-#line 4574 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4580 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								NULL,
@@ -7077,10 +7088,10 @@ namespace zorba {
 		}
     break;
 
-  case 512:
+  case 513:
 
 /* Line 678 of lalr1.cc  */
-#line 4580 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4586 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								NULL,
@@ -7088,35 +7099,23 @@ namespace zorba {
 		}
     break;
 
-  case 513:
+  case 514:
 
 /* Line 678 of lalr1.cc  */
-#line 4592 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4598 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaAttributeTest(LOC ((yyloc)),
 								new QName(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (2)].sval))));
 		}
     break;
 
-  case 514:
-
-/* Line 678 of lalr1.cc  */
-#line 4603 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.node) = new ElementTest(LOC ((yyloc)),
-                           NULL,
-                           NULL,
-                           true);
-		}
-    break;
-
   case 515:
 
 /* Line 678 of lalr1.cc  */
-#line 4610 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4609 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
-                           new QName(LOC((yyloc)), SYMTAB ((yysemantic_stack_[(4) - (3)].sval))),
+                           NULL,
                            NULL,
                            true);
 		}
@@ -7125,7 +7124,19 @@ namespace zorba {
   case 516:
 
 /* Line 678 of lalr1.cc  */
-#line 4617 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4616 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+			(yyval.node) = new ElementTest(LOC ((yyloc)),
+                           new QName(LOC((yyloc)), SYMTAB ((yysemantic_stack_[(4) - (3)].sval))),
+                           NULL,
+                           true);
+		}
+    break;
+
+  case 517:
+
+/* Line 678 of lalr1.cc  */
+#line 4623 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
                            new QName(LOC((yyloc)),SYMTAB ((yysemantic_stack_[(6) - (3)].sval))),
@@ -7134,10 +7145,10 @@ namespace zorba {
 		}
     break;
 
-  case 517:
+  case 518:
 
 /* Line 678 of lalr1.cc  */
-#line 4624 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4630 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
                            new QName(LOC((yyloc)), SYMTAB ((yysemantic_stack_[(6) - (3)].sval))),
@@ -7146,10 +7157,10 @@ namespace zorba {
 		}
     break;
 
-  case 518:
+  case 519:
 
 /* Line 678 of lalr1.cc  */
-#line 4631 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4637 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									NULL,
@@ -7158,10 +7169,10 @@ namespace zorba {
 		}
     break;
 
-  case 519:
+  case 520:
 
 /* Line 678 of lalr1.cc  */
-#line 4638 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4644 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									NULL,
@@ -7170,10 +7181,10 @@ namespace zorba {
 		}
     break;
 
-  case 520:
+  case 521:
 
 /* Line 678 of lalr1.cc  */
-#line 4645 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4651 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									NULL,
@@ -7182,30 +7193,30 @@ namespace zorba {
 		}
     break;
 
-  case 521:
+  case 522:
 
 /* Line 678 of lalr1.cc  */
-#line 4658 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4664 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new SchemaElementTest(LOC ((yyloc)),
 									new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(4) - (3)].sval))));
 		}
     break;
 
-  case 522:
+  case 523:
 
 /* Line 678 of lalr1.cc  */
-#line 4679 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4685 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new TypeName(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(1) - (1)].sval))));
 		}
     break;
 
-  case 523:
+  case 524:
 
 /* Line 678 of lalr1.cc  */
-#line 4686 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4692 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new TypeName(LOC ((yyloc)),
 								new QName(LOC ((yyloc)),SYMTAB ((yysemantic_stack_[(2) - (1)].sval))),
@@ -7213,112 +7224,57 @@ namespace zorba {
 		}
     break;
 
-  case 524:
-
-/* Line 678 of lalr1.cc  */
-#line 4706 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-			(yyval.expr) = new StringLiteral(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(1) - (1)].sval)));
-		}
-    break;
-
   case 525:
 
 /* Line 678 of lalr1.cc  */
-#line 4746 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4712 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new RevalidationDecl (LOC ((yyloc)), StaticContextConsts::strict_validation);
+			(yyval.expr) = new StringLiteral(LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(1) - (1)].sval)));
 		}
     break;
 
   case 526:
 
 /* Line 678 of lalr1.cc  */
-#line 4750 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4752 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new RevalidationDecl (LOC ((yyloc)), StaticContextConsts::lax_validation);
-    }
+      (yyval.node) = new RevalidationDecl (LOC ((yyloc)), StaticContextConsts::strict_validation);
+		}
     break;
 
   case 527:
 
 /* Line 678 of lalr1.cc  */
-#line 4754 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4756 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new RevalidationDecl (LOC ((yyloc)), StaticContextConsts::skip_validation);
+      (yyval.node) = new RevalidationDecl (LOC ((yyloc)), StaticContextConsts::lax_validation);
     }
     break;
 
   case 528:
 
 /* Line 678 of lalr1.cc  */
-#line 4763 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4760 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-       (yyval.expr) = new InsertExpr(
-                  LOC ((yyloc)),
-                  store::UpdateConsts::INTO, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
-		}
+      (yyval.node) = new RevalidationDecl (LOC ((yyloc)), StaticContextConsts::skip_validation);
+    }
     break;
 
   case 529:
 
 /* Line 678 of lalr1.cc  */
-#line 4769 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4769 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
-                  store::UpdateConsts::AS_FIRST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr));
+                  store::UpdateConsts::INTO, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
 		}
     break;
 
   case 530:
 
 /* Line 678 of lalr1.cc  */
-#line 4775 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-       (yyval.expr) = new InsertExpr(
-                  LOC ((yyloc)),
-                  store::UpdateConsts::AS_LAST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr));
-		}
-    break;
-
-  case 531:
-
-/* Line 678 of lalr1.cc  */
-#line 4781 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-       (yyval.expr) = new InsertExpr(
-                  LOC ((yyloc)),
-                  store::UpdateConsts::AFTER, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
-		}
-    break;
-
-  case 532:
-
-/* Line 678 of lalr1.cc  */
-#line 4787 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-       (yyval.expr) = new InsertExpr(
-                  LOC ((yyloc)),
-                  store::UpdateConsts::BEFORE, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
-		}
-    break;
-
-  case 533:
-
-/* Line 678 of lalr1.cc  */
-#line 4794 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-       (yyval.expr) = new InsertExpr(
-                  LOC ((yyloc)),
-                  store::UpdateConsts::INTO, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
-		}
-    break;
-
-  case 534:
-
-/* Line 678 of lalr1.cc  */
-#line 4800 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4775 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -7326,10 +7282,10 @@ namespace zorba {
 		}
     break;
 
-  case 535:
+  case 531:
 
 /* Line 678 of lalr1.cc  */
-#line 4806 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4781 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -7337,10 +7293,10 @@ namespace zorba {
 		}
     break;
 
-  case 536:
+  case 532:
 
 /* Line 678 of lalr1.cc  */
-#line 4812 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4787 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -7348,10 +7304,10 @@ namespace zorba {
 		}
     break;
 
-  case 537:
+  case 533:
 
 /* Line 678 of lalr1.cc  */
-#line 4818 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4793 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new InsertExpr(
                   LOC ((yyloc)),
@@ -7359,19 +7315,65 @@ namespace zorba {
 		}
     break;
 
+  case 534:
+
+/* Line 678 of lalr1.cc  */
+#line 4800 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+       (yyval.expr) = new InsertExpr(
+                  LOC ((yyloc)),
+                  store::UpdateConsts::INTO, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
+		}
+    break;
+
+  case 535:
+
+/* Line 678 of lalr1.cc  */
+#line 4806 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+       (yyval.expr) = new InsertExpr(
+                  LOC ((yyloc)),
+                  store::UpdateConsts::AS_FIRST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr));
+		}
+    break;
+
+  case 536:
+
+/* Line 678 of lalr1.cc  */
+#line 4812 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+       (yyval.expr) = new InsertExpr(
+                  LOC ((yyloc)),
+                  store::UpdateConsts::AS_LAST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr));
+		}
+    break;
+
+  case 537:
+
+/* Line 678 of lalr1.cc  */
+#line 4818 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+       (yyval.expr) = new InsertExpr(
+                  LOC ((yyloc)),
+                  store::UpdateConsts::AFTER, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
+		}
+    break;
+
   case 538:
 
 /* Line 678 of lalr1.cc  */
-#line 4830 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4824 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-       (yyval.expr) = new DeleteExpr( LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr));
+       (yyval.expr) = new InsertExpr(
+                  LOC ((yyloc)),
+                  store::UpdateConsts::BEFORE, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
 		}
     break;
 
   case 539:
 
 /* Line 678 of lalr1.cc  */
-#line 4835 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4836 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new DeleteExpr( LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr));
 		}
@@ -7380,7 +7382,16 @@ namespace zorba {
   case 540:
 
 /* Line 678 of lalr1.cc  */
-#line 4845 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4841 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+       (yyval.expr) = new DeleteExpr( LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr));
+		}
+    break;
+
+  case 541:
+
+/* Line 678 of lalr1.cc  */
+#line 4851 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new ReplaceExpr(
                   LOC ((yyloc)),
@@ -7388,10 +7399,10 @@ namespace zorba {
 		}
     break;
 
-  case 541:
+  case 542:
 
 /* Line 678 of lalr1.cc  */
-#line 4851 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4857 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new ReplaceExpr(
                   LOC ((yyloc)),
@@ -7399,30 +7410,30 @@ namespace zorba {
 		}
     break;
 
-  case 542:
+  case 543:
 
 /* Line 678 of lalr1.cc  */
-#line 4863 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4869 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new RenameExpr(
                   LOC ((yyloc)), (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
 		}
     break;
 
-  case 543:
+  case 544:
 
 /* Line 678 of lalr1.cc  */
-#line 4889 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4895 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       CopyVarList* lList = dynamic_cast<CopyVarList*>((yysemantic_stack_[(7) - (3)].expr));
       (yyval.expr) = new TransformExpr(LOC((yyloc)), lList, (yysemantic_stack_[(7) - (5)].expr), (yysemantic_stack_[(7) - (7)].expr));
 		}
     break;
 
-  case 544:
+  case 545:
 
 /* Line 678 of lalr1.cc  */
-#line 4900 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4906 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        CopyVarList* lList = new CopyVarList(LOC((yyloc)));
        lList->push_back (dynamic_cast<VarBinding*> ((yysemantic_stack_[(1) - (1)].expr)));
@@ -7430,10 +7441,10 @@ namespace zorba {
 		}
     break;
 
-  case 545:
+  case 546:
 
 /* Line 678 of lalr1.cc  */
-#line 4906 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4912 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        CopyVarList* lList = dynamic_cast<CopyVarList*>((yysemantic_stack_[(4) - (1)].expr));
        VarBinding* lBinding = dynamic_cast<VarBinding*>((yysemantic_stack_[(4) - (4)].expr));
@@ -7442,29 +7453,29 @@ namespace zorba {
 		}
     break;
 
-  case 546:
-
-/* Line 678 of lalr1.cc  */
-#line 4919 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-       (yyval.expr) = new VarBinding(LOC((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (1)].sval)), (yysemantic_stack_[(3) - (3)].expr));  
-    }
-    break;
-
   case 547:
 
 /* Line 678 of lalr1.cc  */
-#line 4933 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4925 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-       (yyval.expr) = new TryExpr(LOC ((yyloc)),
-								       (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
+       (yyval.expr) = new VarBinding(LOC((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (1)].sval)), (yysemantic_stack_[(3) - (3)].expr));  
     }
     break;
 
   case 548:
 
 /* Line 678 of lalr1.cc  */
-#line 4940 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4939 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+       (yyval.expr) = new TryExpr(LOC ((yyloc)),
+								       (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
+    }
+    break;
+
+  case 549:
+
+/* Line 678 of lalr1.cc  */
+#line 4946 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        CatchListExpr* aCatchListExpr = new CatchListExpr(LOC ((yyloc)));
        aCatchListExpr->push_back(static_cast<CatchExpr*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -7472,10 +7483,10 @@ namespace zorba {
     }
     break;
 
-  case 549:
+  case 550:
 
 /* Line 678 of lalr1.cc  */
-#line 4946 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4952 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       CatchListExpr* aCatchListExpr = dynamic_cast<CatchListExpr*>((yysemantic_stack_[(2) - (1)].expr));
       if (aCatchListExpr) {
@@ -7485,10 +7496,10 @@ namespace zorba {
     }
     break;
 
-  case 550:
+  case 551:
 
 /* Line 678 of lalr1.cc  */
-#line 4957 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4963 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC ((yyloc)),
                           *(yysemantic_stack_[(3) - (2)].name_test_list),
@@ -7497,10 +7508,10 @@ namespace zorba {
     }
     break;
 
-  case 551:
+  case 552:
 
 /* Line 678 of lalr1.cc  */
-#line 4964 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4970 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC ((yyloc)),
                           *(yysemantic_stack_[(7) - (2)].name_test_list),
@@ -7510,10 +7521,10 @@ namespace zorba {
     }
     break;
 
-  case 552:
+  case 553:
 
 /* Line 678 of lalr1.cc  */
-#line 4973 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4979 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC ((yyloc)),
                           *(yysemantic_stack_[(10) - (2)].name_test_list),
@@ -7524,10 +7535,10 @@ namespace zorba {
     }
     break;
 
-  case 553:
+  case 554:
 
 /* Line 678 of lalr1.cc  */
-#line 4982 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 4988 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC ((yyloc)),
                           *(yysemantic_stack_[(13) - (2)].name_test_list),
@@ -7539,10 +7550,10 @@ namespace zorba {
     }
     break;
 
-  case 554:
+  case 555:
 
 /* Line 678 of lalr1.cc  */
-#line 4995 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5001 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       CatchExpr::NameTestList *name_test_list = new CatchExpr::NameTestList;
       name_test_list->push_back (static_cast<NameTest *> ((yysemantic_stack_[(1) - (1)].node)));
@@ -7550,10 +7561,10 @@ namespace zorba {
     }
     break;
 
-  case 555:
+  case 556:
 
 /* Line 678 of lalr1.cc  */
-#line 5001 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5007 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       CatchExpr::NameTestList *name_test_list =
         static_cast<CatchExpr::NameTestList *> ((yysemantic_stack_[(3) - (1)].name_test_list));
@@ -7562,10 +7573,10 @@ namespace zorba {
     }
     break;
 
-  case 558:
+  case 559:
 
 /* Line 678 of lalr1.cc  */
-#line 5021 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5027 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       std::string tmp = SYMTAB ((yysemantic_stack_[(1) - (1)].sval));
       if (tmp.find (':') != std::string::npos) {
@@ -7576,1312 +7587,1312 @@ namespace zorba {
     }
     break;
 
-  case 560:
-
-/* Line 678 of lalr1.cc  */
-#line 5037 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval); }
-    break;
-
   case 561:
 
 /* Line 678 of lalr1.cc  */
-#line 5040 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("xquery"); }
+#line 5043 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval); }
     break;
 
   case 562:
 
 /* Line 678 of lalr1.cc  */
-#line 5041 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("empty"); }
+#line 5046 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("xquery"); }
     break;
 
   case 563:
 
 /* Line 678 of lalr1.cc  */
-#line 5042 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("attribute"); }
+#line 5047 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("empty"); }
     break;
 
   case 564:
 
 /* Line 678 of lalr1.cc  */
-#line 5043 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("comment"); }
+#line 5048 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("attribute"); }
     break;
 
   case 565:
 
 /* Line 678 of lalr1.cc  */
-#line 5044 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("document-node"); }
+#line 5049 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("comment"); }
     break;
 
   case 566:
 
 /* Line 678 of lalr1.cc  */
-#line 5045 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("element"); }
+#line 5050 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("document-node"); }
     break;
 
   case 567:
 
 /* Line 678 of lalr1.cc  */
-#line 5046 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("item"); }
+#line 5051 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("element"); }
     break;
 
   case 568:
 
 /* Line 678 of lalr1.cc  */
-#line 5047 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("if"); }
+#line 5052 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("item"); }
     break;
 
   case 569:
 
 /* Line 678 of lalr1.cc  */
-#line 5048 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("node"); }
+#line 5053 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("if"); }
     break;
 
   case 570:
 
 /* Line 678 of lalr1.cc  */
-#line 5049 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("processing-instruction"); }
+#line 5054 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("node"); }
     break;
 
   case 571:
 
 /* Line 678 of lalr1.cc  */
-#line 5050 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("schema-attribute"); }
+#line 5055 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("processing-instruction"); }
     break;
 
   case 572:
 
 /* Line 678 of lalr1.cc  */
-#line 5051 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("schema-element"); }
+#line 5056 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("schema-attribute"); }
     break;
 
   case 573:
 
 /* Line 678 of lalr1.cc  */
-#line 5052 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("text"); }
+#line 5057 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("schema-element"); }
     break;
 
   case 574:
 
 /* Line 678 of lalr1.cc  */
-#line 5053 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("typeswitch"); }
+#line 5058 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("text"); }
     break;
 
   case 575:
 
 /* Line 678 of lalr1.cc  */
-#line 5054 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("empty-sequence"); }
+#line 5059 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("typeswitch"); }
     break;
 
   case 576:
 
 /* Line 678 of lalr1.cc  */
-#line 5055 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("boundary-space"); }
+#line 5060 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("empty-sequence"); }
     break;
 
   case 577:
 
 /* Line 678 of lalr1.cc  */
-#line 5056 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("ft-option"); }
+#line 5061 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("boundary-space"); }
     break;
 
   case 578:
 
 /* Line 678 of lalr1.cc  */
-#line 5057 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("base-uri"); }
+#line 5062 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("ft-option"); }
     break;
 
   case 579:
 
 /* Line 678 of lalr1.cc  */
-#line 5058 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("lax"); }
+#line 5063 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("base-uri"); }
     break;
 
   case 580:
 
 /* Line 678 of lalr1.cc  */
-#line 5059 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("strict"); }
+#line 5064 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("lax"); }
     break;
 
   case 581:
 
 /* Line 678 of lalr1.cc  */
-#line 5060 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("idiv"); }
+#line 5065 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("strict"); }
     break;
 
   case 582:
 
 /* Line 678 of lalr1.cc  */
-#line 5061 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("document"); }
+#line 5066 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("idiv"); }
     break;
 
   case 583:
 
 /* Line 678 of lalr1.cc  */
-#line 5062 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("not"); }
+#line 5067 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("document"); }
     break;
 
   case 584:
 
 /* Line 678 of lalr1.cc  */
-#line 5063 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("sensitive"); }
+#line 5068 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("not"); }
     break;
 
   case 585:
 
 /* Line 678 of lalr1.cc  */
-#line 5064 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("insensitive"); }
+#line 5069 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("sensitive"); }
     break;
 
   case 586:
 
 /* Line 678 of lalr1.cc  */
-#line 5065 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("diacritics"); }
+#line 5070 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("insensitive"); }
     break;
 
   case 587:
 
 /* Line 678 of lalr1.cc  */
-#line 5066 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("without"); }
+#line 5071 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("diacritics"); }
     break;
 
   case 588:
 
 /* Line 678 of lalr1.cc  */
-#line 5067 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("stemming"); }
+#line 5072 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("without"); }
     break;
 
   case 589:
 
 /* Line 678 of lalr1.cc  */
-#line 5068 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("thesaurus"); }
+#line 5073 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("stemming"); }
     break;
 
   case 590:
 
 /* Line 678 of lalr1.cc  */
-#line 5069 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("stop"); }
+#line 5074 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("thesaurus"); }
     break;
 
   case 591:
 
 /* Line 678 of lalr1.cc  */
-#line 5070 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("wildcards"); }
+#line 5075 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("stop"); }
     break;
 
   case 592:
 
 /* Line 678 of lalr1.cc  */
-#line 5071 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("entire"); }
+#line 5076 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("wildcards"); }
     break;
 
   case 593:
 
 /* Line 678 of lalr1.cc  */
-#line 5072 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("content"); }
+#line 5077 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("entire"); }
     break;
 
   case 594:
 
 /* Line 678 of lalr1.cc  */
-#line 5073 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("word"); }
+#line 5078 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("content"); }
     break;
 
   case 595:
 
 /* Line 678 of lalr1.cc  */
-#line 5074 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("start"); }
+#line 5079 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("word"); }
     break;
 
   case 596:
 
 /* Line 678 of lalr1.cc  */
-#line 5075 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("end"); }
+#line 5080 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("start"); }
     break;
 
   case 597:
 
 /* Line 678 of lalr1.cc  */
-#line 5076 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("most"); }
+#line 5081 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("end"); }
     break;
 
   case 598:
 
 /* Line 678 of lalr1.cc  */
-#line 5077 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("skip"); }
+#line 5082 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("most"); }
     break;
 
   case 599:
 
 /* Line 678 of lalr1.cc  */
-#line 5078 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("copy"); }
+#line 5083 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("skip"); }
     break;
 
   case 600:
 
 /* Line 678 of lalr1.cc  */
-#line 5079 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("value"); }
+#line 5084 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("copy"); }
     break;
 
   case 601:
 
 /* Line 678 of lalr1.cc  */
-#line 5080 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("eq"); }
+#line 5085 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("value"); }
     break;
 
   case 602:
 
 /* Line 678 of lalr1.cc  */
-#line 5081 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("ne"); }
+#line 5086 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("eq"); }
     break;
 
   case 603:
 
 /* Line 678 of lalr1.cc  */
-#line 5082 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("lt"); }
+#line 5087 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("ne"); }
     break;
 
   case 604:
 
 /* Line 678 of lalr1.cc  */
-#line 5083 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("le"); }
+#line 5088 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("lt"); }
     break;
 
   case 605:
 
 /* Line 678 of lalr1.cc  */
-#line 5084 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("gt"); }
+#line 5089 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("le"); }
     break;
 
   case 606:
 
 /* Line 678 of lalr1.cc  */
-#line 5085 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("ge"); }
+#line 5090 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("gt"); }
     break;
 
   case 607:
 
 /* Line 678 of lalr1.cc  */
-#line 5086 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("at"); }
+#line 5091 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("ge"); }
     break;
 
   case 608:
 
 /* Line 678 of lalr1.cc  */
-#line 5087 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("context"); }
+#line 5092 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("at"); }
     break;
 
   case 609:
 
 /* Line 678 of lalr1.cc  */
-#line 5088 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("variable"); }
+#line 5093 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("context"); }
     break;
 
   case 610:
 
 /* Line 678 of lalr1.cc  */
-#line 5089 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("return"); }
+#line 5094 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("variable"); }
     break;
 
   case 611:
 
 /* Line 678 of lalr1.cc  */
-#line 5090 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("for"); }
+#line 5095 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("return"); }
     break;
 
   case 612:
 
 /* Line 678 of lalr1.cc  */
-#line 5091 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("outer"); }
+#line 5096 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("for"); }
     break;
 
   case 613:
 
 /* Line 678 of lalr1.cc  */
-#line 5092 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("sliding"); }
+#line 5097 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("outer"); }
     break;
 
   case 614:
 
 /* Line 678 of lalr1.cc  */
-#line 5093 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("tumbling"); }
+#line 5098 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("sliding"); }
     break;
 
   case 615:
 
 /* Line 678 of lalr1.cc  */
-#line 5094 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("previous"); }
+#line 5099 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("tumbling"); }
     break;
 
   case 616:
 
 /* Line 678 of lalr1.cc  */
-#line 5095 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("next"); }
+#line 5100 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("previous"); }
     break;
 
   case 617:
 
 /* Line 678 of lalr1.cc  */
-#line 5096 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("only"); }
+#line 5101 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("next"); }
     break;
 
   case 618:
 
 /* Line 678 of lalr1.cc  */
-#line 5097 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("when"); }
+#line 5102 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("only"); }
     break;
 
   case 619:
 
 /* Line 678 of lalr1.cc  */
-#line 5098 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("count"); }
+#line 5103 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("when"); }
     break;
 
   case 620:
 
 /* Line 678 of lalr1.cc  */
-#line 5099 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("in"); }
+#line 5104 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("count"); }
     break;
 
   case 621:
 
 /* Line 678 of lalr1.cc  */
-#line 5100 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("let"); }
+#line 5105 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("in"); }
     break;
 
   case 622:
 
 /* Line 678 of lalr1.cc  */
-#line 5101 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("where"); }
+#line 5106 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("let"); }
     break;
 
   case 623:
 
 /* Line 678 of lalr1.cc  */
-#line 5102 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("by"); }
+#line 5107 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("where"); }
     break;
 
   case 624:
 
 /* Line 678 of lalr1.cc  */
-#line 5103 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("group"); }
+#line 5108 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("by"); }
     break;
 
   case 625:
 
 /* Line 678 of lalr1.cc  */
-#line 5104 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("order"); }
+#line 5109 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("group"); }
     break;
 
   case 626:
 
 /* Line 678 of lalr1.cc  */
-#line 5105 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("stable"); }
+#line 5110 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("order"); }
     break;
 
   case 627:
 
 /* Line 678 of lalr1.cc  */
-#line 5106 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("ascending"); }
+#line 5111 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("stable"); }
     break;
 
   case 628:
 
 /* Line 678 of lalr1.cc  */
-#line 5107 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("descending"); }
+#line 5112 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("ascending"); }
     break;
 
   case 629:
 
 /* Line 678 of lalr1.cc  */
-#line 5108 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("greatest"); }
+#line 5113 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("descending"); }
     break;
 
   case 630:
 
 /* Line 678 of lalr1.cc  */
-#line 5109 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("least"); }
+#line 5114 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("greatest"); }
     break;
 
   case 631:
 
 /* Line 678 of lalr1.cc  */
-#line 5110 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("collation"); }
+#line 5115 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("least"); }
     break;
 
   case 632:
 
 /* Line 678 of lalr1.cc  */
-#line 5111 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("some"); }
+#line 5116 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("collation"); }
     break;
 
   case 633:
 
 /* Line 678 of lalr1.cc  */
-#line 5112 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("every"); }
+#line 5117 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("some"); }
     break;
 
   case 634:
 
 /* Line 678 of lalr1.cc  */
-#line 5113 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("satisfies"); }
+#line 5118 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("every"); }
     break;
 
   case 635:
 
 /* Line 678 of lalr1.cc  */
-#line 5114 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("case"); }
+#line 5119 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("satisfies"); }
     break;
 
   case 636:
 
 /* Line 678 of lalr1.cc  */
-#line 5115 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("as"); }
+#line 5120 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("case"); }
     break;
 
   case 637:
 
 /* Line 678 of lalr1.cc  */
-#line 5116 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("then"); }
+#line 5121 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("as"); }
     break;
 
   case 638:
 
 /* Line 678 of lalr1.cc  */
-#line 5117 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("else"); }
+#line 5122 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("then"); }
     break;
 
   case 639:
 
 /* Line 678 of lalr1.cc  */
-#line 5118 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("or"); }
+#line 5123 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("else"); }
     break;
 
   case 640:
 
 /* Line 678 of lalr1.cc  */
-#line 5119 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("and"); }
+#line 5124 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("or"); }
     break;
 
   case 641:
 
 /* Line 678 of lalr1.cc  */
-#line 5120 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("instance"); }
+#line 5125 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("and"); }
     break;
 
   case 642:
 
 /* Line 678 of lalr1.cc  */
-#line 5121 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("of"); }
+#line 5126 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("instance"); }
     break;
 
   case 643:
 
 /* Line 678 of lalr1.cc  */
-#line 5122 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("castable"); }
+#line 5127 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("of"); }
     break;
 
   case 644:
 
 /* Line 678 of lalr1.cc  */
-#line 5123 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("to"); }
+#line 5128 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("castable"); }
     break;
 
   case 645:
 
 /* Line 678 of lalr1.cc  */
-#line 5124 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("div"); }
+#line 5129 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("to"); }
     break;
 
   case 646:
 
 /* Line 678 of lalr1.cc  */
-#line 5125 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("mod"); }
+#line 5130 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("div"); }
     break;
 
   case 647:
 
 /* Line 678 of lalr1.cc  */
-#line 5126 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("union"); }
+#line 5131 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("mod"); }
     break;
 
   case 648:
 
 /* Line 678 of lalr1.cc  */
-#line 5127 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("intersect"); }
+#line 5132 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("union"); }
     break;
 
   case 649:
 
 /* Line 678 of lalr1.cc  */
-#line 5128 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("except"); }
+#line 5133 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("intersect"); }
     break;
 
   case 650:
 
 /* Line 678 of lalr1.cc  */
-#line 5129 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("validate"); }
+#line 5134 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("except"); }
     break;
 
   case 651:
 
 /* Line 678 of lalr1.cc  */
-#line 5130 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("cast"); }
+#line 5135 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("validate"); }
     break;
 
   case 652:
 
 /* Line 678 of lalr1.cc  */
-#line 5131 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("treat"); }
+#line 5136 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("cast"); }
     break;
 
   case 653:
 
 /* Line 678 of lalr1.cc  */
-#line 5132 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("is"); }
+#line 5137 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("treat"); }
     break;
 
   case 654:
 
 /* Line 678 of lalr1.cc  */
-#line 5133 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("preserve"); }
+#line 5138 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("is"); }
     break;
 
   case 655:
 
 /* Line 678 of lalr1.cc  */
-#line 5134 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("strip"); }
+#line 5139 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("preserve"); }
     break;
 
   case 656:
 
 /* Line 678 of lalr1.cc  */
-#line 5135 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("namespace"); }
+#line 5140 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("strip"); }
     break;
 
   case 657:
 
 /* Line 678 of lalr1.cc  */
-#line 5136 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("external"); }
+#line 5141 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("namespace"); }
     break;
 
   case 658:
 
 /* Line 678 of lalr1.cc  */
-#line 5137 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("encoding"); }
+#line 5142 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("external"); }
     break;
 
   case 659:
 
 /* Line 678 of lalr1.cc  */
-#line 5138 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("no-preserve"); }
+#line 5143 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("encoding"); }
     break;
 
   case 660:
 
 /* Line 678 of lalr1.cc  */
-#line 5139 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("inherit"); }
+#line 5144 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("no-preserve"); }
     break;
 
   case 661:
 
 /* Line 678 of lalr1.cc  */
-#line 5140 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("no-inherit"); }
+#line 5145 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("inherit"); }
     break;
 
   case 662:
 
 /* Line 678 of lalr1.cc  */
-#line 5141 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("declare"); }
+#line 5146 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("no-inherit"); }
     break;
 
   case 663:
 
 /* Line 678 of lalr1.cc  */
-#line 5142 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("construction"); }
+#line 5147 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("declare"); }
     break;
 
   case 664:
 
 /* Line 678 of lalr1.cc  */
-#line 5143 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("ordering"); }
+#line 5148 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("construction"); }
     break;
 
   case 665:
 
 /* Line 678 of lalr1.cc  */
-#line 5144 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("default"); }
+#line 5149 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("ordering"); }
     break;
 
   case 666:
 
 /* Line 678 of lalr1.cc  */
-#line 5145 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("copy-namespaces"); }
+#line 5150 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("default"); }
     break;
 
   case 667:
 
 /* Line 678 of lalr1.cc  */
-#line 5146 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("option"); }
+#line 5151 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("copy-namespaces"); }
     break;
 
   case 668:
 
 /* Line 678 of lalr1.cc  */
-#line 5147 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("version"); }
+#line 5152 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("option"); }
     break;
 
   case 669:
 
 /* Line 678 of lalr1.cc  */
-#line 5148 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("import"); }
+#line 5153 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("version"); }
     break;
 
   case 670:
 
 /* Line 678 of lalr1.cc  */
-#line 5149 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("schema"); }
+#line 5154 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("import"); }
     break;
 
   case 671:
 
 /* Line 678 of lalr1.cc  */
-#line 5150 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("module"); }
+#line 5155 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("schema"); }
     break;
 
   case 672:
 
 /* Line 678 of lalr1.cc  */
-#line 5151 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("function"); }
+#line 5156 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("module"); }
     break;
 
   case 673:
 
 /* Line 678 of lalr1.cc  */
-#line 5152 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("score"); }
+#line 5157 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("function"); }
     break;
 
   case 674:
 
 /* Line 678 of lalr1.cc  */
-#line 5153 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("ftcontains"); }
+#line 5158 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("score"); }
     break;
 
   case 675:
 
 /* Line 678 of lalr1.cc  */
-#line 5154 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("weight"); }
+#line 5159 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("ftcontains"); }
     break;
 
   case 676:
 
 /* Line 678 of lalr1.cc  */
-#line 5155 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("window"); }
+#line 5160 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("weight"); }
     break;
 
   case 677:
 
 /* Line 678 of lalr1.cc  */
-#line 5156 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("distance"); }
+#line 5161 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("window"); }
     break;
 
   case 678:
 
 /* Line 678 of lalr1.cc  */
-#line 5157 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("occurs"); }
+#line 5162 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("distance"); }
     break;
 
   case 679:
 
 /* Line 678 of lalr1.cc  */
-#line 5158 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("times"); }
+#line 5163 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("occurs"); }
     break;
 
   case 680:
 
 /* Line 678 of lalr1.cc  */
-#line 5159 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("same"); }
+#line 5164 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("times"); }
     break;
 
   case 681:
 
 /* Line 678 of lalr1.cc  */
-#line 5160 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("different"); }
+#line 5165 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("same"); }
     break;
 
   case 682:
 
 /* Line 678 of lalr1.cc  */
-#line 5161 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("lowercase"); }
+#line 5166 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("different"); }
     break;
 
   case 683:
 
 /* Line 678 of lalr1.cc  */
-#line 5162 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("uppercase"); }
+#line 5167 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("lowercase"); }
     break;
 
   case 684:
 
 /* Line 678 of lalr1.cc  */
-#line 5163 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("relationship"); }
+#line 5168 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("uppercase"); }
     break;
 
   case 685:
 
 /* Line 678 of lalr1.cc  */
-#line 5164 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("levels"); }
+#line 5169 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("relationship"); }
     break;
 
   case 686:
 
 /* Line 678 of lalr1.cc  */
-#line 5165 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("language"); }
+#line 5170 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("levels"); }
     break;
 
   case 687:
 
 /* Line 678 of lalr1.cc  */
-#line 5166 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("any"); }
+#line 5171 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("language"); }
     break;
 
   case 688:
 
 /* Line 678 of lalr1.cc  */
-#line 5167 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("all"); }
+#line 5172 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("any"); }
     break;
 
   case 689:
 
 /* Line 678 of lalr1.cc  */
-#line 5168 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("phrase"); }
+#line 5173 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("all"); }
     break;
 
   case 690:
 
 /* Line 678 of lalr1.cc  */
-#line 5169 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("exactly"); }
+#line 5174 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("phrase"); }
     break;
 
   case 691:
 
 /* Line 678 of lalr1.cc  */
-#line 5170 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("from"); }
+#line 5175 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("exactly"); }
     break;
 
   case 692:
 
 /* Line 678 of lalr1.cc  */
-#line 5171 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("words"); }
+#line 5176 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("from"); }
     break;
 
   case 693:
 
 /* Line 678 of lalr1.cc  */
-#line 5172 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("sentences"); }
+#line 5177 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("words"); }
     break;
 
   case 694:
 
 /* Line 678 of lalr1.cc  */
-#line 5173 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("sentence"); }
+#line 5178 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("sentences"); }
     break;
 
   case 695:
 
 /* Line 678 of lalr1.cc  */
-#line 5174 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("paragraph"); }
+#line 5179 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("sentence"); }
     break;
 
   case 696:
 
 /* Line 678 of lalr1.cc  */
-#line 5175 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("replace"); }
+#line 5180 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("paragraph"); }
     break;
 
   case 697:
 
 /* Line 678 of lalr1.cc  */
-#line 5176 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("modify"); }
+#line 5181 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("replace"); }
     break;
 
   case 698:
 
 /* Line 678 of lalr1.cc  */
-#line 5177 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("first"); }
+#line 5182 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("modify"); }
     break;
 
   case 699:
 
 /* Line 678 of lalr1.cc  */
-#line 5178 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("insert"); }
+#line 5183 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("first"); }
     break;
 
   case 700:
 
 /* Line 678 of lalr1.cc  */
-#line 5179 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("before"); }
+#line 5184 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("insert"); }
     break;
 
   case 701:
 
 /* Line 678 of lalr1.cc  */
-#line 5180 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("after"); }
+#line 5185 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("before"); }
     break;
 
   case 702:
 
 /* Line 678 of lalr1.cc  */
-#line 5181 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("revalidation"); }
+#line 5186 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("after"); }
     break;
 
   case 703:
 
 /* Line 678 of lalr1.cc  */
-#line 5182 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("with"); }
+#line 5187 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("revalidation"); }
     break;
 
   case 704:
 
 /* Line 678 of lalr1.cc  */
-#line 5183 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("nodes"); }
+#line 5188 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("with"); }
     break;
 
   case 705:
 
 /* Line 678 of lalr1.cc  */
-#line 5184 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("rename"); }
+#line 5189 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("nodes"); }
     break;
 
   case 706:
 
 /* Line 678 of lalr1.cc  */
-#line 5185 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("last"); }
+#line 5190 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("rename"); }
     break;
 
   case 707:
 
 /* Line 678 of lalr1.cc  */
-#line 5186 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("delete"); }
+#line 5191 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("last"); }
     break;
 
   case 708:
 
 /* Line 678 of lalr1.cc  */
-#line 5187 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("into"); }
+#line 5192 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("delete"); }
     break;
 
   case 709:
 
 /* Line 678 of lalr1.cc  */
-#line 5188 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("simple"); }
+#line 5193 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("into"); }
     break;
 
   case 710:
 
 /* Line 678 of lalr1.cc  */
-#line 5189 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("sequential"); }
+#line 5194 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("simple"); }
     break;
 
   case 711:
 
 /* Line 678 of lalr1.cc  */
-#line 5190 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("updating"); }
+#line 5195 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("sequential"); }
     break;
 
   case 712:
 
 /* Line 678 of lalr1.cc  */
-#line 5191 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("deterministic"); }
+#line 5196 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("updating"); }
     break;
 
   case 713:
 
 /* Line 678 of lalr1.cc  */
-#line 5192 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("nondeterministic"); }
+#line 5197 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("deterministic"); }
     break;
 
   case 714:
 
 /* Line 678 of lalr1.cc  */
-#line 5193 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("ordered"); }
+#line 5198 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("nondeterministic"); }
     break;
 
   case 715:
 
 /* Line 678 of lalr1.cc  */
-#line 5194 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("unordered"); }
+#line 5199 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("ordered"); }
     break;
 
   case 716:
 
 /* Line 678 of lalr1.cc  */
-#line 5195 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("block"); }
+#line 5200 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("unordered"); }
     break;
 
   case 717:
 
 /* Line 678 of lalr1.cc  */
-#line 5196 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("exit"); }
+#line 5201 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("block"); }
     break;
 
   case 718:
 
 /* Line 678 of lalr1.cc  */
-#line 5197 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("loop"); }
+#line 5202 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("exit"); }
     break;
 
   case 719:
 
 /* Line 678 of lalr1.cc  */
-#line 5198 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("while"); }
+#line 5203 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("loop"); }
     break;
 
   case 720:
 
 /* Line 678 of lalr1.cc  */
-#line 5199 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("break"); }
+#line 5204 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("while"); }
     break;
 
   case 721:
 
 /* Line 678 of lalr1.cc  */
-#line 5200 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("continue"); }
+#line 5205 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("break"); }
     break;
 
   case 722:
 
 /* Line 678 of lalr1.cc  */
-#line 5201 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("try"); }
+#line 5206 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("continue"); }
     break;
 
   case 723:
 
 /* Line 678 of lalr1.cc  */
-#line 5202 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("catch"); }
+#line 5207 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("try"); }
     break;
 
   case 724:
 
 /* Line 678 of lalr1.cc  */
-#line 5203 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("eval"); }
+#line 5208 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("catch"); }
     break;
 
   case 725:
 
 /* Line 678 of lalr1.cc  */
-#line 5204 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("using"); }
+#line 5209 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("eval"); }
     break;
 
   case 726:
 
 /* Line 678 of lalr1.cc  */
-#line 5205 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("set"); }
+#line 5210 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("using"); }
     break;
 
   case 727:
 
 /* Line 678 of lalr1.cc  */
-#line 5206 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("index"); }
+#line 5211 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("set"); }
     break;
 
   case 728:
 
 /* Line 678 of lalr1.cc  */
-#line 5207 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("create"); }
+#line 5212 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("index"); }
     break;
 
   case 729:
 
 /* Line 678 of lalr1.cc  */
-#line 5208 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("build"); }
+#line 5213 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("create"); }
     break;
 
   case 730:
 
 /* Line 678 of lalr1.cc  */
-#line 5209 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("unique"); }
+#line 5214 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("build"); }
     break;
 
   case 731:
 
 /* Line 678 of lalr1.cc  */
-#line 5210 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("on"); }
+#line 5215 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("unique"); }
     break;
 
   case 732:
 
 /* Line 678 of lalr1.cc  */
-#line 5211 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("hash"); }
+#line 5216 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("on"); }
     break;
 
   case 733:
 
 /* Line 678 of lalr1.cc  */
-#line 5212 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("btree"); }
+#line 5217 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("hash"); }
     break;
 
   case 734:
 
 /* Line 678 of lalr1.cc  */
-#line 5213 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("drop"); }
+#line 5218 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("btree"); }
     break;
 
   case 735:
 
 /* Line 678 of lalr1.cc  */
-#line 5214 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("decimal-format"); }
+#line 5219 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("drop"); }
     break;
 
   case 736:
 
 /* Line 678 of lalr1.cc  */
-#line 5215 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("decimal-separator"); }
+#line 5220 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("decimal-format"); }
     break;
 
   case 737:
 
 /* Line 678 of lalr1.cc  */
-#line 5216 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("grouping-separator"); }
+#line 5221 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("decimal-separator"); }
     break;
 
   case 738:
 
 /* Line 678 of lalr1.cc  */
-#line 5217 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("infinity"); }
+#line 5222 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("grouping-separator"); }
     break;
 
   case 739:
 
 /* Line 678 of lalr1.cc  */
-#line 5218 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("minus-sign"); }
+#line 5223 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("infinity"); }
     break;
 
   case 740:
 
 /* Line 678 of lalr1.cc  */
-#line 5219 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("NaN"); }
+#line 5224 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("minus-sign"); }
     break;
 
   case 741:
 
 /* Line 678 of lalr1.cc  */
-#line 5220 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("percent"); }
+#line 5225 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("NaN"); }
     break;
 
   case 742:
 
 /* Line 678 of lalr1.cc  */
-#line 5221 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("per-mille"); }
+#line 5226 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("percent"); }
     break;
 
   case 743:
 
 /* Line 678 of lalr1.cc  */
-#line 5222 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("zero-digit"); }
+#line 5227 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("per-mille"); }
     break;
 
   case 744:
 
 /* Line 678 of lalr1.cc  */
-#line 5223 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("digit"); }
+#line 5228 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("zero-digit"); }
     break;
 
   case 745:
 
 /* Line 678 of lalr1.cc  */
-#line 5224 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    { (yyval.sval) = SYMTAB_PUT ("pattern-separator"); }
+#line 5229 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("digit"); }
     break;
 
   case 746:
 
 /* Line 678 of lalr1.cc  */
-#line 5236 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5230 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    { (yyval.sval) = SYMTAB_PUT ("pattern-separator"); }
+    break;
+
+  case 747:
+
+/* Line 678 of lalr1.cc  */
+#line 5242 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
        (yyval.expr) = new EvalExpr (LOC ((yyloc)),
                           dynamic_cast<VarGetsDeclList *> ((yysemantic_stack_[(7) - (3)].node)),
@@ -8889,63 +8900,55 @@ namespace zorba {
     }
     break;
 
-  case 747:
+  case 748:
 
 /* Line 678 of lalr1.cc  */
-#line 5242 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5248 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yyval.expr) = new EvalExpr (LOC ((yyloc)), new VarGetsDeclList (LOC ((yyloc))), (yysemantic_stack_[(4) - (3)].expr));
     }
     break;
 
-  case 748:
-
-/* Line 678 of lalr1.cc  */
-#line 5259 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
-    {
-      (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(1) - (1)].node)), NULL, NULL);
-		}
-    break;
-
   case 749:
 
 /* Line 678 of lalr1.cc  */
-#line 5263 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5265 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(2) - (1)].node)), static_cast<FTMatchOptionProximityList *> ((yysemantic_stack_[(2) - (2)].node)), NULL);
+      (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(1) - (1)].node)), NULL, NULL);
 		}
     break;
 
   case 750:
 
 /* Line 678 of lalr1.cc  */
-#line 5267 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5269 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(3) - (1)].node)), NULL, static_cast<RangeExpr *> ((yysemantic_stack_[(3) - (3)].expr)));
+      (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(2) - (1)].node)), static_cast<FTMatchOptionProximityList *> ((yysemantic_stack_[(2) - (2)].node)), NULL);
 		}
     break;
 
   case 751:
 
 /* Line 678 of lalr1.cc  */
-#line 5271 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5273 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(4) - (1)].node)), static_cast<FTMatchOptionProximityList *> ((yysemantic_stack_[(4) - (2)].node)), static_cast<RangeExpr *> ((yysemantic_stack_[(4) - (4)].expr)));
+      (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(3) - (1)].node)), NULL, static_cast<RangeExpr *> ((yysemantic_stack_[(3) - (3)].expr)));
 		}
     break;
 
   case 752:
 
 /* Line 678 of lalr1.cc  */
-#line 5281 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5277 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
+      (yyval.node) = new FTSelection (LOC ((yyloc)), static_cast<FTOr *> ((yysemantic_stack_[(4) - (1)].node)), static_cast<FTMatchOptionProximityList *> ((yysemantic_stack_[(4) - (2)].node)), static_cast<RangeExpr *> ((yysemantic_stack_[(4) - (4)].expr)));
 		}
     break;
 
   case 753:
 
 /* Line 678 of lalr1.cc  */
-#line 5284 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5287 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -8953,7 +8956,7 @@ namespace zorba {
   case 754:
 
 /* Line 678 of lalr1.cc  */
-#line 5287 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5290 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -8961,7 +8964,7 @@ namespace zorba {
   case 755:
 
 /* Line 678 of lalr1.cc  */
-#line 5290 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5293 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -8969,7 +8972,7 @@ namespace zorba {
   case 756:
 
 /* Line 678 of lalr1.cc  */
-#line 5299 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5296 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -8977,7 +8980,7 @@ namespace zorba {
   case 757:
 
 /* Line 678 of lalr1.cc  */
-#line 5302 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5305 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -8985,7 +8988,7 @@ namespace zorba {
   case 758:
 
 /* Line 678 of lalr1.cc  */
-#line 5311 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5308 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -8993,7 +8996,7 @@ namespace zorba {
   case 759:
 
 /* Line 678 of lalr1.cc  */
-#line 5314 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5317 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9001,7 +9004,7 @@ namespace zorba {
   case 760:
 
 /* Line 678 of lalr1.cc  */
-#line 5323 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5320 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9009,7 +9012,7 @@ namespace zorba {
   case 761:
 
 /* Line 678 of lalr1.cc  */
-#line 5326 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5329 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9017,7 +9020,7 @@ namespace zorba {
   case 762:
 
 /* Line 678 of lalr1.cc  */
-#line 5335 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5332 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9025,7 +9028,7 @@ namespace zorba {
   case 763:
 
 /* Line 678 of lalr1.cc  */
-#line 5338 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5341 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9033,7 +9036,7 @@ namespace zorba {
   case 764:
 
 /* Line 678 of lalr1.cc  */
-#line 5347 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5344 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9041,7 +9044,7 @@ namespace zorba {
   case 765:
 
 /* Line 678 of lalr1.cc  */
-#line 5350 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5353 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9049,7 +9052,7 @@ namespace zorba {
   case 766:
 
 /* Line 678 of lalr1.cc  */
-#line 5353 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5356 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9057,7 +9060,7 @@ namespace zorba {
   case 767:
 
 /* Line 678 of lalr1.cc  */
-#line 5362 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5359 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9065,7 +9068,7 @@ namespace zorba {
   case 768:
 
 /* Line 678 of lalr1.cc  */
-#line 5365 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5368 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9073,33 +9076,33 @@ namespace zorba {
   case 769:
 
 /* Line 678 of lalr1.cc  */
-#line 5374 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5371 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new FTWordsValue (LOC ((yyloc)), static_cast<StringLiteral *> ((yysemantic_stack_[(1) - (1)].expr)), NULL);
 		}
     break;
 
   case 770:
 
 /* Line 678 of lalr1.cc  */
-#line 5378 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5380 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new FTWordsValue (LOC ((yyloc)), NULL, (yysemantic_stack_[(3) - (2)].expr));
+      (yyval.node) = new FTWordsValue (LOC ((yyloc)), static_cast<StringLiteral *> ((yysemantic_stack_[(1) - (1)].expr)), NULL);
 		}
     break;
 
   case 771:
 
 /* Line 678 of lalr1.cc  */
-#line 5388 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5384 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
+      (yyval.node) = new FTWordsValue (LOC ((yyloc)), NULL, (yysemantic_stack_[(3) - (2)].expr));
 		}
     break;
 
   case 772:
 
 /* Line 678 of lalr1.cc  */
-#line 5391 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5394 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9107,7 +9110,7 @@ namespace zorba {
   case 773:
 
 /* Line 678 of lalr1.cc  */
-#line 5394 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5397 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9115,7 +9118,7 @@ namespace zorba {
   case 774:
 
 /* Line 678 of lalr1.cc  */
-#line 5397 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5400 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9123,7 +9126,7 @@ namespace zorba {
   case 775:
 
 /* Line 678 of lalr1.cc  */
-#line 5400 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5403 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9131,7 +9134,7 @@ namespace zorba {
   case 776:
 
 /* Line 678 of lalr1.cc  */
-#line 5409 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5406 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9139,16 +9142,15 @@ namespace zorba {
   case 777:
 
 /* Line 678 of lalr1.cc  */
-#line 5418 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5415 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
     break;
 
   case 778:
 
 /* Line 678 of lalr1.cc  */
-#line 5422 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5424 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
@@ -9157,7 +9159,7 @@ namespace zorba {
   case 779:
 
 /* Line 678 of lalr1.cc  */
-#line 5426 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5428 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
@@ -9166,7 +9168,7 @@ namespace zorba {
   case 780:
 
 /* Line 678 of lalr1.cc  */
-#line 5430 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5432 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
@@ -9175,7 +9177,7 @@ namespace zorba {
   case 781:
 
 /* Line 678 of lalr1.cc  */
-#line 5434 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5436 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
@@ -9184,7 +9186,7 @@ namespace zorba {
   case 782:
 
 /* Line 678 of lalr1.cc  */
-#line 5438 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5440 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
@@ -9193,7 +9195,7 @@ namespace zorba {
   case 783:
 
 /* Line 678 of lalr1.cc  */
-#line 5442 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5444 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
@@ -9202,15 +9204,16 @@ namespace zorba {
   case 784:
 
 /* Line 678 of lalr1.cc  */
-#line 5452 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5448 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
+			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		}
     break;
 
   case 785:
 
 /* Line 678 of lalr1.cc  */
-#line 5455 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5458 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9218,7 +9221,7 @@ namespace zorba {
   case 786:
 
 /* Line 678 of lalr1.cc  */
-#line 5458 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5461 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9226,7 +9229,7 @@ namespace zorba {
   case 787:
 
 /* Line 678 of lalr1.cc  */
-#line 5461 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5464 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9234,7 +9237,7 @@ namespace zorba {
   case 788:
 
 /* Line 678 of lalr1.cc  */
-#line 5470 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5467 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9242,7 +9245,7 @@ namespace zorba {
   case 789:
 
 /* Line 678 of lalr1.cc  */
-#line 5473 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5476 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9250,7 +9253,7 @@ namespace zorba {
   case 790:
 
 /* Line 678 of lalr1.cc  */
-#line 5476 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5479 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9258,7 +9261,7 @@ namespace zorba {
   case 791:
 
 /* Line 678 of lalr1.cc  */
-#line 5479 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5482 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9266,7 +9269,7 @@ namespace zorba {
   case 792:
 
 /* Line 678 of lalr1.cc  */
-#line 5488 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5485 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9274,7 +9277,7 @@ namespace zorba {
   case 793:
 
 /* Line 678 of lalr1.cc  */
-#line 5491 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5494 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9282,7 +9285,7 @@ namespace zorba {
   case 794:
 
 /* Line 678 of lalr1.cc  */
-#line 5500 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5497 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9290,7 +9293,7 @@ namespace zorba {
   case 795:
 
 /* Line 678 of lalr1.cc  */
-#line 5503 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5506 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9298,7 +9301,7 @@ namespace zorba {
   case 796:
 
 /* Line 678 of lalr1.cc  */
-#line 5506 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5509 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9306,7 +9309,7 @@ namespace zorba {
   case 797:
 
 /* Line 678 of lalr1.cc  */
-#line 5509 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5512 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9314,7 +9317,7 @@ namespace zorba {
   case 798:
 
 /* Line 678 of lalr1.cc  */
-#line 5512 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5515 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9322,7 +9325,7 @@ namespace zorba {
   case 799:
 
 /* Line 678 of lalr1.cc  */
-#line 5515 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5518 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9330,7 +9333,7 @@ namespace zorba {
   case 800:
 
 /* Line 678 of lalr1.cc  */
-#line 5518 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5521 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9338,7 +9341,7 @@ namespace zorba {
   case 801:
 
 /* Line 678 of lalr1.cc  */
-#line 5527 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5524 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9346,7 +9349,7 @@ namespace zorba {
   case 802:
 
 /* Line 678 of lalr1.cc  */
-#line 5530 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5533 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9354,7 +9357,7 @@ namespace zorba {
   case 803:
 
 /* Line 678 of lalr1.cc  */
-#line 5539 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5536 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9362,7 +9365,7 @@ namespace zorba {
   case 804:
 
 /* Line 678 of lalr1.cc  */
-#line 5542 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5545 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9370,7 +9373,7 @@ namespace zorba {
   case 805:
 
 /* Line 678 of lalr1.cc  */
-#line 5545 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5548 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9378,7 +9381,7 @@ namespace zorba {
   case 806:
 
 /* Line 678 of lalr1.cc  */
-#line 5548 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5551 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9386,7 +9389,7 @@ namespace zorba {
   case 807:
 
 /* Line 678 of lalr1.cc  */
-#line 5557 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5554 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9394,7 +9397,7 @@ namespace zorba {
   case 808:
 
 /* Line 678 of lalr1.cc  */
-#line 5560 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5563 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9402,7 +9405,7 @@ namespace zorba {
   case 809:
 
 /* Line 678 of lalr1.cc  */
-#line 5563 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5566 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9410,7 +9413,7 @@ namespace zorba {
   case 810:
 
 /* Line 678 of lalr1.cc  */
-#line 5566 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5569 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9418,7 +9421,7 @@ namespace zorba {
   case 811:
 
 /* Line 678 of lalr1.cc  */
-#line 5569 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5572 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9426,7 +9429,7 @@ namespace zorba {
   case 812:
 
 /* Line 678 of lalr1.cc  */
-#line 5578 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5575 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9434,7 +9437,7 @@ namespace zorba {
   case 813:
 
 /* Line 678 of lalr1.cc  */
-#line 5581 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5584 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9442,7 +9445,7 @@ namespace zorba {
   case 814:
 
 /* Line 678 of lalr1.cc  */
-#line 5590 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5587 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9450,7 +9453,7 @@ namespace zorba {
   case 815:
 
 /* Line 678 of lalr1.cc  */
-#line 5593 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5596 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9458,7 +9461,7 @@ namespace zorba {
   case 816:
 
 /* Line 678 of lalr1.cc  */
-#line 5602 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5599 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9466,7 +9469,7 @@ namespace zorba {
   case 817:
 
 /* Line 678 of lalr1.cc  */
-#line 5605 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5608 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9474,7 +9477,7 @@ namespace zorba {
   case 818:
 
 /* Line 678 of lalr1.cc  */
-#line 5614 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5611 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9482,7 +9485,7 @@ namespace zorba {
   case 819:
 
 /* Line 678 of lalr1.cc  */
-#line 5617 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5620 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9490,7 +9493,7 @@ namespace zorba {
   case 820:
 
 /* Line 678 of lalr1.cc  */
-#line 5626 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5623 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9498,7 +9501,7 @@ namespace zorba {
   case 821:
 
 /* Line 678 of lalr1.cc  */
-#line 5635 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5632 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9506,7 +9509,7 @@ namespace zorba {
   case 822:
 
 /* Line 678 of lalr1.cc  */
-#line 5638 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5641 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9514,7 +9517,7 @@ namespace zorba {
   case 823:
 
 /* Line 678 of lalr1.cc  */
-#line 5647 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5644 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9522,7 +9525,7 @@ namespace zorba {
   case 824:
 
 /* Line 678 of lalr1.cc  */
-#line 5650 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5653 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9530,7 +9533,7 @@ namespace zorba {
   case 825:
 
 /* Line 678 of lalr1.cc  */
-#line 5653 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5656 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9538,7 +9541,7 @@ namespace zorba {
   case 826:
 
 /* Line 678 of lalr1.cc  */
-#line 5662 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5659 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9546,7 +9549,7 @@ namespace zorba {
   case 827:
 
 /* Line 678 of lalr1.cc  */
-#line 5665 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5668 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9554,7 +9557,7 @@ namespace zorba {
   case 828:
 
 /* Line 678 of lalr1.cc  */
-#line 5668 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5671 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9562,7 +9565,7 @@ namespace zorba {
   case 829:
 
 /* Line 678 of lalr1.cc  */
-#line 5671 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5674 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9570,7 +9573,7 @@ namespace zorba {
   case 830:
 
 /* Line 678 of lalr1.cc  */
-#line 5674 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5677 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9578,68 +9581,68 @@ namespace zorba {
   case 831:
 
 /* Line 678 of lalr1.cc  */
-#line 5683 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5680 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::exactly, (yysemantic_stack_[(2) - (2)].expr));
 		}
     break;
 
   case 832:
 
 /* Line 678 of lalr1.cc  */
-#line 5687 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5689 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::at_least, (yysemantic_stack_[(3) - (3)].expr));
+       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::exactly, (yysemantic_stack_[(2) - (2)].expr));
 		}
     break;
 
   case 833:
 
 /* Line 678 of lalr1.cc  */
-#line 5691 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5693 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::at_most, (yysemantic_stack_[(3) - (3)].expr));
+       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::at_least, (yysemantic_stack_[(3) - (3)].expr));
 		}
     break;
 
   case 834:
 
 /* Line 678 of lalr1.cc  */
-#line 5695 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5697 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::from_to, (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr));
+       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::at_most, (yysemantic_stack_[(3) - (3)].expr));
 		}
     break;
 
   case 835:
 
 /* Line 678 of lalr1.cc  */
-#line 5705 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5701 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
+       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::from_to, (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr));
 		}
     break;
 
   case 836:
 
 /* Line 678 of lalr1.cc  */
-#line 5714 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5711 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new FTWindow (LOC ((yyloc)), static_cast<UnionExpr *> ((yysemantic_stack_[(3) - (2)].expr)), static_cast<FTUnit *> ((yysemantic_stack_[(3) - (3)].node)));
 		}
     break;
 
   case 837:
 
 /* Line 678 of lalr1.cc  */
-#line 5724 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5720 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
+      (yyval.node) = new FTWindow (LOC ((yyloc)), static_cast<UnionExpr *> ((yysemantic_stack_[(3) - (2)].expr)), static_cast<FTUnit *> ((yysemantic_stack_[(3) - (3)].node)));
 		}
     break;
 
   case 838:
 
 /* Line 678 of lalr1.cc  */
-#line 5733 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5730 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9647,7 +9650,7 @@ namespace zorba {
   case 839:
 
 /* Line 678 of lalr1.cc  */
-#line 5736 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5739 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9655,7 +9658,7 @@ namespace zorba {
   case 840:
 
 /* Line 678 of lalr1.cc  */
-#line 5745 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5742 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9663,7 +9666,7 @@ namespace zorba {
   case 841:
 
 /* Line 678 of lalr1.cc  */
-#line 5748 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5751 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9671,7 +9674,7 @@ namespace zorba {
   case 842:
 
 /* Line 678 of lalr1.cc  */
-#line 5751 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5754 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9679,7 +9682,7 @@ namespace zorba {
   case 843:
 
 /* Line 678 of lalr1.cc  */
-#line 5760 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5757 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9687,7 +9690,7 @@ namespace zorba {
   case 844:
 
 /* Line 678 of lalr1.cc  */
-#line 5763 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5766 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
 		}
     break;
@@ -9695,7 +9698,15 @@ namespace zorba {
   case 845:
 
 /* Line 678 of lalr1.cc  */
-#line 5772 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5769 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+    {
+		}
+    break;
+
+  case 846:
+
+/* Line 678 of lalr1.cc  */
+#line 5778 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = new FTIgnoreOption (LOC ((yyloc)), static_cast<UnionExpr *> ((yysemantic_stack_[(3) - (3)].expr)));
 		}
@@ -9704,7 +9715,7 @@ namespace zorba {
 
 
 /* Line 678 of lalr1.cc  */
-#line 9708 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 9719 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 	default:
           break;
       }
@@ -10063,148 +10074,148 @@ namespace zorba {
   const unsigned short int
   xquery_parser::yydefact_[] =
   {
-         0,   377,   378,   559,   524,   716,   717,   720,   718,   721,
-     719,   650,   574,   566,   582,   573,   564,   662,   672,   711,
-     710,   712,   713,   709,   568,   570,   597,   669,   632,   626,
-     671,   667,   594,   670,   726,   621,   663,   724,   611,   612,
-     613,   614,   615,   616,   617,   618,   619,   664,   578,   572,
-     565,   666,   641,   571,   576,   735,   736,   737,   738,   739,
-     740,   741,   742,   743,   744,   745,   368,   371,   640,   636,
-     627,   607,   563,   358,     0,   635,   643,   651,   356,   631,
-     394,   608,   609,   665,   357,   360,   628,   645,     0,   400,
-     366,   396,   638,   562,   629,   630,   658,   633,   649,   657,
-     362,   361,   581,   620,   660,   395,   648,   653,   567,     0,
-       0,   315,   646,   656,   661,   659,   639,   714,   625,   623,
-     624,   367,     0,   314,     0,   370,   369,   654,   610,   634,
-       0,   359,   344,     0,   376,   655,   637,   644,   652,   647,
-     715,   601,   606,   605,   604,   603,   602,   575,   622,     0,
-     561,   668,   595,   701,   700,   702,   580,   579,   598,   707,
-     569,   699,   704,   705,   696,   600,   642,   698,   708,   706,
-     697,   599,   703,   722,   723,   725,   688,   687,   584,   577,
-     586,   585,   681,   677,   592,   596,   593,   690,   691,   674,
-     583,   686,   685,   682,   678,   695,   689,   684,   680,   673,
-     694,   693,   679,   683,   675,   676,   587,   588,   590,   692,
-     589,   591,   728,   729,   734,   730,   727,   732,   733,   731,
-       0,     0,     2,     0,     4,     6,     0,     0,     0,     0,
-      17,    19,    31,    21,    22,    23,    47,    24,    28,    29,
-      51,    52,    53,    48,    49,    55,    56,    26,    25,    30,
-      50,   173,   172,   169,   170,   171,   174,    27,    11,   150,
-     151,   155,   157,   189,   195,     0,     0,   187,   188,   158,
-     159,   160,   161,   271,   273,   275,   285,   288,   290,   293,
-     298,   301,   304,   306,   308,   310,     0,   312,   318,   320,
-       0,   336,   319,   340,   343,   345,   348,   350,     0,   355,
-     352,     0,   363,   373,   375,   349,   379,   384,   392,   385,
-     386,   387,   390,   391,   388,   389,   407,   409,   410,   411,
-     408,   456,   457,   458,   459,   460,   461,   372,   498,   490,
-     497,   496,   495,   492,   494,   491,   493,   393,    54,   162,
-     163,   165,   164,   166,   167,   374,   560,   168,   121,   118,
-       0,   129,   130,     0,     0,     0,     0,     0,     0,   716,
-     717,   720,   721,   719,   650,   574,   566,   582,   573,   564,
-     662,   568,   570,   669,   632,   671,   726,   621,   724,   611,
-     612,   572,   565,   563,   633,     0,     0,   714,   715,   561,
-     707,   569,   699,   705,   696,   599,   722,   725,   728,   729,
-     734,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+         0,   378,   379,   560,   525,   717,   718,   721,   719,   722,
+     720,   651,   575,   567,   583,   574,   565,   663,   673,   712,
+     711,   713,   714,   710,   569,   571,   598,   670,   633,   627,
+     672,   668,   595,   671,   727,   622,   664,   725,   612,   613,
+     614,   615,   616,   617,   618,   619,   620,   665,   579,   573,
+     566,   667,   642,   572,   577,   736,   737,   738,   739,   740,
+     741,   742,   743,   744,   745,   746,   369,   372,   641,   637,
+     628,   608,   564,   359,     0,   636,   644,   652,   357,   632,
+     395,   609,   610,   666,   358,   361,   629,   646,     0,   401,
+     367,   397,   639,   563,   630,   631,   659,   634,   650,   658,
+     363,   362,   582,   621,   661,   396,   649,   654,   568,     0,
+       0,   316,   647,   657,   662,   660,   640,   715,   626,   624,
+     625,   368,     0,   315,     0,   371,   370,   655,   611,   635,
+       0,   360,   345,     0,   377,   656,   638,   645,   653,   648,
+     716,   602,   607,   606,   605,   604,   603,   576,   623,     0,
+     562,   669,   596,   702,   701,   703,   581,   580,   599,   708,
+     570,   700,   705,   706,   697,   601,   643,   699,   709,   707,
+     698,   600,   704,   723,   724,   726,   689,   688,   585,   578,
+     587,   586,   682,   678,   593,   597,   594,   691,   692,   675,
+     584,   687,   686,   683,   679,   696,   690,   685,   681,   674,
+     695,   694,   680,   684,   676,   677,   588,   589,   591,   693,
+     590,   592,   729,   730,   735,   731,   728,   733,   734,   732,
+       0,     0,     2,     0,     4,     6,    12,     0,     0,     0,
+      18,    20,    32,    22,    23,    24,    48,    25,    29,    30,
+      52,    53,    54,    49,    50,    56,    57,    27,    26,    31,
+      51,   174,   173,   170,   171,   172,   175,    28,    11,   151,
+     152,   156,   158,   190,   196,     0,     0,   188,   189,   159,
+     160,   161,   162,   272,   274,   276,   286,   289,   291,   294,
+     299,   302,   305,   307,   309,   311,     0,   313,   319,   321,
+       0,   337,   320,   341,   344,   346,   349,   351,     0,   356,
+     353,     0,   364,   374,   376,   350,   380,   385,   393,   386,
+     387,   388,   391,   392,   389,   390,   408,   410,   411,   412,
+     409,   457,   458,   459,   460,   461,   462,   373,   499,   491,
+     498,   497,   496,   493,   495,   492,   494,   394,    55,   163,
+     164,   166,   165,   167,   168,   375,   561,   169,   122,   119,
+       0,   130,   131,     0,     0,     0,     0,     0,     0,   717,
+     718,   721,   722,   720,   651,   575,   567,   583,   574,   565,
+     663,   569,   571,   670,   633,   672,   727,   622,   725,   612,
+     613,   573,   566,   564,   634,     0,     0,   715,   716,   562,
+     708,   570,   700,   706,   697,   600,   723,   726,   729,   730,
+     735,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,    98,    99,
-       0,   100,   101,   103,   134,   137,     0,   557,     0,     0,
-       0,   558,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,   197,     0,     0,     0,     0,     0,     0,     0,   566,
-     573,   564,   570,   563,   364,   374,   397,     0,   398,     0,
-     423,     0,     0,   339,     0,     0,   342,     0,     0,   452,
+       0,     0,     0,     0,     0,     0,     0,     0,    99,   100,
+       0,   101,   102,   104,   135,   138,     0,   558,     0,     0,
+       0,   559,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,   198,     0,     0,     0,     0,     0,     0,     0,   567,
+     574,   565,   571,   564,   365,   375,   398,     0,   399,     0,
+     424,     0,     0,   340,     0,     0,   343,     0,     0,   453,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     3,     1,     5,     7,     0,
-       0,    12,    10,    14,    15,     0,   153,   152,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,   175,   194,   190,
-     196,   191,   193,   192,   199,   200,     0,     0,     0,     0,
-     329,     0,     0,   327,     0,   280,     0,   328,   321,   326,
-     325,   324,   323,   322,     0,     0,     0,     0,     0,     0,
+       0,    13,    10,    15,    16,     0,   154,   153,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,   176,   195,   191,
+     197,   192,   194,   193,   200,   201,     0,     0,     0,     0,
+     330,     0,     0,   328,     0,   281,     0,   329,   322,   327,
+     326,   325,   324,   323,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,   317,   316,   313,     0,   337,   341,     0,     0,
-       0,   351,   381,   354,   353,   365,   380,     0,     0,   127,
-       0,     0,   522,     0,     0,     0,     0,     0,   514,     0,
-       0,     0,     0,     0,   503,     0,   504,     0,   139,     0,
-     140,   136,   135,   138,     0,   112,   113,    64,    65,   556,
-      73,     0,     0,    58,    59,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,   525,   526,   527,     0,     0,
-       0,     0,   784,   785,     0,    63,   777,   778,   779,   780,
-     781,   782,   783,   102,     0,   104,     0,     0,     0,   505,
-       0,     0,     0,    82,     0,     0,     0,    74,     0,   260,
-       0,     0,     0,   212,   213,     0,     0,   177,   178,     0,
-       0,   198,     0,     0,     0,   500,     0,     0,     0,   508,
-       0,     0,     0,     0,   399,   424,   423,   420,     0,     0,
-     454,   453,   338,   513,     0,   451,     0,   538,   539,   499,
-       0,     0,     0,     0,     0,     0,   544,     0,     0,     0,
-     215,   232,   131,   133,   132,     0,    18,     0,    20,   156,
-       0,     0,     0,     0,     0,   176,   233,     0,     0,     0,
-       0,     0,     0,     0,     0,   272,   274,   278,   284,   283,
-     282,     0,   279,   276,   277,     0,     0,     0,   769,   286,
-     748,   756,   758,   760,   762,   764,   767,   292,   291,   289,
-     295,   296,   297,   294,   299,   300,   303,   302,     0,     0,
-       0,     0,   334,     0,   346,   347,     0,   382,   403,   405,
-       0,   662,     0,     0,     0,     0,   330,     0,     0,     0,
-       0,     0,   518,     0,   515,   463,     0,   462,   471,   472,
-       0,     0,     0,    62,     0,     0,    37,    38,    39,    40,
-      41,    42,    43,    44,    45,    46,    33,    34,     0,     0,
-      90,     0,    86,    88,    89,    93,    96,     0,     0,     0,
-      32,    72,     0,     0,   786,   787,     0,   788,   792,     0,
-       0,   821,   790,   791,   820,   789,   793,     0,   800,   822,
-       0,     0,     0,   507,   506,   473,     0,     0,     0,     0,
-       0,    75,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,   747,     0,     0,   179,   180,     0,   185,
-     521,   501,   502,     0,     0,   511,     0,   509,   467,     0,
-       0,   423,   421,     0,   412,     0,   401,   402,     0,     8,
+       0,     0,   318,   317,   314,     0,   338,   342,     0,     0,
+       0,   352,   382,   355,   354,   366,   381,     0,     0,   128,
+       0,     0,   523,     0,     0,     0,     0,     0,   515,     0,
+       0,     0,     0,     0,   504,     0,   505,     0,   140,     0,
+     141,   137,   136,   139,     0,   113,   114,    65,    66,   557,
+      74,     0,     0,    59,    60,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,   526,   527,   528,     0,     0,
+       0,     0,   785,   786,     0,    64,   778,   779,   780,   781,
+     782,   783,   784,   103,     0,   105,     0,     0,     0,   506,
+       0,     0,     0,    83,     0,     0,     0,    75,     0,   261,
+       0,     0,     0,   213,   214,     0,     0,   178,   179,     0,
+       0,   199,     0,     0,     0,   501,     0,     0,     0,   509,
+       0,     0,     0,     0,   400,   425,   424,   421,     0,     0,
+     455,   454,   339,   514,     0,   452,     0,   539,   540,   500,
+       0,     0,     0,     0,     0,     0,   545,     0,     0,     0,
+     216,   233,   132,   134,   133,     0,    19,     0,    21,   157,
+       0,     0,     0,     0,     0,   177,   234,     0,     0,     0,
+       0,     0,     0,     0,     0,   273,   275,   279,   285,   284,
+     283,     0,   280,   277,   278,     0,     0,     0,   770,   287,
+     749,   757,   759,   761,   763,   765,   768,   293,   292,   290,
+     296,   297,   298,   295,   300,   301,   304,   303,     0,     0,
+       0,     0,   335,     0,   347,   348,     0,   383,   404,   406,
+       0,   663,     0,     0,     0,     0,   331,     0,     0,     0,
+       0,     0,   519,     0,   516,   464,     0,   463,   472,   473,
+       0,     0,     0,    63,     0,     0,    38,    39,    40,    41,
+      42,    43,    44,    45,    46,    47,    34,    35,     0,     0,
+      91,     0,    87,    89,    90,    94,    97,     0,     0,     0,
+      33,    73,     0,     0,   787,   788,     0,   789,   793,     0,
+       0,   822,   791,   792,   821,   790,   794,     0,   801,   823,
+       0,     0,     0,   508,   507,   474,     0,     0,     0,     0,
+       0,    76,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,   748,     0,     0,   180,   181,     0,   186,
+     522,   502,   503,     0,     0,   512,     0,   510,   468,     0,
+       0,   424,   422,     0,   413,     0,   402,   403,     0,     8,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,    16,     0,   154,
-       0,   186,   244,   240,   242,     0,   234,   235,     0,   567,
-     575,   479,   480,   486,   487,   489,     0,   202,     0,     0,
-       0,     0,     0,     0,     0,   281,     0,     0,   763,     0,
-     287,     0,   776,     0,     0,     0,     0,     0,     0,     0,
-     749,   753,   771,   752,   775,   773,   772,   774,     0,     0,
-       0,   765,   828,   826,   830,   768,   305,   307,   309,   477,
-     311,   335,   383,     0,   404,   124,   123,     0,   120,   119,
-     128,     0,   332,   331,     0,     0,   266,     0,     0,     0,
-     522,     0,     0,   464,     0,   114,     0,   144,   142,     0,
-     141,     0,    70,    71,    68,    69,    35,     0,     0,    91,
-      92,    94,     0,    95,    60,    61,    66,    67,    57,     0,
-       0,     0,   795,     0,   794,   811,     0,     0,     0,   474,
-       0,    84,    78,    81,    80,     0,    76,     0,   258,   262,
-       0,     0,   126,     0,   217,     0,     0,     0,     0,     0,
-     181,     0,     0,     0,     0,   226,     0,   223,   228,   184,
-       0,     0,     0,   468,   259,   424,     0,   413,     0,   447,
-     444,     0,   448,   449,     0,     0,   450,   443,     0,   418,
-     446,   445,     0,     0,     0,   531,   532,   528,     0,     0,
-     536,   537,   533,   542,   540,     0,     0,     0,   546,     0,
-     547,   548,     0,     0,   241,   253,     0,   254,     0,   245,
-     246,   247,   248,     0,   237,     0,   201,     0,     0,   483,
-     485,   484,   481,   210,   211,   204,     0,   206,   203,     0,
-       0,     0,   770,   766,     0,   823,   824,   844,   843,   839,
-       0,     0,     0,     0,   825,   757,   838,   750,     0,     0,
-     755,   754,   759,     0,     0,   829,   827,   478,   406,     0,
-     122,   333,     0,     0,     0,   267,   465,     0,   519,   520,
-     523,   516,   517,   146,     0,     0,   115,     0,   143,    36,
-      87,    97,   809,     0,     0,   807,   803,     0,     0,     0,
-       0,   475,     0,    83,     0,    77,   261,   263,    13,   214,
-     219,   218,     0,   221,     0,     0,     0,   183,   224,   227,
-       0,   469,     0,   512,   510,   423,     0,     0,   455,     0,
-     423,     0,   419,     9,     0,     0,     0,     0,     0,   545,
-       0,   554,     0,   549,     0,   216,   257,   255,   256,   249,
-     250,   251,   243,     0,   238,   236,   488,   482,   208,   205,
-       0,   207,   845,     0,     0,   831,     0,   842,   841,   840,
-     835,   836,   751,   761,   837,   125,     0,     0,     0,     0,
-     466,   147,   116,   145,     0,   149,     0,     0,   810,   812,
-     814,   816,     0,   808,     0,     0,     0,   798,     0,   796,
-       0,     0,     0,   476,     0,    79,   220,   222,   231,   230,
-     225,   182,   470,     0,   423,     0,   148,     0,   423,   529,
-     530,   534,   535,   541,   543,     0,     0,   550,   746,   252,
-     239,   209,   833,   832,     0,     0,   268,     0,   264,   117,
-     819,   818,   813,   817,   815,   804,   805,     0,   801,     0,
-     110,   106,   108,     0,   105,   270,    85,     0,   433,   427,
-     422,     0,   423,   414,     0,     0,   555,   834,     0,     0,
-       0,     0,   799,   797,     0,   109,   111,     0,   441,   435,
-       0,   434,   436,   442,   439,   429,     0,   428,   430,   440,
-     416,     0,   415,     0,     0,   265,   806,   802,   107,   229,
-     426,   437,   438,   425,   431,   432,   417,     0,     0,   269,
-       0,   551,     0,     0,     0,     0,   552,     0,     0,   553
+       0,     0,     0,     0,     0,     0,     0,    17,     0,   155,
+       0,   187,   245,   241,   243,     0,   235,   236,     0,   568,
+     576,   480,   481,   487,   488,   490,     0,   203,     0,     0,
+       0,     0,     0,     0,     0,   282,     0,     0,   764,     0,
+     288,     0,   777,     0,     0,     0,     0,     0,     0,     0,
+     750,   754,   772,   753,   776,   774,   773,   775,     0,     0,
+       0,   766,   829,   827,   831,   769,   306,   308,   310,   478,
+     312,   336,   384,     0,   405,   125,   124,     0,   121,   120,
+     129,     0,   333,   332,     0,     0,   267,     0,     0,     0,
+     523,     0,     0,   465,     0,   115,     0,   145,   143,     0,
+     142,     0,    71,    72,    69,    70,    36,     0,     0,    92,
+      93,    95,     0,    96,    61,    62,    67,    68,    58,     0,
+       0,     0,   796,     0,   795,   812,     0,     0,     0,   475,
+       0,    85,    79,    82,    81,     0,    77,     0,   259,   263,
+       0,     0,   127,     0,   218,     0,     0,     0,     0,     0,
+     182,     0,     0,     0,     0,   227,     0,   224,   229,   185,
+       0,     0,     0,   469,   260,   425,     0,   414,     0,   448,
+     445,     0,   449,   450,     0,     0,   451,   444,     0,   419,
+     447,   446,     0,     0,     0,   532,   533,   529,     0,     0,
+     537,   538,   534,   543,   541,     0,     0,     0,   547,     0,
+     548,   549,     0,     0,   242,   254,     0,   255,     0,   246,
+     247,   248,   249,     0,   238,     0,   202,     0,     0,   484,
+     486,   485,   482,   211,   212,   205,     0,   207,   204,     0,
+       0,     0,   771,   767,     0,   824,   825,   845,   844,   840,
+       0,     0,     0,     0,   826,   758,   839,   751,     0,     0,
+     756,   755,   760,     0,     0,   830,   828,   479,   407,     0,
+     123,   334,     0,     0,     0,   268,   466,     0,   520,   521,
+     524,   517,   518,   147,     0,     0,   116,     0,   144,    37,
+      88,    98,   810,     0,     0,   808,   804,     0,     0,     0,
+       0,   476,     0,    84,     0,    78,   262,   264,    14,   215,
+     220,   219,     0,   222,     0,     0,     0,   184,   225,   228,
+       0,   470,     0,   513,   511,   424,     0,     0,   456,     0,
+     424,     0,   420,     9,     0,     0,     0,     0,     0,   546,
+       0,   555,     0,   550,     0,   217,   258,   256,   257,   250,
+     251,   252,   244,     0,   239,   237,   489,   483,   209,   206,
+       0,   208,   846,     0,     0,   832,     0,   843,   842,   841,
+     836,   837,   752,   762,   838,   126,     0,     0,     0,     0,
+     467,   148,   117,   146,     0,   150,     0,     0,   811,   813,
+     815,   817,     0,   809,     0,     0,     0,   799,     0,   797,
+       0,     0,     0,   477,     0,    80,   221,   223,   232,   231,
+     226,   183,   471,     0,   424,     0,   149,     0,   424,   530,
+     531,   535,   536,   542,   544,     0,     0,   551,   747,   253,
+     240,   210,   834,   833,     0,     0,   269,     0,   265,   118,
+     820,   819,   814,   818,   816,   805,   806,     0,   802,     0,
+     111,   107,   109,     0,   106,   271,    86,     0,   434,   428,
+     423,     0,   424,   415,     0,     0,   556,   835,     0,     0,
+       0,     0,   800,   798,     0,   110,   112,     0,   442,   436,
+       0,   435,   437,   443,   440,   430,     0,   429,   431,   441,
+     417,     0,   416,     0,     0,   266,   807,   803,   108,   230,
+     427,   438,   439,   426,   432,   433,   418,     0,     0,   270,
+       0,   552,     0,     0,     0,     0,   553,     0,     0,   554
   };
 
   /* YYPGOTO[NTERM-NUM].  */
@@ -12435,62 +12446,62 @@ namespace zorba {
   xquery_parser::yyr1_[] =
   {
          0,   298,   299,   299,   300,   300,   300,   300,   301,   301,
-     302,   302,   303,   304,   305,   305,   305,   306,   306,   307,
-     307,   308,   308,   308,   308,   309,   309,   309,   309,   309,
-     309,   309,   310,   310,   311,   311,   312,   313,   313,   313,
-     313,   313,   313,   313,   313,   313,   313,   314,   314,   314,
-     314,   314,   314,   314,   314,   315,   315,   316,   317,   317,
-     318,   318,   319,   320,   321,   321,   322,   322,   323,   323,
-     323,   323,   324,   325,   326,   326,   326,   326,   327,   327,
-     328,   328,   329,   329,   329,   329,   330,   331,   331,   332,
-     332,   332,   333,   334,   334,   335,   335,   335,   336,   336,
-     337,   338,   338,   339,   339,   340,   341,   341,   342,   342,
-     343,   343,   344,   344,   345,   345,   345,   345,   346,   347,
-     348,   348,   349,   349,   350,   350,   351,   352,   353,   354,
-     354,   355,   355,   355,   356,   356,   356,   357,   357,   357,
-     357,   358,   358,   359,   360,   360,   361,   361,   362,   363,
-     364,   365,   365,   366,   366,   367,   367,   368,   368,   368,
+     302,   302,   303,   303,   304,   305,   305,   305,   306,   306,
+     307,   307,   308,   308,   308,   308,   309,   309,   309,   309,
+     309,   309,   309,   310,   310,   311,   311,   312,   313,   313,
+     313,   313,   313,   313,   313,   313,   313,   313,   314,   314,
+     314,   314,   314,   314,   314,   314,   315,   315,   316,   317,
+     317,   318,   318,   319,   320,   321,   321,   322,   322,   323,
+     323,   323,   323,   324,   325,   326,   326,   326,   326,   327,
+     327,   328,   328,   329,   329,   329,   329,   330,   331,   331,
+     332,   332,   332,   333,   334,   334,   335,   335,   335,   336,
+     336,   337,   338,   338,   339,   339,   340,   341,   341,   342,
+     342,   343,   343,   344,   344,   345,   345,   345,   345,   346,
+     347,   348,   348,   349,   349,   350,   350,   351,   352,   353,
+     354,   354,   355,   355,   355,   356,   356,   356,   357,   357,
+     357,   357,   358,   358,   359,   360,   360,   361,   361,   362,
+     363,   364,   365,   365,   366,   366,   367,   367,   368,   368,
      368,   368,   368,   368,   368,   368,   368,   368,   368,   368,
-     368,   368,   368,   368,   368,   369,   370,   371,   371,   372,
-     372,   372,   373,   373,   374,   374,   375,   376,   376,   376,
-     377,   377,   377,   377,   377,   378,   378,   379,   379,   380,
-     381,   381,   382,   382,   382,   382,   382,   382,   382,   382,
-     383,   384,   385,   386,   386,   387,   387,   388,   388,   388,
-     388,   389,   389,   390,   390,   390,   391,   391,   391,   392,
-     392,   392,   393,   394,   395,   396,   396,   397,   397,   398,
-     399,   399,   400,   400,   401,   401,   402,   402,   402,   402,
-     402,   402,   402,   403,   403,   404,   404,   405,   406,   406,
-     407,   407,   408,   408,   409,   409,   410,   410,   411,   411,
-     412,   413,   413,   414,   414,   415,   415,   415,   415,   415,
-     416,   415,   415,   415,   415,   417,   417,   417,   418,   418,
-     419,   419,   419,   420,   420,   420,   420,   420,   421,   421,
-     421,   422,   422,   422,   423,   423,   424,   424,   425,   425,
-     426,   426,   427,   427,   428,   428,   428,   428,   429,   429,
-     429,   430,   430,   430,   430,   430,   430,   431,   431,   431,
-     432,   432,   432,   432,   433,   433,   434,   434,   435,   435,
-     436,   436,   436,   436,   437,   438,   438,   438,   439,   439,
-     440,   440,   440,   440,   441,   441,   442,   442,   442,   442,
-     442,   442,   442,   443,   443,   444,   444,   445,   445,   445,
-     445,   445,   446,   446,   447,   447,   448,   448,   448,   449,
-     449,   450,   450,   451,   452,   452,   452,   452,   452,   452,
-     452,   452,   453,   453,   454,   454,   454,   455,   456,   456,
-     457,   458,   459,   460,   460,   461,   461,   462,   462,   463,
-     463,   463,   464,   464,   464,   464,   464,   464,   465,   465,
-     466,   466,   467,   468,   468,   469,   469,   470,   470,   471,
-     471,   471,   471,   472,   472,   473,   473,   473,   473,   474,
-     474,   475,   475,   476,   476,   476,   476,   477,   477,   477,
-     477,   478,   478,   479,   479,   480,   481,   481,   481,   481,
-     481,   481,   482,   483,   483,   483,   483,   484,   484,   484,
-     484,   485,   486,   487,   487,   487,   487,   488,   488,   489,
-     490,   490,   490,   491,   491,   491,   492,   492,   492,   493,
-     494,   494,   494,   494,   494,   494,   494,   494,   494,   495,
-     496,   496,   496,   497,   498,   499,   499,   499,   500,   500,
-     500,   500,   500,   501,   502,   502,   502,   502,   502,   502,
-     502,   503,   504,   505,   506,   507,   507,   507,   508,   508,
-     508,   508,   508,   508,   508,   508,   508,   508,   509,   509,
-     510,   510,   511,   512,   513,   513,   514,   515,   516,   516,
-     517,   517,   517,   517,   518,   518,   519,   520,   520,   521,
-     521,   522,   522,   522,   522,   522,   522,   522,   522,   522,
+     368,   368,   368,   368,   368,   368,   369,   370,   371,   371,
+     372,   372,   372,   373,   373,   374,   374,   375,   376,   376,
+     376,   377,   377,   377,   377,   377,   378,   378,   379,   379,
+     380,   381,   381,   382,   382,   382,   382,   382,   382,   382,
+     382,   383,   384,   385,   386,   386,   387,   387,   388,   388,
+     388,   388,   389,   389,   390,   390,   390,   391,   391,   391,
+     392,   392,   392,   393,   394,   395,   396,   396,   397,   397,
+     398,   399,   399,   400,   400,   401,   401,   402,   402,   402,
+     402,   402,   402,   402,   403,   403,   404,   404,   405,   406,
+     406,   407,   407,   408,   408,   409,   409,   410,   410,   411,
+     411,   412,   413,   413,   414,   414,   415,   415,   415,   415,
+     415,   416,   415,   415,   415,   415,   417,   417,   417,   418,
+     418,   419,   419,   419,   420,   420,   420,   420,   420,   421,
+     421,   421,   422,   422,   422,   423,   423,   424,   424,   425,
+     425,   426,   426,   427,   427,   428,   428,   428,   428,   429,
+     429,   429,   430,   430,   430,   430,   430,   430,   431,   431,
+     431,   432,   432,   432,   432,   433,   433,   434,   434,   435,
+     435,   436,   436,   436,   436,   437,   438,   438,   438,   439,
+     439,   440,   440,   440,   440,   441,   441,   442,   442,   442,
+     442,   442,   442,   442,   443,   443,   444,   444,   445,   445,
+     445,   445,   445,   446,   446,   447,   447,   448,   448,   448,
+     449,   449,   450,   450,   451,   452,   452,   452,   452,   452,
+     452,   452,   452,   453,   453,   454,   454,   454,   455,   456,
+     456,   457,   458,   459,   460,   460,   461,   461,   462,   462,
+     463,   463,   463,   464,   464,   464,   464,   464,   464,   465,
+     465,   466,   466,   467,   468,   468,   469,   469,   470,   470,
+     471,   471,   471,   471,   472,   472,   473,   473,   473,   473,
+     474,   474,   475,   475,   476,   476,   476,   476,   477,   477,
+     477,   477,   478,   478,   479,   479,   480,   481,   481,   481,
+     481,   481,   481,   482,   483,   483,   483,   483,   484,   484,
+     484,   484,   485,   486,   487,   487,   487,   487,   488,   488,
+     489,   490,   490,   490,   491,   491,   491,   492,   492,   492,
+     493,   494,   494,   494,   494,   494,   494,   494,   494,   494,
+     495,   496,   496,   496,   497,   498,   499,   499,   499,   500,
+     500,   500,   500,   500,   501,   502,   502,   502,   502,   502,
+     502,   502,   503,   504,   505,   506,   507,   507,   507,   508,
+     508,   508,   508,   508,   508,   508,   508,   508,   508,   509,
+     509,   510,   510,   511,   512,   513,   513,   514,   515,   516,
+     516,   517,   517,   517,   517,   518,   518,   519,   520,   520,
+     521,   521,   522,   522,   522,   522,   522,   522,   522,   522,
      522,   522,   522,   522,   522,   522,   522,   522,   522,   522,
      522,   522,   522,   522,   522,   522,   522,   522,   522,   522,
      522,   522,   522,   522,   522,   522,   522,   522,   522,   522,
@@ -12508,17 +12519,17 @@ namespace zorba {
      522,   522,   522,   522,   522,   522,   522,   522,   522,   522,
      522,   522,   522,   522,   522,   522,   522,   522,   522,   522,
      522,   522,   522,   522,   522,   522,   522,   522,   522,   522,
-     522,   522,   522,   522,   522,   522,   523,   523,   524,   524,
-     524,   524,   525,   525,   525,   525,   526,   526,   527,   527,
-     528,   528,   529,   529,   530,   530,   530,   531,   531,   532,
-     532,   533,   533,   533,   533,   533,   534,   535,   535,   535,
-     535,   535,   535,   535,   536,   536,   536,   536,   537,   537,
-     537,   537,   538,   538,   539,   539,   539,   539,   539,   539,
-     539,   540,   540,   541,   541,   541,   541,   542,   542,   542,
-     542,   542,   543,   543,   544,   544,   545,   545,   546,   546,
-     547,   548,   548,   549,   549,   549,   550,   550,   550,   550,
-     550,   551,   551,   551,   551,   552,   553,   554,   555,   555,
-     556,   556,   556,   557,   557,   558
+     522,   522,   522,   522,   522,   522,   522,   523,   523,   524,
+     524,   524,   524,   525,   525,   525,   525,   526,   526,   527,
+     527,   528,   528,   529,   529,   530,   530,   530,   531,   531,
+     532,   532,   533,   533,   533,   533,   533,   534,   535,   535,
+     535,   535,   535,   535,   535,   536,   536,   536,   536,   537,
+     537,   537,   537,   538,   538,   539,   539,   539,   539,   539,
+     539,   539,   540,   540,   541,   541,   541,   541,   542,   542,
+     542,   542,   542,   543,   543,   544,   544,   545,   545,   546,
+     546,   547,   548,   548,   549,   549,   549,   550,   550,   550,
+     550,   550,   551,   551,   551,   551,   552,   553,   554,   555,
+     555,   556,   556,   556,   557,   557,   558
   };
 
   /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -12526,90 +12537,90 @@ namespace zorba {
   xquery_parser::yyr2_[] =
   {
          0,     2,     1,     2,     1,     2,     1,     2,     4,     6,
-       2,     1,     2,     6,     2,     2,     4,     1,     3,     1,
-       3,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     4,     4,     1,     2,     3,     1,     1,     1,
+       2,     1,     1,     2,     6,     2,     2,     4,     1,     3,
+       1,     3,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     4,     4,     1,     2,     3,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     5,     3,     3,
-       5,     5,     4,     3,     3,     3,     5,     5,     5,     5,
-       5,     5,     4,     3,     3,     4,     5,     6,     1,     3,
-       3,     3,     3,     6,     5,     8,     4,     3,     1,     1,
-       1,     2,     2,     2,     3,     5,     4,     6,     1,     1,
-       2,     1,     2,     1,     2,     7,     1,     3,     1,     2,
-       2,     3,     3,     3,     2,     3,     4,     5,     2,     4,
-       3,     0,     3,     2,     1,     3,     5,     3,     5,     2,
-       2,     3,     3,     3,     2,     3,     3,     1,     2,     2,
-       2,     4,     4,     4,     1,     3,     2,     3,     3,     3,
-       1,     1,     2,     1,     3,     1,     3,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     5,     3,
+       3,     5,     5,     4,     3,     3,     3,     5,     5,     5,
+       5,     5,     5,     4,     3,     3,     4,     5,     6,     1,
+       3,     3,     3,     3,     6,     5,     8,     4,     3,     1,
+       1,     1,     2,     2,     2,     3,     5,     4,     6,     1,
+       1,     2,     1,     2,     1,     2,     7,     1,     3,     1,
+       2,     2,     3,     3,     3,     2,     3,     4,     5,     2,
+       4,     3,     0,     3,     2,     1,     3,     5,     3,     5,
+       2,     2,     3,     3,     3,     2,     3,     3,     1,     2,
+       2,     2,     4,     4,     4,     1,     3,     2,     3,     3,
+       3,     1,     1,     2,     1,     3,     1,     3,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     2,     2,     2,     2,     1,
-       1,     2,     4,     3,     5,     4,     3,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     2,     2,     3,     2,
-       1,     4,     3,     4,     4,     5,     4,     5,     5,     6,
-       3,     3,     3,     1,     4,     1,     4,     3,     4,     4,
-       5,     4,     5,     1,     2,     3,     1,     2,     1,     6,
-       3,     3,     1,     2,     3,     1,     3,     2,     3,     2,
-       3,     4,     1,     3,     1,     2,     1,     1,     1,     2,
-       2,     2,     3,     1,     1,     2,     2,     2,     5,     5,
-       1,     4,     3,     4,     8,    10,     1,     2,     4,     7,
-       8,     1,     3,     1,     3,     1,     3,     3,     3,     3,
-       0,     4,     3,     3,     3,     1,     3,     4,     1,     3,
-       1,     3,     3,     1,     3,     3,     3,     3,     1,     3,
-       3,     1,     3,     3,     1,     4,     1,     4,     1,     4,
-       1,     4,     1,     2,     1,     1,     2,     2,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       4,     5,     5,     6,     3,     4,     1,     2,     3,     2,
-       1,     2,     2,     1,     1,     1,     3,     3,     1,     1,
-       1,     2,     1,     2,     2,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     2,     2,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       2,     1,     2,     3,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     2,     2,     3,
-       1,     4,     4,     3,     4,     1,     3,     1,     1,     1,
-       1,     1,     4,     5,     8,     9,     9,    10,     1,     2,
-       1,     2,     6,     0,     1,     3,     3,     0,     1,     1,
-       1,     2,     2,     0,     1,     1,     1,     2,     2,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     3,     2,     3,     3,     2,     1,     1,     1,     1,
-       1,     1,     4,     4,     5,     6,     7,     4,     5,     6,
-       7,     4,     4,     4,     5,     6,     7,     1,     2,     2,
-       1,     2,     3,     1,     1,     1,     1,     1,     3,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     3,
-       3,     4,     4,     3,     3,     3,     4,     4,     3,     4,
-       6,     4,     6,     3,     3,     4,     6,     6,     4,     6,
-       6,     4,     1,     2,     1,     3,     3,     3,     5,     7,
-       7,     5,     5,     5,     7,     7,     5,     5,     3,     3,
-       5,     7,     5,     7,     1,     4,     3,     5,     1,     2,
-       3,     7,    10,    13,     1,     3,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     7,     4,     1,     2,
-       3,     4,     1,     1,     2,     2,     1,     3,     1,     3,
-       1,     4,     1,     2,     1,     2,     3,     1,     2,     1,
-       3,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     2,     2,     2,     2,
-       2,     2,     2,     2,     3,     3,     5,     7,     5,     7,
-       2,     1,     3,     2,     4,     4,     6,     4,     5,     4,
-       5,     3,     1,     2,     2,     3,     1,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     1,     2,     1,     2,
-       1,     2,     3,     3,     4,     3,     3,     3,     2,     2,
-       1,     1,     1,     1,     1,     3
+       1,     1,     2,     4,     3,     5,     4,     3,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     2,     2,     3,
+       2,     1,     4,     3,     4,     4,     5,     4,     5,     5,
+       6,     3,     3,     3,     1,     4,     1,     4,     3,     4,
+       4,     5,     4,     5,     1,     2,     3,     1,     2,     1,
+       6,     3,     3,     1,     2,     3,     1,     3,     2,     3,
+       2,     3,     4,     1,     3,     1,     2,     1,     1,     1,
+       2,     2,     2,     3,     1,     1,     2,     2,     2,     5,
+       5,     1,     4,     3,     4,     8,    10,     1,     2,     4,
+       7,     8,     1,     3,     1,     3,     1,     3,     3,     3,
+       3,     0,     4,     3,     3,     3,     1,     3,     4,     1,
+       3,     1,     3,     3,     1,     3,     3,     3,     3,     1,
+       3,     3,     1,     3,     3,     1,     4,     1,     4,     1,
+       4,     1,     4,     1,     2,     1,     1,     2,     2,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     4,     5,     5,     6,     3,     4,     1,     2,     3,
+       2,     1,     2,     2,     1,     1,     1,     3,     3,     1,
+       1,     1,     2,     1,     2,     2,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     2,     2,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     2,     1,     2,     3,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     2,     2,
+       3,     1,     4,     4,     3,     4,     1,     3,     1,     1,
+       1,     1,     1,     4,     5,     8,     9,     9,    10,     1,
+       2,     1,     2,     6,     0,     1,     3,     3,     0,     1,
+       1,     1,     2,     2,     0,     1,     1,     1,     2,     2,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     3,     2,     3,     3,     2,     1,     1,     1,
+       1,     1,     1,     4,     4,     5,     6,     7,     4,     5,
+       6,     7,     4,     4,     4,     5,     6,     7,     1,     2,
+       2,     1,     2,     3,     1,     1,     1,     1,     1,     3,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       3,     3,     4,     4,     3,     3,     3,     4,     4,     3,
+       4,     6,     4,     6,     3,     3,     4,     6,     6,     4,
+       6,     6,     4,     1,     2,     1,     3,     3,     3,     5,
+       7,     7,     5,     5,     5,     7,     7,     5,     5,     3,
+       3,     5,     7,     5,     7,     1,     4,     3,     5,     1,
+       2,     3,     7,    10,    13,     1,     3,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     7,     4,     1,
+       2,     3,     4,     1,     1,     2,     2,     1,     3,     1,
+       3,     1,     4,     1,     2,     1,     2,     3,     1,     2,
+       1,     3,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     2,     2,     2,
+       2,     2,     2,     2,     2,     3,     3,     5,     7,     5,
+       7,     2,     1,     3,     2,     4,     4,     6,     4,     5,
+       4,     5,     3,     1,     2,     2,     3,     1,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     1,     2,     1,
+       2,     1,     2,     3,     3,     4,     3,     3,     3,     2,
+       2,     1,     1,     1,     1,     1,     3
   };
 
 #if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
@@ -12769,270 +12780,271 @@ namespace zorba {
        299,     0,    -1,   300,    -1,   283,   300,    -1,   302,    -1,
      301,   302,    -1,   303,    -1,   301,   303,    -1,   210,   211,
       20,   186,    -1,   210,   211,    20,   128,    20,   186,    -1,
-     305,   364,    -1,   364,    -1,   304,   305,    -1,    52,   156,
-     520,   129,   519,   186,    -1,   306,   186,    -1,   307,   186,
-      -1,   306,   186,   307,   186,    -1,   308,    -1,   306,   186,
-     308,    -1,   309,    -1,   307,   186,   309,    -1,   314,    -1,
-     315,    -1,   316,    -1,   318,    -1,   335,    -1,   330,    -1,
-     356,    -1,   319,    -1,   320,    -1,   337,    -1,   310,    -1,
-      39,   112,    78,   311,    -1,    39,    78,   521,   311,    -1,
-     312,    -1,   311,   312,    -1,   313,   129,   506,    -1,    79,
-      -1,    80,    -1,    81,    -1,    82,    -1,    83,    -1,    84,
-      -1,    85,    -1,    86,    -1,    87,    -1,    88,    -1,   317,
-      -1,   324,    -1,   325,    -1,   344,    -1,   321,    -1,   322,
-      -1,   323,    -1,   507,    -1,   326,    -1,   329,    -1,    39,
-     156,   520,   129,   519,    -1,    39,    77,   177,    -1,    39,
-      77,   191,    -1,    39,   112,    35,   156,   519,    -1,    39,
-     112,    40,   156,   519,    -1,    39,    53,   521,    20,    -1,
-      39,   240,   535,    -1,    39,    70,   164,    -1,    39,    70,
-     197,    -1,    39,   112,   165,   124,   125,    -1,    39,   112,
-     165,   124,   126,    -1,    39,    74,   177,   106,   144,    -1,
-      39,    74,   177,   106,   161,    -1,    39,    74,   162,   106,
-     144,    -1,    39,    74,   162,   106,   161,    -1,    39,   112,
-     105,   519,    -1,    39,    71,   519,    -1,    49,    55,   519,
-      -1,    49,    55,   328,   519,    -1,    49,    55,   519,    95,
-     327,    -1,    49,    55,   328,   519,    95,   327,    -1,   519,
-      -1,   327,   106,   519,    -1,   156,   520,   129,    -1,   112,
-      35,   156,    -1,    49,    52,   519,    -1,    49,    52,   156,
-     520,   129,   519,    -1,    49,    52,   519,    95,   327,    -1,
-      49,    52,   156,   520,   129,   519,    95,   327,    -1,    39,
-     110,   148,   331,    -1,    93,   492,   332,    -1,   332,    -1,
-     333,    -1,   134,    -1,   134,   333,    -1,   139,   368,    -1,
-     117,   521,    -1,   117,   521,   489,    -1,    39,   111,   334,
-     139,   368,    -1,    39,   111,   334,   134,    -1,    39,   111,
-     334,   134,   139,   368,    -1,   280,    -1,   281,    -1,    39,
-     338,    -1,   339,    -1,   278,   339,    -1,   340,    -1,   336,
-     340,    -1,   279,   519,   282,   368,   166,   343,   182,    -1,
-     342,    -1,   342,   105,   519,    -1,   368,    -1,   368,   489,
-      -1,   152,   341,    -1,   343,   106,   341,    -1,    39,    59,
-     177,    -1,    39,    59,   191,    -1,   152,   182,    -1,   152,
-     360,   182,    -1,   152,   182,    93,   490,    -1,   152,   360,
-     182,    93,   490,    -1,    27,   347,    -1,   149,   348,   365,
-     179,    -1,   348,   349,   186,    -1,    -1,   349,   106,   350,
-      -1,    39,   350,    -1,   334,    -1,   334,   139,   368,    -1,
-      57,   117,   521,   139,   368,    -1,    28,   233,   368,    -1,
-      32,   152,   368,   182,   347,    -1,    29,    30,    -1,    31,
-      30,    -1,   275,   279,   519,    -1,   277,   279,   519,    -1,
-     276,   279,   519,    -1,    39,   357,    -1,    39,    44,   357,
-      -1,    39,    43,   357,    -1,   358,    -1,    45,   358,    -1,
-      41,   358,    -1,    42,   359,    -1,    40,   521,   345,   363,
-      -1,    40,   521,   345,   134,    -1,    40,   521,   345,   347,
-      -1,   361,    -1,   360,   106,   361,    -1,   117,   521,    -1,
-     117,   521,   489,    -1,   149,   365,   179,    -1,   149,   365,
-     179,    -1,   365,    -1,   367,    -1,   367,   366,    -1,   186,
-      -1,   366,   367,   186,    -1,   368,    -1,   367,   106,   368,
-      -1,   369,    -1,   406,    -1,   409,    -1,   412,    -1,   413,
-      -1,   508,    -1,   509,    -1,   511,    -1,   510,    -1,   512,
-      -1,   515,    -1,   523,    -1,   352,    -1,   353,    -1,   354,
-      -1,   351,    -1,   346,    -1,   355,    -1,   378,   370,    -1,
-     181,   368,    -1,    63,   268,    -1,    64,   268,    -1,   213,
-      -1,   246,    -1,    67,   246,    -1,   372,   390,    68,   368,
-      -1,   372,    68,   368,    -1,    61,   371,   389,   373,   373,
-      -1,    61,   371,   389,   373,    -1,    69,   117,   521,    -1,
-     380,    -1,   385,    -1,   374,    -1,   376,    -1,   394,    -1,
-     399,    -1,   395,    -1,   375,    -1,   376,    -1,   378,   377,
-      -1,    61,   117,    -1,    62,    61,   117,    -1,   379,   381,
-      -1,   382,    -1,   381,   106,   117,   382,    -1,   521,   143,
-     368,    -1,   521,   489,   143,   368,    -1,   521,   383,   143,
-     368,    -1,   521,   489,   383,   143,   368,    -1,   521,   384,
-     143,   368,    -1,   521,   489,   384,   143,   368,    -1,   521,
-     383,   384,   143,   368,    -1,   521,   489,   383,   384,   143,
-     368,    -1,    95,   117,   521,    -1,   262,   117,   521,    -1,
-      58,   117,   386,    -1,   388,    -1,   386,   106,   117,   388,
-      -1,   393,    -1,   387,   106,   117,   393,    -1,   521,   139,
-     368,    -1,   521,   489,   139,   368,    -1,   521,   384,   139,
-     368,    -1,   521,   489,   384,   139,   368,    -1,   117,   521,
-     143,   368,    -1,   117,   521,   489,   143,   368,    -1,   391,
-      -1,   117,   521,    -1,   117,   521,   391,    -1,   383,    -1,
-     383,   392,    -1,   392,    -1,    65,   117,   521,    66,   117,
-     521,    -1,    66,   117,   521,    -1,    65,   117,   521,    -1,
-     521,    -1,   207,   368,    -1,   167,   166,   396,    -1,   397,
-      -1,   396,   106,   397,    -1,   117,   521,    -1,   117,   521,
-     398,    -1,   105,   519,    -1,   165,   166,   400,    -1,    51,
-     165,   166,   400,    -1,   401,    -1,   400,   106,   401,    -1,
-     368,    -1,   368,   402,    -1,   403,    -1,   404,    -1,   405,
-      -1,   403,   404,    -1,   403,   405,    -1,   404,   405,    -1,
-     403,   404,   405,    -1,    94,    -1,   115,    -1,   124,   125,
-      -1,   124,   126,    -1,   105,   519,    -1,    50,   117,   407,
-     183,   368,    -1,   132,   117,   407,   183,   368,    -1,   408,
-      -1,   407,   106,   117,   408,    -1,   521,   143,   368,    -1,
-     521,   489,   143,   368,    -1,    34,   152,   365,   182,   410,
-     112,   181,   368,    -1,    34,   152,   365,   182,   410,   112,
-     117,   521,   181,   368,    -1,   411,    -1,   410,   411,    -1,
-      99,   490,   181,   368,    -1,    99,   117,   521,    93,   490,
-     181,   368,    -1,    46,   152,   365,   182,   193,   368,   123,
-     368,    -1,   414,    -1,   413,   163,   414,    -1,   415,    -1,
-     414,    91,   415,    -1,   417,    -1,   417,   430,   417,    -1,
-     417,   431,   417,    -1,   417,   129,   417,    -1,   417,   158,
-     417,    -1,    -1,   417,   153,   416,   417,    -1,   417,   151,
-     417,    -1,   417,   140,   417,    -1,   417,   138,   417,    -1,
-     418,    -1,   418,   251,   524,    -1,   418,   251,   524,   558,
-      -1,   419,    -1,   419,   194,   419,    -1,   420,    -1,   419,
-     171,   420,    -1,   419,   154,   420,    -1,   421,    -1,   420,
-     189,   421,    -1,   420,   116,   421,    -1,   420,   142,   421,
-      -1,   420,   155,   421,    -1,   422,    -1,   421,   196,   422,
-      -1,   421,   205,   422,    -1,   423,    -1,   422,   146,   423,
-      -1,   422,   133,   423,    -1,   424,    -1,   424,    75,   227,
-     490,    -1,   425,    -1,   425,   195,    93,   490,    -1,   426,
-      -1,   426,   100,    93,   488,    -1,   427,    -1,   427,   101,
-      93,   488,    -1,   429,    -1,   428,   429,    -1,   171,    -1,
-     154,    -1,   428,   171,    -1,   428,   154,    -1,   432,    -1,
-     436,    -1,   433,    -1,   198,    -1,   203,    -1,   202,    -1,
-     201,    -1,   200,    -1,   199,    -1,   147,    -1,   174,    -1,
-     137,    -1,    33,   149,   365,   179,    -1,    33,   218,   149,
-     365,   179,    -1,    33,   217,   149,   365,   179,    -1,    33,
-      93,   504,   149,   365,   179,    -1,   434,   149,   179,    -1,
-     434,   149,   365,   179,    -1,   435,    -1,   434,   435,    -1,
-     172,   521,    15,    -1,   172,    16,    -1,   437,    -1,   437,
-     438,    -1,   188,   438,    -1,   438,    -1,   187,    -1,   439,
-      -1,   439,   187,   438,    -1,   439,   188,   438,    -1,   440,
-      -1,   449,    -1,   441,    -1,   441,   450,    -1,   444,    -1,
-     444,   450,    -1,   442,   446,    -1,   443,    -1,   104,    -1,
-     113,    -1,    97,    -1,   185,    -1,   114,    -1,   136,    -1,
-     135,    -1,   446,    -1,    98,   446,    -1,   445,   446,    -1,
-     119,    -1,   168,    -1,    89,    -1,   176,    -1,   175,    -1,
-      90,    -1,   494,    -1,   447,    -1,   521,    -1,   448,    -1,
-     189,    -1,    10,    -1,    17,    -1,   452,    -1,   452,   450,
-      -1,   451,    -1,   450,   451,    -1,   150,   365,   180,    -1,
-     453,    -1,   455,    -1,   456,    -1,   457,    -1,   460,    -1,
-     462,    -1,   458,    -1,   459,    -1,   454,    -1,   506,    -1,
-     109,    -1,   145,    -1,   121,    -1,   117,   521,    -1,   152,
-     182,    -1,   152,   365,   182,    -1,   118,    -1,   164,   149,
-     365,   179,    -1,   197,   149,   365,   179,    -1,   521,   152,
-     182,    -1,   521,   152,   461,   182,    -1,   368,    -1,   461,
-     106,   368,    -1,   463,    -1,   481,    -1,   464,    -1,   478,
-      -1,   479,    -1,   153,   521,   468,   127,    -1,   153,   521,
-     466,   468,   127,    -1,   153,   521,   468,   192,   190,   521,
-     468,   192,    -1,   153,   521,   468,   192,   465,   190,   521,
-     468,   192,    -1,   153,   521,   466,   468,   192,   190,   521,
-     468,   192,    -1,   153,   521,   466,   468,   192,   465,   190,
-     521,   468,   192,    -1,   476,    -1,   465,   476,    -1,   467,
-      -1,   466,   467,    -1,    26,   521,   468,   129,   468,   469,
-      -1,    -1,    26,    -1,   178,   470,   178,    -1,    92,   472,
-      92,    -1,    -1,   471,    -1,   131,    -1,   474,    -1,   471,
-     131,    -1,   471,   474,    -1,    -1,   473,    -1,   130,    -1,
-     475,    -1,   473,   130,    -1,   473,   475,    -1,    19,    -1,
-     477,    -1,     4,    -1,   477,    -1,   463,    -1,     9,    -1,
-     480,    -1,   477,    -1,     8,    -1,   120,    -1,   122,    -1,
-     362,    -1,   208,    21,   209,    -1,   208,   209,    -1,   169,
-     520,   170,    -1,   169,   520,     7,    -1,   102,     6,    -1,
-     482,    -1,   483,    -1,   484,    -1,   485,    -1,   486,    -1,
-     487,    -1,    36,   149,   365,   179,    -1,    35,   521,   149,
-     179,    -1,    35,   521,   149,   365,   179,    -1,    35,   149,
-     365,   179,   149,   179,    -1,    35,   149,   365,   179,   149,
-     365,   179,    -1,    96,   521,   149,   179,    -1,    96,   521,
-     149,   365,   179,    -1,    96,   149,   365,   179,   149,   179,
-      -1,    96,   149,   365,   179,   149,   365,   179,    -1,    37,
-     149,   365,   179,    -1,    38,   149,   365,   179,    -1,    47,
-     520,   149,   179,    -1,    47,   520,   149,   365,   179,    -1,
-      47,   149,   365,   179,   149,   179,    -1,    47,   149,   365,
-     179,   149,   365,   179,    -1,   493,    -1,   493,   141,    -1,
-      93,   490,    -1,   492,    -1,   492,   491,    -1,   206,   152,
-     182,    -1,   141,    -1,   189,    -1,   171,    -1,   493,    -1,
-     494,    -1,   148,   152,   182,    -1,   521,    -1,   496,    -1,
-     502,    -1,   500,    -1,   503,    -1,   501,    -1,   499,    -1,
-     498,    -1,   497,    -1,   495,    -1,   221,   152,   182,    -1,
-      73,   152,   182,    -1,    73,   152,   502,   182,    -1,    73,
-     152,   503,   182,    -1,    37,   152,   182,    -1,    38,   152,
-     182,    -1,    47,   152,   182,    -1,    47,   152,   520,   182,
-      -1,    47,   152,    20,   182,    -1,    96,   152,   182,    -1,
-      96,   152,   521,   182,    -1,    96,   152,   521,   106,   504,
-     182,    -1,    96,   152,   189,   182,    -1,    96,   152,   189,
-     106,   504,   182,    -1,   184,   521,   182,    -1,    35,   152,
-     182,    -1,    35,   152,   521,   182,    -1,    35,   152,   521,
-     106,   504,   182,    -1,    35,   152,   521,   106,   505,   182,
-      -1,    35,   152,   189,   182,    -1,    35,   152,   189,   106,
-     504,   182,    -1,    35,   152,   189,   106,   505,   182,    -1,
-      72,   152,   521,   182,    -1,   521,    -1,   521,   141,    -1,
-      20,    -1,    39,   216,   217,    -1,    39,   216,   218,    -1,
-      39,   216,   219,    -1,   222,   221,   368,   229,   368,    -1,
-     222,   221,   368,    93,   228,   229,   368,    -1,   222,   221,
-     368,    93,   230,   229,   368,    -1,   222,   221,   368,   214,
-     368,    -1,   222,   221,   368,   215,   368,    -1,   222,   223,
-     368,   229,   368,    -1,   222,   223,   368,    93,   228,   229,
-     368,    -1,   222,   223,   368,    93,   230,   229,   368,    -1,
-     222,   223,   368,   214,   368,    -1,   222,   223,   368,   215,
-     368,    -1,   220,   221,   368,    -1,   220,   223,   368,    -1,
-     225,   221,   368,   233,   368,    -1,   225,   226,   227,   221,
-     368,   233,   368,    -1,   224,   221,   368,    93,   368,    -1,
-     232,   117,   513,   231,   368,   181,   368,    -1,   514,    -1,
-     513,   106,   117,   514,    -1,   521,   139,   368,    -1,   234,
-     149,   368,   179,   516,    -1,   517,    -1,   516,   517,    -1,
-     235,   518,   363,    -1,   235,   518,   152,   117,   521,   182,
-     363,    -1,   235,   518,   152,   117,   521,   106,   117,   521,
-     182,   363,    -1,   235,   518,   152,   117,   521,   106,   117,
-     521,   106,   117,   521,   182,   363,    -1,   447,    -1,   518,
-     205,   447,    -1,    20,    -1,    14,    -1,   521,    -1,    18,
-      -1,   522,    -1,   210,    -1,   124,    -1,    96,    -1,    38,
-      -1,    73,    -1,    35,    -1,   148,    -1,    46,    -1,   221,
-      -1,    47,    -1,    76,    -1,    72,    -1,    37,    -1,    34,
-      -1,   206,    -1,    77,    -1,   240,    -1,    71,    -1,   218,
-      -1,   217,    -1,   142,    -1,    36,    -1,   252,    -1,   239,
-      -1,   242,    -1,   241,    -1,   269,    -1,   270,    -1,   273,
-      -1,   271,    -1,   274,    -1,   245,    -1,   247,    -1,    54,
-      -1,   213,    -1,   246,    -1,    48,    -1,   219,    -1,   232,
-      -1,   226,    -1,   198,    -1,   203,    -1,   202,    -1,   201,
-      -1,   200,    -1,   199,    -1,    95,    -1,   110,    -1,   111,
-      -1,   181,    -1,    61,    -1,    62,    -1,    63,    -1,    64,
-      -1,    65,    -1,    66,    -1,    67,    -1,    68,    -1,    69,
-      -1,   143,    -1,    58,    -1,   207,    -1,   166,    -1,   167,
-      -1,   165,    -1,    51,    -1,    94,    -1,   115,    -1,   125,
-      -1,   126,    -1,   105,    -1,    50,    -1,   132,    -1,   183,
-      -1,    99,    -1,    93,    -1,   193,    -1,   123,    -1,   163,
-      -1,    91,    -1,    75,    -1,   227,    -1,   100,    -1,   194,
-      -1,   116,    -1,   155,    -1,   196,    -1,   146,    -1,   133,
-      -1,    33,    -1,   101,    -1,   195,    -1,   147,    -1,   177,
-      -1,   191,    -1,   156,    -1,   134,    -1,   128,    -1,   162,
-      -1,   144,    -1,   161,    -1,    39,    -1,    59,    -1,    70,
-      -1,   112,    -1,    74,    -1,    53,    -1,   211,    -1,    49,
-      -1,    55,    -1,    52,    -1,    40,    -1,   262,    -1,   251,
-      -1,   267,    -1,   268,    -1,   244,    -1,   257,    -1,   265,
-      -1,   261,    -1,   243,    -1,   256,    -1,   266,    -1,   260,
-      -1,   255,    -1,   254,    -1,   238,    -1,   237,    -1,   259,
-      -1,   248,    -1,   249,    -1,   272,    -1,   264,    -1,   263,
-      -1,   258,    -1,   225,    -1,   231,    -1,   228,    -1,   222,
-      -1,   215,    -1,   214,    -1,   216,    -1,   233,    -1,   223,
-      -1,   224,    -1,   230,    -1,   220,    -1,   229,    -1,    45,
-      -1,    42,    -1,    41,    -1,    43,    -1,    44,    -1,   164,
-      -1,   197,    -1,    27,    -1,    28,    -1,    30,    -1,    32,
-      -1,    29,    -1,    31,    -1,   234,    -1,   235,    -1,    60,
-      -1,   236,    -1,    57,    -1,   279,    -1,   275,    -1,   276,
-      -1,   278,    -1,   282,    -1,   280,    -1,   281,    -1,   277,
-      -1,    78,    -1,    79,    -1,    80,    -1,    81,    -1,    82,
-      -1,    83,    -1,    84,    -1,    85,    -1,    86,    -1,    87,
-      -1,    88,    -1,   236,   117,   387,    60,   149,   368,   179,
-      -1,    60,   149,   368,   179,    -1,   526,    -1,   526,   525,
-      -1,   526,   267,   418,    -1,   526,   525,   267,   418,    -1,
-     535,    -1,   533,    -1,   525,   535,    -1,   525,   533,    -1,
-     527,    -1,   526,   253,   527,    -1,   528,    -1,   527,   250,
-     528,    -1,   529,    -1,   528,   252,   143,   529,    -1,   530,
-      -1,   252,   530,    -1,   531,    -1,   531,   554,    -1,   152,
-     524,   182,    -1,   532,    -1,   532,   550,    -1,   453,    -1,
-     149,   365,   179,    -1,   534,    -1,   553,    -1,   552,    -1,
-     555,    -1,   549,    -1,   164,    -1,   536,    -1,   537,    -1,
-     538,    -1,   539,    -1,   542,    -1,   547,    -1,   548,    -1,
-     256,    -1,   266,    -1,    99,   239,    -1,    99,   242,    -1,
-     233,   241,    -1,   269,   241,    -1,   241,   239,    -1,   241,
-     242,    -1,   233,   270,    -1,   269,   270,    -1,   233,   273,
-     541,    -1,   233,   273,   112,    -1,   233,   273,   152,   541,
-     182,    -1,   233,   273,   152,   541,   106,   540,   182,    -1,
-     233,   273,   152,   112,   182,    -1,   233,   273,   152,   112,
-     106,   540,   182,    -1,   269,   273,    -1,   541,    -1,   540,
-     106,   541,    -1,    95,    20,    -1,    95,    20,   260,    20,
-      -1,    95,    20,   551,   255,    -1,    95,    20,   260,    20,
-     551,   255,    -1,   233,   271,   272,   544,    -1,   233,   271,
-     272,   544,   543,    -1,   233,   112,   271,   272,    -1,   233,
-     112,   271,   272,   543,    -1,   269,   271,   272,    -1,   546,
-      -1,   543,   546,    -1,    95,    20,    -1,   152,   545,   182,
-      -1,    20,    -1,   545,    20,    -1,   196,   544,    -1,   133,
-     544,    -1,   254,    20,    -1,   233,   274,    -1,   269,   274,
-      -1,    95,   213,    -1,    95,   246,    -1,   245,   247,    -1,
-     238,    -1,   238,    54,    -1,   237,    -1,   237,   272,    -1,
-     259,    -1,   248,   421,    -1,    95,   126,   421,    -1,    95,
-      48,   421,    -1,   249,   421,   194,   421,    -1,   244,   551,
-     556,    -1,   268,   421,   556,    -1,   257,   551,   265,    -1,
-     261,   557,    -1,   243,   557,    -1,   272,    -1,   264,    -1,
-     258,    -1,   263,    -1,   258,    -1,   269,   247,   421,    -1
+     305,   364,    -1,   364,    -1,   304,    -1,   304,   305,    -1,
+      52,   156,   520,   129,   519,   186,    -1,   306,   186,    -1,
+     307,   186,    -1,   306,   186,   307,   186,    -1,   308,    -1,
+     306,   186,   308,    -1,   309,    -1,   307,   186,   309,    -1,
+     314,    -1,   315,    -1,   316,    -1,   318,    -1,   335,    -1,
+     330,    -1,   356,    -1,   319,    -1,   320,    -1,   337,    -1,
+     310,    -1,    39,   112,    78,   311,    -1,    39,    78,   521,
+     311,    -1,   312,    -1,   311,   312,    -1,   313,   129,   506,
+      -1,    79,    -1,    80,    -1,    81,    -1,    82,    -1,    83,
+      -1,    84,    -1,    85,    -1,    86,    -1,    87,    -1,    88,
+      -1,   317,    -1,   324,    -1,   325,    -1,   344,    -1,   321,
+      -1,   322,    -1,   323,    -1,   507,    -1,   326,    -1,   329,
+      -1,    39,   156,   520,   129,   519,    -1,    39,    77,   177,
+      -1,    39,    77,   191,    -1,    39,   112,    35,   156,   519,
+      -1,    39,   112,    40,   156,   519,    -1,    39,    53,   521,
+      20,    -1,    39,   240,   535,    -1,    39,    70,   164,    -1,
+      39,    70,   197,    -1,    39,   112,   165,   124,   125,    -1,
+      39,   112,   165,   124,   126,    -1,    39,    74,   177,   106,
+     144,    -1,    39,    74,   177,   106,   161,    -1,    39,    74,
+     162,   106,   144,    -1,    39,    74,   162,   106,   161,    -1,
+      39,   112,   105,   519,    -1,    39,    71,   519,    -1,    49,
+      55,   519,    -1,    49,    55,   328,   519,    -1,    49,    55,
+     519,    95,   327,    -1,    49,    55,   328,   519,    95,   327,
+      -1,   519,    -1,   327,   106,   519,    -1,   156,   520,   129,
+      -1,   112,    35,   156,    -1,    49,    52,   519,    -1,    49,
+      52,   156,   520,   129,   519,    -1,    49,    52,   519,    95,
+     327,    -1,    49,    52,   156,   520,   129,   519,    95,   327,
+      -1,    39,   110,   148,   331,    -1,    93,   492,   332,    -1,
+     332,    -1,   333,    -1,   134,    -1,   134,   333,    -1,   139,
+     368,    -1,   117,   521,    -1,   117,   521,   489,    -1,    39,
+     111,   334,   139,   368,    -1,    39,   111,   334,   134,    -1,
+      39,   111,   334,   134,   139,   368,    -1,   280,    -1,   281,
+      -1,    39,   338,    -1,   339,    -1,   278,   339,    -1,   340,
+      -1,   336,   340,    -1,   279,   519,   282,   368,   166,   343,
+     182,    -1,   342,    -1,   342,   105,   519,    -1,   368,    -1,
+     368,   489,    -1,   152,   341,    -1,   343,   106,   341,    -1,
+      39,    59,   177,    -1,    39,    59,   191,    -1,   152,   182,
+      -1,   152,   360,   182,    -1,   152,   182,    93,   490,    -1,
+     152,   360,   182,    93,   490,    -1,    27,   347,    -1,   149,
+     348,   365,   179,    -1,   348,   349,   186,    -1,    -1,   349,
+     106,   350,    -1,    39,   350,    -1,   334,    -1,   334,   139,
+     368,    -1,    57,   117,   521,   139,   368,    -1,    28,   233,
+     368,    -1,    32,   152,   368,   182,   347,    -1,    29,    30,
+      -1,    31,    30,    -1,   275,   279,   519,    -1,   277,   279,
+     519,    -1,   276,   279,   519,    -1,    39,   357,    -1,    39,
+      44,   357,    -1,    39,    43,   357,    -1,   358,    -1,    45,
+     358,    -1,    41,   358,    -1,    42,   359,    -1,    40,   521,
+     345,   363,    -1,    40,   521,   345,   134,    -1,    40,   521,
+     345,   347,    -1,   361,    -1,   360,   106,   361,    -1,   117,
+     521,    -1,   117,   521,   489,    -1,   149,   365,   179,    -1,
+     149,   365,   179,    -1,   365,    -1,   367,    -1,   367,   366,
+      -1,   186,    -1,   366,   367,   186,    -1,   368,    -1,   367,
+     106,   368,    -1,   369,    -1,   406,    -1,   409,    -1,   412,
+      -1,   413,    -1,   508,    -1,   509,    -1,   511,    -1,   510,
+      -1,   512,    -1,   515,    -1,   523,    -1,   352,    -1,   353,
+      -1,   354,    -1,   351,    -1,   346,    -1,   355,    -1,   378,
+     370,    -1,   181,   368,    -1,    63,   268,    -1,    64,   268,
+      -1,   213,    -1,   246,    -1,    67,   246,    -1,   372,   390,
+      68,   368,    -1,   372,    68,   368,    -1,    61,   371,   389,
+     373,   373,    -1,    61,   371,   389,   373,    -1,    69,   117,
+     521,    -1,   380,    -1,   385,    -1,   374,    -1,   376,    -1,
+     394,    -1,   399,    -1,   395,    -1,   375,    -1,   376,    -1,
+     378,   377,    -1,    61,   117,    -1,    62,    61,   117,    -1,
+     379,   381,    -1,   382,    -1,   381,   106,   117,   382,    -1,
+     521,   143,   368,    -1,   521,   489,   143,   368,    -1,   521,
+     383,   143,   368,    -1,   521,   489,   383,   143,   368,    -1,
+     521,   384,   143,   368,    -1,   521,   489,   384,   143,   368,
+      -1,   521,   383,   384,   143,   368,    -1,   521,   489,   383,
+     384,   143,   368,    -1,    95,   117,   521,    -1,   262,   117,
+     521,    -1,    58,   117,   386,    -1,   388,    -1,   386,   106,
+     117,   388,    -1,   393,    -1,   387,   106,   117,   393,    -1,
+     521,   139,   368,    -1,   521,   489,   139,   368,    -1,   521,
+     384,   139,   368,    -1,   521,   489,   384,   139,   368,    -1,
+     117,   521,   143,   368,    -1,   117,   521,   489,   143,   368,
+      -1,   391,    -1,   117,   521,    -1,   117,   521,   391,    -1,
+     383,    -1,   383,   392,    -1,   392,    -1,    65,   117,   521,
+      66,   117,   521,    -1,    66,   117,   521,    -1,    65,   117,
+     521,    -1,   521,    -1,   207,   368,    -1,   167,   166,   396,
+      -1,   397,    -1,   396,   106,   397,    -1,   117,   521,    -1,
+     117,   521,   398,    -1,   105,   519,    -1,   165,   166,   400,
+      -1,    51,   165,   166,   400,    -1,   401,    -1,   400,   106,
+     401,    -1,   368,    -1,   368,   402,    -1,   403,    -1,   404,
+      -1,   405,    -1,   403,   404,    -1,   403,   405,    -1,   404,
+     405,    -1,   403,   404,   405,    -1,    94,    -1,   115,    -1,
+     124,   125,    -1,   124,   126,    -1,   105,   519,    -1,    50,
+     117,   407,   183,   368,    -1,   132,   117,   407,   183,   368,
+      -1,   408,    -1,   407,   106,   117,   408,    -1,   521,   143,
+     368,    -1,   521,   489,   143,   368,    -1,    34,   152,   365,
+     182,   410,   112,   181,   368,    -1,    34,   152,   365,   182,
+     410,   112,   117,   521,   181,   368,    -1,   411,    -1,   410,
+     411,    -1,    99,   490,   181,   368,    -1,    99,   117,   521,
+      93,   490,   181,   368,    -1,    46,   152,   365,   182,   193,
+     368,   123,   368,    -1,   414,    -1,   413,   163,   414,    -1,
+     415,    -1,   414,    91,   415,    -1,   417,    -1,   417,   430,
+     417,    -1,   417,   431,   417,    -1,   417,   129,   417,    -1,
+     417,   158,   417,    -1,    -1,   417,   153,   416,   417,    -1,
+     417,   151,   417,    -1,   417,   140,   417,    -1,   417,   138,
+     417,    -1,   418,    -1,   418,   251,   524,    -1,   418,   251,
+     524,   558,    -1,   419,    -1,   419,   194,   419,    -1,   420,
+      -1,   419,   171,   420,    -1,   419,   154,   420,    -1,   421,
+      -1,   420,   189,   421,    -1,   420,   116,   421,    -1,   420,
+     142,   421,    -1,   420,   155,   421,    -1,   422,    -1,   421,
+     196,   422,    -1,   421,   205,   422,    -1,   423,    -1,   422,
+     146,   423,    -1,   422,   133,   423,    -1,   424,    -1,   424,
+      75,   227,   490,    -1,   425,    -1,   425,   195,    93,   490,
+      -1,   426,    -1,   426,   100,    93,   488,    -1,   427,    -1,
+     427,   101,    93,   488,    -1,   429,    -1,   428,   429,    -1,
+     171,    -1,   154,    -1,   428,   171,    -1,   428,   154,    -1,
+     432,    -1,   436,    -1,   433,    -1,   198,    -1,   203,    -1,
+     202,    -1,   201,    -1,   200,    -1,   199,    -1,   147,    -1,
+     174,    -1,   137,    -1,    33,   149,   365,   179,    -1,    33,
+     218,   149,   365,   179,    -1,    33,   217,   149,   365,   179,
+      -1,    33,    93,   504,   149,   365,   179,    -1,   434,   149,
+     179,    -1,   434,   149,   365,   179,    -1,   435,    -1,   434,
+     435,    -1,   172,   521,    15,    -1,   172,    16,    -1,   437,
+      -1,   437,   438,    -1,   188,   438,    -1,   438,    -1,   187,
+      -1,   439,    -1,   439,   187,   438,    -1,   439,   188,   438,
+      -1,   440,    -1,   449,    -1,   441,    -1,   441,   450,    -1,
+     444,    -1,   444,   450,    -1,   442,   446,    -1,   443,    -1,
+     104,    -1,   113,    -1,    97,    -1,   185,    -1,   114,    -1,
+     136,    -1,   135,    -1,   446,    -1,    98,   446,    -1,   445,
+     446,    -1,   119,    -1,   168,    -1,    89,    -1,   176,    -1,
+     175,    -1,    90,    -1,   494,    -1,   447,    -1,   521,    -1,
+     448,    -1,   189,    -1,    10,    -1,    17,    -1,   452,    -1,
+     452,   450,    -1,   451,    -1,   450,   451,    -1,   150,   365,
+     180,    -1,   453,    -1,   455,    -1,   456,    -1,   457,    -1,
+     460,    -1,   462,    -1,   458,    -1,   459,    -1,   454,    -1,
+     506,    -1,   109,    -1,   145,    -1,   121,    -1,   117,   521,
+      -1,   152,   182,    -1,   152,   365,   182,    -1,   118,    -1,
+     164,   149,   365,   179,    -1,   197,   149,   365,   179,    -1,
+     521,   152,   182,    -1,   521,   152,   461,   182,    -1,   368,
+      -1,   461,   106,   368,    -1,   463,    -1,   481,    -1,   464,
+      -1,   478,    -1,   479,    -1,   153,   521,   468,   127,    -1,
+     153,   521,   466,   468,   127,    -1,   153,   521,   468,   192,
+     190,   521,   468,   192,    -1,   153,   521,   468,   192,   465,
+     190,   521,   468,   192,    -1,   153,   521,   466,   468,   192,
+     190,   521,   468,   192,    -1,   153,   521,   466,   468,   192,
+     465,   190,   521,   468,   192,    -1,   476,    -1,   465,   476,
+      -1,   467,    -1,   466,   467,    -1,    26,   521,   468,   129,
+     468,   469,    -1,    -1,    26,    -1,   178,   470,   178,    -1,
+      92,   472,    92,    -1,    -1,   471,    -1,   131,    -1,   474,
+      -1,   471,   131,    -1,   471,   474,    -1,    -1,   473,    -1,
+     130,    -1,   475,    -1,   473,   130,    -1,   473,   475,    -1,
+      19,    -1,   477,    -1,     4,    -1,   477,    -1,   463,    -1,
+       9,    -1,   480,    -1,   477,    -1,     8,    -1,   120,    -1,
+     122,    -1,   362,    -1,   208,    21,   209,    -1,   208,   209,
+      -1,   169,   520,   170,    -1,   169,   520,     7,    -1,   102,
+       6,    -1,   482,    -1,   483,    -1,   484,    -1,   485,    -1,
+     486,    -1,   487,    -1,    36,   149,   365,   179,    -1,    35,
+     521,   149,   179,    -1,    35,   521,   149,   365,   179,    -1,
+      35,   149,   365,   179,   149,   179,    -1,    35,   149,   365,
+     179,   149,   365,   179,    -1,    96,   521,   149,   179,    -1,
+      96,   521,   149,   365,   179,    -1,    96,   149,   365,   179,
+     149,   179,    -1,    96,   149,   365,   179,   149,   365,   179,
+      -1,    37,   149,   365,   179,    -1,    38,   149,   365,   179,
+      -1,    47,   520,   149,   179,    -1,    47,   520,   149,   365,
+     179,    -1,    47,   149,   365,   179,   149,   179,    -1,    47,
+     149,   365,   179,   149,   365,   179,    -1,   493,    -1,   493,
+     141,    -1,    93,   490,    -1,   492,    -1,   492,   491,    -1,
+     206,   152,   182,    -1,   141,    -1,   189,    -1,   171,    -1,
+     493,    -1,   494,    -1,   148,   152,   182,    -1,   521,    -1,
+     496,    -1,   502,    -1,   500,    -1,   503,    -1,   501,    -1,
+     499,    -1,   498,    -1,   497,    -1,   495,    -1,   221,   152,
+     182,    -1,    73,   152,   182,    -1,    73,   152,   502,   182,
+      -1,    73,   152,   503,   182,    -1,    37,   152,   182,    -1,
+      38,   152,   182,    -1,    47,   152,   182,    -1,    47,   152,
+     520,   182,    -1,    47,   152,    20,   182,    -1,    96,   152,
+     182,    -1,    96,   152,   521,   182,    -1,    96,   152,   521,
+     106,   504,   182,    -1,    96,   152,   189,   182,    -1,    96,
+     152,   189,   106,   504,   182,    -1,   184,   521,   182,    -1,
+      35,   152,   182,    -1,    35,   152,   521,   182,    -1,    35,
+     152,   521,   106,   504,   182,    -1,    35,   152,   521,   106,
+     505,   182,    -1,    35,   152,   189,   182,    -1,    35,   152,
+     189,   106,   504,   182,    -1,    35,   152,   189,   106,   505,
+     182,    -1,    72,   152,   521,   182,    -1,   521,    -1,   521,
+     141,    -1,    20,    -1,    39,   216,   217,    -1,    39,   216,
+     218,    -1,    39,   216,   219,    -1,   222,   221,   368,   229,
+     368,    -1,   222,   221,   368,    93,   228,   229,   368,    -1,
+     222,   221,   368,    93,   230,   229,   368,    -1,   222,   221,
+     368,   214,   368,    -1,   222,   221,   368,   215,   368,    -1,
+     222,   223,   368,   229,   368,    -1,   222,   223,   368,    93,
+     228,   229,   368,    -1,   222,   223,   368,    93,   230,   229,
+     368,    -1,   222,   223,   368,   214,   368,    -1,   222,   223,
+     368,   215,   368,    -1,   220,   221,   368,    -1,   220,   223,
+     368,    -1,   225,   221,   368,   233,   368,    -1,   225,   226,
+     227,   221,   368,   233,   368,    -1,   224,   221,   368,    93,
+     368,    -1,   232,   117,   513,   231,   368,   181,   368,    -1,
+     514,    -1,   513,   106,   117,   514,    -1,   521,   139,   368,
+      -1,   234,   149,   368,   179,   516,    -1,   517,    -1,   516,
+     517,    -1,   235,   518,   363,    -1,   235,   518,   152,   117,
+     521,   182,   363,    -1,   235,   518,   152,   117,   521,   106,
+     117,   521,   182,   363,    -1,   235,   518,   152,   117,   521,
+     106,   117,   521,   106,   117,   521,   182,   363,    -1,   447,
+      -1,   518,   205,   447,    -1,    20,    -1,    14,    -1,   521,
+      -1,    18,    -1,   522,    -1,   210,    -1,   124,    -1,    96,
+      -1,    38,    -1,    73,    -1,    35,    -1,   148,    -1,    46,
+      -1,   221,    -1,    47,    -1,    76,    -1,    72,    -1,    37,
+      -1,    34,    -1,   206,    -1,    77,    -1,   240,    -1,    71,
+      -1,   218,    -1,   217,    -1,   142,    -1,    36,    -1,   252,
+      -1,   239,    -1,   242,    -1,   241,    -1,   269,    -1,   270,
+      -1,   273,    -1,   271,    -1,   274,    -1,   245,    -1,   247,
+      -1,    54,    -1,   213,    -1,   246,    -1,    48,    -1,   219,
+      -1,   232,    -1,   226,    -1,   198,    -1,   203,    -1,   202,
+      -1,   201,    -1,   200,    -1,   199,    -1,    95,    -1,   110,
+      -1,   111,    -1,   181,    -1,    61,    -1,    62,    -1,    63,
+      -1,    64,    -1,    65,    -1,    66,    -1,    67,    -1,    68,
+      -1,    69,    -1,   143,    -1,    58,    -1,   207,    -1,   166,
+      -1,   167,    -1,   165,    -1,    51,    -1,    94,    -1,   115,
+      -1,   125,    -1,   126,    -1,   105,    -1,    50,    -1,   132,
+      -1,   183,    -1,    99,    -1,    93,    -1,   193,    -1,   123,
+      -1,   163,    -1,    91,    -1,    75,    -1,   227,    -1,   100,
+      -1,   194,    -1,   116,    -1,   155,    -1,   196,    -1,   146,
+      -1,   133,    -1,    33,    -1,   101,    -1,   195,    -1,   147,
+      -1,   177,    -1,   191,    -1,   156,    -1,   134,    -1,   128,
+      -1,   162,    -1,   144,    -1,   161,    -1,    39,    -1,    59,
+      -1,    70,    -1,   112,    -1,    74,    -1,    53,    -1,   211,
+      -1,    49,    -1,    55,    -1,    52,    -1,    40,    -1,   262,
+      -1,   251,    -1,   267,    -1,   268,    -1,   244,    -1,   257,
+      -1,   265,    -1,   261,    -1,   243,    -1,   256,    -1,   266,
+      -1,   260,    -1,   255,    -1,   254,    -1,   238,    -1,   237,
+      -1,   259,    -1,   248,    -1,   249,    -1,   272,    -1,   264,
+      -1,   263,    -1,   258,    -1,   225,    -1,   231,    -1,   228,
+      -1,   222,    -1,   215,    -1,   214,    -1,   216,    -1,   233,
+      -1,   223,    -1,   224,    -1,   230,    -1,   220,    -1,   229,
+      -1,    45,    -1,    42,    -1,    41,    -1,    43,    -1,    44,
+      -1,   164,    -1,   197,    -1,    27,    -1,    28,    -1,    30,
+      -1,    32,    -1,    29,    -1,    31,    -1,   234,    -1,   235,
+      -1,    60,    -1,   236,    -1,    57,    -1,   279,    -1,   275,
+      -1,   276,    -1,   278,    -1,   282,    -1,   280,    -1,   281,
+      -1,   277,    -1,    78,    -1,    79,    -1,    80,    -1,    81,
+      -1,    82,    -1,    83,    -1,    84,    -1,    85,    -1,    86,
+      -1,    87,    -1,    88,    -1,   236,   117,   387,    60,   149,
+     368,   179,    -1,    60,   149,   368,   179,    -1,   526,    -1,
+     526,   525,    -1,   526,   267,   418,    -1,   526,   525,   267,
+     418,    -1,   535,    -1,   533,    -1,   525,   535,    -1,   525,
+     533,    -1,   527,    -1,   526,   253,   527,    -1,   528,    -1,
+     527,   250,   528,    -1,   529,    -1,   528,   252,   143,   529,
+      -1,   530,    -1,   252,   530,    -1,   531,    -1,   531,   554,
+      -1,   152,   524,   182,    -1,   532,    -1,   532,   550,    -1,
+     453,    -1,   149,   365,   179,    -1,   534,    -1,   553,    -1,
+     552,    -1,   555,    -1,   549,    -1,   164,    -1,   536,    -1,
+     537,    -1,   538,    -1,   539,    -1,   542,    -1,   547,    -1,
+     548,    -1,   256,    -1,   266,    -1,    99,   239,    -1,    99,
+     242,    -1,   233,   241,    -1,   269,   241,    -1,   241,   239,
+      -1,   241,   242,    -1,   233,   270,    -1,   269,   270,    -1,
+     233,   273,   541,    -1,   233,   273,   112,    -1,   233,   273,
+     152,   541,   182,    -1,   233,   273,   152,   541,   106,   540,
+     182,    -1,   233,   273,   152,   112,   182,    -1,   233,   273,
+     152,   112,   106,   540,   182,    -1,   269,   273,    -1,   541,
+      -1,   540,   106,   541,    -1,    95,    20,    -1,    95,    20,
+     260,    20,    -1,    95,    20,   551,   255,    -1,    95,    20,
+     260,    20,   551,   255,    -1,   233,   271,   272,   544,    -1,
+     233,   271,   272,   544,   543,    -1,   233,   112,   271,   272,
+      -1,   233,   112,   271,   272,   543,    -1,   269,   271,   272,
+      -1,   546,    -1,   543,   546,    -1,    95,    20,    -1,   152,
+     545,   182,    -1,    20,    -1,   545,    20,    -1,   196,   544,
+      -1,   133,   544,    -1,   254,    20,    -1,   233,   274,    -1,
+     269,   274,    -1,    95,   213,    -1,    95,   246,    -1,   245,
+     247,    -1,   238,    -1,   238,    54,    -1,   237,    -1,   237,
+     272,    -1,   259,    -1,   248,   421,    -1,    95,   126,   421,
+      -1,    95,    48,   421,    -1,   249,   421,   194,   421,    -1,
+     244,   551,   556,    -1,   268,   421,   556,    -1,   257,   551,
+     265,    -1,   261,   557,    -1,   243,   557,    -1,   272,    -1,
+     264,    -1,   258,    -1,   263,    -1,   258,    -1,   269,   247,
+     421,    -1
   };
 
   /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
@@ -13041,61 +13053,61 @@ namespace zorba {
   xquery_parser::yyprhs_[] =
   {
          0,     0,     3,     5,     8,    10,    13,    15,    18,    23,
-      30,    33,    35,    38,    45,    48,    51,    56,    58,    62,
-      64,    68,    70,    72,    74,    76,    78,    80,    82,    84,
-      86,    88,    90,    95,   100,   102,   105,   109,   111,   113,
+      30,    33,    35,    37,    40,    47,    50,    53,    58,    60,
+      64,    66,    70,    72,    74,    76,    78,    80,    82,    84,
+      86,    88,    90,    92,    97,   102,   104,   107,   111,   113,
      115,   117,   119,   121,   123,   125,   127,   129,   131,   133,
-     135,   137,   139,   141,   143,   145,   147,   149,   155,   159,
-     163,   169,   175,   180,   184,   188,   192,   198,   204,   210,
-     216,   222,   228,   233,   237,   241,   246,   252,   259,   261,
-     265,   269,   273,   277,   284,   290,   299,   304,   308,   310,
-     312,   314,   317,   320,   323,   327,   333,   338,   345,   347,
-     349,   352,   354,   357,   359,   362,   370,   372,   376,   378,
-     381,   384,   388,   392,   396,   399,   403,   408,   414,   417,
-     422,   426,   427,   431,   434,   436,   440,   446,   450,   456,
-     459,   462,   466,   470,   474,   477,   481,   485,   487,   490,
-     493,   496,   501,   506,   511,   513,   517,   520,   524,   528,
-     532,   534,   536,   539,   541,   545,   547,   551,   553,   555,
+     135,   137,   139,   141,   143,   145,   147,   149,   151,   157,
+     161,   165,   171,   177,   182,   186,   190,   194,   200,   206,
+     212,   218,   224,   230,   235,   239,   243,   248,   254,   261,
+     263,   267,   271,   275,   279,   286,   292,   301,   306,   310,
+     312,   314,   316,   319,   322,   325,   329,   335,   340,   347,
+     349,   351,   354,   356,   359,   361,   364,   372,   374,   378,
+     380,   383,   386,   390,   394,   398,   401,   405,   410,   416,
+     419,   424,   428,   429,   433,   436,   438,   442,   448,   452,
+     458,   461,   464,   468,   472,   476,   479,   483,   487,   489,
+     492,   495,   498,   503,   508,   513,   515,   519,   522,   526,
+     530,   534,   536,   538,   541,   543,   547,   549,   553,   555,
      557,   559,   561,   563,   565,   567,   569,   571,   573,   575,
-     577,   579,   581,   583,   585,   587,   590,   593,   596,   599,
-     601,   603,   606,   611,   615,   621,   626,   630,   632,   634,
-     636,   638,   640,   642,   644,   646,   648,   651,   654,   658,
-     661,   663,   668,   672,   677,   682,   688,   693,   699,   705,
-     712,   716,   720,   724,   726,   731,   733,   738,   742,   747,
-     752,   758,   763,   769,   771,   774,   778,   780,   783,   785,
-     792,   796,   800,   802,   805,   809,   811,   815,   818,   822,
-     825,   829,   834,   836,   840,   842,   845,   847,   849,   851,
-     854,   857,   860,   864,   866,   868,   871,   874,   877,   883,
-     889,   891,   896,   900,   905,   914,   925,   927,   930,   935,
-     943,   952,   954,   958,   960,   964,   966,   970,   974,   978,
-     982,   983,   988,   992,   996,  1000,  1002,  1006,  1011,  1013,
-    1017,  1019,  1023,  1027,  1029,  1033,  1037,  1041,  1045,  1047,
-    1051,  1055,  1057,  1061,  1065,  1067,  1072,  1074,  1079,  1081,
-    1086,  1088,  1093,  1095,  1098,  1100,  1102,  1105,  1108,  1110,
+     577,   579,   581,   583,   585,   587,   589,   592,   595,   598,
+     601,   603,   605,   608,   613,   617,   623,   628,   632,   634,
+     636,   638,   640,   642,   644,   646,   648,   650,   653,   656,
+     660,   663,   665,   670,   674,   679,   684,   690,   695,   701,
+     707,   714,   718,   722,   726,   728,   733,   735,   740,   744,
+     749,   754,   760,   765,   771,   773,   776,   780,   782,   785,
+     787,   794,   798,   802,   804,   807,   811,   813,   817,   820,
+     824,   827,   831,   836,   838,   842,   844,   847,   849,   851,
+     853,   856,   859,   862,   866,   868,   870,   873,   876,   879,
+     885,   891,   893,   898,   902,   907,   916,   927,   929,   932,
+     937,   945,   954,   956,   960,   962,   966,   968,   972,   976,
+     980,   984,   985,   990,   994,   998,  1002,  1004,  1008,  1013,
+    1015,  1019,  1021,  1025,  1029,  1031,  1035,  1039,  1043,  1047,
+    1049,  1053,  1057,  1059,  1063,  1067,  1069,  1074,  1076,  1081,
+    1083,  1088,  1090,  1095,  1097,  1100,  1102,  1104,  1107,  1110,
     1112,  1114,  1116,  1118,  1120,  1122,  1124,  1126,  1128,  1130,
-    1132,  1137,  1143,  1149,  1156,  1160,  1165,  1167,  1170,  1174,
-    1177,  1179,  1182,  1185,  1187,  1189,  1191,  1195,  1199,  1201,
-    1203,  1205,  1208,  1210,  1213,  1216,  1218,  1220,  1222,  1224,
-    1226,  1228,  1230,  1232,  1234,  1237,  1240,  1242,  1244,  1246,
+    1132,  1134,  1139,  1145,  1151,  1158,  1162,  1167,  1169,  1172,
+    1176,  1179,  1181,  1184,  1187,  1189,  1191,  1193,  1197,  1201,
+    1203,  1205,  1207,  1210,  1212,  1215,  1218,  1220,  1222,  1224,
+    1226,  1228,  1230,  1232,  1234,  1236,  1239,  1242,  1244,  1246,
     1248,  1250,  1252,  1254,  1256,  1258,  1260,  1262,  1264,  1266,
-    1268,  1271,  1273,  1276,  1280,  1282,  1284,  1286,  1288,  1290,
-    1292,  1294,  1296,  1298,  1300,  1302,  1304,  1306,  1309,  1312,
-    1316,  1318,  1323,  1328,  1332,  1337,  1339,  1343,  1345,  1347,
-    1349,  1351,  1353,  1358,  1364,  1373,  1383,  1393,  1404,  1406,
-    1409,  1411,  1414,  1421,  1422,  1424,  1428,  1432,  1433,  1435,
-    1437,  1439,  1442,  1445,  1446,  1448,  1450,  1452,  1455,  1458,
+    1268,  1270,  1273,  1275,  1278,  1282,  1284,  1286,  1288,  1290,
+    1292,  1294,  1296,  1298,  1300,  1302,  1304,  1306,  1308,  1311,
+    1314,  1318,  1320,  1325,  1330,  1334,  1339,  1341,  1345,  1347,
+    1349,  1351,  1353,  1355,  1360,  1366,  1375,  1385,  1395,  1406,
+    1408,  1411,  1413,  1416,  1423,  1424,  1426,  1430,  1434,  1435,
+    1437,  1439,  1441,  1444,  1447,  1448,  1450,  1452,  1454,  1457,
     1460,  1462,  1464,  1466,  1468,  1470,  1472,  1474,  1476,  1478,
-    1480,  1482,  1486,  1489,  1493,  1497,  1500,  1502,  1504,  1506,
-    1508,  1510,  1512,  1517,  1522,  1528,  1535,  1543,  1548,  1554,
-    1561,  1569,  1574,  1579,  1584,  1590,  1597,  1605,  1607,  1610,
-    1613,  1615,  1618,  1622,  1624,  1626,  1628,  1630,  1632,  1636,
+    1480,  1482,  1484,  1488,  1491,  1495,  1499,  1502,  1504,  1506,
+    1508,  1510,  1512,  1514,  1519,  1524,  1530,  1537,  1545,  1550,
+    1556,  1563,  1571,  1576,  1581,  1586,  1592,  1599,  1607,  1609,
+    1612,  1615,  1617,  1620,  1624,  1626,  1628,  1630,  1632,  1634,
     1638,  1640,  1642,  1644,  1646,  1648,  1650,  1652,  1654,  1656,
-    1660,  1664,  1669,  1674,  1678,  1682,  1686,  1691,  1696,  1700,
-    1705,  1712,  1717,  1724,  1728,  1732,  1737,  1744,  1751,  1756,
-    1763,  1770,  1775,  1777,  1780,  1782,  1786,  1790,  1794,  1800,
-    1808,  1816,  1822,  1828,  1834,  1842,  1850,  1856,  1862,  1866,
-    1870,  1876,  1884,  1890,  1898,  1900,  1905,  1909,  1915,  1917,
-    1920,  1924,  1932,  1943,  1957,  1959,  1963,  1965,  1967,  1969,
+    1658,  1662,  1666,  1671,  1676,  1680,  1684,  1688,  1693,  1698,
+    1702,  1707,  1714,  1719,  1726,  1730,  1734,  1739,  1746,  1753,
+    1758,  1765,  1772,  1777,  1779,  1782,  1784,  1788,  1792,  1796,
+    1802,  1810,  1818,  1824,  1830,  1836,  1844,  1852,  1858,  1864,
+    1868,  1872,  1878,  1886,  1892,  1900,  1902,  1907,  1911,  1917,
+    1919,  1922,  1926,  1934,  1945,  1959,  1961,  1965,  1967,  1969,
     1971,  1973,  1975,  1977,  1979,  1981,  1983,  1985,  1987,  1989,
     1991,  1993,  1995,  1997,  1999,  2001,  2003,  2005,  2007,  2009,
     2011,  2013,  2015,  2017,  2019,  2021,  2023,  2025,  2027,  2029,
@@ -13114,17 +13126,17 @@ namespace zorba {
     2271,  2273,  2275,  2277,  2279,  2281,  2283,  2285,  2287,  2289,
     2291,  2293,  2295,  2297,  2299,  2301,  2303,  2305,  2307,  2309,
     2311,  2313,  2315,  2317,  2319,  2321,  2323,  2325,  2327,  2329,
-    2331,  2333,  2335,  2337,  2339,  2341,  2343,  2351,  2356,  2358,
-    2361,  2365,  2370,  2372,  2374,  2377,  2380,  2382,  2386,  2388,
-    2392,  2394,  2399,  2401,  2404,  2406,  2409,  2413,  2415,  2418,
-    2420,  2424,  2426,  2428,  2430,  2432,  2434,  2436,  2438,  2440,
-    2442,  2444,  2446,  2448,  2450,  2452,  2454,  2457,  2460,  2463,
-    2466,  2469,  2472,  2475,  2478,  2482,  2486,  2492,  2500,  2506,
-    2514,  2517,  2519,  2523,  2526,  2531,  2536,  2543,  2548,  2554,
-    2559,  2565,  2569,  2571,  2574,  2577,  2581,  2583,  2586,  2589,
-    2592,  2595,  2598,  2601,  2604,  2607,  2610,  2612,  2615,  2617,
-    2620,  2622,  2625,  2629,  2633,  2638,  2642,  2646,  2650,  2653,
-    2656,  2658,  2660,  2662,  2664,  2666
+    2331,  2333,  2335,  2337,  2339,  2341,  2343,  2345,  2353,  2358,
+    2360,  2363,  2367,  2372,  2374,  2376,  2379,  2382,  2384,  2388,
+    2390,  2394,  2396,  2401,  2403,  2406,  2408,  2411,  2415,  2417,
+    2420,  2422,  2426,  2428,  2430,  2432,  2434,  2436,  2438,  2440,
+    2442,  2444,  2446,  2448,  2450,  2452,  2454,  2456,  2459,  2462,
+    2465,  2468,  2471,  2474,  2477,  2480,  2484,  2488,  2494,  2502,
+    2508,  2516,  2519,  2521,  2525,  2528,  2533,  2538,  2545,  2550,
+    2556,  2561,  2567,  2571,  2573,  2576,  2579,  2583,  2585,  2588,
+    2591,  2594,  2597,  2600,  2603,  2606,  2609,  2612,  2614,  2617,
+    2619,  2622,  2624,  2627,  2631,  2635,  2640,  2644,  2648,  2652,
+    2655,  2658,  2660,  2662,  2664,  2666,  2668
   };
 
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
@@ -13132,90 +13144,90 @@ namespace zorba {
   xquery_parser::yyrline_[] =
   {
          0,   886,   886,   887,   897,   902,   908,   913,   925,   930,
-     940,   947,   959,   971,   983,   989,   995,  1007,  1013,  1027,
-    1033,  1047,  1048,  1049,  1050,  1056,  1057,  1058,  1059,  1062,
-    1065,  1067,  1073,  1078,  1086,  1092,  1101,  1110,  1111,  1112,
-    1113,  1114,  1115,  1116,  1117,  1118,  1119,  1126,  1127,  1128,
-    1129,  1130,  1131,  1132,  1135,  1142,  1143,  1155,  1167,  1172,
-    1183,  1189,  1201,  1214,  1225,  1230,  1242,  1247,  1258,  1264,
-    1270,  1276,  1295,  1306,  1317,  1324,  1331,  1338,  1351,  1357,
-    1372,  1376,  1386,  1392,  1399,  1405,  1417,  1424,  1430,  1437,
-    1443,  1447,  1454,  1465,  1469,  1477,  1486,  1493,  1503,  1505,
-    1512,  1520,  1524,  1532,  1536,  1544,  1552,  1556,  1564,  1568,
-    1575,  1582,  1592,  1597,  1609,  1613,  1617,  1621,  1628,  1635,
-    1654,  1664,  1670,  1676,  1685,  1696,  1709,  1716,  1723,  1735,
-    1739,  1746,  1750,  1754,  1761,  1765,  1771,  1778,  1782,  1786,
-    1794,  1801,  1810,  1822,  1836,  1844,  1858,  1864,  1876,  1884,
-    1895,  1906,  1910,  1922,  1926,  1935,  1939,  1955,  1956,  1957,
-    1958,  1959,  1962,  1963,  1964,  1965,  1966,  1968,  1969,  1972,
-    1973,  1974,  1975,  1976,  1979,  1986,  1995,  2002,  2006,  2014,
-    2018,  2022,  2029,  2033,  2040,  2048,  2059,  2068,  2069,  2070,
-    2074,  2074,  2074,  2074,  2074,  2077,  2083,  2092,  2096,  2106,
-    2117,  2123,  2137,  2144,  2152,  2161,  2171,  2179,  2188,  2197,
-    2212,  2224,  2235,  2247,  2253,  2265,  2271,  2285,  2293,  2302,
-    2310,  2322,  2328,  2338,  2339,  2343,  2351,  2355,  2360,  2364,
-    2368,  2372,  2379,  2394,  2402,  2409,  2415,  2426,  2432,  2441,
-    2451,  2456,  2468,  2474,  2488,  2494,  2506,  2513,  2520,  2527,
-    2534,  2541,  2548,  2561,  2565,  2575,  2580,  2591,  2602,  2609,
-    2622,  2629,  2641,  2647,  2660,  2667,  2681,  2687,  2699,  2705,
-    2718,  2729,  2733,  2744,  2748,  2767,  2771,  2779,  2787,  2795,
-    2803,  2803,  2811,  2819,  2827,  2841,  2845,  2852,  2865,  2869,
-    2880,  2884,  2888,  2898,  2902,  2906,  2910,  2914,  2924,  2928,
-    2933,  2944,  2948,  2952,  2962,  2966,  2978,  2982,  2994,  2998,
-    3010,  3014,  3026,  3030,  3042,  3046,  3050,  3054,  3066,  3070,
-    3074,  3084,  3088,  3092,  3096,  3100,  3104,  3114,  3118,  3122,
-    3132,  3136,  3140,  3144,  3156,  3162,  3174,  3180,  3194,  3201,
-    3242,  3246,  3250,  3254,  3266,  3276,  3287,  3292,  3302,  3306,
-    3316,  3322,  3328,  3334,  3346,  3352,  3363,  3367,  3371,  3375,
-    3379,  3383,  3387,  3397,  3401,  3411,  3415,  3426,  3430,  3434,
-    3438,  3442,  3457,  3461,  3471,  3475,  3485,  3492,  3499,  3512,
-    3516,  3528,  3534,  3548,  3559,  3563,  3567,  3571,  3575,  3579,
-    3583,  3587,  3597,  3601,  3611,  3616,  3621,  3632,  3642,  3646,
-    3657,  3667,  3678,  3734,  3740,  3752,  3758,  3770,  3774,  3784,
-    3788,  3792,  3802,  3810,  3818,  3826,  3834,  3842,  3857,  3863,
-    3875,  3881,  3894,  3903,  3905,  3911,  3916,  3928,  3931,  3938,
-    3944,  3950,  3958,  3973,  3976,  3983,  3989,  3995,  4003,  4017,
-    4022,  4033,  4038,  4049,  4054,  4059,  4065,  4077,  4083,  4088,
-    4093,  4104,  4109,  4124,  4129,  4146,  4161,  4165,  4169,  4173,
-    4177,  4181,  4191,  4202,  4208,  4214,  4219,  4241,  4247,  4253,
-    4258,  4269,  4279,  4289,  4295,  4301,  4306,  4317,  4323,  4335,
-    4346,  4352,  4358,  4395,  4400,  4405,  4416,  4420,  4424,  4434,
-    4445,  4449,  4453,  4457,  4461,  4465,  4469,  4473,  4477,  4487,
-    4497,  4501,  4506,  4517,  4527,  4537,  4541,  4545,  4555,  4561,
-    4567,  4573,  4579,  4591,  4602,  4609,  4616,  4623,  4630,  4637,
-    4644,  4657,  4678,  4685,  4705,  4745,  4749,  4753,  4762,  4768,
-    4774,  4780,  4786,  4793,  4799,  4805,  4811,  4817,  4829,  4834,
-    4844,  4850,  4862,  4888,  4899,  4905,  4918,  4932,  4939,  4945,
-    4956,  4963,  4972,  4981,  4994,  5000,  5010,  5019,  5020,  5037,
-    5037,  5040,  5041,  5042,  5043,  5044,  5045,  5046,  5047,  5048,
-    5049,  5050,  5051,  5052,  5053,  5054,  5055,  5056,  5057,  5058,
-    5059,  5060,  5061,  5062,  5063,  5064,  5065,  5066,  5067,  5068,
-    5069,  5070,  5071,  5072,  5073,  5074,  5075,  5076,  5077,  5078,
-    5079,  5080,  5081,  5082,  5083,  5084,  5085,  5086,  5087,  5088,
-    5089,  5090,  5091,  5092,  5093,  5094,  5095,  5096,  5097,  5098,
-    5099,  5100,  5101,  5102,  5103,  5104,  5105,  5106,  5107,  5108,
-    5109,  5110,  5111,  5112,  5113,  5114,  5115,  5116,  5117,  5118,
-    5119,  5120,  5121,  5122,  5123,  5124,  5125,  5126,  5127,  5128,
-    5129,  5130,  5131,  5132,  5133,  5134,  5135,  5136,  5137,  5138,
-    5139,  5140,  5141,  5142,  5143,  5144,  5145,  5146,  5147,  5148,
-    5149,  5150,  5151,  5152,  5153,  5154,  5155,  5156,  5157,  5158,
-    5159,  5160,  5161,  5162,  5163,  5164,  5165,  5166,  5167,  5168,
-    5169,  5170,  5171,  5172,  5173,  5174,  5175,  5176,  5177,  5178,
-    5179,  5180,  5181,  5182,  5183,  5184,  5185,  5186,  5187,  5188,
-    5189,  5190,  5191,  5192,  5193,  5194,  5195,  5196,  5197,  5198,
-    5199,  5200,  5201,  5202,  5203,  5204,  5205,  5206,  5207,  5208,
-    5209,  5210,  5211,  5212,  5213,  5214,  5215,  5216,  5217,  5218,
-    5219,  5220,  5221,  5222,  5223,  5224,  5235,  5241,  5258,  5262,
-    5266,  5270,  5280,  5283,  5286,  5289,  5298,  5301,  5310,  5313,
-    5322,  5325,  5334,  5337,  5346,  5349,  5352,  5361,  5364,  5373,
-    5377,  5387,  5390,  5393,  5396,  5399,  5408,  5417,  5421,  5425,
-    5429,  5433,  5437,  5441,  5451,  5454,  5457,  5460,  5469,  5472,
-    5475,  5478,  5487,  5490,  5499,  5502,  5505,  5508,  5511,  5514,
-    5517,  5526,  5529,  5538,  5541,  5544,  5547,  5556,  5559,  5562,
-    5565,  5568,  5577,  5580,  5589,  5592,  5601,  5604,  5613,  5616,
-    5625,  5634,  5637,  5646,  5649,  5652,  5661,  5664,  5667,  5670,
-    5673,  5682,  5686,  5690,  5694,  5704,  5713,  5723,  5732,  5735,
-    5744,  5747,  5750,  5759,  5762,  5771
+     940,   947,   959,   965,   977,   989,   995,  1001,  1013,  1019,
+    1033,  1039,  1053,  1054,  1055,  1056,  1062,  1063,  1064,  1065,
+    1068,  1071,  1073,  1079,  1084,  1092,  1098,  1107,  1116,  1117,
+    1118,  1119,  1120,  1121,  1122,  1123,  1124,  1125,  1132,  1133,
+    1134,  1135,  1136,  1137,  1138,  1141,  1148,  1149,  1161,  1173,
+    1178,  1189,  1195,  1207,  1220,  1231,  1236,  1248,  1253,  1264,
+    1270,  1276,  1282,  1301,  1312,  1323,  1330,  1337,  1344,  1357,
+    1363,  1378,  1382,  1392,  1398,  1405,  1411,  1423,  1430,  1436,
+    1443,  1449,  1453,  1460,  1471,  1475,  1483,  1492,  1499,  1509,
+    1511,  1518,  1526,  1530,  1538,  1542,  1550,  1558,  1562,  1570,
+    1574,  1581,  1588,  1598,  1603,  1615,  1619,  1623,  1627,  1634,
+    1641,  1660,  1670,  1676,  1682,  1691,  1702,  1715,  1722,  1729,
+    1741,  1745,  1752,  1756,  1760,  1767,  1771,  1777,  1784,  1788,
+    1792,  1800,  1807,  1816,  1828,  1842,  1850,  1864,  1870,  1882,
+    1890,  1901,  1912,  1916,  1928,  1932,  1941,  1945,  1961,  1962,
+    1963,  1964,  1965,  1968,  1969,  1970,  1971,  1972,  1974,  1975,
+    1978,  1979,  1980,  1981,  1982,  1985,  1992,  2001,  2008,  2012,
+    2020,  2024,  2028,  2035,  2039,  2046,  2054,  2065,  2074,  2075,
+    2076,  2080,  2080,  2080,  2080,  2080,  2083,  2089,  2098,  2102,
+    2112,  2123,  2129,  2143,  2150,  2158,  2167,  2177,  2185,  2194,
+    2203,  2218,  2230,  2241,  2253,  2259,  2271,  2277,  2291,  2299,
+    2308,  2316,  2328,  2334,  2344,  2345,  2349,  2357,  2361,  2366,
+    2370,  2374,  2378,  2385,  2400,  2408,  2415,  2421,  2432,  2438,
+    2447,  2457,  2462,  2474,  2480,  2494,  2500,  2512,  2519,  2526,
+    2533,  2540,  2547,  2554,  2567,  2571,  2581,  2586,  2597,  2608,
+    2615,  2628,  2635,  2647,  2653,  2666,  2673,  2687,  2693,  2705,
+    2711,  2724,  2735,  2739,  2750,  2754,  2773,  2777,  2785,  2793,
+    2801,  2809,  2809,  2817,  2825,  2833,  2847,  2851,  2858,  2871,
+    2875,  2886,  2890,  2894,  2904,  2908,  2912,  2916,  2920,  2930,
+    2934,  2939,  2950,  2954,  2958,  2968,  2972,  2984,  2988,  3000,
+    3004,  3016,  3020,  3032,  3036,  3048,  3052,  3056,  3060,  3072,
+    3076,  3080,  3090,  3094,  3098,  3102,  3106,  3110,  3120,  3124,
+    3128,  3138,  3142,  3146,  3150,  3162,  3168,  3180,  3186,  3200,
+    3207,  3248,  3252,  3256,  3260,  3272,  3282,  3293,  3298,  3308,
+    3312,  3322,  3328,  3334,  3340,  3352,  3358,  3369,  3373,  3377,
+    3381,  3385,  3389,  3393,  3403,  3407,  3417,  3421,  3432,  3436,
+    3440,  3444,  3448,  3463,  3467,  3477,  3481,  3491,  3498,  3505,
+    3518,  3522,  3534,  3540,  3554,  3565,  3569,  3573,  3577,  3581,
+    3585,  3589,  3593,  3603,  3607,  3617,  3622,  3627,  3638,  3648,
+    3652,  3663,  3673,  3684,  3740,  3746,  3758,  3764,  3776,  3780,
+    3790,  3794,  3798,  3808,  3816,  3824,  3832,  3840,  3848,  3863,
+    3869,  3881,  3887,  3900,  3909,  3911,  3917,  3922,  3934,  3937,
+    3944,  3950,  3956,  3964,  3979,  3982,  3989,  3995,  4001,  4009,
+    4023,  4028,  4039,  4044,  4055,  4060,  4065,  4071,  4083,  4089,
+    4094,  4099,  4110,  4115,  4130,  4135,  4152,  4167,  4171,  4175,
+    4179,  4183,  4187,  4197,  4208,  4214,  4220,  4225,  4247,  4253,
+    4259,  4264,  4275,  4285,  4295,  4301,  4307,  4312,  4323,  4329,
+    4341,  4352,  4358,  4364,  4401,  4406,  4411,  4422,  4426,  4430,
+    4440,  4451,  4455,  4459,  4463,  4467,  4471,  4475,  4479,  4483,
+    4493,  4503,  4507,  4512,  4523,  4533,  4543,  4547,  4551,  4561,
+    4567,  4573,  4579,  4585,  4597,  4608,  4615,  4622,  4629,  4636,
+    4643,  4650,  4663,  4684,  4691,  4711,  4751,  4755,  4759,  4768,
+    4774,  4780,  4786,  4792,  4799,  4805,  4811,  4817,  4823,  4835,
+    4840,  4850,  4856,  4868,  4894,  4905,  4911,  4924,  4938,  4945,
+    4951,  4962,  4969,  4978,  4987,  5000,  5006,  5016,  5025,  5026,
+    5043,  5043,  5046,  5047,  5048,  5049,  5050,  5051,  5052,  5053,
+    5054,  5055,  5056,  5057,  5058,  5059,  5060,  5061,  5062,  5063,
+    5064,  5065,  5066,  5067,  5068,  5069,  5070,  5071,  5072,  5073,
+    5074,  5075,  5076,  5077,  5078,  5079,  5080,  5081,  5082,  5083,
+    5084,  5085,  5086,  5087,  5088,  5089,  5090,  5091,  5092,  5093,
+    5094,  5095,  5096,  5097,  5098,  5099,  5100,  5101,  5102,  5103,
+    5104,  5105,  5106,  5107,  5108,  5109,  5110,  5111,  5112,  5113,
+    5114,  5115,  5116,  5117,  5118,  5119,  5120,  5121,  5122,  5123,
+    5124,  5125,  5126,  5127,  5128,  5129,  5130,  5131,  5132,  5133,
+    5134,  5135,  5136,  5137,  5138,  5139,  5140,  5141,  5142,  5143,
+    5144,  5145,  5146,  5147,  5148,  5149,  5150,  5151,  5152,  5153,
+    5154,  5155,  5156,  5157,  5158,  5159,  5160,  5161,  5162,  5163,
+    5164,  5165,  5166,  5167,  5168,  5169,  5170,  5171,  5172,  5173,
+    5174,  5175,  5176,  5177,  5178,  5179,  5180,  5181,  5182,  5183,
+    5184,  5185,  5186,  5187,  5188,  5189,  5190,  5191,  5192,  5193,
+    5194,  5195,  5196,  5197,  5198,  5199,  5200,  5201,  5202,  5203,
+    5204,  5205,  5206,  5207,  5208,  5209,  5210,  5211,  5212,  5213,
+    5214,  5215,  5216,  5217,  5218,  5219,  5220,  5221,  5222,  5223,
+    5224,  5225,  5226,  5227,  5228,  5229,  5230,  5241,  5247,  5264,
+    5268,  5272,  5276,  5286,  5289,  5292,  5295,  5304,  5307,  5316,
+    5319,  5328,  5331,  5340,  5343,  5352,  5355,  5358,  5367,  5370,
+    5379,  5383,  5393,  5396,  5399,  5402,  5405,  5414,  5423,  5427,
+    5431,  5435,  5439,  5443,  5447,  5457,  5460,  5463,  5466,  5475,
+    5478,  5481,  5484,  5493,  5496,  5505,  5508,  5511,  5514,  5517,
+    5520,  5523,  5532,  5535,  5544,  5547,  5550,  5553,  5562,  5565,
+    5568,  5571,  5574,  5583,  5586,  5595,  5598,  5607,  5610,  5619,
+    5622,  5631,  5640,  5643,  5652,  5655,  5658,  5667,  5670,  5673,
+    5676,  5679,  5688,  5692,  5696,  5700,  5710,  5719,  5729,  5738,
+    5741,  5750,  5753,  5756,  5765,  5768,  5777
   };
 
   // Print the state stack on the debug stream.
@@ -13337,11 +13349,11 @@ namespace zorba {
 } // zorba
 
 /* Line 1054 of lalr1.cc  */
-#line 13341 "/home/soso/work/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.cpp"
+#line 13353 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.cpp"
 
 
 /* Line 1056 of lalr1.cc  */
-#line 5779 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 5785 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 
 
 namespace zorba {

@@ -120,6 +120,7 @@ typedef unsigned int flex_uint32_t;
 #include <errno.h>
 #include <cstdlib>
 #include <cstring>
+#include <cstdio>
 /* end standard C++ headers. */
 /* %endif */
 
@@ -379,7 +380,7 @@ typedef unsigned char YY_CHAR;
 
 #define yytext_ptr yytext
 
-#include "FlexLexer.h"
+#include "compiler/parser/FlexLexer.h"
 
 int yyFlexLexer::yywrap() { return 1; }
 
@@ -1659,7 +1660,7 @@ static yyconst flex_int16_t yy_rule_linenum[297] =
 #define yymore() ((yy_more_flag) = 1)
 #define YY_MORE_ADJ (yy_more_len)
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
  * 
@@ -1675,7 +1676,7 @@ static yyconst flex_int16_t yy_rule_linenum[297] =
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#line 17 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 17 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 
 #if defined (WIN32)
 #pragma warning(disable: 4786)
@@ -1880,9 +1881,9 @@ PITargetName          [.\-_:0-9A-\xFF]
 
 /* Try-Catch Modes */
 
-#line 301 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 301 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 typedef zorba::xquery_parser::token token;
-#line 1886 "xquery_scanner.yy.cpp"
+#line 1887 "xquery_scanner.yy.cpp"
 
 #define INITIAL 0
 #define MODE_APOS_ATTRIBUTE_CONTENT 1
@@ -2069,7 +2070,7 @@ YY_DECL
 	register int yy_act;
     
 /* %% [7.0] user's declarations go here */
-#line 305 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 305 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 
 
   /*______________________________________________________________________
@@ -2080,7 +2081,7 @@ YY_DECL
    |  expression or subexpression.
    |______________________________________________________________________*/
 
-#line 2084 "xquery_scanner.yy.cpp"
+#line 2085 "xquery_scanner.yy.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -2197,557 +2198,557 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 315 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 315 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::LPAR; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 316 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 316 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::SEMI; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 317 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 317 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::COMMA; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 318 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 318 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::MINUS; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 319 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 319 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::PLUS; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 320 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 320 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::SLASH; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 321 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 321 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::SLASH_SLASH; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 322 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 322 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::AT_SIGN; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 323 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 323 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::RPAR; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 324 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 324 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::STAR; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 325 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 325 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DOT_DOT; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 326 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 326 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DOT; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 327 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 327 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::HOOK; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 328 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 328 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::RBRACK; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 329 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 329 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DOLLAR; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 331 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 331 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::IF; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 332 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 332 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::BLOCK; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 333 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 333 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::EXIT; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 334 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 334 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::WITH; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 335 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 335 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::BREAK; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 336 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 336 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::LOOP; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 337 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 337 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::CONTINUE; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 338 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 338 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::WHILE; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 339 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 339 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::SET; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 340 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 340 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::VALIDATE; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 341 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 341 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::TYPESWITCH; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 342 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 342 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::EVAL; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 343 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 343 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ELEMENT; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 344 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 344 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ATTRIBUTE; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 345 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 345 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DOCUMENT; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 346 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 346 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::TEXT; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 347 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 347 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::PROCESSING_INSTRUCTION; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 348 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 348 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::COMMENT; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 349 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 349 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DECLARE; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 350 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 350 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::FUNCTION; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 351 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 351 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DETERMINISTIC; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 352 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 352 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::NONDETERMINISTIC; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 353 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 353 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::SIMPLE; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 354 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 354 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::UPDATING; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 355 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 355 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::SEQUENTIAL; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 356 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 356 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ORDERED;}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 357 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 357 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::UNORDERED; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 358 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 358 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::SCHEMA_ELEMENT; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 359 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 359 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::SCHEMA_ATTRIBUTE; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 360 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 360 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::NODE; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 361 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 361 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DOCUMENT_NODE; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 363 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 363 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ANCESTOR_OR_SELF_AXIS; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 364 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 364 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ANCESTOR_AXIS; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 365 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 365 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ATTRIBUTE_AXIS; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 366 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 366 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::CHILD_AXIS; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 367 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 367 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DESCENDANT_OR_SELF_AXIS; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 368 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 368 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DESCENDANT_AXIS; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 369 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 369 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::FOLLOWING_SIBLING_AXIS; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 370 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 370 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::FOLLOWING_AXIS; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 371 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 371 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::PARENT_AXIS; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 372 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 372 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::PRECEDING_SIBLING_AXIS; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 373 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 373 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::PRECEDING_AXIS; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 374 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 374 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::SELF_AXIS;}
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 376 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 376 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::CONSTRUCTION; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 377 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 377 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DEFAULT; }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 378 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 378 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ORDER; }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 379 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 379 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::COLLATION; }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 380 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 380 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::NAMESPACE; }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 381 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 381 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::MODULE; }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 382 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 382 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::BASE_URI; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 383 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 383 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::IMPORT; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 384 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 384 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::SCHEMA; }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 385 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 385 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::COPY_NAMESPACES; }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 386 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 386 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::FOR; }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 387 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 387 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::OUTER; }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 388 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 388 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::LET; }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 389 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 389 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::SLIDING; }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 390 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 390 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::TUMBLING; }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 391 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 391 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::PREVIOUS; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 392 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 392 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::NEXT; }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 393 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 393 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ONLY; }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 394 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 394 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::WHEN; }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 395 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 395 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::COUNT; }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 396 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 396 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::USING; }
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 397 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 397 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::SOME; }
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 398 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 398 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::EVERY; }
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 399 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 399 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::CONTEXT; }
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 400 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 400 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::VARIABLE; }
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 401 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 401 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::BOUNDARY_SPACE; }
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 402 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 402 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ORDERING; }
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 403 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 403 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::XQUERY; }
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 404 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 404 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::VERSION; }
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-#line 405 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 405 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::OPTION; }
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 406 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 406 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::AT; }
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 407 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 407 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::REVALIDATION;}
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 408 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 408 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::AS; }
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-#line 410 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 410 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DECIMAL_FORMAT; }
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 411 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 411 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DECIMAL_SEPARATOR; }
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 412 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 412 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::GROUPING_SEPARATOR; }
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
-#line 413 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 413 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::INFINITY_VALUE; }
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
-#line 414 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 414 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::MINUS_SIGN; }
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
-#line 415 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 415 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::NaN; }
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
-#line 416 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 416 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::PERCENT; }
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
-#line 417 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 417 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::PER_MILLE; }
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
-#line 418 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 418 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ZERO_DIGIT; }
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
-#line 419 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 419 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DIGIT; }
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
-#line 420 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 420 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::PATTERN_SEPARATOR; }
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-#line 422 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 422 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::TRY;}
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
-#line 424 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 424 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::INDEX; }
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
-#line 425 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 425 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::CREATE; }
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
-#line 426 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 426 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::BUILD; }
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-#line 427 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 427 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::UNIQUE; }
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
-#line 428 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 428 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::HASH; }
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
-#line 429 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 429 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::BTREE; }
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
-#line 430 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 430 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ON; }
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
-#line 431 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 431 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DROP; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -2756,387 +2757,387 @@ YY_RULE_SETUP
      |______________________________________________________________________*/
 case 112:
 YY_RULE_SETUP
-#line 438 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 438 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::FTAND; }
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
-#line 439 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 439 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::FTNOT; }
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
-#line 440 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 440 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::FTOR; }
 	YY_BREAK
 case 115:
 YY_RULE_SETUP
-#line 441 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 441 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::FTNOT; }
 	YY_BREAK
 case 116:
 YY_RULE_SETUP
-#line 442 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 442 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::_IN; }
 	YY_BREAK
 case 117:
 YY_RULE_SETUP
-#line 443 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 443 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ALL; }
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
-#line 444 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 444 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::WORDS; }
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
-#line 445 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 445 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ANY; }
 	YY_BREAK
 case 120:
 YY_RULE_SETUP
-#line 446 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 446 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::WORD; }
 	YY_BREAK
 case 121:
 YY_RULE_SETUP
-#line 447 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 447 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::END; }
 	YY_BREAK
 case 122:
 YY_RULE_SETUP
-#line 448 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 448 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::LEAST; }
 	YY_BREAK
 case 123:
 YY_RULE_SETUP
-#line 449 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 449 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::MOST; }
 	YY_BREAK
 case 124:
 YY_RULE_SETUP
-#line 450 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 450 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::START; }
 	YY_BREAK
 case 125:
 YY_RULE_SETUP
-#line 451 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 451 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::CASE; }
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
-#line 452 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 452 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::INSENSITIVE; }
 	YY_BREAK
 case 127:
 YY_RULE_SETUP
-#line 453 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 453 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::SENSITIVE; }
 	YY_BREAK
 case 128:
 YY_RULE_SETUP
-#line 454 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 454 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::FT_OPTION; }
 	YY_BREAK
 case 129:
 YY_RULE_SETUP
-#line 455 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 455 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DIACRITICS; }
 	YY_BREAK
 case 130:
 YY_RULE_SETUP
-#line 456 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 456 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DIFFERENT; }
 	YY_BREAK
 case 131:
 YY_RULE_SETUP
-#line 457 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 457 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DISTANCE; }
 	YY_BREAK
 case 132:
 YY_RULE_SETUP
-#line 458 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 458 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ENTIRE; }
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
-#line 459 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 459 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::CONTENT; }
 	YY_BREAK
 case 134:
 YY_RULE_SETUP
-#line 460 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 460 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::EXACTLY; }
 	YY_BREAK
 case 135:
 YY_RULE_SETUP
-#line 461 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 461 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::FROM; }
 	YY_BREAK
 case 136:
 YY_RULE_SETUP
-#line 462 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 462 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::LANGUAGE; }
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
-#line 463 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 463 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::LEVELS; }
 	YY_BREAK
 case 138:
 YY_RULE_SETUP
-#line 464 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 464 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::LOWERCASE; }
 	YY_BREAK
 case 139:
 YY_RULE_SETUP
-#line 465 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 465 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::OCCURS; }
 	YY_BREAK
 case 140:
 YY_RULE_SETUP
-#line 466 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 466 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::PARAGRAPH; }
 	YY_BREAK
 case 141:
 YY_RULE_SETUP
-#line 467 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 467 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::PHRASE; }
 	YY_BREAK
 case 142:
 YY_RULE_SETUP
-#line 468 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 468 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::RELATIONSHIP; }
 	YY_BREAK
 case 143:
 YY_RULE_SETUP
-#line 469 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 469 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::SAME; }
 	YY_BREAK
 case 144:
 YY_RULE_SETUP
-#line 470 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 470 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::SCORE; }
 	YY_BREAK
 case 145:
 YY_RULE_SETUP
-#line 471 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 471 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::SENTENCE; }
 	YY_BREAK
 case 146:
 YY_RULE_SETUP
-#line 472 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 472 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::SENTENCES; }
 	YY_BREAK
 case 147:
 YY_RULE_SETUP
-#line 473 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 473 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::TIMES; }
 	YY_BREAK
 case 148:
 YY_RULE_SETUP
-#line 474 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 474 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::UPPERCASE; }
 	YY_BREAK
 case 149:
 YY_RULE_SETUP
-#line 475 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 475 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::WEIGHT; }
 	YY_BREAK
 case 150:
 YY_RULE_SETUP
-#line 476 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 476 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::WINDOW; }
 	YY_BREAK
 case 151:
 YY_RULE_SETUP
-#line 477 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 477 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::WITHOUT; }
 	YY_BREAK
 case 152:
 YY_RULE_SETUP
-#line 478 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 478 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::STEMMING; }
 	YY_BREAK
 case 153:
 YY_RULE_SETUP
-#line 479 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 479 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::STOP; }
 	YY_BREAK
 case 154:
 YY_RULE_SETUP
-#line 480 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 480 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::THESAURUS; }
 	YY_BREAK
 case 155:
 YY_RULE_SETUP
-#line 481 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 481 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::WILDCARDS; }
 	YY_BREAK
 case 156:
 YY_RULE_SETUP
-#line 482 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 482 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::GETS; }
 	YY_BREAK
 case 157:
 YY_RULE_SETUP
-#line 483 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 483 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DIV; }
 	YY_BREAK
 case 158:
 YY_RULE_SETUP
-#line 484 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 484 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::EQUALS; }
 	YY_BREAK
 case 159:
 YY_RULE_SETUP
-#line 485 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 485 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::EXCEPT; }
 	YY_BREAK
 case 160:
 YY_RULE_SETUP
-#line 486 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 486 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::VAL_EQ; }
 	YY_BREAK
 case 161:
 YY_RULE_SETUP
-#line 487 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 487 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::VAL_GE; }
 	YY_BREAK
 case 162:
 YY_RULE_SETUP
-#line 488 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 488 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::VAL_GT; }
 	YY_BREAK
 case 163:
 YY_RULE_SETUP
-#line 489 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 489 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::VAL_LE; }
 	YY_BREAK
 case 164:
 YY_RULE_SETUP
-#line 490 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 490 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::VAL_LT; }
 	YY_BREAK
 case 165:
 YY_RULE_SETUP
-#line 491 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 491 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::VAL_NE; }
 	YY_BREAK
 case 166:
 YY_RULE_SETUP
-#line 492 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 492 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::GE; }
 	YY_BREAK
 case 167:
 YY_RULE_SETUP
-#line 493 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 493 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::FOLLOWS; }
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
-#line 494 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 494 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::GT; }
 	YY_BREAK
 case 169:
 YY_RULE_SETUP
-#line 495 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 495 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::IDIV; }
 	YY_BREAK
 case 170:
 YY_RULE_SETUP
-#line 496 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 496 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::INTERSECT; }
 	YY_BREAK
 case 171:
 YY_RULE_SETUP
-#line 497 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 497 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::IS; }
 	YY_BREAK
 case 172:
 YY_RULE_SETUP
-#line 498 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 498 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::LBRACK; }
 	YY_BREAK
 case 173:
 YY_RULE_SETUP
-#line 499 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 499 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::LE; }
 	YY_BREAK
 case 174:
 YY_RULE_SETUP
-#line 500 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 500 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::PRECEDES; }
 	YY_BREAK
 case 175:
 YY_RULE_SETUP
-#line 501 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 501 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::MOD; }
 	YY_BREAK
 case 176:
 YY_RULE_SETUP
-#line 502 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 502 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::NE; }
 	YY_BREAK
 case 177:
 YY_RULE_SETUP
-#line 503 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 503 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::GROUP; }
 	YY_BREAK
 case 178:
 YY_RULE_SETUP
-#line 504 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 504 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::BY; }
 	YY_BREAK
 case 179:
 YY_RULE_SETUP
-#line 505 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 505 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::STABLE; }
 	YY_BREAK
 case 180:
 YY_RULE_SETUP
-#line 506 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 506 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::OR; }
 	YY_BREAK
 case 181:
 YY_RULE_SETUP
-#line 507 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 507 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::RETURN; }
 	YY_BREAK
 case 182:
 YY_RULE_SETUP
-#line 508 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 508 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::SATISFIES; }
 	YY_BREAK
 case 183:
 YY_RULE_SETUP
-#line 509 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 509 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::TO; }
 	YY_BREAK
 case 184:
 YY_RULE_SETUP
-#line 510 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 510 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::UNION; }
 	YY_BREAK
 case 185:
 YY_RULE_SETUP
-#line 511 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 511 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::VBAR; }
 	YY_BREAK
 case 186:
 YY_RULE_SETUP
-#line 512 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 512 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::WHERE; }
 	YY_BREAK
 case 187:
 YY_RULE_SETUP
-#line 513 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 513 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::PRESERVE; }
 	YY_BREAK
 case 188:
 YY_RULE_SETUP
-#line 514 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 514 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::STRIP; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -3145,183 +3146,183 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 189:
 YY_RULE_SETUP
-#line 522 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 522 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::INSERT; }
 	YY_BREAK
 case 190:
 YY_RULE_SETUP
-#line 523 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 523 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::_DELETE; }
 	YY_BREAK
 case 191:
 YY_RULE_SETUP
-#line 524 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 524 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::REPLACE; }
 	YY_BREAK
 case 192:
 YY_RULE_SETUP
-#line 525 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 525 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::VALUE; }
 	YY_BREAK
 case 193:
 YY_RULE_SETUP
-#line 526 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 526 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::OF; }
 	YY_BREAK
 /* TODO: getDriver()->set_rename(true); */
 case 194:
 YY_RULE_SETUP
-#line 528 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 528 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::RENAME; }
 	YY_BREAK
 case 195:
 YY_RULE_SETUP
-#line 529 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 529 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::COPY; }
 	YY_BREAK
 case 196:
 YY_RULE_SETUP
-#line 530 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 530 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::NODES; }
 	YY_BREAK
 case 197:
 YY_RULE_SETUP
-#line 531 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 531 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::INTO; }
 	YY_BREAK
 case 198:
 YY_RULE_SETUP
-#line 532 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 532 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::AFTER; }
 	YY_BREAK
 case 199:
 YY_RULE_SETUP
-#line 533 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 533 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::BEFORE; }
 	YY_BREAK
 case 200:
 YY_RULE_SETUP
-#line 534 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 534 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::MODIFY; }
 	YY_BREAK
 case 201:
 YY_RULE_SETUP
-#line 536 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 536 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::_STRICT; }
 	YY_BREAK
 case 202:
 YY_RULE_SETUP
-#line 537 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 537 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::LAX; }
 	YY_BREAK
 case 203:
 YY_RULE_SETUP
-#line 538 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 538 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::SKIP; }
 	YY_BREAK
 case 204:
 YY_RULE_SETUP
-#line 539 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 539 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::THEN; }
 	YY_BREAK
 case 205:
 YY_RULE_SETUP
-#line 540 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 540 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ELSE; }
 	YY_BREAK
 case 206:
 YY_RULE_SETUP
-#line 541 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 541 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::EXTERNAL; }
 	YY_BREAK
 case 207:
 YY_RULE_SETUP
-#line 542 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 542 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::AND; }
 	YY_BREAK
 case 208:
 YY_RULE_SETUP
-#line 544 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 544 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::INHERIT; }
 	YY_BREAK
 case 209:
 YY_RULE_SETUP
-#line 545 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 545 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::NO_INHERIT; }
 	YY_BREAK
 case 210:
 YY_RULE_SETUP
-#line 546 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 546 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::NO_PRESERVE; }
 	YY_BREAK
 case 211:
 YY_RULE_SETUP
-#line 547 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 547 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::EMPTY_SEQUENCE; }
 	YY_BREAK
 case 212:
 YY_RULE_SETUP
-#line 548 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 548 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ITEM; }
 	YY_BREAK
 case 213:
 YY_RULE_SETUP
-#line 549 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 549 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::CAST; }
 	YY_BREAK
 case 214:
 YY_RULE_SETUP
-#line 550 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 550 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::CASTABLE; }
 	YY_BREAK
 case 215:
 YY_RULE_SETUP
-#line 551 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 551 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::INSTANCE;}
 	YY_BREAK
 case 216:
 YY_RULE_SETUP
-#line 552 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 552 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::TREAT; }
 	YY_BREAK
 case 217:
 YY_RULE_SETUP
-#line 553 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 553 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::FIRST; }
 	YY_BREAK
 case 218:
 YY_RULE_SETUP
-#line 554 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 554 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::LAST; }
 	YY_BREAK
 case 219:
 YY_RULE_SETUP
-#line 555 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 555 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::CATCH; }
 	YY_BREAK
 case 220:
 YY_RULE_SETUP
-#line 556 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 556 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::_EMPTY; }
 	YY_BREAK
 case 221:
 YY_RULE_SETUP
-#line 557 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 557 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::GREATEST; }
 	YY_BREAK
 case 222:
 YY_RULE_SETUP
-#line 558 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 558 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ASCENDING; }
 	YY_BREAK
 case 223:
 YY_RULE_SETUP
-#line 559 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 559 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DESCENDING; }
 	YY_BREAK
 case 224:
 YY_RULE_SETUP
-#line 560 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 560 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ENCODING; }
 	YY_BREAK
 /* TODO: this flag should not be needed anymore
@@ -3330,7 +3331,7 @@ YY_RULE_SETUP
   */
 case 225:
 YY_RULE_SETUP
-#line 566 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 566 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::FTCONTAINS; }
 	YY_BREAK
 /* TODO: fix 'if (1) then 2 else processing-instruction' */
@@ -3340,7 +3341,7 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 226:
 YY_RULE_SETUP
-#line 577 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 577 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 {
   yylval->ival = getDriver()->symtab.integerval(yytext, yyleng);
   return token::INTEGER_LITERAL;
@@ -3348,7 +3349,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 227:
 YY_RULE_SETUP
-#line 582 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 582 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 {
   yylval->decval = getDriver()->symtab.decimalval(yytext, yyleng);
   return token::DECIMAL_LITERAL;
@@ -3356,7 +3357,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 228:
 YY_RULE_SETUP
-#line 587 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 587 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 {
   yylval->dval = getDriver()->symtab.doubleval(yytext, yyleng);
   return token::DOUBLE_LITERAL;
@@ -3364,7 +3365,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 229:
 YY_RULE_SETUP
-#line 592 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 592 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 {
   /* invalid integer literal */
   return token::UNRECOGNIZED;
@@ -3372,21 +3373,21 @@ YY_RULE_SETUP
 	YY_BREAK
 case 230:
 YY_RULE_SETUP
-#line 597 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 597 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 {
   TRY_SVAL_TOKEN (ELEM_WILDCARD, put_ncname(yytext, yyleng-2));
 }
 	YY_BREAK
 case 231:
 YY_RULE_SETUP
-#line 601 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 601 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 {
   TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng));
 }
 	YY_BREAK
 case 232:
 YY_RULE_SETUP
-#line 605 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 605 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 {
   TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2));
 }
@@ -3394,7 +3395,7 @@ YY_RULE_SETUP
 case 233:
 /* rule 233 can match eol */
 YY_RULE_SETUP
-#line 609 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 609 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { 
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
@@ -3405,7 +3406,7 @@ YY_RULE_SETUP
     |______________________________________________________________________*/
 case 234:
 YY_RULE_SETUP
-#line 619 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 619 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 {
   return token::BYTE_ORDER_MARK_UTF8;
 }
@@ -3416,14 +3417,14 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 235:
 YY_RULE_SETUP
-#line 628 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 628 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_XML_COMMENT); return token::XML_COMMENT_BEGIN; }
 	YY_BREAK
 /* transition to PROCESSING_INSTRUCTION */
 /* ------------------------------------ */
 case 236:
 YY_RULE_SETUP
-#line 632 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 632 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_STATE(MODE_PROCESSING_INSTRUCTION);
   return token::PI_BEGIN;
@@ -3433,7 +3434,7 @@ YY_RULE_SETUP
 /* --------------------------- */
 case 237:
 YY_RULE_SETUP
-#line 639 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 639 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 {
   // PUSH_AND_BEGIN (MODE_CDATA_SECTION, MODE_OPERATOR);
   return token::CDATA_BEGIN;
@@ -3441,19 +3442,19 @@ YY_RULE_SETUP
 	YY_BREAK
 case 238:
 YY_RULE_SETUP
-#line 644 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 644 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_START_TAG); return token::LT_OR_START_TAG; }
 	YY_BREAK
 case 239:
 YY_RULE_SETUP
-#line 646 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 646 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_EXPR_COMMENT); }
 	YY_BREAK
 /* transition to PRAGMA */
 /* -------------------- */
 case 240:
 YY_RULE_SETUP
-#line 650 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 650 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_PRAGMA;
   return token::PRAGMA_BEGIN;
@@ -3463,20 +3464,20 @@ YY_RULE_SETUP
 /* ------------------ */
 case 241:
 YY_RULE_SETUP
-#line 657 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 657 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(INITIAL); return token::LBRACE; }
 	YY_BREAK
 /* pop previous state */
 /* ------------------ */
 case 242:
 YY_RULE_SETUP
-#line 661 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 661 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); return token::RBRACE; }
 	YY_BREAK
 case 243:
 /* rule 243 can match eol */
 YY_RULE_SETUP
-#line 663 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 663 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -3647,18 +3648,18 @@ YY_RULE_SETUP
 case 244:
 /* rule 244 can match eol */
 YY_RULE_SETUP
-#line 893 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 893 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng, true, true)); }
 	YY_BREAK
 case 245:
 YY_RULE_SETUP
-#line 894 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 894 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_SVAL_AND_END_PRAGMA, put_qname(yytext, yyleng-2)); }
 	YY_BREAK
 case 246:
 /* rule 246 can match eol */
 YY_RULE_SETUP
-#line 895 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 895 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { /* continue lexing */ }
 	YY_BREAK
 /* } */  /* END <MODE_PRAGMA> */
@@ -3673,7 +3674,7 @@ YY_RULE_SETUP
 case 247:
 /* rule 247 can match eol */
 YY_RULE_SETUP
-#line 910 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 910 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { BEGIN INITIAL; TRY_SVAL_TOKEN(PRAGMA_LITERAL_AND_END_PRAGMA, put(yytext, yyleng-2)); }
 	YY_BREAK
 /* } */  /* END <MODE_PRAGMACONTENTS> */
@@ -3700,43 +3701,43 @@ YY_RULE_SETUP
 /* <MODE_START_TAG>{ */  /* TODO: this one is needed */
 case 248:
 YY_RULE_SETUP
-#line 942 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 942 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_ELEMENT_CONTENT; return token::TAG_END; }
 	YY_BREAK
 case 249:
 YY_RULE_SETUP
-#line 943 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 943 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_QUOTE_ATTRIBUTE_CONTENT; return token::QUOTE; }
 	YY_BREAK
 case 250:
 YY_RULE_SETUP
-#line 944 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 944 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_APOS_ATTRIBUTE_CONTENT; return token::APOS; }
 	YY_BREAK
 case 251:
 YY_RULE_SETUP
-#line 945 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 945 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::EQUALS; }
 	YY_BREAK
 case 252:
 /* rule 252 can match eol */
 YY_RULE_SETUP
-#line 946 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 946 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::BLANK; }
 	YY_BREAK
 case 253:
 YY_RULE_SETUP
-#line 947 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 947 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); return token::EMPTY_TAG_END; }
 	YY_BREAK
 case 254:
 YY_RULE_SETUP
-#line 948 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 948 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng)); }
 	YY_BREAK
 case 255:
 YY_RULE_SETUP
-#line 949 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 949 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::UNRECOGNIZED; }
 	YY_BREAK
 /* } */  /* END <MODE_START_TAG> */
@@ -3756,58 +3757,58 @@ YY_RULE_SETUP
 /* <MODE_ELEMENT_CONTENT>{ */
 case 256:
 YY_RULE_SETUP
-#line 970 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 970 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_END_TAG; return token::START_TAG_END; }
 	YY_BREAK
 case 257:
 YY_RULE_SETUP
-#line 971 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 971 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(INITIAL); return token::LBRACE; }
 	YY_BREAK
 case 258:
 YY_RULE_SETUP
-#line 972 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 972 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_XML_COMMENT); return token::XML_COMMENT_BEGIN; }
 	YY_BREAK
 case 259:
 YY_RULE_SETUP
-#line 973 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 973 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_PROCESSING_INSTRUCTION); return token::PI_BEGIN; }
 	YY_BREAK
 case 260:
 YY_RULE_SETUP
-#line 974 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 974 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_CDATA_SECTION); return token::CDATA_BEGIN; }
 	YY_BREAK
 case 261:
 YY_RULE_SETUP
-#line 975 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 975 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_START_TAG); return token::LT_OR_START_TAG; }
 	YY_BREAK
 case 262:
 /* rule 262 can match eol */
 YY_RULE_SETUP
-#line 976 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 976 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN (ELEMENT_CONTENT, put(yytext, yyleng, 1)); }
 	YY_BREAK
 case 263:
 YY_RULE_SETUP
-#line 977 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 977 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN (ELEMENT_CONTENT, put_entityref(yytext, yyleng)); }
 	YY_BREAK
 case 264:
 YY_RULE_SETUP
-#line 978 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 978 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 	YY_BREAK
 case 265:
 YY_RULE_SETUP
-#line 979 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 979 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_LBRACE; }
 	YY_BREAK
 case 266:
 YY_RULE_SETUP
-#line 980 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 980 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_RBRACE; }
 	YY_BREAK
 /* } */ /* MODE_ELEMENT_CONTENT> */
@@ -3821,13 +3822,13 @@ YY_RULE_SETUP
 /* <MODE_END_TAG>{ */
 case 267:
 YY_RULE_SETUP
-#line 995 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 995 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); return token::TAG_END; }
 	YY_BREAK
 case 268:
 /* rule 268 can match eol */
 YY_RULE_SETUP
-#line 996 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 996 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng, false, true)); }
 	YY_BREAK
 /* } */  /* END <MODE_END_TAG> */
@@ -3841,13 +3842,13 @@ YY_RULE_SETUP
 /* <MODE_XML_COMMENT>{  */
 case 269:
 YY_RULE_SETUP
-#line 1011 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1011 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); return token::XML_COMMENT_END; }
 	YY_BREAK
 case 270:
 /* rule 270 can match eol */
 YY_RULE_SETUP
-#line 1012 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1012 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN (XML_COMMENT_LITERAL, put(yytext, yyleng)); }
 	YY_BREAK
 /* } */  /* END <MODE_XML_COMMENT> */
@@ -3862,22 +3863,22 @@ YY_RULE_SETUP
 /* <MODE_EXPR_COMMENT>{  */
 case 271:
 YY_RULE_SETUP
-#line 1028 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1028 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); }
 	YY_BREAK
 case 272:
 YY_RULE_SETUP
-#line 1029 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1029 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_EXPR_COMMENT); }
 	YY_BREAK
 case 273:
 /* rule 273 can match eol */
 YY_RULE_SETUP
-#line 1030 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1030 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { /* do nothing */ }
 	YY_BREAK
 case YY_STATE_EOF(MODE_EXPR_COMMENT):
-#line 1031 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1031 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::UNRECOGNIZED; }
 	YY_BREAK
 /* } */  /* END <MODE_EXPR_COMMENT> */
@@ -3892,17 +3893,17 @@ case YY_STATE_EOF(MODE_EXPR_COMMENT):
 case 274:
 /* rule 274 can match eol */
 YY_RULE_SETUP
-#line 1046 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1046 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT; /* continue lexing */ }
 	YY_BREAK
 case 275:
 YY_RULE_SETUP
-#line 1047 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1047 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); return token::PI_END; }
 	YY_BREAK
 case 276:
 YY_RULE_SETUP
-#line 1048 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1048 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 /* PITarget */    { TRY_SVAL_TOKEN (NCNAME_SVAL, put(yytext, yyleng)); }
 	YY_BREAK
 /* } */  /* END <MODE_PROCESSING_INSTRUCTION> */
@@ -3917,7 +3918,7 @@ YY_RULE_SETUP
 case 277:
 /* rule 277 can match eol */
 YY_RULE_SETUP
-#line 1063 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1063 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 {
   POP_STATE();
   TRY_SVAL_TOKEN (CHAR_LITERAL_AND_PI_END, put(yytext, yyleng-2));
@@ -3934,13 +3935,13 @@ YY_RULE_SETUP
 /* <MODE_CDATA_SECTION>{ */
 case 278:
 YY_RULE_SETUP
-#line 1081 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1081 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3)); }
 	YY_BREAK
 case 279:
 /* rule 279 can match eol */
 YY_RULE_SETUP
-#line 1082 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1082 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { yymore(); }
 	YY_BREAK
 /* } */  /* END <MODE_CDATA_SECTION> */
@@ -3960,43 +3961,43 @@ YY_RULE_SETUP
 /* <MODE_QUOTE_ATTRIBUTE_CONTENT>{ */
 case 280:
 YY_RULE_SETUP
-#line 1103 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1103 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_START_TAG; return token::QUOTE; }
 	YY_BREAK
 case 281:
 YY_RULE_SETUP
-#line 1104 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1104 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(INITIAL); return token::LBRACE; }
 	YY_BREAK
 case 282:
 YY_RULE_SETUP
-#line 1105 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1105 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ESCAPE_QUOTE; }
 	YY_BREAK
 case 283:
 /* rule 283 can match eol */
 YY_RULE_SETUP
-#line 1106 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1106 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put(yytext, yyleng, 2)); }
 	YY_BREAK
 case 284:
 YY_RULE_SETUP
-#line 1107 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1107 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put_entityref(yytext, yyleng)); }
 	YY_BREAK
 case 285:
 YY_RULE_SETUP
-#line 1108 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1108 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 	YY_BREAK
 case 286:
 YY_RULE_SETUP
-#line 1109 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1109 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_LBRACE; }
 	YY_BREAK
 case 287:
 YY_RULE_SETUP
-#line 1110 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1110 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_RBRACE; }
 	YY_BREAK
 /* } */  /* END <MODE_QUOTE_ATTRIBUTE_CONTENT> */
@@ -4011,43 +4012,43 @@ YY_RULE_SETUP
 /* <MODE_APOS_ATTRIBUTE_CONTENT>{ */
 case 288:
 YY_RULE_SETUP
-#line 1126 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1126 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_START_TAG; return token::APOS; }
 	YY_BREAK
 case 289:
 YY_RULE_SETUP
-#line 1127 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1127 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { PUSH_AND_BEGIN (INITIAL, MODE_APOS_ATTRIBUTE_CONTENT); return token::LBRACE; }
 	YY_BREAK
 case 290:
 YY_RULE_SETUP
-#line 1128 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1128 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::ESCAPE_APOS; }
 	YY_BREAK
 case 291:
 /* rule 291 can match eol */
 YY_RULE_SETUP
-#line 1129 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1129 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put(yytext, yyleng, 2)); }
 	YY_BREAK
 case 292:
 YY_RULE_SETUP
-#line 1130 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1130 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put_entityref(yytext, yyleng)); }
 	YY_BREAK
 case 293:
 YY_RULE_SETUP
-#line 1131 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1131 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 	YY_BREAK
 case 294:
 YY_RULE_SETUP
-#line 1132 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1132 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_LBRACE; }
 	YY_BREAK
 case 295:
 YY_RULE_SETUP
-#line 1133 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1133 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_RBRACE; }
 	YY_BREAK
 /* } */  /* END <MODE_APOS_ATTRIBUTE_CONTENT> */
@@ -4057,16 +4058,16 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 296:
 YY_RULE_SETUP
-#line 1144 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1144 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 return token::UNRECOGNIZED;
 	YY_BREAK
 /* END OF FLEX RULES */
 case 297:
 YY_RULE_SETUP
-#line 1150 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1150 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 ECHO;
 	YY_BREAK
-#line 4070 "xquery_scanner.yy.cpp"
+#line 4071 "xquery_scanner.yy.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(MODE_APOS_ATTRIBUTE_CONTENT):
 case YY_STATE_EOF(MODE_CDATA_SECTION):
@@ -5144,7 +5145,7 @@ void Zorbafree (void * ptr )
 
 /* %ok-for-header */
 
-#line 1150 "/home/soso/work/zorba/trunk/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1150 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_scanner.l"
 
 
 
