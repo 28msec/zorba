@@ -675,14 +675,14 @@ printErrorInfo( zorba::QueryException& qe,
     os << "<errors>";
     if( indent ) os << std::endl << "  ";
     //code
-    os << "<error code=&#39;" << qe.getErrorCodeAsString(qe.getErrorCode()) << "&#39;>";
+    os << "<error code='" << qe.getErrorCodeAsString(qe.getErrorCode()) << "'>";
     if( indent ) os << std::endl << "    ";
     //location
-    os << "<location fileName=&#39;" << qe.getQueryURI();
-    os << "&#39; lineStart=&#39;" << qe.getLineBegin();
-    os << "&#39; columnStart=&#39;" << qe.getColumnBegin();
-    os << "&#39; lineEnd=&#39;" << qe.getLineBegin();
-    os << "&#39; columnEnd=&#39;" << qe.getColumnBegin() << "&#39; />";
+    os << "<location fileName='" << qe.getQueryURI();
+    os << "' lineStart='" << qe.getLineBegin();
+    os << "' columnStart='" << qe.getColumnBegin();
+    os << "' lineEnd='" << qe.getLineBegin();
+    os << "' columnEnd='" << qe.getColumnBegin() << "' />";
     if( indent ) os << std::endl << "    ";
     //description
     os << "<description>" << qe.getDescription().formatAsXML() << "</description>";
