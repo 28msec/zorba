@@ -1472,7 +1472,7 @@ int serializer::text_emitter::emit_node_children(
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  JSON Emitter                                                               //
+//  Json Emitter                                                               //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -1495,6 +1495,30 @@ void serializer::json_emitter::emit_item(const store::Item* item)
     ZORBA_ERROR(API0061_CONV_JSON_SERIALIZE);
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  JsonML Emitter                                                             //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+serializer::jsonml_emitter::jsonml_emitter(serializer* the_serializer, transcoder& the_transcoder)
+  :
+  emitter(the_serializer, the_transcoder)
+{
+}
+
+void serializer::jsonml_emitter::emit_declaration()
+{
+}
+
+void serializer::jsonml_emitter::emit_item(const store::Item* item)
+{
+  xqpStringStore_t result, error_log;
+  if (JSON_ML_serialize(item, result, error_log))
+    tr << result->c_str();
+  else
+    ZORBA_ERROR(API0064_CONV_JSON_ML_SERIALIZE);
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -1625,6 +1649,8 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       method = PARAMETER_VALUE_TEXT;
     else if (value == "json")
       method = PARAMETER_VALUE_JSON;
+    else if (value == "jsonml")
+      method = PARAMETER_VALUE_JSONML;
     else
     {
       ZORBA_ERROR( SEPM0016);
@@ -1730,6 +1756,8 @@ bool serializer::setup(ostream& os)
     e = new text_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_JSON)
     e = new json_emitter(this, *tr);
+  else if (method == PARAMETER_VALUE_JSONML)
+    e = new jsonml_emitter(this, *tr);
   else
   {
     ZORBA_ASSERT(0);

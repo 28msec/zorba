@@ -743,6 +743,8 @@ XQueryImpl::setSerializationParameters(
     ser->set_parameter("method", "text"); break;
   case ZORBA_SERIALIZATION_METHOD_JSON:
     ser->set_parameter("method", "json"); break;
+  case ZORBA_SERIALIZATION_METHOD_JSONML:
+    ser->set_parameter("method", "jsonml"); break;
   }
 
   switch (opt->byte_order_mark) 

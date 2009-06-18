@@ -535,7 +535,7 @@ namespace zorba {
 
     if (element == NULL)
     {
-      error_log = new xqpStringStore("Passed a NULL element to the Json ML serializer.");
+      error_log = new xqpStringStore("Passed a NULL element to the JsonML serializer.");
       return false;
     }
 

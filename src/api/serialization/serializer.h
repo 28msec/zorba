@@ -97,6 +97,7 @@ protected:
     PARAMETER_VALUE_XHTML,
     PARAMETER_VALUE_TEXT,
     PARAMETER_VALUE_JSON,
+    PARAMETER_VALUE_JSONML,
   
     PARAMETER_VALUE_UTF_8
 #ifndef ZORBA_NO_UNICODE
@@ -117,7 +118,7 @@ protected:
   short int escape_uri_attributes;   // TODO: yes/no requires unicode normalization
   short int include_content_type;    // yes/no, implemented
   xqp_string media_type;             // string, implemented
-  short int method;                  // an expanded QName: "xml", "html", "xhtml", "text" and "json"  are handled
+  short int method;                  // an expanded QName: "xml", "html", "xhtml", "text", "json" and "jsonml"  are handled
   xqp_string normalization_form;     // TODO:   requires unicode normalization
   short int omit_xml_declaration;    // "yes" or "no", implemented
   short int standalone;              // implemented, TODO: add some validity checks
@@ -339,6 +340,21 @@ protected:
   {
     public:
       json_emitter(serializer* the_serializer, transcoder& the_transcoder);
+
+      virtual void emit_declaration();
+      virtual void emit_item(const store::Item* item);
+  };
+
+  ///////////////////////////////////////////////////////////
+  //                                                       //
+  //  class jsonml_emitter                                 //
+  //                                                       //
+  ///////////////////////////////////////////////////////////
+
+  class jsonml_emitter : public emitter
+  {
+    public:
+      jsonml_emitter(serializer* the_serializer, transcoder& the_transcoder);
 
       virtual void emit_declaration();
       virtual void emit_item(const store::Item* item);
