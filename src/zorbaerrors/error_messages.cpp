@@ -200,6 +200,7 @@ DEF_ERR_CODE(API0063_CONV_JSON_ML_PARSE, API0063, "Could not parse JsonML string
 DEF_ERR_CODE(API0064_CONV_JSON_ML_SERIALIZE, API0064, "Could not serialize element with string representation {/s}. Error: {/s}");
 DEF_ERR_CODE(API0065_CONV_JSON_ML_PARAM, API0065, "Parameter with string representation {/s} is not an element node.");
 
+DEF_ERR_CODE(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED, API0066, "Cannot serialize a sequence if 'json' or 'jsonml' method was selected.")
 //
 // Store Errors
 //

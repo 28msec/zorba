@@ -1782,7 +1782,7 @@ bool serializer::setup(ostream& os)
   
   if (cdata_section_elements != "")
   {
-    cdata_section_elements_tokens = tokenize(*cdata_section_elements.theStrStore, xqpStringStore("; ")); // space and semicolon    
+    cdata_section_elements_tokens = tokenize(*cdata_section_elements.theStrStore, xqpStringStore("; ")); // space and semicolon
   }
   
   return true;
@@ -1791,21 +1791,33 @@ bool serializer::setup(ostream& os)
 
 void serializer::serialize(PlanWrapper *result, ostream& os)
 {
+  bool firstItem = true;
+
   validate_parameters();
+
   if (!setup(os))
     return;
-  
+
   e->emit_declaration();
 
   store::Item_t item;
+
   while (result->next(item))
   {
+    if( (method == PARAMETER_VALUE_JSON ||
+         method == PARAMETER_VALUE_JSONML) &&
+         !firstItem )
+    {
+      ZORBA_ERROR(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED);
+    }
+
     if (item->isPul())
       ZORBA_ERROR(API0023_CANNOT_SERIALIZE_UPDATE_QUERY);
 
     e->emit_item(&*item);
+    firstItem = false;
   }
-  
+
   e->emit_declaration_end();
 }
 
