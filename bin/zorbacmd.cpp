@@ -933,27 +933,20 @@ int _tmain(int argc, _TCHAR* argv[])
 
         Zorba_CompilerHints lHints;
         lHints.opt_level = ZORBA_OPT_LEVEL_O0;
-        
-        lQuery->compile(*lXQ.get(), lHints);
 
-        // populate the dynamic context
+        lQuery->compile(*lXQ.get(), lHints);
         zorba::DynamicContext* lDynamicContext = lQuery->getDynamicContext();
-        try {
-          if (!populateDynamicContext(lDynamicContext, lProperties)) {
-            lProperties.printHelp(std::cout);
-            return 0;
-          }
-        } catch (zorba::QueryException& qe) {
-          printErrorInfo(qe, std::cerr, lProperties);
+        if (!populateDynamicContext(lDynamicContext, lProperties)) {
+          lProperties.printHelp(std::cout);
           return 0;
-        } catch (zorba::ZorbaException& ze) {
-          std::cerr << ze << std::endl;
-          return 0;
-          }
-      }
-      catch( StaticException &e ) {
-        printErrorInfo(e, std::cerr, lProperties);
-        return 0;
+        }
+
+      } catch (zorba::QueryException& qe) {
+        printErrorInfo(qe, std::cerr, lProperties);
+        return 5;
+      } catch (zorba::ZorbaException& ze) {
+        std::cerr << ze << std::endl;
+        return 6;
       }
 
       if(!compileOnly) {
