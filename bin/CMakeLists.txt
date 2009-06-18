@@ -58,3 +58,6 @@ SET_TESTS_PROPERTIES(bin/zorba3 PROPERTIES PASS_REGULAR_EXPRESSION "")
 
 ADD_TEST(bin/zorba4 ${ZORBA_EXE_PATH} --context-item=${CMAKE_CURRENT_SOURCE_DIR}/test.xml  -m 3 -q "./test/child[1]")
 SET_TESTS_PROPERTIES(bin/zorba4 PROPERTIES PASS_REGULAR_EXPRESSION "(.*<child>child1</child>)*")
+
+ADD_TEST(bin/zorba_jsonml1 ${ZORBA_EXE_PATH} -q "<ul>1</ul>" -z method=jsonml)
+SET_TESTS_PROPERTIES(bin/zorba_jsonml1 PROPERTIES PASS_REGULAR_EXPRESSION "ul.*1")
