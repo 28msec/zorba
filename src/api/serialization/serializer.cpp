@@ -1489,10 +1489,18 @@ void serializer::json_emitter::emit_declaration()
 void serializer::json_emitter::emit_item(const store::Item* item)
 {
   xqpStringStore_t result, error_log;
+
+  if(!item->isNode() || item->getNodeKind () != store::StoreConsts::elementNode)
+    ZORBA_ERROR_PARAM_OSS(API0062_CONV_JSON_PARAM,
+                          item->getStringValue(),
+                          NULL);
+
   if (JSON_serialize(item, result, error_log))
     tr << result->c_str();
   else
-    ZORBA_ERROR(API0061_CONV_JSON_SERIALIZE);
+    ZORBA_ERROR_PARAM_OSS(API0061_CONV_JSON_SERIALIZE,
+                          item->getStringValue(),
+                          error_log);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -1514,10 +1522,18 @@ void serializer::jsonml_emitter::emit_declaration()
 void serializer::jsonml_emitter::emit_item(const store::Item* item)
 {
   xqpStringStore_t result, error_log;
+
+  if(!item->isNode() || item->getNodeKind () != store::StoreConsts::elementNode)
+    ZORBA_ERROR_PARAM_OSS(API0065_CONV_JSON_ML_PARAM,
+                          item->getStringValue(),
+                          NULL);
+
   if (JSON_ML_serialize(item, result, error_log))
     tr << result->c_str();
   else
-    ZORBA_ERROR(API0064_CONV_JSON_ML_SERIALIZE);
+    ZORBA_ERROR_PARAM_OSS(API0064_CONV_JSON_ML_SERIALIZE,
+                          item->getStringValue(),
+                          error_log);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
