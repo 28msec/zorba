@@ -63,7 +63,7 @@ ADD_TEST(bin/zorba_jsonml1 ${ZORBA_EXE_PATH} -q "<ul>1</ul>" -z method=jsonml)
 SET_TESTS_PROPERTIES(bin/zorba_jsonml1 PROPERTIES PASS_REGULAR_EXPRESSION "ul.*1")
 
 ADD_TEST(bin/zorba_json1 ${ZORBA_EXE_PATH} -q "<ul>1</ul>" -z method=json)
-SET_TESTS_PROPERTIES(bin/zorba_json1 PROPERTIES PASS_REGULAR_EXPRESSION ".*API0061.* Could not serialize element with string representation.*1.*")
+SET_TESTS_PROPERTIES(bin/zorba_json1 PROPERTIES PASS_REGULAR_EXPRESSION ".*API0061.* Could not serialize the element with string representation .*1.*")
 
 ADD_TEST(bin/zorba_jsonml2 ${ZORBA_EXE_PATH} -q "(<!--comment-->)" -z method=jsonml)
 SET_TESTS_PROPERTIES(bin/zorba_jsonml2 PROPERTIES PASS_REGULAR_EXPRESSION ".*API0065.* Parameter with string representation .*comment.* is not an element node.")
