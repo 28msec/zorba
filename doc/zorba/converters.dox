@@ -1,4 +1,4 @@
-/** \page converters Conversion functions
+/** \page converters Conversion Functions
 
 <ul>
    <li> Table of Contents
@@ -24,17 +24,27 @@
        </ul>
        <li> \ref json_ml_in_serializer
      </ul>
-    <li> \ref apendix_converters
+    <li> \ref appendix_converters
    </ul>
  </ul>
 
 \section conv_intro 1 Introduction
-This document defines a general set of conversion functions.
+In the XQuery specification, XQuery is described as a language capable of expressing queries on XML data.
+This makes XQuery the perfect choice for a data processing language on the Web because XML is widely used there.
+However, there are also some other data formats presents on the Web.
+For example, <a href="http://www.json.org/" target="_blank">JSON</a> (JavaScript Object Notation) is the most common data format for applications which are written in JavaScript.
+
+Zorba implements a set of functions that opens XQuery developers the door to processing other data formats (like JSon)
+In this document, we describe these functions in detail.
+
 
 \section conv_json 2 JSON
-<a href="http://www.json.org/" target="_blank">JSON</a>  (JavaScript Object Notation) is a lightweight data-interchange format. It is easy for humans to read and write. It is easy for machines to parse and generate. \n
-JSON is a text format that is completely language independent but uses conventions that are familiar to programmers of the C-family of languages, including C, C++, C#, Java, JavaScript, Perl, Python, and many others. \n
-In order to parsing JSON into XQuery Zorba implements the following mapping between JSON and XML proposed by John Snelson in the following article: <a href="http://snelson.org.uk/archives/2008/02/parsing_json_in.php#more" target="_blank">Parsing JSON into XQuery</a> \n
+JSon is a lightweight hierachical data-interchange format.
+Like XML, it is easy for humans to read and write. Moreover, it is easy for machines to parse and generate.
+
+In order to process JSON with XQuery, Zorba implements a mapping between JSON and XML that was proposed by John Snelson in his article <a href="http://snelson.org.uk/archives/2008/02/parsing_json_in.php#more" target="_blank">Parsing JSON into XQuery</a>.
+
+In this article, he describes the following recursive mapping declarations.
 
 <table border="1" cellpadding="0" cellspacing="0">
 <tr>
@@ -79,27 +89,37 @@ In order to parsing JSON into XQuery Zorba implements the following mapping betw
 </tr>
 </table>
 
-\subsection json_namespace 2.1 Namespace
+Zorba implements this mapping in two functions: the <em>parse</em> function is used for parsing a sequence of JSON strings into a sequence of elements, the <em>serialize</em> function implements the reverse process, i.e. serializing a sequence of elements into a sequence of valid JSON strings.
+In the following, we describe those functions and give some examples.
 
-In order to use Zorba JSON functions, the module <tt>"http://www.zorba-xquery.com/zorba/json-functions"</tt> has
-to be included at the beginning of a query. For example
+\subsection json_namespace 2.1 JSon Module Namespace
+
+The <em>parse</em> and <em>serialize</em> functions are available in the JSON module <tt>"http://www.zorba-xquery.com/zorba/json-functions"</tt>.
+In order to use this functionality, you have to import this module in the prolog of your XQuery module as follows:
 
 \code
   import module namespace zorba-json = "http://www.zorba-xquery.com/zorba/json-functions";
 \endcode
 
-\subsection json_signatures 2.2 Function Signatures and Descriptions
+\subsection json_signatures 2.2 JSon Functions
 
-\subsection json_parse 2.2.1 zorba-json:parse
+\subsection json_parse 2.2.1 Parsing JSON into the XQuery Data Model (XDM).
+
+The parse function can be used for parsing a sequence of valid JSON strings into a sequence of XDM elements.
 
 \code
   declare function zorba-json:parse($text as xs:string*) as xs:element*
 \endcode
 
-\subsection ex_json_parse Example:
+The function raises the API0060 error if any of the strings passed as parameter are not a valid JSON (see \ref appendix_converters).
+
+
+The following XQuery (taken from John Snelson's article mentioned above) demonstrates the usage of the parse function.
+
 \include parse3.xq
 
-\subsection res_json_parse Result:
+For example, executing this query and serializing its result to XML yields the following:
+
 \code
   <json type="object">
     <pair name="firstName" type="string">John</pair>
@@ -148,121 +168,95 @@ to be included at the beginning of a query. For example
   </json>
 \endcode
 
-Error conditions:\n
-If the string that was passed is not a valid JSON string, an error is raised API0060 (see \ref apendix_converters).\n
-
 \subsection json_serialize 2.2.2 zorba-json:serialize
+
+The serialize function takes a sequence of elements as parameter and transforms each element into a valid JSON string according to the mapping depicted above.
+The function delaration is as follows:
 
 \code
   declare function zorba-json:serialize($xml as xs:element*) as xs:string*
 \endcode
 
-\subsection ex_json_serialize Example:
+There are two error scenarios: (1) If the passed elements do not have a valid JSON structure, the API0061 error is raised, (2) if the passed parameter is not an element, the API0062 error is raised (also see \ref appendix_converters).
+
+In the following, we demonstrate the use of the JSON serialize function.
+
 \include serialize2.xq
 
-Error conditions:\n
-If the passed element does not have a valid JSON structure, an error is raised API0061 (see \ref apendix_converters).\n
-If the passed parameter is not an element, an error is raised API0062 (see \ref apendix_converters).\n
+\subsection json_in_serializer 2.3 The JSON Serialization Method
+The JSON serialization process is also implemented in the serializer component of Zorba.
+This is similar to using any of the serialization methods defined in the "XSLT 2.0 and XQuery 1.0 Serialization" specification at http://www.w3.org/TR/xslt-xquery-serialization/.
+This method can be triggered by the Zorba command line utility or by any of the Zorba programming APIs.
 
-\subsection json_in_serializer 2.3 Json in the serializer
-You can use %Zorba command line utility to generate Json directly by using <b>--serialization-parameter,-z</b> option. \n
-The query has to contain a single element node with the structure presented above at \ref conv_json.
+In the following three examples, we use use the %Zorba command line utility to serialize the result of a query generate JSON by using the <em>--serialization-parameter,-z</em> option.
 
-Here are some examples: \n
+In contrast to the serialize function described above, the JSON serializer has to be passed a single element node adhering to the structure presented above (see \ref conv_json).
+This is because a valid JSON document is required to have a single root object.
+If a query returns a sequence with more then one element, the API0066 error is raised (see \ref appendix_converters and Example 3 below).
 
-Note that is you pass a sequence of items, only the first item in the sequence will be processed and then an error is raised API0066 (see \ref apendix_converters).\n See example 3 below: \n
-
-<b>Example 1: using %Zorba to serialize Json</b>
+<b>Example 1:</b>
 \verbatim
 zorba -q "<json type='object'><pair name='firstName' type='string'>John</pair></json>" -z method=json
 \endverbatim
 
-<b>Output example 1:</b>
+<b>Result of Example 1:</b>
 \verbatim
 {"firstName": "John"}
 \endverbatim
 
-<b>Example 2: passing a wrong argument will raise an error:</b>
+<b>Example 2:</b>
 \verbatim
 zorba -q "<ul>1</ul>" -z method=json
 \endverbatim
 
-<b>Output example 2:</b>
+<b>Output of Example 2:</b>
 \verbatim
 [API0061] Could not serialize element with string representation {1}. Error: {This is not a Json element.}
 \endverbatim
 
-<b>Example 3: passing a sequence of items will raise an error:</b>
+<b>Example 3</b>
 \verbatim
 zorba -q "(<json type='object'><pair name='firstName' type='string'>John</pair></json>, 2)" -z method=json
 \endverbatim
 
-<b>Output example 3:</b>
+<b>Output of Example 3:</b>
 \verbatim
 {"firstName": "John"}
 [API0066] Cannot serialize a sequence if 'json' or 'jsonml' method was selected.
 \endverbatim
 
 \section conv_json_ml 3 JsonML
-<a href="http://jsonml.org" target="_blank">JsonML</a> (JSON Markup Language) is an application of the <a href="http://www.json.org/" target="_blank">JSON</a> (JavaScript Object Notation) format. \n
-The purpose of JsonML is to provide a compact format for transporting XML-based markup as JSON which allows it to be losslessly converted back to its original form.\n
-Native XML/XHTML doesn't sit well embedded in JavaScript. When XHTML is stored in script it must be properly encoded as an opaque string. JsonML allows easy manipulation of the markup in script before completely rehydrating back to the original form: <a href="http://www.ibm.com/developerworks/library/x-jsonml/#N10106" target="_blank">JsonML usage</a>\n
+<a href="http://jsonml.org" target="_blank">JsonML</a> (JSON Markup Language) is an application of the <a href="http://www.json.org/" target="_blank">JSON</a> (JavaScript Object Notation) format.
+The purpose of JsonML is to provide a compact format for transporting XML-based markup as JSON.
+In contrast to the JSON mapping depicted above (see \ref conv_json), JsonML allows a losslessly conversion back and forth.
 
-In order to parsing JsonML into XQuery Zorba uses the following <a href="http://www.ibm.com/developerworks/library/x-jsonml/#N10138" target="_blank">JsonML markup</a> : \n
-
-<table width="100%" cellpadding="0" cellspacing="0" border="1">
-<tr><td><pre>
-element
-    = '[' tag-name ',' attributes ',' element-list ']'
-    | '[' tag-name ',' attributes ']'
-    | '[' tag-name ',' element-list ']'
-    | '[' tag-name ']'
-    | json-string
-    ;
-tag-name
-    = json-string
-    ;
-attributes
-    = '{' attribute-list '}'
-    | '{' '}'
-    ;
-attribute-list
-    = attribute ',' attribute-list
-    | attribute
-    ;
-attribute
-    = attribute-name ':' attribute-value
-    ;
-attribute-name
-    = json-string
-    ;
-attribute-value
-    = json-string
-    ;
-element-list
-    = element ',' element-list
-    | element
-    ;
-</pre></td></tr></table>
+Zorba implements the JsonML structure defined at http://www.ibm.com/developerworks/library/x-jsonml/#N10138.
+Analogoulsy to the JSON conversion, this functionality is implemented in a parse and serialize function, respectively.
 
 More details about <a href="http://jsonml.org" target="_blank">JsonML</a> can be found in the following article: <a href="https://www.ibm.com/developerworks/library/x-jsonml/" target="_blank">Get to know JsonML</a>.
 
-\subsection json_ml_namespace 3.1 Namespace
 
-In order to use Zorba JsonML functions, the module <tt>"http://www.zorba-xquery.com/zorba/json-ml-functions"</tt> has
-to be included at the beginning of a query. For example
+\subsection json_ml_namespace 3.1 JsonML Module Namespace
+
+The <em>parse</em and <em>serialize</em> functions are available in the JsonML moudle <tt>"http://www.zorba-xquery.com/zorba/json-ml-functions"</tt>.
 
 \code
   import module namespace zorba-json-ml = "http://www.zorba-xquery.com/zorba/json-ml-functions";
 \endcode
 
-\subsection json_ml_signatures 3.2 Function Signatures and Descriptions
+\subsection json_ml_signatures 3.2 JsonML Functions
 
-\subsection json_ml_parse 3.2.1 zorba-json-ml:parse
+\subsection json_ml_parse 3.2.1 Parising JsonML into the XQuery Data Model (XDM) 
+
+The parse function can be used to parse a sequence of valid JSON strings to XDM elements.
+It is declared as follows
 
 \code
   declare function zorba-json-ml:parse($text as xs:string*) as xs:element*
 \endcode
+
+The API0063 error is raised if one of the strings that are passed as parameters are not valid Json (also see \ref appendix_converters).
+
 
 \subsection ex_json_ml_parse Example:
 \include jsonml_parse1.xq
@@ -288,14 +282,16 @@ to be included at the beginning of a query. For example
 \endcode
 
 
-Error conditions:\n
-If the string that was passed is not a valid JsonML string, an error is raised API0063 (see \ref apendix_converters).\n
-
 \subsection json_ml_serialize 3.2.2 zorba-json-ml:serialize
+
+The serialize function takes a sequence of elements and transforms each of them into a sequence of JsonML strings.
 
 \code
   declare function zorba-json-ml:serialize($xml as xs:element*) as xs:string*
 \endcode
+
+If one of the passed elements does not have a valid JsonML structure, the API0064 error is raised.
+If the passed parameter is not an element, the API0065 error is raised.
 
 \subsection ex_json_ml_serialize Example:
 \include jsonml_serialize1.xq
@@ -319,10 +315,6 @@ If the string that was passed is not a valid JsonML string, an error is raised A
   ]
 ]
 \endcode
-
-Error conditions:\n
-If the passed element does not have a valid JsonML structure, an error is raised API0064 (see \ref apendix_converters).\n
-If the passed parameter is not an element, an error is raised API0065 (see \ref apendix_converters).\n
 
 \subsection json_ml_note Note:
 Calling <b>zorba-json-ml:serialize(zorba-json-ml:parse($some_string))</b> will not always produce <b>$some_string</b>. \n
@@ -349,53 +341,56 @@ will output the following result:
 ]
 \endcode
 
-\subsection json_ml_in_serializer 3.3 JsonML in the serializer
-You can use %Zorba command line utility to generate JsonML directly by using <b>--serialization-parameter,-z</b> option. \n
-The query has to contain a single element node with the structure presented above at \ref conv_json_ml.
+\subsection json_ml_in_serializer 3.3 The JsonML Serialization Method
 
-Here are some examples: \n
+The JsonML serialization functionality is also implemented in the serializer component of Zorba.
 
-Note that is you pass a sequence of items, only the first item in the sequence will be processed and then an error is raised API0066 (see \ref apendix_converters).\n See example 3 below: \n
+In the following, we give some examples that demonstrate this using the zorba command line utility using the <b>--serialization-parameter,-z</b> option. \n
+Please note that the result of query has to be a sequence with one element.
 
-<b>Example 1: using %Zorba to serialize JsonML</b>
+Here are some examples: 
+
+Note that is you pass a sequence of items, only the first item in the sequence will be processed and then an error is raised API0066 (see \ref appendix_converters).\n See example 3 below: 
+
+<b>Example 1:</b>
 \verbatim
 zorba -q "<ul>1</ul>" -z method=jsonml
 \endverbatim
 
-<b>Output example 1:</b>
+<b>Output of Example 1:</b>
 \verbatim
 ["ul", "1"]
 \endverbatim
 
-<b>Example 2: passing a wrong argument will raise an error:</b>
+<b>Example 2</b>
 \verbatim
 zorba -q "<?pi content?>" -z method=jsonml
 \endverbatim
 
-<b>Output example 2:</b>
+<b>Output of Example 2:</b>
 \verbatim
 [API0064] Could not serialize element with string representation {content}. Error: {This is not a JsonML element.}
 \endverbatim
 
-<b>Example 3: passing a sequence of items will raise an error:</b>
+<b>Example 3</b>
 \verbatim
 zorba -q "(<ul>1</ul>, <?pi content?>)" -z method=jsonml
 \endverbatim
 
-<b>Output example 3:</b>
+<b>Output of Example 3:</b>
 \verbatim
 ["ul", "1"]
 [API0066] Cannot serialize a sequence if 'json' or 'jsonml' method was selected.
 \endverbatim
 
-\section apendix_converters Appendix A:  Error codes
+\section appendix_converters Appendix A:  Error codes
 
-  API0060 - API0060_CONV_JSON_PARSE - is returned if the string could not be parsed.\n
-  API0061 - API0061_CONV_JSON_SERIALIZE - is returned if the element could not be serialized.\n
-  API0062 - API0062_CONV_JSON_PARAM - is returned is the passed param is not an element.\n
-  API0063 - API0063_CONV_JSON_ML_PARSE - is returned if the string could not be parsed.\n
-  API0064 - API0064_CONV_JSON_ML_SERIALIZE - is returned if the element could not be serialized.\n
-  API0065 - API0065_CONV_JSON_ML_PARAM - is returned is the passed param is not an element.\n
-  API0066 - API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED - Cannot serialize a sequence if 'json' or 'jsonml' method was selected. \n
+  API0060 - API0060_CONV_JSON_PARSE - is raised if the string could not be parsed.<br/>
+  API0061 - API0061_CONV_JSON_SERIALIZE - is raised if the element could not be serialized.<br/>
+  API0062 - API0062_CONV_JSON_PARAM - is raised is the passed param is not an element.<br/>
+  API0063 - API0063_CONV_JSON_ML_PARSE - is raised if the string could not be parsed.<br/>
+  API0064 - API0064_CONV_JSON_ML_SERIALIZE - is raised if the element could not be serialized.<br/>
+  API0065 - API0065_CONV_JSON_ML_PARAM - is raised is the passed parameter is not an element.<br/>
+  API0066 - API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED - Cannot serialize a sequence with more than one element if the 'json' or 'jsonml' method was selected.
 
 */

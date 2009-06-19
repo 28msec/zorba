@@ -192,15 +192,15 @@ DEF_ERR_CODE(API0037_TIDY_ERROR_SET_OPTION, API0037, "Could not set option {/s} 
 DEF_ERR_CODE(API0050_REST_ERROR_HEADER, API0050, "Invalid value passed for header parameter.");
 DEF_ERR_CODE(API0051_REST_ERROR_PAYLOAD, API0051, "Invalid value passed for payload parameter.");
 
-DEF_ERR_CODE(API0060_CONV_JSON_PARSE, API0060, "Could not parse Json string {/s} reason: {/s}.");
-DEF_ERR_CODE(API0061_CONV_JSON_SERIALIZE, API0061, "Could not serialize element with string representation {/s}. Error: {/s}");
+DEF_ERR_CODE(API0060_CONV_JSON_PARSE, API0060, "Could not parse the Json string {/s}. Reason: {/s}.");
+DEF_ERR_CODE(API0061_CONV_JSON_SERIALIZE, API0061, "Could not serialize the element with string representation {/s}. Error: {/s}");
 DEF_ERR_CODE(API0062_CONV_JSON_PARAM, API0062, "Parameter with string representation {/s} is not an element node.");
 
-DEF_ERR_CODE(API0063_CONV_JSON_ML_PARSE, API0063, "Could not parse JsonML string {/s} reason: {/s}.");
-DEF_ERR_CODE(API0064_CONV_JSON_ML_SERIALIZE, API0064, "Could not serialize element with string representation {/s}. Error: {/s}");
+DEF_ERR_CODE(API0063_CONV_JSON_ML_PARSE, API0063, "Could not parse the JsonML string {/s} reason: {/s}.");
+DEF_ERR_CODE(API0064_CONV_JSON_ML_SERIALIZE, API0064, "Could not serialize the element with string representation {/s}. Error: {/s}");
 DEF_ERR_CODE(API0065_CONV_JSON_ML_PARAM, API0065, "Parameter with string representation {/s} is not an element node.");
 
-DEF_ERR_CODE(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED, API0066, "Cannot serialize a sequence if 'json' or 'jsonml' method was selected.")
+DEF_ERR_CODE(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED, API0066, "Cannot serialize a sequence with more than one element if the 'json' or 'jsonml' method was selected.")
 //
 // Store Errors
 //
