@@ -929,13 +929,9 @@ std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery)
 
 std::ostream& operator<< (std::ostream& os, XQuery* aQuery)
 {
-#ifndef NDEBUG
-  XQueryImpl* lQuery = static_cast<XQueryImpl*>(aQuery);
-  assert(lQuery);
+  XQueryImpl* lQuery = dynamic_cast<XQueryImpl*>(aQuery);
+  ZORBA_ASSERT (lQuery != NULL);
   lQuery->serialize(os); 
-#else
-  dynamic_cast<XQueryImpl*>(aQuery)->serialize(os); 
-#endif
   return os;
 }
 
