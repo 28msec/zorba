@@ -324,6 +324,10 @@ XQueryImpl::getCompilerConfig(const Zorba_CompilerHints_t& aHints)
   lConfig.opt_level = (aHints.opt_level == ZORBA_OPT_LEVEL_O0 ?
                        CompilerCB::config_t::O0 :
                        CompilerCB::config_t::O1);
+
+  // if lib_module is set to true the query will be considered a library module
+  lConfig.lib_module = aHints.lib_module;
+
   return lConfig;
 }
 

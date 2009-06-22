@@ -23,6 +23,7 @@
 #include "util/properties.h"
 
 #include "context/static_context.h"
+#include "context/standard_uri_resolvers.h"
 
 #include "types/root_typemanager.h"
 #include "types/typemanagerimpl.h"
@@ -109,6 +110,11 @@ PlanIter_t
 XQueryCompiler::compile(std::istream& aXQuery, const xqpString & aFileName)
 {
   parsenode_t lAST = parse(aXQuery, aFileName);
+
+  if(theCompilerCB->m_config.lib_module &&
+     typeid (lAST) != typeid (LibraryModule))
+    lAST = createMainModule(lAST, aXQuery, aFileName);
+
   return compile (lAST);
 }
 
@@ -254,6 +260,26 @@ XQueryCompiler::optimize(expr_t lExpr)
   return lExpr;
 }
 
+parsenode_t
+XQueryCompiler::createMainModule(parsenode_t aLibraryModule, std::istream& aXQuery, const xqpString & aFileName)
+{
+  //get the namespace from the LibraryModule
+  LibraryModule *mod_ast = dynamic_cast<LibraryModule *> (&*aLibraryModule);
+  std::string lib_namespace = mod_ast->get_decl()->get_target_namespace();
+
+  //create a dummy main module
+  std::string ss = "import module namespace m = '";
+  ss.append(lib_namespace);
+  ss.append ("'; 1");
+  std::auto_ptr<std::istream> lDocStream(new std::stringstream(ss));
+
+  aXQuery.clear();
+  aXQuery.seekg(0);
+
+  theCompilerCB->m_sctx->set_module_uri_resolver(new StandardLibraryModuleURIResolver(aXQuery, lib_namespace));
+
+  return  parse(*lDocStream, aFileName);
+}
 
 XQueryCompilerSubsystem::XQueryCompilerSubsystem()
 {

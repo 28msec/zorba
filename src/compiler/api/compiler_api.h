@@ -40,11 +40,14 @@ class XQueryCompiler
 
   PlanIter_t compile(std::istream& aXQuery, const xqpString & aFileName = "");
   PlanIter_t compile(parsenode_t);
-    
+
  protected:
   expr_t normalize(parsenode_t);
 
   expr_t optimize(expr_t lExpr);
+
+ private:
+  parsenode_t createMainModule(parsenode_t aLibraryModule, std::istream& aXQuery, const xqpString & aFileName = "");
 };
 
 

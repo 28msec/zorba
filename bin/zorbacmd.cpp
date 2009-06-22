@@ -485,6 +485,10 @@ int executeQueryWithTiming(
   if (properties.optimizationLevel() == "O0")
     lHints.opt_level = ZORBA_OPT_LEVEL_O0;
 
+  //default is false
+  if (properties.libModule())
+    lHints.lib_module = true;
+
   XmlDataManager* store = zorbaInstance->getXmlDataManager();
 
   Zorba_SerializerOptions lSerOptions = Zorba_SerializerOptions::SerializerOptionsFromStringParams(properties.getSerializerParameters());
@@ -598,6 +602,11 @@ int executeQuery(
   Zorba_CompilerHints lHints;
   if (properties.optimizationLevel() == "O0")
     lHints.opt_level = ZORBA_OPT_LEVEL_O0;
+
+  //default is false
+  if (properties.libModule())
+    lHints.lib_module = true;
+
 
     Zorba_SerializerOptions lSerOptions = Zorba_SerializerOptions::SerializerOptionsFromStringParams(properties.getSerializerParameters());
     createSerializerOptions(lSerOptions, properties);

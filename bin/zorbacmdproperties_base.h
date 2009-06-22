@@ -33,7 +33,7 @@ namespace zorbacmd {
 class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug-client", "--debug-server", "--no-colors", NULL };
+    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug-client", "--debug-server", "--no-colors", NULL };
     return result;
   }
   bool theTiming;
@@ -57,6 +57,7 @@ protected:
   std::vector<std::string> theExternalVariable;
   std::string theContextItem;
   std::string theOptimizationLevel;
+  bool theLibModule;
   bool theParseOnly;
   bool theCompileOnly;
   bool theNoSerializer;
@@ -77,6 +78,7 @@ protected:
     theMultiple = 1;
     theAsFiles = false;
     theOptimizationLevel = "O1";
+    theLibModule = false;
     theParseOnly = false;
     theCompileOnly = false;
     theNoSerializer = false;
@@ -107,6 +109,7 @@ public:
   const std::vector<std::string> &externalVariable () const { return theExternalVariable; }
   const std::string &contextItem () const { return theContextItem; }
   const std::string &optimizationLevel () const { return theOptimizationLevel; }
+  const bool &libModule () const { return theLibModule; }
   const bool &parseOnly () const { return theParseOnly; }
   const bool &compileOnly () const { return theCompileOnly; }
   const bool &noSerializer () const { return theNoSerializer; }
@@ -211,6 +214,9 @@ public:
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --optimization-level option"; break; }        init_val (*argv, theOptimizationLevel, d);
       }
+      else if (strcmp (*argv, "--lib-module") == 0 || strncmp (*argv, "-l", 2) == 0) {
+        theLibModule = true;
+      }
       else if (strcmp (*argv, "--parse-only") == 0) {
         theParseOnly = true;
       }
@@ -262,25 +268,26 @@ public:
 "--print-errors-as-xml\nPrint the errors as XML.\n\n"
 "--byte-order-mark\nSet the byte-order-mark for the serializer.\n\n"
 "--omit-xml-declaration\nOmit the XML declaration from the result.\n\n"
-"--base-uri\nSet the base URI property of the static context\n\n"
+"--base-uri\nSet the base URI property of the static context.\n\n"
 "--boundary-space\nSet the boundary-space policy ('strip' or 'preserve') in the static context.\n\n"
 "--default-collation\nAdd the given collation and set the value of the default collation in the static context to the given collation.\n\n"
 "--construction-mode\nSet the construction mode ('strip' or 'preserve') in the static context.\n\n"
-"--ordering-mode\nSet the ordering mode ('ordered' or 'unordered') in the static context\n\n"
+"--ordering-mode\nSet the ordering mode ('ordered' or 'unordered') in the static context.\n\n"
 "--multiple, -m\nExecute the given queries multiple times.\n\n"
 "--query, -q\nQuery test or file URI (file://...)\n\n"
-"--as-files, -f\nTreat all -q arguments as file paths instead of URIs or inline queries\n\n"
+"--as-files, -f\nTreat all -q arguments as file paths instead of URIs or inline queries.\n\n"
 "--external-variable, -e\nProvide the value for a variable given a file (name=file) or a value (name:=value)\n\n"
 "--context-item\nSet the context item to the XML document in a given file.\n\n"
 "--optimization-level\nOptimization level for the query compiler (O0 or O1)\n\n"
-"--parse-only\nStop after parsing the query\n\n"
+"--lib-module, -l\nQuery compiler option to treat the query as a library module. We suggest unsing this option together with --compile-only option.\n\n"
+"--parse-only\nStop after parsing the query.\n\n"
 "--compile-only\nOnly compile (don't execute)\n\n"
-"--no-serializer\nDo not serialize (discard) result\n\n"
+"--no-serializer\nDo not serialize (discard) result.\n\n"
 #ifdef ZORBA_DEBUGGER
 "--debug-ports, -p\nSpecify the ports for zorba debugger. The format is requestPort:eventPort.\n\n"
 "--debug-client, -c\nLaunch the debugger command line client.\n\n"
 "--debug-server, -s\nLaunch queries on the debugger server.\n\n"
-"--no-colors\nNo colors\n\n"
+"--no-colors\nNo colors.\n\n"
 #endif
 ;
   }

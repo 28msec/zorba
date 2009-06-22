@@ -241,4 +241,19 @@ StandardModuleURIResolver::resolve(
   return modfile.release();
 }
 
+std::istream*
+StandardLibraryModuleURIResolver::resolve(const store::Item_t& aURI,
+                                          static_context* aStaticContext)
+{
+  xqpStringStore_t lResolvedURI = aURI->getStringValue();
+
+  assert( lResolvedURI->str() == theLibraryModuleNamespace );
+  assert( theStream.good() );
+
+  std::auto_ptr<std::istream> modfile(new std::istream(theStream.rdbuf()));
+
+  // we transfer ownership to the caller
+  return modfile.release();
+}
+
 } /* namespace zorba */

@@ -45,6 +45,7 @@ class ZORBA_DLL_PUBLIC CompilerCB
 
     bool force_gflwor;
     opt_level_t opt_level;
+    bool lib_module;
     ast_callback parse_cb;
     expr_callback translate_cb, normalize_cb, optimize_cb;
     bool print_item_flow;  // TODO: move to RuntimeCB

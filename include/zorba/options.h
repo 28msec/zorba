@@ -31,6 +31,10 @@ typedef enum {
                            or constant folding). */
 } Zorba_opt_level_t;
 
+#if !defined(__cplusplus)
+  typedef enum { false = 0, true = 1 } bool;
+#endif
+
 /** \brief Set of hints that can be passed to the query compiler.
  *
  * An instance of this class can be passed to the compileQuery function
@@ -45,11 +49,14 @@ typedef enum {
 typedef struct Zorba_CompilerHints {
   /** \brief The optimization level that is used */
   Zorba_opt_level_t opt_level;
+  /** \brief Treat the query as a library module */
+  bool lib_module;
 #ifdef __cplusplus
   /** \brief Default constructor for CompilerHints which assigns default values to all hints (C++ only).
    *
    * Default values:
-   *   - optimization level: O1 
+   *   - optimization level: O1
+   *   - library module: false
    */
   ZORBA_DLL_PUBLIC Zorba_CompilerHints();
 #endif

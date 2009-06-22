@@ -70,6 +70,9 @@ Set the context item to the XML document in a given file.
 --optimization-level
 Optimization level for the query compiler ('O0' or 'O1')
 
+--lib-module, -l
+Query compiler option to treat the query as a library module. We suggest using this option together with --compile-only option.
+
 --parse-only
 Stop after parsing the query
 

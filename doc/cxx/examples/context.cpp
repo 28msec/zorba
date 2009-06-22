@@ -243,7 +243,7 @@ context_example_8(Zorba* aZorba)
 }
 
 /**
- * Example to show the ability to define the current dateTime in the dynami context.
+ * Example to show the ability to define the current dateTime in the dynamic context.
  */
 bool
 context_example_9(Zorba* aZorba)

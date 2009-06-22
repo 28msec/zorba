@@ -17,7 +17,8 @@
 #include <zorba/options.h>
 
 Zorba_CompilerHints::Zorba_CompilerHints()
-: opt_level(ZORBA_OPT_LEVEL_O1)
+: opt_level(ZORBA_OPT_LEVEL_O1),
+  lib_module(false)
 {}
 
 Zorba_SerializerOptions::Zorba_SerializerOptions()

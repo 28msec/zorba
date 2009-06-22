@@ -50,7 +50,7 @@ CompilerCB::CompilerCB()
   CompilerCB::~CompilerCB() {}
 
   CompilerCB::config::config ()
-    : opt_level (O1), parse_cb (NULL)
+  : opt_level (O1), lib_module(false), parse_cb (NULL)
   {
     translate_cb = normalize_cb = optimize_cb = NULL;
     // TODO: move these out

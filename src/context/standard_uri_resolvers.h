@@ -62,7 +62,27 @@ namespace zorba {
       virtual std::istream*
       resolve(const store::Item_t& aURI,
               static_context* aStaticContext);
-              
+  };
+
+  /*
+    This is a small helper class used when the user whants to compile a library module.
+    The ONLY place it is used (and should be used) is in the XQueryCompiler::createMainModule method
+  */
+  class StandardLibraryModuleURIResolver : public InternalModuleURIResolver
+  {
+    private:
+      std::istream& theStream;
+      std::string   theLibraryModuleNamespace;
+
+    public:
+      StandardLibraryModuleURIResolver (std::istream& aXQuery, std::string lib_namespace)
+      : theStream (aXQuery), theLibraryModuleNamespace (lib_namespace) {}
+
+      virtual ~StandardLibraryModuleURIResolver() {}
+
+      virtual std::istream*
+      resolve(const store::Item_t& aURI,
+              static_context* aStaticContext);
   };
 
 } /* namespace zorba */
