@@ -749,7 +749,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
   if(lProperties.queriesOrFilesBegin() == lProperties.queriesOrFilesEnd()) {
     std::cerr << "no queries submitted." << std::endl;
-    std::string ErrDesc = "no queries submitted\n";
+    lProperties.printHelp(std::cout);
     return 3;
   }
 
