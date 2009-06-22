@@ -793,9 +793,11 @@ int _tmain(int argc, _TCHAR* argv[])
     
     if ( asFile && (!qfile->good() || qfile->eof()) ) {
       std::cerr << "file {" << fname << "} not found or not readable." << std::endl;
+      lProperties.printHelp(std::cout);
       return 3;
     } else if (fURI.empty ()) {
       std::cerr << "empty query." << std::endl;
+      lProperties.printHelp(std::cout);
       return 3;
     }
 
