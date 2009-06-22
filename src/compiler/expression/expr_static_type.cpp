@@ -30,7 +30,7 @@
 using namespace std;
 namespace zorba {
 
-#define DEBUG_RT(e, t) t
+  // #define DEBUG_RT(e, t) t
 
 #ifndef DEBUG_RT
 #define DEBUG_RT(e, t) print_expr_and_type(e, t)
@@ -593,6 +593,9 @@ xqtref_t relpath_expr::return_type_impl(static_context* sctx)
     return theSteps[0]->return_type(sctx);
 
   xqtref_t sourceType = theSteps[0]->return_type(sctx);
+
+  if (TypeOps::is_empty (*sourceType))
+    return sourceType;
 
   if (sourceType->type_kind() != XQType::NODE_TYPE_KIND)
   {
