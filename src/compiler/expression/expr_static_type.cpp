@@ -30,7 +30,7 @@
 using namespace std;
 namespace zorba {
 
-  // #define DEBUG_RT(e, t) t
+#define DEBUG_RT(e, t) t
 
 #ifndef DEBUG_RT
 #define DEBUG_RT(e, t) print_expr_and_type(e, t)
