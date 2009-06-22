@@ -238,7 +238,7 @@ More details about <a href="http://jsonml.org" target="_blank">JsonML</a> can be
 
 \subsection json_ml_namespace 3.1 JsonML Module Namespace
 
-The <em>parse</em> and <em>serialize</em> functions are available in the JsonML moudle <tt>"http://www.zorba-xquery.com/zorba/json-ml-functions"</tt>.
+The <em>parse</em> and <em>serialize</em> functions are available in the JsonML mold <tt>"http://www.zorba-xquery.com/zorba/json-ml-functions"</tt>.
 
 \code
   import module namespace zorba-json-ml = "http://www.zorba-xquery.com/zorba/json-ml-functions";
