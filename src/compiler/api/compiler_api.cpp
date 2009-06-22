@@ -265,20 +265,27 @@ XQueryCompiler::createMainModule(parsenode_t aLibraryModule, std::istream& aXQue
 {
   //get the namespace from the LibraryModule
   LibraryModule *mod_ast = dynamic_cast<LibraryModule *> (&*aLibraryModule);
+  if (!mod_ast) {
+    ZORBA_ERROR_DESC_OSS(API0002_COMPILE_FAILED,
+                        "given library module is not a valid module, e.g. the module declaration is missing");
+
+  }
+
   std::string lib_namespace = mod_ast->get_decl()->get_target_namespace();
 
   //create a dummy main module
-  std::string ss = "import module namespace m = '";
-  ss.append(lib_namespace);
-  ss.append ("'; 1");
-  std::auto_ptr<std::istream> lDocStream(new std::stringstream(ss));
+  //create a dummy main module
+  std::stringstream lDocStream;
+  lDocStream << "import module namespace m = '"
+             << lib_namespace
+             << "'; 1";
 
   aXQuery.clear();
   aXQuery.seekg(0);
 
   theCompilerCB->m_sctx->set_module_uri_resolver(new StandardLibraryModuleURIResolver(aXQuery, lib_namespace));
 
-  return  parse(*lDocStream, aFileName);
+  return  parse(lDocStream, aFileName);
 }
 
 XQueryCompilerSubsystem::XQueryCompilerSubsystem()

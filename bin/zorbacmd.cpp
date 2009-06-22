@@ -619,6 +619,9 @@ int executeQuery(
   } catch (zorba::QueryException& qe) {
     printErrorInfo(qe, std::cerr, properties);
     return 5;
+  } catch (zorba::ZorbaException& ze) {
+    std::cerr << ze << std::endl;
+    return 5;
   }
 
   //
