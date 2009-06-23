@@ -689,7 +689,8 @@ printErrorInfo( zorba::QueryException& qe,
   }
   else {
     std::string queryURI;
-    if( qe.getQueryURI().indexOf("http") == -1 )
+    if( qe.getQueryURI().indexOf("http") == -1  &&
+        !qe.getQueryURI().empty())
       queryURI.append("file://");
     queryURI.append(qe.getQueryURI().c_str());
 

@@ -152,13 +152,13 @@ public:
       else if (strcmp (*argv, "--print-query") == 0) {
         thePrintQuery = true;
       }
-      else if (strcmp (*argv, "--print-errors-as-xml") == 0) {
+      else if (strcmp (*argv, "--print-errors-as-xml") == 0 || strncmp (*argv, "-x", 2) == 0) {
         thePrintErrorsAsXml = true;
       }
       else if (strcmp (*argv, "--byte-order-mark") == 0) {
         theByteOrderMark = true;
       }
-      else if (strcmp (*argv, "--omit-xml-declaration") == 0) {
+      else if (strcmp (*argv, "--omit-xml-declaration") == 0 || strncmp (*argv, "-i", 2) == 0) {
         theOmitXmlDeclaration = true;
       }
       else if (strcmp (*argv, "--base-uri") == 0) {
@@ -265,9 +265,9 @@ public:
 "--serialize-text\nSerialize the result as Text.\n\n"
 "--indent\nIndent output.\n\n"
 "--print-query\nPrint the queries.\n\n"
-"--print-errors-as-xml\nPrint the errors as XML.\n\n"
+"--print-errors-as-xml, -x\nPrint the errors as XML.\n\n"
 "--byte-order-mark\nSet the byte-order-mark for the serializer.\n\n"
-"--omit-xml-declaration\nOmit the XML declaration from the result.\n\n"
+"--omit-xml-declaration, -i\nOmit the XML declaration from the result.\n\n"
 "--base-uri\nSet the base URI property of the static context.\n\n"
 "--boundary-space\nSet the boundary-space policy ('strip' or 'preserve') in the static context.\n\n"
 "--default-collation\nAdd the given collation and set the value of the default collation in the static context to the given collation.\n\n"

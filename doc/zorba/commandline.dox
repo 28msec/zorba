@@ -28,13 +28,13 @@ Indent output.
 --print-query
 Print the queries.
 
---print-errors-as-xml
+--print-errors-as-xml, -x
 Print the errors as XML.
 
 --byte-order-mark
 Set the byte-order-mark for the serializer.
 
---omit-xml-declaration
+--omit-xml-declaration, -i
 Omit the XML declaration from the result.
 
 --base-uri
