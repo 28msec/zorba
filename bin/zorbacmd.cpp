@@ -684,13 +684,18 @@ printErrorInfo( zorba::QueryException& qe,
     if( aProperties.indent() ) { os << std::endl; };
   }
   else {
+    std::string queryURI;
+    if( qe.getQueryURI().indexOf("http") == -1 )
+      queryURI.append("file://");
+    queryURI.append(qe.getQueryURI().c_str());
+
     os << "<errors>";
     if( indent ) os << std::endl << "  ";
     //code
     os << "<error code='" << qe.getErrorCodeAsString(qe.getErrorCode()) << "'>";
     if( indent ) os << std::endl << "    ";
     //location
-    os << "<location fileName='" << qe.getQueryURI();
+    os << "<location module='" << queryURI;
     os << "' lineStart='" << qe.getLineBegin();
     os << "' columnStart='" << qe.getColumnBegin();
     os << "' lineEnd='" << qe.getLineBegin();
