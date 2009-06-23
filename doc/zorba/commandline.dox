@@ -71,7 +71,7 @@ Set the context item to the XML document in a given file.
 Optimization level for the query compiler ('O0' or 'O1')
 
 --lib-module, -l
-Query compiler option to treat the query as a library module. We suggest using this option together with --compile-only option.
+Query compiler option to treat the query as a library module. If this is set --compile-only option is also set to true.
 
 --parse-only
 Stop after parsing the query

@@ -540,7 +540,9 @@ int executeQueryWithTiming(
       return 6;
     }
 
-    if (! properties.compileOnly ()) {
+    //libModule assumes compileOnly even if compileOnly is false
+    if( ! properties.compileOnly() &&
+        ! properties.libModule() ) {
     //
     // Run the query
     //
@@ -642,7 +644,9 @@ int executeQuery(
     return 6;
   }
 
-  if (! properties.compileOnly ()) {
+  //libModule assumes compileOnly even if compileOnly is false
+  if( ! properties.compileOnly() &&
+      ! properties.libModule() ) {
   //
   // Run the query N times
   //
@@ -738,8 +742,10 @@ int _tmain(int argc, _TCHAR* argv[])
 
   bool doTiming = lProperties.timing();
   bool debug = (lProperties.debugServer() || lProperties.debugClient());
-  bool compileOnly = lProperties.compileOnly();
- 
+
+  //libModule assumes compileOnly even if compileOnly is false
+  bool compileOnly = (lProperties.compileOnly() || lProperties.libModule() );
+
   // write to file or standard out
   std::auto_ptr<std::ostream> lFileStream(lProperties.outputFile().size() > 0 ?
                                           new std::ofstream(lProperties.outputFile().c_str()) 
@@ -871,7 +877,7 @@ int _tmain(int argc, _TCHAR* argv[])
     }
 
     else if (!debug && doTiming) {
-      if(lProperties.compileOnly ()) {
+      if( compileOnly ) {
         try {
           zorba::XQuery_t aQuery = lZorbaInstance->createQuery();
           if (asFile)
@@ -900,7 +906,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
       timing.print(std::cout);
     } else if (!debug) {
-      if(lProperties.compileOnly ()) {
+      if( compileOnly ) {
         try {
           zorba::XQuery_t aQuery = lZorbaInstance->createQuery();
           if (asFile)
@@ -968,7 +974,7 @@ int _tmain(int argc, _TCHAR* argv[])
         return 6;
       }
 
-      if(!compileOnly) {
+      if( !compileOnly ) {
       // Debugger server arguments
       std::auto_ptr<server_args> lArgs(new server_args());
       lArgs->theRequestPort = lProperties.getRequestPort();

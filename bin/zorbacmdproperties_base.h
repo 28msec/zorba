@@ -279,7 +279,7 @@ public:
 "--external-variable, -e\nProvide the value for a variable given a file (name=file) or a value (name:=value)\n\n"
 "--context-item\nSet the context item to the XML document in a given file.\n\n"
 "--optimization-level\nOptimization level for the query compiler (O0 or O1)\n\n"
-"--lib-module, -l\nQuery compiler option to treat the query as a library module. We suggest unsing this option together with --compile-only option.\n\n"
+"--lib-module, -l\nQuery compiler option to treat the query as a library module. If this is set --compile-only option is also set to true.\n\n"
 "--parse-only\nStop after parsing the query.\n\n"
 "--compile-only\nOnly compile (don't execute)\n\n"
 "--no-serializer\nDo not serialize (discard) result.\n\n"
