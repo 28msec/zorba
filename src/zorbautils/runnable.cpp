@@ -9,6 +9,11 @@
 #define ZORBA_THREAD_RETURN DWORD WINAPI
 #endif
 
+
+zorba::Runnable::~Runnable()
+{
+}
+
 zorba::Runnable::Runnable() : theStatus(IDLE), finishCalled(false)
 {
 }
