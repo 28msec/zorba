@@ -325,6 +325,34 @@ bool UserDefinedXQType::isSuperTypeOf(const XQType& subType) const
 }
 
 
+bool UserDefinedXQType::isSubTypeOf(const XQType& supertype) const
+{
+  const XQType* subtype = this;
+
+  do
+  {
+    if (TypeOps::is_equal(*subtype, supertype))
+      return true;
+
+    if (subtype->type_kind() == XQType::USER_DEFINED_KIND)
+    {
+      subtype = static_cast<const UserDefinedXQType*>(subtype)->getBaseType().getp();
+    }
+    else if (supertype.type_kind() == XQType::USER_DEFINED_KIND)
+    {
+      return false;
+    }
+    else
+    {
+      return TypeOps::is_subtype(*subtype, supertype);
+    }
+  }
+  while(true);
+    
+  return false;
+}
+
+
 std::ostream& UserDefinedXQType::serialize(std::ostream& os) const
 {
   std::string info = "";

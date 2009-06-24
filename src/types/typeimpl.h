@@ -571,11 +571,13 @@ public:
   bool isComplex()                const { return m_typeCategory == COMPLEX_TYPE; }
   TYPE_CATEGORY getTypeCategory() const { return m_typeCategory; }
 
-  xqtref_t getBaseType()                            const { return m_baseType; }
-  const XQType*  getListItemType()                  const { return m_listItemType; }
-  std::vector<const XQType*> getUnionItemTypes()    const { return m_unionItemTypes; }
+  xqtref_t getBaseType()                          const { return m_baseType; }
+  const XQType*  getListItemType()                const { return m_listItemType; }
+  std::vector<const XQType*> getUnionItemTypes()  const { return m_unionItemTypes; }
 
   bool isSuperTypeOf(const XQType& subType) const;
+
+  bool isSubTypeOf(const XQType& superType) const;
 
   virtual std::ostream& serialize(std::ostream& os) const;
 };

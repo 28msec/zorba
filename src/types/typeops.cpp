@@ -417,9 +417,14 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
       {
         return true;
       }
+      case XQType::USER_DEFINED_KIND:
+      {
+        const UserDefinedXQType& udSubtype = static_cast<const UserDefinedXQType&>(subtype);
+        return udSubtype.isSubTypeOf(supertype);
+      }
       default:
       {
-        // NODE, ITEM, ANY, ANY_SIMPLE, UNTYPED, USER_DEFINED
+        // NODE, ITEM, ANY, ANY_SIMPLE, UNTYPED
         return false;
       }
       }
@@ -571,9 +576,8 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
 
     case XQType::USER_DEFINED_KIND:
     {
-      const UserDefinedXQType& udSuperType = dynamic_cast<const UserDefinedXQType&>(supertype);
+      const UserDefinedXQType& udSuperType = static_cast<const UserDefinedXQType&>(supertype);
 
-      // ????
       return udSuperType.isSuperTypeOf(subtype);
     }
 
