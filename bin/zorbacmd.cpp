@@ -74,7 +74,7 @@ using namespace zorba;
 namespace zorbatm = zorba::time;
 
 const char *copyright_str =
-  "Copyright 2006-2008 The FLWOR Foundation.\n"
+  "Copyright 2006-2009 The FLWOR Foundation.\n"
   "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>";
 
 std::ostream&
@@ -237,7 +237,9 @@ ZORBA_THREAD_RETURN server(void* args)
   unsigned short events = lArgs->theEventPort;
   lQuery->debug(requests, events);
   //lQuery->close();
+#ifndef NDEBUG
   std::clog << "Quit server thread\n";
+#endif
   return 0;
 }
 #endif
@@ -979,11 +981,13 @@ int _tmain(int argc, _TCHAR* argv[])
       // debug server
       
       if ( lProperties.debugServer() ) {
-        std::cout << "Zorba XQuery debugger server.\n" << copyright_str << std::endl;
+        if (!lProperties.hasNoLogo() )
+          std::cout << "Zorba XQuery debugger server.\n" << copyright_str << std::endl;
         server((void *)lArgs.get());
         return 0;  
       } else if (lProperties.debugClient()) {
-        std::cout << "Zorba XQuery debugger client.\n" << copyright_str << std::endl;
+        if (!lProperties.hasNoLogo() )
+          std::cout << "Zorba XQuery debugger client.\n" << copyright_str << std::endl;
         // start the server thread
 #ifdef ZORBA_HAVE_PTHREAD_H
         pthread_t lServerThread;

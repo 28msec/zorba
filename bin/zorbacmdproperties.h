@@ -61,6 +61,8 @@ public:
 
   bool isDebugServer(){ return theDebugServer; }
 
+  bool hasNoLogo(){ return theNoLogo; }
+
   unsigned int getRequestPort(){ return theRequestPort; }
 
   unsigned int getEventPort(){ return theEventPort; }

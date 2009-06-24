@@ -65,6 +65,7 @@ protected:
   bool theDebugClient;
   bool theDebugServer;
   bool theNoColors;
+  bool theNoLogo;
 
   void initialize () {
     theTiming = false;
@@ -86,6 +87,7 @@ protected:
     theDebugClient = false;
     theDebugServer = false;
     theNoColors = false;
+    theNoLogo = false;
   }
 public:
   const bool &timing () const { return theTiming; }
@@ -117,6 +119,7 @@ public:
   const bool &debugClient () const { return theDebugClient; }
   const bool &debugServer () const { return theDebugServer; }
   const bool &noColors () const { return theNoColors; }
+  const bool &noLogo () const { return theNoLogo; }
 
   std::string load_argv (int argc, const char **argv) {
     if (argv == NULL) return "";
@@ -241,6 +244,9 @@ public:
       else if (strcmp (*argv, "--no-colors") == 0) {
         theNoColors = true;
       }
+      else if (strcmp (*argv, "--no-logo") == 0) {
+        theNoLogo = true;
+      }
 #endif
       else if (strcmp (*argv, "--") == 0) {
         copy_args (++argv);
@@ -287,7 +293,8 @@ public:
 "--debug-ports, -p\nSpecify the ports for zorba debugger. The format is requestPort:eventPort.\n\n"
 "--debug-client, -c\nLaunch the debugger command line client.\n\n"
 "--debug-server, -s\nLaunch queries on the debugger server.\n\n"
-"--no-colors\nNo colors.\n\n"
+"--no-colors\nUse no colors in the debugger client.\n\n"
+"--no-logo\nPrint no logo when starting the debugger client or server.\n\n"
 #endif
 ;
   }
