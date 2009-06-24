@@ -29,25 +29,22 @@ bool
 ZorbaMailIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t   itemTo, itemSubj, itemMsg;
-  bool            res = false;
+  bool            res = false, lSMTPServerFound = false;
   xqp_string      SMTPServer, SMTPUser, SMTPPwd, diagnostics;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-//   planState.theRuntimeCB->theStaticContext->set_SMTP_server("smtp.gmail.com:587/tls/novalidate-cert");
-//   planState.theRuntimeCB->theStaticContext->set_SMTP_uname("zorbaro");
-//   planState.theRuntimeCB->theStaticContext->set_SMTP_upwd("zorbaisgreat");
+  lSMTPServerFound = planState.sctx()->lookup_option("http://www.zorba-xquery.org/options", "SMTPServer", SMTPServer);
+  planState.sctx()->lookup_option("http://www.zorba-xquery.org/options", "SMTPUser", SMTPUser);
+  planState.sctx()->lookup_option("http://www.zorba-xquery.org/options", "SMTPPwd", SMTPPwd);
 
-  SMTPServer = planState.theRuntimeCB->theStaticContext->SMTP_server();
-  SMTPUser = planState.theRuntimeCB->theStaticContext->SMTP_uname();
-  SMTPPwd = planState.theRuntimeCB->theStaticContext->SMTP_upwd();
-
-  if(SMTPServer.empty())
+  if( !lSMTPServerFound ||
+       (lSMTPServerFound && SMTPServer.empty()) )
     ZORBA_ERROR_LOC(API0038_SMTP_SEVER_ERROR_SET_OPTION, loc);
-  else if (consumeNext(itemTo, theChildren[0].getp(), planState) &&
-      consumeNext(itemSubj, theChildren[1].getp(), planState) &&
-      consumeNext(itemMsg, theChildren[2].getp(), planState))
+  else if(consumeNext(itemTo, theChildren[0].getp(), planState ) &&
+          consumeNext(itemSubj, theChildren[1].getp(), planState) &&
+          consumeNext(itemMsg, theChildren[2].getp(), planState))
       {
         if(itemTo->getStringValue()->empty())
           ZORBA_ERROR_LOC(API0039_TO_SET_OPTION, loc);
@@ -62,7 +59,7 @@ ZorbaMailIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                    SMTPPwd.c_str(),
                    diagnostics);
 
-        if(!res)
+        if( !res )
           ZORBA_ERROR_LOC_PARAM(API0040_MAIL_NOT_SENT, loc, diagnostics.c_str() , "");
       }
 

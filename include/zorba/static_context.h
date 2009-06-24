@@ -421,53 +421,6 @@ namespace zorba {
        */
       virtual void
       declareOption( const Item& aQName, const String& aOptionValue) const = 0;
-
-#ifdef ZORBA_WITH_EMAIL
-      /** \brief Set the SMTP server.
-       *
-       * @param aSMTP_server the SMTP server as String.
-       * @return true if the SMTP server has been set, false otherwise.
-       */
-      virtual bool
-      setSMTPServer( const String& aSMTP_server ) = 0;
-
-      /** \brief Get the SMTP server.
-       *
-       * @return String the SMTP server.
-       */
-      virtual String
-      getSMTPServer( ) const = 0;
-
-      /** \brief Set the SMTP username.
-       *
-       * @param aSMTP_username the SMTP username as String.
-       * @return true if the SMTP username has been set, false otherwise.
-       */
-      virtual bool
-      setSMTPUname( const String& aSMTP_username ) = 0;
-
-      /** \brief Get the SMTP username.
-       *
-       * @return String the SMTP username.
-       */
-      virtual String
-      getSMTPUname( ) const = 0;
-
-      /** \brief Set the SMTP user password.
-       *
-       * @param aSMTP_password the SMTP user nassword as String.
-       * @return true if the SMTP user password has been set, false otherwise.
-       */
-      virtual bool
-      setSMTPUpwd( const String& aSMTP_password ) = 0;
-
-      /** \brief Get the SMTP user password.
-       *
-       * @return String the SMTP user password.
-       */
-      virtual String
-      getSMTPUpwd( ) const = 0;
-#endif  /* ZORBA_WITH_EMAIL */
   };
 } /* namespace zorba */
 #endif

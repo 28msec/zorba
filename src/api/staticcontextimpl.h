@@ -215,27 +215,6 @@ class StaticContextImpl : public StaticContext
 
   virtual void
   declareOption( const Item& aQName, const String& aOptionValue) const;
-
-#ifdef ZORBA_WITH_EMAIL
-  // SMTP parameter settings
-  virtual bool
-  setSMTPServer( const String& aSMTP_server );
-
-  virtual String
-  getSMTPServer( ) const;
-
-  virtual bool
-  setSMTPUname( const String& aSMTP_username );
-
-  virtual String
-  getSMTPUname( ) const;
-
-  virtual bool
-  setSMTPUpwd( const String& aSMTP_password );
-
-  virtual String
-  getSMTPUpwd( ) const;
-#endif  /* ZORBA_WITH_EMAIL */
 };
 
 } /* namespace zorba */

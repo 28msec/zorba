@@ -25,19 +25,14 @@
 using namespace zorba;
 
 /**
- * Example to show the use of collations in string comparison.
+ * Example to show the use mail function.
  */
 bool
 email_example_1(Zorba* aZorba)
 {
   StaticContext_t lStaticContext = aZorba->createStaticContext();
 
-  /* set the values needed for the SMTP connection (SMTP server, username and password) */
-  lStaticContext->setSMTPServer("smtp.gmail.com:587/tls/novalidate-cert");
-  lStaticContext->setSMTPUname("username");
-  lStaticContext->setSMTPUpwd("password");
-
-  XQuery_t lQuery = aZorba->compileQuery("import module namespace zu = 'http://www.zorba-xquery.com/zorba/util-functions'; zu:mail('user@domain.com','this is a test email','it works!')",
+  XQuery_t lQuery = aZorba->compileQuery("import module namespace ze = 'http://www.zorba-xquery.com/zorba/email-functions'; declare namespace op = 'http://www.zorba-xquery.org/options'; declare option op:SMTPServer 'smtp.gmail.com:587/tls/novalidate-cert'; declare option op:SMTPUser 'username'; declare option op:SMTPPwd 'zorbaisgreat'; ze:mail('user@domain.com','this is a test email','it works!')",
           lStaticContext); 
 
   try {

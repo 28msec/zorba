@@ -708,7 +708,7 @@ DECL(sctx, zorba_encode_base64,
         GENV_TYPESYSTEM.STRING_TYPE_STAR));
 #ifdef ZORBA_WITH_EMAIL
   DECL(sctx, zorba_mail,
-       (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "mail"),
+       (createQName(ZORBA_EMAIL_FN_NS, "fn-zorba-email", "mail"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.STRING_TYPE_ONE,

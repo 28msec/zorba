@@ -8,7 +8,7 @@
     <ul>
       <li> \ref mail_installation
       <li> \ref mail_configuring
-      <li> \ref mail_static_context
+      <li> \ref mail_option_declaration
     </ul>
     <li> \ref signatures_mail
     <ul>
@@ -24,7 +24,7 @@
  </ul>
 
 \section intro_mail 1 Introduction
-This document defines functions used to send emails part of "zorba-util" namespace.
+This document defines functions used to send emails.
 
 \section configuring_mail 2 Configuring
 Zorba provides email support through the C-Client library part of <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>. \n
@@ -39,11 +39,18 @@ assuming the C-Client sources are under /home/user/imap-2007e, \n
 you should configure Zorba with -DCCLIENT_INCLUDE_DIRS=/home/user/imap-2007e -DCCLIENT_LIBRARY_DIRS=/home/user/imap-2007e/c-client \n
 After that the ZORBA_WITH_EMAIL flag should be set to ON. \n
 
-\subsection mail_static_context 2.3 Configuring SMTP parameters in the Static Context
-There are several values that have to be configured in the static context prior to calling any email functions. These are the following: \n
-- SMTP server \n
-- SMTP username \n
-- SMTP password \n
+\subsection mail_option_declaration 2.3 Configuring SMTP parameters
+The SMTP parameters have to be declared as options prior to calling the email functions: \n
+
+\code
+declare namespace op = "http://www.zorba-xquery.org/options";
+
+declare option op:SMTPServer "smtp.gmail.com:587/tls/novalidate-cert";
+declare option op:SMTPUser "user";
+declare option op:SMTPPwd "password";
+\endcode
+
+These is the meaning of each parameter: \n
 
 <b>SMTP server</b> \n
 The SMTP server has to be specified as a string in the following form: \n
@@ -66,14 +73,14 @@ This is the remote username password used to authenticate to the SMTP server. \n
 \section signatures_mail 3 Function Signatures and Descriptions
 
 \subsection namespace_mail 3.1 Namespace
-In order to use these functions, the module <tt>"http://www.zorba-xquery.com/zorba/util-functions"</tt> has
+In order to use these functions, the module <tt>"http://www.zorba-xquery.com/zorba/email-functions"</tt> has
 to be included at the beginning of a query. For example
 
 \code
-  import module namespace zorba-util = "http://www.zorba-xquery.com/zorba/util-functions";
+  import module namespace zorba-email = "http://www.zorba-xquery.com/zorba/email-functions";
 \endcode
 
-\subsection mail 3.2 zorba-util:mail
+\subsection mail 3.2 zorba-email:mail
 
 \code
   declare function mail(  $to       as xs:string
@@ -102,33 +109,15 @@ If the email could not be sent for some reason an error is raised API0040_MAIL_N
 
 \subsection ex_mail Example:
 \code
-  #include <zorba/zorba.h>
-  #include <simplestore/simplestore.h>
+  import module namespace ze = 'http://www.zorba-xquery.com/zorba/email-functions';
 
-  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
-  Zorba* lZorba = Zorba::getInstance(lStore);
+  declare namespace op = "http://www.zorba-xquery.org/options";
 
-  StaticContext_t lStaticContext = aZorba->createStaticContext();
+  declare option op:SMTPServer "smtp.gmail.com:587/tls/novalidate-cert";
+  declare option op:SMTPUser "username";
+  declare option op:SMTPPwd "password";
 
-  // set the values needed for the SMTP connection (SMTP server, username and password)
-  lStaticContext->setSMTPServer("smtp.gmail.com:587/tls/novalidate-cert");
-  lStaticContext->setSMTPUname("username");
-  lStaticContext->setSMTPUpwd("password");
-
-  XQuery_t lQuery = aZorba->compileQuery("import module namespace zu = 'http://www.zorba-xquery.com/zorba/util-functions';
-  zu:mail('user@domain.com','this is a test email','it works!')", lStaticContext);
-
-  try {
-    std::cout << lQuery << std::endl;
-  } catch (SystemException &e) {
-      std::cerr << e << std::endl;
-      return false;
-  }
-
-  return true;
-
-  lZorba->shutdown();
-  simplestore::SimpleStoreManager::shutdownStore(lStore);
+  ze:mail('user@domain.com','this is a test email','it works!');
 \endcode
 
 \section apendix_email Appendix A:  Error codes
