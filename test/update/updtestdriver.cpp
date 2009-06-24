@@ -197,6 +197,9 @@ main(int argc, char** argv)
         std::string uri_map_file = srcDir + "/Queries/w3c_update_testsuite/TestSources/uri.txt";
         resolver.reset(new zorba::TestSchemaURIResolver ( uri_map_file.c_str() ));
         lContext->setSchemaURIResolver ( resolver.get() );
+
+        if (path.find("ValSkip") != std::string::npos ) 
+          lContext->setBoundarySpacePolicy(preserve_space);
       }
       
       zorba::XQuery_t lQuery = engine->createQuery();
