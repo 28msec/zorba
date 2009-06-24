@@ -18,7 +18,8 @@ SET(ZORBAUTILS_SRCS
     mutex.cpp
     condition.cpp
     latch.cpp
-    lock.cpp)
+    lock.cpp
+    runnable.cpp)
 
 IF (ZORBA_WITH_LIBXML2_SAX)
     SET(ZORBAUTILS_SRCS ${ZORBAUTILS_SRCS} SAXParser.cpp)
