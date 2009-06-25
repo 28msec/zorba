@@ -22,7 +22,16 @@
 #include "zorbaerrors/Assert.h"
 
 
-namespace zorba {
+namespace zorba 
+{
+
+#if 0
+static void foo()
+{
+  std::cout << "..." << std::endl;
+}
+#endif
+
 
 const char* XQType::KIND_STRINGS[XQType::MAX_TYPE_KIND] =
 {
@@ -215,8 +224,7 @@ UserDefinedXQType::UserDefinedXQType(
   XQType(manager, USER_DEFINED_KIND, quantifier, false),
   m_qname(qname),
   m_baseType(baseType),
-  m_contentKind(contentKind),
-  m_listItemType(NULL)
+  m_contentKind(contentKind)
 {
   ZORBA_ASSERT(baseType!=NULL);
 
@@ -259,8 +267,8 @@ UserDefinedXQType::UserDefinedXQType(
   }        
 }
 
-
-  // Constructor for List types
+ 
+// Constructor for List types
 UserDefinedXQType::UserDefinedXQType(
     const TypeManager *manager,
     store::Item_t qname,
@@ -276,24 +284,24 @@ UserDefinedXQType::UserDefinedXQType(
   m_listItemType(listItemType)
 {
   ZORBA_ASSERT( listItemType );
+  //foo();
 }
 
 
-  // Constructor for Union types
+// Constructor for Union types
 UserDefinedXQType::UserDefinedXQType(
     const TypeManager *manager,
     store::Item_t qname,
     xqtref_t baseType,
     TypeConstants::quantifier_t quantifier,
-    std::vector<const XQType*> unionItemTypes)
+    std::vector<xqtref_t> unionItemTypes)
   : 
   XQType(manager, USER_DEFINED_KIND, quantifier, false),
   m_qname(qname),
   m_baseType(baseType),
   m_typeCategory(UNION_TYPE),
   m_contentKind(SIMPLE_CONTENT_KIND),
-  m_unionItemTypes(unionItemTypes),
-  m_listItemType(NULL)
+  m_unionItemTypes(unionItemTypes)
 {
 }
 
@@ -355,26 +363,24 @@ bool UserDefinedXQType::isSubTypeOf(const XQType& supertype) const
 
 std::ostream& UserDefinedXQType::serialize(std::ostream& os) const
 {
-  std::string info = "";
+  std::ostringstream info;
 
   switch (m_typeCategory)
   {
   case ATOMIC_TYPE:
-    info += "isAtomic";
+    info << "isAtomic";
     break;
   case COMPLEX_TYPE:
-    info += "isComplex";
+    info << "isComplex";
     break;
   case LIST_TYPE:
-    info += " isList itemType:";
-    info += m_listItemType->toString();
+    info << " isList itemType:" << m_listItemType->toString();
     break;
   case UNION_TYPE:
-    info += " isUnion ";
-    info += m_unionItemTypes.size() + ":";
-    for ( unsigned int i=0; i<m_unionItemTypes.size(); i++)
+    info << " isUnion " << m_unionItemTypes.size() << ":";
+    for ( unsigned int i = 0; i < m_unionItemTypes.size(); i++)
     {
-      info += m_unionItemTypes[i]->toString();
+      info << m_unionItemTypes[i]->toString();
     }
     break;
   default:
@@ -382,10 +388,10 @@ std::ostream& UserDefinedXQType::serialize(std::ostream& os) const
   }
   
   return os << "[UserDefinedXQType " << " "
-            << TypeOps::decode_quantifier (get_quantifier())
+            << TypeOps::decode_quantifier (get_quantifier()) << " "
             << m_qname->getLocalName()->str() << "@"
             << m_qname->getNamespace()->str() << " "
-            << info
+            << info.str()
             << " base:"
             << ( m_baseType ? TypeOps::toString(*m_baseType) : "NULL" )
             << " ]";

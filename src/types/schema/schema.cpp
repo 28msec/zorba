@@ -751,13 +751,13 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
         }
         
         //cout << " creating UDT Simple Union Type: " << qname->show() << " of: ";
-        std::vector<const XQType*> unionItemTypes;
+        std::vector<xqtref_t> unionItemTypes;
         
-        for ( unsigned int i=0; i<memberTypesDefList->size(); i++)
+        for ( unsigned int i = 0; i < memberTypesDefList->size(); i++)
         {
-          XSSimpleTypeDefinition * itemTypeDef = memberTypesDefList->elementAt(i);
+          XSSimpleTypeDefinition* itemTypeDef = memberTypesDefList->elementAt(i);
           xqtref_t itemXQType = createXQTypeFromTypeDefinition(typeManager, itemTypeDef);
-          unionItemTypes.push_back(itemXQType.getp());                        
+          unionItemTypes.push_back(itemXQType);                        
           //cout << " " << itemXQType->toString();
           
           if ( itemXQType->type_kind() == XQType::USER_DEFINED_KIND )
@@ -1280,14 +1280,14 @@ bool Schema::parseUserUnionTypes(
     ZORBA_ASSERT( udXQType->isUnion() );
 
 
-    std::vector<const XQType*> unionItemTypes = udXQType->getUnionItemTypes();
+    std::vector<xqtref_t> unionItemTypes = udXQType->getUnionItemTypes();
 
-    for ( unsigned int i = 0; i<unionItemTypes.size(); i++)
+    for ( unsigned int i = 0; i < unionItemTypes.size(); i++)
     {        
-        if ( isCastableUserSimpleTypes(textValue, xqtref_t(unionItemTypes[i]) ) )
-        {                
-            return parseUserSimpleTypes(textValue, xqtref_t(unionItemTypes[i]), resultList );
-        }
+      if (isCastableUserSimpleTypes(textValue, unionItemTypes[i]))
+      {                
+        return parseUserSimpleTypes(textValue, unionItemTypes[i], resultList);
+      }
     }
 
     return false;
@@ -1389,12 +1389,12 @@ bool Schema::isCastableUserUnionTypes(
     ZORBA_ASSERT( udXQType->isUnion() );
 
 
-    std::vector<const XQType*> unionItemTypes = udXQType->getUnionItemTypes();
+    std::vector<xqtref_t> unionItemTypes = udXQType->getUnionItemTypes();
 
     for ( unsigned int i = 0; i<unionItemTypes.size(); i++)
     {        
-        if ( isCastableUserSimpleTypes(textValue, xqtref_t(unionItemTypes[i]) ) )
-            return true;
+      if ( isCastableUserSimpleTypes(textValue, unionItemTypes[i]))
+        return true;
     }
 
     return false;
