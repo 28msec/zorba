@@ -48,11 +48,12 @@ const int SIZE_OF_HEADER_CONTENT = 9;
 const int SIZE_OF_REPLY_CONTENT = 2;
 
 /* Flags */
-const Flags NULL_FLAG = 0x0;
-const Flags REPLY_FLAG = 0x80;
+const Flags NULL_FLAG           = 0x0;
+const Flags VARIABLE_DATA_FLAG  = 0x11;
+const Flags REPLY_FLAG          = 0x80;
 const Flags REPLY_VARIABLE_FLAG = 0xf0;
-const Flags REPLY_SET_FLAG = 0xf1;
-const Flags REPLY_FRAME_FLAG = 0xf2;
+const Flags REPLY_SET_FLAG      = 0xf1;
+const Flags REPLY_FRAME_FLAG    = 0xf2;
 
 /* CommandSet */
 const CommandSet EXECUTION    = 0xf1;
@@ -114,7 +115,7 @@ const unsigned char MESSAGE_SIZE = MESSAGE_HEADER_SIZE + MESSAGE_BODY_SIZE;
 /* The packet id is set in 4 bytes */
 const unsigned short MESSAGE_ID = 4;
 
-/* The Flag is set at the index 4 of the packet */
+/* The Flag is set at the index 4 of the message */
 const unsigned short MESSAGE_FLAGS = 4;
 /* The Command Sets is at the index 5 of the packet */
 const unsigned short MESSAGE_COMMAND_SET = 5;
@@ -670,6 +671,11 @@ class ZORBA_DLL_PUBLIC VariableMessage: public AbstractCommandMessage
     VariableMessage( Byte * aMessage, const unsigned int aLength ); 
    
     virtual ~VariableMessage();
+
+    virtual bool hasToGetData() { return theDataFlag; }
+
+  protected:
+    bool theDataFlag;
 };
 
 /**
@@ -709,10 +715,15 @@ class ZORBA_DLL_PUBLIC VariableReply: public ReplyMessage
   protected:
     std::map<xqpString, xqpString> theGlobals;
     std::map<xqpString, xqpString> theLocals;
+
+    std::vector<std::list<std::pair<xqpString, xqpString> > > theGlobalData;
+    std::vector<std::list<std::pair<xqpString, xqpString> > > theLocalData;
+    bool theContainsData;
+
     xqpString getData() const;
 
   public:
-    VariableReply( const Id anId, const ErrorCode aErrorCode );
+    VariableReply( const Id anId, const ErrorCode aErrorCode, bool containsData = false );
 
     VariableReply( Byte * aMessage, const unsigned int aLength );
 
@@ -734,8 +745,10 @@ class ZORBA_DLL_PUBLIC VariableReply: public ReplyMessage
     std::map<xqpString, xqpString> getGlobalVariables() const;
 
     void addGlobal( xqpString aVariable, xqpString aType );
+    void addGlobal( xqpString aVariable, xqpString aType, std::list<std::pair<xqpString, xqpString> > val);
     
     void addLocal( xqpString aVariable, xqpString aType );
+    void addLocal( xqpString aVariable, xqpString aType, std::list<std::pair<xqpString, xqpString> > val);
 };
 }//end of namespace
 #endif

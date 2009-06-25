@@ -220,6 +220,8 @@ class ZorbaDebugger
 
     void eval( xqpString anExpr );
 
+    std::list<std::pair<xqpString, xqpString> > evalExpr(xqpString anExpr);
+
     void step( const StepCommand aKind );
 
     std::stack<unsigned int> getCurrentDecimal() const;

@@ -423,60 +423,68 @@ namespace zorba{
 
 	void ZorbaDebugger::eval( xqpString anExpr )
 	{
-		if ( theStatus != QUERY_IDLE && theStatus != QUERY_TERMINATED )
-		{
-			auto_ptr<EvaluatedEvent> lMsg;
-			try {
-				auto_ptr< CompilerCB > ccb(new CompilerCB(*thePlanState->theCompilerCB));
-				auto_ptr< dynamic_context > dctx(new dynamic_context(thePlanState->dctx()));
-				xqpString lExpr = anExpr.replace("&quot;", "\"", "");
-				auto_ptr<PlanWrapperHolder> eval_plan = compileEvalPlan(theLocation, ccb.get(), dctx.get(), lExpr, *thePlanState);
-				PlanWrapper* lIterator = eval_plan->get();
-				assert(lIterator != 0);
-
-				store::Item_t lItem;
-				list< pair<xqpString, xqpString> > lValuesAndTypes;
-
-				if (lIterator->isUpdating()) {
-					if (lIterator->next(lItem))
-					{
-						if (!lItem->isPul())
-							ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR,
-							"Query does not return a pending update list");
-
-						std::set<zorba::store::Item*> validationNodes;
-						QueryLoc loc;
-
-						store::Item_t validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
-#ifndef ZORBA_NO_XMLSCHEMA
-						//          validateAfterUpdate(validationNodes, validationPul, theStaticContext, loc);
-#endif  
-						validationPul->applyUpdates(validationNodes);
-					}
-				} else {
-					error::ErrorManager lErrorManger;
-					serializer lSerializer(&lErrorManger);
-					lSerializer.set_parameter("omit-xml-declaration", "yes");
-
-					while (lIterator->next(lItem)) {
-						ostringstream os;
-						lSerializer.serialize(lItem, os);
-						xqpString lValue = os.str();
-						xqpString lType( lItem->getType()->getStringValue() );
-						lValuesAndTypes.push_back(pair<xqpString, xqpString>(lValue, lType));
-					}
-				}
-				lMsg.reset(new EvaluatedEvent(anExpr, lValuesAndTypes));
-			} catch ( error::ZorbaError& e) {
-				stringstream lOutputStream;
-				xqpString lDescription = e.theDescription.replace("\\\"", "", "");
-				lOutputStream << "Error: " << error::ZorbaError::toString(e.theErrorCode) << " " << lDescription;
-				lMsg.reset(new EvaluatedEvent( anExpr, lOutputStream.str() ));
-			}
-			assert(lMsg.get() != 0);
-			m_debuggerCommunicator->sendEvent(lMsg.get());
-		}
+		auto_ptr<EvaluatedEvent> lMsg;
+    try
+    {
+      list< pair<xqpString, xqpString> > lValuesAndTypes = evalExpr(anExpr);
+      lMsg.reset(new EvaluatedEvent(anExpr, lValuesAndTypes));
+    }
+    catch (error::ZorbaError& e)
+    {
+      stringstream lOutputStream;
+      xqpString lDescription = e.theDescription.replace("\\\"", "", "");
+      lOutputStream << "Error: " << error::ZorbaError::toString(e.theErrorCode) << " " << lDescription;
+      lMsg.reset(new EvaluatedEvent( anExpr, lOutputStream.str() ));
+    }
+    assert(lMsg.get() != 0);
+    m_debuggerCommunicator->sendEvent(lMsg.get());
 	}
+
+  std::list<std::pair<xqpString, xqpString> > ZorbaDebugger::evalExpr(xqpString anExpr)
+  {
+    assert(theStatus != QUERY_IDLE && theStatus != QUERY_TERMINATED);
+    list< pair<xqpString, xqpString> > lValuesAndTypes;
+
+    auto_ptr< CompilerCB > ccb(new CompilerCB(*thePlanState->theCompilerCB));
+    auto_ptr< dynamic_context > dctx(new dynamic_context(thePlanState->dctx()));
+    xqpString lExpr = anExpr.replace("&quot;", "\"", "");
+    auto_ptr<PlanWrapperHolder> eval_plan = compileEvalPlan(theLocation, ccb.get(), dctx.get(), lExpr, *thePlanState);
+    PlanWrapper* lIterator = eval_plan->get();
+    assert(lIterator != 0);
+
+    store::Item_t lItem;
+
+    if (lIterator->isUpdating()) {
+      if (lIterator->next(lItem))
+      {
+        if (!lItem->isPul())
+          ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR,
+          "Query does not return a pending update list");
+
+        std::set<zorba::store::Item*> validationNodes;
+        QueryLoc loc;
+
+        store::Item_t validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
+#ifndef ZORBA_NO_XMLSCHEMA
+        //          validateAfterUpdate(validationNodes, validationPul, theStaticContext, loc);
+#endif  
+        validationPul->applyUpdates(validationNodes);
+      }
+    } else {
+      error::ErrorManager lErrorManger;
+      serializer lSerializer(&lErrorManger);
+      lSerializer.set_parameter("omit-xml-declaration", "yes");
+
+      while (lIterator->next(lItem)) {
+        ostringstream os;
+        lSerializer.serialize(lItem, os);
+        xqpString lValue = os.str();
+        xqpString lType( lItem->getType()->getStringValue() );
+        lValuesAndTypes.push_back(pair<xqpString, xqpString>(lValue, lType));
+      }
+    }
+    return lValuesAndTypes;
+  }
 
 	const QueryLoc ZorbaDebugger::addBreakpoint(const QueryLoc& aLocation)
 	{
@@ -713,14 +721,22 @@ namespace zorba{
 							{
 								if ( it->first->get_varname() == theVarnames.at(i) )
 								{
-									lReply->addGlobal( lName, lType );
+                  if (lMessage->hasToGetData()) {
+                    lReply->addGlobal( lName, lType, evalExpr(lName) );
+                  } else {
+									  lReply->addGlobal( lName, lType );
+                  }
 									is_global = true;
 									break;
 								}
 							}
 							if ( ! is_global )
 							{
-								lReply->addLocal( lName, lType );
+                if (lMessage->hasToGetData()) {
+                  lReply->addLocal( lName, lType, evalExpr(lName) );
+                } else {
+								  lReply->addLocal( lName, lType );
+                }
 							}
 						}
 						lMessage->setReplyMessage( lReply );

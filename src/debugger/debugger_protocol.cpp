@@ -825,13 +825,16 @@ xqpString EvalMessage::getExpr() const
 }
 
 VariableMessage::VariableMessage():
-  AbstractCommandMessage( DYNAMIC, VARIABLES ) 
+  AbstractCommandMessage( DYNAMIC, VARIABLES ), theDataFlag(false)
 {
   checkIntegrity();
 }
 
 VariableMessage::VariableMessage( Byte * aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength ){}
+  AbstractCommandMessage( aMessage, aLength )
+  {
+    theDataFlag = aMessage[MESSAGE_FLAGS] == VARIABLE_DATA_FLAG;
+  }
 
 VariableMessage::~VariableMessage(){}
 
@@ -1005,8 +1008,8 @@ void SetReply::addBreakpoint(unsigned int anId, QueryLoc& aLocation)
 /**
  * Variable Reply Message
  */
-VariableReply::VariableReply( const Id anId, const ErrorCode aErrorCode ):
-  ReplyMessage( anId, aErrorCode )
+VariableReply::VariableReply( const Id anId, const ErrorCode aErrorCode, bool containsData ):
+  ReplyMessage( anId, aErrorCode ), theContainsData(containsData)
 {
   setFlags( REPLY_VARIABLE_FLAG );
   unsigned int l = MESSAGE_SIZE + getData().length();
@@ -1015,7 +1018,7 @@ VariableReply::VariableReply( const Id anId, const ErrorCode aErrorCode ):
 }
 
 VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
-  ReplyMessage( aMessage, aLength )
+  ReplyMessage( aMessage, aLength ), theContainsData(false)
 {
   setFlags( REPLY_VARIABLE_FLAG );
   std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
@@ -1089,23 +1092,53 @@ xqpString VariableReply::getData() const
   lJSONString << "{";
   lJSONString << "\"globals\":[";
   std::map<xqpString, xqpString>::const_iterator it = theGlobals.begin();
+  long pos = 0;
   for(; it != theGlobals.end(); it++ )
   {
     if ( it != theGlobals.begin() )
     {
       lJSONString << ',';
     }
-    lJSONString << "{\"name\":\"" << it->first << "\",\"type\":\"" << it->second << "\"}";
+    if (theContainsData) {
+      xqpString vString;
+      for (std::list<std::pair<xqpString, xqpString> >::const_iterator iter = theGlobalData[pos].begin(); 
+        iter != theGlobalData[pos].end(); it++) {
+          if (iter != theGlobalData[pos].begin()) {
+            vString += ",";
+          }
+          vString += "{\"name\":" + iter->first + "\",\"value\":\"" + iter->second + "\"}";
+      }
+      lJSONString << "{\"name\":\"" << it->first << "\",\"type\":\"" << it->second << "\",\"value\":\"" 
+        << "[" << vString << "]}";
+    } else {
+      lJSONString << "{\"name\":\"" << it->first << "\",\"type\":\"" << it->second << "\"}";
+    }
+    ++pos;
   }
   lJSONString << "],\"locals\":[";
   std::map<xqpString, xqpString>::const_iterator lIter;
+  pos = 0;
   for( lIter = theLocals.begin(); lIter != theLocals.end(); ++lIter )
   {
     if ( lIter != theLocals.begin() )
     {
       lJSONString << ',';
     }
-    lJSONString << "{\"name\":\"" << lIter->first << "\",\"type\":\"" << lIter->second << "\"}";
+    if (theContainsData) {
+      xqpString vString;
+      for (std::list<std::pair<xqpString, xqpString> >::const_iterator iter = theLocalData[pos].begin(); 
+        iter != theLocalData[pos].end(); it++) {
+          if (iter != theLocalData[pos].begin()) {
+            vString += ",";
+          }
+          vString += "{\"name\":" + iter->first + "\",\"value\":\"" + iter->second + "\"}";
+      }
+      lJSONString << "{\"name\":\"" << it->first << "\",\"type\":\"" << it->second << "\",\"value\":\"" 
+        << "[" << vString << "]}";
+    } else {
+      lJSONString << "{\"name\":\"" << lIter->first << "\",\"type\":\"" << lIter->second << "\"}";
+    }
+    ++pos;
   }
   lJSONString << "]}";
   xqpString lReturnString( lJSONString.str() );
@@ -1153,6 +1186,20 @@ void VariableReply::addGlobal( xqpString aVariable, xqpString aType )
 void VariableReply::addLocal( xqpString aVariable, xqpString aType )
 {
   theLocals.insert( std::make_pair( aVariable, aType ) );
+  setLength( MESSAGE_SIZE + getData().length() );
+}
+
+void VariableReply::addGlobal( xqpString aVariable, xqpString aType, std::list<std::pair<xqpString, xqpString> > val )
+{
+  theGlobals.insert( std::make_pair( aVariable, aType ) );
+  theGlobalData.push_back(val);
+  setLength( MESSAGE_SIZE + getData().length() );
+}
+
+void VariableReply::addLocal( xqpString aVariable, xqpString aType, std::list<std::pair<xqpString, xqpString> > val )
+{
+  theLocals.insert( std::make_pair( aVariable, aType ) );
+  theLocalData.push_back(val);
   setLength( MESSAGE_SIZE + getData().length() );
 }
 }//end of namespace
