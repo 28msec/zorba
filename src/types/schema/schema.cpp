@@ -44,9 +44,9 @@ namespace zorba
 
 #ifdef DO_TRACE
 
-#define TRACE(msg)                                         \
-  {                                                        \
-    std::cout << __FUNCTION__ << ": " << msg << std::endl; \
+#define TRACE(msg)                                                            \
+  {                                                                           \
+    std::cout << __FUNCTION__ << ": " << msg << std::endl; std::cout.flush(); \
   }
 
 #else
@@ -727,7 +727,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
           addTypeToCache(itemXQType);    
         }
         
-        //cout << " creating UDT Simple List Type: " << qname->show() << " of " << itemXQType->toString() << endl; cout.flush();
+        //cout << " creating UDT Simple List Type: " << qname->getLocalName()->c_str() <<  "@" << qname->getNamespace()->c_str() << " of " << itemXQType->toString() << endl; cout.flush();
         
         xqtref_t xqType = xqtref_t(new UserDefinedXQType(typeManager,
                                                          qname,
@@ -736,6 +736,8 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
                                                          itemXQType.getp()));
         
         //cout << "   created UDT Simple List Type: " << xqType->toString() << endl; cout.flush();
+        addTypeToCache(xqType);
+
         result = xqType;
       }
       break;
@@ -750,7 +752,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
           result = NULL;
         }
         
-        //cout << " creating UDT Simple Union Type: " << qname->show() << " of: ";
+        //cout << " creating UDT Simple Union Type: " << qname->getLocalName()->c_str() <<  "@" << qname->getNamespace()->c_str() << " of: ";
         std::vector<xqtref_t> unionItemTypes;
         
         for ( unsigned int i = 0; i < memberTypesDefList->size(); i++)
@@ -773,6 +775,9 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
                                                          TypeConstants::QUANT_ONE,
                                                          unionItemTypes));
         
+        //cout << "   created UDT Union Type: " << xqType->toString() << endl; cout.flush();
+        addTypeToCache(xqType);
+
         result = xqType;
       }
       break;
@@ -1242,9 +1247,9 @@ bool Schema::parseUserListTypes(
     const xqtref_t& aTargetType,
     std::vector<store::Item_t> &resultList)
 {
-    //cout << "parseUserListTypes: '" << textValue << "' to " << aTargetType->toString() << endl; cout.flush();
-
     ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
+
+    //cout << "parseUserListTypes: '" << textValue << "' to " << aTargetType->toString() << endl; cout.flush();
 
     const UserDefinedXQType* udXQType = static_cast<const UserDefinedXQType*>(aTargetType.getp());
     ZORBA_ASSERT( udXQType->isList() );
@@ -1259,6 +1264,7 @@ bool Schema::parseUserListTypes(
     
     for ( unsigned int i = 0; i< atomicTextValues.size() ; i++)
     {
+        TRACE("trying parsing '" << textValue << "' to " << listItemType->toString());
         bool res = parseUserSimpleTypes(atomicTextValues[i], xqtref_t(listItemType), resultList);
         hasResult = hasResult && res;
     }

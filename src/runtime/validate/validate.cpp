@@ -573,11 +573,11 @@ void ValidateIterator::processTextValue (
 {
   xqtref_t type = typeManager->
                   create_named_type(typeQName.getp(), TypeConstants::QUANT_ONE);
-  //cout << "     - processTextValue: " << typeQName->getPrefix()->str() 
-  //     << ":" << typeQName->getLocalName()->str() << "@" 
+  //cout << "     - processTextValue: " << typeQName->getPrefix()->str()
+  //     << ":" << typeQName->getLocalName()->str() << "@"
   //     << typeQName->getNamespace()->str() ; cout.flush();
   //cout << " type: " << ( type==NULL ? "NULL" : type->toString() ) << "\n";
-  //cout.flush();                    
+  //cout.flush();
   
   // TODO: we probably need the ns bindings from the static context
   // surrounding the original validate_expr, not planState.sctx()
