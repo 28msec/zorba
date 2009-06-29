@@ -34,6 +34,8 @@ namespace zorba {
 			xqpStringStore_t& docUri, 
 			error::ErrorManager* errorManager);
 
+    virtual ~SAXParser();
+
 	public:
 		bool parseDocument(store::Item_t& result, std::istream& stream);
 	public:
@@ -82,6 +84,7 @@ namespace zorba {
 		static void warning(void * ctx, const char * msg, ... );
 
 	protected:
+    void createTextNodeFromBuffer();
 		xmlSAXHandler theHandler;
 		store::Item_t theResult;
 		store::ItemFactory& theFactory;
@@ -90,6 +93,7 @@ namespace zorba {
 		bool theSucceeded;
 		std::vector<store::Item_t> theStack;
 		error::ErrorManager* theErrorManager;
+    std::ostringstream* m_stream;
 	};
 }
 
