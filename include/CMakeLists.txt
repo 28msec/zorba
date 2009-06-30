@@ -16,7 +16,8 @@
   INCLUDE(CheckFunctionExists)
   INCLUDE(CheckVariableExists)
   INCLUDE(CheckIncludeFileCXX)
-
+  INCLUDE(CheckTypeSize)
+  
   CHECK_INCLUDE_FILES ("sys/param.h;sys/mount.h"      ZORBA_HAVE_SYS_MOUNT_H)
   CHECK_INCLUDE_FILES ("unicode/utypes.h"             ZORBA_HAVE_UTYPES_H)
   CHECK_INCLUDE_FILES ("unicode/coll.h"               ZORBA_HAVE_COLL_H)
@@ -39,14 +40,19 @@
   CHECK_FUNCTION_EXISTS (strcat_s                   ZORBA_HAVE_STRCAT_S_FUNCTION)
   CHECK_FUNCTION_EXISTS (strcpy_s                   ZORBA_HAVE_STRCPY_S_FUNCTION)
 
-  SET(CMAKE_REQUIRED_LIBRARIES pthread)
+  SET(CMAKE_REQUIRED_LIBRARIES pthread)  
   CHECK_INCLUDE_FILES (pthread.h                    ZORBA_HAVE_PTHREAD_H)
   CHECK_FUNCTION_EXISTS(pthread_spin_init           ZORBA_HAVE_PTHREAD_SPINLOCK)
-CHECK_FUNCTION_EXISTS(pthread_mutex_init          ZORBA_HAVE_PTHREAD_MUTEX)
-MESSAGE(STATUS "*** Found pthreads ***")
+  CHECK_FUNCTION_EXISTS(pthread_mutex_init          ZORBA_HAVE_PTHREAD_MUTEX)
+  SET(CMAKE_REQUIRED_LIBRARIES)  
 
-CHECK_INCLUDE_FILES ("sys/time.h;sys/resource.h"  ZORBA_HAVE_RUSAGE_INCLUDES)
-CHECK_FUNCTION_EXISTS (getrusage                  ZORBA_HAVE_RUSAGE_FUNCTION)
+  CHECK_INCLUDE_FILES ("sys/time.h;sys/resource.h"  ZORBA_HAVE_RUSAGE_INCLUDES)
+  CHECK_FUNCTION_EXISTS (getrusage                  ZORBA_HAVE_RUSAGE_FUNCTION)
+
+  CHECK_TYPE_SIZE("int32_t" ZORBA_HAVE_INT32_T) 
+  CHECK_TYPE_SIZE("uint32_t" ZORBA_HAVE_UINT32_T) 
+  CHECK_TYPE_SIZE("unsigned __int32" ZORBA_HAVE_MS_UINT32) 
+  CHECK_TYPE_SIZE("__int32" ZORBA_HAVE_MS_INT32) 
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/zorba/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/zorba/config.h)
 MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/zorba/config.h.cmake -->${CMAKE_CURRENT_BINARY_DIR}/zorba/config.h")

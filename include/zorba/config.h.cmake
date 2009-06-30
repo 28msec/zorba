@@ -62,6 +62,11 @@
 #cmakedefine ZORBA_HAVE_ICONV_H
 #cmakedefine ZORBA_HAVE_EXECINFO_H
 #cmakedefine ZORBA_HAVE_FLEXLEXER_H
+#cmakedefine ZORBA_HAVE_UINT32_T
+#cmakedefine ZORBA_HAVE_INT32_T
+#cmakedefine ZORBA_HAVE_MS_INT32
+#cmakedefine ZORBA_HAVE_MS_UINT32
+
 
 /* rest support */
 #cmakedefine ZORBA_WITH_REST
@@ -141,6 +146,26 @@
 
 #if defined WIN32
 #  pragma warning( disable: 4251 )
+#endif
+
+#ifdef ZORBA_HAVE_STDINT_H
+#  include <stdint.h>
+#endif
+
+#ifdef ZORBA_HAVE_INTTYPES_H
+#  include <inttypes.h>
+#endif
+
+#ifndef ZORBA_HAVE_UINT32_T
+#  ifdef ZORBA_HAVE_MS_UINT32
+     typedef unsigned __int32  uint32_t;
+#  endif
+#endif
+
+#ifndef ZORBA_HAVE_INT32_T
+#  ifdef ZORBA_HAVE_MS_INT32
+     typedef __int32  int32_t;
+#  endif
 #endif
 
 #endif
