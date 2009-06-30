@@ -47,51 +47,51 @@ const char* XQType::KIND_STRINGS[XQType::MAX_TYPE_KIND] =
 
 const char *AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE] =
 {
-  "XS_ANY_ATOMIC",
-  "XS_STRING",
-  "XS_NORMALIZED_STRING",
-  "XS_TOKEN",
-  "XS_LANGUAGE",
-  "XS_NMTOKEN",
-  "XS_NAME",
-  "XS_NCNAME",
-  "XS_ID",
-  "XS_IDREF",
-  "XS_ENTITY",
-  "XS_UNTYPED_ATOMIC",
-  "XS_DATETIME",
-  "XS_DATE",
-  "XS_TIME",
-  "XS_DURATION",
-  "XS_DT_DURATION",
-  "XS_YM_DURATION",
-  "XS_FLOAT",
-  "XS_DOUBLE",
-  "XS_DECIMAL",
-  "XS_INTEGER",
-  "XS_NON_POSITIVE_INTEGER",
-  "XS_NEGATIVE_INTEGER",
-  "XS_LONG",
-  "XS_INT",
-  "XS_SHORT",
-  "XS_BYTE",
-  "XS_NON_NEGATIVE_INTEGER",
-  "XS_UNSIGNED_LONG",
-  "XS_UNSIGNED_INT",
-  "XS_UNSIGNED_SHORT",
-  "XS_UNSIGNED_BYTE",
-  "XS_POSITIVE_INTEGER",
-  "XS_GYEAR_MONTH",
-  "XS_GYEAR",
-  "XS_GMONTH_DAY",
-  "XS_GDAY",
-  "XS_GMONTH",
-  "XS_BOOLEAN",
-  "XS_BASE64BINARY",
-  "XS_HEXBINARY",
-  "XS_ANY_URI",
-  "XS_QNAME",
-  "XS_NOTATION"
+  "xs:anyAtomicType",
+  "xs:string",
+  "xs:normalizedString",
+  "xs:token",
+  "xs:language",
+  "xs:NMTOKEN",
+  "xs:Name",
+  "xs:NCName",
+  "xs:ID",
+  "xs:IDREF",
+  "xs:ENTITY",
+  "UNTYPED_ATOMIC",
+  "xs:dateTime",
+  "xs:date",
+  "xs:time",
+  "xs:duration",
+  "xs:dayTimeDuration",
+  "xs:yearMonthDuration",
+  "xs:float",
+  "xs:double",
+  "xs:decimal",
+  "xs:integer",
+  "xs:nonPositiveInteger",
+  "xs:negativeInteger",
+  "xs:long",
+  "xs:int",
+  "xs:short",
+  "xs:byte",
+  "xs:nonNegativeInteger",
+  "xs:unsignedLong",
+  "xs:unsignedInt",
+  "xs:unsignedShort",
+  "xs:unsignedByte",
+  "xs:positiveInteger",
+  "xs:gYearMonth",
+  "xs:gYear",
+  "xs:gMonthDay",
+  "xs:gDay",
+  "xs:gMonth",
+  "xs:boolean",
+  "xs:base64Binary",
+  "xs:hexBinary",
+  "xs:anyURI",
+  "xs:QName",
+  "xs:NOTATION"
 };
 
 std::ostream& XQType::serialize(std::ostream& os) const
@@ -111,8 +111,8 @@ std::string XQType::toString() const
 
 std::ostream& AtomicXQType::serialize(std::ostream& os) const
 {
-  return os << "[AtomicXQType " << ATOMIC_TYPE_CODE_STRINGS[get_type_code()]
-            << TypeOps::decode_quantifier (get_quantifier()) << "]";
+  return os << ATOMIC_TYPE_CODE_STRINGS[get_type_code()]
+            << TypeOps::decode_quantifier (get_quantifier());
 }
 
 store::Item_t AtomicXQType::get_qname() const
@@ -135,12 +135,6 @@ store::Item_t UntypedXQType::get_qname() const
   return GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
 }
 
-#if 0
-static void foo()
-{
-  std::cout << "Hell" << std::endl;
-}
-#endif
 
 NodeXQType::NodeXQType(
     const TypeManager* manager,
@@ -155,7 +149,6 @@ NodeXQType::NodeXQType(
   m_content_type(contentType),
   m_nillable(nillable)
 {
-  //foo();
 }
 
 
@@ -284,7 +277,6 @@ UserDefinedXQType::UserDefinedXQType(
   m_listItemType(listItemType)
 {
   ZORBA_ASSERT( listItemType );
-  //foo();
 }
 
 
