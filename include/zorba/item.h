@@ -109,6 +109,22 @@ public:
   String
   getStringValue() const;
 
+  /** \brief Get the int value of the Item.
+   *
+   * @return Item the int value of the Item.
+   * @throw ZorbaException if an error occured.
+   */
+  int32_t
+  getIntValue() const;
+
+  /** \brief Get the unsigned int value of the Item.
+   *
+   * @return Item the unsigned int value of the Item.
+   * @throw ZorbaException if an error occured.
+   */
+  uint32_t
+  getUnsignedIntValue() const;
+
   /** \brief Get the effective boolean value of the Item.
    *
    * The effective boolean value is the result of applying the fn:boolean function on 

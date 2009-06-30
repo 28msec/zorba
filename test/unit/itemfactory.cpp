@@ -203,6 +203,7 @@ int itemfactory(int argc, char* argv[])
     UNIT_ASSERT ( checkType(lItem.getType(), "int") );
     UNIT_ASSERT ( lItem.isAtomic() );
     UNIT_ASSERT ( lItem.getStringValue() == "23424223" );
+	UNIT_ASSERT ( lItem.getIntValue() == 23424223 );
     UNIT_ASSERT ( lItem.getEBV().getBooleanValue() );
     UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
     UNIT_ASSERT ( !lItem.isNaN() );
@@ -406,6 +407,7 @@ int itemfactory(int argc, char* argv[])
     UNIT_ASSERT ( checkType(lItem.getType(), "unsignedInt") );
     UNIT_ASSERT ( lItem.isAtomic() );
     UNIT_ASSERT ( lItem.getStringValue() == "10" );
+	UNIT_ASSERT ( lItem.getUnsignedIntValue() == 10 );
     UNIT_ASSERT ( lItem.getEBV().getBooleanValue() );
     UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );

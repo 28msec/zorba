@@ -190,6 +190,30 @@ String Item::getStringValue() const
   return String((const char*)0);
 }
 
+int32_t Item::getIntValue() const
+{
+  ITEM_TRY
+
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return m_item->getIntValue();
+
+  ITEM_CATCH
+  return 0;
+}
+
+uint32_t Item::getUnsignedIntValue() const
+{
+  ITEM_TRY
+
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return m_item->getUnsignedIntValue();
+
+  ITEM_CATCH
+  return 0;
+}
+
 
 void Item::serialize(std::ostream& os) const
 {
