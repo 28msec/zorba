@@ -190,7 +190,7 @@ String Item::getStringValue() const
   return String((const char*)0);
 }
 
-int32_t Item::getIntValue() const
+long Item::getIntValue() const
 {
   ITEM_TRY
 
@@ -202,7 +202,7 @@ int32_t Item::getIntValue() const
   return 0;
 }
 
-uint32_t Item::getUnsignedIntValue() const
+unsigned long Item::getUnsignedIntValue() const
 {
   ITEM_TRY
 
