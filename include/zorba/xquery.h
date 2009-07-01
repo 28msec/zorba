@@ -287,6 +287,19 @@ namespace zorba {
       virtual void
       close() = 0;
 
+      /** \brief Check if this query object has already been closed.
+       *
+       * This function checks if this query object has already been closed (@see close()).
+       * Closing an XQuery object is necessary in order to free all ressources of Zorba
+       * or the current store.
+       * Usually, closing a query explicitly is not necessary since the destructor takes
+       * care of releasing all ressources properly.
+       *
+       * @return true if the query has been closed already or false otherwise.
+       */
+      virtual bool
+      isClosed() const = 0;
+
       /** \brief Clone this query object for executing it in another thread.
        *
        * A query object is not thread safe, i.e. it can't be executed in several

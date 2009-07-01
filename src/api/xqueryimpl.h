@@ -242,6 +242,9 @@ class XQueryImpl : public XQuery
   void
   close();
 
+  bool
+  isClosed() const { return theIsClosed; }
+
   XQuery_t
   clone() const;
 
