@@ -9,7 +9,7 @@ Iterator tree for main query:
             <ForVariable name="$$dot">
               <DescendantSelfAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
                 <FnDocIterator>
-                  <PromoteIterator type="[AtomicXQType XS_STRING]">
+                  <PromoteIterator type="xs:string">
                     <FnDataIterator>
                       <CtxVariableIterator>
                         <SingletonIterator value="xs:string(input-context)"/>

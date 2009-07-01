@@ -6,7 +6,7 @@ Iterator tree for main query:
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,closed_auctions)" typename="*" nill allowed="0">
           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
             <FnDocIterator>
-              <PromoteIterator type="[AtomicXQType XS_STRING]">
+              <PromoteIterator type="xs:string">
                 <FnDataIterator>
                   <CtxVariableIterator>
                     <SingletonIterator value="xs:string(input-context)"/>

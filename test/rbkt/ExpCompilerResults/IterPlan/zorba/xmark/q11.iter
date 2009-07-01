@@ -2,7 +2,7 @@ Iterator tree for main query:
 <flwor::FLWORIterator>
   <LetVariable name="auction" materialize="true">
     <FnDocIterator>
-      <PromoteIterator type="[AtomicXQType XS_STRING]">
+      <PromoteIterator type="xs:string">
         <FnDataIterator>
           <CtxVariableIterator>
             <SingletonIterator value="xs:string(input-context)"/>
@@ -76,7 +76,7 @@ Iterator tree for main query:
                     </UnhoistIterator>
                     <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                       <SingletonIterator value="xs:double(5000)"/>
-                      <PromoteIterator type="[AtomicXQType XS_DOUBLE]">
+                      <PromoteIterator type="xs:double">
                         <FnDataIterator>
                           <FnExactlyOneIterator>
                             <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
