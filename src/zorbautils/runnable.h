@@ -5,7 +5,6 @@
 
 #ifdef ZORBA_HAVE_PTHREAD_H
 #include <pthread.h>
-typedef pthread_t ThreadId;
 #define ZORBA_THREAD_RETURN void *
 #else
 typedef DWORD ThreadId;
@@ -48,7 +47,6 @@ namespace zorba {
     static ZORBA_THREAD_RETURN startImpl(void* params);
     void finishImpl();
     ThreadState theStatus;
-    ThreadId theThreadId;
     bool finishCalled;
     Lock theThreadLock;
 #ifdef ZORBA_HAVE_PTHREAD_H
@@ -56,6 +54,7 @@ namespace zorba {
     pthread_mutex_t theMutex;
     pthread_cond_t theCV;
 #else
+    ThreadId theThreadId;
     HANDLE theThread;
 #endif
   };

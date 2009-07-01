@@ -23,7 +23,8 @@ void zorba::Runnable::start()
 #ifdef WIN32
   theThread = CreateThread(NULL, 0, &startImpl, (void *) this, 0, &theThreadId);
 #else
-  theThread = pthread_create(&theThreadId, NULL, &startImpl, (void *) this);
+  // TODO handle errors (i.e. return value)
+  pthread_create(&theThread, NULL, &startImpl, (void *) this);
 #endif
   theStatus = RUNNING;
 }
