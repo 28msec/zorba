@@ -114,7 +114,7 @@ public:
    * @return Item the int value of the Item.
    * @throw ZorbaException if an error occured.
    */
-  long
+  int32_t
   getIntValue() const;
 
   /** \brief Get the unsigned int value of the Item.
@@ -122,7 +122,7 @@ public:
    * @return Item the unsigned int value of the Item.
    * @throw ZorbaException if an error occured.
    */
-  unsigned long
+  uint32_t
   getUnsignedIntValue() const;
 
   /** \brief Get the effective boolean value of the Item.
