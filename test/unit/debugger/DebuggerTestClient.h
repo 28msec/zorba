@@ -16,7 +16,7 @@ namespace zorba {
 class DebuggerTestClient {
 public:
 	typedef struct {
-		XQuery_t xquery;
+		XQuery* xquery;
 		std::ostream* stream;
 	} ArgStruct;
 public:
@@ -27,15 +27,23 @@ public:
 	void run();
 	DebuggerTestHandler::DebugEvent getNextEvent();
 	std::string getQueryResult() const;
+  QueryLocation_t addBreakpoint(std::string nspace, unsigned int lNumber);
+  std::list<Variable> getAllVariables(bool data);
 
 private:
 	zorba::Zorba* m_zorbaInstance;
-	std::istream* m_queryStream;
 	zorba::XQuery_t m_xquery;
 	zorba::ZorbaDebuggerClient* m_client;
 	DebuggerTestHandler* m_handler;
 	std::string m_queryResult;
 	std::ostringstream m_resultStream;
+#ifdef ZORBA_HAVE_PTHREAD_H
+	pthread_t theServerThread;
+#else
+	HANDLE theServerThread;
+#endif
+
+  ArgStruct  theArguments;
 };
 
 }

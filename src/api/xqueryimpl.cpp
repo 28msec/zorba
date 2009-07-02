@@ -128,11 +128,11 @@ XQueryImpl::close()
     if (!theResultIterators.empty())
       ZORBA_ERROR(API0026_CANNOT_CLOSE_QUERY_WITH_ITERATORS);
 
-    thePlan = 0;
-
 #ifdef ZORBA_DEBUGGER
     delete theDebugger;
 #endif
+
+    thePlan = 0;
 
     delete theErrorManager;
 

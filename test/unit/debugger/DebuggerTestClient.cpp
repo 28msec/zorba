@@ -24,21 +24,29 @@ using namespace zorba;
 
 ZORBA_THREAD_RETURN server(void* args) {
 	std::cout << "Server thread started" << std::endl;
-  std::auto_ptr<DebuggerTestClient::ArgStruct> arg((DebuggerTestClient::ArgStruct*)args);
-	XQuery_t xquery = arg->xquery;
+  DebuggerTestClient::ArgStruct* arg = (DebuggerTestClient::ArgStruct*) args;
+	XQuery* xquery = arg->xquery;
   // this call blocks
-	xquery->debug(*(arg->stream), NULL, 8000, 9000);
-	xquery->close();
+  try {
+	  xquery->debug(*(arg->stream), NULL, 8000, 9000);
+  } catch (ZorbaException& e) {
+    std::cerr << "exception in server thread " << e << std::endl;
+  } catch (...) {
+    std::cerr << "caught exception" << std::endl;
+  }
 	std::cout << "Server thread terminated" << std::endl;
 	return 0;
 }
 
 namespace zorba {
 	DebuggerTestClient::DebuggerTestClient( std::string filename, std::string query )
+    : m_client(0),
+      m_handler(0)
 	{
 		zorba::simplestore::SimpleStore* store = zorba::simplestore::SimpleStoreManager::getStore();
 		m_zorbaInstance = zorba::Zorba::getInstance(store);
-		m_queryStream = new istringstream(query);
+
+    std::stringstream queryStream(query);
 
 		m_xquery = m_zorbaInstance->createQuery();
 		m_xquery->setFileName(filename);
@@ -47,16 +55,15 @@ namespace zorba {
 		Zorba_CompilerHints lHints;
 		lHints.opt_level = ZORBA_OPT_LEVEL_O0;
 
-		m_xquery->compile(*m_queryStream, lHints);
-		ArgStruct* arg = new ArgStruct();
-		arg->xquery = m_xquery;
-		arg->stream = &m_resultStream;
+		m_xquery->compile(queryStream, lHints);
+
+		theArguments.xquery = m_xquery.get();
+		theArguments.stream = &m_resultStream;
+
 #ifdef ZORBA_HAVE_PTHREAD_H
-		pthread_t lServerThread;
-		if ( pthread_create( &lServerThread, 0, server, arg ) != 0 )
+		if ( pthread_create( &theServerThread, 0, server, &theArguments ) != 0 )
 #else
-		HANDLE lServerThread;
-		if ( ( lServerThread = CreateThread( 0, 0, server, arg, 0, 0 ) ) == 0 )
+		if ( theServerThread = CreateThread( 0, 0, server, &theArguments, 0, 0 ) == 0 )
 #endif
 		{
 			std::cerr << "Couldn't start the server thread" << std::endl;
@@ -70,9 +77,16 @@ namespace zorba {
 
 	DebuggerTestClient::~DebuggerTestClient()
 	{
-		m_zorbaInstance->shutdown();
-		delete m_queryStream;
-		delete m_client;
+    m_client->terminate();
+#ifdef ZORBA_HAVE_PTHREAD_H
+    int res = pthread_join(theServerThread, 0);
+    std::cerr << "joined server thread " << res << std::endl;
+#endif
+    delete m_handler;
+    delete m_client;
+    m_xquery->close(); // need to close before shutting down zorba
+    m_zorbaInstance->shutdown();
+    zorba::simplestore::SimpleStoreManager::shutdownStore(zorba::simplestore::SimpleStoreManager::getStore());
 	}
 
 	void DebuggerTestClient::run()
@@ -93,4 +107,21 @@ namespace zorba {
 	{
 		return m_queryResult;
 	}
+
+  QueryLocation_t DebuggerTestClient::addBreakpoint( std::string nspace, unsigned int lNumber )
+  {
+    QueryLocation_t lLocation(m_client->addBreakpoint(nspace, lNumber));
+    if(lLocation->getLineBegin() == 0) {
+      std::cerr << "Couldn't find an expression to break in " << nspace << " at line " << lNumber << "\n";
+    } else {
+      std::cerr << "Set breakpoint at: " <<  lLocation.get()->toString().c_str() << "\n";
+    }
+    return lLocation;
+  }
+
+  std::list<Variable> DebuggerTestClient::getAllVariables(bool data)
+  {
+    std::list<Variable> res = m_client->getAllVariables(data);
+    return res;
+  }
 }

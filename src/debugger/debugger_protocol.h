@@ -49,7 +49,7 @@ const int SIZE_OF_REPLY_CONTENT = 2;
 
 /* Flags */
 const Flags NULL_FLAG           = 0x0;
-const Flags VARIABLE_DATA_FLAG  = 0x11;
+const Flags VARIABLE_DATA_FLAG  = 0x04;
 const Flags REPLY_FLAG          = 0x80;
 const Flags REPLY_VARIABLE_FLAG = 0xf0;
 const Flags REPLY_SET_FLAG      = 0xf1;
@@ -337,7 +337,7 @@ class ZORBA_DLL_PUBLIC AbstractCommandMessage: public AbstractMessage
      * @param data (variable)
      */
     AbstractCommandMessage( const CommandSet aCommandSet,
-        const Command aCommand );
+        const Command aCommand, const Flags commandFlags = NULL_FLAG );
 
     AbstractCommandMessage( Byte * aMessage, const unsigned int aLength );
 
@@ -666,7 +666,7 @@ class ZORBA_DLL_PUBLIC FrameReply: public ReplyMessage
 class ZORBA_DLL_PUBLIC VariableMessage: public AbstractCommandMessage
 { 
   public:
-    VariableMessage();
+    VariableMessage(bool dataFlag = false);
     
     VariableMessage( Byte * aMessage, const unsigned int aLength ); 
    
@@ -738,11 +738,11 @@ class ZORBA_DLL_PUBLIC VariableReply: public ReplyMessage
       return lReply;
     }
 
-    std::map<xqpString, xqpString> getVariables() const; 
+    std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > getVariables() const; 
 
-    std::map<xqpString, xqpString> getLocalVariables() const;
+    std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > getLocalVariables() const;
 
-    std::map<xqpString, xqpString> getGlobalVariables() const;
+    std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > getGlobalVariables() const;
 
     void addGlobal( xqpString aVariable, xqpString aType );
     void addGlobal( xqpString aVariable, xqpString aType, std::list<std::pair<xqpString, xqpString> > val);

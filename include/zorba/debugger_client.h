@@ -110,14 +110,18 @@ namespace zorba{
     private:
       String theName;
       String theType;
+      std::list<std::pair<String, String> > theData;
     public:
-      Variable( String &aName, String &aType ): theName(aName), theType(aType){}
+      Variable( String &aName, String &aType, std::list<std::pair<String, String> > data )
+        : theName(aName), theType(aType), theData(data) {}
       
       virtual ~Variable(){}
 
       String getName() const { return theName; }
 
       String getType() const { return theType; }
+
+      std::list<std::pair<String, String> > getData() const { return theData; }
   };
 
   /** 
@@ -326,21 +330,21 @@ namespace zorba{
        * @return a list of all variables that are in scope in the remote query.
        */
       virtual std::list<Variable>
-      getAllVariables() const = 0;
+      getAllVariables(bool data = false) const = 0;
 
       /** \brief Get all local variables that are in scope in the remote query.
        *
        * @return a list of all local variables that are in scope in the remote query.
        */
       virtual std::list<Variable>
-      getLocalVariables() const = 0;
+      getLocalVariables(bool data = false) const = 0;
 
       /** \brief Get all global variables that are in scope in the remote query.
        *
        * @return a list of all global variables that are in scope in the remote query.
        */
       virtual std::list<Variable>
-      getGlobalVariables() const = 0;
+      getGlobalVariables(bool data = false) const = 0;
 
       /** \brief Get the runtime stack frame.
        *

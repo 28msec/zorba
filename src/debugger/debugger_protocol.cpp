@@ -216,7 +216,8 @@ unsigned long AbstractCommandMessage::theLastId = 0;
  * @param command (1 byte)
  * @param data (variable)
  */
-AbstractCommandMessage::AbstractCommandMessage( const CommandSet aCommandSet, const Command aCommand ): AbstractMessage( ++theLastId, NULL_FLAG ), theReply(0)
+AbstractCommandMessage::AbstractCommandMessage( const CommandSet aCommandSet, const Command aCommand, const Flags flags )
+: AbstractMessage( ++theLastId, flags ), theReply(0)
 {
   theCommandContent = new CommandContent();
   setCommandSet( aCommandSet );
@@ -824,8 +825,8 @@ xqpString EvalMessage::getExpr() const
   return theExpr;
 }
 
-VariableMessage::VariableMessage():
-  AbstractCommandMessage( DYNAMIC, VARIABLES ), theDataFlag(false)
+VariableMessage::VariableMessage(bool dataFlag):
+AbstractCommandMessage( DYNAMIC, VARIABLES, dataFlag ? VARIABLE_DATA_FLAG : NULL_FLAG ), theDataFlag(dataFlag)
 {
   checkIntegrity();
 }
@@ -833,7 +834,7 @@ VariableMessage::VariableMessage():
 VariableMessage::VariableMessage( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength )
   {
-    theDataFlag = aMessage[MESSAGE_FLAGS] == VARIABLE_DATA_FLAG;
+    theDataFlag = aMessage[MESSAGE_HEADER_SIZE + MESSAGE_FLAGS] == VARIABLE_DATA_FLAG;
   }
 
 VariableMessage::~VariableMessage(){}
@@ -1011,17 +1012,20 @@ void SetReply::addBreakpoint(unsigned int anId, QueryLoc& aLocation)
 VariableReply::VariableReply( const Id anId, const ErrorCode aErrorCode, bool containsData ):
   ReplyMessage( anId, aErrorCode ), theContainsData(containsData)
 {
-  setFlags( REPLY_VARIABLE_FLAG );
+  setFlags(theContainsData ? REPLY_VARIABLE_FLAG || VARIABLE_DATA_FLAG : REPLY_VARIABLE_FLAG);
   unsigned int l = MESSAGE_SIZE + getData().length();
-  setLength( l );
+  setLength(l);
   checkIntegrity();
 }
 
 VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
   ReplyMessage( aMessage, aLength ), theContainsData(false)
 {
+  bool containsData = (aMessage[MESSAGE_HEADER_SIZE + MESSAGE_FLAGS] || VARIABLE_DATA_FLAG) != 0;
   setFlags( REPLY_VARIABLE_FLAG );
   std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
+  std::cout.write((char *) aMessage, aLength);
+  std::cout.flush();
   json::value* globals = getValue(lValue.get(), "globals");
   json::value* locals = getValue(lValue.get(), "locals");
 
@@ -1033,6 +1037,7 @@ VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
     {
       json::value* Name = getValue(*it, "name");
       json::value* Type = getValue(*it, "type");
+      json::value* Value = getValue(*it, "value");
 
       if ( Name == 0 )
       {
@@ -1048,7 +1053,30 @@ VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
       std::wstring *lType = Type->getstring(L"", true);
       std::string type = std::string( lType->begin()+1, lType->end()-1 );
       delete lType; 
-      addGlobal(name, type);
+      if (Value == 0 && containsData) {
+        throw MessageFormatException("Invalid JSON format for variable message.");
+      }
+      if (containsData){
+        std::list<std::pair<xqpString, xqpString> > data;
+        json::array_list_t* dList = Value->getarraylist();
+        for (json::array_list_t::iterator iter = dList->begin(); iter != dList->end(); iter++) {
+          json::value* v = getValue(*iter, "value");
+          json::value* t = getValue(*iter, "type");
+          if (v == NULL || t == NULL) {
+            throw MessageFormatException("Invalid JSON format for variable message.");
+          }
+          std::wstring* lV = v->getstring(L"", true);
+          std::wstring* lT = v->getstring(L"", true);
+          std::string sV(lV->begin() + 1, lV->end() - 1);
+          std::string sT(lT->begin() + 1, lT->end() - 1);
+          delete lV;
+          delete lT;
+          data.push_back(std::pair<xqpString, xqpString>(sV, sT));
+        }
+        addGlobal(name, type, data);
+      } else {
+        addGlobal(name, type);
+      }
     }
   } else {
     throw MessageFormatException("Invalid JSON format for variable message.");
@@ -1106,7 +1134,7 @@ xqpString VariableReply::getData() const
           if (iter != theGlobalData[pos].begin()) {
             vString += ",";
           }
-          vString += "{\"name\":" + iter->first + "\",\"value\":\"" + iter->second + "\"}";
+          vString += "{\"value\":" + iter->first + "\",\"type\":\"" + iter->second + "\"}";
       }
       lJSONString << "{\"name\":\"" << it->first << "\",\"type\":\"" << it->second << "\",\"value\":\"" 
         << "[" << vString << "]}";
@@ -1127,13 +1155,13 @@ xqpString VariableReply::getData() const
     if (theContainsData) {
       xqpString vString;
       for (std::list<std::pair<xqpString, xqpString> >::const_iterator iter = theLocalData[pos].begin(); 
-        iter != theLocalData[pos].end(); it++) {
+        iter != theLocalData[pos].end(); iter++) {
           if (iter != theLocalData[pos].begin()) {
             vString += ",";
           }
-          vString += "{\"name\":" + iter->first + "\",\"value\":\"" + iter->second + "\"}";
+          vString += "{\"value\":" + iter->first + "\",\"type\":\"" + iter->second + "\"}";
       }
-      lJSONString << "{\"name\":\"" << it->first << "\",\"type\":\"" << it->second << "\",\"value\":\"" 
+      lJSONString << "{\"name\":\"" << lIter->first << "\",\"type\":\"" << lIter->second << "\",\"value\":\"" 
         << "[" << vString << "]}";
     } else {
       lJSONString << "{\"name\":\"" << lIter->first << "\",\"type\":\"" << lIter->second << "\"}";
@@ -1159,22 +1187,62 @@ Byte * VariableReply::serialize( Length & aLength ) const
   return lMsg; 
 }
 
-std::map<xqpString, xqpString> VariableReply::getVariables() const
+std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > VariableReply::getVariables() const
 {
-  std::map<xqpString, xqpString> lVariables;
-  lVariables.insert( theGlobals.begin(), theGlobals.end() );
-  lVariables.insert( theLocals.begin(), theLocals.end() );
+  std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > lVariables;
+  unsigned int pos = 0;
+  for (std::map<xqpString, xqpString>::const_iterator it = theGlobals.begin(); it != theGlobals.end(); it++) {
+    std::pair<xqpString, xqpString> p = *it;
+    std::list<std::pair<xqpString, xqpString> > l;
+    if (theContainsData) {
+      l = theGlobalData[pos];
+    }
+    lVariables.insert(std::pair<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > >(p, l));
+    ++pos;
+  }
+  pos = 0;
+  for (std::map<xqpString, xqpString>::const_iterator it = theLocals.begin(); it != theLocals.end(); it++) {
+    std::pair<xqpString, xqpString> p = *it;
+    std::list<std::pair<xqpString, xqpString> > l;
+    if (theContainsData) {
+      l = theGlobalData[pos];
+    }
+    lVariables.insert(std::pair<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > >(p, l));
+    ++pos;
+  }
   return lVariables;
 }
 
-std::map<xqpString, xqpString> VariableReply::getLocalVariables() const
+std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > VariableReply::getLocalVariables() const
 {
-  return theLocals;
+  std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > lVariables;
+  unsigned int pos = 0;
+  for (std::map<xqpString, xqpString>::const_iterator it = theLocals.begin(); it != theLocals.end(); it++) {
+    std::pair<xqpString, xqpString> p = *it;
+    std::list<std::pair<xqpString, xqpString> > l;
+    if (theContainsData) {
+      l = theGlobalData[pos];
+    }
+    lVariables.insert(std::pair<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > >(p, l));
+    ++pos;
+  }
+  return lVariables;
 }
 
-std::map<xqpString, xqpString> VariableReply::getGlobalVariables() const
+std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > VariableReply::getGlobalVariables() const
 {
-  return theGlobals;
+  std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > lVariables;
+  unsigned int pos = 0;
+  for (std::map<xqpString, xqpString>::const_iterator it = theGlobals.begin(); it != theGlobals.end(); it++) {
+    std::pair<xqpString, xqpString> p = *it;
+    std::list<std::pair<xqpString, xqpString> > l;
+    if (theContainsData) {
+      l = theGlobalData[pos];
+    }
+    lVariables.insert(std::pair<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > >(p, l));
+    ++pos;
+  }
+  return lVariables;
 }
 
 void VariableReply::addGlobal( xqpString aVariable, xqpString aType )
@@ -1182,17 +1250,17 @@ void VariableReply::addGlobal( xqpString aVariable, xqpString aType )
   theGlobals.insert( std::make_pair( aVariable, aType ) );
   setLength( MESSAGE_SIZE + getData().length() );
 }
-    
-void VariableReply::addLocal( xqpString aVariable, xqpString aType )
-{
-  theLocals.insert( std::make_pair( aVariable, aType ) );
-  setLength( MESSAGE_SIZE + getData().length() );
-}
 
 void VariableReply::addGlobal( xqpString aVariable, xqpString aType, std::list<std::pair<xqpString, xqpString> > val )
 {
   theGlobals.insert( std::make_pair( aVariable, aType ) );
   theGlobalData.push_back(val);
+  setLength( MESSAGE_SIZE + getData().length() );
+}
+
+void VariableReply::addLocal( xqpString aVariable, xqpString aType )
+{
+  theLocals.insert( std::make_pair( aVariable, aType ) );
   setLength( MESSAGE_SIZE + getData().length() );
 }
 

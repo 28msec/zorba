@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # Project name
-#
+# bla
 PROJECT(zorba)
 ENABLE_TESTING()
 INCLUDE(CTest)

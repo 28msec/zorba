@@ -94,11 +94,11 @@ namespace zorba{
 
       bool eval( String &anExpr ) const;
 
-      std::list<Variable> getAllVariables() const;
+      std::list<Variable> getAllVariables(bool data = false) const;
       
-      std::list<Variable> getLocalVariables() const;
+      std::list<Variable> getLocalVariables(bool data = false) const;
       
-      std::list<Variable> getGlobalVariables() const;
+      std::list<Variable> getGlobalVariables(bool data = false) const;
     
       StackFrame_t getStack() const;
 

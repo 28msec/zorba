@@ -67,6 +67,10 @@ namespace zorba{
 
 	ZORBA_THREAD_RETURN runtimeThread( void *aDebugger )
 	{
+#ifdef ZORBA_HAVE_PTHREAD_H
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,NULL);
+#endif
+
 		ZorbaDebugger * lDebugger = (ZorbaDebugger *)aDebugger;
 		//We wait for theRuntimeThread to be allocated
 		while( lDebugger->theRuntimeThread == 0 ){ sleep(1); }
@@ -77,28 +81,29 @@ namespace zorba{
 		return 0;
 	}
 
-	ZorbaDebugger::ZorbaDebugger():
-	theQuery(0),
-		theOutputStream(0),
-		theSerOptions(0),
-		theRequestServerSocket(0), 
-		theEventSocket(0), 
-		theStatus( QUERY_IDLE  ),
-		thePlanState(0),
-		theRuntimeThread(0),
-    m_debuggerCommunicator(0),
-		isSteppingOver(false),
-		isSteppingInto(false),
-		isSteppingOut(false),
-		theProfiler(0),
-		isFunctionExecution(false),
-		catchFunctionExecution(false)
+	ZorbaDebugger::ZorbaDebugger()
+	  : theQuery(0),
+		  theOutputStream(0),
+		  theSerOptions(0),
+		  theRequestServerSocket(0), 
+		  theEventSocket(0), 
+		  theStatus( QUERY_IDLE  ),
+		  thePlanState(0),
+		  theRuntimeThread(0),
+      m_debuggerCommunicator(0),
+		  isSteppingOver(false),
+		  isSteppingInto(false),
+		  isSteppingOut(false),
+		  theProfiler(0),
+		  isFunctionExecution(false),
+		  catchFunctionExecution(false)
 	{
 	}
 
 
 	ZorbaDebugger::~ZorbaDebugger()
 	{
+    theWrapper->close();
 		delete theProfiler;
 		delete theRequestServerSocket;
 		delete theEventSocket;
@@ -137,7 +142,6 @@ namespace zorba{
 		synchronous_logger::clog << "[Server Thread] server quited\n";
 #endif
 		delete theRuntimeThread;
-    theWrapper->close();
 #ifndef NDEBUG
 		synchronous_logger::clog << "[Server Thread] runtime thread quited\n";
 #endif 
@@ -704,7 +708,7 @@ namespace zorba{
 #else
 						lMessage = static_cast< VariableMessage * > ( aMessage );
 #endif
-						VariableReply * lReply = new VariableReply( lMessage->getId(), DEBUGGER_NO_ERROR );
+						VariableReply * lReply = new VariableReply(lMessage->getId(), DEBUGGER_NO_ERROR, lMessage->hasToGetData());
 						for( unsigned i = 0; i<theVarnames.size(); i++ )
 						{
 							xqpString lName(theVarnames.at(i)->getStringValue());
@@ -722,7 +726,7 @@ namespace zorba{
 								if ( it->first->get_varname() == theVarnames.at(i) )
 								{
                   if (lMessage->hasToGetData()) {
-                    lReply->addGlobal( lName, lType, evalExpr(lName) );
+                    lReply->addGlobal( lName, lType, evalExpr("$" + lName) );
                   } else {
 									  lReply->addGlobal( lName, lType );
                   }
@@ -733,7 +737,7 @@ namespace zorba{
 							if ( ! is_global )
 							{
                 if (lMessage->hasToGetData()) {
-                  lReply->addLocal( lName, lType, evalExpr(lName) );
+                  lReply->addLocal( lName, lType, evalExpr("$" + lName) );
                 } else {
 								  lReply->addLocal( lName, lType );
                 }

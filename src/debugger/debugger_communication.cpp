@@ -58,7 +58,7 @@ zorba::AbstractCommandMessage* zorba::DebuggerCommunicator::handleTCPClient()
 	try
 	{
 		lMessage.reset(MessageFactory::buildMessage( m_commandSocket ));
-		AbstractCommandMessage* lCommandMessage(dynamic_cast< AbstractCommandMessage * >(lMessage.get()));
+		AbstractCommandMessage* lCommandMessage = dynamic_cast< AbstractCommandMessage * >(lMessage.get());
 		if ( lCommandMessage )
 		{
 			lMessage.release();

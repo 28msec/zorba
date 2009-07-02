@@ -403,63 +403,81 @@ bool ZorbaDebuggerClientImpl::eval( String &anExpr ) const
   return true;
 }
 
-std::list<Variable> ZorbaDebuggerClientImpl::getAllVariables() const
+std::list<Variable> ZorbaDebuggerClientImpl::getAllVariables(bool data) const
 {
   std::list<Variable> lVariables;
-  VariableMessage lMessage;
+  VariableMessage lMessage(data);
   std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   VariableReply *lVariableReply = dynamic_cast<VariableReply *>( lReply.get() );
   if ( lVariableReply )
   {
-    std::map<xqpString, xqpString> variables = lVariableReply->getVariables();
-    std::map<xqpString, xqpString>::iterator it;
+    std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > variables = 
+      lVariableReply->getVariables();
+    std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > >::iterator it;
     for ( it = variables.begin(); it != variables.end(); ++it )
     {
-      String lName( it->first );
-      String lType( it->second );
-      Variable lVariable( lName, lType );
+      String lName( it->first.first );
+      String lType( it->first.second );
+      std::list<std::pair<xqpString, xqpString> > d = it->second;
+      std::list<std::pair<String, String> > data;
+      for (std::list<std::pair<xqpString, xqpString> >::iterator iter = d.begin(); iter != d.end(); iter++) {
+        data.push_back(std::pair<String, String>(String(iter->first.getStore()), String(iter->second.getStore())));
+      }
+      Variable lVariable( lName, lType, data );
       lVariables.push_back( lVariable );
     }
   }
   return lVariables;
 }
 
-std::list<Variable> ZorbaDebuggerClientImpl::getLocalVariables() const
+std::list<Variable> ZorbaDebuggerClientImpl::getLocalVariables(bool data) const
 {
   std::list<Variable> lVariables;
-  VariableMessage lMessage;
+  VariableMessage lMessage(data);
   std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   VariableReply *lVariableReply = dynamic_cast<VariableReply *>( lReply.get() );
   if ( lVariableReply )
   {
-    std::map<xqpString, xqpString> variables = lVariableReply->getLocalVariables();
-    std::map<xqpString, xqpString>::iterator it;
+    std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > variables = 
+      lVariableReply->getLocalVariables();
+    std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > >::iterator it;
     for ( it = variables.begin(); it != variables.end(); ++it )
     {
-      String lName( it->first );
-      String lType( it->second );
-      Variable lVariable( lName, lType );
+      String lName( it->first.first );
+      String lType( it->first.second );
+      std::list<std::pair<xqpString, xqpString> > d = it->second;
+      std::list<std::pair<String, String> > data;
+      for (std::list<std::pair<xqpString, xqpString> >::iterator iter = d.begin(); iter != d.end(); iter++) {
+        data.push_back(std::pair<String, String>(String(iter->first.getStore()), String(iter->second.getStore())));
+      }
+      Variable lVariable( lName, lType, data );
       lVariables.push_back( lVariable );
     }
   }
   return lVariables;
 }
 
-std::list<Variable> ZorbaDebuggerClientImpl::getGlobalVariables() const
+std::list<Variable> ZorbaDebuggerClientImpl::getGlobalVariables(bool data) const
 {
   std::list<Variable> lVariables;
-  VariableMessage lMessage;
+  VariableMessage lMessage(data);
   std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   VariableReply *lVariableReply = dynamic_cast<VariableReply *>( lReply.get() );
   if ( lVariableReply )
   {
-    std::map<xqpString, xqpString> variables = lVariableReply->getGlobalVariables();
-    std::map<xqpString, xqpString>::iterator it;
+    std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > variables = 
+      lVariableReply->getGlobalVariables();
+    std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > >::iterator it;
     for ( it = variables.begin(); it != variables.end(); ++it )
     {
-      String lName( it->first );
-      String lType( it->second );
-      Variable lVariable( lName, lType );
+      String lName( it->first.first );
+      String lType( it->first.second );
+      std::list<std::pair<xqpString, xqpString> > d = it->second;
+      std::list<std::pair<String, String> > data;
+      for (std::list<std::pair<xqpString, xqpString> >::iterator iter = d.begin(); iter != d.end(); iter++) {
+        data.push_back(std::pair<String, String>(String(iter->first.getStore()), String(iter->second.getStore())));
+      }
+      Variable lVariable( lName, lType, data );
       lVariables.push_back( lVariable );
     }
   }
