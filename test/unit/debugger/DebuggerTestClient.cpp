@@ -63,7 +63,7 @@ namespace zorba {
 #ifdef ZORBA_HAVE_PTHREAD_H
 		if ( pthread_create( &theServerThread, 0, server, &theArguments ) != 0 )
 #else
-		if ( theServerThread = CreateThread( 0, 0, server, &theArguments, 0, 0 ) == 0 )
+		if ((theServerThread = CreateThread( 0, 0, server, &theArguments, 0, 0)) == NULL )
 #endif
 		{
 			std::cerr << "Couldn't start the server thread" << std::endl;
