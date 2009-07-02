@@ -41,6 +41,9 @@ ZorbaImpl::ZorbaImpl() : theIsInitialized(false)
 ZorbaImpl::~ZorbaImpl() 
 {
   shutdown();
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
+  RCLock::deletePool();
+#endif
 }
 
 
