@@ -18,6 +18,7 @@
 
 #include "store/api/iterator.h"
 #include "store/util/hashset_item_handle.h"
+
 #include "store/naive/shared_types.h"
 #include "store/naive/node_items.h"
 #include "store/naive/ordpath.h"
@@ -45,10 +46,10 @@ namespace zorba { namespace simplestore {
 class ChildrenIteratorImpl : public store::ChildrenIterator
 {
 protected:
-  rchandle<XmlNode>  theParentNode;
+  rchandle<InternalNode>  theParentNode;
 
-  ulong              theNumChildren;
-  ulong              theCurrentPos;
+  ulong                   theNumChildren;
+  ulong                   theCurrentPos;
 
 public:
  ChildrenIteratorImpl() : theNumChildren(0), theCurrentPos(0) { }
@@ -109,10 +110,10 @@ public:
 class AttributesIteratorImpl : public store::AttributesIterator
 {
 protected:
-  rchandle<XmlNode>  theParentNode;
+  rchandle<ElementNode>  theParentNode;
 
-  ulong              theNumAttributes;
-  ulong              theCurrentPos;
+  ulong                  theNumAttributes;
+  ulong                  theCurrentPos;
 
 public:
   AttributesIteratorImpl() : theNumAttributes(0), theCurrentPos(0) { }
@@ -124,10 +125,10 @@ public:
     theCurrentPos = 0;
   }
 
-  void init(XmlNode* parent)
+  void init(const ElementNode* parent)
   {
     theParentNode = parent;
-    theNumAttributes = theParentNode->numAttributes();
+    theNumAttributes = parent->numAttributes();
     theCurrentPos = 0;
   }
 
@@ -274,7 +275,7 @@ protected:
 
 protected:
   store::Iterator_t       theInput;
-  bool                    theAscendant;
+  bool                    theAscending;
   bool                    theDistinct;
 
   std::vector<XmlNode*>   theNodes;
@@ -287,7 +288,7 @@ public:
         bool                     distinct)
     :
     theInput(input),
-    theAscendant(ascendant),
+    theAscending(ascendant),
     theDistinct(distinct),
     theCurrentNode(-1)
   {

@@ -136,7 +136,7 @@ void FastXmlLoader::abortload()
     XmlNode* node = theNodeStack.top();
     theNodeStack.pop();
     if (node != NULL)
-      node->deleteTree();
+      node->destroy();
   }
 
 #ifdef DATAGUIDE
@@ -353,7 +353,7 @@ void FastXmlLoader::startDocument(void * ctx)
 
   try
   {
-    XmlNode* docNode = new DocumentTreeNode();
+    XmlNode* docNode = new DocumentNode();
 
     loader.setRoot(docNode);
     loader.theNodeStack.push(docNode);
@@ -417,7 +417,7 @@ void FastXmlLoader::endDocument(void * ctx)
     }
     loader.theNodeStack.pop();
 
-    DocumentTreeNode* docNode = dynamic_cast<DocumentTreeNode*>(loader.theNodeStack.top());
+    DocumentNode* docNode = dynamic_cast<DocumentNode*>(loader.theNodeStack.top());
     ZORBA_ASSERT(docNode != NULL);
 
     NodeVector& children = docNode->children();
@@ -508,9 +508,9 @@ void FastXmlLoader::startElement(
                                            reinterpret_cast<const char*>(lname));
     
     // Create the element node and push it to the node stack
-    ElementTreeNode* elemNode = new ElementTreeNode(nodeName,
-                                                    numBindings,
-                                                    numAttributes);
+    ElementNode* elemNode = new ElementNode(nodeName,
+                                            numBindings,
+                                            numAttributes);
     if (loader.theNodeStack.empty())
       loader.setRoot(elemNode);
 
@@ -633,7 +633,7 @@ void FastXmlLoader::startElement(
         loader.theOrdPath.nextChild();
 
         SYNC_CODE(attrNode->theRCLockPtr = &loader.theTree->getRCLock();)
-
+#if 0
         if (strcmp(lname, "schemaLocation") == 0 &&
             uri != NULL &&
             strcmp(uri, "http://www.w3.org/2001/XMLSchema-instance") == 0)
@@ -643,7 +643,7 @@ void FastXmlLoader::startElement(
           xqpStringStore_t schemaUri = value->substr(0, pos);
           loader.theTree->setSchemaUri(schemaUri);
         }
-
+#endif
         LOADER_TRACE2("Attribute: node = " << attrNode << " name [" 
                       << (prefix != NULL ? prefix : "") << ":" << lname << " (" 
                       << (uri != NULL ? uri : "NULL") << ")]" << " value = " 
@@ -715,7 +715,7 @@ void  FastXmlLoader::endElement(
     loader.theNodeStack.pop();
 
     // The element node is now at the top of the stack
-    ElementTreeNode* elemNode = dynamic_cast<ElementTreeNode*>(loader.theNodeStack.top());
+    ElementNode* elemNode = dynamic_cast<ElementNode*>(loader.theNodeStack.top());
     ZORBA_ASSERT(elemNode != NULL);
 
     LOADER_TRACE2("End Element: node = " << elemNode << " name ["
@@ -742,9 +742,11 @@ void  FastXmlLoader::endElement(
       if (currChild->getNodeKind() == store::StoreConsts::elementNode)
       {
         if (!loader.theBindingsStack.empty())
-          currChild->setNsContext(loader.theBindingsStack.top());
+          reinterpret_cast<ElementNode*>(currChild)->
+          setNsContext(loader.theBindingsStack.top());
         else
-          currChild->setNsContext(NULL);
+          reinterpret_cast<ElementNode*>(currChild)->
+          setNsContext(NULL);
       }
     }
 

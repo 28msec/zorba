@@ -19,27 +19,24 @@
 
 #include <vector>
 
-#include "common/common.h"
+#include "store/naive/shared_types.h"
 
-namespace zorba { namespace simplestore {
+namespace zorba 
+{
+
+namespace simplestore 
+{
 
 
 class XmlNode;
-class ConstrNodeVector;
 
 
 /*******************************************************************************
-
+  NodeVector is used to store the children or the attributes of element and
+  document nodes.
 ********************************************************************************/
 class NodeVector
 {
-  friend class XmlNode;
-  friend class LoadedNodeVector;
-  friend class ConstrNodeVector;
-
-public:
-  enum { LOADED, CONSTRUCTED };
-
 protected:
   std::vector<XmlNode*> theNodes;
 
@@ -47,87 +44,35 @@ public:
   NodeVector() { }
   NodeVector(ulong size) : theNodes(size) { }
 
-  virtual ~NodeVector() { }
+  bool empty() const { return theNodes.empty(); }
 
-  bool empty() const            { return theNodes.empty(); }
-  ulong size() const            { return theNodes.size(); }
+  void clear() { theNodes.clear(); }
+
+  ulong size() const { return theNodes.size(); }
+
+  void resize(ulong size) { theNodes.resize(size); }
 
   XmlNode* get(ulong pos) const { return theNodes[pos]; } 
+
   ulong find(XmlNode* n);
 
-  virtual void set(XmlNode* n, ulong pos, bool shared) = 0;
-  virtual void push_back(XmlNode* n, bool shared) = 0;
-  virtual void insert(XmlNode* n, ulong i, bool shared) = 0;
-
-  virtual void remove(ulong i) = 0;
-  virtual bool remove(XmlNode* n) = 0;
-
-  virtual void clear() = 0;
-  virtual void resize(ulong size) = 0;
-  virtual void copy(ConstrNodeVector& dest) = 0;
-  virtual void compact() = 0;
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class LoadedNodeVector : public NodeVector
-{
-public:
-  LoadedNodeVector() : NodeVector() { }
-  LoadedNodeVector(ulong size) : NodeVector(size) { }
-
-  ~LoadedNodeVector() { }
-
   void set(XmlNode* n, ulong pos, bool ) { theNodes[pos] = n; }
-  void push_back(XmlNode* n, bool )      { theNodes.push_back(n); }
-  void insert(XmlNode* n, ulong i, bool shared);
-  void remove(ulong i);
+
+  void push_back(XmlNode* n)  { theNodes.push_back(n); }
+
+  void insert(XmlNode* n, long pos);
+
+  void remove(ulong pos);
+
   bool remove(XmlNode* n);
 
-  void clear()                           { theNodes.clear(); }
-  void resize(ulong size)                { theNodes.resize(size); }
-  void copy(ConstrNodeVector& dest);
+  void copy(NodeVector& dest) const;
+
   void compact();
 
 private:
-  LoadedNodeVector(const LoadedNodeVector& v);
-  LoadedNodeVector& operator=(const LoadedNodeVector& v);
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class ConstrNodeVector : public NodeVector
-{
-  friend class LoadedNodeVector;
-
-private:
-  std::vector<bool> theBitmap;
-
-public:
-  ConstrNodeVector() : NodeVector() { }
-  ConstrNodeVector(ulong size);
-
-  ~ConstrNodeVector()  { clear(); }
-
-  void set(XmlNode* n, ulong pos, bool shared);
-  void push_back(XmlNode* n, bool shared);
-  void insert(XmlNode* n, ulong i, bool shared);
-  void remove(ulong i);
-  bool remove(XmlNode* n);
-
-  void clear();
-  void resize(ulong size);
-  void copy(ConstrNodeVector& dest);
-  void copy(LoadedNodeVector& dest)  { dest.theNodes = theNodes; }
-  void compact();
-
-private:
-  ConstrNodeVector(const ConstrNodeVector& v);
-  ConstrNodeVector& operator=(const ConstrNodeVector& v);
+  NodeVector(const NodeVector& v);
+  NodeVector& operator=(const NodeVector& v);
 };
 
 

@@ -16,6 +16,8 @@
 
 #include "zorbamisc/config/platform.h"
 
+#include "zorbatypes/rchandle.h"
+
 namespace zorba 
 {
   
@@ -23,6 +25,7 @@ namespace simplestore
 {
   class XmlTree;
   typedef rchandle<XmlTree> XmlTree_t;
+
   class XmlNode;
   typedef rchandle<class XmlNode> XmlNode_t;
 }

@@ -220,38 +220,48 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
   const unsigned char* start = str;
   ulong i = 0;
 
-  while (1)
+  try
   {
-    char ch = *start;
+    while (1)
+    {
+      char ch = *start;
+      
+      if (ch >= '0' && ch <= '9')
+        buf[i] = ch - 48;
+      else if (ch >= 'a' && ch <= 'f')
+        buf[i] = ch - 87;
+      else if (ch == '\0')
+        break;
+      else
+        ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
 
-    if (ch >= '0' && ch <= '9')
-      buf[i] = ch - 48;
-    else if (ch >= 'a' && ch <= 'f')
-      buf[i] = ch - 87;
-    else if (ch == '\0')
-      break;
-    else
-      ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
-
-    buf[i] <<= 4;
-    start++;
-    ch = *start;
-
-    if (ch >= '0' && ch <= '9')
-      buf[i] |= ch - 48;
-    else if (ch >= 'a' && ch <= 'f')
-      buf[i] |= ch - 87;
-    else if (ch == '\0')
-      break;
-    else
-      ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
-
-    start++;
-    i++;
+      buf[i] <<= 4;
+      start++;
+      ch = *start;
+      
+      if (ch >= '0' && ch <= '9')
+        buf[i] |= ch - 48;
+      else if (ch >= 'a' && ch <= 'f')
+        buf[i] |= ch - 87;
+      else if (ch == '\0')
+        break;
+      else
+        ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
+      
+      start++;
+      i++;
+    }
+    
+    if (isLocal)
+      markLocal();
   }
+  catch (...)
+  {
+    if (!isLocal && buf != NULL)
+      delete [] buf;
 
-  if (isLocal)
-    markLocal();
+    throw;
+  }
 
   ZORBA_FATAL(i == byteLen, "");
 }

@@ -457,26 +457,13 @@ public:
    * @param result        The new node N created by this method.
    * @param baseUri       The base uri of N. It may be NULL.
    * @param docUri        The document uri of N. It may be NULL.
-   * @param allowSharing  A zorba-specific parameter used to optimize
-   *                      node-construction expressions by avoiding node copying
-   *                      whenever possible. It is the zorba compiler who decides,
-   *                      based on semantic query analysis, if copying can be
-   *                      avoided, and indicates its decision to the store by
-   *                      setting this parameter to true (see also the Item::copy()
-   *                      method). If true, then N may have as children/attributes
-   *                      nodes that belong to a different XML tree than N (such
-   *                      a "shared" child node C will be pointed to by multiple
-   *                      nodes, but it will still have a single parent that
-   *                      belongs to the same xml tree as C). A store may choose
-   *                      to ignore this parameter. 
    * @return              Always true (if any errors occur, the method throws
    *                      exceptions)
    */
   virtual bool createDocumentNode(
         Item_t&           result,
         xqpStringStore_t& baseUri,
-        xqpStringStore_t& docUri,
-        bool              allowSharing = false) = 0;
+        xqpStringStore_t& docUri) = 0;
 
   /**
    * Create a new element node N and place it at a given position among the
@@ -503,34 +490,21 @@ public:
    *                       property of P.
    * @param baseUri        The base uri of N. It may be NULL, in which case, the 
    *                       base-uri property of N is the same as that of P.
-   * @param allowSharing   A zorba-specific parameter used to optimize
-   *                       node-construction expressions by avoiding node copying
-   *                       whenever possible. It is the zorba compiler who decides,
-   *                       based on semantic query analysis, if copying can be
-   *                       avoided, and indicates its decision to the store by
-   *                       setting this parameter to true (see also the Item::copy()
-   *                       method). If true, then N may accept as a child/attribute
-   *                       a node C that already has another parent. In this case,
-   *                       C retains its original parent (which will always be in
-   *                       the same xml tree as C), but becomes a "shared" child
-   *                       between N and its original parent. A store may choose
-   *                       to ignore this parameter. 
    * @return               Always true (if any errors occur, the method throws
    *                       exceptions)
    */
  virtual bool createElementNode(
-        Item_t&               result,
-        Item*                 parent,
-        long                  pos,
-        Item_t&               nodeName,
-        Item_t&               typeName,
-        bool                  haveTypedValue,
-        bool                  haveEmptyValue,
-        bool                  isId,
-        bool                  isIdRefs,
-        const NsBindings&     localBindings,
-        xqpStringStore_t&     baseURI,
-        bool                  allowSharing = false) = 0;
+        Item_t&             result,
+        Item*               parent,
+        long                pos,
+        Item_t&             nodeName,
+        Item_t&             typeName,
+        bool                haveTypedValue,
+        bool                haveEmptyValue,
+        bool                isId,
+        bool                isIdRefs,
+        const NsBindings&   localBindings,
+        xqpStringStore_t&   baseURI) = 0;
 
   /**
    * Create a new attribute node N and place it at a given position among the
@@ -679,3 +653,9 @@ public:
 } // namespace zorba
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

@@ -207,7 +207,7 @@ bool StoreNodeSortIterator::next(store::Item_t& result)
       theNodes.push_back(reinterpret_cast<XmlNode*>(contextNode.transfer()));
     }
 
-    ComparisonFunction cmp;
+    ComparisonFunction cmp(theAscending);
 
     std::sort(theNodes.begin(), theNodes.end(), cmp);
   }

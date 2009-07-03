@@ -35,6 +35,37 @@ class UpdatePrimitive;
 typedef std::vector<UpdatePrimitive*> NodeUpdates;
 
 
+/*******************************************************************************
+  A class to store the type-related info of a node. Used during node updates to
+  implement the undo of updates.
+********************************************************************************/
+class NodeTypeInfo
+{
+public:
+  XmlNode           * theNode;
+
+  store::Item_t       theTypeName;
+  TextNodeContent     theTextContent;
+  uint32_t            theFlags;
+  uint32_t            theChildFlags;
+
+  NodeTypeInfo() : theFlags(0), theChildFlags(0) { }
+
+  NodeTypeInfo(const NodeTypeInfo& other);
+
+  ~NodeTypeInfo();
+
+  void transfer(NodeTypeInfo& other);
+
+  NodeTypeInfo& operator=(const NodeTypeInfo&);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+typedef std::vector<NodeTypeInfo> TypeUndoList;
+
 
 /*******************************************************************************
   A map that maps each target node N to the update primitives having N as their
@@ -303,6 +334,7 @@ class UpdatePrimitive
 {
   friend class PULImpl;
   friend class XmlNode;
+  friend class InternalNode;
 
 protected:
   PULImpl       * thePul;
@@ -331,7 +363,9 @@ public:
   {
   }
 
-  virtual ~UpdatePrimitive() { }
+  virtual ~UpdatePrimitive() 
+  { 
+  }
 
   void addNodeForValidation(zorba::store::Item* node)
   {
@@ -356,9 +390,10 @@ class UpdDelete : public UpdatePrimitive
 {
   friend class PULImpl;
   friend class XmlNode;
+  friend class InternalNode;
 
 protected:
-  XmlNode        * theParent;
+  InternalNode   * theParent;
   ulong            thePos;
   store::Item_t    theRightSibling;
   xqpStringStore_t theLeftContent;
@@ -382,11 +417,33 @@ public:
 
 /*******************************************************************************
   InsertInto, InsertIntoFirst, InsertIntoLast, InsertBefore, InsertAfter
+
+  theTarget      : Inherited from UpdatePrimitive: The parent node under which
+                   the new nodes will be inserted.
+  theNewChildren : The list of new nodes to insert as children of theTarget.
+                   The list does not contain any consecutive text nodes (see
+                   UpdInsertChildren constructor).
+  theSibling     : If theKind is InsertBefore or InsertAfter, theSibling is the
+                   child node of theTarget next to which the new nodes will be
+                   inserted. 
+
+  theNumApplied  : The number of new children that were actually inserted during
+                   the apply() method. It is needed by the undo() method to
+                   handle the case where an error occured in the middle of the
+                   apply() method, before all the new children were inserted.
+  theMergedNode  : If either the 1st or the last node in theNewChildren is a
+                   text node that needs to be merged with an existing text child
+                   N of theTarget, then N is first saved in theMergedNode, then
+                   removed as a child of theTarget, and finally its text content
+                   is merged with the content of the 1st or last node in  
+                   theNewChildren. If the apply must be undone, the undo()
+                   method will restore N in its original position.
 ********************************************************************************/
 class UpdInsertChildren : public UpdatePrimitive
 {
   friend class PULImpl;
   friend class XmlNode;
+  friend class InternalNode;
 
 protected:
   store::UpdateConsts::UpdPrimKind theKind;
@@ -415,6 +472,13 @@ public:
 
 /*******************************************************************************
 
+  theNewAtrs :     The list of new attrs to insert as attributes of theTarget.
+
+  theNumApplied  : The number of new children that were actually inserted during
+                   the apply() method. It is needed by the undo() method to
+                   handle the case where an error occured in the middle of the
+                   apply() method, before all the new children were inserted.
+  theNewBindings :
 ********************************************************************************/
 class UpdInsertAttributes : public UpdatePrimitive
 {
@@ -464,7 +528,7 @@ protected:
 
 public:
   UpdReplaceAttribute(
-        PULImpl*                     pul,
+        PULImpl*                    pul,
         store::Item_t&              target,
         store::Item_t&              attr,
         std::vector<store::Item_t>& newAttrs,
@@ -488,6 +552,7 @@ class UpdReplaceChild : public UpdatePrimitive
 {
   friend class PULImpl;
   friend class XmlNode;
+  friend class InternalNode;
 
 protected:
   store::Item_t               theChild;
@@ -530,7 +595,7 @@ protected:
   store::Item_t     theNewChild;
   store::CopyMode   theCopyMode;
 
-  ConstrNodeVector  theOldChildren;
+  NodeVector        theOldChildren;
   bool              theIsTyped;
 
 public:
@@ -1187,3 +1252,9 @@ public:
 }
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

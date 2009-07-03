@@ -209,8 +209,7 @@ public:
   bool createDocumentNode(
         store::Item_t&    result,
         xqpStringStore_t& baseUri,
-        xqpStringStore_t& docUri,
-        bool              allowSharing = false);
+        xqpStringStore_t& docUri);
 
   bool createElementNode(
         store::Item_t&              result,
@@ -223,8 +222,7 @@ public:
         bool                        isId,
         bool                        isIdRefs,
         const store::NsBindings&    localBindings,
-        xqpStringStore_t&           baseURI,
-        bool                        allowSharing = false);
+        xqpStringStore_t&           baseURI);
 
   bool createAttributeNode(
         store::Item_t&              result,

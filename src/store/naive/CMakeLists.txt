@@ -22,25 +22,26 @@ SET(ZORBA_STORE_LIB_EXTENSION "simplestore" CACHE STRING "store name" FORCE)
 # Source Files
 #
 SET(ZORBA_STORE_IMPL_SRCS
-    simple_store.cpp
     basic_item_factory.cpp
     item.cpp
+    item_vector.cpp
+    node_vector.cpp
+    node_items.cpp
+    node_updates.cpp
+    simple_pul.cpp
+    atomic_items.cpp
+    item_iterator.cpp
+    node_iterators.cpp
+    simple_store.cpp
     simple_iterator_factory.cpp
     simple_collection.cpp
     simple_index.cpp
     simple_temp_seq.cpp
     simple_lazy_temp_seq.cpp
-    simple_pul.cpp
     simple_loader.cpp
     fast_loader.cpp
     qname_pool.cpp
     string_pool.cpp
-    item_vector.cpp
-    item_iterator.cpp
-    atomic_items.cpp
-    node_vector.cpp
-    node_updates.cpp
-    node_iterators.cpp
     ordpath.cpp
     nsbindings.cpp
     properties.cpp
@@ -55,7 +56,7 @@ IF(ZORBA_STORE_MSDOM)
 	LIST(APPEND ZORBA_STORE_IMPL_SRCS		msdom_addon/import_msdom.cpp)
 	LIST(APPEND ZORBA_STORE_IMPL_SRCS		msdom_addon/import_impl.cpp)
 ELSE(ZORBA_STORE_MSDOM)
-	LIST(APPEND ZORBA_STORE_IMPL_SRCS		node_items.cpp)
+#	LIST(APPEND ZORBA_STORE_IMPL_SRCS		node_items.cpp)
 ENDIF(ZORBA_STORE_MSDOM)
 
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/src/store/naive/store_config.h.cmake ${CMAKE_BINARY_DIR}/src/store/naive/store_config.h)

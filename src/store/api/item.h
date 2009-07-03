@@ -403,9 +403,6 @@ public:
    */
 
   virtual bool
-  haveSchemaUri() const;
-
-  virtual bool
   isValidated() const;
 
   virtual void
@@ -537,24 +534,17 @@ public:
    * @param pos      The position under P where the copied tree is to be placed.
    *                 If "this" is an attribute node, pos is a position among the
    *                 attributes of P; otherwise it is a position among the 
-   *                 children of P. If pos is negative or greater or equal to
-   *                 the current number of attributes/children in P, then the
-   *                 copied tree is appended to P's attributes/children.
+   *                 children of P. If is greater or equal to the current number
+   *                 of attributes/children in P, then the copied tree is appended
+   *                 to P's attributes/children.
    * @param copymode Encapsulates the construction-mode and copy-namespace-mode
-   *                 components of the query's static context. To optimize
-   *                 node-construction expressions, copymode also says whether
-   *                 a copy can actually be avoided by simply placing this node
-   *                 among P's children/attributes. In this case, the node 
-   *                 becomes a "shared" child among P and its current parent.
-   *                 (P must have been created with the "allowSharing" paremeter
-   *                 set to true; see ItemFactory::createDocumentNode() and
-   *                 ItemFactory::createElementNode() methods).
+   *                 components of the query's static context. 
    * @return         A pointer to the root node of the copied tree, or to this
    *                 node if no copy was actually done. 
    */
   virtual Item* copy(
         Item*           parent,
-        long            pos,
+        ulong           pos,
         const CopyMode& copymode) const;
 
   /**

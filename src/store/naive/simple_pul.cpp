@@ -755,8 +755,6 @@ void PULImpl::mergeUpdateList(
   numUpdates = myList.size();
   numOtherUpdates = otherList.size();
 
-  myList.resize(numUpdates + numOtherUpdates);
-
   for (ulong i = 0; i < numOtherUpdates; i++)
   {
     UpdatePrimitive* upd = otherList[i];
@@ -779,7 +777,7 @@ void PULImpl::mergeUpdateList(
 
     if (!found)
     {
-      myList[numUpdates + i] = upd;
+      myList.push_back(upd);
       otherList[i] = NULL;
 
       if (target)
@@ -830,14 +828,18 @@ void PULImpl::mergeUpdateList(
       else if (checkDelete && upd->getKind() == store::UpdateConsts::UP_DELETE)
       {
         ulong numTargetUpdates = targetUpdates->size();
-        for (ulong j = 0; j < numTargetUpdates; j++)
+        ulong j;
+        for (j = 0; j < numTargetUpdates; j++)
         {
           if ((*targetUpdates)[j]->getKind() == store::UpdateConsts::UP_DELETE)
-            continue;
+            break;
         }
+
+        if (j < numTargetUpdates)
+          continue;
       }
 
-      myList[numUpdates + i] = upd;
+      myList.push_back(upd);
       otherList[i] = NULL;
       targetUpdates->push_back(upd);
     }
@@ -970,9 +972,6 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
 
   try
   {
-    store::CopyMode copymode;
-    copymode.set(false, true, true, false);
-
     ulong numUpdates = theReplaceNodeList.size();
     for (ulong i = 0; i < numUpdates; i++)
     {
@@ -983,7 +982,10 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
                       reinterpret_cast<UpdReplaceChild*>(upd)->theChild :
                       reinterpret_cast<UpdReplaceAttribute*>(upd)->theAttr);
 
-      node->switchTree(NULL, 0, copymode);
+      // To make the detach() method work properly, we must set the node's
+      // parent back to what it used to be.
+      node->theParent = INTERNAL_NODE(upd->theTarget);
+      node->detach();
     }
 
     numUpdates = theReplaceContentList.size();
@@ -995,7 +997,9 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
       ulong numChildren = upd->theOldChildren.size();
       for (ulong j = 0; j < numChildren; j++)
       {
-        upd->theOldChildren.get(j)->switchTree(NULL, 0, copymode);
+        XmlNode* node = upd->theOldChildren.get(j);
+        node->theParent = INTERNAL_NODE(upd->theTarget);
+        node->detach();
       }
     }
 
@@ -1006,7 +1010,8 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
       if (upd->theParent != NULL)
       {
         XmlNode* target = BASE_NODE(upd->theTarget);
-        target->switchTree(NULL, 0, copymode);
+        target->theParent = upd->theParent;
+        target->detach();
       }
     }
   }
@@ -1052,7 +1057,11 @@ void PULImpl::undoUpdates()
 
 
 /*******************************************************************************
-  Just disconnect the current target from its parent (if any).
+  For now, just disconnect the current target from its parent (if any). The
+  actual deletion of the target node and its subtree is done after all update
+  primitives have been applied without errors (see PULImpl::applyUpdates()
+  method). This way, to undo a delete, we just need to reconnect the target node
+  at its original position under its original parent.
 ********************************************************************************/
 void UpdDelete::apply()
 {
@@ -1064,8 +1073,6 @@ void UpdDelete::apply()
   {
     theParent->deleteChild(*this);
   }
-
-  theIsApplied = true;
 }
 
 
@@ -1139,18 +1146,18 @@ void UpdInsertChildren::apply()
   {
   case store::UpdateConsts::UP_INSERT_INTO:
   {
-    XmlNode* target = BASE_NODE(theTarget);
+    InternalNode* target = INTERNAL_NODE(theTarget);
     target->insertChildren(*this, target->numChildren());
     break;
   }
   case store::UpdateConsts::UP_INSERT_INTO_FIRST:
   {
-    BASE_NODE(theTarget)->insertChildren(*this, 0);
+    INTERNAL_NODE(theTarget)->insertChildren(*this, 0);
     break;
   }
   case store::UpdateConsts::UP_INSERT_INTO_LAST:
   {
-    XmlNode* target = BASE_NODE(theTarget);
+    InternalNode* target = INTERNAL_NODE(theTarget);
     target->insertChildren(*this, target->numChildren());
     break;
   }
@@ -1175,12 +1182,12 @@ void UpdInsertChildren::undo()
   if (theKind == store::UpdateConsts::UP_INSERT_BEFORE ||
       theKind == store::UpdateConsts::UP_INSERT_AFTER)
   {
-    reinterpret_cast<XmlNode*>(theSibling->getParent())->
+    reinterpret_cast<InternalNode*>(theSibling->getParent())->
     undoInsertChildren(*this);
   }
   else
   {
-    BASE_NODE(theTarget)->undoInsertChildren(*this);
+    INTERNAL_NODE(theTarget)->undoInsertChildren(*this);
   }
 }
 
@@ -1314,13 +1321,13 @@ UpdReplaceChild::UpdReplaceChild(
 void UpdReplaceChild::apply()
 {
   theIsApplied = true;
-  BASE_NODE(theTarget)->replaceChild(*this);
+  INTERNAL_NODE(theTarget)->replaceChild(*this);
 }
 
 
 void UpdReplaceChild::undo()
 {
-  BASE_NODE(theTarget)->restoreChild(*this);
+  INTERNAL_NODE(theTarget)->restoreChild(*this);
 }
 
 
@@ -1368,6 +1375,8 @@ void UpdSetElementType::apply()
 
   target->theTypeName.transfer(theTypeName);
 
+  assert(!target->haveTypedTypedValue());
+
   if (theHaveValue)
   {
     target->setHaveValue();
@@ -1386,13 +1395,9 @@ void UpdSetElementType::apply()
 
       TextNode* textChild = reinterpret_cast<TextNode*>(target->getChild(0));
 
-      textChild->setText(NULL);
-      textChild->setValue(theTypedValue);
-
-      target->setHaveTypedValue();
-
+      textChild->setTyped(theTypedValue);
       if (theHaveListValue)
-        target->setHaveListValue();
+        textChild->setHaveListValue();
     }
   }
   else

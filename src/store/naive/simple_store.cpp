@@ -819,19 +819,28 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   {
     ulong i;
 
-    if (attributeNode)
+    if (parent->getNodeKind() != store::StoreConsts::documentNode &&
+        parent->getNodeKind() != store::StoreConsts::elementNode)
     {
-      ulong numAttrs = parent->numAttributes();
+      result = NULL;
+      return false;
+    }
+
+    if (attributeNode && parent->getNodeKind() == store::StoreConsts::elementNode)
+    {
+      ElementNode* elemParent = reinterpret_cast<ElementNode*>(parent);
+
+      ulong numAttrs = elemParent->numAttributes();
       for (i = 0; i < numAttrs; i++)
       {
-        XmlNode* child = parent->getAttr(i);
+        XmlNode* child = elemParent->getAttr(i);
 
         OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(op);
 
         if (pos == OrdPath::SELF)
         {
           result = child;
-          return result!=0;
+          return true;
         }
         else if (pos == OrdPath::DESCENDANT)
         {
@@ -846,17 +855,19 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
       }
     }
 
-    ulong numChildren = parent->numChildren();
+    InternalNode* parent2 = reinterpret_cast<InternalNode*>(parent);
+
+    ulong numChildren = parent2->numChildren();
     for (i = 0; i < numChildren; i++)
     {
-      XmlNode* child = parent->getChild(i);
+      XmlNode* child = parent2->getChild(i);
       
       OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(op);
 
       if (pos == OrdPath::SELF)
       {
         result = child;
-        return result != NULL;
+        return true;
       }
       else if (pos == OrdPath::DESCENDANT)
       {

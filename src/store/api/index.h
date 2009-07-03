@@ -145,25 +145,30 @@ public:
   IndexKey(ulong size = 0) : ItemVector(size) {}
 };
 
+
 /*****************************************************************************
  Class IndexEntryCreator is used to compute (key, domain_expr) pairs for a
  given node that has a certain relationship to the domain expression.
  *****************************************************************************/
 class IndexEntryCreator : public SimpleRCObject
 {
-  public:
-    typedef std::pair<store::IndexKey, store::Item_t> IndexEntry;
-    virtual ~IndexEntryCreator() { }
+public:
+  typedef std::pair<store::IndexKey, store::Item_t> IndexEntry;
 
-    /**
-     * Generate index entries for the given item.
-     */
-    virtual void appendIndexEntries(store::Item_t& item, std::vector<IndexEntry>& entries) = 0;
+  virtual ~IndexEntryCreator() { }
+
+  /**
+   * Generate index entries for the given item.
+   */
+  virtual void appendIndexEntries(store::Item_t& item, std::vector<IndexEntry>& entries) = 0;
 };
+
 
 typedef rchandle<IndexEntryCreator> IndexEntryCreator_t;
 
+
 typedef std::pair<xqpStringStore_t, store::IndexEntryCreator_t> PatternIECreatorPair;
+
 
 /***************************************************************************//**
   Specification for creating a value index.

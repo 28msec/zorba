@@ -560,14 +560,6 @@ bool Item::isPosOrNegInf() const
 /* -----------------------  Methods for Nodes -------------------------------- */
 
 
-bool Item::haveSchemaUri() const
-{
-  ZORBA_ERROR_PARAM_OSS(STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                        __FUNCTION__, getType()->getStringValue());
-  return false;
-}
-
-
 bool Item::isValidated() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -719,7 +711,7 @@ void Item::finalizeNode()
 
 Item* Item::copy(
     store::Item* parent,
-    long pos,
+    ulong pos,
     const CopyMode& copymode) const
 {
   ZORBA_ERROR_PARAM_OSS(STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
