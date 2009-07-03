@@ -194,7 +194,7 @@ bool GenericArithIterator<Operation>::compute(
   }
   
   ZORBA_ERROR_LOC_DESC(XPTY0004, aLoc,
-                       "Arithmetic operation not defined between the given types("
+                       "Arithmetic operation not defined between the given types ("
                        + type0->toString() + " and " + type1->toString() + ").");
   
   return 0;
