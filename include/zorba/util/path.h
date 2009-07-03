@@ -10,6 +10,7 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC filesystem_path {
 private:
   std::string path;
+
   void canonicalize ();
 
 public:
@@ -18,10 +19,11 @@ public:
   } flags_t;
 
 public:
-  const std::string &get_path () const { return path; }
-  const char *c_str () const { return path.c_str (); }
-  operator const std::string & () const { return path; }
+  // from current dir
+  filesystem_path ();
+
   filesystem_path (const std::string &path_, int flags = 0);
+
   filesystem_path (const filesystem_path &base, const filesystem_path &rel) {
     if (rel.is_complete ())
       *this = rel;
@@ -30,10 +32,13 @@ public:
       canonicalize ();
     }
   }
-  // from current dir
-  filesystem_path ();
+
   filesystem_path &operator = (const std::string &p_)
   { path = p_; canonicalize (); return *this; }
+
+  const std::string &get_path () const { return path; }
+  const char *c_str () const { return path.c_str (); }
+  operator const std::string & () const { return path; }
 
   bool is_complete () const;
   bool is_root () const;
