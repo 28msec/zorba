@@ -110,6 +110,11 @@ public:
   void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
 
+  bool
+  getDistinct() const { return theDistinct; }
+
+  bool
+  getAscending() const { return theAscendant; }
 
   virtual void accept(PlanIterVisitor&) const;
 };
