@@ -80,18 +80,18 @@ void NodeDistinctIterator::closeImpl(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
-void
-NodeSortState::init(PlanState& planState)
+void NodeSortState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
 }
 
-void
-NodeSortState::reset(PlanState& planState)
+
+void NodeSortState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   theStoreIterator->reset();
 }
+
 
 void NodeSortIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
@@ -99,17 +99,17 @@ void NodeSortIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   theChild->open(planState, offset);
   store::Iterator_t input = new PlanIteratorWrapper(theChild, planState);
-  // input->open();
 
   NodeSortState* state;
   state = StateTraitsImpl<NodeSortState>::getState(planState, this->stateOffset);
 
   state->theStoreIterator = GENV.getStore().sortNodes(input,
-                                                           theAscendant,
-                                                           theDistinct,
-                                                           theAcceptAtomics);
+                                                      theAscendant,
+                                                      theDistinct,
+                                                      theAcceptAtomics);
   state->theStoreIterator->open();
 }
+
 
 bool NodeSortIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {

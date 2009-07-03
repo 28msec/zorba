@@ -125,3 +125,8 @@ public:
 } /* namespace zorba */
 #endif  /* ZORBA_ITEM_ITERATOR_H */
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
