@@ -217,29 +217,42 @@ bool begin_visit (if_expr& node)
   return true;
 }
 
-void end_visit (fo_expr&) {}
+
+void end_visit (fo_expr&) 
+{
+}
+
 bool begin_visit (fo_expr& node)
 {
   const signature& sign = node.get_signature();
 
   int n = node.size();
-  for(int i = 0; i < n; ++i) {
-    expr::expr_t arg = node[i];
-    if (!node.is_updating())
-      checkNonUpdating(&*arg);
-    const xqtref_t& arg_type = sign[i];
-    xqtref_t arg_prime_type = TypeOps::prime_type(*arg_type);
-    if (TypeOps::is_subtype(*arg_prime_type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE)) {
-      arg = wrap_in_atomization(m_sctx, arg);
-      arg = wrap_in_type_conversion(arg, arg_type);
-    }
-    else arg = wrap_in_typematch(arg, arg_type);
+  for(int i = 0; i < n; ++i) 
+  {
+    expr::expr_t param = node[i];
 
-    node[i] = arg;
+    if (!node.is_updating())
+      checkNonUpdating(&*param);
+
+    const xqtref_t& param_type = sign[i];
+    xqtref_t param_prime_type = TypeOps::prime_type(*param_type);
+
+    if (TypeOps::is_subtype(*param_prime_type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE)) 
+    {
+      param = wrap_in_atomization(m_sctx, param);
+      param = wrap_in_type_conversion(param, param_type);
+    }
+    else
+    {
+      param = wrap_in_typematch(param, param_type);
+    }
+
+    node[i] = param;
   }
 
   return true;
 }
+
 
 void end_visit (instanceof_expr&) {}
 bool begin_visit (instanceof_expr& node)
