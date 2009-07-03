@@ -232,7 +232,7 @@ bool ValidateIterator::effectiveValidationValue (
     xqpStringStore_t docBaseUri = sourceNode->getBaseURI();
     xqpStringStore_t docUri = sourceNode->getDocumentURI();
     store::Item_t newDoc;
-    GENV_ITEMFACTORY->createDocumentNode(newDoc, docBaseUri, docUri, true);
+    GENV_ITEMFACTORY->createDocumentNode(newDoc, docBaseUri, docUri);
     
     processChildren(sctx,
                     typeManager,
@@ -345,7 +345,7 @@ store::Item_t ValidateIterator::processElement(
   store::Item_t elemName = element->getNodeName();
   GENV_ITEMFACTORY->createElementNode(newElem, parent, -1, elemName,
                                       typeName, true, false, false, false, 
-                                      bindings, baseUri, false);
+                                      bindings, baseUri);
   
 
   processAttributes(sctx,

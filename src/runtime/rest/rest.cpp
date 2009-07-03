@@ -186,8 +186,7 @@ bool createNodeHelper(store::Item_t parent, PlanState& planState, xqpString name
       false,
       false,
       bindings,
-      baseUri,
-      true);
+      baseUri);
 
   if (result != NULL)
     *result = temp_result;
