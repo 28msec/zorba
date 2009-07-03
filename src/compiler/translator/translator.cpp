@@ -672,11 +672,15 @@ expr_t wrap_in_atomization (expr_t e) {
     }
   }
 
-  void add_single_global_assign (const global_binding &b) {
-    declare_var (b, minfo->init_exprs);
-  }
 
-expr_t wrap_in_globalvar_assign(expr_t e) {
+void add_single_global_assign (const global_binding &b) 
+{
+  declare_var (b, minfo->init_exprs);
+}
+
+
+expr_t wrap_in_globalvar_assign(expr_t e) 
+{
   for (list<global_binding>::iterator i = theGlobalVars.begin ();
       i != theGlobalVars.end ();
       i++)
@@ -729,16 +733,6 @@ for_clause_t wrap_in_forclause(expr_t e, varref_t fv, varref_t pv)
 }
 
 
-for_clause_t wrap_in_forclause(expr_t expr, bool add_posvar) 
-{
-  varref_t fv = tempvar(expr->get_loc(), var_expr::for_var);
-
-  varref_t pv = (add_posvar ? tempvar(expr->get_loc(), var_expr::pos_var) : 
-                                varref_t (NULL));
-  return wrap_in_forclause(expr, fv, pv);
-}
-
-
 for_clause_t wrap_in_forclause(
     expr_t expr,
     const QueryLoc& loc,
@@ -751,8 +745,29 @@ for_clause_t wrap_in_forclause(
 }
 
 
+for_clause_t wrap_in_forclause(expr_t expr, bool add_posvar) 
+{
+  varref_t fv = tempvar(expr->get_loc(), var_expr::for_var);
+
+  varref_t pv = (add_posvar ? tempvar(expr->get_loc(), var_expr::pos_var) : 
+                                varref_t (NULL));
+  return wrap_in_forclause(expr, fv, pv);
+}
+
+
 /*******************************************************************************
-  Create a flwor expr that uses the given expr as its input.
+  Create a flwor expr that uses the given expr as its input. In particular, if
+  withContextSize is true, the following flwor is built:
+
+    let $$temp := inputExpr
+    let $$last-idx := count($$temp)
+    for $$dot at $$pos in $$temp
+    .....
+
+  if withContextSize is false, the following flwor is built:
+
+    for $$dot at $$pos in inputExpr
+    .....
 ********************************************************************************/
 rchandle<flwor_expr> wrap_expr_in_flwor(expr* inputExpr, bool withContextSize)
 {
@@ -801,10 +816,22 @@ rchandle<flwor_expr> wrap_expr_in_flwor(expr* inputExpr, bool withContextSize)
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t wrap_in_dos_and_dupelim(expr_t expr) 
+expr_t wrap_in_dos_and_dupelim(expr_t expr, bool atomics, bool reverse = false) 
 {
-  rchandle<fo_expr> dos = new fo_expr(expr->get_loc(),
-                                      LOOKUP_OP1("sort-distinct-nodes-asc-or-atomics"));
+  std::ostringstream funcName;
+
+  funcName << ":sort-distinct-nodes";
+
+  if (reverse)
+    funcName << "-desc";
+  else
+    funcName << "-asc";
+
+  if (atomics)
+    funcName << "-or-atomics";
+
+  rchandle<fo_expr> dos;
+  dos = new fo_expr(expr->get_loc(), sctx_p->lookup_builtin_fn(funcName.str(), 1));
   dos->add(expr);
   return &*dos;
 }
@@ -3518,8 +3545,11 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
         || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION)
         || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
       ZORBA_ERROR_LOC_PARAM( XPST0017,  loc, prefix + ":" + fname, sz);
+
     nodestack.push (create_cast_expr (loc, arguments [0], type, true));
-  } else {  // a real function
+  }
+  else 
+  {  // a real function
       function *f = LOOKUP_FN (prefix, fname, sz);
       if (f == NULL)
         ZORBA_ERROR_LOC_PARAM (XPST0017, loc, (prefix.empty () ? prefix : (prefix + ":")) + fname, to_string (sz));
@@ -4105,13 +4135,17 @@ expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool i
       || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE)
       || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
     ZORBA_ERROR_LOC (XPST0080, loc);
+
   if (! TypeOps::is_equal (*type, *GENV_TYPESYSTEM.QNAME_TYPE_ONE)
-      && ! TypeOps::is_equal (*type, *GENV_TYPESYSTEM.QNAME_TYPE_QUESTION)) {
+      && ! TypeOps::is_equal (*type, *GENV_TYPESYSTEM.QNAME_TYPE_QUESTION)) 
+  {
     if (isCast)
       return new cast_expr (loc, node, type);
     else
       return new castable_expr (loc, node, type);
-  } else {  // a QName cast
+  }
+  else 
+  {  // a QName cast
     const const_expr *ce = node.dyn_cast<const_expr> ().getp();
     if (ce != NULL
         && TypeOps::is_equal (*CTXTS->create_value_type (ce->get_val ()),
@@ -4334,7 +4368,7 @@ void end_visit (const IntersectExceptExpr& v, void* /*visit_state*/) {
 
   fo_h->add(e2_h);
   fo_h->add(e1_h);
-  nodestack.push(new fo_expr (loc, LOOKUP_OP1 ("sort-distinct-nodes-ascending"), fo_h));
+  nodestack.push(new fo_expr (loc, LOOKUP_OP1 ("sort-distinct-nodes-asc"), fo_h));
 }
 
 void *begin_visit (const MultiplicativeExpr& v) {
@@ -5066,18 +5100,40 @@ rchandle<flwor_expr> wrap_in_let_flwor (expr_t expr, varref_t lv, expr_t ret)
                 /    \
               step3  step4
 
-  The possible types of a PathExpr are:
-  1. path_leading_lone_slash
-  2. path_leading_slash
-  3. path_leading_slashslash
-  4. path_relative
+  In general, rpe-i says how step-i is connected with step-(i+1), i.e. with / or //.
+
+  The root PathExpr node says whether the path expr starts with a / or // or an
+  input step expr. In particular, the type of PathExpr can be one of the following:
+
+  1. path_leading_lone_slash (/)
+  2. path_leading_slash      (/...)
+  3. path_leading_slashslash (//...)
+  4. path_relative           (source_expr/...)
 
   In case 1, the PathExpr does not have any child node.
 
-  rpe-i says how step-i is connected with step-(i+1), i.e. with / or //.
+  Cases 2 and 3 are treated as if the syntax tree was like this:
+
+       PathExpr
+           |
+         rpe0
+        /    \
+      step0  rpe1
+            /    \
+          step1  rpe2
+                /    \
+              step2  rpe3
+                    /    \
+                 step3  step4
+
+  where, the type of PathExpr is path_relative, rpe0 designates a "/", and
+  step0 is either
+  fn:root(./self::node()) in case 2, or 
+  fn:root(./self::node())/descendant-or-self::node() in case 3.
 
 ********************************************************************************/
-void *begin_visit (const PathExpr& v) {
+void *begin_visit (const PathExpr& v) 
+{
   TRACE_VISIT();
 
   const PathExpr& pe = v;
@@ -5090,7 +5146,9 @@ void *begin_visit (const PathExpr& v) {
   // Put a NULL in the stack to mark the beginning of a PathExp tree.
   nodestack.push(NULL);
 
-  if (pe_type != ParseConstants::path_leading_lone_slash) {
+  // In cases 2, 3, and 4 create a new relpath_expr, which will be put to the nodestack.
+  if (pe_type != ParseConstants::path_leading_lone_slash) 
+  {
     path_expr = new relpath_expr(loc);
 
     result = path_expr.getp();
@@ -5098,10 +5156,17 @@ void *begin_visit (const PathExpr& v) {
 
   // If path expr starts with / or // (cases 1, 2, or 3), create an expr
   // R = fn:root(./self::node()). 
+  //
   // In case 1, just push R to the nodestack.
-  // In case 2, put "R/..." to the nodestact 
-  // In case 3, put "R/descendant-or-self/...." to the nodestack
-  if (pe_type != ParseConstants::path_relative)  {
+  //
+  // In case 2, put relpath_expr(R) to the nodestact 
+  //
+  // In case 3, put relpath_expr(R, descendant-or-self::node()) to the nodestack
+  //
+  // In case 4, put relpath_expr() to the nodestack
+
+  if (pe_type != ParseConstants::path_relative)  
+  {
     rchandle<relpath_expr> ctx_path_expr = new relpath_expr(loc);
     ctx_path_expr->add_back(DOT_VAR);
 
@@ -5118,12 +5183,14 @@ void *begin_visit (const PathExpr& v) {
 
     result = fo.getp();
 
-    if (path_expr != NULL) {
+    if (path_expr != NULL) 
+    {
       path_expr->add_back(&*fo);
       result = path_expr.getp();
     }
 
-    if (pe_type == ParseConstants::path_leading_slashslash) {
+    if (pe_type == ParseConstants::path_leading_slashslash) 
+    {
       rchandle<axis_step_expr> ase = new axis_step_expr(loc);
       rchandle<match_expr> me = new match_expr(loc);
       me->setTestKind(match_anykind_test);
@@ -5139,7 +5206,8 @@ void *begin_visit (const PathExpr& v) {
 }
 
 
-void end_visit (const PathExpr& v, void* /*visit_state*/) {
+void end_visit (const PathExpr& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 
   expr_t arg2 = pop_nodestack();
@@ -5147,7 +5215,7 @@ void end_visit (const PathExpr& v, void* /*visit_state*/) {
 
   ZORBA_ASSERT(arg1 == NULL);
 
-  nodestack.push(wrap_in_dos_and_dupelim(arg2));
+  nodestack.push(wrap_in_dos_and_dupelim(arg2, true));
 }
 
 
@@ -5156,43 +5224,62 @@ void* begin_visit(const RelativePathExpr& v)
   TRACE_VISIT ();
 
   const RelativePathExpr& rpe = v;
+  rchandle<exprnode> step = rpe.get_step_expr();
+  ZORBA_ASSERT(step != NULL);
+  AxisStep* axisStep = step.dyn_cast<AxisStep>();
 
+  // Let rpe be the i-th rpe in the Path Tree. Then i > 0, and pathExpr represents
+  // the translation of step-0/step-1/.../step-(i-1)/. 
   expr_t e = pop_nodestack();
   relpath_expr* pathExpr = e.dyn_cast<relpath_expr>();
   ZORBA_ASSERT(pathExpr != NULL);
 
-  rchandle<exprnode> child1 = rpe.get_step_expr();
-  ZORBA_ASSERT(child1 != NULL);
-  AxisStep* axisStep = child1.dyn_cast<AxisStep>();
-
-  // If the current rpe is the root of the Path Tree ..
-  if (pathExpr->size() == 0) {
-    if (axisStep != NULL) {
+  // If case 4 and i = 1, then there is no step0 and pathExpr is empty.
+  if (pathExpr->size() == 0) 
+  {
+    if (axisStep != NULL) 
+    {
       pathExpr->add_back(DOT_VAR);
 
-      if (axisStep->get_predicate_list() == NULL) {
+      if (axisStep->get_predicate_list() == NULL) 
+      {
+        // The path expr is of the form "axis::test/....". We push 
+        // [ pathExpr(.) ] to the nodestack. 
         nodestack.push(pathExpr);
-      } else {
+      }
+      else 
+      {
+        // The path expr is of the form "axis::test[pred]/....". We push
+        // [ for $$dot at $$pos in pathExpr(.) ]  to the nodestack.
         rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(pathExpr, false);
         nodestack.push(flworExpr.getp());
       }
-    } else {
+    }
+    else 
+    {
+      // The path expr is of the form "source_expr/....". We push 
+      // pathExpr() to the nodestack. 
       nodestack.push(pathExpr);
     }
   }
 
-  // Else if child1 is an axis step with no repdicates, just put the pathExpr
+  // Else if step-i is an axis step with no repdicates, just put pathExpr(...)
   // back in the stack.
-  else if (axisStep != NULL && axisStep->get_predicate_list() == NULL) {
+  else if (axisStep != NULL && axisStep->get_predicate_list() == NULL) 
+  {
     nodestack.push(pathExpr);
   }
 
-  // Else, child1 is an axis step with predicates or a filter expr, and child1
+  // Else, step-i is an axis step with predicates or a filter expr, and 
   // is not the very 1st step in the path expr. In this case, pathExpr becomes
   // the input to a new flwor expr that will compute, once for each node in
-  // pathExpr, the next step in the path. The flwor is pushed to the nodestack.
-  else {
-    expr_t inputExpr = wrap_in_dos_and_dupelim(pathExpr);
+  // pathExpr, the next step in the path. In particular, the following expr
+  // is pushed to the stack:
+  //
+  // [ for $$dot at $$pos in sort-distinct(pathExpr) ]
+  else 
+  {
+    expr_t inputExpr = wrap_in_dos_and_dupelim(pathExpr, false);
     rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputExpr, false);
     nodestack.push(flworExpr.getp());
   }
@@ -5213,13 +5300,13 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
   // is either a path expr or a flwor expr.
   expr_t stepExpr = pop_nodestack();
   expr_t curExpr = pop_nodestack();
-
   relpath_expr* pathExpr = curExpr.dyn_cast<relpath_expr>();
   flwor_expr* flworExpr = curExpr.dyn_cast<flwor_expr>();
 
   // If curExpr is a path expr, step-i was an axis step with no predicates, or
-  // rpe-i is the root of the Path Tree.
-  if (pathExpr != NULL) {
+  // the path expr is of the form "source_expr/...." and i = 1.
+  if (pathExpr != NULL) 
+  {
     axis_step_expr* axisExpr = stepExpr.dyn_cast<axis_step_expr>();
     ZORBA_ASSERT(axisExpr != NULL || pathExpr->size() == 0);
 
@@ -5230,7 +5317,8 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
   // case, translation of step-i resulted in a flwor expr that includes step-i
   // and all the ancestors of rpe-i. We create a new path_expr and make the
   // flwor expr its 1st step (i.e. flwor/.... or flwor/descendant-or-sef/...)
-  else {
+  else 
+  {
     ZORBA_ASSERT(flworExpr != NULL);
 
     flworExpr->set_return_expr(stepExpr);
@@ -5240,7 +5328,9 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
     pathExpr->add_back(flworExpr);
   }
 
-  if (rpe.get_step_type() == ParseConstants::st_slashslash) {
+  // Convert // to /descendant-or-self::node()/
+  if (rpe.get_step_type() == ParseConstants::st_slashslash)
+  {
     rchandle<axis_step_expr> ase = new axis_step_expr(loc);
     rchandle<match_expr> me = new match_expr(loc);
     me->setTestKind(match_anykind_test);
@@ -5262,12 +5352,13 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
   }
 
   // Else we have reached the last step of the Path Tree, and this step is a
-  // filter step or an axist step with predicates. In this case, pathExpr
+  // filter step or an axis step with predicates. In this case, pathExpr
   // becomes the input to a new flwor expr that will compute, once for each
   // node in pathExpr, the next step in the path. The flwor is pushed to the
   // nodestack.
-  else {
-    expr_t inputSeqExpr = wrap_in_dos_and_dupelim(pathExpr);
+  else 
+  {
+    expr_t inputSeqExpr = wrap_in_dos_and_dupelim(pathExpr, false);
     rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputSeqExpr, false);
     nodestack.push(flworExpr.getp());
   }
@@ -5336,7 +5427,7 @@ void* begin_visit(const FilterExpr& v)
 
 void post_primary_visit(const FilterExpr& v, void* /*visit_state*/)
 {
-  // This method is called from AxisExpr::accept() after the primary expr is
+  // This method is called from FilterExpr::accept() after the primary expr is
   // translated, but before the associated predicate list is translated.
 
   if (!v.isPathStep())
@@ -5346,20 +5437,19 @@ void post_primary_visit(const FilterExpr& v, void* /*visit_state*/)
 
   ZORBA_ASSERT(pl != NULL && pl->size() > 0);
 
-  const QueryLoc& loc = v.get_location();
-
   expr_t primaryExpr = pop_nodestack();
-
   expr_t e = pop_nodestack();
   flwor_expr* flworExpr = e.dyn_cast<flwor_expr>();
 
   if (flworExpr != NULL) 
   {
-    // for each item in the input seq
+    // for each item in the input seq compute the input seq for the pred
+    // (= outer_dot/primaryExpr)
+#if 0
+    const QueryLoc& loc = v.get_location();
+
     const for_clause* fcOuterDot =
       reinterpret_cast<const for_clause*>((*flworExpr)[0]);
-
-    // compute the input seq for the pred (= outer_dot/primaryExpr)
     if (primaryExpr->get_expr_kind() == axis_step_expr_kind) 
     {
       rchandle<relpath_expr> pathStepExpr = new relpath_expr(loc);
@@ -5367,7 +5457,8 @@ void post_primary_visit(const FilterExpr& v, void* /*visit_state*/)
       pathStepExpr->add_back(primaryExpr.getp());
       primaryExpr = pathStepExpr.getp();
     }
-    
+#endif
+
     let_clause_t lcPredSeq = wrap_in_letclause(primaryExpr.getp());
 
     flworExpr->add_clause(lcPredSeq);
@@ -5409,6 +5500,7 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
 
   PredicateList* pl = v.get_predicate_list().getp();
 
+  // Nothing to do if there are no predicates
   if (pl == NULL || pl->size() == 0)
     return;
 
@@ -5422,20 +5514,37 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
   flwor_expr* flworExpr = e.dyn_cast<flwor_expr>();
   ZORBA_ASSERT(flworExpr != NULL);
 
-  // for each item in the input seq
+  axis_kind_t axisKind = axisExpr->getAxis();
+
+  // For each item in the input seq compute the input seq for the preds (i.e.
+  // outer_dot/axisExpr). In particular, the following exprs are pushed to the
+  // nodestack:
+  //
+  // [ for $$dot at $$pos in sort-distinct(pathExpr-(i-1))
+  //   let $$predInput := $$dot/axis::test ]
+  //
+  // [ $$predInput ]
   const for_clause* fcOuterDot = reinterpret_cast<const for_clause*>((*flworExpr)[0]);
-
-  // compute the input seq for the pred (= outer_dot/axisExpr)
-  rchandle<relpath_expr> pathStepExpr = new relpath_expr(loc);
-  pathStepExpr->add_back(fcOuterDot->get_var());
-  pathStepExpr->add_back(axisExpr.getp());
+  rchandle<relpath_expr> predPathExpr = new relpath_expr(loc);
+  predPathExpr->add_back(fcOuterDot->get_var());
+  predPathExpr->add_back(axisExpr.getp());
     
-  rchandle<let_clause> lcPredSeq = wrap_in_letclause(pathStepExpr.getp());
+  expr_t predInputExpr = predPathExpr;
+  
+  if (axisKind == axis_kind_ancestor ||
+      axisKind == axis_kind_ancestor_or_self ||
+      axisKind == axis_kind_preceding_sibling ||
+      axisKind == axis_kind_preceding)
+  {
+    predInputExpr = wrap_in_dos_and_dupelim(predInputExpr, false, true);
+  }
 
-  flworExpr->add_clause(lcPredSeq);
+  rchandle<let_clause> lcPredInput = wrap_in_letclause(predInputExpr.getp());
+
+  flworExpr->add_clause(lcPredInput);
 
   nodestack.push(flworExpr);
-  nodestack.push(lcPredSeq->get_var());
+  nodestack.push(lcPredInput->get_var());
 }
 
 
@@ -5528,12 +5637,14 @@ void *begin_visit (const ForwardStep& v)
 }
 
 
-void end_visit (const ForwardStep& v, void* /*visit_state*/) {
+void end_visit (const ForwardStep& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit (const AbbrevForwardStep& v) {
+void *begin_visit (const AbbrevForwardStep& v) 
+{
   TRACE_VISIT ();
 
   rchandle<axis_step_expr> ase = expect_axis_step_top ();
@@ -5548,18 +5659,21 @@ void *begin_visit (const AbbrevForwardStep& v) {
 }
 
 
-void end_visit (const AbbrevForwardStep& v, void* /*visit_state*/) {
+void end_visit (const AbbrevForwardStep& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit (const ForwardAxis& v) {
+void *begin_visit (const ForwardAxis& v) 
+{
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void end_visit (const ForwardAxis& v, void* /*visit_state*/) {
+void end_visit (const ForwardAxis& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 
   rchandle<axis_step_expr> ase = expect_axis_step_top ();
@@ -5605,24 +5719,28 @@ void end_visit (const ForwardAxis& v, void* /*visit_state*/) {
 }
 
 
-void *begin_visit (const ReverseStep& v) {
+void *begin_visit (const ReverseStep& v) 
+{
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void end_visit (const ReverseStep& v, void* /*visit_state*/) {
+void end_visit (const ReverseStep& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit (const ReverseAxis& v) {
+void *begin_visit (const ReverseAxis& v) 
+{
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void end_visit (const ReverseAxis& v, void* /*visit_state*/) {
+void end_visit (const ReverseAxis& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 
   rchandle<axis_step_expr> ase = expect_axis_step_top ();
@@ -5847,7 +5965,7 @@ void end_visit (const UnionExpr& v, void* /*visit_state*/) {
   fo_expr *fo_h = new fo_expr(loc, LOOKUP_OP2 ("union"));
   fo_h->add(e2_h);
   fo_h->add(e1_h);
-  nodestack.push(new fo_expr (loc, LOOKUP_OP1 ("sort-distinct-nodes-ascending"), fo_h));
+  nodestack.push(new fo_expr (loc, LOOKUP_OP1 ("sort-distinct-nodes-asc"), fo_h));
 }
 
 void *begin_visit (const UnorderedExpr& v) {
