@@ -209,10 +209,14 @@ main(int argc, char** argv)
     }
     catch (zorba::ZorbaException &e) 
     {
-      if (isErrorExpected(e, lState)) {
+      if (isErrorExpected(e, lState)) 
+      {
         std::cout << "Expected compiler error:\n" << e << std::endl;
+        std::cout << "updtestdriver: success" << std::endl;
         return 0;
-      } else {
+      }
+      else 
+      {
         std::cout << "Unexpected compiler error:\n" << e << std::endl;
         return 3;
       }
