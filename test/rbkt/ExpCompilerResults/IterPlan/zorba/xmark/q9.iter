@@ -104,7 +104,7 @@ Iterator tree for main query:
                 <ElementIterator>
                   <SingletonIterator value="xs:QName(,,item)"/>
                   <EnclosedIterator attr_cont="false">
-                    <NodeSortIterator>
+                    <NodeSortIterator distinct="true" ascending="true">
                       <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
                         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
                           <flwor::FLWORIterator>

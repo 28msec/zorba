@@ -1,5 +1,5 @@
 Iterator tree for main query:
-<NodeSortIterator>
+<NodeSortIterator distinct="true" ascending="true">
   <flwor::FLWORIterator>
     <ForVariable name="$$dot">
       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill allowed="0">
