@@ -149,8 +149,7 @@ namespace zorba {
                                                       false,
                                                       false,
                                                       bindings,
-                                                      baseUri,
-                                                      true);
+                                                      baseUri);
 
     if (result != NULL)
       *result = temp_result;
