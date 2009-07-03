@@ -187,96 +187,91 @@ void processElement(
     EventSchemaValidator& schemaValidator,
     store::Item_t element)
 {
-    ZORBA_ASSERT(element->isNode());
-    ZORBA_ASSERT(element->getNodeKind() == store::StoreConsts::elementNode);
+  ZORBA_ASSERT(element->isNode());
+  ZORBA_ASSERT(element->getNodeKind() == store::StoreConsts::elementNode);
     
-    store::Item_t nodeName = element->getNodeName();
-    xqpStringStore_t baseUri = element->getBaseURI();
+  store::Item_t nodeName = element->getNodeName();
+  xqpStringStore_t baseUri = element->getBaseURI();
     
-    //cout << " vup    - processElement: " << nodeName->getLocalName()->c_str()
-    //    << " @ " << nodeName->getNamespace()->c_str() << "\n"; cout.flush();
+  //cout << " vup    - processElement: " << nodeName->getLocalName()->c_str()
+  //    << " @ " << nodeName->getNamespace()->c_str() << "\n"; cout.flush();
             
-    schemaValidator.startElem(nodeName);
+  schemaValidator.startElem(nodeName);
     
-    // namespace declarations must go first
-    processNamespaces( schemaValidator, element);
+  // namespace declarations must go first
+  processNamespaces( schemaValidator, element);
         
-    // since the type of an element is determined only after the validator
-    // receives all of it's attributes, and an attribute node needs it's
-    // parent when created we need to go through the attributes twice: once
-    // for validation and once for creation
-    validateAttributes(schemaValidator, element->getAttributes());
+  // since the type of an element is determined only after the validator
+  // receives all of it's attributes, and an attribute node needs it's
+  // parent when created we need to go through the attributes twice: once
+  // for validation and once for creation
+  validateAttributes(schemaValidator, element->getAttributes());
         
-    store::Item_t typeQName = schemaValidator.getTypeQName();
+  store::Item_t typeQName = schemaValidator.getTypeQName();
     
-    //cout << " vup      - elemType old: "
-    //    << element->getType()->getLocalName()->c_str() << " @ "
-    //    << element->getType()->getNamespace()->c_str() << "\n"; cout.flush();
-    //cout << " vup      - elemType new: " << typeQName->getLocalName()->c_str()
-    //    << " @ " << typeQName->getNamespace()->c_str() << "\n"; cout.flush();
+  //cout << " vup      - elemType old: "
+  //    << element->getType()->getLocalName()->c_str() << " @ "
+  //    << element->getType()->getNamespace()->c_str() << "\n"; cout.flush();
+  //cout << " vup      - elemType new: " << typeQName->getLocalName()->c_str()
+  //    << " @ " << typeQName->getNamespace()->c_str() << "\n"; cout.flush();
+  
+  bool isNewType = false;
+  xqtref_t newType;
+  bool tHasValue;
+  bool tHasTypedValue;
+  bool tHasEmptyValue;
+  store::PUL* p = NULL;
+  store::Item_t elm;
+  
+  if ( !typeQName->equals(element->getType()) )
+  {
+    isNewType = true;
+    newType = typeManager->create_named_type(typeQName);
     
-    bool isNewType = false;
-    TypeIdentifier_t newTypeIdent;
-    xqtref_t newType;
-    bool tHasValue;
-    bool tHasTypedValue;
-    bool tHasEmptyValue;
-    store::PUL* p = NULL;
-    store::Item_t elm;
+    p = static_cast<store::PUL *>(pul.getp());
+    elm = element;
+  }
+  
+  store::NsBindings bindings;
+  element->getNamespaceBindings(bindings);
+  namespace_context nsCtx = namespace_context(staticContext, bindings);
+  
+  processAttributes(pul, nsCtx, typeManager, schemaValidator, element, element->getAttributes());
+  
+  std::vector<store::Item_t> typedValues;
+  processChildren(pul, staticContext, nsCtx, typeManager, schemaValidator, 
+                  element->getChildren(), typedValues);
     
-    if ( !typeQName->equals(element->getType()) )
-    {
-        isNewType = true;
-        newTypeIdent = TypeIdentifier::createNamedType(typeQName->getNamespace(),
-                                                    typeQName->getLocalName() );
-        
-        newType = typeManager->create_type(*newTypeIdent);
-        
-        
-        p = static_cast<store::PUL *>(pul.getp());
-        elm = element;
-    }
+  if ( isNewType )
+  {    
+    //cout << " vup        - addSetElementType: " << elm->getNodeName()->getLocalName()->str() << "   " << newTypeIdent->getLocalName() << " @ " << newTypeIdent->getUri() << "\n"; cout.flush();
+    //cout << " vup             - " << ( tHasTypedValue ? "hasTypedValue" : "" ) << " values.size: " << typedValues.size() << (typedValues.size()>0 ? " [0]=" + typedValues[0]->getStringValue()->str() : "" ) << ( tHasValue ? " hasValue" : "" ) << ( tHasEmptyValue ? " hasEmptyValue" : "" ) << "\n"; cout.flush();
     
-    store::NsBindings bindings;
-    element->getNamespaceBindings(bindings);
-    namespace_context nsCtx = namespace_context(staticContext, bindings);
-            
-    processAttributes(pul, nsCtx, typeManager, schemaValidator, element, element->getAttributes());
-        
-    std::vector<store::Item_t> typedValues;
-    processChildren(pul, staticContext, nsCtx, typeManager, schemaValidator, 
-                    element->getChildren(), typedValues);
+    tHasValue      = typeHasValue(newType);
+    tHasTypedValue = typeHasTypedValue(newType);
+    tHasEmptyValue = typeHasEmptyValue(newType);
     
-    if ( isNewType )
-    {    
-        //cout << " vup        - addSetElementType: " << elm->getNodeName()->getLocalName()->str() << "   " << newTypeIdent->getLocalName() << " @ " << newTypeIdent->getUri() << "\n"; cout.flush();
-        //cout << " vup             - " << ( tHasTypedValue ? "hasTypedValue" : "" ) << " values.size: " << typedValues.size() << (typedValues.size()>0 ? " [0]=" + typedValues[0]->getStringValue()->str() : "" ) << ( tHasValue ? " hasValue" : "" ) << ( tHasEmptyValue ? " hasEmptyValue" : "" ) << "\n"; cout.flush();
-            
-        tHasValue      = typeHasValue(newType);
-        tHasTypedValue = typeHasTypedValue(newType);
-        tHasEmptyValue = typeHasEmptyValue(newType);
-
-        if ( typedValues.size()==1 )
-            p->addSetElementType(elm,
-                                typeQName,
-                                typedValues[0],
-                                tHasValue, 
-                                tHasEmptyValue,
-                                tHasTypedValue,
-                                element->isId(),
-                                element->isIdRefs());
-        else
-            p->addSetElementType(elm,
-                                typeQName,
-                                (std::vector<store::Item_t>&)typedValues,
-                                tHasValue, 
-                                tHasEmptyValue,
-                                tHasTypedValue,
-                                element->isId(),
-                                element->isIdRefs());
-    }
-
-    schemaValidator.endElem(nodeName);
+    if ( typedValues.size()==1 )
+      p->addSetElementType(elm,
+                           typeQName,
+                           typedValues[0],
+                           tHasValue, 
+                           tHasEmptyValue,
+                           tHasTypedValue,
+                           element->isId(),
+                           element->isIdRefs());
+    else
+      p->addSetElementType(elm,
+                           typeQName,
+                           (std::vector<store::Item_t>&)typedValues,
+                           tHasValue, 
+                           tHasEmptyValue,
+                           tHasTypedValue,
+                           element->isId(),
+                           element->isIdRefs());
+  }
+  
+  schemaValidator.endElem(nodeName);
 }
 
 
