@@ -268,7 +268,21 @@ void printCommons(const PlanIterator* aIter, int theId)
 
   PRINTER_VISITOR_DEFINITION (NodeDistinctIterator)
 
-  PRINTER_VISITOR_DEFINITION (NodeSortIterator)
+
+void beginVisit ( const NodeSortIterator& a )  
+{
+  thePrinter.startBeginVisit("NodeSortIterator", ++theId); 
+  printCommons(&a, theId);  
+  thePrinter.addAttribute("distinct", (a.getDistinct() ? "true" : "false"));
+  thePrinter.addAttribute("ascending", (a.getAscending() ? "true" : "false"));
+  thePrinter.endBeginVisit( theId);            
+}                  
+                            
+void endVisit ( const NodeSortIterator& ) 
+{               
+  thePrinter.startEndVisit();                  
+  thePrinter.endEndVisit();                    
+}
 
   void beginVisit ( const PathIterator& a ) {
     thePrinter.startBeginVisit("PathIterator", ++theId);
