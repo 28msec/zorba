@@ -1496,6 +1496,12 @@ bool begin_visit (transform_expr& v)
   for (; lIter != lEnd; ++lIter)
   {
     rchandle<var_expr> var = (*lIter)->getVar();
+    expr_t sourceExpr = (*lIter)->getExpr();
+    xqtref_t sourceType = sourceExpr->return_type(ccb->m_sctx);
+
+    if (TypeOps::is_subtype(*sourceType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
+      ZORBA_ERROR_LOC(XUTY0013, qloc);
+
     uint64_t k = (uint64_t) &*var;
     copy_var_iter_map.put(k, new vector<ForVarIter_t>());
   }
