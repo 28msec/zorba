@@ -54,9 +54,7 @@ retry:
   {
   case NOLOCK:
   {
-    assert(theNumWaiters == 0);
     assert(theHolders.size() == 0);
-    assert(!theHaveUpgradeReq);
 
     LockRequest req(READ, thisThread);
     theHolders.push_back(req);
@@ -137,9 +135,7 @@ retry:
   {
   case NOLOCK:
   {
-    assert(theNumWaiters == 0);
     assert(theHolders.size() == 0);
-    assert(!theHaveUpgradeReq);
 
     LockRequest req(WRITE, thisThread);
     theHolders.push_back(req);
