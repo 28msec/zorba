@@ -6,5 +6,5 @@ try {
 } catch * ($code) {
     concat("Caught ", $code)
 } catch err:XPTY0004 {
-    "This is the error throw. But it should be caught in the catch clause above"
+    "This is the error which is thrown. But it is caught in the catch clause above"
 }

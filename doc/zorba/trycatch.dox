@@ -1,67 +1,68 @@
-/** \page trycatch Try-Catch 
+/** \page trycatch Try-Catch - XQuery 1.1
 
-\section trycatchgrammar Try-Catch Grammar
-<table border="0">
-<tr>
-<td>TryCatchExpr</td>
-<td>::=</td>
-<td>TryClause CatchClause+</td>
-</tr>
-<tr>
-<td>TryClause</td>
-<td>::=</td>
-<td>"try" "{" TargetExpr "}"</td>
-</tr>
-<tr>
-<td>CatchClause</td>
-<td>::=</td>
-<td>"catch" "(" NameTest ( "," ErrorCode ( "," ErrorDescr ( "," ErrorVal)?)? )? ")" "{" Expr "}"</td>
-</tr>
-<tr>
-<td>ErrorCode</td>
-<td>::=</td>
-<td>"$" VarName</td>
-</tr>
-<tr>
-<td>ErrorDescr</td>
-<td>::=</td>
-<td>"$" VarName</td>
-</tr>
-<tr>
-<td>ErrorVal</td>
-<td>::=</td>
-<td>"$" VarName</td>
-</tr>
-</table>
+\section trycatch Try/Catch - XQuery 1.1
+Try/Catch has made it into the latest XQuery 1.1 working draft (3 December 2008), see http://www.w3.org/TR/xquery-11/#id-try-catch. 
+The Try/Catch expression provides the user with an error handling mechanism for dynamic and type errors raised during the evaluation of the query.
+This functionality is comparable to the Java or C++ Try/Catch mechanism which allows for catching arbitrary exceptions reported in the body of the Try/Catch expression.
 
-\section trycatchexamples Try-Catch Examples
-A try-catch expression catches errors in expressions that are lexically contained within the try-clause. 
-If the target expression does not raise an error, the result of the try-catch expression is the result of the target expression.
-If the target expression raises an error, the result of the try-catch expression is obtained by evaluating 
-the first first catch clause that "matches" the error value, as described below. 
-An error matches a catch clause if the error's error code matches the clause's NameTest as defined in XQuery 1.0 (see http://www.w3.org/TR/xquery/#node-tests).
-If an error is matched, the optional variables in the catch clause are bound, in order, to the error's code, description, and value.
+A Try/Catch expression catches errors in expressions that are lexically contained in the target expression.
+If the target expression does not raise an error, the result of the Try/Catch expression is the result of the target expression.
+If the target expression raises a dynamic or type  error, the result of the Try/Catch expression is obtained by evaluating the first catch clause that "matches" the error value.
+
+An error matches a catch clause if the error code matches the NameTest of the clause as defined in XQuery 1.1 (see http://www.w3.org/TR/xquery-11/#node-tests).
+If an error is matched, the optional variables in the catch clause are bound, in order, to the code, description, and value of the error.
 These variables are then in scope in the catch clause.
 If no catch clause matches an error, the error is not caught, and propogates upward.
 If an error is raised in a catch clause, the error is not caught, and propogates upward.
 
+Instead of going into more details of the Try/Catch semantics, we refer to the XQuery 1.1 recommendation and present some examples here.
+
+\section trycatchexamples Try-Catch Examples
+
 In the following subsection, we present some examples in order to demonstrate the try-catch functionality.
 
 \subsection example1 Example 1
+The first example demonstrates a simple Try/Catch expression with one catch clause.
+The expression in the catch clause is executed because the target expression (3 + "2") raises the type error XPTY0004.
+The result of executing this query is "Caught a type error".
+
 \include trycatch_doc_example_01.xq
 
 \subsection example2 Example 2
+The following example demonstrates the precedence of multiple catch clauses in one Try/Catch expression.
+In this case, the target expression raises the error XPTY0004.
+It will be caught by the second (catch all) catch clause, although the last catch clause explicitly catches this error.
+Hence, the result os "Caught err:XPTY0004".
 \include trycatch_doc_example_02.xq
 
 \subsection example3 Example 3
+The third example shows how the optional description ($desc) variable can be used in the catch clause to retrieve the description of the error.
+The result is the concatenation of the string representation of the error code and the description of the error.
+In Zorba this returns: "err:XPTY0004 Arithmetic operation not defined between the given types (xs:integer and xs:string)."
+
 \include trycatch_doc_example_03.xq
 
 \subsection example4 Example 4
+The previous example showed, how an optional catch variable bound to the description of the error can be used.
+The following example shows how the third variable of the catch clause can be used to retrieve the error object.
+In this query, the error object is raised by the fn:error function in the catch clause of the inner Try/Catch expression.
+The result is: "An error was caught:  err:XPTY0004 Description: Rethrowing the exception  The cause was: 4"
+
 \include trycatch_doc_example_04.xq
 
 \subsection example5 Example 5
+The fifth example shows that errors are also caught if thrown in a function which is invoked in the target expression.
+
 \include trycatch_doc_example_05.xq
 
-\subsection example5 Example 6
+The result of this query is: "Caught a type error"
+
+\subsection example6 Example 6
+The last example shows a tricky details of the Try/Catch semantics.
+Obviously, the expression '1 div 0' raises the FOAR0001 error.
+At a first glance, one would expect this error to be caught by the catch all expression.
+However, since the expression itself is not lexically contained in the target expression (i.e. only a variable to the result sequence of this expression is used there), the error is not caught.
+The result of the query is the FOAR0001 error.
+
 \include trycatch_doc_example_06.xq
 */
