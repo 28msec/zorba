@@ -50,7 +50,6 @@ static op_node_sort_distinct::nodes_or_atomics_t nodes_or_atomics (xqtref_t type
     return op_node_sort_distinct::ATOMICS;
   else
     return op_node_sort_distinct::MIXED;
-
 }
 
 
@@ -200,9 +199,14 @@ static void mark_casts(
     static_context *sctx) 
 {
   xqtref_t target = node->get_target_type ();
-  if (TypeOps::is_empty (*target)) {
-    TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VAL);
-    TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VAL);
+  if (TypeOps::is_empty (*target)) 
+  {
+    TSVAnnotationValue::update_annotation (input,
+                                           AnnotationKey::IGNORES_SORTED_NODES,
+                                           TSVAnnotationValue::TRUE_VAL);
+    TSVAnnotationValue::update_annotation (input,
+                                           AnnotationKey::IGNORES_DUP_NODES,
+                                           TSVAnnotationValue::TRUE_VAL);
     return;
   }
 
@@ -210,11 +214,19 @@ static void mark_casts(
 
   TypeConstants::quantifier_t q = TypeOps::quantifier (*target);
 
-  if (! is_cast || q == TypeConstants::QUANT_ONE || q == TypeConstants::QUANT_QUESTION) {
-    TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VAL);
-  } else if (is_cast) {
-    TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_SORTED_NODES,
-                                           TSVAnnotationValue::from_bool (node->get_annotation (AnnotationKey::IGNORES_DUP_NODES).getp() == TSVAnnotationValue::TRUE_VAL.getp()));
+  if (! is_cast ||
+      q == TypeConstants::QUANT_ONE ||
+      q == TypeConstants::QUANT_QUESTION) 
+  {
+    TSVAnnotationValue::update_annotation (input,
+                                           AnnotationKey::IGNORES_SORTED_NODES,
+                                           TSVAnnotationValue::TRUE_VAL);
+  }
+  else if (is_cast) 
+  {
+    TSVAnnotationValue::update_annotation (input,
+                                           AnnotationKey::IGNORES_SORTED_NODES,
+                                           TSVAnnotationValue::from_bool(node->get_annotation(AnnotationKey::IGNORES_DUP_NODES).getp() == TSVAnnotationValue::TRUE_VAL.getp()));
   }
 
   bool ignores_dups =
@@ -223,7 +235,8 @@ static void mark_casts(
         && TypeOps::type_min_cnt (*input->return_type (sctx)) >= 1);
   if (is_cast)
     ignores_dups = ignores_dups && node->get_annotation (AnnotationKey::IGNORES_DUP_NODES).getp() == TSVAnnotationValue::TRUE_VAL.getp();
-  TSVAnnotationValue::update_annotation (input, AnnotationKey::IGNORES_DUP_NODES,
+  TSVAnnotationValue::update_annotation (input,
+                                         AnnotationKey::IGNORES_DUP_NODES,
                                          TSVAnnotationValue::from_bool (ignores_dups));
 }
 
@@ -399,20 +412,31 @@ RULE_REWRITE_POST(MarkProducerNodeProps)
 RULE_REWRITE_PRE(EliminateNodeOps)
 {
   static_context *sctx = rCtx.getStaticContext ();
+
   fo_expr *fo = dynamic_cast<fo_expr *>(node);
-  if (fo != NULL) {
-    const function *f = fo->get_func ();
+
+  if (fo != NULL) 
+  {
+    const function* f = fo->get_func();
+
     if (f == LOOKUP_FN ("fn", "unordered", 1))
       return (*fo)[0];
-    const op_node_sort_distinct *nsdf = dynamic_cast<const op_node_sort_distinct *> (f);
-    if (nsdf != NULL) {
-      const function *fmin = nsdf->min_action (sctx, node, (*fo)[0], nodes_or_atomics ((*fo) [0]->return_type (sctx)));
-      if (fmin != NULL) {
-        fo->set_func (fmin);
+
+    const op_node_sort_distinct* nsdf = dynamic_cast<const op_node_sort_distinct *> (f);
+    if (nsdf != NULL) 
+    {
+      const function *fmin = nsdf->min_action(sctx,
+                                              node,
+                                              (*fo)[0],
+                                              nodes_or_atomics((*fo)[0]->return_type(sctx)));
+      if (fmin != NULL) 
+      {
+        fo->set_func(fmin);
       }
-      else {
+      else 
+      {
         // re-compute IGNORES_*
-        fo->set_func (LOOKUP_FN ("fn", "reverse", 1));  // HACK: need fn:identity here
+        fo->set_func(LOOKUP_FN ("fn", "reverse", 1)); // HACK: need fn:identity here
         auto_ptr<Rewriter> rw (new SingletonRuleMajorDriverBase(rule_ptr_t(new MarkConsumerNodeProps())));
         rw->rewrite (rCtx);
         return (*fo)[0];
@@ -422,7 +446,11 @@ RULE_REWRITE_PRE(EliminateNodeOps)
   return NULL;
 }
 
-RULE_REWRITE_POST(EliminateNodeOps) { return NULL; }
+RULE_REWRITE_POST(EliminateNodeOps) 
+{
+  return NULL; 
+}
+
 
 }
 /* vim:set ts=2 sw=2: */
