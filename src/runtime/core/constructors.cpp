@@ -264,8 +264,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                                       false,
                                       false,
                                       theLocalBindings->get_bindings(),
-                                      baseUri,
-                                      false);
+                                      baseUri);
   path.push(result);
 
   // Compute the attributes and children of the element node
@@ -527,6 +526,7 @@ bool TextIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   // node should be constructed.
   if (consumeNext(valueItem, theChild, planState))
   {
+    // ????
     content = (valueItem->isAtomic() ?
                valueItem->getStringValue() :
                valueItem->getAtomizationValue()->getStringValue());
