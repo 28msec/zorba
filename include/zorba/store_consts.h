@@ -27,13 +27,13 @@ class ZORBA_DLL_PUBLIC StoreConsts
 
   enum NodeKind
   {
-    anyNode,
-    documentNode,
-    elementNode,
-    attributeNode,
-    textNode,
-    piNode,
-    commentNode
+    anyNode        = 0,
+    documentNode   = 1,
+    elementNode    = 2,
+    attributeNode  = 3,
+    textNode       = 4,
+    piNode         = 5,
+    commentNode    = 6
   };
 
   enum NsScoping 
