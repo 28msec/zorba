@@ -30,6 +30,8 @@ namespace storeminimal {
 
 #define BASE_NODE(item) (reinterpret_cast<XmlNode*>((item).getp()))
 
+#define INTERNAL_NODE(item) (reinterpret_cast<InternalNode*>((item).getp()))
+
 #define DOC_NODE(item) (reinterpret_cast<DocumentNode*>((item).getp()))
 
 #define ATTR_NODE(item) (reinterpret_cast<AttributeNode*>((item).getp()))
@@ -43,7 +45,7 @@ namespace storeminimal {
 #define COMMENT_NODE(item) (reinterpret_cast<CommentNode*>((item).getp()))
 
 
-enum SchemaTypeCodes
+enum SchemaTypeCode
 {
   XS_UNTYPED = 0,
 

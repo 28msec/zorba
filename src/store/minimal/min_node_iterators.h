@@ -44,7 +44,7 @@ namespace zorba { namespace storeminimal {
 class ChildrenIteratorImpl : public store::ChildrenIterator
 {
 protected:
-  rchandle<XmlNode>  theParentNode;
+  rchandle<InternalNode>  theParentNode;
 
   ulong              theNumChildren;
   ulong              theCurrentPos;
@@ -100,13 +100,13 @@ public:
 class ChildrenIteratorLazy : public store::Iterator
 {
 protected:
-  rchandle<XmlNode>           theParentNode;
+  rchandle<InternalNode>           theParentNode;
 
   //unsigned long       theNumChildren;
   unsigned long       theCurrentPos;
 
 public:
-  ChildrenIteratorLazy(XmlNode* parent);
+  ChildrenIteratorLazy(InternalNode* parent);
 
   void open();
   bool next(store::Item_t& result);
@@ -125,7 +125,7 @@ public:
 class AttributesIteratorImpl : public store::AttributesIterator
 {
 protected:
-  rchandle<XmlNode>  theParentNode;
+  rchandle<ElementNode>  theParentNode;
 
   ulong              theNumAttributes;
   ulong              theCurrentPos;
@@ -140,10 +140,10 @@ public:
     theCurrentPos = 0;
   }
 
-  void init(XmlNode* parent)
+  void init(const ElementNode* parent)
   {
     theParentNode = parent;
-    theNumAttributes = theParentNode->numAttributes();
+    theNumAttributes = parent->numAttributes();
     theCurrentPos = 0;
   }
 
@@ -279,18 +279,18 @@ protected:
     {
       return (theAscending ?
               n1->getTreeId() < n2->getTreeId() ||
-              n1->getTreeId() == n2->getTreeId() &&
-              n1->getOrdPath() < n2->getOrdPath()
+              (n1->getTreeId() == n2->getTreeId() &&
+              n1->getOrdPath() < n2->getOrdPath())
               : 
               n1->getTreeId() > n2->getTreeId() ||
-              n1->getTreeId() == n2->getTreeId() &&
-              n1->getOrdPath() > n2->getOrdPath());
+              (n1->getTreeId() == n2->getTreeId() &&
+              n1->getOrdPath() > n2->getOrdPath()));
     }
   };
 
 protected:
   store::Iterator_t              theInput;
-  bool                    theAscendant;
+  bool                    theAscending;
   bool                    theDistinct;
 
   std::vector<XmlNode*>   theNodes;
@@ -303,7 +303,7 @@ public:
         bool              distinct)
     :
     theInput(input),
-    theAscendant(ascendant),
+    theAscending(ascendant),
     theDistinct(distinct),
     theCurrentNode(-1)
   {

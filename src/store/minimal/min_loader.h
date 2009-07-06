@@ -43,14 +43,14 @@ namespace zorba {
 class XmlTree;
 class XmlNode;
 class NsBindingsContext;
-class ElementTreeNode;
+class ElementNode;
 class NodeVector;
 class SimpleStore;
-class DocumentTreeNode;
+class DocumentNode;
 
 typedef char    xmlChar;
 
-typedef rchandle<DocumentTreeNode>    DocumentTreeNode_t;
+typedef rchandle<DocumentNode>    DocumentNode_t;
 
 
 class mystring
@@ -101,7 +101,7 @@ protected:
   xqpStringStore_t                 theBaseUri;
   xqpStringStore_t                 theDocUri;
 
-  DocumentTreeNode                *theRootNode;
+  DocumentNode                *theRootNode;
 
   std::string                    theWarnings;
 
@@ -135,7 +135,7 @@ protected:
     QNAME_ELEM    name;
     //NsBindingsContext_t    ns_bindings_context;
 
-    ElementTreeNode       *elemNode;
+    ElementNode       *elemNode;
   }TAG_ELEM;
   std::list<TAG_ELEM*>      tag_stack;
 
@@ -185,7 +185,7 @@ public:
                    enum lazyloadType_t,//for lazy loading, UNTIL_START_ELEMENT or UNTIL_END_ELEMENT
                    unsigned short   depth);//for lazy loading, 1 based, when to stop loading;
 protected:
-  void setRoot(DocumentTreeNode* root);
+  void setRoot(DocumentNode* root);
 
   int  read_char();
   void unread_char();

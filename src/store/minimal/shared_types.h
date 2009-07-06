@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 #include "zorbamisc/config/platform.h"
-#include "common/shared_types.h"
+
+#include "zorbatypes/rchandle.h"
 
 namespace zorba 
 {
@@ -23,6 +24,7 @@ namespace zorba
   {
     class XmlTree;
     typedef rchandle<XmlTree> XmlTree_t;
+
     class XmlNode;
     typedef rchandle<class XmlNode> XmlNode_t;
   }

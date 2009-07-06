@@ -89,7 +89,6 @@ SimpleStore::SimpleStore()
   theIteratorFactory(NULL),
   theDocuments(DEFAULT_COLLECTION_MAP_SIZE, true),
   theCollections(DEFAULT_COLLECTION_MAP_SIZE, true),
-  theQueryContextContainer(NULL),
   theTraceLevel(0)
 {
 }
@@ -119,8 +118,6 @@ void SimpleStore::init()
     theIteratorFactory = new SimpleIteratorFactory();
 
     theTraceLevel = 0;//store::Properties::instance()->storeTraceLevel();
-
-    theQueryContextContainer = new QueryContextContainer;
 
     theIsInitialized = true;
   }
@@ -215,12 +212,6 @@ void SimpleStore::shutdown()
 
   theDocuments.clear();
 
-  if (theQueryContextContainer != NULL)
-  {
-    delete theQueryContextContainer;
-    theQueryContextContainer = NULL;
-  }
-
   if (theItemFactory != NULL)
   {
     delete theItemFactory;
@@ -273,22 +264,6 @@ XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
 {
   return new XmlLoader(theItemFactory, aErrorManager);
 }
-
-
-/*******************************************************************************
-
-********************************************************************************/
-QueryContext& SimpleStore::getQueryContext(ulong queryId)
-{
-  return theQueryContextContainer->getContext(queryId);
-}
-
-
-void SimpleStore::deleteQueryContext(ulong queryId)
-{
-  theQueryContextContainer->removeContext(queryId);
-}
-
 
 
 /*******************************************************************************
@@ -459,8 +434,8 @@ store::Item_t SimpleStore::loadDocument(
 
   if (found)
   {
-    theDocuments.remove(uri);
-    //return root.getp();
+    //daniel heDocuments.remove(uri);
+    return root.getp();
   }
 
   error::ErrorManager lErrorManager;
@@ -481,7 +456,8 @@ store::Item_t SimpleStore::loadDocument(
 }
 
 /*******************************************************************************
-
+For lazy loading...
+Param stream is a heap pointer to an input stream. This is to be deallocated by Zorba.
 ********************************************************************************/
 store::Item_t SimpleStore::loadDocument(
             const xqpStringStore_t& uri, 
@@ -802,19 +778,28 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   {
     ulong i;
 
-    if (attributeNode)
+    if (parent->getNodeKind() != store::StoreConsts::documentNode &&
+        parent->getNodeKind() != store::StoreConsts::elementNode)
     {
-      ulong numAttrs = parent->numAttributes();
+      result = NULL;
+      return false;
+    }
+
+    if (attributeNode && parent->getNodeKind() == store::StoreConsts::elementNode)
+    {
+      ElementNode* elemParent = reinterpret_cast<ElementNode*>(parent);
+
+      ulong numAttrs = elemParent->numAttributes();
       for (i = 0; i < numAttrs; i++)
       {
-        XmlNode* child = parent->getAttr(i);
+        XmlNode* child = elemParent->getAttr(i);
 
         OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(op);
 
         if (pos == OrdPath::SELF)
         {
           result = child;
-          return result!=0;
+          return true;
         }
         else if (pos == OrdPath::DESCENDANT)
         {
@@ -829,17 +814,19 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
       }
 
     }
-    ulong numChildren = parent->numChildren();
+    InternalNode* parent2 = reinterpret_cast<InternalNode*>(parent);
+
+    ulong numChildren = parent2->numChildren();
     for (i = 0; i < numChildren; i++)
     {
-      XmlNode* child = parent->getChild(i);
+      XmlNode* child = parent2->getChild(i);
 
       OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(op);
 
       if (pos == OrdPath::SELF)
       {
         result = child;
-        return result != NULL;
+        return true;
       }
       else if (pos == OrdPath::DESCENDANT)
       {

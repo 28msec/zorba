@@ -837,17 +837,11 @@ bool BasicItemFactory::createNOTATION(
 
   baseUri       : The base-uri property of N. It may be NULL.
   docUri        : The document-uri property of N. It may be NULL.
-  allowSharing  : A zorba-specific parameter used to optimize node-construction
-                  expressions by avoiding node copying whenever possible. If
-                  true, then N may have as children nodes that belong to a
-                  different XML tree than N (the parent of such a "shared"
-                  node C is not N, but a node in the same XmlTree as C). 
 ********************************************************************************/
 bool BasicItemFactory::createDocumentNode(
     store::Item_t&    result,
     xqpStringStore_t& baseUri,
-    xqpStringStore_t& docUri,
-    bool              allowSharing)
+    xqpStringStore_t& docUri)
 {
   XmlTree* xmlTree = NULL;
   DocumentNode* n = NULL;
@@ -856,10 +850,7 @@ bool BasicItemFactory::createDocumentNode(
   {
     xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
 
-   if (allowSharing)
-     n = new DocumentDagNode(xmlTree, baseUri, docUri);
-   else
-     n = new DocumentTreeNode(xmlTree, baseUri, docUri);
+    n = new DocumentNode(xmlTree, baseUri, docUri);
   }
   catch (...)
   {
@@ -888,15 +879,25 @@ bool BasicItemFactory::createDocumentNode(
   haveEmptyValue: True if the typed value of the node is the empty sequence.
                   This is the case if the element has a complex type with empty
                   content.
-  localBindings : A set of namespace bindings. The namespaces property of N is
-                  the union of this set and the namespaces property of P.
+  isId          :
+  isIdRefs      :
+  localBindings : A set S1 of namespace bindings. The namespaces property of N
+                  is set to S1, plus the ns binding implied by N's qname, plus
+                  all the ns bindings of P that are not overwritten by S1 or the
+                  ns binding implied by N's qname. Note: when called from an
+                  element constructor iterator, S1 is the set of ns bindings
+                  defined by ns decalration attrs that appear inside the 
+                  constructor expr itself.
   baseUri       : The base-uri property of N. It may be NULL, in which case, 
-                  the base-uri property of N is the same as that of P.
-  allowSharing  : A zorba-specific parameter used to optimize node-construction
-                  expressions by avoiding node copying whenever possible. If
-                  true, then N may have as children/attributes nodes that belong
-                  to a different XML tree than N (the parent of such a "shared"
-                  node C is not N, but a node in the same XmlTree as C). 
+                  the base-uri property of N is the same as that of P. If P
+                  is NULL, then baseUri will NOT be null (see 
+                  runtime/core/constructors.cpp).
+
+  The haveTypedValue and haveEmptyValue properties are actually a function of
+  the node's type. However, since the store stores only the name of the type
+  and does not know anything about the definition of that type, the caller
+  of this method must provide the value for these two properties, which are
+  needed to implement the getTypedValue() method.
 ********************************************************************************/
 bool BasicItemFactory::createElementNode(
     store::Item_t&              result,
@@ -909,29 +910,26 @@ bool BasicItemFactory::createElementNode(
     bool                        isId,
     bool                        isIdRefs,
     const store::NsBindings&    localBindings,
-    xqpStringStore_t&           baseUri,
-    bool                        allowSharing)
+    xqpStringStore_t&           baseUri)
 {
   XmlTree* xmlTree = NULL;
   ElementNode* n = NULL;
 
-  XmlNode* pnode = reinterpret_cast<XmlNode*>(parent);
+  assert(parent == NULL ||
+         parent->getNodeKind() == store::StoreConsts::elementNode ||
+         parent->getNodeKind() == store::StoreConsts::documentNode);
+
+  InternalNode* pnode = reinterpret_cast<InternalNode*>(parent);
 
   try
   {
     if (parent == NULL)
       xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
 
-    if (allowSharing)
-      n = new ElementDagNode(xmlTree, pnode, pos, nodeName,
-                             typeName, haveTypedValue, haveEmptyValue,
-							 isId, isIdRefs,
-                             &localBindings, baseUri);
-    else
-      n = new ElementTreeNode(xmlTree, pnode, pos, nodeName,
-                              typeName, haveTypedValue, haveEmptyValue,
-							  isId, isIdRefs,
-                              &localBindings, false, baseUri);
+    n = new ElementNode(xmlTree, pnode, pos, nodeName,
+                        typeName, haveTypedValue, haveEmptyValue,
+                        isId, isIdRefs,
+                        &localBindings, baseUri, false);
   }
   catch (...)
   {
@@ -957,7 +955,10 @@ bool BasicItemFactory::createElementNode(
                   N is appended to the list of attributes.
   nodeName      : The node-name property of N.
   typeName      : The type-name property of N.
-  typedValue    : The typed-value property of N.
+  typedValue    : The typed-value property of N, for the case where the
+                  typed-value is a single atomic value.
+  isId          :
+  isIdRefs      :
 ********************************************************************************/
 bool BasicItemFactory::createAttributeNode(
     store::Item_t&  result,
@@ -972,7 +973,8 @@ bool BasicItemFactory::createAttributeNode(
   XmlTree* xmlTree = NULL;
   AttributeNode* n = NULL;
 
-  assert(parent == NULL || parent->getNodeKind() == store::StoreConsts::elementNode);
+  assert(parent == NULL ||
+         parent->getNodeKind() == store::StoreConsts::elementNode);
 
   ElementNode* pnode = reinterpret_cast<ElementNode*>(parent);
 
@@ -987,8 +989,16 @@ bool BasicItemFactory::createAttributeNode(
       pnode->checkUniqueAttr(nodeName.getp());
     }
 
-    n = new AttributeNode(xmlTree, pnode, pos,
-                          nodeName, typeName, typedValue, false, isId, isIdRefs, false, 0);
+    n = new AttributeNode(xmlTree,
+                          pnode,
+                          pos,
+                          nodeName,
+                          typeName,
+                          typedValue,
+                          false,     // isListValue
+                          isId,
+                          isIdRefs,
+                          false);    // hidden
   }
   catch (...)
   {
@@ -1001,6 +1011,22 @@ bool BasicItemFactory::createAttributeNode(
 }
 
 
+/*******************************************************************************
+  Create a new attribute node N and place it as the pos-th attribute of a given
+  parent node. If no parent is given, N becomes the root (and single node) of a
+  new XML tree. 
+
+  parent        : The parent P of the new attribute node; may be NULL.
+  pos           : The position, among the attributes of P, that N will occupy.
+                  If pos < 0 or pos >= current number of P's attributes, then
+                  N is appended to the list of attributes.
+  nodeName      : The node-name property of N.
+  typeName      : The type-name property of N.
+  typedValueV   : The typed-value property of N, for the case where the
+                  typed-value is a sequence of atomic values.
+  isId          :
+  isIdRefs      :
+********************************************************************************/
 bool BasicItemFactory::createAttributeNode(
     store::Item_t&              result,
     store::Item*                parent,
@@ -1012,7 +1038,7 @@ bool BasicItemFactory::createAttributeNode(
     bool                        isIdRefs)
 {
   XmlTree* xmlTree = NULL;
-  AttributeNode* n = NULL;
+  AttributeNode* node = NULL;
 
   ElementNode* pnode = reinterpret_cast<ElementNode*>(parent);
 
@@ -1029,8 +1055,16 @@ bool BasicItemFactory::createAttributeNode(
 
     store::Item_t typedValue = new ItemVector(typedValueV);
  
-    n = new AttributeNode(xmlTree, pnode, pos,
-                          nodeName, typeName, typedValue, true, isId, isIdRefs, false, 0);
+    node = new AttributeNode(xmlTree,
+                             pnode,
+                             pos,
+                             nodeName,
+                             typeName,
+                             typedValue,
+                             true,     // isListValue
+                             isId,
+                             isIdRefs,
+                             false);   // hidden
   }
   catch (...)
   {
@@ -1038,15 +1072,17 @@ bool BasicItemFactory::createAttributeNode(
     throw;
   }
 
-  result = n;
-  return n != NULL;
+  result = node;
+  return node != NULL;
 }
 
 
 /*******************************************************************************
   Create a new text node N and place it as the pos-th child of a given parent
   node. If no parent is given, N becomes the root (and single node) of a
-  new XML tree. 
+  new XML tree. If N is going to be placed next to an existing text node T,
+  then no new text node is actually created, but instead the givan content 
+  is concatanated with the content of T. 
 
   parent        : The parent P of the new text node; may be NULL.
   pos           : The position, among the children of P, that N will occupy.
@@ -1063,7 +1099,7 @@ bool BasicItemFactory::createTextNode(
   XmlTree* xmlTree = NULL;
   TextNode* n = NULL;
 
-  XmlNode* pnode = reinterpret_cast<XmlNode*>(parent);
+  InternalNode* pnode = reinterpret_cast<InternalNode*>(parent);
 
   try
   {
@@ -1075,33 +1111,41 @@ bool BasicItemFactory::createTextNode(
     }
     else
     {
-      ulong pos2 = (pos >= 0 ? pos : pnode->numChildren());
+      ulong numChildren = pnode->numChildren();
+
+      ulong pos2 = (pos >= 0 ? pos : numChildren);
 
       XmlNode* lsib = (pos2 > 0 ? pnode->getChild(pos2-1) : NULL);
+      XmlNode* rsib = (pos2 + 1 < numChildren ? pnode->getChild(pos2) : NULL);
 
       if (lsib != NULL && lsib->getNodeKind() == store::StoreConsts::textNode)
       {
         TextNode* textSibling = reinterpret_cast<TextNode*>(lsib);
 
-        ZORBA_ASSERT(pnode->getNodeKind() != store::StoreConsts::elementNode ||
-                     !reinterpret_cast<ElementNode*>(pnode)->haveTypedValue());
+        ZORBA_ASSERT(!textSibling->isTyped());
 
-        if (lsib->getParent() == parent)
-        {
-          xqpStringStore_t content2 = textSibling->getText()->append(content);
-          textSibling->setText(content2);
-          result = lsib;
-        }
-        else
-        {
-          xqpStringStore_t content2 = textSibling->getText()->append(content);
-          pnode->removeChild(pos2-1);
-          result = new TextNode(NULL, pnode, pos2-1, content2);
-        }
+        xqpStringStore_t content2 = textSibling->getText()->append(content);
+        textSibling->setText(content2);
+
+        result = lsib;
         return result != NULL;
       }
- 
-      n = new TextNode(xmlTree, pnode, pos, content);
+      else if (rsib != NULL && rsib->getNodeKind() == store::StoreConsts::textNode)
+      {
+        TextNode* textSibling = reinterpret_cast<TextNode*>(rsib);
+
+        ZORBA_ASSERT(!textSibling->isTyped());
+
+        xqpStringStore_t content2 = content->append(textSibling->getText());
+        textSibling->setText(content2);
+
+        result = rsib;
+        return result != NULL;
+      }
+      else
+      {
+        n = new TextNode(xmlTree, pnode, pos, content);
+      }
     }
   }
   catch (...)
@@ -1175,7 +1219,11 @@ bool BasicItemFactory::createPiNode(
   XmlTree* xmlTree = NULL;
   PiNode* n = NULL;
 
-  XmlNode* pnode = reinterpret_cast<XmlNode*>(parent);
+  assert(parent == NULL ||
+         parent->getNodeKind() == store::StoreConsts::elementNode ||
+         parent->getNodeKind() == store::StoreConsts::documentNode);
+
+  InternalNode* pnode = reinterpret_cast<InternalNode*>(parent);
 
   try
   {
@@ -1215,7 +1263,11 @@ bool BasicItemFactory::createCommentNode(
   XmlTree* xmlTree = NULL;
   CommentNode* n = NULL;
 
-  XmlNode* pnode = reinterpret_cast<XmlNode*>(parent);
+  assert(parent == NULL ||
+         parent->getNodeKind() == store::StoreConsts::elementNode ||
+         parent->getNodeKind() == store::StoreConsts::documentNode);
+
+  InternalNode* pnode = reinterpret_cast<InternalNode*>(parent);
 
   try
   {

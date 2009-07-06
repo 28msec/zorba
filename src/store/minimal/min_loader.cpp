@@ -191,7 +191,7 @@ void XmlLoader::clear_tag_stack()
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlLoader::setRoot(DocumentTreeNode* root)
+void XmlLoader::setRoot(DocumentNode* root)
 {
   theRootNode = root;
   theTree->setRoot(root);
@@ -479,7 +479,7 @@ bool XmlLoader::read_qname(QNAME_ELEM &qname, bool read_attr)
   return true;
 }
 
-bool XmlLoader::read_attributes(store::NsBindings *nsbindings,//ElementTreeNode *elemNode,
+bool XmlLoader::read_attributes(store::NsBindings *nsbindings,//ElementNode *elemNode,
                               attr_list_t& attrs)
 {
   ATTR_ELEM   attr;
@@ -576,6 +576,7 @@ bool XmlLoader::read_attributes(store::NsBindings *nsbindings,//ElementTreeNode 
         nsbindings->push_back(std::pair<xqpString, xqpString>(new xqpStringStore(attr.name.localname), pooledNs.getp()));
       }
     }
+#if 0
     else if((attr.name.localname_len == 14) && !strcmp(attr.name.localname, "schemaLocation"))
     {
       xqpStringStore_t uri;
@@ -588,6 +589,7 @@ bool XmlLoader::read_attributes(store::NsBindings *nsbindings,//ElementTreeNode 
         theTree->setSchemaUri(schemaUri);
       }
     }
+#endif
     else
     {
       attr.value = new xqpStringStore(temp_buff.c_str(), temp_buff.length());
@@ -621,7 +623,7 @@ bool XmlLoader::fill_in_uri(store::NsBindings  *nsbindings,
 
   for(tag_it = tag_stack.rbegin(); tag_it != tag_stack.rend();tag_it++)
   {
-    ElementTreeNode       *elemNode = (*tag_it)->elemNode;
+    ElementNode       *elemNode = (*tag_it)->elemNode;
     NsBindingsContext     *ns_context = elemNode->getNsContext();
     if(!ns_context)
       continue;
@@ -767,7 +769,7 @@ bool XmlLoader::read_tag()
 //  store::Item_t    qname_item(qname);
   ///-store::Item_t tname = store.theSchemaTypeNames[XS_UNTYPED];
   // Create the element node and push it to the node stack
-  ///-tag_elem->elemNode = new ElementTreeNode(NULL,//qname_item,
+  ///-tag_elem->elemNode = new ElementNode(NULL,//qname_item,
   ///-                                        tname);//numAttributes);
 
   //NodeVector  &elem_attrs = tag_elem->elemNode->attributes();
@@ -1358,11 +1360,11 @@ void XmlLoader::startDocument(void * ctx)
 
   try
   {
-    DocumentTreeNode* docNode = new DocumentTreeNode();
+    DocumentNode* docNode = new DocumentNode();
 
     loader.setRoot(docNode);
 
-    docNode->is_full_loaded = false;
+    docNode->setIsFullLoaded(false);
 
     SYNC_CODE(docNode->theRCLockPtr = &loader.theTree->getRCLock();)
     docNode->setId(loader.theTree, &loader.theOrdPath);
@@ -1399,7 +1401,7 @@ void XmlLoader::endDocument(void * ctx)
   {
     if(loader.theRootNode)
     {
-      loader.theRootNode->is_full_loaded = true;
+      loader.theRootNode->setIsFullLoaded(true);
       loader.theRootNode->finalizeNode();
     }
 
@@ -1451,13 +1453,14 @@ void XmlLoader::startElement(
   {
     // Get the parent node from the node stack
     std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
-    XmlNode   *parent;
+    InternalNode   *parent;
     parent_tag = tag_stack.rbegin();
     parent_tag++;
     if(parent_tag == tag_stack.rend())
       parent = theRootNode;
     else
       parent = (*parent_tag)->elemNode;
+    //ElementNode *parent_elem = dynamic_cast<ElementNode*>(parent);
 
     // Construct node name and type
     qname = qnpool.insert(   tag_elem->name.uri->c_str(), 
@@ -1468,13 +1471,13 @@ void XmlLoader::startElement(
     if (parent == NULL)
       baseUri = theBaseUri;
 
-    tag_elem->elemNode = new ElementTreeNode(qname,
+    tag_elem->elemNode = new ElementNode(qname,
                                             &nsbindings,//numBindings,
                                             (ulong)elem_attrs.size());
     tag_elem->elemNode->setIsFullLoaded(false);
     tag_elem->elemNode->depth = (unsigned int)tag_stack.size();//has been already pushed into tag stack
 
-    parent->children().push_back(tag_elem->elemNode, false);
+    parent->children().push_back(tag_elem->elemNode);
     tag_elem->elemNode->setParent(parent);
 
     if(tag_elem->elemNode->theNsContext)
@@ -1595,7 +1598,7 @@ void XmlLoader::characters(void * ctx, xqpStringStore_t content)//const xmlChar 
   {
     std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
     parent_tag = loader.tag_stack.rbegin();
-    XmlNode* parent;
+    InternalNode* parent;
     if(parent_tag != loader.tag_stack.rend())
       parent = (*parent_tag)->elemNode;
     else
@@ -1616,7 +1619,7 @@ void XmlLoader::characters(void * ctx, xqpStringStore_t content)//const xmlChar 
     else
     {
       XmlNode* textNode = new TextNode(content);
-      parent->children().push_back(textNode, false);
+      parent->children().push_back(textNode);
       textNode->setParent(parent);
 
       textNode->setId(loader.theTree, &loader.theOrdPath);
@@ -1681,7 +1684,7 @@ void XmlLoader::processingInstruction(
 
     std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
     parent_tag = loader.tag_stack.rbegin();
-    XmlNode *parent;
+    InternalNode *parent;
     if(parent_tag != loader.tag_stack.rend())
       parent = (*parent_tag)->elemNode;
     else
@@ -1689,7 +1692,7 @@ void XmlLoader::processingInstruction(
 
     XmlNode* piNode = new PiNode(target, content);
 
-    parent->children().push_back(piNode, false);
+    parent->children().push_back(piNode);
     piNode->setParent(parent);
 
     piNode->setId(loader.theTree, &loader.theOrdPath);
@@ -1731,7 +1734,7 @@ void XmlLoader::comment(void * ctx, const xmlChar * ch)
 
     std::list<TAG_ELEM*>::reverse_iterator      parent_tag;
     parent_tag = loader.tag_stack.rbegin();
-    XmlNode *parent;
+    InternalNode *parent;
     if(parent_tag != loader.tag_stack.rend())
       parent = (*parent_tag)->elemNode;
     else
@@ -1739,7 +1742,7 @@ void XmlLoader::comment(void * ctx, const xmlChar * ch)
 
   XmlNode* commentNode = new CommentNode(content);
 
-  parent->children().push_back(commentNode, false);
+  parent->children().push_back(commentNode);
   commentNode->setParent(parent);
 
   commentNode->setId(loader.theTree, &loader.theOrdPath);
