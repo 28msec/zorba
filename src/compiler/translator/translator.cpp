@@ -3499,14 +3499,15 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
 
       rchandle<fo_expr> normExpr;
       rchandle<fo_expr> tokenExpr;
+      rchandle<const_expr> constExpr = new const_expr(loc, xqpString(" " ));
 
       normExpr = new fo_expr(loc, LOOKUP_FN("fn", "normalize-space", 1));
       normExpr->add(flworVarExpr);
       tokenExpr = new fo_expr(loc, LOOKUP_FN("fn", "tokenize", 2));
-      tokenExpr->add(normExpr);
-      tokenExpr->add(new const_expr(loc, xqpString(" ")));
+      tokenExpr->add(normExpr.getp());
+      tokenExpr->add(constExpr.getp());
 
-      flworExpr->set_return_expr(tokenExpr);
+      flworExpr->set_return_expr(tokenExpr.getp());
 
       pop_scope();
 
