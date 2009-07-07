@@ -64,17 +64,6 @@ Note: you can set a boolean parameter to true by either of the following methods
 - passing the option name and the value (like <i>bare</i> in the above example) \n
 
 
-\subsection postfunctions POST Functions
-
-\code
- declare nondeterministic sequential function zorba-rest:post(url as xs:string)                         as element(zorba-rest:result);
- declare nondeterministic sequential function zorba-rest:post(url as xs:string,
-                                                              payload as element(zorba-rest:payload))   as element(zorba-rest:result);
- declare nondeterministic sequential function zorba-rest:post(url as xs:string,
-                                                              payload as element(zorba-rest:payload),
-                                                              headers as element(zorba-rest:headers)*)  as element(zorba-rest:result);
-\endcode
-
 \subsection postfunctions PUT Functions
 
 \code
