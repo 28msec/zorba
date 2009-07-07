@@ -37,6 +37,6 @@
       ("compile-only", "only compile (don't execute)")
       ("tz", po::value<int>(), "implicit time zone (in minutes)")
       ("external-var,x", po::value<std::vector<std::string> >(), "external variables (e.g. -x x=file1.xml -x y:=strValue)")
-      ("serializer-param,z", po::value<std::vector<std::string> >(), "serializer parameters")
+      ("serializer-param,z", po::value<std::vector<std::string> >(), "serializer parameters (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g. -z method=xhtml, -z doctype-system='DTD/xhtml1-strict.dtd', -z indent=yes)")
       ("iter-plan-test", "run as iterator plan test")
       ("dot-plan-file", po::value<std::string>(), "generate the dot iterator plan")

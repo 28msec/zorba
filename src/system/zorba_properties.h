@@ -360,7 +360,7 @@ public:
 "--compile-only\nonly compile (don't execute)\n\n"
 "--tz\nimplicit time zone (in minutes)\n\n"
 "--external-var, -x\nexternal variables (e.g. -x x=file1.xml -x y:=strValue)\n\n"
-"--serializer-param, -z\nserializer parameters\n\n"
+"--serializer-param, -z\nserializer parameters (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g. -z method=xhtml, -z doctype-system='DTD/xhtml1-strict.dtd', -z indent=yes)\n\n"
 "--iter-plan-test\nrun as iterator plan test\n\n"
 "--dot-plan-file\ngenerate the dot iterator plan\n\n"
 ;

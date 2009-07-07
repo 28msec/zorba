@@ -14,7 +14,7 @@ Print timing information. In case of multiple queries the timing information is 
 Write the result to the given file.
 
 --serialization-parameter, -z
-Set serialization parameter in the form of a parameter=value pair.
+Set serialization parameter in the form of a parameter=value pair (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g. -z method=xhtml, -z doctype-system='DTD/xhtml1-strict.dtd', -z indent=yes).
 
 --serialize-html
 Serialize the result as HTML.
@@ -38,7 +38,7 @@ Set the byte-order-mark for the serializer.
 Omit the XML declaration from the result.
 
 --base-uri
-Set the base URI property of the static context
+Set the base URI property of the static context.
 
 --boundary-space
 Set the boundary-space policy ('strip' or 'preserve') in the static context.
@@ -50,7 +50,7 @@ Add the given collation and set the value of the default collation in the static
 Set the construction mode ('strip' or 'preserve') in the static context.
 
 --ordering-mode
-Set the ordering mode ('ordered' or 'unordered') in the static context
+Set the ordering mode ('ordered' or 'unordered') in the static context.
 
 --multiple, -m
 Execute the given queries multiple times.
@@ -59,7 +59,7 @@ Execute the given queries multiple times.
 Query test or file URI (file://...)
 
 --as-files, -f
-Treat all -q arguments as file paths instead of URIs or inline queries
+Treat all -q arguments as file paths instead of URIs or inline queries.
 
 --external-variable, -e
 Provide the value for a variable given a file (name=file) or a value (name:=value)
@@ -68,19 +68,19 @@ Provide the value for a variable given a file (name=file) or a value (name:=valu
 Set the context item to the XML document in a given file.
 
 --optimization-level
-Optimization level for the query compiler ('O0' or 'O1')
+Optimization level for the query compiler (O0 or O1)
 
 --lib-module, -l
 Query compiler option to treat the query as a library module. If this is set --compile-only option is also set to true.
 
 --parse-only
-Stop after parsing the query
+Stop after parsing the query.
 
 --compile-only
 Only compile (don't execute)
 
 --no-serializer
-Do not serialize (discard) result
+Do not serialize (discard) result.
 
 --debug-ports, -p
 Specify the ports for zorba debugger. The format is requestPort:eventPort.
@@ -92,7 +92,10 @@ Launch the debugger command line client.
 Launch queries on the debugger server.
 
 --no-colors
-No colors
+Use no colors in the debugger client.
+
+--no-logo
+Print no logo when starting the debugger client or server.
 \endverbatim
 
 \section commandlineexamples Examples
