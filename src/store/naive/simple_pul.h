@@ -213,9 +213,7 @@ public:
         store::Item_t&               value,
         bool                         haveValue,
         bool                         haveEmptyValue,
-        bool                         haveTypedVaule,
-        bool                         isId,
-        bool                         isIdRefs);
+        bool                         haveTypedVaule);
 
   void addSetElementType(
         store::Item_t&               target,
@@ -223,23 +221,17 @@ public:
         std::vector<store::Item_t>&  value,
         bool                         haveValue,
         bool                         haveEmptyValue,
-        bool                         haveTypedValue,
-        bool                         isId,
-        bool                         isIdRefs);
+        bool                         haveTypedValue);
 
   void addSetAttributeType(
         store::Item_t&               target,
         store::Item_t&               typeName,
-        store::Item_t&               typedValue,
-        bool                         isId,
-        bool                         isIdRefs);
+        store::Item_t&               typedValue);
 
   void addSetAttributeType(
         store::Item_t&              target,
         store::Item_t&              typeName,
-        std::vector<store::Item_t>& typedValue,
-        bool                        isId,
-        bool                        isIdRefs);
+        std::vector<store::Item_t>& typedValue);
 
   // collection functions
   void addCreateCollection(
@@ -683,8 +675,6 @@ protected:
   bool                     theHaveEmptyValue;
   bool                     theHaveTypedValue;
   bool                     theHaveListValue;
-  bool                     theIsId;
-  bool                     theIsIdRefs;
 
 public:
   UpdSetElementType(
@@ -695,17 +685,13 @@ public:
         bool           haveValue,
         bool           haveEmptyValue,
         bool           haveTypedValue,
-        bool           haveListValue,
-        bool           isId,
-        bool           isIdRefs)
+        bool           haveListValue)
     :
     UpdatePrimitive(pul, target),
     theHaveValue(haveValue),
     theHaveEmptyValue(haveEmptyValue),
     theHaveTypedValue(haveTypedValue),
-    theHaveListValue(haveListValue),
-    theIsId(isId),
-    theIsIdRefs(isIdRefs)
+    theHaveListValue(haveListValue)
   {
     theTypeName.transfer(typeName);
     theTypedValue.transfer(typedValue);
@@ -805,8 +791,6 @@ protected:
   store::Item_t            theTypeName;
   store::Item_t            theTypedValue;
   bool                     theHaveListValue;
-  bool                     theIsId;
-  bool                     theIsIdRefs;
 
 public:
   UpdSetAttributeType(
@@ -814,14 +798,10 @@ public:
         store::Item_t& target,
         store::Item_t& typeName,
         store::Item_t& typedValue,
-        bool           haveListValue,
-        bool           isId,
-        bool           isIdRefs)
+        bool           haveListValue)
     :
     UpdatePrimitive(pul, target),
-    theHaveListValue(haveListValue),
-    theIsId(isId),
-    theIsIdRefs(isIdRefs)
+    theHaveListValue(haveListValue)
   {
     theTypeName.transfer(typeName);
     theTypedValue.transfer(typedValue);

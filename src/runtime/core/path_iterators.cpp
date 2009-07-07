@@ -708,7 +708,7 @@ void DescendantAxisState::push(store::Item_t& node)
   }
   else
   {
-    store::ChildrenIterator* ite = GENV_ITERATOR_FACTORY->createChildrenIterator();;
+    store::ChildrenIterator* ite = GENV_ITERATOR_FACTORY->createChildrenIterator();
     store::Item* node1 = node.getp();
     ite->init(node);
     theCurrentPath.push_back(std::pair<store::Item*, store::ChildrenIterator*>

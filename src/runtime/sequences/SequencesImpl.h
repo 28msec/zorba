@@ -25,9 +25,11 @@
 #include "runtime/base/unarybase.h"
 #include "runtime/base/binarybase.h"
 #include "runtime/base/narybase.h"
+#include "runtime/core/path_iterators.h"
 #include "runtime/booleans/compare_types.h"
 
 #include "store/api/iterator.h"
+#include "store/api/iterator_factory.h"
 
 namespace zorba
 {
@@ -405,32 +407,36 @@ NARY_ITER_STATE(OpToIterator, OpToIteratorState);
 
 
 //15.5.2 fn:id
-class FnIdIteratorState : public PlanIteratorState 
+class FnIdIteratorState : public DescendantAxisState
 {
-  public:
-    store::Iterator_t theIterator;
-    store::Iterator_t theTypedValueIter;
-    store::Item_t     inNode;
-    store::Item_t     inArg;
+public:
+  bool                                theIsInitialized;
+  std::vector<xqpStringStore_t>       theIds;
+  store::Item_t                       theDocNode;
 
-    void init(PlanState&);
-    void reset(PlanState&);
+  rchandle<store::AttributesIterator> theAttrsIte;
+
+  void init(PlanState&);
+  void reset(PlanState&);
 };
 
 NARY_ITER_STATE(FnIdIterator, FnIdIteratorState);
 
 
 //15.5.3 fn:idref
-class FnIdRefIteratorState : public PlanIteratorState {
-  public:
-    store::Iterator_t theIterator;
-    store::Iterator_t theTypedValueIter;
-    store::Item_t     inNode;
-    store::Item_t     inArg;
+class FnIdRefIteratorState : public PlanIteratorState 
+{
+public:
+  store::Iterator_t theIterator;
+  store::Iterator_t theTypedValueIter;
+  store::Item_t     inNode;
+  store::Item_t     inArg;
 
-    void init(PlanState&);
-    void reset(PlanState&);
+  void init(PlanState&);
+  void reset(PlanState&);
 };
+
+
 NARY_ITER_STATE(FnIdRefIterator, FnIdRefIteratorState);
 
 //15.5.4 fn:doc

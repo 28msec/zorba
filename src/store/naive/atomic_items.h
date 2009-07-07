@@ -192,7 +192,8 @@ public:
   void getStringValue(xqpStringStore_t& strval) const;
   void getStringValue(std::string& buf) const;
 
-  bool isId() const;
+  bool isIdQName() const;
+
   bool isBaseUri() const;
 
   xqp_string show() const;

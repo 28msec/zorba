@@ -487,16 +487,12 @@ void PULImpl::addSetElementType(
     store::Item_t&              value,
     bool                        haveValue,
     bool                        haveEmptyValue,
-    bool                        haveTypedValue,
-    bool                        isId,
-    bool                        isIdRefs)
+    bool                        haveTypedValue)
 {
   UpdatePrimitive* upd = new UpdSetElementType(this, target,
                                                typeName, value,
                                                haveValue, haveEmptyValue,
-                                               haveTypedValue, false,
-                                               isId, isIdRefs);
-
+                                               haveTypedValue, false);
   theValidationList.push_back(upd);
 }
 
@@ -507,18 +503,14 @@ void PULImpl::addSetElementType(
     std::vector<store::Item_t>& valueV,
     bool                        haveValue,
     bool                        haveEmptyValue,
-    bool                        haveTypedValue,
-    bool                        isId,
-    bool                        isIdRefs)
+    bool                        haveTypedValue)
 {
   store::Item_t typedValue = new ItemVector(valueV);
 
   UpdatePrimitive* upd = new UpdSetElementType(this, target,
                                                typeName, typedValue,
                                                haveValue, haveEmptyValue,
-                                               haveTypedValue, true,
-                                               isId, isIdRefs);
-
+                                               haveTypedValue, true);
   theValidationList.push_back(upd);
 }
 
@@ -526,14 +518,10 @@ void PULImpl::addSetElementType(
 void PULImpl::addSetAttributeType(
     store::Item_t&              target,
     store::Item_t&              typeName,
-    store::Item_t&              typedValue,
-    bool                        isId,
-    bool                        isIdRefs)
+    store::Item_t&              typedValue)
 {
   UpdatePrimitive* upd = new UpdSetAttributeType(this, target,
-                                                 typeName, typedValue, false,
-                                                 isId, isIdRefs);
-
+                                                 typeName, typedValue, false);
   theValidationList.push_back(upd);
 }
 
@@ -541,16 +529,12 @@ void PULImpl::addSetAttributeType(
 void PULImpl::addSetAttributeType(
     store::Item_t&              target,
     store::Item_t&              typeName,
-    std::vector<store::Item_t>& typedValueV,
-    bool                        isId,
-    bool                        isIdRefs)
+    std::vector<store::Item_t>& typedValueV)
 {
   store::Item_t typedValue = new ItemVector(typedValueV);
 
   UpdatePrimitive* upd = new UpdSetAttributeType(this, target,
-                                                 typeName, typedValue, true,
-                                                 isId, isIdRefs);
-
+                                                 typeName, typedValue, true);
   theValidationList.push_back(upd);
 }
 
@@ -1352,10 +1336,6 @@ void UpdSetElementType::apply()
 
     if (theHaveEmptyValue)
       target->setHaveEmptyValue();
-    else if (theIsId)
-      target->setIsId();
-    else if (theIsIdRefs)
-      target->setIsIdRefs();
 
     if (theHaveTypedValue)
     {
@@ -1428,11 +1408,6 @@ void UpdSetAttributeType::apply()
 
   target->theTypeName.transfer(theTypeName);
   target->theTypedValue.transfer(theTypedValue);
-
-  if (theIsId)
-    target->setIsId();
-  else if (theIsIdRefs)
-    target->setIsIdRefs();
 
   if (theHaveListValue)
     target->setHaveListValue();

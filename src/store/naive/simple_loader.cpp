@@ -403,7 +403,7 @@ void SimpleXmlLoader::startElement(
     // Create the element node and push it to the node stack
     store::Item_t node;
     loader.theFactory->createElementNode(node, parent, -1, qname,
-                                         tname, true, false, false, false,
+                                         tname, true, false,
                                          bindings, baseUri);
 
     if (loader.theNodeStack.empty())
@@ -442,7 +442,7 @@ void SimpleXmlLoader::startElement(
                                              -1,
                                              qname,
                                              tnameCopy,
-                                             typedValue, false, false);
+                                             typedValue);
 
       LOADER_TRACE1("Attribute: node = " << attr.getp() << std::endl
                     << attr->show() << std::endl);

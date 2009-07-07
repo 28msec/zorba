@@ -3485,11 +3485,38 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
                                        GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
       return;
     }
-    else if (sz == 1 &&
-             (fname == "lang" || fname == "id" || fname == "idref")) 
+    else if (fname == "id")
     {
-      arguments.insert (arguments.begin (), DOT_VAR);
-    } else if (sz == 1 && fname == "resolve-uri") {
+      if (sz == 1)
+        arguments.insert(arguments.begin(), DOT_VAR);
+
+      expr_t idsExpr = arguments[1];
+
+      rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(idsExpr, false);
+
+      for_clause* fc = reinterpret_cast<for_clause*>((*flworExpr.getp())[0]);
+      expr* flworVarExpr = fc->get_var();
+
+      rchandle<fo_expr> normExpr;
+      rchandle<fo_expr> tokenExpr;
+
+      normExpr = new fo_expr(loc, LOOKUP_FN("fn", "normalize-space", 1));
+      normExpr->add(flworVarExpr);
+      tokenExpr = new fo_expr(loc, LOOKUP_FN("fn", "tokenize", 2));
+      tokenExpr->add(normExpr);
+      tokenExpr->add(new const_expr(loc, xqpString(" ")));
+
+      flworExpr->set_return_expr(tokenExpr);
+
+      pop_scope();
+
+      arguments[1] = flworExpr;
+    }
+    else if (sz == 1 && (fname == "lang" || fname == "idref")) 
+    {
+      arguments.insert(arguments.begin(), DOT_VAR);
+    } 
+    else if (sz == 1 && fname == "resolve-uri") {
 #if 0  // even if the base-uri is not declared in the prolog, we have a default
       if (! hadBUriDecl)
         ZORBA_ERROR (FONS0005);

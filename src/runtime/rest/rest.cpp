@@ -183,8 +183,6 @@ bool createNodeHelper(store::Item_t parent, PlanState& planState, xqpString name
       type_qname,
       true,
       false,
-      false,
-      false,
       bindings,
       baseUri);
 
@@ -207,9 +205,7 @@ bool createAttributeHelper(store::Item_t parent, xqpString name, xqpString value
       -1,
       qname,
       type_qname,
-      str_item,
-      false,
-      false);
+      str_item);
 
   if (result != NULL)
     *result = temp_result;

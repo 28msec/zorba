@@ -71,7 +71,11 @@ static rchandle<var_expr> createTempLetVar(const QueryLoc& loc, int counter)
   return var;
 }
 
-static expr_t hoistCollectionSources(expr_t e, static_context *sCtx, hoisted_collections_t& h, int& count)
+static expr_t hoistCollectionSources(
+    expr_t e,
+    static_context *sCtx,
+    hoisted_collections_t& h,
+    int& count)
 {
   if (isHoistableCollection(e.getp(), sCtx)) {
     rchandle<var_expr> var(createTempLetVar(e->get_loc(), count));

@@ -326,7 +326,6 @@ store::Item_t ValidateIterator::processElement(
 
   schemaValidator.startElem(nodeName);
 
-
   // namespace declarations must go first
   processNamespaces( schemaValidator, element);
 
@@ -344,10 +343,9 @@ store::Item_t ValidateIterator::processElement(
 
   store::Item_t elemName = element->getNodeName();
   GENV_ITEMFACTORY->createElementNode(newElem, parent, -1, elemName,
-                                      typeName, true, false, false, false, 
+                                      typeName, true, false, 
                                       bindings, baseUri);
   
-
   processAttributes(sctx,
                     typeManager,
                     schemaValidator,
@@ -359,7 +357,6 @@ store::Item_t ValidateIterator::processElement(
                   schemaValidator,
                   (store::Item *)newElem, 
                   element->getChildren());
-
 
   schemaValidator.endElem(nodeName);
 
@@ -396,26 +393,32 @@ void ValidateIterator::processAttributes(
   std::list<AttributeValidationInfo*>* attList = schemaValidator.getAttributeList();
   std::list<AttributeValidationInfo*>::iterator curAtt;
          
-  for( curAtt = attList->begin() ; curAtt != attList->end(); ++curAtt )
+  for( curAtt = attList->begin(); curAtt != attList->end(); ++curAtt )
   {
     AttributeValidationInfo* att = *curAtt;
     //cout << " v    proccessATT2: " << att->_localName << " T: " << att->_typeName << "\n";
     
     store::Item_t attQName;
-    GENV_ITEMFACTORY->createQName( attQName, att->_uri, att->_prefix, att->_localName);
-            
+    GENV_ITEMFACTORY->createQName(attQName,
+                                  att->_uri,
+                                  att->_prefix,
+                                  att->_localName);
           
     std::string typePrefix;
-    if ( std::strcmp(Schema::XSD_NAMESPACE, att->_typeURI->c_str() )==0 ) // hack around typeManager bug for comparing QNames
+    if ( std::strcmp(Schema::XSD_NAMESPACE, att->_typeURI->c_str())==0) // hack around typeManager bug for comparing QNames
       typePrefix = "xs";
     else
       typePrefix = "";
     
     store::Item_t typeQName;
-    GENV_ITEMFACTORY->createQName(typeQName, att->_typeURI, new xqpStringStore(typePrefix), att->_typeName);
+    GENV_ITEMFACTORY->createQName(typeQName,
+                                  att->_typeURI,
+                                  new xqpStringStore(typePrefix),
+                                  att->_typeName);
 
     store::NsBindings bindings;
     parent->getNamespaceBindings(bindings);
+
     std::vector<store::Item_t> typedValues;
     processTextValue(sctx,
                      typeManager,
@@ -426,11 +429,19 @@ void ValidateIterator::processAttributes(
     
     store::Item_t validatedAttNode;
     if ( typedValues.size()==1 ) // hack around serialization bug
-      GENV_ITEMFACTORY->createAttributeNode( validatedAttNode, parent, -1, attQName, 
-                                             typeQName, typedValues[0], false, false );
+      GENV_ITEMFACTORY->createAttributeNode(validatedAttNode,
+                                            parent,
+                                            -1,
+                                            attQName, 
+                                            typeQName,
+                                            typedValues[0]);
     else            
-      GENV_ITEMFACTORY->createAttributeNode( validatedAttNode, parent, -1, attQName, 
-                                             typeQName, typedValues, false, false );
+      GENV_ITEMFACTORY->createAttributeNode(validatedAttNode,
+                                            parent,
+                                            -1,
+                                            attQName, 
+                                            typeQName,
+                                            typedValues);
   }
 }
 

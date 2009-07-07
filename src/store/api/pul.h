@@ -105,9 +105,7 @@ public:
         Item_t&              typedValue,
         bool                 haveValue,
         bool                 haveEmptyValue,
-        bool                 haveTypedValue,
-        bool                 isId,
-        bool                 isIdRefs) = 0;
+        bool                 haveTypedValue) = 0;
 
   virtual void addSetElementType(
         Item_t&              target,
@@ -115,23 +113,17 @@ public:
         std::vector<Item_t>& typedValue,
         bool                 haveValue,
         bool                 haveEmptyValue,
-        bool                 haveTypedValue,
-        bool                 isId,
-        bool                 isIdRefs) = 0;
+        bool                 haveTypedValue) = 0;
 
   virtual void addSetAttributeType(
         Item_t&              target,
         Item_t&              typeName,
-        Item_t&              typedValue,
-        bool                 isId,
-        bool                 isIdRefs) = 0;
+        Item_t&              typedValue) = 0;
 
   virtual void addSetAttributeType(
         Item_t&              target,
         Item_t&              typeName,
-        std::vector<Item_t>& typedValue,
-        bool                 isId,
-        bool                 isIdRefs) = 0;
+        std::vector<Item_t>& typedValue) = 0;
 
   // functions to add primitives for updating collection functions (e.g. create-collection)
 

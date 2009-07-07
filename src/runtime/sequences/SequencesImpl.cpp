@@ -1280,108 +1280,130 @@ OpToIteratorState::reset(PlanState& planState) {
 }
 
 //15.5.2 fn:id
-void
-FnIdIteratorState::init(PlanState& planState)
+void FnIdIteratorState::init(PlanState& planState)
 {
-  PlanIteratorState::init(planState);
-  theIterator = NULL;
-  theTypedValueIter = NULL;
-  inNode = NULL;
-  inArg = NULL;
+  DescendantAxisState::init(planState);
+  theIsInitialized = false;
+  theAttrsIte = GENV_ITERATOR_FACTORY->createAttributesIterator();
+  assert(theIds.empty());
+  assert(theDocNode == NULL);
 }
 
 
-void
-FnIdIteratorState::reset(PlanState& planState)
+void FnIdIteratorState::reset(PlanState& planState)
 {
-  PlanIteratorState::reset(planState);
-  theIterator = NULL;
-  theTypedValueIter = NULL;
-  inNode = NULL;
-  inArg = NULL;
+  DescendantAxisState::reset(planState);
+  theIsInitialized = false;
+  theIds.clear();
+  theDocNode = NULL;
 }
 
 
-bool 
-FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+bool FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
-  store::Item_t     item;
-  store::Iterator_t theAttributes;
-  bool              push;
-  xqp_string        strArg;
-  bool              tmp;
-  store::Item*      rootNode;
-  store::Item_t typedValue;
+  store::Item_t  id;
+  store::Item*   child;
+  store::Item*   attr;
+  store::Item_t  tmp;
+  bool           isMatchingId;
+  ulong i;
 
   FnIdIteratorState *state;
   DEFAULT_STACK_INIT(FnIdIteratorState, state, planState);
 
-  if(consumeNext(state->inNode, theChildren[1], planState))
+  if (!state->theIsInitialized)
   {
-    rootNode = state->inNode.getp();
-    while (rootNode->getParent() != NULL)
-      rootNode = rootNode->getParent();
+    while (consumeNext(id, theChildren[0], planState))
+    {
+      state->theIds.push_back(id->getStringValue());
+    }
 
-    if (rootNode->getNodeKind() != store::StoreConsts::documentNode)
+    if(!consumeNext(state->theDocNode, theChildren[1], planState))
+    {
       ZORBA_ERROR_LOC_DESC(FODC0001, loc,
                            "No target document for fn:id function");
+    }
 
-    state->inNode = rootNode;
-    state->theIterator = state->inNode->getChildren();
-
-    while (consumeNext(state->inArg, theChildren[0], planState))
+    while (state->theDocNode->getParent() != NULL)
     {
-      state->theIterator->open();
+      state->theDocNode = state->theDocNode->getParent();
+    }
 
-      while(state->theIterator->next(result))
+    if (state->theDocNode->getNodeKind() != store::StoreConsts::documentNode)
+    {
+      ZORBA_ERROR_LOC_DESC(FODC0001, loc,
+                           "No target document for fn:id function");
+    }
+
+    state->push(state->theDocNode);
+
+    state->theIsInitialized = true;
+  }
+
+  while (true)
+  {
+    while ((child = state->top()->next()) == NULL)
+    {
+      state->pop();
+      if (state->empty())
+        break;
+    }
+
+    if (child == NULL)
+      break;
+
+    if (child->getNodeKind() != store::StoreConsts::elementNode)
+      continue;
+
+    tmp = child;
+    state->push(tmp);
+
+    isMatchingId = false;
+
+    if (child->isId())
+    {
+      for (i = 0; i < state->theIds.size(); ++i)
       {
-        if(result->getNodeKind() == store::StoreConsts::elementNode)
+        if (child->getStringValue()->equals(state->theIds[i]))
         {
-          if(result->isId())
-          {
-            result->getTypedValue(typedValue, state->theTypedValueIter);
-            assert(state->theTypedValueIter == NULL);
-    
-            strArg = state->inArg->getStringValue().getp();
-
-            try {
-              tmp = strArg.matches(typedValue->getStringValue().getp()," ");
-            }
-            catch(zorbatypesException& ex){
-              ZORBA_ERROR_LOC(error::DecodeZorbatypesError(ex.ErrorCode()), loc);
-            }
-                
-            if(tmp)
-              STACK_PUSH(true, state );
-          }
-          else
-          {
-            push = false;
-            theAttributes = result->getAttributes();
-            theAttributes->open();
-            
-            while (!push)
-            {
-              if (!theAttributes->next(result))
-                break;
-    
-              if(result->isId())
-              {
-                result->getTypedValue(typedValue, state->theTypedValueIter);
-                assert(state->theTypedValueIter == NULL);
-    
-                strArg = state->inArg->getStringValue().getp();
-    
-                if(strArg.matches(typedValue->getStringValue().getp()," "))
-                  push = true;
-              }
-            }
-
-            if(push)
-              STACK_PUSH(true, state );
-          }
+          isMatchingId = true;
+          result = child;
+          STACK_PUSH(true, state);
+          break;
         }
       }
+    }
+    else
+    {
+      tmp = child;
+      state->theAttrsIte->init(tmp);
+      state->theAttrsIte->open();
+
+      attr = state->theAttrsIte->next();
+
+      while (attr != NULL)
+      {
+        if (attr->isId())
+        {
+          for (i = 0; i < state->theIds.size(); ++i)
+          {
+            if (attr->getStringValue()->equals(state->theIds[i]))
+            {
+              isMatchingId = true;
+              result = child;
+              STACK_PUSH(true, state);
+              break;
+            }
+          }
+        }
+
+        if (isMatchingId)
+          break;
+
+        attr = state->theAttrsIte->next();
+      }
+
+      state->theAttrsIte->close();
     }
   }
 
@@ -1427,8 +1449,8 @@ FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   bool              tmp;
   store::Item*      rootNode;
 
-  FnIdIteratorState *state;
-  DEFAULT_STACK_INIT(FnIdIteratorState, state, planState);
+  FnIdRefIteratorState* state;
+  DEFAULT_STACK_INIT(FnIdRefIteratorState, state, planState);
 
   if(consumeNext(state->inNode, theChildren[1], planState))
   {

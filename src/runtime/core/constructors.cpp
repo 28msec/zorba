@@ -261,8 +261,6 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                                       typeName,
                                       true,
                                       false,
-                                      false,
-                                      false,
                                       theLocalBindings->get_bindings(),
                                       baseUri);
   path.push(result);
@@ -470,7 +468,7 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     lexicalValue = new xqpStringStore("");
   }
   
-  //normalize value of xml:id
+  // normalize value of xml:id
   if(name->getPrefix()->byteEqual("xml", 3) &&
      name->getLocalName()->byteEqual("id", 2))
   {
@@ -487,10 +485,7 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   GENV_ITEMFACTORY->createAttributeNode(result, parent, -1,
                                         name,
                                         typeName,
-                                        typedValue,
-                                        false,
-                                        false);
-
+                                        typedValue);
   STACK_PUSH(true, state);
   STACK_END (state);
 }

@@ -257,18 +257,14 @@ void processElement(
                            typedValues[0],
                            tHasValue, 
                            tHasEmptyValue,
-                           tHasTypedValue,
-                           element->isId(),
-                           element->isIdRefs());
+                           tHasTypedValue);
     else
       p->addSetElementType(elm,
                            typeQName,
                            (std::vector<store::Item_t>&)typedValues,
                            tHasValue, 
                            tHasEmptyValue,
-                           tHasTypedValue,
-                           element->isId(),
-                           element->isIdRefs());
+                           tHasTypedValue);
   }
   
   schemaValidator.endElem(nodeName);
@@ -302,49 +298,58 @@ void processAttributes( store::Item_t& pul, namespace_context& nsCtx,
         
     for( curAtt = attList->begin() ; curAtt != attList->end(); ++curAtt )
     {
-        AttributeValidationInfo* att = *curAtt;
-        //cout << " vup        - processATT2: " << att->_localName << " T: " << att->_typeName << "\n";
+      AttributeValidationInfo* att = *curAtt;
+      //cout << " vup        - processATT2: " << att->_localName << " T: " << att->_typeName << "\n";
             
-        store::Item_t attQName;
-        GENV_ITEMFACTORY->createQName( attQName, att->_uri, att->_prefix, att->_localName);
+      store::Item_t attQName;
+      GENV_ITEMFACTORY->createQName( attQName, att->_uri, att->_prefix, att->_localName);
         
-        store::Item_t attrib = findAttributeItem(parent, attQName);
+      store::Item_t attrib = findAttributeItem(parent, attQName);
         
-        std::string typePrefix;
-        if ( std::strcmp(Schema::XSD_NAMESPACE, att->_typeURI->c_str() )==0 ) // hack around typeManager bug for comparing QNames
-            typePrefix = "xs";
-        else
-            typePrefix = "";
+      std::string typePrefix;
+      if ( std::strcmp(Schema::XSD_NAMESPACE, att->_typeURI->c_str() )==0 ) // hack around typeManager bug for comparing QNames
+        typePrefix = "xs";
+      else
+        typePrefix = "";
+      
+      store::Item_t typeQName;
+      GENV_ITEMFACTORY->createQName(typeQName,
+                                    att->_typeURI, new xqpStringStore(typePrefix), att->_typeName);
+      
         
-        store::Item_t typeQName;
-        GENV_ITEMFACTORY->createQName(typeQName, att->_typeURI, new xqpStringStore(typePrefix), att->_typeName);
-     
+      std::vector<store::Item_t> typedValues;        
+      processTextValue(pul, typeManager, nsCtx, typeQName, att->_value, attrib, typedValues);
+      
+      if ( attrib==NULL )
+      {
+        // this is an attibute filled in by the validator
+        store::Item_t defaultAttNode;
+        if ( typedValues.size()==1 ) // hack around serialization bug
+          GENV_ITEMFACTORY->createAttributeNode(defaultAttNode,
+                                                parent,
+                                                -1,
+                                                attQName, 
+                                                typeQName,
+                                                typedValues[0]);
+        else            
+          GENV_ITEMFACTORY->createAttributeNode(defaultAttNode,
+                                                parent,
+                                                -1,
+                                                attQName, 
+                                                typeQName,
+                                                typedValues);
         
-        std::vector<store::Item_t> typedValues;        
-        processTextValue(pul, typeManager, nsCtx, typeQName, att->_value, attrib, typedValues);
-        
-        if ( attrib==NULL )
-        {
-            // this is an attibute filled in by the validator
-            store::Item_t defaultAttNode;
-            if ( typedValues.size()==1 ) // hack around serialization bug
-                GENV_ITEMFACTORY->createAttributeNode( defaultAttNode, parent, -1, attQName, 
-                    typeQName, typedValues[0], false, false );
-            else            
-                GENV_ITEMFACTORY->createAttributeNode( defaultAttNode, parent, -1, attQName, 
-                    typeQName, typedValues, false, false );
-            
-            defaultAtts.push_back(defaultAttNode);
-        } 
-        else if ( !typeQName->equals(attrib->getType()) )
-        {
-            store::PUL *p = static_cast<store::PUL *>(pul.getp());
-            store::Item_t atr = store::Item_t(attrib);
-            if ( typedValues.size()==1 )        // optimize when only one item is available 
-                p->addSetAttributeType( atr, typeQName, (store::Item_t&)(typedValues[0]), attrib->isId(), attrib->isIdRefs() );
-            else            
-                p->addSetAttributeType( atr, typeQName, typedValues, attrib->isId(), attrib->isIdRefs() );
-        }
+        defaultAtts.push_back(defaultAttNode);
+      } 
+      else if ( !typeQName->equals(attrib->getType()) )
+      {
+        store::PUL *p = static_cast<store::PUL *>(pul.getp());
+        store::Item_t atr = store::Item_t(attrib);
+        if ( typedValues.size()==1 )        // optimize when only one item is available 
+          p->addSetAttributeType(atr, typeQName, (store::Item_t&)(typedValues[0]));
+        else            
+          p->addSetAttributeType( atr, typeQName, typedValues);
+      }
     }
     
     if ( defaultAtts.size()>0 )

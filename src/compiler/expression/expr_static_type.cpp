@@ -719,54 +719,57 @@ xqtref_t castable_base_expr::return_type_impl (static_context *sctx)
 }
 
   
-  xqtref_t cast_base_expr::return_type_impl (static_context *sctx) {
-    TypeConstants::quantifier_t q =
-      TypeOps::intersect_quant (TypeOps::quantifier (*get_input ()->return_type (sctx)),
-                                TypeOps::quantifier (*target_type));
-    return sctx->get_typemanager ()->create_type_x_quant (*target_type, q);
-  }
-  
-  xqtref_t promote_expr::return_type_impl (static_context *sctx) {
-    TypeManager *tm = sctx->get_typemanager();
-    xqtref_t in_type = input_expr_h->return_type(sctx),
-      in_ptype = TypeOps::prime_type (*in_type),
-      target_ptype = TypeOps::prime_type (*target_type);
-    TypeConstants::quantifier_t q =
-      TypeOps::intersect_quant (TypeOps::quantifier (*in_type),
-                                TypeOps::quantifier (*target_type));
-    if (TypeOps::is_subtype(*in_ptype, *target_ptype))
-      return tm->create_type_x_quant (*in_ptype, q);
+xqtref_t cast_base_expr::return_type_impl (static_context *sctx) 
+{
+  TypeConstants::quantifier_t q =
+    TypeOps::intersect_quant(TypeOps::quantifier(*get_input()->return_type(sctx)),
+                             TypeOps::quantifier(*target_type));
+  return sctx->get_typemanager()->create_type_x_quant(*target_type, q);
+}
 
-    // be liberal
-    return tm->create_type_x_quant (*target_ptype, q);
+  
+xqtref_t promote_expr::return_type_impl (static_context *sctx) 
+{
+  TypeManager *tm = sctx->get_typemanager();
+  xqtref_t in_type = input_expr_h->return_type(sctx),
+    in_ptype = TypeOps::prime_type (*in_type),
+    target_ptype = TypeOps::prime_type (*target_type);
+  TypeConstants::quantifier_t q =
+    TypeOps::intersect_quant (TypeOps::quantifier (*in_type),
+                              TypeOps::quantifier (*target_type));
+  if (TypeOps::is_subtype(*in_ptype, *target_ptype))
+    return tm->create_type_x_quant (*in_ptype, q);
+
+  // be liberal
+  return tm->create_type_x_quant (*target_ptype, q);
 
 #if 0
-    RootTypeManager& ts = GENV_TYPESYSTEM;
-    // TODO: for nodes, the result would be none
-    if (TypeOps::is_equal (*in_ptype, *ts.UNTYPED_ATOMIC_TYPE_ONE))
+  RootTypeManager& ts = GENV_TYPESYSTEM;
+  // TODO: for nodes, the result would be none
+  if (TypeOps::is_equal (*in_ptype, *ts.UNTYPED_ATOMIC_TYPE_ONE))
+    return tm->create_type_x_quant (*target_ptype, q);
+  
+  // decimal --> float
+  if (TypeOps::is_subtype(*target_ptype, *ts.FLOAT_TYPE_ONE)) {
+    if (TypeOps::is_subtype(*in_ptype, *ts.DECIMAL_TYPE_ONE))
       return tm->create_type_x_quant (*target_ptype, q);
-    
-    // decimal --> float
-    if (TypeOps::is_subtype(*target_ptype, *ts.FLOAT_TYPE_ONE)) {
-      if (TypeOps::is_subtype(*in_ptype, *ts.DECIMAL_TYPE_ONE))
-        return tm->create_type_x_quant (*target_ptype, q);
-    }
-
-    // decimal/float --> double
-    if (TypeOps::is_subtype(*target_ptype, *ts.DOUBLE_TYPE_ONE)) {
-      if (TypeOps::is_subtype(*in_ptype, *ts.DECIMAL_TYPE_ONE)
-          || TypeOps::is_subtype(*in_ptype, *ts.FLOAT_TYPE_ONE))
-        return tm->create_type_x_quant (*target_ptype, q);
-    }
-
-    // uri --> string
-    if (TypeOps::is_subtype(*target_ptype, *ts.STRING_TYPE_ONE)) {
-      if (TypeOps::is_subtype(*in_ptype, *ts.ANY_URI_TYPE_ONE))
-        return tm->create_type_x_quant (*target_ptype, q);
-    }
-#endif
   }
   
+  // decimal/float --> double
+  if (TypeOps::is_subtype(*target_ptype, *ts.DOUBLE_TYPE_ONE)) {
+    if (TypeOps::is_subtype(*in_ptype, *ts.DECIMAL_TYPE_ONE)
+        || TypeOps::is_subtype(*in_ptype, *ts.FLOAT_TYPE_ONE))
+      return tm->create_type_x_quant (*target_ptype, q);
+  }
+  
+  // uri --> string
+  if (TypeOps::is_subtype(*target_ptype, *ts.STRING_TYPE_ONE)) {
+    if (TypeOps::is_subtype(*in_ptype, *ts.ANY_URI_TYPE_ONE))
+      return tm->create_type_x_quant (*target_ptype, q);
+  }
+#endif
+}
+
 
 xqtref_t order_expr::return_type_impl(static_context *sctx) 
 {

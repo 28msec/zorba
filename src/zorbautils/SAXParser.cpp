@@ -99,7 +99,7 @@ void zorba::SAXParser::startElement( void * ctx, const xmlChar * localname, cons
 		bindings.push_back(std::pair<xqpString, xqpString>(pre, uri));
 	}
 	store::Item_t typeName;
-	factory.createElementNode(result, parent, -1, nodeName, typeName, false, false, false, false, bindings, lParser.theBaseUri);
+	factory.createElementNode(result, parent, -1, nodeName, typeName, false, false, bindings, lParser.theBaseUri);
 	lParser.theStack.push_back(result);
 }
 

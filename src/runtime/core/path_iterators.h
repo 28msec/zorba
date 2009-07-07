@@ -18,14 +18,18 @@
 
 #include <stack>
 #include <zorba/store_consts.h>
+
 #include "zorbautils/fatal.h"
 #include "common/shared_types.h"
-#include "runtime/base/unarybase.h" 
+#include "context/static_context.h"
 #include "compiler/expression/expr_consts.h"
 #include "types/typeimpl.h"
 #include "types/typeops.h"
 #include "types/typemanager.h"
-#include "context/static_context.h"
+
+#include "runtime/base/unarybase.h"
+
+#include "store/api/iterator.h"
 
 namespace zorba 
 {

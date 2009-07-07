@@ -884,8 +884,6 @@ ElementNode::ElementNode(
     store::Item_t&              typeName,
     bool                        haveTypedValue,
     bool                        haveEmptyValue,
-    bool                        isId,
-    bool                        isIdRefs,
     const store::NsBindings*    localBindings,
     xqpStringStore_t&           baseUri)
   :
@@ -902,10 +900,6 @@ ElementNode::ElementNode(
       
       if (haveEmptyValue)
         setHaveEmptyValue();
-      else if (isId)
-        setIsId();
-      else if (isIdRefs)
-        setIsIdRefs();
     }
 
     if (localBindings)
@@ -989,7 +983,7 @@ XmlNode* ElementNode::copyInternal(
 
   store::Item_t nodeName = theName;
   store::Item_t typeName;
-  bool haveValue, haveEmptyValue, isId, isIdRefs; 
+  bool haveValue, haveEmptyValue;
 
   NsBindingsContext* parentNsContext = NULL;
   if (parent && parent->getNodeKind() == store::StoreConsts::elementNode)
@@ -1004,14 +998,12 @@ XmlNode* ElementNode::copyInternal(
     typeName = theTypeName;
     haveValue = this->haveValue();
     haveEmptyValue = this->haveEmptyValue();
-    isId = this->isId();
-    isIdRefs = this->isIdRefs();
   }
   else
   {
     typeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED];
     haveValue = true;
-    isId = isIdRefs = haveEmptyValue = false;
+    haveEmptyValue = false;
   }
 
   xqpStringStore_t baseUri;
@@ -1024,7 +1016,7 @@ XmlNode* ElementNode::copyInternal(
     pos = (parent == rootParent ? pos : -1);
 
     copyNode = new ElementNode(tree, parent, pos, nodeName, typeName,
-                               haveValue, haveEmptyValue, isId, isIdRefs,
+                               haveValue, haveEmptyValue, 
                                NULL, // local bindings 
                                baseUri);
     if (rootCopy == NULL)
@@ -1251,6 +1243,31 @@ bool ElementNode::haveTypedTypedValue() const
       return true;
   }
 
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool ElementNode::isId() const
+{
+  if (numChildren() == 1 &&
+      getChild(0)->getNodeKind() == store::StoreConsts::textNode)
+  {
+    if (reinterpret_cast<TextNode*>(getChild(0))->isIdInternal())
+      return true;
+  }
+
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool ElementNode::isIdRefs() const
+{
   return false;
 }
 
@@ -1781,8 +1798,6 @@ void ElementNode::addBaseUriProperty(
                     typeName,
                     typedValue,
                     false, // isListVale
-                    false, // isId
-                    false, // isIdRef
                     true); // hidden
   setHaveBaseUri();
 }
@@ -1908,8 +1923,6 @@ AttributeNode::AttributeNode(store::Item_t& attrName, store::Item_t& typeName)
 
   if (qn->isBaseUri())
     theFlags |= IsBaseUri;
-  else if (qn->isId())
-    theFlags |= IsId;
 
   NODE_TRACE1("Loaded attr node " << this << " name = "
               << *theName->getStringValue());
@@ -1933,8 +1946,6 @@ AttributeNode::AttributeNode(
     store::Item_t&    typeName,
     store::Item_t&    typedValue,
     bool              isListValue,
-    bool              isId,
-    bool              isIdRef,
     bool              hidden)
   :
   XmlNode(tree, parent, pos, store::StoreConsts::attributeNode)
@@ -1963,10 +1974,6 @@ AttributeNode::AttributeNode(
 
     if (qn->isBaseUri())
       theFlags |= IsBaseUri;
-    else if (qn->isId() || isId)
-      theFlags |= IsId;
-    else if (isIdRef)
-      theFlags |= IsIdRefs;
 
     if (hidden)
       setHidden();
@@ -2060,7 +2067,6 @@ XmlNode* AttributeNode::copyInternal(
   store::Item_t typedValue;
 
   bool isListValue;
-  bool isId, isIdRefs;
 
   if (copymode.theTypePreserve)
   {
@@ -2068,16 +2074,10 @@ XmlNode* AttributeNode::copyInternal(
     typedValue = theTypedValue;
 
     isListValue = haveListValue();
-    isId = this->isId();
-    isIdRefs = this->isIdRefs();
   }
   else
   {
-    QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(theName.getp());
-
     isListValue = false;
-    isId = qn->isId();
-    isIdRefs = false;
 
     typeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
 
@@ -2106,7 +2106,6 @@ XmlNode* AttributeNode::copyInternal(
                                  pos,
                                  nodeName,
                                  typeName, typedValue, isListValue,
-                                 isId, isIdRefs,
                                  false); // hidden
   }
   catch (...)
@@ -2155,6 +2154,48 @@ void AttributeNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) c
 /*******************************************************************************
 
 ********************************************************************************/
+store::Item_t AttributeNode::getAtomizationValue() const
+{
+  if (haveListValue())
+  {
+    ZORBA_ASSERT(0);
+  }
+  else
+  {
+    return theTypedValue;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool AttributeNode::isId() const
+{
+  QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(theName.getp());
+
+  if (qn->isIdQName())
+    return true;
+
+  if (dynamic_cast<IDItemImpl*>(theTypedValue.getp()) != NULL)
+    return true;
+
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool AttributeNode::isIdRefs() const
+{
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 xqpStringStore_t AttributeNode::getStringValue() const
 {
   xqpStringStore_t strval;
@@ -2195,22 +2236,6 @@ void AttributeNode::getStringValue(std::string& buf) const
   else
   {
     theTypedValue->getStringValue(buf);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-store::Item_t AttributeNode::getAtomizationValue() const
-{
-  if (haveListValue())
-  {
-    ZORBA_ASSERT(0);
-  }
-  else
-  {
-    return theTypedValue;
   }
 }
 
@@ -2529,6 +2554,18 @@ store::Item_t TextNode::getAtomizationValue() const
     rch = getText(); 
     return new UntypedAtomicItemImpl(rch);
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool TextNode::isIdInternal() const
+{
+  if (isTyped() && dynamic_cast<IDItemImpl*>(getValue()) != NULL)
+    return true;
+
+  return false;
 }
 
 

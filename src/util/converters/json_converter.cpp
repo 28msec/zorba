@@ -146,8 +146,6 @@ namespace zorba {
                                                       type_qname,
                                                       true,
                                                       false,
-                                                      false,
-                                                      false,
                                                       bindings,
                                                       baseUri);
 
@@ -171,10 +169,7 @@ namespace zorba {
                                           -1,
                                           qname,
                                           type_qname,
-                                          str_item,
-                                          false,
-                                          false);
-
+                                          str_item);
     if (result != NULL)
       *result = temp_result;
 
