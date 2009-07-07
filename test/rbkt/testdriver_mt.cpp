@@ -369,7 +369,7 @@ void* thread_main(void* param)
     ulong pos = testName.find("Queries");
     testName = testName.substr(pos + 8);
 
-    std::cout << "*** " << queryNo << " : " // << testName
+    std::cout << "*** " << queryNo << " : " << testName
               << " by thread " << tno << std::endl << std::endl;
 
     // Form the full pathname for the .spec file that may be associated
