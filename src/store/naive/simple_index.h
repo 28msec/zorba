@@ -253,7 +253,7 @@ protected:
 public:
   HashProbeIterator(const store::Index_t& index) : theResultSet(NULL)
   {
-    theIndex = reinterpret_cast<HashIndex*>(index.getp());
+    theIndex = static_cast<HashIndex*>(index.getp());
   }
 
   void init(const store::IndexCondition_t& cond);

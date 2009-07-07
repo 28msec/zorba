@@ -419,12 +419,6 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       "Cannot treat empty sequence as <type>+ or <type>.");
     }
   }
-#if 0
-  else
-  {
-    STACK_PUSH(true, lState);
-  }
-#else
   else if(theQuantifier == TypeConstants::QUANT_QUESTION 
          || theQuantifier == TypeConstants::QUANT_ONE) 
   {
@@ -457,7 +451,6 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
     } while (CONSUME (result, 0));
   }
-#endif
   STACK_END (lState);
 }
 

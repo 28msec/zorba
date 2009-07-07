@@ -482,26 +482,19 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
   // check if the collection already exists
   try
   {
-    resolvedUri = aPlanState.sctx()->resolve_relative_uri(lUri->getStringValueP(),
-                                                         xqp_string()).getStore();
-
-    GENV_ITEMFACTORY->createAnyURI(lUri, resolvedUri);
+    coll = getCollection(aPlanState, lUri->getStringValueP(), loc);
   }
   catch (error::ZorbaError&)
   {
-    ZORBA_ERROR_LOC_PARAM(XQST0046,
-                          loc,
-                          lUri->getStringValue()->c_str(),
-                          "URI literal empty or is not in the lexical space of xs:anyURI" );
+    // we come here if the collection does not exist already
   }
-
-  coll = aPlanState.sctx()->get_collection_uri_resolver()->
-      resolve(lUri, aPlanState.sctx());
 
   if (coll != NULL)
     ZORBA_ERROR_LOC_DESC(API0005_COLLECTION_ALREADY_EXISTS,
                          loc,
                          "The collection already exists.");
+
+  resolvedUri = aPlanState.sctx()->resolve_relative_uri(lUri->getStringValueP(), xqp_string()).getStore();
 
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
@@ -528,6 +521,7 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
 
     lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
 
+    GENV_ITEMFACTORY->createAnyURI(lUri, resolvedUri);
     while (consumeNext(item, theChildren[1].getp(), aPlanState))
       pul->addInsertIntoCollection(aPlanState.sctx(), lUri, item, lCopyMode);
   }

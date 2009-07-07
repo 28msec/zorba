@@ -110,7 +110,6 @@ XmlNode::XmlNode(
     long pos,
     store::StoreConsts::NodeKind nodeKind)
   :
-  store::Item(),
   theParent(parent),
   theFlags(0)
 {

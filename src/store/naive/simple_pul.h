@@ -372,7 +372,7 @@ public:
     thePul->theValidationNodes->insert(node);
   }
 
-  virtual store::UpdateConsts::UpdPrimKind getKind() = 0;
+  virtual store::UpdateConsts::UpdPrimKind getKind() const = 0;
 
   virtual void apply() = 0;
   virtual void undo() = 0;
@@ -405,7 +405,7 @@ public:
   {
   }
 
-  store::UpdateConsts::UpdPrimKind getKind() 
+  store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_DELETE; 
   }
@@ -463,7 +463,7 @@ public:
         std::vector<store::Item_t>&      children,
         const store::CopyMode&           copymode);
 
-  store::UpdateConsts::UpdPrimKind getKind() { return theKind; }
+  store::UpdateConsts::UpdPrimKind getKind() const { return theKind; }
 
   void apply();
   void undo();
@@ -499,7 +499,7 @@ public:
         std::vector<store::Item_t>&  attrs,
         const store::CopyMode&       copymode);
 
-  store::UpdateConsts::UpdPrimKind getKind() 
+  store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_INSERT_ATTRIBUTES;
   }
@@ -534,7 +534,7 @@ public:
         std::vector<store::Item_t>& newAttrs,
         const store::CopyMode&      copymode);
 
-  store::UpdateConsts::UpdPrimKind getKind() 
+  store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_REPLACE_ATTRIBUTE;
   }
@@ -572,7 +572,7 @@ public:
         std::vector<store::Item_t>& newChildren,
         const store::CopyMode&      copymode);
 
-  store::UpdateConsts::UpdPrimKind getKind() 
+  store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_REPLACE_CHILD; 
   }
@@ -612,7 +612,7 @@ public:
     theNewChild.transfer(newChild);
   }
 
-  store::UpdateConsts::UpdPrimKind getKind() 
+  store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_REPLACE_CONTENT; 
   }
@@ -649,7 +649,7 @@ public:
     theNewName.transfer(newName);
   }
 
-  store::UpdateConsts::UpdPrimKind getKind() 
+  store::UpdateConsts::UpdPrimKind getKind() const
   { 
     return store::UpdateConsts::UP_RENAME_ELEM; 
   }
@@ -711,7 +711,7 @@ public:
     theTypedValue.transfer(typedValue);
   }
 
-  store::UpdateConsts::UpdPrimKind getKind() 
+  store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_SET_ELEMENT_TYPE; 
   }
@@ -742,7 +742,7 @@ public:
     theNewValue.transfer(newValue);
   }
 
-  store::UpdateConsts::UpdPrimKind getKind() 
+  store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_REPLACE_ATTR_VALUE;
   }
@@ -783,7 +783,7 @@ public:
     theNewName.transfer(newName);
   }
 
-  store::UpdateConsts::UpdPrimKind getKind() 
+  store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_RENAME_ATTR; 
   }
@@ -827,7 +827,7 @@ public:
     theTypedValue.transfer(typedValue);
   }
 
-  store::UpdateConsts::UpdPrimKind getKind() 
+  store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_SET_ATTRIBUTE_TYPE; 
   }
@@ -864,7 +864,7 @@ public:
 
   ~UpdReplaceTextValue();
 
-  store::UpdateConsts::UpdPrimKind getKind() 
+  store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_REPLACE_TEXT_VALUE;
   }
@@ -894,7 +894,7 @@ public:
     theNewValue.transfer(newValue);
   }
 
-  store::UpdateConsts::UpdPrimKind getKind() 
+  store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_REPLACE_PI_VALUE;
   }
@@ -924,7 +924,7 @@ public:
     theNewName.transfer(newName);
   }
 
-  store::UpdateConsts::UpdPrimKind getKind() 
+  store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_RENAME_PI; 
   }
@@ -954,7 +954,7 @@ public:
     theNewValue.transfer(newValue);
   }
 
-  store::UpdateConsts::UpdPrimKind getKind() 
+  store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_REPLACE_COMMENT_VALUE;
   }
@@ -981,7 +981,7 @@ public:
   {
   }
 
-  store::UpdateConsts::UpdPrimKind getKind()
+  store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_CREATE_COLLECTION;
   }
@@ -1029,7 +1029,7 @@ public:
   {
   }
 
-  store::UpdateConsts::UpdPrimKind getKind()
+  store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_DELETE_COLLECTION;
   }
@@ -1054,7 +1054,7 @@ public:
   {
   }
 
-  store::UpdateConsts::UpdPrimKind getKind()
+  store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_INSERT_INTO_COLLECTION;
   }
@@ -1079,7 +1079,7 @@ public:
   {
   }
 
-  store::UpdateConsts::UpdPrimKind getKind()
+  store::UpdateConsts::UpdPrimKind getKind() const
   { 
     return store::UpdateConsts::UP_INSERT_FIRST_INTO_COLLECTION;
   }
@@ -1104,7 +1104,7 @@ public:
   {
   }
 
-  store::UpdateConsts::UpdPrimKind getKind()
+  store::UpdateConsts::UpdPrimKind getKind() const
   { 
     return store::UpdateConsts::UP_INSERT_LAST_INTO_COLLECTION;
   }
@@ -1132,7 +1132,7 @@ public:
   {
   }
 
-  store::UpdateConsts::UpdPrimKind getKind()
+  store::UpdateConsts::UpdPrimKind getKind() const
   { 
     return store::UpdateConsts::UP_INSERT_BEFORE_INTO_COLLECTION;
   }
@@ -1160,7 +1160,7 @@ public:
   {
   }
 
-  store::UpdateConsts::UpdPrimKind getKind()
+  store::UpdateConsts::UpdPrimKind getKind() const
   { 
     return store::UpdateConsts::UP_INSERT_AFTER_INTO_COLLECTION;
   }
@@ -1191,7 +1191,7 @@ public:
   {
   }
 
-  store::UpdateConsts::UpdPrimKind getKind()
+  store::UpdateConsts::UpdPrimKind getKind() const
   { 
     return store::UpdateConsts::UP_INSERT_AT_INTO_COLLECTION;
   }
@@ -1203,7 +1203,7 @@ public:
 class UpdRemoveNodesFromCollection: public  UpdCollection
 {
 protected:
-  std::vector<store::Item_t>  theNodes;
+  std::vector<store::Item_t>  theNodesToDelete;
 
 public:
   UpdRemoveNodesFromCollection(PULImpl* pul, static_context* aStaticContext,
@@ -1211,11 +1211,11 @@ public:
       std::vector<store::Item_t>& nodes)
       :
       UpdCollection(pul, aStaticContext, targetCollectionUri),
-      theNodes(nodes)
+      theNodesToDelete(nodes)
   {
   }
 
-  store::UpdateConsts::UpdPrimKind getKind()
+  store::UpdateConsts::UpdPrimKind getKind() const
   { 
     return store::UpdateConsts::UP_REMOVE_FROM_COLLECTION;
   }
@@ -1224,14 +1224,14 @@ public:
   void undo();
 };
 
-class UpdRemoveNodesAtFromCollection: public  UpdCollection
+class UpdRemoveNodeAtFromCollection: public  UpdCollection
 {
 protected:
   ulong thePos;
   store::Item_t theNode; // used for undo only
 
 public:
-  UpdRemoveNodesAtFromCollection(PULImpl* pul, static_context* aStaticContext,
+  UpdRemoveNodeAtFromCollection(PULImpl* pul, static_context* aStaticContext,
       store::Item_t& targetCollectionUri,
       ulong pos)
       :
@@ -1240,7 +1240,7 @@ public:
   {
   }
 
-  store::UpdateConsts::UpdPrimKind getKind()
+  store::UpdateConsts::UpdPrimKind getKind() const
   { 
     return store::UpdateConsts::UP_REMOVE_AT_FROM_COLLECTION;
   }

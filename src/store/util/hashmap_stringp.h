@@ -75,6 +75,8 @@ public:
   bool insert(const xqpStringStore* key, V& value) { return theMap.insert(key, value); }
 
   bool remove(const xqpStringStore* key) { return theMap.remove(key); }
+
+  bool find(const xqpStringStore* key) { return theMap.find(key); } 
 };
 
 

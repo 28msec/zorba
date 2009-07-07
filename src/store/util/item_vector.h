@@ -61,6 +61,9 @@ public:
   iterator begin() { return theItems.begin(); }
   iterator end()   { return theItems.end(); }
 
+  const_iterator begin() const { return theItems.begin(); }
+  const_iterator end() const   { return theItems.end(); }
+
   std::string toString() const;
 };
 
