@@ -389,10 +389,10 @@ int processReply(const QueryLoc& aLoc,
         {
           store::Iterator_t doc_children = temp->getChildren();
           doc_children->open();
-          doc_children->next(doc);
           CopyMode copyMode;
           copyMode.theDoCopy = false;
-          doc->copy(payload, -1, CopyMode());
+          while (doc_children->next(doc))
+            doc->copy(payload, -1, copyMode);
         }
         else
         {
@@ -410,10 +410,11 @@ int processReply(const QueryLoc& aLoc,
         {
           store::Iterator_t doc_children = temp->getChildren();
           doc_children->open();
-          doc_children->next(doc);
           CopyMode copyMode;
           copyMode.theDoCopy = false;
-          doc->copy(payload, -1, CopyMode());
+          while (doc_children->next(doc)) {
+            doc->copy(payload, -1, copyMode);
+          }
         }
         else
         {
