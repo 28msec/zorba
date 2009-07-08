@@ -188,12 +188,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 %token BLANK                      "<blank>"
 
-%token BLOCK                      "'block'"
-%token EXIT                       "'exit'"
-%token BREAK                      "'break'"
-%token LOOP                       "'loop'"
-%token CONTINUE                   "'continue'"
-%token WHILE                      "'while'"
 %token VALIDATE                   "'validate'"
 %token TYPESWITCH                 "'typeswitch'"
 %token ELEMENT                    "'element'"
@@ -408,6 +402,16 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token MODIFY 										"'modify'"
 %token COPY                       "'copy'"
 %token WITH												"'with'"
+
+/* scripting-related */
+/* ----------------- */
+%token RETURNING	  							"'returning'"
+%token BLOCK                      "'block'"
+%token EXIT                       "'exit'"
+%token BREAK                      "'break'"
+%token LOOP                       "'loop'"
+%token CONTINUE                   "'continue'"
+%token WHILE                      "'while'"
 
 /* try-catch-related */
 /* ----------------- */
@@ -682,6 +686,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> TransformExpr
 %type <expr> VarNameList
 %type <expr> VarNameDecl
+
 
 /* try-catch-related */
 /* ----------------- */
@@ -1724,7 +1729,7 @@ AssignExpr :
   ;
 
 ExitExpr :
-    EXIT WITH ExprSingle
+    EXIT RETURNING ExprSingle
     {
       $$ = new ExitExpr (LOC (@$), $3);
     }
@@ -5249,6 +5254,7 @@ KEYWORD :
   | NONDETERMINISTIC { $$ = SYMTAB_PUT ("nondeterministic"); }
   | ORDERED { $$ = SYMTAB_PUT ("ordered"); }
   | UNORDERED { $$ = SYMTAB_PUT ("unordered"); }
+  | RETURNING { $$ = SYMTAB_PUT ("returning"); }
   | BLOCK { $$ = SYMTAB_PUT ("block"); }
   | EXIT { $$ = SYMTAB_PUT ("exit"); }
   | LOOP { $$ = SYMTAB_PUT ("loop"); }

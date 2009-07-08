@@ -2,7 +2,7 @@ import module namespace
 fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
 declare sequential function local:foo() {
   fn-zorba-collection:insert-nodes-last('http', <a/>);
-  exit with ();
+  exit returning ();
 };
 
 local:foo()

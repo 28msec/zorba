@@ -2,7 +2,7 @@ import module namespace coll="http://www.zorba-xquery.com/zorba/collection-funct
 
 declare sequential function local:test()
 {
-  exit with coll:index-of(fn:collection("a")[2]);
+  exit returning coll:index-of(fn:collection("a")[2]);
 };
 
 local:test()

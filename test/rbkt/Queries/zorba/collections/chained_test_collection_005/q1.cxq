@@ -4,7 +4,7 @@ declare variable $input-context1 external;
 
 declare sequential function local:foo() {
   fn-zorba-collection:create-collection('http', fn:doc($input-context1)//*);
-  exit with ();
+  exit returning ();
 };
 
 local:foo()

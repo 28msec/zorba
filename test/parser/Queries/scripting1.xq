@@ -6,10 +6,10 @@ declare variable $nl := "
 
 declare sequential function local:calc-one ($s as xs:string) as xs:boolean {
   if (string-length ($s) = 0) then
-    exit with false ()
+    exit returning false ()
   else block {
     zorba:print (("Result: ", eval { $s }, $nl));
-    exit with true();
+    exit returning true();
   };
 };
 

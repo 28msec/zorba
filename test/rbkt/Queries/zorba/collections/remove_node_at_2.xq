@@ -3,7 +3,7 @@ import module namespace coll="http://www.zorba-xquery.com/zorba/collection-funct
 declare sequential function local:test()
 {
   coll:remove-node-at(2);
-  exit with fn:collection();
+  exit returning fn:collection();
 };
 
 local:test()

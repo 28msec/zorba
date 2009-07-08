@@ -6,7 +6,7 @@ declare sequential function local:test()
   coll:insert-nodes-last("a", <a/>);
   coll:insert-nodes-last("a", <b/>);
   coll:insert-nodes-last("a", <c/>);
-  exit with coll:node-at("a",2);
+  exit returning coll:node-at("a",2);
 };
 
 local:test()

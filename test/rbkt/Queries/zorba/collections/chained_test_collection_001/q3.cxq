@@ -3,7 +3,7 @@ import module namespace fn-zorba-collection="http://www.zorba-xquery.com/zorba/c
 
 declare sequential function local:foo() {
   fn-zorba-collection:delete-collection('http://example.org/collection_1');
-  exit with ();
+  exit returning ();
 };
 
 local:foo()

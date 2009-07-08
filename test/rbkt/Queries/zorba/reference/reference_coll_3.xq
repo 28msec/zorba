@@ -10,7 +10,7 @@ declare sequential function local:test()
 coll:create-collection("a");
 coll:insert-nodes-last("a", <a><b><c d="e"></c></b></a>);
 
-exit with
+exit returning
 fn:data(zorba:node-by-reference(zorba:node-reference(fn:collection("a")/b/c/@d)));
 };
 

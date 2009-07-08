@@ -7,7 +7,7 @@ declare sequential function local:test()
   coll:insert-nodes-last("a", <b/>);
   coll:insert-nodes-last("a", <c/>);
   coll:insert-nodes-after("a", fn:collection("a")[2], <z/>);
-  exit with fn:collection("a");
+  exit returning fn:collection("a");
 };
 
 local:test()

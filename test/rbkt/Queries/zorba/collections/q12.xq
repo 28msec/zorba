@@ -4,7 +4,7 @@ declare sequential function local:foo($collUri) {
   coll:create-collection($collUri,<a/>);
   let $a := fn:collection($collUri)
   return coll:insert-nodes-last($collUri, <b/>);
-  exit with ();
+  exit returning ();
 };
 
 

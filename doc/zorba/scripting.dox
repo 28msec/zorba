@@ -29,7 +29,7 @@ The following example uses a while loop and Zorba's eval facility to implement
 a simple command-line calculator:
 
 \code
-(: Simple calculator; exit with an empty line :)
+(: Simple calculator; exit and return an empty line :)
 
 import module namespace zorba =
   "http://www.zorba-xquery.com/zorba/internal-functions";
@@ -39,10 +39,10 @@ declare variable $nl := "
 
 declare sequential function local:calc-one ($s as xs:string) as xs:boolean {
   if (string-length ($s) = 0) then
-    exit with false ()
+    exit returning false ()
   else block {
     zorba:print (("Result: ", eval { $s }, $nl));
-    exit with true();
+    exit returning true();
   }
 };
 
@@ -76,7 +76,7 @@ declare variable $nl := "
 
 declare sequential function local:guess ($n) {
   zorba:print (("Was your number ", $n, "? Enter '=', '<' or '>'", $nl));
-  exit with zorba:read-line();
+  exit returning zorba:read-line();
 };
 
 (: find number $x s.t. $lo <= $x < $hi :)

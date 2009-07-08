@@ -7,6 +7,8 @@ version 1.0.0 (comming)
   * Added two plan printing function (printPlanAsXML and printPlanAsDOT) to the SWIG generated APIs
 	* Implemented 'declare option': options are set in the static context
 	* fn:trace can be disabled by setting the option QName("http://www.zorba-xquery.org/option", "trace")  to "disable"
+	* Changed the scripting syntax of the exit expression from 'exit with' to 'exit returning'. 
+		This is due to an ambiguity in the grammar (see http://www.w3.org/Bugs/Public/show_bug.cgi?id=6852 for more information).
 
 version 0.9.5 (2008.02.17)
   * Unified the Tidy and Rest API's
