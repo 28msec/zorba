@@ -359,7 +359,7 @@ xqtref_t Schema::createXQTypeFromTypeName(
   const char* local_cstr = qname->getLocalName()->c_str();
 
   // check the cache first
-  std::string key = std::string(local_cstr) + ":" + nsuri_cstr + " " + 
+  std::string key = qname->getLocalName()->str() + ":" + qname->getNamespace()->str() + " " +
     TypeOps::decode_quantifier(TypeConstants::QUANT_ONE);
 
   if( _udTypesCache->get(key, res) )
@@ -378,12 +378,12 @@ xqtref_t Schema::createXQTypeFromTypeName(
   {
     res = NULL;
     TRACE("No type definition for " << local << "@" << uri);
+    TRACE("add to TypesCache: key:'" << key << "'  t:" << ( res==NULL ? "NULL" : TypeOps::decode_quantifier(res->get_quantifier())) );
+    // stick it in the cache even if it's NULL
+    _udTypesCache->put(key, res);
   }
   else
     res = createXQTypeFromTypeDefinition(typeManager, typeDef);
-  
-  // stick it in the cache even if it's NULL
-  _udTypesCache->put(key, res);
 
   return res;
 }
@@ -875,6 +875,8 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
                                                        contentType));
       result = xqType;
 
+      addTypeToCache(xqType);
+
       //check if it contains anonymous types (they are not available through xsModel API)
       // add them to the cache
       checkForAnonymousTypesInType(typeManager, xsTypeDef);
@@ -1013,10 +1015,11 @@ void Schema::addTypeToCache(xqtref_t itemXQType)
     const store::Item* qname = itemUDType->get_qname();
     std::string key = qname->getLocalName()->str() + ":" + qname->getNamespace()->str() + " " + 
         TypeOps::decode_quantifier (itemXQType->get_quantifier());
+
     xqtref_t res;
     if( !_udTypesCache->get(key, res) )
     {
-        TRACE("key: " << key);
+        TRACE("key: '" << key << "'");
         _udTypesCache->put(key, itemXQType);
     }
 }
@@ -1161,8 +1164,7 @@ bool Schema::parseUserAtomicTypes(
 
       if (!xsiTypeDV) 
       {
-        ZORBA_ERROR_DESC_OSS( FORG0001,
-                              "Type '" << TypeOps::toString (*aTargetType) << "' not found in current context.");
+        ZORBA_ERROR_DESC_OSS( FORG0001, "Type '" << TypeOps::toString (*aTargetType) << "' not found in current context.");
         wasError = true;
       }
       
@@ -1171,8 +1173,7 @@ bool Schema::parseUserAtomicTypes(
     }
     else
     {
-      ZORBA_ERROR_DESC_OSS( FORG0001, 
-                            "Uri '" << typeQName->getNamespace()->str() << "' not found in current schema context.");
+      ZORBA_ERROR_DESC_OSS( FORG0001, "Uri '" << typeQName->getNamespace()->str() << "' not found in current schema context.");
       wasError = true;
       
     }

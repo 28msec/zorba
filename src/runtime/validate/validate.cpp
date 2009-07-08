@@ -208,7 +208,7 @@ bool ValidateIterator::effectiveValidationValue (
     
     if ( validationMode == ParseConstants::val_typename )
     {
-      //cout << "Validate type: " << typeName->getLocalName()->c_str() 
+      //cout << "Validate type: " << typeName->getLocalName()->c_str()
       //     << " @ " << typeName->getNamespace()->c_str() << "\n"; cout.flush();
       schemaValidator.startType(typeName);                
     }
@@ -461,7 +461,7 @@ void ValidateIterator::processChildren(
   {
     if ( child->isNode() )
     {
-      //cout << "  > child: " << child->getNodeKind() << " " << child->getType()->getLocalName()->c_str() << "\n"; cout.flush();
+      //cout << "  > child: " << child->getNodeKind() << " " << (child->getType() != NULL ? child->getType()->getLocalName()->c_str() : "type_NULL" ) << "\n"; cout.flush();
       
       switch ( child->getNodeKind() )
       { 
@@ -490,14 +490,14 @@ void ValidateIterator::processChildren(
         //xqType is NULL, create_type can't find it
         xqtref_t xqType = typeManager->create_type(*typeIdentifier);
 
-        /*if ( typeQName.getp() && xqType.getp() )
-        {
-          cout << "     - text: " << childStringValue << "  T: " << typeQName->getLocalName()->c_str() << "\n"; cout.flush();
-          cout << "        xqT: " << xqType->toString() << "  content_kind: " << xqType->content_kind() << " tKind:" << xqType->type_kind() << " \n"; cout.flush();
-        }
-        else
-          cout << "     - text2: " << childStringValue << "  tQN: " << typeQName.getp() << " xqT:" << xqType.getp() << "\n"; cout.flush();
-        */
+//        if ( typeQName.getp() && xqType.getp() )
+//        {
+//          /cout << "     - text: " << childStringValue << "  T: " << typeQName->getLocalName()->c_str() << "\n"; cout.flush();
+//          cout << "        xqT: " << xqType->toString() << "  content_kind: " << xqType->content_kind() << " tKind:" << xqType->type_kind() << " \n"; cout.flush();
+//        }
+//        else
+//          cout << "     - text2: " << childStringValue << "  tQN: " << typeQName.getp() << " xqT:" << xqType.getp() << "\n"; cout.flush();
+        
         if ( xqType!=NULL && xqType->content_kind()==XQType::SIMPLE_CONTENT_KIND )
         {
           store::NsBindings nsBindings;
@@ -584,11 +584,11 @@ void ValidateIterator::processTextValue (
 {
   xqtref_t type = typeManager->
                   create_named_type(typeQName.getp(), TypeConstants::QUANT_ONE);
-  //cout << "     - processTextValue: " << typeQName->getPrefix()->str()
-  //     << ":" << typeQName->getLocalName()->str() << "@"
-  //     << typeQName->getNamespace()->str() ; cout.flush();
-  //cout << " type: " << ( type==NULL ? "NULL" : type->toString() ) << "\n";
-  //cout.flush();
+//  cout << "     - processTextValue: " << typeQName->getPrefix()->str()
+//       << ":" << typeQName->getLocalName()->str() << "@"
+//       << typeQName->getNamespace()->str() ; cout.flush();
+//  cout << " type: " << ( type==NULL ? "NULL" : type->toString() ) << "\n";
+//  cout.flush();
   
   // TODO: we probably need the ns bindings from the static context
   // surrounding the original validate_expr, not planState.sctx()

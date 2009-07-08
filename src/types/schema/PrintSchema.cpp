@@ -20,6 +20,7 @@
 #include "PrintSchema.h"
 #include "StrX.h"
 #include "schema.h"
+#include "zorbatypes/xerces_xmlcharray.h"
 #include <iostream>
 
 using namespace std;
@@ -45,13 +46,15 @@ void PrintSchema::printInfo(bool excludeBuiltIn, XMLGrammarPool* grammarPool)
       if (nameSpace && (XMLString::stringLen(nameSpace)>0))
       {
         std::cout << StrX(nameSpace);
-        //              const XMLCh* ns1 = XMLString::transcode(XSD_NAMESPACE); 
-        const char* ns2 = XMLString::transcode(nameSpace);
-				if ( XMLString::equals(Schema::XSD_NAMESPACE, ns2 /*ns1, nameSpace*/) )
+        char * nsCh = XMLString::transcode(nameSpace);
+	if ( XMLString::equals(Schema::XSD_NAMESPACE, nsCh ) )
         {
           std::cout << std::endl;
+          XMLString::release(&nsCh);
           break;
         }
+        else
+          XMLString::release(&nsCh);
       }
 
       std::cout << "\n============================================"

@@ -187,87 +187,87 @@ void processElement(
     EventSchemaValidator& schemaValidator,
     store::Item_t element)
 {
-  ZORBA_ASSERT(element->isNode());
-  ZORBA_ASSERT(element->getNodeKind() == store::StoreConsts::elementNode);
+    ZORBA_ASSERT(element->isNode());
+    ZORBA_ASSERT(element->getNodeKind() == store::StoreConsts::elementNode);
     
-  store::Item_t nodeName = element->getNodeName();
-  xqpStringStore_t baseUri = element->getBaseURI();
+    store::Item_t nodeName = element->getNodeName();
+    xqpStringStore_t baseUri = element->getBaseURI();
     
-  //cout << " vup    - processElement: " << nodeName->getLocalName()->c_str()
-  //    << " @ " << nodeName->getNamespace()->c_str() << "\n"; cout.flush();
+    //cout << " vup    - processElement: " << nodeName->getLocalName()->c_str()
+    //    << " @ " << nodeName->getNamespace()->c_str() << "\n"; cout.flush();
             
-  schemaValidator.startElem(nodeName);
+    schemaValidator.startElem(nodeName);
     
-  // namespace declarations must go first
-  processNamespaces( schemaValidator, element);
+    // namespace declarations must go first
+    processNamespaces( schemaValidator, element);
         
-  // since the type of an element is determined only after the validator
-  // receives all of it's attributes, and an attribute node needs it's
-  // parent when created we need to go through the attributes twice: once
-  // for validation and once for creation
-  validateAttributes(schemaValidator, element->getAttributes());
+    // since the type of an element is determined only after the validator
+    // receives all of it's attributes, and an attribute node needs it's
+    // parent when created we need to go through the attributes twice: once
+    // for validation and once for creation
+    validateAttributes(schemaValidator, element->getAttributes());
         
-  store::Item_t typeQName = schemaValidator.getTypeQName();
+    store::Item_t typeQName = schemaValidator.getTypeQName();
     
-  //cout << " vup      - elemType old: "
-  //    << element->getType()->getLocalName()->c_str() << " @ "
-  //    << element->getType()->getNamespace()->c_str() << "\n"; cout.flush();
-  //cout << " vup      - elemType new: " << typeQName->getLocalName()->c_str()
-  //    << " @ " << typeQName->getNamespace()->c_str() << "\n"; cout.flush();
-  
-  bool isNewType = false;
-  xqtref_t newType;
-  bool tHasValue;
-  bool tHasTypedValue;
-  bool tHasEmptyValue;
-  store::PUL* p = NULL;
-  store::Item_t elm;
-  
-  if ( !typeQName->equals(element->getType()) )
-  {
-    isNewType = true;
-    newType = typeManager->create_named_type(typeQName);
+    //cout << " vup      - elemType old: "
+    //    << element->getType()->getLocalName()->c_str() << " @ "
+    //    << element->getType()->getNamespace()->c_str() << "\n"; cout.flush();
+    //cout << " vup      - elemType new: " << typeQName->getLocalName()->c_str()
+    //    << " @ " << typeQName->getNamespace()->c_str() << "\n"; cout.flush();
     
-    p = static_cast<store::PUL *>(pul.getp());
-    elm = element;
-  }
-  
-  store::NsBindings bindings;
-  element->getNamespaceBindings(bindings);
-  namespace_context nsCtx = namespace_context(staticContext, bindings);
-  
-  processAttributes(pul, nsCtx, typeManager, schemaValidator, element, element->getAttributes());
-  
-  std::vector<store::Item_t> typedValues;
-  processChildren(pul, staticContext, nsCtx, typeManager, schemaValidator, 
-                  element->getChildren(), typedValues);
+    bool isNewType = false;
+    xqtref_t newType;
+    bool tHasValue;
+    bool tHasTypedValue;
+    bool tHasEmptyValue;
+    store::PUL* p = NULL;
+    store::Item_t elm;
     
-  if ( isNewType )
-  {    
-    //cout << " vup        - addSetElementType: " << elm->getNodeName()->getLocalName()->str() << "   " << newTypeIdent->getLocalName() << " @ " << newTypeIdent->getUri() << "\n"; cout.flush();
-    //cout << " vup             - " << ( tHasTypedValue ? "hasTypedValue" : "" ) << " values.size: " << typedValues.size() << (typedValues.size()>0 ? " [0]=" + typedValues[0]->getStringValue()->str() : "" ) << ( tHasValue ? " hasValue" : "" ) << ( tHasEmptyValue ? " hasEmptyValue" : "" ) << "\n"; cout.flush();
+    if ( !typeQName->equals(element->getType()) )
+    {
+        isNewType = true;
+        newType = typeManager->create_named_type(typeQName);
+        
+        p = static_cast<store::PUL *>(pul.getp());
+        elm = element;
+    }
     
-    tHasValue      = typeHasValue(newType);
-    tHasTypedValue = typeHasTypedValue(newType);
-    tHasEmptyValue = typeHasEmptyValue(newType);
+    store::NsBindings bindings;
+    element->getNamespaceBindings(bindings);
+    namespace_context nsCtx = namespace_context(staticContext, bindings);
+            
+    processAttributes(pul, nsCtx, typeManager, schemaValidator, element, element->getAttributes());
+        
+    std::vector<store::Item_t> typedValues;
+    processChildren(pul, staticContext, nsCtx, typeManager, schemaValidator, 
+                    element->getChildren(), typedValues);
     
-    if ( typedValues.size()==1 )
-      p->addSetElementType(elm,
-                           typeQName,
-                           typedValues[0],
-                           tHasValue, 
-                           tHasEmptyValue,
-                           tHasTypedValue);
-    else
-      p->addSetElementType(elm,
-                           typeQName,
-                           (std::vector<store::Item_t>&)typedValues,
-                           tHasValue, 
-                           tHasEmptyValue,
-                           tHasTypedValue);
-  }
-  
-  schemaValidator.endElem(nodeName);
+    if ( isNewType )
+    {    
+        tHasValue      = typeHasValue(newType);
+        tHasTypedValue = typeHasTypedValue(newType);
+        tHasEmptyValue = typeHasEmptyValue(newType);
+
+        //cout << " vup        - addSetElementType: " << elm->getNodeName()->getLocalName()->str() << "   " << newTypeIdent->getLocalName() << " @ " << newTypeIdent->getUri() << "\n"; cout.flush();
+        //cout << " vup             - " << ( tHasTypedValue ? "hasTypedValue" : "" ) << " values.size: " << typedValues.size() << (typedValues.size()>0 ? " [0]=" + typedValues[0]->getStringValue()->str() : "" ) << ( tHasValue ? " hasValue" : "" ) << ( tHasEmptyValue ? " hasEmptyValue" : "" ) << "\n"; cout.flush();
+
+        if ( typedValues.size()==1 )
+            p->addSetElementType(elm,
+                                typeQName,
+                                typedValues[0],
+                                tHasValue, 
+                                tHasEmptyValue,
+                                tHasTypedValue);
+        else
+            p->addSetElementType(elm,
+                                typeQName,
+                                (std::vector<store::Item_t>&)typedValues,
+                                tHasValue, 
+                                tHasEmptyValue,
+                                tHasTypedValue);
+    }
+
+    schemaValidator.endElem(nodeName);
 }
 
 
@@ -298,58 +298,60 @@ void processAttributes( store::Item_t& pul, namespace_context& nsCtx,
         
     for( curAtt = attList->begin() ; curAtt != attList->end(); ++curAtt )
     {
-      AttributeValidationInfo* att = *curAtt;
-      //cout << " vup        - processATT2: " << att->_localName << " T: " << att->_typeName << "\n";
+        AttributeValidationInfo* att = *curAtt;
+        //cout << " vup        - processATT2: " << att->_localName << " T: " << att->_typeName << "\n";
             
-      store::Item_t attQName;
-      GENV_ITEMFACTORY->createQName( attQName, att->_uri, att->_prefix, att->_localName);
+        store::Item_t attQName;
+        GENV_ITEMFACTORY->createQName( attQName, att->_uri, att->_prefix, att->_localName);
         
-      store::Item_t attrib = findAttributeItem(parent, attQName);
+        store::Item_t attrib = findAttributeItem(parent, attQName);
         
-      std::string typePrefix;
-      if ( std::strcmp(Schema::XSD_NAMESPACE, att->_typeURI->c_str() )==0 ) // hack around typeManager bug for comparing QNames
-        typePrefix = "xs";
-      else
-        typePrefix = "";
-      
-      store::Item_t typeQName;
-      GENV_ITEMFACTORY->createQName(typeQName,
-                                    att->_typeURI, new xqpStringStore(typePrefix), att->_typeName);
-      
+        std::string typePrefix;
+        if ( std::strcmp(Schema::XSD_NAMESPACE, att->_typeURI->c_str() )==0 ) // hack around typeManager bug for comparing QNames
+            typePrefix = "xs";
+        else
+            typePrefix = "";
         
-      std::vector<store::Item_t> typedValues;        
-      processTextValue(pul, typeManager, nsCtx, typeQName, att->_value, attrib, typedValues);
-      
-      if ( attrib==NULL )
-      {
-        // this is an attibute filled in by the validator
-        store::Item_t defaultAttNode;
-        if ( typedValues.size()==1 ) // hack around serialization bug
-          GENV_ITEMFACTORY->createAttributeNode(defaultAttNode,
-                                                parent,
-                                                -1,
-                                                attQName, 
-                                                typeQName,
-                                                typedValues[0]);
-        else            
-          GENV_ITEMFACTORY->createAttributeNode(defaultAttNode,
-                                                parent,
-                                                -1,
-                                                attQName, 
-                                                typeQName,
-                                                typedValues);
+        store::Item_t typeQName;
+        GENV_ITEMFACTORY->createQName(typeQName,
+                                      att->_typeURI,
+                                      new xqpStringStore(typePrefix),
+                                      att->_typeName);
+
         
-        defaultAtts.push_back(defaultAttNode);
-      } 
-      else if ( !typeQName->equals(attrib->getType()) )
-      {
-        store::PUL *p = static_cast<store::PUL *>(pul.getp());
-        store::Item_t atr = store::Item_t(attrib);
-        if ( typedValues.size()==1 )        // optimize when only one item is available 
-          p->addSetAttributeType(atr, typeQName, (store::Item_t&)(typedValues[0]));
-        else            
-          p->addSetAttributeType( atr, typeQName, typedValues);
-      }
+        std::vector<store::Item_t> typedValues;        
+        processTextValue(pul, typeManager, nsCtx, typeQName, att->_value, attrib, typedValues);
+        
+        if ( attrib==NULL )
+        {
+            // this is an attibute filled in by the validator
+            store::Item_t defaultAttNode;
+            if ( typedValues.size()==1 ) // hack around serialization bug
+                GENV_ITEMFACTORY->createAttributeNode( defaultAttNode,
+                        parent,
+                        -1,
+                        attQName,
+                        typeQName,
+                        typedValues[0]);
+            else            
+                GENV_ITEMFACTORY->createAttributeNode( defaultAttNode,
+                        parent,
+                        -1,
+                        attQName,
+                        typeQName,
+                        typedValues);
+            
+            defaultAtts.push_back(defaultAttNode);
+        } 
+        else if ( !typeQName->equals(attrib->getType()) )
+        {
+            store::PUL *p = static_cast<store::PUL *>(pul.getp());
+            store::Item_t atr = store::Item_t(attrib);
+            if ( typedValues.size()==1 )        // optimize when only one item is available 
+                p->addSetAttributeType( atr, typeQName, (store::Item_t&)(typedValues[0]) );
+            else            
+                p->addSetAttributeType( atr, typeQName, typedValues );
+        }
     }
     
     if ( defaultAtts.size()>0 )
