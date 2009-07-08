@@ -485,16 +485,12 @@ void PULImpl::addSetElementType(
     store::Item_t&              value,
     bool                        haveValue,
     bool                        haveEmptyValue,
-    bool                        haveTypedValue,
-    bool                        isId,
-    bool                        isIdRefs)
+    bool                        haveTypedValue)
 {
   UpdatePrimitive* upd = new UpdSetElementType(this, target,
                                                typeName, value,
                                                haveValue, haveEmptyValue,
-                                               haveTypedValue, false,
-                                               isId, isIdRefs);
-
+                                               haveTypedValue, false);
   theValidationList.push_back(upd);
 }
 
@@ -505,18 +501,14 @@ void PULImpl::addSetElementType(
     std::vector<store::Item_t>& valueV,
     bool                        haveValue,
     bool                        haveEmptyValue,
-    bool                        haveTypedValue,
-    bool                        isId,
-    bool                        isIdRefs)
+    bool                        haveTypedValue)
 {
   store::Item_t typedValue = new ItemVector(valueV);
 
   UpdatePrimitive* upd = new UpdSetElementType(this, target,
                                                typeName, typedValue,
                                                haveValue, haveEmptyValue,
-                                               haveTypedValue, true,
-                                               isId, isIdRefs);
-
+                                               haveTypedValue, true);
   theValidationList.push_back(upd);
 }
 
@@ -524,14 +516,10 @@ void PULImpl::addSetElementType(
 void PULImpl::addSetAttributeType(
     store::Item_t&              target,
     store::Item_t&              typeName,
-    store::Item_t&              typedValue,
-    bool                        isId,
-    bool                        isIdRefs)
+    store::Item_t&              typedValue)
 {
   UpdatePrimitive* upd = new UpdSetAttributeType(this, target,
-                                                 typeName, typedValue, false,
-                                                 isId, isIdRefs);
-
+                                                 typeName, typedValue, false);
   theValidationList.push_back(upd);
 }
 
@@ -539,16 +527,12 @@ void PULImpl::addSetAttributeType(
 void PULImpl::addSetAttributeType(
     store::Item_t&              target,
     store::Item_t&              typeName,
-    std::vector<store::Item_t>& typedValueV,
-    bool                        isId,
-    bool                        isIdRefs)
+    std::vector<store::Item_t>& typedValueV)
 {
   store::Item_t typedValue = new ItemVector(typedValueV);
 
   UpdatePrimitive* upd = new UpdSetAttributeType(this, target,
-                                                 typeName, typedValue, true,
-                                                 isId, isIdRefs);
-
+                                                 typeName, typedValue, true);
   theValidationList.push_back(upd);
 }
 
@@ -560,10 +544,9 @@ void PULImpl::addCreateCollection(
     static_context*      aStaticContext,
     xqpStringStore_t&    resolvedURI)
 {
-  UpdatePrimitive* upd = new UpdCreateCollection(this,
-                                                 aStaticContext,
-                                                 resolvedURI);
-  theCreateCollectionList.push_back(upd);
+  theCreateCollectionList.push_back(
+    new UpdCreateCollection(this, aStaticContext, resolvedURI)
+  );
 }
 
 
@@ -571,10 +554,9 @@ void PULImpl::addDeleteCollection(
     static_context*      aStaticContext,
     store::Item_t&              resolvedURI)
 {
-  UpdatePrimitive* upd = new UpdDeleteCollection(this,
-                                                 aStaticContext,
-                                                 resolvedURI);
-  theDeleteCollectionList.push_back(upd);
+  theDeleteCollectionList.push_back(
+    new UpdDeleteCollection(this, aStaticContext, resolvedURI)
+  );
 }
 
 
@@ -584,12 +566,9 @@ void PULImpl::addInsertIntoCollection(
     store::Item_t&         node,
     const store::CopyMode& copymode)
 {
-  UpdatePrimitive* upd = new UpdInsertIntoCollection(this,
-                                                     aStaticContext,
-                                                     resolvedURI,
-                                                     node,
-                                                     copymode);
-  theInsertIntoCollectionList.push_back(upd);
+  theInsertIntoCollectionList.push_back(
+    new UpdInsertIntoCollection(this, aStaticContext, resolvedURI, node, copymode)
+  );
 } 
 
 
@@ -599,12 +578,9 @@ void PULImpl::addInsertFirstIntoCollection(
     std::vector<store::Item_t>& nodes,
     const store::CopyMode&      copyMode)
 {
-  UpdatePrimitive* upd = new UpdInsertFirstIntoCollection(this,
-                                                          aStaticContext,
-                                                          resolvedURI,
-                                                          nodes,
-                                                          copyMode);
-  theInsertIntoCollectionList.push_back(upd);
+  theInsertIntoCollectionList.push_back(
+    new UpdInsertFirstIntoCollection(this, aStaticContext, resolvedURI, nodes, copyMode)
+  );
 }
 
 
@@ -614,12 +590,9 @@ void PULImpl::addInsertLastIntoCollection(
     std::vector<store::Item_t>& nodes,
     const store::CopyMode&      copyMode)
 {
-  UpdatePrimitive* upd = new UpdInsertLastIntoCollection(this,
-                                                         aStaticContext,
-                                                         resolvedURI,
-                                                         nodes,
-                                                         copyMode);
-  theInsertIntoCollectionList.push_back(upd);
+  theInsertIntoCollectionList.push_back(
+    new UpdInsertLastIntoCollection(this, aStaticContext, resolvedURI, nodes, copyMode)
+  );
 }
 
 
@@ -630,13 +603,9 @@ void PULImpl::addInsertBeforeIntoCollection(
     std::vector<store::Item_t>& nodes,
     const store::CopyMode&      copyMode)
 {
-  UpdatePrimitive* upd = new UpdInsertBeforeIntoCollection(this,
-                                                           aStaticContext,
-                                                           resolvedURI,
-                                                           target,
-                                                           nodes,
-                                                           copyMode);
-  theInsertIntoCollectionList.push_back(upd);
+  theInsertIntoCollectionList.push_back(
+    new UpdInsertBeforeIntoCollection(this, aStaticContext, resolvedURI, target, nodes, copyMode)
+  );
 }
 
 
@@ -647,14 +616,9 @@ void PULImpl::addInsertAfterIntoCollection(
     std::vector<store::Item_t>& nodes,
     const store::CopyMode&      copyMode)
 {
-  UpdatePrimitive* upd = new UpdInsertAfterIntoCollection(this,
-                                                          aStaticContext,
-                                                          resolvedURI,
-                                                          target,
-                                                          nodes,
-                                                          copyMode);
-
-  theInsertIntoCollectionList.push_back(upd);
+  theInsertIntoCollectionList.push_back(
+    new UpdInsertAfterIntoCollection(this, aStaticContext, resolvedURI, target, nodes, copyMode)
+  );
 }
 
 
@@ -665,13 +629,9 @@ void PULImpl::addInsertAtIntoCollection(
     std::vector<store::Item_t>& nodes,
     const store::CopyMode&      copyMode)
 {
-  UpdatePrimitive* upd = new UpdInsertAtIntoCollection(this,
-                                                       aStaticContext,
-                                                       resolvedURI,
-                                                       pos,
-                                                       nodes,
-                                                       copyMode);
-  theInsertIntoCollectionList.push_back(upd);
+  theInsertIntoCollectionList.push_back(
+    new UpdInsertAtIntoCollection(this, aStaticContext, resolvedURI, pos, nodes, copyMode)
+  );
 }
 
 
@@ -680,11 +640,9 @@ void PULImpl::addRemoveFromCollection(
     store::Item_t&            resolvedURI,
     std::vector<store::Item_t>& nodes)
 {
-  UpdatePrimitive* upd = new UpdRemoveNodesFromCollection(this,
-                                                          aStaticContext,
-                                                          resolvedURI,
-                                                          nodes);
-  theDeleteFromCollectionList.push_back(upd);
+  theDeleteFromCollectionList.push_back(
+    new UpdRemoveNodesFromCollection(this, aStaticContext, resolvedURI, nodes)
+  );
 }
 
 
@@ -693,11 +651,9 @@ void PULImpl::addRemoveAtFromCollection(
     store::Item_t&            resolvedURI,
     ulong              pos)
 {
-  UpdatePrimitive* upd = new UpdRemoveNodesAtFromCollection(this,
-                                                            aStaticContext,
-                                                            resolvedURI,
-                                                            pos);
-  theDeleteFromCollectionList.push_back(upd);
+  theDeleteFromCollectionList.push_back(
+    new UpdRemoveNodeAtFromCollection(this, aStaticContext, resolvedURI, pos)
+  );
 }
 
 
@@ -881,24 +837,6 @@ void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) 
   }
 }
 
-#if 0
-/*******************************************************************************
-
-********************************************************************************/
-void PULImpl::serializeUpdates(serializer& ser, std::ostream& os)
-{
-  NodeToUpdatesMap::iterator it = theNodeToUpdatesMap.begin();
-  NodeToUpdatesMap::iterator end = theNodeToUpdatesMap.end();
-
-  for (; it != end; ++it)
-  {
-    const XmlNode* target = (*it).first;
-    target->getTree()->getRoot()->serializeXML(ser, os);
-    os << std::endl << "******************" << std::endl;
-  }
-}
-#endif
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -975,10 +913,17 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     {
       UpdatePrimitive* upd = theReplaceNodeList[i];
 
+#ifndef NDEBUG
       XmlNode* node = BASE_NODE(
                       upd->getKind() == store::UpdateConsts::UP_REPLACE_CHILD ?
-                      reinterpret_cast<UpdReplaceChild*>(upd)->theChild :
-                      reinterpret_cast<UpdReplaceAttribute*>(upd)->theAttr);
+                      dynamic_cast<UpdReplaceChild*>(upd)->theChild :
+                      dynamic_cast<UpdReplaceAttribute*>(upd)->theAttr);
+#else
+      XmlNode* node = BASE_NODE(
+                      upd->getKind() == store::UpdateConsts::UP_REPLACE_CHILD ?
+                      static_cast<UpdReplaceChild*>(upd)->theChild :
+                      static_cast<UpdReplaceAttribute*>(upd)->theAttr);
+#endif
 
       // To make the detach() method work properly, we must set the node's
       // parent back to what it used to be.
@@ -990,7 +935,11 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     for (ulong i = 0; i < numUpdates; i++)
     {
       UpdReplaceElemContent* upd;
-      upd = reinterpret_cast<UpdReplaceElemContent*>(theReplaceContentList[i]);
+#ifndef NDEBUG
+      upd = dynamic_cast<UpdReplaceElemContent*>(theReplaceContentList[i]);
+#else
+      upd = static_cast<UpdReplaceElemContent*>(theReplaceContentList[i]);
+#endif
 
       ulong numChildren = upd->theOldChildren.size();
       for (ulong j = 0; j < numChildren; j++)
@@ -1004,7 +953,11 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     numUpdates = theDeleteList.size();
     for (ulong i = 0; i < numUpdates; i++)
     {
-      UpdDelete* upd = reinterpret_cast<UpdDelete*>(theDeleteList[i]);
+#ifndef NDEBUG
+      UpdDelete* upd = dynamic_cast<UpdDelete*>(theDeleteList[i]);
+#else
+      UpdDelete* upd = static_cast<UpdDelete*>(theDeleteList[i]);
+#endif
       if (upd->theParent != NULL)
       {
         XmlNode* target = BASE_NODE(upd->theTarget);
@@ -1381,10 +1334,6 @@ void UpdSetElementType::apply()
 
     if (theHaveEmptyValue)
       target->setHaveEmptyValue();
-    else if (theIsId)
-      target->setIsId();
-    else if (theIsIdRefs)
-      target->setIsIdRefs();
 
     if (theHaveTypedValue)
     {
@@ -1457,11 +1406,6 @@ void UpdSetAttributeType::apply()
 
   target->theTypeName.transfer(theTypeName);
   target->theTypedValue.transfer(theTypedValue);
-
-  if (theIsId)
-    target->setIsId();
-  else if (theIsIdRefs)
-    target->setIsIdRefs();
 
   if (theHaveListValue)
     target->setHaveListValue();
@@ -1787,8 +1731,8 @@ void UpdRemoveNodesFromCollection::apply()
                          ->resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
-  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end(); ++lIter) {
+  for (std::vector<store::Item_t>::iterator lIter = theNodesToDelete.begin();
+       lIter != theNodesToDelete.end(); ++lIter) {
     lColl->removeNode(lIter->getp());
   }
 }
@@ -1800,8 +1744,8 @@ void UpdRemoveNodesFromCollection::undo()
   assert(lColl);
 
   long lIndex;
-  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end(); ++lIter) {
+  for (std::vector<store::Item_t>::iterator lIter = theNodesToDelete.begin();
+       lIter != theNodesToDelete.end(); ++lIter) {
     if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) {
 #ifndef NDEBUG
       dynamic_cast<SimpleCollection*>(lColl.getp())->addNodeWithoutCopy(lIter->getp());
@@ -1812,8 +1756,8 @@ void UpdRemoveNodesFromCollection::undo()
   }
 }
 
-// UpdRemoveNodesAtFromCollection
-void UpdRemoveNodesAtFromCollection::apply()
+// UpdRemoveNodeAtFromCollection
+void UpdRemoveNodeAtFromCollection::apply()
 {
   store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
                          ->resolve(theTargetCollectionUri, theStaticContext);
@@ -1824,7 +1768,7 @@ void UpdRemoveNodesAtFromCollection::apply()
   lColl->removeNode(thePos);
 }
 
-void UpdRemoveNodesAtFromCollection::undo()
+void UpdRemoveNodeAtFromCollection::undo()
 {
   store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
                          ->resolve(theTargetCollectionUri, theStaticContext);

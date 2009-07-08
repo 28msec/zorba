@@ -907,8 +907,6 @@ bool BasicItemFactory::createElementNode(
     store::Item_t&              typeName,
     bool                        haveTypedValue,
     bool                        haveEmptyValue,
-    bool                        isId,
-    bool                        isIdRefs,
     const store::NsBindings&    localBindings,
     xqpStringStore_t&           baseUri)
 {
@@ -928,7 +926,6 @@ bool BasicItemFactory::createElementNode(
 
     n = new ElementNode(xmlTree, pnode, pos, nodeName,
                         typeName, haveTypedValue, haveEmptyValue,
-                        isId, isIdRefs,
                         &localBindings, baseUri, false);
   }
   catch (...)
@@ -966,9 +963,7 @@ bool BasicItemFactory::createAttributeNode(
     long            pos,
     store::Item_t&  nodeName,
     store::Item_t&  typeName,
-    store::Item_t&  typedValue,
-    bool            isId,
-    bool            isIdRefs)
+    store::Item_t&  typedValue)
 {
   XmlTree* xmlTree = NULL;
   AttributeNode* n = NULL;
@@ -996,8 +991,6 @@ bool BasicItemFactory::createAttributeNode(
                           typeName,
                           typedValue,
                           false,     // isListValue
-                          isId,
-                          isIdRefs,
                           false);    // hidden
   }
   catch (...)
@@ -1033,9 +1026,7 @@ bool BasicItemFactory::createAttributeNode(
     long                        pos,
     store::Item_t&              nodeName,
     store::Item_t&              typeName,
-    std::vector<store::Item_t>& typedValueV,
-    bool                        isId,
-    bool                        isIdRefs)
+    std::vector<store::Item_t>& typedValueV)
 {
   XmlTree* xmlTree = NULL;
   AttributeNode* node = NULL;
@@ -1062,8 +1053,6 @@ bool BasicItemFactory::createAttributeNode(
                              typeName,
                              typedValue,
                              true,     // isListValue
-                             isId,
-                             isIdRefs,
                              false);   // hidden
   }
   catch (...)

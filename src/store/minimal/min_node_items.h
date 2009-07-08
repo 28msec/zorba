@@ -395,6 +395,10 @@ public:
 
   virtual store::Item_t getNilled() const { return 0; }
 
+  virtual bool isId() const { return false; }
+
+  virtual bool isIdRefs() const { return false; }
+
   bool isValidated() const { return getTree()->isValidated(); }
 
   void markValidated()     { getTree()->markValidated(); }
@@ -499,6 +503,10 @@ public:
   {
   }
 
+  //
+  // SimpleStore Methods
+  // 
+
   ulong numChildren() const          { return theChildren.size(); }
   NodeVector& children()             { return theChildren; }
   const NodeVector& children() const { return theChildren; }
@@ -583,7 +591,6 @@ public:
         const store::CopyMode& copyMode) const;
 
   NsBindingsContext* getNsContext() const                { return NULL; }
-  xqpStringStore* findBinding(xqpStringStore* pre) const { return NULL; }
 
   void finalizeNode()                { theChildren.compact(); }
 
@@ -628,8 +635,6 @@ public:
         store::Item_t&              typeName,
         bool                        haveTypedValue,
         bool                        haveEmptyValue,
-        bool                        isId,
-        bool                        isIdRefs,
         const store::NsBindings*    localBindings,
         xqpStringStore_t&           baseUri,
         bool                        doswap_nsbindings);
@@ -640,14 +645,22 @@ public:
   // Item methods
   //
 
-  store::Item* getType() const                     { return theTypeName.getp(); }
-  store::Item* getNodeName() const                 { return theName.getp(); }
+  store::Item* getNodeName() const { return theName.getp(); }
+
+  store::Item* getType() const { return theTypeName.getp(); }
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+
   store::Item_t getAtomizationValue() const;
+
+  bool isId() const;
+
+  bool isIdRefs() const;
+
   xqpStringStore_t getStringValue() const;
   void getStringValue(xqpStringStore_t& strval) const;
   void getStringValue(std::string& buf) const;
+
   store::Item_t getNilled() const;
 
   store::Iterator_t getAttributes() const;
@@ -663,7 +676,6 @@ public:
   // SimpleStore Methods
   // 
 
-  void resetIsIdRefs()          { theFlags &= ~IsIdRefs; }
   bool haveBaseUri() const      { return (theFlags & HaveBaseUri) != 0; }
   void setHaveBaseUri()         { theFlags |= HaveBaseUri; }
   void resetHaveBaseUri()       { theFlags &= ~HaveBaseUri; }
@@ -674,12 +686,6 @@ public:
   void setHaveEmptyValue()      { theFlags |= HaveEmptyValue; }
   void resetHaveEmptyValue()    { theFlags &= ~HaveEmptyValue; }
   bool haveEmptyValue() const   { return (theFlags & HaveEmptyValue) != 0; }
-
-  bool isId() const             { return (theFlags & IsId) != 0; }
-  void setIsId()                { theFlags |= IsId; }
-  void resetIsId()              { theFlags &= ~IsId; }
-  bool isIdRefs() const         { return (theFlags & IsIdRefs) != 0; }
-  void setIsIdRefs()            { theFlags |= IsIdRefs; }
 
   bool haveTypedTypedValue() const;
 
@@ -781,12 +787,37 @@ public:
         store::Item_t&   typeName,
         store::Item_t&              typedValue,
         bool                        isListValue,
-        bool                        isId,
-        bool                        isIdRef,
         bool                        hidden);
 
   virtual ~AttributeNode();
 
+
+  //
+  // Item methods
+  //
+
+  store::Item* getNodeName() const { return theName.getp(); }
+
+  store::Item* getType() const     { return theTypeName.getp(); }
+
+  void setTypedValue(store::Item_t& val);
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+
+  xqpStringStore_t getStringValue() const;
+  void getStringValue(xqpStringStore_t& strval) const;
+  void getStringValue(std::string& buf) const;
+
+  store::Item_t getAtomizationValue() const;
+
+  bool isId() const;
+
+  bool isIdRefs() const;
+
+  xqp_string show() const;
+
+  //
+  // SimpleStore Methods
+  // 
 
   XmlNode* copyInternal(
         InternalNode*          rootParent,
@@ -795,15 +826,6 @@ public:
         const XmlNode*         rootCopy,
         const store::CopyMode& copymode) const;
 
-  store::Item* getType() const     { return theTypeName.getp(); }
-
-  store::Item* getNodeName() const { return theName.getp(); }
-
-  bool isId() const           { return (theFlags & IsId) != 0; }
-  void setIsId()              { theFlags |= IsId; }
-  void resetIsId()            { theFlags &= ~IsId; }
-
-  bool isIdRefs() const       { return (theFlags & IsIdRefs) != 0; }
   void setIsIdRefs()          { theFlags |= IsIdRefs; }
   void resetIsIdRefs()        { theFlags &= ~IsIdRefs; }
 
@@ -816,22 +838,12 @@ public:
 
   bool isBaseUri() const      { return (theFlags & IsBaseUri) != 0; }
 
-  void setTypedValue(store::Item_t& val);
-  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
-
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
-
-  store::Item_t getAtomizationValue() const;
-
-  xqp_string show() const;
-
   void replaceValue(UpdReplaceAttrValue& upd);
   void restoreValue(UpdReplaceAttrValue& upd);
 
   void replaceName(UpdRenameAttr& upd);
   void restoreName(UpdRenameAttr& upd);
+
 
 protected:
   ItemVector& getValueVector() 
@@ -879,6 +891,27 @@ public:
 
   virtual ~TextNode();
 
+  //
+  // Item methods
+  //
+
+  store::Item* getType() const;
+
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+  store::Item_t getAtomizationValue() const;
+
+  xqpStringStore_t getStringValue() const;
+  void getStringValue(xqpStringStore_t& strval) const;
+  void getStringValue(std::string& buf) const;
+
+  store::Item* getNodeName() const { return NULL; }
+
+  xqp_string show() const;
+
+  //
+  // SimpleStore Methods
+  // 
+
   XmlNode* copyInternal(
         InternalNode*          rootParent,
         InternalNode*          parent,
@@ -894,19 +927,10 @@ public:
   void resetHaveListValue()  { theFlags &= ~HaveListValue; }
   void setHaveListValue()    { theFlags |= HaveListValue; }
 
-  store::Item* getType() const;
-
-  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
-  store::Item_t getAtomizationValue() const;
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
-			
-  store::Item* getNodeName() const { return NULL; }
-
-  xqp_string show() const;
+  bool isIdInternal() const;
 
   void replaceValue(UpdReplaceTextValue& upd);
+
   void restoreValue(UpdReplaceTextValue& upd);
 
 protected:

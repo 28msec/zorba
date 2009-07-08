@@ -192,14 +192,11 @@ void SimpleCollection::addNode(
     ZORBA_ERROR(API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION);
   }
 
-  checked_vector<store::Item_t>::iterator targetIter;
-  targetIter = theXmlTrees.begin() + (targetPos -1);
-
   store::Item* lCopy = node->copy(0, 0, copyMode);
   if(before)
-    theXmlTrees.insert(targetIter, lCopy);
+    theXmlTrees.insert(theXmlTrees.begin() + (targetPos-1), lCopy);
   else
-    theXmlTrees.insert(++targetIter, lCopy);
+    theXmlTrees.insert(theXmlTrees.begin() + targetPos, lCopy);
 }
 
 
@@ -363,7 +360,10 @@ void SimpleCollection::CollectionIter::open()
 ********************************************************************************/
 bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 {
-  // TODO check if the iterator was opened
+  if (!theHaveLock) {
+    ZORBA_ERROR_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, "Collection iterator has not been opened");                  
+  }    
+
   if (theIterator == theCollection->theXmlTrees.end()) 
   {
     result = NULL;
@@ -371,7 +371,7 @@ bool SimpleCollection::CollectionIter::next(store::Item_t& result)
   }
 
   result = (*theIterator).getp();
-  theIterator++;
+  ++theIterator;
 
   return true;
 }

@@ -215,7 +215,7 @@ void QNameItemImpl::getStringValue(std::string& buf) const
 }
 
 
-bool QNameItemImpl::isId() const
+bool QNameItemImpl::isIdQName() const
 {
   if (getLocalName()->byteEqual("id", 2))
   {

@@ -555,8 +555,6 @@ void XmlNode::removeType(UpdatePrimitive& upd)
 
       n->theTypeName = GET_STORE().theSchemaTypeNames[XS_ANY];
       n->setHaveValue();
-      n->resetIsId();
-      n->resetIsIdRefs();
       n->resetHaveEmptyValue();
 
       revalidationNode = currNode;
@@ -579,8 +577,6 @@ void XmlNode::removeType(UpdatePrimitive& upd)
         undoList[undoSize - 1].transfer(tinfo);
 
         n->theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
-        n->resetIsId();
-        n->resetIsIdRefs();
         n->resetHaveListValue();
       }
     }
