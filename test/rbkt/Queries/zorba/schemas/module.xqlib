@@ -1,0 +1,16 @@
+module namespace def = "http://www.zorba-xquery.org/test";
+                                                                                                                 
+import schema namespace s = "http://www.zorba-xquery.org/schema" at "module.xsd";
+
+declare function def:test() {
+  <html>
+    <head>
+      <title>The Schema Project's Default Handler</title>
+    </head>
+    <body bgcolor="#2EA20D">
+      <h1> { fn:data((validate { <product xmlns="http://www.zorba-xquery.org/schema"
+                                data="VGhpcyBpcyBhIHRlc3Qu"/> })/@data) } </h1>
+    </body>
+  </html>
+};
+
