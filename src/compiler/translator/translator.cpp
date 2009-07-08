@@ -1459,7 +1459,7 @@ void end_visit (const DirAttr& v, void* /*visit_state*/) {
       ZORBA_ERROR_LOC( XQST0022, loc);
   } else {
     expr_t nameExpr = new const_expr(loc,
-                                     sctx_p->lookup_qname("", qname->get_qname(), loc));
+                                     sctx_p->lookup_qname("", qname->get_qname(), qname->get_location()));
     expr_t attrExpr = new attr_expr(loc, nameExpr, valueExpr);
     nodestack.push(attrExpr);
   }
@@ -1702,7 +1702,7 @@ void end_visit (const CompAttrConstructor& v, void* /*visit_state*/) {
 
   if (constQName != NULL) {
     nameExpr = new const_expr(loc,
-                              sctx_p->lookup_qname("", constQName->get_qname(), loc));
+                              sctx_p->lookup_qname("", constQName->get_qname(), constQName->get_location()));
   } else {
     nameExpr = pop_nodestack();
 
@@ -3057,7 +3057,7 @@ void *begin_visit (const VFO_DeclList& v) {
 
     store::Item_t qname = sctx_p->lookup_fn_qname(n->get_name()->get_prefix(),
                                                   n->get_name()->get_localname(),
-                                                  n->get_location ());
+                                                  n->get_name()->get_location ());
     {
       xqp_string ns = qname->getNamespace ();
       if(ns.empty())
@@ -3375,7 +3375,7 @@ void end_visit (const Param& v, void* /*visit_state*/) {
   rchandle<flwor_expr> flwor = nodestack.top().cast<flwor_expr> ();
   ZORBA_ASSERT(flwor != NULL);
 
-  store::Item_t qname = sctx_p->lookup_qname ("", v.get_name(), loc);
+  store::Item_t qname = sctx_p->lookup_qname ("", v.get_name(), v.get_location());
 
   varref_t param_var = create_var (loc, qname, var_expr::param_var);
   varref_t subst_var = bind_var (loc, qname, var_expr::let_var);
@@ -4611,8 +4611,8 @@ void end_visit (const NameTest& v, void* /*visit_state*/) {
     if (v.getQName() != NULL) {
       string qname = v.getQName()->get_qname();
       store::Item_t qn_h = (axisExpr->getAxis () == axis_kind_attribute ?
-                            sctx_p->lookup_qname("", qname, loc) :
-                            sctx_p->lookup_elem_qname(qname, loc));
+                            sctx_p->lookup_qname("", qname, v.getQName()->get_location()) :
+                            sctx_p->lookup_elem_qname(qname, v.getQName()->get_location()));
       matchExpr->setQName(qn_h);
     } else {
       rchandle<Wildcard> wildcard = v.getWildcard();
@@ -4633,8 +4633,8 @@ void end_visit (const NameTest& v, void* /*visit_state*/) {
         string qname = wildcard->getPrefix() + ":wildcard";
 
         store::Item_t qn_h = (axisExpr->getAxis () == axis_kind_attribute ?
-                              sctx_p->lookup_qname("", qname, loc) :
-                              sctx_p->lookup_elem_qname(qname, loc));
+                              sctx_p->lookup_qname("", qname, wildcard->get_location()) :
+                              sctx_p->lookup_elem_qname(qname, wildcard->get_location()));
         matchExpr->setQName(qn_h);
         break;
       }
@@ -4916,10 +4916,10 @@ void end_visit (const AttributeTest& v, void* /*visit_state*/)
     match->setTestKind(match_attr_test);
 
     if (attrName != NULL)
-      match->setQName(sctx_p->lookup_qname("", attrName->get_qname(), loc));
+      match->setQName(sctx_p->lookup_qname("", attrName->get_qname(), attrName->get_location()));
 
     if (typeName != NULL)
-      match->setTypeName(sctx_p->lookup_elem_qname(typeName->get_name()->get_qname(), loc));
+      match->setTypeName(sctx_p->lookup_elem_qname(typeName->get_name()->get_qname(), typeName->get_location()));
 
     axisExpr->setTest(match);
   }
@@ -4930,12 +4930,12 @@ void end_visit (const AttributeTest& v, void* /*visit_state*/)
 
     if (attrName != NULL) 
     {
-      attrNameItem = sctx_p->lookup_qname("", attrName->get_qname(), loc);
+      attrNameItem = sctx_p->lookup_qname("", attrName->get_qname(), attrName->get_location());
     }
 
     if (typeName != NULL) 
     {
-      store::Item_t tname = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname(), loc);
+      store::Item_t tname = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname(), typeName->get_location());
 
       contentType = CTXTS->create_named_type(tname, TypeConstants::QUANT_ONE);
     }
@@ -4960,7 +4960,7 @@ void *begin_visit (const SchemaAttributeTest& v)
   rchandle<QName> attrName = v.get_attr();
   ZORBA_ASSERT(attrName != NULL);
 
-  store::Item_t attrQNameItem = sctx_p->lookup_qname("", attrName->get_qname(), loc);
+  store::Item_t attrQNameItem = sctx_p->lookup_qname("", attrName->get_qname(), attrName->get_location());
 
   if (axisExpr != NULL) 
   {
