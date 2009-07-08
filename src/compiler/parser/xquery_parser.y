@@ -178,7 +178,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> STRING_LITERAL					      "'STRING'"
 %token <sval> XML_COMMENT_LITERAL			      "'XML comment'"
 
-%type <sval> QNAME                          "'QName'"
 %type <sval> URI_LITERAL                    "'URI'"
 %type <sval> NCNAME                         "'NCName'"
   /* %type <sval> NCNAME_NOKW                    "'NCName(non keyword)'" */
@@ -670,6 +669,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> WhileExpr
 %type <expr> AssignExpr
 %type <expr> FlowCtlStatement
+%type <expr> QNAME
+//%type <sval> QNAME                          "'QName'"
 
 /* update-related */
 /* -------------- */
@@ -761,7 +762,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // parsenodes
 %destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp IndexDecl IndexDecl2 IndexDecl3 IndexDeclSuffix IndexField IndexField1 IndexFieldList IndexStatement CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
 // exprnodes
-%destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement FTContainsExpr
+%destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement QNAME FTContainsExpr
 // internal non-terminals with values
 %destructor { delete $$; } FunctionSig VarNameAndType NameTestList DecimalFormatParam DecimalFormatParamList
 
@@ -1083,7 +1084,8 @@ DecimalFormatDecl :
     }
   | DECLARE  DECIMAL_FORMAT  QNAME  DecimalFormatParamList
     {
-      $$ = new DecimalFormatNode(LOC(@$), SYMTAB($3), $4); 
+      $$ = new DecimalFormatNode(LOC(@$), static_cast<QName*>($3)->get_qname(), $4); 
+      delete $3;
       delete $4;
     }
     ;
@@ -1207,8 +1209,8 @@ OptionDecl :
 		DECLARE OPTION  QNAME  STRING_LITERAL
 		{
 			$$ = new OptionDecl(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($3)),
-								SYMTAB ($4));
+								static_cast<QName*>($3),
+								SYMTAB($4));
 		}
 	;
 
@@ -1470,12 +1472,14 @@ CtxItemDecl4 :
 VarNameAndType :
     DOLLAR QNAME
     {
-      $$ = new VarNameAndType (SYMTAB ($2), NULL);
+      $$ = new VarNameAndType (static_cast<QName*>($2)->get_qname(), NULL);
+      delete $2;
     }
   | DOLLAR QNAME TypeDeclaration
     {
-      $$ = new VarNameAndType (SYMTAB ($2),
+      $$ = new VarNameAndType (static_cast<QName*>($2)->get_qname(),
                                dynamic_cast<SequenceType *> ($3));
+      delete $2;
     }
   ;
 
@@ -1714,7 +1718,8 @@ BlockVarDecl:
 AssignExpr :
     SET DOLLAR QNAME GETS ExprSingle
     {
-      $$ = new AssignExpr (LOC (@$), SYMTAB ($3), $5);
+      $$ = new AssignExpr (LOC (@$), static_cast<QName*>($3)->get_qname(), $5);
+      delete $3;
     }
   ;
 
@@ -1807,7 +1812,7 @@ FunctionDecl3 :
     FUNCTION QNAME FunctionSig BracedExpr
     {
 			$$ = new FunctionDecl(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($2)),
+								static_cast<QName*>($2),
                 &* $3->param, &* $3->ret,
 								$4,
 								ParseConstants::fn_read);
@@ -1816,7 +1821,7 @@ FunctionDecl3 :
   | FUNCTION QNAME FunctionSig EXTERNAL
     {
 			$$ = new FunctionDecl(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($2)),
+								static_cast<QName*>($2),
                 &* $3->param, &* $3->ret,
 								NULL,
 								ParseConstants::fn_extern);
@@ -1828,7 +1833,7 @@ FunctionDecl4 :
     FUNCTION QNAME FunctionSig Block
     {
 			$$ = new FunctionDecl(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($2)),
+								static_cast<QName*>($2),
                 &* $3->param, &* $3->ret,
 								$4,
 								ParseConstants::fn_sequential);
@@ -1864,14 +1869,16 @@ Param :
 		DOLLAR  QNAME
 		{
 			$$ = new Param(LOC (@$),
-								SYMTAB ($2),
+								static_cast<QName*>($2)->get_qname(),
 								NULL);
+      delete $2;
 		}
 	|	DOLLAR  QNAME  TypeDeclaration
 		{
 			$$ = new Param(LOC (@$),
-								SYMTAB ($2),
+								static_cast<QName*>($2)->get_qname(),
 								dynamic_cast<SequenceType *>($3));
+      delete $2;
 		}
 	;
 
@@ -2064,7 +2071,8 @@ WindowClause :
 CountClause :
     COUNT DOLLAR QNAME
     {
-      $$ = new CountClause (LOC (@$), SYMTAB ($3));
+      $$ = new CountClause (LOC (@$), static_cast<QName*>($3)->get_qname());
+      delete $3;
     }
     ;
 
@@ -2143,71 +2151,79 @@ VarInDecl :
 		QNAME  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
-								SYMTAB ($1),
+								static_cast<QName*>($1)->get_qname(),
 								NULL,NULL,NULL,
 								$3);
+      delete $1;
 		}
 	|	QNAME  TypeDeclaration  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
-								SYMTAB ($1),
+								static_cast<QName*>($1)->get_qname(),
 								dynamic_cast<SequenceType *>($2),
 								NULL,NULL,
 								$4);
+      delete $1;
 		}
 	|	QNAME  PositionalVar  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
-								SYMTAB ($1),
+								static_cast<QName*>($1)->get_qname(),
 								NULL,
 								dynamic_cast<PositionalVar*>($2),
 								NULL,
 								$4);
+      delete $1;
 		}
 	|	QNAME  TypeDeclaration  PositionalVar  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
-								SYMTAB ($1),
+								static_cast<QName*>($1)->get_qname(),
 								dynamic_cast<SequenceType *>($2),
 								dynamic_cast<PositionalVar*>($3),
 								NULL,
 								$5);
+      delete $1;
 		}
 	/* full-text extensions */
 	| QNAME  FTScoreVar  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
-								SYMTAB ($1),
+								static_cast<QName*>($1)->get_qname(),
 								NULL,NULL,
 								dynamic_cast<FTScoreVar*>($2),
 								$4);
+      delete $1;
 		}
 	| QNAME  TypeDeclaration  FTScoreVar  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
-								SYMTAB ($1),
+								static_cast<QName*>($1)->get_qname(),
 								dynamic_cast<SequenceType *>($2),
 								NULL,
 								dynamic_cast<FTScoreVar*>($3),
 								$5);
+      delete $1;
 		}
 	| QNAME  PositionalVar  FTScoreVar  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
-								SYMTAB ($1),
+								static_cast<QName*>($1)->get_qname(),
 								NULL,
 								dynamic_cast<PositionalVar*>($2),
 								dynamic_cast<FTScoreVar*>($3),
 								$5);
+      delete $1;
 		}
 	| QNAME  TypeDeclaration  PositionalVar  FTScoreVar  _IN  ExprSingle
 		{
 			$$ = new VarInDecl(LOC (@$),
-								SYMTAB ($1),
+								static_cast<QName*>($1)->get_qname(),
 								dynamic_cast<SequenceType *>($2),
 								dynamic_cast<PositionalVar*>($3),
 								dynamic_cast<FTScoreVar*>($4),
 								$6);
+      delete $1;
 		}
 	;
 
@@ -2218,7 +2234,8 @@ PositionalVar :
 		AT  DOLLAR  QNAME
 		{
 			$$ = new PositionalVar(LOC (@$),
-								SYMTAB ($3));
+								static_cast<QName*>($3)->get_qname());
+      delete $3;
 		}
 	;
 
@@ -2230,7 +2247,8 @@ FTScoreVar :
 		SCORE  DOLLAR  QNAME
 		{
 			$$ = new FTScoreVar(LOC (@$),
-								SYMTAB ($3));
+								static_cast<QName*>($3)->get_qname());
+      delete $3;
 		}
 	;
 
@@ -2291,35 +2309,39 @@ VarGetsDecl :
 		QNAME  GETS  ExprSingle
 		{
 			$$ = new VarGetsDecl(LOC (@$),
-								SYMTAB ($1),
+								static_cast<QName*>($1)->get_qname(),
 								NULL,
 								NULL,
 								$3);
+      delete $1;
 		}
 	|	QNAME  TypeDeclaration  GETS  ExprSingle
 		{
 			$$ = new VarGetsDecl(LOC (@$),
-								SYMTAB ($1),
+								static_cast<QName*>($1)->get_qname(),
 								dynamic_cast<SequenceType *>($2),
 								NULL,
 								$4);
+      delete $1;
 		}
 	/* full-text extensions */
 	| QNAME  FTScoreVar  GETS  ExprSingle
 		{
 			$$ = new VarGetsDecl(LOC (@$),
-								SYMTAB ($1),
+								static_cast<QName*>($1)->get_qname(),
 								NULL,
 								dynamic_cast<FTScoreVar*>($2),
 								$4);
+      delete $1;
 		}
 	| QNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
 		{
 			$$ = new VarGetsDecl(LOC (@$),
-								SYMTAB ($1),
+								static_cast<QName*>($1)->get_qname(),
 								dynamic_cast<SequenceType *>($2),
 								dynamic_cast<FTScoreVar*>($3),
 								$5);
+      delete $1;
 		}
 	;
 
@@ -2328,15 +2350,17 @@ WindowVarDecl :
 		DOLLAR QNAME  _IN  ExprSingle
 		{
 			$$ = new WindowVarDecl(LOC (@$),
-								SYMTAB ($2),
+								static_cast<QName*>($2)->get_qname(),
 								NULL, $4);
+      delete $2;
 		}
 	|	DOLLAR QNAME  TypeDeclaration  _IN  ExprSingle
 		{
 			$$ = new WindowVarDecl(LOC (@$),
-								SYMTAB ($2),
+								static_cast<QName*>($2)->get_qname(),
 								dynamic_cast<SequenceType *>($3),
 								$5);
+      delete $2;
 		}
 
 
@@ -2344,12 +2368,14 @@ WindowVars :
     WindowVars3
   | DOLLAR QNAME
     {
-      $$ = new WindowVars (LOC (@$), NULL, SYMTAB ($2), "", "");
+      $$ = new WindowVars (LOC (@$), NULL, static_cast<QName*>($2)->get_qname(), "", "");
+      delete $2;
     }
   | DOLLAR QNAME WindowVars3
     {
       $$ = $3;
-      dynamic_cast<WindowVars *> ($$)->set_curr (SYMTAB ($2));
+      dynamic_cast<WindowVars *> ($$)->set_curr (static_cast<QName*>($2)->get_qname());
+      delete $2;
     }
   ;
 
@@ -2369,26 +2395,31 @@ WindowVars3 :
 WindowVars2 :
     PREVIOUS DOLLAR QNAME NEXT DOLLAR QNAME
     {
-      $$ = new WindowVars (LOC (@$), NULL, "", SYMTAB ($3), SYMTAB ($6));
+      $$ = new WindowVars (LOC (@$), NULL, "", static_cast<QName*>($3)->get_qname(), static_cast<QName*>($6)->get_qname());
+      delete $3;
+      delete $6;
     }
   | NEXT DOLLAR QNAME
     {
-      $$ = new WindowVars (LOC (@$), NULL, "", "", SYMTAB ($3));
+      $$ = new WindowVars (LOC (@$), NULL, "", "", static_cast<QName*>($3)->get_qname());
+      delete $3;
     }
   | PREVIOUS DOLLAR QNAME
     {
-      $$ = new WindowVars (LOC (@$), NULL, "", SYMTAB ($3), "");
+      $$ = new WindowVars (LOC (@$), NULL, "", static_cast<QName*>($3)->get_qname(), "");
+      delete $3;
     }
     ;
 
 EvalVarDecl :
     QNAME
     {
-      std::string name = SYMTAB ($1);
+      std::string name = static_cast<QName*>($1)->get_qname();
       $$ = new VarGetsDecl(LOC (@$),
                            name, NULL, NULL,
                            new VarRef (LOC (@$), name),
                            VarGetsDecl::eval_var);
+      delete $1;
                            
     }
     ;
@@ -2432,14 +2463,16 @@ GroupSpec :
     DOLLAR QNAME
     {
       $$ = new GroupSpec(LOC(@$),
-                 SYMTAB ($2),
+                 static_cast<QName*>($2)->get_qname(),
                  NULL);
+      delete $2;
     }
   | DOLLAR QNAME GroupCollationSpec
     {
       $$ = new GroupSpec(LOC(@$), 
-                 SYMTAB ($2), 
+                 static_cast<QName*>($2)->get_qname(), 
                  dynamic_cast<GroupCollationSpec*>($3)); 
+      delete $2;
     }
   ;
 
@@ -2647,15 +2680,17 @@ QVarInDecl :
 		QNAME  _IN  ExprSingle
 		{
 			$$ = new QVarInDecl(LOC (@$),
-								SYMTAB ($1),
+								static_cast<QName*>($1)->get_qname(),
 								$3);
+      delete $1;
 		}
 	|	QNAME  TypeDeclaration  _IN  ExprSingle
 		{
 			$$ = new QVarInDecl(LOC (@$),
-								SYMTAB ($1),
+								static_cast<QName*>($1)->get_qname(),
 								dynamic_cast<SequenceType *>($2),
 								$4);
+      delete $1;
 		}
 	;
 
@@ -2711,9 +2746,10 @@ CaseClause :
 	|	CASE  DOLLAR  QNAME  AS  SequenceType  RETURN  ExprSingle
 		{
 			$$ = new CaseClause(LOC (@$),
-								SYMTAB ($3),
+								static_cast<QName*>($3)->get_qname(),
 								dynamic_cast<SequenceType*>($5),
 								$7);
+      delete $3;
 		}
 	;
 
@@ -3200,13 +3236,13 @@ Pragma :
 		PRAGMA_BEGIN  QNAME  PRAGMA_LITERAL_AND_END_PRAGMA
 		{
 			$$ = new Pragma(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($2)),
+								static_cast<QName*>($2),
 								SYMTAB ($3));
 
 		}
   | PRAGMA_BEGIN QNAME_SVAL_AND_END_PRAGMA {
 			$$ = new Pragma(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($2)),
+								new QName(LOC (@$), SYMTAB($2)),
 								"");      
     } 
 	;	/* ws: explicit */
@@ -3476,7 +3512,7 @@ NodeTest :
 NameTest :
 		QNAME
 		{
-			$$ = new NameTest(LOC (@$), new QName(LOC (@$),SYMTAB ($1)));
+			$$ = new NameTest(LOC (@$), static_cast<QName*>($1));
 		}
 	|	Wildcard
 		{
@@ -3637,7 +3673,8 @@ NumericLiteral :
 VarRef :
 		DOLLAR  QNAME
 		{
-			$$ = new VarRef(LOC (@$), SYMTAB ($2));
+			$$ = new VarRef(LOC (@$), static_cast<QName*>($2)->get_qname());
+      delete $2;
 		}
 	;
 
@@ -3740,13 +3777,13 @@ FunctionCall :
 		QNAME LPAR  RPAR
 		{
 			$$ = new FunctionCall(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($1)),
+								static_cast<QName*>($1),
 								NULL);
 		}
 	|	QNAME LPAR  ArgList  RPAR
 		{
 			$$ = new FunctionCall(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($1)),
+								static_cast<QName*>($1),
 								dynamic_cast<ArgList*>($3));
 		}
 	;
@@ -3808,7 +3845,7 @@ DirElemConstructor :
     LT_OR_START_TAG  QNAME  OptionalBlank  EMPTY_TAG_END /* ws: explicitXQ */
 		{
 			$$ = new DirElemConstructor(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($2)),
+								static_cast<QName*>($2),
 								NULL,
 								NULL,
 								NULL);
@@ -3816,7 +3853,7 @@ DirElemConstructor :
   | LT_OR_START_TAG  QNAME  DirAttributeList  OptionalBlank  EMPTY_TAG_END /* ws: explicitXQ */
 		{
 			$$ = new DirElemConstructor(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($2)),
+								static_cast<QName*>($2),
 								NULL,
 								dynamic_cast<DirAttributeList*>($3), 
 								NULL);
@@ -3824,32 +3861,32 @@ DirElemConstructor :
   | LT_OR_START_TAG  QNAME  OptionalBlank  TAG_END  START_TAG_END  QNAME OptionalBlank TAG_END
 		{
 			$$ = new DirElemConstructor(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($2)),
-								new QName(LOC (@$),SYMTAB ($6)),
+								static_cast<QName*>($2),
+								static_cast<QName*>($6),
 								NULL,
 								NULL);
 		}
   |	LT_OR_START_TAG  QNAME  OptionalBlank  TAG_END  DirElemContentList  START_TAG_END  QNAME  OptionalBlank  TAG_END
 		{
 			$$ = new DirElemConstructor(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($2)),
-								new QName(LOC (@$),SYMTAB ($7)),
+								static_cast<QName*>($2),
+								static_cast<QName*>($7),
 								NULL,
 								dynamic_cast<DirElemContentList*>($5));
 		}
   | LT_OR_START_TAG  QNAME  DirAttributeList  OptionalBlank  TAG_END  START_TAG_END  QNAME  OptionalBlank  TAG_END
 		{
 			$$ = new DirElemConstructor(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($2)),
-								new QName(LOC (@$),SYMTAB ($7)),
+								static_cast<QName*>($2),
+								static_cast<QName*>($7),
 								dynamic_cast<DirAttributeList*>($3),
 								NULL);
 		}
     |	LT_OR_START_TAG  QNAME  DirAttributeList  OptionalBlank  TAG_END  DirElemContentList  START_TAG_END  QNAME  OptionalBlank  TAG_END
 		{
 			$$ = new DirElemConstructor(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($2)),
-								new QName(LOC (@$),SYMTAB ($8)),
+								static_cast<QName*>($2),
+								static_cast<QName*>($8),
 								dynamic_cast<DirAttributeList*>($3), 
 								dynamic_cast<DirElemContentList*>($6));
 		}
@@ -3900,7 +3937,7 @@ DirAttr :
     BLANK  QNAME  OptionalBlank  EQUALS  OptionalBlank  DirAttributeValue 	/* ws: explicitXQ */
 		{
 			$$ = new DirAttr(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($2)),
+								static_cast<QName*>($2),
 								dynamic_cast<DirAttributeValue*>($6));
 		}
 	;
@@ -4208,13 +4245,13 @@ CompElemConstructor :
 		ELEMENT QNAME LBRACE  RBRACE
 		{
 			$$ = new CompElemConstructor(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($2)),
+								static_cast<QName*>($2),
 								NULL);
 		}
 	|	ELEMENT QNAME LBRACE  Expr  RBRACE
 		{
 			$$ = new CompElemConstructor(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($2)),
+								static_cast<QName*>($2),
 								$4);
 		}
 	|	ELEMENT LBRACE  Expr  RBRACE  LBRACE  RBRACE
@@ -4247,13 +4284,13 @@ CompAttrConstructor :
 		ATTRIBUTE QNAME LBRACE  RBRACE
 		{
 			$$ = new CompAttrConstructor(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($2)),
+								$2,
 								NULL);
 		}
 	|	ATTRIBUTE QNAME LBRACE  Expr  RBRACE
 		{
 			$$ = new CompAttrConstructor(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($2)),
+								$2,
 								$4);
 		}
 	|	ATTRIBUTE LBRACE  Expr  RBRACE  LBRACE  RBRACE
@@ -4440,7 +4477,7 @@ AtomicType :
 		QNAME
 		{
 			$$ = new AtomicType(LOC (@$),
-								new QName(LOC (@$), SYMTAB ($1)));
+								static_cast<QName*>($1));
 		}
 	;
 
@@ -4567,13 +4604,13 @@ AttributeTest :
 	|	ATTRIBUTE LPAR  QNAME  RPAR
 		{
 			$$ = new AttributeTest(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($3)),
+								static_cast<QName*>($3),
 								NULL);
 		}
 	|	ATTRIBUTE LPAR  QNAME  COMMA  TypeName  RPAR
 		{
 			$$ = new AttributeTest(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($3)),
+								static_cast<QName*>($3),
 								dynamic_cast<TypeName*>($5));
 		}
 	|	ATTRIBUTE LPAR  STAR  RPAR
@@ -4597,7 +4634,7 @@ SchemaAttributeTest :
 		SCHEMA_ATTRIBUTE_LPAR  QNAME  RPAR
 		{
 			$$ = new SchemaAttributeTest(LOC (@$),
-								new QName(LOC (@$), SYMTAB ($2)));
+								static_cast<QName*>($2));
 		}
 	;
 
@@ -4615,21 +4652,21 @@ ElementTest :
 	|	ELEMENT LPAR  QNAME  RPAR
 		{
 			$$ = new ElementTest(LOC (@$),
-                           new QName(LOC(@$), SYMTAB ($3)),
+                           static_cast<QName*>($3),
                            NULL,
                            true);
 		}
 	|	ELEMENT LPAR  QNAME  COMMA  TypeName  RPAR
 		{
 			$$ = new ElementTest(LOC (@$),
-                           new QName(LOC(@$),SYMTAB ($3)),
+                           static_cast<QName*>($3),
                            dynamic_cast<TypeName*>($5),
                            false);
 		}
 	|	ELEMENT LPAR  QNAME  COMMA  TypeName_WITH_HOOK RPAR
 		{
 			$$ = new ElementTest(LOC (@$),
-                           new QName(LOC(@$), SYMTAB ($3)),
+                           static_cast<QName*>($3),
                            dynamic_cast<TypeName*>($5),
                            true);
 		}
@@ -4663,7 +4700,7 @@ SchemaElementTest :
 		SCHEMA_ELEMENT LPAR  QNAME  RPAR
 		{
 			$$ = new SchemaElementTest(LOC (@$),
-									new QName(LOC (@$),SYMTAB ($3)));
+									static_cast<QName*>($3));
 		}
 	;
 
@@ -4684,14 +4721,14 @@ TypeName :
 		QNAME
 		{
 			$$ = new TypeName(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($1)));
+								static_cast<QName*>($1));
 		};
     
 TypeName_WITH_HOOK :
 	  QNAME  HOOK
 		{
 			$$ = new TypeName(LOC (@$),
-								new QName(LOC (@$),SYMTAB ($1)),
+								static_cast<QName*>($1),
 								true);
 		}
 	;
@@ -4923,7 +4960,8 @@ VarNameList :
 VarNameDecl :
     QNAME GETS ExprSingle
     {
-       $$ = new VarBinding(LOC(@$), SYMTAB ($1), $3);  
+       $$ = new VarBinding(LOC(@$), static_cast<QName*>($1)->get_qname(), $3);  
+       delete $1;
     }
   ; 
 
@@ -4970,8 +5008,9 @@ CatchExpr :
     {
        $$ = new CatchExpr(LOC (@$),
                           *$2,
-                          SYMTAB ($5),
+                          static_cast<QName*>($5)->get_qname(),
                           $7);
+       delete $5;
        delete $2;
     }
   |
@@ -4979,19 +5018,23 @@ CatchExpr :
     {
        $$ = new CatchExpr(LOC (@$),
                           *$2,
-                          SYMTAB ($5),
-                          SYMTAB ($8),
+                          static_cast<QName*>($5)->get_qname(),
+                          static_cast<QName*>($8)->get_qname(),
                           $10);
+       delete $5;
+       delete $8;
        delete $2;
     }
   | CATCH NameTestList LPAR DOLLAR QNAME COMMA DOLLAR QNAME COMMA DOLLAR QNAME RPAR BracedExpr
     {
        $$ = new CatchExpr(LOC (@$),
                           *$2,
-                          SYMTAB ($5),
-                          SYMTAB ($8),
-                          SYMTAB ($11),
+                          static_cast<QName*>($5)->get_qname(),
+                          static_cast<QName*>($8)->get_qname(),
+                          static_cast<QName*>($11)->get_qname(),
                           $13);
+       delete $5;
+       delete $8;
        delete $2;
     }
   ;
@@ -5025,12 +5068,12 @@ NCNAME :
     NCNAME_SVAL
   | QNAME
     {
-      std::string tmp = SYMTAB ($1);
+      std::string tmp = static_cast<QName*>($1)->get_qname();
       if (tmp.find (':') != std::string::npos) {
         error(@1, "A NCName is expected, found a QName");
         YYERROR;
       }
-      $$ = $1;
+      $$ = SYMTAB_PUT(tmp.c_str());
     }
   ;
 
@@ -5040,7 +5083,15 @@ NCNAME :
  *                                                                       *
  *_______________________________________________________________________*/
 QNAME :
-    QNAME_SVAL | KEYWORD { $$ = $1; }
+    QNAME_SVAL 
+    { 
+      $$ = new QName(LOC (@$),SYMTAB ($1)); 
+    }
+    | KEYWORD 
+    { 
+      $$ = new QName(LOC (@$),SYMTAB ($1)); 
+    }
+  ;
 
 KEYWORD :
     XQUERY { $$ = SYMTAB_PUT ("xquery"); }
