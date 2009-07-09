@@ -2715,7 +2715,7 @@ TypeswitchExpr :
 			$$ = new TypeswitchExpr(LOC (@$),
 								$3,
 								dynamic_cast<CaseClauseList*>($5),
-								SYMTAB ($8),
+								static_cast<QName*>($8)->get_qname(),
 								$10);
 		}
 	;
