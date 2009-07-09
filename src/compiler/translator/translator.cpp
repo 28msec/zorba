@@ -3294,8 +3294,16 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
   case ParseConstants::fn_sequential:
   case ParseConstants::fn_read:
   {
+    assert(body != NULL);
     if (body->is_sequential () && lFuncType != ParseConstants::fn_sequential) {
       ZORBA_ERROR_LOC_DESC (XPST0003, loc, "Only a sequential function can have a body that is sequential expression");
+    }
+    // bugfix for #2816235 (test seq_func1)
+    // Under section 2.2.2 "Category Rules", it states:
+    // If the body of a sequential function is a Block it must be either a sequential or simple expression."
+    // TODO: the error code has not yet been decided by the w3c
+    if ( lFuncType == ParseConstants::fn_sequential && body->is_updating() ) {
+      ZORBA_ERROR_LOC_DESC (XPTY0004, loc, "A sequential function cannot have a body that returns a pending update list");
     }
     if (lFuncType == ParseConstants::fn_read) {
       if (body->is_updating())
@@ -3304,9 +3312,7 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
     else if (lFuncType == ParseConstants::fn_update) {
       if (! body->is_updating_or_vacuous ())
         ZORBA_ERROR_LOC(XUST0002, loc);
-    }
-
-    assert(body != NULL);
+    } 
 
     user_function *udf = dynamic_cast<user_function *>(
                          LOOKUP_FN(v.get_name ()->get_prefix (),
