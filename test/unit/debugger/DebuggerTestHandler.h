@@ -13,6 +13,7 @@ namespace zorba {
 class DebuggerTestHandler : public zorba::DefaultDebuggerEventHandler {
 public:
 	DebuggerTestHandler(zorba::Zorba* zorba, zorba::ZorbaDebuggerClient* client, std::string fileName);
+  virtual ~DebuggerTestHandler();
 
 public:
 	enum DebugEvent {

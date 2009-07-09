@@ -87,6 +87,8 @@ class ZorbaDebugger
     friend class TranslatorImpl;
     friend ZORBA_THREAD_RETURN runtimeThread( void* );
 
+    bool theRuntimeThreadDeleted;
+
     XQueryImpl* theQuery;
 
     PlanWrapper_t theWrapper;

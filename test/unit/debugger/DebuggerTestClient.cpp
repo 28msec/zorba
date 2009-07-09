@@ -82,8 +82,8 @@ namespace zorba {
     int res = pthread_join(theServerThread, 0);
     std::cerr << "joined server thread " << res << std::endl;
 #endif
-    delete m_handler;
     delete m_client;
+    delete m_handler;
     m_xquery->close(); // need to close before shutting down zorba
     m_zorbaInstance->shutdown();
     zorba::simplestore::SimpleStoreManager::shutdownStore(zorba::simplestore::SimpleStoreManager::getStore());

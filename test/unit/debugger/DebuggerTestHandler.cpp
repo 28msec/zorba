@@ -35,4 +35,8 @@ DebuggerTestHandler::DebugEvent DebuggerTestHandler::getNextEvent()
 		return IDLE;
 	}
 }
+
+DebuggerTestHandler::~DebuggerTestHandler()
+{
+}
 }

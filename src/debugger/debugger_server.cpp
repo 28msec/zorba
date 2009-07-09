@@ -96,7 +96,8 @@ namespace zorba{
 		  isSteppingOut(false),
 		  theProfiler(0),
 		  isFunctionExecution(false),
-		  catchFunctionExecution(false)
+		  catchFunctionExecution(false),
+      theRuntimeThreadDeleted(true)
 	{
 	}
 
@@ -104,6 +105,10 @@ namespace zorba{
 	ZorbaDebugger::~ZorbaDebugger()
 	{
     theWrapper->close();
+    if (!theRuntimeThreadDeleted) {
+      delete theRuntimeThread;
+      theRuntimeThreadDeleted = true;
+    }
 		delete theProfiler;
 		delete theRequestServerSocket;
 		delete theEventSocket;
@@ -141,7 +146,10 @@ namespace zorba{
 #ifndef NDEBUG
 		synchronous_logger::clog << "[Server Thread] server quited\n";
 #endif
-		delete theRuntimeThread;
+    if (!theRuntimeThreadDeleted) {
+		  delete theRuntimeThread;
+      theRuntimeThreadDeleted = true;
+    }
 #ifndef NDEBUG
 		synchronous_logger::clog << "[Server Thread] runtime thread quited\n";
 #endif 
@@ -272,6 +280,7 @@ namespace zorba{
 
 	void ZorbaDebugger::run()
 	{
+    theRuntimeThreadDeleted = false;
 		theRuntimeThread = new Thread( runtimeThread, this );
 	}
 

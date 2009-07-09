@@ -73,6 +73,7 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
 
 ZorbaDebuggerClientImpl::~ZorbaDebuggerClientImpl()
 {
+  theEventListener->join();
   delete theEventListener;
 }
 
