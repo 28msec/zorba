@@ -53,7 +53,7 @@ namespace zorba {
           << "</html>" << std::endl;
 
     DebuggerTestClient client("test.xq", query.str());
-    QueryLocation_t loc = client.addBreakpoint("test.xq", 8);
+    QueryLocation_t loc = client.addBreakpoint("test.xq", 14);
     if (loc == NULL) {
       return -1;
     }
@@ -75,6 +75,7 @@ namespace zorba {
         std::cout << "  " << iter->first << " " << iter->second << std::endl;
       }
     }
+    client.terminate();
     return 0;
   }
 }

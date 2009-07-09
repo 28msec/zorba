@@ -1012,7 +1012,7 @@ void SetReply::addBreakpoint(unsigned int anId, QueryLoc& aLocation)
 VariableReply::VariableReply( const Id anId, const ErrorCode aErrorCode, bool containsData ):
   ReplyMessage( anId, aErrorCode ), theContainsData(containsData)
 {
-  setFlags(theContainsData ? REPLY_VARIABLE_FLAG || VARIABLE_DATA_FLAG : REPLY_VARIABLE_FLAG);
+  setFlags(theContainsData ? REPLY_VARIABLE_FLAG | VARIABLE_DATA_FLAG : REPLY_VARIABLE_FLAG);
   unsigned int l = MESSAGE_SIZE + getData().length();
   setLength(l);
   checkIntegrity();
@@ -1021,7 +1021,7 @@ VariableReply::VariableReply( const Id anId, const ErrorCode aErrorCode, bool co
 VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
   ReplyMessage( aMessage, aLength ), theContainsData(false)
 {
-  bool containsData = (aMessage[MESSAGE_HEADER_SIZE + MESSAGE_FLAGS] || VARIABLE_DATA_FLAG) != 0;
+  theContainsData = (aMessage[MESSAGE_HEADER_SIZE + MESSAGE_FLAGS] | VARIABLE_DATA_FLAG) != 0;
   setFlags( REPLY_VARIABLE_FLAG );
   std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
   std::cout.write((char *) aMessage, aLength);
@@ -1053,10 +1053,10 @@ VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
       std::wstring *lType = Type->getstring(L"", true);
       std::string type = std::string( lType->begin()+1, lType->end()-1 );
       delete lType; 
-      if (Value == 0 && containsData) {
+      if (Value == 0 && theContainsData) {
         throw MessageFormatException("Invalid JSON format for variable message.");
       }
-      if (containsData){
+      if (theContainsData){
         std::list<std::pair<xqpString, xqpString> > data;
         json::array_list_t* dList = Value->getarraylist();
         for (json::array_list_t::iterator iter = dList->begin(); iter != dList->end(); iter++) {
@@ -1090,6 +1090,7 @@ VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
     {
       json::value* Name = getValue(*it, "name");
       json::value* Type = getValue(*it, "type");
+      json::value* Value = getValue(*it, "value");
 
       if ( Name == 0 )
       {
@@ -1104,8 +1105,32 @@ VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
       }
       std::wstring *lType = Type->getstring(L"", true);
       std::string type = std::string( lType->begin()+1, lType->end()-1 );
-      delete lType; 
-      addLocal(name, type);
+      delete lType;
+      if (Value == 0 && theContainsData) {
+        throw MessageFormatException("Invalid JSON format for variable message.");
+      }
+      if (theContainsData){
+        std::list<std::pair<xqpString, xqpString> > data;
+        json::array_list_t* dList = Value->getarraylist();
+        json::datatype::dt dataType = Value->getdatatype();
+        for (json::array_list_t::iterator iter = dList->begin(); iter != dList->end(); iter++) {
+          json::value* v = getValue(*iter, "value");
+          json::value* t = getValue(*iter, "type");
+          if (v == NULL || t == NULL) {
+            throw MessageFormatException("Invalid JSON format for variable message.");
+          }
+          std::wstring* lV = v->getstring(L"", true);
+          std::wstring* lT = v->getstring(L"", true);
+          std::string sV(lV->begin() + 1, lV->end() - 1);
+          std::string sT(lT->begin() + 1, lT->end() - 1);
+          delete lV;
+          delete lT;
+          data.push_back(std::pair<xqpString, xqpString>(sV, sT));
+        }
+        addLocal(name, type, data);
+      } else {
+        addLocal(name, type);
+      }
     }
   } else {
     throw MessageFormatException("Invalid JSON format for variable message.");
@@ -1134,9 +1159,9 @@ xqpString VariableReply::getData() const
           if (iter != theGlobalData[pos].begin()) {
             vString += ",";
           }
-          vString += "{\"value\":" + iter->first + "\",\"type\":\"" + iter->second + "\"}";
+          vString += "{\"value\":\"" + iter->first + "\",\"type\":\"" + iter->second + "\"}";
       }
-      lJSONString << "{\"name\":\"" << it->first << "\",\"type\":\"" << it->second << "\",\"value\":\"" 
+      lJSONString << "{\"name\":\"" << it->first << "\",\"type\":\"" << it->second << "\",\"value\":" 
         << "[" << vString << "]}";
     } else {
       lJSONString << "{\"name\":\"" << it->first << "\",\"type\":\"" << it->second << "\"}";
@@ -1159,9 +1184,9 @@ xqpString VariableReply::getData() const
           if (iter != theLocalData[pos].begin()) {
             vString += ",";
           }
-          vString += "{\"value\":" + iter->first + "\",\"type\":\"" + iter->second + "\"}";
+          vString += "{\"value\":\"" + iter->first + "\",\"type\":\"" + iter->second + "\"}";
       }
-      lJSONString << "{\"name\":\"" << lIter->first << "\",\"type\":\"" << lIter->second << "\",\"value\":\"" 
+      lJSONString << "{\"name\":\"" << lIter->first << "\",\"type\":\"" << lIter->second << "\",\"value\":" 
         << "[" << vString << "]}";
     } else {
       lJSONString << "{\"name\":\"" << lIter->first << "\",\"type\":\"" << lIter->second << "\"}";
@@ -1205,7 +1230,7 @@ std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpStri
     std::pair<xqpString, xqpString> p = *it;
     std::list<std::pair<xqpString, xqpString> > l;
     if (theContainsData) {
-      l = theGlobalData[pos];
+      l = theLocalData[pos];
     }
     lVariables.insert(std::pair<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > >(p, l));
     ++pos;

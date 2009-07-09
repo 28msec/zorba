@@ -82,7 +82,8 @@ namespace zorba{
 	}
 
 	ZorbaDebugger::ZorbaDebugger()
-	  : theQuery(0),
+	  : theRuntimeThreadDeleted(true),
+      theQuery(0),
 		  theOutputStream(0),
 		  theSerOptions(0),
 		  theRequestServerSocket(0), 
@@ -96,8 +97,7 @@ namespace zorba{
 		  isSteppingOut(false),
 		  theProfiler(0),
 		  isFunctionExecution(false),
-		  catchFunctionExecution(false),
-      theRuntimeThreadDeleted(true)
+		  catchFunctionExecution(false)
 	{
 	}
 

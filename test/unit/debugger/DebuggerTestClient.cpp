@@ -77,7 +77,7 @@ namespace zorba {
 
 	DebuggerTestClient::~DebuggerTestClient()
 	{
-    m_client->terminate();
+    //m_client->terminate();
 #ifdef ZORBA_HAVE_PTHREAD_H
     int res = pthread_join(theServerThread, 0);
     std::cerr << "joined server thread " << res << std::endl;
@@ -123,5 +123,10 @@ namespace zorba {
   {
     std::list<Variable> res = m_client->getAllVariables(data);
     return res;
+  }
+
+  void DebuggerTestClient::terminate()
+  {
+    m_client->terminate();
   }
 }

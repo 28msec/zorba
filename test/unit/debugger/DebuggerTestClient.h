@@ -25,6 +25,7 @@ public:
 
 public:
 	void run();
+  void terminate();
 	DebuggerTestHandler::DebugEvent getNextEvent();
 	std::string getQueryResult() const;
   QueryLocation_t addBreakpoint(std::string nspace, unsigned int lNumber);

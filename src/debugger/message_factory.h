@@ -49,7 +49,9 @@ class MessageFactory
               return true;
             }
 
-            if ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ] == REPLY_VARIABLE_FLAG )
+            // Ignore the variable data flag at this point
+            if ( (aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ]  == REPLY_VARIABLE_FLAG)
+              || (aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ]  == (REPLY_VARIABLE_FLAG | VARIABLE_DATA_FLAG)) )
             {
               return true;
             }
@@ -217,7 +219,8 @@ class MessageFactory
               return new ReplyMessage( aMessage, aLength );
             }
 
-            if ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ] == REPLY_VARIABLE_FLAG )
+            if ( (aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ] == REPLY_VARIABLE_FLAG)
+              || (aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ]  == (REPLY_VARIABLE_FLAG | VARIABLE_DATA_FLAG)) )
             {
               return new VariableReply( aMessage, aLength );
             }
