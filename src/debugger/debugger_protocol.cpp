@@ -1021,7 +1021,7 @@ VariableReply::VariableReply( const Id anId, const ErrorCode aErrorCode, bool co
 VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
   ReplyMessage( aMessage, aLength ), theContainsData(false)
 {
-  theContainsData = (aMessage[MESSAGE_HEADER_SIZE + MESSAGE_FLAGS] | VARIABLE_DATA_FLAG) != 0;
+  theContainsData = (aMessage[MESSAGE_HEADER_SIZE + MESSAGE_FLAGS] & VARIABLE_DATA_FLAG) != 0;
   setFlags( REPLY_VARIABLE_FLAG );
   std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
   std::cout.write((char *) aMessage, aLength);
