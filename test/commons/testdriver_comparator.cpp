@@ -215,18 +215,31 @@ fileEquals(
       else 
         return false;
     }
+
     std::getline(li, lLine);
     std::getline(ri, rLine);
 
     // TODO: should be removed, right?
     trim ( lLine );
     trim ( rLine );
-    if ( (aCol = lLine.compare(rLine)) != 0) 
+
+    while ( (aCol = lLine.compare(rLine)) != 0) 
     {
-      aRefLine = lLine;
-      aResLine = rLine;
-      return false;
+      if (aLine == 1 &&
+          lLine == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+      {
+        ++aLine; 
+        std::getline(li, lLine);
+        continue;
+      }
+      else
+      {
+        aRefLine = lLine;
+        aResLine = rLine;
+        return false;
+      }
     }
+
     ++aLine;
   }
 
