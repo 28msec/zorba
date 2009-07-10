@@ -126,7 +126,7 @@ namespace zorba {
 			e.theDebug = true;
 			throw e;
 		}
-		return state;
+		return false;
 	}
 
 	void FnDebugIterator::openImpl(PlanState& planState, uint32_t& offset )
