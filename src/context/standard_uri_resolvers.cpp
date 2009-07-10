@@ -235,10 +235,10 @@ StandardModuleURIResolver::resolve(
     modfile.reset (new std::ifstream(URI::decode_file_URI (lResolvedURI)->c_str()));
   else 
   {
-    std::stringstream code;
-    if (http_get (lResolvedURI->c_str (), code) != 0)
+    std::auto_ptr<std::stringstream> code(new std::stringstream());
+    if (http_get (lResolvedURI->c_str (), *code.get()) != 0)
       return NULL;
-    modfile.reset (&code);
+    modfile.reset (code.release());
   }
   
   // we transfer ownership to the caller
