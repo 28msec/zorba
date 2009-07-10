@@ -20,7 +20,7 @@ m_zorba(zorba), m_client(client), m_fileName(fileName)
 
 DebuggerTestHandler::DebugEvent DebuggerTestHandler::getNextEvent()
 {
-	AutoLock lock(m_lock, Lock::WRITE);
+	SYNC_CODE(AutoLock lock(m_lock, Lock::WRITE);)
 	synchronous_logger::cout << "getNextEvent()\n";
 	while (m_client->isQueryRunning()) {
 		sleep(1);

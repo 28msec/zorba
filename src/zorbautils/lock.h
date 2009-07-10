@@ -16,12 +16,12 @@
 #ifndef ZORBA_STORE_LOCK_H
 #define ZORBA_STORE_LOCK_H
 
-#ifndef ZORBA_FOR_ONE_THREAD_ONLY
-
+#include <zorba/config.h>
 #include<vector>
 
-#include <zorba/config.h>
 #include "zorbamisc/config/platform.h"
+
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
 
 #include "zorbautils/thread.h"
 #include "zorbautils/mutex.h"

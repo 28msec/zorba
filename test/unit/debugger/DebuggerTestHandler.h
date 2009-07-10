@@ -5,6 +5,7 @@
 #include <zorba/debugger_client.h>
 #include <zorba/zorba.h>
 #include <zorbautils/lock.h>
+#include <zorbatypes/rchandle.h>
 
 #include <string>
 
@@ -29,7 +30,7 @@ private:
 	zorba::ZorbaDebuggerClient* m_client;
 	std::string m_fileName;
 	zorba::Zorba* m_zorba;
-	zorba::Lock m_lock;
+	SYNC_CODE(zorba::Lock m_lock;)
 };
 
 }

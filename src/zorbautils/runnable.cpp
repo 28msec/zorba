@@ -1,5 +1,6 @@
 #include "runnable.h"
 
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
 
 #ifdef ZORBA_HAVE_PTHREAD_H
 #include <pthread.h>
@@ -98,3 +99,5 @@ void zorba::Runnable::finishImpl()
   finish();
   finishCalled = true;
 }
+
+#endif
