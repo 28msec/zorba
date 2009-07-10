@@ -194,6 +194,43 @@ example_11( Zorba * aZorba )
   return true;
 }
 
+bool
+example_12(Zorba* aZorba)
+{
+	XQuery_t lQuery = aZorba->compileQuery("<a><b attr='1'/><b attr='2'/></a>");
+
+  ResultIterator_t lIterator = lQuery->iterator();
+  lIterator->open();
+
+  Item lItem;
+  while ( lIterator->next(lItem) ) {
+    Iterator_t lChildIter = lItem.getChildren();
+
+    lChildIter->open();
+    Item lChild;
+    while (lChildIter->next(lChild)) {
+
+      Item lNodeName;
+      lChild.getNodeName(lNodeName);
+      std::cout << "node name " << lNodeName.getStringValue() << std::endl;
+      Iterator_t lAttrIter = lChild.getAttributes();
+      
+      lAttrIter->open();
+
+      Item lAttr;
+      while (lAttrIter->next(lAttr)) {
+        std::cout << "  attribute value " << lAttr.getStringValue() << std::endl;
+      }
+      lAttrIter->close();
+    }
+    lChildIter->close();
+  }
+
+  lIterator->close();
+
+	return true;
+}
+
 
 int 
 simple(int argc, char* argv[])
@@ -255,6 +292,11 @@ simple(int argc, char* argv[])
 
   std::cout << "executing example 11" << std::endl;
   res = example_11(lZorba);
+  if (!res) return 1;
+  std::cout << std::endl;
+
+  std::cout << "executing example 12" << std::endl;
+  res = example_12(lZorba);
   if (!res) return 1;
   std::cout << std::endl;
 

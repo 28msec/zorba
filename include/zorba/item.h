@@ -259,6 +259,43 @@ public:
   bool
   getBooleanValue() const;
 
+  /** \brief Get an iterator for the children of this (node) Item.
+   *
+   * Note that this function is only available for node Items.
+   * The file \link simple.cpp \endlink contains some basic examples the demonstrate
+   * the use of this function.
+   *
+   * @return Iterator over the children of this node.
+   * @throw ZorbaException if an error occured, e.g. the Item is not of type node.
+   */
+  Iterator_t
+  getChildren() const;
+
+  /** \brief Get an iterator for the attributes of this (node) Item.
+   *
+   * Note that this function is only available for node Items.
+   * The file \link simple.cpp \endlink contains some basic examples the demonstrate
+   * the use of this function.
+   *
+   * @return Iterator over the attributes of this node.
+   * @throw ZorbaException if an error occured, e.g. the Item is not of type node.
+   */
+  Iterator_t
+  getAttributes() const;
+
+  /** \brief Get the name of this (node) Item.
+   *
+   * Note that this function is only available for node Items.
+   * The file \link simple.cpp \endlink contains some basic examples the demonstrate
+   * the use of this function.
+   *
+   * @return bool if the name of the node was retrieved successfully.
+   * @return aNodeName the name of the node
+   * @throw ZorbaException if an error occured, e.g. the Item is not of type node.
+   */
+  bool
+  getNodeName(Item& aNodeName) const;
+
 private:
   friend class Unmarshaller;
   store::Item *m_item;

@@ -26,9 +26,11 @@
 
 #include "api/zorbaimpl.h"
 #include "api/serialization/serializer.h"
+#include "api/iteratorimpl.h"
 
 #include "store/api/item.h"
 #include "store/api/store.h"
+#include "store/api/iterator.h"
 
 
 namespace zorba {
@@ -339,4 +341,46 @@ Item::getBooleanValue() const
   return false;
 }
 
+/** Node Items */
+Iterator_t
+Item::getChildren() const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    // TODO, we should have an error handler here
+    return new IteratorImpl(m_item->getChildren(), 0);
+
+  ITEM_CATCH
+  return NULL;
 }
+
+Iterator_t
+Item::getAttributes() const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    // TODO, we should have an error handler here
+    return new IteratorImpl(m_item->getAttributes(), 0);
+
+  ITEM_CATCH
+  return NULL;
+}
+
+bool
+Item::getNodeName(Item& aNodeName) const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+  
+    store::Item* lNodeName = m_item->getNodeName();
+
+    aNodeName = lNodeName;
+    return true;
+
+  ITEM_CATCH
+  return false;
+}
+
+} /* namespace zorba */
