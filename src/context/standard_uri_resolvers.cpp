@@ -236,7 +236,7 @@ StandardModuleURIResolver::resolve(
   else 
   {
     std::auto_ptr<std::stringstream> code(new std::stringstream());
-    if (http_get (lResolvedURI->c_str (), *code.get()) != 0)
+    if (http_get (lResolvedURI->c_str (), *code) != 0)
       return NULL;
     modfile.reset (code.release());
   }

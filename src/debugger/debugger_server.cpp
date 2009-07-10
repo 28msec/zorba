@@ -502,7 +502,12 @@ namespace zorba{
 	const QueryLoc ZorbaDebugger::addBreakpoint(const QueryLoc& aLocation)
 	{
 		xqpString fileName = aLocation.getFilename();
-		fileName = debugger_helper_functions::deascapeString(fileName);
+    std::map<std::string, std::string>::iterator fileIter = theModuleFileMappings.find(aLocation.getFilename().c_str());
+    if (fileIter == theModuleFileMappings.end()) {
+      fileName = debugger_helper_functions::deascapeString(fileName);
+    } else {
+      fileName = fileIter->second;
+    }
 		unsigned long line = aLocation.getLineBegin();
 		std::map<xqpString, std::vector<std::vector<std::pair<QueryLoc, FnDebugIterator*> > > >::iterator iter;
 		iter = theBreaks.find(fileName);
