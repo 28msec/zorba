@@ -17,17 +17,22 @@
 #include "zorbautils/fatal.h"
 #include "common/shared_types.h"
 #include "system/globalenv.h"
+
 #include "types/root_typemanager.h"
+#include "types/schema/Utils.h"
+
 #include "context/static_context.h"
+
 #include "runtime/api/runtimecb.h"
 #include "runtime/update/update.h"
+#include "runtime/api/plan_iterator_wrapper.h"
+#include "runtime/core/var_iterators.h"
+
 #include "store/api/pul.h"
 #include "store/api/update_consts.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
-#include "runtime/core/var_iterators.h"
 #include "store/api/store.h"
-#include "runtime/api/plan_iterator_wrapper.h"
 #include "store/api/temp_seq.h"
 #include "store/api/copymode.h"
 
@@ -581,6 +586,7 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   std::vector<ForVarIter_t>::const_iterator lVarRefIter; 
   std::vector<ForVarIter_t>::const_iterator lVarRefEnd;
   rchandle<store::PUL> lPul;
+  store::Item_t validationPul;
   store::Item_t temp;
   store::Item_t lItem;
   store::Item_t lCopyNode;
@@ -650,7 +656,14 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
       std::set<zorba::store::Item*> validationNodes;
 
-      lPul->applyUpdates(validationNodes);  
+      lPul->applyUpdates(validationNodes);
+
+      validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
+
+#ifndef ZORBA_NO_XMLSCHEMA
+      validateAfterUpdate(validationNodes, validationPul, sctx, loc);
+#endif
+      validationPul->applyUpdates(validationNodes);
     }
   }
 
