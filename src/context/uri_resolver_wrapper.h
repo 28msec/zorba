@@ -78,7 +78,8 @@ namespace zorba {
 
       std::istream*
       resolve(const store::Item_t& aURI,
-              static_context* aStaticContext);
+              static_context* aStaticContext,
+              xqpStringStore* aFileUri = 0);
 
     protected:
       friend class StaticContextImpl;

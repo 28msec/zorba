@@ -223,9 +223,13 @@ StandardSchemaURIResolver::resolve(
 std::istream*
 StandardModuleURIResolver::resolve(
     const store::Item_t& aURI,
-    static_context* aStaticContext)
+    static_context* aStaticContext,
+    xqpStringStore* aFileUri)
 {
   xqpStringStore_t lResolvedURI = aURI->getStringValue();
+  if (aFileUri) {
+    *aFileUri = *(lResolvedURI.getp());
+  }
   std::auto_ptr<std::istream> modfile;
   if (lResolvedURI->byteStartsWith ("file://"))
     modfile.reset (new std::ifstream(URI::decode_file_URI (lResolvedURI)->c_str()));
@@ -243,7 +247,8 @@ StandardModuleURIResolver::resolve(
 
 std::istream*
 StandardLibraryModuleURIResolver::resolve(const store::Item_t& aURI,
-                                          static_context* aStaticContext)
+                                          static_context* aStaticContext,
+                                          xqpStringStore* aFileUri)
 {
   xqpStringStore_t lResolvedURI = aURI->getStringValue();
 

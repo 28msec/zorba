@@ -181,7 +181,7 @@ class MyModuleURIResolver : public ModuleURIResolver
     virtual ~MyModuleURIResolver() {}
 
     virtual std::auto_ptr<ModuleURIResolverResult>
-    resolve(const Item& aURI, StaticContext* aStaticContext)
+    resolve(const Item& aURI, StaticContext* aStaticContext, String* aFileUri = 0)
     {
       std::auto_ptr<MyModuleURIResolverResult> lResult(new MyModuleURIResolverResult());
       if (aURI.getStringValue() == "http://www.zorba-xquery.com/mymodule") {

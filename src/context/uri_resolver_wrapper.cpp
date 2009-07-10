@@ -153,16 +153,22 @@ namespace zorba {
 
   std::istream*
   ModuleURIResolverWrapper::resolve(const store::Item_t& aURI,
-                                    static_context* aStaticContext)
+                                    static_context* aStaticContext,
+                                    xqpStringStore* aFileUri)
   {
     StaticContextImpl  lOuterStaticContext(aStaticContext, 0);
     Item               lURIItem(aURI.getp());  
 
+    String lFileUri;
     // we have the ownership; it will be destroyed automatically once we leave this function
     std::auto_ptr<ModuleURIResolverResult> lResult = theModuleResolver->resolve(lURIItem, 
-                                                                                &lOuterStaticContext);
+                                                                                &lOuterStaticContext,
+                                                                                aFileUri ? &lFileUri : 0);
 
     if (lResult->getError() == URIResolverResult::UR_NOERROR) {
+      if (aFileUri) {
+        *aFileUri = *(Unmarshaller::getInternalString(lFileUri));
+      }
       return lResult->getModule();
     } else {
       // handle errors

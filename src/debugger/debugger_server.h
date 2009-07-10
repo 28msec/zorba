@@ -132,6 +132,7 @@ class ZorbaDebugger
 
     //The list of URIs to import for eval
     std::map<std::string, std::string> theImports;
+    std::map<std::string, std::string> theModuleFileMappings;
 
 	DebuggerCommunicator* m_debuggerCommunicator;
    

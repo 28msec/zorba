@@ -3763,7 +3763,13 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/) {
       ZORBA_ASSERT (found);
     } else {
       // we get the ownership if the moduleResolver is a standard resolver
-      auto_ptr<istream> modfile (lModuleResolver->resolve(aturiitem, sctx_p));
+      xqpStringStore lFileUri;
+      auto_ptr<istream> modfile (lModuleResolver->resolve(aturiitem, sctx_p, &lFileUri));
+#ifdef ZORBA_DEBUGGER
+      if(compilerCB->m_debugger != 0) {
+        compilerCB->m_debugger->theModuleFileMappings.insert(std::pair<std::string, std::string>(aturiitem->getStringValue()->c_str(), lFileUri.c_str()));
+      }
+#endif
 
       try {
         if (modfile.get () == NULL || ! *modfile) {

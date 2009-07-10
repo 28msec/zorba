@@ -148,7 +148,8 @@ namespace zorba {
 
       virtual std::auto_ptr<ModuleURIResolverResult>
       resolve(const Item& aURI,
-              StaticContext* aStaticContext) = 0;
+              StaticContext* aStaticContext,
+              String* aFileUri = 0) = 0;
   };
 
 } /* namespace zorba */

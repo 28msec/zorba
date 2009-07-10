@@ -80,7 +80,7 @@ public :
   void setTest(const std::string& test) { theTest = test; }
 
   virtual std::auto_ptr< ModuleURIResolverResult >
-  resolve ( const Item &, StaticContext * aStaticContext );
+  resolve ( const Item &, StaticContext * aStaticContext, String* aFileUri = 0 );
 
 private:
   void initialize ();

@@ -61,7 +61,8 @@ namespace zorba {
 
       virtual std::istream*
       resolve(const store::Item_t& aURI,
-              static_context* aStaticContext);
+              static_context* aStaticContext,
+              xqpStringStore* aFileUri = 0);
   };
 
   /*
@@ -82,7 +83,8 @@ namespace zorba {
 
       virtual std::istream*
       resolve(const store::Item_t& aURI,
-              static_context* aStaticContext);
+              static_context* aStaticContext,
+              xqpStringStore* = 0);
   };
 
 } /* namespace zorba */
