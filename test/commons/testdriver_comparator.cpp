@@ -10,6 +10,8 @@
 #include <iostream>
 #include <fstream>
 #include <cassert>
+#include <string.h>
+
 
 namespace zorba {
 
@@ -46,20 +48,43 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
       return 8;
     }
 
-    std::cout << "reading from file " << aRefFile << std::endl;
     char buf[1024];
+    char* bufp;
 
     while (!lRefInStream.eof()) 
     {
       lRefInStream.read(buf, 1024);
-      lTmpRefResult.write(buf, lRefInStream.gcount());
+      bufp = buf;
+
+      // Skip xml declaration, if any
+      long numSkipped;
+      if (!strncmp(bufp, "<?xml", 5))
+      {
+        while (*bufp != '\n' && strncmp(bufp, "?>", 2))
+        {
+          ++bufp;
+        }
+
+        if (*bufp == '?')
+          bufp += 2;
+
+        if (*bufp == '\n')
+          ++bufp;
+      }
+
+      numSkipped = (bufp - buf);
+
+      lTmpRefResult.write(bufp, lRefInStream.gcount() - numSkipped);
     }
 
     if (buf[lRefInStream.gcount()-1] != '\n')
       lTmpRefResult << std::endl;
 
     lTmpRefResult << "</root>";
-    lRefResult_ptr = xmlReadMemory(lTmpRefResult.str().c_str(), lTmpRefResult.str().size(), "ref_result.xml", 0, 0);
+
+    lRefResult_ptr = xmlReadMemory(lTmpRefResult.str().c_str(),
+                                   lTmpRefResult.str().size(),
+                                   "ref_result.xml", 0, 0);
 
     // prepend and append an artifical root tag as requested by the guidelines
     std::ostringstream lTmpResult;
@@ -71,8 +96,6 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
       return 8;
     }
 
-    std::cout << "reading from file " << aResultFile << std::endl;
-
     while (!lInStream.eof()) 
     {
       lInStream.read(buf, 1024);
@@ -80,7 +103,10 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
     }
 
     lTmpResult << std::endl << "</root>";
-    lResult_ptr = xmlReadMemory(lTmpResult.str().c_str(), lTmpResult.str().size(), "result.xml", 0, 0);
+
+    lResult_ptr = xmlReadMemory(lTmpResult.str().c_str(),
+                                lTmpResult.str().size(),
+                                "result.xml", 0, 0);
     
   }
   else if (aComparisonMethod.compare("Error") == 0 ) 
@@ -140,12 +166,22 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
   if (!lRes) 
   {
     std::cout << std::endl
-              << "Canonical result does not match canonical expected result:"
-              << std::endl;
+              << "Actual and Reference canonical results are not identical"
+              << std::endl << std::endl
+              << "Actual Canonical Result: "
+              << std::endl << std::endl;
 
-    printFile(std::cout, aRefFile);
+    printFile(std::cout, lCanonicalResFile);
 
-    std::cout << "=== end of expected result ===" << std::endl;
+    std::cout << std::endl << std::endl;
+
+    std::cout << "Reference Canonical Result: "
+              << std::endl << std::endl;
+
+    zorba::printFile(std::cout, lCanonicalRefFile);
+
+    std::cout << std::endl << std::endl;
+
     std::cout << "See line " << lLine << ", col " << lCol 
               << " of expected result. " << std::endl;
     std::cout << "Actual:   <";
