@@ -475,8 +475,15 @@ void bind_udf (store::Item_t qname, function *f, int nargs, static_context *sctx
 void bind_udf (store::Item_t qname, function *f, int nargs, const QueryLoc& loc) {
   bind_udf (qname, f, nargs, sctx_p, loc);
   bind_udf (qname, f, nargs, minfo->globals.get (), loc);
-  if (export_sctx != NULL)
+  // bind the udf also in the sctx that is used
+  // for importing modules
+  if (export_sctx != NULL) {
+    // set the static context in which the function is compiled
+    user_function* user_f = dynamic_cast<user_function*>(f);
+    assert(user_f);
+    user_f->set_context(sctx_p);
     bind_udf (qname, f, nargs, export_sctx, loc);
+  }
 }
 
 
@@ -633,44 +640,44 @@ expr_t wrap_in_atomization (expr_t e) {
   return new fo_expr (e->get_loc (), CACHED (fn_data, LOOKUP_FN ("fn", "data", 1)), e);
 }
   
-  void declare_var (const global_binding &b, std::vector<expr_t> &stmts) {
-    CACHED (ctx_decl, LOOKUP_OP1 ("ctxvar-declare"));
-    CACHED (ctx_set, LOOKUP_OP2 ("ctxvar-assign"));
+void declare_var (const global_binding &b, std::vector<expr_t> &stmts) {
+  CACHED (ctx_decl, LOOKUP_OP1 ("ctxvar-declare"));
+  CACHED (ctx_set, LOOKUP_OP2 ("ctxvar-assign"));
 
-    varref_t var = b.first;
-    xqtref_t var_type = var->get_type ();
-    expr_t expr = b.second;
-    xqpStringStore dot (".");
-    expr_t qname_expr =
-      new const_expr (var->get_loc(), var->get_varname ()->getStringValue ()->equals (&dot) ? "." : dynamic_context::var_key (&*var));
+  varref_t var = b.first;
+  xqtref_t var_type = var->get_type ();
+  expr_t expr = b.second;
+  xqpStringStore dot (".");
+  expr_t qname_expr =
+    new const_expr (var->get_loc(), var->get_varname ()->getStringValue ()->equals (&dot) ? "." : dynamic_context::var_key (&*var));
 
-    expr_t decl_expr = new fo_expr (var->get_loc(), ctx_decl, qname_expr->clone ());
-    if (expr != NULL) {
-      if (expr->is_updating())
-        ZORBA_ERROR_LOC(XUST0001, expr->get_loc());
+  expr_t decl_expr = new fo_expr (var->get_loc(), ctx_decl, qname_expr->clone ());
+  if (expr != NULL) {
+    if (expr->is_updating())
+      ZORBA_ERROR_LOC(XUST0001, expr->get_loc());
 
-      expr = new fo_expr (var->get_loc(),
-                          ctx_set, qname_expr->clone (), expr);
-      expr = new sequential_expr (var->get_loc (), decl_expr, expr);
-      if (b.is_extern ()) {
-        CACHED (ctx_exists, LOOKUP_OP1 ("ctxvar-exists"));
-        expr_t exists_expr =
-          expr_t (new fo_expr (var->get_loc (), ctx_exists, qname_expr->clone ()));
-        expr = new if_expr (var->get_loc (), exists_expr,
-                            expr_t (create_seq (var->get_loc ())), expr);
-      }
-      stmts.push_back (expr);
-    } else {  // no init expr
-      if (! b.is_extern ())
-        stmts.push_back (decl_expr);
+    expr = new fo_expr (var->get_loc(),
+                        ctx_set, qname_expr->clone (), expr);
+    expr = new sequential_expr (var->get_loc (), decl_expr, expr);
+    if (b.is_extern ()) {
+      CACHED (ctx_exists, LOOKUP_OP1 ("ctxvar-exists"));
+      expr_t exists_expr =
+        expr_t (new fo_expr (var->get_loc (), ctx_exists, qname_expr->clone ()));
+      expr = new if_expr (var->get_loc (), exists_expr,
+                          expr_t (create_seq (var->get_loc ())), expr);
     }
-    if (var_type != NULL && (b.is_extern () || b.second != NULL)) {
-      // check type for vars that are external or have an init expr
-      CACHED (ctx_get, LOOKUP_OP1 ("ctxvariable"));
-      expr_t get = new fo_expr (var->get_loc (), ctx_get, qname_expr->clone ());
-      stmts.push_back (new treat_expr (var->get_loc (), get, var->get_type (), XPTY0004));
-    }
+    stmts.push_back (expr);
+  } else {  // no init expr
+    if (! b.is_extern ())
+      stmts.push_back (decl_expr);
   }
+  if (var_type != NULL && (b.is_extern () || b.second != NULL)) {
+    // check type for vars that are external or have an init expr
+    CACHED (ctx_get, LOOKUP_OP1 ("ctxvariable"));
+    expr_t get = new fo_expr (var->get_loc (), ctx_get, qname_expr->clone ());
+    stmts.push_back (new treat_expr (var->get_loc (), get, var->get_type (), XPTY0004));
+  }
+}
 
 
 void add_single_global_assign (const global_binding &b) 
@@ -2985,8 +2992,12 @@ void end_visit (const VarDecl& v, void* /*visit_state*/) {
       ZORBA_ERROR_LOC (XQST0048, loc);
     if (! v.is_extern ()) {
       bind_var (ve, minfo->globals.get ());
-      if (export_sctx != NULL)
+
+      // bind the variable also in the sctx that is used
+      // for importing modules
+      if (export_sctx != NULL) {
         bind_var (ve, export_sctx);
+      }
     }
 #ifdef ZORBA_DEBUGGER
     theScopedVariables.push_back( ve );
@@ -3720,7 +3731,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/) {
   // The namespace prefix specified in a module import must not be the same as any namespace prefix bound 
   // in the same module by another module import, 
   // a schema import, a namespace declaration, or a module declaration with a different target namespace [err:XQST0033].
-  if (! (pfx.empty () || (pfx == mod_pfx && target_ns == mod_ns))) {
+  if (! ( pfx.empty () || ( pfx == mod_pfx && target_ns == mod_ns ) ) ) {
     try {
       sctx_p->bind_ns(pfx, target_ns, XQST0033);
     } catch (error::ZorbaError& e) {
@@ -3734,6 +3745,8 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/) {
   if (ats == NULL && zorba_predef_mod_ns.find (target_ns) != zorba_predef_mod_ns.end ())
     return;
 
+  // use the target namespace if no at clauses are there
+  // otherwise use the resolved URIs of the at clauses
   vector<xqpStringStore_t> lURIs;
   if (ats == NULL || ats->size () == 0) {
     lURIs.push_back(xqp_string(target_ns).getStore());
@@ -3743,8 +3756,14 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/) {
     }
   }
 
+  // the module URI resolve that is used for retrieving the istream to the module
+  // this can either be Zorba's standard implementation or one that has been
+  // provided by the user
   InternalModuleURIResolver* lModuleResolver = sctx_p->get_module_uri_resolver();
 
+  // do the actual work
+  // take each of the URIs collected above and import the module's functions
+  // and variables into the current static context.
   for (vector<xqpStringStore_t>::iterator lIter = lURIs.begin();
        lIter != lURIs.end(); ++lIter) {
     xqpStringStore_t resolveduri = *lIter; 
@@ -3752,17 +3771,22 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/) {
     if (!GENV_ITEMFACTORY->createAnyURI(aturiitem, resolveduri))
       ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "URI is not valid " << resolveduri);
 
+    // track cyclic imports
     set<string> mod_stk1 = mod_stack;
     if (! mod_stk1.insert (xqpString(resolveduri.getp())).second)
       ZORBA_ERROR_LOC (XQST0073, loc);
     
-    string imported_ns;
+    string imported_ns; // the target namespace of the imported module
     static_context *imported_sctx = NULL;
+
+    // use the cache
     if (minfo->mod_ns_map.get (xqpString(resolveduri.getp()), imported_ns)) {
       bool found = minfo->mod_sctx_map.get (xqpString(resolveduri.getp()), imported_sctx);
       ZORBA_ASSERT (found);
     } else {
-      // we get the ownership if the moduleResolver is a standard resolver
+      // we get the ownership of the input stream
+      // TODO: we have to find a way to tell user defined resolvers when their input stream
+      // can be freed. The current solution might leed to problems on Windows.
       xqpStringStore lFileUri;
       auto_ptr<istream> modfile (lModuleResolver->resolve(aturiitem, sctx_p, &lFileUri));
 #ifdef ZORBA_DEBUGGER
@@ -3771,44 +3795,70 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/) {
       }
 #endif
 
-      try {
-        if (modfile.get () == NULL || ! *modfile) {
-          ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
-        }
-
-        CompilerCB mod_ccb (*compilerCB);
-        static_context_t independent_sctx = static_cast<static_context *> (minfo->topCompilerCB->m_sctx->get_parent ());
-        minfo->topCompilerCB->m_sctx_list.push_back (mod_ccb.m_sctx = independent_sctx->create_child_context ());
-        mod_ccb.m_sctx->set_entity_retrieval_url (xqpString(resolveduri.getp()));
-        minfo->topCompilerCB->m_sctx_list.push_back (imported_sctx = independent_sctx->create_child_context ());
-        minfo->mod_sctx_map.put (xqpString(resolveduri.getp()), imported_sctx);
-        XQueryCompiler xqc (&mod_ccb);
-        xqpString lFileName(aturiitem->getStringValue());
-        rchandle<parsenode> ast = xqc.parse (*modfile, lFileName);
-#ifdef ZORBA_DEBUGGER
-        if(compilerCB->m_debugger != 0)
-        {
-          compilerCB->m_debugger->addModule(ast);
-        }
-#endif
-        LibraryModule *mod_ast = dynamic_cast<LibraryModule *> (&*ast);
-        if (mod_ast == NULL)
-          ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
-        imported_ns = mod_ast->get_decl ()->get_target_namespace ();
-        translate_aux (*ast, &mod_ccb, minfo, mod_stk1);
-        minfo->mod_ns_map.put (xqpString(resolveduri.getp()), imported_ns);
-      } catch (...) {
-        throw;
+      if (modfile.get () == NULL || ! *modfile) {
+        ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
       }
+
+      // Create a CompilerCB for the imported module as a copy of the importing
+      // module's CompilerCB. Copying is needed for configuration settings,
+      // error manager, and debugger
+      CompilerCB mod_ccb (*compilerCB);
+
+      static_context_t independent_sctx = static_cast<static_context *> (minfo->topCompilerCB->m_sctx->get_parent ());
+
+      // Create the root sctx for the imported module as a child of the
+      // user-specified sctx (if any) or the zorba default (root) sctx (if no
+      // user-specified sctx).
+      mod_ccb.m_sctx = independent_sctx->create_child_context ();
+      minfo->topCompilerCB->m_sctx_list.push_back (mod_ccb.m_sctx); // make sure it's not deleted
+      mod_ccb.m_sctx->set_entity_retrieval_url (xqpString(resolveduri.getp()));
+
+      // Create an sctx where the imported module is going to register all the
+      // variable and function declarations that appear in its prolog. After the
+      // translation of the imported module is done, this sctx will be merged
+      // with the sctx of the importing module.
+      imported_sctx = independent_sctx->create_child_context();
+      minfo->topCompilerCB->m_sctx_list.push_back (imported_sctx);
+      // remeber the context; will be used in the translation process 
+      // of the module as export_sctx
+      minfo->mod_sctx_map.put (xqpString(resolveduri.getp()), imported_sctx);
+
+      // Parse the imported module
+      XQueryCompiler xqc (&mod_ccb);
+      xqpString lFileName(aturiitem->getStringValue());
+      rchandle<parsenode> ast = xqc.parse (*modfile, lFileName);
+#ifdef ZORBA_DEBUGGER
+      if(compilerCB->m_debugger != 0)
+      {
+        compilerCB->m_debugger->addModule(ast);
+      }
+#endif
+      // Get the target namespace that appears in the module declaration
+      // of the imported module and check that this ns is the same as the
+      // target ns in the module import statement.
+      // Also make sure that the imported module is a library module
+      LibraryModule *mod_ast = dynamic_cast<LibraryModule *> (&*ast);
+      if (mod_ast == NULL)
+        ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
+
+      // translate the imported module
+      translate_aux (*ast, &mod_ccb, minfo, mod_stk1);
+
+      // Register the mapping between the current location uri and the
+      // target namespace.
+      imported_ns = mod_ast->get_decl ()->get_target_namespace ();
+      minfo->mod_ns_map.put (xqpString(resolveduri.getp()), imported_ns);
     }
 
+    // module with given target_ns not found
     if (imported_ns != target_ns)
       ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
+
     // We catch duplicate functions / vars in minfo->globals.
     // We can safely ignore the return value. We might even be able
     // to assert() here (not sure though).
     sctx_p->import_module (imported_sctx);
-  }
+  } // for (vector<xqpStringStore_t>::iterator lIter = lURIs.begin();
 }
 
 

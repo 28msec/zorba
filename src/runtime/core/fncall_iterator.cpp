@@ -45,7 +45,7 @@ UDFunctionCallIteratorState::UDFunctionCallIteratorState()
   theFnBodyStateBlock(NULL),
   thePlan(NULL),
   thePlanStateSize(0),
-  thePlanOpen(false) 
+  thePlanOpen(false)
 { 
 }
 
@@ -110,6 +110,17 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   block->theRuntimeCB = new RuntimeCB (*planState.theRuntimeCB);
   block->theRuntimeCB->theDynamicContext = new dynamic_context (block->theRuntimeCB->theDynamicContext);
   block->theCompilerCB = planState.theCompilerCB;
+
+  // if the function was imported from a module,
+  // we have to use the sctx in which the function was compiled.
+  // The context of the function is 0 if the function was declared
+  // in the main module.
+  static_context* lCtxt = theUDF->get_context();
+  if (lCtxt) {
+    block->theRuntimeCB->theStaticContext = theUDF->get_context();
+    block->theCompilerCB->m_sctx = theUDF->get_context();
+  }
+
   block->checkDepth (loc);
   state->theFnBodyStateBlock = block.release();
 }

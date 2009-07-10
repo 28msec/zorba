@@ -658,8 +658,11 @@ RULE_REWRITE_POST(InlineFunctions)
     fo_expr *fo = static_cast<fo_expr *> (node);
     const user_function *udf = dynamic_cast<const user_function *> (fo->get_func ());
     expr_t body;
+    // only inline functions which are declared in the main module
+    // currently, we can't inline library module functions because
+    // it's not possible to set their static context during runtime
     if (NULL != udf && ! udf->isSequential () && udf->isLeaf ()
-        && (NULL != (body = udf->get_body ())))
+        && (NULL != (body = udf->get_body ())) && udf->get_context() == 0)
     {
       expr_t body = udf->get_body ();
       const std::vector<var_expr_t>& params = udf->get_params();

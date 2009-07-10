@@ -1,0 +1,16 @@
+(: test to make sure that the correct static context is used in a function
+   that is declared in a library module :)
+module namespace def = "foo:bar";
+
+declare copy-namespaces no-preserve,no-inherit;
+
+declare function def:init()
+{
+  let $element1 := <element1 xmlns:namespace1="www.namespace1.com"></element1>
+  let $element2 := <element2 xmlns:namespace2="www.namespace2.com">{$element1}</element2>
+  let $element3 := <element3 xmlns:namespace3="www.namespace3.com">{$element2}</element3>
+  for $var in (in-scope-prefixes($element3/element2))
+  order by $var ascending
+  return $var
+};
+

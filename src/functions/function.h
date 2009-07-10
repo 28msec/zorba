@@ -153,6 +153,11 @@ public:
   void set_body(expr_t body);
   expr_t get_body() const;
 
+  // each user_function that was declared in a library module
+  // needs to know the static context in which it was compiled.
+  void set_context(static_context*);
+  static_context* get_context() const;
+
   void set_params(std::vector<var_expr_t>& params);
   const std::vector<var_expr_t>& get_params() const;
 
@@ -185,6 +190,11 @@ private:
   mutable PlanIter_t                m_plan;
   mutable std::vector<LetVarIter_t> m_param_iters;
   mutable int32_t                   m_state_size;
+
+  // sctxt in which the function was compiled in case
+  // of library modules or zero if the function is declared
+  // in the main module.
+  static_context*                   m_context;
 };
 
 

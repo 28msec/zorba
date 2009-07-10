@@ -94,7 +94,8 @@ user_function::user_function(const QueryLoc& loc,
   theUpdateType((ftype == ParseConstants::fn_update) ? UPDATE_EXPR : SIMPLE_EXPR),
   sequential (ftype == ParseConstants::fn_sequential),
   deterministic (deterministic_),
-  leaf (true)
+  leaf (true),
+  m_context(0)
 { 
 }
 
@@ -109,6 +110,15 @@ const QueryLoc& user_function::get_location() const
   return m_loc;
 }
 
+void user_function::set_context(static_context* c)
+{
+  m_context = c;
+}
+
+static_context* user_function::get_context() const
+{
+  return m_context;
+}
 
 void user_function::set_body(expr_t body)
 {
