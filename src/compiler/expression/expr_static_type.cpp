@@ -724,7 +724,7 @@ xqtref_t cast_base_expr::return_type_impl (static_context *sctx)
   TypeConstants::quantifier_t q =
     TypeOps::intersect_quant(TypeOps::quantifier(*get_input()->return_type(sctx)),
                              TypeOps::quantifier(*target_type));
-  return sctx->get_typemanager()->create_type_x_quant(*target_type, q);
+  return sctx->get_typemanager()->create_type(*target_type, q);
 }
 
   
