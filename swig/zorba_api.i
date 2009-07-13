@@ -49,7 +49,15 @@ public:
   Item() {}
   Item(const Item& aItem) : theItem(aItem.theItem) {}
   static Item createEmptyItem() { return Item(); }
-  std::string getStringValue() const { return std::string(theItem.getStringValue().c_str()); }
+  std::string getStringValue() const { return 		std::string(theItem.getStringValue().c_str()); }
+
+  std::string serialize() const {
+    std::stringstream lStream;
+    theItem.serialize(lStream);
+    return lStream.str();
+  }
+
+
 }; // class Item
 
 class ResultIterator {
@@ -78,12 +86,20 @@ public:
   XQuery() {}
   XQuery(const XQuery& aXQuery) : theQuery(aXQuery.theQuery) {}
   XQuery(zorba::XQuery_t aQuery) : theQuery(aQuery) {}
+
   std::string execute()
   {
     std::stringstream lStream;
       lStream << theQuery;
     return lStream.str();
   }
+
+  void setVariableAsDocument(const std::string& aVarName, const std::string& aURL, const std::string& aContent){
+   std::auto_ptr<std::istream> lDocStream(new std::stringstream(aContent));
+  	zorba::DynamicContext* lCtx = theQuery->getDynamicContext();
+
+  	lCtx->setVariableAsDocument(aVarName, aURL, lDocStream);
+   }
 
   std::string printPlanAsXML()
   {
@@ -191,6 +207,7 @@ class Item {
 public: 
   static Item createEmptyItem();
   std::string getStringValue() const;
+  std::string serialize() const;
 };
 
 class ResultIterator {
@@ -215,6 +232,7 @@ public:
   void applyUpdates();
   void destroy();
   ResultIterator iterator();
+  void setVariableAsDocument(const std::string& aVarName, const std::string& aURL, const std::string& aContent);
 };
 
 class Store {};

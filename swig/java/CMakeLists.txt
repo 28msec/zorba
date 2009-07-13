@@ -17,6 +17,8 @@ include ( FindJNI )
 
 STRING ( COMPARE NOTEQUAL ${JAVA_INCLUDE_PATH} "JAVA_INCLUDE_PATH-NOTFOUND" JNI_FOUND )
 
+
+
 IF ( JNI_FOUND )
 include (CMakeJavaInformation )
 MESSAGE(STATUS "Generating Java API")
@@ -33,11 +35,15 @@ IF ( NOT APPLE )
 INCLUDE_DIRECTORIES ( ${JAVA_INCLUDE_PATH2} )
 ENDIF ( NOT APPLE )
 
+SET( CMAKE_SWIG_FLAGS -package org.zorba)
+
 SWIG_ADD_MODULE ( libzorba_api java zorba_api.i)
   SWIG_LINK_LIBRARIES(libzorba_api zorba_simplestore ${JAVA_LIBRARY})
   IF ( APPLE )
     set_target_properties( libzorba_api PROPERTIES SUFFIX .jnilib )
   ENDIF ( APPLE )
+
+
 
 IF (${CMAKE_INSTALL_PREFIX} EQUAL "/usr/local")
   SET (JAVA_SITEARCH_DIR "/usr/share/java")
