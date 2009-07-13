@@ -1781,6 +1781,7 @@ bool axis_step_expr::is_reverse_axis (axis_kind_t k) {
 match_expr::match_expr(short sctx, const QueryLoc& loc)
   :
   expr(sctx, loc),
+  theDocTestKind(match_no_test),
   theWildKind(match_no_wild),
   theQName(NULL),
   theTypeName(NULL),
