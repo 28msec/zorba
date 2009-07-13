@@ -132,6 +132,7 @@ class InsertExpr;
 class InstanceofExpr;
 class IntersectExceptExpr;
 class ItemType;
+class ModuleDecl;
 class MultiplicativeExpr;
 class NameTest;
 class NamespaceDecl;
@@ -211,49 +212,82 @@ class TypeName;
 class UnaryExpr;
 class UnionExpr;
 class UnorderedExpr;
+class URILiteralList;
 class VFO_DeclList;
 class ValidateExpr;
 class ValueComp;
 class VarBinding;
 class VarDecl;
+class VersionDecl;
+
 class CopyVarList;
 class Wildcard;
 class DecimalFormatNode;
 
 
-// [] Moved here the definitions for FunctionSig and VarNameAndType from the Bison parser file
+// [] Moved here the definitions for FunctionSig and VarNameAndType from the
+// Bison parser file
 // ---------------
-class FunctionSig {
-  public:
-    rchandle<ParamList> param;
-    rchandle<SequenceType> ret;
+class FunctionSig 
+{
+public:
+  rchandle<ParamList> param;
+  rchandle<SequenceType> ret;
 
-    FunctionSig (ParamList *param_, SequenceType *ret_ = NULL)
-  : param (param_), ret (ret_)
-    {}
-};
-
-class VarNameAndType {
-  public:
-    std::string name;
-    rchandle<SequenceType> type;
-
-
-    VarNameAndType (std::string name_, rchandle<SequenceType> type_)
-  : name (name_), type (type_)
-    {}
+  FunctionSig (ParamList *param_, SequenceType *ret_ = NULL)
+    :
+    param (param_), ret (ret_)
+  {
+  }
 };
 
 
+class VarNameAndType 
+{
+public:
+  std::string name;
+  rchandle<SequenceType> type;
 
-// [2] VersionDecl
-// ---------------
+
+  VarNameAndType (std::string name_, rchandle<SequenceType> type_)
+    :
+    name (name_), type (type_)
+  {
+  }
+};
+
+
+/*******************************************************************************
+  [1] Module ::= 	VersionDecl? (LibraryModule | MainModule)
+********************************************************************************/
+class Module : public parsenode
+{
+protected:
+  rchandle<VersionDecl> version_decl_h;
+
+public:
+	Module(const QueryLoc& loc_, rchandle<VersionDecl> vd_)
+    :
+    parsenode (loc_),
+    version_decl_h (vd_)
+  {
+  }
+
+	rchandle<VersionDecl> get_version_decl() const { return version_decl_h; }
+
+  void set_version_decl(rchandle<VersionDecl> vd) { version_decl_h = vd; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+
+/*******************************************************************************
+  [2] VersionDecl ::= XQUERY ENCODING STRING_LITERAL SEMI |
+                      XQUERY VERSION STRING_LITERAL SEMI |
+                      XQUERY VERSION STRING_LITERAL ENCODING STRING_LITERAL SEMI
+********************************************************************************/
 class VersionDecl : public parsenode
-/*______________________________________________________________________
-|
-|	::= XQUERY_VERSION  STRING_LITERAL  SEMI
-|			| XQUERY_VERSION  STRING_LITERAL  ENCODING  STRING_LITERAL  SEMI
-|_______________________________________________________________________*/
 {
 protected:
 	std::string version;
@@ -267,50 +301,17 @@ public:
 		std::string const& version,
 		std::string const& encoding);
 
-
-public:
 	std::string get_version() const { return version; }
 	std::string get_encoding() const { return encoding; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [1] Module
-// ----------
-class Module : public parsenode
-/*______________________________________________________________________
-|
-|	::= MainModule
-|			| VersionDecl MainModule
-|			| LibraryModule
-|			| VersionDecl LibraryModule
-|_______________________________________________________________________*/
-{
-protected:
-  rchandle<VersionDecl> version_decl_h;
-public:
-	Module(const QueryLoc& loc_, rchandle<VersionDecl> vd_)
-    : parsenode (loc_), version_decl_h (vd_)
-  {}
-	rchandle<VersionDecl> get_version_decl() const { return version_decl_h; }
-  void set_version_decl(rchandle<VersionDecl> vd) { version_decl_h = vd; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [3] MainModule
-// --------------
+/*******************************************************************************
+  [3] MainModule ::= Prolog QueryBody | QueryBody
+********************************************************************************/
 class MainModule : public Module
-/*______________________________________________________________________
-|
-|	::= Prolog  QueryBody | QueryBody
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<Prolog> prolog_h;
@@ -323,54 +324,20 @@ public:
 		rchandle<Prolog>,
     rchandle<VersionDecl> = NULL);
 	
-public:
 	rchandle<Prolog> get_prolog() const { return prolog_h; }
+
 	rchandle<QueryBody> get_query_body() const { return query_body_h; }
 
   void set_prolog (rchandle<Prolog> prolog_) { prolog_h = prolog_; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [5] ModuleDecl
-// --------------
-class ModuleDecl : public parsenode
-/*______________________________________________________________________
-|
-|	::= MODULE_NAMESPACE  NCNAME  EQ  URI_LITERAL  SEMI
-|_______________________________________________________________________*/
-{
-protected:
-	std::string prefix;
-	std::string target_namespace;
-
-public:
-	ModuleDecl(
-		const QueryLoc&,
-		std::string const& prefix,
-		std::string const& target_namespace);
-
-
-public:
-	std::string get_prefix() const { return prefix; }
-	std::string get_target_namespace() const { return target_namespace; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [4] LibraryModule
-// -----------------
+/*******************************************************************************
+  [4] LibraryModule ::= ModuleDecl  Prolog
+********************************************************************************/
 class LibraryModule : public Module
-/*______________________________________________________________________
-|
-|	::= ModuleDecl  Prolog
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<ModuleDecl> decl_h;
@@ -383,20 +350,46 @@ public:
 		rchandle<Prolog>,
     rchandle<VersionDecl> = NULL);
 
-
-public:
   rchandle<ModuleDecl> get_decl () const { return decl_h; }
+
 	rchandle<Prolog> get_prolog() const { return prolog_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
+};
 
+
+/*******************************************************************************
+  [5] ModuleDecl ::= MODULE NAMESPACE  NCNAME  EQ  URI_LITERAL  SEMI
+********************************************************************************/
+class ModuleDecl : public parsenode
+{
+protected:
+	std::string prefix;
+	std::string target_namespace;
+
+public:
+	ModuleDecl(
+		const QueryLoc&,
+		std::string const& prefix,
+		std::string const& target_namespace);
+
+	std::string get_prefix() const { return prefix; }
+	std::string get_target_namespace() const { return target_namespace; }
+
+	void accept(parsenode_visitor&) const;
 };
 
 
 /******************************************************************************
+  [6] Prolog ::= SIND_DeclList?  VFO_DeclList?
 
-  [6] Prolog ::= SIND_DeclList  VFO_DeclList
+  [6a] SIND_DeclList ::= SIND_Decl Separator | SIND_DeclList SIND_Decl Separator
+
+  [6b] VFO_DeclList ::= VFO_Decl Separator | VFO_DeclList VFO_Decl Separator
+
+  [6c] SIND_Decl ::= Setter | NamespaceDecl | DefaultNamespaceDecl | Import
+
+  [6d] VFO_Decl ::= VarDecl | ContextItemDecl | FunctionDecl | IndexDecl | OptionDecl
 
 ********************************************************************************/
 class Prolog : public parsenode
@@ -411,12 +404,13 @@ public:
 		rchandle<SIND_DeclList>,
 		rchandle<VFO_DeclList>);
 
-public:
 	rchandle<SIND_DeclList> get_sind_list() const { return sind_list_h; }
+
 	rchandle<VFO_DeclList> get_vfo_list() const { return vfo_list_h; }
 
   // returns true if the value was NULL before the call
   bool set_sind_list(SIND_DeclList* list);
+
   bool set_vfo_list(VFO_DeclList* list);
 
   // sets one of the above, returns false if it was set before
@@ -424,15 +418,12 @@ public:
 
   void set_vfo_list(rchandle<VFO_DeclList> vfo_list_) { vfo_list_h = vfo_list_; }
 
-public:
 	void accept(parsenode_visitor&) const;
 };
 
 
-/******************************************************************************
-
-  [6a] SIND_DeclList ::= SIND_Decl | SIND_DeclList  SEMI  SIND_Decl
-
+/*******************************************************************************
+  [6a] SIND_DeclList ::= SIND_Decl Separator | SIND_DeclList SIND_Decl Separator
 ********************************************************************************/
 class SIND_DeclList : public parsenode
 {
@@ -442,156 +433,37 @@ protected:
 public:
 	SIND_DeclList(const QueryLoc&);
 
-public:
 	void push_back(rchandle<parsenode> sind_h) { sind_hv.push_back(sind_h); }
+
 	rchandle<parsenode> operator[](int k) const { return sind_hv[k]; }
 
-public:
 	void accept(parsenode_visitor&) const;
 };
 
 
-/******************************************************************************
-
-  [6b] VFO_DeclList ::= VFO_Decl | VFO_DeclList  SEMI  VFO_Decl
-
-  VFO_DeclList represents a list of prolog declarations that consists of all
-  the variable, udf, and option declaration in the prolog. 
-
-********************************************************************************/
-class VFO_DeclList : public parsenode
-{
-protected:
-	std::vector<rchandle<parsenode> > vfo_hv;
-
-public:
-	VFO_DeclList(const QueryLoc&);
-
-public:
-  int size () const { return vfo_hv.size (); }
-	void push_back(rchandle<parsenode> vfo_h) { vfo_hv.push_back(vfo_h); }
-  void push_front(rchandle<parsenode> vfo_h) { vfo_hv.insert(vfo_hv.begin (), vfo_h); }
-  void push_back (const VFO_DeclList &other) { vfo_hv.insert (vfo_hv.end (), other.vfo_hv.begin (), other.vfo_hv.end ()); }
-	rchandle<parsenode> operator[](int k) const { return vfo_hv[k]; }
-  std::vector<rchandle<parsenode> >::iterator begin () { return vfo_hv.begin (); }
-  std::vector<rchandle<parsenode> >::iterator end   () { return vfo_hv.end   (); }
-  std::vector<rchandle<parsenode> >::const_iterator begin () const { return vfo_hv.begin (); }
-  std::vector<rchandle<parsenode> >::const_iterator end   () const { return vfo_hv.end   (); }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-/******************************************************************************
-
-  [6c] SIND_Decl ::= Setter |
-                     Import |
-                     NamespaceDecl |
-                     DefaultNamespaceDecl
-
+/*******************************************************************************
+  [9] Separator ::= SEMI (Lexical rule)
 ********************************************************************************/
 
-
-/******************************************************************************
-
-  [6d] VFO_Decl ::= VarDecl |
-                    FunctionDecl |
-                    OptionDecl
-
-********************************************************************************/
-
-/******************************************************************************
-
-  [6e] DecimalFormat
-
-
-********************************************************************************/
-class DecimalFormatNode : public parsenode
-{
-public:
-  bool is_default;
-  std::string format_name;
-  std::vector<std::pair<std::string, std::string > > param_list;
-
-  DecimalFormatNode(const QueryLoc& _loc, const std::string& qname, std::vector<std::pair<std::string, std::string> >* param_list_)
-    :
-    parsenode(_loc), is_default(false), format_name(qname)
-  {
-    param_list.swap (*param_list_);
-  }
-
-  DecimalFormatNode(const QueryLoc& _loc, std::vector<std::pair<std::string, std::string> >* param_list_)
-    :
-    parsenode(_loc), is_default(true)
-  {
-    param_list.swap (*param_list_);
-  }
-
-  void accept(parsenode_visitor&) const;
-};
 
 /******************************************************************************
 
   [7] Setter ::= BoundarySpaceDecl |
+                 OrderingModeDecl |
+                 EmptyOrderDecl |
+                 CopyNamespacesDecl |
+                 DecimalFormatDecl |
                  DefaultCollationDecl |
                  BaseURIDecl |
                  ConstructionDecl |
-                 OrderingModeDecl |
-                 EmptyOrderDecl |
-                 CopyNamespacesDecl
 
 ********************************************************************************/
 
 
-// [8] Import
-/*______________________________________________________________________
-|	::= SchemaImport
-|			| ModuleImport
-|_______________________________________________________________________*/
-
-
-// [9] Separator (Lexical rule)
-// -------------
-
-
-// [10] NamespaceDecl
-// ------------------
-class NamespaceDecl : public parsenode
-/*______________________________________________________________________
-|
-|	::= DECLARE_NAMESPACE  NCNAME  EQ  URI_LITERAL
-|_______________________________________________________________________*/
-{
-protected:
-	std::string thePrefix;
-	std::string theUri;
-
-public:
-	NamespaceDecl(
-		const QueryLoc&,
-		std::string const& prefix,
-		std::string const& uri);
-
-
-public:
-	std::string get_prefix() const { return thePrefix; }
-	std::string get_uri() const { return theUri; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [11] BoundarySpaceDecl
-// ----------------------
+/******************************************************************************
+  [11] BoundarySpaceDecl ::= DECLARE_BOUNDARY_SPACE  ( PRESERVE | STRIP )
+********************************************************************************/
 class BoundarySpaceDecl : public parsenode
-/*______________________________________________________________________
-|
-|	::= DECLARE_BOUNDARY_SPACE  ( PRESERVE | STRIP )
-|_______________________________________________________________________*/
 {
 protected:
 	StaticContextConsts::boundary_space_mode_t mode;
@@ -601,110 +473,17 @@ public:
 		const QueryLoc&,
 		StaticContextConsts::boundary_space_mode_t);
 
-
-public:
 	StaticContextConsts::boundary_space_mode_t
-		get_boundary_space_mode() const { return mode; }
+  get_boundary_space_mode() const { return mode; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [12] DefaultNamespaceDecl
-// -------------------------
-class DefaultNamespaceDecl : public parsenode
-/*______________________________________________________________________
-|
-|	::= DECLARE_DEFAULT_ELEMENT  NAMESPACE  URI_LITERAL
-|			| DECLARE_DEFAULT_FUNCTION  NAMESPACE  URI_LITERAL
-|_______________________________________________________________________*/
-{
-protected:
-	enum ParseConstants::default_namespace_mode_t mode;
-	std::string default_namespace;
-
-public:
-	DefaultNamespaceDecl(
-		const QueryLoc&,
-		enum ParseConstants::default_namespace_mode_t mode,
-		std::string const& default_namespace);
-
-
-public:
-	enum ParseConstants::default_namespace_mode_t get_mode() const { return mode; }
-	std::string get_default_namespace() const { return default_namespace; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [13] OptionDecl
-// ---------------
-class OptionDecl : public parsenode
-/*______________________________________________________________________
-|
-|	::= DECLARE_OPTION  QNAME  STRING_LITERAL
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<QName> qname_h;
-	std::string val;
-
-public:
-	OptionDecl(
-		const QueryLoc&,
-		rchandle<QName> qname_h,
-		std::string const& val);
-
-
-public:
-	rchandle<QName> get_qname() const { return qname_h; }
-	std::string get_val() const { return val; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-/* full-text extension */
-// [13a] FTOptionDecl
-// ------------------
-class FTOptionDecl : public parsenode
-/*______________________________________________________________________
-|
-|	::= DECLARE_FTOPTION  FTMatchOption
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<parsenode> match_option_h;
-
-public:
-	FTOptionDecl(
-		const QueryLoc&,
-		rchandle<parsenode>);
-
-
-public:
-	rchandle<parsenode> get_match_option() const { return match_option_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [14] OrderingModeDecl
-// ---------------------
+/******************************************************************************
+  [14] OrderingModeDecl ::= DECLARE_ORDERING  ( ORDERED | UNORDERED )
+********************************************************************************/
 class OrderingModeDecl : public parsenode
-/*______________________________________________________________________
-|
-|	::= DECLARE_ORDERING  ( ORDERED | UNORDERED )
-|_______________________________________________________________________*/
 {
 protected:
 	StaticContextConsts::ordering_mode_t mode;
@@ -714,24 +493,17 @@ public:
 		const QueryLoc&,
 		StaticContextConsts::ordering_mode_t);
 
-	
-public:
 	StaticContextConsts::ordering_mode_t get_mode() const { return mode; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [15] EmptyOrderDecl
-// -------------------
+/******************************************************************************
+  [15] EmptyOrderDecl ::= DECLARE_DEFAULT_ORDER  EMPTY_GREATEST |
+                          DECLARE_DEFAULT_ORDER  EMPTY_LEAST
+********************************************************************************/
 class EmptyOrderDecl : public parsenode
-/*______________________________________________________________________
-|
-|	::= DECLARE_DEFAULT_ORDER  EMPTY_GREATEST
-|			|	DECLARE_DEFAULT_ORDER  EMPTY_LEAST
-|_______________________________________________________________________*/
 {
 protected:
 	StaticContextConsts::order_empty_mode_t mode;
@@ -741,24 +513,19 @@ public:
 		const QueryLoc&,
 		StaticContextConsts::order_empty_mode_t);
 
-	
-public:
 	StaticContextConsts::order_empty_mode_t get_mode() const { return mode; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [16] CopyNamespacesDecl
-// -----------------------
+/******************************************************************************
+  [16] CopyNamespacesDecl ::= DECLARE_COPY_NAMESPACES PreserveMode COMMA InheritMode
+
+  [19] PreserveMode ::= "preserve" | "no-preserve"
+  [20] InheritMode ::=  "inherit" | "no-inherit"
+********************************************************************************/
 class CopyNamespacesDecl : public parsenode
-/*______________________________________________________________________
-|
-|	::= DECLARE_COPY_NAMESPACES  ("preserve"|"no preserve")
-|				COMMA  ("inherit"|"no inherit")
-|_______________________________________________________________________*/
 {
 protected:
 	StaticContextConsts::preserve_mode_t preserve_mode;
@@ -770,35 +537,63 @@ public:
 		StaticContextConsts::preserve_mode_t preserve_mode,
 		StaticContextConsts::inherit_mode_t  inherit_mode);
 
-
-public:
 	StaticContextConsts::preserve_mode_t get_preserve_mode() const
   { return preserve_mode; }
+
 	StaticContextConsts::inherit_mode_t  get_inherit_mode() const
   { return inherit_mode; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
+/******************************************************************************
+  [17] DecimalFormatDecl ::= "declare"
+                             (("decimal-format" QName) | ("default" "decimal-format"))
+                             (DFPropertyName "=" StringLiteral)*
 
-// [17] PreserveMode
-// -----------------
+  [18] DFPropertyName ::= "decimal-separator" | "grouping-separator" |
+                          "infinity" | "minus-sign" | "NaN" | "percent" |
+                          "per-mille" | "zero-digit" | "digit" |
+                          "pattern-separator"
+********************************************************************************/
+class DecimalFormatNode : public parsenode
+{
+public:
+  bool is_default;
+  std::string format_name;
+  std::vector<std::pair<std::string, std::string > > param_list;
 
-// [18] InheritMode
-// ----------------
+  DecimalFormatNode(
+    const QueryLoc& _loc,
+    const std::string& qname,
+    std::vector<std::pair<std::string, std::string> >* param_list_)
+    :
+    parsenode(_loc),
+    is_default(false),
+    format_name(qname)
+  {
+    param_list.swap (*param_list_);
+  }
+
+  DecimalFormatNode(
+    const QueryLoc& _loc,
+    std::vector<std::pair<std::string, std::string> >* param_list_)
+    :
+    parsenode(_loc),
+    is_default(true)
+  {
+    param_list.swap (*param_list_);
+  }
+
+  void accept(parsenode_visitor&) const;
+};
 
 
-
-// [19] DefaultCollationDecl
-// -------------------------
+/*******************************************************************************
+  [21] DefaultCollationDecl ::=	DECLARE_DEFAULT_COLLATION  URI_LITERAL
+********************************************************************************/
 class DefaultCollationDecl : public parsenode
-/*______________________________________________________________________
-|
-|	::=	DECLARE_DEFAULT_COLLATION  URI_LITERAL
-|_______________________________________________________________________*/
 {
 protected:
 	std::string collation;
@@ -808,23 +603,16 @@ public:
 		const QueryLoc&,
 		std::string const&  collation);
 
-
-public:
 	std::string get_collation() const { return collation; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [20] BaseURIDecl
-// ----------------
+/*******************************************************************************
+  [22] BaseURIDecl ::= DECLARE_BASE_URI  URI_LITERAL
+********************************************************************************/
 class BaseURIDecl : public parsenode
-/*______________________________________________________________________
-|
-|	::= DECLARE_BASE_URI  URI_LITERAL
-|_______________________________________________________________________*/
 {
 protected:
 	std::string base_uri;
@@ -834,54 +622,89 @@ public:
 		const QueryLoc&,
 		std::string const& base_uri);
 
-
-public:
 	std::string get_base_uri() const { return base_uri; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [21a] URLLiteralList
-// --------------------
-class URILiteralList : public parsenode
-/*______________________________________________________________________
-|
-|	::= URI_LITERAL
-|			| URILiteralList  COMMA  URI_LITERAL
-|_______________________________________________________________________*/
+/*******************************************************************************
+  [31] ConstructionDecl ::= DECLARE_CONSTRUCTION  PRESERVE
+                            DECLARE_CONSTRUCTION  STRIP
+********************************************************************************/
+class ConstructionDecl : public parsenode
 {
 protected:
-	std::vector<std::string> uri_v;
+	StaticContextConsts::construction_mode_t mode;
 
 public:
-	URILiteralList(
-		const QueryLoc&);
+	ConstructionDecl(
+		const QueryLoc&,
+		StaticContextConsts::construction_mode_t);
 
+	StaticContextConsts::construction_mode_t get_mode() const { return mode; }
 
-public:
-	void push_back(std::string const& uri) { uri_v.push_back(uri); }
-	std::string operator[](int i) const { return uri_v[i]; }
-  int size () const { return uri_v.size (); }
-
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [21] SchemaImport
-// -----------------
+/******************************************************************************
+  [10] NamespaceDecl ::= ::= DECLARE_NAMESPACE  NCNAME  EQ  URI_LITERAL
+********************************************************************************/
+class NamespaceDecl : public parsenode
+{
+protected:
+	std::string thePrefix;
+	std::string theUri;
+
+public:
+	NamespaceDecl(
+		const QueryLoc&,
+		std::string const& prefix,
+		std::string const& uri);
+
+	std::string get_prefix() const { return thePrefix; }
+
+	std::string get_uri() const { return theUri; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [12] DefaultNamespaceDecl ::= DECLARE DEFAULT ELEMENT NAMESPACE URILiteral |
+                                DECLARE DEFAULT FUNCTION NAMESPACE URILiteral
+********************************************************************************/
+class DefaultNamespaceDecl : public parsenode
+{
+protected:
+	enum ParseConstants::default_namespace_mode_t mode;
+	std::string default_namespace;
+
+public:
+	DefaultNamespaceDecl(
+		const QueryLoc&,
+		enum ParseConstants::default_namespace_mode_t mode,
+		std::string const& default_namespace);
+
+	enum ParseConstants::default_namespace_mode_t get_mode() const { return mode; }
+
+	std::string get_default_namespace() const { return default_namespace; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [8] Import ::= SchemaImport | ModuleImport
+********************************************************************************/
+
+
+/*******************************************************************************
+  [23] SchemaImport ::= "import" "schema" SchemaPrefix? URILiteral
+                        ("at"  URILiteralList)?
+********************************************************************************/
 class SchemaImport : public parsenode
-/*______________________________________________________________________
-|
-|	::= IMPORT_SCHEMA  URI_LITERAL
-|			| IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL
-|			|	IMPORT_SCHEMA  URI_LITERAL  AT  URILiteralList
-|			|	IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL  AT  URILiteralList
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<SchemaPrefix> prefix_h;
@@ -895,26 +718,41 @@ public:
 		std::string const& uri,
 		rchandle<URILiteralList>);
 
-
-public:
 	rchandle<SchemaPrefix> get_prefix() const { return prefix_h; }
+
 	std::string get_uri() const { return uri; }
+
 	rchandle<URILiteralList> get_at_list() const { return at_list_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [22] SchemaPrefix
-// -----------------
+/******************************************************************************
+  [23a] URLLiteralList ::= URI_LITERAL | URILiteralList  COMMA  URI_LITERAL
+********************************************************************************/
+class URILiteralList : public parsenode
+{
+protected:
+	std::vector<std::string> uri_v;
+
+public:
+	URILiteralList(const QueryLoc&);
+
+	void push_back(std::string const& uri) { uri_v.push_back(uri); }
+
+	std::string operator[](int i) const { return uri_v[i]; }
+
+  int size () const { return uri_v.size (); }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/******************************************************************************
+  [24] SchemaPrefix ::=	("namespace" NCName "=") | ("default" "element" "namespace")
+********************************************************************************/
 class SchemaPrefix : public parsenode
-/*______________________________________________________________________
-|
-|	::= NAMESPACE  NCNAME  EQ
-|			|	DEFAULT_ELEMENT  NAMESPACE
-|_______________________________________________________________________*/
 {
 protected:
 	std::string prefix;
@@ -929,27 +767,19 @@ public:
 		const QueryLoc&,
 		std::string const& prefix);
 
-
-public:
 	std::string get_prefix() const { return prefix; }
+
 	bool get_default_bit() const { return default_b; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [23] ModuleImport
-// -----------------
+/*******************************************************************************
+  [25] ModuleImport ::= "import" "module" ("namespace" NCName "=")? URILiteral
+                        ("at" URILiteralList)?
+********************************************************************************/
 class ModuleImport : public parsenode
-/*______________________________________________________________________
-|
-|	::= IMPORT_MODULE  URI_LITERAL
-|			|	IMPORT_MODULE  NAMESPACE  NCNAME  EQ  URI_LITERAL
-|			|	IMPORT_MODULE  URI_LITERAL  AT  URILiteralList
-|			|	IMPORT_MODULE  NAMESPACE  NCNAME  EQ  URI_LITERAL  AT  URILiteralList
-|_______________________________________________________________________*/
 {
 protected:
 	std::string prefix;
@@ -961,23 +791,92 @@ public:
 		const QueryLoc&,
 		std::string const& uri,
 		rchandle<URILiteralList>);
+
 	ModuleImport(
 		const QueryLoc&,
 		std::string const& prefix,
 		std::string const& uri,
 		rchandle<URILiteralList>);
 
-public:
 	std::string get_prefix() const { return prefix; }
+
 	std::string get_uri() const { return uri; }
+
 	rchandle<URILiteralList> get_uri_list() const { return uri_list_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
+/*******************************************************************************
+  [6b] VFO_DeclList ::= VFO_Decl Separator | VFO_DeclList VFO_Decl Separator
+
+  [6d] VFO_Decl ::= VarDecl | ContextItemDecl | FunctionDecl | IndexDecl | OptionDecl
+********************************************************************************/
+class VFO_DeclList : public parsenode
+{
+protected:
+	std::vector<rchandle<parsenode> > vfo_hv;
+
+public:
+	VFO_DeclList(const QueryLoc&);
+
+  int size () const { return vfo_hv.size (); }
+
+  void push_front(rchandle<parsenode> vfo_h) { vfo_hv.insert(vfo_hv.begin(), vfo_h); }
+
+	void push_back(rchandle<parsenode> vfo_h) { vfo_hv.push_back(vfo_h); }
+
+  void push_back (const VFO_DeclList &other) { vfo_hv.insert(vfo_hv.end(), other.vfo_hv.begin(), other.vfo_hv.end()); }
+
+	rchandle<parsenode> operator[](int k) const { return vfo_hv[k]; }
+
+  std::vector<rchandle<parsenode> >::iterator begin() { return vfo_hv.begin(); }
+
+  std::vector<rchandle<parsenode> >::iterator end() { return vfo_hv.end(); }
+
+  std::vector<rchandle<parsenode> >::const_iterator begin() const { return vfo_hv.begin(); }
+
+  std::vector<rchandle<parsenode> >::const_iterator end() const { return vfo_hv.end(); }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [13] OptionDecl ::= DECLARE_OPTION  QNAME  STRING_LITERAL
+********************************************************************************/
+class OptionDecl : public parsenode
+{
+protected:
+	rchandle<QName> qname_h;
+	std::string val;
+
+public:
+	OptionDecl(
+		const QueryLoc&,
+		rchandle<QName> qname_h,
+		std::string const& val);
+
+	rchandle<QName> get_qname() const { return qname_h; }
+
+	std::string get_val() const { return val; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+
+/*******************************************************************************
+  [26] VarDecl ::= "declare" "variable" "$" QName TypeDeclaration?
+                   ((":=" VarValue) |
+                    ("external" (":=" VarDefaultValue)?))
+
+
+  [27] VarValue ::= ExprSingle
+
+  [28] VarDefaultValue ::= ExprSingle
+********************************************************************************/
 class VarDeclBase : public parsenode
 {
 protected:
@@ -986,29 +885,75 @@ protected:
 
 public:
 	VarDeclBase(const QueryLoc& loc_, std::string varname_, rchandle<SequenceType> td_)
-    : parsenode (loc_), varname (varname_), typedecl_h (td_)
-  {}
+    :
+    parsenode (loc_),
+    varname (varname_),
+    typedecl_h (td_)
+  {
+  }
 
-public:
 	std::string get_varname() const { return varname; }
+
 	rchandle<SequenceType> get_typedecl() const { return typedecl_h; }
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class VarDeclWithInit : public VarDeclBase 
 {
 protected:
 	rchandle<exprnode> initexpr_h;
 
 public:
-	VarDeclWithInit(const QueryLoc& loc_, std::string varname_, rchandle<SequenceType> td_, rchandle<exprnode> init_)
-    : VarDeclBase (loc_, varname_, td_), initexpr_h (init_)
-  {}
+	VarDeclWithInit(
+    const QueryLoc& loc,
+    std::string varname,
+    rchandle<SequenceType> type_decl,
+    rchandle<exprnode> init_expr)
+    :
+    VarDeclBase(loc, varname, type_decl),
+    initexpr_h(init_expr)
+  {
+  }
 
 	rchandle<exprnode> get_initexpr() const { return initexpr_h; }
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
+class VarDecl : public VarDeclWithInit
+{
+protected:
+  bool ext;
+  bool global;
+
+public:
+	VarDecl(
+    const QueryLoc& loc,
+    std::string varname,
+    rchandle<SequenceType> type_decl,
+    rchandle<exprnode> init_expr,
+    bool external = false);
+
+	bool is_extern () const { return ext; }
+
+  bool is_global () const { return global; }
+
+  void set_global (bool global_) { global = global_; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [29] ContextItemDecl ::= "declare" "context" "item" ("as" ItemType)?
+                           ((":=" VarValue) |
+                            ("external" (":=" VarDefaultValue)?))
+********************************************************************************/
 class CtxItemDecl : public parsenode 
 {
   rchandle<exprnode> expr;
@@ -1017,204 +962,56 @@ public:
   bool ext;
   rchandle<parsenode> type;
 
-  CtxItemDecl (const QueryLoc& loc_, rchandle<exprnode> expr_)
-    : parsenode (loc_), expr (expr_), ext (false)
-  {}
-
-  rchandle<exprnode> get_expr () const { return expr; }
-  bool is_external () const { return ext; }
-  rchandle<ItemType> get_type () const { return type; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-/***************************************************************************//**
-  IndexDecl ::= DECLARE [UNIQUE] [HASH | BTREE] INDEX URI_LITERAL
-                ON ExprSingle
-                BY IndexFieldList ")"
-********************************************************************************/
-class IndexDecl : public parsenode {
-protected:
-  std::string uri;
-  rchandle<exprnode> on_expr;
-
-public:
-  std::string method;
-  rchandle<IndexFieldList> fields;
-  bool create;
-  bool uniq;
-
-public:
-  bool is_decl_only () const { return ! create; }
-  bool is_uniq () const { return uniq; }
-
-  rchandle<exprnode> get_expr () const { return on_expr; }
-  const std::string& get_uri () const { return uri; }
-
-  IndexDecl (
-        const QueryLoc& loc_,
-        std::string uri_,
-        rchandle<exprnode> expr_,
-        std::string method_,
-        rchandle<IndexFieldList> fields_)
+  CtxItemDecl(const QueryLoc& loc, rchandle<exprnode> expr_)
     :
-    parsenode (loc_),
-    uri (uri_),
-    on_expr (expr_),
-    method (method_),
-    fields (fields_),
-    create (false),
-    uniq (false)
-  {}
+    parsenode(loc),
+    expr(expr_),
+    ext(false)
+  {
+  }
 
-public:
+  rchandle<exprnode> get_expr() const { return expr; }
+
+  bool is_external() const { return ext; }
+
+  rchandle<ItemType> get_type() const { return type; }
+
 	void accept(parsenode_visitor&) const;
 };
 
 
-/***************************************************************************//**
-  IndexFieldList ::= "(" IndexField |
-                      IndexFieldList COMMA IndexField
+/*******************************************************************************
+  [32] FunctionDecl ::= "declare"
+                        ("deterministic" | "nondeterministic")?
+                        ("simple" | "updating | "sequential")?
+                        "function" QName "(" ParamList? ")" ("as" SequenceType)?
+                        (FunctionBody | "external")
+
+  [33] FunctionBody ::= EnclosedExpr | Block
+
+	Block ::= "{" BlockDecls BlockBody "}"
+
+  BlockDecls ::= (BlockVarDecl ";")*
+
+  BlockVarDecl ::= "declare" "$" VarName TypeDeclaration? (":=" ExprSingle)?
+                    ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)*
+
+  BlockBody ::= Expr
+
+  Note: If a function is a sequential one, then its FunctionBody must be a Block,
+        otherwise its FunctionBody must be an EnclosedExpr.
+
+  Note: There are no parsenode classes for BlockVarDecl and BlockDecls; instead
+        the parser generates VarDecl and VFO_DeclList parsenodes.
+
+  Note: There is no parsenode class for Block; instead the parser generates either
+        an Expr node if BlockDecls is empty, or a BlockBody node whose "decls"
+        data member stores the var declarations.
 ********************************************************************************/
-class IndexFieldList : public parsenode {
-public:
-  std::vector<rchandle<IndexField> > fields;
-
-public:
-  IndexFieldList (const QueryLoc& loc_)
-    : parsenode (loc_)
-  {}
-
-public:
-	void accept(parsenode_visitor&) const;
-};
-
-
-/***************************************************************************//**
-  IndexField ::= ExprSingle [TypeDeclaration] [COLLATION URI_LITERAL]
-********************************************************************************/
-class IndexField : public parsenode {
-  rchandle<exprnode> expr;
-  rchandle<SequenceType> type;
-
-public:
-  std::string coll;
-
-public:
-  IndexField (const QueryLoc& loc_, rchandle<exprnode> expr_, rchandle<SequenceType> type_)
-    : parsenode (loc_), expr (expr_), type (type_)
-  {}
-  rchandle<exprnode> get_expr () const { return expr; }
-  rchandle<SequenceType> get_type () const { return type; }
-
-public:
-	void accept(parsenode_visitor&) const;
-};
-
-
-/***************************************************************************//**
-  IndexStatement ::= [CREATE | BUILD | DROP] INDEX URI_LITERAL
-********************************************************************************/
-class IndexStatement : public exprnode {
-  std::string uri;
-
-public:
-  typedef enum { create_stmt, build_stmt, drop_stmt } stmt_type;
-  stmt_type type;
-
-  IndexStatement (const QueryLoc& loc_, std::string uri_, stmt_type type_)
-    : exprnode (loc_), uri (uri_), type (type_)
-  {}
-
-  std::string get_uri () const { return uri; }
-
-public:
-	void accept(parsenode_visitor&) const;
-};
-
-
-// [24] VarDecl
-// ------------
-class VarDecl : public VarDeclWithInit
-/*______________________________________________________________________
-|
-|	::= DECLARE_VARIABLE_DOLLAR  VARNAME  GETS  ExprSingle
-|			|	DECLARE_VARIABLE_DOLLAR  VARNAME  EXTERNAL
-|			|	DECLARE_VARIABLE_DOLLAR  VARNAME  TypeDeclaration  GETS  ExprSingle
-|			|	DECLARE_VARIABLE_DOLLAR  VARNAME  TypeDeclaration  EXTERNAL
-|_______________________________________________________________________*/
-{
-protected:
-  bool ext;
-  bool global;
-
-public:
-	VarDecl(const QueryLoc&,
-          std::string varname,
-          rchandle<SequenceType>,
-          rchandle<exprnode>,
-          bool ext_ = false);
-
-public:
-	bool is_extern () const { return ext; }
-  bool is_global () const { return global; }
-  void set_global (bool global_) { global = global_; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [25] ConstructionDecl
-// ---------------------
-class ConstructionDecl : public parsenode
-/*______________________________________________________________________
-|
-|	::= DECLARE_CONSTRUCTION  PRESERVE
-|			|	DECLARE_CONSTRUCTION  STRIP
-|_______________________________________________________________________*/
-{
-protected:
-	StaticContextConsts::construction_mode_t mode;
-
-public:
-	ConstructionDecl(
-		const QueryLoc&,
-		StaticContextConsts::construction_mode_t);
-
-
-public:
-	StaticContextConsts::construction_mode_t get_mode() const { return mode; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [26] FunctionDecl
-// -----------------
 class FunctionDecl : public parsenode
-/*______________________________________________________________________
-|
-|	::= DECLARE_FUNCTION  QNAME  LPAR  RPAR  EXTERNAL
-|			|	DECLARE_FUNCTION  QNAME  LPAR  RPAR  EnclosedExpr
-|			|	DECLARE_FUNCTION  QNAME  LPAR  ParamList  RPAR  EXTERNAL
-|			|	DECLARE_FUNCTION  QNAME  LPAR  ParamList  RPAR  EnclosedExpr
-|			|	DECLARE_FUNCTION  QNAME  LPAR  RPAR  AS  SequenceType  EXTERNAL
-|			|	DECLARE_FUNCTION  QNAME  LPAR  RPAR  AS  SequenceType  EnclosedExpr
-|			|	DECLARE_FUNCTION  QNAME  LPAR  ParamList  RPAR  AS  SequenceType  EXTERNAL
-|			|	DECLARE_FUNCTION  QNAME  LPAR  ParamList  RPAR  AS  SequenceType  EnclosedExpr
-|
-|_______________________________________________________________________*/
 {
 public:
   ParseConstants::function_type_t type;
-
 protected:
 	rchandle<QName> name_h;
 	rchandle<ParamList> paramlist_h;
@@ -1233,29 +1030,28 @@ public:
 		rchandle<exprnode>,
 		ParseConstants::function_type_t type);
 
-
-public:
 	rchandle<QName> get_name() const { return name_h; }
+
 	rchandle<ParamList> get_paramlist() const { return paramlist_h; }
+
 	int get_param_count() const;
+
 	rchandle<exprnode> get_body() const { return body_h; }
+
 	rchandle<SequenceType> get_return_type() const { return return_type_h; }
+
   ParseConstants::function_type_t get_type() const { return type; }
 
-public:
+  void set_type(ParseConstants::function_type_t t) { type = t; }
+ 
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [27] ParamList
-// --------------
+/*******************************************************************************
+  [34] ParamList ::= Param ("," Param)*
+********************************************************************************/
 class ParamList : public parsenode
-/*______________________________________________________________________
-|
-|	::= Param
-|			|	ParamList  COMMA  Param
-|_______________________________________________________________________*/
 {
 protected:
 	std::vector<rchandle<Param> > param_hv;
@@ -1263,27 +1059,24 @@ protected:
 public:
 	ParamList(const QueryLoc&);
 
-public:
 	void push_back(rchandle<Param> param_h) { param_hv.push_back(param_h); }
+
 	rchandle<Param> operator[](int i) const { return param_hv[i]; }
-  std::vector<rchandle<Param> >::const_iterator begin () const { return param_hv.begin (); }
-  std::vector<rchandle<Param> >::const_iterator end () const { return param_hv.end (); }
-  std::vector<rchandle<Param> >::size_type size () const { return param_hv.size (); }
 
-public:
+  std::vector<rchandle<Param> >::const_iterator begin() const { return param_hv.begin(); }
+
+  std::vector<rchandle<Param> >::const_iterator end() const { return param_hv.end(); }
+
+  std::vector<rchandle<Param> >::size_type size() const { return param_hv.size(); }
+
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [28] Param
-// ----------
+/*******************************************************************************
+  [35] Param ::= "$" QName TypeDeclaration?
+********************************************************************************/
 class Param : public parsenode
-/*______________________________________________________________________
-|
-|	::= DOLLAR  VARNAME
-|			|	DOLLAR  VARNAME  TypeDeclaration
-|_______________________________________________________________________*/
 {
 protected:
 	std::string name;
@@ -1295,24 +1088,113 @@ public:
 		std::string name,
 		rchandle<SequenceType>);
 
-
-public:
 	std::string get_name() const { return name; }
+
 	rchandle<SequenceType> get_typedecl() const { return typedecl_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [29] EnclosedExpr
-// -----------------
+/***************************************************************************//**
+  IndexDecl ::= DECLARE [UNIQUE] [HASH | BTREE] INDEX URI_LITERAL
+                ON ExprSingle
+                BY IndexFieldList ")"
+********************************************************************************/
+class IndexDecl : public parsenode 
+{
+protected:
+  std::string uri;
+  rchandle<exprnode> on_expr;
+
+public:
+  std::string method;
+  rchandle<IndexFieldList> fields;
+  bool create;
+  bool uniq;
+
+public:
+  IndexDecl (
+        const QueryLoc& loc_,
+        std::string uri_,
+        rchandle<exprnode> expr_,
+        std::string method_,
+        rchandle<IndexFieldList> fields_)
+    :
+    parsenode (loc_),
+    uri (uri_),
+    on_expr (expr_),
+    method (method_),
+    fields (fields_),
+    create (false),
+    uniq (false)
+  {
+  }
+
+  bool is_decl_only () const { return ! create; }
+
+  bool is_uniq () const { return uniq; }
+
+  rchandle<exprnode> get_expr () const { return on_expr; }
+
+  const std::string& get_uri () const { return uri; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/***************************************************************************//**
+  IndexFieldList ::= "(" IndexField |
+                      IndexFieldList COMMA IndexField
+********************************************************************************/
+class IndexFieldList : public parsenode 
+{
+public:
+  std::vector<rchandle<IndexField> > fields;
+
+public:
+  IndexFieldList (const QueryLoc& loc_)
+    : parsenode (loc_)
+  {
+  }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/***************************************************************************//**
+  IndexField ::= ExprSingle TypeDeclaration? (COLLATION URI_LITERAL)?
+********************************************************************************/
+class IndexField : public parsenode 
+{
+  rchandle<exprnode> expr;
+  rchandle<SequenceType> type;
+
+public:
+  std::string coll;
+
+public:
+  IndexField (
+    const QueryLoc& loc,
+    rchandle<exprnode> expr_,
+    rchandle<SequenceType> type_)
+    :
+    parsenode (loc), expr (expr_), type (type_)
+  {
+  }
+
+  rchandle<exprnode> get_expr () const { return expr; }
+
+  rchandle<SequenceType> get_type () const { return type; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [36] EnclosedExpr ::= "{" Expr "}"
+********************************************************************************/
 class EnclosedExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= LBRACE  Expr  RBRACE
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> expr_h;
@@ -1322,15 +1204,29 @@ public:
 		const QueryLoc&,
 		rchandle<exprnode>);
 
-
-public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
 	
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
+
+/*******************************************************************************
+	Block ::= "{" BlockDecls BlockBody "}"
+
+  BlockDecls ::= (BlockVarDecl ";")*
+
+  BlockVarDecl ::= "declare" "$" VarName TypeDeclaration? (":=" ExprSingle)?
+                    ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)*
+
+  BlockBody ::= Expr
+
+  Note: There are no parsenode classes for BlockVarDecl and BlockDecls; instead
+        the parser generates VarDecl and VFO_DeclList parsenodes.
+
+  Note: There is no parsenode class for Block; instead the parser generates either
+        an Expr node if BlockDecls is empty, or a BlockBody node whose "decls"
+        data member stores the var declarations.
+********************************************************************************/
 class BlockBody : public exprnode
 {
 protected:
@@ -1339,29 +1235,31 @@ protected:
 
 public:
   BlockBody (const QueryLoc& loc_, rchandle<VFO_DeclList> decls_ = NULL)
-    : exprnode (loc_), decls (decls_)
-  {}
-  void add (rchandle<exprnode> statement) {
-    statements.push_back (statement);
+    :
+    exprnode (loc_), decls (decls_)
+  {
   }
-  const rchandle<exprnode> &operator[](int k) const { return statements [k]; }
-  rchandle<exprnode> &operator[](int k) { return statements [k]; }
+
+  void add (rchandle<exprnode> statement) { statements.push_back(statement); }
+
+  const rchandle<exprnode>& operator[](int k) const { return statements[k]; }
+
+  rchandle<exprnode>& operator[](int k) { return statements[k]; }
 
   int size () const { return statements.size (); }
+
   rchandle<VFO_DeclList> get_decls () const { return decls; }
+
   void set_decls (rchandle<VFO_DeclList> decls_) { decls = decls_; }
 
-public:
 	void accept(parsenode_visitor&) const;
 };
 
-// [30] QueryBody
-// --------------
+
+/*******************************************************************************
+  [37] QueryBody ::= Expr
+********************************************************************************/
 class QueryBody : public exprnode
-/*______________________________________________________________________
-|
-|	::= Expr
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> expr_h;
@@ -1373,18 +1271,14 @@ public:
 
 	QueryBody();
 
-
-public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
 	
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
 /*******************************************************************************
-  Expr ::= ExprSingle | Expr  COMMA  ExprSingle
+  [38] Expr ::= ExprSingle | Expr  COMMA  ExprSingle
 ********************************************************************************/
 class Expr : public exprnode
 {
@@ -1405,13 +1299,60 @@ public:
 
 
 /*******************************************************************************
-  ExprSingle ::= FLWORExpr |
-                 QuantifiedExpr |
-                 TypeswitchExpr |
-                 IfExpr |
-                 OrExpr
+  [39] ExprSingle ::= 
+
+  ** XQuery 1.1 exprs
+                      FLWORExpr |
+                      QuantifiedExpr |
+                      TypeswitchExpr |
+                      IfExpr |
+                      OrExpr |
+                      TryExpr |
+
+  ** updates
+                      InsertExpr |
+                      DeleteExpr |
+                      RenameExpr |
+                      ReplaceExpr |
+                      TransformExpr |
+
+  ** scripting
+                      ExitExpr |
+                      WhileExpr |
+                      FlowCtlStatement |
+                      AssignExpr |
+                      BlockExpr |
+
+  ** eval
+                      EvalExpr
+
+  ** indexes
+                      IndexStatement
 ********************************************************************************/
 
+
+/***************************************************************************//**
+  IndexStatement ::= [CREATE | BUILD | DROP] INDEX URI_LITERAL
+********************************************************************************/
+class IndexStatement : public exprnode 
+{
+  std::string uri;
+
+public:
+  typedef enum { create_stmt, build_stmt, drop_stmt } stmt_type;
+
+  stmt_type type;
+
+  IndexStatement (const QueryLoc& loc_, std::string uri_, stmt_type type_)
+    :
+    exprnode (loc_), uri (uri_), type (type_)
+  {
+  }
+
+  std::string get_uri () const { return uri; }
+
+	void accept(parsenode_visitor&) const;
+};
 
 
 /*******************************************************************************
@@ -1434,7 +1375,6 @@ public:
         const QueryLoc& return_loc_,
         bool force_general = false);
 
-public:
   bool is_general () const { return general; }
 
   bool is_non_10 () const { return non_10; }
@@ -1446,7 +1386,9 @@ public:
 	rchandle<exprnode> get_return_val() const { return return_val_h; }
 
   GroupByClause* get_groupby() const;
+
   OrderByClause* get_orderby() const;
+
   WhereClause* get_where() const;
 
 	void accept(parsenode_visitor&) const;
@@ -5406,12 +5348,65 @@ public:
 };
 
 
-/*_______________________________________________________________________
- *                                                                       *
- *  Full-text productions                                                *
- *  [http://www.w3.org/TR/xqupdate/]                                     *
- *                                                                       *
- *_______________________________________________________________________*/
+class ExitExpr : public exprnode {
+	rchandle<exprnode> value_h;
+public:
+  ExitExpr (const QueryLoc& loc_, rchandle<exprnode> val_)
+    : exprnode (loc_), value_h (val_)
+  {}
+  rchandle<exprnode> get_value () { return value_h; }
+	void accept(parsenode_visitor&) const;
+};
+
+class AssignExpr : public exprnode {
+  std::string varname;
+	rchandle<exprnode> value_h;
+
+public:
+  AssignExpr (const QueryLoc& loc_, std::string varname_, rchandle<exprnode> val_)
+    : exprnode (loc_), varname (varname_), value_h (val_)
+  {}
+	const std::string& get_varname() const { return varname; }
+  rchandle<exprnode> get_value () const { return value_h; }
+	void accept(parsenode_visitor&) const;
+};
+
+class FlowCtlStatement : public exprnode {
+public:
+  enum action { BREAK, CONTINUE };
+
+private:
+  enum action action;
+
+public:
+  FlowCtlStatement (const QueryLoc& loc_, enum action action_)
+    : exprnode (loc_), action (action_)
+  {}
+  enum action get_action () const { return action; }
+	void accept(parsenode_visitor&) const;
+};
+
+class WhileExpr : public exprnode {
+  rchandle<exprnode> cond;
+  rchandle<BlockBody> body;
+
+public:
+  WhileExpr (const QueryLoc& loc_, rchandle<exprnode> cond_, rchandle<BlockBody> body_)
+    : exprnode (loc_), cond (cond_), body (body_)
+  {}
+  rchandle<exprnode> get_cond () { return cond; }
+  rchandle<BlockBody> get_body () { return body; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Full-text productions                                                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 
 //[344] FTSelection
@@ -6488,13 +6483,27 @@ public:
 
 
 
-//[374]	FTIgnoreOption
-//--------------------
+class FTOptionDecl : public parsenode
+{
+protected:
+	rchandle<parsenode> match_option_h;
+
+public:
+	FTOptionDecl(
+		const QueryLoc&,
+		rchandle<parsenode>);
+
+
+public:
+	rchandle<parsenode> get_match_option() const { return match_option_h; }
+
+public:
+	void accept(parsenode_visitor&) const;
+
+};
+
+
 class FTIgnoreOption : public parsenode
-/*______________________________________________________________________
-|
-|	::=	WITHOUT_CONTENT  UnionExpr
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<UnionExpr> union_h;
@@ -6513,57 +6522,6 @@ public:
 
 };
 
-class ExitExpr : public exprnode {
-	rchandle<exprnode> value_h;
-public:
-  ExitExpr (const QueryLoc& loc_, rchandle<exprnode> val_)
-    : exprnode (loc_), value_h (val_)
-  {}
-  rchandle<exprnode> get_value () { return value_h; }
-	void accept(parsenode_visitor&) const;
-};
-
-class AssignExpr : public exprnode {
-  std::string varname;
-	rchandle<exprnode> value_h;
-
-public:
-  AssignExpr (const QueryLoc& loc_, std::string varname_, rchandle<exprnode> val_)
-    : exprnode (loc_), varname (varname_), value_h (val_)
-  {}
-	const std::string& get_varname() const { return varname; }
-  rchandle<exprnode> get_value () const { return value_h; }
-	void accept(parsenode_visitor&) const;
-};
-
-class FlowCtlStatement : public exprnode {
-public:
-  enum action { BREAK, CONTINUE };
-
-private:
-  enum action action;
-
-public:
-  FlowCtlStatement (const QueryLoc& loc_, enum action action_)
-    : exprnode (loc_), action (action_)
-  {}
-  enum action get_action () const { return action; }
-	void accept(parsenode_visitor&) const;
-};
-
-class WhileExpr : public exprnode {
-  rchandle<exprnode> cond;
-  rchandle<BlockBody> body;
-
-public:
-  WhileExpr (const QueryLoc& loc_, rchandle<exprnode> cond_, rchandle<BlockBody> body_)
-    : exprnode (loc_), cond (cond_), body (body_)
-  {}
-  rchandle<exprnode> get_cond () { return cond; }
-  rchandle<BlockBody> get_body () { return body; }
-
-	void accept(parsenode_visitor&) const;
-};
 
 }	/* namespace zorba */
 #endif	/*  ZORBA_PARSENODES_H */

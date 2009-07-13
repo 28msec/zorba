@@ -73,16 +73,15 @@ using namespace std;
 
 namespace zorba {
 
-#define LOOKUP_FN( pfx, local, arity ) (sctx_p->lookup_fn (pfx, local, arity))
-#define LOOKUP_OP1( local ) (sctx_p->lookup_builtin_fn (":" local, 1))
-#define LOOKUP_OP2( local ) (sctx_p->lookup_builtin_fn (":" local, 2))
-#define LOOKUP_OP3( local ) (sctx_p->lookup_builtin_fn (":" local, 3))
-#define LOOKUP_OPN( local ) (sctx_p->lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
-#define LOOKUP_RESOLVED_FN( ns, local, arity ) (sctx_p->lookup_resolved_fn(ns, local, arity))
+class ModulesInfo;
 
-#define CACHED( cache, val ) ((cache == NULL) ? (cache = val) : cache)
 
-#define CHK_SINGLE_DECL( state, err ) do { if (state) ZORBA_ERROR(err); state = true; } while (0)
+static expr_t translate_aux(
+    const parsenode& root,
+    CompilerCB* aCompilerCB,
+    ModulesInfo* minfo,
+    set<string> mod_stack);
+
 
 #define QLOCDECL const QueryLoc &loc = v.get_location(); (void) loc
 
@@ -97,240 +96,577 @@ namespace zorba {
 # define TRACE_VISIT_OUT() QLOCDECL
 #endif
 
+
+/*******************************************************************************
+  Lookup in the sctx the function object for a function with a given prefix
+  local name and arity. Return NULL if such a function is not found 
+********************************************************************************/
+#define LOOKUP_FN( pfx, local, arity ) (sctx_p->lookup_fn (pfx, local, arity))
+
+#define LOOKUP_OP1( local ) (sctx_p->lookup_builtin_fn (":" local, 1))
+
+#define LOOKUP_OP2( local ) (sctx_p->lookup_builtin_fn (":" local, 2))
+
+#define LOOKUP_OP3( local ) (sctx_p->lookup_builtin_fn (":" local, 3))
+
+#define LOOKUP_OPN( local ) (sctx_p->lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
+
+#define LOOKUP_RESOLVED_FN( ns, local, arity ) (sctx_p->lookup_resolved_fn(ns, local, arity))
+
+
+/*******************************************************************************
+  Set/get chached pointers to function objs for certain commonly-used function
+  and operators (to avoid looking them up in the sctx all the time).
+********************************************************************************/
+#define CACHED( cache, val ) ((cache == NULL) ? (cache = val) : cache)
+
+
+/*******************************************************************************
+  Check/set certain bool data members of TranslatorImpl: raise error if true
+  already otherwise set to true.
+********************************************************************************/
+#define CHK_SINGLE_DECL( state, err ) \
+do { if (state) ZORBA_ERROR(err); state = true; } while (0)
+
+
+/*******************************************************************************
+
+********************************************************************************/
+#define ITEM_FACTORY (GENV.getStore().getItemFactory())
+
+#define CTXTS sctx_p->get_typemanager ()
+
+
+/*******************************************************************************
+  Internal names for certain implicit vars
+********************************************************************************/
 #define DOT_VARNAME "$$dot"
 #define DOT_POS_VARNAME "$$pos"
 #define LAST_IDX_VARNAME "$$last-idx"
 
 #define DOT_VAR lookup_ctx_var (DOT_VARNAME, loc).getp()
 
-#define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
-#define CTXTS sctx_p->get_typemanager ()
+/*******************************************************************************
 
-  template<class T> T &peek_stack (stack<T> &stk) {
-    ZORBA_ASSERT (! stk.empty ());
-    return stk.top ();
-  }
+********************************************************************************/
+template<class T> T& peek_stack (stack<T> &stk) 
+{
+  ZORBA_ASSERT (! stk.empty ());
+  return stk.top ();
+}
 
-  template <typename T> T pop_stack (stack<T> &stk) {
-    T x = peek_stack (stk);
-    stk.pop ();
-    return x;
-  }
 
-  template <typename T> T pop_stack (list<T> &stk) {
-    ZORBA_ASSERT (! stk.empty ());
-    T x =  stk.back ();
-    stk.pop_back ();
-    return x;
-  }
+template <typename T> T pop_stack (stack<T> &stk) 
+{
+  T x = peek_stack (stk);
+  stk.pop ();
+  return x;
+}
 
-  template <class T> class RCSet : public SimpleRCObject {
-  public:
-    set<T> theSet;
-    typedef set<string>::iterator iterator;
-    
-    iterator begin () { return theSet.begin (); }
-    iterator begin () const { return theSet.begin (); }
-    iterator end () { return theSet.end (); }
-    iterator end () const { return theSet.end (); }
-    void insert (const T &val) { theSet.insert (val); }
-    void insert (iterator p0, iterator p1) { theSet.insert (p0, p1); }
-    iterator find (const T &val) { return theSet.find (val); }
-    unsigned size () const { return theSet.size (); }
-  };
-  typedef rchandle<RCSet<string> > strset_t;
-  void add_multimap_value (hashmap<strset_t > &map, const string &key, const string &val) {
-    strset_t result;
-    if (! map.get (key, result)) {
-      result = new RCSet<string> ();
-      map.put (key, result);
-    }
-    result->insert (val);
-  }
+
+template <typename T> T pop_stack (list<T> &stk) 
+{
+  ZORBA_ASSERT (! stk.empty ());
+  T x =  stk.back ();
+  stk.pop_back ();
+  return x;
+}
+
+
+/*******************************************************************************
+  Wrapper for ref-counted std::set
+********************************************************************************/
+template <class T> class RCSet : public SimpleRCObject 
+{
+public:
+  typedef set<string>::iterator iterator;
+
+  set<T> theSet;
   
-  class ModulesInfo {
-  public:
-    auto_ptr<static_context> globals;
-    hashmap<static_context *> mod_sctx_map;
-    hashmap<string> mod_ns_map;
-    checked_vector<expr_t> init_exprs;
-    CompilerCB *topCompilerCB;
+    
+  iterator begin () { return theSet.begin (); }
+  iterator begin () const { return theSet.begin (); }
+  iterator end () { return theSet.end (); }
+  iterator end () const { return theSet.end (); }
+  void insert (const T &val) { theSet.insert (val); }
+  void insert (iterator p0, iterator p1) { theSet.insert (p0, p1); }
+  iterator find (const T &val) { return theSet.find (val); }
+  unsigned size () const { return theSet.size (); }
+};
 
-    ModulesInfo (static_context *sctx, CompilerCB *topCompilerCB_)
-      : globals (static_cast<static_context *> (sctx->get_parent ())->create_child_context ()),
-        topCompilerCB (topCompilerCB_)
-    {}
-  };
 
-  expr_t translate_aux (const parsenode &root, CompilerCB* aCompilerCB, ModulesInfo *minfo, set<string> mod_stack);
+typedef rchandle<RCSet<string> > strset_t;
 
+
+/*******************************************************************************
+  Given a hashmap that maps strings to set-of-strings, add a new string to
+  the value-set of a given key string.
+********************************************************************************/
+void add_multimap_value(
+    hashmap<strset_t > &map,
+    const string &key,
+    const string &val) 
+{
+  strset_t result;
+  if (! map.get (key, result)) {
+    result = new RCSet<string> ();
+    map.put (key, result);
+  }
+  result->insert (val);
+}
+  
+
+/*******************************************************************************
+
+  There is only one ModulesInfo instance per compilation. It is created on the
+  stack by the translate() method.
+
+  topCompilerCB : The compilerCB for the root module of the compilation. It
+                  provides access to the static context that is common to all 
+                  modules (this is either a user-provided sctx, or the zorba
+                  default sctx). We also use its m_sctx_list to store (a) the
+                  root sctx obj of each module and (b) the sctx exported by each
+                  module. The reason for (a) is that the root sctx of each module
+                  must survive for the whole lifetime of a query, because it
+                  stores the module-specific type manager used to translate the
+                  type declarations appearing in the module, and all type objs
+                  generated by such translation point back to the type manager
+                  used during the translation. The reason for (b) is that a
+                  module M may be imported by more than one other modules; M
+                  is translated only once, but its exported sctx must be around
+                  to be imorted by each importing module.
+
+  mod_ns_map    : Maps resolved module location uris to target namespaces.
+                  Used to skip compilation of a module that has been compiled
+                  already (for example this is the case when 2 imported modules
+                  both import a common module). It is also used to make sure
+                  that a location uri does not appear in two module import
+                  statements with different target namespaces.
+
+  mod_sctx_map  : Maps resolved module location uris to sctx objs containing
+                  the var and udf declarations that are exported by the
+                  modules corresponding to the location uris.
+
+  init_exprs    : Contains the initilizing expr for each variable in each module
+                  participating in the compilation (see wrap_in_globalvar_assigh())
+
+********************************************************************************/
+class ModulesInfo 
+{
+public:
+  CompilerCB                * topCompilerCB;
+  hashmap<static_context *>   mod_sctx_map;
+  hashmap<string>             mod_ns_map;
+  checked_vector<expr_t>      init_exprs;
+  auto_ptr<static_context>    globals;
+
+  ModulesInfo (CompilerCB* topCompilerCB_)
+    :
+    topCompilerCB (topCompilerCB_)
+  {
+    static_context* sctx = topCompilerCB->m_sctx;
+    globals.reset(static_cast<static_context*>(sctx->get_parent())->create_child_context());
+  }
+};
+
+
+
+/*******************************************************************************
+
+  A new instance of TranslatorImpl is created for the translation of each
+  module participating in a query. The instance is destroyed when the translation
+  of the associated module is finished.
+
+  xquery_version       : 100 for 1.0, 110 for 1.1 etc
+
+  compilerCB           : The compiler control block associated with this translator
+                         (each translator uses its own compiler cb).
+
+  minfo                : Pointer to the unique ModulesInfo instance (see class
+                         ModulesInfo above).
+
+  mod_stack            : A set containing the ns uri of all the modules that have
+                         been imported so far by this module and its ancestor 
+                         modules in a chain of module imports. It is used to check
+                         that there are no cycles in a chain of module imports.
+
+  mod_ns               : If this translator is working on a library module, mod_ns
+                         is the namespace uri of that module.
+  mod_pfx              : If this translator is working on a library module, mod_pfx
+                         is the prefix associated with the ns uri of that module.
+
+  zorba_predef_mod_ns  : Set of ns uris for all internal predefined modules. 
+  mod_import_ns_set    : Set of ns uris for all the modules directly imported 
+                         by this module. Used to check that the same module is
+                         not imported twice by this module.
+  schema_import_ns_set : Set of ns uris for all schemas directly imported by
+                         this module. Used to check that the same schema is not
+                         imported twice by this module.
+
+  sctx_p               : The "current" static context node. It is initialized
+                         with the static context node in the compilerCB.
+  export_sctx          : In case this is a library module translator, export_sctx
+                         is populated with the variable and function declarations
+                         that are exported by the module, i.e., the var and udf
+                         declarations that appear in the prolog of this module.
+                         The export_sctx is created by the importing module,
+                         populated by the imported module, and then merged by
+                         the importing module into its own sctx. export_sctx is
+                         "shared" between importing and imported modules via the
+                         minfo->mod_sctx_map.
+  ns_ctx               : The "current" namespace bindings node. It is initialized
+                         with a newly allocated ns_ctx node, which points to the
+                         initial sctx node. The initial sctx node stores all ns
+                         bindings that are declared in the prolog. ns_ctx nodes 
+                         are created to store ns bindings declared in element
+                         constructors. In general, the ns_ctx hierarchy (of which
+                         the initial sctx node and its ancestors are considered
+                         to be part of) defines the namepsace bindings that are
+                         in scope for each expr. ns_ctx nodes are kept separate
+                         from sctx nodes because sctx nodes may disappear after
+                         translation is done, whereas certain exprs need to know
+                         their ns_ctx in later compilation phases as well.
+
+  print_depth          : For pretty tracing
+  scope_depth          : Incremented/Decremented every time a scope is pushed/popped
+                         Used for some sanity checking only.
+
+  nodestack            : If E is the expr that is currently being built, then
+                         nodestack contains all the ancestors (or ancestor
+                         place-holdres) of E in the expr tree.
+
+  tstack               : Stack of the static types for some of the exprs in the
+                         nodestack.
+
+  tempvar_counter      : Counter used to generate names for internally generated
+                         variables. The names are unique within this translator.
+
+  theGlobalVars        : Global vars are the ones declared in the prolog (both
+                         external and non-external vars). theGlobalVars vector
+                         contains one entry per global var V. The entry maps the
+                         var_expr for V to the expr E that defines V (E is NULL
+                         for external vars without init expr).
+  theDotVar            : var_expr for the context item var of the main module
+
+  vf_decl              : During the translation of a variable or function 
+                         declaration in the prolog, vf_decl stores the normalized
+                         qname of that variable or function. It is used in
+                         building the global_deps.
+  global_fn_decls      : List containing the normalized qname for each udf
+                         declared in the prolog of this module. It is used by 
+                         the reorder_globals() method.
+  global_var_decls     : List containing the normalized qname for each variable
+                         declared in the prolog of this module. It is used by 
+                         the reorder_globals() method.
+  global_deps          : A hashmap implementing the dependency graph among the
+                         variables and udfs declared in the prolog of a module.
+                         It maps the normalized qname of a var or udf X to a set
+                         containing the normalized qnames of all the vars and
+                         udfs that X depends on. Examples:
+                         - $x := $y + g($z)  :  $x --> ($y, g, $z)
+                         - f { $y + g($z) }  :  f  --> ($y, g, $z)
+                         Initially only direct dependencies are registered. The
+                         graph is later expanded by the reorder_globals() method
+                         to include transitive dependencies as well.
+
+  hadBSpaceDecl        : Set to true if prolog has boundary space decl. Used to
+                         check that such a decl does not appear more than once.
+  hadBUriDecl          : Set to true if prolog has bas uri decl. Used to check
+                         that such a decl does not appear more than once.
+  hadConstrDecl        : Set to true if prolog has construction mode decl. Used
+                         to check that such a decl does not appear more than once.
+  hadCopyNSDecl        : Set to true if prolog has copy namespaces decl. Used to
+                         check that such a decl does not appear more than once.
+  hadEmptyOrdDecl      : Set to true if prolog has empty seq order decl. Used to
+                         check that such a decl does not appear more than once.
+  hadOrdModeDecl       : Set to true if prolog has doc order decl. Used to
+                         check that such a decl does not appear more than once.
+
+  xquery_fns_def_dot   : Set of the names of all build-in functions accepting
+                         "." as their default arg. TODO: should be static
+
+  theIsWSBoundaryStack : Saves true if the previous DirElemContent is a boundary
+                         for whitespace (DirElemConstructor or EnclosedExpr).
+  thePossibleWSContentStack: Saves the previous DirElemContent if it might be
+                         bounded whitespace (if it contains whitespace and its
+                         previous item is a whitespace boundary). It must be
+                         checked if the next item is a whitespace boundary.
+
+  op_concatenate       : Cached ptr to the function obj for the concat func 
+  op_enclosed_expr     : Cached ptr to the function obj for the enclosed_expr op
+  op_or                : Cached ptr to the function obj for the or op 
+  fn_data              : Cached ptr to the function obj for the data func 
+
+********************************************************************************/
 class TranslatorImpl : public parsenode_visitor
 {
 public:
-  friend expr_t translate_aux (const parsenode &root, CompilerCB* aCompilerCB, ModulesInfo *minfo, set<string> mod_stack);
+  friend expr_t translate_aux(const parsenode&, CompilerCB*, ModulesInfo*, set<string>);
 
 protected:
+
+  int                                  xquery_version;
+
+  CompilerCB                         * compilerCB;
+
+  ModulesInfo                        * minfo;
+
+  set<string>                          mod_stack;
+  string                               mod_ns;
+  string                               mod_pfx;
+  set<string>                          mod_import_ns_set;
+  set<string>                          zorba_predef_mod_ns;
+
+  set<string>                          schema_import_ns_set;
+
+  static_context                     * sctx_p;
+
+  static_context                     * export_sctx;
+
+  rchandle<namespace_context>          ns_ctx;
 
   uint32_t                             print_depth;
   int                                  scope_depth;
 
-  CompilerCB                         * compilerCB;
-  static_context                     * sctx_p;
-  ModulesInfo                        * minfo;
-  vector<rchandle<static_context> >  & sctx_list;
   stack<expr_t>                        nodestack;
-  stack<xqtref_t>                      tstack;  // types stack
+  stack<xqtref_t>                      tstack; 
   stack<ValueIndex_t>                  indexstack;
 
-  set<string> mod_import_ns_set;
-  set<string> mod_stack;
-  set<string> schema_import_ns_set;
-  int tempvar_counter;
+  int                                  tempvar_counter;
 
+  list<global_binding>                 theGlobalVars;
 
-  /*******************************************************************************
-   Global vars are the ones declared in the prolog (both external and non-external
-   vars). theGlobalVars vector contains one entry per global var V. The entry maps
-   the var_expr for V to the expr E that defines V (E is NULL for external vars)
-  ********************************************************************************/
-  list<global_binding> theGlobalVars;
-  expr_t ctx_item_default;
-  xqtref_t ctx_item_type;
+  varref_t                             theDotVar;
+  varref_t                             theDotPosVar;
+  varref_t                             theLastVar;
+
+  xqtref_t                             ctx_item_type;
+
+  list<string>                         global_var_decls;
+  list<function *>                     global_fn_decls;
+  hashmap<strset_t>                    global_deps;
+
 #ifdef ZORBA_DEBUGGER
-  checked_vector<unsigned int> theScopes;
-  checked_vector<varref_t> theScopedVariables;
+  checked_vector<unsigned int>         theScopes;
+  checked_vector<varref_t>             theScopedVariables;
 #endif
 
-  rchandle<namespace_context> ns_ctx;
-  /// Current module's namespace and prefix
-  string mod_ns, mod_pfx;
-  static_context *export_sctx;
+  bool                                 hadBSpaceDecl;
+  bool                                 hadBUriDecl;
+  bool                                 hadConstrDecl;
+  bool                                 hadCopyNSDecl;
+  bool                                 hadDefNSDecl;
+  bool                                 hadEmptyOrdDecl;
+  bool                                 hadOrdModeDecl;
+  bool                                 hadRevalDecl;
 
-  // FOR WHITESPACE CHECKING OF DirElemContent (stack is need because of nested elements)
-  /**
-   * Saves true if the previous DirElemContent is a boundary (DirElemConstructor or EnclosedExpr).
-   */
-  stack<bool> theIsWSBoundaryStack;
-  /**
-   * Saves the previous DirElemContent if it might be boundary whitespace (its previous item is a boundary
-   * and it contains whitespace). It must be checked if the next item (the current item) is a boundary.
-   */
-  stack<const DirElemContent*> thePossibleWSContentStack;
+  stack<bool>                          theIsWSBoundaryStack;
+  stack<const DirElemContent*>         thePossibleWSContentStack;
 
-  bool hadBSpaceDecl, hadBUriDecl, hadConstrDecl, hadCopyNSDecl, hadDefNSDecl, hadEmptyOrdDecl, hadOrdModeDecl, hadRevalDecl;
-  int xquery_version;  // 100 for 1.0, 110 for 1.1 etc
+  set<string>                          xquery_fns_def_dot;
 
-  varref_t theDotVar, theDotPosVar, theLastVar;
-
-  // TODO: should be static
-  // functions accepting . as default arg
-  set<string> xquery_fns_def_dot;
-  const function *op_concatenate, *op_enclosed_expr, *op_or, *fn_data,
-    * ctx_decl, *ctx_set, *ctx_get, *ctx_exists;
-
-  set<string> zorba_predef_mod_ns;
+  const function                     * op_concatenate;
+  const function                     * op_enclosed_expr;
+  const function                     * op_or;
+  const function                     * fn_data;
+  const function                     * ctx_decl; 
+  const function                     * ctx_set;
+  const function                     * ctx_get;
+  const function                     * ctx_exists;
   
   // format of strings: type_char + qname_internal_key
   // where type_char is F or V
-  stack<string> global_decl_stack;
-  list<string> global_var_decls;
-  list<function *> global_fn_decls, fn_decl_stack;
-  hashmap<strset_t> global_deps;
+  stack<string>                        global_decl_stack;
 
-  TranslatorImpl (CompilerCB* aCompilerCB, ModulesInfo *minfo_, set<string> mod_stack_)
-    :
-    print_depth (0),
-    scope_depth (0),
-    compilerCB(aCompilerCB),
-    sctx_p (aCompilerCB->m_sctx),
-    minfo (minfo_),
-    sctx_list (aCompilerCB->m_sctx_list),
-    mod_stack (mod_stack_),
-    tempvar_counter (1),
-    ns_ctx(new namespace_context(sctx_p)),
-    export_sctx (NULL),
-    hadBSpaceDecl (false),
-    hadBUriDecl (false),
-    hadConstrDecl (false),
-    hadCopyNSDecl (false),
-    hadEmptyOrdDecl (false),
-    hadOrdModeDecl (false),
-    hadRevalDecl (false),
-    xquery_version (10000)  // fictious version 100.0 -- allow everything
-  {
-    xquery_fns_def_dot.insert ("string-length");
-    xquery_fns_def_dot.insert ("normalize-space");
-    xquery_fns_def_dot.insert ("root");
-    xquery_fns_def_dot.insert ("base-uri");
-    xquery_fns_def_dot.insert ("namespace-uri");
-    xquery_fns_def_dot.insert ("local-name");
-    xquery_fns_def_dot.insert ("name");
-    xquery_fns_def_dot.insert ("string");
+  list<function *>                     fn_decl_stack;
 
-    op_concatenate = op_enclosed_expr = op_or = fn_data = NULL;
-    ctx_decl = ctx_set = ctx_get = ctx_exists = NULL;
-    zorba_predef_mod_ns.insert (ZORBA_FN_NS);
-    zorba_predef_mod_ns.insert (ZORBA_MATH_FN_NS);
-    zorba_predef_mod_ns.insert (ZORBA_REST_FN_NS);
-    zorba_predef_mod_ns.insert (ZORBA_NODEREF_FN_NS);
-    zorba_predef_mod_ns.insert (ZORBA_COLLECTION_FN_NS);
-    zorba_predef_mod_ns.insert (ZORBA_ALEXIS_FN_NS);
+
+TranslatorImpl (CompilerCB* aCompilerCB, ModulesInfo *minfo_, set<string> mod_stack_)
+  :
+  xquery_version (10000),  // fictious version 100.0 -- allow everything
+  compilerCB(aCompilerCB),
+  minfo (minfo_),
+  mod_stack (mod_stack_),
+  sctx_p (aCompilerCB->m_sctx),
+  export_sctx (NULL),
+  ns_ctx(new namespace_context(sctx_p)),
+  print_depth (0),
+  scope_depth (0),
+  tempvar_counter (1),
+  hadBSpaceDecl (false),
+  hadBUriDecl (false),
+  hadConstrDecl (false),
+  hadCopyNSDecl (false),
+  hadEmptyOrdDecl (false),
+  hadOrdModeDecl (false),
+  hadRevalDecl (false)
+{
+  xquery_fns_def_dot.insert ("string-length");
+  xquery_fns_def_dot.insert ("normalize-space");
+  xquery_fns_def_dot.insert ("root");
+  xquery_fns_def_dot.insert ("base-uri");
+  xquery_fns_def_dot.insert ("namespace-uri");
+  xquery_fns_def_dot.insert ("local-name");
+  xquery_fns_def_dot.insert ("name");
+  xquery_fns_def_dot.insert ("string");
+  
+  op_concatenate = op_enclosed_expr = op_or = fn_data = NULL;
+  ctx_decl = ctx_set = ctx_get = ctx_exists = NULL;
+
+  zorba_predef_mod_ns.insert (ZORBA_FN_NS);
+  zorba_predef_mod_ns.insert (ZORBA_MATH_FN_NS);
+  zorba_predef_mod_ns.insert (ZORBA_REST_FN_NS);
+  zorba_predef_mod_ns.insert (ZORBA_NODEREF_FN_NS);
+  zorba_predef_mod_ns.insert (ZORBA_COLLECTION_FN_NS);
+  zorba_predef_mod_ns.insert (ZORBA_ALEXIS_FN_NS);
 #ifdef ZORBA_WITH_EMAIL
-    zorba_predef_mod_ns.insert (ZORBA_EMAIL_FN_NS);
+  zorba_predef_mod_ns.insert (ZORBA_EMAIL_FN_NS);
 #endif
-    zorba_predef_mod_ns.insert (ZORBA_JSON_FN_NS);
-    zorba_predef_mod_ns.insert (ZORBA_JSON_ML_FN_NS);
-    zorba_predef_mod_ns.insert (ZORBA_OPEXTENSIONS_NS);
-    zorba_predef_mod_ns.insert (ZORBA_FOP_FN_NS);
-
-    sctx_p->get_global_bindings (theGlobalVars);
-    for (list<global_binding>::iterator i = theGlobalVars.begin ();
-         i != theGlobalVars.end (); i++)
-    {
-      varref_t ve = (*i).first;
-      global_var_decls.push_back (static_context::qname_internal_key (ve->get_varname ()));
-    }
-
-    ctx_item_type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
+  zorba_predef_mod_ns.insert (ZORBA_JSON_FN_NS);
+  zorba_predef_mod_ns.insert (ZORBA_JSON_ML_FN_NS);
+  zorba_predef_mod_ns.insert (ZORBA_OPEXTENSIONS_NS);
+  zorba_predef_mod_ns.insert (ZORBA_FOP_FN_NS);
+  
+  sctx_p->get_global_bindings(theGlobalVars);
+  for (list<global_binding>::iterator i = theGlobalVars.begin();
+       i != theGlobalVars.end(); i++)
+  {
+    varref_t ve = (*i).first;
+    global_var_decls.push_back(static_context::qname_internal_key(ve->get_varname()));
   }
 
+  ctx_item_type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
+}
 
-  expr_t pop_nodestack (int n = 1) {
-    ZORBA_ASSERT (n >= 0);
-    rchandle<expr> e_h;
-    for (; n > 0; --n) {
-      ZORBA_FATAL(! nodestack.empty(), "");
-      e_h = nodestack.top();
-      nodestack.pop();
+
+/*******************************************************************************
+  Pop the top n exprs from the nodestack and return the last expr that was popped.
+********************************************************************************/
+expr_t pop_nodestack (int n = 1) 
+{
+  ZORBA_ASSERT (n >= 0);
+
+  rchandle<expr> e_h;
+
+  for (; n > 0; --n) 
+  {
+    ZORBA_FATAL(! nodestack.empty(), "");
+    e_h = nodestack.top();
+    nodestack.pop();
 #ifndef NDEBUG
-      if (Properties::instance()->traceTranslator()) {
-        cout << "Popped from nodestack:\n";
-        if (e_h != NULL)
-          e_h->put (cout) << endl;
-        else
-          cout << "NULL" << endl;
-      }
-#endif
+    if (Properties::instance()->traceTranslator()) 
+    {
+      cout << "Popped from nodestack:\n";
+      if (e_h != NULL)
+        e_h->put (cout) << endl;
+      else
+        cout << "NULL" << endl;
     }
-    return e_h;
+#endif
   }
-
-  varref_t pop_nodestack_var () {
-    expr_t e = pop_nodestack ();
-    assert (e == NULL || e->get_expr_kind () == var_expr_kind);
-    return static_cast<var_expr *> (e.getp ());
-  }
+  return e_h;
+}
 
 
-expr_t peek_nodestk_or_null () {
+/*******************************************************************************
+  Assert that the top expr in the nodestack is a var_expr and pop it.
+********************************************************************************/
+varref_t pop_nodestack_var () 
+{
+  expr_t e = pop_nodestack ();
+  assert (e == NULL || e->get_expr_kind () == var_expr_kind);
+  return static_cast<var_expr *> (e.getp ());
+}
+
+
+/*******************************************************************************
+  Return rchandle to the expr at the top of the nodestack, or NULL if the
+  nodestack is empty.
+********************************************************************************/
+expr_t peek_nodestk_or_null () 
+{
   return (nodestack.empty ()) ? expr_t (NULL) : peek_stack (nodestack);
 }
 
 
+/*******************************************************************************
+  Check if the top expr in thenodestack is an axis_step, and if so return
+  rchandle to it (but do not pop). Otherwise, raise error.
+********************************************************************************/
+rchandle<axis_step_expr> expect_axis_step_top () 
+{
+  rchandle<axis_step_expr> axisExpr = peek_nodestk_or_null().dyn_cast<axis_step_expr>();
+  if (axisExpr == NULL) 
+  {
+    cout << "Expecting axis step on top of stack; ";
+    if (nodestack.top() != NULL)
+      cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+    else
+      cout << "top is null\n";
+    ZORBA_ASSERT (false);
+  }
+  return axisExpr;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 xqtref_t pop_tstack()
 {
-  return pop_stack (tstack); 
+  return pop_stack(tstack); 
+}
+
+
+/*******************************************************************************
+  Create new static context and make it the current one.
+********************************************************************************/
+void push_scope () 
+{
+#ifdef ZORBA_DEBUGGER
+  theScopes.push_back( theScopedVariables.size() );
+#endif
+  compilerCB->m_sctx_list.push_back (sctx_p = sctx_p->create_child_context());
+  ++scope_depth;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void pop_scope (int n = 1)
+{
+#ifdef ZORBA_DEBUGGER
+  theScopedVariables.erase(theScopedVariables.begin()+theScopes.back(),
+                           theScopedVariables.end() );
+  theScopes.pop_back();
+#endif
+  while (n-- > 0) 
+  {
+    static_context *parent = (static_context *) sctx_p->get_parent ();
+    sctx_p = parent;
+    --scope_depth;
+    assert (scope_depth >= 0);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void push_elem_scope() 
+{
+  ns_ctx = new namespace_context(&*ns_ctx);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void pop_elem_scope() 
+{
+  ns_ctx = ns_ctx->get_parent();
 }
 
 
@@ -492,42 +828,6 @@ fo_expr *create_seq (const QueryLoc& loc) {
 }
 
 
-void push_scope () {
-#ifdef ZORBA_DEBUGGER
-  theScopes.push_back( theScopedVariables.size() );
-#endif
-  sctx_list.push_back (sctx_p = sctx_p->create_child_context());
-  ++scope_depth;
-}
-
-void pop_scope (int n = 1)
-{
-#ifdef ZORBA_DEBUGGER
-  theScopedVariables.erase( theScopedVariables.begin()+theScopes.back(), theScopedVariables.end() );
-  theScopes.pop_back();
-#endif
-  while (n-- > 0) {
-    static_context *parent = (static_context *) sctx_p->get_parent ();
-    sctx_p = parent;
-    --scope_depth;
-    assert (scope_depth >= 0);
-  }
-}
-
-  rchandle<axis_step_expr> expect_axis_step_top () {
-    rchandle<axis_step_expr> axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-    if (axisExpr == NULL) {
-      cout << "Expecting axis step on top of stack; ";
-      if (nodestack.top() != NULL)
-        cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
-      else
-        cout << "top is null\n";
-      ZORBA_ASSERT (false);
-    }
-    return axisExpr;
-  }
-
-
 /*******************************************************************************
   Lookup variable by qname (expanded or not). Search starts from the "current"
   ctx and moves upwards the ancestor path until the first instance (if any) of
@@ -555,14 +855,6 @@ var_expr *lookup_var (store::Item_t varname)
   return static_cast<var_expr *> (sctx_p->lookup_var (varname));
 }
 
-
-  void push_elem_scope() {
-    ns_ctx = new namespace_context(&*ns_ctx);
-  }
-
-  void pop_elem_scope() {
-    ns_ctx = ns_ctx->get_parent();
-  }
 
   expr_update_t update_type_check_for_if(
     expr_update_t lType1, 
@@ -636,11 +928,14 @@ var_expr *lookup_var (store::Item_t varname)
       return StaticContextConsts::xquery_version_unknown;
   }
   
-expr_t wrap_in_atomization (expr_t e) {
+expr_t wrap_in_atomization (expr_t e) 
+{
   return new fo_expr (e->get_loc (), CACHED (fn_data, LOOKUP_FN ("fn", "data", 1)), e);
 }
   
-void declare_var (const global_binding &b, std::vector<expr_t> &stmts) {
+
+void declare_var (const global_binding &b, std::vector<expr_t> &stmts) 
+{
   CACHED (ctx_decl, LOOKUP_OP1 ("ctxvar-declare"));
   CACHED (ctx_set, LOOKUP_OP2 ("ctxvar-assign"));
 
@@ -2809,13 +3104,17 @@ void *begin_visit (const CtxItemDecl& v)
 
 void end_visit (const CtxItemDecl& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
-  if (v.get_type () != NULL) {
-    ctx_item_type = pop_tstack ();
-  }
-  if (v.get_expr () != NULL)
+  TRACE_VISIT_OUT();
+
+  expr_t ctx_item_default;
+  if (v.get_expr() != NULL)
     ctx_item_default = pop_nodestack ();
-  if (v.get_type () != NULL || v.get_expr () != NULL) {
+
+  if (v.get_type () != NULL)
+    ctx_item_type = pop_tstack();
+
+  if (v.get_type() != NULL || v.get_expr() != NULL) 
+  {
     store::Item_t dotname;
     varref_t var = create_var (loc, ".", var_expr::context_var, ctx_item_type);
     global_binding b (var, ctx_item_default, true);
@@ -3706,9 +4005,12 @@ void *begin_visit (const ModuleImport& v) {
   return no_state;
 }
 
-void end_visit (const ModuleImport& v, void* /*visit_state*/) {
+void end_visit (const ModuleImport& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
+
   string pfx = v.get_prefix (), target_ns = v.get_uri ();
+
 #ifdef ZORBA_DEBUGGER
   if(compilerCB->m_debugger != 0)
   {
@@ -3716,7 +4018,8 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/) {
   }
 #endif
 
-  // The namespace prefix specified in a module import must not be xml or xmlns [err:XQST0070]
+  // The namespace prefix specified in a module import must not be xml or xmlns
+  // [err:XQST0070]
   if (pfx == "xml" || pfx == "xmlns")
     ZORBA_ERROR_LOC (XQST0070, loc);
 
@@ -3724,13 +4027,15 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/) {
   if (target_ns.empty ())
     ZORBA_ERROR_LOC (XQST0088, loc);
 
-  // It is a static error [err:XQST0047] if more than one module import in a Prolog specifies the same target namespace
+  // It is a static error [err:XQST0047] if more than one module import in a
+  // Prolog specifies the same target namespace
   if (! mod_import_ns_set.insert (target_ns).second)
     ZORBA_ERROR_LOC (XQST0047, loc);
 
-  // The namespace prefix specified in a module import must not be the same as any namespace prefix bound 
-  // in the same module by another module import, 
-  // a schema import, a namespace declaration, or a module declaration with a different target namespace [err:XQST0033].
+  // The namespace prefix specified in a module import must not be the same as
+  // any namespace prefix bound  in the same module by another module import, 
+  // a schema import, a namespace declaration, or a module declaration with a
+  // different target namespace [err:XQST0033].
   if (! ( pfx.empty () || ( pfx == mod_pfx && target_ns == mod_ns ) ) ) {
     try {
       sctx_p->bind_ns(pfx, target_ns, XQST0033);
@@ -6866,10 +7171,13 @@ void end_visit (const ParseErrorNode& v, void* /*visit_state*/) {
 
 public:
 
-expr_t result () {
-  if (nodestack.size () != 1) {
+expr_t result () 
+{
+  if (nodestack.size () != 1) 
+  {
     cout << "Error: extra nodes on translator stack:\n";
-    while (! nodestack.empty ()) {
+    while (! nodestack.empty ()) 
+    {
       expr_t e_h = pop_nodestack ();
 #ifndef NDEBUG
       if (! Properties::instance()->traceTranslator()) {
@@ -6882,30 +7190,51 @@ expr_t result () {
     }
     ZORBA_ASSERT (false);
   }
+
   ZORBA_ASSERT (tstack.size () == 0);
-  if (scope_depth != 0) {
+
+  if (scope_depth != 0) 
+  {
     cout << "Error: scope depth " << scope_depth << endl;
     ZORBA_ASSERT (false);
   }
+
   return pop_nodestack ();
 }
 
 };
 
-expr_t translate_aux (const parsenode &root, CompilerCB* aCompilerCB, ModulesInfo *minfo, set<string> mod_stack) {
+
+expr_t translate_aux(
+    const parsenode& root,
+    CompilerCB* aCompilerCB,
+    ModulesInfo* minfo,
+    set<string> mod_stack) 
+{
   auto_ptr<TranslatorImpl> t (new TranslatorImpl (aCompilerCB, minfo, mod_stack));
+
   root.accept (*t);
+
   rchandle<expr> result = t->result ();
+
   if (aCompilerCB->m_config.translate_cb != NULL)
     aCompilerCB->m_config.translate_cb (&*result, "XQuery program");
+
   return result;
 }
 
-expr_t translate (const parsenode &root, CompilerCB* aCompilerCB) {
+
+expr_t translate (const parsenode& root, CompilerCB* aCompilerCB) 
+{
   set<string> mod_stack;
+
   if (typeid (root) != typeid (MainModule))
-    ZORBA_ERROR_LOC_DESC (XPST0003, root.get_location (), "Module declaration must not be used in a main module");
-  ModulesInfo minfo (aCompilerCB->m_sctx, aCompilerCB);
+    ZORBA_ERROR_LOC_DESC(XPST0003,
+                         root.get_location(),
+                         "Module declaration must not be used in a main module");
+
+  ModulesInfo minfo (aCompilerCB);
+
   return translate_aux (root, aCompilerCB, &minfo, mod_stack);
 }
 
