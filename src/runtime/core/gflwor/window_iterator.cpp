@@ -396,6 +396,7 @@ void WindowState::tupleReset ( )
 const uint32_t WindowIterator::MAX_HISTORY = 2147483647; //TODO should be set platform dependent, but somebody hat comment out everything in platform.h!
 
 WindowIterator::WindowIterator (
+    short sctx,
     const QueryLoc& loc,
     WindowType windowType,
     PlanIter_t tupleIter,
@@ -407,7 +408,7 @@ WindowIterator::WindowIterator (
     bool lazyEval,
     uint32_t maxNeededHistory)
   :
-  Batcher<WindowIterator>(loc),
+  Batcher<WindowIterator>(sctx, loc),
   theWindowType(windowType),
   theTupleIter(tupleIter),
   theInputIter(domainIterator),

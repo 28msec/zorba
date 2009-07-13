@@ -36,18 +36,13 @@ class RuntimeCB
 public:
   RuntimeCB()
     :
-    theStaticContext(0),
     theDynamicContext(0),
-    theCollationCache(0),
     docLoadingUserTime(0.0),
     docLoadingTime(0)
   {
   }
 
-  // TODO remove the static context from here
-  static_context           * theStaticContext;
   dynamic_context          * theDynamicContext;
-  CollationCache           * theCollationCache;
 
   double                     docLoadingUserTime;
   long                       docLoadingTime;

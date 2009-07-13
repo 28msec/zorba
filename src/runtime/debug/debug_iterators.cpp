@@ -26,7 +26,7 @@ FnTraceIteratorState::init(PlanState& planState)
   PlanIteratorState::init(planState);
   theTagItem = NULL;
   theIndex = 0;
-  theOS = planState.sctx()->get_trace_stream();
+  theOS = 0;
 }
 
 void 
@@ -35,19 +35,19 @@ FnTraceIteratorState::reset(PlanState& planState)
   PlanIteratorState::reset(planState);
   theTagItem = NULL;
   theIndex = 0;
-  theOS = planState.sctx()->get_trace_stream();
 }
 
 bool
 FnTraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  FnTraceIteratorState *state;
   xqp_string lOption;
   bool       lOptionFound;
 
+  FnTraceIteratorState *state;
   DEFAULT_STACK_INIT(FnTraceIteratorState, state, planState);
   
-  lOptionFound =   planState.sctx()->lookup_option("http://www.zorba-xquery.org/options", "trace", lOption);
+  lOptionFound =   getStaticContext(planState)->lookup_option("http://www.zorba-xquery.org/options",
+                                                              "trace", lOption);
 
   // tracing can be disabled  using declare option exq:trace "disable";
   if (!lOptionFound || (lOptionFound && lOption != "disable")) {
@@ -55,6 +55,8 @@ FnTraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       ZORBA_ERROR_LOC_DESC( FORG0006, loc,
           "An empty sequence is not allowed as as second argument to fn:trace");
     }
+
+    state->theOS = getStaticContext(planState)->get_trace_stream();
 
     while (consumeNext(result, theChildren[0], planState)) {
       (*state->theOS) << state->theTagItem->getStringValue() 

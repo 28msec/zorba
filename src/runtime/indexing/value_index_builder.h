@@ -30,9 +30,9 @@ namespace zorba
 class CreateValueIndex : public UnaryBaseIterator<CreateValueIndex, PlanIteratorState> 
 {
 public:
-  CreateValueIndex(const QueryLoc& loc, PlanIter_t aChild)
+  CreateValueIndex( short sctx, const QueryLoc& loc, PlanIter_t aChild)
     :
-    UnaryBaseIterator<CreateValueIndex, PlanIteratorState>(loc, aChild) { }
+    UnaryBaseIterator<CreateValueIndex, PlanIteratorState>(sctx, loc, aChild) { }
 
   virtual ~CreateValueIndex() { }
 
@@ -49,9 +49,9 @@ public:
 class DropValueIndex : public UnaryBaseIterator<DropValueIndex, PlanIteratorState> 
 {
 public:
-  DropValueIndex(const QueryLoc& loc, PlanIter_t aChild)
+  DropValueIndex( short sctx,const QueryLoc& loc, PlanIter_t aChild)
     :
-    UnaryBaseIterator<DropValueIndex, PlanIteratorState>(loc, aChild) { }
+    UnaryBaseIterator<DropValueIndex, PlanIteratorState>(sctx, loc, aChild) { }
 
   virtual ~DropValueIndex() { }
 
@@ -67,9 +67,9 @@ public:
 class ValueIndexInsertSessionOpener : public UnaryBaseIterator<ValueIndexInsertSessionOpener, PlanIteratorState> 
 {
 public:
-  ValueIndexInsertSessionOpener(const QueryLoc& loc, PlanIter_t aChild)
+  ValueIndexInsertSessionOpener( short sctx,const QueryLoc& loc, PlanIter_t aChild)
     :
-    UnaryBaseIterator<ValueIndexInsertSessionOpener, PlanIteratorState>(loc, aChild) { }
+    UnaryBaseIterator<ValueIndexInsertSessionOpener, PlanIteratorState>(sctx, loc, aChild) { }
 
   virtual ~ValueIndexInsertSessionOpener() { }
 
@@ -85,9 +85,9 @@ public:
 class ValueIndexInsertSessionCloser : public UnaryBaseIterator<ValueIndexInsertSessionCloser, PlanIteratorState> 
 {
 public:
-  ValueIndexInsertSessionCloser(const QueryLoc& loc, PlanIter_t aChild)
+  ValueIndexInsertSessionCloser( short sctx,const QueryLoc& loc, PlanIter_t aChild)
     :
-    UnaryBaseIterator<ValueIndexInsertSessionCloser, PlanIteratorState>(loc, aChild) { }
+    UnaryBaseIterator<ValueIndexInsertSessionCloser, PlanIteratorState>(sctx, loc, aChild) { }
 
   virtual ~ValueIndexInsertSessionCloser() { }
 
@@ -113,9 +113,9 @@ public:
 class ValueIndexBuilder : public NaryBaseIterator<ValueIndexBuilder, ValueIndexBuilderState> 
 {
 public:
-  ValueIndexBuilder(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
+  ValueIndexBuilder( short sctx,const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
     :
-    NaryBaseIterator<ValueIndexBuilder, ValueIndexBuilderState>(loc, aChildren) { }
+    NaryBaseIterator<ValueIndexBuilder, ValueIndexBuilderState>(sctx, loc, aChildren) { }
 
   virtual ~ValueIndexBuilder() { }
 

@@ -52,11 +52,12 @@ protected:
 
 public:
   UDFunctionCallIterator(
+        short sctx,
         const QueryLoc& loc, 
         std::vector<PlanIter_t>& args, 
         const user_function *aUDF)
     :
-    NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>(loc, args), 
+    NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>(sctx, loc, args), 
     theUDF(aUDF)
   {}
 
@@ -91,6 +92,7 @@ class StatelessExtFunctionCallIterator :
 {
  public:
   StatelessExtFunctionCallIterator(
+        short sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& args,
         const StatelessExternalFunction *function,

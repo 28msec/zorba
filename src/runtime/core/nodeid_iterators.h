@@ -44,11 +44,12 @@ protected:
 
 public:
   NodeDistinctIterator(
+        short sctx,
         const QueryLoc& loc,
         PlanIter_t input,
         bool aAcceptAtomics = false)
     :
-    UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>(loc, input), theAcceptAtomics(aAcceptAtomics)
+    UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>(sctx, loc, input), theAcceptAtomics(aAcceptAtomics)
   {
   }
 
@@ -90,13 +91,14 @@ protected:
 
 public:
   NodeSortIterator(
+        short sctx,
         const QueryLoc& loc,
         PlanIter_t input,
         bool ascendant,
         bool distinct,
         bool aAcceptAtomics = false)
     :
-    UnaryBaseIterator<NodeSortIterator, NodeSortState>(loc, input),
+    UnaryBaseIterator<NodeSortIterator, NodeSortState>(sctx, loc, input),
     theAscendant(ascendant),
     theDistinct(distinct),
     theAcceptAtomics(aAcceptAtomics)

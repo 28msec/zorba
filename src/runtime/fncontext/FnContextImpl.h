@@ -79,13 +79,14 @@ class EvalIterator : public NaryBaseIterator<EvalIterator, EvalIteratorState> {
   checked_vector<xqtref_t> vartypes;
 
 public:
-  EvalIterator(const QueryLoc& loc,
+  EvalIterator(short sctx,
+               const QueryLoc& loc,
                checked_vector<store::Item_t> varnames_,
                checked_vector<std::string> var_keys_,
                checked_vector<xqtref_t> vartypes_,
                std::vector<PlanIter_t>& aChildren)
     :
-    NaryBaseIterator<EvalIterator, EvalIteratorState> (loc, aChildren),
+    NaryBaseIterator<EvalIterator, EvalIteratorState> (sctx, loc, aChildren),
     varnames (varnames_), var_keys (var_keys_), vartypes (vartypes_)
   {}
 

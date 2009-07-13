@@ -32,14 +32,20 @@ namespace zorba {
   operand matches the SequenceType in its second operand, according to the rules
   for SequenceType matching; otherwise it returns false.
 ********************************************************************************/
-class InstanceOfIterator : public UnaryBaseIterator<InstanceOfIterator, PlanIteratorState>
+class InstanceOfIteratorState : public PlanIteratorState {
+public:
+  TypeManager* tm;
+};
+
+class InstanceOfIterator : public UnaryBaseIterator<InstanceOfIterator, InstanceOfIteratorState>
 {
 
 private:
   xqtref_t theSequenceType;
 
 public:
-  InstanceOfIterator(const QueryLoc& loc, 
+  InstanceOfIterator(short sctx,
+                     const QueryLoc& loc, 
                      PlanIter_t& aTreatExpr, 
                      xqtref_t aSequenceType);
  
@@ -74,7 +80,8 @@ private:
   bool                        theIsSimpleType;
 
 public:
-  CastIterator(const QueryLoc& loc,
+  CastIterator(short sctx,
+               const QueryLoc& loc,
                PlanIter_t& aChild,
                const xqtref_t& aCastType);
   ~CastIterator();
@@ -96,7 +103,8 @@ private:
   TypeConstants::quantifier_t theQuantifier;
 
 public:
-  CastableIterator(const QueryLoc& aLoc,
+  CastableIterator(short sctx,
+                   const QueryLoc& aLoc,
                    PlanIter_t& aChild,
                    const xqtref_t& aCastType);
   virtual ~CastableIterator();
@@ -110,7 +118,13 @@ public:
  * is not possible, a type error is thrown. If the type of the item is a 
  * subtype of the target type, then no promotion is done (it's a noop).
  **/
-class PromoteIterator : public UnaryBaseIterator<PromoteIterator, PlanIteratorState> 
+
+class PromoteIteratorState : public PlanIteratorState {
+public:
+  TypeManager* tm;
+};
+
+class PromoteIterator : public UnaryBaseIterator<PromoteIterator, PromoteIteratorState> 
 {
   friend class PrinterVisitor;
 private:
@@ -118,7 +132,7 @@ private:
   TypeConstants::quantifier_t theQuantifier;
 
 public:
-  PromoteIterator(const QueryLoc&, PlanIter_t&, const xqtref_t& aPromoteType);
+  PromoteIterator(short sctx, const QueryLoc&, PlanIter_t&, const xqtref_t& aPromoteType);
   virtual ~PromoteIterator();
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;
@@ -128,7 +142,12 @@ public:
  * Iterator which checks if a sequence is an instance of the target type. If not,
  * an error is thrown.
  **/
-class TreatIterator : public NaryBaseIterator<TreatIterator, PlanIteratorState> {
+class TreatIteratorState : public PlanIteratorState {
+public:
+  TypeManager* tm;
+};
+
+class TreatIterator : public NaryBaseIterator<TreatIterator, TreatIteratorState> {
   friend class PrinterVisitor;
 private:
   xqtref_t theTreatType;
@@ -137,7 +156,7 @@ private:
   XQUERY_ERROR theErrorCode;
 
 public:
-  TreatIterator(const QueryLoc&, std::vector<PlanIter_t>&, const xqtref_t& aTreatType,
+  TreatIterator(short sctx, const QueryLoc&, std::vector<PlanIter_t>&, const xqtref_t& aTreatType,
                 bool check_prime, XQUERY_ERROR);
   
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

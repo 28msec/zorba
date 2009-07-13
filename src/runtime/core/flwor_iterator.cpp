@@ -225,7 +225,7 @@ uint32_t OrderByClause::getStateSizeOfSubtree() const
 /***************************************************************************//**
 
 ********************************************************************************/
-void OrderByClause::open(PlanState& planState, uint32_t& offset)
+void OrderByClause::open(static_context* sctx, PlanState& planState, uint32_t& offset)
 {
   std::vector<OrderSpec>::iterator iter;
   std::vector<OrderSpec>::const_iterator end = theOrderSpecs.end();
@@ -235,12 +235,12 @@ void OrderByClause::open(PlanState& planState, uint32_t& offset)
 
     if (iter->theCollation.size() != 0) 
     {
-      iter->theCollator = planState.theRuntimeCB->theCollationCache->
+      iter->theCollator = sctx->get_collation_cache()->
                           getCollator(iter->theCollation);
     }
     else
     {
-      iter->theCollator = planState.theRuntimeCB->theCollationCache->
+      iter->theCollator = sctx->get_collation_cache()->
                           getDefaultCollator();
     }
   }
@@ -349,7 +349,7 @@ uint32_t GroupByClause::getStateSizeOfSubtree() const
 /***************************************************************************//**
 
 ********************************************************************************/
-void GroupByClause::open(PlanState& planState, uint32_t& offset)
+void GroupByClause::open(static_context* sctx, PlanState& planState, uint32_t& offset)
 { 
   std::vector<GroupingSpec>::iterator groupIter = theGroupingSpecs.begin();
   std::vector<GroupingSpec>::iterator groupEnd = theGroupingSpecs.end();
@@ -359,12 +359,12 @@ void GroupByClause::open(PlanState& planState, uint32_t& offset)
 
     if (groupIter->theCollation.size() != 0) 
     {
-      groupIter->theCollator = planState.theRuntimeCB->theCollationCache->
+      groupIter->theCollator = sctx->get_collation_cache()->
                                getCollator(groupIter->theCollation);
     }
     else
     {
-      groupIter->theCollator = planState.theRuntimeCB->theCollationCache->
+      groupIter->theCollator = sctx->get_collation_cache()->
                                getDefaultCollator();
     }
   }
@@ -453,7 +453,7 @@ FlworState::~FlworState()
   Init the state for a certain nb of variables but not the ordering
   @nb_variables  Number of FOR and LET clauses
 ********************************************************************************/
-void FlworState::init(PlanState& planState, size_t numVars)
+void FlworState::init(PlanState& planState, static_context* sctx, size_t numVars)
 {
   PlanIteratorState::init(planState);
 
@@ -475,15 +475,16 @@ void FlworState::init(PlanState& planState, size_t numVars)
 ********************************************************************************/
 void FlworState::init(
     PlanState& planState,
+    static_context* sctx,
     size_t numVars,
     std::vector<OrderSpec>* orderSpecs,
     std::vector<GroupingSpec>* groupingSpecs)
 {
-  init(planState, numVars);
+  init(planState, sctx, numVars);
   
   if(groupingSpecs != 0)
   {
-    GroupTupleCmp cmp(planState.theRuntimeCB, groupingSpecs);
+    GroupTupleCmp cmp(planState.theRuntimeCB, sctx, groupingSpecs);
     theGroupMap = new GroupHashMap(cmp, 1024, false);
   }
 }
@@ -567,6 +568,7 @@ void FlworState::clearGroupMap()
 
 ********************************************************************************/
 FLWORIterator::FLWORIterator(
+    short sctx,
     const QueryLoc& loc,
     std::vector<ForLetClause>& aForLetClauses,
     PlanIter_t& aWhereClause,
@@ -575,7 +577,7 @@ FLWORIterator::FLWORIterator(
     PlanIter_t& aReturnClause,
     bool aIsUpdating)
   :
-  Batcher<FLWORIterator>(loc),
+  Batcher<FLWORIterator>(sctx, loc),
   theForLetClauses(aForLetClauses),
   theWhereClause(aWhereClause),
   theGroupByClause(aGroupByClauses),
@@ -686,6 +688,7 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
               startTime = (double)stime.tv_sec+(1.e-6)*stime.tv_usec;
 #endif
               SortTupleCmp cmp(planState.theRuntimeCB,
+                               getStaticContext(planState),
                                &theOrderByClause->theOrderSpecs);
 
               if (theOrderByClause->theStable)
@@ -1188,20 +1191,22 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
   if(doGroupBy)
   {
     iterState->init(planState,
-                     theNumBindings,
-                     (doOrderBy ? &theOrderByClause->theOrderSpecs : NULL),
-                     &theGroupByClause->theGroupingSpecs); 
+                    getStaticContext(planState),
+                    theNumBindings,
+                    (doOrderBy ? &theOrderByClause->theOrderSpecs : NULL),
+                    &theGroupByClause->theGroupingSpecs); 
   }
   else if (doOrderBy) 
   {
     iterState->init(planState,
-                     theNumBindings,
-                     &theOrderByClause->theOrderSpecs,
-                     0);
+                    getStaticContext(planState),
+                    theNumBindings,
+                    &theOrderByClause->theOrderSpecs,
+                    0);
   }
   else 
   {
-    iterState->init(planState, theNumBindings);
+    iterState->init(planState, getStaticContext(planState), theNumBindings);
   }
 
   // some variables must have been bound
@@ -1220,10 +1225,10 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
     theWhereClause->open(planState, offset);
   
   if (doGroupBy)
-    theGroupByClause->open(planState, offset);
+    theGroupByClause->open(getStaticContext(planState), planState, offset);
   
   if (doOrderBy)
-    theOrderByClause->open(planState, offset);
+    theOrderByClause->open(getStaticContext(planState), planState, offset);
 }
 
 

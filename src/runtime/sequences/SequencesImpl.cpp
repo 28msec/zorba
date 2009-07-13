@@ -71,6 +71,7 @@ namespace zorba {
 static XQPCollator*
 getCollator(
     RuntimeCB* aRuntimeCB,
+    static_context* sctx,
     const QueryLoc& loc,
     PlanState& planState,
     const PlanIterator* iter)
@@ -84,10 +85,9 @@ getCollator(
   if (PlanIterator::consumeNext(temp, iter, planState))
       ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "A sequence of more then one item is not allowed as collation parameter");
     
-  xqtref_t lCollationItemType = planState.theCompilerCB->m_sctx->get_typemanager()->
-                                create_value_type (lCollationItem);
+  xqtref_t lCollationItemType = sctx->get_typemanager()->create_value_type (lCollationItem);
 
-  return planState.theRuntimeCB->theCollationCache->getCollator(lCollationItem->getStringValue()->str());
+  return sctx->get_collation_cache()->getCollator(lCollationItem->getStringValue()->str());
 }
 
 
@@ -153,7 +153,7 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t lCollationItem;
   xqtref_t      lCollationItemType;
   store::Item_t searchItem;
-  TypeManager* typemgr = planState.theRuntimeCB->theStaticContext->get_typemanager();
+  TypeManager* typemgr = getStaticContext(planState)->get_typemanager();
   long timezone = 0;
 
   FnIndexOfIteratorState* state;
@@ -166,7 +166,8 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
 
   if ( theChildren.size() == 3 )
-    state->theCollator = getCollator(planState.theRuntimeCB, loc, planState, theChildren[2].getp());
+    state->theCollator = getCollator(planState.theRuntimeCB, getStaticContext(planState), loc,
+                                     planState, theChildren[2].getp());
 
   while ( consumeNext(lSequenceItem, theChildren[0].getp(), planState))
   {
@@ -265,9 +266,9 @@ FnExistsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
  * The order in which the sequence of values is returned is ·implementation dependent·.
  * Here, we return the first item that is not a duplicate and throw away the remaining ones
  */
-FnDistinctValuesIterator::FnDistinctValuesIterator(const QueryLoc& loc,
+FnDistinctValuesIterator::FnDistinctValuesIterator(short sctx, const QueryLoc& loc,
                                                    vector<PlanIter_t>& args)
- : NaryBaseIterator<FnDistinctValuesIterator, FnDistinctValuesIteratorState> ( loc, args )
+ : NaryBaseIterator<FnDistinctValuesIterator, FnDistinctValuesIteratorState> ( sctx, loc, args )
 { }
 
 FnDistinctValuesIterator::~FnDistinctValuesIterator()
@@ -287,12 +288,13 @@ FnDistinctValuesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   DEFAULT_STACK_INIT(FnDistinctValuesIteratorState, state, planState);
 
   if (theChildren.size() == 2) {
-    lCollator = getCollator(planState.theRuntimeCB, loc, planState, theChildren[1].getp());
+    lCollator = getCollator(planState.theRuntimeCB, getStaticContext(planState), loc,
+                            planState, theChildren[1].getp());
 
-    theValueCompare = new ValueCompareParam(planState.theRuntimeCB);
+    theValueCompare = new ValueCompareParam(planState.theRuntimeCB, getStaticContext(planState));
     theValueCompare->theCollator = lCollator;
   } else {
-    theValueCompare = new ValueCompareParam(planState.theRuntimeCB);
+    theValueCompare = new ValueCompareParam(planState.theRuntimeCB, getStaticContext(planState));
   }
   // theValueCompare managed by state->theAlreadySeenMap
   state->theAlreadySeenMap.reset (new ItemValueCollHandleHashSet (theValueCompare));
@@ -425,7 +427,8 @@ FnRemoveIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   state->thePosition = lPositionItem->getIntegerValue();
 
   if ( theChildren.size() == 3 )
-    state->theCollator = getCollator(planState.theRuntimeCB, loc, planState, theChildren[2].getp());
+    state->theCollator = getCollator(planState.theRuntimeCB, getStaticContext(planState), loc,
+                                     planState, theChildren[2].getp());
 
   while (consumeNext(result, theChildren[0].getp(), planState))
   {
@@ -640,15 +643,15 @@ FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 |_______________________________________________________________________*/
 
 //15.3.1 fn:deep-equal
-
 bool DeepEqual(
+    static_context* sctx,
     store::Item_t& item1,
     store::Item_t& item2,
     XQPCollator* collator,
     RuntimeCB* theRuntimeCB);
-    
 
 bool DeepEqual(
+    static_context* sctx,
     store::Iterator_t it1,
     store::Iterator_t it2,
     XQPCollator* collator,
@@ -669,7 +672,7 @@ bool DeepEqual(
       return true;
     else if (!c1Valid || !c2Valid)
       return false;
-    else if (!DeepEqual(child1, child2, collator, theRuntimeCB))
+    else if (!DeepEqual(sctx, child1, child2, collator, theRuntimeCB))
       return false;
   }
     
@@ -678,6 +681,7 @@ bool DeepEqual(
 
 
 bool DeepEqual(
+    static_context* sctx,
     store::Item_t& item1,
     store::Item_t& item2,
     XQPCollator* collator,
@@ -695,11 +699,11 @@ bool DeepEqual(
   if (item1->isAtomic())
   {
     assert(item2->isAtomic());
-    TypeManager* typemgr = theRuntimeCB->theStaticContext->get_typemanager();
+    TypeManager* typemgr = sctx->get_typemanager();
     long timezone = theRuntimeCB->theDynamicContext->get_implicit_timezone();
 
     if (collator == NULL)
-      collator = theRuntimeCB->theCollationCache->getDefaultCollator();
+      collator = sctx->get_collation_cache()->getDefaultCollator();
 
     // check NaN
     xqtref_t type1 = typemgr->create_value_type(item1.getp());
@@ -745,9 +749,9 @@ bool DeepEqual(
       case store::StoreConsts::elementNode:
         if (0 != item1->getNodeName()->getStringValue()->compare(item2->getNodeName()->getStringValue(), collator))
           return false;
-        return DeepEqual(item1->getAttributes(), item2->getAttributes(), collator, theRuntimeCB)
+        return DeepEqual(sctx, item1->getAttributes(), item2->getAttributes(), collator, theRuntimeCB)
             &&
-            DeepEqual(item1->getChildren(), item2->getChildren(), collator, theRuntimeCB);
+            DeepEqual(sctx, item1->getChildren(), item2->getChildren(), collator, theRuntimeCB);
         break;
         
       case store::StoreConsts::attributeNode:
@@ -761,9 +765,9 @@ bool DeepEqual(
         item2->getTypedValue(tvalue2, tvalue2Iter);
 
         if (tvalue1Iter == NULL && tvalue2Iter == NULL)
-          return DeepEqual(tvalue1, tvalue2, collator, theRuntimeCB);
+          return DeepEqual(sctx, tvalue1, tvalue2, collator, theRuntimeCB);
         else if (tvalue1Iter != NULL && tvalue2Iter != NULL)
-          return DeepEqual(tvalue1Iter, tvalue2Iter, collator, theRuntimeCB);
+          return DeepEqual(sctx, tvalue1Iter, tvalue2Iter, collator, theRuntimeCB);
         else
           return false;
 
@@ -798,7 +802,8 @@ FnDeepEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if ( theChildren.size() == 3 )
   {
-    collator = getCollator(planState.theRuntimeCB, loc, planState, theChildren[2].getp());
+    collator = getCollator(planState.theRuntimeCB, getStaticContext(planState), loc,
+                           planState, theChildren[2].getp());
   }
 
   while (1)
@@ -814,7 +819,7 @@ FnDeepEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       break;
     }
 
-    equal = equal && DeepEqual(arg1, arg2, collator, planState.theRuntimeCB);
+    equal = equal && DeepEqual(getStaticContext(planState), arg1, arg2, collator, planState.theRuntimeCB);
   }
   
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, equal), state);
@@ -846,10 +851,11 @@ HashSemiJoinIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
 
-HashSemiJoinIterator::HashSemiJoinIterator(const QueryLoc& loc,
+HashSemiJoinIterator::HashSemiJoinIterator(short sctx,
+                                   const QueryLoc& loc,
                                    std::vector<PlanIter_t>& args,
                                    bool antijoin)
- : NaryBaseIterator<HashSemiJoinIterator, HashSemiJoinIteratorState> ( loc, args ),
+ : NaryBaseIterator<HashSemiJoinIterator, HashSemiJoinIteratorState> ( sctx, loc, args ),
    theAntijoin(antijoin)
 {
 }
@@ -880,9 +886,10 @@ HashSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 }
 
 // sort-merge semi-join
-SortSemiJoinIterator::SortSemiJoinIterator(const QueryLoc& loc,
+SortSemiJoinIterator::SortSemiJoinIterator(short sctx,
+                                   const QueryLoc& loc,
                                    std::vector<PlanIter_t>& args)
- : NaryBaseIterator<SortSemiJoinIterator, PlanIteratorState> ( loc, args )
+ : NaryBaseIterator<SortSemiJoinIterator, PlanIteratorState> ( sctx, loc, args )
 {
 }
 
@@ -1006,13 +1013,23 @@ FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
     } else {
       // DO NOT short-circuit for INF and NaN!
       // Must check all items in case FORG0006 is needed
-      GenericArithIterator<AddOperation>::compute(lSumItem, planState.theRuntimeCB, loc, lSumItem, lRunningItem);
+      GenericArithIterator<AddOperation>::compute(lSumItem,
+          planState.theRuntimeCB,
+          getStaticContext(planState),
+          loc,
+          lSumItem,
+          lRunningItem);
     }
   }
 
   if (lCount > 0) {
     GENV_ITEMFACTORY->createInteger(countItem, Integer::parseInt (lCount));
-    GenericArithIterator<DivideOperation>::compute(result, planState.theRuntimeCB, loc, lSumItem, countItem);
+    GenericArithIterator<DivideOperation>::compute(result,
+        planState.theRuntimeCB,
+        getStaticContext(planState),
+        loc,
+        lSumItem,
+        countItem);
     STACK_PUSH(true, state);
   }
   // else return empty sequence
@@ -1022,8 +1039,8 @@ FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
 
 //15.4.3 fn:max & 15.4.4 fn:min
 FnMinMaxIterator::FnMinMaxIterator
-  (const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, Type aType)
-  : NaryBaseIterator<FnMinMaxIterator, PlanIteratorState>(loc, aChildren), 
+  (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, Type aType)
+  : NaryBaseIterator<FnMinMaxIterator, PlanIteratorState>(sctx, loc, aChildren), 
     theType(aType),
     theCompareType(
        (aType == MIN 
@@ -1037,7 +1054,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lRunningItem = NULL;
   xqtref_t lMaxType;
-  TypeManager* typemgr = planState.theRuntimeCB->theStaticContext->get_typemanager();
+  TypeManager* typemgr = getStaticContext(planState)->get_typemanager();
   long timezone = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
   XQPCollator*  lCollator = 0;
   bool  elems_in_seq = 0;
@@ -1049,9 +1066,10 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (theChildren.size() == 2)
-    lCollator = getCollator(planState.theRuntimeCB, loc, planState, theChildren[1].getp());
+    lCollator = getCollator(planState.theRuntimeCB, getStaticContext(planState), loc,
+                            planState, theChildren[1].getp());
   else
-    lCollator = planState.theRuntimeCB->theCollationCache->getDefaultCollator();
+    lCollator = getStaticContext(planState)->get_collation_cache()->getDefaultCollator();
 
   if (consumeNext(lRunningItem, theChildren[0].getp(), planState))
   {
@@ -1203,7 +1221,12 @@ FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
           TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE)) ||
          (TypeOps::is_subtype(*lResultType, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE) &&
           TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE)))
-        GenericArithIterator<AddOperation>::compute(result, planState.theRuntimeCB, loc, result, lRunningItem);
+        GenericArithIterator<AddOperation>::compute(result,
+            planState.theRuntimeCB,
+            getStaticContext(planState),
+            loc,
+            result,
+            lRunningItem);
       else
         ZORBA_ERROR_LOC_DESC( FORG0006, loc, "Sum is not possible with parameters of type " + TypeOps::toString (*lResultType) + " and " + TypeOps::toString (*lRunningType) );
     }
@@ -1589,9 +1612,9 @@ FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 | If $uri is the empty sequence, the result is an empty sequence.
 |_______________________________________________________________________*/
 
-FnDocIterator::FnDocIterator(const QueryLoc& loc, PlanIter_t& arg)
+FnDocIterator::FnDocIterator( short sctx, const QueryLoc& loc, PlanIter_t& arg)
   :
-  UnaryBaseIterator<FnDocIterator, PlanIteratorState> ( loc, arg )
+  UnaryBaseIterator<FnDocIterator, PlanIteratorState> ( sctx, loc, arg )
 {
 }
 
@@ -1655,7 +1678,7 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       try 
       {
-        resolvedURIString = planState.sctx()->resolve_relative_uri(uriString, xqp_string(), false).getStore();
+        resolvedURIString = getStaticContext(planState)->resolve_relative_uri(uriString, xqp_string(), false).getStore();
         GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
       }
       catch (error::ZorbaError& e) 
@@ -1668,8 +1691,8 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         zorba::DateTime::getLocalTime(t0);
         zorbatm::get_timeinfo (t0user);
 
-        result = planState.sctx()->get_document_uri_resolver()->resolve(resolvedURIItem, 
-                                                                        planState.sctx(),
+        result = getStaticContext(planState)->get_document_uri_resolver()->resolve(resolvedURIItem, 
+                                                                        getStaticContext(planState),
                                                                         false,
                                                                         false);
         fillTime(t0, t0user, runtimeCB);
@@ -1724,8 +1747,8 @@ bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planStat
   if (consumeNext(uriItem, theChildren[0].getp(), planState)) {
 
     try {
-      doc = planState.sctx()->get_document_uri_resolver()->resolve( uriItem,
-                                                                    planState.sctx(),
+      doc = getStaticContext(planState)->get_document_uri_resolver()->resolve( uriItem,
+                                                                    getStaticContext(planState),
                                                                     false,
                                                                     false);
     } catch (error::ZorbaError& e) {

@@ -33,9 +33,9 @@ namespace zorba
 
 
 PlanIter_t
-fn_current_dateTime::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+fn_current_dateTime::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnCurrentDateTimeIterator(loc, argv);
+  return new FnCurrentDateTimeIterator(sctx, loc, argv);
 }
 
 
@@ -47,9 +47,9 @@ fn_current_dateTime::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
 
 
 PlanIter_t
-fn_current_date::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+fn_current_date::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnCurrentDateIterator(loc, argv);
+  return new FnCurrentDateIterator(sctx, loc, argv);
 }
 
 
@@ -61,9 +61,9 @@ fn_current_date::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, An
 
 
 PlanIter_t
-fn_current_time::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+fn_current_time::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnCurrentTimeIterator(loc, argv);
+  return new FnCurrentTimeIterator(sctx, loc, argv);
 }
 
 
@@ -75,9 +75,9 @@ fn_current_time::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, An
 
 
 PlanIter_t
-fn_implicit_timezone::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+fn_implicit_timezone::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnImplicitTimezoneIterator(loc, argv);
+  return new FnImplicitTimezoneIterator(sctx, loc, argv);
 }
 
 
@@ -89,9 +89,9 @@ fn_implicit_timezone::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& arg
 
 
 PlanIter_t
-fn_default_collation::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+fn_default_collation::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnDefaultCollationIterator(loc, argv);
+  return new FnDefaultCollationIterator(sctx, loc, argv);
 }
 
 

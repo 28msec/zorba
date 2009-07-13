@@ -43,7 +43,7 @@ private:
   bool theNegate;
 
 public:
-  FnBooleanIterator ( const QueryLoc& loc, PlanIter_t& aIter, bool aNegate = false );
+  FnBooleanIterator ( short sctx, const QueryLoc& loc, PlanIter_t& aIter, bool aNegate = false );
 
   /**
    * Static function which computes the effective boolean value of a passed iterator.
@@ -81,6 +81,7 @@ private:
       
 public:
   LogicIterator(
+        short sctx,
         const QueryLoc& loc,
         PlanIter_t aChild0,
         PlanIter_t aChild1,
@@ -106,6 +107,7 @@ private:
 
 public:
   CompareIterator (
+        short sctx,
         const QueryLoc& loc,
         PlanIter_t theChild0,
         PlanIter_t theChild1,
@@ -283,10 +285,11 @@ class TypedValueCompareIterator
   XQPCollator               * theCollation;
 
 public:
-  TypedValueCompareIterator (const QueryLoc& loc,
+  TypedValueCompareIterator (short sctx,
+                             const QueryLoc& loc,
                              std::vector<PlanIter_t>& children,
                              CompareConsts::CompareType aCompType)
-    : NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState> ( loc, children ), 
+    : NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState> ( sctx, loc, children ), 
       theCompType(aCompType), theTimezone (0)
   {}
 

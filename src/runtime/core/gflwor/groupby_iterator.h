@@ -44,7 +44,7 @@ public:
 
   ~GroupByState();
 
-  void init(PlanState& aState, std::vector<GroupingSpec>* groupingSpecs);
+  void init(PlanState& aState, static_context* sctx, std::vector<GroupingSpec>* groupingSpecs);
   void reset(PlanState& state );
 };
 
@@ -58,6 +58,7 @@ private:
 
 public:
   GroupByIterator (
+        short sctx,
         const QueryLoc& loc,
         PlanIter_t aTupleIterator,
         std::vector<GroupingSpec> aGroupingSpecs,

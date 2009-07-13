@@ -33,13 +33,14 @@ namespace flwor
 // theChild1 --> InputIterator
 
 OuterForIterator::OuterForIterator (
+    short sctx,
     const QueryLoc& loc,
     const store::Item_t& aVarName,
     PlanIter_t aTupleIterator,
     PlanIter_t aInput,
     const std::vector<PlanIter_t>& aOuterForVars) 
   :
-  BinaryBaseIterator<OuterForIterator, PlanIteratorState>(loc, aTupleIterator, aInput),
+  BinaryBaseIterator<OuterForIterator, PlanIteratorState>(sctx, loc, aTupleIterator, aInput),
   theVarName (aVarName)
 {
   castIterVector<ForVarIterator>(theOuterForVars, aOuterForVars);

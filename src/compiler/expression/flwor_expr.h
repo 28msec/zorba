@@ -88,6 +88,7 @@ public:
   } ClauseKind;
 
 protected:
+  short                     theContext;
   QueryLoc                  theLocation;
 
   ClauseKind                theKind;
@@ -98,8 +99,9 @@ protected:
 #endif
 
 public:
-  flwor_clause (const QueryLoc& loc, ClauseKind kind) 
+  flwor_clause (short sctx, const QueryLoc& loc, ClauseKind kind) 
     :
+    theContext(sctx),
     theLocation(loc),
     theKind(kind)
   {
@@ -168,6 +170,7 @@ protected:
 
 public:
   forletwin_clause(
+        short sctx,
         const QueryLoc& loc,
         ClauseKind kind,
         varref_t varExpr,
@@ -208,6 +211,7 @@ protected:
 
 public:
   for_clause(
+        short sctx,
         const QueryLoc& loc,
         varref_t varExpr,
         expr_t domainExpr,
@@ -258,6 +262,7 @@ protected:
 
 public:
   let_clause(
+        short sctx,
         const QueryLoc& loc,
         varref_t varExpr,
         expr_t domainExpr,
@@ -298,6 +303,7 @@ protected:
 
 public:
   window_clause(
+        short sctx,
         const QueryLoc& loc,
         window_t winKind,
         varref_t varExpr,
@@ -441,12 +447,13 @@ protected:
 
 public:
   group_clause(
+        short sctx,
         const QueryLoc& loc,
         const rebind_list_t& gvars,
         rebind_list_t ngvars,
         const std::vector<std::string>& collations)
     :
-    flwor_clause(loc, flwor_clause::group_clause),
+    flwor_clause(sctx, loc, flwor_clause::group_clause),
     theGroupVars(gvars),
     theNonGroupVars(ngvars),
     theCollations(collations)
@@ -492,12 +499,13 @@ protected:
 
 public:
   orderby_clause (
+        short sctx,
         const QueryLoc& loc,
         bool stable,
         const std::vector<order_modifier>& modifiers,
         const std::vector<expr_t>& orderingExprs)
     :
-    flwor_clause(loc, flwor_clause::order_clause),
+    flwor_clause(sctx, loc, flwor_clause::order_clause),
     theStableOrder(stable),
     theModifiers(modifiers),
     theOrderingExprs(orderingExprs)
@@ -561,9 +569,9 @@ protected:
   varref_t theVarExpr;
 
 public:
-  count_clause(const QueryLoc& loc, varref_t var) 
+  count_clause(short sctx, const QueryLoc& loc, varref_t var) 
     :
-    flwor_clause(loc, flwor_clause::count_clause),
+    flwor_clause(sctx, loc, flwor_clause::count_clause),
     theVarExpr(var)
   {
   }
@@ -586,9 +594,9 @@ class where_clause : public flwor_clause
   expr_t theWhereExpr;
 
 public:
-  where_clause(const QueryLoc& loc, expr_t where) 
+  where_clause(short sctx, const QueryLoc& loc, expr_t where) 
     :
-    flwor_clause(loc, flwor_clause::where_clause),
+    flwor_clause(sctx, loc, flwor_clause::where_clause),
     theWhereExpr(where)
   {
   }
@@ -623,9 +631,9 @@ protected:
   expr_t        theReturnExpr;
 
 public:
-  flwor_expr(const QueryLoc& loc, bool general) 
+  flwor_expr(short sctx, const QueryLoc& loc, bool general) 
     :
-    expr(loc),
+    expr(sctx, loc),
     theIsGeneral(general)
   {}
 

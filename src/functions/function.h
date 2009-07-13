@@ -97,7 +97,10 @@ public:
   int  get_arity() const { return sig.arg_count(); }
 
 	// codegen: functor specification
-	virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const = 0;
+	virtual PlanIter_t codegen (short sctx,
+                              const QueryLoc& loc,
+                              std::vector<PlanIter_t>& argv,
+                              AnnotationHolder &ann) const = 0;
 
   virtual bool requires_dyn_ctx () const { return false; }
 
@@ -153,15 +156,11 @@ public:
   void set_body(expr_t body);
   expr_t get_body() const;
 
-  // each user_function that was declared in a library module
-  // needs to know the static context in which it was compiled.
-  void set_context(static_context*);
-  static_context* get_context() const;
-
   void set_params(std::vector<var_expr_t>& params);
   const std::vector<var_expr_t>& get_params() const;
 
-  virtual PlanIter_t codegen(const QueryLoc& loc,
+  virtual PlanIter_t codegen(short sctx,
+                             const QueryLoc& loc,
                              std::vector<PlanIter_t>& argv,
                              AnnotationHolder &ann) const;
 
@@ -190,11 +189,6 @@ private:
   mutable PlanIter_t                m_plan;
   mutable std::vector<LetVarIter_t> m_param_iters;
   mutable int32_t                   m_state_size;
-
-  // sctxt in which the function was compiled in case
-  // of library modules or zero if the function is declared
-  // in the main module.
-  static_context*                   m_context;
 };
 
 

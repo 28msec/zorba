@@ -130,6 +130,7 @@ public:
   typedef substitution_t::iterator subst_iter_t;
 
 protected:
+  short    context;
   QueryLoc loc;
 
   // Pitfall when using the cache -- AVOID THIS SCENARIO:
@@ -166,6 +167,8 @@ public:
   const QueryLoc &get_loc() const { return loc; }
   void set_loc(const QueryLoc& aLoc) { loc = aLoc; }
 
+  short get_cur_sctx() const { return context; }
+
   virtual expr_iterator expr_begin ();
   virtual void accept(expr_visitor&);
   virtual void accept_children(expr_visitor &v);
@@ -190,7 +193,7 @@ public:
   virtual expr_update_t get_update_type () const;
 
 protected:
-  expr(const QueryLoc&);
+  expr(short, const QueryLoc&);
 
   virtual expr_iterator_data *make_iter ();
 };

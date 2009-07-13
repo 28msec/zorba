@@ -160,6 +160,7 @@ void OrderByState::clearSortTable()
 
 
 OrderByIterator::OrderByIterator (
+    short sctx,
     const QueryLoc& aLoc,
     bool stable,
     std::vector<OrderSpec>& orderSpecs,
@@ -169,7 +170,7 @@ OrderByIterator::OrderByIterator (
     std::vector<std::vector<ForVarIter_t> >& outputForVarsRefs,
     std::vector<std::vector<LetVarIter_t> >& outputLetVarsRefs) 
   :
-  Batcher<OrderByIterator>(aLoc),
+  Batcher<OrderByIterator>(sctx, aLoc),
   theStable(stable),
   theOrderSpecs(orderSpecs),
   theTupleIter(tupleIterator),
@@ -243,7 +244,7 @@ void OrderByIterator::openImpl(PlanState& planState, uint32_t& aOffset)
 
     if (! theOrderSpecs[i].theCollation.empty())
     {
-      theOrderSpecs[i].theCollator = planState.theRuntimeCB->theCollationCache->
+      theOrderSpecs[i].theCollator = getStaticContext(planState)->get_collation_cache()->
                                      getCollator(theOrderSpecs[i].theCollation);
     }
   }
@@ -294,7 +295,7 @@ bool OrderByIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   }
 
   {
-  SortTupleCmp cmp(planState.theRuntimeCB, &theOrderSpecs);
+  SortTupleCmp cmp(planState.theRuntimeCB, getStaticContext(planState), &theOrderSpecs);
 
   if (theStable)
   {

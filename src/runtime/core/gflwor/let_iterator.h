@@ -33,6 +33,7 @@ private:
   
 public:
   LetIterator ( 
+        short sctx,
         const QueryLoc& aLoc,  
         store::Item_t aVarName, 
         PlanIter_t aTupleIter, 

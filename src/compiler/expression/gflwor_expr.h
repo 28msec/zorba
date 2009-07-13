@@ -36,10 +36,11 @@ public:
   typedef std::vector<std::pair <varref_t, varref_t> > rebind_list_t;
 
 protected:
+  short    sctx;
   QueryLoc loc;
 
 public:
-  gflwor_clause (const QueryLoc &loc_) : loc (loc_) {}
+  gflwor_clause (short sctx_, const QueryLoc &loc_) : sctx(sctx_), loc (loc_) {}
 
   const QueryLoc &get_loc () const { return loc; }
 };
@@ -151,9 +152,9 @@ class where_gclause : public gflwor_clause
   expr_t where;
 
 public:
-  where_gclause (const QueryLoc &loc_, expr_t where_) 
+  where_gclause (short sctx_, const QueryLoc &loc_, expr_t where_) 
     :
-    gflwor_clause (loc_),
+    gflwor_clause (sctx_, loc_),
     where (where_)
   {
   }
@@ -172,9 +173,9 @@ class count_gclause : public gflwor_clause
   varref_t var;
 
 public:
-  count_gclause (const QueryLoc &loc_, varref_t var_) 
+  count_gclause (short sctx_, const QueryLoc &loc_, varref_t var_) 
     :
-    gflwor_clause (loc_),
+    gflwor_clause (sctx_, loc_),
     var (var_)
   {
   }
@@ -200,9 +201,15 @@ protected:
   rebind_list_t rebind_list;
 
 public:
-  orderby_gclause (const QueryLoc &loc_, ParseConstants::dir_spec_t _dir, StaticContextConsts::order_empty_mode_t _empty_mode, std::string _collation, bool stable_, expr_t order_)
+  orderby_gclause (short sctx_,
+                   const QueryLoc &loc_,
+                   ParseConstants::dir_spec_t _dir,
+                   StaticContextConsts::order_empty_mode_t _empty_mode,
+                   std::string _collation,
+                   bool stable_,
+                   expr_t order_)
     :
-    gflwor_clause (loc_),
+    gflwor_clause (sctx_, loc_),
     dir (_dir),
     empty_mode (_empty_mode),
     collation (_collation),
@@ -246,8 +253,15 @@ protected:
   std::vector<std::string> theCollations;
 
 public:
-  group_gclause(const QueryLoc &loc_, const rebind_list_t &inner_rebind_, rebind_list_t outer_rebind_, const std::vector<std::string> &aCollations_)
-    : gflwor_clause (loc_), inner_rebind (inner_rebind_), outer_rebind (outer_rebind_), theCollations(aCollations_) {}
+  group_gclause(short sctx_,
+                const QueryLoc &loc_,
+                const rebind_list_t &inner_rebind_,
+                rebind_list_t outer_rebind_,
+                const std::vector<std::string> &aCollations_)
+    : gflwor_clause (sctx_, loc_),
+      inner_rebind (inner_rebind_),
+      outer_rebind (outer_rebind_),
+      theCollations(aCollations_) {}
 
   const std::vector<std::string> &getCollations() const { return theCollations; }
   const rebind_list_t &get_inner_rebind () const { return inner_rebind; }
@@ -273,7 +287,9 @@ protected:
   expr_t        retval_h;
 
 public:
-  gflwor_expr(const QueryLoc &loc_, expr_t retval_) : expr (loc_), retval_h (retval_) {}
+  gflwor_expr(short sctx_,
+              const QueryLoc &loc_,
+              expr_t retval_) : expr (sctx_, loc_), retval_h (retval_) {}
 
   expr_kind_t get_expr_kind () const { return gflwor_expr_kind; }
 

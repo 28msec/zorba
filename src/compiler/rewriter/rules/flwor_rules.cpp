@@ -141,10 +141,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       expr_t oldWhere = whereExpr;
       flwor.remove_where_clause();
 
-      return fix_if_annotations(new if_expr(LOC(node),
+      return fix_if_annotations(new if_expr(node->get_cur_sctx(), LOC(node),
                                             oldWhere,
                                             &flwor,
-                                            fo_expr::create_seq (LOC(node))));
+                                            fo_expr::create_seq (node->get_cur_sctx(), LOC(node))));
     }
   }
 
@@ -185,13 +185,13 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       if (is_let || quant_cnt < 2) 
       {
         if (quant_cnt == 0)
-          return fo_expr::create_seq (LOC(node));
+          return fo_expr::create_seq (node->get_cur_sctx(), LOC(node));
 
         if (pvar != NULL)
           MODIFY(subst_vars(rCtx,
                             node,
                             pvar,
-                            new const_expr(LOC(node), xqp_integer::parseInt(1))));
+                            new const_expr(node->get_cur_sctx(), LOC(node), xqp_integer::parseInt(1))));
 
         int uses = count_variable_uses(&flwor, var, 2);
         if (uses > 1)
@@ -257,10 +257,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     expr_t result = flwor.get_return_expr();
     expr* whereExpr;
     if ((whereExpr = flwor.get_where()) != NULL)
-      result = fix_if_annotations(new if_expr(LOC(whereExpr),
+      result = fix_if_annotations(new if_expr(whereExpr->get_cur_sctx(), LOC(whereExpr),
                                               whereExpr,
                                               result,
-                                              fo_expr::create_seq(LOC(whereExpr))));
+                                              fo_expr::create_seq(whereExpr->get_cur_sctx(), LOC(whereExpr))));
     return result;
   }
 
@@ -542,11 +542,11 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
       refactor_index_pred(rCtx, whereExpr, pvar, pos) &&
       count_variable_uses(flwor, pvar, 2) <= 1) 
   {
-    rchandle<fo_expr> result = new fo_expr (LOC(whereExpr),
+    rchandle<fo_expr> result = new fo_expr (whereExpr->get_cur_sctx(), LOC(whereExpr),
                                             LOOKUP_FN("fn", "subsequence", 3),
                                             pvar->get_for_clause()->get_expr(),
                                             &*pos,
-                                            new const_expr(LOC(pos),
+                                            new const_expr(pos->get_cur_sctx(), LOC(pos),
                                                             xqp_double::parseInt(1)));
     fix_annotations(&*result);
     for_clause* clause = pvar->get_for_clause();
@@ -605,7 +605,7 @@ static bool refactor_index_pred(
       {
         store::Item_t pVal;
         GenericCast::instance()->promote(pVal, val, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
-        pos_expr = new const_expr(LOC(pos_expr), pVal);
+        pos_expr = new const_expr(pos_expr->get_cur_sctx(), LOC(pos_expr), pVal);
         return true;
       }
     }

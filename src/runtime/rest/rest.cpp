@@ -168,11 +168,15 @@ bool createQNameHelper(store::Item_t& result, xqpString name)
   return GENV_ITEMFACTORY->createQName(result, ns.getStore(), pre.getStore(), name.getStore());
 }
     
-bool createNodeHelper(store::Item_t parent, PlanState& planState, xqpString name, store::Item_t* result = NULL)
+bool createNodeHelper(store::Item_t parent,
+    PlanState& planState,
+    static_context* sctx,
+    xqpString name,
+    store::Item_t* result = NULL)
 {
   store::Item_t qname, temp_result, type_qname;
   store::NsBindings bindings;
-  xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->final_baseuri().getStore();
+  xqpStringStore_t baseUri = sctx->final_baseuri().getStore();
   createQNameHelper(qname, name);
   createTypeHelper(type_qname, "untyped");
   bool status = GENV_ITEMFACTORY->createElementNode(
@@ -249,6 +253,7 @@ static int readSome(std::istream& stream, char *buffer, int maxlen) {
 int processReply(const QueryLoc& aLoc,
                  store::Item_t& result,
                  PlanState& planState,
+                 static_context* sctx,
                  xqpString& lUriString,
                  int code,
                  std::vector<std::string>& headers,
@@ -261,18 +266,18 @@ int processReply(const QueryLoc& aLoc,
   store::Item_t payload, error_node, headers_node, text_code, status_code;
   store::Item_t doc = NULL;
 
-  createNodeHelper(NULL, planState, "result", &result); 
-  createNodeHelper(result, planState, "status-code", &status_code);
+  createNodeHelper(NULL, planState, sctx, "result", &result); 
+  createNodeHelper(result, planState, sctx, "status-code", &status_code);
   if (headers.size() == 0)
   { 
     // No headers -- create error message node
     xqpStringStore_t temp = new xqpStringStore(theStreamBuffer->getErrorBuffer());
-    createNodeHelper(result, planState, "error-message", &error_node);
+    createNodeHelper(result, planState, sctx, "error-message", &error_node);
     GENV_ITEMFACTORY->createTextNode(text_code, error_node, -1, temp);
   }
-  createNodeHelper(result, planState, "headers", &headers_node);
+  createNodeHelper(result, planState, sctx, "headers", &headers_node);
   if (!ignore_payload)
-    createNodeHelper(result, planState, "payload", &payload);
+    createNodeHelper(result, planState, sctx, "payload", &payload);
 
   if (headers.size() == 0)
   {
@@ -293,7 +298,7 @@ int processReply(const QueryLoc& aLoc,
       if (pos > -1)
       {
         store::Item_t header, header_value;
-        createNodeHelper(headers_node, planState, "header", &header);
+        createNodeHelper(headers_node, planState, sctx, "header", &header);
 
         xqpString name_string = headers.operator[](i).substr(0, pos);
         createAttributeHelper(header, "name", name_string);
@@ -910,6 +915,7 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
   processReply(loc,
                result,
                planState,
+               getStaticContext(planState),
                Uri,
                code,
                *state->headers,
@@ -979,7 +985,15 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
   headers_list = curl_slist_append(headers_list , expect_buf);
   curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
   code = state->theStreamBuffer->multi_perform();
-  processReply(loc, result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL);
+  processReply(loc,
+      result,
+      planState,
+      getStaticContext(planState),
+      Uri,
+      code,
+      *state->headers,
+      state->theStreamBuffer.getp(),
+      NULL);
   
   curl_formfree(first);
   curl_slist_free_all(headers_list);
@@ -1041,7 +1055,15 @@ bool ZorbaRestPutIterator::nextImpl(store::Item_t& result, PlanState& planState)
   headers_list = curl_slist_append(headers_list , expect_buf);
   curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
   code = state->theStreamBuffer->multi_perform();
-  processReply(loc, result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL);
+  processReply(loc,
+      result,
+      planState,
+      getStaticContext(planState),
+      Uri,
+      code,
+      *state->headers,
+      state->theStreamBuffer.getp(),
+      NULL);
   
   curl_formfree(first);
   curl_slist_free_all(headers_list);
@@ -1092,7 +1114,16 @@ bool ZorbaRestDeleteIterator::nextImpl(store::Item_t& result, PlanState& planSta
 #endif
 #endif
   code = state->theStreamBuffer->multi_perform();
-  processReply(loc, result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL, true);
+  processReply(loc,
+      result,
+      planState,
+      getStaticContext(planState),
+      Uri,
+      code,
+      *state->headers,
+      state->theStreamBuffer.getp(),
+      NULL,
+      true);
   
   curl_slist_free_all(headers_list);
   cleanupConnection(state);
@@ -1142,7 +1173,16 @@ bool ZorbaRestHeadIterator::nextImpl(store::Item_t& result, PlanState& planState
 #endif
 #endif
   code = state->theStreamBuffer->multi_perform();
-  processReply(loc, result, planState, Uri, code, *state->headers, state->theStreamBuffer.getp(), NULL, true);
+  processReply(loc,
+      result,
+      planState,
+      getStaticContext(planState),
+      Uri,
+      code,
+      *state->headers,
+      state->theStreamBuffer.getp(),
+      NULL,
+      true);
   
   curl_slist_free_all(headers_list);
   cleanupConnection(state);

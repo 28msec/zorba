@@ -46,6 +46,7 @@ protected:
 
 public:
 	ft_expr(
+    short sctx,
 		const QueryLoc&,
 		rchandle<ft_expr>,
 		rchandle<ft_options>);
@@ -73,7 +74,7 @@ protected:
 	std::vector<rchandle<ft_expr> > ft_and_expr_hv;
 
 public:
-	ft_or_expr(const QueryLoc&);
+	ft_or_expr(short sctx, const QueryLoc&);
 	~ft_or_expr();
 
 public:
@@ -109,7 +110,7 @@ protected:
 	std::vector<rchandle<ft_expr> > ft_mildnot_expr_hv;
 
 public:
-	ft_and_expr(const QueryLoc&);
+	ft_and_expr(short sctx, const QueryLoc&);
 	~ft_and_expr();
 
 public:
@@ -145,7 +146,7 @@ protected:
 	std::vector<rchandle<ft_expr> > ft_unary_expr_hv;
 
 public:
-	ft_mildnot_expr(const QueryLoc&);
+	ft_mildnot_expr(short sctx, const QueryLoc&);
 	~ft_mildnot_expr();
 
 public:
@@ -183,6 +184,7 @@ protected:
 
 public:
 	ft_words_expr(
+    short sctx,
 		const QueryLoc&,
 		rchandle<expr>,
 		ParseConstants::ft_anyall_option_t);
@@ -218,6 +220,7 @@ protected:
 
 public:
 	ft_words_selection_expr(
+    short sctx,
 		const QueryLoc&,
 		rchandle<ft_words_expr>,
 		rchandle<expr> src_h,
@@ -225,6 +228,7 @@ public:
 		ParseConstants::ft_range_mode_t range_mode);
 
 	ft_words_selection_expr(
+    short sctx,
 		const QueryLoc&,
 		rchandle<ft_expr>);
 	
@@ -257,6 +261,7 @@ protected:
 
 public:
 	ft_unarynot_expr(
+    short sctx,
 		const QueryLoc&,
 		rchandle<ft_words_selection_expr>,
 		bool not_b);

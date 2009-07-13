@@ -111,16 +111,6 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   block->theRuntimeCB->theDynamicContext = new dynamic_context (block->theRuntimeCB->theDynamicContext);
   block->theCompilerCB = planState.theCompilerCB;
 
-  // if the function was imported from a module,
-  // we have to use the sctx in which the function was compiled.
-  // The context of the function is 0 if the function was declared
-  // in the main module.
-  static_context* lCtxt = theUDF->get_context();
-  if (lCtxt) {
-    block->theRuntimeCB->theStaticContext = theUDF->get_context();
-    block->theCompilerCB->m_sctx = theUDF->get_context();
-  }
-
   block->checkDepth (loc);
   state->theFnBodyStateBlock = block.release();
 }
@@ -280,13 +270,14 @@ void StatelessExtFunctionCallIteratorState::reset(PlanState& planState)
 }
 
 
-StatelessExtFunctionCallIterator::StatelessExtFunctionCallIterator(const QueryLoc& loc,
+StatelessExtFunctionCallIterator::StatelessExtFunctionCallIterator(short sctx,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& args,
     const StatelessExternalFunction *function,
     bool aIsUpdating)
   :
   NaryBaseIterator<StatelessExtFunctionCallIterator, 
-                   StatelessExtFunctionCallIteratorState>(loc, args),
+                   StatelessExtFunctionCallIteratorState>(sctx, loc, args),
   m_function(function),
   theIsUpdating(aIsUpdating) 
 { 

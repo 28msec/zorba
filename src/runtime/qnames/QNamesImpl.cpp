@@ -355,10 +355,10 @@ NamespaceUriForPrefixIterator::nextImpl(store::Item_t& result, PlanState& planSt
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (!consumeNext(itemPrefix, theChildren[0].getp(), planState ))
-    resNs = planState.theRuntimeCB->theStaticContext->default_elem_type_ns().getStore();
+    resNs = getStaticContext(planState)->default_elem_type_ns().getStore();
   else {
     if (!consumeNext(itemElem, theChildren[1].getp(), planState ))
-      resNs = planState.theRuntimeCB->theStaticContext->default_elem_type_ns().getStore();
+      resNs = getStaticContext(planState)->default_elem_type_ns().getStore();
     else {
       itemElem->getNamespaceBindings(NamespaceBindings);
       for (

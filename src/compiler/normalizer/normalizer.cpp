@@ -26,40 +26,40 @@
 namespace zorba {
 
 #define LOOKUP_FN( pfx, local, arity ) (sctx->lookup_fn (pfx, local, arity))
-#define LOOKUP_OP1( local ) (m_sctx->lookup_builtin_fn (":" local, 1))
+#define LOOKUP_OP1( local ) (m_cb->m_sctx->lookup_builtin_fn (":" local, 1))
 
 
-static inline expr::expr_t wrap_in_bev(static_context *sctx, expr::expr_t e)
+static inline expr::expr_t wrap_in_bev(short context, static_context *sctx, expr::expr_t e)
 {
-  expr::expr_t fh(new fo_expr(e->get_loc(), LOOKUP_FN("fn", "boolean", 1)));
+  expr::expr_t fh(new fo_expr(context, e->get_loc(), LOOKUP_FN("fn", "boolean", 1)));
   fo_expr *fp = static_cast<fo_expr *>(fh.getp());
   fp->add(e);
   return fh;
 }
 
 
-static inline expr::expr_t wrap_in_atomization(static_context *sctx, expr::expr_t e)
+static inline expr::expr_t wrap_in_atomization(short context, static_context *sctx, expr::expr_t e)
 {
-  expr::expr_t fh(new fo_expr(e->get_loc(), LOOKUP_FN("fn", "data", 1)));
+  expr::expr_t fh(new fo_expr(context, e->get_loc(), LOOKUP_FN("fn", "data", 1)));
   fo_expr *fp = static_cast<fo_expr *>(fh.getp());
   fp->add(e);
   return fh;
 }
 
 
-static inline expr::expr_t wrap_in_typematch(expr::expr_t e, xqtref_t type)
+static inline expr::expr_t wrap_in_typematch(short context, expr::expr_t e, xqtref_t type)
 {
   // treat_expr should be avoided for updating expressions too,
   // but in that case "type" will be item()* anyway
   return TypeOps::is_subtype(*GENV_TYPESYSTEM.ITEM_TYPE_STAR, *type)
     ? e
-    : new treat_expr (e->get_loc (), e, type, XPTY0004);
+    : new treat_expr (context, e->get_loc (), e, type, XPTY0004);
 }
 
 
-static inline expr::expr_t wrap_in_type_conversion(expr::expr_t e, xqtref_t type)
+static inline expr::expr_t wrap_in_type_conversion(short context, expr::expr_t e, xqtref_t type)
 {
-  expr::expr_t ph = new promote_expr(e->get_loc(), e, type);
+  expr::expr_t ph = new promote_expr(context, e->get_loc(), e, type);
   // TODO : Need to add convert_simple_operand
   return ph;
 }
@@ -74,10 +74,11 @@ static inline void checkNonUpdating(const expr* lExpr)
 
 class normalizer : public expr_visitor 
 {
-  static_context *m_sctx;
+  CompilerCB*     m_cb;
 
 public:
-  normalizer(CompilerCB* aCompilerCB) : m_sctx(aCompilerCB->m_sctx) { }
+  normalizer(CompilerCB* aCompilerCB) 
+    : m_cb(aCompilerCB) {}
   ~normalizer() { }
 
 #define DEF_VISIT_METHODS( e )                  \
@@ -103,12 +104,12 @@ DEF_VISIT_METHODS (eval_expr)
 DEF_VISIT_METHODS (typeswitch_expr)
 
 
-void wrap_flwor_wincond(static_context* sctx, flwor_wincond* c) 
+void wrap_flwor_wincond(short context, static_context* sctx, flwor_wincond* c) 
 {
   if (c == NULL)
     return;
 
-  c->set_cond(wrap_in_bev(sctx, c->get_cond()));
+  c->set_cond(wrap_in_bev(context, sctx, c->get_cond()));
 }
 
 
@@ -127,7 +128,7 @@ void end_visit(flwor_expr& node)
     if (c.get_kind() == flwor_clause::where_clause) 
     {
       where_clause* wc = static_cast<where_clause *>(&c);
-      wc->set_where(wrap_in_bev(m_sctx, wc->get_where()));
+      wc->set_where(wrap_in_bev(m_cb->m_cur_sctx, m_cb->m_sctx.getp(), wc->get_where()));
     }
     else if (c.get_kind() == flwor_clause::order_clause)
     {
@@ -137,7 +138,7 @@ void end_visit(flwor_expr& node)
 
       for (unsigned i = 0; i < numColumns; ++i)
       { 
-        obc->set_column_expr(i, wrap_in_atomization(m_sctx, obc->get_column_expr(i)));
+        obc->set_column_expr(i, wrap_in_atomization(m_cb->m_cur_sctx, m_cb->m_sctx.getp(), obc->get_column_expr(i)));
       }
     }
     else if (c.get_kind() == flwor_clause::for_clause)
@@ -150,11 +151,11 @@ void end_visit(flwor_expr& node)
         if (TypeOps::is_empty(*vartype))
           ZORBA_ERROR_LOC_PARAM(XPTY0004, fc->get_loc(), "empty-sequence()", "");
 
-        xqtref_t promote_type = m_sctx->get_typemanager()->
+        xqtref_t promote_type = m_cb->m_sctx->get_typemanager()->
                                 create_type(*vartype, TypeConstants::QUANT_STAR);
 
         expr_t e = fc->get_expr();
-        fc->set_expr(wrap_in_typematch(e, promote_type));
+        fc->set_expr(wrap_in_typematch(m_cb->m_cur_sctx, e, promote_type));
       }
     }
     else if (c.get_kind() == flwor_clause::let_clause)
@@ -165,7 +166,7 @@ void end_visit(flwor_expr& node)
       if (vartype != NULL) 
       {
         expr_t e = lc->get_expr();
-        lc->set_expr(wrap_in_typematch(e, vartype));
+        lc->set_expr(wrap_in_typematch(m_cb->m_cur_sctx, e, vartype));
       }
     }
     else if (c.get_kind() == flwor_clause::window_clause)
@@ -176,11 +177,11 @@ void end_visit(flwor_expr& node)
       if (vartype != NULL) 
       {
         expr_t e = wc->get_expr();
-        wc->set_expr(wrap_in_typematch(e, vartype));
+        wc->set_expr(wrap_in_typematch(m_cb->m_cur_sctx, e, vartype));
       }
 
-      wrap_flwor_wincond(m_sctx, wc->get_win_start());
-      wrap_flwor_wincond(m_sctx, wc->get_win_stop());
+      wrap_flwor_wincond(m_cb->m_cur_sctx, m_cb->m_sctx, wc->get_win_start());
+      wrap_flwor_wincond(m_cb->m_cur_sctx, m_cb->m_sctx, wc->get_win_stop());
     }
   }
 }
@@ -213,7 +214,7 @@ bool begin_visit (trycatch_expr& node)
 void end_visit (if_expr&) {}
 bool begin_visit (if_expr& node)
 {
-  node.set_cond_expr(wrap_in_bev(m_sctx, node.get_cond_expr()));
+  node.set_cond_expr(wrap_in_bev(m_cb->m_cur_sctx, m_cb->m_sctx, node.get_cond_expr()));
   return true;
 }
 
@@ -239,12 +240,12 @@ bool begin_visit (fo_expr& node)
 
     if (TypeOps::is_subtype(*param_prime_type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE)) 
     {
-      param = wrap_in_atomization(m_sctx, param);
-      param = wrap_in_type_conversion(param, param_type);
+      param = wrap_in_atomization(m_cb->m_cur_sctx, m_cb->m_sctx, param);
+      param = wrap_in_type_conversion(m_cb->m_cur_sctx, param, param_type);
     }
     else
     {
-      param = wrap_in_typematch(param, param_type);
+      param = wrap_in_typematch(m_cb->m_cur_sctx, param, param_type);
     }
 
     node[i] = param;
@@ -281,7 +282,7 @@ bool begin_visit (cast_expr& node)
 {
   checkNonUpdating(&*node.get_input());
 
-  expr_t arg = wrap_in_atomization(m_sctx, node.get_input());
+  expr_t arg = wrap_in_atomization(m_cb->m_cur_sctx, m_cb->m_sctx, node.get_input());
 
   node.set_input(arg);
 
@@ -326,7 +327,7 @@ bool begin_visit (relpath_expr& node)
 {
   if (node.size() > 0) {
     expr_t ie = node[0];
-    expr_t pe = new treat_expr(ie->get_loc(), ie, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, XPTY0019);
+    expr_t pe = new treat_expr(m_cb->m_cur_sctx, ie->get_loc(), ie, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, XPTY0019);
     node[0] = pe;
   }
   return true;
@@ -373,11 +374,11 @@ bool begin_visit (attr_expr& node)
       function* lTestFunc = LOOKUP_OP1("enclosed-expr");
       if (lFoExpr->get_func() == lTestFunc)
       {
-        (*lFoExpr)[0] = wrap_in_atomization(m_sctx, (*lFoExpr)[0].getp());
+        (*lFoExpr)[0] = wrap_in_atomization(m_cb->m_cur_sctx, m_cb->m_sctx, (*lFoExpr)[0].getp());
         return true;
       }
     }
-    node.setValueExpr(wrap_in_atomization(m_sctx, node.getValueExpr()));
+    node.setValueExpr(wrap_in_atomization(m_cb->m_cur_sctx, m_cb->m_sctx, node.getValueExpr()));
   }
 
   return true;
@@ -429,12 +430,12 @@ void normalize_expr_tree(
   {
     if (TypeOps::is_builtin_simple(*rType)) 
     {
-      root = wrap_in_atomization(aCompilerCB->m_sctx, root);
-      root = wrap_in_type_conversion(root, rType);
+      root = wrap_in_atomization(aCompilerCB->m_cur_sctx, aCompilerCB->m_sctx, root);
+      root = wrap_in_type_conversion(aCompilerCB->m_cur_sctx, root, rType);
     }
     else 
     {
-      root = wrap_in_typematch (root, rType);
+      root = wrap_in_typematch (aCompilerCB->m_cur_sctx, root, rType);
     }
   }
 

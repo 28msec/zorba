@@ -166,7 +166,8 @@ static_context::static_context()
   theColResolver(0),
   theSchemaResolver(0),
   theModuleResolver(0),
-  theTraceStream(&std::cerr)
+  theTraceStream(&std::cerr),
+  theCollationCache(0)
 {
   set_encapsulating_entity_baseuri ("");
   set_entity_retrieval_url ("");
@@ -180,7 +181,8 @@ static_context::static_context (static_context *_parent)
   theColResolver(0),
   theSchemaResolver(0),
   theModuleResolver(0),
-  theTraceStream(&std::cerr)
+  theTraceStream(&std::cerr),
+  theCollationCache(0)
 {
   if (parent != NULL)
     RCHelper::addReference (parent);
@@ -192,6 +194,8 @@ static_context::~static_context()
   //debug
   //test_obj.use_me();
   //end debug
+  //
+  delete theCollationCache;
 
   ///free the pointers from ctx_value_t from keymap
   checked_vector<hashmap<ctx_value_t>::entry>::const_iterator   it;
@@ -789,14 +793,12 @@ XQPCollator* static_context::create_collator(const xqp_string& aURI)
 
 CollationCache* static_context::get_collation_cache() 
 {
-  return new CollationCache(this);
+  if (!theCollationCache)
+    theCollationCache = new CollationCache(this);
+
+  return  theCollationCache;
 }
 
-
-void static_context::release_collation_cache(CollationCache* aCache)
-{
-  delete aCache;
-}
 
 
 /*******************************************************************************

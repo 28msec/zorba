@@ -28,7 +28,8 @@ namespace flwor
 
     class WhereIterator : public BinaryBaseIterator<WhereIterator, PlanIteratorState> {
       public:
-        WhereIterator ( const QueryLoc& aLoc,
+        WhereIterator ( short sctx,
+                      const QueryLoc& aLoc,
                       PlanIter_t aTupleIterator,
                       PlanIter_t aWhereClause);
         ~WhereIterator();

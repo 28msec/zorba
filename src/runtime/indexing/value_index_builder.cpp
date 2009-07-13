@@ -30,7 +30,7 @@ bool CreateValueIndex::nextImpl(store::Item_t& result, PlanState& planState) con
 
   status = consumeNext(result, theChild, planState);
   ZORBA_ASSERT(status);
-  indexSpec = planState.sctx()->lookup_index(result->getStringValueP());
+  indexSpec = getStaticContext(planState)->lookup_index(result->getStringValueP());
 
   {
     const std::vector<xqtref_t>& iTypes(indexSpec->getIndexFieldTypes());
@@ -38,7 +38,7 @@ bool CreateValueIndex::nextImpl(store::Item_t& result, PlanState& planState) con
     int n = iTypes.size();
     store::IndexSpecification spec(n);
     xqp_string dColl;
-    std::string dCollString(planState.sctx()->lookup_default_collation(dColl) ?
+    std::string dCollString(getStaticContext(planState)->lookup_default_collation(dColl) ?
                             dColl.getStore()->str() : "");
     for(int i = 0; i < n; ++i) 
     {

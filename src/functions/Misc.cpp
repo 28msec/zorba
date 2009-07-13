@@ -22,9 +22,9 @@ using namespace std;
 
 namespace zorba {
 
-PlanIter_t fn_trace_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_trace_func::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnTraceIterator ( loc, argv );
+  return new FnTraceIterator ( sctx, loc, argv );
 }
 
 
@@ -33,9 +33,9 @@ PlanIter_t fn_trace_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>&
   3 The Error Function
 ********************************************************************************/
 
-PlanIter_t fn_error::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_error::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnErrorIterator(loc, argv);
+  return new FnErrorIterator(sctx, loc, argv);
 }
 
 
@@ -43,19 +43,19 @@ PlanIter_t fn_error::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
   8.1 fn:resolve-uri
 ********************************************************************************/
 
-PlanIter_t fn_resolve_uri::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_resolve_uri::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnResolveUriIterator ( loc, argv );
+  return new FnResolveUriIterator ( sctx, loc, argv );
 }
 
-PlanIter_t fn_read_string::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_read_string::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnReadStringIterator (loc, argv);
+  return new FnReadStringIterator (sctx, loc, argv);
 }
 
-PlanIter_t fn_print::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_print::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnPrintIterator (loc, argv);
+  return new FnPrintIterator (sctx, loc, argv);
 }
 
 

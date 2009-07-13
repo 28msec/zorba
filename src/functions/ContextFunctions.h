@@ -31,7 +31,7 @@ namespace zorba
   public:
     fn_current_dateTime(const signature& sig) : function (sig) {}
      
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
   };
@@ -42,7 +42,7 @@ namespace zorba
   public:
     fn_current_date(const signature& sig) : function (sig) {}
      
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
   };
@@ -53,7 +53,7 @@ namespace zorba
   public:
     fn_current_time(const signature& sig) : function (sig) {}
      
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
   };
@@ -64,7 +64,7 @@ namespace zorba
   public:
     fn_implicit_timezone(const signature& sig) : function (sig) {}
      
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
   };
@@ -75,7 +75,7 @@ namespace zorba
   public:
     fn_default_collation(const signature& sig) : function (sig) {}
      
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
   };

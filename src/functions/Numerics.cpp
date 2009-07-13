@@ -57,8 +57,8 @@ class bin_num_specific_arith_func_base : public bin_num_arith_func
 {
 public:
   bin_num_specific_arith_func_base (const signature &sig) : bin_num_arith_func (sig) {}
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-    return new SpecificNumArithIterator<op, t> (loc, argv[0], argv[1]);
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
+    return new SpecificNumArithIterator<op, t> (sctx, loc, argv[0], argv[1]);
   }
 };
 
@@ -151,7 +151,7 @@ class op_numeric_add : public specializable_bin_num_arith_func
 public:
   const char *op_name () const { return "add"; }
   op_numeric_add(const signature &sig) : specializable_bin_num_arith_func (sig) {};
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen ( short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 // 6.2.2 op:numeric-subtract
@@ -161,7 +161,7 @@ class op_numeric_subtract : public specializable_bin_num_arith_func
 public:
   const char *op_name () const { return "subtract"; }
   op_numeric_subtract(const signature &sig) : specializable_bin_num_arith_func (sig) {};
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 
@@ -172,7 +172,7 @@ class op_numeric_multiply : public specializable_bin_num_arith_func
 public:
   const char *op_name () const { return "multiply"; }
   op_numeric_multiply(const signature &sig) : specializable_bin_num_arith_func (sig) {};
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 // 6.2.4 op:numeric-divide
@@ -182,7 +182,7 @@ class op_numeric_divide : public specializable_bin_num_arith_func
 public:
   const char *op_name () const { return "divide"; }
   op_numeric_divide(const signature &sig) : specializable_bin_num_arith_func (sig) {};
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const {
     return function::return_type (arg_types);
   }
@@ -194,7 +194,7 @@ class op_numeric_integer_divide : public bin_num_arith_func
 {
 public:
   op_numeric_integer_divide(const signature &sig) : bin_num_arith_func (sig) {};
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 // 6.2.6 op:numeric-mod
@@ -203,7 +203,7 @@ class op_numeric_mod : public bin_num_arith_func
 {
 public:
   op_numeric_mod(const signature &sig) : bin_num_arith_func (sig) {};
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 // 6.2.7 op:numeric-unary-plus
@@ -212,7 +212,7 @@ class op_numeric_unary_plus : public single_numeric_func
 {
 public:
   op_numeric_unary_plus(const signature&);
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 
@@ -222,7 +222,7 @@ class op_numeric_unary_minus : public single_numeric_func
 {
 public:
   op_numeric_unary_minus(const signature&);
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 
@@ -236,7 +236,7 @@ class fn_abs : public single_numeric_func
 {
 public:
   fn_abs(const signature&);
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 // 6.4.2 fn:ceiling
@@ -244,7 +244,7 @@ class fn_ceiling : public single_numeric_func
 {
   public:
     fn_ceiling(const signature&);
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 // 6.4.3 fn:floor
@@ -252,7 +252,7 @@ class fn_floor : public single_numeric_func
 {
   public:
     fn_floor(const signature&);
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 // 6.4.4 fn:round
@@ -260,7 +260,7 @@ class fn_round : public single_numeric_func
 {
   public:
     fn_round(const signature&);
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 // 6.4.5 fn:round-half-to-even
@@ -268,7 +268,7 @@ class fn_round_half_to_even : public single_numeric_func
 {
   public:
     fn_round_half_to_even(const signature&);
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 
@@ -300,9 +300,9 @@ xqtref_t bin_num_arith_func::return_type (const std::vector<xqtref_t> &arg_types
 | NaN is returned.
 |_______________________________________________________________________*/
 
-PlanIter_t op_numeric_add::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t op_numeric_add::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new NumArithIterator<AddOperation>(loc, argv[0], argv[1]);
+  return new NumArithIterator<AddOperation>(sctx, loc, argv[0], argv[1]);
 }
 
 
@@ -325,9 +325,9 @@ PlanIter_t op_numeric_add::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
 | infinity of the appropriate sign is returned.
 |_______________________________________________________________________*/
 
-PlanIter_t op_numeric_subtract::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t op_numeric_subtract::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new NumArithIterator<SubtractOperation>(loc, argv[0], argv[1]);
+  return new NumArithIterator<SubtractOperation>(sctx, loc, argv[0], argv[1]);
 }
 
 
@@ -349,9 +349,9 @@ PlanIter_t op_numeric_subtract::codegen (const QueryLoc& loc, std::vector<PlanIt
 | appropriate sign is returned.
 |_______________________________________________________________________*/
 
-PlanIter_t op_numeric_multiply::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t op_numeric_multiply::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new NumArithIterator<MultiplyOperation>(loc, argv[0], argv[1]);
+  return new NumArithIterator<MultiplyOperation>(sctx, loc, argv[0], argv[1]);
 }
 
 
@@ -380,9 +380,9 @@ PlanIter_t op_numeric_multiply::codegen (const QueryLoc& loc, std::vector<PlanIt
 | returns NaN.
 |_______________________________________________________________________*/
 
-PlanIter_t op_numeric_divide::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t op_numeric_divide::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new NumArithIterator<DivideOperation>(loc, argv[0], argv[1]);
+  return new NumArithIterator<DivideOperation>(sctx, loc, argv[0], argv[1]);
 }
 
 
@@ -416,9 +416,9 @@ PlanIter_t op_numeric_divide::codegen (const QueryLoc& loc, std::vector<PlanIter
 | defined in programming languages such as Java and C++.
 |_______________________________________________________________________*/
 
-PlanIter_t op_numeric_integer_divide::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t op_numeric_integer_divide::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new NumArithIterator<IntegerDivideOperation>(loc, argv[0], argv[1]);
+  return new NumArithIterator<IntegerDivideOperation>(sctx, loc, argv[0], argv[1]);
 }
 
 
@@ -460,9 +460,9 @@ PlanIter_t op_numeric_integer_divide::codegen (const QueryLoc& loc, std::vector<
 |     required precision.
 |_______________________________________________________________________*/
 
-PlanIter_t op_numeric_mod::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t op_numeric_mod::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new NumArithIterator<ModOperation>(loc, argv[0], argv[1]);
+  return new NumArithIterator<ModOperation>(sctx, loc, argv[0], argv[1]);
 }
 
 
@@ -484,9 +484,9 @@ op_numeric_unary_plus::op_numeric_unary_plus(
 {
 }
 
-PlanIter_t op_numeric_unary_plus::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t op_numeric_unary_plus::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new OpNumericUnaryIterator(loc, argv[0], true);
+  return new OpNumericUnaryIterator(sctx, loc, argv[0], true);
 }
 
 
@@ -512,9 +512,9 @@ op_numeric_unary_minus::op_numeric_unary_minus(
 {
 }
 
-PlanIter_t op_numeric_unary_minus::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t op_numeric_unary_minus::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new OpNumericUnaryIterator(loc, argv[0], false);
+  return new OpNumericUnaryIterator(sctx, loc, argv[0], false);
 }
 
 
@@ -542,9 +542,9 @@ fn_abs::fn_abs(const signature& sig)
 {     
 }
 
-PlanIter_t fn_abs::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_abs::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnAbsIterator(loc, argv);
+  return new FnAbsIterator(sctx, loc, argv);
 }
 
 
@@ -555,9 +555,9 @@ fn_ceiling::fn_ceiling(const signature& sig)
 single_numeric_func(sig)
 {}
 
-PlanIter_t fn_ceiling::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_ceiling::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnCeilingIterator(loc, argv);
+  return new FnCeilingIterator(sctx, loc, argv);
 }
 
 
@@ -568,9 +568,9 @@ fn_floor::fn_floor(const signature& sig)
 single_numeric_func(sig)
 {}
 
-PlanIter_t fn_floor::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_floor::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnFloorIterator(loc, argv);
+  return new FnFloorIterator(sctx, loc, argv);
 }
 
 
@@ -580,9 +580,9 @@ fn_round::fn_round(const signature& sig)
 single_numeric_func(sig)
 {}
 
-PlanIter_t fn_round::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_round::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnRoundIterator(loc, argv);
+  return new FnRoundIterator(sctx, loc, argv);
 }
 
 
@@ -594,24 +594,24 @@ single_numeric_func(sig)
 {}
 
 PlanIter_t
-fn_round_half_to_even::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+fn_round_half_to_even::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnRoundHalfToEvenIterator(loc, argv);
+  return new FnRoundHalfToEvenIterator(sctx, loc, argv);
 }
 
 
 
-PlanIter_t zor_numgen::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t zor_numgen::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new ZorNumGen(loc);
+  return new ZorNumGen(sctx, loc);
 }
 
 class fn_sqrt : public single_numeric_func
 {
 public:
   fn_sqrt(const signature& sig) : single_numeric_func (sig) {}
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-    return new FnSQRTIterator(loc, argv);
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
+    return new FnSQRTIterator(sctx, loc, argv);
   }
 };
 
@@ -624,9 +624,9 @@ class fn_format_number_2 : public function
 {
 public:
   fn_format_number_2(const signature& sig) : function(sig) {};
-  PlanIter_t codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  PlanIter_t codegen(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
   {
-    return new FnFormatNumberIterator(loc, argv);
+    return new FnFormatNumberIterator(sctx, loc, argv);
   }
 };
 
@@ -634,9 +634,9 @@ class fn_format_number_3 : public function
 {
 public:
   fn_format_number_3(const signature& sig) : function(sig) {};
-  PlanIter_t codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  PlanIter_t codegen(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
   {
-    return new FnFormatNumberIterator(loc, argv);
+    return new FnFormatNumberIterator(sctx, loc, argv);
   }
 };
 

@@ -30,10 +30,11 @@ namespace zorba
 
 
 ForVarIterator::ForVarIterator(
+    short sctx,
     const QueryLoc& loc,
     const store::Item_t& name)
   : 
-  NoaryBaseIterator<ForVarIterator, ForVarState >(loc), 
+  NoaryBaseIterator<ForVarIterator, ForVarState >(sctx, loc), 
   theVarName(name)
 {
 }
@@ -93,10 +94,11 @@ void LetVarState::reset(PlanState& planState)
 
 
 LetVarIterator::LetVarIterator(
+    short sctx,
     const QueryLoc& loc,
     const store::Item_t& name)
   :
-  NoaryBaseIterator<LetVarIterator, LetVarState>(loc),
+  NoaryBaseIterator<LetVarIterator, LetVarState>(sctx, loc),
   theVarName(name)
 {
 }

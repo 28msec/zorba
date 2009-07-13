@@ -43,6 +43,7 @@ namespace zorba {
 	public:
 		FnDebugIterator(
 			ZorbaDebugger* debugger,
+      short sctx,
 			const QueryLoc& loc,
 			checked_vector<store::Item_t> varnames_,
 			checked_vector<std::string> var_keys_,

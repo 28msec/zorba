@@ -29,11 +29,12 @@ namespace zorba {
 //[344] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTSelection]
 
 ft_expr::ft_expr(
+  short sctx,
 	const QueryLoc& loc,
 	rchandle<ft_expr> _ft_or_h,
 	rchandle<ft_options> _ft_opt_h)
 :
-	expr(loc),
+	expr(sctx, loc),
 	ft_or_h(_ft_or_h),
 	ft_opt_h(_ft_opt_h)
 {
@@ -53,9 +54,10 @@ ostream& ft_expr::put(ostream& os) const
 //[345] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTOr]
 
 ft_or_expr::ft_or_expr(
+  short sctx,
 	const QueryLoc& loc)
 :
-	expr(loc)
+	expr(sctx, loc)
 {
 }
 
@@ -73,9 +75,10 @@ ostream& ft_or_expr::put(ostream& os) const
 //[346] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTAnd]
 
 ft_and_expr::ft_and_expr(
+  short sctx,
 	const QueryLoc& loc)
 :
-	expr(loc)
+	expr(sctx, loc)
 {
 }
 
@@ -93,9 +96,10 @@ ostream& ft_and_expr::put(ostream& os) const
 //[347] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTMildnot]
 
 ft_mildnot_expr::ft_mildnot_expr(
+  short sctx,
 	const QueryLoc& loc)
 :
-	expr(loc)
+	expr(sctx, loc)
 {
 }
 
@@ -113,11 +117,12 @@ ostream& ft_mildnot_expr::put(ostream& os) const
 //[348] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTUnaryNot]
 
 ft_unarynot_expr::ft_unarynot_expr(
+  short sctx,
 	const QueryLoc& loc,
 	rchandle<ft_words_selection_expr> _words_selection_h,
 	bool _not_b)
 :
-	expr(loc),
+	expr(sctx, loc),
 	words_selection_h(_words_selection_h),
 	not_b(_not_b)
 {
@@ -137,13 +142,14 @@ ostream& ft_unarynot_expr::put(ostream& os) const
 //[349] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTWordsSelection]
 
 ft_words_selection_expr::ft_words_selection_expr(
+  short sctx,
 	const QueryLoc& loc,
 	rchandle<ft_words_expr> _words_h,
 	rchandle<expr> _src_h,
 	rchandle<expr> _dst_h,
 	ParseConstants::ft_range_mode_t _range_mode)
 :
-	expr(loc),
+	expr(sctx, loc),
 	words_h(_words_h),
 	src_h(_src_h),
 	dst_h(_dst_h),
@@ -152,10 +158,11 @@ ft_words_selection_expr::ft_words_selection_expr(
 }
 
 ft_words_selection_expr::ft_words_selection_expr(
+  short sctx,
 	const QueryLoc& loc,
 	rchandle<ft_expr> _selection_h)
 :
-	expr(loc),
+	expr(sctx, loc),
 	selection_h(_selection_h)
 {
 }
@@ -174,11 +181,12 @@ ostream& ft_words_selection_expr::put(ostream& os) const
 //[350] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTWords]
 
 ft_words_expr::ft_words_expr(
+  short sctx,
 	const QueryLoc& loc,
 	rchandle<expr> _words_expr_h,
 	ParseConstants::ft_anyall_option_t _anyall_opt)
 :
-	expr(loc),
+	expr(sctx, loc),
 	words_expr_h(_words_expr_h),
 	anyall_opt(_anyall_opt)
 {

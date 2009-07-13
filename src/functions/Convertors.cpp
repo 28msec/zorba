@@ -20,28 +20,28 @@
 namespace zorba {
 //Json
 PlanIter_t
-zorba_json_parse::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_json_parse::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new ZorbaJsonParseIterator(loc, argv);
+  return new ZorbaJsonParseIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_json_serialize::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_json_serialize::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new ZorbaJsonSerializeIterator(loc, argv);
+  return new ZorbaJsonSerializeIterator(sctx, loc, argv);
 }
 
 //Json ML
 PlanIter_t
-zorba_json_ml_parse::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_json_ml_parse::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new ZorbaJsonMLParseIterator(loc, argv);
+  return new ZorbaJsonMLParseIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_json_ml_serialize::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_json_ml_serialize::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new ZorbaJsonMLSerializeIterator(loc, argv);
+  return new ZorbaJsonMLSerializeIterator(sctx, loc, argv);
 }
 }
 /* vim:set ts=2 sw=2: */

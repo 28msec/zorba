@@ -81,10 +81,13 @@
 
 #define QLOCDECL const QueryLoc &qloc = v.get_loc(); (void) qloc
 
+#define SCTXDECL short sctx = v.get_cur_sctx(); (void) sctx
+
 #ifndef NDEBUG
 
 #define CODEGEN_TRACE(msg)                      \
   QLOCDECL;                                     \
+  SCTXDECL;                                     \
   if (Properties::instance()->traceCodegen()) { \
     cout << (msg) << TRACE << ", stk size " << itstack.size () << endl; \
     cout << endl; \
@@ -100,7 +103,7 @@
   CODEGEN_TRACE (string (depth--, ' ') + msg)
 
 #else
-#define CODEGEN_TRACE(msg) QLOCDECL
+#define CODEGEN_TRACE(msg) QLOCDECL; SCTXDECL;
 #define CODEGEN_TRACE_IN(msg) CODEGEN_TRACE(msg)
 #define CODEGEN_TRACE_OUT(msg) CODEGEN_TRACE(msg)
 #endif
@@ -315,7 +318,15 @@ void end_visit (debugger_expr& v) {
   }
   argv.push_back (pop_itstack ());
   reverse (argv.begin (), argv.end ());
-  push_itstack(new FnDebugIterator(this->ccb->m_debugger, qloc, varnames, var_keys, vartypes, globals, argv, v.isForExpr()));
+  push_itstack(new FnDebugIterator(this->ccb->m_debugger, 
+                                   sctx,
+                                   qloc,
+                                   varnames,
+                                   var_keys,
+                                   vartypes,
+                                   globals,
+                                   argv,
+                                   v.isForExpr()));
 }
 #endif
 
@@ -344,7 +355,7 @@ void end_visit (sequential_expr& v) {
     argv.push_back (pop_itstack ());
   reverse (argv.begin (), argv.end ());
 
-  push_itstack(new SequentialIterator (qloc, argv, v.is_updating ()));
+  push_itstack(new SequentialIterator (sctx, qloc, argv, v.is_updating ()));
 }
 
 
@@ -375,7 +386,7 @@ PlanIter_t base_var_codegen(
   bool bound = varMap.get((uint64_t) &var, varRefs);
   ZORBA_ASSERT(bound);
 
-  Iter* iter = new Iter(var.get_loc(), var.get_varname());
+  Iter* iter = new Iter(var.get_cur_sctx(), var.get_loc(), var.get_varname());
 
   varRefs->push_back(iter);
 
@@ -388,11 +399,11 @@ PlanIter_t create_var_iter(const var_expr& var, bool forvar)
   PlanIter_t iter;
   if (forvar)
   {
-    iter = new ForVarIterator(var.get_loc(), var.get_varname());
+    iter = new ForVarIterator(var.get_cur_sctx(), var.get_loc(), var.get_varname());
   }
   else
   {
-    iter = new LetVarIterator(var.get_loc(), var.get_varname());
+    iter = new LetVarIterator(var.get_cur_sctx(), var.get_loc(), var.get_varname());
   }
   return iter;
 }
@@ -401,6 +412,7 @@ PlanIter_t create_var_iter(const var_expr& var, bool forvar)
 void general_var_codegen (const var_expr& var)
 {
   const QueryLoc& qloc = var.get_loc();
+  short sctx = var.get_cur_sctx();
 
   bool isForVar = false;
 
@@ -506,26 +518,26 @@ void general_var_codegen (const var_expr& var)
       store::Item_t qname;
       xqpStringStore_t dot = new xqpStringStore (".");
       ITEM_FACTORY->createString (qname, dot);
-      ctx_args.push_back (new SingletonIterator (qloc, qname));
-      push_itstack(new CtxVariableIterator (qloc, ctx_args));
+      ctx_args.push_back (new SingletonIterator (sctx, qloc, qname));
+      push_itstack(new CtxVariableIterator (sctx, qloc, ctx_args));
     }
     else if (varname == DOT_POS_VAR) 
     {
       store::Item_t i;
       ITEM_FACTORY->createInteger (i, Integer::parseInt((int32_t)1));
-      push_itstack(new SingletonIterator (qloc, i));
+      push_itstack(new SingletonIterator (sctx, qloc, i));
     }
     else if (varname == LAST_IDX_VAR) 
     {
       store::Item_t i;
       ITEM_FACTORY->createInteger (i, Integer::parseInt((int32_t)1));
-      push_itstack(new SingletonIterator (qloc, i));
+      push_itstack(new SingletonIterator (sctx, qloc, i));
     }
     else 
     {
       expr_t lookup_expr =
-        new fo_expr (qloc, LOOKUP_OP1 ("ctxvariable"),
-                     new const_expr (qloc, dynamic_context::var_key(&var)));
+        new fo_expr (sctx, qloc, LOOKUP_OP1 ("ctxvariable"),
+                     new const_expr (sctx, qloc, dynamic_context::var_key(&var)));
       lookup_expr->accept (*this);
     }
  
@@ -564,7 +576,7 @@ void end_visit(flwor_expr& v)
 
     PlanIter_t gflwor = gflwor_codegen(v, v.num_clauses() - 1);
 
-    push_itstack(new flwor::TupleStreamIterator(qloc, gflwor, ret, false));
+    push_itstack(new flwor::TupleStreamIterator(sctx, qloc, gflwor, ret, false));
   }
 }
 
@@ -801,7 +813,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
   if (currentClause < 0)
   {
-    return new flwor::TupleSourceIterator(qloc);
+    return new flwor::TupleSourceIterator(flworExpr.get_cur_sctx(), qloc);
   }
 
   const flwor_clause& c = *(flworExpr[currentClause]);
@@ -825,7 +837,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
   if (c.get_kind() == flwor_clause::where_clause) 
   {
     PlanIter_t where = pop_itstack();
-    return new flwor::WhereIterator(c.get_loc(), PREV_ITER, where);
+    return new flwor::WhereIterator(flworExpr.get_cur_sctx(), c.get_loc(), PREV_ITER, where);
   }
 
   //
@@ -880,7 +892,8 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
         {
           globals.push_back( *it );
         }
-        argv.push_back(new flwor::ForIterator(var->get_loc (),
+        argv.push_back(new flwor::ForIterator(var->get_cur_sctx(),
+                                              var->get_loc (),
                                               var->get_varname(),
                                               PREV_ITER,
                                               domainIter,
@@ -888,7 +901,8 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
                                               *posVarRefs));
         reverse (argv.begin (), argv.end ());
         return new FnDebugIterator(ccb->m_debugger,
-								   var->get_loc(),
+                                   var->get_cur_sctx(),
+                								   var->get_loc(),
                                    varnames,
                                    var_keys,
                                    vartypes,
@@ -897,7 +911,8 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
                                    true);
       }
 #endif
-      return new flwor::ForIterator(var->get_loc(),
+      return new flwor::ForIterator(var->get_cur_sctx(),
+                                    var->get_loc(),
                                     var->get_varname(),
                                     PREV_ITER,
                                     domainIter,
@@ -908,7 +923,8 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
     {
       ZORBA_ASSERT(fc->get_pos_var() == NULL);
 
-      return new flwor::OuterForIterator(var->get_loc(),
+      return new flwor::OuterForIterator(var->get_cur_sctx(),
+                                         var->get_loc(),
                                          var->get_varname(),
                                          PREV_ITER,
                                          domainIter,
@@ -931,7 +947,8 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
     vector<PlanIter_t>& varRefs = clauseVarMap->theVarRebinds[0]->theOutputVarRefs;
 
-    return new flwor::LetIterator(var->get_loc(),
+    return new flwor::LetIterator(var->get_cur_sctx(),
+                                  var->get_loc(),
                                   var->get_varname(),
                                   PREV_ITER,
                                   domainIter,
@@ -980,7 +997,8 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
       start_clause.reset(new flwor::StartClause(pop_itstack(), wvars));
     }
 
-    return new flwor::WindowIterator(var->get_loc(),
+    return new flwor::WindowIterator(var->get_cur_sctx(),
+                                     var->get_loc(),
                                      wc->get_winkind() == window_clause::tumbling_window ? flwor::WindowIterator::TUMBLING : flwor::WindowIterator::SLIDING,
                                      PREV_ITER,
                                      domainIter,
@@ -1001,7 +1019,8 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
     vector<PlanIter_t>& var_iters = clauseVarMap->theVarRebinds[0]->theOutputVarRefs;
 
-    return new flwor::CountIterator(var->get_loc(),
+    return new flwor::CountIterator(var->get_cur_sctx(),
+                                    var->get_loc(),
                                     var->get_varname(),
                                     PREV_ITER,
                                     var_iters);
@@ -1072,7 +1091,8 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
                                        modifiers[i].theCollation);
     }
 
-    return new flwor::OrderByIterator(c.get_loc(),
+    return new flwor::OrderByIterator(flworExpr.get_cur_sctx(),
+                                      c.get_loc(),
                                       obc->is_stable(),
                                       orderSpecs,
                                       PREV_ITER,
@@ -1092,7 +1112,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
     generate_groupby(clauseVarMap, gspecs, gouters);
 
-    return new flwor::GroupByIterator(c.get_loc(), PREV_ITER, gspecs, gouters);
+    return new flwor::GroupByIterator(flworExpr.get_cur_sctx(), c.get_loc(), PREV_ITER, gspecs, gouters);
   }
 
   ZORBA_ASSERT (false);
@@ -1103,8 +1123,6 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
 void flwor_codegen(const flwor_expr& flworExpr) 
 {
-  const QueryLoc& qloc = flworExpr.get_loc();
-
   flwor::FLWORIterator* flworIter;
   PlanIter_t returnIter;
   auto_ptr<flwor::OrderByClause> orderClause(NULL);
@@ -1244,7 +1262,8 @@ void flwor_codegen(const flwor_expr& flworExpr)
 
   std::reverse(forletClauses.begin(), forletClauses.end());
 
-  flworIter = new flwor::FLWORIterator(qloc,
+  flworIter = new flwor::FLWORIterator(flworExpr.get_cur_sctx(),
+                                       flworExpr.get_loc(),
                                        forletClauses,
                                        whereIter,
                                        groupClause.release(), 
@@ -1301,7 +1320,7 @@ void end_visit (promote_expr& v) {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
   // TODO: Currently we use cast. Promotion may be more efficient.
-  push_itstack(new PromoteIterator(qloc, lChild, v.get_target_type()));
+  push_itstack(new PromoteIterator(sctx, qloc, lChild, v.get_target_type()));
 }
 
 bool begin_visit (trycatch_expr& v) {
@@ -1349,7 +1368,7 @@ void end_visit (trycatch_expr& v) {
   }
   vector<TryCatchIterator::CatchClause> ccs(rev_ccs.rbegin(), rev_ccs.rend());
   PlanIter_t lChild = pop_itstack();
-  push_itstack(new TryCatchIterator(qloc, lChild, ccs));
+  push_itstack(new TryCatchIterator(sctx, qloc, lChild, ccs));
 }
 
 bool begin_visit (eval_expr& v) {
@@ -1370,7 +1389,7 @@ void end_visit (eval_expr& v) {
   }
   argv.push_back (pop_itstack ());
   reverse (argv.begin (), argv.end ());
-  push_itstack (new EvalIterator (qloc, varnames, var_keys, vartypes, argv));
+  push_itstack (new EvalIterator (sctx, qloc, varnames, var_keys, vartypes, argv));
 }
 
 bool begin_visit (typeswitch_expr& v) {
@@ -1396,7 +1415,7 @@ void end_visit (if_expr& v) {
   PlanIter_t iterThen = pop_itstack();
   PlanIter_t iterCond = pop_itstack();
   PlanIter_t iterIfThenElse = new IfThenElseIterator(
-    qloc, iterCond, iterThen, iterElse, v.is_updating());
+    sctx, qloc, iterCond, iterThen, iterElse, v.is_updating());
   push_itstack(&*iterIfThenElse);
 }
 
@@ -1418,7 +1437,7 @@ void end_visit (insert_expr& v)
   CODEGEN_TRACE_OUT("");
   PlanIter_t lTarget = pop_itstack();
   PlanIter_t lSource = pop_itstack();
-  PlanIter_t lInsert = new InsertIterator(qloc, v.getType(), lSource, lTarget); 
+  PlanIter_t lInsert = new InsertIterator(sctx, qloc, v.getType(), lSource, lTarget); 
   push_itstack(&*lInsert);
 }
 
@@ -1434,7 +1453,7 @@ void end_visit (delete_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lTarget = pop_itstack();
-  PlanIter_t lDelete = new DeleteIterator(qloc, lTarget);
+  PlanIter_t lDelete = new DeleteIterator(sctx, qloc, lTarget);
   push_itstack(&*lDelete);
 }
 
@@ -1457,7 +1476,8 @@ void end_visit (replace_expr& v)
   CODEGEN_TRACE_OUT("");
   PlanIter_t lReplacement = pop_itstack();
   PlanIter_t lTarget = pop_itstack();
-  PlanIter_t lReplace = new ReplaceIterator(qloc,
+  PlanIter_t lReplace = new ReplaceIterator(sctx,
+                                            qloc,
                                             v.getType(),
                                             lTarget,
                                             lReplacement);
@@ -1482,7 +1502,7 @@ void end_visit (rename_expr& v)
   CODEGEN_TRACE_OUT("");
   PlanIter_t lName = pop_itstack();
   PlanIter_t lTarget = pop_itstack();
-  PlanIter_t lRename = new RenameIterator(qloc, lTarget, lName);
+  PlanIter_t lRename = new RenameIterator(sctx, qloc, lTarget, lName);
   push_itstack(&*lRename);
 }
 
@@ -1533,7 +1553,7 @@ void end_visit (transform_expr& v)
     lClauses.push_back(CopyClause (*lVarIters, lInput));
   }
 
-  TransformIterator* lTransform = new TransformIterator(qloc, lClauses, lModify, lReturn); 
+  TransformIterator* lTransform = new TransformIterator(sctx, qloc, lClauses, lModify, lReturn); 
   push_itstack(lTransform);
 }
 
@@ -1547,7 +1567,7 @@ void end_visit (exit_expr& v) {
   CODEGEN_TRACE_OUT("");
   checked_vector<PlanIter_t> argv;
   argv.push_back (pop_itstack ());
-  push_itstack (new FlowCtlIterator (qloc, argv, FlowCtlIterator::EXIT));
+  push_itstack (new FlowCtlIterator (sctx, qloc, argv, FlowCtlIterator::EXIT));
 }
 
 bool begin_visit (flowctl_expr& v) {
@@ -1569,7 +1589,7 @@ void end_visit (flowctl_expr& v) {
     ZORBA_FATAL(false, "");
   }
   checked_vector<PlanIter_t> argv;
-  push_itstack (new FlowCtlIterator (qloc, argv, a));
+  push_itstack (new FlowCtlIterator (sctx, qloc, argv, a));
 }
 
 bool begin_visit (while_expr& v) {
@@ -1581,7 +1601,7 @@ void end_visit (while_expr& v) {
   CODEGEN_TRACE_OUT("");
   checked_vector<PlanIter_t> argv;
   argv.push_back (pop_itstack ());
-  push_itstack (new LoopIterator (qloc, argv));
+  push_itstack (new LoopIterator (sctx, qloc, argv));
 }
 
 
@@ -1611,7 +1631,7 @@ void end_visit (fo_expr& v) {
   const QueryLoc& loc = qloc;
 
   if (func->validate_args (argv)) {
-    PlanIter_t iter = func->codegen (loc, argv, v);
+    PlanIter_t iter = func->codegen (sctx, loc, argv, v);
     ZORBA_ASSERT(iter != NULL);
     push_itstack(iter);
 
@@ -1648,7 +1668,7 @@ bool begin_visit (instanceof_expr& v) {
 void end_visit (instanceof_expr& v) {
   CODEGEN_TRACE_OUT("");
   PlanIter_t p = pop_itstack ();
-  push_itstack (new InstanceOfIterator (qloc, p, v.get_target_type ()));
+  push_itstack (new InstanceOfIterator (sctx, qloc, p, v.get_target_type ()));
 }
 
 bool begin_visit (treat_expr& v) {
@@ -1660,7 +1680,7 @@ void end_visit (treat_expr& v) {
   CODEGEN_TRACE_OUT("");
   vector<PlanIter_t> argv;
   argv.push_back (pop_itstack ());
-  push_itstack (new TreatIterator (qloc, argv, v.get_target_type (), v.get_check_prime (), v.get_err ()));
+  push_itstack (new TreatIterator (sctx, qloc, argv, v.get_target_type (), v.get_check_prime (), v.get_err ()));
 }
 
 bool begin_visit (castable_expr& v) {
@@ -1671,7 +1691,7 @@ bool begin_visit (castable_expr& v) {
 void end_visit (castable_expr& v) {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
-  push_itstack(new CastableIterator(qloc, lChild, v.get_target_type()));
+  push_itstack(new CastableIterator(sctx, qloc, lChild, v.get_target_type()));
 }
 
 bool begin_visit (cast_expr& v) {
@@ -1682,7 +1702,7 @@ bool begin_visit (cast_expr& v) {
 void end_visit (cast_expr& v) {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
-  push_itstack(new CastIterator(qloc, lChild, v.get_target_type()));
+  push_itstack(new CastIterator(sctx, qloc, lChild, v.get_target_type()));
 }
 
 bool begin_visit (name_cast_expr& v) {
@@ -1709,7 +1729,7 @@ bool begin_visit (name_cast_expr& v) {
 void end_visit (name_cast_expr& v) {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
-  push_itstack(new NameCastIterator(qloc, lChild, v.getNamespaceContext()));
+  push_itstack(new NameCastIterator(sctx, qloc, lChild, v.getNamespaceContext()));
 }
 
 
@@ -1727,7 +1747,8 @@ void end_visit (validate_expr& v)
   PlanIter_t lChild = pop_itstack();
   //store::Item_t typeName = v.get_type_name();
   //std::cout << "validate end-visit: type: " << typeName->getLocalName()->c_str() << " @ " << typeName->getNamespace()->c_str() << "\n"; cout.flush();
-  push_itstack (new ValidateIterator (qloc,
+  push_itstack (new ValidateIterator (sctx,
+                                      qloc,
                                       lChild,
                                       v.get_typemgr(),
                                       v.get_type_name(),
@@ -1781,7 +1802,7 @@ bool begin_visit (axis_step_expr& v) {
 
   if (pathIte == NULL) {
     PlanIter_t inputStep = pop_itstack();
-    pathIte = new PathIterator(qloc, inputStep);
+    pathIte = new PathIterator(sctx, qloc, inputStep);
     push_itstack(pathIte);
   }
   //ZORBA_ASSERT(pathIte != NULL);
@@ -1881,57 +1902,57 @@ bool begin_visit (axis_step_expr& v) {
   {
   case axis_kind_self:
   {
-    axisIte = new SelfAxisIterator(qloc, input);
+    axisIte = new SelfAxisIterator(sctx, qloc, input);
     break;
   }
   case axis_kind_child:
   {
-    axisIte = new ChildAxisIterator(qloc, input);
+    axisIte = new ChildAxisIterator(sctx, qloc, input);
     break;
   }
   case axis_kind_parent:
   {
-    axisIte = new ParentAxisIterator(qloc, input);
+    axisIte = new ParentAxisIterator(sctx, qloc, input);
     break;
   }
   case axis_kind_descendant:
   {
-    axisIte = new DescendantAxisIterator(qloc, input);
+    axisIte = new DescendantAxisIterator(sctx, qloc, input);
     break;
   }
   case axis_kind_descendant_or_self:
   {
-    axisIte = new DescendantSelfAxisIterator(qloc, input);
+    axisIte = new DescendantSelfAxisIterator(sctx, qloc, input);
     break;
   }
   case axis_kind_ancestor:
   {
-    axisIte = new AncestorAxisIterator(qloc, input);
+    axisIte = new AncestorAxisIterator(sctx, qloc, input);
     break;
   }
   case axis_kind_ancestor_or_self:
   {
-    axisIte = new AncestorSelfAxisIterator(qloc, input);
+    axisIte = new AncestorSelfAxisIterator(sctx, qloc, input);
     break;
   }
   case axis_kind_following_sibling:
   {
-    axisIte = new RSiblingAxisIterator(qloc, input);
+    axisIte = new RSiblingAxisIterator(sctx, qloc, input);
     break;
   }
   case axis_kind_following:
   {
-    axisIte = new FollowingAxisIterator(qloc, input);
+    axisIte = new FollowingAxisIterator(sctx, qloc, input);
     break;
   }
   case axis_kind_preceding_sibling:
   {
-    axisIte = new LSiblingAxisIterator(qloc, input);
+    axisIte = new LSiblingAxisIterator(sctx, qloc, input);
     break;
   }
   case axis_kind_preceding:
   {
-    axisIte = new PrecedingAxisIterator(qloc, input);
+    axisIte = new PrecedingAxisIterator(sctx, qloc, input);
     break;
   }
   case axis_kind_attribute:
@@ -1941,9 +1962,9 @@ bool begin_visit (axis_step_expr& v) {
         v.getTest()->getTestKind() == match_xs_attr_test ||
         v.getTest()->getTestKind() == match_anykind_test)
     {
-      axisIte = new AttributeAxisIterator(qloc, input);
+      axisIte = new AttributeAxisIterator(sctx, qloc, input);
     } else {
-      axisIte = new EmptyIterator(qloc);
+      axisIte = new EmptyIterator(sctx, qloc);
       result = false;
     }
 
@@ -2045,8 +2066,8 @@ void end_visit (doc_expr& v) {
   CODEGEN_TRACE_OUT("");
   
   PlanIter_t lContent = pop_itstack();
-  PlanIter_t lContIter = new DocumentContentIterator(qloc, lContent);
-  PlanIter_t lDocIter = new DocumentIterator(qloc, lContIter);
+  PlanIter_t lContIter = new DocumentContentIterator(sctx, qloc, lContent);
+  PlanIter_t lDocIter = new DocumentIterator(sctx, qloc, lContIter);
   push_itstack(lDocIter);
 
   theAttrContentStack.pop();
@@ -2088,7 +2109,8 @@ void end_visit (elem_expr& v) {
     isRoot = true;
   }
 
-	PlanIter_t iter = new ElementIterator(qloc,
+	PlanIter_t iter = new ElementIterator(sctx,
+                                        qloc,
                                         lQNameIter,
                                         lAttrsIter,
                                         lContentIter,
@@ -2118,7 +2140,7 @@ void end_visit (attr_expr& v) {
   if (v.getValueExpr() != 0) {
     lVarIter = pop_itstack();
   } else {
-    lVarIter = new EmptyIterator(qloc);
+    lVarIter = new EmptyIterator(sctx, qloc);
   }
   
   PlanIter_t lAttrIter = 0;
@@ -2132,7 +2154,7 @@ void end_visit (attr_expr& v) {
     isRoot = true;
   }
 
-  lAttrIter = new AttributeIterator(qloc, lQNameIter, lVarIter, isRoot);
+  lAttrIter = new AttributeIterator(sctx, qloc, lQNameIter, lVarIter, isRoot);
   
   push_itstack(lAttrIter);
 }
@@ -2163,11 +2185,11 @@ void end_visit (text_expr& v) {
 
   switch (v.get_type ()) {
   case text_expr::text_constructor:
-    push_itstack (new TextIterator(qloc, content, isRoot));
+    push_itstack (new TextIterator(sctx, qloc, content, isRoot));
     break;
 
   case text_expr::comment_constructor:
-    push_itstack (new CommentIterator (qloc, content, isRoot));
+    push_itstack (new CommentIterator (sctx, qloc, content, isRoot));
     break;
 
   default:
@@ -2199,7 +2221,7 @@ void end_visit (pi_expr& v) {
 
   PlanIter_t content = pop_itstack ();
   PlanIter_t target = pop_itstack ();
-  push_itstack (new PiIterator (qloc, target, content, isRoot));
+  push_itstack (new PiIterator (sctx, qloc, target, content, isRoot));
 }
 
 
@@ -2220,7 +2242,7 @@ bool begin_visit (const_expr& v) {
 
 void end_visit (const_expr& v) {
   CODEGEN_TRACE_OUT("");
-  PlanIter_t it = new SingletonIterator (qloc, v.get_val ());
+  PlanIter_t it = new SingletonIterator (sctx, qloc, v.get_val ());
   push_itstack (it);
 }
 

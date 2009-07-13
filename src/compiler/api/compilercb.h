@@ -54,15 +54,26 @@ class ZORBA_DLL_PUBLIC CompilerCB
   } config_t;
   
 
-  CompilerCB();
+  CompilerCB(std::map<short, static_context_t>&);
+  CompilerCB(const CompilerCB&);
   ~CompilerCB();
 
-  static_context_t              m_sctx;          
-  std::vector<static_context_t> m_sctx_list;     
-  error::ErrorManager*          m_error_manager;
-  config_t                      m_config;
+  static_context*
+  getStaticContext(short c)
+  {
+    std::map<short, static_context_t>::iterator lIter;
+    lIter = m_context_map.find(c);
+    assert(lIter != m_context_map.end());
+    return lIter->second.getp();
+  }
+
+  short                              m_cur_sctx;
+  std::map<short, static_context_t>& m_context_map;
+  static_context_t                   m_sctx;          
+  error::ErrorManager*               m_error_manager;
+  config_t                           m_config;
 #ifdef ZORBA_DEBUGGER
-  ZorbaDebugger*                m_debugger;
+  ZorbaDebugger*                     m_debugger;
 #endif
 };
 

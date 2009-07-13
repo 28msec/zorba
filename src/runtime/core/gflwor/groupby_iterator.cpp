@@ -64,11 +64,12 @@ GroupByState::~GroupByState()
 
 void GroupByState::init (
     PlanState& aState,
+    static_context* sctx,
     std::vector<GroupingSpec>* groupingSpecs) 
 {
   PlanIteratorState::init ( aState );
 
-  GroupTupleCmp cmp(aState.theRuntimeCB, groupingSpecs);
+  GroupTupleCmp cmp(aState.theRuntimeCB, sctx, groupingSpecs);
   theGroupMap = new GroupHashMap(cmp, 1024, false);
 }
 
@@ -100,12 +101,13 @@ void GroupByState::reset ( PlanState& aPlanState )
 
 ********************************************************************************/
 GroupByIterator::GroupByIterator (
+    short sctx,
     const QueryLoc& aLoc,
     PlanIter_t aTupleIterator,
     std::vector<GroupingSpec> aGroupingSpecs,
     std::vector<GroupingOuterVar> aOuterVars ) 
   :
-  Batcher<GroupByIterator> ( aLoc ),
+  Batcher<GroupByIterator> ( sctx, aLoc ),
   theTupleIter(aTupleIterator),
   theGroupingSpecs ( aGroupingSpecs ),
   theOuterVars ( aOuterVars ) 
@@ -285,7 +287,7 @@ void GroupByIterator::openImpl ( PlanState& planState, uint32_t& aOffset )
   GroupByState* state = StateTraitsImpl<GroupByState>::getState(planState,
                                                                 this->stateOffset);
       
-  state->init(planState, &theGroupingSpecs); 
+  state->init(planState, getStaticContext(planState), &theGroupingSpecs); 
       
   theTupleIter->open(planState, aOffset);
 
@@ -297,12 +299,12 @@ void GroupByIterator::openImpl ( PlanState& planState, uint32_t& aOffset )
 
     if (iter->theCollation.size() != 0) 
     {
-      iter->theCollator = planState.theRuntimeCB->theCollationCache->
+      iter->theCollator = getStaticContext(planState)->get_collation_cache()->
                           getCollator(iter->theCollation);
     }
     else
     {
-      iter->theCollator = planState.theRuntimeCB->theCollationCache->
+      iter->theCollator = getStaticContext(planState)->get_collation_cache()->
                           getDefaultCollator();
     }
   }

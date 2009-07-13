@@ -135,6 +135,8 @@ class XQueryImpl : public XQuery
   // static stuff
   xqpString                        theFileName;
 
+  std::map<short, static_context_t>  theSctxMap;
+
   CompilerCB                     * theCompilerCB;
 
   PlanProxy_t                      thePlan; 

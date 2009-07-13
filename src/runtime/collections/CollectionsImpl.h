@@ -76,7 +76,7 @@ NARY_UPDATE_ITER (ZorbaRemoveNodeIterator);
 NARY_UPDATE_ITER (ZorbaRemoveNodeAtIterator);
 
 // helper function
-store::Collection_t getCollection(PlanState&, const xqpStringStore_t, const QueryLoc);
+store::Collection_t getCollection(static_context*, const xqpStringStore_t, const QueryLoc);
 
 }/*namespace zorba*/
 

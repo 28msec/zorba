@@ -21,17 +21,17 @@ namespace zorba {
 zop_createtuple::zop_createtuple(const signature& sig)
   : function(sig) { }
 
-PlanIter_t zop_createtuple::codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t zop_createtuple::codegen(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new CreateTupleIterator(loc, argv);
+  return new CreateTupleIterator(sctx, loc, argv);
 }
 
 zop_gettuplefield::zop_gettuplefield(const signature& sig)
   : function(sig) { }
 
-PlanIter_t zop_gettuplefield::codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t zop_gettuplefield::codegen(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new GetTupleFieldIterator(loc, argv);
+  return new GetTupleFieldIterator(sctx, loc, argv);
 }
 
 }

@@ -23,35 +23,39 @@ namespace zorba
 {
 
 PlanIter_t ctx_variable::codegen (
+    short sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
     AnnotationHolder &ann ) const
 {
-  return new CtxVariableIterator(loc, argv);
+  return new CtxVariableIterator(sctx, loc, argv);
 }
 
 PlanIter_t ctx_var_assign::codegen (
+    short sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
     AnnotationHolder &ann ) const
 {
-  return new CtxVarAssignIterator(loc, argv);
+  return new CtxVarAssignIterator(sctx, loc, argv);
 }
 
 PlanIter_t ctx_var_declare::codegen (
+    short sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
     AnnotationHolder &ann ) const
 {
-  return new CtxVarDeclIterator(loc, argv);
+  return new CtxVarDeclIterator(sctx, loc, argv);
 }
 
 PlanIter_t ctx_var_exists::codegen (
+    short sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
     AnnotationHolder &ann ) const
 {
-  return new CtxVarExistsIterator(loc, argv);
+  return new CtxVarExistsIterator(sctx, loc, argv);
 }
 
 }

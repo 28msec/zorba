@@ -16,7 +16,7 @@
 #include "functions/Fop.h"
 #include "runtime/fop/FopImpl.h"
 
-zorba::PlanIter_t zorba::zorba_fop::codegen( const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder& ann ) const
+zorba::PlanIter_t zorba::zorba_fop::codegen(short sctx,  const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder& ann ) const
 {
-	return new ZorbaFopIterator(loc, argv);
+	return new ZorbaFopIterator(sctx, loc, argv);
 }

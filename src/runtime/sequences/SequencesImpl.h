@@ -62,9 +62,9 @@ protected:
   bool  theIsUpdating;
 
 public:
-  FnConcatIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool aIsUpdating)
+  FnConcatIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool aIsUpdating)
     :
-    NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>(loc, aChildren),
+    NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>(sctx, loc, aChildren),
     theIsUpdating(aIsUpdating)
   { }                                                               
                                                                         
@@ -152,7 +152,8 @@ class FnDistinctValuesIterator : public NaryBaseIterator<FnDistinctValuesIterato
 {
 
 public:
-  FnDistinctValuesIterator(const QueryLoc& loc,
+  FnDistinctValuesIterator(short sctx,
+                           const QueryLoc& loc,
                            std::vector<PlanIter_t>& args);
  
   ~FnDistinctValuesIterator();
@@ -242,10 +243,11 @@ class FnExactlyOneIterator
 {
 
 public:
-  FnExactlyOneIterator(const QueryLoc& loc,
+  FnExactlyOneIterator(short sctx,
+                       const QueryLoc& loc,
                        std::vector<PlanIter_t>& args,
                        bool raise_err_ = true)
-    : NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState> (loc, args), raise_err (raise_err_)
+    : NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState> (sctx, loc, args), raise_err (raise_err_)
   {}
  
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
@@ -309,7 +311,7 @@ class HashSemiJoinIterator: public NaryBaseIterator<HashSemiJoinIterator,
 {
 
 public:
-  HashSemiJoinIterator(const QueryLoc& loc,
+  HashSemiJoinIterator(short sctx, const QueryLoc& loc,
                    std::vector<PlanIter_t>& args,
                    bool antijoin = false);
  
@@ -341,7 +343,7 @@ class SortSemiJoinIterator : public NaryBaseIterator<SortSemiJoinIterator,
 {
 
 public:
-  SortSemiJoinIterator(const QueryLoc& loc, std::vector<PlanIter_t>& args);
+  SortSemiJoinIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& args);
  
   ~SortSemiJoinIterator();
 
@@ -376,7 +378,7 @@ private:
   CompareConsts::CompareType theCompareType;
 
 public:
-    FnMinMaxIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, Type aType);
+    FnMinMaxIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, Type aType);
     bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
     virtual void accept(PlanIterVisitor& v) const;
     Type getType() const { return theType; }
@@ -444,7 +446,7 @@ NARY_ITER_STATE(FnIdRefIterator, FnIdRefIteratorState);
 class FnDocIterator : public UnaryBaseIterator<FnDocIterator, PlanIteratorState>
 {
 public:
-  FnDocIterator(const QueryLoc& loc, PlanIter_t& arg);
+  FnDocIterator(short sctx, const QueryLoc& loc, PlanIter_t& arg);
   virtual ~FnDocIterator();
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;

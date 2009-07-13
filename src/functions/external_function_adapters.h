@@ -32,7 +32,7 @@ class stateless_external_function_adapter : public external_function {
 
     ~stateless_external_function_adapter();
 
-    virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    virtual PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     virtual expr_update_t getUpdateType() const { return theUpdateType; }
 

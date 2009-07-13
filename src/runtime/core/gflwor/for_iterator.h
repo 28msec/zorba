@@ -69,6 +69,7 @@ private:
 
 public:
   ForIterator(
+        short sctx,
         const QueryLoc& loc,
         const store::Item_t& varName,
         PlanIter_t tupleIter,
@@ -76,6 +77,7 @@ public:
         const std::vector<PlanIter_t>& varRefs);
 
   ForIterator(
+        short sctx,
         const QueryLoc& loc,
         const store::Item_t& varName,
         PlanIter_t tupleIter,

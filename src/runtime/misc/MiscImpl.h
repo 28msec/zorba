@@ -36,8 +36,8 @@ class SequentialIterator : public NaryBaseIterator<SequentialIterator, PlanItera
 private:
   bool theUpdating;
 public:
-  SequentialIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool aUpdating) 
-  : NaryBaseIterator<SequentialIterator, PlanIteratorState>(loc, aChildren), theUpdating(aUpdating)
+  SequentialIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool aUpdating) 
+  : NaryBaseIterator<SequentialIterator, PlanIteratorState>(sctx, loc, aChildren), theUpdating(aUpdating)
   {}
 
 public:
@@ -75,8 +75,8 @@ private:
   enum action act;
 
 public:
-  FlowCtlIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, enum action act_)
-    : NaryBaseIterator<FlowCtlIterator, PlanIteratorState>(loc, aChildren), act (act_)
+  FlowCtlIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, enum action act_)
+    : NaryBaseIterator<FlowCtlIterator, PlanIteratorState>(sctx, loc, aChildren), act (act_)
   {}
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
 };
@@ -89,8 +89,8 @@ NARY_ITER (FnReadStringIterator);
 class FnPrintIterator : public NaryBaseIterator<FnPrintIterator, PlanIteratorState>
 {
 public:
-	FnPrintIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool printToConsole = true) :
-	  NaryBaseIterator<FnPrintIterator, PlanIteratorState >(loc, aChildren), m_printToConsole(printToConsole)
+	FnPrintIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool printToConsole = true) :
+	  NaryBaseIterator<FnPrintIterator, PlanIteratorState >(sctx, loc, aChildren), m_printToConsole(printToConsole)
 	  {
 	  }
 

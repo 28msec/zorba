@@ -52,10 +52,11 @@ void FnDataIteratorState::reset(PlanState& planState)
 
 
 FnDataIterator::FnDataIterator (
+    short sctx,
     const QueryLoc& loc,
     PlanIter_t& childIter)
   :
-  UnaryBaseIterator<FnDataIterator, FnDataIteratorState> ( loc, childIter )
+  UnaryBaseIterator<FnDataIterator, FnDataIteratorState> ( sctx, loc, childIter )
 {
 }
 

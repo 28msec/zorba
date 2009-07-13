@@ -58,7 +58,7 @@ public:
 
   CompilerCB* getCompilerCB() { return compilerCB; }
 
-  rchandle<var_expr> createTempVar(const QueryLoc& loc, var_expr::var_kind kind);
+  rchandle<var_expr> createTempVar(short sctx, const QueryLoc& loc, var_expr::var_kind kind);
 };
 
 }

@@ -24,11 +24,12 @@ namespace zorba {
 
 PlanIter_t
 fn_data_func::codegen(
+    short sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
     AnnotationHolder &ann ) const
 {
-  return new FnDataIterator ( loc, argv[0] );
+  return new FnDataIterator ( sctx, loc, argv[0] );
 }
 
 
@@ -78,9 +79,9 @@ xqtref_t fn_data_func::return_type (const std::vector<xqtref_t> &arg_types) cons
   
 ********************************************************************************/
 
-PlanIter_t fn_root_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_root_func::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnRootIterator(loc, argv);
+  return new FnRootIterator(sctx, loc, argv);
 }
 
 
@@ -88,9 +89,9 @@ PlanIter_t fn_root_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
   
 ********************************************************************************/
 
-PlanIter_t fn_nodename_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_nodename_func::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnNodeNameIterator(loc, argv);
+  return new FnNodeNameIterator(sctx, loc, argv);
 }
 
 
@@ -98,27 +99,27 @@ PlanIter_t fn_nodename_func::codegen (const QueryLoc& loc, std::vector<PlanIter_
   2.2 fn:nilled
 ********************************************************************************/
 
-PlanIter_t fn_nilled_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_nilled_func::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnNilledIterator(loc, argv);
+  return new FnNilledIterator(sctx, loc, argv);
 }
 
 
 /*******************************************************************************
   2.5 fn:base-uri
 ********************************************************************************/
-PlanIter_t fn_base_uri_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_base_uri_func::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnBaseUriIterator(loc, argv);
+  return new FnBaseUriIterator(sctx, loc, argv);
 }
 
 
 /*******************************************************************************
   2.6 fn:document-uri
 ********************************************************************************/
-PlanIter_t fn_document_uri_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_document_uri_func::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnDocumentUriIterator(loc, argv);
+  return new FnDocumentUriIterator(sctx, loc, argv);
 }
 
 
@@ -127,17 +128,17 @@ PlanIter_t fn_document_uri_func::codegen (const QueryLoc& loc, std::vector<PlanI
   
 ********************************************************************************/
 
-PlanIter_t fn_name_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_name_func::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  PlanIter_t nnIter = new FnNodeNameIterator(loc, argv);
+  PlanIter_t nnIter = new FnNodeNameIterator(sctx, loc, argv);
   std::vector<PlanIter_t> lVec;
   lVec.push_back(nnIter);
-  return new FnStringIterator(loc, lVec, true);
+  return new FnStringIterator(sctx, loc, lVec, true);
 }
 
-PlanIter_t fn_string_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_string_func::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnStringIterator(loc, argv, true);
+  return new FnStringIterator(sctx, loc, argv, true);
 }
 
 

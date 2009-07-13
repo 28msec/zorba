@@ -36,6 +36,7 @@ private:
 
 public:
   InsertIterator ( 
+    short sctx,
     const QueryLoc& loc, 
     store::UpdateConsts::InsertType aType,
     PlanIter_t source, 
@@ -56,7 +57,7 @@ public:
 class DeleteIterator : public UnaryBaseIterator<DeleteIterator, PlanIteratorState>
 {
  public:
-  DeleteIterator(const QueryLoc& aLoc, PlanIter_t target);
+  DeleteIterator(short sctx, const QueryLoc& aLoc, PlanIter_t target);
 
   virtual ~DeleteIterator() {}
 
@@ -77,6 +78,7 @@ private:
 
 public:
   ReplaceIterator (
+    short sctx,
     const QueryLoc& aLoc,
     store::UpdateConsts::ReplaceType aType,
     PlanIter_t target,
@@ -97,6 +99,7 @@ class RenameIterator : public BinaryBaseIterator<RenameIterator, PlanIteratorSta
 {
 public:
   RenameIterator (
+    short sctx,
     const QueryLoc& aLoc,
     PlanIter_t target,
     PlanIter_t name);
@@ -142,6 +145,7 @@ private:
 
 public:
   TransformIterator (
+    short sctx,
     const QueryLoc& aLoc,
     std::vector<CopyClause>& aCopyClauses,
     PlanIter_t aModifyIter,

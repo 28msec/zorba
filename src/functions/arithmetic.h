@@ -40,7 +40,7 @@ namespace zorba {
   public:
     op_subtract(const signature& sig) : binary_arith_func (sig) {}
     const char *op_name () const { return "subtract"; }
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
 

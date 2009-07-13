@@ -60,6 +60,8 @@ protected:
 
   std::ostream*                  theTraceStream;
 
+  CollationCache*                theCollationCache;
+
 public:
   virtual ~static_context();
 
@@ -331,8 +333,6 @@ public:
 	void add_collation(const xqp_string& uri);
 
   CollationCache* get_collation_cache();
-
-  void release_collation_cache(CollationCache*);
 
   XQPCollator* create_collator(const xqp_string& aURI);
 

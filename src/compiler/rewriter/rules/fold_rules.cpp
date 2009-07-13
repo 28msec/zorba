@@ -87,9 +87,9 @@ static expr_t execute (
     loc.setColumnBegin(e.theQueryColumn);
     store::Item_t qname;
     ITEM_FACTORY->createQName (qname, "http://www.w3.org/2005/xqt-errors", "err",  error::ZorbaError::toString(lErrorCode).c_str ());
-    expr_t err_expr = new fo_expr (loc, LOOKUP_FN ("fn", "error", 2),
-                                   new const_expr (loc, qname),
-                                   new const_expr (loc, e.theDescription));
+    expr_t err_expr = new fo_expr (node->get_cur_sctx(), loc, LOOKUP_FN ("fn", "error", 2),
+                                   new const_expr (node->get_cur_sctx(), loc, qname),
+                                   new const_expr (node->get_cur_sctx(), loc, e.theDescription));
     err_expr->put_annotation (AnnotationKey::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VAL);
     err_expr->put_annotation (AnnotationKey::NONDISCARDABLE_EXPR, TSVAnnotationValue::TRUE_VAL);
     return err_expr;
@@ -365,8 +365,8 @@ RULE_REWRITE_PRE(FoldConst)
     if (folded == NULL) {
       ZORBA_ASSERT (result.size () <= 1);
       folded = (result.size () == 1 ?
-                ((expr *) (new const_expr (LOC (node), result [0]))) :
-                ((expr *) (fo_expr::create_seq (LOC (node)))));
+                ((expr *) (new const_expr (node->get_cur_sctx(), LOC (node), result [0]))) :
+                ((expr *) (fo_expr::create_seq (node->get_cur_sctx(), LOC (node)))));
     }
     return folded;
   }
@@ -490,11 +490,11 @@ RULE_REWRITE_PRE(PartialEval)
     xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
 
     if (TypeOps::is_subtype(*arg_type, *cbe->get_target_type()))
-      return new const_expr (LOC (node), true);
+      return new const_expr (node->get_cur_sctx(), LOC (node), true);
 
     else if (node->get_expr_kind() == instanceof_expr_kind)
       return TypeOps::intersect_type(*arg_type, *cbe->get_target_type()) == GENV_TYPESYSTEM.NONE_TYPE 
-        ? new const_expr (LOC (node), false) : NULL;
+        ? new const_expr (node->get_cur_sctx(), LOC (node), false) : NULL;
     else
       return NULL;
   }
@@ -543,7 +543,7 @@ static expr_t partial_eval_fo (RewriterContext& rCtx, fo_expr *fo)
     if (arg->get_annotation (AnnotationKey::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL) {
       int type_cnt = TypeOps::type_cnt (*arg->return_type (rCtx.getStaticContext()));
       if (type_cnt != -1)
-        return new const_expr (fo->get_loc (), Integer::parseInt (type_cnt));
+        return new const_expr (fo->get_cur_sctx(), fo->get_loc (), Integer::parseInt (type_cnt));
     }
     return NULL;
   }
@@ -563,7 +563,7 @@ static expr_t partial_eval_logic (
     const_expr *cond = i->dyn_cast<const_expr> ().getp ();
     if (cond != NULL) {
       if (cond->get_val ()->getEBV ()->getBooleanValue () == shortcircuit_val)
-        return new const_expr (LOC (fo), (xqp_boolean) shortcircuit_val);
+        return new const_expr (fo->get_cur_sctx(), LOC (fo), (xqp_boolean) shortcircuit_val);
     } else {
       if (nontrivial1 == NULL)
         nontrivial1 = *i;
@@ -575,12 +575,13 @@ static expr_t partial_eval_logic (
   }
 
   if (nontrivial1 == NULL)
-    return new const_expr (LOC (fo), (xqp_boolean) ! shortcircuit_val);
+    return new const_expr (fo->get_cur_sctx(), LOC (fo), (xqp_boolean) ! shortcircuit_val);
 
   if (nontrivial2 == NULL) {
     if (! TypeOps::is_subtype(*nontrivial1->return_type(rCtx.getStaticContext()),
                               *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
-      nontrivial1 = fix_annotations (new fo_expr (LOC (fo),
+      nontrivial1 = fix_annotations (new fo_expr (fo->get_cur_sctx(),
+                                                  LOC (fo),
                                                   LOOKUP_FN("fn", "boolean", 1),
                                                   nontrivial1));
     return nontrivial1;
@@ -612,27 +613,27 @@ static expr_t partial_eval_eq (RewriterContext& rCtx, fo_expr &fo)
     xqp_integer ival = val->getIntegerValue ();
     xqp_integer zero = xqp_integer::parseInt (0);
     if (ival < zero)
-      return new const_expr (LOC (val_expr), false);
+      return new const_expr (val_expr->get_cur_sctx(), LOC (val_expr), false);
     else if (ival == zero)
-      return fix_annotations (new fo_expr (fo.get_loc (),
+      return fix_annotations (new fo_expr (fo.get_cur_sctx(), fo.get_loc (),
                                            LOOKUP_FN ("fn", "empty", 1),
                                            (*count_expr) [0]));
     else if (ival == xqp_integer::parseInt (1))
-      return fix_annotations (new fo_expr (fo.get_loc (),
+      return fix_annotations (new fo_expr (fo.get_cur_sctx(), fo.get_loc (),
                                            LOOKUP_OP1 ("exactly-one-noraise"),
                                            (*count_expr) [0]));
     else {
       store::Item_t pVal;
       GenericCast::instance ()->promote (pVal, val, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
-      expr_t dpos = new const_expr (LOC (val_expr), pVal);
+      expr_t dpos = new const_expr (val_expr->get_cur_sctx(), LOC (val_expr), pVal);
       expr_t subseq_expr = fix_annotations(
-                           new fo_expr (LOC (count_expr),
+                           new fo_expr (count_expr->get_cur_sctx(), LOC (count_expr),
                                         LOOKUP_FN ("fn", "subsequence", 3),
                                         (*count_expr) [0],
                                         dpos,
-                                        new const_expr (LOC (val_expr),
+                                        new const_expr (val_expr->get_cur_sctx(), LOC (val_expr),
                                                         xqp_double::parseInt (2))));
-      return fix_annotations (new fo_expr (fo.get_loc (),
+      return fix_annotations (new fo_expr (fo.get_cur_sctx(), fo.get_loc (),
                                            LOOKUP_OP1 ("exactly-one-noraise"),
                                            subseq_expr));
     }
@@ -658,11 +659,8 @@ RULE_REWRITE_POST(InlineFunctions)
     fo_expr *fo = static_cast<fo_expr *> (node);
     const user_function *udf = dynamic_cast<const user_function *> (fo->get_func ());
     expr_t body;
-    // only inline functions which are declared in the main module
-    // currently, we can't inline library module functions because
-    // it's not possible to set their static context during runtime
     if (NULL != udf && ! udf->isSequential () && udf->isLeaf ()
-        && (NULL != (body = udf->get_body ())) && udf->get_context() == 0)
+        && (NULL != (body = udf->get_body ())))
     {
       expr_t body = udf->get_body ();
       const std::vector<var_expr_t>& params = udf->get_params();
@@ -674,7 +672,7 @@ RULE_REWRITE_POST(InlineFunctions)
       try {
         body = body->clone (subst);
         return body;
-      } catch (...) {}
+      } catch (...) {assert(false);}
     }
   }
   return NULL;

@@ -33,8 +33,8 @@ namespace zorba
 {
 namespace flwor 
 {
-    TupleSourceIterator::TupleSourceIterator ( const QueryLoc& aLoc ) :
-        NoaryBaseIterator<TupleSourceIterator, PlanIteratorState> ( aLoc ) {}
+    TupleSourceIterator::TupleSourceIterator ( short sctx, const QueryLoc& aLoc ) :
+        NoaryBaseIterator<TupleSourceIterator, PlanIteratorState> ( sctx, aLoc ) {}
 
     TupleSourceIterator::~TupleSourceIterator() {}
 

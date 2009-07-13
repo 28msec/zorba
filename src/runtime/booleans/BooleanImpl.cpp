@@ -50,11 +50,12 @@ namespace zorba {
  Computes the effective boolean value of the sequence $arg.
 _______________________________________________________________________*/
 FnBooleanIterator::FnBooleanIterator(
+    short sctx,
     const QueryLoc& loc,
     PlanIter_t& aIter,
     bool aNegate)
   :
-  UnaryBaseIterator<FnBooleanIterator, PlanIteratorState>(loc, aIter),
+  UnaryBaseIterator<FnBooleanIterator, PlanIteratorState>(sctx, loc, aIter),
   theNegate(aNegate)
 {}
     
@@ -124,12 +125,13 @@ bool FnBooleanIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
 
 LogicIterator::LogicIterator (
+    short sctx,
     const QueryLoc& loc,
     PlanIter_t theChild0,
     PlanIter_t theChild1,
     LogicType aLogicType)
   :
-  BinaryBaseIterator<LogicIterator, PlanIteratorState>(loc, theChild0, theChild1),
+  BinaryBaseIterator<LogicIterator, PlanIteratorState>(sctx, loc, theChild0, theChild1),
   theLogicType(aLogicType) 
 {}
   
@@ -166,12 +168,13 @@ LogicIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 
 CompareIterator::CompareIterator(
+     short sctx,
      const QueryLoc& loc,
      PlanIter_t aChild0,
      PlanIter_t aChild1,
      CompareConsts::CompareType aCompType)
   :
-  BinaryBaseIterator<CompareIterator, PlanIteratorState> ( loc, aChild0, aChild1 ), 
+  BinaryBaseIterator<CompareIterator, PlanIteratorState> ( sctx, loc, aChild0, aChild1 ), 
   theCompType(aCompType)
 {
   switch(theCompType) {
@@ -195,9 +198,9 @@ void CompareIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   BinaryBaseIterator<CompareIterator, PlanIteratorState>::openImpl(planState, offset);
 
-  theTypeManager = planState.theRuntimeCB->theStaticContext->get_typemanager();
+  theTypeManager = getStaticContext(planState)->get_typemanager();
   theTimezone = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
-  theCollation = planState.theRuntimeCB->theCollationCache->getDefaultCollator();
+  theCollation = getStaticContext(planState)->get_collation_cache()->getDefaultCollator();
 }
 
 
@@ -753,7 +756,7 @@ void TypedValueCompareIterator<ATC>::openImpl(PlanState& planState, uint32_t& of
   NaryBaseIterator<TypedValueCompareIterator, PlanIteratorState>::openImpl(planState, offset);
 
   theTimezone = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
-  theCollation = planState.theRuntimeCB->theCollationCache->getDefaultCollator();
+  theCollation = TypedValueCompareIterator<ATC>::getStaticContext(planState)->get_collation_cache()->getDefaultCollator();
 }
 
 template<TypeConstants::atomic_type_code_t ATC>

@@ -58,12 +58,13 @@ CountState::reset ( PlanState& planState ) {
 // theChild0 --> TupleIterator
 // theChild1 --> InputIterator
 CountIterator::CountIterator (
+    short sctx,
     const QueryLoc& loc,
     const store::Item_t& aVarName,
     PlanIter_t aTupleIterator,
     const std::vector<PlanIter_t>& aCountVars ) 
   :
-  UnaryBaseIterator<CountIterator, CountState> ( loc, aTupleIterator ),
+  UnaryBaseIterator<CountIterator, CountState> ( sctx, loc, aTupleIterator ),
   theVarName ( aVarName )
 {
   castIterVector<ForVarIterator>(theCountVars, aCountVars);

@@ -34,11 +34,12 @@ xqtref_t op_enclosed_expr::return_type(const std::vector<xqtref_t>& arg_types) c
 
 
 PlanIter_t op_enclosed_expr::codegen(
+    short sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
     AnnotationHolder& ann) const
 {
-  return new EnclosedIterator ( loc, argv[0] );
+  return new EnclosedIterator ( sctx, loc, argv[0] );
 }
   
   

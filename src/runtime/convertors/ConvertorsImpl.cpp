@@ -36,7 +36,7 @@ ZorbaJsonParseIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   DEFAULT_STACK_INIT(FnJsonParseIteratorState, state, planState);
 
   if( state->theBaseUri.empty() )
-    state->theBaseUri = planState.theRuntimeCB->theStaticContext->final_baseuri();
+    state->theBaseUri = getStaticContext(planState)->final_baseuri();
 
   while (consumeNext(strItem, theChildren[0].getp(), planState))
   {
@@ -121,7 +121,7 @@ ZorbaJsonMLParseIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   DEFAULT_STACK_INIT(FnJsonMLParseIteratorState, state, planState);
 
   if( state->theBaseUri.empty() )
-    state->theBaseUri = planState.theRuntimeCB->theStaticContext->final_baseuri();
+    state->theBaseUri = getStaticContext(planState)->final_baseuri();
 
   while (consumeNext(strItem, theChildren[0].getp(), planState))
   {

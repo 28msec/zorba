@@ -37,6 +37,7 @@ namespace zorba {
 
 void ArithOperationsCommons::createError(
   RuntimeCB* aRuntimeCB,
+  static_context* aContext,
   const char* aOp, 
   const QueryLoc* aLoc, 
   TypeConstants::atomic_type_code_t aType0,
@@ -47,9 +48,9 @@ void ArithOperationsCommons::createError(
   lStream << "The operation '";
   lStream << aOp;
   lStream << "' is not possible with parameters of the type ";
-  aRuntimeCB->theStaticContext->get_typemanager()->create_builtin_atomic_type(aType0, TypeConstants::QUANT_ONE)->serialize(lStream);
+  aContext->get_typemanager()->create_builtin_atomic_type(aType0, TypeConstants::QUANT_ONE)->serialize(lStream);
   lStream << " and ";
-  aRuntimeCB->theStaticContext->get_typemanager()->create_builtin_atomic_type(aType1, TypeConstants::QUANT_ONE)->serialize(lStream);
+  aContext->get_typemanager()->create_builtin_atomic_type(aType1, TypeConstants::QUANT_ONE)->serialize(lStream);
   lStream << ".";
   ZORBA_ERROR_LOC_DESC( XPTY0004, *aLoc, lStream.str());
 }
@@ -57,9 +58,9 @@ void ArithOperationsCommons::createError(
 /* begin class GenericArithIterator */
 template< class Operations>
 GenericArithIterator<Operations>::GenericArithIterator
-( const QueryLoc& loc, PlanIter_t& iter0, PlanIter_t& iter1 )
+( short sctx, const QueryLoc& loc, PlanIter_t& iter0, PlanIter_t& iter1 )
     :
-    BinaryBaseIterator<GenericArithIterator<Operations>, PlanIteratorState > ( loc, iter0, iter1 )
+    BinaryBaseIterator<GenericArithIterator<Operations>, PlanIteratorState > ( sctx, loc, iter0, iter1 )
 { }
 
 template < class Operation >
@@ -75,7 +76,8 @@ bool GenericArithIterator<Operation>::nextImpl ( store::Item_t& result, PlanStat
   {
     if (consumeNext( n1, this->theChild1.getp(), planState ))
     {
-      status = compute(result, planState.theRuntimeCB, this->loc, n0, n1);
+      status = compute(result, planState.theRuntimeCB, this->getStaticContext(planState),
+                       this->loc, n0, n1);
     
       if ( consumeNext(n0, this->theChild0.getp(), planState )
            || consumeNext(n1, this->theChild1.getp(), planState ))
@@ -92,6 +94,7 @@ template < class Operation >
 bool GenericArithIterator<Operation>::compute(
     store::Item_t& result,
     RuntimeCB* aRuntimeCB,
+    static_context* aContext,
     const QueryLoc& aLoc, 
     store::Item_t& n0,
     store::Item_t& n1)
@@ -101,10 +104,10 @@ bool GenericArithIterator<Operation>::compute(
   store::Item_t an0 = n0->getAtomizationValue();
   store::Item_t an1 = n1->getAtomizationValue();
 
-  xqtref_t type0 = aRuntimeCB->theStaticContext->get_typemanager()->
+  xqtref_t type0 = aContext->get_typemanager()->
                    create_value_type (an0);
 
-  xqtref_t type1 = aRuntimeCB->theStaticContext->get_typemanager()->
+  xqtref_t type1 = aContext->get_typemanager()->
                    create_value_type (an1);
   
   if (TypeOps::is_numeric(*type0)
@@ -119,13 +122,13 @@ bool GenericArithIterator<Operation>::compute(
     {
       return Operation::template
              compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_YM_DURATION>
-             (result, aRuntimeCB, &aLoc, an0, an1);
+             (result, aRuntimeCB, aContext, &aLoc, an0, an1);
     }
     else
     {
       return Operation::template
              compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DT_DURATION>
-             (result, aRuntimeCB, &aLoc, an0, an1);
+             (result, aRuntimeCB, aContext, &aLoc, an0, an1);
     }
   }
   else if (TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE )
@@ -134,63 +137,63 @@ bool GenericArithIterator<Operation>::compute(
   {
     return Operation::template
            compute<TypeConstants::XS_DURATION,TypeConstants::XS_TIME>
-           (result, aRuntimeCB, &aLoc, an0, an1);
+           (result, aRuntimeCB, aContext, &aLoc, an0, an1);
   }
   else if (TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE ))
   {
     if(TypeOps::is_numeric(*type1))
     {
       GenericCast::instance()->castToAtomic ( an1, an1, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-      return Operation::template compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DOUBLE> ( result, aRuntimeCB, &aLoc, an0, an1 );
+      return Operation::template compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DOUBLE> ( result, aRuntimeCB, aContext, &aLoc, an0, an1 );
     }
     else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
-      return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME> (result, aRuntimeCB, &aLoc, an0, an1);
+      return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME> (result, aRuntimeCB, aContext, &aLoc, an0, an1);
     else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE))
-      return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE> (result, aRuntimeCB, &aLoc, an0, an1);
+      return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE> (result, aRuntimeCB, aContext, &aLoc, an0, an1);
     else if (TypeOps::is_equal(*type0, *type1))
-      return Operation::template computeSingleType<TypeConstants::XS_YM_DURATION> ( result, aRuntimeCB, &aLoc, an0, an1 );
+      return Operation::template computeSingleType<TypeConstants::XS_YM_DURATION> ( result, aRuntimeCB, aContext, &aLoc, an0, an1 );
   }
   else if (TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE ))
   {
     if(TypeOps::is_numeric(*type1))
     {
       GenericCast::instance()->castToAtomic ( an1, an1, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-      return Operation::template compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DOUBLE> ( result, aRuntimeCB, &aLoc, an0, an1 );
+      return Operation::template compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DOUBLE> ( result, aRuntimeCB, aContext, &aLoc, an0, an1 );
     }
     else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
-      return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME> (result, aRuntimeCB, &aLoc, an0, an1);
+      return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME> (result, aRuntimeCB, aContext, &aLoc, an0, an1);
     else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE))
-      return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE> (result, aRuntimeCB, &aLoc, an0, an1);
+      return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE> (result, aRuntimeCB, aContext, &aLoc, an0, an1);
     else if (TypeOps::is_equal(*type0, *type1))
-      return Operation::template computeSingleType<TypeConstants::XS_DT_DURATION> ( result, aRuntimeCB, &aLoc, an0, an1 );
+      return Operation::template computeSingleType<TypeConstants::XS_DT_DURATION> ( result, aRuntimeCB, aContext, &aLoc, an0, an1 );
   }
   else if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE ))
   {
     if(TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE ))
-      return Operation::template compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DATETIME> (  result, aRuntimeCB, &aLoc, an0, an1 );
+      return Operation::template compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DATETIME> (  result, aRuntimeCB, aContext, &aLoc, an0, an1 );
     else if (TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE ))
-      return Operation::template compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION> (  result, aRuntimeCB, &aLoc, an0, an1 );
+      return Operation::template compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION> (  result, aRuntimeCB, aContext, &aLoc, an0, an1 );
   }
   else if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DATE_TYPE_ONE ))
   {
     if (TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE ))
-      return Operation::template compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE> (  result, aRuntimeCB, &aLoc, an0, an1 );
+      return Operation::template compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE> (  result, aRuntimeCB, aContext, &aLoc, an0, an1 );
     else if (TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE ))
-      return Operation::template compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION> (  result, aRuntimeCB, &aLoc, an0, an1 );
+      return Operation::template compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION> (  result, aRuntimeCB, aContext, &aLoc, an0, an1 );
   }
   else if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.TIME_TYPE_ONE ))
   {
     if(TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE ))
-      return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME> (  result, aRuntimeCB, &aLoc, an0, an1 );
+      return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME> (  result, aRuntimeCB, aContext, &aLoc, an0, an1 );
     else if (TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE))
-      return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION> (  result, aRuntimeCB, &aLoc, an0, an1 );
+      return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION> (  result, aRuntimeCB, aContext, &aLoc, an0, an1 );
   }
   else if ((TypeOps::is_numeric(*type0)
            || TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
            && ( TypeOps::is_numeric(*type1)
            || TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)))
   {
-    return NumArithIterator<Operation>::computeAtomic( result, aRuntimeCB, aLoc, an0, type0, an1, type1);
+    return NumArithIterator<Operation>::computeAtomic( result, aRuntimeCB, aContext, aLoc, an0, type0, an1, type1);
   }
   
   ZORBA_ERROR_LOC_DESC(XPTY0004, aLoc,
@@ -218,7 +221,12 @@ void GenericArithIterator<Operation>::accept(PlanIterVisitor& v) const {
 /* begin class AddOperations */
 template<>
 bool AddOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_YM_DURATION>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+ ( store::Item_t& result,
+   RuntimeCB* aRuntimeCB,
+   static_context* aContext,
+   const QueryLoc* loc,
+   const store::Item* i0,
+   const store::Item* i1 )
 {
   std::auto_ptr<Duration> d = std::auto_ptr<Duration>(i0->getYearMonthDurationValue() + i1->getYearMonthDurationValue());
   return GENV_ITEMFACTORY->createYearMonthDuration(result, d.get());
@@ -226,7 +234,12 @@ bool AddOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_YM_DU
 
 template<>
 bool AddOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DT_DURATION>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   std::auto_ptr<Duration> d = std::auto_ptr<Duration>(i0->getDayTimeDurationValue() + i1->getDayTimeDurationValue());
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
@@ -234,7 +247,12 @@ bool AddOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DT_DU
 
 template<>
 bool AddOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   std::auto_ptr<xqp_dateTime> d = std::auto_ptr<xqp_dateTime>(i0->getDateTimeValue().addDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createDateTime(result, d.get());
@@ -242,7 +260,12 @@ bool AddOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION
 
 template<>
 bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   std::auto_ptr<xqp_dateTime> d = std::auto_ptr<xqp_dateTime>(i1->getDateTimeValue().addDuration(i0->getDurationValue()));
   return GENV_ITEMFACTORY->createDateTime(result, d.get());
@@ -250,7 +273,12 @@ bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME
 
 template<>
 bool AddOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   std::auto_ptr<xqp_date> d = std::auto_ptr<xqp_date>(i0->getDateValue().addDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createDate(result, d.get());
@@ -258,7 +286,12 @@ bool AddOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
 
 template<>
 bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   std::auto_ptr<xqp_date> d = std::auto_ptr<xqp_date>(i1->getDateValue().addDuration(i0->getDurationValue()));
   return GENV_ITEMFACTORY->createDate (result, d.get());
@@ -266,7 +299,12 @@ bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE>
 
 template<>
 bool AddOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   std::auto_ptr<xqp_time> t = std::auto_ptr<xqp_time>(i0->getTimeValue().addDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createTime (result, t.get());
@@ -274,7 +312,12 @@ bool AddOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
 
 template<>
 bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_TIME>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   std::auto_ptr<xqp_time> t = std::auto_ptr<xqp_time>(i1->getTimeValue().addDuration(i0->getDurationValue()));
   return GENV_ITEMFACTORY->createTime (result, t.get());
@@ -285,7 +328,12 @@ bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_TIME>
 /* start class SubtractOperations */
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_YM_DURATION>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   std::auto_ptr<Duration> d = std::auto_ptr<Duration>(i0->getYearMonthDurationValue() - i1->getYearMonthDurationValue());
   return GENV_ITEMFACTORY->createYearMonthDuration(result, d.get());
@@ -293,7 +341,12 @@ bool SubtractOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_
 
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DT_DURATION>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   std::auto_ptr<Duration> d = std::auto_ptr<Duration>(i0->getDayTimeDurationValue() - i1->getDayTimeDurationValue());
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
@@ -301,7 +354,12 @@ bool SubtractOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_
 
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   std::auto_ptr<xqp_dateTime> d = std::auto_ptr<xqp_dateTime>(i0->getDateTimeValue().subtractDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createDateTime (result, d.get());
@@ -310,7 +368,12 @@ bool SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DUR
 
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   std::auto_ptr<xqp_date> d = std::auto_ptr<xqp_date>(i0->getDateValue().subtractDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createDate(result, d.get());
@@ -319,7 +382,12 @@ bool SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATIO
 
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   std::auto_ptr<xqp_time> t = std::auto_ptr<xqp_time>(i0->getTimeValue().subtractDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createTime(result, t.get());
@@ -328,7 +396,12 @@ bool SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATIO
 
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DATETIME>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   std::auto_ptr<Duration> d;
   try {
@@ -344,7 +417,12 @@ bool SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DAT
 
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   std::auto_ptr<Duration> d;
   try 
@@ -362,7 +440,12 @@ bool SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE>
 
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   std::auto_ptr<Duration> d;
   try {
@@ -380,7 +463,12 @@ bool SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME>
 /* start class MultiplyOperations */
 template<>
 bool MultiplyOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DOUBLE>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   std::auto_ptr<Duration> d;
   
@@ -396,7 +484,12 @@ bool MultiplyOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_
 
 template<>
 bool MultiplyOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DOUBLE>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   std::auto_ptr<Duration> d;
   
@@ -412,23 +505,38 @@ bool MultiplyOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_
 
 template<>
 bool MultiplyOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_YM_DURATION>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
-  return MultiplyOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DOUBLE>(result, aRuntimeCB, loc, i1, i0);
+  return MultiplyOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DOUBLE>(result, aRuntimeCB, aContext, loc, i1, i0);
 }
 
 template<>
 bool MultiplyOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DT_DURATION>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
-  return MultiplyOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DOUBLE>(result, aRuntimeCB, loc, i1, i0);
+  return MultiplyOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DOUBLE>(result, aRuntimeCB, aContext, loc, i1, i0);
 }
 /* end class MultiplyOperations */
 
 /* start class DivideOperations */
 template<>
 bool DivideOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DOUBLE>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   std::auto_ptr<Duration> d;
 
@@ -448,7 +556,12 @@ bool DivideOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DO
 
 template<>
 bool DivideOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DOUBLE>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   std::auto_ptr<Duration> d;
 
@@ -468,7 +581,12 @@ bool DivideOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DO
 
 template<>
 bool DivideOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_YM_DURATION>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   xqp_decimal d = i0->getYearMonthDurationValue() / i1->getYearMonthDurationValue();
   return GENV_ITEMFACTORY->createDecimal(result, d);
@@ -476,7 +594,12 @@ bool DivideOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_YM
 
 template<>
 bool DivideOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DT_DURATION>
-( store::Item_t& result, RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
+( store::Item_t& result,
+  RuntimeCB* aRuntimeCB,
+  static_context* aContext,
+  const QueryLoc* loc,
+  const store::Item* i0,
+  const store::Item* i1 )
 {
   xqp_decimal d = i0->getDayTimeDurationValue() / i1->getDayTimeDurationValue();
   return GENV_ITEMFACTORY->createDecimal(result, d);

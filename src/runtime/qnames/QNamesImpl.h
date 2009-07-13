@@ -33,9 +33,9 @@ namespace zorba {
 class ResolveQNameIterator : public BinaryBaseIterator<ResolveQNameIterator, PlanIteratorState>
 {
   public:
-    ResolveQNameIterator( const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
+    ResolveQNameIterator( short sctx, const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
   :
-    BinaryBaseIterator<ResolveQNameIterator, PlanIteratorState>(loc, arg0, arg1){}
+    BinaryBaseIterator<ResolveQNameIterator, PlanIteratorState>(sctx, loc, arg0, arg1){}
 
     ~ResolveQNameIterator() {};
   public:
@@ -53,9 +53,9 @@ class ResolveQNameIterator : public BinaryBaseIterator<ResolveQNameIterator, Pla
 class QNameIterator : public BinaryBaseIterator<QNameIterator, PlanIteratorState>
 {
   public:
-    QNameIterator( const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
+    QNameIterator( short sctx, const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
   :
-    BinaryBaseIterator<QNameIterator, PlanIteratorState>(loc, arg0, arg1){}
+    BinaryBaseIterator<QNameIterator, PlanIteratorState>(sctx, loc, arg0, arg1){}
 
     ~QNameIterator() {};
   public:
@@ -73,9 +73,9 @@ class QNameIterator : public BinaryBaseIterator<QNameIterator, PlanIteratorState
 class QNameEqualIterator : public BinaryBaseIterator<QNameEqualIterator, PlanIteratorState>
 {
   public:
-    QNameEqualIterator( const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
+    QNameEqualIterator( short sctx, const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
   :
-    BinaryBaseIterator<QNameEqualIterator, PlanIteratorState>(loc, arg0, arg1){}
+    BinaryBaseIterator<QNameEqualIterator, PlanIteratorState>(sctx, loc, arg0, arg1){}
 
     ~QNameEqualIterator() {};
   public:
@@ -92,9 +92,9 @@ class QNameEqualIterator : public BinaryBaseIterator<QNameEqualIterator, PlanIte
 class PrefixFromQNameIterator : public UnaryBaseIterator<PrefixFromQNameIterator, PlanIteratorState>
 {
   public:
-    PrefixFromQNameIterator ( const QueryLoc& loc, PlanIter_t& arg )
+    PrefixFromQNameIterator ( short sctx, const QueryLoc& loc, PlanIter_t& arg )
   :
-    UnaryBaseIterator<PrefixFromQNameIterator, PlanIteratorState>( loc, arg ){};
+    UnaryBaseIterator<PrefixFromQNameIterator, PlanIteratorState>( sctx, loc, arg ){};
   
     ~PrefixFromQNameIterator(){};
   public:
@@ -111,9 +111,9 @@ class PrefixFromQNameIterator : public UnaryBaseIterator<PrefixFromQNameIterator
 class LocalNameFromQNameIterator : public UnaryBaseIterator<LocalNameFromQNameIterator, PlanIteratorState>
 {
   public:
-    LocalNameFromQNameIterator ( const QueryLoc& loc, PlanIter_t& arg )
+    LocalNameFromQNameIterator ( short sctx, const QueryLoc& loc, PlanIter_t& arg )
   :
-    UnaryBaseIterator<LocalNameFromQNameIterator, PlanIteratorState>( loc, arg ){};
+    UnaryBaseIterator<LocalNameFromQNameIterator, PlanIteratorState>( sctx, loc, arg ){};
   
     ~LocalNameFromQNameIterator(){};
   public:
@@ -130,9 +130,9 @@ class LocalNameFromQNameIterator : public UnaryBaseIterator<LocalNameFromQNameIt
 class NamespaceUriFromQNameIterator : public UnaryBaseIterator<NamespaceUriFromQNameIterator, PlanIteratorState>
 {
   public:
-    NamespaceUriFromQNameIterator ( const QueryLoc& loc, PlanIter_t& arg )
+    NamespaceUriFromQNameIterator ( short sctx, const QueryLoc& loc, PlanIter_t& arg )
   :
-    UnaryBaseIterator<NamespaceUriFromQNameIterator, PlanIteratorState>( loc, arg ){};
+    UnaryBaseIterator<NamespaceUriFromQNameIterator, PlanIteratorState>( sctx, loc, arg ){};
   
     ~NamespaceUriFromQNameIterator(){};
   public:
@@ -169,9 +169,9 @@ class InScopePrefixesIterator : public UnaryBaseIterator<InScopePrefixesIterator
                                                          InScopePrefixesState>
 {
 public:
-  InScopePrefixesIterator(const QueryLoc& loc, PlanIter_t& arg)
+  InScopePrefixesIterator( short sctx,const QueryLoc& loc, PlanIter_t& arg)
     :
-  UnaryBaseIterator<InScopePrefixesIterator, InScopePrefixesState>(loc, arg) {};
+  UnaryBaseIterator<InScopePrefixesIterator, InScopePrefixesState>(sctx, loc, arg) {};
   
   ~InScopePrefixesIterator() {};
 

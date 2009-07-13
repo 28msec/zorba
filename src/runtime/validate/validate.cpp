@@ -83,13 +83,14 @@ namespace zorba
   default namespace for elements and types.
 _______________________________________________________________________*/
 ValidateIterator::ValidateIterator(
+    short sctx,
     const QueryLoc& loc,
     PlanIter_t& aIter,
     TypeManager *typeMgr,
 	store::Item_t typeName,
 	ParseConstants::validation_mode_t validationMode)
   :
-  UnaryBaseIterator<ValidateIterator, PlanIteratorState>( loc, aIter ),
+  UnaryBaseIterator<ValidateIterator, PlanIteratorState>( sctx, loc, aIter ),
   _validationMode(validationMode),
   _typemgr (typeMgr),
   _typeName(typeName)
@@ -121,7 +122,7 @@ bool ValidateIterator::nextImpl(store::Item_t& result, PlanState& planState) con
                                           _typeName,
                                           _typemgr.getp(),
                                           _validationMode,
-                                          planState.theRuntimeCB->theStaticContext,
+                                          getStaticContext(planState),
                                           this->loc),
                  aState);
     }

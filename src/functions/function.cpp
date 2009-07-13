@@ -94,8 +94,7 @@ user_function::user_function(const QueryLoc& loc,
   theUpdateType((ftype == ParseConstants::fn_update) ? UPDATE_EXPR : SIMPLE_EXPR),
   sequential (ftype == ParseConstants::fn_sequential),
   deterministic (deterministic_),
-  leaf (true),
-  m_context(0)
+  leaf (true)
 { 
 }
 
@@ -108,16 +107,6 @@ user_function::~user_function()
 const QueryLoc& user_function::get_location() const
 {
   return m_loc;
-}
-
-void user_function::set_context(static_context* c)
-{
-  m_context = c;
-}
-
-static_context* user_function::get_context() const
-{
-  return m_context;
 }
 
 void user_function::set_body(expr_t body)
@@ -201,11 +190,12 @@ PlanIter_t user_function::get_plan(CompilerCB *ccb) const
 
 
 PlanIter_t user_function::codegen (
+    short sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
     AnnotationHolder &ann) const
 {
-  return new UDFunctionCallIterator(loc, argv, this);
+  return new UDFunctionCallIterator(sctx, loc, argv, this);
 }
 
 }

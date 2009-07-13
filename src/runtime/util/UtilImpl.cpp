@@ -155,14 +155,14 @@ ZorbaTDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       STACK_PUSH(true, state);
     } else {
       try {
-        resolvedURIString = planState.sctx()->resolve_relative_uri(uriString, xqp_string(), false).getStore();
+        resolvedURIString = getStaticContext(planState)->resolve_relative_uri(uriString, xqp_string(), false).getStore();
         GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
       } catch (error::ZorbaError& e) {
         ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
       }
       try {
-        result = planState.sctx()->get_document_uri_resolver()->resolve(resolvedURIItem,
-                                                                        planState.sctx(),
+        result = getStaticContext(planState)->get_document_uri_resolver()->resolve(resolvedURIItem,
+                                                                        getStaticContext(planState),
                                                                         false,
                                                                         true,
                                                                         (theChildren.size() > 1 ? itemOpt : NULL));

@@ -70,8 +70,8 @@ RULE_REWRITE_PRE(ExpandBuildIndex)
       //
       // create index-session-opener(uri) expr
       // 
-      expr_t open_index_arg(new const_expr(fo->get_loc(), uri_item));
-      expr_t open_index(new fo_expr(fo->get_loc(),
+      expr_t open_index_arg(new const_expr(fo->get_cur_sctx(), fo->get_loc(), uri_item));
+      expr_t open_index(new fo_expr(fo->get_cur_sctx(), fo->get_loc(),
                                     LOOKUP_OP1("index-session-opener"),
                                     open_index_arg));
       se_args.push_back(open_index);
@@ -87,15 +87,16 @@ RULE_REWRITE_PRE(ExpandBuildIndex)
 
       expr_t newdom = vi->getDomainExpression()->clone(subst);
 
-      var_expr_t newdot = new var_expr(dot->get_loc(),
+      var_expr_t newdot = new var_expr(dot->get_cur_sctx(), dot->get_loc(),
                                        dot->get_kind(),
                                        dot->get_varname());
-      var_expr_t newpos = new var_expr(pos->get_loc(),
+      var_expr_t newpos = new var_expr(pos->get_cur_sctx(),
+                                       pos->get_loc(),
                                        pos->get_kind(),
                                        pos->get_varname());
       subst[dot] = newdot;
       subst[pos] = newpos;
-      for_clause* fc = new for_clause(dot->get_loc(), newdot, newdom, newpos);
+      for_clause* fc = new for_clause(dot->get_cur_sctx(), dot->get_loc(), newdot, newdom, newpos);
       newdot->set_flwor_clause(fc);
       newpos->set_flwor_clause(fc);
 
@@ -106,10 +107,10 @@ RULE_REWRITE_PRE(ExpandBuildIndex)
       // return index-builder(uri, $$dot, field1_expr, ..., fieldN_expr)
       //
       std::vector<expr_t> index_builder_args;
-      expr_t insert_builder_uri(new const_expr(fo->get_loc(), uri_item));
+      expr_t insert_builder_uri(new const_expr(fo->get_cur_sctx(), fo->get_loc(), uri_item));
       index_builder_args.push_back(insert_builder_uri);
 
-      expr_t index_builder_var(new wrapper_expr(fo->get_loc(), newdot.getp()));
+      expr_t index_builder_var(new wrapper_expr(fo->get_cur_sctx(), fo->get_loc(), newdot.getp()));
       index_builder_args.push_back(index_builder_var);
 
       const std::vector<expr_t>& idx_fields(vi->getIndexFieldExpressions());
@@ -119,14 +120,15 @@ RULE_REWRITE_PRE(ExpandBuildIndex)
         index_builder_args.push_back(idx_fields[i]->clone(subst));
       }
 
-      expr_t ret_expr(new fo_expr(fo->get_loc(),
+      expr_t ret_expr(new fo_expr(fo->get_cur_sctx(),
+                                  fo->get_loc(),
                                   LOOKUP_OPN("index-builder"),
                                   index_builder_args));
       
       //
       // Create flwor_expr with the above FOR and RETURN clauses.
       //
-      rchandle<flwor_expr> flwor = new flwor_expr(fo->get_loc(), false);
+      rchandle<flwor_expr> flwor = new flwor_expr(fo->get_cur_sctx(), fo->get_loc(), false);
       flwor->set_return_expr(ret_expr);
       for (unsigned i = 0; i < clauses.size(); ++i)
       {
@@ -137,8 +139,8 @@ RULE_REWRITE_PRE(ExpandBuildIndex)
       //
       // Create index-session-closer(uri) expr.
       //
-      expr_t close_index_arg(new const_expr(fo->get_loc(), uri_item));
-      expr_t close_index(new fo_expr(fo->get_loc(),
+      expr_t close_index_arg(new const_expr(fo->get_cur_sctx(), fo->get_loc(), uri_item));
+      expr_t close_index(new fo_expr(fo->get_cur_sctx(), fo->get_loc(),
                                      LOOKUP_OP1("index-session-closer"),
                                      close_index_arg));
       se_args.push_back(close_index);
@@ -153,7 +155,7 @@ RULE_REWRITE_PRE(ExpandBuildIndex)
       //
       // index-session-closer(uri);
       //
-      expr_t se = new sequential_expr(fo->get_loc(), se_args);
+      expr_t se = new sequential_expr(fo->get_cur_sctx(), fo->get_loc(), se_args);
       return se;
     }
   }

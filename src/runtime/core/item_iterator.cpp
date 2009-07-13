@@ -37,6 +37,7 @@ bool SingletonIterator::nextImpl ( store::Item_t& result, PlanState& planState )
 
 /* start class IfThenElseIterator */
 IfThenElseIterator::IfThenElseIterator(
+    short sctx,
     const QueryLoc& loc,
     PlanIter_t& aCondIter,
     PlanIter_t& aThenIter,
@@ -44,7 +45,7 @@ IfThenElseIterator::IfThenElseIterator(
     bool aIsUpdating,
     bool aIsBooleanIter )
   :
-  Batcher<IfThenElseIterator> ( loc ),
+  Batcher<IfThenElseIterator> ( sctx, loc ),
   theCondIter ( aCondIter ),
   theThenIter ( aThenIter ),
   theElseIter ( aElseIter ),

@@ -35,7 +35,7 @@ class NumArithIterator : public BinaryBaseIterator<NumArithIterator<Operation>,
                                                    PlanIteratorState>
 {
 public:
-  NumArithIterator ( const QueryLoc&, PlanIter_t&, PlanIter_t& );
+  NumArithIterator ( short sctx, const QueryLoc&, PlanIter_t&, PlanIter_t& );
 
   virtual ~NumArithIterator(){}
 
@@ -54,6 +54,7 @@ public:
   compute(
         store::Item_t& result,
         RuntimeCB* aRuntimeCB,
+        static_context* aContext,
         const QueryLoc& loc,
         store::Item_t& item0,
         store::Item_t& item1);
@@ -71,6 +72,7 @@ public:
   computeAtomic(
         store::Item_t& result,
         RuntimeCB* aRuntimeCB,
+        static_context* aContext,
         const QueryLoc&,
         store::Item_t& item0,
         xqtref_t type0,
@@ -87,7 +89,7 @@ class SpecificNumArithIterator
     : public BinaryBaseIterator<SpecificNumArithIterator<Operation, Type>, PlanIteratorState>
 {
 public:
-  SpecificNumArithIterator ( const QueryLoc&, PlanIter_t&, PlanIter_t& );
+  SpecificNumArithIterator ( short sctx, const QueryLoc&, PlanIter_t&, PlanIter_t& );
 
   virtual ~SpecificNumArithIterator(){}
 
@@ -106,6 +108,7 @@ public:
   compute(
         store::Item_t& result,
         RuntimeCB* aRuntimeCB,
+        static_context* aContext,
         const QueryLoc& loc,
         store::Item *item0,
         store::Item *item1);
@@ -153,7 +156,7 @@ public:
       bool thePlus;
 
     public:
-      OpNumericUnaryIterator ( const QueryLoc& loc, PlanIter_t& aChild, bool aPlus);
+      OpNumericUnaryIterator ( short sctx, const QueryLoc& loc, PlanIter_t& aChild, bool aPlus);
       virtual ~OpNumericUnaryIterator();
 
     public: // iterator interface
@@ -215,7 +218,7 @@ public:
   class ZorNumGen : public NoaryBaseIterator<ZorNumGen, ZorNumGenState> 
   {
   public:
-    ZorNumGen ( const QueryLoc& loc);
+    ZorNumGen ( short sctx, const QueryLoc& loc);
     ~ZorNumGen();
 
     bool nextImpl(store::Item_t& result, PlanState& planState) const;
@@ -241,9 +244,9 @@ public:
 class FnFormatNumberIterator: public NaryBaseIterator<FnFormatNumberIterator, PlanIteratorState >
 {
 public:
-  FnFormatNumberIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
+  FnFormatNumberIterator( short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
     :
-    NaryBaseIterator<FnFormatNumberIterator, PlanIteratorState >(loc, aChildren)
+    NaryBaseIterator<FnFormatNumberIterator, PlanIteratorState >(sctx, loc, aChildren)
   {}
 
 public:

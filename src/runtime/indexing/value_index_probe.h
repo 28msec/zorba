@@ -47,9 +47,9 @@ class ValueIndexPointProbe : public NaryBaseIterator<ValueIndexPointProbe,
                                                      ValueIndexPointProbeState> 
 {
 public:
-  ValueIndexPointProbe(const QueryLoc& loc, std::vector<PlanIter_t> aChildren)
+  ValueIndexPointProbe( short sctx, const QueryLoc& loc, std::vector<PlanIter_t> aChildren)
     :
-    NaryBaseIterator<ValueIndexPointProbe, ValueIndexPointProbeState>(loc, aChildren) { }
+    NaryBaseIterator<ValueIndexPointProbe, ValueIndexPointProbeState>(sctx, loc, aChildren) { }
 
   virtual ~ValueIndexPointProbe() { }
 
@@ -70,8 +70,8 @@ class ValueIndexRangeProbeState : public PlanIteratorState {
 
 class ValueIndexRangeProbe : public NaryBaseIterator<ValueIndexRangeProbe, ValueIndexRangeProbeState> {
   public:
-    ValueIndexRangeProbe(const QueryLoc& loc, std::vector<PlanIter_t> aChildren)
-      : NaryBaseIterator<ValueIndexRangeProbe, ValueIndexRangeProbeState>(loc, aChildren) { }
+    ValueIndexRangeProbe( short sctx, const QueryLoc& loc, std::vector<PlanIter_t> aChildren)
+      : NaryBaseIterator<ValueIndexRangeProbe, ValueIndexRangeProbeState>(sctx, loc, aChildren) { }
 
     virtual ~ValueIndexRangeProbe() { }
 

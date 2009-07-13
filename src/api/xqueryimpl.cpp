@@ -91,7 +91,7 @@ XQueryImpl::XQueryImpl()
   , theProfileName("xquery_profile.out")
 #endif
 { 
-  theCompilerCB = new CompilerCB();
+  theCompilerCB = new CompilerCB(theSctxMap);
 
   theDynamicContext = new dynamic_context();
 
@@ -133,6 +133,8 @@ XQueryImpl::close()
 #endif
 
     thePlan = 0;
+
+    theSctxMap.clear();
 
     delete theErrorManager;
 
@@ -186,6 +188,7 @@ XQueryImpl::clone() const
     lImpl->theStaticContext = theStaticContext->create_child_context();
     RCHelper::addReference (lImpl->theStaticContext);
     lImpl->theCompilerCB->m_sctx = lImpl->theStaticContext;
+    lImpl->theCompilerCB->m_context_map = theCompilerCB->m_context_map;
 
     // child dynamic context
     delete lImpl->theDynamicContext;
@@ -475,6 +478,12 @@ XQueryImpl::compile(
     checkNotCompiled();
     theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
     xqpString lQuery = Unmarshaller::getInternalString(aQuery);
+
+    // if the static context results from loadProlog, we need all the context
+    // that were created when compiling the query
+    theSctxMap = static_cast<StaticContextImpl*>(aStaticContext.get())->theCtxMap;
+    theCompilerCB->m_context_map = theSctxMap;
+
     std::istringstream lQueryStream(lQuery);
     doCompile(lQueryStream, aHints);
   ZORBA_CATCH
@@ -534,6 +543,11 @@ XQueryImpl::compile(std::istream& aQuery,
     checkNotCompiled();
     theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
 
+    // if the static context results from loadProlog, we need all the context
+    // that were created when compiling the query
+    theSctxMap = static_cast<StaticContextImpl*>(aStaticContext.get())->theCtxMap;
+    theCompilerCB->m_context_map = theSctxMap;
+
     doCompile(aQuery, aHints);
   ZORBA_CATCH
 }
@@ -561,6 +575,8 @@ XQueryImpl::doCompile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints,
   theStaticContext->set_entity_retrieval_url(xqp_string (&*URI::encode_file_URI (theFileName)));
 
   theCompilerCB->m_sctx = theStaticContext;
+  theCompilerCB->m_cur_sctx = theCompilerCB->m_context_map.size() + 1;
+  theCompilerCB->m_context_map[theCompilerCB->m_cur_sctx] = theStaticContext;
 
   // set the compiler config
   theCompilerCB->m_config = getCompilerConfig(aHints);

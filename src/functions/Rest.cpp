@@ -25,9 +25,9 @@ rest_get::rest_get(const signature& sig)
 {}
 
 PlanIter_t
-rest_get::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+rest_get::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new ZorbaRestGetIterator(loc, argv, false);
+  return new ZorbaRestGetIterator(sctx, loc, argv, false);
 }
 
 rest_get_tidy::rest_get_tidy(const signature& sig)
@@ -35,9 +35,9 @@ rest_get_tidy::rest_get_tidy(const signature& sig)
 {}
 
 PlanIter_t
-rest_get_tidy::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+rest_get_tidy::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new ZorbaRestGetIterator(loc, argv, true);
+  return new ZorbaRestGetIterator(sctx, loc, argv, true);
 }
 
 rest_post::rest_post(const signature& sig)
@@ -45,9 +45,9 @@ rest_post::rest_post(const signature& sig)
 {}
 
 PlanIter_t
-rest_post::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+rest_post::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new ZorbaRestPostIterator(loc, argv);
+  return new ZorbaRestPostIterator(sctx, loc, argv);
 }
 
 xqtref_t
@@ -61,9 +61,9 @@ rest_put::rest_put(const signature& sig) : function(sig)
 {
 }
 
-PlanIter_t rest_put::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t rest_put::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new ZorbaRestPutIterator(loc, argv);
+  return new ZorbaRestPutIterator(sctx, loc, argv);
 }
 
 xqtref_t rest_put::return_type (const std::vector<xqtref_t> &arg_types) const
@@ -76,9 +76,9 @@ rest_delete::rest_delete(const signature& sig) : function(sig)
 {
 }
 
-PlanIter_t rest_delete::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t rest_delete::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new ZorbaRestDeleteIterator(loc, argv);
+  return new ZorbaRestDeleteIterator(sctx, loc, argv);
 }
 
 xqtref_t rest_delete::return_type (const std::vector<xqtref_t> &arg_types) const
@@ -91,9 +91,9 @@ rest_head::rest_head(const signature& sig) : function(sig)
 {
 }
 
-PlanIter_t rest_head::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t rest_head::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new ZorbaRestHeadIterator(loc, argv);
+  return new ZorbaRestHeadIterator(sctx, loc, argv);
 }
 
 xqtref_t rest_head::return_type (const std::vector<xqtref_t> &arg_types) const

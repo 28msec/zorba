@@ -41,11 +41,11 @@ private:
 public:
   SortTupleCmp() : theOrderSpecs(0), theTypeManager(0), theTimezone(0) {}
 
-  SortTupleCmp(RuntimeCB* rcb, const std::vector<OrderSpec>* orderSpecs)
+  SortTupleCmp(RuntimeCB* rcb, static_context* sctx, const std::vector<OrderSpec>* orderSpecs)
   :
   theOrderSpecs(orderSpecs) 
   {
-    theTypeManager = rcb->theStaticContext->get_typemanager();
+    theTypeManager = sctx->get_typemanager();
     theTimezone = rcb->theDynamicContext->get_implicit_timezone();
   }
 

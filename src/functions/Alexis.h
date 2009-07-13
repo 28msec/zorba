@@ -26,7 +26,8 @@ namespace zorba {
   public:
     zorba_decode_base64(const signature& sig) : function (sig) {}
 
-    PlanIter_t codegen (const QueryLoc& loc,
+    PlanIter_t codegen (short sctx,
+                        const QueryLoc& loc,
                         std::vector<PlanIter_t>& argv,
                         AnnotationHolder &ann) const;
   };
@@ -35,7 +36,8 @@ namespace zorba {
   public:
     zorba_encode_base64(const signature& sig) : function (sig) {}
 
-    PlanIter_t codegen (const QueryLoc& loc,
+    PlanIter_t codegen (short sctx,
+                        const QueryLoc& loc,
                         std::vector<PlanIter_t>& argv,
                         AnnotationHolder &ann) const;
   };
@@ -45,7 +47,8 @@ namespace zorba {
   public:
     zorba_schema_type(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (const QueryLoc& loc,
+    PlanIter_t codegen (short sctx,
+                        const QueryLoc& loc,
                         std::vector<PlanIter_t>& argv,
                         AnnotationHolder &ann) const;
   };
@@ -56,7 +59,8 @@ namespace zorba {
   public:
     zorba_tidy(const signature& sig): function(sig){}
     
-    PlanIter_t codegen (const QueryLoc& loc,
+    PlanIter_t codegen (short sctx,
+                        const QueryLoc& loc,
                         std::vector<PlanIter_t>& argv,
                         AnnotationHolder &ann) const;
   };
@@ -66,7 +70,8 @@ namespace zorba {
   public:
     zorba_tdoc(const signature& sig): function(sig){}
     bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
-    PlanIter_t codegen (const QueryLoc& loc,
+    PlanIter_t codegen (short sctx,
+                        const QueryLoc& loc,
                         std::vector<PlanIter_t>& argv,
                         AnnotationHolder &ann) const;
   };
@@ -77,7 +82,8 @@ namespace zorba {
   public:
     zorba_random(const signature& sig): function(sig){}
     
-    PlanIter_t codegen (const QueryLoc& loc,
+    PlanIter_t codegen (short sctx,
+                        const QueryLoc& loc,
                         std::vector<PlanIter_t>& argv,
                         AnnotationHolder &ann) const;
     bool isPureFunction () const { return false; }
@@ -88,7 +94,8 @@ namespace zorba {
   public:
     zorba_uuid(const signature& sig): function(sig){}
     
-    PlanIter_t codegen (const QueryLoc& loc,
+    PlanIter_t codegen (short sctx,
+                        const QueryLoc& loc,
                         std::vector<PlanIter_t>& argv,
                         AnnotationHolder &ann) const;
     bool isPureFunction () const { return false; }
@@ -98,7 +105,8 @@ namespace zorba {
   public:
     zorba_serialize_to_string(const signature& sig) : function(sig) {}
     
-    PlanIter_t codegen (const QueryLoc& loc,
+    PlanIter_t codegen (short sctx,
+      const QueryLoc& loc,
       std::vector<PlanIter_t>& argv,
       AnnotationHolder &ann) const;
     bool isPureFunction () const { return false; }

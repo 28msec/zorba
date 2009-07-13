@@ -33,8 +33,8 @@ typedef rchandle<SingletonIterator> singleton_t;
 class EmptyIterator : public NoaryBaseIterator<EmptyIterator, PlanIteratorState>
 {
 public:
-  EmptyIterator(const QueryLoc& loc)
-     : NoaryBaseIterator<EmptyIterator, PlanIteratorState>(loc) {}
+  EmptyIterator(short sctx, const QueryLoc& loc)
+     : NoaryBaseIterator<EmptyIterator, PlanIteratorState>(sctx, loc) {}
 
   virtual ~EmptyIterator() {}
   
@@ -55,8 +55,8 @@ protected:
   store::Item_t theValue;
 
 public:
-  SingletonIterator(const QueryLoc& loc, store::Item_t value)
-    : NoaryBaseIterator<SingletonIterator, PlanIteratorState>(loc),
+  SingletonIterator(short sctx, const QueryLoc& loc, store::Item_t value)
+    : NoaryBaseIterator<SingletonIterator, PlanIteratorState>(sctx, loc),
     theValue(value) {}
 
   virtual ~SingletonIterator() {}
@@ -102,6 +102,7 @@ public:
    *                              boolean value function
    */
   IfThenElseIterator(
+        short sctx, 
         const QueryLoc& loc,
         PlanIter_t& aCondIter,
         PlanIter_t& aThenIter,

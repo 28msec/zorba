@@ -34,6 +34,7 @@ private:
 
 public:
   OuterForIterator(
+        short sctx,
         const QueryLoc& aLoc,
         const store::Item_t& aVarName,
         PlanIter_t aTupleIterator,

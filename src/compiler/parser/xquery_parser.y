@@ -5040,6 +5040,7 @@ CatchExpr :
                           $13);
        delete $5;
        delete $8;
+       delete $11;
        delete $2;
     }
   ;

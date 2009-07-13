@@ -31,9 +31,9 @@ xqtref_t zop_hoist::return_type(const std::vector<xqtref_t>& arg_types) const
 }
 
 
-PlanIter_t zop_hoist::codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t zop_hoist::codegen(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new HoistIterator(loc, argv);
+  return new HoistIterator(sctx, loc, argv);
 }
 
 
@@ -48,9 +48,9 @@ xqtref_t zop_unhoist::return_type(const std::vector<xqtref_t>& arg_types) const
 }
 
 
-PlanIter_t zop_unhoist::codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t zop_unhoist::codegen(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new UnhoistIterator(loc, argv);
+  return new UnhoistIterator(sctx, loc, argv);
 }
 
 

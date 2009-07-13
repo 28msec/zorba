@@ -57,7 +57,7 @@ protected:
   store::Item_t  theVarName;
   
 public:
-  ForVarIterator(const QueryLoc& loc, const store::Item_t& name);
+  ForVarIterator(short sctx, const QueryLoc& loc, const store::Item_t& name);
 
   ~ForVarIterator() { }
   
@@ -103,7 +103,7 @@ private:
   store::Item_t  theVarName;
   
 public:
-  LetVarIterator(const QueryLoc& loc, const store::Item_t& name);
+  LetVarIterator(short sctx, const QueryLoc& loc, const store::Item_t& name);
 
   ~LetVarIterator() {}
   

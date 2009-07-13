@@ -79,7 +79,7 @@ ZorbaCollectionExistsIterator::nextImpl(store::Item_t& result, PlanState& planSt
 
   try
   {
-    resolvedURIString = planState.sctx()->
+    resolvedURIString = getStaticContext(planState)->
                         resolve_relative_uri(item->getStringValueP(),
                                               xqp_string()).getStore();
 
@@ -93,8 +93,8 @@ ZorbaCollectionExistsIterator::nextImpl(store::Item_t& result, PlanState& planSt
                           "URI literal empty or is not in the lexical space of xs:anyURI" );
   }
 
-  lCollection = planState.sctx()->get_collection_uri_resolver()->
-                resolve(resolvedURIItem, planState.sctx());
+  lCollection = getStaticContext(planState)->get_collection_uri_resolver()->
+                resolve(resolvedURIItem, getStaticContext(planState));
   res = (lCollection != NULL);
 
   GENV_ITEMFACTORY->createBoolean(result, res);
@@ -133,7 +133,7 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   {
     try
     {
-      resolvedURIString = planState.sctx()->
+      resolvedURIString = getStaticContext(planState)->
           resolve_relative_uri(itemURI->getStringValueP(),
                                xqp_string()).getStore();
 
@@ -147,8 +147,8 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
                                 "URI literal empty or is not in the lexical space of xs:anyURI" );
     }
 
-    theColl = planState.sctx()->get_collection_uri_resolver()->
-        resolve(resolvedURIItem, planState.sctx());
+    theColl = getStaticContext(planState)->get_collection_uri_resolver()->
+        resolve(resolvedURIItem, getStaticContext(planState));
 
     if (theColl == NULL)
     {
@@ -165,8 +165,8 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
       {
         try
         {
-          itemXML = planState.sctx()->get_document_uri_resolver()->
-                    resolve(resolvedURIItem, planState.sctx(), false, false);
+          itemXML = getStaticContext(planState)->get_document_uri_resolver()->
+                    resolve(resolvedURIItem, getStaticContext(planState), false, false);
         }
         catch (error::ZorbaError& e) 
         {
@@ -254,7 +254,7 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
   {
     try 
     {
-      resolvedURIString = planState.sctx()->
+      resolvedURIString = getStaticContext(planState)->
                           resolve_relative_uri(uriString.getp(),
                                                xqp_string()).getStore();
 
@@ -266,8 +266,8 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
     }
     try 
     {
-      inNode = planState.sctx()->get_document_uri_resolver()->
-               resolve(resolvedURIItem, planState.sctx(), false, false);
+      inNode = getStaticContext(planState)->get_document_uri_resolver()->
+               resolve(resolvedURIItem, getStaticContext(planState), false, false);
     }
     catch (error::ZorbaError& e) 
     {
@@ -329,8 +329,8 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
               }
               try 
               {
-                itemXML = planState.sctx()->get_document_uri_resolver()->
-                          resolve(resolvedURIItem, planState.sctx(), false, false);
+                itemXML = getStaticContext(planState)->get_document_uri_resolver()->
+                          resolve(resolvedURIItem, getStaticContext(planState), false, false);
               }
               catch (error::ZorbaError& e) 
               {
@@ -482,7 +482,7 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
   // check if the collection already exists
   try
   {
-    coll = getCollection(aPlanState, lUri->getStringValueP(), loc);
+    coll = getCollection(getStaticContext(aPlanState), lUri->getStringValueP(), loc);
   }
   catch (error::ZorbaError&)
   {
@@ -494,12 +494,12 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
                          loc,
                          "The collection already exists.");
 
-  resolvedUri = aPlanState.sctx()->resolve_relative_uri(lUri->getStringValueP(), xqp_string()).getStore();
+  resolvedUri = getStaticContext(aPlanState)->resolve_relative_uri(lUri->getStringValueP(), xqp_string()).getStore();
 
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addCreateCollection(aPlanState.sctx(), resolvedUri);
+  pul->addCreateCollection(getStaticContext(aPlanState), resolvedUri);
 
   // also add some optional nodes to the collection
   if(theChildren.size() == 2) 
@@ -510,7 +510,7 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
     bool nsPreserve;
     bool nsInherit;
     
-    sctx = aPlanState.theRuntimeCB->theStaticContext;
+    sctx = getStaticContext(aPlanState);
 
     typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
                     true : false);
@@ -523,7 +523,7 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
 
     GENV_ITEMFACTORY->createAnyURI(lUri, resolvedUri);
     while (consumeNext(item, theChildren[1].getp(), aPlanState))
-      pul->addInsertIntoCollection(aPlanState.sctx(), lUri, item, lCopyMode);
+      pul->addInsertIntoCollection(getStaticContext(aPlanState), lUri, item, lCopyMode);
   }
 
   result = pul.release();
@@ -568,12 +568,12 @@ ZorbaDeleteCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
       ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(aPlanState, item->getStringValueP(), loc);
+  coll = getCollection(getStaticContext(aPlanState), item->getStringValueP(), loc);
 
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   item = coll->getUri();
-  pul->addDeleteCollection(aPlanState.sctx(), item);
+  pul->addDeleteCollection(getStaticContext(aPlanState), item);
 
   if(setDefCollNull)
     aPlanState.theRuntimeCB->theDynamicContext->set_default_collection(NULL);
@@ -604,7 +604,7 @@ ZorbaDeleteAllCollectionsIterator::nextImpl(store::Item_t& result, PlanState& pl
 
   for ((uriItState = GENV_STORE.listCollectionUris())->open ();
         uriItState->next(itemUri); ) {
-    pul->addDeleteCollection(planState.sctx(), itemUri);
+    pul->addDeleteCollection(getStaticContext(planState), itemUri);
   }
 
   uriItState->close();
@@ -649,7 +649,7 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  sctx = planState.theRuntimeCB->theStaticContext;
+  sctx = getStaticContext(planState);
 
   typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
@@ -669,7 +669,7 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
       ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(planState, item->getStringValueP(), loc);
+  coll = getCollection(getStaticContext(planState), item->getStringValueP(), loc);
 
   while (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState))
     nodes.push_back(item);
@@ -678,7 +678,7 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   item = coll->getUri();
-  pul->addInsertFirstIntoCollection(planState.sctx(), item, nodes, lCopyMode);
+  pul->addInsertFirstIntoCollection(getStaticContext(planState), item, nodes, lCopyMode);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -725,7 +725,7 @@ ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  sctx = planState.theRuntimeCB->theStaticContext;
+  sctx = getStaticContext(planState);
 
   typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
@@ -745,7 +745,7 @@ ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
       ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(planState, item->getStringValueP(), loc);
+  coll = getCollection(getStaticContext(planState), item->getStringValueP(), loc);
 
   while (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState))
     nodes.push_back(item);
@@ -754,7 +754,7 @@ ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   item = coll->getUri();
-  pul->addInsertLastIntoCollection(planState.sctx(), item, nodes, lCopyMode);
+  pul->addInsertLastIntoCollection(getStaticContext(planState), item, nodes, lCopyMode);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -810,7 +810,7 @@ ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planSt
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  sctx = planState.theRuntimeCB->theStaticContext;
+  sctx = getStaticContext(planState);
 
   typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
@@ -830,7 +830,7 @@ ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planSt
       ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(planState, itemUri->getStringValueP(), loc);
+  coll = getCollection(getStaticContext(planState), itemUri->getStringValueP(), loc);
 
   while (consumeNext(tmpItem, theChildren[theChildren.size()-1].getp(), planState))
     nodes.push_back(tmpItem);
@@ -856,7 +856,7 @@ ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planSt
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   tmpItem = coll->getUri();
-  pul->addInsertBeforeIntoCollection(planState.sctx(), tmpItem, itemTarget, nodes, lCopyMode);
+  pul->addInsertBeforeIntoCollection(getStaticContext(planState), tmpItem, itemTarget, nodes, lCopyMode);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-2]->reset(planState);
@@ -907,7 +907,7 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  sctx = planState.theRuntimeCB->theStaticContext;
+  sctx = getStaticContext(planState);
 
   typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
@@ -927,7 +927,7 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
       ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(planState, itemUri->getStringValueP(), loc);
+  coll = getCollection(getStaticContext(planState), itemUri->getStringValueP(), loc);
 
   if(!consumeNext(itemTarget, theChildren[theChildren.size()-2].getp(), planState)) {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
@@ -953,7 +953,7 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
     nodes.push_back(tmpItem);
 
   tmpItem = coll->getUri();
-  pul->addInsertAfterIntoCollection(planState.sctx(), tmpItem, itemTarget, nodes, lCopyMode);
+  pul->addInsertAfterIntoCollection(getStaticContext(planState), tmpItem, itemTarget, nodes, lCopyMode);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-2]->reset(planState);
@@ -1006,7 +1006,7 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  sctx = planState.theRuntimeCB->theStaticContext;
+  sctx = getStaticContext(planState);
 
   typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
@@ -1026,7 +1026,7 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
       ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(planState, itemUri->getStringValueP(), loc);
+  coll = getCollection(getStaticContext(planState), itemUri->getStringValueP(), loc);
 
   if(!consumeNext(itemPos, theChildren[theChildren.size()-2].getp(), planState)) {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
@@ -1052,7 +1052,7 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
     nodes.push_back(tmpItem);
 
   tmpItem = coll->getUri();
-  pul->addInsertAtIntoCollection(planState.sctx(), tmpItem, pos, nodes, lCopyMode);
+  pul->addInsertAtIntoCollection(getStaticContext(planState), tmpItem, pos, nodes, lCopyMode);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-2]->reset(planState);
@@ -1105,7 +1105,7 @@ ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
       ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(planState, itemUri->getStringValueP(), loc);
+  coll = getCollection(getStaticContext(planState), itemUri->getStringValueP(), loc);
 
   while (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState)) {
     if (coll->indexOf(item.getp()) == -1)
@@ -1119,7 +1119,7 @@ ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
   item = coll->getUri();
-  pul->addRemoveFromCollection(planState.sctx(), item, nodes);
+  pul->addRemoveFromCollection(getStaticContext(planState), item, nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -1169,7 +1169,7 @@ ZorbaRemoveNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
       ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(planState, itemUri->getStringValueP(), loc);
+  coll = getCollection(getStaticContext(planState), itemUri->getStringValueP(), loc);
 
   if(!consumeNext(itemTarget, theChildren[theChildren.size()-1].getp(), planState)) {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
@@ -1195,7 +1195,7 @@ ZorbaRemoveNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   tmpItem = coll->getUri();
-  pul->addRemoveAtFromCollection(planState.sctx(), tmpItem, lpos);
+  pul->addRemoveAtFromCollection(getStaticContext(planState), tmpItem, lpos);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -1238,7 +1238,7 @@ ZorbaNodeCountIterator::nextImpl(store::Item_t& result, PlanState& planState) co
       ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
-  theColl = getCollection(planState, itemUri->getStringValue(), loc);
+  theColl = getCollection(getStaticContext(planState), itemUri->getStringValue(), loc);
 
   STACK_PUSH(GENV_ITEMFACTORY->createInteger(
             result,
@@ -1284,7 +1284,7 @@ ZorbaNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
-  theColl = getCollection(planState, item->getStringValue(), loc);
+  theColl = getCollection(getStaticContext(planState), item->getStringValue(), loc);
 
   if (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState))
   {
@@ -1337,7 +1337,7 @@ ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
-  theColl = getCollection(planState, item->getStringValue(), loc);
+  theColl = getCollection(getStaticContext(planState), item->getStringValue(), loc);
 
   if (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState))
   {
@@ -1396,7 +1396,7 @@ ZorbaExportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
   if(consumeNext(item, theChildren[0].getp(), planState))
   {
-    theColl = getCollection(planState, item->getStringValue(), loc);
+    theColl = getCollection(getStaticContext(planState), item->getStringValue(), loc);
 
     if(theChildren.size() == 2 &&
        consumeNext(item, theChildren[1].getp(), planState))
@@ -1439,7 +1439,7 @@ ZorbaExportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
 
 store::Collection_t getCollection(
-    PlanState& planState,
+    static_context* sctx,
     const xqpStringStore_t strURI,
     const QueryLoc loc)
 {
@@ -1448,7 +1448,7 @@ store::Collection_t getCollection(
 
   try 
   {
-    resolvedURIString = planState.sctx()->
+    resolvedURIString = sctx->
                         resolve_relative_uri(strURI.getp(),
                                              xqp_string()).getStore();
 
@@ -1459,9 +1459,9 @@ store::Collection_t getCollection(
     ZORBA_ERROR_LOC_PARAM(API0006_COLLECTION_NOT_FOUND, loc, strURI, e.theDescription);
   }
 
-  store::Collection_t lCollection = planState.sctx()->
+  store::Collection_t lCollection = sctx->
                                     get_collection_uri_resolver()->
-                                    resolve(resolvedURIItem, planState.sctx());
+                                    resolve(resolvedURIItem, sctx);
   if (lCollection == NULL) 
   {
     ZORBA_ERROR_LOC_PARAM(API0006_COLLECTION_NOT_FOUND,

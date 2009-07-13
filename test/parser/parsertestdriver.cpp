@@ -38,7 +38,8 @@ main(int argc, char** argv)
   Zorba* lZorba = Zorba::getInstance(simplestore::SimpleStoreManager::getStore());
 
   std::string lQueryFileString;
-  CompilerCB aCompilerCB;
+  std::map<short, static_context_t> lSctxMap;
+  CompilerCB aCompilerCB(lSctxMap);
   xquery_driver lDriver(&aCompilerCB);
 
   // do initial stuff

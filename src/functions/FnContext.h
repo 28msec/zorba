@@ -31,7 +31,7 @@ public:
   ctx_variable(const signature& sig) : function (sig) {}
 
 public:
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
   bool requires_dyn_ctx () const { return true; }
 };
@@ -42,7 +42,7 @@ public:
   ctx_var_declare(const signature& sig) : function (sig) {}
 
 public:
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
   bool requires_dyn_ctx () const { return true; }
 };
@@ -53,7 +53,7 @@ public:
   ctx_var_assign(const signature& sig) : function (sig) {}
 
 public:
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
   bool requires_dyn_ctx () const { return true; }
 };
@@ -64,7 +64,7 @@ public:
   ctx_var_exists(const signature& sig) : function (sig) {}
 
 public:
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
   bool requires_dyn_ctx () const { return true; }
 };

@@ -228,7 +228,7 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
     try 
     {
       tt = lURI->getStringValue();
-      resolvedURIString = planState.sctx()->
+      resolvedURIString = getStaticContext(planState)->
                           resolve_relative_uri(lURI->getStringValueP(),
                                                xqp_string()).getStore();
 
@@ -249,8 +249,8 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
                            "Default collection is undefined in the dynamic context.");
   }
 
-  theColl =  planState.sctx()->get_collection_uri_resolver()->
-             resolve(resolvedURIItem, planState.sctx());
+  theColl =  getStaticContext(planState)->get_collection_uri_resolver()->
+             resolve(resolvedURIItem, getStaticContext(planState));
 
   if ( theColl == 0 ) 
   {

@@ -104,14 +104,8 @@ public:
 
   RuntimeCB*   theRuntimeCB;
 
-  static_context*
-  sctx();
-
   dynamic_context*
   dctx();
-
-  CollationCache*
-  collationCache();
 
 public:
   PlanState(uint32_t blockSize, uint32_t aStackDepth = 0);
@@ -268,17 +262,20 @@ public:
   
 public:
   QueryLoc  loc;
+  short     sctx;
 
 public:
-  PlanIterator(const QueryLoc& aLoc) 
+  PlanIterator(short aContext, const QueryLoc& aLoc) 
     : stateOffset(0),
-      loc(aLoc) 
+      loc(aLoc),
+      sctx(aContext)
   {}
   
   PlanIterator(const PlanIterator& it) 
     : SimpleRCObject(it), 
       stateOffset(0),
-      loc(it.loc)
+      loc(it.loc),
+      sctx(it.sctx)
   {}
 
   virtual ~PlanIterator() {}
@@ -403,8 +400,8 @@ public:
   Batcher(const Batcher<IterType>& b)  
     : PlanIterator(b)
   {}
-  Batcher(const QueryLoc& loc) 
-    : PlanIterator(loc) 
+  Batcher(short sctx, const QueryLoc& loc) 
+    : PlanIterator(sctx, loc) 
   {}
 
   ~Batcher() {}
@@ -466,6 +463,20 @@ public:
     lState->theIsOpened = false;
 #endif
   }
+
+  // get the static context for this iterator
+  static_context*
+  getStaticContext(PlanState& planState) const
+  {
+    return planState.theCompilerCB->getStaticContext(sctx);
+  }
+
+  CollationCache*
+  collationCache(PlanState& planState) 
+  {
+    return getStaticContext(planState)->get_collation_cache(); 
+  }
+
 
 
 public:

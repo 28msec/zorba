@@ -36,7 +36,7 @@ protected:
   std::vector<PlanIter_t> theChildren;
 
 public:
-  NaryBaseIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& args );
+  NaryBaseIterator ( short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& args );
 
   virtual ~NaryBaseIterator(){}
 
@@ -57,10 +57,11 @@ public:
 
 template <class IterType, class StateType>
 NaryBaseIterator<IterType, StateType>::NaryBaseIterator (
+    short sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& aChildren )
   :
-  Batcher<IterType> ( loc ),
+  Batcher<IterType> ( sctx, loc ),
   theChildren ( aChildren )
 {
 #ifndef NDEBUG
@@ -161,8 +162,8 @@ NaryBaseIterator<IterType, StateType>::closeImpl ( PlanState& planState )
 class iterName : public NaryBaseIterator<iterName, stateName >           \
 {                                                                        \
 public:                                                                  \
-  iterName(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren) :    \
-    NaryBaseIterator<iterName, stateName >(loc, aChildren)               \
+  iterName(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren) :    \
+    NaryBaseIterator<iterName, stateName >(sctx, loc, aChildren)               \
       { }                                                                \
                                                                          \
 public:                                                                  \
@@ -173,8 +174,8 @@ public:                                                                  \
 class iterName : public NaryBaseIterator<iterName, stateName >           \
 {                                                                        \
 public:                                                                  \
-  iterName(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren) :    \
-    NaryBaseIterator<iterName, stateName >(loc, aChildren)               \
+  iterName(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren) :    \
+    NaryBaseIterator<iterName, stateName >(sctx, loc, aChildren)               \
       { }                                                                \
                                                                          \
 public:                                                                  \

@@ -248,7 +248,7 @@ DEF_ACCEPT (while_expr)
 // end expr iterators
 
   
-expr::expr(const QueryLoc& _loc) : loc(_loc) {
+expr::expr(short _sctx, const QueryLoc& _loc) : context(_sctx), loc(_loc) {
   invalidate ();
 }
 
@@ -440,7 +440,7 @@ expr_t expr::clone(substitution_t& subst) {
     vector<expr_t> seq2;
     for (unsigned i = 0; i < sequence.size (); i++)
       seq2.push_back (sequence [i]->clone (subst));
-    return new sequential_expr (get_loc (), seq2);
+    return new sequential_expr (context, get_loc (), seq2);
   }
 
 
@@ -469,9 +469,9 @@ string var_expr::decode_var_kind(enum var_kind k)
 }
 
 
-var_expr::var_expr(const QueryLoc& loc, var_kind k, store::Item_t name, bool global_)
+var_expr::var_expr(short sctx, const QueryLoc& loc, var_kind k, store::Item_t name, bool global_)
   :
-  expr (loc),
+  expr (sctx, loc),
   kind (k),
   varname_h (name),
   type (NULL),
@@ -591,12 +591,13 @@ void flwor_clause::set_bound_variables(checked_vector<varref_t>& aScopedVariable
 
 ********************************************************************************/
 forletwin_clause::forletwin_clause(
+    short sctx,
     const QueryLoc& loc,
     flwor_clause::ClauseKind kind,
     varref_t varExpr,
     expr_t domainExpr)
   :
-  flwor_clause(loc, kind),
+  flwor_clause(sctx, loc, kind),
   theVarExpr(varExpr),
   theDomainExpr(domainExpr)
 {
@@ -615,6 +616,7 @@ forletwin_clause::~forletwin_clause() {
 
 ********************************************************************************/
 for_clause::for_clause(
+    short sctx,
     const QueryLoc& loc,
     varref_t varExpr,
     expr_t domainExpr,
@@ -622,7 +624,7 @@ for_clause::for_clause(
     varref_t scoreVarExpr,
     bool isOuter)
   :
-  forletwin_clause(loc, flwor_clause::for_clause, varExpr, domainExpr),
+  forletwin_clause(sctx, loc, flwor_clause::for_clause, varExpr, domainExpr),
   thePosVarExpr(posVarExpr),
   theScoreVarExpr(scoreVarExpr),
   theIsOuter(isOuter)
@@ -666,7 +668,8 @@ flwor_clause_t for_clause::clone(expr::substitution_t& subst) {
     subst[score_var_ptr] = scorevarCopy.getp();
   }
 
-  return new for_clause(get_loc(),
+  return new for_clause(theContext,
+                        get_loc(),
                         varCopy,
                         domainCopy,
                         posvarCopy,
@@ -679,12 +682,13 @@ flwor_clause_t for_clause::clone(expr::substitution_t& subst) {
 
 ********************************************************************************/
 let_clause::let_clause(
+    short sctx,
     const QueryLoc& loc,
     varref_t varExpr,
     expr_t domainExpr,
     varref_t scoreVarExpr)
   :
-  forletwin_clause(loc, flwor_clause::let_clause, varExpr, domainExpr),
+  forletwin_clause(sctx, loc, flwor_clause::let_clause, varExpr, domainExpr),
   theScoreVarExpr(scoreVarExpr)
 {
   if (theScoreVarExpr != NULL)
@@ -712,7 +716,7 @@ flwor_clause_t let_clause::clone(expr::substitution_t& subst) {
     subst[score_var_ptr] = scorevarCopy.getp();
   }
 
-  return new let_clause(get_loc(), varCopy, domainCopy, scorevarCopy);
+  return new let_clause(theContext, get_loc(), varCopy, domainCopy, scorevarCopy);
 }
 
 
@@ -720,6 +724,7 @@ flwor_clause_t let_clause::clone(expr::substitution_t& subst) {
 
 ********************************************************************************/
 window_clause::window_clause(
+    short sctx,
     const QueryLoc& loc,
     window_t winKind,
     varref_t varExpr,
@@ -727,7 +732,7 @@ window_clause::window_clause(
     flwor_wincond_t winStart,
     flwor_wincond_t winStop)
   :
-  forletwin_clause(loc, flwor_clause::window_clause, varExpr, domainExpr),
+  forletwin_clause(sctx, loc, flwor_clause::window_clause, varExpr, domainExpr),
   theWindowKind(winKind),
   theWinStartCond(winStart),
   theWinStopCond(winStop)
@@ -764,7 +769,8 @@ flwor_clause_t window_clause::clone(expr::substitution_t& subst) {
   if (theWinStopCond != NULL)
     cloneStopCond = theWinStopCond->clone(subst);
 
-  return new window_clause(get_loc(),
+  return new window_clause(theContext,
+                           get_loc(),
                            theWindowKind,
                            varCopy,
                            domainCopy,
@@ -867,7 +873,7 @@ flwor_clause_t group_clause::clone(expr::substitution_t& subst) {
     subst[theNonGroupVars[i].second.getp()] = cloneNonGroupVars[i].second.getp();
   }
 
-  return new group_clause(get_loc(), cloneGroupVars, cloneNonGroupVars, theCollations);
+  return new group_clause(theContext, get_loc(), cloneGroupVars, cloneNonGroupVars, theCollations);
 }
 
 
@@ -884,7 +890,7 @@ flwor_clause_t orderby_clause::clone(expr::substitution_t& subst) {
     cloneExprs[i] = theOrderingExprs[i]->clone(subst);
   }
 
-  return new orderby_clause(get_loc(), theStableOrder, theModifiers, cloneExprs);
+  return new orderby_clause(theContext, get_loc(), theStableOrder, theModifiers, cloneExprs);
 }
 
 
@@ -901,7 +907,7 @@ flwor_clause_t count_clause::clone(expr::substitution_t& subst) {
   varref_t cloneVar = new var_expr(*theVarExpr);
   subst[theVarExpr.getp()] = cloneVar;
 
-  return new count_clause(get_loc(), cloneVar);
+  return new count_clause(theContext, get_loc(), cloneVar);
 }
 
 
@@ -911,7 +917,7 @@ flwor_clause_t count_clause::clone(expr::substitution_t& subst) {
 flwor_clause_t where_clause::clone(expr::substitution_t& subst) {
   expr_t cloneExpr = theWhereExpr->clone(subst);
 
-  return new where_clause(get_loc(), cloneExpr);
+  return new where_clause(theContext, get_loc(), cloneExpr);
 }
 
 
@@ -949,7 +955,7 @@ void flwor_expr::add_clause(ulong pos, flwor_clause* c) {
 
 
 void flwor_expr::add_where(expr_t e) {
-  where_clause* whereClause = new where_clause(e->get_loc(), e);
+  where_clause* whereClause = new where_clause(context, e->get_loc(), e);
 
   theClauses.push_back(whereClause);
 }
@@ -992,7 +998,7 @@ void flwor_expr::set_where(expr* e) {
     return;
   }
 
-  where_clause* wc = new where_clause(e->get_loc(), e);
+  where_clause* wc = new where_clause(context, e->get_loc(), e);
   theClauses.insert(theClauses.begin() + i, wc);
 }
 
@@ -1121,7 +1127,7 @@ long flwor_expr::defines_variable(const var_expr* v, const flwor_clause* limit) 
 expr_t flwor_expr::clone(substitution_t& subst) {
   ulong numClauses = num_clauses();
 
-  flwor_expr_t cloneFlwor = new flwor_expr(get_loc(), theIsGeneral);
+  flwor_expr_t cloneFlwor = new flwor_expr(context, get_loc(), theIsGeneral);
 
   for (ulong i = 0; i < numClauses; ++i) {
     flwor_clause_t cloneClause = theClauses[i]->clone(subst);
@@ -1334,8 +1340,9 @@ expr_iterator_data *trycatch_expr::make_iter() {
   return new trycatch_expr_iterator_data(this);
 }
 
-trycatch_expr::trycatch_expr(const QueryLoc& loc)
-  : expr(loc) {}
+trycatch_expr::trycatch_expr(short sctx,
+                             const QueryLoc& loc)
+  : expr(sctx, loc) {}
 
 void trycatch_expr::next_iter(expr_iterator_data& v) {
   BEGIN_EXPR_ITER2 (trycatch_expr);
@@ -1360,14 +1367,17 @@ void eval_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER ();
 }
 
-  eval_expr::eval_var::eval_var (var_expr *ve, expr_t val_)
-    : varname (ve->get_varname ()),
-      var_key (dynamic_context::var_key (ve)), type(ve->get_type()), val (val_)
-  {
-  }
+eval_expr::eval_var::eval_var (var_expr *ve, expr_t val_)
+  : varname (ve->get_varname ()),
+    var_key (dynamic_context::var_key (ve)), type(ve->get_type()), val (val_)
+{
+}
 
-cast_or_castable_base_expr::cast_or_castable_base_expr(const QueryLoc& loc, expr_t input, xqtref_t type)
-  : expr (loc), input_expr_h (input), target_type (type)
+cast_or_castable_base_expr::cast_or_castable_base_expr(short sctx,
+                                                       const QueryLoc& loc,
+                                                       expr_t input,
+                                                       xqtref_t type)
+  : expr (sctx, loc), input_expr_h (input), target_type (type)
 {
   assert (type != NULL);
   assert (input != NULL);
@@ -1383,13 +1393,19 @@ void cast_or_castable_base_expr::set_target_type(xqtref_t target) {
 }
 
 
-cast_base_expr::cast_base_expr(const QueryLoc& loc, expr_t input, xqtref_t type)
-  : cast_or_castable_base_expr (loc, input, type)
+cast_base_expr::cast_base_expr(short sctx,
+                               const QueryLoc& loc,
+                               expr_t input,
+                               xqtref_t type)
+  : cast_or_castable_base_expr (sctx, loc, input, type)
 {}
 
 
-promote_expr::promote_expr(const QueryLoc& loc, expr_t input, xqtref_t type)
-  : cast_base_expr (loc, input, type)
+promote_expr::promote_expr(short sctx,
+                           const QueryLoc& loc,
+                           expr_t input,
+                           xqtref_t type)
+  : cast_base_expr (sctx, loc, input, type)
 {}
 
 void promote_expr::next_iter (expr_iterator_data& v) {
@@ -1404,9 +1420,10 @@ void promote_expr::next_iter (expr_iterator_data& v) {
 // [43] [http://www.w3.org/TR/xquery/#prod-xquery-TypeswitchExpr]
 
 typeswitch_expr::typeswitch_expr(
+  short sctx,
   const QueryLoc& loc)
 :
-  expr(loc)
+  expr(sctx, loc)
 {}
 
 expr_iterator_data *typeswitch_expr::make_iter () {
@@ -1429,21 +1446,23 @@ void typeswitch_expr::next_iter (expr_iterator_data& v) {
 // [45] [http://www.w3.org/TR/xquery/#prod-xquery-IfExpr]
 
 if_expr::if_expr(
+  short sctx,
   const QueryLoc& loc,
   expr_t _cond_expr_h,
   expr_t _then_expr_h,
   expr_t _else_expr_h)
 :
-  expr(loc),
+  expr(sctx, loc),
   cond_expr_h(_cond_expr_h),
   then_expr_h(_then_expr_h),
   else_expr_h(_else_expr_h)
 {}
 
 if_expr::if_expr(
+  short sctx,
   const QueryLoc& loc)
 :
-  expr(loc)
+  expr(sctx, loc)
 {}
 
 
@@ -1480,9 +1499,9 @@ store::Item_t fo_expr::get_fname () const
 }
 
 
-fo_expr *fo_expr::create_seq(const QueryLoc &loc) 
+fo_expr *fo_expr::create_seq(short sctx, const QueryLoc &loc) 
 {
-  auto_ptr<fo_expr> fo (new fo_expr (loc, GENV.getRootStaticContext ().lookup_builtin_fn (":" "concatenate", VARIADIC_SIG_SIZE)));
+  auto_ptr<fo_expr> fo (new fo_expr (sctx, loc, GENV.getRootStaticContext ().lookup_builtin_fn (":" "concatenate", VARIADIC_SIG_SIZE)));
   fo->put_annotation (AnnotationKey::CONCAT_EXPR, TSVAnnotationValue::TRUE_VAL);
   return fo.release ();
 }
@@ -1496,8 +1515,8 @@ bool fo_expr::is_concatenation () const
 expr_t fo_expr::clone (substitution_t& subst) 
 {
   fo_expr *fo = (is_concatenation() ?
-                 create_seq(get_loc()) :
-                 new fo_expr(get_loc(), get_func()));
+                 create_seq(context, get_loc()) :
+                 new fo_expr(context, get_loc(), get_func()));
 
   for (unsigned i = 0; i < argv.size (); i++)
     fo->add (argv [i]->clone (subst));
@@ -1523,12 +1542,13 @@ void fo_expr::next_iter (expr_iterator_data& v)
 // [48a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTContainsExpr]
 
 ft_contains_expr::ft_contains_expr(
+  short sctx,
   const QueryLoc& loc,
   expr_t _range_h,
   expr_t _ft_select_h,
   expr_t _ft_ignore_h)
 :
-  expr(loc),
+  expr(sctx, loc),
   range_h(_range_h),
   ft_select_h(_ft_select_h),
   ft_ignore_h(_ft_ignore_h)
@@ -1546,16 +1566,18 @@ void ft_contains_expr::next_iter (expr_iterator_data& v) {
 
 // [54] [http://www.w3.org/TR/xquery/#prod-xquery-InstanceofExpr]
 
-castable_base_expr::castable_base_expr (const QueryLoc& loc,
+castable_base_expr::castable_base_expr (short sctx,
+                                        const QueryLoc& loc,
                                         expr_t _expr_h,
                                         xqtref_t _type)
-  : cast_or_castable_base_expr (loc, _expr_h, _type)
+  : cast_or_castable_base_expr (sctx, loc, _expr_h, _type)
 {}
 
-instanceof_expr::instanceof_expr(const QueryLoc& loc,
+instanceof_expr::instanceof_expr(short sctx,
+                                 const QueryLoc& loc,
                                  expr_t _expr_h,
                                  xqtref_t _type)
-  : castable_base_expr (loc, _expr_h, _type)
+  : castable_base_expr (sctx, loc, _expr_h, _type)
 {}
 
 void instanceof_expr::next_iter (expr_iterator_data& v) {
@@ -1568,13 +1590,14 @@ void instanceof_expr::next_iter (expr_iterator_data& v) {
 // [55] [http://www.w3.org/TR/xquery/#prod-xquery-TreatExpr]
 
 treat_expr::treat_expr(
+  short sctx,
   const QueryLoc& loc,
   expr_t _expr_h,
   xqtref_t _type,
   XQUERY_ERROR err_,
   bool check_prime_)
 :
-  cast_base_expr (loc, _expr_h, _type),
+  cast_base_expr (sctx, loc, _expr_h, _type),
   err (err_), check_prime (check_prime_)
 {}
 
@@ -1587,11 +1610,12 @@ void treat_expr::next_iter (expr_iterator_data& v) {
 // [56] [http://www.w3.org/TR/xquery/#prod-xquery-CastableExpr]
 
 castable_expr::castable_expr(
+  short sctx,
   const QueryLoc& loc,
   expr_t _expr_h,
   xqtref_t _type)
 :
-  castable_base_expr (loc, _expr_h, _type)
+  castable_base_expr (sctx, loc, _expr_h, _type)
 {}
 
 void castable_expr::next_iter (expr_iterator_data& v) {
@@ -1604,10 +1628,11 @@ void castable_expr::next_iter (expr_iterator_data& v) {
 // [57] [http://www.w3.org/TR/xquery/#prod-xquery-CastExpr]
 
 cast_expr::cast_expr(
+  short sctx,
   const QueryLoc& loc,
   expr_t _expr_h,
   xqtref_t _type)
-  : cast_base_expr (loc, _expr_h, _type)
+  : cast_base_expr (sctx, loc, _expr_h, _type)
 {}
 
 void cast_expr::next_iter (expr_iterator_data& v) {
@@ -1617,10 +1642,11 @@ void cast_expr::next_iter (expr_iterator_data& v) {
 }
 
 name_cast_expr::name_cast_expr(
+  short sctx,
   const QueryLoc& loc,
   expr_t _expr_h,
   NamespaceContext_t aNCtx)
-: expr(loc), input_expr_h(_expr_h), theNCtx(aNCtx) 
+: expr(sctx, loc), input_expr_h(_expr_h), theNCtx(aNCtx) 
 {}
 
 void name_cast_expr::next_iter (expr_iterator_data& v) {
@@ -1634,12 +1660,13 @@ rchandle<namespace_context> name_cast_expr::getNamespaceContext() { return theNC
 // [63] [http://www.w3.org/TR/xquery/#prod-xquery-ValidateExpr]
 
 validate_expr::validate_expr(
+  short sctx,
   const QueryLoc& loc,
   enum ParseConstants::validation_mode_t _valmode,
   store::Item_t aTypeName,
   expr_t _expr_h, rchandle<TypeManager> typemgr_)
 :
-  expr(loc),
+  expr(sctx, loc),
   valmode(_valmode),
   typeName(aTypeName),
   typemgr (typemgr_),
@@ -1654,23 +1681,30 @@ void validate_expr::next_iter (expr_iterator_data& v) {
 }
 
 expr_t validate_expr::clone(substitution_t &subst) {
-  return new validate_expr (get_loc (), get_valmode (), get_type_name (), get_expr ()->clone (subst), get_typemgr ());
+  return new validate_expr (context,
+                            get_loc (),
+                            get_valmode (),
+                            get_type_name (),
+                            get_expr ()->clone (subst),
+                            get_typemgr ());
 }
 
 
 // [65] [http://www.w3.org/TR/xquery/#prod-xquery-ExtensionExpr]
 
 extension_expr::extension_expr(
+  short sctx,
   const QueryLoc& loc)
 :
-  expr(loc)
+  expr(sctx, loc)
 {}
 
 extension_expr::extension_expr(
+  short sctx,
   const QueryLoc& loc,
   expr_t _expr_h)
 :
-  expr(loc),
+  expr(sctx, loc),
   expr_h(_expr_h)
 {}
 
@@ -1689,9 +1723,9 @@ void extension_expr::next_iter (expr_iterator_data& v) {
   RelativPathExpr ::= "/" | ("/" | "//")?  StepExpr (("/" | "//") StepExpr)*
 
 ********************************************************************************/
-relpath_expr::relpath_expr(const QueryLoc& loc)
+relpath_expr::relpath_expr(short sctx, const QueryLoc& loc)
   :
-  expr(loc)
+  expr(sctx, loc)
 {}
 
 expr_iterator_data *relpath_expr::make_iter () { return new relpath_expr_iterator_data (this); }
@@ -1711,9 +1745,9 @@ void relpath_expr::next_iter (expr_iterator_data& v) {
   AxisStep ::= Axis NodeTest Predicate*
 
 ********************************************************************************/
-axis_step_expr::axis_step_expr(const QueryLoc& loc)
+axis_step_expr::axis_step_expr(short sctx, const QueryLoc& loc)
   :
-  expr(loc)
+  expr(sctx, loc)
 {}
 
 expr_iterator_data *axis_step_expr::make_iter () {
@@ -1744,9 +1778,9 @@ bool axis_step_expr::is_reverse_axis (axis_kind_t k) {
                      PITest | CommentTest | TextTest | AnyKindTest
 
 ********************************************************************************/
-match_expr::match_expr(const QueryLoc& loc)
+match_expr::match_expr(short sctx, const QueryLoc& loc)
   :
-  expr(loc),
+  expr(sctx, loc),
   theWildKind(match_no_wild),
   theQName(NULL),
   theTypeName(NULL),
@@ -1796,63 +1830,68 @@ store::StoreConsts::NodeKind match_expr::getNodeKind() const
 
 // [85] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]
 
-const_expr::const_expr(const QueryLoc& loc, xqpString v)
+const_expr::const_expr(short sctx, const QueryLoc& loc, xqpString v)
   :
-  expr(loc)
+  expr(sctx, loc)
 {
   xqpStringStore_t tmp = v.getStore();
   ITEM_FACTORY->createString(val, tmp); 
 }
 
-const_expr::const_expr(const QueryLoc& loc, xqp_integer v)
+const_expr::const_expr(short sctx, const QueryLoc& loc, xqp_integer v)
   :
-  expr(loc)
+  expr(sctx, loc)
 {
   ITEM_FACTORY->createInteger (val, v);
 }
 
 const_expr::const_expr(
+  short sctx,
   const QueryLoc& loc,
   xqp_decimal v)
 :
-  expr(loc)
+  expr(sctx, loc)
 {
   ITEM_FACTORY->createDecimal (val, v);
 }
 
 const_expr::const_expr(
+  short sctx,
   const QueryLoc& loc,
   xqp_double v)
 :
-  expr(loc)
+  expr(sctx, loc)
 {
   ITEM_FACTORY->createDouble (val, v);
 }
 
 const_expr::const_expr(
+  short sctx,
   const QueryLoc& loc,
   xqp_boolean v)
 :
-  expr(loc)
+  expr(sctx, loc)
 {
   ITEM_FACTORY->createBoolean (val, v);
 }
 
 const_expr::const_expr(
+  short sctx,
   const QueryLoc& loc,
   store::Item_t v)
 :
-  expr(loc),
+  expr(sctx, loc),
   val(v)
 {}
 
 const_expr::const_expr(
+  short sctx,
   const QueryLoc& aLoc, 
   const char* aNamespace,
   const char* aPrefix, 
   const char* aLocal)
 :
-  expr(aLoc)
+  expr(sctx, aLoc)
 {
   ITEM_FACTORY->createQName(val, aNamespace, aPrefix, aLocal);
 }
@@ -1867,11 +1906,12 @@ void const_expr::next_iter (expr_iterator_data& v) {
 // [91] [http://www.w3.org/TR/xquery/#prod-xquery-OrderedExpr]
 
 order_expr::order_expr(
+  short sctx,
   const QueryLoc& loc,
   order_type_t _type,
   expr_t _expr_h)
 :
-  expr(loc),
+  expr(sctx, loc),
   type(_type),
   expr_h(_expr_h)
 {}
@@ -1885,7 +1925,7 @@ void order_expr::next_iter (expr_iterator_data& v) {
 
 
 expr_t order_expr::clone(substitution_t& subst) {
-  return new order_expr (get_loc (), get_type (), get_expr ()->clone (subst));
+  return new order_expr (context, get_loc (), get_type (), get_expr ()->clone (subst));
 }
 
 
@@ -1893,13 +1933,14 @@ expr_t order_expr::clone(substitution_t& subst) {
 
 // [96] [http://www.w3.org/TR/xquery/#doc-exquery-DirElemConstructor]
 elem_expr::elem_expr (
+    short sctx,
     const QueryLoc& aLoc,
     expr_t aQNameExpr,
     expr_t aAttrs,
     expr_t aContent,
     rchandle<namespace_context> aNSCtx)
     :
-    constructor_expr ( aLoc ),
+    constructor_expr ( sctx, aLoc ),
     theQNameExpr ( aQNameExpr ),
     theAttrs ( aAttrs ),
     theContent ( aContent ),
@@ -1907,12 +1948,13 @@ elem_expr::elem_expr (
 {}
 
 elem_expr::elem_expr (
+    short sctx,
     const QueryLoc& aLoc,
     expr_t aQNameExpr,
     expr_t aContent,
     rchandle<namespace_context> aNSCtx)
     :
-    constructor_expr ( aLoc ),
+    constructor_expr ( sctx, aLoc ),
     theQNameExpr ( aQNameExpr ),
     theAttrs ( 0 ),
     theContent ( aContent ),
@@ -1931,7 +1973,7 @@ void elem_expr::next_iter (expr_iterator_data& v) {
 }
 
 expr_t elem_expr::clone(substitution_t& subst) {
-  return new elem_expr (get_loc (),
+  return new elem_expr (context, get_loc (),
                         CLONE (getQNameExpr (), subst),
                         CLONE (getAttrs (), subst),
                         CLONE (getContent (), subst),
@@ -1942,10 +1984,11 @@ expr_t elem_expr::clone(substitution_t& subst) {
 // [110] [http://www.w3.org/TR/xquery/#prod-xquery-CompDocConstructor]
 
 doc_expr::doc_expr(
+  short sctx,
   const QueryLoc& loc,
   expr_t aContent)
 :
-  constructor_expr(loc),
+  constructor_expr(sctx, loc),
   theContent(aContent)
 {}
 
@@ -1957,7 +2000,7 @@ void doc_expr::next_iter (expr_iterator_data& v) {
 }
 
 expr_t doc_expr::clone(substitution_t& subst) {
-  return new doc_expr (get_loc (), CLONE (getContent (), subst));
+  return new doc_expr (context, get_loc (), CLONE (getContent (), subst));
 }
 
 
@@ -1967,11 +2010,12 @@ expr_t doc_expr::clone(substitution_t& subst) {
 // [113] [http://www.w3.org/TR/xquery/#prod-xquery-CompAttrConstructor]
 
 attr_expr::attr_expr(
+  short sctx,
   const QueryLoc& loc,
   expr_t aQNameExpr,
   expr_t aValueExpr)
 :
-  constructor_expr(loc),
+  constructor_expr(sctx, loc),
   theQNameExpr(aQNameExpr),
   theValueExpr(aValueExpr)
 {}
@@ -1995,18 +2039,19 @@ void attr_expr::next_iter (expr_iterator_data& v) {
 }
 
 expr_t attr_expr::clone(substitution_t& subst) {
-  return new attr_expr (get_loc (),
+  return new attr_expr (context, get_loc (),
                         CLONE (getQNameExpr (), subst), CLONE (getValueExpr (), subst));
 }
 
 // [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompTextConstructor]
 
 text_expr::text_expr(
+  short sctx,
   const QueryLoc& loc,
   text_constructor_type type_arg,
   expr_t text_arg)
 :
-  constructor_expr(loc),
+  constructor_expr(sctx, loc),
   type (type_arg),
   text(text_arg)
 {}
@@ -2019,7 +2064,7 @@ void text_expr::next_iter (expr_iterator_data& v) {
 }
 
 expr_t text_expr::clone(substitution_t& subst) {
-  return new text_expr (get_loc (), get_type (), CLONE (get_text (), subst));
+  return new text_expr (context, get_loc (), get_type (), CLONE (get_text (), subst));
 }
 
 // [115] [http://www.w3.org/TR/xquery/#prod-xquery-CompCommentConstructor]
@@ -2028,11 +2073,12 @@ expr_t text_expr::clone(substitution_t& subst) {
 // [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompPIConstructor]
 
 pi_expr::pi_expr(
+  short sctx,
   const QueryLoc& loc,
   expr_t _target_expr_h,
   expr_t _content_expr_h)
 :
-  text_expr(loc, text_expr::pi_constructor, _content_expr_h),
+  text_expr(sctx, loc, text_expr::pi_constructor, _content_expr_h),
   target_expr_h(_target_expr_h)
 {}
 
@@ -2048,13 +2094,17 @@ void pi_expr::next_iter (expr_iterator_data& v) {
 void function_def_expr::next_iter (expr_iterator_data& v) {}
 
 expr_t pi_expr::clone(substitution_t& subst) {
-  return new pi_expr (get_loc (),
+  return new pi_expr (context, get_loc (),
                       CLONE (get_target_expr (), subst), CLONE (get_text (), subst));
 }
 
 
-function_def_expr::function_def_expr (const QueryLoc& loc, store::Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type_impl)
-  : expr (loc), name (name_)
+function_def_expr::function_def_expr (short sctx,
+                                      const QueryLoc& loc,
+                                      store::Item_t name_,
+                                      std::vector<rchandle<var_expr> > &params_,
+                                      xqtref_t return_type_impl)
+  : expr (sctx, loc), name (name_)
 {
   assert (return_type_impl != NULL);
   params.swap (params_);
@@ -2068,12 +2118,13 @@ function_def_expr::function_def_expr (const QueryLoc& loc, store::Item_t name_, 
 // [242] [http://www.w3.org/TR/xqupdate/#prod-xquery-InsertExpr]
 
 insert_expr::insert_expr(
+  short sctx,
 	const QueryLoc& loc,
   store::UpdateConsts::InsertType aType,
 	expr_t aSourceExpr,
 	expr_t aTargetExpr)
 :
-	expr(loc),
+	expr(sctx, loc),
   theType(aType),
 	theSourceExpr(aSourceExpr),
 	theTargetExpr(aTargetExpr)
@@ -2096,16 +2147,17 @@ insert_expr::next_iter(expr_iterator_data& v)
 }
 
 expr_t insert_expr::clone (substitution_t& subst) {
-  return new insert_expr (get_loc (), getType (), getSourceExpr ()->clone (subst), getTargetExpr ()->clone (subst));
+  return new insert_expr (context, get_loc (), getType (), getSourceExpr ()->clone (subst), getTargetExpr ()->clone (subst));
 }
 
 // [243] [http://www.w3.org/TR/xqupdate/#prod-xquery-DeleteExpr]
 
 delete_expr::delete_expr(
+  short sctx,
 	const QueryLoc& loc,
 	expr_t aTargetExpr)
 :
-	expr(loc),
+	expr(sctx, loc),
 	theTargetExpr(aTargetExpr)
 {}
 
@@ -2124,19 +2176,20 @@ void delete_expr::next_iter(expr_iterator_data& v)
 }
 
 expr_t delete_expr::clone (substitution_t& subst) {
-  return new delete_expr (get_loc (), getTargetExpr ()->clone (subst));
+  return new delete_expr (context, get_loc (), getTargetExpr ()->clone (subst));
 }
 
 
 // [244] [http://www.w3.org/TR/xqupdate/#prod-xquery-ReplaceExpr]
 
 replace_expr::replace_expr(
+  short sctx,
 	const QueryLoc& loc,
   store::UpdateConsts::ReplaceType aType,
 	expr_t aTargetExpr,
 	expr_t aReplaceExpr)
 :
-	expr(loc),
+	expr(sctx, loc),
   theType(aType),
 	theTargetExpr(aTargetExpr),
 	theReplaceExpr(aReplaceExpr)
@@ -2158,17 +2211,18 @@ void replace_expr::next_iter(expr_iterator_data& v)
 }
 
 expr_t replace_expr::clone (substitution_t& subst) {
-  return new replace_expr (get_loc (), getType (), getTargetExpr ()->clone (subst), getReplaceExpr ()->clone (subst));
+  return new replace_expr (context, get_loc (), getType (), getTargetExpr ()->clone (subst), getReplaceExpr ()->clone (subst));
 }
 
 // [245] [http://www.w3.org/TR/xqupdate/#prod-xquery-RenameExpr]
 
 rename_expr::rename_expr(
+  short sctx,
 	const QueryLoc& loc,
 	expr_t aTargetExpr,
 	expr_t aNameExpr)
 :
-	expr(loc),
+	expr(sctx, loc),
 	theTargetExpr(aTargetExpr),
 	theNameExpr(aNameExpr)
 {}
@@ -2190,7 +2244,7 @@ void rename_expr::next_iter(expr_iterator_data& v)
 
 expr_t rename_expr::clone (substitution_t& subst) 
 {
-  return new rename_expr (get_loc (), getTargetExpr ()->clone (subst), getNameExpr ()->clone (subst));
+  return new rename_expr (context, get_loc (), getTargetExpr ()->clone (subst), getNameExpr ()->clone (subst));
 }
 
 
@@ -2204,11 +2258,12 @@ copy_clause::copy_clause(rchandle<var_expr> aVar, expr_t aExpr)
 
 
 transform_expr::transform_expr(
+    short sctx,
 	  const QueryLoc& loc,
     expr_t aModifyExpr,
     expr_t aReturnExpr)
   :
-	expr(loc),
+	expr(sctx, loc),
 	theModifyExpr(aModifyExpr),
 	theReturnExpr(aReturnExpr)
 {
@@ -2234,7 +2289,7 @@ void exit_expr::next_iter (expr_iterator_data& v)
 }
 
 expr_t exit_expr::clone (substitution_t& subst) {
-  return new exit_expr (get_loc (), get_value ()->clone (subst));
+  return new exit_expr (context, get_loc (), get_value ()->clone (subst));
 }
 
 void flowctl_expr::next_iter (expr_iterator_data& v)
@@ -2244,7 +2299,7 @@ void flowctl_expr::next_iter (expr_iterator_data& v)
 }
 
 expr_t flowctl_expr::clone (substitution_t& subst) {
-  return new flowctl_expr (get_loc (), get_action ());
+  return new flowctl_expr (context, get_loc (), get_action ());
 }
 
 void while_expr::next_iter (expr_iterator_data& v)
@@ -2255,18 +2310,19 @@ void while_expr::next_iter (expr_iterator_data& v)
 }
 
 expr_t while_expr::clone (substitution_t& subst) {
-  return new while_expr (get_loc (), get_body ()->clone (subst));
+  return new while_expr (context, get_loc (), get_body ()->clone (subst));
 }
 
 expr_t if_expr::clone (substitution_t& subst) {
-  return new if_expr (get_loc (),
+  return new if_expr (context,
+                      get_loc (),
                       get_cond_expr ()->clone (subst),
                       get_then_expr ()->clone (subst),
                       get_else_expr ()->clone (subst));
 }
 
 expr_t const_expr::clone (substitution_t&) {
-  return new const_expr (get_loc (), get_val ());
+  return new const_expr (context, get_loc (), get_val ());
 }
 
 expr_t wrapper_expr::clone (substitution_t& subst) {
@@ -2274,12 +2330,12 @@ expr_t wrapper_expr::clone (substitution_t& subst) {
   if (wrapped->get_expr_kind () == var_expr_kind && e->get_expr_kind () != var_expr_kind)
     return e;
   else
-    return new wrapper_expr (get_loc (), e);
+    return new wrapper_expr (context, get_loc (), e);
 }
 
 
 expr_t match_expr::clone (substitution_t& subst) {
-  match_expr *me = new match_expr (get_loc ());
+  match_expr *me = new match_expr (context, get_loc ());
   me->setTestKind (getTestKind ());
   me->setDocTestKind (getDocTestKind ());
   me->setWildName (getWildName ());
@@ -2291,41 +2347,41 @@ expr_t match_expr::clone (substitution_t& subst) {
 }
 
 expr_t axis_step_expr::clone (substitution_t& subst) {
-  axis_step_expr *ae = new axis_step_expr (get_loc ());
+  axis_step_expr *ae = new axis_step_expr (context, get_loc ());
   ae->setAxis (getAxis ());
   ae->setTest (getTest ());
   return ae;
 }
 
 expr_t relpath_expr::clone (substitution_t& subst) {
-  auto_ptr<relpath_expr> re (new relpath_expr (get_loc ()));
+  auto_ptr<relpath_expr> re (new relpath_expr (context, get_loc ()));
   for (unsigned i = 0; i < size (); i++)
     re->add_back ((*this) [i]->clone (subst));
   return re.release ();
 }
 
 expr_t promote_expr::clone (substitution_t& subst) {
-  return new promote_expr (get_loc (), get_input ()->clone (subst), get_target_type ());
+  return new promote_expr (context, get_loc (), get_input ()->clone (subst), get_target_type ());
 }
 
 expr_t treat_expr::clone (substitution_t& subst) {
-  return new treat_expr (get_loc (), get_input ()->clone (subst), get_target_type (), get_err (), get_check_prime ());
+  return new treat_expr (context, get_loc (), get_input ()->clone (subst), get_target_type (), get_err (), get_check_prime ());
 }
 
 expr_t castable_expr::clone (substitution_t& subst) {
-  return new castable_expr (get_loc (), get_input ()->clone (subst), get_target_type ());
+  return new castable_expr (context, get_loc (), get_input ()->clone (subst), get_target_type ());
 }
 
 expr_t instanceof_expr::clone (substitution_t& subst) {
-  return new instanceof_expr (get_loc (), get_input ()->clone (subst), get_target_type ());
+  return new instanceof_expr (context, get_loc (), get_input ()->clone (subst), get_target_type ());
 }
 
 expr_t cast_expr::clone (substitution_t& subst) {
-  return new cast_expr (get_loc (), get_input ()->clone (subst), get_target_type ());
+  return new cast_expr (context, get_loc (), get_input ()->clone (subst), get_target_type ());
 }
 
 expr_t name_cast_expr::clone (substitution_t& subst) {
-  return new name_cast_expr (get_loc (), get_input ()->clone (subst), getNamespaceContext());
+  return new name_cast_expr (context, get_loc (), get_input ()->clone (subst), getNamespaceContext());
 }
 
 

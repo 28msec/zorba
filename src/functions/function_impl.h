@@ -48,8 +48,8 @@
   } while(0)
 
 #define DEFAULT_CODEGEN( Iter ) \
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const { \
-    return new Iter (loc, argv);                                        \
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const { \
+    return new Iter (sctx, loc, argv);                                        \
   }
 
 namespace zorba {

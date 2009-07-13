@@ -150,7 +150,7 @@ public:
 
   uint32_t getStateSizeOfSubtree() const;
 
-  void open(PlanState& planState, uint32_t& offset);
+  void open(static_context* sctx, PlanState& planState, uint32_t& offset);
   void reset(PlanState& planState);
   void close(PlanState& planState); 
 };
@@ -190,7 +190,7 @@ public:
 
   uint32_t getStateSizeOfSubtree() const;
 
-  void open(PlanState& planState, uint32_t& offset);
+  void open(static_context* sctx, PlanState& planState, uint32_t& offset);
   void reset(PlanState& planState);
   void close(PlanState& planState); 
 };
@@ -242,10 +242,11 @@ public:
 
   ~FlworState();
 
-  void init(PlanState& state, size_t numVars);
+  void init(PlanState& state, static_context* sctx, size_t numVars);
           
   void init(
         PlanState& state,
+        static_context* sctx,
         size_t numVars,
         std::vector<OrderSpec>* orderSpecs,
         std::vector<GroupingSpec>* groupingSpecs);
@@ -289,6 +290,7 @@ private:
          
 public:
   FLWORIterator(
+        short                       sctx,
         const QueryLoc&             loc,
         std::vector<ForLetClause>&  forLetClauses,
         PlanIter_t&                 whereClause,

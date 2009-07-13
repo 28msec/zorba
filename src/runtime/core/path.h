@@ -291,9 +291,9 @@ protected:
   std::vector<NodePredicate*> theNodePreds;
 
 public:
-  PathIterator(const QueryLoc&  loc, PlanIter_t input)
+  PathIterator(short sctx, const QueryLoc&  loc, PlanIter_t input)
     :
-    UnaryBaseIterator<PathIterator, PathIteratorState>(loc, input)
+    UnaryBaseIterator<PathIterator, PathIteratorState>(sctx, loc, input)
   {
   }
 
@@ -332,9 +332,9 @@ public:
 class PathIterator : public UnaryBaseIterator<PathIterator, PathIteratorState>
 {
 public:
-  PathIterator(const QueryLoc&  loc, PlanIter_t input)
+  PathIterator(short sctx, const QueryLoc&  loc, PlanIter_t input)
     :
-    UnaryBaseIterator<PathIterator, PathIteratorState>(loc, input)
+    UnaryBaseIterator<PathIterator, PathIteratorState>(sctx, loc, input)
   {
   }
 

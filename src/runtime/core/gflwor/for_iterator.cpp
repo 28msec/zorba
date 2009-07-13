@@ -56,13 +56,14 @@ void ForState::reset(PlanState& planState)
 
 
 ForIterator::ForIterator (
+    short sctx,
     const QueryLoc& loc,
     const store::Item_t& varName,
     PlanIter_t tupleIter,
     PlanIter_t domainIter,
     const std::vector<PlanIter_t>& varRefs)
   :
-  BinaryBaseIterator<ForIterator, ForState>(loc, tupleIter, domainIter),
+  BinaryBaseIterator<ForIterator, ForState>(sctx, loc, tupleIter, domainIter),
   theVarName(varName),
   theHasPosVars(false)
 {
@@ -71,6 +72,7 @@ ForIterator::ForIterator (
 
 
 ForIterator::ForIterator (
+    short sctx,
     const QueryLoc& loc,
     const store::Item_t& varName,
     PlanIter_t tupleIter,
@@ -78,7 +80,7 @@ ForIterator::ForIterator (
     const std::vector<PlanIter_t>& varRefs,
     const std::vector<PlanIter_t>& posRefs) 
   :
-  BinaryBaseIterator<ForIterator, ForState>(loc, tupleIter, domainIter),
+  BinaryBaseIterator<ForIterator, ForState>(sctx, loc, tupleIter, domainIter),
   theVarName(varName)
 {
   castIterVector<ForVarIterator>(theVarRefs, varRefs);

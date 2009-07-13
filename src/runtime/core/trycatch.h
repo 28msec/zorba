@@ -52,7 +52,7 @@ namespace zorba
       std::vector<LetVarIter_t> errorobj_var;
     };
 
-    TryCatchIterator(const QueryLoc& loc, PlanIter_t& aBlock, std::vector<CatchClause>& aCatchClauses);
+    TryCatchIterator(short sctx, const QueryLoc& loc, PlanIter_t& aBlock, std::vector<CatchClause>& aCatchClauses);
     virtual ~TryCatchIterator();
   
     void openImpl(PlanState& planState, uint32_t& offset);

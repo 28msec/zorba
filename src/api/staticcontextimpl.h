@@ -19,6 +19,7 @@
 #include <zorba/typeident.h> 
 #include <zorba/static_context.h>
 #include <zorba/api_shared_types.h>
+#include <map>
 
 #include "common/shared_types.h"
 
@@ -41,9 +42,11 @@ namespace zorba {
 class StaticContextImpl : public StaticContext
 {
   friend class Unmarshaller; // needs to get the context out of this class
+  friend class XQueryImpl; // needed for accessing theCtxMap
 
  protected:
   static_context*  theCtx;
+  std::map<short, static_context_t> theCtxMap;
   bool             theUserStaticContext;
 
   ErrorHandler*    theErrorHandler;

@@ -33,7 +33,7 @@ class zor_numgen : public function
 {
 public:
 	zor_numgen(const signature& sig) : function (sig) {}
-	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+	PlanIter_t codegen ( short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
 void populateContext_Numerics(static_context *sctx);

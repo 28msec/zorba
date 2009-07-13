@@ -28,7 +28,7 @@ namespace flwor
      */
     class TupleSourceIterator : public NoaryBaseIterator<TupleSourceIterator, PlanIteratorState> {
       public:
-        TupleSourceIterator ( const QueryLoc& loc);
+        TupleSourceIterator ( short sctx, const QueryLoc& loc);
         ~TupleSourceIterator();
 
       public:

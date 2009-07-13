@@ -105,7 +105,7 @@ public:
   static std::string decode_var_kind(enum var_kind);
 
 public:
-  var_expr(const QueryLoc& loc, var_kind k, store::Item_t name, bool global = true);
+  var_expr(short sctx, const QueryLoc& loc, var_kind k, store::Item_t name, bool global = true);
 
   expr_kind_t get_expr_kind () const { return var_expr_kind; }
 

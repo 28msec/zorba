@@ -31,6 +31,7 @@ namespace zorba {
 
 	FnDebugIterator::FnDebugIterator(
 		ZorbaDebugger* debugger,
+    short sctx,
 		const QueryLoc& loc,
 		checked_vector<store::Item_t> varnames_,
 		checked_vector<std::string> var_keys_,
@@ -38,7 +39,7 @@ namespace zorba {
 		checked_vector<global_binding> globals_,
 		std::vector<PlanIter_t>& aChildren,
 		bool for_expr_) 
-		: NaryBaseIterator<FnDebugIterator, PlanIteratorState>(loc, aChildren),
+		: NaryBaseIterator<FnDebugIterator, PlanIteratorState>(sctx, loc, aChildren),
 		theDebugger(debugger), varnames(varnames_), var_keys(var_keys_), vartypes(vartypes_),
 		globals(globals_), for_expr(for_expr_), m_break(false)
 	{

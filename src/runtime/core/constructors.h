@@ -23,6 +23,7 @@
 #include "runtime/base/unarybase.h"
 #include "runtime/base/binarybase.h"
 #include "runtime/base/narybase.h"
+#include "runtime/base/noarybase.h"
 #include "store/api/iterator.h"
 
 namespace zorba {
@@ -44,9 +45,9 @@ private:
   bool      theNsInherit;
 
 public:
-  DocumentIterator(const QueryLoc& loc, PlanIter_t& aChild)
+  DocumentIterator(short sctx, const QueryLoc& loc, PlanIter_t& aChild)
     :
-    UnaryBaseIterator<DocumentIterator, PlanIteratorState>(loc, aChild)
+    UnaryBaseIterator<DocumentIterator, PlanIteratorState>(sctx, loc, aChild)
   {}
 
   void openImpl(PlanState& planState, uint32_t& offset);
@@ -68,9 +69,9 @@ class DocumentContentIterator : public UnaryBaseIterator<DocumentContentIterator
                                                          PlanIteratorState> 
 {
 public:
-  DocumentContentIterator(const QueryLoc& loc, PlanIter_t& aContent)
+  DocumentContentIterator(short sctx, const QueryLoc& loc, PlanIter_t& aContent)
     :
-    UnaryBaseIterator<DocumentContentIterator, PlanIteratorState>(loc, aContent)
+    UnaryBaseIterator<DocumentContentIterator, PlanIteratorState>(sctx, loc, aContent)
   {}
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
@@ -97,7 +98,17 @@ public:
   theIsRoot         : Whether this is the root in a tree of constructor iterators.
                       
 ********************************************************************************/
-class ElementIterator : public Batcher<ElementIterator>
+class ElementIteratorState : public PlanIteratorState 
+{
+public:
+  static_context*  sctx;
+  xqpStringStore_t baseUri;
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class ElementIterator : public NoaryBaseIterator<ElementIterator, ElementIteratorState>
 {
   typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 
@@ -117,6 +128,7 @@ private:
 
 public:
   ElementIterator (
+      short               sctx,
       const QueryLoc&     loc,
       PlanIter_t&         aQNameIter,
       PlanIter_t&         aAttrs,
@@ -129,9 +141,8 @@ public:
   void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
 
-  uint32_t getStateSize() const { return sizeof(PlanIteratorState); }
   uint32_t getStateSizeOfSubtree() const;
-  
+
   void accept(PlanIterVisitor&) const;
 };
   
@@ -149,6 +160,7 @@ private:
 
 public:
   AttributeIterator(
+        short sctx,
         const QueryLoc& loc,
         PlanIter_t& aQNameIter,
         PlanIter_t& aValueIter,
@@ -171,7 +183,7 @@ private:
   NamespaceContext_t theNCtx;
 
 public:
-  NameCastIterator(const QueryLoc& loc, PlanIter_t& aChild, NamespaceContext_t aNCtx);
+  NameCastIterator(short sctx, const QueryLoc& loc, PlanIter_t& aChild, NamespaceContext_t aNCtx);
 
   virtual ~NameCastIterator();
 
@@ -194,6 +206,7 @@ protected:
 
 public:
   CommentIterator(
+        short sctx,
         const QueryLoc& loc, 
         PlanIter_t& aComment,
         bool isRoot);
@@ -216,6 +229,7 @@ protected:
 
 public:
   PiIterator(
+        short sctx,
         const QueryLoc& loc, 
         PlanIter_t& aTarget,
         PlanIter_t& aContent,
@@ -241,7 +255,7 @@ protected:
   bool       theIsRoot;
 
 public:
-  TextIterator( const QueryLoc& loc, PlanIter_t& aChild, bool isRoot);
+  TextIterator( short sctx, const QueryLoc& loc, PlanIter_t& aChild, bool isRoot);
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
   virtual void accept(PlanIterVisitor&) const;
@@ -276,6 +290,7 @@ private:
   
 public:
   EnclosedIterator(
+        short sctx,
         const QueryLoc& loc,
         PlanIter_t& childIter);
 

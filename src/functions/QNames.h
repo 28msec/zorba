@@ -34,7 +34,7 @@ namespace zorba
   {
   public:
     fn_resolve_qname(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
   
   /*
@@ -44,7 +44,7 @@ namespace zorba
   {
   public:
     fn_qname(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
   
   /*
@@ -54,7 +54,7 @@ namespace zorba
   {
   public:
     op_qname_equal(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -64,7 +64,7 @@ namespace zorba
   {
   public:
     fn_prefix_from_qname(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -74,7 +74,7 @@ namespace zorba
   {
   public:
     fn_local_name_from_qname(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -84,7 +84,7 @@ namespace zorba
   {
   public:
     fn_namespace_uri_from_qname(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -94,7 +94,7 @@ namespace zorba
   {
   public:
     fn_namespace_uri_for_prefix(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -104,7 +104,7 @@ namespace zorba
   {
   public:
     fn_in_scope_prefixes(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 } /* namespace zorba */
 #endif /* ZORBA_QNAMES_H */

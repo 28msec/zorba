@@ -52,8 +52,8 @@ namespace zorba
   class op_concatenate : public function {
   public:
     op_concatenate(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-      return new FnConcatIterator(loc, argv, ann.is_updating());
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
+      return new FnConcatIterator(sctx, loc, argv, ann.is_updating());
     }
     xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
     void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
@@ -149,7 +149,7 @@ namespace zorba
   class fn_exactly_one_noraise : public function {
   public:
     fn_exactly_one_noraise(const signature& sig) : function (sig), raise_err (false) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
 
   protected:
@@ -181,7 +181,7 @@ class fn_union : public function
 public:
   fn_union(const signature& sig) : function (sig) {}
 
-  PlanIter_t codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
   ZORBA_PRODUCES_SORTED
   ZORBA_PRODUCES_DISTINCT
@@ -193,7 +193,7 @@ class fn_intersect : public function
 public:
   fn_intersect(const signature& sig) : function (sig) {}
 
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
   ZORBA_PRODUCES_SORTED
   ZORBA_PRODUCES_DISTINCT
@@ -205,7 +205,7 @@ class fn_except: public function
 public:
   fn_except(const signature& sig) : function (sig) {}
 
-  PlanIter_t codegen(const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
   ZORBA_PRODUCES_SORTED
   ZORBA_PRODUCES_DISTINCT
@@ -226,8 +226,8 @@ public:
   class fn_max : public function {
   public:
     fn_max(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-      return new FnMinMaxIterator(loc, argv, FnMinMaxIterator::MAX);
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
+      return new FnMinMaxIterator(sctx, loc, argv, FnMinMaxIterator::MAX);
     }
     ZORBA_PROPAGATES_ONE_I2O (0)
   };
@@ -237,8 +237,8 @@ public:
   class fn_min : public function {
   public:
     fn_min(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-      return new FnMinMaxIterator(loc, argv, FnMinMaxIterator::MIN);
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
+      return new FnMinMaxIterator(sctx, loc, argv, FnMinMaxIterator::MIN);
     }
     ZORBA_PROPAGATES_ONE_I2O (0)
   };
@@ -265,8 +265,8 @@ public:
   class fn_doc_func : public function {
   public:
     fn_doc_func(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-      return new FnDocIterator(loc, argv[0]);
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
+      return new FnDocIterator(sctx, loc, argv[0]);
     }
     virtual bool isSource() const { return true; }
     bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
@@ -367,9 +367,9 @@ void fn_subsequence::compute_annotation (AnnotationHolder *parent, std::vector<A
 |_______________________________________________________________________*/
 
 //15.2.3 fn:exactly-one
-PlanIter_t fn_exactly_one_noraise::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_exactly_one_noraise::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnExactlyOneIterator(loc, argv, raise_err);
+  return new FnExactlyOneIterator(sctx, loc, argv, raise_err);
 }
 
 xqtref_t fn_exactly_one_noraise::return_type (const std::vector<xqtref_t> &arg_types) const {
@@ -388,9 +388,9 @@ xqtref_t fn_exactly_one_noraise::return_type (const std::vector<xqtref_t> &arg_t
 
 //15.3.2 op:union
 //ordered
-PlanIter_t fn_union::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_union::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnConcatIterator(loc, argv, false);
+  return new FnConcatIterator(sctx, loc, argv, false);
 }
 
 
@@ -404,7 +404,7 @@ PlanIter_t fn_union::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
 // during optimization.
 
 //15.3.3 op:intersect
-PlanIter_t fn_intersect::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_intersect::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
 #if 0  // we can't access PRODUCES_* from the inputs, must rethink
   bool distinct = ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VAL;
@@ -417,16 +417,16 @@ PlanIter_t fn_intersect::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
   return new SortSemiJoinIterator(loc, inputs);
 #endif
 
-  return new HashSemiJoinIterator(loc, argv);
+  return new HashSemiJoinIterator(sctx, loc, argv);
 }
 
 
 
 //15.3.4 op:except
-PlanIter_t fn_except::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_except::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   // TODO: use SortAntiJoinIterator when available (trac ticket 254)
-  return new HashSemiJoinIterator(loc, argv, true);
+  return new HashSemiJoinIterator(sctx, loc, argv, true);
 }
 
 
@@ -493,6 +493,7 @@ void op_node_sort_distinct::compute_annotation(
 
 
 PlanIter_t op_node_sort_distinct::codegen(
+    short sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
     AnnotationHolder& ann) const 
@@ -500,10 +501,10 @@ PlanIter_t op_node_sort_distinct::codegen(
   const bool* a = action();
   bool distinct = A_DISTINCT;
   if (! A_SORT)
-    return distinct ? new NodeDistinctIterator (loc, argv [0], A_ATOMICS)
-      : (A_ATOMICS ? new EitherNodesOrAtomicsIterator (loc, argv) : argv [0]);
+    return distinct ? new NodeDistinctIterator (sctx, loc, argv [0], A_ATOMICS)
+      : (A_ATOMICS ? new EitherNodesOrAtomicsIterator (sctx, loc, argv) : argv [0]);
   else
-    return new NodeSortIterator(loc, argv [0], A_ASCENDING, distinct, A_ATOMICS);
+    return new NodeSortIterator(sctx, loc, argv [0], A_ASCENDING, distinct, A_ATOMICS);
 }
 
 
@@ -570,7 +571,7 @@ const function *op_node_sort_distinct::min_action(
 }
 
 
-PlanIter_t fn_unordered::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &) const
+PlanIter_t fn_unordered::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &) const
 {
   return argv [0];
 }

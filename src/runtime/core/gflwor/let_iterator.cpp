@@ -27,6 +27,7 @@ namespace flwor
 {
 
 LetIterator::LetIterator (
+    short sctx,
     const QueryLoc& aLoc,
     store::Item_t aVarName, 
     PlanIter_t aTupleIter,
@@ -34,7 +35,7 @@ LetIterator::LetIterator (
     const std::vector<PlanIter_t>& aLetVars,
     bool aNeedsMaterialization ) 
   :
-  BinaryBaseIterator<LetIterator, PlanIteratorState> ( aLoc, aTupleIter, aInput),
+  BinaryBaseIterator<LetIterator, PlanIteratorState> ( sctx, aLoc, aTupleIter, aInput),
   theVarName(aVarName), 
   theNeedsMat ( aNeedsMaterialization ) 
 {

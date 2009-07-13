@@ -33,7 +33,7 @@ protected:
   PlanIter_t theChild;
 
 public:
-  UnaryBaseIterator ( const QueryLoc& loc, PlanIter_t& arg );
+  UnaryBaseIterator ( short sctx, const QueryLoc& loc, PlanIter_t& arg );
 
   virtual ~UnaryBaseIterator();
 
@@ -48,10 +48,11 @@ public:
 
 template <class IterType, class StateType>
 UnaryBaseIterator<IterType, StateType>::UnaryBaseIterator(
+    short sctx,
     const QueryLoc& loc,
     PlanIter_t& aChild)
   :
-  Batcher<IterType> ( loc ), theChild ( aChild )
+  Batcher<IterType> ( sctx, loc ), theChild ( aChild )
 {
 #ifndef NDEBUG
   assert(theChild != 0);

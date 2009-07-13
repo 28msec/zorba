@@ -211,7 +211,7 @@ CompareStrIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
           n2 = n2->getAtomizationValue();
           XQPCollator* coll = 0;
           try {
-            coll = planState.theRuntimeCB->theCollationCache->getCollator(n2->getStringValue()->str());
+            coll = getStaticContext(planState)->get_collation_cache()->getCollator(n2->getStringValue()->str());
           } catch (error::ZorbaError& e) {
             // rethrow the error with a location argument
             ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
@@ -223,7 +223,7 @@ CompareStrIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
       else {
         XQPCollator* coll = 0;
         try {
-          coll = planState.theRuntimeCB->theCollationCache->getDefaultCollator();
+          coll = getStaticContext(planState)->get_collation_cache()->getDefaultCollator();
         } catch (error::ZorbaError& e) {
           // rethrow the error with a location argument
           ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
@@ -905,7 +905,7 @@ ContainsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
           itemColl = itemColl->getAtomizationValue();
           XQPCollator* coll = 0;
           try {
-            coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue()->str());
+            coll = getStaticContext(planState)->get_collation_cache()->getCollator(itemColl->getStringValue()->str());
           } catch (error::ZorbaError& e) {
             // rethrow the error with a location argument
             ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
@@ -987,7 +987,7 @@ StartsWithIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
           itemColl = itemColl->getAtomizationValue();
           XQPCollator* coll = 0;
           try {
-            coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue()->str());
+            coll = getStaticContext(planState)->get_collation_cache()->getCollator(itemColl->getStringValue()->str());
           } catch (error::ZorbaError& e) {
             // rethrow the error with a location argument
             ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
@@ -1069,7 +1069,7 @@ EndsWithIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
           itemColl = itemColl->getAtomizationValue();
           XQPCollator* coll = 0;
           try {
-            coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue()->str());
+            coll = getStaticContext(planState)->get_collation_cache()->getCollator(itemColl->getStringValue()->str());
           } catch (error::ZorbaError& e) {
             // rethrow the error with a location argument
             ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
@@ -1150,7 +1150,7 @@ SubstringBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
           itemColl = itemColl->getAtomizationValue();
           XQPCollator* coll = 0;
           try {
-            coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue()->str());
+            coll = getStaticContext(planState)->get_collation_cache()->getCollator(itemColl->getStringValue()->str());
           } catch (error::ZorbaError& e) {
             // rethrow the error with a location argument
             ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
@@ -1234,7 +1234,7 @@ SubstringAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) co
           itemColl = itemColl->getAtomizationValue();
           XQPCollator* coll = 0;
           try {
-            coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue()->str());
+            coll = getStaticContext(planState)->get_collation_cache()->getCollator(itemColl->getStringValue()->str());
           } catch (error::ZorbaError& e) {
             // rethrow the error with a location argument
             ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);

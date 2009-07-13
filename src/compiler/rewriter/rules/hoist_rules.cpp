@@ -304,16 +304,16 @@ static expr_t try_hoisting(
   // var: $$temp := opext:hoist(e) (b) we place the $$temp declaration right after
   // variable V, and (c) we replace e with opext:unhoist($$temp).
 
-  rchandle<var_expr> letvar(rCtx.createTempVar(e->get_loc(), var_expr::let_var));
-  expr_t hoisted = new fo_expr(e->get_loc(), LOOKUP_OP1("hoist"), e);
-  let_clause_t flref(new let_clause(e->get_loc(), letvar, hoisted));
+  rchandle<var_expr> letvar(rCtx.createTempVar(e->get_cur_sctx(), e->get_loc(), var_expr::let_var));
+  expr_t hoisted = new fo_expr(e->get_cur_sctx(), e->get_loc(), LOOKUP_OP1("hoist"), e);
+  let_clause_t flref(new let_clause(e->get_cur_sctx(), e->get_loc(), letvar, hoisted));
   letvar->set_flwor_clause(flref.getp());
 
   if (h->prev == NULL) 
   {
     if (h->flwor == NULL) 
     {
-      h->flwor = new flwor_expr(e->get_loc(), false);
+      h->flwor = new flwor_expr(e->get_cur_sctx(), e->get_loc(), false);
     }
     h->flwor->add_clause(flref);
   }
@@ -323,7 +323,7 @@ static expr_t try_hoisting(
     ++h->clause_count;
   }
 
-  expr_t unhoisted = new fo_expr(e->get_loc(), LOOKUP_OP1("unhoist"), letvar.getp());
+  expr_t unhoisted = new fo_expr(e->get_cur_sctx(), e->get_loc(), LOOKUP_OP1("unhoist"), letvar.getp());
   return unhoisted.getp();
 }
 

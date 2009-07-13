@@ -44,12 +44,13 @@ namespace zorba
 
 ********************************************************************************/
 InsertIterator::InsertIterator (
+    short                           sctx,
     const QueryLoc&                 aLoc,
     store::UpdateConsts::InsertType aType,
     PlanIter_t                      source,
     PlanIter_t                      target)
   :
-  BinaryBaseIterator<InsertIterator, PlanIteratorState>(aLoc, source, target),
+  BinaryBaseIterator<InsertIterator, PlanIteratorState>(sctx, aLoc, source, target),
   theType(aType),
   theDoCopy(true)
 { 
@@ -81,7 +82,7 @@ InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
-  sctx = aPlanState.theRuntimeCB->theStaticContext;
+  sctx = getStaticContext(aPlanState);
 
   typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
@@ -258,9 +259,9 @@ InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 /*******************************************************************************
 
 ********************************************************************************/
-DeleteIterator::DeleteIterator(const QueryLoc& aLoc, PlanIter_t target)
+DeleteIterator::DeleteIterator(short sctx, const QueryLoc& aLoc, PlanIter_t target)
   :
-  UnaryBaseIterator<DeleteIterator, PlanIteratorState>(aLoc, target)
+  UnaryBaseIterator<DeleteIterator, PlanIteratorState>(sctx, aLoc, target)
 { 
 }
 
@@ -294,12 +295,13 @@ DeleteIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
 ********************************************************************************/
 ReplaceIterator::ReplaceIterator (
+    short sctx,
     const QueryLoc& aLoc,
     store::UpdateConsts::ReplaceType aType,
     PlanIter_t target,
     PlanIter_t source)
   :
-  BinaryBaseIterator<ReplaceIterator, PlanIteratorState>(aLoc, target, source),
+  BinaryBaseIterator<ReplaceIterator, PlanIteratorState>(sctx, aLoc, target, source),
   theType(aType),
   theDoCopy(true)
 { 
@@ -329,7 +331,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
   
-  sctx = aPlanState.theRuntimeCB->theStaticContext;
+  sctx = getStaticContext(aPlanState);
 
   typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
@@ -502,11 +504,12 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
 ********************************************************************************/
 RenameIterator::RenameIterator (
+    short sctx,
     const QueryLoc& aLoc,
     PlanIter_t target,
     PlanIter_t name)
   :
-  BinaryBaseIterator<RenameIterator, PlanIteratorState>(aLoc, target, name)
+  BinaryBaseIterator<RenameIterator, PlanIteratorState>(sctx, aLoc, target, name)
 { 
 }
 
@@ -562,12 +565,13 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
 ********************************************************************************/
 TransformIterator::TransformIterator(
+  short sctx,
   const QueryLoc& aLoc,
   std::vector<CopyClause>& aCopyClauses,
   PlanIter_t aModifyIter,
   PlanIter_t aReturnIter)
   :
-  Batcher<TransformIterator>(aLoc),
+  Batcher<TransformIterator>(sctx, aLoc),
   theCopyClauses(aCopyClauses),
   theModifyIter(aModifyIter),
   theReturnIter(aReturnIter)
@@ -599,7 +603,7 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   PlanIteratorState* aState;
   DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
 
-  sctx = aPlanState.theRuntimeCB->theStaticContext;
+  sctx = getStaticContext(aPlanState);
 
   typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);

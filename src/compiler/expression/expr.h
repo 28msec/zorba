@@ -57,31 +57,31 @@ class sequential_expr : public expr
 public:
   expr_kind_t get_expr_kind () const { return sequential_expr_kind; }
 
-  sequential_expr(const QueryLoc& loc)
+  sequential_expr(short sctx, const QueryLoc& loc)
     :
-    expr (loc)
+    expr (sctx, loc)
   {
   }
 
-  sequential_expr(const QueryLoc& loc, expr_t first, expr_t second)
+  sequential_expr(short sctx, const QueryLoc& loc, expr_t first, expr_t second)
     :
-    expr (loc)
+    expr (sctx, loc)
   {
     sequence.push_back (first);
     sequence.push_back (second);
   }
 
-  sequential_expr(const QueryLoc& loc, checked_vector<expr_t> seq, expr_t result)
+  sequential_expr(short sctx, const QueryLoc& loc, checked_vector<expr_t> seq, expr_t result)
     :
-    expr (loc),
+    expr (sctx, loc),
     sequence (seq)
   {
     sequence.push_back (result);
   }
 
-  sequential_expr(const QueryLoc& loc, checked_vector<expr_t> seq)
+  sequential_expr(short sctx, const QueryLoc& loc, checked_vector<expr_t> seq)
     :
-    expr (loc),
+    expr (sctx, loc),
     sequence (seq)
   {
   }
@@ -127,7 +127,7 @@ public:
 class constructor_expr : public expr 
 {
 protected:
-  constructor_expr(const QueryLoc& loc) : expr (loc) {}
+  constructor_expr(short sctx, const QueryLoc& loc) : expr (sctx, loc) {}
 };
 
 
@@ -179,7 +179,7 @@ protected:
     std::vector<clauseref_t> catch_clause_hv;
 
 public:
-    trycatch_expr(const QueryLoc&);
+    trycatch_expr(short sctx, const QueryLoc&);
 
     expr_t get_try_expr() const
     { return try_expr_h; }
@@ -241,8 +241,8 @@ protected:
 public:
   expr_kind_t get_expr_kind () const { return eval_expr_kind; }
 
-  eval_expr (const QueryLoc &loc, expr_t expr_)
-    : expr (loc), expr_h (expr_)
+  eval_expr (short sctx, const QueryLoc &loc, expr_t expr_)
+    : expr (sctx, loc), expr_h (expr_)
   {}
 
   checked_vector<eval_var> &get_vars () { return vars; }
@@ -273,14 +273,14 @@ private:
     bool theForExpr;
     
 public:
-    debugger_expr( const QueryLoc& loc, expr_t aChild, std::list<global_binding> aGlobals ):
-      eval_expr(loc, aChild ), theGlobals( aGlobals ){}
+    debugger_expr(short sctx, const QueryLoc& loc, expr_t aChild, std::list<global_binding> aGlobals ):
+      eval_expr(sctx, loc, aChild ), theGlobals( aGlobals ){}
     
-  debugger_expr( const QueryLoc& loc, expr_t aChild,
+  debugger_expr( short sctx, const QueryLoc& loc, expr_t aChild,
                  checked_vector<varref_t> aScopedVariables,
                  std::list<global_binding> aGlobals,
                  bool aForExpr = false):
-    eval_expr(loc, aChild ), theGlobals( aGlobals ), theForExpr(aForExpr)
+    eval_expr(sctx, loc, aChild ), theGlobals( aGlobals ), theForExpr(aForExpr)
   {
     store_local_variables( aScopedVariables );
   }
@@ -308,7 +308,7 @@ private:
       {
         lQNames.insert( (*it)->get_varname() );
         varref_t lValue = (*it);
-        varref_t lVariable( new var_expr( loc, var_expr::eval_var, lValue->get_varname() ) );
+        varref_t lVariable( new var_expr( context, loc, var_expr::eval_var, lValue->get_varname() ) );
         lVariable->set_type( lValue->get_type() );
         add_var(eval_expr::eval_var(&*lVariable, lValue.getp()));
       }
@@ -326,9 +326,9 @@ class wrapper_expr : public expr
   expr_t wrapped;
 
 public:
-  wrapper_expr (const QueryLoc& loc_, expr_t wrapped_)
+  wrapper_expr (short sctx, const QueryLoc& loc_, expr_t wrapped_)
     :
-    expr (loc_),
+    expr (sctx, loc_),
     wrapped (wrapped_)
   {
   }
@@ -391,7 +391,7 @@ protected:
   xqtref_t target_type;
 
 protected:
-  cast_or_castable_base_expr(const QueryLoc& loc, expr_t input, xqtref_t type);
+  cast_or_castable_base_expr(short sctx, const QueryLoc& loc, expr_t input, xqtref_t type);
   
 public:
   bool cache_compliant () { return true; }
@@ -411,7 +411,7 @@ public:
 ********************************************************************************/
 class cast_base_expr : public cast_or_castable_base_expr {
 public:
-  cast_base_expr(const QueryLoc& loc, expr_t input, xqtref_t type);
+  cast_base_expr(short sctx, const QueryLoc& loc, expr_t input, xqtref_t type);
 
   xqtref_t return_type_impl (static_context *sctx);
 };
@@ -422,7 +422,7 @@ public:
 ********************************************************************************/
 class castable_base_expr : public cast_or_castable_base_expr {
 protected:
-  castable_base_expr (const QueryLoc&, expr_t, xqtref_t);
+  castable_base_expr (short sctx, const QueryLoc&, expr_t, xqtref_t);
 
 public:
   xqtref_t return_type_impl (static_context *sctx);
@@ -437,6 +437,7 @@ public:
 class cast_expr : public cast_base_expr {
 public:
   cast_expr(
+    short sctx, 
     const QueryLoc&,
     expr_t,
     xqtref_t);
@@ -466,6 +467,7 @@ public:
 
 public:
   castable_expr(
+    short sctx, 
     const QueryLoc&,
     expr_t,
     xqtref_t);
@@ -492,6 +494,7 @@ protected:
 public:
   expr_kind_t get_expr_kind () const { return treat_expr_kind; }
   treat_expr(
+    short sctx, 
     const QueryLoc&,
     expr_t,
     xqtref_t,
@@ -520,7 +523,8 @@ protected:
   bool forced;  // error if not instance?
 
 public:
-  instanceof_expr (const QueryLoc&,
+  instanceof_expr (short sctx, 
+                   const QueryLoc&,
                    expr_t,
                    xqtref_t);
 
@@ -545,7 +549,7 @@ class promote_expr : public cast_base_expr {
 public:
   expr_kind_t get_expr_kind () const { return promote_expr_kind; }
 
-  promote_expr(const QueryLoc& loc, expr_t input, xqtref_t type);
+  promote_expr(short sctx, const QueryLoc& loc, expr_t input, xqtref_t type);
   xqtref_t return_type_impl (static_context *sctx);
 
 public:
@@ -565,6 +569,7 @@ private:
   NamespaceContext_t theNCtx;
 public:
   name_cast_expr (
+    short sctx,
     const QueryLoc&,
     expr_t,
     NamespaceContext_t);
@@ -599,7 +604,7 @@ protected:
   expr_t default_clause_h;
 
   // typeswitch_expr is not fully supported, so prevent instantiation
-  typeswitch_expr(const QueryLoc&);
+  typeswitch_expr(short sctx, const QueryLoc&);
 
 public:
   expr_kind_t get_expr_kind () const { return typeswitch_expr_kind; }
@@ -663,12 +668,14 @@ protected:
 
 public:
   if_expr(
+    short sctx,
     const QueryLoc&,
     expr_t,
     expr_t,
     expr_t);
 
   if_expr(
+    short sctx,
     const QueryLoc&);
 
 
@@ -707,7 +714,11 @@ protected:
   expr_t body;
   std::auto_ptr<signature> sig;
 
-  function_def_expr (const QueryLoc& loc, store::Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type_impl);
+  function_def_expr (short sctx,
+                     const QueryLoc& loc,
+                     store::Item_t name_,
+                     std::vector<rchandle<var_expr> > &params_,
+                     xqtref_t return_type_impl);
 
 public:
 
@@ -742,37 +753,37 @@ protected:
   const function         * func;
 
 public:
-  fo_expr (const QueryLoc& loc, const function *f)
-   : expr(loc), func (f)  { assert (f != NULL); }
+  fo_expr (short sctx, const QueryLoc& loc, const function *f)
+   : expr(sctx, loc), func (f)  { assert (f != NULL); }
 
-  fo_expr (const QueryLoc& loc, const function *f, expr_t arg)
-   : expr(loc), func (f)
+  fo_expr (short sctx, const QueryLoc& loc, const function *f, expr_t arg)
+   : expr(sctx, loc), func (f)
   {
     assert (f != NULL);
     add (arg);
   }
 
-  fo_expr (const QueryLoc& loc, const function *f, expr_t arg1, expr_t arg2)
-   : expr(loc), func (f)
+  fo_expr (short sctx, const QueryLoc& loc, const function *f, expr_t arg1, expr_t arg2)
+   : expr(sctx, loc), func (f)
   {
     assert (f != NULL);
     add (arg1); add (arg2);
   }
 
-  fo_expr (const QueryLoc& loc, const function *f, expr_t arg1, expr_t arg2, expr_t arg3)
-   : expr(loc), func (f)
+  fo_expr (short sctx, const QueryLoc& loc, const function *f, expr_t arg1, expr_t arg2, expr_t arg3)
+   : expr(sctx, loc), func (f)
   {
     assert (f != NULL);
     add (arg1); add (arg2); add (arg3);
   }
 
-  fo_expr (const QueryLoc& loc, const function *f, const std::vector<expr_t>& args)
-   : expr(loc), argv(args), func(f)
+  fo_expr (short sctx, const QueryLoc& loc, const function *f, const std::vector<expr_t>& args)
+   : expr(sctx, loc), argv(args), func(f)
   {
     assert (f != NULL);
   }
 
-  static fo_expr *create_seq (const QueryLoc &);
+  static fo_expr *create_seq (short sctx, const QueryLoc &);
   bool is_concatenation () const;
 
   bool cache_compliant () { return true; }
@@ -834,7 +845,7 @@ protected:
   expr_t expr_h;
 
 public:
-  validate_expr(const QueryLoc&, ParseConstants::validation_mode_t,
+  validate_expr(short sctx, const QueryLoc&, ParseConstants::validation_mode_t,
                 store::Item_t aTypeName,
                 expr_t, rchandle<TypeManager>);
 
@@ -882,8 +893,10 @@ protected:
 
 public:
   extension_expr(
+    short sctx,
     const QueryLoc&);
   extension_expr(
+    short sctx,
     const QueryLoc&,
     expr_t);
 
@@ -943,7 +956,7 @@ protected:
   std::vector<expr_t> theSteps;
 
 public:
-  relpath_expr(const QueryLoc&);
+  relpath_expr(short sctx, const QueryLoc&);
 
   expr_kind_t get_expr_kind () const { return relpath_expr_kind; }
 
@@ -987,7 +1000,7 @@ protected:
   expr_t                  theNodeTest;
 
 public:
-  axis_step_expr(const QueryLoc&);
+  axis_step_expr(short sctx, const QueryLoc&);
 
   expr_kind_t get_expr_kind () const { return axis_step_expr_kind; }
 
@@ -1045,7 +1058,7 @@ protected:
   bool          theNilledAllowed;
 
 public:
-  match_expr(const QueryLoc&);
+  match_expr(short sctx, const QueryLoc&);
 
   expr_kind_t get_expr_kind () const       { return match_expr_kind; }
 
@@ -1116,13 +1129,13 @@ protected:
   store::Item_t val;
 
 public:
-  const_expr(const QueryLoc&, xqpString sval);
-  const_expr(const QueryLoc&, xqp_integer);
-  const_expr(const QueryLoc&, xqp_decimal);
-  const_expr(const QueryLoc&, xqp_double);
-  const_expr(const QueryLoc&, xqp_boolean);
-  const_expr(const QueryLoc&, store::Item_t);  
-  const_expr(const QueryLoc&, const char* aNamespace, const char* aPrefix, const char* aLocal);
+  const_expr(short sctx, const QueryLoc&, xqpString sval);
+  const_expr(short sctx, const QueryLoc&, xqp_integer);
+  const_expr(short sctx, const QueryLoc&, xqp_decimal);
+  const_expr(short sctx, const QueryLoc&, xqp_double);
+  const_expr(short sctx, const QueryLoc&, xqp_boolean);
+  const_expr(short sctx, const QueryLoc&, store::Item_t);  
+  const_expr(short sctx, const QueryLoc&, const char* aNamespace, const char* aPrefix, const char* aLocal);
 
 public:
   store::Item_t get_val () const { return val; }
@@ -1159,6 +1172,7 @@ protected:
 
 public:
   order_expr(
+    short sctx,
     const QueryLoc&,
     order_type_t,
     expr_t);
@@ -1198,6 +1212,7 @@ protected:
   
 public:
   elem_expr(
+    short sctx,
     const QueryLoc&,
     expr_t aQNameExpr,
     expr_t aAttrs,
@@ -1205,6 +1220,7 @@ public:
     rchandle<namespace_context> aNSCtx);
   
   elem_expr(
+    short sctx,
     const QueryLoc&,
     expr_t aQNameExpr,
     expr_t aContent,
@@ -1242,6 +1258,7 @@ protected:
 
 public:
   doc_expr(
+    short sctx,
     const QueryLoc&,
     expr_t aContent);
 
@@ -1282,6 +1299,7 @@ protected:
 
 public:
   attr_expr(
+    short sctx,
     const QueryLoc& loc,
     expr_t aQNameExpr,
     expr_t aValueExpr);
@@ -1324,6 +1342,7 @@ protected:
 
 public:
   text_expr(
+    short sctx,
     const QueryLoc&,
     text_constructor_type,
     expr_t);
@@ -1363,7 +1382,8 @@ protected:
   expr_t target_expr_h;
   
 public:
-  pi_expr (const QueryLoc&,
+  pi_expr (short sctx,
+           const QueryLoc&,
            expr_t,
            expr_t);
   
@@ -1417,6 +1437,7 @@ protected:
 
 public:
 	insert_expr(
+    short sctx,
 		const QueryLoc&,
     store::UpdateConsts::InsertType,
 		expr_t aSourceExpr,
@@ -1450,6 +1471,7 @@ protected:
 
 public:
 	delete_expr(
+    short sctx,
 		const QueryLoc&,
 		expr_t);
 
@@ -1484,6 +1506,7 @@ protected:
 
 public:
 	replace_expr(
+    short sctx,
 		const QueryLoc&,
     store::UpdateConsts::ReplaceType aType,
 		expr_t,
@@ -1519,6 +1542,7 @@ protected:
 
 public:
 	rename_expr(
+    short sctx,
 		const QueryLoc&,
 		expr_t,
 		expr_t);
@@ -1570,6 +1594,7 @@ protected:
 
 public:
 	transform_expr(
+    short sctx,
 		const QueryLoc&,
 		expr_t aModifyExpr,
 		expr_t aReturnExpr);
@@ -1618,8 +1643,8 @@ class exit_expr : public expr {
   expr_t val;
 
 public:
-  exit_expr (const QueryLoc &loc, expr_t val_)
-    : expr (loc), val (val_)
+  exit_expr (short sctx, const QueryLoc &loc, expr_t val_)
+    : expr (sctx, loc), val (val_)
   {}
   expr_kind_t get_expr_kind () const { return exit_expr_kind; }
   expr_t get_value () { return val; }
@@ -1640,8 +1665,8 @@ protected:
   enum action action;
 
 public:
-  flowctl_expr (const QueryLoc &loc, enum action action_)
-    : expr (loc), action (action_)
+  flowctl_expr (short sctx, const QueryLoc &loc, enum action action_)
+    : expr (sctx, loc), action (action_)
   {}
   expr_kind_t get_expr_kind () const { return flowctl_expr_kind; }
   enum action get_action () const { return action; }
@@ -1658,8 +1683,8 @@ class while_expr : public expr {
   expr_t body;
 
 public:
-  while_expr (const QueryLoc &loc, expr_t body_)
-    : expr (loc), body (body_)
+  while_expr (short sctx, const QueryLoc &loc, expr_t body_)
+    : expr (sctx, loc), body (body_)
   {}
   expr_kind_t get_expr_kind () const { return while_expr_kind; }
   expr_t get_body () { return body; }
@@ -1676,7 +1701,7 @@ public:
 class ft_select_expr : public expr 
 {
 public:
-  ft_select_expr (const QueryLoc &loc) : expr (loc) {}
+  ft_select_expr (short sctx, const QueryLoc &loc) : expr (sctx, loc) {}
 };
 
 
@@ -1689,6 +1714,7 @@ protected:
 
 public:
   ft_contains_expr(
+        short sctx,
         const QueryLoc&,
         expr_t,
         expr_t,

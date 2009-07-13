@@ -37,10 +37,11 @@ namespace flwor
 
     // theChild0 --> TupleIterator
     // theChild1 --> InputIterator
-    WhereIterator::WhereIterator ( const QueryLoc& loc,
+    WhereIterator::WhereIterator ( short sctx,
+                              const QueryLoc& loc,
                                PlanIter_t aTupleIterator,
                                PlanIter_t aWhereClause ) :
-        BinaryBaseIterator<WhereIterator, PlanIteratorState> ( loc, aTupleIterator, aWhereClause ) {
+        BinaryBaseIterator<WhereIterator, PlanIteratorState> ( sctx, loc, aTupleIterator, aWhereClause ) {
     }
 
     WhereIterator::~WhereIterator() {}

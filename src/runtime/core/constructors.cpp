@@ -46,7 +46,7 @@ void DocumentIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   UnaryBaseIterator<DocumentIterator, PlanIteratorState>::openImpl(planState, offset);
 
-  static_context* sctx = planState.theRuntimeCB->theStaticContext;
+  static_context* sctx = getStaticContext(planState);
 
   theTypePreserve =
     (sctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
@@ -64,8 +64,7 @@ bool DocumentIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   // Note: baseUri has to be rchandle because if createDocumentNode throws
   // an exception, we don't know if the exception was thrown before or after
   // the ownership of the uri was transfered to the doc node.
-  xqpStringStore_t baseUri = planState.theRuntimeCB->theStaticContext->
-                             final_baseuri().getStore();
+  xqpStringStore_t baseUri = getStaticContext(planState)->final_baseuri().getStore();
   xqpStringStore_t docUri;
 
   std::stack<store::Item*>& path = planState.theRuntimeCB->theNodeConstuctionPath;
@@ -148,7 +147,22 @@ bool DocumentContentIterator::nextImpl(store::Item_t& result, PlanState& planSta
 /*******************************************************************************
 
 ********************************************************************************/
+void
+ElementIteratorState::init(PlanState&)
+{
+  sctx = 0;
+  baseUri = 0;
+}
+
+void
+ElementIteratorState::reset(PlanState&)
+{
+  sctx = 0;
+  baseUri = 0;
+}
+
 ElementIterator::ElementIterator (
+    short               sctx,
     const QueryLoc&     loc,
     PlanIter_t&         qnameIter,
     PlanIter_t&         attrsIter,
@@ -156,7 +170,7 @@ ElementIterator::ElementIterator (
     namespace_context*  localBindings,
     bool                isRoot)
   :
-  Batcher<ElementIterator>(loc),
+  NoaryBaseIterator<ElementIterator, ElementIteratorState>(sctx, loc),
   theQNameIter(qnameIter),
   theAttributesIter(attrsIter),
   theChildrenIter(childrenIter),
@@ -168,12 +182,12 @@ ElementIterator::ElementIterator (
 
 void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  StateTraitsImpl<PlanIteratorState>::createState(planState,
-                                                  this->stateOffset,
-                                                  offset);
+  StateTraitsImpl<ElementIteratorState>::createState(planState,
+                                                      this->stateOffset,
+                                                      offset);
 
-  StateTraitsImpl<PlanIteratorState>::initState(planState,
-                                                this->stateOffset);
+  StateTraitsImpl<ElementIteratorState>::initState(planState, this->stateOffset);
+  ElementIteratorState* state = StateTraitsImpl<ElementIteratorState>::getState(planState, this->stateOffset); \
 
   if (theQNameIter != 0)
     theQNameIter->open(planState, offset);
@@ -187,29 +201,27 @@ void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
   if (theNamespacesIter != 0)
     theNamespacesIter->open(planState, offset);
 
-  static_context* sctx = planState.theRuntimeCB->theStaticContext;
+  state->sctx = getStaticContext(planState);
 
   theTypePreserve =
-    (sctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
+    (state->sctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
 
   theNsPreserve =
-    (sctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
+    (state->sctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
 
   theNsInherit = 
-    (sctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
+    (state->sctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
 }
 
 
 bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::ItemFactory* factory = GENV_ITEMFACTORY;
-  static_context* sctx = planState.theRuntimeCB->theStaticContext;
 
   store::Item* parent;
   store::Item_t nodeName;
   store::Item_t typeName;
   store::Item_t nullValue;
-  xqpStringStore_t baseUri;
   xqpStringStore_t content;
 
   std::stack<store::Item*>& path = planState.theRuntimeCB->theNodeConstuctionPath;
@@ -217,8 +229,8 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   store::Item_t child;
   store::CopyMode copymode;
 
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  ElementIteratorState* state;
+  DEFAULT_STACK_INIT(ElementIteratorState, state, planState);
 
   // Compute the node name. Note: the compiler wraps an xs:qname cast around
   // the name expression, so we know that consumeNext() returns exactly one,
@@ -248,8 +260,8 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     // uris that may appear in the children. If theAttributesIter does produce
     // an explicit base-uri attribute, then the base-uri added here will be
     // replaced with the explicit one.
-    baseUri = sctx->final_baseuri().getStore();
-    if (baseUri->empty())
+    state->baseUri = state->sctx->final_baseuri().getStore();
+    if (state->baseUri->empty())
       ZORBA_ERROR_LOC(XPST0001, loc);
   }
 
@@ -262,7 +274,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                                       true,
                                       false,
                                       theLocalBindings->get_bindings(),
-                                      baseUri);
+                                      state->baseUri);
   path.push(result);
 
   // Compute the attributes and children of the element node
@@ -380,7 +392,7 @@ void ElementIterator::closeImpl(PlanState& planState)
   if (theNamespacesIter != 0)
     theNamespacesIter->close(planState);
 
-  StateTraitsImpl<PlanIteratorState>::destroyState(planState, this->stateOffset);
+  StateTraitsImpl<ElementIteratorState>::destroyState(planState, this->stateOffset);
 }
 
   
@@ -408,12 +420,13 @@ uint32_t ElementIterator::getStateSizeOfSubtree() const
 
 ********************************************************************************/
 AttributeIterator::AttributeIterator(
+    short sctx,
     const QueryLoc& loc,
     PlanIter_t&  aQNameIter,
     PlanIter_t&  aValueIter,
     bool         isRoot)
   :
-  BinaryBaseIterator<AttributeIterator, PlanIteratorState>(loc, aQNameIter, aValueIter),
+  BinaryBaseIterator<AttributeIterator, PlanIteratorState>(sctx, loc, aQNameIter, aValueIter),
   theIsRoot(isRoot)
 {
 }
@@ -495,11 +508,12 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
 ********************************************************************************/
 TextIterator::TextIterator(
+    short sctx,
     const QueryLoc& loc,
     PlanIter_t&     aChild,
     bool            isRoot) 
   :
-  UnaryBaseIterator<TextIterator, PlanIteratorState>(loc, aChild),
+  UnaryBaseIterator<TextIterator, PlanIteratorState>(sctx, loc, aChild),
   theIsRoot(isRoot)
 {
 }
@@ -557,12 +571,13 @@ bool TextIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 ********************************************************************************/
 PiIterator::PiIterator (
+    short sctx,
     const QueryLoc& loc,
     PlanIter_t&     aTarget,
     PlanIter_t&     aContent,
     bool            isRoot)
   :
-  BinaryBaseIterator<PiIterator, PlanIteratorState>(loc, aTarget, aContent),
+  BinaryBaseIterator<PiIterator, PlanIteratorState>(sctx, loc, aTarget, aContent),
   theIsRoot(isRoot)
 {
 }
@@ -642,11 +657,12 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 ********************************************************************************/
 CommentIterator::CommentIterator(
+    short sctx,
     const QueryLoc& loc,
     PlanIter_t&     aComment,
     bool            isRoot)
   :
-  UnaryBaseIterator<CommentIterator, PlanIteratorState>(loc, aComment),
+  UnaryBaseIterator<CommentIterator, PlanIteratorState>(sctx, loc, aComment),
   theIsRoot(isRoot)
 {
 }
@@ -742,10 +758,11 @@ EnclosedIteratorState::~EnclosedIteratorState()
 
 
 EnclosedIterator::EnclosedIterator (
+    short sctx,
     const QueryLoc& loc,
     PlanIter_t& childIter)
   :
-  UnaryBaseIterator<EnclosedIterator, EnclosedIteratorState> ( loc, childIter ),
+  UnaryBaseIterator<EnclosedIterator, EnclosedIteratorState> ( sctx, loc, childIter ),
   theAttrContent(false)
 {
 }
@@ -906,11 +923,12 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
 ********************************************************************************/
 NameCastIterator::NameCastIterator(
+    short sctx,
     const QueryLoc& loc,
     PlanIter_t& aChild,
     NamespaceContext_t aNCtx)
   :
-  UnaryBaseIterator<NameCastIterator, PlanIteratorState>(loc, aChild),
+  UnaryBaseIterator<NameCastIterator, PlanIteratorState>(sctx, loc, aChild),
   theNCtx(aNCtx)
 {
 }

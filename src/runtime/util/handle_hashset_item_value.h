@@ -33,12 +33,12 @@ namespace zorba
 class ValueCompareParam
 {
 public:
-  ValueCompareParam(RuntimeCB* aRuntimeCB)
+  ValueCompareParam(RuntimeCB* aRuntimeCB, static_context* sctx)
     :
     theRuntimeCB(aRuntimeCB),
-    theTypeManager(theRuntimeCB->theStaticContext->get_typemanager()),
+    theTypeManager(sctx->get_typemanager()),
     theTimezone(theRuntimeCB->theDynamicContext->get_implicit_timezone()),
-    theCollator(theRuntimeCB->theCollationCache->getDefaultCollator()) 
+    theCollator(sctx->get_collation_cache()->getDefaultCollator()) 
   {
   }
 

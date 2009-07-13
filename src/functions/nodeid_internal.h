@@ -50,6 +50,7 @@ public:
         nodes_or_atomics_t noa) const;
 
   PlanIter_t codegen(
+        short sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
         AnnotationHolder &ann) const;
@@ -212,6 +213,7 @@ public:
   fn_unordered(const signature& sig) : single_seq_function (sig) {}
 
   PlanIter_t codegen(
+        short sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
         AnnotationHolder &ann) const;

@@ -59,14 +59,14 @@ static xqpStringStore *getCollectionName(expr *e)
 
 typedef std::vector<std::pair<expr_t, expr_t> > hoisted_collections_t;
 
-static rchandle<var_expr> createTempLetVar(const QueryLoc& loc, int counter)
+static rchandle<var_expr> createTempLetVar(short sctx, const QueryLoc& loc, int counter)
 {
   std::stringstream ss;
   ss << "$$opt_temp_" << (counter);
   std::string varname = ss.str();
   store::Item_t qname;
   GENV_ITEMFACTORY->createQName(qname, "", "", varname.c_str());
-  rchandle<var_expr> var = new var_expr(loc, var_expr::let_var, qname);
+  rchandle<var_expr> var = new var_expr(sctx, loc, var_expr::let_var, qname);
 
   return var;
 }
@@ -78,10 +78,10 @@ static expr_t hoistCollectionSources(
     int& count)
 {
   if (isHoistableCollection(e.getp(), sCtx)) {
-    rchandle<var_expr> var(createTempLetVar(e->get_loc(), count));
+    rchandle<var_expr> var(createTempLetVar(e->get_cur_sctx(), e->get_loc(), count));
     std::pair<expr_t, expr_t> p(var.getp(), e);
     h.push_back(p);
-    return new wrapper_expr(e->get_loc(), var.getp());
+    return new wrapper_expr(e->get_cur_sctx(), e->get_loc(), var.getp());
   }
   expr_iterator i = e->expr_begin();
   while(!i.done()) {

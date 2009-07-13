@@ -143,11 +143,11 @@ void GroupingOuterVar::close ( PlanState& planState )
 /////////////////////////////////////////////////////////////////////////////////
 
 
-GroupTupleCmp::GroupTupleCmp(RuntimeCB* rcb, std::vector<GroupingSpec>* groupingSpecs) 
+GroupTupleCmp::GroupTupleCmp(RuntimeCB* rcb, static_context* sctx, std::vector<GroupingSpec>* groupingSpecs) 
   :
   theGroupingSpecs(groupingSpecs) 
 {
-  theTypeManager = rcb->theStaticContext->get_typemanager();
+  theTypeManager = sctx->get_typemanager();
   theTimezone = rcb->theDynamicContext->get_implicit_timezone();
 }
 

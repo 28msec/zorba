@@ -239,6 +239,7 @@ public:
    *
    */
   WindowIterator (
+        short sctx,
         const QueryLoc& loc,
         WindowType windowType,
         PlanIter_t tupleIter,

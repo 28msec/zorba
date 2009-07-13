@@ -29,6 +29,7 @@ public:
   xqtref_t return_type(const std::vector<xqtref_t> &arg_types) const;
 
   PlanIter_t codegen(
+        short sctx, 
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
         AnnotationHolder &ann) const;

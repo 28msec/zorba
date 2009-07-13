@@ -88,8 +88,8 @@ public:
 class ZorbaRestGetIterator : public NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState > 
 {
 public:                                                                  
-  ZorbaRestGetIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool tidy = false)
-    : NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState >(loc, aChildren),
+  ZorbaRestGetIterator( short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool tidy = false)
+    : NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren),
       isGetTidy(tidy)
   { } 
 
@@ -120,8 +120,8 @@ private:
 class ZorbaRestPostIterator : public NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState >
 {
 public:
-  ZorbaRestPostIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState >(loc, aChildren)
+  ZorbaRestPostIterator( short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren)
   { }
 
   bool
@@ -149,8 +149,8 @@ public:
 class ZorbaRestPutIterator : public NaryBaseIterator<ZorbaRestPutIterator, ZorbaRestGetIteratorState >
 {
 public:
-  ZorbaRestPutIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator<ZorbaRestPutIterator, ZorbaRestGetIteratorState >(loc, aChildren)
+  ZorbaRestPutIterator( short sctx,const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator<ZorbaRestPutIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren)
   { }
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -176,8 +176,8 @@ public:
 class ZorbaRestDeleteIterator : public NaryBaseIterator<ZorbaRestDeleteIterator, ZorbaRestGetIteratorState >
 {
 public:
-  ZorbaRestDeleteIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator<ZorbaRestDeleteIterator, ZorbaRestGetIteratorState >(loc, aChildren)
+  ZorbaRestDeleteIterator( short sctx,const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator<ZorbaRestDeleteIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren)
   { }
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -203,8 +203,8 @@ public:
 class ZorbaRestHeadIterator : public NaryBaseIterator<ZorbaRestHeadIterator, ZorbaRestGetIteratorState >
 {
 public:
-  ZorbaRestHeadIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator<ZorbaRestHeadIterator, ZorbaRestGetIteratorState >(loc, aChildren)
+  ZorbaRestHeadIterator( short sctx,const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator<ZorbaRestHeadIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren)
   { }
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

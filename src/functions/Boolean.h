@@ -41,12 +41,12 @@ public:
   
   virtual bool specializable() const { return true; }
 
-  virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-    return createIterator (loc, argv);
+  virtual PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
+    return createIterator (sctx, loc, argv);
   }
 
 protected:
-  virtual PlanIter_t createIterator( const QueryLoc& loc, std::vector<PlanIter_t>& ) const = 0;
+  virtual PlanIter_t createIterator( short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& ) const = 0;
 };
 
 

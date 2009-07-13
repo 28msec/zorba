@@ -33,7 +33,7 @@ protected:
   PlanIter_t theChild1;
 
 public:
-  BinaryBaseIterator ( const QueryLoc& loc, PlanIter_t& arg0, PlanIter_t& arg1 );
+  BinaryBaseIterator ( short sctx, const QueryLoc& loc, PlanIter_t& arg0, PlanIter_t& arg1 );
 
   virtual ~BinaryBaseIterator();
 
@@ -53,11 +53,12 @@ public:
 
 template <class IterType, class StateType>
 BinaryBaseIterator<IterType, StateType>::BinaryBaseIterator (
+    short sctx,
     const QueryLoc& loc,
     PlanIter_t& aChild0,
     PlanIter_t& aChild1 )
   :
-  Batcher<IterType> ( loc ), theChild0 ( aChild0 ), theChild1 ( aChild1 )
+  Batcher<IterType> ( sctx, loc ), theChild0 ( aChild0 ), theChild1 ( aChild1 )
 {
 #ifndef NDEBUG
   assert(aChild0 != 0);

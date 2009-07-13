@@ -39,7 +39,7 @@ public:
 class FnDataIterator : public UnaryBaseIterator<FnDataIterator, FnDataIteratorState>
 {
 public:
-  FnDataIterator(const QueryLoc& loc, PlanIter_t& aChild);
+  FnDataIterator(short sctx, const QueryLoc& loc, PlanIter_t& aChild);
 
   virtual ~FnDataIterator() { }
 
@@ -85,12 +85,12 @@ class FnStringIterator : public NaryBaseIterator<FnStringIterator, FnStringItera
   public:
     // TODO is the parameter theEmptyStringOnNULL needed?
     // otherwise we could replace this declaration with the macro
-    FnStringIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
-      : NaryBaseIterator<FnStringIterator, FnStringIteratorState>(loc, aChildren), 
+    FnStringIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
+      : NaryBaseIterator<FnStringIterator, FnStringIteratorState>(sctx, loc, aChildren), 
         theEmptyStringOnNULL(false) { }
 
-    FnStringIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool emptyStringOnNULL)
-      : NaryBaseIterator<FnStringIterator, FnStringIteratorState>(loc, aChildren), 
+    FnStringIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool emptyStringOnNULL)
+      : NaryBaseIterator<FnStringIterator, FnStringIteratorState>(sctx, loc, aChildren), 
         theEmptyStringOnNULL(emptyStringOnNULL) { }
 
     virtual ~FnStringIterator() { }

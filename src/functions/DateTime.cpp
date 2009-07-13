@@ -28,7 +28,7 @@ namespace zorba
   {
   public:
     fn_datetime_ctor(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*______________________________________________________________________
@@ -149,7 +149,7 @@ namespace zorba
   {
   public:
     op_ym_durations_add(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -159,7 +159,7 @@ namespace zorba
   {
   public:
     op_ym_durations_subtract(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -169,7 +169,7 @@ namespace zorba
   {
   public:
     op_ym_durations_multiply(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -179,7 +179,7 @@ namespace zorba
   {
   public:
     op_ym_durations_divide(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -189,7 +189,7 @@ namespace zorba
   {
   public:
     op_divide_ymd_by_ymd(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -199,7 +199,7 @@ namespace zorba
   {
   public:
     op_dt_durations_add(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -209,7 +209,7 @@ namespace zorba
   {
   public:
     op_dt_durations_subtract(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -219,7 +219,7 @@ namespace zorba
   {
   public:
     op_dt_durations_multiply(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -229,7 +229,7 @@ namespace zorba
   {
   public:
     op_dt_durations_divide(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -239,7 +239,7 @@ namespace zorba
   {
   public:
     op_divide_dtd_by_dtd(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -249,7 +249,7 @@ namespace zorba
   {
   public:
     op_sub_dt(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -259,7 +259,7 @@ namespace zorba
   {
   public:
     op_sub_d(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -269,7 +269,7 @@ namespace zorba
   {
   public:
     op_sub_t(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -279,7 +279,7 @@ namespace zorba
   {
   public:
     op_add_ymd_to_dt(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -289,7 +289,7 @@ namespace zorba
   {
   public:
     op_add_dtd_to_dt(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -299,7 +299,7 @@ namespace zorba
   {
   public:
     op_sub_ymd_from_dt(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -309,7 +309,7 @@ namespace zorba
   {
   public:
     op_sub_dtd_from_dt(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -319,7 +319,7 @@ namespace zorba
   {
   public:
     op_add_ymd_to_d(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -329,7 +329,7 @@ namespace zorba
   {
   public:
     op_add_dtd_to_d(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -339,7 +339,7 @@ namespace zorba
   {
   public:
     op_sub_ymd_from_d(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -349,7 +349,7 @@ namespace zorba
   {
   public:
     op_sub_dtd_from_d(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -359,7 +359,7 @@ namespace zorba
   {
   public:
     op_add_dtd_to_t(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -369,7 +369,7 @@ namespace zorba
   {
   public:
     op_sub_dtd_from_t(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -380,14 +380,14 @@ namespace zorba
   public:
     bool requires_dyn_ctx () const { return true; }
     fn_adjust_dt_to_tz_1(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   class fn_adjust_dt_to_tz_2 : public function
   {
   public:
     fn_adjust_dt_to_tz_2(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -398,14 +398,14 @@ namespace zorba
   public:
     fn_adjust_d_to_tz_1(const signature& sig) : function (sig) {}
     bool requires_dyn_ctx () const { return true; }
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   class fn_adjust_d_to_tz_2 : public function
   {
   public:
     fn_adjust_d_to_tz_2(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   /*
@@ -416,20 +416,20 @@ namespace zorba
   public:
     fn_adjust_t_to_tz_1(const signature& sig) : function (sig) {}
     bool requires_dyn_ctx () const { return true; }
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   class fn_adjust_t_to_tz_2 : public function
   {
   public:
     fn_adjust_t_to_tz_2(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
 
-PlanIter_t fn_datetime_ctor::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+PlanIter_t fn_datetime_ctor::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new FnDateTimeConstructorIterator(loc, argv[0], argv[1]);
+  return new FnDateTimeConstructorIterator(sctx, loc, argv[0], argv[1]);
 }
 
   /*
@@ -440,9 +440,9 @@ class fn_format_datetime_4 : public function
 {
 public:
   fn_format_datetime_4(const signature& sig) : function (sig) {}
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
   {
-    return new FnFormatDateTimeIterator(loc, argv, DateTime::DATETIME_FACET);
+    return new FnFormatDateTimeIterator(sctx, loc, argv, DateTime::DATETIME_FACET);
   }
 };
 
@@ -450,9 +450,9 @@ class fn_format_datetime_2 : public function
 {
 public:
   fn_format_datetime_2(const signature& sig) : function (sig) {}
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
   {
-    return new FnFormatDateTimeIterator(loc, argv, DateTime::DATETIME_FACET);
+    return new FnFormatDateTimeIterator(sctx, loc, argv, DateTime::DATETIME_FACET);
   }
 };
 
@@ -461,9 +461,9 @@ class fn_format_date_4 : public function
 {
 public:
   fn_format_date_4(const signature& sig) : function (sig) {}
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
   {
-    return new FnFormatDateTimeIterator(loc, argv, DateTime::DATE_FACET);
+    return new FnFormatDateTimeIterator(sctx, loc, argv, DateTime::DATE_FACET);
   }
 };
 
@@ -471,9 +471,9 @@ class fn_format_date_2 : public function
 {
 public:
   fn_format_date_2(const signature& sig) : function (sig) {}
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
   {
-    return new FnFormatDateTimeIterator(loc, argv, DateTime::DATE_FACET);
+    return new FnFormatDateTimeIterator(sctx, loc, argv, DateTime::DATE_FACET);
   }
 };
 
@@ -482,9 +482,9 @@ class fn_format_time_4 : public function
 {
 public:
   fn_format_time_4(const signature& sig) : function (sig) {}
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
   {
-    return new FnFormatDateTimeIterator(loc, argv, DateTime::TIME_FACET);
+    return new FnFormatDateTimeIterator(sctx, loc, argv, DateTime::TIME_FACET);
   }
 };
 
@@ -492,9 +492,9 @@ class fn_format_time_2 : public function
 {
 public:
   fn_format_time_2(const signature& sig) : function (sig) {}
-  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
   {
-    return new FnFormatDateTimeIterator(loc, argv, DateTime::TIME_FACET);
+    return new FnFormatDateTimeIterator(sctx, loc, argv, DateTime::TIME_FACET);
   }
 };
 
@@ -502,246 +502,246 @@ public:
  * 10.6.1 op:add-yearMonthDurations
  * --------------------*/
 PlanIter_t
-op_ym_durations_add::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_ym_durations_add::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<AddOperation>(loc, argv[0], argv[1]);
+  return new NumArithIterator<AddOperation>(sctx, loc, argv[0], argv[1]);
 }
 
 /*
  * 10.6.2 op:subtract-yearMonthDurations
  * --------------------*/
 PlanIter_t
-op_ym_durations_subtract::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_ym_durations_subtract::codegen ( short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<SubtractOperation>(loc, argv[0], argv[1]);
+  return new NumArithIterator<SubtractOperation>(sctx, loc, argv[0], argv[1]);
 }
 
 /*
  * 10.6.3 op:multiply-yearMonthDuration
  * --------------------*/
 PlanIter_t
-op_ym_durations_multiply::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_ym_durations_multiply::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<MultiplyOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<MultiplyOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  * 10.6.4 op:divide-yearMonthDuration
  * --------------------*/
 PlanIter_t
-op_ym_durations_divide::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_ym_durations_divide::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<DivideOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<DivideOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  * 10.6.5 op:divide-yearMonthDuration-by-yearMonthDuration
  * --------------------*/
 PlanIter_t
-op_divide_ymd_by_ymd::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_divide_ymd_by_ymd::codegen ( short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<DivideOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<DivideOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  * 10.6.6 op:add-dayTimeDurations
  * --------------------*/
 PlanIter_t
-op_dt_durations_add::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_dt_durations_add::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<AddOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<AddOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  * 10.6.7 op:subtract-dayTimeDurations
  * --------------------*/
 PlanIter_t
-op_dt_durations_subtract::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_dt_durations_subtract::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<SubtractOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  *  10.6.8 op:multiply-dayTimeDuration
  * --------------------*/
 PlanIter_t
-op_dt_durations_multiply::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_dt_durations_multiply::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<MultiplyOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<MultiplyOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  *  10.6.9 op:divide-dayTimeDuration
  * --------------------*/
 PlanIter_t
-op_dt_durations_divide::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_dt_durations_divide::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<DivideOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<DivideOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  *  10.6.10 op:divide-dayTimeDuration-by-dayTimeDuration
  * --------------------*/
 PlanIter_t
-op_divide_dtd_by_dtd::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_divide_dtd_by_dtd::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<DivideOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<DivideOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  *  10.8.1 op:subtract-dateTimes
  * --------------------*/
 PlanIter_t
-op_sub_dt::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_sub_dt::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<SubtractOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  *  10.8.2 op:subtract-dates
  * --------------------*/
 PlanIter_t
-op_sub_d::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_sub_d::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<SubtractOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  *  10.8.3 op:subtract-times
  * --------------------*/
 PlanIter_t
-op_sub_t::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_sub_t::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<SubtractOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  *  10.8.4 op:add-yearMonthDuration-to-dateTime
  * --------------------*/
 PlanIter_t
-op_add_ymd_to_dt::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_add_ymd_to_dt::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<AddOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<AddOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  *  10.8.5 op:add-dayTimeDuration-to-dateTime
  * --------------------*/
 PlanIter_t
-op_add_dtd_to_dt::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_add_dtd_to_dt::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<AddOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<AddOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  *  10.8.6 op:subtract-yearMonthDuration-from-dateTime
  * --------------------*/
 PlanIter_t
-op_sub_ymd_from_dt::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_sub_ymd_from_dt::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<SubtractOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  *  10.8.7 op:subtract-dayTimeDuration-from-dateTime
  * --------------------*/
 PlanIter_t
-op_sub_dtd_from_dt::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_sub_dtd_from_dt::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<SubtractOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  *  10.8.8 op:add-yearMonthDuration-to-date
  * --------------------*/
 PlanIter_t
-op_add_ymd_to_d::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_add_ymd_to_d::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<AddOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<AddOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  *  10.8.9 op:add-dayTimeDuration-to-date
  * --------------------*/
 PlanIter_t
-op_add_dtd_to_d::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_add_dtd_to_d::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<AddOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<AddOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  *  10.8.10 op:subtract-yearMonthDuration-from-date
  * --------------------*/
 PlanIter_t
-op_sub_ymd_from_d::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_sub_ymd_from_d::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<SubtractOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  *  10.8.11 op:subtract-dayTimeDuration-from-date
  * --------------------*/
 PlanIter_t
-op_sub_dtd_from_d::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_sub_dtd_from_d::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<SubtractOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  *  10.8.12 op:add-dayTimeDuration-to-time
  * --------------------*/
 PlanIter_t
-op_add_dtd_to_t::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_add_dtd_to_t::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<AddOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<AddOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  *  10.8.13 op:subtract-dayTimeDuration-from-time
  * --------------------*/
 PlanIter_t
-op_sub_dtd_from_t::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+op_sub_dtd_from_t::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<SubtractOperation>(sctx, loc,  argv[0], argv[1]);
 }
 
 /*
  *  10.7.1 fn:adjust-dateTime-to-timezone
  * --------------------*/
-PlanIter_t fn_adjust_dt_to_tz_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+PlanIter_t fn_adjust_dt_to_tz_1::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new FnAdjustToTimeZoneIterator_1(loc, argv[0]);
+  return new FnAdjustToTimeZoneIterator_1(sctx, loc, argv[0]);
 }
 
-PlanIter_t fn_adjust_dt_to_tz_2::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+PlanIter_t fn_adjust_dt_to_tz_2::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new FnAdjustToTimeZoneIterator_2(loc, argv[0], argv[1]);
+  return new FnAdjustToTimeZoneIterator_2(sctx, loc, argv[0], argv[1]);
 }
 
 /*
  *  10.7.2 fn:adjust-date-to-timezone
  * --------------------*/
-PlanIter_t fn_adjust_d_to_tz_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+PlanIter_t fn_adjust_d_to_tz_1::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new FnAdjustToTimeZoneIterator_1(loc, argv[0]);
+  return new FnAdjustToTimeZoneIterator_1(sctx, loc, argv[0]);
 }
 
-PlanIter_t fn_adjust_d_to_tz_2::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+PlanIter_t fn_adjust_d_to_tz_2::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new FnAdjustToTimeZoneIterator_2(loc, argv[0], argv[1]);
+  return new FnAdjustToTimeZoneIterator_2(sctx, loc, argv[0], argv[1]);
 }
 
 /*
  *  10.7.3 fn:adjust-time-to-timezone
  * --------------------*/
-PlanIter_t fn_adjust_t_to_tz_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+PlanIter_t fn_adjust_t_to_tz_1::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new FnAdjustToTimeZoneIterator_1(loc, argv[0]);
+  return new FnAdjustToTimeZoneIterator_1(sctx, loc, argv[0]);
 }
 
-PlanIter_t fn_adjust_t_to_tz_2::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+PlanIter_t fn_adjust_t_to_tz_2::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
-  return new FnAdjustToTimeZoneIterator_2(loc, argv[0], argv[1]);
+  return new FnAdjustToTimeZoneIterator_2(sctx, loc, argv[0], argv[1]);
 }
 
 void populateContext_Datetime(static_context *sctx)

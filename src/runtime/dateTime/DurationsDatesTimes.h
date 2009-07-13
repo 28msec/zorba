@@ -30,9 +30,9 @@ class FnDateTimeConstructorIterator : public BinaryBaseIterator<FnDateTimeConstr
                                                                 PlanIteratorState>
 {
 public:
-  FnDateTimeConstructorIterator( const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
+  FnDateTimeConstructorIterator(short sctx,  const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
     :
-    BinaryBaseIterator<FnDateTimeConstructorIterator, PlanIteratorState>(loc, arg0, arg1){}
+    BinaryBaseIterator<FnDateTimeConstructorIterator, PlanIteratorState>(sctx, loc, arg0, arg1){}
 
   virtual ~FnDateTimeConstructorIterator() {};
 
@@ -58,9 +58,9 @@ public:
 // 10.4.5 op:duration-equal
 class OpDurationEqualIterator : public BinaryBaseIterator<OpDurationEqualIterator, PlanIteratorState>{
 public:
-  OpDurationEqualIterator( const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
+  OpDurationEqualIterator( short sctx, const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
   :
-  BinaryBaseIterator<OpDurationEqualIterator, PlanIteratorState>(loc, arg0, arg1){}
+  BinaryBaseIterator<OpDurationEqualIterator, PlanIteratorState>(sctx, loc, arg0, arg1){}
 
   virtual ~OpDurationEqualIterator() {};
   
@@ -163,9 +163,9 @@ private:
   DateTime::FACET_TYPE facet_type;
     
 public:
-  FnFormatDateTimeIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, DateTime::FACET_TYPE a_facet_type = DateTime::DATETIME_FACET)
+  FnFormatDateTimeIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, DateTime::FACET_TYPE a_facet_type = DateTime::DATETIME_FACET)
     :
-    NaryBaseIterator<FnFormatDateTimeIterator, PlanIteratorState >(loc, aChildren), facet_type(a_facet_type)
+    NaryBaseIterator<FnFormatDateTimeIterator, PlanIteratorState >(sctx, loc, aChildren), facet_type(a_facet_type)
   {
   }
 
@@ -201,9 +201,9 @@ class FnAdjustToTimeZoneIterator_1 : public UnaryBaseIterator<FnAdjustToTimeZone
                                                                 PlanIteratorState>
 {
 public:
-  FnAdjustToTimeZoneIterator_1(const QueryLoc& loc, PlanIter_t& arg0)
+  FnAdjustToTimeZoneIterator_1(short sctx, const QueryLoc& loc, PlanIter_t& arg0)
     :
-    UnaryBaseIterator<FnAdjustToTimeZoneIterator_1, PlanIteratorState>(loc, arg0){}
+    UnaryBaseIterator<FnAdjustToTimeZoneIterator_1, PlanIteratorState>(sctx, loc, arg0){}
 
   virtual ~FnAdjustToTimeZoneIterator_1() {};
 
@@ -216,9 +216,9 @@ class FnAdjustToTimeZoneIterator_2 : public BinaryBaseIterator<FnAdjustToTimeZon
                                                                 PlanIteratorState>
 {
 public:
-  FnAdjustToTimeZoneIterator_2(const QueryLoc& loc, PlanIter_t& arg0, PlanIter_t& arg1)
+  FnAdjustToTimeZoneIterator_2(short sctx, const QueryLoc& loc, PlanIter_t& arg0, PlanIter_t& arg1)
   :
-  BinaryBaseIterator<FnAdjustToTimeZoneIterator_2, PlanIteratorState>(loc, arg0, arg1){}
+  BinaryBaseIterator<FnAdjustToTimeZoneIterator_2, PlanIteratorState>(sctx, loc, arg0, arg1){}
 
   virtual ~FnAdjustToTimeZoneIterator_2() {};
 

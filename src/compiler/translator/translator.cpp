@@ -216,7 +216,6 @@ void add_multimap_value(
   result->insert (val);
 }
   
-
 /*******************************************************************************
 
   There is only one ModulesInfo instance per compilation. It is created on the
@@ -256,18 +255,15 @@ class ModulesInfo
 {
 public:
   CompilerCB                * topCompilerCB;
-  hashmap<static_context *>   mod_sctx_map;
+  hashmap<static_context_t>   mod_sctx_map;
   hashmap<string>             mod_ns_map;
   checked_vector<expr_t>      init_exprs;
   auto_ptr<static_context>    globals;
 
-  ModulesInfo (CompilerCB* topCompilerCB_)
-    :
-    topCompilerCB (topCompilerCB_)
-  {
-    static_context* sctx = topCompilerCB->m_sctx;
-    globals.reset(static_cast<static_context*>(sctx->get_parent())->create_child_context());
-  }
+  ModulesInfo (static_context *sctx, CompilerCB *topCompilerCB_)
+    : topCompilerCB (topCompilerCB_),
+      globals (static_cast<static_context *> (sctx->get_parent ())->create_child_context ())
+  {}
 };
 
 
@@ -280,8 +276,8 @@ public:
 
   xquery_version       : 100 for 1.0, 110 for 1.1 etc
 
-  compilerCB           : The compiler control block associated with this translator
-                         (each translator uses its own compiler cb).
+  cb                   : The compiler control block associated with this translator
+                         (each translator uses its own compiler cb; also for library modules).
 
   minfo                : Pointer to the unique ModulesInfo instance (see class
                          ModulesInfo above).
@@ -408,7 +404,7 @@ protected:
 
   int                                  xquery_version;
 
-  CompilerCB                         * compilerCB;
+  CompilerCB                         * cb;
 
   ModulesInfo                        * minfo;
 
@@ -429,6 +425,7 @@ protected:
   uint32_t                             print_depth;
   int                                  scope_depth;
 
+  stack<short>                         sctxstack;
   stack<expr_t>                        nodestack;
   stack<xqtref_t>                      tstack; 
   stack<ValueIndex_t>                  indexstack;
@@ -481,11 +478,10 @@ protected:
 
   list<function *>                     fn_decl_stack;
 
-
 TranslatorImpl (CompilerCB* aCompilerCB, ModulesInfo *minfo_, set<string> mod_stack_)
   :
   xquery_version (10000),  // fictious version 100.0 -- allow everything
-  compilerCB(aCompilerCB),
+  cb(aCompilerCB),
   minfo (minfo_),
   mod_stack (mod_stack_),
   sctx_p (aCompilerCB->m_sctx),
@@ -618,40 +614,6 @@ xqtref_t pop_tstack()
   return pop_stack(tstack); 
 }
 
-
-/*******************************************************************************
-  Create new static context and make it the current one.
-********************************************************************************/
-void push_scope () 
-{
-#ifdef ZORBA_DEBUGGER
-  theScopes.push_back( theScopedVariables.size() );
-#endif
-  compilerCB->m_sctx_list.push_back (sctx_p = sctx_p->create_child_context());
-  ++scope_depth;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void pop_scope (int n = 1)
-{
-#ifdef ZORBA_DEBUGGER
-  theScopedVariables.erase(theScopedVariables.begin()+theScopes.back(),
-                           theScopedVariables.end() );
-  theScopes.pop_back();
-#endif
-  while (n-- > 0) 
-  {
-    static_context *parent = (static_context *) sctx_p->get_parent ();
-    sctx_p = parent;
-    --scope_depth;
-    assert (scope_depth >= 0);
-  }
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -712,7 +674,7 @@ varref_t create_var(
     var_expr::var_kind kind,
     xqtref_t type = NULL) 
 {
-  varref_t e = new var_expr(loc, kind, qname, global_decl_stack.empty ());
+  varref_t e = new var_expr(cb->m_cur_sctx, loc, kind, qname, global_decl_stack.empty ());
 
   if (kind == var_expr::pos_var ||
       kind == var_expr::count_var ||
@@ -814,19 +776,46 @@ void bind_udf (store::Item_t qname, function *f, int nargs, const QueryLoc& loc)
   // bind the udf also in the sctx that is used
   // for importing modules
   if (export_sctx != NULL) {
-    // set the static context in which the function is compiled
-    user_function* user_f = dynamic_cast<user_function*>(f);
-    assert(user_f);
-    user_f->set_context(sctx_p);
     bind_udf (qname, f, nargs, export_sctx, loc);
   }
 }
 
 
 fo_expr *create_seq (const QueryLoc& loc) {
-  return fo_expr::create_seq (loc);
+  return fo_expr::create_seq (cb->m_cur_sctx, loc);
 }
 
+
+/*******************************************************************************
+  Create new static context and make it the current one.
+********************************************************************************/
+void push_scope () {
+#ifdef ZORBA_DEBUGGER
+  theScopes.push_back( theScopedVariables.size() );
+#endif
+  
+  sctxstack.push(cb->m_cur_sctx);
+  sctx_p = sctx_p->create_child_context();
+  ++cb->m_cur_sctx;
+  cb->m_context_map[cb->m_cur_sctx] = sctx_p; 
+  ++scope_depth;
+}
+
+/*******************************************************************************
+********************************************************************************/
+void pop_scope (int n = 1)
+{
+#ifdef ZORBA_DEBUGGER
+  theScopedVariables.erase( theScopedVariables.begin()+theScopes.back(), theScopedVariables.end() );
+  theScopes.pop_back();
+#endif
+  while (n-- > 0) {
+    cb->m_cur_sctx = sctxstack.top();
+    sctx_p = cb->m_context_map[cb->m_cur_sctx];
+    sctxstack.pop();
+    --scope_depth;
+  }
+}
 
 /*******************************************************************************
   Lookup variable by qname (expanded or not). Search starts from the "current"
@@ -930,7 +919,7 @@ var_expr *lookup_var (store::Item_t varname)
   
 expr_t wrap_in_atomization (expr_t e) 
 {
-  return new fo_expr (e->get_loc (), CACHED (fn_data, LOOKUP_FN ("fn", "data", 1)), e);
+  return new fo_expr (cb->m_cur_sctx, e->get_loc (), CACHED (fn_data, LOOKUP_FN ("fn", "data", 1)), e);
 }
   
 
@@ -944,21 +933,21 @@ void declare_var (const global_binding &b, std::vector<expr_t> &stmts)
   expr_t expr = b.second;
   xqpStringStore dot (".");
   expr_t qname_expr =
-    new const_expr (var->get_loc(), var->get_varname ()->getStringValue ()->equals (&dot) ? "." : dynamic_context::var_key (&*var));
+    new const_expr (cb->m_cur_sctx, var->get_loc(), var->get_varname ()->getStringValue ()->equals (&dot) ? "." : dynamic_context::var_key (&*var));
 
-  expr_t decl_expr = new fo_expr (var->get_loc(), ctx_decl, qname_expr->clone ());
+  expr_t decl_expr = new fo_expr (cb->m_cur_sctx, var->get_loc(), ctx_decl, qname_expr->clone ());
   if (expr != NULL) {
     if (expr->is_updating())
       ZORBA_ERROR_LOC(XUST0001, expr->get_loc());
 
-    expr = new fo_expr (var->get_loc(),
+    expr = new fo_expr (cb->m_cur_sctx, var->get_loc(),
                         ctx_set, qname_expr->clone (), expr);
-    expr = new sequential_expr (var->get_loc (), decl_expr, expr);
+    expr = new sequential_expr (cb->m_cur_sctx, var->get_loc (), decl_expr, expr);
     if (b.is_extern ()) {
       CACHED (ctx_exists, LOOKUP_OP1 ("ctxvar-exists"));
       expr_t exists_expr =
-        expr_t (new fo_expr (var->get_loc (), ctx_exists, qname_expr->clone ()));
-      expr = new if_expr (var->get_loc (), exists_expr,
+        expr_t (new fo_expr (cb->m_cur_sctx, var->get_loc (), ctx_exists, qname_expr->clone ()));
+      expr = new if_expr (cb->m_cur_sctx, var->get_loc (), exists_expr,
                           expr_t (create_seq (var->get_loc ())), expr);
     }
     stmts.push_back (expr);
@@ -969,8 +958,8 @@ void declare_var (const global_binding &b, std::vector<expr_t> &stmts)
   if (var_type != NULL && (b.is_extern () || b.second != NULL)) {
     // check type for vars that are external or have an init expr
     CACHED (ctx_get, LOOKUP_OP1 ("ctxvariable"));
-    expr_t get = new fo_expr (var->get_loc (), ctx_get, qname_expr->clone ());
-    stmts.push_back (new treat_expr (var->get_loc (), get, var->get_type (), XPTY0004));
+    expr_t get = new fo_expr (cb->m_cur_sctx, var->get_loc (), ctx_get, qname_expr->clone ());
+    stmts.push_back (new treat_expr (cb->m_cur_sctx, var->get_loc (), get, var->get_type (), XPTY0004));
   }
 }
 
@@ -991,7 +980,7 @@ expr_t wrap_in_globalvar_assign(expr_t e)
   }
 
   if (! minfo->init_exprs.empty ()) {
-    e = new sequential_expr (e->get_loc(), minfo->init_exprs, e);
+    e = new sequential_expr (cb->m_cur_sctx, e->get_loc(), minfo->init_exprs, e);
   }
 
   return e;
@@ -1005,7 +994,7 @@ expr_t wrap_in_globalvar_assign(expr_t e)
 let_clause_t wrap_in_letclause(expr_t e, varref_t lv) 
 {
   assert (lv->get_kind () == var_expr::let_var);
-  return new let_clause(e->get_loc(), lv, e.getp());
+  return new let_clause(cb->m_cur_sctx, e->get_loc(), lv, e.getp());
 }
 
 
@@ -1031,7 +1020,7 @@ for_clause_t wrap_in_forclause(expr_t e, varref_t fv, varref_t pv)
   if (pv != NULL)
     assert (pv->get_kind() == var_expr::pos_var);
 
-  return new for_clause(e->get_loc(), fv, e, pv);
+  return new for_clause(cb->m_cur_sctx, e->get_loc(), fv, e, pv);
 }
 
 
@@ -1077,7 +1066,7 @@ rchandle<flwor_expr> wrap_expr_in_flwor(expr* inputExpr, bool withContextSize)
 
   push_scope();
 
-  rchandle<flwor_expr> flworExpr = new flwor_expr(loc, false);
+  rchandle<flwor_expr> flworExpr = new flwor_expr(cb->m_cur_sctx, loc, false);
 
   if (withContextSize) 
   {
@@ -1085,7 +1074,7 @@ rchandle<flwor_expr> wrap_expr_in_flwor(expr* inputExpr, bool withContextSize)
     let_clause_t lcInputSeq = wrap_in_letclause(inputExpr);
 
     // compute the size of the input seq
-    rchandle<fo_expr> countExpr = new fo_expr(loc, LOOKUP_FN("fn", "count", 1));
+    rchandle<fo_expr> countExpr = new fo_expr(cb->m_cur_sctx, loc, LOOKUP_FN("fn", "count", 1));
     countExpr->add(lcInputSeq->get_var());
 
     let_clause_t lcLast = wrap_in_letclause(countExpr.getp(),
@@ -1133,7 +1122,7 @@ expr_t wrap_in_dos_and_dupelim(expr_t expr, bool atomics, bool reverse = false)
     funcName << "-or-atomics";
 
   rchandle<fo_expr> dos;
-  dos = new fo_expr(expr->get_loc(), sctx_p->lookup_builtin_fn(funcName.str(), 1));
+  dos = new fo_expr(cb->m_cur_sctx, expr->get_loc(), sctx_p->lookup_builtin_fn(funcName.str(), 1));
   dos->add(expr);
   return &*dos;
 }
@@ -1419,7 +1408,7 @@ void end_visit (const EnclosedExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 
   expr_t lContent = pop_nodestack();
-  fo_expr *fo_h = new fo_expr(loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
+  fo_expr *fo_h = new fo_expr(cb->m_cur_sctx, loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
   fo_h->add(lContent);
   nodestack.push(fo_h);
 }
@@ -1449,7 +1438,7 @@ void end_visit (const BlockBody& v, void* /*visit_state*/) {
     }
   }
   reverse (stmts.begin (), stmts.end ());
-  nodestack.push (new sequential_expr (loc, stmts));
+  nodestack.push (new sequential_expr (cb->m_cur_sctx, loc, stmts));
   pop_scope ();
 }
 
@@ -1469,8 +1458,8 @@ void end_visit (const DirCommentConstructor& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 
   xqpString str = v.get_comment();
-  expr_t content = new const_expr (loc, str);
-  nodestack.push (new text_expr(loc,
+  expr_t content = new const_expr (cb->m_cur_sctx, loc, str);
+  nodestack.push (new text_expr(cb->m_cur_sctx, loc,
                                 text_expr::comment_constructor,
                                 content));
 }
@@ -1486,9 +1475,9 @@ void end_visit (const DirPIConstructor& v, void* /*visit_state*/) {
   if (target_str.uppercase () == "XML")
     ZORBA_ERROR_LOC ( XPST0003, loc);
   expr_t
-    target = new const_expr (loc, target_str),
-    content = new const_expr (loc, v.get_pi_content ());
-  nodestack.push (new pi_expr (loc, target,  content));
+    target = new const_expr (cb->m_cur_sctx, loc, target_str),
+    content = new const_expr (cb->m_cur_sctx, loc, v.get_pi_content ());
+  nodestack.push (new pi_expr (cb->m_cur_sctx, loc, target,  content));
 }
 
 
@@ -1516,10 +1505,10 @@ void end_visit (const DirElemConstructor& v, void* /*visit_state*/) {
   if (v.get_attr_list() != NULL)
     attrExpr = pop_nodestack();
 
-  nameExpr = new const_expr(loc,
+  nameExpr = new const_expr(cb->m_cur_sctx, loc,
                             sctx_p->lookup_elem_qname(v.get_elem_name()->get_qname(), loc));
 
-  nodestack.push(new elem_expr(loc,
+  nodestack.push(new elem_expr(cb->m_cur_sctx, loc,
                                nameExpr,
                                attrExpr,
                                contentExpr,
@@ -1634,8 +1623,8 @@ void end_visit (const DirElemContent& v, void* /*visit_state*/) {
   else if (v.get_common_content() != NULL) {
   } else {
     if (!v.isStripped()) {
-      expr_t content = new const_expr (loc, v.get_elem_content());
-      nodestack.push (new text_expr(loc,
+      expr_t content = new const_expr (cb->m_cur_sctx, loc, v.get_elem_content());
+      nodestack.push (new text_expr(cb->m_cur_sctx, loc,
                                     text_expr::text_constructor,
                                     content));
     }
@@ -1650,8 +1639,8 @@ void *begin_visit (const CDataSection& v) {
 
 void end_visit (const CDataSection& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  expr_t content = new const_expr (loc, v.get_cdata_content ());
-  nodestack.push (new text_expr (loc, text_expr::text_constructor, content));
+  expr_t content = new const_expr (cb->m_cur_sctx, loc, v.get_cdata_content ());
+  nodestack.push (new text_expr (cb->m_cur_sctx, loc, text_expr::text_constructor, content));
 }
 
 
@@ -1760,9 +1749,9 @@ void end_visit (const DirAttr& v, void* /*visit_state*/) {
     else
       ZORBA_ERROR_LOC( XQST0022, loc);
   } else {
-    expr_t nameExpr = new const_expr(loc,
+    expr_t nameExpr = new const_expr(cb->m_cur_sctx, loc,
                                      sctx_p->lookup_qname("", qname->get_qname(), qname->get_location()));
-    expr_t attrExpr = new attr_expr(loc, nameExpr, valueExpr);
+    expr_t attrExpr = new attr_expr(cb->m_cur_sctx, loc, nameExpr, valueExpr);
     nodestack.push(attrExpr);
   }
 }
@@ -1825,7 +1814,7 @@ void end_visit (const AposAttrContentList& v, void* visit_state) {
 void attr_val_content (const QueryLoc& loc, const CommonContent *cc, xqpString content)
 {
   if (cc == NULL) {
-    nodestack.push(new const_expr (loc, content));
+    nodestack.push(new const_expr (cb->m_cur_sctx, loc, content));
 
     //    nodestack.push(new text_expr(loc,
     //                            text_expr::text_constructor,
@@ -1898,7 +1887,7 @@ void end_visit (const CommonContent& v, void* /*visit_state*/) {
         curRef++;
     }
 
-    expr_t lConstExpr = new const_expr(loc, content);
+    expr_t lConstExpr = new const_expr(cb->m_cur_sctx, loc, content);
     nodestack.push(lConstExpr);
     break;
   }
@@ -1907,7 +1896,7 @@ void end_visit (const CommonContent& v, void* /*visit_state*/) {
     // we always create a text node here because if we are in an attribute, we atomice
     // the text node into its string value
     xqpString content("{");
-    expr_t lConstExpr = new const_expr(loc, content);
+    expr_t lConstExpr = new const_expr(cb->m_cur_sctx, loc, content);
     nodestack.push ( lConstExpr );
     break;
   }
@@ -1916,7 +1905,7 @@ void end_visit (const CommonContent& v, void* /*visit_state*/) {
     // we always create a text node here because if we are in an attribute, we atomice
     // the text node into its string value
     xqpString content("}");
-    expr_t lConstExpr = new const_expr(loc, content);
+    expr_t lConstExpr = new const_expr(cb->m_cur_sctx, loc, content);
     nodestack.push ( lConstExpr );
     break;
   }
@@ -1938,10 +1927,10 @@ void end_visit (const CompDocConstructor& v, void* /*visit_state*/) {
 
   expr_t lContent = pop_nodestack();
 
-  fo_expr *lEnclosed = new fo_expr(loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
+  fo_expr *lEnclosed = new fo_expr(cb->m_cur_sctx, loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
   lEnclosed->add(lContent);
 
-  nodestack.push (new doc_expr (loc, lEnclosed ));
+  nodestack.push (new doc_expr (cb->m_cur_sctx, loc, lEnclosed ));
 }
 
 
@@ -1958,7 +1947,7 @@ void end_visit (const CompElemConstructor& v, void* /*visit_state*/) {
   if (v.get_content_expr() != 0) {
     contentExpr = pop_nodestack();
 
-    fo_expr *lEnclosed = new fo_expr(loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
+    fo_expr *lEnclosed = new fo_expr(cb->m_cur_sctx, loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
     lEnclosed->add(contentExpr);
     contentExpr = lEnclosed;
   }
@@ -1966,16 +1955,16 @@ void end_visit (const CompElemConstructor& v, void* /*visit_state*/) {
   QName* constQName = v.get_qname_expr().dyn_cast<QName> ().getp();
 
   if (constQName != NULL) {
-    nameExpr = new const_expr(loc,
+    nameExpr = new const_expr(cb->m_cur_sctx, loc,
                               sctx_p->lookup_elem_qname(constQName->get_qname(), loc));
   } else {
     nameExpr = pop_nodestack();
 
     rchandle<fo_expr> atomExpr = (fo_expr*)wrap_in_atomization (nameExpr).getp();
-    nameExpr = new name_cast_expr(loc, atomExpr.getp(), ns_ctx);
+    nameExpr = new name_cast_expr(cb->m_cur_sctx, loc, atomExpr.getp(), ns_ctx);
   }
 
-  nodestack.push (new elem_expr(loc, nameExpr, contentExpr, ns_ctx));
+  nodestack.push (new elem_expr(cb->m_cur_sctx, loc, nameExpr, contentExpr, ns_ctx));
 }
 
 
@@ -1994,7 +1983,7 @@ void end_visit (const CompAttrConstructor& v, void* /*visit_state*/) {
   if (v.get_val_expr() != 0) {
     valueExpr = pop_nodestack();
 
-    fo_expr* enclosedExpr = new fo_expr(loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
+    fo_expr* enclosedExpr = new fo_expr(cb->m_cur_sctx, loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
     enclosedExpr->add(valueExpr);
 
     valueExpr = enclosedExpr;
@@ -2003,20 +1992,20 @@ void end_visit (const CompAttrConstructor& v, void* /*visit_state*/) {
   QName* constQName = v.get_qname_expr().dyn_cast<QName> ().getp();
 
   if (constQName != NULL) {
-    nameExpr = new const_expr(loc,
+    nameExpr = new const_expr(cb->m_cur_sctx, loc,
                               sctx_p->lookup_qname("", constQName->get_qname(), constQName->get_location()));
   } else {
     nameExpr = pop_nodestack();
 
     rchandle<fo_expr> atomExpr = (fo_expr*)wrap_in_atomization (nameExpr).getp();
 
-    expr_t castExpr = new name_cast_expr(loc,
+    expr_t castExpr = new name_cast_expr(cb->m_cur_sctx, loc,
                                          atomExpr.getp(),
                                          ns_ctx);
     nameExpr = castExpr;
   }
 
-  attrExpr = new attr_expr(loc, nameExpr, valueExpr);
+  attrExpr = new attr_expr(cb->m_cur_sctx, loc, nameExpr, valueExpr);
 
   nodestack.push(attrExpr);
 }
@@ -2032,11 +2021,11 @@ void end_visit (const CompCommentConstructor& v, void* /*visit_state*/) {
 
   expr_t inputExpr = pop_nodestack();
 
-  rchandle<fo_expr> enclosedExpr = new fo_expr(loc,
+  rchandle<fo_expr> enclosedExpr = new fo_expr(cb->m_cur_sctx, loc,
                                                CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
   enclosedExpr->add(inputExpr);
 
-  expr_t textExpr = new text_expr(loc,
+  expr_t textExpr = new text_expr(cb->m_cur_sctx, loc,
                                   text_expr::comment_constructor,
                                   enclosedExpr.getp());
 
@@ -2060,7 +2049,7 @@ void end_visit (const CompPIConstructor& v, void* /*visit_state*/) {
   } else {
     content = pop_nodestack();
 
-    rchandle<fo_expr> enclosedExpr = new fo_expr(loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
+    rchandle<fo_expr> enclosedExpr = new fo_expr(cb->m_cur_sctx, loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
     enclosedExpr->add(content);
 
     content = enclosedExpr;
@@ -2072,18 +2061,18 @@ void end_visit (const CompPIConstructor& v, void* /*visit_state*/) {
     rchandle<fo_expr> atomExpr = (fo_expr*)wrap_in_atomization (target).getp();
 
     rchandle<cast_expr> castExpr =
-      new cast_expr(loc, atomExpr.getp(),
+      new cast_expr(cb->m_cur_sctx, loc, atomExpr.getp(),
                     GENV_TYPESYSTEM.NCNAME_TYPE_ONE);
 
-    rchandle<fo_expr> enclosedExpr = new fo_expr(loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
+    rchandle<fo_expr> enclosedExpr = new fo_expr(cb->m_cur_sctx, loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
     enclosedExpr->add(castExpr.getp());
 
     target = enclosedExpr;
   }
 
   expr_t e = (v.get_target_expr () != NULL ?
-              new pi_expr (loc, target, content) :
-              new pi_expr (loc, new const_expr (loc, v.get_target()), content));
+              new pi_expr (cb->m_cur_sctx, loc, target, content) :
+              new pi_expr (cb->m_cur_sctx, loc, new const_expr (cb->m_cur_sctx, loc, v.get_target()), content));
 
   nodestack.push (e);
 }
@@ -2099,11 +2088,11 @@ void end_visit (const CompTextConstructor& v, void* /*visit_state*/) {
 
   expr_t inputExpr = pop_nodestack();
 
-  rchandle<fo_expr> enclosedExpr = new fo_expr(loc,
+  rchandle<fo_expr> enclosedExpr = new fo_expr(cb->m_cur_sctx, loc,
                                                CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
   enclosedExpr->add(inputExpr);
 
-  expr_t textExpr = new text_expr(loc,
+  expr_t textExpr = new text_expr(cb->m_cur_sctx, loc,
                                   text_expr::text_constructor,
                                   enclosedExpr.getp());
 
@@ -2143,7 +2132,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
 
   vector <rchandle<flwor_clause> > eclauses;
 
-  rchandle<flwor_expr> flwor = new flwor_expr(loc, v.is_general());
+  rchandle<flwor_expr> flwor = new flwor_expr(cb->m_cur_sctx, loc, v.is_general());
 
   //
   // Process return clause
@@ -2151,10 +2140,10 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
   expr_t retExpr = pop_nodestack();
   
 #ifdef ZORBA_DEBUGGER
-  if ( compilerCB->m_debugger != 0) 
+  if ( cb->m_debugger != 0) 
   {
     const QueryLoc& return_location = v.get_return_location(); 
-    rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(return_location,
+    rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(cb->m_cur_sctx, return_location,
                                                               retExpr,
                                                               theScopedVariables,
                                                               theGlobalVars);
@@ -2214,7 +2203,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
       {
         expr_t domainExpr = domainExprs[j];
 #ifdef ZORBA_DEBUGGER
-        if(compilerCB->m_debugger != 0)
+        if(cb->m_debugger != 0)
         {
           push_scope();
           for(int k = numVars; k > j; k--)
@@ -2222,7 +2211,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
             theScopedVariables.push_back(varExprs[k-1]);
           }
 
-          domainExpr = new debugger_expr(domainExprs[j]->get_loc(),
+          domainExpr = new debugger_expr(cb->m_cur_sctx, domainExprs[j]->get_loc(),
                                          domainExpr,
                                          theScopedVariables,
                                          theGlobalVars,
@@ -2230,7 +2219,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
           pop_scope();
         }
 #endif
-        for_clause* eflc = new for_clause(c.get_location(),
+        for_clause* eflc = new for_clause(cb->m_cur_sctx, c.get_location(),
                                           varExprs[j],
                                           domainExpr,
                                           posVarExprs[j]);
@@ -2239,7 +2228,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
         eclauses.push_back(eflc);
 
 #ifdef ZORBA_DEBUGGER
-        if(compilerCB->m_debugger != 0)
+        if(cb->m_debugger != 0)
         {
           theScopedVariables.push_back(varExprs[j]);
           if(posVarExprs[j] != 0)
@@ -2279,21 +2268,21 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
       {
         expr_t domainExpr = domainExprs[j];
 #ifdef ZORBA_DEBUGGER
-        if(compilerCB->m_debugger != 0)
+        if(cb->m_debugger != 0)
         {
           push_scope();
           for(int k = numVars; k-1 > j; k--)
           {
             theScopedVariables.push_back(varExprs[k-1]);
           }
-          domainExpr = new debugger_expr(domainExprs[j]->get_loc(),
+          domainExpr = new debugger_expr(cb->m_cur_sctx, domainExprs[j]->get_loc(),
                                          domainExpr,
                                          theScopedVariables,
                                          theGlobalVars);
           pop_scope();
         }
 #endif
-        let_clause* eflc = new let_clause(c.get_location(),
+        let_clause* eflc = new let_clause(cb->m_cur_sctx, c.get_location(),
                                           varExprs[j],
                                           domainExpr);
         eclauses.push_back(eflc);
@@ -2349,7 +2338,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
         }
       }
 
-      window_clause* flwc = new window_clause(c.get_location(),
+      window_clause* flwc = new window_clause(cb->m_cur_sctx, c.get_location(),
                                               winKind,
                                               windowVarExpr,
                                               windowDomainExpr,
@@ -2367,7 +2356,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
       if (whereExpr->is_updating())
         ZORBA_ERROR_LOC(XUST0001, loc);
 
-      eclauses.push_back(new where_clause(c.get_location(), whereExpr));
+      eclauses.push_back(new where_clause(cb->m_cur_sctx, c.get_location(), whereExpr));
     }
 
     //
@@ -2398,7 +2387,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
           collations.push_back ("");
 
         wrapper_expr_t input_wrapper;
-        input_wrapper = new wrapper_expr(c.get_location(),
+        input_wrapper = new wrapper_expr(cb->m_cur_sctx, c.get_location(),
                                          static_cast<expr*>(input_var.getp()));
 
         grouping_rebind.push_back(pair<wrapper_expr_t, varref_t>(input_wrapper,
@@ -2415,7 +2404,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
         input_var = pop_nodestack_var();
 
         wrapper_expr_t input_wrapper;
-        input_wrapper = new wrapper_expr(c.get_location(),
+        input_wrapper = new wrapper_expr(cb->m_cur_sctx, c.get_location(),
                                          static_cast<expr*>(input_var.getp()));
 
         nongrouping_rebind.push_back(pair<wrapper_expr_t, varref_t>(input_wrapper,
@@ -2424,7 +2413,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
         pop_scope();
       }
       
-      eclauses.push_back(new group_clause(c.get_location(),
+      eclauses.push_back(new group_clause(cb->m_cur_sctx, c.get_location(),
                                           grouping_rebind,
                                           nongrouping_rebind,
                                           collations));
@@ -2469,7 +2458,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
         orderExprs[i] = orderExpr;
       }
 
-      rchandle<orderby_clause> obgc = new orderby_clause(c.get_location(),
+      rchandle<orderby_clause> obgc = new orderby_clause(cb->m_cur_sctx, c.get_location(),
                                                          orderByClause.get_stable_bit(),
                                                          modifiers,
                                                          orderExprs);
@@ -2481,7 +2470,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
     //
     else if (typeid (c) == typeid (CountClause)) 
     {
-      eclauses.push_back(new count_clause(c.get_location(), pop_nodestack_var()));
+      eclauses.push_back(new count_clause(cb->m_cur_sctx, c.get_location(), pop_nodestack_var()));
     }
   }
 
@@ -3158,17 +3147,17 @@ void *begin_visit (const IndexFieldList& v) {
 
   expr_t dExpr = pop_nodestack();
   const std::string& uri = indexstack.top()->getIndexUri()->str();
-  if (compilerCB->m_config.translate_cb != NULL)
-    compilerCB->m_config.translate_cb (&*dExpr, uri);
+  if (cb->m_config.translate_cb != NULL)
+    cb->m_config.translate_cb (&*dExpr, uri);
 
-  normalize_expr_tree(uri.c_str(), compilerCB, dExpr, &*GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR);
+  normalize_expr_tree(uri.c_str(), cb, dExpr, &*GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR);
 
-  if (compilerCB->m_config.opt_level == CompilerCB::config_t::O1) {
-    RewriterContext rCtx(compilerCB, dExpr);
+  if (cb->m_config.opt_level == CompilerCB::config_t::O1) {
+    RewriterContext rCtx(cb, dExpr);
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
     dExpr = rCtx.getRoot();
-    if (compilerCB->m_config.optimize_cb != NULL)
-      compilerCB->m_config.optimize_cb (&*dExpr, uri.c_str());
+    if (cb->m_config.optimize_cb != NULL)
+      cb->m_config.optimize_cb (&*dExpr, uri.c_str());
   }
 
   indexstack.top()->setDomainExpression(dExpr);
@@ -3236,20 +3225,20 @@ void end_visit (const IndexStatement& v, void* /*visit_state*/) {
   rchandle<fo_expr> fo;
   switch(v.type) {
     case IndexStatement::build_stmt:
-      fo = new fo_expr(v.get_location(), LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "build-index", 1));
+      fo = new fo_expr(cb->m_cur_sctx, v.get_location(), LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "build-index", 1));
       break;
 
     case IndexStatement::create_stmt:
-      fo = new fo_expr(v.get_location(), LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "create-index", 1));
+      fo = new fo_expr(cb->m_cur_sctx, v.get_location(), LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "create-index", 1));
       break;
 
     case IndexStatement::drop_stmt:
-      fo = new fo_expr(v.get_location(), LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "drop-index", 1));
+      fo = new fo_expr(cb->m_cur_sctx, v.get_location(), LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "drop-index", 1));
       break;
   }
   store::Item_t uri_item;
   GENV_ITEMFACTORY->createAnyURI(uri_item, v.get_uri().c_str());
-  expr_t uri(new const_expr(v.get_location(), uri_item));
+  expr_t uri(new const_expr(cb->m_cur_sctx, v.get_location(), uri_item));
   fo->add(uri);
   nodestack.push((const rchandle<fo_expr>&)fo);
 
@@ -3630,23 +3619,23 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
                                    nargs));
     ZORBA_ASSERT (udf != NULL);
     
-    if (compilerCB->m_config.translate_cb != NULL)
-      compilerCB->m_config.translate_cb (&*body, v.get_name ()->get_qname ());
+    if (cb->m_config.translate_cb != NULL)
+      cb->m_config.translate_cb (&*body, v.get_name ()->get_qname ());
 
-    normalize_expr_tree(v.get_name ()->get_qname().c_str(), compilerCB, body, *&(udf->get_signature().return_type()));
+    normalize_expr_tree(v.get_name ()->get_qname().c_str(), cb, body, *&(udf->get_signature().return_type()));
 
-    if (compilerCB->m_config.opt_level == CompilerCB::config_t::O1) 
+    if (cb->m_config.opt_level == CompilerCB::config_t::O1) 
     {
-      RewriterContext rCtx(compilerCB, body);
+      RewriterContext rCtx(cb, body);
       GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
       body = rCtx.getRoot();
 
-      RewriterContext rCtx1(compilerCB, body);
+      RewriterContext rCtx1(cb, body);
       GENV_COMPILERSUBSYS.getPhase1Rewriter()->rewrite(rCtx1);
       body = rCtx1.getRoot();
 
-      if (compilerCB->m_config.optimize_cb != NULL)
-        compilerCB->m_config.optimize_cb (&*body, v.get_name ()->get_qname ());
+      if (cb->m_config.optimize_cb != NULL)
+        cb->m_config.optimize_cb (&*body, v.get_name ()->get_qname ());
     }
 
     udf->set_body(body);
@@ -3668,7 +3657,7 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
 void *begin_visit (const ParamList& v) {
   TRACE_VISIT ();
   if (v.size() > 0) {
-    nodestack.push(new flwor_expr(loc, false));
+    nodestack.push(new flwor_expr(cb->m_cur_sctx, loc, false));
   }
   return no_state;
 }
@@ -3697,7 +3686,7 @@ void end_visit (const Param& v, void* /*visit_state*/) {
   varref_t subst_var = bind_var (loc, qname, var_expr::let_var);
 
 #ifdef ZORBA_DEBUGGER
-  if(compilerCB->m_debugger != 0)
+  if(cb->m_debugger != 0)
   {
     theScopedVariables.push_back(subst_var);
   }
@@ -3765,20 +3754,20 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
 
       varref_t tv = tempvar (loc, var_expr::let_var);
 
-      expr_t nan_expr = new const_expr (loc, xqp_double::nan ());
+      expr_t nan_expr = new const_expr (cb->m_cur_sctx, loc, xqp_double::nan ());
 
-      expr_t ret = new if_expr (loc,
-                                new castable_expr (loc,
+      expr_t ret = new if_expr (cb->m_cur_sctx, loc,
+                                new castable_expr (cb->m_cur_sctx, loc,
                                                    &*tv,
                                                    GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
-                                new cast_expr (loc,
+                                new cast_expr (cb->m_cur_sctx, loc,
                                                &*tv,
                                                GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
                                 nan_expr);
 
       expr_t data_expr = wrap_in_atomization (arguments [0]);
 
-      nodestack.push(&*wrap_in_let_flwor(new treat_expr(loc,
+      nodestack.push(&*wrap_in_let_flwor(new treat_expr(cb->m_cur_sctx, loc,
                                                         data_expr,
                                                         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
                                                         XPTY0004),
@@ -3796,8 +3785,8 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
       if (baseuri.empty ())
         nodestack.push (create_seq (loc));
       else
-        nodestack.push (new cast_expr (loc,
-                                       new const_expr (loc, baseuri),
+        nodestack.push (new cast_expr (cb->m_cur_sctx, loc,
+                                       new const_expr (cb->m_cur_sctx, loc, baseuri),
                                        GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
       return;
     }
@@ -3815,11 +3804,11 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
 
       rchandle<fo_expr> normExpr;
       rchandle<fo_expr> tokenExpr;
-      rchandle<const_expr> constExpr = new const_expr(loc, xqpString(" " ));
+      rchandle<const_expr> constExpr = new const_expr(cb->m_cur_sctx, loc, xqpString(" " ));
 
-      normExpr = new fo_expr(loc, LOOKUP_FN("fn", "normalize-space", 1));
+      normExpr = new fo_expr(cb->m_cur_sctx, loc, LOOKUP_FN("fn", "normalize-space", 1));
       normExpr->add(flworVarExpr);
-      tokenExpr = new fo_expr(loc, LOOKUP_FN("fn", "tokenize", 2));
+      tokenExpr = new fo_expr(cb->m_cur_sctx, loc, LOOKUP_FN("fn", "tokenize", 2));
       tokenExpr->add(normExpr.getp());
       tokenExpr->add(constExpr.getp());
 
@@ -3839,9 +3828,9 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
         ZORBA_ERROR (FONS0005);
       else
 #endif
-        arguments.insert (arguments.begin (), new const_expr (loc, sctx_p->final_baseuri()));
+        arguments.insert (arguments.begin (), new const_expr (cb->m_cur_sctx, loc, sctx_p->final_baseuri()));
     } else if (sz == 1 && fname == "parse") {
-      arguments.insert (arguments.begin (), new const_expr (loc, sctx_p->final_baseuri()));
+      arguments.insert (arguments.begin (), new const_expr (cb->m_cur_sctx, loc, sctx_p->final_baseuri()));
     } else if (fname == "concat") {
       if (sz < 2)
         ZORBA_ERROR_LOC_PARAM (XPST0017, loc, "concat", to_string (sz));
@@ -3872,7 +3861,7 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
     }
   } else if (fn_ns->byteEqual(ZORBA_FN_NS)) {
     if (fname == "inline-xml" && sz == 1) {
-      nodestack.push (new eval_expr(loc, create_cast_expr (loc, arguments [0], GENV_TYPESYSTEM.STRING_TYPE_ONE, true)));
+      nodestack.push (new eval_expr(cb->m_cur_sctx, loc, create_cast_expr (loc, arguments [0], GENV_TYPESYSTEM.STRING_TYPE_ONE, true)));
       return;
     }
   }
@@ -3907,15 +3896,15 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
         }
       }
 
-      rchandle<fo_expr> fo_h = new fo_expr (loc, f);
+      rchandle<fo_expr> fo_h = new fo_expr (cb->m_cur_sctx, loc, f);
 
       // TODO this should be a const iterator
       vector<expr_t>::reverse_iterator iter = arguments.rbegin();
       for(; iter != arguments.rend(); ++iter)
         fo_h->add(*iter);
 #ifdef ZORBA_DEBUGGER
-      if ( compilerCB->m_debugger != 0 ) {
-        rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(loc, &*fo_h, theScopedVariables, theGlobalVars);
+      if ( cb->m_debugger != 0 ) {
+        rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(cb->m_cur_sctx, loc, &*fo_h, theScopedVariables, theGlobalVars);
         nodestack.push(&*lDebuggerExpr);
       } else {
         nodestack.push(&*fo_h);
@@ -3995,8 +3984,10 @@ void end_visit (const ModuleDecl& v, void* /*visit_state*/) {
 
   sctx_p->bind_ns (mod_pfx, mod_ns);
 
-  bool found = minfo->mod_sctx_map.get (sctx_p->entity_retrieval_url (), export_sctx);
+  static_context_t lTmpCtx;
+  bool found = minfo->mod_sctx_map.get (sctx_p->entity_retrieval_url (), lTmpCtx);
   ZORBA_ASSERT (found);
+  export_sctx = lTmpCtx.getp();
 }
 
 
@@ -4012,9 +4003,9 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
   string pfx = v.get_prefix (), target_ns = v.get_uri ();
 
 #ifdef ZORBA_DEBUGGER
-  if(compilerCB->m_debugger != 0)
+  if(cb->m_debugger != 0)
   {
-    compilerCB->m_debugger->theImports.insert(make_pair<string, string>(target_ns, pfx)); 
+    cb->m_debugger->theImports.insert(make_pair<string, string>(target_ns, pfx)); 
   }
 #endif
 
@@ -4082,7 +4073,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       ZORBA_ERROR_LOC (XQST0073, loc);
     
     string imported_ns; // the target namespace of the imported module
-    static_context *imported_sctx = NULL;
+    static_context_t imported_sctx = NULL;
 
     // use the cache
     if (minfo->mod_ns_map.get (xqpString(resolveduri.getp()), imported_ns)) {
@@ -4095,8 +4086,8 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       xqpStringStore lFileUri;
       auto_ptr<istream> modfile (lModuleResolver->resolve(aturiitem, sctx_p, &lFileUri));
 #ifdef ZORBA_DEBUGGER
-      if(compilerCB->m_debugger != 0) {
-        compilerCB->m_debugger->theModuleFileMappings.insert(std::pair<std::string, std::string>(aturiitem->getStringValue()->c_str(), lFileUri.c_str()));
+      if(cb->m_debugger != 0) {
+        cb->m_debugger->theModuleFileMappings.insert(std::pair<std::string, std::string>(aturiitem->getStringValue()->c_str(), lFileUri.c_str()));
       }
 #endif
 
@@ -4107,7 +4098,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       // Create a CompilerCB for the imported module as a copy of the importing
       // module's CompilerCB. Copying is needed for configuration settings,
       // error manager, and debugger
-      CompilerCB mod_ccb (*compilerCB);
+      CompilerCB mod_ccb (*cb);
 
       static_context_t independent_sctx = static_cast<static_context *> (minfo->topCompilerCB->m_sctx->get_parent ());
 
@@ -4115,7 +4106,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       // user-specified sctx (if any) or the zorba default (root) sctx (if no
       // user-specified sctx).
       mod_ccb.m_sctx = independent_sctx->create_child_context ();
-      minfo->topCompilerCB->m_sctx_list.push_back (mod_ccb.m_sctx); // make sure it's not deleted
+      minfo->topCompilerCB->m_context_map[mod_ccb.m_cur_sctx] = mod_ccb.m_sctx;
       mod_ccb.m_sctx->set_entity_retrieval_url (xqpString(resolveduri.getp()));
 
       // Create an sctx where the imported module is going to register all the
@@ -4123,7 +4114,6 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       // translation of the imported module is done, this sctx will be merged
       // with the sctx of the importing module.
       imported_sctx = independent_sctx->create_child_context();
-      minfo->topCompilerCB->m_sctx_list.push_back (imported_sctx);
       // remeber the context; will be used in the translation process 
       // of the module as export_sctx
       minfo->mod_sctx_map.put (xqpString(resolveduri.getp()), imported_sctx);
@@ -4133,9 +4123,9 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       xqpString lFileName(aturiitem->getStringValue());
       rchandle<parsenode> ast = xqc.parse (*modfile, lFileName);
 #ifdef ZORBA_DEBUGGER
-      if(compilerCB->m_debugger != 0)
+      if(cb->m_debugger != 0)
       {
-        compilerCB->m_debugger->addModule(ast);
+        cb->m_debugger->addModule(ast);
       }
 #endif
       // Get the target namespace that appears in the module declaration
@@ -4162,7 +4152,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
     // We catch duplicate functions / vars in minfo->globals.
     // We can safely ignore the return value. We might even be able
     // to assert() here (not sure though).
-    sctx_p->import_module (imported_sctx);
+    sctx_p->import_module (imported_sctx.getp());
   } // for (vector<xqpStringStore_t>::iterator lIter = lURIs.begin();
 }
 
@@ -4500,7 +4490,7 @@ void end_visit (const AdditiveExpr& v, void* /*visit_state*/) {
     func = LOOKUP_OP2 ("subtract");
     break;
   }
-  fo_expr *fo_h = new fo_expr(loc, func);
+  fo_expr *fo_h = new fo_expr(cb->m_cur_sctx, loc, func);
   fo_h->add(e2_h);
   fo_h->add(e1_h);
   nodestack.push (fo_h);
@@ -4516,7 +4506,7 @@ void end_visit (const AndExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   rchandle<expr> e1_h = pop_nodestack();
   rchandle<expr> e2_h = pop_nodestack();
-  fo_expr *fo_h = new fo_expr(loc, LOOKUP_OPN ("and"));
+  fo_expr *fo_h = new fo_expr(cb->m_cur_sctx, loc, LOOKUP_OPN ("and"));
   fo_h->add(e2_h);
   fo_h->add(e1_h);
   nodestack.push (fo_h);
@@ -4535,9 +4525,9 @@ expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool i
       && ! TypeOps::is_equal (*type, *GENV_TYPESYSTEM.QNAME_TYPE_QUESTION)) 
   {
     if (isCast)
-      return new cast_expr (loc, node, type);
+      return new cast_expr (cb->m_cur_sctx, loc, node, type);
     else
-      return new castable_expr (loc, node, type);
+      return new castable_expr (cb->m_cur_sctx, loc, node, type);
   }
   else 
   {  // a QName cast
@@ -4565,14 +4555,14 @@ expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool i
       }
       assert (castLiteral != NULL || ! isCast);
       if (isCast)
-        return new const_expr (loc, castLiteral);
+        return new const_expr (cb->m_cur_sctx, loc, castLiteral);
       else
-        return new const_expr (loc, castLiteral != NULL);
+        return new const_expr (cb->m_cur_sctx, loc, castLiteral != NULL);
     } else {
       if (isCast)
-        return new treat_expr (loc, node, type, XPTY0004);
+        return new treat_expr (cb->m_cur_sctx, loc, node, type, XPTY0004);
       else
-        return new instanceof_expr (loc, node, type);
+        return new instanceof_expr (cb->m_cur_sctx, loc, node, type);
     }
   }
 }
@@ -4636,7 +4626,7 @@ void end_visit (const ComparisonExpr& v, void* /*visit_state*/) {
     }
   }
 
-  fo_expr *fo_p = new fo_expr(loc, f);
+  fo_expr *fo_p = new fo_expr(cb->m_cur_sctx, loc, f);
 
   rchandle<expr> e1_h = pop_nodestack();
   rchandle<expr> e2_h = pop_nodestack();;
@@ -4717,13 +4707,13 @@ void end_visit (const IfExpr& v, void* /*visit_state*/) {
                            loc);
 
 #ifdef ZORBA_DEBUGGER
-  if (compilerCB->m_debugger != 0) {
-    c_h = new debugger_expr(c_h->get_loc(), c_h, theScopedVariables, theGlobalVars);
-    t_h = new debugger_expr(t_h->get_loc(), t_h, theScopedVariables, theGlobalVars);
-    e_h = new debugger_expr(e_h->get_loc(), e_h, theScopedVariables, theGlobalVars);
+  if (cb->m_debugger != 0) {
+    c_h = new debugger_expr(cb->m_cur_sctx, c_h->get_loc(), c_h, theScopedVariables, theGlobalVars);
+    t_h = new debugger_expr(cb->m_cur_sctx, t_h->get_loc(), t_h, theScopedVariables, theGlobalVars);
+    e_h = new debugger_expr(cb->m_cur_sctx, e_h->get_loc(), e_h, theScopedVariables, theGlobalVars);
   }
 #endif
-  if_expr *lIfExpr = new if_expr(loc,c_h,t_h,e_h);
+  if_expr *lIfExpr = new if_expr(cb->m_cur_sctx, loc,c_h,t_h,e_h);
   nodestack.push(lIfExpr);
 }
 
@@ -4735,7 +4725,7 @@ void *begin_visit (const InstanceofExpr& v) {
 
 void end_visit (const InstanceofExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  nodestack.push(new instanceof_expr(loc, pop_nodestack(), pop_tstack()));
+  nodestack.push(new instanceof_expr(cb->m_cur_sctx, loc, pop_nodestack(), pop_tstack()));
 }
 
 
@@ -4759,11 +4749,11 @@ void end_visit (const IntersectExceptExpr& v, void* /*visit_state*/) {
     break;
   }
 
-  fo_expr *fo_h = new fo_expr(loc, f);
+  fo_expr *fo_h = new fo_expr(cb->m_cur_sctx, loc, f);
 
   fo_h->add(e2_h);
   fo_h->add(e1_h);
-  nodestack.push(new fo_expr (loc, LOOKUP_OP1 ("sort-distinct-nodes-asc"), fo_h));
+  nodestack.push(new fo_expr (cb->m_cur_sctx, loc, LOOKUP_OP1 ("sort-distinct-nodes-asc"), fo_h));
 }
 
 void *begin_visit (const MultiplicativeExpr& v) {
@@ -4790,7 +4780,7 @@ void end_visit (const MultiplicativeExpr& v, void* /*visit_state*/) {
     f = LOOKUP_OP2 ("mod");
     break;
   }
-  fo_expr *fo_h = new fo_expr(loc, f);
+  fo_expr *fo_h = new fo_expr(cb->m_cur_sctx, loc, f);
   fo_h->add(e2_h);
   fo_h->add(e1_h);
   nodestack.push (fo_h);
@@ -4805,15 +4795,15 @@ void end_visit (const NumericLiteral& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   switch (v.get_type()) {
   case ParseConstants::num_integer: {
-    nodestack.push(new const_expr(loc, v.get<xqp_integer>()));
+    nodestack.push(new const_expr(cb->m_cur_sctx, loc, v.get<xqp_integer>()));
     break;
   }
   case ParseConstants::num_decimal: {
-    nodestack.push(new const_expr(loc, v.get<xqp_decimal>()));
+    nodestack.push(new const_expr(cb->m_cur_sctx, loc, v.get<xqp_decimal>()));
     break;
   }
   case ParseConstants::num_double: {
-    nodestack.push(new const_expr(loc, v.get<xqp_double>()));
+    nodestack.push(new const_expr(cb->m_cur_sctx, loc, v.get<xqp_double>()));
     break;
   }
   }
@@ -4828,7 +4818,7 @@ void end_visit (const OrExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   rchandle<expr> e1_h = pop_nodestack();
   rchandle<expr> e2_h = pop_nodestack();
-  fo_expr *fo_p = new fo_expr(loc, CACHED (op_or, LOOKUP_OPN ("or")));
+  fo_expr *fo_p = new fo_expr(cb->m_cur_sctx, loc, CACHED (op_or, LOOKUP_OPN ("or")));
   fo_p->add(e2_h);
   fo_p->add(e1_h);
   nodestack.push (fo_p);
@@ -4841,7 +4831,7 @@ void *begin_visit (const OrderedExpr& v) {
 
 void end_visit (const OrderedExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  nodestack.push (new order_expr (loc, order_expr::ordered,
+  nodestack.push (new order_expr (cb->m_cur_sctx, loc, order_expr::ordered,
                                   pop_nodestack ()));
 }
 
@@ -4972,7 +4962,7 @@ void end_visit (const NameTest& v, void* /*visit_state*/) {
 
   if ((axisExpr = dynamic_cast<axis_step_expr *>(top)) != NULL) {
     // Construct name-test match expr
-    rchandle<match_expr> matchExpr = new match_expr(loc);;
+    rchandle<match_expr> matchExpr = new match_expr(cb->m_cur_sctx, loc);;
     matchExpr->setTestKind(match_name_test);
 
     if (v.getQName() != NULL) {
@@ -5082,7 +5072,7 @@ void end_visit (const AnyKindTest& v, void* /*visit_state*/) {
   // if the top of the stack is an axis step expr, add a node test expr to it.
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
   if (axisExpr != NULL) {
-    rchandle<match_expr> me = new match_expr(loc);
+    rchandle<match_expr> me = new match_expr(cb->m_cur_sctx, loc);
     me->setTestKind(match_anykind_test);
     axisExpr->setTest(me);
   } else {
@@ -5116,7 +5106,7 @@ void end_visit (const DocumentTest& v, void* /*visit_state*/)
   {
     if (axisExpr != NULL) 
     {
-      match = new match_expr(loc);
+      match = new match_expr(cb->m_cur_sctx, loc);
       match->setTestKind(match_doc_test);
 
       axisExpr->setTest(match);
@@ -5183,7 +5173,7 @@ void end_visit (const ElementTest& v, void* /*visit_state*/)
 
   if (axisExpr != NULL) 
   {
-    rchandle<match_expr> me = new match_expr(loc);
+    rchandle<match_expr> me = new match_expr(cb->m_cur_sctx, loc);
     me->setTestKind(match_elem_test);
     me->setQName(elemNameItem);
     me->setTypeName(typeNameItem);
@@ -5235,7 +5225,7 @@ void *begin_visit (const SchemaElementTest& v)
     store::Item_t typeQNameItem;
     CTXTS->get_schema_element_typename(elemQNameItem, typeQNameItem);
 
-    rchandle<match_expr> match = new match_expr(loc);
+    rchandle<match_expr> match = new match_expr(cb->m_cur_sctx, loc);
     match->setTestKind(match_xs_elem_test);
     match->setQName(elemQNameItem);
     match->setTypeName(typeQNameItem);
@@ -5279,7 +5269,7 @@ void end_visit (const AttributeTest& v, void* /*visit_state*/)
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
   if (axisExpr != NULL) 
   {
-    rchandle<match_expr> match = new match_expr(loc);
+    rchandle<match_expr> match = new match_expr(cb->m_cur_sctx, loc);
     match->setTestKind(match_attr_test);
 
     if (attrName != NULL)
@@ -5334,7 +5324,7 @@ void *begin_visit (const SchemaAttributeTest& v)
     store::Item_t typeQNameItem;
     CTXTS->get_schema_attribute_typename(attrQNameItem, typeQNameItem);
 
-    rchandle<match_expr> match = new match_expr(loc);
+    rchandle<match_expr> match = new match_expr(cb->m_cur_sctx, loc);
     match->setTestKind(match_xs_attr_test);
     match->setQName(attrQNameItem);
     match->setTypeName(typeQNameItem);
@@ -5377,7 +5367,7 @@ void end_visit (const TextTest& v, void* /*visit_state*/)
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
   if (axisExpr != NULL) 
   {
-    rchandle<match_expr> match = new match_expr(loc);
+    rchandle<match_expr> match = new match_expr(cb->m_cur_sctx, loc);
     match->setTestKind(match_text_test);
     axisExpr->setTest(match);
   }
@@ -5403,7 +5393,7 @@ void end_visit (const CommentTest& v, void* /*visit_state*/)
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
   if (axisExpr != NULL) 
   {
-    rchandle<match_expr> match = new match_expr(loc);
+    rchandle<match_expr> match = new match_expr(cb->m_cur_sctx, loc);
     match->setTestKind(match_comment_test);
     axisExpr->setTest(match);
   }
@@ -5434,7 +5424,7 @@ void end_visit (const PITest& v, void* /*visit_state*/)
 
   if (axisExpr != NULL) 
   {
-    rchandle<match_expr> match = new match_expr(loc);
+    rchandle<match_expr> match = new match_expr(cb->m_cur_sctx, loc);
     match->setTestKind(match_pi_test);
     if (target != "")
       match->setQName(qname);
@@ -5472,7 +5462,7 @@ varref_t tempvar(const QueryLoc& loc, var_expr::var_kind kind)
 
 rchandle<flwor_expr> wrap_in_let_flwor (expr_t expr, varref_t lv, expr_t ret) 
 {
-  rchandle<flwor_expr> fe = new flwor_expr(lv->get_loc(), false);
+  rchandle<flwor_expr> fe = new flwor_expr(cb->m_cur_sctx, lv->get_loc(), false);
   fe->add_clause(wrap_in_letclause (expr, lv));
   fe->set_return_expr(ret);
   return fe;
@@ -5544,7 +5534,7 @@ void *begin_visit (const PathExpr& v)
   // In cases 2, 3, and 4 create a new relpath_expr, which will be put to the nodestack.
   if (pe_type != ParseConstants::path_leading_lone_slash) 
   {
-    path_expr = new relpath_expr(loc);
+    path_expr = new relpath_expr(cb->m_cur_sctx, loc);
 
     result = path_expr.getp();
   }
@@ -5562,18 +5552,18 @@ void *begin_visit (const PathExpr& v)
 
   if (pe_type != ParseConstants::path_relative)  
   {
-    rchandle<relpath_expr> ctx_path_expr = new relpath_expr(loc);
+    rchandle<relpath_expr> ctx_path_expr = new relpath_expr(cb->m_cur_sctx, loc);
     ctx_path_expr->add_back(DOT_VAR);
 
-    rchandle<match_expr> me = new match_expr(loc);
+    rchandle<match_expr> me = new match_expr(cb->m_cur_sctx, loc);
     me->setTestKind(match_anykind_test);
-    rchandle<axis_step_expr> ase = new axis_step_expr(loc);
+    rchandle<axis_step_expr> ase = new axis_step_expr(cb->m_cur_sctx, loc);
     ase->setAxis(axis_kind_self);
     ase->setTest(me);
 
     ctx_path_expr->add_back(&*ase);
 
-    rchandle<fo_expr> fo = new fo_expr(loc, LOOKUP_FN("fn", "root", 1));
+    rchandle<fo_expr> fo = new fo_expr(cb->m_cur_sctx, loc, LOOKUP_FN("fn", "root", 1));
     fo->add(&*ctx_path_expr);
 
     result = fo.getp();
@@ -5586,8 +5576,8 @@ void *begin_visit (const PathExpr& v)
 
     if (pe_type == ParseConstants::path_leading_slashslash) 
     {
-      rchandle<axis_step_expr> ase = new axis_step_expr(loc);
-      rchandle<match_expr> me = new match_expr(loc);
+      rchandle<axis_step_expr> ase = new axis_step_expr(cb->m_cur_sctx, loc);
+      rchandle<match_expr> me = new match_expr(cb->m_cur_sctx, loc);
       me->setTestKind(match_anykind_test);
       ase->setAxis(axis_kind_descendant_or_self);
       ase->setTest(me);
@@ -5719,15 +5709,15 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
     flworExpr->set_return_expr(stepExpr);
     pop_scope();
 
-    pathExpr = new relpath_expr(loc);
+    pathExpr = new relpath_expr(cb->m_cur_sctx, loc);
     pathExpr->add_back(flworExpr);
   }
 
   // Convert // to /descendant-or-self::node()/
   if (rpe.get_step_type() == ParseConstants::st_slashslash)
   {
-    rchandle<axis_step_expr> ase = new axis_step_expr(loc);
-    rchandle<match_expr> me = new match_expr(loc);
+    rchandle<axis_step_expr> ase = new axis_step_expr(cb->m_cur_sctx, loc);
+    rchandle<match_expr> me = new match_expr(cb->m_cur_sctx, loc);
     me->setTestKind(match_anykind_test);
     ase->setAxis(axis_kind_descendant_or_self);
     ase->setTest(me);
@@ -5882,7 +5872,7 @@ void* begin_visit(const AxisStep& v)
 {
   TRACE_VISIT ();
 
-  rchandle<axis_step_expr> ase = new axis_step_expr(loc);
+  rchandle<axis_step_expr> ase = new axis_step_expr(cb->m_cur_sctx, loc);
   nodestack.push(ase.getp());
   return no_state;
 }
@@ -5920,7 +5910,7 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
   //
   // [ $$predInput ]
   const for_clause* fcOuterDot = reinterpret_cast<const for_clause*>((*flworExpr)[0]);
-  rchandle<relpath_expr> predPathExpr = new relpath_expr(loc);
+  rchandle<relpath_expr> predPathExpr = new relpath_expr(cb->m_cur_sctx, loc);
   predPathExpr->add_back(fcOuterDot->get_var());
   predPathExpr->add_back(axisExpr.getp());
     
@@ -5997,25 +5987,25 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   expr_t dotvar = DOT_VAR;
 
   // Check if the pred expr returns a numeric result
-  rchandle<fo_expr> cond = new fo_expr(loc, CACHED (op_or, LOOKUP_OPN ("or")));
-  cond->add(new instanceof_expr(loc, predvar, GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
-  cond->add(new instanceof_expr(loc, predvar, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
-  cond = new fo_expr(loc, CACHED (op_or, LOOKUP_OPN ("or")), &*cond);
-  cond->add(new instanceof_expr(loc, predvar, GENV_TYPESYSTEM.FLOAT_TYPE_ONE));
+  rchandle<fo_expr> cond = new fo_expr(cb->m_cur_sctx, loc, CACHED (op_or, LOOKUP_OPN ("or")));
+  cond->add(new instanceof_expr(cb->m_cur_sctx, loc, predvar, GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
+  cond->add(new instanceof_expr(cb->m_cur_sctx, loc, predvar, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+  cond = new fo_expr(cb->m_cur_sctx, loc, CACHED (op_or, LOOKUP_OPN ("or")), &*cond);
+  cond->add(new instanceof_expr(cb->m_cur_sctx, loc, predvar, GENV_TYPESYSTEM.FLOAT_TYPE_ONE));
 
   // If so: return $dot if the value of the pred expr is equal to the value
   // of $dot_pos var, otherwise return the empty seq.
-  rchandle<fo_expr> eq = new fo_expr(loc, LOOKUP_OP2("value-equal"));
+  rchandle<fo_expr> eq = new fo_expr(cb->m_cur_sctx, loc, LOOKUP_OP2("value-equal"));
   eq->add(lookup_ctx_var(DOT_POS_VARNAME, loc).getp ());
   eq->add(predvar);
 
-  expr_t thenExpr = new if_expr(loc, eq.getp(), dotvar, create_seq(loc));
+  expr_t thenExpr = new if_expr(cb->m_cur_sctx, loc, eq.getp(), dotvar, create_seq(loc));
 
   // Else, return $dot if the the value of the pred expr is true, otherwise
   // return the empty seq.
-  expr_t elseExpr = new if_expr(loc, predvar, dotvar, create_seq(loc));
+  expr_t elseExpr = new if_expr(cb->m_cur_sctx, loc, predvar, dotvar, create_seq(loc));
 
-  expr_t ifExpr = new if_expr(loc, cond.getp(), thenExpr, elseExpr);
+  expr_t ifExpr = new if_expr(cb->m_cur_sctx, loc, cond.getp(), thenExpr, elseExpr);
 
   flworExpr->set_return_expr(ifExpr);
 
@@ -6184,14 +6174,14 @@ void end_visit (const QuantifiedExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  rchandle<flwor_expr> flwor(new flwor_expr(loc, false));
+  rchandle<flwor_expr> flwor(new flwor_expr(cb->m_cur_sctx, loc, false));
 
-  flwor->set_return_expr(new const_expr(loc, true));
+  flwor->set_return_expr(new const_expr(cb->m_cur_sctx, loc, true));
 
   rchandle<expr> sat = pop_nodestack();
   if (v.get_qmode() == ParseConstants::quant_every) 
   {
-    rchandle<fo_expr> uw = new fo_expr(v.get_expr()->get_location(),
+    rchandle<fo_expr> uw = new fo_expr(cb->m_cur_sctx, v.get_expr()->get_location(),
                                        LOOKUP_FN("fn", "not", 1));
     uw->add(sat);
     sat = uw.getp();
@@ -6209,7 +6199,7 @@ void end_visit (const QuantifiedExpr& v, void* /*visit_state*/)
 
   flwor->add_where(sat);
 
-  rchandle<fo_expr> quant = new fo_expr(loc,
+  rchandle<fo_expr> quant = new fo_expr(cb->m_cur_sctx, loc,
                                         v.get_qmode() == ParseConstants::quant_every ?
                                         LOOKUP_FN("fn", "empty", 1) :
                                         LOOKUP_FN("fn", "exists", 1));
@@ -6228,7 +6218,7 @@ void *begin_visit (const RangeExpr& v) {
 
 void end_visit (const RangeExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  fo_expr *e = new fo_expr (loc, LOOKUP_OP2 ("to"));
+  fo_expr *e = new fo_expr (cb->m_cur_sctx, loc, LOOKUP_OP2 ("to"));
 
   rchandle<expr> e1_h = pop_nodestack ();
   rchandle<expr> e2_h = pop_nodestack ();
@@ -6247,7 +6237,7 @@ void *begin_visit (const StringLiteral& v) {
 
 void end_visit (const StringLiteral& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  nodestack.push(new const_expr(loc,v.get_strval()));
+  nodestack.push(new const_expr(cb->m_cur_sctx, loc,v.get_strval()));
 }
 
 void *begin_visit (const TreatExpr& v) {
@@ -6257,7 +6247,7 @@ void *begin_visit (const TreatExpr& v) {
 
 void end_visit (const TreatExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  nodestack.push (new treat_expr (loc, pop_nodestack (), pop_tstack (), XPDY0050));
+  nodestack.push (new treat_expr (cb->m_cur_sctx, loc, pop_nodestack (), pop_tstack (), XPDY0050));
 }
 
 void *begin_visit (const TypeswitchExpr& v) {
@@ -6298,15 +6288,15 @@ void *begin_visit (const TypeswitchExpr& v) {
     if (! name.empty ()) {
       pop_scope ();
       expr_t lExpr = pop_nodestack();
-      expr_t lFlwor = wrap_in_let_flwor (new cast_expr (loc, &*sv, type), var, lExpr);
+      expr_t lFlwor = wrap_in_let_flwor (new cast_expr (cb->m_cur_sctx, loc, &*sv, type), var, lExpr);
       nodestack.push (lFlwor);
     }
     expr_t lThen = pop_nodestack();
     update_type_check_for_if(lThen->get_update_type(), 
                              defret->get_update_type(),
                              loc);
-    defret = new if_expr (e_p->get_location (),
-                          new instanceof_expr (loc, &*sv, type),
+    defret = new if_expr (cb->m_cur_sctx, e_p->get_location (),
+                          new instanceof_expr (cb->m_cur_sctx, loc, &*sv, type),
                           lThen, defret);
   }
 
@@ -6339,7 +6329,7 @@ void end_visit (const UnaryExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 
   rchandle<expr> e1_h = pop_nodestack ();
-  fo_expr *fo_p = new fo_expr(loc,
+  fo_expr *fo_p = new fo_expr(cb->m_cur_sctx, loc,
                               v.get_signlist()->get_sign()
                               ? LOOKUP_OP1 ("unary-plus")
                               : LOOKUP_OP1 ("unary-minus"));
@@ -6357,10 +6347,10 @@ void end_visit (const UnionExpr& v, void* /*visit_state*/) {
 
   rchandle<expr> e1_h = pop_nodestack ();
   rchandle<expr> e2_h = pop_nodestack ();
-  fo_expr *fo_h = new fo_expr(loc, LOOKUP_OP2 ("union"));
+  fo_expr *fo_h = new fo_expr(cb->m_cur_sctx, loc, LOOKUP_OP2 ("union"));
   fo_h->add(e2_h);
   fo_h->add(e1_h);
-  nodestack.push(new fo_expr (loc, LOOKUP_OP1 ("sort-distinct-nodes-asc"), fo_h));
+  nodestack.push(new fo_expr (cb->m_cur_sctx, loc, LOOKUP_OP1 ("sort-distinct-nodes-asc"), fo_h));
 }
 
 void *begin_visit (const UnorderedExpr& v) {
@@ -6370,7 +6360,7 @@ void *begin_visit (const UnorderedExpr& v) {
 
 void end_visit (const UnorderedExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  nodestack.push (new order_expr (loc, order_expr::unordered,
+  nodestack.push (new order_expr (cb->m_cur_sctx, loc, order_expr::unordered,
                                   pop_nodestack ()));
 }
 
@@ -6391,7 +6381,7 @@ void end_visit (const ValidateExpr& v, void* /*visit_state*/)
     GENV_ITEMFACTORY->createQName(qname, ns.c_str(), v.get_type_name()->get_prefix().c_str(), v.get_type_name()->get_localname().c_str());
   }
 
-  nodestack.push (new validate_expr (loc,
+  nodestack.push (new validate_expr (cb->m_cur_sctx, loc,
                                      v.get_valmode(),
                                      qname,
                                      pop_nodestack(),
@@ -6412,7 +6402,7 @@ void end_visit (const VarRef& v, void* /*visit_state*/) {
     string key = "V" + static_context::qname_internal_key (ve->get_varname ());
     add_multimap_value (global_deps, global_decl_stack.top (), key);
   }
-  nodestack.push (new wrapper_expr (v.get_location (), rchandle<expr> (ve)));
+  nodestack.push (new wrapper_expr (cb->m_cur_sctx, v.get_location (), rchandle<expr> (ve)));
 }
 
 
@@ -6428,7 +6418,7 @@ void end_visit (const DeleteExpr& v, void* /*visit_state*/) {
   if (lTarget->is_updating()) {
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
-  expr_t aDelete = new delete_expr(loc, lTarget);
+  expr_t aDelete = new delete_expr(cb->m_cur_sctx, loc, lTarget);
   nodestack.push(aDelete);
 }
 
@@ -6444,11 +6434,11 @@ void end_visit (const InsertExpr& v, void* /*visit_state*/) {
   if (lTarget->is_updating() || lSource->is_updating()) {
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
-  fo_expr* lEnclosed = new fo_expr(loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
+  fo_expr* lEnclosed = new fo_expr(cb->m_cur_sctx, loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
   lEnclosed->add(lSource);
   lSource = lEnclosed;
 
-  expr_t lInsert = new insert_expr(loc, v.getType(), lSource, lTarget);
+  expr_t lInsert = new insert_expr(cb->m_cur_sctx, loc, v.getType(), lSource, lTarget);
   nodestack.push(lInsert);
 }
 
@@ -6469,9 +6459,9 @@ void end_visit (const RenameExpr& v, void* /*visit_state*/) {
   }
 
   rchandle<fo_expr> atomExpr = (fo_expr*)wrap_in_atomization (nameExpr).getp();
-  nameExpr = new name_cast_expr(loc, atomExpr.getp(), ns_ctx);
+  nameExpr = new name_cast_expr(cb->m_cur_sctx, loc, atomExpr.getp(), ns_ctx);
 
-  expr_t renameExpr = new rename_expr(loc, targetExpr, nameExpr);
+  expr_t renameExpr = new rename_expr(cb->m_cur_sctx, loc, targetExpr, nameExpr);
 
   nodestack.push(renameExpr);
 }
@@ -6490,12 +6480,12 @@ void end_visit (const ReplaceExpr& v, void* /*visit_state*/) {
   }
 
   if (v.getType() == store::UpdateConsts::NODE) {
-    fo_expr* lEnclosed = new fo_expr(loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
+    fo_expr* lEnclosed = new fo_expr(cb->m_cur_sctx, loc, CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
     lEnclosed->add(lReplacement);
     lReplacement = lEnclosed;
   }
 
-  expr_t lReplace = new replace_expr(loc,
+  expr_t lReplace = new replace_expr(cb->m_cur_sctx, loc,
                                      v.getType(),
                                      lTarget,
                                      lReplacement);
@@ -6536,7 +6526,7 @@ void end_visit (const TransformExpr& v, void* /*visit_state*/)
     ZORBA_ERROR_LOC(XUST0002, loc);
   }
 
-  std::auto_ptr<transform_expr> lTransform(new transform_expr(loc, lModify, lReturn));
+  std::auto_ptr<transform_expr> lTransform(new transform_expr(cb->m_cur_sctx, loc, lModify, lReturn));
 
   const size_t lSize = v.get_var_list()->size();
   for (size_t i = 0; i < lSize; ++i)
@@ -6550,7 +6540,7 @@ void end_visit (const TransformExpr& v, void* /*visit_state*/)
     varref_t lVarExpr = pop_nodestack_var ();
     lVarExpr->set_kind(var_expr::copy_var);
 
-    copy_clause* copyClause = new copy_clause( lVarExpr, lExpr);
+    copy_clause* copyClause = new copy_clause(lVarExpr, lExpr);
     lTransform->add_front(copyClause);
 
     pop_scope();
@@ -6587,7 +6577,7 @@ void end_visit (const VarBinding& v, void*)
 /* try-catch-related */
 void *begin_visit (const TryExpr& v) {
   TRACE_VISIT ();
-  nodestack.push(new trycatch_expr(loc));
+  nodestack.push(new trycatch_expr(cb->m_cur_sctx, loc));
   return no_state;
 }
 
@@ -6606,7 +6596,7 @@ void end_visit (const EvalExpr& v, void* visit_state) {
   TRACE_VISIT_OUT ();
 
   rchandle<eval_expr> result =
-    new eval_expr(loc, create_cast_expr (loc, pop_nodestack (), GENV_TYPESYSTEM.STRING_TYPE_ONE, true));
+    new eval_expr(cb->m_cur_sctx, loc, create_cast_expr (loc, pop_nodestack (), GENV_TYPESYSTEM.STRING_TYPE_ONE, true));
 
   rchandle<VarGetsDeclList> vgdl = v.get_vars ();
   
@@ -6615,7 +6605,7 @@ void end_visit (const EvalExpr& v, void* visit_state) {
     ve->set_kind (var_expr::eval_var);
     expr_t val = pop_nodestack ();
     if (ve->get_type () != NULL)
-      val = new treat_expr (val->get_loc (), val, ve->get_type (), XPTY0004);
+      val = new treat_expr (cb->m_cur_sctx, val->get_loc (), val, ve->get_type (), XPTY0004);
     result->add_var (eval_expr::eval_var (&*ve, val));
     pop_scope ();
   }
@@ -6663,7 +6653,7 @@ void *begin_visit (const CatchExpr& v) {
     varref_t ev = bind_var(loc, v.getVarErrorCode(), var_expr::catch_var, GENV_TYPESYSTEM.QNAME_TYPE_QUESTION);
     cc->set_errorcode_var_h(ev);
 #ifdef ZORBA_DEBUGGER
-        if(compilerCB->m_debugger != 0)
+        if(cb->m_debugger != 0)
         {
           theScopedVariables.push_back(ev);
         }
@@ -6673,7 +6663,7 @@ void *begin_visit (const CatchExpr& v) {
       varref_t dv = bind_var(loc, v.getVarErrorDescr(), var_expr::catch_var, GENV_TYPESYSTEM.STRING_TYPE_QUESTION);
       cc->set_errordesc_var_h(dv);
 #ifdef ZORBA_DEBUGGER
-        if(compilerCB->m_debugger != 0)
+        if(cb->m_debugger != 0)
         {
           theScopedVariables.push_back(dv);
         }
@@ -6682,7 +6672,7 @@ void *begin_visit (const CatchExpr& v) {
         varref_t vv = bind_var(loc, v.getVarErrorVal(), var_expr::catch_var, GENV_TYPESYSTEM.ITEM_TYPE_QUESTION);
         cc->set_errorobj_var_h(vv);
 #ifdef ZORBA_DEBUGGER
-        if(compilerCB->m_debugger != 0)
+        if(cb->m_debugger != 0)
         {
           theScopedVariables.push_back(vv);
         }
@@ -6714,8 +6704,8 @@ void end_visit (const AssignExpr& v, void* visit_state) {
   varref_t ve = lookup_ctx_var (v.get_varname (), loc);
   if (ve->get_kind () != var_expr::context_var)
     ZORBA_ERROR_LOC (XPST0003, loc);
-  expr_t qname_expr = new const_expr (ve->get_loc(), dynamic_context::var_key (&*ve));
-  nodestack.push (new fo_expr (loc, ctx_set, qname_expr, pop_nodestack ()));
+  expr_t qname_expr = new const_expr (cb->m_cur_sctx, ve->get_loc(), dynamic_context::var_key (&*ve));
+  nodestack.push (new fo_expr (cb->m_cur_sctx, loc, ctx_set, qname_expr, pop_nodestack ()));
 }
 
 void *begin_visit (const ExitExpr& v) {
@@ -6725,7 +6715,7 @@ void *begin_visit (const ExitExpr& v) {
 
 void end_visit (const ExitExpr& v, void* visit_state) {
   TRACE_VISIT_OUT ();
-  nodestack.push (new exit_expr (loc, pop_nodestack ()));
+  nodestack.push (new exit_expr (cb->m_cur_sctx, loc, pop_nodestack ()));
 }
 
 void *begin_visit (const WhileExpr& v) {
@@ -6737,8 +6727,8 @@ void end_visit (const WhileExpr& v, void* visit_state) {
   TRACE_VISIT_OUT ();
   rchandle<sequential_expr> body = pop_nodestack ().cast<sequential_expr> ();
   expr_t cond = pop_nodestack ();
-  body->push_front (new if_expr (loc, cond, create_seq (loc), new flowctl_expr (loc, flowctl_expr::BREAK)));
-  nodestack.push (new while_expr (loc, body.getp()));
+  body->push_front (new if_expr (cb->m_cur_sctx, loc, cond, create_seq (loc), new flowctl_expr (cb->m_cur_sctx, loc, flowctl_expr::BREAK)));
+  nodestack.push (new while_expr (cb->m_cur_sctx, loc, body.getp()));
 }
 
 void *begin_visit (const FlowCtlStatement& v) {
@@ -6759,7 +6749,7 @@ void end_visit (const FlowCtlStatement& v, void* visit_state) {
   default:
     ZORBA_FATAL(false, "");
   }
-  nodestack.push (new flowctl_expr (loc, a));
+  nodestack.push (new flowctl_expr (cb->m_cur_sctx, loc, a));
 }
 
 /* full-text-related */
@@ -7233,7 +7223,7 @@ expr_t translate (const parsenode& root, CompilerCB* aCompilerCB)
                          root.get_location(),
                          "Module declaration must not be used in a main module");
 
-  ModulesInfo minfo (aCompilerCB);
+  ModulesInfo minfo (aCompilerCB->m_sctx, aCompilerCB);
 
   return translate_aux (root, aCompilerCB, &minfo, mod_stack);
 }

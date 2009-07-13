@@ -62,6 +62,7 @@ void RewriterContext::setRoot(expr_t root)
 
 
 rchandle<var_expr> RewriterContext::createTempVar(
+    short sctx,
     const QueryLoc& loc,
     var_expr::var_kind kind)
 {
@@ -70,7 +71,7 @@ rchandle<var_expr> RewriterContext::createTempVar(
   std::string varname = ss.str();
   store::Item_t qname;
   GENV_ITEMFACTORY->createQName(qname, "", "", varname.c_str());
-  rchandle<var_expr> var = new var_expr(loc, kind, qname);
+  rchandle<var_expr> var = new var_expr(sctx, loc, kind, qname);
 
   return var;
 }

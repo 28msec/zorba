@@ -73,6 +73,7 @@ private:
 
 public:
   ValidateIterator (
+        short sctx,
         const QueryLoc& loc,
         PlanIter_t& aIter,
         TypeManager *,

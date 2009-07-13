@@ -37,6 +37,7 @@ namespace flwor
         
       public:
         TupleStreamIterator (
+          short                       sctx,
           const QueryLoc&             aLoc,
           PlanIter_t                  aTupleClause,
           PlanIter_t                  aReturnClause,

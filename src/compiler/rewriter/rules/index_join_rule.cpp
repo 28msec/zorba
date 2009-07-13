@@ -261,6 +261,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   std::cout << "!!!!! Found Join Index Predicate !!!!!" << std::endl << std::endl;
 
   const QueryLoc& loc = predInfo.thePredicate->get_loc();
+  short sctx = predInfo.thePredicate->get_cur_sctx();
 
   for_clause* fc = predInfo.theInnerVar->get_for_clause();
 
@@ -281,9 +282,9 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   idx->setDomainExpression(domainExpr);
 
-  idx->setDomainVariable(rCtx.createTempVar(loc, var_expr::for_var));
+  idx->setDomainVariable(rCtx.createTempVar(sctx, loc, var_expr::for_var));
 
-  idx->setDomainPositionVariable(rCtx.createTempVar(loc, var_expr::pos_var));
+  idx->setDomainPositionVariable(rCtx.createTempVar(sctx, loc, var_expr::pos_var));
 
   idx->setTemp(true);
 
@@ -353,17 +354,17 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   //
   store::Item_t uri_item;
   GENV_ITEMFACTORY->createAnyURI(uri_item, uri.c_str());
-  expr_t uriExpr(new const_expr(loc, uri_item));
+  expr_t uriExpr(new const_expr(sctx, loc, uri_item));
 
   rchandle<fo_expr> createExpr;
   rchandle<fo_expr> buildExpr;
 
-  createExpr = new fo_expr(loc, LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
+  createExpr = new fo_expr(sctx, loc, LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
                                                    "create-index",
                                                    1));
   createExpr->add(uriExpr);
 
-  buildExpr = new fo_expr(loc, LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
+  buildExpr = new fo_expr(sctx, loc, LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
                                                   "build-index",
                                                   1));
   buildExpr->add(uriExpr);
@@ -373,7 +374,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   //
   if (outerSeqExpr == NULL)
   {
-    sequential_expr* seqExpr = new sequential_expr(loc);
+    sequential_expr* seqExpr = new sequential_expr(sctx, loc);
     
     seqExpr->push_back(createExpr.getp());
     seqExpr->push_back(buildExpr.getp());
@@ -395,7 +396,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   // Replace the expr defining the inner var with an index probe.
   //
   rchandle<fo_expr> probeExpr;
-  probeExpr = new fo_expr(loc, LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
+  probeExpr = new fo_expr(sctx, loc, LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
                                                   "probe-index-point",
                                                   VARIADIC_SIG_SIZE));
   probeExpr->add(uriExpr);

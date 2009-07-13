@@ -181,6 +181,7 @@ private:
   
 public:
   OrderByIterator(
+        short sctx,
         const QueryLoc& loc,
         bool stable,
         std::vector<OrderSpec>& orderSpecs,

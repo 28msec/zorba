@@ -77,8 +77,11 @@ TryCatchIteratorState::reset(PlanState& planState) {
 
 TryCatchIterator::CatchClause::~CatchClause() {}
 
-TryCatchIterator::TryCatchIterator(const QueryLoc& loc, PlanIter_t& aBlock, std::vector<CatchClause>& aCatchClauses)
-  : UnaryBaseIterator<TryCatchIterator, TryCatchIteratorState> (loc, aBlock),
+TryCatchIterator::TryCatchIterator(short sctx,
+                                   const QueryLoc& loc,
+                                   PlanIter_t& aBlock,
+                                   std::vector<CatchClause>& aCatchClauses)
+  : UnaryBaseIterator<TryCatchIterator, TryCatchIteratorState> (sctx, loc, aBlock),
     theCatchClauses(aCatchClauses)
 { }
 

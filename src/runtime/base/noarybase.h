@@ -29,7 +29,7 @@ template <class IterType, class StateType>
 class NoaryBaseIterator : public Batcher<IterType>
 {
 public:
-  NoaryBaseIterator ( const QueryLoc& loc );
+  NoaryBaseIterator ( short sctx, const QueryLoc& loc );
 
   virtual ~NoaryBaseIterator();
 
@@ -43,9 +43,9 @@ public:
 
 
 template <class IterType, class StateType>
-NoaryBaseIterator<IterType, StateType>::NoaryBaseIterator ( const QueryLoc& loc )
+NoaryBaseIterator<IterType, StateType>::NoaryBaseIterator ( short sctx, const QueryLoc& loc )
   :
-  Batcher<IterType> ( loc )
+  Batcher<IterType> ( sctx, loc )
 {
 }
 

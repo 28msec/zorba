@@ -33,21 +33,14 @@ PlanState::PlanState(uint32_t blockSize, uint32_t aStackDepth)
 }
 
 
-static_context*
-PlanState::sctx() { return theCompilerCB->m_sctx; }
+//static_context*
+//PlanState::sctx() { return theCompilerCB->m_sctx; }
 
 
 dynamic_context*
 PlanState::dctx() 
 {
   return theRuntimeCB->theDynamicContext; 
-}
-
-
-CollationCache*
-PlanState::collationCache() 
-{
-  return sctx()->get_collation_cache(); 
 }
 
 

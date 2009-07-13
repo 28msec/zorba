@@ -53,11 +53,6 @@ PlanWrapper::PlanWrapper(
   // for the moment, let's keep the runtime cb here
   theStateBlock->theRuntimeCB = new RuntimeCB();
   theStateBlock->theRuntimeCB->theDynamicContext = aDynamicContext;
-
-  // puh, we want to have the static context everywhere and not always pass both
-  // control blocks in all functions
-  theStateBlock->theRuntimeCB->theStaticContext = aCompilerCB->m_sctx;
-  theStateBlock->theRuntimeCB->theCollationCache = aCompilerCB->m_sctx->get_collation_cache();
 }
 
 
@@ -66,8 +61,6 @@ PlanWrapper::~PlanWrapper()
 #ifndef NDEBUG
   assert(!theIsOpened);
 #endif
-
-  theStateBlock->theRuntimeCB->theStaticContext->release_collation_cache(theStateBlock->theRuntimeCB->theCollationCache);
 
   // we created it
   delete theStateBlock->theRuntimeCB; 
