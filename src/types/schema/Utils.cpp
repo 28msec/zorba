@@ -288,84 +288,87 @@ void validateAttributes( EventSchemaValidator& schemaValidator, store::Iterator_
 }
 
 
-void processAttributes( store::Item_t& pul, namespace_context& nsCtx, 
-    TypeManager* typeManager, EventSchemaValidator& schemaValidator,
-    store::Item* parent, store::Iterator_t attributes)
+void processAttributes( 
+    store::Item_t& pul,
+    namespace_context& nsCtx, 
+    TypeManager* typeManager,
+    EventSchemaValidator& schemaValidator,
+    store::Item* parent,
+    store::Iterator_t attributes)
 {
-    std::list<AttributeValidationInfo*>* attList = schemaValidator.getAttributeList();
-    std::list<AttributeValidationInfo*>::iterator curAtt;
-    std::vector<store::Item_t> defaultAtts;    
+  std::list<AttributeValidationInfo*>* attList = schemaValidator.getAttributeList();
+  std::list<AttributeValidationInfo*>::iterator curAtt;
+  std::vector<store::Item_t> defaultAtts;    
         
-    for( curAtt = attList->begin() ; curAtt != attList->end(); ++curAtt )
-    {
-        AttributeValidationInfo* att = *curAtt;
-        //cout << " vup        - processATT2: " << att->_localName << " T: " << att->_typeName << "\n";
+  for( curAtt = attList->begin() ; curAtt != attList->end(); ++curAtt )
+  {
+    AttributeValidationInfo* att = *curAtt;
+    //cout << " vup        - processATT2: " << att->_localName << " T: " << att->_typeName << "\n";
             
-        store::Item_t attQName;
-        GENV_ITEMFACTORY->createQName( attQName, att->_uri, att->_prefix, att->_localName);
+    store::Item_t attQName;
+    GENV_ITEMFACTORY->createQName( attQName, att->_uri, att->_prefix, att->_localName);
         
-        store::Item_t attrib = findAttributeItem(parent, attQName);
+    store::Item_t attrib = findAttributeItem(parent, attQName);
         
-        std::string typePrefix;
-        if ( std::strcmp(Schema::XSD_NAMESPACE, att->_typeURI->c_str() )==0 ) // hack around typeManager bug for comparing QNames
-            typePrefix = "xs";
-        else
-            typePrefix = "";
+    std::string typePrefix;
+    if ( std::strcmp(Schema::XSD_NAMESPACE, att->_typeURI->c_str() )==0 ) // hack around typeManager bug for comparing QNames
+      typePrefix = "xs";
+    else
+      typePrefix = "";
         
-        store::Item_t typeQName;
-        GENV_ITEMFACTORY->createQName(typeQName,
-                                      att->_typeURI,
-                                      new xqpStringStore(typePrefix),
-                                      att->_typeName);
+    store::Item_t typeQName;
+    GENV_ITEMFACTORY->createQName(typeQName,
+                                  att->_typeURI,
+                                  new xqpStringStore(typePrefix),
+                                  att->_typeName);
 
+    std::vector<store::Item_t> typedValues;        
+    processTextValue(pul, typeManager, nsCtx, typeQName, att->_value, attrib, typedValues);
         
-        std::vector<store::Item_t> typedValues;        
-        processTextValue(pul, typeManager, nsCtx, typeQName, att->_value, attrib, typedValues);
-        
-        if ( attrib==NULL )
-        {
-            // this is an attibute filled in by the validator
-            store::Item_t defaultAttNode;
-            if ( typedValues.size()==1 ) // hack around serialization bug
-                GENV_ITEMFACTORY->createAttributeNode( defaultAttNode,
-                        parent,
-                        -1,
-                        attQName,
-                        typeQName,
-                        typedValues[0]);
-            else            
-                GENV_ITEMFACTORY->createAttributeNode( defaultAttNode,
-                        parent,
-                        -1,
-                        attQName,
-                        typeQName,
-                        typedValues);
-            
-            defaultAtts.push_back(defaultAttNode);
-        } 
-        else if ( !typeQName->equals(attrib->getType()) )
-        {
-            store::PUL *p = static_cast<store::PUL *>(pul.getp());
-            store::Item_t atr = store::Item_t(attrib);
-            if ( typedValues.size()==1 )        // optimize when only one item is available 
-                p->addSetAttributeType( atr, typeQName, (store::Item_t&)(typedValues[0]) );
-            else            
-                p->addSetAttributeType( atr, typeQName, typedValues );
-        }
-    }
-    
-    if ( defaultAtts.size()>0 )
+    if ( attrib==NULL )
     {
-        store::PUL *p = static_cast<store::PUL *>(pul.getp());
-        store::CopyMode lCopyMode;
-        bool typePreserve = true; //(sctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
-        bool nsPreserve = true; //(sctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
-        bool nsInherit = true; //(sctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
-        lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
-        
-        store::Item_t parentElem = store::Item_t(parent);
-        p->addInsertAttributes(parentElem, defaultAtts, lCopyMode);
+      // this is an attibute filled in by the validator
+      store::Item_t defaultAttNode;
+      if ( typedValues.size()==1 ) // hack around serialization bug
+        GENV_ITEMFACTORY->createAttributeNode( defaultAttNode,
+                                               NULL,
+                                               -1,
+                                               attQName,
+                                               typeQName,
+                                               typedValues[0]);
+      else            
+        GENV_ITEMFACTORY->createAttributeNode( defaultAttNode,
+                                               NULL,
+                                               -1,
+                                               attQName,
+                                               typeQName,
+                                               typedValues);
+      
+      defaultAtts.push_back(defaultAttNode);
+    } 
+    else if ( !typeQName->equals(attrib->getType()) )
+    {
+      store::PUL *p = static_cast<store::PUL *>(pul.getp());
+      store::Item_t atr = store::Item_t(attrib);
+      if ( typedValues.size()==1 )        // optimize when only one item is available 
+        p->addSetAttributeType( atr, typeQName, (store::Item_t&)(typedValues[0]) );
+      else            
+        p->addSetAttributeType( atr, typeQName, typedValues );
     }
+  }
+  
+  if ( defaultAtts.size()>0 )
+  {
+    store::PUL *p = static_cast<store::PUL *>(pul.getp());
+    store::CopyMode lCopyMode;
+    bool typePreserve = true; //(sctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
+    bool nsPreserve = true; //(sctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
+    bool nsInherit = true; //(sctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
+    lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
+    
+    store::Item_t parentElem = store::Item_t(parent);
+    p->addInsertAttributes(parentElem, defaultAtts, lCopyMode);
+  }
 }
 
 
@@ -453,76 +456,83 @@ void processNamespaces ( EventSchemaValidator& schemaValidator, const store::Ite
     }
 }
 
-void processTextValue (store::Item_t& pul, TypeManager* typeManager, 
-    namespace_context &nsCtx, store::Item_t typeQName, xqpStringStore_t& textValue, 
-    store::Item_t& originalChild, std::vector<store::Item_t> &resultList)
+void processTextValue (
+    store::Item_t& pul,
+    TypeManager* typeManager, 
+    namespace_context &nsCtx,
+    store::Item_t typeQName,
+    xqpStringStore_t& textValue, 
+    store::Item_t& originalChild,
+    std::vector<store::Item_t> &resultList)
 {
-    xqtref_t type = typeManager->create_named_atomic_type(typeQName, TypeConstants::QUANT_ONE);
-    //cout << " vup        - processTextValue: " << typeQName->getPrefix()->str() << ":" << typeQName->getLocalName()->str() << "@" << typeQName->getNamespace()->str() ; cout.flush();
-    //cout << "           type: " << ( type==NULL ? "NULL" : type->toString()) << "\n"; cout.flush();                    
+  xqtref_t type = typeManager->create_named_atomic_type(typeQName,
+                                                        TypeConstants::QUANT_ONE);
+  //cout << " vup        - processTextValue: " << typeQName->getPrefix()->str()
+  // << ":" << typeQName->getLocalName()->str() << "@" 
+  // << typeQName->getNamespace()->str() ; cout.flush();
+  //cout << "           type: " << ( type==NULL ? "NULL" : type->toString())
+  // << "\n"; cout.flush();                    
             
-    store::Item_t result;                    
-    if (type!=NULL)
+  store::Item_t result;                    
+  if (type!=NULL)
+  {
+    if ( type->content_kind()==XQType::ELEMENT_ONLY_CONTENT_KIND || 
+         type->content_kind()==XQType::MIXED_CONTENT_KIND )
+      return;
+    
+    if ( type->type_kind() == XQType::USER_DEFINED_KIND )
     {
-        if ( type->content_kind()==XQType::ELEMENT_ONLY_CONTENT_KIND || 
-             type->content_kind()==XQType::MIXED_CONTENT_KIND )
-            return;
-            
-        if ( type->type_kind() == XQType::USER_DEFINED_KIND )
-        {
-            const UserDefinedXQType udXQType = static_cast<const UserDefinedXQType&>(*type);
-            if ( udXQType.isList() || udXQType.isUnion() )
-            {
-                xqp_string str(textValue);
-                typeManager->getSchema()->
-                    parseUserSimpleTypes(str, type, resultList);
-                
-                return;
-            }
-            else if ( udXQType.isComplex() )
-            {   // text in mixed content, 
-                //  - if invalid there will be a validation exception thrown
-                //  - if xmlspace or mixed content it's fine to have the same node               
-                //resultList.push_back(originalChild);                
-                return;
-            }
-            // else isAtomic
-        }
-
-        bool isResult = GenericCast::instance()->castToAtomic(result, textValue, type.getp(), &nsCtx);
-        if ( isResult )
-            resultList.push_back(result);
+      const UserDefinedXQType udXQType = static_cast<const UserDefinedXQType&>(*type);
+      if ( udXQType.isList() || udXQType.isUnion() )
+      {
+        xqp_string str(textValue);
+        typeManager->getSchema()->
+          parseUserSimpleTypes(str, type, resultList);
+        
+        return;
+      }
+      else if ( udXQType.isComplex() )
+      {   // text in mixed content, 
+        //  - if invalid there will be a validation exception thrown
+        //  - if xmlspace or mixed content it's fine to have the same node               
+        //resultList.push_back(originalChild);                
+        return;
+      }
+      // else isAtomic
     }
-    else
-    {
-        if ( GENV_ITEMFACTORY->createUntypedAtomic( result, textValue) )
-            resultList.push_back(result);
-    }
+    
+    bool isResult = GenericCast::instance()->castToAtomic(result, textValue, type.getp(), &nsCtx);
+    if ( isResult )
+      resultList.push_back(result);
+  }
+  else
+  {
+    if ( GENV_ITEMFACTORY->createUntypedAtomic( result, textValue) )
+      resultList.push_back(result);
+  }
 }
+  
 
 store::Item_t findAttributeItem(const store::Item *parent, store::Item_t &attQName)
 {
-    store::Iterator_t attributes = parent->getAttributes();
+  store::Iterator_t attributes = parent->getAttributes();
     
-    store::Item_t attribute;
+  store::Item_t attribute;
     
-    while ( attributes->next(attribute) )
-    {
-        ZORBA_ASSERT(attribute->isNode());
-        ZORBA_ASSERT(attribute->getNodeKind() == store::StoreConsts::attributeNode);
+  while ( attributes->next(attribute) )
+  {
+    ZORBA_ASSERT(attribute->isNode());
+    ZORBA_ASSERT(attribute->getNodeKind() == store::StoreConsts::attributeNode);
                   
-        store::Item_t currentAttName = attribute->getNodeName();
+    store::Item_t currentAttName = attribute->getNodeName();
         
-        if ( attQName->getLocalName()->
-                compare(currentAttName->getLocalName())==0 && 
-             attQName->getNamespace()->
-                compare(currentAttName->getNamespace())==0 )
-        {
-            return attribute.getp();
-        }
+    if (attQName->equals(currentAttName))
+    {
+      return attribute.getp();
     }
-    ZORBA_ASSERT(false);
-    return NULL;
+  }
+  //ZORBA_ASSERT(false);
+  return NULL;
 }
 
 /**

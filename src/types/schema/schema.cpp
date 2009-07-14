@@ -378,12 +378,15 @@ xqtref_t Schema::createXQTypeFromTypeName(
   {
     res = NULL;
     TRACE("No type definition for " << local << "@" << uri);
-    TRACE("add to TypesCache: key:'" << key << "'  t:" << ( res==NULL ? "NULL" : TypeOps::decode_quantifier(res->get_quantifier())) );
+    TRACE("add to TypesCache: key:'" << key << "'  t:"
+          << ( res==NULL ? "NULL" : TypeOps::decode_quantifier(res->get_quantifier())) );
     // stick it in the cache even if it's NULL
     _udTypesCache->put(key, res);
   }
   else
+  {
     res = createXQTypeFromTypeDefinition(typeManager, typeDef);
+  }
 
   return res;
 }
