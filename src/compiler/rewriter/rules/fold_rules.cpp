@@ -672,7 +672,8 @@ RULE_REWRITE_POST(InlineFunctions)
       try {
         body = body->clone (subst);
         return body;
-      } catch (...) {assert(false);}
+      // TODO: this is caught here, because clone is not implemented for all expressions
+      } catch (...) {}
     }
   }
   return NULL;
