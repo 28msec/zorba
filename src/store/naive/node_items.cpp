@@ -1268,6 +1268,13 @@ bool ElementNode::isId() const
 ********************************************************************************/
 bool ElementNode::isIdRefs() const
 {
+  if (numChildren() == 1 &&
+      getChild(0)->getNodeKind() == store::StoreConsts::textNode)
+  {
+    if (reinterpret_cast<TextNode*>(getChild(0))->isIdRefsInternal())
+      return true;
+  }
+
   return false;
 }
 
@@ -2189,6 +2196,22 @@ bool AttributeNode::isId() const
 ********************************************************************************/
 bool AttributeNode::isIdRefs() const
 {
+  if (haveListValue())
+  {
+    const ItemVector& values = getValueVector();
+    ulong numValues = values.size();
+
+    for (ulong i = 0; i < numValues; ++i)
+    {
+      if (dynamic_cast<IDREFItemImpl*>(values.getItem(i)) != NULL)
+        return true;
+    }
+  }
+  else if (dynamic_cast<IDREFItemImpl*>(theTypedValue.getp()) != NULL)
+  {
+    return true;
+  }
+
   return false;
 }
 
@@ -2564,6 +2587,36 @@ bool TextNode::isIdInternal() const
 {
   if (isTyped() && dynamic_cast<IDItemImpl*>(getValue()) != NULL)
     return true;
+
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool TextNode::isIdRefsInternal() const
+{
+  if (isTyped())
+  {
+    store::Item* value = getValue();
+
+    if (haveListValue())
+    {
+      const ItemVector& values = *reinterpret_cast<ItemVector*>(value); 
+      ulong numValues = values.size();
+
+      for (ulong i = 0; i < numValues; ++i)
+      {
+        if (dynamic_cast<IDREFItemImpl*>(values.getItem(i)) != NULL)
+          return true;
+      }
+    }
+    else if (dynamic_cast<IDREFItemImpl*>(value) != NULL)
+    {
+      return true;
+    }
+  }
 
   return false;
 }

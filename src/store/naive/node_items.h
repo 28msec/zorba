@@ -928,6 +928,8 @@ public:
 
   bool isIdInternal() const;
 
+  bool isIdRefsInternal() const;
+
   void replaceValue(UpdReplaceTextValue& upd);
 
   void restoreValue(UpdReplaceTextValue& upd);

@@ -49,7 +49,10 @@ public:
   bool empty() const { return theItems.empty(); }
 
   const std::vector<store::Item_t>& getItems() const { return theItems; }
-  std::vector<store::Item_t>& getItems()             { return theItems; }
+
+  std::vector<store::Item_t>& getItems() { return theItems; }
+
+  store::Item* getItem(ulong pos) const { return theItems[pos].getp(); }
 };
 
 } // namespace store
