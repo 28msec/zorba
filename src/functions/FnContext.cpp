@@ -15,7 +15,7 @@
  */
 #include "functions/FnContext.h"
 #include "system/globalenv.h"
-#include "runtime/fncontext/FnContextImpl.h"
+#include "runtime/core/var_iterators.h"
 #include "runtime/core/item_iterator.h"
 #include "store/api/iterator.h"
 
@@ -40,6 +40,7 @@ PlanIter_t ctx_var_assign::codegen (
   return new CtxVarAssignIterator(sctx, loc, argv);
 }
 
+
 PlanIter_t ctx_var_declare::codegen (
     short sctx,
     const QueryLoc& loc,
@@ -48,6 +49,7 @@ PlanIter_t ctx_var_declare::codegen (
 {
   return new CtxVarDeclIterator(sctx, loc, argv);
 }
+
 
 PlanIter_t ctx_var_exists::codegen (
     short sctx,

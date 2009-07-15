@@ -122,11 +122,11 @@ DECL(sctx, fn_string_func,
      (createQName(XQUERY_FN_NS, "fn", "string"),
       GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, GENV_TYPESYSTEM.STRING_TYPE_ONE));
 // end Accessors
-
 }
+
+
 void BuiltinFunctionLibrary::populateContext_Error(static_context *sctx)
 {
-//begin Error function
 DECL(sctx, fn_error,
      (createQName(XQUERY_FN_NS, "fn", "error"),
       GENV_TYPESYSTEM.NONE_TYPE));
@@ -148,9 +148,8 @@ DECL(sctx, fn_error,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR ,
       GENV_TYPESYSTEM.NONE_TYPE));
-//end Errror function
-
 }
+
 
 void BuiltinFunctionLibrary::populateContext_AnyURI(static_context *sctx)
 {
@@ -163,9 +162,9 @@ void BuiltinFunctionLibrary::populateContext_AnyURI(static_context *sctx)
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
 //end functions on Any URI
-
-
 }
+
+
 void BuiltinFunctionLibrary::populateContext_Context(static_context *sctx)
 {
 // begin context functions
@@ -190,9 +189,9 @@ DECL(sctx, fn_default_collation,
      (createQName(XQUERY_FN_NS,"fn","default-collation"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 // end context functions
-
-
 }
+
+
 void BuiltinFunctionLibrary::populateContext_QNames(static_context *sctx)
 {
 //QNames
@@ -243,8 +242,8 @@ DECL(sctx, fn_in_scope_prefixes,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_STAR));
 // end QNames
-
 }
+
 
 void BuiltinFunctionLibrary::populateContext_Constructors(static_context *sctx)
 {
@@ -254,8 +253,8 @@ DECL(sctx, op_enclosed_expr,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 // end constructors
-
 }
+
 
 void BuiltinFunctionLibrary::populateContext_Debug(static_context *sctx)
 {
@@ -276,9 +275,9 @@ DECL (sctx, fn_print,
        GENV_TYPESYSTEM.NONE_TYPE));
 
 // end debug functions
-
-
 }
+
+
 void BuiltinFunctionLibrary::populateContext_Zorba(static_context *sctx)
 {
 // begin zorba functions
