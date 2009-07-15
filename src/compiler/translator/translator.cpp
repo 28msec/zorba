@@ -216,6 +216,7 @@ void add_multimap_value(
   result->insert (val);
 }
   
+
 /*******************************************************************************
 
   There is only one ModulesInfo instance per compilation. It is created on the
@@ -260,10 +261,13 @@ public:
   checked_vector<expr_t>      init_exprs;
   auto_ptr<static_context>    globals;
 
-  ModulesInfo (static_context *sctx, CompilerCB *topCompilerCB_)
-    : topCompilerCB (topCompilerCB_),
-      globals (static_cast<static_context *> (sctx->get_parent ())->create_child_context ())
-  {}
+  ModulesInfo(CompilerCB *topCompilerCB_)
+    :
+    topCompilerCB (topCompilerCB_),
+    globals(static_cast<static_context *>
+            (topCompilerCB->m_sctx->get_parent())->create_child_context())
+  {
+  }
 };
 
 
@@ -277,7 +281,8 @@ public:
   xquery_version       : 100 for 1.0, 110 for 1.1 etc
 
   cb                   : The compiler control block associated with this translator
-                         (each translator uses its own compiler cb; also for library modules).
+                         (each translator uses its own compiler cb; also for library
+                          modules).
 
   minfo                : Pointer to the unique ModulesInfo instance (see class
                          ModulesInfo above).
@@ -301,7 +306,7 @@ public:
                          imported twice by this module.
 
   sctx_p               : The "current" static context node. It is initialized
-                         with the static context node in the compilerCB.
+                         with the root static context of the associated module.
   export_sctx          : In case this is a library module translator, export_sctx
                          is populated with the variable and function declarations
                          that are exported by the module, i.e., the var and udf
@@ -416,6 +421,8 @@ protected:
 
   set<string>                          schema_import_ns_set;
 
+  stack<short>                         sctxstack;
+
   static_context                     * sctx_p;
 
   static_context                     * export_sctx;
@@ -425,7 +432,6 @@ protected:
   uint32_t                             print_depth;
   int                                  scope_depth;
 
-  stack<short>                         sctxstack;
   stack<expr_t>                        nodestack;
   stack<xqtref_t>                      tstack; 
   stack<ValueIndex_t>                  indexstack;
@@ -477,6 +483,7 @@ protected:
   stack<string>                        global_decl_stack;
 
   list<function *>                     fn_decl_stack;
+
 
 TranslatorImpl (CompilerCB* aCompilerCB, ModulesInfo *minfo_, set<string> mod_stack_)
   :
@@ -614,6 +621,42 @@ xqtref_t pop_tstack()
   return pop_stack(tstack); 
 }
 
+
+/*******************************************************************************
+  Create new static context, make it the current one for the current module, and
+  register it into the query-level sctx map.
+********************************************************************************/
+void push_scope() 
+{
+#ifdef ZORBA_DEBUGGER
+  theScopes.push_back( theScopedVariables.size() );
+#endif
+  
+  sctxstack.push(cb->m_cur_sctx);
+  sctx_p = sctx_p->create_child_context();
+  ++cb->m_cur_sctx;
+  cb->m_context_map[cb->m_cur_sctx] = sctx_p; 
+  ++scope_depth;
+}
+
+
+/*******************************************************************************
+  Make the parent of the current sctx be the current sctx for the current module.
+********************************************************************************/
+void pop_scope()
+{
+#ifdef ZORBA_DEBUGGER
+  theScopedVariables.erase(theScopedVariables.begin()+theScopes.back(),
+                           theScopedVariables.end() );
+  theScopes.pop_back();
+#endif
+  cb->m_cur_sctx = sctxstack.top();
+  sctx_p = cb->m_context_map[cb->m_cur_sctx];
+  sctxstack.pop();
+  --scope_depth;
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -633,48 +676,25 @@ void pop_elem_scope()
 
 
 /*******************************************************************************
-  Create a type representing an ElementTest, where:
-
-	ElementTest ::= "element" "(" (ElementNameOrWildcard ("," TypeName "?"?)?)? ")"
+  Create a name to be used for an internally generated variable. The name is
+  unique within this translator.
 ********************************************************************************/
-xqtref_t create_element_test(
-    const QueryLoc& loc,
-    QName* elemName,
-    TypeName* typeName,
-    bool nillable)
+xqpString tempname () 
 {
-  store::Item_t ename;
-  store::Item_t tname;
-  rchandle<NodeTest> nodeTest;
-  xqtref_t contentType;
-
-  if (elemName != NULL) 
-  {
-    ename = sctx_p->lookup_elem_qname(elemName->get_qname(), loc);
-  }
-  
-  if (typeName != NULL) 
-  {
-    tname = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname(), loc);
-    
-    contentType = CTXTS->create_named_type(tname, TypeConstants::QUANT_ONE);
-  }
-  
-  return CTXTS->create_node_type(store::StoreConsts::elementNode,
-                                 ename,
-                                 contentType,
-                                 TypeConstants::QUANT_ONE,
-                                 nillable);
+  return "$$temp" + to_string(tempvar_counter++);
 }
 
 
+/*******************************************************************************
+  Create a var_expr for a variable with a given qname item, kind, and type
+********************************************************************************/
 varref_t create_var(
     const QueryLoc& loc,
     store::Item_t qname,
     var_expr::var_kind kind,
     xqtref_t type = NULL) 
 {
-  varref_t e = new var_expr(cb->m_cur_sctx, loc, kind, qname, global_decl_stack.empty ());
+  varref_t e = new var_expr(cb->m_cur_sctx, loc, kind, qname, global_decl_stack.empty());
 
   if (kind == var_expr::pos_var ||
       kind == var_expr::count_var ||
@@ -684,27 +704,49 @@ varref_t create_var(
     type = GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE;
   }
 
-  e->set_type (type);
+  e->set_type(type);
   return e;
 }
 
-  
+
+/*******************************************************************************
+  Create a var_expr for a variable with a given qname, kind, and type.
+  The given qname is resolved to a qname item. An error is raised if the
+  resolution fails.
+********************************************************************************/
 varref_t create_var(
     const QueryLoc& loc,
     string varname,
     var_expr::var_kind kind, 
     xqtref_t type = NULL) 
 {
-  store::Item_t qname = sctx_p->lookup_var_qname (varname, loc);
+  store::Item_t qname = sctx_p->lookup_var_qname(varname, loc);
   return create_var (loc, qname, kind, type);
 }
   
 
+/*******************************************************************************
+  Create a var_expr for an internal variable with a given kind.
+********************************************************************************/
+varref_t tempvar(const QueryLoc& loc, var_expr::var_kind kind)
+{
+  xqpString lname (tempname ());
+  return create_var(loc, lname, kind);
+}
+
+
+/*******************************************************************************
+  Create a binding in the given sctx between a var qname item and a var_expr.
+  Raise error if a var with the same expanded qname item is already in the given
+  sctx obj.
+********************************************************************************/
 void bind_var (varref_t e, static_context *sctx) 
 {
   assert (sctx != NULL);
-  store::Item_t qname = e->get_varname ();
-  if (! sctx->bind_var (qname, e.getp ()))
+
+  store::Item_t qname = e->get_varname();
+
+  if (! sctx->bind_var(qname, e.getp ()))
   {
     if(e->get_kind () == var_expr::let_var)
     {
@@ -718,14 +760,20 @@ void bind_var (varref_t e, static_context *sctx)
 }
 
 
+/*******************************************************************************
+  Create a var_expr for a variable with a given qname item, kind, and type.
+  Then, create a binding in the given sctx between the var qname item and the
+  var_expr. Raise error if a var with the same expanded qname item is already
+  in the given sctx obj.
+********************************************************************************/
 varref_t bind_var (
     const QueryLoc& loc,
     string varname,
     var_expr::var_kind kind,
     xqtref_t type = NULL) 
 {
-  varref_t e = create_var (loc, varname, kind, type);
-  bind_var (e, sctx_p);
+  varref_t e = create_var(loc, varname, kind, type);
+  bind_var(e, sctx_p);
   return e;
 }
 
@@ -742,6 +790,12 @@ varref_t bind_var (
 }
 
 
+/*******************************************************************************
+  Create a var_expr for a variable with a given qname item, kind, and type.
+  Then, create a binding in the given sctx between the var qname item and the
+  var_expr. Finally, push the var_expr to the nodestack. Raise error if a var
+  with the same expanded qname is already in the given context.
+********************************************************************************/
 varref_t bind_var_and_push (
     const QueryLoc& loc,
     store::Item_t varname,
@@ -764,59 +818,6 @@ varref_t bind_var_and_push (
 }
 
 
-void bind_udf (store::Item_t qname, function *f, int nargs, static_context *sctx, const QueryLoc& loc) {
-  if (! sctx->bind_fn (qname, f, nargs))
-    ZORBA_ERROR_LOC_PARAM (XQST0034, loc, qname->getStringValue (), loc.getFilenameBegin());
-}
-
-
-void bind_udf (store::Item_t qname, function *f, int nargs, const QueryLoc& loc) {
-  bind_udf (qname, f, nargs, sctx_p, loc);
-  bind_udf (qname, f, nargs, minfo->globals.get (), loc);
-  // bind the udf also in the sctx that is used
-  // for importing modules
-  if (export_sctx != NULL) {
-    bind_udf (qname, f, nargs, export_sctx, loc);
-  }
-}
-
-
-fo_expr *create_seq (const QueryLoc& loc) {
-  return fo_expr::create_seq (cb->m_cur_sctx, loc);
-}
-
-
-/*******************************************************************************
-  Create new static context and make it the current one.
-********************************************************************************/
-void push_scope () {
-#ifdef ZORBA_DEBUGGER
-  theScopes.push_back( theScopedVariables.size() );
-#endif
-  
-  sctxstack.push(cb->m_cur_sctx);
-  sctx_p = sctx_p->create_child_context();
-  ++cb->m_cur_sctx;
-  cb->m_context_map[cb->m_cur_sctx] = sctx_p; 
-  ++scope_depth;
-}
-
-/*******************************************************************************
-********************************************************************************/
-void pop_scope (int n = 1)
-{
-#ifdef ZORBA_DEBUGGER
-  theScopedVariables.erase( theScopedVariables.begin()+theScopes.back(), theScopedVariables.end() );
-  theScopes.pop_back();
-#endif
-  while (n-- > 0) {
-    cb->m_cur_sctx = sctxstack.top();
-    sctx_p = cb->m_context_map[cb->m_cur_sctx];
-    sctxstack.pop();
-    --scope_depth;
-  }
-}
-
 /*******************************************************************************
   Lookup variable by qname (expanded or not). Search starts from the "current"
   ctx and moves upwards the ancestor path until the first instance (if any) of
@@ -829,13 +830,14 @@ varref_t lookup_ctx_var (xqp_string name, const QueryLoc &loc)
   expr *ve = sctx_p->lookup_var (name);
   if (ve != NULL)
     return (var_expr *) ve;
+
   ZORBA_ERROR_LOC_PARAM (XPDY0002, loc, name, "");
 }
 
 
 var_expr *lookup_var (string varname) 
 {
-    return static_cast<var_expr *> (sctx_p->lookup_var (varname));
+  return static_cast<var_expr *> (sctx_p->lookup_var (varname));
 }
 
 
@@ -845,145 +847,93 @@ var_expr *lookup_var (store::Item_t varname)
 }
 
 
-  expr_update_t update_type_check_for_if(
-    expr_update_t lType1, 
-    expr_update_t lType2, 
-    const QueryLoc& aLoc)
-  {
-    switch(lType1)
-    {
-    case VACUOUS_EXPR:
-      switch(lType2) {
-      case VACUOUS_EXPR:
-        return VACUOUS_EXPR;
-        break;
-      case SIMPLE_EXPR:
-        return SIMPLE_EXPR;
-        break;
-      case UPDATE_EXPR:
-        return UPDATE_EXPR;
-        break;
-      }
-      break;
-    case SIMPLE_EXPR:
-      switch(lType2) {
-      case VACUOUS_EXPR:
-        return SIMPLE_EXPR;
-        break;
-      case SIMPLE_EXPR:
-        return SIMPLE_EXPR;
-        break;
-      case UPDATE_EXPR:
-        ZORBA_ERROR_LOC(XUST0001, aLoc);
-        break;
-      }
-      break;
-    case UPDATE_EXPR:
-      switch(lType2) {
-      case VACUOUS_EXPR:
-        return UPDATE_EXPR;
-        break;
-      case SIMPLE_EXPR:
-        ZORBA_ERROR_LOC(XUST0001, aLoc);
-        break;
-      case UPDATE_EXPR:
-        return UPDATE_EXPR;
-        break;
-      }
-      break;
-    default:
-      ZORBA_ASSERT(false);
-    }
-    return SIMPLE_EXPR;
-  }
-  
-  StaticContextConsts::xquery_version_t parse_xquery_version(const VersionDecl* vh) 
-  {
-    if (vh == NULL)
-      return StaticContextConsts::xquery_version_1_0; // TODO: the spec says the default should be 1.1 for a 1.1 processor
 
-    string ver = vh->get_version ();
-    if (ver == "1.0")
-    {
-      xquery_version = StaticContextConsts::xquery_version_1_0;
-      return StaticContextConsts::xquery_version_1_0;
-    }
-    else if (ver == "1.1")
-    {
-      xquery_version = StaticContextConsts::xquery_version_1_1;
-      return StaticContextConsts::xquery_version_1_1;
-    }
-    else
-      return StaticContextConsts::xquery_version_unknown;
+/*******************************************************************************
+  Create a binding in the given sctx obj between the given (function qname item,
+  arity) pair and the given function object. Raise error if such a binding
+  exists already in the sctx.
+********************************************************************************/
+void bind_udf(
+    store::Item_t qname,
+    function *f,
+    int nargs,
+    static_context *sctx,
+    const QueryLoc& loc) 
+{
+  if (! sctx->bind_fn (qname, f, nargs))
+    ZORBA_ERROR_LOC_PARAM(XQST0034, loc,
+                          qname->getStringValue(),
+                          loc.getFilenameBegin());
+}
+
+
+/*******************************************************************************
+  Create a binding between the given (function qname item, arity) pair and the
+  given function object. The binding is created in (a) the current sctx of this 
+  module, (b) the query-level sctx that gathers all declaration of functions and
+  variables from all modules, and (c) the export_sctx (if any). Raise error if 
+  such a binding exists already in any of these sctxs.
+********************************************************************************/
+void bind_udf (store::Item_t qname, function *f, int nargs, const QueryLoc& loc) 
+{
+  bind_udf (qname, f, nargs, sctx_p, loc);
+  bind_udf (qname, f, nargs, minfo->globals.get (), loc);
+
+  if (export_sctx != NULL) 
+  {
+    bind_udf (qname, f, nargs, export_sctx, loc);
   }
-  
+}
+
+
+/*******************************************************************************
+  Create an fn:concatenate() expr
+********************************************************************************/
+fo_expr *create_seq (const QueryLoc& loc) 
+{
+  return fo_expr::create_seq (cb->m_cur_sctx, loc);
+}
+
+
+/*******************************************************************************
+  Wrap the given expr in an fn:data() function
+********************************************************************************/
 expr_t wrap_in_atomization (expr_t e) 
 {
-  return new fo_expr (cb->m_cur_sctx, e->get_loc (), CACHED (fn_data, LOOKUP_FN ("fn", "data", 1)), e);
-}
-  
-
-void declare_var (const global_binding &b, std::vector<expr_t> &stmts) 
-{
-  CACHED (ctx_decl, LOOKUP_OP1 ("ctxvar-declare"));
-  CACHED (ctx_set, LOOKUP_OP2 ("ctxvar-assign"));
-
-  varref_t var = b.first;
-  xqtref_t var_type = var->get_type ();
-  expr_t expr = b.second;
-  xqpStringStore dot (".");
-  expr_t qname_expr =
-    new const_expr (cb->m_cur_sctx, var->get_loc(), var->get_varname ()->getStringValue ()->equals (&dot) ? "." : dynamic_context::var_key (&*var));
-
-  expr_t decl_expr = new fo_expr (cb->m_cur_sctx, var->get_loc(), ctx_decl, qname_expr->clone ());
-  if (expr != NULL) {
-    if (expr->is_updating())
-      ZORBA_ERROR_LOC(XUST0001, expr->get_loc());
-
-    expr = new fo_expr (cb->m_cur_sctx, var->get_loc(),
-                        ctx_set, qname_expr->clone (), expr);
-    expr = new sequential_expr (cb->m_cur_sctx, var->get_loc (), decl_expr, expr);
-    if (b.is_extern ()) {
-      CACHED (ctx_exists, LOOKUP_OP1 ("ctxvar-exists"));
-      expr_t exists_expr =
-        expr_t (new fo_expr (cb->m_cur_sctx, var->get_loc (), ctx_exists, qname_expr->clone ()));
-      expr = new if_expr (cb->m_cur_sctx, var->get_loc (), exists_expr,
-                          expr_t (create_seq (var->get_loc ())), expr);
-    }
-    stmts.push_back (expr);
-  } else {  // no init expr
-    if (! b.is_extern ())
-      stmts.push_back (decl_expr);
-  }
-  if (var_type != NULL && (b.is_extern () || b.second != NULL)) {
-    // check type for vars that are external or have an init expr
-    CACHED (ctx_get, LOOKUP_OP1 ("ctxvariable"));
-    expr_t get = new fo_expr (cb->m_cur_sctx, var->get_loc (), ctx_get, qname_expr->clone ());
-    stmts.push_back (new treat_expr (cb->m_cur_sctx, var->get_loc (), get, var->get_type (), XPTY0004));
-  }
+  return new fo_expr (cb->m_cur_sctx,
+                      e->get_loc (),
+                      CACHED (fn_data, LOOKUP_FN ("fn", "data", 1)),
+                      e);
 }
 
 
-void add_single_global_assign (const global_binding &b) 
+/*******************************************************************************
+  Wrap the given expr in one of the following functions:
+  fn:sort-distinct-nodes-asc-or-atomics, or
+  fn:sort-distinct-nodes-desc-or-atomics, or
+  fn:sort-distinct-nodes-asc, or
+  fn:sort-distinct-nodes-desc
+********************************************************************************/
+expr_t wrap_in_dos_and_dupelim(expr_t expr, bool atomics, bool reverse = false) 
 {
-  declare_var (b, minfo->init_exprs);
-}
+  std::ostringstream funcName;
 
+  funcName << ":sort-distinct-nodes";
 
-expr_t wrap_in_globalvar_assign(expr_t e) 
-{
-  for (list<global_binding>::iterator i = theGlobalVars.begin ();
-      i != theGlobalVars.end ();
-      i++)
-  {
-    add_single_global_assign (*i);
-  }
+  if (reverse)
+    funcName << "-desc";
+  else
+    funcName << "-asc";
 
-  if (! minfo->init_exprs.empty ()) {
-    e = new sequential_expr (cb->m_cur_sctx, e->get_loc(), minfo->init_exprs, e);
-  }
+  if (atomics)
+    funcName << "-or-atomics";
 
-  return e;
+  rchandle<fo_expr> dos;
+  dos = new fo_expr(cb->m_cur_sctx,
+                    expr->get_loc(),
+                    sctx_p->lookup_builtin_fn(funcName.str(), 1));
+  dos->add(expr);
+  return &*dos;
 }
 
 
@@ -998,12 +948,22 @@ let_clause_t wrap_in_letclause(expr_t e, varref_t lv)
 }
 
 
+/*******************************************************************************
+  Create a var_expr for a LET var with the given qname and add that var to the
+  local sctx obj. Then, create a LET clause for this new var_expr, with the given
+  expr "e" as its defining expression.
+********************************************************************************/
 let_clause_t wrap_in_letclause(expr_t e, const QueryLoc& loc, string name) 
 {
   return wrap_in_letclause(e, bind_var(loc, name, var_expr::let_var));
 }
 
 
+/*******************************************************************************
+  Create a var_expr for a new internal LET var and then create a LET clause for
+  this new var_expr, with the given expr "e" as its defining expression. NOTE:
+  the internal var is not registered in the sctx.
+********************************************************************************/
 let_clause_t wrap_in_letclause(expr_t e) 
 {
   return wrap_in_letclause(e, tempvar(e->get_loc(), var_expr::let_var));
@@ -1024,6 +984,12 @@ for_clause_t wrap_in_forclause(expr_t e, varref_t fv, varref_t pv)
 }
 
 
+/*******************************************************************************
+  Create var_exprs for a FOR var with the given qname and its associated POS
+  var, whose qname is also given. Then add those vars to the local sctx obj.
+  Then, create a FOR clause for these new var_exprs, with the given expr as the
+  defining expression of the FOR var.
+********************************************************************************/
 for_clause_t wrap_in_forclause(
     expr_t expr,
     const QueryLoc& loc,
@@ -1036,6 +1002,11 @@ for_clause_t wrap_in_forclause(
 }
 
 
+/*******************************************************************************
+  Create a var_expr for a new internal FOR var and then create a FOR clause for
+  this new var_expr, with the given expr as its defining expression. NOTE:
+  the internal var is not registered in the sctx.
+********************************************************************************/
 for_clause_t wrap_in_forclause(expr_t expr, bool add_posvar) 
 {
   varref_t fv = tempvar(expr->get_loc(), var_expr::for_var);
@@ -1101,30 +1072,6 @@ rchandle<flwor_expr> wrap_expr_in_flwor(expr* inputExpr, bool withContextSize)
   }
 
   return flworExpr;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-expr_t wrap_in_dos_and_dupelim(expr_t expr, bool atomics, bool reverse = false) 
-{
-  std::ostringstream funcName;
-
-  funcName << ":sort-distinct-nodes";
-
-  if (reverse)
-    funcName << "-desc";
-  else
-    funcName << "-asc";
-
-  if (atomics)
-    funcName << "-or-atomics";
-
-  rchandle<fo_expr> dos;
-  dos = new fo_expr(cb->m_cur_sctx, expr->get_loc(), sctx_p->lookup_builtin_fn(funcName.str(), 1));
-  dos->add(expr);
-  return &*dos;
 }
 
 
@@ -1225,6 +1172,254 @@ void collect_flwor_vars (
       break;
   }
 }
+
+
+/*******************************************************************************
+  Create declaration/initialization exprs for each prolog variable of this 
+  module and put these exprs in minfo->init_exprs. Then create a sequential
+  expr with its children being all the init exprs in minfo->init_exprs  plus
+  the given expr "e" as its last child. 
+
+  The method is called at the end of the translation of each module. The returned
+  expr is the result of the module translation. For the root module, the "e" expr
+  is the result of translating the QueryBody. For non-root modules, "e" is an
+  empty fn:concatenate() expr. 
+********************************************************************************/
+expr_t wrap_in_globalvar_assign(expr_t e) 
+{
+  for (list<global_binding>::iterator i = theGlobalVars.begin();
+      i != theGlobalVars.end();
+      i++)
+  {
+     declare_var(*i, minfo->init_exprs);
+  }
+
+  if (! minfo->init_exprs.empty ()) 
+  {
+    e = new sequential_expr(cb->m_cur_sctx, e->get_loc(), minfo->init_exprs, e);
+  }
+
+  return e;
+}
+
+
+/*******************************************************************************
+  Create declaration/initialization exprs for a prolog or block-local variable.
+
+  The following 4 cases are handled:
+  1. non-extrernal var with init expr, 2. external var with init expr,
+  3. non-extrernal var without init expr, 4. external var without init expr,
+  The corresponding expr created here are:
+  
+  1. sequential(ctxvar-declare(varName), ctxvar-assign(varName, initExpr))
+  2. if (ctxvar-exists(varName)) 
+     then fn:concatenate()
+     else sequential(ctxvar-declare(varName), ctxvar-assign(varName, initExpr))
+  3. ctxvar-declare(varName)
+  4. nothing
+********************************************************************************/
+void declare_var(const global_binding& b, std::vector<expr_t>& stmts) 
+{
+  CACHED (ctx_decl, LOOKUP_OP1 ("ctxvar-declare"));
+  CACHED (ctx_set, LOOKUP_OP2 ("ctxvar-assign"));
+
+  varref_t var = b.first;
+  xqtref_t var_type = var->get_type ();
+  expr_t expr = b.second;
+
+  xqpStringStore dot (".");
+
+  expr_t qname_expr = new const_expr(cb->m_cur_sctx,
+                                     var->get_loc(),
+                                     var->get_varname()->getStringValue()->equals(&dot) ?
+                                     "." : dynamic_context::var_key(&*var));
+
+  expr_t decl_expr = new fo_expr(cb->m_cur_sctx,
+                                 var->get_loc(),
+                                 ctx_decl,
+                                 qname_expr->clone());
+ 
+  if (expr != NULL) 
+  {
+    if (expr->is_updating())
+      ZORBA_ERROR_LOC(XUST0001, expr->get_loc());
+
+    expr = new fo_expr (cb->m_cur_sctx,
+                        var->get_loc(),
+                        ctx_set,
+                        qname_expr->clone(),
+                        expr);
+
+    expr = new sequential_expr(cb->m_cur_sctx, var->get_loc(), decl_expr, expr);
+
+    if (b.is_extern()) 
+    {
+      CACHED (ctx_exists, LOOKUP_OP1 ("ctxvar-exists"));
+      expr_t exists_expr = new fo_expr(cb->m_cur_sctx,
+                                       var->get_loc(),
+                                       ctx_exists,
+                                       qname_expr->clone());
+
+      expr = new if_expr (cb->m_cur_sctx,
+                          var->get_loc(),
+                          exists_expr,
+                          create_seq(var->get_loc()),
+                          expr);
+    }
+
+    stmts.push_back(expr);
+  }
+  else 
+  {
+    if (! b.is_extern())
+      stmts.push_back(decl_expr);
+  }
+
+  if (var_type != NULL && (b.is_extern() || b.second != NULL)) 
+  {
+    // check type for vars that are external or have an init expr
+    CACHED (ctx_get, LOOKUP_OP1("ctxvariable"));
+
+    expr_t get = new fo_expr(cb->m_cur_sctx,
+                             var->get_loc(),
+                             ctx_get,
+                             qname_expr->clone());
+
+    stmts.push_back(new treat_expr(cb->m_cur_sctx,
+                                   var->get_loc(),
+                                   get,
+                                   var->get_type(),
+                                   XPTY0004));
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+expr_update_t update_type_check_for_if(
+    expr_update_t lType1, 
+    expr_update_t lType2, 
+    const QueryLoc& aLoc)
+{
+  switch(lType1)
+  {
+  case VACUOUS_EXPR:
+  {
+    switch(lType2) 
+    {
+    case VACUOUS_EXPR:
+      return VACUOUS_EXPR;
+      break;
+    case SIMPLE_EXPR:
+      return SIMPLE_EXPR;
+      break;
+    case UPDATE_EXPR:
+      return UPDATE_EXPR;
+      break;
+    }
+    break;
+  }
+  case SIMPLE_EXPR:
+  {
+    switch(lType2) 
+    {
+    case VACUOUS_EXPR:
+      return SIMPLE_EXPR;
+      break;
+    case SIMPLE_EXPR:
+      return SIMPLE_EXPR;
+      break;
+    case UPDATE_EXPR:
+      ZORBA_ERROR_LOC(XUST0001, aLoc);
+      break;
+    }
+    break;
+  }
+  case UPDATE_EXPR:
+  {
+    switch(lType2) 
+    {
+    case VACUOUS_EXPR:
+      return UPDATE_EXPR;
+      break;
+    case SIMPLE_EXPR:
+      ZORBA_ERROR_LOC(XUST0001, aLoc);
+      break;
+    case UPDATE_EXPR:
+      return UPDATE_EXPR;
+      break;
+    }
+    break;
+  }
+  default:
+    ZORBA_ASSERT(false);
+  }
+  return SIMPLE_EXPR;
+}
+  
+
+/*******************************************************************************
+
+********************************************************************************/
+StaticContextConsts::xquery_version_t parse_xquery_version(const VersionDecl* vh) 
+{
+  if (vh == NULL)
+    return StaticContextConsts::xquery_version_1_0; // TODO: the spec says the default should be 1.1 for a 1.1 processor
+
+  string ver = vh->get_version ();
+  if (ver == "1.0")
+  {
+    xquery_version = StaticContextConsts::xquery_version_1_0;
+    return StaticContextConsts::xquery_version_1_0;
+  }
+  else if (ver == "1.1")
+  {
+    xquery_version = StaticContextConsts::xquery_version_1_1;
+    return StaticContextConsts::xquery_version_1_1;
+  }
+  else
+    return StaticContextConsts::xquery_version_unknown;
+}
+
+
+
+
+/*******************************************************************************
+  Create a type representing an ElementTest, where:
+
+	ElementTest ::= "element" "(" (ElementNameOrWildcard ("," TypeName "?"?)?)? ")"
+********************************************************************************/
+xqtref_t create_element_test(
+    const QueryLoc& loc,
+    QName* elemName,
+    TypeName* typeName,
+    bool nillable)
+{
+  store::Item_t ename;
+  store::Item_t tname;
+  rchandle<NodeTest> nodeTest;
+  xqtref_t contentType;
+
+  if (elemName != NULL) 
+  {
+    ename = sctx_p->lookup_elem_qname(elemName->get_qname(), loc);
+  }
+  
+  if (typeName != NULL) 
+  {
+    tname = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname(), loc);
+    
+    contentType = CTXTS->create_named_type(tname, TypeConstants::QUANT_ONE);
+  }
+  
+  return CTXTS->create_node_type(store::StoreConsts::elementNode,
+                                 ename,
+                                 contentType,
+                                 TypeConstants::QUANT_ONE,
+                                 nillable);
+}
+
 
 /*******************************************************************************
 
@@ -2294,7 +2489,8 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
     //
     else if (typeid (c) == typeid (WindowClause)) 
     {
-      pop_scope(2);  // var decl + output window condition vars
+      pop_scope();  // var decl + output window condition vars
+      pop_scope();
 
       const WindowClause& wc = *static_cast<const WindowClause *>(&c);
 
@@ -3107,7 +3303,7 @@ void end_visit (const CtxItemDecl& v, void* /*visit_state*/)
     store::Item_t dotname;
     varref_t var = create_var (loc, ".", var_expr::context_var, ctx_item_type);
     global_binding b (var, ctx_item_default, true);
-    add_single_global_assign (b);
+    declare_var(b, minfo->init_exprs);
   }
 }
 
@@ -4084,7 +4280,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       // TODO: we have to find a way to tell user defined resolvers when their input stream
       // can be freed. The current solution might leed to problems on Windows.
       xqpStringStore lFileUri;
-      auto_ptr<istream> modfile (lModuleResolver->resolve(aturiitem, sctx_p, &lFileUri));
+      auto_ptr<istream> modfile(lModuleResolver->resolve(aturiitem, sctx_p, &lFileUri));
 #ifdef ZORBA_DEBUGGER
       if(cb->m_debugger != 0) {
         cb->m_debugger->theModuleFileMappings.insert(std::pair<std::string, std::string>(aturiitem->getStringValue()->c_str(), lFileUri.c_str()));
@@ -5448,16 +5644,6 @@ void end_visit (const PITest& v, void* /*visit_state*/)
   }
 }
 
-
-xqpString tempname () {
-  return "$$temp" + to_string(tempvar_counter++);
-}
-
-varref_t tempvar(const QueryLoc& loc, var_expr::var_kind kind)
-{
-  xqpString lname (tempname ());
-  return create_var(loc, lname, kind);
-}
 
 
 rchandle<flwor_expr> wrap_in_let_flwor (expr_t expr, varref_t lv, expr_t ret) 
@@ -7223,7 +7409,7 @@ expr_t translate (const parsenode& root, CompilerCB* aCompilerCB)
                          root.get_location(),
                          "Module declaration must not be used in a main module");
 
-  ModulesInfo minfo (aCompilerCB->m_sctx, aCompilerCB);
+  ModulesInfo minfo (aCompilerCB);
 
   return translate_aux (root, aCompilerCB, &minfo, mod_stack);
 }
