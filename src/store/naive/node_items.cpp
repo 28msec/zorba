@@ -378,7 +378,7 @@ xqpStringStore_t XmlNode::getBaseURIInternal(bool& local) const
 ********************************************************************************/
 store::Item* XmlNode::copy(
     store::Item* inParent,
-    ulong pos,
+    long pos,
     const store::CopyMode& copymode) const
 {
   InternalNode* parent = NULL;

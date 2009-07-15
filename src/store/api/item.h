@@ -544,7 +544,7 @@ public:
    */
   virtual Item* copy(
         Item*           parent,
-        ulong           pos,
+        long           pos,
         const CopyMode& copymode) const;
 
   /**
