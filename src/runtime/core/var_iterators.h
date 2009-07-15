@@ -19,12 +19,76 @@
 #include "zorbatypes/xqpstring.h"
 
 #include "common/shared_types.h"
-#include "runtime/base/noarybase.h" // TODO remove after iterator refactoring
+
+#include "runtime/base/noarybase.h" 
+#include "runtime/base/narybase.h"
+
+#include "store/api/iterator.h"
 
 namespace zorba
 {
 
-class Item;
+/*******************************************************************************
+  This iterator implements the ctxvar-declare(varName) function. Its purpose is
+  to declare all block-local and prolog vars (including the context item, if it
+  is declared in the prolog), except for external vars without an initalizing
+  expr. Specifically, the iterator registers the varName into the dynamic context.
+********************************************************************************/
+NARY_ITER(CtxVarDeclIterator);
+
+
+/*******************************************************************************
+  This iterator implements the ctxvar-assign(varName, initExpr) function. Its
+  purpose is to initialize prolog vars that do have an initializing expr, or
+  in xquery-scripting, to assign a value to a prolog or block-local variable.
+
+  For the context item var, the iterator creates a binding in the dynamic ctx
+  between the varName (".") and the actual context item returned by the initExpr.
+  For a regular prolog var, the iterator creates a binding in the dynamic ctx
+  between the varName and an iterator plan that computes the initExpr. 
+  
+********************************************************************************/
+NARY_ITER(CtxVarAssignIterator);
+
+
+/*******************************************************************************
+  This iterator implements the ctxvar-exists(varName) function. Its purpose is
+  to check if a prolog or block-local variable has been declared. It does so
+  by checking whether an entry exists for variable in the dynamic ctx.
+********************************************************************************/
+NARY_ITER(CtxVarExistsIterator);
+
+
+/*******************************************************************************
+  This iterator implements the ctxvariable(varName) function, which represents
+  references to prolog or block-local variables.
+
+  For each prolog variable, the dynamic context maps the name of the variable
+  to an iterator that computes the variable's value. CtxVariableIterator has
+  one child only, which produces the name of a prolog variabe. Using this name,
+  CtxVariableIterator extracts the associated iterator from the dynamic context
+  and just returns the items that it produces, one-at-a-time.
+
+  The global context item is also considered a prolog variable whose name is
+  ".". Since the value of the context item is always a single item (or the empty
+  seq), the dynamic context maps "." to an Item (instead of an Iterator). So,
+  a CtxVariableIterator that represents the context item, returns just the item
+  associated with "." in the dynamic context.
+
+  Note: the binding in the dynamic context between a var name and an iterator
+  plan (or single item) can be created in one of the following ways:
+  (a) The CtxVarAssignIterator described above, or
+  (b) Through the user API provided by DynamicContextImpl class (see methods
+      setVariable, setContextItem, etc).
+********************************************************************************/
+class CtxVariableIteratorState : public  PlanIteratorState 
+{
+public:
+  store::Iterator_t theIter;
+};
+
+
+NARY_ITER_STATE(CtxVariableIterator, CtxVariableIteratorState);
 
 
 /*******************************************************************************

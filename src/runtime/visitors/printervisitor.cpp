@@ -159,7 +159,7 @@ void printCommons(const PlanIterator* aIter, int theId)
     thePrinter.addAttribute("test kind", toString(a->getTestKind()));
 
     if (a->getDocTestKind() != match_no_test)
-      thePrinter.addAttribute("doc test kind", toString(a->getDocTestKind()));
+      thePrinter.addAttribute("doc_test_kind", toString(a->getDocTestKind()));
 
     if (a->getQName() != 0)
       thePrinter.addAttribute("qname", a->getQName()->show());

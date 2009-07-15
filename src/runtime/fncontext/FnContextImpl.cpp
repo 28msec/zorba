@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "compiler/api/compiler_api.h"
 #include "compiler/parsetree/parsenodes.h"
 
@@ -39,73 +40,41 @@ using namespace std;
 namespace zorba
 {
 
-bool CtxVariableIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+PlanIter_t EvalIterator::compile(
+    CompilerCB *ccb,
+    xqp_string query, 
+    checked_vector<store::Item_t> varnames,
+    checked_vector<xqtref_t> vartypes) 
 {
-  store::Item_t varName;
-  xqpStringStore dot (".");
+  XQueryCompiler compiler (ccb);
+  istringstream os (query);
+  parsenode_t ast = compiler.parse (os);
+  QueryLoc loc;
+
+  rchandle<MainModule> mm = ast.dyn_cast<MainModule> ();
+  if (mm == NULL)
+    ZORBA_ERROR_LOC (XPST0003, loc);
+  rchandle<Prolog> prolog = mm->get_prolog ();
+  if (prolog == NULL) {
+    prolog = new Prolog (loc, NULL, NULL);
+    mm->set_prolog (prolog);
+  }
+  rchandle<VFO_DeclList> vfo = prolog->get_vfo_list ();
+  if (vfo == NULL) {
+    vfo = new VFO_DeclList (loc);
+    prolog->set_vfo_list (vfo);
+  }
   
-  CtxVariableIteratorState* state;
-  DEFAULT_STACK_INIT(CtxVariableIteratorState, state, planState);
-
-  CONSUME (varName, 0);
-
-	if(varName->getStringValue ()->equals (&dot)) {  // looking for context item?
-      result = planState.theRuntimeCB->theDynamicContext->context_item();
-		if(result == NULL)
-			ZORBA_ERROR_LOC_PARAM( XPDY0002, loc, "context item", "");
-		STACK_PUSH(true, state);
-	} else {
-    state->theIter = planState.theRuntimeCB->theDynamicContext->
-                     get_variable(varName);
-
-    if (state->theIter == NULL) {
-      std::string var_key = xqp_string (varName->getStringValue ());
-			ZORBA_ERROR_LOC_PARAM( XPDY0002, loc, var_key.substr (var_key.find (":") + 1), "");
-    }
-
-    state->theIter->open();
-
-    while (state->theIter->next(result))
-			STACK_PUSH (true, state);
-
-    state->theIter->close();
-	}
-
-  STACK_END (state);
+  for (int i = (int) varnames.size () - 1; i >= 0; i--)
+    vfo->push_front (new VarDecl (loc, xqp_string (varnames [i]->getStringValue ()), NULL, NULL, true));
+  // TODO: give eval'ed code the types of the variables (for optimization)
+  
+  return compiler.compile (ast);
 }
 
 
-PlanIter_t EvalIterator::compile (CompilerCB *ccb, xqp_string query, 
-                           checked_vector<store::Item_t> varnames,
-                           checked_vector<xqtref_t> vartypes) 
+bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
-    XQueryCompiler compiler (ccb);
-    istringstream os (query);
-    parsenode_t ast = compiler.parse (os);
-    QueryLoc loc;
-
-    rchandle<MainModule> mm = ast.dyn_cast<MainModule> ();
-    if (mm == NULL)
-      ZORBA_ERROR_LOC (XPST0003, loc);
-    rchandle<Prolog> prolog = mm->get_prolog ();
-    if (prolog == NULL) {
-      prolog = new Prolog (loc, NULL, NULL);
-      mm->set_prolog (prolog);
-    }
-    rchandle<VFO_DeclList> vfo = prolog->get_vfo_list ();
-    if (vfo == NULL) {
-      vfo = new VFO_DeclList (loc);
-      prolog->set_vfo_list (vfo);
-    }
-
-    for (int i = (int) varnames.size () - 1; i >= 0; i--)
-      vfo->push_front (new VarDecl (loc, xqp_string (varnames [i]->getStringValue ()), NULL, NULL, true));
-    // TODO: give eval'ed code the types of the variables (for optimization)
-
-    return compiler.compile (ast);
-  }
-
-bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t item;
   EvalIteratorState* state;
 
@@ -113,7 +82,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
 
   // set up eval state's ccb
   state->ccb.reset (new CompilerCB (*planState.theCompilerCB));
-  state->ccb->m_sctx = state->ccb->m_sctx->create_child_context ();
+  state->ccb->m_sctx = planState.theCompilerCB->m_sctx->create_child_context ();
   state->ccb->m_context_map[state->ccb->m_cur_sctx] = state->ccb->m_sctx; 
   CONSUME (item, 0);
 
@@ -147,64 +116,5 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   STACK_END (state);
 }
 
-bool CtxVarDeclIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t varName;
-  store::Item_t item;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  CONSUME (varName, 0);
-
-  planState.theRuntimeCB->theDynamicContext->declare_variable (xqp_string (varName->getStringValue ()));
-
-  STACK_END (state);
-}
-
-bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t varName;
-  xqpStringStore dot (".");
-  store::Item_t item;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  CONSUME (varName, 0);
-
-	if(varName->getStringValue ()->equals (&dot)) {
-    if (! CONSUME (item, 1))
-			ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "context item must be a single item");
-    planState.theRuntimeCB->theDynamicContext->set_context_item(item, 0);
-    if (CONSUME (item, 1))
-      ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "context item must be a single item");
-  } else {
-    planState.theRuntimeCB->theDynamicContext->set_variable (xqp_string (varName->getStringValue ()),
-                                                             new PlanIteratorWrapper (theChildren [1], planState));
-  }
-
-  STACK_END (state);
-}
-
-bool CtxVarExistsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  xqpStringStore dot (".");
-  store::Item_t varName;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  CONSUME (varName, 0);
-
-	if(varName->getStringValue ()->equals (&dot)) {
-    STACK_PUSH(GENV_ITEMFACTORY->createBoolean (result, planState.theRuntimeCB->theDynamicContext->context_item() != NULL),
-               state);
-	} else {
-    STACK_PUSH(GENV_ITEMFACTORY->createBoolean (result, planState.theRuntimeCB->theDynamicContext->get_variable(varName) != NULL),
-               state);
-  }
-  STACK_END (state);
-}
 
 }

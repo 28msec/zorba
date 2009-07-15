@@ -74,9 +74,13 @@ public:
   void setNilledAllowed(bool v)                    { theNilledAllowed = v; }
 
   const match_test_t& getTestKind() const { return theTestKind; }
+
   const match_test_t& getDocTestKind() const { return theDocTestKind; }
+
   const store::Item_t& getQName() const { return theQName; }
+
   const xqtref_t& getType() const { return theType; }
+
   bool nilledAllowed() const { return theNilledAllowed; }
 
   bool nameOrKindTest(const store::Item* node, PlanState& planState) const;
