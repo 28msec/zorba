@@ -1206,17 +1206,28 @@ expr_t wrap_in_globalvar_assign(expr_t e)
 /*******************************************************************************
   Create declaration/initialization exprs for a prolog or block-local variable.
 
-  The following 4 cases are handled:
-  1. non-extrernal var with init expr, 2. external var with init expr,
-  3. non-extrernal var without init expr, 4. external var without init expr,
-  The corresponding expr created here are:
+  The following 4 cases are considered:
+  1. non-extrernal var with init expr, 
+  2. external var with init expr,
+  3. non-extrernal var without init expr,
+  4. external var without init expr,
+
+  The corresponding expr created here (and added to stmts) are:
   
   1. sequential(ctxvar-declare(varName), ctxvar-assign(varName, initExpr))
+
   2. if (ctxvar-exists(varName)) 
      then fn:concatenate()
      else sequential(ctxvar-declare(varName), ctxvar-assign(varName, initExpr))
+
   3. ctxvar-declare(varName)
+
   4. nothing
+
+  If the var declaration includes a type declaration, then the following expr
+  is also created and added to stmts:
+
+  treat(ctxvariable(varName), type)
 ********************************************************************************/
 void declare_var(const global_binding& b, std::vector<expr_t>& stmts) 
 {
@@ -1424,14 +1435,558 @@ xqtref_t create_element_test(
 /*******************************************************************************
 
 ********************************************************************************/
-
-
-void *begin_visit (const exprnode& v) {
+void *begin_visit (const exprnode& v) 
+{
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit (const exprnode& v, void* /*visit_state*/) {
+void end_visit (const exprnode& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Module, VersionDecl, MainModule, LibraryModule, ModuleDecl                 //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+  [1] Module ::= 	VersionDecl? (LibraryModule | MainModule)
+********************************************************************************/
+void *begin_visit (const Module& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const Module& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/******************************************************************************
+  [2] VersionDecl ::= XQUERY ENCODING STRING_LITERAL SEMI |
+                      XQUERY VERSION STRING_LITERAL SEMI |
+                      XQUERY VERSION STRING_LITERAL ENCODING STRING_LITERAL SEMI
+********************************************************************************/
+void *begin_visit (const VersionDecl& v) 
+{
+  TRACE_VISIT ();
+  if (! xqp_string (v.get_encoding ()).matches ("^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
+    ZORBA_ERROR_LOC (XQST0087, loc);
+
+  StaticContextConsts::xquery_version_t ver = parse_xquery_version(&v);
+  if (ver == StaticContextConsts::xquery_version_unknown)
+    ZORBA_ERROR_LOC(XQST0031, loc);
+
+  sctx_p->set_xquery_version(ver);
+  return no_state;
+}
+
+void end_visit (const VersionDecl& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [3] MainModule ::= Prolog  QueryBody | QueryBody
+********************************************************************************/
+void *begin_visit (const MainModule & v) 
+{
+  TRACE_VISIT ();
+
+  theDotVar = bind_var(loc, DOT_VARNAME, var_expr::context_var, ctx_item_type);
+  
+  sctx_p->set_xquery_version(parse_xquery_version(v.get_version_decl().getp()));
+
+  return no_state;
+}
+
+void end_visit (const MainModule & v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [4] LibraryModule ::= ModuleDecl  Prolog
+********************************************************************************/
+void *begin_visit (const LibraryModule& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const LibraryModule& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  sctx_p->set_xquery_version(parse_xquery_version(v.get_version_decl().getp()));
+
+  // Note: There is no real reason to put the expr returned by 
+  // wrap_in_globalvar_assign() in the nodestack. The only reason is for the
+  // translate_aux() function to be able to pick that expr from the stack in
+  // order to print it.
+  nodestack.push(wrap_in_globalvar_assign(create_seq(loc)));
+}
+
+
+/******************************************************************************
+  [5] ModuleDecl ::= MODULE NAMESPACE  NCNAME  EQ  URI_LITERAL  SEMI
+********************************************************************************/
+void *begin_visit (const ModuleDecl& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const ModuleDecl& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  mod_pfx = v.get_prefix ();
+  mod_ns = v.get_target_namespace ();
+
+  if (mod_ns.empty ())
+    ZORBA_ERROR_LOC (XQST0088, loc);
+
+  if (mod_pfx == "xml" || mod_pfx == "xmlns")
+    ZORBA_ERROR_LOC (XQST0070, loc);
+
+  sctx_p->bind_ns (mod_pfx, mod_ns);
+
+  static_context_t lTmpCtx;
+  bool found = minfo->mod_sctx_map.get(sctx_p->entity_retrieval_url(), lTmpCtx);
+  ZORBA_ASSERT (found);
+
+  export_sctx = lTmpCtx.getp();
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Prolog                                                                     //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+  [6] Prolog ::= SIND_DeclList  VFO_DeclList
+
+  [6a] SIND_DeclList ::= SIND_Decl Separator | SIND_DeclList SIND_Decl Separator
+
+  [6b] VFO_DeclList ::= VFO_Decl Separator | VFO_DeclList VFO_Decl Separator
+
+  [6c] SIND_Decl ::= Setter | NamespaceDecl | DefaultNamespaceDecl | Import
+
+  [6d] VFO_Decl ::= VarDecl | ContextItemDecl | FunctionDecl | IndexDecl | OptionDecl
+********************************************************************************/
+void *begin_visit (const Prolog& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const Prolog& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [6a] SIND_DeclList ::= SIND_Decl Separator | SIND_DeclList SIND_Decl Separator
+********************************************************************************/
+void *begin_visit (const SIND_DeclList& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const SIND_DeclList& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [6c] SIND_Decl ::= Setter | NamespaceDecl | DefaultNamespaceDecl | Import
+********************************************************************************/
+
+
+/******************************************************************************
+
+  [7] Setter ::= BoundarySpaceDecl |
+                 OrderingModeDecl |
+                 EmptyOrderDecl |
+                 CopyNamespacesDecl |
+                 DecimalFormatDecl |
+                 DefaultCollationDecl |
+                 BaseURIDecl |
+                 ConstructionDecl |
+
+********************************************************************************/
+
+
+/*******************************************************************************
+  [11] BoundarySpaceDecl ::= DECLARE_BOUNDARY_SPACE  ( PRESERVE | STRIP )
+********************************************************************************/
+void *begin_visit (const BoundarySpaceDecl& v) 
+{
+  TRACE_VISIT ();
+  CHK_SINGLE_DECL (hadBSpaceDecl, XQST0068);
+  sctx_p->set_boundary_space_mode(v.get_boundary_space_mode());
+  return NULL;
+}
+
+void end_visit (const BoundarySpaceDecl& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [14] OrderingModeDecl ::= DECLARE_ORDERING  ( ORDERED | UNORDERED )
+********************************************************************************/
+void *begin_visit (const OrderingModeDecl& v) 
+{
+  TRACE_VISIT ();
+  CHK_SINGLE_DECL (hadOrdModeDecl, XQST0065);
+  sctx_p->set_ordering_mode(v.get_mode());
+  return NULL;
+}
+
+
+void end_visit (const OrderingModeDecl& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [15] EmptyOrderDecl ::= DECLARE_DEFAULT_ORDER  EMPTY_GREATEST |
+                          DECLARE_DEFAULT_ORDER  EMPTY_LEAST
+********************************************************************************/
+void *begin_visit (const EmptyOrderDecl& v) 
+{
+  TRACE_VISIT ();
+  CHK_SINGLE_DECL (hadEmptyOrdDecl, XQST0069);
+  sctx_p->set_order_empty_mode(v.get_mode());
+  return no_state;
+}
+
+void end_visit (const EmptyOrderDecl& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [16] CopyNamespacesDecl ::= DECLARE_COPY_NAMESPACES PreserveMode COMMA InheritMode
+
+  [19] PreserveMode ::= "preserve" | "no-preserve"
+  [20] InheritMode ::=  "inherit" | "no-inherit"
+********************************************************************************/
+void *begin_visit (const CopyNamespacesDecl& v) 
+{
+  TRACE_VISIT ();
+  CHK_SINGLE_DECL (hadCopyNSDecl, XQST0055);
+  return no_state;
+}
+
+void end_visit (const CopyNamespacesDecl& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+ sctx_p->set_inherit_mode  (v.get_inherit_mode ());
+ sctx_p->set_preserve_mode (v.get_preserve_mode ());
+}
+
+
+/******************************************************************************
+  [17] DecimalFormatDecl ::= "declare"
+                             (("decimal-format" QName) | ("default" "decimal-format"))
+                             (DFPropertyName "=" StringLiteral)*
+
+  [18] DFPropertyName ::= "decimal-separator" | "grouping-separator" |
+                          "infinity" | "minus-sign" | "NaN" | "percent" |
+                          "per-mille" | "zero-digit" | "digit" |
+                          "pattern-separator"
+********************************************************************************/
+void *begin_visit (const DecimalFormatNode& v) 
+{
+  // cout << "Got DecimalFormat declaration: " << std::endl;
+  TRACE_VISIT ();
+
+  store::Item_t qname;
+  if (!v.is_default)
+  {
+    string::size_type pos = v.format_name.find(":");
+    string prefix = v.format_name.substr(0, pos == string::npos ? 0 : pos);
+    string name = v.format_name.substr(pos == string::npos ? 0 : pos+1);
+    xqp_string ns;
+    ns_ctx->findBinding(prefix, ns);
+    GENV_ITEMFACTORY->createQName(qname, ns.c_str(), prefix.c_str(), name.c_str());
+  }
+  
+  DecimalFormat_t df = new DecimalFormat(v.is_default, qname, v.param_list);
+  sctx_p->add_decimal_format(df);
+    
+  return no_state;
+}
+
+void end_visit (const DecimalFormatNode& v, void* /*visit_state*/) 
+{
+  // std::cout << "end_visit() Got DecimalFormat declaration: " << std::endl;
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [21] DefaultCollationDecl ::=	DECLARE_DEFAULT_COLLATION  URI_LITERAL
+********************************************************************************/
+void *begin_visit (DefaultCollationDecl const& v) 
+{
+  TRACE_VISIT ();
+  string uri = v.get_collation();
+  sctx_p->set_default_collation_uri(uri);
+  return NULL;
+}
+
+void end_visit (const DefaultCollationDecl& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [22] BaseURIDecl ::= DECLARE_BASE_URI  URI_LITERAL
+********************************************************************************/
+void *begin_visit (const BaseURIDecl& v) 
+{
+  TRACE_VISIT ();
+  CHK_SINGLE_DECL (hadBUriDecl, XQST0032);
+  try 
+  {
+    sctx_p->set_baseuri(v.get_base_uri());
+  }
+  catch (error::ZorbaError&) 
+  {
+    // assume it's a relative uri and we will resolve it later.
+    // It's currently a problem if the uri is absolute but invalid
+  }
+  return NULL;
+}
+
+void end_visit (const BaseURIDecl& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [31] ConstructionDecl ::= DECLARE_CONSTRUCTION  PRESERVE
+                            DECLARE_CONSTRUCTION  STRIP
+********************************************************************************/
+void *begin_visit (const ConstructionDecl& v) 
+{
+  TRACE_VISIT ();
+  CHK_SINGLE_DECL (hadConstrDecl, XQST0067);
+  sctx_p->set_construction_mode(v.get_mode());
+  return NULL;
+}
+
+void end_visit (const ConstructionDecl& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [10] NamespaceDecl ::= ::= DECLARE_NAMESPACE  NCNAME  EQ  URI_LITERAL
+********************************************************************************/
+void *begin_visit (const NamespaceDecl& v) 
+{
+  TRACE_VISIT ();
+
+  xqp_string pre = v.get_prefix (), uri = v.get_uri ();
+  if (pre == "xml" || pre == "xmlns" || uri == XML_NS)
+    ZORBA_ERROR_LOC (XQST0070, loc);
+
+  sctx_p->bind_ns (pre, uri);
+
+  return NULL;
+}
+
+void end_visit (const NamespaceDecl& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [12] DefaultNamespaceDecl ::= DECLARE DEFAULT ELEMENT NAMESPACE URILiteral |
+                                DECLARE DEFAULT FUNCTION NAMESPACE URILiteral
+********************************************************************************/
+void *begin_visit (DefaultNamespaceDecl const& v) 
+{
+  TRACE_VISIT ();
+  switch (v.get_mode()) 
+  {
+  case ParseConstants::ns_element_default:
+    sctx_p->set_default_elem_type_ns (v.get_default_namespace ());
+    break;
+  case ParseConstants::ns_function_default:
+    sctx_p->set_default_function_namespace (v.get_default_namespace ());
+    break;
+  }
+  return NULL;
+}
+
+void end_visit (const DefaultNamespaceDecl& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [8] Import ::= SchemaImport | ModuleImport
+********************************************************************************/
+
+
+/*******************************************************************************
+  [23] SchemaImport ::= "import" "schema" SchemaPrefix? URILiteral
+                        ("at"  URILiteralList)?
+********************************************************************************/
+void *begin_visit (const SchemaImport& v) 
+{
+  TRACE_VISIT ();
+
+#ifndef ZORBA_NO_XMLSCHEMA
+
+  SchemaPrefix* prefix = &*v.get_prefix();
+  string target_ns = v.get_uri();
+
+  if (! schema_import_ns_set.insert(target_ns).second)
+    ZORBA_ERROR_LOC (XQST0058, loc);
+
+  if (prefix != NULL) 
+  {
+    if (target_ns.size() == 0)
+      ZORBA_ERROR_LOC_PARAM(XQST0057, loc,
+                            "(no target namespace uri specified)",
+                            target_ns);
+
+    string pfx = prefix->get_prefix();
+
+    if (pfx == "xml" || pfx == "xmlns")
+      ZORBA_ERROR_LOC (XQST0070, loc);
+
+    if (prefix->get_default_bit()) 
+      sctx_p->set_default_elem_type_ns (target_ns);
+
+    if (! pfx.empty())
+      sctx_p->bind_ns (pfx, target_ns, XQST0033);
+  }
+
+  store::Item_t lTargetNamespace = NULL;
+  ITEM_FACTORY->createAnyURI(lTargetNamespace, target_ns.c_str());
+  ZORBA_ASSERT(lTargetNamespace != NULL);
+
+  rchandle<URILiteralList> atlist = v.get_at_list();
+  std::vector<store::Item_t> lAtURIList;
+
+  if (atlist != NULL) 
+  {
+    for (int i = 0; i < atlist->size(); ++i) 
+    {
+      // If current uri is relative, turn it to an absolute one, using the
+      // base uri from the sctx.
+      string at = sctx_p->resolve_relative_uri((*atlist)[i], xqpString());
+
+      store::Item_t lAtURIItem;
+      ITEM_FACTORY->createAnyURI(lAtURIItem, at.c_str());
+      ZORBA_ASSERT(lAtURIItem != NULL);
+      lAtURIList.push_back(lAtURIItem);
+#if 0
+      string pfx = prefix == NULL ? "" : prefix->get_prefix();
+      cout << "SchemaImport: " << pfx << " : " << target_ns
+           << " @ " << at << endl;
+      cout << " Context: " << CTXTS << "\n";
+#endif
+    }
+  }
+  
+  InternalSchemaURIResolver* lSchemaResolver = sctx_p->get_schema_uri_resolver();
+  
+  try 
+  {
+    // If lAtURIList is empty, return lTargetNamespace, else return the 1st
+    // uri item from lAtURIList.
+    store::Item_t lSchemaUri = lSchemaResolver->resolve(lTargetNamespace,
+                                                        lAtURIList,
+                                                        sctx_p);
+
+    // Create a Schema obj and register it in the typemanger, if the typemanager
+    // does not have a schema obj already
+    CTXTS->initializeSchema();
+    Schema* schema_p = CTXTS->getSchema();
+
+    std::string lTmp(lSchemaUri->getStringValue()->c_str());
+
+    // Make Xerxes load and parse the xsd file and create a Xerces
+    // representaton of it.
+    schema_p->registerXSD(lTargetNamespace->getStringValue()->c_str(), lTmp, loc);
+  }
+  catch (error::ZorbaError& e) 
+  {
+    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+  }
+
+  return no_state;
+
+#else
+  ZORBA_ERROR_LOC(XQST0009, loc);
+  return no_state;
+#endif
+}
+
+void end_visit (const SchemaImport& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/******************************************************************************
+  [23a] URLLiteralList ::= URI_LITERAL | URILiteralList  COMMA  URI_LITERAL
+********************************************************************************/
+void *begin_visit (const URILiteralList& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const URILiteralList& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/******************************************************************************
+  [24] SchemaPrefix ::=	("namespace" NCName "=") | ("default" "element" "namespace")
+********************************************************************************/
+void *begin_visit (const SchemaPrefix& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const SchemaPrefix& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 }
 
@@ -1439,20 +1994,8 @@ void end_visit (const exprnode& v, void* /*visit_state*/) {
 /*******************************************************************************
 
 ********************************************************************************/
-void *begin_visit (const ArgList& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const ArgList& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void *begin_visit (const QueryBody& v) {
+void *begin_visit (const QueryBody& v) 
+{
   TRACE_VISIT ();
   // fictious :query-body operator
   // TODO: should be local::query-body, but some C examples fail to
@@ -1472,31 +2015,12 @@ void end_visit (const QueryBody& v, void* /*visit_state*/) {
 /*******************************************************************************
 
 ********************************************************************************/
-void *begin_visit (const BaseURIDecl& v) {
+void *begin_visit (const ArgList& v) {
   TRACE_VISIT ();
-  CHK_SINGLE_DECL (hadBUriDecl, XQST0032);
-  try {
-    sctx_p->set_baseuri(v.get_base_uri());
-  } catch (error::ZorbaError&) {
-    // assume it's a relative uri and we will resolve it later.
-    // It's currently a problem if the uri is absolute but invalid
-  }
-  return NULL;
+  return no_state;
 }
 
-void end_visit (const BaseURIDecl& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const BoundarySpaceDecl& v) {
-  TRACE_VISIT ();
-  CHK_SINGLE_DECL (hadBSpaceDecl, XQST0068);
-  sctx_p->set_boundary_space_mode(v.get_boundary_space_mode());
-  return NULL;
-}
-
-void end_visit (const BoundarySpaceDecl& v, void* /*visit_state*/) {
+void end_visit (const ArgList& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
@@ -1517,73 +2041,6 @@ void *begin_visit (const CaseClauseList& v) {
 }
 
 void end_visit (const CaseClauseList& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const ConstructionDecl& v) {
-  TRACE_VISIT ();
-  CHK_SINGLE_DECL (hadConstrDecl, XQST0067);
-  sctx_p->set_construction_mode(v.get_mode());
-  return NULL;
-}
-
-void end_visit (const ConstructionDecl& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const CopyNamespacesDecl& v) {
-  TRACE_VISIT ();
-  CHK_SINGLE_DECL (hadCopyNSDecl, XQST0055);
-  return no_state;
-}
-
-void end_visit (const CopyNamespacesDecl& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
- sctx_p->set_inherit_mode  (v.get_inherit_mode ());
- sctx_p->set_preserve_mode (v.get_preserve_mode ());
-}
-
-
-void *begin_visit (DefaultCollationDecl const& v) {
-  TRACE_VISIT ();
-  string uri = v.get_collation();
-  sctx_p->set_default_collation_uri(uri);
-  return NULL;
-}
-
-void end_visit (const DefaultCollationDecl& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (DefaultNamespaceDecl const& v) {
-  TRACE_VISIT ();
-  switch (v.get_mode()) {
-  case ParseConstants::ns_element_default:
-    sctx_p->set_default_elem_type_ns (v.get_default_namespace ());
-    break;
-  case ParseConstants::ns_function_default:
-    sctx_p->set_default_function_namespace (v.get_default_namespace ());
-    break;
-  }
-  return NULL;
-}
-
-void end_visit (const DefaultNamespaceDecl& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const EmptyOrderDecl& v) {
-  TRACE_VISIT ();
-  CHK_SINGLE_DECL (hadEmptyOrdDecl, XQST0069);
-  sctx_p->set_order_empty_mode(v.get_mode());
-  return no_state;
-}
-
-void end_visit (const EmptyOrderDecl& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
@@ -4127,66 +4584,6 @@ void end_visit (const GeneralComp& v, void* /*visit_state*/) {
 }
 
 
-void *begin_visit (const LibraryModule& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const LibraryModule& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  sctx_p->set_xquery_version(parse_xquery_version(v.get_version_decl().getp()));
-  nodestack.push (wrap_in_globalvar_assign (create_seq (loc)));
-}
-
-
-void *begin_visit (const MainModule & v) {
-  TRACE_VISIT ();
-
-  theDotVar = bind_var (loc, DOT_VARNAME, var_expr::context_var, ctx_item_type);
-  
-  sctx_p->set_xquery_version(parse_xquery_version(v.get_version_decl().getp()));
-  return no_state;
-}
-
-void end_visit (const MainModule & v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const Module& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const Module& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const ModuleDecl& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const ModuleDecl& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-
-  mod_pfx = v.get_prefix ();
-  mod_ns = v.get_target_namespace ();
-  if (mod_ns.empty ())
-    ZORBA_ERROR_LOC (XQST0088, loc);
-  if (mod_pfx == "xml" || mod_pfx == "xmlns")
-    ZORBA_ERROR_LOC (XQST0070, loc);
-
-  sctx_p->bind_ns (mod_pfx, mod_ns);
-
-  static_context_t lTmpCtx;
-  bool found = minfo->mod_sctx_map.get (sctx_p->entity_retrieval_url (), lTmpCtx);
-  ZORBA_ASSERT (found);
-  export_sctx = lTmpCtx.getp();
-}
-
-
 void *begin_visit (const ModuleImport& v) {
   TRACE_VISIT ();
   return no_state;
@@ -4353,19 +4750,6 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
 }
 
 
-void *begin_visit (const NamespaceDecl& v) {
-  TRACE_VISIT ();
-  xqp_string pre = v.get_prefix (), uri = v.get_uri ();
-  if (pre == "xml" || pre == "xmlns" || uri == XML_NS)
-    ZORBA_ERROR_LOC (XQST0070, loc);
-  sctx_p->bind_ns (pre, uri);
-  return NULL;
-}
-
-void end_visit (const NamespaceDecl& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
 void *begin_visit (const NodeComp& v) {
   TRACE_VISIT ();
   return no_state;
@@ -4393,19 +4777,6 @@ void end_visit (const OptionDecl& v, void* /*visit_state*/) {
 }
 
 
-void *begin_visit (const OrderingModeDecl& v) {
-  TRACE_VISIT ();
-  CHK_SINGLE_DECL (hadOrdModeDecl, XQST0065);
-  sctx_p->set_ordering_mode(v.get_mode());
-  return NULL;
-}
-
-
-void end_visit (const OrderingModeDecl& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-
 void *begin_visit (const Pragma& v) {
   TRACE_VISIT ();
   return no_state;
@@ -4423,16 +4794,6 @@ void *begin_visit (const PragmaList& v) {
 }
 
 void end_visit (const PragmaList& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const Prolog& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const Prolog& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
@@ -4458,141 +4819,6 @@ void *begin_visit (const QVarInDeclList& v) {
 }
 
 void end_visit (const QVarInDeclList& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const SIND_DeclList& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const SIND_DeclList& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const DecimalFormatNode& v) {
-  // cout << "Got DecimalFormat declaration: " << std::endl;
-  TRACE_VISIT ();
-
-  store::Item_t qname;
-  if (!v.is_default)
-  {
-    string::size_type pos = v.format_name.find(":");
-    string prefix = v.format_name.substr(0, pos == string::npos ? 0 : pos);
-    string name = v.format_name.substr(pos == string::npos ? 0 : pos+1);
-    xqp_string ns;
-    ns_ctx->findBinding(prefix, ns);
-    GENV_ITEMFACTORY->createQName(qname, ns.c_str(), prefix.c_str(), name.c_str());
-  }
-  
-  DecimalFormat_t df = new DecimalFormat(v.is_default, qname, v.param_list);
-  sctx_p->add_decimal_format(df);
-    
-  return no_state;
-}
-
-void end_visit (const DecimalFormatNode& v, void* /*visit_state*/) {
-  // std::cout << "end_visit() Got DecimalFormat declaration: " << std::endl;
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const SchemaImport& v) 
-{
-  TRACE_VISIT ();
-
-#ifndef ZORBA_NO_XMLSCHEMA
-
-  SchemaPrefix* sp = &*v.get_prefix();
-  string target_ns = v.get_uri();
-
-  if (! schema_import_ns_set.insert(target_ns).second)
-    ZORBA_ERROR_LOC (XQST0058, loc);
-
-  if (sp != NULL) 
-  {
-    if (target_ns.size() == 0)
-      ZORBA_ERROR_LOC_PARAM(XQST0057, loc,
-                            "(no target namespace uri specified)",
-                            target_ns);
-
-    string pfx = sp->get_prefix();
-    if (pfx == "xml" || pfx == "xmlns")
-      ZORBA_ERROR_LOC (XQST0070, loc);
-
-    if (sp->get_default_bit()) 
-      sctx_p->set_default_elem_type_ns (target_ns);
-
-    if (! pfx.empty())
-      sctx_p->bind_ns (pfx, target_ns, XQST0033);
-  }
-
-  store::Item_t lTargetNamespace = NULL;
-  ITEM_FACTORY->createAnyURI(lTargetNamespace, target_ns.c_str());
-  ZORBA_ASSERT(lTargetNamespace != NULL);
-
-  rchandle<URILiteralList> atlist = v.get_at_list();
-  std::vector<store::Item_t> lAtURIList;
-
-  if (atlist != NULL) 
-  {
-    for (int i = 0; i < atlist->size(); ++i) 
-    {
-      string at = sctx_p->resolve_relative_uri((*atlist)[i], xqpString());
-      store::Item_t lAtURIItem;
-      ITEM_FACTORY->createAnyURI(lAtURIItem, at.c_str());
-      ZORBA_ASSERT(lAtURIItem != NULL);
-      lAtURIList.push_back(lAtURIItem);
-#if 0
-      string prefix = sp == NULL ? "" : sp->get_prefix();
-      cout << "SchemaImport: " << prefix << " : " << target_ns
-           << " @ " << at << endl;
-      cout << " Context: " << CTXTS << "\n";
-#endif
-    }
-  }
-  
-  InternalSchemaURIResolver* lSchemaResolver = sctx_p->get_schema_uri_resolver();
-  
-  try 
-  {
-    store::Item_t lSchemaUri = lSchemaResolver->resolve(lTargetNamespace,
-                                                        lAtURIList,
-                                                        sctx_p);
-    CTXTS->initializeSchema();
-    Schema* schema_p = CTXTS->getSchema();
-
-    std::string lTmp(lSchemaUri->getStringValue()->c_str());
-    schema_p->registerXSD(lTargetNamespace->getStringValue()->c_str(), lTmp, loc);
-  }
-  catch (error::ZorbaError& e) 
-  {
-    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-  }
-
-  return no_state;
-
-#else
-  ZORBA_ERROR_LOC(XQST0009, loc);
-  return no_state;
-#endif
-}
-
-void end_visit (const SchemaImport& v, void* /*visit_state*/) 
-{
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const SchemaPrefix& v) 
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const SchemaPrefix& v, void* /*visit_state*/) 
-{
   TRACE_VISIT_OUT ();
 }
 
@@ -4629,15 +4855,6 @@ void end_visit (const TypeName& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit (const URILiteralList& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const URILiteralList& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
 
 void *begin_visit (const ValueComp& v) {
   TRACE_VISIT ();
@@ -4647,25 +4864,6 @@ void *begin_visit (const ValueComp& v) {
 void end_visit (const ValueComp& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
-
-
-void *begin_visit (const VersionDecl& v) {
-  TRACE_VISIT ();
-  if (! xqp_string (v.get_encoding ()).matches ("^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
-    ZORBA_ERROR_LOC (XQST0087, loc);
-
-  StaticContextConsts::xquery_version_t ver = parse_xquery_version(&v);
-  if (ver == StaticContextConsts::xquery_version_unknown)
-    ZORBA_ERROR_LOC(XQST0031, loc);
-
-  sctx_p->set_xquery_version(ver);
-  return no_state;
-}
-
-void end_visit (const VersionDecl& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
 
 
 void *begin_visit (const AdditiveExpr& v) {
