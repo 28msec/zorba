@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
 #include "system/globalenv.h"
 #include "store/naive/simple_collection.h"
@@ -119,7 +120,7 @@ void SimpleCollection::addNode(
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
   store::Item* lCopy = node->copy(0, 0, copyMode);
-  if(position == -1)
+  if(position <= 0)
     theXmlTrees.push_back(lCopy);
   else
     theXmlTrees.insert(theXmlTrees.begin() + (position - 1), lCopy);
@@ -142,7 +143,7 @@ void SimpleCollection::addNodeWithoutCopy(
 
   if( nodePositionInCollection((store::Item*)node) == -1)
   {
-    if(position == -1)
+    if(position <= 0)
       theXmlTrees.push_back(const_cast<store::Item*>(node));
     else
       theXmlTrees.insert(theXmlTrees.begin() + (position - 1), const_cast<store::Item*>(node));
@@ -176,9 +177,10 @@ void SimpleCollection::addNode(
   }
 
   store::Item* lCopy = node->copy(0, 0, copyMode);
-  if(before)
+  if(before) {
+    ZORBA_ASSERT(targetPos != 0);
     theXmlTrees.insert(theXmlTrees.begin() + (targetPos-1), lCopy);
-  else
+  } else
     theXmlTrees.insert(theXmlTrees.begin() + targetPos, lCopy);
 }
 
@@ -218,6 +220,8 @@ void SimpleCollection::removeNode(const store::Item* node)
     if( (ulong)(position-1) >= theXmlTrees.size() )
       ZORBA_ERROR(API0030_NO_NODE_AT_GIVEN_POSITION);
 
+    ZORBA_ASSERT(position != 0);
+
     theXmlTrees.erase(theXmlTrees.begin() + (position - 1));
   }
   else
@@ -243,7 +247,8 @@ void SimpleCollection::removeNode(const long position)
   }
   else if (position <= 0)
   {
-    ZORBA_ERROR_DESC(API0030_NO_NODE_AT_GIVEN_POSITION, "The given position is not valid. It must be >= -1.");
+    ZORBA_ERROR_DESC(API0030_NO_NODE_AT_GIVEN_POSITION,
+        "The given position is not valid. It must be >= -1.");
   }
   else 
   {
