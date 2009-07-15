@@ -535,9 +535,12 @@ void general_var_codegen (const var_expr& var)
     }
     else 
     {
-      expr_t lookup_expr =
-        new fo_expr (sctx, qloc, LOOKUP_OP1 ("ctxvariable"),
-                     new const_expr (sctx, qloc, dynamic_context::var_key(&var)));
+      expr_t lookup_expr = new fo_expr(sctx,
+                                       qloc,
+                                       LOOKUP_OP1 ("ctxvariable"),
+                                       new const_expr(sctx,
+                                                      qloc,
+                                                      dynamic_context::var_key(&var)));
       lookup_expr->accept (*this);
     }
  
@@ -1988,7 +1991,8 @@ void end_visit (axis_step_expr& v) {
 /*******************************************************************************
 
 ********************************************************************************/
-bool begin_visit (match_expr& v) {
+bool begin_visit (match_expr& v) 
+{
   CODEGEN_TRACE_IN ("");
 
   PlanIter_t axisIte = pop_itstack();
@@ -1999,7 +2003,8 @@ bool begin_visit (match_expr& v) {
 
   store::ItemFactory& iFactory = *(GENV.getStore().getItemFactory());
 
-  if (v.getTestKind() == match_name_test) {
+  if (v.getTestKind() == match_name_test) 
+  {
     match_wild_t wildKind = v.getWildKind();
 
     axisItep->setTestKind(match_name_test);
@@ -2022,7 +2027,9 @@ bool begin_visit (match_expr& v) {
     else if (wildKind == match_name_wild) {
       axisItep->setQName(v.getQName());
     }
-  } else {
+  }
+  else 
+  {
     axisItep->setTestKind(v.getTestKind());
     axisItep->setDocTestKind(v.getDocTestKind());
     axisItep->setNodeKind(v.getNodeKind());
