@@ -30,6 +30,25 @@ class ZorbaDebugger;
 class static_context;
 
 // exported for unit testing only
+
+/*******************************************************************************
+  There is one CompilerCB per module participating in a compilation. The
+  compilerCB for the root module is created by the constructor of the XQueryImpl
+  obj and remain alive for the whole duration of the query (including runtime).
+  The CompilerCBs of imported module are created and stay alive only during the
+  translation of their associated modules.
+
+  m_sctx          : The root static ctx for the associated module. For each
+                    module, this is a child of either a user provided static
+                    ctx or the zorba default root context.
+  m_cur_sctx      : The numeric id of the last sctx created during the translation
+                    of the associated module.
+  m_context_map   : A reference to the query-level map that maps sctx numeric ids
+                    to sctx objs. 
+  m_error_manager : Pointer to an ErrorManager obj. In fact, all CompilerCBs
+                    share the same ErrorManager.
+  m_config        :
+********************************************************************************/
 class ZORBA_DLL_PUBLIC CompilerCB 
 {
  public:
@@ -53,9 +72,20 @@ class ZORBA_DLL_PUBLIC CompilerCB
     config();
   } config_t;
   
+  static_context_t                   m_sctx;
+  short                              m_cur_sctx;
+  std::map<short, static_context_t>& m_context_map;
+  error::ErrorManager*               m_error_manager;
+  config_t                           m_config;
+#ifdef ZORBA_DEBUGGER
+  ZorbaDebugger*                     m_debugger;
+#endif
 
+public:
   CompilerCB(std::map<short, static_context_t>&);
+
   CompilerCB(const CompilerCB&);
+
   ~CompilerCB();
 
   static_context*
@@ -66,15 +96,6 @@ class ZORBA_DLL_PUBLIC CompilerCB
     assert(lIter != m_context_map.end());
     return lIter->second.getp();
   }
-
-  short                              m_cur_sctx;
-  std::map<short, static_context_t>& m_context_map;
-  static_context_t                   m_sctx;          
-  error::ErrorManager*               m_error_manager;
-  config_t                           m_config;
-#ifdef ZORBA_DEBUGGER
-  ZorbaDebugger*                     m_debugger;
-#endif
 };
 
 

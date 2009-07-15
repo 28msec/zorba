@@ -38,45 +38,54 @@ namespace zorba {
   DEF_PRINT_EXPR_TREE (optimization)
 
 
-  CompilerCB::CompilerCB(std::map<short, static_context_t>& sctx_map)
-    :
-    m_cur_sctx(0),
-    m_context_map(sctx_map),
-    m_sctx(0),
-    m_error_manager(0)
+CompilerCB::CompilerCB(std::map<short, static_context_t>& sctx_map)
+  :
+  m_sctx(0),
+  m_cur_sctx(0),
+  m_context_map(sctx_map),
+  m_error_manager(0)
 #ifdef ZORBA_DEBUGGER
-    ,m_debugger(0)
+ ,m_debugger(0)
 #endif
-  {}
+{
+}
 
-  CompilerCB::CompilerCB(const CompilerCB& cb)
-    :
-    m_cur_sctx(cb.m_cur_sctx+1),
-    m_context_map(cb.m_context_map),
-    m_sctx(cb.m_sctx),
-    m_error_manager(cb.m_error_manager),
-    m_config(cb.m_config)
+
+CompilerCB::CompilerCB(const CompilerCB& cb)
+  :
+  m_sctx(NULL),
+  m_cur_sctx(cb.m_cur_sctx+1),
+  m_context_map(cb.m_context_map),
+  m_error_manager(cb.m_error_manager),
+  m_config(cb.m_config)
 #ifdef ZORBA_DEBUGGER
-    ,m_debugger(cb.m_debugger)
+  ,m_debugger(cb.m_debugger)
 #endif
-  {}
+{
+}
+  
+
+CompilerCB::~CompilerCB() 
+{
+}
 
 
-  CompilerCB::~CompilerCB() {}
-
-  CompilerCB::config::config ()
-  : opt_level (O1), lib_module(false), parse_cb (NULL)
-  {
-    translate_cb = normalize_cb = optimize_cb = NULL;
-    // TODO: move these out
-    print_item_flow = Properties::instance()->printItemFlow();
-    if (Properties::instance()->printTranslated())
-      translate_cb = print_expr_tree_translation;
-    if (Properties::instance()->printNormalized())
-      normalize_cb = print_expr_tree_normalization;
-    if (Properties::instance()->printOptimized())
-      optimize_cb = print_expr_tree_optimization;
-    force_gflwor = Properties::instance()->forceGflwor();
-  }
+CompilerCB::config::config ()
+  :
+  opt_level (O1),
+  lib_module(false),
+  parse_cb (NULL)
+{
+  translate_cb = normalize_cb = optimize_cb = NULL;
+  // TODO: move these out
+  print_item_flow = Properties::instance()->printItemFlow();
+  if (Properties::instance()->printTranslated())
+    translate_cb = print_expr_tree_translation;
+  if (Properties::instance()->printNormalized())
+    normalize_cb = print_expr_tree_normalization;
+  if (Properties::instance()->printOptimized())
+    optimize_cb = print_expr_tree_optimization;
+  force_gflwor = Properties::instance()->forceGflwor();
+}
 
 } /* namespace zorba */
