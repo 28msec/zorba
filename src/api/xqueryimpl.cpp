@@ -479,7 +479,7 @@ XQueryImpl::compile(
     theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
     xqpString lQuery = Unmarshaller::getInternalString(aQuery);
 
-    // if the static context results from loadProlog, we need all the context
+    // if the static context results from loadProlog, we need all the contexts
     // that were created when compiling the query
     theSctxMap = static_cast<StaticContextImpl*>(aStaticContext.get())->theCtxMap;
     theCompilerCB->m_context_map = theSctxMap;

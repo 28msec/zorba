@@ -630,13 +630,32 @@ xqtref_t pop_tstack()
 void push_scope() 
 {
 #ifdef ZORBA_DEBUGGER
-  theScopes.push_back( theScopedVariables.size() );
+  if (cb->m_debugger) {
+    // TODO can be removed
+    theScopes.push_back( theScopedVariables.size() );
+  }
 #endif
   
-  sctxstack.push(cb->m_cur_sctx);
-  sctx_p = sctx_p->create_child_context();
-  ++cb->m_cur_sctx;
-  cb->m_context_map[cb->m_cur_sctx] = sctx_p; 
+  // create a new static context for the new scope
+  sctx_p = sctx_p->create_child_context(); 
+#ifdef ZORBA_DEBUGGER
+  if (cb->m_debugger) {
+    // in debug mode, we remember all static contexts
+    // this allows the debugger to introspect (during runtime)
+    // all variables in scope
+    sctxstack.push(cb->m_cur_sctx);
+    cb->m_cur_sctx = cb->m_context_map.size() + 1;
+    cb->m_context_map[cb->m_cur_sctx] = sctx_p; 
+  } else
+#endif
+  {
+    // in non-debug mode, we need to make sure that the scoped
+    // contexts are kept around for the compilation of this module.
+    // The static context available at runtime will be the root context
+    // in which the module is compiled. Keeping all contexts around during
+    // runtime seems to be overhead.
+    cb->m_sctx_list.push_back(sctx_p);
+  }
   ++scope_depth;
 }
 
@@ -647,13 +666,26 @@ void push_scope()
 void pop_scope()
 {
 #ifdef ZORBA_DEBUGGER
-  theScopedVariables.erase(theScopedVariables.begin()+theScopes.back(),
-                           theScopedVariables.end() );
-  theScopes.pop_back();
+  // TODO can be removed
+  if (cb->m_debugger) {
+    theScopedVariables.erase(theScopedVariables.begin()+theScopes.back(),
+        theScopedVariables.end() );
+    theScopes.pop_back();
+  }
 #endif
-  cb->m_cur_sctx = sctxstack.top();
-  sctx_p = cb->m_context_map[cb->m_cur_sctx];
-  sctxstack.pop();
+
+#ifdef ZORBA_DEBUGGER
+  if (cb->m_debugger) {
+    cb->m_cur_sctx = sctxstack.top();
+    sctx_p = cb->m_context_map[cb->m_cur_sctx];
+    sctxstack.pop();
+  } else
+#endif
+  {
+    // pop one scope, howerver the static context is kept around in the m_sctx_list
+    static_context *parent = (static_context *) sctx_p->get_parent ();
+    sctx_p = parent;
+  }
   --scope_depth;
 }
 
@@ -2121,6 +2153,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       // user-specified sctx (if any) or the zorba default (root) sctx (if no
       // user-specified sctx).
       mod_ccb.m_sctx = independent_sctx->create_child_context ();
+      mod_ccb.m_cur_sctx = minfo->topCompilerCB->m_context_map.size() + 1;
       minfo->topCompilerCB->m_context_map[mod_ccb.m_cur_sctx] = mod_ccb.m_sctx;
       mod_ccb.m_sctx->set_entity_retrieval_url (xqpString(resolveduri.getp()));
 
@@ -2976,7 +3009,8 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
   if ( cb->m_debugger != 0) 
   {
     const QueryLoc& return_location = v.get_return_location(); 
-    rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(cb->m_cur_sctx, return_location,
+    rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(cb->m_cur_sctx,
+                                                              return_location,
                                                               retExpr,
                                                               theScopedVariables,
                                                               thePrologVars);

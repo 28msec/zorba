@@ -54,7 +54,7 @@ CompilerCB::CompilerCB(std::map<short, static_context_t>& sctx_map)
 CompilerCB::CompilerCB(const CompilerCB& cb)
   :
   m_sctx(NULL),
-  m_cur_sctx(cb.m_cur_sctx+1),
+  m_cur_sctx(m_cur_sctx),
   m_context_map(cb.m_context_map),
   m_error_manager(cb.m_error_manager),
   m_config(cb.m_config)

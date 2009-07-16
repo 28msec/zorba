@@ -44,7 +44,14 @@ class static_context;
   m_cur_sctx      : The numeric id of the last sctx created during the translation
                     of the associated module.
   m_context_map   : A reference to the query-level map that maps sctx numeric ids
-                    to sctx objs. 
+                    to sctx objs. It's modified in end_visit(ModuleImport) as well
+                    as push_scope or pop_scope, respectively.
+  m_sctx_list:    : A list of static contexts which need to be kept alive during
+                    the translation of a module. This is different from the
+                    query-level sctx map. The contexts in the query-level map are
+                    used during runtime. Those in this list go away after the translation
+                    process. It's managed in push_scope and pop_scope.
+                    If the debugger is used, this list remains empty
   m_error_manager : Pointer to an ErrorManager obj. In fact, all CompilerCBs
                     share the same ErrorManager.
   m_config        :
@@ -75,6 +82,7 @@ class ZORBA_DLL_PUBLIC CompilerCB
   static_context_t                   m_sctx;
   short                              m_cur_sctx;
   std::map<short, static_context_t>& m_context_map;
+  std::vector<static_context_t>      m_sctx_list;
   error::ErrorManager*               m_error_manager;
   config_t                           m_config;
 #ifdef ZORBA_DEBUGGER
