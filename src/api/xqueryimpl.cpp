@@ -489,37 +489,6 @@ XQueryImpl::compile(
   ZORBA_CATCH
 }
 
-void
-XQueryImpl::printPlan( std::ostream& aStream, bool aDotFormat ) const
-{
-  ZORBA_TRY
-    checkNotClosed();
-    checkCompiled();
-    std::auto_ptr<IterPrinter> lPrinter;
-    if (aDotFormat)
-      lPrinter.reset(new DOTIterPrinter(aStream));
-    else
-      lPrinter.reset(new XMLIterPrinter(aStream));
-    print_iter_plan(*(lPrinter.get()), thePlan->theRootIter.getp());
-  ZORBA_CATCH
-}
-
-void
-XQueryImpl::loadProlog(
-    const String& aQuery,
-    const StaticContext_t& aStaticContext, 
-    const Zorba_CompilerHints_t& aHints)
-{
-  ZORBA_TRY
-    checkNotClosed();
-    checkNotCompiled();
-    theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
-    xqpString lQuery = Unmarshaller::getInternalString(aQuery);
-    std::istringstream lQueryStream(lQuery + "()");
-    doCompile(lQueryStream, aHints, false);
-  ZORBA_CATCH
-}
-
 
 void
 XQueryImpl::compile(std::istream& aQuery,
@@ -549,6 +518,23 @@ XQueryImpl::compile(std::istream& aQuery,
     theCompilerCB->m_context_map = theSctxMap;
 
     doCompile(aQuery, aHints);
+  ZORBA_CATCH
+}
+
+
+void
+XQueryImpl::loadProlog(
+    const String& aQuery,
+    const StaticContext_t& aStaticContext, 
+    const Zorba_CompilerHints_t& aHints)
+{
+  ZORBA_TRY
+    checkNotClosed();
+    checkNotCompiled();
+    theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
+    xqpString lQuery = Unmarshaller::getInternalString(aQuery);
+    std::istringstream lQueryStream(lQuery + "()");
+    doCompile(lQueryStream, aHints, false);
   ZORBA_CATCH
 }
 
@@ -936,6 +922,22 @@ void XQueryImpl::debug(std::ostream& aOutStream,
 }
 
 #endif
+
+void
+XQueryImpl::printPlan( std::ostream& aStream, bool aDotFormat ) const
+{
+  ZORBA_TRY
+    checkNotClosed();
+    checkCompiled();
+    std::auto_ptr<IterPrinter> lPrinter;
+    if (aDotFormat)
+      lPrinter.reset(new DOTIterPrinter(aStream));
+    else
+      lPrinter.reset(new XMLIterPrinter(aStream));
+    print_iter_plan(*(lPrinter.get()), thePlan->theRootIter.getp());
+  ZORBA_CATCH
+}
+
 
 std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery)
 {
