@@ -431,8 +431,6 @@ protected:
 
   set<string>                          schema_import_ns_set;
 
-  stack<short>                         sctxstack;
-
   static_context                     * sctx_p;
 
   static_context                     * export_sctx;
@@ -456,6 +454,7 @@ protected:
   list<function *>                     prolog_fn_decls;
 
 #ifdef ZORBA_DEBUGGER
+  stack<short>                         sctxstack;
   checked_vector<unsigned int>         theScopes;
   checked_vector<varref_t>             theScopedVariables;
 #endif
@@ -540,6 +539,14 @@ TranslatorImpl (CompilerCB* aCompilerCB, ModulesInfo* minfo_, set<string> mod_st
   zorba_predef_mod_ns.insert (ZORBA_OPEXTENSIONS_NS);
   zorba_predef_mod_ns.insert (ZORBA_FOP_FN_NS);
   
+  sctx_p->get_global_bindings(thePrologVars);
+  for (list<global_binding>::iterator i = thePrologVars.begin();
+       i != thePrologVars.end(); ++i)
+  {
+    varref_t ve = (*i).first;
+    prolog_var_decls.push_back(static_context::qname_internal_key(ve->get_varname()));
+  }
+
   ctx_item_type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
 }
 
@@ -630,23 +637,27 @@ xqtref_t pop_tstack()
 void push_scope() 
 {
 #ifdef ZORBA_DEBUGGER
-  if (cb->m_debugger) {
+  if (cb->m_debugger) 
+  {
     // TODO can be removed
     theScopes.push_back( theScopedVariables.size() );
   }
 #endif
   
   // create a new static context for the new scope
-  sctx_p = sctx_p->create_child_context(); 
+  sctx_p = sctx_p->create_child_context();
+ 
 #ifdef ZORBA_DEBUGGER
-  if (cb->m_debugger) {
+  if (cb->m_debugger) 
+  {
     // in debug mode, we remember all static contexts
     // this allows the debugger to introspect (during runtime)
     // all variables in scope
     sctxstack.push(cb->m_cur_sctx);
     cb->m_cur_sctx = cb->m_context_map.size() + 1;
     cb->m_context_map[cb->m_cur_sctx] = sctx_p; 
-  } else
+  }
+  else
 #endif
   {
     // in non-debug mode, we need to make sure that the scoped
@@ -667,23 +678,26 @@ void pop_scope()
 {
 #ifdef ZORBA_DEBUGGER
   // TODO can be removed
-  if (cb->m_debugger) {
+  if (cb->m_debugger) 
+  {
     theScopedVariables.erase(theScopedVariables.begin()+theScopes.back(),
-        theScopedVariables.end() );
+                             theScopedVariables.end() );
     theScopes.pop_back();
   }
 #endif
 
 #ifdef ZORBA_DEBUGGER
-  if (cb->m_debugger) {
+  if (cb->m_debugger) 
+  {
     cb->m_cur_sctx = sctxstack.top();
     sctx_p = cb->m_context_map[cb->m_cur_sctx];
     sctxstack.pop();
-  } else
+  }
+  else
 #endif
   {
     // pop one scope, howerver the static context is kept around in the m_sctx_list
-    static_context *parent = (static_context *) sctx_p->get_parent ();
+    static_context* parent = (static_context *) sctx_p->get_parent ();
     sctx_p = parent;
   }
   --scope_depth;
@@ -727,7 +741,7 @@ varref_t create_var(
     var_expr::var_kind kind,
     xqtref_t type = NULL) 
 {
-  varref_t e = new var_expr(cb->m_cur_sctx, loc, kind, qname, global_decl_stack.empty());
+  varref_t e = new var_expr(cb->m_cur_sctx, loc, kind, qname);
 
   if (kind == var_expr::pos_var ||
       kind == var_expr::count_var ||
@@ -779,15 +793,15 @@ void bind_var (varref_t e, static_context *sctx)
 
   store::Item_t qname = e->get_varname();
 
-  if (! sctx->bind_var(qname, e.getp ()))
+  if (! sctx->bind_var(qname, e.getp()))
   {
     if(e->get_kind () == var_expr::let_var)
     {
-      ZORBA_ERROR_LOC_PARAM (XQST0039, e->get_loc (), qname->getStringValue (), "");
+      ZORBA_ERROR_LOC_PARAM(XQST0039, e->get_loc(), qname->getStringValue (), "");
     }
     else
     {
-      ZORBA_ERROR_LOC_PARAM (XQST0049, e->get_loc (), qname->getStringValue (), "");
+      ZORBA_ERROR_LOC_PARAM(XQST0049, e->get_loc(), qname->getStringValue (), "");
     }
   }
 }
@@ -847,7 +861,7 @@ varref_t bind_var_and_push (
     var_expr::var_kind kind,
     xqtref_t type = NULL) 
 {
-  return bind_var_and_push (loc, sctx_p->lookup_var_qname (varname, loc), kind, type);
+  return bind_var_and_push(loc, sctx_p->lookup_var_qname(varname, loc), kind, type);
 }
 
 
@@ -1534,7 +1548,7 @@ void *begin_visit (const MainModule & v)
 {
   TRACE_VISIT ();
 
-  theDotVar = bind_var(loc, DOT_VARNAME, var_expr::context_var, ctx_item_type);
+  theDotVar = bind_var(loc, DOT_VARNAME, var_expr::prolog_var, ctx_item_type);
   
   sctx_p->set_xquery_version(parse_xquery_version(v.get_version_decl().getp()));
 
@@ -2223,6 +2237,7 @@ void end_visit (const QueryBody& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
   pop_stack (global_decl_stack);
   nodestack.push(wrap_in_globalvar_assign(pop_nodestack()));
+  sctx_p->set_global_bindings(thePrologVars);
 }
 
 
@@ -3973,7 +3988,7 @@ void end_visit (const CtxItemDecl& v, void* /*visit_state*/)
   if (v.get_type() != NULL || v.get_expr() != NULL) 
   {
     store::Item_t dotname;
-    varref_t var = create_var (loc, ".", var_expr::context_var, ctx_item_type);
+    varref_t var = create_var (loc, ".", var_expr::prolog_var, ctx_item_type);
     global_binding b (var, ctx_item_default, true);
     declare_var(b, minfo->init_exprs);
   }
@@ -4122,33 +4137,39 @@ void end_visit (const IndexStatement& v, void* /*visit_state*/) {
 void *begin_visit (const VarDecl& v) 
 {
   TRACE_VISIT ();
-  string key = static_context::qname_internal_key (sctx_p->lookup_var_qname (v.get_varname (), loc));
-  if (v.is_global ()) 
+
+  string key = static_context::qname_internal_key(sctx_p->lookup_var_qname(v.get_varname(), loc));
+  if (v.is_global()) 
   {
-    prolog_var_decls.push_front (key);
+    prolog_var_decls.push_front(key);
     // TODO: local vars too
     global_decl_stack.push ("V" + key);
   }
   return no_state;
 }
 
+
 void end_visit (const VarDecl& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
-  if (v.is_global ())
-    pop_stack (global_decl_stack);
+  TRACE_VISIT_OUT();
+
+  if (v.is_global())
+    pop_stack(global_decl_stack);
+
   xqp_string varname = v.get_varname();
 
   // The declared type of a global or external is never tightened based on
   // type inference because globals are mutable.
   xqtref_t type;
-  if (v.get_typedecl () != NULL)
-    type = pop_tstack ();
+  if (v.get_typedecl() != NULL)
+    type = pop_tstack();
 
-  varref_t ve = bind_var (loc, varname, var_expr::context_var, type);
+  varref_t ve;
 
   if (v.is_global ()) 
   {
+    ve = bind_var(loc, varname, var_expr::prolog_var, type);
+
     if (! theModuleNamespace.empty() &&
         ve->get_varname()->getNamespace()->str() != theModuleNamespace)
       ZORBA_ERROR_LOC (XQST0048, loc);
@@ -4160,14 +4181,20 @@ void end_visit (const VarDecl& v, void* /*visit_state*/)
       // bind the variable also in the sctx that is used
       // for importing modules
       if (export_sctx != NULL) {
-        bind_var (ve, export_sctx);
+        bind_var(ve, export_sctx);
       }
     }
 #ifdef ZORBA_DEBUGGER
     theScopedVariables.push_back( ve );
 #endif
   }
+  else
+  {
+    ve = bind_var(loc, varname, var_expr::local_var, type);
+  }
+
   expr_t val = v.get_initexpr () == NULL ? expr_t(NULL) : pop_nodestack();
+
   if (v.is_global ()) 
   {
     thePrologVars.push_back(global_binding(ve, val, v.is_extern ()));
@@ -6844,7 +6871,7 @@ void end_visit (const VarRef& v, void* /*visit_state*/)
   if (ve == NULL)
     ZORBA_ERROR_LOC_PARAM (XPST0008, loc, v.get_varname (), "");
 
-  if (ve->global && ! global_decl_stack.empty ()) 
+  if (ve->get_kind() == var_expr::prolog_var && ! global_decl_stack.empty()) 
   {
     string key = "V" + static_context::qname_internal_key (ve->get_varname ());
     add_multimap_value (thePrologDeps, global_decl_stack.top (), key);
@@ -7140,21 +7167,30 @@ void end_visit (const CatchExpr& v, void* visit_state) {
   pop_scope();
 }
 
-void *begin_visit (const AssignExpr& v) {
+
+void *begin_visit (const AssignExpr& v) 
+{
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit (const AssignExpr& v, void* visit_state) {
+void end_visit (const AssignExpr& v, void* visit_state) 
+{
   TRACE_VISIT_OUT ();
+
   // TODO: add treat_expr to check var type
   const function *ctx_set = LOOKUP_OP2 ("ctxvar-assign");
   varref_t ve = lookup_ctx_var (v.get_varname (), loc);
-  if (ve->get_kind () != var_expr::context_var)
+  if (ve->get_kind() != var_expr::local_var && ve->get_kind() != var_expr::prolog_var)
     ZORBA_ERROR_LOC (XPST0003, loc);
-  expr_t qname_expr = new const_expr (cb->m_cur_sctx, ve->get_loc(), dynamic_context::var_key (&*ve));
-  nodestack.push (new fo_expr (cb->m_cur_sctx, loc, ctx_set, qname_expr, pop_nodestack ()));
+
+  expr_t qname_expr = new const_expr(cb->m_cur_sctx,
+                                     ve->get_loc(),
+                                     dynamic_context::var_key (&*ve));
+
+  nodestack.push(new fo_expr(cb->m_cur_sctx, loc, ctx_set, qname_expr, pop_nodestack()));
 }
+
 
 void *begin_visit (const ExitExpr& v) {
   TRACE_VISIT ();

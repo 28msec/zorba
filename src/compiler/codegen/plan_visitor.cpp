@@ -416,7 +416,7 @@ void general_var_codegen (const var_expr& var)
 
   bool isForVar = false;
 
-  switch (var.kind)
+  switch (var.get_kind())
   {
   case var_expr::for_var:
   case var_expr::pos_var:
@@ -509,7 +509,8 @@ void general_var_codegen (const var_expr& var)
     break;
   }
 
-  case var_expr::context_var: 
+  case var_expr::prolog_var: 
+  case var_expr::local_var: 
   {
     xqpString varname = var.get_varname()->getStringValue().getp();
     if (varname == DOT_VAR) 

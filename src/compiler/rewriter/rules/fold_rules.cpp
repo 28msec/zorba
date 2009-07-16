@@ -276,7 +276,8 @@ RULE_REWRITE_POST(MarkUnfoldableExprs)
   Annotation::key_t k = AnnotationKey::UNFOLDABLE_OP;
   switch (node->get_expr_kind ()) 
   {
-  case fo_expr_kind: {
+  case fo_expr_kind: 
+  {
     fo_expr *fo = static_cast<fo_expr *> (node);
     const function *f = fo->get_func ();
 
@@ -291,9 +292,12 @@ RULE_REWRITE_POST(MarkUnfoldableExprs)
   }
       
   case var_expr_kind:
-    if (static_cast<var_expr *> (node)->get_kind () == var_expr::context_var)
+  {
+    var_expr::var_kind k = static_cast<var_expr *> (node)->get_kind();
+    if (k == var_expr::prolog_var || k == var_expr::local_var)
       node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
     break;
+  }
 
   // Exit and flow-control exprs do more than just computing a result which is
   // consumed by their parent expr. So, they cannot be folded.

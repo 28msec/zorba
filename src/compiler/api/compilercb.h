@@ -34,24 +34,31 @@ class static_context;
 /*******************************************************************************
   There is one CompilerCB per module participating in a compilation. The
   compilerCB for the root module is created by the constructor of the XQueryImpl
-  obj and remain alive for the whole duration of the query (including runtime).
-  The CompilerCBs of imported module are created and stay alive only during the
+  obj and remains alive for the whole duration of the query (including runtime).
+  The CompilerCBs of imported modules are created and stay alive only during the
   translation of their associated modules.
 
   m_sctx          : The root static ctx for the associated module. For each
                     module, this is a child of either a user provided static
                     ctx or the zorba default root context.
-  m_cur_sctx      : The numeric id of the last sctx created during the translation
-                    of the associated module.
+  m_cur_sctx      : The numeric id of the last sctx that was added to the 
+                    m_context_map. Every time an expr is created, the current
+                    value of m_cur_sctx is stored in the expr obj, so that each
+                    expr will be executed in the appropriate sctx.
   m_context_map   : A reference to the query-level map that maps sctx numeric ids
-                    to sctx objs. It's modified in end_visit(ModuleImport) as well
-                    as push_scope or pop_scope, respectively.
+                    to sctx objs. In non-DEBUGGER mode, the map stores entries 
+                    only for the root sctx of each module. In DEBUGGER mode, it
+                    stores entries for all sctxs created by each module. By 
+                    registering an sctx in this map, we make sure that it will
+                    stay alive for the whole duration on the query. The map
+                    is modified by the translator methods end_visit(ModuleImport)
+                    and push_scope().
   m_sctx_list:    : A list of static contexts which need to be kept alive during
                     the translation of a module. This is different from the
                     query-level sctx map. The contexts in the query-level map are
-                    used during runtime. Those in this list go away after the translation
-                    process. It's managed in push_scope and pop_scope.
-                    If the debugger is used, this list remains empty
+                    used during runtime. Those in this list go away after the
+                    translation process. It's managed in push_scope and pop_scope.
+                    If the debugger is used, this list remains empty.
   m_error_manager : Pointer to an ErrorManager obj. In fact, all CompilerCBs
                     share the same ErrorManager.
   m_config        :

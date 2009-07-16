@@ -69,7 +69,8 @@ typedef rchandle<var_expr> varref_t;
 class var_expr : public expr 
 {
 public:
-  enum var_kind {
+  enum var_kind 
+  {
     eval_var,
     for_var,
     let_var,
@@ -82,7 +83,8 @@ public:
     wincond_in_pos_var,
     count_var,
     quant_var,
-    context_var, // prolog or block-local var
+    prolog_var,
+    local_var,
     param_var,
     catch_var,
     copy_var,
@@ -92,10 +94,9 @@ public:
   };
 
 public:
-  var_kind kind;
-  store::Item_t varname_h;
-  xqtref_t type;
-  bool global;
+  var_kind       theKind;
+  store::Item_t  varname_h;
+  xqtref_t       type;
 
 protected:
   flwor_clause * theFlworClause;
@@ -109,16 +110,15 @@ public:
         short sctx,
         const QueryLoc& loc,
         var_kind k,
-        store::Item_t name,
-        bool global = true);
+        store::Item_t name);
 
   expr_kind_t get_expr_kind() const { return var_expr_kind; }
 
   store::Item_t get_varname() const;
 
-  var_kind get_kind() const { return kind; }
+  var_kind get_kind() const { return theKind; }
 
-  void set_kind(var_kind k) { kind = k; }
+  void set_kind(var_kind k) { theKind = k; }
 
   xqtref_t get_type() const;
 

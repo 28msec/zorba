@@ -458,7 +458,8 @@ string var_expr::decode_var_kind(enum var_kind k)
   case count_var: return "CNT"; break;
   case score_var: return "SCORE"; break;
   case quant_var: return "QUANT"; break;
-  case context_var: return "CTX"; break;
+  case prolog_var: return "PROLOG"; break;
+  case local_var: return "LOCAL"; break;
   case catch_var: return "CATCH"; break;
   case copy_var: return "COPY"; break;
   case groupby_var: return "GROUPBY"; break;
@@ -469,36 +470,39 @@ string var_expr::decode_var_kind(enum var_kind k)
 }
 
 
-var_expr::var_expr(short sctx, const QueryLoc& loc, var_kind k, store::Item_t name, bool global_)
+var_expr::var_expr(short sctx, const QueryLoc& loc, var_kind k, store::Item_t name)
   :
-  expr (sctx, loc),
-  kind (k),
-  varname_h (name),
-  type (NULL),
-  global (global_),
+  expr(sctx, loc),
+  theKind(k),
+  varname_h(name),
+  type(NULL),
   theFlworClause(NULL),
   theCopyClause(NULL)
 {
 }
 
 
-store::Item_t var_expr::get_varname() const {
+store::Item_t var_expr::get_varname() const 
+{
   return varname_h;
 }
 
 
-xqtref_t var_expr::get_type() const {
+xqtref_t var_expr::get_type() const 
+{
   return type;
 }
 
 
-void var_expr::set_type(xqtref_t t) {
+void var_expr::set_type(xqtref_t t) 
+{
   type = t;
 }
 
 
-var_expr* var_expr::get_pos_var() const {
-  if (kind == for_var) {
+var_expr* var_expr::get_pos_var() const 
+{
+  if (theKind == for_var) {
     return reinterpret_cast<for_clause*>(theFlworClause)->get_pos_var();
   } else {
     return NULL;
@@ -510,7 +514,7 @@ expr* var_expr::get_domain_expr() const
 {
   if (theFlworClause)
   {
-    if (kind == for_var || kind == let_var || kind == win_var)
+    if (theKind == for_var || theKind == let_var || theKind == win_var)
     {
       return reinterpret_cast<forletwin_clause*>(theFlworClause)->get_expr();
     }
@@ -524,23 +528,27 @@ expr* var_expr::get_domain_expr() const
 }
 
 
-forletwin_clause* var_expr::get_forletwin_clause() const {
+forletwin_clause* var_expr::get_forletwin_clause() const 
+{
   return dynamic_cast<forletwin_clause*>(theFlworClause);
 }
 
 
-for_clause* var_expr::get_for_clause() const {
+for_clause* var_expr::get_for_clause() const 
+{
   return dynamic_cast<for_clause*>(theFlworClause);
 }
 
 
-void var_expr::next_iter(expr_iterator_data& v) {
+void var_expr::next_iter(expr_iterator_data& v) 
+{
   BEGIN_EXPR_ITER();
   END_EXPR_ITER();
 }
 
 
-expr::expr_t var_expr::clone(expr::substitution_t& subst) {
+expr::expr_t var_expr::clone(expr::substitution_t& subst) 
+{
   expr::subst_iter_t i = subst.find(this);
 
   if (i == subst.end()) 

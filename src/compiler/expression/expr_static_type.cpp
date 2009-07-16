@@ -788,14 +788,15 @@ xqtref_t var_expr::return_type_impl(static_context* sctx)
   xqtref_t type1 = NULL;
   expr* domainExpr;
 
-  if (kind == for_var || kind == let_var || kind == win_var || kind == copy_var) 
+  if (theKind == for_var || theKind == let_var ||
+      theKind == win_var || theKind == copy_var) 
   {
     domainExpr = get_domain_expr();
     assert(domainExpr != NULL);
 
     type1 = domainExpr->return_type(sctx);
 
-    if (kind == for_var) 
+    if (theKind == for_var) 
     {
       type1 = TypeOps::prime_type(*type1);
     }
