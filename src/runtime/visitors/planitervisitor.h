@@ -287,6 +287,8 @@ namespace zorba
   class ZorbaJsonMLParseIterator;
   class ZorbaJsonMLSerializeIterator;
 
+  class ZorbaTimestampIterator;
+
   namespace flwor
   {
     class FLWORIterator;
@@ -900,6 +902,8 @@ public:
     PLAN_ITER_VISITOR(ZorbaJsonSerializeIterator);
     PLAN_ITER_VISITOR(ZorbaJsonMLParseIterator);
     PLAN_ITER_VISITOR(ZorbaJsonMLSerializeIterator);
+
+    PLAN_ITER_VISITOR(ZorbaTimestampIterator);
 
 #ifdef ZORBA_DEBUGGER
     PLAN_ITER_VISITOR ( FnDebugIterator );  

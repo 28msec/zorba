@@ -66,6 +66,12 @@ zorba_uuid::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& a
   return new ZorbaUUIDIterator(sctx, loc, argv);
 }
 
+PlanIter_t
+zorba_timestamp::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new ZorbaTimestampIterator(sctx, loc, argv);
+}
+
 zorba::PlanIter_t zorba_serialize_to_string::codegen(short sctx,  const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
 	return new FnPrintIterator(sctx, loc, argv, false);

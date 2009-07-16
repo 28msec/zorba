@@ -17,7 +17,9 @@
 #include <assert.h>
 #include <time.h>
 #include <sys/timeb.h>
-
+#ifdef UNIX
+#include <sys/time.h>
+#endif
 #include "store/api/iterator.h"
 #include "store/api/temp_seq.h"
 #include "store/api/item_factory.h"
@@ -100,6 +102,12 @@ dynamic_context::dynamic_context(dynamic_context *parent)
 
     GENV_ITEMFACTORY->createDateTime(current_date_time_item, gmtm.tm_year + 1900, gmtm.tm_mon + 1, gmtm.tm_mday, 
 		  gmtm.tm_hour, gmtm.tm_min, gmtm.tm_sec + timebuffer.millitm/1000.0, implicit_timezone/3600);
+
+    timeval tv;
+    gettimeofday(&tv, 0);
+    long long millis = tv.tv_sec;
+    millis = millis * 1000 + tv.tv_usec/1000;
+    GENV_ITEMFACTORY->createLong(current_time_millis, millis);
     
 	  ctxt_position = 0;
 	}
@@ -182,6 +190,11 @@ void	dynamic_context::set_current_date_time( const store::Item_t& aDateTimeItem 
 store::Item_t	dynamic_context::get_current_date_time()
 {
 	return current_date_time_item;
+}
+
+store::Item_t dynamic_context::get_current_time_millis()
+{
+    return current_time_millis;
 }
 
 void  dynamic_context::set_implicit_timezone(int tzone_seconds)

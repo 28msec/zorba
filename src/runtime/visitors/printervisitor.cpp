@@ -1425,6 +1425,9 @@ void endVisitFlworReturn(const PlanIterator& /*a*/)
 #ifdef ZORBA_WITH_EMAIL
   PRINTER_VISITOR_DEFINITION(ZorbaMailIterator);
 #endif  /* ZORBA_WITH_EMAIL */
+
+  PRINTER_VISITOR_DEFINITION(ZorbaTimestampIterator);
+
 #ifdef ZORBA_DEBUGGER
   PRINTER_VISITOR_DEFINITION(FnDebugIterator);
 #endif

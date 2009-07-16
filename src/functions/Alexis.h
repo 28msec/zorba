@@ -101,6 +101,19 @@ namespace zorba {
     bool isPureFunction () const { return false; }
   };
 
+  class zorba_timestamp : public function
+  {
+    public:
+      zorba_timestamp(const signature& sig) : function(sig) {}
+
+      PlanIter_t codegen (short sctx,
+                          const QueryLoc& loc,
+                          std::vector<PlanIter_t>& argv,
+                          AnnotationHolder & ann) const;
+
+      bool requires_dyn_ctx () const { return true; }
+  };
+
   class zorba_serialize_to_string : public function {
   public:
     zorba_serialize_to_string(const signature& sig) : function(sig) {}

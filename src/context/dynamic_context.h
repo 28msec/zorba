@@ -60,6 +60,7 @@ protected:
 
   hashmap<dctx_value_t>   keymap;
   store::Item_t           current_date_time_item;
+  store::Item_t           current_time_millis;
   int                     implicit_timezone;
   store::Item_t           default_collection_uri;  //default URI for fn:collection()
 
@@ -119,6 +120,7 @@ public:
 
   void set_current_date_time( const store::Item_t& );
   store::Item_t get_current_date_time();
+  store::Item_t get_current_time_millis();
 
   void set_implicit_timezone( int tzone_seconds );
   int get_implicit_timezone();

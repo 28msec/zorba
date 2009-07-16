@@ -26,6 +26,7 @@
 
 #include "context/static_context.h"
 #include "context/internal_uri_resolvers.h"
+#include "context/dynamic_context.h"
 
 #include "util/web/web.h"
 #include "util/uuid/uuid.h"
@@ -219,6 +220,18 @@ ZorbaUUIDIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   GENV_ITEMFACTORY->createString(result, uuidStr);
+  STACK_PUSH (true, state);
+
+  STACK_END (state);
+}
+
+bool
+ZorbaTimestampIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  result = planState.dctx()->get_current_time_millis();
   STACK_PUSH (true, state);
 
   STACK_END (state);

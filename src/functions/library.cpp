@@ -686,6 +686,10 @@ DECL(sctx, zorba_encode_base64,
        (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "uuid"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
+  DECL(sctx, zorba_timestamp,
+       (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "timestamp"),
+        GENV_TYPESYSTEM.LONG_TYPE_ONE));
+
   DECL(sctx, zorba_json_parse,
        (createQName(ZORBA_JSON_FN_NS, "fn-zorba-json", "parse"),
         GENV_TYPESYSTEM.STRING_TYPE_STAR,

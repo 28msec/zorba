@@ -32,6 +32,7 @@ namespace zorba {
 
   NARY_ITER (ZorbaRandomIterator);
   NARY_ITER (ZorbaUUIDIterator);
+  NARY_ITER (ZorbaTimestampIterator);
 
 }/*namespace zorba*/
 
