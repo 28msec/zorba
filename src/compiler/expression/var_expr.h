@@ -82,7 +82,7 @@ public:
     wincond_in_pos_var,
     count_var,
     quant_var,
-    context_var,
+    context_var, // prolog or block-local var
     param_var,
     catch_var,
     copy_var,
@@ -105,9 +105,14 @@ public:
   static std::string decode_var_kind(enum var_kind);
 
 public:
-  var_expr(short sctx, const QueryLoc& loc, var_kind k, store::Item_t name, bool global = true);
+  var_expr(
+        short sctx,
+        const QueryLoc& loc,
+        var_kind k,
+        store::Item_t name,
+        bool global = true);
 
-  expr_kind_t get_expr_kind () const { return var_expr_kind; }
+  expr_kind_t get_expr_kind() const { return var_expr_kind; }
 
   store::Item_t get_varname() const;
 
@@ -151,13 +156,12 @@ struct global_binding : public std::pair<varref_t, expr_t>
 
   global_binding () : ext (false) {}
 
-  global_binding (varref_t v, expr_t e)
-    : std::pair<varref_t, expr_t>  (v, e), ext (e == NULL)
-  {}
-
   global_binding (varref_t v, expr_t e, bool ext_)
-    : std::pair<varref_t, expr_t> (v, e), ext (ext_)
-  {}
+    :
+    std::pair<varref_t, expr_t> (v, e),
+    ext (ext_)
+  {
+  }
 
   bool is_extern () const { return ext; }
 };

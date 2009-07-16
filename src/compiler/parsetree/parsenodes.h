@@ -729,7 +729,7 @@ public:
 
 
 /******************************************************************************
-  [23a] URLLiteralList ::= URI_LITERAL | URILiteralList  COMMA  URI_LITERAL
+  [23a] URILiteralList ::= URI_LITERAL | URILiteralList  COMMA  URI_LITERAL
 ********************************************************************************/
 class URILiteralList : public parsenode
 {

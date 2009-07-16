@@ -248,8 +248,9 @@ void add_multimap_value(
                   the var and udf declarations that are exported by the
                   modules corresponding to the location uris.
 
-  init_exprs    : Contains the initilizing expr for each variable in each module
-                  participating in the compilation (see wrap_in_globalvar_assigh())
+  init_exprs    : Contains the initializing expr for each prolog var in each
+                  module participating in the compilation (see method
+                  wrap_in_globalvar_assigh())
 
 ********************************************************************************/
 class ModulesInfo 
@@ -292,10 +293,11 @@ public:
                          modules in a chain of module imports. It is used to check
                          that there are no cycles in a chain of module imports.
 
-  mod_ns               : If this translator is working on a library module, mod_ns
-                         is the namespace uri of that module.
-  mod_pfx              : If this translator is working on a library module, mod_pfx
-                         is the prefix associated with the ns uri of that module.
+  theModuleNamespace   : If this translator is working on a library module,
+                         theModuleNamespace is the namespace uri of that module.
+  theModulePrefix      : If this translator is working on a library module, 
+                         theModulePrefix is the prefix associated with the ns
+                         uri of that module.
 
   zorba_predef_mod_ns  : Set of ns uris for all internal predefined modules. 
   mod_import_ns_set    : Set of ns uris for all the modules directly imported 
@@ -333,34 +335,19 @@ public:
   scope_depth          : Incremented/Decremented every time a scope is pushed/popped
                          Used for some sanity checking only.
 
-  nodestack            : If E is the expr that is currently being built, then
-                         nodestack contains all the ancestors (or ancestor
-                         place-holdres) of E in the expr tree.
-
-  tstack               : Stack of the static types for some of the exprs in the
-                         nodestack.
-
-  tempvar_counter      : Counter used to generate names for internally generated
-                         variables. The names are unique within this translator.
-
-  theGlobalVars        : Global vars are the ones declared in the prolog (both
-                         external and non-external vars). theGlobalVars vector
-                         contains one entry per global var V. The entry maps the
-                         var_expr for V to the expr E that defines V (E is NULL
-                         for external vars without init expr).
   theDotVar            : var_expr for the context item var of the main module
 
-  vf_decl              : During the translation of a variable or function 
-                         declaration in the prolog, vf_decl stores the normalized
-                         qname of that variable or function. It is used in
-                         building the global_deps.
-  global_fn_decls      : List containing the normalized qname for each udf
-                         declared in the prolog of this module. It is used by 
-                         the reorder_globals() method.
-  global_var_decls     : List containing the normalized qname for each variable
-                         declared in the prolog of this module. It is used by 
-                         the reorder_globals() method.
-  global_deps          : A hashmap implementing the dependency graph among the
+  thePrologVars        : thePrologVars vector contains one entry for each var V
+                         declared in the prolog of this module. The entry maps
+                         the var_expr for V to the expr E that initializes V (E
+                         is NULL for vars without init expr). At the end of each
+                         module translation, the method wrap_in_globalvar_assign()
+                         creates appropriate initialization exprs for each var in 
+                         thePrologVars and registers them in minfo->init_exprs, so
+                         that they will be incorporated in the whole query plan at
+                         the end of the translation of the root module.
+
+  thePrologDeps        : A hashmap implementing the dependency graph among the
                          variables and udfs declared in the prolog of a module.
                          It maps the normalized qname of a var or udf X to a set
                          containing the normalized qnames of all the vars and
@@ -369,7 +356,30 @@ public:
                          - f { $y + g($z) }  :  f  --> ($y, g, $z)
                          Initially only direct dependencies are registered. The
                          graph is later expanded by the reorder_globals() method
-                         to include transitive dependencies as well.
+                         to include transitive dependencies as well. Then, the
+                         graph is used to sort thePrologVars so that vars are
+                         initialized before they are referenced.
+
+  vf_decl              : During the translation of a variable or function 
+                         declaration in the prolog, vf_decl stores the normalized
+                         qname of that variable or function. It is used in
+                         building the thePrologDeps.
+  prolog_fn_decls      : List containing the normalized qname for each udf
+                         declared in the prolog of this module. It is used by 
+                         the reorder_globals() method.
+  prolog_var_decls     : List containing the normalized qname for each variable
+                         declared in the prolog of this module. It is used by 
+                         the reorder_globals() method.
+
+  tempvar_counter      : Counter used to generate names for internally generated
+                         variables. The names are unique within this translator.
+
+  nodestack            : If E is the expr that is currently being built, then
+                         nodestack contains all the ancestors (or ancestor
+                         place-holdres) of E in the expr tree.
+
+  tstack               : Stack of the static types for some of the exprs in the
+                         nodestack.
 
   hadBSpaceDecl        : Set to true if prolog has boundary space decl. Used to
                          check that such a decl does not appear more than once.
@@ -414,8 +424,8 @@ protected:
   ModulesInfo                        * minfo;
 
   set<string>                          mod_stack;
-  string                               mod_ns;
-  string                               mod_pfx;
+  string                               theModuleNamespace;
+  string                               theModulePrefix;
   set<string>                          mod_import_ns_set;
   set<string>                          zorba_predef_mod_ns;
 
@@ -432,28 +442,31 @@ protected:
   uint32_t                             print_depth;
   int                                  scope_depth;
 
-  stack<expr_t>                        nodestack;
-  stack<xqtref_t>                      tstack; 
-  stack<ValueIndex_t>                  indexstack;
-
-  int                                  tempvar_counter;
-
-  list<global_binding>                 theGlobalVars;
-
   varref_t                             theDotVar;
-  varref_t                             theDotPosVar;
-  varref_t                             theLastVar;
 
   xqtref_t                             ctx_item_type;
 
-  list<string>                         global_var_decls;
-  list<function *>                     global_fn_decls;
-  hashmap<strset_t>                    global_deps;
+  list<global_binding>                 thePrologVars;
+
+  hashmap<strset_t>                    thePrologDeps;
+  // format of strings: type_char + qname_internal_key
+  // where type_char is F or V
+  stack<string>                        global_decl_stack;
+  list<string>                         prolog_var_decls;
+  list<function *>                     prolog_fn_decls;
 
 #ifdef ZORBA_DEBUGGER
   checked_vector<unsigned int>         theScopes;
   checked_vector<varref_t>             theScopedVariables;
 #endif
+
+  int                                  tempvar_counter;
+
+  stack<expr_t>                        nodestack;
+
+  stack<xqtref_t>                      tstack; 
+
+  stack<ValueIndex_t>                  indexstack;
 
   bool                                 hadBSpaceDecl;
   bool                                 hadBUriDecl;
@@ -477,15 +490,11 @@ protected:
   const function                     * ctx_set;
   const function                     * ctx_get;
   const function                     * ctx_exists;
-  
-  // format of strings: type_char + qname_internal_key
-  // where type_char is F or V
-  stack<string>                        global_decl_stack;
 
   list<function *>                     fn_decl_stack;
 
 
-TranslatorImpl (CompilerCB* aCompilerCB, ModulesInfo *minfo_, set<string> mod_stack_)
+TranslatorImpl (CompilerCB* aCompilerCB, ModulesInfo* minfo_, set<string> mod_stack_)
   :
   xquery_version (10000),  // fictious version 100.0 -- allow everything
   cb(aCompilerCB),
@@ -531,14 +540,6 @@ TranslatorImpl (CompilerCB* aCompilerCB, ModulesInfo *minfo_, set<string> mod_st
   zorba_predef_mod_ns.insert (ZORBA_OPEXTENSIONS_NS);
   zorba_predef_mod_ns.insert (ZORBA_FOP_FN_NS);
   
-  sctx_p->get_global_bindings(theGlobalVars);
-  for (list<global_binding>::iterator i = theGlobalVars.begin();
-       i != theGlobalVars.end(); i++)
-  {
-    varref_t ve = (*i).first;
-    global_var_decls.push_back(static_context::qname_internal_key(ve->get_varname()));
-  }
-
   ctx_item_type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
 }
 
@@ -728,7 +729,7 @@ varref_t create_var(
 /*******************************************************************************
   Create a var_expr for an internal variable with a given kind.
 ********************************************************************************/
-varref_t tempvar(const QueryLoc& loc, var_expr::var_kind kind)
+  varref_t tempvar(const QueryLoc& loc, var_expr::var_kind kind)
 {
   xqpString lname (tempname ());
   return create_var(loc, lname, kind);
@@ -1187,8 +1188,8 @@ void collect_flwor_vars (
 ********************************************************************************/
 expr_t wrap_in_globalvar_assign(expr_t e) 
 {
-  for (list<global_binding>::iterator i = theGlobalVars.begin();
-      i != theGlobalVars.end();
+  for (list<global_binding>::iterator i = thePrologVars.begin();
+      i != thePrologVars.end();
       i++)
   {
      declare_var(*i, minfo->init_exprs);
@@ -1550,16 +1551,16 @@ void end_visit (const ModuleDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  mod_pfx = v.get_prefix ();
-  mod_ns = v.get_target_namespace ();
+  theModulePrefix = v.get_prefix ();
+  theModuleNamespace = v.get_target_namespace ();
 
-  if (mod_ns.empty ())
+  if (theModuleNamespace.empty ())
     ZORBA_ERROR_LOC (XQST0088, loc);
 
-  if (mod_pfx == "xml" || mod_pfx == "xmlns")
+  if (theModulePrefix == "xml" || theModulePrefix == "xmlns")
     ZORBA_ERROR_LOC (XQST0070, loc);
 
-  sctx_p->bind_ns (mod_pfx, mod_ns);
+  sctx_p->bind_ns(theModulePrefix, theModuleNamespace);
 
   static_context_t lTmpCtx;
   bool found = minfo->mod_sctx_map.get(sctx_p->entity_retrieval_url(), lTmpCtx);
@@ -1992,6 +1993,186 @@ void end_visit (const SchemaPrefix& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
+  [25] ModuleImport ::= "import" "module" ("namespace" NCName "=")? URILiteral
+                        ("at" URILiteralList)?
+********************************************************************************/
+void *begin_visit (const ModuleImport& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+
+void end_visit (const ModuleImport& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  string pfx = v.get_prefix (), target_ns = v.get_uri ();
+
+#ifdef ZORBA_DEBUGGER
+  if(cb->m_debugger != 0)
+  {
+    cb->m_debugger->theImports.insert(make_pair<string, string>(target_ns, pfx)); 
+  }
+#endif
+
+  // The namespace prefix specified in a module import must not be xml or xmlns
+  // [err:XQST0070]
+  if (pfx == "xml" || pfx == "xmlns")
+    ZORBA_ERROR_LOC (XQST0070, loc);
+
+  // The first URILiteral in a module import must be of nonzero length [err:XQST0088]
+  if (target_ns.empty ())
+    ZORBA_ERROR_LOC (XQST0088, loc);
+
+  // It is a static error [err:XQST0047] if more than one module import in a
+  // Prolog specifies the same target namespace
+  if (! mod_import_ns_set.insert (target_ns).second)
+    ZORBA_ERROR_LOC (XQST0047, loc);
+
+  // The namespace prefix specified in a module import must not be the same as
+  // any namespace prefix bound  in the same module by another module import, 
+  // a schema import, a namespace declaration, or a module declaration with a
+  // different target namespace [err:XQST0033].
+  if (! (pfx.empty() || (pfx == theModulePrefix && target_ns == theModuleNamespace) ) ) 
+  {
+    try 
+    {
+      sctx_p->bind_ns(pfx, target_ns, XQST0033);
+    }
+    catch (error::ZorbaError& e)
+    {
+      // rethrow with current location
+      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+    }
+  }
+
+  rchandle<URILiteralList> ats = v.get_uri_list ();
+  // Handle pre-defined modules
+  if (ats == NULL && zorba_predef_mod_ns.find (target_ns) != zorba_predef_mod_ns.end ())
+    return;
+
+  // use the target namespace if no at clauses are there
+  // otherwise use the resolved URIs of the at clauses
+  vector<xqpStringStore_t> lURIs;
+  if (ats == NULL || ats->size () == 0) {
+    lURIs.push_back(xqp_string(target_ns).getStore());
+  } else {
+    for (int i = 0; i < ats->size(); ++i) {
+      lURIs.push_back(sctx_p->resolve_relative_uri((*ats)[i], xqp_string()).getStore());
+    }
+  }
+
+  // the module URI resolve that is used for retrieving the istream to the module
+  // this can either be Zorba's standard implementation or one that has been
+  // provided by the user
+  InternalModuleURIResolver* lModuleResolver = sctx_p->get_module_uri_resolver();
+
+  // do the actual work
+  // take each of the URIs collected above and import the module's functions
+  // and variables into the current static context.
+  for (vector<xqpStringStore_t>::iterator lIter = lURIs.begin();
+       lIter != lURIs.end(); ++lIter) 
+  {
+    xqpStringStore_t resolveduri = *lIter; 
+    store::Item_t    aturiitem = NULL;
+    if (!GENV_ITEMFACTORY->createAnyURI(aturiitem, resolveduri))
+      ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "URI is not valid " << resolveduri);
+
+    // track cyclic imports
+    set<string> mod_stk1 = mod_stack;
+    if (! mod_stk1.insert (xqpString(resolveduri.getp())).second)
+      ZORBA_ERROR_LOC (XQST0073, loc);
+    
+    string imported_ns; // the target namespace of the imported module
+    static_context_t imported_sctx = NULL;
+
+    // use the cache
+    if (minfo->mod_ns_map.get (xqpString(resolveduri.getp()), imported_ns)) 
+    {
+      bool found = minfo->mod_sctx_map.get (xqpString(resolveduri.getp()), imported_sctx);
+      ZORBA_ASSERT (found);
+    } 
+    else 
+    {
+      // we get the ownership of the input stream
+      // TODO: we have to find a way to tell user defined resolvers when their input stream
+      // can be freed. The current solution might leed to problems on Windows.
+      xqpStringStore lFileUri;
+      auto_ptr<istream> modfile(lModuleResolver->resolve(aturiitem, sctx_p, &lFileUri));
+#ifdef ZORBA_DEBUGGER
+      if(cb->m_debugger != 0) {
+        cb->m_debugger->theModuleFileMappings.insert(std::pair<std::string, std::string>(aturiitem->getStringValue()->c_str(), lFileUri.c_str()));
+      }
+#endif
+
+      if (modfile.get () == NULL || ! *modfile) {
+        ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
+      }
+
+      // Create a CompilerCB for the imported module as a copy of the importing
+      // module's CompilerCB. Copying is needed for configuration settings,
+      // error manager, and debugger
+      CompilerCB mod_ccb (*cb);
+
+      static_context_t independent_sctx = static_cast<static_context *> (minfo->topCompilerCB->m_sctx->get_parent ());
+
+      // Create the root sctx for the imported module as a child of the
+      // user-specified sctx (if any) or the zorba default (root) sctx (if no
+      // user-specified sctx).
+      mod_ccb.m_sctx = independent_sctx->create_child_context ();
+      minfo->topCompilerCB->m_context_map[mod_ccb.m_cur_sctx] = mod_ccb.m_sctx;
+      mod_ccb.m_sctx->set_entity_retrieval_url (xqpString(resolveduri.getp()));
+
+      // Create an sctx where the imported module is going to register all the
+      // variable and function declarations that appear in its prolog. After the
+      // translation of the imported module is done, this sctx will be merged
+      // with the sctx of the importing module.
+      imported_sctx = independent_sctx->create_child_context();
+      // remeber the context; will be used in the translation process 
+      // of the module as export_sctx
+      minfo->mod_sctx_map.put (xqpString(resolveduri.getp()), imported_sctx);
+
+      // Parse the imported module
+      XQueryCompiler xqc (&mod_ccb);
+      xqpString lFileName(aturiitem->getStringValue());
+      rchandle<parsenode> ast = xqc.parse (*modfile, lFileName);
+#ifdef ZORBA_DEBUGGER
+      if(cb->m_debugger != 0)
+      {
+        cb->m_debugger->addModule(ast);
+      }
+#endif
+      // Get the target namespace that appears in the module declaration
+      // of the imported module and check that this ns is the same as the
+      // target ns in the module import statement.
+      // Also make sure that the imported module is a library module
+      LibraryModule *mod_ast = dynamic_cast<LibraryModule *> (&*ast);
+      if (mod_ast == NULL)
+        ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
+
+      // translate the imported module
+      translate_aux (*ast, &mod_ccb, minfo, mod_stk1);
+
+      // Register the mapping between the current location uri and the
+      // target namespace.
+      imported_ns = mod_ast->get_decl ()->get_target_namespace ();
+      minfo->mod_ns_map.put (xqpString(resolveduri.getp()), imported_ns);
+    }
+
+    // module with given target_ns not found
+    if (imported_ns != target_ns)
+      ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
+
+    // We catch duplicate functions / vars in minfo->globals.
+    // We can safely ignore the return value. We might even be able
+    // to assert() here (not sure though).
+    sctx_p->import_module(imported_sctx.getp());
+  } // for (vector<xqpStringStore_t>::iterator lIter = lURIs.begin();
+}
+
+
+/*******************************************************************************
 
 ********************************************************************************/
 void *begin_visit (const QueryBody& v) 
@@ -2004,11 +2185,11 @@ void *begin_visit (const QueryBody& v)
   return no_state;
 }
 
-void end_visit (const QueryBody& v, void* /*visit_state*/) {
+void end_visit (const QueryBody& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
   pop_stack (global_decl_stack);
   nodestack.push(wrap_in_globalvar_assign(pop_nodestack()));
-  sctx_p->set_global_bindings (theGlobalVars);
 }
 
 
@@ -2798,7 +2979,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
     rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(cb->m_cur_sctx, return_location,
                                                               retExpr,
                                                               theScopedVariables,
-                                                              theGlobalVars);
+                                                              thePrologVars);
    retExpr = lDebuggerExpr;
   }
 #endif
@@ -2866,7 +3047,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
           domainExpr = new debugger_expr(cb->m_cur_sctx, domainExprs[j]->get_loc(),
                                          domainExpr,
                                          theScopedVariables,
-                                         theGlobalVars,
+                                         thePrologVars,
                                          true);
           pop_scope();
         }
@@ -2888,7 +3069,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
             theScopedVariables.push_back(posVarExprs[j]);
           }
           eflc->set_bound_variables(theScopedVariables);
-          eflc->set_global_variables(theGlobalVars);
+          eflc->set_global_variables(thePrologVars);
         }
 #endif
       }
@@ -2930,7 +3111,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
           domainExpr = new debugger_expr(cb->m_cur_sctx, domainExprs[j]->get_loc(),
                                          domainExpr,
                                          theScopedVariables,
-                                         theGlobalVars);
+                                         thePrologVars);
           pop_scope();
         }
 #endif
@@ -3904,18 +4085,21 @@ void end_visit (const IndexStatement& v, void* /*visit_state*/) {
 
 ********************************************************************************/
 
-void *begin_visit (const VarDecl& v) {
+void *begin_visit (const VarDecl& v) 
+{
   TRACE_VISIT ();
   string key = static_context::qname_internal_key (sctx_p->lookup_var_qname (v.get_varname (), loc));
-  if (v.is_global ()) {
-    global_var_decls.push_front (key);
+  if (v.is_global ()) 
+  {
+    prolog_var_decls.push_front (key);
     // TODO: local vars too
     global_decl_stack.push ("V" + key);
   }
   return no_state;
 }
 
-void end_visit (const VarDecl& v, void* /*visit_state*/) {
+void end_visit (const VarDecl& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
   if (v.is_global ())
     pop_stack (global_decl_stack);
@@ -3928,10 +4112,15 @@ void end_visit (const VarDecl& v, void* /*visit_state*/) {
     type = pop_tstack ();
 
   varref_t ve = bind_var (loc, varname, var_expr::context_var, type);
-  if (v.is_global ()) {
-    if (! mod_ns.empty () && xqp_string (ve->get_varname ()->getNamespace ()) != mod_ns)
+
+  if (v.is_global ()) 
+  {
+    if (! theModuleNamespace.empty() &&
+        ve->get_varname()->getNamespace()->str() != theModuleNamespace)
       ZORBA_ERROR_LOC (XQST0048, loc);
-    if (! v.is_extern ()) {
+
+    if (! v.is_extern ()) 
+    {
       bind_var (ve, minfo->globals.get ());
 
       // bind the variable also in the sctx that is used
@@ -3945,9 +4134,12 @@ void end_visit (const VarDecl& v, void* /*visit_state*/) {
 #endif
   }
   expr_t val = v.get_initexpr () == NULL ? expr_t(NULL) : pop_nodestack();
-  if (v.is_global ()) {
-    theGlobalVars.push_back(global_binding(ve, val, v.is_extern ()));
-  } else {
+  if (v.is_global ()) 
+  {
+    thePrologVars.push_back(global_binding(ve, val, v.is_extern ()));
+  }
+  else
+  {
     nodestack.push (ve.cast<expr> ());
     nodestack.push (val);
   }
@@ -4019,7 +4211,7 @@ void *begin_visit (const VFO_DeclList& v) {
                                n->get_location (),
                                qname->getLocalName()->str(), "");
       // In a module, all exports must be inside to target ns
-      if (! mod_ns.empty () && ns != mod_ns)
+      if (! theModuleNamespace.empty () && ns != theModuleNamespace)
         ZORBA_ERROR_LOC (XQST0048, loc);
     }
 
@@ -4058,22 +4250,22 @@ void *begin_visit (const VFO_DeclList& v) {
 
 void reorder_globals () {
   // STEP 1: Floyd-Warshall transitive closure of edges starting from functions
-  for (list<function *>::iterator k = global_fn_decls.begin ();
-       k != global_fn_decls.end (); k++)
+  for (list<function *>::iterator k = prolog_fn_decls.begin ();
+       k != prolog_fn_decls.end (); k++)
   {
     string kkey = "F" + static_context::qname_internal_key ((*k)->get_fname ());
     strset_t kedges;    
-    if (! global_deps.get (kkey, kedges))
+    if (! thePrologDeps.get (kkey, kedges))
       continue;
 
     for (set<string>::iterator j = kedges->begin (); j != kedges->end (); j++) {
       string jkey = *j;
-      for (list<function *>::iterator i = global_fn_decls.begin ();
-           i != global_fn_decls.end (); i++)
+      for (list<function *>::iterator i = prolog_fn_decls.begin ();
+           i != prolog_fn_decls.end (); i++)
       {
         string ikey = "F" + static_context::qname_internal_key ((*i)->get_fname ());
         strset_t iedges, new_iedges;
-        if (global_deps.get (ikey, iedges)
+        if (thePrologDeps.get (ikey, iedges)
             && iedges->find (kkey) != iedges->end ()
             && iedges->find (jkey) == iedges->end ()) {
           // cout << "Added " << ikey << " -> " << kkey << " -> " << jkey << endl;
@@ -4084,18 +4276,18 @@ void reorder_globals () {
   }
 
   // STEP 2: add var -> fn -> var dependencies found above
-  for (list<string>::iterator i = global_var_decls.begin ();
-       i != global_var_decls.end (); i++)
+  for (list<string>::iterator i = prolog_var_decls.begin ();
+       i != prolog_var_decls.end (); i++)
   {
     string ikey = "V" + *i;
     strset_t iedges;
-    if (! global_deps.get (ikey, iedges))
+    if (! thePrologDeps.get (ikey, iedges))
       continue;
     set<string> new_iedges;
     for (set<string>::iterator k = iedges->begin (); k != iedges->end (); k++) {
       string kkey = *k;
       strset_t kedges;
-      if (kkey [0] == 'F' && global_deps.get (kkey, kedges))
+      if (kkey [0] == 'F' && thePrologDeps.get (kkey, kedges))
         new_iedges.insert (kedges->begin (), kedges->end ());
     }
     // after iteration on iedges is finished, enlarge it
@@ -4116,8 +4308,8 @@ void reorder_globals () {
   list<string> topsorted_vars;  // dependencies first
   set<string> visited;
   stack<string> todo;  // format: action_char + var_key
-  for (list<string>::iterator i = global_var_decls.begin ();
-       i != global_var_decls.end (); i++)
+  for (list<string>::iterator i = prolog_var_decls.begin ();
+       i != prolog_var_decls.end (); i++)
     todo.push ("I" + (*i));
   
   while (! todo.empty ()) {
@@ -4136,7 +4328,7 @@ void reorder_globals () {
         visited.insert (ikey);
         todo.push ("D" + ikey);
         strset_t iedges;
-        if (global_deps.get ("V" + ikey, iedges)) {
+        if (thePrologDeps.get ("V" + ikey, iedges)) {
           for (set<string>::iterator j = iedges->begin ();
                j != iedges->end (); j++)
           {
@@ -4150,21 +4342,21 @@ void reorder_globals () {
     }
   }
 
-  // STEP 4: reorder theGlobalVars according to topological order
+  // STEP 4: reorder thePrologVars according to topological order
   #if 1
   map<string, global_binding> gvmap;
-  for (list<global_binding>::iterator i = theGlobalVars.begin ();
-       i != theGlobalVars.end (); i++)
+  for (list<global_binding>::iterator i = thePrologVars.begin ();
+       i != thePrologVars.end (); i++)
   {
     store::Item_t qname = (*i).first->get_varname ();
     gvmap [static_context::qname_internal_key (qname)] = *i;
   }
-  theGlobalVars.clear ();
+  thePrologVars.clear ();
   for (list<string>::iterator i = topsorted_vars.begin ();
        i != topsorted_vars.end (); i++) {
     map<string, global_binding>::iterator p = gvmap.find (*i);
     if (p != gvmap.end ())
-      theGlobalVars.push_back ((*p).second);
+      thePrologVars.push_back ((*p).second);
   }
   #endif
 }
@@ -4186,7 +4378,7 @@ void *begin_visit (const FunctionDecl& v) {
   string key = sctx_p->qname_internal_key (qname);
   global_decl_stack.push ("F" + key);
   function *f = sctx_p->lookup_fn_int (key, v.get_param_count ());
-  global_fn_decls.push_front (f);
+  prolog_fn_decls.push_front (f);
   fn_decl_stack.push_front (f);
   return no_state;
 }
@@ -4362,7 +4554,7 @@ void *begin_visit (const FunctionCall& v) {
   store::Item_t qname = sctx_p->lookup_fn_qname(prefix, fname, loc);
   string key = "F" + static_context::qname_internal_key (qname);
   if (! global_decl_stack.empty ())
-    add_multimap_value (global_deps, global_decl_stack.top (), key);
+    add_multimap_value (thePrologDeps, global_decl_stack.top (), key);
   nodestack.push(NULL);
   return no_state;
 }
@@ -4557,7 +4749,7 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/) {
         fo_h->add(*iter);
 #ifdef ZORBA_DEBUGGER
       if ( cb->m_debugger != 0 ) {
-        rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(cb->m_cur_sctx, loc, &*fo_h, theScopedVariables, theGlobalVars);
+        rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(cb->m_cur_sctx, loc, &*fo_h, theScopedVariables, thePrologVars);
         nodestack.push(&*lDebuggerExpr);
       } else {
         nodestack.push(&*fo_h);
@@ -4581,172 +4773,6 @@ void *begin_visit (const GeneralComp& v) {
 
 void end_visit (const GeneralComp& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const ModuleImport& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const ModuleImport& v, void* /*visit_state*/) 
-{
-  TRACE_VISIT_OUT ();
-
-  string pfx = v.get_prefix (), target_ns = v.get_uri ();
-
-#ifdef ZORBA_DEBUGGER
-  if(cb->m_debugger != 0)
-  {
-    cb->m_debugger->theImports.insert(make_pair<string, string>(target_ns, pfx)); 
-  }
-#endif
-
-  // The namespace prefix specified in a module import must not be xml or xmlns
-  // [err:XQST0070]
-  if (pfx == "xml" || pfx == "xmlns")
-    ZORBA_ERROR_LOC (XQST0070, loc);
-
-  // The first URILiteral in a module import must be of nonzero length [err:XQST0088]
-  if (target_ns.empty ())
-    ZORBA_ERROR_LOC (XQST0088, loc);
-
-  // It is a static error [err:XQST0047] if more than one module import in a
-  // Prolog specifies the same target namespace
-  if (! mod_import_ns_set.insert (target_ns).second)
-    ZORBA_ERROR_LOC (XQST0047, loc);
-
-  // The namespace prefix specified in a module import must not be the same as
-  // any namespace prefix bound  in the same module by another module import, 
-  // a schema import, a namespace declaration, or a module declaration with a
-  // different target namespace [err:XQST0033].
-  if (! ( pfx.empty () || ( pfx == mod_pfx && target_ns == mod_ns ) ) ) {
-    try {
-      sctx_p->bind_ns(pfx, target_ns, XQST0033);
-    } catch (error::ZorbaError& e) {
-      // rethrow with current location
-      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-    }
-  }
-
-  rchandle<URILiteralList> ats = v.get_uri_list ();
-  // Handle pre-defined modules
-  if (ats == NULL && zorba_predef_mod_ns.find (target_ns) != zorba_predef_mod_ns.end ())
-    return;
-
-  // use the target namespace if no at clauses are there
-  // otherwise use the resolved URIs of the at clauses
-  vector<xqpStringStore_t> lURIs;
-  if (ats == NULL || ats->size () == 0) {
-    lURIs.push_back(xqp_string(target_ns).getStore());
-  } else {
-    for (int i = 0; i < ats->size(); ++i) {
-      lURIs.push_back(sctx_p->resolve_relative_uri((*ats)[i], xqp_string()).getStore());
-    }
-  }
-
-  // the module URI resolve that is used for retrieving the istream to the module
-  // this can either be Zorba's standard implementation or one that has been
-  // provided by the user
-  InternalModuleURIResolver* lModuleResolver = sctx_p->get_module_uri_resolver();
-
-  // do the actual work
-  // take each of the URIs collected above and import the module's functions
-  // and variables into the current static context.
-  for (vector<xqpStringStore_t>::iterator lIter = lURIs.begin();
-       lIter != lURIs.end(); ++lIter) {
-    xqpStringStore_t resolveduri = *lIter; 
-    store::Item_t    aturiitem = NULL;
-    if (!GENV_ITEMFACTORY->createAnyURI(aturiitem, resolveduri))
-      ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "URI is not valid " << resolveduri);
-
-    // track cyclic imports
-    set<string> mod_stk1 = mod_stack;
-    if (! mod_stk1.insert (xqpString(resolveduri.getp())).second)
-      ZORBA_ERROR_LOC (XQST0073, loc);
-    
-    string imported_ns; // the target namespace of the imported module
-    static_context_t imported_sctx = NULL;
-
-    // use the cache
-    if (minfo->mod_ns_map.get (xqpString(resolveduri.getp()), imported_ns)) {
-      bool found = minfo->mod_sctx_map.get (xqpString(resolveduri.getp()), imported_sctx);
-      ZORBA_ASSERT (found);
-    } else {
-      // we get the ownership of the input stream
-      // TODO: we have to find a way to tell user defined resolvers when their input stream
-      // can be freed. The current solution might leed to problems on Windows.
-      xqpStringStore lFileUri;
-      auto_ptr<istream> modfile(lModuleResolver->resolve(aturiitem, sctx_p, &lFileUri));
-#ifdef ZORBA_DEBUGGER
-      if(cb->m_debugger != 0) {
-        cb->m_debugger->theModuleFileMappings.insert(std::pair<std::string, std::string>(aturiitem->getStringValue()->c_str(), lFileUri.c_str()));
-      }
-#endif
-
-      if (modfile.get () == NULL || ! *modfile) {
-        ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
-      }
-
-      // Create a CompilerCB for the imported module as a copy of the importing
-      // module's CompilerCB. Copying is needed for configuration settings,
-      // error manager, and debugger
-      CompilerCB mod_ccb (*cb);
-
-      static_context_t independent_sctx = static_cast<static_context *> (minfo->topCompilerCB->m_sctx->get_parent ());
-
-      // Create the root sctx for the imported module as a child of the
-      // user-specified sctx (if any) or the zorba default (root) sctx (if no
-      // user-specified sctx).
-      mod_ccb.m_sctx = independent_sctx->create_child_context ();
-      minfo->topCompilerCB->m_context_map[mod_ccb.m_cur_sctx] = mod_ccb.m_sctx;
-      mod_ccb.m_sctx->set_entity_retrieval_url (xqpString(resolveduri.getp()));
-
-      // Create an sctx where the imported module is going to register all the
-      // variable and function declarations that appear in its prolog. After the
-      // translation of the imported module is done, this sctx will be merged
-      // with the sctx of the importing module.
-      imported_sctx = independent_sctx->create_child_context();
-      // remeber the context; will be used in the translation process 
-      // of the module as export_sctx
-      minfo->mod_sctx_map.put (xqpString(resolveduri.getp()), imported_sctx);
-
-      // Parse the imported module
-      XQueryCompiler xqc (&mod_ccb);
-      xqpString lFileName(aturiitem->getStringValue());
-      rchandle<parsenode> ast = xqc.parse (*modfile, lFileName);
-#ifdef ZORBA_DEBUGGER
-      if(cb->m_debugger != 0)
-      {
-        cb->m_debugger->addModule(ast);
-      }
-#endif
-      // Get the target namespace that appears in the module declaration
-      // of the imported module and check that this ns is the same as the
-      // target ns in the module import statement.
-      // Also make sure that the imported module is a library module
-      LibraryModule *mod_ast = dynamic_cast<LibraryModule *> (&*ast);
-      if (mod_ast == NULL)
-        ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
-
-      // translate the imported module
-      translate_aux (*ast, &mod_ccb, minfo, mod_stk1);
-
-      // Register the mapping between the current location uri and the
-      // target namespace.
-      imported_ns = mod_ast->get_decl ()->get_target_namespace ();
-      minfo->mod_ns_map.put (xqpString(resolveduri.getp()), imported_ns);
-    }
-
-    // module with given target_ns not found
-    if (imported_ns != target_ns)
-      ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
-
-    // We catch duplicate functions / vars in minfo->globals.
-    // We can safely ignore the return value. We might even be able
-    // to assert() here (not sure though).
-    sctx_p->import_module (imported_sctx.getp());
-  } // for (vector<xqpStringStore_t>::iterator lIter = lURIs.begin();
 }
 
 
@@ -5102,9 +5128,9 @@ void end_visit (const IfExpr& v, void* /*visit_state*/) {
 
 #ifdef ZORBA_DEBUGGER
   if (cb->m_debugger != 0) {
-    c_h = new debugger_expr(cb->m_cur_sctx, c_h->get_loc(), c_h, theScopedVariables, theGlobalVars);
-    t_h = new debugger_expr(cb->m_cur_sctx, t_h->get_loc(), t_h, theScopedVariables, theGlobalVars);
-    e_h = new debugger_expr(cb->m_cur_sctx, e_h->get_loc(), e_h, theScopedVariables, theGlobalVars);
+    c_h = new debugger_expr(cb->m_cur_sctx, c_h->get_loc(), c_h, theScopedVariables, thePrologVars);
+    t_h = new debugger_expr(cb->m_cur_sctx, t_h->get_loc(), t_h, theScopedVariables, thePrologVars);
+    e_h = new debugger_expr(cb->m_cur_sctx, e_h->get_loc(), e_h, theScopedVariables, thePrologVars);
   }
 #endif
   if_expr *lIfExpr = new if_expr(cb->m_cur_sctx, loc,c_h,t_h,e_h);
@@ -6777,15 +6803,19 @@ void *begin_visit (const VarRef& v) {
   return no_state;
 }
 
-void end_visit (const VarRef& v, void* /*visit_state*/) {
+void end_visit (const VarRef& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
   var_expr *ve = lookup_var (v.get_varname ());
   if (ve == NULL)
     ZORBA_ERROR_LOC_PARAM (XPST0008, loc, v.get_varname (), "");
-  if (ve->global && ! global_decl_stack.empty ()) {
+
+  if (ve->global && ! global_decl_stack.empty ()) 
+  {
     string key = "V" + static_context::qname_internal_key (ve->get_varname ());
-    add_multimap_value (global_deps, global_decl_stack.top (), key);
+    add_multimap_value (thePrologDeps, global_decl_stack.top (), key);
   }
+
   nodestack.push (new wrapper_expr (cb->m_cur_sctx, v.get_location (), rchandle<expr> (ve)));
 }
 
@@ -7541,7 +7571,6 @@ void end_visit (const ParseErrorNode& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
-// End pass-thru
 
 public:
 
