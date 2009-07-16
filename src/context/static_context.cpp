@@ -1084,15 +1084,6 @@ static_context::get_trace_stream() const
   return theTraceStream;
 }
 
-void static_context::get_global_bindings (std::list<global_binding> &bs) {
-  if (parent != NULL)
-    static_cast<static_context *> (parent)->get_global_bindings (bs);
-  bs.insert (bs.end (), theGlobalVars.begin (), theGlobalVars.end ());
-}
-
-void static_context::set_global_bindings (const std::list<global_binding> &bs) {
-  theGlobalVars = bs;
-}
 
 } /* namespace zorba */
 

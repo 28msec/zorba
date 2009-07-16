@@ -55,7 +55,7 @@ protected:
   InternalCollectionURIResolver* theColResolver;
   InternalSchemaURIResolver*     theSchemaResolver;
   InternalModuleURIResolver*     theModuleResolver;
-  std::list<global_binding> theGlobalVars;
+
   std::vector<DecimalFormat_t> theDecimalFormats;
 
   std::ostream*                  theTraceStream;
@@ -80,9 +80,6 @@ public:
 
   void add_decimal_format(const DecimalFormat_t& decimal_format);
   DecimalFormat_t get_decimal_format(const store::Item_t qname);
-
-  void get_global_bindings (std::list<global_binding> &bs);
-  void set_global_bindings (const std::list<global_binding> &bs);
 
   StaticContextConsts::xquery_version_t xquery_version() const;
 	StaticContextConsts::xpath1_0compatib_mode_t xpath1_0compatib_mode() const;
