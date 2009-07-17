@@ -54,7 +54,7 @@ public:
         const XMLCh* const publicId,
         const XMLCh* const systemId);
 };        
-  
+
 #endif
 
 

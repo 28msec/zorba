@@ -83,6 +83,9 @@ InputSource* SchemaLocationEntityResolver::resolveEntity(
     const XMLCh* const publicId,
     const XMLCh* const systemID)
 {
+  TRACE("pId: " << StrX(publicId) << "  sId: " << StrX(systemID) );;
+
+
   if (XMLString::compareString(systemID, theLogicalURI) == 0) 
   {
     XMLChArray xerces_xsdURL (theLocation.c_str());
@@ -190,17 +193,26 @@ void Schema::registerXSD(const char* xsdURL, std::string& location, const QueryL
   TRACE("url=" << xsdURL << " loc=" << location);
 
   try
-  {    
-    parser.reset(XMLReaderFactory::createXMLReader(XMLPlatformUtils::fgMemoryManager,
-                                                   _grammarPool));
-    parser->setFeature(XMLUni::fgSAX2CoreNameSpaces, true);
-    parser->setFeature(XMLUni::fgSAX2CoreNameSpacePrefixes, false);
-    parser->setFeature(XMLUni::fgXercesSchema, true);
-    parser->setFeature(XMLUni::fgXercesSchemaFullChecking, true);
-    parser->setFeature(XMLUni::fgSAX2CoreValidation, true);
-    parser->setFeature(XMLUni::fgXercesDynamic, true);
+  {
+    SAX2XMLReader* reader = XMLReaderFactory::createXMLReader(XMLPlatformUtils::fgMemoryManager,
+                                                   _grammarPool);
+
+    parser.reset(reader);
+    parser->setFeature(XMLUni::fgSAX2CoreNameSpaces, true);                     // Perform namespace processing
+    parser->setFeature(XMLUni::fgSAX2CoreNameSpacePrefixes, false);             // Do not report attributes used for namespace declarations and optionally  do not report original prefixed names
+    parser->setFeature(XMLUni::fgXercesSchema, true);                           // Enable parser's schema support
+    parser->setFeature(XMLUni::fgXercesSchemaFullChecking, true);               // time and memory intensive to be disabled only if schema files previously checked
+    parser->setFeature(XMLUni::fgSAX2CoreValidation, true);                     // report all validation errors
+    parser->setFeature(XMLUni::fgXercesDynamic, true);                          // validate only if schema is available
+    ////parser->setFeature(XMLUni::fgXercesLoadSchema, true);                     // load the schema in the grammar pool
+    parser->setFeature(XMLUni::fgXercesDisableDefaultEntityResolution, true);   // disables network resolver
 
     parser->setProperty(XMLUni::fgXercesScannerName, (void *)XMLUni::fgSGXMLScanner);
+    
+    // this doesn't seem to work
+    //XMLChArray extSchemaLocation("namespace /location/file.xsd");
+    //parser->setFeature(XMLUni::fgXercesSchemaExternalSchemaLocation, extSchemaLocation.get());
+    
 
     LoadSchemaErrorHandler handler(loc);
     parser->setErrorHandler(&handler);
@@ -209,12 +221,16 @@ void Schema::registerXSD(const char* xsdURL, std::string& location, const QueryL
     SchemaLocationEntityResolver lEntityResolver(xerces_xsdURL.get(), location);
     parser->setEntityResolver(&lEntityResolver);
 
+    //this works but using loadProlog
+    //parser->loadGrammar("file:///location/file.xsd",
+    //                    Grammar::SchemaGrammarType, true);
+
     parser->loadGrammar(xsdURL, Grammar::SchemaGrammarType, true);
-        
+
     if (handler.getSawErrors())
     {
       handler.resetErrors();
-    }        
+    }
   }
   catch (const OutOfMemoryException&)
   {

@@ -103,6 +103,7 @@ TestSchemaURIResolver::resolve (
       std::cout << "Resolved schema " << aURI.getStringValue () << " -> " 
                 << result->theSchema.getStringValue () << std::endl;
   } else {
+    // todo Location hint is not used at all
     result -> setError ( URIResolverResult::UR_XQST0059 );
     std::stringstream lErrorStream;
     lErrorStream << "Schema not found " << aURI.getStringValue();
