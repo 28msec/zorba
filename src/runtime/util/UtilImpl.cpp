@@ -102,7 +102,9 @@ ZorbaTidyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t       item, itemOpt;
   xqp_string          xmlString, diag;
-  xqpStringStore_t    buf, options;
+  xqpStringStore_t    buf(new xqpStringStore(""));
+  xqpStringStore_t    options;
+  std::istringstream  is(std::istringstream::in);
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -115,9 +117,10 @@ ZorbaTidyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if( tidy(item->getStringValue()->c_str(), xmlString, diag, (theChildren.size() > 1?options->c_str():NULL)) >= 0)
     {
-      buf = xqpStringStore_t(xmlString.getStore());
       //if tidy returns a value >0 a warning should be raised
-      STACK_PUSH(GENV_ITEMFACTORY->createString(result, buf), state );
+      is.str(xmlString);
+      result = GENV_STORE.loadDocument(buf, is, false);
+      STACK_PUSH(result != NULL, state);
     }
     else
     {
