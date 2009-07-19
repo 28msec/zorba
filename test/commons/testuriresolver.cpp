@@ -64,7 +64,11 @@ void TestSchemaURIResolver::initialize ()
     path.erase ( slash );
   }
   path += "/";
+#ifndef WIN32
   std::string url ( "file://" );
+#else
+  std::string url ( "file:///" );
+#endif
   url += path;
   std::ifstream urifile ( map_file.c_str() );
   if ( urifile.good () == false ) return;
@@ -175,7 +179,11 @@ void TestModuleURIResolver::initialize ()
   path.erase ( slash );
   slash = path.find_last_of ( '/' );
   path.erase ( slash );
+#ifndef WIN32
   std::string url ( "file://" );
+#else
+  std::string url ( "file:///" );
+#endif
   std::ifstream urifile ( map_file.c_str() );
   std::string uris;
 
