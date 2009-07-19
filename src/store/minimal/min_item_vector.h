@@ -50,6 +50,8 @@ public:
 
   const std::vector<store::Item_t>& getItems() const { return theItems; }
   std::vector<store::Item_t>& getItems()             { return theItems; }
+
+  store::Item* getItem(ulong pos) const { return theItems[pos].getp(); }
 };
 
 } // namespace storeminimal

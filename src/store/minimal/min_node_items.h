@@ -390,7 +390,6 @@ public:
 
   store::Item* copy(
         store::Item*           parent,
-        ulong                  pos,
         const store::CopyMode& copymode) const;
 
   virtual store::Item_t getNilled() const { return 0; }
@@ -928,6 +927,8 @@ public:
   void setHaveListValue()    { theFlags |= HaveListValue; }
 
   bool isIdInternal() const;
+
+  bool isIdRefsInternal() const;
 
   void replaceValue(UpdReplaceTextValue& upd);
 

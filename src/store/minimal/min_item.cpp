@@ -710,7 +710,7 @@ void Item::finalizeNode()
 
 Item* Item::copy(
     store::Item* parent,
-    ulong pos,
+    long pos,
     const CopyMode& copymode) const
 {
   ZORBA_ERROR_PARAM_OSS(STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,

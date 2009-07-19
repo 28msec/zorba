@@ -368,7 +368,6 @@ xqpStringStore_t XmlNode::getBaseURIInternal(bool& local) const
 ********************************************************************************/
 store::Item* XmlNode::copy(
     store::Item* inParent,
-    ulong pos,
     const store::CopyMode& copymode) const
 {
   InternalNode* parent = NULL;
@@ -1295,6 +1294,24 @@ bool ElementNode::isId() const
 ********************************************************************************/
 bool ElementNode::isIdRefs() const
 {
+  if(!this->isFullLoaded())
+  {//do full load
+    store::Iterator_t    child_iter = this->getChildren();
+    child_iter->open();
+    store::Item_t  child_item;
+    while(child_iter->next(child_item))
+    {
+    }
+    child_iter->close();
+  }
+
+  if (numChildren() == 1 &&
+      getChild(0)->getNodeKind() == store::StoreConsts::textNode)
+  {
+    if (reinterpret_cast<TextNode*>(getChild(0))->isIdRefsInternal())
+      return true;
+  }
+
   return false;
 }
 
@@ -2236,6 +2253,22 @@ bool AttributeNode::isId() const
 ********************************************************************************/
 bool AttributeNode::isIdRefs() const
 {
+  if (haveListValue())
+  {
+    const ItemVector& values = getValueVector();
+    ulong numValues = values.size();
+
+    for (ulong i = 0; i < numValues; ++i)
+    {
+      if (dynamic_cast<IDREFItemImpl*>(values.getItem(i)) != NULL)
+        return true;
+    }
+  }
+  else if (dynamic_cast<IDREFItemImpl*>(theTypedValue.getp()) != NULL)
+  {
+    return true;
+  }
+
   return false;
 }
 
@@ -2610,6 +2643,35 @@ bool TextNode::isIdInternal() const
   return false;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+bool TextNode::isIdRefsInternal() const
+{
+  if (isTyped())
+  {
+    store::Item* value = getValue();
+
+    if (haveListValue())
+    {
+      const ItemVector& values = *reinterpret_cast<ItemVector*>(value); 
+      ulong numValues = values.size();
+
+      for (ulong i = 0; i < numValues; ++i)
+      {
+        if (dynamic_cast<IDREFItemImpl*>(values.getItem(i)) != NULL)
+          return true;
+      }
+    }
+    else if (dynamic_cast<IDREFItemImpl*>(value) != NULL)
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 /*******************************************************************************
 
