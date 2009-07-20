@@ -4335,9 +4335,6 @@ void *begin_visit (const CaseClause& v)
 {
   TRACE_VISIT ();
 
-  // shouldn't get here
-  ZORBA_ASSERT (false);
-
   return no_state;
 }
 
