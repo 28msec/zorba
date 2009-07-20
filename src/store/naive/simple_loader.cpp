@@ -729,5 +729,5 @@ void  SimpleXmlLoader::warning(void * ctx, const char * msg, ... )
 
 #undef ZORBA_ERROR_DESC_CONTINUE
 
-} // namespace store
+} // namespace simplestore
 } // namespace zorba

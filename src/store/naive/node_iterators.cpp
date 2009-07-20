@@ -353,6 +353,6 @@ bool StoreNodeSortOrAtomicIterator::next(store::Item_t& result)
   }
  
 }
-} // namespace store
+} // namespace simplestore
 } // namespace zorba
 

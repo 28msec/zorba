@@ -1,0 +1,62 @@
+(:~
+ : Foo Bar module
+ : @see http://example.com
+ :)
+module namespace gdata="http://www.28msec.com/modules/gdata";
+
+import module namespace zorba = "http://www.zorba-xquery.com/zorba/internal-functions";
+import module namespace atompub = "http://www.28msec.com/modules/atom" at "atom.xq";
+(:~
+ : Import the Atom XML Schema
+ : @see http://www.kbcafe.com/rss/atom.xsd.xml
+ :)
+import module namespace rest    = "http://www.zorba-xquery.com/zorba/rest-functions";
+
+
+import schema namespace atom = "http://www.w3.org/2005/Atom" at "atom.xsd";
+
+declare variable $gdata:version := "3.0";
+(:~
+ : Google ID
+ : @see http://www.google.com
+ :)
+declare variable $gdata:id := <id />;
+declare variable $gdata:authToken := <authSubToken />;
+
+(:~
+ : Google Login
+ : @see http://www.google.com
+ :)
+declare function gdata:login($account as xs:string*, $password as xs:string+, $service as xs:string?) as xs:boolean+
+{
+    let $result := rest:post("https://www.google.com/accounts/ClientLogin", <payload content-type="multipart/form-data">
+                                                                                <part name="Email">{$account}</part>
+                                                                                <part name="Passwd">{$password}</part>
+                                                                                <part name="service">{$service}</part>
+                                                                                <part name="source">28msec.com</part>
+                                                                            </payload>)
+    return
+        if($result/rest:status-code/text()="200") then
+            block {
+                replace value of node $gdata:id with $account;
+                replace value of node $gdata:authToken with fn:substring-after($result/rest:payload/text(), "Auth=");
+                true();
+            }
+        else false()
+};
+
+declare function gdata:get-headers() as element(rest:headers)
+{
+    if($gdata:authToken/text()="") then 
+        error(xs:QName("GDATA_ERROR"), "The client is not authenticated")
+    else
+        <rest:headers>
+            <rest:header name="GData-Version">{$gdata:version}</rest:header>
+            <rest:header name="Authorization">GoogleLogin auth={$gdata:authToken/text()}</rest:header>
+        </rest:headers>
+};
+
+declare function gdata:get-google-id() as xs:string
+{
+    encode-for-uri($gdata:id)
+};

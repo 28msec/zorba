@@ -65,7 +65,7 @@ class XQDocAnnotation
   public:
     const std::string& getName() const { return theName; }
     const std::string& getValue() const { return theValue; }
-    const XQDocType getType() const { return theType; }
+    XQDocType getType() const { return theType; }
 };
 
 class XQDocComment

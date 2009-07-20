@@ -23,8 +23,8 @@
 #include "store/api/item.h"
 
 
-namespace zorba 
-{ 
+namespace zorba
+{
 
 namespace simplestore 
 {
@@ -1340,7 +1340,7 @@ private:
   ErrorItemNaive& operator=(const ErrorItemNaive& other);
 };
 
-} // namespace store
+} // namespace simplestore
 } // namespace zorba
 #endif /* ZORBA_STORE_ATOMIC_ITEMS_H */
 

@@ -55,7 +55,7 @@ public:
   store::Item* getItem(ulong pos) const { return theItems[pos].getp(); }
 };
 
-} // namespace store
+} // namespace simplestore
 } // namespace zorba
 
 #endif

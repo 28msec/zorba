@@ -52,24 +52,33 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   xqpString lFileName;
   store::Item_t lItem;
   store::Item_t lURIItem = 0;
-  PlanIteratorState *state;
   auto_ptr<istream> lFile;
   stringstream lOutput;
   istringstream lInput;
   static_context* lSctx;
   InternalModuleURIResolver* lModuleResolver = 0;
-  XQueryCompiler lCompiler(planState.theCompilerCB);
 
+  // setup a new CompilerCB and a new XQueryCompiler 
+  CompilerCB     lCompilerCB(*planState.theCompilerCB);
+  lCompilerCB.m_sctx = GENV.getRootStaticContext().create_child_context();
+
+  // the XQueryCompiler's constructor destroys the existing type manager 
+  // in the static context. Hence, we create a new one
+  XQueryCompiler lCompiler(&lCompilerCB);
+
+  PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
+  // retrieve the URI of the module to generate xqdoc for
   if(consumeNext(lItem, theChildren[0].getp(), planState))
   {
     lFileName = xqpString(lItem->getStringValue());
   }
 
+  // resolve the uri in the surrounding static context and use
+  // the URI resolver to retrieve the module
   lSctx = getStaticContext(planState);
-  lURI = lSctx->resolve_relative_uri(lItem->getStringValueP(),
-                                              xqp_string()).getStore();
+  lURI = lSctx->resolve_relative_uri(lItem->getStringValueP(), xqp_string()).getStore();
   if (!GENV_ITEMFACTORY->createAnyURI(lURIItem, lURI))
       ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "URI is not valid " << lURI);
 
@@ -78,12 +87,20 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   // TODO: we have to find a way to tell user defined resolvers when their input stream
   // can be freed. The current solution might leed to problems on Windows.
   lFile.reset(lModuleResolver->resolve(lURIItem, lSctx));
-  if(lFile->good())
+
+  // now, do the real work
+  if(lFile.get() && lFile->good())
   {
+    // retrieve the xqdoc elements as string and parse them
+    // TODO: this could be done more efficiently if Items are returned immediately
     lCompiler.xqdoc(*lFile.get(), lFileName.theStrStore->str(), lOutput, planState.dctx()->get_current_date_time());
     lInput.str(lOutput.str());
     result = GENV_STORE.loadDocument(lFileName.theStrStore, lInput, false);
     STACK_PUSH(true, state);
+  }
+  else
+  {
+    ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "No module could be found at " << lURI);
   }
   STACK_END(state);
 }

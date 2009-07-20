@@ -350,8 +350,8 @@ void SimpleCollection::CollectionIter::open()
 bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 {
   if (!theHaveLock) {
-    ZORBA_ERROR_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, "Collection iterator has not been opened");                  
-  }    
+    ZORBA_ERROR_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, "Collection iterator has not been opened");
+  }
 
   if (theIterator == theCollection->theXmlTrees.end()) 
   {
@@ -385,6 +385,6 @@ void SimpleCollection::CollectionIter::close()
   SYNC_CODE(theCollection->theLatch.unlock();)
 }
 
-} // namespace store
+} // namespace simplestore
 } // namespace zorba
 

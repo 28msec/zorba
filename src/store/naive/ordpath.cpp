@@ -4038,6 +4038,6 @@ std::string OrdPathStack::show() const
   return str.str().c_str();
 }
 
-} // namespace store
+} // namespace simplestore
 } // namespace zorba
 

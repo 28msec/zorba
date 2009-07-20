@@ -39,6 +39,7 @@ namespace store
 namespace simplestore 
 {
 
+class StringPool;
 typedef StringPool UriPool;
 
 
@@ -285,7 +286,7 @@ public:
           error::ZorbaError* inError);
 };
 
-} // namespace store
+} // namespace simplestore
 } // namespace zorba
 
 #endif

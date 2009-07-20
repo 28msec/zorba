@@ -337,7 +337,7 @@ public:
 };
 
 
-} // namespace store
+} // namespace simplestore
 } // namespace zorba
 
 #endif

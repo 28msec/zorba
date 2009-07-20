@@ -1325,6 +1325,6 @@ bool BasicItemFactory::createError(
 }
 
 
-} // namespace store
+} // namespace simplestore
 } // namespace zorba
 
