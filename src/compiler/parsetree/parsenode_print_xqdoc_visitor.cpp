@@ -81,7 +81,7 @@ private:
       for(lIt = lAnnotations.begin(); lIt != lAnnotations.end(); ++lIt)
       {
         const XQDocAnnotation lAnnotation = *lIt;
-        if(lAnnotation.getType() != UNKNOWN)
+        if(lAnnotation.getType() != TYPE_UNKNOWN)
         {
           INDENT(os);
           os << "<xqdoc:" << lAnnotation.getName() << "><![CDATA[" << lAnnotation.getValue();

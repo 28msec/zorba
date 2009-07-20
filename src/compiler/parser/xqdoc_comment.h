@@ -26,7 +26,7 @@ class XQDocumentable;
 
 enum XQDocType
 {
-  AUTHOR, VERSION, PARAM, RETURN, ERROR, DEPRECATED, SEE, SINCE, UNKNOWN
+  TYPE_AUTHOR, TYPE_VERSION, TYPE_PARAM, TYPE_RETURN, TYPE_ERROR, TYPE_DEPRECATED, TYPE_SEE, TYPE_SINCE, TYPE_UNKNOWN
 };
 
 class XQDocAnnotation
@@ -42,23 +42,23 @@ class XQDocAnnotation
     {
       if(theName == "author")
       {
-        theType = AUTHOR;
+        theType = TYPE_AUTHOR;
       } else if(theName == "version") {
-        theType = VERSION;
+        theType = TYPE_VERSION;
       } else if(theName == "param") {
-        theType = PARAM;
+        theType = TYPE_PARAM;
       } else if(theName == "return") {
-        theType = RETURN;
+        theType = TYPE_RETURN;
       } else if(theName == "error") {
-        theType = ERROR;
+        theType = TYPE_ERROR;
       } else if(theName == "deprecated") {
-        theType = DEPRECATED;
+        theType = TYPE_DEPRECATED;
       } else if(theName == "see") {
-        theType = SEE;
+        theType = TYPE_SEE;
       } else if(theName == "since") {
-        theType = SINCE;
+        theType = TYPE_SINCE;
       } else {
-        theType = UNKNOWN;
+        theType = TYPE_UNKNOWN;
       }
     }
 
