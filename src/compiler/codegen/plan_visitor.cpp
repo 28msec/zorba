@@ -218,7 +218,7 @@ protected:
   stack<expr*>                           theConstructorsStack;
   stack<bool>                            theAttrContentStack;
 
-  hash64map<vector<LetVarIter_t> *>    * param_var_iter_map;
+  hash64map<vector<LetVarIter_t> *>    * arg_var_iter_map;
   hash64map<vector<LetVarIter_t> *>      catchvar_iter_map;
   hash64map<vector<ForVarIter_t> *>      copy_var_iter_map;
 
@@ -230,10 +230,10 @@ protected:
 
 public:
 
-plan_visitor(CompilerCB *ccb_, hash64map<vector<LetVarIter_t> *> *param_var_map = NULL)
+plan_visitor(CompilerCB *ccb_, hash64map<vector<LetVarIter_t> *> *arg_var_map = NULL)
   :
   depth (0),
-  param_var_iter_map(param_var_map),
+  arg_var_iter_map(arg_var_map),
   ccb (ccb_)
 {
 }
@@ -488,9 +488,9 @@ void general_var_codegen (const var_expr& var)
     break;
   }
 
-  case var_expr::param_var: 
+  case var_expr::arg_var: 
   {
-    PlanIter_t iter = base_var_codegen(var, *param_var_iter_map);
+    PlanIter_t iter = base_var_codegen(var, *arg_var_iter_map);
     push_itstack(iter);
     break;
   }
@@ -2305,9 +2305,9 @@ PlanIter_t codegen(
     const char *descr,
     expr *root,
     CompilerCB *ccb,
-    hash64map<vector<LetVarIter_t> *> *param_var_map)
+    hash64map<vector<LetVarIter_t> *> *arg_var_map)
 {
-  plan_visitor c(ccb, param_var_map);
+  plan_visitor c(ccb, arg_var_map);
   root->accept (c);
   PlanIter_t result = c.result();
 

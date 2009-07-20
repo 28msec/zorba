@@ -464,7 +464,7 @@ string var_expr::decode_var_kind(enum var_kind k)
   case copy_var: return "COPY"; break;
   case groupby_var: return "GROUPBY"; break;
   case non_groupby_var: return "NON-GROUPBY"; break;
-  case param_var: return "PARAM"; break;
+  case arg_var: return "ARG"; break;
   default: return "???";
   }
 }

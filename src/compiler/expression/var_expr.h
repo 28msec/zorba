@@ -85,7 +85,7 @@ public:
     quant_var,
     prolog_var,
     local_var,
-    param_var,
+    arg_var,
     catch_var,
     copy_var,
     groupby_var,

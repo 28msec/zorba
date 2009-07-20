@@ -344,7 +344,7 @@ static bool is_trivial_expr (expr* e)
   case var_expr_kind: 
   {
     enum var_expr::var_kind vk = static_cast<var_expr *>(e)->get_kind();
-    return vk != var_expr::param_var;
+    return vk != var_expr::arg_var;
   }
   case wrapper_expr_kind:
   {

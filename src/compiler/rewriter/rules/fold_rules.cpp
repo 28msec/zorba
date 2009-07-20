@@ -667,7 +667,7 @@ RULE_REWRITE_POST(InlineFunctions)
         && (NULL != (body = udf->get_body ())))
     {
       expr_t body = udf->get_body ();
-      const std::vector<var_expr_t>& params = udf->get_params();
+      const std::vector<var_expr_t>& params = udf->get_args();
       expr::substitution_t subst;
       for (unsigned i = 0; i < params.size (); ++i) {
         var_expr_t p = params [i];
