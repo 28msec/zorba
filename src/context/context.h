@@ -47,7 +47,7 @@ protected:
     ArityFMap        * fmapValue; 
     int                intValue;
     bool               boolValue;
-		const XQType     * typeValue; ///do manual ref counting on this
+    const XQType     * typeValue; ///do manual ref counting on this
     StatelessExternalFunction* stateless_function;
     ValueIndex       * valueIndex;
   } ctx_value_t;
@@ -55,14 +55,14 @@ protected:
   typedef xqp_string (* str_param_t) ();
   
 protected:
-	context              * parent;
-	hashmap<ctx_value_t>   keymap;     // maps strings to ctx_values
-	hashmap<xqp_string>    str_keymap; // maps strings to strings
+  context              * parent;
+  hashmap<ctx_value_t>   keymap;     // maps strings to ctx_values
+  hashmap<xqp_string>    str_keymap; // maps strings to strings
 
 public:
   context (context *_parent = NULL) : parent (_parent) {}
 
-	context *get_parent() const { return parent; }
+  context *get_parent() const { return parent; }
 
 protected:
   bool lookup_once (xqp_string key, xqp_string& val) const
@@ -85,22 +85,22 @@ protected:
     return keymap.get2 (key1, key2, val); 
   }
 
-	template<class V> bool context_value(xqp_string key, V &val) const
-	{
-		if (lookup_once (key, val))
+  template<class V> bool context_value(xqp_string key, V &val) const
+  {
+    if (lookup_once (key, val))
       return true;
     else
       return parent == NULL ? false : parent->context_value (key, val);
-	}
-
-	template<class V> bool context_value2(const char *key1, xqp_string key2, V& val) const
-	{
-		if (lookup_once2 (key1, key2, val))
+  }
+  
+  template<class V> bool context_value2(const char *key1, xqp_string key2, V& val) const
+  {
+    if (lookup_once2 (key1, key2, val))
       return true;
     else
       return parent == NULL ? false : parent->context_value2 (key1, key2, val);
-	}
-
+  }
+  
   expr* lookup_expr (xqp_string key) const 
   {
     ctx_value_t val;
