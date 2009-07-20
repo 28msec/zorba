@@ -361,7 +361,7 @@ public:
 /*******************************************************************************
   [5] ModuleDecl ::= MODULE NAMESPACE  NCNAME  EQ  URI_LITERAL  SEMI
 ********************************************************************************/
-class ModuleDecl : public parsenode
+class ModuleDecl : public XQDocumentable
 {
 protected:
 	std::string prefix;
@@ -375,7 +375,6 @@ public:
 
 	std::string get_prefix() const { return prefix; }
 	std::string get_target_namespace() const { return target_namespace; }
-
 	void accept(parsenode_visitor&) const;
 };
 
@@ -779,7 +778,7 @@ public:
   [25] ModuleImport ::= "import" "module" ("namespace" NCName "=")? URILiteral
                         ("at" URILiteralList)?
 ********************************************************************************/
-class ModuleImport : public parsenode
+class ModuleImport : public XQDocumentable
 {
 protected:
 	std::string prefix;
@@ -877,7 +876,7 @@ public:
 
   [28] VarDefaultValue ::= ExprSingle
 ********************************************************************************/
-class VarDeclBase : public parsenode
+class VarDeclBase : public XQDocumentable
 {
 protected:
 	std::string varname;
@@ -886,7 +885,7 @@ protected:
 public:
 	VarDeclBase(const QueryLoc& loc_, std::string varname_, rchandle<SequenceType> td_)
     :
-    parsenode (loc_),
+    XQDocumentable(loc_),
     varname (varname_),
     typedecl_h (td_)
   {
@@ -1008,7 +1007,7 @@ public:
         an Expr node if BlockDecls is empty, or a BlockBody node whose "decls"
         data member stores the var declarations.
 ********************************************************************************/
-class FunctionDecl : public parsenode
+class FunctionDecl : public XQDocumentable
 {
 public:
   ParseConstants::function_type_t type;
@@ -1017,7 +1016,6 @@ protected:
 	rchandle<ParamList> paramlist_h;
 	rchandle<exprnode> body_h;
 	rchandle<SequenceType> return_type_h;
-
 public:
 	bool deterministic;
 

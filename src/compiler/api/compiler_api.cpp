@@ -41,7 +41,7 @@
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
 
 #include "runtime/api/plan_wrapper.h"
-#include "compiler/parsetree/parsenode_xqdoc_visitor.h"
+#include "compiler/parsetree/parsenode_print_xqdoc_visitor.h"
 #include "runtime/visitors/printervisitor.h"
 #include "runtime/visitors/iterprinter.h"
 
@@ -76,10 +76,8 @@ static void print_ast_tree (const parsenode *n, std::string name) {
   std::cout << std::endl;
 }
 
-static void print_xqdoc_tree (const parsenode *n, std::string name) {
-  std::cout << "XQDOC for " << name << "\n";
-  print_parsetree_xqdoc (std::cout, n);
-  std::cout << std::endl;
+static void print_xqdoc_tree (const parsenode *n, std::string name, std::ostream& anOutput, store::Item_t aDateTime) {
+  print_parsetree_xqdoc (anOutput, n, name, aDateTime);
 }
 
 void XQueryCompiler::parseOnly(std::istream& aXQuery, const xqpString& aFileName)
@@ -105,6 +103,11 @@ PlanIter_t XQueryCompiler::compile(parsenode_t ast)
   return plan;
 }
 
+void XQueryCompiler::xqdoc(std::istream& aXQuery, const xqpString& aFileName, std::ostream& anOutput, const store::Item_t& aDateTime)
+{
+  parsenode_t lAST = parse(aXQuery, aFileName);
+  print_xqdoc_tree(lAST.getp(), aFileName, anOutput, aDateTime);
+}
 
 PlanIter_t
 XQueryCompiler::compile(std::istream& aXQuery, const xqpString & aFileName)
@@ -125,10 +128,6 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
   // TODO: move these out
   if (Properties::instance()->printAst()) {
     theCompilerCB->m_config.parse_cb = print_ast_tree;
-  }
-  
-  if (Properties::instance()->printXqdoc()) {
-    theCompilerCB->m_config.parse_cb = print_xqdoc_tree;
   }
   
   std::istream  *xquery_stream = &aXQuery;
@@ -270,7 +269,6 @@ XQueryCompiler::createMainModule(parsenode_t aLibraryModule, std::istream& aXQue
 
   std::string lib_namespace = mod_ast->get_decl()->get_target_namespace();
 
-  //create a dummy main module
   //create a dummy main module
   std::stringstream lDocStream;
   lDocStream << "import module namespace m = '"

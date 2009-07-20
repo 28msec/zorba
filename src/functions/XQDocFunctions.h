@@ -13,29 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef XQDOC_FUNCTIONS_H
+#define XQDOC_FUNCTIONS_H
 
-#ifndef ZORBA_UTIL_IMPL_H
-#define ZORBA_UTIL_IMPL_H
-
-#include "runtime/base/narybase.h"
+#include "common/shared_types.h"
+#include "functions/function.h"
 
 namespace zorba {
 
-  NARY_ITER (ZorbaSchemaTypeIterator);
-  NARY_ITER (ZorbaBase64DecodeIterator);
-  NARY_ITER (ZorbaBase64EncodeIterator);
+class XQDocFunction: public function
+{
+  public:
+    XQDocFunction(const signature& sig): function(sig){}
 
-  NARY_ITER (XQDocIterator);
-
-#ifdef ZORBA_WITH_TIDY
-  NARY_ITER (ZorbaTidyIterator);
-  NARY_ITER (ZorbaTDocIterator);
-#endif  /* ZORBA_WITH_TIDY */
-
-  NARY_ITER (ZorbaRandomIterator);
-  NARY_ITER (ZorbaUUIDIterator);
-  NARY_ITER (ZorbaTimestampIterator);
-
-}/*namespace zorba*/
-
-#endif /* ZORBA_UTIL_IMPL_H */
+    PlanIter_t codegen (short sctx,
+                        const QueryLoc& loc,
+                        std::vector<PlanIter_t>& argv,
+                        AnnotationHolder &ann) const;
+};
+}//end of namespace
+#endif

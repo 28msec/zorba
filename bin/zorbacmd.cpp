@@ -856,16 +856,12 @@ int _tmain(int argc, _TCHAR* argv[])
     //
     // Parse the query
     //
-    if (lProperties.parseOnly() /*|| lProperties.xqdoc()*/) {
+    if (lProperties.parseOnly()) {
       try {
         zorba::XQuery_t lQuery = lZorbaInstance->createQuery();
 
         if (asFile)
           lQuery->setFileName(path.get_path());
-
-//      if (lProperties.xqdoc())
-//        lQuery->xqdoc(*qfile);
-//      else
           lQuery->parse (*qfile);
       } catch (zorba::ZorbaException& ze) {
         std::cerr << ze << std::endl;

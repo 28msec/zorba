@@ -162,7 +162,7 @@ namespace zorba {
 
       /** \brief Parse the given query String.
        *
-       * @param aQuery the query String to parse.
+       * @param aQuery the query file to parse.
        * @throw ZorbaException if an error occurs while parsing the query.
        */
       virtual void

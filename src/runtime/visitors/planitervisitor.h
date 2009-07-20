@@ -270,6 +270,7 @@ namespace zorba
   class ZorbaSchemaTypeIterator;
   class ZorbaBase64EncodeIterator;
   class ZorbaBase64DecodeIterator;
+  class XQDocIterator;
 #ifdef ZORBA_WITH_TIDY
   class ZorbaTidyIterator;
   class ZorbaTDocIterator;
@@ -886,6 +887,7 @@ public:
     PLAN_ITER_VISITOR(ZorbaSchemaTypeIterator);
     PLAN_ITER_VISITOR(ZorbaBase64EncodeIterator);
     PLAN_ITER_VISITOR(ZorbaBase64DecodeIterator);
+    PLAN_ITER_VISITOR(XQDocIterator);
 #ifdef ZORBA_WITH_TIDY
     PLAN_ITER_VISITOR(ZorbaTidyIterator);
     PLAN_ITER_VISITOR(ZorbaTDocIterator);

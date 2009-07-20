@@ -33,6 +33,7 @@ SET(FUNCTIONS_SRCS
     signature.cpp
     Strings.cpp
     tuple_functions.cpp
+    XQDocFunctions.cpp
     InternalOperators.cpp
     Index.cpp)
 

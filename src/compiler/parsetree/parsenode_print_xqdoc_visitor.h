@@ -13,29 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef ZORBA_PARSENODE_PRINT_XQDOC_VISITOR_H
+#define ZORBA_PARSENODE_PRINT_XQDOC_VISITOR_H
 
-#ifndef ZORBA_UTIL_IMPL_H
-#define ZORBA_UTIL_IMPL_H
+#include <iostream>
+#include <ostream>
+#include <string>
 
-#include "runtime/base/narybase.h"
+#include "common/shared_types.h"
 
 namespace zorba {
 
-  NARY_ITER (ZorbaSchemaTypeIterator);
-  NARY_ITER (ZorbaBase64DecodeIterator);
-  NARY_ITER (ZorbaBase64EncodeIterator);
+  void print_parsetree_xqdoc (std::ostream &, const parsenode *p, const std::string&, const store::Item_t& aDateTime);
 
-  NARY_ITER (XQDocIterator);
+} // namespace
 
-#ifdef ZORBA_WITH_TIDY
-  NARY_ITER (ZorbaTidyIterator);
-  NARY_ITER (ZorbaTDocIterator);
-#endif  /* ZORBA_WITH_TIDY */
+#endif
 
-  NARY_ITER (ZorbaRandomIterator);
-  NARY_ITER (ZorbaUUIDIterator);
-  NARY_ITER (ZorbaTimestampIterator);
-
-}/*namespace zorba*/
-
-#endif /* ZORBA_UTIL_IMPL_H */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

@@ -39,6 +39,7 @@
 #include "functions/Index.h"
 #include "functions/Alexis.h"
 #include "functions/Convertors.h"
+#include "functions/XQDocFunctions.h"
 
 #ifdef ZORBA_WITH_REST
 #include "functions/Rest.h"
@@ -287,6 +288,12 @@ DECL(sctx, zor_numgen,
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
 // end zorba functions
+
+// begin xqdoc functions
+DECL(sctx, XQDocFunction,
+      (createQName(ZORBA_XQDOC_FN_NS, "xqdoc", "xqdoc"),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+// end xqdoc functions
 
 #ifdef ZORBA_WITH_REST
 

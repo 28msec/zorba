@@ -17,10 +17,11 @@
 #define ZORBA_PARSENODE_BASE_H
 
 #include <zorba/config.h>
+#include <zorba/error.h>
+
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parser/query_loc.h"
-
-#include <zorba/error.h>
+#include "compiler/parser/xqdoc_comment.h"
 
 #include "store/api/update_consts.h"
 
@@ -51,9 +52,38 @@ public:
 
 };
 
-/*
-**  exprnode:  nodes with values.
-*/
+/**
+ * XQDocumentable: nodes with XQDoc comments attached
+ */
+class XQDocumentable: public parsenode
+{
+  private:
+    std::string theStringComment;
+    mutable const XQDocComment* theComment;
+  
+  public:
+    XQDocumentable(const QueryLoc& loc): parsenode(loc), theComment(0){}
+    ~XQDocumentable(){ delete theComment; }
+
+    XQDocumentable* setComment(const std::string& aComment)
+    {
+      theStringComment = aComment;
+      return this;
+    }
+
+    const XQDocComment* getComment() const
+    {
+      if(theComment == 0)
+      {
+        theComment = new XQDocComment(theStringComment);
+      }
+      return theComment;
+    }
+};
+
+/**
+ * exprnode:  nodes with values.
+ */
 class exprnode : public parsenode
 {
 public:

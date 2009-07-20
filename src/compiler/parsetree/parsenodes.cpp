@@ -16,7 +16,6 @@
 
 #include "store/api/item.h"
 
-
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
 #include "context/static_context_consts.h"
@@ -162,7 +161,7 @@ ModuleDecl::ModuleDecl(
     std::string const& _prefix,
     std::string const& _target_namespace)
   :
-  parsenode(loc_),
+  XQDocumentable(loc_),
   prefix(_prefix),
   target_namespace(_target_namespace)
 {
@@ -567,7 +566,7 @@ ModuleImport::ModuleImport(
     std::string const& _uri,
     rchandle<URILiteralList> _uri_list_h)
   :
-  parsenode(loc_),
+  XQDocumentable(loc_),
   uri (_uri),
   uri_list_h(_uri_list_h)
 {
@@ -580,7 +579,7 @@ ModuleImport::ModuleImport(
     std::string const& _uri,
     rchandle<URILiteralList> _uri_list_h)
   :
-  parsenode(loc_),
+  XQDocumentable(loc_),
   prefix(_prefix),
   uri(_uri),
   uri_list_h(_uri_list_h)
@@ -730,7 +729,7 @@ FunctionDecl::FunctionDecl(
     rchandle<exprnode> _body_h,
     enum ParseConstants::function_type_t _type)
   :
-  parsenode(loc_),
+  XQDocumentable(loc_),
   type(_type),
   name_h(_name_h),
   paramlist_h(_paramlist_h),

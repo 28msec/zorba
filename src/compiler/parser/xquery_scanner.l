@@ -268,6 +268,7 @@ ByteOrderMark_UTF8    \xEF\xBB\xBF
 %x MODE_ELEMENT_CONTENT
 %x MODE_END_TAG
 %x MODE_EXPR_COMMENT
+%x MODE_EXPR_DOC_COMMENT
 %x MODE_ITEMTYPE
 %x MODE_KINDTEST
 %x MODE_KINDTESTFORPI
@@ -347,7 +348,12 @@ typedef zorba::xquery_parser::token token;
 "text" { return token::TEXT; }
 "processing-instruction" { return token::PROCESSING_INSTRUCTION; }
 "comment" { return token::COMMENT; }
-"declare" { return token::DECLARE; }
+"declare" {
+  std::string lDocComment = theDriver->theDocComment;
+  yylval->sval = getDriver()->symtab.put_stringlit(lDocComment.c_str(), lDocComment.length());
+  theDriver->theDocComment = "";
+  return token::DECLARE;
+}
 "function" { return token::FUNCTION; }
 "deterministic" { return token::DETERMINISTIC; }
 "nondeterministic" { return token::NONDETERMINISTIC; }
@@ -379,9 +385,17 @@ typedef zorba::xquery_parser::token token;
 "order" { return token::ORDER; }
 "collation" { return token::COLLATION; }
 "namespace" { return token::NAMESPACE; }
-"module" { return token::MODULE; }
+"module" {
+  std::string lDocComment = theDriver->theDocComment;
+  yylval->sval = getDriver()->symtab.put_stringlit(lDocComment.c_str(), lDocComment.length());
+  theDriver->theDocComment = "";
+  return token::MODULE;
+}
+
 "base-uri" { return token::BASE_URI; }
-"import" { return token::IMPORT; }
+"import" { 
+  return token::IMPORT;
+}
 "schema" { return token::SCHEMA; }
 "copy-namespaces" { return token::COPY_NAMESPACES; }
 "for" { return token::FOR; }
@@ -643,6 +657,8 @@ typedef zorba::xquery_parser::token token;
 }
 
 "<" { PUSH_STATE(MODE_START_TAG); return token::LT_OR_START_TAG; }
+
+"(:~" { PUSH_STATE(MODE_EXPR_DOC_COMMENT); }
 
 "(:" { PUSH_STATE(MODE_EXPR_COMMENT); }
 
@@ -1032,6 +1048,32 @@ typedef zorba::xquery_parser::token token;
 <MODE_EXPR_COMMENT><<EOF>> { return token::UNRECOGNIZED; }
 
   /* } */  /* END <MODE_EXPR_COMMENT> */
+
+
+  /*______________________________________________________________________
+   |
+   | EXPR_DOC_COMMENT State
+   |
+   | The "(:~" token marks the beginning of a doc Comment, and
+   | the ":)" token marks the end. This allows no special interpretation
+   | of other characters in this state.
+   |______________________________________________________________________*/
+
+  /* <MODE_EXPR_COMMENT>{  */
+
+<MODE_EXPR_DOC_COMMENT>":)" { POP_STATE(); }
+<MODE_EXPR_DOC_COMMENT>.|"\n" {
+  if(theDriver->theDocComment.empty())
+  {
+    theDriver->theMainModuleDocComment = theDriver->theDocComment;
+  }
+  theDriver->theDocComment += yytext;
+}
+<MODE_EXPR_DOC_COMMENT><<EOF>> { return token::UNRECOGNIZED; }
+
+  /* } */  /* END <MODE_EXPR_COMMENT> */
+
+
 
 
   /*______________________________________________________________________

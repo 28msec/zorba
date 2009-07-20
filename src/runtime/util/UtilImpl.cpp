@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "compiler/api/compiler_api.h"
 
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 
 #include "system/globalenv.h"
+#include "zorbatypes/URI.h"
 #include "zorbatypes/binary.h"
 #include "zorbatypes/numconversions.h"
 
@@ -34,8 +36,57 @@
 
 #include <stdlib.h>
 #include <time.h>
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include <memory>
+
+using namespace std;
 
 namespace zorba {
+
+bool
+XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  xqpStringStore_t lURI;
+  xqpString lFileName;
+  store::Item_t lItem;
+  store::Item_t lURIItem = 0;
+  PlanIteratorState *state;
+  auto_ptr<istream> lFile;
+  stringstream lOutput;
+  istringstream lInput;
+  static_context* lSctx;
+  InternalModuleURIResolver* lModuleResolver = 0;
+  XQueryCompiler lCompiler(planState.theCompilerCB);
+
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if(consumeNext(lItem, theChildren[0].getp(), planState))
+  {
+    lFileName = xqpString(lItem->getStringValue());
+  }
+
+  lSctx = getStaticContext(planState);
+  lURI = lSctx->resolve_relative_uri(lItem->getStringValueP(),
+                                              xqp_string()).getStore();
+  if (!GENV_ITEMFACTORY->createAnyURI(lURIItem, lURI))
+      ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "URI is not valid " << lURI);
+
+  lModuleResolver = lSctx->get_module_uri_resolver();
+  // we get the ownership of the input stream
+  // TODO: we have to find a way to tell user defined resolvers when their input stream
+  // can be freed. The current solution might leed to problems on Windows.
+  lFile.reset(lModuleResolver->resolve(lURIItem, lSctx));
+  if(lFile->good())
+  {
+    lCompiler.xqdoc(*lFile.get(), lFileName.theStrStore->str(), lOutput, planState.dctx()->get_current_date_time());
+    lInput.str(lOutput.str());
+    result = GENV_STORE.loadDocument(lFileName.theStrStore, lInput, false);
+    STACK_PUSH(true, state);
+  }
+  STACK_END(state);
+}
 
 bool
 ZorbaSchemaTypeIterator::nextImpl(store::Item_t& result, PlanState& planState) const

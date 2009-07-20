@@ -36,6 +36,7 @@
 #define ZORBA_JSON_FN_NS        "http://www.zorba-xquery.com/zorba/json-functions"
 #define ZORBA_JSON_ML_FN_NS     "http://www.zorba-xquery.com/zorba/json-ml-functions"
 #define ZORBA_FOP_FN_NS         "http://www.zorba-xquery.com/zorba/fop-functions"
+#define ZORBA_XQDOC_FN_NS       "http://www.zorba-xquery.com/zorba/xqdoc-functions"
 
 
 #define ZORBA_COLLATION_NS_BASE "http://www.zorba-xquery.com/zorba/collations/"

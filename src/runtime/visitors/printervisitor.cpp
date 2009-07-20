@@ -1416,6 +1416,7 @@ void endVisitFlworReturn(const PlanIterator& /*a*/)
   PRINTER_VISITOR_DEFINITION(ZorbaSchemaTypeIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaBase64EncodeIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaBase64DecodeIterator);
+  PRINTER_VISITOR_DEFINITION(XQDocIterator);
 #ifdef ZORBA_WITH_TIDY
   PRINTER_VISITOR_DEFINITION(ZorbaTidyIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaTDocIterator);

@@ -40,7 +40,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 30 "/Users/mbrantner/projects/zorba/zorba/src/compiler/parser/xquery_parser.y"
+#line 30 "/Users/wcandillon/28msec/zorba/src/compiler/parser/xquery_parser.y"
 
 #include "compiler/parsetree/parsenodes.h"
 namespace zorba {
@@ -50,7 +50,7 @@ class xquery_driver;
 
 
 /* Line 35 of lalr1.cc  */
-#line 54 "/Users/mbrantner/projects/zorba/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 54 "/Users/wcandillon/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -64,7 +64,7 @@ class xquery_driver;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 68 "/Users/mbrantner/projects/zorba/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 68 "/Users/wcandillon/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
@@ -74,7 +74,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 78 "/Users/mbrantner/projects/zorba/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 78 "/Users/wcandillon/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -122,7 +122,7 @@ do {							\
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 126 "/Users/mbrantner/projects/zorba/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 126 "/Users/wcandillon/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -134,7 +134,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 120 "/Users/mbrantner/projects/zorba/zorba/src/compiler/parser/xquery_parser.y"
+#line 120 "/Users/wcandillon/28msec/zorba/src/compiler/parser/xquery_parser.y"
 
   zorba::parsenode * node;
   zorba::exprnode * expr;
@@ -153,7 +153,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 157 "/Users/mbrantner/projects/zorba/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 157 "/Users/wcandillon/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -185,27 +185,27 @@ namespace zorba {
      QUOTE_ATTR_CONTENT = 274,
      STRING_LITERAL = 275,
      XML_COMMENT_LITERAL = 276,
-     BLANK = 280,
-     VALIDATE = 281,
-     TYPESWITCH = 282,
-     ELEMENT = 283,
-     DOCUMENT = 284,
-     TEXT = 285,
-     COMMENT = 286,
-     DECLARE = 287,
-     FUNCTION = 288,
-     UPDATING = 289,
-     SEQUENTIAL = 290,
-     DETERMINISTIC = 291,
-     NONDETERMINISTIC = 292,
-     SIMPLE = 293,
-     IF = 294,
-     PROCESSING_INSTRUCTION = 295,
-     MOST = 296,
-     IMPORT = 297,
-     SOME = 298,
-     STABLE = 299,
-     MODULE = 300,
+     DECLARE = 280,
+     MODULE = 281,
+     BLANK = 282,
+     VALIDATE = 283,
+     TYPESWITCH = 284,
+     ELEMENT = 285,
+     DOCUMENT = 286,
+     TEXT = 287,
+     COMMENT = 288,
+     FUNCTION = 289,
+     UPDATING = 290,
+     SEQUENTIAL = 291,
+     DETERMINISTIC = 292,
+     NONDETERMINISTIC = 293,
+     SIMPLE = 294,
+     IF = 295,
+     IMPORT = 296,
+     PROCESSING_INSTRUCTION = 297,
+     MOST = 298,
+     SOME = 299,
+     STABLE = 300,
      OPTION = 301,
      WORD = 302,
      SCHEMA = 303,
@@ -634,7 +634,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 638 "/Users/mbrantner/projects/zorba/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 638 "/Users/wcandillon/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

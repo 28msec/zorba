@@ -14,28 +14,16 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_UTIL_IMPL_H
-#define ZORBA_UTIL_IMPL_H
+#include "functions/XQDocFunctions.h"
 
-#include "runtime/base/narybase.h"
+#include "runtime/util/UtilImpl.h"
+
+using namespace std;
 
 namespace zorba {
 
-  NARY_ITER (ZorbaSchemaTypeIterator);
-  NARY_ITER (ZorbaBase64DecodeIterator);
-  NARY_ITER (ZorbaBase64EncodeIterator);
-
-  NARY_ITER (XQDocIterator);
-
-#ifdef ZORBA_WITH_TIDY
-  NARY_ITER (ZorbaTidyIterator);
-  NARY_ITER (ZorbaTDocIterator);
-#endif  /* ZORBA_WITH_TIDY */
-
-  NARY_ITER (ZorbaRandomIterator);
-  NARY_ITER (ZorbaUUIDIterator);
-  NARY_ITER (ZorbaTimestampIterator);
-
-}/*namespace zorba*/
-
-#endif /* ZORBA_UTIL_IMPL_H */
+PlanIter_t XQDocFunction::codegen(short sctx, const QueryLoc& loc, vector<PlanIter_t>& argv, AnnotationHolder& ann) const
+{
+  return new XQDocIterator(sctx, loc, argv);
+}
+}//end of namespace

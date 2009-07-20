@@ -183,6 +183,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
   /* %type <sval> NCNAME_NOKW                    "'NCName(non keyword)'" */
 %type <sval> KEYWORD                        "'KEYWORD'"
 
+%token <sval> DECLARE                "'declare'"
+%token <sval> MODULE                 "'module'"
+
 /* simple tokens */
 /* ------------- */
 
@@ -194,7 +197,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token DOCUMENT                   "'document'"
 %token TEXT                       "'text'"
 %token COMMENT                    "'comment'"
-%token DECLARE                    "'declare'"
 %token FUNCTION                   "'function'"
 %token UPDATING                   "'updating'"
 %token SEQUENTIAL                 "'sequential'"
@@ -202,12 +204,11 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token NONDETERMINISTIC           "'nondeterministic'"
 %token SIMPLE                     "'simple'"
 %token IF                         "'if'"
+%token IMPORT                     "'import'"
 %token PROCESSING_INSTRUCTION     "'processing-instruction'"
 %token MOST                       "'most'"
-%token IMPORT                     "'import'"
 %token SOME                       "'some'"
 %token STABLE                     "'stable'"
-%token MODULE                     "'module'"
 %token OPTION                     "'option'"
 %token WORD                       "'word'"
 %token SCHEMA                     "'schema'"
@@ -985,6 +986,7 @@ ModuleDecl :
 			$$ = new ModuleDecl(LOC (@$),
 								SYMTAB ($3), 
 								SYMTAB ($5));
+      dynamic_cast<ModuleDecl *>($$)->setComment(SYMTAB($1));
 		}
 	;
 
@@ -1167,7 +1169,7 @@ Import :
 NamespaceDecl :
 		DECLARE NAMESPACE  NCNAME  EQUALS  URI_LITERAL
 		{
-			$$ = new NamespaceDecl(LOC (@$),
+      $$ = new NamespaceDecl(LOC (@$),
 								SYMTAB ($3),
 								SYMTAB ($5));
 		}
@@ -1401,6 +1403,7 @@ ModuleImport :
 			$$ = new ModuleImport(LOC (@$),
 								SYMTAB ($3),
 								NULL);
+      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
 		}
 	|	IMPORT MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL
 		{
@@ -1408,12 +1411,14 @@ ModuleImport :
 								SYMTAB ($4),
 								SYMTAB ($6),
 								NULL);
+      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
 		}
 	|	IMPORT MODULE  URI_LITERAL  AT  URILiteralList
 		{
 			$$ = new ModuleImport(LOC (@$),
 								SYMTAB ($3),
 								dynamic_cast<URILiteralList*>($5));
+      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
 		}
 	|	IMPORT MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URILiteralList
 		{
@@ -1421,6 +1426,7 @@ ModuleImport :
 								SYMTAB ($4),
 								SYMTAB ($6),
 								dynamic_cast<URILiteralList*>($8));
+      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
 		}
 	;
 
@@ -1497,6 +1503,7 @@ VarDecl :
 								nt->type,
 								$5);
       delete nt;
+      dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
 		}
 	|	DECLARE  VARIABLE  VarNameAndType EXTERNAL
 		{
@@ -1504,6 +1511,7 @@ VarDecl :
 			$$ = new VarDecl(LOC (@$), nt->name, nt->type,
                        NULL, true);
       delete nt;
+      dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
 		}
 	|	DECLARE  VARIABLE  VarNameAndType EXTERNAL GETS ExprSingle
 		{
@@ -1511,6 +1519,7 @@ VarDecl :
 			$$ = new VarDecl(LOC (@$), nt->name, nt->type,
                        $6, true);
       delete nt;
+      dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
 		}
 	;
 
@@ -1775,17 +1784,20 @@ IndexStatement :
 
 FunctionDecl :
     DECLARE FunctionDecl2
-    {
+    { 
+      dynamic_cast<FunctionDecl *>($2)->setComment(SYMTAB($1));
       $$ = $2;
     }
   | DECLARE NONDETERMINISTIC FunctionDecl2
     {
       FunctionDecl *d = dynamic_cast<FunctionDecl *> ($3);
+      d->setComment(SYMTAB($1));
       d->deterministic = false;
       $$ = d;
     }
   | DECLARE DETERMINISTIC FunctionDecl2
     {
+      dynamic_cast<FunctionDecl *>($3)->setComment(SYMTAB($1));
       $$ = $3;
     }
   ;

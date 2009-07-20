@@ -43,6 +43,8 @@ private:
   };
 
 public:
+  std::string theDocComment;
+  std::string theMainModuleDocComment;
   std::string theFilename;
   symbol_table symtab;
   rchandle<parsenode> expr_p;

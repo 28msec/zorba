@@ -197,9 +197,6 @@ class XQueryImpl : public XQuery
   void
   parse(std::istream&);
 
-  //void
-  //xqdoc(std::istream&);
-
   void
   compile(const String&);
 
