@@ -10,7 +10,8 @@ version 1.0.0 (comming)
 	* Changed the scripting syntax of the exit expression from 'exit with' to 'exit returning'. 
 		This is due to an ambiguity in the grammar (see http://www.w3.org/Bugs/Public/show_bug.cgi?id=6852 for more information).
   * Added some accessor functions for node items to the Item class in the API (e.g. getChildren, getAttributes, or getNodeName)
-	* Made rhe util:tidy function to return a node instead of a string
+	* Made the util:tidy function to return a node instead of a string
+	* Added the module http://www.zorba-xquery.com/zorba/xqdoc-functions for generating xqdoc documentation
 
 version 0.9.5 (2008.02.17)
   * Unified the Tidy and Rest API's
