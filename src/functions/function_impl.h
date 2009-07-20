@@ -47,26 +47,34 @@
     type##_ptr.release();                                               \
   } while(0)
 
+
 #define DEFAULT_CODEGEN( Iter ) \
   PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const { \
     return new Iter (sctx, loc, argv);                                        \
   }
 
+
 namespace zorba {
 
-  static inline store::Item_t createQName(const char *ns, const char *pre, const char *local)
-  {
-    store::Item_t res;
-    ITEM_FACTORY.createQName(res, ns, pre, local);
-    return res;
-  }
+static inline store::Item_t createQName(
+    const char *ns,
+    const char *pre,
+    const char *local)
+{
+  store::Item_t res;
+  ITEM_FACTORY.createQName(res, ns, pre, local);
+  return res;
+}
 
 
-  template <class Iter> class function_impl : public function {
-  public:
-    function_impl ( const signature& sig) : function (sig) {}
-    DEFAULT_CODEGEN (Iter)
-  };
+template <class Iter> class function_impl : public function 
+{
+public:
+  function_impl ( const signature& sig) : function (sig) {}
+
+  DEFAULT_CODEGEN (Iter)
+};
+
 
 }	/* namespace zorba */
 

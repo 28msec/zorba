@@ -23,25 +23,31 @@
 
 namespace zorba {
 
-class stateless_external_function_adapter : public external_function {
-  public:
-    stateless_external_function_adapter(
-      const signature& sig, 
-      StatelessExternalFunction *function,
-      bool aIsUpdating);
+class stateless_external_function_adapter : public external_function 
+{
+private:
+  StatelessExternalFunction * m_function;
+  expr_update_t               theUpdateType;
 
-    ~stateless_external_function_adapter();
+public:
+  stateless_external_function_adapter(
+        const signature& sig, 
+        StatelessExternalFunction *function,
+        bool aIsUpdating);
+  
+  ~stateless_external_function_adapter();
 
-    virtual PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  virtual expr_update_t getUpdateType() const { return theUpdateType; }
 
-    virtual expr_update_t getUpdateType() const { return theUpdateType; }
+  virtual bool isPureFunction() const { return m_function->isPureFunction(); }
 
-    virtual bool isPureFunction() const { return m_function->isPureFunction(); }
-
-  private:
-    StatelessExternalFunction *m_function;
-    expr_update_t theUpdateType;
+  virtual PlanIter_t codegen (
+        short sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder &ann) const;
 };
+
 
 } /* namespace zorba */
 #endif  /* ZORBA_EXTERNAL_FUNCTION_ADAPTERS_H */

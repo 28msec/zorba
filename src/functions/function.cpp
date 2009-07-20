@@ -34,6 +34,9 @@ using namespace std;
 namespace zorba {
 
 
+/*******************************************************************************
+
+********************************************************************************/
 xqtref_t function::return_type (const std::vector<xqtref_t> &) const 
 {
   return sig.return_type ();
@@ -82,11 +85,15 @@ function::AnnotationProperty_t function::producesNodeIdSorted() const
 }
 
 
-user_function::user_function(const QueryLoc& loc, 
-                             const signature& _sig, 
-                             expr_t expr_body, 
-                             enum ParseConstants::function_type_t ftype,
-                             bool deterministic_)
+/*******************************************************************************
+
+********************************************************************************/
+user_function::user_function(
+    const QueryLoc& loc, 
+    const signature& _sig, 
+    expr_t expr_body, 
+    enum ParseConstants::function_type_t ftype,
+    bool deterministic_)
   :
   function(_sig), 
   m_loc(loc), 
@@ -109,6 +116,7 @@ const QueryLoc& user_function::get_location() const
   return m_loc;
 }
 
+
 void user_function::set_body(expr_t body)
 {
   m_expr_body = body;
@@ -121,20 +129,17 @@ expr_t user_function::get_body() const
 }
 
 
-void user_function::set_params(std::vector<var_expr_t>& params)
+void user_function::set_args(std::vector<var_expr_t>& args)
 {
-  m_params = params;
+  m_args = args;
 }
 
 
-const std::vector<var_expr_t>& user_function::get_params() const
+const std::vector<var_expr_t>& user_function::get_args() const
 {
-  return m_params;
+  return m_args;
 }
   
-bool user_function::isPureFunction () const {
-  return deterministic;
-}
 
 bool user_function::requires_dyn_ctx () const
 {
@@ -154,12 +159,12 @@ PlanIter_t user_function::get_plan(CompilerCB *ccb) const
 {
   if (m_plan == NULL) 
   {
-    std::vector<std::vector<LetVarIter_t> > param_iter_vec(m_params.size());
+    std::vector<std::vector<LetVarIter_t> > param_iter_vec(m_args.size());
     hash64map<std::vector<LetVarIter_t> *> param_map;
 
-    for(uint32_t i = 0; i < m_params.size(); ++i)
+    for(uint32_t i = 0; i < m_args.size(); ++i)
     {
-      param_map.put((uint64_t)&*m_params[i], &param_iter_vec[i]);
+      param_map.put((uint64_t)&*m_args[i], &param_iter_vec[i]);
     }
 
     m_plan = zorba::codegen(get_fname()->getStringValue()->c_str (),
