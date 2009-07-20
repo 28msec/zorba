@@ -18,8 +18,11 @@
 namespace zorba {
   
 ZorbaException
-ExternalFunctionData::createZorbaException(const XQUERY_ERROR& aError, const String& aDescription,
-                                           const String& aFileName, unsigned int aFileLineNumber)
+ExternalFunctionData::createZorbaException(
+    const XQUERY_ERROR& aError,
+    const String& aDescription,
+    const String& aFileName,
+    unsigned int aFileLineNumber)
 {
   return ZorbaException(aError, aDescription, aFileName, aFileLineNumber);
 }
