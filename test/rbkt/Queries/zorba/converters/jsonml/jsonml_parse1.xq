@@ -7,7 +7,7 @@ jsonml:parse(('[ "ul",
                     {"href":"driving.html", "title":"Driving"},
                     "Second item"],
                   [ "li", null],
-                  [ "li", -14e12]
+                  [ "li", -14]
                   ]', '["table",{"class":"maintable"},
                         ["tr",{"class":"odd"},
                         ["th",{},"Situation"],
