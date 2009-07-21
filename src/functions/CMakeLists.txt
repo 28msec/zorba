@@ -17,12 +17,12 @@ SET(FUNCTIONS_SRCS
     arithmetic.cpp
     Boolean.cpp
     Collections.cpp
-    Constructor.cpp
     ContextFunctions.cpp
     Convertors.cpp
     DateTime.cpp
+    EnclosedExpr.cpp
     external_function_adapters.cpp
-    FnContext.cpp
+    VarDecl.cpp
     function.cpp
     library.cpp
     Misc.cpp

@@ -496,47 +496,59 @@ void FnReverseIteratorState::reset(PlanState& planState)
 }
 
 //15.1.10 fn:subsequence
-bool 
-FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
-  store::Item_t temp;
-  xqp_integer lSkip;
-  xqp_integer zero = xqp_integer::parseInt (0), minus_one = xqp_integer::parseInt (-1);
+bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
+  store::Item_t startPosItem;
+  xqp_integer startPos;
+  store::Item_t lengthItem;
+  xqp_integer zero = xqp_integer::parseInt (0);
+  xqp_integer minus_one = xqp_integer::parseInt (-1);
 
   FnSubsequenceIteratorState* state;
   DEFAULT_STACK_INIT(FnSubsequenceIteratorState, state, planState);
   
-  CONSUME(temp, 1);
-  xqp_integer::parseDouble (temp->getDoubleValue ().round (), lSkip);
-  lSkip += minus_one;
+  CONSUME(startPosItem, 1);
+  xqp_integer::parseDouble(startPosItem->getDoubleValue().round(), startPos);
+  startPos += minus_one;
   
-  if (theChildren.size() == 3) {
-    CONSUME(temp, 2);
-    xqp_integer::parseDouble (temp->getDoubleValue ().round (),
-                              state->theRemaining);
+  if (theChildren.size() == 3) 
+  {
+    CONSUME(lengthItem, 2);
+    xqp_integer::parseDouble(lengthItem->getDoubleValue().round(),
+                             state->theRemaining);
   }
 
-  if (lSkip < zero) {
-    if (theChildren.size () >= 3)
-      state->theRemaining += lSkip;
-    lSkip = zero;
+  if (startPos < zero)
+  {
+    if (theChildren.size() >= 3)
+      state->theRemaining += startPos;
+
+    startPos = zero;
   }
 
-  if (theChildren.size () == 3 && state->theRemaining <= zero)
+  // If a length is specified and it is <= 0, return the empty sequence
+  if (theChildren.size() == 3 && state->theRemaining <= zero)
     goto done;
 
-  for (; lSkip > zero; --lSkip)
-    if (!CONSUME (result, 0))
+  // Consume and skip all input items that are before the startPos
+  for (; startPos > zero; --startPos)
+  {
+    if (!CONSUME(result, 0))
       goto done;
-  
-  while (((theChildren.size () < 3) || (state->theRemaining > xqp_integer::parseInt (0)))
-         && CONSUME (result, 0))
+  }
+
+  while ((theChildren.size() < 3 || state->theRemaining > xqp_integer::parseInt(0)) &&
+         CONSUME(result, 0))
   {
     if (theChildren.size () >= 3)
       state->theRemaining--;
-      STACK_PUSH (true, state);
+
+    STACK_PUSH (true, state);
   }
 
 done:
+  theChildren[0]->reset(planState);
+
   STACK_END (state);
 }
 

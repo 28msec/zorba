@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include "system/globalenv.h"
-#include "functions/Constructor.h"
+#include "functions/EnclosedExpr.h"
 #include "runtime/core/item_iterator.h"
 #include "runtime/core/constructors.h"
 

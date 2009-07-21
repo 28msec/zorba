@@ -72,6 +72,7 @@ public:
     HASH,
     BTREE
   } index_method_t;
+
 private:
   static_context      * m_static_context;
   xqpStringStore_t      m_index_uri;

@@ -18,18 +18,34 @@
 
 #include "common/shared_types.h"
 #include "functions/function.h"
+#include "functions/function_impl.h"
 
-namespace zorba {
+#include "runtime/collections/CollectionsImpl.h"
+
+namespace zorba 
+{
+
+class fn_collection : public function 
+{
+public:
+  fn_collection(const signature & sig) : function (sig) {}
+
+  bool requires_dyn_ctx() const { return true; }
+
+  DEFAULT_CODEGEN (FnCollectionIterator)
+};
+
 
 class zorba_collection_exists : public function
 {
-  public:
-    zorba_collection_exists(const signature& sig): function(sig){}
+public:
+  zorba_collection_exists(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
-    bool requires_dyn_ctx () const { return true; }
+  bool requires_dyn_ctx() const { return true; }
 };
+
 
 class zorba_import_xml : public function
 {
@@ -202,35 +218,46 @@ class zorba_nodes_count : public function
     bool requires_dyn_ctx () const { return true; }
 };
 
+
 class zorba_node_at : public function
 {
-  public:
-    zorba_node_at(const signature& sig): function(sig){}
+public:
+  zorba_node_at(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
-    bool requires_dyn_ctx () const { return true; }
+  bool requires_dyn_ctx () const { return true; }
 };
+
 
 class zorba_index_of : public function
 {
-  public:
-    zorba_index_of(const signature& sig): function(sig){}
+public:
+  zorba_index_of(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
-    bool requires_dyn_ctx () const { return true; }
+  bool requires_dyn_ctx () const { return true; }
 };
+
 
 class zorba_export_xml : public function
 {
-  public:
-    zorba_export_xml(const signature& sig): function(sig){}
+public:
+  zorba_export_xml(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
-    bool requires_dyn_ctx () const { return true; }
+  bool requires_dyn_ctx () const { return true; }
 };
+
+
 } /* namespace zorba */
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

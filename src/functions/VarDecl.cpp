@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "functions/FnContext.h"
+
 #include "system/globalenv.h"
+#include "functions/VarDecl.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/item_iterator.h"
 #include "store/api/iterator.h"

@@ -27,10 +27,10 @@
 #include "functions/Sequences.h"
 #include "functions/Strings.h"
 #include "functions/Boolean.h"
-#include "functions/Constructor.h"
+#include "functions/EnclosedExpr.h"
 #include "functions/ContextFunctions.h"
 #include "functions/DateTime.h"
-#include "functions/FnContext.h"
+#include "functions/VarDecl.h"
 #include "functions/Misc.h"
 #include "functions/arithmetic.h"
 #include "functions/Nodes.h"
@@ -444,6 +444,15 @@ DECL(sctx, zorba_fop,
 #endif
 
 //begin collection functions
+DECL(sctx, fn_collection,
+     (createQName(XQUERY_FN_NS, "fn", "collection"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+
+DECL(sctx, fn_collection,
+     (createQName(XQUERY_FN_NS, "fn", "collection"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+
 DECL(sctx, zorba_collection_exists,
      (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "collection-exists"),
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));

@@ -71,9 +71,8 @@ CollectionImpl::size() const
 }
 
 
-
 bool
-CollectionImpl::addNode(const Item& aNode, const long aPosition)
+CollectionImpl::addNode(const Item& aNode, long aPosition)
 {
   ZORBA_TRY
 
@@ -82,13 +81,16 @@ CollectionImpl::addNode(const Item& aNode, const long aPosition)
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
     store::CopyMode lCopyMode;
-    //check if the item is already in the collection
-    theCollection->addNode(lItem, lCopyMode, aPosition);
+    store::Item* lCopy = lItem->copy(0, 0, lCopyMode);
+
+    theCollection->addNode(lCopy, aPosition);
+
     return true;
 
   ZORBA_CATCH
-    return false;
+  return false;
 }
+
 
 bool
 CollectionImpl::addNode(const Item& aNode, const Item& aTargetNode, bool before)
@@ -101,12 +103,14 @@ CollectionImpl::addNode(const Item& aNode, const Item& aTargetNode, bool before)
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
     store::CopyMode lCopyMode;
-    theCollection->addNode(lItem, lCopyMode, targetItem, before);
+    store::Item* lCopy = lItem->copy(0, 0, lCopyMode);
+
+    theCollection->addNode(lCopy, targetItem, before);
 
     return true;
 
   ZORBA_CATCH
-    return false;
+  return false;
 }
 
 
@@ -120,7 +124,13 @@ CollectionImpl::addNodes(const ResultIterator* aResultIterator)
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
     store::CopyMode lCopyMode;
-    theCollection->addNodes(&*lPlan, lCopyMode);
+    store::Item_t node;
+    while (lPlan->next(node))
+    {
+      store::Item* lCopy = node->copy(0, 0, lCopyMode);
+      addNode(lCopy);
+    }
+
     return true;
 
   ZORBA_CATCH
@@ -129,7 +139,7 @@ CollectionImpl::addNodes(const ResultIterator* aResultIterator)
 
 
 bool
-CollectionImpl::addDocument(std::istream& lInStream, const long aPosition)
+CollectionImpl::addDocument(std::istream& lInStream, long aPosition)
 {
   ZORBA_TRY
     theCollection->loadDocument(lInStream, aPosition);
@@ -155,7 +165,7 @@ CollectionImpl::deleteNode(const Item& aNode)
 
 
 bool
-CollectionImpl::deleteNode(const long aPosition)
+CollectionImpl::deleteNode(long aPosition)
 {
   ZORBA_TRY
     theCollection->removeNode(aPosition);
@@ -166,7 +176,7 @@ CollectionImpl::deleteNode(const long aPosition)
 
 
 Item
-CollectionImpl::nodeAt(const long aPosition)
+CollectionImpl::nodeAt(long aPosition)
 {
   ZORBA_TRY
     return theCollection->nodeAt(aPosition).getp();

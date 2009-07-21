@@ -32,6 +32,7 @@ class node_reference : public function
 {
 public:
   node_reference(const signature &sig) : function (sig) {} 
+
   DEFAULT_CODEGEN (NodeReferenceIterator)
 };
 
@@ -40,36 +41,37 @@ class node_by_reference : public function
 {
 public:
   node_by_reference(const signature &sig) : function (sig) {}    
+
   DEFAULT_CODEGEN (NodeByReferenceIterator)
 };
 
 
-  class fn_local_name : public function {
-  public:
-    fn_local_name(const signature &sig) : function (sig) {}
-    DEFAULT_CODEGEN (FnLocalNameIterator)
-  };
+class fn_local_name : public function 
+{
+public:
+  fn_local_name(const signature &sig) : function (sig) {}
 
-  class fn_namespace_uri : public function {
-  public:
-    fn_namespace_uri(const signature &sig) : function (sig) {}
-    DEFAULT_CODEGEN (FnNamespaceUriIterator)
-  };
-
-  class fn_lang : public function {
-  public:
-    fn_lang(const signature &sig) : function (sig) {}
-    DEFAULT_CODEGEN (FnLangIterator)
-  };
-
-  class fn_collection : public function {
-  public:
-    fn_collection(const signature &sig) : function (sig) {}
-    bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
-    DEFAULT_CODEGEN (FnCollectionIterator)
-  };
+  DEFAULT_CODEGEN (FnLocalNameIterator)
+};
 
 
+class fn_namespace_uri : public function 
+{
+public:
+  fn_namespace_uri(const signature &sig) : function (sig) {}
+
+  DEFAULT_CODEGEN (FnNamespaceUriIterator)
+};
+  
+
+class fn_lang : public function 
+{
+public:
+  fn_lang(const signature &sig) : function (sig) {}
+
+  DEFAULT_CODEGEN (FnLangIterator)
+};
+  
 
 void populateContext_Nodes(static_context *sctx)
 {
@@ -90,15 +92,6 @@ DECL(sctx, fn_lang,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
-
-DECL(sctx, fn_collection,
-     (createQName(XQUERY_FN_NS, "fn", "collection"),
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
-
-DECL(sctx, fn_collection,
-     (createQName(XQUERY_FN_NS, "fn", "collection"),
-      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 //end functions on nodes
 
 DECL(sctx, node_reference,

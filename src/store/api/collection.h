@@ -68,7 +68,7 @@ public:
    * By default the data will be appended at the end.
    * @return The root node of the xml document or fragment.
    */
-  virtual Item_t loadDocument(std::istream& stream, const long position = -1) = 0;
+  virtual Item_t loadDocument(std::istream& stream, long position = -1) = 0;
 
   /**
    * Loads and inserts into the collection an xml document or fragment given
@@ -81,10 +81,10 @@ public:
    * By default the data will be appended at the end.
    * @return The root node of the xml document or fragment.
    */
-  virtual Item_t loadDocument(std::istream* stream, const long position = -1) = 0;
+  virtual Item_t loadDocument(std::istream* stream, long position = -1) = 0;
 
   /**
-   * Inserts a copy for the passed node to the collection.
+   * Inserts a given node to the collection.
    *
    * @param node The node to insert
    * @param copyMode copy behavior
@@ -92,10 +92,10 @@ public:
    * By default the data will be appended at the end.
    *
    */
-  virtual void addNode(const Item* node, const CopyMode& copyMode,  const long position = -1) = 0;
+  virtual void addNode(const Item* node, long position = -1) = 0;
 
   /**
-   * Adds a copy of a Node Item to the Collection before or after the targetNode.
+   * Adds a given node to the Collection before or after the targetNode.
    * 
    * @param aNode the Node Item to add.
    * @param copyMode copy behavior
@@ -106,18 +106,7 @@ public:
    *
    */
   virtual void
-  addNode(const Item* aNode, const CopyMode& copyMode, const Item* aTargetNode, bool before) = 0;
-
-  /**
-   * Inserts to the collection copies of a set of nodes returned by the given iterator.
-   *
-   * @param nodeIter The iterator which produces the nodes to insert
-   * @param copyMode copy behavior
-   * @param position The position where the data will be inserted.
-   * By default the data will be appended at the end.
-   *
-   */
-  virtual void addNodes(Iterator* nodeIter, const CopyMode& copyMode, const long position = -1) = 0;
+  addNode(const Item* aNode, const Item* aTargetNode, bool before) = 0;
 
   /**
    * Removes a node from the collection.
@@ -134,7 +123,7 @@ public:
    * By default the last Node will be removed from collection.
    *
    */
-  virtual void removeNode(const long position = -1) = 0;
+  virtual void removeNode(long position = -1) = 0;
 
   /**
    * Get the node at the given position in the collection as a Node Item.
@@ -144,7 +133,7 @@ public:
    *
    */
   virtual Item_t
-  nodeAt(const long aPosition) = 0;
+  nodeAt(long aPosition) = 0;
 
   /**
    * Get the position of the Node Item within the collection.
@@ -162,3 +151,9 @@ public:
 } // namespace store
 } // namespace zorba
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

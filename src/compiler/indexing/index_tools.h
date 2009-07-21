@@ -20,11 +20,18 @@
 
 namespace zorba {
 
-class IndexTools {
-  public:
-    static void inferIndexCreators(ValueIndex *vi);
+class IndexTools 
+{
+public:
+  static void inferIndexCreators(ValueIndex *vi);
 };
 
 }
 
 #endif /* ZORBA_INDEX_TOOLS_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

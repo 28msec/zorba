@@ -50,10 +50,19 @@ XmlTree::XmlTree(XmlNode* root, ulong id)
   :
   theRefCount(0),
   theId(id),
+  theCollection(NULL),
   theRootNode(root),
   theDataGuideRootNode(NULL),
   theIsValidated(false)
 {
+}
+
+
+void XmlTree::setCollection(SimpleCollection* coll) 
+{
+  ZORBA_ASSERT(theCollection == NULL);
+
+  theCollection = coll; 
 }
 
 

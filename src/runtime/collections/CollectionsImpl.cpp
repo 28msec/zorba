@@ -44,6 +44,120 @@
 
 namespace zorba {
 
+
+/*******************************************************************************
+  fn:collection() as node()*
+  fn:collection($uri as xs:string?) as node()*
+********************************************************************************/
+FnCollectionIteratorState::FnCollectionIteratorState()
+  :
+  theIteratorOpened(false)
+{
+}
+
+
+FnCollectionIteratorState::~FnCollectionIteratorState()
+{
+  if ( theIterator != NULL ) 
+  {
+    // closing the iterator is necessary here if an exception occurs
+    // in the producer or if the iterator is not fully consumed
+    if (theIteratorOpened) 
+    {
+      theIterator->close();
+      theIteratorOpened = false;
+    }
+    theIterator = NULL;
+  }
+}
+
+
+void FnCollectionIteratorState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  theIterator = NULL;
+}
+
+
+void FnCollectionIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+
+  if ( theIterator != NULL ) 
+  {
+    // closing the iterator is necessary here if an exception occurs
+    // in the producer or if the iterator is not fully consumed
+    if (theIteratorOpened) {
+      theIterator->close();
+      theIteratorOpened = false;
+    }
+    theIterator = NULL;
+  }
+}
+
+
+bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t       lURI, resolvedURIItem;
+  store::Collection_t coll;
+  xqpStringStore_t    resolvedURIString, tt;
+
+  FnCollectionIteratorState *state;
+  DEFAULT_STACK_INIT(FnCollectionIteratorState, state, planState);
+
+  if (theChildren.size() == 1 &&
+      consumeNext(lURI, theChildren[0].getp(), planState)) 
+  {
+    try 
+    {
+      tt = lURI->getStringValue();
+      resolvedURIString = getStaticContext(planState)->
+                          resolve_relative_uri(lURI->getStringValueP(),
+                                               xqp_string()).getStore();
+
+      GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
+    }
+    catch (error::ZorbaError&) 
+    {
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Error retrieving resource.");
+    }
+  }
+  else 
+  {
+    resolvedURIItem = planState.theRuntimeCB->theDynamicContext->
+                      get_default_collection();
+
+    if( NULL == resolvedURIItem)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc,
+                           "Default collection is undefined in the dynamic context.");
+  }
+
+  coll =  getStaticContext(planState)->get_collection_uri_resolver()->
+          resolve(resolvedURIItem, getStaticContext(planState));
+
+  if (coll == 0) 
+  {
+    ZORBA_ERROR_LOC_PARAM(FODC0004, loc,
+                          resolvedURIItem->getStringValue()->c_str(), "");
+  }
+
+  /** return the nodes of the collection */
+  state->theIterator = coll->getIterator(false);
+  ZORBA_ASSERT(state->theIterator!=NULL);
+  state->theIterator->open();
+  state->theIteratorOpened = true;
+
+  while(state->theIterator->next(result))
+    STACK_PUSH (true, state);
+
+  // close as early as possible
+  state->theIterator->close();
+  state->theIteratorOpened = false;
+
+  STACK_END (state);
+}
+
+
 /*******************************************************************************
   declare function collection-exists() as xs:boolean
 
@@ -74,7 +188,8 @@ ZorbaCollectionExistsIterator::nextImpl(store::Item_t& result, PlanState& planSt
   {
     item = planState.theRuntimeCB->theDynamicContext->get_default_collection();
     if(NULL == item)
-      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc,
+                           "Default collection undefined in the dynamic context.");
   }
 
   try
@@ -122,62 +237,61 @@ ZorbaCollectionExistsIterator::nextImpl(store::Item_t& result, PlanState& planSt
 bool
 ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t       itemURI, itemXML, resolvedURIItem;
-  xqpStringStore_t    strURI, resolvedURIString;
+  store::Item_t       uriItem;
+  store::Item_t       resolvedURIItem;
+  xqpStringStore_t    resolvedURIString;
+  store::Item_t       node;
+  store::Item_t       copyNode;
   store::Collection_t theColl;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(itemURI, theChildren[0].getp(), planState))
+  if (consumeNext(uriItem, theChildren[0].getp(), planState))
   {
     try
     {
       resolvedURIString = getStaticContext(planState)->
-          resolve_relative_uri(itemURI->getStringValueP(),
-                               xqp_string()).getStore();
+                          resolve_relative_uri(uriItem->getStringValueP(),
+                                               xqp_string()).getStore();
 
       GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
     }
     catch (error::ZorbaError&)
     {
-      ZORBA_ERROR_LOC_PARAM(XQST0046,
-                            loc,
-                            itemURI->getStringValue()->c_str(),
-                                "URI literal empty or is not in the lexical space of xs:anyURI" );
+      ZORBA_ERROR_LOC_PARAM(XQST0046, loc, uriItem->getStringValue()->c_str(),
+      "URI literal empty or is not in the lexical space of xs:anyURI");
     }
 
-    theColl = getStaticContext(planState)->get_collection_uri_resolver()->
-        resolve(resolvedURIItem, getStaticContext(planState));
-
-    if (theColl == NULL)
+    try 
     {
-      try 
-      {
-        itemXML = GENV_STORE.getDocument(resolvedURIString);
-      }
-      catch (error::ZorbaError& e) 
-      {
-        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-      }
+      theColl = getStaticContext(planState)->get_collection_uri_resolver()->
+                resolve(resolvedURIItem, getStaticContext(planState));
 
-      if (itemXML == NULL) 
+      if (theColl == NULL)
       {
-        try
+        theColl = GENV_STORE.createCollection(resolvedURIString);
+
+        node = GENV_STORE.getDocument(resolvedURIString);
+
+        if (node == NULL) 
         {
-          itemXML = getStaticContext(planState)->get_document_uri_resolver()->
-                    resolve(resolvedURIItem, getStaticContext(planState), false, false);
+          node = getStaticContext(planState)->get_document_uri_resolver()->
+                 resolve(resolvedURIItem, getStaticContext(planState), false, false);
+          
+          theColl->addNode(node, 1);
         }
-        catch (error::ZorbaError& e) 
+        else
         {
-          ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+          store::CopyMode lCopyMode;
+          copyNode = node->copy(NULL, NULL, lCopyMode);
+          theColl->addNode(copyNode, 1);
         }
       }
-
-      strURI = itemURI->getStringValue();
-      theColl = GENV_STORE.createCollection(strURI);
-      store::CopyMode lCopyMode;
-      theColl->addNode(itemXML, lCopyMode, 1);
+    }
+    catch (error::ZorbaError& e) 
+    {
+      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
     }
   }
 
@@ -198,10 +312,10 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   ...
   </catalog>
 
-  Each of the documents referenced in the <doc> tags is first looked up in the
-  store. If it is already present, nothing is done; otherwise the doc is loaded,
-  a new collection is created for it with the same uri, and the doc is added to
-  this new collection.
+  Each of the uris referenced in the <doc> tags is first looked up in the store's
+  collection pool. If it is already present, nothing is done; otherwise the doc
+  is loaded, a new collection is created for it with the same uri, and the doc is
+  added to this new collection.
 
   The URIs of the catalog and the files may include a protocol specification,
   such as "file://" or "http://". 
@@ -225,129 +339,153 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 bool
 ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t       itemURI, resolvedURIItem, inNode, intt, inArg, attr, itemXML;
-  xqp_string          attrName;
-  xqpStringStore_t    uriString, resolvedURIString, fileString;
-  store::Iterator_t   theIterator, theAttributes;;
-  URI                 uriCatalog, uriFile;
-  store::Collection_t theColl;
+  store::Item_t       catalogUriItem;
+  store::Item_t       catalogResolvedUriItem;
+  URI                 catalogURI;
+  xqpStringStore_t    catalogUriString;
+  xqpStringStore_t    catalogResolvedUriString;
 
-  PlanIteratorState *state;
+  store::Item_t       catalogRootNode;
+  store::Item_t       catalogNode;
+  store::Item_t       catalogAttr;
+  store::Iterator_t   childrenIte;
+  store::Iterator_t   attributesIte;
+
+  store::Item_t       docUriItem;
+  store::Item_t       docResolvedUriItem;
+  URI                 docURI;
+  xqpStringStore_t    docUriString;
+  xqpStringStore_t    docResolvedUriString;
+
+  store::Collection_t theColl;
+  store::Item_t       docRootNode;
+  store::Item_t       copyNode;
+
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(itemURI, theChildren[0].getp(), planState))
-    uriCatalog = URI(itemURI->getStringValue().getp());
+  if (!consumeNext(catalogUriItem, theChildren[0].getp(), planState))
+    ZORBA_ASSERT(false);
 
-  uriString = uriCatalog.toString().getStore();
+  // Resolve the URI of the catalog document.
+  try 
+  {
+    catalogURI = URI(catalogUriItem->getStringValue().getp());
+
+    catalogUriString = catalogURI.toString().getStore();
+
+    catalogResolvedUriString = getStaticContext(planState)->
+                               resolve_relative_uri(catalogUriString.getp(),
+                                                    xqp_string()).getStore();
+
+    GENV_ITEMFACTORY->createAnyURI(catalogResolvedUriItem, catalogResolvedUriString);
+  }
+  catch (error::ZorbaError& e) 
+  {
+    ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
+  }
 
   // Load the catalog document, if it has not been loaded before
   try 
   {
-    inNode = GENV_STORE.getDocument(itemURI->getStringValue());
+    catalogRootNode = GENV_STORE.getDocument(catalogResolvedUriString);
+
+    if (catalogRootNode == NULL) 
+    {
+      catalogRootNode = getStaticContext(planState)->get_document_uri_resolver()->
+                        resolve(catalogResolvedUriItem,
+                                getStaticContext(planState),
+                                false,
+                                false);
+    }
   }
   catch (error::ZorbaError& e) 
   {
     ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
   }
 
-  if (inNode == NULL) 
-  {
-    try 
-    {
-      resolvedURIString = getStaticContext(planState)->
-                          resolve_relative_uri(uriString.getp(),
-                                               xqp_string()).getStore();
-
-      GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
-    }
-    catch (error::ZorbaError& e) 
-    {
-      ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
-    }
-    try 
-    {
-      inNode = getStaticContext(planState)->get_document_uri_resolver()->
-               resolve(resolvedURIItem, getStaticContext(planState), false, false);
-    }
-    catch (error::ZorbaError& e) 
-    {
-      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-    }
-  }
-
   // Navigate the catalog doc to extract the uri of each data doc and then, if
   // the data doc is not loaded already, create a collection for it, load the
   // doc, and add it to its associated collection.
-  if(inNode->getNodeKind() == store::StoreConsts::documentNode) 
+  if(catalogRootNode->getNodeKind() == store::StoreConsts::documentNode) 
   {
-    theIterator = inNode->getChildren();
-    theIterator->open();
-    theIterator->next(intt);
-    theIterator->close();
+    childrenIte = catalogRootNode->getChildren();
+    childrenIte->open();
+    childrenIte->next(catalogNode);
+    childrenIte->close();
 
-    theIterator = intt->getChildren();
-    theIterator->open();
+    childrenIte = catalogNode->getChildren();
+    childrenIte->open();
 
-    while(theIterator->next(inArg)) 
+    while(childrenIte->next(catalogNode)) 
     {
-      if(inArg->getNodeKind() == store::StoreConsts::elementNode &&
-         inArg->getNodeName()->getLocalName()->byteEqual("doc", 3)) 
+      if(catalogNode->getNodeKind() == store::StoreConsts::elementNode &&
+         catalogNode->getNodeName()->getLocalName()->byteEqual("doc", 3)) 
       {
-        theAttributes = inArg->getAttributes();
-        theAttributes->open();
-        for (; theAttributes->next(attr); ) 
-        {
-          attrName = attr->getNodeName()->getStringValue()->str();
-          if(attr->getNodeName()->getLocalName()->byteEqual("href", 4)) 
-          {
-            if (attr->getStringValue()->indexOf("/") == -1)
-              uriFile = URI(uriCatalog, attr->getStringValue().getp());
-            else
-              uriFile = URI(attr->getStringValue().getp());
+        attributesIte = catalogNode->getAttributes();
+        attributesIte->open();
 
-            fileString = uriFile.toString().getStore();
+        for (; attributesIte->next(catalogAttr); ) 
+        {
+          if(catalogAttr->getNodeName()->getLocalName()->byteEqual("href", 4)) 
+          {
+            try
+            {
+              if (catalogAttr->getStringValue()->indexOf("/") == -1)
+                docURI = URI(catalogURI, catalogAttr->getStringValue().getp());
+              else
+                docURI = URI(catalogAttr->getStringValue().getp());
+
+              docUriString = docURI.toString().getStore();
+
+              docResolvedUriString = docUriString;
+
+              GENV_ITEMFACTORY->createAnyURI(docResolvedUriItem, docResolvedUriString);
+            }
+            catch (error::ZorbaError& e) 
+            {
+              ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
+            }
 
             try 
             {
-              itemXML = GENV_STORE.getDocument(fileString);
+              theColl = getStaticContext(planState)->get_collection_uri_resolver()->
+                        resolve(docResolvedUriItem, getStaticContext(planState));
+
+              if (theColl == NULL) 
+              {
+                theColl = GENV_STORE.createCollection(docResolvedUriString);
+
+                docRootNode = GENV_STORE.getDocument(docResolvedUriString);
+
+                if (docRootNode == NULL) 
+                {
+                  docRootNode = getStaticContext(planState)->get_document_uri_resolver()->
+                                resolve(docResolvedUriItem,
+                                        getStaticContext(planState),
+                                        false,
+                                        false);
+          
+                  theColl->addNode(docRootNode, 1);
+                }
+                else
+                {
+                  store::CopyMode lCopyMode;
+                  copyNode = docRootNode->copy(NULL, NULL, lCopyMode);
+                  theColl->addNode(copyNode, 1);
+                }
+              }
             }
             catch (error::ZorbaError& e) 
             {
               ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
             }
-
-            if (itemXML == NULL) 
-            {
-              try 
-              {
-                resolvedURIString = fileString;
-                GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
-              }
-              catch (error::ZorbaError& e) 
-              {
-                ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
-              }
-              try 
-              {
-                itemXML = getStaticContext(planState)->get_document_uri_resolver()->
-                          resolve(resolvedURIItem, getStaticContext(planState), false, false);
-              }
-              catch (error::ZorbaError& e) 
-              {
-                ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-              }
-            }
-
-            xqpStringStore_t collectionUri = uriFile.toString().getStore();
-            theColl = GENV_STORE.createCollection(collectionUri);
-            store::CopyMode lCopyMode;
-            theColl->addNode(itemXML, lCopyMode, 1);
           }
         }
-        theAttributes->close();
+        attributesIte->close();
       }
     }
-    theIterator->close();
+    childrenIte->close();
   }
 
   STACK_END (state);
@@ -394,6 +532,13 @@ ZorbaImportFolderIterator::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END (state);
 }
 
+
+
+/*******************************************************************************
+  declare function list-collections() as xs:anyURI*
+
+  The function will return a sequence of URIs of all currently known collections.
+********************************************************************************/
 ZorbaListCollectionsState::~ZorbaListCollectionsState()
 {
   if ( uriItState != NULL ) {
@@ -402,15 +547,15 @@ ZorbaListCollectionsState::~ZorbaListCollectionsState()
   }
 }
 
-void
-ZorbaListCollectionsState::init(PlanState& planState)
+
+void ZorbaListCollectionsState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   uriItState = NULL;
 }
 
-void
-ZorbaListCollectionsState::reset(PlanState& planState)
+
+void ZorbaListCollectionsState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   if ( uriItState != NULL ) {
@@ -420,11 +565,6 @@ ZorbaListCollectionsState::reset(PlanState& planState)
 }
 
 
-/*******************************************************************************
-  declare function list-collections() as xs:anyURI*
-
-  The function will return a sequence of URIs of all currently known collections.
-********************************************************************************/
 bool
 ZorbaListCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -447,10 +587,11 @@ ZorbaListCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
 
 /*******************************************************************************
-  declare sequential function create-collection($uri    as xs:anyURI) as none
+  declare sequential function
+  create-collection($uri as xs:anyURI) as none
 
-  declare sequential function create-collection($uri    as xs:anyURI,
-                                                $nodes  as node()*) as none
+  declare sequential function
+  create-collection($uri as xs:anyURI,$nodes as node()*) as none
 
   The first function will create a new, empty, collection. The second function
   will create a new collection and will add the given nodes to it.
@@ -460,29 +601,39 @@ ZorbaListCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planSta
      (API0005_COLLECTION_ALREADY_EXISTS - collection already exists).
   - XQP0000_DYNAMIC_RUNTIME_ERROR if the argument is the empty sequence
 ********************************************************************************/
-bool
-ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
+bool ZorbaCreateCollectionIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& aPlanState) const
 {
-  store::Item_t             item, lUri;
+  store::Item_t             uriItem;
+  store::Item_t             resolvedUriItem;
+  xqpStringStore_t          resolvedUriString;
+
+  store::Item_t             node;
+  store::Item_t             copyNode;
   store::Collection_t       coll;
   std::auto_ptr<store::PUL> pul;
-  xqpStringStore_t          resolvedUri;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
   // check argument
-  if (!consumeNext(lUri, theChildren[0].getp(), aPlanState)) 
+  if (!consumeNext(uriItem, theChildren[0].getp(), aPlanState)) 
   {
-    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR,
-                         loc,
-                         "The empty-sequence is not allowed as first argument to create-collection");
+    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc,
+    "The empty-sequence is not allowed as first argument to create-collection");
   }
+
+  resolvedUriString = getStaticContext(aPlanState)->
+                      resolve_relative_uri(uriItem->getStringValueP(),
+                                           xqp_string()).getStore();
+
+  GENV_ITEMFACTORY->createAnyURI(resolvedUriItem, resolvedUriString);
 
   // check if the collection already exists
   try
   {
-    coll = getCollection(getStaticContext(aPlanState), lUri->getStringValueP(), loc);
+    coll = getCollection(getStaticContext(aPlanState), resolvedUriString, loc);
   }
   catch (error::ZorbaError&)
   {
@@ -490,16 +641,15 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
   }
 
   if (coll != NULL)
-    ZORBA_ERROR_LOC_DESC(API0005_COLLECTION_ALREADY_EXISTS,
-                         loc,
-                         "The collection already exists.");
-
-  resolvedUri = getStaticContext(aPlanState)->resolve_relative_uri(lUri->getStringValueP(), xqp_string()).getStore();
+  {
+    ZORBA_ERROR_LOC_DESC(API0005_COLLECTION_ALREADY_EXISTS, loc,
+   "The collection already exists.");
+  }
 
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addCreateCollection(getStaticContext(aPlanState), resolvedUri);
+  pul->addCreateCollection(getStaticContext(aPlanState), resolvedUriString);
 
   // also add some optional nodes to the collection
   if(theChildren.size() == 2) 
@@ -521,9 +671,14 @@ ZorbaCreateCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
 
     lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
 
-    GENV_ITEMFACTORY->createAnyURI(lUri, resolvedUri);
-    while (consumeNext(item, theChildren[1].getp(), aPlanState))
-      pul->addInsertIntoCollection(getStaticContext(aPlanState), lUri, item, lCopyMode);
+    while (consumeNext(node, theChildren[1].getp(), aPlanState))
+    {
+      copyNode = node->copy(NULL, NULL, lCopyMode);
+
+      pul->addInsertIntoCollection(getStaticContext(aPlanState),
+                                   resolvedUriItem,
+                                   copyNode);
+    }
   }
 
   result = pul.release();
@@ -590,21 +745,23 @@ ZorbaDeleteCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
 
   The function will delete all existing collections.
 ********************************************************************************/
-bool
-ZorbaDeleteAllCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool ZorbaDeleteAllCollectionsIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
-  PlanIteratorState             *state;
   store::Iterator_t             uriItState;
-  store::Item_t                 itemUri;
+  store::Item_t                 uriItem;
   std::auto_ptr<store::PUL>     pul;
 
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  for ((uriItState = GENV_STORE.listCollectionUris())->open ();
-        uriItState->next(itemUri); ) {
-    pul->addDeleteCollection(getStaticContext(planState), itemUri);
+  for ((uriItState = GENV_STORE.listCollectionUris())->open();
+        uriItState->next(uriItem);) 
+  {
+    pul->addDeleteCollection(getStaticContext(planState), uriItem);
   }
 
   uriItState->close();
@@ -617,10 +774,11 @@ ZorbaDeleteAllCollectionsIterator::nextImpl(store::Item_t& result, PlanState& pl
 
 
 /*******************************************************************************
-  declare sequential function insert-nodes-first($newnode as node()*) as none
+  declare sequential function
+  insert-nodes-first($newnode as node()*) as none
 
-  declare sequential function insert-nodes-first($uri     as xs:string?,
-                                                 $newnode as node()*) as none
+  declare sequential function
+  insert-nodes-first($uri as xs:string?, $newnode as node()*) as none
 
   The function will insert the given node(s) as the first node(s) of the given
   collection. If multiple nodes are inserted, the nodes remain adjacent and
@@ -636,7 +794,9 @@ bool
 ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Collection_t        coll;
-  store::Item_t              item;
+  store::Item_t              uriItem;
+  store::Item_t              node;
+  store::Item_t              copyNode;
   std::vector<store::Item_t> nodes;
   std::auto_ptr<store::PUL>  pul;
 
@@ -646,7 +806,7 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
   bool nsPreserve;
   bool nsInherit;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   sctx = getStaticContext(planState);
@@ -660,25 +820,29 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
   lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
 
-  if((theChildren.size()==1) ||
-     ((theChildren.size()==2) &&
-      !consumeNext(item, theChildren[0].getp(), planState)))
+  if(theChildren.size() == 1 ||
+     (theChildren.size() == 2 &&
+      !consumeNext(uriItem, theChildren[0].getp(), planState)))
   {
-    item = planState.theRuntimeCB->theDynamicContext->get_default_collection();
-    if(NULL == item)
-      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
+    uriItem = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(NULL == uriItem)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc,
+      "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(getStaticContext(planState), item->getStringValueP(), loc);
+  coll = getCollection(getStaticContext(planState), uriItem->getStringValueP(), loc);
+  uriItem = coll->getUri();
 
-  while (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState))
-    nodes.push_back(item);
+  while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
+  {
+    copyNode = node->copy(NULL, NULL, lCopyMode);
+    nodes.push_back(copyNode);
+  }
 
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  item = coll->getUri();
-  pul->addInsertFirstIntoCollection(getStaticContext(planState), item, nodes, lCopyMode);
+  pul->addInsertFirstIntoCollection(getStaticContext(planState), uriItem, nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -691,10 +855,11 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
 
 /*******************************************************************************
-  declare sequential function insert-nodes-last($newnode  as node()*) as none
+  declare sequential function
+  insert-nodes-last($newnode  as node()*) as none
 
-  declare sequential function insert-nodes-last($uri      as xs:string?,
-                                                $newnode  as node()*) as none
+  declare sequential function
+  insert-nodes-last($uri as xs:string?, $newnode as node()*) as none
 
   The function will insert the given node(s) as the last node(s) of the given
   collection. If multiple nodes are inserted, the nodes remain adjacent and 
@@ -711,8 +876,10 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
 bool
 ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Collection_t       coll;
-  store::Item_t             item;
+  store::Collection_t        coll;
+  store::Item_t              uriItem;
+  store::Item_t              node;
+  store::Item_t              copyNode;
   std::vector<store::Item_t> nodes;
   std::auto_ptr<store::PUL>  pul;
 
@@ -736,25 +903,29 @@ ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
   lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
 
-  if((theChildren.size()==1) ||
-     ((theChildren.size()==2) &&
-      !consumeNext(item, theChildren[0].getp(), planState)))
+  if(theChildren.size() == 1 ||
+     (theChildren.size() == 2 &&
+      !consumeNext(uriItem, theChildren[0].getp(), planState)))
   {
-    item = planState.theRuntimeCB->theDynamicContext->get_default_collection();
-    if(NULL == item)
-      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
+    uriItem = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(NULL == uriItem)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc,
+      "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(getStaticContext(planState), item->getStringValueP(), loc);
+  coll = getCollection(getStaticContext(planState), uriItem->getStringValueP(), loc);
+  uriItem = coll->getUri();
 
-  while (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState))
-    nodes.push_back(item);
+  while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
+  {
+    copyNode = node->copy(NULL, NULL, lCopyMode);
+    nodes.push_back(copyNode);
+  }
 
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  item = coll->getUri();
-  pul->addInsertLastIntoCollection(getStaticContext(planState), item, nodes, lCopyMode);
+  pul->addInsertLastIntoCollection(getStaticContext(planState), uriItem, nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -767,12 +938,13 @@ ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
 
 /*******************************************************************************
-  declare sequential function insert-nodes-before($target   as node()+,
-                                                  $newnode  as node()*) as none
+  declare sequential function
+  insert-nodes-before($target as node()+, $newnode  as node()*) as none
 
-  declare sequential function insert-nodes-before($uri      as xs:string?,
-                                                  $target   as node()+,
-                                                  $newnode  as node()*) as none
+  declare sequential function
+  insert-nodes-before($uri as xs:string?,
+                      $target as node()+,
+                      $newnode as node()*) as none
 
 
   The inserted nodes become the preceding (or following) nodes of the target.
@@ -797,7 +969,10 @@ bool
 ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Collection_t        coll;
-  store::Item_t              itemUri, itemTarget, tmpItem;
+  store::Item_t              itemUri;
+  store::Item_t              targetNode, tmpItem;
+  store::Item_t              node;
+  store::Item_t              copyNode;
   std::vector<store::Item_t> nodes;
   std::auto_ptr<store::PUL>  pul;
 
@@ -821,42 +996,52 @@ ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planSt
 
   lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
 
-  if((theChildren.size()==2) ||
-     ((theChildren.size()==3) &&
+  if(theChildren.size() == 2 ||
+     (theChildren.size()==3 &&
       !consumeNext(itemUri, theChildren[0].getp(), planState)))
   {
     itemUri = planState.theRuntimeCB->theDynamicContext->get_default_collection();
     if(NULL == itemUri)
-      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc,
+      "Default collection undefined in the dynamic context.");
   }
 
   coll = getCollection(getStaticContext(planState), itemUri->getStringValueP(), loc);
+  itemUri = coll->getUri();
 
-  while (consumeNext(tmpItem, theChildren[theChildren.size()-1].getp(), planState))
-    nodes.push_back(tmpItem);
-
-  if(!consumeNext(itemTarget, theChildren[theChildren.size()-2].getp(), planState)) {
+  if(!consumeNext(targetNode, theChildren[theChildren.size()-2].getp(), planState)) 
+  {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc,
-                         "The empty-sequence is not allowed as second argument to insert-nodes-before");
+    "The empty-sequence is not allowed as second argument to insert-nodes-before");
   }
 
-  if(consumeNext(tmpItem, theChildren[theChildren.size()-2].getp(), planState)) {
+  if(consumeNext(tmpItem, theChildren[theChildren.size()-2].getp(), planState)) 
+  {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc,
-                         "A sequence with more then one item is not allowed as second argument to insert-nodes-before");
+    "A sequence with more then one item is not allowed as second argument to insert-nodes-before");
   }
 
 
-  if (coll->indexOf(itemTarget.getp()) == -1) {
+  if (coll->indexOf(targetNode.getp()) == -1) 
+  {
     ZORBA_ERROR_LOC_DESC_OSS(XQP0000_DYNAMIC_RUNTIME_ERROR, loc,
-                         "The target node passed as second parameter to insert-nodes-before does not exist in the given collection "
-                         << coll->getUri()->getStringValue());
+    "The target node passed as second parameter to insert-nodes-before does not exist in the given collection "
+                             << coll->getUri()->getStringValue());
+  }
+
+  while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
+  {
+    copyNode = node->copy(NULL, NULL, lCopyMode);
+    nodes.push_back(copyNode);
   }
 
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  tmpItem = coll->getUri();
-  pul->addInsertBeforeIntoCollection(getStaticContext(planState), tmpItem, itemTarget, nodes, lCopyMode);
+  pul->addInsertBeforeIntoCollection(getStaticContext(planState),
+                                     itemUri,
+                                     targetNode,
+                                     nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-2]->reset(planState);
@@ -893,8 +1078,12 @@ Error conditions:
 bool
 ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Collection_t       coll;
-  store::Item_t             itemUri, itemTarget, tmpItem;
+  store::Collection_t        coll;
+  store::Item_t              itemUri;
+  store::Item_t              targetNode;
+  store::Item_t              tmpItem;
+  store::Item_t              node;
+  store::Item_t              copyNode;
   std::vector<store::Item_t> nodes;
   std::auto_ptr<store::PUL>  pul;
 
@@ -904,7 +1093,7 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
   bool nsPreserve;
   bool nsInherit;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   sctx = getStaticContext(planState);
@@ -918,42 +1107,51 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
   lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
 
-  if((theChildren.size()==2) ||
-     ((theChildren.size()==3) &&
+  if(theChildren.size() == 2 ||
+     (theChildren.size() == 3 &&
       !consumeNext(itemUri, theChildren[0].getp(), planState)))
   {
     itemUri = planState.theRuntimeCB->theDynamicContext->get_default_collection();
     if(NULL == itemUri)
-      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc,
+      "Default collection undefined in the dynamic context.");
   }
 
   coll = getCollection(getStaticContext(planState), itemUri->getStringValueP(), loc);
+  itemUri = coll->getUri();
 
-  if(!consumeNext(itemTarget, theChildren[theChildren.size()-2].getp(), planState)) {
+  if(!consumeNext(targetNode, theChildren[theChildren.size()-2].getp(), planState)) 
+  {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
-                         "The empty-sequence is not allowed as second argument to insert-nodes-after");
+    "The empty-sequence is not allowed as second argument to insert-nodes-after");
   }
 
-  if(consumeNext(tmpItem, theChildren[theChildren.size()-2].getp(), planState)) {
+  if(consumeNext(tmpItem, theChildren[theChildren.size()-2].getp(), planState)) 
+  {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
-                         "A sequence with more then one item is not allowed as second argument to insert-nodes-after");
+    "A sequence with more then one item is not allowed as second argument to insert-nodes-after");
   }
 
-
-  if (coll->indexOf(itemTarget.getp()) == -1) {
+  if (coll->indexOf(targetNode.getp()) == -1) 
+  {
     ZORBA_ERROR_LOC_DESC_OSS(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
-                         "The target node passed as second parameter to insert-nodes-before does not exist in the given collection "
+    "The target node passed as second parameter to insert-nodes-before does not exist in the given collection "
                          << coll->getUri()->getStringValue());
   }
 
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  while (consumeNext(tmpItem, theChildren[theChildren.size()-1].getp(), planState))
-    nodes.push_back(tmpItem);
+  while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
+  {
+    copyNode = node->copy(NULL, NULL, lCopyMode);
+    nodes.push_back(copyNode);
+  }
 
-  tmpItem = coll->getUri();
-  pul->addInsertAfterIntoCollection(getStaticContext(planState), tmpItem, itemTarget, nodes, lCopyMode);
+  pul->addInsertAfterIntoCollection(getStaticContext(planState),
+                                    itemUri,
+                                    targetNode,
+                                    nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-2]->reset(planState);
@@ -967,12 +1165,13 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
 
 /*******************************************************************************
-  declare sequential function insert-nodes-at($position as xs:integer,
-                                              $newnode  as node()*) as none
+  declare sequential function
+  insert-nodes-at($position as xs:integer, $newnode as node()*) as none
 
-  declare sequential function insert-nodes-at($uri      as xs:string?,
-                                              $position as xs:integer,
-                                              $newnode  as node()*) as none
+  declare sequential function
+  insert-nodes-at($uri as xs:string?,
+                  $position as xs:integer,
+                  $newnode as node()*) as none
 
   Inserts the node(s) into the given collection, at the specified position.
   If $position is negative, the node(s) will be inserted at the beginning of
@@ -993,6 +1192,8 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
 {
   store::Collection_t        coll;
   store::Item_t              itemUri, itemPos, tmpItem;
+  store::Item_t              node;
+  store::Item_t              copyNode;
   std::vector<store::Item_t> nodes;
   std::auto_ptr<store::PUL>  pul;
   xqp_uint                   pos;
@@ -1003,7 +1204,7 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   bool nsPreserve;
   bool nsInherit;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   sctx = getStaticContext(planState);
@@ -1017,42 +1218,53 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
 
-  if((theChildren.size()==2) ||
-     ((theChildren.size()==3) &&
+  if(theChildren.size() == 2 ||
+     (theChildren.size() == 3 &&
       !consumeNext(itemUri, theChildren[0].getp(), planState)))
   {
     itemUri = planState.theRuntimeCB->theDynamicContext->get_default_collection();
     if(NULL == itemUri)
-      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc,
+      "Default collection undefined in the dynamic context.");
   }
 
   coll = getCollection(getStaticContext(planState), itemUri->getStringValueP(), loc);
+  itemUri = coll->getUri();
 
-  if(!consumeNext(itemPos, theChildren[theChildren.size()-2].getp(), planState)) {
+  if(!consumeNext(itemPos, theChildren[theChildren.size()-2].getp(), planState)) 
+  {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
-                         "The empty-sequence is not allowed as second argument to insert-nodes-at");
+    "The empty-sequence is not allowed as second argument to insert-nodes-at");
   }
 
-  if(consumeNext(tmpItem, theChildren[theChildren.size()-2].getp(), planState)) {
+  if(consumeNext(tmpItem, theChildren[theChildren.size()-2].getp(), planState)) 
+  {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
-                         "A sequence with more then one item is not allowed as second argument to insert-nodes-at");
+    "A sequence with more then one item is not allowed as second argument to insert-nodes-at");
   }
 
   if(itemPos->getIntegerValue() < Integer::zero())
+  {
     ZORBA_ERROR_LOC_DESC_OSS(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
-                             "The target position passed as second argument to insert-nodes-at (" 
-                              << itemPos->getStringValue() << ") must be positive");
+    "The target position passed as second argument to insert-nodes-at (" 
+                             << itemPos->getStringValue() << ") must be positive");
+  }
 
   NumConversions::strToUInt(itemPos->getIntegerValue().toString(), pos);
 
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  while (consumeNext(tmpItem, theChildren[theChildren.size()-1].getp(), planState))
-    nodes.push_back(tmpItem);
+  while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
+  {
+    copyNode = node->copy(NULL, NULL, lCopyMode);
+    nodes.push_back(copyNode);
+  }
 
-  tmpItem = coll->getUri();
-  pul->addInsertAtIntoCollection(getStaticContext(planState), tmpItem, pos, nodes, lCopyMode);
+  pul->addInsertAtIntoCollection(getStaticContext(planState),
+                                 itemUri,
+                                 pos,
+                                 nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-2]->reset(planState);
@@ -1088,38 +1300,42 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
 bool
 ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Collection_t                     coll;
-  store::Item_t                           itemUri, item;
-  std::vector<store::Item_t>              nodes;
-  std::auto_ptr<store::PUL>               pul;
+  store::Collection_t         coll;
+  store::Item_t               uriItem;
+  store::Item_t               node;
+  std::vector<store::Item_t>  nodes;
+  std::auto_ptr<store::PUL>   pul;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if((theChildren.size()==1) ||
-     ((theChildren.size()==2) &&
-      !consumeNext(itemUri, theChildren[0].getp(), planState)))
+  if(theChildren.size() == 1 ||
+     (theChildren.size() == 2 &&
+      !consumeNext(uriItem, theChildren[0].getp(), planState)))
   {
-    item = planState.theRuntimeCB->theDynamicContext->get_default_collection();
-    if(NULL == item)
-      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
+    uriItem = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(NULL == uriItem)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc,
+      "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(getStaticContext(planState), itemUri->getStringValueP(), loc);
+  coll = getCollection(getStaticContext(planState), uriItem->getStringValueP(), loc);
+  uriItem = coll->getUri();
 
-  while (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState)) {
-    if (coll->indexOf(item.getp()) == -1)
+  while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState)) 
+  {
+    if (coll->indexOf(node.getp()) == -1)
       ZORBA_ERROR_LOC_DESC_OSS(API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION, loc, 
-                           "The node passed as second parameter to remove-nodes does not exist in the given collection "
-                           << coll->getUri()->getStringValue());
+      "The node passed as second parameter to remove-nodes does not exist in the given collection "
+                               << coll->getUri()->getStringValue());
 
-    nodes.push_back(item);
+    nodes.push_back(node);
   }
 
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-  item = coll->getUri();
-  pul->addRemoveFromCollection(getStaticContext(planState), item, nodes);
+
+  pul->addRemoveFromCollection(getStaticContext(planState), uriItem, nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -1132,10 +1348,11 @@ ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
 
 /*******************************************************************************
-  declare sequential function remove-node-at($position  as xs:integer) as none
+  declare sequential function
+  remove-node-at($position as xs:integer) as none
 
-  declare sequential function remove-node-at($uri       as xs:string?,
-                                             $position  as xs:integer) as none
+  declare sequential function
+  remove-node-at($uri as xs:string?, $position as xs:integer) as none
 
   The function will remove from the given collection the node positioned at
   $position.
@@ -1149,53 +1366,63 @@ ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     and an error is raised (API0030_NO_NODE_AT_GIVEN_POSITION - there is no
     node at the given position, the collection has fewer nodes). 
 ********************************************************************************/
-bool
-ZorbaRemoveNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool ZorbaRemoveNodeAtIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Collection_t        coll;
-  store::Item_t              itemUri, itemTarget, tmpItem;
+  store::Item_t              uriItem;
+  store::Item_t              posItem;
+  store::Item_t              tmpItem;
   uint32_t                   lpos;
   std::auto_ptr<store::PUL>  pul;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if((theChildren.size()==1) ||
-      ((theChildren.size()==2) &&
-      !consumeNext(itemUri, theChildren[0].getp(), planState)))
+  if(theChildren.size() == 1 ||
+     (theChildren.size() == 2 &&
+      !consumeNext(uriItem, theChildren[0].getp(), planState)))
   {
-    itemUri = planState.theRuntimeCB->theDynamicContext->get_default_collection();
-    if(NULL == itemUri)
-      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
+    uriItem = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(NULL == uriItem)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc,
+      "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(getStaticContext(planState), itemUri->getStringValueP(), loc);
+  coll = getCollection(getStaticContext(planState), uriItem->getStringValueP(), loc);
+  uriItem = coll->getUri();
 
-  if(!consumeNext(itemTarget, theChildren[theChildren.size()-1].getp(), planState)) {
+  if(!consumeNext(posItem, theChildren[theChildren.size()-1].getp(), planState)) 
+  {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
-                         "The empty-sequence is not allowed as second argument to remove-node-at");
+    "The empty-sequence is not allowed as second argument to remove-node-at");
   }
 
-  if(consumeNext(tmpItem, theChildren[theChildren.size()-1].getp(), planState)) {
+  if(consumeNext(tmpItem, theChildren[theChildren.size()-1].getp(), planState)) 
+  {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
-                         "A sequence with more then one item is not allowed as second argument to remove-node-at");
+    "A sequence with more then one item is not allowed as second argument to remove-node-at");
   }
 
-  if(itemTarget->getIntegerValue() < Integer::zero())
+  if(posItem->getIntegerValue() < Integer::zero())
+  {
     ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
-                         "An negative integer is not allowed as as second argument to remove-node-at");
+    "An negative integer is not allowed as as second argument to remove-node-at");
+  }
 
-  NumConversions::strToUInt(itemTarget->getIntegerValue().toString(),lpos);
+  NumConversions::strToUInt(posItem->getIntegerValue().toString(),lpos);
 
   if (coll->size() < lpos)
+  {
     ZORBA_ERROR_LOC_DESC(API0030_NO_NODE_AT_GIVEN_POSITION, loc, 
-                         "The size of the collection is smaller then the parameter passed as second argument to remove-node-at");
+    "The size of the collection is smaller then the parameter passed as second argument to remove-node-at");
+  }
 
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  tmpItem = coll->getUri();
-  pul->addRemoveAtFromCollection(getStaticContext(planState), tmpItem, lpos);
+  pul->addRemoveAtFromCollection(getStaticContext(planState), uriItem, lpos);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -1358,10 +1585,11 @@ ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
 
 /*******************************************************************************
-  declare updating function export-xml($uri       as xs:string) as none
+  declare updating function
+  export-xml($uri as xs:string) as none
 
-  declare updating function export-xml($uri       as xs:string,
-                                       $targeturi as xs:string) as none
+  declare updating function
+  export-xml($uri as xs:string, $targeturi as xs:string) as none
 
   Saves the given collection to the target URI as an XML file. Intended
   supported targets (protocols) are: "file:///path/file.xml" : (e.g.
@@ -1380,60 +1608,69 @@ ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   (API0035_COLLECTION_CANNOT_BE_SERIALIZED - the collection cannot be serialized).
 
 ********************************************************************************/
-bool
-ZorbaExportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool ZorbaExportXmlIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
-  store::Collection_t theColl;
-  store::Item_t       item;
+  store::Collection_t coll;
+  store::Item_t       uriItem;
+  store::Item_t       targetUriItem;
+  URI                 targetURI;
+  store::Item_t       node;
   store::Iterator_t   collIterator;
   std::ostringstream  ss;
-  error::ErrorManager lErrorManager;
-  URI                 uri;
-  serializer          ser(&lErrorManager);
+  std::ostream*       lOutputStream;
+  std::auto_ptr<std::ostream> lFileStream;
 
-  PlanIteratorState *state;
+  error::ErrorManager lErrorManager;
+  serializer ser(&lErrorManager);
+  ser.set_parameter("omit-xml-declaration", "yes");
+
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if(consumeNext(item, theChildren[0].getp(), planState))
+  if(!consumeNext(uriItem, theChildren[0].getp(), planState))
+    ZORBA_ASSERT(false);
+
+  coll = getCollection(getStaticContext(planState), uriItem->getStringValue(), loc);
+
+  if(theChildren.size() == 2)
   {
-    theColl = getCollection(getStaticContext(planState), item->getStringValue(), loc);
+    if (!consumeNext(targetUriItem, theChildren[1].getp(), planState))
+      ZORBA_ASSERT(false);
 
-    if(theChildren.size() == 2 &&
-       consumeNext(item, theChildren[1].getp(), planState))
-    {
-      uri = URI(item->getStringValue().getp());
-    }
-    else
-    {
-      uri = URI(theColl->getUri()->getStringValue()->c_str());
-    }
-
-    if( uri.get_scheme() != xqpString("file") && !uri.get_scheme().empty())
-    {
-      ZORBA_ERROR_LOC_DESC (FOER0000,
-                            loc,
-                            "ZorbaExportXmlIterator implemented only for 'file' scheme.");
-    }
-
-    std::auto_ptr<std::ostream> lFileStream (new std::ofstream(uri.get_path().c_str()));
-    std::ostream* lOutputStream = lFileStream.get();
-    if ( !lOutputStream->good() )
-      ZORBA_ERROR_LOC_DESC_OSS (API0033_FILE_OR_FOLDER_DOES_NOT_EXIST,
-                                loc,
-                                "File or folder does not exist: " << uri.get_path().c_str());
-
-    collIterator = theColl->getIterator(true);
-
-    ser.set_parameter("omit-xml-declaration", "yes");
-
-    collIterator->open();
-    while (collIterator->next(item))
-      ser.serialize(item, ss);
-
-    collIterator->close();
-
-    *lOutputStream << ss.str() << std::endl;
+    targetURI = URI(targetUriItem->getStringValue().getp());
   }
+  else
+  {
+    targetURI = URI(coll->getUri()->getStringValue()->c_str());
+  }
+
+  if(targetURI.get_scheme() != xqpString("file") && !targetURI.get_scheme().empty())
+  {
+    ZORBA_ERROR_LOC_DESC(FOER0000, loc,
+    "ZorbaExportXmlIterator implemented only for 'file' scheme.");
+  }
+
+  lFileStream.reset(new std::ofstream(targetURI.get_path().c_str()));
+  lOutputStream = lFileStream.get();
+  if (!lOutputStream->good())
+  {
+    ZORBA_ERROR_LOC_DESC_OSS(API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, loc,
+    "File or folder does not exist: " << targetURI.get_path().c_str());
+  }
+
+  collIterator = coll->getIterator(true);
+
+  collIterator->open();
+
+  while (collIterator->next(node))
+    ser.serialize(node, ss);
+  
+  collIterator->close();
+
+  *lOutputStream << ss.str() << std::endl;
+
   STACK_END (state);
 }
 
@@ -1441,16 +1678,15 @@ ZorbaExportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 store::Collection_t getCollection(
     static_context* sctx,
     const xqpStringStore_t strURI,
-    const QueryLoc loc)
+    const QueryLoc& loc)
 {
-  store::Item_t       resolvedURIItem;
-  xqpStringStore_t    resolvedURIString;
+  store::Item_t     resolvedURIItem;
+  xqpStringStore_t  resolvedURIString;
 
   try 
   {
-    resolvedURIString = sctx->
-                        resolve_relative_uri(strURI.getp(),
-                                             xqp_string()).getStore();
+    resolvedURIString = sctx->resolve_relative_uri(strURI.getp(),
+                                                   xqp_string()).getStore();
 
     GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
   }
@@ -1459,18 +1695,16 @@ store::Collection_t getCollection(
     ZORBA_ERROR_LOC_PARAM(API0006_COLLECTION_NOT_FOUND, loc, strURI, e.theDescription);
   }
 
-  store::Collection_t lCollection = sctx->
-                                    get_collection_uri_resolver()->
+  store::Collection_t lCollection = sctx->get_collection_uri_resolver()->
                                     resolve(resolvedURIItem, sctx);
   if (lCollection == NULL) 
   {
-    ZORBA_ERROR_LOC_PARAM(API0006_COLLECTION_NOT_FOUND,
-                          loc,
-                          strURI,
-                          "The requested collection could not be found.");
+    ZORBA_ERROR_LOC_PARAM(API0006_COLLECTION_NOT_FOUND, loc, strURI,
+    "The requested collection could not be found.");
   }
 
   return lCollection;
 }
+
 
 } /* namespace zorba */

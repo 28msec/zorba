@@ -23,6 +23,23 @@
 
 namespace zorba {
 
+// fn:collection
+class FnCollectionIteratorState : public PlanIteratorState 
+{
+public:
+  store::Iterator_t theIterator;
+  bool              theIteratorOpened;
+
+  FnCollectionIteratorState();
+  ~FnCollectionIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+NARY_ITER_STATE(FnCollectionIterator, FnCollectionIteratorState);
+
+
 // non-updating collection functions
 NARY_ITER (ZorbaCollectionExistsIterator);
 
@@ -76,7 +93,9 @@ NARY_UPDATE_ITER (ZorbaRemoveNodeIterator);
 NARY_UPDATE_ITER (ZorbaRemoveNodeAtIterator);
 
 // helper function
-store::Collection_t getCollection(static_context*, const xqpStringStore_t, const QueryLoc);
+store::Collection_t getCollection(static_context*,
+                                  const xqpStringStore_t,
+                                  const QueryLoc&);
 
 }/*namespace zorba*/
 

@@ -18,9 +18,9 @@
 
 #include "functions/Collections.h"
 
-#include "runtime/collections/CollectionsImpl.h"
+namespace zorba 
+{
 
-namespace zorba {
 PlanIter_t
 zorba_collection_exists::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
