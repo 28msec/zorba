@@ -37,7 +37,7 @@ class PUL;
 
 namespace storeminimal 
 {
-
+class StringPool;
 typedef StringPool UriPool;
 
 
