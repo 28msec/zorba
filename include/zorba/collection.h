@@ -62,7 +62,7 @@ class ZORBA_DLL_PUBLIC Collection : public SmartObject
      * @return true if the Node Item was added to the Collection, false otherwise.
      */
     virtual bool
-    addNode(const Item& aNode, const long aPosition = -1) = 0;
+    addNode(const Item& aNode, long aPosition = -1) = 0;
 
     /** \brief Adds a Copy of a Node Item to the Collection after the targetNode.
      *
@@ -92,7 +92,7 @@ class ZORBA_DLL_PUBLIC Collection : public SmartObject
      * @return true if the given Node Item was deleted, false otherwise.
      */
     virtual bool
-    deleteNode(const long aPosition = -1) = 0;
+    deleteNode(long aPosition = -1) = 0;
 
     /** \brief Get the node at the given position in the collection as a Node Item.
      *
@@ -100,7 +100,7 @@ class ZORBA_DLL_PUBLIC Collection : public SmartObject
      * @return the Node Item at the given position.
      */
     virtual Item
-    nodeAt(const long aPosition) = 0;
+    nodeAt(long aPosition) = 0;
 
     /** \brief Adds Copies of the Node Items retrieved from the given ResultIterator to the Collection.
      *
@@ -122,7 +122,7 @@ class ZORBA_DLL_PUBLIC Collection : public SmartObject
      *         false otherwise.
      */
     virtual bool
-    addDocument(std::istream& aInStream, const long aPosition = -1) = 0;
+    addDocument(std::istream& aInStream, long aPosition = -1) = 0;
 
 }; /* class Collection */
 
