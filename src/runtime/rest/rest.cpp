@@ -321,7 +321,9 @@ int processReply(const QueryLoc& aLoc,
   xqpString temp = NumConversions::intToStr(reply_code);
   GENV_ITEMFACTORY->createTextNode(text_code, status_code, -1, temp.theStrStore);
 
-  if ((!ignore_payload) && reply_code >= 200 && reply_code < 300)
+  // Always add payload to response (not only in case of a successful request)
+  // Payload in case of errors usually contains detailed error message
+  if ((!ignore_payload) /*&& reply_code >= 200 && reply_code < 300*/)
   {
     int doc_type;  // values: 3 - xml, 2 - text, 1 - everything else (base64), 0 - do nothing, document has bee processed.
 
@@ -984,6 +986,19 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
   curl_easy_setopt(state->EasyHandle, CURLOPT_URL, Uri.c_str());
   headers_list = curl_slist_append(headers_list , expect_buf);
   curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
+#ifndef ZORBA_VERIFY_PEER_SSL_CERTIFICATE//default is to not verify root certif
+  curl_easy_setopt(state->EasyHandle, CURLOPT_SSL_VERIFYPEER, 0);
+  //but CURLOPT_SSL_VERIFYHOST is left default, value 2, meaning verify that
+  //the Common Name or Subject Alternate Name field in the certificate matches the name of the server
+  //tested with https://www.npr.org/rss/rss.php?id=1001
+  //about using ssl certs in curl: http://curl.haxx.se/docs/sslcerts.html
+#else
+  #if defined WIN32
+  //set the root CA certificates file path
+  if(GENV.g_curl_root_CA_certificates_path[0])
+    curl_easy_setopt(state->EasyHandle, CURLOPT_CAINFO, GENV.g_curl_root_CA_certificates_path);
+  #endif
+#endif
   code = state->theStreamBuffer->multi_perform();
   processReply(loc,
       result,
@@ -1054,6 +1069,19 @@ bool ZorbaRestPutIterator::nextImpl(store::Item_t& result, PlanState& planState)
   curl_easy_setopt(state->EasyHandle, CURLOPT_URL, Uri.c_str());
   headers_list = curl_slist_append(headers_list , expect_buf);
   curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
+#ifndef ZORBA_VERIFY_PEER_SSL_CERTIFICATE//default is to not verify root certif
+  curl_easy_setopt(state->EasyHandle, CURLOPT_SSL_VERIFYPEER, 0);
+  //but CURLOPT_SSL_VERIFYHOST is left default, value 2, meaning verify that
+  //the Common Name or Subject Alternate Name field in the certificate matches the name of the server
+  //tested with https://www.npr.org/rss/rss.php?id=1001
+  //about using ssl certs in curl: http://curl.haxx.se/docs/sslcerts.html
+#else
+  #if defined WIN32
+  //set the root CA certificates file path
+  if(GENV.g_curl_root_CA_certificates_path[0])
+    curl_easy_setopt(state->EasyHandle, CURLOPT_CAINFO, GENV.g_curl_root_CA_certificates_path);
+  #endif
+#endif
   code = state->theStreamBuffer->multi_perform();
   processReply(loc,
       result,
