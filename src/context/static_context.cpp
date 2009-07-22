@@ -166,7 +166,7 @@ static_context::static_context()
   theColResolver(0),
   theSchemaResolver(0),
   theModuleResolver(0),
-  theTraceStream(&std::cerr),
+  theTraceStream(0),
   theCollationCache(0)
 {
   set_encapsulating_entity_baseuri ("");
@@ -181,7 +181,7 @@ static_context::static_context (static_context *_parent)
   theColResolver(0),
   theSchemaResolver(0),
   theModuleResolver(0),
-  theTraceStream(&std::cerr),
+  theTraceStream(0),
   theCollationCache(0)
 {
   if (parent != NULL)
@@ -313,7 +313,9 @@ bool
 static_context::lookup_option(const xqp_string& ns, const xqp_string& localname, xqp_string& option) const
 {
   xqp_string s = ns + localname;
-  return lookup_once2("option:", s, option);
+  if (lookup_once2("option:", s, option))
+    return true;
+  return parent == NULL ? false : dynamic_cast<static_context*>(parent)->lookup_option(ns, localname, option);
 }
 
 bool
@@ -1081,7 +1083,9 @@ static_context::set_trace_stream(std::ostream& os)
 std::ostream*
 static_context::get_trace_stream() const
 {
-  return theTraceStream;
+  if (theTraceStream)
+    return theTraceStream;
+  return parent == NULL ? &std::cerr : dynamic_cast<static_context*>(parent)->get_trace_stream();
 }
 
 
