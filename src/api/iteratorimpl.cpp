@@ -15,7 +15,7 @@ namespace zorba {
 #define RESULT_ITERATOR_TRY try {
  
 #define RESULT_ITERATOR_CATCH                                  \
-} catch (error::ZorbaError& e)                                   \
+} catch (error::ZorbaError& /*e*/)                             \
 {                                                              \
   SYNC_CODE(                                                   \
   if (theHaveLock)                                             \
@@ -25,7 +25,7 @@ namespace zorba {
   })                                                           \
                                                                \
 }                                                              \
-catch (std::exception& e)                                      \
+catch (std::exception& /*e*/)                                  \
 {                                                              \
   SYNC_CODE(                                                   \
   if (theHaveLock)                                             \
