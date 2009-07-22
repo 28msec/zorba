@@ -40,6 +40,7 @@
 namespace zorba
 {
 
+//#define DO_PRINT_SCHEMA_INFO
 //#define DO_TRACE
 
 #ifdef DO_TRACE
@@ -255,7 +256,7 @@ void Schema::registerXSD(const char* xsdURL, std::string& location, const QueryL
                          std::string(xsdURL));
   }
   
-#if 0 // enable this to debug registered user defined schema types
+#ifdef DO_PRINT_SCHEMA_INFO // enable this to debug registered user defined schema types
   printXSDInfo(true);
 #endif
 }

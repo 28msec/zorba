@@ -118,6 +118,11 @@ private:
 
   bool                                                        _errorOccurred;
 
+  // After an element is processed will contain the name of the substituted element 
+  // if current is a substitution element, otherwise NULL
+  XMLCh*                                                      _substitutedElemName;
+  XMLCh*                                                      _substitutedElemUri;
+
 public:
   SchemaValidatorFilter(
         bool strictValidation,
@@ -173,6 +178,13 @@ public:
   virtual const XMLCh* getTypeName();
   virtual const XMLCh* getTypeUri();
   
+  virtual const XMLCh* getSubstitutedElemName()
+  {   return _substitutedElemName; }
+
+  virtual const XMLCh* getSubstitutedElemUri()
+  {   return _substitutedElemUri;  }
+
+
 private:
   //
   // XMLScanner

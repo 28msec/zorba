@@ -208,6 +208,7 @@ void processElement(
     validateAttributes(schemaValidator, element->getAttributes());
         
     store::Item_t typeQName = schemaValidator.getTypeQName();
+    store::Item_t substitutedElemQName = schemaValidator.getSubstitutedElemQName();
     
     //cout << " vup      - elemType old: "
     //    << element->getType()->getLocalName()->c_str() << " @ "
@@ -215,6 +216,11 @@ void processElement(
     //cout << " vup      - elemType new: " << typeQName->getLocalName()->c_str()
     //    << " @ " << typeQName->getNamespace()->c_str() << "\n"; cout.flush();
     
+    //if (substitutedElemQName)
+    //    cout << " vup        - substitutes: " << substitutedElemQName->getLocalName()->c_str() <<
+    //        " @ " << substitutedElemQName->getNamespace()->c_str() << "\n"; cout.flush();
+
+
     bool isNewType = false;
     xqtref_t newType;
     bool tHasValue;

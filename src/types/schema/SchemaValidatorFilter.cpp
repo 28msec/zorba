@@ -240,6 +240,8 @@ void SchemaValidatorFilter::processStartElement()
   {
     // schema validator will have correct type if validating
     SchemaElementDecl* tempElement = (SchemaElementDecl*)_parentStack->fThisElement;
+    
+    
     SchemaElementDecl::ModelTypes modelType = tempElement->getModelType();
     ComplexTypeInfo *currType = 0;
 
@@ -285,6 +287,23 @@ void SchemaValidatorFilter::processStartElement()
                                                isProcessorStipulatedTypeName);
   assert(elemDecl);
   fElemStack.setElement(elemDecl, fReaderMgr.getCurrentReaderNum());
+  
+  // save substituted element name
+  _substitutedElemName = NULL;
+  _substitutedElemUri  = NULL;
+  SchemaElementDecl* schemaElemDecl = dynamic_cast<SchemaElementDecl*>(elemDecl);
+  if (schemaElemDecl)
+  {
+      SchemaElementDecl* substitutedElem = schemaElemDecl->getSubstitutionGroupElem();
+      if (substitutedElem)
+      {
+          const XMLCh* substElemName = substitutedElem->getFullName();
+          //std::cout << "     svf substitutedElem: " << StrX(substElemName) << "\n";
+          _substitutedElemName = substitutedElem->getBaseName();
+          _substitutedElemUri  = (XMLCh*)fURIStringPool->getValueForId(substitutedElem->getURI());
+      }
+  }
+
 
   if(fValidate)
   {

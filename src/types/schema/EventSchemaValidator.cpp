@@ -25,7 +25,7 @@
 #include "types/schema/schema.h"
 #include "PrintSchema.h"
 
-//using namespace std;
+using namespace std;
 using namespace XERCES_CPP_NAMESPACE;
 
 namespace zorba
@@ -149,7 +149,10 @@ store::Item_t EventSchemaValidator::getTypeQName()
   //cout << "  - getTypeQName: " << typeName << "@" << typeUri <<" ";
 
   store::Item_t typeQName;
-  GENV_ITEMFACTORY->createQName(typeQName, typeUri.localFormOrDefault (Schema::XSD_NAMESPACE), "", typeName.localFormOrDefault ("anyType"));
+  GENV_ITEMFACTORY->createQName(typeQName, 
+                                typeUri.localFormOrDefault (Schema::XSD_NAMESPACE), 
+                                "", 
+                                typeName.localFormOrDefault ("anyType"));
   
   //cout << " : " << typeQName->getLocalName()->c_str() << " @ "
   //     << typeQName->getNamespace()->c_str() <<"\n";
@@ -166,10 +169,38 @@ xqtref_t EventSchemaValidator::getType()
   //cout << "  - getType: " << typeName << "@" << typeUri <<"\n";
     
   store::Item_t typeQName;
-  GENV_ITEMFACTORY->createQName(typeQName, typeUri.localFormOrDefault (Schema::XSD_NAMESPACE), "", typeName.localFormOrDefault ("anyType"));
+  GENV_ITEMFACTORY->createQName(typeQName, 
+                                typeUri.localFormOrDefault (Schema::XSD_NAMESPACE), 
+                                "", 
+                                typeName.localFormOrDefault ("anyType"));
   
   xqtref_t type = _typeManager->create_named_type(typeQName);
   return type;
+}
+
+
+store::Item_t EventSchemaValidator::getSubstitutedElemQName()
+{
+    if (_schemaValidatorFilter->getSubstitutedElemName())
+    {
+        StrX substElemName(_schemaValidatorFilter->getSubstitutedElemName());
+        StrX substElemUri (_schemaValidatorFilter->getSubstitutedElemUri ());
+        
+        //cout << "  - getSubstitutedElemQName: " << substElemName << "@" << substElemUri <<" ";
+        
+        store::Item_t substElemQName;
+        GENV_ITEMFACTORY->createQName(substElemQName, 
+                                      substElemUri.localForm(), 
+                                      "", 
+                                      substElemName.localForm());
+        
+        //cout << " : " << substElemQName->getLocalName()->c_str() << " @ "
+        //     << substElemQName->getNamespace()->c_str() <<"\n";
+  
+        return substElemQName;
+    }
+    else
+        return NULL;
 }
 
 

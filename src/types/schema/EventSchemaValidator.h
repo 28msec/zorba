@@ -70,6 +70,7 @@ public:
   // Must be called only after all attr() have been sent
   store::Item_t getTypeQName();
   xqtref_t      getType();
+  store::Item_t getSubstitutedElemQName();
     
   // Must be called only after all attr() have been sent and after getTypeQName() has been called
   std::list<AttributeValidationInfo*>* getAttributeList()
