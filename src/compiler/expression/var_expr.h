@@ -93,12 +93,11 @@ public:
     unknown_var  // TODO: get rid
   };
 
-public:
-  var_kind       theKind;
-  store::Item_t  varname_h;
-  xqtref_t       type;
-
 protected:
+  var_kind       theKind;
+  store::Item_t  theName;
+  xqtref_t       theDeclaredType;
+
   flwor_clause * theFlworClause;
   copy_clause  * theCopyClause;
 
@@ -124,10 +123,6 @@ public:
 
   void set_type(xqtref_t t);
 
-  virtual expr_t clone(substitution_t& substitution);
-
-  virtual xqtref_t return_type_impl (static_context *);
-
   void set_flwor_clause(flwor_clause* c) { theFlworClause = c; }
 
   flwor_clause* get_flwor_clause() const { return theFlworClause; }
@@ -141,6 +136,10 @@ public:
   expr* get_domain_expr() const;
 
   var_expr* get_pos_var() const;
+
+  virtual expr_t clone(substitution_t& substitution);
+
+  virtual xqtref_t return_type_impl(static_context *);
 
   void next_iter(expr_iterator_data&);
 

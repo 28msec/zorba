@@ -467,9 +467,9 @@ XQueryImpl::compile(
 }
 
 
-void
-XQueryImpl::compile(std::istream& aQuery,
-                    const Zorba_CompilerHints_t& aHints)
+void XQueryImpl::compile(
+    std::istream& aQuery,
+    const Zorba_CompilerHints_t& aHints)
 {
   ZORBA_TRY
     checkNotClosed();
@@ -479,10 +479,10 @@ XQueryImpl::compile(std::istream& aQuery,
 }
 
 
-void
-XQueryImpl::compile(std::istream& aQuery,
-                    const StaticContext_t& aStaticContext, 
-                    const Zorba_CompilerHints_t& aHints)
+void XQueryImpl::compile(
+    std::istream& aQuery,
+    const StaticContext_t& aStaticContext, 
+    const Zorba_CompilerHints_t& aHints)
 {
   ZORBA_TRY
     checkNotClosed();
@@ -499,8 +499,7 @@ XQueryImpl::compile(std::istream& aQuery,
 }
 
 
-void
-XQueryImpl::loadProlog(
+void XQueryImpl::loadProlog(
     const String& aQuery,
     const StaticContext_t& aStaticContext, 
     const Zorba_CompilerHints_t& aHints)
@@ -508,27 +507,37 @@ XQueryImpl::loadProlog(
   ZORBA_TRY
     checkNotClosed();
     checkNotCompiled();
+
     theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
+
     xqpString lQuery = Unmarshaller::getInternalString(aQuery);
     std::istringstream lQueryStream(lQuery + "()");
+
+    theCompilerCB->setLoadPrologQuery();
+
     doCompile(lQueryStream, aHints, false);
   ZORBA_CATCH
 }
 
 
-void
-XQueryImpl::doCompile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints, bool fork_sctx)
+void XQueryImpl::doCompile(
+    std::istream& aQuery,
+    const Zorba_CompilerHints_t& aHints,
+    bool fork_sctx)
 {
   checkNotClosed();
   checkNotCompiled();
 
-  if ( ! theStaticContext ) {
+  if ( ! theStaticContext ) 
+  {
     // no context given => use the default one (i.e. a child of the root static context)
     if (fork_sctx)
       theStaticContext = GENV.getRootStaticContext().create_child_context();
     else
       theStaticContext = &GENV.getRootStaticContext();
-  } else {
+  }
+  else 
+  {
     // otherwise create a child and we have ownership over that one
     if (fork_sctx)
       theStaticContext = theStaticContext->create_child_context();

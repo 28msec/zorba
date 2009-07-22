@@ -31,7 +31,7 @@
 #include "compiler/api/compiler_api_impl.h"
 #include "compiler/api/compilercb.h"
 #include "compiler/parser/xquery_driver.h"
-#include "compiler/parsetree/parsenode_base.h" 
+#include "compiler/parsetree/parsenodes.h" 
 #include "compiler/expression/expr_base.h"
 #include "compiler/translator/translator.h"
 #include "compiler/normalizer/normalizer.h"

@@ -85,11 +85,14 @@ class ZORBA_DLL_PUBLIC CompilerCB
 
     config();
   } config_t;
+
+  bool                               m_is_loadprolog;
+  std::map<short, static_context_t>& m_context_map;
   
   static_context_t                   m_sctx;
   short                              m_cur_sctx;
-  std::map<short, static_context_t>& m_context_map;
   std::vector<static_context_t>      m_sctx_list;
+
   error::ErrorManager*               m_error_manager;
   config_t                           m_config;
 #ifdef ZORBA_DEBUGGER
@@ -102,6 +105,10 @@ public:
   CompilerCB(const CompilerCB&);
 
   ~CompilerCB();
+
+  bool isLoadPrologQuery() const { return m_is_loadprolog; }
+
+  void setLoadPrologQuery() { m_is_loadprolog = true; }
 
   static_context*
   getStaticContext(short c)

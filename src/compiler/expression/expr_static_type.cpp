@@ -807,10 +807,12 @@ xqtref_t var_expr::return_type_impl(static_context* sctx)
 
   if (type1 == NULL) 
   {
-    return type == NULL ? GENV_TYPESYSTEM.ITEM_TYPE_STAR : type;
+    return theDeclaredType == NULL ? GENV_TYPESYSTEM.ITEM_TYPE_STAR : theDeclaredType;
   }
 
-  return type == NULL ? type1 : TypeOps::intersect_type(*type1, *type);
+  return (theDeclaredType == NULL ?
+          type1 :
+          TypeOps::intersect_type(*type1, *theDeclaredType));
 }
 
 

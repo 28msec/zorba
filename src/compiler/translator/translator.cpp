@@ -80,7 +80,8 @@ static expr_t translate_aux(
     const parsenode& root,
     CompilerCB* aCompilerCB,
     ModulesInfo* minfo,
-    set<string> mod_stack);
+    set<string> mod_stack,
+    bool isLibModule);
 
 
 #define QLOCDECL const QueryLoc &loc = v.get_location(); (void) loc
@@ -307,7 +308,14 @@ public:
                          populated by the imported module, and then merged by
                          the importing module into its own sctx. export_sctx is
                          "shared" between importing and imported modules via the
-                         minfo->mod_sctx_map.
+                         minfo->mod_sctx_map. export_sctx is needed because module
+                         import is not transitive: If M1 imports M2 and M2 imports
+                         M3, then the vars and functions are seen by M2, but not
+                         by M3. This means, that the regular root sctx S2 of M2
+                         will contain the decls from both M2 and M3. So, M1 should
+                         not import S2 into its own sctx S1. Instead, we create
+                         ES2 for M2 and register in there the decls of M2 only;
+                         then, we import ES2 to S1.
   ns_ctx               : The "current" namespace bindings node. It is initialized
                          with a newly allocated ns_ctx node, which points to the
                          initial sctx node. The initial sctx node stores all ns
@@ -327,12 +335,11 @@ public:
 
   theDotVar            : var_expr for the context item var of the main module
 
-  thePrologVars        : thePrologVars vector contains one entry for each var 
-                         V declared in the prolog of this module or via the
-                         loadProlog api. The entry maps the var_expr for V to
-                         the expr E that initializes V (E is NULL for vars 
-                         without init expr). At the end of each module
-                          translation, the method wrap_in_globalvar_assign()
+  thePrologVars        : thePrologVars vector contains one entry for each var V
+                         declared in the prolog of this module. The entry maps
+                         the var_expr for V to the expr E that initializes V (E
+                         is NULL for vars without init expr). At the end of each
+                         module translation, the method wrap_in_globalvar_assign()
                          creates appropriate initialization exprs for each var in 
                          thePrologVars and registers them in minfo->init_exprs, so
                          that they will be incorporated in the whole query plan at
@@ -410,7 +417,7 @@ public:
 class TranslatorImpl : public parsenode_visitor
 {
 public:
-  friend expr_t translate_aux(const parsenode&, CompilerCB*, ModulesInfo*, set<string>);
+  friend expr_t translate_aux(const parsenode&, CompilerCB*, ModulesInfo*, set<string>, bool);
 
 protected:
 
@@ -488,7 +495,11 @@ protected:
   const function                     * ctx_exists;
 
 
-TranslatorImpl (CompilerCB* aCompilerCB, ModulesInfo* minfo_, set<string> mod_stack_)
+TranslatorImpl(
+    CompilerCB* aCompilerCB,
+    ModulesInfo* minfo_,
+    set<string> mod_stack_,
+    bool isLibModule)
   :
   xquery_version (10000),  // fictious version 100.0 -- allow everything
   cb(aCompilerCB),
@@ -535,15 +546,6 @@ TranslatorImpl (CompilerCB* aCompilerCB, ModulesInfo* minfo_, set<string> mod_st
   zorba_predef_mod_ns.insert (ZORBA_OPEXTENSIONS_NS);
   zorba_predef_mod_ns.insert (ZORBA_FOP_FN_NS);
   
-  // Get prolog vars, if any, that have been declared via the loadProlog api. 
-  sctx_p->get_global_bindings(thePrologVars);
-  for (list<global_binding>::iterator i = thePrologVars.begin();
-       i != thePrologVars.end(); ++i)
-  {
-    varref_t ve = (*i).first;
-    prolog_var_decls.push_back(static_context::qname_internal_key(ve->get_varname()));
-  }
-
   ctx_item_type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
 }
 
@@ -1258,12 +1260,23 @@ expr_t wrap_in_globalvar_assign(expr_t e)
      declare_var(*i, minfo->init_exprs);
   }
 
-  if (! minfo->init_exprs.empty ()) 
-  {
-    e = new sequential_expr(cb->m_cur_sctx, e->get_loc(), minfo->init_exprs, e);
-  }
+  expr_t preloadedInitExpr = static_cast<static_context*>(sctx_p->get_parent())->
+                             get_query_expr();
 
-  return e;
+  if (!minfo->init_exprs.empty() || preloadedInitExpr != NULL) 
+  {
+    sequential_expr* seqExpr =
+    new sequential_expr(cb->m_cur_sctx, e->get_loc(), minfo->init_exprs, e);
+
+    if (preloadedInitExpr)
+      seqExpr->push_front(preloadedInitExpr);
+
+    return seqExpr;
+  }
+  else
+  {
+    return e;
+  }
 }
 
 
@@ -2250,7 +2263,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
         ZORBA_ERROR_LOC_PARAM(XQST0059, loc, resolveduri, target_ns);
 
       // translate the imported module
-      translate_aux(*ast, &mod_ccb, minfo, mod_stk1);
+      translate_aux(*ast, &mod_ccb, minfo, mod_stk1, true);
 
       // Register the mapping between the current location uri and the
       // target namespace.
@@ -3051,9 +3064,12 @@ void end_visit (const QueryBody& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  nodestack.push(wrap_in_globalvar_assign(pop_nodestack()));
+  expr_t resultExpr = wrap_in_globalvar_assign(pop_nodestack());
 
-  sctx_p->set_global_bindings(thePrologVars);
+  nodestack.push(resultExpr);
+
+  if (minfo->topCompilerCB->isLoadPrologQuery())
+    sctx_p->set_query_expr(resultExpr);
 }
 
 
@@ -7430,33 +7446,50 @@ void end_visit (const TryExpr& v, void* visit_state) {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit (const EvalExpr& v) {
+
+void *begin_visit (const EvalExpr& v) 
+{
   TRACE_VISIT ();
   if (xquery_version <= StaticContextConsts::xquery_version_1_0)
     ZORBA_ERROR_LOC (XPST0003, loc);
   return no_state;
 }
 
-void end_visit (const EvalExpr& v, void* visit_state) {
+void end_visit (const EvalExpr& v, void* visit_state) 
+{
   TRACE_VISIT_OUT ();
 
   rchandle<eval_expr> result =
-    new eval_expr(cb->m_cur_sctx, loc, create_cast_expr (loc, pop_nodestack (), GENV_TYPESYSTEM.STRING_TYPE_ONE, true));
+    new eval_expr(cb->m_cur_sctx,
+                  loc,
+                  create_cast_expr(loc,
+                                   pop_nodestack(),
+                                   GENV_TYPESYSTEM.STRING_TYPE_ONE,
+                                   true));
 
-  rchandle<VarGetsDeclList> vgdl = v.get_vars ();
+  rchandle<VarGetsDeclList> vgdl = v.get_vars();
   
-  for (size_t i = 0; i < vgdl->size (); i++) {
-    varref_t ve = pop_nodestack ().dyn_cast<var_expr> ();
+  for (size_t i = 0; i < vgdl->size(); i++) 
+  {
+    varref_t ve = pop_nodestack().dyn_cast<var_expr> ();
     ve->set_kind (var_expr::eval_var);
-    expr_t val = pop_nodestack ();
-    if (ve->get_type () != NULL)
-      val = new treat_expr (cb->m_cur_sctx, val->get_loc (), val, ve->get_type (), XPTY0004);
-    result->add_var (eval_expr::eval_var (&*ve, val));
-    pop_scope ();
+    expr_t val = pop_nodestack();
+
+    if (ve->get_type() != NULL)
+      val = new treat_expr(cb->m_cur_sctx,
+                           val->get_loc(),
+                           val,
+                           ve->get_type(),
+                           XPTY0004);
+
+    result->add_var(eval_expr::eval_var(&*ve, val));
+
+    pop_scope();
   }
 
   nodestack.push (&*result);
 }
+
 
 void *begin_visit (const CatchListExpr& v) {
   TRACE_VISIT ();
@@ -8052,9 +8085,13 @@ expr_t translate_aux(
     const parsenode& root,
     CompilerCB* aCompilerCB,
     ModulesInfo* minfo,
-    set<string> mod_stack) 
+    set<string> mod_stack,
+    bool isLibModule) 
 {
-  auto_ptr<TranslatorImpl> t (new TranslatorImpl (aCompilerCB, minfo, mod_stack));
+  auto_ptr<TranslatorImpl> t(new TranslatorImpl(aCompilerCB,
+                                                minfo,
+                                                mod_stack,
+                                                isLibModule));
 
   root.accept (*t);
 
@@ -8078,7 +8115,7 @@ expr_t translate (const parsenode& root, CompilerCB* aCompilerCB)
 
   ModulesInfo minfo (aCompilerCB);
 
-  return translate_aux (root, aCompilerCB, &minfo, mod_stack);
+  return translate_aux (root, aCompilerCB, &minfo, mod_stack, false);
 }
 
 } /* namespace zorba */

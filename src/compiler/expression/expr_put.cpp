@@ -105,14 +105,17 @@ ostream& sequential_expr::put( ostream& os) const
 ostream& var_expr::put(ostream& os) const
 {
   os << INDENT << "var kind=" << decode_var_kind(get_kind()) << expr_addr (this);
-  if (varname_h != NULL)
+  if (theName != NULL)
   {
     os << " name=";
-    put_qname (get_varname(), os);
+    put_qname(get_varname(), os);
   }
-  if (type != NULL) {
-    os << " type=" << type->toString ();
+
+  if (theDeclaredType != NULL) 
+  {
+    os << " type=" << theDeclaredType->toString ();
   }
+
   os << endl;
   UNDENT;
   return os;

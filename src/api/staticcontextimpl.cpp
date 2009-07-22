@@ -762,7 +762,9 @@ void
 StaticContextImpl::loadProlog(const String& prolog, const Zorba_CompilerHints_t &hints)
 {
   XQueryImpl impl;
-  impl.loadProlog (prolog, this, hints);
+
+  impl.loadProlog(prolog, this, hints);
+
   theCtxMap = impl.theSctxMap;
 }
 

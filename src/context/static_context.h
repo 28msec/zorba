@@ -45,6 +45,17 @@ class TypeManager;
 	[http://www.w3.org/TR/xquery/#id-xq-context-components]
 
   Note: External API interface is in class public StaticQueryContext
+
+  theDocResolver    :
+  theColResolver    :
+  theSchemaResolver :
+
+  theQueryExpr      : If this sctx is the root sctx for a mainModule, theQueryExpr
+                      is the resul of the translation of that mainModule. It is
+                      used in implementing the loadProlog api.
+  theDecimalFormats :
+  theTraceStream    :
+  theCollationCache :
 ********************************************************************************/
 class ZORBA_DLL_PUBLIC static_context : public context
 {
@@ -55,7 +66,9 @@ protected:
   InternalCollectionURIResolver* theColResolver;
   InternalSchemaURIResolver*     theSchemaResolver;
   InternalModuleURIResolver*     theModuleResolver;
-  std::list<global_binding>      theGlobalVars;
+
+  expr_t                         theQueryExpr;
+
   std::vector<DecimalFormat_t>   theDecimalFormats;
 
   std::ostream*                  theTraceStream;
@@ -81,8 +94,9 @@ public:
   void add_decimal_format(const DecimalFormat_t& decimal_format);
   DecimalFormat_t get_decimal_format(const store::Item_t qname);
 
-  void get_global_bindings (std::list<global_binding> &bs);
-  void set_global_bindings (const std::list<global_binding> &bs);
+  expr_t get_query_expr() const { return theQueryExpr; }
+
+  void set_query_expr(expr_t expr) { theQueryExpr = expr; }
 
   StaticContextConsts::xquery_version_t xquery_version() const;
 	StaticContextConsts::xpath1_0compatib_mode_t xpath1_0compatib_mode() const;

@@ -474,8 +474,8 @@ var_expr::var_expr(short sctx, const QueryLoc& loc, var_kind k, store::Item_t na
   :
   expr(sctx, loc),
   theKind(k),
-  varname_h(name),
-  type(NULL),
+  theName(name),
+  theDeclaredType(NULL),
   theFlworClause(NULL),
   theCopyClause(NULL)
 {
@@ -484,19 +484,19 @@ var_expr::var_expr(short sctx, const QueryLoc& loc, var_kind k, store::Item_t na
 
 store::Item_t var_expr::get_varname() const 
 {
-  return varname_h;
+  return theName;
 }
 
 
 xqtref_t var_expr::get_type() const 
 {
-  return type;
+  return theDeclaredType;
 }
 
 
 void var_expr::set_type(xqtref_t t) 
 {
-  type = t;
+  theDeclaredType = t;
 }
 
 
@@ -557,21 +557,22 @@ expr::expr_t var_expr::clone(expr::substitution_t& subst)
   return i->second->clone(subst);
 }
 
+#ifdef ZORBA_DEBUGGER
 
 /*******************************************************************************
 
 ********************************************************************************/
 bound_var::bound_var(var_expr* ve, varref_t var, expr_t val_)
   :
-  varname(ve->get_varname ()),
+  varname(ve->get_varname()),
   var_key(dynamic_context::var_key (ve)),
   type(ve->get_type()),
   val(val_),
   var(var)
-{}
+{
+}
 
 
-#ifdef ZORBA_DEBUGGER
 /******************************************************************************
 
 ********************************************************************************/
