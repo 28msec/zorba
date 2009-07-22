@@ -245,50 +245,44 @@ public:
   void addInsertIntoCollection(
         static_context*             aStaticContext,
         store::Item_t&              resolvedURI,
-        store::Item_t&              node,             
-        const store::CopyMode&      copymode);
+        store::Item_t&              node);
 
   void addInsertFirstIntoCollection(
         static_context*             aStaticContext,
         store::Item_t&              resolvedURI,
-        std::vector<store::Item_t>& nodes,
-        const store::CopyMode&      copymode);
+        std::vector<store::Item_t>& nodes);
 
   void addInsertLastIntoCollection(
         static_context*             aStaticContext,
         store::Item_t&              resolvedURI,
-        std::vector<store::Item_t>& nodes,
-        const store::CopyMode&      copymode);
+        std::vector<store::Item_t>& nodes);
 
   void addInsertBeforeIntoCollection(
         static_context*             aStaticContext,
         store::Item_t&              resolvedURI,
         store::Item_t&              target,
-        std::vector<store::Item_t>& nodes,
-        const store::CopyMode&      copymode);
+        std::vector<store::Item_t>& nodes);
 
   void addInsertAfterIntoCollection(
         static_context*             aStaticContext,
         store::Item_t&              resolvedURI,
         store::Item_t&              target,
-        std::vector<store::Item_t>& nodes,
-        const store::CopyMode&      copymode);
+        std::vector<store::Item_t>& nodes);
 
   void addInsertAtIntoCollection(
         static_context*             aStaticContext,
         store::Item_t&              resolvedURI,
         ulong                       pos,
-        std::vector<store::Item_t>& nodes,
-        const store::CopyMode&      copymode);
+        std::vector<store::Item_t>& nodes);
 
   void addRemoveFromCollection(
-        static_context*      aStaticContext,
+        static_context*             aStaticContext,
         store::Item_t&              resolvedURI,
         std::vector<store::Item_t>& nodes);
 
   void addRemoveAtFromCollection(
         static_context*      aStaticContext,
-        store::Item_t&              resolvedURI,
+        store::Item_t&       resolvedURI,
         ulong                pos);
 
   // apply
@@ -943,6 +937,7 @@ public:
   void undo();
 };
 
+
 /*******************************************************************************
   UpdatePrimitives for collection functions
 ********************************************************************************/
@@ -953,7 +948,10 @@ protected:
   xqpStringStore_t   theCollectionUri;
 
 public:
-  UpdCreateCollection(PULImpl* pul, static_context* aStaticContext,  xqpStringStore_t& collectionUri)
+  UpdCreateCollection(
+        PULImpl* pul,
+        static_context* aStaticContext,
+        xqpStringStore_t& collectionUri)
     :
     UpdatePrimitive(pul),
     theStaticContext(aStaticContext),
@@ -970,6 +968,7 @@ public:
   void undo();
 };
 
+
 // base class for other collection functions
 class UpdCollection : public UpdatePrimitive
 {
@@ -978,7 +977,10 @@ protected:
   store::Item_t      theTargetCollectionUri;
 
 public:
-  UpdCollection(PULImpl* pul, static_context* aStaticContext, store::Item_t& targetCollectionUri)
+  UpdCollection(
+        PULImpl* pul,
+        static_context* aStaticContext,
+        store::Item_t& targetCollectionUri)
     :
     UpdatePrimitive(pul),
     theStaticContext(aStaticContext),
@@ -986,16 +988,19 @@ public:
   {
   }
 
-  UpdCollection(PULImpl* pul, static_context* aStaticContext, 
-                store::Item_t& target, store::Item_t& targetCollectionUri)
+  UpdCollection(
+        PULImpl* pul,
+        static_context* aStaticContext, 
+        store::Item_t& target,
+        store::Item_t& targetCollectionUri)
     :
     UpdatePrimitive(pul, target),
     theStaticContext(aStaticContext),
     theTargetCollectionUri(targetCollectionUri)
   {
   }
-
 };
+
 
 class UpdDeleteCollection : public UpdCollection
 {
@@ -1003,7 +1008,10 @@ protected:
   std::vector<store::Item_t> theSavedItems; // only used for undo
 
 public:
-  UpdDeleteCollection(PULImpl* pul, static_context* aStaticContext, store::Item_t& targetCollectionUri)
+  UpdDeleteCollection(
+        PULImpl* pul,
+        static_context* aStaticContext,
+        store::Item_t& targetCollectionUri)
     :
     UpdCollection(pul, aStaticContext, targetCollectionUri)
   {
@@ -1016,21 +1024,23 @@ public:
 
   void apply();
   void undo();
-
 };
+
 
 class UpdInsertIntoCollection : public UpdCollection
 {
 protected:
-  store::Item_t            theNode;
-  store::CopyMode          theCopyMode;
+  store::Item_t  theNode;
 
 public:
-  UpdInsertIntoCollection(PULImpl* pul, static_context* aStaticContext, store::Item_t& targetCollectionUri, 
-                          store::Item_t& node, store::CopyMode aCopyMode)
+  UpdInsertIntoCollection(
+        PULImpl* pul,
+        static_context* aStaticContext,
+        store::Item_t& targetCollectionUri, 
+        store::Item_t& node)
       :
       UpdCollection(pul, aStaticContext, targetCollectionUri),
-      theNode(node), theCopyMode(aCopyMode)
+      theNode(node)
   {
   }
 
@@ -1043,19 +1053,21 @@ public:
   void undo();
 };
 
+
 class UpdInsertFirstIntoCollection : public  UpdCollection
 {
 protected:
   std::vector<store::Item_t>  theNodes;
-  store::CopyMode             theCopyMode;
 
 public:
-  UpdInsertFirstIntoCollection(PULImpl* pul, static_context* aStaticContext,
+  UpdInsertFirstIntoCollection(
+      PULImpl* pul,
+      static_context* aStaticContext,
       store::Item_t& targetCollectionUri,
-      std::vector<store::Item_t>& nodes, store::CopyMode aCopyMode)
-      :
-      UpdCollection(pul, aStaticContext, targetCollectionUri),
-      theNodes(nodes), theCopyMode(aCopyMode)
+      std::vector<store::Item_t>& nodes)
+    :
+    UpdCollection(pul, aStaticContext, targetCollectionUri),
+    theNodes(nodes)
   {
   }
 
@@ -1068,19 +1080,21 @@ public:
   void undo();
 };
 
+
 class UpdInsertLastIntoCollection : public  UpdCollection
 {
 protected:
   std::vector<store::Item_t>  theNodes;
-  store::CopyMode             theCopyMode;
 
 public:
-  UpdInsertLastIntoCollection(PULImpl* pul, static_context* aStaticContext,
-                              store::Item_t& targetCollectionUri,
-                              std::vector<store::Item_t>& nodes, store::CopyMode aCopyMode)
-      :
-      UpdCollection(pul, aStaticContext, targetCollectionUri),
-      theNodes(nodes), theCopyMode(aCopyMode)
+  UpdInsertLastIntoCollection(
+        PULImpl* pul,
+        static_context* aStaticContext,
+        store::Item_t& targetCollectionUri,
+        std::vector<store::Item_t>& nodes)
+    :
+    UpdCollection(pul, aStaticContext, targetCollectionUri),
+    theNodes(nodes)
   {
   }
 
@@ -1093,22 +1107,22 @@ public:
   void undo();
 };
 
+
 class UpdInsertBeforeIntoCollection : public  UpdCollection
 {
 protected:
   std::vector<store::Item_t>  theNodes;
-  store::CopyMode             theCopyMode;
 
 public:
-  UpdInsertBeforeIntoCollection(PULImpl* pul, static_context* aStaticContext,
-      store::Item_t& targetCollectionUri,
-      store::Item_t&    target,
-      std::vector<store::Item_t>& nodes,
-      store::CopyMode aCopyMode)
-      :
-      UpdCollection(pul, aStaticContext, target, targetCollectionUri),
-      theNodes(nodes),
-      theCopyMode(aCopyMode)
+  UpdInsertBeforeIntoCollection(
+        PULImpl* pul,
+        static_context* aStaticContext,
+        store::Item_t& targetCollectionUri,
+        store::Item_t& target,
+        std::vector<store::Item_t>& nodes)
+    :
+    UpdCollection(pul, aStaticContext, target, targetCollectionUri),
+    theNodes(nodes)
   {
   }
 
@@ -1121,22 +1135,22 @@ public:
   void undo();
 };
 
+
 class UpdInsertAfterIntoCollection : public  UpdCollection
 {
 protected:
   std::vector<store::Item_t>  theNodes;
-  store::CopyMode             theCopyMode;
 
 public:
-  UpdInsertAfterIntoCollection(PULImpl* pul, static_context* aStaticContext,
-      store::Item_t& targetCollectionUri,
-      store::Item_t&    target,
-      std::vector<store::Item_t>& nodes,
-      store::CopyMode aCopyMode)
-      :
-      UpdCollection(pul, aStaticContext, target, targetCollectionUri),
-      theNodes(nodes),
-      theCopyMode(aCopyMode)
+  UpdInsertAfterIntoCollection(
+        PULImpl* pul,
+        static_context* aStaticContext,
+        store::Item_t& targetCollectionUri,
+        store::Item_t&    target,
+        std::vector<store::Item_t>& nodes)
+    :
+    UpdCollection(pul, aStaticContext, target, targetCollectionUri),
+    theNodes(nodes)
   {
   }
 
@@ -1149,25 +1163,24 @@ public:
   void undo();
 };
 
+
 class UpdInsertAtIntoCollection : public  UpdCollection
 {
 protected:
   std::vector<store::Item_t>  theNodes;
   ulong                       thePos;
-  store::CopyMode             theCopyMode;
 
 public:
-  UpdInsertAtIntoCollection(PULImpl* pul, static_context* aStaticContext,
-      store::Item_t& targetCollectionUri,
-      ulong                       pos,
-      std::vector<store::Item_t>& nodes,
-      store::CopyMode             aCopyMode
-      )
-      :
-      UpdCollection(pul, aStaticContext, targetCollectionUri),
-      theNodes(nodes),
-      thePos(pos),
-      theCopyMode(aCopyMode)
+  UpdInsertAtIntoCollection(
+        PULImpl* pul,
+        static_context* aStaticContext,
+        store::Item_t& targetCollectionUri,
+        ulong                       pos,
+        std::vector<store::Item_t>& nodes)
+    :
+    UpdCollection(pul, aStaticContext, targetCollectionUri),
+    theNodes(nodes),
+    thePos(pos)
   {
   }
 
@@ -1180,18 +1193,21 @@ public:
   void undo();
 };
 
+
 class UpdRemoveNodesFromCollection: public  UpdCollection
 {
 protected:
   std::vector<store::Item_t>  theNodesToDelete;
 
 public:
-  UpdRemoveNodesFromCollection(PULImpl* pul, static_context* aStaticContext,
-      store::Item_t& targetCollectionUri,
-      std::vector<store::Item_t>& nodes)
-      :
-      UpdCollection(pul, aStaticContext, targetCollectionUri),
-      theNodesToDelete(nodes)
+  UpdRemoveNodesFromCollection(
+        PULImpl* pul,
+        static_context* aStaticContext,
+        store::Item_t& targetCollectionUri,
+        std::vector<store::Item_t>& nodes)
+    :
+    UpdCollection(pul, aStaticContext, targetCollectionUri),
+    theNodesToDelete(nodes)
   {
   }
 
@@ -1204,6 +1220,7 @@ public:
   void undo();
 };
 
+
 class UpdRemoveNodeAtFromCollection: public  UpdCollection
 {
 protected:
@@ -1211,12 +1228,14 @@ protected:
   store::Item_t theNode; // used for undo only
 
 public:
-  UpdRemoveNodeAtFromCollection(PULImpl* pul, static_context* aStaticContext,
+  UpdRemoveNodeAtFromCollection(
+      PULImpl* pul,
+      static_context* aStaticContext,
       store::Item_t& targetCollectionUri,
       ulong pos)
-      :
-      UpdCollection(pul, aStaticContext, targetCollectionUri),
-      thePos(pos)
+    :
+    UpdCollection(pul, aStaticContext, targetCollectionUri),
+    thePos(pos)
   {
   }
 

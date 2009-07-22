@@ -563,11 +563,10 @@ void PULImpl::addDeleteCollection(
 void PULImpl::addInsertIntoCollection(
     static_context*        aStaticContext,
     store::Item_t&         resolvedURI,
-    store::Item_t&         node,
-    const store::CopyMode& copymode)
+    store::Item_t&         node)
 {
   theInsertIntoCollectionList.push_back(
-    new UpdInsertIntoCollection(this, aStaticContext, resolvedURI, node, copymode)
+    new UpdInsertIntoCollection(this, aStaticContext, resolvedURI, node)
   );
 } 
 
@@ -575,11 +574,10 @@ void PULImpl::addInsertIntoCollection(
 void PULImpl::addInsertFirstIntoCollection(
     static_context*             aStaticContext,
     store::Item_t&              resolvedURI,
-    std::vector<store::Item_t>& nodes,
-    const store::CopyMode&      copyMode)
+    std::vector<store::Item_t>& nodes)
 {
   theInsertIntoCollectionList.push_back(
-    new UpdInsertFirstIntoCollection(this, aStaticContext, resolvedURI, nodes, copyMode)
+    new UpdInsertFirstIntoCollection(this, aStaticContext, resolvedURI, nodes)
   );
 }
 
@@ -587,11 +585,10 @@ void PULImpl::addInsertFirstIntoCollection(
 void PULImpl::addInsertLastIntoCollection(
     static_context*             aStaticContext,
     store::Item_t&              resolvedURI,
-    std::vector<store::Item_t>& nodes,
-    const store::CopyMode&      copyMode)
+    std::vector<store::Item_t>& nodes)
 {
   theInsertIntoCollectionList.push_back(
-    new UpdInsertLastIntoCollection(this, aStaticContext, resolvedURI, nodes, copyMode)
+    new UpdInsertLastIntoCollection(this, aStaticContext, resolvedURI, nodes)
   );
 }
 
@@ -600,11 +597,10 @@ void PULImpl::addInsertBeforeIntoCollection(
     static_context*             aStaticContext,
     store::Item_t&              resolvedURI,
     store::Item_t&              target,
-    std::vector<store::Item_t>& nodes,
-    const store::CopyMode&      copyMode)
+    std::vector<store::Item_t>& nodes)
 {
   theInsertIntoCollectionList.push_back(
-    new UpdInsertBeforeIntoCollection(this, aStaticContext, resolvedURI, target, nodes, copyMode)
+    new UpdInsertBeforeIntoCollection(this, aStaticContext, resolvedURI, target, nodes)
   );
 }
 
@@ -613,11 +609,10 @@ void PULImpl::addInsertAfterIntoCollection(
     static_context*             aStaticContext,
     store::Item_t&              resolvedURI,
     store::Item_t&              target,
-    std::vector<store::Item_t>& nodes,
-    const store::CopyMode&      copyMode)
+    std::vector<store::Item_t>& nodes)
 {
   theInsertIntoCollectionList.push_back(
-    new UpdInsertAfterIntoCollection(this, aStaticContext, resolvedURI, target, nodes, copyMode)
+    new UpdInsertAfterIntoCollection(this, aStaticContext, resolvedURI, target, nodes)
   );
 }
 
@@ -626,11 +621,10 @@ void PULImpl::addInsertAtIntoCollection(
     static_context*             aStaticContext,
     store::Item_t&              resolvedURI,
     ulong                       pos,
-    std::vector<store::Item_t>& nodes,
-    const store::CopyMode&      copyMode)
+    std::vector<store::Item_t>& nodes)
 {
   theInsertIntoCollectionList.push_back(
-    new UpdInsertAtIntoCollection(this, aStaticContext, resolvedURI, pos, nodes, copyMode)
+    new UpdInsertAtIntoCollection(this, aStaticContext, resolvedURI, pos, nodes)
   );
 }
 
@@ -1484,11 +1478,15 @@ void UpdReplaceCommentValue::undo()
   COMMENT_NODE(theTarget)->restoreValue(*this);
 }
 
+
 /*******************************************************************************
   UpdatePrimitives for collection functions
 ********************************************************************************/
 
-// UpdCreateCollection
+
+/*******************************************************************************
+  UpdCreateCollection
+********************************************************************************/
 void UpdCreateCollection::apply()
 {
   GET_STORE().createCollection(theCollectionUri);
@@ -1500,23 +1498,27 @@ void UpdCreateCollection::undo()
 {
   store::Item_t item;
   GENV_ITEMFACTORY->createAnyURI(item, theCollectionUri);
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
-                              ->resolve(item, theStaticContext);
-  if (lColl) {
+  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
+                              resolve(item, theStaticContext);
+  if (lColl) 
+  {
     xqpStringStore_t lCollString = lColl->getUri()->getStringValueP();
     GET_STORE().deleteCollection(lCollString);
   }
 }
 
-// UpdDeleteCollection
+
+/*******************************************************************************
+  UpdDeleteCollection
+********************************************************************************/
 void UpdDeleteCollection::apply()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
-                         ->resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
+                              resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
   // save nodes for potential undo
-  store::Item_t   lTmp = NULL;
+  store::Item_t lTmp = NULL;
   store::Iterator_t lIter = lColl->getIterator(true);
   assert(lIter);
 
@@ -1549,22 +1551,25 @@ void UpdDeleteCollection::undo()
        lIter != theSavedItems.end(); ++lIter) {
     if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) {
 #ifndef NDEBUG
-      dynamic_cast<SimpleCollection*>(lColl.getp())->addNodeWithoutCopy(lIter->getp());
+      dynamic_cast<SimpleCollection*>(lColl.getp())->addNode(lIter->getp());
 #else
-      static_cast<SimpleCollection*>(lColl.getp())->addNodeWithoutCopy(lIter->getp());
+      static_cast<SimpleCollection*>(lColl.getp())->addNode(lIter->getp());
 #endif
     }
   }
 }
 
-// UpdInsertIntoCollection
+
+/*******************************************************************************
+  UpdInsertIntoCollection
+********************************************************************************/
 void UpdInsertIntoCollection::apply()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
-                         ->resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
+                              resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
-  lColl->addNode(theNode, theCopyMode);
+  lColl->addNode(theNode);
 
   theIsApplied = true;
 }
@@ -1578,189 +1583,242 @@ void UpdInsertIntoCollection::undo()
 
   // remove the node if it exists
   long lIndex;
-  if ( (lIndex = lColl->indexOf(theNode.getp())) != -1 ) {
+  if ( (lIndex = lColl->indexOf(theNode.getp())) != -1 ) 
+  {
     lColl->removeNode(lIndex);
   }
 }
 
-// UpdInsertFirstIntoCollection
+
+/*******************************************************************************
+  UpdInsertFirstIntoCollection
+********************************************************************************/
 void UpdInsertFirstIntoCollection::apply()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
-                         ->resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
+                              resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
   for (std::vector<store::Item_t>::reverse_iterator lIter = theNodes.rbegin();
-       lIter != theNodes.rend(); ++lIter) {
-    lColl->addNode(*lIter, theCopyMode, 1);
+       lIter != theNodes.rend();
+       ++lIter) 
+  {
+    lColl->addNode(*lIter, 1);
   }
 }
 
 void UpdInsertFirstIntoCollection::undo()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
-                         ->resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
+                              resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
   long lIndex;
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end(); ++lIter) {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) {
+       lIter != theNodes.end();
+       ++lIter) 
+  {
+    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) 
+    {
       lColl->removeNode(lIndex);
     }
   }
 }
 
-// UpdInsertLastIntoCollection
+
+/*******************************************************************************
+  UpdInsertLastIntoCollection
+********************************************************************************/
 void UpdInsertLastIntoCollection::apply()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
-                         ->resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
+                              resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end(); ++lIter) {
-    lColl->addNode(*lIter, theCopyMode, -1);
+       lIter != theNodes.end();
+       ++lIter) 
+  {
+    lColl->addNode(*lIter, -1);
   }
 }
 
 void UpdInsertLastIntoCollection::undo()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
-                         ->resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
+                              resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
   long lIndex;
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end(); ++lIter) {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) {
+       lIter != theNodes.end();
+       ++lIter) 
+  {
+    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) 
+    {
       lColl->removeNode(lIndex);
     }
   }
 }
 
-// UpdInsertBeforeIntoCollection
+
+/*******************************************************************************
+  UpdInsertBeforeIntoCollection
+********************************************************************************/
 void UpdInsertBeforeIntoCollection::apply()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
-                         ->resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
+                              resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end(); ++lIter) {
-    lColl->addNode(*lIter, theCopyMode, theTarget, true);
+       lIter != theNodes.end();
+       ++lIter)
+  {
+    lColl->addNode(*lIter, theTarget, true);
   }
 }
 
 void UpdInsertBeforeIntoCollection::undo()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
-                         ->resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
+                              resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
   long lIndex;
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end(); ++lIter) {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) {
+       lIter != theNodes.end();
+       ++lIter)
+  {
+    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) 
+    {
       lColl->removeNode(lIndex);
     }
   }
 }
 
-// UpdInsertAfterIntoCollection
+
+/*******************************************************************************
+  UpdInsertAfterIntoCollection
+********************************************************************************/
 void UpdInsertAfterIntoCollection::apply()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
-                         ->resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
+                              resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
   for (std::vector<store::Item_t>::reverse_iterator lIter = theNodes.rbegin();
-       lIter != theNodes.rend(); ++lIter) {
-    lColl->addNode(*lIter, theCopyMode, theTarget, false);
+       lIter != theNodes.rend();
+       ++lIter) 
+  {
+    lColl->addNode(*lIter, theTarget, false);
   }
 }
 
+
 void UpdInsertAfterIntoCollection::undo()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
-                         ->resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
+                              resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
   long lIndex;
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end(); ++lIter) {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) {
+       lIter != theNodes.end();
+       ++lIter)
+  {
+    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) 
+    {
       lColl->removeNode(lIndex);
     }
   }
 }
 
-// UpdInsertAtIntoCollection
+
+/*******************************************************************************
+  UpdInsertAtIntoCollection
+********************************************************************************/
 void UpdInsertAtIntoCollection::apply()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
-                         ->resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
+                              resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
   ulong lPos = thePos;
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end(); ++lIter) {
-    lColl->addNode(*lIter, theCopyMode, lPos++);
+       lIter != theNodes.end();
+       ++lIter) 
+  {
+    lColl->addNode(*lIter, lPos++);
   }
 }
 
 void UpdInsertAtIntoCollection::undo()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
-                         ->resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
+                              resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
   long lIndex;
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end(); ++lIter) {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) {
+       lIter != theNodes.end();
+       ++lIter) 
+  {
+    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) 
+    {
       lColl->removeNode(lIndex);
     }
   }
 }
 
-// UpdRemoveNodesFromCollection
+
+/*******************************************************************************
+  UpdRemoveNodesFromCollection
+********************************************************************************/
 void UpdRemoveNodesFromCollection::apply()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
-                         ->resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
+                              resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
   for (std::vector<store::Item_t>::iterator lIter = theNodesToDelete.begin();
-       lIter != theNodesToDelete.end(); ++lIter) {
+       lIter != theNodesToDelete.end();
+       ++lIter) 
+  {
     lColl->removeNode(lIter->getp());
   }
 }
 
 void UpdRemoveNodesFromCollection::undo()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
-                         ->resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
+                              resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
   long lIndex;
   for (std::vector<store::Item_t>::iterator lIter = theNodesToDelete.begin();
-       lIter != theNodesToDelete.end(); ++lIter) {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) {
+       lIter != theNodesToDelete.end();
+       ++lIter) 
+  {
+    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) 
+    {
 #ifndef NDEBUG
-      dynamic_cast<SimpleCollection*>(lColl.getp())->addNodeWithoutCopy(lIter->getp());
+      dynamic_cast<SimpleCollection*>(lColl.getp())->addNode(lIter->getp());
 #else
-      static_cast<SimpleCollection*>(lColl.getp())->addNodeWithoutCopy(lIter->getp());
+      static_cast<SimpleCollection*>(lColl.getp())->addNode(lIter->getp());
 #endif
     }
   }
 }
 
-// UpdRemoveNodeAtFromCollection
+
+/*******************************************************************************
+  UpdRemoveNodeAtFromCollection
+********************************************************************************/
 void UpdRemoveNodeAtFromCollection::apply()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
-                         ->resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
+                              resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
   theNode = lColl->nodeAt(thePos);
@@ -1770,14 +1828,14 @@ void UpdRemoveNodeAtFromCollection::apply()
 
 void UpdRemoveNodeAtFromCollection::undo()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
-                         ->resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
+                              resolve(theTargetCollectionUri, theStaticContext);
   assert(lColl);
 
 #ifndef NDEBUG
-  dynamic_cast<SimpleCollection*>(lColl.getp())->addNodeWithoutCopy(theNode);
+  dynamic_cast<SimpleCollection*>(lColl.getp())->addNode(theNode);
 #else
-  static_cast<SimpleCollection*>(lColl.getp())->addNodeWithoutCopy(theNode);
+  static_cast<SimpleCollection*>(lColl.getp())->addNode(theNode);
 #endif
 }
 

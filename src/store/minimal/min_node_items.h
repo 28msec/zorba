@@ -58,6 +58,8 @@ class UpdRenamePi;
 class UpdReplaceCommentValue;
 class NodeTypeInfo;
 
+class SimpleCollection;
+
 typedef std::vector<NodeTypeInfo> TypeUndoList;
 
 typedef rchandle<NsBindingsContext> NsBindingsContext_t;
@@ -217,6 +219,8 @@ public:
   theId          : An internally generated id for the tree
   theBaseUri     : The base uri property of the tree's root node.
   theDocUri      : A user provided uri for the tree (may be NULL)
+  theCollection  : The collection where this xml tree belongs to, if any. An xml
+                   tree may belong to at most one collection at a time.
   theRootNode    : The root node of the tree.
   theIsValidated : True if the tree has ever undergone schema validation.
 ********************************************************************************/
@@ -231,6 +235,9 @@ public:
 
   xqpStringStore_t          theDocUri;
   xqpStringStore_t          theBaseUri;
+
+  SimpleCollection        * theCollection;
+
   XmlNode         * theRootNode;
 
   bool                      theIsValidated;
@@ -261,6 +268,10 @@ public:
   xqpStringStore* getBaseUri() const { return theBaseUri.getp(); }
 
   void setBaseUri(const xqpStringStore_t& uri) { theBaseUri = uri; }
+
+  SimpleCollection* getCollection() const { return theCollection; }
+
+  void setCollection(SimpleCollection* coll);
 
   XmlNode* getRoot() const      { return theRootNode; }
 
@@ -413,6 +424,10 @@ public:
   XmlTree* getTree() const          { return (XmlTree*)theTreeRCPtr; }
 
   ulong getTreeId() const           { return getTree()->getId(); }
+
+  SimpleCollection* getCollection() const { return getTree()->getCollection(); }
+
+  void setCollection(SimpleCollection* coll) { getTree()->setCollection(coll); }
 
   const OrdPath& getOrdPath() const { return theOrdPath; }
   OrdPath& getOrdPath()             { return theOrdPath; }
