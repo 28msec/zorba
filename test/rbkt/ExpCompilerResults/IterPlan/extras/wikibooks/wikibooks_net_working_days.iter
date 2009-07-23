@@ -92,7 +92,7 @@ Iterator tree for main query:
                   <LetVariable name="d" materialize="true">
                     <GenericArithIterator_AddOperation>
                       <SingletonIterator value="2008-07-01+01:00"/>
-                      <CastIterator type="[AtomicXQType XS_DT_DURATION]">
+                      <CastIterator type="xs:dayTimeDuration">
                         <ConcatStrIterator>
                           <SingletonIterator value="xs:string(P)"/>
                           <ForVarIterator varname="i"/>
@@ -102,12 +102,12 @@ Iterator tree for main query:
                     </GenericArithIterator_AddOperation>
                   </LetVariable>
                   <LetVariable name="dow" materialize="true">
-                    <PromoteIterator type="[AtomicXQType XS_INTEGER]">
+                    <PromoteIterator type="xs:integer">
                       <GenericArithIterator_ModOperation>
-                        <CastIterator type="[AtomicXQType XS_INTEGER]">
+                        <CastIterator type="xs:integer">
                           <GenericArithIterator_DivideOperation>
                             <GenericArithIterator_SubtractOperation>
-                              <CastIterator type="[AtomicXQType XS_DATE]">
+                              <CastIterator type="xs:date">
                                 <LetVarIterator varname="d"/>
                               </CastIterator>
                               <SingletonIterator value="1901-01-06"/>
@@ -185,7 +185,7 @@ Iterator tree for main query:
                           <EnclosedIterator attr_cont="false">
                             <UDFunctionCallIterator>
                               <SingletonIterator value="2008-07-01+01:00"/>
-                              <PromoteIterator type="[AtomicXQType XS_DATE]">
+                              <PromoteIterator type="xs:date">
                                 <LetVarIterator varname="d"/>
                               </PromoteIterator>
                             </UDFunctionCallIterator>
