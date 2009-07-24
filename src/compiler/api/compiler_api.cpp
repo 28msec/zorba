@@ -62,7 +62,6 @@ XQueryCompiler::XQueryCompiler(CompilerCB* aCompilerCB)
   :
   theCompilerCB(aCompilerCB)
 { 
-  aCompilerCB->m_sctx->set_typemanager(rchandle<TypeManager>(new TypeManagerImpl(&GENV_TYPESYSTEM)));
 }
 
 

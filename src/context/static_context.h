@@ -80,7 +80,7 @@ public:
 
   static_context* create_child_context() { return new static_context(this); }
 
-  TypeManager* get_typemanager () 
+  TypeManager* get_typemanager() 
   {
     TypeManager *tm = typemgr.getp();
     if (tm != NULL) {
@@ -89,9 +89,12 @@ public:
     return static_cast<static_context *>(parent)->get_typemanager();
   }
 
-  void set_typemanager(rchandle<TypeManager>);
+  TypeManager* get_local_typemanager() const { return typemgr.getp(); }
 
+  void set_typemanager(rchandle<TypeManager>);
+  
   void add_decimal_format(const DecimalFormat_t& decimal_format);
+
   DecimalFormat_t get_decimal_format(const store::Item_t qname);
 
   expr_t get_query_expr() const { return theQueryExpr; }

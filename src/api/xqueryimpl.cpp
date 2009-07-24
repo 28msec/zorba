@@ -528,23 +528,26 @@ void XQueryImpl::doCompile(
   checkNotClosed();
   checkNotCompiled();
 
-  if ( ! theStaticContext ) 
+  if ( ! theStaticContext )
   {
     // no context given => use the default one (i.e. a child of the root static context)
-    if (fork_sctx)
-      theStaticContext = GENV.getRootStaticContext().create_child_context();
-    else
-      theStaticContext = &GENV.getRootStaticContext();
+    theStaticContext = GENV.getRootStaticContext().create_child_context();
+
+    theStaticContext->set_typemanager(new TypeManagerImpl(&GENV_TYPESYSTEM));
   }
   else 
   {
+    if (theStaticContext->get_local_typemanager() == NULL)
+      theStaticContext->set_typemanager(new TypeManagerImpl(&GENV_TYPESYSTEM));
+
     // otherwise create a child and we have ownership over that one
     if (fork_sctx)
       theStaticContext = theStaticContext->create_child_context();
   }
+
   RCHelper::addReference (theStaticContext);
 
-  theStaticContext->set_entity_retrieval_url(xqp_string (&*URI::encode_file_URI (theFileName)));
+  theStaticContext->set_entity_retrieval_url(xqp_string(&*URI::encode_file_URI(theFileName)));
 
   theCompilerCB->m_sctx = theStaticContext;
   theCompilerCB->m_cur_sctx = theCompilerCB->m_context_map.size() + 1;
@@ -554,6 +557,7 @@ void XQueryImpl::doCompile(
   theCompilerCB->m_config = getCompilerConfig(aHints);
 
   XQueryCompiler lCompiler(theCompilerCB);
+
 #ifdef ZORBA_DEBUGGER
   theCompilerCB->m_debugger = theDebugger;
   //if the debug mode is set, we force the gflwor, we set the query input stream
