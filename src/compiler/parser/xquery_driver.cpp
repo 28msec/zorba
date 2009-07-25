@@ -33,15 +33,41 @@ xquery_driver::xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize)
 
 bool xquery_driver::parse_stream(std::istream& in, const xqpString& aFilename)
 {
+  int ch[3];
+  int i;
+  
   theFilename = aFilename.c_str();
 
-    xquery_scanner scanner(this, &in);
-    scanner.set_yy_flex_debug(Properties::instance()->traceScanning());
-    this->lexer = &scanner;
+  // process the UTF16 Byte Order Mark = \xEF\xBB\xBF
+  if (in.peek() == 0xEF)
+  {
+    for (i=0; i<3; i++)
+      if (in.good())
+        ch[i] = in.get();
+      else
+        break;
 
-    zorba::xquery_parser parser(*this);
-    parser.set_debug_level(Properties::instance()->traceParsing());
-    return (parser.parse() == 0);
+    if (i<3 || ch[0] != 0xEF || ch[1] != 0xBB || ch[2] != 0xBF)
+    {
+      if (i==3) i--;
+      for ( ; i>=0; i--)
+        in.putback(ch[i]);
+    }
+  }
+
+  // process the UTF16 (LE) Byte Order Mark = \xFF\xFE, not supported yet
+  //else if (in.peek() == 0xFF)
+  //{
+    // transcode the input to UTF8
+  //}
+
+  xquery_scanner scanner(this, &in);
+  scanner.set_yy_flex_debug(Properties::instance()->traceScanning());
+  this->lexer = &scanner;
+
+  zorba::xquery_parser parser(*this);
+  parser.set_debug_level(Properties::instance()->traceParsing());
+  return (parser.parse() == 0);
 }
 
 bool xquery_driver::parse_file(const xqpString& aFilename)

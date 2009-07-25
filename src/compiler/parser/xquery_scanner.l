@@ -42,15 +42,11 @@ typedef zorba::xquery_parser::token_type token_type;
 #define PUSH_STATE(state) \
     do { \
         yy_push_state(state); \
-        getDriver()->push_state_stack(); \
     } while(0)
 
 #define POP_STATE() \
     do { \
-        if (getDriver()->state_stack.empty ())    \
-          return token::UNRECOGNIZED; \
         yy_pop_state(); \
-        getDriver()->pop_state_stack(); \
     } while(0)
 
 #define PUSH_AND_BEGIN( pushed, new ) \
@@ -95,20 +91,18 @@ typedef zorba::xquery_parser::token_type token_type;
 #define yyterminate() return token::_EOF
 
 /*
-    The macro YY_USER_ACTION can be defined to provide an action which is
-    always executed prior to the matched rule's action.
+  The macro YY_USER_ACTION can be defined to provide an action which is
+  always executed prior to the matched rule's action.
 
-    The following paragraph suffices to track locations accurately. Each
-    time yylex is invoked, the begin position is moved onto the end
-    position. Then when a pattern is matched, the end position is advanced
-    of its width. In case it matched ends of lines, the end cursor is
-    adjusted, and each time blanks are matched, the begin cursor is moved
-    onto the end cursor to effectively ignore the blanks preceding tokens.
-    Comments would be treated equally.
- */
-
-std::string start_state(int);
-    
+  The following paragraph suffices to track locations accurately. Each
+  time yylex is invoked, the begin position is moved onto the end
+  position. Then when a pattern is matched, the end position is advanced
+  of its width. In case it matched ends of lines, the end cursor is
+  adjusted, and each time blanks are matched, the begin cursor is moved
+  onto the end cursor to effectively ignore the blanks preceding tokens.
+  Comments would be treated equally.
+*/
+std::string start_state(int);   /* forward declaration, used by YY_USER_ACTION */
 #define YY_USER_ACTION \
 { \
   if (yy_flex_debug) { \
@@ -137,16 +131,28 @@ std::string start_state(int);
    *______________________________________________________________________*/
 
 %option outfile="xquery_scanner.yy.cpp"
-/* %option case-insensitive */
-/* %option nostdinit */
 %option noyywrap
 %option batch
 %option debug
 %option stack
-/* %option reentrant */
 %option nounistd
 %option c++
 %option prefix="Zorba"
+      
+  /*_____________________________________________________________________
+   |
+   |  UTF-8 characters definitions
+   |______________________________________________________________________*/
+
+
+  /* UTF8_1Byte    [\x00-\x7F] -- not used anywhere */
+  
+BaseChar_1Byte  ([\x41-\x5A]|[\x61-\x7A])
+UTF8_2Bytes     ([\xC0-\xDF][\x80-\xBF])
+UTF8_3Bytes     ([\xE0-\xEF][\x80-\xBF][\x80-\xBF])
+UTF8_4Bytes     ([\xF0-\xF7][\x80-\xBF][\x80-\xBF][\x80-\xBF])
+
+UTF8_MultiByte  ({UTF8_2Bytes}|{UTF8_3Bytes}|{UTF8_4Bytes})
       
 
   /*_____________________________________________________________________
@@ -165,7 +171,7 @@ SPNoComment     {S1}+
    |
    |  Basic character classes
    |______________________________________________________________________*/
-Letter      [A-Za-z]
+Letter      ({BaseChar_1Byte}|{UTF8_MultiByte})
 Digit       [0-9]
 Apos        \'
 Quote       \"
@@ -183,10 +189,12 @@ EscapeQuot  {Quote}{Quote}
    |
    |  NCName definition
    |______________________________________________________________________*/
-Nmstart     ({Letter}|_)
-Nmchar      ({Letter}|{Digit}|[._-])
-NCName      {Nmstart}{Nmchar}*
+NCNameStartChar       ({Letter}|"_")
+NCNameChar            ({Letter}|{Digit}|[._-])
 
+NCName                ({NCNameStartChar}{NCNameChar}*)
+
+    
   /*_____________________________________________________________________
    |
    |  QName definition
@@ -230,19 +238,6 @@ ElementContentChar    [\x09\x0A\x0D\x20-\x25\x27-\x3B\x3D-\x7A\x7C\x7E-\xFD]
 QuotAttrContentChar   [\x09\x0A\x0D\x20-\x21\x23-\x25\x27-\x3B\x3D-\x7A\x7C\x7E-\xFD]
 AposAttrContentChar   [\x09\x0A\x0D\x20-\x25\x28-\x3B\x3D-\x7A\x7C\x7E-\xFD]
 
-  /*
-  NonXChar  [\x09\x0A\x0D\x20A-WY-Za-wy-z\x7B-\xFD]
-  NonMChar  [\x09\x0A\x0D\x20A-LN-Za-ln-z\x7B-\xFD]
-  NonLChar  [\x09\x0A\x0D\x20A-KM-Za-km-z\x7B-\xFD]
-
-  PITarget  (({NonXChar}{Char}*)|((X|x){NonMChar}{Char}*)|((X|x)(M|m){NonLChar}*)|({Char}{Char}{Char}{Char}+))
-  */
-
-  /*
-  PITargetStart         [_:A-\xFF]
-  PITargetName          [.\-_:0-9A-\xFF]
-  */
-  
 PITarget              {NCName}
 
 NonQuestionMarkChar                 [\x09\x0A\x0D\x20-\x3E\x40-\xFD]
@@ -253,8 +248,6 @@ NonSharpPragmaChar                  [\x09\x0A\x0D\x20-\x22\x24-\xFD]
 NonSharpNonParPragmaChar            [\x09\x0A\x0D\x20-\x28\x2A-\xFD]
 PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPragmaChar})*"#"*
 
-    
-ByteOrderMark_UTF8    \xEF\xBB\xBF
     
   /*______________________________________________________________________
    |
@@ -539,7 +532,6 @@ typedef zorba::xquery_parser::token token;
 "replace" { return token::REPLACE; }
 "value" { return token::VALUE; }
 "of" { return token::OF; }
- /* TODO: getDriver()->set_rename(true); */
 "rename" { return token::RENAME; }
 "copy" { return token::COPY; }
 "nodes" { return token::NODES; }
@@ -573,11 +565,6 @@ typedef zorba::xquery_parser::token token;
 "ascending" { return token::ASCENDING; }
 "descending" { return token::DESCENDING; }
 "encoding" { return token::ENCODING; }
-
- /* TODO: this flag should not be needed anymore
-    BEGIN INITIAL;
-    getDriver()->set_ftcontains(true);
-  */
 "ftcontains" { return token::FTCONTAINS; }
 
 
@@ -627,15 +614,6 @@ typedef zorba::xquery_parser::token token;
 
 
   /*______________________________________________________________________
-    |
-    | Byte Order Mark
-    |______________________________________________________________________*/
-
-{ByteOrderMark_UTF8} {
-  return token::BYTE_ORDER_MARK_UTF8;
-}
-
-  /*______________________________________________________________________
    |
    | State transitions
    |______________________________________________________________________*/
@@ -656,11 +634,21 @@ typedef zorba::xquery_parser::token token;
   return token::CDATA_BEGIN;
 }
 
+
+  /* transition to MODE_START_TAG */
+  /* ---------------------------- */
 "<" { PUSH_STATE(MODE_START_TAG); return token::LT_OR_START_TAG; }
 
+
+  /* transition to MODE_EXPR_DOC_COMMENT */
+  /* ----------------------------------- */
 "(:~" { PUSH_STATE(MODE_EXPR_DOC_COMMENT); }
 
+
+  /* transition to MODE_EXPR_COMMENT */
+  /* ------------------------------- */
 "(:" { PUSH_STATE(MODE_EXPR_COMMENT); }
+
 
   /* transition to PRAGMA */
   /* -------------------- */
@@ -668,6 +656,7 @@ typedef zorba::xquery_parser::token token;
   BEGIN MODE_PRAGMA;
   return token::PRAGMA_BEGIN;
 }
+
 
   /* push initial state */
   /* ------------------ */
@@ -677,171 +666,14 @@ typedef zorba::xquery_parser::token token;
   /* ------------------ */
 "}" { POP_STATE(); return token::RBRACE; }
 
+  
 {S} {
   /* eat up whitespace */
 }
 
   /* END <MODE INITIAL> */
 
-
-  /*______________________________________________________________________
-   |
-   |  The PROCESSING_INSTRUCTION_CTOR State
-   |
-   |  transition to MODE_OPERATOR
-   |______________________________________________________________________*/
-
-  /* <MODE_PROCESSING_INSTRUCTION_CTOR>{ */
-
-
-  /* } */  /* END <MODE_PROCESSING_INSTRUCTION_CTOR> */
-
-
-  /*______________________________________________________________________
-   |
-   |  OPERATOR State
-   |
-   |  This state is for patterns that are defined for operators.
-   |______________________________________________________________________*/
-
-  /* <MODE_OPERATOR>{ */
-
-
-  /*______________________________________________________________________
-   |
-   | FT rules <OPERATOR>
-   |______________________________________________________________________*/
-
-  /* } */  /* END <MODE_OPERATOR> */
-
-  /*______________________________________________________________________
-   |
-   | XQUERY_VERSION State
-   |
-   | This state is for recognition of XQuery version specific keywords.
-   |______________________________________________________________________*/
-
-  /* <MODE_XQUERY_VERSION>{ */
-
-  /* } */ /* END <MODE_XQUERY_VERSION> */
-
-  /*______________________________________________________________________
-   |
-   | NAMESPACEDECL State
-   |
-   | This state occurs inside of a namespace declaration, and is needed
-   | to recognize a NCName that is to be used as the prefix, as opposed
-   | to allowing a QName to occur. (Otherwise, the difference between
-   | NCName and QName becomes ambiguous.)
-   |______________________________________________________________________*/
-
-  /* <MODE_NAMESPACEDECL>{ */
-
-  /* } */ /* END <MODE_NAMESPACEDECL> */ 
-
-
-  /*______________________________________________________________________
-   |
-   | URITOOPERATOR State
-   |
-   | This state is to recognize a URILiteral that transitions to the
-   | OPERATOR state.
-   |______________________________________________________________________*/
-
-
-  /*______________________________________________________________________
-   |
-   | NAMESPACEKEYWORD State
-   |
-   | This state occurs at places where the keyword "namespace" is
-   | expected, which would otherwise be ambiguous compared to a QName.
-   | QNames can not occur in this state.
-   |______________________________________________________________________*/
-
-  /* <MODE_NAMESPACEKEYWORD>{ */
-
-  /* } */  /* END <MODE_NAMESPACEKEYWORD> */
-
   
-   /*______________________________________________________________________
-    |
-    | XMLSPACE_DECL State
-    |
-    | This state occurs at places where the keywords "preserve" and
-    | "strip" is expected to support "declare xmlspace". QNames cannot
-    | occur in this state.
-    |______________________________________________________________________*/
-
-  /* <MODE_XMLSPACE_DECL>{ */
-
-  /* transition to INITIAL */
-  /* --------------------- */
-
-  /* } */ /* END <MODE_XMLSPACE_DECL> */
-
-
-  /*______________________________________________________________________
-   |
-   | SINGLETYPE State
-   |
-   | This state distinguishes tokens that can occur only inside the
-   | SingleType production.
-   |______________________________________________________________________*/
-
-  /* <MODE_SINGLETYPE>{ */
-
-  /* } */  /* END <MODE_SINGLETYPE> */
-
-
-  /*______________________________________________________________________
-   |
-   | ITEMTYPE State
-   |
-   | This state distinguishes tokens that can occur only inside the
-   | ItemType production.
-   |______________________________________________________________________*/
-
-  /* <MODE_ITEMTYPE>{ */
-
-  /* } */ /* END <MODE_ITEMTYPE> */
-
-
-  /*______________________________________________________________________
-   |
-   | KINDTEST State
-   |
-   | This state is for the psuedo-parameters for the KindTest productions
-   |______________________________________________________________________*/
-
-  /* <MODE_KINDTEST>{ */
-
-  /* } */ /* END <MODE_KINDTEST> */
-
-
-  /*______________________________________________________________________
-   |
-   | KINDTESTFORPI
-   |
-   | This state is similar to KINDTEST, but recognizes NCNames instead of
-   | QNames.
-   |______________________________________________________________________*/
-
-  /* <MODE_KINDTESTFORPI>{ */
-
-  /* } */  /* END <MODE_KINDTESTFORPI> */
-
-
-  /*______________________________________________________________________
-   |
-   | CLOSE_KINDTEST State
-   |
-   | This state is expecting to close a KINDTEST sequence.
-   |______________________________________________________________________*/
-
-  /* <MODE_CLOSE_KINDTEST>{ */
-
-  /* } */  /* END <MODE_CLOSE_KINDTEST> */
-
 
   /*______________________________________________________________________
    |
@@ -884,20 +716,6 @@ typedef zorba::xquery_parser::token token;
 
   /*______________________________________________________________________
    |
-   | OPTION State
-   |
-   | This state is entered in the prolog for an option declaration, and
-   | recognizes a QName that transits to a INITIAL state rather than a
-   | OPERATOR state.
-   |______________________________________________________________________*/
-
-  /* <MODE_OPTION>{ */
-
-  /* } */  /* END <MODE_OPTION> */
-
-
-  /*______________________________________________________________________
-   |
    | PRAGMA State
    |
    | This state is entered in a a pragma expression, and recognizes
@@ -905,14 +723,10 @@ typedef zorba::xquery_parser::token token;
    | OPERATOR state.
    |______________________________________________________________________*/
 
-  /* <MODE_PRAGMA>{  */
-
 <MODE_PRAGMA>{QName}{SPNoComment} { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng, true, true)); }
 <MODE_PRAGMA>{QName}"#)" { BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_SVAL_AND_END_PRAGMA, put_qname(yytext, yyleng-2)); }
 <MODE_PRAGMA>{S} { /* continue lexing */ }
-
-  /* } */  /* END <MODE_PRAGMA> */
-
+  
   
   /*______________________________________________________________________
    |
@@ -922,25 +736,7 @@ typedef zorba::xquery_parser::token token;
    | out of this state when a '#)' pattern is recognized.
    |______________________________________________________________________*/
 
-  /* <MODE_PRAGMACONTENTS>{  */
-
 <MODE_PRAGMACONTENTS>{PragmaChars}"#)" { BEGIN INITIAL; TRY_SVAL_TOKEN(PRAGMA_LITERAL_AND_END_PRAGMA, put(yytext, yyleng-2)); }
-
-  /* } */  /* END <MODE_PRAGMACONTENTS> */
-
-
-  /*______________________________________________________________________
-   |
-   | VARNAME State
-   |
-   | This state differentiates variable names from qualified names. This
-   | allows only the pattern of a QName to be recognized when otherwise
-   | ambiguities could occur.
-   |______________________________________________________________________*/
-
-  /* <MODE_VARNAME>{ */
-
-  /* } */ /* END <MODE_VARNAME> */
 
 
   /*______________________________________________________________________
@@ -954,8 +750,6 @@ typedef zorba::xquery_parser::token token;
    | is associated with the transition to the original state.
    |______________________________________________________________________*/
 
-  /* <MODE_START_TAG>{ */  /* TODO: this one is needed */
-
 <MODE_START_TAG>">" { BEGIN MODE_ELEMENT_CONTENT; return token::TAG_END; }
 <MODE_START_TAG>\" { BEGIN MODE_QUOTE_ATTRIBUTE_CONTENT; return token::QUOTE; }
 <MODE_START_TAG>\' { BEGIN MODE_APOS_ATTRIBUTE_CONTENT; return token::APOS; }
@@ -964,8 +758,6 @@ typedef zorba::xquery_parser::token token;
 <MODE_START_TAG>"/>" { POP_STATE(); return token::EMPTY_TAG_END; }
 <MODE_START_TAG>{QName} { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng)); }
 <MODE_START_TAG>{CatchAll} { return token::UNRECOGNIZED; }
-
-  /* } */  /* END <MODE_START_TAG> */
 
 
   /*______________________________________________________________________
@@ -982,8 +774,6 @@ typedef zorba::xquery_parser::token token;
    | associated with a transition to the END_TAG state.
    |______________________________________________________________________*/
 
-  /* <MODE_ELEMENT_CONTENT>{ */
-
 <MODE_ELEMENT_CONTENT>"</" { BEGIN MODE_END_TAG; return token::START_TAG_END; }
 <MODE_ELEMENT_CONTENT>"{" { PUSH_STATE(INITIAL); return token::LBRACE; }
 <MODE_ELEMENT_CONTENT>"<!--" { PUSH_STATE(MODE_XML_COMMENT); return token::XML_COMMENT_BEGIN; }
@@ -996,8 +786,6 @@ typedef zorba::xquery_parser::token token;
 <MODE_ELEMENT_CONTENT>"{{" { return token::DOUBLE_LBRACE; }
 <MODE_ELEMENT_CONTENT>"}}" { return token::DOUBLE_RBRACE; }
 
-  /* } */ /* MODE_ELEMENT_CONTENT> */
-
 
   /*______________________________________________________________________
    |
@@ -1007,12 +795,8 @@ typedef zorba::xquery_parser::token token;
    | that was pushed at the start of the corresponding start tag.
    |______________________________________________________________________*/
 
-  /* <MODE_END_TAG>{ */
-
 <MODE_END_TAG>">" { POP_STATE(); return token::TAG_END; }
 <MODE_END_TAG>{QName}{S} { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng, false, true)); }
-
-  /* } */  /* END <MODE_END_TAG> */
 
 
   /*______________________________________________________________________
@@ -1022,13 +806,9 @@ typedef zorba::xquery_parser::token token;
    | token marks the end. This allows no special interpretation of other
    | characters in this state.
    |______________________________________________________________________*/
-
-  /* <MODE_XML_COMMENT>{  */
   
 <MODE_XML_COMMENT>"-->" { POP_STATE(); return token::XML_COMMENT_END; }
 <MODE_XML_COMMENT>{XMLCommentChar}* { TRY_SVAL_TOKEN (XML_COMMENT_LITERAL, put(yytext, yyleng)); }
-
-  /* } */  /* END <MODE_XML_COMMENT> */
 
 
   /*______________________________________________________________________
@@ -1040,14 +820,10 @@ typedef zorba::xquery_parser::token token;
    | of other characters in this state.
    |______________________________________________________________________*/
 
-  /* <MODE_EXPR_COMMENT>{  */
-
 <MODE_EXPR_COMMENT>":)" { POP_STATE(); }
 <MODE_EXPR_COMMENT>"(:" { PUSH_STATE(MODE_EXPR_COMMENT); }
 <MODE_EXPR_COMMENT>.|"\n" { /* do nothing */ }
 <MODE_EXPR_COMMENT><<EOF>> { return token::UNRECOGNIZED; }
-
-  /* } */  /* END <MODE_EXPR_COMMENT> */
 
 
   /*______________________________________________________________________
@@ -1084,13 +860,9 @@ typedef zorba::xquery_parser::token token;
    | instruction name are recognized.
    |______________________________________________________________________*/
 
-  /* <MODE_PROCESSING_INSTRUCTION>{ */
-
 <MODE_PROCESSING_INSTRUCTION>{SP} { BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT; /* continue lexing */ }
 <MODE_PROCESSING_INSTRUCTION>"?>" { POP_STATE(); return token::PI_END; }
 <MODE_PROCESSING_INSTRUCTION>{NCName} /* PITarget */    { TRY_SVAL_TOKEN (NCNAME_SVAL, put(yytext, yyleng)); }
-
-  /* } */  /* END <MODE_PROCESSING_INSTRUCTION> */
 
 
   /*______________________________________________________________________
@@ -1101,14 +873,10 @@ typedef zorba::xquery_parser::token token;
    | instruction content are recognized.
    |______________________________________________________________________*/
 
-  /* <MODE_PROCESSING_INSTRUCTION_CONTENT>{ */
-
 <MODE_PROCESSING_INSTRUCTION_CONTENT>{PIChars}"?>" {
   POP_STATE();
   TRY_SVAL_TOKEN (CHAR_LITERAL_AND_PI_END, put(yytext, yyleng-2));
 }
-
-  /* } */  /* END <MODE_PROCESSING_INSTRUCTION_CONTENT> */
 
 
   /*______________________________________________________________________
@@ -1119,12 +887,8 @@ typedef zorba::xquery_parser::token token;
    | recognized.
    |______________________________________________________________________*/
 
-  /* <MODE_CDATA_SECTION>{ */
-
 <MODE_CDATA_SECTION>"]]>" { POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3)); }
 <MODE_CDATA_SECTION>{Char} { yymore(); }
-
-  /* } */  /* END <MODE_CDATA_SECTION> */
 
 
   /*______________________________________________________________________
@@ -1141,8 +905,6 @@ typedef zorba::xquery_parser::token token;
    | unescaped quote marks the end of the state.
    |______________________________________________________________________*/
 
-  /* <MODE_QUOTE_ATTRIBUTE_CONTENT>{ */
-
 <MODE_QUOTE_ATTRIBUTE_CONTENT>\" { BEGIN MODE_START_TAG; return token::QUOTE; }
 <MODE_QUOTE_ATTRIBUTE_CONTENT>"{" { PUSH_STATE(INITIAL); return token::LBRACE; }
 <MODE_QUOTE_ATTRIBUTE_CONTENT>{EscapeQuot} { return token::ESCAPE_QUOTE; }
@@ -1151,8 +913,6 @@ typedef zorba::xquery_parser::token token;
 <MODE_QUOTE_ATTRIBUTE_CONTENT>{CharRef}+ { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 <MODE_QUOTE_ATTRIBUTE_CONTENT>"{{" { return token::DOUBLE_LBRACE; }
 <MODE_QUOTE_ATTRIBUTE_CONTENT>"}}" { return token::DOUBLE_RBRACE; }
-
-  /* } */  /* END <MODE_QUOTE_ATTRIBUTE_CONTENT> */
 
 
   /*______________________________________________________________________
@@ -1164,8 +924,6 @@ typedef zorba::xquery_parser::token token;
    | the state.
    |______________________________________________________________________*/
 
-  /* <MODE_APOS_ATTRIBUTE_CONTENT>{ */
-
 <MODE_APOS_ATTRIBUTE_CONTENT>\'                     { BEGIN MODE_START_TAG; return token::APOS; }
 <MODE_APOS_ATTRIBUTE_CONTENT>"{"                    { PUSH_AND_BEGIN (INITIAL, MODE_APOS_ATTRIBUTE_CONTENT); return token::LBRACE; }
 <MODE_APOS_ATTRIBUTE_CONTENT>{EscapeApos}           { return token::ESCAPE_APOS; }
@@ -1174,8 +932,6 @@ typedef zorba::xquery_parser::token token;
 <MODE_APOS_ATTRIBUTE_CONTENT>{CharRef}+             { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 <MODE_APOS_ATTRIBUTE_CONTENT>"{{"                   { return token::DOUBLE_LBRACE; }
 <MODE_APOS_ATTRIBUTE_CONTENT>"}}"                   { return token::DOUBLE_RBRACE; }
-
-  /* } */  /* END <MODE_APOS_ATTRIBUTE_CONTENT> */
 
 
   /*______________________________________________________________________
@@ -1263,6 +1019,5 @@ int xquery_scanner::interpretAsLessThan()
 
 int ZorbaFlexLexer::yylex()
 {
-  std::cout << "in ZorbaFlexLexer::yylex() !" << std::endl;
   return 0;
 }

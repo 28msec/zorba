@@ -35,13 +35,6 @@ class CompilerCB;
 // exported for unit testing only
 class ZORBA_DLL_PUBLIC xquery_driver
 {
-private:
-  struct extra_scanner_state_t {
-    bool rename_bit;
-    bool ftcontains_bit;
-    extra_scanner_state_t () : rename_bit (false), ftcontains_bit (false) {}
-  };
-
 public:
   std::string theDocComment;
   std::string theMainModuleDocComment;
@@ -49,35 +42,16 @@ public:
   symbol_table symtab;
   rchandle<parsenode> expr_p;
   CompilerCB* theCompilerCB;
-  std::vector<extra_scanner_state_t> state_stack;
-  extra_scanner_state_t current_state;
 
   xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize = 1024);
   virtual ~xquery_driver() {}
 
   bool parse_stream(std::istream& in, const xqpString& aFilename = "");
-
   bool parse_string(const xqpString& input);
-
   bool parse_file(const xqpString& aFilename);
 
 	void set_expr(parsenode* e_p);
 	parsenode* get_expr() { return expr_p; }
-
-	/**
-	**	Deal with "as" operator overloading for update
-	*/
-	void set_rename(bool b) { current_state.rename_bit = b; }
-	bool rename() const { return current_state.rename_bit; }
-
-	/**
-	**	Deal with operator overloading for ft
-	*/
-	void set_ftcontains(bool b) { current_state.ftcontains_bit = b; }
-	bool ftcontains() const { return current_state.ftcontains_bit; }
-
-    void push_state_stack() { state_stack.push_back(current_state); }
-    void pop_state_stack() { current_state = state_stack.back(); state_stack.pop_back(); }
 
   QueryLoc createQueryLoc(const location& aLoc);
 
