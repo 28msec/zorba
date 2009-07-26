@@ -290,6 +290,8 @@ void createDynamicContext(
       
     std::ifstream inputquery ( inputqueryfile.c_str() );
 
+    assert(inputquery.is_open());
+
     zorba::XQuery_t inputQuery = engine->compileQuery(inputquery,
                                                       sctx,
                                                       getCompilerHints());
@@ -342,7 +344,7 @@ void set_var(
   {
     const char *val_fname = val.c_str ();
     std::ifstream* is = new std::ifstream(val_fname);
-    if (! is) 
+    if (! is || !is->is_open() ) 
     {
       std::cout << "Could not open file `" << val_fname << "' for variable `"
                 << name << "'" << std::endl;
