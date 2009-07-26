@@ -23,12 +23,12 @@ template<class class_name>
 class HashCharPtrObjPtr : public HashMap<const char *, class_name*, CompareCharPtr>
 {
 public:
-  HashCharPtrObjPtr() : HashMap(1024, true) {}
+  HashCharPtrObjPtr() : HashMap<const char *, class_name*, CompareCharPtr>(1024, true) {}
   virtual ~HashCharPtrObjPtr() {freeAll();}
   void freeAll()
   {//free all allocated FloatImpls
-    HashMap<const char *, class_name*, CompareCharPtr>::iterator  it;
-    for(it=begin(); it != end(); ++it)
+    typename HashMap<const char *, class_name*, CompareCharPtr>::iterator  it;
+    for(it=HashMap<const char *, class_name*, CompareCharPtr>::begin(); it != HashMap<const char *, class_name*, CompareCharPtr>::end(); ++it)
     {
       delete (*it).second;
     }
@@ -40,21 +40,21 @@ class HashCharPtrObjPtrLimited : public HashCharPtrObjPtr<class_name>
 {
   //int nr_missed;
 public:
-  HashCharPtrObjPtrLimited() : HashCharPtrObjPtr() {/*nr_missed=0;*/}
+  HashCharPtrObjPtrLimited() : HashCharPtrObjPtr<class_name>() {/*nr_missed=0;*/}
 
   bool get(const char * item, class_name*& value)
   {
-    if(HashMap::get(item, value))
+    if(HashMap<const char *, class_name*, CompareCharPtr>::get(item, value))
     {
       //nr_missed = 0;
       return true;
     }
     //nr_missed++;
-    if((theNumEntries >= 20*1024))// && (nr_missed > 50))
+    if((HashMap<const char *, class_name*, CompareCharPtr>::theNumEntries >= 20*1024))// && (nr_missed > 50))
     {
       //restart hashing
-      freeAll();
-      clear();
+      HashCharPtrObjPtr<class_name>freeAll();
+      HashMap<const char *, class_name*, CompareCharPtr>::clear();
     }
     return false;
   }
