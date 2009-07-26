@@ -26,6 +26,8 @@
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/zorbatypes_decl.h"
 
+#include "zorbautils/hashmap_str_obj.h"
+
 
 namespace zorba {
 #ifndef ZORBA_NO_BIGNUMBERS
@@ -49,6 +51,11 @@ private:
 
   Integer(IMAPM aInteger) : theInteger(aInteger) { }
     
+#ifdef ZORBA_NUMERIC_OPTIMIZATION
+public:
+  static  HashCharPtrObjPtrLimited<Integer>  parsed_integers;
+#endif
+
 public:
   Integer() : theInteger(0) { }
   Integer(const Integer& aInteger) : theInteger(aInteger.theInteger) { }
@@ -58,19 +65,7 @@ private:
   longlongToMAPM(long long);
       
   static IMAPM
-  floatingToInteger(MAPM theFloating) 
-  {
-#ifndef ZORBA_NO_BIGNUMBERS
-    // TODO inf and nan handling
-    if (theFloating >= 0)
-      return theFloating.floor();
-    else
-      return theFloating.ceil();
-#else
-    return (IMAPM)theFloating;
-#endif
-  }
-
+  floatingToInteger(MAPM theFloating);
 public:
   /**
    * @return integer that represents 0

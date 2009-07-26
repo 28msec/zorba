@@ -26,10 +26,24 @@
 #include "zorbatypes/zorbatypes_decl.h"
 #include "zorbatypes/xqpstring.h"
 
+#include "zorbautils/hashmap_str_obj.h"
+
 namespace zorba {
 
 #ifdef ZORBA_NO_BIGNUMBERS
 typedef double    MAPM;
+#endif
+
+#ifndef ZORBA_NO_BIGNUMBERS
+#define IS_ZERO(mapm_obj)                 (mapm_obj.sign() == 0)
+#define IS_POSITIVE(mapm_obj)             (mapm_obj.sign() > 0)
+#define IS_POSITIVE_OR_ZERO(mapm_obj)     (mapm_obj.sign() >= 0)
+#define IS_NEGATIVE(mapm_obj)             (mapm_obj.sign() < 0)
+#else
+#define IS_ZERO(mapm_obj)                 (mapm_obj == 0)
+#define IS_POSITIVE(mapm_obj)             (mapm_obj > 0)
+#define IS_POSITIVE_OR_ZERO(mapm_obj)     (mapm_obj >= 0)
+#define IS_NEGATIVE(mapm_obj)             (mapm_obj < 0)
 #endif
 
 class FloatCommons 
@@ -70,20 +84,28 @@ template <>
 class  FloatImplTraits<double> 
 {
 public:
+  static MAPM   double_upper_limit;
+  static MAPM   double_lower_limit;
+  static MAPM   double_negative_upper_limit;
+  static MAPM   double_negative_lower_limit;
+public:
   static bool 
-  isPosInf(MAPM aMAPM);
+  isPosInf(const MAPM &aMAPM);
       
   static bool
-  isZero(MAPM aMAPM); 
+  isZero(const MAPM &aMAPM); 
       
+  static bool 
+  isNegZero(const MAPM &aMAPM);
+
   static bool
-  isNegInf(MAPM aMAPM); 
+  isNegInf(const MAPM &aMAPM); 
       
-  static MAPM
-  cutMantissa(MAPM aMAPM);
+  static void
+  cutMantissa(MAPM &aMAPM);
 
   static uint32_t 
-  hash(FloatCommons::NumType, MAPM aMAPM);
+  hash(FloatCommons::NumType, const MAPM &aMAPM);
 };
 
 
@@ -94,20 +116,28 @@ template <>
 class  FloatImplTraits<float> 
 {
 public:
+  static MAPM   float_upper_limit;
+  static MAPM   float_lower_limit;
+  static MAPM   float_negative_upper_limit;
+  static MAPM   float_negative_lower_limit;
+public:
   static bool
-  isPosInf(MAPM aMAPM);
+  isPosInf(const MAPM &aMAPM);
       
   static bool
-  isZero(MAPM aMAPM); 
+  isZero(const MAPM &aMAPM); 
       
+  static bool 
+  isNegZero(const MAPM &aMAPM);
+
   static bool
-  isNegInf(MAPM aMAPM); 
+  isNegInf(const MAPM &aMAPM); 
   
-  static MAPM
-  cutMantissa(MAPM aMAPM);
+  static void
+  cutMantissa(MAPM &aMAPM);
 
   static uint32_t 
-  hash(FloatCommons::NumType, MAPM aMAPM);
+  hash(FloatCommons::NumType, const MAPM &aMAPM);
 };
 
 #else // ZORBA_NO_BIGNUMBERS
@@ -125,7 +155,7 @@ public:
   static bool
   isNegInf(FloatType aMAPM); 
       
-  static FloatType
+  static void
   cutMantissa(FloatType aMAPM);
 
   static uint32_t 
@@ -160,6 +190,10 @@ private:
   {
   }
 
+#ifdef ZORBA_NUMERIC_OPTIMIZATION
+public:
+  static  HashCharPtrObjPtrLimited<FloatImpl>  parsed_floats;
+#endif
 public:
   FloatImpl() : theType(FloatCommons::NORMAL), theFloatImpl(0) { }
 
@@ -381,7 +415,7 @@ public:
       isPos() const { return theType == FloatCommons::NORMAL || theType == FloatCommons::INF_POS; }
 
       bool 
-      isZero() const { return ((theType == FloatCommons::NORMAL || theType == FloatCommons::NORMAL_NEG) && theFloatImpl == 0); }
+      isZero() const { return ((theType == FloatCommons::NORMAL || theType == FloatCommons::NORMAL_NEG) && IS_ZERO(theFloatImpl)); }
 
       bool 
       operator==(const FloatImpl& aFloatImpl) const;

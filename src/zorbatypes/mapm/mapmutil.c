@@ -118,6 +118,7 @@ static	int	M_util_firsttime = TRUE;
 static	int     M_firsttime3 = TRUE;
 
 static	M_APM	M_work_0_5;
+static  M_APM M_work_0_4999;
 
 static  char    *M_init_error_msg = "\'m_apm_init\', Out of memory";
 
@@ -177,6 +178,7 @@ void	M_free_all_util()
 if (M_util_firsttime == FALSE)
   {
    m_apm_free(M_work_0_5);
+   m_apm_free(M_work_0_4999);
    M_util_firsttime = TRUE;
   }
 
@@ -276,6 +278,8 @@ if (M_util_firsttime)
 
    M_work_0_5 = m_apm_init();
    m_apm_set_string(M_work_0_5, "5");
+   M_work_0_4999 = m_apm_init();
+   m_apm_set_string(M_work_0_4999, "4.9999999");
   }
 
 ii = places + 1;
@@ -286,12 +290,16 @@ if (atmp->m_apm_datalength <= ii)
    return;
   }
 
-M_work_0_5->m_apm_exponent = atmp->m_apm_exponent - ii;
-
 if (atmp->m_apm_sign > 0)
+{
+  M_work_0_5->m_apm_exponent = atmp->m_apm_exponent - ii;
   m_apm_add(btmp, atmp, M_work_0_5);
+}
 else
-  m_apm_subtract(btmp, atmp, M_work_0_5);
+{
+  M_work_0_4999->m_apm_exponent = atmp->m_apm_exponent - ii;
+  m_apm_subtract(btmp, atmp, M_work_0_4999);//daniel
+}
 
 btmp->m_apm_datalength = ii;
 M_apm_normalize(btmp);

@@ -26,8 +26,21 @@ Integer& Integer::zero() {
   return lValue;
 }
 
+#ifdef ZORBA_NUMERIC_OPTIMIZATION
+HashCharPtrObjPtrLimited<Integer>   Integer::parsed_integers;
+#endif
+
 bool Integer::parseString(const char* aCharStar, Integer& aInteger) 
 {
+#ifdef ZORBA_NUMERIC_OPTIMIZATION
+  Integer *hashed_integer;
+  if(parsed_integers.get(aCharStar, hashed_integer))
+  {
+    //found in hash
+    aInteger.theInteger = hashed_integer->theInteger;
+    return true;
+  }
+#endif
   // correctness check
   const char* lCur = aCharStar;
   bool lGotSign = false;
@@ -126,8 +139,7 @@ bool Integer::parseString(const char* aCharStar, Integer& aInteger)
   else 
   {
 #ifndef ZORBA_NO_BIGNUMBERS
-    MAPM lNumber = aCharStar;
-    aInteger.theInteger = lNumber;
+    aInteger.theInteger = aCharStar;
 #else
     aInteger.theInteger = atoi(aCharStar);
 #endif
@@ -135,6 +147,10 @@ bool Integer::parseString(const char* aCharStar, Integer& aInteger)
     if (lGotSpace)
       delete [] aCharStar;
 
+#ifdef ZORBA_NUMERIC_OPTIMIZATION
+    hashed_integer = new Integer(aInteger);
+    parsed_integers.insert(aCharStar, hashed_integer);
+#endif
     return true;
   }
 }
@@ -166,8 +182,7 @@ bool Integer::parseStringUnsigned(const char* aStarChar, Integer& aUInteger) {
     return false;
   } else {
 #ifndef ZORBA_NO_BIGNUMBERS
-    MAPM lNumber = aStarChar;
-    aUInteger.theInteger = lNumber;
+    aUInteger.theInteger = aStarChar;
     return true;
 #else
     aUInteger.theInteger = (IMAPM)atoi(aStarChar);
@@ -181,8 +196,7 @@ bool Integer::parseDouble(const Double& aDouble, Integer& aInteger) {
   case FloatCommons::NORMAL:
   case FloatCommons::NORMAL_NEG:
   {
-    MAPM lNum = aDouble.theFloatImpl;
-    aInteger.theInteger = floatingToInteger(lNum);
+    aInteger.theInteger = floatingToInteger(aDouble.theFloatImpl);
     return true;
   }
     break;
@@ -197,8 +211,7 @@ bool Integer::parseFloat(const Float& aFloat, Integer& aInteger) {
   case FloatCommons::NORMAL:
   case FloatCommons::NORMAL_NEG:
   {
-    MAPM lNum = aFloat.theFloatImpl;
-    aInteger.theInteger = floatingToInteger(lNum);
+    aInteger.theInteger = floatingToInteger(aFloat.theFloatImpl);
     return true;
   }
     break;
@@ -217,8 +230,7 @@ Integer Integer::parseLongLong(long long aLong) {
 #ifndef ZORBA_NO_BIGNUMBERS
   xqpString lStrRep = NumConversions::longLongToStr(aLong);
   MAPM lMAPM = lStrRep.c_str();
-  Integer lInteger(lMAPM);
-  return lInteger;
+  return Integer(lMAPM);
 #else
   return Integer((IMAPM)aLong);
 #endif
@@ -228,8 +240,7 @@ Integer Integer::parseULongLong(unsigned long long aULong) {
 #ifndef ZORBA_NO_BIGNUMBERS
   xqpString lStrRep = NumConversions::ulongLongToStr(aULong);
   MAPM lMAPM = lStrRep.c_str();
-  Integer lInteger(lMAPM);
-  return lInteger;
+  return Integer(lMAPM);
 #else
   return Integer((IMAPM)aULong);
 #endif
@@ -245,8 +256,7 @@ Integer Integer::parseUInt(uint32_t aUInt) {
 #ifndef ZORBA_NO_BIGNUMBERS
   xqpString lStrRep = NumConversions::uintToStr(aUInt);
   MAPM lMAPM = lStrRep.c_str();
-  Integer lInteger(lMAPM);
-  return lInteger;
+  return Integer(lMAPM);
 #else
   return Integer((IMAPM)aUInt);
 #endif
@@ -291,14 +301,26 @@ MAPM Integer::longlongToMAPM(long long aLong) {
 #endif
 }
 
+IMAPM Integer::floatingToInteger(MAPM theFloating) 
+{
+#ifndef ZORBA_NO_BIGNUMBERS
+  // TODO inf and nan handling
+  if (IS_POSITIVE_OR_ZERO(theFloating))
+    return theFloating.floor();
+  else
+    return theFloating.ceil();
+#else
+  return (IMAPM)theFloating;
+#endif
+}
+
+
 Integer Integer::operator+(const Integer& aInteger) const {
-  Integer lResult(theInteger + aInteger.theInteger);
-  return lResult;
+  return Integer(theInteger + aInteger.theInteger);
 }
 
 Decimal Integer::operator+(const Decimal& aDecimal) const {
-  Decimal lResult(theInteger + aDecimal.theDecimal);
-  return lResult;
+  return Decimal(theInteger + aDecimal.theDecimal);
 }
 
 Integer& Integer::operator+=(const Integer& aInteger) {
@@ -307,13 +329,11 @@ Integer& Integer::operator+=(const Integer& aInteger) {
 }
 
 Integer Integer::operator-(const Integer& aInteger) const {
-  Integer lResult(theInteger - aInteger.theInteger);
-  return lResult;
+  return Integer(theInteger - aInteger.theInteger);
 }
 
 Decimal Integer::operator-(const Decimal& aDecimal) const {
-  Decimal lResult(theInteger - aDecimal.theDecimal);
-  return lResult;
+  return Decimal(theInteger - aDecimal.theDecimal);
 }
 
 Integer& Integer::operator-=(const Integer& aInteger) {
@@ -322,13 +342,11 @@ Integer& Integer::operator-=(const Integer& aInteger) {
 }
 
 Integer Integer::operator*(const Integer& aInteger) const {
-  Integer lResult(theInteger * aInteger.theInteger);
-  return lResult;
+  return Integer(theInteger * aInteger.theInteger);
 }
 
 Decimal Integer::operator*(const Decimal& aDecimal) const {
-  Decimal lResult(theInteger * aDecimal.theDecimal);
-  return lResult;
+  return Decimal(theInteger * aDecimal.theDecimal);
 }
 
 Integer& Integer::operator*=(const Integer& aInteger) {
@@ -481,10 +499,12 @@ xqpString Integer::toString() const {
 #endif
 }
 
+extern MAPM mapm_65535;
+
 uint32_t Integer::hash() const
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  Integer lInteger(theInteger % 65535);
+  Integer lInteger(theInteger % mapm_65535);
   if (lInteger < Integer::zero())
     lInteger = -lInteger;
   uint32_t lHash;

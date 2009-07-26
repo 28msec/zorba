@@ -27,6 +27,8 @@
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/zorbatypes_decl.h"
 
+#include "zorbautils/hashmap_str_obj.h"
+
 namespace zorba {
 
 #ifdef ZORBA_NO_BIGNUMBERS
@@ -44,14 +46,20 @@ private:
   MAPM theDecimal;
   Decimal(MAPM aDecimal) : theDecimal(aDecimal) { }
 
+#ifdef ZORBA_NUMERIC_OPTIMIZATION
+public:
+  static  HashCharPtrObjPtrLimited<Decimal>  parsed_decimals;
+#endif
+
 public:
   Decimal() : theDecimal(0) { }
   Decimal(const Decimal& aDecimal) : theDecimal(aDecimal.theDecimal) { }
 
 public:
 #ifndef ZORBA_NO_BIGNUMBERS
-  static MAPM round(MAPM aValue, MAPM aPrecision);
-  static MAPM roundHalfToEven(MAPM aValue, MAPM aPrecision);
+  //static MAPM round(const MAPM &aValue, int aPrecision);
+  static MAPM round(const MAPM &aValue, const MAPM &aPrecision);
+  static MAPM roundHalfToEven(const MAPM &aValue, const MAPM &aPrecision);
 #else
   static MAPM round(MAPM aValue, int aPrecision);
   static MAPM roundHalfToEven(MAPM aValue, int aPrecision);

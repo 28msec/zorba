@@ -25,8 +25,21 @@ Decimal& Decimal::zero() {
   return lValue;
 }
 
+#ifdef ZORBA_NUMERIC_OPTIMIZATION
+HashCharPtrObjPtrLimited<Decimal>   Decimal::parsed_decimals;
+#endif
+
 bool Decimal::parseString(const char* aCharStar, Decimal& aDecimal) 
 {
+#ifdef ZORBA_NUMERIC_OPTIMIZATION
+  Decimal *hashed_decimal;
+  if(parsed_decimals.get(aCharStar, hashed_decimal))
+  {
+    //found in hash
+    aDecimal.theDecimal = hashed_decimal->theDecimal;
+    return true;
+  }
+#endif
   // correctness check
   const char* lCur = aCharStar;
   bool lGotPoint = false;
@@ -131,8 +144,7 @@ bool Decimal::parseString(const char* aCharStar, Decimal& aDecimal)
   else
   {
 #ifndef ZORBA_NO_BIGNUMBERS
-    MAPM lNumber = aCharStar;
-    aDecimal.theDecimal = lNumber;
+    aDecimal.theDecimal = aCharStar;
 #else
     aDecimal.theDecimal = atof(aCharStar);
     if(aDecimal.theDecimal == -0)
@@ -142,6 +154,10 @@ bool Decimal::parseString(const char* aCharStar, Decimal& aDecimal)
     if (lGotSpace)
       delete [] aCharStar;
 
+#ifdef ZORBA_NUMERIC_OPTIMIZATION
+    hashed_decimal = new Decimal(aDecimal);
+    parsed_decimals.insert(aCharStar, hashed_decimal);
+#endif
     return true;
   }
 }
@@ -245,7 +261,8 @@ bool Decimal::parseDouble(const Double& aDouble, Decimal& aDecimal)
 }
 
 #ifndef ZORBA_NO_BIGNUMBERS
-MAPM Decimal::round(MAPM aValue, MAPM aPrecision) {
+
+MAPM Decimal::round(const MAPM &aValue, const MAPM &aPrecision) {
   MAPM aExp = MAPM(10).pow(aPrecision);
   MAPM aCur = aValue * aExp;
   aCur += 0.5;
@@ -254,7 +271,7 @@ MAPM Decimal::round(MAPM aValue, MAPM aPrecision) {
   return aCur;
 }
 
-MAPM Decimal::roundHalfToEven(MAPM aValue, MAPM aPrecision) {
+MAPM Decimal::roundHalfToEven(const MAPM &aValue, const MAPM &aPrecision) {
   MAPM aExp = MAPM(10).pow(aPrecision);
   MAPM aCur = aValue * aExp;
   bool aHalfVal = ((aCur - 0.5) == aCur.floor());
@@ -326,13 +343,11 @@ Decimal& Decimal::operator=(const Decimal& aDecimal) {
 }
 
 Decimal Decimal::operator+(const Integer& aInteger) const {
-  Decimal lResult(theDecimal + aInteger.theInteger);
-  return lResult;
+  return Decimal(theDecimal + aInteger.theInteger);
 }
 
 Decimal Decimal::operator+(const Decimal& aDecimal) const {
-  Decimal lResult(theDecimal + aDecimal.theDecimal);
-  return lResult;
+  return Decimal(theDecimal + aDecimal.theDecimal);
 }
 
 Decimal& Decimal::operator+=(const Integer& aInteger) {
@@ -346,13 +361,11 @@ Decimal& Decimal::operator+=(const Decimal& aDecimal) {
 }
 
 Decimal Decimal::operator-(const Integer& aInteger) const {
-  Decimal lResult(theDecimal - aInteger.theInteger);
-  return lResult;
+  return Decimal(theDecimal - aInteger.theInteger);
 }
 
 Decimal Decimal::operator-(const Decimal& aDecimal) const {
-  Decimal lResult(theDecimal - aDecimal.theDecimal);
-  return lResult;
+  return Decimal(theDecimal - aDecimal.theDecimal);
 }
 
 Decimal& Decimal::operator-=(const Integer& aInteger) {
@@ -366,13 +379,11 @@ Decimal& Decimal::operator-=(const Decimal& aDecimal) {
 }
 
 Decimal Decimal::operator*(const Integer& aInteger) const {
-  Decimal lResult(theDecimal * aInteger.theInteger);
-  return lResult;
+  return Decimal(theDecimal * aInteger.theInteger);
 }
 
 Decimal Decimal::operator*(const Decimal& aDecimal) const {
-  Decimal lResult(theDecimal * aDecimal.theDecimal);
-  return lResult;
+  return Decimal(theDecimal * aDecimal.theDecimal);
 }
 
 Decimal& Decimal::operator*=(const Integer& aInteger) {
@@ -496,8 +507,6 @@ xqpString Decimal::decimalToString(MAPM theValue) {
   theValue.toFixPtString(lBuffer, ZORBA_FLOAT_POINT_PRECISION);
 #else
   char lBuffer[174];
-//  char  lflags[20];
-//  sprintf(lflags, "%%.%dlf", ZORBA_FLOAT_POINT_PRECISION);
   if(theValue == 0)
     sprintf(lBuffer, "0");
   else if(fabs(theValue) < 1.0e-10)
@@ -540,10 +549,11 @@ xqpString Decimal::toIntegerString() const {
   return lResult;
 }
 
+extern MAPM mapm_65535;
 uint32_t Decimal::hash() const
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  Decimal lDecimal(theDecimal %  65535);
+  Decimal lDecimal(theDecimal %  mapm_65535);
   if (lDecimal < Decimal::zero())
     lDecimal = -lDecimal;
   Integer lInteger = Integer::parseDecimal(lDecimal);
