@@ -103,6 +103,7 @@
 #cmakedefine ZORBA_NO_UNICODE
 #cmakedefine ZORBA_NO_XMLSCHEMA
 #cmakedefine ZORBA_NO_BIGNUMBERS
+#cmakedefine ZORBA_NUMERIC_OPTIMIZATION
 
 /* XQueryX */
 #cmakedefine ZORBA_XQUERYX
