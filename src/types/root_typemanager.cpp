@@ -187,7 +187,7 @@ const int RootTypeManager::QUANT_MIN_CNT [4] = { 1, 0, 0, 1 };
 const int RootTypeManager::QUANT_MAX_CNT [4] = { 1, 1, 2, 2 };
 
 
-#define ATOMIC_QNAMETYPE_MAP_SIZE 50
+#define ATOMIC_QNAMETYPE_MAP_SIZE 150   //50
  
  
 RootTypeManager::RootTypeManager()
