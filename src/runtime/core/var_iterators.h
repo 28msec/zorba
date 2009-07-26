@@ -121,6 +121,14 @@ protected:
   store::Item_t  theVarName;
   
 public:
+  SERIALIZABLE_CLASS(ForVarIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ForVarIterator, NoaryBaseIterator<ForVarIterator, ForVarState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NoaryBaseIterator<ForVarIterator, ForVarState>*)this);
+    ar & theVarName;
+  }
+public:
   ForVarIterator(short sctx, const QueryLoc& loc, const store::Item_t& name);
 
   ~ForVarIterator() { }
@@ -166,6 +174,14 @@ class LetVarIterator : public NoaryBaseIterator<LetVarIterator, LetVarState>
 private:
   store::Item_t  theVarName;
   
+public:
+  SERIALIZABLE_CLASS(LetVarIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(LetVarIterator, NoaryBaseIterator<LetVarIterator, LetVarState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NoaryBaseIterator<LetVarIterator, LetVarState>*)this);
+    ar & theVarName;
+  }
 public:
   LetVarIterator(short sctx, const QueryLoc& loc, const store::Item_t& name);
 

@@ -19,6 +19,21 @@
 
 namespace zorba {
 
+SERIALIZABLE_CLASS_VERSIONS(CreateValueIndex)
+END_SERIALIZABLE_CLASS_VERSIONS(CreateValueIndex)
+
+SERIALIZABLE_CLASS_VERSIONS(DropValueIndex)
+END_SERIALIZABLE_CLASS_VERSIONS(DropValueIndex)
+
+SERIALIZABLE_CLASS_VERSIONS(ValueIndexInsertSessionOpener)
+END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexInsertSessionOpener)
+
+SERIALIZABLE_CLASS_VERSIONS(ValueIndexInsertSessionCloser)
+END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexInsertSessionCloser)
+
+SERIALIZABLE_CLASS_VERSIONS(ValueIndexBuilder)
+END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexBuilder)
+
 bool CreateValueIndex::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   bool status;

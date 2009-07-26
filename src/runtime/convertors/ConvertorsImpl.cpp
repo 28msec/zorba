@@ -25,6 +25,18 @@
 
 namespace zorba {
 //Json
+SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonParseIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonParseIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonSerializeIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonSerializeIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonMLParseIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonMLParseIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonMLSerializeIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonMLSerializeIterator)
+
 bool
 ZorbaJsonParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {

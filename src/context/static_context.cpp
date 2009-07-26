@@ -56,6 +56,15 @@ namespace zorba {
 
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
+SERIALIZABLE_CLASS_VERSIONS(context)
+END_SERIALIZABLE_CLASS_VERSIONS(context)
+
+SERIALIZABLE_CLASS_VERSIONS(context::ctx_value_t)
+END_SERIALIZABLE_CLASS_VERSIONS(context::ctx_value_t)
+
+SERIALIZABLE_CLASS_VERSIONS(static_context)
+END_SERIALIZABLE_CLASS_VERSIONS(static_context)
+
 
 /*******************************************************************************
   Class context methods
@@ -95,7 +104,7 @@ void context::bind_str2 (
 
 bool context::bind_expr (xqp_string key, expr *e) 
 {
-  ctx_value_t v;
+  ctx_value_t v(CTX_EXPR);
   v.exprValue = e;
   if (keymap.put (key, v, false))
     return false;
@@ -106,7 +115,7 @@ bool context::bind_expr (xqp_string key, expr *e)
 
 bool context::bind_expr2 (const char *key1, xqp_string key2, expr *e) 
 {
-  ctx_value_t v;
+  ctx_value_t v(CTX_EXPR);
   v.exprValue = e;
   if (keymap.put2 (key1, key2, v, false))
     return false;
@@ -117,7 +126,7 @@ bool context::bind_expr2 (const char *key1, xqp_string key2, expr *e)
 
 bool context::bind_func (xqp_string key, function *f) 
 {
-  ctx_value_t v;
+  ctx_value_t v(CTX_FUNCTION);
   v.functionValue = f;
   if (keymap.put (key, v, false))
     return false;
@@ -128,7 +137,7 @@ bool context::bind_func (xqp_string key, function *f)
 
 bool context::bind_func2 (const char *key1, xqp_string key2, function *f) 
 {
-  ctx_value_t v;
+  ctx_value_t v(CTX_FUNCTION);
   v.functionValue = f;
   if (keymap.put2 (key1, key2, v, false))
     return false;
@@ -139,7 +148,7 @@ bool context::bind_func2 (const char *key1, xqp_string key2, function *f)
 
 bool context::bind_stateless_function(xqp_string key, StatelessExternalFunction* f) 
 {
-  ctx_value_t v;
+  ctx_value_t v(CTX_STATELESS_EXTERNAL_FUNC);
   v.stateless_function = f;
   if (keymap.put (key, v, false))
     return false;
@@ -148,12 +157,67 @@ bool context::bind_stateless_function(xqp_string key, StatelessExternalFunction*
 
 bool context::bind_index(const char *key1, const xqp_string& key2, ValueIndex *vi)
 {
-  ctx_value_t v;
+  ctx_value_t v(CTX_VALUE_INDEX);
   v.valueIndex = vi;
   if (keymap.put2 (key1, key2, v, false))
     return false;
   RCHelper::addReference (vi);
   return true;
+}
+
+bool context::check_parent_is_root()
+{
+  return parent == (context*)&GENV_ROOT_STATIC_CONTEXT;
+}
+
+void context::set_parent_as_root()
+{
+  parent = &GENV_ROOT_STATIC_CONTEXT;
+}
+
+void context::ctx_value_t::serialize(::zorba::serialization::Archiver &ar)
+{
+  SERIALIZE_ENUM(enum ctx_value_type, type);
+  switch(type)
+  {
+  case CTX_EXPR:
+    //if(!ar.is_serializing_out())
+    //  exprValue = NULL;//don't serialize this
+    ar & exprValue;
+    if(!ar.is_serializing_out() && exprValue)
+      RCHelper::addReference (exprValue);
+    break;
+  case CTX_FUNCTION:
+  {
+      //if(!ar.is_serializing_out())
+    //  functionValue = NULL;//don't serialize this
+    //ar & functionValue;
+    SERIALIZE_FUNCTION(functionValue);
+    if(!ar.is_serializing_out() && functionValue)
+      RCHelper::addReference (functionValue);
+  }
+    break;
+  case CTX_ARITY:
+    ar & fmapValue;
+    break;
+  case CTX_INT:
+    ar & intValue;
+    break;
+  case CTX_BOOL:
+    ar & boolValue;
+    break;
+  case CTX_VALUE_INDEX:
+    ar & valueIndex;
+    if(!ar.is_serializing_out() && valueIndex)
+      RCHelper::addReference (valueIndex);
+    break;
+  case CTX_XQTYPE:
+  case CTX_STATELESS_EXTERNAL_FUNC:
+  default:
+    if(!ar.is_serializing_out())
+      typeValue = NULL;//don't serialize this
+    break;
+  }
 }
 
 /*******************************************************************************
@@ -198,7 +262,7 @@ static_context::~static_context()
   delete theCollationCache;
 
   ///free the pointers from ctx_value_t from keymap
-  checked_vector<hashmap<ctx_value_t>::entry>::const_iterator   it;
+  checked_vector<serializable_hashmap<ctx_value_t>::entry>::const_iterator   it;
   const char    *keybuff;
   
   //keybuff[sizeof(keybuff)-1] = 0;
@@ -208,17 +272,19 @@ static_context::~static_context()
     //keymap.getentryKey(*it, keybuff, sizeof(keybuff)-1);
     keybuff = (*it).key.c_str();
     const ctx_value_t *val = &(*it).val;
-
-    if (0 == strncmp(keybuff, "type:", 5)) {
-      RCHelper::removeReference (const_cast<XQType *> (val->typeValue));
-    } else if (0 == strncmp(keybuff, "var:", 4)) {
-      RCHelper::removeReference (const_cast<expr *> (val->exprValue));
-    } else if (0 == strncmp(keybuff, "fn:", 3)) {
-      RCHelper::removeReference (const_cast<function *> (val->functionValue));
-    } else if (0 == strncmp(keybuff, "fmap:", 5)) {
-      delete (const_cast<ArityFMap *> (val->fmapValue));
-    } else if (0 == strncmp(keybuff, "vindex:", 7)) {
-      RCHelper::removeReference(const_cast<ValueIndex *>(val->valueIndex));
+    if(val->exprValue)
+    {
+      if (0 == strncmp(keybuff, "type:", 5)) {
+        RCHelper::removeReference (const_cast<XQType *> (val->typeValue));
+      } else if (0 == strncmp(keybuff, "var:", 4)) {
+        RCHelper::removeReference (const_cast<expr *> (val->exprValue));
+      } else if (0 == strncmp(keybuff, "fn:", 3)) {
+        RCHelper::removeReference (const_cast<function *> (val->functionValue));
+      } else if (0 == strncmp(keybuff, "fmap:", 5)) {
+        delete (const_cast<ArityFMap *> (val->fmapValue));
+      } else if (0 == strncmp(keybuff, "vindex:", 7)) {
+        RCHelper::removeReference(const_cast<ValueIndex *>(val->valueIndex));
+      }
     }
   }
 
@@ -230,7 +296,6 @@ static_context::~static_context()
   if (parent)
     RCHelper::removeReference (parent);
 }
-
 
 /*******************************************************************************
 
@@ -499,7 +564,7 @@ bool static_context::bind_fn (
   if (! allow_override && existed)
     return false;
 
-  ctx_value_t v;
+  ctx_value_t v(CTX_ARITY);
   ArityFMap *fmap = NULL;
   bool newMap = ! lookup_once (key, v);
 
@@ -625,7 +690,7 @@ StatelessExternalFunction * static_context::lookup_stateless_external_function(
 ********************************************************************************/
 void static_context::bind_type(xqp_string key, xqtref_t t)
 {
-  ctx_value_t v;
+  ctx_value_t v(CTX_XQTYPE);
   v.typeValue = &*t;
   keymap.put (key, v);
   RCHelper::addReference (const_cast<XQType *> (t.getp ()));
@@ -634,7 +699,7 @@ void static_context::bind_type(xqp_string key, xqtref_t t)
 
 xqtref_t static_context::lookup_type( xqp_string key)
 {
-  ctx_value_t val;
+  ctx_value_t val(CTX_XQTYPE);
   ZORBA_ASSERT(context_value (key, val));
   return val.typeValue;
 }
@@ -642,7 +707,7 @@ xqtref_t static_context::lookup_type( xqp_string key)
 
 xqtref_t static_context::lookup_type2( const char *key1, xqp_string key2)
 {
-  ctx_value_t val;
+  ctx_value_t val(CTX_XQTYPE);
   ZORBA_ASSERT(context_value2 (key1, key2, val));
   return val.typeValue;
 }
@@ -978,7 +1043,7 @@ xqp_string static_context::make_absolute_uri(
 ********************************************************************************/
 bool static_context::import_module (const static_context *module) 
 {
-  checked_vector<hashmap<ctx_value_t>::entry>::const_iterator   it;
+  checked_vector<serializable_hashmap<ctx_value_t>::entry>::const_iterator   it;
   const char    *keybuff;
   
   for(it = module->keymap.begin(); it!=module->keymap.end(); it++) 
@@ -993,7 +1058,7 @@ bool static_context::import_module (const static_context *module)
       if (! bind_func (keybuff, val->functionValue))
         return false;
     } else if (0 == strncmp(keybuff, "fmap:", 5)) {
-      ctx_value_t val2;
+      ctx_value_t val2(CTX_ARITY);
       val2.fmapValue = new ArityFMap (*val->fmapValue);
       keymap.put (keybuff, val2);
     }

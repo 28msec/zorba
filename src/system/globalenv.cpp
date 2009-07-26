@@ -38,6 +38,8 @@
 
 #include "types/schema/schema.h"
 
+#include "zorbautils/condition.h"
+
 #include "store/api/collection.h"
 
 #include "store/api/store.h"
@@ -52,6 +54,7 @@
 #endif
 
 using namespace zorba;
+
 
 GlobalEnvironment * GlobalEnvironment::m_globalEnv = 0;
 
@@ -197,6 +200,7 @@ void GlobalEnvironment::init(store::Store* store)
 
 }
 
+extern zorba::serialization::ClassSerializer *zorba::serialization::g_class_serializer;
 
 void GlobalEnvironment::destroy()
 {
@@ -238,6 +242,8 @@ void GlobalEnvironment::destroy()
   RCHelper::removeReference (m_globalEnv->m_rootStaticContext);
   m_globalEnv->m_rootStaticContext = 0;
 
+  zorba::serialization::g_class_serializer->destroyArchiverForHardcodedObjects();
+
   m_globalEnv->m_store = NULL;
 
   delete m_globalEnv;
@@ -264,6 +270,10 @@ RootTypeManager& GlobalEnvironment::getRootTypeManager()
   return *(static_cast<RootTypeManager *>(m_rootStaticContext->get_typemanager()));
 }
 
+bool GlobalEnvironment::isRootStaticContextInitialized()
+{
+  return m_rootStaticContext != NULL;
+}
 
 store::Store& GlobalEnvironment::getStore()
 {

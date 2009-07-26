@@ -37,6 +37,93 @@
 
 namespace zorba
 {
+SERIALIZABLE_TEMPLATE_VERSIONS(NumArithIterator)
+END_SERIALIZABLE_TEMPLATE_VERSIONS(NumArithIterator)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NumArithIterator, NumArithIterator<AddOperation>, 1)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NumArithIterator, NumArithIterator<SubtractOperation>, 2)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NumArithIterator, NumArithIterator<MultiplyOperation>, 3)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NumArithIterator, NumArithIterator<DivideOperation>, 4)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NumArithIterator, NumArithIterator<IntegerDivideOperation>, 5)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NumArithIterator, NumArithIterator<ModOperation>, 6)
+
+SERIALIZABLE_TEMPLATE_VERSIONS(SpecificNumArithIterator)
+END_SERIALIZABLE_TEMPLATE_VERSIONS(SpecificNumArithIterator)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<AddOperation, TypeConstants::XS_DOUBLE>, 1);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<AddOperation, TypeConstants::XS_FLOAT>, 2);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<AddOperation, TypeConstants::XS_DECIMAL>, 3);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<AddOperation, TypeConstants::XS_INTEGER>, 4);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DOUBLE>, 5);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_FLOAT>, 6);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_DECIMAL>, 7);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<SubtractOperation, TypeConstants::XS_INTEGER>, 8);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DOUBLE>, 9);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_FLOAT>, 10);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_DECIMAL>, 11);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<MultiplyOperation, TypeConstants::XS_INTEGER>, 12);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DOUBLE>, 13);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<DivideOperation, TypeConstants::XS_FLOAT>, 14);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<DivideOperation, TypeConstants::XS_DECIMAL>, 15);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<DivideOperation, TypeConstants::XS_INTEGER>, 16);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<ModOperation, TypeConstants::XS_DOUBLE>, 17);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<ModOperation, TypeConstants::XS_FLOAT>, 18);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<ModOperation, TypeConstants::XS_DECIMAL>, 19);
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<ModOperation, TypeConstants::XS_INTEGER>, 20);
+
+
+SERIALIZABLE_CLASS_VERSIONS(OpNumericUnaryIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(OpNumericUnaryIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnAbsIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnAbsIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnCeilingIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnCeilingIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnFloorIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnFloorIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnRoundIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnRoundIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnRoundHalfToEvenIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnRoundHalfToEvenIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(ZorNumGen)
+END_SERIALIZABLE_CLASS_VERSIONS(ZorNumGen)
+
+SERIALIZABLE_CLASS_VERSIONS(FnSQRTIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnSQRTIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnExpIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnExpIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnLogIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnLogIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnSinIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnSinIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnCosIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnCosIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnTanIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnTanIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnArcSinIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnArcSinIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnArcCosIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnArcCosIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnArcTanIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnArcTanIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnFormatNumberIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnFormatNumberIterator)
+
+
+
+
 /* begin class AddOperations */
 template<>
 bool AddOperation::compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_DOUBLE>(

@@ -21,6 +21,8 @@
 
 namespace zorba
 {
+extern const ::zorba::serialization::ClassVersion g_BinaryBaseIterator_class_versions[];
+extern const int g_BinaryBaseIterator_class_versions_count;
 /**
  * Superclass for all iterators which have two child iterators 
  * and no additional state variables.
@@ -32,6 +34,15 @@ protected:
   PlanIter_t theChild0;
   PlanIter_t theChild1;
 
+public:
+  SERIALIZABLE_CLASS_NO_FACTORY(BinaryBaseIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(BinaryBaseIterator, Batcher<IterType>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (Batcher<IterType>*)this);
+    ar & theChild0;
+    ar & theChild1;
+  }
 public:
   BinaryBaseIterator ( short sctx, const QueryLoc& loc, PlanIter_t& arg0, PlanIter_t& arg1 );
 

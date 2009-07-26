@@ -35,6 +35,15 @@
 
 namespace zorba {
 
+SERIALIZABLE_TEMPLATE_VERSIONS(GenericArithIterator)
+END_SERIALIZABLE_TEMPLATE_VERSIONS(GenericArithIterator)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<AddOperation>, 1)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<SubtractOperation>, 2)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<MultiplyOperation>, 3)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<DivideOperation>, 4)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<IntegerDivideOperation>, 5)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<ModOperation>, 6)
+
 void ArithOperationsCommons::createError(
   RuntimeCB* aRuntimeCB,
   static_context* aContext,
@@ -48,9 +57,9 @@ void ArithOperationsCommons::createError(
   lStream << "The operation '";
   lStream << aOp;
   lStream << "' is not possible with parameters of the type ";
-  aContext->get_typemanager()->create_builtin_atomic_type(aType0, TypeConstants::QUANT_ONE)->serialize(lStream);
+  aContext->get_typemanager()->create_builtin_atomic_type(aType0, TypeConstants::QUANT_ONE)->serialize_ostream(lStream);
   lStream << " and ";
-  aContext->get_typemanager()->create_builtin_atomic_type(aType1, TypeConstants::QUANT_ONE)->serialize(lStream);
+  aContext->get_typemanager()->create_builtin_atomic_type(aType1, TypeConstants::QUANT_ONE)->serialize_ostream(lStream);
   lStream << ".";
   ZORBA_ERROR_LOC_DESC( XPTY0004, *aLoc, lStream.str());
 }

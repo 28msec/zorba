@@ -34,6 +34,8 @@ namespace zorba
 namespace flwor 
 {
 
+SERIALIZABLE_CLASS_VERSIONS(GroupByIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(GroupByIterator)
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

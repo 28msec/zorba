@@ -77,6 +77,12 @@ double atanh( double z)
 
 namespace zorba {
 
+SERIALIZABLE_TEMPLATE_VERSIONS(FloatImpl)
+END_SERIALIZABLE_TEMPLATE_VERSIONS(FloatImpl)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(FloatImpl, FloatImpl<float>, 1)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(FloatImpl, FloatImpl<double>, 2)
+
 const xqpString& FloatCommons::get_INF_POS_STR()
 {
    static const xqpString INF_POS_STR = "INF";
@@ -134,7 +140,7 @@ bool FloatImplTraits<double>::isZero(const MAPM &aMAPM) {
     {
       if(aMAPM < double_lower_limit)
         return true;
-    }
+}
     else
     {
       if(aMAPM > double_negative_lower_limit)
@@ -183,7 +189,7 @@ uint32_t FloatImplTraits<double>::hash(FloatCommons::NumType aType, const MAPM &
   NumConversions::integerToUInt(lInteger, lHash);
   return lHash;
 }
-
+  
 //MAPM   FloatImplTraits<float>::float_zero(0);
 MAPM   FloatImplTraits<float>::float_upper_limit("3.4028235e+38");
 MAPM   FloatImplTraits<float>::float_negative_upper_limit("-3.4028235e+38");
@@ -208,7 +214,7 @@ bool FloatImplTraits<float>::isZero(const MAPM &aMAPM) {
     {
       if(aMAPM < float_lower_limit)
         return true;
-    }
+}
     else if(aMAPM > float_negative_lower_limit)
       return true;
   }
@@ -235,7 +241,7 @@ void FloatImplTraits<float>::cutMantissa(MAPM &aMAPM) {
   if(aMAPM.significant_digits() > 7)
   {
     aMAPM = aMAPM.round(7);
-  }
+}
 }
 
 
@@ -284,7 +290,7 @@ bool FloatImplTraits<FloatType>::isZero(FloatType aMAPM)
   if(aMAPM == 0)
     return true;
   else
-    return false;
+  return false;
 }
 
 bool FloatImplTraits<double>::isNegZero(double aMAPM)
@@ -293,9 +299,9 @@ bool FloatImplTraits<double>::isNegZero(double aMAPM)
   {
     unsigned char *byteaccess = &aMAPM;
     if(byteaccess[0] || byteaccess[7])//test for little endian and big endian
-      return true;
-    else
-      return false;
+    return true;
+  else
+    return false;
   }
   else
     return false;
@@ -303,14 +309,14 @@ bool FloatImplTraits<double>::isNegZero(double aMAPM)
 
 bool FloatImplTraits<float>::isNegZero(float aMAPM)
 {
-  if(aMAPM == 0) 
+  if(aMAPM == 0)
   {
     unsigned char *byteaccess = &aMAPM;
     if(byteaccess[0] || byteaccess[3])//test for little endian and big endian
-      return true;
-    else
-      return false;
-  }
+    return true;
+  else
+    return false;
+}
   else
     return false;
 }

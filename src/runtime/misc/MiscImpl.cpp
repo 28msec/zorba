@@ -34,6 +34,27 @@
 
 namespace zorba {
 
+SERIALIZABLE_CLASS_VERSIONS(FnErrorIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnErrorIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnResolveUriIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnResolveUriIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(SequentialIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(SequentialIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FlowCtlIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FlowCtlIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(LoopIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(LoopIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnReadStringIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnReadStringIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnPrintIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnPrintIterator)
+
 // 3 The Error Function
 //---------------------
 bool FnErrorIterator::nextImpl(store::Item_t& result, PlanState& planState) const

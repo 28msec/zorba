@@ -31,6 +31,33 @@
 #include "context/static_context.h"
 
 namespace zorba {
+SERIALIZABLE_CLASS_VERSIONS(InternalDocumentURIResolver)
+END_SERIALIZABLE_CLASS_VERSIONS(InternalDocumentURIResolver)
+
+SERIALIZABLE_CLASS_VERSIONS(InternalCollectionURIResolver)
+END_SERIALIZABLE_CLASS_VERSIONS(InternalCollectionURIResolver)
+
+SERIALIZABLE_CLASS_VERSIONS(InternalSchemaURIResolver)
+END_SERIALIZABLE_CLASS_VERSIONS(InternalSchemaURIResolver)
+
+SERIALIZABLE_CLASS_VERSIONS(InternalModuleURIResolver)
+END_SERIALIZABLE_CLASS_VERSIONS(InternalModuleURIResolver)
+
+SERIALIZABLE_CLASS_VERSIONS(StandardDocumentURIResolver)
+END_SERIALIZABLE_CLASS_VERSIONS(StandardDocumentURIResolver)
+
+SERIALIZABLE_CLASS_VERSIONS(StandardCollectionURIResolver)
+END_SERIALIZABLE_CLASS_VERSIONS(StandardCollectionURIResolver)
+
+SERIALIZABLE_CLASS_VERSIONS(StandardSchemaURIResolver)
+END_SERIALIZABLE_CLASS_VERSIONS(StandardSchemaURIResolver)
+
+SERIALIZABLE_CLASS_VERSIONS(StandardModuleURIResolver)
+END_SERIALIZABLE_CLASS_VERSIONS(StandardModuleURIResolver)
+
+SERIALIZABLE_CLASS_VERSIONS(StandardLibraryModuleURIResolver)
+END_SERIALIZABLE_CLASS_VERSIONS(StandardLibraryModuleURIResolver)
+
 
 store::Item_t
 StandardDocumentURIResolver::resolve(

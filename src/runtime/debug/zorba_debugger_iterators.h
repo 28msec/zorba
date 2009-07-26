@@ -31,44 +31,57 @@ namespace zorba {
 
 	class FnDebugIterator : public NaryBaseIterator<FnDebugIterator, PlanIteratorState>
 	{
-	private:
-		ZorbaDebugger *theDebugger;
-		checked_vector<store::Item_t> varnames;
-		checked_vector<std::string> var_keys;  
-		checked_vector<xqtref_t> vartypes;
-		checked_vector<global_binding> globals;
-		bool for_expr;
+  private:
+    ZorbaDebugger *theDebugger;
+    checked_vector<store::Item_t> varnames;
+    checked_vector<std::string> var_keys;  
+    checked_vector<xqtref_t> vartypes;
+    checked_vector<global_binding> globals;
+    bool for_expr;
 		bool m_break;
 
-	public:
+/*  public:
+    SERIALIZABLE_CLASS(FnDebugIterator)
+    SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDebugIterator, NaryBaseIterator<FnDebugIterator, PlanIteratorState>)
+    void serialize(zorba::serialization::Archiver &ar)
+    {
+      serialize_baseclass(ar, (NaryBaseIterator<FnDebugIterator, PlanIteratorState>*)this);
+      //ar & theDebugger;
+      ar & varnames;
+      ar & var_keys;
+      ar & vartypes;
+      ar & globals;
+      ar & for_expr;
+    }
+*/  public:
 		FnDebugIterator(
 			ZorbaDebugger* debugger,
       short sctx,
 			const QueryLoc& loc,
-			checked_vector<store::Item_t> varnames_,
-			checked_vector<std::string> var_keys_,
-			checked_vector<xqtref_t> vartypes_,
-			checked_vector<global_binding> globals_,
-			std::vector<PlanIter_t>& aChildren,
-			bool for_expr = false);
+                 checked_vector<store::Item_t> varnames_,
+                 checked_vector<std::string> var_keys_,
+                 checked_vector<xqtref_t> vartypes_,
+                 checked_vector<global_binding> globals_,
+                 std::vector<PlanIter_t>& aChildren,
+                 bool for_expr = false);
 
-		virtual ~FnDebugIterator();
+    virtual ~FnDebugIterator();
 
-		bool nextImpl( store::Item_t& result, PlanState& planState ) const;
+    bool nextImpl( store::Item_t& result, PlanState& planState ) const;
 
-		void accept(PlanIterVisitor& v) const;
+    void accept(PlanIterVisitor& v) const;
 
-		void openImpl(PlanState& planState, uint32_t& offset );
+    void openImpl(PlanState& planState, uint32_t& offset );
 
-		bool isUpdating() const;
+    bool isUpdating() const;
 
 		void setBreakpoint() { m_break = true; }
 
 		void removeBreakpoint() { m_break = false; }
-	private:
-		void updateInfos(const QueryLoc& loc, PlanState& planState, checked_vector<store::Item_t> varnames,
-			checked_vector<std::string> var_keys, checked_vector<xqtref_t> vartypes,
-			checked_vector<global_binding> globals) const;
+  private:
+    void updateInfos(const QueryLoc& loc, PlanState& planState, checked_vector<store::Item_t> varnames,
+                     checked_vector<std::string> var_keys, checked_vector<xqtref_t> vartypes,
+                     checked_vector<global_binding> globals) const;
 
 
 	};

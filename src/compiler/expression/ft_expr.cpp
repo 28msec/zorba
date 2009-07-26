@@ -18,6 +18,28 @@
 using namespace std;
 namespace zorba {
   
+SERIALIZABLE_CLASS_VERSIONS(ft_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(ft_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(ft_or_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(ft_or_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(ft_and_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(ft_and_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(ft_mildnot_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(ft_mildnot_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(ft_words_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(ft_words_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(ft_words_selection_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(ft_words_selection_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(ft_unarynot_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(ft_unarynot_expr)
+
+
   
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //

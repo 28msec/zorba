@@ -39,16 +39,26 @@ public:
 
 private:
   wildcard_kind_t          m_kind;
-  rchandle<xqpStringStore> m_uri;
-  rchandle<xqpStringStore> m_local;
+  xqpStringStore_t         m_uri;
+  xqpStringStore_t         m_local;
 
 public:
-  NodeNameTest(rchandle<xqpStringStore> uri, rchandle<xqpStringStore> local);
+  SERIALIZABLE_CLASS(NodeNameTest)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(NodeNameTest)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    //serialize_baseclass(ar, (SimpleRCObject*)this);
+    SERIALIZE_ENUM(wildcard_kind_t, m_kind);
+    ar & m_uri;
+    ar & m_local;
+  }
+public:
+  NodeNameTest(xqpStringStore_t uri, xqpStringStore_t local);
 
   NodeNameTest(const store::Item* qname);
     
-  rchandle<xqpStringStore> get_uri() const;
-  rchandle<xqpStringStore> get_local() const;
+  xqpStringStore_t get_uri() const;
+  xqpStringStore_t get_local() const;
   
   bool operator==(const NodeNameTest& other) const;
 
@@ -67,7 +77,15 @@ class NodeTest : virtual public SimpleRCObject
 private:
   store::StoreConsts::NodeKind  m_node_kind;
   rchandle<NodeNameTest>        m_name_test;
-
+public:
+  SERIALIZABLE_CLASS(NodeTest)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(NodeTest)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    //serialize_baseclass(ar, (SimpleRCObject*)this);
+    SERIALIZE_ENUM(store::StoreConsts::NodeKind, m_node_kind);
+    ar & m_name_test;
+  }
 public:
   static const rchandle<NodeTest> ANY_NODE_TEST;
   static const rchandle<NodeTest> ELEMENT_TEST;

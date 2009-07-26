@@ -23,6 +23,7 @@
 #include <zorbatypes/xerces_xmlcharray.h>
 #include "store/api/item_factory.h"
 #include "types/schema/schema.h"
+#include "types/root_typemanager.h"
 #include "PrintSchema.h"
 
 using namespace std;

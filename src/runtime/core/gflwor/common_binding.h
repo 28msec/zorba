@@ -24,7 +24,7 @@
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "store/api/temp_seq.h"
 
-using namespace zorba;
+//using namespace zorba;
 
 namespace zorba 
 {

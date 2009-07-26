@@ -63,7 +63,13 @@ void slurp_file (
   if(sstr.find("$RBKT_SRC_DIR",0) != std::string::npos)
   {
     std::string rbkt_src_uri = zorba::URI::encode_file_URI (rbkt_src_dir)->str ();
+#ifdef ZORBA_XQUERYX
+    zorba::str_replace_all(rbkt_src_uri, "%3A", ":");
+#endif
     zorba::str_replace_all(sstr, "$RBKT_SRC_DIR", rbkt_src_uri);
+#ifdef MY_D_WIN32
+    zorba::str_replace_all(sstr, "w3c_testsuite/Queries/w3c_testsuite", "w3c_testsuite/Queries");
+#endif
   }
 
   if(sstr.find("$RBKT_BINARY_DIR",0) != std::string::npos)
@@ -287,6 +293,9 @@ void createDynamicContext(
   {
     std::string inputqueryfile = spec.getInputQueryFile ();
     zorba::str_replace_all(inputqueryfile, "$RBKT_SRC_DIR", driverCtx.theRbktSourceDir);
+#ifdef MY_D_WIN32
+    zorba::str_replace_all(inputqueryfile, "rbkt/Queries/w3c_testsuite/", "w3c_testsuite/Queries/");
+#endif
       
     std::ifstream inputquery ( inputqueryfile.c_str() );
 
@@ -331,6 +340,10 @@ void set_var(
     const std::string& rbkt_src_dir) 
 {
   zorba::str_replace_all (val, "$RBKT_SRC_DIR", rbkt_src_dir);
+#ifdef MY_D_WIN32
+  zorba::str_replace_all(val, "rbkt/Queries/w3c_testsuite/", "w3c_testsuite/Queries/");
+  //zorba::str_replace_all(val, "/", "\\");
+#endif
 
   if (!inlineFile) 
   {
@@ -342,6 +355,9 @@ void set_var(
   }
   else 
   {
+#ifdef MY_D_WIN32
+    std::cout << "Load xml " << val << std::endl;
+#endif
     const char *val_fname = val.c_str ();
     std::ifstream* is = new std::ifstream(val_fname);
     if (! is || !is->is_open() ) 

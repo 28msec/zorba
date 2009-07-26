@@ -1,7 +1,7 @@
 #ifndef RUNNABLE_H
 #define RUNNABLE_H
 
-#include "lock.h"
+#include "zorbautils/lock.h"
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
 
@@ -61,7 +61,6 @@ namespace zorba {
 #endif
   };
 }
-
 #endif//#ifndef ZORBA_FOR_ONE_THREAD_ONLY
 
 #endif // RUNNABLE_H

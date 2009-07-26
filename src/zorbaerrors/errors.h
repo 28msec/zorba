@@ -37,7 +37,7 @@ namespace error
 /*******************************************************************************
 
 ********************************************************************************/
-class ZORBA_DLL_PUBLIC ZorbaError
+class ZORBA_DLL_PUBLIC ZorbaError : public ::zorba::serialization::SerializeBaseClass
 {
 public:
   xqpString      theLocalName;
@@ -54,6 +54,26 @@ public:
   bool           theDebug;
 #endif
 
+public:
+  SERIALIZABLE_CLASS(ZorbaError)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(ZorbaError)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theLocalName;
+    ar & thePrefix;
+    ar & theNamespace;
+    SERIALIZE_ENUM(XQUERY_ERROR, theErrorCode);
+    ar & theDescription;
+    ar & theQueryLine;
+    ar & theQueryColumn;
+    ar & theQueryFileName; // the name of the file where the error occured
+    ar & theFileName; // source file
+    ar & theLineNumber; // line number in the source file
+#ifdef ZORBA_DEBUGGER
+    if(!ar.is_serializing_out())
+      theDebug = false;
+#endif
+  }
 public:
   static std::string
   toString(const XQUERY_ERROR& code);

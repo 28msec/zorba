@@ -17,6 +17,7 @@
 #include "functions/Accessors.h"
 #include "runtime/accessors/AccessorsImpl.h"
 #include "types/typeops.h"
+#include "runtime/core/var_iterators.h"
 
 using namespace std;
 

@@ -17,7 +17,7 @@
 #include "zorbautils/fatal.h"
 #include "zorbautils/mutex.h"
 #include "zorbautils/condition.h"
-
+#include <cassert>
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
 
@@ -66,14 +66,19 @@ void Condition::broadcast()
 }
 
 #elif WIN32
+
 Condition::Condition(Mutex& m) : theMutex(m) 
 {
 //  int ret = pthread_cond_init(&theCondition, NULL); 
 	cond_event[0] = CreateEvent(NULL, FALSE, FALSE, NULL);//auto-reset, for signal
+  assert(cond_event[0] != NULL);
 	cond_event[1] = CreateEvent(NULL, TRUE, FALSE, NULL);//manual-reset, for broadcast
+  assert(cond_event[1] != NULL);
 	
   cond_door = CreateEvent(NULL, FALSE, TRUE, NULL);//auto-reset, initial ON
+  assert(cond_door != NULL);
   cond_broadcast = CreateEvent(NULL, FALSE, FALSE, NULL);//auto-reset, initial OFF
+  assert(cond_broadcast != NULL);
 
   InitializeCriticalSection(&cond_cs);
   waiters = 0;

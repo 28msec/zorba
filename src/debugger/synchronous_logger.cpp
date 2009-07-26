@@ -10,7 +10,7 @@ m_stream(stream)
 zorba::synchronous_logger::SynchronousLogger& zorba::synchronous_logger::SynchronousLogger::operator<<( const long input )
 {
 	SYNC_CODE(AutoLock lock(m_lock, Lock::WRITE);)
-	m_stream << input;
+  m_stream << input;
 	m_stream.flush();
 	return *this;
 }
@@ -18,7 +18,7 @@ zorba::synchronous_logger::SynchronousLogger& zorba::synchronous_logger::Synchro
 zorba::synchronous_logger::SynchronousLogger& zorba::synchronous_logger::SynchronousLogger::operator<<( const zorba::String input )
 {
 	SYNC_CODE(AutoLock lock(m_lock, Lock::WRITE);)
-	m_stream << input;
+  m_stream << input;
 	m_stream.flush();
 	return *this;
 }

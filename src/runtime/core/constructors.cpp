@@ -38,6 +38,32 @@ using namespace std;
 namespace zorba
 {
 
+SERIALIZABLE_CLASS_VERSIONS(DocumentIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(DocumentIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(DocumentContentIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(DocumentContentIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(ElementIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ElementIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(AttributeIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(AttributeIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(NameCastIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(NameCastIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(CommentIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(CommentIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(PiIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(PiIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(TextIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(TextIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(EnclosedIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(EnclosedIterator)
 
 /*******************************************************************************
 
@@ -175,7 +201,10 @@ ElementIterator::ElementIterator (
   theAttributesIter(attrsIter),
   theChildrenIter(childrenIter),
   theLocalBindings(localBindings),
-  theIsRoot(isRoot)
+  theIsRoot(isRoot),
+  theTypePreserve(false),
+  theNsPreserve(false),
+  theNsInherit(false)
 {
 }
 

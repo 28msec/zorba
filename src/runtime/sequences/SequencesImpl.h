@@ -62,6 +62,14 @@ protected:
   bool  theIsUpdating;
 
 public:
+  SERIALIZABLE_CLASS(FnConcatIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnConcatIterator, NaryBaseIterator<FnConcatIterator, FnConcatIteratorState >)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<FnConcatIterator, FnConcatIteratorState >*)this);
+    ar & theIsUpdating;
+  }
+public:
   FnConcatIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool aIsUpdating)
     :
     NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>(sctx, loc, aChildren),
@@ -163,6 +171,13 @@ public:
  
   virtual void 
   accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(FnDistinctValuesIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDistinctValuesIterator, NaryBaseIterator<FnDistinctValuesIterator, FnDistinctValuesIteratorState >)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<FnDistinctValuesIterator, FnDistinctValuesIteratorState >*)this);
+  }
 
 };
 
@@ -265,6 +280,15 @@ public:
 
 protected:
   bool raise_err;
+public:
+  SERIALIZABLE_CLASS(FnExactlyOneIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnExactlyOneIterator, NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState >)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState >*)this);
+    ar & raise_err;
+  }
+
 
 };
 
@@ -325,6 +349,15 @@ public:
 
 protected:
   bool theAntijoin;
+public:
+  SERIALIZABLE_CLASS(HashSemiJoinIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(HashSemiJoinIterator, NaryBaseIterator<HashSemiJoinIterator, HashSemiJoinIteratorState >)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<HashSemiJoinIterator, HashSemiJoinIteratorState >*)this);
+    ar & theAntijoin;
+  }
+
 
 };
 
@@ -352,6 +385,13 @@ public:
  
   virtual void 
   accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(SortSemiJoinIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SortSemiJoinIterator, NaryBaseIterator<SortSemiJoinIterator, PlanIteratorState >)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<SortSemiJoinIterator, PlanIteratorState >*)this);
+  }
 };
 
   /*______________________________________________________________________
@@ -377,6 +417,15 @@ private:
   Type theType;
   CompareConsts::CompareType theCompareType;
 
+public:
+  SERIALIZABLE_CLASS(FnMinMaxIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnMinMaxIterator, NaryBaseIterator<FnMinMaxIterator, PlanIteratorState >)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<FnMinMaxIterator, PlanIteratorState >*)this);
+    SERIALIZE_ENUM(Type, theType);
+    SERIALIZE_ENUM(CompareConsts::CompareType, theCompareType);
+  }
 public:
     FnMinMaxIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, Type aType);
     bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -452,6 +501,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(FnDocIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDocIterator, UnaryBaseIterator<FnDocIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<FnDocIterator, PlanIteratorState>*)this);
+  }
 };
 
 

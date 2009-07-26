@@ -39,7 +39,7 @@ namespace zorba
   A non-template class used to store some data that is common to all axis
   iterators.
 ********************************************************************************/
-class AxisIteratorHelper
+class AxisIteratorHelper : virtual public ::zorba::serialization::SerializeBaseClass
 {
 protected:
   match_test_t                 theTestKind;
@@ -50,6 +50,19 @@ protected:
   xqtref_t                     theType;
   bool                         theNilledAllowed;
 
+public:
+  SERIALIZABLE_CLASS(AxisIteratorHelper)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(AxisIteratorHelper)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    SERIALIZE_ENUM(match_test_t, theTestKind);
+    SERIALIZE_ENUM(match_test_t, theDocTestKind);
+    SERIALIZE_ENUM(store::StoreConsts::NodeKind, theNodeKind);
+    ar & theQName;
+    SERIALIZE_ENUM(match_wild_t, theWildKind);
+    ar & theType;
+    ar & theNilledAllowed;
+  }
 public:
   AxisIteratorHelper() 
     :
@@ -114,6 +127,15 @@ public:
   }
 
   virtual ~AxisIterator() {}
+public:
+  SERIALIZABLE_TEMPLATE_ABSTRACT_CLASS(AxisIterator)
+  AxisIterator(::zorba::serialization::Archiver &ar) :
+  UnaryBaseIterator<AxisIter, State>(ar), AxisIteratorHelper(ar) {}
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<AxisIter, State>*)this);
+    serialize_baseclass(ar, (AxisIteratorHelper*)this);
+  }
 };
 
 
@@ -140,6 +162,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(SelfAxisIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SelfAxisIterator, AxisIterator<SelfAxisIterator, SelfAxisState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (AxisIterator<SelfAxisIterator, SelfAxisState>*)this);
+  }
 };
 
 
@@ -177,6 +206,13 @@ public:
   uint32_t getStateSize() const { return sizeof(AttributeAxisState); }
 
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(AttributeAxisIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(AttributeAxisIterator, AxisIterator<AttributeAxisIterator, AttributeAxisState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (AxisIterator<AttributeAxisIterator, AttributeAxisState>*)this);
+  }
 };
 
 
@@ -205,6 +241,13 @@ public:
   // void closeImpl(PlanState& planState); 
   
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(ParentAxisIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ParentAxisIterator, AxisIterator<ParentAxisIterator, ParentAxisState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (AxisIterator<ParentAxisIterator, ParentAxisState>*)this);
+  }
 };
 
 
@@ -231,6 +274,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(AncestorAxisIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(AncestorAxisIterator, AxisIterator<AncestorAxisIterator, AncestorAxisState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (AxisIterator<AncestorAxisIterator, AncestorAxisState>*)this);
+  }
 };
 
 
@@ -260,6 +310,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(AncestorSelfAxisIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(AncestorSelfAxisIterator, AxisIterator<AncestorSelfAxisIterator, AncestorSelfAxisState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (AxisIterator<AncestorSelfAxisIterator, AncestorSelfAxisState>*)this);
+  }
 };
 
 
@@ -292,6 +349,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(RSiblingAxisIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(RSiblingAxisIterator, AxisIterator<RSiblingAxisIterator, RSiblingAxisState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (AxisIterator<RSiblingAxisIterator, RSiblingAxisState>*)this);
+  }
 };
 
 
@@ -326,6 +390,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(LSiblingAxisIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(LSiblingAxisIterator, AxisIterator<LSiblingAxisIterator, LSiblingAxisState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (AxisIterator<LSiblingAxisIterator, LSiblingAxisState>*)this);
+  }
 };
 
 
@@ -359,6 +430,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(ChildAxisIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ChildAxisIterator, AxisIterator<ChildAxisIterator, ChildAxisState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (AxisIterator<ChildAxisIterator, ChildAxisState>*)this);
+  }
 };
 
 
@@ -413,6 +491,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(DescendantAxisIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DescendantAxisIterator, AxisIterator<DescendantAxisIterator,DescendantAxisState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (AxisIterator<DescendantAxisIterator,DescendantAxisState>*)this);
+  }
 };
 
 
@@ -434,6 +519,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(DescendantSelfAxisIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DescendantSelfAxisIterator, AxisIterator<DescendantSelfAxisIterator,DescendantAxisState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (AxisIterator<DescendantSelfAxisIterator,DescendantAxisState>*)this);
+  }
 };
 
 
@@ -468,6 +560,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(PrecedingAxisIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(PrecedingAxisIterator, AxisIterator<PrecedingAxisIterator, PrecedingAxisState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (AxisIterator<PrecedingAxisIterator, PrecedingAxisState>*)this);
+  }
 };
 
 
@@ -504,6 +603,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(FollowingAxisIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FollowingAxisIterator, AxisIterator<FollowingAxisIterator,FollowingAxisState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (AxisIterator<FollowingAxisIterator,FollowingAxisState>*)this);
+  }
 };
 
 

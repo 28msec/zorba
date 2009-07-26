@@ -23,6 +23,9 @@
 
 namespace zorba
 {
+SERIALIZABLE_CLASS_VERSIONS(TimeZone)
+END_SERIALIZABLE_CLASS_VERSIONS(TimeZone)
+
 
 TimeZone::TimeZone(short hours) : Duration(DAYTIMEDURATION_FACET)
 {

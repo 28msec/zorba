@@ -33,6 +33,12 @@ using namespace std;
 namespace zorba
 {
 
+SERIALIZABLE_CLASS_VERSIONS(xqpStringStore)
+END_SERIALIZABLE_CLASS_VERSIONS(xqpStringStore)
+
+SERIALIZABLE_CLASS_VERSIONS(xqpString)
+END_SERIALIZABLE_CLASS_VERSIONS(xqpString)
+
 //UnicodeString getUnicodeString(xqpStringStore *strstore);
 
 
@@ -925,7 +931,12 @@ xqpStringStore_t xqpStringStore::formatAsXML() const
   for(i = 0; i < len; ++i)
   {
     cp = c[i];//UTF8Decode(c);
-    if(cp < 128)
+    if( (cp < 128) &&
+        (cp != 34) &&   // quot == " == (double) quotation mark
+        (cp != 38) &&   // amp == & == ampersand
+        (cp != 39) &&   // apos == ' == apostrophe
+        (cp != 60) &&   // lt == < == less-than sign
+        (cp != 62))     // gt == > == greater-than sign
     {
       //memset(seq, 0, sizeof(seq));
       //UTF8Encode(cp, seq);

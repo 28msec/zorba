@@ -25,12 +25,14 @@
 #include "context/context.h"
 #include "context/static_context_consts.h"
 #include "context/decimal_format.h"
+#include "context/collation_cache.h"
 
 #include "types/typemanager.h"
 #include "zorbaerrors/Assert.h"
 
 #include <zorba/api_shared_types.h>
 #include "common/shared_types.h"
+#include "context/internal_uri_resolvers.h"
 
 #include "compiler/expression/var_expr.h"
 
@@ -75,6 +77,29 @@ protected:
 
   CollationCache*                theCollationCache;
 
+public:
+  SERIALIZABLE_CLASS(static_context)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(static_context, context)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (context*)this);
+    SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, typemgr);
+    //+ar & theDocResolver;
+    //+ar & theColResolver;
+    //+ar & theSchemaResolver;
+    //+ar & theModuleResolver;
+    if(!ar.is_serializing_out())
+    {
+      theDocResolver = NULL;
+      theColResolver = NULL;
+      theSchemaResolver = NULL;
+      theModuleResolver = NULL;//user has to set up again the uri resolvers after reloading the plan
+      theTraceStream = &std::cerr;
+    }
+   //+ar & theGlobalVars;
+	  //+ar & theDecimalFormats;
+    ar & theCollationCache;
+  }
 public:
   virtual ~static_context();
 
@@ -312,7 +337,7 @@ public:
 
   ValueIndex *lookup_index(const xqp_string& aIndexURI) const
   {
-    ctx_value_t val;
+    ctx_value_t val(CTX_VALUE_INDEX);
     return context_value2("vindex:", aIndexURI, val) ? val.valueIndex : NULL;
   }
 

@@ -40,6 +40,14 @@ class signature_base: public SimpleRCObject
   bool variadic;
 
  public:
+  SERIALIZABLE_CLASS(signature_base)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(signature_base, SimpleRCObject)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    //serialize_baseclass(ar, (SimpleRCObject*)this);
+    ar & variadic;
+  }
+public:
   signature_base () : variadic (false) {}
   signature_base (bool _variadic) : variadic (_variadic) {}
 
@@ -53,6 +61,15 @@ public:
   store::Item_t            qname_p;
   checked_vector<xqtref_t> argv;
 
+public:
+  SERIALIZABLE_CLASS(signature)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(signature, signature_base)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (signature_base*)this);
+    ar & qname_p;
+    ar & argv;
+  }
 public:
   signature (store::Item_t name,
              xqtref_t arg1,

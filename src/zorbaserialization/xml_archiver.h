@@ -47,7 +47,7 @@ protected:
   void write_string(const char *str);
 
   //reading
-  bool match_string(char c, char *match);
+  bool match_string(char c, const char *match);
   bool read_root_tag(char c);
   bool read_attrib_name(char *attrib_name);
   void read_attrib_value(char *attrib_value);

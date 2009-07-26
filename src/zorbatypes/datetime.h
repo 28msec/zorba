@@ -20,6 +20,7 @@
 #include "zorbatypes/timezone.h"
 #include "zorbatypes/duration.h"
 
+#include "zorbaserialization/serialization_engine.h"
 
 namespace zorba
 {
@@ -30,7 +31,7 @@ class   InvalidTimezoneException : public std::exception
   
 
  // exported for testing only
-class ZORBA_DLL_PUBLIC DateTime 
+class ZORBA_DLL_PUBLIC DateTime : ::zorba::serialization::SerializeBaseClass
 {
 public:
       
@@ -382,6 +383,21 @@ protected:
   int data[7];
       
   TimeZone the_time_zone;
+public:
+  SERIALIZABLE_CLASS(DateTime)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(DateTime)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    SERIALIZE_ENUM(FACET_TYPE, facet);
+    ar & data[0];
+    ar & data[1];
+    ar & data[2];
+    ar & data[3];
+    ar & data[4];
+    ar & data[5];
+    ar & data[6];
+    ar & the_time_zone;
+  }
 };
 
 } /* namespace xqp */

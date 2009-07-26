@@ -25,18 +25,22 @@ namespace zorba
 {
 namespace flwor 
 {
+SERIALIZABLE_CLASS_VERSIONS(LetIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(LetIterator)
+
+
 
 LetIterator::LetIterator (
     short sctx,
     const QueryLoc& aLoc,
-    store::Item_t aVarName, 
-    PlanIter_t aTupleIter,
-    PlanIter_t aInput,
+                               store::Item_t aVarName, 
+                               PlanIter_t aTupleIter,
+                               PlanIter_t aInput,
     const std::vector<PlanIter_t>& aLetVars,
     bool aNeedsMaterialization ) 
   :
   BinaryBaseIterator<LetIterator, PlanIteratorState> ( sctx, aLoc, aTupleIter, aInput),
-  theVarName(aVarName), 
+        theVarName(aVarName), 
   theNeedsMat ( aNeedsMaterialization ) 
 {
   castIterVector<LetVarIterator>(theLetVars, aLetVars);
@@ -69,14 +73,14 @@ void LetIterator::accept(PlanIterVisitor& v) const
 //theChild1 == InputIter
 bool LetIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const 
 {
-  PlanIteratorState* lState;
-  DEFAULT_STACK_INIT ( PlanIteratorState, lState, aPlanState );
-  while ( consumeNext ( aResult, theChild0, aPlanState ) ) {
-    bindVariables ( theChild1 ,theLetVars,aPlanState,theNeedsMat);
-    STACK_PUSH ( true, lState );
-    theChild1->reset ( aPlanState );
-  }
-  STACK_END ( lState );
+      PlanIteratorState* lState;
+      DEFAULT_STACK_INIT ( PlanIteratorState, lState, aPlanState );
+      while ( consumeNext ( aResult, theChild0, aPlanState ) ) {
+        bindVariables ( theChild1 ,theLetVars,aPlanState,theNeedsMat);
+        STACK_PUSH ( true, lState );
+        theChild1->reset ( aPlanState );
+      }
+      STACK_END ( lState );
 }
 
 

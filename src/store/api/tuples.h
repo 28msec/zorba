@@ -22,6 +22,8 @@
 #include "store/api/temp_seq.h"
 #include "zorbaerrors/Assert.h"
 
+#include "zorbaserialization/serialization_engine.h"
+
 namespace zorba {
 
 namespace store {
@@ -31,7 +33,7 @@ namespace store {
   Stores a pointer that is a pointer to either a single item or a temp sequence
 
  *******************************************************************************/
-class TupleField 
+class TupleField : public ::zorba::serialization::SerializeBaseClass
 {
  public:
   typedef enum 
@@ -42,7 +44,7 @@ class TupleField
   } tag_t;
 
   TupleField();
-  ~TupleField();
+  virtual ~TupleField();
 
   TupleField(const TupleField&);
   const TupleField& operator=(const TupleField&);
@@ -60,6 +62,48 @@ class TupleField
  private:
   tag_t m_tag;
   void *m_data;
+public:
+  SERIALIZABLE_CLASS(TupleField)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(TupleField)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    SERIALIZE_ENUM(tag_t, m_tag)
+    switch(m_tag)
+    {
+      case UNINITIALIZED:
+        if(m_data)
+        {
+          ZORBA_SER_ERROR_DESC_OSS(SRL0010_ITEM_TYPE_NOT_SERIALIZABLE, "TupleField");
+        }
+        if(!ar.is_serializing_out())
+          m_data = NULL;
+        break;
+      case FIELD_TYPE_ITEM:
+      {
+        Item *ip = static_cast<Item *>(m_data);
+        ar.set_is_temp_field(true);
+        ar & ip;
+        ar.set_is_temp_field(false);
+        if(!ar.is_serializing_out())
+        {
+          m_data = (void*)ip;
+          ip->addReference(ip->getSharedRefCounter() SYNC_PARAM2(ip->getRCLock()));
+        }
+      }break;
+      case FIELD_TYPE_SEQ:
+      {
+        TempSeq *seq = static_cast<TempSeq *>(m_data);
+        ar.set_is_temp_field(true);
+        ar & seq;
+        ar.set_is_temp_field(false);
+        if(!ar.is_serializing_out())
+        {
+          m_data = (void*)seq;
+          seq->addReference(seq->getSharedRefCounter() SYNC_PARAM2(seq->getRCLock()));
+        }
+      }break;
+    }
+  }
 };
 
 
@@ -77,7 +121,7 @@ inline TupleField::~TupleField()
 }
 
 
-inline TupleField::TupleField(const TupleField& other)
+inline TupleField::TupleField(const TupleField& other) : ::zorba::serialization::SerializeBaseClass()
 {
   switch(other.getTag()) 
   {

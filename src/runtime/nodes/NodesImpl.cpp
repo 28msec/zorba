@@ -36,6 +36,20 @@
 using namespace std;
 
 namespace zorba {
+SERIALIZABLE_CLASS_VERSIONS(NodeReferenceIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(NodeReferenceIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(NodeByReferenceIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(NodeByReferenceIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnLocalNameIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnLocalNameIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnNamespaceUriIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnNamespaceUriIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnLangIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnLangIterator)
 
 bool NodeReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {

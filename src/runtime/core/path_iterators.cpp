@@ -35,6 +35,61 @@
 
 namespace zorba
 {
+SERIALIZABLE_CLASS_VERSIONS(AxisIteratorHelper)
+END_SERIALIZABLE_CLASS_VERSIONS(AxisIteratorHelper)
+
+SERIALIZABLE_TEMPLATE_VERSIONS(AxisIterator)
+END_SERIALIZABLE_TEMPLATE_VERSIONS(AxisIterator)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<SelfAxisIterator, SelfAxisState>, 1)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AttributeAxisIterator, AttributeAxisState>, 2)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<ParentAxisIterator, ParentAxisState>, 3)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorAxisIterator, AncestorAxisState>, 4)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorSelfAxisIterator, AncestorSelfAxisState>, 5)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<RSiblingAxisIterator, RSiblingAxisState>, 6)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<LSiblingAxisIterator, LSiblingAxisState>, 7)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<ChildAxisIterator, ChildAxisState>, 8)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<DescendantAxisIterator,DescendantAxisState>, 9)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<DescendantSelfAxisIterator,DescendantAxisState>, 10)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<PrecedingAxisIterator, PrecedingAxisState>, 11)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<FollowingAxisIterator,FollowingAxisState>, 12)
+
+SERIALIZABLE_CLASS_VERSIONS(SelfAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(SelfAxisIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(AttributeAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(AttributeAxisIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(ParentAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ParentAxisIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(AncestorAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(AncestorAxisIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(AncestorSelfAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(AncestorSelfAxisIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(RSiblingAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(RSiblingAxisIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(LSiblingAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(LSiblingAxisIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(ChildAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ChildAxisIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(DescendantAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(DescendantAxisIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(DescendantSelfAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(DescendantSelfAxisIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(PrecedingAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(PrecedingAxisIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FollowingAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FollowingAxisIterator)
+
+
 
 template <typename T> void checked_pop(std::stack<T> &stk) 
 {

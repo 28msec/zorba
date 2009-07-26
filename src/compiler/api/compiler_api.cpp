@@ -32,6 +32,7 @@
 #include "compiler/api/compilercb.h"
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parsetree/parsenodes.h" 
+#include "compiler/parsetree/parsenodes.h" 
 #include "compiler/expression/expr_base.h"
 #include "compiler/translator/translator.h"
 #include "compiler/normalizer/normalizer.h"
@@ -137,7 +138,7 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
   bool  is_xqueryx = false;
   {
     char  strtemp[1000];
-    int   nr_read = 1;
+    //int   nr_read = 1;
     do
     {
       strtemp[0] = 0;
@@ -169,6 +170,9 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
 
   xquery_driver lDriver(&*theCompilerCB);
   lDriver.parse_stream(*xquery_stream, aFileName);
+  assert(xquery_stream->eof());
+  assert(!xquery_stream->bad());
+
 #ifdef ZORBA_XQUERYX
   delete xquery_stream;
   if(is_xqueryx)
@@ -177,9 +181,6 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
     xqxconvertor->freeResult(converted_xquery_str);
   }
 #endif
-  assert(aXQuery.eof());
-  assert(!aXQuery.bad());
-
   parsenode_t node = lDriver.get_expr();
   if (typeid (*node) == typeid (ParseErrorNode)) {
     ParseErrorNode *err = static_cast<ParseErrorNode *> (&*node);

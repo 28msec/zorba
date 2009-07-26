@@ -24,10 +24,14 @@
 
 #include "common/shared_types.h"
 #include "zorbatypes/xqpstring.h"
+#define ZORBA_HASHMAP_WITH_SERIALIZATION
 #include "util/hashmap.h"
+#undef ZORBA_HASHMAP_WITH_SERIALIZATION
 
 #include "types/typeconstants.h"
 #include "types/schema/EventSchemaValidator.h"
+
+#include "zorbaserialization/serialization_engine.h"
 
 #include "store/api/item.h"
 
@@ -42,7 +46,7 @@ namespace zorba
 class SchemaLocationEntityResolver : public EntityResolver
 {
 protected:
-  std::string   theLocation;
+    std::string theLocation;
   const XMLCh * theLogicalURI;
 
 public:
@@ -61,30 +65,30 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class Schema
+class Schema : public ::zorba::serialization::SerializeBaseClass
 {
 public:
-  static const char* XSD_NAMESPACE;
+    static const char* XSD_NAMESPACE;
 
 private:
   static bool                            _isInitialized;
 
 #ifndef ZORBA_NO_XMLSCHEMA
   XERCES_CPP_NAMESPACE::XMLGrammarPool * _grammarPool;
-  hashmap<xqtref_t>                    * _udTypesCache;
+  serializable_hashmap<xqtref_t>                    * _udTypesCache;
 #endif
 
 public:
-  static void initialize();
+    static void initialize();
 
-  static void terminate();
+    static void terminate();
 
 public:
-  Schema();
+    Schema();
 
-  virtual ~Schema();
+    virtual ~Schema();
 
-  void printXSDInfo(bool excludeBuiltIn = true);
+    void printXSDInfo(bool excludeBuiltIn = true);
 
 #ifndef ZORBA_NO_XMLSCHEMA
 
@@ -123,46 +127,46 @@ public:
 
   store::Item_t parseAtomicValue(xqtref_t type, xqp_string textValue);    
 
-  // user defined simple types, i.e. Atomic, List or Union Types
+    // user defined simple types, i.e. Atomic, List or Union Types
   bool parseUserSimpleTypes(
         const xqp_string textValue,
         const xqtref_t& aTargetType,
         std::vector<store::Item_t> &resultList);    
 
-  // user defined atomic types
+    // user defined atomic types
   bool parseUserAtomicTypes(
         const xqp_string textValue,
         const xqtref_t& aTargetType, 
         store::Item_t &result);    
 
-  // user defined list types
+    // user defined list types
   bool parseUserListTypes(
         const xqp_string textValue,
         const xqtref_t& aTargetType, 
         std::vector<store::Item_t>& resultList);    
 
-  // user defined union types
+    // user defined union types
   bool parseUserUnionTypes(
         const xqp_string textValue,
         const xqtref_t& aTargetType, 
         std::vector<store::Item_t> &resultList);    
   
-  // user defined simple types, i.e. Atomic, List or Union Types
+    // user defined simple types, i.e. Atomic, List or Union Types
   bool isCastableUserSimpleTypes(
         const xqp_string textValue,
         const xqtref_t& aTargetType);
 
-  // user defined atomic types
+    // user defined atomic types
   bool isCastableUserAtomicTypes(
         const xqp_string textValue,
         const xqtref_t& aTargetType);
 
-  // user defined list types
+    // user defined list types
   bool isCastableUserListTypes(
         const xqp_string textValue,
         const xqtref_t& aTargetType);
 
-  // user defined union types
+    // user defined union types
   bool isCastableUserUnionTypes(
         const xqp_string textValue,
         const xqtref_t& aTargetType);
@@ -182,9 +186,68 @@ private:
   void checkForAnonymousTypesInType(const TypeManager* typeManager, XSTypeDefinition* typeDef);
   void checkForAnonymousTypesInParticle(const TypeManager* typeManager, XSParticle *xsParticle);
   void addAnonymousTypeToCache(const TypeManager* typeManager, XSTypeDefinition* typeDef);
-  void addTypeToCache(xqtref_t itemXQType);
+    void addTypeToCache(xqtref_t itemXQType);
 
 #endif
+public:
+  SERIALIZABLE_CLASS(Schema)
+  Schema(::zorba::serialization::Archiver &ar);
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+#ifndef ZORBA_NO_XMLSCHEMA
+    ar & _udTypesCache;
+
+    bool is_grammar_NULL = (_grammarPool == NULL);
+    ar.set_is_temp_field(true);
+    ar & is_grammar_NULL;
+    if(ar.is_serializing_out())
+    {
+      if(!is_grammar_NULL)
+      {
+        BinMemOutputStream    binmemoutputstream;
+        unsigned int  size = 0;
+        unsigned char *binchars = NULL;
+        try
+        {    
+          _grammarPool->serializeGrammars(&binmemoutputstream);
+          size = binmemoutputstream.getSize();
+          binchars = (unsigned char*)binmemoutputstream.getRawBuffer();
+        }
+        catch (...)
+        {
+        }
+
+        ar & size;
+        if(size)
+          serialize_array(ar, binchars, size);
+      }
+    }
+    else
+    {
+      if(!is_grammar_NULL)
+      {
+        unsigned int  size;
+        unsigned char *binchars;
+
+        ar & size;
+        if(size)
+        {
+          binchars = (unsigned char*)malloc(size+8);
+          serialize_array(ar, binchars, size);
+          BinMemInputStream   binmeminputstream((XMLByte*)binchars, size);
+          _grammarPool->deserializeGrammars(&binmeminputstream);
+
+          free(binchars);
+        }
+      }
+      else
+      {
+        _grammarPool = NULL;
+      }
+    }
+    ar.set_is_temp_field(false);
+#endif
+  }
 };
 
 } // namespace zorba

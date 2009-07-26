@@ -32,7 +32,7 @@ class   Collator
 
 #endif
 
-class XQPCollator 
+class XQPCollator
 {
   friend class CollationFactory;
   friend class xqpString;
@@ -40,15 +40,18 @@ class XQPCollator
 
  protected:
   void * theCollator;
+  const std::string uri;
   bool   theDoMemCmp;
 
  private:
-  XQPCollator(void* Collator, bool doMemCmp = false);
+  XQPCollator(void* Collator, const std::string& aCollationURI, bool doMemCmp = false);
 
  public:
   virtual ~XQPCollator();
 
   bool doMemCmp() const { return theDoMemCmp; }
+
+  const std::string& getURI();
 };
 
 

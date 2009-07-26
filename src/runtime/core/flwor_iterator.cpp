@@ -49,10 +49,19 @@
 namespace zorba
 {
 
-
 namespace flwor
 {
+SERIALIZABLE_CLASS_VERSIONS(OrderByClause)
+END_SERIALIZABLE_CLASS_VERSIONS(OrderByClause)
 
+SERIALIZABLE_CLASS_VERSIONS(GroupByClause)
+END_SERIALIZABLE_CLASS_VERSIONS(GroupByClause)
+
+SERIALIZABLE_CLASS_VERSIONS(ForLetClause)
+END_SERIALIZABLE_CLASS_VERSIONS(ForLetClause)
+
+SERIALIZABLE_CLASS_VERSIONS(FLWORIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FLWORIterator)
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -75,7 +84,8 @@ ForLetClause::ForLetClause (
   :
   theVarName(aVarName->getStringValue()),
   theType(FOR),
-  theInput(aInput)
+  theInput(aInput),
+  theMaterialize(false)
 {
   castIterVector<ForVarIterator>(theForVarRefs, varRefs);
 }
@@ -98,7 +108,8 @@ ForLetClause::ForLetClause (
   :
   theVarName(aVarName->getStringValue()),
   theType(FOR),
-  theInput(aInput)
+  theInput(aInput),
+  theMaterialize(false)
 {
   castIterVector<ForVarIterator>(theForVarRefs, varRefs);
   castIterVector<ForVarIterator>(thePosVarRefs, aPosVars);

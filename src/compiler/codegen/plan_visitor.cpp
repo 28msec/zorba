@@ -21,7 +21,7 @@
 #include "util/properties.h"
 #include "util/tracer.h"
 #include "util/stl_extra.h"
-#include "util/hashmap.h"
+#include "util/hashmap32.h"
 
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/expression/expr.h"

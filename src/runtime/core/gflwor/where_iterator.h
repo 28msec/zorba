@@ -37,6 +37,13 @@ namespace flwor
       public:
         bool nextImpl ( store::Item_t& result, PlanState& planState ) const;
         virtual void accept ( PlanIterVisitor& ) const;
+      public:
+        SERIALIZABLE_CLASS(WhereIterator)
+        SERIALIZABLE_CLASS_CONSTRUCTOR2T(WhereIterator, BinaryBaseIterator<WhereIterator, PlanIteratorState>)
+        void serialize(::zorba::serialization::Archiver &ar)
+        {
+          serialize_baseclass(ar, (BinaryBaseIterator<WhereIterator, PlanIteratorState>*)this);
+        }
     };
   }
 }

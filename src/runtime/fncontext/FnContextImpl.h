@@ -43,6 +43,16 @@ class EvalIterator : public NaryBaseIterator<EvalIterator, EvalIteratorState>
   checked_vector<xqtref_t> vartypes;
 
 public:
+  SERIALIZABLE_CLASS(EvalIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(EvalIterator, NaryBaseIterator<EvalIterator, EvalIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<EvalIterator, EvalIteratorState>*)this);
+    ar & varnames;
+    ar & var_keys;
+    ar & vartypes;
+  }
+public:
   EvalIterator(short sctx,
                const QueryLoc& loc,
                checked_vector<store::Item_t> varnames_,

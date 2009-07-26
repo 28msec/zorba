@@ -53,6 +53,8 @@
 
 namespace zorba
 {
+SERIALIZABLE_CLASS_VERSIONS(ValidateIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ValidateIterator)
 
 /*______________________________________________________________________
   
@@ -197,10 +199,10 @@ bool ValidateIterator::effectiveValidationValue (
                 
   EventSchemaValidator schemaValidator = 
   EventSchemaValidator(typeManager,
-                       schema->getGrammarPool(),
-                       validationMode == ParseConstants::val_lax,
-                       loc);  
-  
+      schema->getGrammarPool(),
+      validationMode == ParseConstants::val_lax,
+      loc);  
+    
   switch (sourceNode->getNodeKind())
   {
   case store::StoreConsts::documentNode:
@@ -613,7 +615,7 @@ void ValidateIterator::processTextValue (
                    castToAtomic(result, textValue, type.getp(), &nsCtx);
         ZORBA_ASSERT(res);
         resultList.push_back(result);
-      }
+    }
     }
     else if (type->type_kind() == XQType::ATOMIC_TYPE_KIND)
     {

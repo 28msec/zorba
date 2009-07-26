@@ -56,6 +56,9 @@
 #endif
 #include "store/api/iterator.h"
 
+#include "context/static_context.h"
+#include "context/namespace_context.h"
+
 #define NOARY_ACCEPT(type) \
   void type::accept(PlanIterVisitor& v) const { \
     v.beginVisit(*this); \

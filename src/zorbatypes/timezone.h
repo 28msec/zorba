@@ -85,6 +85,14 @@ public:
 protected:
   bool timezone_not_set;
   
+public:
+  SERIALIZABLE_CLASS(TimeZone)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(TimeZone, Duration)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (Duration*)this);
+    ar & timezone_not_set;
+  }
 };
 
 } /* namespace zorba */

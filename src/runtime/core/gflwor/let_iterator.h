@@ -43,6 +43,17 @@ public:
 
   ~LetIterator();
         
+      public:
+        SERIALIZABLE_CLASS(LetIterator)
+        SERIALIZABLE_CLASS_CONSTRUCTOR2T(LetIterator, BinaryBaseIterator<LetIterator, PlanIteratorState>)
+        void serialize(::zorba::serialization::Archiver &ar)
+        {
+          serialize_baseclass(ar, (BinaryBaseIterator<LetIterator, PlanIteratorState>*)this);
+          ar & theVarName;
+          ar & theLetVars;
+          ar & theNeedsMat;
+        }
+      public:
   store::Item* getVarName() const { return theVarName.getp(); }
 
   bool nextImpl ( store::Item_t& result, PlanState& planState ) const;

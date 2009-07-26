@@ -42,6 +42,12 @@ using namespace zorba;
 XERCES_CPP_NAMESPACE_USE
 #endif
 
+SERIALIZABLE_CLASS_VERSIONS(TypeManager)
+END_SERIALIZABLE_CLASS_VERSIONS(TypeManager)
+
+SERIALIZABLE_CLASS_VERSIONS(TypeManagerImpl)
+END_SERIALIZABLE_CLASS_VERSIONS(TypeManagerImpl)
+
 
 /***************************************************************************//**
 
@@ -250,7 +256,7 @@ xqtref_t TypeManagerImpl::create_named_type(
       ZORBA_ASSERT(namedType->type_kind() == XQType::USER_DEFINED_KIND);
 
       return create_type(*namedType, quant);
-    }
+  }
 #endif
 
     return NULL;
@@ -651,7 +657,7 @@ xqtref_t TypeManagerImpl::create_type(
   {
     return create_builtin_atomic_type(
                   static_cast<const AtomicXQType*>(&type)->get_type_code(),
-                  quantifier);
+                              quantifier);
   }
 
   case XQType::NODE_TYPE_KIND:
@@ -660,9 +666,9 @@ xqtref_t TypeManagerImpl::create_type(
     if (type.is_builtin())
     {
       return create_builtin_node_type(nt.get_node_kind(),
-                                      quantifier,
+                            quantifier,
                                       nt.is_untyped());
-    }
+  }
     else
     {
       return new NodeXQType(nt, quantifier);

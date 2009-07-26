@@ -40,6 +40,15 @@ protected:
   QueryLoc loc;
 
 public:
+  SERIALIZABLE_ABSTRACT_CLASS(gflwor_clause)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(gflwor_clause, flwor_clause)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (flwor_clause*)this);
+	ar & sctx;
+    ar & loc;
+  }
+public:
   gflwor_clause (short sctx_, const QueryLoc &loc_) : sctx(sctx_), loc (loc_) {}
 
   const QueryLoc &get_loc () const { return loc; }
@@ -152,6 +161,14 @@ class where_gclause : public gflwor_clause
   expr_t where;
 
 public:
+  SERIALIZABLE_ABSTRACT_CLASS(where_gclause)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(where_gclause, gflwor_clause)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (gflwor_clause*)this);
+    ar & where;
+  }
+public:
   where_gclause (short sctx_, const QueryLoc &loc_, expr_t where_) 
     :
     gflwor_clause (sctx_, loc_),
@@ -172,6 +189,14 @@ class count_gclause : public gflwor_clause
 {
   varref_t var;
 
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(count_gclause)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(count_gclause, gflwor_clause)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (gflwor_clause*)this);
+    ar & var;
+  }
 public:
   count_gclause (short sctx_, const QueryLoc &loc_, varref_t var_) 
     :
@@ -200,6 +225,19 @@ protected:
 
   rebind_list_t rebind_list;
 
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(orderby_gclause)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(orderby_gclause, gflwor_clause)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (gflwor_clause*)this);
+    SERIALIZE_ENUM(ParseConstants::dir_spec_t, dir);
+    SERIALIZE_ENUM(StaticContextConsts::order_empty_mode_t, empty_mode);
+    ar & collation;
+    ar & stable;
+    ar & order;
+    ar & rebind_list;
+  }
 public:
   orderby_gclause (short sctx_,
                    const QueryLoc &loc_,
@@ -253,6 +291,15 @@ protected:
   std::vector<std::string> theCollations;
 
 public:
+  SERIALIZABLE_ABSTRACT_CLASS(group_gclause)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(group_gclause, gflwor_clause)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (gflwor_clause*)this);
+    ar & outer_rebind;
+    ar & theCollations;
+  }
+public:
   group_gclause(short sctx_,
                 const QueryLoc &loc_,
                 const rebind_list_t &inner_rebind_,
@@ -286,6 +333,15 @@ protected:
   clause_list_t clauses;
   expr_t        retval_h;
 
+public:
+  SERIALIZABLE_CLASS(gflwor_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(gflwor_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & clauses;
+    ar & retval_h;
+  }
 public:
   gflwor_expr(short sctx_,
               const QueryLoc &loc_,

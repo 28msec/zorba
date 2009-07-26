@@ -2,6 +2,7 @@
 #include "zorbaserialization/archiver.h"
 #include "zorbaerrors/error_manager.h"
 #include <zorba/error.h>
+#include "zorbaserialization/mem_archiver.h"
 
 #include "store/api/item.h"
 
@@ -12,16 +13,16 @@ namespace zorba{
 //////////////////////////////////////////////////////
 
 archive_field::archive_field(const char *type, bool is_simple, bool is_class, 
-              void *value, void *assoc_ptr,
+              const void *value, const void *assoc_ptr,
               int version, enum ArchiveFieldTreat  field_treat,
               int referencing)
 {
-  this->type = _strdup(type);
+  this->type = strdup(type);
   this->is_simple = is_simple;
   this->is_class = is_class;
   if(value)
   {
-    this->value = _strdup((char*)value);
+    this->value = strdup((char*)value);
   }
   else
     this->value = NULL;
@@ -39,8 +40,8 @@ archive_field::archive_field(const char *type, bool is_simple, bool is_class,
 archive_field::~archive_field()
 {
   free(type);
-  if(is_simple && value)
-    free(value);
+  if(/*is_simple &&*/ value)
+    free((void*)value);
   archive_field *temp1;
   archive_field *temp2;
   temp1 = first_child;
@@ -55,7 +56,7 @@ archive_field::~archive_field()
 /////////////////////////////////////////
 //////////////////////////////////////////////////////
 
-Archiver::Archiver(bool is_serializing_out)
+Archiver::Archiver(bool is_serializing_out, bool internal_archive)
 {
   this->serializing_out = is_serializing_out;
   //this->ser = ser;
@@ -72,16 +73,40 @@ Archiver::Archiver(bool is_serializing_out)
     current_compound_field = out_fields;
   }
 
-  nr_ids = 0;
+  if(internal_archive)
+    nr_ids = 0;
+  else
+  {
+    Archiver *har = ::zorba::serialization::ClassSerializer::getInstance()->harcoded_objects_archive;
+    nr_ids = har->get_nr_ids();
+  }
   current_class_version = 0;
   read_optional = false;
   is_temp_field = 0;
+  this->internal_archive = internal_archive;
+
+  all_reference_list = NULL;//(??30000, 0.6f)//, hash_out_fields(20000, 0.6f)
+  if(is_serializing_out)
+  {
+    simple_hashout_fields = new HashMap<SIMPLE_HASHOUT_FIELD, archive_field*, SimpleHashoutFieldCompare>(1000, false);
+    hash_out_fields = new hash64map<archive_field*>(10000, 0.6f);
+  }
+  else
+  {
+    simple_hashout_fields = NULL;
+    hash_out_fields = NULL;
+  }
+
+  compiler_cb = NULL;
 }
 
 Archiver::~Archiver()
 {
   if(out_fields)
     delete out_fields; 
+  delete all_reference_list;
+  delete simple_hashout_fields;
+  delete hash_out_fields;
 }
 
 
@@ -89,15 +114,15 @@ void Archiver::create_archive(const char *archive_name,
                             const char *archive_info,
                             int archive_version)
 {
-  this->archive_name = _strdup(archive_name);
-  this->archive_info = _strdup(archive_info);
+  this->archive_name = strdup(archive_name);
+  this->archive_info = strdup(archive_info);
   this->archive_version = archive_version;
 }
 
 //return true if field is not referencing
 bool Archiver::add_simple_field(const char *type, 
                             const char *value,
-                            void *orig_ptr,
+                            const void *orig_ptr,
                             enum ArchiveFieldTreat field_treat
                             )
 {
@@ -108,7 +133,7 @@ bool Archiver::add_simple_field(const char *type,
   if(!orig_ptr)
     field_treat = ARCHIVE_FIELD_IS_NULL;
   else if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && orig_ptr && !get_is_temp_field())
-    ref_field = check_nonclass_pointer(orig_ptr);
+    ref_field = check_nonclass_pointer(type, orig_ptr);
   if(ref_field)
   {
     if(field_treat == ARCHIVE_FIELD_NORMAL)
@@ -123,7 +148,12 @@ bool Archiver::add_simple_field(const char *type,
   }
 
 
-  new_field = new archive_field(type, true, false, (void*)value, orig_ptr, 0, field_treat, ref_field ? ref_field->id : 0);
+  new_field = new archive_field(type, true, false, value, orig_ptr, 0, field_treat, ref_field ? ref_field->id : 0);
+  if(!ref_field && (field_treat != ARCHIVE_FIELD_IS_BASECLASS) && orig_ptr && !get_is_temp_field())
+  {
+    SIMPLE_HASHOUT_FIELD  f(type, orig_ptr);
+    simple_hashout_fields->insert(f, new_field);
+  }
   if(!exch_fields)
   {
     new_field->parent = current_compound_field;
@@ -177,8 +207,8 @@ void Archiver::exchange_fields(archive_field  *new_field, archive_field  *ref_fi
 bool Archiver::add_compound_field(const char *type, 
                               int version, 
                               bool is_class,
-                              void *info,
-                              void *ptr,//for classes, pointer to SerializeBaseClass
+                              const void *info,
+                              const void *ptr,//for classes, pointer to SerializeBaseClass
                               enum ArchiveFieldTreat field_treat
                               )
 {
@@ -191,7 +221,7 @@ bool Archiver::add_compound_field(const char *type,
   else if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && ptr && !get_is_temp_field())
   {
     if(!is_class)
-      ref_field = check_nonclass_pointer(ptr);
+      ref_field = check_nonclass_pointer(type, ptr);
     else
       ref_field = check_class_pointer((SerializeBaseClass*)ptr);
   }
@@ -208,6 +238,16 @@ bool Archiver::add_compound_field(const char *type,
   }
 
   new_field = new archive_field(type, false, is_class, info, ptr, version, field_treat, ref_field ? ref_field->id : 0);
+  if(!ref_field && (field_treat != ARCHIVE_FIELD_IS_BASECLASS) && ptr && !get_is_temp_field())
+  {
+    if(!is_class)
+    {
+      SIMPLE_HASHOUT_FIELD  f(type, ptr);
+      simple_hashout_fields->insert(f, new_field);
+    }
+    else
+      hash_out_fields->put((uint64_t)ptr, new_field);
+  }
   if(!exch_fields)
   {
     new_field->parent = current_compound_field;
@@ -235,18 +275,29 @@ void Archiver::add_end_compound_field()
 void Archiver::set_class_type(const char *class_name)
 {
   free(current_compound_field->type);
-  current_compound_field->type = _strdup(class_name);
+  current_compound_field->type = strdup(class_name);
 }
 
-archive_field* Archiver::check_nonclass_pointer(void *ptr)
+archive_field* Archiver::check_nonclass_pointer(const char *type, const void *ptr)
 {
   if(!ptr)
     return NULL;
 
-  return check_nonclass_pointer_internal(ptr, out_fields);
+  //return check_nonclass_pointer_internal(ptr, out_fields);
+  archive_field *duplicate_field = NULL;
+  //hash_out_fields->get((uint64_t)ptr, duplicate_field);
+  SIMPLE_HASHOUT_FIELD  f(type, ptr);
+  simple_hashout_fields->get(f, duplicate_field);
+  if(!duplicate_field)
+  {
+    Archiver *har = ::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
+    if(har != this)
+      duplicate_field = har->check_nonclass_pointer(type, ptr);
+  }
+  return duplicate_field;
 }
-
-archive_field* Archiver::check_nonclass_pointer_internal(void *ptr, archive_field *fields)
+/*
+archive_field* Archiver::check_nonclass_pointer_internal(const void *ptr, archive_field *fields)
 {
   archive_field *child;
   child = fields->first_child;
@@ -265,16 +316,26 @@ archive_field* Archiver::check_nonclass_pointer_internal(void *ptr, archive_fiel
   }
   return 0;
 }
-
-archive_field* Archiver::check_class_pointer(SerializeBaseClass *ptr)
+*/
+archive_field* Archiver::check_class_pointer(const SerializeBaseClass *ptr)
 {
   if(!ptr)
     return NULL;
-  return check_class_pointer_internal(ptr, out_fields);
+  //return check_class_pointer_internal(ptr, out_fields);
+  archive_field *duplicate_field = NULL;
+  hash_out_fields->get((uint64_t)ptr, duplicate_field);
+  if(!duplicate_field)
+  {
+    Archiver *har = ::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
+    if(har != this)
+      duplicate_field = har->check_class_pointer(ptr);
+  }
+  return duplicate_field;
 }
-
-archive_field* Archiver::check_class_pointer_internal(SerializeBaseClass *ptr, archive_field *fields)
+/*
+archive_field* Archiver::check_class_pointer_internal(const SerializeBaseClass *ptr, archive_field *fields)
 {
+
   archive_field *child;
   child = fields->first_child;
   while(child)
@@ -292,7 +353,7 @@ archive_field* Archiver::check_class_pointer_internal(SerializeBaseClass *ptr, a
   }
   return 0;
 }
-
+*/
 
 
 void Archiver::check_simple_field(bool retval, 
@@ -307,11 +368,17 @@ void Archiver::check_simple_field(bool retval,
   {
     ZORBA_ERROR(SRL0001_INEXISTENT_INPUT_FIELD);
   }
-  if(!is_simple || strcmp(type, required_type))
+  if(!is_simple)
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
   }
-  if((field_treat != required_field_treat) && (field_treat != ARCHIVE_FIELD_IS_NULL))
+  if(field_treat == ARCHIVE_FIELD_IS_NULL)
+    return;
+  if(strcmp(type, required_type))
+  {
+    ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+  }
+  if((required_field_treat != (enum ArchiveFieldTreat)-1) && (field_treat != required_field_treat))
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
   }
@@ -330,11 +397,17 @@ void Archiver::check_nonclass_field(bool retval,
   {
     ZORBA_ERROR(SRL0001_INEXISTENT_INPUT_FIELD);
   }
-  if(is_simple || is_class || strcmp(type, required_type))
+  if(is_simple || is_class)
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
   }
-  if((field_treat != required_field_treat) && (field_treat != ARCHIVE_FIELD_IS_NULL))
+  if(field_treat == ARCHIVE_FIELD_IS_NULL)
+    return;
+  if(strcmp(type, required_type))
+  {
+    ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+  }
+  if((required_field_treat != (enum ArchiveFieldTreat)-1) && (field_treat != required_field_treat))
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
   }
@@ -353,24 +426,33 @@ void Archiver::check_class_field(bool retval,
   {
     ZORBA_ERROR(SRL0001_INEXISTENT_INPUT_FIELD);
   }
-  if(is_simple || !is_class || strcmp(type, required_type))
+  if(is_simple || !is_class)
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
   }
-  if((field_treat != required_field_treat) && (field_treat != ARCHIVE_FIELD_IS_NULL))
+  if(field_treat == ARCHIVE_FIELD_IS_NULL)
+    return;
+  if(strcmp(type, required_type))
+  {
+    ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+  }
+  if((required_field_treat != (enum ArchiveFieldTreat)-1) && (field_treat != required_field_treat))
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
   }
 }
 
-void Archiver::register_reference(int id, enum ArchiveFieldTreat field_treat, void *ptr)
+void Archiver::register_reference(int id, enum ArchiveFieldTreat field_treat, const void *ptr)
 {
   if(get_is_temp_field() && (field_treat != ARCHIVE_FIELD_IS_PTR))
     return;
-  struct field_ptr_vs_id    fid;
-  fid.field_id = id;
-  fid.assoc_ptr = ptr;
-  all_reference_list.push_back(fid);
+
+//  struct field_ptr_vs_id    fid;
+//  fid.field_id = id;
+//  fid.assoc_ptr = ptr;
+//  all_reference_list->push_back(fid);
+  all_reference_list->put((uint32_t)id, (void*)ptr);
+
 }
 void Archiver::register_item(store::Item* i)
 {
@@ -387,22 +469,68 @@ void Archiver::register_delay_reference(void **ptr,
   fid.referencing = referencing;
   fid.is_class = is_class;
   fid.ptr = ptr;
+  *ptr = NULL;
+  //fid.add_ref_to_rcobject = true;
   if(class_name)
-    fid.class_name = _strdup(class_name);
+    fid.class_name = strdup(class_name);
   else
     fid.class_name = NULL;
   fwd_reference_list.push_back(fid);
 }
 
+void Archiver::reconf_last_delayed_rcobject(void **last_obj, void **new_last_obj)
+{
+  if(fwd_reference_list.size() > 0)
+  {
+    struct fwd_ref    &fid = fwd_reference_list.back();
+    if(fid.ptr == last_obj)
+    {
+      //fid.add_ref_to_rcobject = false;
+      fid.ptr = new_last_obj;
+    }
+  }
+}
+
+void Archiver::register_pointers_internal(archive_field *fields)
+{
+  archive_field *child;
+  child = fields->first_child;
+  while(child)
+  {
+    register_reference(child->id, child->field_treat, child->assoc_ptr);
+    if(!child->is_simple)
+    {
+      register_pointers_internal(child);
+    }
+    child = child->next;
+  }
+}
+
 void *Archiver::get_reference_value(int refid)
 {
+/*
   std::list<field_ptr_vs_id>::iterator    all_it;
-  for(all_it=all_reference_list.begin(); all_it != all_reference_list.end(); all_it++)
+  for(all_it=all_reference_list->begin(); all_it != all_reference_list->end(); all_it++)
   {
     if((*all_it).field_id == refid)
       return (*all_it).assoc_ptr;
   }
   return NULL;
+*/
+  if(internal_archive && !all_reference_list)
+  {
+    //construct all_reference_list
+    root_tag_is_read();
+    register_pointers_internal(out_fields);
+  }
+  void *assoc_ptr = NULL;
+  if(!all_reference_list->get((uint32_t)refid, assoc_ptr))
+  {
+    Archiver *har = ::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
+    if(har != this)
+      assoc_ptr = har->get_reference_value(refid);
+  }
+  return assoc_ptr;
 }
 
 void Archiver::finalize_input_serialization()
@@ -432,7 +560,7 @@ void Archiver::finalize_input_serialization()
       cls_factory->cast_ptr((SerializeBaseClass*)ptr, (*it).ptr);
       RCObject *rcobj = dynamic_cast<RCObject*>((SerializeBaseClass*)ptr);
       if(rcobj)
-        rcobj->addReference(rcobj->getSharedRefCounter() SYNC_PARAM2(rcobj->getRCLock()));
+        RCHelper::addReference(rcobj);//this can lead to memory leaks
     }
   }
 
@@ -453,4 +581,15 @@ void Archiver::set_class_version(int new_class_version)
 {
   current_class_version = new_class_version;
 }
+
+void Archiver::root_tag_is_read()
+{
+  all_reference_list = new hash32map<void*>(nr_ids*2, 0.6f);
+}
+
+int Archiver::get_nr_ids()
+{
+  return nr_ids;
+}
+
 }}

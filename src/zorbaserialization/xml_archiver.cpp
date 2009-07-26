@@ -12,6 +12,36 @@ XmlArchiver::XmlArchiver(std::istream *is) : Archiver(false)
   this->os = NULL;
   read_tag_level = 0;
   is_compound_field_without_children = false;
+
+  //read the top tag
+  char  c = 0;
+  
+read_tag:
+  while(c != '<')
+  {
+    is->read(&c, 1);
+    if(c == 0)
+    {
+      ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+    }
+  }
+
+  is->read(&c, 1);
+  if(c == '?')//skip pi
+  {
+    skip_tag();
+    goto read_tag;
+  }
+  if(c == '!')//skip comment
+  {
+    skip_comment_tag();
+    goto read_tag;
+  }
+  if(!read_root_tag(c))
+  {
+    ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+  }
+  read_tag_level++;
 }
 
 XmlArchiver::XmlArchiver(std::ostream *os) : Archiver(true)
@@ -39,7 +69,8 @@ void XmlArchiver::serialize_out()
   write_string("archive_info=\"");
   encode_string(archive_info.c_str());
   write_string("\" ");
-  *os << "archive_version=\"" << archive_version << "\" >" << std::endl;
+  *os << "archive_version=\"" << archive_version << "\" ";
+  *os << "nr_ids=\"" << nr_ids << "\" >" << std::endl;
   serialize_compound_fields(out_fields);
   write_string("</zorba_archive>\n");
 
@@ -167,7 +198,13 @@ bool XmlArchiver::read_next_field( char **type,
   
 read_tag:
   while(c != '<')
+  {
     is->read(&c, 1);
+    if(c == 0)
+    {
+      return false;
+    }
+  }
 
   is->read(&c, 1);
   if(c == '?')//skip pi
@@ -356,7 +393,13 @@ bool XmlArchiver::read_root_tag(char c)
       read_attrib_value(attrib_value);
       archive_version = atoi(attrib_value);
     }
+    else if(!strcmp(attrib_name, "nr_ids"))
+    {
+      read_attrib_value(attrib_value);
+      nr_ids = atoi(attrib_value);
+    }
   }
+  root_tag_is_read();
   return true;
 }
 
@@ -372,7 +415,13 @@ void XmlArchiver::read_end_current_level()
   char  c = 0;
 read_tag:
   while(c != '<')
+  {
     is->read(&c, 1);
+    if(c == 0)
+    {
+      ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+    }
+  }
 
   is->read(&c, 1);
   if(c == '?')//skip pi
@@ -403,7 +452,7 @@ read_tag:
   return;
 }
 
-bool XmlArchiver::match_string(char c, char *match)
+bool XmlArchiver::match_string(char c, const char *match)
 {
   if(match[0] != c)
     return false;
@@ -432,6 +481,10 @@ read_name:
   do
   {
     is->read(&c, 1);
+    if(c == 0)
+    {
+      return false;
+    }
   }
   while((c == ' ') || (c == '\t') || (c == '\n') || (c == '\r'));
   if(c == '>')
@@ -446,6 +499,10 @@ read_name:
   while(1)
   {
     is->read(&c, 1);
+    if(c == 0)
+    {
+      return false;
+    }
     if(c == '>')
       return false;
     if((c == ' ') || (c == '\t') || (c == '\n') || (c == '\r') || (c == '='))
@@ -457,6 +514,10 @@ read_name:
   while(c != '=')
   {
     is->read(&c, 1);
+    if(c == 0)
+    {
+      return false;
+    }
   }
   return true;
 }
@@ -465,11 +526,21 @@ void XmlArchiver::read_attrib_value(char *attrib_value)
 {
   char c = 0;
   while(c!='\"')
+  {
     is->read(&c, 1);
+    if(c == 0)
+    {
+      ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+    }
+  }
   c = 0;
   while(1)
   {
     is->read(&c, 1);
+    if(c == 0)
+    {
+      ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+    }
     if(c == '\"')
       break;
     //case '\"': write_string("&quot;";break;
@@ -566,11 +637,21 @@ void XmlArchiver::read_attrib_value(std::string *attrib_value)
 {
   char c = 0;
   while(c!='\"')
+  {
     is->read(&c, 1);
+    if(c == 0)
+    {
+      ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+    }
+  }
   c = 0;
   while(1)
   {
     is->read(&c, 1);
+    if(c == 0)
+    {
+      ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+    }
     if(c == '\"')
       break;
     if(c == '&')
@@ -665,6 +746,10 @@ void XmlArchiver::skip_tag()
   while((c != ' ') && (c != '\t') && (c != '\n') && (c != '\r') && (c != '>'))
   {
     is->read(&c, 1);
+    if(c == 0)
+    {
+      ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+    }
   }
   if(c == '>')
     return;
@@ -685,6 +770,10 @@ void XmlArchiver::skip_comment_tag()
     while(1)
     {
       is->read(&c, 1);
+      if(c == 0)
+      {
+        ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+      }
       switch(c)
       {
       case ']':
@@ -706,6 +795,10 @@ void XmlArchiver::skip_comment_tag()
     while(1)
     {
       is->read(&c, 1);
+      if(c == 0)
+      {
+        ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+      }
       switch(c)
       {
       case '-':
@@ -726,6 +819,10 @@ void XmlArchiver::skip_comment_tag()
     while(c != '>')
     {
       is->read(&c, 1);
+      if(c == 0)
+      {
+        ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+      }
     }
   }
 }

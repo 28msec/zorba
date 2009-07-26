@@ -43,6 +43,7 @@ typedef long	off_t;
 
 
 #define  strcasecmp		_stricmp
+#define  strdup   		_strdup
 
 #define		isatty			_isatty
 #define		fileno			_fileno

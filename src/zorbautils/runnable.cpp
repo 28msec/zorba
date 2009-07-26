@@ -100,4 +100,4 @@ void zorba::Runnable::finishImpl()
   finishCalled = true;
 }
 
-#endif
+#endif//#ifndef ZORBA_FOR_ONE_THREAD_ONLY

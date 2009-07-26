@@ -494,6 +494,7 @@ store::Item_t SimpleStore::loadDocument(
 
   if (found)
   {
+    //+ daniel theDocuments.remove(uri);
     return root.getp();
   }
 

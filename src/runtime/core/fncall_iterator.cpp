@@ -32,6 +32,8 @@
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/api/runtimecb.h"
 
+#include "context/dynamic_context.h"
+
 #include "functions/function.h"
 
 #include "api/unmarshaller.h"
@@ -41,6 +43,12 @@
 #endif
 
 namespace zorba {
+
+SERIALIZABLE_CLASS_VERSIONS(UDFunctionCallIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(UDFunctionCallIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(StatelessExtFunctionCallIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(StatelessExtFunctionCallIterator)
 
 UDFunctionCallIteratorState::UDFunctionCallIteratorState()
   :

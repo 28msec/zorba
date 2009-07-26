@@ -39,6 +39,13 @@ public:
 public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(FnDateTimeConstructorIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDateTimeConstructorIterator, BinaryBaseIterator<FnDateTimeConstructorIterator,PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (BinaryBaseIterator<FnDateTimeConstructorIterator,PlanIteratorState>*)this);
+  }
 };
 /*
 10.1 Duration, Date and Time Types
@@ -68,6 +75,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(OpDurationEqualIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(OpDurationEqualIterator, BinaryBaseIterator<OpDurationEqualIterator,PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (BinaryBaseIterator<OpDurationEqualIterator,PlanIteratorState>*)this);
+  }
 };
 
 /*
@@ -163,6 +177,14 @@ private:
   DateTime::FACET_TYPE facet_type;
     
 public:
+  SERIALIZABLE_CLASS(FnFormatDateTimeIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnFormatDateTimeIterator, NaryBaseIterator<FnFormatDateTimeIterator, PlanIteratorState >)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<FnFormatDateTimeIterator, PlanIteratorState >*)this);
+    SERIALIZE_ENUM(DateTime::FACET_TYPE, facet_type);
+  }
+public:
   FnFormatDateTimeIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, DateTime::FACET_TYPE a_facet_type = DateTime::DATETIME_FACET)
     :
     NaryBaseIterator<FnFormatDateTimeIterator, PlanIteratorState >(sctx, loc, aChildren), facet_type(a_facet_type)
@@ -210,6 +232,13 @@ public:
 public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(FnAdjustToTimeZoneIterator_1)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnAdjustToTimeZoneIterator_1, UnaryBaseIterator<FnAdjustToTimeZoneIterator_1,PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<FnAdjustToTimeZoneIterator_1,PlanIteratorState>*)this);
+  }
 };
 
 class FnAdjustToTimeZoneIterator_2 : public BinaryBaseIterator<FnAdjustToTimeZoneIterator_2,
@@ -225,6 +254,13 @@ public:
 public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(FnAdjustToTimeZoneIterator_2)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnAdjustToTimeZoneIterator_2, BinaryBaseIterator<FnAdjustToTimeZoneIterator_2, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (BinaryBaseIterator<FnAdjustToTimeZoneIterator_2, PlanIteratorState>*)this);
+  }
 };
 
 

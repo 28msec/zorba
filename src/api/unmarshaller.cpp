@@ -21,6 +21,7 @@
 #include "api/collectionimpl.h"
 #include "store/api/collection.h"
 #include "runtime/api/plan_wrapper.h"
+#include "runtime/base/plan_iterator.h"
 
 
 namespace zorba {

@@ -22,7 +22,7 @@ namespace zorba {
 			std::ostream &m_stream;
 		};
 		SYNC_CODE(static Lock m_lock;)
-		static SynchronousLogger cerr(std::cerr);
+    static SynchronousLogger cerr(std::cerr);
 		static SynchronousLogger clog(std::clog);
 		static SynchronousLogger cout(std::cout);
 	}

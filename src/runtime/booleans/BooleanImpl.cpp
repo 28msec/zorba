@@ -42,6 +42,33 @@
 
 namespace zorba {
 
+SERIALIZABLE_CLASS_VERSIONS(FnBooleanIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnBooleanIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(LogicIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(LogicIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(CompareIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(CompareIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(OpIsSameNodeIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(OpIsSameNodeIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(OpNodeBeforeIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(OpNodeBeforeIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(OpNodeAfterIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(OpNodeAfterIterator)
+
+SERIALIZABLE_TEMPLATE_VERSIONS(TypedValueCompareIterator)
+END_SERIALIZABLE_TEMPLATE_VERSIONS(TypedValueCompareIterator)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<TypeConstants::XS_DOUBLE>, 1)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<TypeConstants::XS_FLOAT>, 2)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<TypeConstants::XS_DECIMAL>, 3)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<TypeConstants::XS_INTEGER>, 4)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<TypeConstants::XS_STRING>, 5)
+
 /*______________________________________________________________________
 
  15.1.1 fn:boolean
@@ -190,6 +217,10 @@ CompareIterator::CompareIterator(
     theIsGeneralComparison = false;
     break;
   }
+
+  theTypeManager = NULL;
+  theCollation = NULL;
+  theTimezone = 0;
 }
 
   

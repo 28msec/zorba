@@ -61,9 +61,10 @@ std::vector<std::string> std_string_tokenize(
                                           
 
 
-XQPCollator::XQPCollator(void* aCollator, bool doMemCmp)
+XQPCollator::XQPCollator(void* aCollator, const std::string& aCollationURI, bool doMemCmp)
   :
   theCollator((Collator*)aCollator),
+  uri(aCollationURI),
   theDoMemCmp(doMemCmp)
 {
 }
@@ -72,6 +73,11 @@ XQPCollator::XQPCollator(void* aCollator, bool doMemCmp)
 XQPCollator::~XQPCollator()
 {
   delete (Collator*)theCollator;
+}
+
+const std::string& XQPCollator::getURI()
+{
+  return uri;
 }
 
 
@@ -91,10 +97,10 @@ CollationFactory::createCollator(const std::string& aCollationURI)
     lCollator->setStrength(Collator::TERTIARY);
     lCollator->setAttribute(UCOL_CASE_FIRST, UCOL_UPPER_FIRST, lError);
     assert( lError == U_ZERO_ERROR );
-    return new XQPCollator(lCollator, true);
+    return new XQPCollator(lCollator, aCollationURI, true);
 #else
     Collator* coll = new Collator;
-    return new XQPCollator(coll, true);
+    return new XQPCollator(coll, aCollationURI, true);
 #endif
   }
 
@@ -172,7 +178,7 @@ CollationFactory::createCollator(const std::string& aCollationURI)
     return 0;
   }
   
-  return new XQPCollator(lCollator);
+  return new XQPCollator(lCollator, aCollationURI);
 }
 
 
@@ -190,7 +196,7 @@ CollationFactory::createCollator()
 #else
   lCollator = new Collator;
 #endif
-  return new XQPCollator(lCollator);
+  return new XQPCollator(lCollator, (std::string)"");
 }
 
 

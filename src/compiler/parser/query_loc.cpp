@@ -19,6 +19,9 @@
 #include <ostream>
 
 namespace zorba {
+SERIALIZABLE_CLASS_VERSIONS(QueryLoc)
+END_SERIALIZABLE_CLASS_VERSIONS(QueryLoc)
+
 QueryLoc QueryLoc::null;
 
 QueryLoc::QueryLoc()
@@ -31,7 +34,8 @@ QueryLoc::QueryLoc()
 {}
 
 QueryLoc::QueryLoc(const QueryLoc& aQueryLoc) 
- : theFilenameBegin (aQueryLoc.theFilenameBegin),
+ : ::zorba::serialization::SerializeBaseClass(),
+   theFilenameBegin (aQueryLoc.theFilenameBegin),
    theLineBegin (aQueryLoc.theLineBegin),
    theColumnBegin (aQueryLoc.theColumnBegin),
    theFilenameEnd (aQueryLoc.theFilenameEnd),

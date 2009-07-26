@@ -40,37 +40,39 @@ using namespace std;
 namespace zorba
 {
 
+SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
+
 PlanIter_t EvalIterator::compile(
     CompilerCB *ccb,
     xqp_string query, 
-    checked_vector<store::Item_t> varnames,
-    checked_vector<xqtref_t> vartypes) 
+    checked_vector<store::Item_t> varnames,    checked_vector<xqtref_t> vartypes) 
 {
-  XQueryCompiler compiler (ccb);
-  istringstream os (query);
-  parsenode_t ast = compiler.parse (os);
-  QueryLoc loc;
+    XQueryCompiler compiler (ccb);
+    istringstream os (query);
+    parsenode_t ast = compiler.parse (os);
+    QueryLoc loc;
 
-  rchandle<MainModule> mm = ast.dyn_cast<MainModule> ();
-  if (mm == NULL)
-    ZORBA_ERROR_LOC (XPST0003, loc);
-  rchandle<Prolog> prolog = mm->get_prolog ();
-  if (prolog == NULL) {
-    prolog = new Prolog (loc, NULL, NULL);
-    mm->set_prolog (prolog);
+    rchandle<MainModule> mm = ast.dyn_cast<MainModule> ();
+    if (mm == NULL)
+      ZORBA_ERROR_LOC (XPST0003, loc);
+    rchandle<Prolog> prolog = mm->get_prolog ();
+    if (prolog == NULL) {
+      prolog = new Prolog (loc, NULL, NULL);
+      mm->set_prolog (prolog);
+    }
+    rchandle<VFO_DeclList> vfo = prolog->get_vfo_list ();
+    if (vfo == NULL) {
+      vfo = new VFO_DeclList (loc);
+      prolog->set_vfo_list (vfo);
+    }
+
+    for (int i = (int) varnames.size () - 1; i >= 0; i--)
+      vfo->push_front (new VarDecl (loc, xqp_string (varnames [i]->getStringValue ()), NULL, NULL, true));
+    // TODO: give eval'ed code the types of the variables (for optimization)
+
+    return compiler.compile (ast);
   }
-  rchandle<VFO_DeclList> vfo = prolog->get_vfo_list ();
-  if (vfo == NULL) {
-    vfo = new VFO_DeclList (loc);
-    prolog->set_vfo_list (vfo);
-  }
-  
-  for (int i = (int) varnames.size () - 1; i >= 0; i--)
-    vfo->push_front (new VarDecl (loc, xqp_string (varnames [i]->getStringValue ()), NULL, NULL, true));
-  // TODO: give eval'ed code the types of the variables (for optimization)
-  
-  return compiler.compile (ast);
-}
 
 
 bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
@@ -83,7 +85,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   // set up eval state's ccb
   state->ccb.reset (new CompilerCB (*planState.theCompilerCB));
   state->ccb->m_sctx = planState.theCompilerCB->m_sctx->create_child_context ();
-  state->ccb->m_context_map[state->ccb->m_cur_sctx] = state->ccb->m_sctx; 
+  (*state->ccb->m_context_map)[state->ccb->m_cur_sctx] = state->ccb->m_sctx; 
   CONSUME (item, 0);
 
   {

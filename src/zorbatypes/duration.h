@@ -20,11 +20,13 @@
 #include "zorbatypes/zorbatypes_decl.h"
 #include "zorbatypes/xqpstring.h"
 
+#include "zorbaserialization/serialization_engine.h"
+
 namespace zorba
 {
 
 
-class ZORBA_DLL_PUBLIC Duration
+  class ZORBA_DLL_PUBLIC Duration : public ::zorba::serialization::SerializeBaseClass
 {
 public:
   typedef enum
@@ -185,6 +187,21 @@ protected:
 
   bool is_negative;
   long data[7];
+public:
+  SERIALIZABLE_CLASS(Duration)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(Duration)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    SERIALIZE_ENUM(FACET_TYPE, facet);
+    ar & is_negative;
+    ar & data[0];
+    ar & data[1];
+    ar & data[2];
+    ar & data[3];
+    ar & data[4];
+    ar & data[5];
+    ar & data[6];
+  }
 };
 
 

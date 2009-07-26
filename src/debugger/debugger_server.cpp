@@ -535,7 +535,7 @@ namespace zorba{
 
 		//set up eval state's ccb
     ccb->m_sctx = ccb->m_sctx->create_child_context();
-		ccb->m_context_map[ccb->m_context_map.size()+1] = ccb->m_sctx;
+		(*ccb->m_context_map)[ccb->m_context_map->size()+1] = ccb->m_sctx;
 		ccb->m_debugger = 0;
 
 		//set up import list

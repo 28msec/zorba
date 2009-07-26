@@ -16,11 +16,11 @@
 #ifndef ZORBA_UTIL_CONDITION_H
 #define ZORBA_UTIL_CONDITION_H
 
-#ifndef ZORBA_FOR_ONE_THREAD_ONLY
 
 #include <zorba/config.h>
 #include "zorbamisc/config/platform.h"
 
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
 #ifdef ZORBA_HAVE_PTHREAD_H
 #include <pthread.h>
 #endif

@@ -273,6 +273,13 @@ class GenericArithIterator
         store::Item_t& n0,
         store::Item_t& n1);
 
+public:
+  SERIALIZABLE_TEMPLATE_CLASS(GenericArithIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(GenericArithIterator, BinaryBaseIterator<GenericArithIterator<Operation>, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (BinaryBaseIterator<GenericArithIterator<Operation>, PlanIteratorState>*)this);
+  }
 }; /* class NumArithIterator */
 }
 

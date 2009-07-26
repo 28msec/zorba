@@ -169,7 +169,9 @@ void TestModuleURIResolver::initialize ()
     if (pos != std::string::npos && theTest.substr (0, pos) == "w3c_testsuite")
       pos = theTest.find_first_of ('/', pos + 1);
     else {
+#ifndef MY_D_WIN32
       return;
+#endif
     }
     pfx = theTest.substr (0, pos) + "/";
   }

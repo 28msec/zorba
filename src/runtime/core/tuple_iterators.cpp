@@ -24,6 +24,15 @@
 
 namespace zorba {
 
+SERIALIZABLE_CLASS_VERSIONS(CreateTupleIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(CreateTupleIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(store::TupleField)
+END_SERIALIZABLE_CLASS_VERSIONS(store::TupleField)
+
+SERIALIZABLE_CLASS_VERSIONS(GetTupleFieldIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(GetTupleFieldIterator)
+
 bool
 CreateTupleIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {

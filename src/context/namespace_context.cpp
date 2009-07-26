@@ -19,6 +19,11 @@
 
 namespace zorba {
 
+SERIALIZABLE_CLASS_VERSIONS(namespace_context)
+END_SERIALIZABLE_CLASS_VERSIONS(namespace_context)
+
+
+
 namespace_context::namespace_context(static_context *sctx, store::NsBindings& bindings)
       : m_sctx(sctx)
 {

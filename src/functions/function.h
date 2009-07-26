@@ -23,6 +23,7 @@
 #include "compiler/semantic_annotations/annotation_holder.h"
 #include "compiler/expression/expr_consts.h"
 #include "compiler/api/compilercb.h"
+#include "runtime/core/var_iterators.h"
 
 #include "runtime/booleans/compare_types.h"
 
@@ -100,17 +101,25 @@ public:
   } AnnotationProperty_t;
 
 protected:
-  signature sig;
+	signature sig;
 
 public:
-  function(const signature& _sig) : sig(_sig) {}
+  SERIALIZABLE_ABSTRACT_CLASS(function)
+  SERIALIZABLE_CLASS_CONSTRUCTOR3(function, SimpleRCObject, sig)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    //serialize_baseclass(ar, (SimpleRCObject*)this);
+    ar & sig;
+  }
+public:
+	function(const signature& _sig) : sig(_sig) {}
 
-  virtual ~function() {}
+	virtual ~function() {}
 
-  // XQuery signature (name+arity)
-  const store::Item_t& get_fname() const { return sig.get_name(); }
+	// XQuery signature (name+arity)
+	const store::Item_t& get_fname() const { return sig.get_name(); }
 
-  void set_signature(signature& _sig) { sig = _sig; }
+	void set_signature(signature& _sig) { sig = _sig; }
 
   const signature& get_signature() const { return sig; }
 
@@ -125,8 +134,8 @@ public:
 	std::vector<AnnotationHolder *> &,
 	Annotation::key_t) const;
 
-  // runtime arg validation
-  virtual bool validate_args(std::vector<PlanIter_t>& argv) const;
+	// runtime arg validation
+	virtual bool validate_args(std::vector<PlanIter_t>& argv) const;
 
   // Annotation calculator functions
   virtual bool isSource() const { return false; }
@@ -219,12 +228,31 @@ private:
   mutable int32_t                   m_state_size;
 
 public:
+  SERIALIZABLE_CLASS(user_function)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(user_function, function)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    if(ar.is_serializing_out())
+      get_plan(ar.compiler_cb);
+    serialize_baseclass(ar, (function*)this);
+    ar & m_loc;
+    //m_expr_body
+    //m_args
+    SERIALIZE_ENUM(expr_update_t, theUpdateType);
+	  ar & sequential;
+    ar & deterministic;
+	  ar & leaf;
+    ar & m_plan;
+    ar & m_param_iters;
+    ar & m_state_size;
+  }
+public:
   user_function(
         const QueryLoc& loc,
-        const signature& _sig,
-        expr_t expr_body, 
-        ParseConstants::function_type_t,
-        bool deterministic_);
+                const signature& _sig,
+                expr_t expr_body, 
+                ParseConstants::function_type_t,
+                bool deterministic_);
 
   virtual ~user_function();
 
@@ -251,7 +279,7 @@ public:
   bool requires_dyn_ctx () const;
 
   virtual PlanIter_t get_plan(CompilerCB *) const;
-
+  
   virtual std::vector<LetVarIter_t>& get_param_iters() const;
 
   virtual PlanIter_t codegen(
@@ -267,10 +295,10 @@ public:
 ********************************************************************************/
 class external_function : public function 
 {
-public:
+  public:
   external_function(const signature& sig) : function(sig) { }
 
-  virtual ~external_function() { }
+    virtual ~external_function() { }
 };
 
 

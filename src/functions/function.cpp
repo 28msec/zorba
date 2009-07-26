@@ -25,7 +25,7 @@
 
 #include "functions/function.h"
 
-#include "util/hashmap.h"
+#include "util/hashmap32.h"
 
 #include "types/typeops.h"
 
@@ -33,6 +33,11 @@ using namespace std;
 
 namespace zorba {
 
+SERIALIZABLE_CLASS_VERSIONS(function)
+END_SERIALIZABLE_CLASS_VERSIONS(function)
+
+SERIALIZABLE_CLASS_VERSIONS(user_function)
+END_SERIALIZABLE_CLASS_VERSIONS(user_function)
 
 /*******************************************************************************
 
@@ -90,10 +95,10 @@ function::AnnotationProperty_t function::producesNodeIdSorted() const
 ********************************************************************************/
 user_function::user_function(
     const QueryLoc& loc, 
-    const signature& _sig, 
-    expr_t expr_body, 
-    enum ParseConstants::function_type_t ftype,
-    bool deterministic_)
+                             const signature& _sig, 
+                             expr_t expr_body, 
+                             enum ParseConstants::function_type_t ftype,
+                             bool deterministic_)
   :
   function(_sig), 
   m_loc(loc), 
@@ -102,14 +107,14 @@ user_function::user_function(
   sequential (ftype == ParseConstants::fn_sequential),
   deterministic (deterministic_),
   leaf (true)
-{ 
+{
+  m_state_size = 0;
 }
 
 
 user_function::~user_function()
 {
 }
-
 
 const QueryLoc& user_function::get_location() const
 {

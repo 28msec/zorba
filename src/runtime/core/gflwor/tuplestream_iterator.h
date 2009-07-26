@@ -36,6 +36,14 @@ namespace flwor
         bool        theIsUpdating;
         
       public:
+        SERIALIZABLE_CLASS(TupleStreamIterator)
+        SERIALIZABLE_CLASS_CONSTRUCTOR2T(TupleStreamIterator, BinaryBaseIterator<TupleStreamIterator, PlanIteratorState>)
+        void serialize(::zorba::serialization::Archiver &ar)
+        {
+          serialize_baseclass(ar, (BinaryBaseIterator<TupleStreamIterator, PlanIteratorState>*)this);
+          ar & theIsUpdating;
+        }
+      public:
         TupleStreamIterator (
           short                       sctx,
           const QueryLoc&             aLoc,

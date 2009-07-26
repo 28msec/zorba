@@ -3,12 +3,15 @@
 #define ZORBA_BINARY_SERIALIZATION_ARCHIVER
 
 #include "zorbaserialization/class_serializer.h"
+#include "util/hashmap32.h"
+#include "zorbautils/hashmap.h"
 
 namespace zorba{
 namespace store{
 class Item;
 }
-
+class CompilerCB;
+//class XQueryImpl;
   namespace serialization{
 
 #define   ARCHIVER_LATEST_VERSION   0x1 //current latest version
@@ -30,6 +33,15 @@ class Item;
 
 class ClassSerializer;
 
+enum ArchiveFieldTreat
+{
+  ARCHIVE_FIELD_NORMAL,
+  ARCHIVE_FIELD_IS_PTR,
+  ARCHIVE_FIELD_IS_NULL,
+  ARCHIVE_FIELD_IS_BASECLASS,
+  ARCHIVE_FIELD_IS_REFERENCING
+};
+/*
 struct field_ptr_vs_id
 {
   int   field_id;
@@ -39,12 +51,14 @@ struct field_ptr_vs_id
     void  *assoc_ptr;
   };
 };
+*/
 
 struct fwd_ref
 {
   int referencing;
   void **ptr;
   bool is_class;
+  //bool add_ref_to_rcobject;
   char *class_name;
 };
 
@@ -58,10 +72,10 @@ public:
   int   referencing;
   int   id;
   bool  is_class;
-  char  *value;//for simple fields
+  const char  *value;//for simple fields
   union{
-    SerializeBaseClass  *assoc_class_ptr;
-    void  *assoc_ptr;
+    const SerializeBaseClass  *assoc_class_ptr;
+    const void  *assoc_ptr;
   };
 
   class archive_field  *next;
@@ -71,33 +85,56 @@ public:
 
 public:
   archive_field(const char *type, bool is_simple, bool is_class, 
-                void *value, void *assoc_ptr,
+                const void *value, const void *assoc_ptr,
                 int version, enum ArchiveFieldTreat  field_treat,
                 int referencing);
   ~archive_field();
 };
 
-enum ArchiveFieldTreat
-{
-  ARCHIVE_FIELD_NORMAL,
-  ARCHIVE_FIELD_IS_PTR,
-  ARCHIVE_FIELD_IS_NULL,
-  ARCHIVE_FIELD_IS_BASECLASS,
-  ARCHIVE_FIELD_IS_REFERENCING
-};
-
-
 //base class
 class Archiver
 {
   friend class ClassSerializer;
+  struct SIMPLE_HASHOUT_FIELD
+  {
+    std::string   type;
+    const void *  ptr;
+    SIMPLE_HASHOUT_FIELD() {}
+    SIMPLE_HASHOUT_FIELD(const char *typestr, const void *ptrptr)
+    {
+      type = typestr;
+      if(type[type.length()-1] == '*')
+        type.resize(type.length()-1);
+      ptr = ptrptr;
+
+    }
+  };
+  class SimpleHashoutFieldCompare
+  {
+  public: 
+    uint32_t hash(const SIMPLE_HASHOUT_FIELD& f)
+    {
+      uint32_t  h = 0;
+      h = hashfun::h32(f.type);
+      h = hashfun::h32((void*)&f.ptr, sizeof(void*), h);
+      return h;
+    }
+    bool equal(const SIMPLE_HASHOUT_FIELD& f1, const SIMPLE_HASHOUT_FIELD& f2)
+    {
+      if((f1.ptr == f2.ptr) && (f1.type == f2.type))
+        return true;
+      else
+        return false;
+    }
+  };
 protected:
   bool  serializing_out;
-  ClassSerializer *ser;
+  //ClassSerializer *ser;
 
   int  serialize_base_class;
 
-  std::list<struct field_ptr_vs_id>   all_reference_list;
+  //std::list<struct field_ptr_vs_id>   all_reference_list;
+  hash32map<void*>       *all_reference_list;//key is id, value is assoc_ptr
   
   std::list<struct fwd_ref>   fwd_reference_list;
 
@@ -107,30 +144,36 @@ protected:
 
   class archive_field  *out_fields;
   class archive_field  *current_compound_field;
+  HashMap<SIMPLE_HASHOUT_FIELD, archive_field*, SimpleHashoutFieldCompare>    *simple_hashout_fields;
+  hash64map<archive_field*>       *hash_out_fields;//key is ptr, value is archive_field*
 
   int   nr_ids;
   int   current_class_version;
 
   bool  read_optional;
   int   is_temp_field;
+  bool  internal_archive;
 
   std::vector<store::Item*>   registered_items;
 public:
-  Archiver(bool is_serializing_out);
+  //XQueryImpl  *xquery_impl;//to workaround std::map reference
+  CompilerCB  *compiler_cb;///to workaround user defined function compile-at-runtime
+public:
+  Archiver(bool is_serializing_out, bool internal_archive=false);
   virtual ~Archiver();
 
 public:
 
   bool add_simple_field( const char *type, 
                         const char *value,
-                        void *orig_ptr,
+                        const void *orig_ptr,
                         enum ArchiveFieldTreat field_treat);
 
   bool add_compound_field( const char *type,
                           int version,
                           bool is_class,
-                          void *info,
-                          void *ptr,//for classes, pointer to SerializeBaseClass
+                          const void *info,
+                          const void *ptr,//for classes, pointer to SerializeBaseClass
                           enum ArchiveFieldTreat field_treat
                           );
 
@@ -139,8 +182,8 @@ public:
   void set_class_type(const char *class_name);
 
   //return the id of previous object if it is the same
-  archive_field* check_nonclass_pointer(void *ptr);
-  archive_field* check_class_pointer(SerializeBaseClass *ptr);
+  archive_field* check_nonclass_pointer(const char *type, const void *ptr);
+  archive_field* check_class_pointer(const SerializeBaseClass *ptr);
   
 
   virtual bool read_next_field( char **type, 
@@ -174,9 +217,12 @@ protected:
     *nr_ids = this->nr_ids;
   }
 protected:
-  archive_field* check_nonclass_pointer_internal(void *ptr, archive_field *fields);
-  archive_field* check_class_pointer_internal(SerializeBaseClass *ptr, archive_field *fields);
+  archive_field* check_nonclass_pointer_internal(const void *ptr, archive_field *fields);
+  archive_field* check_class_pointer_internal(const SerializeBaseClass *ptr, archive_field *fields);
   void exchange_fields(archive_field  *new_field, archive_field  *ref_field);
+
+  void root_tag_is_read();
+  void register_pointers_internal(archive_field *fields);
 
 public:
   void check_simple_field(bool retval, 
@@ -202,8 +248,9 @@ public:
                                   enum ArchiveFieldTreat  field_treat,
                                   enum ArchiveFieldTreat  required_field_treat,
                                   int id);
-  void register_reference(int id, enum ArchiveFieldTreat field_treat, void *ptr);
+  void register_reference(int id, enum ArchiveFieldTreat field_treat, const void *ptr);
   void register_delay_reference(void **ptr, bool is_class, const char *class_name, int referencing);
+  void reconf_last_delayed_rcobject(void **last_obj, void **new_last_obj);
   void register_item(store::Item* i);
 
   int get_class_version();
@@ -211,12 +258,13 @@ public:
 
 
   //to help check class name at runtime
-  void    set_serialize_base_class(bool serialize_base_class)
+  void    set_serialize_base_class(bool s)
   {
-    if(serialize_base_class)
-      this->serialize_base_class++;
+    if(s)
+      serialize_base_class++;
     else
-      this->serialize_base_class--;
+      serialize_base_class--;
+    assert(serialize_base_class >= 0);
   }
   bool    is_serialize_base_class()
   {
@@ -226,10 +274,10 @@ public:
   {
     return serializing_out;
   }
-  ClassSerializer*  get_serializer()
-  {
-    return ser;
-  }
+//  ClassSerializer*  get_serializer()
+//  {
+//    return ser;
+//  }
   void *get_reference_value(int refid);
   void finalize_input_serialization();
 
@@ -244,8 +292,11 @@ public:
       this->is_temp_field++;
     else
       this->is_temp_field--;
+    assert(is_temp_field >= 0);
   }
   bool get_is_temp_field() { return (this->is_temp_field > 0); }
+
+  int get_nr_ids();
 
 };
 

@@ -30,6 +30,8 @@ namespace zorba
 {
 namespace flwor 
 {
+SERIALIZABLE_CLASS_VERSIONS(TupleStreamIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(TupleStreamIterator)
 
         TupleStreamIterator::TupleStreamIterator (
           short sctx,

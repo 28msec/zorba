@@ -21,6 +21,8 @@
 
 namespace zorba
 {
+extern const ::zorba::serialization::ClassVersion g_NoaryBaseIterator_class_versions[];
+extern const int g_NoaryBaseIterator_class_versions_count;
 /**
  * Superclass for all iterators which have no child iterators
  * and no additional state variables.
@@ -28,6 +30,13 @@ namespace zorba
 template <class IterType, class StateType>
 class NoaryBaseIterator : public Batcher<IterType>
 {
+public:
+  SERIALIZABLE_CLASS_NO_FACTORY(NoaryBaseIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(NoaryBaseIterator, Batcher<IterType>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (Batcher<IterType>*)this);
+  }
 public:
   NoaryBaseIterator ( short sctx, const QueryLoc& loc );
 

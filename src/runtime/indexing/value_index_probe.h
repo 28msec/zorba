@@ -56,6 +56,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor& v) const;
+public:
+  SERIALIZABLE_CLASS(ValueIndexPointProbe)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ValueIndexPointProbe, NaryBaseIterator<ValueIndexPointProbe, ValueIndexPointProbeState> )
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<ValueIndexPointProbe, ValueIndexPointProbeState> *)this);
+  }
 };
 
 class ValueIndexRangeProbeState : public PlanIteratorState {
@@ -78,6 +85,13 @@ class ValueIndexRangeProbe : public NaryBaseIterator<ValueIndexRangeProbe, Value
     bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
     virtual void accept(PlanIterVisitor& v) const;
+public:
+  SERIALIZABLE_CLASS(ValueIndexRangeProbe)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ValueIndexRangeProbe, NaryBaseIterator<ValueIndexRangeProbe, ValueIndexRangeProbeState> )
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<ValueIndexRangeProbe, ValueIndexRangeProbeState> *)this);
+  }
 };
 
 }

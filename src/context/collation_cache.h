@@ -20,7 +20,7 @@
 #include "common/shared_types.h"
 
 namespace zorba {
-  class CollationCache
+  class CollationCache : public ::zorba::serialization::SerializeBaseClass
   {
     public:
       typedef std::map<std::string, XQPCollator*> CacheMap_t;
@@ -30,6 +30,15 @@ namespace zorba {
       CacheMap_t theMap;
       XQPCollator* theDefaultCollator;
 
+    public:
+      SERIALIZABLE_CLASS(CollationCache)
+      SERIALIZABLE_CLASS_CONSTRUCTOR(CollationCache)
+      void serialize(::zorba::serialization::Archiver &ar)
+      {
+        ar & theStaticContext;
+        ar & theMap;
+        ar & theDefaultCollator;
+      }
       friend class static_context;
     private:
       CollationCache(static_context* aStaticContext);

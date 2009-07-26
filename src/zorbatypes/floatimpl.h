@@ -26,6 +26,8 @@
 #include "zorbatypes/zorbatypes_decl.h"
 #include "zorbatypes/xqpstring.h"
 
+#include "zorbaserialization/serialization_engine.h"
+
 #include "zorbautils/hashmap_str_obj.h"
 
 namespace zorba {
@@ -95,12 +97,12 @@ public:
   static bool
   isZero(const MAPM &aMAPM); 
       
-  static bool 
+  static bool
   isNegZero(const MAPM &aMAPM);
-
+      
   static bool
   isNegInf(const MAPM &aMAPM); 
-      
+
   static void
   cutMantissa(MAPM &aMAPM);
 
@@ -127,12 +129,12 @@ public:
   static bool
   isZero(const MAPM &aMAPM); 
       
-  static bool 
+  static bool
   isNegZero(const MAPM &aMAPM);
-
+  
   static bool
   isNegInf(const MAPM &aMAPM); 
-  
+
   static void
   cutMantissa(MAPM &aMAPM);
 
@@ -166,7 +168,7 @@ public:
 
 // exported for testing only
 template <typename FloatType>
-class ZORBA_DLL_PUBLIC FloatImpl 
+class ZORBA_DLL_PUBLIC FloatImpl : public ::zorba::serialization::SerializeBaseClass
 {
   friend class Integer;
   friend class Decimal;
@@ -190,6 +192,15 @@ private:
   {
   }
 
+
+public:
+  SERIALIZABLE_TEMPLATE_CLASS(FloatImpl)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(FloatImpl)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    SERIALIZE_ENUM(FloatCommons::NumType, theType)
+    ar & theFloatImpl;
+  }
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
 public:
   static  HashCharPtrObjPtrLimited<FloatImpl>  parsed_floats;
@@ -197,13 +208,14 @@ public:
 public:
   FloatImpl() : theType(FloatCommons::NORMAL), theFloatImpl(0) { }
 
-  FloatImpl(const FloatImpl& aFloatImpl) 
+  FloatImpl(const FloatImpl& aFloatImpl)
     :
+    ::zorba::serialization::SerializeBaseClass(),
     theType(aFloatImpl.theType),
     theFloatImpl(aFloatImpl.theFloatImpl)
   {
   }
-
+  virtual ~FloatImpl() {}
 protected:
   /**
    * Checks if the MAPM value is to big, too small, or too precise 

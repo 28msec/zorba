@@ -33,6 +33,9 @@
 
 
 namespace zorba {
+SERIALIZABLE_CLASS_VERSIONS(ZorbaFopIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ZorbaFopIterator)
+
   bool ZorbaFopIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     static JNIEnv* env = JavaVMSingelton::getInstance()->getEnv();

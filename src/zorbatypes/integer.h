@@ -26,6 +26,7 @@
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/zorbatypes_decl.h"
 
+#include "zorbaserialization/serialization_engine.h"
 #include "zorbautils/hashmap_str_obj.h"
 
 
@@ -38,7 +39,7 @@ namespace zorba {
 #endif
 
 // exported for testing only
-class ZORBA_DLL_PUBLIC Integer 
+  class ZORBA_DLL_PUBLIC Integer : public ::zorba::serialization::SerializeBaseClass
 {
   friend class Decimal;
     
@@ -51,6 +52,13 @@ private:
 
   Integer(IMAPM aInteger) : theInteger(aInteger) { }
     
+public:
+  SERIALIZABLE_CLASS(Integer)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(Integer)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theInteger;
+  }
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
 public:
   static  HashCharPtrObjPtrLimited<Integer>  parsed_integers;
@@ -58,7 +66,8 @@ public:
 
 public:
   Integer() : theInteger(0) { }
-  Integer(const Integer& aInteger) : theInteger(aInteger.theInteger) { }
+  Integer(const Integer& aInteger) : ::zorba::serialization::SerializeBaseClass(), theInteger(aInteger.theInteger) { }
+  virtual ~Integer() {}
 
 private:
   static MAPM 

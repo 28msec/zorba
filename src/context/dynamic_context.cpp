@@ -29,6 +29,7 @@
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
+#include "context/namespace_context.h"
 
 #include "compiler/expression/var_expr.h"
 
@@ -50,7 +51,7 @@ string dynamic_context::var_key (const void *var)
 {
   if (var == NULL) return "";
   const var_expr *ve = static_cast<const var_expr *> (var);
-  return xqpString::concat(to_string(var), ":", ve->get_varname ()->getStringValue ());
+  return xqpString::concat(/*to_string(var)*/to_string(ve->get_unique_id()), ":", ve->get_varname ()->getStringValue ());
 }
 
 

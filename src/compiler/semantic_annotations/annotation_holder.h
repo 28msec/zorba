@@ -22,7 +22,7 @@
 
 namespace zorba {
 
-class AnnotationHolder 
+class AnnotationHolder : public virtual ::zorba::serialization::SerializeBaseClass
 {
 public:
   AnnotationHolder() {}
@@ -41,6 +41,13 @@ protected:
   typedef std::map<Annotation::key_t, Annotation::value_ref_t> annotations_t;
 
   annotations_t m_annotations;
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(AnnotationHolder)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(AnnotationHolder)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+	  //ar & m_annotations;
+  }
 };
 
 }

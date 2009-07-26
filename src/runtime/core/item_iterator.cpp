@@ -22,6 +22,14 @@
 using namespace std;
 namespace zorba
 {
+SERIALIZABLE_CLASS_VERSIONS(EmptyIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(EmptyIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(SingletonIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(SingletonIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(IfThenElseIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(IfThenElseIterator)
 
 
 /* start class SingletonIterator */

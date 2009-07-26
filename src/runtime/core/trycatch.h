@@ -42,14 +42,27 @@ namespace zorba
 
   class TryCatchIterator : public UnaryBaseIterator<TryCatchIterator, TryCatchIteratorState> {
   public:
-    class CatchClause {
+    class CatchClause : public ::zorba::serialization::SerializeBaseClass
+    {
     public:
-      ~CatchClause();
+      virtual ~CatchClause();
       std::vector<NodeNameTest_t> node_names;
       PlanIter_t     catch_expr;
       std::vector<LetVarIter_t> errorcode_var;
       std::vector<LetVarIter_t> errordesc_var;
       std::vector<LetVarIter_t> errorobj_var;
+    public:
+      SERIALIZABLE_CLASS(CatchClause)
+      CatchClause() {}
+      SERIALIZABLE_CLASS_CONSTRUCTOR(CatchClause)
+      void serialize(::zorba::serialization::Archiver &ar)
+      {
+        ar & node_names;
+        ar & catch_expr;
+        ar & errorcode_var;
+        ar & errordesc_var;
+        ar & errorobj_var;
+      }
     };
 
     TryCatchIterator(short sctx, const QueryLoc& loc, PlanIter_t& aBlock, std::vector<CatchClause>& aCatchClauses);
@@ -67,6 +80,14 @@ namespace zorba
     bool matchedCatch(error::ZorbaError& e, TryCatchIteratorState* state, PlanState&) const;
     void bindErrorVars(error::ZorbaError& e, const CatchClause* state, PlanState&) const;
     std::vector<CatchClause> theCatchClauses;
+  public:
+    SERIALIZABLE_CLASS(TryCatchIterator)
+    SERIALIZABLE_CLASS_CONSTRUCTOR2T(TryCatchIterator, UnaryBaseIterator<TryCatchIterator, TryCatchIteratorState>)
+    void serialize(::zorba::serialization::Archiver &ar)
+    {
+      serialize_baseclass(ar, (UnaryBaseIterator<TryCatchIterator, TryCatchIteratorState>*)this);
+      ar & theCatchClauses;
+    }
   };
 
 

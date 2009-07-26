@@ -516,6 +516,29 @@ DEF_ERR_CODE(XUDY0029, XUDY0029, "In an insert expression where before or after 
 
 DEF_ERR_CODE(XUDY0030, XUDY0030, "It is a dynamic error if an insert expression specifies the insertion of an attribute node before or after a child of a document node.")
 
+
+DEF_ERR_CODE(SRL0001_INEXISTENT_INPUT_FIELD, SRL0001, "Plan serialization error: Cannot read expected input field.")
+
+DEF_ERR_CODE(SRL0002_INCOMPATIBLE_INPUT_FIELD, SRL0002, "Plan serialization error: Input field is not the expected one for id: /s.")
+
+DEF_ERR_CODE(SRL0003_UNRECOGNIZED_CLASS_FIELD, SRL0003, "Plan serialization error: Cannot find class factory for class: /s.")
+
+DEF_ERR_CODE(SRL0004_UNRESOLVED_FIELD_REFERENCE, SRL0004, "Plan serialization error: Unresolved forward field reference. Referencing id: /s.")
+
+DEF_ERR_CODE(SRL0005_CLASS_VERSION_IS_TOO_NEW, SRL0005, "Plan serialization error: Class version is too new: /s.")
+
+DEF_ERR_CODE(SRL0006_CLASS_VERSION_IS_TOO_OLD, SRL0006, "Plan serialization error: Class version is too old: /s.")
+
+DEF_ERR_CODE(SRL0007_INPUT_ARCHIVE_USED_FOR_OUT_SERIALIZATION, SRL0007, "Plan serialization error: Input archive used for out serialization.")
+
+DEF_ERR_CODE(SRL0008_OUTPUT_ARCHIVE_USED_FOR_IN_SERIALIZATION, SRL0008, "Plan serialization error: Output archive used for in serialization.")
+
+DEF_ERR_CODE(SRL0009_CLASS_NOT_SERIALIZABLE, SRL0009, "Plan serialization error: Class not serializable: /s")
+
+DEF_ERR_CODE(SRL0010_ITEM_TYPE_NOT_SERIALIZABLE, SRL0010, "Plan serialization error: Store item type not serializable: /s")
+
+DEF_ERR_CODE(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE, SRL0011, "Plan serialization error: Unrecognized input archive.")
+
 #undef DEF_ERR_CODE
 
     for (int i = 0; i < MAX_ZORBA_ERROR_CODE; ++i) 

@@ -28,7 +28,7 @@ protected:
   SYNC_CODE(mutable RCLock theRCLock;)
 
 public:
-  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
+  SYNC_CODE(virtual RCLock* getRCLock() const { return &theRCLock; })
 
 
 public:

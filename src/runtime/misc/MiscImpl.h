@@ -36,6 +36,14 @@ class SequentialIterator : public NaryBaseIterator<SequentialIterator, PlanItera
 private:
   bool theUpdating;
 public:
+  SERIALIZABLE_CLASS(SequentialIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SequentialIterator, NaryBaseIterator<SequentialIterator, PlanIteratorState >)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<SequentialIterator, PlanIteratorState >*)this);
+    ar & theUpdating;
+  }
+public:
   SequentialIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool aUpdating) 
   : NaryBaseIterator<SequentialIterator, PlanIteratorState>(sctx, loc, aChildren), theUpdating(aUpdating)
   {}
@@ -75,6 +83,14 @@ private:
   enum action act;
 
 public:
+  SERIALIZABLE_CLASS(FlowCtlIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FlowCtlIterator, NaryBaseIterator<FlowCtlIterator, PlanIteratorState >)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<FlowCtlIterator, PlanIteratorState >*)this);
+    SERIALIZE_ENUM(enum action, act);
+  }
+public:
   FlowCtlIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, enum action act_)
     : NaryBaseIterator<FlowCtlIterator, PlanIteratorState>(sctx, loc, aChildren), act (act_)
   {}
@@ -99,6 +115,14 @@ public:
 
 private:
 	bool m_printToConsole;
+public:
+  SERIALIZABLE_CLASS(FnPrintIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnPrintIterator, NaryBaseIterator<FnPrintIterator, PlanIteratorState >)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<FnPrintIterator, PlanIteratorState >*)this);
+    ar & m_printToConsole;
+  }
 };
 
 } /* namespace zorba */

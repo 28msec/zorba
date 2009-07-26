@@ -35,6 +35,15 @@ private:
   bool                            theDoCopy;
 
 public:
+  SERIALIZABLE_CLASS(InsertIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(InsertIterator, BinaryBaseIterator<InsertIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (BinaryBaseIterator<InsertIterator, PlanIteratorState>*)this);
+    SERIALIZE_ENUM(store::UpdateConsts::InsertType, theType);
+    ar & theDoCopy;
+  }
+public:
   InsertIterator ( 
     short sctx,
     const QueryLoc& loc, 
@@ -64,6 +73,13 @@ class DeleteIterator : public UnaryBaseIterator<DeleteIterator, PlanIteratorStat
   virtual bool isUpdating() const { return true; }
   bool nextImpl(store::Item_t&, PlanState&) const;
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(DeleteIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DeleteIterator, UnaryBaseIterator<DeleteIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<DeleteIterator, PlanIteratorState>*)this);
+  }
 };
 
 
@@ -76,6 +92,15 @@ private:
   store::UpdateConsts::ReplaceType theType;
   bool                             theDoCopy;
 
+public:
+  SERIALIZABLE_CLASS(ReplaceIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ReplaceIterator, BinaryBaseIterator<ReplaceIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (BinaryBaseIterator<ReplaceIterator, PlanIteratorState>*)this);
+    SERIALIZE_ENUM(store::UpdateConsts::ReplaceType, theType);
+    ar & theDoCopy;
+  }
 public:
   ReplaceIterator (
     short sctx,
@@ -109,13 +134,20 @@ public:
   virtual bool isUpdating() const { return true; }
   bool nextImpl(store::Item_t&, PlanState&) const;
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(RenameIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(RenameIterator, BinaryBaseIterator<RenameIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (BinaryBaseIterator<RenameIterator, PlanIteratorState>*)this);
+  }
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class CopyClause
+class CopyClause : public ::zorba::serialization::SerializeBaseClass
 {
   friend class TransformIterator;
 
@@ -125,6 +157,16 @@ class CopyClause
   std::vector<ForVarIter_t> theCopyVars;
   PlanIter_t                theInput;
 
+public:
+  SERIALIZABLE_CLASS(CopyClause)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(CopyClause)
+  CopyClause() {}
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theCopyVars;
+    ar & theInput;
+  }
+  virtual ~CopyClause() {}
 public:
   CopyClause(
     std::vector<ForVarIter_t>& aCopyVars,
@@ -143,6 +185,16 @@ private:
   PlanIter_t              theModifyIter;
   PlanIter_t              theReturnIter;
 
+public:
+  SERIALIZABLE_CLASS(TransformIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(TransformIterator, Batcher<TransformIterator>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (Batcher<TransformIterator>*)this);
+    ar & theCopyClauses;
+    ar & theModifyIter;
+    ar & theReturnIter;
+  }
 public:
   TransformIterator (
     short sctx,

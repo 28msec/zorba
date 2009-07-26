@@ -23,6 +23,8 @@
 #include "compiler/api/compilercb.h"
 #include "compiler/parser/query_loc.h"
 
+#include "zorbaserialization/serialization_engine.h"
+
 // Info: Forcing inlining a function in g++:
 // store::Item_t next() __attribute__((always_inline)) {...}
 
@@ -265,6 +267,17 @@ public:
   short     sctx;
 
 public:
+  SERIALIZABLE_ABSTRACT_CLASS(PlanIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(PlanIterator, SimpleRCObject)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    //serialize_baseclass(ar, (SimpleRCObject*)this);
+    ar & stateOffset;
+    ar & loc;
+	ar & sctx;
+  }
+
+public:
   PlanIterator(short aContext, const QueryLoc& aLoc) 
     : stateOffset(0),
       loc(aLoc),
@@ -272,7 +285,8 @@ public:
   {}
   
   PlanIterator(const PlanIterator& it) 
-    : SimpleRCObject(it), 
+    : ::zorba::serialization::SerializeBaseClass(),
+      SimpleRCObject(it), 
       stateOffset(0),
       loc(it.loc),
       sctx(it.sctx)
@@ -390,6 +404,8 @@ public:
 };
 
 
+extern const ::zorba::serialization::ClassVersion g_Batcher_class_versions[];
+extern const int g_Batcher_class_versions_count;
 /*******************************************************************************
   Class to implement batching
 ********************************************************************************/
@@ -406,6 +422,13 @@ public:
 
   ~Batcher() {}
 
+public:
+  SERIALIZABLE_CLASS_NO_FACTORY(Batcher)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(Batcher, PlanIterator)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (PlanIterator*)this);
+  }
 public:
 
 #if ZORBA_BATCHING_TYPE == 1  

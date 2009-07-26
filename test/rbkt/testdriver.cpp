@@ -69,9 +69,9 @@ int analyzeError (const Specification &lSpec, const TestErrorHandler& errHandler
     std::cout << "Expected error(s):";
     for (std::vector<std::string>::const_iterator lIter = lSpec.errorsBegin();
          lIter != lSpec.errorsEnd(); ++lIter)
-    {
+      {
         std::cout << " " << *lIter;
-    }
+      }
     if (lSpec.errorsSize () == 0) { std::cout << " (none)"; }
     std::cout << std::endl;
     return UNEXPECTED_ERROR;
@@ -121,6 +121,10 @@ main(int argc, char** argv)
     } else break;
   }
 
+  zorba::XQuery_t lQuery;
+  clock_t t0, t1;
+  TestErrorHandler errHandler;
+
   DriverContext driverContext;
   driverContext.theEngine = engine;
   driverContext.theRbktSourceDir = rbkt_src_dir;
@@ -132,9 +136,11 @@ main(int argc, char** argv)
 
     int path_flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;
 
+    std::string lQueryFileString = rbkt_src_dir + Queriesdir + argv[i];
+#ifndef ZORBA_TEST_PLAN_SERIALIZATION_EXECUTION_ONLY
     // Form the full pathname for the file containing the query and make sure
     // that the file exists.
-    zorba::file lQueryFile (rbkt_src_dir + Queriesdir + argv[i], path_flags);
+    zorba::file lQueryFile (lQueryFileString, path_flags);
 
     if ( (! lQueryFile.exists ()) || lQueryFile.is_directory () ) 
     {
@@ -142,18 +148,50 @@ main(int argc, char** argv)
                 << " does not exist or is not a file" << std::endl;
       return 2;
     }
+#endif//ZORBA_TEST_PLAN_SERIALIZATION_EXECUTION_ONLY
 
     // Check if this is w3c_testsuite test.
-    std::string path = lQueryFile.get_path();
+    std::string path = lQueryFileString;
     bool isW3Ctest = ( path.find ( "w3c_testsuite" ) != std::string::npos );
+    std::string lQueryWithoutSuffix = 
+    std::string(argv[i]).substr( 0, std::string(argv[i]).rfind('.') );
+    std::auto_ptr<zorba::TestSchemaURIResolver>      resolver;
+    std::auto_ptr<zorba::TestModuleURIResolver>      mresolver;
+    std::auto_ptr<zorba::TestCollectionURIResolver>  cresolver;
+    // Create the static context. If this is a w3c query, install special uri
+    // resolvers in the static context.
+    zorba::StaticContext_t lContext = engine->createStaticContext();
+
+    if ( isW3Ctest ) 
+    {
+  #ifndef MY_D_WIN32
+      std::string w3cDataDir = "/Queries/w3c_testsuite/TestSources/";
+  #else
+      std::string w3cDataDir = "/Queries/TestSources/";
+  #endif
+      std::string uri_map_file = rbkt_src_dir + w3cDataDir + "uri.txt";
+      std::string mod_map_file = rbkt_src_dir + w3cDataDir + "module.txt";
+      std::string col_map_file = rbkt_src_dir + w3cDataDir + "collection.txt";
+
+      resolver.reset(new zorba::TestSchemaURIResolver(uri_map_file.c_str()));
+
+      mresolver.reset(new zorba::TestModuleURIResolver(mod_map_file.c_str(),
+                                                       lQueryWithoutSuffix));
+
+      cresolver.reset(new zorba::TestCollectionURIResolver(col_map_file.c_str(),
+                                                           rbkt_src_dir));
+      lContext->setSchemaURIResolver ( resolver.get() );
+      lContext->setModuleURIResolver ( mresolver.get() );
+      lContext->setCollectionURIResolver ( cresolver.get() );
+    }
 
     // Form the full pathname for the files that will receive the result or the
     // errors of this query. Then, delete these files if they exist already from
     // previous runs of the query. Finaly, create (if necessary) all the dirs
     // in the pathname of the result and error files.
-    std::string lQueryWithoutSuffix = 
-    std::string(argv[i]).substr( 0, std::string(argv[i]).rfind('.') );
 
+    std::cout << "test " << lQueryWithoutSuffix << std::endl;
+#ifndef ZORBA_TEST_PLAN_SERIALIZATION_COMPILE_ONLY
     zorba::file lResultFile (rbkt_bin_dir + "/QueryResults/" 
                              + lQueryWithoutSuffix + ".xml.res", path_flags);
 
@@ -214,7 +252,7 @@ main(int argc, char** argv)
           lRefFileTmpString = lRefFileTmpString.erase(14, 8);
         else if (lQueryWithoutSuffix.find("XQuery") != std::string::npos)
           lRefFileTmpString = lRefFileTmpString.erase(14, 7);
-      }
+    }
   
       lRefFiles.push_back(zorba::file(rbkt_src_dir + "/ExpQueryResults/" +
                                       lRefFileTmpString + ".xml.res"));
@@ -222,46 +260,20 @@ main(int argc, char** argv)
       if (lRefFiles [0].exists())
         lRefFileExists = true;
     }
+#endif//ZORBA_TEST_PLAN_SERIALIZATION_COMPILE_ONLY
 
+#ifndef ZORBA_TEST_PLAN_SERIALIZATION_EXECUTION_ONLY
     // print the query
     std::cout << "Query:" << std::endl;
     zorba::printFile(std::cout, lQueryFile.get_path());
     std::cout << std::endl;
 
-    // Create the static context. If this is a w3c query, install special uri
-    // resolvers in the static context.
-    zorba::StaticContext_t lContext = engine->createStaticContext();
-
-    std::auto_ptr<zorba::TestSchemaURIResolver>      resolver;
-    std::auto_ptr<zorba::TestModuleURIResolver>      mresolver;
-    std::auto_ptr<zorba::TestCollectionURIResolver>  cresolver;
-
-    if ( isW3Ctest ) 
-    {
-      std::string w3cDataDir = "/Queries/w3c_testsuite/TestSources/";
-      std::string uri_map_file = rbkt_src_dir + w3cDataDir + "uri.txt";
-      std::string mod_map_file = rbkt_src_dir + w3cDataDir + "module.txt";
-      std::string col_map_file = rbkt_src_dir + w3cDataDir + "collection.txt";
-
-      resolver.reset(new zorba::TestSchemaURIResolver(uri_map_file.c_str()));
-
-      mresolver.reset(new zorba::TestModuleURIResolver(mod_map_file.c_str(),
-                                                       lQueryWithoutSuffix));
-
-      cresolver.reset(new zorba::TestCollectionURIResolver(col_map_file.c_str(),
-                                                           rbkt_src_dir));
-      lContext->setSchemaURIResolver ( resolver.get() );
-      lContext->setModuleURIResolver ( mresolver.get() );
-      lContext->setCollectionURIResolver ( cresolver.get() );
-    }
-
-    TestErrorHandler errHandler;
 
     // create and compile the query
     std::string lQueryString;
     slurp_file(lQueryFile.get_path().c_str(), lQueryString, rbkt_src_dir, rbkt_bin_dir);
 
-    zorba::XQuery_t lQuery = engine->createQuery (&errHandler);
+    lQuery = engine->createQuery (&errHandler);
     lQuery->setFileName (lQueryFile.get_path ());
     lQuery->compile (lQueryString.c_str(), lContext, getCompilerHints());
 
@@ -271,9 +283,69 @@ main(int argc, char** argv)
       errors = analyzeError (lSpec, errHandler);
       if( errors == UNEXPECTED_ERROR )
         return 6;
+    std::cout << "testdriver: success" << std::endl;
+    return 0;
+    } 
+    // no compilation errors
+
+#ifdef ZORBA_TEST_PLAN_SERIALIZATION
+    try{
+    std::string binary_path = lQueryFileString;
+    binary_path = binary_path.substr( 0, binary_path.rfind('.') );
+    binary_path += ".plan";
+    t0 = clock();
+    std::ofstream fbinary(binary_path.c_str(), std::ios_base::binary);
+    if(!lQuery->saveExecutionPlan(fbinary, ZORBA_USE_BINARY_ARCHIVE))
+    {
+      printf("save execution plan FAILED\n");
+      return 0x0badc0de;
     }
-    else // no compilation errors
-    {  
+    fbinary.close();
+    t1 = clock();
+    printf("save execution plan in %f sec\n", (float)(t1-t0)/CLOCKS_PER_SEC);
+    }catch(zorba::ZorbaException &err)
+    {
+      std::cout << err << std::endl;
+      return -1;
+    }
+#endif//ZORBA_TEST_PLAN_SERIALIZATION
+#ifdef ZORBA_TEST_PLAN_SERIALIZATION_COMPILE_ONLY
+    continue;
+#endif//ZORBA_TEST_PLAN_SERIALIZATION_COMPILE_ONLY
+
+#endif//#ifndef ZORBA_TEST_PLAN_SERIALIZATION_EXECUTION_ONLY
+
+#ifdef ZORBA_TEST_PLAN_SERIALIZATION
+    try
+    {
+      std::string binary_path = lQueryFileString;
+      binary_path = binary_path.substr( 0, binary_path.rfind('.') );
+      binary_path += ".plan";
+      lQuery = engine->createQuery (&errHandler);
+      t0 = clock();
+      std::ifstream   ifbinary(binary_path.c_str(), std::ios_base::binary);
+      if(!ifbinary.is_open())
+      {
+        std::cout << "cannot open plan " << binary_path << std::endl;
+        return 0;
+      }
+      if ( isW3Ctest ) 
+      {
+        lQuery->loadExecutionPlan(ifbinary, NULL, cresolver.get(), resolver.get(), mresolver.get());
+      }
+      else
+      {
+        lQuery->loadExecutionPlan(ifbinary);
+      }
+      t1 = clock();
+      printf("load execution plan in %f sec\n", (float)(t1-t0)/CLOCKS_PER_SEC);
+    }catch(zorba::ZorbaException &err)
+    {
+      std::cout << err << std::endl;
+      return -1;
+    }
+#endif
+
       // Create dynamic context and set in it the external variables, the current
       // date & time, and the timezone.
       createDynamicContext(driverContext, lContext, lQuery);
@@ -336,9 +408,9 @@ main(int argc, char** argv)
         size_t i = 1;
         for (std::vector<zorba::file>::const_iterator lIter = lRefFiles.begin();
              lIter != lRefFiles.end(); ++lIter) 
-        {
-          int lLine, lCol, lPos; // where do the files differ
-          std::string lRefLine, lResultLine;
+          {
+            int lLine, lCol, lPos; // where do the files differ
+            std::string lRefLine, lResultLine;
           bool lRes = zorba::fileEquals(lIter->c_str(),
                                         lResultFile.c_str(),
                                         lLine, lCol, lPos,
@@ -347,8 +419,8 @@ main(int argc, char** argv)
           {
             std::cout << "testdriver: success (non-canonical result # " << i 
                       << " matches)" << std::endl;
-            return 0;
-          }
+              return 0;
+            }
 
           std::cout << "testdriver: non-canonical result for reference result # " 
                     << i << " doesn't match." << std::endl;
@@ -371,7 +443,6 @@ main(int argc, char** argv)
         std::cout << "testdriver: none of the reference results matched" << std::endl;
         return 8;
       }
-    }
   }
   std::cout << "testdriver: success" << std::endl;
   return 0;

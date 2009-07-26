@@ -67,7 +67,18 @@ private:
   std::vector<ForVarIter_t> theVarRefs;
   std::vector<ForVarIter_t> thePosVarRefs;
 
-public:
+ public:
+    SERIALIZABLE_CLASS(ForIterator)
+    SERIALIZABLE_CLASS_CONSTRUCTOR2T(ForIterator, BinaryBaseIterator<ForIterator, ForState>)
+    void serialize(::zorba::serialization::Archiver &ar)
+    {
+      serialize_baseclass(ar, (BinaryBaseIterator<ForIterator, ForState>*)this);
+      ar & theVarName;
+      ar & theHasPosVars;
+      ar & theVarRefs;
+      ar & thePosVarRefs;
+	}
+ public:
   ForIterator(
         short sctx,
         const QueryLoc& loc,

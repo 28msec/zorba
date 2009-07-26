@@ -20,6 +20,12 @@
 #include "zorbaerrors/error_manager.h"
 
 namespace zorba {
+SERIALIZABLE_CLASS_VERSIONS(Base64)
+END_SERIALIZABLE_CLASS_VERSIONS(Base64)
+
+SERIALIZABLE_CLASS_VERSIONS(Base16)
+END_SERIALIZABLE_CLASS_VERSIONS(Base16)
+
 
 Base64::Base64(const Base16& aBase16)
 {
@@ -312,7 +318,7 @@ size_t Base16::ENCODE_OUTPUT = 2;
 size_t Base16::DECODE_INPUT = 2;
 size_t Base16::DECODE_OUTPUT = 1;
 
-Base16::Base16(const Base64& aBase64)
+Base16::Base16(const Base64& aBase64) : ::zorba::serialization::SerializeBaseClass()
 {
   std::vector<char> lOrig;
   Base64::decode(aBase64.getData(), lOrig);

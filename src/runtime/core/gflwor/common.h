@@ -84,7 +84,7 @@ public:
                  Note: no need to delete theCollator in ~OrderSpec() because
                  the obj is managed by the collation cache.
 ********************************************************************************/
-class GroupingSpec
+class GroupingSpec : public ::zorba::serialization::SerializeBaseClass
 {
   friend class FLWORIterator;
   friend class PrinterVisitor;
@@ -98,6 +98,18 @@ protected:
   std::string               theCollation;
   XQPCollator             * theCollator;
 
+public:
+  SERIALIZABLE_CLASS(GroupingSpec)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(GroupingSpec)
+  GroupingSpec() {theCollator = NULL;}
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theInput;
+    ar & theInnerVars;
+    ar & theCollation;
+    ar & theCollator;
+  }
+  virtual ~GroupingSpec() {}
 public:
   GroupingSpec(
         PlanIter_t inputVar,
@@ -125,7 +137,7 @@ public:
   theOuterVars : All references to this non-grouping variable in the output
                  tuple stream.
 ********************************************************************************/
-class GroupingOuterVar
+class GroupingOuterVar : public ::zorba::serialization::SerializeBaseClass
 {
   friend class FLWORIterator;
   friend class GroupByIterator;
@@ -136,6 +148,16 @@ protected:
   PlanIter_t                theInput;
   std::vector<LetVarIter_t> theOuterVars;
   
+public:
+  SERIALIZABLE_CLASS(GroupingOuterVar)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(GroupingOuterVar)
+  GroupingOuterVar() {}
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theInput;
+    ar & theOuterVars;
+  }
+  virtual ~GroupingOuterVar() {}
 public:
   GroupingOuterVar(
         PlanIter_t inputVar,

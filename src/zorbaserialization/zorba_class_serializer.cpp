@@ -1,5 +1,4 @@
 
-#include "zorbaserialization/zorba_class_serializer.h"
 #include "zorbaserialization/serialization_engine.h"
 #include "types/typeimpl.h"
 #include "types/root_typemanager.h"
@@ -9,6 +8,8 @@
 #include "store/api/tuples.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/collation_manager.h"
+#include "functions/function.h"
+//#include "context/context.h"
 
 #include <zorba/store_consts.h>
 
@@ -16,6 +17,49 @@ namespace zorba{
   namespace serialization{
 
 
+class store_item_class_factory : public ::zorba::serialization::class_deserializer
+{ 
+public:
+  store_item_class_factory()
+  {
+    /*register this class into plan serializer*/  
+    ::zorba::serialization::ClassSerializer::getInstance()->register_class_factory("store::Item*", this);
+  }
+  virtual ::zorba::serialization::SerializeBaseClass *create_new(::zorba::serialization::Archiver &ar)
+  {
+    return NULL;
+  }
+  virtual void cast_ptr(::zorba::serialization::SerializeBaseClass* ptr, void **class_ptr)
+  {
+    *class_ptr = (void*)dynamic_cast<store::Item*>(ptr);
+  }
+
+};
+store_item_class_factory    g_store_item_class_factory;
+
+class xqpcollator_class_factory : public ::zorba::serialization::class_deserializer
+{ 
+public:
+  xqpcollator_class_factory()
+  {
+    /*register this class into plan serializer*/  
+    ::zorba::serialization::ClassSerializer::getInstance()->register_class_factory("XQPCollator*", this);
+  }
+  virtual ::zorba::serialization::SerializeBaseClass *create_new(::zorba::serialization::Archiver &ar)
+  {
+    return NULL;
+  }
+  virtual void cast_ptr(::zorba::serialization::SerializeBaseClass* ptr, void **class_ptr)
+  {
+    *class_ptr = (void*)dynamic_cast<XQPCollator*>(ptr);
+  }
+
+};
+xqpcollator_class_factory    g_xqpcollator_class_factory;
+
+
+
+/*
 void operator&(Archiver &ar, XQType *&obj)
 #define T XQType
 {
@@ -34,7 +78,7 @@ void operator&(Archiver &ar, XQType *&obj)
     //sprintf(strtemp, "%d", 0);
     bool is_ref;
     
-    is_ref = ar.add_compound_field(ar.is_serialize_base_class() ? typeid(T).name()+6 : typeid(*obj).name()+6, 
+    is_ref = ar.add_compound_field(ar.is_serialize_base_class() ? obj->T::get_class_name_str() : obj->get_class_name_str(), 
                                     ar.is_serialize_base_class() ? T::class_versions[T::class_versions_count-1].class_version : obj->get_classversion(obj->get_version_count()-1).class_version , 
                                     FIELD_IS_CLASS, "0",//strtemp, 
                                     (SerializeBaseClass*)obj, 
@@ -67,7 +111,7 @@ void operator&(Archiver &ar, XQType *&obj)
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_class_field(retval, "", "", is_simple, is_class, (ArchiveFieldTreat)0, (ArchiveFieldTreat)0, id);
+    ar.check_class_field(retval, "", "", is_simple, is_class, field_treat, (ArchiveFieldTreat)-1, id);
     if(field_treat == ARCHIVE_FIELD_IS_NULL)
     {
       obj = NULL;
@@ -80,7 +124,7 @@ void operator&(Archiver &ar, XQType *&obj)
 
     if(ar.is_serialize_base_class())
     {
-      if(strcmp(type, typeid(T).name()+6))
+      if(strcmp(type, T::get_class_name_str_static()))
       {
         ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
       }
@@ -104,7 +148,7 @@ void operator&(Archiver &ar, XQType *&obj)
       cls_factory = g_class_serializer->get_class_factory(type);
       if(cls_factory == NULL)
       {
-         ZORBA_SER_ERROR_DESC_OSS(SRL0003_UNRECOGNIZED_CLASS_FIELD, id);
+         ZORBA_SER_ERROR_DESC_OSS(SRL0003_UNRECOGNIZED_CLASS_FIELD, type);
       }
       new_obj = cls_factory->create_new(ar);
       obj = dynamic_cast<T*>(new_obj);
@@ -117,7 +161,7 @@ void operator&(Archiver &ar, XQType *&obj)
       int v;
       if(version > obj->get_classversion(obj->get_version_count()-1).class_version)
       {
-        ZORBA_SER_ERROR_DESC_OSS(SRL0005_CLASS_VERSION_IS_TOO_NEW, "Class version for " << typeid(*obj).name()+6 << " is " << version  << "while the version supported is " << obj->get_classversion(obj->get_version_count()-1).class_version);
+        ZORBA_SER_ERROR_DESC_OSS(SRL0005_CLASS_VERSION_IS_TOO_NEW, "Class version for " << obj->get_class_name_str() << " is " << version  << "while the version supported is " << obj->get_classversion(obj->get_version_count()-1).class_version);
       }
       for(v = obj->get_version_count()-1; v >= 0; v--)
       {
@@ -136,7 +180,7 @@ void operator&(Archiver &ar, XQType *&obj)
             oldv = 0;
           
           ZORBA_SER_ERROR_DESC_OSS(SRL0006_CLASS_VERSION_IS_TOO_OLD, 
-                          "Class version for " << typeid(*obj).name()+6 << " is " << version 
+                          "Class version for " << obj->get_class_name_str() << " is " << version 
                           << " while the minimal supported version is " << ver.class_version 
                           << ". Use Zorba 0x" << std::hex << obj->get_classversion(oldv).zorba_version << "instead.");
         }
@@ -157,6 +201,7 @@ void operator&(Archiver &ar, XQType *&obj)
           {
             AtomicXQType  *atomic;
             atomic = dynamic_cast<AtomicXQType*>(obj);
+            assert(atomic);
             obj = (XQType*)root_type_mng->create_atomic_type(atomic->get_type_code(), atomic->get_quantifier()).getp();
             delete atomic;
           }break;
@@ -164,61 +209,73 @@ void operator&(Archiver &ar, XQType *&obj)
           {
             NodeXQType  *node;
             node = dynamic_cast<NodeXQType*>(obj);
+            assert(node);
 
 
-#define LINK_NODE_XQTYPE(basename)                                      \
+#define LINK_NODE_ITEM_XQTYPE(basename, suffix)                              \
   switch(obj->get_quantifier())                                         \
   {                                                                     \
   case TypeConstants::QUANT_ONE:                                        \
     delete obj;                                                         \
-    obj = (XQType*)root_type_mng->basename##_TYPE_ONE.getp();           \
+    obj = (XQType*)root_type_mng->basename##suffix##TYPE_ONE.getp();           \
     break;                                                              \
   case TypeConstants::QUANT_QUESTION:                                   \
     delete obj;                                                         \
-    obj = (XQType*)root_type_mng->basename##_TYPE_QUESTION.getp();      \
+    obj = (XQType*)root_type_mng->basename##suffix##TYPE_QUESTION.getp();      \
     break;                                                              \
   case TypeConstants::QUANT_STAR:                                       \
     delete obj;                                                         \
-    obj = (XQType*)root_type_mng->basename##_TYPE_STAR.getp();          \
+    obj = (XQType*)root_type_mng->basename##suffix##TYPE_STAR.getp();          \
     break;                                                              \
   case TypeConstants::QUANT_PLUS:                                       \
     delete obj;                                                         \
-    obj = (XQType*)root_type_mng->basename##_TYPE_PLUS.getp();          \
+    obj = (XQType*)root_type_mng->basename##suffix##TYPE_PLUS.getp();          \
     break;                                                              \
+  default:                                                              \
+    break;                                                              \
+  }
+
+#define LINK_NODE(basename)                                                             \
+  {                                                                                     \
+    xqtref_t  content_type = node->get_content_type();                                  \
+    switch(content_type->type_kind())                                                   \
+    {                                                                                   \
+    case XQType::ANY_TYPE_KIND : LINK_NODE_ITEM_XQTYPE(basename,_);break;               \
+    case XQType::UNTYPED_KIND : LINK_NODE_ITEM_XQTYPE(basename,_UNTYPED_CONT_);break;   \
+    }                                                                                   \
   }
 
             switch(node->get_nodetest()->get_node_kind())
             {
               case zorba::store::StoreConsts::anyNode:
-                LINK_NODE_XQTYPE(ANY_NODE)
+                LINK_NODE(ANY_NODE)
                 break;
               case zorba::store::StoreConsts::elementNode:
-                LINK_NODE_XQTYPE(ELEMENT)
+                LINK_NODE(ELEMENT)
                 break;
               case zorba::store::StoreConsts::attributeNode:
-                LINK_NODE_XQTYPE(ATTRIBUTE)
+                LINK_NODE(ATTRIBUTE)
                 break;
               case zorba::store::StoreConsts::piNode:
-                LINK_NODE_XQTYPE(PI)
+                LINK_NODE(PI)
                 break;
               case zorba::store::StoreConsts::textNode:
-                LINK_NODE_XQTYPE(TEXT)
+                LINK_NODE(TEXT)
                 break;
               case zorba::store::StoreConsts::commentNode:
-                LINK_NODE_XQTYPE(COMMENT)
+                LINK_NODE(COMMENT)
                 break;
               case zorba::store::StoreConsts::documentNode:
-                LINK_NODE_XQTYPE(DOCUMENT)
+                LINK_NODE(DOCUMENT)
                 break;
             }
-            delete node;
           }break;
         case XQType::ANY_TYPE_KIND:
           delete obj;
           obj = (XQType*)root_type_mng->ANY_TYPE.getp();
           break;
         case XQType::ITEM_KIND:
-          LINK_NODE_XQTYPE(ITEM)
+          LINK_NODE_ITEM_XQTYPE(ITEM, _)
           break;
         case XQType::ANY_SIMPLE_TYPE_KIND:
           delete obj;
@@ -251,7 +308,7 @@ void operator&(Archiver &ar, XQType *&obj)
       int v;
       if(version > obj->T::get_classversion(obj->T::get_version_count()-1).class_version)
       {
-        ZORBA_SER_ERROR_DESC_OSS(SRL0005_CLASS_VERSION_IS_TOO_NEW, "Class version for " << typeid(T).name()+6 << " is " << version  << "while the version supported is " << obj->T::get_classversion(obj->T::get_version_count()-1).class_version);
+        ZORBA_SER_ERROR_DESC_OSS(SRL0005_CLASS_VERSION_IS_TOO_NEW, "Class version for " << obj->T::get_class_name_str() << " is " << version  << "while the version supported is " << obj->T::get_classversion(obj->T::get_version_count()-1).class_version);
       }
       for(v = obj->T::get_version_count()-1; v >= 0; v--)
       {
@@ -269,7 +326,7 @@ void operator&(Archiver &ar, XQType *&obj)
             oldv = 0;
           
           ZORBA_SER_ERROR_DESC_OSS(SRL0006_CLASS_VERSION_IS_TOO_OLD, 
-                          "Class version for " << typeid(T).name()+6 << " is " << version 
+                          "Class version for " << obj->T::get_class_name_str() << " is " << version 
                           << " while the minimal supported version is " << obj->T::get_classversion(v).class_version 
                           << ". Use Zorba 0x" << std::hex << obj->T::get_classversion(oldv).zorba_version << "instead.");
         }
@@ -288,12 +345,12 @@ void operator&(Archiver &ar, XQType *&obj)
       }
     }
     else
-      ar.register_delay_reference((void**)&obj, FIELD_IS_CLASS, typeid(T).name()+6, referencing);
+      ar.register_delay_reference((void**)&obj, FIELD_IS_CLASS, obj->T::get_class_name_str(), referencing);
     ar.set_class_version(prev_class_version);
   }
 }
+*/
 #undef T
-
 void operator&(Archiver &ar, const XQType *&obj)
 {
   XQType *obj2 = (XQType*)obj;
@@ -348,13 +405,26 @@ void operator&(Archiver &ar, XQPCollator *&obj)
   }
 }
 
-
+#ifndef ZORBA_NO_BIGNUMBERS
 void operator&(Archiver &ar, MAPM &obj)
 {
   if(ar.is_serializing_out())
   {
     char lBuffer[1024];
-    obj.toString(lBuffer, ZORBA_FLOAT_POINT_PRECISION);
+    obj.toString(lBuffer, 512);//ZORBA_FLOAT_POINT_PRECISION);
+    if(strchr(lBuffer, '.'))
+    {//save only necessary decimals
+      char *e_ptr = strrchr(lBuffer, 'E');
+      char *tail = e_ptr ? e_ptr-1 : lBuffer+strlen(lBuffer)-1;
+      while(*tail == '0')
+        tail--;
+      if(*tail == '.')
+        tail++;
+      if(e_ptr)
+        strcpy(tail+1, e_ptr);
+      else
+        tail[1] = 0;
+    }
 
     ar.add_simple_field("MAPM", lBuffer, &obj, ARCHIVE_FIELD_NORMAL);
   }
@@ -379,7 +449,7 @@ void operator&(Archiver &ar, MAPM &obj)
     ar.register_reference(id, field_treat, &obj);
   }
 }
-
+#endif
 
 /*
 void serialize_qname(Archiver &ar, store::Item_t &obj)
@@ -470,7 +540,7 @@ void iterator_to_vector(store::Iterator_t iter, std::vector<store::Item_t> &item
         obj = result.getp();                            \
         if(obj)                                         \
           obj->addReference(obj->getSharedRefCounter() SYNC_PARAM2(obj->getRCLock()));     \
-        ar.register_reference(id, field_treat, obj);                \
+        ar.register_reference(id, ARCHIVE_FIELD_IS_PTR, obj);                \
       }                                                 
 
 #define COMPARE_NAME_OF_TYPE_STRING(str)\
@@ -496,7 +566,7 @@ void operator&(Archiver &ar, store::Item* &obj)
     {
       ar.add_compound_field("store::Item*", 
                             1 ,//class_version
-                            !FIELD_IS_CLASS, "NULL", 
+                            FIELD_IS_CLASS, "NULL", 
                             NULL,//(SerializeBaseClass*)obj, 
                             ARCHIVE_FIELD_IS_NULL);
       return;
@@ -511,7 +581,7 @@ void operator&(Archiver &ar, store::Item* &obj)
     sprintf(strtemp, "isNode:%disAtomic:%disPul:%disTuple:%disError:%d",
                     is_node, is_atomic, is_pul, is_tuple, is_error);
 
-    is_ref = ar.add_compound_field("store::Item*", 0, !FIELD_IS_CLASS, strtemp, obj, ARCHIVE_FIELD_IS_PTR);
+    is_ref = ar.add_compound_field("store::Item*", 0, FIELD_IS_CLASS, strtemp, obj, ARCHIVE_FIELD_IS_PTR);
   }
   else
   {
@@ -524,7 +594,7 @@ void operator&(Archiver &ar, store::Item* &obj)
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_nonclass_field(retval, type, "store::Item*", is_simple, is_class, (enum  ArchiveFieldTreat)0, (enum  ArchiveFieldTreat)0, id);
+    ar.check_class_field(retval, type, "store::Item*", is_simple, is_class, field_treat, (enum  ArchiveFieldTreat)-1, id);
     if(field_treat == ARCHIVE_FIELD_IS_NULL)
     {
       obj = NULL;
@@ -858,14 +928,12 @@ void operator&(Archiver &ar, store::Item* &obj)
         }
         ar & haveTypedValue;
         ar & haveEmptyValue;
-        SERIALIZE_FIELD(bool, isId, isId());
-        SERIALIZE_FIELD(bool, isIdRefs, isIdRefs());
         store::NsBindings ns_bindings;
         if(ar.is_serializing_out())
           obj->getNamespaceBindings(ns_bindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
         ar & ns_bindings;
         SERIALIZE_FIELD(xqpStringStore_t, baseUri, getBaseURI());
-        FINALIZE_SERIALIZE(createElementNode, (result, parent, -1, nodename, name_of_type, haveTypedValue, haveEmptyValue, isId, isIdRefs, ns_bindings, baseUri));
+        FINALIZE_SERIALIZE(createElementNode, (result, parent, -1, nodename, name_of_type, haveTypedValue, haveEmptyValue, ns_bindings, baseUri));
         std::vector<store::Item_t>  attribs;
         iterator_to_vector(obj->getAttributes(), attribs);
         ar & attribs;
@@ -889,15 +957,13 @@ void operator&(Archiver &ar, store::Item* &obj)
           iterator_to_vector(val_it, val_vector);
         }
         ar & val_vector;
-        SERIALIZE_FIELD(bool, isId, isId());
-        SERIALIZE_FIELD(bool, isIdRefs, isIdRefs());
         if(val != NULL)
         {
-          FINALIZE_SERIALIZE(createAttributeNode, (result, parent, -1, nodename, name_of_type, val, isId, isIdRefs));
+          FINALIZE_SERIALIZE(createAttributeNode, (result, parent, -1, nodename, name_of_type, val));
         }
         else
         {
-          FINALIZE_SERIALIZE(createAttributeNode, (result, parent, -1, nodename, name_of_type, val_vector, isId, isIdRefs));
+          FINALIZE_SERIALIZE(createAttributeNode, (result, parent, -1, nodename, name_of_type, val_vector));
         }
       }break;
       case store::StoreConsts::textNode:
@@ -970,10 +1036,104 @@ void operator&(Archiver &ar, store::Item* &obj)
         }
       }
       else
-        ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, typeid(store::Item*).name()+6, referencing);//should be unreachable
+        ar.register_delay_reference((void**)&obj, FIELD_IS_CLASS, "store::Item*", referencing);//should be unreachable
     }
   }
 
+}
+
+void operator&(Archiver &ar, std::map<int, rchandle<function> > *&obj)
+{
+  if(ar.is_serializing_out())
+  {
+    if((obj == NULL))
+    {
+      ar.add_compound_field("NULL", 
+                            1 ,//class_version
+                            !FIELD_IS_CLASS, "NULL", 
+                            NULL,//(SerializeBaseClass*)obj, 
+                            ARCHIVE_FIELD_IS_NULL);
+      return;
+    }
+    bool is_ref;
+    is_ref = ar.add_compound_field("context::ArityFMap*", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_IS_PTR);
+    if(!is_ref)
+    {
+      ar.set_is_temp_field(true);
+      int s = (int)obj->size();
+      ar & s;
+      ar.set_is_temp_field(false);
+      context::ArityFMap::iterator  it;
+      function *f;
+      int i1;
+      for(it=obj->begin(); it != obj->end(); it++)
+      {
+        i1 = (*it).first;
+        ar.set_is_temp_field(true);
+        ar & i1;
+        ar.set_is_temp_field(false);
+        f = (*it).second.getp();
+        SERIALIZE_FUNCTION(f);
+      }
+      ar.add_end_compound_field();
+    }
+  }
+  else
+  {
+    char  *type;
+    std::string value;
+    int   id;
+    int   version;
+    bool  is_simple;
+    bool  is_class;
+    enum  ArchiveFieldTreat field_treat;
+    int   referencing;
+    bool  retval;
+    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
+    ar.check_nonclass_field(retval, type, "context::ArityFMap*", is_simple, is_class, field_treat, ARCHIVE_FIELD_IS_PTR, id);
+    if(field_treat == ARCHIVE_FIELD_IS_NULL)
+    {
+      obj = NULL;
+      ar.read_end_current_level();
+      return;
+    }
+    void *new_obj;
+    if(field_treat == ARCHIVE_FIELD_IS_PTR)
+    {
+      obj = new context::ArityFMap;
+      ar.register_reference(id, field_treat, obj);
+
+      ar.set_is_temp_field(true);
+      int s;
+      ar & s;
+      ar.set_is_temp_field(false);
+      context::ArityFMap::iterator  it;
+      //std::pair<int, rchandle<function>>   p;
+      int a1;
+      function *a2;
+      for(int i=0;i<s;i++)
+      {
+        ar.set_is_temp_field(true);
+        ar & a1;
+        ar.set_is_temp_field(false);
+        SERIALIZE_FUNCTION(a2);
+        obj->insert(std::pair<int, rchandle<function> >(a1, a2));
+      }
+      ar.read_end_current_level();
+    }
+    else if((id > referencing) && (new_obj = ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
+    {
+      obj = (context::ArityFMap*)new_obj;
+      if(!obj)
+      {
+        ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+      }
+    }
+    else
+      ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, "context::ArityFMap*", referencing);
+  }
 }
 
 void operator&(Archiver &ar, zorba::store::TempSeq *obj)

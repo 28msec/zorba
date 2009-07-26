@@ -15,3 +15,12 @@
  */
 #include <cassert>
 #include "zorbamisc/config/platform.h"
+
+//use this macro to activate or deactivate use of sync code
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
+  #define SYNC_CODE(x)    x
+  #define SYNC_PARAM2(x)  , x
+#else
+  #define SYNC_CODE(x)    
+  #define SYNC_PARAM2(x)
+#endif

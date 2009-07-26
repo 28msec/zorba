@@ -40,6 +40,14 @@ class NodeDistinctIterator : public UnaryBaseIterator<NodeDistinctIterator, Node
 private:
   bool theAcceptAtomics;
 
+public:
+  SERIALIZABLE_CLASS(NodeDistinctIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(NodeDistinctIterator, UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>*)this);
+    ar & theAcceptAtomics;
+  }
 protected:
 
 public:
@@ -89,6 +97,16 @@ protected:
   bool  theDistinct;
   bool  theAcceptAtomics;
 
+public:
+  SERIALIZABLE_CLASS(NodeSortIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(NodeSortIterator, UnaryBaseIterator<NodeSortIterator, NodeSortState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<NodeSortIterator, NodeSortState>*)this);
+    ar & theAscendant;
+    ar & theDistinct;
+    ar & theAcceptAtomics;
+  }
 public:
   NodeSortIterator(
         short sctx,

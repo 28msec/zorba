@@ -18,6 +18,10 @@
 namespace zorba 
 {
 
+SERIALIZABLE_CLASS_VERSIONS(ValueIndex)
+END_SERIALIZABLE_CLASS_VERSIONS(ValueIndex)
+
+
 ValueIndex::~ValueIndex()
 {
 }

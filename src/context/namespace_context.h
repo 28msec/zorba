@@ -25,6 +25,8 @@
 #include "zorbamisc/ns_consts.h"
 #include "store/api/item.h"
 
+#include "zorbaserialization/serialization_engine.h"
+
 namespace zorba {
 
 class static_context;
@@ -55,6 +57,16 @@ class namespace_context : public SimpleRCObject {
     static_context *m_sctx;
     rchandle<namespace_context> m_parent;
     bindings_t m_bindings;
+  public:
+    SERIALIZABLE_CLASS(namespace_context)
+    SERIALIZABLE_CLASS_CONSTRUCTOR2(namespace_context, SimpleRCObject)
+    void serialize(::zorba::serialization::Archiver &ar)
+    {
+      //serialize_baseclass(ar, (SimpleRCObject*)this);
+      ar & m_sctx;
+      ar & m_parent;
+      ar & m_bindings;
+    }
 };
 
 }

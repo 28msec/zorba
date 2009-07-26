@@ -22,8 +22,7 @@
 
 namespace zorba
 {
-
-  class zorba;
+//  class zorba;
 
   // 16.3 fn:current-dateTime
   class fn_current_dateTime : public function

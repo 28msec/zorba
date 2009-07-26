@@ -21,6 +21,7 @@
 
 #include "system/globalenv.h"
 #include "context/namespace_context.h"
+#include "context/static_context.h"
 
 namespace zorba {
   json::value* getValue(const char* aJSON, const unsigned int aLen);

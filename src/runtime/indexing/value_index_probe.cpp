@@ -18,6 +18,12 @@
 
 namespace zorba {
 
+SERIALIZABLE_CLASS_VERSIONS(ValueIndexPointProbe)
+END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexPointProbe)
+
+SERIALIZABLE_CLASS_VERSIONS(ValueIndexRangeProbe)
+END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexRangeProbe)
+
 void ValueIndexPointProbeState::init(PlanState& state)
 {
   PlanIteratorState::init(state);

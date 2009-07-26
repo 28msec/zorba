@@ -60,7 +60,7 @@ class OrderValue;
                   Note: no need to delete theCollator in ~OrderSpec() because
                   the obj is managed by the collation cache.
 ********************************************************************************/
-class OrderSpec
+class OrderSpec : public ::zorba::serialization::SerializeBaseClass
 {
 public:
   PlanIter_t             theDomainIter;
@@ -70,6 +70,18 @@ public:
   std::string            theCollation;
   XQPCollator          * theCollator;
 
+public:
+  SERIALIZABLE_CLASS(OrderSpec)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(OrderSpec)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theDomainIter;
+    ar & theEmptyLeast;
+    ar & theDescending;
+    ar & theCollation;
+    ar & theCollator;
+  }
+  virtual ~OrderSpec() {}
 public:
   OrderSpec() : theCollator(NULL) {}
 
@@ -172,13 +184,28 @@ private:
   bool                                    theStable;
   std::vector<OrderSpec>                  theOrderSpecs;
 
-  PlanIter_t                              theTupleIter;
+  PlanIter_t theTupleIter;
 
   std::vector<ForVarIter_t>               theInputForVars;
   std::vector<LetVarIter_t>               theInputLetVars;
   std::vector<std::vector<ForVarIter_t> > theOutputForVarsRefs;
   std::vector<std::vector<LetVarIter_t> > theOutputLetVarsRefs;
   
+public:
+  SERIALIZABLE_CLASS(OrderByIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(OrderByIterator, Batcher<OrderByIterator>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (Batcher<OrderByIterator>*)this);
+	ar & theStable;
+    ar & theOrderSpecs;
+    ar & theTupleIter;
+
+    ar & theInputForVars;
+    ar & theInputLetVars;
+    ar & theOutputForVarsRefs;
+    ar & theOutputLetVarsRefs;
+  }
 public:
   OrderByIterator(
         short sctx,

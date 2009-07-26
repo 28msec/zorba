@@ -324,6 +324,56 @@ namespace zorba {
       virtual XQuery_t
       clone() const = 0;
 
+      /** \brief Save the compiled execution plan.
+       *
+       After compiling an XQuery code you can save the execution plan in a persistent format.
+       The execution plan is saved in a platform independent format.
+       The default format for serializing plan iterators is XML.
+       You can latter load this execution plan in a different XQuery object or a different machine
+       and execute it like it was compiled in place.
+       *
+       * @param os Reference to std::ostream.
+       *
+       * @return true if success.
+       * @throw ZorbaException if the query has not been compiled or there are problems serializing
+          the execution plan.
+       */
+      virtual bool
+      saveExecutionPlan(std::ostream &os, Zorba_binary_plan_format_t archive_format) = 0;
+
+      /** \brief Load execution plan.
+       *
+       Loads a saved execution plan.
+       The serialized execution plan contains a general version for the entire archive and
+       specific versions for each class. Zorba does not quarantee that it can load execution plans
+       saved with previous versions of Zorba. In general case there will be no problems, but the
+       complete backward compatibility cannot be quaranteed.
+       *
+       * @param is Reference to std::istream.
+       *
+       * @return true if success.
+       * @throw ZorbaException if there are problems loading the execution plan.
+       */
+      virtual bool
+      loadExecutionPlan(std::istream &is) = 0;
+      
+      /** \brief Load execution plan.
+       *
+       Loads a saved execution plan.
+       Same loading of execution plan, except that here the static context is reinitialized with
+       user-defined uri resolvers.
+       *
+       * @return true if success.
+       * @throw ZorbaException if there are problems loading the execution plan.
+      */
+      virtual bool
+      loadExecutionPlan(std::istream &is, 
+                        DocumentURIResolver* aDocumentURIResolver,
+                        CollectionURIResolver* aCollectionUriResolver = NULL,
+                        SchemaURIResolver* aSchemaUriResolver = NULL,
+                        ModuleURIResolver* aModuleUriResolver = NULL,
+                        std::ostream*      theTraceStream = NULL) = 0;
+
 #ifdef ZORBA_DEBUGGER
       /** \brief Enable/disable debug mode on the query
        *

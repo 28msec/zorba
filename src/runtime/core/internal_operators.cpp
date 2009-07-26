@@ -23,6 +23,12 @@
 
 namespace zorba {
 
+SERIALIZABLE_CLASS_VERSIONS(HoistIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(HoistIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(UnhoistIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(UnhoistIterator)
+
 void HoistIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);

@@ -20,18 +20,28 @@
 #include <zorba/config.h>
 #include "zorbatypes/xqpstring.h"
 
+#include "zorbaserialization/serialization_engine.h"
+
 namespace zorba {
 
 class Base16;
-class ZORBA_DLL_PUBLIC Base64
+class ZORBA_DLL_PUBLIC Base64 : public ::zorba::serialization::SerializeBaseClass
 {
 private:
   std::vector<char> theData;
 
 public:
-  Base64(const Base64& aBase64) { theData = aBase64.theData; }
+  SERIALIZABLE_CLASS(Base64)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(Base64)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theData;
+  }
+public:
+  Base64(const Base64& aBase64) : ::zorba::serialization::SerializeBaseClass() { theData = aBase64.theData; }
   explicit Base64(const Base16& aBase16);
   Base64() {}
+  virtual ~Base64() {}
 
   static bool parseString(const xqpString& aString, Base64& aBase64) {
     return parseString(aString.c_str(), aString.length(), aBase64);
@@ -64,7 +74,7 @@ public:
 
  std::ostream& operator<<(std::ostream& os, const Base64& aBase64);
 
-class ZORBA_DLL_PUBLIC Base16
+class ZORBA_DLL_PUBLIC Base16 : public ::zorba::serialization::SerializeBaseClass
 {
 private:
   std::vector<char> theData;
@@ -77,9 +87,17 @@ private:
   static size_t DECODE_OUTPUT;
 
 public:
-  Base16(const Base16& aBase16) { theData = aBase16.theData; }
+  SERIALIZABLE_CLASS(Base16)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(Base16)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theData;
+  }
+public:
+  Base16(const Base16& aBase16) : ::zorba::serialization::SerializeBaseClass() { theData = aBase16.theData; }
   explicit Base16(const Base64& aBase64);
   Base16() {}
+  virtual ~Base16() {}
 
   static bool parseString(const xqpString& aString, Base16& aBase16) {
     return parseString(aString.c_str(), aString.length(), aBase16);

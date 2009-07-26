@@ -18,6 +18,7 @@
 #include "compiler/semantic_annotations/tsv_annotation.h"
 #include "types/typeops.h"
 #include "context/static_context.h"
+#include "context/namespace_context.h"
 #include "functions/function.h"
 
 namespace zorba {

@@ -39,6 +39,13 @@ public:
 class FnDataIterator : public UnaryBaseIterator<FnDataIterator, FnDataIteratorState>
 {
 public:
+  SERIALIZABLE_CLASS(FnDataIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDataIterator, UnaryBaseIterator<FnDataIterator, FnDataIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<FnDataIterator, FnDataIteratorState>*)this);
+  }
+public:
   FnDataIterator(short sctx, const QueryLoc& loc, PlanIter_t& aChild);
 
   virtual ~FnDataIterator() { }
@@ -82,6 +89,13 @@ class FnStringIteratorState : public PlanIteratorState {
 
 
 class FnStringIterator : public NaryBaseIterator<FnStringIterator, FnStringIteratorState> {
+  public:
+  SERIALIZABLE_CLASS(FnStringIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnStringIterator, NaryBaseIterator<FnStringIterator, FnStringIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<FnStringIterator, FnStringIteratorState>*)this);
+  }
   public:
     // TODO is the parameter theEmptyStringOnNULL needed?
     // otherwise we could replace this declaration with the macro

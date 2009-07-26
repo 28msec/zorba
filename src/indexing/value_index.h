@@ -88,6 +88,25 @@ private:
   std::vector<store::PatternIECreatorPair> m_creatorPatterns;
 
 public:
+  SERIALIZABLE_CLASS(ValueIndex)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ValueIndex, SimpleRCObject)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    //serialize_baseclass(ar, (SimpleRCObject*)this);
+    ar & m_static_context;
+    ar & m_index_uri;
+    ar & m_unique;
+    ar & m_temp;
+    SERIALIZE_ENUM(index_method_t, m_method);
+    ar & m_domain_expr;
+    ar & m_domain_var;
+    ar & m_domain_pos_var;
+    ar & m_index_field_exprs;
+    ar & m_index_field_types;
+    ar & m_index_field_collations;
+    ar & m_creatorPatterns;
+  }
+public:
   ValueIndex(static_context* sCtx, xqpStringStore_t indexUri)
     :
     m_static_context(sCtx),

@@ -48,7 +48,6 @@
 
 #include "runtime/base/plan_iterator.h"  // maybe we can separate the batcher from the plan iterator
 #include "runtime/api/plan_wrapper.h"
-#include "runtime/api/plan_wrapper.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/visitors/printervisitor.h"
@@ -60,11 +59,22 @@
 #include "store/api/pul.h"
 #include "store/api/store.h"
 
+#include "zorbaserialization/xml_archiver.h"
+#include "zorbaserialization/bin_archiver.h"
+#include "zorbaserialization/class_serializer.h"
+
 #ifdef ZORBA_DEBUGGER
 #include "debugger/debugger_server.h"
 #endif
 
 namespace zorba {
+
+SERIALIZABLE_CLASS_VERSIONS(XQueryImpl::PlanProxy)
+END_SERIALIZABLE_CLASS_VERSIONS(XQueryImpl::PlanProxy)
+
+SERIALIZABLE_CLASS_VERSIONS(XQueryImpl)
+END_SERIALIZABLE_CLASS_VERSIONS(XQueryImpl)
+
 
 
 XQueryImpl::PlanProxy::PlanProxy(PlanIter_t& root)
@@ -145,7 +155,7 @@ XQueryImpl::close()
       RCHelper::removeReference (theStaticContext);
 
     if (theDynamicContext)
-      delete theDynamicContext;
+    delete theDynamicContext;
 
     if (theDynamicContextWrapper)
       delete theDynamicContextWrapper;
@@ -373,8 +383,8 @@ XQueryImpl::executeSAX()
   try { 
     lPlan->open();
     if (theSAX2Handler != NULL) {
-      lSerializer.serializeSAX2(&*lPlan, std::cerr, theSAX2Handler );
-      std::cerr << std::endl;
+    lSerializer.serializeSAX2(&*lPlan, std::cerr, theSAX2Handler );
+    std::cerr << std::endl;
     } else {
       store::Item_t item;
       while (lPlan->next(item)){};
@@ -459,7 +469,7 @@ XQueryImpl::compile(
     // if the static context results from loadProlog, we need all the contexts
     // that were created when compiling the query
     theSctxMap = static_cast<StaticContextImpl*>(aStaticContext.get())->theCtxMap;
-    theCompilerCB->m_context_map = theSctxMap;
+    theCompilerCB->m_context_map = &theSctxMap;
 
     std::istringstream lQueryStream(lQuery);
     doCompile(lQueryStream, aHints);
@@ -492,7 +502,7 @@ void XQueryImpl::compile(
     // if the static context results from loadProlog, we need all the context
     // that were created when compiling the query
     theSctxMap = static_cast<StaticContextImpl*>(aStaticContext.get())->theCtxMap;
-    theCompilerCB->m_context_map = theSctxMap;
+    theCompilerCB->m_context_map = &theSctxMap;
 
     doCompile(aQuery, aHints);
   ZORBA_CATCH
@@ -550,8 +560,8 @@ void XQueryImpl::doCompile(
   theStaticContext->set_entity_retrieval_url(xqp_string(&*URI::encode_file_URI(theFileName)));
 
   theCompilerCB->m_sctx = theStaticContext;
-  theCompilerCB->m_cur_sctx = theCompilerCB->m_context_map.size() + 1;
-  theCompilerCB->m_context_map[theCompilerCB->m_cur_sctx] = theStaticContext;
+  theCompilerCB->m_cur_sctx = theCompilerCB->m_context_map->size() + 1;
+  (*theCompilerCB->m_context_map)[theCompilerCB->m_cur_sctx] = theStaticContext;
 
   // set the compiler config
   theCompilerCB->m_config = getCompilerConfig(aHints);
@@ -941,6 +951,89 @@ std::ostream& operator<< (std::ostream& os, XQuery* aQuery)
   ZORBA_ASSERT (lQuery != NULL);
   lQuery->serialize(os); 
   return os;
+}
+
+extern zorba::serialization::ClassSerializer  *zorba::serialization::g_class_serializer;
+bool XQueryImpl::saveExecutionPlan(std::ostream &os, Zorba_binary_plan_format_t archive_format)
+{
+  ZORBA_TRY
+  //debug
+  clock_t t1t0 = zorba::serialization::g_class_serializer->get_registration_time();
+  printf("registration time %f\n", (float)t1t0/CLOCKS_PER_SEC);
+  //end debug
+  clock_t t0, t1, t2;
+  t0 = clock();
+  if(archive_format == ZORBA_USE_XML_ARCHIVE)
+  {
+    zorba::serialization::XmlArchiver   xmlar(&os);
+    serialize(xmlar);
+    t1 = clock();
+    printf("plan serialization to archiver %f sec \n", (float)(t1-t0)/CLOCKS_PER_SEC);
+    xmlar.serialize_out();
+    t2 = clock();
+    printf("plan serialization to xml %f sec \n", (float)(t2-t1)/CLOCKS_PER_SEC);
+  }
+  else//ZORBA_USE_BINARY_ARCHIVE
+  {
+    zorba::serialization::BinArchiver   bin_ar(&os);
+    serialize(bin_ar);
+    t1 = clock();
+    printf("plan serialization to archiver %f sec \n", (float)(t1-t0)/CLOCKS_PER_SEC);
+    bin_ar.serialize_out();
+    t2 = clock();
+    printf("plan serialization to binary %f sec \n", (float)(t2-t1)/CLOCKS_PER_SEC);
+  }
+  return true;
+  ZORBA_CATCH
+  return false;
+}
+
+bool XQueryImpl::loadExecutionPlan(std::istream &is)
+{
+  ZORBA_TRY
+  try{//try the binary format first
+    zorba::serialization::BinArchiver   bin_ar(&is);
+    serialize(bin_ar);
+    bin_ar.finalize_input_serialization();
+    return true;
+  }
+  catch(error::ZorbaError &er)
+  {
+    if(er.theErrorCode != SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE)
+      throw;
+    //else go try xml archive reader
+  }
+  zorba::serialization::XmlArchiver   xmlar(&is);
+  serialize(xmlar);
+  xmlar.finalize_input_serialization();
+  return true;
+  ZORBA_CATCH
+  return false;
+}
+
+bool
+XQueryImpl::loadExecutionPlan(std::istream &is, 
+                  DocumentURIResolver* aDocumentURIResolver,
+                  CollectionURIResolver* aCollectionUriResolver,
+                  SchemaURIResolver* aSchemaUriResolver,
+                  ModuleURIResolver* aModuleUriResolver,
+                  std::ostream*      theTraceStream)
+{
+  if(!loadExecutionPlan(is))
+    return false;
+
+  getStaticContext();
+  if(aDocumentURIResolver)
+    theStaticContextWrapper->setDocumentURIResolver(aDocumentURIResolver);
+  if(aCollectionUriResolver)
+    theStaticContextWrapper->setCollectionURIResolver(aCollectionUriResolver);
+  if(aSchemaUriResolver)
+    theStaticContextWrapper->setSchemaURIResolver(aSchemaUriResolver);
+  if(aModuleUriResolver)
+    theStaticContextWrapper->setModuleURIResolver(aModuleUriResolver);
+  if(theTraceStream)
+    theStaticContextWrapper->setTraceStream(*theTraceStream);
+  return true;
 }
 
 } /* namespace zorba */

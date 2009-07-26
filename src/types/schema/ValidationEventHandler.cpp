@@ -17,6 +17,7 @@
 #ifndef ZORBA_NO_XMLSCHEMA
 
 #include "types/schema/StrX.h"
+#include "types/typeimpl.h"
 #include "types/schema/ValidationEventHandler.h"
 #include "types/schema/schema.h"
 #include <xercesc/util/XMLString.hpp>

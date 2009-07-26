@@ -34,6 +34,9 @@
 namespace zorba
 {
 
+SERIALIZABLE_CLASS_VERSIONS(PathIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(PathIterator)
+
 static inline bool isElementOrDocumentNode(const store::Item* node)
 {
   assert(node->isNode());

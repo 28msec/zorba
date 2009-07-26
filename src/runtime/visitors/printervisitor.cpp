@@ -56,6 +56,8 @@
 #include "runtime/collections/CollectionsImpl.h"
 #include "runtime/util/UtilImpl.h"
 #include "runtime/convertors/ConvertorsImpl.h"
+#include "context/static_context.h"
+#include "context/namespace_context.h"
 
 #ifdef ZORBA_WITH_REST
 #include "runtime/rest/rest.h"

@@ -37,6 +37,15 @@ namespace zorba {
     protected:
       friend class StaticContextImpl;
       DocumentURIResolver* theDocResolver;
+    public:
+      SERIALIZABLE_ABSTRACT_CLASS(DocumentURIResolverWrapper)
+      SERIALIZABLE_CLASS_CONSTRUCTOR2(DocumentURIResolverWrapper, InternalDocumentURIResolver)
+      //DocumentURIResolverWrapper() {}
+      void serialize(::zorba::serialization::Archiver &ar)
+      {
+        ::zorba::serialization::serialize_baseclass(ar, (InternalDocumentURIResolver*)this);
+        ZORBA_SER_ERROR_DESC_OSS(SRL0009_CLASS_NOT_SERIALIZABLE, "DocumentURIResolverWrapper");
+      }
   };
 
   class CollectionURIResolverWrapper : public InternalCollectionURIResolver
@@ -52,6 +61,15 @@ namespace zorba {
     protected:
       friend class StaticContextImpl;
       CollectionURIResolver* theColResolver;
+    public:
+      SERIALIZABLE_ABSTRACT_CLASS(CollectionURIResolverWrapper)
+      SERIALIZABLE_CLASS_CONSTRUCTOR2(CollectionURIResolverWrapper, InternalCollectionURIResolver)
+      //CollectionURIResolverWrapper() {}
+      void serialize(::zorba::serialization::Archiver &ar)
+      {
+        ::zorba::serialization::serialize_baseclass(ar, (InternalCollectionURIResolver*)this);
+        ZORBA_SER_ERROR_DESC_OSS(SRL0009_CLASS_NOT_SERIALIZABLE, "CollectionURIResolverWrapper");
+      }
   };
 
   class SchemaURIResolverWrapper : public InternalSchemaURIResolver
@@ -68,6 +86,15 @@ namespace zorba {
     protected:
       friend class StaticContextImpl;
       SchemaURIResolver* theSchemaResolver;
+    public:
+      SERIALIZABLE_ABSTRACT_CLASS(SchemaURIResolverWrapper)
+      SERIALIZABLE_CLASS_CONSTRUCTOR2(SchemaURIResolverWrapper, InternalSchemaURIResolver)
+      //SchemaURIResolverWrapper() {}
+      void serialize(::zorba::serialization::Archiver &ar)
+      {
+        ::zorba::serialization::serialize_baseclass(ar, (InternalSchemaURIResolver*)this);
+        ZORBA_SER_ERROR_DESC_OSS(SRL0009_CLASS_NOT_SERIALIZABLE, "SchemaURIResolverWrapper");
+      }
   };
 
   class ModuleURIResolverWrapper : public InternalModuleURIResolver
@@ -84,6 +111,15 @@ namespace zorba {
     protected:
       friend class StaticContextImpl;
       ModuleURIResolver* theModuleResolver;
+    public:
+      SERIALIZABLE_ABSTRACT_CLASS(ModuleURIResolverWrapper)
+      SERIALIZABLE_CLASS_CONSTRUCTOR2(ModuleURIResolverWrapper, InternalModuleURIResolver)
+      //ModuleURIResolverWrapper() {}
+      void serialize(::zorba::serialization::Archiver &ar)
+      {
+        ::zorba::serialization::serialize_baseclass(ar, (InternalModuleURIResolver*)this);
+        ZORBA_SER_ERROR_DESC_OSS(SRL0009_CLASS_NOT_SERIALIZABLE, "ModuleURIResolverWrapper");
+      }
   };
 
 } /* namespace zorba */

@@ -25,6 +25,37 @@
 namespace zorba 
 {
 
+SERIALIZABLE_CLASS_VERSIONS(XQType)
+END_SERIALIZABLE_CLASS_VERSIONS(XQType)
+
+SERIALIZABLE_CLASS_VERSIONS(AtomicXQType)
+END_SERIALIZABLE_CLASS_VERSIONS(AtomicXQType)
+
+SERIALIZABLE_CLASS_VERSIONS(NodeXQType)
+END_SERIALIZABLE_CLASS_VERSIONS(NodeXQType)
+
+SERIALIZABLE_CLASS_VERSIONS(ItemXQType)
+END_SERIALIZABLE_CLASS_VERSIONS(ItemXQType)
+
+SERIALIZABLE_CLASS_VERSIONS(AnyXQType)
+END_SERIALIZABLE_CLASS_VERSIONS(AnyXQType)
+
+SERIALIZABLE_CLASS_VERSIONS(AnySimpleXQType)
+END_SERIALIZABLE_CLASS_VERSIONS(AnySimpleXQType)
+
+SERIALIZABLE_CLASS_VERSIONS(UntypedXQType)
+END_SERIALIZABLE_CLASS_VERSIONS(UntypedXQType)
+
+SERIALIZABLE_CLASS_VERSIONS(EmptyXQType)
+END_SERIALIZABLE_CLASS_VERSIONS(EmptyXQType)
+
+SERIALIZABLE_CLASS_VERSIONS(NoneXQType)
+END_SERIALIZABLE_CLASS_VERSIONS(NoneXQType)
+
+SERIALIZABLE_CLASS_VERSIONS(UserDefinedXQType)
+END_SERIALIZABLE_CLASS_VERSIONS(UserDefinedXQType)
+
+
 #if 0
 static void foo()
 {
@@ -94,7 +125,7 @@ const char *AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CO
   "xs:NOTATION"
 };
 
-std::ostream& XQType::serialize(std::ostream& os) const
+std::ostream& XQType::serialize_ostream(std::ostream& os) const
 {
   return os << "[XQType " << KIND_STRINGS[type_kind()]
             << TypeOps::decode_quantifier(get_quantifier()) << "]";
@@ -104,12 +135,12 @@ std::ostream& XQType::serialize(std::ostream& os) const
 std::string XQType::toString() const
 {
   std::ostringstream os;
-  serialize(os);
+  serialize_ostream(os);
   return os.str();
 }
 
 
-std::ostream& AtomicXQType::serialize(std::ostream& os) const
+std::ostream& AtomicXQType::serialize_ostream(std::ostream& os) const
 {
   return os << ATOMIC_TYPE_CODE_STRINGS[get_type_code()]
             << TypeOps::decode_quantifier (get_quantifier());
@@ -187,7 +218,7 @@ bool NodeXQType::is_untyped() const
 }
 
 
-std::ostream& NodeXQType::serialize(std::ostream& os) const
+std::ostream& NodeXQType::serialize_ostream(std::ostream& os) const
 {
   rchandle<NodeTest> node_test = get_nodetest ();
   store::StoreConsts::NodeKind node_kind = node_test->get_node_kind();
@@ -231,7 +262,7 @@ UserDefinedXQType::UserDefinedXQType(
     {
     case ATOMIC_TYPE:
     case COMPLEX_TYPE:
-      break;
+    break;
       
     case LIST_TYPE:
       m_listItemType = udBaseType.getListItemType();
@@ -243,7 +274,7 @@ UserDefinedXQType::UserDefinedXQType(
       
     default:
       ZORBA_ASSERT(false);
-    }
+  }
     
 
     break;
@@ -255,8 +286,8 @@ UserDefinedXQType::UserDefinedXQType(
   }
   default:
   {
-    m_typeCategory = COMPLEX_TYPE;     
-  }       
+    m_typeCategory = COMPLEX_TYPE;            
+  }        
   }        
 }
 
@@ -353,7 +384,7 @@ bool UserDefinedXQType::isSubTypeOf(const XQType& supertype) const
 }
 
 
-std::ostream& UserDefinedXQType::serialize(std::ostream& os) const
+std::ostream& UserDefinedXQType::serialize_ostream(std::ostream& os) const
 {
   std::ostringstream info;
 

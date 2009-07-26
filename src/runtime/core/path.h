@@ -291,6 +291,15 @@ protected:
   std::vector<NodePredicate*> theNodePreds;
 
 public:
+  SERIALIZABLE_CLASS(PathIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(PathIterator, UnaryBaseIterator<PathIterator, PathIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<PathIterator, PathIteratorState>*)this);
+    ar & theAxes;
+    ar & theNodePreds;
+  }
+public:
   PathIterator(short sctx, const QueryLoc&  loc, PlanIter_t input)
     :
     UnaryBaseIterator<PathIterator, PathIteratorState>(sctx, loc, input)
@@ -347,6 +356,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const
   {
     return false;
+  }
+public:
+  SERIALIZABLE_CLASS(PathIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(PathIterator, UnaryBaseIterator<PathIterator, PathIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<PathIterator, PathIteratorState>*)this);
   }
 };
 

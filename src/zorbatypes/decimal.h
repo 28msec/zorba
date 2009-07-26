@@ -26,6 +26,7 @@
 #endif
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/zorbatypes_decl.h"
+#include "zorbaserialization/serialization_engine.h"
 
 #include "zorbautils/hashmap_str_obj.h"
 
@@ -36,7 +37,8 @@ typedef double    MAPM;
 #endif
 
 // exported for testing only
-class ZORBA_DLL_PUBLIC  Decimal {
+class ZORBA_DLL_PUBLIC  Decimal  : public ::zorba::serialization::SerializeBaseClass
+{
   friend class Integer;
   template <typename Type>
     friend class FloatImpl;
@@ -46,6 +48,14 @@ private:
   MAPM theDecimal;
   Decimal(MAPM aDecimal) : theDecimal(aDecimal) { }
 
+
+public:
+  SERIALIZABLE_CLASS(Decimal)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(Decimal)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theDecimal;
+  }
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
 public:
   static  HashCharPtrObjPtrLimited<Decimal>  parsed_decimals;
@@ -53,7 +63,8 @@ public:
 
 public:
   Decimal() : theDecimal(0) { }
-  Decimal(const Decimal& aDecimal) : theDecimal(aDecimal.theDecimal) { }
+  Decimal(const Decimal& aDecimal) : ::zorba::serialization::SerializeBaseClass(), theDecimal(aDecimal.theDecimal) { }
+  virtual ~Decimal() {}
 
 public:
 #ifndef ZORBA_NO_BIGNUMBERS

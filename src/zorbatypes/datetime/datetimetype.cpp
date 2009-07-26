@@ -37,6 +37,8 @@ using namespace std;
 
 namespace zorba
 {
+SERIALIZABLE_CLASS_VERSIONS(DateTime)
+END_SERIALIZABLE_CLASS_VERSIONS(DateTime)
 
   
 static const char separators[] = { '-', '-', 'T', ':', ':', '.'};

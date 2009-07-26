@@ -16,7 +16,7 @@
 
 #include "zorbautils/fatal.h"
 #include "zorbautils/latch.h"
-
+#include <cassert>
 #ifdef ZORBA_HAVE_PTHREAD_H
 #  include <pthread.h>
 #endif
@@ -104,10 +104,12 @@ Latch::Latch()
   wlocked(false)
 {
  	mutex = CreateEvent(NULL, FALSE, TRUE, NULL);
+  assert(mutex != NULL);
   if(mutex == NULL)
     return;
 
  	cond_read = CreateEvent(NULL, FALSE, FALSE, NULL);
+  assert(cond_read != NULL);
   if(cond_read == NULL)
   {
     CloseHandle(mutex);
@@ -115,6 +117,7 @@ Latch::Latch()
   }
 
  	cond_write = CreateEvent(NULL, FALSE, FALSE, NULL);
+  assert(cond_write != NULL);
   if(cond_read == NULL)
   {
     CloseHandle(mutex);

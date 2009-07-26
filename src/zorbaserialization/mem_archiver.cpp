@@ -9,6 +9,7 @@ void MemArchiver::reset_serialize_in()
   serializing_out = false;
 
   current_field = out_fields->first_child;
+  root_tag_is_read();
 }
 
 bool MemArchiver::read_next_field( char **type, 

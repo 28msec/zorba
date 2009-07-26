@@ -17,6 +17,14 @@
 #include "node_test.h"
 #include "zorbatypes/datetime.h"
 
+namespace zorba
+{
+SERIALIZABLE_CLASS_VERSIONS(NodeTest)
+END_SERIALIZABLE_CLASS_VERSIONS(NodeTest)
+
+SERIALIZABLE_CLASS_VERSIONS(NodeNameTest)
+END_SERIALIZABLE_CLASS_VERSIONS(NodeNameTest)
+}
 
 using namespace zorba;
 
@@ -30,8 +38,8 @@ const rchandle<NodeTest> NodeTest::DOCUMENT_TEST(new NodeTest(store::StoreConsts
 
 
 NodeNameTest::NodeNameTest(
-    rchandle<xqpStringStore> uri,
-    rchandle<xqpStringStore> local)
+    xqpStringStore_t uri,
+    xqpStringStore_t local)
   :
   m_uri(uri),
   m_local(local)
@@ -56,13 +64,13 @@ NodeNameTest::NodeNameTest(const store::Item* qname)
 }
 
 
-rchandle<xqpStringStore> NodeNameTest::get_uri() const
+xqpStringStore_t NodeNameTest::get_uri() const
 {
   return m_uri;
 }
 
 
-rchandle<xqpStringStore> NodeNameTest::get_local() const
+xqpStringStore_t NodeNameTest::get_local() const
 {
   return m_local;
 }

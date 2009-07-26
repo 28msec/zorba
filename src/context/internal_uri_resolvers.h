@@ -23,9 +23,11 @@
 #include "common/shared_types.h"
 #include "store/api/item.h"
 
+#include "zorbaserialization/serialization_engine.h"
+
 namespace zorba {
 
-  class InternalDocumentURIResolver 
+  class InternalDocumentURIResolver : public ::zorba::serialization::SerializeBaseClass
   {
     public:
       virtual ~InternalDocumentURIResolver() {}
@@ -36,9 +38,16 @@ namespace zorba {
               bool validate,
               bool tidying,
               const store::Item_t& tidyUserOpt = NULL) = 0;
+    public:
+      SERIALIZABLE_ABSTRACT_CLASS(InternalDocumentURIResolver)
+      SERIALIZABLE_CLASS_CONSTRUCTOR(InternalDocumentURIResolver)
+      InternalDocumentURIResolver() {}
+      void serialize(::zorba::serialization::Archiver &ar)
+      {
+      }
   };
 
-  class InternalCollectionURIResolver
+  class InternalCollectionURIResolver : public ::zorba::serialization::SerializeBaseClass
   {
     public:
       virtual ~InternalCollectionURIResolver() {}
@@ -46,9 +55,16 @@ namespace zorba {
       virtual store::Collection_t 
       resolve(const store::Item_t& aURI,
               static_context* aStaticContext) = 0;
+    public:
+      SERIALIZABLE_ABSTRACT_CLASS(InternalCollectionURIResolver)
+      SERIALIZABLE_CLASS_CONSTRUCTOR(InternalCollectionURIResolver)
+      InternalCollectionURIResolver() {}
+      void serialize(::zorba::serialization::Archiver &ar)
+      {
+      }
   };
 
-  class InternalSchemaURIResolver
+  class InternalSchemaURIResolver : public ::zorba::serialization::SerializeBaseClass
   {
     public:
       virtual ~InternalSchemaURIResolver() {}
@@ -57,9 +73,16 @@ namespace zorba {
       resolve(const store::Item_t& aURI,
               const std::vector<store::Item_t>& aLocationHints,
               static_context* aStaticContext) = 0;
+    public:
+      SERIALIZABLE_ABSTRACT_CLASS(InternalSchemaURIResolver)
+      SERIALIZABLE_CLASS_CONSTRUCTOR(InternalSchemaURIResolver)
+      InternalSchemaURIResolver() {}
+      void serialize(::zorba::serialization::Archiver &ar)
+      {
+      }
   };
 
-  class InternalModuleURIResolver
+  class InternalModuleURIResolver : public ::zorba::serialization::SerializeBaseClass
   {
     public:
       virtual ~InternalModuleURIResolver() {}
@@ -68,6 +91,13 @@ namespace zorba {
       resolve(const store::Item_t& aURI,
               static_context* aStaticContext,
               xqpStringStore* aFileUri = 0) = 0;
+    public:
+      SERIALIZABLE_ABSTRACT_CLASS(InternalModuleURIResolver)
+      SERIALIZABLE_CLASS_CONSTRUCTOR(InternalModuleURIResolver)
+      InternalModuleURIResolver() {}
+      void serialize(::zorba::serialization::Archiver &ar)
+      {
+      }
   };
 
 } /* namespace zorba */

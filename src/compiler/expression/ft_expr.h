@@ -45,6 +45,15 @@ protected:
 	rchandle<ft_options> ft_opt_h;
 
 public:
+  SERIALIZABLE_ABSTRACT_CLASS(ft_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ft_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & ft_or_h;
+    ar & ft_opt_h;
+  }
+public:
 	ft_expr(
     short sctx,
 		const QueryLoc&,
@@ -73,6 +82,14 @@ class ft_or_expr : public expr
 protected:
 	std::vector<rchandle<ft_expr> > ft_and_expr_hv;
 
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(ft_or_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ft_or_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & ft_and_expr_hv;
+  }
 public:
 	ft_or_expr(short sctx, const QueryLoc&);
 	~ft_or_expr();
@@ -110,6 +127,14 @@ protected:
 	std::vector<rchandle<ft_expr> > ft_mildnot_expr_hv;
 
 public:
+  SERIALIZABLE_ABSTRACT_CLASS(ft_and_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ft_and_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & ft_mildnot_expr_hv;
+  }
+public:
 	ft_and_expr(short sctx, const QueryLoc&);
 	~ft_and_expr();
 
@@ -145,6 +170,14 @@ class ft_mildnot_expr : public expr
 protected:
 	std::vector<rchandle<ft_expr> > ft_unary_expr_hv;
 
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(ft_mildnot_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ft_mildnot_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & ft_unary_expr_hv;
+  }
 public:
 	ft_mildnot_expr(short sctx, const QueryLoc&);
 	~ft_mildnot_expr();
@@ -183,6 +216,15 @@ protected:
   ParseConstants::ft_anyall_option_t anyall_opt;
 
 public:
+  SERIALIZABLE_ABSTRACT_CLASS(ft_words_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ft_words_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & words_expr_h;
+    SERIALIZE_ENUM(ParseConstants::ft_anyall_option_t, anyall_opt);
+  }
+public:
 	ft_words_expr(
     short sctx,
 		const QueryLoc&,
@@ -218,6 +260,18 @@ protected:
   ParseConstants::ft_range_mode_t range_mode;
 	rchandle<ft_expr> selection_h;
 
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(ft_words_selection_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ft_words_selection_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & words_h;
+    ar & src_h;
+    ar & dst_h;
+    SERIALIZE_ENUM(ParseConstants::ft_range_mode_t, range_mode);
+    ar & selection_h;
+  }
 public:
 	ft_words_selection_expr(
     short sctx,
@@ -259,6 +313,15 @@ protected:
 	rchandle<ft_words_selection_expr> words_selection_h;
 	bool not_b;
 
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(ft_unarynot_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ft_unarynot_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & words_selection_h;
+    ar & not_b;
+  }
 public:
 	ft_unarynot_expr(
     short sctx,

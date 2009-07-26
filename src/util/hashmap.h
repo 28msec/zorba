@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_HASHMAP_H
+#if !defined ZORBA_HASHMAP_H && !defined ZORBA_HASHMAP_WITH_SERIALIZATION || !defined ZORBA_HASHMAP_SERIALIZATION_H && defined ZORBA_HASHMAP_WITH_SERIALIZATION
+#ifndef ZORBA_HASHMAP_WITH_SERIALIZATION
 #define ZORBA_HASHMAP_H
+#else
+#define ZORBA_HASHMAP_SERIALIZATION_H
+#endif
 
 #include "common/common.h"
 
@@ -36,6 +40,11 @@
 
 namespace zorba {
 
+#ifdef ZORBA_HASHMAP_WITH_SERIALIZATION
+#define HASHMAP  serializable_hashmap
+#else
+#define HASHMAP hashmap
+#endif
 
 /*___________________________________________________________
 |
@@ -43,31 +52,54 @@ namespace zorba {
 |____________________________________________________________*/
 
 template<class V>   // V = value type
-class hashmap       // key type = string
+class HASHMAP    // key type = string
+#ifdef ZORBA_HASHMAP_WITH_SERIALIZATION
+                  : public ::zorba::serialization::SerializeBaseClass   
+#endif
 {
 public:
-  struct entry
+  struct entry 
+#ifdef ZORBA_HASHMAP_WITH_SERIALIZATION
+    : public ::zorba::serialization::SerializeBaseClass
+#endif
   {
     std::string key;
     V val;
 
+    public:
+#ifdef ZORBA_HASHMAP_WITH_SERIALIZATION
+      SERIALIZABLE_TEMPLATE_CLASS(entry)
+      entry(::zorba::serialization::Archiver &ar) : val(ar) {}
+      void serialize(::zorba::serialization::Archiver &ar)
+      {
+        ar & key;
+        ar & val;
+      }
+#endif
     entry() {}
 
     entry(std::string const& k, V v) : key(k), val(v) {}
 
     entry(char const* k, uint32_t l, V v) : key(std::string(k,0,l)), val(v) {}
 
-    entry(entry const& e) : key(e.key), val(e.val) {}
+    entry(entry const& e) :
+#ifdef ZORBA_HASHMAP_WITH_SERIALIZATION
+      ::zorba::serialization::SerializeBaseClass(),
+#endif
+      key(e.key), val(e.val) {}
 
-    entry(const char* k1, std::string const& k2, V v)
+    entry(const char* k1, std::string const& k2, V v) : val(v)
     {
       key = k1;
       key += k2;
-      val = v;
+      //val = v;
     }
 
+#ifdef ZORBA_HASHMAP_WITH_SERIALIZATION
+    virtual ~entry() {}
+#else
     ~entry() {}
-
+#endif
     entry& operator=(entry const& e) 
     {
       key = e.key; val = e.val; return *this; 
@@ -100,11 +132,81 @@ private:
   checked_vector<int> tab;   // hash table, indexes into 'v', -1 = empty
 
 public:
-  hashmap(uint32_t sz = 1024, float ld = .6);
+#ifdef ZORBA_HASHMAP_WITH_SERIALIZATION
+  SERIALIZABLE_TEMPLATE_CLASS(serializable_hashmap)
+  serializable_hashmap(::zorba::serialization::Archiver &ar) : ::zorba::serialization::SerializeBaseClass()
+  {
+  }
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & sz;
+    ar & tsz;
+    ar & ld;
+    ar & minsz;
+    ar & v;
+    //ar & tab;
+    //compress tab
+    int tab_size = tab.size();
+    ar.set_is_temp_field(true);
+    ar & tab_size;
+    if(ar.is_serializing_out())
+    {
+      typename checked_vector<int>::iterator tab_it;
+      tab_it = tab.begin();
+      int last_val = *tab_it;
+      int nr_dupl = 1;
+      for(tab_it++; tab_it != tab.end(); tab_it++)
+      {
+        if((*tab_it) != last_val)
+        {
+          ar & nr_dupl;
+          ar & last_val;
+          last_val  = (*tab_it);
+          nr_dupl = 1;
+        }
+        else
+          nr_dupl++;
+      }
+      ar & nr_dupl;
+      ar & last_val;
+      nr_dupl = 0;
+      ar & nr_dupl;
+    }
+    else
+    {
+      tab.resize(tab_size);
+      int last_val;
+      int nr_dupl, i;
+      typename checked_vector<int>::iterator  tab_it = tab.begin();
+      while(1)
+      {
+        ar & nr_dupl;
+        if(!nr_dupl)
+          break;
+        ar & last_val;
+        for(i=0;i<nr_dupl;i++)
+        {
+          //tab.push_back(last_val);
+          *tab_it = last_val;
+          tab_it++;
+        }
+      }
 
-  hashmap(hashmap const&);
+      assert((int)tab.size() == (int)tab_size);
+    }
+    ar.set_is_temp_field(false);
+  }
+#endif
+public:
+  HASHMAP(uint32_t sz = 1024, float ld = .6);
 
-  ~hashmap();
+  HASHMAP(HASHMAP const&);
+
+#ifdef ZORBA_HASHMAP_WITH_SERIALIZATION
+  virtual ~HASHMAP();
+#else
+  ~HASHMAP();
+#endif
 
 public: // housekeeping
   void clear();
@@ -148,12 +250,11 @@ public: // the hash functions
 
 };
 
-
 /*******************************************************************************
 
 ********************************************************************************/
 template<class V>
-hashmap<V>::hashmap(uint32_t initial_size, float load_factor)
+HASHMAP<V>::HASHMAP(uint32_t initial_size, float load_factor)
 :
   sz(0),
   tsz(initial_size),
@@ -169,7 +270,7 @@ hashmap<V>::hashmap(uint32_t initial_size, float load_factor)
 
 ********************************************************************************/
 template<class V>
-hashmap<V>::hashmap(hashmap<V> const& m)
+HASHMAP<V>::HASHMAP(HASHMAP<V> const& m)
 :
   sz(m.sz),
   tsz(m.tsz),
@@ -195,7 +296,7 @@ hashmap<V>::hashmap(hashmap<V> const& m)
 
 ********************************************************************************/
 template<class V>
-hashmap<V>::~hashmap()
+HASHMAP<V>::~HASHMAP()
 {
 }
 
@@ -204,7 +305,7 @@ hashmap<V>::~hashmap()
 
 ********************************************************************************/
 template<class V>
-inline void hashmap<V>::clear()
+inline void HASHMAP<V>::clear()
 {
   sz = 0;
   v.clear();
@@ -217,7 +318,7 @@ inline void hashmap<V>::clear()
 
 ********************************************************************************/
 template<class V>
-void hashmap<V>::displayentry(uint32_t n) const
+void HASHMAP<V>::displayentry(uint32_t n) const
 {
   std::cout << "tab["<<n<<"] = ("<<v[n].key<<','<<v[n].val<<std::endl;
 }
@@ -227,7 +328,7 @@ void hashmap<V>::displayentry(uint32_t n) const
 
 ********************************************************************************/
 template<class V>
-void hashmap<V>::displayEntries() const
+void HASHMAP<V>::displayEntries() const
 {
   typename checked_vector<entry>::const_iterator it;
   for (it = v.begin(); it!=v.end(); it++) {
@@ -241,7 +342,7 @@ void hashmap<V>::displayEntries() const
   Double the size of the hash table and rehash all existing entries.
 ********************************************************************************/
 template<class V>
-inline void hashmap<V>::resize()
+inline void HASHMAP<V>::resize()
 {
   int oldIndex;
 
@@ -281,7 +382,7 @@ inline void hashmap<V>::resize()
   Return true if key was in map already, else false.
 ********************************************************************************/
 template<class V>
-inline bool hashmap<V>::put(const std::string& key, V val, bool replace)
+inline bool HASHMAP<V>::put(const std::string& key, V val, bool replace)
 {
   if (sz > tsz*ld) resize();
 
@@ -312,7 +413,7 @@ inline bool hashmap<V>::put(const std::string& key, V val, bool replace)
   Return true if key was in map already, else false.
 ********************************************************************************/
 template<class V>
-inline bool hashmap<V>::put(const char* key, V val, bool replace)
+inline bool HASHMAP<V>::put(const char* key, V val, bool replace)
 {
   if (sz > tsz*ld) resize();
 
@@ -343,7 +444,7 @@ inline bool hashmap<V>::put(const char* key, V val, bool replace)
   Return true if key was in map already, else false.
 ********************************************************************************/
 template<class V>
-inline bool hashmap<V>::put(const char* key, uint32_t len, V val, bool replace)
+inline bool HASHMAP<V>::put(const char* key, uint32_t len, V val, bool replace)
 {
   if (sz > tsz*ld) resize();
 
@@ -374,7 +475,7 @@ inline bool hashmap<V>::put(const char* key, uint32_t len, V val, bool replace)
   Return true if key was in map already, else false.
 ********************************************************************************/
 template<class V>
-inline bool hashmap<V>::put2(
+inline bool HASHMAP<V>::put2(
     const char* key1,
     const std::string& key2,
     V val,
@@ -405,7 +506,7 @@ inline bool hashmap<V>::put2(
   Get a copy of the value for a given key, return false if key not found
 ********************************************************************************/
 template<class V>
-inline bool hashmap<V>::get(const std::string& key, V& result) const
+inline bool HASHMAP<V>::get(const std::string& key, V& result) const
 {
   uint32_t h0;
   if (find(key, h0))
@@ -421,7 +522,7 @@ inline bool hashmap<V>::get(const std::string& key, V& result) const
   Get a copy of the value for a given key, return false if key not found.
 ********************************************************************************/
 template<class V>
-inline bool hashmap<V>::get(const char* key, V& result) const
+inline bool HASHMAP<V>::get(const char* key, V& result) const
 {
   uint32_t h0;
   if (find(key,h0)) 
@@ -437,7 +538,7 @@ inline bool hashmap<V>::get(const char* key, V& result) const
   Get a copy of the value for a given key, return false if key not found.
 ********************************************************************************/
 template<class V>
-inline bool hashmap<V>::get(const char* key, uint32_t len, V& result) const
+inline bool HASHMAP<V>::get(const char* key, uint32_t len, V& result) const
 {
   uint32_t h0;
   if (find(key,len,h0)) 
@@ -453,7 +554,7 @@ inline bool hashmap<V>::get(const char* key, uint32_t len, V& result) const
   Get a copy of the value for a given key, return false if key not found.
 ********************************************************************************/
 template<class V>
-inline bool hashmap<V>::get2(const char* key1, const std::string& key2, V& result) const
+inline bool HASHMAP<V>::get2(const char* key1, const std::string& key2, V& result) const
 {
   uint32_t h0;
   if (find2(key1, key2, h0)) 
@@ -473,7 +574,7 @@ inline bool hashmap<V>::get2(const char* key1, const std::string& key2, V& resul
   key should be inserted. 
 ********************************************************************************/  
 template<class V>
-inline bool hashmap<V>::find(const std::string& key, uint32_t& bucket) const
+inline bool HASHMAP<V>::find(const std::string& key, uint32_t& bucket) const
 {
   uint32_t h0 = h(key);
   bool result = false;
@@ -505,7 +606,7 @@ inline bool hashmap<V>::find(const std::string& key, uint32_t& bucket) const
   key should be inserted. 
 ********************************************************************************/
 template<class V>
-inline bool hashmap<V>::find(const char* key, uint32_t& bucket) const
+inline bool HASHMAP<V>::find(const char* key, uint32_t& bucket) const
 {
   uint32_t h0 = h(key);
   bool result = false;
@@ -539,7 +640,7 @@ inline bool hashmap<V>::find(const char* key, uint32_t& bucket) const
   NOTE: method does case-insesitive string comparison when looking for the key
 ********************************************************************************/
 template<class V>
-inline bool hashmap<V>::find(const char* key, uint32_t len, uint32_t& bucket) const
+inline bool HASHMAP<V>::find(const char* key, uint32_t len, uint32_t& bucket) const
 {
   uint32_t h0 = h(key, len);
   bool result = false;
@@ -572,7 +673,7 @@ inline bool hashmap<V>::find(const char* key, uint32_t len, uint32_t& bucket) co
   key should be inserted. 
 ********************************************************************************/
 template<class V>
-inline bool hashmap<V>::find2(
+inline bool HASHMAP<V>::find2(
     const char* key1,
     const std::string& key2,
     uint32_t& bucket) const
@@ -603,530 +704,34 @@ inline bool hashmap<V>::find2(
   The hash functions
 ********************************************************************************/
 template<class V>
-inline uint32_t hashmap<V>::h(const std::string& key) const
+inline uint32_t HASHMAP<V>::h(const std::string& key) const
 {
   return  hashfun::h32(key) % tsz;
 }
 
 
 template<class V>
-inline uint32_t hashmap<V>::h(const char* key) const
+inline uint32_t HASHMAP<V>::h(const char* key) const
 {
   return  hashfun::h32(key, FNV_32_INIT) % tsz;
 }
 
 
 template<class V>
-inline uint32_t hashmap<V>::h(const char* key, uint32_t len) const
+inline uint32_t HASHMAP<V>::h(const char* key, uint32_t len) const
 {
   return  hashfun::h32(key, len, FNV_32_INIT) % tsz;
 }
 
 
 template<class V>
-inline uint32_t hashmap<V>::h(const char *key1, const std::string& key2) const
+inline uint32_t HASHMAP<V>::h(const char *key1, const std::string& key2) const
 {
   return  hashfun::h32(key2, hashfun::h32(key1)) % tsz;
 }
 
 
-
-/*_____________________________________________________________
-|
-|  Hash map: 32 bits -> <class V>
-|______________________________________________________________*/
-
-#define EMPTY -1
-
-template<class V>
-class hash32map
-{
-public:
-  struct entry
-  {
-    uint32_t key;
-    V val;
-    entry() {}
-    entry(uint32_t k, V v) : key(k), val(v) {}
-    ~entry() {}
-  };
-
-private:
-  uint32_t sz;                // count of hashed entries
-  uint32_t dsz;               // tab (directory) allocated size
-  float ld;                   // maximum load factor, default = .6
-  checked_vector<entry> v;  // hash entries
-  checked_vector<int> tab;  // hash directory, indexes 'v', -1 = EMPTY
-  uint32_t depth;             // = lg(sz)
-  SYNC_CODE(Latch rwl;)                 // readers-writers synchronization
-
-public: // ctor,dtor
-  hash32map(uint32_t sz, float ld);
-  hash32map();
-  ~hash32map();
-
-public: // housekeeping
-  uint32_t size();                            // the number of hashed entries
-  uint32_t size_unsync();
-  uint32_t alloc_size() const { return dsz; } // size of underlying array
-  float load() const { return ld; }           // return the load factor
-  void resize();  // double the array
-  void resize_unsync();
-
-public: // iterator interface
-  typename checked_vector<entry>::const_iterator begin() { return v.begin(); }
-  typename checked_vector<entry>::const_iterator end() { return v.end(); }
-
-public: // map interface
-  bool find(uint32_t key, uint32_t& index);     // find hash index(key), true on match
-  bool find_unsync(uint32_t key, uint32_t& index);  // find hash index(key), true on match
-  bool get(uint32_t key, V& result);            // copy hash entry to result, true on match
-  bool get_unsync(uint32_t key, V& result);     // copy hash entry to result, true on match
-  bool put(uint32_t key, V val);                // add (key,val) entry to map, true on match
-  bool put_unsync(uint32_t key, V val);         // add (key,val) entry to map, true on match
-  uint32_t h(uint32_t key) const;               // the hash function
-
-};
-
-
-
-/*_____________________________________________________________
-|
-|  Hash map: 64 bits -> <class T>
-|______________________________________________________________*/
-
-template<class V>
-class hash64map
-{
-public:
-  struct entry
-  {
-    uint64_t key;
-    V val;
-    entry() {}
-    entry(uint64_t k, V v) : key(k), val(v) {}
-    ~entry() {}
-  };
-
-private:
-  uint32_t sz;                // count of hashed entries
-  uint32_t dsz;               // tab (directory) allocated size
-  float ld;                   // maximum load factor, default = .6
-  checked_vector<entry> v;  // hash entries
-  checked_vector<int> tab;  // hash directory, indexes 'v', -1 = EMPTY
-  uint32_t depth;             // = lg(sz)
-  SYNC_CODE(Latch rwl;)                 // readers-writers synchronization
-
-public: // ctor,dtor
-  hash64map(uint32_t sz, float ld);
-  hash64map();
-  ~hash64map();
-
-public: // housekeeping
-  uint32_t size();                            // the number of hashed entries
-  uint32_t size_unsync();
-  uint32_t alloc_size() const { return dsz; } // size of underlying array
-  float load() const { return ld; }           // return the load factor
-  void resize();  // double the array
-  void resize_unsync();
-
-public: // iterator interface
-  typename checked_vector<entry>::const_iterator begin() { return v.begin(); }
-  typename checked_vector<entry>::const_iterator end() { return v.end(); }
-
-public: // map interface
-  bool find_unsync(uint64_t key) const;         // find hash index(key), true on match
-  bool find(uint64_t key, uint32_t& index);     // find hash index(key), true on match
-  bool find_unsync(uint64_t key, uint32_t& index);  // find hash index(key), true on match
-  bool get(uint64_t key, V& result);            // copy hash entry to result, true on match
-  bool get_unsync(uint64_t key, V& result);     // copy hash entry to result, true on match
-  bool put(uint64_t key, V val);                // add (key,val) entry to map, true on match
-  bool put_unsync(uint64_t key, V val);         // add (key,val) entry to map, true on match
-  uint32_t h(uint64_t key) const;               // the hash function
-
-};
-
-
-
-
-/*_______________________________________________________
-|                                                        
-|          hash32map implementations
-|________________________________________________________*/
-
-
-// ctor, dtor
-template<class V>
-hash32map<V>::hash32map(
-  uint32_t initial_size,
-  float load_factor)
-:
-  sz(0),
-  dsz(initial_size),
-  ld(load_factor),
-  tab(initial_size),
-  depth(0)
-{
-  for (uint32_t n=0; n<dsz; ++n) tab[n] = EMPTY;
-  for (uint32_t d = dsz; d>0; d>>=1) depth++;
-}
-
-template<class V>
-hash32map<V>::hash32map()
-:
-  sz(0),
-  dsz(1024),
-  ld(0.6f),
-  tab (1024),
-  depth(0)
-{
-  for (uint32_t n=0; n<dsz; ++n) tab[n] = EMPTY;
-  for (uint32_t d = dsz; d>0; d>>=1) depth++;
-}
-
-template<class V>
-hash32map<V>::~hash32map()
-{
-}
-
-
-template<class V>
-inline uint32_t hash32map<V>::size_unsync()
-{
-  return v.size();
-}
-
-
-template<class V>
-inline uint32_t hash32map<V>::size() 
-{
-  SYNC_CODE(rwl.rlock();)
-  uint32_t z = v.size();
-  SYNC_CODE(rwl.unlock();)
-  return z;
-}
-
-
-template<class V>
-inline void hash32map<V>::resize()
-{
-  int oldIndex;
-  uint32_t dsz0 = dsz;  // save old table size
-  dsz <<= 1;            // double the table size
-  depth += 1;           // increment depth
-  checked_vector<int> tab0 (dsz);
-
-  tab.swap (tab0);
-  for (uint32_t n=0; n<dsz; ++n) tab[n] = EMPTY;
-
-  // rehash: place old entry index in new hash location
-  for (uint32_t k = 0; k<dsz0; ++k) {
-    oldIndex = tab0[k];
-    if (oldIndex==EMPTY) continue;
-    uint32_t h0 = h(v[oldIndex].key);
-    while (true) {
-      if (tab[h0] == EMPTY) break;
-      h0 = (h0+1) % dsz;
-    }
-    tab[h0] = oldIndex;
-  }
-}
-
-
-template<class V>
-inline bool hash32map<V>::find_unsync(
-  uint32_t key, uint32_t& index) 
-{
-  uint32_t h0 = h(key);
-  bool result = false;
-  while (true) {
-    int x = tab[h0];
-    if (x==EMPTY) break;
-    const entry& e = v[x];
-    if (e.key==key) { result = true; break; }
-    h0 = (h0 + 1) % dsz;
-  }
-  index = h0;
-  return result;
-}
-
-template<class V>
-inline bool hash32map<V>::find(
-  uint32_t key, uint32_t& index) 
-{
-  SYNC_CODE(rwl.rlock();)
-  bool b = find_unsync(key, index);
-  SYNC_CODE(rwl.unlock();)
-  return b;
-}
-
-
-template<class V>
-inline bool hash32map<V>::get_unsync(
-  uint32_t key, V& result)
-{
-  uint32_t h0;
-  if (find_unsync(key,h0)) {
-    result = v[tab[h0]].val;
-    return true;
-  }
-  return false;
-}
-
-template<class V>
-inline bool hash32map<V>::get(
-  uint32_t key, V& result) 
-{
-  SYNC_CODE(rwl.rlock();)
-  bool b = get_unsync(key, result);
-  SYNC_CODE(rwl.unlock();)
-  return b;
-}
-
-
-template<class V>
-inline bool hash32map<V>::put_unsync(
-  uint32_t key, V val)
-{
-  if (sz>dsz*ld) resize();
-  uint32_t h0;
-  if (find_unsync(key,h0)) {
-    entry* e = &v[tab[h0]];
-    e->val = val;
-    return true;
-  } else {
-    v.push_back(entry(key,val));
-    tab[h0] = sz++;
-    return false;
-  }
-}
-
-template<class V>
-inline bool hash32map<V>::put(
-  uint32_t key, V val)
-{
-  SYNC_CODE(rwl.wlock();)
-  bool b = put_unsync(key, val);
-  SYNC_CODE(rwl.unlock();)
-  return b;
-}
-
-template<class V>
-inline uint32_t hash32map<V>::h(
-  uint32_t key) const
-{
-  char buf[5];
-  buf[0] = (unsigned char)(key>>24);
-  buf[1] = (unsigned char)(key>>16);
-  buf[2] = (unsigned char)(key>>8 );
-  buf[3] = (unsigned char)(key    );
-  buf[4] = 0;
-  return hashfun::h32((void*)buf,4,FNV_32_INIT) % dsz;
-}
-
-
-
-/*_______________________________________________________
-|
-|          hash64map implementations
-|________________________________________________________*/
-
-// ctor, dtor
-template<class V>
-hash64map<V>::hash64map(
-  uint32_t initial_size,
-  float load_factor)
-:
-  sz(0),
-  dsz(initial_size),
-  ld(load_factor),
-  tab (initial_size),
-  depth(0)
-{
-  for (uint32_t n=0; n<dsz; ++n) tab[n] = EMPTY;
-  for (uint32_t d = dsz; d>0; d>>=1) depth++;
-}
-
-template<class V>
-hash64map<V>::hash64map()
-:
-  sz(0),
-  dsz(1024),
-  ld(0.6f),
-  tab (1024),
-  depth(0)
-{
-  for (uint32_t n=0; n<dsz; ++n) tab[n] = EMPTY;
-  for (uint32_t d = dsz; d>0; d>>=1) depth++;
-}
-
-template<class V>
-hash64map<V>::~hash64map()
-{
-}
-
-
-template<class V>
-inline uint32_t hash64map<V>::size_unsync()
-{
-  return v.size();
-}
-
-
-template<class V>
-inline uint32_t hash64map<V>::size() 
-{
-  SYNC_CODE(rwl.rlock();)
-  uint32_t z = v.size();
-  SYNC_CODE(rwl.unlock();)
-  return z;
-}
-
-
-template<class V>
-inline void hash64map<V>::resize()
-{
-  int oldIndex;
-  uint32_t dsz0 = dsz;  // save old table size
-  dsz <<= 1;            // double the table size
-  depth += 1;           // increment depth
-  checked_vector<int> tab0 (dsz);
-
-  tab.swap (tab0);
-
-  for (uint32_t n=0; n<dsz; ++n) tab[n] = EMPTY;
-
-  // rehash: place old entry index in new hash location
-  for (uint32_t k = 0; k<dsz0; ++k) {
-    oldIndex = tab0[k];
-    if (oldIndex==EMPTY) continue;
-    uint32_t h0 = h(v[oldIndex].key);
-    while (true) {
-      if (tab[h0] == EMPTY) break;
-      h0 = (h0+1) % dsz;
-    }
-    tab[h0] = oldIndex;
-  }
-}
-
-
-template<class V>
-inline bool hash64map<V>::find_unsync(
-  uint64_t key, uint32_t& index) 
-{
-  uint32_t h0 = h(key);
-  bool result = false;
-  while (true) {
-    int x = tab[h0];
-    if (x==EMPTY) break;
-    const entry& e = v[x];
-    if (e.key==key) { result = true; break; }
-    h0 = (h0 + 1) % dsz;
-  }
-  index = h0;
-  return result;
-}
-
-
-template<class V>
-inline bool hash64map<V>::find(
-  uint64_t key, uint32_t& index) 
-{
-  SYNC_CODE(rwl.rlock();)
-  bool b = find_unsync(key, index);
-  SYNC_CODE(rwl.unlock();)
-  return b;
-}
-
-
-template<class V>
-inline bool hash64map<V>::find_unsync(
-  uint64_t key) const 
-{
-  uint32_t h0 = h(key);
-  bool result = false;
-  while (true) {
-    int x = tab[h0];
-    if (x==EMPTY) break;
-    const entry& e = v[x];
-    if (e.key==key) { result = true; break; }
-    h0 = (h0 + 1) % dsz;
-  }
-  return result;
-}
-
-
-template<class V>
-inline bool hash64map<V>::get_unsync(
-  uint64_t key, V& result)
-{
-  uint32_t h0;
-  if (find_unsync(key,h0)) {
-    result = v[tab[h0]].val;
-    return true;
-  }
-  return false;
-}
-
-
-template<class V>
-inline bool hash64map<V>::get(
-  uint64_t key, V& result) 
-{
-  SYNC_CODE(rwl.rlock();)
-  bool b = get_unsync(key, result);
-  SYNC_CODE(rwl.unlock();)
-  return b;
-}
-
-
-template<class V>
-inline bool hash64map<V>::put_unsync(
-  uint64_t key, V val)
-{
-  if (sz>dsz*ld) resize();
-  uint32_t h0;
-  if (find_unsync(key,h0)) {
-    entry* e = &v[tab[h0]];
-    e->val = val;
-    return true;
-  } else {
-    v.push_back(entry(key,val));
-    tab[h0] = sz++;
-    return false;
-  }
-}
-
-
-template<class V>
-inline bool hash64map<V>::put(
-  uint64_t key, V val)
-{
-  SYNC_CODE(rwl.wlock();)
-  bool b = put_unsync(key, val);
-  SYNC_CODE(rwl.unlock();)
-  return b;
-}
-
-
-template<class V>
-inline uint32_t hash64map<V>::h(
-  uint64_t key) const
-{
-  char buf[9];
-  buf[0] = (unsigned char)(key>>56);
-  buf[1] = (unsigned char)(key>>48);
-  buf[2] = (unsigned char)(key>>40);
-  buf[3] = (unsigned char)(key>>32);
-  buf[4] = (unsigned char)(key>>24);
-  buf[5] = (unsigned char)(key>>16);
-  buf[6] = (unsigned char)(key>>8 );
-  buf[7] = (unsigned char)(key    );
-  buf[8] = 0;
-  return hashfun::h64((void*)buf,8,FNV_64_INIT) % dsz;
-}
-
-
+#undef HASHMAP
 
 } /* namespace zorba  */
 #endif  /* ZORBA_HASHMAP_H */

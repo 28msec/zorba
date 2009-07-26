@@ -160,6 +160,11 @@ protected:
   virtual bool cache_compliant () { return false; }
 
 public:
+  SERIALIZABLE_ABSTRACT_CLASS(expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR3(expr, SimpleRCObject, AnnotationHolder)
+  void serialize(::zorba::serialization::Archiver &ar);
+
+public:
   virtual ~expr();
 
   virtual expr_kind_t get_expr_kind () const = 0;

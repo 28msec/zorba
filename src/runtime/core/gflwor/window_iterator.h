@@ -24,11 +24,9 @@ namespace zorba
 {
 namespace flwor
 {
-
 class WindowIterator;
 
-
-class WindowVars
+class WindowVars : public ::zorba::serialization::SerializeBaseClass
 {
   friend class WindowIterator;
   friend class StartClause;
@@ -46,15 +44,30 @@ protected:
   std::vector<ForVarIter_t > thePosOuterVars;
 
 public:
+  SERIALIZABLE_CLASS(WindowVars)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(WindowVars)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theCurVars;
+    ar & thePrevVars;
+    ar & theNextVars;
+    ar & thePosVars;
+
+    ar & theCurOuterVars;
+    ar & thePrevOuterVars;
+    ar & theNextOuterVars;
+    ar & thePosOuterVars;
+  }
+public:
   WindowVars();
   /**
-   * Method to construct the WindowVars.
-   *
+  * Method to construct the WindowVars.
+  *
    * @param aCurVars Variables which refer the current item. The scope is only
    *        the WindowClause.
-   * @param aPrevVars Previous item variables. The scope is only the WindowClause.
-   * @param aNextVars Next item variables. The scope is only the WindowClause.
-   * @param aPosVars  Position variables. The scope is only the WindowClause.
+    * @param aPrevVars Previous item variables. The scope is only the WindowClause.
+    * @param aNextVars Next item variables. The scope is only the WindowClause.
+    * @param aPosVars  Position variables. The scope is only the WindowClause.
    * @param aCurOuterVars Variables which refer the current item. The scope is
    *        everything after the WindowClause.
    * @param aPrevOuterVars Previous item variables. The scope is everything after
@@ -63,7 +76,7 @@ public:
    *        the WindowClause.
    * @param aPosOuterVars  Position variables. The scope is everything after
    *        the WindowClause.
-   */
+         */
   WindowVars(
         const std::vector<PlanIter_t >& aCurVars,
         const std::vector<PlanIter_t >& aPrevVars,
@@ -75,7 +88,7 @@ public:
         const std::vector<PlanIter_t >& aNextOuterVars,
         const std::vector<PlanIter_t >& aPosOuterVars);
 
-  ~WindowVars();
+  virtual ~WindowVars();
 
   void accept ( PlanIterVisitor& ) const;
 
@@ -92,22 +105,21 @@ public:
         const store::TempSeq_t& aInputSeq,
         const uint32_t aPosition ) const;
 
-  /**
-   * Binds the variables outside the window clause.
-   *
-   * @param aPlanState The PlanState
-   * @param aInputSeq The underlying input sequence
+        /**
+        * Binds the variables outside the window clause.
+        *
+        * @param aPlanState The PlanState
+        * @param aInputSeq The underlying input sequence
    * @param aPosition The relative position for all variables. Starts counting
    *        with 0 (although the XQuery counting starts with 1).
-   */
+        */
   void bindExtern(
         PlanState& aPlanState,
         const store::TempSeq_t& aInputSeq,
         const uint32_t aPosition ) const;
 };
 
-
-class StartClause
+class StartClause : public ::zorba::serialization::SerializeBaseClass
 {
   friend class WindowIterator;
 
@@ -116,9 +128,17 @@ protected:
   WindowVars theWindowVars;
 
 public:
+  SERIALIZABLE_CLASS(StartClause)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(StartClause)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theStartClauseIter;
+    ar & theWindowVars;
+  }
+public:
   StartClause(PlanIter_t aStartClauseIter, WindowVars& aWindowVars);
 
-  ~StartClause();
+  virtual ~StartClause();
 
 protected:
 
@@ -132,8 +152,7 @@ protected:
   void bindExtern(PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition) const;
 };
 
-
-class EndClause
+class EndClause : public ::zorba::serialization::SerializeBaseClass
 {
   friend class WindowIterator;
 protected:
@@ -143,6 +162,16 @@ protected:
   bool theHasEndClause;
 
 public:
+  SERIALIZABLE_CLASS(EndClause)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(EndClause)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theEndClauseIter;
+    ar & theWindowVars;
+    ar & theOnlyEnd;
+    ar & theHasEndClause;
+  }
+public:
   /**
    * If the EndClause is missing in the case of a tumbling window, this constructor should be used
    */
@@ -150,8 +179,8 @@ public:
   EndClause ( PlanIter_t aEndClauseIter,
               WindowVars& theWindowVars,
               bool aOnlyEnd
-              );
-  ~EndClause();
+            );
+  virtual ~EndClause();
 
 protected:
   void accept ( PlanIterVisitor& ) const;
@@ -205,18 +234,35 @@ public:
 private:
   WindowType                 theWindowType;
 
-  PlanIter_t                 theTupleIter;
-  PlanIter_t                 theInputIter;
+  PlanIter_t theTupleIter;
+  PlanIter_t theInputIter;
 
   store::Item_t              theVarName;
   std::vector<LetVarIter_t > theVarRefs;
 
-  StartClause                theStartClause;
-  EndClause                  theEndClause;
+  StartClause theStartClause;
+  EndClause theEndClause;
 
-  bool                       theLazyEval;
-  uint32_t                   theMaxNeededHistory;
+  bool theLazyEval;
+  uint32_t theMaxNeededHistory;
 
+public:
+  SERIALIZABLE_CLASS(WindowIterator)
+  WindowIterator(::zorba::serialization::Archiver &ar) 
+  : Batcher<WindowIterator>(ar), theStartClause(ar) {}
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (Batcher<WindowIterator>*)this);
+    SERIALIZE_ENUM(WindowType, theWindowType);
+    ar & theTupleIter;
+    ar & theInputIter;
+    ar & theVarName;
+    ar & theVarRefs;
+    ar & theStartClause;
+    ar & theEndClause;
+    ar & theLazyEval;
+    ar & theMaxNeededHistory;
+  }
 public:
 
   /**
@@ -237,7 +283,7 @@ public:
    *        a window. The MaxNeededHistory specifies how much it is required to
    *        look back. If the value is MAX_HISTORY no Garbage Colleciton is performed.
    *
-   */
+         */
   WindowIterator (
         short sctx,
         const QueryLoc& loc,
@@ -270,7 +316,7 @@ private:
         const uint32_t aStartPos,
         const uint32_t aEndPos ) const;
 
-  void doGarbageCollection(WindowState* lState) const;
+        void doGarbageCollection(WindowState* lState) const;
 };
 
 

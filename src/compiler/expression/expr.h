@@ -32,6 +32,7 @@
 #include "compiler/expression/flwor_expr.h"
 
 #include "context/static_context.h"
+#include "context/namespace_context.h"
 #include "types/node_test.h"
 #include "types/typeimpl.h"
 
@@ -39,6 +40,8 @@
 #include "store/api/fullText/ft_options.h"
 #include "store/api/update_consts.h"
 #include "store/api/item.h" // TODO remove by putting functions and explicit destructors into the cpp file
+
+#include "functions/signature.h"
 
 namespace zorba {
 
@@ -54,6 +57,14 @@ class sequential_expr : public expr
 {
   checked_vector<expr_t> sequence;
 
+public:
+  SERIALIZABLE_CLASS(sequential_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(sequential_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & sequence;
+  }
 public:
   expr_kind_t get_expr_kind () const { return sequential_expr_kind; }
 
@@ -128,6 +139,13 @@ class constructor_expr : public expr
 {
 protected:
   constructor_expr(short sctx, const QueryLoc& loc) : expr (sctx, loc) {}
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(constructor_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(constructor_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+  }
 };
 
 
@@ -144,6 +162,18 @@ class catch_clause : public SimpleRCObject
     varref_t errorobj_var_h;
     expr_t catch_expr_h;
 
+  public:
+    SERIALIZABLE_CLASS(catch_clause)
+    SERIALIZABLE_CLASS_CONSTRUCTOR2(catch_clause, SimpleRCObject)
+    void serialize(::zorba::serialization::Archiver &ar)
+    {
+      //serialize_baseclass(ar, (SimpleRCObject*)this);
+      ar & nametests_h;
+      ar & errorcode_var_h;
+      ar & errordesc_var_h;
+      ar & errorobj_var_h;
+      ar & catch_expr_h;
+    }
   public:
     catch_clause();
 
@@ -178,6 +208,15 @@ protected:
     expr_t try_expr_h;
     std::vector<clauseref_t> catch_clause_hv;
 
+public:
+  SERIALIZABLE_CLASS(trycatch_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(trycatch_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & try_expr_h;
+    ar & catch_clause_hv;
+  }
 public:
     trycatch_expr(short sctx, const QueryLoc&);
 
@@ -223,21 +262,42 @@ public:
 class eval_expr : public expr 
 {
 public:
-  class eval_var {
+  class eval_var : public ::zorba::serialization::SerializeBaseClass
+  {
   public:
     store::Item_t varname;
     std::string var_key;
     xqtref_t type;
     expr_t val;
+  public:
+    SERIALIZABLE_CLASS(eval_var)
+    SERIALIZABLE_CLASS_CONSTRUCTOR(eval_var)
+    void serialize(::zorba::serialization::Archiver &ar)
+    {
+      ar & varname;
+      ar & var_key;
+      ar & type;
+      ar & val;
+    }
 
     eval_var() {}
     eval_var (var_expr *ve, expr_t val);
+    virtual ~eval_var() {}
   };
 
 protected:
   expr_t expr_h;
   checked_vector<eval_var> vars;
 
+public:
+  SERIALIZABLE_CLASS(eval_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(eval_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & expr_h;
+    ar & vars;
+  }
 public:
   expr_kind_t get_expr_kind () const { return eval_expr_kind; }
 
@@ -326,6 +386,14 @@ class wrapper_expr : public expr
   expr_t wrapped;
 
 public:
+  SERIALIZABLE_CLASS(wrapper_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(wrapper_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & wrapped;
+  }
+public:
   wrapper_expr (short sctx, const QueryLoc& loc_, expr_t wrapped_)
     :
     expr (sctx, loc_),
@@ -366,6 +434,15 @@ protected:
   xqtref_t type;
 
 public:
+  SERIALIZABLE_CLASS(case_clause)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(case_clause, SimpleRCObject)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & var_h;
+    ar & case_expr_h;
+    ar & type;
+  }
+public:
   case_clause();
 
   void set_var_h(varref_t a) { var_h = a.getp(); }
@@ -394,6 +471,15 @@ protected:
   cast_or_castable_base_expr(short sctx, const QueryLoc& loc, expr_t input, xqtref_t type);
   
 public:
+  SERIALIZABLE_ABSTRACT_CLASS(cast_or_castable_base_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(cast_or_castable_base_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & input_expr_h;
+    ar & target_type;
+  }
+public:
   bool cache_compliant () { return true; }
 
   expr_t get_input() { invalidate (); return input_expr_h; }
@@ -414,6 +500,13 @@ public:
   cast_base_expr(short sctx, const QueryLoc& loc, expr_t input, xqtref_t type);
 
   xqtref_t return_type_impl (static_context *sctx);
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(cast_base_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(cast_base_expr, cast_or_castable_base_expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (cast_or_castable_base_expr*)this);
+  }
 };
 
 
@@ -426,6 +519,13 @@ protected:
 
 public:
   xqtref_t return_type_impl (static_context *sctx);
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(castable_base_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(castable_base_expr, cast_or_castable_base_expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (cast_or_castable_base_expr*)this);
+  }
 };
 
 
@@ -453,6 +553,13 @@ public:
   void accept (expr_visitor&);
 
   std::ostream& put(std::ostream&) const;
+public:
+  SERIALIZABLE_CLASS(cast_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(cast_expr, cast_base_expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (cast_base_expr*)this);
+  }
 };
 
 
@@ -466,11 +573,18 @@ public:
   expr_kind_t get_expr_kind () const { return castable_expr_kind; }
 
 public:
+  SERIALIZABLE_CLASS(castable_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(castable_expr, castable_base_expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (castable_base_expr*)this);
+  }
+public:
   castable_expr(
     short sctx, 
     const QueryLoc&,
-    expr_t,
-    xqtref_t);
+                   expr_t,
+                   xqtref_t);
 
 public:
   bool is_optional() const;
@@ -491,6 +605,15 @@ protected:
   XQUERY_ERROR err;
   bool check_prime;
 
+public:
+  SERIALIZABLE_CLASS(treat_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(treat_expr, cast_base_expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (cast_base_expr*)this);
+    SERIALIZE_ENUM(XQUERY_ERROR, err);
+    ar & check_prime;
+  }
 public:
   expr_kind_t get_expr_kind () const { return treat_expr_kind; }
   treat_expr(
@@ -523,10 +646,18 @@ protected:
   bool forced;  // error if not instance?
 
 public:
+  SERIALIZABLE_CLASS(instanceof_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(instanceof_expr, castable_base_expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (castable_base_expr*)this);
+    ar & forced;
+  }
+public:
   instanceof_expr (short sctx, 
                    const QueryLoc&,
-                   expr_t,
-                   xqtref_t);
+    expr_t,
+    xqtref_t);
 
   expr_kind_t get_expr_kind () const { return instanceof_expr_kind; }
 
@@ -557,6 +688,13 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
   expr_t clone (substitution_t& s);
+public:
+  SERIALIZABLE_CLASS(promote_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(promote_expr, cast_base_expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (cast_base_expr*)this);
+  }
 };
 
 
@@ -567,6 +705,10 @@ class name_cast_expr : public expr {
 private:
   expr_t input_expr_h;
   NamespaceContext_t theNCtx;
+public:
+  SERIALIZABLE_CLASS(name_cast_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(name_cast_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar);
 public:
   name_cast_expr (
     short sctx,
@@ -606,6 +748,17 @@ protected:
   // typeswitch_expr is not fully supported, so prevent instantiation
   typeswitch_expr(short sctx, const QueryLoc&);
 
+public:
+  SERIALIZABLE_CLASS(typeswitch_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(typeswitch_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & switch_expr_h;
+    ar & case_clause_hv;
+    ar & default_var_h;
+    ar & default_clause_h;
+  }
 public:
   expr_kind_t get_expr_kind () const { return typeswitch_expr_kind; }
 
@@ -667,6 +820,16 @@ protected:
   expr_t else_expr_h;
 
 public:
+  SERIALIZABLE_CLASS(if_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(if_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & cond_expr_h;
+    ar & then_expr_h;
+    ar & else_expr_h;
+  }
+public:
   if_expr(
     short sctx,
     const QueryLoc&,
@@ -721,6 +884,11 @@ protected:
                      xqtref_t return_type_impl);
 
 public:
+  SERIALIZABLE_ABSTRACT_CLASS(function_def_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(function_def_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar);
+
+public:
 
   store::Item_t get_name () const { return name; }
   expr_t get_body () { return body; }
@@ -751,6 +919,11 @@ public:
 protected:
   checked_vector<expr_t>   argv;
   const function         * func;
+
+public:
+  SERIALIZABLE_CLASS(fo_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(fo_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar);
 
 public:
   fo_expr (short sctx, const QueryLoc& loc, const function *f)
@@ -845,6 +1018,17 @@ protected:
   expr_t expr_h;
 
 public:
+  SERIALIZABLE_CLASS(validate_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(validate_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    SERIALIZE_ENUM(ParseConstants::validation_mode_t, valmode);
+    ar & typeName;
+    SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, typemgr);
+    ar & expr_h;
+  }
+public:
   validate_expr(short sctx, const QueryLoc&, ParseConstants::validation_mode_t,
                 store::Item_t aTypeName,
                 expr_t, rchandle<TypeManager>);
@@ -875,6 +1059,14 @@ struct pragma : public SimpleRCObject
 
   pragma(store::Item_t _name_h, std::string const& _content)
  : name_h(_name_h), content(_content) {}
+public:
+  SERIALIZABLE_CLASS(pragma)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(pragma, SimpleRCObject)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & name_h;
+    ar & content;
+  }
 };
 
 
@@ -891,6 +1083,15 @@ protected:
   rchandle<pragma> pragma_h;
   expr_t expr_h;
 
+public:
+  SERIALIZABLE_CLASS(extension_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(extension_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & pragma_h;
+    ar & expr_h;
+  }
 public:
   extension_expr(
     short sctx,
@@ -956,11 +1157,19 @@ protected:
   std::vector<expr_t> theSteps;
 
 public:
+  SERIALIZABLE_CLASS(relpath_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(relpath_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & theSteps;
+  }
+public:
   relpath_expr(short sctx, const QueryLoc&);
 
   expr_kind_t get_expr_kind () const { return relpath_expr_kind; }
 
-	size_t size() const          { return theSteps.size(); }
+	size_t size() const        { return theSteps.size(); }
 	void add_back(expr_t step)   { theSteps.push_back(step); }
   void erase(ulong i)          { theSteps.erase(theSteps.begin() + i); }
 
@@ -999,6 +1208,15 @@ protected:
   axis_kind_t             theAxis;
   expr_t                  theNodeTest;
 
+public:
+  SERIALIZABLE_CLASS(axis_step_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(axis_step_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    SERIALIZE_ENUM(axis_kind_t, theAxis);
+    ar & theNodeTest;
+  }
 public:
   axis_step_expr(short sctx, const QueryLoc&);
 
@@ -1057,6 +1275,20 @@ protected:
   store::Item_t theTypeName;
   bool          theNilledAllowed;
 
+public:
+  SERIALIZABLE_CLASS(match_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(match_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    SERIALIZE_ENUM(match_test_t, theTestKind);
+    SERIALIZE_ENUM(match_test_t, theDocTestKind);
+    SERIALIZE_ENUM(match_wild_t, theWildKind);
+    ar & theWildName;
+    ar & theQName;
+    ar & theTypeName;
+    ar & theNilledAllowed;
+  }
 public:
   match_expr(short sctx, const QueryLoc&);
 
@@ -1129,6 +1361,14 @@ protected:
   store::Item_t val;
 
 public:
+  SERIALIZABLE_CLASS(const_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(const_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & val;
+  }
+public:
   const_expr(short sctx, const QueryLoc&, xqpString sval);
   const_expr(short sctx, const QueryLoc&, xqp_integer);
   const_expr(short sctx, const QueryLoc&, xqp_decimal);
@@ -1171,6 +1411,15 @@ protected:
   expr_t expr_h;
 
 public:
+  SERIALIZABLE_CLASS(order_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(order_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    SERIALIZE_ENUM(order_type_t, type);
+    ar & expr_h;
+  }
+public:
   order_expr(
     short sctx,
     const QueryLoc&,
@@ -1210,6 +1459,17 @@ protected:
   expr_t theContent;
   rchandle<namespace_context> theNSCtx;
   
+public:
+  SERIALIZABLE_CLASS(elem_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(elem_expr, constructor_expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (constructor_expr*)this);
+    ar & theQNameExpr;
+    ar & theAttrs;
+    ar & theContent;
+    ar & theNSCtx;
+  }
 public:
   elem_expr(
     short sctx,
@@ -1257,6 +1517,14 @@ protected:
   expr_t theContent;
 
 public:
+  SERIALIZABLE_CLASS(doc_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(doc_expr, constructor_expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (constructor_expr*)this);
+    ar & theContent;
+  }
+public:
   doc_expr(
     short sctx,
     const QueryLoc&,
@@ -1297,6 +1565,15 @@ protected:
   expr_t theQNameExpr;
   expr_t theValueExpr;
 
+public:
+  SERIALIZABLE_CLASS(attr_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(attr_expr, constructor_expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (constructor_expr*)this);
+    ar & theQNameExpr;
+    ar & theValueExpr;
+  }
 public:
   attr_expr(
     short sctx,
@@ -1341,6 +1618,15 @@ protected:
   expr_t text;
 
 public:
+  SERIALIZABLE_CLASS(text_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(text_expr, constructor_expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (constructor_expr*)this);
+    SERIALIZE_ENUM(text_constructor_type, type);
+    ar & text;
+  }
+public:
   text_expr(
     short sctx,
     const QueryLoc&,
@@ -1380,7 +1666,15 @@ public:
   expr_kind_t get_expr_kind () const { return pi_expr_kind; }
 protected:
   expr_t target_expr_h;
-  
+
+public:
+  SERIALIZABLE_CLASS(pi_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(pi_expr, text_expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (text_expr*)this);
+    ar & target_expr_h;
+  }
 public:
   pi_expr (short sctx,
            const QueryLoc&,
@@ -1436,6 +1730,16 @@ protected:
 	expr_t theTargetExpr;
 
 public:
+  SERIALIZABLE_CLASS(insert_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(insert_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    SERIALIZE_ENUM(store::UpdateConsts::InsertType, theType);
+    ar & theSourceExpr;
+    ar & theTargetExpr;
+  }
+public:
 	insert_expr(
     short sctx,
 		const QueryLoc&,
@@ -1469,6 +1773,14 @@ class delete_expr : public expr
 protected:
 	expr_t theTargetExpr;
 
+public:
+  SERIALIZABLE_CLASS(delete_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(delete_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & theTargetExpr;
+  }
 public:
 	delete_expr(
     short sctx,
@@ -1504,6 +1816,16 @@ protected:
 	expr_t theTargetExpr;
 	expr_t theReplaceExpr;
 
+public:
+  SERIALIZABLE_CLASS(replace_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(replace_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    SERIALIZE_ENUM(store::UpdateConsts::ReplaceType, theType);
+    ar & theTargetExpr;
+    ar & theTargetExpr;
+  }
 public:
 	replace_expr(
     short sctx,
@@ -1541,6 +1863,15 @@ protected:
 	expr_t theNameExpr;
 
 public:
+  SERIALIZABLE_CLASS(rename_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(rename_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & theTargetExpr;
+    ar & theNameExpr;
+  }
+public:
 	rename_expr(
     short sctx,
 		const QueryLoc&,
@@ -1576,6 +1907,15 @@ private:
   expr_t             theExpr;
 
 public:
+  SERIALIZABLE_CLASS(copy_clause)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(copy_clause, SimpleRCObject)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theVar;
+    ar & theExpr;
+  }
+
+public:
   copy_clause(rchandle<var_expr> aVar, expr_t aExpr);
 
   rchandle<var_expr> getVar()  const { return theVar; }
@@ -1592,6 +1932,16 @@ protected:
 	expr_t theModifyExpr;
 	expr_t theReturnExpr;
 
+public:
+  SERIALIZABLE_CLASS(transform_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(transform_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & theCopyClauses;
+    ar & theModifyExpr;
+    ar & theReturnExpr;
+  }
 public:
 	transform_expr(
     short sctx,
@@ -1643,6 +1993,14 @@ class exit_expr : public expr {
   expr_t val;
 
 public:
+  SERIALIZABLE_CLASS(exit_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(exit_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & val;
+  }
+public:
   exit_expr (short sctx, const QueryLoc &loc, expr_t val_)
     : expr (sctx, loc), val (val_)
   {}
@@ -1665,6 +2023,14 @@ protected:
   enum action action;
 
 public:
+  SERIALIZABLE_CLASS(flowctl_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(flowctl_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    SERIALIZE_ENUM(enum action, action);
+  }
+public:
   flowctl_expr (short sctx, const QueryLoc &loc, enum action action_)
     : expr (sctx, loc), action (action_)
   {}
@@ -1682,6 +2048,14 @@ public:
 class while_expr : public expr {
   expr_t body;
 
+public:
+  SERIALIZABLE_CLASS(while_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(while_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & body;
+  }
 public:
   while_expr (short sctx, const QueryLoc &loc, expr_t body_)
     : expr (sctx, loc), body (body_)
@@ -1702,6 +2076,13 @@ class ft_select_expr : public expr
 {
 public:
   ft_select_expr (short sctx, const QueryLoc &loc) : expr (sctx, loc) {}
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(ft_select_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ft_select_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+  }
 };
 
 
@@ -1712,6 +2093,16 @@ protected:
   expr_t ft_select_h;
   expr_t ft_ignore_h;
 
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(ft_contains_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ft_contains_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & range_h;
+    ar & ft_select_h;
+    ar & ft_ignore_h;
+  }
 public:
   ft_contains_expr(
         short sctx,

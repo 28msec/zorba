@@ -59,6 +59,7 @@ class ZORBA_DLL_PUBLIC GlobalEnvironment
 
   RootTypeManager& getRootTypeManager();
   static_context& getRootStaticContext();
+  bool isRootStaticContextInitialized();
   XQueryCompilerSubsystem& getCompilerSubsystem();
   store::Store& getStore();
   store::ItemFactory* getItemFactory();

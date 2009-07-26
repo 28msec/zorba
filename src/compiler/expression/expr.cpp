@@ -48,7 +48,203 @@ using namespace std;
 
 namespace zorba 
 {
-  
+SERIALIZABLE_CLASS_VERSIONS(global_binding)
+END_SERIALIZABLE_CLASS_VERSIONS(global_binding)
+
+SERIALIZABLE_CLASS_VERSIONS(AnnotationHolder)
+END_SERIALIZABLE_CLASS_VERSIONS(AnnotationHolder)
+
+SERIALIZABLE_CLASS_VERSIONS(expr)
+END_SERIALIZABLE_CLASS_VERSIONS(expr)
+
+SERIALIZABLE_CLASS_VERSIONS(sequential_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(sequential_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(constructor_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(constructor_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(catch_clause)
+END_SERIALIZABLE_CLASS_VERSIONS(catch_clause)
+
+SERIALIZABLE_CLASS_VERSIONS(trycatch_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(trycatch_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(eval_expr::eval_var)
+END_SERIALIZABLE_CLASS_VERSIONS(eval_expr::eval_var)
+
+SERIALIZABLE_CLASS_VERSIONS(eval_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(eval_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(wrapper_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(wrapper_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(case_clause)
+END_SERIALIZABLE_CLASS_VERSIONS(case_clause)
+
+SERIALIZABLE_CLASS_VERSIONS(cast_or_castable_base_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(cast_or_castable_base_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(cast_base_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(cast_base_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(promote_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(promote_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(castable_base_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(castable_base_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(instanceof_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(instanceof_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(treat_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(treat_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(castable_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(castable_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(cast_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(cast_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(name_cast_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(name_cast_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(typeswitch_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(typeswitch_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(if_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(if_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(function_def_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(function_def_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(fo_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(fo_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(validate_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(validate_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(pragma)
+END_SERIALIZABLE_CLASS_VERSIONS(pragma)
+
+SERIALIZABLE_CLASS_VERSIONS(extension_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(extension_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(relpath_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(relpath_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(axis_step_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(axis_step_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(match_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(match_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(const_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(const_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(order_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(order_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(elem_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(elem_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(doc_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(doc_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(attr_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(attr_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(text_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(text_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(pi_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(pi_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(insert_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(insert_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(delete_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(delete_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(replace_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(replace_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(rename_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(rename_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(copy_clause)
+END_SERIALIZABLE_CLASS_VERSIONS(copy_clause)
+
+SERIALIZABLE_CLASS_VERSIONS(transform_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(transform_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(exit_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(exit_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(flowctl_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(flowctl_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(while_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(while_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(ft_select_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(ft_select_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(ft_contains_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(ft_contains_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(var_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(var_expr)
+
+//SERIALIZABLE_CLASS_VERSIONS(gflwor_clause)
+//END_SERIALIZABLE_CLASS_VERSIONS(gflwor_clause)
+//
+//SERIALIZABLE_CLASS_VERSIONS(where_gclause)
+//END_SERIALIZABLE_CLASS_VERSIONS(where_gclause)
+//
+//SERIALIZABLE_CLASS_VERSIONS(count_gclause)
+//END_SERIALIZABLE_CLASS_VERSIONS(count_gclause)
+//
+//SERIALIZABLE_CLASS_VERSIONS(orderby_gclause)
+//END_SERIALIZABLE_CLASS_VERSIONS(orderby_gclause)
+//
+//SERIALIZABLE_CLASS_VERSIONS(group_gclause)
+//END_SERIALIZABLE_CLASS_VERSIONS(group_gclause)
+//
+//SERIALIZABLE_CLASS_VERSIONS(gflwor_expr)
+//END_SERIALIZABLE_CLASS_VERSIONS(gflwor_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(flwor_clause)
+END_SERIALIZABLE_CLASS_VERSIONS(flwor_clause)
+
+SERIALIZABLE_CLASS_VERSIONS(forletwin_clause)
+END_SERIALIZABLE_CLASS_VERSIONS(forletwin_clause)
+
+SERIALIZABLE_CLASS_VERSIONS(for_clause)
+END_SERIALIZABLE_CLASS_VERSIONS(for_clause)
+
+SERIALIZABLE_CLASS_VERSIONS(let_clause)
+END_SERIALIZABLE_CLASS_VERSIONS(let_clause)
+
+SERIALIZABLE_CLASS_VERSIONS(window_clause)
+END_SERIALIZABLE_CLASS_VERSIONS(window_clause)
+
+SERIALIZABLE_CLASS_VERSIONS(group_clause)
+END_SERIALIZABLE_CLASS_VERSIONS(group_clause)
+
+SERIALIZABLE_CLASS_VERSIONS(orderby_clause)
+END_SERIALIZABLE_CLASS_VERSIONS(orderby_clause)
+
+SERIALIZABLE_CLASS_VERSIONS(count_clause)
+END_SERIALIZABLE_CLASS_VERSIONS(count_clause)
+
+SERIALIZABLE_CLASS_VERSIONS(where_clause)
+END_SERIALIZABLE_CLASS_VERSIONS(where_clause)
+
+SERIALIZABLE_CLASS_VERSIONS(flwor_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(flwor_expr)
+
+
+
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
 static QueryLoc null_loc;
@@ -250,10 +446,28 @@ DEF_ACCEPT (while_expr)
   
 expr::expr(short _sctx, const QueryLoc& _loc) : context(_sctx), loc(_loc) {
   invalidate ();
+  cache.type.sctx = NULL;
+  cache.upd_seq_kind.vacuous = false;
+  cache.upd_seq_kind.updating = false;
+  cache.upd_seq_kind.sequential = false;
 }
 
   
 expr::~expr() {}
+
+void expr::serialize(::zorba::serialization::Archiver &ar)
+{
+  //serialize_baseclass(ar, (SimpleRCObject*)this);
+  serialize_baseclass(ar, (AnnotationHolder*)this);
+  ar & loc;
+  ar & cache.type.valid;
+  ar & cache.type.t;
+  ar & cache.type.sctx;
+  ar & cache.upd_seq_kind.valid;
+  ar & cache.upd_seq_kind.vacuous;
+  ar & cache.upd_seq_kind.updating;
+  ar & cache.upd_seq_kind.sequential;
+}
 
 expr_update_t expr::get_update_type () const {
   if (is_vacuous ())
@@ -444,6 +658,24 @@ expr_t expr::clone(substitution_t& subst) {
   }
 
 
+void var_expr::serialize(::zorba::serialization::Archiver &ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  SERIALIZE_ENUM(var_kind, theKind);
+  ar & theName;
+  ar & theDeclaredType;
+  //+ar & theFlworClause;
+  //+ar & theCopyClause;
+  if(!ar.is_serializing_out())
+  {
+    theFlworClause = NULL;
+    theCopyClause = NULL;
+  }
+  ar & unique_id;
+}
+
+int var_expr::var_expr_count = 0;//used for giving var_exprs unique ids
+
 string var_expr::decode_var_kind(enum var_kind k)
 {
   switch (k) {
@@ -479,6 +711,7 @@ var_expr::var_expr(short sctx, const QueryLoc& loc, var_kind k, store::Item_t na
   theFlworClause(NULL),
   theCopyClause(NULL)
 {
+  unique_id = var_expr_count++;
 }
 
 
@@ -1376,11 +1609,11 @@ void eval_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER ();
 }
 
-eval_expr::eval_var::eval_var (var_expr *ve, expr_t val_)
-  : varname (ve->get_varname ()),
-    var_key (dynamic_context::var_key (ve)), type(ve->get_type()), val (val_)
-{
-}
+  eval_expr::eval_var::eval_var (var_expr *ve, expr_t val_)
+    : varname (ve->get_varname ()),
+      var_key (dynamic_context::var_key (ve)), type(ve->get_type()), val (val_)
+  {
+  }
 
 cast_or_castable_base_expr::cast_or_castable_base_expr(short sctx,
                                                        const QueryLoc& loc,
@@ -1657,6 +1890,13 @@ name_cast_expr::name_cast_expr(
   NamespaceContext_t aNCtx)
 : expr(sctx, loc), input_expr_h(_expr_h), theNCtx(aNCtx) 
 {}
+
+void name_cast_expr::serialize(::zorba::serialization::Archiver &ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & input_expr_h;
+  ar & theNCtx;
+}
 
 void name_cast_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
@@ -2109,6 +2349,25 @@ expr_t pi_expr::clone(substitution_t& subst) {
 }
 
 
+void function_def_expr::serialize(::zorba::serialization::Archiver &ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & name;
+  ar & params;
+  ar & body;
+  if(ar.is_serializing_out())
+  {
+    signature *psig = sig.get();
+    ar & psig;
+  }
+  else
+  {
+    signature *psig;
+    ar & psig;
+    sig = auto_ptr<signature>(psig);
+  }
+}
+
 function_def_expr::function_def_expr (short sctx,
                                       const QueryLoc& loc,
                                       store::Item_t name_,
@@ -2343,6 +2602,13 @@ expr_t wrapper_expr::clone (substitution_t& subst) {
     return new wrapper_expr (context, get_loc (), e);
 }
 
+
+void fo_expr::serialize(::zorba::serialization::Archiver &ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & argv;
+  SERIALIZE_FUNCTION((function*&)func);
+}
 
 expr_t match_expr::clone (substitution_t& subst) {
   match_expr *me = new match_expr (context, get_loc ());

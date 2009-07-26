@@ -35,7 +35,7 @@
 #include "types/typemanagerimpl.h"
 #include "types/schema/schema.h"
 #include "types/casting.h"
-
+#include "context/static_context.h"
 
 namespace zorba
 {

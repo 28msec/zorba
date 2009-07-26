@@ -19,6 +19,12 @@
 using namespace std;
 
 namespace zorba {
+SERIALIZABLE_CLASS_VERSIONS(signature_base)
+END_SERIALIZABLE_CLASS_VERSIONS(signature_base)
+
+SERIALIZABLE_CLASS_VERSIONS(signature)
+END_SERIALIZABLE_CLASS_VERSIONS(signature)
+
 
 signature::signature (
     store::Item_t name,

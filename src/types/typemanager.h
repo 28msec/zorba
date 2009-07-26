@@ -24,6 +24,7 @@
 #include "common/shared_types.h"
 #include "types/typeconstants.h"
 
+#include "zorbaserialization/serialization_engine.h"
 
 namespace zorba {
 
@@ -50,6 +51,14 @@ class TypeManager : public SimpleRCObject
 protected:
   int m_level;
 
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(TypeManager)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(TypeManager, SimpleRCObject)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    //serialize_baseclass(ar, (SimpleRCObject*)this);
+    ar & m_level;
+  }
 public:
   TypeManager(int level) : m_level(level) { }
   

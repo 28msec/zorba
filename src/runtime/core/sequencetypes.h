@@ -44,6 +44,14 @@ private:
   xqtref_t theSequenceType;
 
 public:
+  SERIALIZABLE_CLASS(InstanceOfIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(InstanceOfIterator, UnaryBaseIterator<InstanceOfIterator, InstanceOfIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<InstanceOfIterator, InstanceOfIteratorState>*)this);
+    ar & theSequenceType;
+  }
+public:
   InstanceOfIterator(short sctx,
                      const QueryLoc& loc, 
                      PlanIter_t& aTreatExpr, 
@@ -80,6 +88,16 @@ private:
   bool                        theIsSimpleType;
 
 public:
+  SERIALIZABLE_CLASS(CastIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CastIterator, UnaryBaseIterator<CastIterator, CastIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<CastIterator, CastIteratorState>*)this);
+    ar & theCastType;
+    SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
+    ar & theIsSimpleType;
+  }
+public:
   CastIterator(short sctx,
                const QueryLoc& loc,
                PlanIter_t& aChild,
@@ -102,6 +120,15 @@ private:
   xqtref_t theCastType;
   TypeConstants::quantifier_t theQuantifier;
 
+public:
+  SERIALIZABLE_CLASS(CastableIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CastableIterator, UnaryBaseIterator<CastableIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<CastableIterator, PlanIteratorState>*)this);
+    ar & theCastType;
+    SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
+  }
 public:
   CastableIterator(short sctx,
                    const QueryLoc& aLoc,
@@ -132,6 +159,15 @@ private:
   TypeConstants::quantifier_t theQuantifier;
 
 public:
+  SERIALIZABLE_CLASS(PromoteIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(PromoteIterator, UnaryBaseIterator<PromoteIterator, PromoteIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<PromoteIterator, PromoteIteratorState>*)this);
+    ar & thePromoteType;
+    SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
+  }
+public:
   PromoteIterator(short sctx, const QueryLoc&, PlanIter_t&, const xqtref_t& aPromoteType);
   virtual ~PromoteIterator();
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -155,6 +191,17 @@ private:
   bool check_prime;
   XQUERY_ERROR theErrorCode;
 
+public:
+  SERIALIZABLE_CLASS(TreatIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(TreatIterator, NaryBaseIterator<TreatIterator, TreatIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<TreatIterator, TreatIteratorState>*)this);
+    ar & theTreatType;
+    SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
+    ar & check_prime;
+    SERIALIZE_ENUM(XQUERY_ERROR, theErrorCode);
+  }
 public:
   TreatIterator(short sctx, const QueryLoc&, std::vector<PlanIter_t>&, const xqtref_t& aTreatType,
                 bool check_prime, XQUERY_ERROR);

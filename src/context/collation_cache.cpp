@@ -22,6 +22,10 @@
 
 namespace zorba {
 
+SERIALIZABLE_CLASS_VERSIONS(CollationCache)
+END_SERIALIZABLE_CLASS_VERSIONS(CollationCache)
+
+
 CollationCache::CollationCache(static_context* aStaticContext)
   :
   theStaticContext(aStaticContext),

@@ -35,7 +35,11 @@ using namespace std;
 
 namespace zorba
 {
+SERIALIZABLE_CLASS_VERSIONS(xqpStringStore)
+END_SERIALIZABLE_CLASS_VERSIONS(xqpStringStore)
 
+SERIALIZABLE_CLASS_VERSIONS(xqpString)
+END_SERIALIZABLE_CLASS_VERSIONS(xqpString)
 
 /*******************************************************************************
   whitespace = " \t\r\n" meaning (#x20) (#x9) (#xD) (#xA)

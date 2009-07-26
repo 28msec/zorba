@@ -25,6 +25,21 @@
 
 namespace zorba
 {
+SERIALIZABLE_CLASS_VERSIONS(FnCurrentDateTimeIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnCurrentDateTimeIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnCurrentDateIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnCurrentDateIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnCurrentTimeIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnCurrentTimeIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnImplicitTimezoneIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnImplicitTimezoneIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnDefaultCollationIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnDefaultCollationIterator)
+
 /**
  *______________________________________________________________________
  *

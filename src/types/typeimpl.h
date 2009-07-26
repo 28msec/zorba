@@ -21,6 +21,10 @@
 #include "types/typeconstants.h"
 #include "zorbatypes/rchandle.h"
 #include "store/api/item.h"
+#include "types/typemanager.h"
+
+#include "system/globalenv.h"
+#include "zorbaserialization/serialization_engine.h"
 
 namespace zorba {
 
@@ -264,10 +268,23 @@ public:
 protected:
   static const char            * KIND_STRINGS[XQType::MAX_TYPE_KIND];
 
-  const TypeManager            * m_manager;
-  const type_kind_t              m_type_kind;
+  /*const*/ TypeManager        * m_manager;
+  /*const*/ type_kind_t          m_type_kind;
   TypeConstants::quantifier_t    m_quantifier;
   bool                           theIsBuiltin;
+
+
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(XQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(XQType, SimpleRCObject)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    //serialize_baseclass(ar, (SimpleRCObject*)this);
+    SERIALIZE_TYPEMANAGER(TypeManager, m_manager);
+    SERIALIZE_ENUM(type_kind_t, m_type_kind)
+    SERIALIZE_ENUM(TypeConstants::quantifier_t, m_quantifier);
+    ar & theIsBuiltin;
+  }
 
 public:
   virtual ~XQType() { }
@@ -290,22 +307,28 @@ public:
 
   virtual store::Item_t get_qname() const { return NULL; }
 
-  virtual std::ostream& serialize(std::ostream& os) const;
+  bool get_isBuiltin() const { return theIsBuiltin; }
+  virtual std::ostream& serialize_ostream(std::ostream& os) const;
 
   virtual std::string toString() const;
 
 protected:
   XQType(
         const TypeManager* manager,
-        type_kind_t type_kind,
-        TypeConstants::quantifier_t quantifier,
-        bool builtin)
+         type_kind_t type_kind,
+         TypeConstants::quantifier_t quantifier,
+         bool builtin)
     :
-    m_manager(manager),
+    m_manager((TypeManager*)manager),
     m_type_kind(type_kind),
     m_quantifier(quantifier),
     theIsBuiltin(builtin)
   {
+    if(theIsBuiltin)
+    {//register this hardcoded object to help plan serialization
+      XQType  *this_ptr = this;
+      *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects() & this_ptr;
+    }
   }
 };
 
@@ -317,30 +340,37 @@ protected:
 class AtomicXQType : public XQType
 {
 public:
-  static const char* ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
+   static const char* ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
 
 private:
-  TypeConstants::atomic_type_code_t m_type_code;
+   TypeConstants::atomic_type_code_t m_type_code;
 
 public:
-  AtomicXQType(
+  SERIALIZABLE_CLASS(AtomicXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(AtomicXQType, XQType)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (XQType*)this);
+    SERIALIZE_ENUM(TypeConstants::atomic_type_code_t, m_type_code);
+  }
+public:
+   AtomicXQType(
         const TypeManager *manager,
         TypeConstants::atomic_type_code_t type_code,
         TypeConstants::quantifier_t quantifier,
         bool builtin = false)
-    :
-    XQType(manager, ATOMIC_TYPE_KIND, quantifier, builtin),
-    m_type_code(type_code)
-  {
-  }
+     :
+     XQType(manager, ATOMIC_TYPE_KIND, quantifier, builtin),
+     m_type_code(type_code)
+   {
+   }
 
-  TypeConstants::atomic_type_code_t get_type_code() const { return m_type_code; }
+   TypeConstants::atomic_type_code_t get_type_code() const { return m_type_code; }
 
-  content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
+   content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
 
   store::Item_t get_qname() const;
-
-  virtual std::ostream& serialize(std::ostream& os) const;
+   virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };
 
 
@@ -355,6 +385,16 @@ private:
   xqtref_t           m_content_type;
   bool               m_nillable;
 
+ public:
+  SERIALIZABLE_CLASS(NodeXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(NodeXQType, XQType)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (XQType*)this);
+    ar & m_nodetest;
+    ar & m_content_type;
+    ar & m_nillable;
+  }
 public:
   NodeXQType(
         const TypeManager* manager,
@@ -394,7 +434,7 @@ public:
 
   bool get_nillable() const { return m_nillable; }
 
-  virtual std::ostream& serialize(std::ostream& os) const;
+  virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };
 
 
@@ -412,6 +452,13 @@ public:
     XQType(manager, ITEM_KIND, quantifier, builtin) 
   { 
   }
+ public:
+  SERIALIZABLE_CLASS(ItemXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ItemXQType, XQType)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (XQType*)this);
+  }
 };
 
 
@@ -428,6 +475,13 @@ public:
   }
 
   store::Item_t get_qname() const;
+ public:
+  SERIALIZABLE_CLASS(AnyXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(AnyXQType, XQType)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (XQType*)this);
+  }
 };
 
 
@@ -446,6 +500,13 @@ public:
   content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
 
   store::Item_t get_qname() const;
+ public:
+  SERIALIZABLE_CLASS(AnySimpleXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(AnySimpleXQType, XQType)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (XQType*)this);
+  }
 };
 
 
@@ -462,6 +523,13 @@ public:
   }
 
   store::Item_t get_qname() const;
+ public:
+  SERIALIZABLE_CLASS(UntypedXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(UntypedXQType, XQType)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (XQType*)this);
+  }
 };
 
 
@@ -478,6 +546,13 @@ public:
   }
 
   content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
+ public:
+  SERIALIZABLE_CLASS(EmptyXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(EmptyXQType, XQType)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (XQType*)this);
+  }
 };
 
 
@@ -494,6 +569,13 @@ public:
   }
 
   content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
+ public:
+  SERIALIZABLE_CLASS(NoneXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(NoneXQType, XQType)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (XQType*)this);
+  }
 };
 
 
@@ -535,6 +617,19 @@ private:
   std::vector<xqtref_t>   m_unionItemTypes;
   xqtref_t                m_listItemType;
 
+ public:
+  SERIALIZABLE_CLASS(UserDefinedXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(UserDefinedXQType, XQType)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (XQType*)this);
+    ar & m_qname;
+    ar & m_baseType;
+    SERIALIZE_ENUM(TYPE_CATEGORY, m_typeCategory);
+    SERIALIZE_ENUM(content_kind_t, m_contentKind);
+    ar & m_listItemType;
+    ar & m_unionItemTypes;
+  }
 public:
   UserDefinedXQType(
         const TypeManager *manager,
@@ -581,7 +676,7 @@ public:
 
   bool isSubTypeOf(const XQType& superType) const;
 
-  virtual std::ostream& serialize(std::ostream& os) const;
+  virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };
 
 }

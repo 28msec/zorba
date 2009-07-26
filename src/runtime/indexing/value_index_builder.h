@@ -39,6 +39,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor& v) const;
+public:
+  SERIALIZABLE_CLASS(CreateValueIndex)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CreateValueIndex, UnaryBaseIterator<CreateValueIndex, PlanIteratorState> )
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<CreateValueIndex, PlanIteratorState> *)this);
+  }
 };
 
 
@@ -58,6 +65,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor& v) const;
+public:
+  SERIALIZABLE_CLASS(DropValueIndex)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DropValueIndex, UnaryBaseIterator<DropValueIndex, PlanIteratorState> )
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<DropValueIndex, PlanIteratorState> *)this);
+  }
 };
 
 
@@ -76,6 +90,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor& v) const;
+public:
+  SERIALIZABLE_CLASS(ValueIndexInsertSessionOpener)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ValueIndexInsertSessionOpener, UnaryBaseIterator<ValueIndexInsertSessionOpener, PlanIteratorState> )
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<ValueIndexInsertSessionOpener, PlanIteratorState> *)this);
+  }
 };
 
 
@@ -94,6 +115,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor& v) const;
+public:
+  SERIALIZABLE_CLASS(ValueIndexInsertSessionCloser)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ValueIndexInsertSessionCloser, UnaryBaseIterator<ValueIndexInsertSessionCloser, PlanIteratorState> )
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<ValueIndexInsertSessionCloser, PlanIteratorState> *)this);
+  }
 };
 
 
@@ -122,6 +150,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor& v) const;
+public:
+  SERIALIZABLE_CLASS(ValueIndexBuilder)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ValueIndexBuilder, NaryBaseIterator<ValueIndexBuilder, ValueIndexBuilderState> )
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<ValueIndexBuilder, ValueIndexBuilderState> *)this);
+  }
 };
 
 }

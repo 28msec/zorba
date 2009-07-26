@@ -26,13 +26,13 @@
 
 #define DECL_INT_PARAM( class, name, type )                             \
   type class::name () const {                                           \
-    ctx_value_t val;                                                    \
+    ctx_value_t val(CTX_INT);                                           \
     GET_CONTEXT_VALUE(name, val);                                       \
     return (type) val.intValue;                                         \
   }                                                                     \
                                                                         \
   void class::set_##name (type x) {                                     \
-    class::ctx_value_t val;                                             \
+    class::ctx_value_t val(CTX_INT);                                    \
     val.intValue = (int) x;                                             \
     keymap.put ("int:" #name, val);                                     \
   }

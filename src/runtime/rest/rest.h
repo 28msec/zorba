@@ -109,6 +109,14 @@ public:
   }
 private:
   bool isGetTidy;
+public:
+  SERIALIZABLE_CLASS(ZorbaRestGetIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaRestGetIterator, NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState >)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState >*)this);
+    ar & isGetTidy;
+  }
 };
 
 /****************************************************************************
@@ -138,6 +146,13 @@ public:
     }
     v.endVisit(*this);
   }
+public:
+  SERIALIZABLE_CLASS(ZorbaRestPostIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaRestPostIterator, NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState >)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState >*)this);
+  }
 };
 
 /****************************************************************************
@@ -164,6 +179,13 @@ public:
       ( *iter )->accept ( v );
     }
     v.endVisit(*this);
+  }
+public:
+  SERIALIZABLE_CLASS(ZorbaRestPutIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaRestPutIterator, NaryBaseIterator<ZorbaRestPutIterator, ZorbaRestGetIteratorState >)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<ZorbaRestPutIterator, ZorbaRestGetIteratorState >*)this);
   }
 };
 
@@ -192,6 +214,13 @@ public:
     }
     v.endVisit(*this);
   }
+public:
+  SERIALIZABLE_CLASS(ZorbaRestDeleteIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaRestDeleteIterator, NaryBaseIterator<ZorbaRestDeleteIterator, ZorbaRestGetIteratorState >)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<ZorbaRestDeleteIterator, ZorbaRestGetIteratorState >*)this);
+  }
 };
 
 /****************************************************************************
@@ -218,6 +247,13 @@ public:
       ( *iter )->accept ( v );
     }
     v.endVisit(*this);
+  }
+public:
+  SERIALIZABLE_CLASS(ZorbaRestHeadIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaRestHeadIterator, NaryBaseIterator<ZorbaRestHeadIterator, ZorbaRestGetIteratorState >)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<ZorbaRestHeadIterator, ZorbaRestGetIteratorState >*)this);
   }
 };
 

@@ -33,6 +33,7 @@
 #include "api/functionimpl.h"
 
 #include "api/xqueryimpl.h"
+#include "runtime/base/plan_iterator.h"
 
 namespace zorba {
 

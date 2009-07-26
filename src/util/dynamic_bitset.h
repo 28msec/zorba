@@ -24,6 +24,7 @@
 #endif
 
 #include <vector>
+#include "zorbamisc/config/platform.h"
 
 namespace zorba {
 

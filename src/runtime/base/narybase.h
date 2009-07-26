@@ -26,6 +26,8 @@ namespace zorba
 
   class PlanIterVisitor;
 
+extern const ::zorba::serialization::ClassVersion g_NaryBaseIterator_class_versions[];
+extern const int g_NaryBaseIterator_class_versions_count;
 /*******************************************************************************
   Superclass for all iterators which have n child iterators 
 ********************************************************************************/
@@ -35,6 +37,14 @@ class NaryBaseIterator : public Batcher<IterType>
 protected:
   std::vector<PlanIter_t> theChildren;
 
+public:
+  SERIALIZABLE_CLASS_NO_FACTORY(NaryBaseIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(NaryBaseIterator, Batcher<IterType>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (Batcher<IterType>*)this);
+    ar & theChildren;
+  }
 public:
   NaryBaseIterator ( short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& args );
 
@@ -166,6 +176,13 @@ public:                                                                  \
     NaryBaseIterator<iterName, stateName >(sctx, loc, aChildren)               \
       { }                                                                \
                                                                          \
+public:                                                                   \
+  SERIALIZABLE_CLASS(iterName)                                            \
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(iterName, NaryBaseIterator<iterName, stateName >) \
+  void serialize(::zorba::serialization::Archiver &ar)                        \
+  {                                                                         \
+    serialize_baseclass(ar, (NaryBaseIterator<iterName, stateName >*)this); \
+  }                                                                         \
 public:                                                                  \
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;     \
 };
@@ -178,6 +195,13 @@ public:                                                                  \
     NaryBaseIterator<iterName, stateName >(sctx, loc, aChildren)               \
       { }                                                                \
                                                                          \
+public:                                                                   \
+  SERIALIZABLE_CLASS(iterName)                                            \
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(iterName, NaryBaseIterator<iterName, stateName >) \
+  void serialize(::zorba::serialization::Archiver &ar)                        \
+  {                                                                         \
+    serialize_baseclass(ar, (NaryBaseIterator<iterName, stateName >*)this); \
+  }                                                                         \
 public:                                                                  \
   bool isUpdating() const { return true; }                               \
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;     \

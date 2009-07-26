@@ -27,6 +27,11 @@ namespace zorba
 namespace flwor
 {
 
+SERIALIZABLE_CLASS_VERSIONS(GroupingSpec)
+END_SERIALIZABLE_CLASS_VERSIONS(GroupingSpec)
+
+SERIALIZABLE_CLASS_VERSIONS(GroupingOuterVar)
+END_SERIALIZABLE_CLASS_VERSIONS(GroupingOuterVar)
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -41,7 +46,8 @@ GroupingSpec::GroupingSpec(
     const std::string& collation)
   :
   theInput(inputVar),
-  theCollation(collation)
+  theCollation(collation),
+  theCollator(NULL)
 {
   castIterVector<ForVarIterator>(theInnerVars, outputVarRefs);
 }

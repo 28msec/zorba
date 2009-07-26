@@ -56,6 +56,21 @@ using namespace store;
 
 static const char expect_buf[] = "Expect:";
 
+SERIALIZABLE_CLASS_VERSIONS(ZorbaRestGetIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ZorbaRestGetIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(ZorbaRestPostIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ZorbaRestPostIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(ZorbaRestPutIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ZorbaRestPutIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(ZorbaRestDeleteIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ZorbaRestDeleteIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(ZorbaRestHeadIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ZorbaRestHeadIterator)
+
 /****************************************************************************
  *
  * CurlStreamBuffer

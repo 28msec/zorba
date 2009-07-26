@@ -26,6 +26,7 @@
 #include "capi/capi_util.h"
 #include "api/staticcontextimpl.h"
 #include "api/xqueryimpl.h"
+#include "runtime/base/plan_iterator.h"
 
 using namespace zorba;
 

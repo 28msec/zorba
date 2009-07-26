@@ -34,7 +34,8 @@ namespace zorba {
  * dependencies to the parser.
  */
 // exported for unit testing only
-class ZORBA_DLL_PUBLIC QueryLoc {
+  class ZORBA_DLL_PUBLIC QueryLoc : public ::zorba::serialization::SerializeBaseClass
+  {
 
 public:
   static QueryLoc null;
@@ -51,9 +52,24 @@ private:
 #endif
 
 public:
+  SERIALIZABLE_CLASS(QueryLoc)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(QueryLoc)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theFilenameBegin;
+    ar & theLineBegin;
+    ar & theColumnBegin;
+    ar & theFilenameEnd;
+    ar & theLineEnd;
+    ar & theColumnEnd;
+//#ifdef ZORBA_DEBUGGER
+//    SERIALIZE_OPTIONAL_FIELD(theFunctionName)
+//#endif
+  }
+public:
   QueryLoc();
   QueryLoc(const QueryLoc& aQueryLoc);
-  ~QueryLoc(){}
+  virtual ~QueryLoc(){}
 
 public:
   xqpString    getFilenameBegin() const { return theFilenameBegin; } 

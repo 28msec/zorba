@@ -73,7 +73,7 @@ namespace flwor
                    "let $x := (1,2,3) return ($x, $x)" needs materialization, but
                    "let $x := (1,2,3) return if(test()) then $x else $x" doesn't.
 ********************************************************************************/
-class ForLetClause 
+class ForLetClause : public ::zorba::serialization::SerializeBaseClass
 {
   friend class FLWORIterator;
   friend class PrinterVisitor;
@@ -91,6 +91,20 @@ protected:
   bool                       theMaterialize;
     
 public:
+  SERIALIZABLE_CLASS(ForLetClause)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(ForLetClause)
+  ForLetClause() {}
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theVarName;
+    SERIALIZE_ENUM(ForLetType, theType)
+    ar & theForVarRefs;
+    ar & thePosVarRefs;
+    ar & theLetVarRefs;
+    ar & theInput;
+    ar & theMaterialize;
+  }
+public:
   ForLetClause(
         const store::Item_t& varName,
         const std::vector<PlanIter_t>& forVars,
@@ -107,6 +121,7 @@ public:
         const std::vector<PlanIter_t>& letVars,
         PlanIter_t& input,
         bool needsMaterialization);
+  virtual ~ForLetClause() {}
           
   void accept (PlanIterVisitor&) const;
 
@@ -135,7 +150,7 @@ public:
                   the the definition of class OrderSpec).
   theStable     : Whether the sorting must be stable or not.
 ********************************************************************************/
-class OrderByClause
+class OrderByClause : public ::zorba::serialization::SerializeBaseClass
 {
   friend class FLWORIterator;
   
@@ -144,6 +159,17 @@ public:
   bool                   theStable;
   
 public:
+  SERIALIZABLE_CLASS(OrderByClause)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(OrderByClause)
+  OrderByClause() {}
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theOrderSpecs;
+    ar & theStable;
+  }
+  virtual ~OrderByClause() {}
+public:
+
   OrderByClause(const std::vector<OrderSpec>& orderSpecs, bool stable);
 
   void accept(PlanIterVisitor& v) const;
@@ -172,7 +198,7 @@ public:
   theGroupingSpecs :
   theOuterVars     :
 ********************************************************************************/
-class GroupByClause
+class GroupByClause : public ::zorba::serialization::SerializeBaseClass
 {
   friend class FLWORIterator;
   friend class PrinterVisitor;
@@ -181,6 +207,15 @@ private:
   std::vector<GroupingSpec>     theGroupingSpecs;
   std::vector<GroupingOuterVar> theOuterVars;
     
+public:
+  SERIALIZABLE_CLASS(GroupByClause)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(GroupByClause)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theGroupingSpecs;
+    ar & theOuterVars;
+  }
+  virtual ~GroupByClause() {}
 public:
   GroupByClause(
         std::vector<GroupingSpec> aGroupingSpecs, 
@@ -286,8 +321,25 @@ private:
   bool                      doGroupBy;
   PlanIter_t                theReturnClause; 
   bool                      theIsUpdating;
-  const int                 theNumBindings; //Number of FORs and LETs (overall) 
+  /*const */int                 theNumBindings; //Number of FORs and LETs (overall) 
          
+public:
+  SERIALIZABLE_CLASS(FLWORIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(FLWORIterator, Batcher<FLWORIterator>)
+  //FLWORIterator() {}
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (Batcher<FLWORIterator>*)this);
+    ar & theForLetClauses;
+    ar & theWhereClause; //can be null
+    ar & theGroupByClause;
+    ar & theOrderByClause;  //can be null
+    ar & doOrderBy; //just indicates if the FLWOR has an orderby
+    ar & doGroupBy;
+    ar & theReturnClause; 
+    ar & theIsUpdating;
+    ar & theNumBindings; //Number of FORs and LETs (overall) 
+  }
 public:
   FLWORIterator(
         short                       sctx,

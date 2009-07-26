@@ -57,6 +57,16 @@ private:
   std::vector<GroupingOuterVar> theOuterVars;
 
 public:
+  SERIALIZABLE_CLASS(GroupByIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(GroupByIterator, Batcher<GroupByIterator>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (Batcher<GroupByIterator>*)this);
+    ar & theTupleIter;
+    ar & theGroupingSpecs;
+    ar & theOuterVars;
+  }
+public:
   GroupByIterator (
         short sctx,
         const QueryLoc& loc,

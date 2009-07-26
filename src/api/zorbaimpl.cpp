@@ -29,6 +29,7 @@
 #include "zorbaerrors/error_manager.h"
 #include "system/globalenv.h"
 #include "context/static_context.h"
+#include "runtime/base/plan_iterator.h"
 
 namespace zorba {
 
@@ -38,9 +39,12 @@ ZorbaImpl::ZorbaImpl() : theIsInitialized(false)
 }
 
 
+extern ::zorba::serialization::ClassSerializer *::zorba::serialization::g_class_serializer;
 ZorbaImpl::~ZorbaImpl() 
 {
   shutdown();
+  delete ::zorba::serialization::g_class_serializer;
+  ::zorba::serialization::g_class_serializer = NULL;
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
   RCLock::deletePool();
 #endif

@@ -29,6 +29,8 @@
 #include "zorbatypes/zorbatypes_decl.h"
 #include "zorbautils/checked_vector.h"
 
+#include "zorbaserialization/serialization_engine.h"
+
 namespace zorba {
 
 // exported for testing only
@@ -47,6 +49,15 @@ protected:
 
 protected:
   std::string  theString;
+
+public:
+  SERIALIZABLE_CLASS(xqpStringStore)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(xqpStringStore, RCObject)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    //::zorba::serialization::serialize_baseclass(ar, (RCObject*)this);
+    ar & theString;
+  }
 
 public:
   static bool
@@ -84,14 +95,13 @@ public:
 
   xqpStringStore(const xqpStringStore& other) 
     :
+    ::zorba::serialization::SerializeBaseClass(), 
     RCObject(other),
     theString(other.theString)
   {
   }
 
-
-  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
-
+  SYNC_CODE(virtual RCLock* getRCLock() const { return &theRCLock; })
 
   const std::string& str() const { return theString; }
 
@@ -285,13 +295,23 @@ template class  rchandle<xqpStringStore>;
 #endif
 
 // exported for testing only
-class ZORBA_DLL_PUBLIC xqpString
+class ZORBA_DLL_PUBLIC xqpString : public ::zorba::serialization::SerializeBaseClass
 {
 public:
   xqpStringStore_t theStrStore;
 
   typedef std::string::size_type  size_type;
 
+public:
+  SERIALIZABLE_CLASS(xqpString)
+  //xqpString(::zorba::serialization::Archiver &ar) : theStrStore(ar) {}
+  SERIALIZABLE_CLASS_CONSTRUCTOR(xqpString)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theStrStore;
+  }
+
+public:
   //constructor/destructor
   /**Construct an empty xqpString
    */
@@ -300,7 +320,7 @@ public:
   /**Construct a xqpString as a copy of another xqpString
    * @param src A source UTF-8 encoded string
    */
-  xqpString(const xqpString& other) : theStrStore(other.theStrStore) {}
+  xqpString(const xqpString& other) : ::zorba::serialization::SerializeBaseClass(), theStrStore(other.theStrStore) {}
 
   /**Construct a xqpString as a wrapper of an existing xqpStringStore
    * @param src A source UTF-8 encoded string
@@ -322,7 +342,7 @@ public:
    */
   xqpString(const wchar_t * src);
 
-  ~xqpString(){};
+  virtual ~xqpString(){};
 
   xqpStringStore* 
   getStore() const { return theStrStore.getp(); }

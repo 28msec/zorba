@@ -43,6 +43,14 @@ private:
   bool theNegate;
 
 public:
+  SERIALIZABLE_CLASS(FnBooleanIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnBooleanIterator, UnaryBaseIterator<FnBooleanIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<FnBooleanIterator, PlanIteratorState>*)this);
+    ar & theNegate;
+  }
+public:
   FnBooleanIterator ( short sctx, const QueryLoc& loc, PlanIter_t& aIter, bool aNegate = false );
 
   /**
@@ -80,6 +88,14 @@ private:
   LogicType theLogicType;
       
 public:
+  SERIALIZABLE_CLASS(LogicIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(LogicIterator, BinaryBaseIterator<LogicIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (BinaryBaseIterator<LogicIterator, PlanIteratorState>*)this);
+    SERIALIZE_ENUM(LogicType, theLogicType)
+  }
+public:
   LogicIterator(
         short sctx,
         const QueryLoc& loc,
@@ -105,6 +121,18 @@ private:
   long                        theTimezone;
   XQPCollator               * theCollation;
 
+public:
+  SERIALIZABLE_CLASS(CompareIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CompareIterator, BinaryBaseIterator<CompareIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (BinaryBaseIterator<CompareIterator, PlanIteratorState>*)this);
+    SERIALIZE_ENUM(CompareConsts::CompareType, theCompType)
+    ar & theIsGeneralComparison;
+    SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager)
+    ar & theTimezone;
+    ar & theCollation;
+  }
 public:
   CompareIterator (
         short sctx,
@@ -285,12 +313,22 @@ class TypedValueCompareIterator
   XQPCollator               * theCollation;
 
 public:
+  SERIALIZABLE_TEMPLATE_CLASS(TypedValueCompareIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(TypedValueCompareIterator, NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState>*)this);
+    SERIALIZE_ENUM(CompareConsts::CompareType, theCompType);
+    ar & theTimezone;
+    ar & theCollation;
+  }
+public:
   TypedValueCompareIterator (short sctx,
                              const QueryLoc& loc,
                              std::vector<PlanIter_t>& children,
                              CompareConsts::CompareType aCompType)
     : NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState> ( sctx, loc, children ), 
-      theCompType(aCompType), theTimezone (0)
+      theCompType(aCompType), theTimezone (0), theCollation(NULL)
   {}
 
   ~TypedValueCompareIterator () {}

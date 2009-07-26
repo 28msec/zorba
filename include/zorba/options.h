@@ -116,6 +116,11 @@ typedef enum {
   ZORBA_UNDECLARE_PREFIXES_NO
 } Zorba_undeclare_prefixes_t;
 
+typedef enum {
+  ZORBA_USE_BINARY_ARCHIVE,
+  ZORBA_USE_XML_ARCHIVE
+}Zorba_binary_plan_format_t;
+
 /** \brief Options that configure the serialization process of a query result.
 *         See http://www.w3.org/TR/2005/CR-xslt-xquery-serialization-20051103/.
 *

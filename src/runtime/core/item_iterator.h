@@ -42,6 +42,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const { return false; }
 
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(EmptyIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(EmptyIterator, NoaryBaseIterator<EmptyIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NoaryBaseIterator<EmptyIterator, PlanIteratorState>*)this);
+  }
 };
 
 /*******************************************************************************
@@ -54,6 +61,14 @@ class SingletonIterator : public NoaryBaseIterator<SingletonIterator, PlanIterat
 protected:
   store::Item_t theValue;
 
+public:
+  SERIALIZABLE_CLASS(SingletonIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SingletonIterator, NoaryBaseIterator<SingletonIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NoaryBaseIterator<SingletonIterator, PlanIteratorState>*)this);
+    ar & theValue;
+  }
 public:
   SingletonIterator(short sctx, const QueryLoc& loc, store::Item_t value)
     : NoaryBaseIterator<SingletonIterator, PlanIteratorState>(sctx, loc),
@@ -89,6 +104,18 @@ private:
   bool theIsUpdating;
   bool theIsBooleanIter;
     
+public:
+  SERIALIZABLE_CLASS(IfThenElseIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(IfThenElseIterator, Batcher<IfThenElseIterator>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (Batcher<IfThenElseIterator>*)this);
+    ar & theCondIter;
+    ar & theThenIter;
+    ar & theElseIter;
+    ar & theIsUpdating;
+    ar & theIsBooleanIter;
+  }
 public:
   /**
    * Constructor

@@ -156,7 +156,7 @@ rchandle<NodeNameTest> TypeOps::get_nametest(const XQType& type)
     if (nt) 
     {
       return rchandle<NodeNameTest>(nt->get_nametest());
-    }
+  }
   }
   return rchandle<NodeNameTest>(0);
 }
@@ -454,7 +454,7 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
             c2->type_kind() == XQType::UNTYPED_KIND)
         {
           return (c1 != NULL && c1->type_kind() == XQType::UNTYPED_KIND);
-        }
+      }
 
         if (c1 != NULL && c2 != NULL)
           return is_subtype(*c1, *c2);
@@ -652,7 +652,7 @@ xqtref_t TypeOps::union_type(const XQType& type1, const XQType& type2)
     else
     {
       return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-    }
+  }
   }
 }
 
@@ -918,7 +918,7 @@ const char *TypeOps::decode_quantifier (TypeConstants::quantifier_t quant)
 
 std::ostream& TypeOps::serialize(std::ostream& os, const XQType& type)
 {
-  return type.serialize(os);
+  return type.serialize_ostream(os);
 }
 
 

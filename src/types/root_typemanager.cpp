@@ -34,6 +34,10 @@
 
 using namespace zorba;
 
+//SERIALIZABLE_CLASS_VERSIONS(RootTypeManager)
+//END_SERIALIZABLE_CLASS_VERSIONS(RootTypeManager)
+
+
 #define N TypeConstants::NOT_CASTABLE
 #define Y TypeConstants::CASTABLE
 #define M TypeConstants::MAYBE_CASTABLE

@@ -31,6 +31,14 @@ namespace zorba {
               bool validate,
               bool tidying,
               const store::Item_t& tidyUserOpt = NULL);
+    public:
+      SERIALIZABLE_CLASS(StandardDocumentURIResolver)
+      SERIALIZABLE_CLASS_CONSTRUCTOR2(StandardDocumentURIResolver, InternalDocumentURIResolver)
+      StandardDocumentURIResolver() {}
+      void serialize(::zorba::serialization::Archiver &ar)
+      {
+        serialize_baseclass(ar, (InternalDocumentURIResolver*)this);
+      }
   };
 
   class StandardCollectionURIResolver : public InternalCollectionURIResolver
@@ -41,6 +49,14 @@ namespace zorba {
       virtual store::Collection_t 
       resolve(const store::Item_t& aURI,
               static_context* aStaticContext);
+    public:
+      SERIALIZABLE_CLASS(StandardCollectionURIResolver)
+      SERIALIZABLE_CLASS_CONSTRUCTOR2(StandardCollectionURIResolver, InternalCollectionURIResolver)
+      StandardCollectionURIResolver() {}
+      void serialize(::zorba::serialization::Archiver &ar)
+      {
+        serialize_baseclass(ar, (InternalCollectionURIResolver*)this);
+      }
   };
 
   class StandardSchemaURIResolver : public InternalSchemaURIResolver
@@ -52,6 +68,14 @@ namespace zorba {
       resolve(const store::Item_t& aURI,
               const std::vector<store::Item_t>& aLocationHints,
               static_context* aStaticContext);
+    public:
+      SERIALIZABLE_CLASS(StandardSchemaURIResolver)
+      SERIALIZABLE_CLASS_CONSTRUCTOR2(StandardSchemaURIResolver, InternalSchemaURIResolver)
+      StandardSchemaURIResolver() {}
+      void serialize(::zorba::serialization::Archiver &ar)
+      {
+        serialize_baseclass(ar, (InternalSchemaURIResolver*)this);
+      }
   };
 
   class StandardModuleURIResolver : public InternalModuleURIResolver
@@ -63,6 +87,14 @@ namespace zorba {
       resolve(const store::Item_t& aURI,
               static_context* aStaticContext,
               xqpStringStore* aFileUri = 0);
+    public:
+      SERIALIZABLE_CLASS(StandardModuleURIResolver)
+      SERIALIZABLE_CLASS_CONSTRUCTOR2(StandardModuleURIResolver, InternalModuleURIResolver)
+      StandardModuleURIResolver() {}
+      void serialize(::zorba::serialization::Archiver &ar)
+      {
+        serialize_baseclass(ar, (InternalModuleURIResolver*)this);
+      }
   };
 
   /*
@@ -85,6 +117,18 @@ namespace zorba {
       resolve(const store::Item_t& aURI,
               static_context* aStaticContext,
               xqpStringStore* = 0);
+    public:
+      SERIALIZABLE_CLASS(StandardLibraryModuleURIResolver)
+      StandardLibraryModuleURIResolver(::zorba::serialization::Archiver &ar)  
+              : InternalModuleURIResolver(ar) ,
+               theStream(std::cin) {}
+      StandardLibraryModuleURIResolver() : theStream(std::cin) {}
+      void serialize(::zorba::serialization::Archiver &ar)
+      {
+        serialize_baseclass(ar, (InternalModuleURIResolver*)this);
+        //ar & theStream;
+        ar & theLibraryModuleNamespace;
+      }
   };
 
 } /* namespace zorba */

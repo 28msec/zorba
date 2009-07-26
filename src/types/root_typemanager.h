@@ -42,7 +42,7 @@ public:
    * Pre-allocated XQType and QNameItem objects for all of the 45 built-in atomic
    * types of XQDM. Specifically, for each built-in atomic XQDM type T, we pre-
    * allocate a QNameItem for the name of T (as defined by XMLSchema), and 4 
-   * XQType objects representing the sequence tyoes T, T?, T*, and T+.
+   * XQType objects representing the sequence types T, T?, T*, and T+.
    */
 #define ATOMIC_DECL(basename) \
     store::Item_t XS_##basename##_QNAME; \
@@ -229,7 +229,7 @@ private:
    * QUANT_UNION_MATRIX[q1][q2] = q <==> q is IS(S(q1) union S(q2)) 
    * 
    * In other words, q is the "minimum" quantifier that is equally or more
-   * permissive than both q1 and q2.
+   *  permissive than both q1 and q2.
    */
   static const TypeConstants::quantifier_t
   QUANT_UNION_MATRIX[TypeConstants::QUANTIFIER_LIST_SIZE]

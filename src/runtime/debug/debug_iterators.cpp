@@ -20,6 +20,10 @@
 
 namespace zorba {
 
+SERIALIZABLE_CLASS_VERSIONS(FnTraceIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnTraceIterator)
+
+
 void 
 FnTraceIteratorState::init(PlanState& planState)
 {

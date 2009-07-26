@@ -22,7 +22,7 @@
 
 namespace zorba {
 
-class zorba;
+//class zorba;
 
 // Zorba specific functions:
 

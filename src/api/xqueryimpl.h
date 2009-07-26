@@ -27,6 +27,7 @@
 
 #include "common/shared_types.h" 
 #include "compiler/api/compilercb.h"
+#include "context/dynamic_context.h"
 
 namespace zorba {
 
@@ -103,12 +104,13 @@ class ResultIteratorImpl;
   sax content handler that provide event-based xml parser
  
 ********************************************************************************/
-class XQueryImpl : public XQuery 
+class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseClass
 {
   friend class ResultIteratorImpl;
   friend class ZorbaImpl; // only ZorbaImpl is allowed to create us
   friend class StaticContextImpl;  // StaticContextImpl::loadProlog() needs this
   friend class DynamicContextImpl;
+  friend class CompilerCB;
 
  protected:
 
@@ -120,10 +122,18 @@ class XQueryImpl : public XQuery
     SYNC_CODE(mutable RCLock  theRCLock;)
 
   public:
+    SERIALIZABLE_CLASS(PlanProxy)
+    SERIALIZABLE_CLASS_CONSTRUCTOR2(PlanProxy, RCObject)
+    void serialize(::zorba::serialization::Archiver &ar)
+    {
+      //serialize_baseclass(ar, (RCObject*)this);
+      ar & theRootIter;
+    }
+  public:
     long*
     getSharedRefCounter() const { return NULL; }  
 
-    SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
+    SYNC_CODE(virtual RCLock* getRCLock() const { return &theRCLock; })
 
     PlanProxy(PlanIter_t& root);
   };
@@ -168,6 +178,45 @@ class XQueryImpl : public XQuery
   long                             theDocLoadingTime;
 
  public:
+public:
+  SERIALIZABLE_CLASS(XQueryImpl)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(XQueryImpl)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+  // static stuff
+    ar & theFileName;
+    if(!ar.is_serializing_out())
+    {
+      delete theCompilerCB;
+      //ar.xquery_impl = this;
+    }
+    else
+      ar.compiler_cb = theCompilerCB;
+    ar & theCompilerCB;
+    ar & theSctxMap;
+    ar & thePlan; 
+    ar & theStaticContext;
+    if(!ar.is_serializing_out())
+    {
+      RCHelper::addReference (theStaticContext);
+      //theDynamicContext = NULL; 
+      theDynamicContextWrapper = NULL; 
+      theStaticContextWrapper = NULL;//new StaticContextImpl(theStaticContext, theErrorHandler); 
+
+      //theUserErrorHandler = false; 
+      //theErrorHandler = NULL; 
+      //theErrorManager = NULL;
+      //theSAX2Handler = NULL; 
+      theIsClosed = false;
+
+      theCompilerCB->m_error_manager = theErrorManager;
+
+#ifdef ZORBA_DEBUGGER
+      theDebugger = NULL;
+#endif
+    }
+  }
+public:
   virtual ~XQueryImpl();
 
   void
@@ -247,7 +296,20 @@ class XQueryImpl : public XQuery
   XQuery_t
   clone() const;
 
- protected:
+  bool
+  saveExecutionPlan(std::ostream &os, Zorba_binary_plan_format_t archive_format);
+
+  bool
+  loadExecutionPlan(std::istream &is);
+  
+  bool
+  loadExecutionPlan(std::istream &is, 
+                    DocumentURIResolver* aDocumentURIResolver,
+                    CollectionURIResolver* aCollectionUriResolver = NULL,
+                    SchemaURIResolver* aSchemaUriResolver = NULL,
+                    ModuleURIResolver* aModuleUriResolver = NULL,
+                    std::ostream*      theTraceStream = NULL);
+protected:
     
   XQueryImpl();
       

@@ -22,6 +22,7 @@
 #include "schema.h"
 #include "zorbatypes/xerces_xmlcharray.h"
 #include <iostream>
+#include "types/typeimpl.h"
 
 using namespace std;
 

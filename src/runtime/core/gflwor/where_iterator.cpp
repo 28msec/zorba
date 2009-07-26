@@ -28,6 +28,8 @@ namespace zorba
 {
 namespace flwor 
 {
+SERIALIZABLE_CLASS_VERSIONS(WhereIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(WhereIterator)
 
     /////////////////////////////////////////////////////////////////////////////////
     //                                                                             //

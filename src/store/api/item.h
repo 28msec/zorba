@@ -67,7 +67,7 @@ public:
   long* 
   getSharedRefCounter() const { return theTreeRCPtr; }
 
-  SYNC_CODE(RCLock* getRCLock() const { return NULL; })
+  SYNC_CODE(virtual RCLock* getRCLock() const { return NULL; })
 
 #else
 
@@ -81,7 +81,7 @@ public:
   long*
   getSharedRefCounter() const { return theTreeRCPtr; }
 
-  SYNC_CODE(RCLock* getRCLock() const { return theRCLockPtr; })
+  SYNC_CODE(virtual RCLock* getRCLock() const { return theRCLockPtr; })
 
 #endif
 

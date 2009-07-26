@@ -1,6 +1,6 @@
 
 #include "zorbatypes/rchandle.h"
-#include "zorbatypes/xqpString.h"
+#include "zorbatypes/xqpstring.h"
 #include "context/context.h"
 #include "common/shared_types.h"
 #include "types/typeimpl.h"
@@ -22,19 +22,20 @@ END_SERIALIZABLE_CLASS_VERSIONS(SimpleRCObject)
 
 SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, serializable_hashmap<context::ctx_value_t>)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, serializable_hashmap<xqp_string>)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, serializable_hashmap<xqtref_t>)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, serializable_hashmap<context::ctx_value_t>, 1)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, serializable_hashmap<xqp_string>, 2)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, serializable_hashmap<xqtref_t>, 3)
 
 SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap_entry)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap_entry)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<context::ctx_value_t>::entry)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<xqp_string>::entry)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<xqtref_t>::entry)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<context::ctx_value_t>::entry, 1)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<xqp_string>::entry, 2)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<xqtref_t>::entry, 3)
 
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
 SERIALIZABLE_CLASS_VERSIONS(RCLock)
 END_SERIALIZABLE_CLASS_VERSIONS(RCLock)
-
+#endif
 
 /*SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(Batcher, Batcher<ElementIterator>)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(Batcher, Batcher<FLWORIterator>)

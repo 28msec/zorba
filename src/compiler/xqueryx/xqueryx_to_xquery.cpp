@@ -131,7 +131,7 @@ bool  XQueryXConvertor::isXQueryX(char *xquery_str)
 {
   char  *cursor = xquery_str;
 
-  if((cursor[0] == 0xEF) && (cursor[1] == 0xBB) && (cursor[2] == 0xBF))
+  if((cursor[0] == (char)0xEF) && (cursor[1] == (char)0xBB) && (cursor[2] == (char)0xBF))
   {
     //UTF8 mark (on Windows text editors) U+FEFF
     cursor += 3;//skip

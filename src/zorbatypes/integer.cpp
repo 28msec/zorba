@@ -20,6 +20,9 @@
 #include <stdlib.h>
 
 namespace zorba {
+SERIALIZABLE_CLASS_VERSIONS(Integer)
+END_SERIALIZABLE_CLASS_VERSIONS(Integer)
+
 
 Integer& Integer::zero() {
   static Integer lValue(IMAPM(0));

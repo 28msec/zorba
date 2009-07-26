@@ -19,6 +19,9 @@
 #include "zorbatypes/numconversions.h"
 
 namespace zorba {
+SERIALIZABLE_CLASS_VERSIONS(Decimal)
+END_SERIALIZABLE_CLASS_VERSIONS(Decimal)
+
 
 Decimal& Decimal::zero() {
   static Decimal lValue(MAPM(0));
@@ -509,10 +512,10 @@ xqpString Decimal::decimalToString(MAPM theValue) {
   char lBuffer[174];
   if(theValue == 0)
     sprintf(lBuffer, "0");
-  else if(fabs(theValue) < 1.0e-10)
-    sprintf(lBuffer, "%.20lf", theValue);
+  //else if(fabs(theValue) < 1.0e-10)
+  //  sprintf(lBuffer, "%.20lf", theValue);
   else
-    sprintf(lBuffer, "%.10lf", theValue);
+    sprintf(lBuffer, "%.16lf", theValue);
 #endif
 
   // Note in the canonical representation the decimal point is required

@@ -17,10 +17,13 @@
 #define XQP_COMPILERCB_H
 
 #include <vector>
+#include <map>
 
 #include <zorba/config.h>
 #include "common/shared_types.h"
 #include "context/static_context.h"
+
+#include "zorbaserialization/serialization_engine.h"
 
 namespace zorba {
 
@@ -63,11 +66,11 @@ class static_context;
                     share the same ErrorManager.
   m_config        :
 ********************************************************************************/
-class ZORBA_DLL_PUBLIC CompilerCB 
+class ZORBA_DLL_PUBLIC CompilerCB : public zorba::serialization::SerializeBaseClass
 {
  public:
-  typedef struct config 
-  {
+   typedef struct config : public zorba::serialization::SerializeBaseClass
+   {
     typedef enum {
       O0,
       O1
@@ -84,10 +87,23 @@ class ZORBA_DLL_PUBLIC CompilerCB
     bool print_item_flow;  // TODO: move to RuntimeCB
 
     config();
+  public:
+    SERIALIZABLE_CLASS(config)
+    config(::zorba::serialization::Archiver &ar) : parse_cb(NULL), translate_cb(NULL), normalize_cb(NULL), optimize_cb(NULL) {}
+    virtual ~config() {}
+    void serialize(::zorba::serialization::Archiver &ar)
+    {
+      ar & force_gflwor;
+      SERIALIZE_ENUM(opt_level_t, opt_level);
+	    ar & lib_module;
+      //ar & parse_cb;
+      //ar & translate_cb, normalize_cb, optimize_cb;
+      ar & print_item_flow;
+    }
   } config_t;
-
+  
   bool                               m_is_loadprolog;
-  std::map<short, static_context_t>& m_context_map;
+  std::map<short, static_context_t> *m_context_map;
   
   static_context_t                   m_sctx;
   short                              m_cur_sctx;
@@ -103,20 +119,33 @@ public:
   CompilerCB(std::map<short, static_context_t>&);
 
   CompilerCB(const CompilerCB&);
-
-  ~CompilerCB();
+  virtual ~CompilerCB();
 
   bool isLoadPrologQuery() const { return m_is_loadprolog; }
 
   void setLoadPrologQuery() { m_is_loadprolog = true; }
 
   static_context*
-  getStaticContext(short c)
+  getStaticContext(short c);
+public:
+  SERIALIZABLE_CLASS(CompilerCB)
+  //CompilerCB(::zorba::serialization::Archiver &ar); 
+  SERIALIZABLE_CLASS_CONSTRUCTOR(CompilerCB)
+  void serialize(::zorba::serialization::Archiver &ar)
   {
-    std::map<short, static_context_t>::iterator lIter;
-    lIter = m_context_map.find(c);
-    assert(lIter != m_context_map.end());
-    return lIter->second.getp();
+	ar & m_is_loadprolog;
+    ar & m_cur_sctx;
+    ar & m_context_map;
+    ar & m_sctx;
+	ar & m_sctx_list;
+    if(!ar.is_serializing_out())
+    {
+      m_error_manager = NULL;//don't serialize this
+#ifdef ZORBA_DEBUGGER
+      m_debugger = NULL;
+#endif
+    }
+    ar & m_config;
   }
 };
 

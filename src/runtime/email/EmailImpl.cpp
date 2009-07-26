@@ -25,6 +25,9 @@
 
 namespace zorba {
 
+SERIALIZABLE_CLASS_VERSIONS(ZorbaMailIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ZorbaMailIterator)
+
 bool
 ZorbaMailIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {

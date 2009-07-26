@@ -42,6 +42,13 @@ class ResolveQNameIterator : public BinaryBaseIterator<ResolveQNameIterator, Pla
     bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
     virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(ResolveQNameIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ResolveQNameIterator, BinaryBaseIterator<ResolveQNameIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (BinaryBaseIterator<ResolveQNameIterator, PlanIteratorState>*)this);
+  }
 };
 /*end class ResolveQNameIterator */
 
@@ -62,6 +69,13 @@ class QNameIterator : public BinaryBaseIterator<QNameIterator, PlanIteratorState
     bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
     virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(QNameIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(QNameIterator, BinaryBaseIterator<QNameIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (BinaryBaseIterator<QNameIterator, PlanIteratorState>*)this);
+  }
 };
 /*end class QNameIterator */
 
@@ -82,6 +96,13 @@ class QNameEqualIterator : public BinaryBaseIterator<QNameEqualIterator, PlanIte
     bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
     virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(QNameEqualIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(QNameEqualIterator, BinaryBaseIterator<QNameEqualIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (BinaryBaseIterator<QNameEqualIterator, PlanIteratorState>*)this);
+  }
 };
 /*end class QNameEqualIterator */
 
@@ -101,6 +122,13 @@ class PrefixFromQNameIterator : public UnaryBaseIterator<PrefixFromQNameIterator
     bool nextImpl(store::Item_t& result, PlanState& planState) const;
     
     virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(PrefixFromQNameIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(PrefixFromQNameIterator, UnaryBaseIterator<PrefixFromQNameIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<PrefixFromQNameIterator, PlanIteratorState>*)this);
+  }
 };
 /* end class PrefixFromQNameIterator */
 
@@ -120,6 +148,13 @@ class LocalNameFromQNameIterator : public UnaryBaseIterator<LocalNameFromQNameIt
     bool nextImpl(store::Item_t& result, PlanState& planState) const;
     
     virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(LocalNameFromQNameIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(LocalNameFromQNameIterator, UnaryBaseIterator<LocalNameFromQNameIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<LocalNameFromQNameIterator, PlanIteratorState>*)this);
+  }
 };
 /* end class LocalNameFromQNameIterator */
 
@@ -139,6 +174,13 @@ class NamespaceUriFromQNameIterator : public UnaryBaseIterator<NamespaceUriFromQ
     bool nextImpl(store::Item_t& result, PlanState& planState) const;
     
     virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(NamespaceUriFromQNameIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(NamespaceUriFromQNameIterator, UnaryBaseIterator<NamespaceUriFromQNameIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<NamespaceUriFromQNameIterator, PlanIteratorState>*)this);
+  }
 };
 /* end class NamespaceUriFromQNameIterator */
 
@@ -179,6 +221,13 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
+public:
+  SERIALIZABLE_CLASS(InScopePrefixesIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(InScopePrefixesIterator, UnaryBaseIterator<InScopePrefixesIterator,InScopePrefixesState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<InScopePrefixesIterator,InScopePrefixesState>*)this);
+  }
 };
 /* end class InScopePrefixesIterator */
 }/*namespace zorba*/

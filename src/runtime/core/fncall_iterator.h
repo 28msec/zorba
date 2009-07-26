@@ -48,8 +48,16 @@ class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator,
                                                        UDFunctionCallIteratorState> 
 {
 protected:
-  const user_function *theUDF;
+  user_function* theUDF;
 
+public:
+  SERIALIZABLE_CLASS(UDFunctionCallIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(UDFunctionCallIterator, NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>*)this);
+    ar & theUDF;
+  }
 public:
   UDFunctionCallIterator(
         short sctx,
@@ -58,7 +66,7 @@ public:
         const user_function *aUDF)
     :
     NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>(sctx, loc, args), 
-    theUDF(aUDF)
+    theUDF((user_function*)aUDF)
   {}
 
   virtual ~UDFunctionCallIterator() {}
@@ -111,6 +119,13 @@ class StatelessExtFunctionCallIterator :
  protected:
   const StatelessExternalFunction *m_function;
   bool theIsUpdating;
+public:
+  SERIALIZABLE_CLASS(StatelessExtFunctionCallIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(StatelessExtFunctionCallIterator, NaryBaseIterator<StatelessExtFunctionCallIterator, StatelessExtFunctionCallIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ZORBA_SER_ERROR_DESC_OSS(SRL0009_CLASS_NOT_SERIALIZABLE, "StatelessExtFunctionCallIterator");
+  }
 };
 
 }

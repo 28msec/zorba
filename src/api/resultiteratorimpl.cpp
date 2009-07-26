@@ -28,6 +28,7 @@
 #include "store/api/store.h"
 
 #include "runtime/api/plan_wrapper.h"
+#include "runtime/base/plan_iterator.h"
 
 
 namespace zorba {

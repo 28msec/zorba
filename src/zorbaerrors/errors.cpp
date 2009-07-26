@@ -20,6 +20,9 @@
 
 namespace zorba { namespace error {
 
+SERIALIZABLE_CLASS_VERSIONS(ZorbaError)
+END_SERIALIZABLE_CLASS_VERSIONS(ZorbaError)
+
 
 std::string 
 ZorbaError::toString(const XQUERY_ERROR& code) 
@@ -99,6 +102,7 @@ ZorbaError::ZorbaError(
 
 ZorbaError::ZorbaError(const ZorbaError& other)
   :
+  ::zorba::serialization::SerializeBaseClass(),
   theLocalName(other.theLocalName),
   thePrefix(other.thePrefix),
   theNamespace(other.theNamespace),

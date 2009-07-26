@@ -17,9 +17,10 @@
 #define ZORBA_VAR_EXPR_H
 
 #include "compiler/expression/expr_base.h"
+//#include "compiler/expression/flwor_expr.h"
+#include "zorbaserialization/serialization_engine.h"
 
-namespace zorba 
-{
+namespace zorba {
 
 class flwor_clause;
 class forletwin_clause;
@@ -98,8 +99,16 @@ protected:
   store::Item_t  theName;
   xqtref_t       theDeclaredType;
 
+  static int var_expr_count;
   flwor_clause * theFlworClause;
   copy_clause  * theCopyClause;
+
+  int   unique_id;
+
+public:
+  SERIALIZABLE_CLASS(var_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(var_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar);
 
 public:
   static std::string decode_var_kind(enum var_kind);
@@ -146,12 +155,22 @@ public:
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream&) const;
+
+  int get_unique_id() const {return unique_id;}
 };
 
 
-struct global_binding : public std::pair<varref_t, expr_t> 
+struct global_binding : public std::pair<varref_t, expr_t>, public ::zorba::serialization::SerializeBaseClass
 {
-  bool ext;
+    bool ext;
+public:
+  SERIALIZABLE_CLASS(global_binding)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(global_binding)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & ext;
+  }
+public:
 
   global_binding () : ext (false) {}
 
@@ -162,6 +181,7 @@ struct global_binding : public std::pair<varref_t, expr_t>
   {
   }
 
+  virtual ~global_binding() {}
   bool is_extern () const { return ext; }
 };
 

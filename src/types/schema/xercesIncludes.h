@@ -32,6 +32,8 @@
 #include <xercesc/framework/URLInputSource.hpp>
 
 #include <xercesc/internal/XMLGrammarPoolImpl.hpp>
+#include <xercesc/internal/BinMemOutputStream.hpp>
+#include <xercesc/util/BinMemInputStream.hpp>
 
 #include <xercesc/sax2/DefaultHandler.hpp>
 #include <xercesc/sax2/SAX2XMLReader.hpp>

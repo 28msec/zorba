@@ -30,7 +30,14 @@
 #include "types/node_test.h"
 
 namespace zorba {
-  
+
+SERIALIZABLE_CLASS_VERSIONS(TryCatchIterator::CatchClause)
+END_SERIALIZABLE_CLASS_VERSIONS(TryCatchIterator::CatchClause)
+
+SERIALIZABLE_CLASS_VERSIONS(TryCatchIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(TryCatchIterator)
+
+
 TryCatchIteratorState::TryCatchIteratorState()
   : theTempIterator(NULL),
   theCatchIterator(NULL)
