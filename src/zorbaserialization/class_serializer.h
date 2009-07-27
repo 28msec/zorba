@@ -7,6 +7,8 @@
 #include <vector>
 #include <assert.h>
 #include <iostream>
+#include <typeinfo>
+#include <string.h>
 
 #include <zorba/error.h>
 #include "zorbamisc/config/platform.h"
