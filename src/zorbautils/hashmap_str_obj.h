@@ -53,7 +53,7 @@ public:
     if((HashMap<const char *, class_name*, CompareCharPtr>::theNumEntries >= 20*1024))// && (nr_missed > 50))
     {
       //restart hashing
-      HashCharPtrObjPtr<class_name>freeAll();
+      HashCharPtrObjPtr<class_name>::freeAll();
       HashMap<const char *, class_name*, CompareCharPtr>::clear();
     }
     return false;
