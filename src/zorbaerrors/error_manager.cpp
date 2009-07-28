@@ -40,10 +40,6 @@ ErrorManager::createException(
 
   ZorbaError lError(aErrorCode, lDesc , 0, 0, "", aFileName, aLineNumber);
 
-  std::cout << "createException code=" << (int)aErrorCode << std::endl
-            << "error=" << lDesc << std::endl
-            << "file=" << aFileName << std::endl
-            << "line=" << aLineNumber << std::endl;
   return ZorbaError(lError);
 }
 
@@ -64,10 +60,6 @@ ErrorManager::createException(
                     aQueryLine, aQueryColumn, aQueryFileName,
                     aFileName, aLineNumber);
 
-  std::cout << "createException code=" << (int)aErrorCode << std::endl
-            << "error=" << lDesc << std::endl
-            << "file=" << aFileName << std::endl
-            << "line=" << aLineNumber << std::endl;
   return ZorbaError(lError);
 }
 
@@ -89,10 +81,6 @@ ErrorManager::createException(
   ZorbaError lError(aErrorCode, lDesc,
                     aQueryLine, aQueryColumn, aQueryFileName,
                     aFileName, aLineNumber);
-  std::cout << "createException code=" << (int)aErrorCode << std::endl
-            << "error=" << lDesc << std::endl
-            << "file=" << aFileName << std::endl
-            << "line=" << aLineNumber << std::endl;
   return ZorbaError(lError);
 }
 
@@ -106,10 +94,6 @@ ErrorManager::createException(
 {
   ZorbaError lError(aErrorCode, aDesc, 0, 0, "", aFileName, aLineNumber);
 
-  std::cout << "createException code=" << (int)aErrorCode << std::endl
-            << "error=" << aDesc << std::endl
-            << "file=" << aFileName << std::endl
-            << "line=" << aLineNumber << std::endl;
   return ZorbaError(lError);
 }
 
@@ -128,10 +112,6 @@ ErrorManager::createException(
                     aQueryLine, aQueryColumn, aQueryFileName,
                     aFileName, aLineNumber);
 
-  std::cout << "createException code=" << (int)aErrorCode << std::endl
-            << "error=" << aDescription << std::endl
-            << "file=" << aFileName << std::endl
-            << "line=" << aLineNumber << std::endl;
   return ZorbaError(lError);
 }
 
