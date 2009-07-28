@@ -339,6 +339,10 @@ store::Item_t ValidateIterator::processElement(
         
   store::Item_t typeName = schemaValidator.getTypeQName();
 
+  bool isSubstitutionGroup = false;
+  if ( schemaValidator.getSubstitutedElemQName() )
+      isSubstitutionGroup = true;
+
   store::Item_t newElem;
 
   store::NsBindings bindings;
@@ -347,7 +351,7 @@ store::Item_t ValidateIterator::processElement(
   store::Item_t elemName = element->getNodeName();
   GENV_ITEMFACTORY->createElementNode(newElem, parent, -1, elemName,
                                       typeName, true, false, 
-                                      bindings, baseUri);
+                                      bindings, baseUri, isSubstitutionGroup);
   
   processAttributes(sctx,
                     typeManager,

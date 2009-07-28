@@ -105,7 +105,8 @@ public:
         Item_t&              typedValue,
         bool                 haveValue,
         bool                 haveEmptyValue,
-        bool                 haveTypedValue) = 0;
+        bool                 haveTypedValue,
+        bool                 isInSubstitutionGroup) = 0;
 
   virtual void addSetElementType(
         Item_t&              target,
@@ -113,7 +114,8 @@ public:
         std::vector<Item_t>& typedValue,
         bool                 haveValue,
         bool                 haveEmptyValue,
-        bool                 haveTypedValue) = 0;
+        bool                 haveTypedValue,
+        bool                 isInSubstitutionGroup) = 0;
 
   virtual void addSetAttributeType(
         Item_t&              target,

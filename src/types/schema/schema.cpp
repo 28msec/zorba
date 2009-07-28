@@ -42,8 +42,8 @@ namespace zorba
 SERIALIZABLE_CLASS_VERSIONS(Schema)
 END_SERIALIZABLE_CLASS_VERSIONS(Schema)
 
-//#define DO_PRINT_SCHEMA_INFO
 //#define DO_TRACE
+//#define DO_PRINT_SCHEMA_INFO
 
 #ifdef DO_TRACE
 
@@ -440,7 +440,18 @@ XSTypeDefinition* Schema::getTypeDefForElement(const store::Item* qname)
   XSElementDeclaration* decl = model->getElementDeclaration(local, uri);
   
   if (decl)
+  {
     typeDef = decl->getTypeDefinition();
+
+    // this works anly on the element that is a substitution, not on substitution base element
+    //XSElementDeclaration * substGroup = decl->getSubstitutionGroupAffiliation();
+    
+    //if ( substGroup )
+    //{
+    //    TRACE(" substitutionGroup qname: " << StrX(substGroup->getName()) << "@" << 
+    //          StrX(substGroup->getNamespace()) << "\n");
+    //}
+  }
 
   return typeDef;
 }

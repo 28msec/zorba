@@ -487,7 +487,8 @@ void PULImpl::addSetElementType(
     store::Item_t&              value,
     bool                        haveValue,
     bool                        haveEmptyValue,
-    bool                        haveTypedValue)
+    bool                        haveTypedValue,
+    bool                        isInSubstitutionGroup)
 {
   UpdatePrimitive* upd = new UpdSetElementType(this, target,
                                                typeName, value,
@@ -503,7 +504,8 @@ void PULImpl::addSetElementType(
     std::vector<store::Item_t>& valueV,
     bool                        haveValue,
     bool                        haveEmptyValue,
-    bool                        haveTypedValue)
+    bool                        haveTypedValue,
+    bool                        isInSubstitutionGroup)
 {
   store::Item_t typedValue = new ItemVector(valueV);
 

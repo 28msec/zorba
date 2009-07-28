@@ -221,7 +221,8 @@ public:
         bool                        haveTypedValue,
         bool                        haveEmptyValue,
         const store::NsBindings&    localBindings,
-        xqpStringStore_t&           baseURI);
+        xqpStringStore_t&           baseURI,
+        bool                        isInSubstitutionGroup = false);
 
   bool createAttributeNode(
         store::Item_t&              result,

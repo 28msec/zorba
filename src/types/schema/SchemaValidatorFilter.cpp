@@ -297,8 +297,7 @@ void SchemaValidatorFilter::processStartElement()
       SchemaElementDecl* substitutedElem = schemaElemDecl->getSubstitutionGroupElem();
       if (substitutedElem)
       {
-          const XMLCh* substElemName = substitutedElem->getFullName();
-          //std::cout << "     svf substitutedElem: " << StrX(substElemName) << "\n";
+          //std::cout << "     svf substitutedElem: " << StrX(substitutedElem->getFullName()) << "\n";
           _substitutedElemName = substitutedElem->getBaseName();
           _substitutedElemUri  = (XMLCh*)fURIStringPool->getValueForId(substitutedElem->getURI());
       }

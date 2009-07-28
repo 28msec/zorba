@@ -907,7 +907,8 @@ bool BasicItemFactory::createElementNode(
     bool                        haveTypedValue,
     bool                        haveEmptyValue,
     const store::NsBindings&    localBindings,
-    xqpStringStore_t&           baseUri)
+    xqpStringStore_t&           baseUri,
+    bool                        isInSubstitutionGroup)
 {
   XmlTree* xmlTree = NULL;
   ElementNode* n = NULL;

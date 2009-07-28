@@ -216,10 +216,13 @@ void processElement(
     //cout << " vup      - elemType new: " << typeQName->getLocalName()->c_str()
     //    << " @ " << typeQName->getNamespace()->c_str() << "\n"; cout.flush();
     
-    //if (substitutedElemQName)
+    bool isInSubstitutionElement = false;
+    if (substitutedElemQName)
+    {
+        isInSubstitutionElement = true;
     //    cout << " vup        - substitutes: " << substitutedElemQName->getLocalName()->c_str() <<
     //        " @ " << substitutedElemQName->getNamespace()->c_str() << "\n"; cout.flush();
-
+    }
 
     bool isNewType = false;
     xqtref_t newType;
@@ -259,18 +262,20 @@ void processElement(
 
         if ( typedValues.size()==1 )
             p->addSetElementType(elm,
-                                typeQName,
-                                typedValues[0],
-                                tHasValue, 
-                                tHasEmptyValue,
-                                tHasTypedValue);
+                                 typeQName,
+                                 typedValues[0],
+                                 tHasValue, 
+                                 tHasEmptyValue,
+                                 tHasTypedValue, 
+                                 isInSubstitutionElement);
         else
             p->addSetElementType(elm,
-                                typeQName,
-                                (std::vector<store::Item_t>&)typedValues,
-                                tHasValue, 
-                                tHasEmptyValue,
-                                tHasTypedValue);
+                                 typeQName,
+                                 (std::vector<store::Item_t>&)typedValues,
+                                 tHasValue, 
+                                 tHasEmptyValue,
+                                 tHasTypedValue,
+                                 isInSubstitutionElement);
     }
 
     schemaValidator.endElem(nodeName);

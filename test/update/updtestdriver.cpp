@@ -203,9 +203,9 @@ main(int argc, char** argv)
           lContext->setBoundarySpacePolicy(preserve_space);
 
       	zorba::String lProlog = zorba::String(
-	  std::string("import schema 'http://www.w3.org/XML/1998/namespace';\n"));
-	
-	lContext->loadProlog(lProlog, getCompilerHints());
+          std::string("import schema 'http://www.w3.org/XML/1998/namespace';\n"));
+
+        lContext->loadProlog(lProlog, getCompilerHints());
       }
       
       zorba::XQuery_t lQuery = engine->createQuery();

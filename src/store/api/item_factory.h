@@ -500,7 +500,8 @@ public:
         bool                haveTypedValue,
         bool                haveEmptyValue,
         const NsBindings&   localBindings,
-        xqpStringStore_t&   baseURI) = 0;
+        xqpStringStore_t&   baseURI,
+        bool                isInSubstitutionGroup = false) = 0;
 
   /**
    * Create a new attribute node N and place it at a given position among the

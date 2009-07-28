@@ -213,7 +213,8 @@ public:
         store::Item_t&               value,
         bool                         haveValue,
         bool                         haveEmptyValue,
-        bool                         haveTypedVaule);
+        bool                         haveTypedVaule,
+        bool                         isInSubstitutionGroup);
 
   void addSetElementType(
         store::Item_t&               target,
@@ -221,7 +222,8 @@ public:
         std::vector<store::Item_t>&  value,
         bool                         haveValue,
         bool                         haveEmptyValue,
-        bool                         haveTypedValue);
+        bool                         haveTypedValue,
+        bool                         isInSubstitutionGroup);
 
   void addSetAttributeType(
         store::Item_t&               target,
