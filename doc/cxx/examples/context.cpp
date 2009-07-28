@@ -20,6 +20,7 @@
 
 #include <zorba/zorba.h>
 #include <simplestore/simplestore.h>
+#include <zorba/uri_resolvers.h>
 
 
 using namespace zorba;
@@ -304,6 +305,62 @@ context_example_10(Zorba* aZorba)
 	return false;
 }
 
+class MyModuleURIResolverResult : public ModuleURIResolverResult
+{
+  public:
+    virtual std::istream*
+    getModule() const
+    {
+      return theModule;
+    }
+
+  protected:
+    friend class MyModuleURIResolver;
+    std::istream* theModule;
+};
+
+class MyModuleURIResolver : public ModuleURIResolver
+{
+  public:
+    virtual ~MyModuleURIResolver() {}
+
+    virtual std::auto_ptr<ModuleURIResolverResult>
+    resolve(const Item& aURI, StaticContext* aStaticContext, String* aFileUri = 0)
+    {
+      std::auto_ptr<MyModuleURIResolverResult> lResult(new MyModuleURIResolverResult());
+      if (aURI.getStringValue() == "http://www.zorba-xquery.com/mymodule") {
+        // we have only one module
+        lResult->theModule = new std::istringstream(
+                                    "module namespace mymodule = 'http://www.zorba-xquery.com/mymodule'; declare variable $mymodule:var  := 'myvar';");
+        lResult->setError(URIResolverResult::UR_NOERROR);
+      } 
+      return std::auto_ptr<ModuleURIResolverResult>(lResult.release());
+    }
+};
+
+bool
+context_example_11(Zorba* aZorba)
+{
+  StaticContext_t lContext = aZorba->createStaticContext();
+  MyModuleURIResolver lResolver;
+  lContext->setModuleURIResolver(&lResolver);
+
+  try {
+    Zorba_CompilerHints_t hints;
+    lContext->loadProlog("import module namespace mymodule = 'http://www.zorba-xquery.com/mymodule';", hints);
+
+    XQuery_t aQuery = aZorba->compileQuery("$mymodule:var", lContext);
+
+    std::cout << aQuery << std::endl;
+    return true;
+
+  } catch (QueryException &e) {
+    std::cerr << e << std::endl;
+    return false;
+  }
+
+	return false;
+}
 
 int 
 context(int argc, char* argv[])
@@ -360,6 +417,11 @@ context(int argc, char* argv[])
 
     std::cout << "executing example_10" << std::endl;
     res = context_example_10(lZorba);
+    if (!res) return 1; 
+    std::cout << std::endl;
+
+    std::cout << "executing example_11" << std::endl;
+    res = context_example_11(lZorba);
     if (!res) return 1; 
     std::cout << std::endl;
 
