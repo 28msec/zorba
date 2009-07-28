@@ -305,7 +305,7 @@ context_example_10(Zorba* aZorba)
 	return false;
 }
 
-class MyModuleURIResolverResult : public ModuleURIResolverResult
+class PrologModuleURIResolverResult : public ModuleURIResolverResult
 {
   public:
     virtual std::istream*
@@ -315,19 +315,19 @@ class MyModuleURIResolverResult : public ModuleURIResolverResult
     }
 
   protected:
-    friend class MyModuleURIResolver;
+    friend class PrologModuleURIResolver;
     std::istream* theModule;
 };
 
-class MyModuleURIResolver : public ModuleURIResolver
+class PrologModuleURIResolver : public ModuleURIResolver
 {
   public:
-    virtual ~MyModuleURIResolver() {}
+    virtual ~PrologModuleURIResolver() {}
 
     virtual std::auto_ptr<ModuleURIResolverResult>
     resolve(const Item& aURI, StaticContext* aStaticContext, String* aFileUri = 0)
     {
-      std::auto_ptr<MyModuleURIResolverResult> lResult(new MyModuleURIResolverResult());
+      std::auto_ptr<PrologModuleURIResolverResult> lResult(new PrologModuleURIResolverResult());
       if (aURI.getStringValue() == "http://www.zorba-xquery.com/mymodule") {
         // we have only one module
         lResult->theModule = new std::istringstream(
@@ -342,7 +342,7 @@ bool
 context_example_11(Zorba* aZorba)
 {
   StaticContext_t lContext = aZorba->createStaticContext();
-  MyModuleURIResolver lResolver;
+  PrologModuleURIResolver lResolver;
   lContext->setModuleURIResolver(&lResolver);
 
   try {
