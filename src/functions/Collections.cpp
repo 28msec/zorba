@@ -22,116 +22,116 @@ namespace zorba
 {
 
 PlanIter_t
-zorba_collection_exists::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_collection_exists::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaCollectionExistsIterator(sctx, loc, argv);
 }
 
 
 PlanIter_t
-zorba_import_xml::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_import_xml::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaImportXmlIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_import_catalog::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_import_catalog::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaImportCatalogIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_import_folder::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_import_folder::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaImportFolderIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_list_collections::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_list_collections::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaListCollectionsIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_create_collection::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_create_collection::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaCreateCollectionIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_delete_collection::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_delete_collection::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaDeleteCollectionIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_delete_all_collections::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_delete_all_collections::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaDeleteAllCollectionsIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_insert_nodes_first::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_insert_nodes_first::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaInsertNodeFirstIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_insert_nodes_last::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_insert_nodes_last::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaInsertNodeLastIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_insert_nodes_before::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_insert_nodes_before::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaInsertNodeBeforeIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_insert_nodes_after::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_insert_nodes_after::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaInsertNodeAfterIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_insert_nodes_at::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_insert_nodes_at::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaInsertNodeAtIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_remove_nodes::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_remove_nodes::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaRemoveNodeIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_remove_node_at::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_remove_node_at::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaRemoveNodeAtIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_nodes_count::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_nodes_count::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaNodeCountIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_node_at::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_node_at::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaNodeAtIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_index_of::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_index_of::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaIndexOfIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_export_xml::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_export_xml::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaExportXmlIterator(sctx, loc, argv);
 }

@@ -27,7 +27,8 @@ namespace zorba {
     public:
       zorba_mail(const signature& sig): function(sig){}
 
-      PlanIter_t codegen (short sctx,
+      PlanIter_t codegen (CompilerCB* cb,
+                          short sctx,
                           const QueryLoc& loc,
                           std::vector<PlanIter_t>& argv,
                           AnnotationHolder &ann) const;

@@ -31,6 +31,7 @@ namespace zorba {
 
 
 class fo_expr;
+class CompilerCB;
 
 typedef rchandle<var_expr> var_expr_t;
 
@@ -172,10 +173,11 @@ public:
 
   // codegen: functor specification
   virtual PlanIter_t codegen (
+        CompilerCB* cb, 
         short sctx,
-	const QueryLoc& loc,
-	std::vector<PlanIter_t>& argv,
-	AnnotationHolder &ann) const = 0;
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder &ann) const = 0;
 };
 
 
@@ -283,6 +285,7 @@ public:
   virtual std::vector<LetVarIter_t>& get_param_iters() const;
 
   virtual PlanIter_t codegen(
+        CompilerCB* cb,
         short sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,

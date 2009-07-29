@@ -21,7 +21,7 @@ namespace zorba {
 zop_createtuple::zop_createtuple(const signature& sig)
   : function(sig) { }
 
-PlanIter_t zop_createtuple::codegen(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t zop_createtuple::codegen(CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new CreateTupleIterator(sctx, loc, argv);
 }
@@ -29,7 +29,7 @@ PlanIter_t zop_createtuple::codegen(short sctx, const QueryLoc& loc, std::vector
 zop_gettuplefield::zop_gettuplefield(const signature& sig)
   : function(sig) { }
 
-PlanIter_t zop_gettuplefield::codegen(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t zop_gettuplefield::codegen(CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new GetTupleFieldIterator(sctx, loc, argv);
 }

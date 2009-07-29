@@ -28,7 +28,8 @@ namespace zorba {
     public:
       zorba_json_parse(const signature& sig): function(sig){}
 
-      PlanIter_t codegen (short sctx,
+      PlanIter_t codegen (CompilerCB* cb,
+                          short sctx,
                           const QueryLoc& loc,
                           std::vector<PlanIter_t>& argv,
                           AnnotationHolder &ann) const;
@@ -39,7 +40,8 @@ namespace zorba {
     public:
       zorba_json_serialize(const signature& sig): function(sig){}
 
-      PlanIter_t codegen (short sctx,
+      PlanIter_t codegen (CompilerCB* cb,
+                          short sctx,
                           const QueryLoc& loc,
                           std::vector<PlanIter_t>& argv,
                           AnnotationHolder &ann) const;
@@ -51,7 +53,8 @@ namespace zorba {
     public:
       zorba_json_ml_parse(const signature& sig): function(sig){}
 
-      PlanIter_t codegen (short sctx,
+      PlanIter_t codegen (CompilerCB* cb,
+                          short sctx,
                           const QueryLoc& loc,
                           std::vector<PlanIter_t>& argv,
                           AnnotationHolder &ann) const;
@@ -62,7 +65,8 @@ namespace zorba {
     public:
       zorba_json_ml_serialize(const signature& sig): function(sig){}
 
-      PlanIter_t codegen (short sctx,
+      PlanIter_t codegen (CompilerCB* cb,
+                          short sctx,
                           const QueryLoc& loc,
                           std::vector<PlanIter_t>& argv,
                           AnnotationHolder &ann) const;

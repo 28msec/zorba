@@ -41,7 +41,8 @@ class zorba_collection_exists : public function
 public:
   zorba_collection_exists(const signature& sig): function(sig){}
 
-  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (CompilerCB* cb,
+                      short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
   bool requires_dyn_ctx() const { return true; }
 };
@@ -52,7 +53,8 @@ class zorba_import_xml : public function
   public:
     zorba_import_xml(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
 };
@@ -63,7 +65,8 @@ class zorba_import_catalog : public function
   public:
     zorba_import_catalog(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
 };
@@ -73,7 +76,8 @@ class zorba_import_folder : public function
   public:
     zorba_import_folder(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
 };
@@ -83,7 +87,8 @@ class zorba_list_collections : public function
   public:
     zorba_list_collections(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
 };
@@ -93,7 +98,8 @@ class zorba_create_collection : public function
   public:
     zorba_create_collection(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
 
@@ -105,7 +111,8 @@ class zorba_delete_collection : public function
   public:
     zorba_delete_collection(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
 
@@ -117,7 +124,8 @@ class zorba_delete_all_collections : public function
   public:
     zorba_delete_all_collections(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
 
@@ -129,7 +137,8 @@ class zorba_insert_nodes_first : public function
   public:
     zorba_insert_nodes_first(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
 
@@ -141,7 +150,8 @@ class zorba_insert_nodes_last : public function
   public:
     zorba_insert_nodes_last(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
 
@@ -153,7 +163,8 @@ class zorba_insert_nodes_before : public function
   public:
     zorba_insert_nodes_before(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
 
@@ -165,7 +176,8 @@ class zorba_insert_nodes_after : public function
   public:
     zorba_insert_nodes_after(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
 
@@ -177,7 +189,8 @@ class zorba_insert_nodes_at : public function
   public:
     zorba_insert_nodes_at(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
 
@@ -189,7 +202,8 @@ class zorba_remove_nodes : public function
   public:
     zorba_remove_nodes(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
 
@@ -201,7 +215,8 @@ class zorba_remove_node_at : public function
   public:
     zorba_remove_node_at(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
 
@@ -213,7 +228,8 @@ class zorba_nodes_count : public function
   public:
     zorba_nodes_count(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     bool requires_dyn_ctx () const { return true; }
 };
@@ -224,7 +240,8 @@ class zorba_node_at : public function
 public:
   zorba_node_at(const signature& sig): function(sig){}
 
-  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (CompilerCB* cb,
+                      short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
   bool requires_dyn_ctx () const { return true; }
 };
@@ -235,7 +252,8 @@ class zorba_index_of : public function
 public:
   zorba_index_of(const signature& sig): function(sig){}
 
-  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (CompilerCB* cb,
+                      short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
   bool requires_dyn_ctx () const { return true; }
 };
@@ -246,7 +264,8 @@ class zorba_export_xml : public function
 public:
   zorba_export_xml(const signature& sig): function(sig){}
 
-  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  PlanIter_t codegen (CompilerCB* cb,
+                      short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
   bool requires_dyn_ctx () const { return true; }
 };

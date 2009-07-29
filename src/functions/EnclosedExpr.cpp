@@ -34,6 +34,7 @@ xqtref_t op_enclosed_expr::return_type(const std::vector<xqtref_t>& arg_types) c
 
 
 PlanIter_t op_enclosed_expr::codegen(
+    CompilerCB* /*cb*/,
     short sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,

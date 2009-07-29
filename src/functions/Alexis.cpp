@@ -22,57 +22,57 @@ using namespace std;
 
 namespace zorba {
 
-PlanIter_t zorba_decode_base64::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t zorba_decode_base64::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaBase64DecodeIterator ( sctx, loc, argv );
 }
 
 
-PlanIter_t zorba_encode_base64::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t zorba_encode_base64::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaBase64EncodeIterator ( sctx, loc, argv );
 }
 
 
 PlanIter_t
-zorba_schema_type::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_schema_type::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaSchemaTypeIterator(sctx, loc, argv);
 }
 
 #ifdef ZORBA_WITH_TIDY
   PlanIter_t
-  zorba_tidy::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  zorba_tidy::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
   {
     return new ZorbaTidyIterator(sctx, loc, argv);
   }
 
   PlanIter_t
-  zorba_tdoc::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  zorba_tdoc::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
   {
     return new ZorbaTDocIterator(sctx, loc, argv);
   }
 #endif  /* ZORBA_WITH_TIDY */
 
 PlanIter_t
-zorba_random::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_random::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaRandomIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_uuid::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_uuid::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaUUIDIterator(sctx, loc, argv);
 }
 
 PlanIter_t
-zorba_timestamp::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_timestamp::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaTimestampIterator(sctx, loc, argv);
 }
 
-zorba::PlanIter_t zorba_serialize_to_string::codegen(short sctx,  const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+zorba::PlanIter_t zorba_serialize_to_string::codegen(CompilerCB* /*cb*/, short sctx,  const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 {
 	return new FnPrintIterator(sctx, loc, argv, false);
 }

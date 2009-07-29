@@ -24,6 +24,7 @@ namespace zorba
 {
 
 PlanIter_t ctx_variable::codegen (
+    CompilerCB* /*cb*/,
     short sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
@@ -33,6 +34,7 @@ PlanIter_t ctx_variable::codegen (
 }
 
 PlanIter_t ctx_var_assign::codegen (
+    CompilerCB* /*cb*/,
     short sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
@@ -43,6 +45,7 @@ PlanIter_t ctx_var_assign::codegen (
 
 
 PlanIter_t ctx_var_declare::codegen (
+    CompilerCB* /*cb*/,
     short sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
@@ -53,6 +56,7 @@ PlanIter_t ctx_var_declare::codegen (
 
 
 PlanIter_t ctx_var_exists::codegen (
+    CompilerCB* /*cb*/,
     short sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,

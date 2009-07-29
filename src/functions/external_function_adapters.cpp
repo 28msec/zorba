@@ -30,7 +30,7 @@ stateless_external_function_adapter::~stateless_external_function_adapter()
 {
 }
 
-PlanIter_t stateless_external_function_adapter::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t stateless_external_function_adapter::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
     return new StatelessExtFunctionCallIterator(sctx, loc, argv, m_function, isUpdating());
 }

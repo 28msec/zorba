@@ -42,6 +42,7 @@ public:
   virtual bool isPureFunction() const { return m_function->isPureFunction(); }
 
   virtual PlanIter_t codegen (
+        CompilerCB* cb,
         short sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,

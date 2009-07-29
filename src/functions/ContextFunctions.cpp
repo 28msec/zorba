@@ -33,7 +33,7 @@ namespace zorba
 
 
 PlanIter_t
-fn_current_dateTime::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+fn_current_dateTime::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnCurrentDateTimeIterator(sctx, loc, argv);
 }
@@ -47,7 +47,7 @@ fn_current_dateTime::codegen (short sctx, const QueryLoc& loc, std::vector<PlanI
 
 
 PlanIter_t
-fn_current_date::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+fn_current_date::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnCurrentDateIterator(sctx, loc, argv);
 }
@@ -61,7 +61,7 @@ fn_current_date::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_
 
 
 PlanIter_t
-fn_current_time::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+fn_current_time::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnCurrentTimeIterator(sctx, loc, argv);
 }
@@ -75,7 +75,7 @@ fn_current_time::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_
 
 
 PlanIter_t
-fn_implicit_timezone::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+fn_implicit_timezone::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnImplicitTimezoneIterator(sctx, loc, argv);
 }
@@ -89,7 +89,7 @@ fn_implicit_timezone::codegen (short sctx, const QueryLoc& loc, std::vector<Plan
 
 
 PlanIter_t
-fn_default_collation::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+fn_default_collation::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnDefaultCollationIterator(sctx, loc, argv);
 }

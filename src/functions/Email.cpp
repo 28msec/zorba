@@ -22,7 +22,7 @@ using namespace std;
 namespace zorba {
 
 PlanIter_t
-zorba_mail::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+zorba_mail::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaMailIterator(sctx, loc, argv);
 }

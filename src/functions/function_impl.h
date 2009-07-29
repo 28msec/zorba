@@ -48,9 +48,13 @@
   } while(0)
 
 
-#define DEFAULT_CODEGEN( Iter ) \
-  PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const { \
-    return new Iter (sctx, loc, argv);                                        \
+#define DEFAULT_CODEGEN( Iter )                           \
+  PlanIter_t codegen (CompilerCB* /* cb */,               \
+                      short sctx,                         \
+                      const QueryLoc& loc,                \
+                      std::vector<PlanIter_t>& argv,      \
+                      AnnotationHolder &/*ann*/) const {  \
+    return new Iter (sctx, loc, argv);                    \
   }
 
 

@@ -38,6 +38,7 @@ public:
   ctx_var_declare(const signature& sig) : function (sig) {}
 
   PlanIter_t codegen(
+        CompilerCB* cb,
         short sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
@@ -63,6 +64,7 @@ public:
   ctx_var_assign(const signature& sig) : function (sig) {}
 
   PlanIter_t codegen(
+        CompilerCB* cb,
         short sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
@@ -85,6 +87,7 @@ public:
   ctx_var_exists(const signature& sig) : function (sig) {}
 
   PlanIter_t codegen(
+        CompilerCB* cb,
         short sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
@@ -108,6 +111,7 @@ public:
   ctx_variable(const signature& sig) : function (sig) {}
 
   PlanIter_t codegen(
+        CompilerCB* cb,
         short sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,

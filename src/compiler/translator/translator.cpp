@@ -2449,7 +2449,7 @@ void *begin_visit (const OptionDecl& v)
 void end_visit (const OptionDecl& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT ();
-    }
+}
 
 
 /*******************************************************************************

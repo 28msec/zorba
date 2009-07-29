@@ -25,14 +25,16 @@ namespace zorba {
   class fn_trace_func : public function {
   public:
     fn_trace_func(const signature& sig) : function (sig) {}    
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   class fn_error : public function {
   public:
     fn_error(const signature& sig) : function (sig) {}
     
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     virtual expr_update_t getUpdateType() const { return VACUOUS_EXPR; }
   };
@@ -40,21 +42,24 @@ namespace zorba {
   class fn_resolve_uri : public function {
   public:
     fn_resolve_uri(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   class fn_read_string : public function {
   public:
     fn_read_string(const signature& sig) : function (sig) {}
     bool requires_dyn_ctx () const { return true; }
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   class fn_print : public function {
   public:
     fn_print(const signature& sig) : function (sig) {}
     bool requires_dyn_ctx () const { return true; }
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
 }

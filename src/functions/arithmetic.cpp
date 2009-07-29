@@ -75,7 +75,7 @@ xqtref_t binary_arith_func::return_type (const std::vector<xqtref_t> &arg_types)
   public:
     op_add(const signature& sig) : binary_arith_func (sig) {}
     const char *op_name () const { return "add"; }
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   // 6.2.3 op:numeric-multiply
@@ -85,7 +85,7 @@ xqtref_t binary_arith_func::return_type (const std::vector<xqtref_t> &arg_types)
   public:
     op_multiply(const signature& sig) : binary_arith_func (sig) {}
     const char *op_name () const { return "multiply"; }
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
 
@@ -96,7 +96,7 @@ xqtref_t binary_arith_func::return_type (const std::vector<xqtref_t> &arg_types)
   public:
     op_divide(const signature& sig) : binary_arith_func (sig) {}
     const char *op_name () const { return "divide"; }
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const {
       return atomic_return_type (arg_types);
     }
@@ -109,7 +109,7 @@ xqtref_t binary_arith_func::return_type (const std::vector<xqtref_t> &arg_types)
   public:
     op_integer_divide(const signature& sig) : function (sig) {}
     virtual bool isArithmeticFunction() const { return true; }
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   // 6.2.6 op:numeric-mod
@@ -119,44 +119,44 @@ xqtref_t binary_arith_func::return_type (const std::vector<xqtref_t> &arg_types)
   public:
 	op_mod(const signature& sig) : function (sig) {}
     virtual bool isArithmeticFunction() const { return true; }
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
 
-PlanIter_t op_add::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t op_add::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
 	return new GenericArithIterator<AddOperation>(sctx, loc, argv[0], argv[1]);
 }
 
 
 
-PlanIter_t op_subtract::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t op_subtract::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
 	return new GenericArithIterator<SubtractOperation>(sctx, loc, argv[0], argv[1]);
 }
 
-PlanIter_t op_multiply::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t op_multiply::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
 	return new GenericArithIterator<MultiplyOperation>(sctx, loc, argv[0], argv[1]);
 }
 
 
 
-PlanIter_t op_divide::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t op_divide::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
 	return new GenericArithIterator<DivideOperation>(sctx, loc, argv[0], argv[1]);
 }
 
 
 
-PlanIter_t op_integer_divide::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t op_integer_divide::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
 	return new GenericArithIterator<IntegerDivideOperation>(sctx, loc, argv[0], argv[1]);
 }
 
 
 
-PlanIter_t op_mod::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t op_mod::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
 	return new GenericArithIterator<ModOperation>(sctx, loc, argv[0], argv[1]);
 }

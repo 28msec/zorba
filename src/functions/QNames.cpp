@@ -26,7 +26,7 @@
 
 
 PlanIter_t
-    fn_resolve_qname::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+    fn_resolve_qname::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ResolveQNameIterator(sctx, loc, argv[0], argv[1]);
 }
@@ -41,7 +41,7 @@ PlanIter_t
 
 
 PlanIter_t
-    fn_qname::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+    fn_qname::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new QNameIterator(sctx, loc, argv[0], argv[1]);
 }
@@ -56,7 +56,7 @@ PlanIter_t
 
 
 PlanIter_t
-    op_qname_equal::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+    op_qname_equal::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new QNameEqualIterator(sctx, loc, argv[0], argv[1]);
 }
@@ -71,7 +71,7 @@ PlanIter_t
 
 
 PlanIter_t
-    fn_prefix_from_qname::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+    fn_prefix_from_qname::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new PrefixFromQNameIterator(sctx, loc, argv[0]);
 }
@@ -86,7 +86,7 @@ PlanIter_t
 
 
 PlanIter_t
-    fn_local_name_from_qname::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+    fn_local_name_from_qname::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new LocalNameFromQNameIterator(sctx, loc, argv[0]);
 }
@@ -101,7 +101,7 @@ PlanIter_t
 
 
 PlanIter_t
-    fn_namespace_uri_from_qname::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+    fn_namespace_uri_from_qname::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new NamespaceUriFromQNameIterator(sctx, loc, argv[0]);
 }
@@ -116,7 +116,7 @@ PlanIter_t
 
 
 PlanIter_t
-    fn_namespace_uri_for_prefix::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+    fn_namespace_uri_for_prefix::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new NamespaceUriForPrefixIterator(sctx, loc, argv);
 }
@@ -131,7 +131,7 @@ PlanIter_t
 
 
 PlanIter_t
-    fn_in_scope_prefixes::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+    fn_in_scope_prefixes::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new InScopePrefixesIterator(sctx, loc, argv[0]);
 }

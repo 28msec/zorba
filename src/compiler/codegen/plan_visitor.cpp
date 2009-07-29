@@ -1635,7 +1635,7 @@ void end_visit (fo_expr& v) {
   const QueryLoc& loc = qloc;
 
   if (func->validate_args (argv)) {
-    PlanIter_t iter = func->codegen (sctx, loc, argv, v);
+    PlanIter_t iter = func->codegen (ccb, sctx, loc, argv, v);
     ZORBA_ASSERT(iter != NULL);
     push_itstack(iter);
 

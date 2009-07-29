@@ -22,9 +22,22 @@ using namespace std;
 
 namespace zorba {
 
-PlanIter_t fn_trace_func::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_trace_func::codegen (CompilerCB* cb,
+                                   short sctx,
+                                   const QueryLoc& loc,
+                                   std::vector<PlanIter_t>& argv,
+                                   AnnotationHolder &ann) const
 {
-  return new FnTraceIterator ( sctx, loc, argv );
+  // tracing can be disabled  using declare option exq:trace "disable";
+  static_context* lContext = cb->getStaticContext(sctx);
+  xqp_string lOption;
+  bool       lOptionFound = lContext->lookup_option("http://www.zorba-xquery.org/options",
+                                                    "trace", lOption);
+  if (!lOptionFound || (lOptionFound && lOption != "disable")) {
+    return new FnTraceIterator ( sctx, loc, argv );
+  } else {
+    return argv[0];
+  }
 }
 
 
@@ -33,7 +46,11 @@ PlanIter_t fn_trace_func::codegen (short sctx, const QueryLoc& loc, std::vector<
   3 The Error Function
 ********************************************************************************/
 
-PlanIter_t fn_error::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_error::codegen (CompilerCB* /*cb*/,
+                              short sctx,
+                              const QueryLoc& loc,
+                              std::vector<PlanIter_t>& argv,
+                              AnnotationHolder &ann) const
 {
   return new FnErrorIterator(sctx, loc, argv);
 }
@@ -43,17 +60,17 @@ PlanIter_t fn_error::codegen (short sctx, const QueryLoc& loc, std::vector<PlanI
   8.1 fn:resolve-uri
 ********************************************************************************/
 
-PlanIter_t fn_resolve_uri::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_resolve_uri::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnResolveUriIterator ( sctx, loc, argv );
 }
 
-PlanIter_t fn_read_string::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_read_string::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnReadStringIterator (sctx, loc, argv);
 }
 
-PlanIter_t fn_print::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_print::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnPrintIterator (sctx, loc, argv);
 }

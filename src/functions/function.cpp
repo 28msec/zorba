@@ -200,6 +200,7 @@ PlanIter_t user_function::get_plan(CompilerCB *ccb) const
 
 
 PlanIter_t user_function::codegen (
+    CompilerCB* cb,
     short sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,

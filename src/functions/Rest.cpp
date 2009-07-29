@@ -25,7 +25,7 @@ rest_get::rest_get(const signature& sig)
 {}
 
 PlanIter_t
-rest_get::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+rest_get::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaRestGetIterator(sctx, loc, argv, false);
 }
@@ -35,7 +35,7 @@ rest_get_tidy::rest_get_tidy(const signature& sig)
 {}
 
 PlanIter_t
-rest_get_tidy::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+rest_get_tidy::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaRestGetIterator(sctx, loc, argv, true);
 }
@@ -45,7 +45,7 @@ rest_post::rest_post(const signature& sig)
 {}
 
 PlanIter_t
-rest_post::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+rest_post::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaRestPostIterator(sctx, loc, argv);
 }
@@ -61,7 +61,7 @@ rest_put::rest_put(const signature& sig) : function(sig)
 {
 }
 
-PlanIter_t rest_put::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t rest_put::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaRestPutIterator(sctx, loc, argv);
 }
@@ -76,7 +76,7 @@ rest_delete::rest_delete(const signature& sig) : function(sig)
 {
 }
 
-PlanIter_t rest_delete::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t rest_delete::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaRestDeleteIterator(sctx, loc, argv);
 }
@@ -91,7 +91,7 @@ rest_head::rest_head(const signature& sig) : function(sig)
 {
 }
 
-PlanIter_t rest_head::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t rest_head::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ZorbaRestHeadIterator(sctx, loc, argv);
 }

@@ -22,7 +22,7 @@ using namespace std;
 
 namespace zorba {
 
-PlanIter_t XQDocFunction::codegen(short sctx, const QueryLoc& loc, vector<PlanIter_t>& argv, AnnotationHolder& ann) const
+PlanIter_t XQDocFunction::codegen(CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, vector<PlanIter_t>& argv, AnnotationHolder& ann) const
 {
   return new XQDocIterator(sctx, loc, argv);
 }

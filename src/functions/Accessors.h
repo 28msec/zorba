@@ -26,7 +26,8 @@ namespace zorba {
   {
   public:
     fn_data_func ( const signature& sig) : single_seq_function (sig) {}    
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
   };
 
@@ -35,49 +36,56 @@ namespace zorba {
   {
   public:
     fn_root_func(const signature& s) : function (s) {}
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   class fn_nodename_func : public function
   {
   public:
     fn_nodename_func(const signature& s) : function (s) {}
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   class fn_nilled_func : public function
   {
   public:
     fn_nilled_func(const signature& s) : function (s) {}
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   class fn_base_uri_func : public function
   {
   public:
     fn_base_uri_func(const signature& s) : function (s) {}
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   class fn_document_uri_func : public function
   {
   public:
     fn_document_uri_func(const signature& s) : function (s) {}
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
   
   class fn_name_func : public function
   {
   public:
     fn_name_func(const signature& s) : function (s) {}
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   class fn_string_func : public function
   {
   public:
     fn_string_func(const signature& s) : function (s) {}
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* cb,
+                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 } /* namespace zorba */
 

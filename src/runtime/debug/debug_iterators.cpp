@@ -44,37 +44,24 @@ FnTraceIteratorState::reset(PlanState& planState)
 bool
 FnTraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  xqp_string lOption;
-  bool       lOptionFound;
-
   FnTraceIteratorState *state;
   DEFAULT_STACK_INIT(FnTraceIteratorState, state, planState);
   
-  lOptionFound =   getStaticContext(planState)->lookup_option("http://www.zorba-xquery.org/options",
-                                                              "trace", lOption);
+  if (!consumeNext(state->theTagItem, theChildren[1], planState)) {
+    ZORBA_ERROR_LOC_DESC( FORG0006, loc,
+        "An empty sequence is not allowed as as second argument to fn:trace");
+  }
 
-  // tracing can be disabled  using declare option exq:trace "disable";
-  if (!lOptionFound || (lOptionFound && lOption != "disable")) {
-    if (!consumeNext(state->theTagItem, theChildren[1], planState)) {
-      ZORBA_ERROR_LOC_DESC( FORG0006, loc,
-          "An empty sequence is not allowed as as second argument to fn:trace");
-    }
+  state->theOS = getStaticContext(planState)->get_trace_stream();
 
-    state->theOS = getStaticContext(planState)->get_trace_stream();
+  while (consumeNext(result, theChildren[0], planState)) {
+    (*state->theOS) << state->theTagItem->getStringValue() 
+      << " [" << state->theIndex << "]: "
+      << result->show()
+      << std::endl;
+    ++state->theIndex;
 
-    while (consumeNext(result, theChildren[0], planState)) {
-      (*state->theOS) << state->theTagItem->getStringValue() 
-        << " [" << state->theIndex << "]: "
-        << result->show()
-        << std::endl;
-      ++state->theIndex;
-
-      STACK_PUSH(true, state);
-    }
-  } else {
-    while (consumeNext(result, theChildren[0], planState)) {
-      STACK_PUSH(true, state);
-    }
+    STACK_PUSH(true, state);
   }
   
 

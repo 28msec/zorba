@@ -265,13 +265,13 @@ DECL_ALL_SPECIFIC_GENERAL_OPS(LESS_EQUAL, less_equal, "less-equal");
   class op_and : public function {
   public:
     op_and (const signature &sig) : function (sig) {}
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
   
   class op_or : public function {
   public:
     op_or (const signature &sig) : function (sig) {}
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
 
@@ -280,21 +280,21 @@ DECL_ALL_SPECIFIC_GENERAL_OPS(LESS_EQUAL, less_equal, "less-equal");
   class fn_true : public function {
   public:
     fn_true (const signature &sig) : function (sig) {}
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   }; /* class fn_true */
   
   // 9.1.2 fn:false
   class fn_false : public function {
   public:
     fn_false (const signature &sig) : function (sig) {}
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   }; /* class fn_false */
   
   // 9.3.1 fn:not
   class fn_not : public function {
   public:
     fn_not (const signature &sig) : function (sig) {}
-    PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   };
 
   // 15 Functions and Operators on Sequences
@@ -302,7 +302,7 @@ DECL_ALL_SPECIFIC_GENERAL_OPS(LESS_EQUAL, less_equal, "less-equal");
   class fn_boolean : public function {
     public:
     fn_boolean (const signature &sig) : function (sig) {}
-      PlanIter_t codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+      PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   }; /* class fn_false */
 
 
@@ -311,7 +311,7 @@ DECL_ALL_SPECIFIC_GENERAL_OPS(LESS_EQUAL, less_equal, "less-equal");
   
   /* start class op_and */
   PlanIter_t
-  op_and::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+  op_and::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
   {
     return new LogicIterator ( sctx, loc, argv[0], argv[1], LogicIterator::AND );
   }
@@ -321,7 +321,7 @@ DECL_ALL_SPECIFIC_GENERAL_OPS(LESS_EQUAL, less_equal, "less-equal");
   
   /*start class op_or */
   PlanIter_t
-  op_or::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+  op_or::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
   {
     return new LogicIterator ( sctx, loc, argv[0], argv[1], LogicIterator::OR );
   }
@@ -331,7 +331,7 @@ DECL_ALL_SPECIFIC_GENERAL_OPS(LESS_EQUAL, less_equal, "less-equal");
 
   /* start class fn_true */
   PlanIter_t
-  fn_true::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+  fn_true::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
   {
     store::Item_t res;
     GENV_ITEMFACTORY->createBoolean(res, true);
@@ -343,7 +343,7 @@ DECL_ALL_SPECIFIC_GENERAL_OPS(LESS_EQUAL, less_equal, "less-equal");
   
   /* start class fn_false */
   PlanIter_t
-  fn_false::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+  fn_false::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
   {
     store::Item_t res;
     GENV_ITEMFACTORY->createBoolean(res, false);
@@ -355,7 +355,7 @@ DECL_ALL_SPECIFIC_GENERAL_OPS(LESS_EQUAL, less_equal, "less-equal");
   
   /* begin class fn_not */
   PlanIter_t
-  fn_not::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+  fn_not::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
   {
     return new FnBooleanIterator(sctx, loc, argv[0], true );
   }
@@ -365,7 +365,7 @@ DECL_ALL_SPECIFIC_GENERAL_OPS(LESS_EQUAL, less_equal, "less-equal");
 
   /* start class fn_boolean */
   PlanIter_t
-  fn_boolean::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+  fn_boolean::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
   {
     return new FnBooleanIterator ( sctx, loc, argv[0] );
   }

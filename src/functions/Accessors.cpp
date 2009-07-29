@@ -25,6 +25,7 @@ namespace zorba {
 
 PlanIter_t
 fn_data_func::codegen(
+    CompilerCB* /* cb */,
     short sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
@@ -80,7 +81,7 @@ xqtref_t fn_data_func::return_type (const std::vector<xqtref_t> &arg_types) cons
   
 ********************************************************************************/
 
-PlanIter_t fn_root_func::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_root_func::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnRootIterator(sctx, loc, argv);
 }
@@ -90,7 +91,7 @@ PlanIter_t fn_root_func::codegen (short sctx, const QueryLoc& loc, std::vector<P
   
 ********************************************************************************/
 
-PlanIter_t fn_nodename_func::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_nodename_func::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnNodeNameIterator(sctx, loc, argv);
 }
@@ -100,7 +101,7 @@ PlanIter_t fn_nodename_func::codegen (short sctx, const QueryLoc& loc, std::vect
   2.2 fn:nilled
 ********************************************************************************/
 
-PlanIter_t fn_nilled_func::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_nilled_func::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnNilledIterator(sctx, loc, argv);
 }
@@ -109,7 +110,7 @@ PlanIter_t fn_nilled_func::codegen (short sctx, const QueryLoc& loc, std::vector
 /*******************************************************************************
   2.5 fn:base-uri
 ********************************************************************************/
-PlanIter_t fn_base_uri_func::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_base_uri_func::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnBaseUriIterator(sctx, loc, argv);
 }
@@ -118,7 +119,7 @@ PlanIter_t fn_base_uri_func::codegen (short sctx, const QueryLoc& loc, std::vect
 /*******************************************************************************
   2.6 fn:document-uri
 ********************************************************************************/
-PlanIter_t fn_document_uri_func::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_document_uri_func::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnDocumentUriIterator(sctx, loc, argv);
 }
@@ -129,7 +130,7 @@ PlanIter_t fn_document_uri_func::codegen (short sctx, const QueryLoc& loc, std::
   
 ********************************************************************************/
 
-PlanIter_t fn_name_func::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_name_func::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   PlanIter_t nnIter = new FnNodeNameIterator(sctx, loc, argv);
   std::vector<PlanIter_t> lVec;
@@ -137,7 +138,7 @@ PlanIter_t fn_name_func::codegen (short sctx, const QueryLoc& loc, std::vector<P
   return new FnStringIterator(sctx, loc, lVec, true);
 }
 
-PlanIter_t fn_string_func::codegen (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_string_func::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnStringIterator(sctx, loc, argv, true);
 }
