@@ -1939,12 +1939,12 @@ Expr :
     }
   | ConcatExpr ApplyExpr
     {
-      BlockBody *blk = dynamic_cast<BlockBody *> ($2),
-        *blk2 = new BlockBody (LOC (@$));
+      std::auto_ptr<BlockBody> blk(dynamic_cast<BlockBody *> ($2));
+      BlockBody  *blk2 = new BlockBody (LOC (@$));
+      $$ = blk2;
       blk2->add ($1);
       for (int i = 0; i < blk->size (); i++)
         blk2->add ((*blk) [i]);
-      $$ = blk2;
     }
   ;
 

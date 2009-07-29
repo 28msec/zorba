@@ -34,13 +34,13 @@ xquery_driver::xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize)
 bool xquery_driver::parse_stream(std::istream& in, const xqpString& aFilename)
 {
   int ch[3];
-  int i;
   
   theFilename = aFilename.c_str();
 
   // process the UTF16 Byte Order Mark = \xEF\xBB\xBF
   if (in.peek() == 0xEF)
   {
+    int i;
     for (i=0; i<3; i++)
       if (in.good())
         ch[i] = in.get();
