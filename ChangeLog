@@ -1,5 +1,5 @@
 Zorba - The XQuery Processor
-version 1.0.0 (comming)
+version 0.9.6 (comming)
   * XQueryX execution
   * Added converter functions to/from JSON and XML
   * Added functions for sending emails
@@ -12,6 +12,7 @@ version 1.0.0 (comming)
   * Added some accessor functions for node items to the Item class in the API (e.g. getChildren, getAttributes, or getNodeName)
 	* Made the util:tidy function to return a node instead of a string
 	* Added the module http://www.zorba-xquery.com/zorba/xqdoc-functions for generating xqdoc documentation
+	* Added a UserException to the API which is raised if the user makes a call to the fn:error function.
 
 version 0.9.5 (2008.02.17)
   * Unified the Tidy and Rest API's

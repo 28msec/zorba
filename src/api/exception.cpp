@@ -79,7 +79,6 @@ QueryException::QueryException(
 {
 }
 
-
 QueryException::~QueryException() throw() 
 {
 }
@@ -174,6 +173,44 @@ SerializationException::~SerializationException() throw()
 {
 }
 
+UserException::UserException(
+    const XQUERY_ERROR& aErrorCode,
+    const String& aDescription,
+    const String& afilename,
+    unsigned int afilelinenumber,
+    const String& queryuri,
+    unsigned int linebegin,
+    unsigned int columnbegin)
+  :
+  QueryException(aErrorCode, aDescription, afilename, afilelinenumber, queryuri, linebegin, columnbegin)
+{
+}
+
+UserException::UserException(
+    const XQUERY_ERROR& aErrorCode,
+    const String& aDescription,
+    const String& afilename,
+    unsigned int afilelinenumber,
+    const String& queryuri,
+    unsigned int linebegin,
+    unsigned int columnbegin,
+    const Iterator_t& aErrorObject)
+  :
+  QueryException(aErrorCode, aDescription, afilename, afilelinenumber, queryuri, linebegin, columnbegin),
+  theErrorObject(aErrorObject)
+{
+}
+
+
+UserException::~UserException() throw() 
+{
+}
+
+Iterator_t
+UserException::getErrorObject() const
+{
+  return theErrorObject;
+}
 
 SystemException::SystemException(
     const XQUERY_ERROR& aErrorCode, 

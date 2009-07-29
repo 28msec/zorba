@@ -100,6 +100,32 @@ error_example_4(Zorba* aZorba)
 }
 
 
+bool
+error_example_5(Zorba* aZorba)
+{
+  try {
+    XQuery_t lQuery = aZorba->compileQuery("fn:error(fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000'), 'a user error', 1 to 10)"); 
+
+    std::cout << lQuery << std::endl;
+  } catch (UserException& e) {
+    // get the error object of an error that was raised
+    // using the fn:error function
+    Iterator_t lIter = e.getErrorObject();
+    lIter->open();
+    Item lItem;
+    while (lIter->next(lItem)) {
+      std::cout << lItem.getStringValue() << std::endl;
+    }
+    return true;
+  } catch (ZorbaException& ze) {
+    std::cerr << ze << std::endl;
+    return false;
+  }
+
+	return false;
+}
+
+
 int 
 errors(int argc, char* argv[])
 {
@@ -124,6 +150,11 @@ errors(int argc, char* argv[])
 
   std::cout << "executing example 4" << std::endl;
   res = error_example_4(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
+
+  std::cout << "executing example 5" << std::endl;
+  res = error_example_5(lZorba);
   if (!res) return 1; 
   std::cout << std::endl;
 

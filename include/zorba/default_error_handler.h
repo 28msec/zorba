@@ -39,6 +39,9 @@ namespace zorba {
       serializationError ( const SerializationException& aSerializationError );
 
       virtual void
+      userError ( const  UserException& aUserError );
+
+      virtual void
       systemError ( const SystemException& aSystemError );
 
   }; /* class DefaultErrorHandler */

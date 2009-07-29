@@ -122,7 +122,6 @@ main(int argc, char** argv)
   }
 
   zorba::XQuery_t lQuery;
-  clock_t t0, t1;
   TestErrorHandler errHandler;
 
   DriverContext driverContext;

@@ -206,6 +206,11 @@ class TestErrorHandler : public zorba::ErrorHandler {
       registerError(aSystemError);
     }
 
+    void userError(const zorba::UserException& aUserError)
+    {
+      registerError(aUserError);
+    }
+
     bool errors()
     {
       return !m_errors.empty();

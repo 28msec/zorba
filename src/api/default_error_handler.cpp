@@ -44,6 +44,12 @@ namespace zorba {
   }
 
   void
+  DefaultErrorHandler::userError ( const  UserException& aUserError )
+  {
+    throw aUserError;
+  }
+
+  void
   DefaultErrorHandler::systemError ( const SystemException& aSystemException )
   {
     throw aSystemException;

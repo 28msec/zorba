@@ -55,6 +55,11 @@ public:
     registerError(aSystemError);
   }
 
+  void userError(const zorba::UserException& aUserError)
+  {
+    registerError(aUserError);
+  }
+
   bool errors() const
   {
     return !m_errors.empty();

@@ -23,9 +23,12 @@
 #include "api/itemfactoryimpl.h"
 #include "api/unmarshaller.h"
 #include "api/xmldatamanagerimpl.h"
+#include "api/iteratorimpl.h"
+#include "api/vectoriterator.h"
 
 #include "zorbautils/fatal.h"
 #include "zorbaerrors/errors.h"
+#include "errors/user_error.h"
 #include "zorbaerrors/error_manager.h"
 #include "system/globalenv.h"
 #include "context/static_context.h"
@@ -253,7 +256,23 @@ ZorbaImpl::getXmlDataManager()
 void
 ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
 {
-  if (aError.isStaticError()) 
+  if (aError.isUserError())
+  {
+    zorba::error::ZorbaUserError* lUserError = static_cast<zorba::error::ZorbaUserError*>(&aError);
+
+    Iterator_t lIter = new VectorIterator(lUserError->theErrorObject, aErrorHandler);
+
+    UserException lUserException(aError.theErrorCode,
+                                 String(aError.theDescription.theStrStore),
+                                 String(aError.theFileName),
+                                 aError.theLineNumber,
+                                 aError.theQueryFileName,
+                                 aError.theQueryLine,
+                                 aError.theQueryColumn,
+                                 lIter);
+    aErrorHandler->userError(lUserException);
+  }
+  else if (aError.isStaticError()) 
   {
     StaticException lStaticException(aError.theErrorCode,
                                      String(aError.theDescription.theStrStore),

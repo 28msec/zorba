@@ -81,18 +81,25 @@ static expr_t execute (
   }
   catch (error::ZorbaError& e) 
   {
-    XQUERY_ERROR lErrorCode = e.theErrorCode;
-    QueryLoc loc;
-    loc.setLineBegin(e.theQueryLine);
-    loc.setColumnBegin(e.theQueryColumn);
-    store::Item_t qname;
-    ITEM_FACTORY->createQName (qname, "http://www.w3.org/2005/xqt-errors", "err",  error::ZorbaError::toString(lErrorCode).c_str ());
-    expr_t err_expr = new fo_expr (node->get_cur_sctx(), loc, LOOKUP_FN ("fn", "error", 2),
-                                   new const_expr (node->get_cur_sctx(), loc, qname),
-                                   new const_expr (node->get_cur_sctx(), loc, e.theDescription));
-    err_expr->put_annotation (AnnotationKey::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VAL);
-    err_expr->put_annotation (AnnotationKey::NONDISCARDABLE_EXPR, TSVAnnotationValue::TRUE_VAL);
-    return err_expr;
+    node->put_annotation (AnnotationKey::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VAL);
+    node->put_annotation (AnnotationKey::NONDISCARDABLE_EXPR, TSVAnnotationValue::TRUE_VAL);
+    return node;
+    // TODO:
+    // we had to disable folding of errors because the FnErrorIterator
+    // was erroneously used. It always raises a ZorbaUserError (which is not correct).
+    
+    // XQUERY_ERROR lErrorCode = e.theErrorCode;
+    // QueryLoc loc;
+    // loc.setLineBegin(e.theQueryLine);
+    // loc.setColumnBegin(e.theQueryColumn);
+    // store::Item_t qname;
+    // ITEM_FACTORY->createQName (qname, "http://www.w3.org/2005/xqt-errors", "err",  error::ZorbaError::toString(lErrorCode).c_str ());
+    // expr_t err_expr = new fo_expr (node->get_cur_sctx(), loc, LOOKUP_FN ("fn", "error", 2),
+    //                                new const_expr (node->get_cur_sctx(), loc, qname),
+    //                                new const_expr (node->get_cur_sctx(), loc, e.theDescription));
+    // err_expr->put_annotation (AnnotationKey::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VAL);
+    // err_expr->put_annotation (AnnotationKey::NONDISCARDABLE_EXPR, TSVAnnotationValue::TRUE_VAL);
+    // return err_expr;
   }
 }
 

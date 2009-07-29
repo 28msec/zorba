@@ -74,6 +74,15 @@ namespace zorba {
       virtual void
       serializationError ( const  SerializationException& aSerializationError ) = 0;
 
+      /** \brief Callback function that is called for errors that are raised by
+       *         the user using the fn:error function.
+       *         (see http://www.w3.org/TR/xpath-functions/#func-error)
+       *
+       * @param aUserError information about the error.
+       */
+      virtual void
+      userError ( const  UserException& aUserError ) = 0;
+
       /** \brief Callback function that is called for errors that occur in the system.
        *
        * @param aSystemError information about the error.

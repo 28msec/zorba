@@ -19,6 +19,7 @@
 #include <zorba/config.h>
 #include <zorba/error.h>
 #include <zorba/zorbastring.h>
+#include <zorba/iterator.h>
 
 namespace zorba {
 
@@ -255,6 +256,54 @@ protected:
 
 };
 
+/** \brief UserException is raised if an error is raised by using the fn:error
+ *         function in a query.
+ */
+class ZORBA_DLL_PUBLIC UserException : public QueryException
+{
+  friend ZORBA_DLL_PUBLIC std::ostream& operator<<(std::ostream&, const UserException&);
+  friend class ZorbaImpl;
+
+public:
+  /** \brief Destructor
+   */
+  virtual ~UserException() throw();
+
+  /** \brief Returns the sequence that may be passed as third parameter
+   *         to the fn:error function.
+   */
+  virtual Iterator_t
+  getErrorObject() const;
+
+protected:
+  /** \brief Proctected constructor - only the %Zorba engine
+   *         can construct and throw exceptions.
+   */
+  UserException(
+        const XQUERY_ERROR&,
+        const String& aDescription,
+        const String& afilename,
+        unsigned int afilelinenumber,
+        const String& queryuri,
+        unsigned int linebegin,
+        unsigned int columnbegin);
+
+  /** \brief Proctected constructor - only the %Zorba engine
+   *         can construct and throw exceptions.
+   */
+  UserException(
+        const XQUERY_ERROR&,
+        const String& aDescription,
+        const String& afilename,
+        unsigned int afilelinenumber,
+        const String& queryuri,
+        unsigned int linebegin,
+        unsigned int columnbegin,
+        const Iterator_t& aErrorObject);
+
+  Iterator_t            theErrorObject;
+};
+
 
 /** \brief SystemException represents an error that occurs in the %Zorba system.
  */
@@ -297,6 +346,9 @@ std::ostream& operator<< (std::ostream& os, const TypeException& aException);
 /** \brief Print information about the exception to the given output stream */
 ZORBA_DLL_PUBLIC
 std::ostream& operator<< (std::ostream& os, const SerializationException& aException);
+/** \brief Print information about the exception to the given output stream */
+ZORBA_DLL_PUBLIC
+std::ostream& operator<< (std::ostream& os, const UserException& aException);
 /** \brief Print information about the exception to the given output stream */
 ZORBA_DLL_PUBLIC
 std::ostream& operator<< (std::ostream& os, const SystemException& aException);
