@@ -42,7 +42,15 @@ namespace zorba {
     
     public:
       
-      FnCallEntry(string aFnName, string aFileName, unsigned int aLineNo): theFnName(aFnName), theFileName(aFileName), theLineNo(aLineNo)
+      FnCallEntry(string aFnName, string aFileName, unsigned int aLineNo)
+        : theParent(0),
+          theChildren(0),
+          isUserDefined(false),
+          theFnName(aFnName),
+          theFileName(aFileName),
+          theLineNo(aLineNo),
+          theTimeTaken(0),
+          theMark(0)
       {
       }
       

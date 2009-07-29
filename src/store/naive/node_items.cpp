@@ -2126,7 +2126,7 @@ XmlNode* AttributeNode::copyInternal(
   }
   catch (...)
   {
-    if (tree) delete tree;
+    delete tree;
     throw;
   }
   
@@ -2482,7 +2482,7 @@ XmlNode* TextNode::copyInternal(
   }
   catch (...)
   {
-    if (tree) delete tree;
+    delete tree;
     throw;
   }
 
@@ -2788,7 +2788,7 @@ XmlNode* PiNode::copyInternal(
   }
   catch (...)
   {
-    if (tree) delete tree;
+    delete tree;
     throw;
   }
 
@@ -2924,7 +2924,7 @@ XmlNode* CommentNode::copyInternal(
   }
   catch (...)
   {
-    if (tree) delete tree;
+    delete tree;
     throw;
   }
 

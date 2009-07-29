@@ -43,6 +43,7 @@ class StrX
 {
 public :
   StrX(const XMLCh* const toTranscode, unsigned int length)
+    : fLocalForm(0)
   {
     XMLString::transcode(toTranscode, fLocalForm, length);
   }

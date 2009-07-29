@@ -504,7 +504,6 @@ int Duration::parseYearMonthDuration(const xqpString& s, Duration& d)
 static bool parse_s_string(std::string ss, unsigned int& position, long& seconds, long& frac_seconds)
 {
   long result;
-  double temp_frac_seconds;
   
   if (position == ss.size() || parse_int(ss, position, result))
     return false;
@@ -521,7 +520,7 @@ static bool parse_s_string(std::string ss, unsigned int& position, long& seconds
   {
     position++;
     seconds = result;
-
+    double temp_frac_seconds = 0;
     if (position == ss.size() || parse_frac(ss, position, temp_frac_seconds))
       return false;
 
@@ -539,7 +538,6 @@ static bool parse_s_string(std::string ss, unsigned int& position, long& seconds
 static bool parse_ms_string(std::string ss, unsigned int& position, long& minutes, long& seconds, long& frac_seconds)
 {
   long result;
-  double temp_frac_seconds;
   
   if (position == ss.size() || parse_int(ss, position, result))
     return false;
@@ -564,6 +562,7 @@ static bool parse_ms_string(std::string ss, unsigned int& position, long& minute
     position++;
     seconds = result;
 
+    double temp_frac_seconds = 0;
     if (position == ss.size() || parse_frac(ss, position, temp_frac_seconds))
       return false;
 
@@ -581,7 +580,6 @@ static bool parse_ms_string(std::string ss, unsigned int& position, long& minute
 static bool parse_hms_string(std::string ss, unsigned int& position, long& hours, long& minutes, long& seconds, long& frac_seconds)
 {
   long result;
-  double temp_frac_seconds;
   
   if (position == ss.size() || parse_int(ss, position, result))
     return false;
@@ -613,6 +611,7 @@ static bool parse_hms_string(std::string ss, unsigned int& position, long& hours
     position++;
     seconds = result;
 
+    double temp_frac_seconds;
     if (position == ss.size() || parse_frac(ss, position, temp_frac_seconds))
       return false;
 
@@ -632,7 +631,7 @@ int Duration::parseDayTimeDuration(const xqpString& s, Duration& d, bool dont_ch
   std::string ss = s.getStore()->str();
   bool negative = false;
   unsigned int position = 0;
-  long result, days = 0, hours = 0, minutes = 0, seconds = 0, frac_seconds = 0;
+  long days = 0, hours = 0, minutes = 0, seconds = 0, frac_seconds = 0;
 
   skip_whitespace(ss, position);
   
@@ -654,6 +653,7 @@ int Duration::parseDayTimeDuration(const xqpString& s, Duration& d, bool dont_ch
   // It must be either 'T' or 'nD'
   if (ss[position] != 'T')
   {
+    long result = 0;
     if (parse_int(ss, position, result))
       return 1;
 
@@ -698,7 +698,6 @@ int Duration::parseDayTimeDuration(const xqpString& s, Duration& d, bool dont_ch
 int Duration::parseDuration(const xqpString& s, Duration& d)
 {
   int pos, t_pos;
-  Duration ymd;
   Duration dtd;
 
   t_pos = s.indexOf("T");
@@ -711,6 +710,7 @@ int Duration::parseDuration(const xqpString& s, Duration& d)
   // Check month or year
   if (pos != -1)
   {
+    Duration ymd;
     if (0 != Duration::parseYearMonthDuration(s.substr(0, pos+1), ymd))
       return 1;
     d = Duration(ymd);

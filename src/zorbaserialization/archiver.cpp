@@ -40,8 +40,7 @@ archive_field::archive_field(const char *type, bool is_simple, bool is_class,
 archive_field::~archive_field()
 {
   free(type);
-  if(/*is_simple &&*/ value)
-    free((void*)value);
+  free((void*)value);
   archive_field *temp1;
   archive_field *temp2;
   temp1 = first_child;
@@ -102,8 +101,7 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
 
 Archiver::~Archiver()
 {
-  if(out_fields)
-    delete out_fields; 
+  delete out_fields; 
   delete all_reference_list;
   delete simple_hashout_fields;
   delete hash_out_fields;

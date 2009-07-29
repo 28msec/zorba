@@ -66,7 +66,8 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(signature, signature_base)
   void serialize(::zorba::serialization::Archiver &ar)
   {
-    serialize_baseclass(ar, (signature_base*)this);
+    signature_base* lBase = dynamic_cast<signature_base*>(this);
+    serialize_baseclass(ar, lBase);
     ar & qname_p;
     ar & argv;
   }

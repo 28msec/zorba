@@ -142,7 +142,7 @@ private:
   Variable  * theCurVar;
 
 public:
-  Specification() {}
+  Specification() : theCurState(0), theCurVar(0) {}
 
   ~Specification() 
   {
@@ -153,6 +153,8 @@ public:
       delete *lIter;
     }
     theStates.clear();
+    delete theCurState;
+    delete theCurVar;
   }
 
   size_t statesSize() const
@@ -175,6 +177,7 @@ public:
 private:
   void addState(iterator_t str, iterator_t end) 
   {
+    delete theCurState;
     theCurState = new State();
     theCurState->theName = std::string(str, end);
   }
@@ -235,6 +238,7 @@ private:
 
   void setVarName(iterator_t str, iterator_t end) 
   {
+    delete theCurVar;
     theCurVar = new Variable();
     theCurVar->theName = std::string(str, end);
   }

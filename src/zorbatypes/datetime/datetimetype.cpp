@@ -653,7 +653,6 @@ int DateTime::parse_time(
     int& seconds,
     int& frac_seconds)
 {
-  double temp_frac_seconds;
   if (position == ss.size())
     return 1;
   
@@ -675,6 +674,7 @@ int DateTime::parse_time(
   
   if (position < ss.size() && ss[position] == '.')
   {
+    double temp_frac_seconds;
     position++;
     if (parse_frac(ss, position, temp_frac_seconds))
       return 1;

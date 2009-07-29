@@ -198,8 +198,7 @@ public:
 			FreeLibrary(m_hDbhHelp);
 		m_hDbhHelp = NULL;
 		m_parent = NULL;
-		if(m_szSymPath != NULL)
-			free(m_szSymPath);
+    free(m_szSymPath);
 		m_szSymPath = NULL;
 	}
 	BOOL Init(LPCSTR szSymPath)
@@ -619,10 +618,8 @@ cleanup:
 						}
 					}
 				}
-				if (szImg != NULL)
-					free(szImg);
-				if (vData != NULL)
-					free(vData);
+        free(szImg);
+        free(vData);
 			}
 
 			// Retrive some additional-infos about the module
@@ -749,8 +746,7 @@ StackWalker::~StackWalker()
 	if (m_szSymPath != NULL)
 		free(m_szSymPath);
 	m_szSymPath = NULL;
-	if (this->m_sw != NULL)
-		delete this->m_sw;
+  delete this->m_sw;
 	this->m_sw = NULL;
 }
 
@@ -843,7 +839,7 @@ BOOL StackWalker::LoadModules()
 
 	// First Init the whole stuff...
 	BOOL bRet = this->m_sw->Init(szSymPath);
-	if (szSymPath != NULL) free(szSymPath); szSymPath = NULL;
+	free(szSymPath); szSymPath = NULL;
 	if (bRet == FALSE)
 	{
 		this->OnDbgHelpErr("Error while initializing dbghelp.dll", 0, 0);
@@ -1072,7 +1068,7 @@ BOOL StackWalker::ShowCallstack(HANDLE hThread, CONTEXT *context, PReadProcessMe
 	} // for ( frameNum )
 
 cleanup:
-	if (pSym) free( pSym );
+	free( pSym );
 
 	if (context == NULL)
 		ResumeThread(hThread);

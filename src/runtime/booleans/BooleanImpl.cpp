@@ -94,7 +94,6 @@ bool FnBooleanIterator::effectiveBooleanValue(
     bool negate)
 {
   store::Item_t item, temp;
-  xqtref_t type;
   bool result;
 
   if (!consumeNext(item, iter, planState))
@@ -109,7 +108,7 @@ bool FnBooleanIterator::effectiveBooleanValue(
   }
   else
   {
-    type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type(item);
+    xqtref_t type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type(item);
     if (( !consumeNext(temp, iter, planState))
         && (TypeOps::is_equal(*type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)
             || TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.STRING_TYPE_ONE )

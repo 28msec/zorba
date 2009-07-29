@@ -1743,12 +1743,11 @@ store::Collection_t getCollection(
     const QueryLoc& loc)
 {
   store::Item_t       resolvedURIItem;
-  xqpStringStore_t    resolvedURIString;
 
   try 
   {
-    resolvedURIString = sctx->resolve_relative_uri(strURI.getp(),
-                                             xqp_string()).getStore();
+    xqpStringStore_t resolvedURIString = sctx->resolve_relative_uri(strURI.getp(),
+                                                                    xqp_string()).getStore();
 
     GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
   }

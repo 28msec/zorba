@@ -13,8 +13,7 @@
 namespace zorba {
 
 DebuggerTestHandler::DebuggerTestHandler( zorba::Zorba* zorba, zorba::ZorbaDebuggerClient* client, std::string fileName )
-:
-m_zorba(zorba), m_client(client), m_fileName(fileName)
+: m_client(client), m_fileName(fileName), m_zorba(zorba)
 {
 }
 

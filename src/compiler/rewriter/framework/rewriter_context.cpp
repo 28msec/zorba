@@ -38,14 +38,11 @@ RewriterContext::RewriterContext(CompilerCB* aCompilerCB, expr_t root)
 
 RewriterContext::~RewriterContext() 
 {
-  if (m_varid_map != NULL)
-    delete m_varid_map;
+  delete m_varid_map;
 
-  if (m_idvar_map != NULL)
-    delete m_idvar_map;
+  delete m_idvar_map;
   
-  if (m_exprvars_map != NULL)
-    delete m_exprvars_map;
+  delete m_exprvars_map;
 }
 
 

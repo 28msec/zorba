@@ -210,8 +210,7 @@ CollationFactory::CollationFactory()
 
 CollationFactory::~CollationFactory()
 {
-  if ( theRootCollator )
-    delete theRootCollator;
+  delete theRootCollator;
 }
 
 } /* namespace xqp */

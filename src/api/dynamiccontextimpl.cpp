@@ -180,10 +180,10 @@ DynamicContextImpl::setVariableAsDocument(
     {
       store::Item_t validatedNode;
       store::Item_t typeName;
-      QueryLoc loc;
 
       try
       {
+        QueryLoc loc;
         bool success = ValidateIterator::
                        effectiveValidationValue(validatedNode,
                                                 lDocItem,

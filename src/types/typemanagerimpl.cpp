@@ -54,8 +54,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(TypeManagerImpl)
 ********************************************************************************/
 TypeManagerImpl::~TypeManagerImpl()
 {
-  if (m_schema != NULL)
-    delete m_schema;
+  delete m_schema;
 }
 
 

@@ -218,18 +218,15 @@ namespace zorba {
     json::array_list_t::iterator arrtIter;
     json::array_list_t *arr;
 
-    int size;
-    xqpStringStore_t name, type, val;
     store::Item_t itemObj, itemArr;
 
     if(value!=0)
     {
-      name = xqpString((*value)->getname().c_str()).getStore();
+      xqpStringStore_t name = xqpString((*value)->getname().c_str()).getStore();
       switch((*value)->getdatatype()){
         case json::datatype::_array:
           create_Pair_Helper(parent, baseUri, result, name, new xqpStringStore("array"), NULL);
           arr = (*value)->getarraylist();
-          size = arr->size();
           if(arr != 0)
             for ( arrtIter=arr->begin(); arrtIter != arr->end(); ++arrtIter )
               parse_Json_value(&*arrtIter, *result, baseUri, &itemArr);
@@ -242,7 +239,8 @@ namespace zorba {
               parse_Json_value(&*vectIter, *result, baseUri, &itemObj);
           break;
         default:
-          val = xqpString((*((*value)->getstring())).c_str()).getStore();
+          xqpStringStore_t val = xqpString((*((*value)->getstring())).c_str()).getStore();
+          xqpStringStore_t type;
           if ((*value)->getdatatype() == json::datatype::_string)
             type = new xqpStringStore("string");
           else if ((*value)->getdatatype() == json::datatype::_literal)
@@ -273,11 +271,11 @@ namespace zorba {
     json::array_list_t::iterator arrIter;
     json::array_list_t *arr;
 
-    xqpStringStore_t name, text;
     store::Item_t itemObj, text_value;
 
     if(value != 0)
     {
+      xqpStringStore_t  name, text;
       switch((*value)->getdatatype())
       {
         case json::datatype::_array:
@@ -496,8 +494,6 @@ namespace zorba {
   {
     std::auto_ptr<json::value> lValue(getValue(aJSON_string, aLength));
 
-    xqpStringStore_t name;
-
     json::array_list_t::iterator arrIter;
     json::array_list_t *arr = lValue->getarraylist();
     if(arr != 0)
@@ -505,7 +501,7 @@ namespace zorba {
       arrIter = arr->begin();
       if((*arrIter)->getdatatype() == json::datatype::_string)
       {
-        name = xqpString((*((*arrIter)->getstring())).c_str()).getStore();
+        xqpStringStore_t name = xqpString((*((*arrIter)->getstring())).c_str()).getStore();
         create_Node_Helper(NULL, baseUri, name, &element);
 
         ++arrIter;

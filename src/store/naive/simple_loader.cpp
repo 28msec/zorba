@@ -118,13 +118,12 @@ store::Item_t SimpleXmlLoader::loadXml(
     std::istream& stream)
 {
   xmlParserCtxtPtr ctxt = NULL;
-  long numChars;
 
   theDocUri = docuri;
 
   try
   {
-    numChars = readPacket(stream, theBuffer, 4096);
+    long numChars = readPacket(stream, theBuffer, 4096);
 
     if (numChars < 0)
     {

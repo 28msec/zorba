@@ -170,8 +170,6 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
 
   xquery_driver lDriver(&*theCompilerCB);
   lDriver.parse_stream(*xquery_stream, aFileName);
-  assert(xquery_stream->eof());
-  assert(!xquery_stream->bad());
 
 #ifdef ZORBA_XQUERYX
   delete xquery_stream;
@@ -185,7 +183,6 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
   if (typeid (*node) == typeid (ParseErrorNode)) {
     ParseErrorNode *err = static_cast<ParseErrorNode *> (&*node);
     ZORBA_ERROR_LOC_DESC( XPST0003, err->get_location (), err->msg);
-    node = NULL;
   }
   return node;
 }

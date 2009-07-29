@@ -98,14 +98,11 @@ int read_state(xqp_short *clockseq, xqp_ulong *timestamp,
 {
   static int inited = 0;
   FILE *fp = 0;
-#ifdef WIN32
-  errno_t err;
-#endif
 
   //only need to read state once per boot
   if (!inited) {
 #ifdef WIN32
-    err = fopen_s( &fp, "state", "rb");
+    errno_t err = fopen_s( &fp, "state", "rb");
     if ( err != 0)
       return 0;
 #else
@@ -141,12 +138,9 @@ void write_state(xqp_short clockseq, xqp_ulong timestamp,
   st.cs = clockseq;
   st.ts = timestamp;
   st.node = node;
-#ifdef WIN32
-  errno_t err;
-#endif
   if (timestamp >= next_save) {
 #ifdef WIN32
-    err = fopen_s( &fp, "state", "wb");
+    errno_t err = fopen_s( &fp, "state", "wb");
     if ( err != 0)
       return ;
 #else

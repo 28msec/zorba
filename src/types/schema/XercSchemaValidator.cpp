@@ -92,9 +92,7 @@ XercSchemaValidator::~XercSchemaValidator()
 {
     delete fXsiType;
     delete fTypeStack;
-
-    if (fNotationBuf)
-        delete fNotationBuf;
+    delete fNotationBuf;
 }
 
 // ---------------------------------------------------------------------------
@@ -2253,8 +2251,7 @@ XercSchemaValidator::~XercSchemaValidator()
     delete fXsiType;
     delete fTypeStack;
 
-    if (fNotationBuf)
-        delete fNotationBuf;
+    delete fNotationBuf;
 }
 
 // ---------------------------------------------------------------------------

@@ -31,8 +31,8 @@ int main (int argc, char** argv)
 	items.push_back(bif.createInteger(63));
 	items.push_back(bif.createInteger(78));
 
-	serializer* ser = new serializer();
-	ser->serialize_as_xml(items, cout);	
+	serializer ser;
+	ser/serialize_as_xml(items, cout);	
 
 
 	return 0;

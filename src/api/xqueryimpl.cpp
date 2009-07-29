@@ -154,14 +154,11 @@ XQueryImpl::close()
     if (theStaticContext)
       RCHelper::removeReference (theStaticContext);
 
-    if (theDynamicContext)
     delete theDynamicContext;
 
-    if (theDynamicContextWrapper)
-      delete theDynamicContextWrapper;
+    delete theDynamicContextWrapper;
 
-    if (theStaticContextWrapper)
-      delete theStaticContextWrapper;
+    delete theStaticContextWrapper;
 
     delete theCompilerCB;
 

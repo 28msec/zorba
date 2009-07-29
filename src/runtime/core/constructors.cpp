@@ -775,8 +775,7 @@ void EnclosedIteratorState::reset(PlanState& planState)
 
 EnclosedIteratorState::~EnclosedIteratorState()
 {
-  if (theAttrValueString)
-    delete theAttrValueString;
+  delete theAttrValueString;
 
   if (theDocChildren != NULL)
   {

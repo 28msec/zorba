@@ -455,8 +455,7 @@ FlworState::~FlworState()
 
   clearGroupMap();
 
-  if (theGroupMap)
-    delete theGroupMap;
+  delete theGroupMap;
 }
 
 

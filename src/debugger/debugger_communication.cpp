@@ -54,7 +54,6 @@ zorba::AbstractCommandMessage* zorba::DebuggerCommunicator::handleTCPClient()
 	ZorbaArrayAutoPointer<Byte> lByteMessage;
 	std::auto_ptr<AbstractMessage> lMessage;
 	ReplyMessage* lReplyMessage;
-	Length length;
 	try
 	{
 		lMessage.reset(MessageFactory::buildMessage( m_commandSocket ));
@@ -71,6 +70,7 @@ zorba::AbstractCommandMessage* zorba::DebuggerCommunicator::handleTCPClient()
 			//Send it back to the client right away
 			lReplyMessage = dynamic_cast<ReplyMessage *>(lMessage.get());
 			if( lReplyMessage != 0 ){
+	      Length length;
 				lByteMessage.reset(lReplyMessage->serialize( length ));
 				m_commandSocket->send( lByteMessage.get(), length );
 			} else {

@@ -225,7 +225,6 @@ store::Item_t FastXmlLoader::loadXml(
     std::istream& stream)
 {
   xmlParserCtxtPtr ctxt = NULL;
-  long numChars;
 
   theTree = new XmlTree(NULL, GET_STORE().getTreeId());
 
@@ -245,7 +244,7 @@ store::Item_t FastXmlLoader::loadXml(
 
   try
   {
-    numChars = readPacket(stream, theBuffer, 4096);
+    long numChars = readPacket(stream, theBuffer, 4096);
 
     if (numChars < 0)
     {

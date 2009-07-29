@@ -84,7 +84,7 @@ zorba::Runnable::ThreadState zorba::Runnable::status()
 
 ZORBA_THREAD_RETURN zorba::Runnable::startImpl( void* params )
 {
-  Runnable* r = (Runnable*) params;
+  Runnable* r = static_cast<Runnable*>(params);
   r->run();
   r->finishImpl();
   return NULL;

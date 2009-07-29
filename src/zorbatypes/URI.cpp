@@ -605,11 +605,10 @@ URI::initializeAuthority(const xqpString& uri)
   }
 
   lTmp = uri.substr(lStart, uri.length() - lStart);
-  xqpString lPortString;
   int lPort = -1;
 
   if ( ( ! lHost.empty() ) && ( lIndex != -1 ) && ( lStart < lEnd ) ) {
-    lPortString = lTmp.substr(0, lEnd - lStart);
+    xqpString lPortString = lTmp.substr(0, lEnd - lStart);
 
     if ( !lPortString.empty() ) {
       lPort = atoi(lPortString.c_str());

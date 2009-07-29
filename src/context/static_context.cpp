@@ -1074,8 +1074,7 @@ bool static_context::import_module (const static_context *module)
 void
 static_context::set_document_uri_resolver(InternalDocumentURIResolver* aDocResolver)
 {
-  if ( theDocResolver )
-    delete theDocResolver;
+  delete theDocResolver;
 
   theDocResolver = aDocResolver;
 }
@@ -1091,8 +1090,7 @@ static_context::get_document_uri_resolver()
 void
 static_context::set_collection_uri_resolver(InternalCollectionURIResolver* aColResolver)
 {
-  if ( theColResolver )
-    delete theColResolver;
+  delete theColResolver;
 
   theColResolver = aColResolver;
 }
@@ -1108,8 +1106,7 @@ static_context::get_collection_uri_resolver()
 void
 static_context::set_schema_uri_resolver(InternalSchemaURIResolver* aSchemaResolver)
 {
-  if ( theSchemaResolver )
-    delete theSchemaResolver;
+  delete theSchemaResolver;
 
   theSchemaResolver = aSchemaResolver;
 }
@@ -1125,8 +1122,7 @@ static_context::get_schema_uri_resolver()
 void
 static_context::set_module_uri_resolver(InternalModuleURIResolver* aModuleResolver)
 {
-  if ( theModuleResolver )
-    delete theModuleResolver;
+  delete theModuleResolver;
 
   theModuleResolver = aModuleResolver;
 }

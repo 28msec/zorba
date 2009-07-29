@@ -1179,7 +1179,7 @@ public:
   int                                    theWincondIter;
 
 public:
-  flwor_expr_iterator_data(expr* e) : expr_iterator_data(e) {}
+  flwor_expr_iterator_data(expr* e) : expr_iterator_data(e), theWincondIter(0) {}
 };
 
 

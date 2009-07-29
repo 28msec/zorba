@@ -39,10 +39,7 @@ namespace zorba
   
       ~ZorbaArrayAutoPointer()
       {
-        if(thePtr != 0)
-        {
-          delete[] thePtr;
-        }
+        delete[] thePtr;
       }
   
       void reset(T *aPtr)

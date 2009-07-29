@@ -226,9 +226,6 @@ void processElement(
 
     bool isNewType = false;
     xqtref_t newType;
-    bool tHasValue;
-    bool tHasTypedValue;
-    bool tHasEmptyValue;
     store::PUL* p = NULL;
     store::Item_t elm;
     
@@ -253,9 +250,9 @@ void processElement(
     
     if ( isNewType )
     {    
-        tHasValue      = typeHasValue(newType);
-        tHasTypedValue = typeHasTypedValue(newType);
-        tHasEmptyValue = typeHasEmptyValue(newType);
+      bool tHasValue      = typeHasValue(newType);
+      bool tHasTypedValue = typeHasTypedValue(newType);
+      bool tHasEmptyValue = typeHasEmptyValue(newType);
 
         //cout << " vup        - addSetElementType: " << elm->getNodeName()->getLocalName()->str() << "   " << newTypeIdent->getLocalName() << " @ " << newTypeIdent->getUri() << "\n"; cout.flush();
         //cout << " vup             - " << ( tHasTypedValue ? "hasTypedValue" : "" ) << " values.size: " << typedValues.size() << (typedValues.size()>0 ? " [0]=" + typedValues[0]->getStringValue()->str() : "" ) << ( tHasValue ? " hasValue" : "" ) << ( tHasEmptyValue ? " hasEmptyValue" : "" ) << "\n"; cout.flush();

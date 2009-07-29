@@ -411,8 +411,8 @@ public:
   }
 
   void report_error(   XQUERY_ERROR        aErrorCode,
-                      const std::string  aDesc, 
-                      const std::string  aFileName,
+                      const std::string&   aDesc, 
+                      const std::string&   aFileName,
                       int                 aLineNumber);
 
 }}//end namespace serialization

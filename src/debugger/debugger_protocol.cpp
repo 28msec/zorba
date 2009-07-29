@@ -1112,7 +1112,6 @@ VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
       if (theContainsData){
         std::list<std::pair<xqpString, xqpString> > data;
         json::array_list_t* dList = Value->getarraylist();
-        json::datatype::dt dataType = Value->getdatatype();
         for (json::array_list_t::iterator iter = dList->begin(); iter != dList->end(); iter++) {
           json::value* v = getValue(*iter, "value");
           json::value* t = getValue(*iter, "type");

@@ -90,7 +90,6 @@ Bool setZorbaOptions(TidyDoc& tdoc)
 Bool setUserOptions(TidyDoc& tdoc, const char* options)  throw()
 {
   Bool          ok = yes;
-  TidyOptionId  toID;
   std::string   option, value;
 
   if(NULL != options) {
@@ -108,7 +107,7 @@ Bool setUserOptions(TidyDoc& tdoc, const char* options)  throw()
         value = "true";
       }
 
-      toID = tidyOptGetIdForName(option.c_str());
+      TidyOptionId  toID = tidyOptGetIdForName(option.c_str());
       ok = tidyOptSetValue(tdoc, toID, value.c_str());
 
 //       if(!ok)
