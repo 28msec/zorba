@@ -275,7 +275,6 @@ namespace zorba {
 
     if(value != 0)
     {
-      xqpStringStore_t  name, text;
       switch((*value)->getdatatype())
       {
         case json::datatype::_array:
@@ -283,7 +282,7 @@ namespace zorba {
           arrIter = arr->begin();
           if((*arrIter)->getdatatype() == json::datatype::_string)
           {
-            name = xqpString((*((*arrIter)->getstring())).c_str()).getStore();
+            xqpStringStore_t name = xqpString((*((*arrIter)->getstring())).c_str()).getStore();
             create_Node_Helper(parent, baseUri, name, result);
             ++arrIter;
 
@@ -297,14 +296,14 @@ namespace zorba {
           {
             for ( vectIter=vect->begin(); vectIter != vect->end(); ++vectIter )
             {
-              name = xqpString((*vectIter)->getname().c_str()).getStore();
-              text = xqpString((*((*vectIter)->getstring())).c_str()).getStore();
+              xqpStringStore_t name = xqpString((*vectIter)->getname().c_str()).getStore();
+              xqpStringStore_t text = xqpString((*((*vectIter)->getstring())).c_str()).getStore();
               create_Attribute_Helper(parent, name, text, NULL);
             }
           }
           break;
         default:
-          text = xqpString((*((*value)->getstring())).c_str()).getStore();
+          xqpStringStore_t text = xqpString((*((*value)->getstring())).c_str()).getStore();
           if(text->byteCompare("null") != 0)
             GENV_ITEMFACTORY->createTextNode(text_value, parent, -1, text);
           break;
@@ -318,7 +317,7 @@ namespace zorba {
     store::Item_t     attr, child;
 
     bool result = true;
-    xqpStringStore_t name, type, value;
+    xqpStringStore_t name, type;
 
     attrIt = element->getAttributes();
     attrIt->open();
@@ -354,6 +353,7 @@ namespace zorba {
     }
     else if(type->byteCompare("string") == 0)
     {
+      xqpStringStore_t value;
       get_value(element, value);
       if(element->getNodeName()->getStringValue()->byteCompare("pair") == 0)
       {
@@ -377,6 +377,7 @@ namespace zorba {
     }
     else //number,boolean
     {
+      xqpStringStore_t value;
       get_value(element, value);
       if(element->getNodeName()->getStringValue()->byteCompare("pair") == 0)
       {
@@ -466,8 +467,6 @@ namespace zorba {
 
     while (childrenIt->next(child) && result)
     {
-      
-
       if (child->getNodeKind() == store::StoreConsts::elementNode)
       {
         json_string->append_in_place(", ");
