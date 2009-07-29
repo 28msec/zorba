@@ -515,6 +515,7 @@ TranslatorImpl(
   hadBUriDecl (false),
   hadConstrDecl (false),
   hadCopyNSDecl (false),
+  hadDefNSDecl (false),
   hadEmptyOrdDecl (false),
   hadOrdModeDecl (false),
   hadRevalDecl (false)
