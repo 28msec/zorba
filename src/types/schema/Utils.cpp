@@ -279,20 +279,22 @@ void processElement(
 }
 
 
-void validateAttributes( EventSchemaValidator& schemaValidator, store::Iterator_t attributes)
+void validateAttributes( 
+    EventSchemaValidator& schemaValidator,
+    store::Iterator_t attributes)
 {
-    store::Item_t attribute;
+  store::Item_t attribute;
     
-    while ( attributes->next(attribute) )
-    {
-        ZORBA_ASSERT(attribute->isNode());
-        ZORBA_ASSERT(attribute->getNodeKind() == store::StoreConsts::attributeNode);
-
-        //cout << " vup    - attr: " << attribute->getNodeName()->getLocalName()->c_str() << "\n"; cout.flush();
-                    
-        store::Item_t attName = attribute->getNodeName();
-        schemaValidator.attr(attName, attribute->getStringValue());
-    }
+  while ( attributes->next(attribute) )
+  {
+    ZORBA_ASSERT(attribute->isNode());
+    ZORBA_ASSERT(attribute->getNodeKind() == store::StoreConsts::attributeNode);
+    
+    //cout << " vup    - attr: " << attribute->getNodeName()->getLocalName()->c_str() << "\n"; cout.flush();
+    
+    store::Item_t attName = attribute->getNodeName();
+    schemaValidator.attr(attName, attribute->getStringValue());
+  }
 }
 
 
@@ -314,7 +316,7 @@ void processAttributes(
     //cout << " vup        - processATT2: " << att->_localName << " T: " << att->_typeName << "\n";
             
     store::Item_t attQName;
-    GENV_ITEMFACTORY->createQName( attQName, att->_uri, att->_prefix, att->_localName);
+    GENV_ITEMFACTORY->createQName(attQName, att->_uri, att->_prefix, att->_localName);
         
     store::Item_t attrib = findAttributeItem(parent, attQName);
         
