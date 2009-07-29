@@ -58,7 +58,13 @@ static inline const XMLCh *nullToZero(const XMLCh *in)
 
 const XMLCh SchemaValidatorFilter::DT_UNTYPED[] =
 {
-    chLatin_u, chLatin_n, chLatin_t, chLatin_y, chLatin_p, chLatin_e, chLatin_d, chNull
+  chLatin_u, chLatin_n, chLatin_t, chLatin_y, chLatin_p, chLatin_e, chLatin_d, chNull
+};
+
+const XMLCh SchemaValidatorFilter::DT_UNTYPED_ATOMIC[] =
+{
+  chLatin_u, chLatin_n, chLatin_t, chLatin_y, chLatin_p, chLatin_e, chLatin_d,
+  chLatin_A, chLatin_t, chLatin_o, chLatin_m, chLatin_i, chLatin_c, chNull
 };
 
 
@@ -556,19 +562,21 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
                               attrValidator->getTypeLocalName());
       else 
         _eventBuffer->attributeEvent(emptyToNull(attr->getPrefix()),
-                              emptyToNull(uri),
-                              localname,
-                              value,
-                              SchemaSymbols::fgURI_SCHEMAFORSCHEMA,
-                              SchemaSymbols::fgDT_ANYSIMPLETYPE);
+                                     emptyToNull(uri),
+                                     localname,
+                                     value,
+                                     SchemaSymbols::fgURI_SCHEMAFORSCHEMA,
+                                     SchemaSymbols::fgDT_ANYSIMPLETYPE);
     }
     else
+    {
       _eventBuffer->attributeEvent(emptyToNull(attr->getPrefix()),
                             emptyToNull(uri),
                             localname,
                             value,
                             SchemaSymbols::fgURI_SCHEMAFORSCHEMA,
-                            DT_UNTYPED);
+                            DT_UNTYPED_ATOMIC);
+    }
   }
   
   // Deal with default, required and prohibited attrs

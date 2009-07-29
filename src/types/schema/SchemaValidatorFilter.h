@@ -83,6 +83,7 @@ class SchemaValidatorFilter :
 {
 public:
   static const XMLCh DT_UNTYPED[];
+  static const XMLCh DT_UNTYPED_ATOMIC[];
 
 private:
   const QueryLoc                                            & _loc;
