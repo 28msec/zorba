@@ -153,7 +153,7 @@ store::Item_t EventSchemaValidator::getTypeQName()
   GENV_ITEMFACTORY->createQName(typeQName, 
                                 typeUri.localFormOrDefault (Schema::XSD_NAMESPACE), 
                                 "", 
-                                typeName.localFormOrDefault ("anyType"));
+                                typeName.localFormOrDefault ("untyped"));
   
   //cout << " : " << typeQName->getLocalName()->c_str() << " @ "
   //     << typeQName->getNamespace()->c_str() <<"\n";
@@ -173,7 +173,7 @@ xqtref_t EventSchemaValidator::getType()
   GENV_ITEMFACTORY->createQName(typeQName, 
                                 typeUri.localFormOrDefault (Schema::XSD_NAMESPACE), 
                                 "", 
-                                typeName.localFormOrDefault ("anyType"));
+                                typeName.localFormOrDefault ("untyped"));
   
   xqtref_t type = _typeManager->create_named_type(typeQName);
   return type;
@@ -182,26 +182,26 @@ xqtref_t EventSchemaValidator::getType()
 
 store::Item_t EventSchemaValidator::getSubstitutedElemQName()
 {
-    if (_schemaValidatorFilter->getSubstitutedElemName())
-    {
-        StrX substElemName(_schemaValidatorFilter->getSubstitutedElemName());
-        StrX substElemUri (_schemaValidatorFilter->getSubstitutedElemUri ());
+  if (_schemaValidatorFilter->getSubstitutedElemName())
+  {
+    StrX substElemName(_schemaValidatorFilter->getSubstitutedElemName());
+    StrX substElemUri (_schemaValidatorFilter->getSubstitutedElemUri ());
         
-        //cout << "  - getSubstitutedElemQName: " << substElemName << "@" << substElemUri <<" ";
+    //cout << "  - getSubstitutedElemQName: " << substElemName << "@" << substElemUri <<" ";
         
-        store::Item_t substElemQName;
-        GENV_ITEMFACTORY->createQName(substElemQName, 
-                                      substElemUri.localForm(), 
-                                      "", 
-                                      substElemName.localForm());
+    store::Item_t substElemQName;
+    GENV_ITEMFACTORY->createQName(substElemQName, 
+                                  substElemUri.localForm(), 
+                                  "", 
+                                  substElemName.localForm());
         
-        //cout << " : " << substElemQName->getLocalName()->c_str() << " @ "
-        //     << substElemQName->getNamespace()->c_str() <<"\n";
+    //cout << " : " << substElemQName->getLocalName()->c_str() << " @ "
+    //     << substElemQName->getNamespace()->c_str() <<"\n";
   
-        return substElemQName;
-    }
-    else
-        return NULL;
+    return substElemQName;
+  }
+  else
+    return NULL;
 }
 
 
