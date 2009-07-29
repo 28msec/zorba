@@ -2729,6 +2729,7 @@ TypeswitchExpr :
 								dynamic_cast<CaseClauseList*>($5),
 								static_cast<QName*>($8)->get_qname(),
 								$10);
+      delete $8;
 		}
 	;
 
@@ -5086,7 +5087,8 @@ NCNAME :
     NCNAME_SVAL
   | QNAME
     {
-      std::string tmp = static_cast<QName*>($1)->get_qname();
+      std::auto_ptr<QName> lQName(static_cast<QName*>($1));
+      std::string tmp = lQName->get_qname();
       if (tmp.find (':') != std::string::npos) {
         error(@1, "A NCName is expected, found a QName");
         YYERROR;
