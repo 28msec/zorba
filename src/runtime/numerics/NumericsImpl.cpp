@@ -591,8 +591,16 @@ bool NumArithIterator<Operation>::computeAtomic(
   store::Item_t n0;
   store::Item_t n1;
 
-  GenericCast::instance()->castToAtomic ( n0, item0, &*resultType );
-  GenericCast::instance()->castToAtomic ( n1, item1, &*resultType );
+  try
+  {
+    GenericCast::instance()->castToAtomic ( n0, item0, &*resultType);
+    GenericCast::instance()->castToAtomic ( n1, item1, &*resultType);
+  }
+  catch(error::ZorbaError& e)
+  {
+    // rethrow but with location
+    ZORBA_ERROR_LOC_DESC(e.theErrorCode , aLoc, e.theDescription);
+  }
 
   switch ( TypeOps::get_atomic_type_code ( *resultType ) )
   {
