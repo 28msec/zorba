@@ -19,6 +19,8 @@
 #include <memory>
 #include <list>
 
+#include <zorba/api_shared_types.h>
+
 #include "store/api/item.h" // TODO remove by moving all functions into the cpp file
 
 #include "context/static_context_consts.h"
@@ -30,7 +32,6 @@
 #include "types/typemanager.h"
 #include "zorbaerrors/Assert.h"
 
-#include <zorba/api_shared_types.h>
 #include "common/shared_types.h"
 #include "context/internal_uri_resolvers.h"
 
