@@ -35,6 +35,7 @@
        <li> \ref eval
        <li> \ref zorbascripting
        <li> \ref rest
+       <li> \ref fop
        <li> Additional Function Libraries
        <ul>
          <li> \ref deref

@@ -1,5 +1,39 @@
 /** \page rest REST
 
+  <ul>
+    <li> Table of Contents
+    <ul>
+      <li> \ref intro_rest
+      <li> \ref installation_rest
+      <ul>
+        <li> \ref https_rest
+        <li> \ref proxy_rest
+      </ul>
+      <li> \ref restfunctions
+      <ul>
+        <li> \ref getfunctions
+          <ul>
+            <li> \ref getfunctions_tidy
+          </ul> 
+        <li> \ref postfunctions
+        <li> \ref parameterdesc
+        <ul>
+          <li> \ref resturl
+          <li> \ref restpayload
+          <li> \ref restheaders
+          <li> \ref restresult
+          <li> \ref resterrors
+        </ul>
+        <li> \ref restexamples
+        <ul>
+          <li> \ref restgetexamples
+          <li> \ref restpostexamples
+        </ul>
+      </ul>
+    </ul>
+ </ul>
+
+\section intro_rest 1 Introduction
 In order to use Zorba's REST functionality, the module "http://www.zorba-xquery.com/zorba/rest-functions" has
 to be included at the beginning of a query. For example
 
@@ -12,10 +46,21 @@ HEAD and DELETE  with a later release.
 Moreover, all of the functions will be declared nondeterministic (as in the upcoming XQuery 1.1. specification) and 
 sequential (as in the upcoming XQuery Scripting specification).
 
-\section restfunctions REST Functions
+\section installation_rest 2 Configuring
+
+\subsection https_rest 2.1 HTTPS note
+Please make sure to read the \ref https_support from the build instructions.
+
+\subsection proxy_rest 2.2 Proxy note
+If you have a Proxy installed cURL allows you to configure proxy settings using environment variables.
+Set the following environment variable according to your settings:
+
+<i><b>http_proxy=http://username:password@proxyserver.example.org:8123/</b></i>
+
+\section restfunctions 3 REST Functions
 The following section defines the various REST XQuery functions (and their parameters) provided by Zorba.
 
-\subsection getfunctions GET Functions
+\subsection getfunctions 3.1 GET Functions
 
 \code
  declare nondeterministic sequential function zorba-rest:get( url as xs:string)                         as element(zorba-rest:result);
@@ -26,7 +71,7 @@ The following section defines the various REST XQuery functions (and their param
                                                               headers as element(zorba-rest:headers)*)  as element(zorba-rest:result);
 \endcode
 
-\subsection getfunctions_tidy GetTidy Functions
+\subsection getfunctions_tidy 3.1.1 GetTidy Functions
 
 In order to use the functions that require Tidy you have to:\n
 - install Tidy either from <a href="http://tidy.sourceforge.net/#binaries" target="_blank">binaries</a> or <a href="http://tidy.sourceforge.net/#source" target="_blank">source code</a>.\n
@@ -64,7 +109,7 @@ Note: you can set a boolean parameter to true by either of the following methods
 - passing the option name and the value (like <i>bare</i> in the above example) \n
 
 
-\subsection postfunctions PUT Functions
+\subsection postfunctions 3.2 PUT Functions
 
 \code
  declare nondeterministic sequential function zorba-rest:put( url as xs:string)                         as element(zorba-rest:result);
@@ -77,12 +122,12 @@ Note: you can set a boolean parameter to true by either of the following methods
 
 
 
-\subsection parameterdesc Parameter Descriptions
+\subsection parameterdesc 3.3 Parameter Descriptions
 
-\subsubsection resturl URL
+\subsubsection resturl 3.3.1 URL
 The URL as an xs:string. This can be either a HTTP or a HTTPS URL optionally containing additional parameters.
 
-\subsubsection restpayload Payload
+\subsubsection restpayload 3.3.2 Payload
 
 For the GET function, the payload should have the form:
 
@@ -115,7 +160,7 @@ default content type of "text/plain" and "text/xml", respectively. The third for
 be either text nodes or XML parts.
 
 
-\subsubsection restheaders Headers
+\subsubsection restheaders 3.3.3 Headers
 Custom headers to be sent with the HTTP request.
 
 \code
@@ -125,7 +170,7 @@ Custom headers to be sent with the HTTP request.
  <zorba-rest:headers>
 \endcode
 
-\subsubsection restresult Result
+\subsubsection restresult 3.3.4 Result
 Contains the reply of the HTTP request.
 
 \code
@@ -146,14 +191,14 @@ The headers part contains the headers sent by the servers, e.g. content-type, co
 The payload will be: an XML part when the content type is xml or xhtml, a text node for all content-types that begin with "text/" (except "text/xml"), and 
 a Base64 encoded value in all the other cases.
 
-\subsubsection resterrors Errors
+\subsubsection resterrors 3.3.5 Errors
 
 An error will be generated for any reply that has a status code different from 200. 
 The payload, however, will be returned too, if available.
 
-\section restexamples REST Examples
+\section restexamples 3.4 REST Examples
 
-\subsection restgetexamples REST GET Examples
+\subsection restgetexamples 3.4.1 REST GET Examples
 
 \subsubsection restexample2 Example 1
 
@@ -210,7 +255,7 @@ zorba-rest:get("http://www.example.com/path",
 \endcode
 
 
-\subsection restpostexamples REST POST Examples
+\subsection restpostexamples 3.4.2 REST POST Examples
 
 \subsubsection restpostexample1 Example 1
 

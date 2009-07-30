@@ -18,10 +18,9 @@
       <li> \ref mail
     </ul>
   </ul>
-    <li> \ref apendix_email
-    <li> \ref apendix_naming
-   </ul>
- </ul>
+  <li> \ref apendix_email
+  <li> \ref apendix_naming
+</ul>
 
 \section intro_mail 1 Introduction
 This document defines functions used to send emails.

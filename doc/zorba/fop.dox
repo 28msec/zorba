@@ -1,4 +1,4 @@
-/** \page rest REST
+/** \page fop FO
 
 In order to use Zorba's FO functionality, the module "http://www.zorba-xquery.com/zorba/fop-functions" has
 to be included at the beginning of a query. For example
