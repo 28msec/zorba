@@ -914,6 +914,7 @@ void operator&(Archiver &ar, store::Item* &obj)
         //pos = -1
         SERIALIZE_FIELD(store::Item_t, nodename, getNodeName());
         SERIALIZE_FIELD(store::Item_t, name_of_type, getType());
+        SERIALIZE_FIELD(bool, isInSubstGroup, isInSubstitutionGroup());
         bool  haveTypedValue = false;
         bool  haveEmptyValue = true;
         if(ar.is_serializing_out())
@@ -933,7 +934,7 @@ void operator&(Archiver &ar, store::Item* &obj)
           obj->getNamespaceBindings(ns_bindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
         ar & ns_bindings;
         SERIALIZE_FIELD(xqpStringStore_t, baseUri, getBaseURI());
-        FINALIZE_SERIALIZE(createElementNode, (result, parent, -1, nodename, name_of_type, haveTypedValue, haveEmptyValue, ns_bindings, baseUri));
+        FINALIZE_SERIALIZE(createElementNode, (result, parent, -1, nodename, name_of_type, haveTypedValue, haveEmptyValue, ns_bindings, baseUri, isInSubstGroup));
         std::vector<store::Item_t>  attribs;
         iterator_to_vector(obj->getAttributes(), attribs);
         ar & attribs;
